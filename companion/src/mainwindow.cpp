@@ -59,7 +59,7 @@
 #include "burndialog.h"
 #include "hexinterface.h"
 #include "warnings.h"
-#include "firmwares/opentx/open9xinterface.h" // TODO get rid of this include
+#include "firmwares/opentx/opentxinterface.h" // TODO get rid of this include
 
 #define DONATE_STR "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QUZ48K4SEXDP2"
 #ifdef __APPLE__
@@ -1226,34 +1226,29 @@ bool MainWindow::isValidEEPROM(QString eepromfile)
         return false;
       }
       file.close();
-      RadioData radioData;
-      if (!LoadEeprom(radioData, eeprom, eeprom_size)) {
-        free(eeprom);
-        return false;
-      } else {
-        free(eeprom);
-        return true;
-      }
-    } else if (fileType==FILE_TYPE_BIN) { //read binary
+      RadioData * radioData = new RadioData();
+      bool result = LoadEeprom(*radioData, eeprom, eeprom_size);
+      free(eeprom);
+      delete radioData;
+      return result;
+    }
+    else if (fileType==FILE_TYPE_BIN) { //read binary
       if (!file.open(QFile::ReadOnly))
         return false;
       eeprom_size = file.size();
       uint8_t *eeprom = (uint8_t *)malloc(eeprom_size);
       memset(eeprom, 0, eeprom_size);
-      long result = file.read((char*)eeprom, eeprom_size);
+      long read = file.read((char*)eeprom, eeprom_size);
       file.close();
-      if (result != eeprom_size) {
+      if (read != eeprom_size) {
         free(eeprom);
         return false;
       }
-      RadioData radioData;
-      if (!LoadEeprom(radioData, eeprom, eeprom_size)) {
-        free(eeprom);
-        return false;
-      } else {
-        free(eeprom);
-        return true;
-      }
+      RadioData * radioData = new RadioData();
+      bool result = LoadEeprom(*radioData, eeprom, eeprom_size);
+      free(eeprom);
+      delete radioData;
+      return result;
     }
     return false;
 }

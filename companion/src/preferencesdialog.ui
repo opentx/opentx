@@ -26,7 +26,7 @@
    <string>Preferences</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="companion9x.qrc">
+   <iconset resource="companion.qrc">
     <normaloff>:/images/preferences.png</normaloff>:/images/preferences.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_4" columnstretch="1,0,0,1,0">
@@ -161,7 +161,7 @@
         <string>...</string>
        </property>
        <property name="icon">
-        <iconset resource="companion9x.qrc">
+        <iconset resource="companion.qrc">
          <normaloff>:/images/clear.png</normaloff>:/images/clear.png</iconset>
        </property>
       </widget>
@@ -228,7 +228,7 @@
         <string>...</string>
        </property>
        <property name="icon">
-        <iconset resource="companion9x.qrc">
+        <iconset resource="companion.qrc">
          <normaloff>:/images/library.png</normaloff>:/images/library.png</iconset>
        </property>
       </widget>
@@ -1649,7 +1649,7 @@ May be different from firmware language</string>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>
-  <include location="companion9x.qrc"/>
+  <include location="companion.qrc"/>
  </resources>
  <connections>
   <connection>

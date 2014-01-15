@@ -109,6 +109,8 @@ add_custom_command(
   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/firmwares/ersky9x/ersky9xsimulator.cpp
 )
 
+add_subdirectory(modeledit)
+
 SET( companion_SRCS
      eeprominterface.cpp
      hexinterface.cpp
@@ -124,28 +126,24 @@ SET( companion_SRCS
      ${ER9X_CHECKOUT_DIRECTORY}/er9xsimulator.cpp
      firmwares/gruvin9x/gruvin9xeeprom.cpp
      firmwares/gruvin9x/gruvin9xinterface.cpp  
-     firmwares/opentx/open9xeeprom.cpp
+     firmwares/opentx/opentxeeprom.cpp
      firmwares/opentx/open9xStockeeprom.cpp
-     firmwares/opentx/open9xinterface.cpp
      firmwares/opentx/open9xGruvin9xeeprom.cpp
      firmwares/opentx/open9xSky9xeeprom.cpp
+     firmwares/opentx/opentxinterface.cpp
      firmwares/opentx/opentxTaranisSimulator.cpp
-     firmwares/opentx/open9xSky9xsimulator.cpp
-     firmwares/opentx/open9xGruvin9xsimulator.cpp
-     firmwares/opentx/open9xM128simulator.cpp
-     firmwares/opentx/open9xsimulator.cpp  
+     firmwares/opentx/opentxSky9xsimulator.cpp
+     firmwares/opentx/opentxGruvin9xsimulator.cpp
+     firmwares/opentx/opentxM128simulator.cpp
+     firmwares/opentx/opentxsimulator.cpp  
      firmwares/ersky9x/ersky9xeeprom.cpp
      firmwares/ersky9x/ersky9xinterface.cpp
      ${ERSKY9X_CHECKOUT_DIRECTORY}/ersky9xsimulator.cpp
-     node.cpp
-     edge.cpp
      helpers.cpp
      mdichild.cpp
      generaledit.cpp
-     modeledit.cpp 
      modelslist.cpp
      mountlist.cpp 
-     mixerslist.cpp 
      avroutputdialog.cpp
      preferencesdialog.cpp
      burnconfigdialog.cpp
@@ -155,8 +153,6 @@ SET( companion_SRCS
      burndialog.cpp
      printdialog.cpp
      fusesdialog.cpp
-     expodialog.cpp
-     mixerdialog.cpp
      logsdialog.cpp
      downloaddialog.cpp
      simulatordialog.cpp
@@ -175,9 +171,7 @@ SET( companion_MOC_HDRS
      comparedialog.h
      printdialog.h
      fusesdialog.h
-     mixerdialog.h
      logsdialog.h
-     expodialog.h
      contributorsdialog.h
      customizesplashdialog.h
      splashlibrary.h
@@ -191,14 +185,13 @@ SET( companion_MOC_HDRS
      xmenuwidget.h
      xsimulatordialog.h
      generaledit.h
-     modeledit.h
      modelslist.h
-     mixerslist.h
      mdichild.h
      mainwindow.h
      myslider.h
      modelconfigdialog.h
      qcustomplot.h
+     helpers.h
 )
      
 SET( companion_UIS
@@ -206,16 +199,13 @@ SET( companion_UIS
      avroutputdialog.ui
      comparedialog.ui
      fusesdialog.ui
-     expodialog.ui
      logsdialog.ui
-     mixerdialog.ui
      preferencesdialog.ui
      simulatordialog.ui
      xsimulatordialog.ui
      burnconfigdialog.ui
      downloaddialog.ui
      generaledit.ui
-     modeledit.ui
      printdialog.ui
      contributorsdialog.ui
      customizesplashdialog.ui
@@ -244,7 +234,7 @@ IF ( SDL_FOUND )
 ENDIF( ) 
 
 SET( companion_RCS
-     companion9x.qrc
+     companion.qrc
      ${CMAKE_CURRENT_BINARY_DIR}/translations.qrc
 )
 
@@ -314,7 +304,7 @@ ELSE( )
     ADD_EXECUTABLE( ${PROJECT_NAME} WIN32 ${companion_SRCS} ${companion_QM} )
 ENDIF( )
 
-TARGET_LINK_LIBRARIES( ${PROJECT_NAME} ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} )
+TARGET_LINK_LIBRARIES( ${PROJECT_NAME} modeledit ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} )
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     INSTALL( TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin )

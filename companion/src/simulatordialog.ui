@@ -26,7 +26,7 @@
    <string>Companion Simulator</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="companion9x.qrc">
+   <iconset resource="companion.qrc">
     <normaloff>:/images/simulate.png</normaloff>:/images/simulate.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_6">
@@ -1093,6 +1093,7 @@ QPushButton:checked {
           </widget>
          </item>
 
+
          <item row="0" column="4" rowspan="3">
           <widget class="menuWidget" name="menu" native="true">
            <property name="sizePolicy">
@@ -1811,6 +1812,7 @@ QPushButton:checked {
            <property name="frameShadow">
             <enum>QFrame::Raised</enum>
            </property>
+
 
            <property name="lineWidth">
             <number>2</number>
@@ -3711,7 +3713,7 @@ border-radius: 4px;
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="companion9x.qrc"/>
+  <include location="companion.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -51,7 +51,7 @@ public:
   }
   bool general_settings;
   uint8_t models_count;
-  uint8_t models[C9XMAX_MODELS];
+  uint8_t models[C9X_MAX_MODELS];
 };
 
 ModelsListWidget::ModelsListWidget(QWidget *parent):

@@ -16,14 +16,14 @@
 
 #include <iostream>
 #include <QMessageBox>
-#include "open9xinterface.h"
-#include "open9xeeprom.h"
+#include "opentxinterface.h"
+#include "opentxeeprom.h"
 #include "open9xGruvin9xeeprom.h"
 #include "open9xSky9xeeprom.h"
-#include "open9xsimulator.h"
-#include "open9xM128simulator.h"
-#include "open9xGruvin9xsimulator.h"
-#include "open9xSky9xsimulator.h"
+#include "opentxsimulator.h"
+#include "opentxM128simulator.h"
+#include "opentxGruvin9xsimulator.h"
+#include "opentxSky9xsimulator.h"
 #include "opentxTaranisSimulator.h"
 #include "file.h"
 
@@ -278,15 +278,7 @@ bool Open9xInterface::saveGeneral(GeneralSettings &settings, BoardEnum board, ui
 }
 
 template <class T>
-bool Open9xInterface::saveModel(unsigned int index, ModelData &model)
-{
-  T open9xModel(model);
-  int sz = efile->writeRlc2(FILE_MODEL(index), FILE_TYP_MODEL, (uint8_t*)&open9xModel, sizeof(T));
-  return (sz == sizeof(T));
-}
-
-template <class T>
-bool Open9xInterface::saveModelVariant(unsigned int index, ModelData &model, unsigned int version, unsigned int variant)
+bool Open9xInterface::saveModel(unsigned int index, ModelData &model, unsigned int version, unsigned int variant)
 {
   T open9xModel(model, board, version, variant);
   // open9xModel.Dump();
@@ -371,16 +363,16 @@ int Open9xInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t varian
       case BOARD_TARANIS:
       case BOARD_TARANIS_REV4a:
       case BOARD_SKY9X:
-        version = 215;
+        version = 216;
         break;
       case BOARD_GRUVIN9X:
-        version = 214;
+        version = 216;
         break;
       case BOARD_M128:
-        version = 215;
+        version = 216;
         break;
       case BOARD_STOCK:
-        version = 213;
+        version = 216;
         break;
     }
   }
@@ -389,81 +381,21 @@ int Open9xInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t varian
 
   efile->EeFsCreate(eeprom, size, board);
 
-  int result = 0;
-
   if (board == BOARD_M128) {
     variant |= M128_VARIANT;
   }
   
-  result = saveGeneral<Open9xGeneralDataNew>(radioData.generalSettings, board, version, variant);
-
-  if (!result)
+  int result = saveGeneral<Open9xGeneralDataNew>(radioData.generalSettings, board, version, variant);
+  if (!result) {
     return 0;
+  }
 
   for (int i=0; i<getMaxModels(); i++) {
     if (!radioData.models[i].isempty()) {
-      result = 0;
-      switch(version) {
-        case 202:
-          result = saveModel<Open9xModelData_v202>(i, radioData.models[i]);
-          break;
-        case 203:
-          result = saveModel<Open9xModelData_v203>(i, radioData.models[i]);
-          break;
-        case 204:
-          result = saveModel<Open9xModelData_v204>(i, radioData.models[i]);
-          break;
-        case 205:
-          result = saveModel<Open9xModelData_v205>(i, radioData.models[i]);
-          break;
-        case 207:
-          if (board == BOARD_GRUVIN9X)
-            result = saveModel<Open9xGruvin9xModelData_v207>(i, radioData.models[i]);
-          break;
-        case 208:
-          if (board == BOARD_GRUVIN9X)
-            result = saveModel<Open9xGruvin9xModelData_v208>(i, radioData.models[i]);
-          else if (board == BOARD_SKY9X)
-            result = saveModel<Open9xArmModelData_v208>(i, radioData.models[i]);
-          else
-            result = saveModel<Open9xModelData_v208>(i, radioData.models[i]);
-          break;
-        case 209:
-          if (board == BOARD_GRUVIN9X)
-            result = saveModel<Open9xGruvin9xModelData_v209>(i, radioData.models[i]);
-          else if (board == BOARD_SKY9X)
-            result = saveModel<Open9xArmModelData_v209>(i, radioData.models[i]);
-          else
-            result = saveModel<Open9xModelData_v209>(i, radioData.models[i]);
-          break;
-        case 210:
-          if (board == BOARD_GRUVIN9X)
-            result = saveModel<Open9xGruvin9xModelData_v210>(i, radioData.models[i]);
-          else if (board == BOARD_SKY9X)
-            result = saveModel<Open9xArmModelData_v210>(i, radioData.models[i]);
-          else
-            result = saveModel<Open9xModelData_v210>(i, radioData.models[i]);
-          break;
-        case 211:
-          if (board == BOARD_GRUVIN9X)
-            result = saveModel<Open9xGruvin9xModelData_v211>(i, radioData.models[i]);
-          else if (board == BOARD_SKY9X)
-            result = saveModel<Open9xArmModelData_v211>(i, radioData.models[i]);
-          else
-            result = saveModel<Open9xModelData_v211>(i, radioData.models[i]);
-          break;
-        case 212:
-          if (board == BOARD_SKY9X)
-            result = saveModel<Open9xArmModelData_v212>(i, radioData.models[i]);
-          else
-            result = saveModelVariant<Open9xModelDataNew>(i, radioData.models[i], version, variant);
-          break;
-        default:
-          result = saveModelVariant<Open9xModelDataNew>(i, radioData.models[i], version, variant);
-          break;
+      result = saveModel<Open9xModelDataNew>(i, radioData.models[i], version, variant);
+      if (!result) {
+        return 0;
       }
-      if (!result)
-        return false;
     }
   }
 
@@ -488,7 +420,6 @@ int Open9xInterface::getSize(ModelData &model)
   efile->EeFsCreate(tmp, EESIZE_RLC_MAX, board);
 
   Open9xModelDataNew open9xModel(model, board, 255, GetCurrentFirmwareVariant());
-  // open9xModel.Dump();
 
   QByteArray eeprom;
   open9xModel.Export(eeprom);
@@ -562,12 +493,14 @@ int Open9xInterface::getCapability(const Capability capability)
         return 6;
       else
         return 5;
-    case FlightPhasesAreNamed:
     case FlightPhasesHaveFades:
+      return 1;
     case Gvars:
+      return IS_ARM(board) ? 9 : 5;
+    case FlightModesName:
+    case GvarsName:
+      return (IS_TARANIS(board) ? 10 : 6);
     case GvarsInCS:
-    case GvarsAsWeight:
-    case ExpoIsCurve:
     case HasFAIMode:
       return 1;
     case GvarsAreNamed:
@@ -663,13 +596,6 @@ int Open9xInterface::getCapability(const Capability capability)
       return 0;
     case ExtraInputs:
       return 1;
-    case HasNegCurves:
-      return 1;
-    case HasExpoCurves:
-      return true;
-    case ExpoCurve5:
-    case ExpoCurve9:
-      return 4;
     case ExtendedTrims:
       return 500;
     case ExtraTrims:
@@ -680,10 +606,6 @@ int Open9xInterface::getCapability(const Capability capability)
       return 1;
     case FSSwitch:
       return 1;
-    case HasTTrace:
-      return 1;
-    case CustomCurves:
-      return 1;
     case MixesWithoutExpo:
       return 1;
     case NumCurves:
@@ -692,14 +614,10 @@ int Open9xInterface::getCapability(const Capability capability)
       return (IS_ARM(board) ? (IS_TARANIS(board) ? 8 : 6) : false);
     case HasExpoNames:
       return (IS_ARM(board) ? (IS_TARANIS(board) ? 8 : 6) : false);
-    case HasChNames:
-      return (IS_TARANIS(board) ? 1 : 0);
+    case ChannelsName:
+      return (IS_TARANIS(board) ? 6 : 0);
     case HasCvNames:
       return (IS_TARANIS(board) ? 1 : 0);
-    case NoTimerDirs:
-      return 1;
-    case NoThrExpo:
-      return 1;
     case Telemetry:
       return TM_HASTELEMETRY|TM_HASOFFSET|TM_HASWSHH;
     case TelemetryBars:
@@ -734,8 +652,6 @@ int Open9xInterface::getCapability(const Capability capability)
       return 1;
     case TelemetryMaxMultiplier:
       return (IS_ARM(board) ? 32 : 8);
-    case DiffMixers:
-      return 1;
     case PPMCenter:
       return 1;
     case SYMLimits:
@@ -766,10 +682,6 @@ int Open9xInterface::getCapability(const Capability capability)
     case HasBrightness:
       return (IS_ARM(board) ? true : false);
     case PerModelTimers:
-    case PerModelThrottleWarning:
-    case PerModelThrottleInvert:
-      return 1;
-    case pmSwitchMask:
       return 1;
     case SlowScale:
       return (IS_ARM(board) ? 10 : 2);
@@ -777,15 +689,18 @@ int Open9xInterface::getCapability(const Capability capability)
       return (IS_ARM(board) ? 250 : 15);
     case CSFunc:
       return 18;
-    case GvarsNum:
-    case GvarsOfsNum:  
-      return 5;
     case HasSDLogs:
       return ((board == BOARD_GRUVIN9X || IS_ARM(board)) ? true : false);
     case LCDWidth:
       return (IS_TARANIS(board) ? 212 : 128) ;
     case GetThrSwitch:
-      return (IS_TARANIS(board) ?DSW_SF1 : DSW_THR) ;
+      return (IS_TARANIS(board) ? DSW_SF1 : DSW_THR) ;
+    case VirtualInputs:
+    case LuaInputs:
+    case LimitsPer1000:
+    case EnhancedCurves:
+    case TelemetryInternalAlarms:
+      return IS_TARANIS(board);
     default:
       return 0;
   }
@@ -814,12 +729,15 @@ int Open9xInterface::isAvailable(Protocol proto, int port)
           case PXX_XJT_D8:
           case PXX_XJT_LR12:
           case PXX_DJT:
+          case LP45:
+          case DSM2:
+          case DSMX:
             return 1;
           default:
             return 0;
         }
         break;
-      case 2:
+      case -1:
         switch (proto) {
           case PPM:
             return 1;
@@ -953,6 +871,9 @@ bool Open9xInterface::checkVersion(unsigned int version)
       break;
     case 215:
       // M128 revert because too much RAM used!
+      break;
+    case 216:
+      // A lot of things (first github release)
       break;
     default:
       return false;

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>367</width>
-    <height>475</height>
+    <width>342</width>
+    <height>434</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -20,7 +20,7 @@
    <string>Dialog</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="companion9x.qrc">
+   <iconset resource="../companion9x.qrc">
     <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
@@ -178,42 +178,28 @@ p, li { white-space: pre-wrap; }
    </item>
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0,0">
-     <item row="12" column="1" colspan="2">
-      <widget class="QComboBox" name="mltpxCB">
-       <property name="whatsThis">
-        <string>Multiplexer
-
-This determines how mixer values are added.
-
-&quot;+&quot; means the value of the current mix is added to the previous mixes in the same channel.
-&quot;*&quot; means the value of the current mix is amultiplied with the previous mixes in the same channel.
-&quot;R&quot; means the value replaces the previous values.  If the switch is off the value will be ignored.</string>
-       </property>
-       <item>
-        <property name="text">
-         <string>ADD</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>MULTIPLY</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>REPLACE</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="1" column="1" colspan="2">
-      <widget class="QComboBox" name="sourceCB">
-       <property name="whatsThis">
-        <string>The source for the mixer</string>
+     <item row="5" column="0">
+      <widget class="QLabel" name="trimLabel">
+       <property name="text">
+        <string>Include Trim</string>
        </property>
       </widget>
      </item>
-     <item row="9" column="1" colspan="2">
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Offset</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Weight</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1" colspan="2">
       <layout class="QGridLayout" name="gridLayout_4">
        <item row="0" column="0">
         <widget class="QLabel" name="lb_FP0">
@@ -370,20 +356,6 @@ This determines how mixer values are added.
        </item>
       </layout>
      </item>
-     <item row="11" column="0">
-      <widget class="QLabel" name="label_8">
-       <property name="text">
-        <string>Warning</string>
-       </property>
-      </widget>
-     </item>
-     <item row="12" column="0">
-      <widget class="QLabel" name="label_9">
-       <property name="text">
-        <string>Multiplex</string>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="0">
       <widget class="QLabel" name="label_name">
        <property name="text">
@@ -398,52 +370,24 @@ This determines how mixer values are added.
        </property>
       </widget>
      </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_3">
+     <item row="10" column="0">
+      <widget class="QLabel" name="label_9">
        <property name="text">
-        <string>Weight</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>Offset</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_curve">
-       <property name="text">
-        <string>Curve/Differential</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="label_5">
-       <property name="text">
-        <string>Include Trim</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="0">
-      <widget class="QLabel" name="label_FMtrim">
-       <property name="text">
-        <string>Enable FM Trim</string>
+        <string>Multiplex</string>
        </property>
       </widget>
      </item>
      <item row="9" column="0">
-      <widget class="QLabel" name="label_phases">
+      <widget class="QLabel" name="label_8">
        <property name="text">
-        <string>Flight modes</string>
+        <string>Warning</string>
        </property>
       </widget>
      </item>
-     <item row="10" column="0">
-      <widget class="QLabel" name="label_7">
-       <property name="text">
-        <string>Switch</string>
+     <item row="4" column="1">
+      <widget class="QComboBox" name="curveTypeCB">
+       <property name="whatsThis">
+        <string>The curve used by the mix</string>
        </property>
       </widget>
      </item>
@@ -454,14 +398,28 @@ This determines how mixer values are added.
        </property>
       </widget>
      </item>
-     <item row="8" column="0">
-      <widget class="QLabel" name="label_FixOffset">
+     <item row="7" column="0">
+      <widget class="QLabel" name="label_phases">
        <property name="text">
-        <string>Fix Offset</string>
+        <string>Flight modes</string>
        </property>
       </widget>
      </item>
-     <item row="11" column="1" colspan="2">
+     <item row="8" column="0">
+      <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>Switch</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QCheckBox" name="MixDR_CB">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="1" colspan="2">
       <widget class="QComboBox" name="warningCB">
        <property name="whatsThis">
         <string>Mixer warning.
@@ -489,38 +447,18 @@ Setting this value will cause a beep to be emmitted when this value is active.</
        </item>
       </widget>
      </item>
-     <item row="4" column="1">
-      <widget class="QComboBox" name="curvesCB">
-       <property name="whatsThis">
-        <string>The curve used by the mix</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="1">
-      <widget class="QCheckBox" name="MixDR_CB">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="1">
-      <widget class="QCheckBox" name="FixOffsetChkB">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="1">
-      <widget class="QCheckBox" name="FMtrimChkB">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
+     <item row="5" column="1">
+      <widget class="QComboBox" name="trimCB">
+       <item>
+        <property name="text">
+         <string>No</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Yes</string>
+        </property>
+       </item>
       </widget>
      </item>
      <item row="3" column="1" colspan="2">
@@ -557,18 +495,46 @@ Setting this value will cause a beep to be emmitted when this value is active.</
        </item>
       </layout>
      </item>
-     <item row="5" column="1">
-      <widget class="QComboBox" name="trimCB">
+     <item row="10" column="1" colspan="2">
+      <widget class="QComboBox" name="mltpxCB">
+       <property name="whatsThis">
+        <string>Multiplexer
+
+This determines how mixer values are added.
+
+&quot;+&quot; means the value of the current mix is added to the previous mixes in the same channel.
+&quot;*&quot; means the value of the current mix is amultiplied with the previous mixes in the same channel.
+&quot;R&quot; means the value replaces the previous values.  If the switch is off the value will be ignored.</string>
+       </property>
        <item>
         <property name="text">
-         <string>No</string>
+         <string>ADD</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Yes</string>
+         <string>MULTIPLY</string>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>REPLACE</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="1" column="1" colspan="2">
+      <widget class="QComboBox" name="sourceCB">
+       <property name="whatsThis">
+        <string>The source for the mixer</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_curve">
+       <property name="text">
+        <string>Curve</string>
+       </property>
       </widget>
      </item>
      <item row="2" column="1" colspan="2">
@@ -605,7 +571,7 @@ Setting this value will cause a beep to be emmitted when this value is active.</
        </item>
       </layout>
      </item>
-     <item row="10" column="1" colspan="2">
+     <item row="8" column="1" colspan="2">
       <widget class="QComboBox" name="switchesCB">
        <property name="whatsThis">
         <string>Switch used by the mix.
@@ -623,21 +589,21 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</string>
      <item row="4" column="2">
       <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0,0">
        <item>
-        <widget class="QCheckBox" name="differentialGV">
+        <widget class="QCheckBox" name="curveGVarCB">
          <property name="text">
           <string>GV</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="differentialCB">
+        <widget class="QComboBox" name="curveValueCB">
          <property name="whatsThis">
           <string>The source for the mixer</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QSpinBox" name="differentialSB"/>
+        <widget class="QSpinBox" name="curveValueSB"/>
        </item>
       </layout>
      </item>
@@ -646,7 +612,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</string>
   </layout>
  </widget>
  <resources>
-  <include location="companion9x.qrc"/>
+  <include location="../companion9x.qrc"/>
  </resources>
  <connections>
   <connection>

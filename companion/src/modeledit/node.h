@@ -52,11 +52,12 @@ QT_BEGIN_NAMESPACE
 class QGraphicsSceneMouseEvent;
 QT_END_NAMESPACE
 
-class Node : public QGraphicsItem
+class Node : public QGraphicsObject
 {
+  Q_OBJECT
 
-public:
-    Node(QSpinBox *sb = 0, QSpinBox *sbx = 0);
+  public:
+    Node();
 
     void addEdge(Edge *edge);
     QList<Edge *> edges() const;
@@ -80,16 +81,19 @@ public:
     bool getFixedY() {return fixedY;}
     void setMinX(int val) {minX = val;};
     void setMaxX(int val) {maxX = val;};
-    void setColor(QColor color);
+    void setColor(const QColor & color);
     
-protected:
-    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+  signals:
+    void moved(int x, int y);
+    void focus();
+    void unfocus();
 
+  protected:
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     
-private:
-
+  private:
     bool bPressed;
     bool centerX;
     bool centerY;
@@ -98,8 +102,6 @@ private:
     int  ballSize;
     int minX;
     int maxX;
-    QSpinBox *qsb;
-    QSpinBox *qsbx;
     QList<Edge *> edgeList;
     QPointF newPos;
     QColor nodecolor;
