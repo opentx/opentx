@@ -59,7 +59,7 @@ void splashLibrary::setupPage(int page) {
 }
 
 void splashLibrary::getFileList() {
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings("companion", "companion");
   imageList.clear();
   if (settings.value("embedded_splashes", 0).toInt() == 0) {
     QDir myRes(":/images/library");

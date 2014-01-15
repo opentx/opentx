@@ -20,7 +20,7 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
     ui->setupUi(this);
     this->setWindowIcon(QIcon(":/icon.png"));
 
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     QString firmware_id = settings.value("firmware", default_firmware_variant.id).toString();
     ui->tabWidget->setCurrentIndex(settings.value("generalEditTab", 0).toInt());
     int profile_id=settings.value("profileId", 0).toInt();
@@ -946,7 +946,7 @@ void GeneralEdit::on_PPM4_editingFinished()
 void GeneralEdit::on_tabWidget_currentChanged(int index)
 {
   // TODO why er9x here
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     settings.setValue("generalEditTab",index);//ui->tabWidget->currentIndex());
 }
 
@@ -1195,7 +1195,7 @@ void GeneralEdit::on_swGEAChkB_stateChanged(int )
 
 void GeneralEdit::on_calretrieve_PB_clicked()
 {
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings("companion", "companion");
   int profile_id=ui->profile_CB->itemData(ui->profile_CB->currentIndex()).toInt();
   settings.beginGroup("Profiles");
   QString profile=QString("profile%1").arg(profile_id);
@@ -1312,7 +1312,7 @@ void GeneralEdit::on_calretrieve_PB_clicked()
 
 void GeneralEdit::on_calstore_PB_clicked()
 {
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings("companion", "companion");
   int profile_id=ui->profile_CB->itemData(ui->profile_CB->currentIndex()).toInt();
   settings.beginGroup("Profiles");
   QString profile=QString("profile%1").arg(profile_id);

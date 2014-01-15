@@ -82,7 +82,7 @@ burnConfigDialog::~burnConfigDialog()
 
 void burnConfigDialog::getSettings()
 {
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
 #if defined WIN32 || !defined __GNUC__
     avrLoc   = settings.value("avrdude_location", QFileInfo("avrdude.exe").absoluteFilePath()).toString();
     sambaLoc = settings.value("samba_location", QFileInfo("sam-ba.exe").absoluteFilePath()).toString();
@@ -136,7 +136,7 @@ void burnConfigDialog::getSettings()
 
 void burnConfigDialog::putSettings()
 {
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     settings.setValue("avrdude_location", avrLoc);
     settings.setValue("programmer", avrProgrammer);
     settings.setValue("mcu", avrMCU);

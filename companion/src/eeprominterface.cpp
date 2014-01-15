@@ -438,7 +438,7 @@ GeneralSettings::GeneralSettings()
     calibSpanNeg[i] = 0x180;
     calibSpanPos[i] = 0x180;
   }
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings("companion", "companion");
   templateSetup = settings.value("default_channel_order", 0).toInt();
   stickMode = settings.value("default_mode", 1).toInt();
   int profile_id = settings.value("ActiveProfile", 0).toInt();
@@ -659,7 +659,7 @@ ModelData ModelData::removeGlobalVars()
 QList<EEPROMInterface *> eepromInterfaces;
 void RegisterEepromInterfaces()
 {
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings("companion", "companion");
   int rev4a = settings.value("rev4asupport",0).toInt();
   eepromInterfaces.push_back(new Open9xInterface(BOARD_STOCK));
   eepromInterfaces.push_back(new Open9xInterface(BOARD_M128));

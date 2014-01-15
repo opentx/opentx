@@ -58,7 +58,7 @@ class lcdWidget : public QWidget {
       QPixmap buffer(2*lcdWidth, 2*lcdHeight);
       QPainter p(&buffer);
       doPaint(p);
-      QSettings settings("companion9x", "companion9x");
+      QSettings settings("companion", "companion");
       bool toclipboard=settings.value("snapshot_to_clipboard", false).toBool();
       QApplication::clipboard()->setPixmap( buffer );
       if (!toclipboard) {
