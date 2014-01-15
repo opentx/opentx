@@ -77,10 +77,10 @@ class MyProxyStyle : public QProxyStyle
 int main(int argc, char *argv[])
 {
     Q_INIT_RESOURCE(companion9x);
-    QApplication app(argc, argv);
-    app.setApplicationName("Companion9x");
+    QApplication  * app = new QApplication(argc, argv);
+    app->setApplicationName("Companion9x");
 #ifdef __APPLE__
-    app.setStyle(new MyProxyStyle);
+    app->setStyle(new MyProxyStyle);
 #endif
     QString dir;
     if(argc) dir = QFileInfo(argv[0]).canonicalPath() + "/lang";
@@ -95,20 +95,20 @@ int main(int argc, char *argv[])
     qtTranslator.load((QString)"qt_" + locale.left(2), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
 //    qDebug() << locale;
 //    qtTranslator.load("qt_" + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));    
-    app.installTranslator(&companion9xTranslator);
-    app.installTranslator(&qtTranslator);
+    app->installTranslator(&companion9xTranslator);
+    app->installTranslator(&qtTranslator);
 
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 
     QString firmware_id = settings.value("firmware", default_firmware_variant.id).toString();
     firmware_id.replace("open9x", "opentx");
     firmware_id.replace("x9da", "taranis");
-    QPixmap pixmap;
+    QPixmap * pixmap;
     if (firmware_id.contains("taranis"))
-      pixmap = QPixmap(":/images/splasht.png");
+      pixmap = new QPixmap(":/images/splasht.png");
     else
-      pixmap = QPixmap(":/images/splash.png");
-    QSplashScreen *splash = new QSplashScreen(pixmap);
+      pixmap = new QPixmap(":/images/splash.png");
+    QSplashScreen *splash = new QSplashScreen(*pixmap);
 
     RegisterFirmwares();
 
@@ -116,14 +116,15 @@ int main(int argc, char *argv[])
     current_firmware_variant = GetFirmwareVariant(firmware_id);
     // qDebug() << current_firmware_variant;
 
+    MainWindow * mainWin = new MainWindow();
+	
     if (showSplash) {
       splash->show();
-      splash->showMessage(QObject::tr(""));
-      sleep(SPLASH_TIME);
+      QTimer::singleShot(1000*SPLASH_TIME, splash, SLOT(close()));
+      QTimer::singleShot(1000*SPLASH_TIME, mainWin, SLOT(show()));
     }
-
-    MainWindow mainWin;
-    mainWin.show();
-    splash->finish(&mainWin);
-    return app.exec();
+    else  {
+      mainWin->show();
+    }
+    return app->exec();
 }

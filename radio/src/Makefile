@@ -1307,12 +1307,7 @@ clean_list :
 	$(REMOVE) $(TARGET).lss
 	$(REMOVE) $(TARGET).lst
 	$(REMOVE) $(SRC:.c=.s)
-	$(REMOVE) *.o
-	$(REMOVE) */*.o
-	$(REMOVE) */*/*.o
-	$(REMOVE) */*/*/*.o
-	$(REMOVE) */*/*/*/*.o
-	$(REMOVE) */*/*/*/*/*.o
+	$(REMOVE) `find . -name "*.o"` 
 	$(REMOVE) *.d
 	$(REMOVE) *.lst
 	$(REMOVE) allsrc.cpp

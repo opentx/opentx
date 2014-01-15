@@ -36,7 +36,6 @@ PACK(typedef struct t_Open9xArmTimerData_v202 {
 
   operator TimerData();
   t_Open9xArmTimerData_v202() { memset(this, 0, sizeof(t_Open9xArmTimerData_v202)); }
-  t_Open9xArmTimerData_v202(TimerData &eepe);
 }) Open9xArmTimerData_v202;
 
 PACK(typedef struct t_Open9xArmExpoData_v208 {
@@ -50,8 +49,6 @@ PACK(typedef struct t_Open9xArmExpoData_v208 {
 
   operator ExpoData();
   t_Open9xArmExpoData_v208() { memset(this, 0, sizeof(t_Open9xArmExpoData_v208)); }
-  t_Open9xArmExpoData_v208(ExpoData&);
-
 }) Open9xArmExpoData_v208;
 
 PACK(typedef struct t_Open9xArmExpoData_v210 {
@@ -67,8 +64,6 @@ PACK(typedef struct t_Open9xArmExpoData_v210 {
 
   operator ExpoData();
   t_Open9xArmExpoData_v210() { memset(this, 0, sizeof(t_Open9xArmExpoData_v210)); }
-  t_Open9xArmExpoData_v210(ExpoData&);
-
 }) Open9xArmExpoData_v210;
 
 PACK(typedef struct t_Open9xArmExpoData_v212 {
@@ -83,8 +78,6 @@ PACK(typedef struct t_Open9xArmExpoData_v212 {
 
   operator ExpoData();
   t_Open9xArmExpoData_v212() { memset(this, 0, sizeof(t_Open9xArmExpoData_v212)); }
-  t_Open9xArmExpoData_v212(ExpoData&);
-
 }) Open9xArmExpoData_v212;
 
 PACK(typedef struct t_Open9xArmMixData_v208 {
@@ -106,8 +99,6 @@ PACK(typedef struct t_Open9xArmMixData_v208 {
 
  operator MixData();
   t_Open9xArmMixData_v208() { memset(this, 0, sizeof(t_Open9xArmMixData_v208)); }
-  t_Open9xArmMixData_v208(MixData&);
-
 }) Open9xArmMixData_v208;
 
 PACK(typedef struct t_Open9xArmMixData_v209 {
@@ -129,8 +120,6 @@ PACK(typedef struct t_Open9xArmMixData_v209 {
 
  operator MixData();
   t_Open9xArmMixData_v209() { memset(this, 0, sizeof(t_Open9xArmMixData_v209)); }
-  t_Open9xArmMixData_v209(MixData&);
-
 }) Open9xArmMixData_v209;
 
 PACK(typedef struct t_Open9xArmMixData_v210 {
@@ -154,8 +143,6 @@ PACK(typedef struct t_Open9xArmMixData_v210 {
 
  operator MixData();
   t_Open9xArmMixData_v210() { memset(this, 0, sizeof(t_Open9xArmMixData_v210)); }
-  t_Open9xArmMixData_v210(MixData&);
-
 }) Open9xArmMixData_v210;
 
 PACK(typedef struct t_Open9xArmMixData_v212 {
@@ -180,8 +167,6 @@ PACK(typedef struct t_Open9xArmMixData_v212 {
 
  operator MixData();
   t_Open9xArmMixData_v212() { memset(this, 0, sizeof(t_Open9xArmMixData_v212)); }
-  t_Open9xArmMixData_v212(MixData&);
-
 }) Open9xArmMixData_v212;
 
 PACK(typedef struct t_Open9xArmPhaseData_v208 {
@@ -192,7 +177,6 @@ PACK(typedef struct t_Open9xArmPhaseData_v208 {
   uint8_t fadeOut:4;
   operator PhaseData();
   t_Open9xArmPhaseData_v208() { memset(this, 0, sizeof(t_Open9xArmPhaseData_v208)); }
-  t_Open9xArmPhaseData_v208(PhaseData &eepe);
 }) Open9xArmPhaseData_v208;
 
 PACK(typedef struct t_Open9xArmPhaseData_v212 {
@@ -204,7 +188,6 @@ PACK(typedef struct t_Open9xArmPhaseData_v212 {
   int16_t rotaryEncoders[1];
   operator PhaseData();
   t_Open9xArmPhaseData_v212() { memset(this, 0, sizeof(t_Open9xArmPhaseData_v212)); }
-  t_Open9xArmPhaseData_v212(PhaseData &eepe);
 }) Open9xArmPhaseData_v212;
 
 PACK(typedef struct t_Open9xArmCustomSwData_v208 { // Custom Switches data
@@ -214,7 +197,6 @@ PACK(typedef struct t_Open9xArmCustomSwData_v208 { // Custom Switches data
 
   operator CustomSwData();
   t_Open9xArmCustomSwData_v208() { memset(this, 0, sizeof(t_Open9xArmCustomSwData_v208)); }
-  t_Open9xArmCustomSwData_v208(CustomSwData&);
 }) Open9xArmCustomSwData_v208;
 
 PACK(typedef struct t_Open9xArmCustomSwData_v209 { // Custom Switches data
@@ -224,7 +206,6 @@ PACK(typedef struct t_Open9xArmCustomSwData_v209 { // Custom Switches data
 
   operator CustomSwData();
   t_Open9xArmCustomSwData_v209() { memset(this, 0, sizeof(t_Open9xArmCustomSwData_v209)); }
-  t_Open9xArmCustomSwData_v209(CustomSwData&);
 }) Open9xArmCustomSwData_v209;
 
 PACK(typedef struct t_Open9xArmCustomSwData_v210 { // Custom Switches data
@@ -236,7 +217,6 @@ PACK(typedef struct t_Open9xArmCustomSwData_v210 { // Custom Switches data
 
   operator CustomSwData();
   t_Open9xArmCustomSwData_v210() { memset(this, 0, sizeof(t_Open9xArmCustomSwData_v210)); }
-  t_Open9xArmCustomSwData_v210(CustomSwData&);
 }) Open9xArmCustomSwData_v210;
 
 PACK(typedef struct t_Open9xArmFuncSwData_v208 { // Function Switches data
@@ -246,8 +226,6 @@ PACK(typedef struct t_Open9xArmFuncSwData_v208 { // Function Switches data
 
   operator FuncSwData();
   t_Open9xArmFuncSwData_v208() { memset(this, 0, sizeof(t_Open9xArmFuncSwData_v208)); }
-  t_Open9xArmFuncSwData_v208(FuncSwData&);
-
 }) Open9xArmFuncSwData_v208;
 
 PACK(typedef struct t_Open9xArmFuncSwData_v210 { // Function Switches data
@@ -257,8 +235,6 @@ PACK(typedef struct t_Open9xArmFuncSwData_v210 { // Function Switches data
 
   operator FuncSwData();
   t_Open9xArmFuncSwData_v210() { memset(this, 0, sizeof(t_Open9xArmFuncSwData_v210)); }
-  t_Open9xArmFuncSwData_v210(FuncSwData&);
-
 }) Open9xArmFuncSwData_v210;
 
 PACK(typedef struct t_Open9xArmFuncSwData_v211 { // Function Switches data
@@ -270,8 +246,6 @@ PACK(typedef struct t_Open9xArmFuncSwData_v211 { // Function Switches data
 
   operator FuncSwData();
   t_Open9xArmFuncSwData_v211() { memset(this, 0, sizeof(t_Open9xArmFuncSwData_v211)); }
-  t_Open9xArmFuncSwData_v211(FuncSwData&);
-
 }) Open9xArmFuncSwData_v211;
 
 PACK(typedef struct t_Open9xArmSwashRingData_v208 { // Swash Ring data
@@ -284,8 +258,6 @@ PACK(typedef struct t_Open9xArmSwashRingData_v208 { // Swash Ring data
 
   operator SwashRingData();
   t_Open9xArmSwashRingData_v208() { memset(this, 0, sizeof(t_Open9xArmSwashRingData_v208)); }
-  t_Open9xArmSwashRingData_v208(SwashRingData&);
-
 }) Open9xArmSwashRingData_v208;
 
 PACK(typedef struct t_Open9xArmSwashRingData_v209 { // Swash Ring data
@@ -298,8 +270,6 @@ PACK(typedef struct t_Open9xArmSwashRingData_v209 { // Swash Ring data
 
   operator SwashRingData();
   t_Open9xArmSwashRingData_v209() { memset(this, 0, sizeof(t_Open9xArmSwashRingData_v209)); }
-  t_Open9xArmSwashRingData_v209(SwashRingData&);
-
 }) Open9xArmSwashRingData_v209;
 
 PACK(typedef struct t_Open9xArmSwashRingData_v210 { // Swash Ring data
@@ -312,8 +282,6 @@ PACK(typedef struct t_Open9xArmSwashRingData_v210 { // Swash Ring data
 
   operator SwashRingData();
   t_Open9xArmSwashRingData_v210() { memset(this, 0, sizeof(t_Open9xArmSwashRingData_v210)); }
-  t_Open9xArmSwashRingData_v210(SwashRingData&);
-
 }) Open9xArmSwashRingData_v210;
 
 
@@ -336,7 +304,6 @@ PACK(typedef struct t_Open9xArmFrSkyData_v210 {
 
   operator FrSkyData();
   t_Open9xArmFrSkyData_v210() { memset(this, 0, sizeof(t_Open9xArmFrSkyData_v210)); }
-  t_Open9xArmFrSkyData_v210(FrSkyData&);
 }) Open9xArmFrSkyData_v210;
 
 PACK(typedef struct t_Open9xArmFrSkyData_v211 {
@@ -355,7 +322,6 @@ PACK(typedef struct t_Open9xArmFrSkyData_v211 {
 
   operator FrSkyData();
   t_Open9xArmFrSkyData_v211() { memset(this, 0, sizeof(t_Open9xArmFrSkyData_v211)); }
-  t_Open9xArmFrSkyData_v211(FrSkyData&);
 }) Open9xArmFrSkyData_v211;
 
 PACK(typedef struct t_Open9xArmModelData_v208 {
@@ -395,8 +361,6 @@ PACK(typedef struct t_Open9xArmModelData_v208 {
 
   operator ModelData();
   t_Open9xArmModelData_v208() { memset(this, 0, sizeof(t_Open9xArmModelData_v208)); }
-  t_Open9xArmModelData_v208(ModelData&);
-
 }) Open9xArmModelData_v208;
 
 PACK(typedef struct t_Open9xArmModelData_v209 {
@@ -437,8 +401,6 @@ PACK(typedef struct t_Open9xArmModelData_v209 {
 
   operator ModelData();
   t_Open9xArmModelData_v209() { memset(this, 0, sizeof(t_Open9xArmModelData_v209)); }
-  t_Open9xArmModelData_v209(ModelData&);
-
 }) Open9xArmModelData_v209;
 
 PACK(typedef struct t_Open9xArmModelData_v210 {
@@ -477,7 +439,6 @@ PACK(typedef struct t_Open9xArmModelData_v210 {
 
   operator ModelData();
   t_Open9xArmModelData_v210() { memset(this, 0, sizeof(t_Open9xArmModelData_v210)); }
-  t_Open9xArmModelData_v210(ModelData&);
 
 }) Open9xArmModelData_v210;
 
@@ -517,8 +478,6 @@ PACK(typedef struct t_Open9xArmModelData_v211 {
 
   operator ModelData();
   t_Open9xArmModelData_v211() { memset(this, 0, sizeof(t_Open9xArmModelData_v211)); }
-  t_Open9xArmModelData_v211(ModelData&);
-
 }) Open9xArmModelData_v211;
 
 PACK(typedef struct t_Open9xArmModelData_v212 {
@@ -555,8 +514,6 @@ PACK(typedef struct t_Open9xArmModelData_v212 {
   
   operator ModelData();
   t_Open9xArmModelData_v212() { memset(this, 0, sizeof(t_Open9xArmModelData_v212)); }
-  t_Open9xArmModelData_v212(ModelData&);
-
 }) Open9xArmModelData_v212;
 
 #endif

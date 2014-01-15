@@ -45,7 +45,7 @@ Martin Wilson
 Joe Street
 John Holdsworth
 Daniel Schwartz
-Dean Church
+Dean Church (monthly)
 Michael Halse
 David Mark
 Ted Moss
@@ -166,7 +166,7 @@ Heiko Polig
 Andrew Fernie
 Marco Lange
 Nick McMillan
-Michel Baily (mensual)
+Michel Baily (monthly)
 Patrick Mullen
 Scott Campbell
 Erich Roeder
@@ -233,3 +233,58 @@ Ralph Sauer
 Karl-Heinz Gansel
 Michels Bernhard
 Thomas Demmelbauer
+Felice Baratto
+Michael Halse
+Horst Kampen
+Ian Gough
+Matthew Brett
+Lexington S Morley
+Clemens Drews
+Axel Stöckle
+Roberto Orsello
+Richard Ruck
+Hugh Caldwell
+Christian Marauli
+Albin Esbjörnsson
+Per Esbjörnsson
+Bernd Hohmann
+Sławomir Juszczak
+Stephen Henderson
+David Morgan
+Aloft Hobbies
+Netanel Hobara
+Cameron Galipo
+Doug Schafer
+Pietro Rossin
+Earl Killingsworth
+Victor B Wright
+Terry McKinley
+Марков Алексей
+Offer Shmuely
+Ian Lobley
+Keith Hertzog
+Stéphane Fortas
+Peter Mitrik
+Thomas Majewski
+ANF King
+Henrik Hammarström
+Kenneth Lilja (monthly)
+R Wells
+Uwe Jordt
+Harald Wilczak
+Bernhard Lohmann
+Ferenc Koller
+Robert Ferguson
+Daniel Byers
+Tyler Darby
+Miguel Villalpando
+Kim Dong Hoon 
+Terry McKinley
+Walter Bell
+wsTech - http://wstech.de
+Clinton Linck
+Gordon Stahl
+Josep Clodas Sola 
+Thierry Martin
+Peter Mauro 
+Mitchell Brenner

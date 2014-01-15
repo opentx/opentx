@@ -6,10 +6,10 @@
 
 #define TMR_NUM_OPTION  (TMR_VAROFS+2*9+2*GetEepromInterface()->getCapability(CustomSwitches)-1)
 
-//convert from mode 1 to mode g_eeGeneral.stickMode
+//convert from mode 1 to mode generalSettings.stickMode
 //NOTICE!  =>  1..4 -> 1..4
-#define CONVERT_MODE(x) (((x)<=4) ? modn12x3[g_eeGeneral.stickMode][((x)-1)] : (x))
-#define CHANNEL_ORDER(x) (chout_ar[g_eeGeneral.templateSetup*4 + (x)-1])
+#define CONVERT_MODE(x) (((x)<=4) ? modn12x3[generalSettings.stickMode][((x)-1)] : (x))
+#define CHANNEL_ORDER(x) (chout_ar[generalSettings.templateSetup*4 + (x)-1])
 
 #define CURVE_BASE   7
 #define CH(x) (SRC_CH1+(x)-1-(SRC_SWC-SRC_3POS))
@@ -29,6 +29,29 @@ void populateTTraceCB(QComboBox *b, int value);
 void populateRotEncCB(QComboBox *b, int value, int renumber);
 void populateBacklightCB(QComboBox *b, const uint8_t value);
 
+class CurveGroup : public QObject {
+
+  Q_OBJECT
+
+  public:
+    CurveGroup(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QComboBox *curveValueCB, QSpinBox *curveValueSB, CurveReference & curve, unsigned int flags=0);
+    void update();
+
+  protected slots:
+    void gvarCBChanged(int);
+    void valuesChanged();
+
+  protected:
+    QComboBox *curveTypeCB;
+    QCheckBox *curveGVarCB;
+    QComboBox *curveValueCB;
+    QSpinBox *curveValueSB;
+    CurveReference & curve;
+    unsigned int flags;
+    bool lock;
+    int lastType;
+};
+
 #define POPULATE_ONOFF        0x01
 #define POPULATE_MSWITCHES    0x02
 #define POPULATE_AND_SWITCHES 0x04
@@ -42,13 +65,11 @@ void populateFuncParamArmTCB(QComboBox *b, ModelData * g_model, char * value, QS
 void populatePhasesCB(QComboBox *b, int value);
 void populateTrimUseCB(QComboBox *b, unsigned int phase);
 void populateGvarUseCB(QComboBox *b, unsigned int phase);
-void populateCurvesCB(QComboBox *b, int value);
 void populateCustomScreenFieldCB(QComboBox *b, unsigned int value, bool last, int hubproto);
-void populateExpoCurvesCB(QComboBox *b, int value);
-void populateTimerSwitchCB(QComboBox *b, int value, int extrafields=0);
-void populateTimerSwitchBCB(QComboBox *b, int value, int extrafields=0);
+void populateTimerSwitchCB(QComboBox *b, int value);
 QString getCustomSwitchStr(CustomSwData * customSw, const ModelData & model);
 QString getProtocolStr(const int proto);
+QString getPhasesStr(unsigned int phases, ModelData & model);
 
 #define POPULATE_SOURCES       1
 #define POPULATE_TRIMS         2
@@ -72,12 +93,10 @@ QString getCSWFunc(int val);
 QString getFuncName(unsigned int val);
 QString getRepeatString(unsigned int val);
 QString getSignedStr(int value);
-QString getCurveStr(int curve);
 QString getGVarString(int16_t val, bool sign=false);
 QString image2qstring(QImage image);
 QImage qstring2image(QString imagestr);
 int findmult(float value, float base);
-bool checkbit(int value, int bit);
 
 QString getTrimInc(ModelData * g_model);
 QString getTimerStr(TimerData & timer);
@@ -95,4 +114,5 @@ float getBarValue(int barId, int value, FrSkyData *fd);
 float c9xexpou(float point, float coeff);
 float ValToTim(int value);
 int TimToVal(float value);
+
 #endif // HELPERS_H

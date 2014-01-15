@@ -76,6 +76,9 @@ void preferencesDialog::baseFirmwareChanged()
         ui->voice_dnld->setEnabled(true);
         ui->sdPathButton->setEnabled(true);
         ui->sdPath->setEnabled(true);
+        ui->ge_label->show();
+        ui->ge_lineedit->show();
+        ui->ge_pathButton->show();
       } else {
         ui->voiceLabel->hide();
         ui->voiceCombo->hide();
@@ -83,6 +86,9 @@ void preferencesDialog::baseFirmwareChanged()
         ui->sdPathButton->hide();
         ui->sdPath->hide();
         ui->sdPathLabel->hide();
+        ui->ge_label->hide();
+        ui->ge_lineedit->hide();
+        ui->ge_pathButton->hide();        
       }
       populateFirmwareOptions(firmware);
       int width=firmware->eepromInterface->getCapability(LCDWidth);
@@ -268,6 +274,7 @@ void preferencesDialog::writeValues()
   settings.setValue("backLight", ui->backLightColor->currentIndex());
   settings.setValue("libraryPath", ui->libraryPath->text());
   settings.setValue("sdPath", ui->sdPath->text());
+  settings.setValue("gePath", ui->ge_lineedit->text());
   settings.setValue("embedded_splashes", ui->splashincludeCB->currentIndex());
   if (!ui->SplashFileName->text().isEmpty()) {
     QImage Image = ui->imageLabel->pixmap()->toImage();
@@ -342,6 +349,9 @@ void preferencesDialog::populateFirmwareOptions(const FirmwareInfo * firmware)
             ui->sdPathButton->show();
             ui->sdPath->show();
             ui->sdPathLabel->show();
+            ui->ge_label->show();
+            ui->ge_lineedit->show();
+            ui->ge_pathButton->show();           
             if (current_firmware_variant.id.contains(opt.name) ||firmware->voice) {
               ui->voiceLabel->setEnabled(true);
               ui->voiceCombo->setEnabled(true);
@@ -408,6 +418,10 @@ void preferencesDialog::initSettings()
   if (QDir(Path).exists()) {
     ui->sdPath->setText(Path);
   }
+  Path=settings.value("gePath", "").toString();
+  if (QFile(Path).exists()) {
+    ui->ge_lineedit->setText(Path);
+  }  
   Path=settings.value("backupPath", "").toString();
   if (!Path.isEmpty()) {
     if (QDir(Path).exists()) {
@@ -519,7 +533,7 @@ void preferencesDialog::on_fw_dnld_clicked()
 void preferencesDialog::on_voice_dnld_clicked()
 {
   ui->ProfSave_PB->setEnabled(true);
-  QString url="http://93.51.182.154/voices/";
+  QString url="http://fw.opentx.it/voices/";
   FirmwareVariant variant = getFirmwareVariant();
   url.append(QString("%1/%2/").arg(variant.firmware->id).arg(ui->voiceCombo->currentText()));
   QDesktopServices::openUrl(url);
@@ -566,7 +580,7 @@ void preferencesDialog::on_snapshotClipboardCKB_clicked()
 void preferencesDialog::on_backupPathButton_clicked()
 {
   QSettings settings("companion9x", "companion9x");
-  QString fileName = QFileDialog::getExistingDirectory(this,tr("Select your eeprom backup folder"), settings.value("backupPath").toString());
+  QString fileName = QFileDialog::getExistingDirectory(this,tr("Select your Models and Settings backup folder"), settings.value("backupPath").toString());
   if (!fileName.isEmpty()) {
     settings.setValue("backupPath", fileName);
     ui->backupPath->setText(fileName);
@@ -574,6 +588,15 @@ void preferencesDialog::on_backupPathButton_clicked()
   ui->backupEnable->setEnabled(true);
 }
 
+void preferencesDialog::on_ge_pathButton_clicked()
+{
+  QSettings settings("companion9x", "companion9x");
+  QString fileName = QFileDialog::getOpenFileName(this, tr("Select Google Earth executable"),ui->ge_lineedit->text());
+  if (!fileName.isEmpty()) {
+    ui->ge_lineedit->setText(fileName);
+  }
+}
+ 
 void preferencesDialog::on_splashLibraryButton_clicked()
 {
   QString fileName;
@@ -655,6 +678,7 @@ void preferencesDialog::on_ProfSave_PB_clicked()
     settings.setValue("rename_firmware_files", ui->renameFirmware->isChecked());
     settings.setValue("sdPath", ui->sdPath->text());
     settings.setValue("SplashFileName", ui->SplashFileName->text());
+    settings.setValue("gePath", ui->ge_lineedit->text());
     if (ui->imageLabel->pixmap()) {
       QImage Image = ui->imageLabel->pixmap()->toImage();
       settings.setValue("SplashImage", image2qstring(Image));

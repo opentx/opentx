@@ -96,7 +96,7 @@
         </size>
        </property>
        <property name="text">
-        <string>Burn to TX</string>
+        <string>Write to TX</string>
        </property>
       </widget>
      </item>
@@ -258,7 +258,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Load Firmware</string>
+          <string>Browse for file</string>
          </property>
         </widget>
        </item>
@@ -286,7 +286,7 @@
         <bool>true</bool>
        </property>
        <property name="text">
-        <string>Backup and restore existing eeprom</string>
+        <string>Backup and restore Models and Settings</string>
        </property>
        <property name="tristate">
         <bool>false</bool>
