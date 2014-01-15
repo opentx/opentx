@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>370</width>
-    <height>291</height>
+    <height>331</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -44,14 +44,14 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="4" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
       <string>Weight</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
+   <item row="4" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0,1,0">
      <item>
       <widget class="QCheckBox" name="weightGV">
@@ -79,47 +79,6 @@
         <size>
          <width>40</width>
          <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_expo">
-     <property name="text">
-      <string>Expo</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0,1,0">
-     <item>
-      <widget class="QCheckBox" name="expoGV">
-       <property name="text">
-        <string>GV</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QSpinBox" name="expoSB"/>
-     </item>
-     <item>
-      <widget class="QComboBox" name="expoCB">
-       <property name="whatsThis">
-        <string>Phase used by the expo.</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>0</height>
         </size>
        </property>
       </spacer>
@@ -305,44 +264,6 @@ If blank then the expo is considered to be &quot;ON&quot; all the time.</string>
      </property>
     </widget>
    </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="label_curves">
-     <property name="text">
-      <string>Curve</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0,1,0">
-     <item>
-      <widget class="QComboBox" name="curveTypeCB">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="whatsThis">
-        <string>The curve used by the expo</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="curveGVarCB">
-       <property name="text">
-        <string>GV</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="curveValueCB">
-       <property name="whatsThis">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QSpinBox" name="curveValueSB"/>
-     </item>
-    </layout>
-   </item>
    <item row="9" column="0">
     <widget class="QLabel" name="sideLabel">
      <property name="text">
@@ -396,7 +317,7 @@ If blank then the expo is considered to be &quot;ON&quot; all the time.</string>
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>40</height>
+       <height>30</height>
       </size>
      </property>
     </spacer>
@@ -405,41 +326,6 @@ If blank then the expo is considered to be &quot;ON&quot; all the time.</string>
     <widget class="QComboBox" name="sourceCB">
      <property name="whatsThis">
       <string>The source for the mixer</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1">
-    <widget class="QComboBox" name="trimCB">
-     <item>
-      <property name="text">
-       <string>No</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Yes</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="sourceLabel">
-     <property name="text">
-      <string>Source</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="trimLabel">
-     <property name="text">
-      <string>Include Trim</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="scaleLabel">
-     <property name="text">
-      <string>Scale</string>
      </property>
     </widget>
    </item>
@@ -465,6 +351,79 @@ p, li { white-space: pre-wrap; }
       <number>1</number>
      </property>
     </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="scaleLabel">
+     <property name="text">
+      <string>Scale</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="trimLabel">
+     <property name="text">
+      <string>Include Trim</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="sourceLabel">
+     <property name="text">
+      <string>Source</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QComboBox" name="trimCB">
+     <item>
+      <property name="text">
+       <string>No</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Yes</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_curves">
+     <property name="text">
+      <string>Curve</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0,1,0">
+     <item>
+      <widget class="QComboBox" name="curveTypeCB">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="whatsThis">
+        <string>The curve used by the expo</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="curveGVarCB">
+       <property name="text">
+        <string>GV</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="curveValueCB">
+       <property name="whatsThis">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="curveValueSB"/>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

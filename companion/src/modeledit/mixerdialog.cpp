@@ -49,7 +49,8 @@ MixerDialog::MixerDialog(QWidget *parent, MixData *mixdata, int stickMode) :
       ui->weightGV->setChecked(true);
       ui->weightSB->hide();
       ui->weightCB->show();
-    } else {
+    }
+    else {
       ui->weightGV->setChecked(false);
       ui->weightSB->setValue(md->weight);
       ui->weightSB->show();
@@ -68,6 +69,11 @@ MixerDialog::MixerDialog(QWidget *parent, MixData *mixdata, int stickMode) :
       ui->offsetSB->setValue(md->sOffset);
       ui->offsetSB->show();
       ui->offsetCB->hide();
+    }
+
+    if (GetEepromInterface()->getCapability(VirtualInputs)) {
+      ui->trimLabel->hide();
+      ui->trimCB->hide();
     }
 
     CurveGroup * curveGroup = new CurveGroup(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, md->curve);

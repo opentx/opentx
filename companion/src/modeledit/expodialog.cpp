@@ -57,8 +57,6 @@ ExpoDialog::ExpoDialog(QWidget *parent, ExpoData *expoData, int stickMode) :
 
     ui->sideCB->setCurrentIndex(ed->mode-1);
 
-    ui->label_expo->hide();
-
     if (!GetEepromInterface()->getCapability(FlightPhases)) {
       ui->label_phases->hide();
       for (int i=0; i<9; i++) {
@@ -105,8 +103,6 @@ ExpoDialog::ExpoDialog(QWidget *parent, ExpoData *expoData, int stickMode) :
     valuesChanged();
 
     connect(ui->expoName,SIGNAL(editingFinished()),this,SLOT(valuesChanged()));
-    connect(ui->expoCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
-    connect(ui->expoSB,SIGNAL(editingFinished()),this,SLOT(valuesChanged()));
 
     connect(ui->curveTypeCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
     connect(ui->curveGVarCB,SIGNAL(stateChanged(int)),this,SLOT(valuesChanged()));
@@ -117,7 +113,6 @@ ExpoDialog::ExpoDialog(QWidget *parent, ExpoData *expoData, int stickMode) :
     connect(ui->weightSB,SIGNAL(editingFinished()),this,SLOT(valuesChanged()));
     connect(ui->switchesCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
     connect(ui->sideCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
-    connect(ui->expoGV,SIGNAL(stateChanged(int)),this,SLOT(widgetChanged()));
     connect(ui->weightGV,SIGNAL(stateChanged(int)),this,SLOT(widgetChanged()));
     for (int i=0; i<9; i++) {
       connect(cb_fp[i],SIGNAL(toggled(bool)),this,SLOT(valuesChanged()));
@@ -173,7 +168,6 @@ void ExpoDialog::widgetChanged()
   valuesChanged();
   QTimer::singleShot(0, this, SLOT(shrink()));
 }
-
 
 void ExpoDialog::valuesChanged()
 {

@@ -69,6 +69,7 @@ void populateCustomScreenFieldCB(QComboBox *b, unsigned int value, bool last, in
 void populateTimerSwitchCB(QComboBox *b, int value);
 QString getCustomSwitchStr(CustomSwData * customSw, const ModelData & model);
 QString getProtocolStr(const int proto);
+QString getPhasesStr(unsigned int phases, ModelData & model);
 
 #define POPULATE_SOURCES       1
 #define POPULATE_TRIMS         2

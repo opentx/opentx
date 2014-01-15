@@ -1351,6 +1351,34 @@ QString getProtocol(ModelData * g_model)
   return str;
 }
 
+QString getPhasesStr(unsigned int phases, ModelData & model)
+{
+  int numphases = GetEepromInterface()->getCapability(FlightPhases);
+
+  if (numphases && phases) {
+    QString str;
+    int count = 0;
+    if (phases == (unsigned int)(1<<numphases) - 1) {
+      str = QObject::tr("None");
+    }
+    if (phases) {
+      for (int i=0; i<numphases;i++) {
+        if (!(phases & (1<<i))) {
+          if (count++ > 0) str += QString(", ");
+          str += getPhaseName(i+1, model.phaseData[i].name);
+        }
+      }
+    }
+    if (count > 1)
+      return QObject::tr("Flight modes(%1)").arg(str);
+    else
+      return QObject::tr("Flight mode(%1)").arg(str);
+  }
+  else {
+    return "";
+  }
+}
+
 float c9xexpou(float point, float coeff)
 {
   float x=point*1024.0/100.0;

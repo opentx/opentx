@@ -22,6 +22,13 @@ class InputsPanel : public ModelPanel
     void expolistWidget_customContextMenuRequested(QPoint pos);
     void expolistWidget_doubleClicked(QModelIndex index);
     void expolistWidget_KeyPress(QKeyEvent *event);
+    void exposDelete(bool ask=true);
+    void exposCut();
+    void exposCopy();
+    void exposPaste();
+    void exposDuplicate();
+    void expoOpen(QListWidgetItem *item = NULL);
+    void expoAdd();
 
   private:
     GeneralSettings & generalSettings;
@@ -36,13 +43,6 @@ class InputsPanel : public ModelPanel
     void exposDeleteList(QList<int> list);
     QList<int> createExpoListFromSelected();
     void setSelectedByExpoList(QList<int> list);
-    void exposDelete(bool ask=true);
-    void exposCut();
-    void exposCopy();
-    void exposPaste();
-    void exposDuplicate();
-    void expoOpen(QListWidgetItem *item = NULL);
-    void expoAdd();
     void pasteExpoMimeData(const QMimeData * mimeData, int destIdx);
 
 };

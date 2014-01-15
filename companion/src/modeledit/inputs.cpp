@@ -88,43 +88,10 @@ void InputsPanel::update()
 
     if (md->curve.value) str += " " + md->curve.toString();
 
-    if (GetEepromInterface()->getCapability(FlightPhases)) {
-      if(md->phases) {
-        if (md->phases!=(unsigned int)(1<<GetEepromInterface()->getCapability(FlightPhases))-1) {
-          int mask=1;
-          int first=0;
-          for (int i=0; i<GetEepromInterface()->getCapability(FlightPhases);i++) {
-            if (!(md->phases & mask)) {
-              first++;
-            }
-            mask <<=1;
-          }
-          if (first>1) {
-            str += " " + tr("Flight modes") + QString("(");
-          } else {
-            str += " " + tr("Flight mode") + QString("(");
-          }
-          mask=1;
-          first=1;
-          for (int i=0; i<GetEepromInterface()->getCapability(FlightPhases);i++) {
-            if (!(md->phases & mask)) {
-              if (!first) {
-                str += QString(", ")+ QString("%1").arg(getPhaseName(i+1, model.phaseData[i].name));
-              } else {
-                str += QString("%1").arg(getPhaseName(i+1,model.phaseData[i].name));
-                first=0;
-              }
-            }
-            mask <<=1;
-          }
-          str += QString(")");
-        }
-        else {
-          str += tr("DISABLED")+QString(" !!!");
-        }
-      }
-    }
-    if (md->swtch.type != SWITCH_TYPE_NONE) str += " " + tr("Switch") + QString("(%1)").arg(md->swtch.toString());
+    QString phasesStr = getPhasesStr(md->phases, model);
+    if (!phasesStr.isEmpty()) str += " " + phasesStr;
+
+    if (md->swtch.type != SWITCH_TYPE_NONE) str += " " + tr("Switch(%1)").arg(md->swtch.toString());
 
     if (GetEepromInterface()->getCapability(HasExpoNames)) {
       QString ExpoName;
@@ -230,7 +197,6 @@ void InputsPanel::setSelectedByExpoList(QList<int> list)
         ExposlistWidget->item(i)->setSelected(true);
     }
 }
-
 
 void InputsPanel::exposDelete(bool ask)
 {
