@@ -109,6 +109,7 @@ downloadDialog_forWait(NULL)
     }
     setUnifiedTitleAndToolBarOnMac(true);
     this->setWindowIcon(QIcon(":/icon.png"));
+    this->setIconSize(QSize(32,32));
     QNetworkProxyFactory::setUseSystemConfiguration(true);
     setAcceptDrops(true);
     
@@ -1921,7 +1922,9 @@ void MainWindow::createToolBars()
     editToolBar->addAction(copyAct);
     editToolBar->addAction(pasteAct);
 
-    burnToolBar = addToolBar(tr("Write"));
+    
+    burnToolBar = new QToolBar(tr("Write"));
+    addToolBar( Qt::LeftToolBarArea, burnToolBar );
     burnToolBar->addAction(burnToAct);
     burnToolBar->addAction(burnFromAct);
     burnToolBar->addSeparator();
