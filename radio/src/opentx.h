@@ -1575,9 +1575,15 @@ union ReusableBuffer
         int16_t loVals[NUM_STICKS+NUM_POTS];
         int16_t hiVals[NUM_STICKS+NUM_POTS];
         uint8_t state;
-        uint8_t xpotsPositionsCount[NUM_XPOTS];
-        int16_t xpotsPositions[NUM_XPOTS][6][2];
+#if defined(PCBTARANIS)
+        struct {
+          uint8_t stepsCount;
+          int16_t steps[POTS_POS_COUNT];
+          uint8_t lastCount;
+          int16_t lastPosition;
+        } xpotsCalib[NUM_XPOTS];
     } calib;
+#endif
 
 #if defined(SDCARD)
     struct

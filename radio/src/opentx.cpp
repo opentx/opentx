@@ -2497,17 +2497,11 @@ void getADC()
   for (uint32_t i=0; i<4; i++) {
     adcRead();
     for (uint32_t x=0; x<NUMBER_ANALOG; x++) {
-#if defined(PCBTARANIS)
-      if (s_noScroll) {
-        if (x>=POT1 && x<=POT2 && temp[x]!=Analog_values[x]) {
-          i = 0;
-        }
-        temp[x] = Analog_values[x];
-      }
-      else
-#endif
       temp[x] += Analog_values[x];
     }
+#if defined(PCBTARANIS)
+    if (s_noScroll) break;
+#endif
   }
 
   for (uint32_t x=0; x<NUMBER_ANALOG; x++) {

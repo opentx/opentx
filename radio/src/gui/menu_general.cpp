@@ -1238,6 +1238,7 @@ void menuGeneralHardware(uint8_t event)
 }
 #endif
 
+#define XPOT_DELTA 5
 
 void menuCommonCalib(uint8_t event)
 {
@@ -1249,26 +1250,30 @@ void menuCommonCalib(uint8_t event)
       reusableBuffer.calib.midVals[i] = (reusableBuffer.calib.hiVals[i] + reusableBuffer.calib.loVals[i]) / 2;
 #if defined(PCBTARANIS)
       uint8_t idx = i - POT1;
-      int count = reusableBuffer.calib.xpotsPositionsCount[idx];
+      int count = reusableBuffer.calib.xpotsCalib[idx].stepsCount;
       if (count <= POTS_POS_COUNT) {
-        bool found = false;
-        for (int j=0; j<count; j++) {
-          if (vt > reusableBuffer.calib.xpotsPositions[idx][j][0]-10 && vt < reusableBuffer.calib.xpotsPositions[idx][j][0]+10) {
-            reusableBuffer.calib.xpotsPositions[idx][j][0] = min(vt, reusableBuffer.calib.xpotsPositions[idx][j][0]);
-            reusableBuffer.calib.xpotsPositions[idx][j][1] = max(vt, reusableBuffer.calib.xpotsPositions[idx][j][1]);
-            if (reusableBuffer.calib.xpotsPositions[idx][j][1] - reusableBuffer.calib.xpotsPositions[idx][j][0] > 20) {
-              reusableBuffer.calib.xpotsPositionsCount[idx] = 255;
-            }
-            found = true;
-            break;
-          }
+        if (reusableBuffer.calib.xpotsCalib[idx].lastCount == 0 || vt < reusableBuffer.calib.xpotsCalib[idx].lastPosition - XPOT_DELTA || vt > reusableBuffer.calib.xpotsCalib[idx].lastPosition + XPOT_DELTA) {
+          reusableBuffer.calib.xpotsCalib[idx].lastPosition = vt;
+          reusableBuffer.calib.xpotsCalib[idx].lastCount = 1;
         }
-        if (!found) {
-          if (count < 6) {
-            reusableBuffer.calib.xpotsPositions[idx][count][0] = vt;
-            reusableBuffer.calib.xpotsPositions[idx][count][1] = vt;
+        else {
+          if (reusableBuffer.calib.xpotsCalib[idx].lastCount < 255) reusableBuffer.calib.xpotsCalib[idx].lastCount++;
+        }
+        if (reusableBuffer.calib.xpotsCalib[idx].lastCount == 8/*80ms*/) {
+          int16_t position = reusableBuffer.calib.xpotsCalib[idx].lastPosition;
+          bool found = false;
+          for (int j=0; j<count; j++) {
+            if (position >= reusableBuffer.calib.xpotsCalib[idx].steps[j]-XPOT_DELTA && position <= reusableBuffer.calib.xpotsCalib[idx].steps[j]+XPOT_DELTA) {
+              found = true;
+              break;
+            }
           }
-          reusableBuffer.calib.xpotsPositionsCount[idx] += 1;
+          if (!found) {
+            if (count < POTS_POS_COUNT) {
+              reusableBuffer.calib.xpotsCalib[idx].steps[count] = position;
+            }
+            reusableBuffer.calib.xpotsCalib[idx].stepsCount += 1;
+          }
         }
       }
 #endif
@@ -1311,7 +1316,8 @@ void menuCommonCalib(uint8_t event)
         reusableBuffer.calib.midVals[i] = anaIn(i);
 #if defined(PCBTARANIS)
         if (i<NUM_XPOTS) {
-          reusableBuffer.calib.xpotsPositionsCount[i] = 0;
+          reusableBuffer.calib.xpotsCalib[i].stepsCount = 0;
+          reusableBuffer.calib.xpotsCalib[i].lastCount = 0;
         }
 #endif
       }
@@ -1338,13 +1344,12 @@ void menuCommonCalib(uint8_t event)
 #if defined(PCBTARANIS)
       for (uint8_t i=POT1; i<=POT_LAST; i++) {
         int idx = i - POT1;
-        int count = reusableBuffer.calib.xpotsPositionsCount[idx];
+        int count = reusableBuffer.calib.xpotsCalib[idx].stepsCount;
         if (count > 1 && count <= POTS_POS_COUNT) {
           for (int j=0; j<count; j++) {
             for (int k=j+1; k<count; k++) {
-              if (reusableBuffer.calib.xpotsPositions[idx][k][0] < reusableBuffer.calib.xpotsPositions[idx][j][0]) {
-                swap(reusableBuffer.calib.xpotsPositions[idx][j][0], reusableBuffer.calib.xpotsPositions[idx][k][0]);
-                swap(reusableBuffer.calib.xpotsPositions[idx][j][1], reusableBuffer.calib.xpotsPositions[idx][k][1]);
+              if (reusableBuffer.calib.xpotsCalib[idx].steps[k] < reusableBuffer.calib.xpotsCalib[idx].steps[j]) {
+                swap(reusableBuffer.calib.xpotsCalib[idx].steps[j], reusableBuffer.calib.xpotsCalib[idx].steps[k]);
               }
             }
           }
@@ -1352,7 +1357,7 @@ void menuCommonCalib(uint8_t event)
           StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[i];
           calib->count = count - 1;
           for (int j=0; j<calib->count; j++) {
-            calib->steps[j] = (reusableBuffer.calib.xpotsPositions[idx][j+1][0] + reusableBuffer.calib.xpotsPositions[idx][j][1]) >> 5;
+            calib->steps[j] = (reusableBuffer.calib.xpotsCalib[idx].steps[j+1] + reusableBuffer.calib.xpotsCalib[idx].steps[j]) >> 5;
           }
         }
       }
@@ -1374,7 +1379,7 @@ void menuCommonCalib(uint8_t event)
   for (int i=POT1; i<=POT_LAST; i++) {
     uint8_t steps = 0;
     if (reusableBuffer.calib.state == 2) {
-      steps = reusableBuffer.calib.xpotsPositionsCount[i-POT1];
+      steps = reusableBuffer.calib.xpotsCalib[i-POT1].stepsCount;
     }
     else if (IS_MULTIPOS_POT(i)) {
       StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[i];
