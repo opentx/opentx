@@ -104,7 +104,7 @@ void MixesPanel::update()
       default:  str += "  "; break;
     };
 
-    str += md->srcRaw.toString();
+    str += " " + md->srcRaw.toString();
 
     str += " " + tr("Weight(%1)").arg(getGVarString(md->weight, true));
 
