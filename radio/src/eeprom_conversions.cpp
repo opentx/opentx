@@ -48,6 +48,12 @@ PACK(typedef struct {
   int8_t   curveParam;
 }) ExpoData_v215;
 
+#if defined(PCBTARANIS)
+  #define LIMITDATA_V215_EXTRA  char name[LEN_CHANNEL_NAME];
+#else
+  #define LIMITDATA_V215_EXTRA
+#endif
+
 PACK(typedef struct {
   int8_t  min;
   int8_t  max;
@@ -55,9 +61,7 @@ PACK(typedef struct {
   int16_t offset:14;
   uint16_t symetrical:1;
   uint16_t revert:1;
-#if defined(PCBTARANIS)
-  char name[LEN_CHANNEL_NAME];
-#endif
+  LIMITDATA_V215_EXTRA
 }) LimitData_v215;
 
 #if defined(PCBTARANIS)
@@ -130,6 +134,22 @@ PACK(typedef struct {
 }) PhaseData_v215;
 
 PACK(typedef struct {
+  FrSkyChannelData channels[2];
+  uint8_t usrProto; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh, 3=Halcyon
+  uint8_t voltsSource;
+  uint8_t blades;   // How many blades for RPMs, 0=2 blades, 1=3 blades
+  uint8_t currentSource;
+  uint8_t screensType;
+  FrSkyScreenData screens[MAX_FRSKY_SCREENS];
+  uint8_t varioSource;
+  int8_t  varioCenterMax;
+  int8_t  varioCenterMin;
+  int8_t  varioMin;
+  int8_t  varioMax;
+  FrSkyRSSIAlarm rssiAlarms[2];
+}) FrSkyData_v215;
+
+PACK(typedef struct {
   ModelHeader header;
   TimerData_v215 timers[MAX_TIMERS];
   uint8_t   protocol:3;
@@ -160,9 +180,9 @@ PACK(typedef struct {
 
   swstate_t switchWarningStates;
 
-  char      gvar_names[5][LEN_GVAR_NAME];
+  char gvar_names[5][LEN_GVAR_NAME];
 
-  TELEMETRY_DATA
+  FrSkyData_v215 frsky;
 
   ROTARY_ENCODER_ARRAY_EXTRA
 
@@ -426,7 +446,8 @@ void ConvertModel_215_to_216(ModelData &model)
   for (uint8_t i=0; i<5; i++) {
     memcpy(g_model.gvars[i].name, oldModel.gvar_names[i], LEN_GVAR_NAME);
   }
-  g_model.frsky = oldModel.frsky;
+
+  memcpy(&g_model.frsky, &oldModel.frsky, sizeof(oldModel.frsky));
 
 #if defined(PCBTARANIS)
   g_model.externalModule = oldModel.externalModule;
@@ -465,7 +486,7 @@ bool eeConvert()
   theFile.openRlc(0);
   theFile.readRlc((uint8_t*)&g_eeGeneral, sizeof(g_eeGeneral));
 #else
-  #warning "TODO openRlc for sky9x"
+  #pragma message("TODO openRlc for sky9x")
 #endif
   if (g_eeGeneral.version == 215) ConvertGeneralSettings_215_to_216(g_eeGeneral);
   s_eeDirtyMsk = EE_GENERAL;
@@ -485,7 +506,7 @@ bool eeConvert()
       theFile.openRlc(FILE_MODEL(id));
       theFile.readRlc((uint8_t*)&g_model, sizeof(g_model));
 #else
-      #warning "TODO openRlc for sky9x"
+      #pragma message("TODO openRlc for sky9x")
 #endif
       int version = conversionVersionStart;
       if (version == 215) {

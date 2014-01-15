@@ -56,11 +56,11 @@
 #elif defined(PCBSKY9X)
   #define EEPROM_VER       216
 #elif defined(CPUM2560) || defined(CPUM2561)
-  #define EEPROM_VER       215
+  #define EEPROM_VER       216
 #elif defined(CPUM128)
   #define EEPROM_VER       216
 #else
-  #define EEPROM_VER       214
+  #define EEPROM_VER       216
 #endif
 
 #ifndef PACK
@@ -397,7 +397,7 @@ PACK(typedef struct t_ExpoData {
   char     name[LEN_EXPOMIX_NAME];
   int8_t   offset;
   CurveRef curve;
-  uint8_t  spare[2];
+  uint8_t  spare;
 }) ExpoData;
 #define MIN_EXPO_WEIGHT         -100
 #define EXPO_VALID(ed)          ((ed)->srcRaw)
@@ -508,7 +508,7 @@ PACK(typedef struct t_MixData {
   uint8_t  srcRaw;
   int16_t  offset;
   char     name[LEN_EXPOMIX_NAME];
-  uint8_t  spare[2];
+  uint8_t  spare;
 }) MixData;
 #else
 PACK(typedef struct t_MixData {
@@ -770,7 +770,7 @@ PACK(typedef struct t_CustomFnData { // Function Switches data
 #define CFN_CH_NUMBER(p)        (CFN_FUNC(p))
 #define CFN_PLAY_REPEAT(p)      ((p)->active)
 #define CFN_PLAY_REPEAT_MUL     1
-#define CFN_PLAY_REPEAT_NOSTART 0b111111
+#define CFN_PLAY_REPEAT_NOSTART 0x3F
 #define CFN_GVAR_MODE(p)        ((p)->mode)
 #define CFN_PARAM(p)            ((p)->param.composite.val)
 #define CFN_RESET(p)            (p->active = 0, memset(&(p)->param, 0, sizeof((p)->param)))
@@ -988,8 +988,7 @@ PACK(typedef struct t_FrSkyData {
   FrSkyRSSIAlarm rssiAlarms[2];
   uint16_t mAhPersistent:1;
   uint16_t storedMah:15;
-  int8_t  fasOffset:5;
-  uint8_t spare:3;
+  int8_t   fasOffset;
 }) FrSkyData;
 #else
 #define MAX_FRSKY_SCREENS 2
@@ -1007,8 +1006,7 @@ PACK(typedef struct t_FrSkyData {
   int8_t  varioCenterMin:5;
   uint8_t currentSource:3;
   int8_t  varioCenterMax:5;
-  int8_t  fasOffset:5;
-  uint8_t spare:3;
+  int8_t  fasOffset;
 }) FrSkyData;
 #endif
 
@@ -1411,23 +1409,29 @@ PACK(typedef struct t_ModelHeader {
   MODELDATA_BITMAP
 }) ModelHeader;
 
+#if defined (CPUARM)
+  #define ARM_FIELD(x) x;
+  #define AVR_FIELD(x)
+#else
+  #define ARM_FIELD(x)
+  #define AVR_FIELD(x) x;
+#endif
+
 PACK(typedef struct t_ModelData {
   ModelHeader header;
   TimerData timers[MAX_TIMERS];
-  uint8_t   protocol:3;
+  uint8_t    protocol:3; // not used on Taranis
   uint8_t   thrTrim:1;            // Enable Throttle Trim
-  int8_t    ppmNCH:4; /* spare on ARM */
+  AVR_FIELD(int8_t    ppmNCH:4)
+  ARM_FIELD(int8_t    spare2:4)
   uint8_t   trimInc:3;            // Trim Increments
   uint8_t   disableThrottleWarning:1;
-#if defined (CPUARM)
-  uint8_t   displayText:1; 
-#else
-  uint8_t   pulsePol:1; /* unused on ARM */
-#endif
+  ARM_FIELD(uint8_t displayText:1)
+  AVR_FIELD(uint8_t pulsePol:1)
   uint8_t   extendedLimits:1;
   uint8_t   extendedTrims:1;
   uint8_t   throttleReversed:1;
-  int8_t    ppmDelay; /* spare on ARM */
+  AVR_FIELD(int8_t ppmDelay)
   BeepANACenter beepANACenter;        // 1<<0->A1.. 1<<6->A7
   MixData   mixData[MAX_MIXERS];
   LimitData limitData[NUM_CHNOUT];
@@ -1441,7 +1445,7 @@ PACK(typedef struct t_ModelData {
   SwashRingData swashR;
   PhaseData phaseData[MAX_PHASES];
 
-  int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5ms increments
+  AVR_FIELD(int8_t ppmFrameLength)     // 0=22.5ms  (10ms-30ms) 0.5ms increments
   uint8_t   thrTraceSrc;
   
   swstate_t switchWarningStates;

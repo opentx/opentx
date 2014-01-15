@@ -71,6 +71,7 @@ void init_trainer_ppm()
 
   TIM3->CR1 = TIM_CR1_CEN ;
   NVIC_EnableIRQ(TIM3_IRQn) ;
+  NVIC_SetPriority(TIM3_IRQn, 7);
 }
 
 // TODO - testing
@@ -99,6 +100,7 @@ void init_trainer_capture()
   TIM3->DIER |= TIM_DIER_CC3IE ;
   TIM3->CR1 = TIM_CR1_CEN ;
   NVIC_EnableIRQ(TIM3_IRQn) ;
+  NVIC_SetPriority(TIM3_IRQn, 7);
 }
 
 void stop_trainer_capture()

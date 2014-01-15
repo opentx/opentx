@@ -471,7 +471,7 @@
 #define TR_BLOFFBRIGHTNESS     INDENT"OFF Brightness"
 #define TR_SPLASHSCREEN        "Splash screen"
 #define TR_THROTTLEWARNING     TR("T-Warning","Throttle Warning")
-#define TR_SWITCHWARNING       TR("S-Warning","Switch Warning")
+#define TR_SWITCHWARNING       TR("C-Warning","Control Warning")
 #define TR_POTWARNING          TR("Pot Warn.","Pot Warning")
 #define TR_TIMEZONE            TR("Time Zone","GPS Time zone")
 #define TR_RXCHANNELORD        TR("Rx Channel Ord","Default channel order")

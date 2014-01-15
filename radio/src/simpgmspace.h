@@ -326,6 +326,7 @@ extern volatile uint32_t Tenms;
 extern uint32_t Master_frequency;
 #define NVIC_EnableIRQ(x)
 #define NVIC_DisableIRQ(x)
+#define NVIC_SetPriority(...)
 #define __disable_irq()
 #define __enable_irq()
 #endif
