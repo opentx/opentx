@@ -80,7 +80,12 @@ IF( Subversion_FOUND )
   # Subversion_WC_INFO( ${PROJECT_SOURCE_DIR} C9X )
 ENDIF( )
 
-INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR} ${PROJECT_SOURCE_DIR}/../.. ${PROJECT_SOURCE_DIR}/../../radio/src/fonts/std )
+include_directories(
+  ${CMAKE_CURRENT_BINARY_DIR}
+  ${PROJECT_SOURCE_DIR}/../..
+  ${PROJECT_SOURCE_DIR}/../../radio/src/fonts/std
+  ${PROJECT_SOURCE_DIR}/../../radio/src/lua/src
+)
 
 set(TH9X_CHECKOUT_DIRECTORY ${PROJECT_BINARY_DIR}/firmwares/th9x)
 add_custom_command(

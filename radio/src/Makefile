@@ -252,7 +252,7 @@ GVARS = NO
 
 # Lua interpreter embedded
 # Values = NO, NO_MODEL_SCRIPTS, YES 
-# LUA = NO
+LUA = NO
 
 # Menu Lock modes
 # Values = NO, READONLY, NOMENUS 
