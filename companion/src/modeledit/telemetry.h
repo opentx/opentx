@@ -74,6 +74,9 @@ class TelemetryPanel : public ModelPanel
     void on_varioLimitCenterMin_DSB_editingFinished();
     void on_varioLimitMinOff_ChkB_toggled(bool checked);
     void on_varioLimitCenterMax_DSB_editingFinished();
+    void on_fasOffset_DSB_editingFinished();
+    void on_mahCount_SB_editingFinished();
+    void on_mahCount_ChkB_toggled(bool checked);
     void telBarCBcurrentIndexChanged(int index);
     void ScreenTypeCBcurrentIndexChanged(int index);
     void telMaxSBeditingFinished();

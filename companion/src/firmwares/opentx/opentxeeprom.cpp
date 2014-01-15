@@ -1688,8 +1688,7 @@ class FrskyField: public StructField {
         Append(new UnsignedField<8>(frsky.usrProto));
         if (version >= 216) {
           Append(new UnsignedField<7>(frsky.voltsSource));
-          // TODO altitude displayed
-          Append(new SpareBitsField<1>());
+          Append(new BoolField<1>(frsky.altitudeDisplayed));
         }
         else {
           Append(new UnsignedField<8>(frsky.voltsSource));
@@ -1718,10 +1717,9 @@ class FrskyField: public StructField {
           Append(new ConversionField< SignedField<6> >(frsky.rssiAlarms[i].value, -45+i*3));
         }
         if (version >= 216) {
-          // TODO uint16_t mAhPersistent:1;
-          // uint16_t storedMah:15;
-          // int8_t   fasOffset;
-          Append(new SpareBitsField<24>());
+          Append(new BoolField<1>(frsky.mAhPersistent));
+          Append(new UnsignedField<15>(frsky.storedMah));
+          Append(new SignedField<8>(frsky.fasOffset));
         }
       }
       else {
@@ -2043,7 +2041,7 @@ Open9xGeneralDataNew::Open9xGeneralDataNew(GeneralSettings & generalData, BoardE
   internalField.Append(new SpareBitsField<1>());
 
   internalField.Append(new UnsignedField<8>(generalData.inactivityTimer));
-  if (IS_STOCK(board) && version >= 215) {
+  if (IS_9X(board) && version >= 215) {
     internalField.Append(new UnsignedField<3>(generalData.mavbaud));
   }
   else {

@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>692</width>
-    <height>540</height>
+    <height>568</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,1">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,1">
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_14" stretch="0,0,0">
      <property name="sizeConstraint">
@@ -769,6 +769,106 @@
       </widget>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="variousGB">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title">
+      <string>Various</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_6">
+      <property name="topMargin">
+       <number>1</number>
+      </property>
+      <property name="bottomMargin">
+       <number>1</number>
+      </property>
+      <item row="0" column="0">
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="1" column="1">
+         <widget class="QSpinBox" name="mahCount_SB">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximum">
+           <number>32767</number>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1" alignment="Qt::AlignHCenter">
+         <widget class="QLabel" name="mahCount_label">
+          <property name="text">
+           <string>mAh count</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" alignment="Qt::AlignHCenter">
+         <widget class="QLabel" name="fasOffset_label">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>FAS Offset</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QCheckBox" name="mahCount_ChkB">
+          <property name="text">
+           <string>Persistent mAh</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QDoubleSpinBox" name="fasOffset_DSB">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="decimals">
+           <number>1</number>
+          </property>
+          <property name="minimum">
+           <double>-1.500000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>1.500000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.100000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_4">
