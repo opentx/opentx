@@ -77,10 +77,10 @@ class MyProxyStyle : public QProxyStyle
 int main(int argc, char *argv[])
 {
     Q_INIT_RESOURCE(companion9x);
-    QApplication  * app = new QApplication(argc, argv);
-    app->setApplicationName("Companion9x");
+    QApplication app(argc, argv);
+    app.setApplicationName("OpenTX Companion");
 #ifdef __APPLE__
-    app->setStyle(new MyProxyStyle);
+    app.setStyle(new MyProxyStyle);
 #endif
     QString dir;
     if(argc) dir = QFileInfo(argv[0]).canonicalPath() + "/lang";
@@ -89,26 +89,26 @@ int main(int argc, char *argv[])
     QString locale = settings.value("locale",QLocale::system().name()).toString();
     bool showSplash = settings.value("show_splash", true).toBool();
 
-    QTranslator companion9xTranslator;
-    companion9xTranslator.load(":/companion9x_" + locale);
+    QTranslator companionTranslator;
+    companionTranslator.load(":/companion_" + locale);
     QTranslator qtTranslator;
     qtTranslator.load((QString)"qt_" + locale.left(2), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
 //    qDebug() << locale;
 //    qtTranslator.load("qt_" + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));    
-    app->installTranslator(&companion9xTranslator);
-    app->installTranslator(&qtTranslator);
+    app.installTranslator(&companionTranslator);
+    app.installTranslator(&qtTranslator);
 
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 
     QString firmware_id = settings.value("firmware", default_firmware_variant.id).toString();
     firmware_id.replace("open9x", "opentx");
     firmware_id.replace("x9da", "taranis");
-    QPixmap * pixmap;
+    QPixmap pixmap;
     if (firmware_id.contains("taranis"))
-      pixmap = new QPixmap(":/images/splasht.png");
+      pixmap = QPixmap(":/images/splasht.png");
     else
-      pixmap = new QPixmap(":/images/splash.png");
-    QSplashScreen *splash = new QSplashScreen(*pixmap);
+      pixmap = QPixmap(":/images/splash.png");
+    QSplashScreen *splash = new QSplashScreen(pixmap);
 
     RegisterFirmwares();
 
@@ -116,15 +116,15 @@ int main(int argc, char *argv[])
     current_firmware_variant = GetFirmwareVariant(firmware_id);
     // qDebug() << current_firmware_variant;
 
-    MainWindow * mainWin = new MainWindow();
+    MainWindow mainWin;
 	
     if (showSplash) {
       splash->show();
       QTimer::singleShot(1000*SPLASH_TIME, splash, SLOT(close()));
-      QTimer::singleShot(1000*SPLASH_TIME, mainWin, SLOT(show()));
+      QTimer::singleShot(1000*SPLASH_TIME, &mainWin, SLOT(show()));
     }
     else  {
-      mainWin->show();
+      mainWin.show();
     }
-    return app->exec();
+    return app.exec();
 }
