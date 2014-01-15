@@ -179,7 +179,7 @@ void MdiChild::OpenEditWindow(bool wizard=false)
     }
     if (isNew && !wizard) {
       int ret;
-      QSettings settings("companion9x", "companion9x");
+      QSettings settings("companion", "companion");
       bool wizardEnable=settings.value("wizardEnable", true).toBool();
       if (wizardEnable) {
         ret = QMessageBox::question(this, tr("Companion"), tr("Do you want to use model wizard? "), QMessageBox::Yes | QMessageBox::No);
@@ -346,7 +346,7 @@ bool MdiChild::save()
 
 bool MdiChild::saveAs(bool isNew)
 {
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     QString fileName;
     if (GetEepromInterface()->getBoard() == BOARD_SKY9X) {
       curFile.replace(".eepe", ".bin");
@@ -490,7 +490,7 @@ void MdiChild::setCurrentFile(const QString &fileName)
   fileChanged = false;
   setWindowModified(false);
   updateTitle();
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings("companion", "companion");
   int MaxRecentFiles =settings.value("history_size",10).toInt();
   QStringList files = settings.value("recentFileList").toStringList();
   files.removeAll(fileName);
@@ -508,7 +508,7 @@ QString MdiChild::strippedName(const QString &fullFileName)
 
 void MdiChild::burnTo()  // write to Tx
 {
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings("companion", "companion");
   bool backupEnable=settings.value("backupEnable", true).toBool();
   QString backupPath=settings.value("backupPath", "").toString();
   if (!backupPath.isEmpty()) {
@@ -678,7 +678,7 @@ void MdiChild::setEEpromAvail(int eavail)
 
 bool MdiChild::loadBackup()
 {
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), settings.value("lastDir").toString(),tr(EEPROM_FILES_FILTER));
     if (fileName.isEmpty())
       return false;

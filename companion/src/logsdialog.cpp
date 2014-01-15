@@ -38,7 +38,7 @@ logsDialog::logsDialog(QWidget *parent) :
   ui->customPlot->legend->setSelectedFont(legendFont);
   ui->customPlot->legend->setSelectable(QCPLegend::spItems); // legend box shall not be selectable, only legend items
   ui->customPlot->legend->setVisible(false);
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings("companion", "companion");
   QString Path=settings.value("gePath", "").toString();
   if (Path.isEmpty() || !QFile(Path).exists()) {
     ui->mapsButton->hide();
@@ -202,7 +202,7 @@ void logsDialog::on_mapsButton_clicked() {
         ,F_F,F_F,F_F,F_F,I_F,I_F,I_F,I_F\
         ,I_F,I_F,I_F,I_F,I_F,I_F,I_F,I_F,I_F,I_F,I_F,I_F};
     
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings("companion", "companion");
   QString gePath=settings.value("gePath", "").toString();
   if (gePath.isEmpty() || !QFile(gePath).exists()) {
     ui->FieldsTW->setDisabled(false);
@@ -578,7 +578,7 @@ void logsDialog::moveLegend()
 
 void logsDialog::on_fileOpen_BT_clicked()
 {
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings("companion", "companion");
   QString fileName = QFileDialog::getOpenFileName(this,tr("Select your log file"), settings.value("lastLogDir").toString());
   if (!fileName.isEmpty()) {
     settings.setValue("lastLogDir", fileName);
