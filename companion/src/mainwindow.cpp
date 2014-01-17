@@ -109,6 +109,7 @@ downloadDialog_forWait(NULL)
     }
     setUnifiedTitleAndToolBarOnMac(true);
     this->setWindowIcon(QIcon(":/icon.png"));
+    this->setIconSize(QSize(32,32));
     QNetworkProxyFactory::setUseSystemConfiguration(true);
     setAcceptDrops(true);
     
@@ -1762,7 +1763,7 @@ void MainWindow::createActions()
     separatorAct = new QAction(this);
     separatorAct->setSeparator(true);
 
-    aboutAct = new QAction(QIcon(":/icon.png"), tr("&About"), this);
+    aboutAct = new QAction(QIcon(":/images/information.png"), tr("&About"), this);
     aboutAct->setStatusTip(tr("Show the application's About box"));
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
 
@@ -1846,9 +1847,9 @@ void MainWindow::createMenus()
 
     helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addSeparator();
-    helpMenu->addAction(aboutAct);
-    helpMenu->addSeparator();
     helpMenu->addAction(checkForUpdatesAct);
+    helpMenu->addSeparator();
+    helpMenu->addAction(aboutAct);
     helpMenu->addSeparator();
     helpMenu->addAction(changelogAct);
     helpMenu->addAction(fwchangelogAct);
@@ -1916,7 +1917,9 @@ void MainWindow::createToolBars()
     editToolBar->addAction(copyAct);
     editToolBar->addAction(pasteAct);
 
-    burnToolBar = addToolBar(tr("Write"));
+    
+    burnToolBar = new QToolBar(tr("Write"));
+    addToolBar( Qt::LeftToolBarArea, burnToolBar );
     burnToolBar->addAction(burnToAct);
     burnToolBar->addAction(burnFromAct);
     burnToolBar->addSeparator();
@@ -1929,8 +1932,8 @@ void MainWindow::createToolBars()
     burnToolBar->addAction(burnConfigAct);
 
     helpToolBar = addToolBar(tr("Help"));
-    helpToolBar->addAction(aboutAct);
     helpToolBar->addAction(checkForUpdatesAct);
+    helpToolBar->addAction(aboutAct);
 }
 
 void MainWindow::createStatusBar()
