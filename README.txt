@@ -2,7 +2,6 @@ Add Gear Ratio to RPM Telemetry Calculation and allow for Blades to equal 1
 
 Jan 16 2014
 - Switched to 'next' branch
-- Need to solve issue with frsky_sport.cpp and calc compile error
 - Need to translate "Spur" and "Gear" to other languages, using English as placeholder for now.
 
 
