@@ -443,6 +443,8 @@
 #define TR_ALARM               INDENT"Alarma"
 #define TR_USRDATA             "UsrData"
 #define TR_BLADES              INDENT"Palas"
+#define TR_SPURGEAR            INDENT"Spur Gear"
+#define TR_PINIONGEAR          INDENT"Pinion Gear"
 #define TR_SCREEN              "Pantalla"
 #define TR_SOUND_LABEL         "Sonido"
 #define TR_LENGTH              INDENT"Longitud"
