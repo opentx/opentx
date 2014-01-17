@@ -18,9 +18,21 @@ QString getPhaseName(int val, char * phasename)
   }
 }
 
-QString getStickStr(int index)
+QString getInputStr(ModelData & model, int index)
 {
-  return RawSource(SOURCE_TYPE_STICK, index).toString();
+  QString result;
+
+  if (GetEepromInterface()->getCapability(VirtualInputs)) {
+    result = model.inputNames[index];
+    if (result.isEmpty()) {
+      result = QObject::tr("Input%1").arg(index+1, 2, 10, QChar('0'));
+    }
+  }
+  else {
+    result = RawSource(SOURCE_TYPE_STICK, index).toString();
+  }
+
+  return result;
 }
 
 void populateGvSourceCB(QComboBox *b, int value)
@@ -63,7 +75,7 @@ void populateTTraceCB(QComboBox *b, int value)
   }
   int channels=(IS_ARM(GetEepromInterface()->getBoard()) ? 32 : 16);
   for (int i=1; i<= channels; i++) {
-    b->addItem(QObject::tr("CH")+QString("%1").arg(i,2,10,QChar('0')));
+    b->addItem(QObject::tr("CH%1").arg(i, 2, 10, QChar('0')));
   }
   b->setCurrentIndex(value);
 }
@@ -469,6 +481,78 @@ void populatePhasesCB(QComboBox *b, int value)
       b->addItem(QObject::tr("----"), 0);
   }
   b->setCurrentIndex(value + GetEepromInterface()->getCapability(FlightPhases));
+}
+
+bool gvarsEnabled()
+{
+  int gvars=0;
+  if (GetEepromInterface()->getCapability(HasVariants)) {
+    if ((GetCurrentFirmwareVariant() & GVARS_VARIANT)) {
+      gvars=1;
+    }
+  }
+  else {
+    gvars=1;
+  }
+  return gvars;
+}
+
+GVarGroup::GVarGroup(QCheckBox *weightGV, QSpinBox *weightSB, QComboBox *weightCB, int & weight, const int deflt, const int mini, const int maxi, const unsigned int flags):
+  QObject(),
+  weightGV(weightGV),
+  weightSB(weightSB),
+  weightCB(weightCB),
+  weight(weight),
+  flags(flags),
+  lock(false)
+{
+  lock = true;
+
+  if (gvarsEnabled()) {
+    populateGVCB(weightCB, weight);
+    connect(weightGV, SIGNAL(stateChanged(int)), this, SLOT(gvarCBChanged(int)));
+    connect(weightCB, SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
+  }
+  else {
+    weightGV->hide();
+    if (weight > maxi || weight < -mini) {
+      weight = deflt;
+    }
+  }
+
+  weightSB->setMinimum(mini);
+  weightSB->setMaximum(maxi);
+
+  if (weight>maxi || weight<mini) {
+    weightGV->setChecked(true);
+    weightSB->hide();
+    weightCB->show();
+  }
+  else {
+    weightGV->setChecked(false);
+    weightSB->setValue(weight);
+    weightSB->show();
+    weightCB->hide();
+  }
+
+  connect(weightSB, SIGNAL(editingFinished()), this, SLOT(valuesChanged()));
+
+  lock = false;
+}
+
+void GVarGroup::gvarCBChanged(int state)
+{
+  weightCB->setVisible(state);
+  weightSB->setVisible(!state);
+  valuesChanged();
+}
+
+void GVarGroup::valuesChanged()
+{
+  if (weightGV->isChecked())
+    weight = weightCB->itemData(weightCB->currentIndex()).toInt();
+  else
+    weight = weightSB->value();
 }
 
 CurveGroup::CurveGroup(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QComboBox *curveValueCB, QSpinBox *curveValueSB, CurveReference & curve, unsigned int flags):

@@ -305,7 +305,7 @@ void compareDialog::printPhases()
   str.append("</b></td><td rowspan=2 align=\"center\" valign=\"bottom\"><b>"+tr("Switch")+"</b></td></tr><tr><td align=center width=\"80\"><b>"+tr("Flight mode name"));
   str.append("</b></td><td align=center width=\"30\"><b>"+tr("IN")+"</b></td><td align=center width=\"30\"><b>"+tr("OUT")+"</b></td>");
   for (i=0; i<4; i++) {
-    str.append(QString("<td width=\"40\" align=\"center\"><b>%1</b></td>").arg(getStickStr(i)));
+    str.append(QString("<td width=\"40\" align=\"center\"><b>%1</b></td>").arg(getInputStr(*g_model1, i)));
   }
   str.append("</tr>");
   for (i=0; i<GetEepromInterface()->getCapability(FlightPhases); i++) {
@@ -406,7 +406,7 @@ void compareDialog::printPhases()
   str.append("</b></td><td rowspan=2 align=\"center\" valign=\"bottom\"><b>"+tr("Switch")+"</b></td></tr><tr><td align=center width=\"80\"><b>"+tr("Flight mode name"));
   str.append("</b></td><td align=center width=\"30\"><b>"+tr("IN")+"</b></td><td align=center width=\"30\"><b>"+tr("OUT")+"</b></td>");
   for (i=0; i<4; i++) {
-    str.append(QString("<td width=\"40\" align=\"center\"><b>%1</b></td>").arg(getStickStr(i)));
+    str.append(QString("<td width=\"40\" align=\"center\"><b>%1</b></td>").arg(getInputStr(*g_model1, i)));
   }
   str.append("</tr>");
   for (i=0; i<GetEepromInterface()->getCapability(FlightPhases); i++) {
@@ -694,7 +694,7 @@ void compareDialog::printExpos()
         }
       }
       str.append("</table></td>");
-      str.append("<td width=\"10%\" align=\"center\" valign=\"middle\"><b>"+getStickStr(i)+"</b></td>");
+      str.append("<td width=\"10%\" align=\"center\" valign=\"middle\"><b>"+getInputStr(*g_model2, i)+"</b></td>");
       str.append("<td width=\"45%\">");
       str.append("<table border=0 cellspacing=0 cellpadding=0>");
       for (int j=0; j<C9X_MAX_EXPOS; j++) {

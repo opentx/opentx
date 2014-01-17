@@ -4,29 +4,33 @@
 #include <QDialog>
 #include "eeprominterface.h"
 
+class GVarGroup;
+class CurveGroup;
+
 namespace Ui {
-    class MixerDialog;
+  class MixerDialog;
 }
 
 class MixerDialog : public QDialog {
     Q_OBJECT
-public:
+  public:
     MixerDialog(QWidget *parent, MixData *mixdata, int stickMode);
     ~MixerDialog();
 
-protected:
+  protected:
     void changeEvent(QEvent *e);
 
-private slots:
-    void widgetChanged();
+  private slots:
     void valuesChanged();
     void shrink();
 
-
-private:
+  private:
     Ui::MixerDialog *ui;
     MixData *md;
     bool lock;
+    GVarGroup * gvWeightGroup;
+    GVarGroup * gvOffsetGroup;
+    CurveGroup * curveGroup;
 };
 
 #endif // MIXERDIALOG_H

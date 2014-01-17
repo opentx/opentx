@@ -2,5 +2,5 @@
 #define DATE_STR  "@DATE@"
 #define TIME_STR  "@TIME@"
 #define VERS_STR  "c9x"
-#define SVN_STR   "@FIRMWARE@-r@G9X_WC_REVISION@"
+#define VERS_STR  "@FIRMWARE@-r@G9X_WC_REVISION@"
 #define MOD_STR   "FH"

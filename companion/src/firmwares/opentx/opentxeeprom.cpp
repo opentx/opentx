@@ -1962,8 +1962,8 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
   if (IS_TARANIS(board) && version >= 216) {
     // TODO ScriptData scriptsData[MAX_SCRIPTS];
     internalField.Append(new SpareBitsField<720>());
-    // TODO char inputNames[MAX_INPUTS][4];
-    internalField.Append(new SpareBitsField<1024>());
+    for (int i=0; i<32; i++)
+      internalField.Append(new ZCharField<4>(modelData.inputNames[i]));
   }
 }
 

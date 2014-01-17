@@ -598,8 +598,6 @@ int Open9xInterface::getCapability(const Capability capability)
       return 1;
     case ExtendedTrims:
       return 500;
-    case ExtraTrims:
-      return 1;
     case Simulation:
       return 1;
     case DSM2Indexes:
@@ -696,6 +694,7 @@ int Open9xInterface::getCapability(const Capability capability)
     case GetThrSwitch:
       return (IS_TARANIS(board) ? DSW_SF1 : DSW_THR) ;
     case VirtualInputs:
+      return IS_TARANIS(board) ? 32 : 0;
     case LuaInputs:
     case LimitsPer1000:
     case EnhancedCurves:

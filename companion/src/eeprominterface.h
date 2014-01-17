@@ -65,6 +65,7 @@ const uint8_t modn12x3[4][4]= {
 #define C9X_MAX_MODELS            60
 #define C9X_MAX_PHASES            9
 #define C9X_MAX_MIXERS            64
+#define C9X_MAX_INPUTS            32
 #define C9X_MAX_EXPOS             64
 #define C9X_MAX_CURVES            32
 #define C9X_MAX_POINTS            17
@@ -847,7 +848,10 @@ class ModelData {
     PhaseData phaseData[C9X_MAX_PHASES];
     MixData   mixData[C9X_MAX_MIXERS];
     LimitData limitData[C9X_NUM_CHNOUT];
+
+    char      inputNames[C9X_MAX_INPUTS][4+1];
     ExpoData  expoData[C9X_MAX_EXPOS];
+
     CurveData curves[C9X_MAX_CURVES];
     CustomSwData  customSw[C9X_NUM_CSW];
     FuncSwData    funcSw[C9X_MAX_CUSTOM_FUNCTIONS];
@@ -927,7 +931,6 @@ enum Capability {
  ChannelsName,
  ExtraChannels,
  ExtraInputs,
- ExtraTrims,
  ExtendedTrims,
  HasInputFilter,
  NumCurves,

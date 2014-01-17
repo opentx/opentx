@@ -19,76 +19,32 @@ MixerDialog::MixerDialog(QWidget *parent, MixData *mixdata, int stickMode) :
     else
       this->setWindowTitle(tr("DEST -> CH%1%2").arg(md->destCh/10).arg(md->destCh%10));
 
-    populateSourceCB(ui->sourceCB, md->srcRaw, POPULATE_SOURCES | POPULATE_SWITCHES | (GetEepromInterface()->getCapability(ExtraTrims) ? POPULATE_TRIMS : 0) | (GetEepromInterface()->getCapability(GvarsAsSources) ? POPULATE_GVARS : 0));
-
+    populateSourceCB(ui->sourceCB, md->srcRaw, POPULATE_SOURCES | POPULATE_SWITCHES | POPULATE_TRIMS | (GetEepromInterface()->getCapability(GvarsAsSources) ? POPULATE_GVARS : 0));
     ui->sourceCB->removeItem(0);
-    int limit=GetEepromInterface()->getCapability(OffsetWeight);
-    int gvars=0;
-    if (GetEepromInterface()->getCapability(HasVariants)) {
-      if ((GetCurrentFirmwareVariant() & GVARS_VARIANT)) {
-        gvars=1;
-      }
-    } else {
-      gvars=1;
-    }
-    if (gvars==0) {
-      ui->offsetGV->setDisabled(true);
-      ui->weightGV->setDisabled(true);
-      if (md->weight>limit || md->weight<-limit) {
-        md->weight=100;
-      }
-      if (md->sOffset>limit || md->sOffset<-limit) {
-        md->sOffset=0;
-      }
-    }
-    populateGVCB(ui->offsetCB,md->sOffset);
-    populateGVCB(ui->weightCB,md->weight);
-    ui->weightSB->setMinimum(-limit);
-    ui->weightSB->setMaximum(limit);
-    if (md->weight>limit || md->weight<-limit) {
-      ui->weightGV->setChecked(true);
-      ui->weightSB->hide();
-      ui->weightCB->show();
-    }
-    else {
-      ui->weightGV->setChecked(false);
-      ui->weightSB->setValue(md->weight);
-      ui->weightSB->show();
-      ui->weightCB->hide();
-    }
 
-    ui->offsetSB->setMinimum(-limit);
-    ui->offsetSB->setMaximum(limit);
-    if (md->sOffset>limit || md->sOffset<-limit) {
-      ui->offsetGV->setChecked(true);
-      ui->offsetSB->hide();
-      ui->offsetCB->show();
-    }
-    else {
-      ui->offsetGV->setChecked(false);
-      ui->offsetSB->setValue(md->sOffset);
-      ui->offsetSB->show();
-      ui->offsetCB->hide();
-    }
+    int limit = GetEepromInterface()->getCapability(OffsetWeight);
+
+    gvWeightGroup = new GVarGroup(ui->weightGV, ui->weightSB, ui->weightCB, md->weight, 100, -limit, limit);
+    gvOffsetGroup = new GVarGroup(ui->offsetGV, ui->offsetSB, ui->offsetCB, md->sOffset, 0, -limit, limit);
 
     if (GetEepromInterface()->getCapability(VirtualInputs)) {
       ui->trimLabel->hide();
       ui->trimCB->hide();
     }
 
-    CurveGroup * curveGroup = new CurveGroup(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, md->curve);
+    curveGroup = new CurveGroup(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, md->curve);
 
     ui->MixDR_CB->setChecked(md->noExpo==0);
     if (!GetEepromInterface()->getCapability(MixesWithoutExpo)) {
       ui->MixDR_CB->hide();
       ui->label_MixDR->hide();
     }
-    if (GetEepromInterface()->getCapability(ExtraTrims)) {
-      ui->trimCB->addItem(tr("Rud"),1);
-      ui->trimCB->addItem(tr("Ele"),2);
-      ui->trimCB->addItem(tr("Thr"),3);
-      ui->trimCB->addItem(tr("Ail"),4);      
-    }
+
+    ui->trimCB->addItem(tr("Rud"), 1);
+    ui->trimCB->addItem(tr("Ele"), 2);
+    ui->trimCB->addItem(tr("Thr"), 3);
+    ui->trimCB->addItem(tr("Ail"), 4);
+
     ui->trimCB->setCurrentIndex((-md->carryTrim)+1);
     int namelength=GetEepromInterface()->getCapability(HasMixerNames);
     if (!namelength) {
@@ -147,12 +103,6 @@ MixerDialog::MixerDialog(QWidget *parent, MixData *mixdata, int stickMode) :
     valuesChanged();
     connect(ui->mixerName,SIGNAL(editingFinished()),this,SLOT(valuesChanged()));
     connect(ui->sourceCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
-    connect(ui->weightCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
-    connect(ui->offsetCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
-    connect(ui->weightSB,SIGNAL(editingFinished()),this,SLOT(valuesChanged()));
-    connect(ui->offsetSB,SIGNAL(editingFinished()),this,SLOT(valuesChanged()));
-    connect(ui->weightGV,SIGNAL(stateChanged(int)),this,SLOT(widgetChanged())); // TODO why the same slot?
-    connect(ui->offsetGV,SIGNAL(stateChanged(int)),this,SLOT(widgetChanged()));
     connect(ui->trimCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
     connect(ui->MixDR_CB,SIGNAL(toggled(bool)),this,SLOT(valuesChanged()));
     connect(ui->switchesCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
@@ -169,54 +119,23 @@ MixerDialog::MixerDialog(QWidget *parent, MixData *mixdata, int stickMode) :
 
 MixerDialog::~MixerDialog()
 {
-    delete ui;
+  delete gvWeightGroup;
+  delete gvOffsetGroup;
+  delete curveGroup;
+  delete ui;
 }
 
 void MixerDialog::changeEvent(QEvent *e)
 {
-    QDialog::changeEvent(e);
-    switch (e->type()) {
+  QDialog::changeEvent(e);
+
+  switch (e->type()) {
     case QEvent::LanguageChange:
-        ui->retranslateUi(this);
-        break;
+      ui->retranslateUi(this);
+      break;
     default:
-        break;
-    }
-}
-
-void MixerDialog::widgetChanged()
-{
-  int gvars = 0;
-  if (GetEepromInterface()->getCapability(HasVariants)) {
-    if ((GetCurrentFirmwareVariant() & GVARS_VARIANT)) {
-      gvars = 1;
-    }
+      break;
   }
-  else {
-    gvars = 1;
-  }
-
-  if (gvars == 1) {
-    if (ui->weightGV->isChecked()) {
-      ui->weightCB->show();
-      ui->weightSB->hide();
-    }
-    else {
-      ui->weightCB->hide();
-      ui->weightSB->show();
-    }
-    if (ui->offsetGV->isChecked()) {
-      ui->offsetCB->show();
-      ui->offsetSB->hide();
-    }
-    else {
-      ui->offsetCB->hide();
-      ui->offsetSB->show();
-    }
-  }
-
-  valuesChanged();
-  QTimer::singleShot(0, this, SLOT(shrink()));
 }
 
 void MixerDialog::valuesChanged()
@@ -236,16 +155,6 @@ void MixerDialog::valuesChanged()
     } else {
       ui->MixDR_CB->setHidden(true);
       ui->label_MixDR->setHidden(true);
-    }
-    if (ui->weightGV->isChecked()) {
-      md->weight = ui->weightCB->itemData(ui->weightCB->currentIndex()).toInt();
-    } else {
-      md->weight = ui->weightSB->value();
-    }
-    if (ui->offsetGV->isChecked()) {
-      md->sOffset = ui->offsetCB->itemData(ui->offsetCB->currentIndex()).toInt();
-    } else {
-      md->sOffset = ui->offsetSB->value();
     }
     md->carryTrim = -(ui->trimCB->currentIndex()-1);
     md->noExpo = ui->MixDR_CB->checkState() ? 0 : 1;
@@ -276,6 +185,7 @@ void MixerDialog::valuesChanged()
   }
 }
 
-void MixerDialog::shrink() {
-    resize(0,0);
+void MixerDialog::shrink()
+{
+  resize(0, 0);
 }

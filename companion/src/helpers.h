@@ -29,6 +29,26 @@ void populateTTraceCB(QComboBox *b, int value);
 void populateRotEncCB(QComboBox *b, int value, int renumber);
 void populateBacklightCB(QComboBox *b, const uint8_t value);
 
+class GVarGroup : public QObject {
+
+  Q_OBJECT
+
+  public:
+    GVarGroup(QCheckBox *weightGV, QSpinBox *weightSB, QComboBox *weightCB, int & weight, const int deflt, const int mini, const int maxi, const unsigned int flags=0);
+
+  protected slots:
+    void gvarCBChanged(int);
+    void valuesChanged();
+
+  protected:
+    QCheckBox *weightGV;
+    QSpinBox *weightSB;
+    QComboBox *weightCB;
+    int & weight;
+    const unsigned int flags;
+    bool lock;
+};
+
 class CurveGroup : public QObject {
 
   Q_OBJECT
@@ -88,7 +108,7 @@ void populateCSWCB(QComboBox *b, int value);
 QString getTimerMode(int tm);
 QString getTimerModeB(int tm);
 QString getPhaseName(int val, char * phasename=NULL);
-QString getStickStr(int index);
+QString getInputStr(ModelData & model, int index);
 QString getCSWFunc(int val);
 QString getFuncName(unsigned int val);
 QString getRepeatString(unsigned int val);

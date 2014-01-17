@@ -48,6 +48,10 @@ void InputsPanel::update()
 {
   lock = true;
 
+  int inputsCount = GetEepromInterface()->getCapability(VirtualInputs);
+  if (inputsCount == 0)
+    inputsCount = NUM_STICKS;
+
   // curDest -> destination channel
   // i -> mixer number
   QByteArray qba;
@@ -58,10 +62,12 @@ void InputsPanel::update()
     ExpoData *md = &model.expoData[i];
 
     if (md->mode==0) break;
-    QString str = "";
-    while(curDest<(int)md->chn-1) {
+
+    QString str;
+
+    while (curDest<(int)md->chn-1) {
       curDest++;
-      str = getStickStr(curDest);
+      str = getInputStr(model, curDest);
       qba.clear();
       qba.append((quint8)-curDest-1);
       QListWidgetItem *itm = new QListWidgetItem(str);
@@ -69,14 +75,21 @@ void InputsPanel::update()
       ExposlistWidget->addItem(itm);
     }
 
-    if(curDest!=(int)md->chn) {
-      str = getStickStr(md->chn);
+    if (curDest!=(int)md->chn) {
+      if (GetEepromInterface()->getCapability(VirtualInputs))
+        str = QString("%1").arg(getInputStr(model, md->chn), -8, ' ');
+      else
+        str = getInputStr(model, md->chn);
       curDest = md->chn;
-    } else {
+    }
+    else {
       str = "   ";
     }
 
-    if (!GetEepromInterface()->getCapability(VirtualInputs)) {
+    if (GetEepromInterface()->getCapability(VirtualInputs)) {
+      str += " " + tr("Source(%1)").arg(md->srcRaw.toString());
+    }
+    else {
       switch (md->mode) {
         case (1): str += " <-"; break;
         case (2): str += " ->"; break;
@@ -94,12 +107,10 @@ void InputsPanel::update()
     if (md->swtch.type != SWITCH_TYPE_NONE) str += " " + tr("Switch(%1)").arg(md->swtch.toString());
 
     if (GetEepromInterface()->getCapability(HasExpoNames)) {
-      QString ExpoName;
-      ExpoName.append(md->name);
-      if (!ExpoName.isEmpty()) {
-        str+=QString("(%1)").arg(ExpoName);
-      }
+      QString expoName = md->name;
+      if (!expoName.isEmpty()) str += QString(" [%1]").arg(expoName);
     }
+
     qba.clear();
     qba.append((quint8)i);
     qba.append((const char*)md, sizeof(ExpoData));
@@ -108,9 +119,9 @@ void InputsPanel::update()
     ExposlistWidget->addItem(itm);   //(str);
   }
 
-  while(curDest<NUM_STICKS-1) {
+  while (curDest<inputsCount-1) {
     curDest++;
-    QString str = getStickStr(curDest);
+    QString str = getInputStr(model, curDest);
     qba.clear();
     qba.append((quint8)-curDest-1);
     QListWidgetItem *itm = new QListWidgetItem(str);
@@ -154,12 +165,13 @@ void InputsPanel::gm_openExpo(int index)
     emit modified();
     update();
 
-    ExpoDialog *g = new ExpoDialog(this, &mixd, generalSettings.stickMode);
-    if(g->exec())  {
+    ExpoDialog *g = new ExpoDialog(this, model, &mixd, generalSettings.stickMode);
+    if (g->exec())  {
       model.expoData[index] = mixd;
       emit modified();
       update();
-    } else {
+    }
+    else {
       if (expoInserted) {
         gm_deleteExpo(index);
       }
