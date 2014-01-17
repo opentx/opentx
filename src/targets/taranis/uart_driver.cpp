@@ -94,3 +94,26 @@ extern "C" void USART3_IRQHandler(void)
   }
 }
 #endif
+
+#if defined(SMARTPORT2SERIAL)
+Fifo<512> sp2sTxFifo;
+void sp2sPutc(const char c)
+{
+  sp2sTxFifo.push(c);
+  USART_ITConfig(UART3, USART_IT_TXE, ENABLE);
+}
+
+extern "C" void USART3_IRQHandler(void)
+{
+  if (USART_GetITStatus(UART3, USART_IT_TXE) != RESET) {
+    uint8_t txchar;
+    if (sp2sTxFifo.pop(txchar)) {
+      /* Write one byte to the transmit data register */
+      USART_SendData(UART3, txchar);
+    }
+    else {
+      USART_ITConfig(UART3, USART_IT_TXE, DISABLE);
+    }
+  }
+}
+#endif
