@@ -443,6 +443,8 @@
 #define TR_ALARM               INDENT"Alarm"
 #define TR_USRDATA             "Användardata"
 #define TR_BLADES              INDENT"Blad"
+#define TR_SPURGEAR            INDENT"Spur Gear" // T.Foley
+#define TR_PINIONGEAR          INDENT"Pinion Gear" // T.Foley
 #define TR_SCREEN              "Skärm"
 #define TR_SOUND_LABEL         "Ljud "
 #define TR_LENGTH              INDENT"Tid"
