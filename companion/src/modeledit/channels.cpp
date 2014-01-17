@@ -57,24 +57,26 @@ Channels::Channels(QWidget * parent, ModelData & model):
     gridLayout->addWidget(offset, i+1, col++, 1, 1);
 
     // Channel min
-    QSpinBox * minSB = new QSpinBox(this);
+    QDoubleSpinBox * minSB = new QDoubleSpinBox(this);
     minSB->setProperty("index", i);
     minSB->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
     minSB->setAccelerated(true);
+    minSB->setDecimals(1);
     minSB->setMinimum(model.extendedLimits ? -125 : -100);
     minSB->setMaximum(0);
-    minSB->setValue(model.limitData[i].min);
+    minSB->setValue(float(model.limitData[i].min) / 10);
     connect(minSB, SIGNAL(editingFinished()), this, SLOT(minEdited()));
     gridLayout->addWidget(minSB, i+1, col++, 1, 1);
 
     // Channel max
-    QSpinBox * maxSB = new QSpinBox(this);
+    QDoubleSpinBox * maxSB = new QDoubleSpinBox(this);
     maxSB->setProperty("index", i);
     maxSB->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
     maxSB->setAccelerated(true);
+    maxSB->setDecimals(1);
     maxSB->setMinimum(0);
     maxSB->setMaximum(model.extendedLimits ? 125 : 100);
-    maxSB->setValue(model.limitData[i].max);
+    maxSB->setValue(float(model.limitData[i].max) / 10);
     connect(maxSB, SIGNAL(editingFinished()), this, SLOT(maxEdited()));
     gridLayout->addWidget(maxSB, i+1, col++, 1, 1);
 
@@ -108,9 +110,6 @@ Channels::Channels(QWidget * parent, ModelData & model):
       gridLayout->addWidget(symlimits, i+1, col++, 1, 1);
     }
   }
-
-  // setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-  // setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 }
 
 Channels::~Channels()
@@ -141,23 +140,23 @@ void Channels::offsetEdited()
 {
   QDoubleSpinBox *dsb = qobject_cast<QDoubleSpinBox*>(sender());
   int index = dsb->property("index").toInt();
-  model.limitData[index].offset = round(dsb->value()*10);
+  model.limitData[index].offset = round(dsb->value() * 10);
   emit modified();
 }
 
 void Channels::minEdited()
 {
-  QSpinBox *sb = qobject_cast<QSpinBox*>(sender());
+  QDoubleSpinBox *sb = qobject_cast<QDoubleSpinBox*>(sender());
   int index = sb->property("index").toInt();
-  model.limitData[index].min = sb->value();
+  model.limitData[index].min = round(sb->value() * 10);
   emit modified();
 }
 
 void Channels::maxEdited()
 {
-  QSpinBox *sb = qobject_cast<QSpinBox*>(sender());
+  QDoubleSpinBox *sb = qobject_cast<QDoubleSpinBox*>(sender());
   int index = sb->property("index").toInt();
-  model.limitData[index].max = sb->value();
+  model.limitData[index].max = round(sb->value() * 10);
   emit modified();
 }
 

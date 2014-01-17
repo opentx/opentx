@@ -553,7 +553,7 @@ class LimitData {
     bool  symetrical;
     char  name[6+1];
     CurveReference curve;
-    void clear() { memset(this, 0, sizeof(LimitData)); min = -100; max = +100; }
+    void clear() { memset(this, 0, sizeof(LimitData)); min = -1000; max = +1000; }
 };
 
 enum MltpxValue {
