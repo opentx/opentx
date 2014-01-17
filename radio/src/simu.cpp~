@@ -337,14 +337,6 @@ void Open9xSim::refreshDiplay()
 
     bmp->render();
     bmf->setImage(bmp);
-
-    // Recalc RPM based on Blades setting during simulator - T.Foley
-    // Final value will change as user adjusts blades, spur or gear live in simulator
-    frskyData.hub.rpm = 303;
-    frskyData.hub.rpm *= (uint8_t)60;
-    frskyData.hub.rpm /= (g_model.frsky.blades+1);
-    float gear_ratio = (((float)g_model.frsky.spur_gear+1) / ((float)g_model.frsky.pinion_gear+1));      
-    frskyData.hub.rpm = (float)(frskyData.hub.rpm / gear_ratio);
   }
 }
 
