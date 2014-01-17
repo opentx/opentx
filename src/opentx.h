@@ -158,6 +158,12 @@
 #define IF_SDCARD(x)
 #endif
 
+#if defined(SMARTPORT2SERIAL)
+#define IF_SMARTPORT2SERIAL(x) x,
+#else
+#define IF_SMARTPORT2SERIAL(x)
+#endif
+
 #if defined(BLUETOOTH)
 #define IF_BLUETOOTH(x) x,
 #else
