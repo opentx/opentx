@@ -69,7 +69,7 @@ void uartInit(uint32_t baudrate)
   USART_ITConfig(UART3, USART_IT_TXE, DISABLE);
 
   NVIC_EnableIRQ(USART3_IRQn);
-  NVIC_SetPriority(USART3_IRQn, 8);
+  NVIC_SetPriority(USART3_IRQn, 7);
 }
 
 #if defined(DEBUG)
@@ -85,6 +85,29 @@ extern "C" void USART3_IRQHandler(void)
   if (USART_GetITStatus(UART3, USART_IT_TXE) != RESET) {
     uint8_t txchar;
     if (debugTxFifo.pop(txchar)) {
+      /* Write one byte to the transmit data register */
+      USART_SendData(UART3, txchar);
+    }
+    else {
+      USART_ITConfig(UART3, USART_IT_TXE, DISABLE);
+    }
+  }
+}
+#endif
+
+#if defined(SMARTPORT2SERIAL) && !defined(DEBUG)
+Fifo<512> sp2sTxFifo;
+void sp2sPutc(const char c)
+{
+  sp2sTxFifo.push(c);
+  USART_ITConfig(UART3, USART_IT_TXE, ENABLE);
+}
+
+extern "C" void USART3_IRQHandler(void)
+{
+  if (USART_GetITStatus(UART3, USART_IT_TXE) != RESET) {
+    uint8_t txchar;
+    if (sp2sTxFifo.pop(txchar)) {
       /* Write one byte to the transmit data register */
       USART_SendData(UART3, txchar);
     }
