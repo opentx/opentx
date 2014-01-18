@@ -25,7 +25,7 @@ AS   = $(TRGT)as
 BIN  = $(CP) -O ihex 
 BINX = $(CP) -O binary 
 
-OBJDIR = obj
+OBJDIR = .
 
 MCU  = cortex-m3
 
@@ -358,10 +358,7 @@ $(AOBJS) : $(OBJDIR)/%.o : %.s
 #  $(PROJECT)_ramBootT
 
 clean:
-	-rm -f obj/*.o
-	-rm -f xobj/*.o
-	-rm -f robj/*.o
-	-rm -f tobj/*.o
+	-rm -f *.o
 	-rm -f *.elf
 	-rm -f *.map
 	-rm -f *.hex
