@@ -250,6 +250,10 @@ GVARS = NO
 # Values = NO, READONLY, NOMENUS 
 MENUS_LOCK == NO
 
+# Include bootloader, for now only for Taranis
+# Values = YES, NO
+BOOTLOADER = YES
+
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
@@ -257,6 +261,7 @@ SHELL = sh
 IMG2LBM = -python ../util/img2lbm.py
 TRANSLATE = -python ../util/translate.py
 SVNREV = $(shell sh -c "svnversion | egrep -o '[[:digit:]]+[[:alpha:]]*$$'")
+BIN2LBM = -python ../util/bin2lbm.py
 
 SRC =
 CPPSRC =
@@ -593,7 +598,11 @@ ifeq ($(PCB), TARANIS)
   else
     CPPDEFS = -DREV4
   endif
-  LDSCRIPT = targets/taranis/stm32_flash.ld
+  ifeq ($(BOOTLOADER), YES)
+    LDSCRIPT = targets/taranis/stm32_flash_bl.ld
+  else
+    LDSCRIPT = targets/taranis/stm32_flash.ld
+  endif
   TRGT = arm-none-eabi-
   MCU  = cortex-m3
   OPT = 2
@@ -614,7 +623,6 @@ ifeq ($(PCB), TARANIS)
   CPPSRC += audio_arm.cpp
   CPPSRC += targets/taranis/pwr_driver.cpp targets/taranis/pulses_driver.cpp targets/taranis/keys_driver.cpp targets/taranis/adc_driver.cpp targets/taranis/trainer_driver.cpp targets/taranis/audio_driver.cpp targets/taranis/delays.cpp targets/taranis/uart_driver.cpp targets/taranis/sport_driver.cpp
   CPPSRC += bmp.cpp gui/view_channels.cpp gui/view_about.cpp gui/view_text.cpp
-  CPPSRC += loadboot.cpp
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/system_stm32f2xx.c
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/misc.c
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c
@@ -663,6 +671,11 @@ ifeq ($(PCB), TARANIS)
     CPPDEFS += -DHUBSAN
     CPPSRC += protocols/hubsan.cpp
     CPPSRC += targets/taranis/a7105_driver.cpp
+  endif
+  
+  ifeq ($(BOOTLOADER), YES)
+    CPPDEFS += -DBOOTLOADER
+    CPPSRC += loadboot.cpp
   endif
 endif
 
@@ -1044,8 +1057,14 @@ all: begin gccversion sizebefore build sizeafter end
 ifeq ($(ARCH), AVR)
   build: stamp_header tra lbm allsrc.cpp elf remallsrc hex
 else
-  build: stamp_header tra lbm allsrc.cpp elf remallsrc bin
+  build: stamp_header tra lbm bootloader allsrc.cpp elf remallsrc bin
 endif
+
+# build bootloader
+.PHONY bootloader:
+	@echo "Building bootloader..."
+	$(MAKE) -C ../bootloader PCB=$(PCB)
+	$(BIN2LBM) bootloader.lbm ../bootloader/bootloader_ramBoot.bin
 
 tra: translations/cz.h translations/de.h translations/es.h translations/fr.h translations/it.h translations/pl.h translations/pt.h translations/se.h
 lbm: fonts bitmaps/sticks.lbm
@@ -1305,6 +1324,8 @@ clean_list :
 	$(REMOVE) *.lst
 	$(REMOVE) allsrc.cpp
 	$(REMOVE) stamp-opentx.h
+	$(REMOVE) `find . -name "*.lbm"` 
+	$(MAKE) -C ../bootloader clean
 
 #### Install
 

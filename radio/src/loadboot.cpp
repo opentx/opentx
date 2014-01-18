@@ -47,27 +47,31 @@
 
 
 #include <stdint.h>
-//#include "lcd.h"
 #ifdef PCBSKY
 #include "AT91SAM3S4.h"
 #endif
 
 #ifdef PCBTARANIS
-#include "stm32f2xx.h"
-#include "stm32f2xx_gpio.h"
+ #include "stm32f2xx.h"
+ #include "stm32f2xx_gpio.h"
+#else
+ #ifdef PCBX9D
+  #include "x9d\stm32f2xx.h"
+  #include "x9d\stm32f2xx_gpio.h"
+ #endif
+#endif
 
+#if defined(PCBX9D) || defined(PCBTARANIS)
 void bwdt_reset()
 {
 	IWDG->KR = 0xAAAA ;		// reload
 }
 #endif
 
-#ifdef PCBTARANIS
-//#include "lcd.h"
+#if defined(PCBX9D) || defined(PCBTARANIS)
 
 __attribute__ ((section(".bootrodata"), used))
 void _bootStart( void ) ;
-
 
 __attribute__ ((section(".isr_boot_vector"), used))
 const uint32_t BootVectors[] = {
@@ -76,7 +80,7 @@ const uint32_t BootVectors[] = {
 } ;
 #endif
 
-#ifdef PCBTARANIS
+#if defined(PCBX9D) || defined(PCBTARANIS)
 __attribute__ ((section(".bootrodata.*"), used))
 #endif
 
@@ -85,39 +89,13 @@ __attribute__ ((section(".bootrodata"), used))
 #endif
 
 const uint8_t BootCode[] = {
-#ifdef PCBTARANIS
-#include "bootflashX.lbm"
-#else
- #ifdef REVX
- #include "bootflash8.lbm"
- #else
- #include "bootflash4.lbm"
- #endif
-#endif
+#include "bootloader.lbm"
 } ;
 
 
-#ifdef PCBTARANIS
+#if defined(PCBX9D) || defined(PCBTARANIS)
 
 __attribute__ ((section(".bootrodata"), used))
-static void run_application( void ) ;
-
-static void run_application()
-{
-	asm(" mov.w	r1, #134217728");	// 0x8000000
-  asm(" add.w	r1, #32768");			// 0x8000
-	
-	asm(" movw	r0, #60680");			// 0xED08
-  asm(" movt	r0, #57344");			// 0xE000
-  asm(" str	r1, [r0, #0]");			// Set the VTOR
-	
-  asm("ldr	r0, [r1, #0]");			// Stack pointer value
-  asm("msr msp, r0");						// Set it
-  asm("ldr	r0, [r1, #4]");			// Reset address
-  asm("mov.w	r1, #1");
-  asm("orr		r0, r1");					// Set lsbit
-  asm("bx r0");									// Execute application
-}
 
 void _bootStart()
 {
@@ -161,7 +139,20 @@ void _bootStart()
 	
 		}
 	}
-	run_application() ;	
+//	run_application() ;	
+	asm(" mov.w	r1, #134217728");	// 0x8000000
+  asm(" add.w	r1, #32768");			// 0x8000
+	
+	asm(" movw	r0, #60680");			// 0xED08
+  asm(" movt	r0, #57344");			// 0xE000
+  asm(" str	r1, [r0, #0]");			// Set the VTOR
+	
+  asm("ldr	r0, [r1, #0]");			// Stack pointer value
+  asm("msr msp, r0");						// Set it
+  asm("ldr	r0, [r1, #4]");			// Reset address
+  asm("mov.w	r1, #1");
+  asm("orr		r0, r1");					// Set lsbit
+  asm("bx r0");									// Execute application
 }
 #endif
 
