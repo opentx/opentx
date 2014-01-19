@@ -195,7 +195,7 @@ void boardInit()
 #if defined(DEBUG)
   uartInit(DEBUG_UART_BAUDRATE);
 #endif
-#if defined(SMARTPORT2SERIAL)
+#if defined(SMARTPORT2SERIAL) && !defined(DEBUG)
   uartInit(SPORT_BAUDRATE);
 #endif
   init5msTimer();

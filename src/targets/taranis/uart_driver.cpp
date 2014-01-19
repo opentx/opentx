@@ -95,7 +95,7 @@ extern "C" void USART3_IRQHandler(void)
 }
 #endif
 
-#if defined(SMARTPORT2SERIAL)
+#if defined(SMARTPORT2SERIAL) && !defined(DEBUG)
 Fifo<512> sp2sTxFifo;
 void sp2sPutc(const char c)
 {

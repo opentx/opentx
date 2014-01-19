@@ -431,7 +431,7 @@ void processSerialData(uint8_t data)
   btPushByte(data);
 #endif
 
-#if defined(SMARTPORT2SERIAL)
+#if defined(SMARTPORT2SERIAL) && !defined(DEBUG)
   sp2sPutc(data);
 #endif
 
