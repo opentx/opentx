@@ -70,8 +70,8 @@ contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnu
         str.append("<tr><td colspan=3 class=\"mycss\">"+tr("Thank you all !!!")+"</td></tr>");
         str.append("</table>");
         str.append("</body></html>");        
-        ui->webBrowser->setHtml(str,QUrl(""));
-        ui->webBrowser->scroll(0,0);
+        ui->textEditor->setHtml(str);
+        ui->textEditor->scroll(0,0);
         this->setWindowTitle(tr("Contributors"));
         }
         break;
@@ -79,9 +79,9 @@ contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnu
       case 1:{
         QFile file(":/releasenotes.txt");
         if(file.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
-          ui->webBrowser->setHtml(file.readAll(),QUrl(""));
+          ui->textEditor->setHtml(file.readAll());
         }
-        ui->webBrowser->scroll(0,0);
+        ui->textEditor->scroll(0,0);
         this->setWindowTitle(tr("Companion9x Release Notes"));
         }
         break;
@@ -104,7 +104,7 @@ contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnu
 
 void contributorsDialog::showEvent ( QShowEvent * )
 {
-    ui->webBrowser->scroll(0,0);
+    ui->textEditor->scroll(0,0);
 }
 
 contributorsDialog::~contributorsDialog()
@@ -114,7 +114,7 @@ contributorsDialog::~contributorsDialog()
 
 void contributorsDialog::replyFinished(QNetworkReply * reply)
 {
-    ui->webBrowser->setHtml(reply->readAll(),QUrl(""));
+    ui->textEditor->setHtml(reply->readAll());
 }
 
 void contributorsDialog::forceClose() {
