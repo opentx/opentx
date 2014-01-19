@@ -2,6 +2,7 @@
 #include "ui_burnconfigdialog.h"
 #include "avroutputdialog.h"
 #include "eeprominterface.h"
+#include "helpers.h"
 #include <QtGui>
 
 #if !defined WIN32 && defined __GNUC__
@@ -278,7 +279,20 @@ void burnConfigDialog::listProgrammers()
     QStringList arguments;
     arguments << "-c?";
     avrOutputDialog *ad = new avrOutputDialog(this, ui->avrdude_location->text(), arguments, "List available programmers", AVR_DIALOG_KEEP_OPEN, TRUE);
-    ad->setWindowIcon(QIcon(":/images/list.png"));
+    QSettings settings("companion", "companion");
+    int theme_set=settings.value("theme", 1).toInt();
+    QString Theme;
+    switch(theme_set) {
+      case 0:
+        Theme="classic";
+        break;
+      default:
+        Theme="monochrome";
+        break;          
+    }
+    QIcon Icon;
+    populate_icon(&Icon,Theme,"list.png");
+    ad->setWindowIcon(Icon);
     ad->show();
 }
 
@@ -295,7 +309,20 @@ void burnConfigDialog::on_pushButton_4_clicked()
     arguments << "-?";
 
     avrOutputDialog *ad = new avrOutputDialog(this, ui->avrdude_location->text(), arguments, "Show help", AVR_DIALOG_KEEP_OPEN,TRUE);
-    ad->setWindowIcon(QIcon(":/images/configure.png"));
+    QSettings settings("companion", "companion");
+    int theme_set=settings.value("theme", 1).toInt();
+    QString Theme;
+    switch(theme_set) {
+      case 0:
+        Theme="classic";
+        break;
+      default:
+        Theme="monochrome";
+        break;          
+    }
+    QIcon Icon;
+    populate_icon(&Icon,Theme,"configure.png");
+    ad->setWindowIcon(Icon);
     ad->show();
 }
 
@@ -312,7 +339,20 @@ void burnConfigDialog::readFuses()
     arguments << "-c" << avrProgrammer << "-p" << avrMCU << args << str;
 
     avrOutputDialog *ad = new avrOutputDialog(this, avrLoc, arguments, "Read Fuses",AVR_DIALOG_KEEP_OPEN,TRUE);
-    ad->setWindowIcon(QIcon(":/images/fuses.png"));
+    QSettings settings("companion", "companion");
+    int theme_set=settings.value("theme", 1).toInt();
+    QString Theme;
+    switch(theme_set) {
+      case 0:
+        Theme="classic";
+        break;
+      default:
+        Theme="monochrome";
+        break;          
+    }
+    QIcon Icon;
+    populate_icon(&Icon,Theme,"fuses.png");
+    ad->setWindowIcon(Icon);
     ad->show();
 }
 
@@ -346,7 +386,20 @@ void burnConfigDialog::restFuses(bool eeProtect)
           QStringList argread;
           argread << "-c" << avrProgrammer << "-p" << avrMCU << args  <<"-U" << "lfuse:r:"+tempFile+":r" ;
           avrOutputDialog *ad = new avrOutputDialog(this, avrLoc, argread, "Reset Fuses",AVR_DIALOG_CLOSE_IF_SUCCESSFUL,FALSE);
-          ad->setWindowIcon(QIcon(":/images/fuses.png"));
+          QSettings settings("companion", "companion");
+          int theme_set=settings.value("theme", 1).toInt();
+          QString Theme;
+          switch(theme_set) {
+            case 0:
+              Theme="classic";
+              break;
+            default:
+              Theme="monochrome";
+              break;          
+          }
+          QIcon Icon;
+          populate_icon(&Icon,Theme,"fuses.png");
+          ad->setWindowIcon(Icon);
           ad->exec();
           QFile file(tempFile);
           if (file.exists() && file.size()==1) {
@@ -375,7 +428,20 @@ void burnConfigDialog::restFuses(bool eeProtect)
           arguments << "-c" << avrProgrammer << "-p" << avrMCU << args << "-B" << "100" << "-u" << str;          
         }
         avrOutputDialog *ad = new avrOutputDialog(this, avrLoc, arguments, "Reset Fuses",AVR_DIALOG_KEEP_OPEN,TRUE);
-        ad->setWindowIcon(QIcon(":/images/fuses.png"));
+        QSettings settings("companion", "companion");
+        int theme_set=settings.value("theme", 1).toInt();
+        QString Theme;
+        switch(theme_set) {
+          case 0:
+            Theme="classic";
+            break;
+          default:
+            Theme="monochrome";
+            break;          
+        }
+        QIcon Icon;
+        populate_icon(&Icon,Theme,"fuses.png");
+        ad->setWindowIcon(Icon);
         ad->show();
     }
 

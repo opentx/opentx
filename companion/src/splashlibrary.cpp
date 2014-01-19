@@ -9,6 +9,23 @@
 splashLibrary::splashLibrary(QWidget *parent, QString * fileName) : QDialog(parent), ui(new Ui::splashLibrary) {
   splashFileName = fileName;
   ui->setupUi(this);
+  QSettings settings("companion", "companion");
+  int theme_set=settings.value("theme", 1).toInt();
+  QString Theme;
+  switch(theme_set) {
+    case 0:
+      Theme="classic";
+      break;
+    default:
+      Theme="monochrome";
+      break;          
+  }
+  QIcon NextIcon;
+  populate_icon(&NextIcon,Theme,"arrow-right.png");
+  QIcon PrevIcon;
+  populate_icon(&PrevIcon,Theme,"arrow-left.png");
+  ui->nextPage->setIcon(NextIcon);
+  ui->prevPage->setIcon(PrevIcon);
   page = 0;
   getFileList();
   if (imageList.size() > 20) {

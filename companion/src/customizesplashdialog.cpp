@@ -11,6 +11,20 @@ customizeSplashDialog::customizeSplashDialog(QWidget *parent) :
 QDialog(parent),
 ui(new Ui::customizeSplashDialog) {
   ui->setupUi(this);
+  QSettings settings("companion", "companion");
+  int theme_set=settings.value("theme", 1).toInt();
+  QString Theme;
+  switch(theme_set) {
+    case 0:
+      Theme="classic";
+      break;
+    default:
+      Theme="monochrome";
+      break;          
+  }
+  QIcon LibraryIcon;
+  populate_icon(&LibraryIcon,Theme,"library.png");
+  ui->libraryButton->setIcon(LibraryIcon);
   ui->HowToLabel->clear();
   ui->HowToLabel->append("<center>" + tr("Select an original firmware file") + "</center>");
 }
