@@ -382,17 +382,7 @@ void CustomSwitchesPanel::csw_customContextMenuRequested(QPoint pos)
 {
     QLabel *label = (QLabel *)sender();
     selectedSwitch = label->property("index").toInt();
-    QSettings settings("companion", "companion");
-    int theme_set=settings.value("theme", 1).toInt();
-    QString Theme;
-    switch(theme_set) {
-      case 0:
-        Theme="classic";
-        break;
-      default:
-        Theme="monochrome";
-        break;          
-    }
+    QString Theme=getTheme();
     QIcon ClearIcon;
     populate_icon(&ClearIcon,Theme,"clear.png");
     QIcon CopyIcon;

@@ -29,6 +29,7 @@ void populateTTraceCB(QComboBox *b, int value);
 void populateRotEncCB(QComboBox *b, int value, int renumber);
 void populateBacklightCB(QComboBox *b, const uint8_t value);
 void populate_icon(QIcon *Icon, QString usedtheme, QString baseimage);
+QString getTheme();
 
 class GVarGroup : public QObject {
 

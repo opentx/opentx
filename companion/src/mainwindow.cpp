@@ -96,16 +96,8 @@ downloadDialog_forWait(NULL)
             this, SLOT(setActiveSubWindow(QWidget*)));
 
     MaxRecentFiles=MAX_RECENT;
+    Theme=getTheme();
     QSettings settings("companion", "companion");
-    int theme_set=settings.value("theme", 1).toInt();
-    switch(theme_set) {
-      case 0:
-        Theme="classic";
-        break;
-      default:
-        Theme="monochrome";
-        break;          
-    }
     int icon_size=settings.value("icon_size", 1).toInt();
     switch (icon_size) {
       case 0:

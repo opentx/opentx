@@ -83,17 +83,7 @@ void ModelsListWidget::ShowContextMenu(const QPoint& pos)
     const QClipboard *clipboard = QApplication::clipboard();
     const QMimeData *mimeData = clipboard->mimeData();
     bool hasData = mimeData->hasFormat("application/x-companion9x");
-    QSettings settings("companion", "companion");
-    int theme_set=settings.value("theme", 1).toInt();
-    QString Theme;
-    switch(theme_set) {
-      case 0:
-        Theme="classic";
-        break;
-      default:
-        Theme="monochrome";
-        break;          
-    }
+    QString Theme=getTheme();
     QIcon AddIcon;
     populate_icon(&AddIcon,Theme,"add.png");
     QIcon EditIcon;

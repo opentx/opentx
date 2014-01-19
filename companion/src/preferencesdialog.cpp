@@ -17,19 +17,8 @@ preferencesDialog::preferencesDialog(QWidget *parent) :
   updateLock(false)
 {
   ui->setupUi(this);
-  QSettings settings("companion", "companion");
-  int theme_set=settings.value("theme", 1).toInt();
+  QString Theme=getTheme();
   QIcon Icon;
-  
-  QString Theme;
-  switch(theme_set) {
-    case 0:
-      Theme="classic";
-      break;
-    default:
-      Theme="monochrome";
-      break;          
-  }
   populate_icon(&Icon, Theme, "preferences.png");
   this->setWindowIcon(Icon);
   QIcon LibraryIcon;

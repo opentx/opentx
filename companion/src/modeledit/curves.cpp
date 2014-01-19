@@ -84,18 +84,7 @@ Curves::Curves(QWidget * parent, ModelData & model):
   QGraphicsScene *scene = new QGraphicsScene(ui->curvePreview);
   scene->setItemIndexMethod(QGraphicsScene::NoIndex);
   ui->curvePreview->setScene(scene);
-  QSettings settings("companion", "companion");
-  int theme_set=settings.value("theme", 1).toInt();
-  QString Theme;
-  switch(theme_set) {
-    case 0:
-      Theme="classic";
-      break;
-    default:
-      Theme="monochrome";
-      break;          
-  }
-
+  QString Theme=getTheme();
   QIcon ClearIcon;
   populate_icon(&ClearIcon,Theme,"clear.png");
 

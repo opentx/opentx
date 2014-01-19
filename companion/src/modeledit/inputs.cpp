@@ -8,17 +8,7 @@ InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & g
   generalSettings(generalSettings),
   expoInserted(false)
 {
-  QSettings settings("companion", "companion");
-  int theme_set=settings.value("theme", 1).toInt();
-  QString Theme;
-  switch(theme_set) {
-    case 0:
-      Theme="classic";
-      break;
-    default:
-      Theme="monochrome";
-      break;          
-  }
+  QString Theme=getTheme();
 
   QGridLayout * exposLayout = new QGridLayout(this);
 
@@ -358,17 +348,7 @@ void InputsPanel::expoAdd()
 
 void InputsPanel::expolistWidget_customContextMenuRequested(QPoint pos)
 {
-    QSettings settings("companion", "companion");
-    int theme_set=settings.value("theme", 1).toInt();
-    QString Theme;
-    switch(theme_set) {
-      case 0:
-        Theme="classic";
-        break;
-      default:
-        Theme="monochrome";
-        break;          
-    }
+    QString Theme=getTheme();
     QIcon AddIcon;
     populate_icon(&AddIcon,Theme,"add.png");
     QIcon EditIcon;

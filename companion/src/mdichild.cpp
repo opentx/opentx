@@ -68,17 +68,7 @@ MdiChild::MdiChild():
   isUntitled(true),
   fileChanged(false)
 {
-  QSettings settings("companion", "companion");
-  int theme_set=settings.value("theme", 1).toInt();
-  QString Theme;
-  switch(theme_set) {
-    case 0:
-      Theme="classic";
-      break;
-    default:
-      Theme="monochrome";
-      break;          
-  }
+  QString Theme=getTheme();
   QIcon SimulateIcon;
   populate_icon(&SimulateIcon,Theme,"simulate.png");
 
@@ -522,17 +512,8 @@ QString MdiChild::strippedName(const QString &fullFileName)
 
 void MdiChild::burnTo()  // write to Tx
 {
+  QString Theme=getTheme();
   QSettings settings("companion", "companion");
-  int theme_set=settings.value("theme", 1).toInt();
-  QString Theme;
-  switch(theme_set) {
-    case 0:
-      Theme="classic";
-      break;
-    default:
-      Theme="monochrome";
-      break;          
-  }
   bool backupEnable=settings.value("backupEnable", true).toBool();
   QString backupPath=settings.value("backupPath", "").toString();
   if (!backupPath.isEmpty()) {

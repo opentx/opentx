@@ -123,17 +123,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
     connect(fswtchParamArmT[i], SIGNAL(editTextChanged ( const QString)), this, SLOT(customFunctionEdited()));
 
 #ifdef PHONON
-    QSettings settings("companion", "companion");
-    int theme_set=settings.value("theme", 1).toInt();
-    QString Theme;
-    switch(theme_set) {
-      case 0:
-        Theme="classic";
-        break;
-      default:
-        Theme="monochrome";
-        break;          
-    }
+    QString Theme=getTheme();
     QIcon PlayIcon;
     populate_icon(&PlayIcon,Theme,"play.png");
     playBT[i] = new QPushButton(this);
@@ -173,17 +163,7 @@ void CustomFunctionsPanel::mediaPlayer_state(Phonon::State newState, Phonon::Sta
 {
     if (phononLock)
       return;
-    QSettings settings("companion", "companion");
-    int theme_set=settings.value("theme", 1).toInt();
-    QString Theme;
-    switch(theme_set) {
-      case 0:
-        Theme="classic";
-        break;
-      default:
-        Theme="monochrome";
-        break;          
-    }
+    QString Theme=getTheme();
     QIcon PlayIcon;
     populate_icon(&PlayIcon,Theme,"play.png");
     
@@ -216,17 +196,8 @@ void CustomFunctionsPanel::playMusic()
     QPushButton *playButton = qobject_cast<QPushButton*>(sender());
     int index=playButton->objectName().mid(5,2).toInt();
     QString function=playButton->objectName().left(4);
+    QString Theme=getTheme();
     QSettings settings("companion", "companion");
-    int theme_set=settings.value("theme", 1).toInt();
-    QString Theme;
-    switch(theme_set) {
-      case 0:
-        Theme="classic";
-        break;
-      default:
-        Theme="monochrome";
-        break;          
-    }
     QIcon PlayIcon;
     populate_icon(&PlayIcon,Theme,"play.png");
     QIcon StopIcon;
@@ -499,17 +470,7 @@ void CustomFunctionsPanel::fsw_customContextMenuRequested(QPoint pos)
 {
     QLabel *label = (QLabel *)sender();
     selectedFunction = label->property("index").toInt();
-    QSettings settings("companion", "companion");
-    int theme_set=settings.value("theme", 1).toInt();
-    QString Theme;
-    switch(theme_set) {
-      case 0:
-        Theme="classic";
-        break;
-      default:
-        Theme="monochrome";
-        break;          
-    }
+    QString Theme=getTheme();
     QIcon ClearIcon;
     populate_icon(&ClearIcon,Theme,"clear.png");
     QIcon CopyIcon;

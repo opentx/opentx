@@ -21,18 +21,9 @@ ModelEdit::ModelEdit(RadioData & radioData, int modelId, bool openWizard, bool i
   generalSettings(generalSettings)
 {
   ui->setupUi(this);
+  QString Theme=getTheme();
   QSettings settings("companion", "companion");
   restoreGeometry(settings.value("modelEditGeometry").toByteArray());  
-  int theme_set=settings.value("theme", 1).toInt();
-  QString Theme;
-  switch(theme_set) {
-    case 0:
-      Theme="classic";
-      break;
-    default:
-      Theme="monochrome";
-      break;          
-  }
   QIcon SimulateIcon;
   populate_icon(&SimulateIcon,Theme,"simulate.png");
   ui->pushButton->setIcon(SimulateIcon);

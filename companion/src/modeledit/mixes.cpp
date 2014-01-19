@@ -8,17 +8,6 @@ MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
   generalSettings(generalSettings),
   mixInserted(false)
 {
-  QSettings settings("companion", "companion");
-  int theme_set=settings.value("theme", 1).toInt();
-  QString Theme;
-  switch(theme_set) {
-    case 0:
-      Theme="classic";
-      break;
-    default:
-      Theme="monochrome";
-      break;          
-  }
   QGridLayout * mixesLayout = new QGridLayout(this);
 
   MixerlistWidget = new MixersList(this, false); // TODO enum
@@ -26,6 +15,7 @@ MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
   QPushButton * qbDown = new QPushButton(this);
   QPushButton * qbClear = new QPushButton(this);
 
+  QString Theme=getTheme();
   QIcon qbUpIcon;
   populate_icon(&qbUpIcon,Theme,"moveup.png");
   qbUp->setText(tr("Move Up"));
@@ -423,17 +413,7 @@ void MixesPanel::mixerAdd()
 
 void MixesPanel::mixerlistWidget_customContextMenuRequested(QPoint pos)
 {
-    QSettings settings("companion", "companion");
-    int theme_set=settings.value("theme", 1).toInt();
-    QString Theme;
-    switch(theme_set) {
-      case 0:
-        Theme="classic";
-        break;
-      default:
-        Theme="monochrome";
-        break;          
-    }
+    QString Theme=getTheme();
     QIcon AddIcon;
     populate_icon(&AddIcon,Theme,"add.png");
     QIcon EditIcon;

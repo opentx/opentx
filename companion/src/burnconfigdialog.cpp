@@ -279,17 +279,7 @@ void burnConfigDialog::listProgrammers()
     QStringList arguments;
     arguments << "-c?";
     avrOutputDialog *ad = new avrOutputDialog(this, ui->avrdude_location->text(), arguments, "List available programmers", AVR_DIALOG_KEEP_OPEN, TRUE);
-    QSettings settings("companion", "companion");
-    int theme_set=settings.value("theme", 1).toInt();
-    QString Theme;
-    switch(theme_set) {
-      case 0:
-        Theme="classic";
-        break;
-      default:
-        Theme="monochrome";
-        break;          
-    }
+    QString Theme=getTheme();
     QIcon Icon;
     populate_icon(&Icon,Theme,"list.png");
     ad->setWindowIcon(Icon);
@@ -309,17 +299,7 @@ void burnConfigDialog::on_pushButton_4_clicked()
     arguments << "-?";
 
     avrOutputDialog *ad = new avrOutputDialog(this, ui->avrdude_location->text(), arguments, "Show help", AVR_DIALOG_KEEP_OPEN,TRUE);
-    QSettings settings("companion", "companion");
-    int theme_set=settings.value("theme", 1).toInt();
-    QString Theme;
-    switch(theme_set) {
-      case 0:
-        Theme="classic";
-        break;
-      default:
-        Theme="monochrome";
-        break;          
-    }
+    QString Theme=getTheme();
     QIcon Icon;
     populate_icon(&Icon,Theme,"configure.png");
     ad->setWindowIcon(Icon);
@@ -339,17 +319,7 @@ void burnConfigDialog::readFuses()
     arguments << "-c" << avrProgrammer << "-p" << avrMCU << args << str;
 
     avrOutputDialog *ad = new avrOutputDialog(this, avrLoc, arguments, "Read Fuses",AVR_DIALOG_KEEP_OPEN,TRUE);
-    QSettings settings("companion", "companion");
-    int theme_set=settings.value("theme", 1).toInt();
-    QString Theme;
-    switch(theme_set) {
-      case 0:
-        Theme="classic";
-        break;
-      default:
-        Theme="monochrome";
-        break;          
-    }
+    QString Theme=getTheme();
     QIcon Icon;
     populate_icon(&Icon,Theme,"fuses.png");
     ad->setWindowIcon(Icon);
@@ -364,6 +334,7 @@ void burnConfigDialog::restFuses(bool eeProtect)
     //avrdude -c usbasp -p m64 -U efuse:w:<0xFF>:m
 
     QMessageBox::StandardButton ret = QMessageBox::No;
+    QString Theme=getTheme();
 
     ret = QMessageBox::warning(this, tr("Companion"),
                                tr("<b><u>WARNING!</u></b><br>This will reset the fuses of  %1 to the factory settings.<br>Writing fuses can mess up your radio.<br>Do this only if you are sure they are wrong!<br>Are you sure you want to continue?").arg(avrMCU),
@@ -386,17 +357,6 @@ void burnConfigDialog::restFuses(bool eeProtect)
           QStringList argread;
           argread << "-c" << avrProgrammer << "-p" << avrMCU << args  <<"-U" << "lfuse:r:"+tempFile+":r" ;
           avrOutputDialog *ad = new avrOutputDialog(this, avrLoc, argread, "Reset Fuses",AVR_DIALOG_CLOSE_IF_SUCCESSFUL,FALSE);
-          QSettings settings("companion", "companion");
-          int theme_set=settings.value("theme", 1).toInt();
-          QString Theme;
-          switch(theme_set) {
-            case 0:
-              Theme="classic";
-              break;
-            default:
-              Theme="monochrome";
-              break;          
-          }
           QIcon Icon;
           populate_icon(&Icon,Theme,"fuses.png");
           ad->setWindowIcon(Icon);
@@ -428,17 +388,6 @@ void burnConfigDialog::restFuses(bool eeProtect)
           arguments << "-c" << avrProgrammer << "-p" << avrMCU << args << "-B" << "100" << "-u" << str;          
         }
         avrOutputDialog *ad = new avrOutputDialog(this, avrLoc, arguments, "Reset Fuses",AVR_DIALOG_KEEP_OPEN,TRUE);
-        QSettings settings("companion", "companion");
-        int theme_set=settings.value("theme", 1).toInt();
-        QString Theme;
-        switch(theme_set) {
-          case 0:
-            Theme="classic";
-            break;
-          default:
-            Theme="monochrome";
-            break;          
-        }
         QIcon Icon;
         populate_icon(&Icon,Theme,"fuses.png");
         ad->setWindowIcon(Icon);
