@@ -25,10 +25,6 @@
   <property name="windowTitle">
    <string>Preferences</string>
   </property>
-  <property name="windowIcon">
-   <iconset>
-    <normaloff>:/images/preferences.png</normaloff>:/images/preferences.png</iconset>
-  </property>
   <layout class="QGridLayout" name="gridLayout_4" columnstretch="1,0,0,1,0">
    <property name="sizeConstraint">
     <enum>QLayout::SetMinimumSize</enum>

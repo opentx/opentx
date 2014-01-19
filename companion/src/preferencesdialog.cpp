@@ -17,7 +17,21 @@ preferencesDialog::preferencesDialog(QWidget *parent) :
   updateLock(false)
 {
   ui->setupUi(this);
-
+  QSettings settings("companion", "companion");
+  int theme_set=settings.value("theme", 1).toInt();
+  QIcon Icon;
+  
+  QString Theme;
+  switch(theme_set) {
+    case 0:
+      Theme="classic";
+      break;
+    default:
+      Theme="monochrome";
+      break;          
+  }
+  Icon.addPixmap(":/themes/"+Theme+"/preferences.png");
+  this->setWindowIcon(Icon);
 
   QCheckBox * OptionCheckBox[]= {
       ui->optionCheckBox_1, ui->optionCheckBox_2, ui->optionCheckBox_3, ui->optionCheckBox_4,  ui->optionCheckBox_5, ui->optionCheckBox_6,  ui->optionCheckBox_7,
