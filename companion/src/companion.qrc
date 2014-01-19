@@ -37,56 +37,13 @@
     <file>images/9xcursmin.png</file>
     <file>images/9xcursdown.png</file>
     <file>images/9xcursphoto.png</file>
-    <file>images/copy.png</file>
-    <file>images/cut.png</file>
-    <file>images/currentmodel.png</file>
-    <file>images/information.png</file>
-    <file>images/new.png</file>
-    <file>images/open.png</file>
-    <file>images/paste.png</file>
-    <file>images/save.png</file>
-    <file>images/saveas.png</file>
     <file>images/screenshot.png</file>
     <file>images/splash.png</file>
     <file>images/splasht.png</file>
     <file>images/companion-title.png</file>
-    <file>images/read_eeprom.png</file>
-    <file>images/write_eeprom.png</file>
-    <file>images/write_flash.png</file>
-    <file>images/read_flash.png</file>
-    <file>images/simulate.png</file>
-    <file>images/configure.png</file>
-    <file>images/customize.png</file>
-    <file>images/print.png</file>
-    <file>images/clear.png</file>
-    <file>images/add.png</file>
-    <file>images/edit.png</file>
-    <file>images/wizard.png</file>
-    <file>images/duplicate.png</file>
-    <file>images/fuses.png</file>
-    <file>images/list.png</file>
     <file>images/maps.png</file>
     <file>images/track.png</file>
     <file>images/track0.png</file>
-    <file>images/play.png</file>
-    <file>images/stop.png</file>
-    <file>images/read_eeprom_file.png</file>
-    <file>images/write_eeprom_file.png</file>
-    <file>images/moveup.png</file>
-    <file>images/movedown.png</file>
-    <file>images/update.png</file>
-    <file>images/contributors.png</file>
-    <file>images/changelog.png</file>
-    <file>images/preferences.png</file>
-    <file>images/switch_dir.png</file>
-    <file>images/exit.png</file>
-    <file>images/recentdocument.png</file>
-    <file>images/profiles.png</file>
-    <file>images/library.png</file>
-    <file>images/logs.png</file>
-    <file>images/arrow-left.png</file>
-    <file>images/arrow-right.png</file>
-    <file>images/compare.png</file>
     <file>images/x9b0.png</file>
     <file>images/x9l0.png</file>
     <file>images/x9l1.png</file>
@@ -335,5 +292,91 @@
     <file>images/library/30002.png</file>
     <file>images/library/30003.png</file>
     <file>images/library/30004.png</file>
+    <file>themes/monochrome/open.png</file>
+    <file>themes/monochrome/edit.png</file>
+    <file>themes/monochrome/information.png</file>
+    <file>themes/monochrome/configure.png</file>
+    <file>themes/monochrome/switch_dir.png</file>
+    <file>themes/monochrome/list.png</file>
+    <file>themes/monochrome/wizard.png</file>
+    <file>themes/monochrome/logs.png</file>
+    <file>themes/monochrome/new.png</file>
+    <file>themes/monochrome/save.png</file>
+    <file>themes/monochrome/recentdocument.png</file>
+    <file>themes/monochrome/simulate.png</file>
+    <file>themes/monochrome/changelog.png</file>
+    <file>themes/monochrome/copy.png</file>
+    <file>themes/monochrome/write_flash.png</file>
+    <file>themes/monochrome/read_eeprom_file.png</file>
+    <file>themes/monochrome/clear.png</file>
+    <file>themes/monochrome/play.png</file>
+    <file>themes/monochrome/fuses.png</file>
+    <file>themes/monochrome/arrow-right.png</file>
+    <file>themes/monochrome/exit.png</file>
+    <file>themes/monochrome/moveup.png</file>
+    <file>themes/monochrome/read_eeprom.png</file>
+    <file>themes/monochrome/cut.png</file>
+    <file>themes/monochrome/arrow-left.png</file>
+    <file>themes/monochrome/write_eeprom_file.png</file>
+    <file>themes/monochrome/library.png</file>
+    <file>themes/monochrome/profiles.png</file>
+    <file>themes/monochrome/paste.png</file>
+    <file>themes/monochrome/print.png</file>
+    <file>themes/monochrome/compare.png</file>
+    <file>themes/monochrome/customize.png</file>
+    <file>themes/monochrome/saveas.png</file>
+    <file>themes/monochrome/preferences.png</file>
+    <file>themes/monochrome/movedown.png</file>
+    <file>themes/monochrome/currentmodel.png</file>
+    <file>themes/monochrome/read_flash.png</file>
+    <file>themes/monochrome/duplicate.png</file>
+    <file>themes/monochrome/add.png</file>
+    <file>themes/monochrome/update.png</file>
+    <file>themes/monochrome/contributors.png</file>
+    <file>themes/monochrome/stop.png</file>
+    <file>themes/monochrome/write_eeprom.png</file>
+    <file>themes/classic/open.png</file>
+    <file>themes/classic/edit.png</file>
+    <file>themes/classic/information.png</file>
+    <file>themes/classic/configure.png</file>
+    <file>themes/classic/switch_dir.png</file>
+    <file>themes/classic/list.png</file>
+    <file>themes/classic/wizard.png</file>
+    <file>themes/classic/logs.png</file>
+    <file>themes/classic/new.png</file>
+    <file>themes/classic/save.png</file>
+    <file>themes/classic/recentdocument.png</file>
+    <file>themes/classic/simulate.png</file>
+    <file>themes/classic/changelog.png</file>
+    <file>themes/classic/copy.png</file>
+    <file>themes/classic/write_flash.png</file>
+    <file>themes/classic/read_eeprom_file.png</file>
+    <file>themes/classic/clear.png</file>
+    <file>themes/classic/play.png</file>
+    <file>themes/classic/fuses.png</file>
+    <file>themes/classic/arrow-right.png</file>
+    <file>themes/classic/exit.png</file>
+    <file>themes/classic/moveup.png</file>
+    <file>themes/classic/read_eeprom.png</file>
+    <file>themes/classic/cut.png</file>
+    <file>themes/classic/arrow-left.png</file>
+    <file>themes/classic/write_eeprom_file.png</file>
+    <file>themes/classic/library.png</file>
+    <file>themes/classic/profiles.png</file>
+    <file>themes/classic/paste.png</file>
+    <file>themes/classic/print.png</file>
+    <file>themes/classic/compare.png</file>
+    <file>themes/classic/customize.png</file>
+    <file>themes/classic/saveas.png</file>
+    <file>themes/classic/preferences.png</file>
+    <file>themes/classic/movedown.png</file>
+    <file>themes/classic/currentmodel.png</file>
+    <file>themes/classic/read_flash.png</file>
+    <file>themes/classic/duplicate.png</file>
+    <file>themes/classic/add.png</file>
+    <file>themes/classic/update.png</file>
+    <file>themes/classic/contributors.png</file>
+    <file>themes/classic/stop.png</file>
+    <file>themes/classic/write_eeprom.png</file>
   </qresource>
 </RCC>
