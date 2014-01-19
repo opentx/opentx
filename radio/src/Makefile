@@ -256,7 +256,7 @@ MENUS_LOCK == NO
 SHELL = sh
 IMG2LBM = -python ../util/img2lbm.py
 TRANSLATE = -python ../util/translate.py
-SVNREV = $(shell sh -c "svnversion | egrep -o '[[:digit:]]+[[:alpha:]]*$$'")
+VERSION = 2.0
 
 SRC =
 CPPSRC =
@@ -1063,43 +1063,43 @@ stamp_header:
 	@echo "//Automatically generated file (Makefile) - do not edit" > stamp-opentx.h
 	@echo "#define DATE_STR \"`date +%Y-%m-%d | tr -d '\r\n'`\"" >> stamp-opentx.h
 	@echo "#define TIME_STR \"`date +%H:%M:%S | tr -d '\r\n'`\"" >> stamp-opentx.h
-	@echo "#define SVN_STR  \"opentx-r$(SVNREV)\"" >> stamp-opentx.h
+	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx.h
 	@cat stamp-opentx.h
 
-stock-stamp:
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-stock.txt
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-stock.txt
-	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-stock.txt
-	@cat stamp-opentx-stock.txt
+9x-stamp:
+	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-9x.txt
+	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-9x.txt
+	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx-9x.txt
+	@cat stamp-opentx-9x.txt
 
-stock128-stamp:
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-stock128.txt
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-stock128.txt
-	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-stock128.txt
-	@cat stamp-opentx-stock128.txt
+9x128-stamp:
+	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-9x128.txt
+	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-9x128.txt
+	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx-9x128.txt
+	@cat stamp-opentx-9x128.txt
 
-stock2561-stamp:
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-stock2561.txt
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-stock2561.txt
-	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-stock2561.txt
-	@cat stamp-opentx-stock2561.txt
+9x2561-stamp:
+	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-9x2561.txt
+	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-9x2561.txt
+	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx-9x2561.txt
+	@cat stamp-opentx-9x2561.txt
 	
-v4-stamp:
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-v4.txt
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-v4.txt
-	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-v4.txt
-	@cat stamp-opentx-v4.txt
+gruvin9x-stamp:
+	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-gruvin9x.txt
+	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-gruvin9x.txt
+	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx-gruvin9x.txt
+	@cat stamp-opentx-9x.txt
 
-arm-stamp:
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-arm.txt
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-arm.txt
-	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-arm.txt
-	@cat stamp-opentx-arm.txt
+sky9x-stamp:
+	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-sky9x.txt
+	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-sky9x.txt
+	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx-sky9x.txt
+	@cat stamp-opentx-sky9x.txt
 
 taranis-stamp:
 	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-taranis.txt
 	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-taranis.txt
-	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-taranis.txt
+	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx-taranis.txt
 	@cat stamp-opentx-taranis.txt
 
 translations/cz.h: translations/cz.h.txt
@@ -1299,12 +1299,7 @@ clean_list :
 	$(REMOVE) $(TARGET).lss
 	$(REMOVE) $(TARGET).lst
 	$(REMOVE) $(SRC:.c=.s)
-	$(REMOVE) *.o
-	$(REMOVE) */*.o
-	$(REMOVE) */*/*.o
-	$(REMOVE) */*/*/*.o
-	$(REMOVE) */*/*/*/*.o
-	$(REMOVE) */*/*/*/*/*.o
+	$(REMOVE) `find . -name "*.o"` 
 	$(REMOVE) *.d
 	$(REMOVE) *.lst
 	$(REMOVE) allsrc.cpp

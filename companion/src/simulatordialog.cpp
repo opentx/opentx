@@ -32,7 +32,7 @@ simulatorDialog::simulatorDialog(QWidget *parent) :
     beepVal = 0;
     beepShow = 0;
 
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     backLight = settings.value("backLight",0).toInt();
     bool simuSW=settings.value("simuSW",false).toBool();
     switch (backLight) {
@@ -211,7 +211,7 @@ void simulatorDialog::setupTimer()
 void simulatorDialog::onButtonPressed(int value)
 {
   if (value==Qt::Key_Print) {
-      QSettings settings("companion9x", "companion9x");
+      QSettings settings("companion", "companion");
       bool toclipboard=settings.value("snapshot_to_clipboard", false).toBool();
       QString fileName ="";
       if (!toclipboard) {
@@ -227,7 +227,7 @@ void simulatorDialog::onTimerEvent()
 {
   static unsigned int lcd_counter = 0;
   if (!simulator->timer10ms()) {
-    QMessageBox::critical(this, "companion9x", QString(tr("Firmware %1 error: %2")).arg(txInterface->getName()).arg(simulator->getError()));
+    QMessageBox::critical(this, "Companion", QString(tr("Firmware %1 error: %2")).arg(txInterface->getName()).arg(simulator->getError()));
     timer->stop();
     return;
   }

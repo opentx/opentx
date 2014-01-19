@@ -55,7 +55,7 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
     } else {
         this->setWindowTitle(tr("Write Models and Settings in %1 to TX").arg(DocName));
     }
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     int profileid=settings.value("profileId", 1).toInt();
     settings.beginGroup("Profiles");
     QString profile=QString("profile%1").arg(profileid);
@@ -72,7 +72,7 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
     } else {
       burnraw=false;
       if (checkeEprom(*hexfileName)) {
-        QSettings settings("companion9x", "companion9x");
+        QSettings settings("companion", "companion");
         int profileid=settings.value("profileId", 1).toInt();
         settings.beginGroup("Profiles");
         QString profile=QString("profile%1").arg(profileid);
@@ -113,7 +113,7 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
     hexfileName->clear();
   }
   else if (Type==2) {
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     QString FileName;
     FileName = settings.value("lastFw").toString();
     QFile file(FileName);
@@ -131,7 +131,7 @@ burnDialog::~burnDialog() {
 void burnDialog::on_FlashLoadButton_clicked()
 {
   QString fileName;
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings("companion", "companion");
   ui->ImageLoadButton->setDisabled(true);
   ui->libraryButton->setDisabled(true);
   ui->InvertColorButton->setDisabled(true);
@@ -181,7 +181,7 @@ void burnDialog::checkFw(QString fileName)
   if (fileName.isEmpty()) {
     return;
   }
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings("companion", "companion");
   if (!IS_TARANIS(GetEepromInterface()->getBoard())) {
     ui->EEbackupCB->show();
   } else {
@@ -292,7 +292,7 @@ bool burnDialog::checkeEprom(QString fileName)
     uint8_t eeprom[EESIZE_RLC_MAX];
     int eeprom_size = HexInterface(inputStream).load(eeprom, EESIZE_RLC_MAX);
     if (!eeprom_size) {
-      int res = QMessageBox::question(this, "companion9x",tr("Invalid binary Models and Settings File %1, Proceed anyway ?").arg(fileName),QMessageBox::Yes | QMessageBox::No);
+      int res = QMessageBox::question(this, "Companion",tr("Invalid binary Models and Settings File %1, Proceed anyway ?").arg(fileName),QMessageBox::Yes | QMessageBox::No);
       if (res == QMessageBox::No) {
         return false;
       }
@@ -302,7 +302,7 @@ bool burnDialog::checkeEprom(QString fileName)
     }
     file.close();
     if (!LoadEeprom(radioData, eeprom, eeprom_size)) {
-      int res = QMessageBox::question(this, "companion9x",tr("Invalid binary Models and Settings File %1, Proceed anyway ?").arg(fileName),QMessageBox::Yes | QMessageBox::No);
+      int res = QMessageBox::question(this, "Companion",tr("Invalid binary Models and Settings File %1, Proceed anyway ?").arg(fileName),QMessageBox::Yes | QMessageBox::No);
       if (res == QMessageBox::No) {
         return false;
       }
@@ -325,7 +325,7 @@ bool burnDialog::checkeEprom(QString fileName)
         return false;
     }
     if (!LoadEeprom(radioData, eeprom, eeprom_size)) {
-      int res = QMessageBox::question(this, "companion9x",tr("Invalid binary Models and Settings File %1, Proceed anyway ?").arg(fileName),QMessageBox::Yes | QMessageBox::No);
+      int res = QMessageBox::question(this, "Companion",tr("Invalid binary Models and Settings File %1, Proceed anyway ?").arg(fileName),QMessageBox::Yes | QMessageBox::No);
       if (res == QMessageBox::No) {
         return false;
       }
@@ -343,7 +343,7 @@ void burnDialog::on_ImageLoadButton_clicked()
     supportedImageFormats += QLatin1String(" *.") + QImageReader::supportedImageFormats()[formatIndex];
   }
 
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings("companion", "companion");
   QString fileName = QFileDialog::getOpenFileName(this,
           tr("Open Image to load"), settings.value("lastImagesDir").toString(), tr("Images (%1)").arg(supportedImageFormats));
 
@@ -426,7 +426,7 @@ void burnDialog::on_BurnFlashButton_clicked()
   if (hexType==2) {
     QString fileName=ui->FWFileName->text();
     if (!fileName.isEmpty()) {
-      QSettings settings("companion9x", "companion9x");
+      QSettings settings("companion", "companion");
       settings.setValue("lastFlashDir", QFileInfo(fileName).dir().absolutePath());
       settings.setValue("lastFw", fileName);
       if (ui->PatchFWCB->isChecked()) {
@@ -463,7 +463,7 @@ void burnDialog::on_BurnFlashButton_clicked()
     }
   }
   if (hexType==1) {
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     int profileid=settings.value("profileId", 1).toInt();
     settings.beginGroup("Profiles");
     QString profile=QString("profile%1").arg(profileid);
@@ -640,7 +640,7 @@ void burnDialog::on_PreferredImageCB_toggled(bool checked)
 {
   QString tmpFileName;
   if (checked) {
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     QString ImageStr = settings.value("SplashImage", "").toString();
     if (!ImageStr.isEmpty()) {
       QImage Image = qstring2image(ImageStr);

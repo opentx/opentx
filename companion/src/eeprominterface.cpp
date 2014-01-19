@@ -4,11 +4,15 @@
 #include "firmwares/er9x/er9xinterface.h"
 #include "firmwares/th9x/th9xinterface.h"
 #include "firmwares/gruvin9x/gruvin9xinterface.h"
-#include "firmwares/opentx/open9xinterface.h"
+#include "firmwares/opentx/opentxinterface.h"
 #include "firmwares/ersky9x/ersky9xinterface.h"
 #include "qsettings.h"
+#include "helpers.h"
 
 QString EEPROMWarnings;
+
+const char * switches9X[] = { "3POS", "THR", "RUD", "ELE", "AIL", "GEA", "TRN" };
+const char * switchesX9D[] = { "SA", "SB", "SC", "SD", "SE", "SF", "SG", "SH" };
 
 void setEEPROMString(char *dst, const char *src, int size)
 {
@@ -244,26 +248,27 @@ double RawSource::getStep(const ModelData & Model)
   }
 }
 
+QString AnalogString(int index)
+{
+  static const QString sticks[]  = { QObject::tr("Rud"), QObject::tr("Ele"), QObject::tr("Thr"), QObject::tr("Ail") };
+  static const QString pots9X[]  = { QObject::tr("P1"), QObject::tr("P2"), QObject::tr("P3") };
+  static const QString potsX9D[] = { QObject::tr("S1"), QObject::tr("S2"), QObject::tr("LS"), QObject::tr("RS") };
+
+  if (index < 4)
+    return CHECK_IN_ARRAY(sticks, index);
+  else
+    return (IS_TARANIS(GetEepromInterface()->getBoard()) ? CHECK_IN_ARRAY(potsX9D, index-4) : CHECK_IN_ARRAY(pots9X, index-4));
+}
+
+QString RotaryEncoderString(int index)
+{
+  static const QString rotary[]  = { QObject::tr("REa"), QObject::tr("REb") };
+  return CHECK_IN_ARRAY(rotary, index);
+}
+
 QString RawSource::toString()
 {
-  static const QString sticks[]      = { QObject::tr("Rud"), QObject::tr("Ele"), QObject::tr("Thr"), QObject::tr("Ail") };
-
   static const QString trims[]       = { QObject::tr("TrmR"), QObject::tr("TrmE"), QObject::tr("TrmT"), QObject::tr("TrmA")};
-
-  static const QString pots9X[]      = { QObject::tr("P1"), QObject::tr("P2"), QObject::tr("P3") };
-
-  static const QString potsX9D[]     = { QObject::tr("S1"), QObject::tr("S2"), QObject::tr("LS"), QObject::tr("RS") };
-
-  static const QString rotary[]      = { QObject::tr("REa"), QObject::tr("REb") };
-
-  static const QString switches9X[]  = { QObject::tr("3POS"),
-                            QObject::tr("THR"), QObject::tr("RUD"), QObject::tr("ELE"),
-                            QObject::tr("AIL"), QObject::tr("GEA"), QObject::tr("TRN"),
-                          };
-
-  static const QString switchesX9D[] = { QObject::tr("SA"), QObject::tr("SB"), QObject::tr("SC"), QObject::tr("SD"),
-                            QObject::tr("SE"), QObject::tr("SF"), QObject::tr("SG"), QObject::tr("SH"),
-                          };
 
   static const QString telemetry[]   = { QObject::tr("Batt"), QObject::tr("Timer1"), QObject::tr("Timer2"),
                             (IS_TARANIS(GetEepromInterface()->getBoard()) ? QObject::tr("SWR") :  QObject::tr("Tx")), (IS_TARANIS(GetEepromInterface()->getBoard()) ? QObject::tr("RSSI") :  QObject::tr("Rx")), QObject::tr("A1"), QObject::tr("A2"), QObject::tr("Alt"), QObject::tr("Rpm"), QObject::tr("Fuel"), QObject::tr("T1"),
@@ -284,14 +289,11 @@ QString RawSource::toString()
   }
   switch(type) {
     case SOURCE_TYPE_STICK:
-      if (index < 4)
-        return CHECK_IN_ARRAY(sticks, index);
-      else
-        return (IS_TARANIS(GetEepromInterface()->getBoard()) ? CHECK_IN_ARRAY(potsX9D, index-4) : CHECK_IN_ARRAY(pots9X, index-4));
+      return AnalogString(index);
     case SOURCE_TYPE_TRIM:
       return CHECK_IN_ARRAY(trims, index);
     case SOURCE_TYPE_ROTARY_ENCODER:
-      return CHECK_IN_ARRAY(rotary, index);
+      return RotaryEncoderString(index);
     case SOURCE_TYPE_MAX:
       return QObject::tr("MAX");
     case SOURCE_TYPE_SWITCH:
@@ -407,6 +409,25 @@ QString RawSwitch::toString()
   return QObject::tr("----");
 }
 
+QString CurveReference::toString()
+{
+  if (value == 0) {
+    return "----";
+  }
+  else {
+    switch(type) {
+      case CURVE_REF_DIFF:
+        return QObject::tr("Diff(%1)").arg(getGVarString(value));
+      case CURVE_REF_EXPO:
+        return QObject::tr("Expo(%1)").arg(getGVarString(value));
+      case CURVE_REF_FUNC:
+        return QObject::tr("Function(%1)").arg(QString("x>0" "x<0" "|x|" "f>0" "f<0" "|f|").mid(3*(value-1), 3));
+      default:
+        return QString(value > 0 ? QObject::tr("Curve(%1)") : QObject::tr("!Curve(%1)")).arg(abs(value));
+    }
+  }
+}
+
 GeneralSettings::GeneralSettings()
 {
   memset(this, 0, sizeof(GeneralSettings));
@@ -417,7 +438,7 @@ GeneralSettings::GeneralSettings()
     calibSpanNeg[i] = 0x180;
     calibSpanPos[i] = 0x180;
   }
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings("companion", "companion");
   templateSetup = settings.value("default_channel_order", 0).toInt();
   stickMode = settings.value("default_mode", 1).toInt();
   int profile_id = settings.value("ActiveProfile", 0).toInt();
@@ -534,6 +555,18 @@ ModelData::ModelData()
   clear();
 }
 
+void ModelData::clearInputs()
+{
+  for (int i=0; i<C9X_MAX_EXPOS; i++)
+    expoData[i].clear();
+}
+
+void ModelData::clearMixes()
+{
+  for (int i=0; i<C9X_MAX_MIXERS; i++)
+    mixData[i].clear();
+}
+
 void ModelData::clear()
 {
   memset(this, 0, sizeof(ModelData));
@@ -553,10 +586,8 @@ void ModelData::clear()
   }
   for (int i=0; i<C9X_MAX_PHASES; i++)
     phaseData[i].clear();
-  for (int i=0; i<C9X_MAX_EXPOS; i++)
-    expoData[i].clear();
-  for (int i=0; i<C9X_MAX_MIXERS; i++)
-    mixData[i].clear();
+  clearInputs();
+  clearMixes();
   for(int i=0; i<4; i++){
     mixData[i].destCh = i+1;
     mixData[i].srcRaw = RawSource(SOURCE_TYPE_STICK, i);
@@ -568,12 +599,8 @@ void ModelData::clear()
     expoData[i].clear();
   for (int i=0; i<C9X_NUM_CSW; i++)
     customSw[i].clear();
-  bool custom = GetEepromInterface()->getCapability(CustomCurves);
   for (int i=0; i<C9X_MAX_CURVES; i++) {
-    if (!custom && i>=8)
-      curves[i].clear(9);
-    else
-      curves[i].clear(5);
+    curves[i].clear(5);
   }
 
   swashRingData.clear();
@@ -617,13 +644,13 @@ ModelData ModelData::removeGlobalVars()
 
   for (int i=0; i<C9X_MAX_MIXERS; i++) {
     removeGlobalVar(mixData[i].weight);
-    removeGlobalVar(mixData[i].differential);
+    removeGlobalVar(mixData[i].curve.value);
     removeGlobalVar(mixData[i].sOffset);
   }
 
   for (int i=0; i<C9X_MAX_EXPOS; i++) {
     removeGlobalVar(expoData[i].weight);
-    removeGlobalVar(expoData[i].expo);
+    removeGlobalVar(expoData[i].curve.value);
   }
 
   return result;
@@ -632,7 +659,7 @@ ModelData ModelData::removeGlobalVars()
 QList<EEPROMInterface *> eepromInterfaces;
 void RegisterEepromInterfaces()
 {
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings("companion", "companion");
   int rev4a = settings.value("rev4asupport",0).toInt();
   eepromInterfaces.push_back(new Open9xInterface(BOARD_STOCK));
   eepromInterfaces.push_back(new Open9xInterface(BOARD_M128));

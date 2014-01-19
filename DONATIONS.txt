@@ -166,7 +166,7 @@ Heiko Polig
 Andrew Fernie
 Marco Lange
 Nick McMillan
-Michel Baily (mensual)
+Michel Baily (monthly)
 Patrick Mullen
 Scott Campbell
 Erich Roeder
@@ -281,3 +281,17 @@ Miguel Villalpando
 Kim Dong Hoon 
 Terry McKinley
 Walter Bell
+wsTech - http://wstech.de
+Clinton Linck
+Gordon Stahl
+Josep Clodas Sola 
+Thierry Martin
+Peter Mauro 
+Mitchell Brenner
+Ulach Green
+Lluis Bullich Rañe 
+Steffen Rohr 
+Eric Jacquin
+Harvest Lane
+Ville Kuvaja
+DK-System

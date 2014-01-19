@@ -2,7 +2,7 @@
 #define XSIMULATORDIALOG_H
 
 #include <QDialog>
-#include "node.h"
+#include "modeledit/node.h"
 #include "eeprominterface.h"
 #ifdef JOYSTICKS
 #include "joystick.h"

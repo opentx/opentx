@@ -1,4 +1,4 @@
-PROJECT( companion9x )
+PROJECT( companion )
 
 SET( C9X_VERSION_MAJOR "1" )
 SET( C9X_VERSION_MINOR "52" )
@@ -109,7 +109,9 @@ add_custom_command(
   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/firmwares/ersky9x/ersky9xsimulator.cpp
 )
 
-SET( companion9x_SRCS
+add_subdirectory(modeledit)
+
+SET( companion_SRCS
      eeprominterface.cpp
      hexinterface.cpp
      flashinterface.cpp
@@ -124,28 +126,24 @@ SET( companion9x_SRCS
      ${ER9X_CHECKOUT_DIRECTORY}/er9xsimulator.cpp
      firmwares/gruvin9x/gruvin9xeeprom.cpp
      firmwares/gruvin9x/gruvin9xinterface.cpp  
-     firmwares/opentx/open9xeeprom.cpp
+     firmwares/opentx/opentxeeprom.cpp
      firmwares/opentx/open9xStockeeprom.cpp
-     firmwares/opentx/open9xinterface.cpp
      firmwares/opentx/open9xGruvin9xeeprom.cpp
      firmwares/opentx/open9xSky9xeeprom.cpp
+     firmwares/opentx/opentxinterface.cpp
      firmwares/opentx/opentxTaranisSimulator.cpp
-     firmwares/opentx/open9xSky9xsimulator.cpp
-     firmwares/opentx/open9xGruvin9xsimulator.cpp
-     firmwares/opentx/open9xM128simulator.cpp
-     firmwares/opentx/open9xsimulator.cpp  
+     firmwares/opentx/opentxSky9xsimulator.cpp
+     firmwares/opentx/opentxGruvin9xsimulator.cpp
+     firmwares/opentx/opentxM128simulator.cpp
+     firmwares/opentx/opentxsimulator.cpp  
      firmwares/ersky9x/ersky9xeeprom.cpp
      firmwares/ersky9x/ersky9xinterface.cpp
      ${ERSKY9X_CHECKOUT_DIRECTORY}/ersky9xsimulator.cpp
-     node.cpp
-     edge.cpp
      helpers.cpp
      mdichild.cpp
      generaledit.cpp
-     modeledit.cpp 
      modelslist.cpp
      mountlist.cpp 
-     mixerslist.cpp 
      avroutputdialog.cpp
      preferencesdialog.cpp
      burnconfigdialog.cpp
@@ -155,8 +153,6 @@ SET( companion9x_SRCS
      burndialog.cpp
      printdialog.cpp
      fusesdialog.cpp
-     expodialog.cpp
-     mixerdialog.cpp
      logsdialog.cpp
      downloaddialog.cpp
      simulatordialog.cpp
@@ -168,16 +164,14 @@ SET( companion9x_SRCS
      qcustomplot.cpp
 )
 
-SET( companion9x_MOC_HDRS
+SET( companion_MOC_HDRS
      avroutputdialog.h
      preferencesdialog.h
      burnconfigdialog.h
      comparedialog.h
      printdialog.h
      fusesdialog.h
-     mixerdialog.h
      logsdialog.h
-     expodialog.h
      contributorsdialog.h
      customizesplashdialog.h
      splashlibrary.h
@@ -191,31 +185,27 @@ SET( companion9x_MOC_HDRS
      xmenuwidget.h
      xsimulatordialog.h
      generaledit.h
-     modeledit.h
      modelslist.h
-     mixerslist.h
      mdichild.h
      mainwindow.h
      myslider.h
      modelconfigdialog.h
      qcustomplot.h
+     helpers.h
 )
      
-SET( companion9x_UIS
+SET( companion_UIS
      mdichild.ui
      avroutputdialog.ui
      comparedialog.ui
      fusesdialog.ui
-     expodialog.ui
      logsdialog.ui
-     mixerdialog.ui
      preferencesdialog.ui
      simulatordialog.ui
      xsimulatordialog.ui
      burnconfigdialog.ui
      downloaddialog.ui
      generaledit.ui
-     modeledit.ui
      printdialog.ui
      contributorsdialog.ui
      customizesplashdialog.ui
@@ -225,26 +215,26 @@ SET( companion9x_UIS
 )
 
 IF ( SDL_FOUND )
-  SET( companion9x_SRCS
-       ${companion9x_SRCS}
+  SET( companion_SRCS
+       ${companion_SRCS}
        joystick.cpp
        joystickdialog.cpp
      )
   
-  SET( companion9x_MOC_HDRS
-       ${companion9x_MOC_HDRS}
+  SET( companion_MOC_HDRS
+       ${companion_MOC_HDRS}
        joystick.h
        joystickdialog.h
      )
      
-  SET( companion9x_UIS
-       ${companion9x_UIS}
+  SET( companion_UIS
+       ${companion_UIS}
        joystickdialog.ui
      ) 
 ENDIF( ) 
 
-SET( companion9x_RCS
-     companion9x.qrc
+SET( companion_RCS
+     companion.qrc
      ${CMAKE_CURRENT_BINARY_DIR}/translations.qrc
 )
 
@@ -286,7 +276,7 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/firmwares/opentx/stamp-opentx.h.in ${
 SET( PATCH_FLAGS "--binary" )
 
 IF( WIN32 )
-  SET( companion9x_SRCS ${companion9x_SRCS} icon.rc )
+  SET( companion_SRCS ${companion_SRCS} icon.rc )
   IF ( NOT MSVC )
     SET(CMAKE_EXE_LINKER_FLAGS -mwindows)
   ENDIF( )
@@ -298,28 +288,33 @@ INCLUDE_DIRECTORIES( ${CMAKE_SOURCE_DIR} )
 
 SET( LANGUAGES he pt ru de fr it sv cs )
 FOREACH( language ${LANGUAGES} )
-  SET( companion9x_TS ${companion9x_TS} translations/companion9x_${language}.ts )
+  SET( companion_TS ${companion_TS} translations/companion_${language}.ts )
 ENDFOREACH( language )
 
-QT4_WRAP_UI( companion9x_SRCS ${companion9x_UIS} )
-QT4_WRAP_CPP( companion9x_SRCS ${companion9x_MOC_HDRS} )
-QT4_ADD_TRANSLATION( companion9x_QM ${companion9x_TS}  )
-QT4_ADD_RESOURCES( companion9x_SRCS ${companion9x_RCS} )
+QT4_WRAP_UI( companion_SRCS ${companion_UIS} )
+QT4_WRAP_CPP( companion_SRCS ${companion_MOC_HDRS} )
+QT4_ADD_TRANSLATION( companion_QM ${companion_TS}  )
+QT4_ADD_RESOURCES( companion_SRCS ${companion_RCS} )
 
 ADD_DEFINITIONS( -DQT_TRANSLATIONS_DIR="${QT_TRANSLATIONS_DIR}" )
 
 IF( APPLE )
-    ADD_EXECUTABLE( ${PROJECT_NAME} MACOSX_BUNDLE ${companion9x_SRCS} ${companion9x_QM} )
+    ADD_EXECUTABLE( ${PROJECT_NAME} MACOSX_BUNDLE ${companion_SRCS} ${companion_QM} )
 ELSE( )
-    ADD_EXECUTABLE( ${PROJECT_NAME} WIN32 ${companion9x_SRCS} ${companion9x_QM} )
+    ADD_EXECUTABLE( ${PROJECT_NAME} WIN32 ${companion_SRCS} ${companion_QM} )
 ENDIF( )
 
-TARGET_LINK_LIBRARIES( ${PROJECT_NAME} ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} )
+TARGET_LINK_LIBRARIES( ${PROJECT_NAME} modeledit ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} )
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     INSTALL( TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin )
-    INSTALL( FILES companion9x.desktop DESTINATION share/applications )
-    INSTALL( FILES companion9x.png DESTINATION share/icons )
+    INSTALL( FILES companion.desktop DESTINATION share/applications )
+    INSTALL( FILES images/linuxicons/32x32/companion.png    DESTINATION /usr/share/icons/hicolor/32x32/apps )
+    INSTALL( FILES images/linuxicons/48x48/companion.png    DESTINATION /usr/share/icons/hicolor/48x48/apps )
+    INSTALL( FILES images/linuxicons/128x128/companion.png  DESTINATION /usr/share/icons/hicolor/128x128/apps )
+    INSTALL( FILES images/linuxicons/256x256/companion.png  DESTINATION /usr/share/icons/hicolor/256x256/apps )
+    INSTALL( FILES images/linuxicons/512x512/companion.png  DESTINATION /usr/share/icons/hicolor/512x512/apps )
+    INSTALL( FILES images/linuxicons/scalable/companion.svg DESTINATION /usr/share/icons/hicolor/scalable/apps )
     INSTALL( FILES ../targets/linux/45-taranis.rules DESTINATION /etc/udev/rules.d/ )
     # Linux specific code
     SET(OperatingSystem "Linux")
@@ -329,13 +324,13 @@ ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 IF( WIN32 )
   IF( MSVC )
-    SET( NSI_IN_FILE companion9x-vs.nsi.in )  
+    SET( NSI_IN_FILE companion-vs.nsi.in )  
   ELSE( )
-    SET( NSI_IN_FILE companion9x-msys.nsi.in )
+    SET( NSI_IN_FILE companion-msys.nsi.in )
   ENDIF( )
 
   SET( SYSDIR "$ENV{windir}/system32" )  
-  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../targets/windows/${NSI_IN_FILE} ${CMAKE_CURRENT_BINARY_DIR}/companion9x.nsi @ONLY)     
+  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../targets/windows/${NSI_IN_FILE} ${CMAKE_CURRENT_BINARY_DIR}/companion.nsi @ONLY)     
 
   FIND_PROGRAM(NSIS_EXE makensis.exe PATHS
     "C:/Program Files/NSIS"
@@ -343,14 +338,14 @@ IF( WIN32 )
     "C:/Programs/NSIS"
   )
   
-  ADD_CUSTOM_COMMAND(OUTPUT ${PROJECT_BINARY_DIR}/companion9xInstall.exe
-                     COMMAND "${NSIS_EXE}" ARGS companion9x.nsi
-                     DEPENDS ${PROJECT_NAME} ${PROJECT_BINARY_DIR}/companion9x.nsi
+  ADD_CUSTOM_COMMAND(OUTPUT ${PROJECT_BINARY_DIR}/companionInstall.exe
+                     COMMAND "${NSIS_EXE}" ARGS companion.nsi
+                     DEPENDS ${PROJECT_NAME} ${PROJECT_BINARY_DIR}/companion.nsi
                      COMMENT "Windows NSIS Installer")
 
   ADD_CUSTOM_TARGET( installer
-    DEPENDS ${PROJECT_BINARY_DIR}/companion9xInstall.exe
-    SOURCES ${PROJECT_BINARY_DIR}/companion9x.nsi)
+    DEPENDS ${PROJECT_BINARY_DIR}/companionInstall.exe
+    SOURCES ${PROJECT_BINARY_DIR}/companion.nsi)
 ENDIF( )
 
 IF( APPLE )
@@ -362,36 +357,36 @@ IF( APPLE )
   ENDIF()
   
   ADD_CUSTOM_TARGET( addframeworks ALL 
-                     COMMAND mkdir -p companion9x.app/Contents/Frameworks
-                     COMMAND mkdir -p companion9x.app/Contents/Resources
-		     COMMAND mkdir -p companion9x.app/Contents/translations                     
-		     COMMAND rsync ${PROJECT_SOURCE_DIR}/images/${MACOSX_BUNDLE_ICON_FILE} companion9x.app/Contents/Resources/${MACOSX_BUNDLE_ICON_FILE} # Copy the icon files
-                     COMMAND rsync ${PROJECT_SOURCE_DIR}/../macbuild/lib* companion9x.app/Contents/Frameworks
-                     #COMMAND rsync ${PROJECT_SOURCE_DIR}/../macbuild/libcrypto.1.0.0.dylib companion9x.app/Contents/Frameworks
-                     COMMAND rsync -r --exclude=.svn  ${PROJECT_SOURCE_DIR}/../macbuild/qt_menu.nib companion9x.app/Contents/Resources/
-                     COMMAND rsync ${PROJECT_BINARY_DIR}/*.qm companion9x.app/Contents/translations
-		     COMMAND ${QT_BINARY_DIR}/macdeployqt companion9x.app
+                     COMMAND mkdir -p companion.app/Contents/Frameworks
+                     COMMAND mkdir -p companion.app/Contents/Resources
+		     COMMAND mkdir -p companion.app/Contents/translations                     
+		     COMMAND rsync ${PROJECT_SOURCE_DIR}/images/${MACOSX_BUNDLE_ICON_FILE} companion.app/Contents/Resources/${MACOSX_BUNDLE_ICON_FILE} # Copy the icon files
+                     COMMAND rsync ${PROJECT_SOURCE_DIR}/../targets/mac/lib* companion.app/Contents/Frameworks
+                     #COMMAND rsync ${PROJECT_SOURCE_DIR}/../targets/mac/libcrypto.1.0.0.dylib companion.app/Contents/Frameworks
+                     COMMAND rsync -r --exclude=.svn  ${PROJECT_SOURCE_DIR}/../targets/mac/qt_menu.nib companion.app/Contents/Resources/
+                     COMMAND rsync ${PROJECT_BINARY_DIR}/*.qm companion.app/Contents/translations
+		     COMMAND ${QT_BINARY_DIR}/macdeployqt companion.app
                      WORKING_DIRECTORY ${WORK_DIR}
                      DEPENDS ${PROJECT_NAME} )
 
                         
   ADD_CUSTOM_TARGET( makedmg
-                     COMMAND ${QT_BINARY_DIR}/macdeployqt companion9x.app -dmg -no-plugins
+                     COMMAND ${QT_BINARY_DIR}/macdeployqt companion.app -dmg -no-plugins
                      WORKING_DIRECTORY ${WORK_DIR}
                      DEPENDS addframeworks )
 
 ENDIF( )
 
 ADD_CUSTOM_TARGET( stamp
-                   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/version.h ${CMAKE_SOURCE_DIR}/../companion9x.stamp 
+                   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/version.h ${CMAKE_SOURCE_DIR}/../companion.stamp 
                    DEPENDS ${CMAKE_BINARY_DIR}/version.h )
 
 ADD_CUSTOM_TARGET( translations
                    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-                   COMMAND lupdate-qt4 ${CMAKE_SOURCE_DIR} -ts ${companion9x_TS} )
+                   COMMAND lupdate-qt4 ${CMAKE_SOURCE_DIR} -ts ${companion_TS} )
 
-SET(CPACK_PACKAGE_NAME "COMPANION9X")
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "EEPROM Editor for the openTx open source firmware")
+SET(CPACK_PACKAGE_NAME "COMPANION")
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Models and settings editor for the OpenTx open source firmware")
 string(TOLOWER "${CPACK_PACKAGE_NAME}" CPACK_PACKAGE_NAME_LOWERCASE)
 find_program(DPKG_PROGRAM dpkg DOC "dpkg program of Debian-based systems")
 if(DPKG_PROGRAM)

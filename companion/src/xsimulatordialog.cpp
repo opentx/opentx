@@ -30,7 +30,7 @@ xsimulatorDialog::xsimulatorDialog(QWidget *parent) :
     ui->setupUi(this);
     ui->lcd->setFocus();
 
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     ui->lcd->setBackgroundColor(47, 123, 227);
     setupSticks();
     resize(0, 0); // to force min height, min width
@@ -179,7 +179,7 @@ void xsimulatorDialog::setupTimer()
 void xsimulatorDialog::onButtonPressed(int value)
 {
   if (value==Qt::Key_Print) {
-      QSettings settings("companion9x", "companion9x");
+      QSettings settings("companion", "companion");
       bool toclipboard=settings.value("snapshot_to_clipboard", false).toBool();
       QString fileName ="";
       if (!toclipboard) {
@@ -194,12 +194,13 @@ void xsimulatorDialog::onButtonPressed(int value)
 void xsimulatorDialog::onTimerEvent()
 {
   static unsigned int lcd_counter = 0;
+
   if (!simulator->timer10ms()) {
-    QMessageBox::critical(this, "companion9x", QString(tr("Firmware %1 error: %2")).arg(txInterface->getName()).arg(simulator->getError()));
+    QMessageBox::critical(this, "companion", tr("Firmware %1 error: %2").arg(txInterface->getName()).arg(simulator->getError()));
     timer->stop();
     return;
   }
-
+  
   getValues();
 
   if (g_modelIdx >= 0) {

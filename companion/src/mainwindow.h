@@ -134,7 +134,6 @@ private:
     void createToolBars();
     void createStatusBar();
     void readSettings();
-    void writeSettings();
     void updateRecentFileActions();
     void updateProfilesActions();
     int getFileType(const QString &fullFileName);

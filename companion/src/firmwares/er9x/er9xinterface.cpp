@@ -184,57 +184,20 @@ bool Er9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize,
 
 int Er9xInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t variant, uint8_t version)
 {
-  EEPROMWarnings.clear();
+  std::cout << "NO!\n";
+  // TODO an error
 
-  efile->EeFsCreate(eeprom, getEEpromSize(), BOARD_STOCK);
-
-  Er9xGeneral er9xGeneral(radioData.generalSettings);
-  int sz = efile->writeRlc1(FILE_GENERAL, FILE_TYP_GENERAL, (uint8_t*)&er9xGeneral, sizeof(Er9xGeneral));
-  if(sz != sizeof(Er9xGeneral)) {
-    return 0;
-  }
-
-  for (int i=0; i<getMaxModels(); i++) {
-    if (!radioData.models[i].isempty()) {
-      Er9xModelData er9xModel(radioData.models[i]);
-      applyStickModeToModel(er9xModel, radioData.generalSettings.stickMode+1);
-      sz = efile->writeRlc1(FILE_MODEL(i), FILE_TYP_MODEL, (uint8_t*)&er9xModel, sizeof(Er9xModelData));
-      if(sz != sizeof(Er9xModelData)) {
-        return 0;
-      }
-    }
-  }
-
-  return getEEpromSize();
+  return 0;
 }
 
 int Er9xInterface::getSize(ModelData &model)
 {
-  if (model.isempty())
-    return 0;
-
-  uint8_t tmp[2*EESIZE_STOCK];
-  efile->EeFsCreate(tmp, getEEpromSize(), BOARD_STOCK);
-
-  Er9xModelData er9xModel(model);
-  int sz = efile->writeRlc1(0, FILE_TYP_MODEL, (uint8_t*)&er9xModel, sizeof(Er9xModelData));
-  if(sz != sizeof(Er9xModelData)) {
-     return -1;
-  }
-  return efile->size(0);
+  return 0;
 }
 
 int Er9xInterface::getSize(GeneralSettings &settings)
 {
-  uint8_t tmp[2*EESIZE_STOCK];
-  efile->EeFsCreate(tmp, getEEpromSize(), BOARD_STOCK);
-  
-  Er9xGeneral er9xGeneral(settings);
-  int sz = efile->writeRlc1(0, FILE_TYP_GENERAL, (uint8_t*)&er9xGeneral, sizeof(Er9xGeneral));
-  if(sz != sizeof(Er9xGeneral)) {
-    return -1;
-  }
-  return efile->size(0);
+  return 0;
 }
 
 int Er9xInterface::getCapability(const Capability capability)
@@ -244,12 +207,6 @@ int Er9xInterface::getCapability(const Capability capability)
         return 4;
     case Mixes:
       return ER9X_MAX_MIXERS;
-    case NumCurves5:
-      return ER9X_MAX_CURVE5;
-    case NumCurves9:
-      return ER9X_MAX_CURVE5;      
-    case MixFmTrim:
-      return 1;
     case PPMExtCtrl:
       return 1;
     case ModelTrainerEnable:
@@ -286,10 +243,6 @@ int Er9xInterface::getCapability(const Capability capability)
       return 12;
     case CustomAndSwitches:
         return 5;
-    case GvarsNum:
-        return 7;
-    case GvarsOfsNum:
-      return 5;
     case CSFunc:
       return 13;
     case Outputs:
@@ -305,8 +258,6 @@ int Er9xInterface::getCapability(const Capability capability)
     case Telemetry:
       return TM_HASTELEMETRY|TM_HASWSHH;
     case TelemetryUnits:
-      return 1;
-    case TimerTriggerB:
       return 1;
     case TelemetryMaxMultiplier:
       return 2;
@@ -325,17 +276,13 @@ int Er9xInterface::getCapability(const Capability capability)
     case HasStickScroll:
     case HasAltitudeSel:
     case HasContrast:
-    case InstantTrimSW:
     case HasVolume:
     case HasBlInvert:
     case ModelVoice:
-    case DiffMixers:
-    case HasNegCurves:
-    case HasFixOffset:
     case Gvars:
+      return 7;
     case GvarsHaveSources:
     case GvarsAsSources:
-    case GvarsAsWeight:
      return 1;
     case GetThrSwitch:
       return DSW_THR;     

@@ -14,7 +14,7 @@
    <string>Fuses</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="companion9x.qrc">
+   <iconset resource="companion.qrc">
     <normaloff>:/images/fuses.png</normaloff>:/images/fuses.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -116,7 +116,7 @@ p, li { white-space: pre-wrap; }
   </layout>
  </widget>
  <resources>
-  <include location="companion9x.qrc"/>
+  <include location="companion.qrc"/>
  </resources>
  <connections/>
 </ui>

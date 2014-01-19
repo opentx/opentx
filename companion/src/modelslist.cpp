@@ -51,7 +51,7 @@ public:
   }
   bool general_settings;
   uint8_t models_count;
-  uint8_t models[C9XMAX_MODELS];
+  uint8_t models[C9X_MAX_MODELS];
 };
 
 ModelsListWidget::ModelsListWidget(QWidget *parent):
@@ -226,7 +226,7 @@ void ModelsListWidget::dropEvent(QDropEvent *event)
     if (row < 0)
       return;
 
-    // QMessageBox::warning(this, tr("companion9x"),tr("Index :%1").arg(row));
+    // QMessageBox::warning(this, tr("Companion"),tr("Index :%1").arg(row));
     const QMimeData  *mimeData = event->mimeData();
     if(mimeData->hasFormat("application/x-companion9x"))
     {
@@ -360,9 +360,9 @@ void ModelsListWidget::deleteSelected(bool ask=true)
       }    
       if (isModel==true) {
         if (radioData->generalSettings.currModel != selModel) {
-          ret = QMessageBox::warning(this, "companion9x", tr("Delete Selected Models?"), QMessageBox::Yes | QMessageBox::No);
+          ret = QMessageBox::warning(this, "Companion", tr("Delete Selected Models?"), QMessageBox::Yes | QMessageBox::No);
         } else {
-          ret = QMessageBox::warning(this, "companion9x", tr("Cannot delete default model."), QMessageBox::Ok);
+          ret = QMessageBox::warning(this, "Companion", tr("Cannot delete default model."), QMessageBox::Ok);
         }
       }
     }
@@ -373,9 +373,9 @@ void ModelsListWidget::deleteSelected(bool ask=true)
           ((MdiChild *)parent())->setModified();
         } else if (index.row()>0) {
           if (ask) {
-            ret = QMessageBox::warning(this, "companion9x", tr("Cannot delete default model."), QMessageBox::Ok);
+            ret = QMessageBox::warning(this, "Companion", tr("Cannot delete default model."), QMessageBox::Ok);
           } else {
-            ret = QMessageBox::warning(this, "companion9x", tr("Cannot cut default model."), QMessageBox::Ok);
+            ret = QMessageBox::warning(this, "Companion", tr("Cannot cut default model."), QMessageBox::Ok);
           }
         }
       }
@@ -445,7 +445,7 @@ void ModelsListWidget::doPaste(QByteArray *gmData, int index)
     i++;
     gData++;
     if(c=='G') { //General settings
-      ret = QMessageBox::question(this, "companion9x", tr("Do you want to overwrite TX general settings?"),
+      ret = QMessageBox::question(this, "Companion", tr("Do you want to overwrite TX general settings?"),
               QMessageBox::Yes | QMessageBox::No);
       if (ret == QMessageBox::Yes) {
         radioData->generalSettings = *((GeneralSettings *)gData);
@@ -456,7 +456,7 @@ void ModelsListWidget::doPaste(QByteArray *gmData, int index)
     }
     else { //model data
       if (!radioData->models[id-1].isempty()) {
-        ret = QMessageBox::question(this, "companion9x", tr("You are pasting on an not empty model, are you sure?"),
+        ret = QMessageBox::question(this, "Companion", tr("You are pasting on an not empty model, are you sure?"),
                 QMessageBox::Yes | QMessageBox::No);
         if (ret == QMessageBox::Yes) {
           radioData->models[id-1] = *((ModelData *)gData);
@@ -519,7 +519,7 @@ void ModelsListWidget::duplicate()
           i++;
         }
         if (i==GetEepromInterface()->getMaxModels()) {
-          QMessageBox::warning(this, "companion9x", tr("No free slot available, cannot duplicate"), QMessageBox::Ok);
+          QMessageBox::warning(this, "Companion", tr("No free slot available, cannot duplicate"), QMessageBox::Ok);
         }
     }
 }

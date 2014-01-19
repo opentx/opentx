@@ -273,7 +273,7 @@
         </sizepolicy>
        </property>
        <property name="toolTip">
-        <string>Allows companion9x to write to older version of the firmware</string>
+        <string>Allows Companion to write to older version of the firmware</string>
        </property>
        <property name="text">
         <string>Check Firmware compatibility</string>
@@ -456,7 +456,7 @@
              <string>...</string>
             </property>
             <property name="icon">
-             <iconset resource="companion9x.qrc">
+             <iconset resource="companion.qrc">
               <normaloff>:/images/library.png</normaloff>:/images/library.png</iconset>
             </property>
             <property name="iconSize">
@@ -488,7 +488,7 @@
   <tabstop>BurnFlashButton</tabstop>
  </tabstops>
  <resources>
-  <include location="companion9x.qrc"/>
+  <include location="companion.qrc"/>
  </resources>
  <connections/>
 </ui>

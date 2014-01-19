@@ -23,10 +23,10 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Companion9x Simulator</string>
+   <string>Companion Simulator</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="companion9x.qrc">
+   <iconset resource="companion.qrc">
     <normaloff>:/images/simulate.png</normaloff>:/images/simulate.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_6">
@@ -2053,6 +2053,8 @@ border-radius: 4px;
              <width>16777215</width>
              <height>18</height>
             </size>
+
+
            </property>
            <property name="styleSheet">
             <string notr="true">QSlider::sub-page:horizontal:disabled {
@@ -3900,7 +3902,7 @@ border-radius: 4px;
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="companion9x.qrc"/>
+  <include location="companion.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -59,7 +59,7 @@
 #include "burndialog.h"
 #include "hexinterface.h"
 #include "warnings.h"
-#include "firmwares/opentx/open9xinterface.h" // TODO get rid of this include
+#include "firmwares/opentx/opentxinterface.h" // TODO get rid of this include
 
 #define DONATE_STR "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QUZ48K4SEXDP2"
 #ifdef __APPLE__
@@ -94,6 +94,8 @@ downloadDialog_forWait(NULL)
             this, SLOT(setActiveSubWindow(QWidget*)));
 
     MaxRecentFiles=MAX_RECENT;
+    QSettings settings("companion", "companion");
+    restoreGeometry(settings.value("mainWindowGeometry").toByteArray());
     createActions();
     createMenus();
     createToolBars();
@@ -103,18 +105,18 @@ downloadDialog_forWait(NULL)
     readSettings();
     FirmwareInfo *firmware = GetCurrentFirmware();
     if (ActiveProfile) {
-      setWindowTitle(tr("companion9x - Models and Settings Editor - %1 - profile %2").arg(firmware->name).arg(ActiveProfileName));
+      setWindowTitle(tr("Companion - Models and Settings Editor - %1 - profile %2").arg(firmware->name).arg(ActiveProfileName));
     } else {
-      setWindowTitle(tr("companion9x - Models and Settings Editor - %1").arg(firmware->name));
+      setWindowTitle(tr("Companion - Models and Settings Editor - %1").arg(firmware->name));
     }
     setUnifiedTitleAndToolBarOnMac(true);
     this->setWindowIcon(QIcon(":/icon.png"));
+    this->setIconSize(QSize(32,32));
     QNetworkProxyFactory::setUseSystemConfiguration(true);
     setAcceptDrops(true);
     
     // give time to the splash to disappear and main window to open before starting updates
     int updateDelay = 1000;
-    QSettings settings("companion9x", "companion9x");
     bool showSplash = settings.value("show_splash", true).toBool();
     if (showSplash) 
 	updateDelay += (SPLASH_TIME*1000); 
@@ -167,16 +169,16 @@ downloadDialog_forWait(NULL)
 
 void MainWindow::displayWarnings()
 {
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings("companion", "companion");
   int warnId=settings.value("warningId", 0 ).toInt();
   if (warnId<WARNING_ID && warnId!=0) {
     int res=0;
     if (WARNING_LEVEL>0) {
-      QMessageBox::warning(this, "companion9x", WARNING);
-      res = QMessageBox::question(this, "companion9x",tr("Display previous warning again at startup ?"),QMessageBox::Yes | QMessageBox::No);
+      QMessageBox::warning(this, "Companion", WARNING);
+      res = QMessageBox::question(this, "Companion",tr("Display previous warning again at startup ?"),QMessageBox::Yes | QMessageBox::No);
     } else {
-      QMessageBox::about(this, "companion9x", WARNING);
-      res = QMessageBox::question(this, "companion9x",tr("Display previous message again at startup ?"),QMessageBox::Yes | QMessageBox::No);
+      QMessageBox::about(this, "Companion", WARNING);
+      res = QMessageBox::question(this, "Companion",tr("Display previous message again at startup ?"),QMessageBox::Yes | QMessageBox::No);
     }
     if (res == QMessageBox::No) {
       settings.setValue("warningId", WARNING_ID);
@@ -201,7 +203,7 @@ void MainWindow::checkForUpdates(bool ignoreSettings, QString & fwId)
     showcheckForUpdatesResult = ignoreSettings;
     check1done = true;
     check2done = true;
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     fwToUpdate = fwId;
     QString stamp = GetFirmware(fwToUpdate)->stamp;
 
@@ -249,7 +251,7 @@ void MainWindow::checkForUpdateFinished(QNetworkReply * reply)
       QString version = qba.mid(i+14, 4);
 
       if (version.isNull()) {
-          QMessageBox::warning(this, "companion9x", tr("Unable to check for updates."));
+          QMessageBox::warning(this, "Companion", tr("Unable to check for updates."));
           return;
       }
       double vnum=version.toDouble();
@@ -263,11 +265,11 @@ void MainWindow::checkForUpdateFinished(QNetworkReply * reply)
       if (c9xver< vnum) {
 #if defined WIN32 || !defined __GNUC__ // || defined __APPLE__  // OSX should only notify of updates since no update packages are available. 
         showcheckForUpdatesResult = false; // update is available - do not show dialog
-        int ret = QMessageBox::question(this, "companion9x", tr("A new version of companion9x is available (version %1)<br>"
+        int ret = QMessageBox::question(this, "Companion", tr("A new version of Companion is available (version %1)<br>"
                                                             "Would you like to download it?").arg(version) ,
                                         QMessageBox::Yes | QMessageBox::No);
 
-        QSettings settings("companion9x", "companion9x");
+        QSettings settings("companion", "companion");
 
         if (ret == QMessageBox::Yes) {
 #if defined __APPLE__          
@@ -284,21 +286,21 @@ void MainWindow::checkForUpdateFinished(QNetworkReply * reply)
           }
         }
 #else
-        QMessageBox::warning(this, tr("New release available"), tr("A new release of companion is available please check the repository"));
+        QMessageBox::warning(this, tr("New release available"), tr("A new release of Companion is available please check the repository"));
 #endif            
       } else {
         if (showcheckForUpdatesResult && check1done && check2done)
-          QMessageBox::information(this, "companion9x", tr("No updates available at this time."));
+          QMessageBox::information(this, "Companion", tr("No updates available at this time."));
       }
     } else {
       if(check1done && check2done)
-        QMessageBox::warning(this, "companion9x", tr("Unable to check for updates."));
+        QMessageBox::warning(this, "Companion", tr("Unable to check for updates."));
     }
 }
 
 void MainWindow::updateDownloaded()
 {
-    int ret = QMessageBox::question(this, "companion9x", tr("Would you like to launch the installer?") ,
+    int ret = QMessageBox::question(this, "Companion", tr("Would you like to launch the installer?") ,
                                      QMessageBox::Yes | QMessageBox::No);
     if (ret == QMessageBox::Yes) {
       if(QDesktopServices::openUrl(QUrl::fromLocalFile(installer_fileName)))
@@ -309,7 +311,7 @@ void MainWindow::updateDownloaded()
 void MainWindow::downloadLatestFW(FirmwareInfo * firmware, const QString & firmwareId)
 {
     QString url, ext, cpuid;
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     url = firmware->getUrl(firmwareId);
     cpuid=settings.value("cpuid","").toString();
     ext = url.mid(url.lastIndexOf("."));
@@ -332,7 +334,7 @@ void MainWindow::downloadLatestFW(FirmwareInfo * firmware, const QString & firmw
 void MainWindow::reply1Accepted()
 {
     QString errormsg;
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     bool autoflash=settings.value("burnFirmware", true).toBool();
     bool addversion=settings.value("rename_firmware_files", false).toBool();
     settings.beginGroup("FwRevisions");
@@ -362,7 +364,7 @@ void MainWindow::reply1Accepted()
               errormsg=tr("Compilation server too busy, try later");
               break;
             case 4:
-              errormsg=tr("Compilation server requires registration, please check opentx web site");
+              errormsg=tr("Compilation server requires registration, please check OpenTX web site");
               break;
             default:
               errormsg=tr("Unknown server failure, try later");
@@ -402,7 +404,7 @@ void MainWindow::reply1Accepted()
             errormsg=tr("Compilation server too busy, try later");
             break;
           case 4:
-            errormsg=tr("Compilation server requires registration, please check opentx web site");
+            errormsg=tr("Compilation server requires registration, please check OpenTX web site");
             break;
           default:
             errormsg=tr("Unknown server failure, try later");
@@ -433,7 +435,7 @@ void MainWindow::reply1Accepted()
         }
         settings.setValue(downloadedFW, currentFWrev);
         if (autoflash) {
-          int ret = QMessageBox::question(this, "companion9x", tr("Do you want to write the firmware to the transmitter now ?"), QMessageBox::Yes | QMessageBox::No);
+          int ret = QMessageBox::question(this, "Companion", tr("Do you want to write the firmware to the transmitter now ?"), QMessageBox::Yes | QMessageBox::No);
           if (ret == QMessageBox::Yes) {
             burnToFlash(downloadedFWFilename);
           }
@@ -456,7 +458,7 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
       // TODO delete downloadDialog_forWait?
     }
     
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     cpuid=settings.value("cpuid","").toString();
     QByteArray qba = reply->readAll();
     int i = qba.indexOf("SVN_VERS");
@@ -470,7 +472,7 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
       QString newrev=qba.mid(k).replace('"', "").trimmed();
 
       if(!cres) {
-        QMessageBox::warning(this, "companion9x", tr("Unable to check for updates."));
+        QMessageBox::warning(this, "Companion", tr("Unable to check for updates."));
         int server = settings.value("fwserver",0).toInt();
         server++;
         settings.setValue("fwserver",server);
@@ -490,6 +492,7 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
           showcheckForUpdatesResult = false; // update is available - do not show dialog
           QString rn = GetFirmware(fwToUpdate)->rnurl;
           QAbstractButton *rnButton;
+          msgBox.setWindowTitle("Companion");
           msgBox.setInformativeText(tr("Firmware %1 does not seem to have ever been downloaded.\nVersion %2 is available.\nDo you want to download it now ?").arg(fwToUpdate).arg(NewFwRev));
           QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
           msgBox.addButton(trUtf8("No"), QMessageBox::NoRole);
@@ -502,7 +505,7 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
           if( msgBox.clickedButton() == rnButton ) {
             contributorsDialog *cd = new contributorsDialog(this,2,rn);
             cd->exec();
-            int ret2 = QMessageBox::question(this, "companion9x", tr("Do you want to download release %1 now ?").arg(NewFwRev),
+            int ret2 = QMessageBox::question(this, "Companion", tr("Do you want to download release %1 now ?").arg(NewFwRev),
                   QMessageBox::Yes | QMessageBox::No);
             if (ret2 == QMessageBox::Yes) {
               download = true;
@@ -518,7 +521,7 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
           showcheckForUpdatesResult = false; // update is available - do not show dialog
           QString rn = GetFirmware(fwToUpdate)->rnurl;
           QAbstractButton *rnButton;
-          msgBox.setText("companion9x");
+          msgBox.setText("Companion");
           msgBox.setInformativeText(tr("A new version of %1 firmware is available (current %2 - newer %3).\nDo you want to download it now ?").arg(fwToUpdate).arg(OldFwRev).arg(NewFwRev));
           QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
           msgBox.addButton(trUtf8("No"), QMessageBox::NoRole);
@@ -532,7 +535,7 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
             warning=0;
             contributorsDialog *cd = new contributorsDialog(this,2,rn);
             cd->exec();
-            int ret2 = QMessageBox::question(this, "companion9x", tr("Do you want to download release %1 now ?").arg(NewFwRev),
+            int ret2 = QMessageBox::question(this, "Companion", tr("Do you want to download release %1 now ?").arg(NewFwRev),
                   QMessageBox::Yes | QMessageBox::No);
             if (ret2 == QMessageBox::Yes) {
               download = true;
@@ -546,10 +549,10 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
           }
         } else {
           if(showcheckForUpdatesResult && check1done && check2done)
-            QMessageBox::information(this, "companion9x", tr("No updates available at this time."));
+            QMessageBox::information(this, "Companion", tr("No updates available at this time."));
         }
         if (ignore) {
-          int res = QMessageBox::question(this, "companion9x",tr("Ignore this version (r%1)?").arg(rev), QMessageBox::Yes | QMessageBox::No);
+          int res = QMessageBox::question(this, "Companion",tr("Ignore this version (r%1)?").arg(rev), QMessageBox::Yes | QMessageBox::No);
           if (res==QMessageBox::Yes)   {
             settings.beginGroup("FwRevisions");
             settings.setValue(fwToUpdate, NewFwRev);
@@ -559,7 +562,7 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
           if (warning>0) {
             QString rn = GetFirmware(fwToUpdate)->rnurl;
             if (!rn.isEmpty()) {
-              int ret2 = QMessageBox::warning(this, "companion9x", tr("Release notes contain very important informations. Do you want to see them now ?"), QMessageBox::Yes | QMessageBox::No);
+              int ret2 = QMessageBox::warning(this, "Companion", tr("Release notes contain very important informations. Do you want to see them now ?"), QMessageBox::Yes | QMessageBox::No);
               if (ret2 == QMessageBox::Yes) {
                 contributorsDialog *cd = new contributorsDialog(this,2,rn);
                 cd->exec();
@@ -592,11 +595,11 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
           }
         }
       } else {
-        QMessageBox::warning(this, "companion9x", tr("Unable to check for updates."));
+        QMessageBox::warning(this, "Companion", tr("Unable to check for updates."));
       }
     } else {
       if(check1done && check2done) {
-        QMessageBox::warning(this, "companion9x", tr("Unable to check for updates."));
+        QMessageBox::warning(this, "Companion", tr("Unable to check for updates."));
         int server = settings.value("fwserver",0).toInt();
         server++;
         settings.setValue("fwserver",server);
@@ -607,11 +610,13 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+    QSettings settings("companion", "companion");
+    settings.setValue("mainWindowGeometry", saveGeometry());
+    settings.setValue("mainWindowState", saveState());
     mdiArea->closeAllSubWindows();
     if (mdiArea->currentSubWindow()) {
       event->ignore();
     } else {
-      writeSettings();
       event->accept();
     }
 }
@@ -625,7 +630,7 @@ void MainWindow::newFile()
 
 void MainWindow::openFile()
 {
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), settings.value("lastDir").toString(),tr(EEPROM_FILES_FILTER));
     if (!fileName.isEmpty()) {
       settings.setValue("lastDir", QFileInfo(fileName).dir().absolutePath());
@@ -658,7 +663,7 @@ void MainWindow::saveAs()
 
 void MainWindow::openRecentFile()
  {
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     QAction *action = qobject_cast<QAction *>(sender());
     if (action) {
       QString fileName=action->data().toString();
@@ -680,14 +685,14 @@ void MainWindow::openRecentFile()
 
 void MainWindow::loadProfile()
 {
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     QAction *action = qobject_cast<QAction *>(sender());
     int chord,defmod, burnfw;
     bool renfw;
 
     if (action) {
       int profnum=action->data().toInt();
-      QSettings settings("companion9x", "companion9x");
+      QSettings settings("companion", "companion");
       settings.setValue("ActiveProfile",profnum);
       settings.beginGroup("Profiles");
       QString profile=QString("profile%1").arg(profnum);
@@ -718,13 +723,13 @@ void MainWindow::loadProfile()
       settings.setValue("profileId", profnum);
       current_firmware_variant = GetFirmwareVariant(firmware_id);
       FirmwareInfo *firmware = GetCurrentFirmware();    
-      setWindowTitle(tr("companion9x - Models and Settings Editor - %1").arg(firmware->name));
+      setWindowTitle(tr("Companion - Models and Settings Editor - %1").arg(firmware->name));
       // settings.setValue("lastDir", QFileInfo(fileName).dir().absolutePath());
       foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
         MdiChild *mdiChild = qobject_cast<MdiChild *>(window->widget());
         mdiChild->eepromInterfaceChanged();
       }
-      setWindowTitle(tr("companion9x - Models and Settings Editor - %1 - profile %2").arg(firmware->name).arg(ActiveProfileName));
+      setWindowTitle(tr("Companion - Models and Settings Editor - %1 - profile %2").arg(firmware->name).arg(ActiveProfileName));
     }
 }
 
@@ -732,10 +737,10 @@ void MainWindow::unloadProfile()
 {
     ActiveProfile=0;
     ActiveProfileName="";
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     settings.setValue("ActiveProfile",0);
     FirmwareInfo *firmware = GetCurrentFirmware();    
-    setWindowTitle(tr("companion9x - Models and Settings Editor - %1").arg(firmware->name));
+    setWindowTitle(tr("Companion - Models and Settings Editor - %1").arg(firmware->name));
 }
 
 void MainWindow::preferences()
@@ -744,9 +749,9 @@ void MainWindow::preferences()
     pd->exec();
     FirmwareInfo *firmware = GetCurrentFirmware();    
     if (ActiveProfile) {
-      setWindowTitle(tr("companion9x - Models and Settings Editor - %1 - profile %2").arg(firmware->name).arg(ActiveProfileName));
+      setWindowTitle(tr("Companion - Models and Settings Editor - %1 - profile %2").arg(firmware->name).arg(ActiveProfileName));
     } else {
-      setWindowTitle(tr("companion9x - Models and Settings Editor - %1").arg(firmware->name));
+      setWindowTitle(tr("Companion - Models and Settings Editor - %1").arg(firmware->name));
     }
 
     foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
@@ -1075,17 +1080,17 @@ void MainWindow::burnFrom()
 
 void MainWindow::burnExtenalToEEPROM()
 {
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     QString fileName;
     bool backup = false;
     burnDialog *cd = new burnDialog(this, 1, &fileName, &backup);
     cd->exec();
     if (!fileName.isEmpty()) {
       settings.setValue("lastDir", QFileInfo(fileName).dir().absolutePath());
-      int ret = QMessageBox::question(this, "companion9x", tr("Write Models and settings from %1 to the Tx?").arg(QFileInfo(fileName).fileName()), QMessageBox::Yes | QMessageBox::No);
+      int ret = QMessageBox::question(this, "Companion", tr("Write Models and settings from %1 to the Tx?").arg(QFileInfo(fileName).fileName()), QMessageBox::Yes | QMessageBox::No);
       if (ret != QMessageBox::Yes) return;
       if (!isValidEEPROM(fileName))
-        ret = QMessageBox::question(this, "companion9x", tr("The file %1\nhas not been recognized as a valid Models and Settings file\nWrite anyway ?").arg(QFileInfo(fileName).fileName()), QMessageBox::Yes | QMessageBox::No);
+        ret = QMessageBox::question(this, "Companion", tr("The file %1\nhas not been recognized as a valid Models and Settings file\nWrite anyway ?").arg(QFileInfo(fileName).fileName()), QMessageBox::Yes | QMessageBox::No);
       if (ret != QMessageBox::Yes) return;
       bool backupEnable = settings.value("backupEnable", true).toBool();
       QString backupPath = settings.value("backupPath", "").toString();
@@ -1323,7 +1328,7 @@ bool MainWindow::convertEEPROM(QString backupFile, QString restoreFile, QString 
 
 void MainWindow::burnToFlash(QString fileToFlash)
 {
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     QString fileName;
     bool backup = settings.value("backupOnFlash", false).toBool();
     if(!fileToFlash.isEmpty())
@@ -1413,7 +1418,7 @@ void MainWindow::burnToFlash(QString fileToFlash)
 
 void MainWindow::burnExtenalFromEEPROM()
 {
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save transmitter Models and Settings to File"), settings.value("lastDir").toString(), tr(EXTERNAL_EEPROM_FILES_FILTER));
     if (!fileName.isEmpty()) {
       EEPROMInterface *eepromInterface = GetEepromInterface();
@@ -1441,7 +1446,7 @@ void MainWindow::burnExtenalFromEEPROM()
 
 void MainWindow::burnFromFlash()
 {
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     QString fileName = QFileDialog::getSaveFileName(this,tr("Read Tx Firmware to File"), settings.value("lastFlashDir").toString(),tr(FLASH_FILES_FILTER));
     if (!fileName.isEmpty()) {
         QFile file(fileName);
@@ -1489,15 +1494,16 @@ void MainWindow::logFile()
 
 void MainWindow::about()
 {
-    QString aboutStr = "<center><img src=\":/images/companion9x-title.png\"><br>";
-    aboutStr.append(tr("Copyright") +" Bertrand Songis & Romolo Manfredini &copy; 2011- 2013<br>");
-    aboutStr.append(QString("<a href='http://code.google.com/p/companion9x/'>http://code.google.com/p/companion9x/</a><br>")+tr("Version %1 (revision %2), %3").arg(C9X_VERSION).arg(C9X_REVISION).arg(__DATE__)+QString("<br/><br/>"));
-    aboutStr.append(tr("The companion9x project was originally forked from eePe")+QString(" <a href='http://code.google.com/p/eepe'>http://code.google.com/p/eepe</a><br/><br/>"));
+    QString aboutStr = "<center><img src=\":/images/companion-title.png\"></center><br>";
+    aboutStr.append("OpenTX Home Page: <a href='http://opentx.github.io'>http://open-tx.org</a><br><br>");
+    aboutStr.append(tr("The Companion project was originally forked from eePe")+QString(" <a href='http://code.google.com/p/eepe'>http://code.google.com/p/eepe</a><br/><br/>"));
     aboutStr.append(tr("If you've found this program useful, please support by"));
     aboutStr.append(" <a href='" DONATE_STR "'>");
-    aboutStr.append(tr("donating") + "</a></center>");
+    aboutStr.append(tr("donating") + "</a><br><br>");
+    aboutStr.append(tr("Version %1 (revision %2), %3").arg(C9X_VERSION).arg(C9X_REVISION).arg(__DATE__)+QString("<br/><br/>"));
+    aboutStr.append(tr("Copyright") +" Bertrand Songis & Romolo Manfredini &copy; 2011- 2014<br>");
 
-    QMessageBox::about(this, tr("About companion9x"),aboutStr);
+    QMessageBox::about(this, tr("About Companion"),aboutStr);
 }
 
 void MainWindow::updateMenus()
@@ -1526,7 +1532,7 @@ void MainWindow::updateMenus()
     updateRecentFileActions();
     updateProfilesActions();
     bool notfound=true;
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     settings.beginGroup("Profiles");
     for (int i=0; i<MAX_PROFILES; i++) {
       QString profile=QString("profile%1").arg(i+1);
@@ -1624,15 +1630,15 @@ void MainWindow::createActions()
     connect(preferencesAct, SIGNAL(triggered()), this, SLOT(preferences()));
 
     checkForUpdatesAct = new QAction(QIcon(":/images/update.png"), tr("&Check for updates..."), this);
-    checkForUpdatesAct->setStatusTip(tr("Check for new version of companion9x/er9x"));
+    checkForUpdatesAct->setStatusTip(tr("Check for new version of Companion"));
     connect(checkForUpdatesAct, SIGNAL(triggered()), this, SLOT(doUpdates()));
 
     contributorsAct = new QAction(QIcon(":/images/contributors.png"), tr("Contributors &List..."), this);
-    contributorsAct->setStatusTip(tr("Show companion9x contributors list"));
+    contributorsAct->setStatusTip(tr("Show Companion contributors list"));
     connect(contributorsAct, SIGNAL(triggered()), this, SLOT(contributors()));
 
     changelogAct = new QAction(QIcon(":/images/changelog.png"), tr("ChangeLog..."), this);
-    changelogAct->setStatusTip(tr("Show companion9x changelog"));
+    changelogAct->setStatusTip(tr("Show Companion changelog"));
     connect(changelogAct, SIGNAL(triggered()), this, SLOT(changelog()));
 
     fwchangelogAct = new QAction(QIcon(":/images/changelog.png"), tr("Firmware ChangeLog..."), this);
@@ -1760,7 +1766,7 @@ void MainWindow::createActions()
     separatorAct = new QAction(this);
     separatorAct->setSeparator(true);
 
-    aboutAct = new QAction(QIcon(":/icon.png"), tr("&About"), this);
+    aboutAct = new QAction(QIcon(":/images/information.png"), tr("&About"), this);
     aboutAct->setStatusTip(tr("Show the application's About box"));
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
 
@@ -1844,9 +1850,9 @@ void MainWindow::createMenus()
 
     helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addSeparator();
-    helpMenu->addAction(aboutAct);
-    helpMenu->addSeparator();
     helpMenu->addAction(checkForUpdatesAct);
+    helpMenu->addSeparator();
+    helpMenu->addAction(aboutAct);
     helpMenu->addSeparator();
     helpMenu->addAction(changelogAct);
     helpMenu->addAction(fwchangelogAct);
@@ -1873,6 +1879,7 @@ QMenu *MainWindow::createProfilesMenu()
 void MainWindow::createToolBars()
 {
     fileToolBar = addToolBar(tr("File"));
+    fileToolBar->setObjectName("File");
     fileToolBar->addAction(newAct);
     fileToolBar->addAction(openAct);
     QToolButton * recentToolButton = new QToolButton;
@@ -1892,7 +1899,7 @@ void MainWindow::createToolBars()
     profileButton->setToolTip(tr("Firmware Profiles"));
     fileToolBar->addWidget(profileButton);
     bool notfound=true;
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     settings.beginGroup("Profiles");
     for (int i=0; i<MAX_PROFILES; i++) {
       QString profile=QString("profile%1").arg(i+1);
@@ -1910,11 +1917,15 @@ void MainWindow::createToolBars()
     fileToolBar->addAction(compareAct);
 
     editToolBar = addToolBar(tr("Edit"));
+    editToolBar->setObjectName("Edit");
     editToolBar->addAction(cutAct);
     editToolBar->addAction(copyAct);
     editToolBar->addAction(pasteAct);
 
-    burnToolBar = addToolBar(tr("Write"));
+    
+    burnToolBar = new QToolBar(tr("Write"));
+    addToolBar( Qt::LeftToolBarArea, burnToolBar );
+    burnToolBar->setObjectName("Write");
     burnToolBar->addAction(burnToAct);
     burnToolBar->addAction(burnFromAct);
     burnToolBar->addSeparator();
@@ -1927,8 +1938,9 @@ void MainWindow::createToolBars()
     burnToolBar->addAction(burnConfigAct);
 
     helpToolBar = addToolBar(tr("Help"));
-    helpToolBar->addAction(aboutAct);
+    helpToolBar->setObjectName("Help");
     helpToolBar->addAction(checkForUpdatesAct);
+    helpToolBar->addAction(aboutAct);
 }
 
 void MainWindow::createStatusBar()
@@ -1938,11 +1950,8 @@ void MainWindow::createStatusBar()
 
 void MainWindow::readSettings()
 {
-    QSettings settings("companion9x", "companion9x");
-    bool maximized = settings.value("maximized", false).toBool();
-    QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
-    QSize size = settings.value("size", QSize(400, 400)).toSize();
-
+    QSettings settings("companion", "companion");
+    restoreState(settings.value("mainWindowState").toByteArray());
     checkCompanion9x = settings.value("startup_check_companion9x", true).toBool();
     checkFW = settings.value("startup_check_fw", true).toBool();
     MaxRecentFiles =settings.value("history_size",10).toInt();
@@ -1954,23 +1963,6 @@ void MainWindow::readSettings()
       ActiveProfileName=settings.value("Name","").toString();
       settings.endGroup();
       settings.endGroup();
-    }
-    if (maximized) {
-      setWindowState(Qt::WindowMaximized);
-    } else {
-      move(pos);
-      resize(size);
-    }
-}
-
-void MainWindow::writeSettings()
-{
-    QSettings settings("companion9x", "companion9x");
-
-    settings.setValue("maximized", isMaximized());
-    if(!isMaximized()) {
-      settings.setValue("pos", pos());
-      settings.setValue("size", size());
     }
 }
 
@@ -2011,7 +2003,7 @@ void MainWindow::setActiveSubWindow(QWidget *window)
 void MainWindow::updateRecentFileActions()
  {
     int i,j, numRecentFiles;
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     QStringList files = settings.value("recentFileList").toStringList();
  
     numRecentFiles = qMin(files.size(), (int)MaxRecentFiles);
@@ -2031,7 +2023,7 @@ void MainWindow::updateRecentFileActions()
 void MainWindow::updateProfilesActions()
  {
     int i;
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     settings.beginGroup("Profiles");
     for (i=0; i<MAX_PROFILES; i++) {
       QString profile=QString("profile%1").arg(i+1);
@@ -2148,7 +2140,7 @@ void MainWindow::dropEvent(QDropEvent *event)
     QString fileName = urls.first().toLocalFile();
     if (fileName.isEmpty())
       return;
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     settings.setValue("lastDir", QFileInfo(fileName).dir().absolutePath());
 
     QMdiSubWindow *existing = findMdiChild(fileName);

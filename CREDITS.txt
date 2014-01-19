@@ -2,6 +2,7 @@ Bertrand Songis
 Romolo Manfredini
 André Bernet
 Michael Blandford
+Rob Thomson
 Bryan J. Rentoul (aka Gruvin)
 Cameron Weeks
 Martin Hotař

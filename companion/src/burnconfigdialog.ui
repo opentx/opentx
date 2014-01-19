@@ -26,7 +26,7 @@
    <string>Programmer Configuration</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="companion9x.qrc">
+   <iconset resource="companion.qrc">
     <normaloff>:/images/configure.png</normaloff>:/images/configure.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
@@ -760,7 +760,7 @@ Please only use this if you know what you are doing.  There are no error checks 
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>
-  <include location="companion9x.qrc"/>
+  <include location="companion.qrc"/>
  </resources>
  <connections>
   <connection>
