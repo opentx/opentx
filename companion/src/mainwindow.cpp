@@ -94,6 +94,8 @@ downloadDialog_forWait(NULL)
             this, SLOT(setActiveSubWindow(QWidget*)));
 
     MaxRecentFiles=MAX_RECENT;
+    QSettings settings("companion", "companion");
+    restoreGeometry(settings.value("mainWindowGeometry").toByteArray());
     createActions();
     createMenus();
     createToolBars();
@@ -115,7 +117,6 @@ downloadDialog_forWait(NULL)
     
     // give time to the splash to disappear and main window to open before starting updates
     int updateDelay = 1000;
-    QSettings settings("companion", "companion");
     bool showSplash = settings.value("show_splash", true).toBool();
     if (showSplash) 
 	updateDelay += (SPLASH_TIME*1000); 
@@ -609,11 +610,13 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+    QSettings settings("companion", "companion");
+    settings.setValue("mainWindowGeometry", saveGeometry());
+    settings.setValue("mainWindowState", saveState());
     mdiArea->closeAllSubWindows();
     if (mdiArea->currentSubWindow()) {
       event->ignore();
     } else {
-      writeSettings();
       event->accept();
     }
 }
@@ -1876,6 +1879,7 @@ QMenu *MainWindow::createProfilesMenu()
 void MainWindow::createToolBars()
 {
     fileToolBar = addToolBar(tr("File"));
+    fileToolBar->setObjectName("File");
     fileToolBar->addAction(newAct);
     fileToolBar->addAction(openAct);
     QToolButton * recentToolButton = new QToolButton;
@@ -1913,6 +1917,7 @@ void MainWindow::createToolBars()
     fileToolBar->addAction(compareAct);
 
     editToolBar = addToolBar(tr("Edit"));
+    editToolBar->setObjectName("Edit");
     editToolBar->addAction(cutAct);
     editToolBar->addAction(copyAct);
     editToolBar->addAction(pasteAct);
@@ -1920,6 +1925,7 @@ void MainWindow::createToolBars()
     
     burnToolBar = new QToolBar(tr("Write"));
     addToolBar( Qt::LeftToolBarArea, burnToolBar );
+    burnToolBar->setObjectName("Write");
     burnToolBar->addAction(burnToAct);
     burnToolBar->addAction(burnFromAct);
     burnToolBar->addSeparator();
@@ -1932,6 +1938,7 @@ void MainWindow::createToolBars()
     burnToolBar->addAction(burnConfigAct);
 
     helpToolBar = addToolBar(tr("Help"));
+    helpToolBar->setObjectName("Help");
     helpToolBar->addAction(checkForUpdatesAct);
     helpToolBar->addAction(aboutAct);
 }
@@ -1944,10 +1951,7 @@ void MainWindow::createStatusBar()
 void MainWindow::readSettings()
 {
     QSettings settings("companion", "companion");
-    bool maximized = settings.value("maximized", false).toBool();
-    QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
-    QSize size = settings.value("size", QSize(400, 400)).toSize();
-
+    restoreState(settings.value("mainWindowState").toByteArray());
     checkCompanion9x = settings.value("startup_check_companion9x", true).toBool();
     checkFW = settings.value("startup_check_fw", true).toBool();
     MaxRecentFiles =settings.value("history_size",10).toInt();
@@ -1959,23 +1963,6 @@ void MainWindow::readSettings()
       ActiveProfileName=settings.value("Name","").toString();
       settings.endGroup();
       settings.endGroup();
-    }
-    if (maximized) {
-      setWindowState(Qt::WindowMaximized);
-    } else {
-      move(pos);
-      resize(size);
-    }
-}
-
-void MainWindow::writeSettings()
-{
-    QSettings settings("companion", "companion");
-
-    settings.setValue("maximized", isMaximized());
-    if(!isMaximized()) {
-      settings.setValue("pos", pos());
-      settings.setValue("size", size());
     }
 }
 

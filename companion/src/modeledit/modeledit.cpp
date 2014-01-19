@@ -20,6 +20,8 @@ ModelEdit::ModelEdit(RadioData & radioData, int modelId, bool openWizard, bool i
   generalSettings(generalSettings)
 {
   ui->setupUi(this);
+  QSettings settings("companion", "companion");
+  restoreGeometry(settings.value("modelEditGeometry").toByteArray());  
   addTab(new Setup(this, model), tr("Setup"));
   addTab(new HeliPanel(this, model), tr("Heli"));
   addTab(new FlightModes(this, model, radioData.generalSettings), tr("Flight Modes"));
@@ -38,6 +40,12 @@ ModelEdit::ModelEdit(RadioData & radioData, int modelId, bool openWizard, bool i
 ModelEdit::~ModelEdit()
 {
   delete ui;
+}
+
+void ModelEdit::closeEvent(QCloseEvent *event)
+{
+    QSettings settings("companion", "companion");
+    settings.setValue("modelEditGeometry", saveGeometry());
 }
 
 class VerticalScrollArea : public QScrollArea
