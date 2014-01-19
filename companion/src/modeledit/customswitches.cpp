@@ -382,6 +382,25 @@ void CustomSwitchesPanel::csw_customContextMenuRequested(QPoint pos)
 {
     QLabel *label = (QLabel *)sender();
     selectedSwitch = label->property("index").toInt();
+    QSettings settings("companion", "companion");
+    int theme_set=settings.value("theme", 1).toInt();
+    QString Theme;
+    switch(theme_set) {
+      case 0:
+        Theme="classic";
+        break;
+      default:
+        Theme="monochrome";
+        break;          
+    }
+    QIcon ClearIcon;
+    populate_icon(&ClearIcon,Theme,"clear.png");
+    QIcon CopyIcon;
+    populate_icon(&CopyIcon,Theme,"copy.png");
+    QIcon CutIcon;
+    populate_icon(&CutIcon,Theme,"cut.png");
+    QIcon PasteIcon;
+    populate_icon(&PasteIcon,Theme,"paste.png");
 
     QPoint globalPos = label->mapToGlobal(pos);
 
@@ -390,10 +409,10 @@ void CustomSwitchesPanel::csw_customContextMenuRequested(QPoint pos)
     bool hasData = mimeData->hasFormat("application/x-companion9x-csw");
 
     QMenu contextMenu;
-    contextMenu.addAction(QIcon(":/images/clear.png"), tr("&Delete"),this,SLOT(cswDelete()),tr("Delete"));
-    contextMenu.addAction(QIcon(":/images/copy.png"), tr("&Copy"),this,SLOT(cswCopy()),tr("Ctrl+C"));
-    contextMenu.addAction(QIcon(":/images/cut.png"), tr("&Cut"),this,SLOT(cswCut()),tr("Ctrl+X"));
-    contextMenu.addAction(QIcon(":/images/paste.png"), tr("&Paste"),this,SLOT(cswPaste()),tr("Ctrl+V"))->setEnabled(hasData);
+    contextMenu.addAction(ClearIcon, tr("&Delete"),this,SLOT(cswDelete()),tr("Delete"));
+    contextMenu.addAction(CopyIcon, tr("&Copy"),this,SLOT(cswCopy()),tr("Ctrl+C"));
+    contextMenu.addAction(CutIcon, tr("&Cut"),this,SLOT(cswCut()),tr("Ctrl+X"));
+    contextMenu.addAction(PasteIcon, tr("&Paste"),this,SLOT(cswPaste()),tr("Ctrl+V"))->setEnabled(hasData);
 
     contextMenu.exec(globalPos);
 }

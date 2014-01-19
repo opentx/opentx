@@ -176,10 +176,6 @@
        <property name="text">
         <string>...</string>
        </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>:/images/clear.png</normaloff>:/images/clear.png</iconset>
-       </property>
       </widget>
      </item>
     </layout>
@@ -242,10 +238,6 @@
       <widget class="QToolButton" name="splashLibraryButton">
        <property name="text">
         <string>...</string>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>:/images/library.png</normaloff>:/images/library.png</iconset>
        </property>
       </widget>
      </item>

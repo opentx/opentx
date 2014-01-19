@@ -7,6 +7,7 @@
 #include "mixes.h"
 #include "channels.h"
 #include "curves.h"
+#include "../helpers.h"
 #include "customswitches.h"
 #include "customfunctions.h"
 #include "telemetry.h"
@@ -22,6 +23,19 @@ ModelEdit::ModelEdit(RadioData & radioData, int modelId, bool openWizard, bool i
   ui->setupUi(this);
   QSettings settings("companion", "companion");
   restoreGeometry(settings.value("modelEditGeometry").toByteArray());  
+  int theme_set=settings.value("theme", 1).toInt();
+  QString Theme;
+  switch(theme_set) {
+    case 0:
+      Theme="classic";
+      break;
+    default:
+      Theme="monochrome";
+      break;          
+  }
+  QIcon SimulateIcon;
+  populate_icon(&SimulateIcon,Theme,"simulate.png");
+  ui->pushButton->setIcon(SimulateIcon);
   addTab(new Setup(this, model), tr("Setup"));
   addTab(new HeliPanel(this, model), tr("Heli"));
   addTab(new FlightModes(this, model, radioData.generalSettings), tr("Flight Modes"));

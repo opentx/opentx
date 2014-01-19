@@ -30,8 +30,14 @@ preferencesDialog::preferencesDialog(QWidget *parent) :
       Theme="monochrome";
       break;          
   }
-  Icon.addPixmap(":/themes/"+Theme+"/preferences.png");
+  populate_icon(&Icon, Theme, "preferences.png");
   this->setWindowIcon(Icon);
+  QIcon LibraryIcon;
+  populate_icon(&LibraryIcon, Theme, "library.png");
+  ui->splashLibraryButton->setIcon(LibraryIcon);
+  QIcon ClearIcon;
+  populate_icon(&ClearIcon, Theme, "clear.png");
+  ui->clearImageButton->setIcon(ClearIcon);
 
   QCheckBox * OptionCheckBox[]= {
       ui->optionCheckBox_1, ui->optionCheckBox_2, ui->optionCheckBox_3, ui->optionCheckBox_4,  ui->optionCheckBox_5, ui->optionCheckBox_6,  ui->optionCheckBox_7,

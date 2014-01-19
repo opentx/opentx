@@ -41,6 +41,7 @@
 
 #include "modelslist.h"
 #include "mdichild.h"
+#include "helpers.h"
 
 class DragDropHeader {
 public:
@@ -82,23 +83,58 @@ void ModelsListWidget::ShowContextMenu(const QPoint& pos)
     const QClipboard *clipboard = QApplication::clipboard();
     const QMimeData *mimeData = clipboard->mimeData();
     bool hasData = mimeData->hasFormat("application/x-companion9x");
+    QSettings settings("companion", "companion");
+    int theme_set=settings.value("theme", 1).toInt();
+    QString Theme;
+    switch(theme_set) {
+      case 0:
+        Theme="classic";
+        break;
+      default:
+        Theme="monochrome";
+        break;          
+    }
+    QIcon AddIcon;
+    populate_icon(&AddIcon,Theme,"add.png");
+    QIcon EditIcon;
+    populate_icon(&EditIcon,Theme,"edit.png");
+    QIcon OpenIcon;
+    populate_icon(&OpenIcon,Theme,"open.png");
+    QIcon WizardIcon;
+    populate_icon(&WizardIcon,Theme,"wizard.png");
+    QIcon ClearIcon;
+    populate_icon(&ClearIcon,Theme,"clear.png");
+    QIcon CopyIcon;
+    populate_icon(&CopyIcon,Theme,"copy.png");
+    QIcon CutIcon;
+    populate_icon(&CutIcon,Theme,"cut.png");
+    QIcon PasteIcon;
+    populate_icon(&PasteIcon,Theme,"paste.png");
+    QIcon DuplicateIcon;
+    populate_icon(&DuplicateIcon,Theme,"duplicate.png");
+    QIcon CurrentModelIcon;
+    populate_icon(&CurrentModelIcon,Theme,"currentmodel.png");
+    QIcon PrintIcon;
+    populate_icon(&PrintIcon,Theme,"print.png");
+    QIcon SimulateIcon;
+    populate_icon(&SimulateIcon,Theme,"simulate.png");
 
     QMenu contextMenu;
-    contextMenu.addAction(QIcon(":/images/edit.png"), tr("&Edit"),this,SLOT(OpenEditWindow()));
-    contextMenu.addAction(QIcon(":/images/open.png"), tr("&Restore from backup"),this,SLOT(LoadBackup()));    
-    contextMenu.addAction(QIcon(":/images/wizard.png"), tr("&Model Wizard"),this,SLOT(OpenWizard()));
+    contextMenu.addAction(EditIcon, tr("&Edit"),this,SLOT(OpenEditWindow()));
+    contextMenu.addAction(OpenIcon, tr("&Restore from backup"),this,SLOT(LoadBackup()));    
+    contextMenu.addAction(WizardIcon, tr("&Model Wizard"),this,SLOT(OpenWizard()));
     contextMenu.addSeparator();
-    contextMenu.addAction(QIcon(":/images/clear.png"), tr("&Delete"),this,SLOT(confirmDelete()),tr("Delete"));
-    contextMenu.addAction(QIcon(":/images/copy.png"), tr("&Copy"),this,SLOT(copy()),tr("Ctrl+C"));
-    contextMenu.addAction(QIcon(":/images/cut.png"), tr("&Cut"),this,SLOT(cut()),tr("Ctrl+X"));
-    contextMenu.addAction(QIcon(":/images/paste.png"), tr("&Paste"),this,SLOT(paste()),tr("Ctrl+V"))->setEnabled(hasData);
-    contextMenu.addAction(QIcon(":/images/duplicate.png"), tr("D&uplicate"),this,SLOT(duplicate()),tr("Ctrl+U"));
+    contextMenu.addAction(ClearIcon, tr("&Delete"),this,SLOT(confirmDelete()),tr("Delete"));
+    contextMenu.addAction(CopyIcon, tr("&Copy"),this,SLOT(copy()),tr("Ctrl+C"));
+    contextMenu.addAction(CutIcon, tr("&Cut"),this,SLOT(cut()),tr("Ctrl+X"));
+    contextMenu.addAction(PasteIcon, tr("&Paste"),this,SLOT(paste()),tr("Ctrl+V"))->setEnabled(hasData);
+    contextMenu.addAction(DuplicateIcon, tr("D&uplicate"),this,SLOT(duplicate()),tr("Ctrl+U"));
     contextMenu.addSeparator();
-    contextMenu.addAction(QIcon(":/images/currentmodel.png"), tr("&Use as default"),this,SLOT(setdefault()));
+    contextMenu.addAction(CurrentModelIcon, tr("&Use as default"),this,SLOT(setdefault()));
     contextMenu.addSeparator();
-    contextMenu.addAction(QIcon(":/images/print.png"), tr("P&rint model"),this, SLOT(print()),tr("Alt+R"));
+    contextMenu.addAction(PrintIcon, tr("P&rint model"),this, SLOT(print()),tr("Alt+R"));
     contextMenu.addSeparator();
-    contextMenu.addAction(QIcon(":/images/simulate.png"), tr("&Simulate model"),this, SLOT(simulate()),tr("Alt+S"));
+    contextMenu.addAction(SimulateIcon, tr("&Simulate model"),this, SLOT(simulate()),tr("Alt+S"));
     contextMenu.exec(globalPos);
 }
 
