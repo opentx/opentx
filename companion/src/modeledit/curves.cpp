@@ -2,6 +2,7 @@
 #include "ui_curves.h"
 #include "node.h"
 #include "edge.h"
+#include "helpers.h"
 #include <QSpinBox>
 #include <QCheckBox>
 #include <QPushButton>
@@ -83,9 +84,8 @@ Curves::Curves(QWidget * parent, ModelData & model):
   QGraphicsScene *scene = new QGraphicsScene(ui->curvePreview);
   scene->setItemIndexMethod(QGraphicsScene::NoIndex);
   ui->curvePreview->setScene(scene);
-
-  QIcon clearIcon;
-  clearIcon.addFile(":/images/clear.png", QSize(), QIcon::Normal, QIcon::Off);
+  QIcon ClearIcon;
+  populate_icon(&ClearIcon,"clear.png");
 
   for (int i=0; i<GetEepromInterface()->getCapability(NumCurves); i++) {
     visibleCurves[i] = false;
@@ -94,7 +94,7 @@ Curves::Curves(QWidget * parent, ModelData & model):
     QPushButton * reset = new QPushButton(this);
     reset->setProperty("index", i);
     reset->setMinimumSize(QSize(0, 0));
-    reset->setIcon(clearIcon);
+    reset->setIcon(ClearIcon);
     reset->setIconSize(QSize(14, 14));
     connect(reset, SIGNAL(clicked()), this, SLOT(resetCurve()));
     ui->curvesLayout->addWidget(reset, i, 0, 1, 1);

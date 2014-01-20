@@ -44,7 +44,7 @@ const char * Th9xInterface::getName()
 
 const int Th9xInterface::getEEpromSize()
 {
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings("companion", "companion");
   QString avrMCU = settings.value("mcu", QString("m64")).toString();
   if (avrMCU==QString("m128")) {
     return 2*EESIZE_STOCK;

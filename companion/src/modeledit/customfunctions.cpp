@@ -36,7 +36,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
       }
     }
 
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     QString path = settings.value("sdPath", ".").toString();
     path.append("/SOUNDS/");
     QString lang = generalSettings.ttsLanguage;
@@ -123,9 +123,11 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
     connect(fswtchParamArmT[i], SIGNAL(editTextChanged ( const QString)), this, SLOT(customFunctionEdited()));
 
 #ifdef PHONON
+    QIcon PlayIcon;
+    populate_icon(&PlayIcon,"play.png");
     playBT[i] = new QPushButton(this);
     playBT[i]->setObjectName(QString("play_%1").arg(i));
-    playBT[i]->setIcon(QIcon(":/images/play.png"));
+    playBT[i]->setIcon(PlayIcon);
     paramLayout->addWidget(playBT[i]);
     connect(playBT[i], SIGNAL(pressed()), this, SLOT(playMusic()));
 #endif
@@ -160,6 +162,9 @@ void CustomFunctionsPanel::mediaPlayer_state(Phonon::State newState, Phonon::Sta
 {
     if (phononLock)
       return;
+    QIcon PlayIcon;
+    populate_icon(&PlayIcon,"play.png");
+    
     phononLock=true;
     if ((newState==Phonon::StoppedState || newState==Phonon::PausedState)  && oldState==Phonon::PlayingState) {
       clickObject->stop();
@@ -167,7 +172,7 @@ void CustomFunctionsPanel::mediaPlayer_state(Phonon::State newState, Phonon::Sta
       clickObject->clear();
       for (int i=0; i<GetEepromInterface()->getCapability(CustomFunctions); i++) {
         playBT[i]->setObjectName(QString("play_%1").arg(i));
-        playBT[i]->setIcon(QIcon(":/images/play.png"));
+        playBT[i]->setIcon(PlayIcon);
       }
     }
     if (newState==Phonon::ErrorState) {
@@ -176,7 +181,7 @@ void CustomFunctionsPanel::mediaPlayer_state(Phonon::State newState, Phonon::Sta
       clickObject->clear();
       for (int i=0; i<GetEepromInterface()->getCapability(CustomFunctions); i++) {
         playBT[i]->setObjectName(QString("play_%1").arg(i));
-        playBT[i]->setIcon(QIcon(":/images/play.png"));
+        playBT[i]->setIcon(PlayIcon);
       }
     }
 
@@ -189,7 +194,12 @@ void CustomFunctionsPanel::playMusic()
     QPushButton *playButton = qobject_cast<QPushButton*>(sender());
     int index=playButton->objectName().mid(5,2).toInt();
     QString function=playButton->objectName().left(4);
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
+    QIcon PlayIcon;
+    populate_icon(&PlayIcon,"play.png");
+    QIcon StopIcon;
+    populate_icon(&StopIcon,"stop.png");
+      
     QString path=settings.value("sdPath", ".").toString();
     QDir qd(path);
     QString track;
@@ -217,12 +227,12 @@ void CustomFunctionsPanel::playMusic()
         clickObject->setCurrentSource(Phonon::MediaSource(track));
         clickObject->play();
         playBT[index]->setObjectName(QString("stop_%1").arg(index));
-        playBT[index]->setIcon(QIcon(":/images/stop.png"));
+        playBT[index]->setIcon(StopIcon);
       } else {
         clickObject->stop();
         clickObject->clear();
         playBT[index]->setObjectName(QString("play_%1").arg(index));
-        playBT[index]->setIcon(QIcon(":/images/play.png"));
+        playBT[index]->setIcon(PlayIcon);
       }
 #endif
     }
@@ -457,6 +467,14 @@ void CustomFunctionsPanel::fsw_customContextMenuRequested(QPoint pos)
 {
     QLabel *label = (QLabel *)sender();
     selectedFunction = label->property("index").toInt();
+    QIcon ClearIcon;
+    populate_icon(&ClearIcon,"clear.png");
+    QIcon CopyIcon;
+    populate_icon(&CopyIcon,"copy.png");
+    QIcon CutIcon;
+    populate_icon(&CutIcon,"cut.png");
+    QIcon PasteIcon;
+    populate_icon(&PasteIcon,"paste.png");
 
     QPoint globalPos = label->mapToGlobal(pos);
 
@@ -465,10 +483,10 @@ void CustomFunctionsPanel::fsw_customContextMenuRequested(QPoint pos)
     bool hasData = mimeData->hasFormat("application/x-companion9x-fsw");
 
     QMenu contextMenu;
-    contextMenu.addAction(QIcon(":/images/clear.png"), tr("&Delete"),this,SLOT(fswDelete()),tr("Delete"));
-    contextMenu.addAction(QIcon(":/images/copy.png"), tr("&Copy"),this,SLOT(fswCopy()),tr("Ctrl+C"));
-    contextMenu.addAction(QIcon(":/images/cut.png"), tr("&Cut"),this,SLOT(fswCut()),tr("Ctrl+X"));
-    contextMenu.addAction(QIcon(":/images/paste.png"), tr("&Paste"),this,SLOT(fswPaste()),tr("Ctrl+V"))->setEnabled(hasData);
+    contextMenu.addAction(ClearIcon, tr("&Delete"),this,SLOT(fswDelete()),tr("Delete"));
+    contextMenu.addAction(CopyIcon, tr("&Copy"),this,SLOT(fswCopy()),tr("Ctrl+C"));
+    contextMenu.addAction(CutIcon, tr("&Cut"),this,SLOT(fswCut()),tr("Ctrl+X"));
+    contextMenu.addAction(PasteIcon, tr("&Paste"),this,SLOT(fswPaste()),tr("Ctrl+V"))->setEnabled(hasData);
 
     contextMenu.exec(globalPos);
 }

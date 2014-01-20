@@ -1484,3 +1484,28 @@ QString getCenterBeep(ModelData * g_model)
   if(g_model->beepANACenter & 0x80) strl << "LS";
   return strl.join(", ");
 }
+
+void populate_icon(QIcon *Icon, QString baseimage)
+{
+  static QString usedtheme=getTheme();
+  Icon->addFile(":/themes/"+usedtheme+"/16/"+baseimage,QSize(16,16));
+  Icon->addFile(":/themes/"+usedtheme+"/24/"+baseimage,QSize(24,24));
+  Icon->addFile(":/themes/"+usedtheme+"/32/"+baseimage,QSize(32,32));
+  Icon->addFile(":/themes/"+usedtheme+"/48/"+baseimage,QSize(48,48));
+}
+
+QString getTheme()
+{
+  QSettings settings("companion", "companion");
+  int theme_set=settings.value("theme", 1).toInt();
+  QString Theme;
+  switch(theme_set) {
+    case 0:
+      Theme="classic";
+      break;
+    default:
+      Theme="monochrome";
+      break;          
+  }
+  return Theme;
+}

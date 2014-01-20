@@ -2,6 +2,7 @@
 #include "ui_burnconfigdialog.h"
 #include "avroutputdialog.h"
 #include "eeprominterface.h"
+#include "helpers.h"
 #include <QtGui>
 
 #if !defined WIN32 && defined __GNUC__
@@ -278,7 +279,9 @@ void burnConfigDialog::listProgrammers()
     QStringList arguments;
     arguments << "-c?";
     avrOutputDialog *ad = new avrOutputDialog(this, ui->avrdude_location->text(), arguments, "List available programmers", AVR_DIALOG_KEEP_OPEN, TRUE);
-    ad->setWindowIcon(QIcon(":/images/list.png"));
+    QIcon Icon;
+    populate_icon(&Icon,"list.png");
+    ad->setWindowIcon(Icon);
     ad->show();
 }
 
@@ -295,7 +298,9 @@ void burnConfigDialog::on_pushButton_4_clicked()
     arguments << "-?";
 
     avrOutputDialog *ad = new avrOutputDialog(this, ui->avrdude_location->text(), arguments, "Show help", AVR_DIALOG_KEEP_OPEN,TRUE);
-    ad->setWindowIcon(QIcon(":/images/configure.png"));
+    QIcon Icon;
+    populate_icon(&Icon,"configure.png");
+    ad->setWindowIcon(Icon);
     ad->show();
 }
 
@@ -312,7 +317,9 @@ void burnConfigDialog::readFuses()
     arguments << "-c" << avrProgrammer << "-p" << avrMCU << args << str;
 
     avrOutputDialog *ad = new avrOutputDialog(this, avrLoc, arguments, "Read Fuses",AVR_DIALOG_KEEP_OPEN,TRUE);
-    ad->setWindowIcon(QIcon(":/images/fuses.png"));
+    QIcon Icon;
+    populate_icon(&Icon,"fuses.png");
+    ad->setWindowIcon(Icon);
     ad->show();
 }
 
@@ -324,7 +331,6 @@ void burnConfigDialog::restFuses(bool eeProtect)
     //avrdude -c usbasp -p m64 -U efuse:w:<0xFF>:m
 
     QMessageBox::StandardButton ret = QMessageBox::No;
-
     ret = QMessageBox::warning(this, tr("Companion"),
                                tr("<b><u>WARNING!</u></b><br>This will reset the fuses of  %1 to the factory settings.<br>Writing fuses can mess up your radio.<br>Do this only if you are sure they are wrong!<br>Are you sure you want to continue?").arg(avrMCU),
                                QMessageBox::Yes | QMessageBox::No);
@@ -346,7 +352,9 @@ void burnConfigDialog::restFuses(bool eeProtect)
           QStringList argread;
           argread << "-c" << avrProgrammer << "-p" << avrMCU << args  <<"-U" << "lfuse:r:"+tempFile+":r" ;
           avrOutputDialog *ad = new avrOutputDialog(this, avrLoc, argread, "Reset Fuses",AVR_DIALOG_CLOSE_IF_SUCCESSFUL,FALSE);
-          ad->setWindowIcon(QIcon(":/images/fuses.png"));
+          QIcon Icon;
+          populate_icon(&Icon,"fuses.png");
+          ad->setWindowIcon(Icon);
           ad->exec();
           QFile file(tempFile);
           if (file.exists() && file.size()==1) {
@@ -375,7 +383,9 @@ void burnConfigDialog::restFuses(bool eeProtect)
           arguments << "-c" << avrProgrammer << "-p" << avrMCU << args << "-B" << "100" << "-u" << str;          
         }
         avrOutputDialog *ad = new avrOutputDialog(this, avrLoc, arguments, "Reset Fuses",AVR_DIALOG_KEEP_OPEN,TRUE);
-        ad->setWindowIcon(QIcon(":/images/fuses.png"));
+        QIcon Icon;
+        populate_icon(&Icon,"fuses.png");
+        ad->setWindowIcon(Icon);
         ad->show();
     }
 

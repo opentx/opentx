@@ -17,7 +17,15 @@ preferencesDialog::preferencesDialog(QWidget *parent) :
   updateLock(false)
 {
   ui->setupUi(this);
-
+  QIcon Icon;
+  populate_icon(&Icon,"preferences.png");
+  this->setWindowIcon(Icon);
+  QIcon LibraryIcon;
+  populate_icon(&LibraryIcon,"library.png");
+  ui->splashLibraryButton->setIcon(LibraryIcon);
+  QIcon ClearIcon;
+  populate_icon(&ClearIcon,"clear.png");
+  ui->clearImageButton->setIcon(ClearIcon);
 
   QCheckBox * OptionCheckBox[]= {
       ui->optionCheckBox_1, ui->optionCheckBox_2, ui->optionCheckBox_3, ui->optionCheckBox_4,  ui->optionCheckBox_5, ui->optionCheckBox_6,  ui->optionCheckBox_7,
@@ -265,6 +273,8 @@ void preferencesDialog::writeValues()
   settings.setValue("rename_firmware_files", ui->renameFirmware->isChecked());
   settings.setValue("wizardEnable", ui->wizardEnable_ChkB->isChecked());
   settings.setValue("show_splash", ui->showSplash->isChecked());
+  settings.setValue("theme", ui->theme_CB->currentIndex());
+  settings.setValue("icon_size", ui->iconSize_CB->currentIndex());
   settings.setValue("simuSW", ui->simuSW->isChecked());
   settings.setValue("history_size", ui->historySize->value());
   settings.setValue("burnFirmware", ui->burnFirmware->isChecked());
@@ -404,6 +414,8 @@ void preferencesDialog::initSettings()
   ui->renameFirmware->setChecked(settings.value("rename_firmware_files", false).toBool());
   ui->wizardEnable_ChkB->setChecked(settings.value("wizardEnable", true).toBool());
   ui->showSplash->setChecked(settings.value("show_splash", true).toBool());
+  ui->theme_CB->setCurrentIndex(settings.value("theme", 1).toInt());
+  ui->iconSize_CB->setCurrentIndex(settings.value("icon_size", 2).toInt());
   ui->historySize->setValue(settings.value("history_size", 10).toInt());
   ui->backLightColor->setCurrentIndex(settings.value("backLight", 0).toInt());
   ui->startupCheck_fw->setChecked(settings.value("startup_check_fw", true).toBool());
