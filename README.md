@@ -1,7 +1,7 @@
-OpenTX
-======
+﻿##OpenTX Master Branch
 
-The master branch of OpenTX is where you find the source code for the stable release.  
+You have found your way to the GitHub repository site for the OpenTX Master Branch. This code branch holds the source code for the latest stable releases.    
 
-The next branch of OpenTX is where you find the ongoing development.  
-The only thing that is guaranteed if you build and use software from the next branch is that you are likely to crash your plane. 
+The ongoing development is taking place in the next branch, not here.  
+
+Refer to the opentx.wiki for information about setting up the tool chains for building OpenTX and OpenTX companion and other development related issues.
