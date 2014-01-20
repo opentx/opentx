@@ -83,15 +83,18 @@ class Setup : public ModelPanel
     void on_extendedTrims_toggled(bool checked);
     void on_throttleWarning_toggled(bool checked);
     void on_throttleReverse_toggled(bool checked);
+    void on_displayText_toggled(bool checked);
     void on_image_currentIndexChanged(int index);
     void on_trimIncrement_currentIndexChanged(int index);
     void onBeepCenterToggled(bool checked);
     void startupSwitchEdited(int value);
+    void startupSwitchToggled(bool checked);
     void onChildModified();
 
   private:
     Ui::Setup *ui;
     QVector<QSlider *> startupSwitchesSliders;
+    QVector<QCheckBox *> startupSwitchesCheckboxes;
     QVector<QCheckBox *> centerBeepCheckboxes;
     ModulePanel * modules[C9X_NUM_MODULES+1];
     TimerPanel * timers[C9X_MAX_TIMERS];

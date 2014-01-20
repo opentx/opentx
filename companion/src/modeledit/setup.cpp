@@ -398,6 +398,10 @@ Setup::Setup(QWidget *parent, ModelData & model):
     ui->modelImage_label->hide();
     ui->imagePreview->hide();
   }
+  
+  if (!GetEepromInterface()->getCapability(HasDisplayText)) {
+    ui->displayText->hide();
+  }
 
   // Beep Center checkboxes
   int analogs = 4 + GetEepromInterface()->getCapability(Pots);
@@ -412,11 +416,10 @@ Setup::Setup(QWidget *parent, ModelData & model):
   ui->switchesStartupLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum), 0, analogs+GetEepromInterface()->getCapability(RotaryEncoders));
 
   // Startup switches warnings
-  ui->switchesStartupWarning->setProperty("index", 0);
-  connect(ui->switchesStartupWarning, SIGNAL(currentIndexChanged(int)), this, SLOT(startupSwitchEdited(int)));
   for (int i=0; i<GetEepromInterface()->getCapability(Switches)-1; i++) {
     QLabel * label = new QLabel();
     QSlider * slider = new QSlider();
+    QCheckBox * cb = new QCheckBox();
     slider->setProperty("index", i+1);
     slider->setOrientation(Qt::Vertical);
     slider->setMinimum(0);
@@ -435,10 +438,17 @@ Setup::Setup(QWidget *parent, ModelData & model):
       label->setText(switches9X[i]);
       slider->setMaximum(i==0 ? 2 : 1);
     }
+    cb->setProperty("index", i+1);
     ui->switchesStartupLayout->addWidget(label, 0, i+1);
+    ui->switchesStartupLayout->setAlignment(label, Qt::AlignCenter);
     ui->switchesStartupLayout->addWidget(slider, 1, i+1);
+    ui->switchesStartupLayout->setAlignment(slider, Qt::AlignCenter);
+    ui->switchesStartupLayout->addWidget(cb, 2, i+1);
+    ui->switchesStartupLayout->setAlignment(cb, Qt::AlignCenter);
     connect(slider, SIGNAL(valueChanged(int)), this, SLOT(startupSwitchEdited(int)));
+    connect(cb, SIGNAL(toggled(bool)), this, SLOT(startupSwitchToggled(bool)));
     startupSwitchesSliders << slider;
+    startupSwitchesCheckboxes << cb;
   }
   ui->switchesStartupLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum), 0, GetEepromInterface()->getCapability(Switches));
 
@@ -539,6 +549,7 @@ void Setup::update()
   ui->throttleTrim->setChecked(model.thrTrim);
   ui->extendedLimits->setChecked(model.extendedLimits);
   ui->extendedTrims->setChecked(model.extendedTrims);
+  ui->displayText->setChecked(model.displayText);
 
   updateBeepCenter();
   updateStartupSwitches();
@@ -563,13 +574,14 @@ void Setup::updateStartupSwitches()
   lock = true;
 
   unsigned int switchStates = model.switchWarningStates;
-  bool enabled = !(switchStates & 0x01);
-  ui->switchesStartupWarning->setCurrentIndex(switchStates & 0x01);
-  switchStates >>= 1;
+  bool enabled;
 
   for (int i=0; i<GetEepromInterface()->getCapability(Switches)-1; i++) {
     QSlider * slider = startupSwitchesSliders[i];
+    QCheckBox * cb = startupSwitchesCheckboxes[i];
+    enabled = !(model.nSwToWarn & (1 << i));
     slider->setEnabled(enabled);
+    cb->setChecked(enabled);
     if (IS_TARANIS(GetEepromInterface()->getBoard())) {
       slider->setValue(i==5 ? (switchStates & 0x3)/2 : switchStates & 0x3);
       switchStates >>= 2;
@@ -590,24 +602,24 @@ void Setup::startupSwitchEdited(int value)
     unsigned int mask;
     int index = sender()->property("index").toInt();
 
-    if (index == 0) {
-      mask = 0x01;
-    }
-    else if (IS_TARANIS(GetEepromInterface()->getBoard())) {
-      if (index == 6)
-        mask = 0x02 << (index*2 - 1);
+  if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+      if (index == 6)  {
+        shift = (index - 1)*2;
+        mask = 0x02 << shift;
+        shift++;
+	  }
       else {
-        shift = index*2 - 1;
+        shift = (index - 1)*2;
         mask = 0x03 << shift;
       }
     }
     else {
       if (index == 1) {
-        shift = 1;
-        mask = 0x03 << shift;
+        mask = 0x03;
       }
       else {
-        mask = 0x01 << (index+1);
+        shift = index;
+        mask = 0x01 << shift;
       }
     }
 
@@ -615,7 +627,7 @@ void Setup::startupSwitchEdited(int value)
 
     if (value) {
       if (shift == 0) {
-        model.switchWarningStates |= mask;
+        model.switchWarningStates |= value;
       }
       else {
         model.switchWarningStates |= (value << shift);
@@ -625,6 +637,25 @@ void Setup::startupSwitchEdited(int value)
     updateStartupSwitches();
     emit modified();
   }
+}
+
+void Setup::startupSwitchToggled(bool checked)
+{
+  int index = sender()->property("index").toInt()-1;
+  
+  if (checked)
+    model.nSwToWarn &= ~(1 << index);
+  else
+    model.nSwToWarn |= (1 << index);
+
+  updateStartupSwitches();
+  emit modified();
+}
+
+void Setup::on_displayText_toggled(bool checked)
+{
+  model.displayText = checked;
+  emit modified();
 }
 
 void Setup::on_throttleTrim_toggled(bool checked)

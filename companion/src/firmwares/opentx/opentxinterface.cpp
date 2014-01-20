@@ -695,6 +695,9 @@ int Open9xInterface::getCapability(const Capability capability)
       return (IS_TARANIS(board) ? 212 : 128) ;
     case GetThrSwitch:
       return (IS_TARANIS(board) ? DSW_SF1 : DSW_THR) ;
+    case PotWarnings:
+      return (IS_TARANIS(board) ? 4 : IS_ARM(board) ? 3 : 0);
+    case HasDisplayText:
     case VirtualInputs:
     case LuaInputs:
     case LimitsPer1000:

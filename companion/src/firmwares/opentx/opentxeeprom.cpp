@@ -1856,7 +1856,7 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
   internalField.Append(new BoolField<1>(modelData.disableThrottleWarning));
 
   if (IS_TARANIS(board) || (IS_ARM(board) && version >= 216))
-    internalField.Append(new SpareBitsField<1>());
+    internalField.Append(new BoolField<1>(modelData.displayText));
   else
     internalField.Append(new BoolField<1>(modelData.moduleData[0].ppmPulsePol));
 
@@ -1927,6 +1927,10 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
     internalField.Append(new MavlinkField(modelData.mavlink, board, version));
   }
 
+  if (!IS_ARM(board) && (version >= 216)) {
+    internalField.Append(new UnsignedField<8>(modelData.nSwToWarn));
+  }
+
   if (IS_TARANIS(board) && version < 215) {
     internalField.Append(new CharField<10>(modelData.bitmap));
   }
@@ -1953,6 +1957,14 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
     }
   }
 
+  if (IS_ARM(board) && version >= 216) {
+    internalField.Append(new UnsignedField<8>(modelData.nSwToWarn));
+    internalField.Append(new UnsignedField<8>(modelData.nPotsToWarn));
+    for (int i=0; i < GetEepromInterface()->getCapability(PotWarnings); i++) {
+      internalField.Append(new SignedField<8>(modelData.potPosition[i]));
+	}
+  }
+
   if (IS_TARANIS(board)) {
     for (int i=0; i<MAX_CURVES(board, version); i++) {
       internalField.Append(new ZCharField<6>(modelData.curves[i].name));
@@ -1964,6 +1976,11 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
     internalField.Append(new SpareBitsField<720>());
     // TODO char inputNames[MAX_INPUTS][4];
     internalField.Append(new SpareBitsField<1024>());
+    internalField.Append(new UnsignedField<8>(modelData.nSwToWarn));
+    internalField.Append(new UnsignedField<8>(modelData.nPotsToWarn));
+    for (int i=0; i < GetEepromInterface()->getCapability(PotWarnings); i++) {
+      internalField.Append(new SignedField<8>(modelData.potPosition[i]));
+    }
   }
 }
 
