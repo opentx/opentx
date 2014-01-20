@@ -21,11 +21,9 @@ ModelEdit::ModelEdit(RadioData & radioData, int modelId, bool openWizard, bool i
   generalSettings(radioData.generalSettings)
 {
   ui->setupUi(this);
-  QSettings settings("companion", "companion");
+  QSettings settings;
   restoreGeometry(settings.value("modelEditGeometry").toByteArray());  
-  QIcon SimulateIcon;
-  populate_icon(&SimulateIcon,"simulate.png");
-  ui->pushButton->setIcon(SimulateIcon);
+  ui->pushButton->setIcon(CompanionIcon("simulate.png"));
   addTab(new Setup(this, model), tr("Setup"));
   addTab(new HeliPanel(this, model), tr("Heli"));
   addTab(new FlightModes(this, model, radioData.generalSettings), tr("Flight Modes"));
@@ -47,7 +45,7 @@ ModelEdit::~ModelEdit()
 
 void ModelEdit::closeEvent(QCloseEvent *event)
 {
-  QSettings settings("companion", "companion");
+  QSettings settings;
   settings.setValue("modelEditGeometry", saveGeometry());
 }
 

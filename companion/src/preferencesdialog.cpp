@@ -17,15 +17,9 @@ preferencesDialog::preferencesDialog(QWidget *parent) :
   updateLock(false)
 {
   ui->setupUi(this);
-  QIcon Icon;
-  populate_icon(&Icon,"preferences.png");
-  this->setWindowIcon(Icon);
-  QIcon LibraryIcon;
-  populate_icon(&LibraryIcon,"library.png");
-  ui->splashLibraryButton->setIcon(LibraryIcon);
-  QIcon ClearIcon;
-  populate_icon(&ClearIcon,"clear.png");
-  ui->clearImageButton->setIcon(ClearIcon);
+  setWindowIcon(CompanionIcon("preferences.png"));
+  ui->splashLibraryButton->setIcon(CompanionIcon("library.png"));
+  ui->clearImageButton->setIcon(CompanionIcon("clear.png"));
 
   QCheckBox * OptionCheckBox[]= {
       ui->optionCheckBox_1, ui->optionCheckBox_2, ui->optionCheckBox_3, ui->optionCheckBox_4,  ui->optionCheckBox_5, ui->optionCheckBox_6,  ui->optionCheckBox_7,
@@ -233,7 +227,7 @@ void preferencesDialog::firmwareChanged()
     ui->CPU_ID_LE->hide();
     ui->CPU_ID_LABEL->hide();
   }
-  QSettings settings("companion", "companion");
+  QSettings settings;
   settings.beginGroup("FwRevisions");
   int fwrev = settings.value(variant.id, -1).toInt();
   settings.endGroup();
@@ -259,7 +253,7 @@ void preferencesDialog::firmwareChanged()
 
 void preferencesDialog::writeValues()
 {
-  QSettings settings("companion", "companion");
+  QSettings settings;
   if (ui->locale_QB->currentIndex() > 0)
     settings.setValue("locale", ui->locale_QB->itemData(ui->locale_QB->currentIndex()));
   else
@@ -392,7 +386,7 @@ void preferencesDialog::populateFirmwareOptions(const FirmwareInfo * firmware)
 
 void preferencesDialog::initSettings()
 {
-  QSettings settings("companion", "companion");
+  QSettings settings;
   int i = ui->locale_QB->findData(settings.value("locale"));
   if (i < 0) i = 0;
   ui->locale_QB->setCurrentIndex(i);
@@ -533,7 +527,7 @@ void preferencesDialog::on_fw_dnld_clicked()
   writeValues();
   if (!variant.firmware->getUrl(variant.id).isNull()) {
     if (ui->burnFirmware->isChecked()) {
-      QSettings settings("companion", "companion");
+      QSettings settings;
       current_firmware_variant = getFirmwareVariant();
       settings.setValue("firmware", current_firmware_variant.id);
     }
@@ -554,7 +548,7 @@ void preferencesDialog::on_voice_dnld_clicked()
 void preferencesDialog::on_libraryPathButton_clicked()
 {
   ui->ProfSave_PB->setEnabled(true);
-  QSettings settings("companion", "companion");
+  QSettings settings;
   QString fileName = QFileDialog::getExistingDirectory(this,tr("Select your library folder"), settings.value("libraryPath").toString());
   if (!fileName.isEmpty()) {
     settings.setValue("libraryPath", fileName);
@@ -564,7 +558,7 @@ void preferencesDialog::on_libraryPathButton_clicked()
 
 void preferencesDialog::on_snapshotPathButton_clicked()
 {
-  QSettings settings("companion", "companion");
+  QSettings settings;
   QString fileName = QFileDialog::getExistingDirectory(this,tr("Select your snapshot folder"), settings.value("snapshotPath").toString());
   if (!fileName.isEmpty()) {
     settings.setValue("snapshotpath", fileName);
@@ -575,7 +569,7 @@ void preferencesDialog::on_snapshotPathButton_clicked()
 
 void preferencesDialog::on_snapshotClipboardCKB_clicked()
 {
-  QSettings settings("companion", "companion");
+  QSettings settings;
   if (ui->snapshotClipboardCKB->isChecked()) {
     ui->snapshotPath->setDisabled(true);
     ui->snapshotPathButton->setDisabled(true);
@@ -591,7 +585,7 @@ void preferencesDialog::on_snapshotClipboardCKB_clicked()
 
 void preferencesDialog::on_backupPathButton_clicked()
 {
-  QSettings settings("companion", "companion");
+  QSettings settings;
   QString fileName = QFileDialog::getExistingDirectory(this,tr("Select your Models and Settings backup folder"), settings.value("backupPath").toString());
   if (!fileName.isEmpty()) {
     settings.setValue("backupPath", fileName);
@@ -602,7 +596,7 @@ void preferencesDialog::on_backupPathButton_clicked()
 
 void preferencesDialog::on_ge_pathButton_clicked()
 {
-  QSettings settings("companion", "companion");
+  QSettings settings;
   QString fileName = QFileDialog::getOpenFileName(this, tr("Select Google Earth executable"),ui->ge_lineedit->text());
   if (!fileName.isEmpty()) {
     ui->ge_lineedit->setText(fileName);
@@ -628,7 +622,7 @@ void preferencesDialog::on_splashLibraryButton_clicked()
 
 void preferencesDialog::on_sdPathButton_clicked()
 {
-  QSettings settings("companion", "companion");
+  QSettings settings;
   QString fileName = QFileDialog::getExistingDirectory(this,tr("Select the folder replicating your SD structure"), settings.value("sdPath").toString());
   if (!fileName.isEmpty()) {
     ui->sdPath->setText(fileName);
@@ -638,7 +632,7 @@ void preferencesDialog::on_sdPathButton_clicked()
 
 void preferencesDialog::on_ProfSlot_SB_valueChanged()
 {
-  QSettings settings("companion", "companion");
+  QSettings settings;
   settings.beginGroup("Profiles");
   QString profile=QString("profile%1").arg(ui->ProfSlot_SB->value());
   settings.beginGroup(profile);
@@ -667,7 +661,7 @@ void preferencesDialog::on_ProfSlot_SB_valueChanged()
 
 void preferencesDialog::on_ProfSave_PB_clicked()
 {
-  QSettings settings("companion", "companion");
+  QSettings settings;
   settings.beginGroup("Profiles");
   QString profile=QString("profile%1").arg(ui->ProfSlot_SB->value());
   QString name=ui->ProfName_LE->text();
@@ -706,7 +700,7 @@ void preferencesDialog::on_ProfSave_PB_clicked()
 
 void preferencesDialog::on_export_PB_clicked()
 {
-    QSettings settings("companion", "companion");
+    QSettings settings;
     QString profile=QString("profile%1").arg(ui->ProfSlot_SB->value());
     QString name=ui->ProfName_LE->text();
     if (!name.isEmpty()) {
@@ -727,7 +721,7 @@ void preferencesDialog::on_export_PB_clicked()
 
 void preferencesDialog::on_import_PB_clicked()
 {
-    QSettings settings("companion", "companion");
+    QSettings settings;
     QString profile=QString("profile%1").arg(ui->ProfSlot_SB->value());
     QString name=ui->ProfName_LE->text();
     if (!name.isEmpty()) {
@@ -760,7 +754,7 @@ void preferencesDialog::on_SplashSelect_clicked()
     supportedImageFormats += QLatin1String(" *.") + QImageReader::supportedImageFormats()[formatIndex];
   }
 
-  QSettings settings("companion", "companion");
+  QSettings settings;
   QString fileName = QFileDialog::getOpenFileName(this,
           tr("Open Image to load"), settings.value("lastImagesDir").toString(), tr("Images (%1)").arg(supportedImageFormats));
 
@@ -837,7 +831,7 @@ void preferencesDialog::on_joystickChkB_clicked() {
 }
 
 void preferencesDialog::on_joystickcalButton_clicked() {
-   //QSettings settings("companion", "companion");
+   //QSettings settings;
    //settings.setValue("joystick-name",ui->joystickCB->currentText());
    joystickDialog * jd=new joystickDialog(this, ui->joystickCB->currentIndex());
    jd->exec();
@@ -849,7 +843,7 @@ void preferencesDialog::on_checkFWUpdates_clicked()
 {
     FirmwareVariant variant = getFirmwareVariant();
     if (ui->burnFirmware->isChecked()) {
-      QSettings settings("companion", "companion");
+      QSettings settings;
       current_firmware_variant = variant;
       settings.setValue("firmware", variant.id);
     }

@@ -145,7 +145,7 @@ OpentxTaranisSimulator::OpentxTaranisSimulator(Open9xInterface * open9xInterface
   open9xInterface(open9xInterface)
 {
   taranisSimulatorBoard = GetEepromInterface()->getBoard();
-  QSettings settings("companion", "companion");
+  QSettings settings;
   QString path=settings.value("sdPath", ".").toString()+"/";
   int i=0;
   for (i=0; i< std::min(path.length(),1022); i++) {

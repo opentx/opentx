@@ -66,7 +66,7 @@ contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnu
           }
         }
         str.append("<tr><td class=\"mycss\">&nbsp;</td></tr>");
-        str.append("<tr><td colspan=3 class=\"mycss\">"+tr("Honors go to Rafal Tomczak (RadioClone) and Thomas Husterer (th9x) \nof course. Also to Erez Raviv (er9x) and it's fantastic eePe, from which\ncompanion9x was forked out.")+"</td></tr>");
+        str.append("<tr><td colspan=3 class=\"mycss\">"+tr("Honors go to Rafal Tomczak (RadioClone) and Thomas Husterer (th9x) \nof course. Also to Erez Raviv (er9x) and it's fantastic eePe, from which\nOpenTX Companion was forked out.")+"</td></tr>");
         str.append("<tr><td colspan=3 class=\"mycss\">"+tr("Thank you all !!!")+"</td></tr>");
         str.append("</table>");
         str.append("</body></html>");        

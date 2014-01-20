@@ -84,8 +84,6 @@ Curves::Curves(QWidget * parent, ModelData & model):
   QGraphicsScene *scene = new QGraphicsScene(ui->curvePreview);
   scene->setItemIndexMethod(QGraphicsScene::NoIndex);
   ui->curvePreview->setScene(scene);
-  QIcon ClearIcon;
-  populate_icon(&ClearIcon,"clear.png");
 
   for (int i=0; i<GetEepromInterface()->getCapability(NumCurves); i++) {
     visibleCurves[i] = false;
@@ -94,7 +92,7 @@ Curves::Curves(QWidget * parent, ModelData & model):
     QPushButton * reset = new QPushButton(this);
     reset->setProperty("index", i);
     reset->setMinimumSize(QSize(0, 0));
-    reset->setIcon(ClearIcon);
+    reset->setIcon(CompanionIcon("clear.png"));
     reset->setIconSize(QSize(14, 14));
     connect(reset, SIGNAL(clicked()), this, SLOT(resetCurve()));
     ui->curvesLayout->addWidget(reset, i, 0, 1, 1);
@@ -600,9 +598,9 @@ void ModelEdit::on_ca_apply_PB_clicked()
 
 void ModelEdit::clearCurves(bool ask)
 {
-    if(ask) {
-      int res = QMessageBox::question(this,tr("Clear Curves?"),tr("Really clear all the curves?"),QMessageBox::Yes | QMessageBox::No);
-      if(res!=QMessageBox::Yes) return;
+    if (ask) {
+      int res = QMessageBox::question(this, tr("Clear Curves?"), tr("Really clear all the curves?"), QMessageBox::Yes | QMessageBox::No);
+      if (res!=QMessageBox::Yes) return;
     }
     curvesLock=true;
     for (int j=0; j<16; j++) {

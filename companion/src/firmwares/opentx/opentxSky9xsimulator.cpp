@@ -135,7 +135,7 @@ using namespace Open9xSky9x;
 Open9xSky9xSimulator::Open9xSky9xSimulator(Open9xInterface * open9xInterface):
   open9xInterface(open9xInterface)
 {
-    QSettings settings("companion", "companion");
+    QSettings settings;
     QString path=settings.value("sdPath", ".").toString()+"/";
     int i=0;
     for (i=0; i< std::min(path.length(),1022); i++) {

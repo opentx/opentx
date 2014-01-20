@@ -342,7 +342,7 @@ TelemetryPanel::~TelemetryPanel()
 
 void TelemetryPanel::setup()
 {
-    QSettings settings("companion", "companion");
+    QSettings settings;
     QString firmware_id = settings.value("firmware", default_firmware_variant.id).toString();
 
     lock=true;

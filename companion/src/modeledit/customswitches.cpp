@@ -382,14 +382,6 @@ void CustomSwitchesPanel::csw_customContextMenuRequested(QPoint pos)
 {
     QLabel *label = (QLabel *)sender();
     selectedSwitch = label->property("index").toInt();
-    QIcon ClearIcon;
-    populate_icon(&ClearIcon,"clear.png");
-    QIcon CopyIcon;
-    populate_icon(&CopyIcon,"copy.png");
-    QIcon CutIcon;
-    populate_icon(&CutIcon,"cut.png");
-    QIcon PasteIcon;
-    populate_icon(&PasteIcon,"paste.png");
 
     QPoint globalPos = label->mapToGlobal(pos);
 
@@ -398,10 +390,10 @@ void CustomSwitchesPanel::csw_customContextMenuRequested(QPoint pos)
     bool hasData = mimeData->hasFormat("application/x-companion-csw");
 
     QMenu contextMenu;
-    contextMenu.addAction(ClearIcon, tr("&Delete"),this,SLOT(cswDelete()),tr("Delete"));
-    contextMenu.addAction(CopyIcon, tr("&Copy"),this,SLOT(cswCopy()),tr("Ctrl+C"));
-    contextMenu.addAction(CutIcon, tr("&Cut"),this,SLOT(cswCut()),tr("Ctrl+X"));
-    contextMenu.addAction(PasteIcon, tr("&Paste"),this,SLOT(cswPaste()),tr("Ctrl+V"))->setEnabled(hasData);
+    contextMenu.addAction(CompanionIcon("clear.png"), tr("&Delete"),this,SLOT(cswDelete()),tr("Delete"));
+    contextMenu.addAction(CompanionIcon("copy.png"), tr("&Copy"),this,SLOT(cswCopy()),tr("Ctrl+C"));
+    contextMenu.addAction(CompanionIcon("cut.png"), tr("&Cut"),this,SLOT(cswCut()),tr("Ctrl+X"));
+    contextMenu.addAction(CompanionIcon("paste.png"), tr("&Paste"),this,SLOT(cswPaste()),tr("Ctrl+V"))->setEnabled(hasData);
 
     contextMenu.exec(globalPos);
 }
