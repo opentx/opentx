@@ -68,9 +68,8 @@ MdiChild::MdiChild():
   isUntitled(true),
   fileChanged(false)
 {
-  QString Theme=getTheme();
   QIcon SimulateIcon;
-  populate_icon(&SimulateIcon,Theme,"simulate.png");
+  populate_icon(&SimulateIcon,"simulate.png");
 
   ui->setupUi(this);
   ui->SimulateTxButton->setIcon(SimulateIcon);
@@ -512,7 +511,6 @@ QString MdiChild::strippedName(const QString &fullFileName)
 
 void MdiChild::burnTo()  // write to Tx
 {
-  QString Theme=getTheme();
   QSettings settings("companion", "companion");
   bool backupEnable=settings.value("backupEnable", true).toBool();
   QString backupPath=settings.value("backupPath", "").toString();
@@ -559,7 +557,7 @@ void MdiChild::burnTo()  // write to Tx
             str << path << backupFile;
             avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Backup EEPROM From Tx")); //, AVR_DIALOG_KEEP_OPEN);
             QIcon Icon;
-            populate_icon(&Icon,Theme,"read_eeprom.png");
+            populate_icon(&Icon,"read_eeprom.png");
             ad->setWindowIcon(Icon);
             ad->exec();
             sleep(1);
@@ -568,7 +566,7 @@ void MdiChild::burnTo()  // write to Tx
           QStringList str = ((MainWindow *)this->parent())->GetReceiveEEpromCommand(backupFile);
           avrOutputDialog *ad = new avrOutputDialog(this, ((MainWindow *)this->parent())->GetAvrdudeLocation(), str, tr("Backup EEPROM From Tx"));
           QIcon Icon;
-          populate_icon(&Icon,Theme,"read_eeprom.png");
+          populate_icon(&Icon,"read_eeprom.png");
           ad->setWindowIcon(Icon);
           ad->exec();
           sleep(1);
@@ -579,7 +577,7 @@ void MdiChild::burnTo()  // write to Tx
       QStringList str = ((MainWindow *)this->parent())->GetReceiveFlashCommand(tempFlash);
       avrOutputDialog *ad = new avrOutputDialog(this, ((MainWindow *)this->parent())->GetAvrdudeLocation(), str, "Read Flash From Tx");
       QIcon Icon;
-      populate_icon(&Icon,Theme,"read_flash.png");
+      populate_icon(&Icon,"read_flash.png");
       ad->setWindowIcon(Icon);
       ad->exec();
       sleep(1);
@@ -617,7 +615,7 @@ void MdiChild::burnTo()  // write to Tx
           QStringList str = ((MainWindow *)this->parent())->GetReceiveEEpromCommand(backupFile);
           avrOutputDialog *ad = new avrOutputDialog(this, ((MainWindow *)this->parent())->GetAvrdudeLocation(), str, tr("Backup EEPROM From Tx"));
           QIcon Icon;
-          populate_icon(&Icon,Theme,"read_eeprom.png");
+          populate_icon(&Icon,"read_eeprom.png");
           ad->setWindowIcon(Icon);
           ad->exec();
           sleep(1);
@@ -634,7 +632,7 @@ void MdiChild::burnTo()  // write to Tx
         str << tempFile << path;
         avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Write EEPROM To Tx"), AVR_DIALOG_SHOW_DONE); //, AVR_DIALOG_KEEP_OPEN);
         QIcon Icon;
-        populate_icon(&Icon,Theme,"read_eeprom.png");
+        populate_icon(&Icon,"read_eeprom.png");
         ad->setWindowIcon(Icon);
         ad->show();
         sleep(1);
@@ -643,7 +641,7 @@ void MdiChild::burnTo()  // write to Tx
       QStringList str = ((MainWindow *)this->parent())->GetSendEEpromCommand(tempFile);
       avrOutputDialog *ad = new avrOutputDialog(this, ((MainWindow *)this->parent())->GetAvrdudeLocation(), str, "Write EEPROM To Tx", AVR_DIALOG_SHOW_DONE);
       QIcon Icon;
-      populate_icon(&Icon,Theme,"write_eeprom.png");
+      populate_icon(&Icon,"write_eeprom.png");
       ad->setWindowIcon(Icon);
       ad->show();
     }

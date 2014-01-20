@@ -96,7 +96,6 @@ downloadDialog_forWait(NULL)
             this, SLOT(setActiveSubWindow(QWidget*)));
 
     MaxRecentFiles=MAX_RECENT;
-    Theme=getTheme();
     QSettings settings("companion", "companion");
     int icon_size=settings.value("icon_size", 1).toInt();
     switch (icon_size) {
@@ -1082,7 +1081,7 @@ void MainWindow::burnFrom()
         str << path << tempFile;
         avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Read Models and Settings From Tx")); //, AVR_DIALOG_KEEP_OPEN);
         QIcon icon;
-        populate_icon(&icon,Theme,"read_eeprom.png");
+        populate_icon(&icon,"read_eeprom.png");
         ad->setWindowIcon(icon);
         res = ad->exec();
         sleep(1);
@@ -1091,7 +1090,7 @@ void MainWindow::burnFrom()
       QStringList str = GetReceiveEEpromCommand(tempFile);
       avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Read Models and Settings From Tx")); //, AVR_DIALOG_KEEP_OPEN);
       QIcon icon;
-      populate_icon(&icon,Theme,"read_eeprom.png");
+      populate_icon(&icon,"read_eeprom.png");
       ad->setWindowIcon(icon);
       res = ad->exec();
     }
@@ -1143,7 +1142,7 @@ void MainWindow::burnExtenalToEEPROM()
               str << path << backupFile;
               avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Backup Models and Settings From Tx")); //, AVR_DIALOG_KEEP_OPEN);
               QIcon icon;
-              populate_icon(&icon,Theme,"read_eeprom.png");
+              populate_icon(&icon,"read_eeprom.png");
               ad->setWindowIcon(icon);
               ad->exec();
               sleep(1);
@@ -1152,7 +1151,7 @@ void MainWindow::burnExtenalToEEPROM()
             QStringList str = GetReceiveEEpromCommand(backupFile);
             avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Backup Models and Settings From Tx"));
             QIcon icon;
-            populate_icon(&icon,Theme,"read_eeprom.png");
+            populate_icon(&icon,"read_eeprom.png");
             ad->setWindowIcon(icon);
             ad->exec();
             sleep(1);
@@ -1164,7 +1163,7 @@ void MainWindow::burnExtenalToEEPROM()
         QStringList str = GetReceiveFlashCommand(tempFlash);
         avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, "Read Firmware From Tx");
         QIcon icon;
-        populate_icon(&icon,Theme,"read_flash.png");
+        populate_icon(&icon,"read_flash.png");
         ad->setWindowIcon(icon);
         ad->exec();
         sleep(1);
@@ -1199,7 +1198,7 @@ void MainWindow::burnExtenalToEEPROM()
               str << path << backupFile;
               avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Backup Models and Settings From Tx")); //, AVR_DIALOG_KEEP_OPEN);
               QIcon icon;
-              populate_icon(&icon,Theme,"read_eeprom.png");
+              populate_icon(&icon,"read_eeprom.png");
               ad->setWindowIcon(icon);
               ad->exec();
               sleep(1);
@@ -1208,7 +1207,7 @@ void MainWindow::burnExtenalToEEPROM()
             QStringList str = ((MainWindow *)this->parent())->GetReceiveEEpromCommand(backupFile);
             avrOutputDialog *ad = new avrOutputDialog(this, ((MainWindow *)this->parent())->GetAvrdudeLocation(), str, tr("Backup Models and Settings From Tx"));
             QIcon icon;
-            populate_icon(&icon,Theme,"read_eeprom.png");
+            populate_icon(&icon,"read_eeprom.png");
             ad->setWindowIcon(icon);
             ad->exec();
             sleep(1);
@@ -1225,7 +1224,7 @@ void MainWindow::burnExtenalToEEPROM()
           str << fileName << path;
           avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Write Models and Settings To Tx")); //, AVR_DIALOG_KEEP_OPEN);
           QIcon icon;
-          populate_icon(&icon,Theme,"read_eeprom.png");
+          populate_icon(&icon,"read_eeprom.png");
           ad->setWindowIcon(icon);
           ad->exec();
           sleep(1);
@@ -1234,7 +1233,7 @@ void MainWindow::burnExtenalToEEPROM()
         QStringList str = GetSendEEpromCommand(fileName);
         avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, "Write Models and Settings To Tx", AVR_DIALOG_SHOW_DONE);
         QIcon icon;
-        populate_icon(&icon,Theme,"write_eeprom.png");
+        populate_icon(&icon,"write_eeprom.png");
         ad->setWindowIcon(icon);
         ad->exec();
       }
@@ -1401,7 +1400,7 @@ void MainWindow::burnToFlash(QString fileToFlash)
         QStringList str = GetReceiveEEpromCommand(backupFile);
         avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Backup Models and Settings From Tx"), AVR_DIALOG_CLOSE_IF_SUCCESSFUL);
         QIcon icon;
-        populate_icon(&icon,Theme,"read_eeprom.png");
+        populate_icon(&icon,"read_eeprom.png");
         ad->setWindowIcon(icon);
         int res = ad->exec();
         if (QFileInfo(backupFile).exists() && res) {
@@ -1409,7 +1408,7 @@ void MainWindow::burnToFlash(QString fileToFlash)
           QStringList str = GetSendFlashCommand(fileName);
           avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Write Firmware To Tx"), AVR_DIALOG_CLOSE_IF_SUCCESSFUL);
           QIcon iconw;
-          populate_icon(&iconw,Theme,"write_eeprom.png");
+          populate_icon(&iconw,"write_eeprom.png");
           ad->setWindowIcon(iconw);
           int res = ad->exec();
           if (res) {
@@ -1447,7 +1446,7 @@ void MainWindow::burnToFlash(QString fileToFlash)
           QStringList str = GetReceiveEEpromCommand(backupFile);
           avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Backup Models and Settings From Tx"));
           QIcon icon;
-          populate_icon(&icon,Theme,"read_eeprom.png");
+          populate_icon(&icon,"read_eeprom.png");
           ad->setWindowIcon(icon);
           ad->exec();
           sleep(1);
@@ -1456,7 +1455,7 @@ void MainWindow::burnToFlash(QString fileToFlash)
         QStringList str = GetSendFlashCommand(fileName);
         avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Write Firmware To Tx"), AVR_DIALOG_SHOW_DONE);
         QIcon iconw;
-        populate_icon(&iconw,Theme,"read_eeprom.png");
+        populate_icon(&iconw,"write_flash.png");
         ad->setWindowIcon(iconw);
         ad->exec();
       }
@@ -1479,7 +1478,7 @@ void MainWindow::burnExtenalFromEEPROM()
           str << path << fileName;
           avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Read Models and Settings From Tx")); //, AVR_DIALOG_KEEP_OPEN);
           QIcon icon;
-          populate_icon(&icon,Theme,"read_eeprom.png");
+          populate_icon(&icon,"read_eeprom.png");
           ad->setWindowIcon(icon);
           ad->exec();
         }
@@ -1488,7 +1487,7 @@ void MainWindow::burnExtenalFromEEPROM()
         QStringList str = GetReceiveEEpromCommand(fileName);
         avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Read Models and Settings From Tx"));
         QIcon icon;
-        populate_icon(&icon,Theme,"read_eeprom.png");
+        populate_icon(&icon,"read_eeprom.png");
         ad->setWindowIcon(icon);
         ad->exec();
       }
@@ -1508,7 +1507,7 @@ void MainWindow::burnFromFlash()
         QStringList str = GetReceiveFlashCommand(fileName);
         avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, "Read Firmware From Tx");
         QIcon icon;
-        populate_icon(&icon,Theme,"read_flash.png");
+        populate_icon(&icon,"read_flash.png");
         ad->setWindowIcon(icon);
         ad->exec();
     }
@@ -1650,7 +1649,7 @@ MdiChild *MainWindow::createMdiChild()
 void MainWindow::createActions()
 {
     QIcon newActIcon;
-    populate_icon(&newActIcon,Theme,"new.png");
+    populate_icon(&newActIcon,"new.png");
   
     newAct = new QAction(newActIcon, tr("&New"), this);
     newAct->setShortcuts(QKeySequence::New);
@@ -1658,7 +1657,7 @@ void MainWindow::createActions()
     connect(newAct, SIGNAL(triggered()), this, SLOT(newFile()));
 
     QIcon openActIcon;
-    populate_icon(&openActIcon,Theme,"open.png");
+    populate_icon(&openActIcon,"open.png");
     openAct = new QAction(openActIcon, tr("&Open..."), this);
     openAct->setShortcuts(QKeySequence::Open);
     openAct->setStatusTip(tr("Open an existing file"));
@@ -1669,65 +1668,65 @@ void MainWindow::createActions()
     connect(loadbackupAct, SIGNAL(triggered()), this, SLOT(loadBackup()));
 
     QIcon saveActIcon;
-    populate_icon(&saveActIcon,Theme,"save.png");
+    populate_icon(&saveActIcon,"save.png");
     saveAct = new QAction(saveActIcon, tr("&Save"), this);
     saveAct->setShortcuts(QKeySequence::Save);
     saveAct->setStatusTip(tr("Save the document to disk"));
     connect(saveAct, SIGNAL(triggered()), this, SLOT(save()));
 
     QIcon saveAsActIcon;
-    populate_icon(&saveAsActIcon,Theme,"saveas.png");
+    populate_icon(&saveAsActIcon,"saveas.png");
     saveAsAct = new QAction(saveAsActIcon, tr("Save &As..."), this);
     saveAsAct->setShortcuts(QKeySequence::SaveAs);
     saveAsAct->setStatusTip(tr("Save the document under a new name"));
     connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
 
     QIcon logsActIcon;
-    populate_icon(&logsActIcon,Theme,"logs.png");
+    populate_icon(&logsActIcon,"logs.png");
     logsAct = new QAction(logsActIcon, tr("Lo&gs"), this);
     logsAct->setShortcut(tr("Ctrl+G"));
     logsAct->setStatusTip(tr("Open log file"));
     connect(logsAct, SIGNAL(triggered()), this, SLOT(logFile()));
     
     QIcon preferencesActIcon;
-    populate_icon(&preferencesActIcon,Theme,"preferences.png");
+    populate_icon(&preferencesActIcon,"preferences.png");
     preferencesAct = new QAction(preferencesActIcon, tr("&Preferences..."), this);
     preferencesAct->setStatusTip(tr("Edit general preferences"));
     connect(preferencesAct, SIGNAL(triggered()), this, SLOT(preferences()));
 
     QIcon checkForUpdatesActIcon;
-    populate_icon(&checkForUpdatesActIcon,Theme,"update.png");
+    populate_icon(&checkForUpdatesActIcon,"update.png");
     checkForUpdatesAct = new QAction(checkForUpdatesActIcon, tr("&Check for updates..."), this);
     checkForUpdatesAct->setStatusTip(tr("Check for new version of Companion"));
     connect(checkForUpdatesAct, SIGNAL(triggered()), this, SLOT(doUpdates()));
 
     QIcon contributorsActIcon;
-    populate_icon(&contributorsActIcon,Theme,"contributors.png");
+    populate_icon(&contributorsActIcon,"contributors.png");
     contributorsAct = new QAction(contributorsActIcon, tr("Contributors &List..."), this);
     contributorsAct->setStatusTip(tr("Show Companion contributors list"));
     connect(contributorsAct, SIGNAL(triggered()), this, SLOT(contributors()));
 
     QIcon changelogActIcon;
-    populate_icon(&changelogActIcon,Theme,"changelog.png");
+    populate_icon(&changelogActIcon,"changelog.png");
     changelogAct = new QAction(changelogActIcon, tr("ChangeLog..."), this);
     changelogAct->setStatusTip(tr("Show Companion changelog"));
     connect(changelogAct, SIGNAL(triggered()), this, SLOT(changelog()));
 
     QIcon fwchangelogActIcon;
-    populate_icon(&fwchangelogActIcon,Theme,"changelog.png");
+    populate_icon(&fwchangelogActIcon,"changelog.png");
     fwchangelogAct = new QAction(fwchangelogActIcon, tr("Firmware ChangeLog..."), this);
     fwchangelogAct->setStatusTip(tr("Show firmware changelog"));
     connect(fwchangelogAct, SIGNAL(triggered()), this, SLOT(fwchangelog()));
     
     QIcon compareActIcon;
-    populate_icon(&compareActIcon,Theme,"compare.png");
+    populate_icon(&compareActIcon,"compare.png");
     compareAct = new QAction(compareActIcon, tr("Compare..."), this);
     compareAct->setStatusTip(tr("Compare models"));
     compareAct->setEnabled(false);
     connect(compareAct, SIGNAL(triggered()), this, SLOT(compare()));
     
     QIcon customizeSplashActIcon;
-    populate_icon(&customizeSplashActIcon,Theme,"customize.png");
+    populate_icon(&customizeSplashActIcon,"customize.png");
     customizeSplashAct = new QAction(customizeSplashActIcon, tr("Customize your &TX..."), this);
     customizeSplashAct->setStatusTip(tr("Customize the splash screen of your TX"));
     connect(customizeSplashAct, SIGNAL(triggered()), this, SLOT(customizeSplash()));
@@ -1735,7 +1734,7 @@ void MainWindow::createActions()
     
 //! [0]
     QIcon exitActIcon;
-    populate_icon(&exitActIcon,Theme,"exit.png");
+    populate_icon(&exitActIcon,"exit.png");
     exitAct = new QAction(exitActIcon, tr("E&xit"), this);
     exitAct->setShortcuts(QKeySequence::Quit);
     exitAct->setStatusTip(tr("Exit the application"));
@@ -1743,7 +1742,7 @@ void MainWindow::createActions()
 //! [0]
 
     QIcon cutActIcon;
-    populate_icon(&cutActIcon,Theme,"cut.png");
+    populate_icon(&cutActIcon,"cut.png");
     cutAct = new QAction(cutActIcon, tr("Cu&t"), this);
     cutAct->setShortcuts(QKeySequence::Cut);
     cutAct->setStatusTip(tr("Cut the current selection's contents to the "
@@ -1751,7 +1750,7 @@ void MainWindow::createActions()
     connect(cutAct, SIGNAL(triggered()), this, SLOT(cut()));
 
     QIcon copyActIcon;
-    populate_icon(&copyActIcon,Theme,"copy.png");
+    populate_icon(&copyActIcon,"copy.png");
     copyAct = new QAction(copyActIcon, tr("&Copy"), this);
     copyAct->setShortcuts(QKeySequence::Copy);
     copyAct->setStatusTip(tr("Copy the current selection's contents to the "
@@ -1759,7 +1758,7 @@ void MainWindow::createActions()
     connect(copyAct, SIGNAL(triggered()), this, SLOT(copy()));
 
     QIcon pasteActIcon;
-    populate_icon(&pasteActIcon,Theme,"paste.png");
+    populate_icon(&pasteActIcon,"paste.png");
     pasteAct = new QAction(pasteActIcon, tr("&Paste"), this);
     pasteAct->setShortcuts(QKeySequence::Paste);
     pasteAct->setStatusTip(tr("Paste the clipboard's contents into the current "
@@ -1767,64 +1766,64 @@ void MainWindow::createActions()
     connect(pasteAct, SIGNAL(triggered()), this, SLOT(paste()));
 
     QIcon burnToActIcon;
-    populate_icon(&burnToActIcon,Theme,"write_eeprom.png");
+    populate_icon(&burnToActIcon,"write_eeprom.png");
     burnToAct = new QAction(burnToActIcon, tr("&Write Models and Settings To Tx"), this);
     burnToAct->setShortcut(tr("Ctrl+Alt+W"));
     burnToAct->setStatusTip(tr("Write Models and Settings to transmitter"));
     connect(burnToAct,SIGNAL(triggered()),this,SLOT(burnTo()));
 
     QIcon burnFromActIcon;
-    populate_icon(&burnFromActIcon,Theme,"read_eeprom.png");
+    populate_icon(&burnFromActIcon,"read_eeprom.png");
     burnFromAct = new QAction(burnFromActIcon, tr("&Read Models and Settings From Tx"), this);
     burnFromAct->setShortcut(tr("Ctrl+Alt+R"));
     burnFromAct->setStatusTip(tr("Read Models and Settings from transmitter"));
     connect(burnFromAct,SIGNAL(triggered()),this,SLOT(burnFrom()));
 
     QIcon burnToFlashActIcon;
-    populate_icon(&burnToFlashActIcon,Theme,"write_flash.png");
+    populate_icon(&burnToFlashActIcon,"write_flash.png");
     burnToFlashAct = new QAction(burnToFlashActIcon, tr("Write Firmware"), this);
     burnToFlashAct->setStatusTip(tr("Write firmware to transmitter"));
     connect(burnToFlashAct,SIGNAL(triggered()),this,SLOT(burnToFlash()));
 
     QIcon burnExtenalToEEPROMActIcon;
-    populate_icon(&burnExtenalToEEPROMActIcon,Theme,"write_eeprom_file.png");
+    populate_icon(&burnExtenalToEEPROMActIcon,"write_eeprom_file.png");
     burnExtenalToEEPROMAct = new QAction(burnExtenalToEEPROMActIcon, tr("Write Models and Settings from file to Tx"), this);
     burnExtenalToEEPROMAct->setStatusTip(tr("Write Models and Settings from file to transmitter"));
     connect(burnExtenalToEEPROMAct,SIGNAL(triggered()),this,SLOT(burnExtenalToEEPROM()));
 
     QIcon burnExtenalFromEEPROMActIcon;
-    populate_icon(&burnExtenalFromEEPROMActIcon,Theme,"read_eeprom_file.png");
+    populate_icon(&burnExtenalFromEEPROMActIcon,"read_eeprom_file.png");
     burnExtenalFromEEPROMAct = new QAction(burnExtenalFromEEPROMActIcon, tr("Save transmitter Models and Settings to file"), this);
     burnExtenalFromEEPROMAct->setStatusTip(tr("Save the Models and Settings from the transmitter to a file"));
     connect(burnExtenalFromEEPROMAct,SIGNAL(triggered()),this,SLOT(burnExtenalFromEEPROM()));
 
     QIcon burnFromFlashActIcon;
-    populate_icon(&burnFromFlashActIcon,Theme,"read_flash.png");
+    populate_icon(&burnFromFlashActIcon,"read_flash.png");
     burnFromFlashAct = new QAction(burnFromFlashActIcon, tr("Read Firmware"), this);
     burnFromFlashAct->setStatusTip(tr("Read firmware from transmitter"));
     connect(burnFromFlashAct,SIGNAL(triggered()),this,SLOT(burnFromFlash()));
 
     QIcon burnConfigActIcon;
-    populate_icon(&burnConfigActIcon,Theme,"configure.png");
+    populate_icon(&burnConfigActIcon,"configure.png");
     burnConfigAct = new QAction(burnConfigActIcon, tr("&Configure..."), this);
     burnConfigAct->setStatusTip(tr("Configure software for reading from and writing to the transmitter"));
     connect(burnConfigAct,SIGNAL(triggered()),this,SLOT(burnConfig()));
     EEPROMInterface *eepromInterface = GetEepromInterface();
     if (!IS_ARM(eepromInterface->getBoard())) {
       QIcon burnListActIcon;
-      populate_icon(&burnListActIcon,Theme,"list.png");
+      populate_icon(&burnListActIcon,"list.png");
       burnListAct = new QAction(burnListActIcon, tr("&List programmers"), this);
       burnListAct->setStatusTip(tr("List available programmers"));
       connect(burnListAct,SIGNAL(triggered()),this,SLOT(burnList()));
 
       QIcon burnFusesActIcon;
-      populate_icon(&burnFusesActIcon,Theme,"fuses.png");
+      populate_icon(&burnFusesActIcon,"fuses.png");
       burnFusesAct = new QAction(burnFusesActIcon, tr("&Fuses..."), this);
       burnFusesAct->setStatusTip(tr("Show fuses dialog"));
       connect(burnFusesAct,SIGNAL(triggered()),this,SLOT(burnFuses()));
     }
     QIcon simulateActIcon;
-    populate_icon(&simulateActIcon,Theme,"simulate.png");
+    populate_icon(&simulateActIcon,"simulate.png");
     simulateAct = new QAction(simulateActIcon, tr("&Simulate"), this);
     simulateAct->setShortcut(tr("Alt+S"));
     simulateAct->setStatusTip(tr("Simulate selected model."));
@@ -1832,7 +1831,7 @@ void MainWindow::createActions()
     connect(simulateAct,SIGNAL(triggered()),this,SLOT(simulate()));
 
     QIcon printActIcon;
-    populate_icon(&printActIcon,Theme,"print.png");
+    populate_icon(&printActIcon,"print.png");
     printAct = new QAction(printActIcon, tr("&Print"), this);
     printAct->setShortcut(tr("Ctrl+P"));
     printAct->setStatusTip(tr("Print current model."));
@@ -1874,13 +1873,13 @@ void MainWindow::createActions()
     separatorAct->setSeparator(true);
 
     QIcon aboutActIcon;
-    populate_icon(&aboutActIcon,Theme,"information.png");
+    populate_icon(&aboutActIcon,"information.png");
     aboutAct = new QAction(aboutActIcon, tr("&About"), this);
     aboutAct->setStatusTip(tr("Show the application's About box"));
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
 
     QIcon switchLayoutDirectionActIcon;
-    populate_icon(&switchLayoutDirectionActIcon,Theme,"switch_dir.png");
+    populate_icon(&switchLayoutDirectionActIcon,"switch_dir.png");
     switchLayoutDirectionAct = new QAction(switchLayoutDirectionActIcon,  tr("Switch layout direction"), this);
     switchLayoutDirectionAct->setStatusTip(tr("Switch layout Left/Right"));
     connect(switchLayoutDirectionAct, SIGNAL(triggered()), this, SLOT(switchLayoutDirection()));
@@ -1912,7 +1911,7 @@ void MainWindow::createMenus()
     fileMenu->addAction(saveAsAct);
     fileMenu->addMenu(recentFileMenu);
     QIcon recentFileMenuIcon;
-    populate_icon(&recentFileMenuIcon,Theme,"recentdocument.png");
+    populate_icon(&recentFileMenuIcon,"recentdocument.png");
     recentFileMenu->setIcon(recentFileMenuIcon);
     for ( int i = 0; i < MaxRecentFiles; ++i)
       recentFileMenu->addAction(recentFileActs[i]);
@@ -1927,7 +1926,7 @@ void MainWindow::createMenus()
     fileMenu->addMenu(profilesMenu);
     
     QIcon profilesMenuIcon;
-    populate_icon(&profilesMenuIcon,Theme,"profiles.png");
+    populate_icon(&profilesMenuIcon,"profiles.png");
     profilesMenu->setIcon(profilesMenuIcon);
     for ( int i = 0; i < MAX_PROFILES; ++i)
       profilesMenu->addAction(profileActs[i]);
@@ -1994,7 +1993,7 @@ QMenu *MainWindow::createProfilesMenu()
 void MainWindow::createToolBars()
 {
     QSettings settings("companion", "companion");
-    int icon_size=settings.value("icon_size",1 ).toInt();
+    int icon_size=settings.value("icon_size",2 ).toInt();
     QSize size;
     switch(icon_size) {
       case 0:
@@ -2019,7 +2018,7 @@ void MainWindow::createToolBars()
     recentToolButton->setPopupMode(QToolButton::InstantPopup);
     recentToolButton->setMenu(createRecentFileMenu());
     QIcon recentToolButtonIcon;
-    populate_icon(&recentToolButtonIcon,Theme,"recentdocument.png");
+    populate_icon(&recentToolButtonIcon,"recentdocument.png");
     recentToolButton->setIcon(recentToolButtonIcon);
     recentToolButton->setToolTip(tr("Recent Files"));
     fileToolBar->addWidget(recentToolButton);
@@ -2031,7 +2030,7 @@ void MainWindow::createToolBars()
     profileButton->setPopupMode(QToolButton::InstantPopup);
     profileButton->setMenu(createProfilesMenu());
     QIcon profileButtonIcon;
-    populate_icon(&profileButtonIcon,Theme,"profiles.png");
+    populate_icon(&profileButtonIcon,"profiles.png");
     profileButton->setIcon(profileButtonIcon);
     profileButton->setToolTip(tr("Firmware Profiles"));
     fileToolBar->addWidget(profileButton);

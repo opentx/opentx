@@ -382,15 +382,14 @@ void CustomSwitchesPanel::csw_customContextMenuRequested(QPoint pos)
 {
     QLabel *label = (QLabel *)sender();
     selectedSwitch = label->property("index").toInt();
-    QString Theme=getTheme();
     QIcon ClearIcon;
-    populate_icon(&ClearIcon,Theme,"clear.png");
+    populate_icon(&ClearIcon,"clear.png");
     QIcon CopyIcon;
-    populate_icon(&CopyIcon,Theme,"copy.png");
+    populate_icon(&CopyIcon,"copy.png");
     QIcon CutIcon;
-    populate_icon(&CutIcon,Theme,"cut.png");
+    populate_icon(&CutIcon,"cut.png");
     QIcon PasteIcon;
-    populate_icon(&PasteIcon,Theme,"paste.png");
+    populate_icon(&PasteIcon,"paste.png");
 
     QPoint globalPos = label->mapToGlobal(pos);
 

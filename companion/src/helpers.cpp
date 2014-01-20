@@ -1485,8 +1485,9 @@ QString getCenterBeep(ModelData * g_model)
   return strl.join(", ");
 }
 
-void populate_icon(QIcon *Icon, QString usedtheme, QString baseimage)
+void populate_icon(QIcon *Icon, QString baseimage)
 {
+  static QString usedtheme=getTheme();
   Icon->addFile(":/themes/"+usedtheme+"/16/"+baseimage,QSize(16,16));
   Icon->addFile(":/themes/"+usedtheme+"/24/"+baseimage,QSize(24,24));
   Icon->addFile(":/themes/"+usedtheme+"/32/"+baseimage,QSize(32,32));

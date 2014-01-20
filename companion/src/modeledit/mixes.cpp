@@ -14,20 +14,18 @@ MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
   QPushButton * qbUp = new QPushButton(this);
   QPushButton * qbDown = new QPushButton(this);
   QPushButton * qbClear = new QPushButton(this);
-
-  QString Theme=getTheme();
   QIcon qbUpIcon;
-  populate_icon(&qbUpIcon,Theme,"moveup.png");
+  populate_icon(&qbUpIcon,"moveup.png");
   qbUp->setText(tr("Move Up"));
   qbUp->setIcon(qbUpIcon);
   qbUp->setShortcut(QKeySequence(tr("Ctrl+Up")));
   QIcon qbDownIcon;
-  populate_icon(&qbDownIcon,Theme,"movedown.png");
+  populate_icon(&qbDownIcon,"movedown.png");
   qbDown->setText(tr("Move Down"));
   qbDown->setIcon(qbDownIcon);
   qbDown->setShortcut(QKeySequence(tr("Ctrl+Down")));
   QIcon qbClearIcon;
-  populate_icon(&qbClearIcon,Theme,"clear.png");
+  populate_icon(&qbClearIcon,"clear.png");
   qbClear->setText(tr("Clear Mixes"));
   qbClear->setIcon(qbClearIcon);
 
@@ -413,25 +411,24 @@ void MixesPanel::mixerAdd()
 
 void MixesPanel::mixerlistWidget_customContextMenuRequested(QPoint pos)
 {
-    QString Theme=getTheme();
     QIcon AddIcon;
-    populate_icon(&AddIcon,Theme,"add.png");
+    populate_icon(&AddIcon,"add.png");
     QIcon EditIcon;
-    populate_icon(&EditIcon,Theme,"edit.png");
+    populate_icon(&EditIcon,"edit.png");
     QIcon ClearIcon;
-    populate_icon(&ClearIcon,Theme,"clear.png");
+    populate_icon(&ClearIcon,"clear.png");
     QIcon CopyIcon;
-    populate_icon(&CopyIcon,Theme,"copy.png");
+    populate_icon(&CopyIcon,"copy.png");
     QIcon CutIcon;
-    populate_icon(&CutIcon,Theme,"cut.png");
+    populate_icon(&CutIcon,"cut.png");
     QIcon PasteIcon;
-    populate_icon(&PasteIcon,Theme,"paste.png");
+    populate_icon(&PasteIcon,"paste.png");
     QIcon DuplicateIcon;
-    populate_icon(&DuplicateIcon,Theme,"duplicate.png");
+    populate_icon(&DuplicateIcon,"duplicate.png");
     QIcon MoveUpIcon;
-    populate_icon(&MoveUpIcon,Theme,"moveup.png");
+    populate_icon(&MoveUpIcon,"moveup.png");
     QIcon MoveDownIcon;
-    populate_icon(&MoveDownIcon,Theme,"movedown.png");
+    populate_icon(&MoveDownIcon,"movedown.png");
     QPoint globalPos = MixerlistWidget->mapToGlobal(pos);
 
     const QClipboard *clipboard = QApplication::clipboard();

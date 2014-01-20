@@ -21,11 +21,10 @@ ModelEdit::ModelEdit(RadioData & radioData, int modelId, bool openWizard, bool i
   generalSettings(generalSettings)
 {
   ui->setupUi(this);
-  QString Theme=getTheme();
   QSettings settings("companion", "companion");
   restoreGeometry(settings.value("modelEditGeometry").toByteArray());  
   QIcon SimulateIcon;
-  populate_icon(&SimulateIcon,Theme,"simulate.png");
+  populate_icon(&SimulateIcon,"simulate.png");
   ui->pushButton->setIcon(SimulateIcon);
   addTab(new Setup(this, model), tr("Setup"));
   addTab(new HeliPanel(this, model), tr("Heli"));

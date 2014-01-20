@@ -17,15 +17,14 @@ preferencesDialog::preferencesDialog(QWidget *parent) :
   updateLock(false)
 {
   ui->setupUi(this);
-  QString Theme=getTheme();
   QIcon Icon;
-  populate_icon(&Icon, Theme, "preferences.png");
+  populate_icon(&Icon,"preferences.png");
   this->setWindowIcon(Icon);
   QIcon LibraryIcon;
-  populate_icon(&LibraryIcon, Theme, "library.png");
+  populate_icon(&LibraryIcon,"library.png");
   ui->splashLibraryButton->setIcon(LibraryIcon);
   QIcon ClearIcon;
-  populate_icon(&ClearIcon, Theme, "clear.png");
+  populate_icon(&ClearIcon,"clear.png");
   ui->clearImageButton->setIcon(ClearIcon);
 
   QCheckBox * OptionCheckBox[]= {

@@ -123,9 +123,8 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
     connect(fswtchParamArmT[i], SIGNAL(editTextChanged ( const QString)), this, SLOT(customFunctionEdited()));
 
 #ifdef PHONON
-    QString Theme=getTheme();
     QIcon PlayIcon;
-    populate_icon(&PlayIcon,Theme,"play.png");
+    populate_icon(&PlayIcon,"play.png");
     playBT[i] = new QPushButton(this);
     playBT[i]->setObjectName(QString("play_%1").arg(i));
     playBT[i]->setIcon(PlayIcon);
@@ -163,9 +162,8 @@ void CustomFunctionsPanel::mediaPlayer_state(Phonon::State newState, Phonon::Sta
 {
     if (phononLock)
       return;
-    QString Theme=getTheme();
     QIcon PlayIcon;
-    populate_icon(&PlayIcon,Theme,"play.png");
+    populate_icon(&PlayIcon,"play.png");
     
     phononLock=true;
     if ((newState==Phonon::StoppedState || newState==Phonon::PausedState)  && oldState==Phonon::PlayingState) {
@@ -196,12 +194,11 @@ void CustomFunctionsPanel::playMusic()
     QPushButton *playButton = qobject_cast<QPushButton*>(sender());
     int index=playButton->objectName().mid(5,2).toInt();
     QString function=playButton->objectName().left(4);
-    QString Theme=getTheme();
     QSettings settings("companion", "companion");
     QIcon PlayIcon;
-    populate_icon(&PlayIcon,Theme,"play.png");
+    populate_icon(&PlayIcon,"play.png");
     QIcon StopIcon;
-    populate_icon(&StopIcon,Theme,"stop.png");
+    populate_icon(&StopIcon,"stop.png");
       
     QString path=settings.value("sdPath", ".").toString();
     QDir qd(path);
@@ -470,15 +467,14 @@ void CustomFunctionsPanel::fsw_customContextMenuRequested(QPoint pos)
 {
     QLabel *label = (QLabel *)sender();
     selectedFunction = label->property("index").toInt();
-    QString Theme=getTheme();
     QIcon ClearIcon;
-    populate_icon(&ClearIcon,Theme,"clear.png");
+    populate_icon(&ClearIcon,"clear.png");
     QIcon CopyIcon;
-    populate_icon(&CopyIcon,Theme,"copy.png");
+    populate_icon(&CopyIcon,"copy.png");
     QIcon CutIcon;
-    populate_icon(&CutIcon,Theme,"cut.png");
+    populate_icon(&CutIcon,"cut.png");
     QIcon PasteIcon;
-    populate_icon(&PasteIcon,Theme,"paste.png");
+    populate_icon(&PasteIcon,"paste.png");
 
     QPoint globalPos = label->mapToGlobal(pos);
 

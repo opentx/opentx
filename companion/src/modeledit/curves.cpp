@@ -84,9 +84,8 @@ Curves::Curves(QWidget * parent, ModelData & model):
   QGraphicsScene *scene = new QGraphicsScene(ui->curvePreview);
   scene->setItemIndexMethod(QGraphicsScene::NoIndex);
   ui->curvePreview->setScene(scene);
-  QString Theme=getTheme();
   QIcon ClearIcon;
-  populate_icon(&ClearIcon,Theme,"clear.png");
+  populate_icon(&ClearIcon,"clear.png");
 
   for (int i=0; i<GetEepromInterface()->getCapability(NumCurves); i++) {
     visibleCurves[i] = false;
