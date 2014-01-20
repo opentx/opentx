@@ -8,21 +8,28 @@ InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & g
   generalSettings(generalSettings),
   expoInserted(false)
 {
+  QString Theme=getTheme();
+
   QGridLayout * exposLayout = new QGridLayout(this);
 
   ExposlistWidget = new MixersList(this, true);
   QPushButton * qbUp = new QPushButton(this);
   QPushButton * qbDown = new QPushButton(this);
   QPushButton * qbClear = new QPushButton(this);
-
+  QIcon qbUpIcon;
+  populate_icon(&qbUpIcon,"moveup.png");
   qbUp->setText(tr("Move Up"));
-  qbUp->setIcon(QIcon(":/images/moveup.png"));
+  qbUp->setIcon(qbUpIcon);
   qbUp->setShortcut(QKeySequence(tr("Ctrl+Up")));
+  QIcon qbDownIcon;
+  populate_icon(&qbDownIcon,"movedown.png");
   qbDown->setText(tr("Move Down"));
-  qbDown->setIcon(QIcon(":/images/movedown.png"));
+  qbDown->setIcon(qbDownIcon);
   qbDown->setShortcut(QKeySequence(tr("Ctrl+Down")));
+  QIcon qbClearIcon;
+  populate_icon(&qbClearIcon,"clear.png");
   qbClear->setText(tr("Clear Expo Settings"));
-  qbClear->setIcon(QIcon(":/images/clear.png"));
+  qbClear->setIcon(qbClearIcon);
 
   exposLayout->addWidget(ExposlistWidget,1,1,1,3);
   exposLayout->addWidget(qbUp,2,1);
@@ -341,6 +348,24 @@ void InputsPanel::expoAdd()
 
 void InputsPanel::expolistWidget_customContextMenuRequested(QPoint pos)
 {
+    QIcon AddIcon;
+    populate_icon(&AddIcon,"add.png");
+    QIcon EditIcon;
+    populate_icon(&EditIcon,"edit.png");
+    QIcon ClearIcon;
+    populate_icon(&ClearIcon,"clear.png");
+    QIcon CopyIcon;
+    populate_icon(&CopyIcon,"copy.png");
+    QIcon CutIcon;
+    populate_icon(&CutIcon,"cut.png");
+    QIcon PasteIcon;
+    populate_icon(&PasteIcon,"paste.png");
+    QIcon DuplicateIcon;
+    populate_icon(&DuplicateIcon,"duplicate.png");
+    QIcon MoveUpIcon;
+    populate_icon(&MoveUpIcon,"moveup.png");
+    QIcon MoveDownIcon;
+    populate_icon(&MoveDownIcon,"movedown.png");
     QPoint globalPos = ExposlistWidget->mapToGlobal(pos);
 
     const QClipboard *clipboard = QApplication::clipboard();
@@ -348,17 +373,17 @@ void InputsPanel::expolistWidget_customContextMenuRequested(QPoint pos)
     bool hasData = mimeData->hasFormat("application/x-companion9x-expo");
 
     QMenu contextMenu;
-    contextMenu.addAction(QIcon(":/images/add.png"), tr("&Add"),this,SLOT(expoAdd()),tr("Ctrl+A"));
-    contextMenu.addAction(QIcon(":/images/edit.png"), tr("&Edit"),this,SLOT(expoOpen()),tr("Enter"));
+    contextMenu.addAction(AddIcon, tr("&Add"),this,SLOT(expoAdd()),tr("Ctrl+A"));
+    contextMenu.addAction(EditIcon, tr("&Edit"),this,SLOT(expoOpen()),tr("Enter"));
     contextMenu.addSeparator();
-    contextMenu.addAction(QIcon(":/images/clear.png"), tr("&Delete"),this,SLOT(exposDelete()),tr("Delete"));
-    contextMenu.addAction(QIcon(":/images/copy.png"), tr("&Copy"),this,SLOT(exposCopy()),tr("Ctrl+C"));
-    contextMenu.addAction(QIcon(":/images/cut.png"), tr("&Cut"),this,SLOT(exposCut()),tr("Ctrl+X"));
-    contextMenu.addAction(QIcon(":/images/paste.png"), tr("&Paste"),this,SLOT(exposPaste()),tr("Ctrl+V"))->setEnabled(hasData);
-    contextMenu.addAction(QIcon(":/images/duplicate.png"), tr("Du&plicate"),this,SLOT(exposDuplicate()),tr("Ctrl+U"));
+    contextMenu.addAction(ClearIcon, tr("&Delete"),this,SLOT(exposDelete()),tr("Delete"));
+    contextMenu.addAction(CopyIcon, tr("&Copy"),this,SLOT(exposCopy()),tr("Ctrl+C"));
+    contextMenu.addAction(CutIcon, tr("&Cut"),this,SLOT(exposCut()),tr("Ctrl+X"));
+    contextMenu.addAction(PasteIcon, tr("&Paste"),this,SLOT(exposPaste()),tr("Ctrl+V"))->setEnabled(hasData);
+    contextMenu.addAction(DuplicateIcon, tr("Du&plicate"),this,SLOT(exposDuplicate()),tr("Ctrl+U"));
     contextMenu.addSeparator();
-    contextMenu.addAction(QIcon(":/images/moveup.png"), tr("Move Up"),this,SLOT(moveExpoUp()),tr("Ctrl+Up"));
-    contextMenu.addAction(QIcon(":/images/movedown.png"), tr("Move Down"),this,SLOT(moveExpoDown()),tr("Ctrl+Down"));
+    contextMenu.addAction(MoveUpIcon, tr("Move Up"),this,SLOT(moveExpoUp()),tr("Ctrl+Up"));
+    contextMenu.addAction(MoveDownIcon, tr("Move Down"),this,SLOT(moveExpoDown()),tr("Ctrl+Down"));
 
     contextMenu.exec(globalPos);
 }

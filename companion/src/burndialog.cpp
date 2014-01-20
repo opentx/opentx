@@ -16,6 +16,9 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
   hexType(Type)
 {
   ui->setupUi(this);
+  QIcon LibraryIcon;
+  populate_icon(&LibraryIcon,"library.png");
+  ui->libraryButton->setIcon(LibraryIcon);
   ui->SplashFrame->hide();
   ui->FramFWInfo->hide();
   ui->EEbackupCB->hide();

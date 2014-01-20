@@ -9,6 +9,12 @@
 splashLibrary::splashLibrary(QWidget *parent, QString * fileName) : QDialog(parent), ui(new Ui::splashLibrary) {
   splashFileName = fileName;
   ui->setupUi(this);
+  QIcon NextIcon;
+  populate_icon(&NextIcon,"arrow-right.png");
+  QIcon PrevIcon;
+  populate_icon(&PrevIcon,"arrow-left.png");
+  ui->nextPage->setIcon(NextIcon);
+  ui->prevPage->setIcon(PrevIcon);
   page = 0;
   getFileList();
   if (imageList.size() > 20) {

@@ -11,6 +11,9 @@ customizeSplashDialog::customizeSplashDialog(QWidget *parent) :
 QDialog(parent),
 ui(new Ui::customizeSplashDialog) {
   ui->setupUi(this);
+  QIcon LibraryIcon;
+  populate_icon(&LibraryIcon,"library.png");
+  ui->libraryButton->setIcon(LibraryIcon);
   ui->HowToLabel->clear();
   ui->HowToLabel->append("<center>" + tr("Select an original firmware file") + "</center>");
 }
