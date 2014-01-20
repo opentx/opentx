@@ -258,7 +258,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
     if (modified) {
       model.funcSw[i].swtch = RawSwitch(fswtchSwtch[i]->itemData(fswtchSwtch[i]->currentIndex()).toInt());
       model.funcSw[i].func = (AssignFunc)fswtchFunc[i]->currentIndex();
-      model.funcSw[i].enabled =fswtchEnable[i]->isChecked();
+      model.funcSw[i].enabled = fswtchEnable[i]->isChecked();
       model.funcSw[i].repeatParam = (AssignFunc)fswtchRepeat[i]->currentIndex();
       model.funcSw[i].adjustMode = (AssignFunc)fswtchGVmode[i]->currentIndex();
     }
@@ -275,7 +275,8 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
       }
       fswtchParam[i]->setValue(model.funcSw[i].param);
       widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM + CUSTOM_FUNCTION_ENABLE;
-    } else if (index==FuncLogs) {
+    }
+    else if (index==FuncLogs) {
       fswtchParam[i]->setDecimals(1);
       fswtchParam[i]->setMinimum(0);
       fswtchParam[i]->setMaximum(25.5);
@@ -323,14 +324,16 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
         if (modified) model.funcSw[i].param = fswtchParamT[i]->itemData(fswtchParamT[i]->currentIndex()).toInt();
         populateFuncParamCB(fswtchParamT[i], model, index, model.funcSw[i].param);
         widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM + CUSTOM_FUNCTION_REPEAT;
-      } else if (index==FuncPlayPrompt || index==FuncPlayBoth) {
+      }
+      else if (index==FuncPlayPrompt || index==FuncPlayBoth) {
         if (GetEepromInterface()->getCapability(VoicesAsNumbers)) {
           fswtchParam[i]->setDecimals(0);
           fswtchParam[i]->setSingleStep(1);
           fswtchParam[i]->setMinimum(0);
           if (index==FuncPlayPrompt) {
             widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM + CUSTOM_FUNCTION_REPEAT + CUSTOM_FUNCTION_GV_TOOGLE;
-          } else {
+          }
+          else {
             widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM + CUSTOM_FUNCTION_REPEAT;
             fswtchParamGV[i]->setChecked(false);
           }
@@ -339,7 +342,8 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
             if (fswtchParamGV[i]->isChecked()) {
               fswtchParam[i]->setMinimum(1);
               model.funcSw[i].param = std::min(fswtchParam[i]->value(),5.0)+(fswtchParamGV[i]->isChecked() ? 250 : 0);
-            } else {
+            }
+            else {
               model.funcSw[i].param = fswtchParam[i]->value();
             }
           }
@@ -347,13 +351,15 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
             fswtchParamGV[i]->setChecked(true);
             fswtchParam[i]->setValue(model.funcSw[i].param-250);
             fswtchParam[i]->setMaximum(5);
-          } else {
+          }
+          else {
             fswtchParamGV[i]->setChecked(false);
             fswtchParam[i]->setValue(model.funcSw[i].param);
           }
           if (model.funcSw[i].param < 251)
             widgetsMask |= CUSTOM_FUNCTION_PLAY;
-        } else {
+        }
+        else {
           widgetsMask |= CUSTOM_FUNCTION_FILE_PARAM;
           if (modified) {
             memset(model.funcSw[i].paramarm, 0, sizeof(model.funcSw[i].paramarm));
@@ -366,7 +372,8 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
             }
           }
         }
-      } else if (index==FuncBackgroundMusic) {
+      }
+      else if (index==FuncBackgroundMusic) {
         widgetsMask |= CUSTOM_FUNCTION_FILE_PARAM;
         if (modified) {
           memset(model.funcSw[i].paramarm, 0, sizeof(model.funcSw[i].paramarm));
@@ -389,13 +396,13 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
         populateFuncParamCB(fswtchParamT[i], model, index, model.funcSw[i].param);
         widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM;
       }
-   }
-    else if (model.funcSw[i].swtch.type!=SWITCH_TYPE_NONE) {
+    }
+    else {
       if (modified) model.funcSw[i].param = fswtchParam[i]->value();
       fswtchParam[i]->setDecimals(0);
       fswtchParam[i]->setSingleStep(1);
       fswtchParam[i]->setValue(model.funcSw[i].param);
-      if (index<=FuncInstantTrim) {
+      if (index <= FuncInstantTrim) {
         widgetsMask |= CUSTOM_FUNCTION_ENABLE;
       }
     }
