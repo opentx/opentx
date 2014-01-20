@@ -996,7 +996,6 @@ enum Capability {
  HasStickScroll,
  HasSoundMixer,
  NumModules,
- FSSwitch,
  PPMCenter,
  SYMLimits,
  HasCurrentCalibration,

@@ -62,6 +62,8 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, i
     ui->trimCB->hide();
   }
 
+  ui->trimCB->setCurrentIndex(1 - ed->carryTrim);
+
   int expolength = GetEepromInterface()->getCapability(HasExpoNames);
   if (!expolength) {
     ui->lineNameLabel->hide();

@@ -602,8 +602,6 @@ int Open9xInterface::getCapability(const Capability capability)
       return 1;
     case DSM2Indexes:
       return 1;
-    case FSSwitch:
-      return 1;
     case MixesWithoutExpo:
       return 1;
     case NumCurves:

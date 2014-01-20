@@ -45,14 +45,19 @@ MixerDialog::MixerDialog(QWidget *parent, MixData *mixdata, int stickMode) :
     ui->trimCB->addItem(tr("Thr"), 3);
     ui->trimCB->addItem(tr("Ail"), 4);
 
-    ui->trimCB->setCurrentIndex((-md->carryTrim)+1);
-    int namelength=GetEepromInterface()->getCapability(HasMixerNames);
+    ui->trimCB->setCurrentIndex(1 - md->carryTrim);
+
+    int namelength = GetEepromInterface()->getCapability(HasMixerNames);
     if (!namelength) {
       ui->label_name->hide();
       ui->mixerName->hide();
-    } else {
+    }
+    else {
       ui->mixerName->setMaxLength(namelength);
     }
+    ui->mixerName->setValidator(new QRegExpValidator(rx, this));
+    ui->mixerName->setText(md->name);
+
     if (!GetEepromInterface()->getCapability(FlightPhases)) {
       ui->label_phases->hide();
       for (int i=0; i<9; i++) {
@@ -73,9 +78,6 @@ MixerDialog::MixerDialog(QWidget *parent, MixData *mixdata, int stickMode) :
         cb_fp[i]->hide();
       }
     }
-
-    ui->mixerName->setValidator(new QRegExpValidator(rx, this));
-    ui->mixerName->setText(md->name);
 
     populateSwitchCB(ui->switchesCB,md->swtch);
     ui->warningCB->setCurrentIndex(md->mixWarn);
