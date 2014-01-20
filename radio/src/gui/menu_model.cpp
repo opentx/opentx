@@ -5164,6 +5164,8 @@ enum menuModelTelemetryItems {
   ITEM_TELEMETRY_USR_PROTO,
 #endif
   ITEM_TELEMETRY_USR_BLADES,
+  ITEM_TELEMETRY_USR_SPUR_GEAR, // T.Foley
+  ITEM_TELEMETRY_USR_PINION_GEAR, // T.Foley
 #endif
   ITEM_TELEMETRY_USR_VOLTAGE_SOURCE,
   ITEM_TELEMETRY_USR_CURRENT_SOURCE,
@@ -5200,7 +5202,8 @@ enum menuModelTelemetryItems {
 };
 
 #if defined(PCBTARANIS)
-  #define USRDATA_LINES (uint8_t)-1, 0,
+  //#define USRDATA_LINES (uint8_t)-1, 0,
+  #define USRDATA_LINES (uint8_t)-1, 0, 0, 0, // T.Foley - Add room for two new gearing options
 #elif defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
   #define USRDATA_LINES (uint8_t)-1, 0, 0,
 #else
@@ -5403,8 +5406,24 @@ void menuModelTelemetry(uint8_t event)
 
       case ITEM_TELEMETRY_USR_BLADES:
         lcd_putsLeft(y, STR_BLADES);
-        lcd_outdezAtt(TELEM_COL2+FWNUM, y, 2+g_model.frsky.blades, attr);
-        if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, g_model.frsky.blades, 3);
+        //lcd_outdezAtt(TELEM_COL2+FWNUM, y, 2+g_model.frsky.blades, attr);
+        lcd_outdezAtt(TELEM_COL2, y, 1+g_model.frsky.blades, LEFT|attr); // T.Foley
+        //if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, g_model.frsky.blades, 3);
+        if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, g_model.frsky.blades, 254); // T.Foley
+        break;
+        
+      case ITEM_TELEMETRY_USR_SPUR_GEAR: // T.Foley
+        lcd_putsLeft(y, STR_SPURGEAR);
+        lcd_outdezAtt(TELEM_COL2, y, 1+g_model.frsky.spur_gear, LEFT|attr);
+        // Spur gear must be greater than or equal to pinion to prevent floating point error
+        if (attr) CHECK_INCDEC_MODELVAR(event, g_model.frsky.spur_gear, g_model.frsky.pinion_gear, 254);
+        break;
+        
+      case ITEM_TELEMETRY_USR_PINION_GEAR: // T.Foley
+        lcd_putsLeft(y, STR_PINIONGEAR);
+        lcd_outdezAtt(TELEM_COL2, y, 1+g_model.frsky.pinion_gear, LEFT|attr);
+        // Pinion gear ,ust be less than or equal to spur gear to prevent floating point error
+        if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, g_model.frsky.pinion_gear, g_model.frsky.spur_gear);
         break;
 #endif
 
