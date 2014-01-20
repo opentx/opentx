@@ -143,7 +143,7 @@ void InputsPanel::update()
 bool InputsPanel::gm_insertExpo(int idx)
 {
     if (idx<0 || idx>=C9X_MAX_EXPOS || model.expoData[C9X_MAX_EXPOS-1].mode > 0) {
-      QMessageBox::information(this, "companion9x", tr("Not enough available expos!"));
+      QMessageBox::information(this, "companion", tr("Not enough available expos!"));
       return false;
     }
 
@@ -222,7 +222,7 @@ void InputsPanel::exposDelete(bool ask)
     QMessageBox::StandardButton ret = QMessageBox::No;
 
     if(ask)
-      ret = QMessageBox::warning(this, "companion9x",
+      ret = QMessageBox::warning(this, "companion",
                tr("Delete Selected Expos?"),
                QMessageBox::Yes | QMessageBox::No);
 
@@ -250,7 +250,7 @@ void InputsPanel::exposCopy()
     }
 
     QMimeData *mimeData = new QMimeData;
-    mimeData->setData("application/x-companion9x-expo", mxData);
+    mimeData->setData("application/x-companion-expo", mxData);
     QApplication::clipboard()->setMimeData(mimeData,QClipboard::Clipboard);
 }
 
@@ -264,7 +264,7 @@ void InputsPanel::mimeExpoDropped(int index, const QMimeData *data, Qt::DropActi
 #include <QtGui/qwidget.h>
 void InputsPanel::pasteExpoMimeData(const QMimeData * mimeData, int destIdx)
 {
-  if (mimeData->hasFormat("application/x-companion9x-expo")) {
+  if (mimeData->hasFormat("application/x-companion-expo")) {
     int idx; // mixer index
     int dch;
 
@@ -276,7 +276,7 @@ void InputsPanel::pasteExpoMimeData(const QMimeData * mimeData, int destIdx)
       dch = model.expoData[idx].chn;
     }
 
-    QByteArray mxData = mimeData->data("application/x-companion9x-expo");
+    QByteArray mxData = mimeData->data("application/x-companion-expo");
 
     int i = 0;
     while (i < mxData.size()) {
@@ -370,7 +370,7 @@ void InputsPanel::expolistWidget_customContextMenuRequested(QPoint pos)
 
     const QClipboard *clipboard = QApplication::clipboard();
     const QMimeData *mimeData = clipboard->mimeData();
-    bool hasData = mimeData->hasFormat("application/x-companion9x-expo");
+    bool hasData = mimeData->hasFormat("application/x-companion-expo");
 
     QMenu contextMenu;
     contextMenu.addAction(AddIcon, tr("&Add"),this,SLOT(expoAdd()),tr("Ctrl+A"));

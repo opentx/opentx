@@ -268,7 +268,7 @@ void preferencesDialog::writeValues()
   settings.setValue("default_channel_order", ui->channelorderCB->currentIndex());
   settings.setValue("default_mode", ui->stickmodeCB->currentIndex());
   settings.setValue("cpu_id", ui->CPU_ID_LE->text());
-  settings.setValue("startup_check_companion9x", ui->startupCheck_companion9x->isChecked());
+  settings.setValue("startup_check_companion", ui->startupCheck_companion9x->isChecked());
   settings.setValue("startup_check_fw", ui->startupCheck_fw->isChecked());
   settings.setValue("rename_firmware_files", ui->renameFirmware->isChecked());
   settings.setValue("wizardEnable", ui->wizardEnable_ChkB->isChecked());
@@ -410,7 +410,7 @@ void preferencesDialog::initSettings()
   }
   ui->channelorderCB->setCurrentIndex(settings.value("default_channel_order", 0).toInt());
   ui->stickmodeCB->setCurrentIndex(settings.value("default_mode", 1).toInt());
-  ui->startupCheck_companion9x->setChecked(settings.value("startup_check_companion9x", true).toBool());
+  ui->startupCheck_companion9x->setChecked(settings.value("startup_check_companion", true).toBool());
   ui->renameFirmware->setChecked(settings.value("rename_firmware_files", false).toBool());
   ui->wizardEnable_ChkB->setChecked(settings.value("wizardEnable", true).toBool());
   ui->showSplash->setChecked(settings.value("show_splash", true).toBool());

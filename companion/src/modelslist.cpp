@@ -82,7 +82,7 @@ void ModelsListWidget::ShowContextMenu(const QPoint& pos)
 
     const QClipboard *clipboard = QApplication::clipboard();
     const QMimeData *mimeData = clipboard->mimeData();
-    bool hasData = mimeData->hasFormat("application/x-companion9x");
+    bool hasData = mimeData->hasFormat("application/x-companion");
     QIcon AddIcon;
     populate_icon(&AddIcon,"add.png");
     QIcon EditIcon;
@@ -186,7 +186,7 @@ void ModelsListWidget::mouseMoveEvent(QMouseEvent *event)
     doCopy(&gmData);
 
     QMimeData *mimeData = new QMimeData;
-    mimeData->setData("application/x-companion9x", gmData);
+    mimeData->setData("application/x-companion", gmData);
 
     drag->setMimeData(mimeData);
 
@@ -214,7 +214,7 @@ void ModelsListWidget::restoreSelection()
 
 void ModelsListWidget::dragEnterEvent(QDragEnterEvent *event)
 {
-    if (event->mimeData()->hasFormat("application/x-companion9x"))
+    if (event->mimeData()->hasFormat("application/x-companion"))
     {
          event->acceptProposedAction();
          saveSelection();
@@ -230,9 +230,9 @@ void ModelsListWidget::dragMoveEvent(QDragMoveEvent *event)
 {
     int row=this->indexAt(event->pos()).row();
     const QMimeData *mimeData = event->mimeData();
-    if (mimeData->hasFormat("application/x-companion9x"))
+    if (mimeData->hasFormat("application/x-companion"))
     {
-         QByteArray gmData = mimeData->data("application/x-companion9x");
+         QByteArray gmData = mimeData->data("application/x-companion");
          event->acceptProposedAction();
          clearSelection();
          DragDropHeader *header = (DragDropHeader *)gmData.data();
@@ -253,9 +253,9 @@ void ModelsListWidget::dropEvent(QDropEvent *event)
 
     // QMessageBox::warning(this, tr("Companion"),tr("Index :%1").arg(row));
     const QMimeData  *mimeData = event->mimeData();
-    if(mimeData->hasFormat("application/x-companion9x"))
+    if(mimeData->hasFormat("application/x-companion"))
     {
-        QByteArray gmData = mimeData->data("application/x-companion9x");
+        QByteArray gmData = mimeData->data("application/x-companion");
         if (event->source() && event->dropAction() == Qt::MoveAction)
           ((ModelsListWidget*)event->source())->doCut(&gmData);
         doPaste(&gmData, row);
@@ -450,7 +450,7 @@ void ModelsListWidget::copy()
     doCopy(&gmData);
 
     QMimeData *mimeData = new QMimeData;
-    mimeData->setData("application/x-companion9x", gmData);
+    mimeData->setData("application/x-companion", gmData);
 
     QClipboard *clipboard = QApplication::clipboard();
     clipboard->setMimeData(mimeData,QClipboard::Clipboard);
@@ -458,7 +458,7 @@ void ModelsListWidget::copy()
 
 void ModelsListWidget::doPaste(QByteArray *gmData, int index)
 {
-  //QByteArray gmData = mimeD->data("application/x-companion9x");
+  //QByteArray gmData = mimeD->data("application/x-companion");
   char *gData = gmData->data()+sizeof(DragDropHeader);//new char[gmData.size() + 1];
   int i = sizeof(DragDropHeader);
   int id = index;
@@ -515,7 +515,7 @@ bool ModelsListWidget::hasPasteData()
     const QClipboard *clipboard = QApplication::clipboard();
     const QMimeData *mimeData = clipboard->mimeData();
 
-    return mimeData->hasFormat("application/x-companion9x");
+    return mimeData->hasFormat("application/x-companion");
 }
 
 void ModelsListWidget::paste()
@@ -524,7 +524,7 @@ void ModelsListWidget::paste()
         const QClipboard *clipboard = QApplication::clipboard();
         const QMimeData *mimeData = clipboard->mimeData();
 
-        QByteArray gmData = mimeData->data("application/x-companion9x");
+        QByteArray gmData = mimeData->data("application/x-companion");
         doPaste(&gmData,this->currentRow());
     }
 }

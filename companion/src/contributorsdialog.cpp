@@ -82,7 +82,7 @@ contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnu
           ui->textEditor->setHtml(file.readAll());
         }
         ui->textEditor->scroll(0,0);
-        this->setWindowTitle(tr("Companion9x Release Notes"));
+        this->setWindowTitle(tr("Companion Release Notes"));
         }
         break;
       case 2:{

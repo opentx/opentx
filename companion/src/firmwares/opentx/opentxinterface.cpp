@@ -309,7 +309,7 @@ bool Open9xInterface::load(RadioData &radioData, uint8_t *eeprom, int size)
         std::cout << " wrong size (" << size << ")\n";
         return false;
       } else {
-        QMessageBox::warning(NULL,"companion9x", QObject::tr("Your radio probably uses a wrong firmware,\n eeprom size is 4096 but only the first 2048 are used"));
+        QMessageBox::warning(NULL,"companion", QObject::tr("Your radio probably uses a wrong firmware,\n eeprom size is 4096 but only the first 2048 are used"));
         size=2048;
       }
     } else {
@@ -945,7 +945,7 @@ bool Open9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esiz
 QString geturl( int board)
 {
     QString url="http://";
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     int server = settings.value("fwserver", 0).toInt();
     if (server >= o9xservers.count()) {
       server = 0;
@@ -973,7 +973,7 @@ QString geturl( int board)
 QString getstamp( int board)
 {
     QString url="http://";
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     int server = settings.value("fwserver",0).toInt();
     if (server >=o9xservers.count()) {
       server=0;
@@ -1008,7 +1008,7 @@ QString getstamp( int board)
 QString getrnurl( int board)
 {
     QString url="http://";
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings("companion", "companion");
     int server = settings.value("fwserver",0).toInt();
     if (server >=o9xservers.count()) {
       server=0;
@@ -1239,7 +1239,7 @@ void RegisterOpen9xFirmwares()
   open9x->addOptions(fai_options);
   firmwares.push_back(open9x);
 
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings("companion", "companion");
   int rev4a = settings.value("rev4asupport",0).toInt();
   if (rev4a) {
     open9x = new Open9xFirmware("opentx-taranisrev4a", QObject::tr("openTx for FrSky Taranis Rev4a"), new Open9xInterface(BOARD_TARANIS_REV4a), geturl(BOARD_TARANIS_REV4a), getstamp(BOARD_TARANIS_REV4a),getrnurl(BOARD_TARANIS), true);

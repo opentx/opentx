@@ -181,7 +181,7 @@ void MixesPanel::update()
 bool MixesPanel::gm_insertMix(int idx)
 {
     if (idx<0 || idx>=GetEepromInterface()->getCapability(Mixes) || model.mixData[GetEepromInterface()->getCapability(Mixes)-1].destCh > 0) {
-      QMessageBox::information(this, "companion9x", tr("Not enough available mixers!"));
+      QMessageBox::information(this, "companion", tr("Not enough available mixers!"));
       return false;
     }
 
@@ -286,7 +286,7 @@ void MixesPanel::mixersDelete(bool ask)
     QMessageBox::StandardButton ret = QMessageBox::No;
 
     if(ask)
-      ret = QMessageBox::warning(this, "companion9x",
+      ret = QMessageBox::warning(this, "companion",
                tr("Delete Selected Mixes?"),
                QMessageBox::Yes | QMessageBox::No);
 
@@ -315,13 +315,13 @@ void MixesPanel::mixersCopy()
     }
 
     QMimeData *mimeData = new QMimeData;
-    mimeData->setData("application/x-companion9x-mix", mxData);
+    mimeData->setData("application/x-companion-mix", mxData);
     QApplication::clipboard()->setMimeData(mimeData,QClipboard::Clipboard);
 }
 
 void MixesPanel::pasteMixerMimeData(const QMimeData * mimeData, int destIdx)
 {
-  if(mimeData->hasFormat("application/x-companion9x-mix")) {
+  if(mimeData->hasFormat("application/x-companion-mix")) {
     int idx; // mixer index
     int dch;
 
@@ -333,7 +333,7 @@ void MixesPanel::pasteMixerMimeData(const QMimeData * mimeData, int destIdx)
       dch = model.mixData[idx].destCh;
     }
 
-    QByteArray mxData = mimeData->data("application/x-companion9x-mix");
+    QByteArray mxData = mimeData->data("application/x-companion-mix");
 
     int i = 0;
     while(i<mxData.size()) {
@@ -433,7 +433,7 @@ void MixesPanel::mixerlistWidget_customContextMenuRequested(QPoint pos)
 
     const QClipboard *clipboard = QApplication::clipboard();
     const QMimeData *mimeData = clipboard->mimeData();
-    bool hasData = mimeData->hasFormat("application/x-companion9x-mix");
+    bool hasData = mimeData->hasFormat("application/x-companion-mix");
 
     QMenu contextMenu;
     contextMenu.addAction(AddIcon, tr("&Add"),this,SLOT(mixerAdd()),tr("Ctrl+A"));

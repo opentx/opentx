@@ -425,8 +425,8 @@ void CustomFunctionsPanel::fswPaste()
 {
   const QClipboard *clipboard = QApplication::clipboard();
   const QMimeData *mimeData = clipboard->mimeData();
-  if (mimeData->hasFormat("application/x-companion9x-fsw")) {
-    QByteArray fswData = mimeData->data("application/x-companion9x-fsw");
+  if (mimeData->hasFormat("application/x-companion-fsw")) {
+    QByteArray fswData = mimeData->data("application/x-companion-fsw");
 
     FuncSwData *fsw = &model.funcSw[selectedFunction];
     memcpy(fsw, fswData.mid(0, sizeof(FuncSwData)).constData(), sizeof(FuncSwData));
@@ -453,7 +453,7 @@ void CustomFunctionsPanel::fswCopy()
     QByteArray fswData;
     fswData.append((char*)&model.funcSw[selectedFunction],sizeof(FuncSwData));
     QMimeData *mimeData = new QMimeData;
-    mimeData->setData("application/x-companion9x-fsw", fswData);
+    mimeData->setData("application/x-companion-fsw", fswData);
     QApplication::clipboard()->setMimeData(mimeData,QClipboard::Clipboard);
 }
 
@@ -480,7 +480,7 @@ void CustomFunctionsPanel::fsw_customContextMenuRequested(QPoint pos)
 
     const QClipboard *clipboard = QApplication::clipboard();
     const QMimeData *mimeData = clipboard->mimeData();
-    bool hasData = mimeData->hasFormat("application/x-companion9x-fsw");
+    bool hasData = mimeData->hasFormat("application/x-companion-fsw");
 
     QMenu contextMenu;
     contextMenu.addAction(ClearIcon, tr("&Delete"),this,SLOT(fswDelete()),tr("Delete"));

@@ -48,7 +48,7 @@ compareDialog::compareDialog(QWidget *parent, GeneralSettings *gg) :
 
 void compareDialog::dragMoveEvent(QDragMoveEvent *event)
 {
-  if (event->mimeData()->hasFormat("application/x-companion9x")) {   
+  if (event->mimeData()->hasFormat("application/x-companion")) {   
     event->acceptProposedAction();
   } else {
     event->ignore();
@@ -58,7 +58,7 @@ void compareDialog::dragMoveEvent(QDragMoveEvent *event)
 void compareDialog::dragEnterEvent(QDragEnterEvent *event)
 {
   // accept just text/uri-list mime format
-  if (event->mimeData()->hasFormat("application/x-companion9x")) {   
+  if (event->mimeData()->hasFormat("application/x-companion")) {   
     event->acceptProposedAction();
   } else {
     event->ignore();
@@ -95,8 +95,8 @@ void compareDialog::dropEvent(QDropEvent *event)
   const QMimeData  *mimeData = event->mimeData();
   if (child) {
     if (child->objectName().contains("label_1")) {        
-      if(mimeData->hasFormat("application/x-companion9x")) {
-        QByteArray gmData = mimeData->data("application/x-companion9x");
+      if(mimeData->hasFormat("application/x-companion")) {
+        QByteArray gmData = mimeData->data("application/x-companion");
         DragDropHeader *header = (DragDropHeader *)gmData.data();
         if (!header->general_settings) {
           char *gData = gmData.data()+sizeof(DragDropHeader);//new char[gmData.size() + 1];
@@ -120,8 +120,8 @@ void compareDialog::dropEvent(QDropEvent *event)
       }          
     }
     else if (child->objectName().contains("label_2")) {
-      if(mimeData->hasFormat("application/x-companion9x")) {
-        QByteArray gmData = mimeData->data("application/x-companion9x");
+      if(mimeData->hasFormat("application/x-companion")) {
+        QByteArray gmData = mimeData->data("application/x-companion");
         DragDropHeader *header = (DragDropHeader *)gmData.data();
         if (!header->general_settings) {
           char *gData = gmData.data()+sizeof(DragDropHeader);//new char[gmData.size() + 1];

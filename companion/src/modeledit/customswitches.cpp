@@ -337,8 +337,8 @@ void CustomSwitchesPanel::cswPaste()
 {
     const QClipboard *clipboard = QApplication::clipboard();
     const QMimeData *mimeData = clipboard->mimeData();
-    if (mimeData->hasFormat("application/x-companion9x-csw")) {
-      QByteArray cswData = mimeData->data("application/x-companion9x-csw");
+    if (mimeData->hasFormat("application/x-companion-csw")) {
+      QByteArray cswData = mimeData->data("application/x-companion-csw");
 
       CustomSwData *csw = &model.customSw[selectedSwitch];
       memcpy(csw, cswData.mid(0, sizeof(CustomSwData)).constData(), sizeof(CustomSwData));
@@ -359,7 +359,7 @@ void CustomSwitchesPanel::cswCopy()
     QByteArray cswData;
     cswData.append((char*)&model.customSw[selectedSwitch],sizeof(CustomSwData));
     QMimeData *mimeData = new QMimeData;
-    mimeData->setData("application/x-companion9x-csw", cswData);
+    mimeData->setData("application/x-companion-csw", cswData);
     QApplication::clipboard()->setMimeData(mimeData,QClipboard::Clipboard);
 }
 
@@ -395,7 +395,7 @@ void CustomSwitchesPanel::csw_customContextMenuRequested(QPoint pos)
 
     const QClipboard *clipboard = QApplication::clipboard();
     const QMimeData *mimeData = clipboard->mimeData();
-    bool hasData = mimeData->hasFormat("application/x-companion9x-csw");
+    bool hasData = mimeData->hasFormat("application/x-companion-csw");
 
     QMenu contextMenu;
     contextMenu.addAction(ClearIcon, tr("&Delete"),this,SLOT(cswDelete()),tr("Delete"));

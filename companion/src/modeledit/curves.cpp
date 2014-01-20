@@ -154,7 +154,7 @@ void Curves::resetCurve()
 {
   QPushButton *button = (QPushButton *)sender();
   int index = button->property("index").toInt();
-  int res = QMessageBox::question(this, "companion9x", tr("Are you sure you want to reset curve %1 ?").arg(index+1), QMessageBox::Yes | QMessageBox::No);
+  int res = QMessageBox::question(this, "companion", tr("Are you sure you want to reset curve %1 ?").arg(index+1), QMessageBox::Yes | QMessageBox::No);
   if (res == QMessageBox::Yes) {
     model.curves[index].clear(5);
     update();
@@ -364,7 +364,7 @@ void Curves::on_curvetype_CB_currentIndexChanged(int index)
     int fwpoints = GetEepromInterface()->getCapability(NumCurvePoints);
     if (fwpoints!=0) {
       if (fwpoints < totalpoints) {
-        QMessageBox::warning(this, "companion9x", tr("Not enough free points in EEPROM to store the curve."));
+        QMessageBox::warning(this, "companion", tr("Not enough free points in EEPROM to store the curve."));
         updateCurveType();
         lock = false;
         return;

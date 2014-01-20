@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>342</width>
+    <width>364</width>
     <height>434</height>
    </rect>
   </property>
@@ -20,7 +20,7 @@
    <string>Dialog</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../companion9x.qrc">
+   <iconset resource="../companion.qrc">
     <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
@@ -612,7 +612,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</string>
   </layout>
  </widget>
  <resources>
-  <include location="../companion9x.qrc"/>
+  <include location="../companion.qrc"/>
  </resources>
  <connections>
   <connection>

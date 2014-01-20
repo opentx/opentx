@@ -2090,7 +2090,7 @@ void MainWindow::readSettings()
 {
     QSettings settings("companion", "companion");
     restoreState(settings.value("mainWindowState").toByteArray());
-    checkCompanion9x = settings.value("startup_check_companion9x", true).toBool();
+    checkCompanion9x = settings.value("startup_check_companion", true).toBool();
     checkFW = settings.value("startup_check_fw", true).toBool();
     MaxRecentFiles =settings.value("history_size",10).toInt();
     ActiveProfile=settings.value("activeprofile",0).toInt();
