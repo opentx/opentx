@@ -514,7 +514,6 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
         x += 2;
     }
 #if defined(BOLD_FONT) && !defined(CPUM64) || defined(EXTSTD)
-///////////////////////////////////////////////////////////////////
     if (flags & BOLD) fw += 1;
 #endif
   }
@@ -575,7 +574,6 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
     val = qr.quot;
     x-=fw;
 #if defined(BOLD_FONT) && !defined(CPUM64) || defined(EXTSTD)
-////////////////////////////////////////////////////////////
     if (i==len && (flags & BOLD)) x += 1;
 #endif
   }
