@@ -204,7 +204,7 @@ void MixesPanel::gm_openMix(int index)
     emit modified();
     update();
 
-    MixerDialog *g = new MixerDialog(this, &mixd, generalSettings.stickMode);
+    MixerDialog *g = new MixerDialog(this, model, &mixd, generalSettings.stickMode);
     if(g->exec()) {
       model.mixData[index] = mixd;
       emit modified();

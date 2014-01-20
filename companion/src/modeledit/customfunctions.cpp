@@ -110,7 +110,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
     fswtchParamT[i] = new QComboBox(this);
     fswtchParamT[i]->setProperty("index", i);
     paramLayout->addWidget(fswtchParamT[i]);
-    populateFuncParamCB(fswtchParamT[i], func, model.funcSw[i].param, model.funcSw[i].adjustMode);
+    populateFuncParamCB(fswtchParamT[i], model, func, model.funcSw[i].param, model.funcSw[i].adjustMode);
     connect(fswtchParamT[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
 
     fswtchParamArmT[i] = new QComboBox(this);
@@ -295,20 +295,24 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
         fswtchParam[i]->setMaximum(125);
         fswtchParam[i]->setValue(model.funcSw[i].param);
         widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM;
-      } else {
+      }
+      else {
         if (modified) model.funcSw[i].param = fswtchParamT[i]->itemData(fswtchParamT[i]->currentIndex()).toInt();
-        populateFuncParamCB(fswtchParamT[i], index, model.funcSw[i].param, model.funcSw[i].adjustMode);
+        populateFuncParamCB(fswtchParamT[i], model, index, model.funcSw[i].param, model.funcSw[i].adjustMode);
         widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM;
       }
-    } else if (index==FuncReset) {
+    }
+    else if (index==FuncReset) {
       if (modified) model.funcSw[i].param = (uint8_t)fswtchParamT[i]->currentIndex();
-      populateFuncParamCB(fswtchParamT[i], index, model.funcSw[i].param);
+      populateFuncParamCB(fswtchParamT[i], model, index, model.funcSw[i].param);
       widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM;
-    } else if (index==FuncVolume) {
+    }
+    else if (index==FuncVolume) {
       if (modified) model.funcSw[i].param = fswtchParamT[i]->itemData(fswtchParamT[i]->currentIndex()).toInt();
-      populateFuncParamCB(fswtchParamT[i], index, model.funcSw[i].param);
+      populateFuncParamCB(fswtchParamT[i], model, index, model.funcSw[i].param);
       widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM + CUSTOM_FUNCTION_ENABLE;
-    } else if (index==FuncPlaySound || index==FuncPlayHaptic || index==FuncPlayValue || index==FuncPlayPrompt || index==FuncPlayBoth || index==FuncBackgroundMusic) {
+    }
+    else if (index==FuncPlaySound || index==FuncPlayHaptic || index==FuncPlayValue || index==FuncPlayPrompt || index==FuncPlayBoth || index==FuncBackgroundMusic) {
       if (modified) model.funcSw[i].repeatParam = fswtchRepeat[i]->itemData(fswtchRepeat[i]->currentIndex()).toInt();
       if (index != FuncBackgroundMusic) {
         if (GetEepromInterface()->getCapability(HasFuncRepeat)) {
@@ -317,7 +321,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
       }
       if (index==FuncPlayValue) {
         if (modified) model.funcSw[i].param = fswtchParamT[i]->itemData(fswtchParamT[i]->currentIndex()).toInt();
-        populateFuncParamCB(fswtchParamT[i], index, model.funcSw[i].param);
+        populateFuncParamCB(fswtchParamT[i], model, index, model.funcSw[i].param);
         widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM + CUSTOM_FUNCTION_REPEAT;
       } else if (index==FuncPlayPrompt || index==FuncPlayBoth) {
         if (GetEepromInterface()->getCapability(VoicesAsNumbers)) {
@@ -374,16 +378,19 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
             }
           }
         }
-      } else if (index==FuncPlaySound) {
+      }
+      else if (index==FuncPlaySound) {
         if (modified) model.funcSw[i].param = (uint8_t)fswtchParamT[i]->currentIndex();
-        populateFuncParamCB(fswtchParamT[i], index, model.funcSw[i].param);
-        widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM;
-      } else if (index==FuncPlayHaptic) {
-        if (modified) model.funcSw[i].param = (uint8_t)fswtchParamT[i]->currentIndex();
-        populateFuncParamCB(fswtchParamT[i], index, model.funcSw[i].param);
+        populateFuncParamCB(fswtchParamT[i], model, index, model.funcSw[i].param);
         widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM;
       }
-   } else if (model.funcSw[i].swtch.type!=SWITCH_TYPE_NONE) {
+      else if (index==FuncPlayHaptic) {
+        if (modified) model.funcSw[i].param = (uint8_t)fswtchParamT[i]->currentIndex();
+        populateFuncParamCB(fswtchParamT[i], model, index, model.funcSw[i].param);
+        widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM;
+      }
+   }
+    else if (model.funcSw[i].swtch.type!=SWITCH_TYPE_NONE) {
       if (modified) model.funcSw[i].param = fswtchParam[i]->value();
       fswtchParam[i]->setDecimals(0);
       fswtchParam[i]->setSingleStep(1);

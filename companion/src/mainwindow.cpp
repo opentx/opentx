@@ -1537,7 +1537,7 @@ void MainWindow::about()
     QString aboutStr = "<center><img src=\":/images/companion-title.png\"></center><br/>";
     aboutStr.append(tr("OpenTX Home Page: <a href='%1'>%1</a>").arg("http://www.open-tx.org"));
     aboutStr.append("<br/><br/>");
-    aboutStr.append(tr("The OpenTX Companion project was originally forked from <a href='%1'>companion9x</a> and <a href='%2'>eePe</a>").arg("http://code.google.com/p/companion9x").arg("http://code.google.com/p/eepe"));
+    aboutStr.append(tr("The OpenTX Companion project was originally forked from <a href='%2'>eePe</a>").arg("http://code.google.com/p/eepe"));
     aboutStr.append("<br/><br/>");
     aboutStr.append(tr("If you've found this program useful, please support by <a href='%1'>donating</a>").arg(DONATE_STR));
     aboutStr.append("<br/><br/>");

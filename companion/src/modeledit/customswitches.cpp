@@ -254,7 +254,7 @@ void CustomSwitchesPanel::setSwitchWidgetVisibility(int i)
         cswitchSource2[i]->setVisible(false);
         cswitchValue[i]->setVisible(false);
         cswitchOffset[i]->setVisible(true);
-        populateSourceCB(cswitchSource1[i], source, POPULATE_SOURCES | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (GetEepromInterface()->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
+        populateSourceCB(cswitchSource1[i], source, model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (GetEepromInterface()->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
         cswitchOffset[i]->setDecimals(source.getDecimals(model));
         cswitchOffset[i]->setSingleStep(source.getStep(model));
         if (model.customSw[i].func>CS_FN_ELESS && model.customSw[i].func<CS_FN_VEQUAL) {
@@ -280,8 +280,8 @@ void CustomSwitchesPanel::setSwitchWidgetVisibility(int i)
         cswitchSource2[i]->setVisible(true);
         cswitchValue[i]->setVisible(false);
         cswitchOffset[i]->setVisible(false);
-        populateSourceCB(cswitchSource1[i], RawSource(model.customSw[i].val1), POPULATE_SOURCES | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (GetEepromInterface()->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
-        populateSourceCB(cswitchSource2[i], RawSource(model.customSw[i].val2), POPULATE_SOURCES | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (GetEepromInterface()->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
+        populateSourceCB(cswitchSource1[i], RawSource(model.customSw[i].val1), model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (GetEepromInterface()->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
+        populateSourceCB(cswitchSource2[i], RawSource(model.customSw[i].val2), model, POPULATE_SOURCES | POPULATE_TRIMS | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (GetEepromInterface()->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
         break;
       case CS_FAMILY_TIMERS:
         cswitchSource1[i]->setVisible(false);

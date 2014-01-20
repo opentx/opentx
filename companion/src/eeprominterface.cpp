@@ -287,7 +287,12 @@ QString RawSource::toString()
   if (index<0) {
     return QObject::tr("----");
   }
-  switch(type) {
+  switch (type) {
+    case SOURCE_TYPE_VIRTUAL_INPUT:
+      if (model && strlen(model->inputNames[index]) > 0)
+        return QString(model->inputNames[index]);
+      else
+        return QObject::tr("Virtual Input %1").arg(index+1);
     case SOURCE_TYPE_STICK:
       return AnalogString(index);
     case SOURCE_TYPE_TRIM:

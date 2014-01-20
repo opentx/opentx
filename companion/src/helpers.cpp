@@ -399,7 +399,7 @@ void populateFuncParamArmTCB(QComboBox *b, ModelData * g_model, char * value, QS
   }
 }
 
-void populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsigned int adjustmode)
+void populateFuncParamCB(QComboBox *b, const ModelData & model, uint function, unsigned int value, unsigned int adjustmode)
 {
   QStringList qs;
   b->clear();
@@ -423,18 +423,18 @@ void populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsign
     b->setCurrentIndex(value);
   }
   else if (function==FuncVolume) {
-    populateSourceCB(b, RawSource(value), POPULATE_SOURCES|POPULATE_TRIMS);
+    populateSourceCB(b, RawSource(value), model, POPULATE_SOURCES|POPULATE_TRIMS);
   }
   else if (function==FuncPlayValue) {
-    populateSourceCB(b, RawSource(value), POPULATE_SOURCES|POPULATE_SWITCHES|POPULATE_GVARS|POPULATE_TRIMS|POPULATE_TELEMETRYEXT);
+    populateSourceCB(b, RawSource(value), model, POPULATE_SOURCES|POPULATE_VIRTUAL_INPUTS|POPULATE_SWITCHES|POPULATE_GVARS|POPULATE_TRIMS|POPULATE_TELEMETRYEXT);
   }
   else if (function>=FuncAdjustGV1 && function<=FuncAdjustGVLast) {
     switch (adjustmode) {
       case 1:
-        populateSourceCB(b, RawSource(value), POPULATE_SOURCES|POPULATE_TRIMS|POPULATE_SWITCHES);
+        populateSourceCB(b, RawSource(value), model, POPULATE_SOURCES|POPULATE_TRIMS|POPULATE_SWITCHES);
         break;
       case 2:
-        populateSourceCB(b, RawSource(value), POPULATE_GVARS);
+        populateSourceCB(b, RawSource(value), model, POPULATE_GVARS);
         break;
       case 3:
         b->clear();
@@ -998,8 +998,7 @@ void populateGVCB(QComboBox *b, int value)
     b->setCurrentIndex(nullitem);
 }
 
-
-void populateSourceCB(QComboBox *b, const RawSource &source, unsigned int flags)
+void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData & model, unsigned int flags)
 {
   RawSource item;
 
@@ -1009,7 +1008,18 @@ void populateSourceCB(QComboBox *b, const RawSource &source, unsigned int flags)
     item = RawSource(SOURCE_TYPE_NONE);
     b->addItem(item.toString(), item.toValue());
     if (item == source) b->setCurrentIndex(b->count()-1);
+  }
 
+  if (flags & POPULATE_VIRTUAL_INPUTS) {
+    int virtualInputs = GetEepromInterface()->getCapability(VirtualInputs);
+    for (int i=0; i<virtualInputs; i++) {
+      item = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, i, &model);
+      b->addItem(item.toString(), item.toValue());
+      if (item == source) b->setCurrentIndex(b->count()-1);
+    }
+  }
+
+  if (flags & POPULATE_SOURCES) {
     for (int i=0; i<4+GetEepromInterface()->getCapability(Pots); i++) {
       item = RawSource(SOURCE_TYPE_STICK, i);
       b->addItem(item.toString(), item.toValue());
