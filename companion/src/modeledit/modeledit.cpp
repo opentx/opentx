@@ -17,7 +17,7 @@ ModelEdit::ModelEdit(RadioData & radioData, int modelId, bool openWizard, bool i
   ui(new Ui::ModelEdit),
   modelId(modelId),
   model(radioData.models[modelId]),
-  generalSettings(generalSettings)
+  generalSettings(radioData.generalSettings)
 {
   ui->setupUi(this);
   QSettings settings("companion", "companion");
@@ -32,7 +32,6 @@ ModelEdit::ModelEdit(RadioData & radioData, int modelId, bool openWizard, bool i
   if (GetEepromInterface()->getCapability(CustomFunctions))
     addTab(new CustomFunctionsPanel(this, model, radioData.generalSettings), tr("Assignable Functions"));
   addTab(new Curves(this, model), tr("Curves"));
-  // TODO remove this capability if (!GetEepromInterface()->getCapability(FSSwitch))
   if (GetEepromInterface()->getCapability(Telemetry) & TM_HASTELEMETRY)
     addTab(new TelemetryPanel(this, model), tr("Telemetry"));
 }
@@ -44,8 +43,8 @@ ModelEdit::~ModelEdit()
 
 void ModelEdit::closeEvent(QCloseEvent *event)
 {
-    QSettings settings("companion", "companion");
-    settings.setValue("modelEditGeometry", saveGeometry());
+  QSettings settings("companion", "companion");
+  settings.setValue("modelEditGeometry", saveGeometry());
 }
 
 class VerticalScrollArea : public QScrollArea
