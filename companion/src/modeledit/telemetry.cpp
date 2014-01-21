@@ -371,16 +371,19 @@ void TelemetryPanel::setup()
 
     if (!GetEepromInterface()->getCapability(HasAltitudeSel)) {
       ui->AltitudeGPS_ChkB->hide();
-    } else {
+    }
+    else {
       ui->AltitudeGPS_ChkB->setChecked(model.frsky.FrSkyGpsAlt);
     }
-    int varioCap=GetEepromInterface()->getCapability(HasVario);
-  //  if (IS_TARANIS(GetEepromInterface()->getBoard())) {
-    if (false) {
+
+    if (IS_TARANIS(GetEepromInterface()->getBoard())) {
       ui->AltitudeToolbar_ChkB->setChecked(model.frsky.altitudeDisplayed);
-    } else {
+    }
+    else {
       ui->AltitudeToolbar_ChkB->hide();
     }
+
+    int varioCap = GetEepromInterface()->getCapability(HasVario);
     if (!varioCap) {
       ui->varioLimitMax_DSB->hide();
       ui->varioLimitMinOff_ChkB->hide();
@@ -649,7 +652,6 @@ void TelemetryPanel::on_AltitudeGPS_ChkB_toggled(bool checked)
     if (lock) return;
     model.frsky.FrSkyGpsAlt = checked;
     emit modified();
-    //AltitudeGPS_CB
 }
 
 void TelemetryPanel::on_AltitudeToolbar_ChkB_toggled(bool checked)

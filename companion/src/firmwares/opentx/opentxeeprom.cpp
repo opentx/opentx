@@ -1688,8 +1688,7 @@ class FrskyField: public StructField {
         Append(new UnsignedField<8>(frsky.usrProto));
         if (version >= 216) {
           Append(new UnsignedField<7>(frsky.voltsSource));
-          // TODO altitude displayed
-          Append(new SpareBitsField<1>());
+          Append(new BoolField<1>(frsky.altitudeDisplayed));
         }
         else {
           Append(new UnsignedField<8>(frsky.voltsSource));
