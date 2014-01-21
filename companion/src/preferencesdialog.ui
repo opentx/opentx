@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>685</width>
-    <height>764</height>
+    <height>838</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -1594,6 +1594,16 @@ May be different from firmware language</string>
        <item>
         <property name="text">
          <string>Monochrome</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>MonoWhite</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>MonoBlue</string>
         </property>
        </item>
       </widget>

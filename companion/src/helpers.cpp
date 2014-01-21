@@ -1503,6 +1503,12 @@ QString getTheme()
     case 0:
       Theme="classic";
       break;
+    case 2:
+      Theme="monowhite";
+      break;
+    case 3:
+      Theme="monoblue";
+      break;
     default:
       Theme="monochrome";
       break;          
