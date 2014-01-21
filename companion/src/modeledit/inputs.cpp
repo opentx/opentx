@@ -88,6 +88,12 @@ void InputsPanel::update()
 
     if (GetEepromInterface()->getCapability(VirtualInputs)) {
       str += " " + tr("Source(%1)").arg(md->srcRaw.toString());
+      if (md->carryTrim>0) {
+        str += " " + tr("No Trim");
+      }
+      else if (md->carryTrim<0) {
+        str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString();
+      }
     }
     else {
       switch (md->mode) {
