@@ -338,7 +338,7 @@ void Open9xSim::refreshDiplay()
     bmp->render();
     bmf->setImage(bmp);
 
-    // Recalc RPM based on Blades setting during simulator - T.Foley
+    // Recalc RPM based on Blades setting during simulator
     // Final value will change as user adjusts blades, spur or gear live in simulator
     frskyData.hub.rpm = 303;
     frskyData.hub.rpm *= (uint8_t)60;
