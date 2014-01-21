@@ -443,8 +443,8 @@
 #define TR_ALARM               INDENT"Alarme"
 #define TR_USRDATA             "UsrData"
 #define TR_BLADES              INDENT"Helice"
-#define TR_SPURGEAR            INDENT"Spur Gear" // T.Foley
-#define TR_PINIONGEAR          INDENT"Pinion Gear" // T.Foley
+#define TR_SPURGEAR            INDENT"Spur Gear"
+#define TR_PINIONGEAR          INDENT"Pinion Gear"
 #define TR_SCREEN              "Tela"
 #define TR_SOUND_LABEL         "Som"
 #define TR_LENGTH              INDENT"Comprimento"
