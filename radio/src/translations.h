@@ -343,8 +343,8 @@ extern const pm_char STR_BAR[];
 extern const pm_char STR_ALARM[];
 extern const pm_char STR_USRDATA[];
 extern const pm_char STR_BLADES[];
-extern const pm_char STR_SPURGEAR[]; // T.Foley
-extern const pm_char STR_PINIONGEAR[]; // T.Foley
+extern const pm_char STR_SPURGEAR[];
+extern const pm_char STR_PINIONGEAR[];
 extern const pm_char STR_SCREEN[];
 extern const pm_char STR_SOUND_LABEL[];
 extern const pm_char STR_LENGTH[];
