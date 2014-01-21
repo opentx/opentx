@@ -76,9 +76,15 @@ class MyProxyStyle : public QProxyStyle
 
 int main(int argc, char *argv[])
 {
-  QCoreApplication::setOrganizationName("OpenTX");
-  QCoreApplication::setOrganizationDomain("open-tx.org");
-  QCoreApplication::setApplicationName("Companion");
+  Q_INIT_RESOURCE(companion);
+  QApplication app(argc, argv);
+  app.setApplicationName("OpenTX Companion");
+  app.setOrganizationName("OpenTX");
+  app.setOrganizationDomain("open-tx.org");
+
+#ifdef __APPLE__
+  app.setStyle(new MyProxyStyle);
+#endif
 
   // Start by borrowing any left over settings from companion9x
   QSettings c9x_settings("companion9x", "companion9x");
@@ -90,13 +96,6 @@ int main(int argc, char *argv[])
       settings.setValue(*i, c9x_settings.value(*i));
     }
   }
-
-  Q_INIT_RESOURCE(companion);
-  QApplication app(argc, argv);
-  app.setApplicationName("OpenTX Companion");
-#ifdef __APPLE__
-  app.setStyle(new MyProxyStyle);
-#endif
 
   QString dir;
   if (argc) dir = QFileInfo(argv[0]).canonicalPath() + "/lang";
