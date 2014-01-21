@@ -1338,10 +1338,10 @@ class CustomFunctionField: public TransformedField {
           internalField.Append(new CharField<6>(_arm_param));
         if (version >= 214) {
           internalField.Append(new UnsignedField<2>(_mode));
-          internalField.Append(new UnsignedField<6>(_delay));
+          internalField.Append(new SignedField<6>(_delay));
         }
         else {
-          internalField.Append(new UnsignedField<8>(_delay));
+          internalField.Append(new UnsignedField<8>((unsigned int &)_delay));
         }
         if (version < 214)
           internalField.Append(new SpareBitsField<8>());
@@ -1364,7 +1364,7 @@ class CustomFunctionField: public TransformedField {
       if (IS_ARM(board)) {
         _mode = 0;
         if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayValue)
-          _delay = fn.repeatParam / 5;
+          _delay = (version >= 216 ? fn.repeatParam : (fn.repeatParam/5));
         else
           _delay = (fn.enabled ? 1 : 0);
         if (fn.func <= FuncInstantTrim) {
@@ -1439,7 +1439,7 @@ class CustomFunctionField: public TransformedField {
     {
       if (IS_ARM(board)) {
         if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayValue)
-          fn.repeatParam = _delay * 5;
+          fn.repeatParam = (version >= 216 ? _delay : (_delay*5));
         else
           fn.enabled = (_delay & 0x01);
 
@@ -1529,7 +1529,7 @@ class CustomFunctionField: public TransformedField {
     SourcesConversionTable * sourcesConversionTable;
     char _arm_param[10];
     unsigned int _param;
-    unsigned int _delay;
+    int _delay;
     unsigned int _mode;
     unsigned int _union_param;
 };

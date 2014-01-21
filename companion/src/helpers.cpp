@@ -449,17 +449,6 @@ void populateFuncParamCB(QComboBox *b, const ModelData & model, uint function, u
   }
 }
 
-void populateRepeatCB(QComboBox *b, unsigned int value)
-{
-  b->clear();
-  b->addItem(QObject::tr("No repeat", 0));
-  unsigned int step = IS_ARM(GetEepromInterface()->getBoard()) ? 5 : 10;
-  for (unsigned int i=step; i<=60; i+=step) {
-    b->addItem(QObject::tr("%1s").arg(i), i);
-    if (i==value) b->setCurrentIndex(b->count()-1);
-  }
-}
-
 void populateGVmodeCB(QComboBox *b, unsigned int value)
 {
   b->clear();

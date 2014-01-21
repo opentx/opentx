@@ -646,7 +646,7 @@ class FuncSwData { // Function Switches data
     char paramarm[10];
     unsigned int enabled; // TODO perhaps not any more the right name
     unsigned int adjustMode;
-    unsigned int repeatParam;
+    int repeatParam;
     void clear() { memset(this, 0, sizeof(FuncSwData)); }
 };
 
