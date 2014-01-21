@@ -3,9 +3,10 @@
 #include "eeprominterface.h"
 #include "helpers.h"
 
-MixerDialog::MixerDialog(QWidget *parent, MixData *mixdata, int stickMode) :
+MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, int stickMode) :
     QDialog(parent),
     ui(new Ui::MixerDialog),
+    model(model),
     md(mixdata),
     lock(false)
 {
@@ -19,7 +20,7 @@ MixerDialog::MixerDialog(QWidget *parent, MixData *mixdata, int stickMode) :
     else
       this->setWindowTitle(tr("DEST -> CH%1%2").arg(md->destCh/10).arg(md->destCh%10));
 
-    populateSourceCB(ui->sourceCB, md->srcRaw, POPULATE_SOURCES | POPULATE_SWITCHES | POPULATE_TRIMS | (GetEepromInterface()->getCapability(GvarsAsSources) ? POPULATE_GVARS : 0));
+    populateSourceCB(ui->sourceCB, md->srcRaw, model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS | (GetEepromInterface()->getCapability(GvarsAsSources) ? POPULATE_GVARS : 0));
     ui->sourceCB->removeItem(0);
 
     int limit = GetEepromInterface()->getCapability(OffsetWeight);
@@ -145,16 +146,18 @@ void MixerDialog::valuesChanged()
   if (!lock) {
     lock = true;
     QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
-    md->srcRaw  = RawSource(ui->sourceCB->itemData(ui->sourceCB->currentIndex()).toInt());
+    md->srcRaw  = RawSource(ui->sourceCB->itemData(ui->sourceCB->currentIndex()).toInt(), &model);
     if ((ui->sourceCB->itemData(ui->sourceCB->currentIndex()).toInt()-65536)<4) {
       if (!GetEepromInterface()->getCapability(MixesWithoutExpo)) {
         ui->MixDR_CB->hide();
         ui->label_MixDR->hide();
-      } else {
+      }
+      else {
         ui->MixDR_CB->setVisible(true);
         ui->label_MixDR->setVisible(true);
       }
-    } else {
+    }
+    else {
       ui->MixDR_CB->setHidden(true);
       ui->label_MixDR->setHidden(true);
     }

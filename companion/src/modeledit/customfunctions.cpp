@@ -36,7 +36,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
       }
     }
 
-    QSettings settings("companion", "companion");
+    QSettings settings;
     QString path = settings.value("sdPath", ".").toString();
     path.append("/SOUNDS/");
     QString lang = generalSettings.ttsLanguage;
@@ -110,7 +110,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
     fswtchParamT[i] = new QComboBox(this);
     fswtchParamT[i]->setProperty("index", i);
     paramLayout->addWidget(fswtchParamT[i]);
-    populateFuncParamCB(fswtchParamT[i], func, model.funcSw[i].param, model.funcSw[i].adjustMode);
+    populateFuncParamCB(fswtchParamT[i], model, func, model.funcSw[i].param, model.funcSw[i].adjustMode);
     connect(fswtchParamT[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
 
     fswtchParamArmT[i] = new QComboBox(this);
@@ -123,11 +123,9 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
     connect(fswtchParamArmT[i], SIGNAL(editTextChanged ( const QString)), this, SLOT(customFunctionEdited()));
 
 #ifdef PHONON
-    QIcon PlayIcon;
-    populate_icon(&PlayIcon,"play.png");
     playBT[i] = new QPushButton(this);
     playBT[i]->setObjectName(QString("play_%1").arg(i));
-    playBT[i]->setIcon(PlayIcon);
+    playBT[i]->setIcon(CompanionIcon("play.png"));
     paramLayout->addWidget(playBT[i]);
     connect(playBT[i], SIGNAL(pressed()), this, SLOT(playMusic()));
 #endif
@@ -162,8 +160,6 @@ void CustomFunctionsPanel::mediaPlayer_state(Phonon::State newState, Phonon::Sta
 {
     if (phononLock)
       return;
-    QIcon PlayIcon;
-    populate_icon(&PlayIcon,"play.png");
     
     phononLock=true;
     if ((newState==Phonon::StoppedState || newState==Phonon::PausedState)  && oldState==Phonon::PlayingState) {
@@ -172,7 +168,7 @@ void CustomFunctionsPanel::mediaPlayer_state(Phonon::State newState, Phonon::Sta
       clickObject->clear();
       for (int i=0; i<GetEepromInterface()->getCapability(CustomFunctions); i++) {
         playBT[i]->setObjectName(QString("play_%1").arg(i));
-        playBT[i]->setIcon(PlayIcon);
+        playBT[i]->setIcon(CompanionIcon("play.png"));
       }
     }
     if (newState==Phonon::ErrorState) {
@@ -181,7 +177,7 @@ void CustomFunctionsPanel::mediaPlayer_state(Phonon::State newState, Phonon::Sta
       clickObject->clear();
       for (int i=0; i<GetEepromInterface()->getCapability(CustomFunctions); i++) {
         playBT[i]->setObjectName(QString("play_%1").arg(i));
-        playBT[i]->setIcon(PlayIcon);
+        playBT[i]->setIcon(CompanionIcon("play.png"));
       }
     }
 
@@ -194,19 +190,15 @@ void CustomFunctionsPanel::playMusic()
     QPushButton *playButton = qobject_cast<QPushButton*>(sender());
     int index=playButton->objectName().mid(5,2).toInt();
     QString function=playButton->objectName().left(4);
-    QSettings settings("companion", "companion");
-    QIcon PlayIcon;
-    populate_icon(&PlayIcon,"play.png");
-    QIcon StopIcon;
-    populate_icon(&StopIcon,"stop.png");
-      
-    QString path=settings.value("sdPath", ".").toString();
+    QSettings settings;
+    QString path = settings.value("sdPath", ".").toString();
     QDir qd(path);
     QString track;
     if (qd.exists()) {
       if (GetEepromInterface()->getCapability(VoicesAsNumbers)) {
         track=path+QString("/%1.wav").arg(int(fswtchParam[index]->value()),4,10,(const QChar)'0');
-      } else {
+      }
+      else {
         path.append("/SOUNDS/");
         QString lang = generalSettings.ttsLanguage;
         if (lang.isEmpty())
@@ -227,12 +219,12 @@ void CustomFunctionsPanel::playMusic()
         clickObject->setCurrentSource(Phonon::MediaSource(track));
         clickObject->play();
         playBT[index]->setObjectName(QString("stop_%1").arg(index));
-        playBT[index]->setIcon(StopIcon);
+        playBT[index]->setIcon(CompanionIcon("stop.png"));
       } else {
         clickObject->stop();
         clickObject->clear();
         playBT[index]->setObjectName(QString("play_%1").arg(index));
-        playBT[index]->setIcon(PlayIcon);
+        playBT[index]->setIcon(CompanionIcon("play.png"));
       }
 #endif
     }
@@ -266,7 +258,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
     if (modified) {
       model.funcSw[i].swtch = RawSwitch(fswtchSwtch[i]->itemData(fswtchSwtch[i]->currentIndex()).toInt());
       model.funcSw[i].func = (AssignFunc)fswtchFunc[i]->currentIndex();
-      model.funcSw[i].enabled =fswtchEnable[i]->isChecked();
+      model.funcSw[i].enabled = fswtchEnable[i]->isChecked();
       model.funcSw[i].repeatParam = (AssignFunc)fswtchRepeat[i]->currentIndex();
       model.funcSw[i].adjustMode = (AssignFunc)fswtchGVmode[i]->currentIndex();
     }
@@ -283,14 +275,15 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
       }
       fswtchParam[i]->setValue(model.funcSw[i].param);
       widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM + CUSTOM_FUNCTION_ENABLE;
-    } else if (index==FuncLogs) {
+    }
+    else if (index==FuncLogs) {
       fswtchParam[i]->setDecimals(1);
       fswtchParam[i]->setMinimum(0);
       fswtchParam[i]->setMaximum(25.5);
       fswtchParam[i]->setSingleStep(0.1);
       if (modified) model.funcSw[i].param = fswtchParam[i]->value()*10.0;
       fswtchParam[i]->setValue(model.funcSw[i].param/10.0);
-      widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM + CUSTOM_FUNCTION_ENABLE;
+      widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM;
     }
     else if (index>=FuncAdjustGV1 && index<=FuncAdjustGVLast) {
       if (modified) model.funcSw[i].adjustMode = fswtchGVmode[i]->currentIndex();
@@ -303,20 +296,24 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
         fswtchParam[i]->setMaximum(125);
         fswtchParam[i]->setValue(model.funcSw[i].param);
         widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM;
-      } else {
+      }
+      else {
         if (modified) model.funcSw[i].param = fswtchParamT[i]->itemData(fswtchParamT[i]->currentIndex()).toInt();
-        populateFuncParamCB(fswtchParamT[i], index, model.funcSw[i].param, model.funcSw[i].adjustMode);
+        populateFuncParamCB(fswtchParamT[i], model, index, model.funcSw[i].param, model.funcSw[i].adjustMode);
         widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM;
       }
-    } else if (index==FuncReset) {
+    }
+    else if (index==FuncReset) {
       if (modified) model.funcSw[i].param = (uint8_t)fswtchParamT[i]->currentIndex();
-      populateFuncParamCB(fswtchParamT[i], index, model.funcSw[i].param);
+      populateFuncParamCB(fswtchParamT[i], model, index, model.funcSw[i].param);
       widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM;
-    } else if (index==FuncVolume) {
+    }
+    else if (index==FuncVolume) {
       if (modified) model.funcSw[i].param = fswtchParamT[i]->itemData(fswtchParamT[i]->currentIndex()).toInt();
-      populateFuncParamCB(fswtchParamT[i], index, model.funcSw[i].param);
+      populateFuncParamCB(fswtchParamT[i], model, index, model.funcSw[i].param);
       widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM + CUSTOM_FUNCTION_ENABLE;
-    } else if (index==FuncPlaySound || index==FuncPlayHaptic || index==FuncPlayValue || index==FuncPlayPrompt || index==FuncPlayBoth || index==FuncBackgroundMusic) {
+    }
+    else if (index==FuncPlaySound || index==FuncPlayHaptic || index==FuncPlayValue || index==FuncPlayPrompt || index==FuncPlayBoth || index==FuncBackgroundMusic) {
       if (modified) model.funcSw[i].repeatParam = fswtchRepeat[i]->itemData(fswtchRepeat[i]->currentIndex()).toInt();
       if (index != FuncBackgroundMusic) {
         if (GetEepromInterface()->getCapability(HasFuncRepeat)) {
@@ -325,16 +322,18 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
       }
       if (index==FuncPlayValue) {
         if (modified) model.funcSw[i].param = fswtchParamT[i]->itemData(fswtchParamT[i]->currentIndex()).toInt();
-        populateFuncParamCB(fswtchParamT[i], index, model.funcSw[i].param);
+        populateFuncParamCB(fswtchParamT[i], model, index, model.funcSw[i].param);
         widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM + CUSTOM_FUNCTION_REPEAT;
-      } else if (index==FuncPlayPrompt || index==FuncPlayBoth) {
+      }
+      else if (index==FuncPlayPrompt || index==FuncPlayBoth) {
         if (GetEepromInterface()->getCapability(VoicesAsNumbers)) {
           fswtchParam[i]->setDecimals(0);
           fswtchParam[i]->setSingleStep(1);
           fswtchParam[i]->setMinimum(0);
           if (index==FuncPlayPrompt) {
             widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM + CUSTOM_FUNCTION_REPEAT + CUSTOM_FUNCTION_GV_TOOGLE;
-          } else {
+          }
+          else {
             widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM + CUSTOM_FUNCTION_REPEAT;
             fswtchParamGV[i]->setChecked(false);
           }
@@ -343,7 +342,8 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
             if (fswtchParamGV[i]->isChecked()) {
               fswtchParam[i]->setMinimum(1);
               model.funcSw[i].param = std::min(fswtchParam[i]->value(),5.0)+(fswtchParamGV[i]->isChecked() ? 250 : 0);
-            } else {
+            }
+            else {
               model.funcSw[i].param = fswtchParam[i]->value();
             }
           }
@@ -351,13 +351,15 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
             fswtchParamGV[i]->setChecked(true);
             fswtchParam[i]->setValue(model.funcSw[i].param-250);
             fswtchParam[i]->setMaximum(5);
-          } else {
+          }
+          else {
             fswtchParamGV[i]->setChecked(false);
             fswtchParam[i]->setValue(model.funcSw[i].param);
           }
           if (model.funcSw[i].param < 251)
             widgetsMask |= CUSTOM_FUNCTION_PLAY;
-        } else {
+        }
+        else {
           widgetsMask |= CUSTOM_FUNCTION_FILE_PARAM;
           if (modified) {
             memset(model.funcSw[i].paramarm, 0, sizeof(model.funcSw[i].paramarm));
@@ -370,7 +372,8 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
             }
           }
         }
-      } else if (index==FuncBackgroundMusic) {
+      }
+      else if (index==FuncBackgroundMusic) {
         widgetsMask |= CUSTOM_FUNCTION_FILE_PARAM;
         if (modified) {
           memset(model.funcSw[i].paramarm, 0, sizeof(model.funcSw[i].paramarm));
@@ -382,21 +385,24 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
             }
           }
         }
-      } else if (index==FuncPlaySound) {
+      }
+      else if (index==FuncPlaySound) {
         if (modified) model.funcSw[i].param = (uint8_t)fswtchParamT[i]->currentIndex();
-        populateFuncParamCB(fswtchParamT[i], index, model.funcSw[i].param);
-        widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM;
-      } else if (index==FuncPlayHaptic) {
-        if (modified) model.funcSw[i].param = (uint8_t)fswtchParamT[i]->currentIndex();
-        populateFuncParamCB(fswtchParamT[i], index, model.funcSw[i].param);
+        populateFuncParamCB(fswtchParamT[i], model, index, model.funcSw[i].param);
         widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM;
       }
-   } else if (model.funcSw[i].swtch.type!=SWITCH_TYPE_NONE) {
+      else if (index==FuncPlayHaptic) {
+        if (modified) model.funcSw[i].param = (uint8_t)fswtchParamT[i]->currentIndex();
+        populateFuncParamCB(fswtchParamT[i], model, index, model.funcSw[i].param);
+        widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM;
+      }
+    }
+    else {
       if (modified) model.funcSw[i].param = fswtchParam[i]->value();
       fswtchParam[i]->setDecimals(0);
       fswtchParam[i]->setSingleStep(1);
       fswtchParam[i]->setValue(model.funcSw[i].param);
-      if (index<=FuncInstantTrim) {
+      if (index <= FuncInstantTrim) {
         widgetsMask |= CUSTOM_FUNCTION_ENABLE;
       }
     }
@@ -467,14 +473,6 @@ void CustomFunctionsPanel::fsw_customContextMenuRequested(QPoint pos)
 {
     QLabel *label = (QLabel *)sender();
     selectedFunction = label->property("index").toInt();
-    QIcon ClearIcon;
-    populate_icon(&ClearIcon,"clear.png");
-    QIcon CopyIcon;
-    populate_icon(&CopyIcon,"copy.png");
-    QIcon CutIcon;
-    populate_icon(&CutIcon,"cut.png");
-    QIcon PasteIcon;
-    populate_icon(&PasteIcon,"paste.png");
 
     QPoint globalPos = label->mapToGlobal(pos);
 
@@ -483,10 +481,10 @@ void CustomFunctionsPanel::fsw_customContextMenuRequested(QPoint pos)
     bool hasData = mimeData->hasFormat("application/x-companion-fsw");
 
     QMenu contextMenu;
-    contextMenu.addAction(ClearIcon, tr("&Delete"),this,SLOT(fswDelete()),tr("Delete"));
-    contextMenu.addAction(CopyIcon, tr("&Copy"),this,SLOT(fswCopy()),tr("Ctrl+C"));
-    contextMenu.addAction(CutIcon, tr("&Cut"),this,SLOT(fswCut()),tr("Ctrl+X"));
-    contextMenu.addAction(PasteIcon, tr("&Paste"),this,SLOT(fswPaste()),tr("Ctrl+V"))->setEnabled(hasData);
+    contextMenu.addAction(CompanionIcon("clear.png"), tr("&Delete"),this,SLOT(fswDelete()),tr("Delete"));
+    contextMenu.addAction(CompanionIcon("copy.png"), tr("&Copy"),this,SLOT(fswCopy()),tr("Ctrl+C"));
+    contextMenu.addAction(CompanionIcon("cut.png"), tr("&Cut"),this,SLOT(fswCut()),tr("Ctrl+X"));
+    contextMenu.addAction(CompanionIcon("paste.png"), tr("&Paste"),this,SLOT(fswPaste()),tr("Ctrl+V"))->setEnabled(hasData);
 
     contextMenu.exec(globalPos);
 }

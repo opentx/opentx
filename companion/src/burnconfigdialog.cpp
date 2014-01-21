@@ -83,7 +83,7 @@ burnConfigDialog::~burnConfigDialog()
 
 void burnConfigDialog::getSettings()
 {
-    QSettings settings("companion", "companion");
+    QSettings settings;
 #if defined WIN32 || !defined __GNUC__
     avrLoc   = settings.value("avrdude_location", QFileInfo("avrdude.exe").absoluteFilePath()).toString();
     sambaLoc = settings.value("samba_location", QFileInfo("sam-ba.exe").absoluteFilePath()).toString();
@@ -137,7 +137,7 @@ void burnConfigDialog::getSettings()
 
 void burnConfigDialog::putSettings()
 {
-    QSettings settings("companion", "companion");
+    QSettings settings;
     settings.setValue("avrdude_location", avrLoc);
     settings.setValue("programmer", avrProgrammer);
     settings.setValue("mcu", avrMCU);
@@ -279,10 +279,9 @@ void burnConfigDialog::listProgrammers()
     QStringList arguments;
     arguments << "-c?";
     avrOutputDialog *ad = new avrOutputDialog(this, ui->avrdude_location->text(), arguments, "List available programmers", AVR_DIALOG_KEEP_OPEN, TRUE);
-    QIcon Icon;
-    populate_icon(&Icon,"list.png");
-    ad->setWindowIcon(Icon);
+    ad->setWindowIcon(CompanionIcon("list.png"));
     ad->show();
+    delete ad;
 }
 
 void burnConfigDialog::on_pushButton_3_clicked()
@@ -298,10 +297,9 @@ void burnConfigDialog::on_pushButton_4_clicked()
     arguments << "-?";
 
     avrOutputDialog *ad = new avrOutputDialog(this, ui->avrdude_location->text(), arguments, "Show help", AVR_DIALOG_KEEP_OPEN,TRUE);
-    QIcon Icon;
-    populate_icon(&Icon,"configure.png");
-    ad->setWindowIcon(Icon);
+    ad->setWindowIcon(CompanionIcon("configure.png"));
     ad->show();
+    delete ad;
 }
 
 
@@ -317,10 +315,9 @@ void burnConfigDialog::readFuses()
     arguments << "-c" << avrProgrammer << "-p" << avrMCU << args << str;
 
     avrOutputDialog *ad = new avrOutputDialog(this, avrLoc, arguments, "Read Fuses",AVR_DIALOG_KEEP_OPEN,TRUE);
-    QIcon Icon;
-    populate_icon(&Icon,"fuses.png");
-    ad->setWindowIcon(Icon);
+    ad->setWindowIcon(CompanionIcon("fuses.png"));
     ad->show();
+    delete ad;
 }
 
 void burnConfigDialog::restFuses(bool eeProtect)
@@ -344,7 +341,8 @@ void burnConfigDialog::restFuses(bool eeProtect)
           QString erStr = eeProtect ? "hfuse:w:0x11:m" : "hfuse:w:0x19:m";
           str << "-U" << "lfuse:w:0xD7:m" << "-U" << erStr << "-U" << "efuse:w:0xFC:m";
           //use hfuse = 0x81 to prevent eeprom being erased with every flashing          
-        } else {
+        }
+        else {
           QString tempDir    = QDir::tempPath();
           QString tempFile;
           QString lfuses;
@@ -352,10 +350,9 @@ void burnConfigDialog::restFuses(bool eeProtect)
           QStringList argread;
           argread << "-c" << avrProgrammer << "-p" << avrMCU << args  <<"-U" << "lfuse:r:"+tempFile+":r" ;
           avrOutputDialog *ad = new avrOutputDialog(this, avrLoc, argread, "Reset Fuses",AVR_DIALOG_CLOSE_IF_SUCCESSFUL,FALSE);
-          QIcon Icon;
-          populate_icon(&Icon,"fuses.png");
-          ad->setWindowIcon(Icon);
+          ad->setWindowIcon(CompanionIcon("fuses.png"));
           ad->exec();
+          delete ad;
           QFile file(tempFile);
           if (file.exists() && file.size()==1) {
             file.open(QIODevice::ReadOnly);
@@ -363,12 +360,14 @@ void burnConfigDialog::restFuses(bool eeProtect)
             file.read(bin_flash, 1);
             if (bin_flash[0]==0x0E) {
               lfuses="lfuse:w:0x0E:m";
-            } else {
+            }
+            else {
               lfuses="lfuse:w:0x3F:m";
             } 
             file.close();
             unlink(tempFile.toAscii());
-          } else {
+          }
+          else {
             lfuses="lfuse:w:0x3F:m";
           }
           
@@ -379,14 +378,14 @@ void burnConfigDialog::restFuses(bool eeProtect)
         QStringList arguments;
         if (avrMCU=="m2560") {
           arguments << "-c" << avrProgrammer << "-p" << avrMCU << args << "-u" << str;
-        } else {
+        }
+        else {
           arguments << "-c" << avrProgrammer << "-p" << avrMCU << args << "-B" << "100" << "-u" << str;          
         }
         avrOutputDialog *ad = new avrOutputDialog(this, avrLoc, arguments, "Reset Fuses",AVR_DIALOG_KEEP_OPEN,TRUE);
-        QIcon Icon;
-        populate_icon(&Icon,"fuses.png");
-        ad->setWindowIcon(Icon);
+        ad->setWindowIcon(CompanionIcon("fuses.png"));
         ad->show();
+        delete ad;
     }
 
 }
@@ -398,24 +397,29 @@ void burnConfigDialog::on_advCtrChkB_toggled(bool checked)
     if (IS_TARANIS(eepromInterface->getBoard())) {
       ui->label_dfu2->show();
       ui->dfuArgs->show();
-    } else if (eepromInterface->getBoard()==BOARD_SKY9X) {
+    }
+    else if (eepromInterface->getBoard()==BOARD_SKY9X) {
       ui->label_sb2->show();
       ui->arm_mcu->show();
-    } else {
+    }
+    else {
       ui->label_av3->show();
       ui->avrdude_mcu->show();
       QMessageBox::warning(this, tr("Companion"),
         tr("<b><u>WARNING!</u></b><br>Normally CPU type is automatically selected according to the chosen firmware.<br>If you change the CPU type the resulting eeprom could be inconsistent."),
         QMessageBox::Ok);
     }
-  } else {
+  }
+  else {
     if (IS_TARANIS(eepromInterface->getBoard())) {
       ui->label_dfu2->hide();
       ui->dfuArgs->hide();
-    } else if (eepromInterface->getBoard()==BOARD_SKY9X) {
+    }
+    else if (eepromInterface->getBoard()==BOARD_SKY9X) {
       ui->label_sb2->hide();
       ui->arm_mcu->hide();
-    } else {
+    }
+    else {
       ui->label_av3->hide();
       ui->avrdude_mcu->hide();
     }

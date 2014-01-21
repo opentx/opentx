@@ -130,7 +130,7 @@ void joystickDialog::on_okButton_clicked() {
     return;
   }
   joystick->close();
-  QSettings settings("companion", "companion");
+  QSettings settings;
   settings.beginGroup("JsCalibration");
   for (int i=0; i<8;i++) {
     settings.remove(QString("stick%1_axe").arg(i));

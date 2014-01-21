@@ -353,7 +353,7 @@ Setup::Setup(QWidget *parent, ModelData & model):
   if (GetEepromInterface()->getCapability(ModelImage)) {
     QStringList items;
     items.append("");
-    QSettings settings("companion", "companion");
+    QSettings settings;
     QString path = settings.value("sdPath", ".").toString();
     path.append("/BMP/");
     QDir qd(path);
@@ -497,7 +497,7 @@ void Setup::on_image_currentIndexChanged(int index)
 {
   if (!lock) {
     strncpy(model.bitmap, ui->image->currentText().toAscii(), GetEepromInterface()->getCapability(VoicesMaxLength));
-    QSettings settings("companion", "companion");
+    QSettings settings;
     QString path=settings.value("sdPath", ".").toString();
     path.append("/BMP/");
     QDir qd(path);

@@ -286,19 +286,22 @@ class RawSource {
   public:
     RawSource():
       type(SOURCE_TYPE_NONE),
-      index(0)
+      index(0),
+      model(NULL)
     {
     }
 
-    RawSource(int value):
+    RawSource(int value, const ModelData * model=NULL):
       type(RawSourceType(abs(value)/65536)),
-      index(value >= 0 ? abs(value)%65536 : -(abs(value)%65536))
+      index(value >= 0 ? abs(value)%65536 : -(abs(value)%65536)),
+      model(model)
     {
     }
 
-    RawSource(RawSourceType type, int index=0):
+    RawSource(RawSourceType type, int index=0, const ModelData * model=NULL):
       type(type),
-      index(index)
+      index(index),
+      model(model)
     {
     }
 
@@ -322,6 +325,7 @@ class RawSource {
 
     RawSourceType type;
     int index;
+    const ModelData * model;
 };
 
 enum RawSwitchType {

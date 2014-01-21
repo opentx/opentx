@@ -8,23 +8,23 @@
 #include "flashinterface.h"
 
 customizeSplashDialog::customizeSplashDialog(QWidget *parent) :
-QDialog(parent),
-ui(new Ui::customizeSplashDialog) {
+  QDialog(parent),
+  ui(new Ui::customizeSplashDialog)
+{
   ui->setupUi(this);
-  QIcon LibraryIcon;
-  populate_icon(&LibraryIcon,"library.png");
-  ui->libraryButton->setIcon(LibraryIcon);
+  ui->libraryButton->setIcon(CompanionIcon("library.png"));
   ui->HowToLabel->clear();
   ui->HowToLabel->append("<center>" + tr("Select an original firmware file") + "</center>");
 }
 
-customizeSplashDialog::~customizeSplashDialog() {
+customizeSplashDialog::~customizeSplashDialog()
+{
   delete ui;
 }
 
 void customizeSplashDialog::on_FlashLoadButton_clicked()
 {
-  QSettings settings("companion", "companion");
+  QSettings settings;
   QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), settings.value("lastFlashDir").toString(), FLASH_FILES_FILTER);
   if (!fileName.isEmpty()) {
     ui->ImageLoadButton->setDisabled(true);
@@ -70,7 +70,7 @@ void customizeSplashDialog::on_ImageLoadButton_clicked() {
     supportedImageFormats += QLatin1String(" *.") + QImageReader::supportedImageFormats()[formatIndex];
   }
 
-  QSettings settings("companion", "companion");
+  QSettings settings;
   QString fileName = QFileDialog::getOpenFileName(this,
           tr("Open Image to load"), settings.value("lastImagesDir").toString(), tr("Images (%1)").arg(supportedImageFormats));
 
@@ -147,7 +147,7 @@ void customizeSplashDialog::on_libraryButton_clicked() {
 void customizeSplashDialog::on_SaveFlashButton_clicked()
 {
   QString fileName;
-  QSettings settings("companion", "companion");
+  QSettings settings;
   ui->HowToLabel->clear();
   fileName = QFileDialog::getSaveFileName(this, tr("Write to file"), settings.value("lastFlashDir").toString(), FLASH_FILES_FILTER, 0, QFileDialog::DontConfirmOverwrite);
   if (fileName.isEmpty()) {
@@ -180,7 +180,7 @@ void customizeSplashDialog::on_InvertColorButton_clicked()
 void customizeSplashDialog::on_SaveImageButton_clicked()
 {
   QString fileName;
-  QSettings settings("companion", "companion");
+  QSettings settings;
 
   fileName = QFileDialog::getSaveFileName(this, tr("Write to file"), settings.value("lastImagesDir").toString(), tr("PNG images (*.png);;"), 0, QFileDialog::DontConfirmOverwrite);
   if (!fileName.isEmpty()) {

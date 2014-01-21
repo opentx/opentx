@@ -48,7 +48,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, i
     ui->sideLabel->hide();
     ui->sideCB->hide();
     ui->inputName->setMaxLength(4);
-    populateSourceCB(ui->sourceCB, ed->srcRaw, POPULATE_SOURCES | POPULATE_SWITCHES | POPULATE_TRIMS | (GetEepromInterface()->getCapability(GvarsAsSources) ? POPULATE_GVARS : 0));
+    populateSourceCB(ui->sourceCB, ed->srcRaw, model, POPULATE_SOURCES | POPULATE_SWITCHES | POPULATE_TRIMS | (GetEepromInterface()->getCapability(GvarsAsSources) ? POPULATE_GVARS : 0));
     ui->sourceCB->removeItem(0);
   }
   else {

@@ -14,20 +14,14 @@ MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
   QPushButton * qbUp = new QPushButton(this);
   QPushButton * qbDown = new QPushButton(this);
   QPushButton * qbClear = new QPushButton(this);
-  QIcon qbUpIcon;
-  populate_icon(&qbUpIcon,"moveup.png");
   qbUp->setText(tr("Move Up"));
-  qbUp->setIcon(qbUpIcon);
+  qbUp->setIcon(CompanionIcon("moveup.png"));
   qbUp->setShortcut(QKeySequence(tr("Ctrl+Up")));
-  QIcon qbDownIcon;
-  populate_icon(&qbDownIcon,"movedown.png");
   qbDown->setText(tr("Move Down"));
-  qbDown->setIcon(qbDownIcon);
+  qbDown->setIcon(CompanionIcon("movedown.png"));
   qbDown->setShortcut(QKeySequence(tr("Ctrl+Down")));
-  QIcon qbClearIcon;
-  populate_icon(&qbClearIcon,"clear.png");
   qbClear->setText(tr("Clear Mixes"));
-  qbClear->setIcon(qbClearIcon);
+  qbClear->setIcon(CompanionIcon("clear.png"));
 
   mixesLayout->addWidget(MixerlistWidget,1,1,1,3);
   mixesLayout->addWidget(qbUp,2,1);
@@ -210,7 +204,7 @@ void MixesPanel::gm_openMix(int index)
     emit modified();
     update();
 
-    MixerDialog *g = new MixerDialog(this, &mixd, generalSettings.stickMode);
+    MixerDialog *g = new MixerDialog(this, model, &mixd, generalSettings.stickMode);
     if(g->exec()) {
       model.mixData[index] = mixd;
       emit modified();
@@ -411,24 +405,6 @@ void MixesPanel::mixerAdd()
 
 void MixesPanel::mixerlistWidget_customContextMenuRequested(QPoint pos)
 {
-    QIcon AddIcon;
-    populate_icon(&AddIcon,"add.png");
-    QIcon EditIcon;
-    populate_icon(&EditIcon,"edit.png");
-    QIcon ClearIcon;
-    populate_icon(&ClearIcon,"clear.png");
-    QIcon CopyIcon;
-    populate_icon(&CopyIcon,"copy.png");
-    QIcon CutIcon;
-    populate_icon(&CutIcon,"cut.png");
-    QIcon PasteIcon;
-    populate_icon(&PasteIcon,"paste.png");
-    QIcon DuplicateIcon;
-    populate_icon(&DuplicateIcon,"duplicate.png");
-    QIcon MoveUpIcon;
-    populate_icon(&MoveUpIcon,"moveup.png");
-    QIcon MoveDownIcon;
-    populate_icon(&MoveDownIcon,"movedown.png");
     QPoint globalPos = MixerlistWidget->mapToGlobal(pos);
 
     const QClipboard *clipboard = QApplication::clipboard();
@@ -436,17 +412,17 @@ void MixesPanel::mixerlistWidget_customContextMenuRequested(QPoint pos)
     bool hasData = mimeData->hasFormat("application/x-companion-mix");
 
     QMenu contextMenu;
-    contextMenu.addAction(AddIcon, tr("&Add"),this,SLOT(mixerAdd()),tr("Ctrl+A"));
-    contextMenu.addAction(EditIcon, tr("&Edit"),this,SLOT(mixerOpen()),tr("Enter"));
+    contextMenu.addAction(CompanionIcon("add.png"), tr("&Add"),this,SLOT(mixerAdd()),tr("Ctrl+A"));
+    contextMenu.addAction(CompanionIcon("edit.png"), tr("&Edit"),this,SLOT(mixerOpen()),tr("Enter"));
     contextMenu.addSeparator();
-    contextMenu.addAction(ClearIcon, tr("&Delete"),this,SLOT(mixersDelete()),tr("Delete"));
-    contextMenu.addAction(CopyIcon, tr("&Copy"),this,SLOT(mixersCopy()),tr("Ctrl+C"));
-    contextMenu.addAction(CutIcon, tr("&Cut"),this,SLOT(mixersCut()),tr("Ctrl+X"));
-    contextMenu.addAction(PasteIcon, tr("&Paste"),this,SLOT(mixersPaste()),tr("Ctrl+V"))->setEnabled(hasData);
-    contextMenu.addAction(DuplicateIcon, tr("Du&plicate"),this,SLOT(mixersDuplicate()),tr("Ctrl+U"));
+    contextMenu.addAction(CompanionIcon("clear.png"), tr("&Delete"),this,SLOT(mixersDelete()),tr("Delete"));
+    contextMenu.addAction(CompanionIcon("copy.png"), tr("&Copy"),this,SLOT(mixersCopy()),tr("Ctrl+C"));
+    contextMenu.addAction(CompanionIcon("cut.png"), tr("&Cut"),this,SLOT(mixersCut()),tr("Ctrl+X"));
+    contextMenu.addAction(CompanionIcon("paste.png"), tr("&Paste"),this,SLOT(mixersPaste()),tr("Ctrl+V"))->setEnabled(hasData);
+    contextMenu.addAction(CompanionIcon("duplicate.png"), tr("Du&plicate"),this,SLOT(mixersDuplicate()),tr("Ctrl+U"));
     contextMenu.addSeparator();
-    contextMenu.addAction(MoveUpIcon, tr("Move Up"),this,SLOT(moveMixUp()),tr("Ctrl+Up"));
-    contextMenu.addAction(MoveDownIcon, tr("Move Down"),this,SLOT(moveMixDown()),tr("Ctrl+Down"));
+    contextMenu.addAction(CompanionIcon("moveup.png"), tr("Move Up"),this,SLOT(moveMixUp()),tr("Ctrl+Up"));
+    contextMenu.addAction(CompanionIcon("movedown.png"), tr("Move Down"),this,SLOT(moveMixDown()),tr("Ctrl+Down"));
 
     contextMenu.exec(globalPos);
 }

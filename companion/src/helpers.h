@@ -28,8 +28,13 @@ void populateVoiceLangCB(QComboBox *b, QString language);
 void populateTTraceCB(QComboBox *b, int value);
 void populateRotEncCB(QComboBox *b, int value, int renumber);
 void populateBacklightCB(QComboBox *b, const uint8_t value);
-void populate_icon(QIcon *Icon, QString baseimage);
+
 QString getTheme();
+
+class CompanionIcon: public QIcon {
+  public:
+    CompanionIcon(QString baseimage);
+};
 
 class GVarGroup : public QObject {
 
@@ -82,7 +87,7 @@ void populateFuncCB(QComboBox *b, unsigned int value);
 void populateRepeatCB(QComboBox *b, unsigned int value);
 void populateGVmodeCB(QComboBox *b, unsigned int value);
 QString FuncParam(uint function, int value, QString paramT="",unsigned int adjustmode=0);
-void populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsigned int adjustmode=0);
+void populateFuncParamCB(QComboBox *b, const ModelData & model, uint function, unsigned int value, unsigned int adjustmode=0);
 void populateFuncParamArmTCB(QComboBox *b, ModelData * g_model, char * value, QStringList & paramsList);
 void populatePhasesCB(QComboBox *b, int value);
 void populateTrimUseCB(QComboBox *b, unsigned int phase);
@@ -93,19 +98,20 @@ QString getCustomSwitchStr(CustomSwData * customSw, const ModelData & model);
 QString getProtocolStr(const int proto);
 QString getPhasesStr(unsigned int phases, ModelData & model);
 
-#define POPULATE_SOURCES       1
-#define POPULATE_TRIMS         2
-#define POPULATE_SWITCHES      4
-#define POPULATE_GVARS         8
-#define POPULATE_TELEMETRY    16
-#define POPULATE_TELEMETRYEXT 32
+#define POPULATE_SOURCES        1
+#define POPULATE_TRIMS          2
+#define POPULATE_SWITCHES       4
+#define POPULATE_GVARS          8
+#define POPULATE_TELEMETRY      16
+#define POPULATE_TELEMETRYEXT   32
+#define POPULATE_VIRTUAL_INPUTS 64
 
 #define GVARS_VARIANT 0x0001
 #define FRSKY_VARIANT 0x0002
 
 // void populateGVarCB(QComboBox *b, int value, int min, int max,int pgvars=5); //TODO: Clean Up
 void populateGVCB(QComboBox *b, int value);
-void populateSourceCB(QComboBox *b, const RawSource &source, unsigned int flags);
+void populateSourceCB(QComboBox *b, const RawSource &source, const ModelData & model, unsigned int flags);
 void populateCSWCB(QComboBox *b, int value);
 QString getTimerMode(int tm);
 QString getTimerModeB(int tm);

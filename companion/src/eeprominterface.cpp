@@ -287,7 +287,12 @@ QString RawSource::toString()
   if (index<0) {
     return QObject::tr("----");
   }
-  switch(type) {
+  switch (type) {
+    case SOURCE_TYPE_VIRTUAL_INPUT:
+      if (model && strlen(model->inputNames[index]) > 0)
+        return QString(model->inputNames[index]);
+      else
+        return QObject::tr("Virtual Input %1").arg(index+1);
     case SOURCE_TYPE_STICK:
       return AnalogString(index);
     case SOURCE_TYPE_TRIM:
@@ -438,7 +443,7 @@ GeneralSettings::GeneralSettings()
     calibSpanNeg[i] = 0x180;
     calibSpanPos[i] = 0x180;
   }
-  QSettings settings("companion", "companion");
+  QSettings settings;
   templateSetup = settings.value("default_channel_order", 0).toInt();
   stickMode = settings.value("default_mode", 1).toInt();
   int profile_id = settings.value("ActiveProfile", 0).toInt();
@@ -659,7 +664,7 @@ ModelData ModelData::removeGlobalVars()
 QList<EEPROMInterface *> eepromInterfaces;
 void RegisterEepromInterfaces()
 {
-  QSettings settings("companion", "companion");
+  QSettings settings;
   int rev4a = settings.value("rev4asupport",0).toInt();
   eepromInterfaces.push_back(new Open9xInterface(BOARD_STOCK));
   eepromInterfaces.push_back(new Open9xInterface(BOARD_M128));
