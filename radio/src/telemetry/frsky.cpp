@@ -176,10 +176,6 @@ void parseTelemHubByte(uint8_t byte)
   switch ((uint8_t)structPos) {
 
     case offsetof(FrskySerialData, rpm):
-      //frskyData.hub.rpm *= (uint8_t)60/(g_model.frsky.blades+2);
-      // Change minimum Blades to 1 to allow for single sensors/raw data - T.Foley
-      // Added Spur and Pinion Ratio Calculation to provide final head/drive RPM after gearing
-      //
       frskyData.hub.rpm *= (uint8_t)60;
       frskyData.hub.rpm /= (g_model.frsky.blades+1);
       gear_ratio = (((float)g_model.frsky.spur_gear+1) / ((float)g_model.frsky.pinion_gear+1));      
