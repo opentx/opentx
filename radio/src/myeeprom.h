@@ -976,7 +976,7 @@ PACK(typedef struct t_FrSkyData {
   uint8_t usrProto; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh, 3=Halcyon
   uint8_t voltsSource:7;
   uint8_t altitudeDisplayed:1;
-  uint8_t blades;   // How many blades for RPMs, 0=1 blades, 1=2 blades // T.Foley
+  uint8_t blades;   // How many blades for RPMs, 0=1 blades, 1=2 blades
   uint8_t currentSource;
   uint8_t screensType;
   FrSkyScreenData screens[MAX_FRSKY_SCREENS];
@@ -989,15 +989,15 @@ PACK(typedef struct t_FrSkyData {
   uint16_t mAhPersistent:1;
   uint16_t storedMah:15;
   int8_t   fasOffset;
-  uint8_t spur_gear;   // How many teeth on Spur Gear for Headspeed Calc.  T.Foley
-  uint8_t pinion_gear;   // How many teeth on Pinion Gear for Headspeed Calc. T.Foley
+  uint8_t spur_gear;
+  uint8_t pinion_gear;
 }) FrSkyData;
 #else
 #define MAX_FRSKY_SCREENS 2
 PACK(typedef struct t_FrSkyData {
   FrSkyChannelData channels[2];
   uint8_t usrProto:2; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh, 3=Halcyon
-  uint8_t blades:2;   // How many blades for RPMs, 0=1 blades, 1=2 blades // T.Foley
+  uint8_t blades:2;   // How many blades for RPMs, 0=1 blades, 1=2 blades
   uint8_t screensType:2;
   uint8_t voltsSource:2;
   int8_t  varioMin:4;
@@ -1009,8 +1009,8 @@ PACK(typedef struct t_FrSkyData {
   uint8_t currentSource:3;
   int8_t  varioCenterMax:5;
   int8_t  fasOffset;
-  uint8_t spur_gear;   // How many teeth on Spur Gear for Headspeed Calc.  T.Foley
-  uint8_t pinion_gear;   // How many teeth on Pinion Gear for Headspeed Calc. T.Foley
+  uint8_t spur_gear;
+  uint8_t pinion_gear;
 }) FrSkyData;
 #endif
 
