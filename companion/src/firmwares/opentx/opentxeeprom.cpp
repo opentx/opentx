@@ -1974,8 +1974,10 @@ void Open9xModelDataNew::beforeExport()
   for (int module=0; module<3; module++) {
     if (modelData.moduleData[module].protocol >= PXX_XJT_X16 && modelData.moduleData[module].protocol <= PXX_XJT_LR12)
       subprotocols[module] = modelData.moduleData[module].protocol - PXX_XJT_X16;
+    else if (modelData.moduleData[module].protocol >= LP45 && modelData.moduleData[module].protocol <= DSMX)
+      subprotocols[module] = modelData.moduleData[module].protocol - LP45;
     else
-      subprotocols[module] = (module==0 ? -1:0);
+      subprotocols[module] = (module==0 ? -1 : 0);
   }
 }
 
@@ -1984,9 +1986,9 @@ void Open9xModelDataNew::afterImport()
   // qDebug() << QString("after import model") << modelData.name ;
 
   for (int module=0; module<3; module++) {
-    if (modelData.moduleData[module].protocol == PXX_XJT_X16) {
-      if (subprotocols[module]>=0)
-        modelData.moduleData[module].protocol = PXX_XJT_X16 + subprotocols[module];
+    if (modelData.moduleData[module].protocol == PXX_XJT_X16 || modelData.moduleData[module].protocol == LP45) {
+      if (subprotocols[module] >= 0)
+        modelData.moduleData[module].protocol += subprotocols[module];
       else
         modelData.moduleData[module].protocol = OFF;
     }

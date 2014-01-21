@@ -74,8 +74,9 @@ class ProtocolsConversionTable: public ConversionTable
     ProtocolsConversionTable(BoardEnum board)
     {
       int val = 0;
-      if (IS_TARANIS(board))
+      if (IS_TARANIS(board)) {
         addConversion(OFF, val++);
+      }
       addConversion(PPM, val++);
       if (!IS_ARM(board)) {
         addConversion(PPM16, val++);
@@ -86,9 +87,13 @@ class ProtocolsConversionTable: public ConversionTable
         addConversion(PXX_XJT_D8, val);
         addConversion(PXX_XJT_LR12, val++);
       }
-      addConversion(PXX_DJT, val++);
+      else {
+        addConversion(PXX_DJT, val++);
+      }
       if (IS_TARANIS(board)) {
-        addConversion(DSM2, val++);
+        addConversion(LP45, val);
+        addConversion(DSM2, val);
+        addConversion(DSMX, val++);
       }
       else {
         addConversion(LP45, val++);
@@ -126,7 +131,7 @@ class Open9xModelDataNew: public TransformedField {
 
   private:
     char name[256];
-    signed int subprotocols[C9X_NUM_MODULES+1/*trainer*/];
+    int subprotocols[C9X_NUM_MODULES+1/*trainer*/];
     ProtocolsConversionTable protocolsConversionTable;
     ChannelsConversionTable channelsConversionTable;
 };
