@@ -420,6 +420,14 @@ void populateFuncParamCB(QComboBox *b, const ModelData & model, uint function, u
     qs.append( QObject::tr("Timer2"));
     qs.append( QObject::tr("All"));
     qs.append( QObject::tr("Telemetry"));
+    int reCount = GetEepromInterface()->getCapability(RotaryEncoders);
+    if (reCount == 1) {
+      qs.append( QObject::tr("Rotary Encoder"));
+    }
+    else if (reCount == 2) {
+      qs.append( QObject::tr("REa"));
+      qs.append( QObject::tr("REb"));
+    }
     b->addItems(qs);
     b->setCurrentIndex(value);
   }
