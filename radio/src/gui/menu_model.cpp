@@ -4933,11 +4933,13 @@ void menuModelCustomFunctions(uint8_t event)
           break;
 
         case 3:
-          if (sd->swtch && (CFN_FUNC(sd) <= FUNC_INSTANT_TRIM
+          if (sd->swtch && (CFN_FUNC(sd) <= FUNC_INSTANT_TRIM || CFN_FUNC(sd) == FUNC_RESET
 #if defined(GVARS)
+              // TODO #define
               || CFN_FUNC(sd) >= FUNC_ADJUST_GV1
 #endif
 #if defined(CPUARM)
+              // TODO #define
               || CFN_FUNC(sd) == FUNC_VOLUME
 #endif
               )) {
