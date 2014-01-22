@@ -2293,12 +2293,12 @@ void checkTrims()
   uint8_t event = getEvent(true);
   if (event && !IS_KEY_BREAK(event)) {
     int8_t k = EVT_KEY_MASK(event) - TRM_BASE;
-    int8_t s = g_model.trimInc;
+    int8_t s = g_model.trimInc + 2; // TODO check flash usage, below we do arithmetics again ...
 #else
 uint8_t checkTrim(uint8_t event)
 {
   int8_t k = EVT_KEY_MASK(event) - TRM_BASE;
-  int8_t s = g_model.trimInc;
+  int8_t s = g_model.trimInc + 2; // TODO check flash usage, below we do arithmetics again ...
   if (k>=0 && k<8 && !IS_KEY_BREAK(event)) {
 #endif
     // LH_DWN LH_UP LV_DWN LV_UP RV_DWN RV_UP RH_DWN RH_UP

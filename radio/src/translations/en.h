@@ -71,8 +71,8 @@
 #define LEN_COUNTRYCODES       TR("\002", "\007")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "America""Japan\0 ""Europe\0")
 
-#define LEN_VTRIMINC           TR("\006","\013")
-#define TR_VTRIMINC            TR("Expo  ""ExFine""Fine  ""Medium""Coarse","Exponential""Extra Fine ""Fine       ""Medium     ""Coarse     ")
+#define LEN_VTRIMINC           TR("\006", "\013")
+#define TR_VTRIMINC            TR("Expo\0 ""ExFine""Fine\0 ""Medium""Coarse", "Exponential""Extra Fine\0""Fine\0      ""Medium\0    ""Coarse\0    ")
 
 #define LEN_VBEEPCOUNTDOWN     "\006"
 #define TR_VBEEPCOUNTDOWN      "SilentBeeps\0Voice\0"
