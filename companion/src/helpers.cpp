@@ -12,7 +12,8 @@ QString getPhaseName(int val, char * phasename)
     phaseName.append(phasename);
     if (phaseName.isEmpty()) {
       return QString(val < 0 ? "!" : "") + QObject::tr("FM%1").arg(abs(val) - 1);
-    } else {
+    }
+    else {
       return QString(val < 0 ? "!" : "") + phaseName;
     }
   }
