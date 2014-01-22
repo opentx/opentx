@@ -1811,7 +1811,7 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
     internalField.Append(new TimerModeField(modelData.timers[i].mode, board, version));
     if ((IS_ARM(board) || IS_2560(board)) && version >= 216) {
       internalField.Append(new UnsignedField<16>(modelData.timers[i].val));
-      internalField.Append(new BoolField<2>(modelData.timers[i].countdownBeep));
+      internalField.Append(new UnsignedField<2>(modelData.timers[i].countdownBeep));
       internalField.Append(new BoolField<1>(modelData.timers[i].minuteBeep));
       internalField.Append(new BoolField<1>(modelData.timers[i].persistent));
       internalField.Append(new SpareBitsField<4>());
@@ -1819,7 +1819,7 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
     }
     else if (release21March2013) {
       internalField.Append(new UnsignedField<12>(modelData.timers[i].val));
-      internalField.Append(new BoolField<1>(modelData.timers[i].countdownBeep));
+      internalField.Append(new BoolField<1>((bool &)modelData.timers[i].countdownBeep));
       internalField.Append(new BoolField<1>(modelData.timers[i].minuteBeep));
       if (HAS_PERSISTENT_TIMERS(board)) {
         internalField.Append(new BoolField<1>(modelData.timers[i].persistent));

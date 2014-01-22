@@ -19,13 +19,10 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer):
     ui->persistentValue->hide();
   }
 
-  if (!GetEepromInterface()->getCapability(minuteBeep)) {
-    ui->minuteBeep->hide();
-  }
-
-  if (!GetEepromInterface()->getCapability(countdownBeep)) {
-    ui->countdownBeep->hide();
-  }
+  ui->countdownBeep->addItem(tr("None"));
+  ui->countdownBeep->addItem(tr("Beeps"));
+  if (IS_ARM(GetEepromInterface()->getBoard()) || IS_2560(GetEepromInterface()->getBoard()))
+    ui->countdownBeep->addItem(tr("Countdown"));
 }
 
 TimerPanel::~TimerPanel()
@@ -54,13 +51,8 @@ void TimerPanel::update()
     ui->persistentValue->setText(QString(" %1(%2:%3:%4)").arg(sign<0 ? "-" :" ").arg(hours, 2, 10, QLatin1Char('0')).arg(minutes, 2, 10, QLatin1Char('0')).arg(seconds, 2, 10, QLatin1Char('0')));
   }
 
-  if (GetEepromInterface()->getCapability(minuteBeep)) {
-    ui->minuteBeep->setChecked(timer.minuteBeep);
-  }
-
-  if (GetEepromInterface()->getCapability(countdownBeep)) {
-    ui->countdownBeep->setChecked(timer.countdownBeep);
-  }
+  ui->countdownBeep->setCurrentIndex(timer.countdownBeep);
+  ui->minuteBeep->setChecked(timer.minuteBeep);
 }
 
 void TimerPanel::on_value_editingFinished()
@@ -81,15 +73,15 @@ void TimerPanel::on_persistent_toggled(bool checked)
   emit modified();
 }
 
-void TimerPanel::on_minuteBeep_toggled(bool checked)
+void TimerPanel::on_countdownBeep_currentIndexChanged(int index)
 {
-  timer.minuteBeep = checked;
+  timer.countdownBeep = index;
   emit modified();
 }
 
-void TimerPanel::on_countdownBeep_toggled(bool checked)
+void TimerPanel::on_minuteBeep_toggled(bool checked)
 {
-  timer.countdownBeep = checked;
+  timer.minuteBeep = checked;
   emit modified();
 }
 
