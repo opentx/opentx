@@ -1544,7 +1544,10 @@ void MainWindow::about()
     aboutStr.append(tr("Version %1, %3").arg(C9X_VERSION).arg(__DATE__));
     aboutStr.append("<br/><br/>");
     aboutStr.append(tr("Copyright") + " Bertrand Songis & Romolo Manfredini<br/>&copy; 2011-2014<br/>");
-    QMessageBox::about(this, tr("About Companion"), aboutStr);
+    QMessageBox msgBox(this);
+    msgBox.setWindowTitle(tr("About Companion"));
+    msgBox.setText(aboutStr);
+    msgBox.exec();
 }
 
 void MainWindow::updateMenus()
