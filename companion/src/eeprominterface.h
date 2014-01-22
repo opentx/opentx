@@ -841,7 +841,7 @@ class ModelData {
     TimerData timers[2];
     bool      thrTrim;            // Enable Throttle Trim
     bool      thrExpo;            // Enable Throttle Expo
-    unsigned int trimInc;            // Trim Increments
+    int       trimInc;            // Trim Increments
     bool      disableThrottleWarning;
 
     unsigned int beepANACenter;      // 1<<0->A1.. 1<<6->A7

@@ -1851,7 +1851,11 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
   else
     internalField.Append(new ConversionField< SignedField<4> >(modelData.moduleData[0].channelsCount, &channelsConversionTable, "Channels number", ::QObject::tr("OpenTX doesn't allow this number of channels")));
 
-  internalField.Append(new UnsignedField<3>(modelData.trimInc));
+  if (version >= 216)
+    internalField.Append(new SignedField<3>(modelData.trimInc));
+  else
+    internalField.Append(new ConversionField< SignedField<3> >(modelData.trimInc, +2));
+
   internalField.Append(new BoolField<1>(modelData.disableThrottleWarning));
 
   if (IS_TARANIS(board) || (IS_ARM(board) && version >= 216))

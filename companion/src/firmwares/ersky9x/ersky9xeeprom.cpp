@@ -532,7 +532,7 @@ t_Ersky9xModelData_v10::operator ModelData ()
   c9x.moduleData[0].channelsCount = 8 + 2 * ppmNCH;
   c9x.thrTrim = thrTrim;
   c9x.thrExpo = thrExpo;
-  c9x.trimInc = trimInc;
+  c9x.trimInc = trimInc-2;
   c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
   c9x.funcSw[0].func = FuncInstantTrim;
   if (trimSw) {
@@ -654,7 +654,7 @@ t_Ersky9xModelData_v11::operator ModelData ()
   c9x.moduleData[0].channelsCount = 8 + 2 * ppmNCH;
   c9x.thrTrim = thrTrim;
   c9x.thrExpo = thrExpo;
-  c9x.trimInc = trimInc;
+  c9x.trimInc = trimInc-2;
   c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
   c9x.funcSw[0].func = FuncInstantTrim;
   if (trimSw) {

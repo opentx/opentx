@@ -476,7 +476,7 @@ void Setup::on_extendedTrims_toggled(bool checked)
 
 void Setup::on_trimIncrement_currentIndexChanged(int index)
 {
-  model.trimInc = index;
+  model.trimInc = index-2;
   emit modified();
 }
 
@@ -535,7 +535,7 @@ void Setup::update()
   ui->throttleWarning->setChecked(model.disableThrottleWarning);
 
   //trim inc, thro trim, thro expo, instatrim
-  ui->trimIncrement->setCurrentIndex(model.trimInc);
+  ui->trimIncrement->setCurrentIndex(model.trimInc+2);
   ui->throttleTrim->setChecked(model.thrTrim);
   ui->extendedLimits->setChecked(model.extendedLimits);
   ui->extendedTrims->setChecked(model.extendedTrims);
