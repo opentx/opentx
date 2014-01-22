@@ -216,14 +216,18 @@ void ModulePanel::update()
     ui->label_failsafeMode->setVisible(mask & MASK_FAILSAFES);
     ui->failsafeMode->setVisible(mask & MASK_FAILSAFES);
     ui->failsafeMode->setCurrentIndex(module.failsafeMode);
-    ui->label_failsafeFrame->setVisible(mask & MASK_FAILSAFES);
-    ui->failsafesFrame->setVisible(mask & MASK_FAILSAFES);
     ui->failsafesFrame->setEnabled(module.failsafeMode == 1);
     for (int i=0; i<failsafeSliders.size(); i++) {
       failsafeSliders[i]->setValue(module.failsafeChannels[i]);
       failsafeSpins[i]->setValue(module.failsafeChannels[i]);
     }
   }
+  else {
+    mask = 0;
+  }
+  
+  ui->failsafesLayoutLabel->setVisible(mask & MASK_FAILSAFES);
+  ui->failsafesFrame->setVisible(mask & MASK_FAILSAFES);
 }
 
 void ModulePanel::on_trainerMode_currentIndexChanged(int index)
