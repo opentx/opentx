@@ -84,7 +84,6 @@ class CurveGroup : public QObject {
 #define POPULATE_AND_SWITCHES 0x04
 void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr=0, UseContext context=DefaultContext);
 void populateFuncCB(QComboBox *b, unsigned int value);
-void populateRepeatCB(QComboBox *b, unsigned int value);
 void populateGVmodeCB(QComboBox *b, unsigned int value);
 QString FuncParam(uint function, int value, QString paramT="",unsigned int adjustmode=0);
 void populateFuncParamCB(QComboBox *b, const ModelData & model, uint function, unsigned int value, unsigned int adjustmode=0);

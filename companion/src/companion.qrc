@@ -293,6 +293,7 @@
     <file>images/library/30002.png</file>
     <file>images/library/30003.png</file>
     <file>images/library/30004.png</file>
+    <file>themes/monochrome/16/paintbrush.png</file>
     <file>themes/monochrome/16/open.png</file>
     <file>themes/monochrome/16/edit.png</file>
     <file>themes/monochrome/16/information.png</file>
@@ -336,6 +337,7 @@
     <file>themes/monochrome/16/contributors.png</file>
     <file>themes/monochrome/16/stop.png</file>
     <file>themes/monochrome/16/write_eeprom.png</file>
+    <file>themes/monochrome/24/paintbrush.png</file>
     <file>themes/monochrome/24/open.png</file>
     <file>themes/monochrome/24/edit.png</file>
     <file>themes/monochrome/24/information.png</file>
@@ -379,6 +381,7 @@
     <file>themes/monochrome/24/contributors.png</file>
     <file>themes/monochrome/24/stop.png</file>
     <file>themes/monochrome/24/write_eeprom.png</file>
+    <file>themes/monochrome/32/paintbrush.png</file>
     <file>themes/monochrome/32/open.png</file>
     <file>themes/monochrome/32/edit.png</file>
     <file>themes/monochrome/32/information.png</file>
@@ -422,6 +425,7 @@
     <file>themes/monochrome/32/contributors.png</file>
     <file>themes/monochrome/32/stop.png</file>
     <file>themes/monochrome/32/write_eeprom.png</file>
+    <file>themes/monochrome/48/paintbrush.png</file>
     <file>themes/monochrome/48/open.png</file>
     <file>themes/monochrome/48/edit.png</file>
     <file>themes/monochrome/48/information.png</file>
@@ -465,6 +469,7 @@
     <file>themes/monochrome/48/contributors.png</file>
     <file>themes/monochrome/48/stop.png</file>
     <file>themes/monochrome/48/write_eeprom.png</file>
+    <file>themes/classic/16/paintbrush.png</file>
     <file>themes/classic/16/open.png</file>
     <file>themes/classic/16/edit.png</file>
     <file>themes/classic/16/information.png</file>
@@ -508,6 +513,7 @@
     <file>themes/classic/16/contributors.png</file>
     <file>themes/classic/16/stop.png</file>
     <file>themes/classic/16/write_eeprom.png</file>
+    <file>themes/classic/24/paintbrush.png</file>
     <file>themes/classic/24/open.png</file>
     <file>themes/classic/24/edit.png</file>
     <file>themes/classic/24/information.png</file>
@@ -551,6 +557,7 @@
     <file>themes/classic/24/contributors.png</file>
     <file>themes/classic/24/stop.png</file>
     <file>themes/classic/24/write_eeprom.png</file>
+    <file>themes/classic/32/paintbrush.png</file>
     <file>themes/classic/32/open.png</file>
     <file>themes/classic/32/edit.png</file>
     <file>themes/classic/32/information.png</file>
@@ -594,6 +601,7 @@
     <file>themes/classic/32/contributors.png</file>
     <file>themes/classic/32/stop.png</file>
     <file>themes/classic/32/write_eeprom.png</file>
+    <file>themes/classic/48/paintbrush.png</file>
     <file>themes/classic/48/open.png</file>
     <file>themes/classic/48/edit.png</file>
     <file>themes/classic/48/information.png</file>
@@ -637,6 +645,7 @@
     <file>themes/classic/48/contributors.png</file>
     <file>themes/classic/48/stop.png</file>
     <file>themes/classic/48/write_eeprom.png</file>
+    <file>themes/monoblue/16/paintbrush.png</file>
     <file>themes/monoblue/16/open.png</file>
     <file>themes/monoblue/16/edit.png</file>
     <file>themes/monoblue/16/information.png</file>
@@ -680,6 +689,7 @@
     <file>themes/monoblue/16/contributors.png</file>
     <file>themes/monoblue/16/stop.png</file>
     <file>themes/monoblue/16/write_eeprom.png</file>
+    <file>themes/monoblue/24/paintbrush.png</file>
     <file>themes/monoblue/24/open.png</file>
     <file>themes/monoblue/24/edit.png</file>
     <file>themes/monoblue/24/information.png</file>
@@ -723,6 +733,7 @@
     <file>themes/monoblue/24/contributors.png</file>
     <file>themes/monoblue/24/stop.png</file>
     <file>themes/monoblue/24/write_eeprom.png</file>
+    <file>themes/monoblue/32/paintbrush.png</file>
     <file>themes/monoblue/32/open.png</file>
     <file>themes/monoblue/32/edit.png</file>
     <file>themes/monoblue/32/information.png</file>
@@ -766,6 +777,7 @@
     <file>themes/monoblue/32/contributors.png</file>
     <file>themes/monoblue/32/stop.png</file>
     <file>themes/monoblue/32/write_eeprom.png</file>
+    <file>themes/monoblue/48/paintbrush.png</file>
     <file>themes/monoblue/48/open.png</file>
     <file>themes/monoblue/48/edit.png</file>
     <file>themes/monoblue/48/information.png</file>
@@ -809,6 +821,8 @@
     <file>themes/monoblue/48/contributors.png</file>
     <file>themes/monoblue/48/stop.png</file>
     <file>themes/monoblue/48/write_eeprom.png</file>
+    <file>themes/monowhite/16/paintbrush.png</file>
+    <file>themes/monowhite/16/open.png</file>
     <file>themes/monowhite/16/edit.png</file>
     <file>themes/monowhite/16/information.png</file>
     <file>themes/monowhite/16/configure.png</file>
@@ -851,6 +865,7 @@
     <file>themes/monowhite/16/contributors.png</file>
     <file>themes/monowhite/16/stop.png</file>
     <file>themes/monowhite/16/write_eeprom.png</file>
+    <file>themes/monowhite/24/paintbrush.png</file>
     <file>themes/monowhite/24/open.png</file>
     <file>themes/monowhite/24/edit.png</file>
     <file>themes/monowhite/24/information.png</file>
@@ -894,6 +909,7 @@
     <file>themes/monowhite/24/contributors.png</file>
     <file>themes/monowhite/24/stop.png</file>
     <file>themes/monowhite/24/write_eeprom.png</file>
+    <file>themes/monowhite/32/paintbrush.png</file>
     <file>themes/monowhite/32/open.png</file>
     <file>themes/monowhite/32/edit.png</file>
     <file>themes/monowhite/32/information.png</file>
@@ -937,6 +953,7 @@
     <file>themes/monowhite/32/contributors.png</file>
     <file>themes/monowhite/32/stop.png</file>
     <file>themes/monowhite/32/write_eeprom.png</file>
+    <file>themes/monowhite/48/paintbrush.png</file>
     <file>themes/monowhite/48/open.png</file>
     <file>themes/monowhite/48/edit.png</file>
     <file>themes/monowhite/48/information.png</file>

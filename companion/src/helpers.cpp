@@ -12,7 +12,8 @@ QString getPhaseName(int val, char * phasename)
     phaseName.append(phasename);
     if (phaseName.isEmpty()) {
       return QString(val < 0 ? "!" : "") + QObject::tr("FM%1").arg(abs(val) - 1);
-    } else {
+    }
+    else {
       return QString(val < 0 ? "!" : "") + phaseName;
     }
   }
@@ -446,17 +447,6 @@ void populateFuncParamCB(QComboBox *b, const ModelData & model, uint function, u
   }
   else {
     b->hide();
-  }
-}
-
-void populateRepeatCB(QComboBox *b, unsigned int value)
-{
-  b->clear();
-  b->addItem(QObject::tr("No repeat", 0));
-  unsigned int step = IS_ARM(GetEepromInterface()->getBoard()) ? 5 : 10;
-  for (unsigned int i=step; i<=60; i+=step) {
-    b->addItem(QObject::tr("%1s").arg(i), i);
-    if (i==value) b->setCurrentIndex(b->count()-1);
   }
 }
 

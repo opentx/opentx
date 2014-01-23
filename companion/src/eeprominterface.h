@@ -646,7 +646,7 @@ class FuncSwData { // Function Switches data
     char paramarm[10];
     unsigned int enabled; // TODO perhaps not any more the right name
     unsigned int adjustMode;
-    unsigned int repeatParam;
+    int repeatParam;
     void clear() { memset(this, 0, sizeof(FuncSwData)); }
 };
 
@@ -788,14 +788,13 @@ enum TimerMode {
 class TimerData {
   public:
     TimerData() { clear(); }
-    TimerMode mode;   // timer trigger source -> off, abs, THs, TH%, THt, sw/!sw, !m_sw/!m_sw
-    int8_t    modeB;
-    bool minuteBeep;
-    bool countdownBeep;
-    bool      dir;    // 0=>Count Down, 1=>Count Up
+    TimerMode    mode;   // timer trigger source -> off, abs, THs, TH%, THt, sw/!sw, !m_sw/!m_sw
+    bool         minuteBeep;
+    unsigned int countdownBeep;
+    bool         dir;    // 0=>Count Down, 1=>Count Up
     unsigned int val;
-    bool      persistent;
-    int pvalue;
+    bool         persistent;
+    int          pvalue;
     void clear() { memset(this, 0, sizeof(TimerData)); }
 };
 
@@ -915,8 +914,6 @@ enum Capability {
  MixesWithoutExpo,
  Timers,
  TimeDivisions,
- minuteBeep,
- countdownBeep,
  CustomFunctions,
  VoicesAsNumbers,
  VoicesMaxLength,

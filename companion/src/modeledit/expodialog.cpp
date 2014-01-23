@@ -62,6 +62,10 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, i
     ui->trimCB->hide();
   }
 
+  ui->trimCB->addItem(tr("Rud"), 1);
+  ui->trimCB->addItem(tr("Ele"), 2);
+  ui->trimCB->addItem(tr("Thr"), 3);
+  ui->trimCB->addItem(tr("Ail"), 4);
   ui->trimCB->setCurrentIndex(1 - ed->carryTrim);
 
   int expolength = GetEepromInterface()->getCapability(HasExpoNames);
@@ -81,12 +85,13 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, i
 
   valuesChanged();
 
-  connect(ui->lineName,SIGNAL(editingFinished()),this,SLOT(valuesChanged()));
-  connect(ui->sourceCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
-  connect(ui->switchesCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
-  connect(ui->sideCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
+  connect(ui->lineName,SIGNAL(editingFinished()), this, SLOT(valuesChanged()));
+  connect(ui->sourceCB,SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
+  connect(ui->trimCB,SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
+  connect(ui->switchesCB,SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
+  connect(ui->sideCB,SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
   for (int i=0; i<9; i++) {
-    connect(cb_fp[i],SIGNAL(toggled(bool)),this,SLOT(valuesChanged()));
+    connect(cb_fp[i], SIGNAL(toggled(bool)), this, SLOT(valuesChanged()));
   }
   QTimer::singleShot(0, this, SLOT(shrink()));
 }
@@ -115,6 +120,7 @@ void ExpoDialog::valuesChanged()
     QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
 
     ed->srcRaw  = RawSource(ui->sourceCB->itemData(ui->sourceCB->currentIndex()).toInt());
+    ed->carryTrim = 1 - ui->trimCB->currentIndex();
     ed->swtch  = RawSwitch(ui->switchesCB->itemData(ui->switchesCB->currentIndex()).toInt());
     ed->mode   = ui->sideCB->currentIndex() + 1;
 

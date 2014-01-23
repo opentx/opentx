@@ -2,6 +2,28 @@
 #include <QListWidget>
 #include <QMessageBox>
 
+void ModelEdit::setCurve(uint8_t c, int8_t ar[])
+{
+  int len=sizeof(ar)/sizeof(int8_t);
+
+  if (GetEepromInterface()->getCapability(NumCurves)>c) {
+    if (len<9) {
+      model.curves[c].count=5;
+      model.curves[c].custom=false;
+      for (int i=0; i< 5; i++) {
+        model.curves[c].points[i].y=ar[i];
+      }
+    }
+    else {
+      model.curves[c].count=5;
+      model.curves[c].custom=false;
+      for (int i=0; i< 5; i++) {
+        model.curves[c].points[i].y=ar[i];
+      }
+    }
+  }
+}
+
 Templates::Templates(QWidget * parent, ModelData & model):
   QWidget(parent),
   model(model)

@@ -513,10 +513,6 @@ int Open9xInterface::getCapability(const Capability capability)
         return 1;
       else
         return 0;
-    case minuteBeep:
-        return 1;
-    case countdownBeep:
-        return 1;
     case Pots:
       return (IS_TARANIS(board) ? 4 : 3);
     case Switches:

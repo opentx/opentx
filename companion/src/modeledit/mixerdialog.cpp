@@ -45,7 +45,6 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, i
     ui->trimCB->addItem(tr("Ele"), 2);
     ui->trimCB->addItem(tr("Thr"), 3);
     ui->trimCB->addItem(tr("Ail"), 4);
-
     ui->trimCB->setCurrentIndex(1 - md->carryTrim);
 
     int namelength = GetEepromInterface()->getCapability(HasMixerNames);

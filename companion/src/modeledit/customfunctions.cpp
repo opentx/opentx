@@ -7,6 +7,35 @@
 #include <QDoubleSpinBox>
 #include "helpers.h"
 
+RepeatComboBox::RepeatComboBox(QWidget *parent, int & repeatParam):
+  QComboBox(parent),
+  repeatParam(repeatParam)
+{
+  unsigned int step = IS_ARM(GetEepromInterface()->getBoard()) ? 1 : 10;
+  int value = repeatParam/step;
+
+  if (step == 1) {
+    addItem(QObject::tr("Played once, not during startup"), -1);
+    value++;
+  }
+
+  addItem(QObject::tr("No repeat"), 0);
+
+  for (unsigned int i=step; i<=60; i+=step) {
+    addItem(QObject::tr("%1s").arg(i), i);
+  }
+
+  setCurrentIndex(value);
+
+  connect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(onIndexChanged(int)));
+}
+
+void RepeatComboBox::onIndexChanged(int index)
+{
+  repeatParam = itemData(index).toInt();
+  emit modified();
+}
+
 CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings):
   ModelPanel(parent, model),
   generalSettings(generalSettings),
@@ -132,12 +161,9 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
 
     QHBoxLayout *repeatLayout = new QHBoxLayout();
     gridLayout->addLayout(repeatLayout, i+1, 4);
-
-    fswtchRepeat[i] = new QComboBox(this);
-    fswtchRepeat[i]->setProperty("index", i);
-    connect(fswtchRepeat[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
+    fswtchRepeat[i] = new RepeatComboBox(this, model.funcSw[i].repeatParam);
     repeatLayout->addWidget(fswtchRepeat[i], i+1);
-    populateRepeatCB(fswtchRepeat[i], model.funcSw[i].repeatParam);
+    connect(fswtchRepeat[i], SIGNAL(modified()), this, SLOT(onChildModified()));
 
     fswtchEnable[i] = new QCheckBox(this);
     fswtchEnable[i]->setProperty("index", i);
@@ -252,6 +278,11 @@ void CustomFunctionsPanel::customFunctionEdited()
   }
 }
 
+void CustomFunctionsPanel::onChildModified()
+{
+  emit modified();
+}
+
 void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
 {
     unsigned int widgetsMask = 0;
@@ -259,7 +290,6 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
       model.funcSw[i].swtch = RawSwitch(fswtchSwtch[i]->itemData(fswtchSwtch[i]->currentIndex()).toInt());
       model.funcSw[i].func = (AssignFunc)fswtchFunc[i]->currentIndex();
       model.funcSw[i].enabled = fswtchEnable[i]->isChecked();
-      model.funcSw[i].repeatParam = (AssignFunc)fswtchRepeat[i]->currentIndex();
       model.funcSw[i].adjustMode = (AssignFunc)fswtchGVmode[i]->currentIndex();
     }
 
@@ -314,11 +344,8 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
       widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM + CUSTOM_FUNCTION_ENABLE;
     }
     else if (index==FuncPlaySound || index==FuncPlayHaptic || index==FuncPlayValue || index==FuncPlayPrompt || index==FuncPlayBoth || index==FuncBackgroundMusic) {
-      if (modified) model.funcSw[i].repeatParam = fswtchRepeat[i]->itemData(fswtchRepeat[i]->currentIndex()).toInt();
-      if (index != FuncBackgroundMusic) {
-        if (GetEepromInterface()->getCapability(HasFuncRepeat)) {
-          widgetsMask |= CUSTOM_FUNCTION_REPEAT;
-        }
+      if (index != FuncBackgroundMusic && GetEepromInterface()->getCapability(HasFuncRepeat)) {
+        widgetsMask |= CUSTOM_FUNCTION_REPEAT;
       }
       if (index==FuncPlayValue) {
         if (modified) model.funcSw[i].param = fswtchParamT[i]->itemData(fswtchParamT[i]->currentIndex()).toInt();
@@ -422,9 +449,11 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
 
 void CustomFunctionsPanel::update()
 {
+  lock = true;
   for (int i=0; i<GetEepromInterface()->getCapability(CustomFunctions); i++) {
     refreshCustomFunction(i);
   }
+  lock = false;
 }
 
 void CustomFunctionsPanel::fswPaste()

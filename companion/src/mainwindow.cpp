@@ -1544,7 +1544,10 @@ void MainWindow::about()
     aboutStr.append(tr("Version %1, %3").arg(C9X_VERSION).arg(__DATE__));
     aboutStr.append("<br/><br/>");
     aboutStr.append(tr("Copyright") + " Bertrand Songis & Romolo Manfredini<br/>&copy; 2011-2014<br/>");
-    QMessageBox::about(this, tr("About Companion"), aboutStr);
+    QMessageBox msgBox(this);
+    msgBox.setWindowTitle(tr("About Companion"));
+    msgBox.setText(aboutStr);
+    msgBox.exec();
 }
 
 void MainWindow::updateMenus()
@@ -1686,12 +1689,12 @@ void MainWindow::createActions()
     fwchangelogAct->setStatusTip(tr("Show firmware changelog"));
     connect(fwchangelogAct, SIGNAL(triggered()), this, SLOT(fwchangelog()));
     
-    compareAct = new QAction(CompanionIcon("customize.png"), tr("Compare..."), this);
+    compareAct = new QAction(CompanionIcon("compare.png"), tr("Compare..."), this);
     compareAct->setStatusTip(tr("Compare models"));
     compareAct->setEnabled(false);
     connect(compareAct, SIGNAL(triggered()), this, SLOT(compare()));
     
-    customizeSplashAct = new QAction(CompanionIcon("customize.png"), tr("Customize your &TX..."), this);
+    customizeSplashAct = new QAction(CompanionIcon("paintbrush.png"), tr("Customize your &TX..."), this);
     customizeSplashAct->setStatusTip(tr("Customize the splash screen of your TX"));
     connect(customizeSplashAct, SIGNAL(triggered()), this, SLOT(customizeSplash()));
     
