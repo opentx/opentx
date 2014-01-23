@@ -3746,7 +3746,7 @@ enum LimitsItems {
   #undef MIN_MAX_ATTR
   #define MIN_MAX_ATTR          attr
 #else
-  #define MIN_MAX_DISPLAY(x)    (x)
+  #define MIN_MAX_DISPLAY(x)    ((int8_t)(x))
 #endif
 
 #if defined(PCBTARANIS)
