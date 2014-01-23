@@ -55,6 +55,9 @@ const pm_char STR_OPEN9X[] PROGMEM =
 #endif
     ISTR(TRNMODE)
     ISTR(TRNCHN)
+#if defined(PCBTARANIS)
+    ISTR(UART3MODES)
+#endif
     ISTR(VTRIMINC)
     ISTR(RETA123)
     ISTR(VPROTOS)
@@ -491,6 +494,7 @@ const pm_char STR_VIEW_TEXT[] PROGMEM = "View text";
   const pm_char STR_SCALE[] PROGMEM = "Scale";
   const pm_char STR_VIEW_CHANNELS[] PROGMEM = "View Channels";
   const pm_char STR_VIEW_NOTES[] PROGMEM = "View Notes";
+  const pm_char STR_UART3MODE[] PROGMEM = TR_UART3MODE;
 #endif
 
 #if MENUS_LOCK == 1

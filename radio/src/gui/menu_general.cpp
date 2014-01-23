@@ -75,7 +75,7 @@ enum EnumTabDiag {
   e_Vers,
   e_Keys,
   e_Ana,
-  IF_PCBSKY9X(e_Hardware)
+  IF_CPUARM(e_Hardware)
   e_Calib
 };
 
@@ -95,7 +95,7 @@ const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
   menuGeneralVersion,
   menuGeneralDiagKeys,
   menuGeneralDiagAna,
-  IF_PCBSKY9X(menuGeneralHardware)
+  IF_CPUARM(menuGeneralHardware)
   menuGeneralCalib
 };
 
@@ -1166,7 +1166,33 @@ void menuGeneralDiagAna(uint8_t event)
 #endif
 }
 
-#if defined(PCBSKY9X)
+#if defined(PCBTARANIS)
+enum menuGeneralHwItems {
+  ITEM_SETUP_HW_UART3_MODE,
+  ITEM_SETUP_HW_MAX
+};
+
+#define HW_SETTINGS_COLUMN 15*FW
+
+void menuGeneralHardware(uint8_t event)
+{
+  MENU(STR_HARDWARE, menuTabDiag, e_Hardware, ITEM_SETUP_HW_MAX+1, {0});
+
+  uint8_t sub = m_posVert - 1;
+    
+  for (uint8_t i=0; i<ITEM_SETUP_HW_MAX; i++) {
+  	uint8_t y = 1 + 1*FH + i*FH;
+  	uint8_t attr = (sub == i ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
+    switch(i) {
+      case ITEM_SETUP_HW_UART3_MODE:
+      	g_eeGeneral.hw_uartMode = selectMenuItem(HW_SETTINGS_COLUMN, y, STR_UART3MODE, STR_UART3MODES, g_eeGeneral.hw_uartMode, 0, 2, attr, event);
+        break;
+    }
+  }
+  	
+}
+
+#elif defined(PCBSKY9X)
 enum menuGeneralHwItems {
   ITEM_SETUP_HW_OPTREX_DISPLAY,
   ITEM_SETUP_HW_STICKS_GAINS_LABELS,
