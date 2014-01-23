@@ -3403,6 +3403,9 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 
       if (md->srcRaw == 0) break;
 
+      uint8_t stickIndex = md->srcRaw - MIXSRC_Rud;
+      #define MIX_SRCRAW (stickIndex + MIXSRC_Rud)
+
       if (!(dirtyChannels & ((bitfield_channels_t)1 << md->destCh))) continue;
 
       // if this is the first calculation for the destination channel, initialize it with 0 (otherwise would be random)
@@ -3415,8 +3418,6 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       delayval_t mixEnabled = !(md->phases & (1 << s_perout_flight_phase)) && getSwitch(md->swtch);
 
       //========== VALUE ===============
-      uint8_t stickIndex = md->srcRaw - MIXSRC_Rud;
-      #define MIX_SRCRAW (stickIndex + MIXSRC_Rud)
       getvalue_t v = 0;
       if (mode > e_perout_mode_inactive_phase) {
         if (!mixEnabled || stickIndex >= NUM_STICKS || (stickIndex == THR_STICK && g_model.thrTrim)) {
