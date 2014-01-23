@@ -3750,6 +3750,8 @@ enum LimitsItems {
   #define MIN_MAX_DISPLAY(x)    CONVERT_US_MIN_MAX(x)
   #undef MIN_MAX_ATTR
   #define MIN_MAX_ATTR          attr
+#elif defined(CPUARM)
+  #define MIN_MAX_DISPLAY(x)    (x)
 #else
   #define MIN_MAX_DISPLAY(x)    ((int8_t)(x))
 #endif
