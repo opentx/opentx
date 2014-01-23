@@ -206,23 +206,23 @@
   #define TR_VFSWFUNC      "Sécur.\0      ""Ecolage\0     ""Trim instant." TR_SOUND TR_HAPTIC "Remise à 0\0  " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE "Rétroécl.\0   " TR_CFN_ADJUST_GVAR TR_CFN_TEST
 #endif
 
-#define LEN_VFSWRESET    "\006"
+#define LEN_VFSWRESET          TR("\004","\012")
 
 #if defined(FRSKY)
-  #define TR_FSW_RESET_TELEM   "Télém."
+  #define TR_FSW_RESET_TELEM   TR("Télm","Télémesure")
 #else
   #define TR_FSW_RESET_TELEM   
 #endif
 
 #if ROTARY_ENCODERS == 2
-  #define TR_FSW_RESET_ROTENC  TR("ERa\0 ""ERb\0 ", "EncRot A\0""EncRot B\0")
+  #define TR_FSW_RESET_ROTENC  TR("ERa\0""ERb\0","Enc.Rot.A\0""Enc.Rot.B\0")
 #elif ROTARY_ENCODERS == 1
-  #define TR_FSW_RESET_ROTENC  TR("Enc.r", "EncRot\0  ")
+  #define TR_FSW_RESET_ROTENC  TR("EncR", "Enc.Rot\0  ")
 #else
   #define TR_FSW_RESET_ROTENC
 #endif
 
-#define TR_VFSWRESET           "Timer1""Timer2""Timers" TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC
+#define TR_VFSWRESET           TR("Chr1""Chr2""Tout" TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC,"Chrono 1\0 ""Chrono 2\0 ""Tout\0     " TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC)
 
 #define LEN_FUNCSOUNDS         TR("\004", "\006")
 #define TR_FUNCSOUNDS          TR("Bp1\0""Bp2\0""Bp3\0""Wrn1""Wrn2""Chee""Rata""Tick""Sirn""Ring""SciF""Robt""Chrp""Tada""Crck""Alrm", "Beep1 ""Beep2 ""Beep3 ""Warn1 ""Warn2 ""Cheep ""Ratata""Tick  ""Siren ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""AlmClk")
