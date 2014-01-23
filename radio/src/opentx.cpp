@@ -3416,6 +3416,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 
       //========== VALUE ===============
       uint8_t stickIndex = md->srcRaw - MIXSRC_Rud;
+      #define MIX_SRCRAW (stickIndex + MIXSRC_Rud)
       getvalue_t v = 0;
       if (mode > e_perout_mode_inactive_phase) {
         if (!mixEnabled || stickIndex >= NUM_STICKS || (stickIndex == THR_STICK && g_model.thrTrim)) {
@@ -3433,12 +3434,12 @@ void perOut(uint8_t mode, uint8_t tick10ms)
         else
 #endif
         {
-          v = getValue(md->srcRaw);
-          if (md->srcRaw>=MIXSRC_CH1 && md->srcRaw<=MIXSRC_LAST_CH && md->destCh != md->srcRaw-MIXSRC_CH1) {
-            if (dirtyChannels & ((bitfield_channels_t)1 << (md->srcRaw-MIXSRC_CH1)) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
+          v = getValue(MIX_SRCRAW);
+          if (MIX_SRCRAW>=MIXSRC_CH1 && MIX_SRCRAW<=MIXSRC_LAST_CH && md->destCh != MIX_SRCRAW-MIXSRC_CH1) {
+            if (dirtyChannels & ((bitfield_channels_t)1 << (MIX_SRCRAW-MIXSRC_CH1)) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
               passDirtyChannels |= (bitfield_channels_t) 1 << md->destCh;
-            if (md->srcRaw-MIXSRC_CH1 < md->destCh || pass > 0)
-              v = chans[md->srcRaw-MIXSRC_CH1] >> 8;
+            if (MIX_SRCRAW-MIXSRC_CH1 < md->destCh || pass > 0)
+              v = chans[MIX_SRCRAW-MIXSRC_CH1] >> 8;
           }
         }
         if (!mixCondition) {
