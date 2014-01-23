@@ -3135,7 +3135,7 @@ void evalFunctions()
             }
           }
         }
-        else if (CFN_FUNC(sd) <= FUNC_INSTANT_TRIM) {
+        else if (CFN_FUNC(sd) <= FUNC_INSTANT_TRIM || CFN_FUNC(sd) == FUNC_RESET) {
           active = false;
         }
 
