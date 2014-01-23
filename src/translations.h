@@ -72,6 +72,12 @@
   #define TR(x,y) x
 #endif
 
+#if defined(PUTS_NEWLINE_SUPPORT)
+  #define NL(x,y) x // string x may contain NL ('\n') characters
+#else
+  #define NL(x,y) y
+#endif
+
 // The non-0-terminated-strings
 
 extern const pm_char STR_OPEN9X[];
@@ -652,6 +658,9 @@ extern const pm_char STR_PATH_TOO_LONG[];
 
 #if defined(PCBTARANIS) || defined(DSM2)
   extern const pm_char STR_MODULE_RANGE[];
+#endif
+#if defined(PCBTARANIS) && defined(SWH_RANGE_TEST)
+  extern const pm_char STR_HOLD_TRAINER_KEY[];
 #endif
 
 #if defined(MAVLINK)

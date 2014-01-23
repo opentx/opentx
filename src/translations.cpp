@@ -471,6 +471,9 @@ const pm_char STR_PATH_TOO_LONG[] PROGMEM = "Path too long";
 #if defined(PCBTARANIS) || defined(DSM2)
   const pm_char STR_MODULE_RANGE[] PROGMEM = TR_MODULE_RANGE;
 #endif
+#if defined(PCBTARANIS) && defined(SWH_RANGE_TEST)
+    const pm_char STR_HOLD_TRAINER_KEY[] PROGMEM = TR_HOLD_TRAINER_KEY;
+#endif
 
 #if defined(MAVLINK)
   const pm_char STR_MAVLINK_RC_RSSI_SCALE_LABEL[] PROGMEM = TR_MAVLINK_RC_RSSI_SCALE_LABEL;

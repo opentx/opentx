@@ -101,6 +101,9 @@ const MenuFuncP_PROGMEM menuTabModel[] PROGMEM = {
 static uint8_t s_copyMode = 0;
 static int8_t s_copySrcRow;
 static int8_t s_copyTgtOfs;
+#if defined(PCBTARANIS) && defined(SWH_RANGE_TEST)
+static uint8_t    need_trainer_switch_prompt;
+#endif
 
 uint8_t eeFindEmptyModel(uint8_t id, bool down)
 {
@@ -937,6 +940,9 @@ void menuModelSetup(uint8_t event)
 
   bool CURSOR_ON_CELL = (m_posHorz >= 0);
   MENU_TAB({ 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), LABEL(InternalModule), 0, IF_PORT1_ON(1), IF_PORT1_ON(IS_D8_RX(0) ? (uint8_t)1 : (uint8_t)2), IF_PORT1_ON(FAILSAFE_ROWS(0)), LABEL(ExternalModule), (g_model.externalModule==MODULE_TYPE_XJT || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0, PORT2_CHANNELS_ROWS(), (IS_MODULE_XJT(1) && IS_D8_RX(1)) ? (uint8_t)1 : (IS_MODULE_PPM(1) || IS_MODULE_XJT(1) || IS_MODULE_DSM2(1)) ? (uint8_t)2 : HIDDEN_ROW, IF_PORT2_XJT(FAILSAFE_ROWS(1)), LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)});
+#if defined(SWH_RANGE_TEST)
+    need_trainer_switch_prompt = 0;
+#endif
 #elif defined(CPUM64)
   #define CURSOR_ON_CELL             (true)
   #define MODEL_SETUP_MAX_LINES      ((IS_PPM_PROTOCOL(protocol)||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 1+ITEM_MODEL_SETUP_MAX : ITEM_MODEL_SETUP_MAX)
@@ -1317,7 +1323,12 @@ void menuModelSetup(uint8_t event)
                 if (l_posHorz == 1)
                   newFlag = PXX_SEND_RXNUM;
                 else if (l_posHorz == 2) {
-                  newFlag = PXX_SEND_RANGECHECK;
+#if defined(PCBTARANIS) && defined(SWH_RANGE_TEST)
+                    if ( g_eeGeneral.rangeNeedsSwH != 0 && switchState(SW_RANGE) == 0 )
+                        need_trainer_switch_prompt = 1;
+                    else
+#endif
+                        newFlag = PXX_SEND_RANGECHECK;
                 }
               }
               pxxFlag[moduleIdx] = newFlag;
@@ -1579,6 +1590,12 @@ void menuModelSetup(uint8_t event)
     displayPopup("RSSI: ");
     lcd_outdezAtt(16+4*FW, 5*FH, frskyData.rssi[0].value, BOLD);
   }
+#if defined(SWH_RANGE_TEST)
+  else if ( need_trainer_switch_prompt != 0 )
+    {
+    displayPopup(STR_HOLD_TRAINER_KEY);
+    }
+#endif
 #endif
 }
 
