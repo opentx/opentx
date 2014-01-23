@@ -2110,6 +2110,9 @@ Open9xGeneralDataNew::Open9xGeneralDataNew(GeneralSettings & generalData, BoardE
       internalField.Append(new SignedField<8>(generalData.varioVolume));
       internalField.Append(new SignedField<8>(generalData.backgroundVolume));
     }
+    if (version >= 216) {
+      internalField.Append(new UnsignedField<8>(generalData.hw_uartMode));
+    }
   }
 }
 
