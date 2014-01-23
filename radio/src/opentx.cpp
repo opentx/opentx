@@ -509,6 +509,12 @@ uint16_t evalChkSum()
   return sum;
 }
 
+#if defined(TEMPLATES)
+inline void applyDefaultTemplate()
+{
+  applyTemplate(TMPL_SIMPLE_4CH);
+}
+#else
 void applyDefaultTemplate()
 {
   for (int i=0; i<NUM_STICKS; i++) {
@@ -539,6 +545,7 @@ void applyDefaultTemplate()
   }
   eeDirty(EE_MODEL);
 }
+#endif
 
 #if defined(PXX) && defined(CPUARM)
 void checkModelIdUnique(uint8_t id)
