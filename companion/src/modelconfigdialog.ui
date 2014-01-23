@@ -26,8 +26,8 @@
    <string>Model Configuration Wizard</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="companion9x.qrc">
-    <normaloff>:/images/configure.png</normaloff>:/images/configure.png</iconset>
+   <iconset resource="companion.qrc">
+    <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0,1" columnstretch="0,0,1,1,1,1">
    <item row="3" column="2">
@@ -79,7 +79,7 @@
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap resource="companion9x.qrc">:/images/mcw/aw0a0f.png</pixmap>
+        <pixmap resource="companion.qrc">:/images/mcw/aw0a0f.png</pixmap>
        </property>
        <property name="scaledContents">
         <bool>false</bool>
@@ -113,7 +113,7 @@
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap resource="companion9x.qrc">:/images/mcw/atailv.png</pixmap>
+        <pixmap resource="companion.qrc">:/images/mcw/atailv.png</pixmap>
        </property>
        <property name="scaledContents">
         <bool>false</bool>
@@ -168,7 +168,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="companion9x.qrc">
+      <iconset resource="companion.qrc">
        <normaloff>:/images/mcw/aicon.png</normaloff>:/images/mcw/aicon.png</iconset>
      </property>
      <property name="iconSize">
@@ -200,7 +200,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="companion9x.qrc">
+      <iconset resource="companion.qrc">
        <normaloff>:/images/mcw/hicon.png</normaloff>:/images/mcw/hicon.png</iconset>
      </property>
      <property name="iconSize">
@@ -226,7 +226,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="companion9x.qrc">
+      <iconset resource="companion.qrc">
        <normaloff>:/images/mcw/gicon.png</normaloff>:/images/mcw/gicon.png</iconset>
      </property>
      <property name="iconSize">
@@ -1208,7 +1208,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="companion9x.qrc">
+      <iconset resource="companion.qrc">
        <normaloff>:/images/mcw/dicon.png</normaloff>:/images/mcw/dicon.png</iconset>
      </property>
      <property name="iconSize">
@@ -1262,7 +1262,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="companion9x.qrc"/>
+  <include location="companion.qrc"/>
  </resources>
  <connections/>
 </ui>

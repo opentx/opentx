@@ -1,7 +1,7 @@
 PROJECT( companion )
 
 SET( C9X_VERSION_MAJOR "1" )
-SET( C9X_VERSION_MINOR "51" )
+SET( C9X_VERSION_MINOR "52" )
 SET( C9X_VERSION ${C9X_VERSION_MAJOR}.${C9X_VERSION_MINOR} )
 
 CMAKE_MINIMUM_REQUIRED( VERSION 2.8 )
@@ -234,7 +234,7 @@ IF ( SDL_FOUND )
 ENDIF( ) 
 
 SET( companion_RCS
-     companion9x.qrc
+     companion.qrc
      ${CMAKE_CURRENT_BINARY_DIR}/translations.qrc
 )
 

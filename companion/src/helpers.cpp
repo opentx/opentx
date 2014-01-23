@@ -12,15 +12,28 @@ QString getPhaseName(int val, char * phasename)
     phaseName.append(phasename);
     if (phaseName.isEmpty()) {
       return QString(val < 0 ? "!" : "") + QObject::tr("FM%1").arg(abs(val) - 1);
-    } else {
+    }
+    else {
       return QString(val < 0 ? "!" : "") + phaseName;
     }
   }
 }
 
-QString getStickStr(int index)
+QString getInputStr(ModelData & model, int index)
 {
-  return RawSource(SOURCE_TYPE_STICK, index).toString();
+  QString result;
+
+  if (GetEepromInterface()->getCapability(VirtualInputs)) {
+    result = model.inputNames[index];
+    if (result.isEmpty()) {
+      result = QObject::tr("Input%1").arg(index+1, 2, 10, QChar('0'));
+    }
+  }
+  else {
+    result = RawSource(SOURCE_TYPE_STICK, index).toString();
+  }
+
+  return result;
 }
 
 void populateGvSourceCB(QComboBox *b, int value)
@@ -63,7 +76,7 @@ void populateTTraceCB(QComboBox *b, int value)
   }
   int channels=(IS_ARM(GetEepromInterface()->getBoard()) ? 32 : 16);
   for (int i=1; i<= channels; i++) {
-    b->addItem(QObject::tr("CH")+QString("%1").arg(i,2,10,QChar('0')));
+    b->addItem(QObject::tr("CH%1").arg(i, 2, 10, QChar('0')));
   }
   b->setCurrentIndex(value);
 }
@@ -387,7 +400,7 @@ void populateFuncParamArmTCB(QComboBox *b, ModelData * g_model, char * value, QS
   }
 }
 
-void populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsigned int adjustmode)
+void populateFuncParamCB(QComboBox *b, const ModelData & model, uint function, unsigned int value, unsigned int adjustmode)
 {
   QStringList qs;
   b->clear();
@@ -411,18 +424,18 @@ void populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsign
     b->setCurrentIndex(value);
   }
   else if (function==FuncVolume) {
-    populateSourceCB(b, RawSource(value), POPULATE_SOURCES|POPULATE_TRIMS);
+    populateSourceCB(b, RawSource(value), model, POPULATE_SOURCES|POPULATE_TRIMS);
   }
   else if (function==FuncPlayValue) {
-    populateSourceCB(b, RawSource(value), POPULATE_SOURCES|POPULATE_SWITCHES|POPULATE_GVARS|POPULATE_TRIMS|POPULATE_TELEMETRYEXT);
+    populateSourceCB(b, RawSource(value), model, POPULATE_SOURCES|POPULATE_VIRTUAL_INPUTS|POPULATE_SWITCHES|POPULATE_GVARS|POPULATE_TRIMS|POPULATE_TELEMETRYEXT);
   }
   else if (function>=FuncAdjustGV1 && function<=FuncAdjustGVLast) {
     switch (adjustmode) {
       case 1:
-        populateSourceCB(b, RawSource(value), POPULATE_SOURCES|POPULATE_TRIMS|POPULATE_SWITCHES);
+        populateSourceCB(b, RawSource(value), model, POPULATE_SOURCES|POPULATE_TRIMS|POPULATE_SWITCHES);
         break;
       case 2:
-        populateSourceCB(b, RawSource(value), POPULATE_GVARS);
+        populateSourceCB(b, RawSource(value), model, POPULATE_GVARS);
         break;
       case 3:
         b->clear();
@@ -434,17 +447,6 @@ void populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsign
   }
   else {
     b->hide();
-  }
-}
-
-void populateRepeatCB(QComboBox *b, unsigned int value)
-{
-  b->clear();
-  b->addItem(QObject::tr("No repeat", 0));
-  unsigned int step = IS_ARM(GetEepromInterface()->getBoard()) ? 5 : 10;
-  for (unsigned int i=step; i<=60; i+=step) {
-    b->addItem(QObject::tr("%1s").arg(i), i);
-    if (i==value) b->setCurrentIndex(b->count()-1);
   }
 }
 
@@ -469,6 +471,78 @@ void populatePhasesCB(QComboBox *b, int value)
       b->addItem(QObject::tr("----"), 0);
   }
   b->setCurrentIndex(value + GetEepromInterface()->getCapability(FlightPhases));
+}
+
+bool gvarsEnabled()
+{
+  int gvars=0;
+  if (GetEepromInterface()->getCapability(HasVariants)) {
+    if ((GetCurrentFirmwareVariant() & GVARS_VARIANT)) {
+      gvars=1;
+    }
+  }
+  else {
+    gvars=1;
+  }
+  return gvars;
+}
+
+GVarGroup::GVarGroup(QCheckBox *weightGV, QSpinBox *weightSB, QComboBox *weightCB, int & weight, const int deflt, const int mini, const int maxi, const unsigned int flags):
+  QObject(),
+  weightGV(weightGV),
+  weightSB(weightSB),
+  weightCB(weightCB),
+  weight(weight),
+  flags(flags),
+  lock(false)
+{
+  lock = true;
+
+  if (gvarsEnabled()) {
+    populateGVCB(weightCB, weight);
+    connect(weightGV, SIGNAL(stateChanged(int)), this, SLOT(gvarCBChanged(int)));
+    connect(weightCB, SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
+  }
+  else {
+    weightGV->hide();
+    if (weight > maxi || weight < -mini) {
+      weight = deflt;
+    }
+  }
+
+  weightSB->setMinimum(mini);
+  weightSB->setMaximum(maxi);
+
+  if (weight>maxi || weight<mini) {
+    weightGV->setChecked(true);
+    weightSB->hide();
+    weightCB->show();
+  }
+  else {
+    weightGV->setChecked(false);
+    weightSB->setValue(weight);
+    weightSB->show();
+    weightCB->hide();
+  }
+
+  connect(weightSB, SIGNAL(editingFinished()), this, SLOT(valuesChanged()));
+
+  lock = false;
+}
+
+void GVarGroup::gvarCBChanged(int state)
+{
+  weightCB->setVisible(state);
+  weightSB->setVisible(!state);
+  valuesChanged();
+}
+
+void GVarGroup::valuesChanged()
+{
+  if (weightGV->isChecked())
+    weight = weightCB->itemData(weightCB->currentIndex()).toInt();
+  else
+    weight = weightSB->value();
 }
 
 CurveGroup::CurveGroup(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QComboBox *curveValueCB, QSpinBox *curveValueSB, CurveReference & curve, unsigned int flags):
@@ -914,8 +988,7 @@ void populateGVCB(QComboBox *b, int value)
     b->setCurrentIndex(nullitem);
 }
 
-
-void populateSourceCB(QComboBox *b, const RawSource &source, unsigned int flags)
+void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData & model, unsigned int flags)
 {
   RawSource item;
 
@@ -925,7 +998,18 @@ void populateSourceCB(QComboBox *b, const RawSource &source, unsigned int flags)
     item = RawSource(SOURCE_TYPE_NONE);
     b->addItem(item.toString(), item.toValue());
     if (item == source) b->setCurrentIndex(b->count()-1);
+  }
 
+  if (flags & POPULATE_VIRTUAL_INPUTS) {
+    int virtualInputs = GetEepromInterface()->getCapability(VirtualInputs);
+    for (int i=0; i<virtualInputs; i++) {
+      item = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, i, &model);
+      b->addItem(item.toString(), item.toValue());
+      if (item == source) b->setCurrentIndex(b->count()-1);
+    }
+  }
+
+  if (flags & POPULATE_SOURCES) {
     for (int i=0; i<4+GetEepromInterface()->getCapability(Pots); i++) {
       item = RawSource(SOURCE_TYPE_STICK, i);
       b->addItem(item.toString(), item.toValue());
@@ -1400,3 +1484,35 @@ QString getCenterBeep(ModelData * g_model)
   if(g_model->beepANACenter & 0x80) strl << "LS";
   return strl.join(", ");
 }
+
+QString getTheme()
+{
+  QSettings settings;
+  int theme_set = settings.value("theme", 1).toInt();
+  QString Theme;
+  switch(theme_set) {
+    case 0:
+      Theme="classic";
+      break;
+    case 2:
+      Theme="monowhite";
+      break;
+    case 3:
+      Theme="monoblue";
+      break;
+    default:
+      Theme="monochrome";
+      break;          
+  }
+  return Theme;
+}
+
+CompanionIcon::CompanionIcon(QString baseimage)
+{
+  static QString theme = getTheme();
+  addFile(":/themes/"+theme+"/16/"+baseimage, QSize(16,16));
+  addFile(":/themes/"+theme+"/24/"+baseimage, QSize(24,24));
+  addFile(":/themes/"+theme+"/32/"+baseimage, QSize(32,32));
+  addFile(":/themes/"+theme+"/48/"+baseimage, QSize(48,48));
+}
+

@@ -366,9 +366,7 @@ t_Er9xModelData::operator ModelData ()
   c9x.timers[0].mode = getEr9xTimerMode(tmrMode);
   c9x.timers[0].dir = tmrDir;
   c9x.timers[0].val = tmrVal;
-  c9x.timers[0].modeB = tmrModeB;
-
-    switch(protocol) {
+  switch(protocol) {
     case 1:
       c9x.moduleData[0].protocol = PXX_DJT;
       break;

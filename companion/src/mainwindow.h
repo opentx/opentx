@@ -134,11 +134,12 @@ private:
     void createToolBars();
     void createStatusBar();
     void readSettings();
-    void writeSettings();
     void updateRecentFileActions();
     void updateProfilesActions();
     int getFileType(const QString &fullFileName);
     QString FindTaranisPath();
+    QString Theme;
+    QString ISize;
     QString strippedName(const QString &fullFileName);
 
     MdiChild *activeMdiChild();

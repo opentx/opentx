@@ -35,6 +35,8 @@
 #define AUDIO
 #define VOICE
 #define PXX
+#define DSM2
+#define DSM2_PPM
 #define DBLKEYS
 #define AUTOSWITCH
 #define GRAPHICS
@@ -47,6 +49,7 @@
 #define PPM_CENTER_ADJUSTABLE
 #define PPM_LIMITS_SYMETRICAL
 #define FAI_CHOICE
+
 #define EEPROM_VARIANT 3
 
 #undef min
@@ -65,6 +68,7 @@ inline int geteepromsize() {
 #include "radio/src/targets/taranis/board_taranis.cpp"
 #include "radio/src/protocols/ppm_arm.cpp"
 #include "radio/src/protocols/pxx_arm.cpp"
+#include "radio/src/protocols/dsm2_arm.cpp"
 #include "radio/src/targets/taranis/pwr_driver.cpp"
 #include "radio/src/eeprom_common.cpp"
 #include "radio/src/eeprom_conversions.cpp"
@@ -145,7 +149,7 @@ OpentxTaranisSimulator::OpentxTaranisSimulator(Open9xInterface * open9xInterface
   open9xInterface(open9xInterface)
 {
   taranisSimulatorBoard = GetEepromInterface()->getBoard();
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings;
   QString path=settings.value("sdPath", ".").toString()+"/";
   int i=0;
   for (i=0; i< std::min(path.length(),1022); i++) {

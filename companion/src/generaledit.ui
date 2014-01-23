@@ -20,7 +20,7 @@
    <string>General Edit</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="companion9x.qrc">
+   <iconset resource="companion.qrc">
     <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
   </property>
   <property name="sizeGripEnabled">
@@ -3555,7 +3555,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>PPM_MultiplierDSB</tabstop>
  </tabstops>
  <resources>
-  <include location="companion9x.qrc"/>
+  <include location="companion.qrc"/>
  </resources>
  <connections/>
  <designerdata>

@@ -176,7 +176,7 @@ QString printDialog::printPhases()
     str.append("<td rowspan=2 align=\"center\" valign=\"bottom\"><b>"+tr("Switch")+"</b></td></tr><tr><td align=center width=\"90\"><b>"+tr("Flight mode name"));
     str.append("</b></td><td align=center width=\"30\"><b>"+tr("IN")+"</b></td><td align=center width=\"30\"><b>"+tr("OUT")+"</b></td>");
     for (int i=0; i<4; i++) {
-      str.append(QString("<td width=\"40\" align=\"center\"><b>%1</b></td>").arg(getStickStr(i)));
+      str.append(QString("<td width=\"40\" align=\"center\"><b>%1</b></td>").arg(getInputStr(*g_model, i)));
     }
     if (gvars==1) {
       for (int i=0; i<gvarnum; i++) {
@@ -241,7 +241,7 @@ void printDialog::printExpo()
       str.append("<tr><td><font size=+1 face='Courier New'>");
       if(lastCHN!=ed->chn) {
         lastCHN=ed->chn;
-        str.append("<b>"+getStickStr(ed->chn)+"</b>");
+        str.append("<b>"+getInputStr(*g_model, ed->chn)+"</b>");
       }
       else
         str.append("<b>&nbsp;</b>");

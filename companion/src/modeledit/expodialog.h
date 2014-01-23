@@ -4,27 +4,32 @@
 #include <QDialog>
 #include "eeprominterface.h"
 
+class GVarGroup;
+class CurveGroup;
+
 namespace Ui {
-    class ExpoDialog;
+  class ExpoDialog;
 }
 
 class ExpoDialog : public QDialog {
     Q_OBJECT
-public:
-    ExpoDialog(QWidget *parent, ExpoData *mixdata, int stickMode);
+  public:
+    ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expodata, int stickMode);
     ~ExpoDialog();
 
-protected:
+  protected:
     void changeEvent(QEvent *e);
 
-private slots:
+  private slots:
     void valuesChanged();
-    void widgetChanged();
     void shrink();    
 
-private:
-    Ui::ExpoDialog *ui;
-    ExpoData *ed;
+  private:
+    Ui::ExpoDialog * ui;
+    ModelData & model;
+    ExpoData * ed;
+    GVarGroup * gvGroup;
+    CurveGroup * curveGroup;
 };
 
 #endif // EXPODIALOG_H

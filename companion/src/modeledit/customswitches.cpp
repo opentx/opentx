@@ -254,7 +254,7 @@ void CustomSwitchesPanel::setSwitchWidgetVisibility(int i)
         cswitchSource2[i]->setVisible(false);
         cswitchValue[i]->setVisible(false);
         cswitchOffset[i]->setVisible(true);
-        populateSourceCB(cswitchSource1[i], source, POPULATE_SOURCES | (GetEepromInterface()->getCapability(ExtraTrims) ? POPULATE_TRIMS : 0) | POPULATE_SWITCHES | POPULATE_TELEMETRY | (GetEepromInterface()->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
+        populateSourceCB(cswitchSource1[i], source, model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (GetEepromInterface()->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
         cswitchOffset[i]->setDecimals(source.getDecimals(model));
         cswitchOffset[i]->setSingleStep(source.getStep(model));
         if (model.customSw[i].func>CS_FN_ELESS && model.customSw[i].func<CS_FN_VEQUAL) {
@@ -280,8 +280,8 @@ void CustomSwitchesPanel::setSwitchWidgetVisibility(int i)
         cswitchSource2[i]->setVisible(true);
         cswitchValue[i]->setVisible(false);
         cswitchOffset[i]->setVisible(false);
-        populateSourceCB(cswitchSource1[i], RawSource(model.customSw[i].val1), POPULATE_SOURCES | (GetEepromInterface()->getCapability(ExtraTrims) ? POPULATE_TRIMS : 0) | POPULATE_SWITCHES | POPULATE_TELEMETRY | (GetEepromInterface()->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
-        populateSourceCB(cswitchSource2[i], RawSource(model.customSw[i].val2), POPULATE_SOURCES | (GetEepromInterface()->getCapability(ExtraTrims) ? POPULATE_TRIMS : 0) | POPULATE_SWITCHES | POPULATE_TELEMETRY | (GetEepromInterface()->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
+        populateSourceCB(cswitchSource1[i], RawSource(model.customSw[i].val1), model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (GetEepromInterface()->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
+        populateSourceCB(cswitchSource2[i], RawSource(model.customSw[i].val2), model, POPULATE_SOURCES | POPULATE_TRIMS | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (GetEepromInterface()->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
         break;
       case CS_FAMILY_TIMERS:
         cswitchSource1[i]->setVisible(false);
@@ -337,8 +337,8 @@ void CustomSwitchesPanel::cswPaste()
 {
     const QClipboard *clipboard = QApplication::clipboard();
     const QMimeData *mimeData = clipboard->mimeData();
-    if (mimeData->hasFormat("application/x-companion9x-csw")) {
-      QByteArray cswData = mimeData->data("application/x-companion9x-csw");
+    if (mimeData->hasFormat("application/x-companion-csw")) {
+      QByteArray cswData = mimeData->data("application/x-companion-csw");
 
       CustomSwData *csw = &model.customSw[selectedSwitch];
       memcpy(csw, cswData.mid(0, sizeof(CustomSwData)).constData(), sizeof(CustomSwData));
@@ -359,7 +359,7 @@ void CustomSwitchesPanel::cswCopy()
     QByteArray cswData;
     cswData.append((char*)&model.customSw[selectedSwitch],sizeof(CustomSwData));
     QMimeData *mimeData = new QMimeData;
-    mimeData->setData("application/x-companion9x-csw", cswData);
+    mimeData->setData("application/x-companion-csw", cswData);
     QApplication::clipboard()->setMimeData(mimeData,QClipboard::Clipboard);
 }
 
@@ -387,13 +387,13 @@ void CustomSwitchesPanel::csw_customContextMenuRequested(QPoint pos)
 
     const QClipboard *clipboard = QApplication::clipboard();
     const QMimeData *mimeData = clipboard->mimeData();
-    bool hasData = mimeData->hasFormat("application/x-companion9x-csw");
+    bool hasData = mimeData->hasFormat("application/x-companion-csw");
 
     QMenu contextMenu;
-    contextMenu.addAction(QIcon(":/images/clear.png"), tr("&Delete"),this,SLOT(cswDelete()),tr("Delete"));
-    contextMenu.addAction(QIcon(":/images/copy.png"), tr("&Copy"),this,SLOT(cswCopy()),tr("Ctrl+C"));
-    contextMenu.addAction(QIcon(":/images/cut.png"), tr("&Cut"),this,SLOT(cswCut()),tr("Ctrl+X"));
-    contextMenu.addAction(QIcon(":/images/paste.png"), tr("&Paste"),this,SLOT(cswPaste()),tr("Ctrl+V"))->setEnabled(hasData);
+    contextMenu.addAction(CompanionIcon("clear.png"), tr("&Delete"),this,SLOT(cswDelete()),tr("Delete"));
+    contextMenu.addAction(CompanionIcon("copy.png"), tr("&Copy"),this,SLOT(cswCopy()),tr("Ctrl+C"));
+    contextMenu.addAction(CompanionIcon("cut.png"), tr("&Cut"),this,SLOT(cswCut()),tr("Ctrl+X"));
+    contextMenu.addAction(CompanionIcon("paste.png"), tr("&Paste"),this,SLOT(cswPaste()),tr("Ctrl+V"))->setEnabled(hasData);
 
     contextMenu.exec(globalPos);
 }

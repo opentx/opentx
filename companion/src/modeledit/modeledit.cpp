@@ -7,6 +7,7 @@
 #include "mixes.h"
 #include "channels.h"
 #include "curves.h"
+#include "../helpers.h"
 #include "customswitches.h"
 #include "customfunctions.h"
 #include "telemetry.h"
@@ -17,9 +18,12 @@ ModelEdit::ModelEdit(RadioData & radioData, int modelId, bool openWizard, bool i
   ui(new Ui::ModelEdit),
   modelId(modelId),
   model(radioData.models[modelId]),
-  generalSettings(generalSettings)
+  generalSettings(radioData.generalSettings)
 {
   ui->setupUi(this);
+  QSettings settings;
+  restoreGeometry(settings.value("modelEditGeometry").toByteArray());  
+  ui->pushButton->setIcon(CompanionIcon("simulate.png"));
   addTab(new Setup(this, model), tr("Setup"));
   addTab(new HeliPanel(this, model), tr("Heli"));
   addTab(new FlightModes(this, model, radioData.generalSettings), tr("Flight Modes"));
@@ -30,7 +34,6 @@ ModelEdit::ModelEdit(RadioData & radioData, int modelId, bool openWizard, bool i
   if (GetEepromInterface()->getCapability(CustomFunctions))
     addTab(new CustomFunctionsPanel(this, model, radioData.generalSettings), tr("Assignable Functions"));
   addTab(new Curves(this, model), tr("Curves"));
-  // TODO remove this capability if (!GetEepromInterface()->getCapability(FSSwitch))
   if (GetEepromInterface()->getCapability(Telemetry) & TM_HASTELEMETRY)
     addTab(new TelemetryPanel(this, model), tr("Telemetry"));
 }
@@ -38,6 +41,12 @@ ModelEdit::ModelEdit(RadioData & radioData, int modelId, bool openWizard, bool i
 ModelEdit::~ModelEdit()
 {
   delete ui;
+}
+
+void ModelEdit::closeEvent(QCloseEvent *event)
+{
+  QSettings settings;
+  settings.setValue("modelEditGeometry", saveGeometry());
 }
 
 class VerticalScrollArea : public QScrollArea

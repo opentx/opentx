@@ -13,6 +13,23 @@
 #include <phonon/mediasource.h>
 #endif
 
+class RepeatComboBox: public QComboBox
+{
+    Q_OBJECT
+
+  public:
+    RepeatComboBox(QWidget *parent, int & repeatParam);
+
+  signals:
+    void modified();
+
+  private slots:
+    void onIndexChanged(int);
+
+  protected:
+    int & repeatParam;
+};
+
 class CustomFunctionsPanel : public ModelPanel
 {
     Q_OBJECT
@@ -28,6 +45,7 @@ class CustomFunctionsPanel : public ModelPanel
     void fsw_customContextMenuRequested(QPoint pos);
     void refreshCustomFunction(int index, bool modified=false);
     void playMusic();
+    void onChildModified();
 #ifdef PHONON
     void mediaPlayer_state(Phonon::State newState, Phonon::State oldState);
 #endif

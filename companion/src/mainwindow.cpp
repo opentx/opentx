@@ -59,29 +59,29 @@
 #include "burndialog.h"
 #include "hexinterface.h"
 #include "warnings.h"
+#include "helpers.h"
 #include "firmwares/opentx/opentxinterface.h" // TODO get rid of this include
 
-#define DONATE_STR "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QUZ48K4SEXDP2"
+#define DONATE_STR      "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QUZ48K4SEXDP2"
+
 #ifdef __APPLE__
-#define C9X_STAMP "http://companion9x.googlecode.com/svn/trunk/companion9x-macosx.stamp"
-#define C9X_INSTALLER "/Companion9xMacUpdate.%1.pkg.zip"
-#define C9X_URL   "http://companion9x.googlecode.com/files/Companion9xMacUpdate.%1.pkg.zip"
+  #define C9X_STAMP     OPENTX_COMPANION_DOWNLOADS "/companion-macosx.stamp"
+  #define C9X_INSTALLER "/CompanionMacUpdate.%1.pkg.zip"
 #else
-#define C9X_STAMP "http://companion9x.googlecode.com/svn/trunk/companion9x.stamp"
-#define C9X_INSTALLER "/companion9xInstall_v%1.exe"
-#define C9X_URL   "http://companion9x.googlecode.com/files/companion9xInstall_v%1.exe"
+  #define C9X_STAMP     OPENTX_COMPANION_DOWNLOADS "/companion-windows.stamp"
+  #define C9X_INSTALLER "/companionInstall_%1.exe"
 #endif
 
 #if defined WIN32 || !defined __GNUC__
-#include <windows.h>
-#define sleep(x) Sleep(x*1000)
+  #include <windows.h>
+  #define sleep(x) Sleep(x*1000)
 #else
-#include <unistd.h>
-#include "mountlist.h"
+  #include <unistd.h>
+  #include "mountlist.h"
 #endif
 
 MainWindow::MainWindow():
-downloadDialog_forWait(NULL)
+  downloadDialog_forWait(NULL)
 {
     mdiArea = new QMdiArea;
     mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
@@ -94,6 +94,26 @@ downloadDialog_forWait(NULL)
             this, SLOT(setActiveSubWindow(QWidget*)));
 
     MaxRecentFiles=MAX_RECENT;
+    QSettings settings;
+    int icon_size=settings.value("icon_size", 1).toInt();
+    switch (icon_size) {
+      case 0:
+        ISize="16";
+        break;
+      case 1:
+        ISize="24";
+        break;
+      case 2:
+        ISize="32";
+        break;
+      case 3:
+        ISize="48";
+        break;
+      default:
+        ISize="24";
+        break;        
+    }
+    restoreGeometry(settings.value("mainWindowGeometry").toByteArray());
     createActions();
     createMenus();
     createToolBars();
@@ -109,15 +129,16 @@ downloadDialog_forWait(NULL)
     }
     setUnifiedTitleAndToolBarOnMac(true);
     this->setWindowIcon(QIcon(":/icon.png"));
+    this->setIconSize(QSize(32,32));
     QNetworkProxyFactory::setUseSystemConfiguration(true);
     setAcceptDrops(true);
     
     // give time to the splash to disappear and main window to open before starting updates
     int updateDelay = 1000;
-    QSettings settings("companion9x", "companion9x");
     bool showSplash = settings.value("show_splash", true).toBool();
-    if (showSplash) 
-	updateDelay += (SPLASH_TIME*1000); 
+    if (showSplash) {
+      updateDelay += (SPLASH_TIME*1000); 
+    }
     QTimer::singleShot(updateDelay, this, SLOT(doAutoUpdates()));
     QTimer::singleShot(updateDelay, this, SLOT(displayWarnings()));
 
@@ -167,7 +188,7 @@ downloadDialog_forWait(NULL)
 
 void MainWindow::displayWarnings()
 {
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings;
   int warnId=settings.value("warningId", 0 ).toInt();
   if (warnId<WARNING_ID && warnId!=0) {
     int res=0;
@@ -201,7 +222,7 @@ void MainWindow::checkForUpdates(bool ignoreSettings, QString & fwId)
     showcheckForUpdatesResult = ignoreSettings;
     check1done = true;
     check2done = true;
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings;
     fwToUpdate = fwId;
     QString stamp = GetFirmware(fwToUpdate)->stamp;
 
@@ -267,7 +288,7 @@ void MainWindow::checkForUpdateFinished(QNetworkReply * reply)
                                                             "Would you like to download it?").arg(version) ,
                                         QMessageBox::Yes | QMessageBox::No);
 
-        QSettings settings("companion9x", "companion9x");
+        QSettings settings;
 
         if (ret == QMessageBox::Yes) {
 #if defined __APPLE__          
@@ -277,14 +298,14 @@ void MainWindow::checkForUpdateFinished(QNetworkReply * reply)
 #endif
           if (!fileName.isEmpty()) {
             settings.setValue("lastUpdatesDir", QFileInfo(fileName).dir().absolutePath());
-            downloadDialog * dd = new downloadDialog(this, QString(C9X_URL).arg(version), fileName);
+            downloadDialog * dd = new downloadDialog(this, QString(OPENTX_COMPANION_DOWNLOADS C9X_INSTALLER).arg(version), fileName);
             installer_fileName = fileName;
             connect(dd, SIGNAL(accepted()), this, SLOT(updateDownloaded()));
             dd->show();
           }
         }
 #else
-        QMessageBox::warning(this, tr("New release available"), tr("A new release of Companion is available please check the repository"));
+        QMessageBox::warning(this, tr("New release available"), tr("A new release of Companion is available please check the OpenTX website!"));
 #endif            
       } else {
         if (showcheckForUpdatesResult && check1done && check2done)
@@ -309,7 +330,7 @@ void MainWindow::updateDownloaded()
 void MainWindow::downloadLatestFW(FirmwareInfo * firmware, const QString & firmwareId)
 {
     QString url, ext, cpuid;
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings;
     url = firmware->getUrl(firmwareId);
     cpuid=settings.value("cpuid","").toString();
     ext = url.mid(url.lastIndexOf("."));
@@ -332,7 +353,7 @@ void MainWindow::downloadLatestFW(FirmwareInfo * firmware, const QString & firmw
 void MainWindow::reply1Accepted()
 {
     QString errormsg;
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings;
     bool autoflash=settings.value("burnFirmware", true).toBool();
     bool addversion=settings.value("rename_firmware_files", false).toBool();
     settings.beginGroup("FwRevisions");
@@ -456,7 +477,7 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
       // TODO delete downloadDialog_forWait?
     }
     
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings;
     cpuid=settings.value("cpuid","").toString();
     QByteArray qba = reply->readAll();
     int i = qba.indexOf("SVN_VERS");
@@ -608,11 +629,14 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+    QSettings settings;
+    settings.setValue("mainWindowGeometry", saveGeometry());
+    settings.setValue("mainWindowState", saveState());
     mdiArea->closeAllSubWindows();
     if (mdiArea->currentSubWindow()) {
       event->ignore();
-    } else {
-      writeSettings();
+    }
+    else {
       event->accept();
     }
 }
@@ -626,7 +650,7 @@ void MainWindow::newFile()
 
 void MainWindow::openFile()
 {
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings;
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), settings.value("lastDir").toString(),tr(EEPROM_FILES_FILTER));
     if (!fileName.isEmpty()) {
       settings.setValue("lastDir", QFileInfo(fileName).dir().absolutePath());
@@ -659,7 +683,7 @@ void MainWindow::saveAs()
 
 void MainWindow::openRecentFile()
  {
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings;
     QAction *action = qobject_cast<QAction *>(sender());
     if (action) {
       QString fileName=action->data().toString();
@@ -681,14 +705,14 @@ void MainWindow::openRecentFile()
 
 void MainWindow::loadProfile()
 {
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings;
     QAction *action = qobject_cast<QAction *>(sender());
     int chord,defmod, burnfw;
     bool renfw;
 
     if (action) {
       int profnum=action->data().toInt();
-      QSettings settings("companion9x", "companion9x");
+      QSettings settings;
       settings.setValue("ActiveProfile",profnum);
       settings.beginGroup("Profiles");
       QString profile=QString("profile%1").arg(profnum);
@@ -733,8 +757,8 @@ void MainWindow::unloadProfile()
 {
     ActiveProfile=0;
     ActiveProfileName="";
-    QSettings settings("companion9x", "companion9x");
-    settings.setValue("ActiveProfile",0);
+    QSettings settings;
+    settings.setValue("ActiveProfile", 0);
     FirmwareInfo *firmware = GetCurrentFirmware();    
     setWindowTitle(tr("Companion - Models and Settings Editor - %1").arg(firmware->name));
 }
@@ -746,7 +770,8 @@ void MainWindow::preferences()
     FirmwareInfo *firmware = GetCurrentFirmware();    
     if (ActiveProfile) {
       setWindowTitle(tr("Companion - Models and Settings Editor - %1 - profile %2").arg(firmware->name).arg(ActiveProfileName));
-    } else {
+    }
+    else {
       setWindowTitle(tr("Companion - Models and Settings Editor - %1").arg(firmware->name));
     }
 
@@ -1056,17 +1081,17 @@ void MainWindow::burnFrom()
         QStringList str;
         str << path << tempFile;
         avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Read Models and Settings From Tx")); //, AVR_DIALOG_KEEP_OPEN);
-        ad->setWindowIcon(QIcon(":/images/read_eeprom.png"));
+        ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
         res = ad->exec();
         sleep(1);
       }
     } else {    
       QStringList str = GetReceiveEEpromCommand(tempFile);
       avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Read Models and Settings From Tx")); //, AVR_DIALOG_KEEP_OPEN);
-      ad->setWindowIcon(QIcon(":/images/read_eeprom.png"));
+      ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
       res = ad->exec();
     }
-    if(QFileInfo(tempFile).exists() && res) {
+    if (QFileInfo(tempFile).exists() && res) {
       MdiChild *child = createMdiChild();
       child->newFile();
       child->loadFile(tempFile, false);
@@ -1076,7 +1101,7 @@ void MainWindow::burnFrom()
 
 void MainWindow::burnExtenalToEEPROM()
 {
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings;
     QString fileName;
     bool backup = false;
     burnDialog *cd = new burnDialog(this, 1, &fileName, &backup);
@@ -1113,14 +1138,14 @@ void MainWindow::burnExtenalToEEPROM()
               QStringList str;
               str << path << backupFile;
               avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Backup Models and Settings From Tx")); //, AVR_DIALOG_KEEP_OPEN);
-              ad->setWindowIcon(QIcon(":/images/read_eeprom.png"));
+              ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
               ad->exec();
               sleep(1);
             }
           } else {
             QStringList str = GetReceiveEEpromCommand(backupFile);
             avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Backup Models and Settings From Tx"));
-            ad->setWindowIcon(QIcon(":/images/read_eeprom.png"));
+            ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
             ad->exec();
             sleep(1);
           }
@@ -1130,7 +1155,7 @@ void MainWindow::burnExtenalToEEPROM()
         QString tempFlash = tempDir + "/flash.bin";
         QStringList str = GetReceiveFlashCommand(tempFlash);
         avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, "Read Firmware From Tx");
-        ad->setWindowIcon(QIcon(":/images/read_flash.png"));
+        ad->setWindowIcon(CompanionIcon("read_flash.png"));
         ad->exec();
         sleep(1);
         QString restoreFile = tempDir + "/compat.bin";
@@ -1143,7 +1168,8 @@ void MainWindow::burnExtenalToEEPROM()
           int rev = getEpromVersion(restoreFile);
           if ((rev / 100) != (oldrev / 100)) {
             QMessageBox::warning(this, tr("Warning"), tr("The transmitter firmware belongs to another product family, check file and preferences!"));
-          } else if (rev < oldrev) {
+          }
+          else if (rev < oldrev) {
             QMessageBox::warning(this, tr("Warning"), tr("The transmitter firmware is outdated, please upgrade!"));
           }
           fileName = restoreFile;
@@ -1163,15 +1189,18 @@ void MainWindow::burnExtenalToEEPROM()
               QStringList str;
               str << path << backupFile;
               avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Backup Models and Settings From Tx")); //, AVR_DIALOG_KEEP_OPEN);
-              ad->setWindowIcon(QIcon(":/images/read_eeprom.png"));
+              ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
               ad->exec();
+              delete ad;
               sleep(1);
             }
-          } else {
+          }
+          else {
             QStringList str = ((MainWindow *)this->parent())->GetReceiveEEpromCommand(backupFile);
             avrOutputDialog *ad = new avrOutputDialog(this, ((MainWindow *)this->parent())->GetAvrdudeLocation(), str, tr("Backup Models and Settings From Tx"));
-            ad->setWindowIcon(QIcon(":/images/read_eeprom.png"));
+            ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
             ad->exec();
+            delete ad;
             sleep(1);
           }
         }
@@ -1181,19 +1210,23 @@ void MainWindow::burnExtenalToEEPROM()
         if (path.isEmpty()) {
           QMessageBox::warning(this, tr("Taranis radio not found"), tr("Impossible to identify the radio on your system, please verify the eeprom disk is connected."));
           return;
-        } else {
+        }
+        else {
           QStringList str;
           str << fileName << path;
           avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Write Models and Settings To Tx")); //, AVR_DIALOG_KEEP_OPEN);
-          ad->setWindowIcon(QIcon(":/images/read_eeprom.png"));
+          ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
           ad->exec();
+          delete ad;
           sleep(1);
         }      
-      } else {
+      }
+      else {
         QStringList str = GetSendEEpromCommand(fileName);
         avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, "Write Models and Settings To Tx", AVR_DIALOG_SHOW_DONE);
-        ad->setWindowIcon(QIcon(":/images/write_eeprom.png"));
+        ad->setWindowIcon(CompanionIcon("write_eeprom.png"));
         ad->exec();
+        delete ad;
       }
     }
 }
@@ -1285,7 +1318,8 @@ bool MainWindow::convertEEPROM(QString backupFile, QString restoreFile, QString 
         } else {
           version = fwBuild.toInt(); // TODO changer le nom de la variable
         }
-      } else {
+      }
+      else {
         version = ((Open9xFirmware *)firmware)->getEepromVersion(revision);
       }
     }
@@ -1302,11 +1336,8 @@ bool MainWindow::convertEEPROM(QString backupFile, QString restoreFile, QString 
     long result = file.read((char*)eeprom, eeprom_size);
     file.close();
 
-    RadioData radioData;
-    if (!LoadEeprom(radioData, eeprom, eeprom_size))
-      return false;
-
-    if (!firmware->saveEEPROM(eeprom, radioData, variant, version))
+    QSharedPointer<RadioData> radioData = QSharedPointer<RadioData>(new RadioData());
+    if (!LoadEeprom(*radioData, eeprom, eeprom_size) || !firmware->saveEEPROM(eeprom, *radioData, variant, version))
       return false;
 
     QFile file2(restoreFile);
@@ -1324,7 +1355,7 @@ bool MainWindow::convertEEPROM(QString backupFile, QString restoreFile, QString 
 
 void MainWindow::burnToFlash(QString fileToFlash)
 {
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings;
     QString fileName;
     bool backup = settings.value("backupOnFlash", false).toBool();
     if(!fileToFlash.isEmpty())
@@ -1357,14 +1388,17 @@ void MainWindow::burnToFlash(QString fileToFlash)
         }
         QStringList str = GetReceiveEEpromCommand(backupFile);
         avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Backup Models and Settings From Tx"), AVR_DIALOG_CLOSE_IF_SUCCESSFUL);
-        ad->setWindowIcon(QIcon(":/images/read_eeprom.png"));
+        ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
         int res = ad->exec();
+        delete ad;
         if (QFileInfo(backupFile).exists() && res) {
           sleep(1);
           QStringList str = GetSendFlashCommand(fileName);
           avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Write Firmware To Tx"), AVR_DIALOG_CLOSE_IF_SUCCESSFUL);
-          ad->setWindowIcon(QIcon(":/images/write_flash.png"));
+          CompanionIcon iconw("write_eeprom.png");
+          ad->setWindowIcon(iconw);
           int res = ad->exec();
+          delete ad;
           if (res) {
             QString restoreFile = tempDir + "/restore.bin";
             if (!convertEEPROM(backupFile, restoreFile, fileName)) {
@@ -1374,18 +1408,22 @@ void MainWindow::burnToFlash(QString fileToFlash)
             sleep(1);
             QStringList str = GetSendEEpromCommand(restoreFile);
             avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Restore Models and Settings To Tx"), AVR_DIALOG_CLOSE_IF_SUCCESSFUL);
-            ad->setWindowIcon(QIcon(":/images/write_eeprom.png"));
-            res=ad->exec();
+            ad->setWindowIcon(iconw);
+            res = ad->exec();
+            delete ad;
             if (!res) {
               QMessageBox::warning(this, tr("Restore failed"), tr("Could not restore Models and Settings to TX. The models and settings data file can be found at: %1").arg(backupFile));
             }
-          } else {
+          }
+          else {
             QMessageBox::warning(this, tr("Firmware write failed"), tr("Could not write firmware to to transmitter. The models and settings data file can be found at: %1").arg(backupFile));
           }
-        } else {
+        }
+        else {
           QMessageBox::warning(this, tr("Backup failed"), tr("Cannot backup existing Models and Settings from TX. Firmware write process aborted"));
         }
-      } else {
+      }
+      else {
         bool backupEnable=settings.value("backupEnable", true).toBool();
         QString backupPath=settings.value("backupPath", "").toString();
         if (!QDir(backupPath).exists()) {
@@ -1399,22 +1437,24 @@ void MainWindow::burnToFlash(QString fileToFlash)
           QString backupFile=backupPath+"/backup-"+QDateTime().currentDateTime().toString("yyyy-MM-dd-hhmmss")+".bin";
           QStringList str = GetReceiveEEpromCommand(backupFile);
           avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Backup Models and Settings From Tx"));
-          ad->setWindowIcon(QIcon(":/images/read_eeprom.png"));
+          ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
           ad->exec();
+          delete ad;
           sleep(1);
         }
 
         QStringList str = GetSendFlashCommand(fileName);
         avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Write Firmware To Tx"), AVR_DIALOG_SHOW_DONE);
-        ad->setWindowIcon(QIcon(":/images/write_flash.png"));
+        ad->setWindowIcon(CompanionIcon("write_flash.png"));
         ad->exec();
+        delete ad;
       }
     }
 }
 
 void MainWindow::burnExtenalFromEEPROM()
 {
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings;
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save transmitter Models and Settings to File"), settings.value("lastDir").toString(), tr(EXTERNAL_EEPROM_FILES_FILTER));
     if (!fileName.isEmpty()) {
       EEPROMInterface *eepromInterface = GetEepromInterface();
@@ -1423,26 +1463,30 @@ void MainWindow::burnExtenalFromEEPROM()
         if (path.isEmpty()) {
           QMessageBox::warning(this, tr("Taranis radio not found"), tr("Impossible to identify the radio on your system, please verify that the eeprom disk is connected."));
           return;
-        } else {
+        }
+        else {
           QStringList str;            
           str << path << fileName;
           avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Read Models and Settings From Tx")); //, AVR_DIALOG_KEEP_OPEN);
-          ad->setWindowIcon(QIcon(":/images/read_eeprom.png"));
+          ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
           ad->exec();
+          delete ad;
         }
-      } else {
+      }
+      else {
         settings.setValue("lastDir", QFileInfo(fileName).dir().absolutePath());
         QStringList str = GetReceiveEEpromCommand(fileName);
         avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Read Models and Settings From Tx"));
-        ad->setWindowIcon(QIcon(":/images/read_eeprom.png"));
+        ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
         ad->exec();
+        delete ad;
       }
     }
 }
 
 void MainWindow::burnFromFlash()
 {
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings;
     QString fileName = QFileDialog::getSaveFileName(this,tr("Read Tx Firmware to File"), settings.value("lastFlashDir").toString(),tr(FLASH_FILES_FILTER));
     if (!fileName.isEmpty()) {
         QFile file(fileName);
@@ -1452,10 +1496,10 @@ void MainWindow::burnFromFlash()
         settings.setValue("lastFlashDir",QFileInfo(fileName).dir().absolutePath());
         QStringList str = GetReceiveFlashCommand(fileName);
         avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, "Read Firmware From Tx");
-        ad->setWindowIcon(QIcon(":/images/read_flash.png"));
+        ad->setWindowIcon(CompanionIcon("read_flash.png"));
         ad->exec();
+        delete ad;
     }
-
 }
 
 void MainWindow::burnConfig()
@@ -1490,16 +1534,20 @@ void MainWindow::logFile()
 
 void MainWindow::about()
 {
-    QString aboutStr = "<center><img src=\":/images/companion-title.png\"></center><br>";
-    aboutStr.append("OpenTX Home Page: <a href='http://opentx.github.io'>http://open-tx.org</a><br><br>");
-    aboutStr.append(tr("The Companion project was originally forked from eePe")+QString(" <a href='http://code.google.com/p/eepe'>http://code.google.com/p/eepe</a><br/><br/>"));
-    aboutStr.append(tr("If you've found this program useful, please support by"));
-    aboutStr.append(" <a href='" DONATE_STR "'>");
-    aboutStr.append(tr("donating") + "</a><br><br>");
-    aboutStr.append(tr("Version %1 (revision %2), %3").arg(C9X_VERSION).arg(C9X_REVISION).arg(__DATE__)+QString("<br/><br/>"));
-    aboutStr.append(tr("Copyright") +" Bertrand Songis & Romolo Manfredini &copy; 2011- 2014<br>");
-
-    QMessageBox::about(this, tr("About Companion"),aboutStr);
+    QString aboutStr = "<center><img src=\":/images/companion-title.png\"></center><br/>";
+    aboutStr.append(tr("OpenTX Home Page: <a href='%1'>%1</a>").arg("http://www.open-tx.org"));
+    aboutStr.append("<br/><br/>");
+    aboutStr.append(tr("The OpenTX Companion project was originally forked from <a href='%2'>eePe</a>").arg("http://code.google.com/p/eepe"));
+    aboutStr.append("<br/><br/>");
+    aboutStr.append(tr("If you've found this program useful, please support by <a href='%1'>donating</a>").arg(DONATE_STR));
+    aboutStr.append("<br/><br/>");
+    aboutStr.append(tr("Version %1, %3").arg(C9X_VERSION).arg(__DATE__));
+    aboutStr.append("<br/><br/>");
+    aboutStr.append(tr("Copyright") + " Bertrand Songis & Romolo Manfredini<br/>&copy; 2011-2014<br/>");
+    QMessageBox msgBox(this);
+    msgBox.setWindowTitle(tr("About Companion"));
+    msgBox.setText(aboutStr);
+    msgBox.exec();
 }
 
 void MainWindow::updateMenus()
@@ -1528,7 +1576,7 @@ void MainWindow::updateMenus()
     updateRecentFileActions();
     updateProfilesActions();
     bool notfound=true;
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings;
     settings.beginGroup("Profiles");
     for (int i=0; i<MAX_PROFILES; i++) {
       QString profile=QString("profile%1").arg(i+1);
@@ -1592,137 +1640,134 @@ MdiChild *MainWindow::createMdiChild()
 
 void MainWindow::createActions()
 {
-    newAct = new QAction(QIcon(":/images/new.png"), tr("&New"), this);
+    newAct = new QAction(CompanionIcon("new.png"), tr("&New"), this);
     newAct->setShortcuts(QKeySequence::New);
     newAct->setStatusTip(tr("Create a new file"));
     connect(newAct, SIGNAL(triggered()), this, SLOT(newFile()));
 
-    openAct = new QAction(QIcon(":/images/open.png"), tr("&Open..."), this);
+    openAct = new QAction(CompanionIcon("open.png"), tr("&Open..."), this);
     openAct->setShortcuts(QKeySequence::Open);
     openAct->setStatusTip(tr("Open an existing file"));
     connect(openAct, SIGNAL(triggered()), this, SLOT(openFile()));
     
-    loadbackupAct = new QAction(QIcon(":/images/open.png"), tr("&loadBackup..."), this);
+    loadbackupAct = new QAction(CompanionIcon("open.png"), tr("&loadBackup..."), this);
     loadbackupAct->setStatusTip(tr("Load backup from file"));
     connect(loadbackupAct, SIGNAL(triggered()), this, SLOT(loadBackup()));
 
-    saveAct = new QAction(QIcon(":/images/save.png"), tr("&Save"), this);
+    saveAct = new QAction(CompanionIcon("save.png"), tr("&Save"), this);
     saveAct->setShortcuts(QKeySequence::Save);
     saveAct->setStatusTip(tr("Save the document to disk"));
     connect(saveAct, SIGNAL(triggered()), this, SLOT(save()));
 
-    saveAsAct = new QAction(QIcon(":/images/saveas.png"), tr("Save &As..."), this);
+    saveAsAct = new QAction(CompanionIcon("saveas.png"), tr("Save &As..."), this);
     saveAsAct->setShortcuts(QKeySequence::SaveAs);
     saveAsAct->setStatusTip(tr("Save the document under a new name"));
     connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
 
-    logsAct = new QAction(QIcon(":/images/logs.png"), tr("Lo&gs"), this);
+    logsAct = new QAction(CompanionIcon("logs.png"), tr("Lo&gs"), this);
     logsAct->setShortcut(tr("Ctrl+G"));
     logsAct->setStatusTip(tr("Open log file"));
     connect(logsAct, SIGNAL(triggered()), this, SLOT(logFile()));
     
-    preferencesAct = new QAction(QIcon(":/images/preferences.png"), tr("&Preferences..."), this);
+    preferencesAct = new QAction(CompanionIcon("preferences.png"), tr("&Preferences..."), this);
     preferencesAct->setStatusTip(tr("Edit general preferences"));
     connect(preferencesAct, SIGNAL(triggered()), this, SLOT(preferences()));
 
-    checkForUpdatesAct = new QAction(QIcon(":/images/update.png"), tr("&Check for updates..."), this);
+    checkForUpdatesAct = new QAction(CompanionIcon("update.png"), tr("&Check for updates..."), this);
     checkForUpdatesAct->setStatusTip(tr("Check for new version of Companion"));
     connect(checkForUpdatesAct, SIGNAL(triggered()), this, SLOT(doUpdates()));
 
-    contributorsAct = new QAction(QIcon(":/images/contributors.png"), tr("Contributors &List..."), this);
+    contributorsAct = new QAction(CompanionIcon("contributors.png"), tr("Contributors &List..."), this);
     contributorsAct->setStatusTip(tr("Show Companion contributors list"));
     connect(contributorsAct, SIGNAL(triggered()), this, SLOT(contributors()));
 
-    changelogAct = new QAction(QIcon(":/images/changelog.png"), tr("ChangeLog..."), this);
+    changelogAct = new QAction(CompanionIcon("changelog.png"), tr("ChangeLog..."), this);
     changelogAct->setStatusTip(tr("Show Companion changelog"));
     connect(changelogAct, SIGNAL(triggered()), this, SLOT(changelog()));
 
-    fwchangelogAct = new QAction(QIcon(":/images/changelog.png"), tr("Firmware ChangeLog..."), this);
+    fwchangelogAct = new QAction(CompanionIcon("changelog.png"), tr("Firmware ChangeLog..."), this);
     fwchangelogAct->setStatusTip(tr("Show firmware changelog"));
     connect(fwchangelogAct, SIGNAL(triggered()), this, SLOT(fwchangelog()));
     
-    compareAct = new QAction(QIcon(":/images/compare.png"), tr("Compare..."), this);
+    compareAct = new QAction(CompanionIcon("compare.png"), tr("Compare..."), this);
     compareAct->setStatusTip(tr("Compare models"));
     compareAct->setEnabled(false);
     connect(compareAct, SIGNAL(triggered()), this, SLOT(compare()));
     
-    customizeSplashAct = new QAction(QIcon(":/images/customize.png"), tr("Customize your &TX..."), this);
+    customizeSplashAct = new QAction(CompanionIcon("paintbrush.png"), tr("Customize your &TX..."), this);
     customizeSplashAct->setStatusTip(tr("Customize the splash screen of your TX"));
     connect(customizeSplashAct, SIGNAL(triggered()), this, SLOT(customizeSplash()));
-
     
-//! [0]
-    exitAct = new QAction(QIcon(":/images/exit.png"), tr("E&xit"), this);
+    exitAct = new QAction(CompanionIcon("exit.png"), tr("E&xit"), this);
     exitAct->setShortcuts(QKeySequence::Quit);
     exitAct->setStatusTip(tr("Exit the application"));
     connect(exitAct, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
-//! [0]
 
-    cutAct = new QAction(QIcon(":/images/cut.png"), tr("Cu&t"), this);
+    cutAct = new QAction(CompanionIcon("cut.png"), tr("Cu&t"), this);
     cutAct->setShortcuts(QKeySequence::Cut);
     cutAct->setStatusTip(tr("Cut the current selection's contents to the "
                             "clipboard"));
     connect(cutAct, SIGNAL(triggered()), this, SLOT(cut()));
 
-    copyAct = new QAction(QIcon(":/images/copy.png"), tr("&Copy"), this);
+    copyAct = new QAction(CompanionIcon("copy.png"), tr("&Copy"), this);
     copyAct->setShortcuts(QKeySequence::Copy);
     copyAct->setStatusTip(tr("Copy the current selection's contents to the "
                              "clipboard"));
     connect(copyAct, SIGNAL(triggered()), this, SLOT(copy()));
 
-    pasteAct = new QAction(QIcon(":/images/paste.png"), tr("&Paste"), this);
+    pasteAct = new QAction(CompanionIcon("paste.png"), tr("&Paste"), this);
     pasteAct->setShortcuts(QKeySequence::Paste);
     pasteAct->setStatusTip(tr("Paste the clipboard's contents into the current "
                               "selection"));
     connect(pasteAct, SIGNAL(triggered()), this, SLOT(paste()));
 
-
-    burnToAct = new QAction(QIcon(":/images/write_eeprom.png"), tr("&Write Models and Settings To Tx"), this);
+    burnToAct = new QAction(CompanionIcon("write_eeprom.png"), tr("&Write Models and Settings To Tx"), this);
     burnToAct->setShortcut(tr("Ctrl+Alt+W"));
     burnToAct->setStatusTip(tr("Write Models and Settings to transmitter"));
     connect(burnToAct,SIGNAL(triggered()),this,SLOT(burnTo()));
 
-    burnFromAct = new QAction(QIcon(":/images/read_eeprom.png"), tr("&Read Models and Settings From Tx"), this);
+    burnFromAct = new QAction(CompanionIcon("read_eeprom.png"), tr("&Read Models and Settings From Tx"), this);
     burnFromAct->setShortcut(tr("Ctrl+Alt+R"));
     burnFromAct->setStatusTip(tr("Read Models and Settings from transmitter"));
     connect(burnFromAct,SIGNAL(triggered()),this,SLOT(burnFrom()));
 
-    burnToFlashAct = new QAction(QIcon(":/images/write_flash.png"), tr("Write Firmware"), this);
+    burnToFlashAct = new QAction(CompanionIcon("write_flash.png"), tr("Write Firmware"), this);
     burnToFlashAct->setStatusTip(tr("Write firmware to transmitter"));
     connect(burnToFlashAct,SIGNAL(triggered()),this,SLOT(burnToFlash()));
 
-    burnExtenalToEEPROMAct = new QAction(QIcon(":/images/write_eeprom_file.png"), tr("Write Models and Settings from file to Tx"), this);
+    burnExtenalToEEPROMAct = new QAction(CompanionIcon("write_eeprom_file.png"), tr("Write Models and Settings from file to Tx"), this);
     burnExtenalToEEPROMAct->setStatusTip(tr("Write Models and Settings from file to transmitter"));
     connect(burnExtenalToEEPROMAct,SIGNAL(triggered()),this,SLOT(burnExtenalToEEPROM()));
 
-    burnExtenalFromEEPROMAct = new QAction(QIcon(":/images/read_eeprom_file.png"), tr("Save transmitter Models and Settings to file"), this);
+    burnExtenalFromEEPROMAct = new QAction(CompanionIcon("read_eeprom_file.png"), tr("Save transmitter Models and Settings to file"), this);
     burnExtenalFromEEPROMAct->setStatusTip(tr("Save the Models and Settings from the transmitter to a file"));
     connect(burnExtenalFromEEPROMAct,SIGNAL(triggered()),this,SLOT(burnExtenalFromEEPROM()));
 
-    burnFromFlashAct = new QAction(QIcon(":/images/read_flash.png"), tr("Read Firmware"), this);
+    burnFromFlashAct = new QAction(CompanionIcon("read_flash.png"), tr("Read Firmware"), this);
     burnFromFlashAct->setStatusTip(tr("Read firmware from transmitter"));
     connect(burnFromFlashAct,SIGNAL(triggered()),this,SLOT(burnFromFlash()));
 
-    burnConfigAct = new QAction(QIcon(":/images/configure.png"), tr("&Configure..."), this);
+    burnConfigAct = new QAction(CompanionIcon("configure.png"), tr("&Configure..."), this);
     burnConfigAct->setStatusTip(tr("Configure software for reading from and writing to the transmitter"));
     connect(burnConfigAct,SIGNAL(triggered()),this,SLOT(burnConfig()));
     EEPROMInterface *eepromInterface = GetEepromInterface();
     if (!IS_ARM(eepromInterface->getBoard())) {
-      burnListAct = new QAction(QIcon(":/images/list.png"), tr("&List programmers"), this);
+      burnListAct = new QAction(CompanionIcon("list.png"), tr("&List programmers"), this);
       burnListAct->setStatusTip(tr("List available programmers"));
       connect(burnListAct,SIGNAL(triggered()),this,SLOT(burnList()));
 
-      burnFusesAct = new QAction(QIcon(":/images/fuses.png"), tr("&Fuses..."), this);
+      burnFusesAct = new QAction(CompanionIcon("fuses.png"), tr("&Fuses..."), this);
       burnFusesAct->setStatusTip(tr("Show fuses dialog"));
       connect(burnFusesAct,SIGNAL(triggered()),this,SLOT(burnFuses()));
     }
-    simulateAct = new QAction(QIcon(":/images/simulate.png"), tr("&Simulate"), this);
+
+    simulateAct = new QAction(CompanionIcon("simulate.png"), tr("&Simulate"), this);
     simulateAct->setShortcut(tr("Alt+S"));
     simulateAct->setStatusTip(tr("Simulate selected model."));
     simulateAct->setEnabled(false);
     connect(simulateAct,SIGNAL(triggered()),this,SLOT(simulate()));
 
-    printAct = new QAction(QIcon(":/images/print.png"), tr("&Print"), this);
+    printAct = new QAction(CompanionIcon("print.png"), tr("&Print"), this);
     printAct->setShortcut(tr("Ctrl+P"));
     printAct->setStatusTip(tr("Print current model."));
     printAct->setEnabled(false);
@@ -1762,11 +1807,11 @@ void MainWindow::createActions()
     separatorAct = new QAction(this);
     separatorAct->setSeparator(true);
 
-    aboutAct = new QAction(QIcon(":/icon.png"), tr("&About"), this);
+    aboutAct = new QAction(CompanionIcon("information.png"), tr("&About"), this);
     aboutAct->setStatusTip(tr("Show the application's About box"));
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
 
-    switchLayoutDirectionAct = new QAction(QIcon(":/images/switch_dir.png"),  tr("Switch layout direction"), this);
+    switchLayoutDirectionAct = new QAction(CompanionIcon("switch_dir.png"),  tr("Switch layout direction"), this);
     switchLayoutDirectionAct->setStatusTip(tr("Switch layout Left/Right"));
     connect(switchLayoutDirectionAct, SIGNAL(triggered()), this, SLOT(switchLayoutDirection()));
     for (int i = 0; i < MaxRecentFiles; ++i)  {
@@ -1796,8 +1841,8 @@ void MainWindow::createMenus()
     fileMenu->addAction(saveAct);
     fileMenu->addAction(saveAsAct);
     fileMenu->addMenu(recentFileMenu);
-    recentFileMenu->setIcon(QIcon(":/images/recentdocument.png"));
-    for ( int i = 0; i < MaxRecentFiles; ++i)
+    recentFileMenu->setIcon(CompanionIcon("recentdocument.png"));
+    for (int i=0; i<MaxRecentFiles; ++i)
       recentFileMenu->addAction(recentFileActs[i]);
     fileMenu->addSeparator();
     fileMenu->addAction(logsAct);
@@ -1809,8 +1854,8 @@ void MainWindow::createMenus()
     fileMenu->addAction(preferencesAct);
     fileMenu->addMenu(profilesMenu);
     
-    profilesMenu->setIcon(QIcon(":/images/profiles.png"));
-    for ( int i = 0; i < MAX_PROFILES; ++i)
+    profilesMenu->setIcon(CompanionIcon("profiles.png"));
+    for (int i=0; i<MAX_PROFILES; ++i)
       profilesMenu->addAction(profileActs[i]);
     fileMenu->addAction(switchLayoutDirectionAct);
     fileMenu->addAction(exitAct);
@@ -1846,9 +1891,9 @@ void MainWindow::createMenus()
 
     helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addSeparator();
-    helpMenu->addAction(aboutAct);
-    helpMenu->addSeparator();
     helpMenu->addAction(checkForUpdatesAct);
+    helpMenu->addSeparator();
+    helpMenu->addAction(aboutAct);
     helpMenu->addSeparator();
     helpMenu->addAction(changelogAct);
     helpMenu->addAction(fwchangelogAct);
@@ -1874,13 +1919,32 @@ QMenu *MainWindow::createProfilesMenu()
 
 void MainWindow::createToolBars()
 {
+    QSettings settings;
+    int icon_size=settings.value("icon_size",2 ).toInt();
+    QSize size;
+    switch(icon_size) {
+      case 0:
+        size=QSize(16,16);
+        break;
+      case 1:
+        size=QSize(24,24);
+        break;
+      case 3:
+        size=QSize(48,48);
+        break;
+      default:
+        size=QSize(32,32);
+        break;        
+    }
     fileToolBar = addToolBar(tr("File"));
+    fileToolBar->setIconSize(size);
+    fileToolBar->setObjectName("File");
     fileToolBar->addAction(newAct);
     fileToolBar->addAction(openAct);
     QToolButton * recentToolButton = new QToolButton;
     recentToolButton->setPopupMode(QToolButton::InstantPopup);
     recentToolButton->setMenu(createRecentFileMenu());
-    recentToolButton->setIcon(QIcon(":/images/recentdocument.png"));
+    recentToolButton->setIcon(CompanionIcon("recentdocument.png"));
     recentToolButton->setToolTip(tr("Recent Files"));
     fileToolBar->addWidget(recentToolButton);
     fileToolBar->addAction(saveAct);
@@ -1890,11 +1954,10 @@ void MainWindow::createToolBars()
     profileButton = new QToolButton;
     profileButton->setPopupMode(QToolButton::InstantPopup);
     profileButton->setMenu(createProfilesMenu());
-    profileButton->setIcon(QIcon(":/images/profiles.png"));
+    profileButton->setIcon(CompanionIcon("profiles.png"));
     profileButton->setToolTip(tr("Firmware Profiles"));
     fileToolBar->addWidget(profileButton);
     bool notfound=true;
-    QSettings settings("companion9x", "companion9x");
     settings.beginGroup("Profiles");
     for (int i=0; i<MAX_PROFILES; i++) {
       QString profile=QString("profile%1").arg(i+1);
@@ -1912,11 +1975,17 @@ void MainWindow::createToolBars()
     fileToolBar->addAction(compareAct);
 
     editToolBar = addToolBar(tr("Edit"));
+    editToolBar->setIconSize(size);
+    editToolBar->setObjectName("Edit");
     editToolBar->addAction(cutAct);
     editToolBar->addAction(copyAct);
     editToolBar->addAction(pasteAct);
 
-    burnToolBar = addToolBar(tr("Write"));
+    
+    burnToolBar = new QToolBar(tr("Write"));
+    addToolBar( Qt::LeftToolBarArea, burnToolBar );
+    burnToolBar->setIconSize(size);
+    burnToolBar->setObjectName("Write");
     burnToolBar->addAction(burnToAct);
     burnToolBar->addAction(burnFromAct);
     burnToolBar->addSeparator();
@@ -1929,8 +1998,10 @@ void MainWindow::createToolBars()
     burnToolBar->addAction(burnConfigAct);
 
     helpToolBar = addToolBar(tr("Help"));
-    helpToolBar->addAction(aboutAct);
+    helpToolBar->setIconSize(size);
+    helpToolBar->setObjectName("Help");
     helpToolBar->addAction(checkForUpdatesAct);
+    helpToolBar->addAction(aboutAct);
 }
 
 void MainWindow::createStatusBar()
@@ -1940,12 +2011,9 @@ void MainWindow::createStatusBar()
 
 void MainWindow::readSettings()
 {
-    QSettings settings("companion9x", "companion9x");
-    bool maximized = settings.value("maximized", false).toBool();
-    QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
-    QSize size = settings.value("size", QSize(400, 400)).toSize();
-
-    checkCompanion9x = settings.value("startup_check_companion9x", true).toBool();
+    QSettings settings;
+    restoreState(settings.value("mainWindowState").toByteArray());
+    checkCompanion9x = settings.value("startup_check_companion", true).toBool();
     checkFW = settings.value("startup_check_fw", true).toBool();
     MaxRecentFiles =settings.value("history_size",10).toInt();
     ActiveProfile=settings.value("activeprofile",0).toInt();
@@ -1956,23 +2024,6 @@ void MainWindow::readSettings()
       ActiveProfileName=settings.value("Name","").toString();
       settings.endGroup();
       settings.endGroup();
-    }
-    if (maximized) {
-      setWindowState(Qt::WindowMaximized);
-    } else {
-      move(pos);
-      resize(size);
-    }
-}
-
-void MainWindow::writeSettings()
-{
-    QSettings settings("companion9x", "companion9x");
-
-    settings.setValue("maximized", isMaximized());
-    if(!isMaximized()) {
-      settings.setValue("pos", pos());
-      settings.setValue("size", size());
     }
 }
 
@@ -2013,7 +2064,7 @@ void MainWindow::setActiveSubWindow(QWidget *window)
 void MainWindow::updateRecentFileActions()
  {
     int i,j, numRecentFiles;
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings;
     QStringList files = settings.value("recentFileList").toStringList();
  
     numRecentFiles = qMin(files.size(), (int)MaxRecentFiles);
@@ -2033,7 +2084,7 @@ void MainWindow::updateRecentFileActions()
 void MainWindow::updateProfilesActions()
  {
     int i;
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings;
     settings.beginGroup("Profiles");
     for (i=0; i<MAX_PROFILES; i++) {
       QString profile=QString("profile%1").arg(i+1);
@@ -2150,7 +2201,7 @@ void MainWindow::dropEvent(QDropEvent *event)
     QString fileName = urls.first().toLocalFile();
     if (fileName.isEmpty())
       return;
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings;
     settings.setValue("lastDir", QFileInfo(fileName).dir().absolutePath());
 
     QMdiSubWindow *existing = findMdiChild(fileName);

@@ -47,7 +47,7 @@ const char * Gruvin9xInterface::getName()
 const int Gruvin9xInterface::getEEpromSize()
 {
   if (board == BOARD_STOCK) {
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings;
     QString avrMCU = settings.value("mcu", QString("m64")).toString();
     if (avrMCU==QString("m128")) {
       return EESIZE_STOCK*2;

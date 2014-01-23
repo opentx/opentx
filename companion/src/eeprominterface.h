@@ -66,6 +66,7 @@ const uint8_t modn12x3[4][4]= {
 #define C9X_MAX_MODELS            60
 #define C9X_MAX_PHASES            9
 #define C9X_MAX_MIXERS            64
+#define C9X_MAX_INPUTS            32
 #define C9X_MAX_EXPOS             64
 #define C9X_MAX_CURVES            32
 #define C9X_MAX_POINTS            17
@@ -286,19 +287,22 @@ class RawSource {
   public:
     RawSource():
       type(SOURCE_TYPE_NONE),
-      index(0)
+      index(0),
+      model(NULL)
     {
     }
 
-    RawSource(int value):
+    RawSource(int value, const ModelData * model=NULL):
       type(RawSourceType(abs(value)/65536)),
-      index(value >= 0 ? abs(value)%65536 : -(abs(value)%65536))
+      index(value >= 0 ? abs(value)%65536 : -(abs(value)%65536)),
+      model(model)
     {
     }
 
-    RawSource(RawSourceType type, int index=0):
+    RawSource(RawSourceType type, int index=0, const ModelData * model=NULL):
       type(type),
-      index(index)
+      index(index),
+      model(model)
     {
     }
 
@@ -322,6 +326,7 @@ class RawSource {
 
     RawSourceType type;
     int index;
+    const ModelData * model;
 };
 
 enum RawSwitchType {
@@ -553,7 +558,7 @@ class LimitData {
     bool  symetrical;
     char  name[6+1];
     CurveReference curve;
-    void clear() { memset(this, 0, sizeof(LimitData)); min = -100; max = +100; }
+    void clear() { memset(this, 0, sizeof(LimitData)); min = -1000; max = +1000; }
 };
 
 enum MltpxValue {
@@ -642,7 +647,7 @@ class FuncSwData { // Function Switches data
     char paramarm[10];
     unsigned int enabled; // TODO perhaps not any more the right name
     unsigned int adjustMode;
-    unsigned int repeatParam;
+    int repeatParam;
     void clear() { memset(this, 0, sizeof(FuncSwData)); }
 };
 
@@ -787,14 +792,13 @@ enum TimerMode {
 class TimerData {
   public:
     TimerData() { clear(); }
-    TimerMode mode;   // timer trigger source -> off, abs, THs, TH%, THt, sw/!sw, !m_sw/!m_sw
-    int8_t    modeB;
-    bool minuteBeep;
-    bool countdownBeep;
-    bool      dir;    // 0=>Count Down, 1=>Count Up
+    TimerMode    mode;   // timer trigger source -> off, abs, THs, TH%, THt, sw/!sw, !m_sw/!m_sw
+    bool         minuteBeep;
+    unsigned int countdownBeep;
+    bool         dir;    // 0=>Count Down, 1=>Count Up
     unsigned int val;
-    bool      persistent;
-    int pvalue;
+    bool         persistent;
+    int          pvalue;
     void clear() { memset(this, 0, sizeof(TimerData)); }
 };
 
@@ -851,7 +855,10 @@ class ModelData {
     PhaseData phaseData[C9X_MAX_PHASES];
     MixData   mixData[C9X_MAX_MIXERS];
     LimitData limitData[C9X_NUM_CHNOUT];
+
+    char      inputNames[C9X_MAX_INPUTS][4+1];
     ExpoData  expoData[C9X_MAX_EXPOS];
+
     CurveData curves[C9X_MAX_CURVES];
     CustomSwData  customSw[C9X_NUM_CSW];
     FuncSwData    funcSw[C9X_MAX_CUSTOM_FUNCTIONS];
@@ -911,8 +918,6 @@ enum Capability {
  MixesWithoutExpo,
  Timers,
  TimeDivisions,
- minuteBeep,
- countdownBeep,
  CustomFunctions,
  VoicesAsNumbers,
  VoicesMaxLength,
@@ -931,7 +936,6 @@ enum Capability {
  ChannelsName,
  ExtraChannels,
  ExtraInputs,
- ExtraTrims,
  ExtendedTrims,
  HasInputFilter,
  NumCurves,
@@ -997,7 +1001,6 @@ enum Capability {
  HasStickScroll,
  HasSoundMixer,
  NumModules,
- FSSwitch,
  PPMCenter,
  SYMLimits,
  HasCurrentCalibration,
