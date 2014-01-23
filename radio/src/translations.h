@@ -448,6 +448,10 @@ extern const pm_char STR_INVERT_THR[];
 extern const pm_char STR_AND_SWITCH[];
 extern const pm_char STR_CF[];
 
+#if defined(FAS_OFFSET) || !defined(CPUM64)
+extern const pm_char STR_FAS_OFFSET[];
+#endif
+
 #if defined(DSM2) || defined(PXX)
 extern const pm_char STR_RXNUM[];
 #endif
@@ -536,6 +540,9 @@ extern const pm_char STR_RESET_BTN[];
 
 extern const pm_uchar font_5x7[];
 extern const pm_uchar font_10x14[];
+#if !defined(CPUM64) || defined(EXTSTD)
+extern const pm_uchar font_5x7_B[];
+#endif
 
 #if defined(CPUARM)
 extern const pm_uchar font_3x5[];

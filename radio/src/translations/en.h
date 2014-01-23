@@ -33,6 +33,12 @@
  * GNU General Public License for more details.
  *
  */
+ /* Fotmatting octal codes available in TR_ strings:
+ *  \037\x       -sets LCD x-coord (x value in octal)
+ *  \036         -newline (ARM boards only)
+ *  \001 to \035 -extended spacing (value * FW/2)
+ *  \0           -ends actual string
+ */
 
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON              "\003"
@@ -71,8 +77,8 @@
 #define LEN_COUNTRYCODES       TR("\002", "\007")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "America""Japan\0 ""Europe\0")
 
-#define LEN_VTRIMINC           TR("\006","\013")
-#define TR_VTRIMINC            TR("Expo  ""ExFine""Fine  ""Medium""Coarse","Exponential""Extra Fine ""Fine       ""Medium     ""Coarse     ")
+#define LEN_VTRIMINC           TR("\006", "\013")
+#define TR_VTRIMINC            TR("Expo\0 ""ExFine""Fine\0 ""Medium""Coarse", "Exponential""Extra Fine\0""Fine\0      ""Medium\0    ""Coarse\0    ")
 
 #define LEN_VBEEPCOUNTDOWN     "\006"
 #define TR_VBEEPCOUNTDOWN      "SilentBeeps\0Voice\0"
@@ -488,20 +494,20 @@
 #define OFS_RX                 4
 #define TR_ACCEL               "Acc:"
 #define TR_NODATA              CENTER "NO DATA"
-#define TR_TM1TM2              "TM1\032TM2"
-#define TR_THRTHP              "THR\032TH%"
+#define TR_TM1TM2              "TM1\037\146TM2"
+#define TR_THRTHP              "THR\037\146TH%"
 #define TR_TOT                 "TOT"
-#define TR_TMR1LATMAXUS        "Tmr1Lat max\006us"
-#define STR_US (STR_TMR1LATMAXUS+12)
-#define TR_TMR1LATMINUS        "Tmr1Lat min\006us"
-#define TR_TMR1JITTERUS        "Tmr1 Jitter\006us"
+#define TR_TMR1LATMAXUS        "Tmr1Lat max\037\124us"
+#define STR_US (STR_TMR1LATMAXUS+13)
+#define TR_TMR1LATMINUS        "Tmr1Lat min\037\124us"
+#define TR_TMR1JITTERUS        "Tmr1 Jitter\037\124us"
 
 #if defined(CPUARM)
   #define TR_TMIXMAXMS         "Tmix max"
   #define TR_FREESTACKMINB     "Free Stack"
 #else
-  #define TR_TMIXMAXMS         "Tmix max\014ms"
-  #define TR_FREESTACKMINB     "Free Stack\010b"
+  #define TR_TMIXMAXMS         "Tmix max\037\124ms"
+  #define TR_FREESTACKMINB     "Free Stack\037\124b"
 #endif
 
 #define TR_MENUTORESET         CENTER TR_ENTER " to reset"
@@ -667,6 +673,7 @@
 #define TR_LOWALARM            INDENT "Low Alarm"
 #define TR_CRITICALALARM       INDENT "Critical Alarm"
 #define TR_PERSISTENT_MAH      INDENT "Store mAh"
+#define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL	"Max RSSI"

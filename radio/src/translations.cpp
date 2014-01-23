@@ -267,6 +267,10 @@ const pm_char STR_EEPROMOVERFLOW[] PROGMEM = TR_EEPROMOVERFLOW;
 const pm_char STR_TRIMS2OFFSETS[] PROGMEM = TR_TRIMS2OFFSETS;
 const pm_char STR_MENURADIOSETUP[] PROGMEM = TR_MENURADIOSETUP;
 
+#if defined(FAS_OFFSET) || !defined(CPUM64)
+const pm_char STR_FAS_OFFSET[] PROGMEM = TR_FAS_OFFSET;
+#endif
+
 #if defined(CPUM2560) || defined(CPUARM)
 const pm_char STR_MENUDATEANDTIME[] PROGMEM = TR_MENUDATEANDTIME;
 #endif
@@ -585,6 +589,12 @@ const pm_uchar font_5x7[] PROGMEM = {
 #include "font_se_05x07.lbm"
 #endif
 };
+
+#if !defined(CPUM64) || defined(EXTSTD)
+const pm_uchar font_5x7_B[] PROGMEM = {
+#include "font_05x07_B_compressed.lbm"
+};
+#endif
 
 const pm_uchar font_10x14[] PROGMEM = {
 #include "font_10x14_compressed.lbm"

@@ -1424,7 +1424,7 @@ PACK(typedef struct t_ModelData {
   uint8_t   thrTrim:1;            // Enable Throttle Trim
   AVR_FIELD(int8_t    ppmNCH:4)
   ARM_FIELD(int8_t    spare2:4)
-  uint8_t   trimInc:3;            // Trim Increments
+  int8_t    trimInc:3;            // Trim Increments
   uint8_t   disableThrottleWarning:1;
   ARM_FIELD(uint8_t displayText:1)
   AVR_FIELD(uint8_t pulsePol:1)

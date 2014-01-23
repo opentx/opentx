@@ -1717,10 +1717,9 @@ class FrskyField: public StructField {
           Append(new ConversionField< SignedField<6> >(frsky.rssiAlarms[i].value, -45+i*3));
         }
         if (version >= 216) {
-          // TODO uint16_t mAhPersistent:1;
-          // uint16_t storedMah:15;
-          // int8_t   fasOffset;
-          Append(new SpareBitsField<24>());
+          Append(new BoolField<1>(frsky.mAhPersistent));
+          Append(new UnsignedField<15>(frsky.storedMah));
+          Append(new SignedField<8>(frsky.fasOffset));
         }
       }
       else {
@@ -1851,7 +1850,11 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
   else
     internalField.Append(new ConversionField< SignedField<4> >(modelData.moduleData[0].channelsCount, &channelsConversionTable, "Channels number", ::QObject::tr("OpenTX doesn't allow this number of channels")));
 
-  internalField.Append(new UnsignedField<3>(modelData.trimInc));
+  if (version >= 216)
+    internalField.Append(new SignedField<3>(modelData.trimInc));
+  else
+    internalField.Append(new ConversionField< SignedField<3> >(modelData.trimInc, +2));
+
   internalField.Append(new BoolField<1>(modelData.disableThrottleWarning));
 
   if (IS_TARANIS(board) || (IS_ARM(board) && version >= 216))
@@ -2044,7 +2047,7 @@ Open9xGeneralDataNew::Open9xGeneralDataNew(GeneralSettings & generalData, BoardE
   internalField.Append(new SpareBitsField<1>());
 
   internalField.Append(new UnsignedField<8>(generalData.inactivityTimer));
-  if (IS_STOCK(board) && version >= 215) {
+  if (IS_9X(board) && version >= 215) {
     internalField.Append(new UnsignedField<3>(generalData.mavbaud));
   }
   else {

@@ -178,7 +178,13 @@ void applyTemplate(uint8_t idx)
       // Simple 4-Ch
       case TMPL_SIMPLE_4CH:
         clearInputs();
-        applyDefaultTemplate();
+#if defined(PCBTARANIS)
+  #pragma message("Templates with virtual inputs (FrSky Taranis) are not implemented!")
+#endif
+        setDest(ICC(STK_RUD), MIXSRC_Rud);
+        setDest(ICC(STK_ELE), MIXSRC_Ele);
+        setDest(ICC(STK_THR), MIXSRC_Thr);
+        setDest(ICC(STK_AIL), MIXSRC_Ail);
         break;
 
       // Sticky-T-Cut
@@ -203,9 +209,6 @@ void applyTemplate(uint8_t idx)
       // Elevon\\Delta
       case TMPL_ELEVON_DELTA:
         defaultInputs();
-#if defined(PCBTARANIS)
- #pragma message("Templates below are not implemented (only V-TAIL has been done). Feel free to help!")
-#endif
         setDest(ICC(STK_ELE), MIXSRC_Ele, true);
         setDest(ICC(STK_ELE), MIXSRC_Ail);
         setDest(ICC(STK_AIL), MIXSRC_Ele, true);

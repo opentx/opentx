@@ -509,6 +509,12 @@ uint16_t evalChkSum()
   return sum;
 }
 
+#if defined(TEMPLATES)
+inline void applyDefaultTemplate()
+{
+  applyTemplate(TMPL_SIMPLE_4CH);
+}
+#else
 void applyDefaultTemplate()
 {
   for (int i=0; i<NUM_STICKS; i++) {
@@ -539,6 +545,7 @@ void applyDefaultTemplate()
   }
   eeDirty(EE_MODEL);
 }
+#endif
 
 #if defined(PXX) && defined(CPUARM)
 void checkModelIdUnique(uint8_t id)
@@ -2293,12 +2300,10 @@ void checkTrims()
   uint8_t event = getEvent(true);
   if (event && !IS_KEY_BREAK(event)) {
     int8_t k = EVT_KEY_MASK(event) - TRM_BASE;
-    int8_t s = g_model.trimInc;
 #else
 uint8_t checkTrim(uint8_t event)
 {
   int8_t k = EVT_KEY_MASK(event) - TRM_BASE;
-  int8_t s = g_model.trimInc;
   if (k>=0 && k<8 && !IS_KEY_BREAK(event)) {
 #endif
     // LH_DWN LH_UP LV_DWN LV_UP RV_DWN RV_UP RH_DWN RH_UP
@@ -2329,7 +2334,8 @@ uint8_t checkTrim(uint8_t event)
     before = getRawTrimValue(phase, idx);
     thro = (idx==THR_STICK && g_model.thrTrim);
 #endif
-    int8_t  v = (s==0) ? min(32, abs(before)/4+1) : 1 << (s-1); // 1=>1  2=>2  3=>4  4=>8
+    int8_t trimInc = g_model.trimInc + 1;
+    int8_t v = (trimInc==-1) ? min(32, abs(before)/4+1) : (1 << trimInc);
     if (thro) v = 4; // if throttle trim and trim trottle then step=4
     int16_t after = (k&1) ? before + v : before - v;   // positive = k&1
 #if defined(CPUARM)
@@ -3403,6 +3409,8 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 
       if (md->srcRaw == 0) break;
 
+      uint8_t stickIndex = md->srcRaw - MIXSRC_Rud;
+
       if (!(dirtyChannels & ((bitfield_channels_t)1 << md->destCh))) continue;
 
       // if this is the first calculation for the destination channel, initialize it with 0 (otherwise would be random)
@@ -3415,7 +3423,6 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       delayval_t mixEnabled = !(md->phases & (1 << s_perout_flight_phase)) && getSwitch(md->swtch);
 
       //========== VALUE ===============
-      uint8_t stickIndex = md->srcRaw - MIXSRC_Rud;
       getvalue_t v = 0;
       if (mode > e_perout_mode_inactive_phase) {
         if (!mixEnabled || stickIndex >= NUM_STICKS || (stickIndex == THR_STICK && g_model.thrTrim)) {
@@ -3433,12 +3440,14 @@ void perOut(uint8_t mode, uint8_t tick10ms)
         else
 #endif
         {
-          v = getValue(md->srcRaw);
-          if (md->srcRaw>=MIXSRC_CH1 && md->srcRaw<=MIXSRC_LAST_CH && md->destCh != md->srcRaw-MIXSRC_CH1) {
-            if (dirtyChannels & ((bitfield_channels_t)1 << (md->srcRaw-MIXSRC_CH1)) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
+          int8_t srcRaw = MIXSRC_Rud + stickIndex;
+          v = getValue(srcRaw);
+          srcRaw -= MIXSRC_CH1;
+          if (srcRaw>=0 && srcRaw<=MIXSRC_LAST_CH-MIXSRC_CH1 && md->destCh != srcRaw) {
+            if (dirtyChannels & ((bitfield_channels_t)1 << srcRaw) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
               passDirtyChannels |= (bitfield_channels_t) 1 << md->destCh;
-            if (md->srcRaw-MIXSRC_CH1 < md->destCh || pass > 0)
-              v = chans[md->srcRaw-MIXSRC_CH1] >> 8;
+            if (srcRaw < md->destCh || pass > 0)
+              v = chans[srcRaw] >> 8;
           }
         }
         if (!mixCondition) {

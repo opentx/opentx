@@ -298,7 +298,6 @@
     <file>themes/monochrome/16/edit.png</file>
     <file>themes/monochrome/16/information.png</file>
     <file>themes/monochrome/16/configure.png</file>
-    <file>themes/monochrome/16/switch_dir.png</file>
     <file>themes/monochrome/16/list.png</file>
     <file>themes/monochrome/16/wizard.png</file>
     <file>themes/monochrome/16/logs.png</file>
@@ -341,7 +340,6 @@
     <file>themes/monochrome/24/edit.png</file>
     <file>themes/monochrome/24/information.png</file>
     <file>themes/monochrome/24/configure.png</file>
-    <file>themes/monochrome/24/switch_dir.png</file>
     <file>themes/monochrome/24/list.png</file>
     <file>themes/monochrome/24/wizard.png</file>
     <file>themes/monochrome/24/logs.png</file>
@@ -384,7 +382,6 @@
     <file>themes/monochrome/32/edit.png</file>
     <file>themes/monochrome/32/information.png</file>
     <file>themes/monochrome/32/configure.png</file>
-    <file>themes/monochrome/32/switch_dir.png</file>
     <file>themes/monochrome/32/list.png</file>
     <file>themes/monochrome/32/wizard.png</file>
     <file>themes/monochrome/32/logs.png</file>
@@ -427,7 +424,6 @@
     <file>themes/monochrome/48/edit.png</file>
     <file>themes/monochrome/48/information.png</file>
     <file>themes/monochrome/48/configure.png</file>
-    <file>themes/monochrome/48/switch_dir.png</file>
     <file>themes/monochrome/48/list.png</file>
     <file>themes/monochrome/48/wizard.png</file>
     <file>themes/monochrome/48/logs.png</file>
@@ -470,7 +466,6 @@
     <file>themes/classic/16/edit.png</file>
     <file>themes/classic/16/information.png</file>
     <file>themes/classic/16/configure.png</file>
-    <file>themes/classic/16/switch_dir.png</file>
     <file>themes/classic/16/list.png</file>
     <file>themes/classic/16/wizard.png</file>
     <file>themes/classic/16/logs.png</file>
@@ -513,7 +508,6 @@
     <file>themes/classic/24/edit.png</file>
     <file>themes/classic/24/information.png</file>
     <file>themes/classic/24/configure.png</file>
-    <file>themes/classic/24/switch_dir.png</file>
     <file>themes/classic/24/list.png</file>
     <file>themes/classic/24/wizard.png</file>
     <file>themes/classic/24/logs.png</file>
@@ -556,7 +550,6 @@
     <file>themes/classic/32/edit.png</file>
     <file>themes/classic/32/information.png</file>
     <file>themes/classic/32/configure.png</file>
-    <file>themes/classic/32/switch_dir.png</file>
     <file>themes/classic/32/list.png</file>
     <file>themes/classic/32/wizard.png</file>
     <file>themes/classic/32/logs.png</file>
@@ -599,7 +592,6 @@
     <file>themes/classic/48/edit.png</file>
     <file>themes/classic/48/information.png</file>
     <file>themes/classic/48/configure.png</file>
-    <file>themes/classic/48/switch_dir.png</file>
     <file>themes/classic/48/list.png</file>
     <file>themes/classic/48/wizard.png</file>
     <file>themes/classic/48/logs.png</file>
@@ -642,7 +634,6 @@
     <file>themes/monoblue/16/edit.png</file>
     <file>themes/monoblue/16/information.png</file>
     <file>themes/monoblue/16/configure.png</file>
-    <file>themes/monoblue/16/switch_dir.png</file>
     <file>themes/monoblue/16/list.png</file>
     <file>themes/monoblue/16/wizard.png</file>
     <file>themes/monoblue/16/logs.png</file>
@@ -685,7 +676,6 @@
     <file>themes/monoblue/24/edit.png</file>
     <file>themes/monoblue/24/information.png</file>
     <file>themes/monoblue/24/configure.png</file>
-    <file>themes/monoblue/24/switch_dir.png</file>
     <file>themes/monoblue/24/list.png</file>
     <file>themes/monoblue/24/wizard.png</file>
     <file>themes/monoblue/24/logs.png</file>
@@ -728,7 +718,6 @@
     <file>themes/monoblue/32/edit.png</file>
     <file>themes/monoblue/32/information.png</file>
     <file>themes/monoblue/32/configure.png</file>
-    <file>themes/monoblue/32/switch_dir.png</file>
     <file>themes/monoblue/32/list.png</file>
     <file>themes/monoblue/32/wizard.png</file>
     <file>themes/monoblue/32/logs.png</file>
@@ -771,7 +760,6 @@
     <file>themes/monoblue/48/edit.png</file>
     <file>themes/monoblue/48/information.png</file>
     <file>themes/monoblue/48/configure.png</file>
-    <file>themes/monoblue/48/switch_dir.png</file>
     <file>themes/monoblue/48/list.png</file>
     <file>themes/monoblue/48/wizard.png</file>
     <file>themes/monoblue/48/logs.png</file>
@@ -814,7 +802,6 @@
     <file>themes/monowhite/16/edit.png</file>
     <file>themes/monowhite/16/information.png</file>
     <file>themes/monowhite/16/configure.png</file>
-    <file>themes/monowhite/16/switch_dir.png</file>
     <file>themes/monowhite/16/list.png</file>
     <file>themes/monowhite/16/wizard.png</file>
     <file>themes/monowhite/16/logs.png</file>
@@ -857,7 +844,6 @@
     <file>themes/monowhite/24/edit.png</file>
     <file>themes/monowhite/24/information.png</file>
     <file>themes/monowhite/24/configure.png</file>
-    <file>themes/monowhite/24/switch_dir.png</file>
     <file>themes/monowhite/24/list.png</file>
     <file>themes/monowhite/24/wizard.png</file>
     <file>themes/monowhite/24/logs.png</file>
@@ -900,7 +886,6 @@
     <file>themes/monowhite/32/edit.png</file>
     <file>themes/monowhite/32/information.png</file>
     <file>themes/monowhite/32/configure.png</file>
-    <file>themes/monowhite/32/switch_dir.png</file>
     <file>themes/monowhite/32/list.png</file>
     <file>themes/monowhite/32/wizard.png</file>
     <file>themes/monowhite/32/logs.png</file>
@@ -943,7 +928,6 @@
     <file>themes/monowhite/48/edit.png</file>
     <file>themes/monowhite/48/information.png</file>
     <file>themes/monowhite/48/configure.png</file>
-    <file>themes/monowhite/48/switch_dir.png</file>
     <file>themes/monowhite/48/list.png</file>
     <file>themes/monowhite/48/wizard.png</file>
     <file>themes/monowhite/48/logs.png</file>

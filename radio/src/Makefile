@@ -159,6 +159,10 @@ PPM_UNIT = PERCENT_PREC1
 # Values = YES, NO
 FRSKY_HUB = YES
 
+# FrSky FAS current sensor offset compensation
+# Values = YES, NO
+FAS_OFFSET = NO
+
 # WS HowHigh 
 # Values = YES, NO
 WS_HOW_HIGH = YES
@@ -331,6 +335,10 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   
   ifeq ($(SP22), YES)
    CPPDEFS += -DSP22
+  endif
+  
+  ifeq ($(FAS_OFFSET), YES)
+   CPPDEFS += -DFAS_OFFSET
   endif
 endif
 
@@ -779,10 +787,8 @@ ifneq ($(PCB), TARANIS)
 endif
 
 ifneq ($(FONT), STD)
-  CPPDEFS += -DFONT_$(FONT)
   INCDIRS += fonts/$(shell sh -c "echo $(FONT) | tr '[:upper:]' '[:lower:]'")
 endif
-
 INCDIRS += fonts/std
   
 ifeq ($(THR_TRACE), YES)
@@ -1363,11 +1369,11 @@ GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 # conservative and not optimized.  This is fine as Google Test
 # compiles fast and for ordinary users its source rarely changes.
 gtest-all.o : $(GTEST_SRCS_)
-	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -c \
+	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -I$(GTEST_DIR)/include -c \
             $(GTEST_DIR)/src/gtest-all.cc
 
 gtest_main.o : $(GTEST_SRCS_)
-	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -c \
+	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -I$(GTEST_DIR)/include -c \
             $(GTEST_DIR)/src/gtest_main.cc
 
 gtest.a : gtest-all.o
@@ -1381,4 +1387,4 @@ gtest_main.a : gtest-all.o gtest_main.o
 # function.
 
 gtests: $(BOARDSRC) $(CPPSRC) gtests.cpp simpgmspace.cpp *.h gtest_main.a
-	g++ -std=gnu++0x $(CPPFLAGS) $(BOARDSRC) $(CPPSRC) gtests.cpp simpgmspace.cpp -I$(GTEST_DIR) -o gtests -lpthread -MD -DSIMU gtest_main.a 
+	g++ -std=gnu++0x $(CPPFLAGS) $(BOARDSRC) $(CPPSRC) gtests.cpp simpgmspace.cpp -I$(GTEST_DIR) ${INCFLAGS} -I$(GTEST_DIR)/include -o gtests -lpthread -MD -DSIMU gtest_main.a 

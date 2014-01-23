@@ -768,7 +768,12 @@ void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, uin
   lcd_putsLeft(y, STR_NAME);
 #endif
 
-  lcd_putsnAtt(x, y, name, size, ZCHAR | ((active && s_editMode <= 0) ? INVERS : 0));
+  uint8_t mode = 0;
+  if (active) {
+    if (s_editMode <= 0) mode = INVERS+FIXEDWIDTH;
+    else mode = FIXEDWIDTH;
+  }
+  lcd_putsnAtt(x, y, name, size, ZCHAR | mode);
 
   if (active) {
     uint8_t cur = editNameCursorPos;
@@ -831,7 +836,7 @@ void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, uin
         name[cur] = v;
         eeDirty(EE_MODEL);
       }
-      lcd_putcAtt(x+editNameCursorPos*FW, y, idx2char(v), INVERS);
+      lcd_putcAtt(x+editNameCursorPos*FW, y, idx2char(v), INVERS+FIXEDWIDTH);
     }
     else {
       cur = 0;
@@ -1106,7 +1111,7 @@ void menuModelSetup(uint8_t event)
         break;
 
       case ITEM_MODEL_TRIM_INC:
-        g_model.trimInc = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_TRIMINC, STR_VTRIMINC, g_model.trimInc, 0, 4, attr, event);
+        g_model.trimInc = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_TRIMINC, STR_VTRIMINC, g_model.trimInc, -2, 2, attr, event);
         break;
 
       case ITEM_MODEL_THROTTLE_REVERSED:
@@ -3309,8 +3314,8 @@ void displayHeaderChannelName(uint8_t ch)
   uint8_t len = zlen(g_model.limitData[ch-1].name, sizeof(g_model.limitData[ch-1].name));
   if (len) {
     lcd_putc(17*FW, 0, ' ');
-    lcd_putsnAtt(18*FW, 0, g_model.limitData[ch-1].name, len, ZCHAR);
-    lcd_putc(18*FW+len*FW, 0, ' ');
+    lcd_putsnAtt(lcdNextPos, 0, g_model.limitData[ch-1].name, len, ZCHAR);
+    lcd_putc(lcdNextPos, 0, ' ');
   }
 }
 #endif
@@ -3552,9 +3557,9 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
 
             if (mixCnt > 0) lcd_putsiAtt(FW, y, STR_VMLTPX2, md->mltpx, 0);
 
-            putsMixerSource(MIX_LINE_SRC_POS, y, md->srcRaw, isMixActive(i) ? BOLD : 0);
+            putsMixerSource(MIX_LINE_SRC_POS, y, md->srcRaw, 0);
 
-            gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, attr, event);
+            gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, attr | (isMixActive(i) ? BOLD : 0), event);
 
 #if LCD_W >= 212
             displayFlightModes(EXPO_LINE_FM_POS, y, md->phases);
@@ -3746,7 +3751,7 @@ enum LimitsItems {
   #undef MIN_MAX_ATTR
   #define MIN_MAX_ATTR          attr
 #else
-  #define MIN_MAX_DISPLAY(x)    (x)
+  #define MIN_MAX_DISPLAY(x)    ((int8_t)(x))
 #endif
 
 #if defined(PCBTARANIS)
@@ -5167,6 +5172,9 @@ enum menuModelTelemetryItems {
 #endif
   ITEM_TELEMETRY_USR_VOLTAGE_SOURCE,
   ITEM_TELEMETRY_USR_CURRENT_SOURCE,
+#if defined(FAS_OFFSET) || !defined(CPUM64)
+  ITEM_TELEMETRY_FAS_OFFSET,
+#endif
 #if defined(CPUARM)
   ITEM_TELEMTETRY_PERSISTENT_MAH,
 #endif
@@ -5247,9 +5255,15 @@ enum menuModelTelemetryItems {
   #define VARIO_RANGE_ROWS 3
 #endif
 
+#if defined(FAS_OFFSET) || !defined(CPUM64)
+  #define IF_FAS_OFFSET(x) x,
+#else
+  #define IF_FAS_OFFSET(x) 
+#endif
+
 void menuModelTelemetry(uint8_t event)
 {
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX+1, {0, CHANNEL_ROWS CHANNEL_ROWS RSSI_ROWS USRDATA_LINES 0, 0, IF_CPUARM(0) IF_VARIO(LABEL(Vario)) IF_VARIO(0) IF_VARIO(VARIO_RANGE_ROWS) CASE_PCBTARANIS(LABEL(TopBar)) CASE_PCBTARANIS(0) SCREEN_TYPE_ROWS, 2, 2, 2, 2, SCREEN_TYPE_ROWS, 2, 2, 2, 2, IF_CPUARM(SCREEN_TYPE_ROWS) IF_CPUARM(2) IF_CPUARM(2) IF_CPUARM(2) IF_CPUARM(2) });
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX+1, {0, CHANNEL_ROWS CHANNEL_ROWS RSSI_ROWS USRDATA_LINES 0, 0, IF_FAS_OFFSET(0) IF_CPUARM(0) IF_VARIO(LABEL(Vario)) IF_VARIO(0) IF_VARIO(VARIO_RANGE_ROWS) CASE_PCBTARANIS(LABEL(TopBar)) CASE_PCBTARANIS(0) SCREEN_TYPE_ROWS, 2, 2, 2, 2, SCREEN_TYPE_ROWS, 2, 2, 2, 2, IF_CPUARM(SCREEN_TYPE_ROWS) IF_CPUARM(2) IF_CPUARM(2) IF_CPUARM(2) IF_CPUARM(2) });
 
   uint8_t sub = m_posVert - 1;
 
@@ -5419,6 +5433,16 @@ void menuModelTelemetry(uint8_t event)
         lcd_putsiAtt(TELEM_COL2, y, STR_VOLTSRC, g_model.frsky.currentSource, attr);
         if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, g_model.frsky.currentSource, 3);
         break;
+        
+#if defined(FAS_OFFSET) || !defined(CPUM64)
+      case ITEM_TELEMETRY_FAS_OFFSET:
+      	lcd_putsLeft(y, STR_FAS_OFFSET);
+      	lcd_outdezAtt(TELEM_COL2, y, g_model.frsky.fasOffset, attr|LEFT|PREC1);
+        lcd_outdezAtt(TELEM_COL2+6*FW, y, frskyData.hub.current, LEFT|PREC1);
+        lcd_putc(TELEM_COL2+8*FW, y, 'A');
+      	if (attr) g_model.frsky.fasOffset = checkIncDec(event, g_model.frsky.fasOffset, -15, 15, EE_MODEL);
+        break;
+#endif
 
 #if defined(CPUARM)
       case ITEM_TELEMTETRY_PERSISTENT_MAH:
