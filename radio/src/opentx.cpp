@@ -3411,7 +3411,6 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       if (md->srcRaw == 0) break;
 
       uint8_t stickIndex = md->srcRaw - MIXSRC_Rud;
-      #define MIX_SRCRAW (stickIndex + MIXSRC_Rud)
 
       if (!(dirtyChannels & ((bitfield_channels_t)1 << md->destCh))) continue;
 
@@ -3442,12 +3441,14 @@ void perOut(uint8_t mode, uint8_t tick10ms)
         else
 #endif
         {
-          v = getValue(MIX_SRCRAW);
-          if (MIX_SRCRAW>=MIXSRC_CH1 && MIX_SRCRAW<=MIXSRC_LAST_CH && md->destCh != MIX_SRCRAW-MIXSRC_CH1) {
-            if (dirtyChannels & ((bitfield_channels_t)1 << (MIX_SRCRAW-MIXSRC_CH1)) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
+          int8_t srcRaw = MIXSRC_Rud + stickIndex;
+          v = getValue(srcRaw);
+          srcRaw -= MIXSRC_CH1;
+          if (srcRaw>=0 && srcRaw<=MIXSRC_LAST_CH-MIXSRC_CH1 && md->destCh != srcRaw) {
+            if (dirtyChannels & ((bitfield_channels_t)1 << srcRaw) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
               passDirtyChannels |= (bitfield_channels_t) 1 << md->destCh;
-            if (MIX_SRCRAW-MIXSRC_CH1 < md->destCh || pass > 0)
-              v = chans[MIX_SRCRAW-MIXSRC_CH1] >> 8;
+            if (srcRaw < md->destCh || pass > 0)
+              v = chans[srcRaw] >> 8;
           }
         }
         if (!mixCondition) {
