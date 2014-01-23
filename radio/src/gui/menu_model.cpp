@@ -768,7 +768,12 @@ void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, uin
   lcd_putsLeft(y, STR_NAME);
 #endif
 
-  lcd_putsnAtt(x, y, name, size, ZCHAR | ((active && s_editMode <= 0) ? INVERS : 0));
+  uint8_t mode = 0;
+  if (active) {
+    if (s_editMode <= 0) mode = INVERS+FIXEDWIDTH;
+    else mode = FIXEDWIDTH;
+  }
+  lcd_putsnAtt(x, y, name, size, ZCHAR | mode);
 
   if (active) {
     uint8_t cur = editNameCursorPos;
@@ -831,7 +836,7 @@ void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, uin
         name[cur] = v;
         eeDirty(EE_MODEL);
       }
-      lcd_putcAtt(x+editNameCursorPos*FW, y, idx2char(v), INVERS);
+      lcd_putcAtt(x+editNameCursorPos*FW, y, idx2char(v), INVERS+FIXEDWIDTH);
     }
     else {
       cur = 0;
@@ -3309,8 +3314,8 @@ void displayHeaderChannelName(uint8_t ch)
   uint8_t len = zlen(g_model.limitData[ch-1].name, sizeof(g_model.limitData[ch-1].name));
   if (len) {
     lcd_putc(17*FW, 0, ' ');
-    lcd_putsnAtt(18*FW, 0, g_model.limitData[ch-1].name, len, ZCHAR);
-    lcd_putc(18*FW+len*FW, 0, ' ');
+    lcd_putsnAtt(lcdNextPos, 0, g_model.limitData[ch-1].name, len, ZCHAR);
+    lcd_putc(lcdNextPos, 0, ' ');
   }
 }
 #endif
@@ -3552,9 +3557,9 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
 
             if (mixCnt > 0) lcd_putsiAtt(FW, y, STR_VMLTPX2, md->mltpx, 0);
 
-            putsMixerSource(MIX_LINE_SRC_POS, y, md->srcRaw, isMixActive(i) ? BOLD : 0);
+            putsMixerSource(MIX_LINE_SRC_POS, y, md->srcRaw, 0);
 
-            gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, attr, event);
+            gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, attr | (isMixActive(i) ? BOLD : 0), event);
 
 #if LCD_W >= 212
             displayFlightModes(EXPO_LINE_FM_POS, y, md->phases);

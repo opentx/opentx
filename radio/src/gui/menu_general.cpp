@@ -258,7 +258,7 @@ void menuGeneralSetup(uint8_t event)
 
       case ITEM_SETUP_TIME:
         lcd_putsLeft(y, STR_TIME);
-        lcd_putc(RADIO_SETUP_TIME_COLUMN-1, y, ':'); lcd_putc(RADIO_SETUP_TIME_COLUMN+3*FW-4, y, ':');
+        lcd_putc(RADIO_SETUP_TIME_COLUMN+1, y, ':'); lcd_putc(RADIO_SETUP_TIME_COLUMN+3*FW-2, y, ':');
         for (uint8_t j=0; j<3; j++) {
           uint8_t rowattr = (m_posHorz==j ? attr : 0);
           switch (j) {
@@ -1065,13 +1065,14 @@ void menuGeneralDiagKeys(uint8_t event)
   lcd_puts(14*FW, 3*FH, STR_VTRIM);
 
   for(uint8_t i=0; i<9; i++) {
-    uint8_t y = i*FH; //+FH;
 #if !defined(PCBTARANIS)
-    if(i>(SW_ID0-SW_BASE)) y-=FH; //overwrite ID0
+    uint8_t y = i*FH-FH;
+    if(i==(SW_ID0-SW_BASE)) continue; //ignore ID0
     putsSwitches(8*FW, y, i+1, 0); //ohne off,on
     displayKeyState(11*FW+2, y, (EnumKeys)(SW_BASE+i));
-#endif
-
+#else
+    uint8_t y = i*FH;
+#endif    
     if (i<8) {
       y = i/2*FH+FH*4;
       lcd_img(14*FW, y, sticks, i/2, 0);
@@ -1113,7 +1114,7 @@ void menuGeneralDiagAna(uint8_t event)
     uint8_t y = 1+FH+(i/2)*FH;
     uint8_t x = i&1 ? 64+5 : 0;
     putsStrIdx(x, y, PSTR("A"), i+1);
-    lcd_putc(x+2*FWNUM, y, ':');
+    lcd_putc(lcdNextPos, y, ':');
     lcd_outhex4(x+3*FW-1, y, anaIn(i));
     lcd_outdez8(x+10*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
   }
