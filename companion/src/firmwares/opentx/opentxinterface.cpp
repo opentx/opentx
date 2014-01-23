@@ -690,6 +690,10 @@ int Open9xInterface::getCapability(const Capability capability)
     case EnhancedCurves:
     case TelemetryInternalAlarms:
       return IS_TARANIS(board);
+    case HasFasOffset:
+      return (IS_STOCK(board) ? false : true);
+    case HasMahPersistent:
+      return (IS_ARM(board) ? true : false);
     default:
       return 0;
   }
@@ -1050,6 +1054,7 @@ void RegisterOpen9xFirmwares()
   open9x->addOption("novario", QObject::tr("No vario support"));
   open9x->addOption("nogps", QObject::tr("No GPS support"));
   open9x->addOption("nogauges", QObject::tr("No gauges in the custom telemetry screen"));
+  open9x->addOption("fasoffset", QObject::tr("Allow compensating for offset errors in FrSky FAS current sensors"));
   open9x->addOptions(fai_options);
   firmwares.push_back(open9x);
 
