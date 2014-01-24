@@ -24,7 +24,6 @@
  *
  *
  *
- *
  * !!!!! DO NOT EDIT pl.h - EDIT pl.h.txt INSTEAD !!!!!!!
  *
  * In order to make translations easier pl.h.txt is parsed and national
@@ -33,6 +32,12 @@
  *
  * !!!!! DO NOT EDIT pl.h - EDIT pl.h.txt INSTEAD !!!!!!!   
  *
+ */
+  /* Fotmatting octal codes available in TR_ strings:
+ *  \037\x       -sets LCD x-coord (x value in octal)
+ *  \036         -newline (ARM boards only)
+ *  \001 to \035 -extended spacing (value * FW/2)
+ *  \0           -ends actual string
  */
 
 // NON ZERO TERMINATED STRINGS
@@ -62,6 +67,9 @@
 
 #define LEN_TRNCHN             "\003"
 #define TR_TRNCHN              "CH1CH2CH3CH4"
+
+#define LEN_UART3MODES         "\017"
+#define TR_UART3MODES          "OFF\0           ""SPORT Mirror\0  ""Virtual SP2UART"
 
 #define LEN_DATETIME           "\006"
 #define TR_DATETIME            "DANA:""Czas:\0 "
@@ -207,23 +215,28 @@
   #define TR_VFSWFUNC          "Bezp.\0     ""Trener \0   ""Inst-Trim  " TR_SOUND TR_HAPTIC "Reset       " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE "Podświetl. " TR_CFN_ADJUST_GVAR TR_CFN_TEST
 #endif
 
-#define LEN_VFSWRESET           "\005"
+#define LEN_VFSWRESET          TR("\004", "\011")
 
 #if defined(FRSKY)
+<<<<<<< HEAD
   #define TR_FSW_RESET_TELEM    TR("Telem", "Telemetria") 
 #else  
+=======
+  #define TR_FSW_RESET_TELEM   TR("Telm", "Telemetry")
+#else
+>>>>>>> origin/next
   #define TR_FSW_RESET_TELEM
 #endif
 
 #if ROTARY_ENCODERS == 2
-  #define TR_FSW_RESET_ROTENC  TR("REa\0 ""REb\0 ", "RotEnc A\0""RotEnc B\0")
+  #define TR_FSW_RESET_ROTENC  TR("REa\0""REb\0", "RotEnc A\0""RotEnc B\0")
 #elif ROTARY_ENCODERS == 1
-  #define TR_FSW_RESET_ROTENC  TR("R.Enc", "RotEnc\0  ")
+  #define TR_FSW_RESET_ROTENC  TR("R.E.", "RotEnc\0  ")
 #else
-#define TR_FSW_RESET_ROTENC
+  #define TR_FSW_RESET_ROTENC
 #endif
 
-#define TR_VFSWRESET            "Tmr1\0""Tmr2\0""ALL\0 " TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC
+#define TR_VFSWRESET           TR("Tmr1""Tmr2""All\0" TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC, "Timer 1\0 ""Timer 2\0 ""All\0     " TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC)
 
 #define LEN_FUNCSOUNDS         TR("\004", "\006")
 #define TR_FUNCSOUNDS          TR("Bp1\0""Bp2\0""Bp3\0""Wrn1""Wrn2""Chee""Rata""Tick""Sirn""Ring""SciF""Robt""Chrp""Tada""Crck""Alrm", "Beep1 ""Beep2 ""Beep3 ""Warn1 ""Warn2 ""Cheep ""Ratata""Tick  ""Siren ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""AlmClk")
@@ -485,20 +498,27 @@
 #define OFS_RX                 4
 #define TR_ACCEL               "Acc:"
 #define TR_NODATA              CENTER "NO DATA"
-#define TR_TM1TM2              "TM1\032TM2"
-#define TR_THRTHP              "THR\032TH%"
+#define TR_TM1TM2              "TM1\037\146TM2"
+#define TR_THRTHP              "THR\037\146TH%"
 #define TR_TOT                 "TOT"
-#define TR_TMR1LATMAXUS        "Tmr1Lat max\006us"
-#define STR_US                 (STR_TMR1LATMAXUS+12)
-#define TR_TMR1LATMINUS        "Tmr1Lat min\006us"
-#define TR_TMR1JITTERUS        "Tmr1 Jitter\006us"
+#define TR_TMR1LATMAXUS        "Tmr1Lat max\037\124us"
+#define STR_US (STR_TMR1LATMAXUS+13)
+#define TR_TMR1LATMINUS        "Tmr1Lat min\037\124us"
+#define TR_TMR1JITTERUS        "Tmr1 Jitter\037\124us"
 
 #if defined(CPUARM)
   #define TR_TMIXMAXMS         "Tmix max"
+<<<<<<< HEAD
   #define TR_FREESTACKMINB     "Wolny stos"
 #else
   #define TR_TMIXMAXMS         "Tmix max\014ms"
   #define TR_FREESTACKMINB     "Wolny stos\010b"
+=======
+  #define TR_FREESTACKMINB     "Free Stack"
+#else
+  #define TR_TMIXMAXMS         "Tmix max\037\124ms"
+  #define TR_FREESTACKMINB     "Free Stack\037\124b"
+>>>>>>> origin/next
 #endif
 
 #define TR_MENUTORESET         CENTER TR_ENTER" >> Reset"
@@ -668,6 +688,8 @@
 #define TR_LOWALARM            INDENT "Alarm niski"
 #define TR_CRITICALALARM       INDENT "Alarm krytyczny"
 #define TR_PERSISTENT_MAH      INDENT "Store mAh"
+#define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
+#define TR_UART3MODE           "Serial port"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL	"Max RSSI"

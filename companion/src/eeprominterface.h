@@ -51,7 +51,8 @@ enum BoardEnum {
   BOARD_TARANIS_REV4a
 };
 
-#define IS_STOCK(board)       (board==BOARD_STOCK || board==BOARD_M128)
+#define IS_9X(board)          (board==BOARD_STOCK || board==BOARD_M128)
+#define IS_STOCK(board)       (board==BOARD_STOCK)
 #define IS_2560(board)        (board==BOARD_GRUVIN9X || board==BOARD_MEGA2560)
 #define IS_ARM(board)         (board==BOARD_SKY9X || board==BOARD_TARANIS  || board==BOARD_TARANIS_REV4a)
 #define IS_TARANIS(board)     (board==BOARD_TARANIS  || board==BOARD_TARANIS_REV4a)
@@ -478,6 +479,7 @@ class GeneralSettings {
     int backgroundVolume;
     unsigned int mavbaud;
     unsigned int switchUnlockStates;
+    unsigned int hw_uartMode;
 };
 
 class CurveReference {
@@ -758,6 +760,9 @@ class FrSkyData {
     int varioCenterMin;    // if increment in 0.2m/s = 3.0m/s max
     int varioCenterMax;
     int varioMax;
+    bool mAhPersistent;
+    unsigned int storedMah;
+    int fasOffset;
 
     void clear() { memset(this, 0, sizeof(FrSkyData)); rssiAlarms[0].clear(2, 45); rssiAlarms[1].clear(3, 42); varioSource = 2/*VARIO*/; }
 };
@@ -840,7 +845,7 @@ class ModelData {
     TimerData timers[2];
     bool      thrTrim;            // Enable Throttle Trim
     bool      thrExpo;            // Enable Throttle Expo
-    unsigned int trimInc;            // Trim Increments
+    int       trimInc;            // Trim Increments
     bool      disableThrottleWarning;
 
     unsigned int beepANACenter;      // 1<<0->A1.. 1<<6->A7
@@ -1015,7 +1020,9 @@ enum Capability {
  LuaInputs,
  LimitsPer1000,
  EnhancedCurves,
- TelemetryInternalAlarms
+ TelemetryInternalAlarms,
+ HasFasOffset,
+ HasMahPersistent
 };
 
 enum UseContext {

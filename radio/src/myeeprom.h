@@ -239,7 +239,8 @@ enum BeeperMode {
   int8_t   beepVolume; \
   int8_t   wavVolume; \
   int8_t   varioVolume; \
-  int8_t   backgroundVolume;
+  int8_t   backgroundVolume; \
+  uint8_t  hw_uartMode;
 #elif defined(PXX)
   #define EXTRA_GENERAL_FIELDS uint8_t  countryCode;
 #else
@@ -976,7 +977,7 @@ PACK(typedef struct t_FrSkyData {
   uint8_t usrProto; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh, 3=Halcyon
   uint8_t voltsSource:7;
   uint8_t altitudeDisplayed:1;
-  uint8_t blades;   // How many blades for RPMs, 0=2 blades, 1=3 blades
+  int8_t blades;    // How many blades for RPMs, 0=2 blades
   uint8_t currentSource;
   uint8_t screensType;
   FrSkyScreenData screens[MAX_FRSKY_SCREENS];
@@ -990,12 +991,14 @@ PACK(typedef struct t_FrSkyData {
   uint16_t storedMah:15;
   int8_t   fasOffset;
 }) FrSkyData;
+#define MIN_BLADES -1 // 1 blade
+#define MAX_BLADES 3  // 5 blades
 #else
 #define MAX_FRSKY_SCREENS 2
 PACK(typedef struct t_FrSkyData {
   FrSkyChannelData channels[2];
   uint8_t usrProto:2; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh, 3=Halcyon
-  uint8_t blades:2;   // How many blades for RPMs, 0=2 blades, 1=3 blades
+  uint8_t blades:2;   // How many blades for RPMs, 0=2 blades
   uint8_t screensType:2;
   uint8_t voltsSource:2;
   int8_t  varioMin:4;
@@ -1008,6 +1011,8 @@ PACK(typedef struct t_FrSkyData {
   int8_t  varioCenterMax:5;
   int8_t  fasOffset;
 }) FrSkyData;
+#define MIN_BLADES 0 // 2 blades
+#define MAX_BLADES 3 // 5 blades
 #endif
 
 #if defined(MAVLINK)
@@ -1424,7 +1429,7 @@ PACK(typedef struct t_ModelData {
   uint8_t   thrTrim:1;            // Enable Throttle Trim
   AVR_FIELD(int8_t    ppmNCH:4)
   ARM_FIELD(int8_t    spare2:4)
-  uint8_t   trimInc:3;            // Trim Increments
+  int8_t    trimInc:3;            // Trim Increments
   uint8_t   disableThrottleWarning:1;
   ARM_FIELD(uint8_t displayText:1)
   AVR_FIELD(uint8_t pulsePol:1)

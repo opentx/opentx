@@ -109,6 +109,15 @@ add_custom_command(
   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/firmwares/ersky9x/ersky9xsimulator.cpp
 )
 
+set(RADIO_SRC_DIRECTORY ${PROJECT_SOURCE_DIR}/../../radio/src)
+
+add_custom_command(
+  OUTPUT ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
+  COMMAND make lbm
+  DEPENDS ${RADIO_SRC_DIRECTORY}/bitmaps/sticks_4x1.xbm
+  WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
+)
+
 add_subdirectory(modeledit)
 
 SET( companion_SRCS
@@ -139,6 +148,7 @@ SET( companion_SRCS
      firmwares/ersky9x/ersky9xeeprom.cpp
      firmwares/ersky9x/ersky9xinterface.cpp
      ${ERSKY9X_CHECKOUT_DIRECTORY}/ersky9xsimulator.cpp
+     ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
      helpers.cpp
      mdichild.cpp
      generaledit.cpp
