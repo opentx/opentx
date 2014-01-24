@@ -3750,6 +3750,8 @@ enum LimitsItems {
   #define MIN_MAX_DISPLAY(x)    CONVERT_US_MIN_MAX(x)
   #undef MIN_MAX_ATTR
   #define MIN_MAX_ATTR          attr
+#elif defined(CPUARM)
+  #define MIN_MAX_DISPLAY(x)    (x)
 #else
   #define MIN_MAX_DISPLAY(x)    ((int8_t)(x))
 #endif
@@ -4938,11 +4940,13 @@ void menuModelCustomFunctions(uint8_t event)
           break;
 
         case 3:
-          if (sd->swtch && (CFN_FUNC(sd) <= FUNC_INSTANT_TRIM
+          if (sd->swtch && (CFN_FUNC(sd) <= FUNC_INSTANT_TRIM || CFN_FUNC(sd) == FUNC_RESET
 #if defined(GVARS)
+              // TODO #define
               || CFN_FUNC(sd) >= FUNC_ADJUST_GV1
 #endif
 #if defined(CPUARM)
+              // TODO #define
               || CFN_FUNC(sd) == FUNC_VOLUME
 #endif
               )) {

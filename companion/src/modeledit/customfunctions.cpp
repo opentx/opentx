@@ -336,7 +336,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
     else if (index==FuncReset) {
       if (modified) model.funcSw[i].param = (uint8_t)fswtchParamT[i]->currentIndex();
       populateFuncParamCB(fswtchParamT[i], model, index, model.funcSw[i].param);
-      widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM;
+      widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM | CUSTOM_FUNCTION_ENABLE;
     }
     else if (index==FuncVolume) {
       if (modified) model.funcSw[i].param = fswtchParamT[i]->itemData(fswtchParamT[i]->currentIndex()).toInt();

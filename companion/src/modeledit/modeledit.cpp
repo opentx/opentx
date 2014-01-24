@@ -118,14 +118,16 @@ void ModelEdit::launchSimulation()
     simuData->generalSettings = generalSettings;
     simuData->models[modelId] = model;
     if (GetEepromInterface()->getCapability(SimulatorType)) {
-      xsimulatorDialog sd(this);
-      sd.loadParams(*simuData, modelId);
-      sd.exec();
+      xsimulatorDialog *sd = new xsimulatorDialog(this);
+      sd->loadParams(*simuData, modelId);
+      sd->exec();
+      delete sd;
     }
     else {
-      simulatorDialog sd(this);
-      sd.loadParams(*simuData, modelId);
-      sd.exec();
+      simulatorDialog *sd = new simulatorDialog(this);
+      sd->loadParams(*simuData, modelId);
+      sd->exec();
+      delete sd;
     }
     delete simuData;
   }

@@ -113,7 +113,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
     inv = true;
   }
 
-  unsigned char c_remapped;
+  unsigned char c_remapped = 0;
 #if defined(BOLD_FONT) && !defined(CPUM64) || defined(EXTSTD)
   if (flags & (DBLSIZE+BOLD)) {
 #else
@@ -131,17 +131,13 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
     else if (c=='_')
       c_remapped = 4;
 #if defined(BOLD_FONT) && !defined(CPUM64) || defined(EXTSTD)
-    else if (c==' ')
-      c_remapped = 0;
-    else if (flags & BOLD)
+    else if (c!=' ')
       flags &= ~BOLD;
 #endif
 #if defined(CPUARM)
     else if ((c>= 128) && (flags & DBLSIZE))
       c_remapped = c - 60;
 #endif
-    else
-      c_remapped = 0;
 
 #if defined(BOLD_FONT) && !defined(CPUM64) || defined(EXTSTD)
   }
@@ -277,29 +273,32 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
   }
 #endif
   else {
-
     uint8_t ym8 = (y & 0x07);
 #if defined(BOLD_FONT) && defined(CPUM64) && !defined(EXTSTD)
     uint8_t bb = 0;
     if (inv) bb = 0xff;
 #else
     if (flags & BOLD) {
-    q = &font_5x7_B[(c_remapped)*5];
+      q = &font_5x7_B[(c_remapped)*5];
     }
 #endif
     for (int8_t i=0; i<=6; i++) {
       uint8_t b = 0;
-      if ( !i ) {
+      if (i==0) {
         if ( !x || !inv ) {
           lcdNextPos++;
           p++;
           continue;
         }
       }
-      else if (i <= 5) b = pgm_read_byte(q++);
+      else if (i <= 5) {
+        b = pgm_read_byte(q++);
+      }
       if (b == 0xff) {
-        if (flags & FIXEDWIDTH) b = 0;
-        else continue;
+        if (flags & FIXEDWIDTH)
+          b = 0;
+        else
+          continue;
       }
       if (inv) b = ~b;
       if ((flags & CONDENSED) && i==2) {
