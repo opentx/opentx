@@ -301,7 +301,7 @@
 #define TR_VSWASHTYPE          "--- ""120 ""120X""140 ""90\0"
 
 #define LEN_VKEYS              "\005"
-#define TR_VKEYS               TR(" Menu"" Exit""W dół""Wgórę""Wpraw""Wlewo", " Menu"" Exit""W dół""Wgórę""Wpraw""Wlewo")
+#define TR_VKEYS               TR("Menu\0""Exit\0""W dół""Wgórę""Wpraw""Wlewo", "Menu\0""Exit\0""W dół""Wgórę""Wpraw""Wlewo")
 
 #define LEN_VRENCODERS         "\003"
 #define TR_VRENCODERS          "REa""REb"
