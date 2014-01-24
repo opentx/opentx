@@ -43,7 +43,7 @@
 #define TR_MMMINV              "---""INV"
 
 #define LEN_NCHANNELS          "\004"
-#define TR_NCHANNELS           "\0014CH\0016CH\0018CH10CH12CH14CH16CH"
+#define TR_NCHANNELS           "\0014KN\0016KN\0018KN10KN12KN14KN16KN"
 
 #define LEN_VBEEPMODE          TR("\007","\016")
 #define TR_VBEEPMODE           TR("Cichy\0 ""Alarm\0 ""BezPrz\0""Wszytko", "Cichy\0        ""Tylko alarm\0  ""Bez Przycisków""Wszystko\0     ")
@@ -142,7 +142,7 @@
 #define LEN_VCSWFUNC           "\005"
 #define TR_VCSWFUNC            "---\0 ""a{x\0 ""a>x\0 ""a<x\0 ""|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 ""a=b\0 ""a>b\0 ""a<b\0 ""d}x\0 ""|d|}x""TIM\0"
 
-#define LEN_VFSWFUNC           "\013"
+#define LEN_VFSWFUNC           "\012"
 
 #if defined(VARIO)
   #define TR_VVARIO            "Wario\0     "
@@ -210,7 +210,7 @@
 #define LEN_VFSWRESET           "\005"
 
 #if defined(FRSKY)
-  #define TR_FSW_RESET_TELEM    "Telem"
+  #define TR_FSW_RESET_TELEM    TR("Telem", "Telemetria") 
 #else  
   #define TR_FSW_RESET_TELEM
 #endif
@@ -236,7 +236,7 @@
   #define TR_RSSI_0            "Tx\0 "
   #define TR_RSSI_1            "Rx\0 "
 #endif
-#define TR_VTELEMCHNS          "---\0""Bat\0""Tmr1""Tmr2" TR_RSSI_0 TR_RSSI_1 "A1\0 ""A2\0 ""Alt\0""Rpm\0""Fuel""T1\0 ""T2\0 ""Spd\0""Dist""GAlt""Cell""Cels""Vfas""Curr""Cnsp""Powr""AccX""AccY""AccZ""Hdg\0""VSpd""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Cur+""Pwr+""Acc\0""Time"
+#define TR_VTELEMCHNS          "---\0""Bat\0""Tmr1""Tmr2" TR_RSSI_0 TR_RSSI_1 "A1\0 ""A2\0 ""Alt\0""Rpm\0""Paliwo""T1\0 ""T2\0 ""Spd\0""Dyst""GAlt""Cell""Cels""Vfas""Curr""Cnsp""Powr""AccX""AccY""AccZ""Hdg\0""VSpd""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Cur+""Pwr+""Acc\0""Time"
 
 #if defined(CPUARM)
   #define LEN_VUNITSSYSTEM     TR("\006", "\012")
@@ -359,9 +359,9 @@
   #define LEN_MAVLINK_BAUDS	"\006"
   #define TR_MAVLINK_BAUDS	"4800  ""9600  ""14400 ""19200 ""38400 ""57600 ""76800 ""115200"
   #define LEN_MAVLINK_AC_MODES	"\011"
-  #define TR_MAVLINK_AC_MODES	"Stabilizacja""Akro     ""Alt Hold ""Auto     ""Sterowany   ""Loiter   ""RTL      ""Circle   ""Pos Hold ""Land     ""OF Loiter""Toy A    ""Toy M    ""INVALID  "
+  #define TR_MAVLINK_AC_MODES	"Stabilizacja""Akro     ""Alt Hold ""Auto     ""Sterowany   ""Loiter   ""RTL      ""Koło   ""Utrzymuj ""Ląduj     ""OF Loiter""Toy A    ""Toy M    "BŁĘDNY"  "
   #define LEN_MAVLINK_AP_MODES	"\015"
-  #define TR_MAVLINK_AP_MODES	"Manual       ""Circle       ""Stabilize    ""Training     ""Fly by Wire A""Fly by Wire A""Auto         ""RTL          ""Loiter       ""Guided       ""Initialising ""INVALID      "
+  #define TR_MAVLINK_AP_MODES	"Ręczny       ""Koło       ""Stabilizacja ""Trening     ""Fly by Wire A""Fly by Wire A""Auto         ""RTL          ""Loiter       ""Sterowany       ""Inicjalizacja""BŁĘDNY      "
 #endif
 
 // ZERO TERMINATED STRINGS
@@ -424,7 +424,7 @@
 #define TR_SIDE                "Strona"
 #define TR_DIFFERENTIAL        "Różn.wychyleń"
 #define TR_OFFSET              INDENT"Ofset"
-#define TR_TRIM                "Trim"
+#define TR_TRIM                "Trymer"
 #define TR_DREX                "DRex"
 #define TR_CURVE               "Krzywa"
 #define TR_FLMODE              "Tryb"
@@ -471,11 +471,11 @@
 #define TR_SWITCHWARNING       "(\043)Przełącznik"
 #define TR_TIMEZONE            "Strefa czasowa"
 #define TR_RXCHANNELORD        TR("Kolejność kanałów", "Bazowa kolejność kanałów")
-#define TR_SLAVE               "Podrzędny"
+#define TR_SLAVE               "Uczeń"
 #define TR_MODESRC             " Tryb\006% Źródło"
 #define TR_MULTIPLIER          "Połącznie"
 #define TR_CAL                 "Kal."
-#define TR_VTRIM               "Trim- +"
+#define TR_VTRIM               "Trymer- +"
 #define TR_BG                  "BG:"
 #define TR_MENUTOSTART         CENTER "\007" TR_ENTER " = START"
 #define TR_SETMIDPOINT         TR(CENTER "\001Ustaw drążki/potencj na środku","\005Ustaw drązki/potencj na środku")
@@ -494,16 +494,16 @@
 #define TR_TMR1JITTERUS        "Tmr1 Jitter\006us"
 
 #if defined(CPUARM)
-  #define TR_TMIXMAXMS         "Tmix max\012ms"
+  #define TR_TMIXMAXMS         "Tmix max"
+  #define TR_FREESTACKMINB     "Wolny stos"
 #else
   #define TR_TMIXMAXMS         "Tmix max\014ms"
+  #define TR_FREESTACKMINB     "Wolny stos\010b"
 #endif
 
-#define TR_T10MSUS             "T10ms\016us"
-#define TR_FREESTACKMINB       "Free Stack\010b"
 #define TR_MENUTORESET         CENTER TR_ENTER" >> Reset"
 #define TR_PPM                 "PPM"
-#define TR_CH                  "Kan"
+#define TR_CH                  "Kn"
 #define TR_MODEL               "MODEL"
 #define TR_FP                  "FL"
 #define TR_MIX                 "MIX"
@@ -532,14 +532,21 @@
 
 
 // Alignment
+#if defined(PCBTARANIS)
+  #define TR_MENUINPUTS        "WEJŚCIA"
+  #define TR_MENULIMITS        "SERWA"
+#elif defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...
+  #define TR_MENUINPUTS        "DRĄŻKI"
+  #define TR_MENULIMITS        "SERWA"
+#else
+  #define TR_MENUINPUTS        "DR/EXPO"
+  #define TR_MENULIMITS        "LIMITY"
+#endif
 
-
-#define TR_MENUINPUTS          "DR/EXPO"
-#define TR_MENULIMITS          "LIMITY"
 
 
 #define TR_MENUCURVES          "KRZYWE"
-#define TR_MENUCURVE           "\002k"
+#define TR_MENUCURVE           "KRZYWA"
 #define TR_MENUCUSTOMSWITCH    "PRZEŁĄCZNIK LOGICZNY"
 #define TR_MENUCUSTOMSWITCHES  "Przełączniki logiczne"
 #define TR_MENUCUSTOMFUNC      "FUNKCJE SPECJALNE"
@@ -694,7 +701,7 @@
 #define TR_CSW_HEADERS         { " Funkcja ", " Param. 1 ", " Param 2 ", " AND Przełącznik ", " Czas trwania ", " Opóźnienie " }
 
 //Taranis About screen
-#define TR_ABOUTUS             TR(" ABOUT ", "ABOUT")
+#define TR_ABOUTUS             TR(" O ", " O")
 
 #define TR_ABOUT_OPENTX_1      TR("OpenTX\001is\001open\001source,\001non", "OpenTX is open source, non-")
 #define TR_ABOUT_OPENTX_2      TR("commercial,\001wo\001warranties.", "commercial and comes with no")
@@ -707,7 +714,7 @@
 #define TR_ABOUT_BERTRAND_3    "Companion9x co-author"
 
 #define TR_ABOUT_MIKE_1        "Mike Blandford"
-#define TR_ABOUT_MIKE_2        "Code and drivers guru"
+#define TR_ABOUT_MIKE_2        "Guru kodu i driwerów"
 #define TR_ABOUT_MIKE_3        TR("Arguably,\001one\001of\001the\001best", "Arguably, one of the best")
 #define TR_ABOUT_MIKE_4        "Inspirational"
        
@@ -731,7 +738,7 @@
   #define TR_ABOUT_HARDWARE_3  "Współautor firmware"
 #else
   #define TR_ABOUT_HARDWARE_1  "Brent Nelson"
-  #define TR_ABOUT_HARDWARE_2  "Sky9x designer/producent"
+  #define TR_ABOUT_HARDWARE_2  "Sky9x twórca/producent"
   #define TR_ABOUT_HARDWARE_3  ""
 #endif
 
@@ -749,3 +756,9 @@
 #define TR_WAV_VOLUME          "Głośność wav"
 #define TR_VARIO_VOLUME        "Głośność wario"
 #define TR_BG_VOLUME           "Głośnośc tła "
+
+
+#define TR_TOP_BAR             "Górny Pasek"
+#define TR_ALTITUDE            INDENT "Wysokość"
+#define TR_MODS_FORBIDDEN      "Modyfikacje zabronione!"
+#define TR_UNLOCKED            "Odblokowane"
