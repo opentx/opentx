@@ -99,7 +99,12 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_TRNMODE            (OFS_VBEEPMODE + sizeof(TR_VBEEPMODE))
 #endif
 #define OFS_TRNCHN             (OFS_TRNMODE + sizeof(TR_TRNMODE))
+#if defined(PCBTARANIS)
+#define OFS_UART3MODES         (OFS_TRNCHN + sizeof(TR_TRNCHN))
+#define OFS_VTRIMINC           (OFS_UART3MODES + sizeof(TR_UART3MODES))
+#else
 #define OFS_VTRIMINC           (OFS_TRNCHN + sizeof(TR_TRNCHN))
+#endif
 #define OFS_RETA123            (OFS_VTRIMINC + sizeof(TR_VTRIMINC))
 #define OFS_VPROTOS            (OFS_RETA123 + sizeof(TR_RETA123))
 #define OFS_POSNEG             (OFS_VPROTOS + sizeof(TR_VPROTOS))
@@ -190,6 +195,7 @@ extern const pm_char STR_OPEN9X[];
 #define STR_VBEEPMODE          (STR_OPEN9X + OFS_VBEEPMODE)
 #define STR_TRNMODE            (STR_OPEN9X + OFS_TRNMODE)
 #define STR_TRNCHN             (STR_OPEN9X + OFS_TRNCHN)
+#define STR_UART3MODES         (STR_OPEN9X + OFS_UART3MODES)
 #define STR_VTRIMINC           (STR_OPEN9X + OFS_VTRIMINC)
 #define STR_RETA123            (STR_OPEN9X + OFS_RETA123)
 #define STR_VPROTOS            (STR_OPEN9X + OFS_VPROTOS)
@@ -675,6 +681,7 @@ extern const pm_char STR_VIEW_TEXT[];
   extern const pm_char STR_SCALE[];
   extern const pm_char STR_VIEW_CHANNELS[];
   extern const pm_char STR_VIEW_NOTES[];
+  extern const pm_char STR_UART3MODE[];
 #endif
 
 #if MENUS_LOCK == 1

@@ -479,6 +479,7 @@ class GeneralSettings {
     int backgroundVolume;
     unsigned int mavbaud;
     unsigned int switchUnlockStates;
+    unsigned int hw_uartMode;
 };
 
 class CurveReference {
