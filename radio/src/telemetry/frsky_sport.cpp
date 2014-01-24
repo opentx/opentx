@@ -534,6 +534,10 @@ void processSerialData(uint8_t data)
   btPushByte(data);
 #endif
 
+#if defined(SMARTPORT2SERIAL) && !defined(DEBUG)
+  sp2sPutc(data);
+#endif
+
   if (data == START_STOP) {
     dataState = STATE_DATA_IN_FRAME;
     numPktBytes = 0;
