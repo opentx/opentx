@@ -90,15 +90,6 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
   for (int i=0; i<num_fsw; i++) {
     AssignFunc func = model.funcSw[i].func;
 
-    // The label
-    QLabel * label = new QLabel(this);
-    label->setContextMenuPolicy(Qt::CustomContextMenu);
-    label->setMouseTracking(true);
-    label->setProperty("index", i);
-    label->setText(tr("CF%1").arg(i+1));
-    gridLayout->addWidget(label, i+1, 0);
-    connect(label, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(fsw_customContextMenuRequested(QPoint)));
-
     // The switch
     fswtchSwtch[i] = new QComboBox(this);
     fswtchSwtch[i]->setProperty("index", i);
