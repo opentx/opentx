@@ -24,6 +24,7 @@
  *
  *
  *
+ *
  * !!!!! DO NOT EDIT cz.h - EDIT cz.h.txt INSTEAD !!!!!!!
  *
  * In order to make translations easier cz.h.txt is parsed and national
@@ -31,7 +32,6 @@
  * See translate.py in the util catalog for the list of character codes  
  *
  * !!!!! DO NOT EDIT cz.h - EDIT cz.h.txt INSTEAD !!!!!!!   
- *
  */
   /* Fotmatting octal codes available in TR_ strings:
  *  \037\x       -sets LCD x-coord (x value in octal)
@@ -67,6 +67,9 @@
 
 #define LEN_TRNCHN             "\003"
 #define TR_TRNCHN              "CH1CH2CH3CH4"
+
+#define LEN_UART3MODES         "\017"
+#define TR_UART3MODES          "OFF\0           ""SPORT Mirror\0  ""Virtual SP2UART"
 
 #define LEN_DATETIME           "\006"
 #define TR_DATETIME            "DATUM:""ČAS:  "
@@ -667,6 +670,7 @@
 #define TR_CRITICALALARM       INDENT "Kritický Alarm"
 #define TR_PERSISTENT_MAH      INDENT "Store mAh"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
+#define TR_UART3MODE           "Serial port"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL        "Max RSSI"

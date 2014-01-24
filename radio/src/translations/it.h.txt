@@ -6,6 +6,7 @@
  * - Martin Hotar <mhotar@gmail.com>
  * - Romolo Manfredini <romolo.manfredini@gmail.com>
  *
+ *
  * opentx is based on code named
  * gruvin9x by Bryan J. Rentoul: http://code.google.com/p/gruvin9x/,
  * er9x by Erez Raviv: http://code.google.com/p/er9x/,
@@ -66,6 +67,9 @@
 
 #define LEN_TRNCHN       "\003"
 #define TR_TRNCHN        "ch1ch2ch3ch4"
+
+#define LEN_UART3MODES   "\017"
+#define TR_UART3MODES    "OFF\0           ""SPORT Mirror\0  ""Virtual SP2UART"
 
 #define LEN_DATETIME     "\005"
 #define TR_DATETIME      "DATA:""ORA :"
@@ -666,6 +670,7 @@
 #define TR_CRITICALALARM       INDENT "Allarme Critico"
 #define TR_PERSISTENT_MAH      INDENT "Store mAh"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
+#define TR_UART3MODE           "Serial port"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL	"Max RSSI"
