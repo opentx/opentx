@@ -5421,8 +5421,12 @@ void menuModelTelemetry(uint8_t event)
 
       case ITEM_TELEMETRY_USR_BLADES:
         lcd_putsLeft(y, STR_BLADES);
-        lcd_outdezAtt(TELEM_COL2+FWNUM, y, 2+g_model.frsky.blades, attr);
-        if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, g_model.frsky.blades, 3);
+        lcd_outdezAtt(TELEM_COL2+FWNUM, y, 1+g_model.frsky.blades, attr);
+#if defined(CPUARM)
+        if (attr) CHECK_INCDEC_MODELVAR(event, g_model.frsky.blades, MIN_BLADES, MAX_BLADES);
+#else
+        if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, g_model.frsky.blades, MAX_BLADES);
+#endif
         break;
 #endif
 
