@@ -24,7 +24,6 @@
  *
  *
  *
- *
  * !!!!! DO NOT EDIT pl.h - EDIT pl.h.txt INSTEAD !!!!!!!
  *
  * In order to make translations easier pl.h.txt is parsed and national
@@ -68,6 +67,9 @@
 
 #define LEN_TRNCHN             "\003"
 #define TR_TRNCHN              "CH1CH2CH3CH4"
+
+#define LEN_UART3MODES         "\017"
+#define TR_UART3MODES          "OFF\0           ""SPORT Mirror\0  ""Virtual SP2UART"
 
 #define LEN_DATETIME           "\006"
 #define TR_DATETIME            "DANA:""Czas:\0 "
@@ -668,6 +670,7 @@
 #define TR_CRITICALALARM       INDENT "Alarm krytyczny"
 #define TR_PERSISTENT_MAH      INDENT "Store mAh"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
+#define TR_UART3MODE           "Serial port"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL	"Max RSSI"

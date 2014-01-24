@@ -68,6 +68,9 @@
 #define LEN_TRNCHN             "\003"
 #define TR_TRNCHN              "CH1CH2CH3CH4"
 
+#define LEN_UART3MODES         "\017"
+#define TR_UART3MODES          "OFF\0           ""SPORT Mirror\0  ""Virtual SP2UART"
+
 #define LEN_DATETIME           "\005"
 #define TR_DATETIME            "DATE:""TIME:"
 
@@ -674,6 +677,7 @@
 #define TR_CRITICALALARM       INDENT "Critical Alarm"
 #define TR_PERSISTENT_MAH      INDENT "Store mAh"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
+#define TR_UART3MODE           "Serial port"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL	"Max RSSI"
