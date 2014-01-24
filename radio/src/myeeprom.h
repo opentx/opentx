@@ -1070,8 +1070,17 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 #if defined(PCBSTD)
   #define TRIMS_ARRAY       int8_t trim[4]; int8_t trim_ext:8
   #define TRIMS_ARRAY_SIZE  5
+  #define trim_t            int16_t
 #else
-  #define TRIMS_ARRAY       int16_t trim[4]
+  #if defined(PCBTARANIS)
+    PACK(typedef struct {
+      int16_t value:11;
+      int16_t mode:5;
+    }) trim_t;
+  #else
+    #define trim_t          int16_t
+  #endif
+  #define TRIMS_ARRAY       trim_t trim[4]
   #define TRIMS_ARRAY_SIZE  8
 #endif
 

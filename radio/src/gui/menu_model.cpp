@@ -1722,7 +1722,7 @@ FlightModesType editFlightModes(uint8_t x, uint8_t y, uint8_t event, FlightModes
   return value;
 }
 
-#if LCD_W >= 212
+#if defined(PCBTARANIS)
 
 enum FlightModesItems {
   ITEM_PHASES_NAME,
@@ -1739,7 +1739,7 @@ void editPhaseTrims(uint8_t x, uint8_t y, uint8_t phase, uint8_t event, uint8_t 
   static uint8_t cursorPos = 0;
 
   for (uint8_t t=0; t<NUM_STICKS; t++) {
-    putsTrimMode(x+t*FW, y, phase, t, (active && (s_editMode <= 0 || cursorPos==t)) ? INVERS : 0);
+    putsTrimMode(x+t*(3*FW-2), y, phase, t, (active && (s_editMode <= 0 || cursorPos==t)) ? INVERS : 0);
   }
 
   if (active) {
@@ -1747,18 +1747,13 @@ void editPhaseTrims(uint8_t x, uint8_t y, uint8_t phase, uint8_t event, uint8_t 
     if (s_editMode > 0) {
       if (p1valdiff || IS_ROTARY_RIGHT(event) || IS_ROTARY_LEFT(event) || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_FIRST(KEY_UP)
           || event==EVT_KEY_REPT(KEY_DOWN) || event==EVT_KEY_REPT(KEY_UP)) {
-        int16_t v = getRawTrimValue(phase, cur);
-        if (v < TRIM_EXTENDED_MAX) v = TRIM_EXTENDED_MAX;
-        v = checkIncDec(event, v, TRIM_EXTENDED_MAX, TRIM_EXTENDED_MAX+MAX_PHASES-1, EE_MODEL);
-        if (checkIncDec_Ret) {
-          if (v == TRIM_EXTENDED_MAX) v = 0;
-          setTrimValue(phase, cur, v);
-        }
+        PhaseData *p = phaseAddress(phase);
+        trim_t & v = p->trim[cur];
+        v.mode = checkIncDec(event, v.mode, -1, 2*MAX_PHASES-1, EE_MODEL);
       }
 
       switch (event) {
-#if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBTARANIS)
-        case EVT_ROTARY_BREAK:
+        case EVT_KEY_BREAK(KEY_ENTER):
           if (s_editMode == EDIT_MODIFY_FIELD) {
             s_editMode = EDIT_MODIFY_STRING;
             cur = 0;
@@ -1768,23 +1763,11 @@ void editPhaseTrims(uint8_t x, uint8_t y, uint8_t phase, uint8_t event, uint8_t 
           else
             s_editMode = 0;
           break;
-#endif
 
-#if !defined(PCBTARANIS)
-        case EVT_KEY_BREAK(KEY_LEFT):
-          if (cur>0) cur--;
-          break;
-        case EVT_KEY_BREAK(KEY_RIGHT):
-          if (cur<NUM_STICKS-1) cur++;
-          break;
-#endif
-
-#if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBTARANIS)
-        case EVT_ROTARY_LONG:
+        case EVT_KEY_LONG(KEY_ENTER):
           s_editMode = 0;
           killEvents(event);
           break;
-#endif
       }
     }
     else {
@@ -1831,32 +1814,32 @@ void menuModelFlightModesAll(uint8_t event)
       switch(j)
       {
         case ITEM_PHASES_NAME:
-          editName(4*FW, y, p->name, sizeof(p->name), event, attr);
+          editName(4*FW-1, y, p->name, sizeof(p->name), event, attr);
           break;
 
         case ITEM_PHASES_SWITCH:
           if (k == 0) {
-            lcd_puts((5+LEN_FP_NAME)*FW+FW/2, y, STR_DEFAULT);
+            lcd_puts((5+LEN_FP_NAME)*FW-FW/2, y, STR_DEFAULT);
           }
           else {
-            putsSwitches((5+LEN_FP_NAME)*FW+FW/2, y, p->swtch, attr);
+            putsSwitches((5+LEN_FP_NAME)*FW-FW/2, y, p->swtch, attr);
             if (active) CHECK_INCDEC_MODELSWITCH(event, p->swtch, -MAX_SWITCH, MAX_SWITCH);
           }
           break;
 
         case ITEM_PHASES_TRIMS:
           if (k != 0) {
-            editPhaseTrims((10+LEN_FP_NAME)*FW+FW/2, y, k, event, attr);
+            editPhaseTrims((10+LEN_FP_NAME)*FW-2*FW, y, k, event, attr);
           }
           break;
 
         case ITEM_PHASES_FADE_IN:
-          lcd_outdezAtt(29*FW, y, (10/DELAY_STEP)*p->fadeIn, attr|PREC1);
+          lcd_outdezAtt(32*FW-2, y, (10/DELAY_STEP)*p->fadeIn, attr|PREC1);
           if (active) p->fadeIn = checkIncDec(event, p->fadeIn, 0, DELAY_MAX, EE_MODEL|NO_INCDEC_MARKS);
           break;
 
         case ITEM_PHASES_FADE_OUT:
-          lcd_outdezAtt(34*FW, y, (10/DELAY_STEP)*p->fadeOut, attr|PREC1);
+          lcd_outdezAtt(35*FW, y, (10/DELAY_STEP)*p->fadeOut, attr|PREC1);
           if (active) p->fadeOut = checkIncDec(event, p->fadeOut, 0, DELAY_MAX, EE_MODEL|NO_INCDEC_MARKS);
           break;
 
@@ -1865,7 +1848,7 @@ void menuModelFlightModesAll(uint8_t event)
   }
 }
 
-#else // LCD_W >= 212
+#else // PCBTARANIS
 
 enum menuModelPhaseItems {
   ITEM_MODEL_PHASE_NAME,

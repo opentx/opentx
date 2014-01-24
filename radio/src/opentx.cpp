@@ -1640,38 +1640,83 @@ uint8_t getFlightPhase()
 }
 #endif
 
-int16_t getRawTrimValue(uint8_t phase, uint8_t idx)
+trim_t getRawTrimValue(uint8_t phase, uint8_t idx)
 {
   PhaseData *p = phaseAddress(phase);
 #if defined(PCBSTD)
-  return (((int16_t)p->trim[idx]) << 2) + ((p->trim_ext >> (2*idx)) & 0x03);
+  return (((trim_t)p->trim[idx]) << 2) + ((p->trim_ext >> (2*idx)) & 0x03);
 #else
   return p->trim[idx];
 #endif
 }
 
-int16_t getTrimValue(uint8_t phase, uint8_t idx)
+int getTrimValue(uint8_t phase, uint8_t idx)
 {
+#if defined(PCBTARANIS)
+  int result = 0;
+  for (uint8_t i=0; i<MAX_PHASES; i++) {
+    trim_t v = getRawTrimValue(phase, idx);
+    if (v.mode < 0) {
+      return result;
+    }
+    else {
+      unsigned int p = v.mode >> 1;
+      if (p == phase || phase == 0) {
+        return result + v.value;
+      }
+      else {
+        phase = p;
+        if (v.mode % 2 == 0)
+          result += v.value;
+        else
+          result = 0;
+      }
+    }
+  }
+  return 0;
+#else
   return getRawTrimValue(getTrimFlightPhase(phase, idx), idx);
+#endif
 }
 
-void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim)
+void setTrimValue(uint8_t phase, uint8_t idx, int trim)
 {
+#if defined(PCBTARANIS)
+  for (uint8_t i=0; i<MAX_PHASES; i++) {
+    trim_t & v = phaseAddress(phase)->trim[idx];
+    if (v.mode < 0)
+      return;
+    unsigned int p = v.mode >> 1;
+    if (p == phase || phase == 0) {
+      v.value = trim;
+      break;;
+    }
+    else if (v.mode % 2 == 0) {
+      v.value = limit<int>(-500, trim - getTrimValue(p, idx), 500);
+      break;
+    }
+    else {
+      phase = p;
+    }
+  }
+#elif defined(PCBSTD)
   PhaseData *p = phaseAddress(phase);
-#if defined(PCBSTD)
   p->trim[idx] = (int8_t)(trim >> 2);
-  p->trim_ext = (p->trim_ext & ~(0x03 << (2*idx))) + (((trim & 0x03) << (2*idx)));
+  idx <<= 1;  
+  p->trim_ext = (p->trim_ext & ~(0x03 << idx)) + (((trim & 0x03) << idx));
 #else
+  PhaseData *p = phaseAddress(phase);
   p->trim[idx] = trim;
 #endif
   eeDirty(EE_MODEL);
 }
 
+#if !defined(PCBTARANIS)
 uint8_t getTrimFlightPhase(uint8_t phase, uint8_t idx)
 {
   for (uint8_t i=0; i<MAX_PHASES; i++) {
     if (phase == 0) return 0;
-    int16_t trim = getRawTrimValue(phase, idx);
+    trim_t trim = getRawTrimValue(phase, idx);
     if (trim <= TRIM_EXTENDED_MAX) return phase;
     uint8_t result = trim-TRIM_EXTENDED_MAX-1;
     if (result >= phase) result++;
@@ -1679,6 +1724,7 @@ uint8_t getTrimFlightPhase(uint8_t phase, uint8_t idx)
   }
   return 0;
 }
+#endif
 
 #if defined(ROTARY_ENCODERS)
 uint8_t getRotaryEncoderFlightPhase(uint8_t idx)
@@ -2309,7 +2355,7 @@ uint8_t checkTrim(uint8_t event)
     // LH_DWN LH_UP LV_DWN LV_UP RV_DWN RV_UP RH_DWN RH_UP
     uint8_t idx = CONVERT_MODE((uint8_t)k/2);
     uint8_t phase;
-    int16_t before;
+    int before;
     bool thro;
 
 #if defined(GVARS)
@@ -2325,13 +2371,21 @@ uint8_t checkTrim(uint8_t event)
     }
     else {
       phase = getTrimFlightPhase(s_perout_flight_phase, idx);
+#if defined(PCBTARANIS)
+      before = getTrimValue(phase, idx);
+#else
       before = getRawTrimValue(phase, idx);
+#endif
       thro = (idx==THR_STICK && g_model.thrTrim);
     }
 #else
 #define TRIM_REUSED() 0
     phase = getTrimFlightPhase(s_perout_flight_phase, idx);
+#if defined(PCBTARANIS)
+    before = getTrimValue(phase, idx);
+#else
     before = getRawTrimValue(phase, idx);
+#endif
     thro = (idx==THR_STICK && g_model.thrTrim);
 #endif
     int8_t trimInc = g_model.trimInc + 1;
@@ -4671,7 +4725,7 @@ void instantTrim()
     if (i!=THR_STICK) {
       // don't instant trim the throttle stick
       uint8_t trim_phase = getTrimFlightPhase(s_perout_flight_phase, i);
-      int16_t trim = limit((int16_t)TRIM_EXTENDED_MIN, (int16_t)((anas[i] + trims[i]) / 2), (int16_t)TRIM_EXTENDED_MAX);
+      int16_t trim = limit<int16_t>(TRIM_EXTENDED_MIN, (anas[i] + trims[i]) / 2, TRIM_EXTENDED_MAX);
       setTrimValue(trim_phase, i, trim);
     }
   }
@@ -4729,9 +4783,16 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
     if (i!=THR_STICK || !g_model.thrTrim) {
       int16_t original_trim = getTrimValue(s_perout_flight_phase, i);
       for (uint8_t phase=0; phase<MAX_PHASES; phase++) {
-        int16_t trim = getRawTrimValue(phase, i);
+#if defined(PCBTARANIS)
+        // TODO needs to be tested.
+        trim_t trim = getRawTrimValue(phase, i);
+        if (trim.mode / 2 == phase)
+          setTrimValue(phase, i, trim.value - original_trim);
+#else
+        trim_t trim = getRawTrimValue(phase, i);
         if (trim <= TRIM_EXTENDED_MAX)
           setTrimValue(phase, i, trim - original_trim);
+#endif
       }
     }
   }
