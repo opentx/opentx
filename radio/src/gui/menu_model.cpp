@@ -4734,13 +4734,10 @@ void menuModelCustomFunctions(uint8_t event)
           if (sd->swtch) {
             uint8_t func_displayed;
             if (CFN_FUNC(sd) < FUNC_TRAINER) {
-              func_displayed = 0;
-              putsChn(MODEL_CUSTOM_FUNC_2ND_COLUMN+6*FW, y, CFN_CH_NUMBER(sd)+1, attr);
+              func_displayed = 0;             
             }
             else if (CFN_FUNC(sd) <= FUNC_TRAINER + NUM_STICKS) {
-              func_displayed = 1;
-              if (CFN_FUNC(sd) != FUNC_TRAINER)
-                putsMixerSource(MODEL_CUSTOM_FUNC_2ND_COLUMN+7*FW, y, MIXSRC_Rud+CFN_FUNC(sd)-FUNC_TRAINER-1, attr);
+              func_displayed = 1;               
             }
 #if defined(DEBUG)
             else if (CFN_FUNC(sd) == FUNC_TEST) {
@@ -4753,14 +4750,27 @@ void menuModelCustomFunctions(uint8_t event)
 #endif
 #if defined(GVARS)
             else if (CFN_FUNC(sd) >= FUNC_ADJUST_GV1) {
-              func_displayed = FUNC_ADJUST_GV1 - FUNC_TRAINER - NUM_STICKS + 1;
-              putsStrIdx(MODEL_CUSTOM_FUNC_2ND_COLUMN+7*FW, y, STR_GV, CFN_FUNC(sd)-FUNC_ADJUST_GV1+1, attr);
+              func_displayed = FUNC_ADJUST_GV1 - FUNC_TRAINER - NUM_STICKS + 1;             
             }
 #endif
             else {
               func_displayed = 2 + CFN_FUNC(sd) - FUNC_TRAINER - NUM_STICKS - 1;
             }
+            
             lcd_putsiAtt(MODEL_CUSTOM_FUNC_2ND_COLUMN, y, STR_VFSWFUNC, func_displayed, attr);
+            if (CFN_FUNC(sd) < FUNC_TRAINER) {
+              putsChn(lcdNextPos, y, CFN_CH_NUMBER(sd)+1, attr);
+            }
+            else if (CFN_FUNC(sd) <= FUNC_TRAINER + NUM_STICKS) {
+              if (CFN_FUNC(sd) != FUNC_TRAINER)
+                putsMixerSource(lcdNextPos, y, MIXSRC_Rud+CFN_FUNC(sd)-FUNC_TRAINER-1, attr);
+            }
+#if defined(GVARS)
+            else if (CFN_FUNC(sd) >= FUNC_ADJUST_GV1) {
+              putsStrIdx(lcdNextPos, y, STR_GV, CFN_FUNC(sd)-FUNC_ADJUST_GV1+1, attr);
+            }
+#endif
+               
             if (active) {
 #if defined(CPUARM)
               CHECK_INCDEC_MODELVAR_ZERO(event, CFN_FUNC(sd), FUNC_MAX-1);
