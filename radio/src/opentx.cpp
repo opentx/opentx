@@ -2977,8 +2977,10 @@ uint8_t mSwitchDuration[1+NUM_ROTARY_ENCODERS] = { 0 };
 #endif
 
 #if defined(CPUARM)
+#define VOLUME_HYSTERESIS 10		//how much must a input value change to actually be considered for new volume setting
 uint8_t currentSpeakerVolume = 255;
 uint8_t requiredSpeakerVolume;
+getvalue_t requiredSpeakerVolume_raw_last = 1024 + 1; //initial value must be outside normal range
 uint8_t fnSwitchDuration[NUM_CFN] = { 0 };
 
 inline void playCustomFunctionFile(CustomFnData *sd, uint8_t id)
@@ -3204,7 +3206,14 @@ void evalFunctions()
         }
         else if (CFN_FUNC(sd) == FUNC_VOLUME) {
           if (CFN_ACTIVE(sd)) {
-            requiredSpeakerVolume = ((1024 + getValue(CFN_PARAM(sd))) * VOLUME_LEVEL_MAX) / 2048;
+            getvalue_t raw = getValue(CFN_PARAM(sd));
+            //only set volume if input changed more than hysteresis
+            getvalue_t diff = requiredSpeakerVolume_raw_last - raw;
+            if ( (diff > VOLUME_HYSTERESIS) || (diff < VOLUME_HYSTERESIS)  )
+            {
+              requiredSpeakerVolume_raw_last = raw;
+              requiredSpeakerVolume = ((1024 + raw) * VOLUME_LEVEL_MAX) / 2048;  
+            }
           }
           else {
             active = false;
