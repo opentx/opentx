@@ -640,16 +640,16 @@ void printDialog::printSwitches()
 {
     int sc=0;
     QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
-    str.append("<tr><td><h2>"+tr("Custom Switches")+"</h2></td></tr>");
+    str.append("<tr><td><h2>"+tr("Logical Switches")+"</h2></td></tr>");
     str.append("<tr><td><table border=0 cellspacing=0 cellpadding=3>");
 
     for (int i=0; i<GetEepromInterface()->getCapability(CustomSwitches); i++) {
       if (g_model->customSw[i].func) {
         str.append("<tr>");
         if (i<9) {
-          str.append("<td width=\"60\" align=\"center\"><b>"+tr("CS")+QString("%1</b></td>").arg(i+1));
+          str.append("<td width=\"60\" align=\"center\"><b>"+tr("LS")+QString("%1</b></td>").arg(i+1));
         } else {
-          str.append("<td width=\"60\" align=\"center\"><b>"+tr("CS")+('A'+(i-9))+"</b></td>");
+          str.append("<td width=\"60\" align=\"center\"><b>"+tr("LS")+('A'+(i-9))+"</b></td>");
         }
         QString tstr = getCustomSwitchStr(&g_model->customSw[i], *g_model);
         str.append(doTC(tstr,"green"));
@@ -724,9 +724,8 @@ void printDialog::printFSwitches()
 {
     int sc=0;
     QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
-    str.append("<tr><td><h2>"+tr("Function Switches")+"</h2></td></tr>");
+    str.append("<tr><td><h2>"+tr("Switch Assignments")+"</h2></td></tr>");
     str.append("<tr><td><table border=0 cellspacing=0 cellpadding=3><tr>");
-    str.append("<td width=\"60\">&nbsp;</td>");
     str.append(doTC(tr("Switch"), "", true));
     str.append(doTL(tr("Function"), "", true));
     str.append(doTL(tr("Parameter"), "", true));
@@ -736,7 +735,6 @@ void printDialog::printFSwitches()
     for(int i=0; i<GetEepromInterface()->getCapability(CustomFunctions); i++) {
       if (g_model->funcSw[i].swtch.type!=SWITCH_TYPE_NONE) {
           str.append("<tr>");
-          str.append(doTC(tr("CF")+QString("%1").arg(i+1),"",true));
           str.append(doTC(g_model->funcSw[i].swtch.toString(),"green"));
           str.append(doTC(getFuncName(g_model->funcSw[i].func),"green"));
           str.append(doTC(FuncParam(g_model->funcSw[i].func,g_model->funcSw[i].param,g_model->funcSw[i].paramarm, g_model->funcSw[i].adjustMode),"green"));
