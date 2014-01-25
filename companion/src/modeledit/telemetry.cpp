@@ -342,7 +342,7 @@ TelemetryPanel::~TelemetryPanel()
 
 void TelemetryPanel::setup()
 {
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings;
     QString firmware_id = settings.value("firmware", default_firmware_variant.id).toString();
 
     lock=true;
@@ -371,16 +371,19 @@ void TelemetryPanel::setup()
 
     if (!GetEepromInterface()->getCapability(HasAltitudeSel)) {
       ui->AltitudeGPS_ChkB->hide();
-    } else {
+    }
+    else {
       ui->AltitudeGPS_ChkB->setChecked(model.frsky.FrSkyGpsAlt);
     }
-    int varioCap=GetEepromInterface()->getCapability(HasVario);
-  //  if (IS_TARANIS(GetEepromInterface()->getBoard())) {
-    if (false) {
+    
+    if (IS_TARANIS(GetEepromInterface()->getBoard())) {
       ui->AltitudeToolbar_ChkB->setChecked(model.frsky.altitudeDisplayed);
-    } else {
+    }
+    else {
       ui->AltitudeToolbar_ChkB->hide();
     }
+
+    int varioCap = GetEepromInterface()->getCapability(HasVario);
     if (!varioCap) {
       ui->varioLimitMax_DSB->hide();
       ui->varioLimitMinOff_ChkB->hide();
@@ -480,6 +483,32 @@ void TelemetryPanel::setup()
       ui->frskyProtoCB->addItem(tr("Winged Shadow How High"));
     } else {
       ui->frskyProtoCB->addItem(tr("Winged Shadow How High (not supported)"));
+    }
+    
+    ui->variousGB->hide();
+    if (!(GetEepromInterface()->getCapability(HasFasOffset)) && !(firmware_id.contains("fasoffset"))) {
+      ui->fasOffset_label->hide();
+      ui->fasOffset_DSB->hide();
+    }
+    else {
+      ui->fasOffset_DSB->setValue(model.frsky.fasOffset/10.0);
+      ui->variousGB->show();
+    }
+
+    if (!(GetEepromInterface()->getCapability(HasMahPersistent))) {
+      ui->mahCount_label->hide();
+      ui->mahCount_SB->hide();
+      ui->mahCount_ChkB->hide();
+    }
+    else {
+      if (model.frsky.mAhPersistent) {
+        ui->mahCount_ChkB->setChecked(true);
+        ui->mahCount_SB->setValue(model.frsky.storedMah);
+      }
+      else {
+        ui->mahCount_SB->setDisabled(true);
+      }
+      ui->variousGB->show();
     }
 
     ui->frskyProtoCB->setCurrentIndex(model.frsky.usrProto);
@@ -649,7 +678,6 @@ void TelemetryPanel::on_AltitudeGPS_ChkB_toggled(bool checked)
     if (lock) return;
     model.frsky.FrSkyGpsAlt = checked;
     emit modified();
-    //AltitudeGPS_CB
 }
 
 void TelemetryPanel::on_AltitudeToolbar_ChkB_toggled(bool checked)
@@ -712,6 +740,25 @@ void TelemetryPanel::on_varioLimitCenterMax_DSB_editingFinished()
       ui->varioLimitCenterMax_DSB->setValue(ui->varioLimitCenterMin_DSB->value());
     }
     model.frsky.varioCenterMax= round((ui->varioLimitCenterMax_DSB->value()-0.5)*10);
+    emit modified();
+}
+
+void TelemetryPanel::on_fasOffset_DSB_editingFinished()
+{
+    model.frsky.fasOffset = ui->fasOffset_DSB->value()*10;
+    emit modified();
+}
+
+void TelemetryPanel::on_mahCount_SB_editingFinished()
+{
+    model.frsky.storedMah = ui->mahCount_SB->value();
+    emit modified();
+}
+
+void TelemetryPanel::on_mahCount_ChkB_toggled(bool checked)
+{
+    model.frsky.mAhPersistent = checked;
+    ui->mahCount_SB->setDisabled(!checked);
     emit modified();
 }
 

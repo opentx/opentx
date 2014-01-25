@@ -76,66 +76,68 @@ class MyProxyStyle : public QProxyStyle
 
 int main(int argc, char *argv[])
 {
-    // Start by borrowing any left over settings from companion9x
-    QSettings c9x_settings("companion9x", "companion9x");
-    QSettings com_settings("companion", "companion");
-    if (!com_settings.contains("pos"))  {
-      QStringList keys = c9x_settings.allKeys();
-      for( QStringList::iterator i = keys.begin(); i != keys.end(); i++ )
-      {
-        com_settings.setValue( *i, c9x_settings.value( *i ) );
-      }
-    }
+  Q_INIT_RESOURCE(companion);
+  QApplication app(argc, argv);
+  app.setApplicationName("OpenTX Companion");
+  app.setOrganizationName("OpenTX");
+  app.setOrganizationDomain("open-tx.org");
 
-    Q_INIT_RESOURCE(companion);
-    QApplication app(argc, argv);
-    app.setApplicationName("OpenTX Companion");
 #ifdef __APPLE__
-    app.setStyle(new MyProxyStyle);
+  app.setStyle(new MyProxyStyle);
 #endif
-    QString dir;
-    if(argc) dir = QFileInfo(argv[0]).canonicalPath() + "/lang";
 
-    QSettings settings("companion", "companion");
-    QString locale = settings.value("locale",QLocale::system().name()).toString();
-    bool showSplash = settings.value("show_splash", true).toBool();
+  // Start by borrowing any left over settings from companion9x
+  QSettings c9x_settings("companion9x", "companion9x");
+  QSettings settings;
 
-    QTranslator companionTranslator;
-    companionTranslator.load(":/companion_" + locale);
-    QTranslator qtTranslator;
-    qtTranslator.load((QString)"qt_" + locale.left(2), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-//    qDebug() << locale;
-//    qtTranslator.load("qt_" + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));    
-    app.installTranslator(&companionTranslator);
-    app.installTranslator(&qtTranslator);
-
-    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
-
-    QString firmware_id = settings.value("firmware", default_firmware_variant.id).toString();
-    firmware_id.replace("open9x", "opentx");
-    firmware_id.replace("x9da", "taranis");
-    QPixmap pixmap;
-    if (firmware_id.contains("taranis"))
-      pixmap = QPixmap(":/images/splasht.png");
-    else
-      pixmap = QPixmap(":/images/splash.png");
-    QSplashScreen *splash = new QSplashScreen(pixmap);
-
-    RegisterFirmwares();
-
-    settings.setValue("firmware", firmware_id);
-    current_firmware_variant = GetFirmwareVariant(firmware_id);
-    // qDebug() << current_firmware_variant;
-
-    MainWindow mainWin;
-	
-    if (showSplash) {
-      splash->show();
-      QTimer::singleShot(1000*SPLASH_TIME, splash, SLOT(close()));
-      QTimer::singleShot(1000*SPLASH_TIME, &mainWin, SLOT(show()));
+  if (!settings.contains("pos")) {
+    QStringList keys = c9x_settings.allKeys();
+    for (QStringList::iterator i=keys.begin(); i!=keys.end(); i++) {
+      settings.setValue(*i, c9x_settings.value(*i));
     }
-    else  {
-      mainWin.show();
-    }
-    return app.exec();
+  }
+
+  QString dir;
+  if (argc) dir = QFileInfo(argv[0]).canonicalPath() + "/lang";
+
+  QString locale = settings.value("locale",QLocale::system().name()).toString();
+  bool showSplash = settings.value("show_splash", true).toBool();
+
+  QTranslator companionTranslator;
+  companionTranslator.load(":/companion_" + locale);
+  QTranslator qtTranslator;
+  qtTranslator.load((QString)"qt_" + locale.left(2), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+  app.installTranslator(&companionTranslator);
+  app.installTranslator(&qtTranslator);
+
+  QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
+
+  QString firmware_id = settings.value("firmware", default_firmware_variant.id).toString();
+  firmware_id.replace("open9x", "opentx");
+  firmware_id.replace("x9da", "taranis");
+
+  QPixmap pixmap = QPixmap(firmware_id.contains("taranis") ? ":/images/splasht.png" : ":/images/splash.png");
+  QSplashScreen *splash = new QSplashScreen(pixmap);
+
+  RegisterFirmwares();
+
+  settings.setValue("firmware", firmware_id);
+  current_firmware_variant = GetFirmwareVariant(firmware_id);
+
+  MainWindow *mainWin = new MainWindow();
+  if (showSplash) {
+    splash->show();
+    QTimer::singleShot(1000*SPLASH_TIME, splash, SLOT(close()));
+    QTimer::singleShot(1000*SPLASH_TIME, mainWin, SLOT(show()));
+  }
+  else {
+    mainWin->show();
+  }
+
+  int result = app.exec();
+
+  delete splash;
+  delete mainWin;
+
+  return result;
 }

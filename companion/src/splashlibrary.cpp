@@ -9,6 +9,8 @@
 splashLibrary::splashLibrary(QWidget *parent, QString * fileName) : QDialog(parent), ui(new Ui::splashLibrary) {
   splashFileName = fileName;
   ui->setupUi(this);
+  ui->nextPage->setIcon(CompanionIcon("arrow-right.png"));
+  ui->prevPage->setIcon(CompanionIcon("arrow-left.png"));
   page = 0;
   getFileList();
   if (imageList.size() > 20) {
@@ -59,7 +61,7 @@ void splashLibrary::setupPage(int page) {
 }
 
 void splashLibrary::getFileList() {
-  QSettings settings("companion", "companion");
+  QSettings settings;
   imageList.clear();
   if (settings.value("embedded_splashes", 0).toInt() == 0) {
     QDir myRes(":/images/library");

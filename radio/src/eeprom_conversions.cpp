@@ -224,7 +224,7 @@ void ConvertModel_215_to_216(ModelData &model)
   }
   g_model.protocol = oldModel.protocol;
   g_model.thrTrim = oldModel.thrTrim;
-  g_model.trimInc = oldModel.trimInc;
+  g_model.trimInc = oldModel.trimInc - 2;
   g_model.disableThrottleWarning = oldModel.disableThrottleWarning;
   g_model.extendedLimits = oldModel.extendedLimits;
   g_model.extendedTrims = oldModel.extendedTrims;

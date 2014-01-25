@@ -120,7 +120,6 @@ private slots:
     void loadBackup();
     void preferences();
     void updateMenus();
-    void updateWindowMenu();
     MdiChild *createMdiChild();
     void switchLayoutDirection();
     void setActiveSubWindow(QWidget *window);
@@ -138,6 +137,8 @@ private:
     void updateProfilesActions();
     int getFileType(const QString &fullFileName);
     QString FindTaranisPath();
+    QString Theme;
+    QString ISize;
     QString strippedName(const QString &fullFileName);
 
     MdiChild *activeMdiChild();
@@ -183,7 +184,6 @@ private:
     QMenu *fileMenu;
     QMenu *editMenu;
     QMenu *burnMenu;
-    QMenu *windowMenu;
     QMenu *helpMenu;
     QToolBar *fileToolBar;
     QToolBar *editToolBar;
@@ -215,18 +215,11 @@ private:
     QAction *burnExtenalToEEPROMAct;
     QAction *burnExtenalFromEEPROMAct;
     QAction *simulateAct;
-    QAction *closeAct;
-    QAction *closeAllAct;
-    QAction *tileAct;
-    QAction *cascadeAct;
-    QAction *nextAct;
-    QAction *previousAct;
     QAction *separatorAct;
     QAction *aboutAct;
     QAction *printAct;
     QAction *loadbackupAct;
     QAction *logsAct;
-    QAction *switchLayoutDirectionAct;
     QAction *recentFileActs[MAX_RECENT];
     QAction *profileActs[MAX_PROFILES];
     QString fwToUpdate;

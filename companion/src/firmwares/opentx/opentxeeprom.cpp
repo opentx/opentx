@@ -1338,10 +1338,10 @@ class CustomFunctionField: public TransformedField {
           internalField.Append(new CharField<6>(_arm_param));
         if (version >= 214) {
           internalField.Append(new UnsignedField<2>(_mode));
-          internalField.Append(new UnsignedField<6>(_delay));
+          internalField.Append(new SignedField<6>(_delay));
         }
         else {
-          internalField.Append(new UnsignedField<8>(_delay));
+          internalField.Append(new UnsignedField<8>((unsigned int &)_delay));
         }
         if (version < 214)
           internalField.Append(new SpareBitsField<8>());
@@ -1364,7 +1364,7 @@ class CustomFunctionField: public TransformedField {
       if (IS_ARM(board)) {
         _mode = 0;
         if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayValue)
-          _delay = fn.repeatParam / 5;
+          _delay = (version >= 216 ? fn.repeatParam : (fn.repeatParam/5));
         else
           _delay = (fn.enabled ? 1 : 0);
         if (fn.func <= FuncInstantTrim) {
@@ -1439,7 +1439,7 @@ class CustomFunctionField: public TransformedField {
     {
       if (IS_ARM(board)) {
         if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayValue)
-          fn.repeatParam = _delay * 5;
+          fn.repeatParam = (version >= 216 ? _delay : (_delay*5));
         else
           fn.enabled = (_delay & 0x01);
 
@@ -1529,7 +1529,7 @@ class CustomFunctionField: public TransformedField {
     SourcesConversionTable * sourcesConversionTable;
     char _arm_param[10];
     unsigned int _param;
-    unsigned int _delay;
+    int _delay;
     unsigned int _mode;
     unsigned int _union_param;
 };
@@ -1688,8 +1688,7 @@ class FrskyField: public StructField {
         Append(new UnsignedField<8>(frsky.usrProto));
         if (version >= 216) {
           Append(new UnsignedField<7>(frsky.voltsSource));
-          // TODO altitude displayed
-          Append(new SpareBitsField<1>());
+          Append(new BoolField<1>(frsky.altitudeDisplayed));
         }
         else {
           Append(new UnsignedField<8>(frsky.voltsSource));
@@ -1718,10 +1717,9 @@ class FrskyField: public StructField {
           Append(new ConversionField< SignedField<6> >(frsky.rssiAlarms[i].value, -45+i*3));
         }
         if (version >= 216) {
-          // TODO uint16_t mAhPersistent:1;
-          // uint16_t storedMah:15;
-          // int8_t   fasOffset;
-          Append(new SpareBitsField<24>());
+          Append(new BoolField<1>(frsky.mAhPersistent));
+          Append(new UnsignedField<15>(frsky.storedMah));
+          Append(new SignedField<8>(frsky.fasOffset));
         }
       }
       else {
@@ -1812,7 +1810,7 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
     internalField.Append(new TimerModeField(modelData.timers[i].mode, board, version));
     if ((IS_ARM(board) || IS_2560(board)) && version >= 216) {
       internalField.Append(new UnsignedField<16>(modelData.timers[i].val));
-      internalField.Append(new BoolField<2>(modelData.timers[i].countdownBeep));
+      internalField.Append(new UnsignedField<2>(modelData.timers[i].countdownBeep));
       internalField.Append(new BoolField<1>(modelData.timers[i].minuteBeep));
       internalField.Append(new BoolField<1>(modelData.timers[i].persistent));
       internalField.Append(new SpareBitsField<4>());
@@ -1820,7 +1818,7 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
     }
     else if (release21March2013) {
       internalField.Append(new UnsignedField<12>(modelData.timers[i].val));
-      internalField.Append(new BoolField<1>(modelData.timers[i].countdownBeep));
+      internalField.Append(new BoolField<1>((bool &)modelData.timers[i].countdownBeep));
       internalField.Append(new BoolField<1>(modelData.timers[i].minuteBeep));
       if (HAS_PERSISTENT_TIMERS(board)) {
         internalField.Append(new BoolField<1>(modelData.timers[i].persistent));
@@ -1852,7 +1850,11 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
   else
     internalField.Append(new ConversionField< SignedField<4> >(modelData.moduleData[0].channelsCount, &channelsConversionTable, "Channels number", ::QObject::tr("OpenTX doesn't allow this number of channels")));
 
-  internalField.Append(new UnsignedField<3>(modelData.trimInc));
+  if (version >= 216)
+    internalField.Append(new SignedField<3>(modelData.trimInc));
+  else
+    internalField.Append(new ConversionField< SignedField<3> >(modelData.trimInc, +2));
+
   internalField.Append(new BoolField<1>(modelData.disableThrottleWarning));
 
   if (IS_TARANIS(board) || (IS_ARM(board) && version >= 216))
@@ -1974,8 +1976,10 @@ void Open9xModelDataNew::beforeExport()
   for (int module=0; module<3; module++) {
     if (modelData.moduleData[module].protocol >= PXX_XJT_X16 && modelData.moduleData[module].protocol <= PXX_XJT_LR12)
       subprotocols[module] = modelData.moduleData[module].protocol - PXX_XJT_X16;
+    else if (modelData.moduleData[module].protocol >= LP45 && modelData.moduleData[module].protocol <= DSMX)
+      subprotocols[module] = modelData.moduleData[module].protocol - LP45;
     else
-      subprotocols[module] = (module==0 ? -1:0);
+      subprotocols[module] = (module==0 ? -1 : 0);
   }
 }
 
@@ -1984,9 +1988,9 @@ void Open9xModelDataNew::afterImport()
   // qDebug() << QString("after import model") << modelData.name ;
 
   for (int module=0; module<3; module++) {
-    if (modelData.moduleData[module].protocol == PXX_XJT_X16) {
-      if (subprotocols[module]>=0)
-        modelData.moduleData[module].protocol = PXX_XJT_X16 + subprotocols[module];
+    if (modelData.moduleData[module].protocol == PXX_XJT_X16 || modelData.moduleData[module].protocol == LP45) {
+      if (subprotocols[module] >= 0)
+        modelData.moduleData[module].protocol += subprotocols[module];
       else
         modelData.moduleData[module].protocol = OFF;
     }
@@ -2043,7 +2047,7 @@ Open9xGeneralDataNew::Open9xGeneralDataNew(GeneralSettings & generalData, BoardE
   internalField.Append(new SpareBitsField<1>());
 
   internalField.Append(new UnsignedField<8>(generalData.inactivityTimer));
-  if (IS_STOCK(board) && version >= 215) {
+  if (IS_9X(board) && version >= 215) {
     internalField.Append(new UnsignedField<3>(generalData.mavbaud));
   }
   else {
@@ -2105,6 +2109,9 @@ Open9xGeneralDataNew::Open9xGeneralDataNew(GeneralSettings & generalData, BoardE
       internalField.Append(new SignedField<8>(generalData.wavVolume));
       internalField.Append(new SignedField<8>(generalData.varioVolume));
       internalField.Append(new SignedField<8>(generalData.backgroundVolume));
+    }
+    if (version >= 216) {
+      internalField.Append(new UnsignedField<8>(generalData.hw_uartMode));
     }
   }
 }

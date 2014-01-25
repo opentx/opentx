@@ -109,6 +109,15 @@ add_custom_command(
   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/firmwares/ersky9x/ersky9xsimulator.cpp
 )
 
+set(RADIO_SRC_DIRECTORY ${PROJECT_SOURCE_DIR}/../../radio/src)
+
+add_custom_command(
+  OUTPUT ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
+  COMMAND make lbm
+  DEPENDS ${RADIO_SRC_DIRECTORY}/bitmaps/sticks_4x1.xbm
+  WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
+)
+
 add_subdirectory(modeledit)
 
 SET( companion_SRCS
@@ -139,6 +148,7 @@ SET( companion_SRCS
      firmwares/ersky9x/ersky9xeeprom.cpp
      firmwares/ersky9x/ersky9xinterface.cpp
      ${ERSKY9X_CHECKOUT_DIRECTORY}/ersky9xsimulator.cpp
+     ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
      helpers.cpp
      mdichild.cpp
      generaledit.cpp
@@ -309,6 +319,9 @@ TARGET_LINK_LIBRARIES( ${PROJECT_NAME} modeledit ${QT_LIBRARIES} ${QT_QTMAIN_LIB
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     INSTALL( TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin )
     INSTALL( FILES companion.desktop DESTINATION share/applications )
+    INSTALL( FILES images/linuxicons/16x16/companion.png    DESTINATION /usr/share/icons/hicolor/16x16/apps )
+    INSTALL( FILES images/linuxicons/22x22/companion.png    DESTINATION /usr/share/icons/hicolor/22x22/apps )
+    INSTALL( FILES images/linuxicons/24x24/companion.png    DESTINATION /usr/share/icons/hicolor/24x24/apps )
     INSTALL( FILES images/linuxicons/32x32/companion.png    DESTINATION /usr/share/icons/hicolor/32x32/apps )
     INSTALL( FILES images/linuxicons/48x48/companion.png    DESTINATION /usr/share/icons/hicolor/48x48/apps )
     INSTALL( FILES images/linuxicons/128x128/companion.png  DESTINATION /usr/share/icons/hicolor/128x128/apps )

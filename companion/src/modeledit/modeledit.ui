@@ -20,7 +20,7 @@
    <string>Dialog</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../companion9x.qrc">
+   <iconset resource="../companion.qrc">
     <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
   </property>
   <property name="sizeGripEnabled">
@@ -50,10 +50,6 @@
        <property name="text">
         <string>Simulate</string>
        </property>
-       <property name="icon">
-        <iconset resource="../companion9x.qrc">
-         <normaloff>:/images/simulate.png</normaloff>:/images/simulate.png</iconset>
-       </property>
       </widget>
      </item>
     </layout>
@@ -61,7 +57,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../companion9x.qrc"/>
+  <include location="../companion.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -14,15 +14,15 @@ InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & g
   QPushButton * qbUp = new QPushButton(this);
   QPushButton * qbDown = new QPushButton(this);
   QPushButton * qbClear = new QPushButton(this);
-
+  
   qbUp->setText(tr("Move Up"));
-  qbUp->setIcon(QIcon(":/images/moveup.png"));
+  qbUp->setIcon(CompanionIcon("moveup.png"));
   qbUp->setShortcut(QKeySequence(tr("Ctrl+Up")));
   qbDown->setText(tr("Move Down"));
-  qbDown->setIcon(QIcon(":/images/movedown.png"));
+  qbDown->setIcon(CompanionIcon("movedown.png"));
   qbDown->setShortcut(QKeySequence(tr("Ctrl+Down")));
   qbClear->setText(tr("Clear Expo Settings"));
-  qbClear->setIcon(QIcon(":/images/clear.png"));
+  qbClear->setIcon(CompanionIcon("clear.png"));
 
   exposLayout->addWidget(ExposlistWidget,1,1,1,3);
   exposLayout->addWidget(qbUp,2,1);
@@ -88,6 +88,12 @@ void InputsPanel::update()
 
     if (GetEepromInterface()->getCapability(VirtualInputs)) {
       str += " " + tr("Source(%1)").arg(md->srcRaw.toString());
+      if (md->carryTrim>0) {
+        str += " " + tr("No Trim");
+      }
+      else if (md->carryTrim<0) {
+        str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString();
+      }
     }
     else {
       switch (md->mode) {
@@ -136,7 +142,7 @@ void InputsPanel::update()
 bool InputsPanel::gm_insertExpo(int idx)
 {
     if (idx<0 || idx>=C9X_MAX_EXPOS || model.expoData[C9X_MAX_EXPOS-1].mode > 0) {
-      QMessageBox::information(this, "companion9x", tr("Not enough available expos!"));
+      QMessageBox::information(this, "companion", tr("Not enough available expos!"));
       return false;
     }
 
@@ -215,7 +221,7 @@ void InputsPanel::exposDelete(bool ask)
     QMessageBox::StandardButton ret = QMessageBox::No;
 
     if(ask)
-      ret = QMessageBox::warning(this, "companion9x",
+      ret = QMessageBox::warning(this, "companion",
                tr("Delete Selected Expos?"),
                QMessageBox::Yes | QMessageBox::No);
 
@@ -243,7 +249,7 @@ void InputsPanel::exposCopy()
     }
 
     QMimeData *mimeData = new QMimeData;
-    mimeData->setData("application/x-companion9x-expo", mxData);
+    mimeData->setData("application/x-companion-expo", mxData);
     QApplication::clipboard()->setMimeData(mimeData,QClipboard::Clipboard);
 }
 
@@ -257,7 +263,7 @@ void InputsPanel::mimeExpoDropped(int index, const QMimeData *data, Qt::DropActi
 #include <QtGui/qwidget.h>
 void InputsPanel::pasteExpoMimeData(const QMimeData * mimeData, int destIdx)
 {
-  if (mimeData->hasFormat("application/x-companion9x-expo")) {
+  if (mimeData->hasFormat("application/x-companion-expo")) {
     int idx; // mixer index
     int dch;
 
@@ -269,7 +275,7 @@ void InputsPanel::pasteExpoMimeData(const QMimeData * mimeData, int destIdx)
       dch = model.expoData[idx].chn;
     }
 
-    QByteArray mxData = mimeData->data("application/x-companion9x-expo");
+    QByteArray mxData = mimeData->data("application/x-companion-expo");
 
     int i = 0;
     while (i < mxData.size()) {
@@ -345,20 +351,20 @@ void InputsPanel::expolistWidget_customContextMenuRequested(QPoint pos)
 
     const QClipboard *clipboard = QApplication::clipboard();
     const QMimeData *mimeData = clipboard->mimeData();
-    bool hasData = mimeData->hasFormat("application/x-companion9x-expo");
+    bool hasData = mimeData->hasFormat("application/x-companion-expo");
 
     QMenu contextMenu;
-    contextMenu.addAction(QIcon(":/images/add.png"), tr("&Add"),this,SLOT(expoAdd()),tr("Ctrl+A"));
-    contextMenu.addAction(QIcon(":/images/edit.png"), tr("&Edit"),this,SLOT(expoOpen()),tr("Enter"));
+    contextMenu.addAction(CompanionIcon("add.png"), tr("&Add"),this,SLOT(expoAdd()),tr("Ctrl+A"));
+    contextMenu.addAction(CompanionIcon("edit.png"), tr("&Edit"),this,SLOT(expoOpen()),tr("Enter"));
     contextMenu.addSeparator();
-    contextMenu.addAction(QIcon(":/images/clear.png"), tr("&Delete"),this,SLOT(exposDelete()),tr("Delete"));
-    contextMenu.addAction(QIcon(":/images/copy.png"), tr("&Copy"),this,SLOT(exposCopy()),tr("Ctrl+C"));
-    contextMenu.addAction(QIcon(":/images/cut.png"), tr("&Cut"),this,SLOT(exposCut()),tr("Ctrl+X"));
-    contextMenu.addAction(QIcon(":/images/paste.png"), tr("&Paste"),this,SLOT(exposPaste()),tr("Ctrl+V"))->setEnabled(hasData);
-    contextMenu.addAction(QIcon(":/images/duplicate.png"), tr("Du&plicate"),this,SLOT(exposDuplicate()),tr("Ctrl+U"));
+    contextMenu.addAction(CompanionIcon("clear.png"), tr("&Delete"),this,SLOT(exposDelete()),tr("Delete"));
+    contextMenu.addAction(CompanionIcon("copy.png"), tr("&Copy"),this,SLOT(exposCopy()),tr("Ctrl+C"));
+    contextMenu.addAction(CompanionIcon("cut.png"), tr("&Cut"),this,SLOT(exposCut()),tr("Ctrl+X"));
+    contextMenu.addAction(CompanionIcon("paste.png"), tr("&Paste"),this,SLOT(exposPaste()),tr("Ctrl+V"))->setEnabled(hasData);
+    contextMenu.addAction(CompanionIcon("duplicate.png"), tr("Du&plicate"),this,SLOT(exposDuplicate()),tr("Ctrl+U"));
     contextMenu.addSeparator();
-    contextMenu.addAction(QIcon(":/images/moveup.png"), tr("Move Up"),this,SLOT(moveExpoUp()),tr("Ctrl+Up"));
-    contextMenu.addAction(QIcon(":/images/movedown.png"), tr("Move Down"),this,SLOT(moveExpoDown()),tr("Ctrl+Down"));
+    contextMenu.addAction(CompanionIcon("moveup.png"), tr("Move Up"),this,SLOT(moveExpoUp()),tr("Ctrl+Up"));
+    contextMenu.addAction(CompanionIcon("movedown.png"), tr("Move Down"),this,SLOT(moveExpoDown()),tr("Ctrl+Down"));
 
     contextMenu.exec(globalPos);
 }

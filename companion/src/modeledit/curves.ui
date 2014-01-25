@@ -20,9 +20,47 @@
       <layout class="QGridLayout" name="curvesLayout"/>
      </item>
      <item row="0" column="1" rowspan="3">
-      <layout class="QGridLayout" name="gridLayout_8" rowstretch="0,0,0" columnstretch="1,1">
+      <layout class="QGridLayout" name="gridLayout_8" rowstretch="0,0,0" columnstretch="1,0">
+       <item row="1" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QComboBox" name="curvePoints"/>
+         </item>
+         <item>
+          <widget class="QComboBox" name="curveCustom">
+           <item>
+            <property name="text">
+             <string>Standard</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Custom</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="curveSmooth">
+           <item>
+            <property name="text">
+             <string>Lines</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Smooth</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </item>
        <item row="1" column="0">
-        <widget class="QLabel" name="curvetype_label">
+        <widget class="QLabel" name="curveTypeLabel">
          <property name="text">
           <string>Curve type</string>
          </property>
@@ -31,52 +69,8 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
-        <widget class="QComboBox" name="curvetype_CB">
-         <item>
-          <property name="text">
-           <string>3 points</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>3 points custom</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>5 points</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>5 points custom</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>9 points</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>9 points custom</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>17 points</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>17 points custom</string>
-          </property>
-         </item>
-        </widget>
-       </item>
        <item row="2" column="0">
-        <widget class="QLabel" name="cname_label">
+        <widget class="QLabel" name="curveNameLabel">
          <property name="text">
           <string>Curve name</string>
          </property>
@@ -86,7 +80,7 @@
         </widget>
        </item>
        <item row="2" column="1">
-        <widget class="QLineEdit" name="cname_LE">
+        <widget class="QLineEdit" name="curveName">
          <property name="maxLength">
           <number>6</number>
          </property>
@@ -129,7 +123,7 @@
        </property>
       </layout>
      </item>
-     <item row="4" column="0" colspan="5">
+     <item row="5" column="0" colspan="5">
       <spacer name="verticalSpacer_6">
        <property name="orientation">
         <enum>Qt::Vertical</enum>

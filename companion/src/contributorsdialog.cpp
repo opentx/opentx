@@ -8,7 +8,8 @@ contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnu
 {
     ui->setupUi(this);
     switch (contest) {
-      case 0: {
+      case 0:
+      {
         QFile file(":/DONATIONS.txt");
         QString str;
         str.append("<html><head>");
@@ -20,7 +21,7 @@ contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnu
         str.append("<tr><td class=\"myhead\">"+tr("People who have contributed to this project")+"</td></tr>");
         str.append("</table>");
         str.append("<table width=\"100%\" border=0 cellspacing=0 cellpadding=2>");
-        if(file.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
           int columns=6;
           float cwidth=100.0/columns;
           while (!file.atEnd()) {
@@ -66,26 +67,29 @@ contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnu
           }
         }
         str.append("<tr><td class=\"mycss\">&nbsp;</td></tr>");
-        str.append("<tr><td colspan=3 class=\"mycss\">"+tr("Honors go to Rafal Tomczak (RadioClone) and Thomas Husterer (th9x) \nof course. Also to Erez Raviv (er9x) and it's fantastic eePe, from which\ncompanion9x was forked out.")+"</td></tr>");
-        str.append("<tr><td colspan=3 class=\"mycss\">"+tr("Thank you all !!!")+"</td></tr>");
+        str.append("<tr><td colspan=3 class=\"mycss\">" + tr("Honors go to Rafal Tomczak (RadioClone), Thomas Husterer (th9x) and Erez Raviv (er9x and eePe)") + "<br/></td></tr>");
+        str.append("<tr><td colspan=3 class=\"mycss\">" + tr("Thank you all !!!") + "</td></tr>");
         str.append("</table>");
         str.append("</body></html>");        
         ui->textEditor->setHtml(str);
-        ui->textEditor->scroll(0,0);
-        this->setWindowTitle(tr("Contributors"));
-        }
+        ui->textEditor->scroll(0, 0);
+        setWindowTitle(tr("Contributors"));
         break;
+      }
       
-      case 1:{
+      case 1:
+      {
         QFile file(":/releasenotes.txt");
         if(file.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
           ui->textEditor->setHtml(file.readAll());
         }
         ui->textEditor->scroll(0,0);
-        this->setWindowTitle(tr("Companion9x Release Notes"));
-        }
+        setWindowTitle(tr("Companion Release Notes"));
         break;
-      case 2:{
+      }
+
+      case 2:
+      {
         if (!rnurl.isEmpty()) {
           this->setWindowTitle(tr("OpenTX Release Notes"));
           manager = new QNetworkAccessManager(this);
@@ -94,7 +98,8 @@ contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnu
           QNetworkRequest request(url);
           request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
           manager->get(request);
-        } else {
+        }
+        else {
           QTimer::singleShot(0, this, SLOT(forceClose()));                
         }
         break;
@@ -104,7 +109,7 @@ contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnu
 
 void contributorsDialog::showEvent ( QShowEvent * )
 {
-    ui->textEditor->scroll(0,0);
+    ui->textEditor->scroll(0, 0);
 }
 
 contributorsDialog::~contributorsDialog()
@@ -117,6 +122,7 @@ void contributorsDialog::replyFinished(QNetworkReply * reply)
     ui->textEditor->setHtml(reply->readAll());
 }
 
-void contributorsDialog::forceClose() {
+void contributorsDialog::forceClose()
+{
     accept();;
 }
