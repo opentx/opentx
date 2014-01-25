@@ -1038,7 +1038,7 @@ void compareDialog::printSwitches()
     int sc=0;
     QString color;
     QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
-    str.append("<tr><td><h2>"+tr("Custom Switches")+"</h2></td></tr>");
+    str.append("<tr><td><h2>"+tr("Logical Switches")+"</h2></td></tr>");
     str.append("<tr><td><table border=1 cellspacing=0 cellpadding=1 width=\"100%\">");
     for (int i=0; i<GetEepromInterface()->getCapability(CustomSwitches); i++) {
       QString sw1 = getCustomSwitchStr(&g_model1->customSw[i], *g_model1);
@@ -1048,9 +1048,9 @@ void compareDialog::printSwitches()
         color=getColor1(sw1,sw2);
         str.append(QString("<td  width=\"45%\"><font color=%1>").arg(color)+sw1+"</font></td>");
         if (i<9) {
-          str.append("<td align=\"center\" width=\"10%\"><b>"+tr("CS")+QString("%1</b></td>").arg(i+1));
+          str.append("<td align=\"center\" width=\"10%\"><b>"+tr("LS")+QString("%1</b></td>").arg(i+1));
         } else {
-          str.append("<td align=\"center\" width=\"10%\"><b>"+tr("CS")+('A'+(i-9))+"</b></td>");
+          str.append("<td align=\"center\" width=\"10%\"><b>"+tr("LS")+('A'+(i-9))+"</b></td>");
         }
         color=getColor2(sw1,sw2);
         str.append(QString("<td  width=\"45%\"><font color=%1>").arg(color)+sw2+"</font></td>");
@@ -1069,7 +1069,7 @@ void compareDialog::printFSwitches()
   QString color2;
   int sc=0;
   QString str = "<table border=1 cellspacing=0 cellpadding=3 style=\"page-break-before:always;\" width=\"100%\">";
-  str.append("<tr><td><h2>"+tr("Custom Functions")+"</h2></td></tr>");
+  str.append("<tr><td><h2>"+tr("Switch Assignment")+"</h2></td></tr>");
   str.append("<tr><td><table border=1 cellspacing=0 cellpadding=1 width=\"100%\"><tr>");
   str.append("<td width=\"7%\" align=\"center\"><b>"+tr("Switch")+"</b></td>");
   str.append("<td width=\"12%\" align=\"center\"><b>"+tr("Function")+"</b></td>");
