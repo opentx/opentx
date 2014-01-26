@@ -762,6 +762,7 @@
 #define TR_CHR_LONG   'l' //Taste long
 #define TR_CHR_TOGGLE 't' //Taste als togglefunktion = Ein Aus Ein 
 #define TR_CHR_HOUR   'h' //Stunden
+#define TR_CHR_INPUT           'I'   // Values between A-I will work
 
 #define TR_BEEP_VOLUME         "Beep Lautst"
 #define TR_WAV_VOLUME          "Wav Lautst"
