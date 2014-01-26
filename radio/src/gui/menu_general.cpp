@@ -1037,19 +1037,17 @@ void menuGeneralVersion(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUVERSION, menuTabDiag, e_Vers, 1);
 
-  lcd_putsLeft(2*FH, stamp1);
-  lcd_putsLeft(3*FH, stamp2);
-  lcd_putsLeft(4*FH, stamp3);
+  lcd_putsLeft(2*FH, vers_stamp);
+
 #if defined(PCBSKY9X) && !defined(REVA)
   if (Coproc_valid == 1) {
-     lcd_putsLeft(5*FH, PSTR("CoPr:"));
-     lcd_outdez8(10*FW, 5*FH, Coproc_read);
+     lcd_putsLeft(6*FH, PSTR("CoPr:"));
+     lcd_outdez8(10*FW, 6*FH, Coproc_read);
   }
   else {
-     lcd_putsLeft(5*FH, PSTR("CoPr: ---"));
+     lcd_putsLeft(6*FH, PSTR("CoPr: ---"));
   }
-#endif  
-  lcd_putsLeft(7*FH, eeprom_stamp);
+#endif
 }
 
 void displayKeyState(uint8_t x, uint8_t y, EnumKeys key)

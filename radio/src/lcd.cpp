@@ -361,9 +361,7 @@ void lcd_putsiAtt(xcoord_t x, uint8_t y,const pm_char * s,uint8_t idx, LcdFlags 
 
 void lcd_putsnAtt(xcoord_t x, uint8_t y, const pm_char * s, uint8_t len, LcdFlags mode)
 {
-#if defined(CPUARM)
   xcoord_t orig_x = x;
-#endif
   bool setx = false;
   while(len--) {
     unsigned char c;
@@ -395,16 +393,16 @@ void lcd_putsnAtt(xcoord_t x, uint8_t y, const pm_char * s, uint8_t len, LcdFlag
     else if (c == 0x1F) {  //X-coord prefix
       setx = true;
     }
-#if defined(CPUARM)
     else if (c == 0x1E) {  //NEWLINE
       x = orig_x;
       y += FH;
+#if defined(CPUARM)      
       if (mode & DBLSIZE) y += FH;
       else if (mode & MIDSIZE) y += 4;
       else if (mode & SMLSIZE) y--;
+#endif
       if (y >= LCD_H) break;
     }
-#endif
     else {
       x += (c*FW/2); //EXTENDED SPACE
     }

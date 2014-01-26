@@ -1181,10 +1181,7 @@ extern int8_t  calcRESXto100(int16_t x);
 
 #define TMR_VAROFS  5
 
-extern const char stamp1[];
-extern const char stamp2[];
-extern const char stamp3[];
-extern const char eeprom_stamp[];
+extern const char vers_stamp[];
 
 extern uint8_t            g_vbat100mV;
 #define g_blinkTmr10ms (*(uint8_t*)&g_tmr10ms)
