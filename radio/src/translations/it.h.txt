@@ -33,7 +33,7 @@
  *
  * !!!!! DO NOT EDIT it.h - EDIT it.h.txt INSTEAD !!!!!!!   
  */
-  /* Fotmatting octal codes available in TR_ strings:
+  /* Formatting octal codes available in TR_ strings:
  *  \037\x       -sets LCD x-coord (x value in octal)
  *  \036         -newline (ARM boards only)
  *  \001 to \035 -extended spacing (value * FW/2)
@@ -364,12 +364,12 @@
 #define TR_VFAILSAFE           "Mantieni\0 ""Personali\0""No impulsi"
 
 #if defined(MAVLINK)
-  #define LEN_MAVLINK_BAUDS		"\006"
-  #define TR_MAVLINK_BAUDS		"4800  ""9600  ""14400 ""19200 ""38400 ""57600 ""76800 ""115200"
-  #define LEN_MAVLINK_AC_MODES	"\011"
-  #define TR_MAVLINK_AC_MODES	"Stabilize""Acro     ""Alt Hold ""Auto     ""Guided   ""Loiter   ""RTL      ""Circle   ""Pos Hold ""Land     ""OF Loiter""Toy A    ""Toy M    ""INVALID  "
-  #define LEN_MAVLINK_AP_MODES	"\015"
-  #define TR_MAVLINK_AP_MODES	"Manual       ""Circle       ""Stabilize    ""Training     ""Fly by Wire A""Fly by Wire A""Auto         ""RTL          ""Loiter       ""Guided       ""Initialising ""INVALID      "
+  #define LEN_MAVLINK_BAUDS    "\006"
+  #define TR_MAVLINK_BAUDS     "4800  ""9600  ""14400 ""19200 ""38400 ""57600 ""76800 ""115200"
+  #define LEN_MAVLINK_AC_MODES "\011"
+  #define TR_MAVLINK_AC_MODES  "Stabilize""Acro     ""Alt Hold ""Auto     ""Guided   ""Loiter   ""RTL      ""Circle   ""Pos Hold ""Land     ""OF Loiter""Toy A    ""Toy M    ""INVALID  "
+  #define LEN_MAVLINK_AP_MODES "\015"
+  #define TR_MAVLINK_AP_MODES  "Manual       ""Circle       ""Stabilize    ""Training     ""Fly by Wire A""Fly by Wire A""Auto         ""RTL          ""Loiter       ""Guided       ""Initialising ""INVALID      "
 #endif
 
 // ZERO TERMINATED STRINGS
@@ -396,7 +396,11 @@
 #define TR_MODELNAME           "Nome modello"
 #define TR_PHASENAME           "Nome fase"
 #define TR_MIXNAME             "Nome mix"
-#define TR_EXPONAME            "Nome expo"
+#if defined(PCBTARANIS)
+  #define TR_EXPONAME          "Nome expo"
+#else
+  #define TR_EXPONAME          "Expo Name"
+#endif
 #define TR_BITMAP              "Immagine"
 #define TR_TIMER               TR("Timer","Timer ")
 #define TR_ELIMITS             TR("Limiti.E","Limiti Estesi")
@@ -538,6 +542,9 @@
 #define TR_MENUFLIGHTPHASES    "FASI DI VOLO"
 #define TR_MENUHELISETUP       "SETUP  ELI"
 
+// Alignment
+
+
 #if defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...
   #define TR_MENUINPUTS          "STICK"
   #define TR_MENULIMITS          "USCITE"
@@ -673,29 +680,29 @@
 #define TR_UART3MODE           "Serial port"
 
 #if defined(MAVLINK)
-  #define TR_MAVLINK_RC_RSSI_SCALE_LABEL	"Max RSSI"
-  #define TR_MAVLINK_PC_RSSI_EN_LABEL		"PC RSSI EN"
-  #define TR_MAVMENUSETUP_TITLE				"Mavlink Setup"
-  #define TR_MAVLINK_BAUD_LABEL				"Baudrate"
-  #define TR_MAVLINK_INFOS					"INFOS"
-  #define TR_MAVLINK_MODE					"MODE"
-  #define TR_MAVLINK_CUR_MODE				"Current Mode"
-  #define TR_MAVLINK_ARMED					"Armed"
-  #define TR_MAVLINK_BAT_MENU_TITLE			"BAT RSSI"
-  #define TR_MAVLINK_BATTERY_LABEL			"Flight Battery status"
-  #define TR_MAVLINK_RC_RSSI_LABEL			"RC RSSI"
-  #define TR_MAVLINK_PC_RSSI_LABEL			"PC RSSI"
-  #define TR_MAVLINK_NAV_MENU_TITLE			"NAV"
-  #define TR_MAVLINK_COURSE					"Course"
-  #define TR_MAVLINK_HEADING				"Heading"
-  #define TR_MAVLINK_BEARING				"Bearing"
-  #define TR_MAVLINK_ALTITUDE				"Altitude"
-  #define TR_MAVLINK_GPS					"GPS"
-  #define TR_MAVLINK_NO_FIX					"NO Fix"
-  #define TR_MAVLINK_SAT					"SAT"
-  #define TR_MAVLINK_HDOP					"HDOP"
-  #define TR_MAVLINK_LAT					"LAT"
-  #define TR_MAVLINK_LON					"LON"
+  #define TR_MAVLINK_RC_RSSI_SCALE_LABEL  "Max RSSI"
+  #define TR_MAVLINK_PC_RSSI_EN_LABEL     "PC RSSI EN"
+  #define TR_MAVMENUSETUP_TITLE           "Mavlink Setup"
+  #define TR_MAVLINK_BAUD_LABEL           "Baudrate"
+  #define TR_MAVLINK_INFOS                "INFOS"
+  #define TR_MAVLINK_MODE                 "MODE"
+  #define TR_MAVLINK_CUR_MODE             "Current Mode"
+  #define TR_MAVLINK_ARMED                "Armed"
+  #define TR_MAVLINK_BAT_MENU_TITLE       "BAT RSSI"
+  #define TR_MAVLINK_BATTERY_LABEL        "Flight Battery status"
+  #define TR_MAVLINK_RC_RSSI_LABEL        "RC RSSI"
+  #define TR_MAVLINK_PC_RSSI_LABEL        "PC RSSI"
+  #define TR_MAVLINK_NAV_MENU_TITLE       "NAV"
+  #define TR_MAVLINK_COURSE               "Course"
+  #define TR_MAVLINK_HEADING              "Heading"
+  #define TR_MAVLINK_BEARING              "Bearing"
+  #define TR_MAVLINK_ALTITUDE             "Altitude"
+  #define TR_MAVLINK_GPS                  "GPS"
+  #define TR_MAVLINK_NO_FIX               "NO Fix"
+  #define TR_MAVLINK_SAT                  "SAT"
+  #define TR_MAVLINK_HDOP                 "HDOP"
+  #define TR_MAVLINK_LAT                  "LAT"
+  #define TR_MAVLINK_LON                  "LON"
 #endif
 
 // Taranis column headers
@@ -759,3 +766,8 @@
 #define TR_WAV_VOLUME          "Wav Volume"
 #define TR_VARIO_VOLUME        "Vario Volume"
 #define TR_BG_VOLUME           "Bg Volume"
+
+#define TR_TOP_BAR             "Top Bar"
+#define TR_ALTITUDE            INDENT "Altitude"
+#define TR_MODS_FORBIDDEN      "Modifications forbidden!"
+#define TR_UNLOCKED            "Unlocked"

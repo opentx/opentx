@@ -1,11 +1,11 @@
 /*
-
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bernet Andre <bernet.andre@gmail.com>
  * - Kjell Kernen <kjell.kernen@gmail.com>
  * - Martin Hotar <mhotar@gmail.com>
  * - Romolo Manfredini <romolo.manfredini@gmail.com>
+ * - Jacek Drewniak <jpdjpd33@gmail.com>
  *
  * opentx is based on code named
  * gruvin9x by Bryan J. Rentoul: http://code.google.com/p/gruvin9x/,
@@ -33,7 +33,7 @@
  * !!!!! DO NOT EDIT pl.h - EDIT pl.h.txt INSTEAD !!!!!!!   
  *
  */
-  /* Fotmatting octal codes available in TR_ strings:
+  /* Formatting octal codes available in TR_ strings:
  *  \037\x       -sets LCD x-coord (x value in octal)
  *  \036         -newline (ARM boards only)
  *  \001 to \035 -extended spacing (value * FW/2)
@@ -396,7 +396,11 @@
 #define TR_MODELNAME           "Nazwa modelu"
 #define TR_PHASENAME           "Nazwa"
 #define TR_MIXNAME             "Nazwa"
-#define TR_EXPONAME            "Nazwa"
+#if defined(PCBTARANIS)
+  #define TR_EXPONAME          "Line Name"
+#else
+  #define TR_EXPONAME          "Nazwa"
+#endif
 #define TR_BITMAP              "Obrazek"
 #define TR_TIMER               "Timer "
 #define TR_ELIMITS             TR("Limit+25%", "Kanał +/- 125%")
@@ -493,20 +497,20 @@
 #define OFS_RX                 4
 #define TR_ACCEL               "Acc:"
 #define TR_NODATA              CENTER "NO DATA"
-#define TR_TM1TM2              "TM1\032TM2"
-#define TR_THRTHP              "THR\032TH%"
+#define TR_TM1TM2              "TM1\037\146TM2"
+#define TR_THRTHP              "THR\037\146TH%"
 #define TR_TOT                 "TOT"
-#define TR_TMR1LATMAXUS        "Tmr1Lat max\006us"
+#define TR_TMR1LATMAXUS        "Tmr1Lat max\037\124us"
 #define STR_US                 (STR_TMR1LATMAXUS+12)
-#define TR_TMR1LATMINUS        "Tmr1Lat min\006us"
-#define TR_TMR1JITTERUS        "Tmr1 Jitter\006us"
+#define TR_TMR1LATMINUS        "Tmr1Lat min\037\124us"
+#define TR_TMR1JITTERUS        "Tmr1 Jitter\037\124us"
 
 #if defined(CPUARM)
   #define TR_TMIXMAXMS         "Tmix max"
   #define TR_FREESTACKMINB     "Wolny stos"
 #else
-  #define TR_TMIXMAXMS         "Tmix max\014ms"
-  #define TR_FREESTACKMINB     "Wolny stos\010b"
+  #define TR_TMIXMAXMS         "Tmix max\037\124ms"
+  #define TR_FREESTACKMINB     "Wolny stos\037\124b"
 #endif
 
 #define TR_MENUTORESET         CENTER TR_ENTER" >> Reset"
@@ -538,8 +542,6 @@
 #define TR_MENUFLIGHTPHASES    "FAZY LOTU"
 #define TR_MENUHELISETUP       "HELI"
 
-
-// Alignment
 #if defined(PCBTARANIS)
   #define TR_MENUINPUTS        "WEJŚCIA"
   #define TR_MENULIMITS        "SERWA"
@@ -550,8 +552,6 @@
   #define TR_MENUINPUTS        "DR/EXPO"
   #define TR_MENULIMITS        "LIMITY"
 #endif
-
-
 
 #define TR_MENUCURVES          "KRZYWE"
 #define TR_MENUCURVE           "KRZYWA"
@@ -680,29 +680,29 @@
 #define TR_UART3MODE           "Serial port"
 
 #if defined(MAVLINK)
-  #define TR_MAVLINK_RC_RSSI_SCALE_LABEL	"Max RSSI"
-  #define TR_MAVLINK_PC_RSSI_EN_LABEL		"PC RSSI EN"
-  #define TR_MAVMENUSETUP_TITLE			"Mavlink Setup"
-  #define TR_MAVLINK_BAUD_LABEL			"Baudrate"
-  #define TR_MAVLINK_INFOS			"INFOS"
-  #define TR_MAVLINK_MODE			"MODE"
-  #define TR_MAVLINK_CUR_MODE			"Current Mode"
-  #define TR_MAVLINK_ARMED			"Armed"
-  #define TR_MAVLINK_BAT_MENU_TITLE		"BAT RSSI"
-  #define TR_MAVLINK_BATTERY_LABEL		"Status baterii "
-  #define TR_MAVLINK_RC_RSSI_LABEL		"RC RSSI"
-  #define TR_MAVLINK_PC_RSSI_LABEL		"PC RSSI"
-  #define TR_MAVLINK_NAV_MENU_TITLE		"NAV"
-  #define TR_MAVLINK_COURSE			"Kurs"
-  #define TR_MAVLINK_HEADING			"Kierunek"
-  #define TR_MAVLINK_BEARING			"Orientacja"
-  #define TR_MAVLINK_ALTITUDE			"Wysokość"
-  #define TR_MAVLINK_GPS			"GPS"
-  #define TR_MAVLINK_NO_FIX			"NO Fix"
-  #define TR_MAVLINK_SAT			"SAT"
-  #define TR_MAVLINK_HDOP			"HDOP"
-  #define TR_MAVLINK_LAT			"LAT"
-  #define TR_MAVLINK_LON			"LON"
+  #define TR_MAVLINK_RC_RSSI_SCALE_LABEL  "Max RSSI"
+  #define TR_MAVLINK_PC_RSSI_EN_LABEL     "PC RSSI EN"
+  #define TR_MAVMENUSETUP_TITLE           "Mavlink Setup"
+  #define TR_MAVLINK_BAUD_LABEL           "Baudrate"
+  #define TR_MAVLINK_INFOS                "INFOS"
+  #define TR_MAVLINK_MODE                 "MODE"
+  #define TR_MAVLINK_CUR_MODE             "Current Mode"
+  #define TR_MAVLINK_ARMED                "Armed"
+  #define TR_MAVLINK_BAT_MENU_TITLE       "BAT RSSI"
+  #define TR_MAVLINK_BATTERY_LABEL        "Status baterii "
+  #define TR_MAVLINK_RC_RSSI_LABEL        "RC RSSI"
+  #define TR_MAVLINK_PC_RSSI_LABEL        "PC RSSI"
+  #define TR_MAVLINK_NAV_MENU_TITLE       "NAV"
+  #define TR_MAVLINK_COURSE               "Kurs"
+  #define TR_MAVLINK_HEADING              "Kierunek"
+  #define TR_MAVLINK_BEARING              "Orientacja"
+  #define TR_MAVLINK_ALTITUDE             "Wysokość"
+  #define TR_MAVLINK_GPS                  "GPS"
+  #define TR_MAVLINK_NO_FIX               "NO Fix"
+  #define TR_MAVLINK_SAT                  "SAT"
+  #define TR_MAVLINK_HDOP                 "HDOP"
+  #define TR_MAVLINK_LAT                  "LAT"
+  #define TR_MAVLINK_LON                  "LON"
 #endif
 
 // Taranis column headers
