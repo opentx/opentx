@@ -278,10 +278,10 @@ QString RawSource::toString()
                             QObject::tr("Cur+"), QObject::tr("Pwr+"), QObject::tr("ACC "), QObject::tr("Time"),
                           };
 
-  static const QString virtualSwitches[] = { QObject::tr("CS1"), QObject::tr("CS2"), QObject::tr("CS3"), QObject::tr("CS4"), QObject::tr("CS5"), QObject::tr("CS6"), QObject::tr("CS7"), QObject::tr("CS8"), QObject::tr("CS9"), QObject::tr("CSA"),
-                            QObject::tr("CSB"), QObject::tr("CSC"), QObject::tr("CSD"), QObject::tr("CSE"), QObject::tr("CSF"), QObject::tr("CSG"), QObject::tr("CSH"), QObject::tr("CSI"), QObject::tr("CSJ"), QObject::tr("CSK"),
-                            QObject::tr("CSL"), QObject::tr("CSM"), QObject::tr("CSN"), QObject::tr("CSO"), QObject::tr("CSP"), QObject::tr("CSQ"), QObject::tr("CSR"), QObject::tr("CSS"), QObject::tr("CST"), QObject::tr("CSU"),
-                            QObject::tr("CSV"), QObject::tr("CSW")
+  static const QString virtualSwitches[] = { QObject::tr("LS1"), QObject::tr("LS2"), QObject::tr("LS3"), QObject::tr("LS4"), QObject::tr("LS5"), QObject::tr("LS6"), QObject::tr("LS7"), QObject::tr("LS8"), QObject::tr("LS9"), QObject::tr("LSA"),
+                            QObject::tr("LSB"), QObject::tr("LSC"), QObject::tr("LSD"), QObject::tr("LSE"), QObject::tr("LSF"), QObject::tr("LSG"), QObject::tr("LSH"), QObject::tr("LSI"), QObject::tr("LSJ"), QObject::tr("LSK"),
+                            QObject::tr("LSL"), QObject::tr("LSM"), QObject::tr("LSN"), QObject::tr("LSO"), QObject::tr("LSP"), QObject::tr("LSQ"), QObject::tr("LSR"), QObject::tr("LSS"), QObject::tr("LST"), QObject::tr("LSU"),
+                            QObject::tr("LSV"), QObject::tr("LSW")
                           };
   
   if (index<0) {
@@ -292,7 +292,7 @@ QString RawSource::toString()
       if (model && strlen(model->inputNames[index]) > 0)
         return QString(model->inputNames[index]);
       else
-        return QObject::tr("Virtual Input %1").arg(index+1);
+        return QObject::tr("Input %1").arg(index+1);
     case SOURCE_TYPE_STICK:
       return AnalogString(index);
     case SOURCE_TYPE_TRIM:
@@ -352,10 +352,10 @@ QString RawSwitch::toString()
                             SwitchUp('H'), SwitchDn('H'),
                           };
 
-  static const QString virtualSwitches[] = { QObject::tr("CS1"), QObject::tr("CS2"), QObject::tr("CS3"), QObject::tr("CS4"), QObject::tr("CS5"), QObject::tr("CS6"), QObject::tr("CS7"), QObject::tr("CS8"), QObject::tr("CS9"), QObject::tr("CSA"),
-                                             QObject::tr("CSB"), QObject::tr("CSC"), QObject::tr("CSD"), QObject::tr("CSE"), QObject::tr("CSF"), QObject::tr("CSG"), QObject::tr("CSH"), QObject::tr("CSI"), QObject::tr("CSJ"), QObject::tr("CSK"),
-                                             QObject::tr("CSL"), QObject::tr("CSM"), QObject::tr("CSN"), QObject::tr("CSO"), QObject::tr("CSP"), QObject::tr("CSQ"), QObject::tr("CSR"), QObject::tr("CSS"), QObject::tr("CST"), QObject::tr("CSU"),
-                                             QObject::tr("CSV"), QObject::tr("CSW")
+  static const QString virtualSwitches[] = { QObject::tr("LS1"), QObject::tr("LS2"), QObject::tr("LS3"), QObject::tr("LS4"), QObject::tr("LS5"), QObject::tr("LS6"), QObject::tr("LS7"), QObject::tr("LS8"), QObject::tr("LS9"), QObject::tr("LSA"),
+                                             QObject::tr("LSB"), QObject::tr("LSC"), QObject::tr("LSD"), QObject::tr("LSE"), QObject::tr("LSF"), QObject::tr("LSG"), QObject::tr("LSH"), QObject::tr("LSI"), QObject::tr("LSJ"), QObject::tr("LSK"),
+                                             QObject::tr("LSL"), QObject::tr("LSM"), QObject::tr("LSN"), QObject::tr("LSO"), QObject::tr("LSP"), QObject::tr("LSQ"), QObject::tr("LSR"), QObject::tr("LSS"), QObject::tr("LST"), QObject::tr("LSU"),
+                                             QObject::tr("LSV"), QObject::tr("LSW")
                                            };
 
   switch(type) {
