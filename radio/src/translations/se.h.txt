@@ -396,6 +396,7 @@
 #define TR_MODELNAME           "Modellnamn"
 #define TR_PHASENAME           "Lägesnamn "
 #define TR_MIXNAME             "Mixnamn "
+#define TR_INPUTNAME           "Filternamn"
 #if defined(PCBTARANIS)
   #define TR_EXPONAME          "Linjenamn"
 #else

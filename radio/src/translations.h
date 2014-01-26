@@ -644,6 +644,7 @@ extern const pm_char STR_VIEW_TEXT[];
   extern const pm_char STR_MODELNAME[];
   extern const pm_char STR_PHASENAME[];
   extern const pm_char STR_MIXNAME[];
+  extern const pm_char STR_INPUTNAME[];
   extern const pm_char STR_EXPONAME[];
 #else
   #define STR_MODELNAME STR_NAME

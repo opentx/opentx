@@ -396,6 +396,7 @@
 #define TR_MODELNAME           "Nazwa modelu"
 #define TR_PHASENAME           "Nazwa"
 #define TR_MIXNAME             "Nazwa"
+#define TR_INPUTNAME           "Input Name"
 #if defined(PCBTARANIS)
   #define TR_EXPONAME          "Line Name"
 #else

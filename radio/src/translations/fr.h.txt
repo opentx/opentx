@@ -396,6 +396,7 @@
 #define TR_MODELNAME           TR("Nom modèle","Nom du modèle")
 #define TR_PHASENAME           "Nom phase"
 #define TR_MIXNAME             TR("Nom mix.","Nom du mixeur")
+#define TR_INPUTNAME           "Input Name"
 #if defined(PCBTARANIS)
   #define TR_EXPONAME          "Nom ligne"
 #else
