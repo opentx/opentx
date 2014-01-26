@@ -57,15 +57,13 @@ void menuStatisticsView(uint8_t event)
       return;
   }
 
-  lcd_puts(  1*FW, FH*1, STR_TM1TM2);
+  lcd_puts(  1*FW, FH*0, STR_TOTTM1TM2THRTHP);
   putsTime(    5*FW+5*FWNUM+1, FH*1, timersStates[0].val, 0, 0);
   putsTime(   12*FW+5*FWNUM+1, FH*1, timersStates[1].val, 0, 0);
 
-  lcd_puts(  1*FW, FH*2, STR_THRTHP);
   putsTime(    5*FW+5*FWNUM+1, FH*2, s_timeCumThr, 0, 0);
   putsTime(   12*FW+5*FWNUM+1, FH*2, s_timeCum16ThrP/16, 0, 0);
 
-  lcd_puts( 17*FW, FH*0, STR_TOT);
   putsTime(   12*FW+5*FWNUM+1, FH*0, s_timeCumTot, 0, 0);
   
 #if defined(PCBTARANIS)
