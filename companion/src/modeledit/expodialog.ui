@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>370</width>
-    <height>356</height>
+    <width>381</width>
+    <height>414</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -73,7 +73,7 @@
      <item>
       <widget class="QComboBox" name="weightCB">
        <property name="whatsThis">
-        <string>Phase used by the expo.</string>
+        <string>Phase used by the input.</string>
        </property>
       </widget>
      </item>
@@ -266,8 +266,8 @@
    <item row="9" column="1">
     <widget class="QComboBox" name="switchesCB">
      <property name="whatsThis">
-      <string>Switch used by the expo.
-If blank then the expo is considered to be &quot;ON&quot; all the time.</string>
+      <string>Switch used by the input.
+If blank then the input is considered to be &quot;ON&quot; all the time.</string>
      </property>
     </widget>
    </item>
@@ -395,7 +395,7 @@ p, li { white-space: pre-wrap; }
         <string/>
        </property>
        <property name="whatsThis">
-        <string>The curve used by the expo</string>
+        <string>The curve used by the input</string>
        </property>
       </widget>
      </item>

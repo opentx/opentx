@@ -14,7 +14,7 @@ CustomSwitchesPanel::CustomSwitchesPanel(QWidget * parent, ModelData & model):
   QGridLayout * gridLayout = new QGridLayout(this);
 
   int col = 1;
-  addLabel(gridLayout, tr("Function"), col++);
+  addLabel(gridLayout, tr("Condition"), col++);
   addLabel(gridLayout, tr("V1"), col++);
   addLabel(gridLayout, tr("V2"), col++);
   addLabel(gridLayout, tr("AND"), col++);
@@ -29,9 +29,9 @@ CustomSwitchesPanel::CustomSwitchesPanel(QWidget * parent, ModelData & model):
     QLabel * label = new QLabel(this);
     label->setProperty("index", i);
     if (i < 9)
-      label->setText(tr("CS%1").arg(i+1));
+      label->setText(tr("LS%1").arg(i+1));
     else
-      label->setText(tr("CS%1").arg(QChar('A'+i-9)));
+      label->setText(tr("LS%1").arg(QChar('A'+i-9)));
     label->setContextMenuPolicy(Qt::CustomContextMenu);
     label->setMouseTracking(true);
     connect(label, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(csw_customContextMenuRequested(QPoint)));

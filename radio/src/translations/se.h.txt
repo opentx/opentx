@@ -33,7 +33,7 @@
  *
  * !!!!! DO NOT EDIT se.h - EDIT se.h.txt INSTEAD !!!!!!!   
  */
- /* Fotmatting octal codes available in TR_ strings:
+ /* Formatting octal codes available in TR_ strings:
  *  \037\x       -sets LCD x-coord (x value in octal)
  *  \036         -newline (ARM boards only)
  *  \001 to \035 -extended spacing (value * FW/2)
@@ -323,11 +323,11 @@
 #endif
 
 #if defined(CPUARM)
-  #define TR_CUSTOMSW          "CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC""CSD""CSE""CSF""CSG""CSH""CSI""CSJ""CSK""CSL""CSM""CSN""CSO""CSP""CSQ""CSR""CSS""CST""CSU""CSV""CSW"
+  #define TR_CUSTOMSW          "LB1""LB2""LB3""LB4""LB5""LB6""LB7""LB8""LB9""LBA""LBB""LBC""LBD""LBE""LBF""LBG""LBH""LBI""LBJ""LBK""LBL""LBM""LBN""LBO""LBP""LBQ""LBR""LBS""LBT""LBU""LBV""LBW"
 #elif defined(PCBGRUVIN9X) || defined(CPUM2561) || defined(CPUM128)
-  #define TR_CUSTOMSW          "CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC""CSD""CSE""CSF"
+  #define TR_CUSTOMSW          "LB1""LB2""LB3""LB4""LB5""LB6""LB7""LB8""LB9""LBA""LBB""LBC""LBD""LBE""LBF"
 #else
-  #define TR_CUSTOMSW          "CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC"
+  #define TR_CUSTOMSW          "LB1""LB2""LB3""LB4""LB5""LB6""LB7""LB8""LB9""LBA""LBB""LBC"
 #endif
 
 #if defined(PCBTARANIS)
@@ -394,10 +394,11 @@
 #define TR_LOADINGMODEL        "Laddar Modell   "
 #define TR_NAME                "Namn"
 #define TR_MODELNAME           "Modellnamn"
-#define TR_PHASENAME           "Modnamn   "
+#define TR_PHASENAME           "Lägesnamn "
 #define TR_MIXNAME             "Mixnamn "
+#define TR_INPUTNAME           "Filternamn"
 #if defined(PCBTARANIS)
-  #define TR_EXPONAME          "Line Name"
+  #define TR_EXPONAME          "Linjenamn"
 #else
   #define TR_EXPONAME          "Exponamn"
 #endif
@@ -499,7 +500,7 @@
 #define TR_NODATA              CENTER "NO DATA"
 #define TR_TOTTM1TM2THRTHP     "\037\146TOT\036TM1\037\146TM2\036THR\037\146TH%"
 #define TR_TMR1LATMAXUS        "Tmr1Lat max\037\124us"
-#define STR_US (STR_TMR1LATMAXUS+13)
+#define STR_US                 (STR_TMR1LATMAXUS+13)
 #define TR_TMR1LATMINUS        "Tmr1Lat min\037\124us"
 #define TR_TMR1JITTERUS        "Tmr1 Jitter\037\124us"
 
@@ -541,7 +542,7 @@
 #define TR_MENUHELISETUP       "Helikopter"
 
 #if defined(PCBTARANIS)
-  #define TR_MENUINPUTS        "INPUTS"
+  #define TR_MENUINPUTS        "Filter"
   #define TR_MENULIMITS        "Gränser"
 #elif defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...
   #define TR_MENUINPUTS        "Spakar" 
@@ -703,8 +704,6 @@
   #define TR_MAVLINK_LON                  "LON"
 #endif
 
-
-
 // Taranis column headers
 #define TR_PHASES_HEADERS      { " Namn ", " Brytare ", " Trimmar ", " Tona Upp ", " Tona Ned " }
 #define TR_LIMITS_HEADERS      { " Namn ", " Offset ", " Min ", " Max ", " Riktning ", " PPM-centrum ", " Symmetriskt " }
@@ -761,8 +760,14 @@
 #define TR_CHR_LONG            'l'
 #define TR_CHR_TOGGLE          't'
 #define TR_CHR_HOUR            'h'
+#define TR_CHR_INPUT           'F'   // Values between A-I will work
 
 #define TR_BEEP_VOLUME         "Volym Pip"
 #define TR_WAV_VOLUME          "Volym Wav"
 #define TR_VARIO_VOLUME        "Volym Vario"
 #define TR_BG_VOLUME           "Volym Bg"
+
+#define TR_TOP_BAR             "Top Bar"
+#define TR_ALTITUDE            INDENT "Höjd"
+#define TR_MODS_FORBIDDEN      "Modifikationer förbjudna!"
+#define TR_UNLOCKED            "Olåst"

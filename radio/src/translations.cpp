@@ -460,6 +460,7 @@ const pm_char STR_VIEW_TEXT[] PROGMEM = "View text";
   const pm_char STR_MODELNAME[] PROGMEM = TR_MODELNAME;
   const pm_char STR_PHASENAME[] PROGMEM = TR_PHASENAME;
   const pm_char STR_MIXNAME[] PROGMEM = TR_MIXNAME;
+  const pm_char STR_INPUTNAME[] PROGMEM = TR_INPUTNAME;
   const pm_char STR_EXPONAME[] PROGMEM = TR_EXPONAME;
 #endif
 
