@@ -4817,7 +4817,8 @@ void stack_paint()
   q = &__bss_end ;
   p -= 2 ;
   while ( p > q )
-    *p-- = 0x55 ;
+    *p = 0x55 ;
+    p--;
 }
 
 uint16_t stack_free()
@@ -4825,10 +4826,7 @@ uint16_t stack_free()
   unsigned char *p ;
 
   p = &__bss_end + 1 ;
-  while ( *p == 0x55 )
-  {
-    p+= 1 ;
-  }
+  while ( *p++ == 0x55 );
   return p - &__bss_end ;
 }
 #endif

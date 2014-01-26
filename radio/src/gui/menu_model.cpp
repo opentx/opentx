@@ -2271,7 +2271,8 @@ void DrawCurve(uint8_t offset=0)
 
   uint8_t i = 0;
   do {
-    point_t point = getPoint(i++);
+    point_t point = getPoint(i);
+    i++;
     if (point.x == 0) break;
     lcd_filled_rect(point.x-offset, point.y-1, 3, 3, SOLID, FORCE); // do markup square
   } while(1);

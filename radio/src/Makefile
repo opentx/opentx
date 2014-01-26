@@ -285,7 +285,7 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   ARCH = AVR
   TRGT = avr-
   MCU = atmega64
-  OPT = s  
+  OPT = s
   SDCARD = NO
   THR_TRACE = NO
   INCDIRS += targets/stock
