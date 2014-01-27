@@ -534,7 +534,7 @@ void processSerialData(uint8_t data)
   btPushByte(data);
 #endif
 
-#if defined(SMARTPORT2SERIAL) && !defined(DEBUG)
+#if !defined(DEBUG)
   if (g_eeGeneral.hw_uartMode == 1) {
   sp2sPutc(data);
   }

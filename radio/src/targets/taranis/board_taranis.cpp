@@ -195,7 +195,7 @@ void boardInit()
 #if defined(DEBUG)
   uartInit(DEBUG_UART_BAUDRATE);
 #endif
-#if defined(SMARTPORT2SERIAL) && !defined(DEBUG)
+#if !defined(DEBUG)
   if (g_eeGeneral.hw_uartMode == 1) {
   uartInit(SPORT_BAUDRATE);
   }

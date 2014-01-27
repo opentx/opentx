@@ -63,10 +63,6 @@ PCBREV =
 # Values = STD, FRSKY, JETI, NMEA, ARDUPILOT, MAVLINK, TELEMETREZ
 EXT = STD
 
-# Enable mirroring Smarport data on serial port ( Taranis )
-# Dont' use it with DEBUG enabled
-SMARTPORT2SERIAL = NO
-
 # FAI mode
 # Values = YES, NO, CHOICE
 FAI = NO
@@ -656,10 +652,6 @@ ifeq ($(PCB), TARANIS)
     CPPDEFS += -DVOICE
     INCDIRS += FatFs FatFs/option
   endif
-  
-  ifeq ($(SMARTPORT2SERIAL), YES)
-  	CPPDEFS += -DSMARTPORT2SERIAL
-  endif  
   
   ifeq ($(RTCLOCK), YES)
     CPPDEFS += -DRTCLOCK
