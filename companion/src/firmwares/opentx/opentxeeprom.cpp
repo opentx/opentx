@@ -425,6 +425,12 @@ class PhaseField: public TransformedField {
         for (int i=0; i<NUM_STICKS; i++)
           internalField.Append(new SignedField<2>(trimExt[i]));
       }
+      else if (board == BOARD_TARANIS && version >= 216) {
+        for (int i=0; i<NUM_STICKS; i++) {
+          internalField.Append(new SignedField<11>(phase.trim[i]));
+          internalField.Append(new UnsignedField<5>(trimMode[i]));
+        }
+      }
       else {
         for (int i=0; i<NUM_STICKS; i++)
           internalField.Append(new SignedField<16>(trimBase[i]));
@@ -459,19 +465,27 @@ class PhaseField: public TransformedField {
     virtual void beforeExport()
     {
       for (int i=0; i<NUM_STICKS; i++) {
-        int trim;
-        if (phase.trimRef[i] >= 0) {
-          trim = 501 + phase.trimRef[i] - (phase.trimRef[i] >= index ? 1 : 0);
+        if (board == BOARD_TARANIS && version >= 216) {
+          if (phase.trimMode[i] < 0)
+            trimMode[i] = 0b11111;
+          else
+            trimMode[i] = 2*phase.trimRef[i] + phase.trimMode[i];
         }
         else {
-          trim = std::max(-500, std::min(500, phase.trim[i]));
-        }
-        if (board == BOARD_STOCK || (board == BOARD_M128 && version >= 215)) {
-          trimBase[i] = trim >> 2;
-          trimExt[i] = (trim & 0x03);
-        }
-        else {
-          trimBase[i] = trim;
+          int trim;
+          if (phase.trimMode[i] < 0)
+            trim = 0;
+          else if (phase.trimRef[i] != index)
+            trim = 501 + phase.trimRef[i] - (phase.trimRef[i] > index ? 1 : 0);
+          else
+            trim = std::max(-500, std::min(500, phase.trim[i]));
+          if (board == BOARD_STOCK || (board == BOARD_M128 && version >= 215)) {
+            trimBase[i] = trim >> 2;
+            trimExt[i] = (trim & 0x03);
+          }
+          else {
+            trimBase[i] = trim;
+          }
         }
       }
     }
@@ -479,21 +493,31 @@ class PhaseField: public TransformedField {
     virtual void afterImport()
     {
       for (int i=0; i<NUM_STICKS; i++) {
-        int trim;
-        if (board == BOARD_STOCK || (board == BOARD_M128 && version >= 215))
-          trim = ((trimBase[i]) << 2) + (trimExt[i] & 0x03);
-        else
-          trim = trimBase[i];
-        if (trim > 500) {
-          phase.trimRef[i] = trim - 501;
-          if (phase.trimRef[i] >= index)
-            phase.trimRef[i] += 1;
-          phase.trim[i] = 0;
+        if (board == BOARD_TARANIS && version >= 216) {
+          if (trimMode[i] == 0b11111) {
+            phase.trimMode[i] = -1;
+          }
+          else {
+            phase.trimMode[i] = trimMode[i] % 2;
+            phase.trimRef[i] = trimMode[i] / 2;
+          }
         }
         else {
-          phase.trim[i] = trim;
+          int trim;
+          if (board == BOARD_STOCK || (board == BOARD_M128 && version >= 215))
+            trim = ((trimBase[i]) << 2) + (trimExt[i] & 0x03);
+          else
+            trim = trimBase[i];
+          if (trim > 500) {
+            phase.trimRef[i] = trim - 501;
+            if (phase.trimRef[i] >= index)
+              phase.trimRef[i] += 1;
+            phase.trim[i] = 0;
+          }
+          else {
+            phase.trim[i] = trim;
+          }
         }
-
       }
     }
 
@@ -506,6 +530,7 @@ class PhaseField: public TransformedField {
     int rotencCount;
     int trimBase[NUM_STICKS];
     int trimExt[NUM_STICKS];
+    unsigned int trimMode[NUM_STICKS];
 };
 
 

@@ -655,7 +655,8 @@ class FuncSwData { // Function Switches data
 class PhaseData {
   public:
     PhaseData() { clear(); }
-    int trimRef[NUM_STICKS]; //
+    int trimMode[NUM_STICKS];
+    int trimRef[NUM_STICKS];
     int trim[NUM_STICKS];
     RawSwitch swtch;
     char name[10+1];
@@ -663,7 +664,7 @@ class PhaseData {
     unsigned int fadeOut;
     int rotaryEncoders[2];
     int gvars[C9X_MAX_GVARS];
-    void clear() { memset(this, 0, sizeof(PhaseData)); for (int i=0; i<NUM_STICKS; i++) trimRef[i] = -1; }
+    void clear() { memset(this, 0, sizeof(PhaseData));}
 };
 
 class SwashRingData { // Swash Ring data
@@ -891,8 +892,9 @@ class ModelData {
     void clear();
     bool isempty();
     void setDefault(uint8_t id);
-    unsigned int getTrimFlightPhase(uint8_t idx, int8_t phase);
 
+    int getTrimValue(int phaseIdx, int trimIdx);
+    void setTrimValue(int phaseIdx, int trimIdx, int value);
     ModelData removeGlobalVars();
 
     void clearMixes();
@@ -981,7 +983,6 @@ enum Capability {
  GvarsInCS,
  GvarsAreNamed,
  GvarsFlightPhases,
- GvarsHaveSources,
  GvarsAsSources,
  GvarsName,
  NoTelemetryProtocol,
