@@ -122,7 +122,7 @@ PACK(typedef struct {
 }) TimerData_v215;
 
 PACK(typedef struct {
-  TRIMS_ARRAY;
+  int16_t trim[4];
   int8_t swtch;       // swtch of phase[0] is not used
   char name[LEN_FP_NAME];
   uint8_t fadeIn;
@@ -437,6 +437,22 @@ void ConvertModel_215_to_216(ModelData &model)
 
   for (uint8_t i=0; i<9; i++) {
     memcpy(&g_model.phaseData[i], &oldModel.phaseData[i], sizeof(oldModel.phaseData[i])); // the last 4 gvars will remain blank
+#if defined(PCBTARANIS)
+    for (uint8_t t=0; t<4; t++) {
+      int trim = oldModel.phaseData[i].trim[t];
+      if (trim > 500) {
+        trim -= 501;
+        if (trim >= i)
+          trim += 1;
+        g_model.phaseData[i].trim[t].mode = 2*trim;
+        g_model.phaseData[i].trim[t].value = 0;
+      }
+      else {
+        g_model.phaseData[i].trim[t].mode = 2*i;
+        g_model.phaseData[i].trim[t].value = trim;
+      }
+    }
+#endif
   }
   g_model.thrTraceSrc = oldModel.thrTraceSrc;
   g_model.switchWarningStates = oldModel.switchWarningStates;
