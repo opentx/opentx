@@ -52,7 +52,7 @@ DELAY = 5
 # PCB version
 # Values: 9X, 9X128, 9X2561, 9XR, 9XR128, 9XR2561, GRUVIN9X, MEGA2560, SKY9X, TARANIS
 # Old values STD and STD128 are mapped to 9X and 9X128 for compatibility
-PCB = TARANIS
+PCB = 9X
 
 # PCB revision
 PCBREV =
@@ -65,7 +65,7 @@ EXT = STD
 
 # Enable mirroring Smarport data on serial port ( Taranis )
 # Dont' use it with DEBUG enabled
-SMARTPORT2SERIAL = YES
+SMARTPORT2SERIAL = NO
 
 # FAI mode
 # Values = YES, NO, CHOICE
@@ -91,7 +91,7 @@ NAVIGATION = NO
 
 # Switches automatic selection
 # Values = YES, NO 
-AUTOSWITCH = YES
+AUTOSWITCH = NO
 
 # Swap Stick Inputs for AIL,ELE,RUD,THR
 # Used in some scenarios where stick/pot entries
@@ -100,7 +100,7 @@ AUTOSWITCH = YES
 
 # Sources automatic selection
 # Values = YES, NO 
-AUTOSOURCE = YES
+AUTOSOURCE = NO
 
 # Double keys support (+/- means invert, +/up means max, -/dwn means min, up/down means reset to default)
 # Values = YES, NO 
@@ -108,11 +108,11 @@ DBLKEYS = NO
 
 # AUDIO Mods
 # Values = YES, NO 
-AUDIO = YES
+AUDIO = NO
 
 # VOICE Mods
 # Values = YES, NO 
-VOICE = YES
+VOICE = NO
 
 # corrects different rounding for negative values. So instead of -99.9 you will see again -100.0
 # Values = YES, NO
@@ -149,7 +149,7 @@ FONT = STD
 
 # PPM center adjustable
 # Values = YES, NO
-PPM_CENTER_ADJUSTABLE = YES
+PPM_CENTER_ADJUSTABLE = NO
 
 # PPM symetrical limits
 # Values = YES, NO
