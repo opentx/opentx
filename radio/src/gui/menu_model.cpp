@@ -2888,7 +2888,7 @@ void menuModelExpoOne(uint8_t event)
     {
 #if defined(PCBTARANIS)
       case EXPO_FIELD_INPUT_NAME:
-        editSingleName(EXPO_ONE_2ND_COLUMN, y, "Input Name", g_model.inputNames[ed->chn], sizeof(g_model.inputNames[ed->chn]), event, attr);
+        editSingleName(EXPO_ONE_2ND_COLUMN, y, STR_INPUTNAME, g_model.inputNames[ed->chn], sizeof(g_model.inputNames[ed->chn]), event, attr);
         break;
 #endif
 

@@ -14,7 +14,7 @@ CustomSwitchesPanel::CustomSwitchesPanel(QWidget * parent, ModelData & model):
   QGridLayout * gridLayout = new QGridLayout(this);
 
   int col = 1;
-  addLabel(gridLayout, tr("Function"), col++);
+  addLabel(gridLayout, tr("Condition"), col++);
   addLabel(gridLayout, tr("V1"), col++);
   addLabel(gridLayout, tr("V2"), col++);
   addLabel(gridLayout, tr("AND"), col++);

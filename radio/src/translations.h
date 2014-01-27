@@ -644,6 +644,7 @@ extern const pm_char STR_VIEW_TEXT[];
   extern const pm_char STR_MODELNAME[];
   extern const pm_char STR_PHASENAME[];
   extern const pm_char STR_MIXNAME[];
+  extern const pm_char STR_INPUTNAME[];
   extern const pm_char STR_EXPONAME[];
 #else
   #define STR_MODELNAME STR_NAME
@@ -764,5 +765,6 @@ extern const pm_char STR_VIEW_TEXT[];
 #define CHR_LONG   TR_CHR_LONG
 #define CHR_TOGGLE TR_CHR_TOGGLE
 #define CHR_HOUR   TR_CHR_HOUR
+#define CHR_INPUT  TR_CHR_INPUT
 
 #endif

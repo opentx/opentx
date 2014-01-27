@@ -45,7 +45,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
 
   int col = 1;
   addLabel(gridLayout, tr("Switch"), col++);
-  addLabel(gridLayout, tr("Function"), col++);
+  addLabel(gridLayout, tr("Action"), col++);
   addLabel(gridLayout, tr("Parameters"), col++);
   addLabel(gridLayout, tr("Enable"), col++);
 
