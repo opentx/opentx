@@ -122,3 +122,9 @@ extern "C" void USART3_IRQHandler(void)
   }
 }
 #endif
+
+void initSport2serial() {
+if (g_eeGeneral.hw_uartMode == 1) {
+    uartInit(SPORT_BAUDRATE);
+    }
+}

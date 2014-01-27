@@ -1188,10 +1188,8 @@ void menuGeneralHardware(uint8_t event)
         uint8_t previous_uartMode = g_eeGeneral.hw_uartMode;
       	g_eeGeneral.hw_uartMode = selectMenuItem(HW_SETTINGS_COLUMN, y, STR_UART3MODE, STR_UART3MODES, g_eeGeneral.hw_uartMode, 0, 2, attr, event);
         #if !defined(DEBUG)
-        if (previous_uartMode != g_eeGeneral.hw_uartMode=) {
-            if (g_eeGeneral.hw_uartMode == 1) {
-            uartInit(SPORT_BAUDRATE);
-            }
+        if (previous_uartMode != g_eeGeneral.hw_uartMode) {
+            initSport2serial();
             else {
             uartDeInit();
             }

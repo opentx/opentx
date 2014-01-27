@@ -82,6 +82,7 @@ void delaysInit();
 
 void uartInit(uint32_t baudrate);
 void uartDeInit();
+void initSport2serial();
 void uartPutc(const char c);
 
 void sportInit(void);
