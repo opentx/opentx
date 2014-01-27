@@ -1174,10 +1174,10 @@ void putsTrimMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, LcdFlags at
   }
   else {
     if (mode % 2 == 0)
-      lcd_putcAtt(x+2, y, ':', att);
+      lcd_putcAtt(x, y, ':', att|FIXEDWIDTH);
     else
-      lcd_putcAtt(x, y, '+', att);
-    lcd_putcAtt(x+FW, y, '0'+p, att);
+      lcd_putcAtt(x, y, '+', att|FIXEDWIDTH);
+    lcd_putcAtt(lcdNextPos, y, '0'+p, att);
   }
 }
 #else
