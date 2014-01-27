@@ -1737,6 +1737,11 @@ enum FlightModesItems {
   ITEM_PHASES_LAST = ITEM_PHASES_COUNT-1
 };
 
+bool isTrimModeAvailable(int16_t mode)
+{
+  return (mode == TRIM_MODE_NONE || (mode%2) == 0 || (mode/2) != (m_posVert-1));
+}
+
 void menuModelFlightModesAll(uint8_t event)
 {
   MENU(STR_MENUFLIGHTPHASES, menuTabModel, e_FlightModesAll, 1+MAX_PHASES+1, {0, NAVIGATION_LINE_BY_LINE|(ITEM_PHASES_LAST-5), NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, 0});
@@ -1796,7 +1801,7 @@ void menuModelFlightModesAll(uint8_t event)
             putsTrimMode((4+LEN_FP_NAME)*FW+j*(5*FW/2), y, k, t, attr);
             if (active) {
               trim_t & v = p->trim[t];
-              v.mode = checkIncDec(event, v.mode, -1, 2*MAX_PHASES-1, EE_MODEL);
+              v.mode = checkIncDec(event, v.mode==TRIM_MODE_NONE ? -1 : v.mode, -1, 2*MAX_PHASES-1, EE_MODEL, isTrimModeAvailable);
             }
           }
           break;
@@ -2858,7 +2863,7 @@ void menuModelExpoOne(uint8_t event)
       case EXPO_FIELD_SCALE:
         lcd_putsLeft(y, STR_SCALE);
         putsTelemetryChannel(EXPO_ONE_2ND_COLUMN, y, ed->srcRaw - MIXSRC_FIRST_TELEM, convertTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1, ed->scale), LEFT|attr);
-        if (attr) ed->scale = checkIncDec(event, ed->scale, 0, maxTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1), EE_MODEL, NULL);
+        if (attr) ed->scale = checkIncDec(event, ed->scale, 0, maxTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1), EE_MODEL);
         break;
 #endif
 

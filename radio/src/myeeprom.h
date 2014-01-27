@@ -1074,9 +1074,10 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 #else
   #if defined(PCBTARANIS)
     PACK(typedef struct {
-      int16_t value:11;
-      int16_t mode:5;
+      int16_t  value:11;
+      uint16_t mode:5;
     }) trim_t;
+    #define TRIM_MODE_NONE 0b11111
   #else
     #define trim_t          int16_t
   #endif
