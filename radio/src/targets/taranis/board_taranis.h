@@ -81,6 +81,7 @@ void delaysInit();
 #define SPORT_BAUDRATE      57600
 
 void uartInit(uint32_t baudrate);
+void uartDeInit();
 void uartPutc(const char c);
 
 void sportInit(void);

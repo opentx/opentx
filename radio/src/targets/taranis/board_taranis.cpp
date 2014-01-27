@@ -196,7 +196,9 @@ void boardInit()
   uartInit(DEBUG_UART_BAUDRATE);
 #endif
 #if defined(SMARTPORT2SERIAL) && !defined(DEBUG)
+  if (g_eeGeneral.hw_uartMode == 1) {
   uartInit(SPORT_BAUDRATE);
+  }
 #endif
   init5msTimer();
   __enable_irq();

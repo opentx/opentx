@@ -1185,7 +1185,18 @@ void menuGeneralHardware(uint8_t event)
   	uint8_t attr = (sub == i ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
     switch(i) {
       case ITEM_SETUP_HW_UART3_MODE:
+        uint8_t previous_uartMode = g_eeGeneral.hw_uartMode;
       	g_eeGeneral.hw_uartMode = selectMenuItem(HW_SETTINGS_COLUMN, y, STR_UART3MODE, STR_UART3MODES, g_eeGeneral.hw_uartMode, 0, 2, attr, event);
+        #if defined(SMARTPORT2SERIAL) && !defined(DEBUG)
+        if (previous_uartMode != g_eeGeneral.hw_uartMode=) {
+            if (g_eeGeneral.hw_uartMode == 1) {
+            uartInit(SPORT_BAUDRATE);
+            }
+            else {
+            uartDeInit();
+            }
+        }
+        #endif
         break;
     }
   }

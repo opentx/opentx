@@ -535,7 +535,9 @@ void processSerialData(uint8_t data)
 #endif
 
 #if defined(SMARTPORT2SERIAL) && !defined(DEBUG)
+  if (g_eeGeneral.hw_uartMode == 1) {
   sp2sPutc(data);
+  }
 #endif
 
   if (data == START_STOP) {

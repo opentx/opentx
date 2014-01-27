@@ -72,6 +72,11 @@ void uartInit(uint32_t baudrate)
   NVIC_SetPriority(USART3_IRQn, 7);
 }
 
+void uartDeInit() {
+  USART_DeInit(USART3);
+
+}
+
 #if defined(DEBUG)
 Fifo<512> debugTxFifo;
 void debugPutc(const char c)
