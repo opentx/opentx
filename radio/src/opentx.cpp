@@ -1695,7 +1695,7 @@ void setTrimValue(uint8_t phase, uint8_t idx, int trim)
       phase = p;
     }
     else {
-      v.value = limit<int>(-500, trim - getTrimValue(p, idx), 500);
+      v.value = limit<int>(TRIM_EXTENDED_MIN, trim - getTrimValue(p, idx), TRIM_EXTENDED_MAX);
       break;
     }
   }
