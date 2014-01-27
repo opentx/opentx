@@ -1667,9 +1667,9 @@ int getTrimValue(uint8_t phase, uint8_t idx)
       else {
         phase = p;
         if (v.mode % 2 == 0)
-          result += v.value;
-        else
           result = 0;
+        else
+          result += v.value;
       }
     }
   }
@@ -1692,11 +1692,11 @@ void setTrimValue(uint8_t phase, uint8_t idx, int trim)
       break;;
     }
     else if (v.mode % 2 == 0) {
-      v.value = limit<int>(-500, trim - getTrimValue(p, idx), 500);
-      break;
+      phase = p;
     }
     else {
-      phase = p;
+      v.value = limit<int>(-500, trim - getTrimValue(p, idx), 500);
+      break;
     }
   }
 #elif defined(PCBSTD)

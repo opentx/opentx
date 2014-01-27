@@ -1167,20 +1167,16 @@ void putsTrimMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, LcdFlags at
 {
   trim_t v = getRawTrimValue(phase, idx);
 
-  putsChnLetter(x, y, idx+1, att);
-
   if (v.mode < 0) {
-    lcd_putsAtt(x+FWNUM, y, "--", att);
+    lcd_putsAtt(x, y, "--", att);
   }
   else {
     uint8_t p = v.mode >> 1;
-    if (v.mode % 2 == 0) {
-      lcd_putcAtt(x+FWNUM, y, '+', att);
-    }
-    else {
-      lcd_putcAtt(x+FWNUM, y, ':', att);
-    }
-    lcd_putcAtt(x+2*FWNUM, y, '0'+p, att);
+    if (v.mode % 2 == 0)
+      lcd_putcAtt(x+2, y, ':', att);
+    else
+      lcd_putcAtt(x, y, '+', att);
+    lcd_putcAtt(x+FW, y, '0'+p, att);
   }
 }
 #else

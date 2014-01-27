@@ -1727,64 +1727,24 @@ FlightModesType editFlightModes(uint8_t x, uint8_t y, uint8_t event, FlightModes
 enum FlightModesItems {
   ITEM_PHASES_NAME,
   ITEM_PHASES_SWITCH,
-  ITEM_PHASES_TRIMS,
+  ITEM_PHASES_TRIM_RUD,
+  ITEM_PHASES_TRIM_ELE,
+  ITEM_PHASES_TRIM_THR,
+  ITEM_PHASES_TRIM_AIL,
   ITEM_PHASES_FADE_IN,
   ITEM_PHASES_FADE_OUT,
   ITEM_PHASES_COUNT,
   ITEM_PHASES_LAST = ITEM_PHASES_COUNT-1
 };
 
-void editPhaseTrims(uint8_t x, uint8_t y, uint8_t phase, uint8_t event, uint8_t active)
-{
-  static uint8_t cursorPos = 0;
-
-  for (uint8_t t=0; t<NUM_STICKS; t++) {
-    putsTrimMode(x+t*(3*FW-2), y, phase, t, (active && (s_editMode <= 0 || cursorPos==t)) ? INVERS : 0);
-  }
-
-  if (active) {
-    uint8_t cur = cursorPos;
-    if (s_editMode > 0) {
-      if (p1valdiff || IS_ROTARY_RIGHT(event) || IS_ROTARY_LEFT(event) || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_FIRST(KEY_UP)
-          || event==EVT_KEY_REPT(KEY_DOWN) || event==EVT_KEY_REPT(KEY_UP)) {
-        PhaseData *p = phaseAddress(phase);
-        trim_t & v = p->trim[cur];
-        v.mode = checkIncDec(event, v.mode, -1, 2*MAX_PHASES-1, EE_MODEL);
-      }
-
-      switch (event) {
-        case EVT_KEY_BREAK(KEY_ENTER):
-          if (s_editMode == EDIT_MODIFY_FIELD) {
-            s_editMode = EDIT_MODIFY_STRING;
-            cur = 0;
-          }
-          else if (cur<NUM_STICKS-1)
-            cur++;
-          else
-            s_editMode = 0;
-          break;
-
-        case EVT_KEY_LONG(KEY_ENTER):
-          s_editMode = 0;
-          killEvents(event);
-          break;
-      }
-    }
-    else {
-      cur = 0;
-    }
-    cursorPos = cur;
-  }
-}
-
 void menuModelFlightModesAll(uint8_t event)
 {
-  MENU(STR_MENUFLIGHTPHASES, menuTabModel, e_FlightModesAll, 1+MAX_PHASES+1, {0, NAVIGATION_LINE_BY_LINE|(ITEM_PHASES_LAST-2), NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, 0});
+  MENU(STR_MENUFLIGHTPHASES, menuTabModel, e_FlightModesAll, 1+MAX_PHASES+1, {0, NAVIGATION_LINE_BY_LINE|(ITEM_PHASES_LAST-5), NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, 0});
 
   int8_t sub = m_posVert - 1;
 
   horzpos_t posHorz = m_posHorz;
-  if (sub==0 && posHorz > 0) { posHorz += 2; }
+  if (sub==0 && posHorz > 0) { posHorz += 5; }
 
   if (sub<MAX_PHASES && posHorz>=0) {
     displayColumnHeader(STR_PHASES_HEADERS, posHorz);
@@ -1819,20 +1779,27 @@ void menuModelFlightModesAll(uint8_t event)
 
         case ITEM_PHASES_SWITCH:
           if (k == 0) {
-            lcd_puts((5+LEN_FP_NAME)*FW-FW/2, y, STR_DEFAULT);
+            lcd_puts((5+LEN_FP_NAME)*FW, y, STR_DEFAULT);
           }
           else {
-            putsSwitches((5+LEN_FP_NAME)*FW-FW/2, y, p->swtch, attr);
+            putsSwitches((5+LEN_FP_NAME)*FW, y, p->swtch, attr);
             if (active) CHECK_INCDEC_MODELSWITCH(event, p->swtch, -MAX_SWITCH, MAX_SWITCH);
           }
           break;
 
-        case ITEM_PHASES_TRIMS:
+        case ITEM_PHASES_TRIM_RUD:
+        case ITEM_PHASES_TRIM_ELE:
+        case ITEM_PHASES_TRIM_THR:
+        case ITEM_PHASES_TRIM_AIL:
           if (k != 0) {
-            editPhaseTrims((10+LEN_FP_NAME)*FW-2*FW, y, k, event, attr);
+            uint8_t t = j-ITEM_PHASES_TRIM_RUD;
+            putsTrimMode((4+LEN_FP_NAME)*FW+j*(5*FW/2), y, k, t, attr);
+            if (active) {
+              trim_t & v = p->trim[t];
+              v.mode = checkIncDec(event, v.mode, -1, 2*MAX_PHASES-1, EE_MODEL);
+            }
           }
           break;
-
         case ITEM_PHASES_FADE_IN:
           lcd_outdezAtt(32*FW-2, y, (10/DELAY_STEP)*p->fadeIn, attr|PREC1);
           if (active) p->fadeIn = checkIncDec(event, p->fadeIn, 0, DELAY_MAX, EE_MODEL|NO_INCDEC_MARKS);
