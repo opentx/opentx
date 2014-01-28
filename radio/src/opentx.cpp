@@ -1854,7 +1854,7 @@ csw_telemetry_value_t maxTelemValue(uint8_t channel)
 #endif
 
 #if defined(CPUARM)
-getvalue_t convertTelemValue(uint8_t channel, csw_telemetry_value_t value)
+getvalue_t convert16bitsTelemValue(uint8_t channel, csw_telemetry_value_t value)
 {
   getvalue_t result;
   switch (channel) {
@@ -1867,8 +1867,14 @@ getvalue_t convertTelemValue(uint8_t channel, csw_telemetry_value_t value)
   }
   return result;
 }
-#else
-getvalue_t convertTelemValue(uint8_t channel, csw_telemetry_value_t value)
+
+csw_telemetry_value_t max8bitsTelemValue(uint8_t channel)
+{
+  return min<csw_telemetry_value_t>(255, maxTelemValue(channel));
+}
+#endif
+
+getvalue_t convert8bitsTelemValue(uint8_t channel, csw_telemetry_value_t value)
 {
   getvalue_t result;
   switch (channel) {
@@ -1878,6 +1884,10 @@ getvalue_t convertTelemValue(uint8_t channel, csw_telemetry_value_t value)
       break;
 #if defined(FRSKY)
     case TELEM_ALT:
+#if defined(CPUARM)
+      result = 100 * (value * 8 - 500);
+      break;
+#endif
     case TELEM_GPSALT:
     case TELEM_MAX_ALT:
     case TELEM_MIN_ALT:
@@ -1915,18 +1925,17 @@ getvalue_t convertTelemValue(uint8_t channel, csw_telemetry_value_t value)
   }
   return result;
 }
-#endif
 
 getvalue_t convertCswTelemValue(CustomSwData * cs)
 {
   getvalue_t val;
 #if defined(CPUARM)
-  val = convertTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, cs->v2);
+  val = convert16bitsTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, cs->v2);
 #else
   if (cswFamily(cs->func)==CS_VOFS)
-    val = convertTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128+cs->v2);
+    val = convert8bitsTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128+cs->v2);
   else
-    val = convertTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128+cs->v2) - convertTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128);
+    val = convert8bitsTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128+cs->v2) - convert8bitsTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128);
 #endif
   return val;
 }

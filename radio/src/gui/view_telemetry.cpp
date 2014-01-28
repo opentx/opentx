@@ -214,8 +214,8 @@ void menuTelemetryFrsky(uint8_t event)
       for (int8_t i=3; i>=0; i--) {
         FrSkyBarData & bar = screen.bars[i];
         uint8_t source = bar.source;
-        getvalue_t barMin = convertTelemValue(source, bar.barMin);
-        getvalue_t barMax = convertTelemValue(source, 255-bar.barMax);
+        getvalue_t barMin = convertBarTelemValue(source, bar.barMin);
+        getvalue_t barMax = convertBarTelemValue(source, 255-bar.barMax);
         if (source && barMax > barMin) {
           uint8_t y = barHeight+6+i*(barHeight+6);
           lcd_putsiAtt(0, y+barHeight-5, STR_VTELEMCHNS, source, 0);
@@ -234,7 +234,7 @@ void menuTelemetryFrsky(uint8_t event)
             threshold = g_model.frsky.channels[source-TELEM_A1].alarms_value[0];
 #if defined(FRSKY_HUB)
           else
-            threshold = convertTelemValue(source, barsThresholds[source-TELEM_ALT]);
+            threshold = convertBarTelemValue(source, barsThresholds[source-TELEM_ALT]);
 #endif
 
           if (threshold) {
