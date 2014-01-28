@@ -37,11 +37,15 @@ void getEEPROMString(char *dst, const char *src, int size)
   }
 }
 
-RawSourceRange RawSource::getRange()
+RawSourceRange RawSource::getRange(bool singleprec)
 {
   RawSourceRange result;
 
   int board = GetEepromInterface()->getBoard();
+
+  if (!singleprec && !IS_TARANIS(board)) {
+    singleprec = true;
+  }
 
   switch (type) {
     case SOURCE_TYPE_TELEMETRY:
@@ -53,12 +57,14 @@ RawSourceRange RawSource::getRange()
           break;
         case TELEMETRY_SOURCE_TIMER1:
         case TELEMETRY_SOURCE_TIMER2:
-          result.step = IS_TARANIS(board) ? 1 : 3;
-          result.max = 765;
+          result.step = singleprec ? 3 : 1;
+          result.max = singleprec ? 765 : 7200;
+          result.offset = 128;
           break;
         case TELEMETRY_SOURCE_RSSI_TX:
         case TELEMETRY_SOURCE_RSSI_RX:
           result.max = 100;
+          result.offset = 128;
           break;
         case TELEMETRY_SOURCE_A1:
         case TELEMETRY_SOURCE_A2:
@@ -78,12 +84,13 @@ RawSourceRange RawSource::getRange()
               // result.offset = result.min;
             }
           }
+          result.offset = 128;
           break;
         case TELEMETRY_SOURCE_ALT:
         case TELEMETRY_SOURCE_GPS_ALT:
-          result.step = IS_TARANIS(board) ? 1 : 8;
+          result.step = singleprec ? 8 : 1;
           result.min = -500;
-          result.max = 1540;
+          result.max = singleprec ? 1540 : 3000;
           // result.offset = 524;
           break;
         case TELEMETRY_SOURCE_T1:
@@ -93,16 +100,17 @@ RawSourceRange RawSource::getRange()
           // result.offset = 98;
           break;
         case TELEMETRY_SOURCE_RPM:
-          result.step = IS_TARANIS(board) ? 1 : 50;
-          result.max = 12750;
+          result.step = singleprec ? 50 : 1;
+          result.max = singleprec ? 12750 : 20000;
           // result.offset = 6400;
           break;
         case TELEMETRY_SOURCE_FUEL:
           result.max = 100;
+          result.offset = 128;
           break;
         case TELEMETRY_SOURCE_SPEED:
-          result.step = IS_TARANIS(board) ? 1 : 4;
-          result.max = 944;
+          result.step = singleprec ? 4 : 1;
+          result.max = singleprec ? 944 : 2000;
           // result.offset = 474;
           if (model && !model->frsky.imperial) {
             result.step *= 1.852;
@@ -110,12 +118,12 @@ RawSourceRange RawSource::getRange()
           }
           break;
         case TELEMETRY_SOURCE_DIST:
-          result.step = IS_TARANIS(board) ? 1 : 8;
-          result.max = 2040;
+          result.step = singleprec ? 8 : 1;
+          result.max = singleprec ? 2040 : 10000;
           // result.offset = 1024;
           break;
         case TELEMETRY_SOURCE_CELL:
-          result.step = IS_TARANIS(board) ? 0.01 : 0.02;
+          result.step = singleprec ? 0.02 : 0.01;
           result.max = 5.1;
           result.decimals = 2;
           // result.offset = 2.56;
@@ -125,19 +133,23 @@ RawSourceRange RawSource::getRange()
           result.step = 0.1;
           result.max = 25.5;
           result.decimals = 1;
+          result.offset = 128;
           break;
         case TELEMETRY_SOURCE_CURRENT:
-          result.step = IS_TARANIS(board) ? 0.1 : 0.5;
-          result.max = 127.5;
+          result.step = singleprec ? 0.5 : 0.1;
+          result.max = singleprec ? 127.5 : 200.0;
           result.decimals = 1;
+          result.offset = 128;
           break;
         case TELEMETRY_SOURCE_CONSUMPTION:
-          result.step = IS_TARANIS(board) ? 1 : 20;
-          result.max = 5100;
+          result.step = singleprec ? 20 : 1;
+          result.max = singleprec ? 5100 : 10000;
+          result.offset = 128;
           break;
         case TELEMETRY_SOURCE_POWER:
-          result.step = IS_TARANIS(board) ? 1 : 5;
-          result.max = 1275;
+          result.step = singleprec ? 5 : 1;
+          result.max = singleprec ? 1275 : 2000;
+          result.offset = 128;
           break;
         default:
           result.max = 125;
@@ -153,34 +165,6 @@ RawSourceRange RawSource::getRange()
 
   return result;
 }
-
-#if 0
-int RawSource::getRawOffset(const ModelData & Model)
-{
-  switch (type) {
-    case SOURCE_TYPE_TELEMETRY:
-      switch (index) {
-        case TELEMETRY_SOURCE_TIMER1:
-        case TELEMETRY_SOURCE_TIMER2:
-        case TELEMETRY_SOURCE_RSSI_TX:
-        case TELEMETRY_SOURCE_RSSI_RX:
-        case TELEMETRY_SOURCE_A1:
-        case TELEMETRY_SOURCE_A2:
-        case TELEMETRY_SOURCE_FUEL:
-        case TELEMETRY_SOURCE_CELLS_SUM:
-        case TELEMETRY_SOURCE_VFAS:
-        case TELEMETRY_SOURCE_CURRENT:
-        case TELEMETRY_SOURCE_CONSUMPTION:
-        case TELEMETRY_SOURCE_POWER:
-          return 128;
-        default:
-          return 0;
-      }
-   default:
-      return 0;
-  }
-}
-#endif
 
 QString AnalogString(int index)
 {

@@ -531,7 +531,7 @@ void TelemetryPanel::setup()
       int field = j%4;
       populateCustomScreenFieldCB(barsCB[j], model.frsky.screens[screen].body.bars[field].source, false, model.frsky.usrProto);
       RawSource source = RawSource(SOURCE_TYPE_TELEMETRY, model.frsky.screens[screen].body.bars[field].source, &model);
-      RawSourceRange range = source.getRange();
+      RawSourceRange range = source.getRange(true);
       minSB[j]->setDecimals(range.decimals);
       minSB[j]->setMinimum(range.min);
       minSB[j]->setMaximum(range.max);
@@ -754,7 +754,7 @@ void TelemetryPanel::telBarUpdate()
       index=barsCB[i]->currentIndex();
       if (index==TELEMETRY_SOURCE_A1 || index==TELEMETRY_SOURCE_A1 || index==TELEMETRY_SOURCE_A1_MIN || index==TELEMETRY_SOURCE_A2_MIN) {
         RawSource source = RawSource(SOURCE_TYPE_TELEMETRY, index, &model);
-        RawSourceRange range = source.getRange();
+        RawSourceRange range = source.getRange(true);
         minSB[i]->setMinimum(range.min);
         minSB[i]->setMaximum(range.max);
         minSB[i]->setSingleStep(range.step);
@@ -805,7 +805,7 @@ void TelemetryPanel::telBarCBcurrentIndexChanged(int index)
       maxSB[bar]->setEnabled(true);
     }
     RawSource source = RawSource(SOURCE_TYPE_TELEMETRY, index-1, &model);
-    RawSourceRange range = source.getRange();
+    RawSourceRange range = source.getRange(true);
     minSB[bar]->setDecimals(range.decimals);
     minSB[bar]->setMinimum(range.min);
     minSB[bar]->setMaximum(range.max);
@@ -830,7 +830,7 @@ void TelemetryPanel::telMinSBeditingFinished()
     int barId = spinBox->objectName().right(1).toInt() - 1;
     int minId = barId+screenId*4;
     RawSource source = RawSource(SOURCE_TYPE_TELEMETRY, model.frsky.screens[screenId].body.bars[barId].source, &model);
-    RawSourceRange range = source.getRange();
+    RawSourceRange range = source.getRange(true);
     if (model.frsky.screens[screenId].body.bars[barId].source==TELEMETRY_SOURCE_A1 || model.frsky.screens[screenId].body.bars[barId].source==TELEMETRY_SOURCE_A1_MIN) {
       model.frsky.screens[screenId].body.bars[barId].barMin = round((minSB[minId]->value()-analogs[0]->ui->CalibSB->value())/range.step);
     }
@@ -860,7 +860,7 @@ void TelemetryPanel::telMaxSBeditingFinished()
     int barId = spinBox->objectName().right(1).toInt() - 1;
     lock = true;
     RawSource source = RawSource(SOURCE_TYPE_TELEMETRY, model.frsky.screens[screenId].body.bars[barId].source, &model);
-    RawSourceRange range = source.getRange();
+    RawSourceRange range = source.getRange(true);
     if (model.frsky.screens[screenId].body.bars[barId].source==5) {
       model.frsky.screens[screenId].body.bars[barId].barMax = (255-round((spinBox->value()-analogs[0]->ui->CalibSB->value())/range.step));
     }

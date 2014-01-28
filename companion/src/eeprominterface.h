@@ -337,7 +337,7 @@ class RawSource {
 
     QString toString();
     
-    RawSourceRange getRange();
+    RawSourceRange getRange(bool singleprec=false);
     
     bool operator == ( const RawSource & other) {
       return (this->type == other.type) && (this->index == other.index);
