@@ -1300,13 +1300,13 @@ void compareDialog::printFrSky()
           if (fd1->screens[0].type==fd2->screens[0].type)
             color=getColor1(fd1->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].source);
           str.append("<td  align=\"Center\"><font color="+color+">"+getFrSkySrc(fd1->screens[0].body.bars[i].source)+"</font></td>");
-          value1=getBarValue(fd1->screens[0].body.bars[i].source,fd1->screens[0].body.bars[i].barMin,fd1);
-          value2=getBarValue(fd2->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].barMin,fd2);
+          // TODO value1 = getBarValue(fd1->screens[0].body.bars[i].source,fd1->screens[0].body.bars[i].barMin,fd1);
+          // TODO value2 = getBarValue(fd2->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].barMin,fd2);
           if (fd1->screens[0].type==fd2->screens[0].type)
             color=getColor1(value1,value2);
           str.append("<td  align=\"Right\"><font color="+color+">"+QString::number(value1)+"</td>");
-          value1=getBarValue(fd1->screens[0].body.bars[i].source,fd1->screens[0].body.bars[i].barMax,fd1);
-          value2=getBarValue(fd2->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].barMax,fd2);
+          // TODO value1=getBarValue(fd1->screens[0].body.bars[i].source,fd1->screens[0].body.bars[i].barMax,fd1);
+          // TODO value2=getBarValue(fd2->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].barMax,fd2);
           if (fd1->screens[0].type==fd2->screens[0].type)
            color=getColor1(value1,value2);
           str.append("<td  align=\"Right\"><font color="+color+">"+QString::number(value1)+"</td></tr>");
@@ -1418,13 +1418,13 @@ void compareDialog::printFrSky()
           if (fd1->screens[0].type==fd2->screens[0].type)
             color=getColor2(fd1->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].source);
           str.append("<td  align=\"Center\"><font color="+color+">"+getFrSkySrc(fd2->screens[0].body.bars[i].source)+"</font></td>");
-          value1=getBarValue(fd1->screens[0].body.bars[i].source,fd1->screens[0].body.bars[i].barMin,fd1);
-          value2=getBarValue(fd2->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].barMin,fd2);
+          // TODO value1=getBarValue(fd1->screens[0].body.bars[i].source,fd1->screens[0].body.bars[i].barMin,fd1);
+          // TODO value2=getBarValue(fd2->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].barMin,fd2);
           if (fd1->screens[0].type==fd2->screens[0].type)
             color=getColor2(value1,value2);
           str.append("<td  align=\"Right\"><font color="+color+">"+QString::number(value2)+"</font></td>");
-          value1=getBarValue(fd1->screens[0].body.bars[i].source,fd1->screens[0].body.bars[i].barMax,fd1);
-          value2=getBarValue(fd2->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].barMax,fd2);
+          // TODO value1=getBarValue(fd1->screens[0].body.bars[i].source,fd1->screens[0].body.bars[i].barMax,fd1);
+          // TODO value2=getBarValue(fd2->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].barMax,fd2);
           if (fd1->screens[0].type==fd2->screens[0].type)
             color=getColor2(value1,value2);
           str.append("<td  align=\"Right\"><font color="+color+">"+QString::number(value2)+"</font></td></tr>");

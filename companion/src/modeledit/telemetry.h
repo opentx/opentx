@@ -94,7 +94,6 @@ class TelemetryPanel : public ModelPanel
     QComboBox* csf[36];
 
     void setup();
-    float getBarStep(int barId);
     void telBarUpdate();
 };
 

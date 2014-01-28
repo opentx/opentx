@@ -530,44 +530,27 @@ void TelemetryPanel::setup()
       int screen = j/4;
       int field = j%4;
       populateCustomScreenFieldCB(barsCB[j], model.frsky.screens[screen].body.bars[field].source, false, model.frsky.usrProto);
-      switch (model.frsky.screens[screen].body.bars[field].source-1) {
-        case TELEMETRY_SOURCE_TX_BATT:
-        case TELEMETRY_SOURCE_A1:
-        case TELEMETRY_SOURCE_A1_MIN:
-        case TELEMETRY_SOURCE_A2:
-        case TELEMETRY_SOURCE_A2_MIN:
-        case TELEMETRY_SOURCE_CELLS_SUM:
-        case TELEMETRY_SOURCE_VFAS:
-        case TELEMETRY_SOURCE_CURRENT_MAX:
-        case TELEMETRY_SOURCE_CURRENT:
-          minSB[j]->setDecimals(1);
-          maxSB[j]->setDecimals(1);
-          break;
-        case TELEMETRY_SOURCE_CELL:
-          minSB[j]->setDecimals(2);
-          maxSB[j]->setDecimals(2);
-          break;
-        default:
-          minSB[j]->setDecimals(0);
-          maxSB[j]->setDecimals(0);
-      }
-      minSB[j]->setMinimum(getBarValue(model.frsky.screens[screen].body.bars[field].source, 0, &model.frsky));
-      minSB[j]->setMaximum(getBarValue(model.frsky.screens[screen].body.bars[field].source, 255, &model.frsky));
-      minSB[j]->setSingleStep(getBarStep(model.frsky.screens[screen].body.bars[field].source));
-      minSB[j]->setValue(getBarValue(model.frsky.screens[screen].body.bars[field].source, model.frsky.screens[screen].body.bars[field].barMin, &model.frsky));
-      maxSB[j]->setMinimum(getBarValue(model.frsky.screens[screen].body.bars[field].source, 0, &model.frsky));
-      maxSB[j]->setMaximum(getBarValue(model.frsky.screens[screen].body.bars[field].source, 255, &model.frsky));
-      maxSB[j]->setSingleStep(getBarStep(model.frsky.screens[screen].body.bars[field].source));
-      maxSB[j]->setValue(getBarValue(model.frsky.screens[screen].body.bars[field].source, (255-model.frsky.screens[screen].body.bars[field].barMax), &model.frsky));
-
+      RawSource source = RawSource(SOURCE_TYPE_TELEMETRY, model.frsky.screens[screen].body.bars[field].source, &model);
+      RawSourceRange range = source.getRange();
+      minSB[j]->setDecimals(range.decimals);
+      minSB[j]->setMinimum(range.min);
+      minSB[j]->setMaximum(range.max);
+      minSB[j]->setSingleStep(range.step);
+      minSB[j]->setValue(range.getValue(model.frsky.screens[screen].body.bars[field].barMin));
+      maxSB[j]->setDecimals(range.decimals);
+      maxSB[j]->setMinimum(range.min);
+      maxSB[j]->setMaximum(range.max);
+      maxSB[j]->setSingleStep(range.step);
+      maxSB[j]->setValue(range.getValue(255 - model.frsky.screens[screen].body.bars[field].barMax));
       if (model.frsky.screens[screen].body.bars[field].source==0 || model.frsky.screens[screen].type==0) {
         minSB[j]->setDisabled(true);
         maxSB[j]->setDisabled(true);
       }
-      connect(barsCB[j],SIGNAL(currentIndexChanged(int)),this,SLOT(telBarCBcurrentIndexChanged(int)));
-      connect(maxSB[j],SIGNAL(editingFinished()),this,SLOT(telMaxSBeditingFinished()));
-      connect(minSB[j],SIGNAL(editingFinished()),this,SLOT(telMinSBeditingFinished()));
+      connect(barsCB[j], SIGNAL(currentIndexChanged(int)), this, SLOT(telBarCBcurrentIndexChanged(int)));
+      connect(maxSB[j], SIGNAL(editingFinished()), this, SLOT(telMaxSBeditingFinished()));
+      connect(minSB[j], SIGNAL(editingFinished()), this, SLOT(telMinSBeditingFinished()));
     }
+
     lock=false;
 }
 
@@ -770,14 +753,16 @@ void TelemetryPanel::telBarUpdate()
       int screen=i/4;
       index=barsCB[i]->currentIndex();
       if (index==TELEMETRY_SOURCE_A1 || index==TELEMETRY_SOURCE_A1 || index==TELEMETRY_SOURCE_A1_MIN || index==TELEMETRY_SOURCE_A2_MIN) {
-        minSB[i]->setMinimum(getBarValue(index, 0, &model.frsky));
-        minSB[i]->setMaximum(getBarValue(index, 255, &model.frsky));
-        minSB[i]->setSingleStep(getBarStep(index));
-        maxSB[i]->setMinimum(getBarValue(index, 0, &model.frsky));
-        maxSB[i]->setMaximum(getBarValue(index, 255, &model.frsky));
-        maxSB[i]->setSingleStep(getBarStep(index));
-        minSB[i]->setValue(getBarValue(index, model.frsky.screens[screen].body.bars[i%4].barMin, &model.frsky));
-        maxSB[i]->setValue(getBarValue(index, 255-model.frsky.screens[screen].body.bars[i%4].barMax, &model.frsky));
+        RawSource source = RawSource(SOURCE_TYPE_TELEMETRY, index, &model);
+        RawSourceRange range = source.getRange();
+        minSB[i]->setMinimum(range.min);
+        minSB[i]->setMaximum(range.max);
+        minSB[i]->setSingleStep(range.step);
+        maxSB[i]->setMinimum(range.min);
+        maxSB[i]->setMaximum(range.max);
+        maxSB[i]->setSingleStep(range.step);
+        minSB[i]->setValue(range.getValue(model.frsky.screens[screen].body.bars[i%4].barMin));
+        maxSB[i]->setValue(range.getValue(255 - model.frsky.screens[screen].body.bars[i%4].barMax));
       }
     }
     lock=false;
@@ -785,116 +770,110 @@ void TelemetryPanel::telBarUpdate()
 
 void TelemetryPanel::ScreenTypeCBcurrentIndexChanged(int index)
 {
-    if (lock) return;
-
+  if (!lock) {
+    lock = true;
     QComboBox *comboBox = qobject_cast<QComboBox*>(sender());
     int screen = comboBox->objectName().right(1).toInt() -1;
-    lock=true;
-    model.frsky.screens[screen].type=index;
-
+    model.frsky.screens[screen].type = index;
     for (int i=0; i<3; i++) {
       bool isNum = (model.frsky.screens[i].type==0);
       barsGB[i]->setVisible(!isNum);
       numsGB[i]->setVisible(isNum);
     }
-
-    lock=false;
+    lock = false;
     emit modified();
+  }
 }
 
 void TelemetryPanel::telBarCBcurrentIndexChanged(int index)
 {
-    if (lock) return;
+  if (!lock) {
+    lock = true;
     QComboBox *comboBox = qobject_cast<QComboBox*>(sender());
     int screenId = comboBox->objectName().mid(8,1).toInt() - 1;
     int barId = comboBox->objectName().mid(10,1).toInt() - 1;
     int bar=barId+screenId*4;
     model.frsky.screens[screenId].body.bars[barId].source=index;
-    lock=true;
     if (index==0) {
       model.frsky.screens[screenId].body.bars[barId].barMin=0;
       model.frsky.screens[screenId].body.bars[barId].barMax=0;
       minSB[bar]->setDisabled(true);
       maxSB[bar]->setDisabled(true);
-    } else {
+    }
+    else {
       minSB[bar]->setEnabled(true);
       maxSB[bar]->setEnabled(true);
     }
-    switch (index-1) {
-      case TELEMETRY_SOURCE_TX_BATT:
-      case TELEMETRY_SOURCE_A1:
-      case TELEMETRY_SOURCE_A1_MIN:
-      case TELEMETRY_SOURCE_A2:
-      case TELEMETRY_SOURCE_A2_MIN:
-      case TELEMETRY_SOURCE_CELLS_SUM:
-      case TELEMETRY_SOURCE_VFAS:
-      case TELEMETRY_SOURCE_CURRENT_MAX:
-      case TELEMETRY_SOURCE_CURRENT:
-        minSB[bar]->setDecimals(1);
-        maxSB[bar]->setDecimals(1);
-        break;
-      case TELEMETRY_SOURCE_CELL:
-        minSB[bar]->setDecimals(2);
-        maxSB[bar]->setDecimals(2);
-        break;
-      default:
-        minSB[bar]->setDecimals(0);
-        maxSB[bar]->setDecimals(0);
-    }
-    minSB[bar]->setMinimum(getBarValue(index, 0, &model.frsky));
-    minSB[bar]->setMaximum(getBarValue(index, 255, &model.frsky));
-    minSB[bar]->setSingleStep(getBarStep(index));
-    maxSB[bar]->setMinimum(getBarValue(index, 0, &model.frsky));
-    maxSB[bar]->setMaximum(getBarValue(index, 255, &model.frsky));
-    maxSB[bar]->setSingleStep(getBarStep(index));
-    minSB[bar]->setValue(getBarValue(index, model.frsky.screens[screenId].body.bars[barId].barMin, &model.frsky));
-    maxSB[bar]->setValue(getBarValue(index, 255-model.frsky.screens[screenId].body.bars[barId].barMax, &model.frsky));
-    lock=false;
+    RawSource source = RawSource(SOURCE_TYPE_TELEMETRY, index-1, &model);
+    RawSourceRange range = source.getRange();
+    minSB[bar]->setDecimals(range.decimals);
+    minSB[bar]->setMinimum(range.min);
+    minSB[bar]->setMaximum(range.max);
+    minSB[bar]->setSingleStep(range.step);
+    maxSB[bar]->setDecimals(range.decimals);
+    maxSB[bar]->setMinimum(range.min);
+    maxSB[bar]->setMaximum(range.max);
+    maxSB[bar]->setSingleStep(range.step);
+    minSB[bar]->setValue(range.getValue(model.frsky.screens[screenId].body.bars[barId].barMin));
+    maxSB[bar]->setValue(range.getValue(255 - model.frsky.screens[screenId].body.bars[barId].barMax));
+    lock = false;
     emit modified();
+  }
 }
 
 void TelemetryPanel::telMinSBeditingFinished()
 {
-    if (lock) return;
+  if (!lock) {
+    lock = true;
     QDoubleSpinBox *spinBox = qobject_cast<QDoubleSpinBox*>(sender());
     int screenId = spinBox->objectName().mid(8,1).toInt() - 1;
     int barId = spinBox->objectName().right(1).toInt() - 1;
     int minId = barId+screenId*4;
-    lock=true;
+    RawSource source = RawSource(SOURCE_TYPE_TELEMETRY, model.frsky.screens[screenId].body.bars[barId].source, &model);
+    RawSourceRange range = source.getRange();
     if (model.frsky.screens[screenId].body.bars[barId].source==TELEMETRY_SOURCE_A1 || model.frsky.screens[screenId].body.bars[barId].source==TELEMETRY_SOURCE_A1_MIN) {
-     model.frsky.screens[screenId].body.bars[barId].barMin=round((minSB[minId]->value()-analogs[0]->ui->CalibSB->value())/getBarStep(model.frsky.screens[screenId].body.bars[barId].source));
-    } else if (model.frsky.screens[screenId].body.bars[minId].source==TELEMETRY_SOURCE_A2 || model.frsky.screens[screenId].body.bars[minId].source==TELEMETRY_SOURCE_A2_MIN) {
-     model.frsky.screens[screenId].body.bars[barId].barMin=round((minSB[minId]->value()-analogs[1]->ui->CalibSB->value())/getBarStep(model.frsky.screens[screenId].body.bars[barId].source));
-    } else {
-     model.frsky.screens[screenId].body.bars[barId].barMin=round((minSB[minId]->value()-getBarValue(model.frsky.screens[screenId].body.bars[barId].source, 0, &model.frsky))/getBarStep(model.frsky.screens[screenId].body.bars[barId].source));
+      model.frsky.screens[screenId].body.bars[barId].barMin = round((minSB[minId]->value()-analogs[0]->ui->CalibSB->value())/range.step);
     }
-    spinBox->setValue(getBarValue(model.frsky.screens[screenId].body.bars[barId].source, model.frsky.screens[screenId].body.bars[barId].barMin, &model.frsky));
+    else if (model.frsky.screens[screenId].body.bars[minId].source==TELEMETRY_SOURCE_A2 || model.frsky.screens[screenId].body.bars[minId].source==TELEMETRY_SOURCE_A2_MIN) {
+      model.frsky.screens[screenId].body.bars[barId].barMin = round((minSB[minId]->value()-analogs[1]->ui->CalibSB->value())/range.step);
+    }
+    else {
+     model.frsky.screens[screenId].body.bars[barId].barMin = round((minSB[minId]->value()-range.getValue(0))/range.step);
+    }
+    spinBox->setValue(range.getValue(model.frsky.screens[screenId].body.bars[barId].barMin));
     if (maxSB[minId]->value()<minSB[minId]->value()) {
-      model.frsky.screens[screenId].body.bars[minId].barMax=(255-model.frsky.screens[screenId].body.bars[barId].barMin+1);
-      maxSB[minId]->setValue(getBarValue(model.frsky.screens[screenId].body.bars[barId].source, 255-model.frsky.screens[screenId].body.bars[barId].barMax, &model.frsky));
+      model.frsky.screens[screenId].body.bars[minId].barMax = (255-model.frsky.screens[screenId].body.bars[barId].barMin+1);
+      maxSB[minId]->setValue(range.getValue(255 - model.frsky.screens[screenId].body.bars[barId].barMax));
     }
-    maxSB[minId]->setMinimum(getBarValue(model.frsky.screens[screenId].body.bars[barId].source, (model.frsky.screens[screenId].body.bars[barId].barMin+1), &model.frsky));
-    lock=false;
+    maxSB[minId]->setMinimum(range.getValue((model.frsky.screens[screenId].body.bars[barId].barMin+1)));
+
+    lock = false;
     emit modified();
+  }
 }
 
 void TelemetryPanel::telMaxSBeditingFinished()
 {
-    if (lock) return;
+  if (!lock) {
     QDoubleSpinBox *spinBox = qobject_cast<QDoubleSpinBox*>(sender());
     int screenId = spinBox->objectName().mid(8,1).toInt() - 1;
     int barId = spinBox->objectName().right(1).toInt() - 1;
-    lock=true;
+    lock = true;
+    RawSource source = RawSource(SOURCE_TYPE_TELEMETRY, model.frsky.screens[screenId].body.bars[barId].source, &model);
+    RawSourceRange range = source.getRange();
     if (model.frsky.screens[screenId].body.bars[barId].source==5) {
-      model.frsky.screens[screenId].body.bars[barId].barMax = (255-round((spinBox->value()-analogs[0]->ui->CalibSB->value())/getBarStep(model.frsky.screens[screenId].body.bars[barId].source)));
-    } else if (model.frsky.screens[screenId].body.bars[barId].source==6) {
-      model.frsky.screens[screenId].body.bars[barId].barMax = (255-round((spinBox->value()-analogs[1]->ui->CalibSB->value())/getBarStep(model.frsky.screens[screenId].body.bars[barId].source)));
-    } else {
-      model.frsky.screens[screenId].body.bars[barId].barMax = (255-round((spinBox->value()-getBarValue(model.frsky.screens[screenId].body.bars[barId].source, 0, &model.frsky))/getBarStep(model.frsky.screens[screenId].body.bars[barId].source) ));
+      model.frsky.screens[screenId].body.bars[barId].barMax = (255-round((spinBox->value()-analogs[0]->ui->CalibSB->value())/range.step));
     }
-    spinBox->setValue(getBarValue(model.frsky.screens[screenId].body.bars[barId].source, (255-model.frsky.screens[screenId].body.bars[barId].barMax), &model.frsky));
-    lock=false;
+    else if (model.frsky.screens[screenId].body.bars[barId].source==6) {
+      model.frsky.screens[screenId].body.bars[barId].barMax = (255-round((spinBox->value()-analogs[1]->ui->CalibSB->value())/range.step));
+    }
+    else {
+      model.frsky.screens[screenId].body.bars[barId].barMax = (255-round((spinBox->value()-range.getValue(0))/range.step));
+    }
+    spinBox->setValue(range.getValue(255-model.frsky.screens[screenId].body.bars[barId].barMax));
+    lock = false;
     emit modified();
+  }
 }
 
 void TelemetryPanel::customFieldEdited()
@@ -902,7 +881,7 @@ void TelemetryPanel::customFieldEdited()
   if (!lock) {
     lock = true;
 
-    int cols=GetEepromInterface()->getCapability(TelemetryColsCSFields);
+    int cols = GetEepromInterface()->getCapability(TelemetryColsCSFields);
     if (cols==0) cols=2;
 
     for (int i=0; i<GetEepromInterface()->getCapability(TelemetryCSFields); i++) {
@@ -913,74 +892,9 @@ void TelemetryPanel::customFieldEdited()
         model.frsky.screens[screen].body.lines[r].source[c]=csf[i]->currentIndex();
       }
     }
-    emit modified();
 
     lock = false;
+    emit modified();
   }
 }
 
-float TelemetryPanel::getBarStep(int barId)
-{
-    switch (barId-1) {
-      case TELEMETRY_SOURCE_TX_BATT:
-        return  0.1;
-        break;
-      case TELEMETRY_SOURCE_TIMER1:
-      case TELEMETRY_SOURCE_TIMER2:
-        return 3;
-        break;
-      case TELEMETRY_SOURCE_A1:
-      case TELEMETRY_SOURCE_A1_MIN:
-        return (analogs[0]->ui->RatioSB->value()/255);
-        break;
-      case TELEMETRY_SOURCE_A2:
-      case TELEMETRY_SOURCE_A2_MIN:
-        return (analogs[1]->ui->RatioSB->value()/255);
-        break;
-      case TELEMETRY_SOURCE_ALT:
-      case TELEMETRY_SOURCE_GPS_ALT:
-      case TELEMETRY_SOURCE_ALT_MAX:
-      case TELEMETRY_SOURCE_ALT_MIN:
-        return 8;
-        break;
-      case TELEMETRY_SOURCE_RPM:
-      case TELEMETRY_SOURCE_RPM_MAX:
-        return 50;
-        break;
-      case TELEMETRY_SOURCE_CELLS_SUM:
-      case TELEMETRY_SOURCE_VFAS:
-        return  0.1;
-        break;
-      case TELEMETRY_SOURCE_CELL:
-        return  0.02;
-        break;
-      case TELEMETRY_SOURCE_HDG:
-        return  2;
-        break;
-      case TELEMETRY_SOURCE_DIST:
-      case TELEMETRY_SOURCE_DIST_MAX:
-        return  8;
-        break;
-      case TELEMETRY_SOURCE_CURRENT_MAX:
-      case TELEMETRY_SOURCE_CURRENT:
-        return  0.5;
-        break;
-      case TELEMETRY_SOURCE_POWER:
-        return  5;
-        break;
-      case TELEMETRY_SOURCE_CONSUMPTION:
-        return  20;
-        break;
-      case TELEMETRY_SOURCE_SPEED:
-      case TELEMETRY_SOURCE_SPEED_MAX:
-        if (model.frsky.imperial==1) {
-          return 1;
-        } else {
-          return 1.852;
-        }
-        break;
-      default:
-        return  1;
-        break;
-    }
-}

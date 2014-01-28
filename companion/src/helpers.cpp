@@ -175,6 +175,7 @@ QString getFuncName(unsigned int val)
   }
 }
 
+// TODO should be a toString() method in CustoSwData ...
 QString getCustomSwitchStr(CustomSwData * customSw, const ModelData & model)
 {
   QString result = "";
@@ -189,7 +190,8 @@ QString getCustomSwitchStr(CustomSwData * customSw, const ModelData & model)
       result = QString("TIM(%1 , %2)").arg(ValToTim(customSw->val1)).arg(ValToTim(customSw->val2));
       break;     
     case CS_FAMILY_VOFS: {
-      RawSource source = RawSource(customSw->val1);
+      RawSource source = RawSource(customSw->val1, &model);
+      RawSourceRange range = source.getRange();
       if (customSw->val1)
         result += source.toString();
       else
@@ -204,7 +206,7 @@ QString getCustomSwitchStr(CustomSwData * customSw, const ModelData & model)
         result += " &gt; ";
       else if (customSw->func == CS_FN_ANEG || customSw->func == CS_FN_VNEG)
         result += " &lt; ";
-      result += QString::number(source.getStep(model) * (customSw->val2 + source.getRawOffset(model)) + source.getOffset(model));
+      result += QString::number(range.step * (customSw->val2 /*TODO+ source.getRawOffset(model)*/) + range.offset);
       break;
     }
     case CS_FAMILY_VBOOL:
@@ -1311,109 +1313,6 @@ QString getFrSkyMeasure(int units)
 QString getFrSkySrc(int index)
 {
   return RawSource(SOURCE_TYPE_TELEMETRY, index-1).toString();
-}
-
-
-/*
- 1,2) Timer1/Timer2 0:765
- 3,4) TX/RX
- 5) A1 range
- 6) A2 range
- 7) ALT 0-1020
- 8)RPM 0-12750
- 9FUEL 0-100%
- 10) T1 -30-225
- 11) T2 -30-225
- 12) spd 0-510
- 13) dist 0-2040
- 14)GAlt 0-1020
- 15) cell 0-5.1
- 16) Cels 0 25.5
- 17) Vfas 0 25.5
- 18) Curr 0 127.5
- 19) Cnsp 0 5100
- 20) Powr 0 1275
- 21) AccX 0 2.55
- 22) AccY 0 2.55
- 23) AccZ 0 2.55
- 24) Hdg 0 255
- 25) VSpd 0 2.55
- 26) A1- A1 range
- 27) A2- A2 range
- 28) Alt- 0 255
- 29) Alt+ 0 255
- 30) Rpm+ 0 255
- 31) T1+ 0 255 (s????)
- 32) T2+ 0 255 (e????)
- 33) Spd+ 0 255 (ILG???)
- 34) Dst+ 0 255 (v ????)
- 35) Cur+ 0 25.5 (A)
- 1.852
- */
-
-float getBarValue(int barId, int value, FrSkyData *fd)
-{
-  switch (barId-1) {
-    case TELEMETRY_SOURCE_TX_BATT:
-      return value/10.0;
-    case TELEMETRY_SOURCE_TIMER1:
-    case TELEMETRY_SOURCE_TIMER2:
-      return (3*value);
-    case TELEMETRY_SOURCE_RSSI_TX:
-    case TELEMETRY_SOURCE_RSSI_RX:
-    case TELEMETRY_SOURCE_FUEL:
-      return std::min(100, value);
-    case TELEMETRY_SOURCE_A1:
-    case TELEMETRY_SOURCE_A1_MIN:
-      if (fd->channels[0].type==0)
-        return ((fd->channels[0].ratio*value/255.0)+fd->channels[0].offset)/10;
-      else
-        return ((fd->channels[0].ratio*value/255.0)+fd->channels[0].offset);
-    case TELEMETRY_SOURCE_A2:
-    case TELEMETRY_SOURCE_A2_MIN:
-      if (fd->channels[1].type==0)
-        return ((fd->channels[1].ratio*value/255.0)+fd->channels[1].offset)/10;
-      else
-        return ((fd->channels[1].ratio*value/255.0)+fd->channels[1].offset);
-    case TELEMETRY_SOURCE_ALT:
-    case TELEMETRY_SOURCE_GPS_ALT:
-    case TELEMETRY_SOURCE_ALT_MAX:
-    case TELEMETRY_SOURCE_ALT_MIN:
-      return (8*value)-500;
-    case TELEMETRY_SOURCE_RPM:
-    case TELEMETRY_SOURCE_RPM_MAX:
-      return value * 50;
-    case TELEMETRY_SOURCE_T1:
-    case TELEMETRY_SOURCE_T2:
-    case TELEMETRY_SOURCE_T1_MAX:
-    case TELEMETRY_SOURCE_T2_MAX:
-      return value - 30.0;
-    case TELEMETRY_SOURCE_CELL:
-      return value*2.0/100;
-    case TELEMETRY_SOURCE_CELLS_SUM:
-    case TELEMETRY_SOURCE_VFAS:
-      return value/10.0;
-    case TELEMETRY_SOURCE_HDG:
-      return std::min(359, value*2);
-    case TELEMETRY_SOURCE_DIST_MAX:
-    case TELEMETRY_SOURCE_DIST:
-      return value * 8;
-    case TELEMETRY_SOURCE_CURRENT_MAX:
-    case TELEMETRY_SOURCE_CURRENT:
-      return value/2.0;
-    case TELEMETRY_SOURCE_POWER:
-      return value*5;
-    case TELEMETRY_SOURCE_CONSUMPTION:
-      return value * 20;
-    case TELEMETRY_SOURCE_SPEED:
-    case TELEMETRY_SOURCE_SPEED_MAX:
-      if (fd->imperial==1)
-        return value;
-      else
-        return value*1.852;
-    default:
-      return value;
-  }
 }
 
 QString getTrimInc(ModelData * g_model)

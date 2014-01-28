@@ -201,7 +201,7 @@ class SourcesConversionTable: public ConversionTable {
       if (!(flags & FLAG_NOTELEMETRY)) {
         if (release21March2013) {
           if ((board != BOARD_STOCK && (board!=BOARD_M128 || version<215)) || (variant & GVARS_VARIANT)) {
-            for (int i=0; i<5; i++)
+            for (int i=0; i<MAX_GVARS(board, version); i++)
               addConversion(RawSource(SOURCE_TYPE_GVAR, i), val++);
           }
         }

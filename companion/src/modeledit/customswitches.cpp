@@ -146,36 +146,43 @@ void CustomSwitchesPanel::edited()
     {
       case (CS_FAMILY_VOFS):
         if (model.customSw[i].val1 != cswitchSource1[i]->itemData(cswitchSource1[i]->currentIndex()).toInt()) {
-          source=RawSource(model.customSw[i].val1);
+          source = RawSource(model.customSw[i].val1, &model);
           model.customSw[i].val1 = cswitchSource1[i]->itemData(cswitchSource1[i]->currentIndex()).toInt();
-          RawSource newSource = RawSource(model.customSw[i].val1);
+          RawSource newSource = RawSource(model.customSw[i].val1, &model);
           if (newSource.type == SOURCE_TYPE_TELEMETRY) {
             if (model.customSw[i].func>CS_FN_ELESS && model.customSw[i].func<CS_FN_VEQUAL) {
               model.customSw[i].val2 = 0;
-            } else {
+            }
+            else {
               model.customSw[i].val2 = -128;
             }
-          } else {
+          }
+          else {
+            RawSourceRange range = source.getRange();
             if (model.customSw[i].func>CS_FN_ELESS && model.customSw[i].func<CS_FN_VEQUAL) {
-              model.customSw[i].val2 = (cswitchOffset[i]->value()/source.getStep(model));
-            } else {
-              model.customSw[i].val2 = ((cswitchOffset[i]->value()-source.getOffset(model))/source.getStep(model))-source.getRawOffset(model);
+              model.customSw[i].val2 = (cswitchOffset[i]->value() / range.step);
+            }
+            else {
+              model.customSw[i].val2 = (cswitchOffset[i]->value() - range.offset) / range.step/* TODO - source.getRawOffset(model)*/;
             }
           }
           setSwitchWidgetVisibility(i);
-       } else {
-          source=RawSource(model.customSw[i].val1);
+        }
+        else {
+          source = RawSource(model.customSw[i].val1, &model);
+          RawSourceRange range = source.getRange();
           if (model.customSw[i].func>CS_FN_ELESS && model.customSw[i].func<CS_FN_VEQUAL) {
-            model.customSw[i].val2 = (cswitchOffset[i]->value()/source.getStep(model));
-            cswitchOffset[i]->setValue(model.customSw[i].val2*source.getStep(model));
-          } else {
-            model.customSw[i].val2 = ((cswitchOffset[i]->value()-source.getOffset(model))/source.getStep(model))-source.getRawOffset(model);
-            cswitchOffset[i]->setValue((model.customSw[i].val2 +source.getRawOffset(model))*source.getStep(model)+source.getOffset(model));
+            model.customSw[i].val2 = (cswitchOffset[i]->value() / range.step);
+            cswitchOffset[i]->setValue(model.customSw[i].val2*range.step);
+          }
+          else {
+            model.customSw[i].val2 = ((cswitchOffset[i]->value()-range.offset)/range.step)/* TODO - source.getRawOffset(model)*/;
+            cswitchOffset[i]->setValue((model.customSw[i].val2 /* + TODO source.getRawOffset(model)*/)*range.step+range.offset);
           }
         }
         break;
       case (CS_FAMILY_TIMERS): {
-        value=cswitchOffset[i]->value();
+        value = cswitchOffset[i]->value();
         newval=TimToVal(value);
         if (newval>model.customSw[i].val2) {
           if (value >=60) {
@@ -246,7 +253,9 @@ void CustomSwitchesPanel::edited()
 
 void CustomSwitchesPanel::setSwitchWidgetVisibility(int i)
 {
-    RawSource source = RawSource(model.customSw[i].val1);
+    RawSource source = RawSource(model.customSw[i].val1, &model);
+    RawSourceRange range = source.getRange();
+
     switch (getCSFunctionFamily(model.customSw[i].func))
     {
       case CS_FAMILY_VOFS:
@@ -255,16 +264,16 @@ void CustomSwitchesPanel::setSwitchWidgetVisibility(int i)
         cswitchValue[i]->setVisible(false);
         cswitchOffset[i]->setVisible(true);
         populateSourceCB(cswitchSource1[i], source, model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (GetEepromInterface()->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
-        cswitchOffset[i]->setDecimals(source.getDecimals(model));
-        cswitchOffset[i]->setSingleStep(source.getStep(model));
+        cswitchOffset[i]->setDecimals(range.decimals);
+        cswitchOffset[i]->setSingleStep(range.step);
         if (model.customSw[i].func>CS_FN_ELESS && model.customSw[i].func<CS_FN_VEQUAL) {
-          cswitchOffset[i]->setMinimum(source.getStep(model)*-127);
-          cswitchOffset[i]->setMaximum(source.getStep(model)*127);
-          cswitchOffset[i]->setValue(source.getStep(model)*model.customSw[i].val2);
+          cswitchOffset[i]->setMinimum(range.step*-127);
+          cswitchOffset[i]->setMaximum(range.step*127);
+          cswitchOffset[i]->setValue(range.step*model.customSw[i].val2);
         } else {
-          cswitchOffset[i]->setMinimum(source.getMin(model));
-          cswitchOffset[i]->setMaximum(source.getMax(model));
-          cswitchOffset[i]->setValue(source.getStep(model)*(model.customSw[i].val2+source.getRawOffset(model))+source.getOffset(model));
+          cswitchOffset[i]->setMinimum(range.min);
+          cswitchOffset[i]->setMaximum(range.max);
+          cswitchOffset[i]->setValue(range.step*(model.customSw[i].val2/* TODO+source.getRawOffset(model)*/)+range.offset);
         }
         break;
       case CS_FAMILY_VBOOL:

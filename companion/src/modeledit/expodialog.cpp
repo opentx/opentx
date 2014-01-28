@@ -48,7 +48,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, i
     ui->sideLabel->hide();
     ui->sideCB->hide();
     ui->inputName->setMaxLength(4);
-    populateSourceCB(ui->sourceCB, ed->srcRaw, model, POPULATE_SOURCES | POPULATE_SWITCHES | POPULATE_TRIMS | (GetEepromInterface()->getCapability(GvarsAsSources) ? POPULATE_GVARS : 0));
+    populateSourceCB(ui->sourceCB, ed->srcRaw, model, POPULATE_SOURCES | POPULATE_SWITCHES | POPULATE_TRIMS | POPULATE_TELEMETRY);
     ui->sourceCB->removeItem(0);
   }
   else {
@@ -56,8 +56,6 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, i
     ui->inputName->hide();
     ui->sourceLabel->hide();
     ui->sourceCB->hide();
-    ui->scaleLabel->hide();
-    ui->scaleSB->hide();
     ui->trimLabel->hide();
     ui->trimCB->hide();
   }
@@ -83,13 +81,15 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, i
   ui->lineName->setValidator(new QRegExpValidator(rx, this));
   ui->lineName->setText(ed->name);
 
+  updateScale();
   valuesChanged();
 
-  connect(ui->lineName,SIGNAL(editingFinished()), this, SLOT(valuesChanged()));
-  connect(ui->sourceCB,SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
-  connect(ui->trimCB,SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
-  connect(ui->switchesCB,SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
-  connect(ui->sideCB,SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
+  connect(ui->lineName, SIGNAL(editingFinished()), this, SLOT(valuesChanged()));
+  connect(ui->sourceCB, SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
+  connect(ui->scale, SIGNAL(editingFinished()), this, SLOT(valuesChanged()));
+  connect(ui->trimCB, SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
+  connect(ui->switchesCB, SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
+  connect(ui->sideCB, SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
   for (int i=0; i<9; i++) {
     connect(cb_fp[i], SIGNAL(toggled(bool)), this, SLOT(valuesChanged()));
   }
@@ -103,23 +103,35 @@ ExpoDialog::~ExpoDialog()
   delete ui;
 }
 
-void ExpoDialog::changeEvent(QEvent *e)
+void ExpoDialog::updateScale()
 {
-    QDialog::changeEvent(e);
-    switch (e->type()) {
-    case QEvent::LanguageChange:
-        ui->retranslateUi(this);
-        break;
-    default:
-        break;
-    }
+  if (GetEepromInterface()->getCapability(VirtualInputs) && ed->srcRaw.type == SOURCE_TYPE_TELEMETRY) {
+    RawSourceRange range = ed->srcRaw.getRange();
+    ui->scaleLabel->show();
+    ui->scale->show();
+    ui->scale->setDecimals(range.decimals);
+    ui->scale->setMinimum(range.min);
+    ui->scale->setMaximum(range.max);
+    ui->scale->setValue(round(range.step * ed->scale));
+  }
+  else {
+    ui->scaleLabel->hide();
+    ui->scale->hide();
+  }
 }
 
 void ExpoDialog::valuesChanged()
 {
     QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
 
-    ed->srcRaw  = RawSource(ui->sourceCB->itemData(ui->sourceCB->currentIndex()).toInt());
+    RawSource srcRaw = RawSource(ui->sourceCB->itemData(ui->sourceCB->currentIndex()).toInt());
+    if (ed->srcRaw != srcRaw) {
+      ed->srcRaw = srcRaw;
+      updateScale();
+    }
+
+    RawSourceRange range = srcRaw.getRange();
+    ed->scale = round(float(ui->scale->value()) / range.step);
     ed->carryTrim = 1 - ui->trimCB->currentIndex();
     ed->swtch  = RawSwitch(ui->switchesCB->itemData(ui->switchesCB->currentIndex()).toInt());
     ed->mode   = ui->sideCB->currentIndex() + 1;
@@ -173,5 +185,5 @@ void ExpoDialog::valuesChanged()
 
 void ExpoDialog::shrink()
 {
-  resize(0,0);
+  resize(0, 0);
 }

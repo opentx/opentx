@@ -283,6 +283,30 @@ class ModelData;
 QString AnalogString(int index);
 QString RotaryEncoderString(int index);
 
+class RawSourceRange
+{
+  public:
+    RawSourceRange():
+      decimals(0),
+      min(0.0),
+      max(0.0),
+      step(1.0),
+      offset(0.0)
+    {
+    }
+
+    float getValue(int value) {
+      return round(float(value) * step);
+    }
+
+    int decimals;
+    double min;
+    double max;
+    double step;
+    double offset;
+
+};
+
 class RawSource {
   public:
     RawSource():
@@ -313,15 +337,14 @@ class RawSource {
 
     QString toString();
     
-    int getDecimals(const ModelData & Model);
-    double getMin(const ModelData & Model);
-    double getMax(const ModelData & Model);
-    double getStep(const ModelData & Model);
-    double getOffset(const ModelData & Model);
-    int getRawOffset(const ModelData & Model);
+    RawSourceRange getRange();
     
-    bool operator== ( const RawSource& other) {
+    bool operator == ( const RawSource & other) {
       return (this->type == other.type) && (this->index == other.index);
+    }
+
+    bool operator != ( const RawSource & other) {
+      return (this->type != other.type) || (this->index != other.index);
     }
 
     RawSourceType type;
@@ -982,7 +1005,6 @@ enum Capability {
  GvarsAreNamed,
  GvarsFlightPhases,
  GvarsHaveSources,
- GvarsAsSources,
  GvarsName,
  NoTelemetryProtocol,
  TelemetryCSFields,

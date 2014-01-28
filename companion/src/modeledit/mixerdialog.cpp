@@ -20,7 +20,7 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, i
     else
       this->setWindowTitle(tr("DEST -> CH%1%2").arg(md->destCh/10).arg(md->destCh%10));
 
-    populateSourceCB(ui->sourceCB, md->srcRaw, model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS | (GetEepromInterface()->getCapability(GvarsAsSources) ? POPULATE_GVARS : 0));
+    populateSourceCB(ui->sourceCB, md->srcRaw, model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS);
     ui->sourceCB->removeItem(0);
 
     int limit = GetEepromInterface()->getCapability(OffsetWeight);
