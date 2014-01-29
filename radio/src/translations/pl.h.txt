@@ -75,7 +75,7 @@
 #define TR_DATETIME            "DANA:""Czas:\0 "
 
 #define LEN_VLCD               "\006"
-#define TR_VLCD                "Normal""Optrex"
+#define TR_VLCD                "Normalny""Optrex"
 
 #define LEN_COUNTRYCODES       TR("\002", "\007")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Ameryka""Japonia""Europa\0")
@@ -234,7 +234,7 @@
 #define TR_VFSWRESET           TR("Tmr1""Tmr2""All\0" TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC, "Timer 1\0  ""Timer 2\0  ""All\0      " TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC)
 
 #define LEN_FUNCSOUNDS         TR("\004", "\006")
-#define TR_FUNCSOUNDS          TR("Bp1\0""Bp2\0""Bp3\0""Wrn1""Wrn2""Chee""Rata""Tick""Sirn""Ring""SciF""Robt""Chrp""Tada""Crck""Alrm", "Beep1 ""Beep2 ""Beep3 ""Warn1 ""Warn2 ""Cheep ""Ratata""Tick  ""Siren ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""AlmClk")
+#define TR_FUNCSOUNDS          TR("Bp1\0""Bp2\0""Bp3\0""Ost1""Ost2""Chee""Rata""Tik""Syre""Dzwo""SciF""Robt""Chrp""Tada""Crck""Alrm", "Beep1 ""Beep2 ""Beep3 ""Ostrz1""Ostrz1""Cheep ""Ratata""Tick  ""Syrena""Dzwone""SciFi ""Robot ""Chirp ""Tada  ""Krytcz""AlmZeg")
 
 #define LEN_VTELEMCHNS         "\004"
 #if defined(PCBTARANIS)
@@ -244,7 +244,7 @@
   #define TR_RSSI_0            "Tx\0 "
   #define TR_RSSI_1            "Rx\0 "
 #endif
-#define TR_VTELEMCHNS          "---\0""Bat\0""Tmr1""Tmr2" TR_RSSI_0 TR_RSSI_1 "A1\0 ""A2\0 ""Alt\0""Rpm\0""Pali""T1\0 ""T2\0 ""Spd\0""Dyst""GAlt""Cell""Cels""Vfas""Curr""Cnsp""Powr""AccX""AccY""AccZ""Hdg\0""VSpd""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Cur+""Pwr+""Acc\0""Time"
+#define TR_VTELEMCHNS          "---\0""Bat\0""Tmr1""Tmr2" TR_RSSI_0 TR_RSSI_1 "A1\0 ""A2\0 ""Wys\0""Rpm\0""Pali""T1\0 ""T2\0 ""Spd\0""Dyst""GAlt""Cell""Cels""Vfas""Curr""Cnsp""Moc ""AccX""AccY""AccZ""Hdg\0""VSpd""A1-\0""A2-\0""Wys-""Wys+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Cur+""Moc+""Acc\0""Time"
 
 #if defined(CPUARM)
   #define LEN_VUNITSSYSTEM     TR("\006", "\012")
@@ -284,7 +284,7 @@
 #if defined(FRSKY_SPORT)
   #define TR_VARIOSRC          "Vario""A1\0  ""A2\0"
 #else
-  #define TR_VARIOSRC          "Alti\0""Alti+""Vario""A1\0  ""A2\0"
+  #define TR_VARIOSRC          "Wys.\0""Wys.+""Vario""A1\0  ""A2\0"
 #endif
 
 #define LEN_VSCREEN            "\006"
@@ -295,13 +295,13 @@
 
 #define LEN2_VTEMPLATES        17
 #define LEN_VTEMPLATES         "\021"
-#define TR_VTEMPLATES          "Wyczyść miksery\0 ""Prosty. 4kanal\0  ""Przełącznik-T-Cut""V-Tail      \0    ""Elevon-Delta\0    ""eCCPM       \0    ""Heli Setup  \0    ""Test serwa  \0    "
+#define TR_VTEMPLATES          "Wyczyść miksery\0 ""Prosty. 4kanal\0  ""Przełącznik-T-Cut""V-Tail      \0    ""Elevon-Delta\0    ""eCCPM       \0    ""Ustaw. Heli \0    ""Test serwa  \0    "
 
 #define LEN_VSWASHTYPE         "\004"
 #define TR_VSWASHTYPE          "--- ""120 ""120X""140 ""90\0"
 
 #define LEN_VKEYS              "\005"
-#define TR_VKEYS               TR(" Menu"" Exit""W dół""Wgórę""Wpraw""Wlewo", " Menu"" Exit""W dół""Wgórę""Wpraw""Wlewo")
+#define TR_VKEYS               TR(" Menu""Wyjdź""W dół""Wgórę""Wpraw""Wlewo", " Menu""Wyjdź""W dół""Wgórę""Wpraw""Wlewo")
 
 #define LEN_VRENCODERS         "\003"
 #define TR_VRENCODERS          "REa""REb"
@@ -396,9 +396,9 @@
 #define TR_MODELNAME           "Nazwa modelu"
 #define TR_PHASENAME           "Nazwa"
 #define TR_MIXNAME             "Nazwa"
-#define TR_INPUTNAME           "Input Name"
+#define TR_INPUTNAME           "Wpisz Nazw"
 #if defined(PCBTARANIS)
-  #define TR_EXPONAME          "Line Name"
+  #define TR_EXPONAME          "Linia Naz"
 #else
   #define TR_EXPONAME          "Nazwa"
 #endif
@@ -686,8 +686,8 @@
   #define TR_MAVMENUSETUP_TITLE           "Mavlink Setup"
   #define TR_MAVLINK_BAUD_LABEL           "Baudrate"
   #define TR_MAVLINK_INFOS                "INFOS"
-  #define TR_MAVLINK_MODE                 "MODE"
-  #define TR_MAVLINK_CUR_MODE             "Current Mode"
+  #define TR_MAVLINK_MODE                 "TRYB"
+  #define TR_MAVLINK_CUR_MODE             "Aktualy Tryb"
   #define TR_MAVLINK_ARMED                "Armed"
   #define TR_MAVLINK_BAT_MENU_TITLE       "BAT RSSI"
   #define TR_MAVLINK_BATTERY_LABEL        "Status baterii "
