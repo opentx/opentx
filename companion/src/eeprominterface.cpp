@@ -59,12 +59,10 @@ RawSourceRange RawSource::getRange(bool singleprec)
         case TELEMETRY_SOURCE_TIMER2:
           result.step = singleprec ? 3 : 1;
           result.max = singleprec ? 765 : 7200;
-          result.offset = 128;
           break;
         case TELEMETRY_SOURCE_RSSI_TX:
         case TELEMETRY_SOURCE_RSSI_RX:
           result.max = 100;
-          result.offset = 128;
           break;
         case TELEMETRY_SOURCE_A1:
         case TELEMETRY_SOURCE_A2:
@@ -74,44 +72,36 @@ RawSourceRange RawSource::getRange(bool singleprec)
               result.min = (model->frsky.channels[index-TELEMETRY_SOURCE_A1].offset * model->frsky.channels[index-TELEMETRY_SOURCE_A1].ratio) / 2550.0;
               result.max = model->frsky.channels[index-TELEMETRY_SOURCE_A1].ratio - (model->frsky.channels[index-TELEMETRY_SOURCE_A1].offset * model->frsky.channels[index-TELEMETRY_SOURCE_A1].ratio) / 2550.0;
               result.decimals = 2;
-              // result.offset = result.min;
             }
             else {
               result.step = (model->frsky.channels[index-TELEMETRY_SOURCE_A1].ratio / 255.0);
-              result.min = (model->frsky.channels[index-TELEMETRY_SOURCE_A1].offset  *model->frsky.channels[index-TELEMETRY_SOURCE_A1].ratio) / 255.0;
+              result.min = (model->frsky.channels[index-TELEMETRY_SOURCE_A1].offset * model->frsky.channels[index-TELEMETRY_SOURCE_A1].ratio) / 255.0;
               result.max = model->frsky.channels[index-TELEMETRY_SOURCE_A1].ratio - (model->frsky.channels[index-TELEMETRY_SOURCE_A1].offset * model->frsky.channels[index-TELEMETRY_SOURCE_A1].ratio) / 255.0;
               result.decimals = 0;
-              // result.offset = result.min;
             }
           }
-          result.offset = 128;
           break;
         case TELEMETRY_SOURCE_ALT:
         case TELEMETRY_SOURCE_GPS_ALT:
           result.step = singleprec ? 8 : 1;
           result.min = -500;
           result.max = singleprec ? 1540 : 3000;
-          // result.offset = 524;
           break;
         case TELEMETRY_SOURCE_T1:
         case TELEMETRY_SOURCE_T2:
           result.min = -30;
           result.max = 225;
-          // result.offset = 98;
           break;
         case TELEMETRY_SOURCE_RPM:
           result.step = singleprec ? 50 : 1;
           result.max = singleprec ? 12750 : 20000;
-          // result.offset = 6400;
           break;
         case TELEMETRY_SOURCE_FUEL:
           result.max = 100;
-          result.offset = 128;
           break;
         case TELEMETRY_SOURCE_SPEED:
           result.step = singleprec ? 4 : 1;
           result.max = singleprec ? 944 : 2000;
-          // result.offset = 474;
           if (model && !model->frsky.imperial) {
             result.step *= 1.852;
             result.max *= 1.852;
@@ -120,40 +110,37 @@ RawSourceRange RawSource::getRange(bool singleprec)
         case TELEMETRY_SOURCE_DIST:
           result.step = singleprec ? 8 : 1;
           result.max = singleprec ? 2040 : 10000;
-          // result.offset = 1024;
           break;
         case TELEMETRY_SOURCE_CELL:
           result.step = singleprec ? 0.02 : 0.01;
           result.max = 5.1;
           result.decimals = 2;
-          // result.offset = 2.56;
           break;
         case TELEMETRY_SOURCE_CELLS_SUM:
         case TELEMETRY_SOURCE_VFAS:
           result.step = 0.1;
           result.max = 25.5;
           result.decimals = 1;
-          result.offset = 128;
           break;
         case TELEMETRY_SOURCE_CURRENT:
           result.step = singleprec ? 0.5 : 0.1;
           result.max = singleprec ? 127.5 : 200.0;
           result.decimals = 1;
-          result.offset = 128;
           break;
         case TELEMETRY_SOURCE_CONSUMPTION:
           result.step = singleprec ? 20 : 1;
           result.max = singleprec ? 5100 : 10000;
-          result.offset = 128;
           break;
         case TELEMETRY_SOURCE_POWER:
           result.step = singleprec ? 5 : 1;
           result.max = singleprec ? 1275 : 2000;
-          result.offset = 128;
           break;
         default:
           result.max = 125;
           break;
+      }
+      if (singleprec) {
+        result.offset = result.max - (127*result.step);
       }
       break;
 
