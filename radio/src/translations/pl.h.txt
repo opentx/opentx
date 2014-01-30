@@ -75,7 +75,7 @@
 #define TR_DATETIME            "DANA:""Czas:\0 "
 
 #define LEN_VLCD               "\006"
-#define TR_VLCD                "Normalny""Optrex"
+#define TR_VLCD                "Normal""Optrex"
 
 #define LEN_COUNTRYCODES       TR("\002", "\007")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Ameryka""Japonia""Europa\0")
@@ -398,7 +398,7 @@
 #define TR_MIXNAME             "Nazwa"
 #define TR_INPUTNAME           "Wpisz Nazw"
 #if defined(PCBTARANIS)
-  #define TR_EXPONAME          "Linia Naz"
+  #define TR_EXPONAME          "Linia Nazw"
 #else
   #define TR_EXPONAME          "Nazwa"
 #endif
@@ -411,7 +411,7 @@
 #define TR_TTRIM               TR("Trymer gazu", "Trymer gazu")
 #define TR_BEEPCTR             "(\043)Pikanie środka"
 #define TR_PROTO               INDENT"Protokól"
-#define TR_PPMFRAME            "PPM frame"
+#define TR_PPMFRAME            "Ramka PPM"
 #define TR_MS                  "ms"
 #define TR_SWITCH              "Przełącznik"
 #define TR_TRIMS               "Trymery"
@@ -516,7 +516,7 @@
 
 #define TR_MENUTORESET         CENTER TR_ENTER" >> Reset"
 #define TR_PPM                 "PPM"
-#define TR_CH                  "Kn"
+#define TR_CH                  "KN"
 #define TR_MODEL               "MODEL"
 #define TR_FP                  "FL"
 #define TR_MIX                 "MIX"
@@ -556,8 +556,8 @@
 
 #define TR_MENUCURVES          "KRZYWE"
 #define TR_MENUCURVE           "KRZYWA"
-#define TR_MENUCUSTOMSWITCH    "PRZEŁĄCZNIK LOGICZNY"
-#define TR_MENUCUSTOMSWITCHES  "Przełączniki logiczne"
+#define TR_MENUCUSTOMSWITCH    "PRZEŁ. LOGICZNY"
+#define TR_MENUCUSTOMSWITCHES   TR("PRZEŁ. LOG.", "PRZEŁ. LOGICZNE")
 #define TR_MENUCUSTOMFUNC      "FUNKCJE SPECJALNE"
 #define TR_MENUTELEMETRY       "TELEMETRIA"
 #define TR_MENUTEMPLATES       "SZABLONY"
@@ -617,7 +617,7 @@
 #define TR_COPY_FILE           "Kopiuj"
 #define TR_RENAME_FILE         "Zmień nazwę"
 #define TR_ASSIGN_BITMAP       "Wybierz obrazek"
-#define TR_REMOVED             " skasowane"
+#define TR_REMOVED             "Skasowane"
 #define TR_SD_INFO             "Informacje"
 #define TR_SD_FORMAT           "Formatuj"
 #define TR_NA                  "[X]"
@@ -635,7 +635,7 @@
 #define TR_GLOBAL_VARS         "Zmienne globalne"
 #define TR_GLOBAL_VAR          "Zmienna globalna"
 #define TR_MENUGLOBALVARS      "ZMIENNE GLOBALNE"
-#define TR_OWN                 " Własność "
+#define TR_OWN                 "Własność "
 #define TR_DATE                "Data"
 #define TR_ROTARY_ENCODER      "R.Encs"
 #define TR_CHANNELS_MONITOR    "MONITOR KANAŁÓW"
@@ -671,21 +671,21 @@
 #define TR_SET                 "[Ustaw]"
 #define TR_TRAINER             "Trener"
 #define TR_ANTENNAPROBLEM      CENTER "Problem z anteną TX"
-#define TR_MODELIDUSED         TR("ID już użyte","ID modelu już użyte")
+#define TR_MODELIDUSED         TR("ID zajęte","ID modelu zajęte")
 #define TR_MODULE              INDENT "Moduł"
 #define TR_CHANNELRANGE        INDENT "Zakres kanału"
 #define TR_LOWALARM            INDENT "Alarm niski"
 #define TR_CRITICALALARM       INDENT "Alarm krytyczny"
 #define TR_PERSISTENT_MAH      INDENT "Store mAh"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
-#define TR_UART3MODE           "Serial port"
+#define TR_UART3MODE           "Port szreg."
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL  "Max RSSI"
   #define TR_MAVLINK_PC_RSSI_EN_LABEL     "PC RSSI EN"
   #define TR_MAVMENUSETUP_TITLE           "Mavlink Setup"
   #define TR_MAVLINK_BAUD_LABEL           "Baudrate"
-  #define TR_MAVLINK_INFOS                "INFOS"
+  #define TR_MAVLINK_INFOS                "INFO"
   #define TR_MAVLINK_MODE                 "TRYB"
   #define TR_MAVLINK_CUR_MODE             "Aktualy Tryb"
   #define TR_MAVLINK_ARMED                "Armed"
@@ -702,8 +702,8 @@
   #define TR_MAVLINK_NO_FIX               "NO Fix"
   #define TR_MAVLINK_SAT                  "SAT"
   #define TR_MAVLINK_HDOP                 "HDOP"
-  #define TR_MAVLINK_LAT                  "LAT"
-  #define TR_MAVLINK_LON                  "LON"
+  #define TR_MAVLINK_LAT                  "SZER"
+  #define TR_MAVLINK_LON                  "DLUG"
 #endif
 
 // Taranis column headers
@@ -721,8 +721,8 @@
 #define TR_ABOUT_OPENTX_5      TR("is welcome!", "donations is welcome!")
 
 #define TR_ABOUT_BERTRAND_1    "Bertrand Songis"
-#define TR_ABOUT_BERTRAND_2    "OpenTX main author"
-#define TR_ABOUT_BERTRAND_3    "Companion9x co-author"
+#define TR_ABOUT_BERTRAND_2    "OpenTX główny autor"
+#define TR_ABOUT_BERTRAND_3    "Companion9x współ-autor"
 
 #define TR_ABOUT_MIKE_1        "Mike Blandford"
 #define TR_ABOUT_MIKE_2        "Guru kodu i driwerów"
@@ -730,12 +730,12 @@
 #define TR_ABOUT_MIKE_4        "Inspirational"
        
 #define TR_ABOUT_ROMOLO_1      "Romolo Manfredini"
-#define TR_ABOUT_ROMOLO_2      "Companion9x co-author"
+#define TR_ABOUT_ROMOLO_2      "Companion9x współ-autor"
 #define TR_ABOUT_ROMOLO_3      ""
 
 #define TR_ABOUT_ANDRE_1       "Andre Bernet"
-#define TR_ABOUT_ANDRE_2       "Functionality, usability,"
-#define TR_ABOUT_ANDRE_3       "debugging, documentation"
+#define TR_ABOUT_ANDRE_2       "Funkcjonalność, użytkowość,"
+#define TR_ABOUT_ANDRE_3       "debugging, documentacja"
 
 #define TR_ABOUT_ROB_1         "Rob Thomson"
 #define TR_ABOUT_ROB_2         "openrcforums webmaster"
