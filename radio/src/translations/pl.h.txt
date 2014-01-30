@@ -383,7 +383,7 @@
   #define TR_ENTER             "[MENU]"
 #endif
 
-#define TR_POPUPS              TR_ENTER"\010[EXIT]"
+#define TR_POPUPS              TR_ENTER"\010[WYJŚCIE]"
 #define OFS_EXIT               sizeof(TR_ENTER)
 
 #define TR_MENUWHENDONE        CENTER "\007"TR_ENTER" > DALEJ"
@@ -418,14 +418,14 @@
 #define TR_FADEIN              "Pojawianie"
 #define TR_FADEOUT             "Zanikanie"
 #define TR_DEFAULT             "(Bazowa)"
-#define TR_CHECKTRIMS          "\006Sprawdź \012 Trymery"
+#define TR_CHECKTRIMS          "\006Spr \012 Trymery"
 #define OFS_CHECKTRIMS         (9*FW)
 #define TR_SWASHTYPE           "Typ tarczy"
 #define TR_COLLECTIVE          "Kolektyw"
 #define TR_SWASHRING           "Tarcza"
 #define TR_ELEDIRECTION        "Ster Wysokości"
 #define TR_AILDIRECTION        "\012Lotki"
-#define TR_COLDIRECTION        "\012Kolektwy"
+#define TR_COLDIRECTION        "\012Kolektyw"
 #define TR_MODE                INDENT"Tryb"
 #define TR_NOFREEEXPO          "Brak wolnych expo!"
 #define TR_NOFREEMIXER         "Brak wolnych mix!"
@@ -666,7 +666,7 @@
 #define TR_BUZZER              INDENT"Brzęczyk"
 #define TR_BYTES               "[B]"
 #define TR_MODULE_BIND         "[Bind]"
-#define TR_MODULE_RANGE        "[Zasieg]"
+#define TR_MODULE_RANGE        "Zasięg"
 #define TR_RESET_BTN           "[Reset]"
 #define TR_SET                 "[Ustaw]"
 #define TR_TRAINER             "Trener"
@@ -676,7 +676,7 @@
 #define TR_CHANNELRANGE        INDENT "Zakres kanału"
 #define TR_LOWALARM            INDENT "Alarm niski"
 #define TR_CRITICALALARM       INDENT "Alarm krytyczny"
-#define TR_PERSISTENT_MAH      INDENT "Store mAh"
+#define TR_PERSISTENT_MAH      INDENT "Zapisz mAh"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 #define TR_UART3MODE           "Port szreg."
 
