@@ -2216,10 +2216,13 @@ void checkSwitches()
           }
     }
 #else
-    for (uint8_t i=0; i<MAX_PSWITCH-2; i++) 
-      if (!(g_model.nSwToWarn & (1<<(i-1)))) 
-        if((states & (1 << i)) != (switches_states & (1 << i)))
-          warn = true;
+    uint8_t nSwWarn = g_model.nSwToWarn;
+    nSwWarn=(nSwWarn<<1)|(nSwWarn&1);   // duplicate first bit because states has first two bits for ID, but nSwToWarn has only one
+    for (uint8_t i=0; i<MAX_PSWITCH-2; i++) {
+      if (!(nSwWarn & (1<<i))) 
+        if((states & (1<<i)) != (switches_states & (1<<i)))
+           warn = true;
+    }
 #endif
 
     if(!warn) return;
@@ -2265,7 +2268,7 @@ void checkSwitches()
       uint8_t x = 2;
       for (uint8_t i=1; i<MAX_PSWITCH-1; i++) {
         uint8_t attr = (states & (1 << (i-1))) == (switches_states & (1 << (i-1))) ? 0 : INVERS;
-        if(!(g_model.nSwToWarn & (1<<(i-2)))) putsSwitches(x, 5*FH, (i>2?(i+1):1+((states>>1)&0x3)), attr);
+        if(!(nSwWarn & (1<<(i-1))))  putsSwitches(x, 5*FH, (i>2?(i+1):1+(states&0x3)), attr);        
         if (i == 1 && attr) i++;
         if (i != 1) x += 3*FW+FW/2;
       }
