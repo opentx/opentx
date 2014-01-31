@@ -296,7 +296,7 @@ INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} )
 INCLUDE_DIRECTORIES( ${CMAKE_SOURCE_DIR} )
 
 
-SET( LANGUAGES he pt ru de fr it sv cs )
+SET( LANGUAGES he pl pt ru de fr it sv cs )
 FOREACH( language ${LANGUAGES} )
   SET( companion_TS ${companion_TS} translations/companion_${language}.ts )
 ENDFOREACH( language )
