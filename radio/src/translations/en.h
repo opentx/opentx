@@ -71,6 +71,9 @@
 #define LEN_UART3MODES         "\017"
 #define TR_UART3MODES          "OFF\0           ""SPORT Mirror\0  ""Virtual SP2UART"
 
+#define LEN_POTTYPES           "\017"
+#define TR_POTTYPES            "Pot\0           ""Multipos Switch"
+
 #define LEN_DATETIME           "\005"
 #define TR_DATETIME            "DATE:""TIME:"
 
@@ -680,6 +683,8 @@
 #define TR_PERSISTENT_MAH      INDENT "Store mAh"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 #define TR_UART3MODE           "Serial port"
+#define TR_POT1TYPE            "S1 Type"
+#define TR_POT2TYPE            "S2 Type"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL  "Max RSSI"
