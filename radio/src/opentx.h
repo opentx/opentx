@@ -1582,8 +1582,8 @@ union ReusableBuffer
           uint8_t lastCount;
           int16_t lastPosition;
         } xpotsCalib[NUM_XPOTS];
-    } calib;
 #endif
+    } calib;
 
 #if defined(SDCARD)
     struct
