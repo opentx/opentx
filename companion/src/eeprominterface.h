@@ -44,14 +44,18 @@ template<class t> t LIMIT(t mi, t x, t ma) { return std::min(std::max(mi, x), ma
 enum BoardEnum {
   BOARD_STOCK,
   BOARD_M128,
+  BOARD_MEGA2560,
   BOARD_GRUVIN9X,
   BOARD_SKY9X,
   BOARD_TARANIS,
   BOARD_TARANIS_REV4a
 };
-#define IS_STOCK(board)       (board==BOARD_STOCK || board==BOARD_M128)
-#define IS_ARM(board)       (board==BOARD_SKY9X || board==BOARD_TARANIS  || board==BOARD_TARANIS_REV4a)
-#define IS_TARANIS(board)       (board==BOARD_TARANIS  || board==BOARD_TARANIS_REV4a)
+
+#define IS_9X(board)          (board==BOARD_STOCK || board==BOARD_M128)
+#define IS_STOCK(board)       (board==BOARD_STOCK)
+#define IS_2560(board)        (board==BOARD_GRUVIN9X || board==BOARD_MEGA2560)
+#define IS_ARM(board)         (board==BOARD_SKY9X || board==BOARD_TARANIS  || board==BOARD_TARANIS_REV4a)
+#define IS_TARANIS(board)     (board==BOARD_TARANIS  || board==BOARD_TARANIS_REV4a)
 
 const uint8_t modn12x3[4][4]= {
   {1, 2, 3, 4},
@@ -59,13 +63,15 @@ const uint8_t modn12x3[4][4]= {
   {4, 2, 3, 1},
   {4, 3, 2, 1} };
 
-#define C9XMAX_MODELS             60
+#define C9X_MAX_MODELS            60
 #define C9X_MAX_PHASES            9
 #define C9X_MAX_MIXERS            64
-#define C9X_MAX_EXPOS             32
-#define C9X_MAX_CURVES            16
-#define MAX_POINTS                17
-#define C9X_MAX_GVARS                 9
+#define C9X_MAX_INPUTS            32
+#define C9X_MAX_EXPOS             64
+#define C9X_MAX_CURVES            32
+#define C9X_MAX_POINTS            17
+#define C9X_MAX_GVARS             9
+#define C9X_MAX_ENCODERS          2
 #define NUM_SAFETY_CHNOUT         16
 #define C9X_NUM_CHNOUT            32 // number of real output channels
 #define C9X_NUM_CSW               32 // number of custom switches
@@ -106,6 +112,18 @@ const uint8_t chout_ar[] = { //First number is 0..23 -> template setup,  Second 
 2,1,3,4 , 2,1,4,3 , 2,3,1,4 , 2,3,4,1 , 2,4,1,3 , 2,4,3,1,
 3,1,2,4 , 3,1,4,2 , 3,2,1,4 , 3,2,4,1 , 3,4,1,2 , 3,4,2,1,
 4,1,2,3 , 4,1,3,2 , 4,2,1,3 , 4,2,3,1 , 4,3,1,2 , 4,3,2,1    }; // TODO delete it?
+
+// Beep center bits
+#define BC_BIT_RUD (0x01)
+#define BC_BIT_ELE (0x02)
+#define BC_BIT_THR (0x04)
+#define BC_BIT_AIL (0x08)
+#define BC_BIT_P1  (0x10)
+#define BC_BIT_P2  (0x20)
+#define BC_BIT_P3  (0x40)
+#define BC_BIT_P4  (0x80)
+#define BC_BIT_REA (0x80)
+#define BC_BIT_REB (0x100)
 
 // TODO remove this enum!
 enum EnumKeys {
@@ -185,9 +203,12 @@ enum HeliSwashTypes {
 #define NUM_CAL_PPM         4
 #define NUM_PPM             8
 #define NUM_CYC             3
-#define C9X_NUM_SWITCHES          10
-#define C9X_NUM_KEYS          6
+#define C9X_NUM_SWITCHES    10
+#define C9X_NUM_KEYS        6
 #define C9X_MAX_TIMERS      2
+
+extern const char * switches9X[];
+extern const char * switchesX9D[];
 
 enum TelemetrySource {
   TELEMETRY_SOURCE_TX_BATT,
@@ -241,6 +262,8 @@ enum TelemetrySource {
 
 enum RawSourceType {
   SOURCE_TYPE_NONE,
+  SOURCE_TYPE_VIRTUAL_INPUT,
+  SOURCE_TYPE_LUA_INPUT,
   SOURCE_TYPE_STICK, // and POTS
   SOURCE_TYPE_ROTARY_ENCODER,
   SOURCE_TYPE_TRIM,
@@ -254,25 +277,56 @@ enum RawSourceType {
   SOURCE_TYPE_TELEMETRY,
   MAX_SOURCE_TYPE
 };
+
 class ModelData;
+
+QString AnalogString(int index);
+QString RotaryEncoderString(int index);
+
+class RawSourceRange
+{
+  public:
+    RawSourceRange():
+      decimals(0),
+      min(0.0),
+      max(0.0),
+      step(1.0),
+      offset(0.0)
+    {
+    }
+
+    float getValue(int value) {
+      return min + float(value) * step;
+    }
+
+    int decimals;
+    double min;
+    double max;
+    double step;
+    double offset;
+
+};
 
 class RawSource {
   public:
     RawSource():
       type(SOURCE_TYPE_NONE),
-      index(0)
+      index(0),
+      model(NULL)
     {
     }
 
-    RawSource(int value):
+    RawSource(int value, const ModelData * model=NULL):
       type(RawSourceType(abs(value)/65536)),
-      index(value >= 0 ? abs(value)%65536 : -(abs(value)%65536))
+      index(value >= 0 ? abs(value)%65536 : -(abs(value)%65536)),
+      model(model)
     {
     }
 
-    RawSource(RawSourceType type, int index=0):
+    RawSource(RawSourceType type, int index=0, const ModelData * model=NULL):
       type(type),
-      index(index)
+      index(index),
+      model(model)
     {
     }
 
@@ -283,19 +337,19 @@ class RawSource {
 
     QString toString();
     
-    int getDecimals(const ModelData & Model);
-    double getMin(const ModelData & Model);
-    double getMax(const ModelData & Model);
-    double getStep(const ModelData & Model);
-    double getOffset(const ModelData & Model);
-    int getRawOffset(const ModelData & Model);
+    RawSourceRange getRange(bool singleprec=false);
     
-    bool operator== ( const RawSource& other) {
+    bool operator == ( const RawSource & other) {
       return (this->type == other.type) && (this->index == other.index);
+    }
+
+    bool operator != ( const RawSource & other) {
+      return (this->type != other.type) || (this->index != other.index);
     }
 
     RawSourceType type;
     int index;
+    const ModelData * model;
 };
 
 enum RawSwitchType {
@@ -404,7 +458,6 @@ class GeneralSettings {
     int    timezone;
     bool      optrexDisplay;
     unsigned int    inactivityTimer;
-    bool      throttleReversed;
     bool      minuteBeep;
     bool      preBeep;
     bool      flashBeep;
@@ -449,19 +502,47 @@ class GeneralSettings {
     int backgroundVolume;
     unsigned int mavbaud;
     unsigned int switchUnlockStates;
+    unsigned int hw_uartMode;
+};
+
+class CurveReference {
+  public:
+    enum CurveRefType {
+      CURVE_REF_DIFF,
+      CURVE_REF_EXPO,
+      CURVE_REF_FUNC,
+      CURVE_REF_CUSTOM
+    };
+
+    CurveReference() { clear(); }
+
+    CurveReference(CurveRefType type, int value):
+      type(type),
+      value(value)
+    {
+    }
+
+    void clear() { memset(this, 0, sizeof(CurveReference)); }
+
+    CurveRefType type;
+    int value;
+
+    QString toString();
 };
 
 class ExpoData {
   public:
     ExpoData() { clear(); }
+    RawSource srcRaw;
+    unsigned int scale;
     unsigned int mode;         // 0=end, 1=pos, 2=neg, 3=both
     unsigned int chn;
     RawSwitch swtch;
     unsigned int phases;        // -5=!FP4, 0=normal, 5=FP4
     int  weight;
-    int  expo;
-    unsigned int curveMode;
-    int  curveParam;
+    int offset;
+    CurveReference curve;
+    int carryTrim;
     char name[10+1];
     void clear() { memset(this, 0, sizeof(ExpoData)); }
 };
@@ -474,11 +555,19 @@ class CurvePoint {
 
 class CurveData {
   public:
+    enum CurveType {
+      CURVE_TYPE_STANDARD,
+      CURVE_TYPE_CUSTOM,
+      CURVE_TYPE_LAST = CURVE_TYPE_CUSTOM
+    };
+
     CurveData() { clear(5); }
-    bool custom;         // 0=end, 1=pos, 2=neg, 3=both
-    uint8_t count;
-    CurvePoint points[MAX_POINTS];
-    char  name[6+1];
+
+    CurveType type;
+    bool smooth;
+    int  count;
+    CurvePoint points[C9X_MAX_POINTS];
+    char name[6+1];
     void clear(int count) { memset(this, 0, sizeof(CurveData)); this->count = count; }
 };
 
@@ -492,7 +581,8 @@ class LimitData {
     int   ppmCenter;
     bool  symetrical;
     char  name[6+1];
-    void clear() { memset(this, 0, sizeof(LimitData)); min = -100; max = +100; }
+    CurveReference curve;
+    void clear() { memset(this, 0, sizeof(LimitData)); min = -1000; max = +1000; }
 };
 
 enum MltpxValue {
@@ -501,7 +591,6 @@ enum MltpxValue {
   MLTPX_REP=2
 };
 
-
 class MixData {
   public:
     MixData() { clear(); }
@@ -509,9 +598,8 @@ class MixData {
     RawSource srcRaw;
     unsigned int srcVariant;
     int     weight;
-    int     differential;
     RawSwitch swtch;
-    int     curve;             //0=symmetrisch
+    CurveReference     curve;             //0=symmetrisch
     unsigned int delayUp;
     unsigned int delayDown;
     unsigned int speedUp;           // Servogeschwindigkeit aus Tabelle (10ms Cycle)
@@ -520,9 +608,7 @@ class MixData {
     bool noExpo;
     MltpxValue mltpx;          // multiplex method 0=+ 1=* 2=replace
     unsigned int mixWarn;           // mixer warning
-    unsigned int enableFmTrim;
     unsigned int phases;             // -5=!FP4, 0=normal, 5=FP4
-    unsigned int lateOffset;
     int    sOffset;
     char   name[10+1];
 
@@ -572,10 +658,7 @@ enum AssignFunc {
   FuncBackgroundMusic,
   FuncBackgroundMusicPause,
   FuncAdjustGV1,
-  FuncAdjustGV2,
-  FuncAdjustGV3,
-  FuncAdjustGV4,
-  FuncAdjustGV5,
+  FuncAdjustGVLast = FuncAdjustGV1+C9X_MAX_GVARS-1,
   FuncCount
 };
 
@@ -588,7 +671,7 @@ class FuncSwData { // Function Switches data
     char paramarm[10];
     unsigned int enabled; // TODO perhaps not any more the right name
     unsigned int adjustMode;
-    unsigned int repeatParam;
+    int repeatParam;
     void clear() { memset(this, 0, sizeof(FuncSwData)); }
 };
 
@@ -602,7 +685,7 @@ class PhaseData {
     unsigned int fadeIn;
     unsigned int fadeOut;
     int rotaryEncoders[2];
-    int gvars[5];
+    int gvars[C9X_MAX_GVARS];
     void clear() { memset(this, 0, sizeof(PhaseData)); for (int i=0; i<NUM_STICKS; i++) trimRef[i] = -1; }
 };
 
@@ -654,6 +737,14 @@ class FrSkyChannelData {
     unsigned int multiplier;
     FrSkyAlarmData alarms[2];
 
+    float getRatio()
+    {
+      if (type==0 || type==1 || type==2)
+        return float(ratio << multiplier) / 10.0;
+      else
+        return ratio << multiplier;
+    }
+
     void clear() { memset(this, 0, sizeof(FrSkyChannelData)); }
 };
 
@@ -700,6 +791,9 @@ class FrSkyData {
     int varioCenterMin;    // if increment in 0.2m/s = 3.0m/s max
     int varioCenterMax;
     int varioMax;
+    bool mAhPersistent;
+    unsigned int storedMah;
+    int fasOffset;
 
     void clear() { memset(this, 0, sizeof(FrSkyData)); rssiAlarms[0].clear(2, 45); rssiAlarms[1].clear(3, 42); varioSource = 2/*VARIO*/; }
 };
@@ -730,14 +824,13 @@ enum TimerMode {
 class TimerData {
   public:
     TimerData() { clear(); }
-    TimerMode mode;   // timer trigger source -> off, abs, THs, TH%, THt, sw/!sw, !m_sw/!m_sw
-    int8_t    modeB;
-    bool minuteBeep;
-    bool countdownBeep;
-    bool      dir;    // 0=>Count Down, 1=>Count Up
+    TimerMode    mode;   // timer trigger source -> off, abs, THs, TH%, THt, sw/!sw, !m_sw/!m_sw
+    bool         minuteBeep;
+    unsigned int countdownBeep;
+    bool         dir;    // 0=>Count Down, 1=>Count Up
     unsigned int val;
-    bool      persistent;
-    int pvalue;
+    bool         persistent;
+    int          pvalue;
     void clear() { memset(this, 0, sizeof(TimerData)); }
 };
 
@@ -783,7 +876,7 @@ class ModelData {
     TimerData timers[2];
     bool      thrTrim;            // Enable Throttle Trim
     bool      thrExpo;            // Enable Throttle Expo
-    unsigned int trimInc;            // Trim Increments
+    int       trimInc;            // Trim Increments
     bool      disableThrottleWarning;
 
     unsigned int beepANACenter;      // 1<<0->A1.. 1<<6->A7
@@ -794,7 +887,10 @@ class ModelData {
     PhaseData phaseData[C9X_MAX_PHASES];
     MixData   mixData[C9X_MAX_MIXERS];
     LimitData limitData[C9X_NUM_CHNOUT];
+
+    char      inputNames[C9X_MAX_INPUTS][4+1];
     ExpoData  expoData[C9X_MAX_EXPOS];
+
     CurveData curves[C9X_MAX_CURVES];
     CustomSwData  customSw[C9X_NUM_CSW];
     FuncSwData    funcSw[C9X_MAX_CUSTOM_FUNCTIONS];
@@ -805,7 +901,9 @@ class ModelData {
     int8_t   t2throttle;  // Start timer2 using throttle
     unsigned int   modelId;
     unsigned int switchWarningStates;
+    // TODO structure
     char     gvars_names[C9X_MAX_GVARS][6+1];
+    bool     gvars_popups[C9X_MAX_GVARS];
     uint8_t  gvsource[5];
     uint8_t  bt_telemetry;
     uint8_t  numVoice;
@@ -828,6 +926,9 @@ class ModelData {
 
     ModelData removeGlobalVars();
 
+    void clearMixes();
+    void clearInputs();
+
   protected:
     void removeGlobalVar(int & var);
 };
@@ -835,29 +936,26 @@ class ModelData {
 class RadioData {
   public:   
     GeneralSettings generalSettings;
-    ModelData models[C9XMAX_MODELS];    
+    ModelData models[C9X_MAX_MODELS];    
 };
 
+// TODO rename FlightPhase to FlightMode
 enum Capability {
  OwnerName,
  FlightPhases,
- FlightPhasesAreNamed,
+ FlightModesName,
  FlightPhasesHaveFades,
  SimulatorType,
  Mixes,
  MixesWithoutExpo,
  Timers,
- TimerTriggerB,
  TimeDivisions,
- minuteBeep,
- countdownBeep,
  CustomFunctions,
  VoicesAsNumbers,
  VoicesMaxLength,
  ModelVoice,
  MultiLangVoice,
  ModelImage,
- InstantTrimSW,
  Pots,
  Switches,
  SwitchesPositions,
@@ -867,20 +965,11 @@ enum Capability {
  CustomSwitchesExt,
  RotaryEncoders,
  Outputs,
+ ChannelsName,
  ExtraChannels,
  ExtraInputs,
- ExtraTrims,
  ExtendedTrims,
- HasNegCurves,
  HasInputFilter,
- HasExpoCurves,
- ExpoIsCurve,
- ExpoCurve5,
- ExpoCurve9,
- CustomCurves,
- NumCurves3,
- NumCurves5,
- NumCurves9,
  NumCurves,
  NumCurvePoints,
  OffsetWeight,
@@ -900,7 +989,6 @@ enum Capability {
  TrainerSwitch,
  ModelTrainerEnable,
  Timer2ThrTrig,
- HasTTrace,
  HasExpoNames,
  HasMixerNames,
  HasChNames,
@@ -910,14 +998,10 @@ enum Capability {
  HasPPMStart,
  HasGeneralUnits,
  HasFAIMode,
- NoTimerDirs,
- NoThrExpo,
  OptrexDisplay,
  PPMExtCtrl,
  PPMFrameLength,
- MixFmTrim,
  gsSwitchMask,
- pmSwitchMask,
  BLonStickMove,
  DSM2Indexes,
  Telemetry,
@@ -929,13 +1013,10 @@ enum Capability {
  GvarsAreNamed,
  GvarsFlightPhases,
  GvarsHaveSources,
- GvarsAsSources,
- GvarsAsWeight,
- GvarsNum,
- GvarsOfsNum,
+ GvarsName,
  NoTelemetryProtocol,
- TelemetryCSFields,
- TelemetryColsCSFields,
+ TelemetryCustomScreens,
+ TelemetryCustomScreensFieldsPerLine,
  TelemetryRSSIModel,
  TelemetryAlarm,
  TelemetryInternalAlarm,
@@ -949,11 +1030,8 @@ enum Capability {
  HasPPMSim,
  HasCrossTrims,
  HasStickScroll,
- HasFixOffset,
  HasSoundMixer,
  NumModules,
- FSSwitch,
- DiffMixers,
  PPMCenter,
  SYMLimits,
  HasCurrentCalibration,
@@ -961,8 +1039,6 @@ enum Capability {
  HasBrightness,
  HasContrast,
  PerModelTimers,
- PerModelThrottleWarning,
- PerModelThrottleInvert,
  SlowScale,
  SlowRange,
  PermTimers,
@@ -970,6 +1046,13 @@ enum Capability {
  CSFunc,
  LCDWidth,
  GetThrSwitch,
+ VirtualInputs,
+ LuaInputs,
+ LimitsPer1000,
+ EnhancedCurves,
+ TelemetryInternalAlarms,
+ HasFasOffset,
+ HasMahPersistent
 };
 
 enum UseContext {

@@ -15,7 +15,7 @@
  */
 
 #include "opentxTaranisSimulator.h"
-#include "open9xinterface.h"
+#include "opentxinterface.h"
 
 #define SIMU
 #define SIMU_EXCEPTIONS
@@ -35,6 +35,8 @@
 #define AUDIO
 #define VOICE
 #define PXX
+#define DSM2
+#define DSM2_PPM
 #define DBLKEYS
 #define AUTOSWITCH
 #define GRAPHICS
@@ -47,6 +49,7 @@
 #define PPM_CENTER_ADJUSTABLE
 #define PPM_LIMITS_SYMETRICAL
 #define FAI_CHOICE
+
 #define EEPROM_VARIANT 3
 
 #undef min
@@ -65,6 +68,7 @@ inline int geteepromsize() {
 #include "radio/src/targets/taranis/board_taranis.cpp"
 #include "radio/src/protocols/ppm_arm.cpp"
 #include "radio/src/protocols/pxx_arm.cpp"
+#include "radio/src/protocols/dsm2_arm.cpp"
 #include "radio/src/targets/taranis/pwr_driver.cpp"
 #include "radio/src/eeprom_common.cpp"
 #include "radio/src/eeprom_conversions.cpp"
@@ -128,7 +132,7 @@ bool hasExtendedTrims()
 
 uint8_t getStickMode()
 {
-  return g_eeGeneral.stickMode;
+  return limit<uint8_t>(0, g_eeGeneral.stickMode, 3);
 }
 
 void resetTrims()
@@ -145,7 +149,7 @@ OpentxTaranisSimulator::OpentxTaranisSimulator(Open9xInterface * open9xInterface
   open9xInterface(open9xInterface)
 {
   taranisSimulatorBoard = GetEepromInterface()->getBoard();
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings;
   QString path=settings.value("sdPath", ".").toString()+"/";
   int i=0;
   for (i=0; i< std::min(path.length(),1022); i++) {
@@ -200,7 +204,7 @@ void OpentxTaranisSimulator::setValues(TxInputs &inputs)
 
 void OpentxTaranisSimulator::setTrim(unsigned int idx, int value)
 {
-  idx = Open9xX9D::modn12x3[4*getStickMode() + idx] - 1;
+  idx = Open9xX9D::modn12x3[4*getStickMode() + idx];
   uint8_t phase = getTrimFlightPhase(getFlightPhase(), idx);
   setTrimValue(phase, idx, value);
 }
@@ -214,7 +218,7 @@ void OpentxTaranisSimulator::getTrims(Trims & trims)
   }
 
   for (int i=0; i<2; i++) {
-    uint8_t idx = Open9xX9D::modn12x3[4*getStickMode() + i] - 1;
+    uint8_t idx = Open9xX9D::modn12x3[4*getStickMode() + i];
     int16_t tmp = trims.values[i];
     trims.values[i] = trims.values[idx];
     trims.values[idx] = tmp;

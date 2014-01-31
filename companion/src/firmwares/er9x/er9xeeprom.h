@@ -42,8 +42,6 @@ PACK(typedef struct t_Er9xTrainerMix {
 
   operator TrainerMix();
   t_Er9xTrainerMix();
-  t_Er9xTrainerMix(TrainerMix&);
-
 }) Er9xTrainerMix; //
 
 PACK(typedef struct t_Er9xTrainerData {
@@ -52,8 +50,6 @@ PACK(typedef struct t_Er9xTrainerData {
 
   operator TrainerData();
   t_Er9xTrainerData();
-  t_Er9xTrainerData(TrainerData&);
-
 }) Er9xTrainerData;
 
 PACK(typedef struct t_Er9xGeneral {
@@ -109,8 +105,6 @@ PACK(typedef struct t_Er9xGeneral {
 
   operator GeneralSettings();
   t_Er9xGeneral();
-  t_Er9xGeneral(GeneralSettings&);
-
 }) Er9xGeneral;
 
 PACK(typedef struct t_Er9xExpoData {
@@ -130,7 +124,6 @@ PACK(typedef struct t_Er9xLimitData {
 
   operator LimitData();
   t_Er9xLimitData();
-  t_Er9xLimitData(LimitData&);
 }) Er9xLimitData;
 
 #define MLTPX_ADD  0
@@ -158,7 +151,6 @@ PACK(typedef struct t_Er9xMixData {
 
   operator MixData();
   t_Er9xMixData();
-  t_Er9xMixData(MixData&);
 }) Er9xMixData;
 
 
@@ -170,7 +162,6 @@ PACK(typedef struct t_Er9xCustomSwData { // Custom Switches data
 
   operator CustomSwData();
   t_Er9xCustomSwData() { memset(this, 0, sizeof(t_Er9xCustomSwData)); }
-  t_Er9xCustomSwData(CustomSwData&);
 }) Er9xCustomSwData;
 
 PACK(typedef struct t_Er9xSafetySwData { // Custom Switches data
@@ -179,7 +170,6 @@ PACK(typedef struct t_Er9xSafetySwData { // Custom Switches data
 
   operator SafetySwData();
   t_Er9xSafetySwData();
-  t_Er9xSafetySwData(SafetySwData&);
 }) Er9xSafetySwData;
 
 PACK(typedef struct t_Er9xFrSkyChannelData {
@@ -191,7 +181,6 @@ PACK(typedef struct t_Er9xFrSkyChannelData {
 
   operator FrSkyChannelData();
   t_Er9xFrSkyChannelData();
-  t_Er9xFrSkyChannelData(FrSkyChannelData&);
 }) Er9xFrSkyChannelData;
 
 PACK(typedef struct t_Er9xFrSkyData {
@@ -199,7 +188,6 @@ PACK(typedef struct t_Er9xFrSkyData {
 
   operator FrSkyData();
   t_Er9xFrSkyData();
-  t_Er9xFrSkyData(FrSkyData&);
 }) Er9xFrSkyData;
 
 PACK(typedef struct t_gvar {
@@ -268,9 +256,6 @@ PACK(typedef struct t_Er9xModelData {
   
   operator ModelData();
   t_Er9xModelData() { memset(this, 0, sizeof(t_Er9xModelData)); }
-  t_Er9xModelData(ModelData&);
 }) Er9xModelData;
 
-
 #endif
-/*eof*/

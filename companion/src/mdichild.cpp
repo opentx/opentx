@@ -44,7 +44,7 @@
 #include "xmlinterface.h"
 #include "hexinterface.h"
 #include "mainwindow.h"
-#include "modeledit.h"
+#include "modeledit/modeledit.h"
 #include "generaledit.h"
 #include "avroutputdialog.h"
 #include "burnconfigdialog.h"
@@ -69,7 +69,7 @@ MdiChild::MdiChild():
   fileChanged(false)
 {
   ui->setupUi(this);
-
+  ui->SimulateTxButton->setIcon(CompanionIcon("simulate.png"));
   setAttribute(Qt::WA_DeleteOnClose);
 
   eepromInterfaceChanged();
@@ -144,13 +144,16 @@ void MdiChild::on_SimulateTxButton_clicked()
 {
   if (GetEepromInterface()->getSimulator()) {
     if (GetEepromInterface()->getCapability(SimulatorType)==1) {
-      xsimulatorDialog sd(this);
-      sd.loadParams(radioData);
-      sd.exec();
-    } else {
-      simulatorDialog sd(this);
-      sd.loadParams(radioData);
-      sd.exec();
+      xsimulatorDialog * sd = new xsimulatorDialog(this);
+      sd->loadParams(radioData);
+      sd->exec();
+      delete sd;
+    }
+    else {
+      simulatorDialog * sd = new simulatorDialog(this);
+      sd->loadParams(radioData);
+      sd->exec();
+      delete sd;
     }
   }
   else {
@@ -176,15 +179,15 @@ void MdiChild::OpenEditWindow(bool wizard=false)
     }
     if (isNew && !wizard) {
       int ret;
-      QSettings settings("companion9x", "companion9x");
+      QSettings settings;
       bool wizardEnable=settings.value("wizardEnable", true).toBool();
       if (wizardEnable) {
-        ret = QMessageBox::question(this, tr("companion9x"), tr("Do you want to use model wizard? "), QMessageBox::Yes | QMessageBox::No);
+        ret = QMessageBox::question(this, tr("Companion"), tr("Do you want to use model wizard? "), QMessageBox::Yes | QMessageBox::No);
         if (ret == QMessageBox::Yes) {
           wizard=true;
         } else {
           qSleep(500);
-          ret = QMessageBox::question(this, tr("companion9x"), tr("Ask this question again ? "), QMessageBox::Yes | QMessageBox::No);
+          ret = QMessageBox::question(this, tr("Companion"), tr("Ask this question again ? "), QMessageBox::Yes | QMessageBox::No);
           if (ret == QMessageBox::No) {
             settings.setValue("wizardEnable", false);
           }
@@ -192,9 +195,9 @@ void MdiChild::OpenEditWindow(bool wizard=false)
       }
     }
     ModelEdit *t = new ModelEdit(radioData, (row - 1), wizard, this);
-    if (isNew && !wizard) t->applyBaseTemplate();
+    // TODO if (isNew && !wizard) t->applyBaseTemplate();
     t->setWindowTitle(tr("Editing model %1: ").arg(row) + model.name);
-    connect(t, SIGNAL(modelValuesChanged()), this, SLOT(setModified()));
+    connect(t, SIGNAL(modified()), this, SLOT(setModified()));
     //t->exec();
     t->show();
   }
@@ -343,7 +346,7 @@ bool MdiChild::save()
 
 bool MdiChild::saveAs(bool isNew)
 {
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings;
     QString fileName;
     if (GetEepromInterface()->getBoard() == BOARD_SKY9X) {
       curFile.replace(".eepe", ".bin");
@@ -467,7 +470,7 @@ bool MdiChild::maybeSave()
 {
   if (fileChanged) {
     QMessageBox::StandardButton ret;
-    ret = QMessageBox::warning(this, tr("companion9x"),
+    ret = QMessageBox::warning(this, tr("Companion"),
         tr("%1 has been modified.\n"
            "Do you want to save your changes?").arg(userFriendlyCurrentFile()),
         QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
@@ -487,7 +490,7 @@ void MdiChild::setCurrentFile(const QString &fileName)
   fileChanged = false;
   setWindowModified(false);
   updateTitle();
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings;
   int MaxRecentFiles =settings.value("history_size",10).toInt();
   QStringList files = settings.value("recentFileList").toStringList();
   files.removeAll(fileName);
@@ -505,7 +508,7 @@ QString MdiChild::strippedName(const QString &fullFileName)
 
 void MdiChild::burnTo()  // write to Tx
 {
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings;
   bool backupEnable=settings.value("backupEnable", true).toBool();
   QString backupPath=settings.value("backupPath", "").toString();
   if (!backupPath.isEmpty()) {
@@ -550,15 +553,17 @@ void MdiChild::burnTo()  // write to Tx
             QStringList str;
             str << path << backupFile;
             avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Backup EEPROM From Tx")); //, AVR_DIALOG_KEEP_OPEN);
-            ad->setWindowIcon(QIcon(":/images/read_eeprom.png"));
+            ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
             ad->exec();
             sleep(1);
           }
-        } else {
+        }
+        else {
           QStringList str = ((MainWindow *)this->parent())->GetReceiveEEpromCommand(backupFile);
           avrOutputDialog *ad = new avrOutputDialog(this, ((MainWindow *)this->parent())->GetAvrdudeLocation(), str, tr("Backup EEPROM From Tx"));
-          ad->setWindowIcon(QIcon(":/images/read_eeprom.png"));
+          ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
           ad->exec();
+          delete ad;
           sleep(1);
         }
       }
@@ -566,8 +571,9 @@ void MdiChild::burnTo()  // write to Tx
       QString tempFlash=tempDir + "/flash.bin";
       QStringList str = ((MainWindow *)this->parent())->GetReceiveFlashCommand(tempFlash);
       avrOutputDialog *ad = new avrOutputDialog(this, ((MainWindow *)this->parent())->GetAvrdudeLocation(), str, "Read Flash From Tx");
-      ad->setWindowIcon(QIcon(":/images/read_flash.png"));
+      ad->setWindowIcon(CompanionIcon("read_flash.png"));
       ad->exec();
+      delete ad;
       sleep(1);
       QString restoreFile = tempDir + "/compat.bin";
       if (!((MainWindow *)this->parent())->convertEEPROM(tempFile, restoreFile, tempFlash)) {
@@ -575,7 +581,8 @@ void MdiChild::burnTo()  // write to Tx
                                             QMessageBox::Yes | QMessageBox::No);
        if (ret==QMessageBox::No)
          return;
-      } else {
+      }
+      else {
         int rev=((MainWindow *)this->parent())->getEpromVersion(restoreFile);
         if ((rev/100)!=(oldrev/100)) {
           QMessageBox::warning(this,tr("Warning"), tr("Firmware in radio is of a different family of eeprom written, check file and preferences!"));
@@ -588,7 +595,8 @@ void MdiChild::burnTo()  // write to Tx
       QByteArray ba = tempFlash.toLatin1();
       char *name = ba.data(); 
       unlink(name);
-    } else {
+    }
+    else {
       if (backupEnable) {
         QString backupFile=backupPath+"/backup-"+QDateTime().currentDateTime().toString("yyyy-MM-dd-hhmmss")+".bin";
         if (IS_TARANIS(eepromInterface->getBoard())) {
@@ -596,14 +604,17 @@ void MdiChild::burnTo()  // write to Tx
           if (path.isEmpty()) {
             QMessageBox::warning(this, tr("Taranis radio not found"), tr("Impossible to identify the radio on your system, please verify the eeprom disk is connected."));
             return;
-          } else {
+          }
+          else {
             QFile::copy(path,backupFile);
           }
-        } else {
+        }
+        else {
           QStringList str = ((MainWindow *)this->parent())->GetReceiveEEpromCommand(backupFile);
           avrOutputDialog *ad = new avrOutputDialog(this, ((MainWindow *)this->parent())->GetAvrdudeLocation(), str, tr("Backup EEPROM From Tx"));
-          ad->setWindowIcon(QIcon(":/images/read_eeprom.png"));
+          ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
           ad->exec();
+          delete ad;
           sleep(1);
         }
       }
@@ -613,19 +624,23 @@ void MdiChild::burnTo()  // write to Tx
       if (path.isEmpty()) {
         QMessageBox::warning(this, tr("Taranis radio not found"), tr("Impossible to identify the radio on your system, please verify the eeprom disk is connected."));
         return;
-      } else {
+      }
+      else {
         QStringList str;
         str << tempFile << path;
         avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Write EEPROM To Tx"), AVR_DIALOG_SHOW_DONE); //, AVR_DIALOG_KEEP_OPEN);
-        ad->setWindowIcon(QIcon(":/images/read_eeprom.png"));
+        ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
         ad->show();
+        delete ad;
         sleep(1);
       }
-    } else {
+    }
+    else {
       QStringList str = ((MainWindow *)this->parent())->GetSendEEpromCommand(tempFile);
       avrOutputDialog *ad = new avrOutputDialog(this, ((MainWindow *)this->parent())->GetAvrdudeLocation(), str, "Write EEPROM To Tx", AVR_DIALOG_SHOW_DONE);
-      ad->setWindowIcon(QIcon(":/images/write_eeprom.png"));
+      ad->setWindowIcon(CompanionIcon("write_eeprom.png"));
       ad->show();
+      delete ad;
     }
   }
 }
@@ -675,7 +690,7 @@ void MdiChild::setEEpromAvail(int eavail)
 
 bool MdiChild::loadBackup()
 {
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings;
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), settings.value("lastDir").toString(),tr(EEPROM_FILES_FILTER));
     if (fileName.isEmpty())
       return false;

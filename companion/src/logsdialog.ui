@@ -11,10 +11,10 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Companion9x log viewer</string>
+   <string>Companion Log Viewer</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="companion9x.qrc">
+   <iconset resource="companion.qrc">
     <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
   </property>
   <property name="sizeGripEnabled">
@@ -262,7 +262,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="companion9x.qrc">
+      <iconset resource="companion.qrc">
        <normaloff>:/images/maps.png</normaloff>:/images/maps.png</iconset>
      </property>
      <property name="iconSize">
@@ -285,7 +285,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="companion9x.qrc"/>
+  <include location="companion.qrc"/>
  </resources>
  <connections/>
 </ui>

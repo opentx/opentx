@@ -25,6 +25,10 @@
   <property name="windowTitle">
    <string/>
   </property>
+  <property name="windowIcon">
+   <iconset resource="companion.qrc">
+    <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
+  </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
     <widget class="QToolButton" name="prevPage">
@@ -45,10 +49,6 @@
      </property>
      <property name="text">
       <string>...</string>
-     </property>
-     <property name="icon">
-      <iconset resource="companion9x.qrc">
-       <normaloff>:/images/arrow-left.png</normaloff>:/images/arrow-left.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -945,10 +945,6 @@
      <property name="text">
       <string>...</string>
      </property>
-     <property name="icon">
-      <iconset resource="companion9x.qrc">
-       <normaloff>:/images/arrow-right.png</normaloff>:/images/arrow-right.png</iconset>
-     </property>
      <property name="iconSize">
       <size>
        <width>50</width>
@@ -967,7 +963,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="companion9x.qrc"/>
+  <include location="companion.qrc"/>
  </resources>
  <connections/>
 </ui>

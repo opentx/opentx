@@ -200,6 +200,10 @@ void processHubPacket(uint8_t id, uint16_t value)
       break;
 
     case CURRENT_ID:
+      if(((int16_t)frskyData.hub.current + g_model.frsky.fasOffset)>0)
+        frskyData.hub.current += g_model.frsky.fasOffset;
+      else
+        frskyData.hub.current = 0;
       if (frskyData.hub.current > frskyData.hub.maxCurrent)
         frskyData.hub.maxCurrent = frskyData.hub.current;
       break;
@@ -382,6 +386,10 @@ void processSportPacket(uint8_t *packet)
       }
       else if (appId >= CURR_FIRST_ID && appId <= CURR_LAST_ID) {
         frskyData.hub.current = SPORT_DATA_U32(packet);
+        if(((int16_t)frskyData.hub.current + g_model.frsky.fasOffset)>0)
+          frskyData.hub.current += g_model.frsky.fasOffset;
+        else
+          frskyData.hub.current = 0;
         if (frskyData.hub.current > frskyData.hub.maxCurrent)
           frskyData.hub.maxCurrent = frskyData.hub.current;
       }
@@ -653,7 +661,7 @@ void telemetryWakeup()
     alarmsCheckTime = get_tmr10ms() + 100; /* next check in 1second */
 
     if (alarmsCheckStep == 0) {
-      if (frskyData.rssi[1].value > 0x33) {
+      if ((IS_MODULE_XJT(0) || IS_MODULE_XJT(1)) && frskyData.rssi[1].value > 0x33) {
         AUDIO_SWR_RED();
         s_global_warning = STR_ANTENNAPROBLEM;
         alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3seconds */
@@ -671,11 +679,11 @@ void telemetryWakeup()
         }
       }
       else if (alarmsCheckStep == 2) {
-        if (alarmRaised(1, 1) && g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_D8) {
+        if (alarmRaised(1, 1)) {
           AUDIO_A2_RED();
           alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3seconds */
         }
-        else if (alarmRaised(1, 0) && g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_D8) {
+        else if (alarmRaised(1, 0)) {
           AUDIO_A2_ORANGE();
           alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3seconds */
         }
@@ -734,6 +742,7 @@ void FrskyValueWithMinMax::set(uint8_t value)
 void resetTelemetry()
 {
   memclear(&frskyData, sizeof(frskyData));
+  telemetryState = TELEMETRY_INIT;
 
 #if defined(FRSKY_HUB)
   frskyData.hub.gpsLatitude_bp = 2;

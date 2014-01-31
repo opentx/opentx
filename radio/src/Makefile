@@ -159,6 +159,10 @@ PPM_UNIT = PERCENT_PREC1
 # Values = YES, NO
 FRSKY_HUB = YES
 
+# FrSky FAS current sensor offset compensation
+# Values = YES, NO
+FAS_OFFSET = NO
+
 # WS HowHigh 
 # Values = YES, NO
 WS_HOW_HIGH = YES
@@ -256,7 +260,7 @@ MENUS_LOCK == NO
 SHELL = sh
 IMG2LBM = -python ../util/img2lbm.py
 TRANSLATE = -python ../util/translate.py
-SVNREV = $(shell sh -c "svnversion | egrep -o '[[:digit:]]+[[:alpha:]]*$$'")
+VERSION = 2.0
 
 SRC =
 CPPSRC =
@@ -331,6 +335,10 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   
   ifeq ($(SP22), YES)
    CPPDEFS += -DSP22
+  endif
+  
+  ifeq ($(FAS_OFFSET), YES)
+   CPPDEFS += -DFAS_OFFSET
   endif
 endif
 
@@ -779,10 +787,8 @@ ifneq ($(PCB), TARANIS)
 endif
 
 ifneq ($(FONT), STD)
-  CPPDEFS += -DFONT_$(FONT)
   INCDIRS += fonts/$(shell sh -c "echo $(FONT) | tr '[:upper:]' '[:lower:]'")
 endif
-
 INCDIRS += fonts/std
   
 ifeq ($(THR_TRACE), YES)
@@ -1063,91 +1069,83 @@ stamp_header:
 	@echo "//Automatically generated file (Makefile) - do not edit" > stamp-opentx.h
 	@echo "#define DATE_STR \"`date +%Y-%m-%d | tr -d '\r\n'`\"" >> stamp-opentx.h
 	@echo "#define TIME_STR \"`date +%H:%M:%S | tr -d '\r\n'`\"" >> stamp-opentx.h
-	@echo "#define SVN_STR  \"opentx-r$(SVNREV)\"" >> stamp-opentx.h
+	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx.h
 	@cat stamp-opentx.h
 
-stock-stamp:
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-stock.txt
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-stock.txt
-	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-stock.txt
-	@cat stamp-opentx-stock.txt
+9x-stamp:
+	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-9x.txt
+	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-9x.txt
+	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx-9x.txt
+	@cat stamp-opentx-9x.txt
 
-stock128-stamp:
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-stock128.txt
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-stock128.txt
-	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-stock128.txt
-	@cat stamp-opentx-stock128.txt
+9x128-stamp:
+	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-9x128.txt
+	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-9x128.txt
+	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx-9x128.txt
+	@cat stamp-opentx-9x128.txt
 
-stock2561-stamp:
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-stock2561.txt
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-stock2561.txt
-	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-stock2561.txt
-	@cat stamp-opentx-stock2561.txt
+9x2561-stamp:
+	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-9x2561.txt
+	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-9x2561.txt
+	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx-9x2561.txt
+	@cat stamp-opentx-9x2561.txt
 	
-v4-stamp:
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-v4.txt
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-v4.txt
-	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-v4.txt
-	@cat stamp-opentx-v4.txt
+gruvin9x-stamp:
+	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-gruvin9x.txt
+	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-gruvin9x.txt
+	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx-gruvin9x.txt
+	@cat stamp-opentx-9x.txt
 
-arm-stamp:
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-arm.txt
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-arm.txt
-	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-arm.txt
-	@cat stamp-opentx-arm.txt
+sky9x-stamp:
+	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-sky9x.txt
+	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-sky9x.txt
+	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx-sky9x.txt
+	@cat stamp-opentx-sky9x.txt
 
 taranis-stamp:
 	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-taranis.txt
 	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-taranis.txt
-	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-taranis.txt
+	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx-taranis.txt
 	@cat stamp-opentx-taranis.txt
 
 translations/cz.h: translations/cz.h.txt
 	@echo
-	@echo "Create language specific header files"
-	@echo "Czech"
+	@echo "Create Czech language specific header files"
 	$(TRANSLATE) translations/cz.h.txt translations/cz.h cz
 
 translations/de.h: translations/de.h.txt  
 	@echo
-	@echo "Create language specific header files"
-	@echo "German"
+	@echo "Create German language specific header files"
 	$(TRANSLATE) translations/de.h.txt translations/de.h de
 
 translations/es.h: translations/es.h.txt 
 	@echo
-	@echo "Create language specific header files"
-	@echo "Spanish"
+	@echo "Create Spanish language specific header files"
 	$(TRANSLATE) translations/es.h.txt translations/es.h es
 
 translations/fr.h: translations/fr.h.txt 
 	@echo
-	@echo "Create language specific header files"
-	@echo "French"
+	@echo "Create French language specific header files"
 	$(TRANSLATE) translations/fr.h.txt translations/fr.h fr
 
 translations/it.h: translations/it.h.txt 
 	@echo
-	@echo "Create language specific header files"
-	@echo "Italian"
+	@echo "Create Italian language specific header files"
 	$(TRANSLATE) translations/it.h.txt translations/it.h it
 
 translations/pl.h: translations/pl.h.txt 
 	@echo
-	@echo "Create language specific header files"
-	@echo "Polish"
+	@echo "Create Polish language specific header files"
 	$(TRANSLATE) translations/pl.h.txt translations/pl.h pl
 
 translations/pt.h: translations/pt.h.txt
 	@echo
-	@echo "Create language specific header files"
-	@echo "Portugese"
+	@echo "Create Portugese language specific header files"
 	$(TRANSLATE) translations/pt.h.txt translations/pt.h pt
 
 translations/se.h: translations/se.h.txt 
 	@echo
-	@echo "Create language specific header files"
-	@echo "Swedish"
+	@echo "Create Swedish language specific header files"
 	$(TRANSLATE) translations/se.h.txt translations/se.h se
 
 .PHONY: fonts
@@ -1299,12 +1297,7 @@ clean_list :
 	$(REMOVE) $(TARGET).lss
 	$(REMOVE) $(TARGET).lst
 	$(REMOVE) $(SRC:.c=.s)
-	$(REMOVE) *.o
-	$(REMOVE) */*.o
-	$(REMOVE) */*/*.o
-	$(REMOVE) */*/*/*.o
-	$(REMOVE) */*/*/*/*.o
-	$(REMOVE) */*/*/*/*/*.o
+	$(REMOVE) `find . -name "*.o"` 
 	$(REMOVE) *.d
 	$(REMOVE) *.lst
 	$(REMOVE) allsrc.cpp
@@ -1368,11 +1361,11 @@ GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 # conservative and not optimized.  This is fine as Google Test
 # compiles fast and for ordinary users its source rarely changes.
 gtest-all.o : $(GTEST_SRCS_)
-	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -c \
+	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -I$(GTEST_DIR)/include -c \
             $(GTEST_DIR)/src/gtest-all.cc
 
 gtest_main.o : $(GTEST_SRCS_)
-	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -c \
+	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -I$(GTEST_DIR)/include -c \
             $(GTEST_DIR)/src/gtest_main.cc
 
 gtest.a : gtest-all.o
@@ -1386,4 +1379,4 @@ gtest_main.a : gtest-all.o gtest_main.o
 # function.
 
 gtests: $(BOARDSRC) $(CPPSRC) gtests.cpp simpgmspace.cpp *.h gtest_main.a
-	g++ -std=gnu++0x $(CPPFLAGS) $(BOARDSRC) $(CPPSRC) gtests.cpp simpgmspace.cpp -I$(GTEST_DIR) -o gtests -lpthread -MD -DSIMU gtest_main.a 
+	g++ -std=gnu++0x $(CPPFLAGS) $(BOARDSRC) $(CPPSRC) gtests.cpp simpgmspace.cpp -I$(GTEST_DIR) ${INCFLAGS} -I$(GTEST_DIR)/include -o gtests -lpthread -MD -DSIMU gtest_main.a 

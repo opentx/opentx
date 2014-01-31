@@ -55,6 +55,9 @@ const pm_char STR_OPEN9X[] PROGMEM =
 #endif
     ISTR(TRNMODE)
     ISTR(TRNCHN)
+#if defined(PCBTARANIS)
+    ISTR(UART3MODES)
+#endif
     ISTR(VTRIMINC)
     ISTR(RETA123)
     ISTR(VPROTOS)
@@ -267,6 +270,10 @@ const pm_char STR_EEPROMOVERFLOW[] PROGMEM = TR_EEPROMOVERFLOW;
 const pm_char STR_TRIMS2OFFSETS[] PROGMEM = TR_TRIMS2OFFSETS;
 const pm_char STR_MENURADIOSETUP[] PROGMEM = TR_MENURADIOSETUP;
 
+#if defined(FAS_OFFSET) || !defined(CPUM64)
+const pm_char STR_FAS_OFFSET[] PROGMEM = TR_FAS_OFFSET;
+#endif
+
 #if defined(CPUM2560) || defined(CPUARM)
 const pm_char STR_MENUDATEANDTIME[] PROGMEM = TR_MENUDATEANDTIME;
 #endif
@@ -455,6 +462,7 @@ const pm_char STR_VIEW_TEXT[] PROGMEM = "View text";
   const pm_char STR_MODELNAME[] PROGMEM = TR_MODELNAME;
   const pm_char STR_PHASENAME[] PROGMEM = TR_PHASENAME;
   const pm_char STR_MIXNAME[] PROGMEM = TR_MIXNAME;
+  const pm_char STR_INPUTNAME[] PROGMEM = TR_INPUTNAME;
   const pm_char STR_EXPONAME[] PROGMEM = TR_EXPONAME;
 #endif
 
@@ -482,11 +490,12 @@ const pm_char STR_VIEW_TEXT[] PROGMEM = "View text";
   const pm_char STR_CLEAR[] PROGMEM = "Clear";
   const pm_char STR_RESET[] PROGMEM = "Reset";
   const pm_char STR_COPY_TRIMS_TO_OFFSET[] = "Copy Trims To Offset";
-  const pm_char STR_TOP_BAR[] PROGMEM = "Top Bar";
-  const pm_char STR_ALTITUDE[] PROGMEM = INDENT "Altitude";
+  const pm_char STR_TOP_BAR[] PROGMEM = TR_TOP_BAR;
+  const pm_char STR_ALTITUDE[] PROGMEM = TR_ALTITUDE;
   const pm_char STR_SCALE[] PROGMEM = "Scale";
   const pm_char STR_VIEW_CHANNELS[] PROGMEM = "View Channels";
   const pm_char STR_VIEW_NOTES[] PROGMEM = "View Notes";
+  const pm_char STR_UART3MODE[] PROGMEM = TR_UART3MODE;
 #endif
 
 #if MENUS_LOCK == 1
@@ -585,6 +594,12 @@ const pm_uchar font_5x7[] PROGMEM = {
 #include "font_se_05x07.lbm"
 #endif
 };
+
+#if !defined(CPUM64) || defined(EXTSTD)
+const pm_uchar font_5x7_B[] PROGMEM = {
+#include "font_05x07_B_compressed.lbm"
+};
+#endif
 
 const pm_uchar font_10x14[] PROGMEM = {
 #include "font_10x14_compressed.lbm"

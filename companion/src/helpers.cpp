@@ -12,15 +12,28 @@ QString getPhaseName(int val, char * phasename)
     phaseName.append(phasename);
     if (phaseName.isEmpty()) {
       return QString(val < 0 ? "!" : "") + QObject::tr("FM%1").arg(abs(val) - 1);
-    } else {
+    }
+    else {
       return QString(val < 0 ? "!" : "") + phaseName;
     }
   }
 }
 
-QString getStickStr(int index)
+QString getInputStr(ModelData & model, int index)
 {
-  return RawSource(SOURCE_TYPE_STICK, index).toString();
+  QString result;
+
+  if (GetEepromInterface()->getCapability(VirtualInputs)) {
+    result = model.inputNames[index];
+    if (result.isEmpty()) {
+      result = QObject::tr("Input%1").arg(index+1, 2, 10, QChar('0'));
+    }
+  }
+  else {
+    result = RawSource(SOURCE_TYPE_STICK, index).toString();
+  }
+
+  return result;
 }
 
 void populateGvSourceCB(QComboBox *b, int value)
@@ -63,7 +76,7 @@ void populateTTraceCB(QComboBox *b, int value)
   }
   int channels=(IS_ARM(GetEepromInterface()->getBoard()) ? 32 : 16);
   for (int i=1; i<= channels; i++) {
-    b->addItem(QObject::tr("CH")+QString("%1").arg(i,2,10,QChar('0')));
+    b->addItem(QObject::tr("CH%1").arg(i, 2, 10, QChar('0')));
   }
   b->setCurrentIndex(value);
 }
@@ -155,21 +168,14 @@ QString getFuncName(unsigned int val)
     return QObject::tr("Background Music");
   else if (val == FuncBackgroundMusicPause)
     return QObject::tr("Background Music Pause");
-  else if (val == FuncAdjustGV1)
-    return QObject::tr("Adjust GV1");
-  else if (val == FuncAdjustGV2)
-    return QObject::tr("Adjust GV2");
-  else if (val == FuncAdjustGV3)
-    return QObject::tr("Adjust GV3");
-  else if (val == FuncAdjustGV4)
-    return QObject::tr("Adjust GV4");
-  else if (val == FuncAdjustGV5)
-    return QObject::tr("Adjust GV5");
+  else if (val >= FuncAdjustGV1 && val <= FuncAdjustGVLast)
+    return QObject::tr("Adjust GV%1").arg(val-FuncAdjustGV1+1);
   else {
     return QString("???"); // Highlight unknown functions with output of question marks.(BTW should not happen that we do not know what a function is)
   }
 }
 
+// TODO should be a toString() method in CustoSwData ...
 QString getCustomSwitchStr(CustomSwData * customSw, const ModelData & model)
 {
   QString result = "";
@@ -184,7 +190,8 @@ QString getCustomSwitchStr(CustomSwData * customSw, const ModelData & model)
       result = QString("TIM(%1 , %2)").arg(ValToTim(customSw->val1)).arg(ValToTim(customSw->val2));
       break;     
     case CS_FAMILY_VOFS: {
-      RawSource source = RawSource(customSw->val1);
+      RawSource source = RawSource(customSw->val1, &model);
+      RawSourceRange range = source.getRange();
       if (customSw->val1)
         result += source.toString();
       else
@@ -199,7 +206,7 @@ QString getCustomSwitchStr(CustomSwData * customSw, const ModelData & model)
         result += " &gt; ";
       else if (customSw->func == CS_FN_ANEG || customSw->func == CS_FN_VNEG)
         result += " &lt; ";
-      result += QString::number(source.getStep(model) * (customSw->val2 + source.getRawOffset(model)) + source.getOffset(model));
+      result += QString::number(range.step * (customSw->val2 /*TODO+ source.getRawOffset(model)*/) + range.offset);
       break;
     }
     case CS_FAMILY_VBOOL:
@@ -395,7 +402,7 @@ void populateFuncParamArmTCB(QComboBox *b, ModelData * g_model, char * value, QS
   }
 }
 
-void populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsigned int adjustmode)
+void populateFuncParamCB(QComboBox *b, const ModelData & model, uint function, unsigned int value, unsigned int adjustmode)
 {
   QStringList qs;
   b->clear();
@@ -415,22 +422,30 @@ void populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsign
     qs.append( QObject::tr("Timer2"));
     qs.append( QObject::tr("All"));
     qs.append( QObject::tr("Telemetry"));
+    int reCount = GetEepromInterface()->getCapability(RotaryEncoders);
+    if (reCount == 1) {
+      qs.append( QObject::tr("Rotary Encoder"));
+    }
+    else if (reCount == 2) {
+      qs.append( QObject::tr("REa"));
+      qs.append( QObject::tr("REb"));
+    }
     b->addItems(qs);
     b->setCurrentIndex(value);
   }
   else if (function==FuncVolume) {
-    populateSourceCB(b, RawSource(value), POPULATE_SOURCES|POPULATE_TRIMS);
+    populateSourceCB(b, RawSource(value), model, POPULATE_SOURCES|POPULATE_TRIMS);
   }
   else if (function==FuncPlayValue) {
-    populateSourceCB(b, RawSource(value), POPULATE_SOURCES|POPULATE_SWITCHES|POPULATE_GVARS|POPULATE_TRIMS|POPULATE_TELEMETRYEXT);
+    populateSourceCB(b, RawSource(value), model, POPULATE_SOURCES|POPULATE_VIRTUAL_INPUTS|POPULATE_SWITCHES|POPULATE_GVARS|POPULATE_TRIMS|POPULATE_TELEMETRYEXT);
   }
-  else if (function>=FuncAdjustGV1 && function<=FuncAdjustGV5 ) {
+  else if (function>=FuncAdjustGV1 && function<=FuncAdjustGVLast) {
     switch (adjustmode) {
       case 1:
-        populateSourceCB(b, RawSource(value), POPULATE_SOURCES|POPULATE_TRIMS|POPULATE_SWITCHES);
+        populateSourceCB(b, RawSource(value), model, POPULATE_SOURCES|POPULATE_TRIMS|POPULATE_SWITCHES);
         break;
       case 2:
-        populateSourceCB(b, RawSource(value), POPULATE_GVARS);
+        populateSourceCB(b, RawSource(value), model, POPULATE_GVARS);
         break;
       case 3:
         b->clear();
@@ -440,20 +455,8 @@ void populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsign
         break;
     }
   }
-
   else {
     b->hide();
-  }
-}
-
-void populateRepeatCB(QComboBox *b, unsigned int value)
-{
-  b->clear();
-  b->addItem(QObject::tr("No repeat", 0));
-  unsigned int step = IS_ARM(GetEepromInterface()->getBoard()) ? 5 : 10;
-  for (unsigned int i=step; i<=60; i+=step) {
-    b->addItem(QObject::tr("%1s").arg(i), i);
-    if (i==value) b->setCurrentIndex(b->count()-1);
   }
 }
 
@@ -480,68 +483,205 @@ void populatePhasesCB(QComboBox *b, int value)
   b->setCurrentIndex(value + GetEepromInterface()->getCapability(FlightPhases));
 }
 
-void populateCurvesCB(QComboBox *b, int value)
+bool gvarsEnabled()
 {
-  b->clear();
-  int numcurves=GetEepromInterface()->getCapability(NumCurves);
-  if (numcurves==0) {
-    numcurves=16;
-  }
-  for (int i = -(numcurves)*GetEepromInterface()->getCapability(HasNegCurves); i < CURVE_BASE + numcurves; i++) {
-    if ((i==0) && GetEepromInterface()->getCapability(DiffMixers)) {
-      b->addItem(QObject::tr("Diff"));
-    } else {
-      b->addItem(getCurveStr(i));
+  int gvars=0;
+  if (GetEepromInterface()->getCapability(HasVariants)) {
+    if ((GetCurrentFirmwareVariant() & GVARS_VARIANT)) {
+      gvars=1;
     }
   }
-  b->setCurrentIndex(value+numcurves*GetEepromInterface()->getCapability(HasNegCurves));
-  b->setMaxVisibleItems(10);
+  else {
+    gvars=1;
+  }
+  return gvars;
 }
 
-void populateExpoCurvesCB(QComboBox *b, int value)
+GVarGroup::GVarGroup(QCheckBox *weightGV, QSpinBox *weightSB, QComboBox *weightCB, int & weight, const int deflt, const int mini, const int maxi, const unsigned int flags):
+  QObject(),
+  weightGV(weightGV),
+  weightSB(weightSB),
+  weightCB(weightCB),
+  weight(weight),
+  flags(flags),
+  lock(false)
 {
-  b->clear();
-  int numcurves=GetEepromInterface()->getCapability(NumCurves);
-  if (numcurves==0) {
-    numcurves=16;
-  }
-  if (GetEepromInterface()->getCapability(ExpoIsCurve)) {
-      b->addItem(QObject::tr("Expo"));
-  } else {
-      b->addItem(getCurveStr(0));
-  }
-  for (int i = 1; i < CURVE_BASE + numcurves; i++)    
-    b->addItem(getCurveStr(i));
-  b->setCurrentIndex(value);
-  b->setMaxVisibleItems(10);
-  /* TODO
-  if (GetEepromInterface()->getCapability(ExpoCurve5)) {
-    int curve5=GetEepromInterface()->getCapability(ExpoCurve5);
-    for (int i=CURVE_BASE+curve5; i < CURVE_BASE + MAX_CURVE5; i++) {
-      // Get the index of the value to disable
-      QModelIndex index = b->model()->index(i, 0);
+  lock = true;
 
-      // This is the effective 'disable' flag
-      QVariant v(0);
-
-      //the magic
-      b->model()->setData(index, v, Qt::UserRole - 1);
+  if (gvarsEnabled()) {
+    populateGVCB(weightCB, weight);
+    connect(weightGV, SIGNAL(stateChanged(int)), this, SLOT(gvarCBChanged(int)));
+    connect(weightCB, SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
+  }
+  else {
+    weightGV->hide();
+    if (weight > maxi || weight < -mini) {
+      weight = deflt;
     }
   }
-  if (GetEepromInterface()->getCapability(ExpoCurve9)) {
-    int curve9=GetEepromInterface()->getCapability(ExpoCurve9);
-    for (int i=CURVE_BASE+MAX_CURVE5+curve9; i < CURVE_BASE + MAX_CURVE5+ MAX_CURVE9; i++) {
-      // Get the index of the value to disable
-      QModelIndex index = b->model()->index(i, 0);
 
-      // This is the effective 'disable' flag
-      QVariant v(0);
+  weightSB->setMinimum(mini);
+  weightSB->setMaximum(maxi);
 
-      //the magic
-      b->model()->setData(index, v, Qt::UserRole - 1);
+  if (weight>maxi || weight<mini) {
+    weightGV->setChecked(true);
+    weightSB->hide();
+    weightCB->show();
+  }
+  else {
+    weightGV->setChecked(false);
+    weightSB->setValue(weight);
+    weightSB->show();
+    weightCB->hide();
+  }
+
+  connect(weightSB, SIGNAL(editingFinished()), this, SLOT(valuesChanged()));
+
+  lock = false;
+}
+
+void GVarGroup::gvarCBChanged(int state)
+{
+  weightCB->setVisible(state);
+  weightSB->setVisible(!state);
+  valuesChanged();
+}
+
+void GVarGroup::valuesChanged()
+{
+  if (weightGV->isChecked())
+    weight = weightCB->itemData(weightCB->currentIndex()).toInt();
+  else
+    weight = weightSB->value();
+}
+
+CurveGroup::CurveGroup(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QComboBox *curveValueCB, QSpinBox *curveValueSB, CurveReference & curve, unsigned int flags):
+  QObject(),
+  curveTypeCB(curveTypeCB),
+  curveGVarCB(curveGVarCB),
+  curveValueCB(curveValueCB),
+  curveValueSB(curveValueSB),
+  curve(curve),
+  flags(flags),
+  lock(false),
+  lastType(-1)
+{
+  curveTypeCB->addItem(tr("Diff"));
+  curveTypeCB->addItem(tr("Expo"));
+  curveTypeCB->addItem(tr("Func"));
+  curveTypeCB->addItem(tr("Curve"));
+
+  curveValueCB->setMaxVisibleItems(10);
+
+  connect(curveTypeCB, SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
+  connect(curveGVarCB, SIGNAL(stateChanged(int)), this, SLOT(gvarCBChanged(int)));
+  connect(curveValueCB, SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
+  connect(curveValueSB, SIGNAL(editingFinished()), this, SLOT(valuesChanged()));
+
+  update();
+}
+
+void CurveGroup::update()
+{
+  lock = true;
+
+  curveTypeCB->setCurrentIndex(curve.type);
+
+  if (curve.type == CurveReference::CURVE_REF_DIFF || curve.type == CurveReference::CURVE_REF_EXPO) {
+    curveGVarCB->show();
+    if (curve.value > 100 || curve.value < -100) {
+      curveGVarCB->setChecked(true);
+      if (lastType != CurveReference::CURVE_REF_DIFF && lastType != CurveReference::CURVE_REF_EXPO) {
+        lastType = curve.type;
+        populateGVCB(curveValueCB, curve.value);
+      }
+      curveValueCB->show();
+      curveValueSB->hide();
+    }
+    else {
+      curveGVarCB->setChecked(false);
+      curveValueSB->setMinimum(-100);
+      curveValueSB->setMaximum(100);
+      curveValueSB->setValue(curve.value);
+      curveValueSB->show();
+      curveValueCB->hide();
     }
   }
-  */
+  else {
+    curveGVarCB->hide();
+    curveValueSB->hide();
+    curveValueCB->show();
+    switch (curve.type) {
+      case CurveReference::CURVE_REF_FUNC:
+        if (lastType != curve.type) {
+          lastType = curve.type;
+          curveValueCB->clear();
+          for (int i=0; i<=6/*TODO constant*/; i++) {
+            curveValueCB->addItem(CurveReference(CurveReference::CURVE_REF_FUNC, i).toString());
+          }
+        }
+        curveValueCB->setCurrentIndex(curve.value);
+        break;
+      case CurveReference::CURVE_REF_CUSTOM:
+      {
+        int numcurves = GetEepromInterface()->getCapability(NumCurves);
+        if (lastType != curve.type) {
+          lastType = curve.type;
+          curveValueCB->clear();
+          for (int i=-numcurves; i<numcurves; i++) {
+            curveValueCB->addItem(CurveReference(CurveReference::CURVE_REF_CUSTOM, i).toString());
+          }
+        }
+        curveValueCB->setCurrentIndex(curve.value+numcurves);
+        break;
+      }
+      default:
+        break;
+    }
+  }
+
+  lock = false;
+}
+
+void CurveGroup::gvarCBChanged(int state)
+{
+  if (!lock) {
+    if (state) {
+      curve.value = 10000; // TODO constant in EEpromInterface ...
+    }
+    else {
+      curve.value = 0; // TODO could be better
+    }
+
+    update();
+  }
+}
+
+void CurveGroup::valuesChanged()
+{
+  if (!lock) {
+    switch (curveTypeCB->currentIndex()) {
+      case 0:
+      case 1:
+      {
+        int value;
+        if (curveGVarCB->isChecked())
+          value = curveValueCB->itemData(curveValueCB->currentIndex()).toInt();
+        else
+          value = curveValueSB->value();
+        curve = CurveReference(curveTypeCB->currentIndex() == 0 ? CurveReference::CURVE_REF_DIFF : CurveReference::CURVE_REF_EXPO, value);
+        break;
+      }
+      case 2:
+        curve = CurveReference(CurveReference::CURVE_REF_FUNC, curveValueCB->currentIndex());
+        break;
+      case 3:
+        curve = CurveReference(CurveReference::CURVE_REF_CUSTOM, curveValueCB->currentIndex() - GetEepromInterface()->getCapability(NumCurves));
+        break;
+    }
+
+    update();
+  }
 }
 
 void populateTrimUseCB(QComboBox *b, unsigned int phase)
@@ -560,68 +700,24 @@ void populateTrimUseCB(QComboBox *b, unsigned int phase)
 void populateGvarUseCB(QComboBox *b, unsigned int phase)
 {
   b->addItem(QObject::tr("Own value"));
-  unsigned int num_phases = GetEepromInterface()->getCapability(FlightPhases);
-  if (num_phases>0) {
-    for (unsigned int i = 0; i < num_phases; i++) {
-      if (i != phase) {
-        b->addItem(QObject::tr("Flight mode %1 value").arg(i));
-      }
+  for (int i=0; i<GetEepromInterface()->getCapability(FlightPhases); i++) {
+    if (i != (int)phase) {
+      b->addItem(QObject::tr("Flight mode %1 value").arg(i));
     }
   }
 }
 
-void populateTimerSwitchCB(QComboBox *b, int value, int extrafields)
+void populateTimerSwitchCB(QComboBox *b, int value)
 {
   b->clear();
-  uint8_t endvalue=128;
   uint8_t count=0;
-  if (extrafields==2)
-    endvalue=192;
-  for (int i=-128; i<endvalue; i++) {
+  for (int i=-128; i<128; i++) {
     QString timerMode = getTimerMode(i);
     if (!timerMode.isEmpty()) {
       b->addItem(getTimerMode(i), i);
       if (i==value)
         b->setCurrentIndex(b->count()-1);
-      if (extrafields==2 && (i<0 || (i>3 && i <TMRMODE_FIRST_CHPERC))) {
-        QModelIndex index = b->model()->index(count, 0);
-        // This is the effective 'disable' flag
-        QVariant v(0);
-        //the magic
-        b->model()->setData(index, v, Qt::UserRole - 1);
-      }
       count++;
-    }
-  }
-  b->setMaxVisibleItems(10);
-}
-
-void populateTimerSwitchBCB(QComboBox *b, int value, int extrafields)
-{
-  b->clear();
-  if (extrafields!=2) {
-    int startvalue=-128;
-    int endvalue=128;
-    if (extrafields==1) {
-      startvalue=-25;
-      endvalue=26;
-    }
-    for (int i=startvalue; i<endvalue; i++) {
-      QString timerMode = getTimerMode(i);
-      if (!timerMode.isEmpty()) {
-        b->addItem(getTimerMode(i), i);
-        if (i==value)
-          b->setCurrentIndex(b->count()-1);
-      }
-    }
-  } else {
-    for (int i=-33; i<66; i++) {
-      QString timerMode = getTimerModeB(i);
-      if (!timerMode.isEmpty()) {
-        b->addItem(timerMode, i);
-        if (i==value)
-          b->setCurrentIndex(b->count()-1);
-      }
     }
   }
   b->setMaxVisibleItems(10);
@@ -868,8 +964,10 @@ void populateGVCB(QComboBox *b, int value)
 {
   int selected=0;
   int nullitem;
+
   b->clear();
-  int pgvars=GetEepromInterface()->getCapability(GvarsOfsNum);
+
+  int pgvars = GetEepromInterface()->getCapability(Gvars);
   for (int i=-pgvars; i<=-1; i++) {
     int16_t gval = (int16_t)(-10000+i);
     b->addItem(QObject::tr("-GV%1").arg(-i), gval);
@@ -878,12 +976,15 @@ void populateGVCB(QComboBox *b, int value)
       selected=1;
     }
   }
+
   b->addItem("---", 0);
+
   nullitem=b->count()-1;
   if (value == 0) {
     b->setCurrentIndex(b->count()-1);
     selected=1;
   }
+
   for (int i=1; i<=pgvars; i++) {
     int16_t gval = (int16_t)(10000+i);
     b->addItem(QObject::tr("GV%1").arg(i), gval);
@@ -892,12 +993,12 @@ void populateGVCB(QComboBox *b, int value)
       selected=1;
     }
   }
+
   if (selected==0)
     b->setCurrentIndex(nullitem);
 }
 
-
-void populateSourceCB(QComboBox *b, const RawSource &source, unsigned int flags)
+void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData & model, unsigned int flags)
 {
   RawSource item;
 
@@ -907,7 +1008,18 @@ void populateSourceCB(QComboBox *b, const RawSource &source, unsigned int flags)
     item = RawSource(SOURCE_TYPE_NONE);
     b->addItem(item.toString(), item.toValue());
     if (item == source) b->setCurrentIndex(b->count()-1);
+  }
 
+  if (flags & POPULATE_VIRTUAL_INPUTS) {
+    int virtualInputs = GetEepromInterface()->getCapability(VirtualInputs);
+    for (int i=0; i<virtualInputs; i++) {
+      item = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, i, &model);
+      b->addItem(item.toString(), item.toValue());
+      if (item == source) b->setCurrentIndex(b->count()-1);
+    }
+  }
+
+  if (flags & POPULATE_SOURCES) {
     for (int i=0; i<4+GetEepromInterface()->getCapability(Pots); i++) {
       item = RawSource(SOURCE_TYPE_STICK, i);
       b->addItem(item.toString(), item.toValue());
@@ -983,7 +1095,7 @@ void populateSourceCB(QComboBox *b, const RawSource &source, unsigned int flags)
   }
 
   if (flags & POPULATE_GVARS) {
-    for (int i=0; i<GetEepromInterface()->getCapability(GvarsNum); i++) {
+    for (int i=0; i<GetEepromInterface()->getCapability(Gvars); i++) {
       item = RawSource(SOURCE_TYPE_GVAR, i);
       b->addItem(item.toString(), item.toValue());
       if (item == source) b->setCurrentIndex(b->count()-1);
@@ -1061,25 +1173,20 @@ QString getSignedStr(int value)
   return value > 0 ? QString("+%1").arg(value) : QString("%1").arg(value);
 }
 
-QString getCurveStr(int curve)
-{
-  QString crvStr = "!c16!c15!c14!c13!c12!c11!c10!c9 !c8 !c7 !c6 !c5 !c4 !c3 !c2 !c1 ----x>0 x<0 |x| f>0 f<0 |f| c1  c2  c3  c4  c5  c6  c7  c8  c9  c10 c11 c12 c13 c14 c15 c16 ";
-  return crvStr.mid((curve+C9X_MAX_CURVES) * 4, 4).remove(' ').replace("c", QObject::tr("Curve") + " ");
-}
-
 QString getGVarString(int16_t val, bool sign)
 {
-  if (val >= -10000 && val <= 10000)
+  if (val >= -10000 && val <= 10000) {
     if (sign)
-      return QString("(%1%)").arg(getSignedStr(val));
+      return QString("%1%").arg(getSignedStr(val));
     else
-      return QString("(%1%)").arg(val);
-  else
-    if (val<0) {
-      return QObject::tr("(-GV%1)").arg(-val-10000);
-    } else {
-      return QObject::tr("(GV%1)").arg(val-10000);
-    }
+      return QString("%1%").arg(val);
+  }
+  else {
+    if (val<0)
+      return QObject::tr("-GV%1").arg(-val-10000);
+    else
+      return QObject::tr("GV%1").arg(val-10000);
+  }
 }
 
 QString image2qstring(QImage image)
@@ -1140,12 +1247,6 @@ int findmult(float value, float base)
   
   return mult;
 }
-
-bool checkbit(int value, int bit)
-{
-  return ((value & (1<<bit))==(1<<bit));
-}
-
 
 QString getFrSkyAlarmType(int alarm)
 {
@@ -1214,109 +1315,6 @@ QString getFrSkySrc(int index)
   return RawSource(SOURCE_TYPE_TELEMETRY, index-1).toString();
 }
 
-
-/*
- 1,2) Timer1/Timer2 0:765
- 3,4) TX/RX
- 5) A1 range
- 6) A2 range
- 7) ALT 0-1020
- 8)RPM 0-12750
- 9FUEL 0-100%
- 10) T1 -30-225
- 11) T2 -30-225
- 12) spd 0-510
- 13) dist 0-2040
- 14)GAlt 0-1020
- 15) cell 0-5.1
- 16) Cels 0 25.5
- 17) Vfas 0 25.5
- 18) Curr 0 127.5
- 19) Cnsp 0 5100
- 20) Powr 0 1275
- 21) AccX 0 2.55
- 22) AccY 0 2.55
- 23) AccZ 0 2.55
- 24) Hdg 0 255
- 25) VSpd 0 2.55
- 26) A1- A1 range
- 27) A2- A2 range
- 28) Alt- 0 255
- 29) Alt+ 0 255
- 30) Rpm+ 0 255
- 31) T1+ 0 255 (s????)
- 32) T2+ 0 255 (e????)
- 33) Spd+ 0 255 (ILG???)
- 34) Dst+ 0 255 (v ????)
- 35) Cur+ 0 25.5 (A)
- 1.852
- */
-
-float getBarValue(int barId, int value, FrSkyData *fd)
-{
-  switch (barId-1) {
-    case TELEMETRY_SOURCE_TX_BATT:
-      return value/10.0;
-    case TELEMETRY_SOURCE_TIMER1:
-    case TELEMETRY_SOURCE_TIMER2:
-      return (3*value);
-    case TELEMETRY_SOURCE_RSSI_TX:
-    case TELEMETRY_SOURCE_RSSI_RX:
-    case TELEMETRY_SOURCE_FUEL:
-      return std::min(100, value);
-    case TELEMETRY_SOURCE_A1:
-    case TELEMETRY_SOURCE_A1_MIN:
-      if (fd->channels[0].type==0)
-        return ((fd->channels[0].ratio*value/255.0)+fd->channels[0].offset)/10;
-      else
-        return ((fd->channels[0].ratio*value/255.0)+fd->channels[0].offset);
-    case TELEMETRY_SOURCE_A2:
-    case TELEMETRY_SOURCE_A2_MIN:
-      if (fd->channels[1].type==0)
-        return ((fd->channels[1].ratio*value/255.0)+fd->channels[1].offset)/10;
-      else
-        return ((fd->channels[1].ratio*value/255.0)+fd->channels[1].offset);
-    case TELEMETRY_SOURCE_ALT:
-    case TELEMETRY_SOURCE_GPS_ALT:
-    case TELEMETRY_SOURCE_ALT_MAX:
-    case TELEMETRY_SOURCE_ALT_MIN:
-      return (8*value)-500;
-    case TELEMETRY_SOURCE_RPM:
-    case TELEMETRY_SOURCE_RPM_MAX:
-      return value * 50;
-    case TELEMETRY_SOURCE_T1:
-    case TELEMETRY_SOURCE_T2:
-    case TELEMETRY_SOURCE_T1_MAX:
-    case TELEMETRY_SOURCE_T2_MAX:
-      return value - 30.0;
-    case TELEMETRY_SOURCE_CELL:
-      return value*2.0/100;
-    case TELEMETRY_SOURCE_CELLS_SUM:
-    case TELEMETRY_SOURCE_VFAS:
-      return value/10.0;
-    case TELEMETRY_SOURCE_HDG:
-      return std::min(359, value*2);
-    case TELEMETRY_SOURCE_DIST_MAX:
-    case TELEMETRY_SOURCE_DIST:
-      return value * 8;
-    case TELEMETRY_SOURCE_CURRENT_MAX:
-    case TELEMETRY_SOURCE_CURRENT:
-      return value/2.0;
-    case TELEMETRY_SOURCE_POWER:
-      return value*5;
-    case TELEMETRY_SOURCE_CONSUMPTION:
-      return value * 20;
-    case TELEMETRY_SOURCE_SPEED:
-    case TELEMETRY_SOURCE_SPEED_MAX:
-      if (fd->imperial==1)
-        return value;
-      else
-        return value*1.852;
-    default:
-      return value;
-  }
-}
-
 QString getTrimInc(ModelData * g_model)
 {
     switch (g_model->trimInc) {
@@ -1344,6 +1342,34 @@ QString getProtocol(ModelData * g_model)
   return str;
 }
 
+QString getPhasesStr(unsigned int phases, ModelData & model)
+{
+  int numphases = GetEepromInterface()->getCapability(FlightPhases);
+
+  if (numphases && phases) {
+    QString str;
+    int count = 0;
+    if (phases == (unsigned int)(1<<numphases) - 1) {
+      str = QObject::tr("None");
+    }
+    if (phases) {
+      for (int i=0; i<numphases;i++) {
+        if (!(phases & (1<<i))) {
+          if (count++ > 0) str += QString(", ");
+          str += getPhaseName(i+1, model.phaseData[i].name);
+        }
+      }
+    }
+    if (count > 1)
+      return QObject::tr("Flight modes(%1)").arg(str);
+    else
+      return QObject::tr("Flight mode(%1)").arg(str);
+  }
+  else {
+    return "";
+  }
+}
+
 float c9xexpou(float point, float coeff)
 {
   float x=point*1024.0/100.0;
@@ -1365,3 +1391,35 @@ QString getCenterBeep(ModelData * g_model)
   if(g_model->beepANACenter & 0x80) strl << "LS";
   return strl.join(", ");
 }
+
+QString getTheme()
+{
+  QSettings settings;
+  int theme_set = settings.value("theme", 1).toInt();
+  QString Theme;
+  switch(theme_set) {
+    case 0:
+      Theme="classic";
+      break;
+    case 2:
+      Theme="monowhite";
+      break;
+    case 3:
+      Theme="monoblue";
+      break;
+    default:
+      Theme="monochrome";
+      break;          
+  }
+  return Theme;
+}
+
+CompanionIcon::CompanionIcon(QString baseimage)
+{
+  static QString theme = getTheme();
+  addFile(":/themes/"+theme+"/16/"+baseimage, QSize(16,16));
+  addFile(":/themes/"+theme+"/24/"+baseimage, QSize(24,24));
+  addFile(":/themes/"+theme+"/32/"+baseimage, QSize(32,32));
+  addFile(":/themes/"+theme+"/48/"+baseimage, QSize(48,48));
+}
+

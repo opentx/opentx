@@ -326,6 +326,7 @@ extern volatile uint32_t Tenms;
 extern uint32_t Master_frequency;
 #define NVIC_EnableIRQ(x)
 #define NVIC_DisableIRQ(x)
+#define NVIC_SetPriority(...)
 #define __disable_irq()
 #define __enable_irq()
 #endif
@@ -358,6 +359,8 @@ void eeprom_read_block (void *pointer_ram, const void *pointer_eeprom, size_t si
 #define boardInit()
 
 #define OS_MutexID pthread_mutex_t
+extern OS_MutexID audioMutex;
+
 #define OS_FlagID int
 #define OS_TID int
 #define OS_TCID int

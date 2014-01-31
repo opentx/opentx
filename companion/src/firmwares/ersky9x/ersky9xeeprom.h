@@ -51,8 +51,6 @@ PACK(typedef struct t_Ersky9xTrainerMix {
 
   operator TrainerMix();
   t_Ersky9xTrainerMix();
-  t_Ersky9xTrainerMix(TrainerMix&);
-
 }) Ersky9xTrainerMix; //
 
 PACK(typedef struct t_Ersky9xTrainerData {
@@ -61,8 +59,6 @@ PACK(typedef struct t_Ersky9xTrainerData {
 
   operator TrainerData();
   t_Ersky9xTrainerData();
-  t_Ersky9xTrainerData(TrainerData&);
-
 }) Ersky9xTrainerData;
 
 PACK(typedef struct t_Ersky9xGeneral {
@@ -122,8 +118,6 @@ PACK(typedef struct t_Ersky9xGeneral {
   uint8_t	 rotaryDivisor ;
   operator GeneralSettings();
   t_Ersky9xGeneral();
-  t_Ersky9xGeneral(GeneralSettings&);
-
 }) Ersky9xGeneral;
 
 PACK(typedef struct t_Ersky9xExpoData {
@@ -143,7 +137,6 @@ PACK(typedef struct t_Ersky9xLimitData {
 
   operator LimitData();
   t_Ersky9xLimitData() ;
-  t_Ersky9xLimitData(LimitData&);
 }) Ersky9xLimitData;
 
 #define MLTPX_ADD  0
@@ -170,7 +163,6 @@ PACK(typedef struct t_Ersky9xMixData_v10 {
 
   operator MixData();
   t_Ersky9xMixData_v10();
-  t_Ersky9xMixData_v10(MixData&);
 }) Ersky9xMixData_v10;
 
 PACK(typedef struct t_Ersky9xMixData_v11 {
@@ -192,7 +184,6 @@ PACK(typedef struct t_Ersky9xMixData_v11 {
   uint8_t  res[4];
   operator MixData();
   t_Ersky9xMixData_v11();
-  t_Ersky9xMixData_v11(MixData&);
 }) Ersky9xMixData_v11;
 
 PACK(typedef struct t_Ersky9xCustomSwData_v10 { // Custom Switches data
@@ -202,8 +193,6 @@ PACK(typedef struct t_Ersky9xCustomSwData_v10 { // Custom Switches data
 
   operator CustomSwData();
   t_Ersky9xCustomSwData_v10() { memset(this, 0, sizeof(t_Ersky9xCustomSwData_v10)); }
-  t_Ersky9xCustomSwData_v10(CustomSwData&);
-
 }) Ersky9xCustomSwData_v10;
 
 PACK(typedef struct t_Ersky9xCustomSwData_v11 { // Custom Switches data
@@ -215,8 +204,6 @@ PACK(typedef struct t_Ersky9xCustomSwData_v11 { // Custom Switches data
 
   operator CustomSwData();
   t_Ersky9xCustomSwData_v11() { memset(this, 0, sizeof(t_Ersky9xCustomSwData_v11)); }
-  t_Ersky9xCustomSwData_v11(CustomSwData&);
-
 }) Ersky9xCustomSwData_v11;
 
 PACK(typedef struct t_Ersky9xSafetySwData_v10 { // Custom Switches data
@@ -225,7 +212,6 @@ PACK(typedef struct t_Ersky9xSafetySwData_v10 { // Custom Switches data
 
   operator SafetySwData();
   t_Ersky9xSafetySwData_v10();
-  t_Ersky9xSafetySwData_v10(SafetySwData&);
 }) Ersky9xSafetySwData_v10;
 
 PACK(typedef struct t_Ersky9xSafetySwData_v11 { // Custom Switches data
@@ -246,7 +232,6 @@ PACK(typedef struct t_Ersky9xSafetySwData_v11 { // Custom Switches data
 
   operator SafetySwData();
   t_Ersky9xSafetySwData_v11();
-  t_Ersky9xSafetySwData_v11(SafetySwData&);
 }) Ersky9xSafetySwData_v11;
 
 PACK(typedef struct t_Ersky9xgvar {
@@ -281,7 +266,6 @@ PACK(typedef struct t_Ersky9xFrSkyChannelData_v10 {
 
   operator FrSkyChannelData();
   t_Ersky9xFrSkyChannelData_v10();
-  t_Ersky9xFrSkyChannelData_v10(FrSkyChannelData&);
 }) Ersky9xFrSkyChannelData_v10;
 
 PACK(typedef struct t_Ersky9xFrSkyData_v10 {
@@ -289,7 +273,6 @@ PACK(typedef struct t_Ersky9xFrSkyData_v10 {
 
   operator FrSkyData();
   t_Ersky9xFrSkyData_v10();
-  t_Ersky9xFrSkyData_v10(FrSkyData&);
 }) Ersky9xFrSkyData_v10;
 
 PACK(typedef struct t_Ersky9xFrSkyChannelData_v11 {
@@ -303,7 +286,6 @@ PACK(typedef struct t_Ersky9xFrSkyChannelData_v11 {
   
   operator FrSkyChannelData();
   t_Ersky9xFrSkyChannelData_v11();
-  t_Ersky9xFrSkyChannelData_v11(FrSkyChannelData&);
 }) Ersky9xFrSkyChannelData_v11;
 
 PACK(typedef struct t_Ersky9xFrSkyData_v11 {
@@ -311,7 +293,6 @@ PACK(typedef struct t_Ersky9xFrSkyData_v11 {
 
   operator FrSkyData();
   t_Ersky9xFrSkyData_v11();
-  t_Ersky9xFrSkyData_v11(FrSkyData&);
 }) Ersky9xFrSkyData_v11;
 
 PACK(typedef struct t_Ersky9xFrSkyalarms_v11 {
@@ -390,7 +371,6 @@ PACK(typedef struct t_Ersky9xModelData_v10 {
   Ersky9xTimerMode_v10 timer[2] ;
   operator ModelData();
   t_Ersky9xModelData_v10() { memset(this, 0, sizeof(t_Ersky9xModelData_v10)); }
-  t_Ersky9xModelData_v10(ModelData&);
 }) Ersky9xModelData_v10;
 
 PACK(typedef struct t_Ersky9xModelData_v11 {
@@ -449,8 +429,6 @@ PACK(typedef struct t_Ersky9xModelData_v11 {
 
   operator ModelData();
   t_Ersky9xModelData_v11() { memset(this, 0, sizeof(t_Ersky9xModelData_v11)); }
-  t_Ersky9xModelData_v11(ModelData&);
 }) Ersky9xModelData_v11;
 
 #endif
-/*eof*/

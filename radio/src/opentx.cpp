@@ -73,7 +73,7 @@ OS_TID btTaskId;
 OS_STK btStack[BT_STACK_SIZE];
 #endif
 
-#if defined(CPUARM) && defined(DEBUG)
+#if defined(DEBUG)
 OS_TID debugTaskId;
 OS_STK debugStack[DEBUG_STACK_SIZE];
 #endif
@@ -509,6 +509,12 @@ uint16_t evalChkSum()
   return sum;
 }
 
+#if defined(TEMPLATES)
+inline void applyDefaultTemplate()
+{
+  applyTemplate(TMPL_SIMPLE_4CH);
+}
+#else
 void applyDefaultTemplate()
 {
   for (int i=0; i<NUM_STICKS; i++) {
@@ -539,6 +545,7 @@ void applyDefaultTemplate()
   }
   eeDirty(EE_MODEL);
 }
+#endif
 
 #if defined(PXX) && defined(CPUARM)
 void checkModelIdUnique(uint8_t id)
@@ -1444,11 +1451,6 @@ bool getSwitch(int8_t swtch)
           if (cs->v1 >= MIXSRC_FIRST_TELEM) {
             if ((!TELEMETRY_STREAMING() && cs->v1 >= MIXSRC_FIRST_TELEM+TELEM_FIRST_STREAMED_VALUE-1) || IS_FAI_FORBIDDEN(cs->v1-1))
               return swtch > 0 ? false : true;
-              	
-#if defined (PCBTARANIS)
-          if (cs->v1 == MIXSRC_FIRST_TELEM+TELEM_A2-1 && g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_X16)
-            return swtch > 0 ? false : true;
-#endif
 
             y = convertCswTelemValue(cs);
 
@@ -1877,7 +1879,7 @@ csw_telemetry_value_t maxTelemValue(uint8_t channel)
 #endif
 
 #if defined(CPUARM)
-getvalue_t convertTelemValue(uint8_t channel, csw_telemetry_value_t value)
+getvalue_t convert16bitsTelemValue(uint8_t channel, csw_telemetry_value_t value)
 {
   getvalue_t result;
   switch (channel) {
@@ -1890,8 +1892,14 @@ getvalue_t convertTelemValue(uint8_t channel, csw_telemetry_value_t value)
   }
   return result;
 }
-#else
-getvalue_t convertTelemValue(uint8_t channel, csw_telemetry_value_t value)
+
+csw_telemetry_value_t max8bitsTelemValue(uint8_t channel)
+{
+  return min<csw_telemetry_value_t>(255, maxTelemValue(channel));
+}
+#endif
+
+getvalue_t convert8bitsTelemValue(uint8_t channel, csw_telemetry_value_t value)
 {
   getvalue_t result;
   switch (channel) {
@@ -1901,6 +1909,10 @@ getvalue_t convertTelemValue(uint8_t channel, csw_telemetry_value_t value)
       break;
 #if defined(FRSKY)
     case TELEM_ALT:
+#if defined(CPUARM)
+      result = 100 * (value * 8 - 500);
+      break;
+#endif
     case TELEM_GPSALT:
     case TELEM_MAX_ALT:
     case TELEM_MIN_ALT:
@@ -1938,18 +1950,17 @@ getvalue_t convertTelemValue(uint8_t channel, csw_telemetry_value_t value)
   }
   return result;
 }
-#endif
 
 getvalue_t convertCswTelemValue(CustomSwData * cs)
 {
   getvalue_t val;
 #if defined(CPUARM)
-  val = convertTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, cs->v2);
+  val = convert16bitsTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, cs->v2);
 #else
   if (cswFamily(cs->func)==CS_VOFS)
-    val = convertTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128+cs->v2);
+    val = convert8bitsTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128+cs->v2);
   else
-    val = convertTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128+cs->v2) - convertTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128);
+    val = convert8bitsTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128+cs->v2) - convert8bitsTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128);
 #endif
   return val;
 }
@@ -2324,12 +2335,10 @@ void checkTrims()
   uint8_t event = getEvent(true);
   if (event && !IS_KEY_BREAK(event)) {
     int8_t k = EVT_KEY_MASK(event) - TRM_BASE;
-    int8_t s = g_model.trimInc;
 #else
 uint8_t checkTrim(uint8_t event)
 {
   int8_t k = EVT_KEY_MASK(event) - TRM_BASE;
-  int8_t s = g_model.trimInc;
   if (k>=0 && k<8 && !IS_KEY_BREAK(event)) {
 #endif
     // LH_DWN LH_UP LV_DWN LV_UP RV_DWN RV_UP RH_DWN RH_UP
@@ -2360,7 +2369,8 @@ uint8_t checkTrim(uint8_t event)
     before = getRawTrimValue(phase, idx);
     thro = (idx==THR_STICK && g_model.thrTrim);
 #endif
-    int8_t  v = (s==0) ? min(32, abs(before)/4+1) : 1 << (s-1); // 1=>1  2=>2  3=>4  4=>8
+    int8_t trimInc = g_model.trimInc + 1;
+    int8_t v = (trimInc==-1) ? min(32, abs(before)/4+1) : (1 << trimInc);
     if (thro) v = 4; // if throttle trim and trim trottle then step=4
     int16_t after = (k&1) ? before + v : before - v;   // positive = k&1
 #if defined(CPUARM)
@@ -3183,7 +3193,7 @@ void evalFunctions()
             }
           }
         }
-        else if (CFN_FUNC(sd) <= FUNC_INSTANT_TRIM) {
+        else if (CFN_FUNC(sd) <= FUNC_INSTANT_TRIM || CFN_FUNC(sd) == FUNC_RESET) {
           active = false;
         }
 
@@ -3457,6 +3467,8 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 
       if (md->srcRaw == 0) break;
 
+      uint8_t stickIndex = md->srcRaw - MIXSRC_Rud;
+
       if (!(dirtyChannels & ((bitfield_channels_t)1 << md->destCh))) continue;
 
       // if this is the first calculation for the destination channel, initialize it with 0 (otherwise would be random)
@@ -3469,7 +3481,6 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       delayval_t mixEnabled = !(md->phases & (1 << s_perout_flight_phase)) && getSwitch(md->swtch);
 
       //========== VALUE ===============
-      uint8_t stickIndex = md->srcRaw - MIXSRC_Rud;
       getvalue_t v = 0;
       if (mode > e_perout_mode_inactive_phase) {
         if (!mixEnabled || stickIndex >= NUM_STICKS || (stickIndex == THR_STICK && g_model.thrTrim)) {
@@ -3487,12 +3498,14 @@ void perOut(uint8_t mode, uint8_t tick10ms)
         else
 #endif
         {
-          v = getValue(md->srcRaw);
-          if (md->srcRaw>=MIXSRC_CH1 && md->srcRaw<=MIXSRC_LAST_CH && md->destCh != md->srcRaw-MIXSRC_CH1) {
-            if (dirtyChannels & ((bitfield_channels_t)1 << (md->srcRaw-MIXSRC_CH1)) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
+          int8_t srcRaw = MIXSRC_Rud + stickIndex;
+          v = getValue(srcRaw);
+          srcRaw -= MIXSRC_CH1;
+          if (srcRaw>=0 && srcRaw<=MIXSRC_LAST_CH-MIXSRC_CH1 && md->destCh != srcRaw) {
+            if (dirtyChannels & ((bitfield_channels_t)1 << srcRaw) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
               passDirtyChannels |= (bitfield_channels_t) 1 << md->destCh;
-            if (md->srcRaw-MIXSRC_CH1 < md->destCh || pass > 0)
-              v = chans[md->srcRaw-MIXSRC_CH1] >> 8;
+            if (srcRaw < md->destCh || pass > 0)
+              v = chans[srcRaw] >> 8;
           }
         }
         if (!mixCondition) {

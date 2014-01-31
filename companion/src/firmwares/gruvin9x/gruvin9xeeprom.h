@@ -38,8 +38,6 @@ PACK(typedef struct t_Gruvin9xTrainerMix_v104 {
 
   operator TrainerMix();
   t_Gruvin9xTrainerMix_v104() { memset(this, 0, sizeof(t_Gruvin9xTrainerMix_v104)); }
-  t_Gruvin9xTrainerMix_v104(TrainerMix&);
-
 }) Gruvin9xTrainerMix_v104; //
 
 PACK(typedef struct t_Gruvin9xTrainerData_v103 {
@@ -55,8 +53,6 @@ PACK(typedef struct t_Gruvin9xTrainerData_v104 {
 
   operator TrainerData();
   t_Gruvin9xTrainerData_v104() { memset(this, 0, sizeof(t_Gruvin9xTrainerData_v104)); }
-  t_Gruvin9xTrainerData_v104(TrainerData&);
-
 }) Gruvin9xTrainerData_v104;
 
 PACK(typedef struct t_Gruvin9xFrSkyRSSIAlarm {
@@ -136,8 +132,6 @@ PACK(typedef struct t_Gruvin9xGeneral_v104 {
 
   operator GeneralSettings();
   t_Gruvin9xGeneral_v104() { memset(this, 0, sizeof(t_Gruvin9xGeneral_v104)); }
-  t_Gruvin9xGeneral_v104(GeneralSettings&);
-
 }) Gruvin9xGeneral_v104;
 
 typedef Gruvin9xGeneral_v104 Gruvin9xGeneral;
@@ -156,8 +150,6 @@ PACK(typedef struct t_Gruvin9xExpoData {
 
   operator ExpoData();
   t_Gruvin9xExpoData();
-  t_Gruvin9xExpoData(ExpoData&);
-
 }) Gruvin9xExpoData;
 
 PACK(typedef struct t_Gruvin9xLimitData {
@@ -168,8 +160,6 @@ PACK(typedef struct t_Gruvin9xLimitData {
 
   operator LimitData();
   t_Gruvin9xLimitData();
-  t_Gruvin9xLimitData(LimitData&);
-
 }) Gruvin9xLimitData;
 
 #define MLTPX_ADD  0
@@ -194,8 +184,6 @@ PACK(typedef struct t_Gruvin9xMixData {
 
   operator MixData();
   t_Gruvin9xMixData();
-  t_Gruvin9xMixData(MixData&);
-
 }) Gruvin9xMixData;
 
 PACK(typedef struct t_Gruvin9xCustomSwData { // Custom Switches data
@@ -205,8 +193,6 @@ PACK(typedef struct t_Gruvin9xCustomSwData { // Custom Switches data
 
   operator CustomSwData();
   t_Gruvin9xCustomSwData() { memset(this, 0, sizeof(t_Gruvin9xCustomSwData)); }
-  t_Gruvin9xCustomSwData(CustomSwData&);
-
 }) Gruvin9xCustomSwData;
 
 PACK(typedef struct t_Gruvin9xSafetySwData { // Safety Switches data
@@ -215,8 +201,6 @@ PACK(typedef struct t_Gruvin9xSafetySwData { // Safety Switches data
 
   operator SafetySwData();
   t_Gruvin9xSafetySwData() { memset(this, 0, sizeof(t_Gruvin9xSafetySwData)); }
-  t_Gruvin9xSafetySwData(SafetySwData&);
-
 }) Gruvin9xSafetySwData;
 
 PACK(typedef struct t_Gruvin9xFuncSwData { // Function Switches data
@@ -225,8 +209,6 @@ PACK(typedef struct t_Gruvin9xFuncSwData { // Function Switches data
 
   operator FuncSwData();
   t_Gruvin9xFuncSwData() { memset(this, 0, sizeof(t_Gruvin9xFuncSwData)); }
-  t_Gruvin9xFuncSwData(FuncSwData&);
-
 }) Gruvin9xFuncSwData;
 
 PACK(typedef struct t_Gruvin9xFrSkyChannelData {
@@ -242,17 +224,13 @@ PACK(typedef struct t_Gruvin9xFrSkyChannelData {
 
   operator FrSkyChannelData();
   t_Gruvin9xFrSkyChannelData();
-  t_Gruvin9xFrSkyChannelData(FrSkyChannelData&);
-
 }) Gruvin9xFrSkyChannelData;
 
 PACK(typedef struct t_Gruvin9xFrSkyData {
-	Gruvin9xFrSkyChannelData channels[2];
+  Gruvin9xFrSkyChannelData channels[2];
 
-	operator FrSkyData();
-	t_Gruvin9xFrSkyData();
-	t_Gruvin9xFrSkyData(FrSkyData&);
-
+  operator FrSkyData();
+  t_Gruvin9xFrSkyData();
 }) Gruvin9xFrSkyData;
 
 PACK(typedef struct t_Gruvin9xSwashRingData { // Swash Ring data
@@ -265,8 +243,6 @@ PACK(typedef struct t_Gruvin9xSwashRingData { // Swash Ring data
 
   operator SwashRingData();
   t_Gruvin9xSwashRingData();
-  t_Gruvin9xSwashRingData(SwashRingData&);
-
 }) Gruvin9xSwashRingData;
 
 PACK(typedef struct t_Gruvin9xPhaseData_v102 {
@@ -291,7 +267,6 @@ PACK(typedef struct t_Gruvin9xPhaseData_v106 {
 
   operator PhaseData();
   t_Gruvin9xPhaseData_v106() { memset(this, 0, sizeof(t_Gruvin9xPhaseData_v106)); }
-  t_Gruvin9xPhaseData_v106(PhaseData &eepe);
 }) Gruvin9xPhaseData_v106;
 
 PACK(typedef struct t_Gruvin9xTimerData {
@@ -301,7 +276,6 @@ PACK(typedef struct t_Gruvin9xTimerData {
 
   operator TimerData();
   t_Gruvin9xTimerData() { memset(this, 0, sizeof(t_Gruvin9xTimerData)); }
-  t_Gruvin9xTimerData(TimerData &eepe);
 }) Gruvin9xTimerData;
 
 #define G9X_MAX_PHASES 5
@@ -410,8 +384,6 @@ PACK(typedef struct t_Gruvin9xModelData_v105 {
 
   operator ModelData();
   t_Gruvin9xModelData_v105() { memset(this, 0, sizeof(t_Gruvin9xModelData_v105)); }
-  t_Gruvin9xModelData_v105(ModelData&);
-
 }) Gruvin9xModelData_v105;
 
 PACK(typedef struct t_Gruvin9xModelData_v106 {
@@ -443,11 +415,8 @@ PACK(typedef struct t_Gruvin9xModelData_v106 {
 
   operator ModelData();
   t_Gruvin9xModelData_v106() { memset(this, 0, sizeof(t_Gruvin9xModelData_v106)); }
-  t_Gruvin9xModelData_v106(ModelData&);
-
 }) Gruvin9xModelData_v106;
 
 typedef Gruvin9xModelData_v106 Gruvin9xModelData;
 
 #endif
-/*eof*/

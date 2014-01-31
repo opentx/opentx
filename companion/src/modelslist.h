@@ -48,7 +48,7 @@
 struct CurrentSelection
 {
   QListWidgetItem *current_item;
-  bool selected[C9XMAX_MODELS+1];
+  bool selected[C9X_MAX_MODELS+1];
 };
 
 class ModelsListWidget : public QListWidget
