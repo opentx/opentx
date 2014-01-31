@@ -356,6 +356,7 @@ enum RawSwitchType {
   SWITCH_TYPE_NONE,
   SWITCH_TYPE_SWITCH,
   SWITCH_TYPE_VIRTUAL,
+  SWITCH_TYPE_MULTIPOS_POT,
   SWITCH_TYPE_MOMENT_SWITCH,
   SWITCH_TYPE_MOMENT_VIRTUAL,
   SWITCH_TYPE_ON,
@@ -503,6 +504,7 @@ class GeneralSettings {
     unsigned int mavbaud;
     unsigned int switchUnlockStates;
     unsigned int hw_uartMode;
+    unsigned int potsType[8];
 };
 
 class CurveReference {
@@ -737,7 +739,7 @@ class FrSkyChannelData {
     unsigned int multiplier;
     FrSkyAlarmData alarms[2];
 
-    float getRatio()
+    float getRatio() const
     {
       if (type==0 || type==1 || type==2)
         return float(ratio << multiplier) / 10.0;
@@ -1052,7 +1054,9 @@ enum Capability {
  EnhancedCurves,
  TelemetryInternalAlarms,
  HasFasOffset,
- HasMahPersistent
+ HasMahPersistent,
+ MultiposPots,
+ MultiposPotsPositions
 };
 
 enum UseContext {

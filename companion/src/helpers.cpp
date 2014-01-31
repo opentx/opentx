@@ -842,6 +842,8 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr,
     return;
   }
 
+#if 0
+  // TODO check ... I removed negative toggle switches in the FW, no?
   if (attr & POPULATE_MSWITCHES) {
     if (attr & POPULATE_ONOFF) {
       item = RawSwitch(SWITCH_TYPE_ONM, 1);
@@ -860,6 +862,7 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr,
       if (item == value) b->setCurrentIndex(b->count()-1);
     }
   }
+#endif
 
   if (attr & POPULATE_ONOFF) {
     item = RawSwitch(SWITCH_TYPE_OFF);
@@ -903,6 +906,14 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr,
     item = RawSwitch(SWITCH_TYPE_VIRTUAL, i);
     b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);
+  }
+
+  if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+    for (int i=0; i<GetEepromInterface()->getCapability(MultiposPots) * GetEepromInterface()->getCapability(MultiposPotsPositions); i++) {
+      item = RawSwitch(SWITCH_TYPE_MULTIPOS_POT, i);
+      b->addItem(item.toString(), item.toValue());
+      if (item == value) b->setCurrentIndex(b->count()-1);
+    }
   }
 
   if (attr & POPULATE_ONOFF) {

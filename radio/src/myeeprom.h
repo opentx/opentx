@@ -245,8 +245,8 @@ enum BeeperMode {
 #if defined(PCBTARANIS)
 #define EXTRA_GENERAL_FIELDS \
   EXTRA_GENERAL_FIELDS_ARM \
-  uint8_t  potsType; \
-  uint8_t  hw_uartMode;
+  uint8_t  hw_uartMode; \
+  uint8_t  potsType;
 #elif defined(CPUARM)
   #define EXTRA_GENERAL_FIELDS EXTRA_GENERAL_FIELDS_ARM
 #elif defined(PXX)
