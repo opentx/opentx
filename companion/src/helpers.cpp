@@ -1097,7 +1097,8 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData & 
       b->addItem(item.toString(), item.toValue());
       if (item == source) b->setCurrentIndex(b->count()-1);
     }
-  } else if (flags & POPULATE_TELEMETRY) {
+  }
+  else if (flags & POPULATE_TELEMETRY) {
     for (int i=0; i<TELEMETRY_SOURCES_COUNT; i++) {
       item = RawSource(SOURCE_TYPE_TELEMETRY, i);
       b->addItem(item.toString(), item.toValue());
