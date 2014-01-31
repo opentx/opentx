@@ -796,7 +796,7 @@ void printDialog::printFrSky()
   str.append("<tr><td colspan=2 align=\"Left\"><b>"+tr("System of units")+"</b></td><td colspan=8 align=\"left\">"+getFrSkyMeasure(fd->imperial)+"</td></tr>");
   str.append("<tr><td colspan=2 align=\"Left\"><b>"+tr("Propeller blades")+"</b></td><td colspan=8 align=\"left\">"+getFrSkyBlades(fd->blades)+"</td></tr>");
   str.append("<tr><td colspan=10 align=\"Left\" height=\"4px\"></td></tr></table>");
-  
+#if 0
   if (GetEepromInterface()->getCapability(TelemetryBars) || (GetEepromInterface()->getCapability(TelemetryCSFields))) {
     int cols=GetEepromInterface()->getCapability(TelemetryColsCSFields);
     if (cols==0) cols=2;
@@ -840,6 +840,7 @@ void printDialog::printFrSky()
       }
     }
   }
+#endif
   if (tc>0)
       te->append(str);    
 }

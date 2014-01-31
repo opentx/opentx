@@ -296,7 +296,7 @@ class RawSourceRange
     }
 
     float getValue(int value) {
-      return round(float(value) * step);
+      return min + float(value) * step;
     }
 
     int decimals;
@@ -737,6 +737,14 @@ class FrSkyChannelData {
     unsigned int multiplier;
     FrSkyAlarmData alarms[2];
 
+    float getRatio()
+    {
+      if (type==0 || type==1 || type==2)
+        return float(ratio << multiplier) / 10.0;
+      else
+        return ratio << multiplier;
+    }
+
     void clear() { memset(this, 0, sizeof(FrSkyChannelData)); }
 };
 
@@ -1007,8 +1015,8 @@ enum Capability {
  GvarsHaveSources,
  GvarsName,
  NoTelemetryProtocol,
- TelemetryCSFields,
- TelemetryColsCSFields,
+ TelemetryCustomScreens,
+ TelemetryCustomScreensFieldsPerLine,
  TelemetryRSSIModel,
  TelemetryAlarm,
  TelemetryInternalAlarm,

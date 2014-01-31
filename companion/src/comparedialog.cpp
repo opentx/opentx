@@ -1260,6 +1260,7 @@ void compareDialog::printFrSky()
   color=getColor1(fd1->rssiAlarms[1].value,fd2->rssiAlarms[1].value);
   str.append("<td align=\"center\"><font color="+color+">"+QString::number(fd1->rssiAlarms[1].value,10)+"</td>");
   str.append("</table>");
+#if 0
   if (GetEepromInterface()->getCapability(TelemetryBars) || GetEepromInterface()->getCapability(TelemetryCSFields)) {
     int cols=GetEepromInterface()->getCapability(TelemetryColsCSFields);
     if (cols==0) cols=2;
@@ -1315,6 +1316,7 @@ void compareDialog::printFrSky()
       }
     }
   }
+#endif
   
   str.append("</td><td width=\"50%\">");
   str.append("<table border=1 cellspacing=0 cellpadding=1 width=\"100%\">");
@@ -1377,7 +1379,7 @@ void compareDialog::printFrSky()
   color=getColor2(fd1->rssiAlarms[1].value,fd2->rssiAlarms[1].value);
   str.append("<td align=\"center\"><font color="+color+">"+QString::number(fd2->rssiAlarms[1].value,10)+"</td>");
   str.append("</table></br>");
-
+#if 0
   if (GetEepromInterface()->getCapability(TelemetryBars) || GetEepromInterface()->getCapability(TelemetryCSFields)) {
     int cols=GetEepromInterface()->getCapability(TelemetryColsCSFields);
     if (cols==0) cols=2;
@@ -1433,6 +1435,7 @@ void compareDialog::printFrSky()
       }
     }
   }
+#endif
   str.append("</td></tr></table>");
   te->append(str);
 }

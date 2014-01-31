@@ -67,18 +67,15 @@ RawSourceRange RawSource::getRange(bool singleprec)
         case TELEMETRY_SOURCE_A1:
         case TELEMETRY_SOURCE_A2:
           if (model) {
-            if (model->frsky.channels[index-TELEMETRY_SOURCE_A1].type==0) {
-              result.step = (model->frsky.channels[index-TELEMETRY_SOURCE_A1].ratio / 2550.0);
-              result.min = (model->frsky.channels[index-TELEMETRY_SOURCE_A1].offset * model->frsky.channels[index-TELEMETRY_SOURCE_A1].ratio) / 2550.0;
-              result.max = model->frsky.channels[index-TELEMETRY_SOURCE_A1].ratio - (model->frsky.channels[index-TELEMETRY_SOURCE_A1].offset * model->frsky.channels[index-TELEMETRY_SOURCE_A1].ratio) / 2550.0;
+            FrSkyChannelData channel = model->frsky.channels[index-TELEMETRY_SOURCE_A1]; // TODO const &
+            float ratio = channel.getRatio();
+            if (channel.type==0 || channel.type==1 || channel.type==2)
               result.decimals = 2;
-            }
-            else {
-              result.step = (model->frsky.channels[index-TELEMETRY_SOURCE_A1].ratio / 255.0);
-              result.min = (model->frsky.channels[index-TELEMETRY_SOURCE_A1].offset * model->frsky.channels[index-TELEMETRY_SOURCE_A1].ratio) / 255.0;
-              result.max = model->frsky.channels[index-TELEMETRY_SOURCE_A1].ratio - (model->frsky.channels[index-TELEMETRY_SOURCE_A1].offset * model->frsky.channels[index-TELEMETRY_SOURCE_A1].ratio) / 255.0;
+            else
               result.decimals = 0;
-            }
+            result.step = ratio / 255;
+            result.min = channel.offset * result.step;
+            result.max = ratio + result.min;
           }
           break;
         case TELEMETRY_SOURCE_ALT:
