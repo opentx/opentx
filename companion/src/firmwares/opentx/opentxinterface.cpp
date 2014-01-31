@@ -610,24 +610,12 @@ int Open9xInterface::getCapability(const Capability capability)
       return TM_HASTELEMETRY|TM_HASOFFSET|TM_HASWSHH;
     case TelemetryBars:
       return 1;
-    case TelemetryCSFields:
-      if (IS_TARANIS(board)) {
-        return 36;
-      } else {
-        return IS_ARM(board) ? 24 : 16;
-      }
-    case TelemetryColsCSFields:
-      if (IS_TARANIS(board)) {
-        return 3;
-      } else {
-        return 2;
-      }
+    case TelemetryCustomScreens:
+      return IS_TARANIS(board) ? 3 : 2;
+    case TelemetryCustomScreensFieldsPerLine:
+      return IS_TARANIS(board) ? 3 : 2;
     case NoTelemetryProtocol:
-      if (IS_TARANIS(board)) {
-        return 1;
-      } else {
-        return 0;
-      }      
+      return IS_TARANIS(board) ? 1 : 0;
     case TelemetryUnits:
       return 0;
     case TelemetryBlades:

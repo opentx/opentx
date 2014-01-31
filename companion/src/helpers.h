@@ -136,7 +136,7 @@ QString getFrSkyUnits(int units);
 QString getFrSkyProtocol(int protocol);
 QString getFrSkyMeasure(int units);
 QString getFrSkySrc(int index);
-float getBarValue(int barId, int value, FrSkyData *fd);
+
 float c9xexpou(float point, float coeff);
 float ValToTim(int value);
 int TimToVal(float value);

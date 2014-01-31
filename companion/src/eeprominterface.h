@@ -283,6 +283,30 @@ class ModelData;
 QString AnalogString(int index);
 QString RotaryEncoderString(int index);
 
+class RawSourceRange
+{
+  public:
+    RawSourceRange():
+      decimals(0),
+      min(0.0),
+      max(0.0),
+      step(1.0),
+      offset(0.0)
+    {
+    }
+
+    float getValue(int value) {
+      return min + float(value) * step;
+    }
+
+    int decimals;
+    double min;
+    double max;
+    double step;
+    double offset;
+
+};
+
 class RawSource {
   public:
     RawSource():
@@ -313,15 +337,14 @@ class RawSource {
 
     QString toString();
     
-    int getDecimals(const ModelData & Model);
-    double getMin(const ModelData & Model);
-    double getMax(const ModelData & Model);
-    double getStep(const ModelData & Model);
-    double getOffset(const ModelData & Model);
-    int getRawOffset(const ModelData & Model);
+    RawSourceRange getRange(bool singleprec=false);
     
-    bool operator== ( const RawSource& other) {
+    bool operator == ( const RawSource & other) {
       return (this->type == other.type) && (this->index == other.index);
+    }
+
+    bool operator != ( const RawSource & other) {
+      return (this->type != other.type) || (this->index != other.index);
     }
 
     RawSourceType type;
@@ -664,7 +687,7 @@ class PhaseData {
     unsigned int fadeOut;
     int rotaryEncoders[2];
     int gvars[C9X_MAX_GVARS];
-    void clear() { memset(this, 0, sizeof(PhaseData));}
+    void clear() { memset(this, 0, sizeof(PhaseData)); }
 };
 
 class SwashRingData { // Swash Ring data
@@ -714,6 +737,14 @@ class FrSkyChannelData {
     int   offset;
     unsigned int multiplier;
     FrSkyAlarmData alarms[2];
+
+    float getRatio()
+    {
+      if (type==0 || type==1 || type==2)
+        return float(ratio << multiplier) / 10.0;
+      else
+        return ratio << multiplier;
+    }
 
     void clear() { memset(this, 0, sizeof(FrSkyChannelData)); }
 };
@@ -983,11 +1014,10 @@ enum Capability {
  GvarsInCS,
  GvarsAreNamed,
  GvarsFlightPhases,
- GvarsAsSources,
  GvarsName,
  NoTelemetryProtocol,
- TelemetryCSFields,
- TelemetryColsCSFields,
+ TelemetryCustomScreens,
+ TelemetryCustomScreensFieldsPerLine,
  TelemetryRSSIModel,
  TelemetryAlarm,
  TelemetryInternalAlarm,

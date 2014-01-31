@@ -330,7 +330,7 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</string
     </spacer>
    </item>
    <item row="3" column="1">
-    <widget class="QDoubleSpinBox" name="scaleSB">
+    <widget class="QDoubleSpinBox" name="scale">
      <property name="whatsThis">
       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -441,6 +441,32 @@ p, li { white-space: pre-wrap; }
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>inputName</tabstop>
+  <tabstop>lineName</tabstop>
+  <tabstop>sourceCB</tabstop>
+  <tabstop>scale</tabstop>
+  <tabstop>trimCB</tabstop>
+  <tabstop>weightGV</tabstop>
+  <tabstop>weightSB</tabstop>
+  <tabstop>weightCB</tabstop>
+  <tabstop>curveTypeCB</tabstop>
+  <tabstop>curveGVarCB</tabstop>
+  <tabstop>curveValueCB</tabstop>
+  <tabstop>curveValueSB</tabstop>
+  <tabstop>cb_FP0</tabstop>
+  <tabstop>cb_FP1</tabstop>
+  <tabstop>cb_FP2</tabstop>
+  <tabstop>cb_FP3</tabstop>
+  <tabstop>cb_FP4</tabstop>
+  <tabstop>cb_FP5</tabstop>
+  <tabstop>cb_FP6</tabstop>
+  <tabstop>cb_FP7</tabstop>
+  <tabstop>cb_FP8</tabstop>
+  <tabstop>switchesCB</tabstop>
+  <tabstop>sideCB</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources>
   <include location="../companion.qrc"/>
  </resources>

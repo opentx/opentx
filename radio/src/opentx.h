@@ -1637,8 +1637,23 @@ extern uint8_t barsThresholds[THLD_MAX];
   #define maxTelemValue(channel) 255
 #endif
 
-getvalue_t convertTelemValue(uint8_t channel, csw_telemetry_value_t value);
+#if defined(CPUARM)
+getvalue_t convert16bitsTelemValue(uint8_t channel, csw_telemetry_value_t value);
+csw_telemetry_value_t max8bitsTelemValue(uint8_t channel);
+#endif
+
+getvalue_t convert8bitsTelemValue(uint8_t channel, csw_telemetry_value_t value);
 getvalue_t convertCswTelemValue(CustomSwData * cs);
+
+#if defined(CPUARM)
+  #define convertTelemValue(channel, value) convert16bitsTelemValue(channel, value)
+  #define convertBarTelemValue(channel, value) convert8bitsTelemValue(channel, value)
+  #define maxBarTelemValue(channel) max8bitsTelemValue(channel)
+#else
+  #define convertTelemValue(channel, value) convert8bitsTelemValue(channel, value)
+  #define convertBarTelemValue(channel, value) convert8bitsTelemValue(channel, value)
+  #define maxBarTelemValue(channel) maxTelemValue(channel)
+#endif
 
 #if defined(FRSKY) || defined(CPUARM)
 lcdint_t applyChannelRatio(uint8_t channel, lcdint_t val);
