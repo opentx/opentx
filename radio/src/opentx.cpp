@@ -2258,7 +2258,7 @@ void checkSwitches()
           }
     }
 #else
-    for (uint8_t i=0; i<NUM_SWITCHES; i++) {
+    for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
       if (!(g_model.nSwToWarn & (1<<i))) {
       	if (i == 0) {
       		if((states & 0x03) != (switches_states & 0x03))
@@ -2311,7 +2311,7 @@ void checkSwitches()
     if (last_bad_switches != switches_states) {
       MESSAGE(STR_SWITCHWARN, NULL, STR_PRESSANYKEYTOSKIP, last_bad_switches == 0xff ? AU_SWITCH_ALERT : AU_NONE);
       uint8_t x = 2;
-      for (uint8_t i=0; i<NUM_SWITCHES; i++) {
+      for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
         uint8_t attr;
         if (i == 0)
         	attr = ((states & 0x03) != (switches_states & 0x03)) ? INVERS : 0;
