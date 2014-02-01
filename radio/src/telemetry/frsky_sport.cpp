@@ -534,6 +534,12 @@ void processSerialData(uint8_t data)
   btPushByte(data);
 #endif
 
+#if !defined(DEBUG)
+  if (g_eeGeneral.hw_uartMode == 1) {
+  sp2sPutc(data);
+  }
+#endif
+
   if (data == START_STOP) {
     dataState = STATE_DATA_IN_FRAME;
     numPktBytes = 0;

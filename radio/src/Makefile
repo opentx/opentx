@@ -652,7 +652,7 @@ ifeq ($(PCB), TARANIS)
     CPPDEFS += -DVOICE
     INCDIRS += FatFs FatFs/option
   endif
-    
+  
   ifeq ($(RTCLOCK), YES)
     CPPDEFS += -DRTCLOCK
     CPPSRC += rtc.cpp targets/taranis/rtc_driver.cpp

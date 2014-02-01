@@ -1200,7 +1200,16 @@ void menuGeneralHardware(uint8_t event)
       }
 
       case ITEM_SETUP_HW_UART3_MODE:
+        uint8_t previous_uartMode = g_eeGeneral.hw_uartMode;
       	g_eeGeneral.hw_uartMode = selectMenuItem(HW_SETTINGS_COLUMN, y, STR_UART3MODE, STR_UART3MODES, g_eeGeneral.hw_uartMode, 0, 2, attr, event);
+        #if !defined(DEBUG)
+        if (previous_uartMode != g_eeGeneral.hw_uartMode) {
+            initSport2serial();
+            else {
+            uartDeInit();
+            }
+        }
+        #endif
         break;
     }
   }

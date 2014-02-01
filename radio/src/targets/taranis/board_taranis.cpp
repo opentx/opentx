@@ -195,6 +195,9 @@ void boardInit()
 #if defined(DEBUG)
   uartInit(DEBUG_UART_BAUDRATE);
 #endif
+#if !defined(DEBUG)
+  initSport2serial();
+#endif
   init5msTimer();
   __enable_irq();
   eepromInit();
