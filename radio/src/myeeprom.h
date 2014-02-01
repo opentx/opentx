@@ -1077,7 +1077,7 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
       int16_t  value:11;
       uint16_t mode:5;
     }) trim_t;
-    #define TRIM_MODE_NONE 0b11111
+    #define TRIM_MODE_NONE  0x1F  // 0b11111
   #else
     #define trim_t          int16_t
   #endif

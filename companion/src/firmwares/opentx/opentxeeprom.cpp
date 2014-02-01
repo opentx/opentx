@@ -467,7 +467,7 @@ class PhaseField: public TransformedField {
       for (int i=0; i<NUM_STICKS; i++) {
         if (board == BOARD_TARANIS && version >= 216) {
           if (phase.trimMode[i] < 0)
-            trimMode[i] = 0b11111;
+            trimMode[i] = TRIM_MODE_NONE;
           else
             trimMode[i] = 2*phase.trimRef[i] + phase.trimMode[i];
         }
@@ -494,7 +494,7 @@ class PhaseField: public TransformedField {
     {
       for (int i=0; i<NUM_STICKS; i++) {
         if (board == BOARD_TARANIS && version >= 216) {
-          if (trimMode[i] == 0b11111) {
+          if (trimMode[i] == TRIM_MODE_NONE) {
             phase.trimMode[i] = -1;
           }
           else {

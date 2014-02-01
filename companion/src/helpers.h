@@ -23,6 +23,8 @@
 #define TRIM_OFF 1
 #define TRIM_OFFSET 2
 
+#define TRIM_MODE_NONE  0x1F  // 0b11111
+
 void populateGvSourceCB(QComboBox *b, int value);
 void populateVoiceLangCB(QComboBox *b, QString language);
 void populateTTraceCB(QComboBox *b, int value);
