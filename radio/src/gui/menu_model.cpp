@@ -1060,7 +1060,7 @@ void menuModelSetup(uint8_t event)
             div_t qr = div(timer->start, 60);
             switch (m_posHorz) {
               case 0:
-                CHECK_INCDEC_MODELVAR(event, timer->mode, -2*(MAX_PSWITCH+NUM_CSW), TMR_VAROFS-1+2*(MAX_PSWITCH+NUM_CSW));
+                CHECK_INCDEC_MODELVAR(event, timer->mode, -2*(NUM_PSWITCH+NUM_CSW), TMR_VAROFS-1+2*(NUM_PSWITCH+NUM_CSW));
                 break;
               case 1:
                 CHECK_INCDEC_MODELVAR_ZERO(event, qr.quot, 59);
@@ -1840,7 +1840,7 @@ void menuModelFlightModesAll(uint8_t event)
           }
           else {
             putsSwitches((5+LEN_FP_NAME)*FW+FW/2, y, p->swtch, attr);
-            if (active) CHECK_INCDEC_MODELSWITCH(event, p->swtch, -MAX_SWITCH, MAX_SWITCH);
+            if (active) CHECK_INCDEC_MODELSWITCH(event, p->swtch, -NUM_SWITCH, NUM_SWITCH);
           }
           break;
 
@@ -4297,7 +4297,7 @@ void menuModelCustomSwitchOne(uint8_t event)
       case CSW_FIELD_ANDSW:
         lcd_putsLeft(y, STR_AND_SWITCH);
         putsSwitches(CSWONE_2ND_COLUMN, y, cs->andsw, attr);
-        if (attr) CHECK_INCDEC_MODELVAR(event, cs->andsw, -MAX_SWITCH, MAX_SWITCH);
+        if (attr) CHECK_INCDEC_MODELVAR(event, cs->andsw, -NUM_SWITCH, NUM_SWITCH);
         break;
       case CSW_FIELD_DURATION:
         lcd_putsLeft(y, STR_DURATION);

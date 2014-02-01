@@ -193,6 +193,21 @@ void ConvertGeneralSettings_215_to_216(EEGeneral &settings)
   settings.version = 216;
 }
 
+#if defined(PCBTARANIS)
+int ConvertSwitch_215_to_216(int swtch)
+{
+  if (swtch < SWSRC_ON)
+    return swtch;
+  else
+    return swtch + (2*6); // 2 * 6-pos pots added as switches
+}
+#else
+inline int ConvertSwitch_215_to_216(int swtch)
+{
+  return swtch;
+}
+#endif
+
 void ConvertModel_215_to_216(ModelData &model)
 {
   // Virtual inputs added instead of Expo/DR
@@ -204,6 +219,7 @@ void ConvertModel_215_to_216(ModelData &model)
   // Custom Switches: better precision for x when A comes from telemetry
   // Main View: altitude in top bar
   // Mixes: GVARS in weight moved from 512 to 4096 and -512 to -4096, because GVARS may be used in limits [-1250:1250]
+  // Switches: two 6-pos pots added
 
   TRACE("Model conversion from v215 to v216");
 
@@ -237,7 +253,7 @@ void ConvertModel_215_to_216(ModelData &model)
     g_model.mixData[i].phases = oldModel.mixData[i].phases;
     g_model.mixData[i].mltpx = oldModel.mixData[i].mltpx;
     g_model.mixData[i].weight = oldModel.mixData[i].weight;
-    g_model.mixData[i].swtch = oldModel.mixData[i].swtch;
+    g_model.mixData[i].swtch = ConvertSwitch_215_to_216(oldModel.mixData[i].swtch);
     if (oldModel.mixData[i].curveMode==0/*differential*/) {
       g_model.mixData[i].curve.type = CURVE_REF_DIFF;
       g_model.mixData[i].curve.value = oldModel.mixData[i].curveParam;
@@ -297,7 +313,7 @@ void ConvertModel_215_to_216(ModelData &model)
       }
       g_model.expoData[i].srcRaw = MIXSRC_Rud+chn;
       g_model.expoData[i].chn = chn;
-      g_model.expoData[i].swtch = oldModel.expoData[i].swtch;
+      g_model.expoData[i].swtch = ConvertSwitch_215_to_216(oldModel.expoData[i].swtch);
       g_model.expoData[i].phases = oldModel.expoData[i].phases;
       g_model.expoData[i].weight = oldModel.expoData[i].weight;
       memcpy(&g_model.expoData[i].name, &oldModel.expoData[i].name, LEN_EXPOMIX_NAME);

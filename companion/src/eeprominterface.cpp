@@ -67,7 +67,7 @@ RawSourceRange RawSource::getRange(bool singleprec)
         case TELEMETRY_SOURCE_A1:
         case TELEMETRY_SOURCE_A2:
           if (model) {
-            FrSkyChannelData channel = model->frsky.channels[index-TELEMETRY_SOURCE_A1]; // TODO const &
+            const FrSkyChannelData & channel = model->frsky.channels[index-TELEMETRY_SOURCE_A1];
             float ratio = channel.getRatio();
             if (channel.type==0 || channel.type==1 || channel.type==2)
               result.decimals = 2;
@@ -239,26 +239,34 @@ QString SwitchDn(const char sw)
 
 QString RawSwitch::toString()
 {
-  static const QString switches9X[] = { QObject::tr("THR"), QObject::tr("RUD"), QObject::tr("ELE"),
-                           QObject::tr("ID0"), QObject::tr("ID1"), QObject::tr("ID2"),
-                           QObject::tr("AIL"), QObject::tr("GEA"), QObject::tr("TRN")
-                         };
+  static const QString switches9X[] = {
+    QString("THR"), QString("RUD"), QString("ELE"),
+    QString("ID0"), QString("ID1"), QString("ID2"),
+    QString("AIL"), QString("GEA"), QString("TRN")
+  };
 
-  static const QString switchesX9D[] = { SwitchUp('A'), QString::fromUtf8("SA-"), SwitchDn('A'),
-                            SwitchUp('B'), QString::fromUtf8("SB-"), SwitchDn('B'),
-                            SwitchUp('C'), QString::fromUtf8("SC-"), SwitchDn('C'),
-                            SwitchUp('D'), QString::fromUtf8("SD-"), SwitchDn('D'),
-                            SwitchUp('E'), QString::fromUtf8("SE-"), SwitchDn('E'),
-                            SwitchUp('F'), SwitchDn('F'),
-                            SwitchUp('G'), QString::fromUtf8("SG-"), SwitchDn('G'),
-                            SwitchUp('H'), SwitchDn('H'),
-                          };
+  static const QString switchesX9D[] = {
+    SwitchUp('A'), QString::fromUtf8("SA-"), SwitchDn('A'),
+    SwitchUp('B'), QString::fromUtf8("SB-"), SwitchDn('B'),
+    SwitchUp('C'), QString::fromUtf8("SC-"), SwitchDn('C'),
+    SwitchUp('D'), QString::fromUtf8("SD-"), SwitchDn('D'),
+    SwitchUp('E'), QString::fromUtf8("SE-"), SwitchDn('E'),
+    SwitchUp('F'), SwitchDn('F'),
+    SwitchUp('G'), QString::fromUtf8("SG-"), SwitchDn('G'),
+    SwitchUp('H'), SwitchDn('H'),
+  };
 
-  static const QString virtualSwitches[] = { QObject::tr("LS1"), QObject::tr("LS2"), QObject::tr("LS3"), QObject::tr("LS4"), QObject::tr("LS5"), QObject::tr("LS6"), QObject::tr("LS7"), QObject::tr("LS8"), QObject::tr("LS9"), QObject::tr("LSA"),
-                                             QObject::tr("LSB"), QObject::tr("LSC"), QObject::tr("LSD"), QObject::tr("LSE"), QObject::tr("LSF"), QObject::tr("LSG"), QObject::tr("LSH"), QObject::tr("LSI"), QObject::tr("LSJ"), QObject::tr("LSK"),
-                                             QObject::tr("LSL"), QObject::tr("LSM"), QObject::tr("LSN"), QObject::tr("LSO"), QObject::tr("LSP"), QObject::tr("LSQ"), QObject::tr("LSR"), QObject::tr("LSS"), QObject::tr("LST"), QObject::tr("LSU"),
-                                             QObject::tr("LSV"), QObject::tr("LSW")
-                                           };
+  static const QString virtualSwitches[] = {
+    QObject::tr("LS1"), QObject::tr("LS2"), QObject::tr("LS3"), QObject::tr("LS4"), QObject::tr("LS5"), QObject::tr("LS6"), QObject::tr("LS7"), QObject::tr("LS8"), QObject::tr("LS9"), QObject::tr("LSA"),
+    QObject::tr("LSB"), QObject::tr("LSC"), QObject::tr("LSD"), QObject::tr("LSE"), QObject::tr("LSF"), QObject::tr("LSG"), QObject::tr("LSH"), QObject::tr("LSI"), QObject::tr("LSJ"), QObject::tr("LSK"),
+    QObject::tr("LSL"), QObject::tr("LSM"), QObject::tr("LSN"), QObject::tr("LSO"), QObject::tr("LSP"), QObject::tr("LSQ"), QObject::tr("LSR"), QObject::tr("LSS"), QObject::tr("LST"), QObject::tr("LSU"),
+    QObject::tr("LSV"), QObject::tr("LSW")
+  };
+
+  static const QString multiposPots[] = {
+    QObject::tr("S11"), QObject::tr("S12"), QObject::tr("S13"), QObject::tr("S14"), QObject::tr("S15"), QObject::tr("S16"),
+    QObject::tr("S21"), QObject::tr("S22"), QObject::tr("S23"), QObject::tr("S24"), QObject::tr("S25"), QObject::tr("S26")
+  };
 
   switch(type) {
     case SWITCH_TYPE_SWITCH:
@@ -268,6 +276,8 @@ QString RawSwitch::toString()
         return index > 0 ? CHECK_IN_ARRAY(switches9X, index-1) : QString("!") + CHECK_IN_ARRAY(switches9X, -index-1);
     case SWITCH_TYPE_VIRTUAL:
       return index > 0 ? CHECK_IN_ARRAY(virtualSwitches, index-1) : QString("!") + CHECK_IN_ARRAY(virtualSwitches, -index-1);
+    case SWITCH_TYPE_MULTIPOS_POT:
+      return CHECK_IN_ARRAY(multiposPots, index);
     case SWITCH_TYPE_ON:
       return QObject::tr("ON");
     case SWITCH_TYPE_ONM:

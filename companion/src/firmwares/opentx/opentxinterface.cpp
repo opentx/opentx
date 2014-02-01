@@ -682,6 +682,10 @@ int Open9xInterface::getCapability(const Capability capability)
       return (IS_STOCK(board) ? false : true);
     case HasMahPersistent:
       return (IS_ARM(board) ? true : false);
+    case MultiposPots:
+      return IS_TARANIS(board) ? 2 : 0;
+    case MultiposPotsPositions:
+      return IS_TARANIS(board) ? 6 : 0;
     default:
       return 0;
   }
