@@ -4983,7 +4983,9 @@ inline void opentxInit(OPENTX_INIT_ARGS)
   init_trainer_capture();
 #endif
 
+#if !defined(CPUARM)
   doMixerCalculations();
+#endif
 
   startPulses();
 
