@@ -1178,6 +1178,7 @@ void menuModelSetup(uint8_t event)
 #if defined(CPUM64)
                 getMovedSwitch();
                 g_model.switchWarningStates = switches_states;
+                AUDIO_WARNING1();
                 eeDirty(EE_MODEL);
 #else
                 if (m_posHorz == NUM_SWITCHES-1) {
