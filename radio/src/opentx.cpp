@@ -1666,10 +1666,9 @@ int getTrimValue(uint8_t phase, uint8_t idx)
       }
       else {
         phase = p;
-        if (v.mode % 2 == 0)
-          result = 0;
-        else
+        if (v.mode % 2 != 0) {
           result += v.value;
+        }
       }
     }
   }
