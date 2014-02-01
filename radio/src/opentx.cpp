@@ -503,7 +503,7 @@ void generalDefault()
 uint16_t evalChkSum()
 {
   uint16_t sum = 0;
-  const int16_t *calibValues = &g_eeGeneral.calibMid[0];
+  const int16_t *calibValues = (const int16_t *) &g_eeGeneral.calib[0];
   for (int i=0; i<NUM_STICKS+NUM_POTS+5; i++)
     sum += calibValues[i];
   return sum;
@@ -1308,6 +1308,8 @@ uint8_t  cswStates[NUM_CSW];
 #if defined(PCBTARANIS)
 tmr10ms_t switchesMidposStart[6] = { 0 };
 uint32_t  switchesPos = 0;
+tmr10ms_t potsLastposStart[NUM_XPOTS];
+uint8_t   potsPos[NUM_XPOTS];
 #define DELAY_SWITCH_3POS    10/*100ms*/
 #define CHECK_2POS(sw)       newPos |= (switchState(sw ## 0) ? (1 << (sw ## 0 - SW_SA0)) : (1 << (sw ## 0 - SW_SA0 + 1)))
 #define CHECK_3POS(idx, sw)  if (switchState(sw ## 0)) { \
@@ -1328,8 +1330,7 @@ uint32_t  switchesPos = 0;
                                } \
                                newPos |= (switchesPos & (0x7 << (sw ## 0 - SW_SA0))); \
                              }
-#define SWITCH_POSITION(sw)  (switchesPos & (1<<(sw)))
-void get3POSSwitchesPosition()
+void getSwitchesPosition()
 {
   uint32_t newPos = 0;
   CHECK_3POS(0, SW_SA);
@@ -1341,9 +1342,32 @@ void get3POSSwitchesPosition()
   CHECK_3POS(5, SW_SG);
   CHECK_2POS(SW_SH);
   switchesPos = newPos;
+
+#if defined(PCBTARANIS)
+  for (int i=0; i<NUM_XPOTS; i++) {
+    if (g_eeGeneral.potsType & (1 << i)) {
+      StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[POT1+i];
+      if (calib->count>0 && calib->count<POTS_POS_COUNT) {
+        uint8_t pos = anaIn(POT1+i) / (2*RESX/calib->count);
+        uint8_t previousPos = potsPos[i] >> 4;
+        if (pos != previousPos) {
+          potsLastposStart[i] = get_tmr10ms();
+          potsPos[i] = (pos << 4) | (potsPos[i] & 0x0f);
+        }
+        else if ((tmr10ms_t)(get_tmr10ms() - potsLastposStart[i]) > DELAY_SWITCH_3POS) {
+          potsLastposStart[i] = 0;
+          potsPos[i] = (pos << 4) | (pos);
+        }
+      }
+    }
+  }
+#endif
 }
+#define SWITCH_POSITION(sw)  (switchesPos & (1<<(sw)))
+#define POT_POSITION(sw)     ((potsPos[(sw)/POTS_POS_COUNT] & 0x0f) == ((sw) % POTS_POS_COUNT))
 #else
-#define get3POSSwitchesPosition()
+#define getSwitchesPosition()
+#define SWITCH_POSITION(idx) switchState((EnumKeys)(SW_BASE+(idx)))
 #endif
 
 int16_t csLastValue[NUM_CSW];
@@ -1360,15 +1384,16 @@ bool getSwitch(int8_t swtch)
   if (cs_idx == SWSRC_ON) {
     result = true;
   }
-  else if (cs_idx <= MAX_PSWITCH) {
-#if defined(PCBTARANIS)
-    result = SWITCH_POSITION(cs_idx-SWSRC_SA0);
-#else
-    result = switchState((EnumKeys)(SW_BASE+cs_idx-1));
-#endif
+  else if (cs_idx <= SWSRC_LAST_SWITCH) {
+    result = SWITCH_POSITION(cs_idx-SWSRC_FIRST_SWITCH);
   }
+#if defined(PCBTARANIS)
+  else if (cs_idx >= SWSRC_P11 && cs_idx <= SWSRC_P26) {
+    result = POT_POSITION(cs_idx-SWSRC_P11);
+  }
+#endif
   else {
-    cs_idx -= MAX_PSWITCH+1;
+    cs_idx -= SWSRC_FIRST_CSW;
 
     GETSWITCH_RECURSIVE_TYPE mask = ((GETSWITCH_RECURSIVE_TYPE)1 << cs_idx);
     if (s_last_switch_used & mask) {
@@ -1552,7 +1577,7 @@ int8_t getMovedSwitch()
     }
   }
 #else
-  for (uint8_t i=MAX_PSWITCH; i>0; i--) {
+  for (uint8_t i=NUM_PSWITCH; i>0; i--) {
     bool prev;
     swstate_t mask = 0;
     if (i <= 3) {
@@ -1564,7 +1589,7 @@ int8_t getMovedSwitch()
     }
     bool next = getSwitch(i);
     if (prev != next) {
-      if (i!=MAX_PSWITCH || next==true)
+      if (i!=NUM_PSWITCH || next==true)
         result = next ? i : -i;
       if (mask)
         switches_states ^= mask;
@@ -2148,8 +2173,9 @@ void checkTHR()
   int16_t lowLim = THRCHK_DEADBAND - 1024 ;
 #else
   getADC();   // if thr is down - do not display warning at all
-  int16_t lowLim = g_eeGeneral.calibMid[thrchn];
-  lowLim = (g_model.throttleReversed ? - lowLim - g_eeGeneral.calibSpanPos[thrchn] : lowLim - g_eeGeneral.calibSpanNeg[thrchn]);
+  CalibData * calib = &g_eeGeneral.calib[thrchn];
+  int16_t lowLim = calib->mid;
+  lowLim = (g_model.throttleReversed ? - lowLim - calib->spanPos : lowLim - calib->spanNeg);
   lowLim += THRCHK_DEADBAND;
 #endif
   int16_t v = thrAnaIn(thrchn);
@@ -2214,7 +2240,7 @@ void checkSwitches()
       }
 #else
       uint8_t x = 2;
-      for (uint8_t i=1; i<MAX_PSWITCH-1; i++) {
+      for (uint8_t i=1; i<NUM_PSWITCH-1; i++) {
         uint8_t attr = (states & (1 << i)) == (switches_states & (1 << i)) ? 0 : INVERS;
         putsSwitches(x, 5*FH, (i>2?(i+1):1+((states>>1)&0x3)), attr);
         if (i == 1 && attr) i++;
@@ -2483,10 +2509,29 @@ void getADC()
     for (uint32_t x=0; x<NUMBER_ANALOG; x++) {
       temp[x] += Analog_values[x];
     }
+#if defined(PCBTARANIS)
+    if (s_noScroll) break;
+#endif
   }
 
   for (uint32_t x=0; x<NUMBER_ANALOG; x++) {
-    s_anaFilt[x] = temp[x] >> 3;
+    uint16_t v = temp[x] >> 3;
+#if defined(PCBTARANIS)
+    if (s_noScroll) v = temp[x] >> 1;
+    StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[x];
+    if (IS_MULTIPOS_POT(x) && calib->count>0 && calib->count<POTS_POS_COUNT) {
+      uint8_t vShifted = (v >> 4);
+      s_anaFilt[x] = 2*RESX;
+      for (int i=0; i<calib->count; i++) {
+        if (vShifted < calib->steps[i]) {
+          s_anaFilt[x] = i*2*RESX/calib->count;
+          break;
+        }
+      }
+    }
+    else
+#endif
+    s_anaFilt[x] = v;
   }
 }
 #else
@@ -2734,10 +2779,14 @@ void evalInputs(uint8_t mode)
 
 #ifndef SIMU
     if (i < NUM_STICKS+NUM_POTS) {
-      v -= g_eeGeneral.calibMid[i];
-      v  =  v * (int32_t)RESX /  (max((int16_t)100,(v>0 ?
-                                       g_eeGeneral.calibSpanPos[i] :
-                                       g_eeGeneral.calibSpanNeg[i])));
+      if (IS_MULTIPOS_POT(i)) {
+        v -= RESX;
+      }
+      else {
+        CalibData * calib = &g_eeGeneral.calib[i];
+        v -= calib->mid;
+        v = v * (int32_t)RESX / (max((int16_t)100, (v>0 ? calib->spanPos : calib->spanNeg)));
+      }
     }
 #endif
 
@@ -3063,13 +3112,13 @@ void evalFunctions()
 
 #endif
 
-      if (swtch > MAX_SWITCH+1) {
+      if (swtch > NUM_SWITCH+1) {
         momentary = 1;
-        swtch -= MAX_SWITCH+1;
+        swtch -= NUM_SWITCH+1;
       }
-      if (swtch < -MAX_SWITCH-1) {
+      if (swtch < -NUM_SWITCH-1) {
         momentary = 1;
-        swtch += MAX_SWITCH+1;
+        swtch += NUM_SWITCH+1;
       }
 
       bool active = getSwitch(swtch);
@@ -3697,9 +3746,9 @@ void doMixerCalculations()
   // therefore forget the exact calculation and use only 1 instead; good compromise
   lastTMR = tmr10ms;
 
-  get3POSSwitchesPosition();
-
   getADC();
+
+  getSwitchesPosition();
 
 #if defined(PCBSKY9X) && !defined(REVA) && !defined(SIMU)
   Current_analogue = (Current_analogue*31 + s_anaFilt[8] ) >> 5 ;
@@ -3884,9 +3933,9 @@ void doMixerCalculations()
         timerState->sum+=val;
       }
 
-      if (atm>=(TMR_VAROFS+MAX_SWITCH)){ // toggeled switch
+      if (atm>=(TMR_VAROFS+NUM_SWITCH)){ // toggeled switch
         if(!(timerState->toggled | timerState->sum | timerState->cnt | timerState->lastPos)) { timerState->lastPos = tm < 0; timerState->sum = 1; }  // if initializing then init the lastPos
-        uint8_t swPos = getSwitch(tm>0 ? tm-(TMR_VAROFS+MAX_SWITCH-1) : tm+MAX_SWITCH);
+        uint8_t swPos = getSwitch(tm>0 ? tm-(TMR_VAROFS+NUM_SWITCH-1) : tm+NUM_SWITCH);
         if (swPos && !timerState->lastPos) timerState->toggled = !timerState->toggled;  // if switch is flipped first time -> change counter state
         timerState->lastPos = swPos;
       }
@@ -3923,7 +3972,7 @@ void doMixerCalculations()
             newTimerVal++;
         }
         else {
-          if (atm<(TMR_VAROFS+MAX_SWITCH))
+          if (atm<(TMR_VAROFS+NUM_SWITCH))
             timerState->toggled = tm>0 ? getSwitch(tm-(TMR_VAROFS-1)) : !getSwitch(-tm); // normal switch
           if (timerState->toggled)
             newTimerVal++;

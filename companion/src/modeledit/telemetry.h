@@ -8,6 +8,7 @@
 
 namespace Ui {
   class TelemetryAnalog;
+  class TelemetryCustomScreen;
   class Telemetry;
 }
 
@@ -44,6 +45,32 @@ class TelemetryAnalog : public QWidget
     void update();
 };
 
+class TelemetryCustomScreen : public ModelPanel
+{
+    Q_OBJECT
+
+  public:
+    TelemetryCustomScreen(QWidget *parent, ModelData & model, FrSkyScreenData & screen);
+    ~TelemetryCustomScreen();
+    void update();
+
+  private slots:
+    void on_screenType_currentIndexChanged(int index);
+    void customFieldChanged(int index);
+    void barSourceChanged(int index);
+    void barMinChanged(double value);
+    void barMaxChanged(double value);
+
+  private:
+    void updateBar(int line);
+    Ui::TelemetryCustomScreen * ui;
+    FrSkyScreenData & screen;
+    QComboBox * fieldsCB[4][3];
+    QComboBox * barsCB[4];
+    QDoubleSpinBox * minSB[4];
+    QDoubleSpinBox * maxSB[4];
+};
+
 class TelemetryPanel : public ModelPanel
 {
     Q_OBJECT
@@ -77,21 +104,10 @@ class TelemetryPanel : public ModelPanel
     void on_fasOffset_DSB_editingFinished();
     void on_mahCount_SB_editingFinished();
     void on_mahCount_ChkB_toggled(bool checked);
-    void telBarCBcurrentIndexChanged(int index);
-    void ScreenTypeCBcurrentIndexChanged(int index);
-    void telMaxSBeditingFinished();
-    void telMinSBeditingFinished();
-    void customFieldEdited();
 
   private:
     Ui::Telemetry *ui;
     TelemetryAnalog * analogs[2];
-    QGroupBox* barsGB[3];
-    QGroupBox* numsGB[3];
-    QComboBox* barsCB[12];
-    QDoubleSpinBox* minSB[12];
-    QDoubleSpinBox* maxSB[12];
-    QComboBox* csf[36];
 
     void setup();
     void telBarUpdate();
