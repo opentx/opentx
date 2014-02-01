@@ -71,6 +71,9 @@
 #define LEN_UART3MODES         "\017"
 #define TR_UART3MODES          "OFF\0           ""SPORT Mirror\0  ""Virtual SP2UART"
 
+#define LEN_POTTYPES           "\017"
+#define TR_POTTYPES            "Pot\0           ""Multipos Switch"
+
 #define LEN_DATETIME           "\006"
 #define TR_DATETIME            "DATUM:""ČAS:  "
 
@@ -544,16 +547,16 @@
 #define TR_MENUFLIGHTPHASES    "LETOVÉ REŽIMY"
 #define TR_MENUHELISETUP       "HELI"
 
-
-// Alignment
-
-
-
-
-
-#define TR_MENUINPUTS          "DR/EXPO"
-#define TR_MENULIMITS          "LIMITY"
-
+#if defined(PCBTARANIS)
+  #define TR_MENUINPUTS        "INPUTS"
+  #define TR_MENULIMITS        "SERVOS"
+#elif defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...
+  #define TR_MENUINPUTS        "STICKS"
+  #define TR_MENULIMITS        "SERVOS"
+#else
+  #define TR_MENUINPUTS        "DR/EXPO"
+  #define TR_MENULIMITS        "LIMITY"
+#endif
 
 #define TR_MENUCURVES          "KŘIVKY"
 #define TR_MENUCURVE           "\002k"
@@ -680,6 +683,8 @@
 #define TR_PERSISTENT_MAH      INDENT "Store mAh"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 #define TR_UART3MODE           "Serial port"
+#define TR_POT1TYPE            "S1 Type"
+#define TR_POT2TYPE            "S2 Type"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL        "Max RSSI"
