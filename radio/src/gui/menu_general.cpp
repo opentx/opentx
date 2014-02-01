@@ -1314,6 +1314,9 @@ void menuCommonCalib(uint8_t event)
             if (count < POTS_POS_COUNT) {
               reusableBuffer.calib.xpotsCalib[idx].steps[count] = position;
             }
+            else {
+              g_eeGeneral.potsType &= !(1<<idx);
+            }
             reusableBuffer.calib.xpotsCalib[idx].stepsCount += 1;
           }
         }
