@@ -56,21 +56,29 @@ class SwitchesConversionTable: public ConversionTable {
         addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, i), val++);
       }
 
+      if (IS_TARANIS(board) && version >= 216) {
+        for (int i=0; i<2; i++) {
+          for (int j=0; j<6; j++) {
+            addConversion(RawSwitch(SWITCH_TYPE_MULTIPOS_POT, i*6+j), val++);
+          }
+        }
+      }
+
       addConversion(RawSwitch(SWITCH_TYPE_OFF), -val);
       addConversion(RawSwitch(SWITCH_TYPE_ON), val++);
 
       for (int i=1; i<=MAX_SWITCHES_POSITION(board); i++) {
         int s = switchIndex(i, board, version);
-        addConversion(RawSwitch(SWITCH_TYPE_MOMENT_SWITCH, -s), -val);
+        // addConversion(RawSwitch(SWITCH_TYPE_MOMENT_SWITCH, -s), -val);
         addConversion(RawSwitch(SWITCH_TYPE_MOMENT_SWITCH, s), val++);
       }
 
       for (int i=1; i<=MAX_CUSTOM_SWITCHES(board, version); i++) {
-        addConversion(RawSwitch(SWITCH_TYPE_MOMENT_VIRTUAL, -i), -val);
+        // addConversion(RawSwitch(SWITCH_TYPE_MOMENT_VIRTUAL, -i), -val);
         addConversion(RawSwitch(SWITCH_TYPE_MOMENT_VIRTUAL, i), val++);
       }
 
-      addConversion(RawSwitch(SWITCH_TYPE_ONM, 1 ), -val);
+      // addConversion(RawSwitch(SWITCH_TYPE_ONM, 1 ), -val);
       addConversion(RawSwitch(SWITCH_TYPE_ONM, 0 ), val++);
       addConversion(RawSwitch(SWITCH_TYPE_TRN, 0), val++);
       addConversion(RawSwitch(SWITCH_TYPE_TRN, 1), val++);        
@@ -2036,12 +2044,21 @@ Open9xGeneralDataNew::Open9xGeneralDataNew(GeneralSettings & generalData, BoardE
   if (version >= 213 || (!IS_ARM(board) && version >= 212))
     internalField.Append(new UnsignedField<16>(generalData.variant));
 
-  for (int i=0; i<inputsCount; i++)
-    internalField.Append(new SignedField<16>(generalData.calibMid[i]));
-  for (int i=0; i<inputsCount; i++)
-    internalField.Append(new SignedField<16>(generalData.calibSpanNeg[i]));
-  for (int i=0; i<inputsCount; i++)
-    internalField.Append(new SignedField<16>(generalData.calibSpanPos[i]));
+  if (version >= 216) {
+    for (int i=0; i<inputsCount; i++) {
+      internalField.Append(new SignedField<16>(generalData.calibMid[i]));
+      internalField.Append(new SignedField<16>(generalData.calibSpanNeg[i]));
+      internalField.Append(new SignedField<16>(generalData.calibSpanPos[i]));
+    }
+  }
+  else {
+    for (int i=0; i<inputsCount; i++)
+      internalField.Append(new SignedField<16>(generalData.calibMid[i]));
+    for (int i=0; i<inputsCount; i++)
+      internalField.Append(new SignedField<16>(generalData.calibSpanNeg[i]));
+    for (int i=0; i<inputsCount; i++)
+      internalField.Append(new SignedField<16>(generalData.calibSpanPos[i]));
+  }
 
   internalField.Append(new UnsignedField<16>(chkSum));
   internalField.Append(new UnsignedField<8>(generalData.currModel));
@@ -2135,8 +2152,11 @@ Open9xGeneralDataNew::Open9xGeneralDataNew(GeneralSettings & generalData, BoardE
       internalField.Append(new SignedField<8>(generalData.varioVolume));
       internalField.Append(new SignedField<8>(generalData.backgroundVolume));
     }
-    if (version >= 216) {
+    if (IS_TARANIS(board) && version >= 216) {
       internalField.Append(new UnsignedField<8>(generalData.hw_uartMode));
+      for (int i=0; i<8; i++) {
+        internalField.Append(new UnsignedField<1>(generalData.potsType[i]));
+      }
     }
   }
 }
