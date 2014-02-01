@@ -2260,7 +2260,7 @@ void checkSwitches()
 #else
     uint8_t nSwWarn = g_model.nSwToWarn;
     nSwWarn=(nSwWarn<<1)|(nSwWarn&1);   // duplicate first bit because states has first two bits for ID, but nSwToWarn has only one
-    for (uint8_t i=0; i<MAX_PSWITCH-2; i++) {
+    for (uint8_t i=0; i<NUM_PSWITCH-2; i++) {
       if (!(nSwWarn & (1<<i))) 
         if((states & (1<<i)) != (switches_states & (1<<i)))
            warn = true;
