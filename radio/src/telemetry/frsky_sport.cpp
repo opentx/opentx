@@ -534,6 +534,10 @@ void processSerialData(uint8_t data)
   btPushByte(data);
 #endif
 
+  if (g_eeGeneral.uart3Mode == UART_MODE_SPORT) {
+    uart3Putc(data);
+  }
+
   if (data == START_STOP) {
     dataState = STATE_DATA_IN_FRAME;
     numPktBytes = 0;
