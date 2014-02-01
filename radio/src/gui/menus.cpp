@@ -232,13 +232,13 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
     if (event == EVT_KEY_LONG(KEY_ENTER) && i_max > SWSRC_ON) {
       s_editMode = !s_editMode;
       if (newval > SWSRC_ON)
-        newval -= (MAX_SWITCH+1);
+        newval -= (NUM_SWITCH+1);
       else if (newval > 0)
-        newval += (MAX_SWITCH+1);
+        newval += (NUM_SWITCH+1);
       else if (newval < SWSRC_OFF)
-        newval += (MAX_SWITCH+1);
+        newval += (NUM_SWITCH+1);
       else if (newval < 0)
-        newval -= (MAX_SWITCH+1);
+        newval -= (NUM_SWITCH+1);
     }
   }
 #endif
@@ -976,7 +976,7 @@ int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, LcdFlags attr, uint8_t
 {
   lcd_putsColumnLeft(x, y, STR_SWITCH);
   putsSwitches(x,  y, value, attr);
-  if (attr) CHECK_INCDEC_MODELSWITCH(event, value, -MAX_SWITCH, MAX_SWITCH);
+  if (attr) CHECK_INCDEC_MODELSWITCH(event, value, -NUM_SWITCH, NUM_SWITCH);
   return value;
 }
 
@@ -1263,7 +1263,20 @@ bool isSwitchAvailable(int16_t swtch)
       swtch = -swtch;
   }
 
-  if (swtch>=SWSRC_FIRST_CSW && swtch<=SWSRC_LAST_CSW) {
+#if defined(PCBTARANIS)
+  if (swtch >= SWSRC_P11 && swtch <= SWSRC_P26) {
+    int index = (swtch - SWSRC_P11) / POTS_POS_COUNT;
+    if (g_eeGeneral.potsType & (1<<index)) {
+      StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[POT1+index];
+      return (calib->count >= ((swtch - SWSRC_P11) % POTS_POS_COUNT));
+    }
+    else {
+      return false;
+    }
+  }
+#endif
+
+  if (swtch >= SWSRC_FIRST_CSW && swtch <= SWSRC_LAST_CSW) {
     CustomSwData * cs = cswAddress(swtch-SWSRC_FIRST_CSW);
     return (cs->func != CS_OFF);
   }

@@ -38,7 +38,7 @@ logsDialog::logsDialog(QWidget *parent) :
   ui->customPlot->legend->setSelectedFont(legendFont);
   ui->customPlot->legend->setSelectable(QCPLegend::spItems); // legend box shall not be selectable, only legend items
   ui->customPlot->legend->setVisible(false);
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings;
   QString Path=settings.value("gePath", "").toString();
   if (Path.isEmpty() || !QFile(Path).exists()) {
     ui->mapsButton->hide();
@@ -202,7 +202,7 @@ void logsDialog::on_mapsButton_clicked() {
         ,F_F,F_F,F_F,F_F,I_F,I_F,I_F,I_F\
         ,I_F,I_F,I_F,I_F,I_F,I_F,I_F,I_F,I_F,I_F,I_F,I_F};
     
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings;
   QString gePath=settings.value("gePath", "").toString();
   if (gePath.isEmpty() || !QFile(gePath).exists()) {
     ui->FieldsTW->setDisabled(false);
@@ -262,8 +262,8 @@ void logsDialog::on_mapsButton_clicked() {
   QTextStream outputStream(&geFile);
   outputStream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\">\n";
   outputStream << "\t<Document>\n\t\t<name>" << logFilename << "</name>\n";
-  outputStream << "\t\t<Style id=\"multiTrack_n\">\n\t\t\t<IconStyle>\n\t\t\t\t<Icon>\n\t\t\t\t\t<href>./track0.png</href>\n\t\t\t\t</Icon>\n\t\t\t</IconStyle>\n\t\t\t<LineStyle>\n\t\t\t\t<color>991081f4</color>\n\t\t\t\t<width>6</width>\n\t\t\t</LineStyle>\n\t\t</Style>\n";
-  outputStream << "\t\t<Style id=\"multiTrack_h\">\n\t\t\t<IconStyle>\n\t\t\t\t<scale>1.2</scale>\n\t\t\t\t<Icon>\n\t\t\t\t\t<href>./track0.png</href>\n\t\t\t\t</Icon>\n\t\t\t</IconStyle>\n\t\t\t<LineStyle>\n\t\t\t\t<color>991081f4</color>\n\t\t\t\t<width>8</width>\n\t\t\t</LineStyle>\n\t\t</Style>\n";
+  outputStream << "\t\t<Style id=\"multiTrack_n\">\n\t\t\t<IconStyle>\n\t\t\t\t<Icon>\n\t\t\t\t\t<href>file://" << QDir::tempPath() << "/track0.png</href>\n\t\t\t\t</Icon>\n\t\t\t</IconStyle>\n\t\t\t<LineStyle>\n\t\t\t\t<color>991081f4</color>\n\t\t\t\t<width>6</width>\n\t\t\t</LineStyle>\n\t\t</Style>\n";
+  outputStream << "\t\t<Style id=\"multiTrack_h\">\n\t\t\t<IconStyle>\n\t\t\t\t<scale>0</scale>\n\t\t\t\t<Icon>\n\t\t\t\t\t<href>file://" << QDir::tempPath() << "/track0.png</href>\n\t\t\t\t</Icon>\n\t\t\t</IconStyle>\n\t\t\t<LineStyle>\n\t\t\t\t<color>991081f4</color>\n\t\t\t\t<width>8</width>\n\t\t\t</LineStyle>\n\t\t</Style>\n";
   outputStream << "\t\t<StyleMap id=\"multiTrack\">\n\t\t\t<Pair>\n\t\t\t\t<key>normal</key>\n\t\t\t\t<styleUrl>#multiTrack_n</styleUrl>\n\t\t\t</Pair>\n\t\t\t<Pair>\n\t\t\t\t<key>highlight</key>\n\t\t\t\t<styleUrl>#multiTrack_h</styleUrl>\n\t\t\t</Pair>\n\t\t</StyleMap>\n";
   outputStream << "\t\t<Style id=\"lineStyle\">\n\t\t\t<LineStyle>\n\t\t\t\t<color>991081f4</color>\n\t\t\t\t<width>6</width>\n\t\t\t</LineStyle>\n\t\t</Style>\n";
   outputStream << "\t\t<Schema id=\"schema\">\n";
@@ -295,10 +295,13 @@ void logsDialog::on_mapsButton_clicked() {
   } else {
     planeName=logFilename;
   }
-  outputStream << "\t\t<Folder>\n\t\t\t<name>Log Data</name>\n\t\t\t<Placemark>\n\t\t\t\t<name>" << planeName << "</name>\n\t\t\t\t<styleUrl>#multiTrack</styleUrl>\n\t\t\t\t<gx:Track>\n";
+  outputStream << "\t\t<Folder>\n\t\t\t<name>Log Data</name>\n\t\t\t<Placemark>\n\t\t\t\t<name>" << planeName << "</name>";
+  outputStream << "\n\t\t\t\t<styleUrl>#multiTrack</styleUrl>";
+  outputStream << "\n\t\t\t\t<gx:Track>\n";
+  outputStream << "\n\t\t\t\t\t<altitudeMode>absolute</altitudeMode>\n";
   for (int i=1; i<n; i++) {
     if ((ui->logTable->item(i-1,1)->isSelected() &&rangeSelected) || !rangeSelected) {
-      QString tstamp=csvlog.at(i).at(0)+QString("T")+csvlog.at(i).at(1);
+      QString tstamp=csvlog.at(i).at(0)+QString("T")+csvlog.at(i).at(1)+QString("Z");
       outputStream << "\t\t\t\t\t<when>"<< tstamp <<"</when>\n";
     }
   }
@@ -319,7 +322,7 @@ void logsDialog::on_mapsButton_clicked() {
       }
       latitude.sprintf("%3.8f", flatitude);
       longitude.sprintf("%3.8f", flongitude);
-      outputStream << "\t\t\t\t\t<gx:coord>" << longitude << " " << latitude << " " << csvlog.at(i).at(altcol) << "</gx:coord>\n" ;
+      outputStream << "\t\t\t\t\t<gx:coord>" << longitude << " " << latitude << " " << csvlog.at(i).at(altcol).toFloat() << " </gx:coord>\n" ;
     }
   }
   outputStream << "\t\t\t\t\t<ExtendedData>\n\t\t\t\t\t\t<SchemaData schemaUrl=\"#schema\">\n";
@@ -341,10 +344,14 @@ void logsDialog::on_mapsButton_clicked() {
       outputStream << "\t\t\t\t\t\t\t</gx:SimpleArrayData>\n";
     }
   }
-  outputStream << "\t\t\t\t\t\t</SchemaData>\t\t\t\t\t</ExtendedData>\n\t\t\t\t</gx:Track>\n\t\t\t</Placemark>\n\t\t</Folder>\n\t</Document>\n</kml>";
+  outputStream << "\t\t\t\t\t\t</SchemaData>\n\t\t\t\t\t</ExtendedData>\n\t\t\t\t</gx:Track>\n\t\t\t</Placemark>\n\t\t</Folder>\n\t</Document>\n</kml>";
   geFile.close();
-  
-  QStringList parameters; 
+  QStringList parameters;
+#ifdef __APPLE__
+  gePath = "/usr/bin/open";
+  parameters << "-a";
+  parameters << "Google\ Earth";
+#endif
   parameters << geFilename;
   QProcess *process = new QProcess(this);
   process->start(gePath, parameters);
@@ -578,7 +585,7 @@ void logsDialog::moveLegend()
 
 void logsDialog::on_fileOpen_BT_clicked()
 {
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings;
   QString fileName = QFileDialog::getOpenFileName(this,tr("Select your log file"), settings.value("lastLogDir").toString());
   if (!fileName.isEmpty()) {
     settings.setValue("lastLogDir", fileName);

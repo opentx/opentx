@@ -44,7 +44,7 @@ const char * Er9xInterface::getName()
 
 const int Er9xInterface::getEEpromSize()
 {
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings;
   QString avrMCU = settings.value("mcu", QString("m64")).toString();
   if (avrMCU==QString("m128")) {
     return 2*EESIZE_STOCK;
@@ -282,7 +282,6 @@ int Er9xInterface::getCapability(const Capability capability)
     case Gvars:
       return 7;
     case GvarsHaveSources:
-    case GvarsAsSources:
      return 1;
     case GetThrSwitch:
       return DSW_THR;     

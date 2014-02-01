@@ -30,7 +30,7 @@ xsimulatorDialog::xsimulatorDialog(QWidget *parent) :
     ui->setupUi(this);
     ui->lcd->setFocus();
 
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings;
     ui->lcd->setBackgroundColor(47, 123, 227);
     setupSticks();
     resize(0, 0); // to force min height, min width
@@ -179,7 +179,7 @@ void xsimulatorDialog::setupTimer()
 void xsimulatorDialog::onButtonPressed(int value)
 {
   if (value==Qt::Key_Print) {
-      QSettings settings("companion9x", "companion9x");
+      QSettings settings;
       bool toclipboard=settings.value("snapshot_to_clipboard", false).toBool();
       QString fileName ="";
       if (!toclipboard) {

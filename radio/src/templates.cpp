@@ -64,8 +64,9 @@ MixData* setDest(uint8_t dch, uint8_t src, bool clear=false)
   while (1) {
     mix = mixAddress(i);
     if (mix->srcRaw && mix->destCh <= dch) {
-      if (clear && mix->destCh == dch)
+      if (clear && mix->destCh == dch) {
         deleteExpoMix(0, i);
+      }
       else {
         if (++i==MAX_MIXERS) {
           // TODO should return null pointer but needs to be tested then
@@ -106,10 +107,14 @@ void defaultInputs()
   clearInputs();
 
   for (int i=0; i<NUM_STICKS; i++) {
-    s_currCh = i+1;
-    insertExpoMix(1, i);
+    uint8_t stick_index = channel_order(i+1);
+    ExpoData *expo = expoAddress(i);
+    expo->srcRaw = MIXSRC_Rud - 1 + stick_index;
+    expo->curve.type = CURVE_REF_EXPO;
+    expo->chn = i;
+    expo->weight = 100;
     for (int c=0; c<4; c++) {
-      g_model.inputNames[i][c] = char2idx(STR_VSRCRAW[1+STR_VSRCRAW[0]*(expoAddress(i)->srcRaw-MIXSRC_Rud+1)+c]);
+      g_model.inputNames[i][c] = char2idx(STR_VSRCRAW[1+STR_VSRCRAW[0]*stick_index+c]);
     }
   }
   eeDirty(EE_MODEL);
@@ -163,7 +168,7 @@ void applyTemplate(uint8_t idx)
     uint8_t icc[4] = {0};
     for (uint8_t i=0; i<4; i++) { //generate inverse array
       for(uint8_t j=0; j<4; j++)
-        if(CC(i+1)==j+1) icc[j]=i;
+        if(CC(i+1)==j+MIXSRC_Rud) icc[j]=i;
     }
 
     switch (idx) {
@@ -177,8 +182,14 @@ void applyTemplate(uint8_t idx)
     switch (idx) {
       // Simple 4-Ch
       case TMPL_SIMPLE_4CH:
-        clearInputs();
-        applyDefaultTemplate();
+        defaultInputs();
+#if defined(PCBTARANIS)
+  #pragma message("Templates with virtual inputs (FrSky Taranis) are not implemented!")
+#endif
+        setDest(ICC(STK_RUD), MIXSRC_Rud);
+        setDest(ICC(STK_ELE), MIXSRC_Ele);
+        setDest(ICC(STK_THR), MIXSRC_Thr);
+        setDest(ICC(STK_AIL), MIXSRC_Ail);
         break;
 
       // Sticky-T-Cut
@@ -203,9 +214,6 @@ void applyTemplate(uint8_t idx)
       // Elevon\\Delta
       case TMPL_ELEVON_DELTA:
         defaultInputs();
-#if defined(PCBTARANIS)
- #pragma message("Templates below are not implemented (only V-TAIL has been done). Feel free to help!")
-#endif
         setDest(ICC(STK_ELE), MIXSRC_Ele, true);
         setDest(ICC(STK_ELE), MIXSRC_Ail);
         setDest(ICC(STK_AIL), MIXSRC_Ele, true);

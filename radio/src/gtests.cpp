@@ -295,8 +295,8 @@ TEST(FrSkySPORT, checkCrc)
 TEST(getSwitch, undefCSW)
 {
   MODEL_RESET();
-  EXPECT_EQ(getSwitch(MAX_PSWITCH), false);
-  EXPECT_EQ(getSwitch(-MAX_PSWITCH), true); // no good answer there!
+  EXPECT_EQ(getSwitch(NUM_PSWITCH), false);
+  EXPECT_EQ(getSwitch(-NUM_PSWITCH), true); // no good answer there!
 }
 #endif
 

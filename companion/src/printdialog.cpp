@@ -176,7 +176,7 @@ QString printDialog::printPhases()
     str.append("<td rowspan=2 align=\"center\" valign=\"bottom\"><b>"+tr("Switch")+"</b></td></tr><tr><td align=center width=\"90\"><b>"+tr("Flight mode name"));
     str.append("</b></td><td align=center width=\"30\"><b>"+tr("IN")+"</b></td><td align=center width=\"30\"><b>"+tr("OUT")+"</b></td>");
     for (int i=0; i<4; i++) {
-      str.append(QString("<td width=\"40\" align=\"center\"><b>%1</b></td>").arg(getStickStr(i)));
+      str.append(QString("<td width=\"40\" align=\"center\"><b>%1</b></td>").arg(getInputStr(*g_model, i)));
     }
     if (gvars==1) {
       for (int i=0; i<gvarnum; i++) {
@@ -241,7 +241,7 @@ void printDialog::printExpo()
       str.append("<tr><td><font size=+1 face='Courier New'>");
       if(lastCHN!=ed->chn) {
         lastCHN=ed->chn;
-        str.append("<b>"+getStickStr(ed->chn)+"</b>");
+        str.append("<b>"+getInputStr(*g_model, ed->chn)+"</b>");
       }
       else
         str.append("<b>&nbsp;</b>");
@@ -640,16 +640,16 @@ void printDialog::printSwitches()
 {
     int sc=0;
     QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
-    str.append("<tr><td><h2>"+tr("Custom Switches")+"</h2></td></tr>");
+    str.append("<tr><td><h2>"+tr("Logical Switches")+"</h2></td></tr>");
     str.append("<tr><td><table border=0 cellspacing=0 cellpadding=3>");
 
     for (int i=0; i<GetEepromInterface()->getCapability(CustomSwitches); i++) {
       if (g_model->customSw[i].func) {
         str.append("<tr>");
         if (i<9) {
-          str.append("<td width=\"60\" align=\"center\"><b>"+tr("CS")+QString("%1</b></td>").arg(i+1));
+          str.append("<td width=\"60\" align=\"center\"><b>"+tr("LS")+QString("%1</b></td>").arg(i+1));
         } else {
-          str.append("<td width=\"60\" align=\"center\"><b>"+tr("CS")+('A'+(i-9))+"</b></td>");
+          str.append("<td width=\"60\" align=\"center\"><b>"+tr("LS")+('A'+(i-9))+"</b></td>");
         }
         QString tstr = getCustomSwitchStr(&g_model->customSw[i], *g_model);
         str.append(doTC(tstr,"green"));
@@ -724,9 +724,8 @@ void printDialog::printFSwitches()
 {
     int sc=0;
     QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
-    str.append("<tr><td><h2>"+tr("Function Switches")+"</h2></td></tr>");
+    str.append("<tr><td><h2>"+tr("Switch Assignments")+"</h2></td></tr>");
     str.append("<tr><td><table border=0 cellspacing=0 cellpadding=3><tr>");
-    str.append("<td width=\"60\">&nbsp;</td>");
     str.append(doTC(tr("Switch"), "", true));
     str.append(doTL(tr("Function"), "", true));
     str.append(doTL(tr("Parameter"), "", true));
@@ -736,7 +735,6 @@ void printDialog::printFSwitches()
     for(int i=0; i<GetEepromInterface()->getCapability(CustomFunctions); i++) {
       if (g_model->funcSw[i].swtch.type!=SWITCH_TYPE_NONE) {
           str.append("<tr>");
-          str.append(doTC(tr("CF")+QString("%1").arg(i+1),"",true));
           str.append(doTC(g_model->funcSw[i].swtch.toString(),"green"));
           str.append(doTC(getFuncName(g_model->funcSw[i].func),"green"));
           str.append(doTC(FuncParam(g_model->funcSw[i].func,g_model->funcSw[i].param,g_model->funcSw[i].paramarm, g_model->funcSw[i].adjustMode),"green"));
@@ -798,7 +796,7 @@ void printDialog::printFrSky()
   str.append("<tr><td colspan=2 align=\"Left\"><b>"+tr("System of units")+"</b></td><td colspan=8 align=\"left\">"+getFrSkyMeasure(fd->imperial)+"</td></tr>");
   str.append("<tr><td colspan=2 align=\"Left\"><b>"+tr("Propeller blades")+"</b></td><td colspan=8 align=\"left\">"+getFrSkyBlades(fd->blades)+"</td></tr>");
   str.append("<tr><td colspan=10 align=\"Left\" height=\"4px\"></td></tr></table>");
-  
+#if 0
   if (GetEepromInterface()->getCapability(TelemetryBars) || (GetEepromInterface()->getCapability(TelemetryCSFields))) {
     int cols=GetEepromInterface()->getCapability(TelemetryColsCSFields);
     if (cols==0) cols=2;
@@ -836,12 +834,13 @@ void printDialog::printFrSky()
         for (int i=0; i<4; i++) {
           if (fd->screens[j].body.bars[i].source!=0) 
             tc++;
-          str.append("<tr><td  align=\"Center\"><b>"+QString::number(i+1,10)+"</b></td><td  align=\"Center\"><b>"+getFrSkySrc(fd->screens[j].body.bars[i].source)+"</b></td><td  align=\"Right\"><b>"+(fd->screens[j].body.bars[i].source>0 ? QString::number(getBarValue(fd->screens[j].body.bars[i].source, fd->screens[j].body.bars[i].barMin,fd)):"----")+"</b></td><td  align=\"Right\"><b>"+(fd->screens[j].body.bars[i].source>0 ? QString::number(getBarValue(fd->screens[j].body.bars[i].source,(255-fd->screens[j].body.bars[i].barMax),fd)) :"----")+"</b></td></tr>");
+          // TODO str.append("<tr><td  align=\"Center\"><b>"+QString::number(i+1,10)+"</b></td><td  align=\"Center\"><b>"+getFrSkySrc(fd->screens[j].body.bars[i].source)+"</b></td><td  align=\"Right\"><b>"+(fd->screens[j].body.bars[i].source>0 ? QString::number(getBarValue(fd->screens[j].body.bars[i].source, fd->screens[j].body.bars[i].barMin,fd)):"----")+"</b></td><td  align=\"Right\"><b>"+(fd->screens[j].body.bars[i].source>0 ? QString::number(getBarValue(fd->screens[j].body.bars[i].source,(255-fd->screens[j].body.bars[i].barMax),fd)) :"----")+"</b></td></tr>");
         }
         str.append("</table>");
       }
     }
   }
+#endif
   if (tc>0)
       te->append(str);    
 }

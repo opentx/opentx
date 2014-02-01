@@ -42,14 +42,10 @@ size_t SizeOfArray( T(&)[ N ] )
   return N;
 }
 
-QStringList o9xservers;
-
 Open9xInterface::Open9xInterface(BoardEnum board):
   EEPROMInterface(board),
   efile(new EFile())
 {
-  o9xservers.clear();
-  o9xservers << "93.51.182.154" << "open9x.9xforums.com";
 }
 
 Open9xInterface::~Open9xInterface()
@@ -309,7 +305,7 @@ bool Open9xInterface::load(RadioData &radioData, uint8_t *eeprom, int size)
         std::cout << " wrong size (" << size << ")\n";
         return false;
       } else {
-        QMessageBox::warning(NULL,"companion9x", QObject::tr("Your radio probably uses a wrong firmware,\n eeprom size is 4096 but only the first 2048 are used"));
+        QMessageBox::warning(NULL, "companion", QObject::tr("Your radio probably uses a wrong firmware,\n eeprom size is 4096 but only the first 2048 are used"));
         size=2048;
       }
     } else {
@@ -517,10 +513,6 @@ int Open9xInterface::getCapability(const Capability capability)
         return 1;
       else
         return 0;
-    case minuteBeep:
-        return 1;
-    case countdownBeep:
-        return 1;
     case Pots:
       return (IS_TARANIS(board) ? 4 : 3);
     case Switches:
@@ -598,13 +590,9 @@ int Open9xInterface::getCapability(const Capability capability)
       return 1;
     case ExtendedTrims:
       return 500;
-    case ExtraTrims:
-      return 1;
     case Simulation:
       return 1;
     case DSM2Indexes:
-      return 1;
-    case FSSwitch:
       return 1;
     case MixesWithoutExpo:
       return 1;
@@ -622,24 +610,12 @@ int Open9xInterface::getCapability(const Capability capability)
       return TM_HASTELEMETRY|TM_HASOFFSET|TM_HASWSHH;
     case TelemetryBars:
       return 1;
-    case TelemetryCSFields:
-      if (IS_TARANIS(board)) {
-        return 36;
-      } else {
-        return IS_ARM(board) ? 24 : 16;
-      }
-    case TelemetryColsCSFields:
-      if (IS_TARANIS(board)) {
-        return 3;
-      } else {
-        return 2;
-      }
+    case TelemetryCustomScreens:
+      return IS_TARANIS(board) ? 3 : 2;
+    case TelemetryCustomScreensFieldsPerLine:
+      return IS_TARANIS(board) ? 3 : 2;
     case NoTelemetryProtocol:
-      if (IS_TARANIS(board)) {
-        return 1;
-      } else {
-        return 0;
-      }      
+      return IS_TARANIS(board) ? 1 : 0;
     case TelemetryUnits:
       return 0;
     case TelemetryBlades:
@@ -699,11 +675,20 @@ int Open9xInterface::getCapability(const Capability capability)
       return (IS_TARANIS(board) ? 4 : IS_ARM(board) ? 3 : 0);
     case HasDisplayText:
     case VirtualInputs:
+      return IS_TARANIS(board) ? 32 : 0;
     case LuaInputs:
     case LimitsPer1000:
     case EnhancedCurves:
     case TelemetryInternalAlarms:
       return IS_TARANIS(board);
+    case HasFasOffset:
+      return (IS_STOCK(board) ? false : true);
+    case HasMahPersistent:
+      return (IS_ARM(board) ? true : false);
+    case MultiposPots:
+      return IS_TARANIS(board) ? 2 : 0;
+    case MultiposPotsPositions:
+      return IS_TARANIS(board) ? 6 : 0;
     default:
       return 0;
   }
@@ -950,14 +935,9 @@ bool Open9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esiz
 
 QString geturl( int board)
 {
-    QString url="http://";
-    QSettings settings("companion9x", "companion9x");
-    int server = settings.value("fwserver", 0).toInt();
-    if (server >= o9xservers.count()) {
-      server = 0;
-      settings.setValue("fwserver",server);
-    }
-    url.append(o9xservers.at(server));
+    QSettings settings;
+    QString url = settings.value("compilation-server", OPENTX_FIRMWARE_DOWNLOADS).toString();
+
     switch(board) {
       case BOARD_STOCK:
       case BOARD_M128:
@@ -978,27 +958,21 @@ QString geturl( int board)
 
 QString getstamp( int board)
 {
-    QString url="http://";
-    QSettings settings("companion9x", "companion9x");
-    int server = settings.value("fwserver",0).toInt();
-    if (server >=o9xservers.count()) {
-      server=0;
-      settings.setValue("fwserver",server);
-    }
-    url.append(o9xservers.at(server));
-    url.append("/binaries/stamp-opentx-");
+    QSettings settings;
+    QString url = settings.value("compilation-server", OPENTX_FIRMWARE_DOWNLOADS).toString();
+    url.append("/stamp-opentx-");
     switch(board) {
       case BOARD_STOCK:
-        url.append("stock.txt");
+        url.append("9x.txt");
         break;
       case BOARD_M128:
-        url.append("stock128.txt");
+        url.append("9x128.txt");
         break;
       case BOARD_GRUVIN9X:
-        url.append("v4.txt");
+        url.append("gruvin9x.txt");
         break;
       case BOARD_SKY9X:
-        url.append("arm.txt");
+        url.append("sky9x.txt");
         break;
       case BOARD_TARANIS:
       case BOARD_TARANIS_REV4a:
@@ -1013,16 +987,10 @@ QString getstamp( int board)
 
 QString getrnurl( int board)
 {
-    QString url="http://";
-    QSettings settings("companion9x", "companion9x");
-    int server = settings.value("fwserver",0).toInt();
-    if (server >=o9xservers.count()) {
-      server=0;
-      settings.setValue("fwserver",server);
-    }
-    url.append(o9xservers.at(server));
-    url.append("/docs/releasenotes-");
-    switch(board) {
+   QSettings settings;
+   QString url = settings.value("compilation-server", OPENTX_FIRMWARE_DOWNLOADS).toString();
+   url.append("/releasenotes-");
+   switch(board) {
       case BOARD_STOCK:
       case BOARD_M128:
       case BOARD_GRUVIN9X:
@@ -1049,7 +1017,7 @@ void RegisterOpen9xFirmwares()
   Option extr_options[] = { { "frsky", QObject::tr("Support for frsky telemetry mod"), FRSKY_VARIANT }, { "jeti", QObject::tr("Support for jeti telemetry mod"), 0 }, { "ardupilot", QObject::tr("Support for receiving ardupilot data"), 0 }, { "nmea", QObject::tr("Support for receiving NMEA data"), 0 }, { "mavlink", QObject::tr("Support for MAVLINK devices"), MAVLINK_VARIANT }, { NULL } };
   Option fai_options[] = { { "faichoice", QObject::tr("Possibility to enable FAI MODE at field") }, { "faimode", QObject::tr("FAI MODE always enabled") }, { NULL } };
   /* 9x board */
-  open9x = new Open9xFirmware("opentx-stock", QObject::tr("openTx for 9X board"), new Open9xInterface(BOARD_STOCK), geturl(BOARD_STOCK), getstamp(BOARD_STOCK), getrnurl(BOARD_STOCK), false);
+  open9x = new Open9xFirmware("opentx-9x", QObject::tr("openTx for 9X board"), new Open9xInterface(BOARD_STOCK), geturl(BOARD_STOCK), getstamp(BOARD_STOCK), getrnurl(BOARD_STOCK), false);
   open9x->addOptions(ext_options);
   open9x->addOption("heli", QObject::tr("Enable heli menu and cyclic mix support"));
   open9x->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
@@ -1081,11 +1049,12 @@ void RegisterOpen9xFirmwares()
   open9x->addOption("novario", QObject::tr("No vario support"));
   open9x->addOption("nogps", QObject::tr("No GPS support"));
   open9x->addOption("nogauges", QObject::tr("No gauges in the custom telemetry screen"));
+  open9x->addOption("fasoffset", QObject::tr("Allow compensating for offset errors in FrSky FAS current sensors"));
   open9x->addOptions(fai_options);
   firmwares.push_back(open9x);
 
   /* 9x board with M128 chip */
-  open9x = new Open9xFirmware("opentx-stock128", QObject::tr("openTx for M128 / 9X board"), new Open9xInterface(BOARD_M128), geturl(BOARD_M128), getstamp(BOARD_M128),getrnurl(BOARD_M128), false);
+  open9x = new Open9xFirmware("opentx-9x128", QObject::tr("openTx for M128 / 9X board"), new Open9xInterface(BOARD_M128), geturl(BOARD_M128), getstamp(BOARD_M128),getrnurl(BOARD_M128), false);
   open9x->addOptions(ext_options);
   open9x->addOption("heli", QObject::tr("Enable heli menu and cyclic mix support"));
   open9x->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
@@ -1181,7 +1150,7 @@ void RegisterOpen9xFirmwares()
   firmwares.push_back(open9x);
 
   /* Gruvin9x board */
-  open9x = new Open9xFirmware("opentx-v4", QObject::tr("openTx for Gruvin9x board / 9X"), new Open9xInterface(BOARD_GRUVIN9X), geturl(BOARD_GRUVIN9X), getstamp(BOARD_GRUVIN9X),getrnurl(BOARD_GRUVIN9X), false);
+  open9x = new Open9xFirmware("opentx-gruvin9x", QObject::tr("openTx for Gruvin9x board / 9X"), new Open9xInterface(BOARD_GRUVIN9X), geturl(BOARD_GRUVIN9X), getstamp(BOARD_GRUVIN9X),getrnurl(BOARD_GRUVIN9X), false);
   open9x->setVariantBase(FRSKY_VARIANT);
   open9x->addOption("heli", QObject::tr("Enable heli menu and cyclic mix support"));
   open9x->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
@@ -1245,7 +1214,7 @@ void RegisterOpen9xFirmwares()
   open9x->addOptions(fai_options);
   firmwares.push_back(open9x);
 
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings;
   int rev4a = settings.value("rev4asupport",0).toInt();
   if (rev4a) {
     open9x = new Open9xFirmware("opentx-taranisrev4a", QObject::tr("openTx for FrSky Taranis Rev4a"), new Open9xInterface(BOARD_TARANIS_REV4a), geturl(BOARD_TARANIS_REV4a), getstamp(BOARD_TARANIS_REV4a),getrnurl(BOARD_TARANIS), true);

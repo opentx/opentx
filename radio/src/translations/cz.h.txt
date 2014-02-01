@@ -24,6 +24,7 @@
  *
  *
  *
+ *
  * !!!!! DO NOT EDIT cz.h - EDIT cz.h.txt INSTEAD !!!!!!!
  *
  * In order to make translations easier cz.h.txt is parsed and national
@@ -31,7 +32,12 @@
  * See translate.py in the util catalog for the list of character codes  
  *
  * !!!!! DO NOT EDIT cz.h - EDIT cz.h.txt INSTEAD !!!!!!!   
- *
+ */
+ /* Formatting octal codes available in TR_ strings:
+ *  \037\x       -sets LCD x-coord (x value in octal)
+ *  \036         -newline (ARM boards only)
+ *  \001 to \035 -extended spacing (value * FW/2)
+ *  \0           -ends actual string
  */
 
 // NON ZERO TERMINATED STRINGS
@@ -61,6 +67,9 @@
 
 #define LEN_TRNCHN             "\003"
 #define TR_TRNCHN              "CH1CH2CH3CH4"
+
+#define LEN_UART3MODES         "\017"
+#define TR_UART3MODES          "OFF\0           ""SPORT Mirror\0  ""Virtual SP2UART"
 
 #define LEN_DATETIME           "\006"
 #define TR_DATETIME            "DATUM:""ČAS:  "
@@ -206,23 +215,23 @@
   #define TR_VFSWFUNC          "Zámek \0    ""Trenér \0   ""Insta-Trim\0" TR_SOUND TR_HAPTIC "Reset\0     " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE "Podsvětlení" TR_CFN_ADJUST_GVAR TR_CFN_TEST
 #endif
 
-#define LEN_VFSWRESET           "\005"
+#define LEN_VFSWRESET          TR("\004", "\011")
 
 #if defined(FRSKY)
-  #define TR_FSW_RESET_TELEM    "Telem"
-#else  
+  #define TR_FSW_RESET_TELEM   TR("Telm", "Telemetry")
+#else
   #define TR_FSW_RESET_TELEM
 #endif
 
 #if ROTARY_ENCODERS == 2
-  #define TR_FSW_RESET_ROTENC  TR("REa\0 ""REb\0 ", "RotEnc A\0""RotEnc B\0")
+  #define TR_FSW_RESET_ROTENC  TR("REa\0""REb\0", "RotEnc A\0""RotEnc B\0")
 #elif ROTARY_ENCODERS == 1
-  #define TR_FSW_RESET_ROTENC  TR("R.Enc", "RotEnc\0  ")
+  #define TR_FSW_RESET_ROTENC  TR("R.E.", "RotEnc\0  ")
 #else
-#define TR_FSW_RESET_ROTENC
+  #define TR_FSW_RESET_ROTENC
 #endif
 
-#define TR_VFSWRESET            "Tmr1\0""Tmr2\0""Vše\0 " TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC
+#define TR_VFSWRESET           TR("Tmr1""Tmr2""All\0" TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC, "Timer 1\0 ""Timer 2\0 ""All\0     " TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC)
 
 #define LEN_FUNCSOUNDS         TR("\004", "\006")
 #define TR_FUNCSOUNDS          TR("Bp1\0""Bp2\0""Bp3\0""Wrn1""Wrn2""Chee""Rata""Tick""Sirn""Ring""SciF""Robt""Chrp""Tada""Crck""Alrm", "Beep1 ""Beep2 ""Beep3 ""Warn1 ""Warn2 ""Cheep ""Ratata""Tick  ""Siren ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""AlmClk")
@@ -322,7 +331,8 @@
 #endif
 
 #if defined(PCBTARANIS)
-  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_CUSTOMSW "*1 "
+  #define TR_6POS_POTS         "P11""P12""P13""P14""P15""P16""P21""P22""P23""P24""P25""P26"
+  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_CUSTOMSW TR_6POS_POTS "*1 "
 #else
   #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_CUSTOMSW "*1 "
 #endif
@@ -355,12 +365,12 @@
 #define TR_VFAILSAFE           "Držet\0   ""Vlastní\0 ""Bez pulzů"
 
 #if defined(MAVLINK)
-  #define LEN_MAVLINK_BAUDS		"\006"
-  #define TR_MAVLINK_BAUDS		"4800  ""9600  ""14400 ""19200 ""38400 ""57600 ""76800 ""115200"
-  #define LEN_MAVLINK_AC_MODES	"\011"
-  #define TR_MAVLINK_AC_MODES	"Stabilize""Acro     ""Alt Hold ""Auto     ""Guided   ""Loiter   ""RTL      ""Circle   ""Pos Hold ""Land     ""OF Loiter""Toy A    ""Toy M    ""INVALID  "
-  #define LEN_MAVLINK_AP_MODES	"\015"
-  #define TR_MAVLINK_AP_MODES	"Manual       ""Circle       ""Stabilize    ""Training     ""Fly by Wire A""Fly by Wire A""Auto         ""RTL          ""Loiter       ""Guided       ""Initialising ""INVALID      "
+  #define LEN_MAVLINK_BAUDS    "\006"
+  #define TR_MAVLINK_BAUDS     "4800  ""9600  ""14400 ""19200 ""38400 ""57600 ""76800 ""115200"
+  #define LEN_MAVLINK_AC_MODES "\011"
+  #define TR_MAVLINK_AC_MODES  "Stabilize""Acro     ""Alt Hold ""Auto     ""Guided   ""Loiter   ""RTL      ""Circle   ""Pos Hold ""Land     ""OF Loiter""Toy A    ""Toy M    ""INVALID  "
+  #define LEN_MAVLINK_AP_MODES "\015"
+  #define TR_MAVLINK_AP_MODES  "Manual       ""Circle       ""Stabilize    ""Training     ""Fly by Wire A""Fly by Wire A""Auto         ""RTL          ""Loiter       ""Guided       ""Initialising ""INVALID      "
 #endif
 
 // ZERO TERMINATED STRINGS
@@ -384,11 +394,16 @@
 #define TR_MOVINGMODEL         "Přesouvám model."
 #define TR_LOADINGMODEL        "Aktivuji model.."
 #define TR_NAME                "Jméno"
-#define TR_MODELNAME             "Název modelu"
-#define TR_PHASENAME             "Jméno"
-#define TR_MIXNAME               "Jméno"
-#define TR_EXPONAME              "Jméno"
-#define TR_BITMAP                "Obrázek"
+#define TR_MODELNAME           "Název modelu"
+#define TR_PHASENAME           "Jméno"
+#define TR_MIXNAME             "Jméno"
+#define TR_INPUTNAME           "Input Name"
+#if defined(PCBTARANIS)
+  #define TR_EXPONAME          "Line Name"
+#else
+  #define TR_EXPONAME          "Jméno"
+#endif
+#define TR_BITMAP              "Obrázek"
 #define TR_TIMER               "Stopky "
 #define TR_ELIMITS             TR("Limit+25%", "Kanál +/- 125%")
 #define TR_ETRIMS              TR("širšíTrim", "Široký trim")
@@ -485,22 +500,22 @@
 #define OFS_RX                 4
 #define TR_ACCEL               "Acc:"
 #define TR_NODATA              CENTER "NO DATA"
-#define TR_TM1TM2              "TM1\032TM2"
-#define TR_THRTHP              "THR\032TH%"
+#define TR_TM1TM2              "TM1\037\146TM2"
+#define TR_THRTHP              "THR\037\146TH%"
 #define TR_TOT                 "TOT"
-#define TR_TMR1LATMAXUS        "Tmr1Lat max\006us"
-#define STR_US                 (STR_TMR1LATMAXUS+12)
-#define TR_TMR1LATMINUS        "Tmr1Lat min\006us"
-#define TR_TMR1JITTERUS        "Tmr1 Jitter\006us"
+#define TR_TMR1LATMAXUS        "Tmr1Lat max\037\124us"
+#define STR_US                 (STR_TMR1LATMAXUS+13)
+#define TR_TMR1LATMINUS        "Tmr1Lat min\037\124us"
+#define TR_TMR1JITTERUS        "Tmr1 Jitter\037\124us"
 
 #if defined(CPUARM)
-  #define TR_TMIXMAXMS         "Tmix max\012ms"
+  #define TR_TMIXMAXMS         "Tmix max"
+  #define TR_FREESTACKMINB     "Free Stack"
 #else
-  #define TR_TMIXMAXMS         "Tmix max\014ms"
+  #define TR_TMIXMAXMS         "Tmix max\037\124ms"
+  #define TR_FREESTACKMINB     "Free Stack\037\124b"
 #endif
 
-#define TR_T10MSUS             "T10ms\016us"
-#define TR_FREESTACKMINB       "Free Stack\010b"
 #define TR_MENUTORESET         CENTER TR_ENTER" >> Reset"
 #define TR_PPM                 "PPM"
 #define TR_CH                  "CH"
@@ -532,6 +547,9 @@
 
 
 // Alignment
+
+
+
 
 
 #define TR_MENUINPUTS          "DR/EXPO"
@@ -662,6 +680,10 @@
 #define TR_CRITICALALARM       INDENT "Kritický Alarm"
 #define TR_PERSISTENT_MAH      INDENT "Store mAh"
 #define TR_CHECKLIST           "Display Checklist"
+#define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
+#define TR_UART3MODE           "Serial port"
+#define TR_POT1TYPE            "S1 Type"
+#define TR_POT2TYPE            "S2 Type"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL        "Max RSSI"
@@ -745,8 +767,14 @@
 #define TR_CHR_LONG   'l'
 #define TR_CHR_TOGGLE 't'
 #define TR_CHR_HOUR   'h'
+#define TR_CHR_INPUT           'I'   // Values between A-I will work
 
 #define TR_BEEP_VOLUME         "Pípání"
 #define TR_WAV_VOLUME          "Zvuky WAV"
 #define TR_VARIO_VOLUME        "Vario"
 #define TR_BG_VOLUME           "WAV na pozadí"
+
+#define TR_TOP_BAR             "Top Bar"
+#define TR_ALTITUDE            INDENT "Altitude"
+#define TR_MODS_FORBIDDEN      "Modifications forbidden!"
+#define TR_UNLOCKED            "Unlocked"

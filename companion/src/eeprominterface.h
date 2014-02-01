@@ -51,7 +51,8 @@ enum BoardEnum {
   BOARD_TARANIS_REV4a
 };
 
-#define IS_STOCK(board)       (board==BOARD_STOCK || board==BOARD_M128)
+#define IS_9X(board)          (board==BOARD_STOCK || board==BOARD_M128)
+#define IS_STOCK(board)       (board==BOARD_STOCK)
 #define IS_2560(board)        (board==BOARD_GRUVIN9X || board==BOARD_MEGA2560)
 #define IS_ARM(board)         (board==BOARD_SKY9X || board==BOARD_TARANIS  || board==BOARD_TARANIS_REV4a)
 #define IS_TARANIS(board)     (board==BOARD_TARANIS  || board==BOARD_TARANIS_REV4a)
@@ -65,6 +66,7 @@ const uint8_t modn12x3[4][4]= {
 #define C9X_MAX_MODELS            60
 #define C9X_MAX_PHASES            9
 #define C9X_MAX_MIXERS            64
+#define C9X_MAX_INPUTS            32
 #define C9X_MAX_EXPOS             64
 #define C9X_MAX_CURVES            32
 #define C9X_MAX_POINTS            17
@@ -281,23 +283,50 @@ class ModelData;
 QString AnalogString(int index);
 QString RotaryEncoderString(int index);
 
+class RawSourceRange
+{
+  public:
+    RawSourceRange():
+      decimals(0),
+      min(0.0),
+      max(0.0),
+      step(1.0),
+      offset(0.0)
+    {
+    }
+
+    float getValue(int value) {
+      return min + float(value) * step;
+    }
+
+    int decimals;
+    double min;
+    double max;
+    double step;
+    double offset;
+
+};
+
 class RawSource {
   public:
     RawSource():
       type(SOURCE_TYPE_NONE),
-      index(0)
+      index(0),
+      model(NULL)
     {
     }
 
-    RawSource(int value):
+    RawSource(int value, const ModelData * model=NULL):
       type(RawSourceType(abs(value)/65536)),
-      index(value >= 0 ? abs(value)%65536 : -(abs(value)%65536))
+      index(value >= 0 ? abs(value)%65536 : -(abs(value)%65536)),
+      model(model)
     {
     }
 
-    RawSource(RawSourceType type, int index=0):
+    RawSource(RawSourceType type, int index=0, const ModelData * model=NULL):
       type(type),
-      index(index)
+      index(index),
+      model(model)
     {
     }
 
@@ -308,25 +337,26 @@ class RawSource {
 
     QString toString();
     
-    int getDecimals(const ModelData & Model);
-    double getMin(const ModelData & Model);
-    double getMax(const ModelData & Model);
-    double getStep(const ModelData & Model);
-    double getOffset(const ModelData & Model);
-    int getRawOffset(const ModelData & Model);
+    RawSourceRange getRange(bool singleprec=false);
     
-    bool operator== ( const RawSource& other) {
+    bool operator == ( const RawSource & other) {
       return (this->type == other.type) && (this->index == other.index);
+    }
+
+    bool operator != ( const RawSource & other) {
+      return (this->type != other.type) || (this->index != other.index);
     }
 
     RawSourceType type;
     int index;
+    const ModelData * model;
 };
 
 enum RawSwitchType {
   SWITCH_TYPE_NONE,
   SWITCH_TYPE_SWITCH,
   SWITCH_TYPE_VIRTUAL,
+  SWITCH_TYPE_MULTIPOS_POT,
   SWITCH_TYPE_MOMENT_SWITCH,
   SWITCH_TYPE_MOMENT_VIRTUAL,
   SWITCH_TYPE_ON,
@@ -473,6 +503,8 @@ class GeneralSettings {
     int backgroundVolume;
     unsigned int mavbaud;
     unsigned int switchUnlockStates;
+    unsigned int hw_uartMode;
+    unsigned int potsType[8];
 };
 
 class CurveReference {
@@ -552,7 +584,7 @@ class LimitData {
     bool  symetrical;
     char  name[6+1];
     CurveReference curve;
-    void clear() { memset(this, 0, sizeof(LimitData)); min = -100; max = +100; }
+    void clear() { memset(this, 0, sizeof(LimitData)); min = -1000; max = +1000; }
 };
 
 enum MltpxValue {
@@ -641,7 +673,7 @@ class FuncSwData { // Function Switches data
     char paramarm[10];
     unsigned int enabled; // TODO perhaps not any more the right name
     unsigned int adjustMode;
-    unsigned int repeatParam;
+    int repeatParam;
     void clear() { memset(this, 0, sizeof(FuncSwData)); }
 };
 
@@ -707,6 +739,14 @@ class FrSkyChannelData {
     unsigned int multiplier;
     FrSkyAlarmData alarms[2];
 
+    float getRatio() const
+    {
+      if (type==0 || type==1 || type==2)
+        return float(ratio << multiplier) / 10.0;
+      else
+        return ratio << multiplier;
+    }
+
     void clear() { memset(this, 0, sizeof(FrSkyChannelData)); }
 };
 
@@ -753,6 +793,9 @@ class FrSkyData {
     int varioCenterMin;    // if increment in 0.2m/s = 3.0m/s max
     int varioCenterMax;
     int varioMax;
+    bool mAhPersistent;
+    unsigned int storedMah;
+    int fasOffset;
 
     void clear() { memset(this, 0, sizeof(FrSkyData)); rssiAlarms[0].clear(2, 45); rssiAlarms[1].clear(3, 42); varioSource = 2/*VARIO*/; }
 };
@@ -783,14 +826,13 @@ enum TimerMode {
 class TimerData {
   public:
     TimerData() { clear(); }
-    TimerMode mode;   // timer trigger source -> off, abs, THs, TH%, THt, sw/!sw, !m_sw/!m_sw
-    int8_t    modeB;
-    bool minuteBeep;
-    bool countdownBeep;
-    bool      dir;    // 0=>Count Down, 1=>Count Up
+    TimerMode    mode;   // timer trigger source -> off, abs, THs, TH%, THt, sw/!sw, !m_sw/!m_sw
+    bool         minuteBeep;
+    unsigned int countdownBeep;
+    bool         dir;    // 0=>Count Down, 1=>Count Up
     unsigned int val;
-    bool      persistent;
-    int pvalue;
+    bool         persistent;
+    int          pvalue;
     void clear() { memset(this, 0, sizeof(TimerData)); }
 };
 
@@ -836,7 +878,7 @@ class ModelData {
     TimerData timers[2];
     bool      thrTrim;            // Enable Throttle Trim
     bool      thrExpo;            // Enable Throttle Expo
-    unsigned int trimInc;            // Trim Increments
+    int       trimInc;            // Trim Increments
     bool      disableThrottleWarning;
 
     unsigned int beepANACenter;      // 1<<0->A1.. 1<<6->A7
@@ -847,7 +889,10 @@ class ModelData {
     PhaseData phaseData[C9X_MAX_PHASES];
     MixData   mixData[C9X_MAX_MIXERS];
     LimitData limitData[C9X_NUM_CHNOUT];
+
+    char      inputNames[C9X_MAX_INPUTS][4+1];
     ExpoData  expoData[C9X_MAX_EXPOS];
+
     CurveData curves[C9X_MAX_CURVES];
     CustomSwData  customSw[C9X_NUM_CSW];
     FuncSwData    funcSw[C9X_MAX_CUSTOM_FUNCTIONS];
@@ -911,8 +956,6 @@ enum Capability {
  MixesWithoutExpo,
  Timers,
  TimeDivisions,
- minuteBeep,
- countdownBeep,
  CustomFunctions,
  VoicesAsNumbers,
  VoicesMaxLength,
@@ -931,7 +974,6 @@ enum Capability {
  ChannelsName,
  ExtraChannels,
  ExtraInputs,
- ExtraTrims,
  ExtendedTrims,
  HasInputFilter,
  NumCurves,
@@ -977,11 +1019,10 @@ enum Capability {
  GvarsAreNamed,
  GvarsFlightPhases,
  GvarsHaveSources,
- GvarsAsSources,
  GvarsName,
  NoTelemetryProtocol,
- TelemetryCSFields,
- TelemetryColsCSFields,
+ TelemetryCustomScreens,
+ TelemetryCustomScreensFieldsPerLine,
  TelemetryRSSIModel,
  TelemetryAlarm,
  TelemetryInternalAlarm,
@@ -997,7 +1038,6 @@ enum Capability {
  HasStickScroll,
  HasSoundMixer,
  NumModules,
- FSSwitch,
  PPMCenter,
  SYMLimits,
  HasCurrentCalibration,
@@ -1018,7 +1058,11 @@ enum Capability {
  LuaInputs,
  LimitsPer1000,
  EnhancedCurves,
- TelemetryInternalAlarms
+ TelemetryInternalAlarms,
+ HasFasOffset,
+ HasMahPersistent,
+ MultiposPots,
+ MultiposPotsPositions
 };
 
 enum UseContext {

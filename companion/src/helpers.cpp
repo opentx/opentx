@@ -12,15 +12,28 @@ QString getPhaseName(int val, char * phasename)
     phaseName.append(phasename);
     if (phaseName.isEmpty()) {
       return QString(val < 0 ? "!" : "") + QObject::tr("FM%1").arg(abs(val) - 1);
-    } else {
+    }
+    else {
       return QString(val < 0 ? "!" : "") + phaseName;
     }
   }
 }
 
-QString getStickStr(int index)
+QString getInputStr(ModelData & model, int index)
 {
-  return RawSource(SOURCE_TYPE_STICK, index).toString();
+  QString result;
+
+  if (GetEepromInterface()->getCapability(VirtualInputs)) {
+    result = model.inputNames[index];
+    if (result.isEmpty()) {
+      result = QObject::tr("Input%1").arg(index+1, 2, 10, QChar('0'));
+    }
+  }
+  else {
+    result = RawSource(SOURCE_TYPE_STICK, index).toString();
+  }
+
+  return result;
 }
 
 void populateGvSourceCB(QComboBox *b, int value)
@@ -63,7 +76,7 @@ void populateTTraceCB(QComboBox *b, int value)
   }
   int channels=(IS_ARM(GetEepromInterface()->getBoard()) ? 32 : 16);
   for (int i=1; i<= channels; i++) {
-    b->addItem(QObject::tr("CH")+QString("%1").arg(i,2,10,QChar('0')));
+    b->addItem(QObject::tr("CH%1").arg(i, 2, 10, QChar('0')));
   }
   b->setCurrentIndex(value);
 }
@@ -162,6 +175,7 @@ QString getFuncName(unsigned int val)
   }
 }
 
+// TODO should be a toString() method in CustoSwData ...
 QString getCustomSwitchStr(CustomSwData * customSw, const ModelData & model)
 {
   QString result = "";
@@ -176,7 +190,8 @@ QString getCustomSwitchStr(CustomSwData * customSw, const ModelData & model)
       result = QString("TIM(%1 , %2)").arg(ValToTim(customSw->val1)).arg(ValToTim(customSw->val2));
       break;     
     case CS_FAMILY_VOFS: {
-      RawSource source = RawSource(customSw->val1);
+      RawSource source = RawSource(customSw->val1, &model);
+      RawSourceRange range = source.getRange();
       if (customSw->val1)
         result += source.toString();
       else
@@ -191,7 +206,7 @@ QString getCustomSwitchStr(CustomSwData * customSw, const ModelData & model)
         result += " &gt; ";
       else if (customSw->func == CS_FN_ANEG || customSw->func == CS_FN_VNEG)
         result += " &lt; ";
-      result += QString::number(source.getStep(model) * (customSw->val2 + source.getRawOffset(model)) + source.getOffset(model));
+      result += QString::number(range.step * (customSw->val2 /*TODO+ source.getRawOffset(model)*/) + range.offset);
       break;
     }
     case CS_FAMILY_VBOOL:
@@ -387,7 +402,7 @@ void populateFuncParamArmTCB(QComboBox *b, ModelData * g_model, char * value, QS
   }
 }
 
-void populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsigned int adjustmode)
+void populateFuncParamCB(QComboBox *b, const ModelData & model, uint function, unsigned int value, unsigned int adjustmode)
 {
   QStringList qs;
   b->clear();
@@ -407,22 +422,30 @@ void populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsign
     qs.append( QObject::tr("Timer2"));
     qs.append( QObject::tr("All"));
     qs.append( QObject::tr("Telemetry"));
+    int reCount = GetEepromInterface()->getCapability(RotaryEncoders);
+    if (reCount == 1) {
+      qs.append( QObject::tr("Rotary Encoder"));
+    }
+    else if (reCount == 2) {
+      qs.append( QObject::tr("REa"));
+      qs.append( QObject::tr("REb"));
+    }
     b->addItems(qs);
     b->setCurrentIndex(value);
   }
   else if (function==FuncVolume) {
-    populateSourceCB(b, RawSource(value), POPULATE_SOURCES|POPULATE_TRIMS);
+    populateSourceCB(b, RawSource(value), model, POPULATE_SOURCES|POPULATE_TRIMS);
   }
   else if (function==FuncPlayValue) {
-    populateSourceCB(b, RawSource(value), POPULATE_SOURCES|POPULATE_SWITCHES|POPULATE_GVARS|POPULATE_TRIMS|POPULATE_TELEMETRYEXT);
+    populateSourceCB(b, RawSource(value), model, POPULATE_SOURCES|POPULATE_VIRTUAL_INPUTS|POPULATE_SWITCHES|POPULATE_GVARS|POPULATE_TRIMS|POPULATE_TELEMETRYEXT);
   }
   else if (function>=FuncAdjustGV1 && function<=FuncAdjustGVLast) {
     switch (adjustmode) {
       case 1:
-        populateSourceCB(b, RawSource(value), POPULATE_SOURCES|POPULATE_TRIMS|POPULATE_SWITCHES);
+        populateSourceCB(b, RawSource(value), model, POPULATE_SOURCES|POPULATE_TRIMS|POPULATE_SWITCHES);
         break;
       case 2:
-        populateSourceCB(b, RawSource(value), POPULATE_GVARS);
+        populateSourceCB(b, RawSource(value), model, POPULATE_GVARS);
         break;
       case 3:
         b->clear();
@@ -434,17 +457,6 @@ void populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsign
   }
   else {
     b->hide();
-  }
-}
-
-void populateRepeatCB(QComboBox *b, unsigned int value)
-{
-  b->clear();
-  b->addItem(QObject::tr("No repeat", 0));
-  unsigned int step = IS_ARM(GetEepromInterface()->getBoard()) ? 5 : 10;
-  for (unsigned int i=step; i<=60; i+=step) {
-    b->addItem(QObject::tr("%1s").arg(i), i);
-    if (i==value) b->setCurrentIndex(b->count()-1);
   }
 }
 
@@ -469,6 +481,78 @@ void populatePhasesCB(QComboBox *b, int value)
       b->addItem(QObject::tr("----"), 0);
   }
   b->setCurrentIndex(value + GetEepromInterface()->getCapability(FlightPhases));
+}
+
+bool gvarsEnabled()
+{
+  int gvars=0;
+  if (GetEepromInterface()->getCapability(HasVariants)) {
+    if ((GetCurrentFirmwareVariant() & GVARS_VARIANT)) {
+      gvars=1;
+    }
+  }
+  else {
+    gvars=1;
+  }
+  return gvars;
+}
+
+GVarGroup::GVarGroup(QCheckBox *weightGV, QSpinBox *weightSB, QComboBox *weightCB, int & weight, const int deflt, const int mini, const int maxi, const unsigned int flags):
+  QObject(),
+  weightGV(weightGV),
+  weightSB(weightSB),
+  weightCB(weightCB),
+  weight(weight),
+  flags(flags),
+  lock(false)
+{
+  lock = true;
+
+  if (gvarsEnabled()) {
+    populateGVCB(weightCB, weight);
+    connect(weightGV, SIGNAL(stateChanged(int)), this, SLOT(gvarCBChanged(int)));
+    connect(weightCB, SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
+  }
+  else {
+    weightGV->hide();
+    if (weight > maxi || weight < -mini) {
+      weight = deflt;
+    }
+  }
+
+  weightSB->setMinimum(mini);
+  weightSB->setMaximum(maxi);
+
+  if (weight>maxi || weight<mini) {
+    weightGV->setChecked(true);
+    weightSB->hide();
+    weightCB->show();
+  }
+  else {
+    weightGV->setChecked(false);
+    weightSB->setValue(weight);
+    weightSB->show();
+    weightCB->hide();
+  }
+
+  connect(weightSB, SIGNAL(editingFinished()), this, SLOT(valuesChanged()));
+
+  lock = false;
+}
+
+void GVarGroup::gvarCBChanged(int state)
+{
+  weightCB->setVisible(state);
+  weightSB->setVisible(!state);
+  valuesChanged();
+}
+
+void GVarGroup::valuesChanged()
+{
+  if (weightGV->isChecked())
+    weight = weightCB->itemData(weightCB->currentIndex()).toInt();
+  else
+    weight = weightSB->value();
 }
 
 CurveGroup::CurveGroup(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QComboBox *curveValueCB, QSpinBox *curveValueSB, CurveReference & curve, unsigned int flags):
@@ -758,6 +842,8 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr,
     return;
   }
 
+#if 0
+  // TODO check ... I removed negative toggle switches in the FW, no?
   if (attr & POPULATE_MSWITCHES) {
     if (attr & POPULATE_ONOFF) {
       item = RawSwitch(SWITCH_TYPE_ONM, 1);
@@ -776,6 +862,7 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr,
       if (item == value) b->setCurrentIndex(b->count()-1);
     }
   }
+#endif
 
   if (attr & POPULATE_ONOFF) {
     item = RawSwitch(SWITCH_TYPE_OFF);
@@ -819,6 +906,14 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr,
     item = RawSwitch(SWITCH_TYPE_VIRTUAL, i);
     b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);
+  }
+
+  if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+    for (int i=0; i<GetEepromInterface()->getCapability(MultiposPots) * GetEepromInterface()->getCapability(MultiposPotsPositions); i++) {
+      item = RawSwitch(SWITCH_TYPE_MULTIPOS_POT, i);
+      b->addItem(item.toString(), item.toValue());
+      if (item == value) b->setCurrentIndex(b->count()-1);
+    }
   }
 
   if (attr & POPULATE_ONOFF) {
@@ -914,8 +1009,7 @@ void populateGVCB(QComboBox *b, int value)
     b->setCurrentIndex(nullitem);
 }
 
-
-void populateSourceCB(QComboBox *b, const RawSource &source, unsigned int flags)
+void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData & model, unsigned int flags)
 {
   RawSource item;
 
@@ -925,7 +1019,18 @@ void populateSourceCB(QComboBox *b, const RawSource &source, unsigned int flags)
     item = RawSource(SOURCE_TYPE_NONE);
     b->addItem(item.toString(), item.toValue());
     if (item == source) b->setCurrentIndex(b->count()-1);
+  }
 
+  if (flags & POPULATE_VIRTUAL_INPUTS) {
+    int virtualInputs = GetEepromInterface()->getCapability(VirtualInputs);
+    for (int i=0; i<virtualInputs; i++) {
+      item = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, i, &model);
+      b->addItem(item.toString(), item.toValue());
+      if (item == source) b->setCurrentIndex(b->count()-1);
+    }
+  }
+
+  if (flags & POPULATE_SOURCES) {
     for (int i=0; i<4+GetEepromInterface()->getCapability(Pots); i++) {
       item = RawSource(SOURCE_TYPE_STICK, i);
       b->addItem(item.toString(), item.toValue());
@@ -992,7 +1097,8 @@ void populateSourceCB(QComboBox *b, const RawSource &source, unsigned int flags)
       b->addItem(item.toString(), item.toValue());
       if (item == source) b->setCurrentIndex(b->count()-1);
     }
-  } else if (flags & POPULATE_TELEMETRY) {
+  }
+  else if (flags & POPULATE_TELEMETRY) {
     for (int i=0; i<TELEMETRY_SOURCES_COUNT; i++) {
       item = RawSource(SOURCE_TYPE_TELEMETRY, i);
       b->addItem(item.toString(), item.toValue());
@@ -1221,109 +1327,6 @@ QString getFrSkySrc(int index)
   return RawSource(SOURCE_TYPE_TELEMETRY, index-1).toString();
 }
 
-
-/*
- 1,2) Timer1/Timer2 0:765
- 3,4) TX/RX
- 5) A1 range
- 6) A2 range
- 7) ALT 0-1020
- 8)RPM 0-12750
- 9FUEL 0-100%
- 10) T1 -30-225
- 11) T2 -30-225
- 12) spd 0-510
- 13) dist 0-2040
- 14)GAlt 0-1020
- 15) cell 0-5.1
- 16) Cels 0 25.5
- 17) Vfas 0 25.5
- 18) Curr 0 127.5
- 19) Cnsp 0 5100
- 20) Powr 0 1275
- 21) AccX 0 2.55
- 22) AccY 0 2.55
- 23) AccZ 0 2.55
- 24) Hdg 0 255
- 25) VSpd 0 2.55
- 26) A1- A1 range
- 27) A2- A2 range
- 28) Alt- 0 255
- 29) Alt+ 0 255
- 30) Rpm+ 0 255
- 31) T1+ 0 255 (s????)
- 32) T2+ 0 255 (e????)
- 33) Spd+ 0 255 (ILG???)
- 34) Dst+ 0 255 (v ????)
- 35) Cur+ 0 25.5 (A)
- 1.852
- */
-
-float getBarValue(int barId, int value, FrSkyData *fd)
-{
-  switch (barId-1) {
-    case TELEMETRY_SOURCE_TX_BATT:
-      return value/10.0;
-    case TELEMETRY_SOURCE_TIMER1:
-    case TELEMETRY_SOURCE_TIMER2:
-      return (3*value);
-    case TELEMETRY_SOURCE_RSSI_TX:
-    case TELEMETRY_SOURCE_RSSI_RX:
-    case TELEMETRY_SOURCE_FUEL:
-      return std::min(100, value);
-    case TELEMETRY_SOURCE_A1:
-    case TELEMETRY_SOURCE_A1_MIN:
-      if (fd->channels[0].type==0)
-        return ((fd->channels[0].ratio*value/255.0)+fd->channels[0].offset)/10;
-      else
-        return ((fd->channels[0].ratio*value/255.0)+fd->channels[0].offset);
-    case TELEMETRY_SOURCE_A2:
-    case TELEMETRY_SOURCE_A2_MIN:
-      if (fd->channels[1].type==0)
-        return ((fd->channels[1].ratio*value/255.0)+fd->channels[1].offset)/10;
-      else
-        return ((fd->channels[1].ratio*value/255.0)+fd->channels[1].offset);
-    case TELEMETRY_SOURCE_ALT:
-    case TELEMETRY_SOURCE_GPS_ALT:
-    case TELEMETRY_SOURCE_ALT_MAX:
-    case TELEMETRY_SOURCE_ALT_MIN:
-      return (8*value)-500;
-    case TELEMETRY_SOURCE_RPM:
-    case TELEMETRY_SOURCE_RPM_MAX:
-      return value * 50;
-    case TELEMETRY_SOURCE_T1:
-    case TELEMETRY_SOURCE_T2:
-    case TELEMETRY_SOURCE_T1_MAX:
-    case TELEMETRY_SOURCE_T2_MAX:
-      return value - 30.0;
-    case TELEMETRY_SOURCE_CELL:
-      return value*2.0/100;
-    case TELEMETRY_SOURCE_CELLS_SUM:
-    case TELEMETRY_SOURCE_VFAS:
-      return value/10.0;
-    case TELEMETRY_SOURCE_HDG:
-      return std::min(359, value*2);
-    case TELEMETRY_SOURCE_DIST_MAX:
-    case TELEMETRY_SOURCE_DIST:
-      return value * 8;
-    case TELEMETRY_SOURCE_CURRENT_MAX:
-    case TELEMETRY_SOURCE_CURRENT:
-      return value/2.0;
-    case TELEMETRY_SOURCE_POWER:
-      return value*5;
-    case TELEMETRY_SOURCE_CONSUMPTION:
-      return value * 20;
-    case TELEMETRY_SOURCE_SPEED:
-    case TELEMETRY_SOURCE_SPEED_MAX:
-      if (fd->imperial==1)
-        return value;
-      else
-        return value*1.852;
-    default:
-      return value;
-  }
-}
-
 QString getTrimInc(ModelData * g_model)
 {
     switch (g_model->trimInc) {
@@ -1400,3 +1403,35 @@ QString getCenterBeep(ModelData * g_model)
   if(g_model->beepANACenter & 0x80) strl << "LS";
   return strl.join(", ");
 }
+
+QString getTheme()
+{
+  QSettings settings;
+  int theme_set = settings.value("theme", 1).toInt();
+  QString Theme;
+  switch(theme_set) {
+    case 0:
+      Theme="classic";
+      break;
+    case 2:
+      Theme="monowhite";
+      break;
+    case 3:
+      Theme="monoblue";
+      break;
+    default:
+      Theme="monochrome";
+      break;          
+  }
+  return Theme;
+}
+
+CompanionIcon::CompanionIcon(QString baseimage)
+{
+  static QString theme = getTheme();
+  addFile(":/themes/"+theme+"/16/"+baseimage, QSize(16,16));
+  addFile(":/themes/"+theme+"/24/"+baseimage, QSize(24,24));
+  addFile(":/themes/"+theme+"/32/"+baseimage, QSize(32,32));
+  addFile(":/themes/"+theme+"/48/"+baseimage, QSize(48,48));
+}
+

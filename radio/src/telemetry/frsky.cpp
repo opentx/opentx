@@ -191,6 +191,12 @@ void parseTelemHubByte(uint8_t byte)
       break;
 
     case offsetof(FrskySerialData, current):
+#if defined(FAS_OFFSET) || !defined(CPUM64)
+      if(((int16_t)frskyData.hub.current + g_model.frsky.fasOffset)>0)
+        frskyData.hub.current += g_model.frsky.fasOffset;
+      else
+        frskyData.hub.current = 0;
+#endif
       if (frskyData.hub.current > frskyData.hub.maxCurrent)
         frskyData.hub.maxCurrent = frskyData.hub.current;
       break;

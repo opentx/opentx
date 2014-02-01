@@ -75,7 +75,7 @@ enum EnumTabDiag {
   e_Vers,
   e_Keys,
   e_Ana,
-  IF_PCBSKY9X(e_Hardware)
+  IF_CPUARM(e_Hardware)
   e_Calib
 };
 
@@ -95,7 +95,7 @@ const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
   menuGeneralVersion,
   menuGeneralDiagKeys,
   menuGeneralDiagAna,
-  IF_PCBSKY9X(menuGeneralHardware)
+  IF_CPUARM(menuGeneralHardware)
   menuGeneralCalib
 };
 
@@ -258,7 +258,7 @@ void menuGeneralSetup(uint8_t event)
 
       case ITEM_SETUP_TIME:
         lcd_putsLeft(y, STR_TIME);
-        lcd_putc(RADIO_SETUP_TIME_COLUMN-1, y, ':'); lcd_putc(RADIO_SETUP_TIME_COLUMN+3*FW-4, y, ':');
+        lcd_putc(RADIO_SETUP_TIME_COLUMN+1, y, ':'); lcd_putc(RADIO_SETUP_TIME_COLUMN+3*FW-2, y, ':');
         for (uint8_t j=0; j<3; j++) {
           uint8_t rowattr = (m_posHorz==j ? attr : 0);
           switch (j) {
@@ -1065,13 +1065,14 @@ void menuGeneralDiagKeys(uint8_t event)
   lcd_puts(14*FW, 3*FH, STR_VTRIM);
 
   for(uint8_t i=0; i<9; i++) {
-    uint8_t y = i*FH; //+FH;
 #if !defined(PCBTARANIS)
-    if(i>(SW_ID0-SW_BASE)) y-=FH; //overwrite ID0
+    uint8_t y = i*FH-FH;
+    if(i==(SW_ID0-SW_BASE)) continue; //ignore ID0
     putsSwitches(8*FW, y, i+1, 0); //ohne off,on
     displayKeyState(11*FW+2, y, (EnumKeys)(SW_BASE+i));
-#endif
-
+#else
+    uint8_t y = i*FH;
+#endif    
     if (i<8) {
       y = i/2*FH+FH*4;
       lcd_img(14*FW, y, sticks, i/2, 0);
@@ -1113,7 +1114,7 @@ void menuGeneralDiagAna(uint8_t event)
     uint8_t y = 1+FH+(i/2)*FH;
     uint8_t x = i&1 ? 64+5 : 0;
     putsStrIdx(x, y, PSTR("A"), i+1);
-    lcd_putc(x+2*FWNUM, y, ':');
+    lcd_putc(lcdNextPos, y, ':');
     lcd_outhex4(x+3*FW-1, y, anaIn(i));
     lcd_outdez8(x+10*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
   }
@@ -1165,7 +1166,48 @@ void menuGeneralDiagAna(uint8_t event)
 #endif
 }
 
-#if defined(PCBSKY9X)
+#if defined(PCBTARANIS)
+enum menuGeneralHwItems {
+  ITEM_SETUP_HW_POT1,
+  ITEM_SETUP_HW_POT2,
+  ITEM_SETUP_HW_UART3_MODE,
+  ITEM_SETUP_HW_MAX
+};
+
+#define HW_SETTINGS_COLUMN 15*FW
+
+void menuGeneralHardware(uint8_t event)
+{
+  MENU(STR_HARDWARE, menuTabDiag, e_Hardware, ITEM_SETUP_HW_MAX+1, {0});
+
+  uint8_t sub = m_posVert - 1;
+    
+  for (uint8_t i=0; i<ITEM_SETUP_HW_MAX; i++) {
+    uint8_t y = 1 + 1*FH + i*FH;
+    uint8_t attr = (sub == i ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
+    switch(i) {
+      case ITEM_SETUP_HW_POT1:
+      case ITEM_SETUP_HW_POT2:
+      {
+        int idx = i - ITEM_SETUP_HW_POT1;
+        uint8_t mask = (1<<idx);
+        uint8_t potType = selectMenuItem(HW_SETTINGS_COLUMN, y, i==ITEM_SETUP_HW_POT1 ? STR_POT1TYPE : STR_POT2TYPE, STR_POTTYPES, (g_eeGeneral.potsType & mask) >> idx, 0, 1, attr, event);
+        if (potType)
+          g_eeGeneral.potsType |= mask;
+        else
+          g_eeGeneral.potsType &= ~mask;
+        break;
+      }
+
+      case ITEM_SETUP_HW_UART3_MODE:
+      	g_eeGeneral.hw_uartMode = selectMenuItem(HW_SETTINGS_COLUMN, y, STR_UART3MODE, STR_UART3MODES, g_eeGeneral.hw_uartMode, 0, 2, attr, event);
+        break;
+    }
+  }
+  	
+}
+
+#elif defined(PCBSKY9X)
 enum menuGeneralHwItems {
   ITEM_SETUP_HW_OPTREX_DISPLAY,
   ITEM_SETUP_HW_STICKS_GAINS_LABELS,
@@ -1238,19 +1280,48 @@ void menuGeneralHardware(uint8_t event)
 }
 #endif
 
+#define XPOT_DELTA 5
 
 void menuCommonCalib(uint8_t event)
 {
-  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) { //get low and high vals for sticks and trims
+  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) { // get low and high vals for sticks and trims
     int16_t vt = anaIn(i);
     reusableBuffer.calib.loVals[i] = min(vt, reusableBuffer.calib.loVals[i]);
     reusableBuffer.calib.hiVals[i] = max(vt, reusableBuffer.calib.hiVals[i]);
-#if defined(PCBTARANIS)
-    if(i >= NUM_STICKS && i < NUM_STICKS+NUM_POTS-2) {
-#else
-    if (i >= NUM_STICKS) {
-#endif
+    if (i >= POT1 && i <= POT_LAST) {
       reusableBuffer.calib.midVals[i] = (reusableBuffer.calib.hiVals[i] + reusableBuffer.calib.loVals[i]) / 2;
+#if defined(PCBTARANIS)
+      uint8_t idx = i - POT1;
+      int count = reusableBuffer.calib.xpotsCalib[idx].stepsCount;
+      if (IS_MULTIPOS_POT(i) && count <= POTS_POS_COUNT) {
+        if (reusableBuffer.calib.xpotsCalib[idx].lastCount == 0 || vt < reusableBuffer.calib.xpotsCalib[idx].lastPosition - XPOT_DELTA || vt > reusableBuffer.calib.xpotsCalib[idx].lastPosition + XPOT_DELTA) {
+          reusableBuffer.calib.xpotsCalib[idx].lastPosition = vt;
+          reusableBuffer.calib.xpotsCalib[idx].lastCount = 1;
+        }
+        else {
+          if (reusableBuffer.calib.xpotsCalib[idx].lastCount < 255) reusableBuffer.calib.xpotsCalib[idx].lastCount++;
+        }
+        if (reusableBuffer.calib.xpotsCalib[idx].lastCount == 8/*80ms*/) {
+          int16_t position = reusableBuffer.calib.xpotsCalib[idx].lastPosition;
+          bool found = false;
+          for (int j=0; j<count; j++) {
+            if (position >= reusableBuffer.calib.xpotsCalib[idx].steps[j]-XPOT_DELTA && position <= reusableBuffer.calib.xpotsCalib[idx].steps[j]+XPOT_DELTA) {
+              found = true;
+              break;
+            }
+          }
+          if (!found) {
+            if (count < POTS_POS_COUNT) {
+              reusableBuffer.calib.xpotsCalib[idx].steps[count] = position;
+            }
+            else {
+              g_eeGeneral.potsType &= !(1<<idx);
+            }
+            reusableBuffer.calib.xpotsCalib[idx].stepsCount += 1;
+          }
+        }
+      }
+#endif
     }
   }
 
@@ -1284,6 +1355,12 @@ void menuCommonCalib(uint8_t event)
         reusableBuffer.calib.loVals[i] = 15000;
         reusableBuffer.calib.hiVals[i] = -15000;
         reusableBuffer.calib.midVals[i] = anaIn(i);
+#if defined(PCBTARANIS)
+        if (i<NUM_XPOTS) {
+          reusableBuffer.calib.xpotsCalib[i].stepsCount = 0;
+          reusableBuffer.calib.xpotsCalib[i].lastCount = 0;
+        }
+#endif
       }
       break;
 
@@ -1294,17 +1371,37 @@ void menuCommonCalib(uint8_t event)
       lcd_putsLeft(3*FH, STR_MENUWHENDONE);
 
       for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
-        if (abs(reusableBuffer.calib.loVals[i]-reusableBuffer.calib.hiVals[i])>50) {
-          g_eeGeneral.calibMid[i] = reusableBuffer.calib.midVals[i];
+        if (abs(reusableBuffer.calib.loVals[i]-reusableBuffer.calib.hiVals[i]) > 50) {
+          g_eeGeneral.calib[i].mid = reusableBuffer.calib.midVals[i];
           int16_t v = reusableBuffer.calib.midVals[i] - reusableBuffer.calib.loVals[i];
-          g_eeGeneral.calibSpanNeg[i] = v - v/STICK_TOLERANCE;
+          g_eeGeneral.calib[i].spanNeg = v - v/STICK_TOLERANCE;
           v = reusableBuffer.calib.hiVals[i] - reusableBuffer.calib.midVals[i];
-          g_eeGeneral.calibSpanPos[i] = v - v/STICK_TOLERANCE;
+          g_eeGeneral.calib[i].spanPos = v - v/STICK_TOLERANCE;
         }
       }
       break;
 
     case 3:
+#if defined(PCBTARANIS)
+      for (uint8_t i=POT1; i<=POT_LAST; i++) {
+        int idx = i - POT1;
+        int count = reusableBuffer.calib.xpotsCalib[idx].stepsCount;
+        if (IS_MULTIPOS_POT(i) && count > 1 && count <= POTS_POS_COUNT) {
+          for (int j=0; j<count; j++) {
+            for (int k=j+1; k<count; k++) {
+              if (reusableBuffer.calib.xpotsCalib[idx].steps[k] < reusableBuffer.calib.xpotsCalib[idx].steps[j]) {
+                swap(reusableBuffer.calib.xpotsCalib[idx].steps[j], reusableBuffer.calib.xpotsCalib[idx].steps[k]);
+              }
+            }
+          }
+          StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[i];
+          calib->count = count - 1;
+          for (int j=0; j<calib->count; j++) {
+            calib->steps[j] = (reusableBuffer.calib.xpotsCalib[idx].steps[j+1] + reusableBuffer.calib.xpotsCalib[idx].steps[j]) >> 5;
+          }
+        }
+      }
+#endif
       g_eeGeneral.chkSum = evalChkSum();
       eeDirty(EE_GENERAL);
       reusableBuffer.calib.state = 4;
@@ -1316,8 +1413,22 @@ void menuCommonCalib(uint8_t event)
   }
 
   doMainScreenGraphics();
+
 #if defined(PCBTARANIS)
   drawPotsBars();
+  for (int i=POT1; i<=POT_LAST; i++) {
+    uint8_t steps = 0;
+    if (reusableBuffer.calib.state == 2) {
+      steps = reusableBuffer.calib.xpotsCalib[i-POT1].stepsCount;
+    }
+    else if (IS_MULTIPOS_POT(i)) {
+      StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[i];
+      steps = calib->count + 1;
+    }
+    if (steps > 0 && steps <= POTS_POS_COUNT) {
+      lcd_outdezAtt(LCD_W/2-2+(i-POT1)*5, LCD_H-6, steps, TINSIZE);
+    }
+  }
 #endif
 }
 

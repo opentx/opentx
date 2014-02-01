@@ -20,7 +20,7 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
     ui->setupUi(this);
     this->setWindowIcon(QIcon(":/icon.png"));
 
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings;
     QString firmware_id = settings.value("firmware", default_firmware_variant.id).toString();
     ui->tabWidget->setCurrentIndex(settings.value("generalEditTab", 0).toInt());
     int profile_id=settings.value("profileId", 0).toInt();
@@ -64,7 +64,8 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
         }
         this->layout()->removeItem(ui->TaranisReadOnlyUnlock);
       }
-    } else {
+    }
+    else {
       for (int i=0; pmsl[i]; i++) {
         pmsl[i]->hide();
       }
@@ -373,11 +374,35 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
     for (int i=0; tpmsld[i]; i++) {
       connect(tpmsld[i], SIGNAL(valueChanged(int)),this,SLOT(unlockSwitchEdited()));
     }
+
+    if (GetEepromInterface()->getCapability(MultiposPots)) {
+      ui->pot1Type->setCurrentIndex(g_eeGeneral.potsType[0]);
+      ui->pot2Type->setCurrentIndex(g_eeGeneral.potsType[1]);
+    }
+    else {
+      ui->potsTypeSeparator->hide();
+      ui->pot1Type->hide();
+      ui->pot1TypeLabel->hide();
+      ui->pot2Type->hide();
+      ui->pot2TypeLabel->hide();
+    }
 }
 
 GeneralEdit::~GeneralEdit()
 {
     delete ui;
+}
+
+void GeneralEdit::on_pot1Type_currentIndexChanged(int index)
+{
+  g_eeGeneral.potsType[0] = index;
+  updateSettings();
+}
+
+void GeneralEdit::on_pot2Type_currentIndexChanged(int index)
+{
+  g_eeGeneral.potsType[1] = index;
+  updateSettings();
 }
 
 void GeneralEdit::unlockSwitchEdited()
@@ -946,7 +971,7 @@ void GeneralEdit::on_PPM4_editingFinished()
 void GeneralEdit::on_tabWidget_currentChanged(int index)
 {
   // TODO why er9x here
-    QSettings settings("companion9x", "companion9x");
+    QSettings settings;
     settings.setValue("generalEditTab",index);//ui->tabWidget->currentIndex());
 }
 
@@ -1195,7 +1220,7 @@ void GeneralEdit::on_swGEAChkB_stateChanged(int )
 
 void GeneralEdit::on_calretrieve_PB_clicked()
 {
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings;
   int profile_id=ui->profile_CB->itemData(ui->profile_CB->currentIndex()).toInt();
   settings.beginGroup("Profiles");
   QString profile=QString("profile%1").arg(profile_id);
@@ -1312,7 +1337,7 @@ void GeneralEdit::on_calretrieve_PB_clicked()
 
 void GeneralEdit::on_calstore_PB_clicked()
 {
-  QSettings settings("companion9x", "companion9x");
+  QSettings settings;
   int profile_id=ui->profile_CB->itemData(ui->profile_CB->currentIndex()).toInt();
   settings.beginGroup("Profiles");
   QString profile=QString("profile%1").arg(profile_id);

@@ -64,7 +64,7 @@ void displayRssiLine()
   if (TELEMETRY_STREAMING()) {
     lcd_hline(0, 55, 212, 0); // separator
     uint8_t rssi = min((uint8_t)99, frskyData.rssi[0].value);
-    lcd_putsLeft(STATUS_BAR_Y, STR_RX); lcd_outdezNAtt(4*FW, STATUS_BAR_Y, rssi, LEADING0, 2);
+    lcd_putsn(0, STATUS_BAR_Y, STR_RX, 2); lcd_outdezNAtt(4*FW, STATUS_BAR_Y, rssi, LEADING0, 2);
     lcd_rect(25, 57, 78, 7);
     lcd_filled_rect(26, 58, 19*rssi/25, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
   }
@@ -100,9 +100,9 @@ void displayGpsTime()
 {
   uint8_t att = (TELEMETRY_STREAMING() ? LEFT|LEADING0 : LEFT|LEADING0|BLINK);
   lcd_outdezNAtt(CENTER_OFS+6*FW+5, STATUS_BAR_Y, frskyData.hub.hour, att, 2);
-  lcd_putcAtt(CENTER_OFS+8*FW+2, STATUS_BAR_Y, ':', att);
+  lcd_putcAtt(CENTER_OFS+8*FW+4, STATUS_BAR_Y, ':', att);
   lcd_outdezNAtt(CENTER_OFS+9*FW+2, STATUS_BAR_Y, frskyData.hub.min, att, 2);
-  lcd_putcAtt(CENTER_OFS+11*FW-1, STATUS_BAR_Y, ':', att);
+  lcd_putcAtt(CENTER_OFS+11*FW+1, STATUS_BAR_Y, ':', att);
   lcd_outdezNAtt(CENTER_OFS+12*FW-1, STATUS_BAR_Y, frskyData.hub.sec, att, 2);
   lcd_status_line();
 }
@@ -214,8 +214,8 @@ void menuTelemetryFrsky(uint8_t event)
       for (int8_t i=3; i>=0; i--) {
         FrSkyBarData & bar = screen.bars[i];
         uint8_t source = bar.source;
-        getvalue_t barMin = convertTelemValue(source, bar.barMin);
-        getvalue_t barMax = convertTelemValue(source, 255-bar.barMax);
+        getvalue_t barMin = convertBarTelemValue(source, bar.barMin);
+        getvalue_t barMax = convertBarTelemValue(source, 255-bar.barMax);
         if (source && barMax > barMin) {
           uint8_t y = barHeight+6+i*(barHeight+6);
           lcd_putsiAtt(0, y+barHeight-5, STR_VTELEMCHNS, source, 0);
@@ -234,7 +234,7 @@ void menuTelemetryFrsky(uint8_t event)
             threshold = g_model.frsky.channels[source-TELEM_A1].alarms_value[0];
 #if defined(FRSKY_HUB)
           else
-            threshold = convertTelemValue(source, barsThresholds[source-TELEM_ALT]);
+            threshold = convertBarTelemValue(source, barsThresholds[source-TELEM_ALT]);
 #endif
 
           if (threshold) {

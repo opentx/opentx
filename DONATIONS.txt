@@ -95,8 +95,8 @@ Heinrich Illig
 Michael Collins
 Michael Manning
 Craig Lorentz
-Jonathan Modellismo - http://jonathan.it
-Aviomotive - http://www.aviomotive.com
+Jonathan Modellismo - jonathan.it
+Aviomotive - www.aviomotive.com
 André Lasseret
 Felipe Alexandre de Oliveira
 Brian Harris
@@ -126,7 +126,7 @@ Larisa Filocamo
 Alex Calderhead
 Hartmut Sahm
 Åke Brodin
-Aloft Hobbies - http://www.alofthobbies.com
+Aloft Hobbies - www.alofthobbies.com
 Ted Moss
 Filippos Tigarakis
 Chewytm
@@ -288,3 +288,25 @@ Josep Clodas Sola
 Thierry Martin
 Peter Mauro 
 Mitchell Brenner
+Ulach Green
+Lluis Bullich Rañe 
+Steffen Rohr 
+Eric Jacquin
+Harvest Lane
+Ville Kuvaja
+DK-System
+Heinz Vogel
+Heung Jin Choi
+MMJS van der Helm 
+Dan Neelands
+Yashiro Masayuki
+Isaac Sloan
+Harold Baird
+Roy Bender
+Bradley Murchie
+Maximilian Süß
+Dean Jansa
+Ronald Donker
+Paul Oldenkamp
+Dietmar Drees
+Bradley Murchie

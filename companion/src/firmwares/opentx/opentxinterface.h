@@ -18,6 +18,9 @@
 
 #include "eeprominterface.h"
 
+#define OPENTX_COMPANION_DOWNLOADS   "http://downloads.open-tx.org/companion"
+#define OPENTX_FIRMWARE_DOWNLOADS    "http://downloads.open-tx.org/firmware"
+
 class EFile;
 
 class Open9xInterface : public EEPROMInterface
@@ -91,6 +94,7 @@ class Open9xFirmware: public FirmwareInfo {
       addLanguage("se");
       addLanguage("cz");
       addLanguage("es");
+      addLanguage("pl");
       addLanguage("pt");
 
       addTTSLanguage("en");
@@ -100,6 +104,7 @@ class Open9xFirmware: public FirmwareInfo {
       addTTSLanguage("se");
       addTTSLanguage("cz");
       addTTSLanguage("sk");
+      addTTSLanguage("pl");
       addTTSLanguage("pt");
       addTTSLanguage("es");
     }

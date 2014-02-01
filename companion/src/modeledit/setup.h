@@ -28,7 +28,7 @@ class TimerPanel : public ModelPanel
     void on_value_editingFinished();
     void on_persistent_toggled(bool checked);
     void on_minuteBeep_toggled(bool checked);
-    void on_countdownBeep_toggled(bool checked);
+    void on_countdownBeep_currentIndexChanged(int index);
 
   private:
     TimerData & timer;

@@ -221,7 +221,7 @@ enum BeeperMode {
 };
 
 #if defined(CPUARM)
-  #define EXTRA_GENERAL_FIELDS \
+  #define EXTRA_GENERAL_FIELDS_ARM \
   uint8_t  backlightBright; \
   int8_t   currentCalib; \
   int8_t   temperatureWarn; \
@@ -240,6 +240,15 @@ enum BeeperMode {
   int8_t   wavVolume; \
   int8_t   varioVolume; \
   int8_t   backgroundVolume;
+#endif
+
+#if defined(PCBTARANIS)
+#define EXTRA_GENERAL_FIELDS \
+  EXTRA_GENERAL_FIELDS_ARM \
+  uint8_t  hw_uartMode; \
+  uint8_t  potsType;
+#elif defined(CPUARM)
+  #define EXTRA_GENERAL_FIELDS EXTRA_GENERAL_FIELDS_ARM
 #elif defined(PXX)
   #define EXTRA_GENERAL_FIELDS uint8_t  countryCode;
 #else
@@ -303,13 +312,25 @@ enum BacklightMode {
   #define SPLASH_MODE uint8_t splashMode:1; uint8_t spare4:2
 #endif
 
+#if defined(PCBTARANIS)
+#define POTS_POS_COUNT 6
+PACK(typedef struct {
+  uint8_t count;
+  uint8_t steps[POTS_POS_COUNT-1];
+}) StepsCalibData;
+#endif
+
+PACK(typedef struct {
+  int16_t mid;
+  int16_t spanNeg;
+  int16_t spanPos;
+}) CalibData;
+
 #define ALTERNATE_VIEW 0x10
 PACK(typedef struct t_EEGeneral {
   uint8_t   version;
   uint16_t  variant;
-  int16_t   calibMid[NUM_STICKS+NUM_POTS];
-  int16_t   calibSpanNeg[NUM_STICKS+NUM_POTS];
-  int16_t   calibSpanPos[NUM_STICKS+NUM_POTS];
+  CalibData calib[NUM_STICKS+NUM_POTS];
   uint16_t  chkSum;
   int8_t    currModel;
   uint8_t   contrast;
@@ -639,7 +660,7 @@ PACK( union u_int8int16_t {
 #if defined(CPUARM)
 #define MAX_CSW_DURATION 120 /*60s*/
 #define MAX_CSW_DELAY    120 /*60s*/
-#define MAX_CSW_ANDSW    MAX_SWITCH
+#define MAX_CSW_ANDSW    NUM_SWITCH
 typedef int16_t csw_telemetry_value_t;
 PACK(typedef struct t_CustomSwData { // Custom Switches data
   int16_t v1;
@@ -976,7 +997,7 @@ PACK(typedef struct t_FrSkyData {
   uint8_t usrProto; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh, 3=Halcyon
   uint8_t voltsSource:7;
   uint8_t altitudeDisplayed:1;
-  uint8_t blades;   // How many blades for RPMs, 0=2 blades, 1=3 blades
+  int8_t blades;    // How many blades for RPMs, 0=2 blades
   uint8_t currentSource;
   uint8_t screensType;
   FrSkyScreenData screens[MAX_FRSKY_SCREENS];
@@ -990,12 +1011,14 @@ PACK(typedef struct t_FrSkyData {
   uint16_t storedMah:15;
   int8_t   fasOffset;
 }) FrSkyData;
+#define MIN_BLADES -1 // 1 blade
+#define MAX_BLADES 3  // 5 blades
 #else
 #define MAX_FRSKY_SCREENS 2
 PACK(typedef struct t_FrSkyData {
   FrSkyChannelData channels[2];
   uint8_t usrProto:2; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh, 3=Halcyon
-  uint8_t blades:2;   // How many blades for RPMs, 0=2 blades, 1=3 blades
+  uint8_t blades:2;   // How many blades for RPMs, 0=2 blades
   uint8_t screensType:2;
   uint8_t voltsSource:2;
   int8_t  varioMin:4;
@@ -1008,6 +1031,8 @@ PACK(typedef struct t_FrSkyData {
   int8_t  varioCenterMax:5;
   int8_t  fasOffset;
 }) FrSkyData;
+#define MIN_BLADES 0 // 2 blades
+#define MAX_BLADES 3 // 5 blades
 #endif
 
 #if defined(MAVLINK)
@@ -1138,6 +1163,8 @@ enum SwitchSources {
 #endif
 
   SWSRC_FIRST_CSW,
+  SWSRC_LAST_SWITCH = SWSRC_FIRST_CSW-1,
+
   SWSRC_SW1 = SWSRC_FIRST_CSW,
   SWSRC_SW2,
   SWSRC_SW3,
@@ -1152,10 +1179,17 @@ enum SwitchSources {
   SWSRC_SWC,
   SWSRC_LAST_CSW = SWSRC_SW1+NUM_CSW-1,
 
+#if defined(PCBTARANIS)
+  SWSRC_P11,
+  SWSRC_P16 = SWSRC_P11+5,
+  SWSRC_P21,
+  SWSRC_P26 = SWSRC_P21+5,
+#endif
+
   SWSRC_ON,
 
   SWSRC_FIRST_MOMENT_SWITCH,
-  SWSRC_LAST_MOMENT_SWITCH = SWSRC_FIRST_MOMENT_SWITCH+SWSRC_ON-1,
+  SWSRC_LAST_MOMENT_SWITCH = SWSRC_FIRST_MOMENT_SWITCH+SWSRC_LAST_CSW,
 
 #if !defined(PCBSTD)
   SWSRC_TRAINER_SHORT,
@@ -1424,7 +1458,7 @@ PACK(typedef struct t_ModelData {
   uint8_t   thrTrim:1;            // Enable Throttle Trim
   AVR_FIELD(int8_t    ppmNCH:4)
   ARM_FIELD(int8_t    spare2:4)
-  uint8_t   trimInc:3;            // Trim Increments
+  int8_t    trimInc:3;            // Trim Increments
   uint8_t   disableThrottleWarning:1;
   ARM_FIELD(uint8_t displayText:1)
   AVR_FIELD(uint8_t pulsePol:1)

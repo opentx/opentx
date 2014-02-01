@@ -40,7 +40,7 @@
 #define STR2(s) #s
 #define DEFNUMSTR(s)  STR2(s)
 
-const pm_char stamp1[] PROGMEM = " SVN: " SVN_STR;
+const pm_char stamp1[] PROGMEM = "VERS: " VERS_STR;
 const pm_char stamp2[] PROGMEM = "DATE: " DATE_STR;
 const pm_char stamp3[] PROGMEM = "TIME: " TIME_STR;
 #if defined(PCBSTD)

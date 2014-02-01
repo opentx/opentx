@@ -26,7 +26,7 @@ void HeliPanel::update()
   lock = true;
 
   ui->swashTypeCB->setCurrentIndex(model.swashRingData.type);
-  populateSourceCB(ui->swashCollectiveCB, model.swashRingData.collectiveSource, POPULATE_SOURCES | POPULATE_SWITCHES | POPULATE_TRIMS);
+  populateSourceCB(ui->swashCollectiveCB, model.swashRingData.collectiveSource, model, POPULATE_SOURCES | POPULATE_SWITCHES | POPULATE_TRIMS);
   ui->swashRingValSB->setValue(model.swashRingData.value);
   ui->swashInvertELE->setChecked(model.swashRingData.invertELE);
   ui->swashInvertAIL->setChecked(model.swashRingData.invertAIL);

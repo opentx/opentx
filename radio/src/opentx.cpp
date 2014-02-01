@@ -503,12 +503,18 @@ void generalDefault()
 uint16_t evalChkSum()
 {
   uint16_t sum = 0;
-  const int16_t *calibValues = &g_eeGeneral.calibMid[0];
+  const int16_t *calibValues = (const int16_t *) &g_eeGeneral.calib[0];
   for (int i=0; i<NUM_STICKS+NUM_POTS+5; i++)
     sum += calibValues[i];
   return sum;
 }
 
+#if defined(TEMPLATES)
+inline void applyDefaultTemplate()
+{
+  applyTemplate(TMPL_SIMPLE_4CH);
+}
+#else
 void applyDefaultTemplate()
 {
   for (int i=0; i<NUM_STICKS; i++) {
@@ -539,6 +545,7 @@ void applyDefaultTemplate()
   }
   eeDirty(EE_MODEL);
 }
+#endif
 
 #if defined(PXX) && defined(CPUARM)
 void checkModelIdUnique(uint8_t id)
@@ -1305,6 +1312,8 @@ uint8_t  cswStates[NUM_CSW];
 #if defined(PCBTARANIS)
 tmr10ms_t switchesMidposStart[6] = { 0 };
 uint32_t  switchesPos = 0;
+tmr10ms_t potsLastposStart[NUM_XPOTS];
+uint8_t   potsPos[NUM_XPOTS];
 #define DELAY_SWITCH_3POS    10/*100ms*/
 #define CHECK_2POS(sw)       newPos |= (switchState(sw ## 0) ? (1 << (sw ## 0 - SW_SA0)) : (1 << (sw ## 0 - SW_SA0 + 1)))
 #define CHECK_3POS(idx, sw)  if (switchState(sw ## 0)) { \
@@ -1325,8 +1334,7 @@ uint32_t  switchesPos = 0;
                                } \
                                newPos |= (switchesPos & (0x7 << (sw ## 0 - SW_SA0))); \
                              }
-#define SWITCH_POSITION(sw)  (switchesPos & (1<<(sw)))
-void get3POSSwitchesPosition()
+void getSwitchesPosition()
 {
   uint32_t newPos = 0;
   CHECK_3POS(0, SW_SA);
@@ -1338,9 +1346,32 @@ void get3POSSwitchesPosition()
   CHECK_3POS(5, SW_SG);
   CHECK_2POS(SW_SH);
   switchesPos = newPos;
+
+#if defined(PCBTARANIS)
+  for (int i=0; i<NUM_XPOTS; i++) {
+    if (g_eeGeneral.potsType & (1 << i)) {
+      StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[POT1+i];
+      if (calib->count>0 && calib->count<POTS_POS_COUNT) {
+        uint8_t pos = anaIn(POT1+i) / (2*RESX/calib->count);
+        uint8_t previousPos = potsPos[i] >> 4;
+        if (pos != previousPos) {
+          potsLastposStart[i] = get_tmr10ms();
+          potsPos[i] = (pos << 4) | (potsPos[i] & 0x0f);
+        }
+        else if ((tmr10ms_t)(get_tmr10ms() - potsLastposStart[i]) > DELAY_SWITCH_3POS) {
+          potsLastposStart[i] = 0;
+          potsPos[i] = (pos << 4) | (pos);
+        }
+      }
+    }
+  }
+#endif
 }
+#define SWITCH_POSITION(sw)  (switchesPos & (1<<(sw)))
+#define POT_POSITION(sw)     ((potsPos[(sw)/POTS_POS_COUNT] & 0x0f) == ((sw) % POTS_POS_COUNT))
 #else
-#define get3POSSwitchesPosition()
+#define getSwitchesPosition()
+#define SWITCH_POSITION(idx) switchState((EnumKeys)(SW_BASE+(idx)))
 #endif
 
 int16_t csLastValue[NUM_CSW];
@@ -1357,15 +1388,16 @@ bool getSwitch(int8_t swtch)
   if (cs_idx == SWSRC_ON) {
     result = true;
   }
-  else if (cs_idx <= MAX_PSWITCH) {
-#if defined(PCBTARANIS)
-    result = SWITCH_POSITION(cs_idx-SWSRC_SA0);
-#else
-    result = switchState((EnumKeys)(SW_BASE+cs_idx-1));
-#endif
+  else if (cs_idx <= SWSRC_LAST_SWITCH) {
+    result = SWITCH_POSITION(cs_idx-SWSRC_FIRST_SWITCH);
   }
+#if defined(PCBTARANIS)
+  else if (cs_idx >= SWSRC_P11 && cs_idx <= SWSRC_P26) {
+    result = POT_POSITION(cs_idx-SWSRC_P11);
+  }
+#endif
   else {
-    cs_idx -= MAX_PSWITCH+1;
+    cs_idx -= SWSRC_FIRST_CSW;
 
     GETSWITCH_RECURSIVE_TYPE mask = ((GETSWITCH_RECURSIVE_TYPE)1 << cs_idx);
     if (s_last_switch_used & mask) {
@@ -1549,7 +1581,7 @@ int8_t getMovedSwitch()
     }
   }
 #else
-  for (uint8_t i=MAX_PSWITCH; i>0; i--) {
+  for (uint8_t i=NUM_PSWITCH; i>0; i--) {
     bool prev;
     swstate_t mask = 0;
     if (i <= 3) {
@@ -1561,7 +1593,7 @@ int8_t getMovedSwitch()
     }
     bool next = getSwitch(i);
     if (prev != next) {
-      if (i!=MAX_PSWITCH || next==true)
+      if (i!=NUM_PSWITCH || next==true)
         result = next ? i : -i;
       if (mask)
         switches_states ^= mask;
@@ -1851,7 +1883,7 @@ csw_telemetry_value_t maxTelemValue(uint8_t channel)
 #endif
 
 #if defined(CPUARM)
-getvalue_t convertTelemValue(uint8_t channel, csw_telemetry_value_t value)
+getvalue_t convert16bitsTelemValue(uint8_t channel, csw_telemetry_value_t value)
 {
   getvalue_t result;
   switch (channel) {
@@ -1864,8 +1896,14 @@ getvalue_t convertTelemValue(uint8_t channel, csw_telemetry_value_t value)
   }
   return result;
 }
-#else
-getvalue_t convertTelemValue(uint8_t channel, csw_telemetry_value_t value)
+
+csw_telemetry_value_t max8bitsTelemValue(uint8_t channel)
+{
+  return min<csw_telemetry_value_t>(255, maxTelemValue(channel));
+}
+#endif
+
+getvalue_t convert8bitsTelemValue(uint8_t channel, csw_telemetry_value_t value)
 {
   getvalue_t result;
   switch (channel) {
@@ -1875,6 +1913,10 @@ getvalue_t convertTelemValue(uint8_t channel, csw_telemetry_value_t value)
       break;
 #if defined(FRSKY)
     case TELEM_ALT:
+#if defined(CPUARM)
+      result = 100 * (value * 8 - 500);
+      break;
+#endif
     case TELEM_GPSALT:
     case TELEM_MAX_ALT:
     case TELEM_MIN_ALT:
@@ -1912,18 +1954,17 @@ getvalue_t convertTelemValue(uint8_t channel, csw_telemetry_value_t value)
   }
   return result;
 }
-#endif
 
 getvalue_t convertCswTelemValue(CustomSwData * cs)
 {
   getvalue_t val;
 #if defined(CPUARM)
-  val = convertTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, cs->v2);
+  val = convert16bitsTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, cs->v2);
 #else
   if (cswFamily(cs->func)==CS_VOFS)
-    val = convertTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128+cs->v2);
+    val = convert8bitsTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128+cs->v2);
   else
-    val = convertTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128+cs->v2) - convertTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128);
+    val = convert8bitsTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128+cs->v2) - convert8bitsTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128);
 #endif
   return val;
 }
@@ -2146,8 +2187,9 @@ void checkTHR()
   int16_t lowLim = THRCHK_DEADBAND - 1024 ;
 #else
   getADC();   // if thr is down - do not display warning at all
-  int16_t lowLim = g_eeGeneral.calibMid[thrchn];
-  lowLim = (g_model.throttleReversed ? - lowLim - g_eeGeneral.calibSpanPos[thrchn] : lowLim - g_eeGeneral.calibSpanNeg[thrchn]);
+  CalibData * calib = &g_eeGeneral.calib[thrchn];
+  int16_t lowLim = calib->mid;
+  lowLim = (g_model.throttleReversed ? - lowLim - calib->spanPos : lowLim - calib->spanNeg);
   lowLim += THRCHK_DEADBAND;
 #endif
   int16_t v = thrAnaIn(thrchn);
@@ -2266,7 +2308,7 @@ void checkSwitches()
     if (last_bad_switches != switches_states) {
       MESSAGE(STR_SWITCHWARN, NULL, STR_PRESSANYKEYTOSKIP, last_bad_switches == 0xff ? AU_SWITCH_ALERT : AU_NONE);
       uint8_t x = 2;
-      for (uint8_t i=1; i<MAX_PSWITCH-1; i++) {
+      for (uint8_t i=1; i<NUM_PSWITCH-1; i++) {
         uint8_t attr = (states & (1 << (i-1))) == (switches_states & (1 << (i-1))) ? 0 : INVERS;
         if(!(nSwWarn & (1<<(i-1))))  putsSwitches(x, 5*FH, (i>2?(i+1):1+(states&0x3)), attr);        
         if (i == 1 && attr) i++;
@@ -2361,12 +2403,10 @@ void checkTrims()
   uint8_t event = getEvent(true);
   if (event && !IS_KEY_BREAK(event)) {
     int8_t k = EVT_KEY_MASK(event) - TRM_BASE;
-    int8_t s = g_model.trimInc;
 #else
 uint8_t checkTrim(uint8_t event)
 {
   int8_t k = EVT_KEY_MASK(event) - TRM_BASE;
-  int8_t s = g_model.trimInc;
   if (k>=0 && k<8 && !IS_KEY_BREAK(event)) {
 #endif
     // LH_DWN LH_UP LV_DWN LV_UP RV_DWN RV_UP RH_DWN RH_UP
@@ -2397,7 +2437,8 @@ uint8_t checkTrim(uint8_t event)
     before = getRawTrimValue(phase, idx);
     thro = (idx==THR_STICK && g_model.thrTrim);
 #endif
-    int8_t  v = (s==0) ? min(32, abs(before)/4+1) : 1 << (s-1); // 1=>1  2=>2  3=>4  4=>8
+    int8_t trimInc = g_model.trimInc + 1;
+    int8_t v = (trimInc==-1) ? min(32, abs(before)/4+1) : (1 << trimInc);
     if (thro) v = 4; // if throttle trim and trim trottle then step=4
     int16_t after = (k&1) ? before + v : before - v;   // positive = k&1
 #if defined(CPUARM)
@@ -2536,10 +2577,29 @@ void getADC()
     for (uint32_t x=0; x<NUMBER_ANALOG; x++) {
       temp[x] += Analog_values[x];
     }
+#if defined(PCBTARANIS)
+    if (s_noScroll) break;
+#endif
   }
 
   for (uint32_t x=0; x<NUMBER_ANALOG; x++) {
-    s_anaFilt[x] = temp[x] >> 3;
+    uint16_t v = temp[x] >> 3;
+#if defined(PCBTARANIS)
+    if (s_noScroll) v = temp[x] >> 1;
+    StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[x];
+    if (IS_MULTIPOS_POT(x) && calib->count>0 && calib->count<POTS_POS_COUNT) {
+      uint8_t vShifted = (v >> 4);
+      s_anaFilt[x] = 2*RESX;
+      for (int i=0; i<calib->count; i++) {
+        if (vShifted < calib->steps[i]) {
+          s_anaFilt[x] = i*2*RESX/calib->count;
+          break;
+        }
+      }
+    }
+    else
+#endif
+    s_anaFilt[x] = v;
   }
 }
 #else
@@ -2787,10 +2847,14 @@ void evalInputs(uint8_t mode)
 
 #ifndef SIMU
     if (i < NUM_STICKS+NUM_POTS) {
-      v -= g_eeGeneral.calibMid[i];
-      v  =  v * (int32_t)RESX /  (max((int16_t)100,(v>0 ?
-                                       g_eeGeneral.calibSpanPos[i] :
-                                       g_eeGeneral.calibSpanNeg[i])));
+      if (IS_MULTIPOS_POT(i)) {
+        v -= RESX;
+      }
+      else {
+        CalibData * calib = &g_eeGeneral.calib[i];
+        v -= calib->mid;
+        v = v * (int32_t)RESX / (max((int16_t)100, (v>0 ? calib->spanPos : calib->spanNeg)));
+      }
     }
 #endif
 
@@ -3116,13 +3180,13 @@ void evalFunctions()
 
 #endif
 
-      if (swtch > MAX_SWITCH+1) {
+      if (swtch > NUM_SWITCH+1) {
         momentary = 1;
-        swtch -= MAX_SWITCH+1;
+        swtch -= NUM_SWITCH+1;
       }
-      if (swtch < -MAX_SWITCH-1) {
+      if (swtch < -NUM_SWITCH-1) {
         momentary = 1;
-        swtch += MAX_SWITCH+1;
+        swtch += NUM_SWITCH+1;
       }
 
       bool active = getSwitch(swtch);
@@ -3197,7 +3261,7 @@ void evalFunctions()
             }
           }
         }
-        else if (CFN_FUNC(sd) <= FUNC_INSTANT_TRIM) {
+        else if (CFN_FUNC(sd) <= FUNC_INSTANT_TRIM || CFN_FUNC(sd) == FUNC_RESET) {
           active = false;
         }
 
@@ -3471,6 +3535,8 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 
       if (md->srcRaw == 0) break;
 
+      uint8_t stickIndex = md->srcRaw - MIXSRC_Rud;
+
       if (!(dirtyChannels & ((bitfield_channels_t)1 << md->destCh))) continue;
 
       // if this is the first calculation for the destination channel, initialize it with 0 (otherwise would be random)
@@ -3483,7 +3549,6 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       delayval_t mixEnabled = !(md->phases & (1 << s_perout_flight_phase)) && getSwitch(md->swtch);
 
       //========== VALUE ===============
-      uint8_t stickIndex = md->srcRaw - MIXSRC_Rud;
       getvalue_t v = 0;
       if (mode > e_perout_mode_inactive_phase) {
         if (!mixEnabled || stickIndex >= NUM_STICKS || (stickIndex == THR_STICK && g_model.thrTrim)) {
@@ -3501,12 +3566,14 @@ void perOut(uint8_t mode, uint8_t tick10ms)
         else
 #endif
         {
-          v = getValue(md->srcRaw);
-          if (md->srcRaw>=MIXSRC_CH1 && md->srcRaw<=MIXSRC_LAST_CH && md->destCh != md->srcRaw-MIXSRC_CH1) {
-            if (dirtyChannels & ((bitfield_channels_t)1 << (md->srcRaw-MIXSRC_CH1)) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
+          int8_t srcRaw = MIXSRC_Rud + stickIndex;
+          v = getValue(srcRaw);
+          srcRaw -= MIXSRC_CH1;
+          if (srcRaw>=0 && srcRaw<=MIXSRC_LAST_CH-MIXSRC_CH1 && md->destCh != srcRaw) {
+            if (dirtyChannels & ((bitfield_channels_t)1 << srcRaw) & (passDirtyChannels|~(((bitfield_channels_t) 1 << md->destCh)-1)))
               passDirtyChannels |= (bitfield_channels_t) 1 << md->destCh;
-            if (md->srcRaw-MIXSRC_CH1 < md->destCh || pass > 0)
-              v = chans[md->srcRaw-MIXSRC_CH1] >> 8;
+            if (srcRaw < md->destCh || pass > 0)
+              v = chans[srcRaw] >> 8;
           }
         }
         if (!mixCondition) {
@@ -3747,9 +3814,9 @@ void doMixerCalculations()
   // therefore forget the exact calculation and use only 1 instead; good compromise
   lastTMR = tmr10ms;
 
-  get3POSSwitchesPosition();
-
   getADC();
+
+  getSwitchesPosition();
 
 #if defined(PCBSKY9X) && !defined(REVA) && !defined(SIMU)
   Current_analogue = (Current_analogue*31 + s_anaFilt[8] ) >> 5 ;
@@ -3934,9 +4001,9 @@ void doMixerCalculations()
         timerState->sum+=val;
       }
 
-      if (atm>=(TMR_VAROFS+MAX_SWITCH)){ // toggeled switch
+      if (atm>=(TMR_VAROFS+NUM_SWITCH)){ // toggeled switch
         if(!(timerState->toggled | timerState->sum | timerState->cnt | timerState->lastPos)) { timerState->lastPos = tm < 0; timerState->sum = 1; }  // if initializing then init the lastPos
-        uint8_t swPos = getSwitch(tm>0 ? tm-(TMR_VAROFS+MAX_SWITCH-1) : tm+MAX_SWITCH);
+        uint8_t swPos = getSwitch(tm>0 ? tm-(TMR_VAROFS+NUM_SWITCH-1) : tm+NUM_SWITCH);
         if (swPos && !timerState->lastPos) timerState->toggled = !timerState->toggled;  // if switch is flipped first time -> change counter state
         timerState->lastPos = swPos;
       }
@@ -3973,7 +4040,7 @@ void doMixerCalculations()
             newTimerVal++;
         }
         else {
-          if (atm<(TMR_VAROFS+MAX_SWITCH))
+          if (atm<(TMR_VAROFS+NUM_SWITCH))
             timerState->toggled = tm>0 ? getSwitch(tm-(TMR_VAROFS-1)) : !getSwitch(-tm); // normal switch
           if (timerState->toggled)
             newTimerVal++;
