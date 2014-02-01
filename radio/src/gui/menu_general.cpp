@@ -1191,7 +1191,7 @@ void menuGeneralHardware(uint8_t event)
       {
         int idx = i - ITEM_SETUP_HW_POT1;
         uint8_t mask = (1<<idx);
-        uint8_t potType = selectMenuItem(HW_SETTINGS_COLUMN, y, i==ITEM_SETUP_HW_POT1 ? STR_POT1TYPE : STR_POT2TYPE, STR_POTTYPES, g_eeGeneral.potsType & mask, 0, 1, attr, event);
+        uint8_t potType = selectMenuItem(HW_SETTINGS_COLUMN, y, i==ITEM_SETUP_HW_POT1 ? STR_POT1TYPE : STR_POT2TYPE, STR_POTTYPES, (g_eeGeneral.potsType & mask) >> idx, 0, 1, attr, event);
         if (potType)
           g_eeGeneral.potsType |= mask;
         else
