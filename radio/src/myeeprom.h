@@ -243,9 +243,20 @@ enum BeeperMode {
 #endif
 
 #if defined(PCBTARANIS)
+enum uartModes {
+  UART_MODE_NONE,
+  UART_MODE_SPORT,
+  UART_MODE_VIRTUAL_SP2UART,
+#if defined(DEBUG)
+  UART_MODE_DEBUG,
+#endif
+  UART_MODE_COUNT,
+  UART_MODE_MAX = UART_MODE_COUNT-1
+};
+
 #define EXTRA_GENERAL_FIELDS \
   EXTRA_GENERAL_FIELDS_ARM \
-  uint8_t  hw_uartMode; \
+  uint8_t  uart3Mode; \
   uint8_t  potsType;
 #elif defined(CPUARM)
   #define EXTRA_GENERAL_FIELDS EXTRA_GENERAL_FIELDS_ARM

@@ -4982,6 +4982,10 @@ inline void opentxInit(OPENTX_INIT_ARGS)
   lcdSetContrast();
   backlightOn();
 
+#if defined(PCBTARANIS)
+  uart3Init(g_eeGeneral.uart3Mode);
+#endif
+
 #if defined(CPUARM)
   init_trainer_capture();
 #endif
