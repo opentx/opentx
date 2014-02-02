@@ -60,7 +60,7 @@
 #define TR_VRENAVIG            "Ne REaREb"
 
 #define LEN_VBLMODE            TR("\006", "\011")
-#define TR_VBLMODE             TR("Wył\0  ""Przyc.""Drążki""Oba\0  ""Zał\0  ", "Wyłaczone""Przyciski""Drązki\0  ""Oba\0     ""Włączyć\0 ")
+#define TR_VBLMODE             TR("Wył\0  ""Przyc.""Drążki""Oba\0  ""Zał\0  ", "Wyłączone""Przyciski""Drązki\0  ""Oba\0     ""Włączyć\0 ")
 
 #define LEN_TRNMODE            "\003"
 #define TR_TRNMODE             " X "" +="" :="
@@ -69,10 +69,10 @@
 #define TR_TRNCHN              "CH1CH2CH3CH4"
 
 #define LEN_UART3MODES         "\017"
-#define TR_UART3MODES          "OFF\0           ""SPORT Mirror\0  ""Virtual SP2UART"
+#define TR_UART3MODES          "OFF\0           ""S-Port Mirror\0 ""Wirtual.SP2UART"
 
 #define LEN_POTTYPES           "\017"
-#define TR_POTTYPES            "Pot\0           ""Multipos Switch"
+#define TR_POTTYPES            "Potencjometr\0  ""Przeł.Wielopoz."
 
 #define LEN_DATETIME           "\006"
 #define TR_DATETIME            "DANA:""Czas:\0 "
@@ -683,8 +683,8 @@
 #define TR_PERSISTENT_MAH      INDENT "Zapisz mAh"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 #define TR_UART3MODE           "Port szreg."
-#define TR_POT1TYPE            "Typ P1"
-#define TR_POT2TYPE            "Typ P2"
+#define TR_POT1TYPE            "Typ S1"
+#define TR_POT2TYPE            "Typ S2"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL  "Max RSSI"
