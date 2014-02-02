@@ -1284,7 +1284,7 @@ void menuGeneralHardware(uint8_t event)
 }
 #endif
 
-#define XPOT_DELTA 5
+#define XPOT_DELTA 7
 
 void menuCommonCalib(uint8_t event)
 {
@@ -1305,7 +1305,7 @@ void menuCommonCalib(uint8_t event)
         else {
           if (reusableBuffer.calib.xpotsCalib[idx].lastCount < 255) reusableBuffer.calib.xpotsCalib[idx].lastCount++;
         }
-        if (reusableBuffer.calib.xpotsCalib[idx].lastCount == 8/*80ms*/) {
+        if (reusableBuffer.calib.xpotsCalib[idx].lastCount == 20/*200ms*/) {
           int16_t position = reusableBuffer.calib.xpotsCalib[idx].lastPosition;
           bool found = false;
           for (int j=0; j<count; j++) {
@@ -1317,9 +1317,6 @@ void menuCommonCalib(uint8_t event)
           if (!found) {
             if (count < POTS_POS_COUNT) {
               reusableBuffer.calib.xpotsCalib[idx].steps[count] = position;
-            }
-            else {
-              g_eeGeneral.potsType &= !(1<<idx);
             }
             reusableBuffer.calib.xpotsCalib[idx].stepsCount += 1;
           }
@@ -1403,6 +1400,9 @@ void menuCommonCalib(uint8_t event)
           for (int j=0; j<calib->count; j++) {
             calib->steps[j] = (reusableBuffer.calib.xpotsCalib[idx].steps[j+1] + reusableBuffer.calib.xpotsCalib[idx].steps[j]) >> 5;
           }
+        }
+        else {
+          g_eeGeneral.potsType &= ~(1<<idx);
         }
       }
 #endif
