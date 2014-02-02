@@ -679,6 +679,9 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
   if (!sdMounted())
     return;
 
+  if (g_eeGeneral.beepMode == e_mode_quiet)
+    return;
+
   if (strlen(filename) > AUDIO_FILENAME_MAXLEN) {
     POPUP_WARNING(STR_PATH_TOO_LONG);
     return;
