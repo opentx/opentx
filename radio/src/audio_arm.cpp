@@ -870,7 +870,7 @@ void audioEvent(uint8_t e, uint16_t f)
           break;
         // timer == 0
         case AU_TIMER_00:
-          audioQueue.play(BEEP_DEFAULT_FREQ+150, 240, 20, PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ+150, 300, 20, PLAY_NOW);
           break;
         // timer <= 10 seconds left
         case AU_TIMER_LT10:

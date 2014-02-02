@@ -3989,7 +3989,10 @@ void doMixerCalculations()
         switch(timerState->state)
         {
           case TMR_RUNNING:
-            if (tv && newTimerVal>=(int16_t)tv) timerState->state = TMR_NEGATIVE;
+            if (tv && newTimerVal>=(int16_t)tv) {
+              AUDIO_TIMER_00(g_model.timers[i].countdownBeep);
+              timerState->state = TMR_NEGATIVE;
+            }
             break;
           case TMR_NEGATIVE:
             if (newTimerVal >= (int16_t)tv + MAX_ALERT_TIME) timerState->state = TMR_STOPPED;
@@ -4004,7 +4007,6 @@ void doMixerCalculations()
             if (g_model.timers[i].countdownBeep && g_model.timers[i].start) {
               if (newTimerVal==30) AUDIO_TIMER_30();
               if (newTimerVal==20) AUDIO_TIMER_20();
-              if (newTimerVal==00) AUDIO_TIMER_00(g_model.timers[i].countdownBeep);
               if (newTimerVal<=10) AUDIO_TIMER_LT10(g_model.timers[i].countdownBeep, newTimerVal);
             }
             if (g_model.timers[i].minuteBeep && (newTimerVal % 60)==0) {
