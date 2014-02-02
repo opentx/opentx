@@ -2519,7 +2519,7 @@ void getADC()
 #if defined(PCBTARANIS)
     if (s_noScroll) v = temp[x] >> 1;
     StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[x];
-    if (IS_MULTIPOS_POT(x) && calib->count>0 && calib->count<POTS_POS_COUNT) {
+    if (!s_noScroll && IS_MULTIPOS_POT(x) && calib->count>0 && calib->count<POTS_POS_COUNT) {
       uint8_t vShifted = (v >> 4);
       s_anaFilt[x] = 2*RESX;
       for (int i=0; i<calib->count; i++) {
@@ -3802,15 +3802,6 @@ void doMixerCalculations()
     s_last_phase = phase;
   }
 
-  if (tick10ms) {
-#if defined(CPUARM)
-    requiredSpeakerVolume = g_eeGeneral.speakerVolume + VOLUME_LEVEL_DEF;
-#endif
-
-    // the reason this needs to be done before limits is the applyLimit function; it checks for safety switches which would be not initialized otherwise
-    evalFunctions();
-  }
-
   int32_t weight = 0;
   if (s_fade_flight_phases) {
     memclear(sum_chans512, sizeof(sum_chans512));
@@ -3818,7 +3809,7 @@ void doMixerCalculations()
       s_last_switch_used = 0;
       if (s_fade_flight_phases & ((ACTIVE_PHASES_TYPE)1 << p)) {
         s_perout_flight_phase = p;
-        perOut(p==phase?e_perout_mode_normal:e_perout_mode_inactive_phase, p==phase?tick10ms:0);
+        perOut(p==phase ? e_perout_mode_normal : e_perout_mode_inactive_phase, p==phase ? tick10ms : 0);
         for (uint8_t i=0; i<NUM_CHNOUT; i++)
           sum_chans512[i] += (chans[i] >> 4) * fp_act[p];
         weight += fp_act[p];
@@ -3832,7 +3823,17 @@ void doMixerCalculations()
     s_perout_flight_phase = phase;
     perOut(e_perout_mode_normal, tick10ms);
   }
-  
+
+  //========== FUNCTIONS ===============
+  // must be done after mixing because some functions use the inputs/channels values
+  // must be done before limits because of the applyLimit function: it checks for safety switches which would be not initialized otherwise
+  if (tick10ms) {
+#if defined(CPUARM)
+    requiredSpeakerVolume = g_eeGeneral.speakerVolume + VOLUME_LEVEL_DEF;
+#endif
+    evalFunctions();
+  }
+
   //========== LIMITS ===============
   for (uint8_t i=0; i<NUM_CHNOUT; i++) {
     // chans[i] holds data from mixer.   chans[i] = v*weight => 1024*256
@@ -3988,7 +3989,10 @@ void doMixerCalculations()
         switch(timerState->state)
         {
           case TMR_RUNNING:
-            if (tv && newTimerVal>=(int16_t)tv) timerState->state = TMR_NEGATIVE;
+            if (tv && newTimerVal>=(int16_t)tv) {
+              AUDIO_TIMER_00(g_model.timers[i].countdownBeep);
+              timerState->state = TMR_NEGATIVE;
+            }
             break;
           case TMR_NEGATIVE:
             if (newTimerVal >= (int16_t)tv + MAX_ALERT_TIME) timerState->state = TMR_STOPPED;
@@ -4003,7 +4007,6 @@ void doMixerCalculations()
             if (g_model.timers[i].countdownBeep && g_model.timers[i].start) {
               if (newTimerVal==30) AUDIO_TIMER_30();
               if (newTimerVal==20) AUDIO_TIMER_20();
-              if (newTimerVal==00) AUDIO_TIMER_00(g_model.timers[i].countdownBeep);
               if (newTimerVal<=10) AUDIO_TIMER_LT10(g_model.timers[i].countdownBeep, newTimerVal);
             }
             if (g_model.timers[i].minuteBeep && (newTimerVal % 60)==0) {
@@ -4978,6 +4981,10 @@ inline void opentxInit(OPENTX_INIT_ARGS)
   
   lcdSetContrast();
   backlightOn();
+
+#if defined(PCBTARANIS)
+  uart3Init(g_eeGeneral.uart3Mode);
+#endif
 
 #if defined(CPUARM)
   init_trainer_capture();

@@ -69,7 +69,7 @@
 #define TR_TRNCHN        "CH1CH2CH3CH4"
 
 #define LEN_UART3MODES   "\017"
-#define TR_UART3MODES    "OFF\0           ""SPORT Mirror\0  ""Virtual SP2UART"
+#define TR_UART3MODES    "OFF\0           ""S-Port Mirror\0 ""Debug\0"
 
 #define LEN_POTTYPES     "\017"
 #define TR_POTTYPES      "Pot\0           ""Multipos Switch"

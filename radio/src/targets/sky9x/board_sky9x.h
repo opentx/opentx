@@ -258,4 +258,7 @@ void rotencEnd();
   #define rotencDown()  0
 #endif
 
+// Debug driver
+void debugPutc(const char c);
+
 #endif

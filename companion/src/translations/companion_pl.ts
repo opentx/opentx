@@ -4905,6 +4905,11 @@ p, li { white-space: pre-wrap; }
         <translation>Portugalski</translation>
     </message>
     <message>
+        <location filename="../helpers.cpp" line="51"/>
+        <source>Polish</source>
+        <translation>Polski</translation>
+    </message>
+    <message>
         <location filename="../helpers.cpp" line="86"/>
         <source>No</source>
         <translation>Nie</translation>
