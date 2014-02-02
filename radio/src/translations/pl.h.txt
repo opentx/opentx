@@ -68,14 +68,14 @@
 #define LEN_TRNCHN             "\003"
 #define TR_TRNCHN              "KN1KN2KN3KN4"
 
-#define LEN_UART3MODES         "\017"
-#define TR_UART3MODES          "WYŁ\0           ""SPORT Mirror\0  ""Wirtualny SP2UART"
+#define LEN_UART3MODES         "\021"
+#define TR_UART3MODES          "WYŁ\0             ""SPORT Mirror\0    ""Wirtualny SP2UART"
 
 #define LEN_POTTYPES           "\017"
-#define TR_POTTYPES            "Potencj.\0      ""Prz.Wielopoz  "
+#define TR_POTTYPES            "Potencj.\0      ""Prz.Wielopoz\0  "
 
 #define LEN_DATETIME           "\006"
-#define TR_DATETIME            "DATA:""CZAS:\0 "
+#define TR_DATETIME            "DATA:\0""CZAS:\0"
 
 #define LEN_VLCD               "\006"
 #define TR_VLCD                "Normal""Optrex"
