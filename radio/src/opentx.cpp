@@ -2519,7 +2519,7 @@ void getADC()
 #if defined(PCBTARANIS)
     if (s_noScroll) v = temp[x] >> 1;
     StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[x];
-    if (IS_MULTIPOS_POT(x) && calib->count>0 && calib->count<POTS_POS_COUNT) {
+    if (!s_noScroll && IS_MULTIPOS_POT(x) && calib->count>0 && calib->count<POTS_POS_COUNT) {
       uint8_t vShifted = (v >> 4);
       s_anaFilt[x] = 2*RESX;
       for (int i=0; i<calib->count; i++) {
