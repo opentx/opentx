@@ -246,7 +246,7 @@ enum BeeperMode {
 enum uartModes {
   UART_MODE_NONE,
   UART_MODE_SPORT,
-  UART_MODE_VIRTUAL_SP2UART,
+//  UART_MODE_VIRTUAL_SP2UART,
 #if defined(DEBUG)
   UART_MODE_DEBUG,
 #endif
