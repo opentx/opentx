@@ -73,7 +73,6 @@ inline void dump(unsigned char *data, unsigned int size)
 extern "C" {
 #endif
 
-void debugPutc(const char c);
 void debugPuts(const char *string, ...);
 void dump(unsigned char *data, unsigned int size);
 

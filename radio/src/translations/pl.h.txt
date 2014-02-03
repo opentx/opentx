@@ -60,19 +60,22 @@
 #define TR_VRENAVIG            "Ne REaREb"
 
 #define LEN_VBLMODE            TR("\006", "\011")
-#define TR_VBLMODE             TR("Wył\0  ""Przyc.""Drążki""Oba\0  ""Zał\0  ", "Wyłaczone""Przyciski""Drązki\0  ""Oba\0     ""Włączyć\0 ")
+#define TR_VBLMODE             TR("Wył\0  ""Przyc.""Drążki""Oba\0  ""Zał\0  ", "Wyłączone""Przyciski""Drązki\0  ""Oba\0     ""Włączyć\0 ")
 
 #define LEN_TRNMODE            "\003"
 #define TR_TRNMODE             " X "" +="" :="
 
 #define LEN_TRNCHN             "\003"
-#define TR_TRNCHN              "CH1CH2CH3CH4"
+#define TR_TRNCHN              "KN1KN2KN3KN4"
 
 #define LEN_UART3MODES         "\017"
-#define TR_UART3MODES          "OFF\0           ""SPORT Mirror\0  ""Virtual SP2UART"
+#define TR_UART3MODES          "Wyłącz\0        ""S-Port Mirror\0 ""Debug\0         "
+
+#define LEN_POTTYPES           "\017"
+#define TR_POTTYPES            "Potencjometr\0  ""Przeł.Wielopoz."
 
 #define LEN_DATETIME           "\006"
-#define TR_DATETIME            "DANA:""Czas:\0 "
+#define TR_DATETIME            "DATA:\0""CZAS:\0"
 
 #define LEN_VLCD               "\006"
 #define TR_VLCD                "Normal""Optrex"
@@ -483,7 +486,6 @@
 #define TR_SPLASHSCREEN        "Logo ekranu"
 #define TR_THROTTLEWARNING     "(\043)Gaz"
 #define TR_SWITCHWARNING       "(\043)Przełącznik"
-#define TR_POTWARNING          TR("Pot Warn.","Pot Warning")
 #define TR_TIMEZONE            "Strefa czasowa"
 #define TR_RXCHANNELORD        TR("Kolejność kanałów", "Bazowa kolejność kanałów")
 #define TR_SLAVE               "Uczeń"
@@ -679,23 +681,22 @@
 #define TR_LOWALARM            INDENT "Alarm niski"
 #define TR_CRITICALALARM       INDENT "Alarm krytyczny"
 #define TR_PERSISTENT_MAH      INDENT "Zapisz mAh"
-#define TR_CHECKLIST           "Display Checklist"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 #define TR_UART3MODE           "Port szreg."
-#define TR_POT1TYPE            "S1 Type"
-#define TR_POT2TYPE            "S2 Type"
+#define TR_POT1TYPE            "Typ S1"
+#define TR_POT2TYPE            "Typ S2"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL  "Max RSSI"
   #define TR_MAVLINK_PC_RSSI_EN_LABEL     "PC RSSI EN"
-  #define TR_MAVMENUSETUP_TITLE           "Mavlink Setup"
+  #define TR_MAVMENUSETUP_TITLE           "Ustawienia Mavlink"
   #define TR_MAVLINK_BAUD_LABEL           "Baudrate"
   #define TR_MAVLINK_INFOS                "INFO"
   #define TR_MAVLINK_MODE                 "TRYB"
   #define TR_MAVLINK_CUR_MODE             "Aktualy Tryb"
   #define TR_MAVLINK_ARMED                "Armed"
   #define TR_MAVLINK_BAT_MENU_TITLE       "BAT RSSI"
-  #define TR_MAVLINK_BATTERY_LABEL        "Status baterii "
+  #define TR_MAVLINK_BATTERY_LABEL        "Status bateri"
   #define TR_MAVLINK_RC_RSSI_LABEL        "RC RSSI"
   #define TR_MAVLINK_PC_RSSI_LABEL        "PC RSSI"
   #define TR_MAVLINK_NAV_MENU_TITLE       "NAV"
@@ -772,7 +773,7 @@
 #define TR_BEEP_VOLUME         "Głośność pikania"
 #define TR_WAV_VOLUME          "Głośność wav"
 #define TR_VARIO_VOLUME        "Głośność wario"
-#define TR_BG_VOLUME           "Głośnośc tła "
+#define TR_BG_VOLUME           "Głośność tła "
 
 #define TR_TOP_BAR             "Górny Pasek"
 #define TR_ALTITUDE            INDENT "Wysokość"

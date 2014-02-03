@@ -1200,8 +1200,12 @@ void menuGeneralHardware(uint8_t event)
       }
 
       case ITEM_SETUP_HW_UART3_MODE:
-      	g_eeGeneral.hw_uartMode = selectMenuItem(HW_SETTINGS_COLUMN, y, STR_UART3MODE, STR_UART3MODES, g_eeGeneral.hw_uartMode, 0, 2, attr, event);
+      	g_eeGeneral.uart3Mode = selectMenuItem(HW_SETTINGS_COLUMN, y, STR_UART3MODE, STR_UART3MODES, g_eeGeneral.uart3Mode, 0, UART_MODE_MAX, attr, event);
+        if (checkIncDec_Ret) {
+      	  uart3Init(g_eeGeneral.uart3Mode);
+      	}
         break;
+
     }
   }
   	
@@ -1301,7 +1305,7 @@ void menuCommonCalib(uint8_t event)
         else {
           if (reusableBuffer.calib.xpotsCalib[idx].lastCount < 255) reusableBuffer.calib.xpotsCalib[idx].lastCount++;
         }
-        if (reusableBuffer.calib.xpotsCalib[idx].lastCount == 8/*80ms*/) {
+        if (reusableBuffer.calib.xpotsCalib[idx].lastCount == 10/*100ms*/) {
           int16_t position = reusableBuffer.calib.xpotsCalib[idx].lastPosition;
           bool found = false;
           for (int j=0; j<count; j++) {
@@ -1313,9 +1317,6 @@ void menuCommonCalib(uint8_t event)
           if (!found) {
             if (count < POTS_POS_COUNT) {
               reusableBuffer.calib.xpotsCalib[idx].steps[count] = position;
-            }
-            else {
-              g_eeGeneral.potsType &= !(1<<idx);
             }
             reusableBuffer.calib.xpotsCalib[idx].stepsCount += 1;
           }
@@ -1399,6 +1400,9 @@ void menuCommonCalib(uint8_t event)
           for (int j=0; j<calib->count; j++) {
             calib->steps[j] = (reusableBuffer.calib.xpotsCalib[idx].steps[j+1] + reusableBuffer.calib.xpotsCalib[idx].steps[j]) >> 5;
           }
+        }
+        else {
+          g_eeGeneral.potsType &= ~(1<<idx);
         }
       }
 #endif

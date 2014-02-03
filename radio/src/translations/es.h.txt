@@ -1,4 +1,4 @@
-﻿﻿/*
+/*
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bernet Andre <bernet.andre@gmail.com>
@@ -69,7 +69,7 @@
 #define TR_TRNCHN              "CH1CH2CH3CH4"
 
 #define LEN_UART3MODES         "\017"
-#define TR_UART3MODES          "OFF\0           ""SPORT Mirror\0  ""Virtual SP2UART"
+#define TR_UART3MODES          "OFF\0           ""S-Port Mirror\0 ""Debug\0         "
 
 #define LEN_POTTYPES           "\017"
 #define TR_POTTYPES            "Pot\0           ""Multipos Switch"
@@ -486,7 +486,6 @@
 #define TR_SPLASHSCREEN        "Ptalla.inicio"
 #define TR_THROTTLEWARNING     TR("Aviso-A", "Aviso Acelerador")
 #define TR_SWITCHWARNING       TR("Aviso-I", "Aviso Intrptor")
-#define TR_POTWARNING          TR("Pot Warn.","Pot Warning")
 #define TR_TIMEZONE            TR("Zona Hora", "GPS Zona Hora")
 #define TR_RXCHANNELORD        TR("Rx Orden canal", "Orden habitual canales")
 #define TR_SLAVE               "Esclavo"
@@ -681,7 +680,6 @@
 #define TR_CHANNELRANGE        INDENT "Gama de canales"
 #define TR_LOWALARM            INDENT "Alarma baja"
 #define TR_CRITICALALARM       INDENT "Alarma Critica"
-#define TR_CHECKLIST           "Display Checklist"
 #define TR_PERSISTENT_MAH      INDENT "Valor mAh"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 #define TR_UART3MODE           "Serial port"

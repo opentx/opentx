@@ -69,7 +69,10 @@
 #define TR_TRNCHN              "CH1CH2CH3CH4"
 
 #define LEN_UART3MODES         "\017"
-#define TR_UART3MODES          "OFF\0           ""SPORT Mirror\0  ""Virtual SP2UART"
+#define TR_UART3MODES          "OFF\0           ""S-Port Mirror\0 ""Debug\0         "
+
+#define LEN_POTTYPES           "\017"
+#define TR_POTTYPES            "Pot\0           ""Multipos Switch"
 
 #define LEN_DATETIME           "\006"
 #define TR_DATETIME            "DATUM:""ČAS:  "
@@ -545,16 +548,16 @@
 #define TR_MENUFLIGHTPHASES    "LETOVÉ REŽIMY"
 #define TR_MENUHELISETUP       "HELI"
 
-
-// Alignment
-
-
-
-
-
-#define TR_MENUINPUTS          "DR/EXPO"
-#define TR_MENULIMITS          "LIMITY"
-
+#if defined(PCBTARANIS)
+  #define TR_MENUINPUTS        "INPUTS"
+  #define TR_MENULIMITS        "SERVOS"
+#elif defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...
+  #define TR_MENUINPUTS        "STICKS"
+  #define TR_MENULIMITS        "SERVOS"
+#else
+  #define TR_MENUINPUTS        "DR/EXPO"
+  #define TR_MENULIMITS        "LIMITY"
+#endif
 
 #define TR_MENUCURVES          "KŘIVKY"
 #define TR_MENUCURVE           "\002k"

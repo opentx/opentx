@@ -68,11 +68,11 @@
 #define LEN_TRNCHN             "\003"
 #define TR_TRNCHN              "KN1KN2KN3KN4"
 
-#define LEN_UART3MODES         "\017"
-#define TR_UART3MODES          "Av\0            ""SPORT-spegel\0  ""VirtuellSP2UART"
+#define LEN_UART3MODES         "\022"
+#define TR_UART3MODES          "Av\0               ""Spegling av S-Port""Debug\0            "
 
-#define LEN_POTTYPES           "\017"
-#define TR_POTTYPES            "Pot\0           ""Multipos Switch"
+#define LEN_POTTYPES           "\020"
+#define TR_POTTYPES            "Potentiometer\0  ""Flerlägesväljare"
 
 #define LEN_DATETIME           "\005"
 #define TR_DATETIME            "DAG: ""TID: "
@@ -486,7 +486,6 @@
 #define TR_SPLASHSCREEN        "Startbild"
 #define TR_THROTTLEWARNING     "Gasvarning"
 #define TR_SWITCHWARNING       TR("Bryt.varn.","Brytarvarning")
-#define TR_POTWARNING          TR("Pot Warn.","Pot Warning")
 #define TR_TIMEZONE            TR("Tidszon","GPS Tidszon")
 #define TR_RXCHANNELORD        "Kanaler i RX"
 #define TR_SLAVE               "Slav"
@@ -525,15 +524,15 @@
 #define TR_MODEL               "Modell"
 #define TR_FP                  "FL"
 #define TR_MIX                 "MIX"
-#define TR_EEPROMLOWMEM        "EEPROM low mem"
+#define TR_EEPROMLOWMEM        "Minnesbrist"
 #define TR_ALERT               "\016OBS"
 #define TR_PRESSANYKEYTOSKIP   "Tryck ned en knapp"
 #define TR_THROTTLENOTIDLE     "Gasen är påslagen!"
 #define TR_ALARMSDISABLED      "Alarmen Avstängda!"
-#define TR_PRESSANYKEY         TR("Tryck ned en knapp", "Tryck ned en knapp")
-#define TR_BADEEPROMDATA       "EEprom Datafel "
-#define TR_EEPROMFORMATTING    "Formaterar EEprom"
-#define TR_EEPROMOVERFLOW      "Fel i EEprom"
+#define TR_PRESSANYKEY         "Tryck ned en knapp"
+#define TR_BADEEPROMDATA       "Minnet kan inte tolkas"
+#define TR_EEPROMFORMATTING    "Minnet Nollställs"
+#define TR_EEPROMOVERFLOW      "Minnesfel"
 #define TR_MENURADIOSETUP      "Inställningar"
 #define TR_MENUDATEANDTIME     "Dag och Tid"
 #define TR_MENUTRAINER         "Trainer (PPM in)"
@@ -682,11 +681,10 @@
 #define TR_LOWALARM            INDENT "Låg-alarm"
 #define TR_CRITICALALARM       INDENT "Kritiskt alarm"
 #define TR_PERSISTENT_MAH      INDENT "Store mAh"
-#define TR_CHECKLIST           "Display Checklist"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
-#define TR_UART3MODE           "Serieport"
-#define TR_POT1TYPE            "S1 Type"
-#define TR_POT2TYPE            "S2 Type"
+#define TR_UART3MODE           "Serieporten"
+#define TR_POT1TYPE            "S1-ratten"
+#define TR_POT2TYPE            "S2-ratten"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL  "Max RSSI"
@@ -707,7 +705,7 @@
   #define TR_MAVLINK_BEARING              "Bäring"
   #define TR_MAVLINK_ALTITUDE             "Höjd"
   #define TR_MAVLINK_GPS                  "GPS"
-  #define TR_MAVLINK_NO_FIX               "NO Fix"
+  #define TR_MAVLINK_NO_FIX               "EJ Lås"
   #define TR_MAVLINK_SAT                  "SAT"
   #define TR_MAVLINK_HDOP                 "HDOP"
   #define TR_MAVLINK_LAT                  "LAT"
