@@ -1053,7 +1053,6 @@ enum Capability {
  LCDWidth,
  GetThrSwitch,
  HasDisplayText,
- PotWarnings,
  VirtualInputs,
  LuaInputs,
  LimitsPer1000,

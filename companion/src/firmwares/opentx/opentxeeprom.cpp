@@ -1970,7 +1970,7 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
   if (IS_ARM(board) && version >= 216) {
     internalField.Append(new UnsignedField<8>(modelData.nSwToWarn));
     internalField.Append(new UnsignedField<8>(modelData.nPotsToWarn));
-    for (int i=0; i < GetEepromInterface()->getCapability(PotWarnings); i++) {
+    for (int i=0; i < GetEepromInterface()->getCapability(Pots); i++) {
       internalField.Append(new SignedField<8>(modelData.potPosition[i]));
 	}
   }
@@ -1988,7 +1988,7 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
       internalField.Append(new ZCharField<4>(modelData.inputNames[i]));
     internalField.Append(new UnsignedField<8>(modelData.nSwToWarn));
     internalField.Append(new UnsignedField<8>(modelData.nPotsToWarn));
-    for (int i=0; i < GetEepromInterface()->getCapability(PotWarnings); i++) {
+    for (int i=0; i < GetEepromInterface()->getCapability(Pots); i++) {
       internalField.Append(new SignedField<8>(modelData.potPosition[i]));
     }
   }

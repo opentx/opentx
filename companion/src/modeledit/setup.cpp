@@ -409,13 +409,12 @@ Setup::Setup(QWidget *parent, ModelData & model):
     connect(checkbox, SIGNAL(toggled(bool)), this, SLOT(onBeepCenterToggled(bool)));
     centerBeepCheckboxes << checkbox;
   }
-  ui->switchesStartupLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum), 0, analogs+GetEepromInterface()->getCapability(RotaryEncoders));
 
   // Startup switches warnings
   for (int i=0; i<GetEepromInterface()->getCapability(Switches)-1; i++) {
-    QLabel * label = new QLabel();
-    QSlider * slider = new QSlider();
-    QCheckBox * cb = new QCheckBox();
+    QLabel * label = new QLabel(this);
+    QSlider * slider = new QSlider(this);
+    QCheckBox * cb = new QCheckBox(this);
     slider->setProperty("index", i+1);
     slider->setOrientation(Qt::Vertical);
     slider->setMinimum(0);
@@ -441,13 +440,28 @@ Setup::Setup(QWidget *parent, ModelData & model):
     ui->switchesStartupLayout->setAlignment(slider, Qt::AlignCenter);
     ui->switchesStartupLayout->addWidget(cb, 2, i+1);
     ui->switchesStartupLayout->setAlignment(cb, Qt::AlignCenter);
-    connect(slider, SIGNAL(valueChanged(int)), this, SLOT(startupSwitchEdited(int)));
-    connect(cb, SIGNAL(toggled(bool)), this, SLOT(startupSwitchToggled(bool)));
+    connect(slider, SIGNAL(valueChanged(int)), this, SLOT(on_startupSwitchEdited(int)));
+    connect(cb, SIGNAL(toggled(bool)), this, SLOT(on_startupSwitchToggled(bool)));
     startupSwitchesSliders << slider;
     startupSwitchesCheckboxes << cb;
   }
   ui->switchesStartupLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum), 0, GetEepromInterface()->getCapability(Switches));
 
+  // Pot warnings
+  if(IS_TARANIS(GetEepromInterface()->getBoard())) {
+    for (int i=0; i<GetEepromInterface()->getCapability(Pots); i++) {
+      QCheckBox * cb = new QCheckBox(this);
+      cb->setProperty("index", i+1);
+      cb->setText(AnalogString(i+4));
+      ui->potWarningLayout->addWidget(cb, 0, i+1);
+      connect(cb, SIGNAL(toggled(bool)), this, SLOT(on_potWarningToggled(bool)));
+      potWarningCheckboxes << cb;
+    }
+  }
+  else {
+    ui->label_potWarning->hide();
+    ui->potWarningMode->hide();
+  }
   lock = false;
 }
 
@@ -549,6 +563,7 @@ void Setup::update()
 
   updateBeepCenter();
   updateStartupSwitches();
+  updatePotWarnings();
 
   for (int i=0; i<C9X_MAX_TIMERS; i++)
     timers[i]->update();
@@ -591,7 +606,7 @@ void Setup::updateStartupSwitches()
   lock = false;
 }
 
-void Setup::startupSwitchEdited(int value)
+void Setup::on_startupSwitchEdited(int value)
 {
   if (!lock) {
     int shift = 0;
@@ -635,16 +650,61 @@ void Setup::startupSwitchEdited(int value)
   }
 }
 
-void Setup::startupSwitchToggled(bool checked)
+void Setup::on_startupSwitchToggled(bool checked)
 {
-  int index = sender()->property("index").toInt()-1;
+  if (!lock) {
+    int index = sender()->property("index").toInt()-1;
   
-  if (checked)
-    model.nSwToWarn &= ~(1 << index);
-  else
-    model.nSwToWarn |= (1 << index);
+    if (checked)
+      model.nSwToWarn &= ~(1 << index);
+    else
+      model.nSwToWarn |= (1 << index);
 
-  updateStartupSwitches();
+    updateStartupSwitches();
+    emit modified();
+  }
+}
+
+void Setup::updatePotWarnings()
+{
+  lock = true;
+    int mode = model.nPotsToWarn >> 6;
+    ui->potWarningMode->setCurrentIndex(mode);
+    
+    if (mode == 0)
+      model.nPotsToWarn = 0x3F;
+
+    for (int i=0; i<GetEepromInterface()->getCapability(Pots); i++) {
+      bool enabled = !(model.nPotsToWarn & (1 << i));
+
+      potWarningCheckboxes[i]->setChecked(enabled);
+      potWarningCheckboxes[i]->setDisabled(mode == 0);
+    }
+  lock = false;
+}
+
+void Setup::on_potWarningToggled(bool checked)
+{
+  if (!lock) {
+    int index = sender()->property("index").toInt()-1;
+
+    if(checked)
+      model.nPotsToWarn &= ~(1 << index);
+    else
+      model.nPotsToWarn |= (1 << index);
+
+    updatePotWarnings();
+    emit modified();
+  }
+}
+
+void Setup::on_potWarningMode_currentIndexChanged(int index)
+{
+  int mask = 0xC0;
+  model.nPotsToWarn = model.nPotsToWarn & ~mask;
+  model.nPotsToWarn = model.nPotsToWarn | ((index << 6) & mask);
+
+  updatePotWarnings();
   emit modified();
 }
 

@@ -6,6 +6,7 @@
 #include <QCheckBox>
 #include <QSlider>
 #include <QSpinBox>
+#include <QLabel>
 
 namespace Ui {
   class Setup;
@@ -87,18 +88,22 @@ class Setup : public ModelPanel
     void on_image_currentIndexChanged(int index);
     void on_trimIncrement_currentIndexChanged(int index);
     void onBeepCenterToggled(bool checked);
-    void startupSwitchEdited(int value);
-    void startupSwitchToggled(bool checked);
+    void on_startupSwitchEdited(int value);
+    void on_startupSwitchToggled(bool checked);
+    void on_potWarningToggled(bool checked);
+    void on_potWarningMode_currentIndexChanged(int index);
     void onChildModified();
 
   private:
     Ui::Setup *ui;
     QVector<QSlider *> startupSwitchesSliders;
     QVector<QCheckBox *> startupSwitchesCheckboxes;
+    QVector<QCheckBox *> potWarningCheckboxes;
     QVector<QCheckBox *> centerBeepCheckboxes;
     ModulePanel * modules[C9X_NUM_MODULES+1];
     TimerPanel * timers[C9X_MAX_TIMERS];
     void updateStartupSwitches();
+    void updatePotWarnings();
     void updateBeepCenter();
 };
 
