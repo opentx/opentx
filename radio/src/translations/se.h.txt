@@ -362,7 +362,7 @@
 #define TR_VTMRMODES           "Av\0""ABS""GAs""GA%""GAt"
 
 #define LEN_VTRAINERMODES      "\006"
-#define TR_VTRAINERMODES       "Master""Slav\0."
+#define TR_VTRAINERMODES       "Lärare""Elev\0."
 
 #define LEN_VFAILSAFE          "\011"
 #define TR_VFAILSAFE           "Håll\0    ""Special\0 ""Pulsfritt"
@@ -488,7 +488,7 @@
 #define TR_SWITCHWARNING       TR("Bryt.varn.","Brytarvarning")
 #define TR_TIMEZONE            TR("Tidszon","GPS Tidszon")
 #define TR_RXCHANNELORD        "Kanaler i RX"
-#define TR_SLAVE               "Slav"
+#define TR_SLAVE               "Elev"
 #define TR_MODESRC             " Läge\004% Källa"
 #define TR_MULTIPLIER          "Styrka"
 #define TR_CAL                 "Kalib."
@@ -548,7 +548,7 @@
 #define TR_MENUHELISETUP       "Helikopter"
 
 #if defined(PCBTARANIS)
-  #define TR_MENUINPUTS        "Filter"
+  #define TR_MENUINPUTS        TR("Filter","Filtrerad Insignal")
   #define TR_MENULIMITS        "Gränser"
 #elif defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...
   #define TR_MENUINPUTS        "Spakar" 
