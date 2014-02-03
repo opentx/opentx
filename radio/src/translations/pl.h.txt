@@ -68,8 +68,8 @@
 #define LEN_TRNCHN             "\003"
 #define TR_TRNCHN              "KN1KN2KN3KN4"
 
-#define LEN_UART3MODES         "\021"
-#define TR_UART3MODES          "Wyłącz\0        ""S-Port Mirror\0  ""Virtual SP2UART"
+#define LEN_UART3MODES         "\017"
+#define TR_UART3MODES          "Wyłącz\0        ""S-Port Mirror\0 ""Debug\0         "
 
 #define LEN_POTTYPES           "\017"
 #define TR_POTTYPES            "Potencjometr\0  ""Przeł.Wielopoz."
