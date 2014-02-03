@@ -1046,6 +1046,16 @@ int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t m
 }
 #endif
 
+void repeatLastCursorMove(uint8_t event)
+{
+  if (CURSOR_MOVED_LEFT(event) || CURSOR_MOVED_RIGHT(event)) {
+    putEvent(event);
+  }
+  else {
+    m_posHorz = 0;
+  }
+}
+
 #if LCD_W >= 212
 #define MENU_X   30
 #define MENU_Y   16

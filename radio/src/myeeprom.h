@@ -693,63 +693,54 @@ PACK(typedef struct t_CustomSwData { // Custom Switches data
 #endif
 
 enum Functions {
-#if defined(CPUARM)
-  FUNC_SAFETY_CH1,
-  FUNC_SAFETY_CH16=FUNC_SAFETY_CH1+15,
-#else
-  FUNC_SAFETY_GROUP1,
-  FUNC_SAFETY_GROUP2,
-  FUNC_SAFETY_GROUP3,
-  FUNC_SAFETY_GROUP4,
-#endif
+  // first the functions which need a checkbox
+  FUNC_SAFETY_CHANNEL,
   FUNC_TRAINER,
-  FUNC_TRAINER_RUD,
-  FUNC_TRAINER_ELE,
-  FUNC_TRAINER_THR,
-  FUNC_TRAINER_AIL,
   FUNC_INSTANT_TRIM,
-  FUNC_PLAY_SOUND,
-#if !defined(PCBTARANIS)
-  FUNC_HAPTIC,
-#endif
   FUNC_RESET,
-  FUNC_VARIO,
+  FUNC_ADJUST_GVAR,
+#if defined(CPUARM)
+  FUNC_VOLUME,
+#endif
+
+  // then the other functions
+  FUNC_FIRST_WITHOUT_ENABLE,
+  FUNC_PLAY_SOUND = FUNC_FIRST_WITHOUT_ENABLE,
   FUNC_PLAY_TRACK,
 #if !defined(CPUARM)
   FUNC_PLAY_BOTH,
 #endif
   FUNC_PLAY_VALUE,
-#if !defined(PCBSTD)
-  FUNC_LOGS,
-#endif
-#if defined(CPUARM)
-  FUNC_VOLUME,
-#endif
-  FUNC_BACKLIGHT,
 #if defined(CPUARM)
   FUNC_BACKGND_MUSIC,
   FUNC_BACKGND_MUSIC_PAUSE,
 #endif
-#if defined(GVARS)
-  FUNC_ADJUST_GV1,
-  FUNC_ADJUST_GVLAST = (FUNC_ADJUST_GV1 + (MAX_GVARS-1)),
+  FUNC_VARIO,
+  FUNC_HAPTIC,
+#if !defined(PCBSTD)
+  FUNC_LOGS,
 #endif
+  FUNC_BACKLIGHT,
 #if defined(DEBUG)
   FUNC_TEST, // should remain the last before MAX as not added in companion9x
 #endif
   FUNC_MAX
 };
 
+#define HAS_ENABLE_PARAM(func) (func < FUNC_FIRST_WITHOUT_ENABLE)
+
 #if defined(CPUARM)
-  #define IS_PLAY_BOTH_FUNC(sd) (0)
+  #define IS_PLAY_BOTH_FUNC(func) (0)
+  #define IS_VOLUME_FUNC(func)    (func == FUNC_VOLUME)
 #else
-  #define IS_PLAY_BOTH_FUNC(sd) (CFN_FUNC(sd) == FUNC_PLAY_BOTH)
+  #define IS_PLAY_BOTH_FUNC(func) (func == FUNC_PLAY_BOTH)
+  #define IS_VOLUME_FUNC(func)    (0)
 #endif
 
 #if defined(GVARS)
-  #define IS_ADJUST_GV_FUNCTION(sd)  (CFN_FUNC(sd) >= FUNC_ADJUST_GV1 && CFN_FUNC(sd) <= FUNC_ADJUST_GVLAST)
+  #define IS_ADJUST_GV_FUNC(func) (func == FUNC_ADJUST_GVAR)
 #else
-  #define IS_ADJUST_GV_FUNCTION(sd)  (0)
+  #define IS_ADJUST_GV_FUNC(func) (0)
 #endif
 
 #if defined(VOICE)
@@ -814,34 +805,20 @@ PACK(typedef struct t_CustomFnData { // Function Switches data
 #define CFN_RESET(p)            (p->active = 0, memset(&(p)->param, 0, sizeof((p)->param)))
 #else
 PACK(typedef struct t_CustomFnData {
-  int8_t  swtch; // input
-  union {
-    struct {
-      uint8_t param:3;
-      uint8_t func:5;
-    } func_param;
-
-    struct {
-      uint8_t active:1;
-      uint8_t param:2;
-      uint8_t func:5;
-    } func_param_enable;
-
-    struct {
-      uint8_t active:1;
-      uint8_t func:7;
-    } func_safety;
-  } internal;
-  uint8_t param;
+  uint8_t  value;
+  uint8_t  func:5;
+  uint8_t  active:1;
+  int16_t  swtch:6;
+  uint8_t  param:4;
 }) CustomFnData;
-#define CFN_FUNC(p)         ((p)->internal.func_param.func)
-#define CFN_ACTIVE(p)       ((p)->internal.func_param_enable.active)
-#define CFN_CH_NUMBER(p)    ((p)->internal.func_safety.func)
-#define CFN_PLAY_REPEAT(p)  ((p)->internal.func_param.param)
+#define CFN_FUNC(p)         ((p)->func)
+#define CFN_ACTIVE(p)       ((p)->active)
+#define CFN_CH_NUMBER(p)    ((p)->param)
+#define CFN_PLAY_REPEAT(p)  ((p)->param)
 #define CFN_PLAY_REPEAT_MUL 10
-#define CFN_GVAR_MODE(p)    ((p)->internal.func_param_enable.param)
-#define CFN_PARAM(p)        ((p)->param)
-#define CFN_RESET(p)        ((p)->internal.func_param_enable.active = 0, CFN_PARAM(p) = 0)
+#define CFN_GVAR_MODE(p)    ((p)->param)
+#define CFN_PARAM(p)        ((p)->value)
+#define CFN_RESET(p)        ((p)->active = 0, CFN_PARAM(p) = 0)
 #endif
 
 enum TelemetryUnit {

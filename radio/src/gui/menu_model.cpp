@@ -4687,7 +4687,7 @@ void onCustomFunctionsMenu(const char *result)
 
 void menuModelCustomFunctions(uint8_t event)
 {
-  MENU(STR_MENUCUSTOMFUNC, menuTabModel, e_CustomFunctions, NUM_CFN+1, {0, NAVIGATION_LINE_BY_LINE|3/*repeated*/});
+  MENU(STR_MENUCUSTOMFUNC, menuTabModel, e_CustomFunctions, NUM_CFN+1, {0, NAVIGATION_LINE_BY_LINE|4/*repeated*/});
 
   uint8_t y;
   uint8_t k = 0;
@@ -4720,7 +4720,8 @@ void menuModelCustomFunctions(uint8_t event)
 #endif
 
     CustomFnData *sd = &g_model.funcSw[k];
-    for (uint8_t j=0; j<4; j++) {
+    uint8_t func = CFN_FUNC(sd);
+    for (uint8_t j=0; j<5; j++) {
       uint8_t attr = ((sub==k && m_posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       uint8_t active = (attr && (s_editMode>0 || p1valdiff));
       switch (j) {
@@ -4731,228 +4732,197 @@ void menuModelCustomFunctions(uint8_t event)
 
         case 1:
           if (sd->swtch) {
-            uint8_t func_displayed;
-            if (CFN_FUNC(sd) < FUNC_TRAINER) {
-              func_displayed = 0;
-              putsChn(MODEL_CUSTOM_FUNC_2ND_COLUMN+6*FW, y, CFN_CH_NUMBER(sd)+1, attr);
-            }
-            else if (CFN_FUNC(sd) <= FUNC_TRAINER + NUM_STICKS) {
-              func_displayed = 1;
-              if (CFN_FUNC(sd) != FUNC_TRAINER)
-                putsMixerSource(MODEL_CUSTOM_FUNC_2ND_COLUMN+7*FW, y, MIXSRC_Rud+CFN_FUNC(sd)-FUNC_TRAINER-1, attr);
-            }
-#if defined(DEBUG)
-            else if (CFN_FUNC(sd) == FUNC_TEST) {
-#if defined(GVARS)
-              func_displayed = FUNC_TEST - FUNC_TRAINER - NUM_STICKS - MAX_GVARS + 2;
-#else
-              func_displayed = FUNC_TEST - FUNC_TRAINER - NUM_STICKS + 1;
-#endif
-            }
-#endif
-#if defined(GVARS)
-            else if (CFN_FUNC(sd) >= FUNC_ADJUST_GV1) {
-              func_displayed = FUNC_ADJUST_GV1 - FUNC_TRAINER - NUM_STICKS + 1;
-              putsStrIdx(MODEL_CUSTOM_FUNC_2ND_COLUMN+7*FW, y, STR_GV, CFN_FUNC(sd)-FUNC_ADJUST_GV1+1, attr);
-            }
-#endif
-            else {
-              func_displayed = 2 + CFN_FUNC(sd) - FUNC_TRAINER - NUM_STICKS - 1;
-            }
-            lcd_putsiAtt(MODEL_CUSTOM_FUNC_2ND_COLUMN, y, STR_VFSWFUNC, func_displayed, attr);
+            lcd_putsiAtt(MODEL_CUSTOM_FUNC_2ND_COLUMN, y, STR_VFSWFUNC, func, attr);
             if (active) {
-#if defined(CPUARM)
               CHECK_INCDEC_MODELVAR_ZERO(event, CFN_FUNC(sd), FUNC_MAX-1);
-#else
-              if (CFN_FUNC(sd) < FUNC_TRAINER) {
-                CHECK_INCDEC_MODELVAR_ZERO(event, sd->internal.func_safety.func, 16);
-              }
-              else {
-                CHECK_INCDEC_MODELVAR_ZERO(event, CFN_FUNC(sd), FUNC_MAX-1);
-                if (CFN_FUNC(sd) < FUNC_TRAINER)
-                  sd->internal.func_safety.func = 15;
-              }
-#endif
               if (checkIncDec_Ret) CFN_RESET(sd);
             }
           }
-          else if (attr) {
-            REPEAT_LAST_CURSOR_MOVE();
+          else {
+            j = 4; // skip other fields
+            if (attr && m_posHorz > 0) {
+              REPEAT_LAST_CURSOR_MOVE();
+            }
           }
           break;
 
         case 2:
-          if (sd->swtch) {
-            INCDEC_DECLARE_VARS();
-            int16_t val_displayed = CFN_PARAM(sd);
-            int8_t val_min = 0;
-            uint8_t val_max = 255;
-            if (CFN_FUNC(sd) == FUNC_PLAY_SOUND) {
-#if defined(AUDIO)
-              val_max = AU_FRSKY_LAST-AU_FRSKY_FIRST-1;
-              lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_FUNCSOUNDS, val_displayed, attr);
-#else
-              break;
-#endif
-            }
-#if defined(HAPTIC)
-            else if (CFN_FUNC(sd) == FUNC_HAPTIC) {
-              val_max = 3;
-              lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
-            }
-#endif
-#if defined(CPUARM) && defined(SDCARD)
-            else if (CFN_FUNC(sd) == FUNC_PLAY_TRACK || CFN_FUNC(sd) == FUNC_BACKGND_MUSIC) {
-#if LCD_W >= 212
-              xcoord_t x = MODEL_CUSTOM_FUNC_3RD_COLUMN;
-#else
-              xcoord_t x = (CFN_FUNC(sd) == FUNC_PLAY_TRACK ? MODEL_CUSTOM_FUNC_2ND_COLUMN + FW + FW*strlen(TR_PLAY_TRACK) : MODEL_CUSTOM_FUNC_3RD_COLUMN);
-#endif
-              if (ZEXIST(sd->param.name))
-                lcd_putsnAtt(x, y, sd->param.name, sizeof(sd->param.name), attr);
-              else
-                lcd_putsiAtt(x, y, STR_VCSWFUNC, 0, attr);
-              if (active && event==EVT_KEY_BREAK(KEY_ENTER)) {
-                s_editMode = 0;
-                char directory[] = SOUNDS_PATH;
-                strncpy(directory+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
-                if (listSdFiles(directory, SOUNDS_EXT, sizeof(sd->param.name), sd->param.name)) {
-                  menuHandler = onCustomFunctionsFileSelectionMenu;
-                }
-                else {
-                  POPUP_WARNING(STR_NO_SOUNDS_ON_SD);
-                  s_menu_flags = 0;
-                }
-              }
-              break;
-            }
-            else if (CFN_FUNC(sd) == FUNC_PLAY_VALUE) {
-              val_max = MIXSRC_FIRST_TELEM + TELEM_DISPLAY_MAX - 1;
-              putsMixerSource(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr);
-              INCDEC_ENABLE_CHECK(isSourceAvailable);
-            }
-#endif
-#if defined(CPUARM)
-            else if (CFN_FUNC(sd) == FUNC_VOLUME) {
-              val_max = MIXSRC_LAST_CH;
-              putsMixerSource(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr);
-              INCDEC_ENABLE_CHECK(isSourceAvailable);
-            }
-#elif defined(VOICE)
-            else if (CFN_FUNC(sd) == FUNC_PLAY_TRACK) {
-#if defined(GVARS)
-              if (attr && event==EVT_KEY_LONG(KEY_ENTER)) {
-                killEvents(event);
-                s_editMode = !s_editMode;
-                active = true;
-                val_displayed = (val_displayed > 250 ? 0 : 251);
-              }
-              if (val_displayed > 250) {
-                putsStrIdx(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_GV, val_displayed-250, attr);
-              }
-              else {
-                lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed+PROMPT_CUSTOM_BASE, attr|LEFT);
-              }
-#else
-              lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed+PROMPT_CUSTOM_BASE, attr|LEFT);
-#endif
-            }
-            else if (CFN_FUNC(sd) == FUNC_PLAY_BOTH) {
-              lcd_putcAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN+3*FWNUM, y, '|', attr);
-              lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN+3*FWNUM, y, val_displayed+PROMPT_CUSTOM_BASE, attr);
-              lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN+2+3*FWNUM, y, (val_displayed+PROMPT_CUSTOM_BASE+1)%10, attr|LEFT);
-            }
-            else if (CFN_FUNC(sd) == FUNC_PLAY_VALUE) {
-              val_max = MIXSRC_FIRST_TELEM + TELEM_DISPLAY_MAX - 1;
-              putsMixerSource(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr);
-              INCDEC_ENABLE_CHECK(isSourceAvailable);
-            }
-#endif
-#if defined(SDCARD)
-            else if (CFN_FUNC(sd) == FUNC_LOGS) {
-              if (val_displayed) {
-                lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|PREC1|LEFT);
-                lcd_putc(lcdLastPos, y, 's');
-              }
-              else {
-                lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_MMMINV, 0, attr);
-              }
-            }
-#endif
-            else if (CFN_FUNC(sd) == FUNC_RESET) {
-              val_max = FUNC_RESET_PARAM_LAST;
-              lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_VFSWRESET, CFN_PARAM(sd), attr);
-            }
-            else if (CFN_FUNC(sd) < FUNC_TRAINER) {
-              val_displayed = (int8_t)CFN_PARAM(sd);
-              val_min = -125; val_max = 125;
-              lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
-            }
-#if defined(GVARS)
-            else if (CFN_FUNC(sd) >= FUNC_ADJUST_GV1
-#if defined(DEBUG)
-                && CFN_FUNC(sd) <= FUNC_ADJUST_GVLAST
-#endif
-                ) {
-              switch (CFN_GVAR_MODE(sd)) {
-                case FUNC_ADJUST_GVAR_CONSTANT:
-                  val_displayed = (int8_t)CFN_PARAM(sd);
-                  val_min = -125; val_max = 125;
-                  lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
-                  break;
-                case FUNC_ADJUST_GVAR_SOURCE:
-                  val_max = MIXSRC_LAST_CH;
-                  putsMixerSource(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr);
-                  INCDEC_ENABLE_CHECK(isSourceAvailable);
-                  break;
-                case FUNC_ADJUST_GVAR_GVAR:
-                  val_max = MAX_GVARS-1;
-                  putsStrIdx(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_GV, val_displayed+1, attr);
-                  break;
-                default: // FUNC_ADJUST_GVAR_INC
-                  val_max = 1;
-                  lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, PSTR("\002-1+1"), val_displayed, attr);
-                  break;
-              }
-
-              if (attr && event==EVT_KEY_LONG(KEY_ENTER)) {
-                killEvents(event);
-                s_editMode = !s_editMode;
-                active = true;
-                CFN_GVAR_MODE(sd) += 1;
-                val_displayed = 0;
-              }
-            }
-#endif
-            else {
-              if (attr) m_posHorz = (CURSOR_MOVED_LEFT(event) ? 1 : 3);
-              break;
-            }
-
-            if (active) {
-              CFN_PARAM(sd) = CHECK_INCDEC_PARAM(event, val_displayed, val_min, val_max);
-            }
+        {
+          int8_t maxParam = NUM_CHNOUT-1;
+          if (func == FUNC_SAFETY_CHANNEL) {
+            putsChn(MODEL_CUSTOM_FUNC_2ND_COLUMN+6*FW, y, CFN_CH_NUMBER(sd)+1, attr);
           }
+          else if (func == FUNC_TRAINER) {
+            maxParam = 4;
+            putsMixerSource(MODEL_CUSTOM_FUNC_2ND_COLUMN+7*FW, y, MIXSRC_Rud+CFN_CH_NUMBER(sd)-1, attr);
+          }
+#if defined(GVARS)
+          else if (func == FUNC_ADJUST_GVAR) {
+            maxParam = MAX_GVARS-1;
+            putsStrIdx(MODEL_CUSTOM_FUNC_2ND_COLUMN+7*FW, y, STR_GV, CFN_CH_NUMBER(sd)+1, attr);
+          }
+#endif
           else if (attr) {
             REPEAT_LAST_CURSOR_MOVE();
           }
+          if (active) CHECK_INCDEC_MODELVAR_ZERO(event, CFN_CH_NUMBER(sd), maxParam);
           break;
+        }
 
         case 3:
-          if (sd->swtch && (CFN_FUNC(sd) <= FUNC_INSTANT_TRIM || CFN_FUNC(sd) == FUNC_RESET
-#if defined(GVARS)
-              // TODO #define
-              || CFN_FUNC(sd) >= FUNC_ADJUST_GV1
+        {
+          INCDEC_DECLARE_VARS();
+          int16_t val_displayed = CFN_PARAM(sd);
+          int8_t val_min = 0;
+          uint8_t val_max = 255;
+          if (func == FUNC_SAFETY_CHANNEL) {
+            val_displayed = (int8_t)CFN_PARAM(sd);
+            val_min = -125; val_max = 125;
+            lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
+          }
+#if defined(AUDIO)
+          else if (func == FUNC_PLAY_SOUND) {
+            val_max = AU_FRSKY_LAST-AU_FRSKY_FIRST-1;
+            lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_FUNCSOUNDS, val_displayed, attr);
+            break;
+          }
+#endif
+#if defined(HAPTIC)
+          else if (func == FUNC_HAPTIC) {
+            val_max = 3;
+            lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
+          }
+#endif
+#if defined(CPUARM) && defined(SDCARD)
+          else if (func == FUNC_PLAY_TRACK || func == FUNC_BACKGND_MUSIC) {
+#if LCD_W >= 212
+            xcoord_t x = MODEL_CUSTOM_FUNC_3RD_COLUMN;
+#else
+            xcoord_t x = (func == FUNC_PLAY_TRACK ? MODEL_CUSTOM_FUNC_2ND_COLUMN + FW + FW*strlen(TR_PLAY_TRACK) : MODEL_CUSTOM_FUNC_3RD_COLUMN);
+#endif
+            if (ZEXIST(sd->param.name))
+              lcd_putsnAtt(x, y, sd->param.name, sizeof(sd->param.name), attr);
+            else
+              lcd_putsiAtt(x, y, STR_VCSWFUNC, 0, attr);
+            if (active && event==EVT_KEY_BREAK(KEY_ENTER)) {
+              s_editMode = 0;
+              char directory[] = SOUNDS_PATH;
+              strncpy(directory+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
+              if (listSdFiles(directory, SOUNDS_EXT, sizeof(sd->param.name), sd->param.name)) {
+                menuHandler = onCustomFunctionsFileSelectionMenu;
+              }
+              else {
+                POPUP_WARNING(STR_NO_SOUNDS_ON_SD);
+                s_menu_flags = 0;
+              }
+            }
+            break;
+          }
+          else if (func == FUNC_PLAY_VALUE) {
+            val_max = MIXSRC_FIRST_TELEM + TELEM_DISPLAY_MAX - 1;
+            putsMixerSource(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr);
+            INCDEC_ENABLE_CHECK(isSourceAvailable);
+          }
 #endif
 #if defined(CPUARM)
-              // TODO #define
-              || CFN_FUNC(sd) == FUNC_VOLUME
+          else if (func == FUNC_VOLUME) {
+            val_max = MIXSRC_LAST_CH;
+            putsMixerSource(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr);
+            INCDEC_ENABLE_CHECK(isSourceAvailable);
+          }
+#elif defined(VOICE)
+          else if (func == FUNC_PLAY_TRACK) {
+#if defined(GVARS)
+            if (attr && event==EVT_KEY_LONG(KEY_ENTER)) {
+              killEvents(event);
+              s_editMode = !s_editMode;
+              active = true;
+              val_displayed = (val_displayed > 250 ? 0 : 251);
+            }
+            if (val_displayed > 250) {
+              putsStrIdx(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_GV, val_displayed-250, attr);
+            }
+            else {
+              lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed+PROMPT_CUSTOM_BASE, attr|LEFT);
+            }
+#else
+            lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed+PROMPT_CUSTOM_BASE, attr|LEFT);
 #endif
-              )) {
+          }
+          else if (func == FUNC_PLAY_BOTH) {
+            lcd_putcAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN+3*FWNUM, y, '|', attr);
+            lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN+3*FWNUM, y, val_displayed+PROMPT_CUSTOM_BASE, attr);
+            lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN+2+3*FWNUM, y, (val_displayed+PROMPT_CUSTOM_BASE+1)%10, attr|LEFT);
+          }
+          else if (func == FUNC_PLAY_VALUE) {
+            val_max = MIXSRC_FIRST_TELEM + TELEM_DISPLAY_MAX - 1;
+            putsMixerSource(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr);
+            INCDEC_ENABLE_CHECK(isSourceAvailable);
+          }
+#endif
+#if defined(SDCARD)
+          else if (func == FUNC_LOGS) {
+            if (val_displayed) {
+              lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|PREC1|LEFT);
+              lcd_putc(lcdLastPos, y, 's');
+            }
+            else {
+              lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_MMMINV, 0, attr);
+            }
+          }
+#endif
+          else if (func == FUNC_RESET) {
+            val_max = FUNC_RESET_PARAM_LAST;
+            lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_VFSWRESET, CFN_PARAM(sd), attr);
+          }
+#if defined(GVARS)
+          else if (func == FUNC_ADJUST_GVAR) {
+            switch (CFN_GVAR_MODE(sd)) {
+              case FUNC_ADJUST_GVAR_CONSTANT:
+                val_displayed = (int8_t)CFN_PARAM(sd);
+                val_min = -125; val_max = 125;
+                lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
+                break;
+              case FUNC_ADJUST_GVAR_SOURCE:
+                val_max = MIXSRC_LAST_CH;
+                putsMixerSource(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr);
+                INCDEC_ENABLE_CHECK(isSourceAvailable);
+                break;
+              case FUNC_ADJUST_GVAR_GVAR:
+                val_max = MAX_GVARS-1;
+                putsStrIdx(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_GV, val_displayed+1, attr);
+                break;
+              default: // FUNC_ADJUST_GVAR_INC
+                val_max = 1;
+                lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, PSTR("\002-1+1"), val_displayed, attr);
+                break;
+            }
+
+            if (attr && event==EVT_KEY_LONG(KEY_ENTER)) {
+              killEvents(event);
+              s_editMode = !s_editMode;
+              active = true;
+              CFN_GVAR_MODE(sd) += 1;
+              val_displayed = 0;
+            }
+          }
+#endif
+          else if (attr) {
+            REPEAT_LAST_CURSOR_MOVE();
+          }
+
+          if (active) {
+            CFN_PARAM(sd) = CHECK_INCDEC_PARAM(event, val_displayed, val_min, val_max);
+          }
+          break;
+        }
+
+        case 4:
+          if (func <= FUNC_INSTANT_TRIM || func == FUNC_RESET || IS_ADJUST_GV_FUNC(func) || IS_VOLUME_FUNC(func)) {
             menu_lcd_onoff(MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF, y, CFN_ACTIVE(sd), attr);
             if (active) CHECK_INCDEC_MODELVAR_ZERO(event, CFN_ACTIVE(sd), 1);
           }
-          else if (sd->swtch && HAS_REPEAT_PARAM(sd)) {
+          else if (HAS_REPEAT_PARAM(sd)) {
             if (CFN_PLAY_REPEAT(sd) == 0) {
 #if LCD_W >= 212
               lcd_putsAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN+2, y, "1x", attr);

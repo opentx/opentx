@@ -295,7 +295,7 @@ void displayTopBar()
     x -= 12;
   }
 
-  if (isFunctionActive(FUNC_LOGS)) {
+  if (isFunctionActive(FUNCTION_LOGS)) {
     LCD_NOTIF_ICON(x, ICON_LOGS);
     x -= 12;
   }

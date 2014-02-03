@@ -400,7 +400,8 @@ void pushMenuTextView(const char *filename);
   #define REPEAT_LAST_CURSOR_MOVE() { if (EVT_KEY_MASK(event) >= 0x0e) putEvent(event); else m_posHorz = 0; }
   #define MOVE_CURSOR_FROM_HERE()   if (m_posHorz > 0) REPEAT_LAST_CURSOR_MOVE()
 #else
-  #define REPEAT_LAST_CURSOR_MOVE() m_posHorz = 0;
+  void repeatLastCursorMove(uint8_t event);
+  #define REPEAT_LAST_CURSOR_MOVE() repeatLastCursorMove(event)
   #define MOVE_CURSOR_FROM_HERE()   REPEAT_LAST_CURSOR_MOVE()
 #endif
 

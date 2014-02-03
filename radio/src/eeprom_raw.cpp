@@ -383,7 +383,6 @@ void eeLoadModel(uint8_t id)
       resumePulses();
     }
 
-    activeSwitches = 0;
     activeFnSwitches = 0;
     activeFunctions = 0;
     memclear(lastFunctionTime, sizeof(lastFunctionTime));

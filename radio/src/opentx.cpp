@@ -1531,15 +1531,17 @@ bool getSwitch(int8_t swtch)
           cswDelays[cs_idx] = get_tmr10ms() + (cs->delay*50);
         }
       }
+
       if (cs->duration) {
-        if (result && !cswStates[cs_idx])
+        if (result && !cswStates[cs_idx]) {
           cswDurations[cs_idx] = get_tmr10ms() + (cs->duration*50);
+        }
 
         cswStates[cs_idx] = result;
+        result = false;
 
         if (cswDurations[cs_idx] > get_tmr10ms()) {
           result = true;
-          if (cs->delay) cswDelays[cs_idx] = get_tmr10ms() + (cs->delay*50);
         }
       }
 #endif
@@ -2031,7 +2033,7 @@ void checkBacklight()
         backlightOn();
     }
 
-    bool backlightOn = (g_eeGeneral.backlightMode == e_backlight_mode_on || lightOffCounter || isFunctionActive(FUNC_BACKLIGHT));
+    bool backlightOn = (g_eeGeneral.backlightMode == e_backlight_mode_on || lightOffCounter || isFunctionActive(FUNCTION_BACKLIGHT));
     if (flashCounter) backlightOn = !backlightOn;
     if (backlightOn)
       BACKLIGHT_ON();
@@ -2841,7 +2843,7 @@ void evalInputs(uint8_t mode)
     }
 
     if (ch < NUM_STICKS) { //only do this for sticks
-      if (mode <= e_perout_mode_inactive_phase && (isFunctionActive(FUNC_TRAINER) || isFunctionActive(FUNC_TRAINER_RUD+ch))) {
+      if (mode <= e_perout_mode_inactive_phase && isFunctionActive(FUNCTION_TRAINER+ch)) {
         // trainer mode
         TrainerMix* td = &g_eeGeneral.trainer.mix[ch];
         if (td->mode) {
@@ -2899,7 +2901,6 @@ void testFunc()
 #endif
 
 MASK_FUNC_TYPE activeFunctions  = 0;
-MASK_CFN_TYPE  activeSwitches   = 0;
 MASK_CFN_TYPE  activeFnSwitches = 0;
 tmr10ms_t lastFunctionTime[NUM_CFN] = { 0 };
 
@@ -3060,175 +3061,90 @@ bool evalFunctionsFirstTime = true;
 void evalFunctions()
 {
   MASK_FUNC_TYPE newActiveFunctions  = 0;
-  MASK_CFN_TYPE  newActiveSwitches   = 0;
   MASK_CFN_TYPE  newActiveFnSwitches = 0;
 
 #if defined(ROTARY_ENCODERS) && defined(GVARS)
   static rotenc_t rePreviousValues[ROTARY_ENCODERS];
 #endif
 
-  for (uint8_t i=0; i<NUM_CHNOUT; i++)
+  for (uint8_t i=0; i<NUM_CHNOUT; i++) {
     safetyCh[i] = -128; // not defined
+  }
 
 #if defined(GVARS)
-  for (uint8_t i=0; i<4; i++)
+  for (uint8_t i=0; i<NUM_STICKS; i++)
     trimGvar[i] = -1;
-#endif
-
-#if !defined(PCBSTD)
-  uint8_t mSwitchDurationIncremented = 0;
 #endif
 
   for (uint8_t i=0; i<NUM_CFN; i++) {
     CustomFnData *sd = &g_model.funcSw[i];
     int8_t swtch = sd->swtch;
     if (swtch) {
-      MASK_FUNC_TYPE function_mask = (CFN_FUNC(sd) >= FUNC_TRAINER ? ((MASK_FUNC_TYPE)1 << (CFN_FUNC(sd)-FUNC_TRAINER)) : 0);
       MASK_CFN_TYPE  switch_mask   = ((MASK_CFN_TYPE)1 << i);
 
       bool active = getSwitch(swtch);
-      if (active) newActiveSwitches |= switch_mask;
 
-      if (active || IS_PLAY_BOTH_FUNC(sd)) {
+      if (HAS_ENABLE_PARAM(CFN_FUNC(sd))) {
+        active &= CFN_ACTIVE(sd);
+      }
 
-        if (CFN_ACTIVE(sd)) {
-          if (CFN_FUNC(sd) < FUNC_TRAINER) {
+      if (active || IS_PLAY_BOTH_FUNC(CFN_FUNC(sd))) {
+
+        switch(CFN_FUNC(sd)) {
+
+          case FUNC_SAFETY_CHANNEL:
             safetyCh[CFN_CH_NUMBER(sd)] = CFN_PARAM(sd);
+            break;
+
+          case FUNC_TRAINER:
+          {
+            uint8_t mask = 0x0f;
+            if (CFN_CH_NUMBER(sd) > 0) {
+              mask = (1<<(CFN_CH_NUMBER(sd)-1));
+            }
+            newActiveFunctions |= mask;
+            break;
           }
 
-          if (!(activeFunctions & function_mask)) {
-            if (CFN_FUNC(sd) == FUNC_INSTANT_TRIM) {
+          case FUNC_INSTANT_TRIM:
+            if (!isFunctionActive(FUNCTION_INSTANT_TRIM)) {
+              newActiveFunctions |= (1 << FUNCTION_INSTANT_TRIM);
               if (g_menuStack[0] == menuMainView
 #if defined(FRSKY)
                 || g_menuStack[0] == menuTelemetryFrsky
 #endif
-                )
+              )
                 instantTrim();
             }
-          }
-        }
-        else if (CFN_FUNC(sd) <= FUNC_INSTANT_TRIM || CFN_FUNC(sd) == FUNC_RESET) {
-          active = false;
-        }
+            break;
 
-        if (CFN_FUNC(sd) == FUNC_RESET) {
-          switch (CFN_PARAM(sd)) {
-            case FUNC_RESET_TIMER1:
-            case FUNC_RESET_TIMER2:
-              resetTimer(CFN_PARAM(sd));
-              break;
-            case FUNC_RESET_ALL:
-              resetAll();
-              break;
+          case FUNC_RESET:
+            switch (CFN_PARAM(sd)) {
+              case FUNC_RESET_TIMER1:
+              case FUNC_RESET_TIMER2:
+                resetTimer(CFN_PARAM(sd));
+                break;
+              case FUNC_RESET_ALL:
+                resetAll();
+                break;
 #if defined(FRSKY)
-            case FUNC_RESET_TELEMETRY:
-              resetTelemetry();
-              break;
+              case FUNC_RESET_TELEMETRY:
+                resetTelemetry();
+                break;
 #endif
 #if ROTARY_ENCODERS > 0
-            case FUNC_RESET_ROTENC1:
+              case FUNC_RESET_ROTENC1:
 #if ROTARY_ENCODERS > 1
-            case FUNC_RESET_ROTENC2:
+              case FUNC_RESET_ROTENC2:
 #endif
-              g_rotenc[CFN_PARAM(sd)-FUNC_RESET_ROTENC1] = 0;
-              break;
+                g_rotenc[CFN_PARAM(sd)-FUNC_RESET_ROTENC1] = 0;
+                break;
 #endif
-          }
-        }
-
-#if defined(SDCARD)
-        else if (CFN_FUNC(sd) == FUNC_LOGS) {
-          logDelay = CFN_PARAM(sd);
-        }
-#endif
-
-#if defined(HAPTIC)
-        else if (CFN_FUNC(sd) == FUNC_HAPTIC) {
-          haptic.event(AU_FRSKY_LAST+CFN_PARAM(sd));
-        }
-#endif
-
-#if defined(CPUARM) && defined(SDCARD)
-        else if (CFN_FUNC(sd) == FUNC_PLAY_SOUND || CFN_FUNC(sd) == FUNC_PLAY_TRACK || CFN_FUNC(sd) == FUNC_PLAY_VALUE) {
-          tmr10ms_t tmr10ms = get_tmr10ms();
-          uint8_t repeatParam = CFN_PLAY_REPEAT(sd);
-          if (evalFunctionsFirstTime && repeatParam == CFN_PLAY_REPEAT_NOSTART)
-            lastFunctionTime[i] = tmr10ms;
-          if (!lastFunctionTime[i] || (repeatParam && repeatParam!=CFN_PLAY_REPEAT_NOSTART && (signed)(tmr10ms-lastFunctionTime[i])>=100*repeatParam)) {
-            if (!IS_PLAYING(i+1)) {
-              lastFunctionTime[i] = tmr10ms;
-              if (CFN_FUNC(sd) == FUNC_PLAY_SOUND) {
-                AUDIO_PLAY(AU_FRSKY_FIRST+CFN_PARAM(sd));
-              }
-              else if (CFN_FUNC(sd) == FUNC_PLAY_VALUE) {
-                PLAY_VALUE(CFN_PARAM(sd), i+1);
-              }
-              else {
-                playCustomFunctionFile(sd, i+1);
-              }
             }
-          }
-        }
-        else if (CFN_FUNC(sd) == FUNC_BACKGND_MUSIC) {
-          if (!IS_PLAYING(i+1)) {
-            playCustomFunctionFile(sd, i+1);
-          }
-        }
-        else if (CFN_FUNC(sd) == FUNC_VOLUME) {
-          if (CFN_ACTIVE(sd)) {
-            getvalue_t raw = getValue(CFN_PARAM(sd));
-            //only set volume if input changed more than hysteresis
-            if (abs(requiredSpeakerVolumeRawLast - raw) > VOLUME_HYSTERESIS) {
-              requiredSpeakerVolumeRawLast = raw;
-            }
-	    requiredSpeakerVolume = ((1024 + requiredSpeakerVolumeRawLast) * VOLUME_LEVEL_MAX) / 2048;
-          }
-          else {
-            active = false;
-          }
-        }
-#elif defined(VOICE)
-        else if (CFN_FUNC(sd) == FUNC_PLAY_SOUND || CFN_FUNC(sd) == FUNC_PLAY_TRACK || CFN_FUNC(sd) == FUNC_PLAY_BOTH || CFN_FUNC(sd) == FUNC_PLAY_VALUE) {
-          tmr10ms_t tmr10ms = get_tmr10ms();
-          uint8_t repeatParam = CFN_PLAY_REPEAT(sd);
-          if (!lastFunctionTime[i] || (CFN_FUNC(sd)==FUNC_PLAY_BOTH && active!=(bool)(activeFnSwitches&switch_mask)) || (repeatParam && (signed)(tmr10ms-lastFunctionTime[i])>=1000*repeatParam)) {
-            lastFunctionTime[i] = tmr10ms;
-            uint8_t param = CFN_PARAM(sd);
-            if (CFN_FUNC(sd) == FUNC_PLAY_SOUND) {
-              AUDIO_PLAY(AU_FRSKY_FIRST+param);
-            }
-            else if (CFN_FUNC(sd) == FUNC_PLAY_VALUE) {
-              PLAY_VALUE(param, i+1);
-            }
-            else {
-#if defined(GVARS)
-              if (CFN_FUNC(sd) == FUNC_PLAY_TRACK && param > 250)
-                param = GVAR_VALUE(param-251, getGVarFlightPhase(s_perout_flight_phase, param-251));
-#endif
-              PUSH_CUSTOM_PROMPT(active ? param : param+1, i+1);
-            }
-          }
-        }
-#else
-        else if (CFN_FUNC(sd) == FUNC_PLAY_SOUND) {
-          tmr10ms_t tmr10ms = get_tmr10ms();
-          uint8_t repeatParam = CFN_PLAY_REPEAT(sd);
-          if (!lastFunctionTime[i] || (repeatParam && (signed)(tmr10ms-lastFunctionTime[i])>=1000*repeatParam)) {
-            lastFunctionTime[i] = tmr10ms;
-            AUDIO_PLAY(AU_FRSKY_FIRST+CFN_PARAM(sd));
-          }
-        }
-#endif
-
-#if defined(DEBUG)
-        else if (CFN_FUNC(sd) == FUNC_TEST) {
-          testFunc();
-        }
-#endif
+            break;
 
 #if defined(GVARS)
-        else if (CFN_FUNC(sd) >= FUNC_ADJUST_GV1) {
-          if (CFN_ACTIVE(sd)) {
+          case FUNC_ADJUST_GVAR:
             if (CFN_GVAR_MODE(sd) == 0) {
               SET_GVAR(CFN_FUNC(sd)-FUNC_ADJUST_GV1, CFN_PARAM(sd), s_perout_flight_phase);
             }
@@ -3254,17 +3170,130 @@ void evalFunctions()
             else {
               SET_GVAR(CFN_FUNC(sd)-FUNC_ADJUST_GV1, limit((getvalue_t)-1250, getValue(CFN_PARAM(sd)), (getvalue_t)1250) / 10, s_perout_flight_phase);
             }
-          }
-          else {
-            active = false;
-          }
-        }
+            break;
 #endif
 
-        if (active) {
-          newActiveFnSwitches |= switch_mask;
-          newActiveFunctions |= function_mask;
+#if defined(CPUARM) && defined(SDCARD)
+          case FUNC_VOLUME:
+          {
+            getvalue_t raw = getValue(CFN_PARAM(sd));
+            //only set volume if input changed more than hysteresis
+            if (abs(requiredSpeakerVolumeRawLast - raw) > VOLUME_HYSTERESIS) {
+              requiredSpeakerVolumeRawLast = raw;
+            }
+            requiredSpeakerVolume = ((1024 + requiredSpeakerVolumeRawLast) * VOLUME_LEVEL_MAX) / 2048;
+            break;
+          }
+#endif
+
+#if defined(CPUARM) && defined(SDCARD)
+          case FUNC_PLAY_SOUND:
+          case FUNC_PLAY_TRACK:
+          case FUNC_PLAY_VALUE:
+          {
+            tmr10ms_t tmr10ms = get_tmr10ms();
+            uint8_t repeatParam = CFN_PLAY_REPEAT(sd);
+            if (evalFunctionsFirstTime && repeatParam == CFN_PLAY_REPEAT_NOSTART)
+              lastFunctionTime[i] = tmr10ms;
+            if (!lastFunctionTime[i] || (repeatParam && repeatParam!=CFN_PLAY_REPEAT_NOSTART && (signed)(tmr10ms-lastFunctionTime[i])>=100*repeatParam)) {
+              if (!IS_PLAYING(i+1)) {
+                lastFunctionTime[i] = tmr10ms;
+                if (CFN_FUNC(sd) == FUNC_PLAY_SOUND) {
+                  AUDIO_PLAY(AU_FRSKY_FIRST+CFN_PARAM(sd));
+                }
+                else if (CFN_FUNC(sd) == FUNC_PLAY_VALUE) {
+                  PLAY_VALUE(CFN_PARAM(sd), i+1);
+                }
+                else {
+                  playCustomFunctionFile(sd, i+1);
+                }
+              }
+            }
+            break;
+          }
+
+          case FUNC_BACKGND_MUSIC:
+            newActiveFunctions |= (1 << FUNCTION_BACKGND_MUSIC);
+            if (!IS_PLAYING(i+1)) {
+              playCustomFunctionFile(sd, i+1);
+            }
+            break;
+
+          case FUNC_BACKGND_MUSIC_PAUSE:
+            newActiveFunctions |= (1 << FUNCTION_BACKGND_MUSIC_PAUSE);
+            break;
+
+#elif defined(VOICE)
+          case FUNC_PLAY_SOUND:
+          case FUNC_PLAY_TRACK:
+          case FUNC_PLAY_BOTH:
+          case FUNC_PLAY_VALUE:
+          {
+            tmr10ms_t tmr10ms = get_tmr10ms();
+            uint8_t repeatParam = CFN_PLAY_REPEAT(sd);
+            if (!lastFunctionTime[i] || (CFN_FUNC(sd)==FUNC_PLAY_BOTH && active!=(bool)(activeFnSwitches&switch_mask)) || (repeatParam && (signed)(tmr10ms-lastFunctionTime[i])>=1000*repeatParam)) {
+              lastFunctionTime[i] = tmr10ms;
+              uint8_t param = CFN_PARAM(sd);
+              if (CFN_FUNC(sd) == FUNC_PLAY_SOUND) {
+                AUDIO_PLAY(AU_FRSKY_FIRST+param);
+              }
+              else if (CFN_FUNC(sd) == FUNC_PLAY_VALUE) {
+                PLAY_VALUE(param, i+1);
+              }
+              else {
+#if defined(GVARS)
+                if (CFN_FUNC(sd) == FUNC_PLAY_TRACK && param > 250)
+                  param = GVAR_VALUE(param-251, getGVarFlightPhase(s_perout_flight_phase, param-251));
+#endif
+                PUSH_CUSTOM_PROMPT(active ? param : param+1, i+1);
+              }
+            }
+            break;
+          }
+#else
+          case FUNC_PLAY_SOUND:
+          {
+            tmr10ms_t tmr10ms = get_tmr10ms();
+            uint8_t repeatParam = CFN_PLAY_REPEAT(sd);
+            if (!lastFunctionTime[i] || (repeatParam && (signed)(tmr10ms-lastFunctionTime[i])>=1000*repeatParam)) {
+              lastFunctionTime[i] = tmr10ms;
+              AUDIO_PLAY(AU_FRSKY_FIRST+CFN_PARAM(sd));
+            }
+            break;
+          }
+#endif
+
+#if defined(FRSKY) && defined(VARIO)
+          case FUNC_VARIO:
+            newActiveFunctions |= (1 << FUNCTION_VARIO);
+            break;
+#endif
+
+#if defined(HAPTIC)
+          case FUNC_HAPTIC:
+            haptic.event(AU_FRSKY_LAST+CFN_PARAM(sd));
+            break;
+#endif
+
+#if defined(SDCARD)
+          case FUNC_LOGS:
+            newActiveFunctions |= (1 << FUNCTION_LOGS);
+            logDelay = CFN_PARAM(sd);
+            break;
+#endif
+
+          case FUNC_BACKLIGHT:
+            newActiveFunctions |= (1 << FUNCTION_BACKLIGHT);
+            break;
+
+#if defined(DEBUG)
+          case FUNC_TEST:
+            testFunc();
+            break;
+#endif
         }
+
+        newActiveFnSwitches |= switch_mask;
       }
       else {
         lastFunctionTime[i] = 0;
@@ -3272,7 +3301,7 @@ void evalFunctions()
         fnSwitchDuration[i] = 0;
 #endif
 #if defined(CPUARM) && defined(SDCARD)
-        if (CFN_FUNC(sd) == FUNC_BACKGND_MUSIC && isFunctionActive(FUNC_BACKGND_MUSIC)) {
+        if (CFN_FUNC(sd) == FUNC_BACKGND_MUSIC && isFunctionActive(FUNCTION_BACKGND_MUSIC)) {
           STOP_PLAY(i+1);
         }
 #endif
@@ -3280,13 +3309,13 @@ void evalFunctions()
     }
   }
 
-  activeSwitches   = newActiveSwitches;
   activeFnSwitches = newActiveFnSwitches;
   activeFunctions  = newActiveFunctions;
 
 #if defined(ROTARY_ENCODERS) && defined(GVARS)
-  for (uint8_t i=0; i<ROTARY_ENCODERS; i++)
+  for (uint8_t i=0; i<ROTARY_ENCODERS; i++) {
     rePreviousValues[i] = (g_rotenc[i] / ROTARY_ENCODER_GRANULARITY);
+  }
 #endif
 
 #if defined(CPUARM)

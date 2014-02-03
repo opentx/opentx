@@ -175,9 +175,7 @@
   #define TR_SOUND             "Beep\0     "
 #endif
 
-#if defined(PCBTARANIS)
-  #define TR_HAPTIC
-#elif defined(HAPTIC)
+#if defined(HAPTIC)
   #define TR_HAPTIC            "Haptic\0   "
 #else
   #define TR_HAPTIC            "[Haptic]\0 "
@@ -197,7 +195,6 @@
   #define TR_PLAY_VALUE        "[Play Val]"
 #endif
 
-#define TR_CFN_VOLUME          "Volume\0   "
 #define TR_CFN_BG_MUSIC        "BgMusic\0  ""BgMusic ||"
 
 #if defined(SDCARD)
@@ -206,10 +203,10 @@
   #define TR_SDCLOGS           "[SD Logs]\0"
 #endif
 
-#ifdef GVARS
-  #define TR_CFN_ADJUST_GVAR   "Adjust \0  "
+#if defined(GVARS)
+  #define TR_ADJUST_GVAR       "Adjust \0  "
 #else
-  #define TR_CFN_ADJUST_GVAR
+  #define TR_ADJUST_GVAR       "[AdjustGV]"
 #endif
 
 #ifdef DEBUG
@@ -219,11 +216,11 @@
 #endif
 
 #if defined(CPUARM)
-  #define TR_VFSWFUNC          "Safety\0   ""Trainer\0  ""Inst. Trim" TR_SOUND TR_HAPTIC "Reset\0    " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_CFN_VOLUME "Backlight\0" TR_CFN_BG_MUSIC TR_CFN_ADJUST_GVAR TR_CFN_TEST
+  #define TR_VFSWFUNC          "Safety\0   ""Trainer\0  ""Inst. Trim""Reset\0    " TR_ADJUST_GVAR "Volume\0   " TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Backlight\0" TR_CFN_TEST
 #elif defined(PCBGRUVIN9X)
-  #define TR_VFSWFUNC          "Safety\0   ""Trainer\0  ""Inst. Trim" TR_SOUND TR_HAPTIC "Reset\0    " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_SDCLOGS "Backlight\0" TR_CFN_ADJUST_GVAR TR_CFN_TEST
+  #define TR_VFSWFUNC          "Safety\0   ""Trainer\0  ""Inst. Trim""Reset\0    " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC TR_SDCLOGS "Backlight\0" TR_CFN_TEST
 #else
-  #define TR_VFSWFUNC          "Safety\0   ""Trainer\0  ""Inst. Trim" TR_SOUND TR_HAPTIC "Reset\0    " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE "Backlight\0" TR_CFN_ADJUST_GVAR TR_CFN_TEST
+  #define TR_VFSWFUNC          "Safety\0   ""Trainer\0  ""Inst. Trim""Reset\0    " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC "Backlight\0" TR_CFN_TEST
 #endif
 
 #define LEN_VFSWRESET          TR("\004", "\011")

@@ -1321,19 +1321,34 @@ extern int24_t act   [MAX_MIXERS];
 #endif
 
 #if defined(CPUARM)
-  #define MASK_CFN_TYPE uint32_t  // current max = 32 function switches
-  #define MASK_FUNC_TYPE uint32_t // current max = 32 functions
+  #define MASK_CFN_TYPE  uint32_t  // current max = 32 function switches
+  #define MASK_FUNC_TYPE uint32_t  // current max = 32 functions
+
 #elif defined(CPUM64)
-  #define MASK_CFN_TYPE uint16_t  // current max = 16 function switches
-  #define MASK_FUNC_TYPE uint16_t // current max = 16 functions
+  #define MASK_CFN_TYPE  uint16_t  // current max = 16 function switches
+  #define MASK_FUNC_TYPE uint8_t   // current max = 8  functions
 #else
-  #define MASK_CFN_TYPE uint32_t  // current max = 32 function switches
-  #define MASK_FUNC_TYPE uint16_t // current max = 16 functions
+  #define MASK_CFN_TYPE  uint32_t  // current max = 32 function switches
+  #define MASK_FUNC_TYPE uint8_t   // current max = 8 functions
 #endif
 
-extern MASK_CFN_TYPE  activeSwitches;
-extern MASK_CFN_TYPE  activeFnSwitches;
+enum FunctionsActive {
+  FUNCTION_TRAINER,
+  FUNCTION_INSTANT_TRIM = FUNCTION_TRAINER+4,
+  FUNCTION_VARIO,
+  FUNCTION_BACKLIGHT,
+#if defined(SDCARD)
+  FUNCTION_LOGS,
+#endif
+#if defined(CPUARM)
+  FUNCTION_BACKGND_MUSIC,
+  FUNCTION_BACKGND_MUSIC_PAUSE,
+#endif
+};
+
+
 extern MASK_FUNC_TYPE activeFunctions;
+extern MASK_CFN_TYPE  activeFnSwitches;
 extern tmr10ms_t lastFunctionTime[NUM_CFN];
 
 #if defined(CPUARM)
@@ -1342,7 +1357,7 @@ extern bool evalFunctionsFirstTime;
 
 inline bool isFunctionActive(uint8_t func)
 {
-  return activeFunctions & ((MASK_FUNC_TYPE)1 << (func-FUNC_TRAINER));
+  return activeFunctions & ((uint8_t)1 << func);
 }
 
 #if defined(ROTARY_ENCODERS)
