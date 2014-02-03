@@ -1053,31 +1053,6 @@ void putsSwitches(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att)
   }
 #endif
 
-#if !defined(PCBSTD)
-  else if (idx >= SWSRC_TRAINER_SHORT) {
-    idx -= SWSRC_TRAINER_SHORT;
-    char suffix = (idx & 1) ? CHR_LONG : CHR_SHORT;
-#if ROTARY_ENCODERS > 0
-    if (idx >= 2) {
-      idx -= 2;
-      lcd_putsiAtt(x, y, STR_VRENCODERS, idx/2, att);
-    }
-    else
-#endif
-    {
-      lcd_putsiAtt(x, y, STR_VSWITCHES, SWSRC_TRAINER-1, att);     
-    }
-    return lcd_putcAtt(lcdLastPos, y, suffix, att);
-  }
-#endif
-
-  if (idx > SWSRC_ON) {
-    idx -= SWSRC_ON;
-    if (idx != SWSRC_ON && (~att & STRCONDENSED)) {
-      lcd_putsiAtt(x, y, STR_VSWITCHES, idx-1, att);
-      return lcd_putcAtt(lcdLastPos, y, CHR_TOGGLE, att);
-    }
-  }
   lcd_putsiAtt(x, y, STR_VSWITCHES, idx-1, att);
 }
 

@@ -4476,7 +4476,7 @@ void menuModelCustomSwitches(uint8_t event)
     int8_t v1_min=0, v1_max=MIXSRC_LAST_TELEM, v2_min=0, v2_max=MIXSRC_LAST_TELEM;
 #endif
 
-    if (cstate == CS_VBOOL || IS_VSTICKY(cstate)) {
+    if (cstate == CS_VBOOL || cstate == CS_VSTICKY) {
       putsSwitches(CSW_2ND_COLUMN, y, cs->v1, attr1);
       putsSwitches(CSW_3RD_COLUMN, y, cs->v2, attr2);
       v1_min = SWSRC_OFF+1; v1_max = SWSRC_ON-1;

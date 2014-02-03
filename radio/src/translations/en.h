@@ -150,12 +150,12 @@
 #define LEN_VMIXTRIMS          "\003"
 #define TR_VMIXTRIMS           "OFF""ON\0""Rud""Ele""Thr""Ail"
 
-#if defined(CPUARM)
+#if defined(PCBTARANIS)
   #define TR_CSWTIMER          "Timer"
   #define TR_CSWSTICKY         "Stcky"
 #else
-  #define TR_CSWTIMER          "TIM\0"
-  #define TR_CSWSTICKY
+  #define TR_CSWTIMER          "Tim\0 "
+  #define TR_CSWSTICKY         "Stky\0"
 #endif
 
 #define LEN_VCSWFUNC           "\005"
