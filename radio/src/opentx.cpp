@@ -3089,7 +3089,11 @@ void evalFunctions()
       bool active = getSwitch(swtch);
       if (active) newActiveSwitches |= switch_mask;
 
+<<<<<<< HEAD
       if (active || IS_PLAY_BOTH_FUNC(sd)) {
+=======
+      if (active || CFN_FUNC(sd) == FUNC_PLAY_BOTH) {
+>>>>>>> b404673f5830bb3c51182e402890bb804d3f23c2
 
         if (CFN_ACTIVE(sd)) {
           if (CFN_FUNC(sd) < FUNC_TRAINER) {
