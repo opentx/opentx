@@ -10012,7 +10012,7 @@ Får skilja från språket för mjukvaran</translation>
         <location line="+22"/>
         <location line="+152"/>
         <location line="+22"/>
-        <location line="+103"/>
+        <location line="+104"/>
         <location line="+22"/>
         <location line="+158"/>
         <location line="+22"/>
@@ -10022,7 +10022,7 @@ Får skilja från språket för mjukvaran</translation>
         <translation>-100.1</translation>
     </message>
     <message>
-        <location line="-1128"/>
+        <location line="-1129"/>
         <source>CH9</source>
         <translation>KN9</translation>
     </message>
@@ -10062,7 +10062,7 @@ Får skilja från språket för mjukvaran</translation>
         <translation>KN5</translation>
     </message>
     <message>
-        <location line="+161"/>
+        <location line="+162"/>
         <source>CH13</source>
         <translation>KN13</translation>
     </message>
@@ -10097,6 +10097,166 @@ Får skilja från språket för mjukvaran</translation>
         <translation>KN16</translation>
     </message>
     <message>
+        <location line="+34"/>
+        <source>LSK</source>
+        <translation>LBK</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LSC</source>
+        <translation>LBC</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LSD</source>
+        <translation>LBD</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LS7</source>
+        <translation>LB7</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LSL</source>
+        <translation>LBL</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LSB</source>
+        <translation>LBB</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LS1</source>
+        <translation>LB1</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LSH</source>
+        <translation>LBH</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LSG</source>
+        <translation>LBG</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LSE</source>
+        <translation>LBE</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LSF</source>
+        <translation>LBF</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LS8</source>
+        <translation>LB8</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LS9</source>
+        <translation>LB9</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LSA</source>
+        <translation>LBA</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LSM</source>
+        <translation>LBM</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LSJ</source>
+        <translation>LBJ</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LSI</source>
+        <translation>LBI</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LS4</source>
+        <translation>LB4</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LS5</source>
+        <translation>LB5</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LS2</source>
+        <translation>LB2</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LS3</source>
+        <translation>LB3</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LS6</source>
+        <translation>LB6</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LSN</source>
+        <translation>LBN</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LSO</source>
+        <translation>LBO</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LSP</source>
+        <translation>LBP</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LSQ</source>
+        <translation>LBQ</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LSR</source>
+        <translation>LBR</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LSS</source>
+        <translation>LBS</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LST</source>
+        <translation>LBT</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LSU</source>
+        <translation>LBU</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LSV</source>
+        <translation>LBV</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>LSW</source>
+        <translation>LBW</translation>
+    </message>
+    <message>
         <location filename="../xsimulatordialog.cpp" line="+58"/>
         <location line="+22"/>
         <source>Warning</source>
@@ -10128,7 +10288,7 @@ Får skilja från språket för mjukvaran</translation>
         <translation>Simulerar </translation>
     </message>
     <message>
-        <location filename="../xsimulatordialog.ui" line="-1773"/>
+        <location filename="../xsimulatordialog.ui" line="-2769"/>
         <location line="+22"/>
         <location line="+3"/>
         <source>SF</source>
@@ -10169,164 +10329,132 @@ Får skilja från språket för mjukvaran</translation>
         <translation> - Fligmod: %1(%2)</translation>
     </message>
     <message>
-        <location filename="../xsimulatordialog.ui" line="+1627"/>
         <source>CSK</source>
-        <translation>LBK</translation>
+        <translation type="obsolete">LBK</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CSC</source>
-        <translation>LBC</translation>
+        <translation type="obsolete">LBC</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CSD</source>
-        <translation>LBD</translation>
+        <translation type="obsolete">LBD</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CS7</source>
-        <translation>LB7</translation>
+        <translation type="obsolete">LB7</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CSL</source>
-        <translation>LBL</translation>
+        <translation type="obsolete">LBL</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CSB</source>
-        <translation>LBB</translation>
+        <translation type="obsolete">LBB</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CS1</source>
-        <translation>LB1</translation>
+        <translation type="obsolete">LB1</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CSH</source>
-        <translation>LBH</translation>
+        <translation type="obsolete">LBH</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CSG</source>
-        <translation>LBG</translation>
+        <translation type="obsolete">LBG</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CSE</source>
-        <translation>LBE</translation>
+        <translation type="obsolete">LBE</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CSF</source>
-        <translation>LBF</translation>
+        <translation type="obsolete">LBF</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CS8</source>
-        <translation>LB8</translation>
+        <translation type="obsolete">LB8</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CS9</source>
-        <translation>LB9</translation>
+        <translation type="obsolete">LB9</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CSA</source>
-        <translation>LBA</translation>
+        <translation type="obsolete">LBA</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CSM</source>
-        <translation>LBM</translation>
+        <translation type="obsolete">LBM</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CSJ</source>
-        <translation>LBJ</translation>
+        <translation type="obsolete">LBJ</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CSI</source>
-        <translation>LBI</translation>
+        <translation type="obsolete">LBI</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CS4</source>
-        <translation>LB4</translation>
+        <translation type="obsolete">LB4</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CS5</source>
-        <translation>LB5</translation>
+        <translation type="obsolete">LB5</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CS2</source>
-        <translation>LB2</translation>
+        <translation type="obsolete">LB2</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CS3</source>
-        <translation>LB3</translation>
+        <translation type="obsolete">LB3</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CS6</source>
-        <translation>LB6</translation>
+        <translation type="obsolete">LB6</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CSN</source>
-        <translation>LBN</translation>
+        <translation type="obsolete">LBN</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CSO</source>
-        <translation>LBO</translation>
+        <translation type="obsolete">LBO</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CSP</source>
-        <translation>LBP</translation>
+        <translation type="obsolete">LBP</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CSQ</source>
-        <translation>LBQ</translation>
+        <translation type="obsolete">LBQ</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CSR</source>
-        <translation>LBR</translation>
+        <translation type="obsolete">LBR</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CSS</source>
-        <translation>LBS</translation>
+        <translation type="obsolete">LBS</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CST</source>
-        <translation>LBT</translation>
+        <translation type="obsolete">LBT</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CSU</source>
-        <translation>LBU</translation>
+        <translation type="obsolete">LBU</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CSV</source>
-        <translation>LBV</translation>
+        <translation type="obsolete">LBV</translation>
     </message>
     <message>
-        <location line="+31"/>
         <source>CSW</source>
-        <translation>LBW</translation>
+        <translation type="obsolete">LBW</translation>
     </message>
 </context>
 </TS>
