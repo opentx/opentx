@@ -2264,7 +2264,7 @@ void checkSwitches()
       		if((states & 0x03) != (switches_states & 0x03))
       			warn = true;
       		}
-        else if((states & (1<<i+1)) != (switches_states & (1<<i+1)))
+        else if((states & (1<<(i+1))) != (switches_states & (1<<(i+1))))
            warn = true;
       }
     }
@@ -2316,7 +2316,7 @@ void checkSwitches()
         if (i == 0)
         	attr = ((states & 0x03) != (switches_states & 0x03)) ? INVERS : 0;
         else
-        	attr = (states & (1 << i+1)) == (switches_states & (1 << i+1)) ? 0 : INVERS;
+        	attr = (states & (1 << (i+1))) == (switches_states & (1 << (i+1))) ? 0 : INVERS;
         if(!(g_model.nSwToWarn & (1<<i)))
         	putsSwitches(x, 5*FH, (i>0?(i+3):(states&0x3)+1), attr);        
         x += 3*FW+FW/2;

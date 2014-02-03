@@ -1201,7 +1201,7 @@ void menuModelSetup(uint8_t event)
           c = "\300-\301"[states & 0x03];
           lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+i*(2*FW), y, 'A'+i, line && (m_posHorz == i) ? INVERS : 0);
           if(swactive) lcd_putc(MODEL_SETUP_2ND_COLUMN+i*(2*FW)+FWNUM, y, c);
-          lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+((NUM_SWITCHES-1)*2*FW+2), y, "<]", (m_posHorz == NUM_SWITCHES-1 && !s_noHi) ? line : 0); 
+          lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+((NUM_SWITCHES-1)*2*FW+2), y, PSTR("<]"), (m_posHorz == NUM_SWITCHES-1 && !s_noHi) ? line : 0); 
           states >>= 2;
 #else
           attr = 0;
@@ -1223,7 +1223,7 @@ void menuModelSetup(uint8_t event)
           }
           lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+i*FW, y, (swactive || (attr & BLINK)) ? c : '-', attr);
 #if !defined(CPUM64)
-          lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+(NUM_SWITCHES*FW), y, "<]", (m_posHorz == NUM_SWITCHES-1 && !s_noHi) ? line : 0);
+          lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+(NUM_SWITCHES*FW), y, PSTR("<]"), (m_posHorz == NUM_SWITCHES-1 && !s_noHi) ? line : 0);
 #endif       
 #endif
         }
