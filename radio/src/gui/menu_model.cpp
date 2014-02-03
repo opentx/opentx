@@ -4184,10 +4184,10 @@ enum CustomSwitchFields {
 
 #if LCD_W >= 212
   #define CSW_1ST_COLUMN  (4*FW-3)
-  #define CSW_2ND_COLUMN  (8*FW+1)
-  #define CSW_3RD_COLUMN  (14*FW)
-  #define CSW_4TH_COLUMN  (21*FW+1)
-  #define CSW_5TH_COLUMN  (26*FW+1)
+  #define CSW_2ND_COLUMN  (8*FW+2+FW/2)
+  #define CSW_3RD_COLUMN  (14*FW+1+FW/2)
+  #define CSW_4TH_COLUMN  (22*FW)
+  #define CSW_5TH_COLUMN  (26*FW+3)
   #define CSW_6TH_COLUMN  (31*FW+1)
 #else
   #define CSW_1ST_COLUMN  (4*FW-3)
@@ -4442,15 +4442,15 @@ void menuModelCustomSwitches(uint8_t event)
 #endif
 
 #if defined(PCBTARANIS)
-   if (sub>=0 && horz<0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
-     killEvents(event);
-     CustomSwData * cs = cswAddress(sub);
-     if (cs->func) MENU_ADD_ITEM(STR_COPY);
-     if (clipboard.type == CLIPBOARD_TYPE_CUSTOM_SWITCH)
-       MENU_ADD_ITEM(STR_PASTE);
-     if (cs->func || cs->v1 || cs->v2 || cs->delay || cs->duration || cs->andsw) MENU_ADD_ITEM(STR_DELETE);
-     menuHandler = onCustomSwitchesMenu;
-   }
+  if (sub>=0 && horz<0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
+    killEvents(event);
+    CustomSwData * cs = cswAddress(sub);
+    if (cs->func) MENU_ADD_ITEM(STR_COPY);
+    if (clipboard.type == CLIPBOARD_TYPE_CUSTOM_SWITCH)
+      MENU_ADD_ITEM(STR_PASTE);
+    if (cs->func || cs->v1 || cs->v2 || cs->delay || cs->duration || cs->andsw) MENU_ADD_ITEM(STR_DELETE);
+    menuHandler = onCustomSwitchesMenu;
+  }
 #endif
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
@@ -4476,7 +4476,7 @@ void menuModelCustomSwitches(uint8_t event)
     int8_t v1_min=0, v1_max=MIXSRC_LAST_TELEM, v2_min=0, v2_max=MIXSRC_LAST_TELEM;
 #endif
 
-    if (cstate == CS_VBOOL) {
+    if (cstate == CS_VBOOL || IS_VSTICKY(cstate)) {
       putsSwitches(CSW_2ND_COLUMN, y, cs->v1, attr1);
       putsSwitches(CSW_3RD_COLUMN, y, cs->v2, attr2);
       v1_min = SWSRC_OFF+1; v1_max = SWSRC_ON-1;
@@ -4585,7 +4585,6 @@ void menuModelCustomSwitches(uint8_t event)
           if (cstate==CS_VOFS && cs->v1!=0 && event==EVT_KEY_LONG(KEY_ENTER)) {
             killEvents(event);
             getvalue_t x = getValue(cs->v1);
-            TRACE("AUTO x=%d", x);
             if (cs->v1 < MIXSRC_GVAR1)
               cs->v2 = calcRESXto100(x);
             else if (cs->v1 - MIXSRC_FIRST_TELEM + 1 == TELEM_ALT)

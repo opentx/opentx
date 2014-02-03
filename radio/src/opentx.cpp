@@ -448,7 +448,13 @@ CustomSwData *cswAddress(uint8_t idx)
 
 uint8_t cswFamily(uint8_t func)
 {
-  return (func<CS_AND ? CS_VOFS : (func<CS_EQUAL ? CS_VBOOL : (func<CS_DIFFEGREATER ? CS_VCOMP : (func<CS_TIMER ? CS_VDIFF : CS_VTIMER))));
+  return (func<CS_AND ? CS_VOFS : (func<CS_EQUAL ? CS_VBOOL : (func<CS_DIFFEGREATER ? CS_VCOMP : (func<CS_TIMER ? CS_VDIFF :
+#if defined(CPUARM)
+      (func<CS_STICKY ? CS_VTIMER : CS_VSTICKY)
+#else
+      CS_VTIMER
+#endif
+      ))));
 }
 
 int16_t cswTimerValue(int8_t val)
@@ -1343,7 +1349,6 @@ void getSwitchesPosition()
   CHECK_2POS(SW_SH);
   switchesPos = newPos;
 
-#if defined(PCBTARANIS)
   for (int i=0; i<NUM_XPOTS; i++) {
     if (g_eeGeneral.potsType & (1 << i)) {
       StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[POT1+i];
@@ -1361,7 +1366,6 @@ void getSwitchesPosition()
       }
     }
   }
-#endif
 }
 #define SWITCH_POSITION(sw)  (switchesPos & (1<<(sw)))
 #define POT_POSITION(sw)     ((potsPos[(sw)/POTS_POS_COUNT] & 0x0f) == ((sw) % POTS_POS_COUNT))
@@ -1425,8 +1429,13 @@ bool getSwitch(int8_t swtch)
         }
       }
       else if (s == CS_VTIMER) {
-        result = csLastValue[cs_idx] <= 0;
+        result = (csLastValue[cs_idx] <= 0);
       }
+#if defined(CPUARM)
+      else if (s == CS_VSTICKY) {
+        result = (csLastValue[cs_idx] & (1<<0));
+      }
+#endif
       else {
         getvalue_t x = getValue(cs->v1);
         getvalue_t y;
@@ -3460,8 +3469,6 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 
   do {
 
-    // TRACE("[pass %d]", pass);
-
     bitfield_channels_t passDirtyChannels = 0;
 
     for (uint8_t i=0; i<MAX_MIXERS; i++) {
@@ -4045,6 +4052,30 @@ void doMixerCalculations()
           *lastValue -= 1;
         }
       }
+#if defined(CPUARM)
+      else if (cs->func == CS_STICKY) {
+        uint16_t & lastValue = (uint16_t &)csLastValue[i];
+        bool before = (lastValue & (1<<15));
+        if (lastValue & (1<<0)) {
+          bool now = getSwitch(cs->v2);
+          if (now != before) {
+            lastValue ^= (1<<15);
+            if (!before) {
+              lastValue &= ~(1<<0);
+            }
+          }
+        }
+        else {
+          bool now = getSwitch(cs->v1);
+          if (before != now) {
+            lastValue ^= (1<<15);
+            if (!before) {
+              lastValue |= (1<<0);
+            }
+          }
+        }
+      }
+#endif
     }
   
     if (s_cnt_1s >= 10) { // 1sec
