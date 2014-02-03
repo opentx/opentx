@@ -448,13 +448,7 @@ CustomSwData *cswAddress(uint8_t idx)
 
 uint8_t cswFamily(uint8_t func)
 {
-  return (func<CS_AND ? CS_VOFS : (func<CS_EQUAL ? CS_VBOOL : (func<CS_DIFFEGREATER ? CS_VCOMP : (func<CS_TIMER ? CS_VDIFF :
-#if defined(CPUARM)
-      (func<CS_STICKY ? CS_VTIMER : CS_VSTICKY)
-#else
-      CS_VTIMER
-#endif
-      ))));
+  return (func<CS_AND ? CS_VOFS : (func<CS_EQUAL ? CS_VBOOL : (func<CS_DIFFEGREATER ? CS_VCOMP : (func<CS_TIMER ? CS_VDIFF : func+CS_VTIMER-CS_TIMER))));
 }
 
 int16_t cswTimerValue(int8_t val)
@@ -1431,11 +1425,9 @@ bool getSwitch(int8_t swtch)
       else if (s == CS_VTIMER) {
         result = (csLastValue[cs_idx] <= 0);
       }
-#if defined(CPUARM)
       else if (s == CS_VSTICKY) {
         result = (csLastValue[cs_idx] & (1<<0));
       }
-#endif
       else {
         getvalue_t x = getValue(cs->v1);
         getvalue_t y;
@@ -3093,100 +3085,11 @@ void evalFunctions()
     if (swtch) {
       MASK_FUNC_TYPE function_mask = (CFN_FUNC(sd) >= FUNC_TRAINER ? ((MASK_FUNC_TYPE)1 << (CFN_FUNC(sd)-FUNC_TRAINER)) : 0);
       MASK_CFN_TYPE  switch_mask   = ((MASK_CFN_TYPE)1 << i);
-      uint8_t momentary = 0;
-
-#if !defined(PCBSTD)
-
-  #define MOMENTARY_START_TEST() ( (momentary && !(activeSwitches & switch_mask) && active) || \
-                                   (short_long==1 && !active && mSwitchDuration[mswitch]>0 && mSwitchDuration[mswitch]<CFN_PRESSLONG_DURATION) || \
-                                   (short_long==2 && active && mSwitchDuration[mswitch]==CFN_PRESSLONG_DURATION) )
-
-      uint8_t short_long = 0;
-      uint8_t mswitch = 0;
-
-      if (swtch == SWSRC_TRAINER_LONG) {
-        short_long = 2;
-        swtch = SWSRC_TRAINER;
-        mswitch = 0;
-      }
-      else if (swtch == SWSRC_TRAINER_SHORT) {
-        short_long = 1;
-        swtch = SWSRC_TRAINER;
-        mswitch = 0;
-      }
-      else
-
-#else
-
-  #define short_long  0
-  #define MOMENTARY_START_TEST() (!(activeSwitches & switch_mask) && active)
-
-#endif
-
-      if (swtch > NUM_SWITCH+1) {
-        momentary = 1;
-        swtch -= NUM_SWITCH+1;
-      }
-      if (swtch < -NUM_SWITCH-1) {
-        momentary = 1;
-        swtch += NUM_SWITCH+1;
-      }
 
       bool active = getSwitch(swtch);
       if (active) newActiveSwitches |= switch_mask;
-      if (momentary || short_long) {
 
-#if !defined(PCBSTD)
-        bool swState = active;
-#endif
-
-        if (MOMENTARY_START_TEST()) {
-
-          if (short_long) {
-            active = false;
-            momentary = true;
-          }
-          else {
-            active = !(activeFnSwitches & switch_mask);
-#if !defined(CPUARM)
-            if (CFN_FUNC(sd) == FUNC_PLAY_BOTH && !active) {
-              momentary = true;
-            }
-            else
-#endif
-            {
-              momentary = false;
-            }
-          }
-        }
-        else if (swtch == SWSRC_ON) {
-          active = false;
-          momentary = false;
-        }
-        else {
-          active = (activeFnSwitches & switch_mask);
-          momentary = false;
-        }
-#if !defined(PCBSTD)
-        if (short_long && !(mSwitchDurationIncremented & (1<<mswitch))) {
-          mSwitchDurationIncremented |= (1<<mswitch);
-          if (swState) {
-            if (mSwitchDuration[mswitch] < 255)
-              mSwitchDuration[mswitch]++;
-          }
-          else {
-            mSwitchDuration[mswitch] = 0;
-          }
-        }
-#endif
-      }
-#if !defined(CPUARM)
-      else if (CFN_FUNC(sd) == FUNC_PLAY_BOTH) {
-        momentary = true;
-      }
-#endif
-
-      if (active || momentary) {
+      if (active || CFN_FUNC(sd) == FUNC_PLAY_BOTH) {
 
         if (CFN_ACTIVE(sd)) {
           if (CFN_FUNC(sd) < FUNC_TRAINER) {
@@ -4052,7 +3955,6 @@ void doMixerCalculations()
           *lastValue -= 1;
         }
       }
-#if defined(CPUARM)
       else if (cs->func == CS_STICKY) {
         uint16_t & lastValue = (uint16_t &)csLastValue[i];
         bool before = (lastValue & (1<<15));
@@ -4075,7 +3977,6 @@ void doMixerCalculations()
           }
         }
       }
-#endif
     }
   
     if (s_cnt_1s >= 10) { // 1sec

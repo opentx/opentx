@@ -639,9 +639,7 @@ enum CswFunctions {
   CS_DIFFEGREATER,
   CS_ADIFFEGREATER,
   CS_TIMER,
-#if defined(CPUARM)
   CS_STICKY,
-#endif
   CS_COUNT,
   CS_MAXF = CS_COUNT-1
 };
@@ -655,12 +653,6 @@ enum CswFunctions {
 
 uint8_t cswFamily(uint8_t func);
 int16_t cswTimerValue(int8_t val);
-
-#if defined(CPUARM)
-  #define IS_VSTICKY(val)  ((val) == CS_VSTICKY)
-#else
-  #define IS_VSTICKY(val)  (0)
-#endif
 
 #define NUM_CYC         3
 #define NUM_CAL_PPM     4
