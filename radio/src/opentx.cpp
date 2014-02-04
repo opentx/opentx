@@ -4884,9 +4884,9 @@ void stack_paint()
   p = (unsigned char *) STACKPTR ;
   q = &__bss_end ;
   p -= 2 ;
-  while ( p > q )
-    *p = 0x55 ;
-    p--;
+  while ( p > q ) {
+    *p-- = 0x55 ;
+  }
 }
 
 uint16_t stack_free()
