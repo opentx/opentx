@@ -35,7 +35,7 @@
  */
  /* Formatting octal codes available in TR_ strings:
  *  \037\x       -sets LCD x-coord (x value in octal)
- *  \036         -newline (ARM boards only)
+ *  \036         -newline
  *  \001 to \035 -extended spacing (value * FW/2)
  *  \0           -ends actual string
  */
@@ -304,7 +304,7 @@
 #define TR_VSWASHTYPE          "---\0""120\0""120X""140\0""90\0"
 
 #define LEN_VKEYS              "\005"
-#define TR_VKEYS               TR(" Menu"" Exit"" Down""   Up""Right"" Left", " Menu"" Exit""Enter"" Page"" Plus""Minus")
+#define TR_VKEYS               TR("Menu\0""Exit\0""Down\0""Up\0  ""Right""Left\0", "Menu\0""Exit\0""Enter""Page\0""Plus\0""Minus")
 
 #define LEN_VRENCODERS         "\003"
 #define TR_VRENCODERS          "REa""REb"
@@ -494,17 +494,15 @@
 #define TR_CAL                 "Cal"
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
-#define TR_MENUTOSTART         CENTER "\006" TR_ENTER " TO START"
-#define TR_SETMIDPOINT         TR(CENTER "\003SET STICKS MIDPOINT",CENTER "\003CENTER STICKS/SLIDERS")
+#define TR_MENUTOSTART         CENTER "\010" TR_ENTER " TO START"
+#define TR_SETMIDPOINT         TR(CENTER "\004SET STICKS MIDPOINT",CENTER "\004CENTER STICKS/SLIDERS")
 #define TR_MOVESTICKSPOTS      CENTER "\006MOVE STICKS/POTS"
 #define TR_RXBATT              "Rx Batt:"
 #define TR_TXnRX               "Tx:\0Rx:"
 #define OFS_RX                 4
 #define TR_ACCEL               "Acc:"
 #define TR_NODATA              CENTER "NO DATA"
-#define TR_TM1TM2              "TM1\037\146TM2"
-#define TR_THRTHP              "THR\037\146TH%"
-#define TR_TOT                 "TOT"
+#define TR_TOTTM1TM2THRTHP     "\037\146TOT\036TM1\037\146TM2\036THR\037\146TH%"
 #define TR_TMR1LATMAXUS        "Tmr1Lat max\037\124us"
 #define STR_US                 (STR_TMR1LATMAXUS+13)
 #define TR_TMR1LATMINUS        "Tmr1Lat min\037\124us"
