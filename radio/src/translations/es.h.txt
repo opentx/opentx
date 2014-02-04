@@ -304,7 +304,7 @@
 #define TR_VSWASHTYPE          "---\0""120\0""120X""140\0""90\0"
 
 #define LEN_VKEYS              "\005"
-#define TR_VKEYS               TR(" Menu""Salir""Abajo""Arrib""Dcha.""Izqd.", " Menu""Salir""Enter""Pgna.""Mas  ""Menos")
+#define TR_VKEYS               TR("Menu\0""Salir""Abajo""Arrib""Dcha.""Izqd.", "Menu\0""Salir""Enter""Pgna.""Mas\0 ""Menos")
 
 #define LEN_VRENCODERS         "\003"
 #define TR_VRENCODERS          "REa""REb"
@@ -390,7 +390,7 @@
 #define TR_POPUPS              TR_ENTER "\010[SALIR]"
 #define OFS_EXIT               sizeof(TR_ENTER)
 
-#define TR_MENUWHENDONE        CENTER "\007" TR_ENTER " AL ACABAR"
+#define TR_MENUWHENDONE        CENTER "\007" TR_ENTER " AL ACABAR "
 #define TR_FREE                "libre"
 #define TR_DELETEMODEL         "BORRAR MODELO"
 #define TR_COPYINGMODEL        "Copiando modelo.."
@@ -496,7 +496,7 @@
 #define TR_BG                  "BG:"
 #define TR_MENUTOSTART         CENTER "\010" TR_ENTER " EMPEZAR"
 #define TR_SETMIDPOINT         TR(CENTER "\007STICKS AL CENTRO",CENTER "\010STICKS AL CENTRO")
-#define TR_MOVESTICKSPOTS      TR(CENTER "\005MOVER STICKS/POTS",CENTER "\006MOVER STICKS/POTS")
+#define TR_MOVESTICKSPOTS      CENTER "\006MOVER STICKS/POTS"
 #define TR_RXBATT              "Rx Batt:"
 #define TR_TXnRX               "Tx:\0Rx:"
 #define OFS_RX                 4

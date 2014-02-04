@@ -304,7 +304,7 @@
 #define TR_VSWASHTYPE          "--- ""120 ""120X""140 ""90\0"
 
 #define LEN_VKEYS              "\005"
-#define TR_VKEYS               TR(" Menu""Wyjdź""W dół""Wgórę""Wpraw""Wlewo", " Menu""Wyjdź""W dół""Wgórę""Wpraw""Wlewo")
+#define TR_VKEYS               TR("Menu\0""Wyjdź""W dół""Wgórę""Wpraw""Wlewo", "Menu\0""Wyjdź""W dół""Wgórę""Wpraw""Wlewo")
 
 #define LEN_VRENCODERS         "\003"
 #define TR_VRENCODERS          "REa""REb"
@@ -390,7 +390,7 @@
 #define TR_POPUPS              TR_ENTER"\010[WYJŚCIE]"
 #define OFS_EXIT               sizeof(TR_ENTER)
 
-#define TR_MENUWHENDONE        CENTER "\011"TR_ENTER" > DALEJ"
+#define TR_MENUWHENDONE        CENTER "\012"TR_ENTER" > DALEJ"
 #define TR_FREE                TR("wolne:", "wolne")
 #define TR_DELETEMODEL         "SKASUJ MODEL"
 #define TR_COPYINGMODEL        "Kopiuj model.."
@@ -495,8 +495,8 @@
 #define TR_VTRIM               "Trymer- +"
 #define TR_BG                  "BG:"
 #define TR_MENUTOSTART         CENTER "\011" TR_ENTER " = START"
-#define TR_SETMIDPOINT         TR(CENTER "\001Ustaw drążki/potencj na środku","\005Ustaw drązki/potencj na środku")
-#define TR_MOVESTICKSPOTS      TR(CENTER "\004Poruszaj drążkami i potenc.","\010Poruszaj drążkami i potenc.")
+#define TR_SETMIDPOINT         TR(CENTER "\002Ustaw drążki/potencj","\010Ustaw drązki/potencj na środku")
+#define TR_MOVESTICKSPOTS      TR(CENTER "Poruszaj drążkami i pot","\014Poruszaj drążkami i potenc.")
 #define TR_RXBATT              "Rx Bat.:"
 #define TR_TXnRX               "Tx:\0Rx:"
 #define OFS_RX                 4
