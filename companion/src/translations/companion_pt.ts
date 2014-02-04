@@ -2460,6 +2460,11 @@ Do you want to download it now ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../mainwindow.cpp" line="1874"/>
+        <source>Set Menu Language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../mainwindow.cpp" line="1906"/>
         <source>&amp;Settings</source>
         <translation type="unfinished"></translation>
@@ -3097,11 +3102,6 @@ Write anyway ?</source>
         <location filename="../mainwindow.cpp" line="1873"/>
         <location filename="../mainwindow.cpp" line="2018"/>
         <source>Firmware Profiles</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1874"/>
-        <source>Set MenuLanguage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

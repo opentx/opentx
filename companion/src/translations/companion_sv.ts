@@ -2372,7 +2372,12 @@ Vill du ladda ned den nu ?</translation>
         <translation>Läs firmware från sändaren</translation>
     </message>
     <message>
-        <location line="+156"/>
+        <location line="+129"/>
+        <source>Set Menu Language</source>
+        <translation>Ställ in Menyspråk</translation>
+    </message>
+    <message>
+        <location line="+27"/>
         <source>&amp;Edit</source>
         <translation>&amp;Redigera</translation>
     </message>
@@ -2959,12 +2964,11 @@ Starta skrivningen i alla fall ?</translation>
         <translation>Använd Ryska i menyerna</translation>
     </message>
     <message>
-        <location line="+9"/>
         <source>Set MenuLanguage</source>
-        <translation>Ställ in menyspråk</translation>
+        <translation type="obsolete">Ställ in menyspråk</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+10"/>
         <source>Set Icon Theme</source>
         <translation>Ställ in Ikontema</translation>
     </message>

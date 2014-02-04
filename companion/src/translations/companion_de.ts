@@ -3107,11 +3107,6 @@ Write anyway ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1874"/>
-        <source>Set MenuLanguage</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1875"/>
         <source>Set Icon Theme</source>
         <translation type="unfinished"></translation>
@@ -3316,6 +3311,11 @@ Write anyway ?</source>
         <location filename="../mainwindow.cpp" line="2008"/>
         <source>Recent Files</source>
         <translation>Letzte Dateien</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1874"/>
+        <source>Set Menu Language</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1934"/>
@@ -6029,7 +6029,7 @@ Right</source>
     <message>
         <location filename="../helpers.cpp" line="51"/>
         <source>German</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Deutch</translation>
     </message>
     <message>
         <location filename="../helpers.cpp" line="51"/>

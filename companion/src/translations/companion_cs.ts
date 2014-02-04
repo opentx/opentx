@@ -3036,11 +3036,6 @@ Chcete ho přesto zapsat ?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1874"/>
-        <source>Set MenuLanguage</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1875"/>
         <source>Set Icon Theme</source>
         <translation type="unfinished"></translation>
@@ -3269,6 +3264,11 @@ Chcete ho přesto zapsat ?</translation>
         <location filename="../mainwindow.cpp" line="2018"/>
         <source>Firmware Profiles</source>
         <translation>Profily firmwaru</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1874"/>
+        <source>Set Menu Language</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1878"/>

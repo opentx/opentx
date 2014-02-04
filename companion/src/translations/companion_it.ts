@@ -2683,6 +2683,11 @@ Scriverlo ugualmente ?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../mainwindow.cpp" line="1874"/>
+        <source>Set Menu Language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../mainwindow.cpp" line="1906"/>
         <source>&amp;Settings</source>
         <translation type="unfinished"></translation>
@@ -3256,11 +3261,6 @@ Scriverlo ugualmente ?</translation>
         <location filename="../mainwindow.cpp" line="2018"/>
         <source>Firmware Profiles</source>
         <translation>Profili personalizzati </translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1874"/>
-        <source>Set MenuLanguage</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1875"/>

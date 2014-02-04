@@ -2370,11 +2370,6 @@ Chcesz pobrać teraz?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1874"/>
-        <source>Set MenuLanguage</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1875"/>
         <source>Set Icon Theme</source>
         <translation type="unfinished"></translation>
@@ -2940,6 +2935,11 @@ Czy mimo wszystko zapisać?</translation>
         <location filename="../mainwindow.cpp" line="2018"/>
         <source>Firmware Profiles</source>
         <translation>Profile firmware</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1874"/>
+        <source>Set Menu Language</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1878"/>

@@ -2513,11 +2513,6 @@ Burn anyway ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1874"/>
-        <source>Set MenuLanguage</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1875"/>
         <source>Set Icon Theme</source>
         <translation type="unfinished"></translation>
@@ -3306,6 +3301,11 @@ Ecrire quand même?</translation>
         <location filename="../mainwindow.cpp" line="2008"/>
         <source>Recent Files</source>
         <translation>Derniers documents utilisés</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1874"/>
+        <source>Set Menu Language</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2209"/>
