@@ -35,7 +35,7 @@
  */
  /* Formatting octal codes available in TR_ strings:
  *  \037\x       -sets LCD x-coord (x value in octal)
- *  \036         -newline (ARM boards only)
+ *  \036         -newline
  *  \001 to \035 -extended spacing (value * FW/2)
  *  \0           -ends actual string
  */
@@ -304,7 +304,7 @@
 #define TR_VSWASHTYPE          "---\0""120\0""120X""140\0""90\0"
 
 #define LEN_VKEYS              "\005"
-#define TR_VKEYS               TR(" Menu""Salir""Abajo""Arrib""Dcha.""Izqd.", " Menu""Salir""Enter""Pgna.""Mas  ""Menos")
+#define TR_VKEYS               TR("Menu\0""Salir""Abajo""Arrib""Dcha.""Izqd.", "Menu\0""Salir""Enter""Pgna.""Mas\0 ""Menos")
 
 #define LEN_VRENCODERS         "\003"
 #define TR_VRENCODERS          "REa""REb"
@@ -390,7 +390,7 @@
 #define TR_POPUPS              TR_ENTER "\010[SALIR]"
 #define OFS_EXIT               sizeof(TR_ENTER)
 
-#define TR_MENUWHENDONE        CENTER "\006" TR_ENTER "AL ACABAR "
+#define TR_MENUWHENDONE        CENTER "\007" TR_ENTER " AL ACABAR "
 #define TR_FREE                "libre"
 #define TR_DELETEMODEL         "BORRAR MODELO"
 #define TR_COPYINGMODEL        "Copiando modelo.."
@@ -494,17 +494,15 @@
 #define TR_CAL                 "Cal"
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
-#define TR_MENUTOSTART         CENTER "\006" TR_ENTER "EMPEZAR"
-#define TR_SETMIDPOINT         CENTER "\003STICKS AL CENTRO"
+#define TR_MENUTOSTART         CENTER "\010" TR_ENTER " EMPEZAR"
+#define TR_SETMIDPOINT         TR(CENTER "\007STICKS AL CENTRO",CENTER "\010STICKS AL CENTRO")
 #define TR_MOVESTICKSPOTS      CENTER "\006MOVER STICKS/POTS"
 #define TR_RXBATT              "Rx Batt:"
 #define TR_TXnRX               "Tx:\0Rx:"
 #define OFS_RX                 4
 #define TR_ACCEL               "Acc:"
 #define TR_NODATA              CENTER "SIN DATOS"
-#define TR_TM1TM2              "TM1\037\146TM2"
-#define TR_THRTHP              "THR\037\146TH%"
-#define TR_TOT                 "TOT"
+#define TR_TOTTM1TM2THRTHP     "\037\146TOT\036TM1\037\146TM2\036THR\037\146TH%"
 #define TR_TMR1LATMAXUS        "Tmr1Lat max\037\124us"
 #define STR_US                 (STR_TMR1LATMAXUS+13)
 #define TR_TMR1LATMINUS        "Tmr1Lat min\037\124us"
@@ -527,7 +525,7 @@
 #define TR_EEPROMLOWMEM        "EEPROM mem.baja"
 #define TR_ALERT               "\016ALERTA"
 #define TR_PRESSANYKEYTOSKIP   "Pulsar tecla omitir"
-#define TR_THROTTLENOTIDLE     "Aceler.Activado"
+#define TR_THROTTLENOTIDLE     "Aceler. Activado"
 #define TR_ALARMSDISABLED      "Alarmas Desact."
 #define TR_PRESSANYKEY         TR("\010Pulsa una Tecla", "Pulsa una Tecla")
 #define TR_BADEEPROMDATA       "Datos EEprom mal"

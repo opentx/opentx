@@ -40,11 +40,8 @@
 #define STR2(s) #s
 #define DEFNUMSTR(s)  STR2(s)
 
-const pm_char stamp1[] PROGMEM = "VERS: " VERS_STR;
-const pm_char stamp2[] PROGMEM = "DATE: " DATE_STR;
-const pm_char stamp3[] PROGMEM = "TIME: " TIME_STR;
 #if defined(PCBSTD)
-const pm_char eeprom_stamp[] PROGMEM = "EEPR: " DEFNUMSTR(EEPROM_VER) "-" DEFNUMSTR(EEPROM_VARIANT);
+const pm_char vers_stamp[] PROGMEM = "VERS\037\033: " VERS_STR "\036DATE\037\033: " DATE_STR"\036TIME\037\033: " TIME_STR "\036EEPR\037\033: " DEFNUMSTR(EEPROM_VER) "-" DEFNUMSTR(EEPROM_VARIANT);
 #else
-const pm_char eeprom_stamp[] PROGMEM = "EEPR: " DEFNUMSTR(EEPROM_VER);
+const pm_char vers_stamp[] PROGMEM = "VERS\037\033: " VERS_STR "\036DATE\037\033: " DATE_STR"\036TIME\037\033: " TIME_STR "\036EEPR\037\033: " DEFNUMSTR(EEPROM_VER);
 #endif

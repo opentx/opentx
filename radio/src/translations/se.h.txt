@@ -35,7 +35,7 @@
  */
  /* Formatting octal codes available in TR_ strings:
  *  \037\x       -sets LCD x-coord (x value in octal)
- *  \036         -newline (ARM boards only)
+ *  \036         -newline
  *  \001 to \035 -extended spacing (value * FW/2)
  *  \0           -ends actual string
  */
@@ -304,7 +304,7 @@
 #define TR_VSWASHTYPE          "--- ""120 ""120X""140 ""90\0"
 
 #define LEN_VKEYS              "\005"
-#define TR_VKEYS               TR(" Menu"" Exit""  Ned""  Upp""Höger""Vänst", " Menu"" Exit""Enter"" Page"" Plus""Minus")
+#define TR_VKEYS               TR("Menu\0""Exit\0""Ned\0 ""Upp\0 ""Höger""Vänst", "Menu\0""Exit\0""Enter""Page\0""Plus\0""Minus")
 
 #define LEN_VRENCODERS         "\003"
 #define TR_VRENCODERS          "REa""REb"
@@ -390,7 +390,7 @@
 #define TR_POPUPS              TR_ENTER"\010[EXIT]"
 #define OFS_EXIT               sizeof(TR_ENTER)
 
-#define TR_MENUWHENDONE        CENTER "\006" TR_ENTER " Avslutar "
+#define TR_MENUWHENDONE        CENTER "\011" TR_ENTER " Avslutar "
 #define TR_FREE                "kvar"
 #define TR_DELETEMODEL         "Radera Modell"
 #define TR_COPYINGMODEL        "Kopierar Modell "
@@ -494,17 +494,15 @@
 #define TR_CAL                 "Kalib."
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
-#define TR_MENUTOSTART         CENTER "\006" TR_ENTER " Startar "
-#define TR_SETMIDPOINT         CENTER "\010Centrera Allt"
-#define TR_MOVESTICKSPOTS      CENTER "\004Rör Rattar/Spakar"
+#define TR_MENUTOSTART         CENTER "\011" TR_ENTER " Startar "
+#define TR_SETMIDPOINT         TR(CENTER "\012Centrera Allt",CENTER "\013Centrera Allt")
+#define TR_MOVESTICKSPOTS      TR(CENTER "\005Rör Rattar/Spakar",CENTER "\006Rör Rattar/Spakar")
 #define TR_RXBATT              "Rx Batt:"
 #define TR_TXnRX               "Tx:\0Rx:"
 #define OFS_RX                 4
 #define TR_ACCEL               "Acc:"
 #define TR_NODATA              CENTER "NO DATA"
-#define TR_TM1TM2              "TM1\037\146TM2"
-#define TR_THRTHP              "THR\037\146TH%"
-#define TR_TOT                 "TOT"
+#define TR_TOTTM1TM2THRTHP     "\037\146TOT\036TM1\037\146TM2\036THR\037\146TH%"
 #define TR_TMR1LATMAXUS        "Tmr1Lat max\037\124us"
 #define STR_US                 (STR_TMR1LATMAXUS+13)
 #define TR_TMR1LATMINUS        "Tmr1Lat min\037\124us"
