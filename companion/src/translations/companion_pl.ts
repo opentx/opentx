@@ -9354,282 +9354,162 @@ Mode 4:
     <message>
         <location filename="../simulatordialog.ui" line="1266"/>
         <source>LS1</source>
-        <translation type="unfinished">PL1</translation>
+        <translation>PL1</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="1297"/>
         <source>LS2</source>
-        <translation type="unfinished">PL2</translation>
+        <translation>PL2</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="1328"/>
         <source>LS3</source>
-        <translation type="unfinished">PL3</translation>
+        <translation>PL3</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="1359"/>
         <source>LS4</source>
-        <translation type="unfinished">PL4</translation>
+        <translation>PL4</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="1390"/>
         <source>LS5</source>
-        <translation type="unfinished">PL5</translation>
+        <translation>PL5</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="1421"/>
         <source>LS6</source>
-        <translation type="unfinished">PL6</translation>
+        <translation>PL6</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="1452"/>
         <source>LS7</source>
-        <translation type="unfinished">PL7</translation>
+        <translation>PL7</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="1483"/>
         <source>LS8</source>
-        <translation type="unfinished">PL8</translation>
+        <translation>PL8</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="1514"/>
         <source>LS9</source>
-        <translation type="unfinished">PL9</translation>
+        <translation>PL9</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="1545"/>
         <source>LSA</source>
-        <translation type="unfinished">PLA</translation>
+        <translation>PLA</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="1576"/>
         <source>LSB</source>
-        <translation type="unfinished">PLB</translation>
+        <translation>PLB</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="1607"/>
         <source>LSC</source>
-        <translation type="unfinished">PLC</translation>
+        <translation>PLC</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="1638"/>
         <source>LSD</source>
-        <translation type="unfinished">PLD</translation>
+        <translation>PLD</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="1669"/>
         <source>LSE</source>
-        <translation type="unfinished">PLE</translation>
+        <translation>PLE</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="1700"/>
         <source>LSF</source>
-        <translation type="unfinished">PLF</translation>
+        <translation>PLF</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="1731"/>
         <source>LSG</source>
-        <translation type="unfinished">PLG</translation>
+        <translation>PLG</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="1762"/>
         <source>LSH</source>
-        <translation type="unfinished">PLH</translation>
+        <translation>PLH</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="1793"/>
         <source>LSI</source>
-        <translation type="unfinished">PLI</translation>
+        <translation>PLI</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="1824"/>
         <source>LSJ</source>
-        <translation type="unfinished">PLJ</translation>
+        <translation>PLJ</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="1855"/>
         <source>LSK</source>
-        <translation type="unfinished">PLK</translation>
+        <translation>PLK</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="1886"/>
         <source>LSL</source>
-        <translation type="unfinished">PLL</translation>
+        <translation>PLL</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="1917"/>
         <source>LSM</source>
-        <translation type="unfinished">PLM,</translation>
+        <translation>PLM,</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="1948"/>
         <source>LSN</source>
-        <translation type="unfinished">PLN</translation>
+        <translation>PLN</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="1979"/>
         <source>LSO</source>
-        <translation type="unfinished">PLO</translation>
+        <translation>PLO</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="2010"/>
         <source>LSP</source>
-        <translation type="unfinished">PLP</translation>
+        <translation>PLP</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="2041"/>
         <source>LSQ</source>
-        <translation type="unfinished">PLQ</translation>
+        <translation>PLQ</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="2072"/>
         <source>LSR</source>
-        <translation type="unfinished">PLR</translation>
+        <translation>PLR</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="2103"/>
         <source>LSS</source>
-        <translation type="unfinished">PLS</translation>
+        <translation>PLS</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="2134"/>
         <source>LST</source>
-        <translation type="unfinished">PLT</translation>
+        <translation>PLT</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="2165"/>
         <source>LSU</source>
-        <translation type="unfinished">PLU</translation>
+        <translation>PLU</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="2196"/>
         <source>LSV</source>
-        <translation type="unfinished">PLV</translation>
+        <translation>PLV</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="2227"/>
         <source>LSW</source>
-        <translation type="unfinished">PLW</translation>
-    </message>
-    <message>
-        <source>CS1</source>
-        <translation type="obsolete">PL1</translation>
-    </message>
-    <message>
-        <source>CS2</source>
-        <translation type="obsolete">PL2</translation>
-    </message>
-    <message>
-        <source>CS3</source>
-        <translation type="obsolete">PL3</translation>
-    </message>
-    <message>
-        <source>CS4</source>
-        <translation type="obsolete">PL4</translation>
-    </message>
-    <message>
-        <source>CS5</source>
-        <translation type="obsolete">PL5</translation>
-    </message>
-    <message>
-        <source>CS6</source>
-        <translation type="obsolete">PL6</translation>
-    </message>
-    <message>
-        <source>CS7</source>
-        <translation type="obsolete">PL7</translation>
-    </message>
-    <message>
-        <source>CS8</source>
-        <translation type="obsolete">PL8</translation>
-    </message>
-    <message>
-        <source>CS9</source>
-        <translation type="obsolete">PL9</translation>
-    </message>
-    <message>
-        <source>CSA</source>
-        <translation type="obsolete">PLA</translation>
-    </message>
-    <message>
-        <source>CSB</source>
-        <translation type="obsolete">PLB</translation>
-    </message>
-    <message>
-        <source>CSC</source>
-        <translation type="obsolete">PLC</translation>
-    </message>
-    <message>
-        <source>CSD</source>
-        <translation type="obsolete">PLD</translation>
-    </message>
-    <message>
-        <source>CSE</source>
-        <translation type="obsolete">PLE</translation>
-    </message>
-    <message>
-        <source>CSF</source>
-        <translation type="obsolete">PLF</translation>
-    </message>
-    <message>
-        <source>CSG</source>
-        <translation type="obsolete">PLG</translation>
-    </message>
-    <message>
-        <source>CSH</source>
-        <translation type="obsolete">PLH</translation>
-    </message>
-    <message>
-        <source>CSI</source>
-        <translation type="obsolete">PLI</translation>
-    </message>
-    <message>
-        <source>CSJ</source>
-        <translation type="obsolete">PLJ</translation>
-    </message>
-    <message>
-        <source>CSL</source>
-        <translation type="obsolete">PLL</translation>
-    </message>
-    <message>
-        <source>CSM</source>
-        <translation type="obsolete">PLM</translation>
-    </message>
-    <message>
-        <source>CSN</source>
-        <translation type="obsolete">PLN</translation>
-    </message>
-    <message>
-        <source>CSO</source>
-        <translation type="obsolete">PLO</translation>
-    </message>
-    <message>
-        <source>CSP</source>
-        <translation type="obsolete">PLP</translation>
-    </message>
-    <message>
-        <source>CSQ</source>
-        <translation type="obsolete">PLQ</translation>
-    </message>
-    <message>
-        <source>CSR</source>
-        <translation type="obsolete">PLR</translation>
-    </message>
-    <message>
-        <source>CSS</source>
-        <translation type="obsolete">PLS</translation>
-    </message>
-    <message>
-        <source>CST</source>
-        <translation type="obsolete">PLT</translation>
-    </message>
-    <message>
-        <source>CSU</source>
-        <translation type="obsolete">PLU</translation>
-    </message>
-    <message>
-        <source>CSV</source>
-        <translation type="obsolete">PLV</translation>
+        <translation>PLW</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="807"/>
@@ -9640,16 +9520,6 @@ Mode 4:
         <location filename="../simulatordialog.ui" line="26"/>
         <source>Companion Simulator</source>
         <translation>Symulator Companion</translation>
-    </message>
-    <message>
-        <source>CSK</source>
-        <oldsource>SWK</oldsource>
-        <translation type="obsolete">PLK</translation>
-    </message>
-    <message>
-        <source>CSW</source>
-        <oldsource>SWW</oldsource>
-        <translation type="obsolete">PLW</translation>
     </message>
     <message>
         <location filename="../simulatordialog.ui" line="2308"/>
@@ -10055,290 +9925,162 @@ Mode 4:
     <message>
         <location filename="../xsimulatordialog.ui" line="2897"/>
         <source>LSK</source>
-        <translation type="unfinished">PLK</translation>
+        <translation>PLK</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="2928"/>
         <source>LSC</source>
-        <translation type="unfinished">PLC</translation>
+        <translation>PLC</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="2959"/>
         <source>LSD</source>
-        <translation type="unfinished">PLD</translation>
+        <translation>PLD</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="2990"/>
         <source>LS7</source>
-        <translation type="unfinished">PL7</translation>
+        <translation>PL7</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="3021"/>
         <source>LSL</source>
-        <translation type="unfinished">PLL</translation>
+        <translation>PLL</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="3052"/>
         <source>LSB</source>
-        <translation type="unfinished">PLB</translation>
+        <translation>PLB</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="3083"/>
         <source>LS1</source>
-        <translation type="unfinished">PL1</translation>
+        <translation>PL1</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="3114"/>
         <source>LSH</source>
-        <translation type="unfinished">PLH</translation>
+        <translation>PLH</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="3145"/>
         <source>LSG</source>
-        <translation type="unfinished">PLG</translation>
+        <translation>PLG</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="3176"/>
         <source>LSE</source>
-        <translation type="unfinished">PLE</translation>
+        <translation>PLE</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="3207"/>
         <source>LSF</source>
-        <translation type="unfinished">PLF</translation>
+        <translation>PLF</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="3238"/>
         <source>LS8</source>
-        <translation type="unfinished">PL8</translation>
+        <translation>PL8</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="3269"/>
         <source>LS9</source>
-        <translation type="unfinished">PL9</translation>
+        <translation>PL9</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="3300"/>
         <source>LSA</source>
-        <translation type="unfinished">PLA</translation>
+        <translation>PLA</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="3331"/>
         <source>LSM</source>
-        <translation type="unfinished">PLM,</translation>
+        <translation>PLM,</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="3362"/>
         <source>LSJ</source>
-        <translation type="unfinished">PLJ</translation>
+        <translation>PLJ</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="3393"/>
         <source>LSI</source>
-        <translation type="unfinished">PLI</translation>
+        <translation>PLI</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="3424"/>
         <source>LS4</source>
-        <translation type="unfinished">PL4</translation>
+        <translation>PL4</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="3455"/>
         <source>LS5</source>
-        <translation type="unfinished">PL5</translation>
+        <translation>PL5</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="3486"/>
         <source>LS2</source>
-        <translation type="unfinished">PL2</translation>
+        <translation>PL2</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="3517"/>
         <source>LS3</source>
-        <translation type="unfinished">PL3</translation>
+        <translation>PL3</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="3548"/>
         <source>LS6</source>
-        <translation type="unfinished">PL6</translation>
+        <translation>PL6</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="3579"/>
         <source>LSN</source>
-        <translation type="unfinished">PLN</translation>
+        <translation>PLN</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="3610"/>
         <source>LSO</source>
-        <translation type="unfinished">PLO</translation>
+        <translation>PLO</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="3641"/>
         <source>LSP</source>
-        <translation type="unfinished">PLP</translation>
+        <translation>PLP</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="3672"/>
         <source>LSQ</source>
-        <translation type="unfinished">PLQ</translation>
+        <translation>PLQ</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="3703"/>
         <source>LSR</source>
-        <translation type="unfinished">PLR</translation>
+        <translation>PLR</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="3734"/>
         <source>LSS</source>
-        <translation type="unfinished">PLS</translation>
+        <translation>PLS</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="3765"/>
         <source>LST</source>
-        <translation type="unfinished">PLT</translation>
+        <translation>PLT</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="3796"/>
         <source>LSU</source>
-        <translation type="unfinished">PLU</translation>
+        <translation>PLU</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="3827"/>
         <source>LSV</source>
-        <translation type="unfinished">PLV</translation>
+        <translation>PLV</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.ui" line="3858"/>
         <source>LSW</source>
-        <translation type="unfinished">PLW</translation>
-    </message>
-    <message>
-        <source>CSK</source>
-        <translation type="obsolete">PLK</translation>
-    </message>
-    <message>
-        <source>CSC</source>
-        <translation type="obsolete">PLC</translation>
-    </message>
-    <message>
-        <source>CSD</source>
-        <translation type="obsolete">PLD</translation>
-    </message>
-    <message>
-        <source>CS7</source>
-        <translation type="obsolete">PL7</translation>
-    </message>
-    <message>
-        <source>CSL</source>
-        <translation type="obsolete">PLL</translation>
-    </message>
-    <message>
-        <source>CSB</source>
-        <translation type="obsolete">PLB</translation>
-    </message>
-    <message>
-        <source>CS1</source>
-        <translation type="obsolete">PL1</translation>
-    </message>
-    <message>
-        <source>CSH</source>
-        <translation type="obsolete">PLH</translation>
-    </message>
-    <message>
-        <source>CSG</source>
-        <translation type="obsolete">PLG</translation>
-    </message>
-    <message>
-        <source>CSE</source>
-        <translation type="obsolete">PLE</translation>
-    </message>
-    <message>
-        <source>CSF</source>
-        <translation type="obsolete">PLF</translation>
-    </message>
-    <message>
-        <source>CS8</source>
-        <translation type="obsolete">PL8</translation>
-    </message>
-    <message>
-        <source>CS9</source>
-        <translation type="obsolete">PL9</translation>
-    </message>
-    <message>
-        <source>CSA</source>
-        <translation type="obsolete">PLA</translation>
-    </message>
-    <message>
-        <source>CSM</source>
-        <translation type="obsolete">PLM</translation>
-    </message>
-    <message>
-        <source>CSJ</source>
-        <translation type="obsolete">PLJ</translation>
-    </message>
-    <message>
-        <source>CSI</source>
-        <translation type="obsolete">PLI</translation>
-    </message>
-    <message>
-        <source>CS4</source>
-        <translation type="obsolete">PL4</translation>
-    </message>
-    <message>
-        <source>CS5</source>
-        <translation type="obsolete">PL5</translation>
-    </message>
-    <message>
-        <source>CS2</source>
-        <translation type="obsolete">PL2</translation>
-    </message>
-    <message>
-        <source>CS3</source>
-        <translation type="obsolete">PL3</translation>
-    </message>
-    <message>
-        <source>CS6</source>
-        <translation type="obsolete">PL6</translation>
-    </message>
-    <message>
-        <source>CSN</source>
-        <translation type="obsolete">PLN</translation>
-    </message>
-    <message>
-        <source>CSO</source>
-        <translation type="obsolete">PLO</translation>
-    </message>
-    <message>
-        <source>CSP</source>
-        <translation type="obsolete">PLP</translation>
-    </message>
-    <message>
-        <source>CSQ</source>
-        <translation type="obsolete">PLQ</translation>
-    </message>
-    <message>
-        <source>CSR</source>
-        <translation type="obsolete">PLR</translation>
-    </message>
-    <message>
-        <source>CSS</source>
-        <translation type="obsolete">PLS</translation>
-    </message>
-    <message>
-        <source>CST</source>
-        <translation type="obsolete">PLT</translation>
-    </message>
-    <message>
-        <source>CSU</source>
-        <translation type="obsolete">PLU</translation>
-    </message>
-    <message>
-        <source>CSV</source>
-        <translation type="obsolete">PLV</translation>
-    </message>
-    <message>
-        <source>CSW</source>
-        <translation type="obsolete">PLW</translation>
+        <translation>PLW</translation>
     </message>
     <message>
         <location filename="../xsimulatordialog.cpp" line="58"/>
