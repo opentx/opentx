@@ -4754,7 +4754,11 @@ void menuModelCustomFunctions(uint8_t event)
           }
           else if (func == FUNC_TRAINER) {
             maxParam = 4;
+#if defined(CPUARM)
+            putsMixerSource(MODEL_CUSTOM_FUNC_2ND_COLUMN+7*FW, y, CFN_CH_NUMBER(sd)==0 ? 0 : MIXSRC_Rud+CFN_CH_NUMBER(sd)-1, attr);
+#else
             putsMixerSource(MODEL_CUSTOM_FUNC_2ND_COLUMN+7*FW, y, MIXSRC_Rud+CFN_CH_NUMBER(sd)-1, attr);
+#endif
           }
 #if defined(GVARS)
           else if (func == FUNC_ADJUST_GVAR) {

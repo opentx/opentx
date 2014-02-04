@@ -786,23 +786,23 @@ PACK(typedef struct t_CustomFnData { // Function Switches data
     char name[LEN_CFN_NAME];
     struct {
       int16_t val;
-      int16_t ext1;
-      int16_t ext2;
+      uint8_t mode;
+      uint8_t spare1;
+      int16_t spare2;
     } composite;
   }) param;
-  uint8_t mode:2;
-  uint8_t active:6;
+  uint8_t active;
 }) CustomFnData;
 #define CFN_EMPTY(p)            (!(p)->swtch)
 #define CFN_FUNC(p)             ((p)->func)
 #define CFN_ACTIVE(p)           ((p)->active)
-#define CFN_CH_NUMBER(p)        (CFN_FUNC(p))
+#define CFN_CH_NUMBER(p)        ((p)->param.composite.mode)
 #define CFN_PLAY_REPEAT(p)      ((p)->active)
 #define CFN_PLAY_REPEAT_MUL     1
 #define CFN_PLAY_REPEAT_NOSTART 0x3F
-#define CFN_GVAR_MODE(p)        ((p)->mode)
+#define CFN_GVAR_MODE(p)        ((p)->param.composite.mode)
 #define CFN_PARAM(p)            ((p)->param.composite.val)
-#define CFN_RESET(p)            (p->active = 0, memset(&(p)->param, 0, sizeof((p)->param)))
+#define CFN_RESET(p)            ((p)->active=0, (p)->param.composite.val=0, (p)->param.composite.mode=0, (p)->param.composite.spare1=0, (p)->param.composite.spare2=0)
 #else
 PACK(typedef struct t_CustomFnData {
   uint8_t  value;
