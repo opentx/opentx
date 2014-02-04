@@ -3045,10 +3045,10 @@ uint8_t fnSwitchDuration[NUM_CFN] = { 0 };
 
 inline void playCustomFunctionFile(CustomFnData *sd, uint8_t id)
 {
-  char filename[sizeof(SOUNDS_PATH)+sizeof(sd->param.name)+sizeof(SOUNDS_EXT)] = SOUNDS_PATH "/";
+  char filename[sizeof(SOUNDS_PATH)+sizeof(sd->play.name)+sizeof(SOUNDS_EXT)] = SOUNDS_PATH "/";
   strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
-  strncpy(filename+sizeof(SOUNDS_PATH), sd->param.name, sizeof(sd->param.name));
-  filename[sizeof(SOUNDS_PATH)+sizeof(sd->param.name)] = '\0';
+  strncpy(filename+sizeof(SOUNDS_PATH), sd->play.name, sizeof(sd->play.name));
+  filename[sizeof(SOUNDS_PATH)+sizeof(sd->play.name)] = '\0';
   strcat(filename+sizeof(SOUNDS_PATH), SOUNDS_EXT);
   PLAY_FILE(filename, sd->func==FUNC_BACKGND_MUSIC ? PLAY_BACKGROUND : 0, id);
 }
@@ -3078,7 +3078,7 @@ void evalFunctions()
 
   for (uint8_t i=0; i<NUM_CFN; i++) {
     CustomFnData *sd = &g_model.funcSw[i];
-    int8_t swtch = sd->swtch;
+    int8_t swtch = CFN_SWITCH(sd);
     if (swtch) {
       MASK_CFN_TYPE  switch_mask   = ((MASK_CFN_TYPE)1 << i);
 
@@ -3146,29 +3146,29 @@ void evalFunctions()
 #if defined(GVARS)
           case FUNC_ADJUST_GVAR:
             if (CFN_GVAR_MODE(sd) == 0) {
-              SET_GVAR(CFN_FUNC(sd)-FUNC_ADJUST_GV1, CFN_PARAM(sd), s_perout_flight_phase);
+              SET_GVAR(CFN_GVAR_NUMBER(sd), CFN_PARAM(sd), s_perout_flight_phase);
             }
             else if (CFN_GVAR_MODE(sd) == 2) {
-              SET_GVAR(CFN_FUNC(sd)-FUNC_ADJUST_GV1, GVAR_VALUE(CFN_PARAM(sd), s_perout_flight_phase), s_perout_flight_phase);
+              SET_GVAR(CFN_GVAR_NUMBER(sd), GVAR_VALUE(CFN_PARAM(sd), s_perout_flight_phase), s_perout_flight_phase);
             }
             else if (CFN_GVAR_MODE(sd) == 3) {
               if (!(activeFnSwitches & switch_mask)) {
-                SET_GVAR(CFN_FUNC(sd)-FUNC_ADJUST_GV1, GVAR_VALUE(CFN_FUNC(sd)-FUNC_ADJUST_GV1, getGVarFlightPhase(s_perout_flight_phase, CFN_FUNC(sd)-FUNC_ADJUST_GV1)) + (CFN_PARAM(sd) ? +1 : -1), s_perout_flight_phase);
+                SET_GVAR(CFN_GVAR_NUMBER(sd), GVAR_VALUE(CFN_GVAR_NUMBER(sd), getGVarFlightPhase(s_perout_flight_phase, CFN_GVAR_NUMBER(sd))) + (CFN_PARAM(sd) ? +1 : -1), s_perout_flight_phase);
               }
             }
             else if (CFN_PARAM(sd) >= MIXSRC_TrimRud && CFN_PARAM(sd) <= MIXSRC_TrimAil) {
-              trimGvar[CFN_PARAM(sd)-MIXSRC_TrimRud] = CFN_FUNC(sd)-FUNC_ADJUST_GV1;
+              trimGvar[CFN_PARAM(sd)-MIXSRC_TrimRud] = CFN_GVAR_NUMBER(sd);
             }
 #if defined(ROTARY_ENCODERS)
             else if (CFN_PARAM(sd) >= MIXSRC_REa && CFN_PARAM(sd) < MIXSRC_TrimRud) {
               int8_t scroll = rePreviousValues[CFN_PARAM(sd)-MIXSRC_REa] - (g_rotenc[CFN_PARAM(sd)-MIXSRC_REa] / ROTARY_ENCODER_GRANULARITY);
               if (scroll) {
-                SET_GVAR(CFN_FUNC(sd)-FUNC_ADJUST_GV1, GVAR_VALUE(CFN_FUNC(sd)-FUNC_ADJUST_GV1, getGVarFlightPhase(s_perout_flight_phase, CFN_FUNC(sd)-FUNC_ADJUST_GV1)) + scroll, s_perout_flight_phase);
+                SET_GVAR(CFN_GVAR_NUMBER(sd), GVAR_VALUE(CFN_GVAR_NUMBER(sd), getGVarFlightPhase(s_perout_flight_phase, CFN_GVAR_NUMBER(sd))) + scroll, s_perout_flight_phase);
               }
             }
 #endif
             else {
-              SET_GVAR(CFN_FUNC(sd)-FUNC_ADJUST_GV1, limit((getvalue_t)-1250, getValue(CFN_PARAM(sd)), (getvalue_t)1250) / 10, s_perout_flight_phase);
+              SET_GVAR(CFN_GVAR_NUMBER(sd), limit((getvalue_t)-1250, getValue(CFN_PARAM(sd)), (getvalue_t)1250) / 10, s_perout_flight_phase);
             }
             break;
 #endif

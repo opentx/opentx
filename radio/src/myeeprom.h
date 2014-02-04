@@ -783,42 +783,68 @@ PACK(typedef struct t_CustomFnData { // Function Switches data
   int8_t  swtch;
   uint8_t func;
   PACK(union {
-    char name[LEN_CFN_NAME];
+    struct {
+      char name[LEN_CFN_NAME];
+    } play;
+
     struct {
       int16_t val;
       uint8_t mode;
-      uint8_t spare1;
+      uint8_t param;
       int16_t spare2;
-    } composite;
-  }) param;
+    } all;
+
+    struct {
+      int32_t val1;
+      int16_t val2;
+    } clear;
+  });
   uint8_t active;
 }) CustomFnData;
 #define CFN_EMPTY(p)            (!(p)->swtch)
+#define CFN_SWITCH(p)           ((p)->swtch)
 #define CFN_FUNC(p)             ((p)->func)
 #define CFN_ACTIVE(p)           ((p)->active)
-#define CFN_CH_NUMBER(p)        ((p)->param.composite.mode)
+#define CFN_CH_NUMBER(p)        ((p)->all.param)
 #define CFN_PLAY_REPEAT(p)      ((p)->active)
 #define CFN_PLAY_REPEAT_MUL     1
 #define CFN_PLAY_REPEAT_NOSTART 0x3F
-#define CFN_GVAR_MODE(p)        ((p)->param.composite.mode)
-#define CFN_PARAM(p)            ((p)->param.composite.val)
-#define CFN_RESET(p)            ((p)->active=0, (p)->param.composite.val=0, (p)->param.composite.mode=0, (p)->param.composite.spare1=0, (p)->param.composite.spare2=0)
+#define CFN_GVAR_NUMBER(p)      ((p)->all.param)
+#define CFN_GVAR_MODE(p)        ((p)->all.mode)
+#define CFN_PARAM(p)            ((p)->all.val)
+#define CFN_RESET(p)            ((p)->active=0, (p)->clear.val1=0, (p)->clear.val2=0)
 #else
 PACK(typedef struct t_CustomFnData {
-  uint8_t  value;
-  uint8_t  func:5;
-  uint8_t  active:1;
-  int16_t  swtch:6;
-  uint8_t  param:4;
+  PACK(union {
+    struct {
+      int8_t   swtch:6;
+      uint16_t func:4;
+      uint8_t  mode:2;
+      uint8_t  param:3;
+      uint8_t  active:1;
+    } gvar;
+
+    struct {
+      int8_t   swtch:6;
+      uint16_t func:4;
+      uint8_t  param:4;
+      uint8_t  spare:1;
+      uint8_t  active:1;
+    } all;
+  });
+
+  uint8_t value;
 }) CustomFnData;
-#define CFN_FUNC(p)         ((p)->func)
-#define CFN_ACTIVE(p)       ((p)->active)
-#define CFN_CH_NUMBER(p)    ((p)->param)
-#define CFN_PLAY_REPEAT(p)  ((p)->param)
+#define CFN_SWITCH(p)       ((p)->all.swtch)
+#define CFN_FUNC(p)         ((p)->all.func)
+#define CFN_ACTIVE(p)       ((p)->all.active)
+#define CFN_CH_NUMBER(p)    ((p)->all.param)
+#define CFN_PLAY_REPEAT(p)  ((p)->all.param)
 #define CFN_PLAY_REPEAT_MUL 10
-#define CFN_GVAR_MODE(p)    ((p)->param)
+#define CFN_GVAR_NUMBER(p)  ((p)->gvar.param)
+#define CFN_GVAR_MODE(p)    ((p)->gvar.mode)
 #define CFN_PARAM(p)        ((p)->value)
-#define CFN_RESET(p)        ((p)->active = 0, CFN_PARAM(p) = 0)
+#define CFN_RESET(p)        ((p)->all.active = 0, CFN_PARAM(p) = 0)
 #endif
 
 enum TelemetryUnit {

@@ -1043,16 +1043,6 @@ void putsSwitches(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att)
     lcd_vlineStip(x-2, y, 8, 0x5E/*'!'*/);
     idx = -idx;
   }
-
-#if ROTARY_ENCODERS > 0
-  else if (idx >= SWSRC_FIRST_ROTENC_SWITCH) {
-    idx -= SWSRC_FIRST_ROTENC_SWITCH;
-    char suffix = (idx & 1) ? CHR_LONG : CHR_SHORT;
-    lcd_putsiAtt(x, y, STR_VRENCODERS, idx/2, att);
-    return lcd_putcAtt(lcdLastPos, y, suffix, att);
-  }
-#endif
-
   lcd_putsiAtt(x, y, STR_VSWITCHES, idx-1, att);
 }
 

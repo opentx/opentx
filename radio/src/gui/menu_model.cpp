@@ -4640,14 +4640,14 @@ void onCustomFunctionsFileSelectionMenu(const char *result)
   if (result == STR_UPDATE_LIST) {
     char directory[] = SOUNDS_PATH;
     strncpy(directory+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
-    if (!listSdFiles(directory, SOUNDS_EXT, sizeof(g_model.funcSw[sub].param), NULL)) {
+    if (!listSdFiles(directory, SOUNDS_EXT, sizeof(g_model.funcSw[sub].play.name), NULL)) {
       POPUP_WARNING(STR_NO_SOUNDS_ON_SD);
       s_menu_flags = 0;
     }
   }
   else {
     // The user choosed a wav file in the list
-    memcpy(g_model.funcSw[sub].param.name, result, sizeof(g_model.funcSw[sub].param.name));
+    memcpy(g_model.funcSw[sub].play.name, result, sizeof(g_model.funcSw[sub].play.name));
     eeDirty(EE_MODEL);
   }
 }
@@ -4726,12 +4726,12 @@ void menuModelCustomFunctions(uint8_t event)
       uint8_t active = (attr && (s_editMode>0 || p1valdiff));
       switch (j) {
         case 0:
-          putsSwitches(MODEL_CUSTOM_FUNC_1ST_COLUMN, y, sd->swtch, attr | ((activeFnSwitches & ((MASK_CFN_TYPE)1 << k)) ? BOLD : 0));
-          if (active || AUTOSWITCH_ENTER_LONG()) CHECK_INCDEC_MODELSWITCH(event, sd->swtch, SWSRC_FIRST, SWSRC_LAST);
+          putsSwitches(MODEL_CUSTOM_FUNC_1ST_COLUMN, y, CFN_SWITCH(sd), attr | ((activeFnSwitches & ((MASK_CFN_TYPE)1 << k)) ? BOLD : 0));
+          if (active || AUTOSWITCH_ENTER_LONG()) CHECK_INCDEC_MODELSWITCH(event, CFN_SWITCH(sd), SWSRC_FIRST, SWSRC_LAST);
           break;
 
         case 1:
-          if (sd->swtch) {
+          if (CFN_SWITCH(sd)) {
             lcd_putsiAtt(MODEL_CUSTOM_FUNC_2ND_COLUMN, y, STR_VFSWFUNC, func, attr);
             if (active) {
               CHECK_INCDEC_MODELVAR_ZERO(event, CFN_FUNC(sd), FUNC_MAX-1);
@@ -4740,7 +4740,7 @@ void menuModelCustomFunctions(uint8_t event)
           }
           else {
             j = 4; // skip other fields
-            if (attr && m_posHorz > 0) {
+            if (sub==k && m_posHorz > 0) {
               REPEAT_LAST_CURSOR_MOVE();
             }
           }
@@ -4763,7 +4763,9 @@ void menuModelCustomFunctions(uint8_t event)
 #if defined(GVARS)
           else if (func == FUNC_ADJUST_GVAR) {
             maxParam = MAX_GVARS-1;
-            putsStrIdx(MODEL_CUSTOM_FUNC_2ND_COLUMN+7*FW, y, STR_GV, CFN_CH_NUMBER(sd)+1, attr);
+            putsStrIdx(MODEL_CUSTOM_FUNC_2ND_COLUMN+7*FW, y, STR_GV, CFN_GVAR_NUMBER(sd)+1, attr);
+            if (active) CHECK_INCDEC_MODELVAR_ZERO(event, CFN_GVAR_NUMBER(sd), maxParam);
+            break;
           }
 #endif
           else if (attr) {
@@ -4804,15 +4806,15 @@ void menuModelCustomFunctions(uint8_t event)
 #else
             xcoord_t x = (func == FUNC_PLAY_TRACK ? MODEL_CUSTOM_FUNC_2ND_COLUMN + FW + FW*strlen(TR_PLAY_TRACK) : MODEL_CUSTOM_FUNC_3RD_COLUMN);
 #endif
-            if (ZEXIST(sd->param.name))
-              lcd_putsnAtt(x, y, sd->param.name, sizeof(sd->param.name), attr);
+            if (ZEXIST(sd->play.name))
+              lcd_putsnAtt(x, y, sd->play.name, sizeof(sd->play.name), attr);
             else
               lcd_putsiAtt(x, y, STR_VCSWFUNC, 0, attr);
             if (active && event==EVT_KEY_BREAK(KEY_ENTER)) {
               s_editMode = 0;
               char directory[] = SOUNDS_PATH;
               strncpy(directory+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
-              if (listSdFiles(directory, SOUNDS_EXT, sizeof(sd->param.name), sd->param.name)) {
+              if (listSdFiles(directory, SOUNDS_EXT, sizeof(sd->play.name), sd->play.name)) {
                 menuHandler = onCustomFunctionsFileSelectionMenu;
               }
               else {
@@ -4922,7 +4924,7 @@ void menuModelCustomFunctions(uint8_t event)
         }
 
         case 4:
-          if (func <= FUNC_INSTANT_TRIM || func == FUNC_RESET || IS_ADJUST_GV_FUNC(func) || IS_VOLUME_FUNC(func)) {
+          if (HAS_ENABLE_PARAM(func)) {
             menu_lcd_onoff(MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF, y, CFN_ACTIVE(sd), attr);
             if (active) CHECK_INCDEC_MODELVAR_ZERO(event, CFN_ACTIVE(sd), 1);
           }
