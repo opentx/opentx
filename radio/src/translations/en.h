@@ -490,8 +490,8 @@
 #define TR_CAL                 "Cal"
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
-#define TR_MENUTOSTART         CENTER "\006" TR_ENTER " TO START"
-#define TR_SETMIDPOINT         TR(CENTER "\003SET STICKS MIDPOINT",CENTER "\003CENTER STICKS/SLIDERS")
+#define TR_MENUTOSTART         CENTER "\010" TR_ENTER " TO START"
+#define TR_SETMIDPOINT         TR(CENTER "\004SET STICKS MIDPOINT",CENTER "\004CENTER STICKS/SLIDERS")
 #define TR_MOVESTICKSPOTS      CENTER "\006MOVE STICKS/POTS"
 #define TR_RXBATT              "Rx Batt:"
 #define TR_TXnRX               "Tx:\0Rx:"

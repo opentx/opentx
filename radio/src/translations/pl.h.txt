@@ -386,7 +386,7 @@
 #define TR_POPUPS              TR_ENTER"\010[EXIT]"
 #define OFS_EXIT               sizeof(TR_ENTER)
 
-#define TR_MENUWHENDONE        CENTER "\007"TR_ENTER" > DALEJ"
+#define TR_MENUWHENDONE        CENTER "\011"TR_ENTER" > DALEJ"
 #define TR_FREE                TR("wolne:", "wolne")
 #define TR_DELETEMODEL         "SKASUJ MODEL"
 #define TR_COPYINGMODEL        "Kopiuj model.."
@@ -490,7 +490,7 @@
 #define TR_CAL                 "Kal."
 #define TR_VTRIM               "Trymer- +"
 #define TR_BG                  "BG:"
-#define TR_MENUTOSTART         CENTER "\007" TR_ENTER " = START"
+#define TR_MENUTOSTART         CENTER "\011" TR_ENTER " = START"
 #define TR_SETMIDPOINT         TR(CENTER "\001Ustaw drążki/potencj na środku","\005Ustaw drązki/potencj na środku")
 #define TR_MOVESTICKSPOTS      TR(CENTER "\004Poruszaj drążkami i potenc.","\010Poruszaj drążkami i potenc.")
 #define TR_RXBATT              "Rx Bat.:"

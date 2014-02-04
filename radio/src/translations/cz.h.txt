@@ -490,9 +490,9 @@
 #define TR_CAL                 "Kal."
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
-#define TR_MENUTOSTART         CENTER "\007" TR_ENTER " = START"
-#define TR_SETMIDPOINT         TR(CENTER "\001Nastav páky na střed", CENTER "\002Nastav páky na střed")
-#define TR_MOVESTICKSPOTS      TR(CENTER "\004Hýbej pákami/poty", "\007Hýbej pákami i potenciometry")
+#define TR_MENUTOSTART         CENTER "\010" TR_ENTER " = START"
+#define TR_SETMIDPOINT         TR(CENTER "\003Nastav páky na střed", CENTER "\004Nastav páky na střed")
+#define TR_MOVESTICKSPOTS      TR(CENTER "\005Hýbej pákami/poty", "\010Hýbej pákami i potenciometry")
 #define TR_RXBATT              "Rx Bat.:"
 #define TR_TXnRX               "Tx:\0Rx:"
 #define OFS_RX                 4

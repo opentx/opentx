@@ -386,7 +386,7 @@
 #define TR_POPUPS              TR_ENTER "\010[SALIR]"
 #define OFS_EXIT               sizeof(TR_ENTER)
 
-#define TR_MENUWHENDONE        CENTER "\006" TR_ENTER "AL ACABAR "
+#define TR_MENUWHENDONE        CENTER "\007" TR_ENTER " AL ACABAR"
 #define TR_FREE                "libre"
 #define TR_DELETEMODEL         "BORRAR MODELO"
 #define TR_COPYINGMODEL        "Copiando modelo.."
@@ -490,9 +490,9 @@
 #define TR_CAL                 "Cal"
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
-#define TR_MENUTOSTART         CENTER "\006" TR_ENTER "EMPEZAR"
-#define TR_SETMIDPOINT         CENTER "\003STICKS AL CENTRO"
-#define TR_MOVESTICKSPOTS      CENTER "\006MOVER STICKS/POTS"
+#define TR_MENUTOSTART         CENTER "\010" TR_ENTER " EMPEZAR"
+#define TR_SETMIDPOINT         TR(CENTER "\007STICKS AL CENTRO",CENTER "\010STICKS AL CENTRO")
+#define TR_MOVESTICKSPOTS      TR(CENTER "\005MOVER STICKS/POTS",CENTER "\006MOVER STICKS/POTS")
 #define TR_RXBATT              "Rx Batt:"
 #define TR_TXnRX               "Tx:\0Rx:"
 #define OFS_RX                 4
@@ -521,7 +521,7 @@
 #define TR_EEPROMLOWMEM        "EEPROM mem.baja"
 #define TR_ALERT               "\016ALERTA"
 #define TR_PRESSANYKEYTOSKIP   "Pulsar tecla omitir"
-#define TR_THROTTLENOTIDLE     "Aceler.Activado"
+#define TR_THROTTLENOTIDLE     "Aceler. Activado"
 #define TR_ALARMSDISABLED      "Alarmas Desact."
 #define TR_PRESSANYKEY         TR("\010Pulsa una Tecla", "Pulsa una Tecla")
 #define TR_BADEEPROMDATA       "Datos EEprom mal"

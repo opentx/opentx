@@ -386,7 +386,7 @@
 #define TR_POPUPS              TR_ENTER"\010[EXIT]"
 #define OFS_EXIT               sizeof(TR_ENTER)
 
-#define TR_MENUWHENDONE        CENTER"\006"TR_ENTER" > Weiter"
+#define TR_MENUWHENDONE        CENTER"\010"TR_ENTER" > Weiter"
 #define TR_FREE                "frei"
 #define TR_DELETEMODEL         "Modell l\203schen?"
 #define TR_COPYINGMODEL        "Kopiere Modell"
@@ -490,9 +490,9 @@
 #define TR_CAL                 "Kal."
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
-#define TR_MENUTOSTART         CENTER"\006"TR_ENTER" zum Start"
-#define TR_SETMIDPOINT         CENTER"Sticks+Potis auf Mitte"
-#define TR_MOVESTICKSPOTS      CENTER"Sticks+Potis bewegen"
+#define TR_MENUTOSTART         CENTER"\007"TR_ENTER" zum Start"
+#define TR_SETMIDPOINT         CENTER"\002Sticks+Potis auf Mitte"
+#define TR_MOVESTICKSPOTS      CENTER"\003Sticks+Potis bewegen"
 #define TR_RXBATT              "Rx Batt:"
 #define TR_TXnRX               "Tx:\0Rx:"
 #define OFS_RX                 4
