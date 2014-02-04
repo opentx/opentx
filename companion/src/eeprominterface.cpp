@@ -37,215 +37,117 @@ void getEEPROMString(char *dst, const char *src, int size)
   }
 }
 
-int RawSource::getDecimals(const ModelData & Model)
+RawSourceRange RawSource::getRange(bool singleprec)
 {
-  if(type==SOURCE_TYPE_TELEMETRY) {
-    switch (index) {
-      case TELEMETRY_SOURCE_A1:
-      case TELEMETRY_SOURCE_A2:
-        return (Model.frsky.channels[index-TELEMETRY_SOURCE_A1].type==0 ? 2: 0);
-      case TELEMETRY_SOURCE_CELL:
-        return 2;
-      case TELEMETRY_SOURCE_CELLS_SUM:
-      case TELEMETRY_SOURCE_VFAS:
-      case TELEMETRY_SOURCE_CURRENT:
-        return 1;
-      default:
-        return 0;
-    }
-  }
-  return 0;
-}
+  RawSourceRange result;
 
-double RawSource::getMin(const ModelData & Model)
-{
+  int board = GetEepromInterface()->getBoard();
+
+  if (!singleprec && !IS_TARANIS(board)) {
+    singleprec = true;
+  }
+
   switch (type) {
     case SOURCE_TYPE_TELEMETRY:
       switch (index) {
-        /*case TELEMETRY_SOURCE_NONE:
         case TELEMETRY_SOURCE_TX_BATT:
+          result.step = 0.1;
+          result.decimals = 1;
+          result.max = 25.5;
+          break;
         case TELEMETRY_SOURCE_TIMER1:
         case TELEMETRY_SOURCE_TIMER2:
-          return 0; */
-        case TELEMETRY_SOURCE_A1:
-        case TELEMETRY_SOURCE_A2:
-          if (Model.frsky.channels[index-TELEMETRY_SOURCE_A1].type==0) {
-            return (Model.frsky.channels[index-TELEMETRY_SOURCE_A1].offset*Model.frsky.channels[index-TELEMETRY_SOURCE_A1].ratio)/2550.0;
-          }
-          else {
-            return (Model.frsky.channels[index-TELEMETRY_SOURCE_A1].offset*Model.frsky.channels[index-TELEMETRY_SOURCE_A1].ratio)/255.0;
-          }
-        case TELEMETRY_SOURCE_ALT:
-        case TELEMETRY_SOURCE_GPS_ALT:
-          return -500;
-        case TELEMETRY_SOURCE_T1:
-        case TELEMETRY_SOURCE_T2:
-          return -30;
-        default:
-          return 0;
-      }
-      break;
-    default:
-      return (Model.extendedLimits ? -125 :-100);
-  }
-}
-
-double RawSource::getMax(const ModelData & Model)
-{
-  switch (type) {
-    case SOURCE_TYPE_TELEMETRY:
-      switch (index) {
-        case TELEMETRY_SOURCE_TIMER1:
-        case TELEMETRY_SOURCE_TIMER2:
-          return 765;
+          result.step = singleprec ? 3 : 1;
+          result.max = singleprec ? 765 : 7200;
+          break;
         case TELEMETRY_SOURCE_RSSI_TX:
         case TELEMETRY_SOURCE_RSSI_RX:
-          return 100;
+          result.max = 100;
+          break;
         case TELEMETRY_SOURCE_A1:
         case TELEMETRY_SOURCE_A2:
-          if (Model.frsky.channels[index-TELEMETRY_SOURCE_A1].type==0) {
-            return (Model.frsky.channels[index-TELEMETRY_SOURCE_A1].ratio-(Model.frsky.channels[index-TELEMETRY_SOURCE_A1].offset*Model.frsky.channels[index-TELEMETRY_SOURCE_A1].ratio)/255.0)/10;
-          } else {
-            return Model.frsky.channels[index-TELEMETRY_SOURCE_A1].ratio-(Model.frsky.channels[index-TELEMETRY_SOURCE_A1].offset*Model.frsky.channels[index-TELEMETRY_SOURCE_A1].ratio)/255.0;
+          if (model) {
+            const FrSkyChannelData & channel = model->frsky.channels[index-TELEMETRY_SOURCE_A1];
+            float ratio = channel.getRatio();
+            if (channel.type==0 || channel.type==1 || channel.type==2)
+              result.decimals = 2;
+            else
+              result.decimals = 0;
+            result.step = ratio / 255;
+            result.min = channel.offset * result.step;
+            result.max = ratio + result.min;
           }
+          break;
         case TELEMETRY_SOURCE_ALT:
         case TELEMETRY_SOURCE_GPS_ALT:
-          return 1540;
-        case TELEMETRY_SOURCE_RPM:
-          return 12750;
-        case TELEMETRY_SOURCE_FUEL:
-          return 100;        
+          result.step = singleprec ? 8 : 1;
+          result.min = -500;
+          result.max = singleprec ? 1540 : 3000;
+          break;
         case TELEMETRY_SOURCE_T1:
         case TELEMETRY_SOURCE_T2:
-          return 225;
-        case TELEMETRY_SOURCE_SPEED:
-          return 944;
-        case TELEMETRY_SOURCE_DIST:
-          return 2040;
-        case TELEMETRY_SOURCE_CELL:
-          return 5.1;
-        case TELEMETRY_SOURCE_CELLS_SUM:
-        case TELEMETRY_SOURCE_VFAS:
-          return 25.5;
-        case TELEMETRY_SOURCE_CURRENT:
-          return 127.5;
-        case TELEMETRY_SOURCE_CONSUMPTION:
-          return 5100;
-        case TELEMETRY_SOURCE_POWER:
-          return 1275;
-        default:
-          return 125;
-      }
-      break;
-    default:
-      return (Model.extendedLimits ? 125 :100);
-  }
-}
-
-double RawSource::getOffset(const ModelData & Model)
-{
-  if (type==SOURCE_TYPE_TELEMETRY) {
-    switch (index) {
-      case TELEMETRY_SOURCE_A1:
-      case TELEMETRY_SOURCE_A2:
-        if (Model.frsky.channels[index-TELEMETRY_SOURCE_A1].type==0) {
-          return (Model.frsky.channels[index-TELEMETRY_SOURCE_A1].offset*Model.frsky.channels[index-TELEMETRY_SOURCE_A1].ratio)/2550.0;
-        }
-        else {
-          return (Model.frsky.channels[index-TELEMETRY_SOURCE_A1].offset*Model.frsky.channels[index-TELEMETRY_SOURCE_A1].ratio)/255.0;
-        }
-      case TELEMETRY_SOURCE_ALT:
-      case TELEMETRY_SOURCE_GPS_ALT:
-        return 524;
-      case TELEMETRY_SOURCE_RPM:
-        return 6400;
-      case TELEMETRY_SOURCE_FUEL:
-        return 0;
-      case TELEMETRY_SOURCE_T1:
-      case TELEMETRY_SOURCE_T2:
-        return 98;
-      case TELEMETRY_SOURCE_SPEED:
-        return 474;
-      case TELEMETRY_SOURCE_DIST:
-        return 1024;
-      case TELEMETRY_SOURCE_CELL:
-        return 2.56;
-      default:
-        return 0;
-    }
-  }
-  return 0;
-}
-
-int RawSource::getRawOffset(const ModelData & Model)
-{
-  switch (type) {
-    case SOURCE_TYPE_TELEMETRY:
-      switch (index) {
-        case TELEMETRY_SOURCE_TIMER1:
-        case TELEMETRY_SOURCE_TIMER2:
-        case TELEMETRY_SOURCE_RSSI_TX:
-        case TELEMETRY_SOURCE_RSSI_RX:
-        case TELEMETRY_SOURCE_A1:
-        case TELEMETRY_SOURCE_A2:
-        case TELEMETRY_SOURCE_FUEL:
-        case TELEMETRY_SOURCE_CELLS_SUM:
-        case TELEMETRY_SOURCE_VFAS:
-        case TELEMETRY_SOURCE_CURRENT:
-        case TELEMETRY_SOURCE_CONSUMPTION:
-        case TELEMETRY_SOURCE_POWER:
-          return 128;
-        default:
-          return 0;
-      }
-   default:
-      return 0;
-  }
-}
-
-double RawSource::getStep(const ModelData & Model)
-{
-  switch (type) {
-    case SOURCE_TYPE_TELEMETRY:
-      switch (index) {
-        case TELEMETRY_SOURCE_TIMER1:
-        case TELEMETRY_SOURCE_TIMER2:
-          return 3;
-        case TELEMETRY_SOURCE_A1:
-        case TELEMETRY_SOURCE_A2:
-          if (Model.frsky.channels[index-TELEMETRY_SOURCE_A1].type==0) {
-            return (Model.frsky.channels[index-TELEMETRY_SOURCE_A1].ratio/2550.0);
-          }
-          else {
-            return (Model.frsky.channels[index-TELEMETRY_SOURCE_A1].ratio/255.0);
-          }
-        case TELEMETRY_SOURCE_ALT:
-        case TELEMETRY_SOURCE_GPS_ALT:
-          return 8;
+          result.min = -30;
+          result.max = 225;
+          break;
         case TELEMETRY_SOURCE_RPM:
-          return 50;
+          result.step = singleprec ? 50 : 1;
+          result.max = singleprec ? 12750 : 20000;
+          break;
+        case TELEMETRY_SOURCE_FUEL:
+          result.max = 100;
+          break;
         case TELEMETRY_SOURCE_SPEED:
-          return 4;
+          result.step = singleprec ? 4 : 1;
+          result.max = singleprec ? 944 : 2000;
+          if (model && !model->frsky.imperial) {
+            result.step *= 1.852;
+            result.max *= 1.852;
+          }
+          break;
         case TELEMETRY_SOURCE_DIST:
-          return 8;
+          result.step = singleprec ? 8 : 1;
+          result.max = singleprec ? 2040 : 10000;
+          break;
         case TELEMETRY_SOURCE_CELL:
-          return 0.02;
+          result.step = singleprec ? 0.02 : 0.01;
+          result.max = 5.1;
+          result.decimals = 2;
+          break;
         case TELEMETRY_SOURCE_CELLS_SUM:
         case TELEMETRY_SOURCE_VFAS:
-          return 0.1;
+          result.step = 0.1;
+          result.max = 25.5;
+          result.decimals = 1;
+          break;
         case TELEMETRY_SOURCE_CURRENT:
-          return 0.5;
+          result.step = singleprec ? 0.5 : 0.1;
+          result.max = singleprec ? 127.5 : 200.0;
+          result.decimals = 1;
+          break;
         case TELEMETRY_SOURCE_CONSUMPTION:
-          return 20;
+          result.step = singleprec ? 20 : 1;
+          result.max = singleprec ? 5100 : 10000;
+          break;
         case TELEMETRY_SOURCE_POWER:
-          return 5;
+          result.step = singleprec ? 5 : 1;
+          result.max = singleprec ? 1275 : 2000;
+          break;
         default:
-          return 1;
+          result.max = 125;
+          break;
+      }
+      if (singleprec) {
+        result.offset = result.max - (127*result.step);
       }
       break;
-   default:
-      return 1;
+
+    default:
+      result.max = (model && model->extendedLimits ? 125 : 100);
+      result.min = - result.max;
+      break;
   }
+
+  return result;
 }
 
 QString AnalogString(int index)
@@ -337,26 +239,34 @@ QString SwitchDn(const char sw)
 
 QString RawSwitch::toString()
 {
-  static const QString switches9X[] = { QObject::tr("THR"), QObject::tr("RUD"), QObject::tr("ELE"),
-                           QObject::tr("ID0"), QObject::tr("ID1"), QObject::tr("ID2"),
-                           QObject::tr("AIL"), QObject::tr("GEA"), QObject::tr("TRN")
-                         };
+  static const QString switches9X[] = {
+    QString("THR"), QString("RUD"), QString("ELE"),
+    QString("ID0"), QString("ID1"), QString("ID2"),
+    QString("AIL"), QString("GEA"), QString("TRN")
+  };
 
-  static const QString switchesX9D[] = { SwitchUp('A'), QString::fromUtf8("SA-"), SwitchDn('A'),
-                            SwitchUp('B'), QString::fromUtf8("SB-"), SwitchDn('B'),
-                            SwitchUp('C'), QString::fromUtf8("SC-"), SwitchDn('C'),
-                            SwitchUp('D'), QString::fromUtf8("SD-"), SwitchDn('D'),
-                            SwitchUp('E'), QString::fromUtf8("SE-"), SwitchDn('E'),
-                            SwitchUp('F'), SwitchDn('F'),
-                            SwitchUp('G'), QString::fromUtf8("SG-"), SwitchDn('G'),
-                            SwitchUp('H'), SwitchDn('H'),
-                          };
+  static const QString switchesX9D[] = {
+    SwitchUp('A'), QString::fromUtf8("SA-"), SwitchDn('A'),
+    SwitchUp('B'), QString::fromUtf8("SB-"), SwitchDn('B'),
+    SwitchUp('C'), QString::fromUtf8("SC-"), SwitchDn('C'),
+    SwitchUp('D'), QString::fromUtf8("SD-"), SwitchDn('D'),
+    SwitchUp('E'), QString::fromUtf8("SE-"), SwitchDn('E'),
+    SwitchUp('F'), SwitchDn('F'),
+    SwitchUp('G'), QString::fromUtf8("SG-"), SwitchDn('G'),
+    SwitchUp('H'), SwitchDn('H'),
+  };
 
-  static const QString virtualSwitches[] = { QObject::tr("LS1"), QObject::tr("LS2"), QObject::tr("LS3"), QObject::tr("LS4"), QObject::tr("LS5"), QObject::tr("LS6"), QObject::tr("LS7"), QObject::tr("LS8"), QObject::tr("LS9"), QObject::tr("LSA"),
-                                             QObject::tr("LSB"), QObject::tr("LSC"), QObject::tr("LSD"), QObject::tr("LSE"), QObject::tr("LSF"), QObject::tr("LSG"), QObject::tr("LSH"), QObject::tr("LSI"), QObject::tr("LSJ"), QObject::tr("LSK"),
-                                             QObject::tr("LSL"), QObject::tr("LSM"), QObject::tr("LSN"), QObject::tr("LSO"), QObject::tr("LSP"), QObject::tr("LSQ"), QObject::tr("LSR"), QObject::tr("LSS"), QObject::tr("LST"), QObject::tr("LSU"),
-                                             QObject::tr("LSV"), QObject::tr("LSW")
-                                           };
+  static const QString virtualSwitches[] = {
+    QObject::tr("LS1"), QObject::tr("LS2"), QObject::tr("LS3"), QObject::tr("LS4"), QObject::tr("LS5"), QObject::tr("LS6"), QObject::tr("LS7"), QObject::tr("LS8"), QObject::tr("LS9"), QObject::tr("LSA"),
+    QObject::tr("LSB"), QObject::tr("LSC"), QObject::tr("LSD"), QObject::tr("LSE"), QObject::tr("LSF"), QObject::tr("LSG"), QObject::tr("LSH"), QObject::tr("LSI"), QObject::tr("LSJ"), QObject::tr("LSK"),
+    QObject::tr("LSL"), QObject::tr("LSM"), QObject::tr("LSN"), QObject::tr("LSO"), QObject::tr("LSP"), QObject::tr("LSQ"), QObject::tr("LSR"), QObject::tr("LSS"), QObject::tr("LST"), QObject::tr("LSU"),
+    QObject::tr("LSV"), QObject::tr("LSW")
+  };
+
+  static const QString multiposPots[] = {
+    QObject::tr("S11"), QObject::tr("S12"), QObject::tr("S13"), QObject::tr("S14"), QObject::tr("S15"), QObject::tr("S16"),
+    QObject::tr("S21"), QObject::tr("S22"), QObject::tr("S23"), QObject::tr("S24"), QObject::tr("S25"), QObject::tr("S26")
+  };
 
   switch(type) {
     case SWITCH_TYPE_SWITCH:
@@ -366,6 +276,8 @@ QString RawSwitch::toString()
         return index > 0 ? CHECK_IN_ARRAY(switches9X, index-1) : QString("!") + CHECK_IN_ARRAY(switches9X, -index-1);
     case SWITCH_TYPE_VIRTUAL:
       return index > 0 ? CHECK_IN_ARRAY(virtualSwitches, index-1) : QString("!") + CHECK_IN_ARRAY(virtualSwitches, -index-1);
+    case SWITCH_TYPE_MULTIPOS_POT:
+      return CHECK_IN_ARRAY(multiposPots, index);
     case SWITCH_TYPE_ON:
       return QObject::tr("ON");
     case SWITCH_TYPE_ONM:

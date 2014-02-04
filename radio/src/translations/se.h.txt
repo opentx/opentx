@@ -68,8 +68,11 @@
 #define LEN_TRNCHN             "\003"
 #define TR_TRNCHN              "KN1KN2KN3KN4"
 
-#define LEN_UART3MODES         "\017"
-#define TR_UART3MODES          "Av\0            ""SPORT-spegel\0  ""VirtuellSP2UART"
+#define LEN_UART3MODES         "\022"
+#define TR_UART3MODES          "Av\0               ""Spegling av S-Port""Debug\0            "
+
+#define LEN_POTTYPES           "\020"
+#define TR_POTTYPES            "Potentiometer\0  ""Flerlägesväljare"
 
 #define LEN_DATETIME           "\005"
 #define TR_DATETIME            "DAG: ""TID: "
@@ -331,7 +334,8 @@
 #endif
 
 #if defined(PCBTARANIS)
-  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_CUSTOMSW "One"
+  #define TR_6POS_POTS         "P11""P12""P13""P14""P15""P16""P21""P22""P23""P24""P25""P26"
+  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_CUSTOMSW TR_6POS_POTS "One"
 #else
   #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_CUSTOMSW "One"
 #endif
@@ -358,7 +362,7 @@
 #define TR_VTMRMODES           "Av\0""ABS""GAs""GA%""GAt"
 
 #define LEN_VTRAINERMODES      "\006"
-#define TR_VTRAINERMODES       "Master""Slav\0."
+#define TR_VTRAINERMODES       "Lärare""Elev\0."
 
 #define LEN_VFAILSAFE          "\011"
 #define TR_VFAILSAFE           "Håll\0    ""Special\0 ""Pulsfritt"
@@ -484,7 +488,7 @@
 #define TR_SWITCHWARNING       TR("Bryt.varn.","Brytarvarning")
 #define TR_TIMEZONE            TR("Tidszon","GPS Tidszon")
 #define TR_RXCHANNELORD        "Kanaler i RX"
-#define TR_SLAVE               "Slav"
+#define TR_SLAVE               "Elev"
 #define TR_MODESRC             " Läge\004% Källa"
 #define TR_MULTIPLIER          "Styrka"
 #define TR_CAL                 "Kalib."
@@ -518,15 +522,15 @@
 #define TR_MODEL               "Modell"
 #define TR_FP                  "FL"
 #define TR_MIX                 "MIX"
-#define TR_EEPROMLOWMEM        "EEPROM low mem"
+#define TR_EEPROMLOWMEM        "Minnesbrist"
 #define TR_ALERT               "\016OBS"
 #define TR_PRESSANYKEYTOSKIP   "Tryck ned en knapp"
 #define TR_THROTTLENOTIDLE     "Gasen är påslagen!"
 #define TR_ALARMSDISABLED      "Alarmen Avstängda!"
-#define TR_PRESSANYKEY         TR("Tryck ned en knapp", "Tryck ned en knapp")
-#define TR_BADEEPROMDATA       "EEprom Datafel "
-#define TR_EEPROMFORMATTING    "Formaterar EEprom"
-#define TR_EEPROMOVERFLOW      "Fel i EEprom"
+#define TR_PRESSANYKEY         "Tryck ned en knapp"
+#define TR_BADEEPROMDATA       "Minnet kan inte tolkas"
+#define TR_EEPROMFORMATTING    "Minnet Nollställs"
+#define TR_EEPROMOVERFLOW      "Minnesfel"
 #define TR_MENURADIOSETUP      "Inställningar"
 #define TR_MENUDATEANDTIME     "Dag och Tid"
 #define TR_MENUTRAINER         "Trainer (PPM in)"
@@ -542,7 +546,7 @@
 #define TR_MENUHELISETUP       "Helikopter"
 
 #if defined(PCBTARANIS)
-  #define TR_MENUINPUTS        "Filter"
+  #define TR_MENUINPUTS        TR("Filter","Filtrerad Insignal")
   #define TR_MENULIMITS        "Gränser"
 #elif defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...
   #define TR_MENUINPUTS        "Spakar" 
@@ -676,7 +680,9 @@
 #define TR_CRITICALALARM       INDENT "Kritiskt alarm"
 #define TR_PERSISTENT_MAH      INDENT "Store mAh"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
-#define TR_UART3MODE           "Serieport"
+#define TR_UART3MODE           "Serieporten"
+#define TR_POT1TYPE            "S1-ratten"
+#define TR_POT2TYPE            "S2-ratten"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL  "Max RSSI"
@@ -697,7 +703,7 @@
   #define TR_MAVLINK_BEARING              "Bäring"
   #define TR_MAVLINK_ALTITUDE             "Höjd"
   #define TR_MAVLINK_GPS                  "GPS"
-  #define TR_MAVLINK_NO_FIX               "NO Fix"
+  #define TR_MAVLINK_NO_FIX               "EJ Lås"
   #define TR_MAVLINK_SAT                  "SAT"
   #define TR_MAVLINK_HDOP                 "HDOP"
   #define TR_MAVLINK_LAT                  "LAT"

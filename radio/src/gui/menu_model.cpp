@@ -1060,7 +1060,7 @@ void menuModelSetup(uint8_t event)
             div_t qr = div(timer->start, 60);
             switch (m_posHorz) {
               case 0:
-                CHECK_INCDEC_MODELVAR(event, timer->mode, -2*(MAX_PSWITCH+NUM_CSW), TMR_VAROFS-1+2*(MAX_PSWITCH+NUM_CSW));
+                CHECK_INCDEC_MODELVAR(event, timer->mode, -2*(NUM_PSWITCH+NUM_CSW), TMR_VAROFS-1+2*(NUM_PSWITCH+NUM_CSW));
                 break;
               case 1:
                 CHECK_INCDEC_MODELVAR_ZERO(event, qr.quot, 59);
@@ -1840,7 +1840,7 @@ void menuModelFlightModesAll(uint8_t event)
           }
           else {
             putsSwitches((5+LEN_FP_NAME)*FW+FW/2, y, p->swtch, attr);
-            if (active) CHECK_INCDEC_MODELSWITCH(event, p->swtch, -MAX_SWITCH, MAX_SWITCH);
+            if (active) CHECK_INCDEC_MODELSWITCH(event, p->swtch, -NUM_SWITCH, NUM_SWITCH);
           }
           break;
 
@@ -4298,7 +4298,7 @@ void menuModelCustomSwitchOne(uint8_t event)
       case CSW_FIELD_ANDSW:
         lcd_putsLeft(y, STR_AND_SWITCH);
         putsSwitches(CSWONE_2ND_COLUMN, y, cs->andsw, attr);
-        if (attr) CHECK_INCDEC_MODELVAR(event, cs->andsw, -MAX_SWITCH, MAX_SWITCH);
+        if (attr) CHECK_INCDEC_MODELVAR(event, cs->andsw, -NUM_SWITCH, NUM_SWITCH);
         break;
       case CSW_FIELD_DURATION:
         lcd_putsLeft(y, STR_DURATION);
@@ -5593,18 +5593,14 @@ void menuModelTelemetry(uint8_t event)
           lineIndex = k-ITEM_TELEMETRY_SCREEN_LINE5;
         }
 
-#if 0
-        putsStrIdx(0, y, PSTR(INDENT"Line"), lineIndex+1, m_posHorz<0 ? attr : 0);
-#endif
-
 #if defined(GAUGES)
         if (IS_BARS_SCREEN(screenIndex)) {
           FrSkyBarData & bar = g_model.frsky.screens[screenIndex].bars[lineIndex];
           uint8_t barSource = bar.source;
           lcd_putsiAtt(TELEM_COL1, y, STR_VTELEMCHNS, barSource, m_posHorz==0 ? attr : 0);
           if (barSource) {
-            putsTelemetryChannel(TELEM_BARS_COLMIN, y, barSource-1, convertTelemValue(barSource, bar.barMin), (m_posHorz==1 ? attr : 0) | LEFT);
-            putsTelemetryChannel(TELEM_BARS_COLMAX, y, barSource-1, convertTelemValue(barSource, 255-bar.barMax), (m_posHorz==2 ? attr : 0) | LEFT);
+            putsTelemetryChannel(TELEM_BARS_COLMIN, y, barSource-1, convertBarTelemValue(barSource, bar.barMin), (m_posHorz==1 ? attr : 0) | LEFT);
+            putsTelemetryChannel(TELEM_BARS_COLMAX, y, barSource-1, convertBarTelemValue(barSource, 255-bar.barMax), (m_posHorz==2 ? attr : 0) | LEFT);
           }
           else if (attr) {
             MOVE_CURSOR_FROM_HERE();
@@ -5615,14 +5611,14 @@ void menuModelTelemetry(uint8_t event)
                 bar.source = checkIncDecModel(event, barSource, 0, TELEM_DISPLAY_MAX);
                 if (checkIncDec_Ret) {
                   bar.barMin = 0;
-                  bar.barMax = 255-maxTelemValue(bar.source);
+                  bar.barMax = 255 - maxBarTelemValue(bar.source);
                 }
                 break;
               case 1:
                 bar.barMin = checkIncDec(event, bar.barMin, 0, 254-bar.barMax, EE_MODEL|NO_INCDEC_MARKS);
                 break;
               case 2:
-                bar.barMax = 255 - checkIncDec(event, 255-bar.barMax, bar.barMin+1, maxTelemValue(barSource), EE_MODEL|NO_INCDEC_MARKS);
+                bar.barMax = 255 - checkIncDec(event, 255-bar.barMax, bar.barMin+1, maxBarTelemValue(barSource), EE_MODEL|NO_INCDEC_MARKS);
                 break;
             }
           }

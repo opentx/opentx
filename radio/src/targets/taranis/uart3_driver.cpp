@@ -36,7 +36,7 @@
 
 #include "../../opentx.h"
 
-void uartInit(uint32_t baudrate)
+void uart3Setup(unsigned int baudrate)
 {
   USART_InitTypeDef USART_InitStructure;
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -69,22 +69,47 @@ void uartInit(uint32_t baudrate)
   USART_ITConfig(UART3, USART_IT_TXE, DISABLE);
 
   NVIC_EnableIRQ(USART3_IRQn);
-  NVIC_SetPriority(USART3_IRQn, 8);
+  NVIC_SetPriority(USART3_IRQn, 7);
+}
+
+void uart3Init(unsigned int mode)
+{
+  USART_DeInit(USART3);
+
+  switch(mode) {
+    case UART_MODE_SPORT:
+      uart3Setup(SPORT_BAUDRATE);
+      break;
+#if defined(DEBUG)
+    case UART_MODE_DEBUG:
+      uart3Setup(DEBUG_BAUDRATE);
+      break;
+#endif
+  }
+}
+
+Fifo<512> uart3TxFifo;
+
+void uart3Putc(const char c)
+{
+  uart3TxFifo.push(c);
+  USART_ITConfig(UART3, USART_IT_TXE, ENABLE);
 }
 
 #if defined(DEBUG)
-Fifo<512> debugTxFifo;
 void debugPutc(const char c)
 {
-  debugTxFifo.push(c);
-  USART_ITConfig(UART3, USART_IT_TXE, ENABLE);
+  if (g_eeGeneral.uart3Mode == UART_MODE_DEBUG) {
+    uart3Putc(c);
+  }
 }
+#endif
 
 extern "C" void USART3_IRQHandler(void)
 {
   if (USART_GetITStatus(UART3, USART_IT_TXE) != RESET) {
     uint8_t txchar;
-    if (debugTxFifo.pop(txchar)) {
+    if (uart3TxFifo.pop(txchar)) {
       /* Write one byte to the transmit data register */
       USART_SendData(UART3, txchar);
     }
@@ -93,4 +118,3 @@ extern "C" void USART3_IRQHandler(void)
     }
   }
 }
-#endif

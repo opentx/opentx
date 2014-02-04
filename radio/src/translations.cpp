@@ -57,6 +57,7 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(TRNCHN)
 #if defined(PCBTARANIS)
     ISTR(UART3MODES)
+    ISTR(POTTYPES)
 #endif
     ISTR(VTRIMINC)
     ISTR(RETA123)
@@ -488,12 +489,14 @@ const pm_char STR_VIEW_TEXT[] PROGMEM = "View text";
   const pm_char STR_CLEAR[] PROGMEM = "Clear";
   const pm_char STR_RESET[] PROGMEM = "Reset";
   const pm_char STR_COPY_TRIMS_TO_OFFSET[] = "Copy Trims To Offset";
-  const pm_char STR_TOP_BAR[] PROGMEM = "Top Bar";
-  const pm_char STR_ALTITUDE[] PROGMEM = INDENT "Altitude";
+  const pm_char STR_TOP_BAR[] PROGMEM = TR_TOP_BAR;
+  const pm_char STR_ALTITUDE[] PROGMEM = TR_ALTITUDE;
   const pm_char STR_SCALE[] PROGMEM = "Scale";
   const pm_char STR_VIEW_CHANNELS[] PROGMEM = "View Channels";
   const pm_char STR_VIEW_NOTES[] PROGMEM = "View Notes";
   const pm_char STR_UART3MODE[] PROGMEM = TR_UART3MODE;
+  const pm_char STR_POT1TYPE[] PROGMEM = TR_POT1TYPE;
+  const pm_char STR_POT2TYPE[] PROGMEM = TR_POT2TYPE;
 #endif
 
 #if MENUS_LOCK == 1

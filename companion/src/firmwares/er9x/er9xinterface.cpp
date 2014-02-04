@@ -282,7 +282,6 @@ int Er9xInterface::getCapability(const Capability capability)
     case Gvars:
       return 7;
     case GvarsHaveSources:
-    case GvarsAsSources:
      return 1;
     case GetThrSwitch:
       return DSW_THR;     

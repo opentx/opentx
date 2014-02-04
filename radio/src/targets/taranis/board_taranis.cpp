@@ -192,9 +192,6 @@ void boardInit()
   adcInit();
   delaysInit();
   audioInit();
-#if defined(DEBUG)
-  uartInit(DEBUG_UART_BAUDRATE);
-#endif
   init5msTimer();
   __enable_irq();
   eepromInit();
