@@ -1699,11 +1699,11 @@ void MainWindow::createActions()
     preferencesAct->setStatusTip(tr("Edit general preferences"));
     connect(preferencesAct, SIGNAL(triggered()), this, SLOT(preferences()));
 
-    appPreferencesAct = new QAction(tr("&Application Preferences..."), this);
+    appPreferencesAct = new QAction(CompanionIcon("apppreferences.png"), tr("&Application Preferences..."), this);
     appPreferencesAct->setStatusTip(tr("Edit application preferences"));
     connect(appPreferencesAct, SIGNAL(triggered()), this, SLOT(appPreferences()));
 
-    fwPreferencesAct = new QAction(tr("&Firmware Preferences..."), this);
+    fwPreferencesAct = new QAction(CompanionIcon("fwpreferences.png"), tr("&Firmware Preferences..."), this);
     fwPreferencesAct->setStatusTip(tr("Edit firmware preferences"));
     connect(fwPreferencesAct, SIGNAL(triggered()), this, SLOT(fwPreferences()));
 
@@ -2048,8 +2048,8 @@ void MainWindow::createToolBars()
     fileToolBar->addAction(saveAct);
     fileToolBar->addAction(logsAct);
     fileToolBar->addSeparator();
+    fileToolBar->addAction(appPreferencesAct);
     fileToolBar->addAction(fwPreferencesAct);
-    fileToolBar->addAction(preferencesAct);
     profileButton = new QToolButton;
     profileButton->setPopupMode(QToolButton::InstantPopup);
     profileButton->setMenu(createProfilesMenu());

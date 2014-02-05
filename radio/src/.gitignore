@@ -7,3 +7,6 @@
 /simu.d
 /snapshot_*.png
 /*.sh
+/*.o
+/*.bin
+/*.lst

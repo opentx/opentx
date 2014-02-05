@@ -26,19 +26,6 @@
    <string>Firmware Preferences</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="4" column="3" colspan="4">
-    <widget class="QLabel" name="FwInfo">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>FwInfo</string>
-     </property>
-    </widget>
-   </item>
    <item row="13" column="5">
     <widget class="QCheckBox" name="optionCheckBox_19">
      <property name="sizePolicy">
@@ -630,19 +617,6 @@ This is used by the templated to determine which channel goes to what number out
      </property>
     </widget>
    </item>
-   <item row="18" column="5">
-    <widget class="QCheckBox" name="optionCheckBox_40">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>CheckBox</string>
-     </property>
-    </widget>
-   </item>
    <item row="17" column="6">
     <widget class="QCheckBox" name="optionCheckBox_36">
      <property name="sizePolicy">
@@ -684,19 +658,6 @@ This is used by the templated to determine which channel goes to what number out
    </item>
    <item row="19" column="3">
     <widget class="QCheckBox" name="optionCheckBox_41">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>CheckBox</string>
-     </property>
-    </widget>
-   </item>
-   <item row="18" column="6">
-    <widget class="QCheckBox" name="optionCheckBox_39">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -950,13 +911,6 @@ This is used by the templated to determine which channel goes to what number out
      </property>
     </widget>
    </item>
-   <item row="32" column="6">
-    <widget class="QPushButton" name="fw_dnld">
-     <property name="text">
-      <string>Download FW</string>
-     </property>
-    </widget>
-   </item>
    <item row="37" column="6">
     <widget class="QPushButton" name="import_PB">
      <property name="text">
@@ -991,20 +945,7 @@ This is used by the templated to determine which channel goes to what number out
    <item row="31" column="3" colspan="3">
     <widget class="QCheckBox" name="renameFirmware">
      <property name="text">
-      <string>Append version number the FW file name</string>
-     </property>
-    </widget>
-   </item>
-   <item row="31" column="6">
-    <widget class="QPushButton" name="checkFWUpdates">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="text">
-      <string>Check for updates</string>
+      <string>Append version number to FW file name</string>
      </property>
     </widget>
    </item>
@@ -1050,8 +991,128 @@ This is used by the templated to determine which channel goes to what number out
      </property>
     </widget>
    </item>
+   <item row="18" column="5">
+    <widget class="QCheckBox" name="optionCheckBox_39">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>CheckBox</string>
+     </property>
+    </widget>
+   </item>
+   <item row="18" column="6">
+    <widget class="QCheckBox" name="optionCheckBox_40">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>CheckBox</string>
+     </property>
+    </widget>
+   </item>
+   <item row="33" column="3" colspan="3">
+    <widget class="QLabel" name="FwInfo">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>FwInfo</string>
+     </property>
+    </widget>
+   </item>
+   <item row="33" column="6">
+    <widget class="QPushButton" name="fw_dnld">
+     <property name="text">
+      <string>Download FW</string>
+     </property>
+    </widget>
+   </item>
+   <item row="32" column="6">
+    <widget class="QPushButton" name="checkFWUpdates">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Check for updates</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>downloadVerCB</tabstop>
+  <tabstop>CPU_ID_LE</tabstop>
+  <tabstop>sdPath</tabstop>
+  <tabstop>sdPathButton</tabstop>
+  <tabstop>langCombo</tabstop>
+  <tabstop>optionCheckBox_2</tabstop>
+  <tabstop>optionCheckBox_1</tabstop>
+  <tabstop>optionCheckBox_3</tabstop>
+  <tabstop>optionCheckBox_4</tabstop>
+  <tabstop>optionCheckBox_5</tabstop>
+  <tabstop>optionCheckBox_6</tabstop>
+  <tabstop>optionCheckBox_7</tabstop>
+  <tabstop>optionCheckBox_8</tabstop>
+  <tabstop>optionCheckBox_9</tabstop>
+  <tabstop>optionCheckBox_10</tabstop>
+  <tabstop>optionCheckBox_11</tabstop>
+  <tabstop>optionCheckBox_12</tabstop>
+  <tabstop>optionCheckBox_13</tabstop>
+  <tabstop>optionCheckBox_14</tabstop>
+  <tabstop>optionCheckBox_15</tabstop>
+  <tabstop>optionCheckBox_16</tabstop>
+  <tabstop>optionCheckBox_17</tabstop>
+  <tabstop>optionCheckBox_18</tabstop>
+  <tabstop>optionCheckBox_19</tabstop>
+  <tabstop>optionCheckBox_20</tabstop>
+  <tabstop>optionCheckBox_21</tabstop>
+  <tabstop>optionCheckBox_22</tabstop>
+  <tabstop>optionCheckBox_23</tabstop>
+  <tabstop>optionCheckBox_24</tabstop>
+  <tabstop>optionCheckBox_25</tabstop>
+  <tabstop>optionCheckBox_26</tabstop>
+  <tabstop>optionCheckBox_27</tabstop>
+  <tabstop>optionCheckBox_28</tabstop>
+  <tabstop>optionCheckBox_29</tabstop>
+  <tabstop>optionCheckBox_30</tabstop>
+  <tabstop>optionCheckBox_31</tabstop>
+  <tabstop>optionCheckBox_32</tabstop>
+  <tabstop>optionCheckBox_33</tabstop>
+  <tabstop>optionCheckBox_34</tabstop>
+  <tabstop>optionCheckBox_35</tabstop>
+  <tabstop>optionCheckBox_36</tabstop>
+  <tabstop>optionCheckBox_37</tabstop>
+  <tabstop>optionCheckBox_38</tabstop>
+  <tabstop>optionCheckBox_39</tabstop>
+  <tabstop>optionCheckBox_40</tabstop>
+  <tabstop>optionCheckBox_41</tabstop>
+  <tabstop>optionCheckBox_42</tabstop>
+  <tabstop>stickmodeCB</tabstop>
+  <tabstop>channelorderCB</tabstop>
+  <tabstop>renameFirmware</tabstop>
+  <tabstop>burnFirmware</tabstop>
+  <tabstop>voiceCombo</tabstop>
+  <tabstop>voice_dnld</tabstop>
+  <tabstop>ProfName_LE</tabstop>
+  <tabstop>import_PB</tabstop>
+  <tabstop>ProfSlot_SB</tabstop>
+  <tabstop>export_PB</tabstop>
+  <tabstop>ProfSave_PB</tabstop>
+ </tabstops>
  <resources>
   <include location="companion.qrc"/>
  </resources>
