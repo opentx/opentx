@@ -298,14 +298,6 @@ t_Er9xSafetySwData::t_Er9xSafetySwData()
   memset(this, 0, sizeof(t_Er9xSafetySwData));
 }
 
-t_Er9xSafetySwData::operator SafetySwData ()
-{
-  SafetySwData c9x;
-  c9x.swtch = er9xToSwitch(swtch);
-  c9x.val = val;
-  return c9x;
-}
-
 t_Er9xFrSkyChannelData::t_Er9xFrSkyChannelData()
 {
   memset(this, 0, sizeof(t_Er9xFrSkyChannelData));
@@ -381,7 +373,7 @@ t_Er9xModelData::operator ModelData ()
       break;
   }
   c9x.traineron= traineron;
-  c9x.t2throttle =  t2throttle;
+  // c9x.t2throttle =  t2throttle;
   c9x.moduleData[0].ppmFrameLength=ppmFrameLength;
   c9x.moduleData[0].channelsCount = 8 + 2 * ppmNCH;
   c9x.thrTrim = thrTrim;
@@ -471,8 +463,8 @@ t_Er9xModelData::operator ModelData ()
   for (int i=0; i<ER9X_NUM_CSW; i++)
     c9x.customSw[i] = customSw[i];
 
-  for (int i=0; i<ER9X_NUM_CHNOUT; i++)
-    c9x.safetySw[i] = safetySw[i];
+  // for (int i=0; i<ER9X_NUM_CHNOUT; i++)
+  //   c9x.safetySw[i] = safetySw[i];
 
   c9x.frsky = frsky;
   c9x.frsky.usrProto=FrSkyUsrProto;

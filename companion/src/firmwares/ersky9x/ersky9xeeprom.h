@@ -210,7 +210,6 @@ PACK(typedef struct t_Ersky9xSafetySwData_v10 { // Custom Switches data
   int8_t  swtch;
   int8_t  val;
 
-  operator SafetySwData();
   t_Ersky9xSafetySwData_v10();
 }) Ersky9xSafetySwData_v10;
 
@@ -230,7 +229,6 @@ PACK(typedef struct t_Ersky9xSafetySwData_v11 { // Custom Switches data
     } vs ;
   } opt ;
 
-  operator SafetySwData();
   t_Ersky9xSafetySwData_v11();
 }) Ersky9xSafetySwData_v11;
 

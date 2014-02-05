@@ -80,14 +80,8 @@ class CurveGroup : public QObject {
 };
 
 #define POPULATE_ONOFF        0x01
-#define POPULATE_MSWITCHES    0x02
-#define POPULATE_AND_SWITCHES 0x04
+#define POPULATE_AND_SWITCHES 0x02
 void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr=0, UseContext context=DefaultContext);
-void populateFuncCB(QComboBox *b, unsigned int value);
-void populateGVmodeCB(QComboBox *b, unsigned int value);
-QString FuncParam(uint function, int value, QString paramT="",unsigned int adjustmode=0);
-void populateFuncParamCB(QComboBox *b, const ModelData & model, uint function, unsigned int value, unsigned int adjustmode=0);
-void populateFuncParamArmTCB(QComboBox *b, ModelData * g_model, char * value, QStringList & paramsList);
 void populatePhasesCB(QComboBox *b, int value);
 void populateTrimUseCB(QComboBox *b, unsigned int phase);
 void populateGvarUseCB(QComboBox *b, unsigned int phase);

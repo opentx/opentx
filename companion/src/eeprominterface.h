@@ -72,7 +72,6 @@ const uint8_t modn12x3[4][4]= {
 #define C9X_MAX_POINTS            17
 #define C9X_MAX_GVARS             9
 #define C9X_MAX_ENCODERS          2
-#define NUM_SAFETY_CHNOUT         16
 #define C9X_NUM_CHNOUT            32 // number of real output channels
 #define C9X_NUM_CSW               32 // number of custom switches
 #define C9X_MAX_CUSTOM_FUNCTIONS  32 // number of functions assigned to switches
@@ -629,18 +628,9 @@ class CustomSwData { // Custom Switches data
     void clear() { memset(this, 0, sizeof(CustomSwData)); }
 };
 
-class SafetySwData { // Custom Switches data
-  public:
-    SafetySwData() { clear(); }
-    RawSwitch  swtch;
-    int        val;
-
-    void clear() { memset(this, 0, sizeof(SafetySwData)); }
-};
-
 enum AssignFunc {
   FuncSafetyCh1 = 0,
-  FuncSafetyCh16 = FuncSafetyCh1+15,
+  FuncSafetyCh32 = FuncSafetyCh1+C9X_NUM_CHNOUT-1,
   FuncTrainer,
   FuncTrainerRUD,
   FuncTrainerELE,
@@ -675,6 +665,8 @@ class FuncSwData { // Function Switches data
     unsigned int adjustMode;
     int repeatParam;
     void clear() { memset(this, 0, sizeof(FuncSwData)); }
+    QString paramToString();
+    QStringList toStringList();
 };
 
 class PhaseData {
@@ -896,11 +888,9 @@ class ModelData {
     CurveData curves[C9X_MAX_CURVES];
     CustomSwData  customSw[C9X_NUM_CSW];
     FuncSwData    funcSw[C9X_MAX_CUSTOM_FUNCTIONS];
-    SafetySwData  safetySw[C9X_NUM_CHNOUT];
     SwashRingData swashRingData;
     unsigned int  thrTraceSrc;
     int8_t   traineron;  // 0 disable trainer, 1 allow trainer
-    int8_t   t2throttle;  // Start timer2 using throttle
     unsigned int   modelId;
     unsigned int switchWarningStates;
     // TODO structure

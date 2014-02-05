@@ -199,7 +199,6 @@ PACK(typedef struct t_Gruvin9xSafetySwData { // Safety Switches data
   int8_t  swtch;
   int8_t  val;
 
-  operator SafetySwData();
   t_Gruvin9xSafetySwData() { memset(this, 0, sizeof(t_Gruvin9xSafetySwData)); }
 }) Gruvin9xSafetySwData;
 

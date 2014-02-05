@@ -399,9 +399,7 @@ extern const pm_char STR_TX[];
 #define STR_RX (STR_TX+OFS_RX)
 extern const pm_char STR_ACCEL[];
 extern const pm_char STR_NODATA[];
-extern const pm_char STR_TM1TM2[];
-extern const pm_char STR_THRTHP[];
-extern const pm_char STR_TOT[];
+extern const pm_char STR_TOTTM1TM2THRTHP[];
 extern const pm_char STR_TMR1LATMAXUS[];
 extern const pm_char STR_TMR1LATMINUS[];
 extern const pm_char STR_TMR1JITTERUS[];

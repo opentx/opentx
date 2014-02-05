@@ -2271,7 +2271,8 @@ void DrawCurve(uint8_t offset=0)
 
   uint8_t i = 0;
   do {
-    point_t point = getPoint(i++);
+    point_t point = getPoint(i);
+    i++;
     if (point.x == 0) break;
     lcd_filled_rect(point.x-offset, point.y-1, 3, 3, SOLID, FORCE); // do markup square
   } while(1);
@@ -3239,7 +3240,7 @@ static uint8_t s_copySrcCh;
 #define MIX_LINE_SRC_POS     4*FW-1
 
 #if LCD_W >= 212
-  #define EXPO_LINE_WEIGHT_POS 8*FW+1
+  #define EXPO_LINE_WEIGHT_POS 8*FW+3
   #define EXPO_LINE_SRC_POS    9*FW-2
   #define EXPO_LINE_CURVE_POS  12*FW+4
   #define EXPO_LINE_SWITCH_POS 17*FW-1
@@ -3251,7 +3252,7 @@ static uint8_t s_copySrcCh;
   #define MIX_LINE_SWITCH_POS  16*FW+1
   #define MIX_LINE_DELAY_POS   19*FW+2
 #elif defined(CPUARM)
-  #define EXPO_LINE_WEIGHT_POS 7*FW-1
+  #define EXPO_LINE_WEIGHT_POS 7*FW+1
   #define EXPO_LINE_EXPO_POS   10*FW+5
   #define EXPO_LINE_SWITCH_POS 11*FW+2
   #define EXPO_LINE_SIDE_POS   14*FW+2
@@ -3263,7 +3264,7 @@ static uint8_t s_copySrcCh;
   #define MIX_LINE_SWITCH_POS  16*FW
   #define MIX_LINE_DELAY_POS   19*FW+7
 #else
-  #define EXPO_LINE_WEIGHT_POS 7*FW-1
+  #define EXPO_LINE_WEIGHT_POS 7*FW+1
   #define EXPO_LINE_EXPO_POS   11*FW
   #define EXPO_LINE_SWITCH_POS 11*FW+4
   #if MAX_PHASES == 6

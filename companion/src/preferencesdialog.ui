@@ -25,7 +25,7 @@
   <property name="windowTitle">
    <string>Preferences</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_4" columnstretch="1,0,0,1,0">
+  <layout class="QGridLayout" name="gridLayout_4" columnstretch="1,0,0,0,0">
    <property name="sizeConstraint">
     <enum>QLayout::SetMinimumSize</enum>
    </property>
@@ -35,7 +35,84 @@
    <property name="margin">
     <number>4</number>
    </property>
-   <item row="3" column="1" colspan="4">
+   <item row="31" column="1" colspan="2">
+    <widget class="QComboBox" name="stickmodeCB">
+     <property name="whatsThis">
+      <string>Mode selection:
+
+Mode 1:
+  Left stick:  Elevator, Rudder
+  Right stick:  Throttle, Aileron
+
+Mode 2:
+  Left stick:  Throttle, Rudder
+  Right stick:  Elevator, Aileron
+
+Mode 3:
+  Left stick:  Elevator, Aileron
+  Right stick:  Throttle, Rudder
+
+Mode 4:
+  Left stick:  Throttle, Aileron
+  Right stick:  Elevator, Rudder
+
+</string>
+     </property>
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
+     <item>
+      <property name="text">
+       <string>Mode 1 (RUD ELE THR AIL)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Mode 2 (RUD THR ELE AIL)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Mode 3 (AIL ELE THR RUD)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Mode 4 (AIL THR ELE RUD)</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="14" column="1">
+    <widget class="QComboBox" name="backLightColor">
+     <item>
+      <property name="text">
+       <string>Blue</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Green</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Red</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Orange</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Yellow</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="2" column="1" colspan="4">
     <layout class="QHBoxLayout" name="horizontalLayout_10">
      <item>
       <widget class="QLineEdit" name="backupPath">
@@ -60,7 +137,14 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0">
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_17">
+     <property name="text">
+      <string>Automatic Backup Folder</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
     <widget class="QLabel" name="label_4">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -73,7 +157,7 @@
      </property>
     </widget>
    </item>
-   <item row="16" column="1" colspan="4">
+   <item row="15" column="1" colspan="4">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QCheckBox" name="joystickChkB">
@@ -101,14 +185,7 @@
      </item>
     </layout>
    </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_17">
-     <property name="text">
-      <string>Automatic Backup Folder</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1" colspan="4">
+   <item row="1" column="1" colspan="4">
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
       <widget class="QSpinBox" name="historySize">
@@ -151,14 +228,14 @@
      </item>
     </layout>
    </item>
-   <item row="6" column="0" colspan="5">
+   <item row="5" column="0" colspan="5">
     <widget class="Line" name="line">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
-   <item row="15" column="0">
+   <item row="14" column="0">
     <widget class="QLabel" name="label_3">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -174,7 +251,7 @@
      </property>
     </widget>
    </item>
-   <item row="7" column="4" rowspan="7">
+   <item row="6" column="4" rowspan="7">
     <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,0">
      <item row="0" column="0" colspan="2">
       <widget class="QLabel" name="imageLabel">
@@ -229,43 +306,14 @@
      </item>
     </layout>
    </item>
-   <item row="15" column="2" colspan="2">
+   <item row="14" column="2" colspan="2">
     <widget class="QCheckBox" name="simuSW">
      <property name="text">
       <string>Remember switches in simulator</string>
      </property>
     </widget>
    </item>
-   <item row="15" column="1">
-    <widget class="QComboBox" name="backLightColor">
-     <item>
-      <property name="text">
-       <string>Blue</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Green</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Red</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Orange</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Yellow</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="7" column="1" colspan="3">
+   <item row="6" column="1" colspan="3">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <property name="spacing">
       <number>6</number>
@@ -302,27 +350,21 @@
      </item>
     </layout>
    </item>
-   <item row="17" column="0">
+   <item row="16" column="0">
     <widget class="QLabel" name="label_19">
      <property name="text">
       <string>Simulator capture folder</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Language (requires restart)</string>
+   <item row="17" column="0" colspan="5">
+    <widget class="Line" name="line_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
-   <item row="32" column="4">
+   <item row="31" column="4">
     <widget class="QComboBox" name="channelorderCB">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -466,7 +508,7 @@ This is used by the templated to determine which channel goes to what number out
      </item>
     </widget>
    </item>
-   <item row="7" column="0">
+   <item row="6" column="0">
     <widget class="QLabel" name="label_8">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -479,7 +521,7 @@ This is used by the templated to determine which channel goes to what number out
      </property>
     </widget>
    </item>
-   <item row="13" column="1" colspan="3">
+   <item row="12" column="1" colspan="3">
     <layout class="QGridLayout" name="gridLayout_2">
      <property name="verticalSpacing">
       <number>1</number>
@@ -503,7 +545,7 @@ This is used by the templated to determine which channel goes to what number out
      </item>
     </layout>
    </item>
-   <item row="25" column="1" colspan="4">
+   <item row="24" column="1" colspan="4">
     <layout class="QHBoxLayout" name="horizontalLayout_5">
      <item>
       <widget class="QLabel" name="FwInfo">
@@ -527,7 +569,7 @@ This is used by the templated to determine which channel goes to what number out
      </item>
     </layout>
    </item>
-   <item row="13" column="0">
+   <item row="12" column="0">
     <widget class="QLabel" name="label_9">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -540,7 +582,7 @@ This is used by the templated to determine which channel goes to what number out
      </property>
     </widget>
    </item>
-   <item row="38" column="0" colspan="5">
+   <item row="37" column="0" colspan="5">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <spacer name="horizontalSpacer_3">
@@ -583,7 +625,7 @@ This is used by the templated to determine which channel goes to what number out
      </item>
     </layout>
    </item>
-   <item row="27" column="1" colspan="4">
+   <item row="26" column="1" colspan="4">
     <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="1,0">
      <item>
       <widget class="QLabel" name="label_12">
@@ -610,7 +652,7 @@ This is used by the templated to determine which channel goes to what number out
      </item>
     </layout>
    </item>
-   <item row="33" column="1" colspan="4">
+   <item row="32" column="1" colspan="4">
     <layout class="QGridLayout" name="gridLayout_6" columnstretch="0,0,1,0,0">
      <item row="1" column="4">
       <widget class="QPushButton" name="export_PB">
@@ -658,7 +700,7 @@ This is used by the templated to determine which channel goes to what number out
      </item>
     </layout>
    </item>
-   <item row="17" column="1" colspan="4">
+   <item row="16" column="1" colspan="4">
     <layout class="QGridLayout" name="gridLayout_8">
      <property name="verticalSpacing">
       <number>1</number>
@@ -689,7 +731,7 @@ This is used by the templated to determine which channel goes to what number out
      </item>
     </layout>
    </item>
-   <item row="32" column="0">
+   <item row="31" column="0">
     <widget class="QLabel" name="label_14">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -702,7 +744,7 @@ This is used by the templated to determine which channel goes to what number out
      </property>
     </widget>
    </item>
-   <item row="32" column="3">
+   <item row="31" column="3">
     <widget class="QLabel" name="label_13">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
@@ -718,62 +760,14 @@ This is used by the templated to determine which channel goes to what number out
      </property>
     </widget>
    </item>
-   <item row="32" column="1" colspan="2">
-    <widget class="QComboBox" name="stickmodeCB">
-     <property name="whatsThis">
-      <string>Mode selection:
-
-Mode 1:
-  Left stick:  Elevator, Rudder
-  Right stick:  Throttle, Aileron
-
-Mode 2:
-  Left stick:  Throttle, Rudder
-  Right stick:  Elevator, Aileron
-
-Mode 3:
-  Left stick:  Elevator, Aileron
-  Right stick:  Throttle, Rudder
-
-Mode 4:
-  Left stick:  Throttle, Aileron
-  Right stick:  Elevator, Rudder
-
-</string>
-     </property>
-     <property name="currentIndex">
-      <number>1</number>
-     </property>
-     <item>
-      <property name="text">
-       <string>Mode 1 (RUD ELE THR AIL)</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Mode 2 (RUD THR ELE AIL)</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Mode 3 (AIL ELE THR RUD)</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Mode 4 (AIL THR ELE RUD)</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="33" column="0">
+   <item row="32" column="0">
     <widget class="QLabel" name="label_15">
      <property name="text">
       <string>Profile slot</string>
      </property>
     </widget>
    </item>
-   <item row="28" column="1" colspan="4">
+   <item row="27" column="1" colspan="4">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -789,7 +783,7 @@ Mode 4:
      </property>
     </spacer>
    </item>
-   <item row="26" column="1" colspan="4">
+   <item row="25" column="1" colspan="4">
     <layout class="QHBoxLayout" name="horizontalLayout_11" stretch="1,0">
      <item>
       <widget class="QLabel" name="label_18">
@@ -816,7 +810,7 @@ Mode 4:
      </item>
     </layout>
    </item>
-   <item row="22" column="1" colspan="4">
+   <item row="21" column="1" colspan="4">
     <layout class="QGridLayout" name="gridLayout_5" columnstretch="1,0,0,0,0">
      <property name="sizeConstraint">
       <enum>QLayout::SetMaximumSize</enum>
@@ -907,7 +901,7 @@ May be different from firmware language</string>
      </item>
     </layout>
    </item>
-   <item row="22" column="0">
+   <item row="21" column="0">
     <layout class="QGridLayout" name="gridLayout_7">
      <item row="0" column="0">
       <widget class="QLabel" name="label_6">
@@ -947,7 +941,7 @@ May be different from firmware language</string>
      </item>
     </layout>
    </item>
-   <item row="2" column="0">
+   <item row="1" column="0">
     <widget class="QLabel" name="label_5">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -960,14 +954,7 @@ May be different from firmware language</string>
      </property>
     </widget>
    </item>
-   <item row="18" column="0" colspan="5">
-    <widget class="Line" name="line_2">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="24" column="1" colspan="4">
+   <item row="23" column="1" colspan="4">
     <layout class="QGridLayout" name="gridLayout" columnstretch="0,0,0,0,0,0">
      <property name="sizeConstraint">
       <enum>QLayout::SetMaximumSize</enum>
@@ -1520,7 +1507,7 @@ May be different from firmware language</string>
      </item>
     </layout>
    </item>
-   <item row="10" column="0">
+   <item row="9" column="0">
     <widget class="QLabel" name="label_10">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -1533,7 +1520,7 @@ May be different from firmware language</string>
      </property>
     </widget>
    </item>
-   <item row="10" column="1" colspan="3">
+   <item row="9" column="1" colspan="3">
     <widget class="QComboBox" name="splashincludeCB">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -1554,116 +1541,6 @@ May be different from firmware language</string>
     </widget>
    </item>
    <item row="0" column="1" colspan="4">
-    <layout class="QHBoxLayout" name="horizontalLayout_8">
-     <item>
-      <widget class="QComboBox" name="locale_QB"/>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_7">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="text">
-        <string>Theme</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="theme_CB">
-       <property name="toolTip">
-        <string>Requires restart</string>
-       </property>
-       <item>
-        <property name="text">
-         <string>Classic</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Monochrome</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>MonoWhite</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>MonoBlue</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_5">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Fixed</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_2">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="text">
-        <string>Icon  size</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="iconSize_CB">
-       <property name="toolTip">
-        <string>Requires restart</string>
-       </property>
-       <item>
-        <property name="text">
-         <string>Small</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Normal</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Big</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Huge</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="1" column="1" colspan="4">
     <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="0,0,0,0">
      <item>
       <widget class="QCheckBox" name="showSplash">
@@ -1710,7 +1587,7 @@ May be different from firmware language</string>
      </item>
     </layout>
    </item>
-   <item row="16" column="0">
+   <item row="15" column="0">
     <widget class="QLabel" name="label_11">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
@@ -1723,14 +1600,14 @@ May be different from firmware language</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="3" column="0">
     <widget class="QLabel" name="ge_label">
      <property name="text">
       <string>Google Earth Executable</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="1" colspan="4">
+   <item row="3" column="1" colspan="4">
     <layout class="QHBoxLayout" name="ge_layout">
      <item>
       <widget class="QLineEdit" name="ge_lineedit">

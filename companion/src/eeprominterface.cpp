@@ -345,6 +345,149 @@ QString CurveReference::toString()
   }
 }
 
+#if 0
+QStringList FuncSwData::toStringList()
+{
+  QStringList result;
+  QStringList qs;
+
+  result << swtch.toString();
+  result << funcToString();
+
+  if (func < FuncInstantTrim) {
+    result << QString("%1").arg(param);
+  }
+  else if (func==FuncPlaySound) {
+    qs <<"Beep 1" << "Beep 2" << "Beep 3" << "Warn1" << "Warn2" << "Cheep" << "Ratata" << "Tick" << "Siren" << "Ring" ;
+    qs << "SciFi" << "Robot" << "Chirp" << "Tada" << "Crickt"  << "AlmClk"  ;
+    if (param>=0 && param<(int)qs.count())
+      result << qs.at(param);
+    else
+      result << QObject::tr("<font color=red><b>Inconsistent parameter</b></font>");
+  }
+  else if (func==FuncPlayHaptic) {
+    qs << "0" << "1" << "2" << "3";
+    if (param>=0 && param<(int)qs.count())
+      result << qs.at(param);
+    else
+      result << QObject::tr("<font color=red><b>Inconsistent parameter</b></font>");
+  }
+  else if (func==FuncReset) {
+    qs.append( QObject::tr("Timer1"));
+    qs.append( QObject::tr("Timer2"));
+    qs.append( QObject::tr("All"));
+    qs.append( QObject::tr("Telemetry"));
+    if (param>=0 && param<(int)qs.count())
+      result << qs.at(param);
+    else
+      result << QObject::tr("<font color=red><b>Inconsistent parameter</b></font>");
+  }
+  else if ((func==FuncVolume)|| (func==FuncPlayValue)) {
+    RawSource item(param);
+    result << item.toString();
+  }
+  else if ((func==FuncPlayPrompt) || (func==FuncPlayBoth)) {
+    if ( GetEepromInterface()->getCapability(VoicesAsNumbers)) {
+      result << QString("%1").arg(param);
+    } else {
+      result << paramarm;
+    }
+  }
+  else if ((func>FuncBackgroundMusicPause) && (func<FuncCount)) {
+    switch (adjustMode) {
+      case 0:
+        result << QObject::tr("Value ")+QString("%1").arg(param);
+        break;
+      case 1:
+        result << RawSource(param).toString();
+        break;
+      case 2:
+        result << RawSource(param).toString();
+        break;
+      case 3:
+        if (param==0) {
+          result << QObject::tr("Decr:")+QString(" -1");
+        }
+        else {
+          result << QObject::tr("Incr:")+QString(" +1");
+        }
+        break;
+      default:
+        break;
+    }
+  }
+  return result;
+}
+#endif
+
+QString FuncSwData::paramToString()
+{
+  QStringList qs;
+  if (func <= FuncInstantTrim) {
+    return QString("%1").arg(param);
+  }
+  else if (func==FuncPlaySound) {
+    qs <<"Beep 1" << "Beep 2" << "Beep 3" << "Warn1" << "Warn2" << "Cheep" << "Ratata" << "Tick" << "Siren" << "Ring" ;
+    qs << "SciFi" << "Robot" << "Chirp" << "Tada" << "Crickt"  << "AlmClk"  ;
+    if (param>=0 && param<(int)qs.count())
+      return qs.at(param);
+    else
+      return QObject::tr("<font color=red><b>Inconsistent parameter</b></font>");
+  }
+  else if (func==FuncPlayHaptic) {
+    qs << "0" << "1" << "2" << "3";
+    if (param>=0 && param<(int)qs.count())
+      return qs.at(param);
+    else
+      return QObject::tr("<font color=red><b>Inconsistent parameter</b></font>");
+  }
+  else if (func==FuncReset) {
+    qs.append( QObject::tr("Timer1"));
+    qs.append( QObject::tr("Timer2"));
+    qs.append( QObject::tr("All"));
+    qs.append( QObject::tr("Telemetry"));
+    if (param>=0 && param<(int)qs.count())
+      return qs.at(param);
+    else
+      return QObject::tr("<font color=red><b>Inconsistent parameter</b></font>");
+  }
+  else if ((func==FuncVolume)|| (func==FuncPlayValue)) {
+    RawSource item(param);
+    return item.toString();
+  }
+  else if ((func==FuncPlayPrompt) || (func==FuncPlayBoth)) {
+    if ( GetEepromInterface()->getCapability(VoicesAsNumbers)) {
+      return QString("%1").arg(param);
+    } else {
+      return paramarm;
+    }
+  }
+  else if ((func>FuncBackgroundMusicPause) && (func<FuncCount)) {
+    switch (adjustMode) {
+      case 0:
+        return QObject::tr("Value ")+QString("%1").arg(param);
+        break;
+      case 1:
+        return RawSource(param).toString();
+        break;
+      case 2:
+        return RawSource(param).toString();
+        break;
+      case 3:
+        if (param==0) {
+          return QObject::tr("Decr:")+QString(" -1");
+        }
+        else {
+          return QObject::tr("Incr:")+QString(" +1");
+        }
+        break;
+      default:
+        return "";
+    }
+  }
+  return "";
+}
+
 GeneralSettings::GeneralSettings()
 {
   memset(this, 0, sizeof(GeneralSettings));

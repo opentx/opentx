@@ -1237,7 +1237,13 @@ class CustomFunctionsConversionTable: public ConversionTable {
     {
       int val=0;
 
-      if (IS_ARM(board) || version < 213) {
+      if (version >= 216) {
+        for (int i=0; i<32; i++) {
+          addConversion(i, val);
+        }
+        val++;
+      }
+      else if (IS_ARM(board) || version < 213) {
         for (int i=0; i<16; i++) {
           addConversion(val, val);
           val++;
@@ -1249,32 +1255,67 @@ class CustomFunctionsConversionTable: public ConversionTable {
         }
         val+=4;
       }
-      addConversion(FuncTrainer, val++);
-      addConversion(FuncTrainerRUD, val++);
-      addConversion(FuncTrainerELE, val++);
-      addConversion(FuncTrainerTHR, val++);
-      addConversion(FuncTrainerAIL, val++);
-      addConversion(FuncInstantTrim, val++);
-      addConversion(FuncPlaySound, val++);
-      if (!IS_TARANIS(board))
-        addConversion(FuncPlayHaptic, val++);
-      addConversion(FuncReset, val++);
-      addConversion(FuncVario, val++);
-      addConversion(FuncPlayPrompt, val++);
-      if (version >= 213 && !IS_ARM(board))
-        addConversion(FuncPlayBoth, val++);
-      addConversion(FuncPlayValue, val++);
-      if (board == BOARD_GRUVIN9X || IS_ARM(board) )
-        addConversion(FuncLogs, val++);
-      if (IS_ARM(board))
-        addConversion(FuncVolume, val++);
-      addConversion(FuncBacklight, val++);
-      if (IS_ARM(board)) {
-        addConversion(FuncBackgroundMusic, val++);
-        addConversion(FuncBackgroundMusicPause, val++);
+
+      if (version >= 216) {
+        addConversion(FuncTrainer, val);
+        addConversion(FuncTrainerRUD, val);
+        addConversion(FuncTrainerELE, val);
+        addConversion(FuncTrainerTHR, val);
+        addConversion(FuncTrainerAIL, val);
+        val++;
       }
-      for (int i=0; i<5; i++)
-        addConversion(FuncAdjustGV1+i, val++);
+      else {
+        addConversion(FuncTrainer, val++);
+        addConversion(FuncTrainerRUD, val++);
+        addConversion(FuncTrainerELE, val++);
+        addConversion(FuncTrainerTHR, val++);
+        addConversion(FuncTrainerAIL, val++);
+      }
+      addConversion(FuncInstantTrim, val++);
+      if (version >= 216) {
+        addConversion(FuncReset, val++);
+        for (int i=0; i<MAX_GVARS(board, version); i++)
+          addConversion(FuncAdjustGV1+i, val);
+        val++;
+        if (IS_ARM(board))
+          addConversion(FuncVolume, val++);
+        addConversion(FuncPlaySound, val++);
+        addConversion(FuncPlayPrompt, val++);
+        if (version >= 213 && !IS_ARM(board))
+          addConversion(FuncPlayBoth, val++);
+        addConversion(FuncPlayValue, val++);
+        if (IS_ARM(board)) {
+          addConversion(FuncBackgroundMusic, val++);
+          addConversion(FuncBackgroundMusicPause, val++);
+        }
+        addConversion(FuncVario, val++);
+        addConversion(FuncPlayHaptic, val++);
+        if (board == BOARD_GRUVIN9X || IS_ARM(board) )
+          addConversion(FuncLogs, val++);
+        addConversion(FuncBacklight, val++);
+      }
+      else {
+        addConversion(FuncPlaySound, val++);
+        if (!IS_TARANIS(board))
+          addConversion(FuncPlayHaptic, val++);
+        addConversion(FuncReset, val++);
+        addConversion(FuncVario, val++);
+        addConversion(FuncPlayPrompt, val++);
+        if (version >= 213 && !IS_ARM(board))
+          addConversion(FuncPlayBoth, val++);
+        addConversion(FuncPlayValue, val++);
+        if (board == BOARD_GRUVIN9X || IS_ARM(board) )
+          addConversion(FuncLogs, val++);
+        if (IS_ARM(board))
+          addConversion(FuncVolume, val++);
+        addConversion(FuncBacklight, val++);
+        if (IS_ARM(board)) {
+          addConversion(FuncBackgroundMusic, val++);
+          addConversion(FuncBackgroundMusicPause, val++);
+        }
+        for (int i=0; i<5; i++)
+          addConversion(FuncAdjustGV1+i, val++);
+      }
     }
 };
 
@@ -1436,7 +1477,7 @@ class CustomFunctionField: public TransformedField {
           if (version >= 213)
             _union_param = fn.repeatParam / 10;
         }
-        else if (fn.func <= FuncSafetyCh16) {
+        else if (fn.func <= FuncSafetyCh32) {
           if (version >= 213)
             _union_param += ((fn.func % 4) << 1);
         }
@@ -1518,7 +1559,7 @@ class CustomFunctionField: public TransformedField {
           if (version >= 213)
             fn.repeatParam = _union_param * 10;
         }
-        else if (fn.func <= FuncSafetyCh16) {
+        else if (fn.func <= FuncSafetyCh32) {
           if (version >= 213) {
             fn.func = AssignFunc(((fn.func >> 2) << 2) + ((_union_param >> 1) & 0x03));
           }

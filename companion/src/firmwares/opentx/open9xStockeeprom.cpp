@@ -662,14 +662,6 @@ t_Open9xFuncSwData_v210::operator FuncSwData ()
   return c9x;
 }
 
-t_Open9xSafetySwData::operator SafetySwData ()
-{
-  SafetySwData c9x;
-  c9x.swtch = open9xStockToSwitch(swtch);
-  c9x.val = val;
-  return c9x;
-}
-
 t_Open9xSwashRingData_v208::operator SwashRingData ()
 {
   SwashRingData c9x;
@@ -993,8 +985,8 @@ t_Open9xModelData_v201::operator ModelData ()
     c9x.customSw[i] = customSw[i];
   for (int i=0; i<12; i++)
     c9x.funcSw[i] = funcSw[i];
-  for (int i=0; i<O9X_NUM_CHNOUT; i++)
-    c9x.safetySw[i] = safetySw[i];
+  // for (int i=0; i<O9X_NUM_CHNOUT; i++)
+  //   c9x.safetySw[i] = safetySw[i];
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;
 
@@ -1067,8 +1059,8 @@ t_Open9xModelData_v202::operator ModelData ()
     c9x.customSw[i] = customSw[i];
   for (int i=0; i<12; i++)
     c9x.funcSw[i] = funcSw[i];
-  for (int i=0; i<O9X_NUM_CHNOUT; i++)
-    c9x.safetySw[i] = safetySw[i];
+  // for (int i=0; i<O9X_NUM_CHNOUT; i++)
+  //  c9x.safetySw[i] = safetySw[i];
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;
   c9x.moduleData[0].ppmFrameLength = ppmFrameLength;

@@ -244,7 +244,6 @@ PACK(typedef struct t_Open9xSafetySwData { // Safety Switches data
   int8_t  swtch;
   int8_t  val;
 
-  operator SafetySwData();
   t_Open9xSafetySwData() { memset(this, 0, sizeof(t_Open9xSafetySwData)); }
 }) Open9xSafetySwData;
 
