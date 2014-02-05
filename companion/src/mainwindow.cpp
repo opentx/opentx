@@ -49,8 +49,6 @@
 #include "comparedialog.h"
 #include "logsdialog.h"
 #include "preferencesdialog.h"
-#include "apppreferencesdialog.h"
-#include "fwpreferencesdialog.h"
 #include "flashinterface.h"
 #include "fusesdialog.h"
 #include "downloaddialog.h"
@@ -805,32 +803,6 @@ void MainWindow::unloadProfile()
 void MainWindow::preferences()
 {
     preferencesDialog *pd = new preferencesDialog(this);
-    pd->exec();
-    FirmwareInfo *firmware = GetCurrentFirmware();    
-    if (ActiveProfile) {
-      setWindowTitle(tr("Companion - Models and Settings Editor - %1 - profile %2").arg(firmware->name).arg(ActiveProfileName));
-    }
-    else {
-      setWindowTitle(tr("Companion - Models and Settings Editor - %1").arg(firmware->name));
-    }
-
-    foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
-      MdiChild *mdiChild = qobject_cast<MdiChild *>(window->widget());
-      mdiChild->eepromInterfaceChanged();
-    }
-    updateMenus();
-}
-
-void MainWindow::appPreferences()
-{
-    appPreferencesDialog *pd = new appPreferencesDialog(this);
-    pd->exec();
-    updateMenus();
-}
-
-void MainWindow::fwPreferences()
-{
-    fwPreferencesDialog *pd = new fwPreferencesDialog(this);
     pd->exec();
     FirmwareInfo *firmware = GetCurrentFirmware();    
     if (ActiveProfile) {
@@ -1699,14 +1671,6 @@ void MainWindow::createActions()
     preferencesAct->setStatusTip(tr("Edit general preferences"));
     connect(preferencesAct, SIGNAL(triggered()), this, SLOT(preferences()));
 
-    appPreferencesAct = new QAction(tr("&Application Preferences..."), this);
-    appPreferencesAct->setStatusTip(tr("Edit application preferences"));
-    connect(appPreferencesAct, SIGNAL(triggered()), this, SLOT(appPreferences()));
-
-    fwPreferencesAct = new QAction(tr("&Firmware Preferences..."), this);
-    fwPreferencesAct->setStatusTip(tr("Edit firmware preferences"));
-    connect(fwPreferencesAct, SIGNAL(triggered()), this, SLOT(fwPreferences()));
-
     checkForUpdatesAct = new QAction(CompanionIcon("update.png"), tr("&Check for updates..."), this);
     checkForUpdatesAct->setStatusTip(tr("Check for new version of Companion"));
     connect(checkForUpdatesAct, SIGNAL(triggered()), this, SLOT(doUpdates()));
@@ -1963,8 +1927,6 @@ void MainWindow::createMenus()
       iconThemeSizeMenu->addAction(bigIconAct);
       iconThemeSizeMenu->addAction(hugeIconAct);
     settingsMenu->addSeparator();
-    settingsMenu->addAction(appPreferencesAct);
-    settingsMenu->addAction(fwPreferencesAct);
     settingsMenu->addAction(preferencesAct);
     settingsMenu->addAction(customizeSplashAct);
     settingsMenu->addAction(burnConfigAct);
@@ -2048,7 +2010,6 @@ void MainWindow::createToolBars()
     fileToolBar->addAction(saveAct);
     fileToolBar->addAction(logsAct);
     fileToolBar->addSeparator();
-    fileToolBar->addAction(fwPreferencesAct);
     fileToolBar->addAction(preferencesAct);
     profileButton = new QToolButton;
     profileButton->setPopupMode(QToolButton::InstantPopup);

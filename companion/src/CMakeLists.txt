@@ -156,8 +156,6 @@ SET( companion_SRCS
      mountlist.cpp 
      avroutputdialog.cpp
      preferencesdialog.cpp
-     apppreferencesdialog.cpp
-     fwpreferencesdialog.cpp
      burnconfigdialog.cpp
      comparedialog.cpp
      contributorsdialog.cpp
@@ -179,8 +177,6 @@ SET( companion_SRCS
 SET( companion_MOC_HDRS
      avroutputdialog.h
      preferencesdialog.h
-     apppreferencesdialog.h
-     fwpreferencesdialog.h
      burnconfigdialog.h
      comparedialog.h
      printdialog.h
@@ -215,8 +211,6 @@ SET( companion_UIS
      fusesdialog.ui
      logsdialog.ui
      preferencesdialog.ui
-     apppreferencesdialog.ui
-     fwpreferencesdialog.ui
      simulatordialog.ui
      xsimulatordialog.ui
      burnconfigdialog.ui
