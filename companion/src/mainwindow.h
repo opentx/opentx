@@ -64,6 +64,7 @@ QT_END_NAMESPACE
 class MainWindow : public QMainWindow
 {
     friend class preferencesDialog;
+    friend class fwPreferencesDialog;
     friend class MdiChild; // TODO GetAvrdudeArgs could be external to this class
 
     Q_OBJECT
@@ -144,6 +145,8 @@ private slots:
     void print();
     void loadBackup();
     void preferences();
+    void appPreferences();
+    void fwPreferences();
     void updateMenus();
     MdiChild *createMdiChild();
     void setActiveSubWindow(QWidget *window);
@@ -220,6 +223,8 @@ private:
     QAction *saveAsAct;
     QAction *exitAct;
     QAction *preferencesAct;
+    QAction *appPreferencesAct;
+    QAction *fwPreferencesAct;
     QAction *checkForUpdatesAct;
     QAction *contributorsAct;
     QAction *changelogAct;
