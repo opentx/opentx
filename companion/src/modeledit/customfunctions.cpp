@@ -513,7 +513,7 @@ void CustomFunctionsPanel::populateFuncCB(QComboBox *b, unsigned int value)
 {
   b->clear();
   for (unsigned int i=0; i<FuncCount; i++) {
-    b->addItem(getFuncName(i));
+    b->addItem(FuncSwData(AssignFunc(i)).funcToString());
     if (!GetEepromInterface()->getCapability(HasVolume)) {
       if (i==FuncVolume || i==FuncBackgroundMusic || i==FuncBackgroundMusicPause) {
         QModelIndex index = b->model()->index(i, 0);

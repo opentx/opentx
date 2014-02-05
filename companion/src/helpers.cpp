@@ -117,165 +117,6 @@ void populateCustomScreenFieldCB(QComboBox *b, unsigned int value, bool last=fal
   b->setMaxVisibleItems(10);
 }
 
-QString getRepeatString(unsigned int val) 
-{
-  if (val==0) {
-    return QObject::tr("No repeat");
-  } else {
-    unsigned int step = IS_ARM(GetEepromInterface()->getBoard()) ? 5 : 10;
-    return QObject::tr("%1 sec").arg(step*val);
-  }
-}
-
-QString getFuncName(unsigned int val)
-{
-  if (val < C9X_NUM_CHNOUT) {
-    return QObject::tr("Safety %1").arg(RawSource(SOURCE_TYPE_CH, val).toString());
-  }
-  else if (val == FuncTrainer)
-    return QObject::tr("Trainer");
-  else if (val == FuncTrainerRUD)
-    return QObject::tr("Trainer RUD");
-  else if (val == FuncTrainerELE)
-    return QObject::tr("Trainer ELE");
-  else if (val == FuncTrainerTHR)
-    return QObject::tr("Trainer THR");
-  else if (val == FuncTrainerAIL)
-    return QObject::tr("Trainer AIL");
-  else if (val == FuncInstantTrim)
-    return QObject::tr("Instant Trim");
-  else if (val == FuncPlaySound)
-    return QObject::tr("Play Sound");
-  else if (val == FuncPlayHaptic)
-    return QObject::tr("Play Haptic");
-  else if (val == FuncReset)
-    return QObject::tr("Reset");
-  else if (val == FuncVario)
-    return QObject::tr("Vario");
-  else if (val == FuncPlayPrompt)
-    return QObject::tr("Play Track");
-  else if (val == FuncPlayBoth)
-    return QObject::tr("Play Both");
-  else if (val == FuncPlayValue)
-    return QObject::tr("Play Value");
-  else if (val == FuncLogs)
-    return QObject::tr("Start Logs");
-  else if (val == FuncVolume)
-    return QObject::tr("Volume");
-  else if (val == FuncBacklight)
-    return QObject::tr("Backlight");
-  else if (val == FuncBackgroundMusic)
-    return QObject::tr("Background Music");
-  else if (val == FuncBackgroundMusicPause)
-    return QObject::tr("Background Music Pause");
-  else if (val >= FuncAdjustGV1 && val <= FuncAdjustGVLast)
-    return QObject::tr("Adjust GV%1").arg(val-FuncAdjustGV1+1);
-  else {
-    return QString("???"); // Highlight unknown functions with output of question marks.(BTW should not happen that we do not know what a function is)
-  }
-}
-
-// TODO should be a toString() method in CustoSwData ...
-QString getCustomSwitchStr(CustomSwData * customSw, const ModelData & model)
-{
-  QString result = "";
-
-  if (!customSw->func)
-    return result;
-  if (customSw->andsw!=0) {
-    result +="( ";
-  }
-  switch (getCSFunctionFamily(customSw->func)) {
-    case CS_FAMILY_TIMERS:
-      result = QString("TIM(%1 , %2)").arg(ValToTim(customSw->val1)).arg(ValToTim(customSw->val2));
-      break;     
-    case CS_FAMILY_VOFS: {
-      RawSource source = RawSource(customSw->val1, &model);
-      RawSourceRange range = source.getRange();
-      if (customSw->val1)
-        result += source.toString();
-      else
-        result += "0";
-      result.remove(" ");
-      if (customSw->func == CS_FN_APOS || customSw->func == CS_FN_ANEG)
-        result = "|" + result + "|";
-      else if (customSw->func == CS_FN_DAPOS)
-        result = "|d(" + result + ")|";
-      else if (customSw->func == CS_FN_DPOS) result = "d(" + result + ")";
-      if (customSw->func == CS_FN_APOS || customSw->func == CS_FN_VPOS || customSw->func == CS_FN_DAPOS || customSw->func == CS_FN_DPOS)
-        result += " &gt; ";
-      else if (customSw->func == CS_FN_ANEG || customSw->func == CS_FN_VNEG)
-        result += " &lt; ";
-      result += QString::number(range.step * (customSw->val2 /*TODO+ source.getRawOffset(model)*/) + range.offset);
-      break;
-    }
-    case CS_FAMILY_VBOOL:
-      result = RawSwitch(customSw->val1).toString();
-      switch (customSw->func) {
-        case CS_FN_AND:
-          result += " AND ";
-          break;
-        case CS_FN_OR:
-          result += " OR ";
-          break;
-        case CS_FN_XOR:
-          result += " XOR ";
-          break;
-        default:
-          break;
-      }
-      result += RawSwitch(customSw->val2).toString();
-      break;
-
-    case CS_FAMILY_VCOMP:
-      if (customSw->val1)
-        result += RawSource(customSw->val1).toString();
-      else
-        result += "0";
-      switch (customSw->func) {
-        case CS_FN_EQUAL:
-          result += " = ";
-          break;
-        case CS_FN_NEQUAL:
-          result += " != ";
-          break;
-        case CS_FN_GREATER:
-          result += " &gt; ";
-          break;
-        case CS_FN_LESS:
-          result += " &lt; ";
-          break;
-        case CS_FN_EGREATER:
-          result += " &gt;= ";
-          break;
-        case CS_FN_ELESS:
-          result += " &lt;= ";
-          break;
-        default:
-          break;
-      }
-      if (customSw->val2)
-        result += RawSource(customSw->val2).toString();
-      else
-        result += "0";
-      break;
-  }
-
-  if (customSw->andsw!=0) {
-    result +=" ) AND ";
-    result += RawSwitch(customSw->andsw).toString();
-  }
-
-  if (GetEepromInterface()->getCapability(CustomSwitchesExt)) {
-    if (customSw->delay)
-      result += QObject::tr(" Delay %1 sec").arg(customSw->delay/2.0);
-    if (customSw->duration)
-      result += QObject::tr(" Duration %1 sec").arg(customSw->duration/2.0);
-  }
-
-  return result;
-}
-
 QString getProtocolStr(const int proto)
 {
   static const char *strings[] = { "OFF",
@@ -567,46 +408,11 @@ QString getTimerMode(int tm) {
     return s;
   }
 
-  if (tma >= TMRMODE_FIRST_MOMENT_SWITCH && tma < TMRMODE_FIRST_MOMENT_SWITCH + GetEepromInterface()->getCapability(SwitchesPositions)) {
-    s =  RawSwitch(SWITCH_TYPE_SWITCH, tma - TMRMODE_FIRST_MOMENT_SWITCH + 1).toString()+"t";
-    if (tm < 0) s.prepend("!");
-    return s;
-  }
-
-  if (tma >= TMRMODE_FIRST_MOMENT_SWITCH + GetEepromInterface()->getCapability(SwitchesPositions) && tma < TMRMODE_FIRST_MOMENT_SWITCH + GetEepromInterface()->getCapability(SwitchesPositions) + GetEepromInterface()->getCapability(CustomSwitches)) {
-    s = RawSwitch(SWITCH_TYPE_VIRTUAL, tma - TMRMODE_FIRST_MOMENT_SWITCH - GetEepromInterface()->getCapability(SwitchesPositions) + 1).toString()+"t";
-    if (tm < 0) s.prepend("!");
-    return s;
-  }
   if (tma >=TMRMODE_FIRST_CHPERC && tma <TMRMODE_FIRST_CHPERC+16) {
     s = QString("CH%1%").arg(tma-TMRMODE_FIRST_CHPERC+1);
     return s;
   }
   return "";
-}
-
-QString getTimerModeB(int tm) {
-
-  QString stt = "---THRRUDELEIDOID1ID2AILGEATRN";
-
-  QString s;
-  int tma = abs(tm);
-  if (tma>33) {
-    tma-=32;
-  }
-  if (tma < 10) {
-    s=stt.mid(abs(tma)*3, 3);
-  } else if (tma <19) {
-    s=QString("SW%1").arg(tma-9);
-  } else  {
-    s=QString("SW")+QChar('A'+tma-19);
-  }
-  if (tm<0) {
-    s.prepend("!");
-  } else if (tm>33) {
-    s.append("m");
-  }
-  return s;
 }
 
 void populateBacklightCB(QComboBox *b, const uint8_t value)
@@ -719,15 +525,6 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr,
     b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);
   }
-
-#if 0
-  // TODO One ?
-  if (attr & POPULATE_ONOFF) {
-    item = RawSwitch(SWITCH_TYPE_ONM);
-    b->addItem(item.toString(), item.toValue());
-    if (item == value) b->setCurrentIndex(b->count()-1);
-  }
-#endif
 
   b->setMaxVisibleItems(10);
 }
@@ -878,35 +675,6 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData & 
   b->setMaxVisibleItems(10);
 }
 
-#define CSWITCH_STR  "----  a~x   a>x   a<x   |a|>x |a|<x AND   OR    XOR   a=b   a!=b  a>b   a<b   a>=b  a<=b  d>=x  |d|>=xTIM   "
-#define CSW_NUM_FUNC 18 // TODO enum
-#define CSW_LEN_FUNC 6
-int csw_values[]={  
-  CS_FN_OFF,
-  CS_FN_VEQUAL, // added at the end to avoid everything renumbered
-  CS_FN_VPOS,
-  CS_FN_VNEG,
-  CS_FN_APOS,
-  CS_FN_ANEG,
-  CS_FN_AND,
-  CS_FN_OR,
-  CS_FN_XOR,
-  CS_FN_EQUAL,
-  CS_FN_NEQUAL,
-  CS_FN_GREATER,
-  CS_FN_LESS,
-  CS_FN_EGREATER,
-  CS_FN_ELESS,
-  CS_FN_DPOS,
-  CS_FN_DAPOS,
-  CS_FN_TIM
-};
-
-QString getCSWFunc(int val)
-{
-  return QString(CSWITCH_STR).mid(val*CSW_LEN_FUNC, CSW_LEN_FUNC);
-}
-
 float ValToTim(int value)
 {
    return ((value < -109 ? 129+value : (value < 7 ? (113+value)*5 : (53+value)*10))/10.0);   
@@ -927,14 +695,37 @@ int TimToVal(float value)
 
 void populateCSWCB(QComboBox *b, int value)
 {
+  int order[] = {
+    CS_FN_OFF,
+    CS_FN_VEQUAL, // added at the end to avoid everything renumbered
+    CS_FN_VPOS,
+    CS_FN_VNEG,
+    CS_FN_APOS,
+    CS_FN_ANEG,
+    CS_FN_AND,
+    CS_FN_OR,
+    CS_FN_XOR,
+    CS_FN_EQUAL,
+    CS_FN_NEQUAL,
+    CS_FN_GREATER,
+    CS_FN_LESS,
+    CS_FN_EGREATER,
+    CS_FN_ELESS,
+    CS_FN_DPOS,
+    CS_FN_DAPOS,
+    CS_FN_TIMER,
+    CS_FN_STICKY
+  };
+
   b->clear();
-  for (int i = 0; i < CSW_NUM_FUNC; i++) {
-    b->addItem(getCSWFunc(i),csw_values[i]);
-    if (i>GetEepromInterface()->getCapability(CSFunc)) {
-      QModelIndex index = b->model()->index(i, 0);
-      QVariant v(0);
-    }
-    if (value == csw_values[i]) {
+  for (int i=0; i<CS_FN_MAX; i++) {
+    int func = order[i];
+    b->addItem(CustomSwData(func).funcToString(), func);
+//    if (i>GetEepromInterface()->getCapability(CSFunc)) {
+//      QModelIndex index = b->model()->index(i, 0);
+//      QVariant v(0);
+//    }
+    if (value == func) {
       b->setCurrentIndex(b->count()-1);
     }
   }
@@ -1141,13 +932,6 @@ QString getPhasesStr(unsigned int phases, ModelData & model)
   else {
     return "";
   }
-}
-
-float c9xexpou(float point, float coeff)
-{
-  float x=point*1024.0/100.0;
-  float k=coeff*256.0/100.0;
-  return ((k*x*x*x/(1024*1024) + x*(256-k) + 128) / 256)/1024.0*100;
 }
 
 QString getCenterBeep(ModelData * g_model)

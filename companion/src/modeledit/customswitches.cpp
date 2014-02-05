@@ -78,7 +78,7 @@ CustomSwitchesPanel::CustomSwitchesPanel(QWidget * parent, ModelData & model):
     // AND
     cswitchAnd[i] = new QComboBox(this);
     cswitchAnd[i]->setProperty("index", i);
-    connect(cswitchAnd[i], SIGNAL(currentIndexChanged(int)), this, SLOT(edited()));
+    connect(cswitchAnd[i], SIGNAL(currentIndexChanged(int)), this, SLOT(andEdited(int)));
     gridLayout->addWidget(cswitchAnd[i], i+1, 4);
     cswitchAnd[i]->setVisible(false);
 
@@ -91,7 +91,7 @@ CustomSwitchesPanel::CustomSwitchesPanel(QWidget * parent, ModelData & model):
       cswitchDuration[i]->setMinimum(0);
       cswitchDuration[i]->setAccelerated(true);
       cswitchDuration[i]->setDecimals(1);
-      connect(cswitchDuration[i],SIGNAL(editingFinished()), this, SLOT(edited()));
+      connect(cswitchDuration[i], SIGNAL(valueChanged(double)), this, SLOT(durationEdited(double)));
       gridLayout->addWidget(cswitchDuration[i], i+1, 5);
       cswitchDuration[i]->setVisible(false);
 
@@ -103,7 +103,7 @@ CustomSwitchesPanel::CustomSwitchesPanel(QWidget * parent, ModelData & model):
       cswitchDelay[i]->setMinimum(0);
       cswitchDelay[i]->setAccelerated(true);
       cswitchDelay[i]->setDecimals(1);
-      connect(cswitchDelay[i], SIGNAL(editingFinished()), this, SLOT(edited()));
+      connect(cswitchDelay[i], SIGNAL(valueChanged(double)), this, SLOT(delayEdited(double)));
       gridLayout->addWidget(cswitchDelay[i], i+1, 6);
       cswitchDelay[i]->setVisible(false);
     }
@@ -116,6 +116,27 @@ CustomSwitchesPanel::~CustomSwitchesPanel()
 {
 }
 
+void CustomSwitchesPanel::durationEdited(double duration)
+{
+  int index = sender()->property("index").toInt();
+  model.customSw[index].duration = (uint8_t)round(duration*2);
+  emit modified();
+}
+
+void CustomSwitchesPanel::delayEdited(double delay)
+{
+  int index = sender()->property("index").toInt();
+  model.customSw[index].delay = (uint8_t)round(delay*2);
+  emit modified();
+}
+
+void CustomSwitchesPanel::andEdited(int value)
+{
+  int index = sender()->property("index").toInt();
+  model.customSw[index].andsw = cswitchAnd[index]->itemData(value).toInt();
+  emit modified();
+}
+
 void CustomSwitchesPanel::edited()
 {
   if (!lock) {
@@ -124,27 +145,25 @@ void CustomSwitchesPanel::edited()
     bool chAr;
     float value, step;
     int newval;
-    chAr = (getCSFunctionFamily(model.customSw[i].func) != getCSFunctionFamily(csw[i]->itemData(csw[i]->currentIndex()).toInt()));
+    chAr = (model.customSw[i].getFunctionFamily() != CustomSwData(csw[i]->itemData(csw[i]->currentIndex()).toInt()).getFunctionFamily());
     model.customSw[i].func = csw[i]->itemData(csw[i]->currentIndex()).toInt();
     if(chAr) {
-      if (getCSFunctionFamily(model.customSw[i].func)==CS_FAMILY_TIMERS) {
+      if (model.customSw[i].getFunctionFamily() == CS_FAMILY_TIMER) {
         model.customSw[i].val1 = -119;
         model.customSw[i].val2 = -119;
-      } else {
+      }
+      else {
         model.customSw[i].val1 = 0;
         model.customSw[i].val2 = 0;
       }
       model.customSw[i].andsw = 0;
       setSwitchWidgetVisibility(i);
     }
-    if (GetEepromInterface()->getCapability(CustomSwitchesExt)) {
-      model.customSw[i].duration= (uint8_t)round(cswitchDuration[i]->value()*2);
-      model.customSw[i].delay= (uint8_t)round(cswitchDelay[i]->value()*2);
-    }
+
     RawSource source;
-    switch (getCSFunctionFamily(model.customSw[i].func))
+    switch (model.customSw[i].getFunctionFamily())
     {
-      case (CS_FAMILY_VOFS):
+      case CS_FAMILY_VOFS:
         if (model.customSw[i].val1 != cswitchSource1[i]->itemData(cswitchSource1[i]->currentIndex()).toInt()) {
           source = RawSource(model.customSw[i].val1, &model);
           model.customSw[i].val1 = cswitchSource1[i]->itemData(cswitchSource1[i]->currentIndex()).toInt();
@@ -181,7 +200,8 @@ void CustomSwitchesPanel::edited()
           }
         }
         break;
-      case (CS_FAMILY_TIMERS): {
+      case CS_FAMILY_TIMER:
+      {
         value = cswitchOffset[i]->value();
         newval=TimToVal(value);
         if (newval>model.customSw[i].val2) {
@@ -194,7 +214,8 @@ void CustomSwitchesPanel::edited()
           } else {
             step=0.1;
           }
-        } else {
+        }
+        else {
           if (value <=2) {
             step=0.1;
           } else if (value<=60) {
@@ -238,14 +259,14 @@ void CustomSwitchesPanel::edited()
         cswitchValue[i]->setValue(value);
         cswitchValue[i]->setSingleStep(step);
         break;
-        }
-      case (CS_FAMILY_VBOOL):
-      case (CS_FAMILY_VCOMP):
+      }
+      case CS_FAMILY_VBOOL:
+      case CS_FAMILY_VCOMP:
+      case CS_FAMILY_STICKY:
         model.customSw[i].val1 = cswitchSource1[i]->itemData(cswitchSource1[i]->currentIndex()).toInt();
         model.customSw[i].val2 = cswitchSource2[i]->itemData(cswitchSource2[i]->currentIndex()).toInt();
         break;
     }
-    model.customSw[i].andsw = cswitchAnd[i]->itemData(cswitchAnd[i]->currentIndex()).toInt();
     emit modified();
     lock = false;
   }
@@ -256,7 +277,7 @@ void CustomSwitchesPanel::setSwitchWidgetVisibility(int i)
     RawSource source = RawSource(model.customSw[i].val1, &model);
     RawSourceRange range = source.getRange();
 
-    switch (getCSFunctionFamily(model.customSw[i].func))
+    switch (model.customSw[i].getFunctionFamily())
     {
       case CS_FAMILY_VOFS:
         cswitchSource1[i]->setVisible(true);
@@ -270,13 +291,15 @@ void CustomSwitchesPanel::setSwitchWidgetVisibility(int i)
           cswitchOffset[i]->setMinimum(range.step*-127);
           cswitchOffset[i]->setMaximum(range.step*127);
           cswitchOffset[i]->setValue(range.step*model.customSw[i].val2);
-        } else {
+        }
+        else {
           cswitchOffset[i]->setMinimum(range.min);
           cswitchOffset[i]->setMaximum(range.max);
           cswitchOffset[i]->setValue(range.step*(model.customSw[i].val2/* TODO+source.getRawOffset(model)*/)+range.offset);
         }
         break;
       case CS_FAMILY_VBOOL:
+      case CS_FAMILY_STICKY:
         cswitchSource1[i]->setVisible(true);
         cswitchSource2[i]->setVisible(true);
         cswitchValue[i]->setVisible(false);
@@ -292,7 +315,7 @@ void CustomSwitchesPanel::setSwitchWidgetVisibility(int i)
         populateSourceCB(cswitchSource1[i], RawSource(model.customSw[i].val1), model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (GetEepromInterface()->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
         populateSourceCB(cswitchSource2[i], RawSource(model.customSw[i].val2), model, POPULATE_SOURCES | POPULATE_TRIMS | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (GetEepromInterface()->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
         break;
-      case CS_FAMILY_TIMERS:
+      case CS_FAMILY_TIMER:
         cswitchSource1[i]->setVisible(false);
         cswitchSource2[i]->setVisible(false);
         cswitchValue[i]->setVisible(true);

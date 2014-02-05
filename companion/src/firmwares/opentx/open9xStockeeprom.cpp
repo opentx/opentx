@@ -74,13 +74,13 @@ RawSwitch open9xStockToSwitch(int8_t sw)
   else if (sw == 22)
     return RawSwitch(SWITCH_TYPE_ON);
   else if (sw == 44)
-    return RawSwitch(SWITCH_TYPE_ONM);
+    return RawSwitch(SWITCH_TYPE_ON);
   else if (sw == -22)
     return RawSwitch(SWITCH_TYPE_OFF);
   else if (swa <= 22+9)
-    return RawSwitch(SWITCH_TYPE_MOMENT_SWITCH, sw > 0 ? sw-22 : sw+22);
+    return RawSwitch(SWITCH_TYPE_SWITCH, sw > 0 ? sw-22 : sw+22);
   else
-    return RawSwitch(SWITCH_TYPE_MOMENT_VIRTUAL, sw > 0 ? sw-22-9 : sw+22+9);
+    return RawSwitch(SWITCH_TYPE_VIRTUAL, sw > 0 ? sw-22-9 : sw+22+9);
 }
 
 t_Open9xExpoData_v201::operator ExpoData ()
@@ -713,7 +713,7 @@ t_Open9xTimerData_v202::operator TimerData ()
   TimerData c9x;
 
   if (mode <= -22)
-    c9x.mode = TimerMode(TMRMODE_FIRST_NEG_MOMENT_SWITCH+(mode+22));
+    c9x.mode = TimerMode(TMRMODE_FIRST_NEG_SWITCH+(mode+22));
   else if (mode <= -1)
     c9x.mode = TimerMode(TMRMODE_FIRST_NEG_SWITCH+(mode+1));
   else if (mode < 5)
@@ -721,7 +721,7 @@ t_Open9xTimerData_v202::operator TimerData ()
   else if (mode < 5+21)
     c9x.mode = TimerMode(TMRMODE_FIRST_SWITCH+(mode-5));
   else
-    c9x.mode = TimerMode(TMRMODE_FIRST_MOMENT_SWITCH+(mode-5-21));
+    c9x.mode = TimerMode(TMRMODE_FIRST_SWITCH+(mode-5-21));
 
   c9x.val = val;
   c9x.persistent = false;

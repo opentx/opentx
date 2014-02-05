@@ -29,9 +29,9 @@ RawSwitch ersky9xToSwitch(int8_t sw)
   else if (sw == -34)
     return RawSwitch(SWITCH_TYPE_OFF);
   else if (swa <= 34+9)
-    return RawSwitch(SWITCH_TYPE_MOMENT_SWITCH, sw > 0 ? sw-34 : sw+34);
+    return RawSwitch(SWITCH_TYPE_SWITCH, sw > 0 ? sw-34 : sw+34);
   else
-    return RawSwitch(SWITCH_TYPE_MOMENT_VIRTUAL, sw > 0 ? sw-34-9 : sw+34+9);
+    return RawSwitch(SWITCH_TYPE_VIRTUAL, sw > 0 ? sw-34-9 : sw+34+9);
 }
 
 t_Ersky9xTrainerMix::t_Ersky9xTrainerMix()

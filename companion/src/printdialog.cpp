@@ -650,7 +650,7 @@ void printDialog::printSwitches()
         } else {
           str.append("<td width=\"60\" align=\"center\"><b>"+tr("LS")+('A'+(i-9))+"</b></td>");
         }
-        QString tstr = getCustomSwitchStr(&g_model->customSw[i], *g_model);
+        QString tstr = g_model->customSw[i].toString(*g_model);
         str.append(doTC(tstr,"green"));
         str.append("</tr>");
         sc++;
@@ -708,7 +708,7 @@ void printDialog::printFSwitches()
       if (g_model->funcSw[i].swtch.type!=SWITCH_TYPE_NONE) {
           str.append("<tr>");
           str.append(doTC(g_model->funcSw[i].swtch.toString(),"green"));
-          str.append(doTC(getFuncName(g_model->funcSw[i].func),"green"));
+          str.append(doTC(g_model->funcSw[i].funcToString(),"green"));
           str.append(doTC(g_model->funcSw[i].paramToString(),"green"));
           int index=g_model->funcSw[i].func;
           if (index==FuncPlaySound || index==FuncPlayHaptic || index==FuncPlayValue || index==FuncPlayPrompt || index==FuncPlayBoth || index==FuncBackgroundMusic) {

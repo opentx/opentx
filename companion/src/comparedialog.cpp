@@ -1040,8 +1040,8 @@ void compareDialog::printSwitches()
     str.append("<tr><td><h2>"+tr("Logical Switches")+"</h2></td></tr>");
     str.append("<tr><td><table border=1 cellspacing=0 cellpadding=1 width=\"100%\">");
     for (int i=0; i<GetEepromInterface()->getCapability(CustomSwitches); i++) {
-      QString sw1 = getCustomSwitchStr(&g_model1->customSw[i], *g_model1);
-      QString sw2 = getCustomSwitchStr(&g_model2->customSw[i], *g_model2);
+      QString sw1 = g_model1->customSw[i].toString(*g_model1);
+      QString sw2 = g_model2->customSw[i].toString(*g_model2);
       if (!(sw1.isEmpty() && sw2.isEmpty())) {
         str.append("<tr>");
         color=getColor1(sw1,sw2);
@@ -1095,7 +1095,7 @@ void compareDialog::printFSwitches()
       str.append("<tr>");
       if (g_model1->funcSw[i].swtch.type) {
         str.append(doTC(g_model1->funcSw[i].swtch.toString(),color1));
-        str.append(doTC(getFuncName(g_model1->funcSw[i].func),color1));
+        str.append(doTC(g_model1->funcSw[i].funcToString(),color1));
         str.append(doTC(g_model1->funcSw[i].paramToString(),color1));
         int index=g_model1->funcSw[i].func;
         if (index==FuncPlaySound || index==FuncPlayHaptic || index==FuncPlayValue || index==FuncPlayPrompt || index==FuncPlayBoth || index==FuncBackgroundMusic) {
@@ -1114,7 +1114,7 @@ void compareDialog::printFSwitches()
       str.append(doTC(tr("CF")+QString("%1").arg(i+1),"",true));
       if (g_model2->funcSw[i].swtch.type) {
         str.append(doTC(g_model2->funcSw[i].swtch.toString(),color2));
-        str.append(doTC(getFuncName(g_model2->funcSw[i].func),color2));
+        str.append(doTC(g_model2->funcSw[i].funcToString(),color2));
         str.append(doTC(g_model2->funcSw[i].paramToString(),color2));
         int index=g_model2->funcSw[i].func;
         if (index==FuncPlaySound || index==FuncPlayHaptic || index==FuncPlayValue || index==FuncPlayPrompt || index==FuncPlayBoth || index==FuncBackgroundMusic) {

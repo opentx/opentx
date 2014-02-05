@@ -280,45 +280,8 @@ QString RawSwitch::toString()
       return CHECK_IN_ARRAY(multiposPots, index);
     case SWITCH_TYPE_ON:
       return QObject::tr("ON");
-    case SWITCH_TYPE_ONM:
-      if (index==0) {
-        return QObject::tr("ONE");
-      }
-      else if (index==1) {
-        return QObject::tr("!ONE");
-      }
-      break;
-    case SWITCH_TYPE_TRN:
-      if (index==0) {
-        if (IS_TARANIS(GetEepromInterface()->getBoard())) 
-          return SwitchDn('H')+"s";
-        else
-          return QObject::tr("TRNs");
-      } else if (index==1) {
-        if (IS_TARANIS(GetEepromInterface()->getBoard())) 
-          return SwitchDn('H')+"l";
-        else
-          return QObject::tr("TRNl");
-      }
-      break;
-    case SWITCH_TYPE_REA:
-      if (index==0) {
-        if (GetEepromInterface()->getBoard() == BOARD_SKY9X) 
-          return QObject::tr("REAs");
-      } else if (index==1) {
-        if (GetEepromInterface()->getBoard() == BOARD_SKY9X) 
-          return QObject::tr("REAl");
-      }
-      break;
     case SWITCH_TYPE_OFF:
       return QObject::tr("OFF");
-    case SWITCH_TYPE_MOMENT_SWITCH:
-      if (IS_TARANIS(GetEepromInterface()->getBoard()))
-        return index > 0 ? CHECK_IN_ARRAY(switchesX9D, index-1)+QString("t") : QString("!")+CHECK_IN_ARRAY(switchesX9D, -index-1)+QString("t");
-      else
-        return index > 0 ? CHECK_IN_ARRAY(switches9X, index-1)+QString("t") : QString("!")+CHECK_IN_ARRAY(switches9X, -index-1)+QString("t");
-    case SWITCH_TYPE_MOMENT_VIRTUAL:
-      return index > 0 ? CHECK_IN_ARRAY(virtualSwitches, index-1)+QString("t") : QString("!")+CHECK_IN_ARRAY(virtualSwitches, -index-1)+QString("t");
     default:
       break;
   }
@@ -343,6 +306,170 @@ QString CurveReference::toString()
         return QString(value > 0 ? QObject::tr("Curve(%1)") : QObject::tr("!Curve(%1)")).arg(abs(value));
     }
   }
+}
+
+CSFunctionFamily CustomSwData::getFunctionFamily()
+{
+  if (func == CS_FN_TIMER)
+    return CS_FAMILY_TIMER;
+  else if (func == CS_FN_STICKY)
+    return CS_FAMILY_STICKY;
+  else if (func < CS_FN_AND || func > CS_FN_ELESS)
+    return CS_FAMILY_VOFS;
+  else if (func < CS_FN_EQUAL)
+    return CS_FAMILY_VBOOL;
+  else
+    return CS_FAMILY_VCOMP;
+}
+
+QString CustomSwData::funcToString()
+{
+  switch (func) {
+    case CS_FN_OFF:
+      return QObject::tr("---");
+    case CS_FN_VPOS:
+      return QObject::tr("a>x");
+    case CS_FN_VNEG:
+      return QObject::tr("a<x");
+    case CS_FN_APOS:
+      return QObject::tr("|a|>x");
+    case CS_FN_ANEG:
+      return QObject::tr("|a|<x");
+    case CS_FN_AND:
+      return QObject::tr("AND");
+    case CS_FN_OR:
+      return QObject::tr("OR");
+    case CS_FN_XOR:
+      return QObject::tr("XOR");
+    case CS_FN_EQUAL:
+      return QObject::tr("a=b");
+    case CS_FN_NEQUAL:
+      return QObject::tr("a!=b");
+    case CS_FN_GREATER:
+      return QObject::tr("a>b");
+    case CS_FN_LESS:
+      return QObject::tr("a<b");
+    case CS_FN_EGREATER:
+      return QObject::tr("a>=b");
+    case CS_FN_ELESS:
+      return QObject::tr("a<=b");
+    case CS_FN_DPOS:
+      return QObject::tr("d>=x");
+    case CS_FN_DAPOS:
+      return QObject::tr("|d|>=x");
+    case CS_FN_VEQUAL:
+      return QObject::tr("a~x");
+    case CS_FN_TIMER:
+      return QObject::tr("Timer");
+    case CS_FN_STICKY:
+      return QObject::tr("Sticky");
+    default:
+      return QObject::tr("Unknown");
+  }
+}
+
+QString CustomSwData::toString(const ModelData & model)
+{
+  QString result = "";
+
+  if (!func)
+    return result;
+
+  if (andsw!=0) {
+    result +="( ";
+  }
+  switch (getFunctionFamily()) {
+    case CS_FAMILY_STICKY:
+      result = QObject::tr("STICKY(%1 , %2)").arg(RawSwitch(val1).toString()).arg(RawSwitch(val2).toString());
+      break;
+    case CS_FAMILY_TIMER:
+      result = QObject::tr("TIMER(%1 , %2)").arg(ValToTim(val1)).arg(ValToTim(val2));
+      break;
+    case CS_FAMILY_VOFS: {
+      RawSource source = RawSource(val1, &model);
+      RawSourceRange range = source.getRange();
+      if (val1)
+        result += source.toString();
+      else
+        result += "0";
+      result.remove(" ");
+      if (func == CS_FN_APOS || func == CS_FN_ANEG)
+        result = "|" + result + "|";
+      else if (func == CS_FN_DAPOS)
+        result = "|d(" + result + ")|";
+      else if (func == CS_FN_DPOS) result = "d(" + result + ")";
+      if (func == CS_FN_APOS || func == CS_FN_VPOS || func == CS_FN_DAPOS || func == CS_FN_DPOS)
+        result += " &gt; ";
+      else if (func == CS_FN_ANEG || func == CS_FN_VNEG)
+        result += " &lt; ";
+      result += QString::number(range.step * (val2 /*TODO+ source.getRawOffset(model)*/) + range.offset);
+      break;
+    }
+    case CS_FAMILY_VBOOL:
+      result = RawSwitch(val1).toString();
+      switch (func) {
+        case CS_FN_AND:
+          result += " AND ";
+          break;
+        case CS_FN_OR:
+          result += " OR ";
+          break;
+        case CS_FN_XOR:
+          result += " XOR ";
+          break;
+        default:
+          break;
+      }
+      result += RawSwitch(val2).toString();
+      break;
+
+    case CS_FAMILY_VCOMP:
+      if (val1)
+        result += RawSource(val1).toString();
+      else
+        result += "0";
+      switch (func) {
+        case CS_FN_EQUAL:
+          result += " = ";
+          break;
+        case CS_FN_NEQUAL:
+          result += " != ";
+          break;
+        case CS_FN_GREATER:
+          result += " &gt; ";
+          break;
+        case CS_FN_LESS:
+          result += " &lt; ";
+          break;
+        case CS_FN_EGREATER:
+          result += " &gt;= ";
+          break;
+        case CS_FN_ELESS:
+          result += " &lt;= ";
+          break;
+        default:
+          break;
+      }
+      if (val2)
+        result += RawSource(val2).toString();
+      else
+        result += "0";
+      break;
+  }
+
+  if (andsw!=0) {
+    result +=" ) AND ";
+    result += RawSwitch(andsw).toString();
+  }
+
+  if (GetEepromInterface()->getCapability(CustomSwitchesExt)) {
+    if (delay)
+      result += QObject::tr(" Delay %1 sec").arg(delay/2.0);
+    if (duration)
+      result += QObject::tr(" Duration %1 sec").arg(duration/2.0);
+  }
+
+  return result;
 }
 
 #if 0
@@ -416,9 +543,68 @@ QStringList FuncSwData::toStringList()
         break;
     }
   }
+
+  if (func==FuncPlaySound || func==FuncPlayHaptic || func==FuncPlayValue || func==FuncPlayPrompt || func==FuncPlayBoth || func==FuncBackgroundMusic) {
+              str.append(doTC(QString("%1").arg(g_model->funcSw[i].repeatParam),"green"));
+            } else {
+              str.append(doTC( "&nbsp;","green"));
+            }
+            if ((index<=FuncInstantTrim) || (index>FuncBackgroundMusicPause)) {
+              str.append(doTC((g_model->funcSw[i].enabled ? "ON" : "OFF"),"green"));
+            } else {
+              str.append(doTC( "---","green"));
+            }
+
   return result;
 }
 #endif
+
+QString FuncSwData::funcToString()
+{
+  if (func >= FuncSafetyCh1 && func <= FuncSafetyCh32)
+    return QObject::tr("Safety %1").arg(RawSource(SOURCE_TYPE_CH, func).toString());
+  else if (func == FuncTrainer)
+    return QObject::tr("Trainer");
+  else if (func == FuncTrainerRUD)
+    return QObject::tr("Trainer RUD");
+  else if (func == FuncTrainerELE)
+    return QObject::tr("Trainer ELE");
+  else if (func == FuncTrainerTHR)
+    return QObject::tr("Trainer THR");
+  else if (func == FuncTrainerAIL)
+    return QObject::tr("Trainer AIL");
+  else if (func == FuncInstantTrim)
+    return QObject::tr("Instant Trim");
+  else if (func == FuncPlaySound)
+    return QObject::tr("Play Sound");
+  else if (func == FuncPlayHaptic)
+    return QObject::tr("Play Haptic");
+  else if (func == FuncReset)
+    return QObject::tr("Reset");
+  else if (func == FuncVario)
+    return QObject::tr("Vario");
+  else if (func == FuncPlayPrompt)
+    return QObject::tr("Play Track");
+  else if (func == FuncPlayBoth)
+    return QObject::tr("Play Both");
+  else if (func == FuncPlayValue)
+    return QObject::tr("Play Value");
+  else if (func == FuncLogs)
+    return QObject::tr("Start Logs");
+  else if (func == FuncVolume)
+    return QObject::tr("Volume");
+  else if (func == FuncBacklight)
+    return QObject::tr("Backlight");
+  else if (func == FuncBackgroundMusic)
+    return QObject::tr("Background Music");
+  else if (func == FuncBackgroundMusicPause)
+    return QObject::tr("Background Music Pause");
+  else if (func >= FuncAdjustGV1 && func <= FuncAdjustGVLast)
+    return QObject::tr("Adjust GV%1").arg(func-FuncAdjustGV1+1);
+  else {
+    return QString("???"); // Highlight unknown functions with output of question marks.(BTW should not happen that we do not know what a function is)
+  }
+}
 
 QString FuncSwData::paramToString()
 {
@@ -486,6 +672,17 @@ QString FuncSwData::paramToString()
     }
   }
   return "";
+}
+
+QString FuncSwData::repeatToString()
+{
+  if (repeatParam==0) {
+    return QObject::tr("No repeat");
+  }
+  else {
+    unsigned int step = IS_ARM(GetEepromInterface()->getBoard()) ? 5 : 10;
+    return QObject::tr("%1 sec").arg(step*repeatParam);
+  }
 }
 
 GeneralSettings::GeneralSettings()

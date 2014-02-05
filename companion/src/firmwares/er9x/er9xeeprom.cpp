@@ -17,9 +17,9 @@ RawSwitch er9xToSwitch(int8_t sw)
   else if (sw == -22)
     return RawSwitch(SWITCH_TYPE_OFF);
   else if (swa <= 22+9)
-    return RawSwitch(SWITCH_TYPE_MOMENT_SWITCH, sw > 0 ? sw-22 : sw+22);
+    return RawSwitch(SWITCH_TYPE_SWITCH, sw > 0 ? sw-22 : sw+22);
   else
-    return RawSwitch(SWITCH_TYPE_MOMENT_VIRTUAL, sw > 0 ? sw-22-9 : sw+22+9);
+    return RawSwitch(SWITCH_TYPE_VIRTUAL, sw > 0 ? sw-22-9 : sw+22+9);
 }
 
 t_Er9xTrainerMix::t_Er9xTrainerMix()
@@ -338,7 +338,7 @@ t_Er9xFrSkyData::operator FrSkyData ()
 TimerMode getEr9xTimerMode(int mode)
 {
   if (mode <= -33)
-    return TimerMode(TMRMODE_FIRST_NEG_MOMENT_SWITCH+(mode+33));
+    return TimerMode(TMRMODE_FIRST_NEG_SWITCH+(mode+33));
   else if (mode <= -1)
     return TimerMode(TMRMODE_FIRST_NEG_SWITCH+(mode+1));
   else if (mode < 16)
@@ -346,7 +346,7 @@ TimerMode getEr9xTimerMode(int mode)
   else if (mode < 16+21)
     return TimerMode(TMRMODE_FIRST_SWITCH+(mode-16));
   else
-    return TimerMode(TMRMODE_FIRST_MOMENT_SWITCH+(mode-16-21));
+    return TimerMode(TMRMODE_FIRST_SWITCH+(mode-16-21));
 }
 
 t_Er9xModelData::operator ModelData ()

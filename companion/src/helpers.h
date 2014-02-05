@@ -87,7 +87,6 @@ void populateTrimUseCB(QComboBox *b, unsigned int phase);
 void populateGvarUseCB(QComboBox *b, unsigned int phase);
 void populateCustomScreenFieldCB(QComboBox *b, unsigned int value, bool last, int hubproto);
 void populateTimerSwitchCB(QComboBox *b, int value);
-QString getCustomSwitchStr(CustomSwData * customSw, const ModelData & model);
 QString getProtocolStr(const int proto);
 QString getPhasesStr(unsigned int phases, ModelData & model);
 
@@ -107,12 +106,8 @@ void populateGVCB(QComboBox *b, int value);
 void populateSourceCB(QComboBox *b, const RawSource &source, const ModelData & model, unsigned int flags);
 void populateCSWCB(QComboBox *b, int value);
 QString getTimerMode(int tm);
-QString getTimerModeB(int tm);
 QString getPhaseName(int val, char * phasename=NULL);
 QString getInputStr(ModelData & model, int index);
-QString getCSWFunc(int val);
-QString getFuncName(unsigned int val);
-QString getRepeatString(unsigned int val);
 QString getSignedStr(int value);
 QString getGVarString(int16_t val, bool sign=false);
 QString image2qstring(QImage image);
@@ -132,7 +127,6 @@ QString getFrSkyProtocol(int protocol);
 QString getFrSkyMeasure(int units);
 QString getFrSkySrc(int index);
 
-float c9xexpou(float point, float coeff);
 float ValToTim(int value);
 int TimToVal(float value);
 

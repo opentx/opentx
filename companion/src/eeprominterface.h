@@ -146,44 +146,6 @@ enum EnumKeys {
 #endif
 };
 
-enum CSFunction {
-  CS_FN_OFF,
-  CS_FN_VPOS,
-  CS_FN_VNEG,
-  CS_FN_APOS,
-  CS_FN_ANEG,
-  CS_FN_AND,
-  CS_FN_OR,
-  CS_FN_XOR,
-  CS_FN_EQUAL,
-  CS_FN_NEQUAL,
-  CS_FN_GREATER,
-  CS_FN_LESS,
-  CS_FN_EGREATER,
-  CS_FN_ELESS,
-  CS_FN_DPOS,
-  CS_FN_DAPOS,
-  CS_FN_VEQUAL, // added at the end to avoid everything renumbered
-  CS_FN_TIM,
-  CS_FN_MAXF
-};
-
-enum CSFunctionFamily {
-  CS_FAMILY_VOFS,
-  CS_FAMILY_VBOOL,
-  CS_FAMILY_VCOMP,
-  CS_FAMILY_TIMERS
-};
-
-inline CSFunctionFamily getCSFunctionFamily(int fn)
-{
-  if (fn==CS_FN_TIM) {
-    return (CS_FAMILY_TIMERS);
-  } else {
-    return ((fn<CS_FN_AND || fn>CS_FN_ELESS) ? CS_FAMILY_VOFS : (fn<CS_FN_EQUAL ? CS_FAMILY_VBOOL : CS_FAMILY_VCOMP));
-  }
-}
-
 #define CHAR_FOR_NAMES " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-."
 #define CHAR_FOR_NAMES_REGEX "[ A-Za-z0-9_.-,]*"
 
@@ -356,13 +318,8 @@ enum RawSwitchType {
   SWITCH_TYPE_SWITCH,
   SWITCH_TYPE_VIRTUAL,
   SWITCH_TYPE_MULTIPOS_POT,
-  SWITCH_TYPE_MOMENT_SWITCH,
-  SWITCH_TYPE_MOMENT_VIRTUAL,
   SWITCH_TYPE_ON,
-  SWITCH_TYPE_OFF,
-  SWITCH_TYPE_ONM,
-  SWITCH_TYPE_TRN,
-  SWITCH_TYPE_REA,
+  SWITCH_TYPE_OFF
 };
 
 class RawSwitch {
@@ -616,16 +573,54 @@ class MixData {
     void clear() { memset(this, 0, sizeof(MixData)); }
 };
 
+enum CSFunction {
+  CS_FN_OFF,
+  CS_FN_VPOS,
+  CS_FN_VNEG,
+  CS_FN_APOS,
+  CS_FN_ANEG,
+  CS_FN_AND,
+  CS_FN_OR,
+  CS_FN_XOR,
+  CS_FN_EQUAL,
+  CS_FN_NEQUAL,
+  CS_FN_GREATER,
+  CS_FN_LESS,
+  CS_FN_EGREATER,
+  CS_FN_ELESS,
+  CS_FN_DPOS,
+  CS_FN_DAPOS,
+  CS_FN_VEQUAL, // added at the end to avoid everything renumbered
+  CS_FN_TIMER,
+  CS_FN_STICKY,
+  CS_FN_MAX
+};
+
+enum CSFunctionFamily {
+  CS_FAMILY_VOFS,
+  CS_FAMILY_VBOOL,
+  CS_FAMILY_VCOMP,
+  CS_FAMILY_TIMER,
+  CS_FAMILY_STICKY
+};
+
 class CustomSwData { // Custom Switches data
   public:
-    CustomSwData() { clear(); }
-    int  val1; //input
-    int  val2; //offset
+    CustomSwData(unsigned int func=0)
+    {
+      clear();
+      this->func = func;
+    }
     unsigned int func;
+    int  val1;
+    int  val2;
     unsigned int delay;
     unsigned int duration;
     unsigned int andsw;
     void clear() { memset(this, 0, sizeof(CustomSwData)); }
+    CSFunctionFamily getFunctionFamily();
+    QString funcToString();
+    QString toString(const ModelData & model);
 };
 
 enum AssignFunc {
@@ -656,7 +651,7 @@ enum AssignFunc {
 
 class FuncSwData { // Function Switches data
   public:
-    FuncSwData() { clear(); }
+    FuncSwData(AssignFunc func=FuncSafetyCh1) { clear(); this->func = func; }
     RawSwitch    swtch;
     AssignFunc   func;
     int param;
@@ -665,7 +660,9 @@ class FuncSwData { // Function Switches data
     unsigned int adjustMode;
     int repeatParam;
     void clear() { memset(this, 0, sizeof(FuncSwData)); }
+    QString funcToString();
     QString paramToString();
+    QString repeatToString();
     QStringList toStringList();
 };
 
@@ -807,12 +804,9 @@ enum TimerMode {
   TMRMODE_THp,
   TMRMODE_THt,
   TMRMODE_FIRST_SWITCH,
-  TMRMODE_FIRST_MOMENT_SWITCH = TMRMODE_FIRST_SWITCH+64,
-  TMRMODE_FIRST_CHPERC = TMRMODE_FIRST_MOMENT_SWITCH+64,
-  
+  TMRMODE_FIRST_CHPERC = TMRMODE_FIRST_SWITCH+64,
   TMRMODE_FIRST_NEG_SWITCH=-TMRMODE_FIRST_SWITCH,
-  TMRMODE_FIRST_NEG_MOMENT_SWITCH=-TMRMODE_FIRST_MOMENT_SWITCH,
-   /* sw/!sw, !m_sw/!m_sw */
+  /* sw/!sw, !m_sw/!m_sw */
 };
 
 class TimerData {
@@ -1174,7 +1168,7 @@ inline void applyStickModeToModel(ModelData &model, unsigned int mode)
   // virtual switches
   for (int i=0; i<C9X_NUM_CSW; i++) {
     RawSource source;
-    switch (getCSFunctionFamily(model.customSw[i].func)) {
+    switch (model.customSw[i].getFunctionFamily()) {
       case CS_FAMILY_VCOMP:
         source = RawSource(model.customSw[i].val2);
         if (source.type == SOURCE_TYPE_STICK)

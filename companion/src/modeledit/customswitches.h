@@ -17,6 +17,9 @@ class CustomSwitchesPanel : public ModelPanel
 
   private slots:
     void edited();
+    void durationEdited(double duration);
+    void delayEdited(double delay);
+    void andEdited(int value);
     void csw_customContextMenuRequested(QPoint pos);
     void cswDelete();
     void cswCopy();
