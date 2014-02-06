@@ -268,31 +268,47 @@ QString RawSwitch::toString()
     QObject::tr("S21"), QObject::tr("S22"), QObject::tr("S23"), QObject::tr("S24"), QObject::tr("S25"), QObject::tr("S26")
   };
 
+  static const QString trimsSwitches[] = {
+    QObject::tr("RudTrim Left"), QObject::tr("RudTrim Right"),
+    QObject::tr("EleTrim Down"), QObject::tr("EleTrim Up"),
+    QObject::tr("ThrTrim Down"), QObject::tr("ThrTrim Up"),
+    QObject::tr("AilTrim Left"), QObject::tr("AilTrim Right")
+  };
+
   static const QString rotaryEncoders[] = {
     QObject::tr("REa"), QObject::tr("REb")
   };
 
-  switch(type) {
-    case SWITCH_TYPE_SWITCH:
-      if (IS_TARANIS(GetEepromInterface()->getBoard()))
-        return index > 0 ? CHECK_IN_ARRAY(switchesX9D, index-1) : QString("!") + CHECK_IN_ARRAY(switchesX9D, -index-1);
-      else
-        return index > 0 ? CHECK_IN_ARRAY(switches9X, index-1) : QString("!") + CHECK_IN_ARRAY(switches9X, -index-1);
-    case SWITCH_TYPE_VIRTUAL:
-      return index > 0 ? CHECK_IN_ARRAY(virtualSwitches, index-1) : QString("!") + CHECK_IN_ARRAY(virtualSwitches, -index-1);
-    case SWITCH_TYPE_MULTIPOS_POT:
-      return CHECK_IN_ARRAY(multiposPots, index);
-    case SWITCH_TYPE_ROTARY_ENCODER:
-      return CHECK_IN_ARRAY(rotaryEncoders, index);
-    case SWITCH_TYPE_ON:
-      return QObject::tr("ON");
-    case SWITCH_TYPE_OFF:
-      return QObject::tr("OFF");
-    default:
-      break;
+  if (index == 0) {
+    return QObject::tr("----");
   }
-
-  return QObject::tr("----");
+  else if (index < 0) {
+    return QString("!") + RawSwitch(type, -index).toString();
+  }
+  else {
+    index = index - 1;
+    switch(type) {
+      case SWITCH_TYPE_SWITCH:
+        if (IS_TARANIS(GetEepromInterface()->getBoard()))
+          return CHECK_IN_ARRAY(switchesX9D, index);
+        else
+          return CHECK_IN_ARRAY(switches9X, index);
+      case SWITCH_TYPE_VIRTUAL:
+        return CHECK_IN_ARRAY(virtualSwitches, index);
+      case SWITCH_TYPE_MULTIPOS_POT:
+        return CHECK_IN_ARRAY(multiposPots, index);
+      case SWITCH_TYPE_TRIM:
+        return CHECK_IN_ARRAY(trimsSwitches, index);
+      case SWITCH_TYPE_ROTARY_ENCODER:
+        return CHECK_IN_ARRAY(rotaryEncoders, index);
+      case SWITCH_TYPE_ON:
+        return QObject::tr("ON");
+      case SWITCH_TYPE_OFF:
+        return QObject::tr("OFF");
+      default:
+        break;
+    }
+  }
 }
 
 QString CurveReference::toString()

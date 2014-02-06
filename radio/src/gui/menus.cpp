@@ -228,18 +228,6 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
 #endif
       }
     }
-
-    if (event == EVT_KEY_LONG(KEY_ENTER) && i_max > SWSRC_ON) {
-      s_editMode = !s_editMode;
-      if (newval > SWSRC_ON)
-        newval -= (NUM_SWITCH+1);
-      else if (newval > 0)
-        newval += (NUM_SWITCH+1);
-      else if (newval < SWSRC_OFF)
-        newval += (NUM_SWITCH+1);
-      else if (newval < 0)
-        newval -= (NUM_SWITCH+1);
-    }
   }
 #endif
 
@@ -976,7 +964,7 @@ int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, LcdFlags attr, uint8_t
 {
   lcd_putsColumnLeft(x, y, STR_SWITCH);
   putsSwitches(x,  y, value, attr);
-  if (attr) CHECK_INCDEC_MODELSWITCH(event, value, -NUM_SWITCH, NUM_SWITCH);
+  if (attr) CHECK_INCDEC_MODELSWITCH(event, value, SWSRC_FIRST, SWSRC_LAST);
   return value;
 }
 

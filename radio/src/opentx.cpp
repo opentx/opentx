@@ -3885,20 +3885,11 @@ void doMixerCalculations()
         timerState->sum = 0;
       }
 
-      uint8_t atm = (tm >= 0 ? tm : TMR_VAROFS-tm-1);
-
       // value for time described in timer->mode
       // OFFABSTHsTH%THt
-      if (atm == TMRMODE_THR_REL) {
+      if (tm == TMRMODE_THR_REL) {
         timerState->cnt++;
         timerState->sum+=val;
-      }
-
-      if (atm>=(TMR_VAROFS+NUM_SWITCH)){ // toggeled switch
-        if(!(timerState->toggled | timerState->sum | timerState->cnt | timerState->lastPos)) { timerState->lastPos = tm < 0; timerState->sum = 1; }  // if initializing then init the lastPos
-        uint8_t swPos = getSwitch(tm>0 ? tm-(TMR_VAROFS+NUM_SWITCH-1) : tm+NUM_SWITCH);
-        if (swPos && !timerState->lastPos) timerState->toggled = !timerState->toggled;  // if switch is flipped first time -> change counter state
-        timerState->lastPos = swPos;
       }
 
       if ((timerState->val_10ms += tick10ms) >= 100) {
@@ -3906,13 +3897,13 @@ void doMixerCalculations()
         int16_t newTimerVal = timerState->val;
         if (tv) newTimerVal = tv - newTimerVal;
 
-        if (atm==TMRMODE_ABS) {
+        if (tm == TMRMODE_ABS) {
           newTimerVal++;
         }
-        else if (atm==TMRMODE_THR) {
+        else if (tm == TMRMODE_THR) {
           if (val) newTimerVal++;
         }
-        else if (atm==TMRMODE_THR_REL) {
+        else if (tm == TMRMODE_THR_REL) {
           // @@@ open.20.fsguruh: why so complicated? we have already a s_sum field; use it for the half seconds (not showable) as well
           // check for s_cnt[i]==0 is not needed because we are shure it is at least 1
 #if defined(ACCURAT_THROTTLE_TIMER)
@@ -3928,19 +3919,17 @@ void doMixerCalculations()
 #endif
           timerState->cnt=0;
         }
-        else if (atm==TMRMODE_THR_TRG) {
+        else if (tm == TMRMODE_THR_TRG) {
           if (val || newTimerVal > 0)
             newTimerVal++;
         }
         else {
-          if (atm<(TMR_VAROFS+NUM_SWITCH))
-            timerState->toggled = tm>0 ? getSwitch(tm-(TMR_VAROFS-1)) : !getSwitch(-tm); // normal switch
-          if (timerState->toggled)
+          if (tm > 0) tm -= (TMR_VAROFS-1);
+          if (getSwitch(tm))
             newTimerVal++;
         }
 
-        switch(timerState->state)
-        {
+        switch (timerState->state) {
           case TMR_RUNNING:
             if (tv && newTimerVal>=(int16_t)tv) {
               AUDIO_TIMER_00(g_model.timers[i].countdownBeep);

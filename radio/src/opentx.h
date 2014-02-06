@@ -397,7 +397,6 @@ enum EnumKeys {
 
 #define NUM_PSWITCH     (SWSRC_LAST_SWITCH-SWSRC_FIRST_SWITCH+1)
 #define NUM_POTSSW      (NUM_XPOTS*6)
-#define NUM_SWITCH      (NUM_PSWITCH+NUM_CSW+NUM_POTSSW)
 
 #if defined(PCBTARANIS)
   #define KEY_RIGHT  KEY_PLUS
@@ -946,10 +945,8 @@ extern uint16_t s_timeCumThr;
 extern uint16_t s_timeCum16ThrP;
 
 struct TimerState {
-  uint8_t  lastPos;
   uint16_t cnt;
   uint16_t sum;
-  uint8_t  toggled;
   uint8_t  state;
   int16_t  val;
   uint8_t  val_10ms;

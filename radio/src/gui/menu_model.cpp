@@ -1051,7 +1051,7 @@ void menuModelSetup(uint8_t event)
         }
         else {
           putsStrIdx(0*FW, y, STR_TIMER, k>=ITEM_MODEL_TIMER2 ? 2 : 1);
-          putsTmrMode(MODEL_SETUP_2ND_COLUMN, y, timer->mode, m_posHorz==0 ? attr : 0);
+          putsTimerMode(MODEL_SETUP_2ND_COLUMN, y, timer->mode, m_posHorz==0 ? attr : 0);
           putsTime(MODEL_SETUP_2ND_COLUMN+5*FW-2+5*FWNUM+1, y, timer->start, m_posHorz==1 ? attr : 0, m_posHorz==2 ? attr : 0);
 #if defined(PCBTARANIS)
           if (attr && m_posHorz < 0) lcd_filled_rect(MODEL_SETUP_2ND_COLUMN, y, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
@@ -1060,7 +1060,7 @@ void menuModelSetup(uint8_t event)
             div_t qr = div(timer->start, 60);
             switch (m_posHorz) {
               case 0:
-                CHECK_INCDEC_MODELVAR(event, timer->mode, -2*(NUM_PSWITCH+NUM_CSW), TMR_VAROFS-1+2*(NUM_PSWITCH+NUM_CSW));
+                CHECK_INCDEC_MODELVAR(event, timer->mode, SWSRC_FIRST, TMR_VAROFS+SWSRC_LAST-1/*--- which is OFF*/);
                 break;
               case 1:
                 CHECK_INCDEC_MODELVAR_ZERO(event, qr.quot, 59);
@@ -1840,7 +1840,7 @@ void menuModelFlightModesAll(uint8_t event)
           }
           else {
             putsSwitches((5+LEN_FP_NAME)*FW+FW/2, y, p->swtch, attr);
-            if (active) CHECK_INCDEC_MODELSWITCH(event, p->swtch, -NUM_SWITCH, NUM_SWITCH);
+            if (active) CHECK_INCDEC_MODELSWITCH(event, p->swtch, SWSRC_FIRST, SWSRC_LAST);
           }
           break;
 
@@ -4298,7 +4298,7 @@ void menuModelCustomSwitchOne(uint8_t event)
       case CSW_FIELD_ANDSW:
         lcd_putsLeft(y, STR_AND_SWITCH);
         putsSwitches(CSWONE_2ND_COLUMN, y, cs->andsw, attr);
-        if (attr) CHECK_INCDEC_MODELVAR(event, cs->andsw, -NUM_SWITCH, NUM_SWITCH);
+        if (attr) CHECK_INCDEC_MODELVAR(event, cs->andsw, -MAX_CSW_ANDSW, MAX_CSW_ANDSW);
         break;
       case CSW_FIELD_DURATION:
         lcd_putsLeft(y, STR_DURATION);
@@ -4596,7 +4596,9 @@ void menuModelCustomSwitches(uint8_t event)
           break;
         case CSW_FIELD_ANDSW:
 #if defined(CPUARM)
-          CHECK_INCDEC_MODELSWITCH(event, cs->andsw, -MAX_CSW_ANDSW, MAX_CSW_ANDSW);
+          INCDEC_SET_FLAG(INCDEC_SWITCH);
+          INCDEC_ENABLE_CHECK(isSwitchAvailableInCustomSwitches);
+          cs->andsw = CHECK_INCDEC_PARAM(event, cs->andsw, -MAX_CSW_ANDSW, MAX_CSW_ANDSW);
 #else
           CHECK_INCDEC_MODELVAR_ZERO(event, cs->andsw, MAX_CSW_ANDSW);
 #endif

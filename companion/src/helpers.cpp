@@ -427,46 +427,52 @@ void populateBacklightCB(QComboBox *b, const uint8_t value)
   }
 }
 
-void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr, UseContext context)
+void populateAndSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr, UseContext context)
 {
   RawSwitch item;
 
   b->clear();
 
-  if (attr & POPULATE_AND_SWITCHES) {
-    if (GetEepromInterface()->getCapability(HasNegAndSwitches)) {
-      for (int i=-GetEepromInterface()->getCapability(CustomAndSwitches); i<=-1; i++) {
-        item = RawSwitch(SWITCH_TYPE_VIRTUAL, i);
-        b->addItem(item.toString(), item.toValue());
-        if (item == value) b->setCurrentIndex(b->count()-1);
-      }
-      for (int i=-GetEepromInterface()->getCapability(SwitchesPositions); i<=-1; i++) {
-        item = RawSwitch(SWITCH_TYPE_SWITCH, i);
-        if (GetEepromInterface()->isAvailable(item, context)) {
-          b->addItem(item.toString(), item.toValue());
-          if (item == value) b->setCurrentIndex(b->count()-1);
-        }
-      }
-    }
-    item = RawSwitch(SWITCH_TYPE_NONE);
-    if (GetEepromInterface()->isAvailable(item, context)) {
+  if (GetEepromInterface()->getCapability(HasNegAndSwitches)) {
+    for (int i=-GetEepromInterface()->getCapability(CustomAndSwitches); i<=-1; i++) {
+      item = RawSwitch(SWITCH_TYPE_VIRTUAL, i);
       b->addItem(item.toString(), item.toValue());
       if (item == value) b->setCurrentIndex(b->count()-1);
     }
-    for (int i=1; i<=GetEepromInterface()->getCapability(SwitchesPositions); i++) {
+    for (int i=-GetEepromInterface()->getCapability(SwitchesPositions); i<=-1; i++) {
       item = RawSwitch(SWITCH_TYPE_SWITCH, i);
       if (GetEepromInterface()->isAvailable(item, context)) {
         b->addItem(item.toString(), item.toValue());
         if (item == value) b->setCurrentIndex(b->count()-1);
       }
     }
-    for (int i=1; i<=GetEepromInterface()->getCapability(CustomAndSwitches); i++) {
-      item = RawSwitch(SWITCH_TYPE_VIRTUAL, i);
+  }
+
+  item = RawSwitch(SWITCH_TYPE_NONE);
+
+  if (GetEepromInterface()->isAvailable(item, context)) {
+    b->addItem(item.toString(), item.toValue());
+    if (item == value) b->setCurrentIndex(b->count()-1);
+  }
+  for (int i=1; i<=GetEepromInterface()->getCapability(SwitchesPositions); i++) {
+    item = RawSwitch(SWITCH_TYPE_SWITCH, i);
+    if (GetEepromInterface()->isAvailable(item, context)) {
       b->addItem(item.toString(), item.toValue());
       if (item == value) b->setCurrentIndex(b->count()-1);
     }
-    return;
   }
+  for (int i=1; i<=GetEepromInterface()->getCapability(CustomAndSwitches); i++) {
+    item = RawSwitch(SWITCH_TYPE_VIRTUAL, i);
+    b->addItem(item.toString(), item.toValue());
+    if (item == value) b->setCurrentIndex(b->count()-1);
+  }
+}
+
+void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr, UseContext context)
+{
+  RawSwitch item;
+
+  b->clear();
 
   if (attr & POPULATE_ONOFF) {
     item = RawSwitch(SWITCH_TYPE_OFF);
@@ -482,6 +488,24 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr,
       b->addItem(item.toString(), item.toValue());
       if (item == value) b->setCurrentIndex(b->count()-1);
     }
+  }
+
+  for (int i=-GetEepromInterface()->getCapability(RotaryEncoders); i<0; i++) {
+    item = RawSwitch(SWITCH_TYPE_ROTARY_ENCODER, i);
+    b->addItem(item.toString(), item.toValue());
+    if (item == value) b->setCurrentIndex(b->count()-1);
+  }
+
+  for (int i=-8; i<0; i++) {
+    item = RawSwitch(SWITCH_TYPE_TRIM, i);
+    b->addItem(item.toString(), item.toValue());
+    if (item == value) b->setCurrentIndex(b->count()-1);
+  }
+
+  for (int i=-GetEepromInterface()->getCapability(MultiposPots) * GetEepromInterface()->getCapability(MultiposPotsPositions); i<0; i++) {
+    item = RawSwitch(SWITCH_TYPE_MULTIPOS_POT, i);
+    b->addItem(item.toString(), item.toValue());
+    if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
   for (int i=-GetEepromInterface()->getCapability(SwitchesPositions); i<0; i++) {
@@ -506,13 +530,19 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr,
     }
   }
 
-  for (int i=0; i<GetEepromInterface()->getCapability(MultiposPots) * GetEepromInterface()->getCapability(MultiposPotsPositions); i++) {
+  for (int i=1; i<=GetEepromInterface()->getCapability(MultiposPots) * GetEepromInterface()->getCapability(MultiposPotsPositions); i++) {
     item = RawSwitch(SWITCH_TYPE_MULTIPOS_POT, i);
     b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
-  for (int i=0; i<GetEepromInterface()->getCapability(RotaryEncoders); i++) {
+  for (int i=1; i<=8; i++) {
+    item = RawSwitch(SWITCH_TYPE_TRIM, i);
+    b->addItem(item.toString(), item.toValue());
+    if (item == value) b->setCurrentIndex(b->count()-1);
+  }
+
+  for (int i=1; i<=GetEepromInterface()->getCapability(RotaryEncoders); i++) {
     item = RawSwitch(SWITCH_TYPE_ROTARY_ENCODER, i);
     b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);

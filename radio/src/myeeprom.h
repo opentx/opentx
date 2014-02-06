@@ -671,7 +671,7 @@ PACK( union u_int8int16_t {
 #if defined(CPUARM)
 #define MAX_CSW_DURATION 120 /*60s*/
 #define MAX_CSW_DELAY    120 /*60s*/
-#define MAX_CSW_ANDSW    NUM_SWITCH
+#define MAX_CSW_ANDSW    SWSRC_LAST
 typedef int16_t csw_telemetry_value_t;
 PACK(typedef struct t_CustomSwData { // Custom Switches data
   int16_t v1;

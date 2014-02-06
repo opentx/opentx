@@ -80,7 +80,7 @@ class CurveGroup : public QObject {
 };
 
 #define POPULATE_ONOFF        0x01
-#define POPULATE_AND_SWITCHES 0x02
+void populateAndSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr=0, UseContext context=DefaultContext);
 void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr=0, UseContext context=DefaultContext);
 void populatePhasesCB(QComboBox *b, int value);
 void populateTrimUseCB(QComboBox *b, unsigned int phase);
