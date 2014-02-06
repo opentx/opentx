@@ -338,21 +338,26 @@
   #define TR_CUSTOMSW          "CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC"
 #endif
 
-#if defined(PCBTARANIS)
-  #define TR_6POS_POTS         "P11""P12""P13""P14""P15""P16""P21""P22""P23""P24""P25""P26"
-  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_CUSTOMSW TR_6POS_POTS
-#else
-  #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_CUSTOMSW
-#endif
+#define TR_TRIMS_SWITCHES      "tRl""tRr""tEd""tEu""tTd""tTu""tAl""tAr"
 
 #if defined(PCBSKY9X)
-  #define TR_ROTARY_ENCODERS_VSRCRAW "REnc"
-#elif defined(PCBGRUVIN9X) && ROTARY_ENCODERS > 2
-  #define TR_ROTARY_ENCODERS_VSRCRAW "REa ""REb ""REc ""REd "
-#elif defined(PCBGRUVIN9X) && ROTARY_ENCODERS <= 2
-  #define TR_ROTARY_ENCODERS_VSRCRAW "REa ""REb "
+  #define TR_ROTARY_ENCODERS   "REa\0"
+  #define TR_ROTENC_SWITCHES   "REa"
+#elif defined(PCBGRUVIN9X) || defined(PCBMEGA2560)
+  #define TR_ROTARY_ENCODERS   "REa\0""REb\0"
+  #define TR_ROTENC_SWITCHES   "REa""REb"
 #else
-  #define TR_ROTARY_ENCODERS_VSRCRAW
+  #define TR_ROTARY_ENCODERS
+  #define TR_ROTENC_SWITCHES
+#endif
+
+#if defined(PCBTARANIS)
+  #define TR_6POS_POTS         "P11""P12""P13""P14""P15""P16""P21""P22""P23""P24""P25""P26"
+  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_6POS_POTS TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_CUSTOMSW
+#elif defined(CPUARM)
+  #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_CUSTOMSW
+#else
+  #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_ROTENC_SWITCHES TR_CUSTOMSW
 #endif
 
 #if defined(HELI)
@@ -361,7 +366,7 @@
   #define TR_CYC_VSRCRAW       "[C1]""[C2]""[C3]"
 #endif
 
-#define TR_VSRCRAW             "---\0""Rud\0""Ele\0""Thr\0""Ail\0" TR_POTS_VSRCRAW TR_ROTARY_ENCODERS_VSRCRAW "MAX\0" TR_CYC_VSRCRAW "TrmR" "TrmE" "TrmT" "TrmA" TR_SW_VSRCRAW
+#define TR_VSRCRAW             "---\0""Rud\0""Ele\0""Thr\0""Ail\0" TR_POTS_VSRCRAW TR_ROTARY_ENCODERS "MAX\0" TR_CYC_VSRCRAW "TrmR" "TrmE" "TrmT" "TrmA" TR_SW_VSRCRAW
 
 #define LEN_VTMRMODES          "\003"
 #define TR_VTMRMODES           "OFF""ABS""THs""TH%""THt"

@@ -1165,6 +1165,7 @@ enum SwitchSources {
   SWSRC_SG2,
   SWSRC_SH0,
   SWSRC_SH2,
+  SWSRC_TRAINER = SWSRC_SH2,
 #else
   SWSRC_ID0 = SWSRC_FIRST_SWITCH,
   SWSRC_ID1,
@@ -1180,11 +1181,39 @@ enum SwitchSources {
   SWSRC_AIL,
   SWSRC_GEA,
   SWSRC_TRN,
+  SWSRC_TRAINER = SWSRC_TRN,
+#endif
+
+  SWSRC_LAST_SWITCH = SWSRC_TRAINER,
+
+#if defined(PCBTARANIS)
+  SWSRC_P11,
+  SWSRC_P16 = SWSRC_P11+5,
+  SWSRC_P21,
+  SWSRC_P26 = SWSRC_P21+5,
+#endif
+
+#if defined(CPUARM)
+  SWSRC_FIRST_TRIM,
+  SWSRC_TrimRudLeft = SWSRC_FIRST_TRIM,
+  SWSRC_TrimRudRight,
+  SWSRC_TrimEleDown,
+  SWSRC_TrimEleUp,
+  SWSRC_TrimThrDown,
+  SWSRC_TrimThrUp,
+  SWSRC_TrimAilLeft,
+  SWSRC_TrimAilRight,
+  SWSRC_LAST_TRIM = SWSRC_TrimAilRight,
+#endif
+
+#if defined(PCBSKY9X)
+  SWSRC_REa,
+#elif defined(PCBGRUVIN9X) || defined(PCBMEGA2560)
+  SWSRC_REa,
+  SWSRC_REb,
 #endif
 
   SWSRC_FIRST_CSW,
-  SWSRC_LAST_SWITCH = SWSRC_FIRST_CSW-1,
-
   SWSRC_SW1 = SWSRC_FIRST_CSW,
   SWSRC_SW2,
   SWSRC_SW3,
@@ -1199,17 +1228,8 @@ enum SwitchSources {
   SWSRC_SWC,
   SWSRC_LAST_CSW = SWSRC_SW1+NUM_CSW-1,
 
-#if defined(PCBTARANIS)
-  SWSRC_P11,
-  SWSRC_P16 = SWSRC_P11+5,
-  SWSRC_P21,
-  SWSRC_P26 = SWSRC_P21+5,
-#endif
-
   SWSRC_ON,
   SWSRC_OFF = -SWSRC_ON,
-
-  SWSRC_TRAINER = SWSRC_SW1-1,
 
   SWSRC_FIRST = SWSRC_OFF,
   SWSRC_LAST = SWSRC_ON

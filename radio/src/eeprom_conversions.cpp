@@ -196,15 +196,18 @@ void ConvertGeneralSettings_215_to_216(EEGeneral &settings)
 #if defined(PCBTARANIS)
 int ConvertSwitch_215_to_216(int swtch)
 {
-  if (swtch < SWSRC_ON)
+  if (swtch <= SWSRC_LAST_SWITCH)
     return swtch;
   else
-    return swtch + (2*6); // 2 * 6-pos pots added as switches
+    return swtch + 4 + (2*6); // 4 trims and 2 * 6-pos added as switches
 }
 #else
 inline int ConvertSwitch_215_to_216(int swtch)
 {
-  return swtch;
+  if (swtch <= SWSRC_LAST_SWITCH)
+    return swtch;
+  else
+    return swtch + 4 + 1; // 4 trims and REa added
 }
 #endif
 
@@ -219,7 +222,7 @@ void ConvertModel_215_to_216(ModelData &model)
   // Custom Switches: better precision for x when A comes from telemetry
   // Main View: altitude in top bar
   // Mixes: GVARS in weight moved from 512 to 4096 and -512 to -4096, because GVARS may be used in limits [-1250:1250]
-  // Switches: two 6-pos pots added
+  // Switches: two 6-pos pots added, REa added to Sky9x
 
   TRACE("Model conversion from v215 to v216");
 

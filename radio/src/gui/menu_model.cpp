@@ -4483,7 +4483,7 @@ void menuModelCustomSwitches(uint8_t event)
       v1_min = SWSRC_OFF+1; v1_max = SWSRC_ON-1;
       v2_min = SWSRC_OFF+1; v2_max = SWSRC_ON-1;
       INCDEC_SET_FLAG(INCDEC_SWITCH);
-      INCDEC_ENABLE_CHECK(NULL);
+      INCDEC_ENABLE_CHECK(isSwitchAvailableInCustomSwitches);
     }
     else if (cstate == CS_VCOMP) {
       putsMixerSource(CSW_2ND_COLUMN, y, cs->v1, attr1);

@@ -1260,7 +1260,7 @@ bool isInputSourceAvailable(int16_t source)
   return false;
 }
 
-bool isSwitchAvailable(int16_t swtch)
+bool isSwitchAvailableInCustomSwitches(int16_t swtch)
 {
   if (swtch < 0) {
     if (swtch <= -SWSRC_ON)
@@ -1286,6 +1286,15 @@ bool isSwitchAvailable(int16_t swtch)
   }
 #endif
 
+  return true;
+}
+
+bool isSwitchAvailable(int16_t swtch)
+{
+  if (!isSwitchAvailableInCustomSwitches(swtch)) {
+    return false;
+  }
+
   if (swtch >= SWSRC_FIRST_CSW && swtch <= SWSRC_LAST_CSW) {
     CustomSwData * cs = cswAddress(swtch-SWSRC_FIRST_CSW);
     return (cs->func != CS_OFF);
@@ -1293,4 +1302,6 @@ bool isSwitchAvailable(int16_t swtch)
   
   return true;
 }
+
+
 #endif

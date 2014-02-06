@@ -1386,8 +1386,23 @@ bool getSwitch(int8_t swtch)
     result = SWITCH_POSITION(cs_idx-SWSRC_FIRST_SWITCH);
   }
 #if defined(PCBTARANIS)
-  else if (cs_idx >= SWSRC_P11 && cs_idx <= SWSRC_P26) {
+  else if (cs_idx <= SWSRC_P26) {
     result = POT_POSITION(cs_idx-SWSRC_P11);
+  }
+#endif
+#if defined(CPUARM)
+  else if (cs_idx <= SWSRC_LAST_TRIM) {
+    result = readTrims() & (1 << (cs_idx-SWSRC_FIRST_TRIM));
+  }
+#endif
+#if ROTARY_ENCODERS > 0
+  else if (cs_idx == SWSRC_REa) {
+    result = REA_DOWN();
+  }
+#endif
+#if ROTARY_ENCODERS > 1
+  else if (cs_idx == SWSRC_REb) {
+    result = REB_DOWN();
   }
 #endif
   else {
@@ -3072,8 +3087,9 @@ void evalFunctions()
   }
 
 #if defined(GVARS)
-  for (uint8_t i=0; i<NUM_STICKS; i++)
+  for (uint8_t i=0; i<NUM_STICKS; i++) {
     trimGvar[i] = -1;
+  }
 #endif
 
   for (uint8_t i=0; i<NUM_CFN; i++) {
@@ -4175,7 +4191,7 @@ void opentxClose()
   hapticOff();
 #endif
 
-#if defined(CPUARM)
+#if defined(CPUARM) && defined(FRSKY)
   if((g_model.frsky.mAhPersistent) && (g_model.frsky.storedMah != frskyData.hub.currentConsumption)) {
     g_model.frsky.storedMah = frskyData.hub.currentConsumption;
     eeDirty(EE_MODEL);

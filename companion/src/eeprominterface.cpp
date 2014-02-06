@@ -268,6 +268,10 @@ QString RawSwitch::toString()
     QObject::tr("S21"), QObject::tr("S22"), QObject::tr("S23"), QObject::tr("S24"), QObject::tr("S25"), QObject::tr("S26")
   };
 
+  static const QString rotaryEncoders[] = {
+    QObject::tr("REa"), QObject::tr("REb")
+  };
+
   switch(type) {
     case SWITCH_TYPE_SWITCH:
       if (IS_TARANIS(GetEepromInterface()->getBoard()))
@@ -278,6 +282,8 @@ QString RawSwitch::toString()
       return index > 0 ? CHECK_IN_ARRAY(virtualSwitches, index-1) : QString("!") + CHECK_IN_ARRAY(virtualSwitches, -index-1);
     case SWITCH_TYPE_MULTIPOS_POT:
       return CHECK_IN_ARRAY(multiposPots, index);
+    case SWITCH_TYPE_ROTARY_ENCODER:
+      return CHECK_IN_ARRAY(rotaryEncoders, index);
     case SWITCH_TYPE_ON:
       return QObject::tr("ON");
     case SWITCH_TYPE_OFF:
