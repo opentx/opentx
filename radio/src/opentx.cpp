@@ -1414,7 +1414,14 @@ bool getSwitch(int8_t swtch)
       s_last_switch_used |= mask;
 
       CustomSwData * cs = cswAddress(cs_idx);
+#if defined(CPUARM)
+      int8_t s = cs->andsw;
+#else
       uint8_t s = cs->andsw;
+      if (s > SWSRC_LAST_SWITCH) {
+        s += SWSRC_SW1-SWSRC_LAST_SWITCH-1;
+      }
+#endif
       if (cs->func == CS_OFF || (s && !getSwitch(s))) {
         csLastValue[cs_idx] = CS_LAST_VALUE_INIT;
         result = false;

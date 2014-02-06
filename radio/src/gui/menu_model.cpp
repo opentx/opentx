@@ -4550,8 +4550,16 @@ void menuModelCustomSwitches(uint8_t event)
 #endif
     }
 
-    // CSW and switch
+    // CSW AND switch
+#if defined(CPUARM)
     putsSwitches(CSW_4TH_COLUMN, y, cs->andsw, horz==3 ? attr : 0);
+#else
+    uint8_t andsw = cs->andsw;
+    if (andsw > SWSRC_LAST_SWITCH) {
+      andsw += SWSRC_SW1-SWSRC_LAST_SWITCH-1;
+    }
+    putsSwitches(CSW_4TH_COLUMN, y, andsw, horz==3 ? attr : 0);
+#endif
 
 #if defined(CPUARM)
     // CSW duration
