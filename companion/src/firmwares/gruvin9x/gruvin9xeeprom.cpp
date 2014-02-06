@@ -373,7 +373,7 @@ t_Gruvin9xPhaseData_v106::operator PhaseData ()
   return c9x;
 }
 
-extern TimerMode getEr9xTimerMode(int mode);
+extern RawSwitch getEr9xTimerMode(int mode);
 
 t_Gruvin9xTimerData::operator TimerData ()
 {

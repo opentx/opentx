@@ -80,13 +80,14 @@ class CurveGroup : public QObject {
 };
 
 #define POPULATE_ONOFF        0x01
-void populateAndSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr=0, UseContext context=DefaultContext);
-void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr=0, UseContext context=DefaultContext);
+#define POPULATE_TIMER_MODES  0x02
+void populateAndSwitchCB(QComboBox *b, const RawSwitch & value);
+void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr=0);
+
 void populatePhasesCB(QComboBox *b, int value);
 void populateTrimUseCB(QComboBox *b, unsigned int phase);
 void populateGvarUseCB(QComboBox *b, unsigned int phase);
 void populateCustomScreenFieldCB(QComboBox *b, unsigned int value, bool last, int hubproto);
-void populateTimerSwitchCB(QComboBox *b, int value);
 QString getProtocolStr(const int proto);
 QString getPhasesStr(unsigned int phases, ModelData & model);
 
@@ -105,7 +106,6 @@ QString getPhasesStr(unsigned int phases, ModelData & model);
 void populateGVCB(QComboBox *b, int value);
 void populateSourceCB(QComboBox *b, const RawSource &source, const ModelData & model, unsigned int flags);
 void populateCSWCB(QComboBox *b, int value);
-QString getTimerMode(int tm);
 QString getPhaseName(int val, char * phasename=NULL);
 QString getInputStr(ModelData & model, int index);
 QString getSignedStr(int value);

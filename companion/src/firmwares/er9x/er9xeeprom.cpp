@@ -335,8 +335,9 @@ t_Er9xFrSkyData::operator FrSkyData ()
   return c9x;
 }
 
-TimerMode getEr9xTimerMode(int mode)
+RawSwitch getEr9xTimerMode(int mode)
 {
+  /*
   if (mode <= -33)
     return TimerMode(TMRMODE_FIRST_NEG_SWITCH+(mode+33));
   else if (mode <= -1)
@@ -347,6 +348,8 @@ TimerMode getEr9xTimerMode(int mode)
     return TimerMode(TMRMODE_FIRST_SWITCH+(mode-16));
   else
     return TimerMode(TMRMODE_FIRST_SWITCH+(mode-16-21));
+    */
+  return RawSwitch();
 }
 
 t_Er9xModelData::operator ModelData ()

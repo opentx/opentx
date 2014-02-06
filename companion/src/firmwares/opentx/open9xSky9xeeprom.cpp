@@ -124,7 +124,7 @@ RawSource open9xArm210ToSource(int8_t value)
 t_Open9xArmTimerData_v202::operator TimerData ()
 {
   TimerData c9x;
-
+/*
   if (mode <= -42)
     c9x.mode = TimerMode(TMRMODE_FIRST_NEG_SWITCH+(mode+22));
   else if (mode <= -1)
@@ -135,7 +135,7 @@ t_Open9xArmTimerData_v202::operator TimerData ()
     c9x.mode = TimerMode(TMRMODE_FIRST_SWITCH+(mode-5));
   else
     c9x.mode = TimerMode(TMRMODE_FIRST_SWITCH+(mode-5-21));
-
+*/
   c9x.val = val;
   c9x.persistent = false;
   c9x.dir = (val == 0);

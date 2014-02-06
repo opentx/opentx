@@ -5,14 +5,12 @@
 
 extern RawSwitch er9xToSwitch(int8_t sw);
 
-TimerMode getErSky9xTimerMode(int mode)
+RawSwitch getErSky9xTimerMode(int mode)
 {
   if (mode<4)
-    return TimerMode(mode);
-  else if (mode < 20)
-    return TimerMode(TMRMODE_FIRST_CHPERC+(mode-4));
+    return RawSwitch(SWITCH_TYPE_TIMER_MODE, mode);
   else
-    return TimerMode(0);
+    return RawSwitch();
 }
 
 RawSwitch ersky9xToSwitch(int8_t sw)

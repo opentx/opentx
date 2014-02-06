@@ -46,7 +46,7 @@ CustomSwitchesPanel::CustomSwitchesPanel(QWidget * parent, ModelData & model):
     // V1
     cswitchSource1[i] = new QComboBox(this);
     cswitchSource1[i]->setProperty("index",i);
-    connect(cswitchSource1[i], SIGNAL(currentIndexChanged(int)), this, SLOT(edited()));
+    connect(cswitchSource1[i], SIGNAL(currentIndexChanged(int)), this, SLOT(v1Edited(int)));
     gridLayout->addWidget(cswitchSource1[i], i+1, 2);
     cswitchSource1[i]->setVisible(false);
     cswitchValue[i] = new QDoubleSpinBox(this);
@@ -62,7 +62,7 @@ CustomSwitchesPanel::CustomSwitchesPanel(QWidget * parent, ModelData & model):
     // V2
     cswitchSource2[i] = new QComboBox(this);
     cswitchSource2[i]->setProperty("index", i);
-    connect(cswitchSource2[i], SIGNAL(currentIndexChanged(int)), this, SLOT(edited()));
+    connect(cswitchSource2[i], SIGNAL(currentIndexChanged(int)), this, SLOT(v2Edited(int)));
     gridLayout->addWidget(cswitchSource2[i], i+1, 3);
     cswitchSource2[i]->setVisible(false);
     cswitchOffset[i] = new QDoubleSpinBox(this);
@@ -80,7 +80,6 @@ CustomSwitchesPanel::CustomSwitchesPanel(QWidget * parent, ModelData & model):
     cswitchAnd[i]->setProperty("index", i);
     connect(cswitchAnd[i], SIGNAL(currentIndexChanged(int)), this, SLOT(andEdited(int)));
     gridLayout->addWidget(cswitchAnd[i], i+1, 4);
-    cswitchAnd[i]->setVisible(false);
 
     if (GetEepromInterface()->getCapability(CustomSwitchesExt)) {
       // Duration
@@ -93,7 +92,6 @@ CustomSwitchesPanel::CustomSwitchesPanel(QWidget * parent, ModelData & model):
       cswitchDuration[i]->setDecimals(1);
       connect(cswitchDuration[i], SIGNAL(valueChanged(double)), this, SLOT(durationEdited(double)));
       gridLayout->addWidget(cswitchDuration[i], i+1, 5);
-      cswitchDuration[i]->setVisible(false);
 
       // Delay
       cswitchDelay[i] = new QDoubleSpinBox(this);
@@ -105,7 +103,6 @@ CustomSwitchesPanel::CustomSwitchesPanel(QWidget * parent, ModelData & model):
       cswitchDelay[i]->setDecimals(1);
       connect(cswitchDelay[i], SIGNAL(valueChanged(double)), this, SLOT(delayEdited(double)));
       gridLayout->addWidget(cswitchDelay[i], i+1, 6);
-      cswitchDelay[i]->setVisible(false);
     }
   }
 
@@ -114,6 +111,54 @@ CustomSwitchesPanel::CustomSwitchesPanel(QWidget * parent, ModelData & model):
 
 CustomSwitchesPanel::~CustomSwitchesPanel()
 {
+}
+
+void CustomSwitchesPanel::v1Edited(int value)
+{
+  if (!lock) {
+    int i = sender()->property("index").toInt();
+    model.customSw[i].val1 = cswitchSource1[i]->itemData(value).toInt();
+    if (model.customSw[i].getFunctionFamily() == CS_FAMILY_VOFS) {
+      RawSource source = RawSource(model.customSw[i].val1, &model);
+      if (source.type == SOURCE_TYPE_TELEMETRY) {
+        if (model.customSw[i].func > CS_FN_ELESS && model.customSw[i].func < CS_FN_VEQUAL) {
+          model.customSw[i].val2 = 0;
+        }
+        else {
+          model.customSw[i].val2 = -128;
+        }
+      }
+      else {
+        RawSourceRange range = source.getRange();
+        if (model.customSw[i].func > CS_FN_ELESS && model.customSw[i].func < CS_FN_VEQUAL) {
+          model.customSw[i].val2 = (cswitchOffset[i]->value() / range.step);
+        }
+        else {
+          model.customSw[i].val2 = (cswitchOffset[i]->value() - range.offset) / range.step/* TODO - source.getRawOffset(model)*/;
+        }
+      }
+      setSwitchWidgetVisibility(i);
+    }
+    emit modified();
+  }
+}
+
+void CustomSwitchesPanel::v2Edited(int value)
+{
+  if (!lock) {
+    int i = sender()->property("index").toInt();
+    model.customSw[i].val2 = cswitchSource2[i]->itemData(value).toInt();
+    emit modified();
+  }
+}
+
+void CustomSwitchesPanel::andEdited(int value)
+{
+  if (!lock) {
+    int index = sender()->property("index").toInt();
+    model.customSw[index].andsw = cswitchAnd[index]->itemData(value).toInt();
+    emit modified();
+  }
 }
 
 void CustomSwitchesPanel::durationEdited(double duration)
@@ -127,13 +172,6 @@ void CustomSwitchesPanel::delayEdited(double delay)
 {
   int index = sender()->property("index").toInt();
   model.customSw[index].delay = (uint8_t)round(delay*2);
-  emit modified();
-}
-
-void CustomSwitchesPanel::andEdited(int value)
-{
-  int index = sender()->property("index").toInt();
-  model.customSw[index].andsw = cswitchAnd[index]->itemData(value).toInt();
   emit modified();
 }
 
@@ -164,30 +202,7 @@ void CustomSwitchesPanel::edited()
     switch (model.customSw[i].getFunctionFamily())
     {
       case CS_FAMILY_VOFS:
-        if (model.customSw[i].val1 != cswitchSource1[i]->itemData(cswitchSource1[i]->currentIndex()).toInt()) {
-          source = RawSource(model.customSw[i].val1, &model);
-          model.customSw[i].val1 = cswitchSource1[i]->itemData(cswitchSource1[i]->currentIndex()).toInt();
-          RawSource newSource = RawSource(model.customSw[i].val1, &model);
-          if (newSource.type == SOURCE_TYPE_TELEMETRY) {
-            if (model.customSw[i].func>CS_FN_ELESS && model.customSw[i].func<CS_FN_VEQUAL) {
-              model.customSw[i].val2 = 0;
-            }
-            else {
-              model.customSw[i].val2 = -128;
-            }
-          }
-          else {
-            RawSourceRange range = source.getRange();
-            if (model.customSw[i].func>CS_FN_ELESS && model.customSw[i].func<CS_FN_VEQUAL) {
-              model.customSw[i].val2 = (cswitchOffset[i]->value() / range.step);
-            }
-            else {
-              model.customSw[i].val2 = (cswitchOffset[i]->value() - range.offset) / range.step/* TODO - source.getRawOffset(model)*/;
-            }
-          }
-          setSwitchWidgetVisibility(i);
-        }
-        else {
+        {
           source = RawSource(model.customSw[i].val1, &model);
           RawSourceRange range = source.getRange();
           if (model.customSw[i].func>CS_FN_ELESS && model.customSw[i].func<CS_FN_VEQUAL) {
@@ -260,11 +275,7 @@ void CustomSwitchesPanel::edited()
         cswitchValue[i]->setSingleStep(step);
         break;
       }
-      case CS_FAMILY_VBOOL:
-      case CS_FAMILY_VCOMP:
-      case CS_FAMILY_STICKY:
-        model.customSw[i].val1 = cswitchSource1[i]->itemData(cswitchSource1[i]->currentIndex()).toInt();
-        model.customSw[i].val2 = cswitchSource2[i]->itemData(cswitchSource2[i]->currentIndex()).toInt();
+      default:
         break;
     }
     emit modified();
@@ -274,6 +285,8 @@ void CustomSwitchesPanel::edited()
 
 void CustomSwitchesPanel::setSwitchWidgetVisibility(int i)
 {
+  lock = true;
+
     RawSource source = RawSource(model.customSw[i].val1, &model);
     RawSourceRange range = source.getRange();
 
@@ -345,24 +358,25 @@ void CustomSwitchesPanel::setSwitchWidgetVisibility(int i)
         cswitchValue[i]->setValue(value);
         break;
     }
-    cswitchAnd[i]->setVisible(true);
-    populateSwitchCB(cswitchAnd[i], RawSwitch(model.customSw[i].andsw), POPULATE_AND_SWITCHES);
-    if (GetEepromInterface()->getCapability(CustomSwitchesExt)) {
-      cswitchDuration[i]->setVisible(true);
-      cswitchDuration[i]->setValue(model.customSw[i].duration/2.0);
-      cswitchDelay[i]->setVisible(true);
-      cswitchDelay[i]->setValue(model.customSw[i].delay/2.0);
-    }
+
+    lock = false;
 }
 
 void CustomSwitchesPanel::update()
 {
-  lock = true;
   for (int i=0; i<GetEepromInterface()->getCapability(CustomSwitches); i++) {
+    lock = true;
     populateCSWCB(csw[i], model.customSw[i].func);
+    lock = false;
     setSwitchWidgetVisibility(i);
+    lock = true;
+    populateAndSwitchCB(cswitchAnd[i], RawSwitch(model.customSw[i].andsw));
+    if (GetEepromInterface()->getCapability(CustomSwitchesExt)) {
+      cswitchDuration[i]->setValue(model.customSw[i].duration/2.0);
+      cswitchDelay[i]->setValue(model.customSw[i].delay/2.0);
+    }
+    lock = false;
   }
-  lock = false;
 }
 
 void CustomSwitchesPanel::cswPaste()

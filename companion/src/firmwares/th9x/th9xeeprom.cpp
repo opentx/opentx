@@ -2,18 +2,6 @@
 #include "helpers.h"
 #include "th9xeeprom.h"
 
-int8_t th9xFromSwitch(const RawSwitch & sw)
-{
-  switch (sw.type) {
-    case SWITCH_TYPE_SWITCH:
-      return sw.index;
-    case SWITCH_TYPE_VIRTUAL:
-      return sw.index > 0 ? (9 + sw.index) : (-9 -sw.index);
-    default:
-      return 0;
-  }
-}
-
 RawSwitch th9xToSwitch(int8_t sw)
 {
   if (sw == 0)
@@ -266,7 +254,7 @@ t_Th9xModelData::operator ModelData ()
   ModelData c9x;
   c9x.used = true;
   getEEPROMString(c9x.name, name, sizeof(name));
-  switch(tmrMode) {
+  /*switch(tmrMode) {
     case 1:
       c9x.timers[0].mode = TMRMODE_ABS;
       break;
@@ -279,7 +267,7 @@ t_Th9xModelData::operator ModelData ()
     default:
       c9x.timers[0].mode = TMRMODE_OFF;
       break;
-  }
+  }*/
   // c9x.timers[0].dir = tmrDir;
   c9x.timers[0].val = tmrVal;
   /*c9x.protocol = (Protocol)protocol;

@@ -279,34 +279,39 @@ QString RawSwitch::toString()
     QObject::tr("REa"), QObject::tr("REb")
   };
 
-  if (index == 0) {
-    return QObject::tr("----");
-  }
-  else if (index < 0) {
+  static const QString timerModes[] = {
+    QObject::tr("OFF"), QObject::tr("ABS"),
+    QObject::tr("THs"), QObject::tr("TH%"), QObject::tr("THt")
+  };
+
+  if (index < 0) {
     return QString("!") + RawSwitch(type, -index).toString();
   }
   else {
-    index = index - 1;
     switch(type) {
       case SWITCH_TYPE_SWITCH:
         if (IS_TARANIS(GetEepromInterface()->getBoard()))
-          return CHECK_IN_ARRAY(switchesX9D, index);
+          return CHECK_IN_ARRAY(switchesX9D, index-1);
         else
-          return CHECK_IN_ARRAY(switches9X, index);
+          return CHECK_IN_ARRAY(switches9X, index-1);
       case SWITCH_TYPE_VIRTUAL:
-        return CHECK_IN_ARRAY(virtualSwitches, index);
+        return CHECK_IN_ARRAY(virtualSwitches, index-1);
       case SWITCH_TYPE_MULTIPOS_POT:
-        return CHECK_IN_ARRAY(multiposPots, index);
+        return CHECK_IN_ARRAY(multiposPots, index-1);
       case SWITCH_TYPE_TRIM:
-        return CHECK_IN_ARRAY(trimsSwitches, index);
+        return CHECK_IN_ARRAY(trimsSwitches, index-1);
       case SWITCH_TYPE_ROTARY_ENCODER:
-        return CHECK_IN_ARRAY(rotaryEncoders, index);
+        return CHECK_IN_ARRAY(rotaryEncoders, index-1);
       case SWITCH_TYPE_ON:
         return QObject::tr("ON");
       case SWITCH_TYPE_OFF:
         return QObject::tr("OFF");
+      case SWITCH_TYPE_NONE:
+        return QObject::tr("----");
+      case SWITCH_TYPE_TIMER_MODE:
+        return CHECK_IN_ARRAY(timerModes, index);
       default:
-        break;
+        return QObject::tr("???");
     }
   }
 }
@@ -859,7 +864,8 @@ void ModelData::clear()
   if (IS_TARANIS(board)) {
     moduleData[0].protocol=PXX_XJT_X16;
     moduleData[1].protocol=OFF;
-  } else {
+  }
+  else {
     moduleData[0].protocol=PPM;
     moduleData[1].protocol=OFF;      
   }
@@ -878,9 +884,10 @@ void ModelData::clear()
     expoData[i].clear();
   for (int i=0; i<C9X_NUM_CSW; i++)
     customSw[i].clear();
-  for (int i=0; i<C9X_MAX_CURVES; i++) {
+  for (int i=0; i<C9X_MAX_CURVES; i++)
     curves[i].clear(5);
-  }
+  for (int i=0; i<2; i++)
+    timers[i].clear();
 
   swashRingData.clear();
   frsky.clear();

@@ -321,7 +321,8 @@ enum RawSwitchType {
   SWITCH_TYPE_TRIM,
   SWITCH_TYPE_ROTARY_ENCODER,
   SWITCH_TYPE_ON,
-  SWITCH_TYPE_OFF
+  SWITCH_TYPE_OFF,
+  SWITCH_TYPE_TIMER_MODE
 };
 
 class RawSwitch {
@@ -618,7 +619,7 @@ class CustomSwData { // Custom Switches data
     int  val2;
     unsigned int delay;
     unsigned int duration;
-    unsigned int andsw;
+    int andsw;
     void clear() { memset(this, 0, sizeof(CustomSwData)); }
     CSFunctionFamily getFunctionFamily();
     QString funcToString();
@@ -799,29 +800,17 @@ class MavlinkData {
     void clear() { memset(this, 0, sizeof(MavlinkData)); }
 };
 
-enum TimerMode {
-  TMRMODE_OFF=0,
-  TMRMODE_ABS,
-  TMRMODE_THs,
-  TMRMODE_THp,
-  TMRMODE_THt,
-  TMRMODE_FIRST_SWITCH,
-  TMRMODE_FIRST_CHPERC = TMRMODE_FIRST_SWITCH+64,
-  TMRMODE_FIRST_NEG_SWITCH=-TMRMODE_FIRST_SWITCH,
-  /* sw/!sw, !m_sw/!m_sw */
-};
-
 class TimerData {
   public:
     TimerData() { clear(); }
-    TimerMode    mode;   // timer trigger source -> off, abs, THs, TH%, THt, sw/!sw, !m_sw/!m_sw
+    RawSwitch    mode;
     bool         minuteBeep;
     unsigned int countdownBeep;
     bool         dir;    // 0=>Count Down, 1=>Count Up
     unsigned int val;
     bool         persistent;
     int          pvalue;
-    void clear() { memset(this, 0, sizeof(TimerData)); }
+    void clear() { memset(this, 0, sizeof(TimerData)); mode = RawSwitch(SWITCH_TYPE_TIMER_MODE, 0); }
 };
 
 enum Protocol {
@@ -1084,10 +1073,6 @@ class EEPROMInterface
     virtual int getCapability(const Capability) = 0;
     
     virtual int isAvailable(Protocol proto, int port=0) = 0;
-
-    virtual bool isAvailable(const RawSwitch & swtch, UseContext context) { return true; }
-
-    virtual bool isAvailable(const RawSource & source, UseContext context) { return true; }
 
     virtual SimulatorInterface * getSimulator() = 0;
 

@@ -42,29 +42,50 @@ class SwitchesConversionTable: public ConversionTable {
     SwitchesConversionTable(BoardEnum board, unsigned int version, unsigned long flags=0)
     {
       int val=0;
-
-      addConversion(RawSwitch(SWITCH_TYPE_NONE), val++);
+      int offset=0;
+      if (flags & POPULATE_TIMER_MODES) {
+        offset = 4;
+        for (int i=0; i<5; i++) {
+          addConversion(RawSwitch(SWITCH_TYPE_TIMER_MODE, i), val++);
+        }
+      }
+      else {
+        addConversion(RawSwitch(SWITCH_TYPE_NONE), val++);
+      }
 
       for (int i=1; i<=MAX_SWITCHES_POSITION(board); i++) {
         int s = switchIndex(i, board, version);
-        addConversion(RawSwitch(SWITCH_TYPE_SWITCH, -s), -val);
+        addConversion(RawSwitch(SWITCH_TYPE_SWITCH, -s), -val+offset);
         addConversion(RawSwitch(SWITCH_TYPE_SWITCH, s), val++);
       }
 
-      for (int i=1; i<=MAX_CUSTOM_SWITCHES(board, version); i++) {
-        addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, -i), -val);
-        addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, i), val++);
-      }
-
-      if (IS_TARANIS(board) && version >= 216) {
-        for (int i=0; i<2; i++) {
-          for (int j=0; j<6; j++) {
-            addConversion(RawSwitch(SWITCH_TYPE_MULTIPOS_POT, i*6+j), val++);
-          }
+      if (version >= 216) {
+        for (int i=1; i<=GetEepromInterface()->getCapability(MultiposPots) * GetEepromInterface()->getCapability(MultiposPotsPositions); i++) {
+          addConversion(RawSwitch(SWITCH_TYPE_MULTIPOS_POT, -i), -val+offset);
+          addConversion(RawSwitch(SWITCH_TYPE_MULTIPOS_POT, i), val++);
         }
       }
 
-      addConversion(RawSwitch(SWITCH_TYPE_OFF), -val);
+      if (version >= 216) {
+        for (int i=1; i<=8; i++) {
+          addConversion(RawSwitch(SWITCH_TYPE_TRIM, -i), -val+offset);
+          addConversion(RawSwitch(SWITCH_TYPE_TRIM, i), val++);
+        }
+      }
+
+      if (version >= 216) {
+        for (int i=1; i<=MAX_ROTARY_ENCODERS(board); i++) {
+          addConversion(RawSwitch(SWITCH_TYPE_ROTARY_ENCODER, -i), -val+offset);
+          addConversion(RawSwitch(SWITCH_TYPE_ROTARY_ENCODER, i), val++);
+        }
+      }
+
+      for (int i=1; i<=MAX_CUSTOM_SWITCHES(board, version); i++) {
+        addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, -i), -val+offset);
+        addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, i), val++);
+      }
+
+      addConversion(RawSwitch(SWITCH_TYPE_OFF), -val+offset);
       addConversion(RawSwitch(SWITCH_TYPE_ON), val++);
 
       if (version < 216) {
@@ -259,59 +280,6 @@ class SourcesConversionTable: public ConversionTable {
       internalCache.push_back(element);
       return element.table;
     }
-};
-
-class TimerModeConversionTable: public ConversionTable {
-
-  public:
-    TimerModeConversionTable(BoardEnum board, unsigned int version, unsigned long flags=0)
-    {
-      int val=0;
-
-      addConversion(TMRMODE_OFF, val++);
-      addConversion(TMRMODE_ABS, val++);
-      addConversion(TMRMODE_THs, val++);
-      addConversion(TMRMODE_THp, val++);
-      addConversion(TMRMODE_THt, val++);
-
-      int swCount = MAX_SWITCHES_POSITION(board) + MAX_CUSTOM_SWITCHES(board, version);
-
-      for (int i=0; i<swCount; i++) {
-        int s = switchIndex(i+1, board, version) - 1;
-        addConversion(TMRMODE_FIRST_SWITCH+i, val+s);
-        addConversion(TMRMODE_FIRST_SWITCH+i, val+s+swCount);
-        addConversion(TMRMODE_FIRST_NEG_SWITCH-i, -1-s);
-        addConversion(TMRMODE_FIRST_NEG_SWITCH-i, -1-s-swCount);
-      }
-    }
-};
-
-class TimerModeField: public ConversionField< SignedField<8> > {
-  public:
-    TimerModeField(TimerMode & mode, BoardEnum board, unsigned int version, unsigned long flags=0):
-      ConversionField< SignedField<8> >(_mode, &conversionTable, "TimerMode"),
-      conversionTable(board, version, flags),
-      mode(mode),
-      _mode(0)
-    {
-    }
-
-  virtual void beforeExport()
-  {
-    _mode = mode;
-    ConversionField< SignedField<8> >::beforeExport();
-  }
-
-  virtual void afterImport()
-  {
-    ConversionField< SignedField<8> >::afterImport();
-    mode = (TimerMode)_mode;
-  }
-
-  protected:
-    TimerModeConversionTable conversionTable;
-    TimerMode & mode;
-    int _mode;
 };
 
 template <int N>
@@ -1086,10 +1054,10 @@ class CustomSwitchesFunctionsTable: public ConversionTable {
     }
 };
 
-class CustomSwitchesAndSwitchesConversionTable: public ConversionTable {
+class AndSwitchesConversionTable: public ConversionTable {
 
   public:
-    CustomSwitchesAndSwitchesConversionTable(BoardEnum board, unsigned int version)
+    AndSwitchesConversionTable(BoardEnum board, unsigned int version)
     {
       int val=0;
       addConversion(RawSwitch(SWITCH_TYPE_NONE), val++);
@@ -1127,6 +1095,29 @@ class CustomSwitchesAndSwitchesConversionTable: public ConversionTable {
       }
     }
 
+    static ConversionTable * getInstance(BoardEnum board, unsigned int version)
+    {
+      if (IS_ARM(board) && version >= 216)
+        return new SwitchesConversionTable(board, version);
+      else
+        return new AndSwitchesConversionTable(board, version);
+
+#if 0
+      static std::list<Cache> internalCache;
+
+      for (std::list<Cache>::iterator it=internalCache.begin(); it!=internalCache.end(); it++) {
+        Cache element = *it;
+        if (element.board == board && element.version == version && element.flags == flags)
+          return element.table;
+      }
+
+      Cache element(board, version, flags, new SwitchesConversionTable(board, version, flags));
+      internalCache.push_back(element);
+      return element.table;
+#endif
+    }
+
+
   protected:
 
     void addConversion(const RawSwitch & sw, const int b)
@@ -1147,7 +1138,7 @@ class CustomSwitchField: public TransformedField {
       functionsConversionTable(board, version),
       sourcesConversionTable(SourcesConversionTable::getInstance(board, version, variant, (version >= 214 || (!IS_ARM(board) && version >= 213)) ? 0 : FLAG_NOSWITCHES)),
       switchesConversionTable(SwitchesConversionTable::getInstance(board, version)),
-      andswitchesConversionTable(board, version)
+      andswitchesConversionTable(AndSwitchesConversionTable::getInstance(board, version))
     {
       if (IS_ARM(board) && version >= 215) {
         internalField.Append(new SignedField<16>(v1));
@@ -1163,13 +1154,13 @@ class CustomSwitchField: public TransformedField {
         internalField.Append(new UnsignedField<8>(csw.delay));
         internalField.Append(new UnsignedField<8>(csw.duration));
         if (version >= 214) {
-          internalField.Append(new ConversionField< SignedField<8> >((int &)csw.andsw, &andswitchesConversionTable, "AND switch"));
+          internalField.Append(new ConversionField< SignedField<8> >((int &)csw.andsw, andswitchesConversionTable, "AND switch"));
         }
       }
       else {
         if (version >= 213) {
           internalField.Append(new ConversionField< UnsignedField<4> >(csw.func, &functionsConversionTable, "Function"));
-          internalField.Append(new ConversionField< UnsignedField<4> >(csw.andsw, &andswitchesConversionTable, "AND switch"));
+          internalField.Append(new ConversionField< UnsignedField<4> >((unsigned int &)csw.andsw, andswitchesConversionTable, "AND switch"));
         }
         else {
           internalField.Append(new ConversionField< UnsignedField<8> >(csw.func, &functionsConversionTable, "Function"));
@@ -1224,7 +1215,7 @@ class CustomSwitchField: public TransformedField {
     CustomSwitchesFunctionsTable functionsConversionTable;
     SourcesConversionTable * sourcesConversionTable;
     SwitchesConversionTable * switchesConversionTable;
-    CustomSwitchesAndSwitchesConversionTable andswitchesConversionTable;
+    ConversionTable * andswitchesConversionTable;
     int v1;
     int v2;
 };
@@ -1977,7 +1968,7 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
   }
 
   for (int i=0; i<O9X_MAX_TIMERS; i++) {
-    internalField.Append(new TimerModeField(modelData.timers[i].mode, board, version));
+    internalField.Append(new SwitchField<8>(modelData.timers[i].mode, board, version, POPULATE_TIMER_MODES));
     if ((IS_ARM(board) || IS_2560(board)) && version >= 216) {
       internalField.Append(new UnsignedField<16>(modelData.timers[i].val));
       internalField.Append(new UnsignedField<2>(modelData.timers[i].countdownBeep));
