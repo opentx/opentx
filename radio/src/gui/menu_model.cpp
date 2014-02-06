@@ -4761,20 +4761,20 @@ void menuModelCustomFunctions(uint8_t event)
         {
           int8_t maxParam = NUM_CHNOUT-1;
           if (func == FUNC_SAFETY_CHANNEL) {
-            putsChn(MODEL_CUSTOM_FUNC_2ND_COLUMN+6*FW, y, CFN_CH_NUMBER(sd)+1, attr);
+            putsChn(lcdNextPos, y, CFN_CH_NUMBER(sd)+1, attr);
           }
           else if (func == FUNC_TRAINER) {
             maxParam = 4;
 #if defined(CPUARM)
-            putsMixerSource(MODEL_CUSTOM_FUNC_2ND_COLUMN+7*FW, y, CFN_CH_NUMBER(sd)==0 ? 0 : MIXSRC_Rud+CFN_CH_NUMBER(sd)-1, attr);
+            putsMixerSource(lcdNextPos, y, CFN_CH_NUMBER(sd)==0 ? 0 : MIXSRC_Rud+CFN_CH_NUMBER(sd)-1, attr);
 #else
-            putsMixerSource(MODEL_CUSTOM_FUNC_2ND_COLUMN+7*FW, y, MIXSRC_Rud+CFN_CH_NUMBER(sd)-1, attr);
+            putsMixerSource(lcdNextPos, y, MIXSRC_Rud+CFN_CH_NUMBER(sd)-1, attr);
 #endif
           }
 #if defined(GVARS)
           else if (func == FUNC_ADJUST_GVAR) {
             maxParam = MAX_GVARS-1;
-            putsStrIdx(MODEL_CUSTOM_FUNC_2ND_COLUMN+7*FW, y, STR_GV, CFN_GVAR_NUMBER(sd)+1, attr);
+            putsStrIdx(lcdNextPos, y, STR_GV, CFN_GVAR_NUMBER(sd)+1, attr);
             if (active) CHECK_INCDEC_MODELVAR_ZERO(event, CFN_GVAR_NUMBER(sd), maxParam);
             break;
           }
