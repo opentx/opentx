@@ -325,7 +325,6 @@
     <file>themes/monochrome/16/print.png</file>
     <file>themes/monochrome/16/compare.png</file>
     <file>themes/monochrome/16/saveas.png</file>
-    <file>themes/monochrome/16/preferences.png</file>
     <file>themes/monochrome/16/apppreferences.png</file>
     <file>themes/monochrome/16/fwpreferences.png</file>
     <file>themes/monochrome/16/movedown.png</file>
@@ -369,7 +368,6 @@
     <file>themes/monochrome/24/print.png</file>
     <file>themes/monochrome/24/compare.png</file>
     <file>themes/monochrome/24/saveas.png</file>
-    <file>themes/monochrome/24/preferences.png</file>
     <file>themes/monochrome/24/apppreferences.png</file>
     <file>themes/monochrome/24/fwpreferences.png</file>
     <file>themes/monochrome/24/movedown.png</file>
@@ -413,7 +411,6 @@
     <file>themes/monochrome/32/print.png</file>
     <file>themes/monochrome/32/compare.png</file>
     <file>themes/monochrome/32/saveas.png</file>
-    <file>themes/monochrome/32/preferences.png</file>
     <file>themes/monochrome/32/apppreferences.png</file>
     <file>themes/monochrome/32/fwpreferences.png</file>
     <file>themes/monochrome/32/movedown.png</file>
@@ -457,7 +454,6 @@
     <file>themes/monochrome/48/print.png</file>
     <file>themes/monochrome/48/compare.png</file>
     <file>themes/monochrome/48/saveas.png</file>
-    <file>themes/monochrome/48/preferences.png</file>
     <file>themes/monochrome/48/apppreferences.png</file>
     <file>themes/monochrome/48/fwpreferences.png</file>
     <file>themes/monochrome/48/movedown.png</file>
@@ -501,7 +497,6 @@
     <file>themes/classic/16/print.png</file>
     <file>themes/classic/16/compare.png</file>
     <file>themes/classic/16/saveas.png</file>
-    <file>themes/classic/16/preferences.png</file>
     <file>themes/classic/16/apppreferences.png</file>
     <file>themes/classic/16/fwpreferences.png</file>
     <file>themes/classic/16/movedown.png</file>
@@ -545,7 +540,6 @@
     <file>themes/classic/24/print.png</file>
     <file>themes/classic/24/compare.png</file>
     <file>themes/classic/24/saveas.png</file>
-    <file>themes/classic/24/preferences.png</file>
     <file>themes/classic/24/apppreferences.png</file>
     <file>themes/classic/24/fwpreferences.png</file>
     <file>themes/classic/24/movedown.png</file>
@@ -589,7 +583,6 @@
     <file>themes/classic/32/print.png</file>
     <file>themes/classic/32/compare.png</file>
     <file>themes/classic/32/saveas.png</file>
-    <file>themes/classic/32/preferences.png</file>
     <file>themes/classic/32/apppreferences.png</file>
     <file>themes/classic/32/fwpreferences.png</file>
     <file>themes/classic/32/movedown.png</file>
@@ -633,7 +626,6 @@
     <file>themes/classic/48/print.png</file>
     <file>themes/classic/48/compare.png</file>
     <file>themes/classic/48/saveas.png</file>
-    <file>themes/classic/48/preferences.png</file>
     <file>themes/classic/48/apppreferences.png</file>
     <file>themes/classic/48/fwpreferences.png</file>
     <file>themes/classic/48/movedown.png</file>
@@ -677,7 +669,6 @@
     <file>themes/monoblue/16/print.png</file>
     <file>themes/monoblue/16/compare.png</file>
     <file>themes/monoblue/16/saveas.png</file>
-    <file>themes/monoblue/16/preferences.png</file>
     <file>themes/monoblue/16/apppreferences.png</file>
     <file>themes/monoblue/16/fwpreferences.png</file>
     <file>themes/monoblue/16/movedown.png</file>
@@ -721,7 +712,6 @@
     <file>themes/monoblue/24/print.png</file>
     <file>themes/monoblue/24/compare.png</file>
     <file>themes/monoblue/24/saveas.png</file>
-    <file>themes/monoblue/24/preferences.png</file>
     <file>themes/monoblue/24/apppreferences.png</file>
     <file>themes/monoblue/24/fwpreferences.png</file>
     <file>themes/monoblue/24/movedown.png</file>
@@ -765,7 +755,6 @@
     <file>themes/monoblue/32/print.png</file>
     <file>themes/monoblue/32/compare.png</file>
     <file>themes/monoblue/32/saveas.png</file>
-    <file>themes/monoblue/32/preferences.png</file>
     <file>themes/monoblue/32/apppreferences.png</file>
     <file>themes/monoblue/32/fwpreferences.png</file>
     <file>themes/monoblue/32/movedown.png</file>
@@ -809,7 +798,6 @@
     <file>themes/monoblue/48/print.png</file>
     <file>themes/monoblue/48/compare.png</file>
     <file>themes/monoblue/48/saveas.png</file>
-    <file>themes/monoblue/48/preferences.png</file>
     <file>themes/monoblue/48/apppreferences.png</file>
     <file>themes/monoblue/48/fwpreferences.png</file>
     <file>themes/monoblue/48/movedown.png</file>
@@ -853,7 +841,6 @@
     <file>themes/monowhite/16/print.png</file>
     <file>themes/monowhite/16/compare.png</file>
     <file>themes/monowhite/16/saveas.png</file>
-    <file>themes/monowhite/16/preferences.png</file>
     <file>themes/monowhite/16/apppreferences.png</file>
     <file>themes/monowhite/16/fwpreferences.png</file>
     <file>themes/monowhite/16/movedown.png</file>
@@ -897,7 +884,6 @@
     <file>themes/monowhite/24/print.png</file>
     <file>themes/monowhite/24/compare.png</file>
     <file>themes/monowhite/24/saveas.png</file>
-    <file>themes/monowhite/24/preferences.png</file>
     <file>themes/monowhite/24/apppreferences.png</file>
     <file>themes/monowhite/24/fwpreferences.png</file>
     <file>themes/monowhite/24/movedown.png</file>
@@ -941,7 +927,6 @@
     <file>themes/monowhite/32/print.png</file>
     <file>themes/monowhite/32/compare.png</file>
     <file>themes/monowhite/32/saveas.png</file>
-    <file>themes/monowhite/32/preferences.png</file>
     <file>themes/monowhite/32/apppreferences.png</file>
     <file>themes/monowhite/32/fwpreferences.png</file>
     <file>themes/monowhite/32/movedown.png</file>
@@ -985,7 +970,6 @@
     <file>themes/monowhite/48/print.png</file>
     <file>themes/monowhite/48/compare.png</file>
     <file>themes/monowhite/48/saveas.png</file>
-    <file>themes/monowhite/48/preferences.png</file>
     <file>themes/monowhite/48/apppreferences.png</file>
     <file>themes/monowhite/48/fwpreferences.png</file>
     <file>themes/monowhite/48/movedown.png</file>

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>634</width>
-    <height>794</height>
+    <height>800</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Firmware Preferences</string>
+   <string>Download Firmware and Voice</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="13" column="5">

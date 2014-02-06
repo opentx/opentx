@@ -1695,16 +1695,16 @@ void MainWindow::createActions()
     logsAct->setStatusTip(tr("Open log file"));
     connect(logsAct, SIGNAL(triggered()), this, SLOT(logFile()));
     
-    preferencesAct = new QAction(CompanionIcon("preferences.png"), tr("&General Preferences..."), this);
-    preferencesAct->setStatusTip(tr("Edit general preferences"));
+    preferencesAct = new QAction(tr("&Old Preferences Dialog..."), this);
+    preferencesAct->setStatusTip(tr("Used the old Preferences Dialog"));
     connect(preferencesAct, SIGNAL(triggered()), this, SLOT(preferences()));
 
     appPreferencesAct = new QAction(CompanionIcon("apppreferences.png"), tr("&Application Preferences..."), this);
     appPreferencesAct->setStatusTip(tr("Edit application preferences"));
     connect(appPreferencesAct, SIGNAL(triggered()), this, SLOT(appPreferences()));
 
-    fwPreferencesAct = new QAction(CompanionIcon("fwpreferences.png"), tr("&Firmware Preferences..."), this);
-    fwPreferencesAct->setStatusTip(tr("Edit firmware preferences"));
+    fwPreferencesAct = new QAction(CompanionIcon("fwpreferences.png"), tr("&Download Firmware and Voice..."), this);
+    fwPreferencesAct->setStatusTip(tr("Download firmware and voice files"));
     connect(fwPreferencesAct, SIGNAL(triggered()), this, SLOT(fwPreferences()));
 
     checkForUpdatesAct = new QAction(CompanionIcon("update.png"), tr("&Check for updates..."), this);
@@ -1927,6 +1927,7 @@ void MainWindow::createMenus()
     fileMenu->addAction(printAct);
     fileMenu->addAction(compareAct);
     fileMenu->addSeparator();
+    fileMenu->addAction(fwPreferencesAct);
     fileMenu->addMenu(profilesMenu);
     
     profilesMenu->setIcon(CompanionIcon("profiles.png"));
@@ -1964,9 +1965,8 @@ void MainWindow::createMenus()
       iconThemeSizeMenu->addAction(hugeIconAct);
     settingsMenu->addSeparator();
     settingsMenu->addAction(appPreferencesAct);
-    settingsMenu->addAction(fwPreferencesAct);
-    settingsMenu->addAction(preferencesAct);
     settingsMenu->addAction(customizeSplashAct);
+    settingsMenu->addAction(preferencesAct);
     settingsMenu->addAction(burnConfigAct);
 
     burnMenu = menuBar()->addMenu(tr("&Read/Write"));
@@ -2050,6 +2050,7 @@ void MainWindow::createToolBars()
     fileToolBar->addSeparator();
     fileToolBar->addAction(appPreferencesAct);
     fileToolBar->addAction(fwPreferencesAct);
+    fileToolBar->addAction(customizeSplashAct);
     profileButton = new QToolButton;
     profileButton->setPopupMode(QToolButton::InstantPopup);
     profileButton->setMenu(createProfilesMenu());
