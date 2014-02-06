@@ -1390,11 +1390,9 @@ bool getSwitch(int8_t swtch)
     result = POT_POSITION(cs_idx-SWSRC_P11);
   }
 #endif
-#if defined(CPUARM)
   else if (cs_idx <= SWSRC_LAST_TRIM) {
-    result = readTrims() & (1 << (cs_idx-SWSRC_FIRST_TRIM));
+    result = trimDown(cs_idx-SWSRC_FIRST_TRIM);
   }
-#endif
 #if ROTARY_ENCODERS > 0
   else if (cs_idx == SWSRC_REa) {
     result = REA_DOWN();

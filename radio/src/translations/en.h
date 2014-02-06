@@ -155,7 +155,7 @@
   #define TR_CSWSTICKY         "Stcky"
 #else
   #define TR_CSWTIMER          "Tim\0 "
-  #define TR_CSWSTICKY         "Stky\0"
+  #define TR_CSWSTICKY         "Glue\0"
 #endif
 
 #define LEN_VCSWFUNC           "\005"
@@ -357,7 +357,7 @@
 #elif defined(CPUARM)
   #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_CUSTOMSW
 #else
-  #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_ROTENC_SWITCHES TR_CUSTOMSW
+  #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_CUSTOMSW
 #endif
 
 #if defined(HELI)

@@ -113,6 +113,11 @@ uint32_t readTrims()
   return result;
 }
 
+uint8_t trimDown(uint8_t idx)
+{
+  return readTrims() & (1 << idx);
+}
+
 uint8_t keyDown()
 {
   return (~readKeys() & 0x7E) || REA_DOWN();

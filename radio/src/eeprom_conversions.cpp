@@ -199,7 +199,7 @@ int ConvertSwitch_215_to_216(int swtch)
   if (swtch <= SWSRC_LAST_SWITCH)
     return swtch;
   else
-    return swtch + 4 + (2*6); // 4 trims and 2 * 6-pos added as switches
+    return swtch + (2*4) + (2*6); // 4 trims and 2 * 6-pos added as switches
 }
 #else
 inline int ConvertSwitch_215_to_216(int swtch)
@@ -207,7 +207,7 @@ inline int ConvertSwitch_215_to_216(int swtch)
   if (swtch <= SWSRC_LAST_SWITCH)
     return swtch;
   else
-    return swtch + 4 + 1; // 4 trims and REa added
+    return swtch + (2*4) + 1; // 4 trims and REa added
 }
 #endif
 

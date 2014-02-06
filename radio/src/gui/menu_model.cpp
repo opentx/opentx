@@ -4233,7 +4233,7 @@ void menuModelCustomSwitchOne(uint8_t event)
       {
         lcd_putsLeft(y, STR_V1);
         int8_t v1_min=0, v1_max=MIXSRC_LAST_TELEM;
-        if (cstate == CS_VBOOL) {
+        if (cstate == CS_VBOOL || cstate == CS_VSTICKY) {
           putsSwitches(CSWONE_2ND_COLUMN, y, cs->v1, attr);
           v1_min = SWSRC_OFF+1; v1_max = SWSRC_ON-1;
         }
@@ -4253,7 +4253,7 @@ void menuModelCustomSwitchOne(uint8_t event)
       {
         lcd_putsLeft(y, STR_V2);
         int8_t v2_min=0, v2_max=MIXSRC_LAST_TELEM;
-        if (cstate == CS_VBOOL) {
+        if (cstate == CS_VBOOL || cstate == CS_VSTICKY) {
           putsSwitches(CSWONE_2ND_COLUMN, y, cs->v2, attr);
           v2_min = SWSRC_OFF+1; v2_max = SWSRC_ON-1;
         }
@@ -4358,7 +4358,7 @@ void menuModelCustomSwitches(uint8_t event)
       // CSW params
       uint8_t cstate = cswFamily(cs->func);
 
-      if (cstate == CS_VBOOL) {
+      if (cstate == CS_VBOOL || cstate == CS_VSTICKY) {
         putsSwitches(CSW_2ND_COLUMN, y, cs->v1, 0);
         putsSwitches(CSW_3RD_COLUMN, y, cs->v2, 0);
       }

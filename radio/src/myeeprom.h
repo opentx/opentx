@@ -1193,7 +1193,6 @@ enum SwitchSources {
   SWSRC_P26 = SWSRC_P21+5,
 #endif
 
-#if defined(CPUARM)
   SWSRC_FIRST_TRIM,
   SWSRC_TrimRudLeft = SWSRC_FIRST_TRIM,
   SWSRC_TrimRudRight,
@@ -1204,7 +1203,6 @@ enum SwitchSources {
   SWSRC_TrimAilLeft,
   SWSRC_TrimAilRight,
   SWSRC_LAST_TRIM = SWSRC_TrimAilRight,
-#endif
 
 #if defined(PCBSKY9X)
   SWSRC_REa,

@@ -806,6 +806,7 @@ enum PowerState {
 };
 
 bool switchState(EnumKeys enuk);
+uint8_t trimDown(uint8_t idx);
 void readKeysAndTrims();
 
 uint16_t evalChkSum();
