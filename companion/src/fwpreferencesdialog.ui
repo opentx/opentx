@@ -301,7 +301,7 @@ Mode 4:
       </sizepolicy>
      </property>
      <property name="text">
-      <string> Firmware Type</string>
+      <string>Firmware Type</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1017,7 +1017,7 @@ This is used by the templated to determine which channel goes to what number out
      </property>
     </widget>
    </item>
-   <item row="33" column="3" colspan="3">
+   <item row="4" column="3">
     <widget class="QLabel" name="FwInfo">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -1030,14 +1030,7 @@ This is used by the templated to determine which channel goes to what number out
      </property>
     </widget>
    </item>
-   <item row="33" column="6">
-    <widget class="QPushButton" name="fw_dnld">
-     <property name="text">
-      <string>Download FW</string>
-     </property>
-    </widget>
-   </item>
-   <item row="32" column="6">
+   <item row="31" column="6">
     <widget class="QPushButton" name="checkFWUpdates">
      <property name="minimumSize">
       <size>
@@ -1047,6 +1040,13 @@ This is used by the templated to determine which channel goes to what number out
      </property>
      <property name="text">
       <string>Check for updates</string>
+     </property>
+    </widget>
+   </item>
+   <item row="32" column="6">
+    <widget class="QPushButton" name="fw_dnld">
+     <property name="text">
+      <string>Download FW</string>
      </property>
     </widget>
    </item>

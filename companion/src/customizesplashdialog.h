@@ -19,12 +19,15 @@ public:
   ~customizeSplashDialog();
 
 private slots:
-  void on_FlashLoadButton_clicked();
-  void on_ImageLoadButton_clicked();
-  void on_libraryButton_clicked();
-  void on_SaveFlashButton_clicked();
-  void on_InvertColorButton_clicked();
-  void on_SaveImageButton_clicked();
+  void on_leftLoadButton_clicked();
+  void on_leftLibraryButton_clicked();
+  void on_leftSaveButton_clicked();
+  void on_leftInvertButton_clicked();
+
+  void on_rightLoadButton_clicked();
+  void on_rightLibraryButton_clicked();
+  void on_rightSaveButton_clicked();
+  void on_rightInvertButton_clicked();
 
 private:
   Ui::customizeSplashDialog *ui;
