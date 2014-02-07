@@ -4633,10 +4633,18 @@ void menuModelCustomSwitches(uint8_t event)
       lcd_putsiAtt(CSW_5TH_COLUMN, y, STR_MMMINV, 0, horz==CSW_FIELD_DURATION ? attr : 0);
 
     // CSW delay
-    if (cs->delay > 0)
+    if (cstate == CS_FAMILY_STAY) {
+      lcd_puts(CSW_6TH_COLUMN, y, "N/A");
+      if (attr && horz == CSW_FIELD_DELAY) {
+        REPEAT_LAST_CURSOR_MOVE();
+      }
+    }
+    else if (cs->delay > 0) {
       lcd_outdezAtt(CSW_6TH_COLUMN, y, 5*cs->delay, (horz==CSW_FIELD_DELAY ? attr : 0)|PREC1|LEFT);
-    else
+    }
+    else {
       lcd_putsiAtt(CSW_6TH_COLUMN, y, STR_MMMINV, 0, horz==CSW_FIELD_DELAY ? attr : 0);
+    }
 
     if (attr && horz == CSW_FIELD_V3 && cstate != CS_FAMILY_STAY) {
       REPEAT_LAST_CURSOR_MOVE();
