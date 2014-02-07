@@ -1159,9 +1159,28 @@ void putsTmrMode(xcoord_t x, uint8_t y, int8_t mode, LcdFlags att)
   putsSwitches(x, y, mode-(TMR_VAROFS-1), att);
 }
 
+#if defined(PCBTARANIS)
 void putsTrimMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, LcdFlags att)
 {
-  int16_t v = getRawTrimValue(phase, idx);
+  trim_t v = getRawTrimValue(phase, idx);
+  unsigned int mode = v.mode;
+  unsigned int p = mode >> 1;
+
+  if (mode == TRIM_MODE_NONE) {
+    lcd_putsAtt(x, y, "--", att);
+  }
+  else {
+    if (mode % 2 == 0)
+      lcd_putcAtt(x, y, ':', att|FIXEDWIDTH);
+    else
+      lcd_putcAtt(x, y, '+', att|FIXEDWIDTH);
+    lcd_putcAtt(lcdNextPos, y, '0'+p, att);
+  }
+}
+#else
+void putsTrimMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, LcdFlags att)
+{
+  trim_t v = getRawTrimValue(phase, idx);
 
   if (v > TRIM_EXTENDED_MAX) {
     uint8_t p = v - TRIM_EXTENDED_MAX - 1;
@@ -1172,6 +1191,7 @@ void putsTrimMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, LcdFlags at
     putsChnLetter(x, y, idx+1, att);
   }
 }
+#endif
 
 #if ROTARY_ENCODERS > 0
 void putsRotaryEncoderMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, LcdFlags att)

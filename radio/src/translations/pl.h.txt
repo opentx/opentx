@@ -685,14 +685,14 @@
 #define TR_POT2TYPE            "Typ S2"
 
 #if defined(MAVLINK)
-  #define TR_MAVLINK_RC_RSSI_SCALE_LABEL  "Max RSSI"
+  #define TR_MAVLINK_RC_RSSI_SCALE_LABEL  "Maks RSSI"
   #define TR_MAVLINK_PC_RSSI_EN_LABEL     "PC RSSI EN"
   #define TR_MAVMENUSETUP_TITLE           "Ustawienia Mavlink"
   #define TR_MAVLINK_BAUD_LABEL           "Baudrate"
   #define TR_MAVLINK_INFOS                "INFO"
   #define TR_MAVLINK_MODE                 "TRYB"
   #define TR_MAVLINK_CUR_MODE             "Aktualy Tryb"
-  #define TR_MAVLINK_ARMED                "Armed"
+  #define TR_MAVLINK_ARMED                "Aktywny"
   #define TR_MAVLINK_BAT_MENU_TITLE       "BAT RSSI"
   #define TR_MAVLINK_BATTERY_LABEL        "Status bateri"
   #define TR_MAVLINK_RC_RSSI_LABEL        "RC RSSI"

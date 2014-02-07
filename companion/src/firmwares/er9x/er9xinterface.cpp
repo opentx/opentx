@@ -281,8 +281,6 @@ int Er9xInterface::getCapability(const Capability capability)
     case ModelVoice:
     case Gvars:
       return 7;
-    case GvarsHaveSources:
-     return 1;
     case GetThrSwitch:
       return DSW_THR;     
     default:
