@@ -673,11 +673,13 @@ void populateCSWCB(QComboBox *b, int value)
     CS_FN_VEQUAL, // added at the end to avoid everything renumbered
     CS_FN_VPOS,
     CS_FN_VNEG,
+    // CS_FN_RANGE,
     CS_FN_APOS,
     CS_FN_ANEG,
     CS_FN_AND,
     CS_FN_OR,
     CS_FN_XOR,
+    CS_FN_STAY,
     CS_FN_EQUAL,
     CS_FN_NEQUAL,
     CS_FN_GREATER,

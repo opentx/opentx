@@ -337,7 +337,9 @@ QString CurveReference::toString()
 
 CSFunctionFamily CustomSwData::getFunctionFamily()
 {
-  if (func == CS_FN_TIMER)
+  if (func == CS_FN_STAY)
+    return CS_FAMILY_STAY;
+  else if (func == CS_FN_TIMER)
     return CS_FAMILY_TIMER;
   else if (func == CS_FN_STICKY)
     return CS_FAMILY_STICKY;

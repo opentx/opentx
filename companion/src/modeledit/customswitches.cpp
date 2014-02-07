@@ -180,15 +180,18 @@ void CustomSwitchesPanel::edited()
   if (!lock) {
     lock = true;
     int i = sender()->property("index").toInt();
-    bool chAr;
-    float value, step;
-    int newval;
-    chAr = (model.customSw[i].getFunctionFamily() != CustomSwData(csw[i]->itemData(csw[i]->currentIndex()).toInt()).getFunctionFamily());
-    model.customSw[i].func = csw[i]->itemData(csw[i]->currentIndex()).toInt();
-    if(chAr) {
+    int newFunc = csw[i]->itemData(csw[i]->currentIndex()).toInt();
+    bool chAr = (model.customSw[i].getFunctionFamily() != CustomSwData(newFunc).getFunctionFamily());
+    model.customSw[i].func = newFunc;
+    if (chAr) {
       if (model.customSw[i].getFunctionFamily() == CS_FAMILY_TIMER) {
         model.customSw[i].val1 = -119;
         model.customSw[i].val2 = -119;
+      }
+      else if (model.customSw[i].getFunctionFamily() == CS_FAMILY_STAY) {
+        model.customSw[i].val1 = 0;
+        model.customSw[i].val2 = -129;
+        model.customSw[i].val3 = 0;
       }
       else {
         model.customSw[i].val1 = 0;
@@ -216,71 +219,37 @@ void CustomSwitchesPanel::edited()
         }
         break;
       case CS_FAMILY_TIMER:
-      {
-        value = cswitchOffset[i]->value();
-        newval=TimToVal(value);
-        if (newval>model.customSw[i].val2) {
-          if (value >=60) {
-            value=round(value);
-            step=1;
-          } else if (value>=2) {
-            value=(round(value*2.0)/2);
-            step=0.5;
-          } else {
-            step=0.1;
-          }
-        }
-        else {
-          if (value <=2) {
-            step=0.1;
-          } else if (value<=60) {
-            value=(round(value*2.0)/2);
-            step=0.5;
-          } else {
-            value=round(value);
-            step=1;
-          }
-        }
-        model.customSw[i].val2=TimToVal(value);
-        value=ValToTim(model.customSw[i].val2);
-        cswitchOffset[i]->setValue(value);
-        cswitchOffset[i]->setSingleStep(step);
-
-        value=cswitchValue[i]->value();
-        newval=TimToVal(value);
-        if (newval>model.customSw[i].val1) {
-          if (value >=60) {
-            value=round(value);
-            step=1;
-          } else if (value>=2) {
-            value=(round(value*2.0)/2);
-            step=0.5;
-          } else {
-            step=0.1;
-          }
-        } else {
-          if (value <=2) {
-            step=0.1;
-          } else if (value<=60) {
-            value=(round(value*2.0)/2);
-            step=0.5;
-          } else {
-            value=round(value);
-            step=1;
-          }
-        }
-        model.customSw[i].val1=TimToVal(value);
-        value=ValToTim(model.customSw[i].val1);
-        cswitchValue[i]->setValue(value);
-        cswitchValue[i]->setSingleStep(step);
+        model.customSw[i].val1 = TimToVal(cswitchValue[i]->value());
+        model.customSw[i].val2 = TimToVal(cswitchOffset[i]->value());
+        updateTimerParam(cswitchValue[i], model.customSw[i].val1);
+        updateTimerParam(cswitchOffset[i], model.customSw[i].val2);
         break;
-      }
+      case CS_FAMILY_STAY:
+        model.customSw[i].val2 = TimToVal(cswitchOffset[i]->value());
+        updateTimerParam(cswitchOffset[i], model.customSw[i].val2, true);
+        break;
       default:
         break;
     }
     emit modified();
     lock = false;
   }
+}
+
+void CustomSwitchesPanel::updateTimerParam(QDoubleSpinBox *sb, int timer, bool allowZero)
+{
+  sb->setVisible(true);
+  sb->setDecimals(1);
+  sb->setMinimum(allowZero ? 0.0 : 0.1);
+  sb->setMaximum(175);
+  float value = ValToTim(timer);
+  if (value>60)
+    sb->setSingleStep(1);
+  else if (value>2)
+    sb->setSingleStep(0.5);
+  else
+    sb->setSingleStep(0.1);
+  sb->setValue(value);
 }
 
 void CustomSwitchesPanel::setSwitchWidgetVisibility(int i)
@@ -320,6 +289,13 @@ void CustomSwitchesPanel::setSwitchWidgetVisibility(int i)
         populateSwitchCB(cswitchSource1[i], RawSwitch(model.customSw[i].val1));
         populateSwitchCB(cswitchSource2[i], RawSwitch(model.customSw[i].val2));
         break;
+      case CS_FAMILY_STAY:
+        cswitchSource1[i]->setVisible(true);
+        cswitchSource2[i]->setVisible(false);
+        cswitchValue[i]->setVisible(false);
+        populateSwitchCB(cswitchSource1[i], RawSwitch(model.customSw[i].val1));
+        updateTimerParam(cswitchOffset[i], model.customSw[i].val2, true);
+        break;
       case CS_FAMILY_VCOMP:
         cswitchSource1[i]->setVisible(true);
         cswitchSource2[i]->setVisible(true);
@@ -331,31 +307,8 @@ void CustomSwitchesPanel::setSwitchWidgetVisibility(int i)
       case CS_FAMILY_TIMER:
         cswitchSource1[i]->setVisible(false);
         cswitchSource2[i]->setVisible(false);
-        cswitchValue[i]->setVisible(true);
-        cswitchOffset[i]->setVisible(true);
-        cswitchOffset[i]->setDecimals(1);
-        cswitchOffset[i]->setMinimum(0.1);
-        cswitchOffset[i]->setMaximum(175);
-        float value=ValToTim(model.customSw[i].val2);
-        cswitchOffset[i]->setSingleStep(0.1);
-        if (value>60) {
-           cswitchOffset[i]->setSingleStep(1);
-        } else if (value>2) {
-          cswitchOffset[i]->setSingleStep(0.5);
-        }
-        cswitchOffset[i]->setValue(value);
-
-        cswitchValue[i]->setDecimals(1);
-        cswitchValue[i]->setMinimum(0.1);
-        cswitchValue[i]->setMaximum(175);
-        value=ValToTim(model.customSw[i].val1);
-        cswitchValue[i]->setSingleStep(0.1);
-        if (value>60) {
-           cswitchValue[i]->setSingleStep(1);
-        } else if (value>2) {
-          cswitchValue[i]->setSingleStep(0.5);
-        }
-        cswitchValue[i]->setValue(value);
+        updateTimerParam(cswitchValue[i], model.customSw[i].val1);
+        updateTimerParam(cswitchOffset[i], model.customSw[i].val2);
         break;
     }
 

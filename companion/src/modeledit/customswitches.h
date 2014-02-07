@@ -42,6 +42,7 @@ class CustomSwitchesPanel : public ModelPanel
 
     void updateSelectedSwitch();
     void updateV2(int index);
+    void updateTimerParam(QDoubleSpinBox *sb, int timer, bool allowZero=false);
 
 };
 

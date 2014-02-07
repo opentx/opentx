@@ -1032,11 +1032,13 @@ class CustomSwitchesFunctionsTable: public ConversionTable {
         addConversion(CS_FN_VEQUAL, val++);
       addConversion(CS_FN_VPOS, val++);
       addConversion(CS_FN_VNEG, val++);
+      if (IS_ARM(board) && version >= 216) val++; // later RANGE
       addConversion(CS_FN_APOS, val++);
       addConversion(CS_FN_ANEG, val++);
       addConversion(CS_FN_AND, val++);
       addConversion(CS_FN_OR, val++);
       addConversion(CS_FN_XOR, val++);
+      if (IS_ARM(board) && version >= 216) addConversion(CS_FN_STAY, val++);
       addConversion(CS_FN_EQUAL, val++);
       if (!release21March2013)
         addConversion(CS_FN_NEQUAL, val++);
