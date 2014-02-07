@@ -4539,8 +4539,14 @@ void menuModelCustomSwitches(uint8_t event)
       v1_min = SWSRC_OFF+1; v1_max = SWSRC_ON-1;
       v2_min=-129; v2_max = 122;
       v3_max = 222 - cs->v2;
-      INCDEC_SET_FLAG(0);
-      INCDEC_ENABLE_CHECK(NULL);
+      if (horz == 1) {
+        INCDEC_SET_FLAG(INCDEC_SWITCH);
+        INCDEC_ENABLE_CHECK(isSwitchAvailable);
+      }
+      else {
+        INCDEC_SET_FLAG(0);
+        INCDEC_ENABLE_CHECK(NULL);
+      }
     }
 #endif
     else if (cstate == CS_FAMILY_COMP) {
