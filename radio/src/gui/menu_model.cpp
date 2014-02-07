@@ -5019,6 +5019,9 @@ void menuModelCustomFunctions(uint8_t event)
               s_editMode = !s_editMode;
               active = true;
               CFN_GVAR_MODE(sd) += 1;
+#if defined(CPUARM)
+              CFN_GVAR_MODE(sd) &= 0x03;
+#endif
               val_displayed = 0;
             }
           }
