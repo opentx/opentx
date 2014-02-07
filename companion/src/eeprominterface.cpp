@@ -536,15 +536,55 @@ void ModelData::setDefault(uint8_t id)
   sprintf(name, "MODEL%02d", id+1);
 }
 
-unsigned int ModelData::getTrimFlightPhase(uint8_t idx, int8_t phase)
+int ModelData::getTrimValue(int phaseIdx, int trimIdx)
 {
-  // if (phase == -1) phase = getFlightPhase();
-
-  for (uint8_t i=0; i<C9X_MAX_PHASES; i++) {
-    if (phase == 0 || phaseData[phase].trimRef[idx] < 0) return phase;
-    phase = phaseData[phase].trimRef[idx];
+  int result = 0;
+  for (int i=0; i<C9X_MAX_PHASES; i++) {
+    PhaseData & phase = phaseData[phaseIdx];
+    if (phase.trimMode[trimIdx] < 0) {
+      return result;
+    }
+    else {
+      if (phase.trimRef[trimIdx] == phaseIdx || phaseIdx == 0) {
+        return result + phase.trim[trimIdx];
+      }
+      else {
+        phaseIdx = phase.trimRef[trimIdx];
+        if (phase.trimMode[trimIdx] == 0)
+          result = 0;
+        else
+          result += phase.trim[trimIdx];
+      }
+    }
   }
   return 0;
+}
+
+void ModelData::setTrimValue(int phaseIdx, int trimIdx, int value)
+{
+  for (uint8_t i=0; i<C9X_MAX_PHASES; i++) {
+    PhaseData & phase = phaseData[phaseIdx];
+    int mode = phase.trimMode[trimIdx];
+    int p = phase.trimRef[trimIdx];
+    int & trim = phase.trim[trimIdx];
+    if (mode < 0)
+      return;
+    if (p == phaseIdx || phaseIdx == 0) {
+      trim = value;
+      break;;
+    }
+    else if (mode == 0) {
+      phaseIdx = p;
+    }
+    else {
+      trim = value - getTrimValue(p, trimIdx);
+      if (trim < -500)
+        trim = -500;
+      if (trim > 500)
+        trim = 500;
+      break;
+    }
+  }
 }
 
 void ModelData::removeGlobalVar(int & var)

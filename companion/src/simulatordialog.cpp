@@ -497,6 +497,8 @@ void simulatorDialog::setValues()
 {
   TxOutputs outputs;
   simulator->getValues(outputs);
+  Trims trims;
+  simulator->getTrims(trims);
 
   ui->chnout_1->setValue(chVal(outputs.chans[0]));
   ui->chnout_2->setValue(chVal(outputs.chans[1]));
@@ -536,11 +538,11 @@ void simulatorDialog::setValues()
     ui->chnoutV_16->setText(QString("%1").arg((qreal)outputs.chans[15]*100/1024, 0, 'f', 1));
   }
 
-  ui->leftXPerc->setText(QString("X %1%").arg((qreal)nodeLeft->getX()*100, 2, 'f', 0));
-  ui->leftYPerc->setText(QString("Y %1%").arg((qreal)nodeLeft->getY()*-100, 2, 'f', 0));
+  ui->leftXPerc->setText(QString("X %1%").arg((qreal)nodeLeft->getX()*100+trims.values[0]/5, 2, 'f', 0));
+  ui->leftYPerc->setText(QString("Y %1%").arg((qreal)nodeLeft->getY()*-100+trims.values[1]/5, 2, 'f', 0));
 
-  ui->rightXPerc->setText(QString("X %1%").arg((qreal)nodeRight->getX()*100, 2, 'f', 0));
-  ui->rightYPerc->setText(QString("Y %1%").arg((qreal)nodeRight->getY()*-100, 2, 'f', 0));
+  ui->rightXPerc->setText(QString("X %1%").arg((qreal)nodeRight->getX()*100+trims.values[2]/5, 2, 'f', 0));
+  ui->rightYPerc->setText(QString("Y %1%").arg((qreal)nodeRight->getY()*-100+trims.values[3]/5, 2, 'f', 0));
 
 #define CSWITCH_ON  "QLabel { background-color: #4CC417 }"
 #define CSWITCH_OFF "QLabel { }"

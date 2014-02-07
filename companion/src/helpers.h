@@ -23,6 +23,8 @@
 #define TRIM_OFF 1
 #define TRIM_OFFSET 2
 
+#define TRIM_MODE_NONE  0x1F  // 0b11111
+
 void populateGvSourceCB(QComboBox *b, int value);
 void populateVoiceLangCB(QComboBox *b, QString language);
 void populateTTraceCB(QComboBox *b, int value);
@@ -89,7 +91,6 @@ QString FuncParam(uint function, int value, QString paramT="",unsigned int adjus
 void populateFuncParamCB(QComboBox *b, const ModelData & model, uint function, unsigned int value, unsigned int adjustmode=0);
 void populateFuncParamArmTCB(QComboBox *b, ModelData * g_model, char * value, QStringList & paramsList);
 void populatePhasesCB(QComboBox *b, int value);
-void populateTrimUseCB(QComboBox *b, unsigned int phase);
 void populateGvarUseCB(QComboBox *b, unsigned int phase);
 void populateCustomScreenFieldCB(QComboBox *b, unsigned int value, bool last, int hubproto);
 void populateTimerSwitchCB(QComboBox *b, int value);

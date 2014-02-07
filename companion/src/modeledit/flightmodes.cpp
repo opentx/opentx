@@ -17,9 +17,11 @@ FlightMode::FlightMode(QWidget * parent, ModelData & model, int phaseIdx, Genera
 {
   ui->setupUi(this);
 
+  int modesCount = GetEepromInterface()->getCapability(FlightPhases);
+
   // Phase name
   QRegExp rx(CHAR_FOR_NAMES_REGEX);
-  if (GetEepromInterface()->getCapability(FlightPhases)) {
+  if (modesCount) {
     ui->name->setValidator(new QRegExpValidator(rx, this));
     ui->name->setMaxLength(GetEepromInterface()->getCapability(FlightModesName));
     connect(ui->name, SIGNAL(editingFinished()), this, SLOT(phaseName_editingFinished()));
@@ -66,14 +68,19 @@ FlightMode::FlightMode(QWidget * parent, ModelData & model, int phaseIdx, Genera
   for (int i=0; i<4; i++) {
     trimsLabel[i]->setText(labels[CONVERT_MODE(i+1)-1]);
 
-    if (phaseIdx > 0) {
-      trimsUse[i]->setProperty("index", i);
-      populateTrimUseCB(trimsUse[i], phaseIdx);
-      connect(trimsUse[i], SIGNAL(currentIndexChanged(int)), this, SLOT(phaseTrimUse_currentIndexChanged(int)));
+    QComboBox * cb = trimsUse[i];
+    cb->setProperty("index", i);
+    cb->addItem(QObject::tr("Trim disabled"), -1);
+    for (int m=0; m<modesCount; m++) {
+      if (m == phaseIdx) {
+        cb->addItem(QObject::tr("Own Trim"), m*2);
+      }
+      else if (phaseIdx > 0) {
+        cb->addItem(QObject::tr("Use Trim from Flight mode %1").arg(m), m*2);
+        cb->addItem(QObject::tr("Use Trim from Flight mode %1 + Own Trim as an offset").arg(m), m*2+1);
+      }
     }
-    else {
-      trimsUse[i]->hide();
-    }
+    connect(cb, SIGNAL(currentIndexChanged(int)), this, SLOT(phaseTrimUse_currentIndexChanged(int)));
 
     trimsValue[i]->setProperty("index", i);
     connect(trimsValue[i], SIGNAL(valueChanged(int)), this, SLOT(phaseTrim_valueChanged()));
@@ -123,17 +130,6 @@ FlightMode::FlightMode(QWidget * parent, ModelData & model, int phaseIdx, Genera
       QLabel *label = new QLabel(ui->gvGB);
       label->setText(tr("GVAR%1").arg(i+1));
       gvLayout->addWidget(label, i, col++, 1, 1);
-#if 0
-      // TODO remove this capability?
-      // GVar source (er9x/ersky9x)
-      if (GetEepromInterface()->getCapability(GvarsHaveSources)) {
-        QComboBox *source = new QComboBox(ui->gvGB);
-        source->setProperty("index", i);
-        populateGvSourceCB(source, model.gvsource[i]);
-        // connect(source, SIGNAL(currentIndexChanged(int)), this, SLOT(phaseGVSource_currentIndexChanged(int)));
-        gvLayout->addWidget(source, i, col++, 1, 1);
-      }
-#endif
       // GVar name
       int nameLen = GetEepromInterface()->getCapability(GvarsName);
       if (nameLen > 0) {
@@ -193,7 +189,6 @@ void FlightMode::update()
     int chn = CONVERT_MODE(i+1)-1;
     if (chn == 2/*TODO constant*/ && model.throttleReversed)
       trimsSlider[i]->setInvertedAppearance(true);
-
     trimUpdate(i);
   }
 
@@ -262,23 +257,22 @@ void FlightMode::phaseFadeOut_editingFinished()
 
 void FlightMode::trimUpdate(unsigned int trim)
 {
-    lock = true;
-    int chn = CONVERT_MODE(trim+1)-1;
-    int value = phase.trim[chn];
-    if (phaseIdx > 0 && phase.trimRef[chn] >= 0) {
-      trimsUse[trim]->setCurrentIndex(1 + phase.trimRef[chn] - (phase.trimRef[chn] >= phaseIdx ? 1 : 0));
-      value = model.phaseData[model.getTrimFlightPhase(chn, phaseIdx)].trim[chn];
-      trimsValue[trim]->setEnabled(false);
-      trimsSlider[trim]->setEnabled(false);
-    }
-    else {
-      if (phaseIdx > 0) trimsUse[trim]->setCurrentIndex(0);
-      trimsValue[trim]->setEnabled(true);
-      trimsSlider[trim]->setEnabled(true);
-    }
-    trimsSlider[trim]->setValue(value);
-    trimsValue[trim]->setValue(value);
-    lock = false;
+  lock = true;
+  int chn = CONVERT_MODE(trim+1)-1;
+  int value = model.getTrimValue(phaseIdx, chn);
+  trimsSlider[trim]->setValue(value);
+  trimsValue[trim]->setValue(value);
+  if (phase.trimMode[chn] < 0) {
+    trimsUse[trim]->setCurrentIndex(0);
+    trimsValue[trim]->setEnabled(false);
+    trimsSlider[trim]->setEnabled(false);
+  }
+  else {
+    trimsUse[trim]->setCurrentIndex(1 + 2*phase.trimRef[chn] + phase.trimMode[chn] - (phase.trimRef[chn] > phaseIdx ? 1 : 0));
+    trimsValue[trim]->setEnabled(true);
+    trimsSlider[trim]->setEnabled(true);
+  }
+  lock = false;
 }
 
 void FlightMode::phaseGVValue_editingFinished()
@@ -380,15 +374,17 @@ void FlightMode::phaseTrimUse_currentIndexChanged(int index)
     QComboBox *comboBox = qobject_cast<QComboBox*>(sender());
     int trim = comboBox->property("index").toInt();
     int chn = CONVERT_MODE(trim+1)-1;
-    if (index == 0) {
-      phase.trim[chn] = model.phaseData[model.getTrimFlightPhase(chn, phaseIdx)].trim[chn];
-      phase.trimRef[chn] = -1;
+    int data = comboBox->itemData(index).toInt();
+    if (data < 0) {
+      phase.trimMode[chn] = -1;
+      phase.trimRef[chn] = 0;
+      phase.trim[chn] = 0;
     }
     else {
+      phase.trimMode[chn] = data % 2;
+      phase.trimRef[chn] = data / 2;
       phase.trim[chn] = 0;
-      phase.trimRef[chn] = index - 1 + (index > (int)phaseIdx ? 1 : 0);
     }
-
     trimUpdate(trim);
     emit modified();
   }
@@ -401,7 +397,7 @@ void FlightMode::phaseTrim_valueChanged()
     int trim = spinBox->property("index").toInt();
     int chn = CONVERT_MODE(trim+1)-1;
     int value = spinBox->value();
-    phase.trim[chn] = value;
+    model.setTrimValue(phaseIdx, chn, value);
     lock = true;
     trimsSlider[trim]->setValue(value);
     lock = false;
@@ -416,7 +412,7 @@ void FlightMode::phaseTrimSlider_valueChanged()
     int trim = slider->property("index").toInt();
     int chn = CONVERT_MODE(trim+1)-1;
     int value = slider->value();
-    phase.trim[chn] = value;
+    model.setTrimValue(phaseIdx, chn, value);
     lock = true;
     trimsValue[trim]->setValue(value);
     lock = false;
