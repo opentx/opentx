@@ -340,11 +340,11 @@
 #endif
 
 #if defined(CPUARM)
-  #define TR_CUSTOMSW          "CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC""CSD""CSE""CSF""CSG""CSH""CSI""CSJ""CSK""CSL""CSM""CSN""CSO""CSP""CSQ""CSR""CSS""CST""CSU""CSV""CSW"
+  #define TR_CUSTOMSW          "LS1""LS2""LS3""LS4""LS5""LS6""LS7""LS8""LS9""LSA""LSB""LSC""LSD""LSE""LSF""LSG""LSH""LSI""LSJ""LSK""LSL""LSM""LSN""LSO""LSP""LSQ""LSR""LSS""LST""LSU""LSV""LSW"
 #elif defined(PCBGRUVIN9X) || defined(CPUM2561) || defined(CPUM128)
-  #define TR_CUSTOMSW          "CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC""CSD""CSE""CSF"
+  #define TR_CUSTOMSW          "LS1""LS2""LS3""LS4""LS5""LS6""LS7""LS8""LS9""LSA""LSB""LSC""LSD""LSE""LSF"
 #else
-  #define TR_CUSTOMSW          "CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC"
+  #define TR_CUSTOMSW          "LS1""LS2""LS3""LS4""LS5""LS6""LS7""LS8""LS9""LSA""LSB""LSC"
 #endif
 
 #define TR_TRIMS_SWITCHES      "tRl""tRr""tEd""tEu""tTd""tTu""tAl""tAr"
