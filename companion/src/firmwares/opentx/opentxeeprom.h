@@ -64,6 +64,7 @@ class Open9xGeneralDataNew: public TransformedField {
     StructField internalField;
     GeneralSettings & generalData;
     BoardEnum board;
+    unsigned int version;
     int inputsCount;
     unsigned int chkSum;
 };

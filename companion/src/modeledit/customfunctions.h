@@ -55,6 +55,11 @@ class CustomFunctionsPanel : public ModelPanel
     void fswCut();
 
   private:
+    void populateFuncCB(QComboBox *b, unsigned int value);
+    void populateGVmodeCB(QComboBox *b, unsigned int value);
+    void populateFuncParamCB(QComboBox *b, const ModelData & model, uint function, unsigned int value, unsigned int adjustmode=0);
+    void populateFuncParamArmTCB(QComboBox *b, ModelData * g_model, char * value, QStringList & paramsList);
+
     GeneralSettings & generalSettings;
     bool phononLock;
     QComboBox * fswtchSwtch[C9X_MAX_CUSTOM_FUNCTIONS];

@@ -196,15 +196,18 @@ void ConvertGeneralSettings_215_to_216(EEGeneral &settings)
 #if defined(PCBTARANIS)
 int ConvertSwitch_215_to_216(int swtch)
 {
-  if (swtch < SWSRC_ON)
+  if (swtch <= SWSRC_LAST_SWITCH)
     return swtch;
   else
-    return swtch + (2*6); // 2 * 6-pos pots added as switches
+    return swtch + (2*4) + (2*6); // 4 trims and 2 * 6-pos added as switches
 }
 #else
 inline int ConvertSwitch_215_to_216(int swtch)
 {
-  return swtch;
+  if (swtch <= SWSRC_LAST_SWITCH)
+    return swtch;
+  else
+    return swtch + (2*4) + 1; // 4 trims and REa added
 }
 #endif
 
@@ -219,7 +222,7 @@ void ConvertModel_215_to_216(ModelData &model)
   // Custom Switches: better precision for x when A comes from telemetry
   // Main View: altitude in top bar
   // Mixes: GVARS in weight moved from 512 to 4096 and -512 to -4096, because GVARS may be used in limits [-1250:1250]
-  // Switches: two 6-pos pots added
+  // Switches: two 6-pos pots added, REa added to Sky9x
 
   TRACE("Model conversion from v215 to v216");
 
@@ -435,7 +438,7 @@ void ConvertModel_215_to_216(ModelData &model)
   for (uint8_t i=0; i<32; i++) {
     g_model.funcSw[i] = oldModel.funcSw[i];
     CustomFnData *sd = &g_model.funcSw[i];
-    if (CFN_FUNC(sd) == FUNC_PLAY_VALUE || CFN_FUNC(sd) == FUNC_VOLUME || (IS_ADJUST_GV_FUNCTION(sd) && CFN_GVAR_MODE(sd) == FUNC_ADJUST_GVAR_SOURCE)) {
+    if (CFN_FUNC(sd) == FUNC_PLAY_VALUE || CFN_FUNC(sd) == FUNC_VOLUME || (IS_ADJUST_GV_FUNC(CFN_FUNC(sd)) && CFN_GVAR_MODE(sd) == FUNC_ADJUST_GVAR_SOURCE)) {
 #if defined(PCBTARANIS)
       CFN_PARAM(sd) += 1 + MAX_INPUTS + MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS;
 #endif

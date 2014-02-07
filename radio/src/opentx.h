@@ -397,7 +397,6 @@ enum EnumKeys {
 
 #define NUM_PSWITCH     (SWSRC_LAST_SWITCH-SWSRC_FIRST_SWITCH+1)
 #define NUM_POTSSW      (NUM_XPOTS*6)
-#define NUM_SWITCH      (NUM_PSWITCH+NUM_CSW+NUM_POTSSW)
 
 #if defined(PCBTARANIS)
   #define KEY_RIGHT  KEY_PLUS
@@ -639,7 +638,9 @@ enum CswFunctions {
   CS_DIFFEGREATER,
   CS_ADIFFEGREATER,
   CS_TIMER,
-  CS_MAXF = CS_TIMER
+  CS_STICKY,
+  CS_COUNT,
+  CS_MAXF = CS_COUNT-1
 };
 
 #define CS_VOFS         0
@@ -647,6 +648,8 @@ enum CswFunctions {
 #define CS_VCOMP        2
 #define CS_VDIFF        3
 #define CS_VTIMER       4
+#define CS_VSTICKY      5
+
 uint8_t cswFamily(uint8_t func);
 int16_t cswTimerValue(int8_t val);
 
@@ -802,6 +805,7 @@ enum PowerState {
 };
 
 bool switchState(EnumKeys enuk);
+uint8_t trimDown(uint8_t idx);
 void readKeysAndTrims();
 
 uint16_t evalChkSum();
@@ -941,10 +945,8 @@ extern uint16_t s_timeCumThr;
 extern uint16_t s_timeCum16ThrP;
 
 struct TimerState {
-  uint8_t  lastPos;
   uint16_t cnt;
   uint16_t sum;
-  uint8_t  toggled;
   uint8_t  state;
   int16_t  val;
   uint8_t  val_10ms;
@@ -1314,19 +1316,34 @@ extern int24_t act   [MAX_MIXERS];
 #endif
 
 #if defined(CPUARM)
-  #define MASK_CFN_TYPE uint32_t  // current max = 32 function switches
-  #define MASK_FUNC_TYPE uint32_t // current max = 32 functions
+  #define MASK_CFN_TYPE  uint32_t  // current max = 32 function switches
+  #define MASK_FUNC_TYPE uint32_t  // current max = 32 functions
+
 #elif defined(CPUM64)
-  #define MASK_CFN_TYPE uint16_t  // current max = 16 function switches
-  #define MASK_FUNC_TYPE uint16_t // current max = 16 functions
+  #define MASK_CFN_TYPE  uint16_t  // current max = 16 function switches
+  #define MASK_FUNC_TYPE uint8_t   // current max = 8  functions
 #else
-  #define MASK_CFN_TYPE uint32_t  // current max = 32 function switches
-  #define MASK_FUNC_TYPE uint16_t // current max = 16 functions
+  #define MASK_CFN_TYPE  uint32_t  // current max = 32 function switches
+  #define MASK_FUNC_TYPE uint8_t   // current max = 8 functions
 #endif
 
-extern MASK_CFN_TYPE  activeSwitches;
-extern MASK_CFN_TYPE  activeFnSwitches;
+enum FunctionsActive {
+  FUNCTION_TRAINER,
+  FUNCTION_INSTANT_TRIM = FUNCTION_TRAINER+4,
+  FUNCTION_VARIO,
+  FUNCTION_BACKLIGHT,
+#if defined(SDCARD)
+  FUNCTION_LOGS,
+#endif
+#if defined(CPUARM)
+  FUNCTION_BACKGND_MUSIC,
+  FUNCTION_BACKGND_MUSIC_PAUSE,
+#endif
+};
+
+
 extern MASK_FUNC_TYPE activeFunctions;
+extern MASK_CFN_TYPE  activeFnSwitches;
 extern tmr10ms_t lastFunctionTime[NUM_CFN];
 
 #if defined(CPUARM)
@@ -1335,7 +1352,7 @@ extern bool evalFunctionsFirstTime;
 
 inline bool isFunctionActive(uint8_t func)
 {
-  return activeFunctions & ((MASK_FUNC_TYPE)1 << (func-FUNC_TRAINER));
+  return activeFunctions & ((uint8_t)1 << func);
 }
 
 #if defined(ROTARY_ENCODERS)

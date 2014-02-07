@@ -168,7 +168,6 @@ PACK(typedef struct t_Er9xSafetySwData { // Custom Switches data
   int8_t  swtch;
   int8_t  val;
 
-  operator SafetySwData();
   t_Er9xSafetySwData();
 }) Er9xSafetySwData;
 

@@ -253,9 +253,9 @@ void rotencInit();
 void rotencEnd();
 
 #if ROTARY_ENCODERS > 0
-  #define rotencDown()  (!(PIOB->PIO_PDSR & 0x40))
+  #define REA_DOWN()    (!(PIOB->PIO_PDSR & 0x40))
 #else
-  #define rotencDown()  0
+  #define REA_DOWN()    (0)
 #endif
 
 // Debug driver

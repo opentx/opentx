@@ -95,7 +95,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
     fswtchSwtch[i]->setProperty("index", i);
     connect(fswtchSwtch[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
     gridLayout->addWidget(fswtchSwtch[i], i+1, 1);
-    populateSwitchCB(fswtchSwtch[i], model.funcSw[i].swtch, POPULATE_MSWITCHES|POPULATE_ONOFF);
+    populateSwitchCB(fswtchSwtch[i], model.funcSw[i].swtch, POPULATE_ONOFF);
 
     // The function
     fswtchFunc[i] = new QComboBox(this);
@@ -286,7 +286,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
 
     int index = fswtchFunc[i]->currentIndex();
 
-    if (index>=FuncSafetyCh1 && index<=FuncSafetyCh16) {
+    if (index>=FuncSafetyCh1 && index<=FuncSafetyCh32) {
       fswtchParam[i]->setDecimals(0);
       fswtchParam[i]->setSingleStep(1);
       fswtchParam[i]->setMinimum(-125);
@@ -457,7 +457,7 @@ void CustomFunctionsPanel::fswPaste()
     FuncSwData *fsw = &model.funcSw[selectedFunction];
     memcpy(fsw, fswData.mid(0, sizeof(FuncSwData)).constData(), sizeof(FuncSwData));
     // TODO update switch and func
-    populateSwitchCB(fswtchSwtch[selectedFunction], model.funcSw[selectedFunction].swtch, POPULATE_MSWITCHES|POPULATE_ONOFF);
+    populateSwitchCB(fswtchSwtch[selectedFunction], model.funcSw[selectedFunction].swtch, POPULATE_ONOFF);
     populateFuncCB(fswtchFunc[selectedFunction], model.funcSw[selectedFunction].func);
     refreshCustomFunction(selectedFunction);
     emit modified();
@@ -468,7 +468,7 @@ void CustomFunctionsPanel::fswDelete()
 {
   model.funcSw[selectedFunction].clear();
   // TODO update switch and func
-  populateSwitchCB(fswtchSwtch[selectedFunction], model.funcSw[selectedFunction].swtch, POPULATE_MSWITCHES|POPULATE_ONOFF);
+  populateSwitchCB(fswtchSwtch[selectedFunction], model.funcSw[selectedFunction].swtch, POPULATE_ONOFF);
   populateFuncCB(fswtchFunc[selectedFunction], model.funcSw[selectedFunction].func);
   refreshCustomFunction(selectedFunction);
   emit modified();
@@ -507,4 +507,118 @@ void CustomFunctionsPanel::fsw_customContextMenuRequested(QPoint pos)
     contextMenu.addAction(CompanionIcon("paste.png"), tr("&Paste"),this,SLOT(fswPaste()),tr("Ctrl+V"))->setEnabled(hasData);
 
     contextMenu.exec(globalPos);
+}
+
+void CustomFunctionsPanel::populateFuncCB(QComboBox *b, unsigned int value)
+{
+  b->clear();
+  for (unsigned int i=0; i<FuncCount; i++) {
+    b->addItem(FuncSwData(AssignFunc(i)).funcToString());
+    if (!GetEepromInterface()->getCapability(HasVolume)) {
+      if (i==FuncVolume || i==FuncBackgroundMusic || i==FuncBackgroundMusicPause) {
+        QModelIndex index = b->model()->index(i, 0);
+        QVariant v(0);
+        b->model()->setData(index, v, Qt::UserRole - 1);
+      }
+    }
+    if ((i==FuncPlayHaptic) && !GetEepromInterface()->getCapability(Haptic)) {
+      QModelIndex index = b->model()->index(i, 0);
+      QVariant v(0);
+      b->model()->setData(index, v, Qt::UserRole - 1);
+    }
+    if ((i==FuncPlayBoth) && !GetEepromInterface()->getCapability(HasBeeper)) {
+      QModelIndex index = b->model()->index(i, 0);
+      QVariant v(0);
+      b->model()->setData(index, v, Qt::UserRole - 1);
+    }
+    if ((i==FuncLogs) && !GetEepromInterface()->getCapability(HasSDLogs)) {
+      QModelIndex index = b->model()->index(i, 0);
+      QVariant v(0);
+      b->model()->setData(index, v, Qt::UserRole - 1);
+    }
+  }
+  b->setCurrentIndex(value);
+  b->setMaxVisibleItems(10);
+}
+
+void CustomFunctionsPanel::populateGVmodeCB(QComboBox *b, unsigned int value)
+{
+  b->clear();
+  b->addItem(QObject::tr("Value"));
+  b->addItem(QObject::tr("Source"));
+  b->addItem(QObject::tr("GVAR"));
+  b->addItem(QObject::tr("Increment"));
+  b->setCurrentIndex(value);
+}
+
+void CustomFunctionsPanel::populateFuncParamArmTCB(QComboBox *b, ModelData * g_model, char * value, QStringList & paramsList)
+{
+  b->clear();
+  b->addItem("----");
+
+  QString currentvalue(value);
+  foreach ( QString entry, paramsList ) {
+    b->addItem(entry);
+    if (entry==currentvalue) {
+      b->setCurrentIndex(b->count()-1);
+    }
+  }
+}
+
+void CustomFunctionsPanel::populateFuncParamCB(QComboBox *b, const ModelData & model, uint function, unsigned int value, unsigned int adjustmode)
+{
+  QStringList qs;
+  b->clear();
+  if (function==FuncPlaySound) {
+    qs <<"Beep 1" << "Beep 2" << "Beep 3" << "Warn1" << "Warn2" << "Cheep" << "Ratata" << "Tick" << "Siren" << "Ring" ;
+    qs << "SciFi" << "Robot" << "Chirp" << "Tada" << "Crickt"  << "AlmClk"  ;
+    b->addItems(qs);
+    b->setCurrentIndex(value);
+  }
+  else if (function==FuncPlayHaptic) {
+    qs << "0" << "1" << "2" << "3";
+    b->addItems(qs);
+    b->setCurrentIndex(value);
+  }
+  else if (function==FuncReset) {
+    qs.append( QObject::tr("Timer1"));
+    qs.append( QObject::tr("Timer2"));
+    qs.append( QObject::tr("All"));
+    qs.append( QObject::tr("Telemetry"));
+    int reCount = GetEepromInterface()->getCapability(RotaryEncoders);
+    if (reCount == 1) {
+      qs.append( QObject::tr("Rotary Encoder"));
+    }
+    else if (reCount == 2) {
+      qs.append( QObject::tr("REa"));
+      qs.append( QObject::tr("REb"));
+    }
+    b->addItems(qs);
+    b->setCurrentIndex(value);
+  }
+  else if (function==FuncVolume) {
+    populateSourceCB(b, RawSource(value), model, POPULATE_SOURCES|POPULATE_TRIMS);
+  }
+  else if (function==FuncPlayValue) {
+    populateSourceCB(b, RawSource(value), model, POPULATE_SOURCES|POPULATE_VIRTUAL_INPUTS|POPULATE_SWITCHES|POPULATE_GVARS|POPULATE_TRIMS|POPULATE_TELEMETRYEXT);
+  }
+  else if (function>=FuncAdjustGV1 && function<=FuncAdjustGVLast) {
+    switch (adjustmode) {
+      case 1:
+        populateSourceCB(b, RawSource(value), model, POPULATE_SOURCES|POPULATE_TRIMS|POPULATE_SWITCHES);
+        break;
+      case 2:
+        populateSourceCB(b, RawSource(value), model, POPULATE_GVARS);
+        break;
+      case 3:
+        b->clear();
+        b->addItem("-1", 0);
+        b->addItem("+1", 1);
+        b->setCurrentIndex(value);
+        break;
+    }
+  }
+  else {
+    b->hide();
+  }
 }

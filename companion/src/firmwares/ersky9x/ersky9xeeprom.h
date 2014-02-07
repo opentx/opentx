@@ -19,8 +19,7 @@
 #include <inttypes.h>
 #include "eeprominterface.h"
 
-extern TimerMode getEr9xTimerMode(int mode);
-extern int setEr9xTimerMode(TimerMode mode);
+extern RawSwitch getEr9xTimerMode(int mode);
 
 //eeprom data
 #define ERSKY9X_MAX_MIXERS_V10  32
@@ -210,7 +209,6 @@ PACK(typedef struct t_Ersky9xSafetySwData_v10 { // Custom Switches data
   int8_t  swtch;
   int8_t  val;
 
-  operator SafetySwData();
   t_Ersky9xSafetySwData_v10();
 }) Ersky9xSafetySwData_v10;
 
@@ -230,7 +228,6 @@ PACK(typedef struct t_Ersky9xSafetySwData_v11 { // Custom Switches data
     } vs ;
   } opt ;
 
-  operator SafetySwData();
   t_Ersky9xSafetySwData_v11();
 }) Ersky9xSafetySwData_v11;
 
