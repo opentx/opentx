@@ -36,6 +36,16 @@ void RepeatComboBox::onIndexChanged(int index)
   emit modified();
 }
 
+void RepeatComboBox::update()
+{
+  unsigned int step = IS_ARM(GetEepromInterface()->getBoard()) ? 1 : 10;
+  int value = repeatParam/step;
+  if (step == 1) {
+    value++;
+  }
+  setCurrentIndex(value);
+}
+
 CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings):
   ModelPanel(parent, model),
   generalSettings(generalSettings),
@@ -52,7 +62,6 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
   lock = true;
   int num_fsw = GetEepromInterface()->getCapability(CustomFunctions);
 
-  QStringList paramarmList;
   if (!GetEepromInterface()->getCapability(VoicesAsNumbers)) {
     for (int i=0; i<num_fsw; i++) {
       if (model.funcSw[i].func==FuncPlayPrompt || model.funcSw[i].func==FuncBackgroundMusic) {
@@ -89,6 +98,15 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
 
   for (int i=0; i<num_fsw; i++) {
     AssignFunc func = model.funcSw[i].func;
+
+    // The label
+    QLabel * label = new QLabel(this);
+    label->setContextMenuPolicy(Qt::CustomContextMenu);
+    label->setMouseTracking(true);
+    label->setProperty("index", i);
+    label->setText(tr("CF%1").arg(i+1));
+    gridLayout->addWidget(label, i+1, 0);
+    connect(label, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(fsw_customContextMenuRequested(QPoint)));
 
     // The switch
     fswtchSwtch[i] = new QComboBox(this);
@@ -135,7 +153,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
 
     fswtchParamArmT[i] = new QComboBox(this);
     fswtchParamArmT[i]->setProperty("index", i);
-    populateFuncParamArmTCB(fswtchParamArmT[i],&model, model.funcSw[i].paramarm, paramarmList);
+    populateFuncParamArmTCB(fswtchParamArmT[i], model.funcSw[i].paramarm, paramarmList);
     fswtchParamArmT[i]->setEditable(true);
     paramLayout->addWidget(fswtchParamArmT[i]);
 
@@ -337,6 +355,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
     else if (index==FuncPlaySound || index==FuncPlayHaptic || index==FuncPlayValue || index==FuncPlayPrompt || index==FuncPlayBoth || index==FuncBackgroundMusic) {
       if (index != FuncBackgroundMusic && GetEepromInterface()->getCapability(HasFuncRepeat)) {
         widgetsMask |= CUSTOM_FUNCTION_REPEAT;
+        fswtchRepeat[i]->update();
       }
       if (index==FuncPlayValue) {
         if (modified) model.funcSw[i].param = fswtchParamT[i]->itemData(fswtchParamT[i]->currentIndex()).toInt();
@@ -381,12 +400,18 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
           widgetsMask |= CUSTOM_FUNCTION_FILE_PARAM;
           if (modified) {
             memset(model.funcSw[i].paramarm, 0, sizeof(model.funcSw[i].paramarm));
-            int vml=GetEepromInterface()->getCapability(VoicesMaxLength);
+            int vml = GetEepromInterface()->getCapability(VoicesMaxLength);
             if (fswtchParamArmT[i]->currentText() != "----") {
               widgetsMask |= CUSTOM_FUNCTION_PLAY;
-              for (int j=0; j<std::min(fswtchParamArmT[i]->currentText().length(),vml); j++) {
+              for (int j=0; j<std::min(fswtchParamArmT[i]->currentText().length(), vml); j++) {
                 model.funcSw[i].paramarm[j] = fswtchParamArmT[i]->currentText().toAscii().at(j);
               }
+            }
+          }
+          else {
+            populateFuncParamArmTCB(fswtchParamArmT[i], model.funcSw[i].paramarm, paramarmList);
+            if (fswtchParamArmT[i]->currentText() != "----") {
+              widgetsMask |= CUSTOM_FUNCTION_PLAY;
             }
           }
         }
@@ -453,13 +478,13 @@ void CustomFunctionsPanel::fswPaste()
   const QMimeData *mimeData = clipboard->mimeData();
   if (mimeData->hasFormat("application/x-companion-fsw")) {
     QByteArray fswData = mimeData->data("application/x-companion-fsw");
-
     FuncSwData *fsw = &model.funcSw[selectedFunction];
     memcpy(fsw, fswData.mid(0, sizeof(FuncSwData)).constData(), sizeof(FuncSwData));
-    // TODO update switch and func
+    lock = true;
     populateSwitchCB(fswtchSwtch[selectedFunction], model.funcSw[selectedFunction].swtch, POPULATE_ONOFF);
     populateFuncCB(fswtchFunc[selectedFunction], model.funcSw[selectedFunction].func);
     refreshCustomFunction(selectedFunction);
+    lock = false;
     emit modified();
   }
 }
@@ -476,17 +501,17 @@ void CustomFunctionsPanel::fswDelete()
 
 void CustomFunctionsPanel::fswCopy()
 {
-    QByteArray fswData;
-    fswData.append((char*)&model.funcSw[selectedFunction],sizeof(FuncSwData));
-    QMimeData *mimeData = new QMimeData;
-    mimeData->setData("application/x-companion-fsw", fswData);
-    QApplication::clipboard()->setMimeData(mimeData,QClipboard::Clipboard);
+  QByteArray fswData;
+  fswData.append((char*)&model.funcSw[selectedFunction], sizeof(FuncSwData));
+  QMimeData *mimeData = new QMimeData;
+  mimeData->setData("application/x-companion-fsw", fswData);
+  QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
 }
 
 void CustomFunctionsPanel::fswCut()
 {
-    fswCopy();
-    fswDelete();
+  fswCopy();
+  fswDelete();
 }
 
 void CustomFunctionsPanel::fsw_customContextMenuRequested(QPoint pos)
@@ -551,17 +576,24 @@ void CustomFunctionsPanel::populateGVmodeCB(QComboBox *b, unsigned int value)
   b->setCurrentIndex(value);
 }
 
-void CustomFunctionsPanel::populateFuncParamArmTCB(QComboBox *b, ModelData * g_model, char * value, QStringList & paramsList)
+void CustomFunctionsPanel::populateFuncParamArmTCB(QComboBox *b, char * value, QStringList & paramsList)
 {
   b->clear();
   b->addItem("----");
 
+  bool added = false;
   QString currentvalue(value);
   foreach ( QString entry, paramsList ) {
     b->addItem(entry);
     if (entry==currentvalue) {
       b->setCurrentIndex(b->count()-1);
+      added = true;
     }
+  }
+
+  if (!added && strlen(value)) {
+    b->addItem(value);
+    b->setCurrentIndex(b->count()-1);
   }
 }
 
