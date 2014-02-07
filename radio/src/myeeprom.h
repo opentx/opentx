@@ -668,14 +668,42 @@ PACK( union u_int8int16_t {
 
 #endif
 
+enum CswFunctions {
+  CS_OFF,
+  CS_VEQUAL, // v==offset
+  CS_VPOS,   // v>offset
+  CS_VNEG,   // v<offset
+#if defined(CPUARM)
+  CS_RANGE,
+#endif
+  CS_APOS,   // |v|>offset
+  CS_ANEG,   // |v|<offset
+  CS_AND,
+  CS_OR,
+  CS_XOR,
+#if defined(CPUARM)
+  CS_STAY,
+#endif
+  CS_EQUAL,
+  CS_GREATER,
+  CS_LESS,
+  CS_DIFFEGREATER,
+  CS_ADIFFEGREATER,
+  CS_TIMER,
+  CS_STICKY,
+  CS_COUNT,
+  CS_MAXF = CS_COUNT-1
+};
+
 #if defined(CPUARM)
 #define MAX_CSW_DURATION 120 /*60s*/
 #define MAX_CSW_DELAY    120 /*60s*/
 #define MAX_CSW_ANDSW    SWSRC_LAST
 typedef int16_t csw_telemetry_value_t;
 PACK(typedef struct t_CustomSwData { // Custom Switches data
-  int16_t v1;
+  int8_t  v1;
   int16_t v2;
+  int16_t v3;
   uint8_t func;
   uint8_t delay;
   uint8_t duration;

@@ -1140,7 +1140,12 @@ class CustomSwitchField: public TransformedField {
       switchesConversionTable(SwitchesConversionTable::getInstance(board, version)),
       andswitchesConversionTable(AndSwitchesConversionTable::getInstance(board, version))
     {
-      if (IS_ARM(board) && version >= 215) {
+      if (IS_ARM(board) && version >= 216) {
+        internalField.Append(new SignedField<8>(v1));
+        internalField.Append(new SignedField<16>(v2));
+        internalField.Append(new SignedField<16>(v3));
+      }
+      else if (IS_ARM(board) && version >= 215) {
         internalField.Append(new SignedField<16>(v1));
         internalField.Append(new SignedField<16>(v2));
       }
@@ -1170,7 +1175,12 @@ class CustomSwitchField: public TransformedField {
 
     virtual void beforeExport()
     {
-      if ((csw.func >= CS_FN_AND && csw.func <= CS_FN_XOR) || csw.func == CS_FN_STICKY) {
+      if (csw.func == CS_FN_STAY) {
+        switchesConversionTable->exportValue(csw.val1, v1);
+        v2 = csw.val2;
+        v3 = csw.val3;
+      }
+      else if ((csw.func >= CS_FN_AND && csw.func <= CS_FN_XOR) || csw.func == CS_FN_STICKY) {
         switchesConversionTable->exportValue(csw.val1, v1);
         switchesConversionTable->exportValue(csw.val2, v2);
       }
@@ -1189,7 +1199,12 @@ class CustomSwitchField: public TransformedField {
 
     virtual void afterImport()
     {
-      if ((csw.func >= CS_FN_AND && csw.func <= CS_FN_XOR) || csw.func == CS_FN_STICKY) {
+      if (csw.func == CS_FN_STAY) {
+        switchesConversionTable->importValue(v1, csw.val1);
+        csw.val2 = v2;
+        csw.val3 = v3;
+      }
+      else if ((csw.func >= CS_FN_AND && csw.func <= CS_FN_XOR) || csw.func == CS_FN_STICKY) {
         switchesConversionTable->importValue(v1, csw.val1);
         switchesConversionTable->importValue(v2, csw.val2);
       }
@@ -1218,6 +1233,7 @@ class CustomSwitchField: public TransformedField {
     ConversionTable * andswitchesConversionTable;
     int v1;
     int v2;
+    int v3;
 };
 
 class CustomFunctionsConversionTable: public ConversionTable {

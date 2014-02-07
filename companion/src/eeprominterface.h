@@ -596,6 +596,8 @@ enum CSFunction {
   CS_FN_VEQUAL, // added at the end to avoid everything renumbered
   CS_FN_TIMER,
   CS_FN_STICKY,
+  CS_FN_STAY,
+  // later ... CS_FN_RANGE,
   CS_FN_MAX
 };
 
@@ -604,7 +606,8 @@ enum CSFunctionFamily {
   CS_FAMILY_VBOOL,
   CS_FAMILY_VCOMP,
   CS_FAMILY_TIMER,
-  CS_FAMILY_STICKY
+  CS_FAMILY_STICKY,
+  CS_FAMILY_STAY,
 };
 
 class CustomSwData { // Custom Switches data
@@ -615,8 +618,9 @@ class CustomSwData { // Custom Switches data
       this->func = func;
     }
     unsigned int func;
-    int  val1;
-    int  val2;
+    int val1;
+    int val2;
+    int val3;
     unsigned int delay;
     unsigned int duration;
     int andsw;

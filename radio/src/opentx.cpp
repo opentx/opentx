@@ -448,10 +448,23 @@ CustomSwData *cswAddress(uint8_t idx)
 
 uint8_t cswFamily(uint8_t func)
 {
-  return (func<CS_AND ? CS_VOFS : (func<CS_EQUAL ? CS_VBOOL : (func<CS_DIFFEGREATER ? CS_VCOMP : (func<CS_TIMER ? CS_VDIFF : func+CS_VTIMER-CS_TIMER))));
+  if (func <= CS_ANEG)
+    return CS_FAMILY_OFS;
+  else if (func <= CS_XOR)
+    return CS_FAMILY_BOOL;
+#if defined(CPUARM)
+  else if (func == CS_STAY)
+    return CS_FAMILY_STAY;
+#endif
+  else if (func <= CS_LESS)
+    return CS_FAMILY_COMP;
+  else if (func <= CS_ADIFFEGREATER)
+    return CS_FAMILY_DIFF;
+  else
+    return CS_FAMILY_TIMER+func-CS_TIMER;
 }
 
-int16_t cswTimerValue(int8_t val)
+int16_t cswTimerValue(delayval_t val)
 {
   return (val < -109 ? 129+val : (val < 7 ? (113+val)*5 : (53+val)*10));
 }
@@ -536,9 +549,6 @@ void applyDefaultTemplate()
 
 #if defined(PCBTARANIS)
     mix->srcRaw = i+1;
-    if (!isSourceAvailable(mix->srcRaw)) {
-      mix->srcRaw = MIXSRC_Rud - 1 + stick_index;
-    }
 #else
     mix->srcRaw = MIXSRC_Rud - 1 + channel_order(i+1);
 #endif
@@ -573,9 +583,9 @@ void modelDefault(uint8_t id)
   g_model.frsky.channels[0].ratio = 132;
 #endif
 
-#ifdef MAVLINK
-	g_model.mavlink.rc_rssi_scale = 15;
-	g_model.mavlink.pc_rssi_en = 1;
+#if defined(MAVLINK)
+  g_model.mavlink.rc_rssi_scale = 15;
+  g_model.mavlink.pc_rssi_en = 1;
 #endif
 }
 
@@ -1426,7 +1436,7 @@ bool getSwitch(int8_t swtch)
         csLastValue[cs_idx] = CS_LAST_VALUE_INIT;
         result = false;
       }
-      else if ((s=cswFamily(cs->func)) == CS_VBOOL) {
+      else if ((s=cswFamily(cs->func)) == CS_FAMILY_BOOL) {
         bool res1 = getSwitch(cs->v1);
         bool res2 = getSwitch(cs->v2);
         switch (cs->func) {
@@ -1442,16 +1452,21 @@ bool getSwitch(int8_t swtch)
             break;
         }
       }
-      else if (s == CS_VTIMER) {
+      else if (s == CS_FAMILY_TIMER) {
         result = (csLastValue[cs_idx] <= 0);
       }
-      else if (s == CS_VSTICKY) {
+      else if (s == CS_FAMILY_STICKY) {
         result = (csLastValue[cs_idx] & (1<<0));
       }
+#if defined(CPUARM)
+      else if (s == CS_FAMILY_STAY) {
+        result = (csLastValue[cs_idx] & (1<<0));
+      }
+#endif
       else {
         getvalue_t x = getValue(cs->v1);
         getvalue_t y;
-        if (s == CS_VCOMP) {
+        if (s == CS_FAMILY_COMP) {
           y = getValue(cs->v2);
 
           switch (cs->func) {
@@ -1476,7 +1491,7 @@ bool getSwitch(int8_t swtch)
             y = convertCswTelemValue(cs);
 
 #if defined(FRSKY_HUB) && defined(GAUGES)
-            if (s == CS_VOFS) {
+            if (s == CS_FAMILY_OFS) {
               uint8_t idx = cs->v1-MIXSRC_FIRST_TELEM+1-TELEM_ALT;
               if (idx < THLD_MAX) {
                 // Fill the threshold array
@@ -1562,6 +1577,9 @@ bool getSwitch(int8_t swtch)
 
         if (cswDurations[cs_idx] > get_tmr10ms()) {
           result = true;
+        }
+        else if (s == CS_FAMILY_STICKY) {
+          csLastValue[cs_idx] &= ~(1<<0);
         }
       }
 #endif
@@ -1980,7 +1998,7 @@ getvalue_t convertCswTelemValue(CustomSwData * cs)
 #if defined(CPUARM)
   val = convert16bitsTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, cs->v2);
 #else
-  if (cswFamily(cs->func)==CS_VOFS)
+  if (cswFamily(cs->func)==CS_FAMILY_OFS)
     val = convert8bitsTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128+cs->v2);
   else
     val = convert8bitsTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128+cs->v2) - convert8bitsTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128);
@@ -3995,27 +4013,54 @@ void doMixerCalculations()
         }
       }
       else if (cs->func == CS_STICKY) {
-        uint16_t & lastValue = (uint16_t &)csLastValue[i];
-        bool before = (lastValue & (1<<15));
-        if (lastValue & (1<<0)) {
+        PACK(typedef struct {
+          bool state;
+          bool last;
+        }) cs_sticky_struct;
+        cs_sticky_struct & lastValue = (cs_sticky_struct &)csLastValue[i];
+        bool before = lastValue.last & 0x01;
+        if (lastValue.state) {
           bool now = getSwitch(cs->v2);
           if (now != before) {
-            lastValue ^= (1<<15);
+            lastValue.last ^= true;
             if (!before) {
-              lastValue &= ~(1<<0);
+              lastValue.state = false;
             }
           }
         }
         else {
           bool now = getSwitch(cs->v1);
           if (before != now) {
-            lastValue ^= (1<<15);
+            lastValue.last ^= true;
             if (!before) {
-              lastValue |= (1<<0);
+              lastValue.state = true;
             }
           }
         }
       }
+#if defined(CPUARM)
+      else if (cs->func == CS_STAY) {
+        PACK(typedef struct {
+          uint8_t  state:1;
+          uint16_t duration:15;
+        }) cs_stay_struct;
+
+        cs_stay_struct & lastValue = (cs_stay_struct &)csLastValue[i];
+        lastValue.state = false;
+        bool state = getSwitch(cs->v1);
+        if (state) {
+          if (cs->v3 == 0 && lastValue.duration == cswTimerValue(cs->v2))
+            lastValue.state = true;
+          if (lastValue.duration < 1000)
+            lastValue.duration++;
+        }
+        else {
+          if (lastValue.duration > cswTimerValue(cs->v2) && lastValue.duration <= cswTimerValue(cs->v2+cs->v3))
+            lastValue.state = true;
+          lastValue.duration = 0;
+        }
+      }
+#endif
     }
   
     if (s_cnt_1s >= 10) { // 1sec

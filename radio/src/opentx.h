@@ -622,37 +622,6 @@ enum BaseCurves {
 #define SWASH_TYPE_90    4
 #define SWASH_TYPE_NUM   4
 
-enum CswFunctions {
-  CS_OFF,
-  CS_VEQUAL, // v==offset
-  CS_VPOS,   // v>offset
-  CS_VNEG,   // v<offset
-  CS_APOS,   // |v|>offset
-  CS_ANEG,   // |v|<offset
-  CS_AND,
-  CS_OR,
-  CS_XOR,
-  CS_EQUAL,
-  CS_GREATER,
-  CS_LESS,
-  CS_DIFFEGREATER,
-  CS_ADIFFEGREATER,
-  CS_TIMER,
-  CS_STICKY,
-  CS_COUNT,
-  CS_MAXF = CS_COUNT-1
-};
-
-#define CS_VOFS         0
-#define CS_VBOOL        1
-#define CS_VCOMP        2
-#define CS_VDIFF        3
-#define CS_VTIMER       4
-#define CS_VSTICKY      5
-
-uint8_t cswFamily(uint8_t func);
-int16_t cswTimerValue(int8_t val);
-
 #define NUM_CYC         3
 #define NUM_CAL_PPM     4
 #define NUM_PPM         8
@@ -1314,6 +1283,20 @@ extern int24_t act   [MAX_MIXERS];
   #define isExpoActive(x) false
   #define isMixActive(x) false
 #endif
+
+enum CswFunctionFamilies {
+  CS_FAMILY_OFS,
+  CS_FAMILY_BOOL,
+  CS_FAMILY_COMP,
+  CS_FAMILY_DIFF,
+  CS_FAMILY_TIMER,
+  CS_FAMILY_STICKY,
+  CS_FAMILY_RANGE,
+  CS_FAMILY_STAY
+};
+
+uint8_t cswFamily(uint8_t func);
+int16_t cswTimerValue(delayval_t val);
 
 #if defined(CPUARM)
   #define MASK_CFN_TYPE  uint32_t  // current max = 32 function switches

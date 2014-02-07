@@ -4174,6 +4174,9 @@ enum CustomSwitchFields {
   CSW_FIELD_FUNCTION,
   CSW_FIELD_V1,
   CSW_FIELD_V2,
+#if defined(PCBTARANIS)
+  CSW_FIELD_V3,
+#endif
   CSW_FIELD_ANDSW,
 #if defined(CPUARM)
   CSW_FIELD_DURATION,
@@ -4208,7 +4211,8 @@ void menuModelCustomSwitchOne(uint8_t event)
   CustomSwData * cs = cswAddress(s_currIdx);
   uint8_t sw = SWSRC_SW1+s_currIdx;
   putsSwitches(14*FW, 0, sw, (getSwitch(sw) ? BOLD : 0));
-  SIMPLE_SUBMENU_NOTITLE(CSW_FIELD_COUNT);
+
+  SUBMENU_NOTITLE(CSW_FIELD_COUNT, {0, 0, 1, 0 /*, 0...*/});
 
   int8_t sub = m_posVert;
 
@@ -4222,10 +4226,18 @@ void menuModelCustomSwitchOne(uint8_t event)
         lcd_putsLeft(y, STR_FUNC);
         lcd_putsiAtt(CSWONE_2ND_COLUMN, y, STR_VCSWFUNC, cs->func, attr);
         if (attr) {
-          CHECK_INCDEC_MODELVAR_ZERO(event, cs->func, CS_MAXF);
-          if (cstate != cswFamily(cs->func)) {
-            cs->v1 = 0;
-            cs->v2 = 0;
+          cs->func = checkIncDec(event, cs->func, 0, CS_MAXF, EE_MODEL, isFunctionAvailable);
+          uint8_t new_cstate = cswFamily(cs->func);
+          if (cstate != new_cstate) {
+            if (new_cstate == CS_FAMILY_TIMER) {
+              cs->v1 = cs->v2 = -119;
+            }
+            else if (new_cstate == CS_FAMILY_STAY) {
+              cs->v1 = 0; cs->v2 = -129; cs->v3 = 0;
+            }
+            else {
+              cs->v1 = cs->v2 = 0;
+            }
           }
         }
         break;
@@ -4233,11 +4245,11 @@ void menuModelCustomSwitchOne(uint8_t event)
       {
         lcd_putsLeft(y, STR_V1);
         int8_t v1_min=0, v1_max=MIXSRC_LAST_TELEM;
-        if (cstate == CS_VBOOL || cstate == CS_VSTICKY) {
+        if (cstate == CS_FAMILY_BOOL || cstate == CS_FAMILY_STICKY || cstate == CS_FAMILY_STAY) {
           putsSwitches(CSWONE_2ND_COLUMN, y, cs->v1, attr);
           v1_min = SWSRC_OFF+1; v1_max = SWSRC_ON-1;
         }
-        else if (cstate == CS_VTIMER) {
+        else if (cstate == CS_FAMILY_TIMER) {
           lcd_outdezAtt(CSWONE_2ND_COLUMN, y, cs->v1+1, LEFT|attr);
           v1_max = 99;
         }
@@ -4252,16 +4264,32 @@ void menuModelCustomSwitchOne(uint8_t event)
       case CSW_FIELD_V2:
       {
         lcd_putsLeft(y, STR_V2);
-        int8_t v2_min=0, v2_max=MIXSRC_LAST_TELEM;
-        if (cstate == CS_VBOOL || cstate == CS_VSTICKY) {
+        int16_t v2_min=0, v2_max=MIXSRC_LAST_TELEM;
+        if (cstate == CS_FAMILY_BOOL || cstate == CS_FAMILY_STICKY) {
           putsSwitches(CSWONE_2ND_COLUMN, y, cs->v2, attr);
           v2_min = SWSRC_OFF+1; v2_max = SWSRC_ON-1;
         }
-        else if (cstate == CS_VTIMER) {
+        else if (cstate == CS_FAMILY_TIMER) {
           lcd_outdezAtt(CSWONE_2ND_COLUMN, y, cs->v2+1, LEFT|attr);
           v2_max = 99;
         }
-        else if (cstate == CS_VCOMP) {
+        else if (cstate == CS_FAMILY_STAY) {
+          lcd_putc(CSWONE_2ND_COLUMN-4, y, '[');
+          lcd_outdezAtt(CSWONE_2ND_COLUMN, y, cswTimerValue(cs->v2), LEFT|PREC1|(m_posHorz==0 ? attr : 0));
+          lcd_putc(lcdLastPos, y, ':');
+          if (cs->v3 == 0)
+            lcd_putsAtt(lcdLastPos+3, y, "--", (m_posHorz==1 ? attr : 0));
+          else
+            lcd_outdezAtt(lcdLastPos+3, y, cswTimerValue(cs->v2+cs->v3), LEFT|PREC1|(m_posHorz==1 ? attr : 0));
+          lcd_putc(lcdLastPos, y, ']');
+          if (s_editMode <= 0) continue;
+          if (attr && m_posHorz==1) {
+            CHECK_INCDEC_MODELVAR(event, cs->v3, 0, 222 - cs->v2);
+            break;
+          }
+          v2_min=-129; v2_max = 122;
+        }
+        else if (cstate == CS_FAMILY_COMP) {
           putsMixerSource(CSWONE_2ND_COLUMN, y, cs->v2, attr);
         }
         else {
@@ -4269,7 +4297,7 @@ void menuModelCustomSwitchOne(uint8_t event)
           if (cs->v1 >= MIXSRC_FIRST_TELEM) {
             putsTelemetryChannel(CSWONE_2ND_COLUMN, y, cs->v1 - MIXSRC_FIRST_TELEM, convertCswTelemValue(cs), attr|LEFT);
             v2_max = maxTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1);
-            if (cstate == CS_VOFS) {
+            if (cstate == CS_FAMILY_OFS) {
               v2_min = -128;
               v2_max -= 128;
             }
@@ -4358,15 +4386,26 @@ void menuModelCustomSwitches(uint8_t event)
       // CSW params
       uint8_t cstate = cswFamily(cs->func);
 
-      if (cstate == CS_VBOOL || cstate == CS_VSTICKY) {
+      if (cstate == CS_FAMILY_BOOL || cstate == CS_FAMILY_STICKY) {
         putsSwitches(CSW_2ND_COLUMN, y, cs->v1, 0);
         putsSwitches(CSW_3RD_COLUMN, y, cs->v2, 0);
       }
-      else if (cstate == CS_VCOMP) {
+      else if (cstate == CS_FAMILY_COMP) {
         putsMixerSource(CSW_2ND_COLUMN, y, cs->v1, 0);
         putsMixerSource(CSW_3RD_COLUMN, y, cs->v2, 0);
       }
-      else if (cstate == CS_VTIMER) {
+      else if (cstate == CS_FAMILY_STAY) {
+        putsSwitches(CSW_2ND_COLUMN, y, cs->v1, 0);
+        lcd_putc(CSW_3RD_COLUMN-4, y, '[');
+        lcd_outdezAtt(CSW_3RD_COLUMN, y, cswTimerValue(cs->v2), LEFT|PREC1);
+        lcd_putc(lcdLastPos, y, ':');
+        if (cs->v3 == 0)
+          lcd_puts(lcdLastPos+3, y, "--");
+        else
+          lcd_outdezAtt(lcdLastPos+3, y, cswTimerValue(cs->v2+cs->v3), LEFT|PREC1);
+        lcd_putc(lcdLastPos-1, y, ']');
+      }
+      else if (cstate == CS_FAMILY_TIMER) {
         lcd_outdezAtt(CSW_2ND_COLUMN, y, cs->v1+1, LEFT);
         lcd_outdezAtt(CSW_3RD_COLUMN, y, cs->v2+1, LEFT);
       }
@@ -4473,11 +4512,12 @@ void menuModelCustomSwitches(uint8_t event)
     uint8_t cstate = cswFamily(cs->func);
 #if defined(CPUARM)
     int16_t v1_min=0, v1_max=MIXSRC_LAST_TELEM, v2_min=0, v2_max=MIXSRC_LAST_TELEM;
+    int16_t v3_min=0, v3_max=100;
 #else
     int8_t v1_min=0, v1_max=MIXSRC_LAST_TELEM, v2_min=0, v2_max=MIXSRC_LAST_TELEM;
 #endif
 
-    if (cstate == CS_VBOOL || cstate == CS_VSTICKY) {
+    if (cstate == CS_FAMILY_BOOL || cstate == CS_FAMILY_STICKY) {
       putsSwitches(CSW_2ND_COLUMN, y, cs->v1, attr1);
       putsSwitches(CSW_3RD_COLUMN, y, cs->v2, attr2);
       v1_min = SWSRC_OFF+1; v1_max = SWSRC_ON-1;
@@ -4485,13 +4525,31 @@ void menuModelCustomSwitches(uint8_t event)
       INCDEC_SET_FLAG(INCDEC_SWITCH);
       INCDEC_ENABLE_CHECK(isSwitchAvailableInCustomSwitches);
     }
-    else if (cstate == CS_VCOMP) {
+#if defined(CPUARM)
+    else if (cstate == CS_FAMILY_STAY) {
+      putsSwitches(CSW_2ND_COLUMN, y, cs->v1, attr1);
+      lcd_putc(CSW_3RD_COLUMN-4, y, '[');
+      lcd_outdezAtt(CSW_3RD_COLUMN, y, cswTimerValue(cs->v2), LEFT|PREC1|attr2);
+      lcd_putc(lcdLastPos, y, ':');
+      if (cs->v3 == 0)
+        lcd_putsAtt(lcdLastPos+3, y, "--", (horz==CSW_FIELD_V3 ? attr : 0));
+      else
+        lcd_outdezAtt(lcdLastPos+3, y, cswTimerValue(cs->v2+cs->v3), LEFT|PREC1|(horz==CSW_FIELD_V3 ? attr : 0));
+      lcd_putc(lcdLastPos, y, ']');
+      v1_min = SWSRC_OFF+1; v1_max = SWSRC_ON-1;
+      v2_min=-129; v2_max = 122;
+      v3_max = 222 - cs->v2;
+      INCDEC_SET_FLAG(0);
+      INCDEC_ENABLE_CHECK(NULL);
+    }
+#endif
+    else if (cstate == CS_FAMILY_COMP) {
       putsMixerSource(CSW_2ND_COLUMN, y, cs->v1, attr1);
       putsMixerSource(CSW_3RD_COLUMN, y, cs->v2, attr2);
       INCDEC_SET_FLAG(INCDEC_SOURCE);
       INCDEC_ENABLE_CHECK(isSourceAvailable);
     }
-    else if (cstate == CS_VTIMER) {
+    else if (cstate == CS_FAMILY_TIMER) {
       lcd_outdezAtt(CSW_2ND_COLUMN, y, cswTimerValue(cs->v1), LEFT|PREC1|attr1);
       lcd_outdezAtt(CSW_3RD_COLUMN, y, cswTimerValue(cs->v2), LEFT|PREC1|attr2);
       v1_min = v2_min = -128;
@@ -4520,7 +4578,7 @@ void menuModelCustomSwitches(uint8_t event)
           eeDirty(EE_MODEL);
         }
 #else
-        if (cstate == CS_VOFS) {
+        if (cstate == CS_FAMILY_OFS) {
           v2_min = -128;
           v2_max -= 128;
         }
@@ -4552,37 +4610,59 @@ void menuModelCustomSwitches(uint8_t event)
 
     // CSW AND switch
 #if defined(CPUARM)
-    putsSwitches(CSW_4TH_COLUMN, y, cs->andsw, horz==3 ? attr : 0);
+    putsSwitches(CSW_4TH_COLUMN, y, cs->andsw, horz==CSW_FIELD_ANDSW ? attr : 0);
 #else
     uint8_t andsw = cs->andsw;
     if (andsw > SWSRC_LAST_SWITCH) {
       andsw += SWSRC_SW1-SWSRC_LAST_SWITCH-1;
     }
-    putsSwitches(CSW_4TH_COLUMN, y, andsw, horz==3 ? attr : 0);
+    putsSwitches(CSW_4TH_COLUMN, y, andsw, horz==CSW_FIELD_ANDSW ? attr : 0);
 #endif
 
 #if defined(CPUARM)
     // CSW duration
     if (cs->duration > 0)
-      lcd_outdezAtt(CSW_5TH_COLUMN, y, 5*cs->duration, (horz==4 ? attr : 0)|PREC1|LEFT);
+      lcd_outdezAtt(CSW_5TH_COLUMN, y, 5*cs->duration, (horz==CSW_FIELD_DURATION ? attr : 0)|PREC1|LEFT);
     else
-      lcd_putsiAtt(CSW_5TH_COLUMN, y, STR_MMMINV, 0, horz==4 ? attr : 0);
+      lcd_putsiAtt(CSW_5TH_COLUMN, y, STR_MMMINV, 0, horz==CSW_FIELD_DURATION ? attr : 0);
 
     // CSW delay
     if (cs->delay > 0)
-      lcd_outdezAtt(CSW_6TH_COLUMN, y, 5*cs->delay, (horz==5 ? attr : 0)|PREC1|LEFT);
+      lcd_outdezAtt(CSW_6TH_COLUMN, y, 5*cs->delay, (horz==CSW_FIELD_DELAY ? attr : 0)|PREC1|LEFT);
     else
-      lcd_putsiAtt(CSW_6TH_COLUMN, y, STR_MMMINV, 0, horz==5 ? attr : 0);
+      lcd_putsiAtt(CSW_6TH_COLUMN, y, STR_MMMINV, 0, horz==CSW_FIELD_DELAY ? attr : 0);
+
+    if (attr && horz == CSW_FIELD_V3 && cstate != CS_FAMILY_STAY) {
+      REPEAT_LAST_CURSOR_MOVE();
+    }
 #endif
+
 
     if ((s_editMode>0 || p1valdiff) && attr) {
       switch (horz) {
         case CSW_FIELD_FUNCTION:
         {
+#if defined(CPUARM)
+          cs->func = checkIncDec(event, cs->func, 0, CS_MAXF, EE_MODEL, isFunctionAvailable);
+#else
           CHECK_INCDEC_MODELVAR_ZERO(event, cs->func, CS_MAXF);
+#endif
           uint8_t new_cstate = cswFamily(cs->func);
-          if (cstate != new_cstate)
-            cs->v1 = cs->v2 = (new_cstate==CS_VTIMER ? -119/*1.0*/ : 0);
+          if (cstate != new_cstate) {
+#if defined(CPUARM)
+            if (new_cstate == CS_FAMILY_TIMER) {
+              cs->v1 = cs->v2 = -119;
+            }
+            else if (new_cstate == CS_FAMILY_STAY) {
+              cs->v1 = 0; cs->v2 = -129; cs->v3 = 0;
+            }
+            else {
+              cs->v1 = cs->v2 = 0;
+            }
+#else
+            cs->v1 = cs->v2 = (new_cstate==CS_FAMILY_TIMER ? -119/*1.0*/ : 0);
+#endif
+          }
           break;
         }
         case CSW_FIELD_V1:
@@ -4591,7 +4671,7 @@ void menuModelCustomSwitches(uint8_t event)
         case CSW_FIELD_V2:
           cs->v2 = CHECK_INCDEC_PARAM(event, cs->v2, v2_min, v2_max);
 #if defined(PCBTARANIS)
-          if (cstate==CS_VOFS && cs->v1!=0 && event==EVT_KEY_LONG(KEY_ENTER)) {
+          if (cstate==CS_FAMILY_OFS && cs->v1!=0 && event==EVT_KEY_LONG(KEY_ENTER)) {
             killEvents(event);
             getvalue_t x = getValue(cs->v1);
             if (cs->v1 < MIXSRC_GVAR1)
@@ -4602,6 +4682,11 @@ void menuModelCustomSwitches(uint8_t event)
           }
 #endif
           break;
+#if defined(CPUARM)
+        case CSW_FIELD_V3:
+          cs->v3 = CHECK_INCDEC_PARAM(event, cs->v3, v3_min, v3_max);
+          break;
+#endif
         case CSW_FIELD_ANDSW:
 #if defined(CPUARM)
           INCDEC_SET_FLAG(INCDEC_SWITCH);

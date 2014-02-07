@@ -153,13 +153,22 @@
 #if defined(PCBTARANIS)
   #define TR_CSWTIMER          "Timer"
   #define TR_CSWSTICKY         "Stcky"
+  #define TR_CSWRANGE          "Range"
+  #define TR_CSWSTAY           "Stay\0"
 #else
   #define TR_CSWTIMER          "Tim\0 "
   #define TR_CSWSTICKY         "Glue\0"
+  #if defined(CPUARM)
+    #define TR_CSWRANGE        "Rnge\0"
+    #define TR_CSWSTAY         "Stay\0"
+  #else
+    #define TR_CSWRANGE
+    #define TR_CSWSTAY
+  #endif
 #endif
 
 #define LEN_VCSWFUNC           "\005"
-#define TR_VCSWFUNC            "---\0 ""a{x\0 ""a>x\0 ""a<x\0 ""|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 ""a=b\0 ""a>b\0 ""a<b\0 ""d}x\0 ""|d|}x" TR_CSWTIMER TR_CSWSTICKY
+#define TR_VCSWFUNC            "---\0 ""a{x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""d}x\0 ""|d|}x" TR_CSWTIMER TR_CSWSTICKY
 
 #define LEN_VFSWFUNC           "\012"
 
@@ -723,7 +732,7 @@
 // Taranis column headers
 #define TR_PHASES_HEADERS      { " Name ", " Switch ", " Trims ", " Fade In ", " Fade Out " }
 #define TR_LIMITS_HEADERS      { " Name ", " Subtrim ", " Min ", " Max ", " Direction ", " Curve ", " PPM Center ", " Subtrim mode " }
-#define TR_CSW_HEADERS         { " Function ", " V1 ", " V2 ", " AND Switch ", " Duration ", " Delay " }
+#define TR_CSW_HEADERS         { " Function ", " V1 ", " V2 ", " V2 ", " AND Switch ", " Duration ", " Delay " }
 
 // About screen
 #define TR_ABOUTUS             TR(" ABOUT ", "ABOUT")

@@ -390,6 +390,8 @@ QString CustomSwData::funcToString()
       return QObject::tr("Timer");
     case CS_FN_STICKY:
       return QObject::tr("Sticky");
+    case CS_FN_STAY:
+      return QObject::tr("Stay");
     default:
       return QObject::tr("Unknown");
   }
@@ -406,11 +408,14 @@ QString CustomSwData::toString(const ModelData & model)
     result +="( ";
   }
   switch (getFunctionFamily()) {
+    case CS_FAMILY_STAY:
+      result = QObject::tr("STAY(%1, [%2:%3])").arg(RawSwitch(val1).toString()).arg(ValToTim(val2)).arg(ValToTim(val2+val3));
+      break;
     case CS_FAMILY_STICKY:
-      result = QObject::tr("STICKY(%1 , %2)").arg(RawSwitch(val1).toString()).arg(RawSwitch(val2).toString());
+      result = QObject::tr("STICKY(%1, %2)").arg(RawSwitch(val1).toString()).arg(RawSwitch(val2).toString());
       break;
     case CS_FAMILY_TIMER:
-      result = QObject::tr("TIMER(%1 , %2)").arg(ValToTim(val1)).arg(ValToTim(val2));
+      result = QObject::tr("TIMER(%1, %2)").arg(ValToTim(val1)).arg(ValToTim(val2));
       break;
     case CS_FAMILY_VOFS: {
       RawSource source = RawSource(val1, &model);
@@ -873,11 +878,7 @@ void ModelData::clear()
     phaseData[i].clear();
   clearInputs();
   clearMixes();
-  for(int i=0; i<4; i++){
-    mixData[i].destCh = i+1;
-    mixData[i].srcRaw = RawSource(SOURCE_TYPE_STICK, i);
-    mixData[i].weight = 100;
-  }
+
   for (int i=0; i<C9X_NUM_CHNOUT; i++)
     limitData[i].clear();
   for (int i=0; i<NUM_STICKS; i++)

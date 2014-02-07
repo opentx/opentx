@@ -1291,5 +1291,10 @@ bool isSwitchAvailable(int16_t swtch)
   return true;
 }
 
+// Not available yet, will be needed if we implement the Range function later...
+bool isFunctionAvailable(int16_t function)
+{
+  return function != CS_RANGE;
+}
 
 #endif
