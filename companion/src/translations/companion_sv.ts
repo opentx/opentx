@@ -619,7 +619,7 @@ Om fältet lämnas tomt så är filtret aktivt hela tiden.</translation>
         <translation>trim3</translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="+59"/>
+        <location filename="../modeledit/flightmodes.cpp" line="+61"/>
         <source>Rud</source>
         <translation>Rod</translation>
     </message>
@@ -639,7 +639,7 @@ Om fältet lämnas tomt så är filtret aktivt hela tiden.</translation>
         <translation>Ske</translation>
     </message>
     <message>
-        <location line="+32"/>
+        <location line="+37"/>
         <source>Rotary Encoder %1</source>
         <translation>Inmatningshjul %1</translation>
     </message>
@@ -652,7 +652,7 @@ Om fältet lämnas tomt så är filtret aktivt hela tiden.</translation>
 <context>
     <name>FlightModes</name>
     <message>
-        <location line="+334"/>
+        <location line="+323"/>
         <source>Flight Mode %1</source>
         <translation>Flygläge %1</translation>
     </message>
@@ -4036,7 +4036,7 @@ p, li { white-space: pre-wrap; }
         <translation>T2</translation>
     </message>
     <message>
-        <location line="+427"/>
+        <location line="+467"/>
         <source>th9x</source>
         <translation>th9x</translation>
     </message>
@@ -4086,7 +4086,7 @@ p, li { white-space: pre-wrap; }
         <translation>Starta loggning</translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="-416"/>
+        <location filename="../eeprominterface.cpp" line="-456"/>
         <location line="+34"/>
         <location line="+102"/>
         <location filename="../helpers.cpp" line="+319"/>
@@ -4145,7 +4145,7 @@ p, li { white-space: pre-wrap; }
         <translation>Modelldata sparades, men med dessa varningar:</translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="+440"/>
+        <location filename="../eeprominterface.cpp" line="+480"/>
         <source>ersky9x</source>
         <translation>ersky9x</translation>
     </message>
@@ -4157,7 +4157,7 @@ p, li { white-space: pre-wrap; }
         <translation>Det finns ännu ingen simulator för denna typ av firmware</translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="-448"/>
+        <location filename="../eeprominterface.cpp" line="-488"/>
         <location filename="../helpers.cpp" line="+8"/>
         <source>REa</source>
         <translation>REa</translation>
@@ -4418,7 +4418,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="+69"/>
-        <location filename="../helpers.cpp" line="+728"/>
+        <location filename="../helpers.cpp" line="+715"/>
         <source>ON</source>
         <translation>På</translation>
     </message>
@@ -4429,7 +4429,7 @@ p, li { white-space: pre-wrap; }
         <translation>Av</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="-661"/>
+        <location filename="../helpers.cpp" line="-648"/>
         <source>Safety %1</source>
         <translation>Säkring %1</translation>
     </message>
@@ -4616,12 +4616,11 @@ p, li { white-space: pre-wrap; }
         <translation>Belysning</translation>
     </message>
     <message>
-        <location line="+523"/>
         <source>Own trim</source>
-        <translation>Egen trim</translation>
+        <translation type="obsolete">Egen trim</translation>
     </message>
     <message>
-        <location line="+105"/>
+        <location line="+615"/>
         <source>Keys</source>
         <translation>Knappar</translation>
     </message>
@@ -4879,13 +4878,13 @@ p, li { white-space: pre-wrap; }
         <translation>GV%1</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="-1159"/>
-        <location line="+1253"/>
+        <location filename="../helpers.cpp" line="-1146"/>
+        <location line="+1240"/>
         <source>---</source>
         <translation>----</translation>
     </message>
     <message>
-        <location line="-1253"/>
+        <location line="-1240"/>
         <source>Rud Trim</source>
         <translation>Rod.Trim</translation>
     </message>
@@ -4950,7 +4949,7 @@ p, li { white-space: pre-wrap; }
         <translation>Inmatningshjul</translation>
     </message>
     <message>
-        <location line="+275"/>
+        <location line="+262"/>
         <source>Own value</source>
         <translation>Eget värde</translation>
     </message>
@@ -4984,7 +4983,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="-65"/>
-        <location filename="../helpers.cpp" line="-1132"/>
+        <location filename="../helpers.cpp" line="-1119"/>
         <source>S1</source>
         <translation>S1</translation>
     </message>
@@ -5125,7 +5124,7 @@ p, li { white-space: pre-wrap; }
         <translation>Ökning</translation>
     </message>
     <message>
-        <location line="+798"/>
+        <location line="+785"/>
         <source>Yellow</source>
         <translation>Gul</translation>
     </message>
@@ -5416,7 +5415,7 @@ p, li { white-space: pre-wrap; }
         <translation>!Kurva(%1)</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="-1391"/>
+        <location filename="../helpers.cpp" line="-1378"/>
         <location line="+6"/>
         <source>FM%1</source>
         <translation>FM%1</translation>
@@ -5477,17 +5476,16 @@ p, li { white-space: pre-wrap; }
         <translation>Flygläge %1</translation>
     </message>
     <message>
-        <location line="+215"/>
         <source>Flight mode %1 trim</source>
-        <translation>Fligmod %1 trim</translation>
+        <translation type="obsolete">Fligmod %1 trim</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+213"/>
         <source>Flight mode %1 value</source>
         <translation>Flygläge %1 värde</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="+993"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="+1018"/>
         <source>openTx only accepts %1 points in all curves</source>
         <translation>openTX accepterar bar %1 punkter i alla kurvor</translation>
     </message>
@@ -5656,6 +5654,26 @@ The OpenTX/Companion Team.</source>
 Vi uppskattar ert stöd!
 
 Gruppen bakom OpenTX/Companion.</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/flightmodes.cpp" line="-387"/>
+        <source>Trim disabled</source>
+        <translation>Trim inaktiv</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Own Trim</source>
+        <translation>Egen trim</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Use Trim from Flight mode %1</source>
+        <translation>Använd trim från flygläge %1</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Use Trim from Flight mode %1 + Own Trim as an offset</source>
+        <translation>Använd trim från flygläge %1 + Eget trim som offset</translation>
     </message>
 </context>
 <context>
@@ -6250,23 +6268,29 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <translation>Programmets Inställningar</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+46"/>
         <source>Simulator capture folder</source>
         <translation>Lagra simulatorbilder i</translation>
     </message>
     <message>
-        <location line="+14"/>
+        <location line="+7"/>
         <source>Remember simulator switch values</source>
         <translation>Spara läget för alla brytare i simulatorn</translation>
     </message>
     <message>
-        <location line="+14"/>
-        <location line="+109"/>
+        <location line="-41"/>
+        <location line="+233"/>
+        <location line="+67"/>
         <source>Open Folder</source>
         <translation>Öppna katalog</translation>
     </message>
     <message>
-        <location line="-91"/>
+        <location line="-246"/>
+        <source>User Splash Screens</source>
+        <translation>Egna Startbilder</translation>
+    </message>
+    <message>
+        <location line="+44"/>
         <source>Blue</source>
         <translation>Blå</translation>
     </message>
@@ -6291,88 +6315,108 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <translation>Gul</translation>
     </message>
     <message>
+        <location line="+220"/>
+        <source>Include companion splashes</source>
+        <translation>Användarens bilder och Companion-bilder</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Only user defined splashes</source>
+        <translation>Enbart användarens bilder</translation>
+    </message>
+    <message>
         <location line="+14"/>
+        <source>Splash Screen Library</source>
+        <translation>Bibliotek för startbilder</translation>
+    </message>
+    <message>
+        <location line="-290"/>
         <source>Files to keep</source>
         <translation>Behåll filer</translation>
     </message>
     <message>
-        <location line="+26"/>
+        <location line="+199"/>
         <source>Simulator BackLight</source>
         <translation>Simulatorbelysning</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="-50"/>
         <source>Automatic Backup Folder</source>
         <translation>Säkerhetskopiera till folder</translation>
     </message>
     <message>
-        <location line="+41"/>
+        <location line="-63"/>
         <source>Only capture to clipboard</source>
         <translation>Spara bara bilder till Urklipp </translation>
     </message>
     <message>
-        <location line="+30"/>
+        <location line="-126"/>
         <source>Joystick</source>
         <translation>Joystick</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+266"/>
         <source>Find Executable</source>
         <translation>Sök Program</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+21"/>
         <source>Google Earth Executable</source>
         <translation>Sökväg till Google Earth</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="-105"/>
         <source>Calibrate</source>
         <translation>Kalibrera</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+98"/>
         <source>Enable</source>
         <translation>Aktivera</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="-24"/>
         <source>Show splash screen when Companion starts</source>
         <translation>Visa en start-bild då Companion startas</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+38"/>
         <source>Automatic check for OpenTX firmware updates</source>
         <translation>Sök automatiskt efter uppdateringar av OpenTX</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="-195"/>
         <source>Automatic check for Companion updates</source>
         <translation>Sök automatiskt efter uppdateringar av Companion</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="-52"/>
         <source>Offer to use wizard for new models</source>
         <translation>Erbjud användning av modellguiden för nya modeller</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+202"/>
         <source>Enable automatic backup before writing firmware</source>
         <translation>Säkerhetskopiera innan firmware-skrivning</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="+64"/>
+        <location filename="../apppreferencesdialog.cpp" line="+66"/>
         <source>Select your snapshot folder</source>
         <translation>Välj katalog för snapshots av Tx-simulatorn</translation>
     </message>
     <message>
-        <location line="+50"/>
-        <location line="+64"/>
+        <location line="+56"/>
+        <location line="+74"/>
         <source>No joysticks found</source>
         <translation>Ingen joystick hittades</translation>
     </message>
     <message>
-        <location line="-21"/>
+        <location line="-46"/>
+        <source>Select your library folder</source>
+        <translation>Välj bibliotekskatalog</translation>
+    </message>
+    <message>
+        <location line="+25"/>
         <source>Select your Models and Settings backup folder</source>
         <translation>Välj folder för automatisk säkerhetskopiering</translation>
     </message>
@@ -7582,89 +7626,98 @@ m2560 för v4.1-kort</translation>
 <context>
     <name>customizeSplashDialog</name>
     <message>
-        <location filename="../customizesplashdialog.ui" line="+20"/>
-        <location filename="../splasheditdialog.ui" line="+20"/>
         <source>Customize Splash</source>
-        <translation>Ställ in Startbild</translation>
+        <translation type="obsolete">Ställ in Startbild</translation>
     </message>
     <message>
-        <location line="+40"/>
-        <location filename="../splasheditdialog.ui" line="+40"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location line="+247"/>
-        <location line="+26"/>
-        <location filename="../splasheditdialog.ui" line="+247"/>
-        <location line="+26"/>
+        <location filename="../customizesplashdialog.ui" line="+23"/>
+        <source>Transmitter Splash Screen Editor</source>
+        <translation>Startbildsredigerare</translation>
+    </message>
+    <message>
+        <location line="+187"/>
+        <location line="+286"/>
         <source>Invert</source>
         <translation>Invertera</translation>
     </message>
     <message>
-        <location line="-13"/>
-        <location filename="../splasheditdialog.ui" line="-13"/>
+        <location line="-236"/>
+        <location line="+289"/>
+        <source>Load FW</source>
+        <translation>Ladda FW</translation>
+    </message>
+    <message>
+        <location line="-282"/>
+        <location line="+289"/>
+        <source>Load Pict</source>
+        <translation>Ladda Bild</translation>
+    </message>
+    <message>
+        <location line="-266"/>
+        <location line="+289"/>
+        <source>Save</source>
+        <translation>Spara</translation>
+    </message>
+    <message>
         <source>Save Image</source>
-        <translation>Spara bild</translation>
+        <translation type="obsolete">Spara bild</translation>
     </message>
     <message>
-        <location line="-182"/>
-        <location filename="../splasheditdialog.ui" line="-182"/>
         <source>Load Firmware</source>
-        <translation>Ladda firmware</translation>
+        <translation type="obsolete">Ladda firmware</translation>
     </message>
     <message>
-        <location line="+38"/>
-        <location filename="../splasheditdialog.ui" line="+38"/>
         <source>Load Image</source>
-        <translation>Ladda bild</translation>
+        <translation type="obsolete">Ladda bild</translation>
     </message>
     <message>
-        <location line="-25"/>
-        <location filename="../splasheditdialog.ui" line="-25"/>
+        <location line="-346"/>
+        <location line="+286"/>
         <source>Open Splash Library</source>
         <translation>Öppna bildbibliotek</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="+17"/>
-        <location line="+24"/>
-        <location line="+5"/>
         <source>Select an original firmware file</source>
-        <translation>Välj original-firmware</translation>
+        <translation type="obsolete">Välj original-firmware</translation>
     </message>
     <message>
-        <location line="-18"/>
+        <location filename="../customizesplashdialog.cpp" line="+63"/>
         <source>Open</source>
         <translation>Öppna</translation>
     </message>
     <message>
-        <location line="+25"/>
         <source>Select an image to customize your splash &lt;br /&gt;or save actual firmware splash</source>
-        <translation>Välj vilken bild som skall visas när sändaren slås på&lt;br/&gt;eller spara bilden som finns i firmware</translation>
+        <translation type="obsolete">Välj vilken bild som skall visas när sändaren slås på&lt;br/&gt;eller spara bilden som finns i firmware</translation>
     </message>
     <message>
+        <location line="+8"/>
+        <location line="+33"/>
+        <location line="+42"/>
+        <location line="+36"/>
         <location line="+7"/>
-        <location line="+21"/>
-        <location line="+37"/>
-        <location line="+40"/>
+        <location line="+9"/>
         <source>Error</source>
         <translation>Fel</translation>
     </message>
     <message>
-        <location line="-98"/>
+        <location line="-127"/>
         <source>Could not find bitmap to replace in file</source>
         <translation>Det finns ingen bild att byta i firmware-filen</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+26"/>
         <source>Open Image to load</source>
         <translation>Öppna bild för laddning</translation>
     </message>
@@ -7674,54 +7727,57 @@ p, li { white-space: pre-wrap; }
         <translation>Bilder (%1)</translation>
     </message>
     <message>
-        <location line="+6"/>
-        <location line="+37"/>
+        <location line="+7"/>
+        <location line="+42"/>
         <source>Cannot load %1.</source>
         <translation>Kunde inte ladda %1.</translation>
     </message>
     <message>
-        <location line="-12"/>
-        <location line="+37"/>
-        <source>Save your custimized firmware</source>
-        <translation>Spara din modifierade firmware-fil</translation>
+        <location line="+36"/>
+        <location line="+7"/>
+        <source>Could not store image in firmware file %1</source>
+        <translation>Det gick inte att spara bilden i firmware-filen %1</translation>
     </message>
     <message>
         <location line="+9"/>
-        <location line="+33"/>
+        <source>The image file %1 could not be stored</source>
+        <translation>Det gick inte att spara bilden i filen %1</translation>
+    </message>
+    <message>
+        <source>Save your custimized firmware</source>
+        <translation type="obsolete">Spara din modifierade firmware-fil</translation>
+    </message>
+    <message>
         <source>Write to file</source>
-        <translation>Skriv till fil</translation>
+        <translation type="obsolete">Skriv till fil</translation>
     </message>
     <message>
-        <location line="-27"/>
         <source>Error reading file %1</source>
-        <translation>Fel vid läsning från filen %1</translation>
+        <translation type="obsolete">Fel vid läsning från filen %1</translation>
     </message>
     <message>
-        <location line="+8"/>
         <source>Firmware correctly saved.</source>
-        <translation>Firmware sparades.</translation>
+        <translation type="obsolete">Firmware sparades.</translation>
     </message>
     <message>
-        <location line="+3"/>
         <source>Firmware not saved.</source>
-        <translation>Firmware sparades inte.</translation>
+        <translation type="obsolete">Firmware sparades inte.</translation>
     </message>
     <message>
-        <location line="+16"/>
         <source>PNG images (*.png);;</source>
-        <translation>PNG bilder (*.png);;</translation>
+        <translation type="obsolete">PNG bilder (*.png);;</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.ui" line="+3"/>
-        <location filename="../splasheditdialog.ui" line="+3"/>
+        <location filename="../customizesplashdialog.ui" line="-283"/>
+        <location line="+81"/>
+        <location line="+10"/>
+        <location line="+195"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location line="+54"/>
-        <location filename="../splasheditdialog.ui" line="+54"/>
         <source>Save Firmware</source>
-        <translation>Spara Firmware</translation>
+        <translation type="obsolete">Spara Firmware</translation>
     </message>
 </context>
 <context>
@@ -7896,31 +7952,31 @@ p, li { white-space: pre-wrap; }
         <translation>Ladda ned Firmware och Ljud</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+32"/>
+        <location line="+13"/>
+        <location line="+13"/>
+        <location line="+13"/>
+        <location line="+13"/>
+        <location line="+96"/>
+        <location line="+13"/>
+        <location line="+77"/>
+        <location line="+13"/>
+        <location line="+198"/>
+        <location line="+13"/>
+        <location line="+16"/>
+        <location line="+13"/>
+        <location line="+13"/>
+        <location line="+13"/>
+        <location line="+13"/>
+        <location line="+13"/>
+        <location line="+13"/>
+        <location line="+13"/>
+        <location line="+13"/>
+        <location line="+13"/>
         <location line="+13"/>
         <location line="+13"/>
         <location line="+13"/>
         <location line="+23"/>
-        <location line="+90"/>
-        <location line="+71"/>
-        <location line="+30"/>
-        <location line="+176"/>
-        <location line="+13"/>
-        <location line="+19"/>
-        <location line="+13"/>
-        <location line="+13"/>
-        <location line="+13"/>
-        <location line="+13"/>
-        <location line="+13"/>
-        <location line="+13"/>
-        <location line="+13"/>
-        <location line="+13"/>
-        <location line="+13"/>
-        <location line="+13"/>
-        <location line="+13"/>
-        <location line="+13"/>
-        <location line="+13"/>
-        <location line="+23"/>
         <location line="+13"/>
         <location line="+13"/>
         <location line="+13"/>
@@ -7936,18 +7992,17 @@ p, li { white-space: pre-wrap; }
         <location line="+13"/>
         <location line="+13"/>
         <location line="+13"/>
-        <location line="+117"/>
-        <location line="+13"/>
+        <location line="+102"/>
+        <location line="+20"/>
         <source>CheckBox</source>
         <translation>Kryssruta</translation>
     </message>
     <message>
-        <location line="-932"/>
         <source>Hardware Profile Name</source>
-        <translation>Hårdvaruprofil-namn</translation>
+        <translation type="obsolete">Hårdvaruprofil-namn</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="-909"/>
         <source>Set language of voice.
 May be different from firmware language</source>
         <translation>Välj språk för röstfunktioner.
@@ -7964,27 +8019,25 @@ Får skilja från språket för firmware</translation>
         <translation>Processortyp</translation>
     </message>
     <message>
-        <location line="+7"/>
         <source>Language</source>
-        <translation>Språk</translation>
+        <translation type="obsolete">Språk</translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+23"/>
         <source>Default Stick Mode</source>
         <translation>Spaktilldelning</translation>
     </message>
     <message>
-        <location line="+7"/>
         <source>Voice</source>
-        <translation>Röst</translation>
+        <translation type="obsolete">Röst</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+20"/>
         <source>Channel Order</source>
         <translation>Kanalordning</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+42"/>
         <source>Mode selection:
 
 Mode 1:
@@ -8045,22 +8098,20 @@ Mode 4:
         <translation>Mode 4 (SKE GAS HÖJ ROD)</translation>
     </message>
     <message>
-        <location line="+8"/>
         <source>Storage Position</source>
-        <translation>Profilposition</translation>
+        <translation type="obsolete">Profilposition</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="-234"/>
         <source>Options</source>
         <translation>Val</translation>
     </message>
     <message>
-        <location line="+36"/>
         <source> Firmware Type</source>
-        <translation>Firmware-typer</translation>
+        <translation type="obsolete">Firmware-typer</translation>
     </message>
     <message>
-        <location line="+22"/>
+        <location line="+328"/>
         <source>Channel order
 
 This is used by the templated to determine which channel goes to what number output.</source>
@@ -8069,7 +8120,7 @@ This is used by the templated to determine which channel goes to what number out
 Används av mallarna för att koppla ihop kanaler med numrerade utgångar.</translation>
     </message>
     <message>
-        <location line="+577"/>
+        <location line="+567"/>
         <source>Open Folder</source>
         <translation>Öppna Katalog</translation>
     </message>
@@ -8079,22 +8130,52 @@ Används av mallarna för att koppla ihop kanaler med numrerade utgångar.</tran
         <translation>Skriv FW till Tx efter nedladdning</translation>
     </message>
     <message>
+        <location line="+131"/>
+        <source>Profile Splash Screen</source>
+        <translation>Profilens startbild</translation>
+    </message>
+    <message>
         <location line="+7"/>
+        <source>Profile Name</source>
+        <translation>Profilnamn</translation>
+    </message>
+    <message>
+        <location line="+30"/>
         <source>Import</source>
         <translation>Import</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="-7"/>
         <source>Export</source>
         <translation>Export</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="-1056"/>
         <source>Save Profile</source>
         <translation>Spara Profil</translation>
     </message>
     <message>
-        <location line="+17"/>
+        <location line="+109"/>
+        <source>Menu Language</source>
+        <translation>Menyspråk</translation>
+    </message>
+    <message>
+        <location line="+23"/>
+        <source>Voice Language</source>
+        <translation>Röstspråk</translation>
+    </message>
+    <message>
+        <location line="+103"/>
+        <source>Profile Number</source>
+        <translation>Profilnummer</translation>
+    </message>
+    <message>
+        <location line="+58"/>
+        <source>Firmware Type</source>
+        <translation>Firmware-typ</translation>
+    </message>
+    <message>
+        <location line="+609"/>
         <source>Append version number to FW file name</source>
         <translation>Addera versionsnumret till FW-filnamnet</translation>
     </message>
@@ -8104,17 +8185,27 @@ Används av mallarna för att koppla ihop kanaler med numrerade utgångar.</tran
         <translation>Ladda Röstfiler</translation>
     </message>
     <message>
-        <location line="+74"/>
+        <location line="+91"/>
         <source>FwInfo</source>
         <translation>---</translation>
     </message>
     <message>
+        <location line="+70"/>
+        <source>Open Image</source>
+        <translation>Öppna bild</translation>
+    </message>
+    <message>
         <location line="+7"/>
+        <source>Clear Image</source>
+        <translation>Ta bort Bild</translation>
+    </message>
+    <message>
+        <location line="-103"/>
         <source>Download FW</source>
         <translation>Ladda ned Firmware</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+39"/>
         <source>Check for updates</source>
         <translation>Sök efter uppdateringar</translation>
     </message>
@@ -8134,7 +8225,7 @@ Används av mallarna för att koppla ihop kanaler med numrerade utgångar.</tran
         <translation>Firmware-filen kan inte laddas ned av Companion.</translation>
     </message>
     <message>
-        <location line="+158"/>
+        <location line="+168"/>
         <source>Select the folder replicating your SD structure</source>
         <translation>Välj katalog med en kopia av din SD-struktur</translation>
     </message>
@@ -8144,7 +8235,7 @@ Används av mallarna för att koppla ihop kanaler med numrerade utgångar.</tran
         <translation>Profilnamn saknas, profilplats %1 kommer att raderas.&lt;br&gt; Är du säker?</translation>
     </message>
     <message>
-        <location line="+29"/>
+        <location line="+30"/>
         <source>Export profile As</source>
         <translation>Exportera profil Som</translation>
     </message>
@@ -8157,6 +8248,26 @@ Används av mallarna för att koppla ihop kanaler med numrerade utgångar.</tran
         <location line="+6"/>
         <source>Open Profile to import</source>
         <translation>Öppna profil för import</translation>
+    </message>
+    <message>
+        <location line="+25"/>
+        <source>Open Image to load</source>
+        <translation>Öppna bildfil för laddning</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Images (%1)</source>
+        <translation>Bilder (%1)</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Error</source>
+        <translation>Fel</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Cannot load %1.</source>
+        <translation>Kan inte ladda %1.</translation>
     </message>
 </context>
 <context>

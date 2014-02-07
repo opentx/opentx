@@ -616,32 +616,32 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="59"/>
+        <location filename="../modeledit/flightmodes.cpp" line="61"/>
         <source>Rud</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="59"/>
+        <location filename="../modeledit/flightmodes.cpp" line="61"/>
         <source>Ele</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="59"/>
+        <location filename="../modeledit/flightmodes.cpp" line="61"/>
         <source>Thr</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="59"/>
+        <location filename="../modeledit/flightmodes.cpp" line="61"/>
         <source>Ail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="91"/>
+        <location filename="../modeledit/flightmodes.cpp" line="98"/>
         <source>Rotary Encoder %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="124"/>
+        <location filename="../modeledit/flightmodes.cpp" line="131"/>
         <source>GVAR%1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -649,17 +649,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>FlightModes</name>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="458"/>
+        <location filename="../modeledit/flightmodes.cpp" line="454"/>
         <source>Flight Mode %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="461"/>
+        <location filename="../modeledit/flightmodes.cpp" line="457"/>
         <source> (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="464"/>
+        <location filename="../modeledit/flightmodes.cpp" line="460"/>
         <source> (default)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4974,7 +4974,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../helpers.cpp" line="41"/>
-        <location filename="../helpers.cpp" line="1294"/>
+        <location filename="../helpers.cpp" line="1281"/>
         <source>---</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5187,133 +5187,128 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="694"/>
-        <source>Flight mode %1 trim</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../helpers.cpp" line="705"/>
+        <location filename="../helpers.cpp" line="692"/>
         <source>Flight mode %1 value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="1267"/>
+        <location filename="../helpers.cpp" line="1254"/>
         <source>Yellow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="1269"/>
+        <location filename="../helpers.cpp" line="1256"/>
         <source>Orange</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="1271"/>
+        <location filename="../helpers.cpp" line="1258"/>
         <source>Red</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="1305"/>
+        <location filename="../helpers.cpp" line="1292"/>
         <source>Winged Shadow How High</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="1307"/>
+        <location filename="../helpers.cpp" line="1294"/>
         <source>Winged Shadow How High (not supported)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="1309"/>
+        <location filename="../helpers.cpp" line="1296"/>
         <source>FrSky Sensor Hub</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="1311"/>
-        <location filename="../helpers.cpp" line="1365"/>
+        <location filename="../helpers.cpp" line="1298"/>
+        <location filename="../helpers.cpp" line="1352"/>
         <source>None</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="1319"/>
+        <location filename="../helpers.cpp" line="1306"/>
         <source>Imperial</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="1321"/>
+        <location filename="../helpers.cpp" line="1308"/>
         <source>Metric</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="1333"/>
+        <location filename="../helpers.cpp" line="1320"/>
         <source>Extra Fine</source>
         <translation type="unfinished">Extra-fino</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="1334"/>
+        <location filename="../helpers.cpp" line="1321"/>
         <source>Fine</source>
         <translation type="unfinished">Fino</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="1335"/>
+        <location filename="../helpers.cpp" line="1322"/>
         <source>Medium</source>
         <translation type="unfinished">Médio</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="1336"/>
+        <location filename="../helpers.cpp" line="1323"/>
         <source>Coarse</source>
         <translation type="unfinished">Aberto</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="1337"/>
+        <location filename="../helpers.cpp" line="1324"/>
         <source>Exponential</source>
         <translation type="unfinished">Exponencial</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="1343"/>
+        <location filename="../helpers.cpp" line="1330"/>
         <source>Count Up</source>
         <translation type="unfinished">Contagem progressiva</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="1343"/>
+        <location filename="../helpers.cpp" line="1330"/>
         <source>Count Down</source>
         <translation type="unfinished">Contagem regressiva</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="1344"/>
+        <location filename="../helpers.cpp" line="1331"/>
         <source>%1:%2, </source>
         <translation type="unfinished">%1:%2,</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="1352"/>
+        <location filename="../helpers.cpp" line="1339"/>
         <source>: %1 Channels, %2usec Delay</source>
         <translation type="unfinished">:%1 Canais, Atraso de %3 mseg {1 ?} {2m?} {1 ?} {2u?}</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="1376"/>
+        <location filename="../helpers.cpp" line="1363"/>
         <source>Flight modes(%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="1378"/>
+        <location filename="../helpers.cpp" line="1365"/>
         <source>Flight mode(%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="1396"/>
+        <location filename="../helpers.cpp" line="1383"/>
         <source>Rudder</source>
         <translation type="unfinished">Leme</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="1397"/>
+        <location filename="../helpers.cpp" line="1384"/>
         <source>Elevator</source>
         <translation type="unfinished">Elevador</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="1398"/>
+        <location filename="../helpers.cpp" line="1385"/>
         <source>Throttle</source>
         <translation type="unfinished">Acelerador</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="1399"/>
+        <location filename="../helpers.cpp" line="1386"/>
         <source>Aileron</source>
         <translation type="unfinished">Aileron</translation>
     </message>
@@ -5345,32 +5340,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../helpers.cpp" line="689"/>
-        <source>Own trim</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../helpers.cpp" line="702"/>
         <source>Own value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="794"/>
+        <location filename="../helpers.cpp" line="781"/>
         <source>Keys</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="794"/>
+        <location filename="../helpers.cpp" line="781"/>
         <source>Sticks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="794"/>
+        <location filename="../helpers.cpp" line="781"/>
         <source>Keys + Sticks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="984"/>
-        <location filename="../helpers.cpp" line="1198"/>
+        <location filename="../helpers.cpp" line="971"/>
+        <location filename="../helpers.cpp" line="1185"/>
         <source>-GV%1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6000,8 +5990,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="222"/>
-        <location filename="../helpers.cpp" line="1001"/>
-        <location filename="../helpers.cpp" line="1200"/>
+        <location filename="../helpers.cpp" line="988"/>
+        <location filename="../helpers.cpp" line="1187"/>
         <source>GV%1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6417,7 +6407,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="615"/>
+        <location filename="../eeprominterface.cpp" line="655"/>
         <source>ersky9x</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6521,12 +6511,12 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="604"/>
+        <location filename="../eeprominterface.cpp" line="644"/>
         <source>th9x</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="606"/>
+        <location filename="../eeprominterface.cpp" line="646"/>
         <source>er9x</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6572,13 +6562,13 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="282"/>
-        <location filename="../helpers.cpp" line="794"/>
+        <location filename="../helpers.cpp" line="781"/>
         <source>ON</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="314"/>
-        <location filename="../helpers.cpp" line="794"/>
+        <location filename="../helpers.cpp" line="781"/>
         <source>OFF</source>
         <translation type="unfinished">OFF</translation>
     </message>
@@ -6608,25 +6598,25 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="993"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1018"/>
         <source>openTx only accepts %1 points in all curves</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1342"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1360"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1363"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1367"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1385"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1388"/>
         <source>OpenTX on this board doesn&apos;t accept this function</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1852"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1948"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1877"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1973"/>
         <source>OpenTX doesn&apos;t accept this protocol</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1859"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1884"/>
         <source>OpenTX doesn&apos;t allow this number of channels</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6637,6 +6627,26 @@ p, li { white-space: pre-wrap; }
 We are really appreciative for that!
 
 The OpenTX/Companion Team.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/flightmodes.cpp" line="73"/>
+        <source>Trim disabled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/flightmodes.cpp" line="76"/>
+        <source>Own Trim</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/flightmodes.cpp" line="79"/>
+        <source>Use Trim from Flight mode %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/flightmodes.cpp" line="80"/>
+        <source>Use Trim from Flight mode %1 + Own Trim as an offset</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7229,78 +7239,99 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="32"/>
+        <location filename="../apppreferencesdialog.ui" line="72"/>
         <source>Simulator capture folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="46"/>
+        <location filename="../apppreferencesdialog.ui" line="79"/>
         <source>Remember simulator switch values</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="60"/>
-        <location filename="../apppreferencesdialog.ui" line="169"/>
+        <location filename="../apppreferencesdialog.ui" line="38"/>
+        <location filename="../apppreferencesdialog.ui" line="271"/>
+        <location filename="../apppreferencesdialog.ui" line="338"/>
         <source>Open Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="78"/>
+        <location filename="../apppreferencesdialog.ui" line="92"/>
+        <source>User Splash Screens</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="136"/>
         <source>Blue</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="83"/>
+        <location filename="../apppreferencesdialog.ui" line="141"/>
         <source>Green</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="88"/>
+        <location filename="../apppreferencesdialog.ui" line="146"/>
         <source>Red</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="93"/>
+        <location filename="../apppreferencesdialog.ui" line="151"/>
         <source>Orange</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="98"/>
+        <location filename="../apppreferencesdialog.ui" line="156"/>
         <source>Yellow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="112"/>
+        <location filename="../apppreferencesdialog.ui" line="376"/>
+        <source>Include companion splashes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="381"/>
+        <source>Only user defined splashes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="395"/>
+        <source>Splash Screen Library</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="105"/>
         <source>Files to keep</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="138"/>
+        <location filename="../apppreferencesdialog.ui" line="304"/>
         <source>Simulator BackLight</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="155"/>
+        <location filename="../apppreferencesdialog.ui" line="254"/>
         <source>Automatic Backup Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="196"/>
+        <location filename="../apppreferencesdialog.ui" line="191"/>
         <source>Only capture to clipboard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="226"/>
+        <location filename="../apppreferencesdialog.ui" line="65"/>
         <source>Joystick</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="233"/>
+        <location filename="../apppreferencesdialog.ui" line="331"/>
         <source>Find Executable</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="240"/>
+        <location filename="../apppreferencesdialog.ui" line="352"/>
         <source>Google Earth Executable</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7310,53 +7341,58 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="254"/>
+        <location filename="../apppreferencesdialog.ui" line="345"/>
         <source>Enable</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="277"/>
+        <location filename="../apppreferencesdialog.ui" line="321"/>
         <source>Show splash screen when Companion starts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="287"/>
+        <location filename="../apppreferencesdialog.ui" line="359"/>
         <source>Automatic check for OpenTX firmware updates</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="297"/>
+        <location filename="../apppreferencesdialog.ui" line="164"/>
         <source>Automatic check for Companion updates</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="307"/>
+        <location filename="../apppreferencesdialog.ui" line="112"/>
         <source>Offer to use wizard for new models</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="317"/>
+        <location filename="../apppreferencesdialog.ui" line="314"/>
         <source>Enable automatic backup before writing firmware</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="64"/>
+        <location filename="../apppreferencesdialog.cpp" line="66"/>
         <source>Select your snapshot folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="114"/>
-        <location filename="../apppreferencesdialog.cpp" line="178"/>
+        <location filename="../apppreferencesdialog.cpp" line="122"/>
+        <location filename="../apppreferencesdialog.cpp" line="196"/>
         <source>No joysticks found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="157"/>
+        <location filename="../apppreferencesdialog.cpp" line="150"/>
+        <source>Select your library folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.cpp" line="175"/>
         <source>Select your Models and Settings backup folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="168"/>
+        <location filename="../apppreferencesdialog.cpp" line="186"/>
         <source>Select Google Earth executable</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8636,143 +8672,98 @@ m2560 for v4.1 boards</source>
 <context>
     <name>customizeSplashDialog</name>
     <message>
-        <location filename="../customizesplashdialog.ui" line="20"/>
-        <location filename="../splasheditdialog.ui" line="20"/>
-        <source>Customize Splash</source>
+        <location filename="../customizesplashdialog.ui" line="23"/>
+        <source>Transmitter Splash Screen Editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.ui" line="307"/>
-        <location filename="../customizesplashdialog.ui" line="333"/>
-        <location filename="../splasheditdialog.ui" line="307"/>
-        <location filename="../splasheditdialog.ui" line="333"/>
+        <location filename="../customizesplashdialog.ui" line="210"/>
+        <location filename="../customizesplashdialog.ui" line="496"/>
         <source>Invert</source>
         <translation type="unfinished">Inverter</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.ui" line="320"/>
-        <location filename="../splasheditdialog.ui" line="320"/>
-        <source>Save Image</source>
+        <location filename="../customizesplashdialog.ui" line="260"/>
+        <location filename="../customizesplashdialog.ui" line="549"/>
+        <source>Load FW</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.ui" line="138"/>
-        <location filename="../splasheditdialog.ui" line="138"/>
-        <source>Load Firmware</source>
+        <location filename="../customizesplashdialog.ui" line="267"/>
+        <location filename="../customizesplashdialog.ui" line="556"/>
+        <source>Load Pict</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.ui" line="176"/>
-        <location filename="../splasheditdialog.ui" line="176"/>
-        <source>Load Image</source>
+        <location filename="../customizesplashdialog.ui" line="290"/>
+        <location filename="../customizesplashdialog.ui" line="579"/>
+        <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.ui" line="151"/>
-        <location filename="../splasheditdialog.ui" line="151"/>
+        <location filename="../customizesplashdialog.ui" line="233"/>
+        <location filename="../customizesplashdialog.ui" line="519"/>
         <source>Open Splash Library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.ui" line="60"/>
-        <location filename="../splasheditdialog.ui" line="60"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../customizesplashdialog.ui" line="154"/>
-        <location filename="../splasheditdialog.ui" line="154"/>
+        <location filename="../customizesplashdialog.ui" line="236"/>
+        <location filename="../customizesplashdialog.ui" line="317"/>
+        <location filename="../customizesplashdialog.ui" line="327"/>
+        <location filename="../customizesplashdialog.ui" line="522"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.ui" line="208"/>
-        <location filename="../splasheditdialog.ui" line="208"/>
-        <source>Save Firmware</source>
-        <oldsource>Save To Hex</oldsource>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../customizesplashdialog.cpp" line="17"/>
-        <location filename="../customizesplashdialog.cpp" line="41"/>
-        <location filename="../customizesplashdialog.cpp" line="46"/>
-        <source>Select an original firmware file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../customizesplashdialog.cpp" line="28"/>
+        <location filename="../customizesplashdialog.cpp" line="63"/>
         <source>Open</source>
         <translation type="unfinished">Abrir</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="53"/>
-        <source>Select an image to customize your splash &lt;br /&gt;or save actual firmware splash</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../customizesplashdialog.cpp" line="60"/>
-        <location filename="../customizesplashdialog.cpp" line="81"/>
-        <location filename="../customizesplashdialog.cpp" line="118"/>
-        <location filename="../customizesplashdialog.cpp" line="158"/>
+        <location filename="../customizesplashdialog.cpp" line="71"/>
+        <location filename="../customizesplashdialog.cpp" line="104"/>
+        <location filename="../customizesplashdialog.cpp" line="146"/>
+        <location filename="../customizesplashdialog.cpp" line="182"/>
+        <location filename="../customizesplashdialog.cpp" line="189"/>
+        <location filename="../customizesplashdialog.cpp" line="198"/>
         <source>Error</source>
         <translation type="unfinished">Erro</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="60"/>
+        <location filename="../customizesplashdialog.cpp" line="71"/>
         <source>Could not find bitmap to replace in file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="75"/>
+        <location filename="../customizesplashdialog.cpp" line="97"/>
         <source>Open Image to load</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="75"/>
+        <location filename="../customizesplashdialog.cpp" line="97"/>
         <source>Images (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="81"/>
-        <location filename="../customizesplashdialog.cpp" line="118"/>
+        <location filename="../customizesplashdialog.cpp" line="104"/>
+        <location filename="../customizesplashdialog.cpp" line="146"/>
         <source>Cannot load %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="106"/>
-        <location filename="../customizesplashdialog.cpp" line="143"/>
-        <source>Save your custimized firmware</source>
+        <location filename="../customizesplashdialog.cpp" line="182"/>
+        <location filename="../customizesplashdialog.cpp" line="189"/>
+        <source>Could not store image in firmware file %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="152"/>
-        <location filename="../customizesplashdialog.cpp" line="185"/>
-        <source>Write to file</source>
+        <location filename="../customizesplashdialog.cpp" line="198"/>
+        <source>The image file %1 could not be stored</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="158"/>
         <source>Error reading file %1</source>
-        <translation type="unfinished">Erro ao ler o ficheiro %1! {1?}</translation>
-    </message>
-    <message>
-        <location filename="../customizesplashdialog.cpp" line="166"/>
-        <source>Firmware correctly saved.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../customizesplashdialog.cpp" line="169"/>
-        <source>Firmware not saved.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../customizesplashdialog.cpp" line="185"/>
-        <source>PNG images (*.png);;</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Erro ao ler o ficheiro %1! {1?}</translation>
     </message>
 </context>
 <context>
@@ -8909,94 +8900,79 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.ui" line="38"/>
-        <location filename="../fwpreferencesdialog.ui" line="51"/>
-        <location filename="../fwpreferencesdialog.ui" line="64"/>
-        <location filename="../fwpreferencesdialog.ui" line="77"/>
-        <location filename="../fwpreferencesdialog.ui" line="100"/>
-        <location filename="../fwpreferencesdialog.ui" line="190"/>
-        <location filename="../fwpreferencesdialog.ui" line="261"/>
-        <location filename="../fwpreferencesdialog.ui" line="291"/>
-        <location filename="../fwpreferencesdialog.ui" line="467"/>
-        <location filename="../fwpreferencesdialog.ui" line="480"/>
-        <location filename="../fwpreferencesdialog.ui" line="499"/>
-        <location filename="../fwpreferencesdialog.ui" line="512"/>
-        <location filename="../fwpreferencesdialog.ui" line="525"/>
-        <location filename="../fwpreferencesdialog.ui" line="538"/>
-        <location filename="../fwpreferencesdialog.ui" line="551"/>
-        <location filename="../fwpreferencesdialog.ui" line="564"/>
-        <location filename="../fwpreferencesdialog.ui" line="577"/>
-        <location filename="../fwpreferencesdialog.ui" line="590"/>
-        <location filename="../fwpreferencesdialog.ui" line="603"/>
-        <location filename="../fwpreferencesdialog.ui" line="616"/>
-        <location filename="../fwpreferencesdialog.ui" line="629"/>
-        <location filename="../fwpreferencesdialog.ui" line="642"/>
-        <location filename="../fwpreferencesdialog.ui" line="655"/>
-        <location filename="../fwpreferencesdialog.ui" line="668"/>
-        <location filename="../fwpreferencesdialog.ui" line="691"/>
-        <location filename="../fwpreferencesdialog.ui" line="704"/>
-        <location filename="../fwpreferencesdialog.ui" line="717"/>
-        <location filename="../fwpreferencesdialog.ui" line="730"/>
-        <location filename="../fwpreferencesdialog.ui" line="743"/>
-        <location filename="../fwpreferencesdialog.ui" line="756"/>
-        <location filename="../fwpreferencesdialog.ui" line="769"/>
-        <location filename="../fwpreferencesdialog.ui" line="782"/>
-        <location filename="../fwpreferencesdialog.ui" line="795"/>
-        <location filename="../fwpreferencesdialog.ui" line="808"/>
-        <location filename="../fwpreferencesdialog.ui" line="821"/>
-        <location filename="../fwpreferencesdialog.ui" line="834"/>
-        <location filename="../fwpreferencesdialog.ui" line="847"/>
-        <location filename="../fwpreferencesdialog.ui" line="860"/>
-        <location filename="../fwpreferencesdialog.ui" line="873"/>
-        <location filename="../fwpreferencesdialog.ui" line="886"/>
-        <location filename="../fwpreferencesdialog.ui" line="1003"/>
-        <location filename="../fwpreferencesdialog.ui" line="1016"/>
+        <location filename="../fwpreferencesdialog.ui" line="58"/>
+        <location filename="../fwpreferencesdialog.ui" line="71"/>
+        <location filename="../fwpreferencesdialog.ui" line="84"/>
+        <location filename="../fwpreferencesdialog.ui" line="97"/>
+        <location filename="../fwpreferencesdialog.ui" line="110"/>
+        <location filename="../fwpreferencesdialog.ui" line="206"/>
+        <location filename="../fwpreferencesdialog.ui" line="219"/>
+        <location filename="../fwpreferencesdialog.ui" line="296"/>
+        <location filename="../fwpreferencesdialog.ui" line="309"/>
+        <location filename="../fwpreferencesdialog.ui" line="507"/>
+        <location filename="../fwpreferencesdialog.ui" line="520"/>
+        <location filename="../fwpreferencesdialog.ui" line="536"/>
+        <location filename="../fwpreferencesdialog.ui" line="549"/>
+        <location filename="../fwpreferencesdialog.ui" line="562"/>
+        <location filename="../fwpreferencesdialog.ui" line="575"/>
+        <location filename="../fwpreferencesdialog.ui" line="588"/>
+        <location filename="../fwpreferencesdialog.ui" line="601"/>
+        <location filename="../fwpreferencesdialog.ui" line="614"/>
+        <location filename="../fwpreferencesdialog.ui" line="627"/>
+        <location filename="../fwpreferencesdialog.ui" line="640"/>
+        <location filename="../fwpreferencesdialog.ui" line="653"/>
+        <location filename="../fwpreferencesdialog.ui" line="666"/>
+        <location filename="../fwpreferencesdialog.ui" line="679"/>
+        <location filename="../fwpreferencesdialog.ui" line="692"/>
+        <location filename="../fwpreferencesdialog.ui" line="715"/>
+        <location filename="../fwpreferencesdialog.ui" line="728"/>
+        <location filename="../fwpreferencesdialog.ui" line="741"/>
+        <location filename="../fwpreferencesdialog.ui" line="754"/>
+        <location filename="../fwpreferencesdialog.ui" line="767"/>
+        <location filename="../fwpreferencesdialog.ui" line="780"/>
+        <location filename="../fwpreferencesdialog.ui" line="793"/>
+        <location filename="../fwpreferencesdialog.ui" line="806"/>
+        <location filename="../fwpreferencesdialog.ui" line="819"/>
+        <location filename="../fwpreferencesdialog.ui" line="832"/>
+        <location filename="../fwpreferencesdialog.ui" line="845"/>
+        <location filename="../fwpreferencesdialog.ui" line="858"/>
+        <location filename="../fwpreferencesdialog.ui" line="871"/>
+        <location filename="../fwpreferencesdialog.ui" line="884"/>
+        <location filename="../fwpreferencesdialog.ui" line="897"/>
+        <location filename="../fwpreferencesdialog.ui" line="910"/>
+        <location filename="../fwpreferencesdialog.ui" line="1012"/>
+        <location filename="../fwpreferencesdialog.ui" line="1032"/>
         <source>CheckBox</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.ui" line="84"/>
-        <source>Hardware Profile Name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../fwpreferencesdialog.ui" line="107"/>
+        <location filename="../fwpreferencesdialog.ui" line="123"/>
         <source>Set language of voice.
 May be different from firmware language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.ui" line="121"/>
+        <location filename="../fwpreferencesdialog.ui" line="137"/>
         <source>SD Structure path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.ui" line="131"/>
+        <location filename="../fwpreferencesdialog.ui" line="147"/>
         <source>Processor ID</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.ui" line="138"/>
-        <source>Language</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../fwpreferencesdialog.ui" line="154"/>
+        <location filename="../fwpreferencesdialog.ui" line="170"/>
         <source>Default Stick Mode</source>
         <translation type="unfinished">Modo do Rádio por Defeito</translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.ui" line="161"/>
-        <source>Voice</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../fwpreferencesdialog.ui" line="174"/>
+        <location filename="../fwpreferencesdialog.ui" line="190"/>
         <source>Channel Order</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.ui" line="197"/>
+        <location filename="../fwpreferencesdialog.ui" line="232"/>
         <source>Mode selection:
 
 Mode 1:
@@ -9019,94 +8995,124 @@ Mode 4:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.ui" line="222"/>
+        <location filename="../fwpreferencesdialog.ui" line="257"/>
         <source>Mode 1 (RUD ELE THR AIL)</source>
         <translation type="unfinished">Modo 1 (RUD ELE THR AIL)</translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.ui" line="227"/>
+        <location filename="../fwpreferencesdialog.ui" line="262"/>
         <source>Mode 2 (RUD THR ELE AIL)</source>
         <translation type="unfinished">Modo 2 (RUD THR ELE AIL)</translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.ui" line="232"/>
+        <location filename="../fwpreferencesdialog.ui" line="267"/>
         <source>Mode 3 (AIL ELE THR RUD)</source>
         <translation type="unfinished">Modo 3 (AIL ELE THR RUD)</translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.ui" line="237"/>
+        <location filename="../fwpreferencesdialog.ui" line="272"/>
         <source>Mode 4 (AIL THR ELE RUD)</source>
         <translation type="unfinished">Modo 4 (AIL THR ELE RUD)</translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.ui" line="245"/>
-        <source>Storage Position</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../fwpreferencesdialog.ui" line="268"/>
+        <location filename="../fwpreferencesdialog.ui" line="38"/>
         <source>Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.ui" line="304"/>
-        <source> Firmware Type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../fwpreferencesdialog.ui" line="326"/>
+        <location filename="../fwpreferencesdialog.ui" line="366"/>
         <source>Channel order
 
 This is used by the templated to determine which channel goes to what number output.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.ui" line="903"/>
+        <location filename="../fwpreferencesdialog.ui" line="933"/>
         <source>Open Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.ui" line="910"/>
+        <location filename="../fwpreferencesdialog.ui" line="940"/>
         <source>Offer to write FW to Tx after download</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.ui" line="917"/>
+        <location filename="../fwpreferencesdialog.ui" line="1071"/>
+        <source>Profile Splash Screen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="1078"/>
+        <source>Profile Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="1108"/>
         <source>Import</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.ui" line="924"/>
+        <location filename="../fwpreferencesdialog.ui" line="1101"/>
         <source>Export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.ui" line="931"/>
+        <location filename="../fwpreferencesdialog.ui" line="45"/>
         <source>Save Profile</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.ui" line="948"/>
+        <location filename="../fwpreferencesdialog.ui" line="154"/>
+        <source>Menu Language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="177"/>
+        <source>Voice Language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="280"/>
+        <source>Profile Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="338"/>
+        <source>Firmware Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="947"/>
         <source>Append version number to FW file name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.ui" line="955"/>
+        <location filename="../fwpreferencesdialog.ui" line="954"/>
         <source>Download Voice</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.ui" line="1029"/>
+        <location filename="../fwpreferencesdialog.ui" line="1045"/>
         <source>FwInfo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.ui" line="1036"/>
+        <location filename="../fwpreferencesdialog.ui" line="1115"/>
+        <source>Open Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="1122"/>
+        <source>Clear Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="1019"/>
         <source>Download FW</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.ui" line="1049"/>
+        <location filename="../fwpreferencesdialog.ui" line="1058"/>
         <source>Check for updates</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9126,28 +9132,48 @@ This is used by the templated to determine which channel goes to what number out
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.cpp" line="385"/>
+        <location filename="../fwpreferencesdialog.cpp" line="395"/>
         <source>Select the folder replicating your SD structure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.cpp" line="429"/>
+        <location filename="../fwpreferencesdialog.cpp" line="439"/>
         <source>Profile name is empty, profile slot %1 will be deleted.&lt;br&gt;Are you sure ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.cpp" line="458"/>
+        <location filename="../fwpreferencesdialog.cpp" line="469"/>
         <source>Export profile As</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.cpp" line="480"/>
+        <location filename="../fwpreferencesdialog.cpp" line="491"/>
         <source>Profile slot is not empty, profile slot %1 will we overwritten.&lt;br&gt;Are you sure ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.cpp" line="486"/>
+        <location filename="../fwpreferencesdialog.cpp" line="497"/>
         <source>Open Profile to import</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.cpp" line="522"/>
+        <source>Open Image to load</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.cpp" line="522"/>
+        <source>Images (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.cpp" line="528"/>
+        <source>Error</source>
+        <translation type="unfinished">Erro</translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.cpp" line="528"/>
+        <source>Cannot load %1.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
