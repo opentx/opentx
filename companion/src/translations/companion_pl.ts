@@ -2182,207 +2182,207 @@ Chcesz pobrać teraz?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1670"/>
         <source>&amp;General Preferences...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Główne Preferencje...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1695"/>
         <source>Configure transmitter start screen...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustawienia ekranu startowego radia...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1748"/>
         <source>&amp;Configure connection software...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ustawienia oprogramowania łączącego...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1795"/>
         <source>Classic</source>
-        <translation type="unfinished">Klasyczna</translation>
+        <translation>Klasyczna</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1796"/>
         <source>The multicolor classical Companion icon theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Wielokolorowy klasyczny wygląd ikon Companion</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1799"/>
         <source>A monochrome black icon theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Monochromatyczny czarny wygląd ikon</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1802"/>
         <source>A monochrome white icon theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Monochromatyczny biały wygląd ikon</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1805"/>
         <source>A monochrome blue icon theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Monochromatyczny niebieski wygląd ikon</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1808"/>
         <source>Small</source>
-        <translation type="unfinished">Mała</translation>
+        <translation>Małe</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1809"/>
         <source>Use small toolbar icons</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj małych ikon paska narzędzi</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1812"/>
         <source>Use normal size toolbar icons</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj normalnych ikon paska narzędzi</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1813"/>
         <source>Normal</source>
-        <translation type="unfinished">Normalna</translation>
+        <translation>Normalne</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1816"/>
         <source>Use big toolbar icons</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj dużych ikon paska narzędzi</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1817"/>
         <source>Big</source>
-        <translation type="unfinished">Duża</translation>
+        <translation>Duże</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1820"/>
         <source>Use huge toolbar icons</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj olbrzymich ikon paska narzędzi</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1821"/>
         <source>Huge</source>
-        <translation type="unfinished">Olbrzymia</translation>
+        <translation>Olbrzymie</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1824"/>
         <source>System default language</source>
-        <translation type="unfinished"></translation>
+        <translation>Podstawowy język systemu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1825"/>
         <source>Use system default language in menus</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj podstawowego języka systemu w menu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1828"/>
         <source>Czech</source>
-        <translation type="unfinished">Czeski</translation>
+        <translation>Czeski</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1829"/>
         <source>Use Czech in menus</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj Czeskiego w menu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1832"/>
         <source>German</source>
-        <translation type="unfinished">Niemiecki</translation>
+        <translation>Niemiecki</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1833"/>
         <source>Use German in menus</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj Niemieckiego w menu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1836"/>
         <source>English</source>
-        <translation type="unfinished">Angielski</translation>
+        <translation>Angielski</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1837"/>
         <source>Use English in menus</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj Angielskiego w menu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1840"/>
         <source>French</source>
-        <translation type="unfinished">Francuski</translation>
+        <translation>Francuski</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1841"/>
         <source>Use French in menus</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj Francuskiego w menu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1844"/>
         <source>Italian</source>
-        <translation type="unfinished">Włoski</translation>
+        <translation>Włoski</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1845"/>
         <source>Use Italian in menus</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj Włoskiego w menu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1848"/>
         <source>Hebrew</source>
-        <translation type="unfinished"></translation>
+        <translation>Hebrajski</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1849"/>
         <source>Use Hebrew in menus</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj Hebrajskiego w menu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1852"/>
         <source>Polish</source>
-        <translation type="unfinished">Polski</translation>
+        <translation>Polski</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1853"/>
         <source>Use Polish in menus</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj Polskiego w menu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1856"/>
         <source>Portuguese</source>
-        <translation type="unfinished">Portugalski</translation>
+        <translation>Portugalski</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1857"/>
         <source>Use Portuguese in menus</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj Portualskiego w menu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1860"/>
         <source>Swedish</source>
-        <translation type="unfinished">Szwedzki</translation>
+        <translation>Szwedzki</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1861"/>
         <source>Use Swedish in menus</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj Szwedzkiego w menu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1864"/>
         <source>Russian</source>
-        <translation type="unfinished"></translation>
+        <translation>Rosyjski</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1865"/>
         <source>Use Russian in menus</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj Rosyjskiego w menu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1875"/>
         <source>Set Icon Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustaw wygląd ikon</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1876"/>
         <source>Set Icon Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustaw wielkość ikon</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1906"/>
         <source>&amp;Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ustawienia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2125"/>
@@ -2439,24 +2439,24 @@ Chcesz pobrać teraz?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="650"/>
         <source>The selected language will be used the next time you start Companion.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybrany język będzie użyty po ponownym uruchomieniu Comapnion.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="652"/>
         <location filename="../mainwindow.cpp" line="664"/>
         <location filename="../mainwindow.cpp" line="676"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="662"/>
         <source>The new theme will be loaded the next time you start Companion.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybrany wygląd będzie użyty po ponownym uruchomieniu Comapnion.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="674"/>
         <source>The icon size will be used the next time you start Companion.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybrana wiekość ikon będzie użyta po ponownym uruchomieniu Comapnion.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="691"/>
@@ -2657,10 +2657,6 @@ Czy mimo wszystko zapisać?</translation>
         <translation>Otwórz plik logów</translation>
     </message>
     <message>
-        <source>&amp;Preferences...</source>
-        <translation type="obsolete">&amp;Preferencje...</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1671"/>
         <source>Edit general preferences</source>
         <translation>Edycja głównych ustawień</translation>
@@ -2802,10 +2798,6 @@ Czy mimo wszystko zapisać?</translation>
         <translation>Porównaj modele</translation>
     </message>
     <message>
-        <source>Customize your &amp;TX...</source>
-        <translation type="obsolete">&amp;Personalizuj swoje radio...</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1696"/>
         <source>Customize the splash screen of your TX</source>
         <translation>Personalizuj obrazek na swoim radiu</translation>
@@ -2859,10 +2851,6 @@ Czy mimo wszystko zapisać?</translation>
         <location filename="../mainwindow.cpp" line="1728"/>
         <source>Ctrl+Alt+R</source>
         <translation></translation>
-    </message>
-    <message>
-        <source>&amp;Configure...</source>
-        <translation type="obsolete">&amp;Konfiguracja...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1753"/>
@@ -2939,7 +2927,7 @@ Czy mimo wszystko zapisać?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1874"/>
         <source>Set Menu Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustaw język menu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1878"/>
@@ -8685,50 +8673,6 @@ Moze być inny od języka firmware</translation>
         <translation>Żółty</translation>
     </message>
     <message>
-        <source>Theme</source>
-        <translation type="obsolete">Skórka</translation>
-    </message>
-    <message>
-        <source>Requires restart</source>
-        <translation type="obsolete">Wymagany restart</translation>
-    </message>
-    <message>
-        <source>Classic</source>
-        <translation type="obsolete">Klasyczna</translation>
-    </message>
-    <message>
-        <source>Monochrome</source>
-        <translation type="obsolete">Monochromatyczna</translation>
-    </message>
-    <message>
-        <source>MonoWhite</source>
-        <translation type="obsolete">Mono-Biała</translation>
-    </message>
-    <message>
-        <source>MonoBlue</source>
-        <translation type="obsolete">Mono-Niebieska</translation>
-    </message>
-    <message>
-        <source>Icon  size</source>
-        <translation type="obsolete">Wielkość Ikon</translation>
-    </message>
-    <message>
-        <source>Small</source>
-        <translation type="obsolete">Mała</translation>
-    </message>
-    <message>
-        <source>Normal</source>
-        <translation type="obsolete">Normalna</translation>
-    </message>
-    <message>
-        <source>Big</source>
-        <translation type="obsolete">Duża</translation>
-    </message>
-    <message>
-        <source>Huge</source>
-        <translation type="obsolete">Olbrzymia</translation>
-    </message>
-    <message>
         <location filename="../preferencesdialog.ui" line="1571"/>
         <source>Check for updates on startup</source>
         <translation>Sprawdź aktualizacje na przy uruchomieniu</translation>
@@ -8742,10 +8686,6 @@ Moze być inny od języka firmware</translation>
         <location filename="../preferencesdialog.ui" line="1622"/>
         <source>Find Executable</source>
         <translation>Znajdź wykonywalny plik</translation>
-    </message>
-    <message>
-        <source>Language (requires restart)</source>
-        <translation type="obsolete">Język programu (wymaga restartu)</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="520"/>
