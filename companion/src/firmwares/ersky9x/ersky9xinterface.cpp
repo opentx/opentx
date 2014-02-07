@@ -74,7 +74,7 @@ inline void applyStickModeToModel(Ersky9xModelData_v10 & model, unsigned int mod
   for (int i=0; i<ERSKY9X_MAX_MIXERS_V10; i++)
     model.mixData[i].srcRaw = applyStickMode(model.mixData[i].srcRaw, mode);
   for (int i=0; i<ERSKY9X_NUM_CSW_V10; i++) {
-    switch (getCSFunctionFamily(model.customSw[i].func)) {
+    switch (CustomSwData(model.customSw[i].func).getFunctionFamily()) {
       case CS_FAMILY_VCOMP:
         model.customSw[i].v2 = applyStickMode(model.customSw[i].v2, mode);
         // no break
@@ -106,7 +106,7 @@ inline void applyStickModeToModel(Ersky9xModelData_v11 & model, unsigned int mod
   for (int i=0; i<ERSKY9X_MAX_MIXERS_V11; i++)
     model.mixData[i].srcRaw = applyStickMode(model.mixData[i].srcRaw, mode);
   for (int i=0; i<ERSKY9X_NUM_CSW_V11; i++) {
-    switch (getCSFunctionFamily(model.customSw[i].func)) {
+    switch (CustomSwData(model.customSw[i].func).getFunctionFamily()) {
       case CS_FAMILY_VCOMP:
         model.customSw[i].v2 = applyStickMode(model.customSw[i].v2, mode);
         // no break

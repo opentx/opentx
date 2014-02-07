@@ -190,7 +190,9 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
   var = checkIncDecModelZero(event,var,max)
 
 #if defined(CPUARM)
+  bool isFunctionAvailable(int16_t function);
   bool isSwitchAvailable(int16_t swtch);
+  bool isSwitchAvailableInCustomSwitches(int16_t swtch);
   #define AUTOSWITCH_ENTER_LONG() (attr && event==EVT_KEY_LONG(KEY_ENTER))
   #define CHECK_INCDEC_MODELSWITCH(event, var, min, max) \
     var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SWITCH|NO_INCDEC_MARKS, isSwitchAvailable)
@@ -400,7 +402,8 @@ void pushMenuTextView(const char *filename);
   #define REPEAT_LAST_CURSOR_MOVE() { if (EVT_KEY_MASK(event) >= 0x0e) putEvent(event); else m_posHorz = 0; }
   #define MOVE_CURSOR_FROM_HERE()   if (m_posHorz > 0) REPEAT_LAST_CURSOR_MOVE()
 #else
-  #define REPEAT_LAST_CURSOR_MOVE() m_posHorz = 0;
+  void repeatLastCursorMove(uint8_t event);
+  #define REPEAT_LAST_CURSOR_MOVE() repeatLastCursorMove(event)
   #define MOVE_CURSOR_FROM_HERE()   REPEAT_LAST_CURSOR_MOVE()
 #endif
 

@@ -5,14 +5,12 @@
 
 extern RawSwitch er9xToSwitch(int8_t sw);
 
-TimerMode getErSky9xTimerMode(int mode)
+RawSwitch getErSky9xTimerMode(int mode)
 {
   if (mode<4)
-    return TimerMode(mode);
-  else if (mode < 20)
-    return TimerMode(TMRMODE_FIRST_CHPERC+(mode-4));
+    return RawSwitch(SWITCH_TYPE_TIMER_MODE, mode);
   else
-    return TimerMode(0);
+    return RawSwitch();
 }
 
 RawSwitch ersky9xToSwitch(int8_t sw)
@@ -29,9 +27,9 @@ RawSwitch ersky9xToSwitch(int8_t sw)
   else if (sw == -34)
     return RawSwitch(SWITCH_TYPE_OFF);
   else if (swa <= 34+9)
-    return RawSwitch(SWITCH_TYPE_MOMENT_SWITCH, sw > 0 ? sw-34 : sw+34);
+    return RawSwitch(SWITCH_TYPE_SWITCH, sw > 0 ? sw-34 : sw+34);
   else
-    return RawSwitch(SWITCH_TYPE_MOMENT_VIRTUAL, sw > 0 ? sw-34-9 : sw+34+9);
+    return RawSwitch(SWITCH_TYPE_VIRTUAL, sw > 0 ? sw-34-9 : sw+34+9);
 }
 
 t_Ersky9xTrainerMix::t_Ersky9xTrainerMix()
@@ -406,25 +404,9 @@ t_Ersky9xSafetySwData_v10::t_Ersky9xSafetySwData_v10()
   memset(this, 0, sizeof(t_Ersky9xSafetySwData_v10));
 }
 
-t_Ersky9xSafetySwData_v10::operator SafetySwData ()
-{
-  SafetySwData c9x;
-  c9x.swtch = er9xToSwitch(swtch);
-  c9x.val = val;
-  return c9x;
-}
-
 t_Ersky9xSafetySwData_v11::t_Ersky9xSafetySwData_v11()
 {
   memset(this, 0, sizeof(t_Ersky9xSafetySwData_v11));
-}
-
-t_Ersky9xSafetySwData_v11::operator SafetySwData ()
-{
-  SafetySwData c9x;
-  c9x.swtch = ersky9xToSwitch(opt.ss.swtch);
-  c9x.val = opt.ss.val;
-  return c9x;
 }
 
 t_Ersky9xFrSkyChannelData_v10::t_Ersky9xFrSkyChannelData_v10()
@@ -612,8 +594,8 @@ t_Ersky9xModelData_v10::operator ModelData ()
   for (int i=0; i<ERSKY9X_NUM_CSW_V10; i++)
     c9x.customSw[i] = customSw[i];
 
-  for (int i=0; i<ERSKY9X_NUM_CHNOUT_V10; i++)
-    c9x.safetySw[i] = safetySw[i];
+  // for (int i=0; i<ERSKY9X_NUM_CHNOUT_V10; i++)
+  //   c9x.safetySw[i] = safetySw[i];
 
   c9x.frsky = frsky;
   c9x.frsky.usrProto=FrSkyUsrProto;
@@ -733,8 +715,8 @@ t_Ersky9xModelData_v11::operator ModelData ()
   for (int i=0; i<ERSKY9X_NUM_CSW_V11; i++)
     c9x.customSw[i] = customSw[i];
 
-  for (int i=0; i<ERSKY9X_NUM_CHNOUT_V11; i++)
-    c9x.safetySw[i] = safetySw[i];
+  // for (int i=0; i<ERSKY9X_NUM_CHNOUT_V11; i++)
+  //  c9x.safetySw[i] = safetySw[i];
 
   c9x.frsky = frsky;
   c9x.frsky.usrProto=FrSkyUsrProto;

@@ -332,14 +332,6 @@ Gruvin9xFuncSwData::operator FuncSwData ()
   return c9x;
 }
 
-t_Gruvin9xSafetySwData::operator SafetySwData ()
-{
-  SafetySwData c9x;
-  c9x.swtch = gruvin9xToSwitch(swtch);
-  c9x.val = val;
-  return c9x;
-}
-
 t_Gruvin9xSwashRingData::t_Gruvin9xSwashRingData()
 {
   memset(this, 0, sizeof(t_Gruvin9xSwashRingData));
@@ -381,7 +373,7 @@ t_Gruvin9xPhaseData_v106::operator PhaseData ()
   return c9x;
 }
 
-extern TimerMode getEr9xTimerMode(int mode);
+extern RawSwitch getEr9xTimerMode(int mode);
 
 t_Gruvin9xTimerData::operator TimerData ()
 {
@@ -489,8 +481,8 @@ t_Gruvin9xModelData_v102::operator ModelData ()
 
   for (int i=0; i<G9X_NUM_CSW; i++)
     c9x.customSw[i] = customSw[i];
-  for (int i=0; i<G9X_NUM_CHNOUT; i++)
-    c9x.safetySw[i] = safetySw[i];
+  // for (int i=0; i<G9X_NUM_CHNOUT; i++)
+  //  c9x.safetySw[i] = safetySw[i];
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;
   return c9x;
@@ -560,8 +552,8 @@ t_Gruvin9xModelData_v103::operator ModelData ()
 
   for (int i=0; i<G9X_NUM_CSW; i++)
     c9x.customSw[i] = customSw[i];
-  for (int i=0; i<G9X_NUM_CHNOUT; i++)
-    c9x.safetySw[i] = safetySw[i];
+  // for (int i=0; i<G9X_NUM_CHNOUT; i++)
+  //   c9x.safetySw[i] = safetySw[i];
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;
   return c9x;
@@ -650,8 +642,8 @@ t_Gruvin9xModelData_v105::operator ModelData ()
     c9x.customSw[i] = customSw[i];
   for (int i=0; i<G9X_NUM_FSW; i++)
     c9x.funcSw[i] = funcSw[i];
-  for (int i=0; i<G9X_NUM_CHNOUT; i++)
-    c9x.safetySw[i] = safetySw[i];
+  // for (int i=0; i<G9X_NUM_CHNOUT; i++)
+  //  c9x.safetySw[i] = safetySw[i];
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;
 
@@ -734,8 +726,8 @@ t_Gruvin9xModelData_v106::operator ModelData ()
     c9x.customSw[i] = customSw[i];
   for (int i=0; i<G9X_NUM_FSW; i++)
     c9x.funcSw[i] = funcSw[i];
-  for (int i=0; i<G9X_NUM_CHNOUT; i++)
-    c9x.safetySw[i] = safetySw[i];
+  // for (int i=0; i<G9X_NUM_CHNOUT; i++)
+  //   c9x.safetySw[i] = safetySw[i];
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;
 

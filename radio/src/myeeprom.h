@@ -668,14 +668,42 @@ PACK( union u_int8int16_t {
 
 #endif
 
+enum CswFunctions {
+  CS_OFF,
+  CS_VEQUAL, // v==offset
+  CS_VPOS,   // v>offset
+  CS_VNEG,   // v<offset
+#if defined(CPUARM)
+  CS_RANGE,
+#endif
+  CS_APOS,   // |v|>offset
+  CS_ANEG,   // |v|<offset
+  CS_AND,
+  CS_OR,
+  CS_XOR,
+#if defined(CPUARM)
+  CS_STAY,
+#endif
+  CS_EQUAL,
+  CS_GREATER,
+  CS_LESS,
+  CS_DIFFEGREATER,
+  CS_ADIFFEGREATER,
+  CS_TIMER,
+  CS_STICKY,
+  CS_COUNT,
+  CS_MAXF = CS_COUNT-1
+};
+
 #if defined(CPUARM)
 #define MAX_CSW_DURATION 120 /*60s*/
 #define MAX_CSW_DELAY    120 /*60s*/
-#define MAX_CSW_ANDSW    NUM_SWITCH
+#define MAX_CSW_ANDSW    SWSRC_LAST
 typedef int16_t csw_telemetry_value_t;
 PACK(typedef struct t_CustomSwData { // Custom Switches data
-  int16_t v1;
+  int8_t  v1;
   int16_t v2;
+  int16_t v3;
   uint8_t func;
   uint8_t delay;
   uint8_t duration;
@@ -693,57 +721,54 @@ PACK(typedef struct t_CustomSwData { // Custom Switches data
 #endif
 
 enum Functions {
-#if defined(CPUARM)
-  FUNC_SAFETY_CH1,
-  FUNC_SAFETY_CH16=FUNC_SAFETY_CH1+15,
-#else
-  FUNC_SAFETY_GROUP1,
-  FUNC_SAFETY_GROUP2,
-  FUNC_SAFETY_GROUP3,
-  FUNC_SAFETY_GROUP4,
-#endif
+  // first the functions which need a checkbox
+  FUNC_SAFETY_CHANNEL,
   FUNC_TRAINER,
-  FUNC_TRAINER_RUD,
-  FUNC_TRAINER_ELE,
-  FUNC_TRAINER_THR,
-  FUNC_TRAINER_AIL,
   FUNC_INSTANT_TRIM,
-  FUNC_PLAY_SOUND,
-#if !defined(PCBTARANIS)
-  FUNC_HAPTIC,
-#endif
   FUNC_RESET,
-  FUNC_VARIO,
+  FUNC_ADJUST_GVAR,
+#if defined(CPUARM)
+  FUNC_VOLUME,
+#endif
+
+  // then the other functions
+  FUNC_FIRST_WITHOUT_ENABLE,
+  FUNC_PLAY_SOUND = FUNC_FIRST_WITHOUT_ENABLE,
   FUNC_PLAY_TRACK,
 #if !defined(CPUARM)
   FUNC_PLAY_BOTH,
 #endif
   FUNC_PLAY_VALUE,
-#if !defined(PCBSTD)
-  FUNC_LOGS,
-#endif
-#if defined(CPUARM)
-  FUNC_VOLUME,
-#endif
-  FUNC_BACKLIGHT,
 #if defined(CPUARM)
   FUNC_BACKGND_MUSIC,
   FUNC_BACKGND_MUSIC_PAUSE,
 #endif
-#if defined(GVARS)
-  FUNC_ADJUST_GV1,
-  FUNC_ADJUST_GVLAST = (FUNC_ADJUST_GV1 + (MAX_GVARS-1)),
+  FUNC_VARIO,
+  FUNC_HAPTIC,
+#if !defined(PCBSTD)
+  FUNC_LOGS,
 #endif
+  FUNC_BACKLIGHT,
 #if defined(DEBUG)
   FUNC_TEST, // should remain the last before MAX as not added in companion9x
 #endif
   FUNC_MAX
 };
 
-#if defined(GVARS)
-  #define IS_ADJUST_GV_FUNCTION(sd)  (CFN_FUNC(sd) >= FUNC_ADJUST_GV1 && CFN_FUNC(sd) <= FUNC_ADJUST_GVLAST)
+#define HAS_ENABLE_PARAM(func) (func < FUNC_FIRST_WITHOUT_ENABLE)
+
+#if defined(CPUARM)
+  #define IS_PLAY_BOTH_FUNC(func) (0)
+  #define IS_VOLUME_FUNC(func)    (func == FUNC_VOLUME)
 #else
-  #define IS_ADJUST_GV_FUNCTION(sd)  (0)
+  #define IS_PLAY_BOTH_FUNC(func) (func == FUNC_PLAY_BOTH)
+  #define IS_VOLUME_FUNC(func)    (0)
+#endif
+
+#if defined(GVARS)
+  #define IS_ADJUST_GV_FUNC(func) (func == FUNC_ADJUST_GVAR)
+#else
+  #define IS_ADJUST_GV_FUNC(func) (0)
 #endif
 
 #if defined(VOICE)
@@ -786,56 +811,68 @@ PACK(typedef struct t_CustomFnData { // Function Switches data
   int8_t  swtch;
   uint8_t func;
   PACK(union {
-    char name[LEN_CFN_NAME];
+    struct {
+      char name[LEN_CFN_NAME];
+    } play;
+
     struct {
       int16_t val;
-      int16_t ext1;
-      int16_t ext2;
-    } composite;
-  }) param;
-  uint8_t mode:2;
-  uint8_t active:6;
+      uint8_t mode;
+      uint8_t param;
+      int16_t spare2;
+    } all;
+
+    struct {
+      int32_t val1;
+      int16_t val2;
+    } clear;
+  });
+  uint8_t active;
 }) CustomFnData;
 #define CFN_EMPTY(p)            (!(p)->swtch)
+#define CFN_SWITCH(p)           ((p)->swtch)
 #define CFN_FUNC(p)             ((p)->func)
 #define CFN_ACTIVE(p)           ((p)->active)
-#define CFN_CH_NUMBER(p)        (CFN_FUNC(p))
+#define CFN_CH_NUMBER(p)        ((p)->all.param)
 #define CFN_PLAY_REPEAT(p)      ((p)->active)
 #define CFN_PLAY_REPEAT_MUL     1
 #define CFN_PLAY_REPEAT_NOSTART 0x3F
-#define CFN_GVAR_MODE(p)        ((p)->mode)
-#define CFN_PARAM(p)            ((p)->param.composite.val)
-#define CFN_RESET(p)            (p->active = 0, memset(&(p)->param, 0, sizeof((p)->param)))
+#define CFN_GVAR_NUMBER(p)      ((p)->all.param)
+#define CFN_GVAR_MODE(p)        ((p)->all.mode)
+#define CFN_PARAM(p)            ((p)->all.val)
+#define CFN_RESET(p)            ((p)->active=0, (p)->clear.val1=0, (p)->clear.val2=0)
 #else
 PACK(typedef struct t_CustomFnData {
-  int8_t  swtch; // input
-  union {
+  PACK(union {
     struct {
-      uint8_t param:3;
-      uint8_t func:5;
-    } func_param;
+      int8_t   swtch:6;
+      uint16_t func:4;
+      uint8_t  mode:2;
+      uint8_t  param:3;
+      uint8_t  active:1;
+    } gvar;
 
     struct {
-      uint8_t active:1;
-      uint8_t param:2;
-      uint8_t func:5;
-    } func_param_enable;
+      int8_t   swtch:6;
+      uint16_t func:4;
+      uint8_t  param:4;
+      uint8_t  spare:1;
+      uint8_t  active:1;
+    } all;
+  });
 
-    struct {
-      uint8_t active:1;
-      uint8_t func:7;
-    } func_safety;
-  } internal;
-  uint8_t param;
+  uint8_t value;
 }) CustomFnData;
-#define CFN_FUNC(p)         ((p)->internal.func_param.func)
-#define CFN_ACTIVE(p)       ((p)->internal.func_param_enable.active)
-#define CFN_CH_NUMBER(p)    ((p)->internal.func_safety.func)
-#define CFN_PLAY_REPEAT(p)  ((p)->internal.func_param.param)
+#define CFN_SWITCH(p)       ((p)->all.swtch)
+#define CFN_FUNC(p)         ((p)->all.func)
+#define CFN_ACTIVE(p)       ((p)->all.active)
+#define CFN_CH_NUMBER(p)    ((p)->all.param)
+#define CFN_PLAY_REPEAT(p)  ((p)->all.param)
 #define CFN_PLAY_REPEAT_MUL 10
-#define CFN_GVAR_MODE(p)    ((p)->internal.func_param_enable.param)
-#define CFN_PARAM(p)        ((p)->param)
-#define CFN_RESET(p)        ((p)->internal.func_param_enable.active = 0, CFN_PARAM(p) = 0)
+#define CFN_GVAR_NUMBER(p)  ((p)->gvar.param)
+#define CFN_GVAR_MODE(p)    ((p)->gvar.mode)
+#define CFN_PARAM(p)        ((p)->value)
+#define CFN_RESET(p)        ((p)->all.active = 0, CFN_PARAM(p) = 0)
 #endif
 
 enum TelemetryUnit {
@@ -1166,6 +1203,7 @@ enum SwitchSources {
   SWSRC_SG2,
   SWSRC_SH0,
   SWSRC_SH2,
+  SWSRC_TRAINER = SWSRC_SH2,
 #else
   SWSRC_ID0 = SWSRC_FIRST_SWITCH,
   SWSRC_ID1,
@@ -1181,11 +1219,37 @@ enum SwitchSources {
   SWSRC_AIL,
   SWSRC_GEA,
   SWSRC_TRN,
+  SWSRC_TRAINER = SWSRC_TRN,
+#endif
+
+  SWSRC_LAST_SWITCH = SWSRC_TRAINER,
+
+#if defined(PCBTARANIS)
+  SWSRC_P11,
+  SWSRC_P16 = SWSRC_P11+5,
+  SWSRC_P21,
+  SWSRC_P26 = SWSRC_P21+5,
+#endif
+
+  SWSRC_FIRST_TRIM,
+  SWSRC_TrimRudLeft = SWSRC_FIRST_TRIM,
+  SWSRC_TrimRudRight,
+  SWSRC_TrimEleDown,
+  SWSRC_TrimEleUp,
+  SWSRC_TrimThrDown,
+  SWSRC_TrimThrUp,
+  SWSRC_TrimAilLeft,
+  SWSRC_TrimAilRight,
+  SWSRC_LAST_TRIM = SWSRC_TrimAilRight,
+
+#if defined(PCBSKY9X)
+  SWSRC_REa,
+#elif defined(PCBGRUVIN9X) || defined(PCBMEGA2560)
+  SWSRC_REa,
+  SWSRC_REb,
 #endif
 
   SWSRC_FIRST_CSW,
-  SWSRC_LAST_SWITCH = SWSRC_FIRST_CSW-1,
-
   SWSRC_SW1 = SWSRC_FIRST_CSW,
   SWSRC_SW2,
   SWSRC_SW3,
@@ -1200,34 +1264,11 @@ enum SwitchSources {
   SWSRC_SWC,
   SWSRC_LAST_CSW = SWSRC_SW1+NUM_CSW-1,
 
-#if defined(PCBTARANIS)
-  SWSRC_P11,
-  SWSRC_P16 = SWSRC_P11+5,
-  SWSRC_P21,
-  SWSRC_P26 = SWSRC_P21+5,
-#endif
-
   SWSRC_ON,
-
-  SWSRC_FIRST_MOMENT_SWITCH,
-  SWSRC_LAST_MOMENT_SWITCH = SWSRC_FIRST_MOMENT_SWITCH+SWSRC_LAST_CSW,
-
-#if !defined(PCBSTD)
-  SWSRC_TRAINER_SHORT,
-  SWSRC_TRAINER_LONG,
-#endif
-
-#if ROTARY_ENCODERS > 0
-  SWSRC_FIRST_ROTENC_SWITCH,
-  SWSRC_LAST_ROTENC_SWITCH = SWSRC_FIRST_ROTENC_SWITCH+(2*ROTARY_ENCODERS)-1,
-#endif
-
-  SWSRC_COUNT,
-  SWSRC_FIRST = -SWSRC_LAST_MOMENT_SWITCH,
-  SWSRC_LAST = SWSRC_COUNT-1,
-
   SWSRC_OFF = -SWSRC_ON,
-  SWSRC_TRAINER = SWSRC_SW1-1,
+
+  SWSRC_FIRST = SWSRC_OFF,
+  SWSRC_LAST = SWSRC_ON
 };
 
 enum MixSources {

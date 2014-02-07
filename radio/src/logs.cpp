@@ -175,7 +175,7 @@ void writeLogs()
 {
   static const pm_char * error_displayed = NULL;
 
-  if (isFunctionActive(FUNC_LOGS) && logDelay > 0) {
+  if (isFunctionActive(FUNCTION_LOGS) && logDelay > 0) {
     tmr10ms_t tmr10ms = get_tmr10ms();
     if (lastLogTime == 0 || (tmr10ms_t)(tmr10ms - lastLogTime) >= (tmr10ms_t)logDelay*10) {
       lastLogTime = tmr10ms;

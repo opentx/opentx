@@ -228,18 +228,6 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
 #endif
       }
     }
-
-    if (event == EVT_KEY_LONG(KEY_ENTER) && i_max > SWSRC_ON) {
-      s_editMode = !s_editMode;
-      if (newval > SWSRC_ON)
-        newval -= (NUM_SWITCH+1);
-      else if (newval > 0)
-        newval += (NUM_SWITCH+1);
-      else if (newval < SWSRC_OFF)
-        newval += (NUM_SWITCH+1);
-      else if (newval < 0)
-        newval -= (NUM_SWITCH+1);
-    }
   }
 #endif
 
@@ -976,7 +964,7 @@ int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, LcdFlags attr, uint8_t
 {
   lcd_putsColumnLeft(x, y, STR_SWITCH);
   putsSwitches(x,  y, value, attr);
-  if (attr) CHECK_INCDEC_MODELSWITCH(event, value, -NUM_SWITCH, NUM_SWITCH);
+  if (attr) CHECK_INCDEC_MODELSWITCH(event, value, SWSRC_FIRST, SWSRC_LAST);
   return value;
 }
 
@@ -1045,6 +1033,16 @@ int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t m
   return value;
 }
 #endif
+
+void repeatLastCursorMove(uint8_t event)
+{
+  if (CURSOR_MOVED_LEFT(event) || CURSOR_MOVED_RIGHT(event)) {
+    putEvent(event);
+  }
+  else {
+    m_posHorz = 0;
+  }
+}
 
 #if LCD_W >= 212
 #define MENU_X   30
@@ -1250,7 +1248,7 @@ bool isInputSourceAvailable(int16_t source)
   return false;
 }
 
-bool isSwitchAvailable(int16_t swtch)
+bool isSwitchAvailableInCustomSwitches(int16_t swtch)
 {
   if (swtch < 0) {
     if (swtch <= -SWSRC_ON)
@@ -1276,6 +1274,15 @@ bool isSwitchAvailable(int16_t swtch)
   }
 #endif
 
+  return true;
+}
+
+bool isSwitchAvailable(int16_t swtch)
+{
+  if (!isSwitchAvailableInCustomSwitches(swtch)) {
+    return false;
+  }
+
   if (swtch >= SWSRC_FIRST_CSW && swtch <= SWSRC_LAST_CSW) {
     CustomSwData * cs = cswAddress(swtch-SWSRC_FIRST_CSW);
     return (cs->func != CS_OFF);
@@ -1283,4 +1290,11 @@ bool isSwitchAvailable(int16_t swtch)
   
   return true;
 }
+
+// Not available yet, will be needed if we implement the Range function later...
+bool isFunctionAvailable(int16_t function)
+{
+  return function != CS_RANGE;
+}
+
 #endif
