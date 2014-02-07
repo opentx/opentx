@@ -42,7 +42,9 @@ void appPreferencesDialog::writeValues()
   settings.setValue("simuSW", ui->simuSW->isChecked());
   settings.setValue("history_size", ui->historySize->value());
   settings.setValue("backLight", ui->backLightColor->currentIndex());
+  settings.setValue("libraryPath", ui->libraryPath->text());
   settings.setValue("gePath", ui->ge_lineedit->text());
+  settings.setValue("embedded_splashes", ui->splashincludeCB->currentIndex());
   settings.setValue("backupEnable", ui->backupEnable->isChecked());
 
   if (ui->joystickChkB ->isChecked() && ui->joystickCB->isEnabled()) {
@@ -91,6 +93,10 @@ void appPreferencesDialog::initSettings()
   ui->backLightColor->setCurrentIndex(settings.value("backLight", 0).toInt());
   ui->simuSW->setChecked(settings.value("simuSW", false).toBool());
 
+  Path=settings.value("libraryPath", "").toString();
+  if (QDir(Path).exists()) {
+    ui->libraryPath->setText(Path);
+  }
   Path=settings.value("gePath", "").toString();
   if (QFile(Path).exists()) {
     ui->ge_lineedit->setText(Path);
@@ -107,6 +113,8 @@ void appPreferencesDialog::initSettings()
   } else {
       ui->backupEnable->setDisabled(true);
   }
+  ui->splashincludeCB->setCurrentIndex(settings.value("embedded_splashes", 0).toInt());
+
 #ifdef JOYSTICKS
   ui->joystickChkB->setChecked(settings.value("js_support", false).toBool());
   if (ui->joystickChkB->isChecked()) {
@@ -134,6 +142,16 @@ void appPreferencesDialog::initSettings()
     ui->joystickcalButton->setDisabled(true);
   }
 #endif  
+}
+
+void appPreferencesDialog::on_libraryPathButton_clicked()
+{
+  QSettings settings;
+  QString fileName = QFileDialog::getExistingDirectory(this,tr("Select your library folder"), settings.value("libraryPath").toString());
+  if (!fileName.isEmpty()) {
+    settings.setValue("libraryPath", fileName);
+    ui->libraryPath->setText(fileName);
+  }
 }
 
 void appPreferencesDialog::on_snapshotClipboardCKB_clicked()
@@ -199,8 +217,6 @@ void appPreferencesDialog::on_joystickChkB_clicked() {
 }
 
 void appPreferencesDialog::on_joystickcalButton_clicked() {
-   //QSettings settings;
-   //settings.setValue("joystick-name",ui->joystickCB->currentText());
    joystickDialog * jd=new joystickDialog(this, ui->joystickCB->currentIndex());
    jd->exec();
 }

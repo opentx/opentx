@@ -242,6 +242,10 @@ void fwPreferencesDialog::writeValues()
   settings.setValue("firmware", current_firmware_variant.id);
   settings.setValue("profileId", ui->ProfSlot_SB->value());
   settings.setValue("sdPath", ui->sdPath->text());
+  settings.setValue("SplashFileName", ui->SplashFileName->text());
+  if (!ui->SplashFileName->text().isEmpty())
+    settings.setValue("SplashImage", "");
+
   MainWindow * mw = (MainWindow *)this->parent();
   mw->unloadProfile();
 }
@@ -347,10 +351,16 @@ void fwPreferencesDialog::initSettings()
   }
   
   baseFirmwareChanged();
+
   ui->ProfSlot_SB->setValue(settings.value("profileId", 1).toInt());
   on_ProfSlot_SB_valueChanged();
-  QString ImageStr = settings.value("SplashImage", "").toString();
-
+  QString fileName=settings.value("SplashFileName","").toString();
+  if (!fileName.isEmpty()) {
+    QFile file(fileName);
+    if (file.exists()){ 
+      ui->SplashFileName->setText(fileName);
+    }
+  }
   firmwareChanged();
 }
 
@@ -442,6 +452,7 @@ void fwPreferencesDialog::on_ProfSave_PB_clicked()
     settings.setValue("burnFirmware", ui->burnFirmware->isChecked());
     settings.setValue("rename_firmware_files", ui->renameFirmware->isChecked());
     settings.setValue("sdPath", ui->sdPath->text());
+    settings.setValue("SplashFileName", ui->SplashFileName->text());
     current_firmware_variant = getFirmwareVariant();
     settings.setValue("firmware", current_firmware_variant.id);
     settings.endGroup();
@@ -496,6 +507,34 @@ void fwPreferencesDialog::on_import_PB_clicked()
     settings.endGroup();
     settings.endGroup();
     on_ProfSlot_SB_valueChanged();
+}
+
+
+void fwPreferencesDialog::on_SplashSelect_clicked()
+{
+  QString supportedImageFormats;
+  for (int formatIndex = 0; formatIndex < QImageReader::supportedImageFormats().count(); formatIndex++) {
+    supportedImageFormats += QLatin1String(" *.") + QImageReader::supportedImageFormats()[formatIndex];
+  }
+
+  QSettings settings;
+  QString fileName = QFileDialog::getOpenFileName(this,
+          tr("Open Image to load"), settings.value("lastImagesDir").toString(), tr("Images (%1)").arg(supportedImageFormats));
+
+  if (!fileName.isEmpty()) {
+    settings.setValue("lastImagesDir", QFileInfo(fileName).dir().absolutePath());
+    QImage image(fileName);
+    if (image.isNull()) {
+      QMessageBox::critical(this, tr("Error"), tr("Cannot load %1.").arg(fileName));
+      return;
+    }
+    ui->SplashFileName->setText(fileName);
+  }
+}
+
+
+void fwPreferencesDialog::on_clearImageButton_clicked() {
+  ui->SplashFileName->clear();
 }
 
 void fwPreferencesDialog::on_checkFWUpdates_clicked()

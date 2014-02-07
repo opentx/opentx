@@ -26,6 +26,7 @@ private:
 
 private slots:
     void writeValues();
+    void on_libraryPathButton_clicked();
     void on_snapshotPathButton_clicked();
     void on_snapshotClipboardCKB_clicked();
     void on_backupPathButton_clicked();

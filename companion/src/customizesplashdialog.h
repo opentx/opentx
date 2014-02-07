@@ -10,27 +10,58 @@ namespace Ui
   class customizeSplashDialog;
 }
 
+enum Source {FW, PICT, UNDEFINED};
+
+class Side
+{
+public:
+  Side();
+  void copyImage( Side );
+
+  QLabel *imageLabel;
+  QLineEdit *fileNameEdit;
+  QPushButton *saveButton;
+  QPushButton *invertButton;
+  QToolButton *libraryButton;
+
+  Source *source;
+};
+
 class customizeSplashDialog : public QDialog
 {
   Q_OBJECT
+  Side left;
+  Side right;
 
 public:
   explicit customizeSplashDialog(QWidget *parent = 0);
   ~customizeSplashDialog();
 
 private slots:
-  void on_leftLoadButton_clicked();
+  void on_leftLoadFwButton_clicked();
+  void on_leftLoadPictButton_clicked();
   void on_leftLibraryButton_clicked();
   void on_leftSaveButton_clicked();
   void on_leftInvertButton_clicked();
 
-  void on_rightLoadButton_clicked();
+  void on_rightLoadFwButton_clicked();
+  void on_rightLoadPictButton_clicked();
   void on_rightLibraryButton_clicked();
   void on_rightSaveButton_clicked();
   void on_rightInvertButton_clicked();
 
+  void on_copyRightToLeftButton_clicked();
+  void on_copyLeftToRightButton_clicked();
+
 private:
+  void loadFwButton_clicked( Side );
+  void loadPictButton_clicked( Side );
+  void libraryButton_clicked( Side );
+  void saveButton_clicked( Side );
+  void invertButton_clicked( Side );
+
   Ui::customizeSplashDialog *ui;
+  enum sideEnum { LEFT, RIGHT };
 };
 
 #endif // CUSTOMIZESPLASHDIALOG_H

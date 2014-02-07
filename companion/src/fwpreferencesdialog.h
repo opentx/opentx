@@ -45,6 +45,8 @@ private slots:
     void on_ProfSave_PB_clicked();
     void on_export_PB_clicked();
     void on_import_PB_clicked();
+    void on_SplashSelect_clicked();
+    void on_clearImageButton_clicked();
 };
 
 #endif // FWPREFERENCESDIALOG_H
