@@ -33,9 +33,9 @@
  *
  * !!!!! DO NOT EDIT de.h - EDIT de.h.txt INSTEAD !!!!!!!   
  */
- /* Fotmatting octal codes available in TR_ strings:
+ /* Formatting octal codes available in TR_ strings:
  *  \037\x       -sets LCD x-coord (x value in octal)
- *  \036         -newline (ARM boards only)
+ *  \036         -newline
  *  \001 to \035 -extended spacing (value * FW/2)
  *  \0           -ends actual string
  */
@@ -69,7 +69,10 @@
 #define TR_TRNCHN              "CH1CH2CH3CH4"
 
 #define LEN_UART3MODES         "\017"
-#define TR_UART3MODES          "OFF\0           ""SPORT Mirror\0  ""Virtual SP2UART"
+#define TR_UART3MODES          "OFF\0           ""S-Port Mirror\0 ""Debug\0         "
+
+#define LEN_POTTYPES           "\017"
+#define TR_POTTYPES            "Pot\0           ""Multipos Switch"
 
 #define LEN_DATETIME           "\005"
 #define TR_DATETIME            "DATE:""ZEIT:"
@@ -301,7 +304,7 @@
 #define TR_VSWASHTYPE          "--- ""120 ""120X""140 ""90\0"
 
 #define LEN_VKEYS              "\005"
-#define TR_VKEYS               TR(" Menu"" Exit"" Down""   Up""Right"" Left", " Menu"" Exit""Enter"" Page"" Plus""Minus")
+#define TR_VKEYS               TR("Menu\0""Exit\0""Down\0""Up\0  ""Right""Left\0", "Menu\0""Exit\0""Enter""Page\0""Plus\0""Minus")
 
 #define LEN_VRENCODERS         "\003"
 #define TR_VRENCODERS          "DGa""DGb" //Digitalgeber a und b = Drehgeber
@@ -331,7 +334,8 @@
 #endif
 
 #if defined(PCBTARANIS)
-  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_CUSTOMSW "ONE"
+  #define TR_6POS_POTS         "P11""P12""P13""P14""P15""P16""P21""P22""P23""P24""P25""P26"
+  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_CUSTOMSW TR_6POS_POTS "ONE"
 #else
   #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_CUSTOMSW "ONE"
 #endif
@@ -364,12 +368,12 @@
 #define TR_VFAILSAFE           "Hold\0    ""Custom\0  ""No pulses"
 
 #if defined(MAVLINK)
-  #define LEN_MAVLINK_BAUDS		"\006"
-  #define TR_MAVLINK_BAUDS		"4800  ""9600  ""14400 ""19200 ""38400 ""57600 ""76800 ""115200"
-  #define LEN_MAVLINK_AC_MODES	"\011"
-  #define TR_MAVLINK_AC_MODES	"Stabilize""Acro     ""Alt Hold ""Auto     ""Guided   ""Loiter   ""RTL      ""Circle   ""Pos Hold ""Land     ""OF Loiter""Toy A    ""Toy M    ""INVALID  "
-  #define LEN_MAVLINK_AP_MODES	"\015"
-  #define TR_MAVLINK_AP_MODES	"Manual       ""Circle       ""Stabilize    ""Training     ""Fly by Wire A""Fly by Wire A""Auto         ""RTL          ""Loiter       ""Guided       ""Initialising ""INVALID      "
+  #define LEN_MAVLINK_BAUDS    "\006"
+  #define TR_MAVLINK_BAUDS     "4800  ""9600  ""14400 ""19200 ""38400 ""57600 ""76800 ""115200"
+  #define LEN_MAVLINK_AC_MODES "\011"
+  #define TR_MAVLINK_AC_MODES  "Stabilize""Acro     ""Alt Hold ""Auto     ""Guided   ""Loiter   ""RTL      ""Circle   ""Pos Hold ""Land     ""OF Loiter""Toy A    ""Toy M    ""INVALID  "
+  #define LEN_MAVLINK_AP_MODES "\015"
+  #define TR_MAVLINK_AP_MODES  "Manual       ""Circle       ""Stabilize    ""Training     ""Fly by Wire A""Fly by Wire A""Auto         ""RTL          ""Loiter       ""Guided       ""Initialising ""INVALID      "
 #endif
 
 // ZERO TERMINATED STRINGS
@@ -386,7 +390,7 @@
 #define TR_POPUPS              TR_ENTER"\010[EXIT]"
 #define OFS_EXIT               sizeof(TR_ENTER)
 
-#define TR_MENUWHENDONE        CENTER"\006"TR_ENTER" > Weiter"
+#define TR_MENUWHENDONE        CENTER"\010"TR_ENTER" > Weiter"
 #define TR_FREE                "frei"
 #define TR_DELETEMODEL         "Modell l\203schen?"
 #define TR_COPYINGMODEL        "Kopiere Modell"
@@ -396,7 +400,12 @@
 #define TR_MODELNAME           "Modell Name"
 #define TR_PHASENAME           "Phase Name"
 #define TR_MIXNAME             "Mix Name"
-#define TR_EXPONAME            "Expo Name"
+#define TR_INPUTNAME           "Input Name"
+#if defined(PCBTARANIS)
+  #define TR_EXPONAME          "Linie Name"
+#else
+  #define TR_EXPONAME          "Expo Name"
+#endif
 #define TR_BITMAP              "Modell Bild"
 #define TR_TIMER               TR("Stoppuhr","Stoppuhr ")
 #define TR_ELIMITS             TR("Erw.Limit","Erweit. Limits")
@@ -485,19 +494,17 @@
 #define TR_CAL                 "Kal."
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
-#define TR_MENUTOSTART         CENTER"\006"TR_ENTER" zum Start"
-#define TR_SETMIDPOINT         CENTER"Sticks+Potis auf Mitte"
-#define TR_MOVESTICKSPOTS      CENTER"Sticks+Potis bewegen"
+#define TR_MENUTOSTART         CENTER"\007"TR_ENTER" zum Start"
+#define TR_SETMIDPOINT         CENTER"\002Sticks+Potis auf Mitte"
+#define TR_MOVESTICKSPOTS      CENTER"\003Sticks+Potis bewegen"
 #define TR_RXBATT              "Rx Batt:"
 #define TR_TXnRX               "Tx:\0Rx:"
 #define OFS_RX                 4
 #define TR_ACCEL               "Acc:"
 #define TR_NODATA              CENTER"NO DATA"
-#define TR_TM1TM2              "TM1\037\146TM2"
-#define TR_THRTHP              "THR\037\146TH%"
-#define TR_TOT                 "TOT"
+#define TR_TOTTM1TM2THRTHP     "\037\146TOT\036TM1\037\146TM2\036THR\037\146TH%"
 #define TR_TMR1LATMAXUS        "Tmr1Lat max\037\124us"
-#define STR_US (STR_TMR1LATMAXUS+13)
+#define STR_US                 (STR_TMR1LATMAXUS+13)
 #define TR_TMR1LATMINUS        "Tmr1Lat min\037\124us"
 #define TR_TMR1JITTERUS        "Tmr1 Jitter\037\124us"
 
@@ -674,6 +681,8 @@
 #define TR_PERSISTENT_MAH      INDENT "Store mAh"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 #define TR_UART3MODE           "Serial port"
+#define TR_POT1TYPE            "S1 Type"
+#define TR_POT2TYPE            "S2 Type"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL   "Max RSSI"
@@ -757,8 +766,14 @@
 #define TR_CHR_LONG   'l' //Taste long
 #define TR_CHR_TOGGLE 't' //Taste als togglefunktion = Ein Aus Ein 
 #define TR_CHR_HOUR   'h' //Stunden
+#define TR_CHR_INPUT           'I'   // Values between A-I will work
 
 #define TR_BEEP_VOLUME         "Beep Lautst"
 #define TR_WAV_VOLUME          "Wav Lautst"
 #define TR_VARIO_VOLUME        "Vario Lautst"
 #define TR_BG_VOLUME           "Bg Lautst"
+
+#define TR_TOP_BAR             "Top Bar"
+#define TR_ALTITUDE            INDENT "Altitude"
+#define TR_MODS_FORBIDDEN      "Modifications forbidden!"
+#define TR_UNLOCKED            "Unlocked"

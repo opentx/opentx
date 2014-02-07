@@ -64,7 +64,8 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
         }
         this->layout()->removeItem(ui->TaranisReadOnlyUnlock);
       }
-    } else {
+    }
+    else {
       for (int i=0; pmsl[i]; i++) {
         pmsl[i]->hide();
       }
@@ -373,11 +374,35 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
     for (int i=0; tpmsld[i]; i++) {
       connect(tpmsld[i], SIGNAL(valueChanged(int)),this,SLOT(unlockSwitchEdited()));
     }
+
+    if (GetEepromInterface()->getCapability(MultiposPots)) {
+      ui->pot1Type->setCurrentIndex(g_eeGeneral.potsType[0]);
+      ui->pot2Type->setCurrentIndex(g_eeGeneral.potsType[1]);
+    }
+    else {
+      ui->potsTypeSeparator->hide();
+      ui->pot1Type->hide();
+      ui->pot1TypeLabel->hide();
+      ui->pot2Type->hide();
+      ui->pot2TypeLabel->hide();
+    }
 }
 
 GeneralEdit::~GeneralEdit()
 {
     delete ui;
+}
+
+void GeneralEdit::on_pot1Type_currentIndexChanged(int index)
+{
+  g_eeGeneral.potsType[0] = index;
+  updateSettings();
+}
+
+void GeneralEdit::on_pot2Type_currentIndexChanged(int index)
+{
+  g_eeGeneral.potsType[1] = index;
+  updateSettings();
 }
 
 void GeneralEdit::unlockSwitchEdited()

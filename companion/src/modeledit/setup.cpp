@@ -99,16 +99,16 @@ ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module
 
   QString label;
   if (moduleIdx < 0) {
-    label = tr("Trainer Module");
+    label = tr("Trainer Output");
     ui->trainerMode->setCurrentIndex(model.trainerMode);
   }
   else {
     ui->label_trainerMode->hide();
     ui->trainerMode->hide();
     if (moduleIdx == 0)
-      label = tr("Internal Module");
+      label = tr("Internal Radio System");
     else
-      label = tr("External Module");
+      label = tr("External Radio Module");
 
   }
   ui->label_module->setText(label);

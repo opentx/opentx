@@ -33,9 +33,9 @@
  * GNU General Public License for more details.
  *
  */
- /* Fotmatting octal codes available in TR_ strings:
+ /* Formatting octal codes available in TR_ strings:
  *  \037\x       -sets LCD x-coord (x value in octal)
- *  \036         -newline (ARM boards only)
+ *  \036         -newline
  *  \001 to \035 -extended spacing (value * FW/2)
  *  \0           -ends actual string
  */
@@ -69,7 +69,10 @@
 #define TR_TRNCHN              "CH1CH2CH3CH4"
 
 #define LEN_UART3MODES         "\017"
-#define TR_UART3MODES          "OFF\0           ""SPORT Mirror\0  ""Virtual SP2UART"
+#define TR_UART3MODES          "OFF\0           ""S-Port Mirror\0 ""Debug\0         "
+
+#define LEN_POTTYPES           "\017"
+#define TR_POTTYPES            "Pot\0           ""Multipos Switch"
 
 #define LEN_DATETIME           "\005"
 #define TR_DATETIME            "DATE:""TIME:"
@@ -301,7 +304,7 @@
 #define TR_VSWASHTYPE          "---\0""120\0""120X""140\0""90\0"
 
 #define LEN_VKEYS              "\005"
-#define TR_VKEYS               TR(" Menu"" Exit"" Down""   Up""Right"" Left", " Menu"" Exit""Enter"" Page"" Plus""Minus")
+#define TR_VKEYS               TR("Menu\0""Exit\0""Down\0""Up\0  ""Right""Left\0", "Menu\0""Exit\0""Enter""Page\0""Plus\0""Minus")
 
 #define LEN_VRENCODERS         "\003"
 #define TR_VRENCODERS          "REa""REb"
@@ -331,7 +334,8 @@
 #endif
 
 #if defined(PCBTARANIS)
-  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_CUSTOMSW "One"
+  #define TR_6POS_POTS         "P11""P12""P13""P14""P15""P16""P21""P22""P23""P24""P25""P26"
+  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_CUSTOMSW TR_6POS_POTS "One"
 #else
   #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_CUSTOMSW "One"
 #endif
@@ -364,12 +368,12 @@
 #define TR_VFAILSAFE           "Hold\0    ""Custom\0  ""No pulses"
 
 #if defined(MAVLINK)
-  #define LEN_MAVLINK_BAUDS		"\006"
-  #define TR_MAVLINK_BAUDS		"4800  ""9600  ""14400 ""19200 ""38400 ""57600 ""76800 ""115200"
-  #define LEN_MAVLINK_AC_MODES	"\011"
-  #define TR_MAVLINK_AC_MODES	"Stabilize""Acro     ""Alt Hold ""Auto     ""Guided   ""Loiter   ""RTL      ""Circle   ""Pos Hold ""Land     ""OF Loiter""Toy A    ""Toy M    ""INVALID  "
-  #define LEN_MAVLINK_AP_MODES	"\015"
-  #define TR_MAVLINK_AP_MODES	"Manual       ""Circle       ""Stabilize    ""Training     ""Fly by Wire A""Fly by Wire A""Auto         ""RTL          ""Loiter       ""Guided       ""Initialising ""INVALID      "
+  #define LEN_MAVLINK_BAUDS    "\006"
+  #define TR_MAVLINK_BAUDS     "4800  ""9600  ""14400 ""19200 ""38400 ""57600 ""76800 ""115200"
+  #define LEN_MAVLINK_AC_MODES "\011"
+  #define TR_MAVLINK_AC_MODES  "Stabilize""Acro     ""Alt Hold ""Auto     ""Guided   ""Loiter   ""RTL      ""Circle   ""Pos Hold ""Land     ""OF Loiter""Toy A    ""Toy M    ""INVALID  "
+  #define LEN_MAVLINK_AP_MODES "\015"
+  #define TR_MAVLINK_AP_MODES  "Manual       ""Circle       ""Stabilize    ""Training     ""Fly by Wire A""Fly by Wire A""Auto         ""RTL          ""Loiter       ""Guided       ""Initialising ""INVALID      "
 #endif
 
 // ZERO TERMINATED STRINGS
@@ -396,6 +400,7 @@
 #define TR_MODELNAME           "Model Name"
 #define TR_PHASENAME           "Mode Name"
 #define TR_MIXNAME             "Mix Name"
+#define TR_INPUTNAME           "Input Name"
 #if defined(PCBTARANIS)
   #define TR_EXPONAME          "Line Name"
 #else
@@ -489,19 +494,17 @@
 #define TR_CAL                 "Cal"
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
-#define TR_MENUTOSTART         CENTER "\006" TR_ENTER " TO START"
-#define TR_SETMIDPOINT         TR(CENTER "\003SET STICKS MIDPOINT",CENTER "\003CENTER STICKS/SLIDERS")
+#define TR_MENUTOSTART         CENTER "\010" TR_ENTER " TO START"
+#define TR_SETMIDPOINT         TR(CENTER "\004SET STICKS MIDPOINT",CENTER "\004CENTER STICKS/SLIDERS")
 #define TR_MOVESTICKSPOTS      CENTER "\006MOVE STICKS/POTS"
 #define TR_RXBATT              "Rx Batt:"
 #define TR_TXnRX               "Tx:\0Rx:"
 #define OFS_RX                 4
 #define TR_ACCEL               "Acc:"
 #define TR_NODATA              CENTER "NO DATA"
-#define TR_TM1TM2              "TM1\037\146TM2"
-#define TR_THRTHP              "THR\037\146TH%"
-#define TR_TOT                 "TOT"
+#define TR_TOTTM1TM2THRTHP     "\037\146TOT\036TM1\037\146TM2\036THR\037\146TH%"
 #define TR_TMR1LATMAXUS        "Tmr1Lat max\037\124us"
-#define STR_US (STR_TMR1LATMAXUS+13)
+#define STR_US                 (STR_TMR1LATMAXUS+13)
 #define TR_TMR1LATMINUS        "Tmr1Lat min\037\124us"
 #define TR_TMR1JITTERUS        "Tmr1 Jitter\037\124us"
 
@@ -678,37 +681,37 @@
 #define TR_PERSISTENT_MAH      INDENT "Store mAh"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 #define TR_UART3MODE           "Serial port"
+#define TR_POT1TYPE            "S1 Type"
+#define TR_POT2TYPE            "S2 Type"
 
 #if defined(MAVLINK)
-  #define TR_MAVLINK_RC_RSSI_SCALE_LABEL	"Max RSSI"
-  #define TR_MAVLINK_PC_RSSI_EN_LABEL		"PC RSSI EN"
-  #define TR_MAVMENUSETUP_TITLE				"Mavlink Setup"
-  #define TR_MAVLINK_BAUD_LABEL				"Baudrate"
-  #define TR_MAVLINK_INFOS					"INFOS"
-  #define TR_MAVLINK_MODE					"MODE"
-  #define TR_MAVLINK_CUR_MODE				"Current Mode"
-  #define TR_MAVLINK_ARMED					"Armed"
-  #define TR_MAVLINK_BAT_MENU_TITLE			"BAT RSSI"
-  #define TR_MAVLINK_BATTERY_LABEL			"Flight Battery status"
-  #define TR_MAVLINK_RC_RSSI_LABEL			"RC RSSI"
-  #define TR_MAVLINK_PC_RSSI_LABEL			"PC RSSI"
-  #define TR_MAVLINK_NAV_MENU_TITLE			"NAV"
-  #define TR_MAVLINK_COURSE					"Course"
-  #define TR_MAVLINK_HEADING				"Heading"
-  #define TR_MAVLINK_BEARING				"Bearing"
-  #define TR_MAVLINK_ALTITUDE				"Altitude"
-  #define TR_MAVLINK_GPS					"GPS"
-  #define TR_MAVLINK_NO_FIX					"NO Fix"
-  #define TR_MAVLINK_SAT					"SAT"
-  #define TR_MAVLINK_HDOP					"HDOP"
-  #define TR_MAVLINK_LAT					"LAT"
-  #define TR_MAVLINK_LON					"LON"
+  #define TR_MAVLINK_RC_RSSI_SCALE_LABEL  "Max RSSI"
+  #define TR_MAVLINK_PC_RSSI_EN_LABEL     "PC RSSI EN"
+  #define TR_MAVMENUSETUP_TITLE           "Mavlink Setup"
+  #define TR_MAVLINK_BAUD_LABEL           "Baudrate"
+  #define TR_MAVLINK_INFOS                "INFOS"
+  #define TR_MAVLINK_MODE                 "MODE"
+  #define TR_MAVLINK_CUR_MODE             "Current Mode"
+  #define TR_MAVLINK_ARMED                "Armed"
+  #define TR_MAVLINK_BAT_MENU_TITLE       "BAT RSSI"
+  #define TR_MAVLINK_BATTERY_LABEL        "Flight Battery status"
+  #define TR_MAVLINK_RC_RSSI_LABEL        "RC RSSI"
+  #define TR_MAVLINK_PC_RSSI_LABEL        "PC RSSI"
+  #define TR_MAVLINK_NAV_MENU_TITLE       "NAV"
+  #define TR_MAVLINK_COURSE               "Course"
+  #define TR_MAVLINK_HEADING              "Heading"
+  #define TR_MAVLINK_BEARING              "Bearing"
+  #define TR_MAVLINK_ALTITUDE             "Altitude"
+  #define TR_MAVLINK_GPS                  "GPS"
+  #define TR_MAVLINK_NO_FIX               "NO Fix"
+  #define TR_MAVLINK_SAT                  "SAT"
+  #define TR_MAVLINK_HDOP                 "HDOP"
+  #define TR_MAVLINK_LAT                  "LAT"
+  #define TR_MAVLINK_LON                  "LON"
 #endif
 
-
-
 // Taranis column headers
-#define TR_PHASES_HEADERS      { " Name ", " Switch ", " Trims ", " Fade In ", " Fade Out " }
+#define TR_PHASES_HEADERS      { " Name ", " Switch ", " Rudder Trim ", " Elevator Trim ", " Throttle Trim ", " Aileron Trim ", " Fade In ", " Fade Out " }
 #define TR_LIMITS_HEADERS      { " Name ", " Subtrim ", " Min ", " Max ", " Direction ", " Curve ", " PPM Center ", " Subtrim mode " }
 #define TR_CSW_HEADERS         { " Function ", " V1 ", " V2 ", " AND Switch ", " Duration ", " Delay " }
 
@@ -763,6 +766,7 @@
 #define TR_CHR_LONG   'l'
 #define TR_CHR_TOGGLE 't'
 #define TR_CHR_HOUR   'h'
+#define TR_CHR_INPUT           'I'   // Values between A-I will work
 
 #define TR_BEEP_VOLUME         "Beep Volume"
 #define TR_WAV_VOLUME          "Wav Volume"
@@ -773,4 +777,3 @@
 #define TR_ALTITUDE            INDENT "Altitude"
 #define TR_MODS_FORBIDDEN      "Modifications forbidden!"
 #define TR_UNLOCKED            "Unlocked"
-

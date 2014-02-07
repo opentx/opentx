@@ -1260,6 +1260,7 @@ void compareDialog::printFrSky()
   color=getColor1(fd1->rssiAlarms[1].value,fd2->rssiAlarms[1].value);
   str.append("<td align=\"center\"><font color="+color+">"+QString::number(fd1->rssiAlarms[1].value,10)+"</td>");
   str.append("</table>");
+#if 0
   if (GetEepromInterface()->getCapability(TelemetryBars) || GetEepromInterface()->getCapability(TelemetryCSFields)) {
     int cols=GetEepromInterface()->getCapability(TelemetryColsCSFields);
     if (cols==0) cols=2;
@@ -1300,13 +1301,13 @@ void compareDialog::printFrSky()
           if (fd1->screens[0].type==fd2->screens[0].type)
             color=getColor1(fd1->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].source);
           str.append("<td  align=\"Center\"><font color="+color+">"+getFrSkySrc(fd1->screens[0].body.bars[i].source)+"</font></td>");
-          value1=getBarValue(fd1->screens[0].body.bars[i].source,fd1->screens[0].body.bars[i].barMin,fd1);
-          value2=getBarValue(fd2->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].barMin,fd2);
+          // TODO value1 = getBarValue(fd1->screens[0].body.bars[i].source,fd1->screens[0].body.bars[i].barMin,fd1);
+          // TODO value2 = getBarValue(fd2->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].barMin,fd2);
           if (fd1->screens[0].type==fd2->screens[0].type)
             color=getColor1(value1,value2);
           str.append("<td  align=\"Right\"><font color="+color+">"+QString::number(value1)+"</td>");
-          value1=getBarValue(fd1->screens[0].body.bars[i].source,fd1->screens[0].body.bars[i].barMax,fd1);
-          value2=getBarValue(fd2->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].barMax,fd2);
+          // TODO value1=getBarValue(fd1->screens[0].body.bars[i].source,fd1->screens[0].body.bars[i].barMax,fd1);
+          // TODO value2=getBarValue(fd2->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].barMax,fd2);
           if (fd1->screens[0].type==fd2->screens[0].type)
            color=getColor1(value1,value2);
           str.append("<td  align=\"Right\"><font color="+color+">"+QString::number(value1)+"</td></tr>");
@@ -1315,6 +1316,7 @@ void compareDialog::printFrSky()
       }
     }
   }
+#endif
   
   str.append("</td><td width=\"50%\">");
   str.append("<table border=1 cellspacing=0 cellpadding=1 width=\"100%\">");
@@ -1377,7 +1379,7 @@ void compareDialog::printFrSky()
   color=getColor2(fd1->rssiAlarms[1].value,fd2->rssiAlarms[1].value);
   str.append("<td align=\"center\"><font color="+color+">"+QString::number(fd2->rssiAlarms[1].value,10)+"</td>");
   str.append("</table></br>");
-
+#if 0
   if (GetEepromInterface()->getCapability(TelemetryBars) || GetEepromInterface()->getCapability(TelemetryCSFields)) {
     int cols=GetEepromInterface()->getCapability(TelemetryColsCSFields);
     if (cols==0) cols=2;
@@ -1418,13 +1420,13 @@ void compareDialog::printFrSky()
           if (fd1->screens[0].type==fd2->screens[0].type)
             color=getColor2(fd1->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].source);
           str.append("<td  align=\"Center\"><font color="+color+">"+getFrSkySrc(fd2->screens[0].body.bars[i].source)+"</font></td>");
-          value1=getBarValue(fd1->screens[0].body.bars[i].source,fd1->screens[0].body.bars[i].barMin,fd1);
-          value2=getBarValue(fd2->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].barMin,fd2);
+          // TODO value1=getBarValue(fd1->screens[0].body.bars[i].source,fd1->screens[0].body.bars[i].barMin,fd1);
+          // TODO value2=getBarValue(fd2->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].barMin,fd2);
           if (fd1->screens[0].type==fd2->screens[0].type)
             color=getColor2(value1,value2);
           str.append("<td  align=\"Right\"><font color="+color+">"+QString::number(value2)+"</font></td>");
-          value1=getBarValue(fd1->screens[0].body.bars[i].source,fd1->screens[0].body.bars[i].barMax,fd1);
-          value2=getBarValue(fd2->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].barMax,fd2);
+          // TODO value1=getBarValue(fd1->screens[0].body.bars[i].source,fd1->screens[0].body.bars[i].barMax,fd1);
+          // TODO value2=getBarValue(fd2->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].barMax,fd2);
           if (fd1->screens[0].type==fd2->screens[0].type)
             color=getColor2(value1,value2);
           str.append("<td  align=\"Right\"><font color="+color+">"+QString::number(value2)+"</font></td></tr>");
@@ -1433,6 +1435,7 @@ void compareDialog::printFrSky()
       }
     }
   }
+#endif
   str.append("</td></tr></table>");
   te->append(str);
 }

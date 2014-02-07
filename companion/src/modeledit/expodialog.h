@@ -18,7 +18,7 @@ class ExpoDialog : public QDialog {
     ~ExpoDialog();
 
   protected:
-    void changeEvent(QEvent *e);
+    void updateScale();
 
   private slots:
     void valuesChanged();

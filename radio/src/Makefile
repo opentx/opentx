@@ -285,7 +285,7 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   ARCH = AVR
   TRGT = avr-
   MCU = atmega64
-  OPT = s  
+  OPT = s
   SDCARD = NO
   THR_TRACE = NO
   INCDIRS += targets/stock
@@ -620,7 +620,7 @@ ifeq ($(PCB), TARANIS)
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp eeprom_conversions.cpp
   PULSESSRC = protocols/pulses_arm.cpp protocols/ppm_arm.cpp protocols/pxx_arm.cpp
   CPPSRC += audio_arm.cpp
-  CPPSRC += targets/taranis/pwr_driver.cpp targets/taranis/pulses_driver.cpp targets/taranis/keys_driver.cpp targets/taranis/adc_driver.cpp targets/taranis/trainer_driver.cpp targets/taranis/audio_driver.cpp targets/taranis/delays.cpp targets/taranis/uart_driver.cpp targets/taranis/sport_driver.cpp
+  CPPSRC += targets/taranis/pwr_driver.cpp targets/taranis/pulses_driver.cpp targets/taranis/keys_driver.cpp targets/taranis/adc_driver.cpp targets/taranis/trainer_driver.cpp targets/taranis/audio_driver.cpp targets/taranis/delays.cpp targets/taranis/uart3_driver.cpp targets/taranis/sport_driver.cpp
   CPPSRC += bmp.cpp gui/view_channels.cpp gui/view_about.cpp gui/view_text.cpp
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/system_stm32f2xx.c
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/misc.c
@@ -1110,50 +1110,42 @@ taranis-stamp:
 
 translations/cz.h: translations/cz.h.txt
 	@echo
-	@echo "Create language specific header files"
-	@echo "Czech"
+	@echo "Create Czech language specific header files"
 	$(TRANSLATE) translations/cz.h.txt translations/cz.h cz
 
 translations/de.h: translations/de.h.txt  
 	@echo
-	@echo "Create language specific header files"
-	@echo "German"
+	@echo "Create German language specific header files"
 	$(TRANSLATE) translations/de.h.txt translations/de.h de
 
 translations/es.h: translations/es.h.txt 
 	@echo
-	@echo "Create language specific header files"
-	@echo "Spanish"
+	@echo "Create Spanish language specific header files"
 	$(TRANSLATE) translations/es.h.txt translations/es.h es
 
 translations/fr.h: translations/fr.h.txt 
 	@echo
-	@echo "Create language specific header files"
-	@echo "French"
+	@echo "Create French language specific header files"
 	$(TRANSLATE) translations/fr.h.txt translations/fr.h fr
 
 translations/it.h: translations/it.h.txt 
 	@echo
-	@echo "Create language specific header files"
-	@echo "Italian"
+	@echo "Create Italian language specific header files"
 	$(TRANSLATE) translations/it.h.txt translations/it.h it
 
 translations/pl.h: translations/pl.h.txt 
 	@echo
-	@echo "Create language specific header files"
-	@echo "Polish"
+	@echo "Create Polish language specific header files"
 	$(TRANSLATE) translations/pl.h.txt translations/pl.h pl
 
 translations/pt.h: translations/pt.h.txt
 	@echo
-	@echo "Create language specific header files"
-	@echo "Portugese"
+	@echo "Create Portugese language specific header files"
 	$(TRANSLATE) translations/pt.h.txt translations/pt.h pt
 
 translations/se.h: translations/se.h.txt 
 	@echo
-	@echo "Create language specific header files"
-	@echo "Swedish"
+	@echo "Create Swedish language specific header files"
 	$(TRANSLATE) translations/se.h.txt translations/se.h se
 
 .PHONY: fonts

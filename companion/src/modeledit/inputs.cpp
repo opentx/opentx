@@ -21,7 +21,7 @@ InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & g
   qbDown->setText(tr("Move Down"));
   qbDown->setIcon(CompanionIcon("movedown.png"));
   qbDown->setShortcut(QKeySequence(tr("Ctrl+Down")));
-  qbClear->setText(tr("Clear Expo Settings"));
+  qbClear->setText(tr("Clear All Settings"));
   qbClear->setIcon(CompanionIcon("clear.png"));
 
   exposLayout->addWidget(ExposlistWidget,1,1,1,3);
@@ -142,7 +142,7 @@ void InputsPanel::update()
 bool InputsPanel::gm_insertExpo(int idx)
 {
     if (idx<0 || idx>=C9X_MAX_EXPOS || model.expoData[C9X_MAX_EXPOS-1].mode > 0) {
-      QMessageBox::information(this, "companion", tr("Not enough available expos!"));
+      QMessageBox::information(this, "companion", tr("Not enough available inputs!"));
       return false;
     }
 
@@ -222,7 +222,7 @@ void InputsPanel::exposDelete(bool ask)
 
     if(ask)
       ret = QMessageBox::warning(this, "companion",
-               tr("Delete Selected Expos?"),
+               tr("Delete Selected Inputs?"),
                QMessageBox::Yes | QMessageBox::No);
 
 
@@ -460,7 +460,7 @@ void InputsPanel::exposDeleteList(QList<int> list)
 
 void InputsPanel::clearExpos()
 {
-  if (QMessageBox::question(this, tr("Clear Expos?"), tr("Really clear all the expos?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+  if (QMessageBox::question(this, tr("Clear Inputs?"), tr("Really clear all the inputs?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
     model.clearInputs();
     emit modified();
     update();

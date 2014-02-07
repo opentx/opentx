@@ -33,9 +33,9 @@
  *
  * !!!!! DO NOT EDIT se.h - EDIT se.h.txt INSTEAD !!!!!!!   
  */
- /* Fotmatting octal codes available in TR_ strings:
+ /* Formatting octal codes available in TR_ strings:
  *  \037\x       -sets LCD x-coord (x value in octal)
- *  \036         -newline (ARM boards only)
+ *  \036         -newline
  *  \001 to \035 -extended spacing (value * FW/2)
  *  \0           -ends actual string
  */
@@ -68,8 +68,11 @@
 #define LEN_TRNCHN             "\003"
 #define TR_TRNCHN              "KN1KN2KN3KN4"
 
-#define LEN_UART3MODES         "\017"
-#define TR_UART3MODES          "Av\0            ""SPORT-spegel\0  ""VirtuellSP2UART"
+#define LEN_UART3MODES         "\022"
+#define TR_UART3MODES          "Av\0               ""Spegling av S-Port""Debug\0            "
+
+#define LEN_POTTYPES           "\020"
+#define TR_POTTYPES            "Potentiometer\0  ""Flerlägesväljare"
 
 #define LEN_DATETIME           "\005"
 #define TR_DATETIME            "DAG: ""TID: "
@@ -301,7 +304,7 @@
 #define TR_VSWASHTYPE          "--- ""120 ""120X""140 ""90\0"
 
 #define LEN_VKEYS              "\005"
-#define TR_VKEYS               TR(" Menu"" Exit""  Ned""  Upp""Höger""Vänst", " Menu"" Exit""Enter"" Page"" Plus""Minus")
+#define TR_VKEYS               TR("Menu\0""Exit\0""Ned\0 ""Upp\0 ""Höger""Vänst", "Menu\0""Exit\0""Enter""Page\0""Plus\0""Minus")
 
 #define LEN_VRENCODERS         "\003"
 #define TR_VRENCODERS          "REa""REb"
@@ -323,15 +326,16 @@
 #endif
 
 #if defined(CPUARM)
-  #define TR_CUSTOMSW          "CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC""CSD""CSE""CSF""CSG""CSH""CSI""CSJ""CSK""CSL""CSM""CSN""CSO""CSP""CSQ""CSR""CSS""CST""CSU""CSV""CSW"
+  #define TR_CUSTOMSW          "LB1""LB2""LB3""LB4""LB5""LB6""LB7""LB8""LB9""LBA""LBB""LBC""LBD""LBE""LBF""LBG""LBH""LBI""LBJ""LBK""LBL""LBM""LBN""LBO""LBP""LBQ""LBR""LBS""LBT""LBU""LBV""LBW"
 #elif defined(PCBGRUVIN9X) || defined(CPUM2561) || defined(CPUM128)
-  #define TR_CUSTOMSW          "CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC""CSD""CSE""CSF"
+  #define TR_CUSTOMSW          "LB1""LB2""LB3""LB4""LB5""LB6""LB7""LB8""LB9""LBA""LBB""LBC""LBD""LBE""LBF"
 #else
-  #define TR_CUSTOMSW          "CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC"
+  #define TR_CUSTOMSW          "LB1""LB2""LB3""LB4""LB5""LB6""LB7""LB8""LB9""LBA""LBB""LBC"
 #endif
 
 #if defined(PCBTARANIS)
-  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_CUSTOMSW "One"
+  #define TR_6POS_POTS         "P11""P12""P13""P14""P15""P16""P21""P22""P23""P24""P25""P26"
+  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_CUSTOMSW TR_6POS_POTS "One"
 #else
   #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_CUSTOMSW "One"
 #endif
@@ -358,7 +362,7 @@
 #define TR_VTMRMODES           "Av\0""ABS""GAs""GA%""GAt"
 
 #define LEN_VTRAINERMODES      "\006"
-#define TR_VTRAINERMODES       "Master""Slav\0."
+#define TR_VTRAINERMODES       "Lärare""Elev\0."
 
 #define LEN_VFAILSAFE          "\011"
 #define TR_VFAILSAFE           "Håll\0    ""Special\0 ""Pulsfritt"
@@ -386,7 +390,7 @@
 #define TR_POPUPS              TR_ENTER"\010[EXIT]"
 #define OFS_EXIT               sizeof(TR_ENTER)
 
-#define TR_MENUWHENDONE        CENTER "\006" TR_ENTER " Avslutar "
+#define TR_MENUWHENDONE        CENTER "\011" TR_ENTER " Avslutar "
 #define TR_FREE                "kvar"
 #define TR_DELETEMODEL         "Radera Modell"
 #define TR_COPYINGMODEL        "Kopierar Modell "
@@ -394,10 +398,11 @@
 #define TR_LOADINGMODEL        "Laddar Modell   "
 #define TR_NAME                "Namn"
 #define TR_MODELNAME           "Modellnamn"
-#define TR_PHASENAME           "Modnamn   "
+#define TR_PHASENAME           "Lägesnamn "
 #define TR_MIXNAME             "Mixnamn "
+#define TR_INPUTNAME           "Filternamn"
 #if defined(PCBTARANIS)
-  #define TR_EXPONAME          "Line Name"
+  #define TR_EXPONAME          "Linjenamn"
 #else
   #define TR_EXPONAME          "Exponamn"
 #endif
@@ -483,25 +488,23 @@
 #define TR_SWITCHWARNING       TR("Bryt.varn.","Brytarvarning")
 #define TR_TIMEZONE            TR("Tidszon","GPS Tidszon")
 #define TR_RXCHANNELORD        "Kanaler i RX"
-#define TR_SLAVE               "Slav"
+#define TR_SLAVE               "Elev"
 #define TR_MODESRC             " Läge\004% Källa"
 #define TR_MULTIPLIER          "Styrka"
 #define TR_CAL                 "Kalib."
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
-#define TR_MENUTOSTART         CENTER "\006" TR_ENTER " Startar "
-#define TR_SETMIDPOINT         CENTER "\010Centrera Allt"
-#define TR_MOVESTICKSPOTS      CENTER "\004Rör Rattar/Spakar"
+#define TR_MENUTOSTART         CENTER "\011" TR_ENTER " Startar "
+#define TR_SETMIDPOINT         TR(CENTER "\012Centrera Allt",CENTER "\013Centrera Allt")
+#define TR_MOVESTICKSPOTS      TR(CENTER "\005Rör Rattar/Spakar",CENTER "\006Rör Rattar/Spakar")
 #define TR_RXBATT              "Rx Batt:"
 #define TR_TXnRX               "Tx:\0Rx:"
 #define OFS_RX                 4
 #define TR_ACCEL               "Acc:"
 #define TR_NODATA              CENTER "NO DATA"
-#define TR_TM1TM2              "TM1\037\146TM2"
-#define TR_THRTHP              "THR\037\146TH%"
-#define TR_TOT                 "TOT"
+#define TR_TOTTM1TM2THRTHP     "\037\146TOT\036TM1\037\146TM2\036THR\037\146TH%"
 #define TR_TMR1LATMAXUS        "Tmr1Lat max\037\124us"
-#define STR_US (STR_TMR1LATMAXUS+13)
+#define STR_US                 (STR_TMR1LATMAXUS+13)
 #define TR_TMR1LATMINUS        "Tmr1Lat min\037\124us"
 #define TR_TMR1JITTERUS        "Tmr1 Jitter\037\124us"
 
@@ -519,15 +522,15 @@
 #define TR_MODEL               "Modell"
 #define TR_FP                  "FL"
 #define TR_MIX                 "MIX"
-#define TR_EEPROMLOWMEM        "EEPROM low mem"
+#define TR_EEPROMLOWMEM        "Minnesbrist"
 #define TR_ALERT               "\016OBS"
 #define TR_PRESSANYKEYTOSKIP   "Tryck ned en knapp"
 #define TR_THROTTLENOTIDLE     "Gasen är påslagen!"
 #define TR_ALARMSDISABLED      "Alarmen Avstängda!"
-#define TR_PRESSANYKEY         TR("Tryck ned en knapp", "Tryck ned en knapp")
-#define TR_BADEEPROMDATA       "EEprom Datafel "
-#define TR_EEPROMFORMATTING    "Formaterar EEprom"
-#define TR_EEPROMOVERFLOW      "Fel i EEprom"
+#define TR_PRESSANYKEY         "Tryck ned en knapp"
+#define TR_BADEEPROMDATA       "Minnet kan inte tolkas"
+#define TR_EEPROMFORMATTING    "Minnet Nollställs"
+#define TR_EEPROMOVERFLOW      "Minnesfel"
 #define TR_MENURADIOSETUP      "Inställningar"
 #define TR_MENUDATEANDTIME     "Dag och Tid"
 #define TR_MENUTRAINER         "Trainer (PPM in)"
@@ -543,7 +546,7 @@
 #define TR_MENUHELISETUP       "Helikopter"
 
 #if defined(PCBTARANIS)
-  #define TR_MENUINPUTS        "INPUTS"
+  #define TR_MENUINPUTS        TR("Filter","Filtrerad Insignal")
   #define TR_MENULIMITS        "Gränser"
 #elif defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...
   #define TR_MENUINPUTS        "Spakar" 
@@ -677,7 +680,9 @@
 #define TR_CRITICALALARM       INDENT "Kritiskt alarm"
 #define TR_PERSISTENT_MAH      INDENT "Store mAh"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
-#define TR_UART3MODE           "Serieport"
+#define TR_UART3MODE           "Serieporten"
+#define TR_POT1TYPE            "S1-ratten"
+#define TR_POT2TYPE            "S2-ratten"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL  "Max RSSI"
@@ -698,14 +703,12 @@
   #define TR_MAVLINK_BEARING              "Bäring"
   #define TR_MAVLINK_ALTITUDE             "Höjd"
   #define TR_MAVLINK_GPS                  "GPS"
-  #define TR_MAVLINK_NO_FIX               "NO Fix"
+  #define TR_MAVLINK_NO_FIX               "EJ Lås"
   #define TR_MAVLINK_SAT                  "SAT"
   #define TR_MAVLINK_HDOP                 "HDOP"
   #define TR_MAVLINK_LAT                  "LAT"
   #define TR_MAVLINK_LON                  "LON"
 #endif
-
-
 
 // Taranis column headers
 #define TR_PHASES_HEADERS      { " Namn ", " Brytare ", " Trimmar ", " Tona Upp ", " Tona Ned " }
@@ -763,8 +766,14 @@
 #define TR_CHR_LONG            'l'
 #define TR_CHR_TOGGLE          't'
 #define TR_CHR_HOUR            'h'
+#define TR_CHR_INPUT           'F'   // Values between A-I will work
 
 #define TR_BEEP_VOLUME         "Volym Pip"
 #define TR_WAV_VOLUME          "Volym Wav"
 #define TR_VARIO_VOLUME        "Volym Vario"
 #define TR_BG_VOLUME           "Volym Bg"
+
+#define TR_TOP_BAR             "Top Bar"
+#define TR_ALTITUDE            INDENT "Höjd"
+#define TR_MODS_FORBIDDEN      "Modifikationer förbjudna!"
+#define TR_UNLOCKED            "Olåst"

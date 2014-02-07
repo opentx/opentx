@@ -376,8 +376,8 @@ enum EnumKeys {
 #if defined(PCBTARANIS)
   #define NUM_SWITCHES  8
   #define IS_3POS(sw)   ((sw) != 5 && (sw) != 7)
-  #define MAX_PSWITCH   (SW_SH2-SW_SA0+1)
   #define NUM_POTS      4
+  #define NUM_XPOTS     2
   #define NUM_SW_SRCRAW 8
   #define SWSRC_THR     SWSRC_SF2
   #define SWSRC_GEA     SWSRC_SG2
@@ -389,26 +389,34 @@ enum EnumKeys {
   #define NUM_SWITCHES  7
   #define IS_3POS(sw)   ((sw) == 0)
   #define IS_MOMENTARY(sw) (sw == SWSRC_TRN)
-  #define MAX_PSWITCH   (SW_TRN-SW_ID0+1)  // 9 physical switches
   #define NUM_POTS      3
+  #define NUM_XPOTS     0
   #define NUM_SW_SRCRAW 1
   #define SW_DSM2_BIND  SW_TRN
 #endif
 
-#define MAX_SWITCH    (MAX_PSWITCH+NUM_CSW)
+#define NUM_PSWITCH     (SWSRC_LAST_SWITCH-SWSRC_FIRST_SWITCH+1)
+#define NUM_POTSSW      (NUM_XPOTS*6)
+#define NUM_SWITCH      (NUM_PSWITCH+NUM_CSW+NUM_POTSSW)
 
 #if defined(PCBTARANIS)
-#define KEY_RIGHT  KEY_PLUS
-#define KEY_LEFT   KEY_MINUS
-#define KEY_UP     KEY_PLUS
-#define KEY_DOWN   KEY_MINUS
+  #define KEY_RIGHT  KEY_PLUS
+  #define KEY_LEFT   KEY_MINUS
+  #define KEY_UP     KEY_PLUS
+  #define KEY_DOWN   KEY_MINUS
 #else
-#define KEY_ENTER  KEY_MENU
-#define KEY_PLUS   KEY_RIGHT
-#define KEY_MINUS  KEY_LEFT
+  #define KEY_ENTER  KEY_MENU
+  #define KEY_PLUS   KEY_RIGHT
+  #define KEY_MINUS  KEY_LEFT
 #endif
 
 #include "myeeprom.h"
+
+#if defined(PCBTARANIS)
+  #define IS_MULTIPOS_POT(x)   ((x)>=POT1 && (x)<=POT_LAST && (g_eeGeneral.potsType & (1 << ((x)-POT1))))
+#else
+  #define IS_MULTIPOS_POT(x)   (false)
+#endif
 
 #if ROTARY_ENCODERS > 0
   #define IF_ROTARY_ENCODERS(x) x,
@@ -867,10 +875,15 @@ int8_t  getMovedSwitch();
   #define getFlightPhase() 0
 #endif
 
-extern uint8_t getTrimFlightPhase(uint8_t phase, uint8_t idx);
-extern int16_t getRawTrimValue(uint8_t phase, uint8_t idx);
-extern int16_t getTrimValue(uint8_t phase, uint8_t idx);
-extern void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim);
+#if !defined(PCBTARANIS)
+  uint8_t getTrimFlightPhase(uint8_t phase, uint8_t idx);
+#else
+  #define getTrimFlightPhase(phase, idx) (phase)
+#endif
+
+trim_t getRawTrimValue(uint8_t phase, uint8_t idx);
+int getTrimValue(uint8_t phase, uint8_t idx);
+void setTrimValue(uint8_t phase, uint8_t idx, int trim);
 
 #if defined(ROTARY_ENCODERS)
   int16_t getRotaryEncoder(uint8_t idx);
@@ -1041,12 +1054,14 @@ enum Analogs {
 #if defined(PCBTARANIS)
   POT1,
   POT2,
+  POT_LAST = POT2,
   SLIDER1,
   SLIDER2,
 #else
   POT1,
   POT2,
   POT3,
+  POT_LAST = POT3,
 #endif
   TX_VOLTAGE,
 #if defined(PCBSKY9X) && !defined(REVA)
@@ -1094,6 +1109,7 @@ template<class t> FORCEINLINE t min(t a, t b) { return a<b?a:b; }
 template<class t> FORCEINLINE t max(t a, t b) { return a>b?a:b; }
 template<class t> FORCEINLINE t sgn(t a) { return a>0 ? 1 : (a < 0 ? -1 : 0); }
 template<class t> FORCEINLINE t limit(t mi, t x, t ma) { return min(max(mi,x),ma); }
+template<class t> void swap(t & a, t & b) { t tmp = b; b = a; a = tmp; }
 
 #if defined(HELI) || defined(FRSKY_HUB)
 uint16_t isqrt32(uint32_t n);
@@ -1181,10 +1197,7 @@ extern int8_t  calcRESXto100(int16_t x);
 
 #define TMR_VAROFS  5
 
-extern const char stamp1[];
-extern const char stamp2[];
-extern const char stamp3[];
-extern const char eeprom_stamp[];
+extern const char vers_stamp[];
 
 extern uint8_t            g_vbat100mV;
 #define g_blinkTmr10ms (*(uint8_t*)&g_tmr10ms)
@@ -1564,6 +1577,14 @@ union ReusableBuffer
         int16_t loVals[NUM_STICKS+NUM_POTS];
         int16_t hiVals[NUM_STICKS+NUM_POTS];
         uint8_t state;
+#if defined(PCBTARANIS)
+        struct {
+          uint8_t stepsCount;
+          int16_t steps[POTS_POS_COUNT];
+          uint8_t lastCount;
+          int16_t lastPosition;
+        } xpotsCalib[NUM_XPOTS];
+#endif
     } calib;
 
 #if defined(SDCARD)
@@ -1632,8 +1653,23 @@ extern uint8_t barsThresholds[THLD_MAX];
   #define maxTelemValue(channel) 255
 #endif
 
-getvalue_t convertTelemValue(uint8_t channel, csw_telemetry_value_t value);
+#if defined(CPUARM)
+getvalue_t convert16bitsTelemValue(uint8_t channel, csw_telemetry_value_t value);
+csw_telemetry_value_t max8bitsTelemValue(uint8_t channel);
+#endif
+
+getvalue_t convert8bitsTelemValue(uint8_t channel, csw_telemetry_value_t value);
 getvalue_t convertCswTelemValue(CustomSwData * cs);
+
+#if defined(CPUARM)
+  #define convertTelemValue(channel, value) convert16bitsTelemValue(channel, value)
+  #define convertBarTelemValue(channel, value) convert8bitsTelemValue(channel, value)
+  #define maxBarTelemValue(channel) max8bitsTelemValue(channel)
+#else
+  #define convertTelemValue(channel, value) convert8bitsTelemValue(channel, value)
+  #define convertBarTelemValue(channel, value) convert8bitsTelemValue(channel, value)
+  #define maxBarTelemValue(channel) maxTelemValue(channel)
+#endif
 
 #if defined(FRSKY) || defined(CPUARM)
 lcdint_t applyChannelRatio(uint8_t channel, lcdint_t val);

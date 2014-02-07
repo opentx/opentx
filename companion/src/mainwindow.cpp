@@ -641,12 +641,49 @@ void MainWindow::closeEvent(QCloseEvent *event)
     }
 }
 
+void  MainWindow::setLanguage(QString langString)
+{    
+    QSettings settings;
+    settings.setValue("locale", langString );
+    
+    QMessageBox msgBox;
+    msgBox.setText(tr("The selected language will be used the next time you start Companion."));
+    msgBox.setIcon(QMessageBox::Information);
+    msgBox.addButton(tr("OK"), QMessageBox::AcceptRole);
+    msgBox.exec();
+}
+
+void  MainWindow::setTheme(int index)
+{    
+    QSettings settings;
+    settings.setValue("theme", index );
+    
+    QMessageBox msgBox;
+    msgBox.setText(tr("The new theme will be loaded the next time you start Companion."));
+    msgBox.setIcon(QMessageBox::Information);
+    msgBox.addButton(tr("OK"), QMessageBox::AcceptRole);
+    msgBox.exec();
+}
+
+void  MainWindow::setIconThemeSize(int index)
+{    
+    QSettings settings;
+    settings.setValue("icon_size", index );
+
+    QMessageBox msgBox;
+    msgBox.setText(tr("The icon size will be used the next time you start Companion."));
+    msgBox.setIcon(QMessageBox::Information);
+    msgBox.addButton(tr("OK"), QMessageBox::AcceptRole);
+    msgBox.exec();
+}
+
 void MainWindow::newFile()
 {
     MdiChild *child = createMdiChild();
     child->newFile();
     child->show();
 }
+
 
 void MainWindow::openFile()
 {
@@ -1630,7 +1667,7 @@ void MainWindow::createActions()
     logsAct->setStatusTip(tr("Open log file"));
     connect(logsAct, SIGNAL(triggered()), this, SLOT(logFile()));
     
-    preferencesAct = new QAction(CompanionIcon("preferences.png"), tr("&Preferences..."), this);
+    preferencesAct = new QAction(CompanionIcon("preferences.png"), tr("&General Preferences..."), this);
     preferencesAct->setStatusTip(tr("Edit general preferences"));
     connect(preferencesAct, SIGNAL(triggered()), this, SLOT(preferences()));
 
@@ -1655,7 +1692,7 @@ void MainWindow::createActions()
     compareAct->setEnabled(false);
     connect(compareAct, SIGNAL(triggered()), this, SLOT(compare()));
     
-    customizeSplashAct = new QAction(CompanionIcon("paintbrush.png"), tr("Customize your &TX..."), this);
+    customizeSplashAct = new QAction(CompanionIcon("paintbrush.png"), tr("Configure transmitter start screen..."), this);
     customizeSplashAct->setStatusTip(tr("Customize the splash screen of your TX"));
     connect(customizeSplashAct, SIGNAL(triggered()), this, SLOT(customizeSplash()));
     
@@ -1708,7 +1745,7 @@ void MainWindow::createActions()
     burnFromFlashAct->setStatusTip(tr("Read firmware from transmitter"));
     connect(burnFromFlashAct,SIGNAL(triggered()),this,SLOT(burnFromFlash()));
 
-    burnConfigAct = new QAction(CompanionIcon("configure.png"), tr("&Configure..."), this);
+    burnConfigAct = new QAction(CompanionIcon("configure.png"), tr("&Configure connection software..."), this);
     burnConfigAct->setStatusTip(tr("Configure software for reading from and writing to the transmitter"));
     connect(burnConfigAct,SIGNAL(triggered()),this,SLOT(burnConfig()));
     EEPROMInterface *eepromInterface = GetEepromInterface();
@@ -1754,6 +1791,79 @@ void MainWindow::createActions()
       connect(profileActs[i], SIGNAL(triggered()), this, SLOT(loadProfile()));
     }
     updateProfilesActions();
+
+    classicThemeAct = new QAction(tr("Classic"), this);
+    classicThemeAct->setStatusTip(tr("The multicolor classical Companion icon theme"));
+    connect(classicThemeAct, SIGNAL(triggered()), this, SLOT(setClassicTheme()));
+    monoThemeAct = new QAction("Monochrome",this);
+    monoThemeAct->setStatusTip(tr("A monochrome black icon theme"));
+    connect(monoThemeAct, SIGNAL(triggered()), this, SLOT(setMonochromeTheme()));
+    monoWhiteThemeAct = new QAction("MonoWhite",this);
+    monoWhiteThemeAct->setStatusTip(tr("A monochrome white icon theme"));
+    connect(monoWhiteThemeAct, SIGNAL(triggered()), this, SLOT(setMonoWhiteTheme()));
+    monoBlueThemeAct = new QAction("MonoBlue",this);
+    monoBlueThemeAct->setStatusTip(tr("A monochrome blue icon theme"));
+    connect(monoBlueThemeAct, SIGNAL(triggered()), this, SLOT(setMonoBlueTheme()));
+
+    smallIconAct = new QAction(tr("Small"),this);
+    smallIconAct->setStatusTip(tr("Use small toolbar icons"));
+    connect(smallIconAct, SIGNAL(triggered()), this, SLOT(setSmallIconThemeSize()));
+    normalIconAct = new QAction(this);
+    normalIconAct->setStatusTip(tr("Use normal size toolbar icons"));
+    normalIconAct->setText(tr("Normal"));
+    connect(normalIconAct, SIGNAL(triggered()), this, SLOT(setNormalIconThemeSize()));
+    bigIconAct = new QAction(this);
+    bigIconAct->setStatusTip(tr("Use big toolbar icons"));
+    bigIconAct->setText(tr("Big"));
+    connect(bigIconAct, SIGNAL(triggered()), this, SLOT(setBigIconThemeSize()));
+    hugeIconAct = new QAction(this);    
+    hugeIconAct->setStatusTip(tr("Use huge toolbar icons"));
+    hugeIconAct->setText(tr("Huge"));   
+    connect(hugeIconAct, SIGNAL(triggered()), this, SLOT(setHugeIconThemeSize()));
+
+    defaultLanguageAct = new QAction(tr("System default language"),this);
+    defaultLanguageAct->setStatusTip(tr("Use system default language in menus"));
+    connect(defaultLanguageAct, SIGNAL(triggered()), this, SLOT(setDefaultLanguage()));
+
+    czechLanguageAct = new QAction(tr("Czech"),this);
+    czechLanguageAct->setStatusTip(tr("Use Czech in menus"));
+    connect(czechLanguageAct, SIGNAL(triggered()), this, SLOT(setCZLanguage()));
+
+    germanLanguageAct = new QAction(tr("German"),this);
+    germanLanguageAct->setStatusTip(tr("Use German in menus"));
+    connect(germanLanguageAct, SIGNAL(triggered()), this, SLOT(setDELanguage()));
+
+    englishLanguageAct = new QAction(tr("English"),this);
+    englishLanguageAct->setStatusTip(tr("Use English in menus"));
+    connect(englishLanguageAct, SIGNAL(triggered()), this, SLOT(setENLanguage()));
+
+    frenchLanguageAct = new QAction(tr("French"),this);
+    frenchLanguageAct->setStatusTip(tr("Use French in menus"));
+    connect(frenchLanguageAct, SIGNAL(triggered()), this, SLOT(setFRLanguage()));
+
+    italianLanguageAct = new QAction(tr("Italian"),this);
+    italianLanguageAct->setStatusTip(tr("Use Italian in menus"));
+    connect(italianLanguageAct, SIGNAL(triggered()), this, SLOT(setITLanguage()));
+
+    hebrewLanguageAct = new QAction(tr("Hebrew"),this);
+    hebrewLanguageAct->setStatusTip(tr("Use Hebrew in menus"));
+    connect(hebrewLanguageAct, SIGNAL(triggered()), this, SLOT(setHELanguage()));
+
+    polishLanguageAct = new QAction(tr("Polish"),this);
+    polishLanguageAct->setStatusTip(tr("Use Polish in menus"));
+    connect(polishLanguageAct, SIGNAL(triggered()), this, SLOT(setPLLanguage()));
+
+    portugueseLanguageAct = new QAction(tr("Portuguese"),this);
+    portugueseLanguageAct->setStatusTip(tr("Use Portuguese in menus"));
+    connect(portugueseLanguageAct, SIGNAL(triggered()), this, SLOT(setPTLanguage()));
+
+    swedishLanguageAct = new QAction(tr("Swedish"),this);
+    swedishLanguageAct->setStatusTip(tr("Use Swedish in menus"));
+    connect(swedishLanguageAct, SIGNAL(triggered()), this, SLOT(setSELanguage()));
+
+    russianLanguageAct = new QAction(tr("Russian"),this);
+    russianLanguageAct->setStatusTip(tr("Use Russian in menus"));
+    connect(russianLanguageAct, SIGNAL(triggered()), this, SLOT(setRULanguage()));
 }
 
 void MainWindow::createMenus()
@@ -1761,6 +1871,9 @@ void MainWindow::createMenus()
 {
     QMenu *recentFileMenu=new QMenu(tr("Recent Files"));
     QMenu *profilesMenu=new QMenu(tr("Firmware Profiles"));
+    QMenu *languageMenu=new QMenu(tr("Set Menu Language"));
+    QMenu *themeMenu=new QMenu(tr("Set Icon Theme"));
+    QMenu *iconThemeSizeMenu=new QMenu(tr("Set Icon Size"));
     
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(newAct);
@@ -1778,7 +1891,6 @@ void MainWindow::createMenus()
     fileMenu->addAction(printAct);
     fileMenu->addAction(compareAct);
     fileMenu->addSeparator();
-    fileMenu->addAction(preferencesAct);
     fileMenu->addMenu(profilesMenu);
     
     profilesMenu->setIcon(CompanionIcon("profiles.png"));
@@ -1791,6 +1903,34 @@ void MainWindow::createMenus()
     editMenu->addAction(copyAct);
     editMenu->addAction(pasteAct);
 
+    settingsMenu = menuBar()->addMenu(tr("&Settings"));
+    settingsMenu->addMenu(languageMenu);
+      languageMenu->addAction(defaultLanguageAct);
+      languageMenu->addAction(englishLanguageAct);
+      languageMenu->addAction(czechLanguageAct);
+      languageMenu->addAction(germanLanguageAct);
+      languageMenu->addAction(frenchLanguageAct);
+      languageMenu->addAction(hebrewLanguageAct);
+      languageMenu->addAction(italianLanguageAct);
+      languageMenu->addAction(polishLanguageAct);
+      languageMenu->addAction(portugueseLanguageAct);
+      languageMenu->addAction(swedishLanguageAct);
+      languageMenu->addAction(russianLanguageAct);
+    settingsMenu->addMenu(themeMenu);
+      themeMenu->addAction(classicThemeAct);
+      themeMenu->addAction(monoThemeAct);
+      themeMenu->addAction(monoBlueThemeAct);
+      themeMenu->addAction(monoWhiteThemeAct);
+    settingsMenu->addMenu(iconThemeSizeMenu);
+      iconThemeSizeMenu->addAction(smallIconAct);
+      iconThemeSizeMenu->addAction(normalIconAct);
+      iconThemeSizeMenu->addAction(bigIconAct);
+      iconThemeSizeMenu->addAction(hugeIconAct);
+    settingsMenu->addSeparator();
+    settingsMenu->addAction(preferencesAct);
+    settingsMenu->addAction(customizeSplashAct);
+    settingsMenu->addAction(burnConfigAct);
+
     burnMenu = menuBar()->addMenu(tr("&Read/Write"));
     burnMenu->addAction(burnToAct);
     burnMenu->addAction(burnFromAct);
@@ -1801,9 +1941,7 @@ void MainWindow::createMenus()
     burnMenu->addAction(burnToFlashAct);
     burnMenu->addAction(burnFromFlashAct);
     burnMenu->addSeparator();
-    burnMenu->addAction(customizeSplashAct);
     burnMenu->addSeparator();
-    burnMenu->addAction(burnConfigAct);
     EEPROMInterface *eepromInterface = GetEepromInterface();
     if (!IS_ARM(eepromInterface->getBoard())) {    
       burnMenu->addAction(burnFusesAct);
@@ -1966,14 +2104,6 @@ QMdiSubWindow *MainWindow::findMdiChild(const QString &fileName)
         return window;
     }
     return 0;
-}
-
-void MainWindow::switchLayoutDirection()
-{
-    if (layoutDirection() == Qt::LeftToRight)
-      qApp->setLayoutDirection(Qt::RightToLeft);
-    else
-      qApp->setLayoutDirection(Qt::LeftToRight);
 }
 
 void MainWindow::setActiveSubWindow(QWidget *window)
@@ -2143,3 +2273,5 @@ void MainWindow::autoClose()
 {
     this->close();
 }
+
+

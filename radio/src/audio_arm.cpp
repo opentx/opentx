@@ -679,6 +679,9 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
   if (!sdMounted())
     return;
 
+  if (g_eeGeneral.beepMode == e_mode_quiet)
+    return;
+
   if (strlen(filename) > AUDIO_FILENAME_MAXLEN) {
     POPUP_WARNING(STR_PATH_TOO_LONG);
     return;
@@ -870,7 +873,7 @@ void audioEvent(uint8_t e, uint16_t f)
           break;
         // timer == 0
         case AU_TIMER_00:
-          audioQueue.play(BEEP_DEFAULT_FREQ+150, 240, 20, PLAY_NOW);
+          audioQueue.play(BEEP_DEFAULT_FREQ+150, 300, 20, PLAY_NOW);
           break;
         // timer <= 10 seconds left
         case AU_TIMER_LT10:

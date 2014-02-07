@@ -57,6 +57,7 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(TRNCHN)
 #if defined(PCBTARANIS)
     ISTR(UART3MODES)
+    ISTR(POTTYPES)
 #endif
     ISTR(VTRIMINC)
     ISTR(RETA123)
@@ -244,9 +245,7 @@ const pm_char STR_RXBATT[] PROGMEM = TR_RXBATT;
 const pm_char STR_TX[] PROGMEM = TR_TXnRX;
 const pm_char STR_ACCEL[] PROGMEM = TR_ACCEL;
 const pm_char STR_NODATA[] PROGMEM = TR_NODATA;
-const pm_char STR_TM1TM2[] PROGMEM = TR_TM1TM2;
-const pm_char STR_THRTHP[] PROGMEM = TR_THRTHP;
-const pm_char STR_TOT[] PROGMEM = TR_TOT;
+const pm_char STR_TOTTM1TM2THRTHP[] PROGMEM = TR_TOTTM1TM2THRTHP;
 const pm_char STR_TMR1LATMAXUS[] PROGMEM = TR_TMR1LATMAXUS;
 const pm_char STR_TMR1LATMINUS[] PROGMEM = TR_TMR1LATMINUS;
 const pm_char STR_TMR1JITTERUS[] PROGMEM = TR_TMR1JITTERUS;
@@ -462,6 +461,7 @@ const pm_char STR_VIEW_TEXT[] PROGMEM = "View text";
   const pm_char STR_MODELNAME[] PROGMEM = TR_MODELNAME;
   const pm_char STR_PHASENAME[] PROGMEM = TR_PHASENAME;
   const pm_char STR_MIXNAME[] PROGMEM = TR_MIXNAME;
+  const pm_char STR_INPUTNAME[] PROGMEM = TR_INPUTNAME;
   const pm_char STR_EXPONAME[] PROGMEM = TR_EXPONAME;
 #endif
 
@@ -489,12 +489,14 @@ const pm_char STR_VIEW_TEXT[] PROGMEM = "View text";
   const pm_char STR_CLEAR[] PROGMEM = "Clear";
   const pm_char STR_RESET[] PROGMEM = "Reset";
   const pm_char STR_COPY_TRIMS_TO_OFFSET[] = "Copy Trims To Offset";
-  const pm_char STR_TOP_BAR[] PROGMEM = "Top Bar";
-  const pm_char STR_ALTITUDE[] PROGMEM = INDENT "Altitude";
+  const pm_char STR_TOP_BAR[] PROGMEM = TR_TOP_BAR;
+  const pm_char STR_ALTITUDE[] PROGMEM = TR_ALTITUDE;
   const pm_char STR_SCALE[] PROGMEM = "Scale";
   const pm_char STR_VIEW_CHANNELS[] PROGMEM = "View Channels";
   const pm_char STR_VIEW_NOTES[] PROGMEM = "View Notes";
   const pm_char STR_UART3MODE[] PROGMEM = TR_UART3MODE;
+  const pm_char STR_POT1TYPE[] PROGMEM = TR_POT1TYPE;
+  const pm_char STR_POT2TYPE[] PROGMEM = TR_POT2TYPE;
 #endif
 
 #if MENUS_LOCK == 1

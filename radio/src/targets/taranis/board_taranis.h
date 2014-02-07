@@ -77,11 +77,11 @@ extern uint16_t sessionTimer;
 
 void delaysInit();
 
-#define DEBUG_UART_BAUDRATE 115200
+#define DEBUG_BAUDRATE      115200
 #define SPORT_BAUDRATE      57600
 
-void uartInit(uint32_t baudrate);
-void uartPutc(const char c);
+void uart3Init(unsigned int mode);
+void uart3Putc(const char c);
 
 void sportInit(void);
 
@@ -183,6 +183,8 @@ bool usbPlugged(void);
 void eeWriteBlockCmp(const void *pointer_ram, uint16_t pointer_eeprom, size_t size);
 #endif
 
+// Debug driver
+void debugPutc(const char c);
 
 extern uint8_t currentTrainerMode;
 

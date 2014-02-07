@@ -56,21 +56,29 @@ class SwitchesConversionTable: public ConversionTable {
         addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, i), val++);
       }
 
+      if (IS_TARANIS(board) && version >= 216) {
+        for (int i=0; i<2; i++) {
+          for (int j=0; j<6; j++) {
+            addConversion(RawSwitch(SWITCH_TYPE_MULTIPOS_POT, i*6+j), val++);
+          }
+        }
+      }
+
       addConversion(RawSwitch(SWITCH_TYPE_OFF), -val);
       addConversion(RawSwitch(SWITCH_TYPE_ON), val++);
 
       for (int i=1; i<=MAX_SWITCHES_POSITION(board); i++) {
         int s = switchIndex(i, board, version);
-        addConversion(RawSwitch(SWITCH_TYPE_MOMENT_SWITCH, -s), -val);
+        // addConversion(RawSwitch(SWITCH_TYPE_MOMENT_SWITCH, -s), -val);
         addConversion(RawSwitch(SWITCH_TYPE_MOMENT_SWITCH, s), val++);
       }
 
       for (int i=1; i<=MAX_CUSTOM_SWITCHES(board, version); i++) {
-        addConversion(RawSwitch(SWITCH_TYPE_MOMENT_VIRTUAL, -i), -val);
+        // addConversion(RawSwitch(SWITCH_TYPE_MOMENT_VIRTUAL, -i), -val);
         addConversion(RawSwitch(SWITCH_TYPE_MOMENT_VIRTUAL, i), val++);
       }
 
-      addConversion(RawSwitch(SWITCH_TYPE_ONM, 1 ), -val);
+      // addConversion(RawSwitch(SWITCH_TYPE_ONM, 1 ), -val);
       addConversion(RawSwitch(SWITCH_TYPE_ONM, 0 ), val++);
       addConversion(RawSwitch(SWITCH_TYPE_TRN, 0), val++);
       addConversion(RawSwitch(SWITCH_TYPE_TRN, 1), val++);        
@@ -201,7 +209,7 @@ class SourcesConversionTable: public ConversionTable {
       if (!(flags & FLAG_NOTELEMETRY)) {
         if (release21March2013) {
           if ((board != BOARD_STOCK && (board!=BOARD_M128 || version<215)) || (variant & GVARS_VARIANT)) {
-            for (int i=0; i<5; i++)
+            for (int i=0; i<MAX_GVARS(board, version); i++)
               addConversion(RawSource(SOURCE_TYPE_GVAR, i), val++);
           }
         }
@@ -425,6 +433,12 @@ class PhaseField: public TransformedField {
         for (int i=0; i<NUM_STICKS; i++)
           internalField.Append(new SignedField<2>(trimExt[i]));
       }
+      else if (board == BOARD_TARANIS && version >= 216) {
+        for (int i=0; i<NUM_STICKS; i++) {
+          internalField.Append(new SignedField<11>(phase.trim[i]));
+          internalField.Append(new UnsignedField<5>(trimMode[i]));
+        }
+      }
       else {
         for (int i=0; i<NUM_STICKS; i++)
           internalField.Append(new SignedField<16>(trimBase[i]));
@@ -459,19 +473,27 @@ class PhaseField: public TransformedField {
     virtual void beforeExport()
     {
       for (int i=0; i<NUM_STICKS; i++) {
-        int trim;
-        if (phase.trimRef[i] >= 0) {
-          trim = 501 + phase.trimRef[i] - (phase.trimRef[i] >= index ? 1 : 0);
+        if (board == BOARD_TARANIS && version >= 216) {
+          if (phase.trimMode[i] < 0)
+            trimMode[i] = TRIM_MODE_NONE;
+          else
+            trimMode[i] = 2*phase.trimRef[i] + phase.trimMode[i];
         }
         else {
-          trim = std::max(-500, std::min(500, phase.trim[i]));
-        }
-        if (board == BOARD_STOCK || (board == BOARD_M128 && version >= 215)) {
-          trimBase[i] = trim >> 2;
-          trimExt[i] = (trim & 0x03);
-        }
-        else {
-          trimBase[i] = trim;
+          int trim;
+          if (phase.trimMode[i] < 0)
+            trim = 0;
+          else if (phase.trimRef[i] != index)
+            trim = 501 + phase.trimRef[i] - (phase.trimRef[i] > index ? 1 : 0);
+          else
+            trim = std::max(-500, std::min(500, phase.trim[i]));
+          if (board == BOARD_STOCK || (board == BOARD_M128 && version >= 215)) {
+            trimBase[i] = trim >> 2;
+            trimExt[i] = (trim & 0x03);
+          }
+          else {
+            trimBase[i] = trim;
+          }
         }
       }
     }
@@ -479,21 +501,31 @@ class PhaseField: public TransformedField {
     virtual void afterImport()
     {
       for (int i=0; i<NUM_STICKS; i++) {
-        int trim;
-        if (board == BOARD_STOCK || (board == BOARD_M128 && version >= 215))
-          trim = ((trimBase[i]) << 2) + (trimExt[i] & 0x03);
-        else
-          trim = trimBase[i];
-        if (trim > 500) {
-          phase.trimRef[i] = trim - 501;
-          if (phase.trimRef[i] >= index)
-            phase.trimRef[i] += 1;
-          phase.trim[i] = 0;
+        if (board == BOARD_TARANIS && version >= 216) {
+          if (trimMode[i] == TRIM_MODE_NONE) {
+            phase.trimMode[i] = -1;
+          }
+          else {
+            phase.trimMode[i] = trimMode[i] % 2;
+            phase.trimRef[i] = trimMode[i] / 2;
+          }
         }
         else {
-          phase.trim[i] = trim;
+          int trim;
+          if (board == BOARD_STOCK || (board == BOARD_M128 && version >= 215))
+            trim = ((trimBase[i]) << 2) + (trimExt[i] & 0x03);
+          else
+            trim = trimBase[i];
+          if (trim > 500) {
+            phase.trimRef[i] = trim - 501;
+            if (phase.trimRef[i] >= index)
+              phase.trimRef[i] += 1;
+            phase.trim[i] = 0;
+          }
+          else {
+            phase.trim[i] = trim;
+          }
         }
-
       }
     }
 
@@ -506,6 +538,7 @@ class PhaseField: public TransformedField {
     int rotencCount;
     int trimBase[NUM_STICKS];
     int trimExt[NUM_STICKS];
+    unsigned int trimMode[NUM_STICKS];
 };
 
 
@@ -2011,12 +2044,21 @@ Open9xGeneralDataNew::Open9xGeneralDataNew(GeneralSettings & generalData, BoardE
   if (version >= 213 || (!IS_ARM(board) && version >= 212))
     internalField.Append(new UnsignedField<16>(generalData.variant));
 
-  for (int i=0; i<inputsCount; i++)
-    internalField.Append(new SignedField<16>(generalData.calibMid[i]));
-  for (int i=0; i<inputsCount; i++)
-    internalField.Append(new SignedField<16>(generalData.calibSpanNeg[i]));
-  for (int i=0; i<inputsCount; i++)
-    internalField.Append(new SignedField<16>(generalData.calibSpanPos[i]));
+  if (version >= 216) {
+    for (int i=0; i<inputsCount; i++) {
+      internalField.Append(new SignedField<16>(generalData.calibMid[i]));
+      internalField.Append(new SignedField<16>(generalData.calibSpanNeg[i]));
+      internalField.Append(new SignedField<16>(generalData.calibSpanPos[i]));
+    }
+  }
+  else {
+    for (int i=0; i<inputsCount; i++)
+      internalField.Append(new SignedField<16>(generalData.calibMid[i]));
+    for (int i=0; i<inputsCount; i++)
+      internalField.Append(new SignedField<16>(generalData.calibSpanNeg[i]));
+    for (int i=0; i<inputsCount; i++)
+      internalField.Append(new SignedField<16>(generalData.calibSpanPos[i]));
+  }
 
   internalField.Append(new UnsignedField<16>(chkSum));
   internalField.Append(new UnsignedField<8>(generalData.currModel));
@@ -2110,8 +2152,11 @@ Open9xGeneralDataNew::Open9xGeneralDataNew(GeneralSettings & generalData, BoardE
       internalField.Append(new SignedField<8>(generalData.varioVolume));
       internalField.Append(new SignedField<8>(generalData.backgroundVolume));
     }
-    if (version >= 216) {
+    if (IS_TARANIS(board) && version >= 216) {
       internalField.Append(new UnsignedField<8>(generalData.hw_uartMode));
+      for (int i=0; i<8; i++) {
+        internalField.Append(new UnsignedField<1>(generalData.potsType[i]));
+      }
     }
   }
 }
