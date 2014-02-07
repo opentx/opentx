@@ -2167,6 +2167,7 @@ Open9xGeneralDataNew::Open9xGeneralDataNew(GeneralSettings & generalData, BoardE
   internalField("General Settings"),
   generalData(generalData),
   board(board),
+  version(version),
   inputsCount(IS_TARANIS(board) ? 8 : 7)
 {
   generalData.version = version;
@@ -2296,10 +2297,23 @@ Open9xGeneralDataNew::Open9xGeneralDataNew(GeneralSettings & generalData, BoardE
 void Open9xGeneralDataNew::beforeExport()
 {
   uint16_t sum = 0;
-  for (int i=0; i<inputsCount; i++)
-    sum += generalData.calibMid[i];
-  for (int i=0; i<5; i++)
-    sum += generalData.calibSpanNeg[i];
+  if (version >= 216) {
+    int count = 0;
+    for (int i=0; i<inputsCount; i++) {
+      sum += generalData.calibMid[i];
+      if (++count == inputsCount+5) break;
+      sum += generalData.calibSpanNeg[i];
+      if (++count == inputsCount+5) break;
+      sum += generalData.calibSpanPos[i];
+      if (++count == inputsCount+5) break;
+    }
+  }
+  else {
+    for (int i=0; i<inputsCount; i++)
+      sum += generalData.calibMid[i];
+    for (int i=0; i<5; i++)
+      sum += generalData.calibSpanNeg[i];
+  }
   chkSum = sum;
 }
 
