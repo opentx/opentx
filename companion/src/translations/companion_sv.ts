@@ -2312,17 +2312,15 @@ Vill du ladda ned den nu ?</translation>
         <translation>Redigera programmets inställningar</translation>
     </message>
     <message>
-        <location line="+3"/>
         <source>&amp;Download Firmware and Voice...</source>
-        <translation>&amp;Ladda ned Firmware och Ljud...</translation>
+        <translation type="obsolete">&amp;Ladda ned Firmware och Ljud...</translation>
     </message>
     <message>
-        <location line="+1"/>
         <source>Download firmware and voice files</source>
-        <translation>Ladda ned Firmware- och Ljud-filer</translation>
+        <translation type="obsolete">Ladda ned Firmware- och Ljud-filer</translation>
     </message>
     <message>
-        <location line="+12"/>
+        <location line="+16"/>
         <source>Show Companion changelog</source>
         <translation>Visa en lista med förändringar av Companion</translation>
     </message>
@@ -2764,7 +2762,17 @@ Starta skrivningen i alla fall ?</translation>
         <translation>Om Companion</translation>
     </message>
     <message>
-        <location line="+98"/>
+        <location line="+93"/>
+        <source>&amp;Downloads and Profiles...</source>
+        <translation>&amp;Nedladdningar och Profiler...</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Firmware and voice file downloads as well as profile definition.</source>
+        <translation>Ladda ned firmware och röstfiler. Definera profildata.</translation>
+    </message>
+    <message>
+        <location line="+4"/>
         <source>Check for new version of Companion</source>
         <translation>Sök efter ny version av Companion</translation>
     </message>
@@ -7648,25 +7656,31 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location line="+187"/>
-        <location line="+286"/>
+        <location line="+293"/>
         <source>Invert</source>
         <translation>Invertera</translation>
     </message>
     <message>
-        <location line="-236"/>
-        <location line="+289"/>
+        <location line="-243"/>
+        <location line="+296"/>
         <source>Load FW</source>
         <translation>Ladda FW</translation>
     </message>
     <message>
-        <location line="-282"/>
-        <location line="+289"/>
+        <location line="-289"/>
+        <location line="+296"/>
         <source>Load Pict</source>
         <translation>Ladda Bild</translation>
     </message>
     <message>
-        <location line="-266"/>
-        <location line="+289"/>
+        <location line="-289"/>
+        <location line="+296"/>
+        <source>Load Profile</source>
+        <translation>Ladda Profil</translation>
+    </message>
+    <message>
+        <location line="-273"/>
+        <location line="+296"/>
         <source>Save</source>
         <translation>Spara</translation>
     </message>
@@ -7683,8 +7697,8 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Ladda bild</translation>
     </message>
     <message>
-        <location line="-346"/>
-        <location line="+286"/>
+        <location line="-360"/>
+        <location line="+293"/>
         <source>Open Splash Library</source>
         <translation>Öppna bildbibliotek</translation>
     </message>
@@ -7704,7 +7718,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+8"/>
         <location line="+33"/>
-        <location line="+42"/>
+        <location line="+48"/>
         <location line="+36"/>
         <location line="+7"/>
         <location line="+9"/>
@@ -7712,7 +7726,7 @@ p, li { white-space: pre-wrap; }
         <translation>Fel</translation>
     </message>
     <message>
-        <location line="-127"/>
+        <location line="-133"/>
         <source>Could not find bitmap to replace in file</source>
         <translation>Det finns ingen bild att byta i firmware-filen</translation>
     </message>
@@ -7728,7 +7742,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location line="+7"/>
-        <location line="+42"/>
+        <location line="+48"/>
         <source>Cannot load %1.</source>
         <translation>Kunde inte ladda %1.</translation>
     </message>
@@ -7768,8 +7782,8 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">PNG bilder (*.png);;</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.ui" line="-283"/>
-        <location line="+81"/>
+        <location filename="../customizesplashdialog.ui" line="-290"/>
+        <location line="+88"/>
         <location line="+10"/>
         <location line="+195"/>
         <source>...</source>
@@ -7947,25 +7961,24 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>fwPreferencesDialog</name>
     <message>
-        <location filename="../fwpreferencesdialog.ui" line="+26"/>
         <source>Download Firmware and Voice</source>
-        <translation>Ladda ned Firmware och Ljud</translation>
+        <translation type="obsolete">Ladda ned Firmware och Ljud</translation>
     </message>
     <message>
-        <location line="+32"/>
+        <location filename="../fwpreferencesdialog.ui" line="+84"/>
+        <location line="+13"/>
+        <location line="+34"/>
         <location line="+13"/>
         <location line="+13"/>
         <location line="+13"/>
         <location line="+13"/>
-        <location line="+96"/>
+        <location line="+75"/>
         <location line="+13"/>
-        <location line="+77"/>
+        <location line="+67"/>
         <location line="+13"/>
         <location line="+198"/>
         <location line="+13"/>
         <location line="+16"/>
-        <location line="+13"/>
-        <location line="+13"/>
         <location line="+13"/>
         <location line="+13"/>
         <location line="+13"/>
@@ -7992,8 +8005,8 @@ p, li { white-space: pre-wrap; }
         <location line="+13"/>
         <location line="+13"/>
         <location line="+13"/>
-        <location line="+102"/>
-        <location line="+20"/>
+        <location line="+58"/>
+        <location line="+26"/>
         <source>CheckBox</source>
         <translation>Kryssruta</translation>
     </message>
@@ -8002,14 +8015,14 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Hårdvaruprofil-namn</translation>
     </message>
     <message>
-        <location line="-909"/>
+        <location line="+50"/>
         <source>Set language of voice.
 May be different from firmware language</source>
         <translation>Välj språk för röstfunktioner.
 Får skilja från språket för firmware</translation>
     </message>
     <message>
-        <location line="+14"/>
+        <location line="-864"/>
         <source>SD Structure path</source>
         <translation>Sökväg till SD-struktur</translation>
     </message>
@@ -8032,7 +8045,7 @@ Får skilja från språket för firmware</translation>
         <translation type="obsolete">Röst</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+13"/>
         <source>Channel Order</source>
         <translation>Kanalordning</translation>
     </message>
@@ -8102,7 +8115,7 @@ Mode 4:
         <translation type="obsolete">Profilposition</translation>
     </message>
     <message>
-        <location line="-234"/>
+        <location line="-213"/>
         <source>Options</source>
         <translation>Val</translation>
     </message>
@@ -8111,7 +8124,7 @@ Mode 4:
         <translation type="obsolete">Firmware-typer</translation>
     </message>
     <message>
-        <location line="+328"/>
+        <location line="+297"/>
         <source>Channel order
 
 This is used by the templated to determine which channel goes to what number output.</source>
@@ -8120,27 +8133,26 @@ This is used by the templated to determine which channel goes to what number out
 Används av mallarna för att koppla ihop kanaler med numrerade utgångar.</translation>
     </message>
     <message>
-        <location line="+567"/>
+        <location line="+525"/>
         <source>Open Folder</source>
         <translation>Öppna Katalog</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="-872"/>
         <source>Offer to write FW to Tx after download</source>
         <translation>Skriv FW till Tx efter nedladdning</translation>
     </message>
     <message>
-        <location line="+131"/>
+        <location line="+1020"/>
         <source>Profile Splash Screen</source>
         <translation>Profilens startbild</translation>
     </message>
     <message>
-        <location line="+7"/>
         <source>Profile Name</source>
-        <translation>Profilnamn</translation>
+        <translation type="obsolete">Profilnamn</translation>
     </message>
     <message>
-        <location line="+30"/>
+        <location line="-44"/>
         <source>Import</source>
         <translation>Import</translation>
     </message>
@@ -8150,47 +8162,56 @@ Används av mallarna för att koppla ihop kanaler med numrerade utgångar.</tran
         <translation>Export</translation>
     </message>
     <message>
-        <location line="-1056"/>
+        <location line="-1004"/>
+        <source>Downloads and Profiles</source>
+        <translation>Nedladdning och Profiler</translation>
+    </message>
+    <message>
+        <location line="+92"/>
         <source>Save Profile</source>
         <translation>Spara Profil</translation>
     </message>
     <message>
-        <location line="+109"/>
+        <location line="+95"/>
         <source>Menu Language</source>
         <translation>Menyspråk</translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+831"/>
+        <source>Profile</source>
+        <translation>Profil</translation>
+    </message>
+    <message>
+        <location line="+24"/>
         <source>Voice Language</source>
         <translation>Röstspråk</translation>
     </message>
     <message>
-        <location line="+103"/>
         <source>Profile Number</source>
-        <translation>Profilnummer</translation>
+        <translation type="obsolete">Profilnummer</translation>
     </message>
     <message>
-        <location line="+58"/>
+        <location line="-688"/>
         <source>Firmware Type</source>
         <translation>Firmware-typ</translation>
     </message>
     <message>
-        <location line="+609"/>
+        <location line="+560"/>
         <source>Append version number to FW file name</source>
         <translation>Addera versionsnumret till FW-filnamnet</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="-869"/>
         <source>Download Voice</source>
         <translation>Ladda Röstfiler</translation>
     </message>
     <message>
-        <location line="+91"/>
+        <location line="+926"/>
         <source>FwInfo</source>
         <translation>---</translation>
     </message>
     <message>
-        <location line="+70"/>
+        <location line="+101"/>
         <source>Open Image</source>
         <translation>Öppna bild</translation>
     </message>
@@ -8200,12 +8221,12 @@ Används av mallarna för att koppla ihop kanaler med numrerade utgångar.</tran
         <translation>Ta bort Bild</translation>
     </message>
     <message>
-        <location line="-103"/>
+        <location line="-1001"/>
         <source>Download FW</source>
         <translation>Ladda ned Firmware</translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+919"/>
         <source>Check for updates</source>
         <translation>Sök efter uppdateringar</translation>
     </message>

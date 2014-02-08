@@ -1703,8 +1703,8 @@ void MainWindow::createActions()
     appPreferencesAct->setStatusTip(tr("Edit application preferences"));
     connect(appPreferencesAct, SIGNAL(triggered()), this, SLOT(appPreferences()));
 
-    fwPreferencesAct = new QAction(CompanionIcon("fwpreferences.png"), tr("&Download Firmware and Voice..."), this);
-    fwPreferencesAct->setStatusTip(tr("Download firmware and voice files"));
+    fwPreferencesAct = new QAction(CompanionIcon("fwpreferences.png"), tr("&Downloads and Profiles..."), this);
+    fwPreferencesAct->setStatusTip(tr("Firmware and voice file downloads as well as profile definition."));
     connect(fwPreferencesAct, SIGNAL(triggered()), this, SLOT(fwPreferences()));
 
     checkForUpdatesAct = new QAction(CompanionIcon("update.png"), tr("&Check for updates..."), this);

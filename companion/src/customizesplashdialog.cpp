@@ -55,9 +55,9 @@ right.copyImage(left);
 }
 
 
-void customizeSplashDialog::on_leftLoadFwButton_clicked() {loadFwButton_clicked(left);}
-void customizeSplashDialog::on_rightLoadFwButton_clicked() {loadFwButton_clicked(right);}
-void customizeSplashDialog::loadFwButton_clicked(Side side)
+void customizeSplashDialog::on_leftLoadFwButton_clicked() {loadFirmware(left);}
+void customizeSplashDialog::on_rightLoadFwButton_clicked() {loadFirmware(right);}
+void customizeSplashDialog::loadFirmware(Side side)
 {
   QSettings settings;
   QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), settings.value("lastFlashDir").toString(), FLASH_FILES_FILTER);
@@ -84,9 +84,9 @@ void customizeSplashDialog::loadFwButton_clicked(Side side)
   }
 }
 
-void customizeSplashDialog::on_leftLoadPictButton_clicked() {loadPictButton_clicked(left);}
-void customizeSplashDialog::on_rightLoadPictButton_clicked() {loadPictButton_clicked(right);}
-void customizeSplashDialog::loadPictButton_clicked(Side side)
+void customizeSplashDialog::on_leftLoadPictButton_clicked() {loadPicture(left);}
+void customizeSplashDialog::on_rightLoadPictButton_clicked() {loadPicture(right);}
+void customizeSplashDialog::loadPicture(Side side)
 {
   QString supportedImageFormats;
   for (int formatIndex = 0; formatIndex < QImageReader::supportedImageFormats().count(); formatIndex++) {
@@ -130,6 +130,12 @@ void customizeSplashDialog::loadPictButton_clicked(Side side)
   side.saveButton->setEnabled(true);
   side.libraryButton->setEnabled(true);
   side.invertButton->setEnabled(true);
+}
+
+void customizeSplashDialog::on_leftLoadProfileButton_clicked() {loadProfile(left);}
+void customizeSplashDialog::on_rightLoadProfileButton_clicked() {loadProfile(right);}
+void customizeSplashDialog::loadProfile(Side side)
+{
 }
 
 void customizeSplashDialog::on_leftLibraryButton_clicked(){libraryButton_clicked(left);}
