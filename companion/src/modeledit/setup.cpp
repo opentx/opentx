@@ -668,18 +668,18 @@ void Setup::startupSwitchToggled(bool checked)
 void Setup::updatePotWarnings()
 {
   lock = true;
-    int mode = model.nPotsToWarn >> 6;
-    ui->potWarningMode->setCurrentIndex(mode);
-    
-    if (mode == 0)
-      model.nPotsToWarn = 0x3F;
+  int mode = model.nPotsToWarn >> 6;
+  ui->potWarningMode->setCurrentIndex(mode);
 
-    for (int i=0; i<GetEepromInterface()->getCapability(Pots); i++) {
-      bool enabled = !(model.nPotsToWarn & (1 << i));
+  if (mode == 0)
+    model.nPotsToWarn = 0x3F;
 
-      potWarningCheckboxes[i]->setChecked(enabled);
-      potWarningCheckboxes[i]->setDisabled(mode == 0);
-    }
+  for (int i=0; i<potWarningCheckboxes.size(); i++) {
+    bool enabled = !(model.nPotsToWarn & (1 << i));
+
+    potWarningCheckboxes[i]->setChecked(enabled);
+    potWarningCheckboxes[i]->setDisabled(mode == 0);
+  }
   lock = false;
 }
 
@@ -700,12 +700,14 @@ void Setup::potWarningToggled(bool checked)
 
 void Setup::on_potWarningMode_currentIndexChanged(int index)
 {
-  int mask = 0xC0;
-  model.nPotsToWarn = model.nPotsToWarn & ~mask;
-  model.nPotsToWarn = model.nPotsToWarn | ((index << 6) & mask);
+  if (!lock) {
+    int mask = 0xC0;
+    model.nPotsToWarn = model.nPotsToWarn & ~mask;
+    model.nPotsToWarn = model.nPotsToWarn | ((index << 6) & mask);
 
-  updatePotWarnings();
-  emit modified();
+    updatePotWarnings();
+    emit modified();
+  }
 }
 
 void Setup::on_displayText_toggled(bool checked)
