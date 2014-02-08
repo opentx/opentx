@@ -501,22 +501,22 @@ t_Open9xArmMixData_v212::operator MixData ()
   return c9x;
 }
 
-t_Open9xArmCustomSwData_v208::operator CustomSwData ()
+t_Open9xArmLogicalSwitchData_v208::operator LogicalSwitchData ()
 {
-  CustomSwData c9x;
+  LogicalSwitchData c9x;
   c9x.func = func;
   c9x.val1 = v1;
   c9x.val2 = v2;
 
-  if ((c9x.func >= CS_FN_VPOS && c9x.func <= CS_FN_ANEG) || c9x.func >= CS_FN_EQUAL) {
+  if ((c9x.func >= LS_FN_VPOS && c9x.func <= LS_FN_ANEG) || c9x.func >= LS_FN_EQUAL) {
     c9x.val1 = open9xArm208ToSource(v1).toValue();
   }
 
-  if (c9x.func >= CS_FN_EQUAL) {
+  if (c9x.func >= LS_FN_EQUAL) {
     c9x.val2 = open9xArm208ToSource(v2).toValue();
   }
 
-  if (c9x.func >= CS_FN_AND && c9x.func <= CS_FN_XOR) {
+  if (c9x.func >= LS_FN_AND && c9x.func <= LS_FN_XOR) {
     c9x.val1 = open9xArmToSwitch(v1).toValue();
     c9x.val2 = open9xArmToSwitch(v2).toValue();
   }
@@ -524,22 +524,22 @@ t_Open9xArmCustomSwData_v208::operator CustomSwData ()
   return c9x;
 }
 
-t_Open9xArmCustomSwData_v209::operator CustomSwData ()
+t_Open9xArmLogicalSwitchData_v209::operator LogicalSwitchData ()
 {
-  CustomSwData c9x;
+  LogicalSwitchData c9x;
   c9x.func = func;
   c9x.val1 = v1;
   c9x.val2 = v2;
 
-  if ((c9x.func >= CS_FN_VPOS && c9x.func <= CS_FN_ANEG) || c9x.func >= CS_FN_EQUAL) {
+  if ((c9x.func >= LS_FN_VPOS && c9x.func <= LS_FN_ANEG) || c9x.func >= LS_FN_EQUAL) {
     c9x.val1 = open9xArm209ToSource(v1).toValue();
   }
 
-  if (c9x.func >= CS_FN_EQUAL) {
+  if (c9x.func >= LS_FN_EQUAL) {
     c9x.val2 = open9xArm209ToSource(v2).toValue();
   }
 
-  if (c9x.func >= CS_FN_AND && c9x.func <= CS_FN_XOR) {
+  if (c9x.func >= LS_FN_AND && c9x.func <= LS_FN_XOR) {
     c9x.val1 = open9xArmToSwitch(v1).toValue();
     c9x.val2 = open9xArmToSwitch(v2).toValue();
   }
@@ -547,24 +547,24 @@ t_Open9xArmCustomSwData_v209::operator CustomSwData ()
   return c9x;
 }
 
-t_Open9xArmCustomSwData_v210::operator CustomSwData ()
+t_Open9xArmLogicalSwitchData_v210::operator LogicalSwitchData ()
 {
-  CustomSwData c9x;
+  LogicalSwitchData c9x;
   c9x.func = func;
   c9x.val1 = v1;
   c9x.val2 = v2;
   c9x.delay = delay;
   c9x.duration = duration;
   
-  if ((c9x.func >= CS_FN_VPOS && c9x.func <= CS_FN_ANEG) || c9x.func >= CS_FN_EQUAL) {
+  if ((c9x.func >= LS_FN_VPOS && c9x.func <= LS_FN_ANEG) || c9x.func >= LS_FN_EQUAL) {
     c9x.val1 = open9xArm210ToSource(v1).toValue();
   }
 
-  if (c9x.func >= CS_FN_EQUAL && c9x.func <= CS_FN_ELESS) {
+  if (c9x.func >= LS_FN_EQUAL && c9x.func <= LS_FN_ELESS) {
     c9x.val2 = open9xArm210ToSource(v2).toValue();
   }
 
-  if (c9x.func >= CS_FN_AND && c9x.func <= CS_FN_XOR) {
+  if (c9x.func >= LS_FN_AND && c9x.func <= LS_FN_XOR) {
     c9x.val1 = open9xArmToSwitch(v1).toValue();
     c9x.val2 = open9xArmToSwitch(v2).toValue();
   }

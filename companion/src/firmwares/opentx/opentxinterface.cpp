@@ -526,7 +526,7 @@ int Open9xInterface::getCapability(const Capability capability)
         return 24;
       else
         return 16;
-    case CustomSwitches:
+    case LogicalSwitches:
       if (IS_ARM(board))
         return 32;
       else if (board==BOARD_GRUVIN9X||board==BOARD_M128)
@@ -535,10 +535,10 @@ int Open9xInterface::getCapability(const Capability capability)
         return 12;
     case CustomAndSwitches:
       if (IS_ARM(board))
-        return getCapability(CustomSwitches);
+        return getCapability(LogicalSwitches);
       else
         return 15/*4bits*/-9/*sw positions*/;
-    case CustomSwitchesExt:
+    case LogicalSwitchesExt:
       return (IS_ARM(board) ? true : false);
     case RotaryEncoders:
       if (board == BOARD_GRUVIN9X)

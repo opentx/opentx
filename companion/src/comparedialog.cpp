@@ -1039,7 +1039,7 @@ void compareDialog::printSwitches()
     QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
     str.append("<tr><td><h2>"+tr("Logical Switches")+"</h2></td></tr>");
     str.append("<tr><td><table border=1 cellspacing=0 cellpadding=1 width=\"100%\">");
-    for (int i=0; i<GetEepromInterface()->getCapability(CustomSwitches); i++) {
+    for (int i=0; i<GetEepromInterface()->getCapability(LogicalSwitches); i++) {
       QString sw1 = g_model1->customSw[i].toString(*g_model1);
       QString sw2 = g_model2->customSw[i].toString(*g_model2);
       if (!(sw1.isEmpty() && sw2.isEmpty())) {

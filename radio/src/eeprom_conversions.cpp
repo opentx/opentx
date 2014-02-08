@@ -168,7 +168,7 @@ PACK(typedef struct {
   int16_t   curves[16];
   int8_t    points[NUM_POINTS];
 
-  CustomSwData customSw[NUM_CSW];
+  LogicalSwitchData customSw[NUM_CSW];
   CustomFnData funcSw[NUM_CFN];
   SwashRingData swashR;
   PhaseData_v215 phaseData[MAX_PHASES];
@@ -379,13 +379,13 @@ void ConvertModel_215_to_216(ModelData &model)
   for (uint8_t i=0; i<32; i++) {
     g_model.customSw[i] = oldModel.customSw[i];
 #if defined(PCBTARANIS)
-    CustomSwData * cs = &g_model.customSw[i];
+    LogicalSwitchData * cs = &g_model.customSw[i];
     uint8_t cstate = cswFamily(cs->func);
-    if (cstate == CS_FAMILY_OFS || cstate == CS_FAMILY_COMP || cstate == CS_FAMILY_DIFF) {
+    if (cstate == LS_FAMILY_OFS || cstate == LS_FAMILY_COMP || cstate == LS_FAMILY_DIFF) {
       if (cs->v1 > 0) cs->v1 += MAX_INPUTS + MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS;
       if (cs->v1 > MIXSRC_GVAR1+4) cs->v1 += 4;
     }
-    if (cstate == CS_FAMILY_OFS || cstate == CS_FAMILY_DIFF) {
+    if (cstate == LS_FAMILY_OFS || cstate == LS_FAMILY_DIFF) {
       if (cs->v1 >= MIXSRC_FIRST_TELEM) {
         switch ((uint8_t)cs->v1) {
           case MIXSRC_FIRST_TELEM + TELEM_TM1-1:
@@ -429,7 +429,7 @@ void ConvertModel_215_to_216(ModelData &model)
         }
       }
     }
-    if (cstate == CS_FAMILY_COMP) {
+    if (cstate == LS_FAMILY_COMP) {
       if (cs->v2 > 0) cs->v2 += MAX_INPUTS + MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS;
       if (cs->v2 > MIXSRC_GVAR1+4) cs->v2 += 4;
     }

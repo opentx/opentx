@@ -642,7 +642,7 @@ void printDialog::printSwitches()
     str.append("<tr><td><h2>"+tr("Logical Switches")+"</h2></td></tr>");
     str.append("<tr><td><table border=0 cellspacing=0 cellpadding=3>");
 
-    for (int i=0; i<GetEepromInterface()->getCapability(CustomSwitches); i++) {
+    for (int i=0; i<GetEepromInterface()->getCapability(LogicalSwitches); i++) {
       if (g_model->customSw[i].func) {
         str.append("<tr>");
         if (i<9) {

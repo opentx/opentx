@@ -577,42 +577,42 @@ class MixData {
 };
 
 enum CSFunction {
-  CS_FN_OFF,
-  CS_FN_VPOS,
-  CS_FN_VNEG,
-  CS_FN_APOS,
-  CS_FN_ANEG,
-  CS_FN_AND,
-  CS_FN_OR,
-  CS_FN_XOR,
-  CS_FN_EQUAL,
-  CS_FN_NEQUAL,
-  CS_FN_GREATER,
-  CS_FN_LESS,
-  CS_FN_EGREATER,
-  CS_FN_ELESS,
-  CS_FN_DPOS,
-  CS_FN_DAPOS,
-  CS_FN_VEQUAL, // added at the end to avoid everything renumbered
-  CS_FN_TIMER,
-  CS_FN_STICKY,
-  CS_FN_STAY,
-  // later ... CS_FN_RANGE,
-  CS_FN_MAX
+  LS_FN_OFF,
+  LS_FN_VPOS,
+  LS_FN_VNEG,
+  LS_FN_APOS,
+  LS_FN_ANEG,
+  LS_FN_AND,
+  LS_FN_OR,
+  LS_FN_XOR,
+  LS_FN_EQUAL,
+  LS_FN_NEQUAL,
+  LS_FN_GREATER,
+  LS_FN_LESS,
+  LS_FN_EGREATER,
+  LS_FN_ELESS,
+  LS_FN_DPOS,
+  LS_FN_DAPOS,
+  LS_FN_VEQUAL, // added at the end to avoid everything renumbered
+  LS_FN_TIMER,
+  LS_FN_STICKY,
+  LS_FN_STAY,
+  // later ... LS_FN_RANGE,
+  LS_FN_MAX
 };
 
 enum CSFunctionFamily {
-  CS_FAMILY_VOFS,
-  CS_FAMILY_VBOOL,
-  CS_FAMILY_VCOMP,
-  CS_FAMILY_TIMER,
-  CS_FAMILY_STICKY,
-  CS_FAMILY_STAY,
+  LS_FAMILY_VOFS,
+  LS_FAMILY_VBOOL,
+  LS_FAMILY_VCOMP,
+  LS_FAMILY_TIMER,
+  LS_FAMILY_STICKY,
+  LS_FAMILY_STAY,
 };
 
-class CustomSwData { // Custom Switches data
+class LogicalSwitchData { // Custom Switches data
   public:
-    CustomSwData(unsigned int func=0)
+    LogicalSwitchData(unsigned int func=0)
     {
       clear();
       this->func = func;
@@ -624,7 +624,7 @@ class CustomSwData { // Custom Switches data
     unsigned int delay;
     unsigned int duration;
     int andsw;
-    void clear() { memset(this, 0, sizeof(CustomSwData)); }
+    void clear() { memset(this, 0, sizeof(LogicalSwitchData)); }
     CSFunctionFamily getFunctionFamily();
     QString funcToString();
     QString toString(const ModelData & model);
@@ -876,7 +876,7 @@ class ModelData {
     ExpoData  expoData[C9X_MAX_EXPOS];
 
     CurveData curves[C9X_MAX_CURVES];
-    CustomSwData  customSw[C9X_NUM_CSW];
+    LogicalSwitchData  customSw[C9X_NUM_CSW];
     FuncSwData    funcSw[C9X_MAX_CUSTOM_FUNCTIONS];
     SwashRingData swashRingData;
     unsigned int  thrTraceSrc;
@@ -942,10 +942,10 @@ enum Capability {
  Pots,
  Switches,
  SwitchesPositions,
- CustomSwitches,
+ LogicalSwitches,
  CustomAndSwitches,
  HasNegAndSwitches,
- CustomSwitchesExt,
+ LogicalSwitchesExt,
  RotaryEncoders,
  Outputs,
  ChannelsName,
@@ -1161,13 +1161,13 @@ inline void applyStickModeToModel(ModelData &model, unsigned int mode)
   for (int i=0; i<C9X_NUM_CSW; i++) {
     RawSource source;
     switch (model.customSw[i].getFunctionFamily()) {
-      case CS_FAMILY_VCOMP:
+      case LS_FAMILY_VCOMP:
         source = RawSource(model.customSw[i].val2);
         if (source.type == SOURCE_TYPE_STICK)
           source.index = applyStickMode(source.index + 1, mode) - 1;
         model.customSw[i].val2 = source.toValue();
         // no break
-      case CS_FAMILY_VOFS:
+      case LS_FAMILY_VOFS:
         source = RawSource(model.customSw[i].val1);
         if (source.type == SOURCE_TYPE_STICK)
           source.index = applyStickMode(source.index + 1, mode) - 1;

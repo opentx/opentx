@@ -75,11 +75,11 @@ inline void applyStickModeToModel(Er9xModelData & model, unsigned int mode)
   for (int i=0; i<ER9X_MAX_MIXERS; i++)
     model.mixData[i].srcRaw = applyStickMode(model.mixData[i].srcRaw, mode);
   for (int i=0; i<ER9X_NUM_CSW; i++) {
-    switch (CustomSwData(model.customSw[i].func).getFunctionFamily()) {
-      case CS_FAMILY_VCOMP:
+    switch (LogicalSwitchData(model.customSw[i].func).getFunctionFamily()) {
+      case LS_FAMILY_VCOMP:
         model.customSw[i].v2 = applyStickMode(model.customSw[i].v2, mode);
         // no break
-      case CS_FAMILY_VOFS:
+      case LS_FAMILY_VOFS:
         model.customSw[i].v1 = applyStickMode(model.customSw[i].v1, mode);
         break;
       default:
@@ -239,7 +239,7 @@ int Er9xInterface::getCapability(const Capability capability)
       return 9;
     case CustomFunctions:
       return 0;
-    case CustomSwitches:
+    case LogicalSwitches:
       return 12;
     case CustomAndSwitches:
         return 5;

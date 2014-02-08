@@ -186,14 +186,14 @@ PACK(typedef struct t_Gruvin9xMixData {
   t_Gruvin9xMixData();
 }) Gruvin9xMixData;
 
-PACK(typedef struct t_Gruvin9xCustomSwData { // Custom Switches data
+PACK(typedef struct t_Gruvin9xLogicalSwitchData { // Custom Switches data
   int8_t  v1; //input
   int8_t  v2; //offset
   uint8_t func;
 
-  operator CustomSwData();
-  t_Gruvin9xCustomSwData() { memset(this, 0, sizeof(t_Gruvin9xCustomSwData)); }
-}) Gruvin9xCustomSwData;
+  operator LogicalSwitchData();
+  t_Gruvin9xLogicalSwitchData() { memset(this, 0, sizeof(t_Gruvin9xLogicalSwitchData)); }
+}) Gruvin9xLogicalSwitchData;
 
 PACK(typedef struct t_Gruvin9xSafetySwData { // Safety Switches data
   int8_t  swtch;
@@ -309,7 +309,7 @@ PACK(typedef struct t_Gruvin9xModelData_v102 {
   Gruvin9xExpoData  expoData[G9X_MAX_EXPOS];
   int8_t    curves5[G9X_MAX_CURVE5][5];
   int8_t    curves9[G9X_MAX_CURVE9][9];
-  Gruvin9xCustomSwData  customSw[G9X_NUM_CSW];
+  Gruvin9xLogicalSwitchData  customSw[G9X_NUM_CSW];
   Gruvin9xSafetySwData  safetySw[G9X_NUM_CHNOUT];
   Gruvin9xSwashRingData swashR;
   Gruvin9xPhaseData_v102 phaseData[G9X_MAX_PHASES];
@@ -341,7 +341,7 @@ PACK(typedef struct t_Gruvin9xModelData_v103 {
   Gruvin9xExpoData  expoData[G9X_MAX_EXPOS];
   int8_t    curves5[G9X_MAX_CURVE5][5];
   int8_t    curves9[G9X_MAX_CURVE9][9];
-  Gruvin9xCustomSwData  customSw[G9X_NUM_CSW];
+  Gruvin9xLogicalSwitchData  customSw[G9X_NUM_CSW];
   Gruvin9xSafetySwData  safetySw[G9X_NUM_CHNOUT];
   Gruvin9xSwashRingData swashR;
   Gruvin9xPhaseData_v102 phaseData[G9X_MAX_PHASES];
@@ -373,7 +373,7 @@ PACK(typedef struct t_Gruvin9xModelData_v105 {
   Gruvin9xExpoData  expoData[G9X_MAX_EXPOS];
   int8_t    curves5[G9X_MAX_CURVE5][5];
   int8_t    curves9[G9X_MAX_CURVE9][9];
-  Gruvin9xCustomSwData  customSw[G9X_NUM_CSW];
+  Gruvin9xLogicalSwitchData  customSw[G9X_NUM_CSW];
   Gruvin9xSafetySwData  safetySw[G9X_NUM_CHNOUT];
   Gruvin9xFuncSwData    funcSw[G9X_NUM_FSW];
   Gruvin9xSwashRingData swashR;
@@ -405,7 +405,7 @@ PACK(typedef struct t_Gruvin9xModelData_v106 {
   Gruvin9xExpoData  expoData[G9X_MAX_EXPOS];
   int8_t    curves5[G9X_MAX_CURVE5][5];
   int8_t    curves9[G9X_MAX_CURVE9][9];
-  Gruvin9xCustomSwData  customSw[G9X_NUM_CSW];
+  Gruvin9xLogicalSwitchData  customSw[G9X_NUM_CSW];
   Gruvin9xSafetySwData  safetySw[G9X_NUM_CHNOUT];
   Gruvin9xFuncSwData    funcSw[G9X_NUM_FSW];
   Gruvin9xSwashRingData swashR;

@@ -138,18 +138,18 @@ PACK(typedef struct t_Th9xMixData {
   t_Th9xMixData();
 }) Th9xMixData;
 
-PACK(typedef struct t_Th9xCustomSwData {
+PACK(typedef struct t_Th9xLogicalSwitchData {
   uint8_t sw:3;    // 0..7
   uint8_t opCmp:2; // < & | ^
   uint8_t opRes:3; // 0 => 1=> 0=> !=> & | ^
   int8_t val1;
   int8_t val2;
 
-  operator CustomSwData();
-  t_Th9xCustomSwData() { memset(this, 0, sizeof(t_Th9xCustomSwData)); }
+  operator LogicalSwitchData();
+  t_Th9xLogicalSwitchData() { memset(this, 0, sizeof(t_Th9xLogicalSwitchData)); }
   int8_t fromSource(RawSource source);
   RawSource toSource(int8_t value);
-}) Th9xCustomSwData;
+}) Th9xLogicalSwitchData;
 
 PACK(typedef struct t_Th9xTrimData {
   int8_t  itrim:6; //trim index
@@ -173,7 +173,7 @@ PACK(typedef struct t_Th9xModelData {
   int8_t    curves3[TH9X_MAX_CURVES3][3];        // 9  new143
   int8_t    curves5[TH9X_MAX_CURVES5][5];        // 10
   int8_t    curves9[TH9X_MAX_CURVES9][9];        // 18
-  Th9xCustomSwData switchTab[TH9X_MAX_SWITCHES];//
+  Th9xLogicalSwitchData switchTab[TH9X_MAX_SWITCHES];//
   Th9xTrimData   trimData[NUM_STICKS];    // 3*4 -> 1*4
   operator ModelData();
   t_Th9xModelData();

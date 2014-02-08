@@ -190,9 +190,10 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
   var = checkIncDecModelZero(event,var,max)
 
 #if defined(CPUARM)
-  bool isFunctionAvailable(int16_t function);
+  bool isLogicalSwitchFunctionAvailable(int16_t function);
+  bool isAssignableFunctionAvailable(int16_t function);
   bool isSwitchAvailable(int16_t swtch);
-  bool isSwitchAvailableInCustomSwitches(int16_t swtch);
+  bool isSwitchAvailableInLogicalSwitches(int16_t swtch);
   #define AUTOSWITCH_ENTER_LONG() (attr && event==EVT_KEY_LONG(KEY_ENTER))
   #define CHECK_INCDEC_MODELSWITCH(event, var, min, max) \
     var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SWITCH|NO_INCDEC_MARKS, isSwitchAvailable)

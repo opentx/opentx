@@ -1219,8 +1219,8 @@ bool isSourceAvailable(int16_t source)
   }
 
   if (source>=MIXSRC_SW1 && source<=MIXSRC_LAST_CSW) {
-    CustomSwData * cs = cswAddress(source-MIXSRC_SW1);
-    return (cs->func != CS_OFF);
+    LogicalSwitchData * cs = cswAddress(source-MIXSRC_SW1);
+    return (cs->func != LS_FUNC_NONE);
   }
 
 #if !defined(GVARS)
@@ -1248,7 +1248,7 @@ bool isInputSourceAvailable(int16_t source)
   return false;
 }
 
-bool isSwitchAvailableInCustomSwitches(int16_t swtch)
+bool isSwitchAvailableInLogicalSwitches(int16_t swtch)
 {
   if (swtch < 0) {
     if (swtch <= -SWSRC_ON)
@@ -1279,22 +1279,35 @@ bool isSwitchAvailableInCustomSwitches(int16_t swtch)
 
 bool isSwitchAvailable(int16_t swtch)
 {
-  if (!isSwitchAvailableInCustomSwitches(swtch)) {
+  if (!isSwitchAvailableInLogicalSwitches(swtch)) {
     return false;
   }
 
   if (swtch >= SWSRC_FIRST_CSW && swtch <= SWSRC_LAST_CSW) {
-    CustomSwData * cs = cswAddress(swtch-SWSRC_FIRST_CSW);
-    return (cs->func != CS_OFF);
+    LogicalSwitchData * cs = cswAddress(swtch-SWSRC_FIRST_CSW);
+    return (cs->func != LS_FUNC_NONE);
   }
   
   return true;
 }
 
 // Not available yet, will be needed if we implement the Range function later...
-bool isFunctionAvailable(int16_t function)
+bool isLogicalSwitchFunctionAvailable(int16_t function)
 {
-  return function != CS_RANGE;
+  return function != LS_FUNC_RANGE;
 }
 
+bool isAssignableFunctionAvailable(int16_t function)
+{
+  switch (function) {
+
+#if !defined(HAPTIC)
+    case FUNC_HAPTIC:
+      return false;
+#endif
+
+    default:
+      return true;
+  }
+}
 #endif

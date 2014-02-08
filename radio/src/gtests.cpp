@@ -304,8 +304,8 @@ TEST(getSwitch, circularCSW)
 {
   MODEL_RESET();
   MIXER_RESET();
-  g_model.customSw[0] = { SWSRC_SW1, SWSRC_SW1, CS_OR };
-  g_model.customSw[1] = { SWSRC_SW1, SWSRC_SW1, CS_AND };
+  g_model.customSw[0] = { SWSRC_SW1, SWSRC_SW1, LS_FUNC_OR };
+  g_model.customSw[1] = { SWSRC_SW1, SWSRC_SW1, LS_FUNC_AND };
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
   EXPECT_EQ(getSwitch(-SWSRC_SW1), true);
   EXPECT_EQ(getSwitch(SWSRC_SW2), false);
@@ -324,8 +324,8 @@ TEST(getSwitch, recursiveSW)
   MODEL_RESET();
   MIXER_RESET();
 
-  g_model.customSw[0] = { SWSRC_RUD, -SWSRC_SW2, CS_OR };
-  g_model.customSw[1] = { SWSRC_ELE, -SWSRC_SW1, CS_OR };
+  g_model.customSw[0] = { SWSRC_RUD, -SWSRC_SW2, LS_FUNC_OR };
+  g_model.customSw[1] = { SWSRC_ELE, -SWSRC_SW1, LS_FUNC_OR };
 
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
   EXPECT_EQ(getSwitch(SWSRC_SW2), true);

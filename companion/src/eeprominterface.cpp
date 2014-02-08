@@ -335,71 +335,71 @@ QString CurveReference::toString()
   }
 }
 
-CSFunctionFamily CustomSwData::getFunctionFamily()
+CSFunctionFamily LogicalSwitchData::getFunctionFamily()
 {
-  if (func == CS_FN_STAY)
-    return CS_FAMILY_STAY;
-  else if (func == CS_FN_TIMER)
-    return CS_FAMILY_TIMER;
-  else if (func == CS_FN_STICKY)
-    return CS_FAMILY_STICKY;
-  else if (func < CS_FN_AND || func > CS_FN_ELESS)
-    return CS_FAMILY_VOFS;
-  else if (func < CS_FN_EQUAL)
-    return CS_FAMILY_VBOOL;
+  if (func == LS_FN_STAY)
+    return LS_FAMILY_STAY;
+  else if (func == LS_FN_TIMER)
+    return LS_FAMILY_TIMER;
+  else if (func == LS_FN_STICKY)
+    return LS_FAMILY_STICKY;
+  else if (func < LS_FN_AND || func > LS_FN_ELESS)
+    return LS_FAMILY_VOFS;
+  else if (func < LS_FN_EQUAL)
+    return LS_FAMILY_VBOOL;
   else
-    return CS_FAMILY_VCOMP;
+    return LS_FAMILY_VCOMP;
 }
 
-QString CustomSwData::funcToString()
+QString LogicalSwitchData::funcToString()
 {
   switch (func) {
-    case CS_FN_OFF:
+    case LS_FN_OFF:
       return QObject::tr("---");
-    case CS_FN_VPOS:
+    case LS_FN_VPOS:
       return QObject::tr("a>x");
-    case CS_FN_VNEG:
+    case LS_FN_VNEG:
       return QObject::tr("a<x");
-    case CS_FN_APOS:
+    case LS_FN_APOS:
       return QObject::tr("|a|>x");
-    case CS_FN_ANEG:
+    case LS_FN_ANEG:
       return QObject::tr("|a|<x");
-    case CS_FN_AND:
+    case LS_FN_AND:
       return QObject::tr("AND");
-    case CS_FN_OR:
+    case LS_FN_OR:
       return QObject::tr("OR");
-    case CS_FN_XOR:
+    case LS_FN_XOR:
       return QObject::tr("XOR");
-    case CS_FN_EQUAL:
+    case LS_FN_EQUAL:
       return QObject::tr("a=b");
-    case CS_FN_NEQUAL:
+    case LS_FN_NEQUAL:
       return QObject::tr("a!=b");
-    case CS_FN_GREATER:
+    case LS_FN_GREATER:
       return QObject::tr("a>b");
-    case CS_FN_LESS:
+    case LS_FN_LESS:
       return QObject::tr("a<b");
-    case CS_FN_EGREATER:
+    case LS_FN_EGREATER:
       return QObject::tr("a>=b");
-    case CS_FN_ELESS:
+    case LS_FN_ELESS:
       return QObject::tr("a<=b");
-    case CS_FN_DPOS:
+    case LS_FN_DPOS:
       return QObject::tr("d>=x");
-    case CS_FN_DAPOS:
+    case LS_FN_DAPOS:
       return QObject::tr("|d|>=x");
-    case CS_FN_VEQUAL:
+    case LS_FN_VEQUAL:
       return QObject::tr("a~x");
-    case CS_FN_TIMER:
+    case LS_FN_TIMER:
       return QObject::tr("Timer");
-    case CS_FN_STICKY:
+    case LS_FN_STICKY:
       return QObject::tr("Sticky");
-    case CS_FN_STAY:
+    case LS_FN_STAY:
       return QObject::tr("Stay");
     default:
       return QObject::tr("Unknown");
   }
 }
 
-QString CustomSwData::toString(const ModelData & model)
+QString LogicalSwitchData::toString(const ModelData & model)
 {
   QString result = "";
 
@@ -410,16 +410,16 @@ QString CustomSwData::toString(const ModelData & model)
     result +="( ";
   }
   switch (getFunctionFamily()) {
-    case CS_FAMILY_STAY:
+    case LS_FAMILY_STAY:
       result = QObject::tr("STAY(%1, [%2:%3])").arg(RawSwitch(val1).toString()).arg(ValToTim(val2)).arg(ValToTim(val2+val3));
       break;
-    case CS_FAMILY_STICKY:
+    case LS_FAMILY_STICKY:
       result = QObject::tr("STICKY(%1, %2)").arg(RawSwitch(val1).toString()).arg(RawSwitch(val2).toString());
       break;
-    case CS_FAMILY_TIMER:
+    case LS_FAMILY_TIMER:
       result = QObject::tr("TIMER(%1, %2)").arg(ValToTim(val1)).arg(ValToTim(val2));
       break;
-    case CS_FAMILY_VOFS: {
+    case LS_FAMILY_VOFS: {
       RawSource source = RawSource(val1, &model);
       RawSourceRange range = source.getRange();
       if (val1)
@@ -427,28 +427,28 @@ QString CustomSwData::toString(const ModelData & model)
       else
         result += "0";
       result.remove(" ");
-      if (func == CS_FN_APOS || func == CS_FN_ANEG)
+      if (func == LS_FN_APOS || func == LS_FN_ANEG)
         result = "|" + result + "|";
-      else if (func == CS_FN_DAPOS)
+      else if (func == LS_FN_DAPOS)
         result = "|d(" + result + ")|";
-      else if (func == CS_FN_DPOS) result = "d(" + result + ")";
-      if (func == CS_FN_APOS || func == CS_FN_VPOS || func == CS_FN_DAPOS || func == CS_FN_DPOS)
+      else if (func == LS_FN_DPOS) result = "d(" + result + ")";
+      if (func == LS_FN_APOS || func == LS_FN_VPOS || func == LS_FN_DAPOS || func == LS_FN_DPOS)
         result += " &gt; ";
-      else if (func == CS_FN_ANEG || func == CS_FN_VNEG)
+      else if (func == LS_FN_ANEG || func == LS_FN_VNEG)
         result += " &lt; ";
       result += QString::number(range.step * (val2 /*TODO+ source.getRawOffset(model)*/) + range.offset);
       break;
     }
-    case CS_FAMILY_VBOOL:
+    case LS_FAMILY_VBOOL:
       result = RawSwitch(val1).toString();
       switch (func) {
-        case CS_FN_AND:
+        case LS_FN_AND:
           result += " AND ";
           break;
-        case CS_FN_OR:
+        case LS_FN_OR:
           result += " OR ";
           break;
-        case CS_FN_XOR:
+        case LS_FN_XOR:
           result += " XOR ";
           break;
         default:
@@ -457,28 +457,28 @@ QString CustomSwData::toString(const ModelData & model)
       result += RawSwitch(val2).toString();
       break;
 
-    case CS_FAMILY_VCOMP:
+    case LS_FAMILY_VCOMP:
       if (val1)
         result += RawSource(val1).toString();
       else
         result += "0";
       switch (func) {
-        case CS_FN_EQUAL:
+        case LS_FN_EQUAL:
           result += " = ";
           break;
-        case CS_FN_NEQUAL:
+        case LS_FN_NEQUAL:
           result += " != ";
           break;
-        case CS_FN_GREATER:
+        case LS_FN_GREATER:
           result += " &gt; ";
           break;
-        case CS_FN_LESS:
+        case LS_FN_LESS:
           result += " &lt; ";
           break;
-        case CS_FN_EGREATER:
+        case LS_FN_EGREATER:
           result += " &gt;= ";
           break;
-        case CS_FN_ELESS:
+        case LS_FN_ELESS:
           result += " &lt;= ";
           break;
         default:
@@ -496,7 +496,7 @@ QString CustomSwData::toString(const ModelData & model)
     result += RawSwitch(andsw).toString();
   }
 
-  if (GetEepromInterface()->getCapability(CustomSwitchesExt)) {
+  if (GetEepromInterface()->getCapability(LogicalSwitchesExt)) {
     if (delay)
       result += QObject::tr(" Delay %1 sec").arg(delay/2.0);
     if (duration)

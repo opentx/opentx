@@ -1045,39 +1045,39 @@ class CurvesField: public TransformedField {
     int _points[C9X_MAX_CURVES*C9X_MAX_POINTS*2];
 };
 
-class CustomSwitchesFunctionsTable: public ConversionTable {
+class LogicalSwitchesFunctionsTable: public ConversionTable {
 
   public:
-    CustomSwitchesFunctionsTable(BoardEnum board, unsigned int version)
+    LogicalSwitchesFunctionsTable(BoardEnum board, unsigned int version)
     {
       int val=0;
       bool release21March2013 = IS_RELEASE_21_MARCH_2013(board, version);
-      addConversion(CS_FN_OFF, val++);
+      addConversion(LS_FN_OFF, val++);
       if (release21March2013)
-        addConversion(CS_FN_VEQUAL, val++);
-      addConversion(CS_FN_VPOS, val++);
-      addConversion(CS_FN_VNEG, val++);
+        addConversion(LS_FN_VEQUAL, val++);
+      addConversion(LS_FN_VPOS, val++);
+      addConversion(LS_FN_VNEG, val++);
       if (IS_ARM(board) && version >= 216) val++; // later RANGE
-      addConversion(CS_FN_APOS, val++);
-      addConversion(CS_FN_ANEG, val++);
-      addConversion(CS_FN_AND, val++);
-      addConversion(CS_FN_OR, val++);
-      addConversion(CS_FN_XOR, val++);
-      if (IS_ARM(board) && version >= 216) addConversion(CS_FN_STAY, val++);
-      addConversion(CS_FN_EQUAL, val++);
+      addConversion(LS_FN_APOS, val++);
+      addConversion(LS_FN_ANEG, val++);
+      addConversion(LS_FN_AND, val++);
+      addConversion(LS_FN_OR, val++);
+      addConversion(LS_FN_XOR, val++);
+      if (IS_ARM(board) && version >= 216) addConversion(LS_FN_STAY, val++);
+      addConversion(LS_FN_EQUAL, val++);
       if (!release21March2013)
-        addConversion(CS_FN_NEQUAL, val++);
-      addConversion(CS_FN_GREATER, val++);
-      addConversion(CS_FN_LESS, val++);
+        addConversion(LS_FN_NEQUAL, val++);
+      addConversion(LS_FN_GREATER, val++);
+      addConversion(LS_FN_LESS, val++);
       if (!release21March2013) {
-        addConversion(CS_FN_EGREATER, val++);
-        addConversion(CS_FN_ELESS, val++);
+        addConversion(LS_FN_EGREATER, val++);
+        addConversion(LS_FN_ELESS, val++);
       }
-      addConversion(CS_FN_DPOS, val++);
-      addConversion(CS_FN_DAPOS, val++);
-      addConversion(CS_FN_TIMER, val++);
+      addConversion(LS_FN_DPOS, val++);
+      addConversion(LS_FN_DAPOS, val++);
+      addConversion(LS_FN_TIMER, val++);
       if (version >= 216)
-        addConversion(CS_FN_STICKY, val++);
+        addConversion(LS_FN_STICKY, val++);
     }
 };
 
@@ -1153,11 +1153,11 @@ class AndSwitchesConversionTable: public ConversionTable {
     }
 };
 
-class CustomSwitchField: public TransformedField {
+class LogicalSwitchField: public TransformedField {
   public:
-    CustomSwitchField(CustomSwData & csw, BoardEnum board, unsigned int version, unsigned int variant):
+    LogicalSwitchField(LogicalSwitchData & csw, BoardEnum board, unsigned int version, unsigned int variant):
       TransformedField(internalField),
-      internalField("CustomSwitch"),
+      internalField("LogicalSwitch"),
       csw(csw),
       board(board),
       version(version),
@@ -1202,21 +1202,21 @@ class CustomSwitchField: public TransformedField {
 
     virtual void beforeExport()
     {
-      if (csw.func == CS_FN_STAY) {
+      if (csw.func == LS_FN_STAY) {
         switchesConversionTable->exportValue(csw.val1, v1);
         v2 = csw.val2;
         v3 = csw.val3;
       }
-      else if ((csw.func >= CS_FN_AND && csw.func <= CS_FN_XOR) || csw.func == CS_FN_STICKY) {
+      else if ((csw.func >= LS_FN_AND && csw.func <= LS_FN_XOR) || csw.func == LS_FN_STICKY) {
         switchesConversionTable->exportValue(csw.val1, v1);
         switchesConversionTable->exportValue(csw.val2, v2);
       }
-      else if (csw.func >= CS_FN_EQUAL && csw.func <= CS_FN_ELESS) {
+      else if (csw.func >= LS_FN_EQUAL && csw.func <= LS_FN_ELESS) {
         sourcesConversionTable->exportValue(csw.val1, v1);
         sourcesConversionTable->exportValue(csw.val2, v2);
       }
       else {
-        if ((csw.func >= CS_FN_VPOS && csw.func <= CS_FN_ANEG) || (csw.func >= CS_FN_EQUAL && csw.func!=CS_FN_TIMER))
+        if ((csw.func >= LS_FN_VPOS && csw.func <= LS_FN_ANEG) || (csw.func >= LS_FN_EQUAL && csw.func!=LS_FN_TIMER))
           sourcesConversionTable->exportValue(csw.val1, v1);
         else
           v1 = csw.val1;
@@ -1226,21 +1226,21 @@ class CustomSwitchField: public TransformedField {
 
     virtual void afterImport()
     {
-      if (csw.func == CS_FN_STAY) {
+      if (csw.func == LS_FN_STAY) {
         switchesConversionTable->importValue(v1, csw.val1);
         csw.val2 = v2;
         csw.val3 = v3;
       }
-      else if ((csw.func >= CS_FN_AND && csw.func <= CS_FN_XOR) || csw.func == CS_FN_STICKY) {
+      else if ((csw.func >= LS_FN_AND && csw.func <= LS_FN_XOR) || csw.func == LS_FN_STICKY) {
         switchesConversionTable->importValue(v1, csw.val1);
         switchesConversionTable->importValue(v2, csw.val2);
       }
-      else if (csw.func >= CS_FN_EQUAL && csw.func <= CS_FN_ELESS) {
+      else if (csw.func >= LS_FN_EQUAL && csw.func <= LS_FN_ELESS) {
         sourcesConversionTable->importValue(v1, csw.val1);
         sourcesConversionTable->importValue(v2, csw.val2);
       }
       else {
-        if ((csw.func >= CS_FN_VPOS && csw.func <= CS_FN_ANEG) || (csw.func >= CS_FN_EQUAL && csw.func!=CS_FN_TIMER))
+        if ((csw.func >= LS_FN_VPOS && csw.func <= LS_FN_ANEG) || (csw.func >= LS_FN_EQUAL && csw.func!=LS_FN_TIMER))
           sourcesConversionTable->importValue(v1, csw.val1);
         else
           csw.val1 = v1;
@@ -1250,11 +1250,11 @@ class CustomSwitchField: public TransformedField {
 
   protected:
     StructField internalField;
-    CustomSwData & csw;
+    LogicalSwitchData & csw;
     BoardEnum board;
     unsigned int version;
     unsigned int variant;
-    CustomSwitchesFunctionsTable functionsConversionTable;
+    LogicalSwitchesFunctionsTable functionsConversionTable;
     SourcesConversionTable * sourcesConversionTable;
     SwitchesConversionTable * switchesConversionTable;
     ConversionTable * andswitchesConversionTable;
@@ -2087,7 +2087,7 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
     internalField.Append(new ExpoField(modelData.expoData[i], board, version));
   internalField.Append(new CurvesField(modelData.curves, board, version));
   for (int i=0; i<MAX_CUSTOM_SWITCHES(board, version); i++)
-    internalField.Append(new CustomSwitchField(modelData.customSw[i], board, version, variant));
+    internalField.Append(new LogicalSwitchField(modelData.customSw[i], board, version, variant));
   for (int i=0; i<MAX_CUSTOM_FUNCTIONS(board, version); i++) {
     if (IS_ARM(board))
       internalField.Append(new ArmCustomFunctionField(modelData.funcSw[i], board, version, variant));

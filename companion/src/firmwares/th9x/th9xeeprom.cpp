@@ -169,22 +169,22 @@ t_Th9xMixData::operator MixData ()
   return c9x;
 }
 
-t_Th9xCustomSwData::operator CustomSwData ()
+t_Th9xLogicalSwitchData::operator LogicalSwitchData ()
 {
-  CustomSwData c9x;
+  LogicalSwitchData c9x;
   c9x.func = opCmp;
   c9x.val1 = val1;
   c9x.val2 = val2;
 
-  if ((c9x.func >= CS_FN_VPOS && c9x.func <= CS_FN_ANEG) || c9x.func >= CS_FN_EQUAL) {
+  if ((c9x.func >= LS_FN_VPOS && c9x.func <= LS_FN_ANEG) || c9x.func >= LS_FN_EQUAL) {
     c9x.val1 = toSource(val1).toValue();
   }
 
-  if (c9x.func >= CS_FN_EQUAL) {
+  if (c9x.func >= LS_FN_EQUAL) {
     c9x.val2 = toSource(val2).toValue();
   }
 
-  if (c9x.func >= CS_FN_AND && c9x.func <= CS_FN_XOR) {
+  if (c9x.func >= LS_FN_AND && c9x.func <= LS_FN_XOR) {
     c9x.val1 = th9xToSwitch(val1).toValue();
     c9x.val2 = th9xToSwitch(val2).toValue();
   }
@@ -192,7 +192,7 @@ t_Th9xCustomSwData::operator CustomSwData ()
   return c9x;
 }
 
-int8_t t_Th9xCustomSwData::fromSource(RawSource source)
+int8_t t_Th9xLogicalSwitchData::fromSource(RawSource source)
 {
   int v1 = 0;
   if (source.type == SOURCE_TYPE_STICK)
@@ -216,7 +216,7 @@ int8_t t_Th9xCustomSwData::fromSource(RawSource source)
   return v1;
 }
 
-RawSource t_Th9xCustomSwData::toSource(int8_t value)
+RawSource t_Th9xLogicalSwitchData::toSource(int8_t value)
 {
   if (value == 0) {
     return RawSource(SOURCE_TYPE_NONE);

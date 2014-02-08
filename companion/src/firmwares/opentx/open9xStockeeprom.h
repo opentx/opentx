@@ -221,24 +221,24 @@ PACK(typedef struct t_Open9xMixData_v211 {
   t_Open9xMixData_v211() { memset(this, 0, sizeof(t_Open9xMixData_v211)); }
 }) Open9xMixData_v211;
 
-PACK(typedef struct t_Open9xCustomSwData_v208 { // Custom Switches data
+PACK(typedef struct t_Open9xLogicalSwitchData_v208 { // Custom Switches data
   int8_t  v1; //input
   int8_t  v2; //offset
   uint8_t func;
 
-  operator CustomSwData();
-  t_Open9xCustomSwData_v208() { memset(this, 0, sizeof(t_Open9xCustomSwData_v208)); }
-  t_Open9xCustomSwData_v208(CustomSwData&);
-}) Open9xCustomSwData_v208;
+  operator LogicalSwitchData();
+  t_Open9xLogicalSwitchData_v208() { memset(this, 0, sizeof(t_Open9xLogicalSwitchData_v208)); }
+  t_Open9xLogicalSwitchData_v208(LogicalSwitchData&);
+}) Open9xLogicalSwitchData_v208;
 
-PACK(typedef struct t_Open9xCustomSwData_v209 { // Custom Switches data
+PACK(typedef struct t_Open9xLogicalSwitchData_v209 { // Custom Switches data
   int8_t  v1; //input
   int8_t  v2; //offset
   uint8_t func;
 
-  operator CustomSwData();
-  t_Open9xCustomSwData_v209() { memset(this, 0, sizeof(t_Open9xCustomSwData_v209)); }
-}) Open9xCustomSwData_v209;
+  operator LogicalSwitchData();
+  t_Open9xLogicalSwitchData_v209() { memset(this, 0, sizeof(t_Open9xLogicalSwitchData_v209)); }
+}) Open9xLogicalSwitchData_v209;
 
 PACK(typedef struct t_Open9xSafetySwData { // Safety Switches data
   int8_t  swtch;
@@ -516,7 +516,7 @@ PACK(typedef struct t_Open9xModelData_v201 {
   Open9xExpoData_v201  expoData[O9X_MAX_EXPOS];
   int8_t    curves5[O9X_209_MAX_CURVE5][5];
   int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xCustomSwData_v208  customSw[O9X_NUM_CSW];
+  Open9xLogicalSwitchData_v208  customSw[O9X_NUM_CSW];
   Open9xSafetySwData  safetySw[O9X_NUM_CHNOUT];
   Open9xFuncSwData_v201 funcSw[12];
   Open9xSwashRingData_v208 swashR;
@@ -547,7 +547,7 @@ PACK(typedef struct t_Open9xModelData_v202 {
   Open9xExpoData_v201  expoData[O9X_MAX_EXPOS];
   int8_t    curves5[O9X_209_MAX_CURVE5][5];
   int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xCustomSwData_v208  customSw[O9X_NUM_CSW];
+  Open9xLogicalSwitchData_v208  customSw[O9X_NUM_CSW];
   Open9xSafetySwData  safetySw[O9X_NUM_CHNOUT];
   Open9xFuncSwData_v201 funcSw[12];
   Open9xSwashRingData_v208 swashR;
@@ -581,7 +581,7 @@ PACK(typedef struct t_Open9xModelData_v203 {
   Open9xExpoData_v201  expoData[O9X_MAX_EXPOS];
   int8_t    curves5[O9X_209_MAX_CURVE5][5];
   int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xCustomSwData_v208 customSw[O9X_NUM_CSW];
+  Open9xLogicalSwitchData_v208 customSw[O9X_NUM_CSW];
   Open9xFuncSwData_v203 funcSw[O9X_NUM_FSW];
   Open9xSwashRingData_v208 swashR;
   Open9xPhaseData_v201 phaseData[O9X_MAX_PHASES];
@@ -614,7 +614,7 @@ PACK(typedef struct t_Open9xModelData_v204 {
   Open9xExpoData_v201  expoData[O9X_MAX_EXPOS];
   int8_t    curves5[O9X_209_MAX_CURVE5][5];
   int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xCustomSwData_v208  customSw[O9X_NUM_CSW];
+  Open9xLogicalSwitchData_v208  customSw[O9X_NUM_CSW];
   Open9xFuncSwData_v203 funcSw[O9X_NUM_FSW];
   Open9xSwashRingData_v208 swashR;
   Open9xPhaseData_v201 phaseData[O9X_MAX_PHASES];
@@ -647,7 +647,7 @@ PACK(typedef struct t_Open9xModelData_v205 {
   Open9xExpoData_v201  expoData[O9X_MAX_EXPOS];
   int8_t    curves5[O9X_209_MAX_CURVE5][5];
   int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xCustomSwData_v208  customSw[O9X_NUM_CSW];
+  Open9xLogicalSwitchData_v208  customSw[O9X_NUM_CSW];
   Open9xFuncSwData_v203 funcSw[O9X_NUM_FSW];
   Open9xSwashRingData_v208 swashR;
   Open9xPhaseData_v201 phaseData[O9X_MAX_PHASES];
@@ -682,7 +682,7 @@ PACK(typedef struct t_Open9xModelData_v208 {
   Open9xExpoData_v201  expoData[O9X_MAX_EXPOS];
   int8_t    curves5[O9X_209_MAX_CURVE5][5];
   int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xCustomSwData_v208  customSw[O9X_NUM_CSW];
+  Open9xLogicalSwitchData_v208  customSw[O9X_NUM_CSW];
   Open9xFuncSwData_v203 funcSw[O9X_NUM_FSW];
   Open9xSwashRingData_v208 swashR;
   Open9xPhaseData_v201 phaseData[O9X_MAX_PHASES];
@@ -721,7 +721,7 @@ PACK(typedef struct t_Open9xModelData_v209 {
   Open9xExpoData_v201  expoData[O9X_MAX_EXPOS];
   int8_t    curves5[O9X_209_MAX_CURVE5][5];
   int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xCustomSwData_v209  customSw[O9X_NUM_CSW];
+  Open9xLogicalSwitchData_v209  customSw[O9X_NUM_CSW];
   Open9xFuncSwData_v203 funcSw[O9X_NUM_FSW];
   Open9xSwashRingData_v209 swashR;
   Open9xPhaseData_v201 phaseData[O9X_MAX_PHASES];
@@ -761,7 +761,7 @@ PACK(typedef struct t_Open9xModelData_v210 {
   Open9xExpoData_v201  expoData[O9X_MAX_EXPOS];
   int8_t    curves[O9X_MAX_CURVES];
   int8_t    points[O9X_NUM_POINTS];
-  Open9xCustomSwData_v209  customSw[O9X_NUM_CSW];
+  Open9xLogicalSwitchData_v209  customSw[O9X_NUM_CSW];
   Open9xFuncSwData_v210 funcSw[O9X_NUM_FSW];
   Open9xSwashRingData_v209 swashR;
   Open9xPhaseData_v201 phaseData[O9X_MAX_PHASES];
@@ -799,7 +799,7 @@ PACK(typedef struct t_Open9xModelData_v211 {
   Open9xExpoData_v211  expoData[O9X_MAX_EXPOS];
   int8_t    curves[O9X_MAX_CURVES];
   int8_t    points[O9X_NUM_POINTS];
-  Open9xCustomSwData_v209  customSw[O9X_NUM_CSW];
+  Open9xLogicalSwitchData_v209  customSw[O9X_NUM_CSW];
   Open9xFuncSwData_v210 funcSw[O9X_NUM_FSW];
   Open9xSwashRingData_v209 swashR;
   Open9xPhaseData_v201 phaseData[O9X_MAX_PHASES];

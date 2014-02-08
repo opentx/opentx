@@ -185,25 +185,25 @@ PACK(typedef struct t_Ersky9xMixData_v11 {
   t_Ersky9xMixData_v11();
 }) Ersky9xMixData_v11;
 
-PACK(typedef struct t_Ersky9xCustomSwData_v10 { // Custom Switches data
+PACK(typedef struct t_Ersky9xLogicalSwitchData_v10 { // Custom Switches data
   int8_t  v1; //input
   int8_t  v2; //offset
   uint8_t func;
 
-  operator CustomSwData();
-  t_Ersky9xCustomSwData_v10() { memset(this, 0, sizeof(t_Ersky9xCustomSwData_v10)); }
-}) Ersky9xCustomSwData_v10;
+  operator LogicalSwitchData();
+  t_Ersky9xLogicalSwitchData_v10() { memset(this, 0, sizeof(t_Ersky9xLogicalSwitchData_v10)); }
+}) Ersky9xLogicalSwitchData_v10;
 
-PACK(typedef struct t_Ersky9xCustomSwData_v11 { // Custom Switches data
+PACK(typedef struct t_Ersky9xLogicalSwitchData_v11 { // Custom Switches data
   int8_t  v1; //input
   int8_t  v2; 		//offset
   uint8_t func;
   uint8_t andsw;
   uint8_t res ;
 
-  operator CustomSwData();
-  t_Ersky9xCustomSwData_v11() { memset(this, 0, sizeof(t_Ersky9xCustomSwData_v11)); }
-}) Ersky9xCustomSwData_v11;
+  operator LogicalSwitchData();
+  t_Ersky9xLogicalSwitchData_v11() { memset(this, 0, sizeof(t_Ersky9xLogicalSwitchData_v11)); }
+}) Ersky9xLogicalSwitchData_v11;
 
 PACK(typedef struct t_Ersky9xSafetySwData_v10 { // Custom Switches data
   int8_t  swtch;
@@ -360,7 +360,7 @@ PACK(typedef struct t_Ersky9xModelData_v10 {
   int8_t    trim[4];
   int8_t    curves5[ERSKY9X_MAX_CURVE5][5];
   int8_t    curves9[ERSKY9X_MAX_CURVE9][9];
-  Ersky9xCustomSwData_v10   customSw[ERSKY9X_NUM_CSW_V10];
+  Ersky9xLogicalSwitchData_v10   customSw[ERSKY9X_NUM_CSW_V10];
   uint8_t   frSkyVoltThreshold ;
   uint8_t   res3[2];
   Ersky9xSafetySwData_v10  safetySw[ERSKY9X_NUM_CHNOUT_V10];
@@ -409,7 +409,7 @@ PACK(typedef struct t_Ersky9xModelData_v11 {
   int8_t    curves5[ERSKY9X_MAX_CURVE5][5];
   int8_t    curves9[ERSKY9X_MAX_CURVE9][9];
   int8_t    curvexy[18];
-  Ersky9xCustomSwData_v11   customSw[ERSKY9X_NUM_CSW_V11];
+  Ersky9xLogicalSwitchData_v11   customSw[ERSKY9X_NUM_CSW_V11];
   uint8_t   frSkyVoltThreshold ;
   uint8_t   bt_telemetry;
   uint8_t   numVoice;		// 0-16, rest are Safety switches

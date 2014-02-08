@@ -407,7 +407,7 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr)
     if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
-  for (int i=-GetEepromInterface()->getCapability(CustomSwitches); i<0; i++) {
+  for (int i=-GetEepromInterface()->getCapability(LogicalSwitches); i<0; i++) {
     item = RawSwitch(SWITCH_TYPE_VIRTUAL, i);
     b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);
@@ -474,7 +474,7 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr)
     if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
-  for (int i=1; i<=GetEepromInterface()->getCapability(CustomSwitches); i++) {
+  for (int i=1; i<=GetEepromInterface()->getCapability(LogicalSwitches); i++) {
     item = RawSwitch(SWITCH_TYPE_VIRTUAL, i);
     b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);
@@ -582,7 +582,7 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData & 
       if (item == source) b->setCurrentIndex(b->count()-1);
     }
 
-    for (int i=0; i<GetEepromInterface()->getCapability(CustomSwitches); i++) {
+    for (int i=0; i<GetEepromInterface()->getCapability(LogicalSwitches); i++) {
       item = RawSource(SOURCE_TYPE_CUSTOM_SWITCH, i);
       b->addItem(item.toString(), item.toValue());
       if (item == source) b->setCurrentIndex(b->count()-1);
@@ -656,33 +656,33 @@ int TimToVal(float value)
 void populateCSWCB(QComboBox *b, int value)
 {
   int order[] = {
-    CS_FN_OFF,
-    CS_FN_VEQUAL, // added at the end to avoid everything renumbered
-    CS_FN_VPOS,
-    CS_FN_VNEG,
-    // CS_FN_RANGE,
-    CS_FN_APOS,
-    CS_FN_ANEG,
-    CS_FN_AND,
-    CS_FN_OR,
-    CS_FN_XOR,
-    CS_FN_STAY,
-    CS_FN_EQUAL,
-    CS_FN_NEQUAL,
-    CS_FN_GREATER,
-    CS_FN_LESS,
-    CS_FN_EGREATER,
-    CS_FN_ELESS,
-    CS_FN_DPOS,
-    CS_FN_DAPOS,
-    CS_FN_TIMER,
-    CS_FN_STICKY
+    LS_FN_OFF,
+    LS_FN_VEQUAL, // added at the end to avoid everything renumbered
+    LS_FN_VPOS,
+    LS_FN_VNEG,
+    // LS_FN_RANGE,
+    LS_FN_APOS,
+    LS_FN_ANEG,
+    LS_FN_AND,
+    LS_FN_OR,
+    LS_FN_XOR,
+    LS_FN_STAY,
+    LS_FN_EQUAL,
+    LS_FN_NEQUAL,
+    LS_FN_GREATER,
+    LS_FN_LESS,
+    LS_FN_EGREATER,
+    LS_FN_ELESS,
+    LS_FN_DPOS,
+    LS_FN_DAPOS,
+    LS_FN_TIMER,
+    LS_FN_STICKY
   };
 
   b->clear();
-  for (int i=0; i<CS_FN_MAX; i++) {
+  for (int i=0; i<LS_FN_MAX; i++) {
     int func = order[i];
-    b->addItem(CustomSwData(func).funcToString(), func);
+    b->addItem(LogicalSwitchData(func).funcToString(), func);
 //    if (i>GetEepromInterface()->getCapability(CSFunc)) {
 //      QModelIndex index = b->model()->index(i, 0);
 //      QVariant v(0);

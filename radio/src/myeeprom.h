@@ -668,39 +668,39 @@ PACK( union u_int8int16_t {
 
 #endif
 
-enum CswFunctions {
-  CS_OFF,
-  CS_VEQUAL, // v==offset
-  CS_VPOS,   // v>offset
-  CS_VNEG,   // v<offset
+enum LogicalSwitchesFunctions {
+  LS_FUNC_NONE,
+  LS_FUNC_VEQUAL, // v==offset
+  LS_FUNC_VPOS,   // v>offset
+  LS_FUNC_VNEG,   // v<offset
 #if defined(CPUARM)
-  CS_RANGE,
+  LS_FUNC_RANGE,
 #endif
-  CS_APOS,   // |v|>offset
-  CS_ANEG,   // |v|<offset
-  CS_AND,
-  CS_OR,
-  CS_XOR,
+  LS_FUNC_APOS,   // |v|>offset
+  LS_FUNC_ANEG,   // |v|<offset
+  LS_FUNC_AND,
+  LS_FUNC_OR,
+  LS_FUNC_XOR,
 #if defined(CPUARM)
-  CS_STAY,
+  LS_FUNC_STAY,
 #endif
-  CS_EQUAL,
-  CS_GREATER,
-  CS_LESS,
-  CS_DIFFEGREATER,
-  CS_ADIFFEGREATER,
-  CS_TIMER,
-  CS_STICKY,
-  CS_COUNT,
-  CS_MAXF = CS_COUNT-1
+  LS_FUNC_EQUAL,
+  LS_FUNC_GREATER,
+  LS_FUNC_LESS,
+  LS_FUNC_DIFFEGREATER,
+  LS_FUNC_ADIFFEGREATER,
+  LS_FUNC_TIMER,
+  LS_FUNC_STICKY,
+  LS_FUNC_COUNT,
+  LS_FUNC_MAX = LS_FUNC_COUNT-1
 };
 
 #if defined(CPUARM)
-#define MAX_CSW_DURATION 120 /*60s*/
-#define MAX_CSW_DELAY    120 /*60s*/
-#define MAX_CSW_ANDSW    SWSRC_LAST
-typedef int16_t csw_telemetry_value_t;
-PACK(typedef struct t_CustomSwData { // Custom Switches data
+#define MAX_LS_DURATION 120 /*60s*/
+#define MAX_LS_DELAY    120 /*60s*/
+#define MAX_LS_ANDSW    SWSRC_LAST
+typedef int16_t ls_telemetry_value_t;
+PACK(typedef struct t_LogicalSwitchData { // Custom Switches data
   int8_t  v1;
   int16_t v2;
   int16_t v3;
@@ -708,16 +708,16 @@ PACK(typedef struct t_CustomSwData { // Custom Switches data
   uint8_t delay;
   uint8_t duration;
   int8_t  andsw;
-}) CustomSwData;
+}) LogicalSwitchData;
 #else
-typedef uint8_t csw_telemetry_value_t;
-#define MAX_CSW_ANDSW    15
-PACK(typedef struct t_CustomSwData { // Custom Switches data
+typedef uint8_t ls_telemetry_value_t;
+#define MAX_LS_ANDSW    15
+PACK(typedef struct t_LogicalSwitchData { // Custom Switches data
   int8_t  v1; //input
   int8_t  v2; //offset
   uint8_t func:4;
   uint8_t andsw:4;
-}) CustomSwData;
+}) LogicalSwitchData;
 #endif
 
 enum Functions {
@@ -1536,7 +1536,7 @@ PACK(typedef struct t_ModelData {
   CURVDATA  curves[MAX_CURVES];
   int8_t    points[NUM_POINTS];
   
-  CustomSwData customSw[NUM_CSW];
+  LogicalSwitchData customSw[NUM_CSW];
   CustomFnData funcSw[NUM_CFN];
   SwashRingData swashR;
   PhaseData phaseData[MAX_PHASES];

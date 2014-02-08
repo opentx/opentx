@@ -441,27 +441,27 @@ CurveInfo curveInfo(uint8_t idx)
 }
 #endif
 
-CustomSwData *cswAddress(uint8_t idx)
+LogicalSwitchData *cswAddress(uint8_t idx)
 {
   return &g_model.customSw[idx];
 }
 
 uint8_t cswFamily(uint8_t func)
 {
-  if (func <= CS_ANEG)
-    return CS_FAMILY_OFS;
-  else if (func <= CS_XOR)
-    return CS_FAMILY_BOOL;
+  if (func <= LS_FUNC_ANEG)
+    return LS_FAMILY_OFS;
+  else if (func <= LS_FUNC_XOR)
+    return LS_FAMILY_BOOL;
 #if defined(CPUARM)
-  else if (func == CS_STAY)
-    return CS_FAMILY_STAY;
+  else if (func == LS_FUNC_STAY)
+    return LS_FAMILY_STAY;
 #endif
-  else if (func <= CS_LESS)
-    return CS_FAMILY_COMP;
-  else if (func <= CS_ADIFFEGREATER)
-    return CS_FAMILY_DIFF;
+  else if (func <= LS_FUNC_LESS)
+    return LS_FAMILY_COMP;
+  else if (func <= LS_FUNC_ADIFFEGREATER)
+    return LS_FAMILY_DIFF;
   else
-    return CS_FAMILY_TIMER+func-CS_TIMER;
+    return LS_FAMILY_TIMER+func-LS_FUNC_TIMER;
 }
 
 int16_t cswTimerValue(delayval_t val)
@@ -1423,7 +1423,7 @@ bool getSwitch(int8_t swtch)
     else {
       s_last_switch_used |= mask;
 
-      CustomSwData * cs = cswAddress(cs_idx);
+      LogicalSwitchData * cs = cswAddress(cs_idx);
 #if defined(CPUARM)
       int8_t s = cs->andsw;
 #else
@@ -1432,48 +1432,48 @@ bool getSwitch(int8_t swtch)
         s += SWSRC_SW1-SWSRC_LAST_SWITCH-1;
       }
 #endif
-      if (cs->func == CS_OFF || (s && !getSwitch(s))) {
+      if (cs->func == LS_FUNC_NONE || (s && !getSwitch(s))) {
         csLastValue[cs_idx] = CS_LAST_VALUE_INIT;
         result = false;
       }
-      else if ((s=cswFamily(cs->func)) == CS_FAMILY_BOOL) {
+      else if ((s=cswFamily(cs->func)) == LS_FAMILY_BOOL) {
         bool res1 = getSwitch(cs->v1);
         bool res2 = getSwitch(cs->v2);
         switch (cs->func) {
-          case CS_AND:
+          case LS_FUNC_AND:
             result = (res1 && res2);
             break;
-          case CS_OR:
+          case LS_FUNC_OR:
             result = (res1 || res2);
             break;
-          // case CS_XOR:
+          // case LS_FUNC_XOR:
           default:
             result = (res1 ^ res2);
             break;
         }
       }
-      else if (s == CS_FAMILY_TIMER) {
+      else if (s == LS_FAMILY_TIMER) {
         result = (csLastValue[cs_idx] <= 0);
       }
-      else if (s == CS_FAMILY_STICKY) {
+      else if (s == LS_FAMILY_STICKY) {
         result = (csLastValue[cs_idx] & (1<<0));
       }
 #if defined(CPUARM)
-      else if (s == CS_FAMILY_STAY) {
+      else if (s == LS_FAMILY_STAY) {
         result = (csLastValue[cs_idx] & (1<<0));
       }
 #endif
       else {
         getvalue_t x = getValue(cs->v1);
         getvalue_t y;
-        if (s == CS_FAMILY_COMP) {
+        if (s == LS_FAMILY_COMP) {
           y = getValue(cs->v2);
 
           switch (cs->func) {
-            case CS_EQUAL:
+            case LS_FUNC_EQUAL:
               result = (x==y);
               break;
-            case CS_GREATER:
+            case LS_FUNC_GREATER:
               result = (x>y);
               break;
             default:
@@ -1491,7 +1491,7 @@ bool getSwitch(int8_t swtch)
             y = convertCswTelemValue(cs);
 
 #if defined(FRSKY_HUB) && defined(GAUGES)
-            if (s == CS_FAMILY_OFS) {
+            if (s == LS_FAMILY_OFS) {
               uint8_t idx = cs->v1-MIXSRC_FIRST_TELEM+1-TELEM_ALT;
               if (idx < THLD_MAX) {
                 // Fill the threshold array
@@ -1519,7 +1519,7 @@ bool getSwitch(int8_t swtch)
 #endif
 
           switch (cs->func) {
-            case CS_VEQUAL:
+            case LS_FUNC_VEQUAL:
 #if defined(GVARS)
               if (cs->v1 >= MIXSRC_GVAR1 && cs->v1 <= MIXSRC_LAST_GVAR)
                 result = (x==y);
@@ -1527,16 +1527,16 @@ bool getSwitch(int8_t swtch)
 #endif
               result = (abs(x-y) < (1024 / STICK_TOLERANCE));
               break;
-            case CS_VPOS:
+            case LS_FUNC_VPOS:
               result = (x>y);
               break;
-            case CS_VNEG:
+            case LS_FUNC_VNEG:
               result = (x<y);
               break;
-            case CS_APOS:
+            case LS_FUNC_APOS:
               result = (abs(x)>y);
               break;
-            case CS_ANEG:
+            case LS_FUNC_ANEG:
               result = (abs(x)<y);
               break;
             default:
@@ -1544,7 +1544,7 @@ bool getSwitch(int8_t swtch)
               if (csLastValue[cs_idx] == CS_LAST_VALUE_INIT)
                 csLastValue[cs_idx] = x;
               int16_t diff = x - csLastValue[cs_idx];
-              if (cs->func == CS_DIFFEGREATER)
+              if (cs->func == LS_FUNC_DIFFEGREATER)
                 result = (y >= 0 ? (diff >= y) : (diff <= y));
               else
                 result = (abs(diff) >= y);
@@ -1578,7 +1578,7 @@ bool getSwitch(int8_t swtch)
         if (cswDurations[cs_idx] > get_tmr10ms()) {
           result = true;
         }
-        else if (s == CS_FAMILY_STICKY) {
+        else if (s == LS_FAMILY_STICKY) {
           csLastValue[cs_idx] &= ~(1<<0);
         }
       }
@@ -1925,7 +1925,7 @@ void setGVarValue(uint8_t idx, int16_t value, int8_t phase)
 #endif
 
 #if defined(FRSKY)
-csw_telemetry_value_t minTelemValue(uint8_t channel)
+ls_telemetry_value_t minTelemValue(uint8_t channel)
 {
   switch (channel) {
     case TELEM_FUEL:
@@ -1944,7 +1944,7 @@ csw_telemetry_value_t minTelemValue(uint8_t channel)
   }
 }
 
-csw_telemetry_value_t maxTelemValue(uint8_t channel)
+ls_telemetry_value_t maxTelemValue(uint8_t channel)
 {
   switch (channel) {
     case TELEM_FUEL:
@@ -1965,7 +1965,7 @@ csw_telemetry_value_t maxTelemValue(uint8_t channel)
 #endif
 
 #if defined(CPUARM)
-getvalue_t convert16bitsTelemValue(uint8_t channel, csw_telemetry_value_t value)
+getvalue_t convert16bitsTelemValue(uint8_t channel, ls_telemetry_value_t value)
 {
   getvalue_t result;
   switch (channel) {
@@ -1979,13 +1979,13 @@ getvalue_t convert16bitsTelemValue(uint8_t channel, csw_telemetry_value_t value)
   return result;
 }
 
-csw_telemetry_value_t max8bitsTelemValue(uint8_t channel)
+ls_telemetry_value_t max8bitsTelemValue(uint8_t channel)
 {
-  return min<csw_telemetry_value_t>(255, maxTelemValue(channel));
+  return min<ls_telemetry_value_t>(255, maxTelemValue(channel));
 }
 #endif
 
-getvalue_t convert8bitsTelemValue(uint8_t channel, csw_telemetry_value_t value)
+getvalue_t convert8bitsTelemValue(uint8_t channel, ls_telemetry_value_t value)
 {
   getvalue_t result;
   switch (channel) {
@@ -2037,13 +2037,13 @@ getvalue_t convert8bitsTelemValue(uint8_t channel, csw_telemetry_value_t value)
   return result;
 }
 
-getvalue_t convertCswTelemValue(CustomSwData * cs)
+getvalue_t convertCswTelemValue(LogicalSwitchData * cs)
 {
   getvalue_t val;
 #if defined(CPUARM)
   val = convert16bitsTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, cs->v2);
 #else
-  if (cswFamily(cs->func)==CS_FAMILY_OFS)
+  if (cswFamily(cs->func)==LS_FAMILY_OFS)
     val = convert8bitsTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128+cs->v2);
   else
     val = convert8bitsTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128+cs->v2) - convert8bitsTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128);
@@ -4051,8 +4051,8 @@ void doMixerCalculations()
     s_cnt_1s += 1;
 
     for (uint8_t i=0; i<NUM_CSW; i++) {
-      CustomSwData * cs = cswAddress(i);
-      if (cs->func == CS_TIMER) {
+      LogicalSwitchData * cs = cswAddress(i);
+      if (cs->func == LS_FUNC_TIMER) {
         int16_t *lastValue = &csLastValue[i];
         if (*lastValue == 0 || *lastValue == CS_LAST_VALUE_INIT) {
           *lastValue = -cswTimerValue(cs->v1);
@@ -4065,7 +4065,7 @@ void doMixerCalculations()
           *lastValue -= 1;
         }
       }
-      else if (cs->func == CS_STICKY) {
+      else if (cs->func == LS_FUNC_STICKY) {
         PACK(typedef struct {
           bool state;
           bool last;
@@ -4092,7 +4092,7 @@ void doMixerCalculations()
         }
       }
 #if defined(CPUARM)
-      else if (cs->func == CS_STAY) {
+      else if (cs->func == LS_FUNC_STAY) {
         PACK(typedef struct {
           uint8_t  state:1;
           uint16_t duration:15;

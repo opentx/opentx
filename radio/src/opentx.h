@@ -1225,7 +1225,7 @@ ExpoData *expoAddress(uint8_t idx);
 MixData *mixAddress(uint8_t idx);
 LimitData *limitAddress(uint8_t idx);
 int8_t *curveAddress(uint8_t idx);
-CustomSwData *cswAddress(uint8_t idx);
+LogicalSwitchData *cswAddress(uint8_t idx);
 
 #if !defined(PCBTARANIS)
 struct CurveInfo {
@@ -1290,14 +1290,14 @@ extern int24_t act   [MAX_MIXERS];
 #endif
 
 enum CswFunctionFamilies {
-  CS_FAMILY_OFS,
-  CS_FAMILY_BOOL,
-  CS_FAMILY_COMP,
-  CS_FAMILY_DIFF,
-  CS_FAMILY_TIMER,
-  CS_FAMILY_STICKY,
-  CS_FAMILY_RANGE,
-  CS_FAMILY_STAY
+  LS_FAMILY_OFS,
+  LS_FAMILY_BOOL,
+  LS_FAMILY_COMP,
+  LS_FAMILY_DIFF,
+  LS_FAMILY_TIMER,
+  LS_FAMILY_STICKY,
+  LS_FAMILY_RANGE,
+  LS_FAMILY_STAY
 };
 
 uint8_t cswFamily(uint8_t func);
@@ -1646,20 +1646,20 @@ extern uint8_t barsThresholds[THLD_MAX];
 #endif
 
 #if defined(FRSKY)
-  csw_telemetry_value_t minTelemValue(uint8_t channel);
-  csw_telemetry_value_t maxTelemValue(uint8_t channel);
+  ls_telemetry_value_t minTelemValue(uint8_t channel);
+  ls_telemetry_value_t maxTelemValue(uint8_t channel);
 #else
   #define minTelemValue(channel) 255
   #define maxTelemValue(channel) 255
 #endif
 
 #if defined(CPUARM)
-getvalue_t convert16bitsTelemValue(uint8_t channel, csw_telemetry_value_t value);
-csw_telemetry_value_t max8bitsTelemValue(uint8_t channel);
+getvalue_t convert16bitsTelemValue(uint8_t channel, ls_telemetry_value_t value);
+ls_telemetry_value_t max8bitsTelemValue(uint8_t channel);
 #endif
 
-getvalue_t convert8bitsTelemValue(uint8_t channel, csw_telemetry_value_t value);
-getvalue_t convertCswTelemValue(CustomSwData * cs);
+getvalue_t convert8bitsTelemValue(uint8_t channel, ls_telemetry_value_t value);
+getvalue_t convertCswTelemValue(LogicalSwitchData * cs);
 
 #if defined(CPUARM)
   #define convertTelemValue(channel, value) convert16bitsTelemValue(channel, value)
