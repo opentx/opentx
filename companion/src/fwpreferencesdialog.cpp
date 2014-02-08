@@ -460,56 +460,6 @@ void fwPreferencesDialog::on_ProfSave_PB_clicked()
   }
 }
 
-void fwPreferencesDialog::on_export_PB_clicked()
-{
-    QSettings settings;
-    QString profile=QString("profile%1").arg(ui->ProfSlot_SB->value());
-    QString name=ui->ProfName_LE->text();
-    if (!name.isEmpty()) {
-      QString fileName = QFileDialog::getSaveFileName(this, tr("Export profile As"), settings.value("lastDir").toString() + "/" +name+".ini" , "*.ini");
-      if (fileName.isEmpty())
-        return;
-      QSettings exportfile(fileName, QSettings::IniFormat);
-      settings.beginGroup("Profiles");
-      settings.beginGroup(profile);
-      QStringList keys = settings.childKeys();
-      foreach (QString key, keys) {
-        exportfile.setValue(key,settings.value(key));
-      }
-      settings.endGroup();      
-    }
-    settings.endGroup();
-}
-
-void fwPreferencesDialog::on_import_PB_clicked()
-{
-    QSettings settings;
-    QString profile=QString("profile%1").arg(ui->ProfSlot_SB->value());
-    QString name=ui->ProfName_LE->text();
-    if (!name.isEmpty()) {
-      int ret = QMessageBox::question(this, "Companion", 
-                  tr("Profile slot is not empty, profile slot %1 will we overwritten.<br>Are you sure ?").arg(ui->ProfSlot_SB->value()) ,
-                  QMessageBox::Yes | QMessageBox::No);
-      if (ret==QMessageBox::No) {
-        return;
-      }
-    }
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Profile to import"), settings.value("lastDir").toString(), "*.ini");
-    if (fileName.isEmpty())
-      return;
-    QSettings importfile(fileName, QSettings::IniFormat);
-    settings.beginGroup("Profiles");
-    settings.beginGroup(profile);
-    QStringList keys = importfile.childKeys();
-    foreach (QString key, keys) {
-      settings.setValue(key,importfile.value(key));
-    }
-    settings.endGroup();
-    settings.endGroup();
-    on_ProfSlot_SB_valueChanged();
-}
-
-
 void fwPreferencesDialog::on_SplashSelect_clicked()
 {
   QString supportedImageFormats;
