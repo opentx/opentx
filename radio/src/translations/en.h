@@ -225,7 +225,7 @@
 #endif
 
 #if defined(CPUARM)
-  #define TR_VFSWFUNC          "Safety\0   ""Trainer\0  ""Inst. Trim""Reset\0    ""Set Timer\0" TR_ADJUST_GVAR "Volume\0   " TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Backlight\0" TR_CFN_TEST
+  #define TR_VFSWFUNC          "Safety\0   ""Trainer\0  ""Inst. Trim""Reset\0    ""Set \0     " TR_ADJUST_GVAR "Volume\0   " TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Backlight\0" TR_CFN_TEST
 #elif defined(PCBGRUVIN9X)
   #define TR_VFSWFUNC          "Safety\0   ""Trainer\0  ""Inst. Trim""Reset\0    " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC TR_SDCLOGS "Backlight\0" TR_CFN_TEST
 #else
@@ -426,13 +426,13 @@
   #define TR_EXPONAME          "Expo Name"
 #endif
 #define TR_BITMAP              "Model Image"
-#define TR_TIMER               TR("Timer","Timer ")
-#define TR_ELIMITS             TR("E.Limits","Extended Limits")
-#define TR_ETRIMS              TR("E.Trims","Extended Trims")
+#define TR_TIMER               TR("Timer", "Timer ")
+#define TR_ELIMITS             TR("E.Limits", "Extended Limits")
+#define TR_ETRIMS              TR("E.Trims", "Extended Trims")
 #define TR_TRIMINC             "Trim Step"
-#define TR_TTRACE              TR("T-Source","Throttle Source")
-#define TR_TTRIM               TR("T-Trim","Throttle Trim")
-#define TR_BEEPCTR             TR("Ctr Beep","Center Beep")
+#define TR_TTRACE              TR("T-Source", "Throttle Source")
+#define TR_TTRIM               TR("T-Trim", "Throttle Trim")
+#define TR_BEEPCTR             TR("Ctr Beep", "Center Beep")
 #define TR_PROTO               TR(INDENT "Proto", INDENT "Protocol")
 #define TR_PPMFRAME            TR("PPM frame", INDENT "PPM frame")
 #define TR_MS                  "ms"

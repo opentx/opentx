@@ -1307,8 +1307,11 @@ class CustomFunctionsConversionTable: public ConversionTable {
       addConversion(FuncInstantTrim, val++);
       if (version >= 216) {
         addConversion(FuncReset, val++);
-        if (IS_ARM(board))
-          addConversion(FuncSetTimer, val++);
+        if (IS_ARM(board)) {
+          addConversion(FuncSetTimer1, val);
+          addConversion(FuncSetTimer2, val);
+          val++;
+        }
         for (int i=0; i<MAX_GVARS(board, version); i++)
           addConversion(FuncAdjustGV1+i, val);
         val++;
@@ -1453,6 +1456,10 @@ class ArmCustomFunctionField: public TransformedField {
       else if (fn.func >= FuncTrainer && fn.func <= FuncTrainerAIL) {
         if (version >= 216)
           *((uint8_t *)(_param+3)) = fn.func - FuncTrainer;
+      }
+      else if (fn.func >= FuncSetTimer1 && fn.func <= FuncSetTimer2) {
+        if (version >= 216)
+          *((uint8_t *)(_param+3)) = fn.func - FuncSetTimer1;
       }
       else if (fn.func == FuncPlayPrompt || fn.func == FuncBackgroundMusic) {
         memcpy(_param, fn.paramarm, sizeof(_param));
