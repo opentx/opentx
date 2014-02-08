@@ -151,16 +151,16 @@
 #define TR_VMIXTRIMS     "OFF""ON\0""Dir""Prf""Gaz""Ail"
 
 #if defined(PCBTARANIS)
-  #define TR_CSWTIMER          "Timer"
-  #define TR_CSWSTICKY         "Stcky"
-  #define TR_CSWRANGE          "Range"
-  #define TR_CSWSTAY           "Stay\0"
+  #define TR_CSWTIMER          "Tempo"
+  #define TR_CSWSTICKY         "Bist."
+  #define TR_CSWRANGE          "Plage"
+  #define TR_CSWSTAY           "Flanc"
 #else
-  #define TR_CSWTIMER          "Tim\0 "
-  #define TR_CSWSTICKY         "Glue\0"
+  #define TR_CSWTIMER          "Temp\0"
+  #define TR_CSWSTICKY         "Bist\0"
   #if defined(CPUARM)
-    #define TR_CSWRANGE        "Rnge\0"
-    #define TR_CSWSTAY         "Stay\0"
+    #define TR_CSWRANGE        "Zone\0"
+    #define TR_CSWSTAY         "Flnc\0"
   #else
     #define TR_CSWRANGE
     #define TR_CSWSTAY
