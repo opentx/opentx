@@ -269,6 +269,16 @@
           </widget>
          </item>
          <item>
+          <widget class="QPushButton" name="leftLoadProfileButton">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Load Profile</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <spacer name="horizontalSpacer_2">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -558,6 +568,16 @@
           </widget>
          </item>
          <item>
+          <widget class="QPushButton" name="rightLoadProfileButton">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Load Profile</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <spacer name="horizontalSpacer_3">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -605,7 +625,6 @@
  <tabstops>
   <tabstop>leftFileNameEdit</tabstop>
   <tabstop>leftInvertButton</tabstop>
-  <tabstop>leftLoadFwButton</tabstop>
   <tabstop>leftLoadPictButton</tabstop>
   <tabstop>leftSaveButton</tabstop>
   <tabstop>copyLeftToRightButton</tabstop>
