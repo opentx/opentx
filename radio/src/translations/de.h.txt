@@ -154,13 +154,13 @@
   #define TR_CSWTIMER          "Timer"
   #define TR_CSWSTICKY         "Stcky"
   #define TR_CSWRANGE          "Range"
-  #define TR_CSWSTAY           "Stay\0"
+  #define TR_CSWSTAY           "Edge\0"
 #else
   #define TR_CSWTIMER          "Tim\0 "
   #define TR_CSWSTICKY         "Glue\0"
   #if defined(CPUARM)
     #define TR_CSWRANGE        "Rnge\0"
-    #define TR_CSWSTAY         "Stay\0"
+    #define TR_CSWSTAY         "Edge\0"
   #else
     #define TR_CSWRANGE
     #define TR_CSWSTAY
