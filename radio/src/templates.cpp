@@ -146,7 +146,7 @@ void setCurve(uint8_t c, const pm_int8_t ar[])
 
 void setSwitch(uint8_t idx, uint8_t func, int8_t v1, int8_t v2)
 {
-  CustomSwData *cs = cswAddress(idx-1);
+  LogicalSwitchData *cs = cswAddress(idx-1);
   cs->func = func;
   cs->v1   = v1;
   cs->v2   = v2;
@@ -198,8 +198,8 @@ void applyTemplate(uint8_t idx)
         md=setDest(13, MIXSRC_CH14); // md->weight= 100; done by setDest anyway
         md=setDest(13, MIXSRC_MAX); mixSetWeight(md, -100);  md->swtch=SWSRC_SWB;  md->mltpx=MLTPX_REP;
         md=setDest(13, MIXSRC_MAX); /* md->weight= 100;*/  md->swtch=SWSRC_THR;  md->mltpx=MLTPX_REP;
-        setSwitch(11, CS_VNEG, STK_THR, -99);
-        setSwitch(12, CS_VPOS, MIXSRC_CH14, 0);
+        setSwitch(11, LS_FUNC_VNEG, STK_THR, -99);
+        setSwitch(12, LS_FUNC_VPOS, MIXSRC_CH14, 0);
         break;
 
       // V-Tail
@@ -283,7 +283,7 @@ void applyTemplate(uint8_t idx)
       // Servo Test
       case TMPL_SERVO_TEST:
         md=setDest(NUM_CHNOUT-1, MIXSRC_SW1, true); md->weight=110; md->mltpx=MLTPX_ADD; md->delayUp = 6; md->delayDown = 6; md->speedUp = 8; md->speedDown = 8;
-        setSwitch(1, CS_VNEG, MIXSRC_LAST_CH, 0);
+        setSwitch(1, LS_FUNC_VNEG, MIXSRC_LAST_CH, 0);
         break;
 
     default:

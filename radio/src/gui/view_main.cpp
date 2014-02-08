@@ -295,7 +295,7 @@ void displayTopBar()
     x -= 12;
   }
 
-  if (isFunctionActive(FUNC_LOGS)) {
+  if (isFunctionActive(FUNCTION_LOGS)) {
     LCD_NOTIF_ICON(x, ICON_LOGS);
     x -= 12;
   }
@@ -343,7 +343,7 @@ void displayTimers()
   if (g_model.timers[0].mode) {
     TimerState & timerState = timersStates[0];
     putsTime(TIMERS_X, TIMER1_Y, timerState.val, MIDSIZE|LEFT, MIDSIZE|LEFT);
-    putsTmrMode(TIMERS_X, TIMER1_Y-6, g_model.timers[0].mode, STRCONDENSED|SMLSIZE);
+    putsTimerMode(TIMERS_X, TIMER1_Y-6, g_model.timers[0].mode, SMLSIZE);
     if (g_model.timers[0].persistent) lcd_putcAtt(TIMERS_R, TIMER1_Y+1, 'P', SMLSIZE);
     if (timerState.val < 0) {
       if (BLINK_ON_PHASE) {
@@ -356,7 +356,7 @@ void displayTimers()
   if (g_model.timers[1].mode) {
     TimerState & timerState = timersStates[1];
     putsTime(TIMERS_X, TIMER2_Y, timerState.val, MIDSIZE|LEFT, MIDSIZE|LEFT);
-    putsTmrMode(TIMERS_X, TIMER2_Y-6, g_model.timers[1].mode, STRCONDENSED|SMLSIZE);
+    putsTimerMode(TIMERS_X, TIMER2_Y-6, g_model.timers[1].mode, SMLSIZE);
     if (g_model.timers[1].persistent) lcd_putcAtt(TIMERS_R, TIMER2_Y+1, 'P', SMLSIZE);
     if (timerState.val < 0) {
       if (BLINK_ON_PHASE) {
@@ -373,7 +373,7 @@ void displayTimers()
     TimerState & timerState = timersStates[0];
     uint8_t att = DBLSIZE | (timerState.val<0 ? BLINK|INVERS : 0);
     putsTime(12*FW+2+10*FWNUM-4, FH*2, timerState.val, att, att);
-    putsTmrMode(timerState.val >= 0 ? 9*FW-FW/2+3 : 9*FW-FW/2-4, FH*3, g_model.timers[0].mode, STRCONDENSED);
+    putsTimerMode(timerState.val >= 0 ? 9*FW-FW/2+3 : 9*FW-FW/2-4, FH*3, g_model.timers[0].mode);
   }
 }
 #endif
@@ -818,7 +818,7 @@ void menuMainView(uint8_t event)
   }
   else { // timer2
     putsTime(33+FW+2+10*FWNUM-4, FH*5, timersStates[1].val, DBLSIZE, DBLSIZE);
-    putsTmrMode(timersStates[1].val >= 0 ? 20-FW/2+5 : 20-FW/2-2, FH*6, g_model.timers[1].mode, STRCONDENSED);
+    putsTimerMode(timersStates[1].val >= 0 ? 20-FW/2+5 : 20-FW/2-2, FH*6, g_model.timers[1].mode);
     // lcd_outdezNAtt(33+11*FW, FH*6, s_timerVal_10ms[1], LEADING0, 2); // 1/100s
   }
 #endif // PCBTARANIS

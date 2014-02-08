@@ -584,8 +584,8 @@ void Templates::applyTemplate(uint8_t idx)
       md=setDest(14); md->srcRaw=RawSource(SOURCE_TYPE_CH, 13); md->weight= 100; md->swtch=RawSwitch();
       md=setDest(14); md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=-100;  md->swtch=RawSwitch(SWITCH_TYPE_VIRTUAL, 11);  md->mltpx=MLTPX_REP;
       md=setDest(14); md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight= 100;  md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,thrsw);  md->mltpx=MLTPX_REP;
-      setSwitch(0xB, CS_FN_VNEG, RawSource(SOURCE_TYPE_STICK, 2).toValue(), -99);
-      setSwitch(0xC, CS_FN_VPOS, RawSource(SOURCE_TYPE_CH, 13).toValue(), 0);
+      setSwitch(0xB, LS_FN_VNEG, RawSource(SOURCE_TYPE_STICK, 2).toValue(), -99);
+      setSwitch(0xC, LS_FN_VPOS, RawSource(SOURCE_TYPE_CH, 13).toValue(), 0);
       updateSwitchesTab();
     }
 
@@ -841,9 +841,9 @@ void Templates::applyTemplate(uint8_t idx)
       md=setDest(16); md->srcRaw=RawSource(SOURCE_TYPE_CUSTOM_SWITCH, 0); md->weight= 110; md->swtch=RawSwitch();
       md=setDest(16); md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=-110; md->swtch=RawSwitch(SWITCH_TYPE_VIRTUAL, 2); md->mltpx=MLTPX_REP;
       md=setDest(16); md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight= 110; md->swtch=RawSwitch(SWITCH_TYPE_VIRTUAL, 3); md->mltpx=MLTPX_REP;
-      setSwitch(1, CS_FN_LESS, RawSource(SOURCE_TYPE_CH, 14).toValue(), RawSource(SOURCE_TYPE_CH, 15).toValue());
-      setSwitch(2, CS_FN_VPOS, RawSource(SOURCE_TYPE_CH, 14).toValue(), 105);
-      setSwitch(3, CS_FN_VNEG, RawSource(SOURCE_TYPE_CH, 14).toValue(), -105);
+      setSwitch(1, LS_FN_LESS, RawSource(SOURCE_TYPE_CH, 14).toValue(), RawSource(SOURCE_TYPE_CH, 15).toValue());
+      setSwitch(2, LS_FN_VPOS, RawSource(SOURCE_TYPE_CH, 14).toValue(), 105);
+      setSwitch(3, LS_FN_VNEG, RawSource(SOURCE_TYPE_CH, 14).toValue(), -105);
 
       // redraw switches tab
       updateSwitchesTab();

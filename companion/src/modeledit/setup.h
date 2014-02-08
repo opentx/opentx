@@ -55,14 +55,13 @@ class ModulePanel : public ModelPanel
     void on_ppmFrameLength_editingFinished();
     void on_rxNumber_editingFinished();
     void on_failsafeMode_currentIndexChanged(int value);
-    void onFailsafeChannelChanged(int value);
+    void onFailsafeSpinChanged(double value);
 
   private:
     ModuleData & module;
     int moduleIdx;
     Ui::Module *ui;
-    QVector<QSpinBox *> failsafeSpins;
-    QVector<QSlider *> failsafeSliders;
+    QVector<QDoubleSpinBox *> failsafeSpins;
 };
 
 class Setup : public ModelPanel

@@ -11,8 +11,10 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer):
 {
   ui->setupUi(this);
 
+  lock = true;
+
   // Mode
-  populateTimerSwitchCB(ui->mode, timer.mode);
+  populateSwitchCB(ui->mode, timer.mode, POPULATE_TIMER_MODES);
 
   if (!GetEepromInterface()->getCapability(PermTimers)) {
     ui->persistent->hide();
@@ -23,6 +25,8 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer):
   ui->countdownBeep->addItem(tr("Beeps"));
   if (IS_ARM(GetEepromInterface()->getBoard()) || IS_2560(GetEepromInterface()->getBoard()))
     ui->countdownBeep->addItem(tr("Countdown"));
+
+  lock = false;
 }
 
 TimerPanel::~TimerPanel()
@@ -63,8 +67,10 @@ void TimerPanel::on_value_editingFinished()
 
 void TimerPanel::on_mode_currentIndexChanged(int index)
 {
-  timer.mode = TimerMode(ui->mode->itemData(index).toInt());
-  emit modified();
+  if (!lock) {
+    timer.mode = RawSwitch(ui->mode->itemData(index).toInt());
+    emit modified();
+  }
 }
 
 void TimerPanel::on_persistent_toggled(bool checked)
@@ -123,20 +129,20 @@ ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module
 
   if (GetEepromInterface()->getCapability(HasFailsafe)) {
     for (int i=0; i<16; i++) {
-      QSlider * slider = new QSlider(this);
-      slider->setMinimumSize(QSize(30, 50));
-      slider->setRange(-100, 100);
-      QSpinBox * spinbox = new QSpinBox(this);
+      QLabel * label = new QLabel(this);
+      label->setText(QString::number(i+1));
+      QDoubleSpinBox * spinbox = new QDoubleSpinBox(this);
       spinbox->setMinimumSize(QSize(20, 0));
       spinbox->setRange(-100, 100);
-      slider->setProperty("index", i);
+      spinbox->setSingleStep(0.1);
+      spinbox->setDecimals(1);
+      spinbox->setValue(((double)module.failsafeChannels[i]*100)/1024);
+      label->setProperty("index", i);
       spinbox->setProperty("index", i);
-      failsafeSliders << slider;
       failsafeSpins << spinbox;
-      ui->failsafesLayout->addWidget(slider, 2*(i/8), i%8, Qt::AlignHCenter);
+      ui->failsafesLayout->addWidget(label, 2*(i/8), i%8, Qt::AlignHCenter);
       ui->failsafesLayout->addWidget(spinbox, 1+2*(i/8), i%8, Qt::AlignHCenter);
-      connect(slider, SIGNAL(valueChanged(int)), this, SLOT(onFailsafeChannelChanged(int)));
-      connect(slider, SIGNAL(valueChanged(int)), this, SLOT(onFailsafeChannelChanged(int)));
+      connect(spinbox, SIGNAL(valueChanged(double)), this, SLOT(onFailsafeSpinChanged(double)));
     }
   }
 
@@ -217,10 +223,6 @@ void ModulePanel::update()
     ui->failsafeMode->setVisible(mask & MASK_FAILSAFES);
     ui->failsafeMode->setCurrentIndex(module.failsafeMode);
     ui->failsafesFrame->setEnabled(module.failsafeMode == 1);
-    for (int i=0; i<failsafeSliders.size(); i++) {
-      failsafeSliders[i]->setValue(module.failsafeChannels[i]);
-      failsafeSpins[i]->setValue(module.failsafeChannels[i]);
-    }
   }
   else {
     mask = 0;
@@ -302,16 +304,12 @@ void ModulePanel::on_failsafeMode_currentIndexChanged(int value)
   }
 }
 
-void ModulePanel::onFailsafeChannelChanged(int value)
+void ModulePanel::onFailsafeSpinChanged(double value)
 {
   if (!lock) {
-    lock = true;
     int index = sender()->property("index").toInt();
-    module.failsafeChannels[index] = value;
-    failsafeSpins[index]->setValue(value);
-    failsafeSliders[index]->setValue(value);
+    module.failsafeChannels[index] = (value*1024)/100;
     emit modified();
-    lock = false;
   }
 }
 

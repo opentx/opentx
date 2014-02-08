@@ -120,7 +120,7 @@ void varioWakeup()
   static tmr10ms_t s_varioTmr;
   tmr10ms_t tmr10ms = get_tmr10ms();
   
-  if (isFunctionActive(FUNC_VARIO)) {
+  if (isFunctionActive(FUNCTION_VARIO)) {
 #if defined(AUDIO)
     cli();
     int16_t verticalSpeed = frskyData.hub.varioSpeed;
