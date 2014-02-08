@@ -726,6 +726,9 @@ enum Functions {
   FUNC_TRAINER,
   FUNC_INSTANT_TRIM,
   FUNC_RESET,
+#if defined(CPUARM)
+  FUNC_SET_TIMER,
+#endif
   FUNC_ADJUST_GVAR,
 #if defined(CPUARM)
   FUNC_VOLUME,

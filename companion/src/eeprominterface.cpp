@@ -615,6 +615,8 @@ QString FuncSwData::funcToString()
     return QObject::tr("Play Haptic");
   else if (func == FuncReset)
     return QObject::tr("Reset");
+  else if (func == FuncSetTimer)
+    return QObject::tr("Set Timer");
   else if (func == FuncVario)
     return QObject::tr("Vario");
   else if (func == FuncPlayPrompt)

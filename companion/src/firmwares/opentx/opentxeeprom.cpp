@@ -1307,6 +1307,8 @@ class CustomFunctionsConversionTable: public ConversionTable {
       addConversion(FuncInstantTrim, val++);
       if (version >= 216) {
         addConversion(FuncReset, val++);
+        if (IS_ARM(board))
+          addConversion(FuncSetTimer, val++);
         for (int i=0; i<MAX_GVARS(board, version); i++)
           addConversion(FuncAdjustGV1+i, val);
         val++;

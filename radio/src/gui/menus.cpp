@@ -1306,6 +1306,11 @@ bool isAssignableFunctionAvailable(int16_t function)
       return false;
 #endif
 
+#if !defined(GVARS)
+    case FUNC_ADJUST_GVAR:
+      return false;
+#endif
+
     default:
       return true;
   }
