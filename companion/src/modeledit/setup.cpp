@@ -11,8 +11,10 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer):
 {
   ui->setupUi(this);
 
+  lock = true;
+
   // Mode
-  populateTimerSwitchCB(ui->mode, timer.mode);
+  populateSwitchCB(ui->mode, timer.mode, POPULATE_TIMER_MODES);
 
   if (!GetEepromInterface()->getCapability(PermTimers)) {
     ui->persistent->hide();
@@ -23,6 +25,8 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer):
   ui->countdownBeep->addItem(tr("Beeps"));
   if (IS_ARM(GetEepromInterface()->getBoard()) || IS_2560(GetEepromInterface()->getBoard()))
     ui->countdownBeep->addItem(tr("Countdown"));
+
+  lock = false;
 }
 
 TimerPanel::~TimerPanel()
@@ -63,8 +67,10 @@ void TimerPanel::on_value_editingFinished()
 
 void TimerPanel::on_mode_currentIndexChanged(int index)
 {
-  timer.mode = TimerMode(ui->mode->itemData(index).toInt());
-  emit modified();
+  if (!lock) {
+    timer.mode = RawSwitch(ui->mode->itemData(index).toInt());
+    emit modified();
+  }
 }
 
 void TimerPanel::on_persistent_toggled(bool checked)

@@ -190,34 +190,34 @@ PACK(typedef struct t_Open9xArmPhaseData_v212 {
   t_Open9xArmPhaseData_v212() { memset(this, 0, sizeof(t_Open9xArmPhaseData_v212)); }
 }) Open9xArmPhaseData_v212;
 
-PACK(typedef struct t_Open9xArmCustomSwData_v208 { // Custom Switches data
+PACK(typedef struct t_Open9xArmLogicalSwitchData_v208 { // Custom Switches data
   int8_t  v1; //input
   int8_t  v2; //offset
   uint8_t func;
 
-  operator CustomSwData();
-  t_Open9xArmCustomSwData_v208() { memset(this, 0, sizeof(t_Open9xArmCustomSwData_v208)); }
-}) Open9xArmCustomSwData_v208;
+  operator LogicalSwitchData();
+  t_Open9xArmLogicalSwitchData_v208() { memset(this, 0, sizeof(t_Open9xArmLogicalSwitchData_v208)); }
+}) Open9xArmLogicalSwitchData_v208;
 
-PACK(typedef struct t_Open9xArmCustomSwData_v209 { // Custom Switches data
+PACK(typedef struct t_Open9xArmLogicalSwitchData_v209 { // Custom Switches data
   int8_t  v1; //input
   int8_t  v2; //offset
   uint8_t func;
 
-  operator CustomSwData();
-  t_Open9xArmCustomSwData_v209() { memset(this, 0, sizeof(t_Open9xArmCustomSwData_v209)); }
-}) Open9xArmCustomSwData_v209;
+  operator LogicalSwitchData();
+  t_Open9xArmLogicalSwitchData_v209() { memset(this, 0, sizeof(t_Open9xArmLogicalSwitchData_v209)); }
+}) Open9xArmLogicalSwitchData_v209;
 
-PACK(typedef struct t_Open9xArmCustomSwData_v210 { // Custom Switches data
+PACK(typedef struct t_Open9xArmLogicalSwitchData_v210 { // Custom Switches data
   int8_t  v1; //input
   int8_t  v2; //offset
   uint8_t func;
   uint8_t delay;
   uint8_t duration;
 
-  operator CustomSwData();
-  t_Open9xArmCustomSwData_v210() { memset(this, 0, sizeof(t_Open9xArmCustomSwData_v210)); }
-}) Open9xArmCustomSwData_v210;
+  operator LogicalSwitchData();
+  t_Open9xArmLogicalSwitchData_v210() { memset(this, 0, sizeof(t_Open9xArmLogicalSwitchData_v210)); }
+}) Open9xArmLogicalSwitchData_v210;
 
 PACK(typedef struct t_Open9xArmFuncSwData_v208 { // Function Switches data
   int8_t  swtch; // input
@@ -343,7 +343,7 @@ PACK(typedef struct t_Open9xArmModelData_v208 {
   Open9xArmExpoData_v208  expoData[O9X_ARM_MAX_EXPOS];
   int8_t    curves5[O9X_209_MAX_CURVE5][5];
   int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xArmCustomSwData_v208 customSw[O9X_ARM_NUM_CSW];
+  Open9xArmLogicalSwitchData_v208 customSw[O9X_ARM_NUM_CSW];
   Open9xArmFuncSwData_v208 funcSw[O9X_ARM_NUM_FSW];
   Open9xArmSwashRingData_v208 swashR;
   Open9xArmPhaseData_v208 phaseData[O9X_ARM_MAX_PHASES];
@@ -382,7 +382,7 @@ PACK(typedef struct t_Open9xArmModelData_v209 {
   Open9xArmExpoData_v208  expoData[O9X_ARM_MAX_EXPOS];
   int8_t    curves5[O9X_209_MAX_CURVE5][5];
   int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xArmCustomSwData_v209 customSw[O9X_ARM_NUM_CSW];
+  Open9xArmLogicalSwitchData_v209 customSw[O9X_ARM_NUM_CSW];
   Open9xArmFuncSwData_v208 funcSw[O9X_ARM_NUM_FSW];
   Open9xArmSwashRingData_v209 swashR;
   Open9xArmPhaseData_v208 phaseData[O9X_ARM_MAX_PHASES];
@@ -422,7 +422,7 @@ PACK(typedef struct t_Open9xArmModelData_v210 {
   Open9xArmExpoData_v210  expoData[O9X_ARM_MAX_EXPOS];
   int8_t    curves5[O9X_209_MAX_CURVE5][5];
   int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xArmCustomSwData_v210 customSw[O9X_ARM_NUM_CSW];
+  Open9xArmLogicalSwitchData_v210 customSw[O9X_ARM_NUM_CSW];
   Open9xArmFuncSwData_v210 funcSw[O9X_ARM_NUM_FSW];
   Open9xArmSwashRingData_v209 swashR;
   Open9xArmPhaseData_v208 phaseData[O9X_ARM_MAX_PHASES];
@@ -461,7 +461,7 @@ PACK(typedef struct t_Open9xArmModelData_v211 {
   Open9xArmExpoData_v210  expoData[O9X_ARM_MAX_EXPOS];
   int16_t   curves[O9X_ARM_MAX_CURVES];
   int8_t    points[O9X_ARM_NUM_POINTS];
-  Open9xArmCustomSwData_v210 customSw[O9X_ARM_NUM_CSW];
+  Open9xArmLogicalSwitchData_v210 customSw[O9X_ARM_NUM_CSW];
   Open9xArmFuncSwData_v211 funcSw[O9X_ARM_NUM_FSW];
   Open9xArmSwashRingData_v209 swashR;
   Open9xArmPhaseData_v208 phaseData[O9X_ARM_MAX_PHASES];
@@ -499,7 +499,7 @@ PACK(typedef struct t_Open9xArmModelData_v212 {
   Open9xArmExpoData_v212  expoData[O9X_ARM_MAX_EXPOS];
   int16_t   curves[O9X_ARM_MAX_CURVES];
   int8_t    points[O9X_ARM_NUM_POINTS];
-  Open9xArmCustomSwData_v210 customSw[O9X_ARM_NUM_CSW];
+  Open9xArmLogicalSwitchData_v210 customSw[O9X_ARM_NUM_CSW];
   Open9xArmFuncSwData_v211 funcSw[O9X_ARM_NUM_FSW];
   Open9xArmSwashRingData_v210 swashR;
   Open9xArmPhaseData_v212 phaseData[O9X_ARM_MAX_PHASES];

@@ -113,9 +113,14 @@ uint32_t readTrims()
   return result;
 }
 
+uint8_t trimDown(uint8_t idx)
+{
+  return readTrims() & (1 << idx);
+}
+
 uint8_t keyDown()
 {
-  return (~readKeys() & 0x7E) || rotencDown();
+  return (~readKeys() & 0x7E) || REA_DOWN();
 }
 
 void readKeysAndTrims()
@@ -123,7 +128,7 @@ void readKeysAndTrims()
   register uint32_t i;
 
 #if ROTARY_ENCODERS > 0
-  keys[BTN_REa].input(rotencDown(), BTN_REa);
+  keys[BTN_REa].input(REA_DOWN(), BTN_REa);
 #endif
 
   uint8_t enuk = KEY_MENU;
