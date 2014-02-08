@@ -440,8 +440,8 @@ Setup::Setup(QWidget *parent, ModelData & model):
     ui->switchesStartupLayout->setAlignment(slider, Qt::AlignCenter);
     ui->switchesStartupLayout->addWidget(cb, 2, i+1);
     ui->switchesStartupLayout->setAlignment(cb, Qt::AlignCenter);
-    connect(slider, SIGNAL(valueChanged(int)), this, SLOT(on_startupSwitchEdited(int)));
-    connect(cb, SIGNAL(toggled(bool)), this, SLOT(on_startupSwitchToggled(bool)));
+    connect(slider, SIGNAL(valueChanged(int)), this, SLOT(startupSwitchEdited(int)));
+    connect(cb, SIGNAL(toggled(bool)), this, SLOT(startupSwitchToggled(bool)));
     startupSwitchesSliders << slider;
     startupSwitchesCheckboxes << cb;
   }
@@ -454,7 +454,7 @@ Setup::Setup(QWidget *parent, ModelData & model):
       cb->setProperty("index", i+1);
       cb->setText(AnalogString(i+4));
       ui->potWarningLayout->addWidget(cb, 0, i+1);
-      connect(cb, SIGNAL(toggled(bool)), this, SLOT(on_potWarningToggled(bool)));
+      connect(cb, SIGNAL(toggled(bool)), this, SLOT(potWarningToggled(bool)));
       potWarningCheckboxes << cb;
     }
   }
@@ -606,21 +606,21 @@ void Setup::updateStartupSwitches()
   lock = false;
 }
 
-void Setup::on_startupSwitchEdited(int value)
+void Setup::startupSwitchEdited(int value)
 {
   if (!lock) {
     int shift = 0;
     unsigned int mask;
     int index = sender()->property("index").toInt();
 
-  if (IS_TARANIS(GetEepromInterface()->getBoard())) {
-      if (index == 6)  {
-        shift = (index - 1)*2;
+    if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+      if (index == 6) {
+        shift = (index - 1) * 2;
         mask = 0x02 << shift;
         shift++;
-	  }
+      }
       else {
-        shift = (index - 1)*2;
+        shift = (index - 1) * 2;
         mask = 0x03 << shift;
       }
     }
@@ -650,7 +650,7 @@ void Setup::on_startupSwitchEdited(int value)
   }
 }
 
-void Setup::on_startupSwitchToggled(bool checked)
+void Setup::startupSwitchToggled(bool checked)
 {
   if (!lock) {
     int index = sender()->property("index").toInt()-1;
@@ -683,7 +683,7 @@ void Setup::updatePotWarnings()
   lock = false;
 }
 
-void Setup::on_potWarningToggled(bool checked)
+void Setup::potWarningToggled(bool checked)
 {
   if (!lock) {
     int index = sender()->property("index").toInt()-1;
