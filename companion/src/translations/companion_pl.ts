@@ -1323,6 +1323,126 @@ To ustawienie jest używane przez szablony, określa jakie wyjście przypisane j
         <translation>Jeśli uaktywnisz tryb FAI, utracisz informacje o wariometrze, funkcje odtwarzania i ekrany telemetrii. Ten tryb nie może być dezaktywowany.</translation>
     </message>
     <message>
+        <location filename="../generaledit.ui" line="762"/>
+        <source>R E T A</source>
+        <translation>K W G L</translation>
+    </message>
+    <message>
+        <location filename="../generaledit.ui" line="767"/>
+        <source>R E A T</source>
+        <translation>K W L G</translation>
+    </message>
+    <message>
+        <location filename="../generaledit.ui" line="772"/>
+        <source>R T E A</source>
+        <translation>K G W L</translation>
+    </message>
+    <message>
+        <location filename="../generaledit.ui" line="777"/>
+        <source>R T A E</source>
+        <translation>K G L W</translation>
+    </message>
+    <message>
+        <location filename="../generaledit.ui" line="782"/>
+        <source>R A E T</source>
+        <translation>K L W G</translation>
+    </message>
+    <message>
+        <location filename="../generaledit.ui" line="787"/>
+        <source>R A T E</source>
+        <translation>K L G W</translation>
+    </message>
+    <message>
+        <location filename="../generaledit.ui" line="792"/>
+        <source>E R T A</source>
+        <translation>W K G L</translation>
+    </message>
+    <message>
+        <location filename="../generaledit.ui" line="797"/>
+        <source>E R A T</source>
+        <translation>W K L G</translation>
+    </message>
+    <message>
+        <location filename="../generaledit.ui" line="802"/>
+        <source>E T R A</source>
+        <translation>W G K L</translation>
+    </message>
+    <message>
+        <location filename="../generaledit.ui" line="807"/>
+        <source>E T A R</source>
+        <translation>W G L K</translation>
+    </message>
+    <message>
+        <location filename="../generaledit.ui" line="812"/>
+        <source>E A R T</source>
+        <translation>W L K G</translation>
+    </message>
+    <message>
+        <location filename="../generaledit.ui" line="817"/>
+        <source>E A T R</source>
+        <translation>W L G K</translation>
+    </message>
+    <message>
+        <location filename="../generaledit.ui" line="822"/>
+        <source>T R E A</source>
+        <translation>G K W L</translation>
+    </message>
+    <message>
+        <location filename="../generaledit.ui" line="827"/>
+        <source>T R A E</source>
+        <translation>G K L W</translation>
+    </message>
+    <message>
+        <location filename="../generaledit.ui" line="832"/>
+        <source>T E R A</source>
+        <translation>G W K L</translation>
+    </message>
+    <message>
+        <location filename="../generaledit.ui" line="837"/>
+        <source>T E A R</source>
+        <translation>G W L K</translation>
+    </message>
+    <message>
+        <location filename="../generaledit.ui" line="842"/>
+        <source>T A R E</source>
+        <translation>G L K W</translation>
+    </message>
+    <message>
+        <location filename="../generaledit.ui" line="847"/>
+        <source>T A E R</source>
+        <translation>G L W K</translation>
+    </message>
+    <message>
+        <location filename="../generaledit.ui" line="852"/>
+        <source>A R E T</source>
+        <translation>L K W G</translation>
+    </message>
+    <message>
+        <location filename="../generaledit.ui" line="857"/>
+        <source>A R T E</source>
+        <translation>L R G W</translation>
+    </message>
+    <message>
+        <location filename="../generaledit.ui" line="862"/>
+        <source>A E R T</source>
+        <translation>L W K G</translation>
+    </message>
+    <message>
+        <location filename="../generaledit.ui" line="867"/>
+        <source>A E T R</source>
+        <translation>L W G K</translation>
+    </message>
+    <message>
+        <location filename="../generaledit.ui" line="872"/>
+        <source>A T R E</source>
+        <translation>L G K W</translation>
+    </message>
+    <message>
+        <location filename="../generaledit.ui" line="877"/>
+        <source>A T E R</source>
+        <translation>L G W K</translation>
+    </message>
+    <message>
         <location filename="../generaledit.ui" line="1511"/>
         <source>Readonly Unlock</source>
         <translation>Odblokuj &quot;Tylko do odczytu&quot;</translation>
@@ -8242,6 +8362,126 @@ To ustawienie jest używane przez szablony, określa jakie wyjście przypisane j
         <translation>Informacje o Firmware</translation>
     </message>
     <message>
+        <location filename="../fwpreferencesdialog.ui" line="472"/>
+        <source>R E T A</source>
+        <translation>K W G L</translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="477"/>
+        <source>R E A T</source>
+        <translation>K W L G</translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="482"/>
+        <source>R T E A</source>
+        <translation>K W G L</translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="487"/>
+        <source>R T A E</source>
+        <translation>K G L W</translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="492"/>
+        <source>R A E T</source>
+        <translation>K W L G</translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="497"/>
+        <source>R A T E</source>
+        <translation>K G L W</translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="502"/>
+        <source>E R T A</source>
+        <translation>W K G L</translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="507"/>
+        <source>E R A T</source>
+        <translation>W K L G</translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="512"/>
+        <source>E T R A</source>
+        <translation>W G K L</translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="517"/>
+        <source>E T A R</source>
+        <translation>W G L K</translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="522"/>
+        <source>E A R T</source>
+        <translation>W L K G</translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="527"/>
+        <source>E A T R</source>
+        <translation>W L G K</translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="532"/>
+        <source>T R E A</source>
+        <translation>G K W L</translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="537"/>
+        <source>T R A E</source>
+        <translation>G K L W</translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="542"/>
+        <source>T E R A</source>
+        <translation>G W K L</translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="547"/>
+        <source>T E A R</source>
+        <translation>G W L K</translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="552"/>
+        <source>T A R E</source>
+        <translation>G L K W</translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="557"/>
+        <source>T A E R</source>
+        <translation>G L W K</translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="562"/>
+        <source>A R E T</source>
+        <translation>L K W G</translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="567"/>
+        <source>A R T E</source>
+        <translation>L R G W</translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="572"/>
+        <source>A E R T</source>
+        <translation>L W K G</translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="577"/>
+        <source>A E T R</source>
+        <translation>L W G K</translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="582"/>
+        <source>A T R E</source>
+        <translation>L G K W</translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="587"/>
+        <source>A T E R</source>
+        <translation>L G W K</translation>
+    </message>
+    <message>
         <location filename="../fwpreferencesdialog.ui" line="944"/>
         <source>Profile</source>
         <translation>Profile</translation>
@@ -9212,6 +9452,126 @@ Moze być inny od języka firmware</translation>
         <location filename="../preferencesdialog.ui" line="639"/>
         <source>Ask for flashing after Download</source>
         <translation>Zapytaj o flaszowanie po pobraniu </translation>
+    </message>
+    <message>
+        <location filename="../preferencesdialog.ui" line="391"/>
+        <source>R E T A</source>
+        <translation>K W G L</translation>
+    </message>
+    <message>
+        <location filename="../preferencesdialog.ui" line="396"/>
+        <source>R E A T</source>
+        <translation>K W L G</translation>
+    </message>
+    <message>
+        <location filename="../preferencesdialog.ui" line="401"/>
+        <source>R T E A</source>
+        <translation>K G W L</translation>
+    </message>
+    <message>
+        <location filename="../preferencesdialog.ui" line="406"/>
+        <source>R T A E</source>
+        <translation>K G L W</translation>
+    </message>
+    <message>
+        <location filename="../preferencesdialog.ui" line="411"/>
+        <source>R A E T</source>
+        <translation>K L W G</translation>
+    </message>
+    <message>
+        <location filename="../preferencesdialog.ui" line="416"/>
+        <source>R A T E</source>
+        <translation>K G L W</translation>
+    </message>
+    <message>
+        <location filename="../preferencesdialog.ui" line="421"/>
+        <source>E R T A</source>
+        <translation>W K G L</translation>
+    </message>
+    <message>
+        <location filename="../preferencesdialog.ui" line="426"/>
+        <source>E R A T</source>
+        <translation>W K L G</translation>
+    </message>
+    <message>
+        <location filename="../preferencesdialog.ui" line="431"/>
+        <source>E T R A</source>
+        <translation>W G K L</translation>
+    </message>
+    <message>
+        <location filename="../preferencesdialog.ui" line="436"/>
+        <source>E T A R</source>
+        <translation>W G L K</translation>
+    </message>
+    <message>
+        <location filename="../preferencesdialog.ui" line="441"/>
+        <source>E A R T</source>
+        <translation>W L K G</translation>
+    </message>
+    <message>
+        <location filename="../preferencesdialog.ui" line="446"/>
+        <source>E A T R</source>
+        <translation>W L G K</translation>
+    </message>
+    <message>
+        <location filename="../preferencesdialog.ui" line="451"/>
+        <source>T R E A</source>
+        <translation>G K W L</translation>
+    </message>
+    <message>
+        <location filename="../preferencesdialog.ui" line="456"/>
+        <source>T R A E</source>
+        <translation>G K L W</translation>
+    </message>
+    <message>
+        <location filename="../preferencesdialog.ui" line="461"/>
+        <source>T E R A</source>
+        <translation>G W K L</translation>
+    </message>
+    <message>
+        <location filename="../preferencesdialog.ui" line="466"/>
+        <source>T E A R</source>
+        <translation>G L W K</translation>
+    </message>
+    <message>
+        <location filename="../preferencesdialog.ui" line="471"/>
+        <source>T A R E</source>
+        <translation>G L K W</translation>
+    </message>
+    <message>
+        <location filename="../preferencesdialog.ui" line="476"/>
+        <source>T A E R</source>
+        <translation>G L W K</translation>
+    </message>
+    <message>
+        <location filename="../preferencesdialog.ui" line="481"/>
+        <source>A R E T</source>
+        <translation>L K W G</translation>
+    </message>
+    <message>
+        <location filename="../preferencesdialog.ui" line="486"/>
+        <source>A R T E</source>
+        <translation>L R G W</translation>
+    </message>
+    <message>
+        <location filename="../preferencesdialog.ui" line="491"/>
+        <source>A E R T</source>
+        <translation>L W K G</translation>
+    </message>
+    <message>
+        <location filename="../preferencesdialog.ui" line="496"/>
+        <source>A E T R</source>
+        <translation>L W G K</translation>
+    </message>
+    <message>
+        <location filename="../preferencesdialog.ui" line="501"/>
+        <source>A T R E</source>
+        <translation>L G K W</translation>
+    </message>
+    <message>
+        <location filename="../preferencesdialog.ui" line="506"/>
+        <source>A T E R</source>
+        <translation>L G W K</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="660"/>
