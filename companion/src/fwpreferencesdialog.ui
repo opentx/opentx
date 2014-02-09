@@ -86,13 +86,6 @@
      </property>
     </widget>
    </item>
-   <item row="42" column="5">
-    <widget class="QPushButton" name="ProfSave_PB">
-     <property name="text">
-      <string>Save Profile</string>
-     </property>
-    </widget>
-   </item>
    <item row="12" column="4">
     <widget class="QCheckBox" name="optionCheckBox_19">
      <property name="sizePolicy">
@@ -938,20 +931,6 @@ This is used by the templated to determine which channel goes to what number out
      </property>
     </widget>
    </item>
-   <item row="42" column="4">
-    <widget class="QPushButton" name="export_PB">
-     <property name="text">
-      <string>Export</string>
-     </property>
-    </widget>
-   </item>
-   <item row="42" column="3">
-    <widget class="QPushButton" name="import_PB">
-     <property name="text">
-      <string>Import</string>
-     </property>
-    </widget>
-   </item>
    <item row="23" column="0">
     <widget class="QLabel" name="label_16">
      <property name="font">
@@ -1123,6 +1102,13 @@ May be different from firmware language</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="35" column="5">
+    <widget class="QPushButton" name="ProfSave_PB">
+     <property name="text">
+      <string>Save Profile</string>
      </property>
     </widget>
    </item>

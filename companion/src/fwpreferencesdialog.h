@@ -43,8 +43,6 @@ private slots:
     void on_checkFWUpdates_clicked();
     void on_ProfSlot_SB_valueChanged();
     void on_ProfSave_PB_clicked();
-    void on_export_PB_clicked();
-    void on_import_PB_clicked();
     void on_SplashSelect_clicked();
     void on_clearImageButton_clicked();
 };
