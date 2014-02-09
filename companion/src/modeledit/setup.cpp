@@ -563,7 +563,10 @@ void Setup::update()
 
   updateBeepCenter();
   updateStartupSwitches();
-  updatePotWarnings();
+  
+  if(IS_TARANIS(GetEepromInterface()->getBoard())) {
+    updatePotWarnings();
+  }
 
   for (int i=0; i<C9X_MAX_TIMERS; i++)
     timers[i]->update();
