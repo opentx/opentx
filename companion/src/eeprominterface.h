@@ -642,6 +642,8 @@ enum AssignFunc {
   FuncPlaySound,
   FuncPlayHaptic,
   FuncReset,
+  FuncSetTimer1,
+  FuncSetTimer2,
   FuncVario,
   FuncPlayPrompt,
   FuncPlayBoth,

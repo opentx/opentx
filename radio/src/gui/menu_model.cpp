@@ -4605,7 +4605,6 @@ void menuModelLogicalSwitches(uint8_t event)
     }
 #endif
 
-
     if ((s_editMode>0 || p1valdiff) && attr) {
       switch (horz) {
         case LS_FIELD_FUNCTION:
@@ -4679,9 +4678,9 @@ void menuModelLogicalSwitches(uint8_t event)
 #endif
 
 #if LCD_W >= 212
-  #define MODEL_CUSTOM_FUNC_1ST_COLUMN          (5+4*FW)
-  #define MODEL_CUSTOM_FUNC_2ND_COLUMN          (9*FW)
-  #define MODEL_CUSTOM_FUNC_3RD_COLUMN          (21*FW)
+  #define MODEL_CUSTOM_FUNC_1ST_COLUMN          (5+3*FW)
+  #define MODEL_CUSTOM_FUNC_2ND_COLUMN          (8*FW)
+  #define MODEL_CUSTOM_FUNC_3RD_COLUMN          (20*FW)
   #define MODEL_CUSTOM_FUNC_4TH_COLUMN          (33*FW-3)
   #define MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF    (34*FW-3)
 #else
@@ -4798,7 +4797,11 @@ void menuModelCustomFunctions(uint8_t event)
           if (CFN_SWITCH(sd)) {
             lcd_putsiAtt(MODEL_CUSTOM_FUNC_2ND_COLUMN, y, STR_VFSWFUNC, func, attr);
             if (active) {
+#if defined(CPUARM)
+              CFN_FUNC(sd) = checkIncDec(event, CFN_FUNC(sd), 0, FUNC_MAX-1, EE_MODEL, isAssignableFunctionAvailable);
+#else
               CHECK_INCDEC_MODELVAR_ZERO(event, CFN_FUNC(sd), FUNC_MAX-1);
+#endif
               if (checkIncDec_Ret) CFN_RESET(sd);
             }
           }
@@ -4814,28 +4817,36 @@ void menuModelCustomFunctions(uint8_t event)
         {
           int8_t maxParam = NUM_CHNOUT-1;
           if (func == FUNC_SAFETY_CHANNEL) {
-            putsChn(lcdNextPos, y, CFN_CH_NUMBER(sd)+1, attr);
+            putsChn(lcdNextPos, y, CFN_CH_INDEX(sd)+1, attr);
           }
           else if (func == FUNC_TRAINER) {
             maxParam = 4;
 #if defined(CPUARM)
-            putsMixerSource(lcdNextPos, y, CFN_CH_NUMBER(sd)==0 ? 0 : MIXSRC_Rud+CFN_CH_NUMBER(sd)-1, attr);
+            putsMixerSource(lcdNextPos, y, CFN_CH_INDEX(sd)==0 ? 0 : MIXSRC_Rud+CFN_CH_INDEX(sd)-1, attr);
 #else
-            putsMixerSource(lcdNextPos, y, MIXSRC_Rud+CFN_CH_NUMBER(sd)-1, attr);
+            putsMixerSource(lcdNextPos, y, MIXSRC_Rud+CFN_CH_INDEX(sd)-1, attr);
 #endif
           }
 #if defined(GVARS)
           else if (func == FUNC_ADJUST_GVAR) {
             maxParam = MAX_GVARS-1;
-            putsStrIdx(lcdNextPos, y, STR_GV, CFN_GVAR_NUMBER(sd)+1, attr);
-            if (active) CHECK_INCDEC_MODELVAR_ZERO(event, CFN_GVAR_NUMBER(sd), maxParam);
+            putsStrIdx(lcdNextPos, y, STR_GV, CFN_GVAR_INDEX(sd)+1, attr);
+            if (active) CHECK_INCDEC_MODELVAR_ZERO(event, CFN_GVAR_INDEX(sd), maxParam);
+            break;
+          }
+#endif
+#if defined(CPUARM)
+          else if (func == FUNC_SET_TIMER) {
+            maxParam = 1;
+            putsStrIdx(lcdNextPos, y, STR_TIMER, CFN_TIMER_INDEX(sd)+1, attr);
+            if (active) CHECK_INCDEC_MODELVAR_ZERO(event, CFN_TIMER_INDEX(sd), maxParam);
             break;
           }
 #endif
           else if (attr) {
             REPEAT_LAST_CURSOR_MOVE();
           }
-          if (active) CHECK_INCDEC_MODELVAR_ZERO(event, CFN_CH_NUMBER(sd), maxParam);
+          if (active) CHECK_INCDEC_MODELVAR_ZERO(event, CFN_CH_INDEX(sd), maxParam);
           break;
         }
 
@@ -4844,17 +4855,26 @@ void menuModelCustomFunctions(uint8_t event)
           INCDEC_DECLARE_VARS();
           int16_t val_displayed = CFN_PARAM(sd);
           int8_t val_min = 0;
+#if defined(CPUARM)
+          int16_t val_max = 255;
+#else
           uint8_t val_max = 255;
+#endif
           if (func == FUNC_SAFETY_CHANNEL) {
             val_displayed = (int8_t)CFN_PARAM(sd);
             val_min = -125; val_max = 125;
             lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
           }
+#if defined(CPUARM)
+          else if (func == FUNC_SET_TIMER) {
+            val_max = 59*60+59;
+            putsTime(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT, attr);
+          }
+#endif
 #if defined(AUDIO)
           else if (func == FUNC_PLAY_SOUND) {
             val_max = AU_FRSKY_LAST-AU_FRSKY_FIRST-1;
             lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_FUNCSOUNDS, val_displayed, attr);
-            break;
           }
 #endif
 #if defined(HAPTIC)
