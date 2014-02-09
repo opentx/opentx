@@ -1307,6 +1307,11 @@ class CustomFunctionsConversionTable: public ConversionTable {
       addConversion(FuncInstantTrim, val++);
       if (version >= 216) {
         addConversion(FuncReset, val++);
+        if (IS_ARM(board)) {
+          addConversion(FuncSetTimer1, val);
+          addConversion(FuncSetTimer2, val);
+          val++;
+        }
         for (int i=0; i<MAX_GVARS(board, version); i++)
           addConversion(FuncAdjustGV1+i, val);
         val++;
@@ -1452,6 +1457,12 @@ class ArmCustomFunctionField: public TransformedField {
         if (version >= 216)
           *((uint8_t *)(_param+3)) = fn.func - FuncTrainer;
       }
+      else if (fn.func >= FuncSetTimer1 && fn.func <= FuncSetTimer2) {
+        if (version >= 216) {
+          *((uint16_t *)_param) = fn.param;
+          *((uint8_t *)(_param+3)) = fn.func - FuncSetTimer1;
+        }
+      }
       else if (fn.func == FuncPlayPrompt || fn.func == FuncBackgroundMusic) {
         memcpy(_param, fn.paramarm, sizeof(_param));
       }
@@ -1519,9 +1530,13 @@ class ArmCustomFunctionField: public TransformedField {
         fn.func = AssignFunc(fn.func + index);
         fn.param = (int)value;
       }
-      else if (fn.func >= FuncTrainer && fn.func <= FuncTrainerAIL) {
+      else if (fn.func >= FuncSetTimer1 && fn.func <= FuncSetTimer2) {
         fn.func = AssignFunc(fn.func + index);
         fn.param = (int)value;
+      }
+      else if (fn.func >= FuncTrainer && fn.func <= FuncTrainerAIL) {
+        fn.func = AssignFunc(fn.func + index);
+        fn.param = value;
       }
       else if (fn.func == FuncPlayPrompt || fn.func == FuncBackgroundMusic) {
         memcpy(fn.paramarm, _param, sizeof(fn.paramarm));

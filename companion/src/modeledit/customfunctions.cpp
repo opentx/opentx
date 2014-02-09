@@ -347,6 +347,15 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
       populateFuncParamCB(fswtchParamT[i], model, index, model.funcSw[i].param);
       widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM | CUSTOM_FUNCTION_ENABLE;
     }
+    else if (index>=FuncSetTimer1 && index<=FuncSetTimer2) {
+      if (modified) model.funcSw[i].param = fswtchParam[i]->value();
+      fswtchParam[i]->setDecimals(0);
+      fswtchParam[i]->setSingleStep(1);
+      fswtchParam[i]->setMinimum(0);
+      fswtchParam[i]->setMaximum(59*60+59);
+      fswtchParam[i]->setValue(model.funcSw[i].param);
+      widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM + CUSTOM_FUNCTION_ENABLE;
+    }
     else if (index==FuncVolume) {
       if (modified) model.funcSw[i].param = fswtchParamT[i]->itemData(fswtchParamT[i]->currentIndex()).toInt();
       populateFuncParamCB(fswtchParamT[i], model, index, model.funcSw[i].param);

@@ -726,6 +726,9 @@ enum Functions {
   FUNC_TRAINER,
   FUNC_INSTANT_TRIM,
   FUNC_RESET,
+#if defined(CPUARM)
+  FUNC_SET_TIMER,
+#endif
   FUNC_ADJUST_GVAR,
 #if defined(CPUARM)
   FUNC_VOLUME,
@@ -833,11 +836,12 @@ PACK(typedef struct t_CustomFnData { // Function Switches data
 #define CFN_SWITCH(p)           ((p)->swtch)
 #define CFN_FUNC(p)             ((p)->func)
 #define CFN_ACTIVE(p)           ((p)->active)
-#define CFN_CH_NUMBER(p)        ((p)->all.param)
+#define CFN_CH_INDEX(p)         ((p)->all.param)
+#define CFN_GVAR_INDEX(p)       ((p)->all.param)
+#define CFN_TIMER_INDEX(p)      ((p)->all.param)
 #define CFN_PLAY_REPEAT(p)      ((p)->active)
 #define CFN_PLAY_REPEAT_MUL     1
 #define CFN_PLAY_REPEAT_NOSTART 0x3F
-#define CFN_GVAR_NUMBER(p)      ((p)->all.param)
 #define CFN_GVAR_MODE(p)        ((p)->all.mode)
 #define CFN_PARAM(p)            ((p)->all.val)
 #define CFN_RESET(p)            ((p)->active=0, (p)->clear.val1=0, (p)->clear.val2=0)
@@ -866,10 +870,11 @@ PACK(typedef struct t_CustomFnData {
 #define CFN_SWITCH(p)       ((p)->all.swtch)
 #define CFN_FUNC(p)         ((p)->all.func)
 #define CFN_ACTIVE(p)       ((p)->all.active)
-#define CFN_CH_NUMBER(p)    ((p)->all.param)
+#define CFN_CH_INDEX(p)     ((p)->all.param)
+#define CFN_TIMER_INDEX(p)  ((p)->all.param)
+#define CFN_GVAR_INDEX(p)   ((p)->gvar.param)
 #define CFN_PLAY_REPEAT(p)  ((p)->all.param)
 #define CFN_PLAY_REPEAT_MUL 10
-#define CFN_GVAR_NUMBER(p)  ((p)->gvar.param)
 #define CFN_GVAR_MODE(p)    ((p)->gvar.mode)
 #define CFN_PARAM(p)        ((p)->value)
 #define CFN_RESET(p)        ((p)->all.active = 0, CFN_PARAM(p) = 0)

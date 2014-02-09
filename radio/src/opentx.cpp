@@ -3185,14 +3185,14 @@ void evalFunctions()
         switch(CFN_FUNC(sd)) {
 
           case FUNC_SAFETY_CHANNEL:
-            safetyCh[CFN_CH_NUMBER(sd)] = CFN_PARAM(sd);
+            safetyCh[CFN_CH_INDEX(sd)] = CFN_PARAM(sd);
             break;
 
           case FUNC_TRAINER:
           {
             uint8_t mask = 0x0f;
-            if (CFN_CH_NUMBER(sd) > 0) {
-              mask = (1<<(CFN_CH_NUMBER(sd)-1));
+            if (CFN_CH_INDEX(sd) > 0) {
+              mask = (1<<(CFN_CH_INDEX(sd)-1));
             }
             newActiveFunctions |= mask;
             break;
@@ -3235,32 +3235,43 @@ void evalFunctions()
             }
             break;
 
+#if defined(CPUARM)
+          case FUNC_SET_TIMER:
+          {
+            TimerState & timerState = timersStates[CFN_TIMER_INDEX(sd)];
+            timerState.state = TMR_OFF; // is changed to RUNNING dep from mode
+            timerState.val = CFN_PARAM(sd);
+            timerState.val_10ms = 0 ;
+            break;
+          }
+#endif
+
 #if defined(GVARS)
           case FUNC_ADJUST_GVAR:
             if (CFN_GVAR_MODE(sd) == 0) {
-              SET_GVAR(CFN_GVAR_NUMBER(sd), CFN_PARAM(sd), s_perout_flight_phase);
+              SET_GVAR(CFN_GVAR_INDEX(sd), CFN_PARAM(sd), s_perout_flight_phase);
             }
             else if (CFN_GVAR_MODE(sd) == 2) {
-              SET_GVAR(CFN_GVAR_NUMBER(sd), GVAR_VALUE(CFN_PARAM(sd), s_perout_flight_phase), s_perout_flight_phase);
+              SET_GVAR(CFN_GVAR_INDEX(sd), GVAR_VALUE(CFN_PARAM(sd), s_perout_flight_phase), s_perout_flight_phase);
             }
             else if (CFN_GVAR_MODE(sd) == 3) {
               if (!(activeFnSwitches & switch_mask)) {
-                SET_GVAR(CFN_GVAR_NUMBER(sd), GVAR_VALUE(CFN_GVAR_NUMBER(sd), getGVarFlightPhase(s_perout_flight_phase, CFN_GVAR_NUMBER(sd))) + (CFN_PARAM(sd) ? +1 : -1), s_perout_flight_phase);
+                SET_GVAR(CFN_GVAR_INDEX(sd), GVAR_VALUE(CFN_GVAR_INDEX(sd), getGVarFlightPhase(s_perout_flight_phase, CFN_GVAR_INDEX(sd))) + (CFN_PARAM(sd) ? +1 : -1), s_perout_flight_phase);
               }
             }
             else if (CFN_PARAM(sd) >= MIXSRC_TrimRud && CFN_PARAM(sd) <= MIXSRC_TrimAil) {
-              trimGvar[CFN_PARAM(sd)-MIXSRC_TrimRud] = CFN_GVAR_NUMBER(sd);
+              trimGvar[CFN_PARAM(sd)-MIXSRC_TrimRud] = CFN_GVAR_INDEX(sd);
             }
 #if defined(ROTARY_ENCODERS)
             else if (CFN_PARAM(sd) >= MIXSRC_REa && CFN_PARAM(sd) < MIXSRC_TrimRud) {
               int8_t scroll = rePreviousValues[CFN_PARAM(sd)-MIXSRC_REa] - (g_rotenc[CFN_PARAM(sd)-MIXSRC_REa] / ROTARY_ENCODER_GRANULARITY);
               if (scroll) {
-                SET_GVAR(CFN_GVAR_NUMBER(sd), GVAR_VALUE(CFN_GVAR_NUMBER(sd), getGVarFlightPhase(s_perout_flight_phase, CFN_GVAR_NUMBER(sd))) + scroll, s_perout_flight_phase);
+                SET_GVAR(CFN_GVAR_INDEX(sd), GVAR_VALUE(CFN_GVAR_INDEX(sd), getGVarFlightPhase(s_perout_flight_phase, CFN_GVAR_INDEX(sd))) + scroll, s_perout_flight_phase);
               }
             }
 #endif
             else {
-              SET_GVAR(CFN_GVAR_NUMBER(sd), limit((getvalue_t)-1250, getValue(CFN_PARAM(sd)), (getvalue_t)1250) / 10, s_perout_flight_phase);
+              SET_GVAR(CFN_GVAR_INDEX(sd), limit((getvalue_t)-1250, getValue(CFN_PARAM(sd)), (getvalue_t)1250) / 10, s_perout_flight_phase);
             }
             break;
 #endif
