@@ -83,6 +83,8 @@ public slots:
     void unloadProfile();
     
 private slots:
+    void openDocumentURL();
+
     void setLanguage(QString langString);
     void setDefaultLanguage() {setLanguage("");};
     void setCZLanguage() {setLanguage("cs_CZ");};
@@ -270,6 +272,7 @@ private:
     QAction *portugueseLanguageAct;
     QAction *swedishLanguageAct;
     QAction *russianLanguageAct;
+    QAction *openDocumentURLAct;
     QString fwToUpdate;
     QToolButton * profileButton;
 };
