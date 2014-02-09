@@ -42,6 +42,7 @@
 #include <QtGui>
 #include <QNetworkProxyFactory>
 #include <QFileInfo>
+#include <QDesktopServices>
 #include "mainwindow.h"
 #include "mdichild.h"
 #include "burnconfigdialog.h"
@@ -686,6 +687,11 @@ void MainWindow::newFile()
     child->show();
 }
 
+void MainWindow::openDocumentURL()
+{
+  QString link = "http://www.open-tx.org/documents.html";
+  QDesktopServices::openUrl(QUrl(link));
+}
 
 void MainWindow::openFile()
 {
@@ -1900,6 +1906,11 @@ void MainWindow::createActions()
     russianLanguageAct = new QAction(tr("Russian"),this);
     russianLanguageAct->setStatusTip(tr("Use Russian in menus"));
     connect(russianLanguageAct, SIGNAL(triggered()), this, SLOT(setRULanguage()));
+
+    openDocumentURLAct = new QAction(tr("Manuals and other Documents"),this);
+    openDocumentURLAct->setStatusTip(tr("Open the OpenTX document page in a web browser"));
+    connect(openDocumentURLAct, SIGNAL(triggered()), this, SLOT(openDocumentURL()));
+
 }
 
 void MainWindow::createMenus()
@@ -1992,6 +2003,7 @@ void MainWindow::createMenus()
     helpMenu->addAction(checkForUpdatesAct);
     helpMenu->addSeparator();
     helpMenu->addAction(aboutAct);
+    helpMenu->addAction(openDocumentURLAct);
     helpMenu->addSeparator();
     helpMenu->addAction(changelogAct);
     helpMenu->addAction(fwchangelogAct);
