@@ -1913,6 +1913,10 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
   else
     internalField.Append(new SwitchesWarningField<8>(modelData.switchWarningStates, board, version));
 
+  if (version >= 216) {
+    internalField.Append(new UnsignedField<8>(modelData.nSwToWarn));
+  }
+
   if ((board == BOARD_STOCK || (board == BOARD_M128 && version >= 215)) && (variant & GVARS_VARIANT)) {
     for (int i=0; i<MAX_GVARS(board, version); i++) {
       // on M64 GVARS are common to all phases, and there is no name
@@ -1967,12 +1971,11 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
     }
   }
 
-  if (IS_ARM(board) && version >= 216) {
-    internalField.Append(new UnsignedField<8>(modelData.nSwToWarn));
+  if (board==BOARD_SKY9X && version >= 216) {
     internalField.Append(new UnsignedField<8>(modelData.nPotsToWarn));
     for (int i=0; i < GetEepromInterface()->getCapability(Pots); i++) {
       internalField.Append(new SignedField<8>(modelData.potPosition[i]));
-	}
+    }
   }
 
   if (IS_TARANIS(board)) {
@@ -1986,7 +1989,6 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
     internalField.Append(new SpareBitsField<720>());
     for (int i=0; i<32; i++)
       internalField.Append(new ZCharField<4>(modelData.inputNames[i]));
-    internalField.Append(new UnsignedField<8>(modelData.nSwToWarn));
     internalField.Append(new UnsignedField<8>(modelData.nPotsToWarn));
     for (int i=0; i < GetEepromInterface()->getCapability(Pots); i++) {
       internalField.Append(new SignedField<8>(modelData.potPosition[i]));
