@@ -1705,12 +1705,12 @@ void MainWindow::createActions()
     preferencesAct->setStatusTip(tr("Used the old Preferences Dialog"));
     connect(preferencesAct, SIGNAL(triggered()), this, SLOT(preferences()));
 
-    appPreferencesAct = new QAction(CompanionIcon("apppreferences.png"), tr("&Application Preferences..."), this);
-    appPreferencesAct->setStatusTip(tr("Edit application preferences"));
+    appPreferencesAct = new QAction(CompanionIcon("apppreferences.png"), tr("&Setting..."), this);
+    appPreferencesAct->setStatusTip(tr("Edit Settings"));
     connect(appPreferencesAct, SIGNAL(triggered()), this, SLOT(appPreferences()));
 
-    fwPreferencesAct = new QAction(CompanionIcon("fwpreferences.png"), tr("&Downloads and Profiles..."), this);
-    fwPreferencesAct->setStatusTip(tr("Firmware and voice file downloads as well as profile definition."));
+    fwPreferencesAct = new QAction(CompanionIcon("fwpreferences.png"), tr("&Downloads..."), this);
+    fwPreferencesAct->setStatusTip(tr("Download firmware and voice files"));
     connect(fwPreferencesAct, SIGNAL(triggered()), this, SLOT(fwPreferences()));
 
     checkForUpdatesAct = new QAction(CompanionIcon("update.png"), tr("&Check for updates..."), this);

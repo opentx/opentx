@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>685</width>
-    <height>456</height>
+    <height>431</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Application Preferences</string>
+   <string>Edit Settings</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="verticalSpacing">
@@ -32,230 +32,7 @@
    <property name="margin">
     <number>6</number>
    </property>
-   <item row="20" column="8">
-    <widget class="QPushButton" name="libraryPathButton">
-     <property name="text">
-      <string>Open Folder</string>
-     </property>
-    </widget>
-   </item>
-   <item row="22" column="1" colspan="8">
-    <widget class="Line" name="line_5">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1" colspan="8">
-    <widget class="Line" name="line_4">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="17" column="0">
-    <widget class="QLabel" name="label_11">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Joystick</string>
-     </property>
-    </widget>
-   </item>
-   <item row="13" column="0">
-    <widget class="QLabel" name="label_19">
-     <property name="text">
-      <string>Simulator capture folder</string>
-     </property>
-    </widget>
-   </item>
-   <item row="15" column="1" colspan="7">
-    <widget class="QCheckBox" name="simuSW">
-     <property name="text">
-      <string>Remember simulator switch values</string>
-     </property>
-    </widget>
-   </item>
-   <item row="20" column="0">
-    <widget class="QLabel" name="label_9">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>User Splash Screens</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_5">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Files to keep</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="1" colspan="7">
-    <widget class="QCheckBox" name="wizardEnable_ChkB">
-     <property name="text">
-      <string>Offer to use wizard for new models</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="18" column="1" colspan="8">
-    <widget class="Line" name="line_6">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="16" column="1">
-    <widget class="QComboBox" name="backLightColor">
-     <property name="maximumSize">
-      <size>
-       <width>100</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <item>
-      <property name="text">
-       <string>Blue</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Green</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Red</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Orange</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Yellow</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="7" column="1" colspan="7">
-    <widget class="QCheckBox" name="startupCheck_companion9x">
-     <property name="text">
-      <string>Automatic check for Companion updates</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="1" colspan="8">
-    <widget class="Line" name="line_2">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="13" column="1" colspan="7">
-    <widget class="QLineEdit" name="snapshotPath">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="14" column="1" colspan="7">
-    <widget class="QCheckBox" name="snapshotClipboardCKB">
-     <property name="text">
-      <string>Only capture to clipboard</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QSpinBox" name="historySize">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-       <horstretch>40</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>50</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="maximum">
-      <number>15</number>
-     </property>
-     <property name="value">
-      <number>10</number>
-     </property>
-    </widget>
-   </item>
-   <item row="12" column="1" colspan="8">
-    <widget class="Line" name="line_3">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1" colspan="8">
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1" colspan="7">
-    <widget class="QLineEdit" name="ge_lineedit">
-     <property name="minimumSize">
-      <size>
-       <width>250</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="17" column="8">
-    <widget class="QPushButton" name="joystickcalButton">
-     <property name="text">
-      <string>Calibrate</string>
-     </property>
-    </widget>
-   </item>
-   <item row="10" column="0">
-    <widget class="QLabel" name="label_17">
-     <property name="text">
-      <string>Automatic Backup Folder</string>
-     </property>
-    </widget>
-   </item>
-   <item row="23" column="7" colspan="2">
+   <item row="2" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -265,205 +42,892 @@
      </property>
     </widget>
    </item>
-   <item row="13" column="8">
-    <widget class="QPushButton" name="snapshotPathButton">
-     <property name="text">
-      <string>Open Folder</string>
+   <item row="0" column="1">
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
      </property>
-     <property name="flat">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="10" column="1" colspan="7">
-    <widget class="QLineEdit" name="backupPath">
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="17" column="1">
-    <widget class="QComboBox" name="joystickCB">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item row="16" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Simulator BackLight</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="11" column="1" colspan="7">
-    <widget class="QCheckBox" name="backupEnable">
-     <property name="text">
-      <string>Enable automatic backup before writing firmware</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1" colspan="7">
-    <widget class="QCheckBox" name="showSplash">
-     <property name="text">
-      <string>Show splash screen when Companion starts</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="8">
-    <widget class="QPushButton" name="ge_pathButton">
-     <property name="text">
-      <string>Find Executable</string>
-     </property>
-    </widget>
-   </item>
-   <item row="10" column="8">
-    <widget class="QPushButton" name="backupPathButton">
-     <property name="text">
-      <string>Open Folder</string>
-     </property>
-    </widget>
-   </item>
-   <item row="17" column="4" colspan="4">
-    <widget class="QCheckBox" name="joystickChkB">
-     <property name="text">
-      <string>Enable</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="ge_label">
-     <property name="text">
-      <string>Google Earth Executable</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="1" colspan="7">
-    <widget class="QCheckBox" name="startupCheck_fw">
-     <property name="text">
-      <string>Automatic check for OpenTX firmware updates</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="19" column="1">
-    <widget class="QComboBox" name="splashincludeCB">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <item>
-      <property name="text">
-       <string>Include companion splashes</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Only user defined splashes</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="19" column="0">
-    <widget class="QLabel" name="label_10">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Splash Screen Library</string>
-     </property>
-    </widget>
-   </item>
-   <item row="20" column="1" colspan="7">
-    <widget class="QLineEdit" name="libraryPath">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
+     <widget class="QWidget" name="applicationTab">
+      <attribute name="title">
+       <string>Application Settings</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="11" column="1" colspan="4">
+        <widget class="Line" name="line_5">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="9" column="0">
+        <widget class="QLabel" name="label_17">
+         <property name="text">
+          <string>Automatic Backup Folder</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QSpinBox" name="historySize">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+           <horstretch>40</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>50</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="maximum">
+          <number>15</number>
+         </property>
+         <property name="value">
+          <number>10</number>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="0">
+        <widget class="QLabel" name="label_9">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>User Splash Screens</string>
+         </property>
+        </widget>
+       </item>
+       <item row="12" column="1">
+        <widget class="QComboBox" name="splashincludeCB">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <item>
+          <property name="text">
+           <string>Include companion splashes</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Only user defined splashes</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="ge_label">
+         <property name="text">
+          <string>Google Earth Executable</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QCheckBox" name="startupCheck_fw">
+         <property name="text">
+          <string>Automatic check for OpenTX firmware updates</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="1">
+        <widget class="QLineEdit" name="backupPath">
+         <property name="minimumSize">
+          <size>
+           <width>350</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="4">
+        <widget class="QPushButton" name="libraryPathButton">
+         <property name="text">
+          <string>Open Folder</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" colspan="4">
+        <widget class="Line" name="line_4">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="ge_lineedit">
+         <property name="minimumSize">
+          <size>
+           <width>350</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="4">
+        <widget class="QPushButton" name="ge_pathButton">
+         <property name="text">
+          <string>Find Executable</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_5">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Files to keep</string>
+         </property>
+        </widget>
+       </item>
+       <item row="12" column="0">
+        <widget class="QLabel" name="label_10">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Splash Screen Library</string>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="1">
+        <widget class="QCheckBox" name="backupEnable">
+         <property name="text">
+          <string>Enable automatic backup before writing firmware</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="4">
+        <widget class="QPushButton" name="backupPathButton">
+         <property name="text">
+          <string>Open Folder</string>
+         </property>
+        </widget>
+       </item>
+       <item row="14" column="1">
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="3" column="1" colspan="4">
+        <widget class="Line" name="line">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QCheckBox" name="startupCheck_companion9x">
+         <property name="text">
+          <string>Automatic check for Companion updates</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="1" colspan="4">
+        <widget class="Line" name="line_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1">
+        <widget class="QCheckBox" name="wizardEnable_ChkB">
+         <property name="text">
+          <string>Offer to use wizard for new models</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QCheckBox" name="showSplash">
+         <property name="text">
+          <string>Show splash screen when Companion starts</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <spacer name="horizontalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="13" column="1">
+        <widget class="QLineEdit" name="libraryPath">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="simulatorTab">
+      <attribute name="title">
+       <string>Simulator Settings</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Simulator BackLight</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="2">
+        <widget class="QCheckBox" name="joystickChkB">
+         <property name="text">
+          <string>Enable</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="4">
+        <widget class="QPushButton" name="snapshotPathButton">
+         <property name="text">
+          <string>Open Folder</string>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="3" column="1">
+        <widget class="QComboBox" name="backLightColor">
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <item>
+          <property name="text">
+           <string>Blue</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Green</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Red</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Orange</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Yellow</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="label_11">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Joystick</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QCheckBox" name="snapshotClipboardCKB">
+         <property name="text">
+          <string>Only capture to clipboard</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QComboBox" name="joystickCB">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="4">
+        <widget class="QPushButton" name="joystickcalButton">
+         <property name="text">
+          <string>Calibrate</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QCheckBox" name="simuSW">
+         <property name="text">
+          <string>Remember simulator switch values</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_19">
+         <property name="text">
+          <string>Simulator capture folder</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="0" column="1" colspan="2">
+        <widget class="QLineEdit" name="snapshotPath">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>350</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="profileTab">
+      <attribute name="title">
+       <string>Radio Settings</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="7" column="1" colspan="5">
+        <widget class="Line" name="line_6">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="5">
+        <widget class="QLabel" name="imageLabel">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>128</width>
+           <height>64</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>128</width>
+           <height>64</height>
+          </size>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Panel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="0">
+        <widget class="QLabel" name="label_13">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Channel Order</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="SplashFileName">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>350</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" colspan="3">
+        <widget class="QLineEdit" name="sdPath">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>350</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="12" column="1" colspan="3">
+        <widget class="QCheckBox" name="burnFirmware">
+         <property name="text">
+          <string>Offer to write FW to Tx after download</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="ProfName_LE">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="12" column="5">
+        <widget class="QPushButton" name="ProfSave_PB">
+         <property name="text">
+          <string>Save Profile</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="5">
+        <widget class="QPushButton" name="sdPathButton">
+         <property name="text">
+          <string>Open Folder</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="5">
+        <widget class="QPushButton" name="clearImageButton">
+         <property name="text">
+          <string>Clear Image</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1" colspan="5">
+        <widget class="Line" name="line_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="1" colspan="2">
+        <widget class="QComboBox" name="channelorderCB">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="whatsThis">
+          <string>Channel order
+
+This is used by the templated to determine which channel goes to what number output.</string>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string notr="true">R E T A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string notr="true">R E A T</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string notr="true">R T E A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string notr="true">R T A E</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string notr="true">R A E T</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string notr="true">R A T E</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string notr="true">E R T A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string notr="true">E R A T</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string notr="true">E T R A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string notr="true">E T A R</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string notr="true">E A R T</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string notr="true">E A T R</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string notr="true">T R E A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string notr="true">T R A E</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string notr="true">T E R A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string notr="true">T E A R</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string notr="true">T A R E</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string notr="true">T A E R</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string notr="true">A R E T</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string notr="true">A R T E</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string notr="true">A E R T</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string notr="true">A E T R</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string notr="true">A T R E</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string notr="true">A T E R</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="sdPathLabel">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>SD Structure path</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="4">
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="8" column="1">
+        <widget class="QComboBox" name="stickmodeCB">
+         <property name="maximumSize">
+          <size>
+           <width>200</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="whatsThis">
+          <string>Mode selection:
+
+Mode 1:
+  Left stick:  Elevator, Rudder
+  Right stick:  Throttle, Aileron
+
+Mode 2:
+  Left stick:  Throttle, Rudder
+  Right stick:  Elevator, Aileron
+
+Mode 3:
+  Left stick:  Elevator, Aileron
+  Right stick:  Throttle, Rudder
+
+Mode 4:
+  Left stick:  Throttle, Aileron
+  Right stick:  Elevator, Rudder
+
+</string>
+         </property>
+         <property name="currentIndex">
+          <number>1</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>Mode 1 (RUD ELE THR AIL)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Mode 2 (RUD THR ELE AIL)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Mode 3 (AIL ELE THR RUD)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Mode 4 (AIL THR ELE RUD)</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <widget class="QLabel" name="label_14">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Default Stick Mode</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_8">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Splash Screen</string>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="1" colspan="3">
+        <widget class="QCheckBox" name="renameFirmware">
+         <property name="text">
+          <string>Append version number to FW file name</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="5">
+        <widget class="QPushButton" name="SplashSelect">
+         <property name="text">
+          <string>Edit Image</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Settings Profile Name</string>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="1">
+        <spacer name="verticalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>
-  <zorder>startupCheck_companion9x</zorder>
-  <zorder>backupEnable</zorder>
-  <zorder>line</zorder>
-  <zorder>backupPath</zorder>
-  <zorder>line_2</zorder>
-  <zorder>startupCheck_fw</zorder>
-  <zorder>wizardEnable_ChkB</zorder>
-  <zorder>ge_label</zorder>
-  <zorder>label_5</zorder>
-  <zorder>showSplash</zorder>
-  <zorder>line_3</zorder>
-  <zorder>ge_pathButton</zorder>
-  <zorder>line_4</zorder>
-  <zorder>backupPathButton</zorder>
-  <zorder>label_3</zorder>
-  <zorder>backLightColor</zorder>
-  <zorder>snapshotPath</zorder>
-  <zorder>snapshotPathButton</zorder>
-  <zorder>snapshotClipboardCKB</zorder>
-  <zorder>label_11</zorder>
-  <zorder>joystickCB</zorder>
-  <zorder>joystickcalButton</zorder>
-  <zorder>ge_lineedit</zorder>
-  <zorder>simuSW</zorder>
-  <zorder>buttonBox</zorder>
-  <zorder>line_5</zorder>
-  <zorder>joystickChkB</zorder>
-  <zorder>label_17</zorder>
-  <zorder>label_19</zorder>
-  <zorder>historySize</zorder>
-  <zorder>label_9</zorder>
-  <zorder>libraryPath</zorder>
-  <zorder>libraryPathButton</zorder>
-  <zorder>line_6</zorder>
-  <zorder>splashincludeCB</zorder>
-  <zorder>label_10</zorder>
  </widget>
  <tabstops>
   <tabstop>buttonBox</tabstop>
-  <tabstop>ge_lineedit</tabstop>
-  <tabstop>ge_pathButton</tabstop>
-  <tabstop>historySize</tabstop>
-  <tabstop>showSplash</tabstop>
-  <tabstop>startupCheck_fw</tabstop>
-  <tabstop>startupCheck_companion9x</tabstop>
-  <tabstop>wizardEnable_ChkB</tabstop>
-  <tabstop>backupPath</tabstop>
-  <tabstop>backupPathButton</tabstop>
-  <tabstop>backupEnable</tabstop>
-  <tabstop>snapshotPath</tabstop>
-  <tabstop>snapshotPathButton</tabstop>
-  <tabstop>snapshotClipboardCKB</tabstop>
-  <tabstop>simuSW</tabstop>
-  <tabstop>backLightColor</tabstop>
-  <tabstop>joystickCB</tabstop>
-  <tabstop>joystickChkB</tabstop>
-  <tabstop>joystickcalButton</tabstop>
  </tabstops>
  <resources>
   <include location="companion.qrc"/>
