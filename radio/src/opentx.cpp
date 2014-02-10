@@ -4365,8 +4365,10 @@ void opentxClose()
   hapticOff();
 #endif
 
+  saveTimers();
+
 #if defined(CPUARM) && defined(FRSKY)
-  if((g_model.frsky.mAhPersistent) && (g_model.frsky.storedMah != frskyData.hub.currentConsumption)) {
+  if ((g_model.frsky.mAhPersistent) && (g_model.frsky.storedMah != frskyData.hub.currentConsumption)) {
     g_model.frsky.storedMah = frskyData.hub.currentConsumption;
     eeDirty(EE_MODEL);
   }
@@ -4376,20 +4378,24 @@ void opentxClose()
   }
 #endif
 
-  saveTimers();
-
 #if defined(PCBSKY9X)
   uint32_t mAhUsed = g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.currentCalib) / 8192 / 36;
-  if (g_eeGeneral.mAhUsed != mAhUsed)
+  if (g_eeGeneral.mAhUsed != mAhUsed) {
     g_eeGeneral.mAhUsed = mAhUsed;
+  }
 #endif
 
-#if defined(CPUARM) && !defined(REVA)
-  if (sessionTimer > 0)
-    g_eeGeneral.globalTimer += sessionTimer;
+#if defined(PCBTARANIS)
+  if ((g_model.nPotsToWarn >> 6) == 2) {
+    for (uint8_t i=0; i<NUM_POTS ; i++)
+      if (!(g_model.nPotsToWarn & (1 << i)))
+        g_model.potPosition[i] = getValue(MIXSRC_FIRST_POT+i) >> 3;
+    eeDirty(EE_MODEL);
+  }
 #endif
 
   g_eeGeneral.unexpectedShutdown = 0;
+
   eeDirty(EE_GENERAL);
   eeCheck(true);
 }
@@ -4981,23 +4987,9 @@ void saveTimers()
     }
   }
 
-#if !defined(CPUM2560)
-  if((g_model.frsky.mAhPersistent) && (g_model.frsky.storedMah != frskyData.hub.currentConsumption)) {
-    g_model.frsky.storedMah = frskyData.hub.currentConsumption;
-    eeDirty(EE_MODEL);
-  }
-  else if((!g_model.frsky.mAhPersistent) && (g_model.frsky.storedMah != 0)){
-    g_model.frsky.storedMah = 0;
-    eeDirty(EE_MODEL);
-  }
-#endif
-
-#if defined(PCBTARANIS)
-  if((g_model.nPotsToWarn >> 6) == 2) {
-    for (uint8_t i=0; i<NUM_POTS ; i++)
-      if(!(g_model.nPotsToWarn & (1 << i)))
-        g_model.potPosition[i] = getValue(MIXSRC_FIRST_POT+i) >> 3;
-    eeDirty(EE_MODEL);
+#if defined(CPUARM) && !defined(REVA)
+  if (sessionTimer > 0) {
+    g_eeGeneral.globalTimer += sessionTimer;
   }
 #endif
 }

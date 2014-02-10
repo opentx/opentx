@@ -670,7 +670,7 @@ void menuModelFailsafe(uint8_t event)
   uint8_t ch;
 
   if (event == EVT_KEY_LONG(KEY_ENTER) && s_editMode) {
-  	s_noHi = NO_HI_LEN;
+    s_noHi = NO_HI_LEN;
     g_model.moduleData[g_moduleIdx].failsafeChannels[m_posVert] = channelOutputs[m_posVert];
     eeDirty(EE_MODEL);
     AUDIO_WARNING1();
