@@ -1292,8 +1292,8 @@ class SwitchesWarningField: public TransformedField {
 
     virtual void beforeExport()
     {
-      bool release21March2013 = IS_RELEASE_21_MARCH_2013(board, version);
-      if (release21March2013 && version < 216) {
+      bool afterrelease21March2013 = IS_AFTER_RELEASE_21_MARCH_2013(board, version);
+      if (afterrelease21March2013 && version < 216) {
         _sw = (sw & 0xC1) + ((sw & 0x30) >> 3) + ((sw & 0x0E) << 2);
       }
       else {
@@ -1303,8 +1303,8 @@ class SwitchesWarningField: public TransformedField {
 
     virtual void afterImport()
     {
-      bool release21March2013 = IS_RELEASE_21_MARCH_2013(board, version);
-      if (release21March2013 && version < 216) {
+      bool afterrelease21March2013 = IS_AFTER_RELEASE_21_MARCH_2013(board, version);
+      if (afterrelease21March2013 && version < 216) {
         sw = (_sw & 0xC1) + ((_sw & 0x38) >> 2) + ((_sw & 0x06) << 3);
       }
       else {
