@@ -150,6 +150,7 @@ private slots:
     void appPreferences();
     void fwPreferences();
     void updateMenus();
+    void createProfile();
     MdiChild *createMdiChild();
     void setActiveSubWindow(QWidget *window);
     QMenu * createRecentFileMenu();
@@ -252,6 +253,7 @@ private:
     QAction *logsAct;
     QAction *recentFileActs[MAX_RECENT];
     QAction *profileActs[MAX_PROFILES];
+    QAction *createProfileAct;
     QAction *classicThemeAct;
     QAction *monoThemeAct;
     QAction *monoBlueThemeAct;

@@ -255,6 +255,16 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_5">
          <item>
+          <widget class="QPushButton" name="leftLoadProfileButton">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string>Load Profile</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="leftLoadFwButton">
            <property name="text">
             <string>Load FW</string>
@@ -265,16 +275,6 @@
           <widget class="QPushButton" name="leftLoadPictButton">
            <property name="text">
             <string>Load Pict</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="leftLoadProfileButton">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>Load Profile</string>
            </property>
           </widget>
          </item>
@@ -551,6 +551,16 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_7">
          <item>
+          <widget class="QPushButton" name="rightLoadProfileButton">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string>Load Profile</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="rightLoadFwButton">
            <property name="enabled">
             <bool>true</bool>
@@ -564,16 +574,6 @@
           <widget class="QPushButton" name="rightLoadPictButton">
            <property name="text">
             <string>Load Pict</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="rightLoadProfileButton">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>Load Profile</string>
            </property>
           </widget>
          </item>
@@ -625,12 +625,17 @@
  <tabstops>
   <tabstop>leftFileNameEdit</tabstop>
   <tabstop>leftInvertButton</tabstop>
+  <tabstop>leftLibraryButton</tabstop>
+  <tabstop>leftLoadProfileButton</tabstop>
+  <tabstop>leftLoadFwButton</tabstop>
   <tabstop>leftLoadPictButton</tabstop>
   <tabstop>leftSaveButton</tabstop>
   <tabstop>copyLeftToRightButton</tabstop>
   <tabstop>copyRightToLeftButton</tabstop>
   <tabstop>rightFileNameEdit</tabstop>
   <tabstop>rightInvertButton</tabstop>
+  <tabstop>rightLibraryButton</tabstop>
+  <tabstop>rightLoadProfileButton</tabstop>
   <tabstop>rightLoadFwButton</tabstop>
   <tabstop>rightLoadPictButton</tabstop>
   <tabstop>rightSaveButton</tabstop>

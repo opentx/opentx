@@ -1829,6 +1829,9 @@ void MainWindow::createActions()
       connect(profileActs[i], SIGNAL(triggered()), this, SLOT(loadProfile()));
     }
     updateProfilesActions();
+    createProfileAct = new QAction(tr("New Profile"), this);
+    createProfileAct->setStatusTip(tr("Create a new Radio Setting Profile"));
+    connect(createProfileAct, SIGNAL(triggered()), this, SLOT(createProfile()));
 
     classicThemeAct = new QAction(tr("Classic"), this);
     classicThemeAct->setStatusTip(tr("The multicolor classical Companion icon theme"));
@@ -1913,7 +1916,6 @@ void MainWindow::createMenus()
 
 {
     QMenu *recentFileMenu=new QMenu(tr("Recent Files"));
-    QMenu *profilesMenu=new QMenu(tr("Firmware Profiles"));
     QMenu *languageMenu=new QMenu(tr("Set Menu Language"));
     QMenu *themeMenu=new QMenu(tr("Set Icon Theme"));
     QMenu *iconThemeSizeMenu=new QMenu(tr("Set Icon Size"));
@@ -1935,11 +1937,7 @@ void MainWindow::createMenus()
     fileMenu->addAction(compareAct);
     fileMenu->addSeparator();
     fileMenu->addAction(fwPreferencesAct);
-    fileMenu->addMenu(profilesMenu);
-    
-    profilesMenu->setIcon(CompanionIcon("profiles.png"));
-    for (int i=0; i<MAX_PROFILES; ++i)
-      profilesMenu->addAction(profileActs[i]);
+    fileMenu->addMenu(createProfilesMenu());
     fileMenu->addAction(exitAct);
 
     editMenu = menuBar()->addMenu(tr("&Edit"));
@@ -2016,9 +2014,11 @@ QMenu *MainWindow::createRecentFileMenu()
 
 QMenu *MainWindow::createProfilesMenu()
 {
-    QMenu *profilesMenu = new QMenu(this);
+    QMenu *profilesMenu=new QMenu(tr("Radio Settings Profiles"));
     for ( int i = 0; i < MAX_PROFILES; ++i)
       profilesMenu->addAction(profileActs[i]);
+    profilesMenu->addAction(createProfileAct);
+    profilesMenu->setIcon(CompanionIcon("profiles.png"));
     return profilesMenu;
 }
 
@@ -2199,9 +2199,11 @@ void MainWindow::updateProfilesActions()
       }
       settings.endGroup();
     }
-   //  separatorAct->setVisible(numRecentFiles > 0);
 }
 
+void MainWindow::createProfile()
+{
+}
 
 QString MainWindow::strippedName(const QString &fullFileName)
  {

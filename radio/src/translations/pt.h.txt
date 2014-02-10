@@ -505,6 +505,7 @@
 #define TR_SPLASHSCREEN        "Splash screen"
 #define TR_THROTTLEWARNING     "Avisa Acel"
 #define TR_SWITCHWARNING       "Avisa Chav"
+#define TR_POTWARNING          TR("Pot Warn.","Pot Warning")
 #define TR_TIMEZONE            "Time Zone"
 #define TR_RXCHANNELORD        "Ordem Canal RX"
 #define TR_SLAVE               "Escravo"
@@ -698,6 +699,7 @@
 #define TR_LOWALARM            INDENT "Low Alarm"
 #define TR_CRITICALALARM       INDENT "Critical Alarm"
 #define TR_PERSISTENT_MAH      INDENT "Store mAh"
+#define TR_CHECKLIST           "Display Checklist"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 #define TR_UART3MODE           "Serial port"
 #define TR_POT1TYPE            "S1 Type"
