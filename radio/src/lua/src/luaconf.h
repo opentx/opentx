@@ -11,10 +11,7 @@
 #include <limits.h>
 #include <stddef.h>
 
-// #define LUA_LIB
-#if !defined(SIMU)
-  #define USE_FATFS
-#endif
+#define USE_FATFS
 
 /*
 ** ==================================================================
