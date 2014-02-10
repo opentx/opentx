@@ -505,6 +505,7 @@
 #define TR_SPLASHSCREEN        "Startbild"
 #define TR_THROTTLEWARNING     "Gas Alarm"
 #define TR_SWITCHWARNING       TR("Sch. Alarm","Schalter Alarm")
+#define TR_POTWARNING          TR("Pot Warn.","Pot Warning")
 #define TR_TIMEZONE            TR("Zeitzone","GPS Zeit Zone")
 #define TR_RXCHANNELORD        TR("Kanalanordnung","Kanalvoreinstellung")
 #define TR_SLAVE               "Sch\205ler PPM1-8 als Ausgang"
@@ -698,6 +699,7 @@
 #define TR_LOWALARM            INDENT "Low Alarm"
 #define TR_CRITICALALARM       INDENT "Kritisch Alarm"
 #define TR_PERSISTENT_MAH      INDENT "Store mAh"
+#define TR_CHECKLIST           "Display Checklist"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 #define TR_UART3MODE           "Serial port"
 #define TR_POT1TYPE            "S1 Type"

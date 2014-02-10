@@ -505,6 +505,7 @@
 #define TR_SPLASHSCREEN        TR("Schermo avvio", "Schermata di avvio")
 #define TR_THROTTLEWARNING     TR("All. Thr", "Allarme Throttle")
 #define TR_SWITCHWARNING       TR("Avv. Int.", "Avviso Interr.")
+#define TR_POTWARNING          TR("Pot Warn.","Pot Warning")
 #define TR_TIMEZONE            "Ora locale"
 #define TR_RXCHANNELORD        "Ordine ch RX"
 #define TR_SLAVE               "Allievo"
@@ -698,6 +699,7 @@
 #define TR_LOWALARM            INDENT "Allarme Basso"
 #define TR_CRITICALALARM       INDENT "Allarme Critico"
 #define TR_PERSISTENT_MAH      INDENT "Store mAh"
+#define TR_CHECKLIST           "Display Checklist"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 #define TR_UART3MODE           "Serial port"
 #define TR_POT1TYPE            "S1 Type"
