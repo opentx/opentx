@@ -803,6 +803,20 @@ enum PerOutMode {
   e_perout_mode_noinput = e_perout_mode_notrainer+e_perout_mode_notrims+e_perout_mode_nosticks
 };
 
+
+#ifdef INPUT_WARNINGS_GENERATE_SIM_DATA
+extern uint8_t checkWarningState;
+
+enum InputWarningStates {
+  e_InWarnBegin               = 0,
+  e_InWarnThrottleWarnActive  = 1,
+  e_InWarnStartSwitchWarn     = 2,
+  // e_InWarnSwitchWarnActive    = 3,  currently not needed
+  e_InWarnFinished            = 3,
+};
+#endif
+
+
 // Fiddle to force compiler to use a pointer
 #if defined(CPUARM) || defined(SIMU)
   #define FORCE_INDIRECT(ptr)
@@ -1211,8 +1225,8 @@ int applyCurve(int x, int8_t idx);
 void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS_INC);
 int16_t applyLimits(uint8_t channel, int32_t value);
 
+void evalInputs(uint8_t mode);
 uint16_t anaIn(uint8_t chan);
-int16_t thrAnaIn(uint8_t chan);
 extern int16_t calibratedStick[NUM_STICKS+NUM_POTS];
 
 #define FLASH_DURATION 20 /*200ms*/
