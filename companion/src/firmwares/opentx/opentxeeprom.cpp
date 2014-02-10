@@ -1302,7 +1302,7 @@ class SwitchesWarningField: public TransformedField {
         sw = _sw >> 1;
       }
       else if (!afterrelease21March2013) {
-        sw = ((_sw & 0xC1) + ((_sw & 0x38) >> 2) + ((_sw & 0x06) << 3)) >> 1;
+        sw = ((_sw & 0x30) >> 4) + ((_sw & 0x0E) << 1) + ((_sw & 0xC0) >> 1);
       }
       else {
         sw = _sw;
