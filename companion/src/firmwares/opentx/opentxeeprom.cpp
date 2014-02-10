@@ -24,13 +24,13 @@
 #define MAX_CURVES(board, version)           (IS_ARM(board) ? ((IS_TARANIS(board) && version >= 216) ? 32 : 16) : O9X_MAX_CURVES)
 #define MAX_GVARS(board, version)            ((IS_ARM(board) && version >= 216) ? 9 : 5)
 
-#define IS_RELEASE_21_MARCH_2013(board, version) (version >= 214 || (!IS_ARM(board) && version >= 213))
-#define IS_RELEASE_23_MARCH_2013(board, version) (version >= 214 || (board==BOARD_STOCK && version >= 213))
+#define IS_AFTER_RELEASE_21_MARCH_2013(board, version) (version >= 214 || (!IS_ARM(board) && version >= 213))
+#define IS_AFTER_RELEASE_23_MARCH_2013(board, version) (version >= 214 || (board==BOARD_STOCK && version >= 213))
 
 inline int switchIndex(int i, BoardEnum board, unsigned int version)
 {
-  bool release21March2013 = IS_RELEASE_21_MARCH_2013(board, version);
-  if (!IS_TARANIS(board) && release21March2013)
+  bool afterrelease21March2013 = IS_AFTER_RELEASE_21_MARCH_2013(board, version);
+  if (!IS_TARANIS(board) && afterrelease21March2013)
     return (i<=3 ? i+3 : (i<=6 ? i-3 : i));
   else
     return i;
@@ -135,7 +135,7 @@ class SourcesConversionTable: public ConversionTable {
   public:
     SourcesConversionTable(BoardEnum board, unsigned int version, unsigned int variant, unsigned long flags=0)
     {
-      bool release21March2013 = IS_RELEASE_21_MARCH_2013(board, version);
+      bool afterrelease21March2013 = IS_AFTER_RELEASE_21_MARCH_2013(board, version);
 
       int val=0;
 
@@ -159,19 +159,19 @@ class SourcesConversionTable: public ConversionTable {
       for (int i=0; i<MAX_ROTARY_ENCODERS(board); i++)
         addConversion(RawSource(SOURCE_TYPE_ROTARY_ENCODER, 0), val++);
 
-      if (!release21March2013) {
+      if (!afterrelease21March2013) {
         for (int i=0; i<NUM_STICKS; i++)
           addConversion(RawSource(SOURCE_TYPE_TRIM, i), val++);
       }
 
       addConversion(RawSource(SOURCE_TYPE_MAX), val++);
 
-      if (release21March2013) {
+      if (afterrelease21March2013) {
         for (int i=0; i<3; i++)
           addConversion(RawSource(SOURCE_TYPE_CYC, i), val++);
       }
 
-      if (release21March2013) {
+      if (afterrelease21March2013) {
         for (int i=0; i<NUM_STICKS; i++)
           addConversion(RawSource(SOURCE_TYPE_TRIM, i), val++);
       }
@@ -179,7 +179,7 @@ class SourcesConversionTable: public ConversionTable {
       addConversion(RawSource(SOURCE_TYPE_SWITCH, 0), val++);
 
       if (!(flags & FLAG_NOSWITCHES)) {
-        if (release21March2013) {
+        if (afterrelease21March2013) {
           for (int i=1; i<MAX_SWITCHES(board); i++)
             addConversion(RawSource(SOURCE_TYPE_SWITCH, i), val++);
         }
@@ -195,7 +195,7 @@ class SourcesConversionTable: public ConversionTable {
           addConversion(RawSource(SOURCE_TYPE_CUSTOM_SWITCH, i), val++);
       }
 
-      if (!release21March2013) {
+      if (!afterrelease21March2013) {
         for (int i=0; i<3; i++)
           addConversion(RawSource(SOURCE_TYPE_CYC, i), val++);
       }
@@ -207,14 +207,14 @@ class SourcesConversionTable: public ConversionTable {
         addConversion(RawSource(SOURCE_TYPE_CH, i), val++);
 
       if (!(flags & FLAG_NOTELEMETRY)) {
-        if (release21March2013) {
+        if (afterrelease21March2013) {
           if ((board != BOARD_STOCK && (board!=BOARD_M128 || version<215)) || (variant & GVARS_VARIANT)) {
             for (int i=0; i<MAX_GVARS(board, version); i++)
               addConversion(RawSource(SOURCE_TYPE_GVAR, i), val++);
           }
         }
 
-        if (release21March2013)
+        if (afterrelease21March2013)
           addConversion(RawSource(SOURCE_TYPE_TELEMETRY, 0), val++);
 
         for (int i=1; i<TELEMETRY_SOURCE_ACC; i++)
@@ -700,7 +700,7 @@ class MixField: public TransformedField {
           internalField.Append(new ZCharField<6>(mix.name));
         }
       }
-      else if (IS_DBLRAM(board, version) && IS_RELEASE_23_MARCH_2013(board, version)) {
+      else if (IS_DBLRAM(board, version) && IS_AFTER_RELEASE_23_MARCH_2013(board, version)) {
         internalField.Append(new UnsignedField<4>(_destCh));
         internalField.Append(new BoolField<1>(_curveMode));
         internalField.Append(new BoolField<1>(mix.noExpo));
@@ -859,7 +859,7 @@ class ExpoField: public TransformedField {
         }
         internalField.Append(new SignedField<8>(_curveParam));
       }
-      else if (IS_DBLRAM(board, version) && IS_RELEASE_23_MARCH_2013(board, version)) {
+      else if (IS_DBLRAM(board, version) && IS_AFTER_RELEASE_23_MARCH_2013(board, version)) {
         internalField.Append(new UnsignedField<2>(expo.mode));
         internalField.Append(new UnsignedField<2>(expo.chn));
         internalField.Append(new BoolField<1>(_curveMode));
@@ -1061,9 +1061,9 @@ class CustomSwitchesFunctionsTable: public ConversionTable {
     CustomSwitchesFunctionsTable(BoardEnum board, unsigned int version)
     {
       int val=0;
-      bool release21March2013 = IS_RELEASE_21_MARCH_2013(board, version);
+      bool afterrelease21March2013 = IS_AFTER_RELEASE_21_MARCH_2013(board, version);
       addConversion(CS_FN_OFF, val++);
-      if (release21March2013)
+      if (afterrelease21March2013)
         addConversion(CS_FN_VEQUAL, val++);
       addConversion(CS_FN_VPOS, val++);
       addConversion(CS_FN_VNEG, val++);
@@ -1073,11 +1073,11 @@ class CustomSwitchesFunctionsTable: public ConversionTable {
       addConversion(CS_FN_OR, val++);
       addConversion(CS_FN_XOR, val++);
       addConversion(CS_FN_EQUAL, val++);
-      if (!release21March2013)
+      if (!afterrelease21March2013)
         addConversion(CS_FN_NEQUAL, val++);
       addConversion(CS_FN_GREATER, val++);
       addConversion(CS_FN_LESS, val++);
-      if (!release21March2013) {
+      if (!afterrelease21March2013) {
         addConversion(CS_FN_EGREATER, val++);
         addConversion(CS_FN_ELESS, val++);
       }
@@ -1573,8 +1573,8 @@ class FrskyScreenField: public DataField {
     {
       _screen = screen;
 
-      bool release21March2013 = IS_RELEASE_21_MARCH_2013(board, version);
-      if (!release21March2013) {
+      bool afterrelease21March2013 = IS_AFTER_RELEASE_21_MARCH_2013(board, version);
+      if (!afterrelease21March2013) {
         for (int i=0; i<4; i++) {
           if (_screen.body.bars[i].source > 0)
             _screen.body.bars[i].source--;
@@ -1598,12 +1598,12 @@ class FrskyScreenField: public DataField {
     {
       _screen = screen;
 
-      bool release21March2013 = IS_RELEASE_21_MARCH_2013(board, version);
+      bool afterrelease21March2013 = IS_AFTER_RELEASE_21_MARCH_2013(board, version);
 
       // NOTA: screen.type should have been imported first!
       if (screen.type == 0) {
         numbers.ImportBits(input);
-        if (!release21March2013) {
+        if (!afterrelease21March2013) {
           int columns=(IS_TARANIS(board) ? 3:2);
           for (int i=0; i<4; i++) {
             for (int j=0; j<columns;j++) {
@@ -1615,7 +1615,7 @@ class FrskyScreenField: public DataField {
       }
       else {
         bars.ImportBits(input);
-        if (!release21March2013) {
+        if (!afterrelease21March2013) {
           for (int i=0; i<4; i++) {
             if (_screen.body.bars[i].source > 0)
               _screen.body.bars[i].source++;
@@ -1805,9 +1805,9 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
   else
     internalField.Append(new ZCharField<10>(modelData.name));
 
-  bool release21March2013 = IS_RELEASE_21_MARCH_2013(board, version);
+  bool afterrelease21March2013 = IS_AFTER_RELEASE_21_MARCH_2013(board, version);
 
-  if (release21March2013)
+  if (afterrelease21March2013)
     internalField.Append(new UnsignedField<8>(modelData.modelId));
 
   if (IS_TARANIS(board) && version >= 215) {
@@ -1824,7 +1824,7 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
       internalField.Append(new SpareBitsField<4>());
       internalField.Append(new SignedField<16>(modelData.timers[i].pvalue));
     }
-    else if (release21March2013) {
+    else if (afterrelease21March2013) {
       internalField.Append(new UnsignedField<12>(modelData.timers[i].val));
       internalField.Append(new BoolField<1>((bool &)modelData.timers[i].countdownBeep));
       internalField.Append(new BoolField<1>(modelData.timers[i].minuteBeep));
@@ -1904,7 +1904,7 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
 
   internalField.Append(new UnsignedField<8>(modelData.thrTraceSrc));
 
-  if (!release21March2013) {
+  if (!afterrelease21March2013) {
     internalField.Append(new UnsignedField<8>(modelData.modelId));
   }
 
