@@ -976,7 +976,7 @@ void menuModelSetup(uint8_t event)
   #define MODEL_SETUP_MAX_LINES      ((IS_PPM_PROTOCOL(protocol)||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 1+ITEM_MODEL_SETUP_MAX : ITEM_MODEL_SETUP_MAX)
 
   uint8_t protocol = g_model.protocol;
-  MENU_TAB({ 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 1, 0, 0, 0, 0, 0, 6, NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1, FIELD_PROTOCOL_MAX, 2, IF_PCBSKY9X(1) IF_PCBSKY9X(2) });
+  MENU_TAB({ 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 1, 0, 0, 0, 0, 0, 6, NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1, FIELD_PROTOCOL_MAX, 2, CASE_PCBSKY9X(1) CASE_PCBSKY9X(2) });
 #endif
 
   if (!MENU_CHECK(menuTabModel, e_ModelSetup, MODEL_SETUP_MAX_LINES)) {
@@ -1163,7 +1163,6 @@ void menuModelSetup(uint8_t event)
             switch(event) {
               CASE_EVT_ROTARY_BREAK
               case EVT_KEY_BREAK(KEY_ENTER):
-                killEvents(event);
 #if defined(CPUM64)
                 g_model.nSwToWarn ^= (1 << m_posHorz);
                 eeDirty(EE_MODEL);
@@ -1190,10 +1189,12 @@ void menuModelSetup(uint8_t event)
                   eeDirty(EE_MODEL);
                 }
 #endif
+                killEvents(event);
                 break; 
             }
           }
         }
+
         LcdFlags line = attr;
         
         for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
@@ -5092,7 +5093,7 @@ void menuModelCustomFunctions(uint8_t event)
             menu_lcd_onoff(MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF, y, CFN_ACTIVE(sd), attr);
             if (active) CHECK_INCDEC_MODELVAR_ZERO(event, CFN_ACTIVE(sd), 1);
           }
-          else if (HAS_REPEAT_PARAM(sd)) {
+          else if (HAS_REPEAT_PARAM(func)) {
             if (CFN_PLAY_REPEAT(sd) == 0) {
 #if LCD_W >= 212
               lcd_putsAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN+2, y, "1x", attr);

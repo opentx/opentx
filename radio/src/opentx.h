@@ -45,9 +45,11 @@
 // TODO change all IF_xxx by CASE_xxx when used with a comma!
 
 #if defined(PCBSKY9X)
-#define IF_PCBSKY9X(x) x,
+#define IS_PCBSKY9X        true
+#define CASE_PCBSKY9X(x)   x,
 #else
-#define IF_PCBSKY9X(x)
+#define IS_PCBSKY9X        false
+#define CASE_PCBSKY9X(x)
 #endif
 
 #if defined(PCBTARANIS)
