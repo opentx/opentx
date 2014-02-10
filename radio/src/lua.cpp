@@ -511,14 +511,15 @@ static int luaModelGetCustomSwitch(lua_State *L)
 {
   int idx = luaL_checkunsigned(L, 1);
   if (idx < NUM_CSW) {
-    CustomSwData * csw = cswAddress(idx);
+    LogicalSwitchData * sw = cswAddress(idx);
     lua_newtable(L);
-    lua_pushtablenumber(L, "function", csw->func);
-    lua_pushtablenumber(L, "v1", csw->v1);
-    lua_pushtablenumber(L, "v2", csw->v2);
-    lua_pushtablenumber(L, "and", csw->andsw);
-    lua_pushtablenumber(L, "delay", csw->delay);
-    lua_pushtablenumber(L, "duration", csw->duration);
+    lua_pushtablenumber(L, "function", sw->func);
+    lua_pushtablenumber(L, "v1", sw->v1);
+    lua_pushtablenumber(L, "v2", sw->v2);
+    lua_pushtablenumber(L, "v3", sw->v3);
+    lua_pushtablenumber(L, "and", sw->andsw);
+    lua_pushtablenumber(L, "delay", sw->delay);
+    lua_pushtablenumber(L, "duration", sw->duration);
   }
   else {
     lua_pushnil(L);
@@ -530,28 +531,31 @@ static int luaModelSetCustomSwitch(lua_State *L)
 {
   int idx = luaL_checkunsigned(L, 1);
   if (idx < NUM_CSW) {
-    CustomSwData * csw = cswAddress(idx);
+    LogicalSwitchData * sw = cswAddress(idx);
     luaL_checktype(L, -1, LUA_TTABLE);
     for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
       luaL_checktype(L, -2, LUA_TSTRING); // key is string
       const char * key = luaL_checkstring(L, -2);
       if (!strcmp(key, "function")) {
-        csw->func = luaL_checkinteger(L, -1);
+        sw->func = luaL_checkinteger(L, -1);
       }
       else if (!strcmp(key, "v1")) {
-        csw->v1 = luaL_checkinteger(L, -1);
+        sw->v1 = luaL_checkinteger(L, -1);
       }
       else if (!strcmp(key, "v2")) {
-        csw->v2 = luaL_checkinteger(L, -1);
+        sw->v2 = luaL_checkinteger(L, -1);
+      }
+      else if (!strcmp(key, "v3")) {
+        sw->v3 = luaL_checkinteger(L, -1);
       }
       else if (!strcmp(key, "and")) {
-        csw->andsw = luaL_checkinteger(L, -1);
+        sw->andsw = luaL_checkinteger(L, -1);
       }
       else if (!strcmp(key, "delay")) {
-        csw->delay = luaL_checkinteger(L, -1);
+        sw->delay = luaL_checkinteger(L, -1);
       }
       else if (!strcmp(key, "duration")) {
-        csw->duration = luaL_checkinteger(L, -1);
+        sw->duration = luaL_checkinteger(L, -1);
       }
     }
   }
@@ -565,12 +569,12 @@ static int luaModelGetCustomFunction(lua_State *L)
   if (idx < NUM_CFN) {
     CustomFnData * cfn = &g_model.funcSw[idx];
     lua_newtable(L);
-    lua_pushtablenumber(L, "switch", cfn->swtch);
-    lua_pushtablenumber(L, "function", cfn->func);
-    lua_pushtablezstring(L, "name", cfn->param.name);
-    lua_pushtablenumber(L, "value", cfn->param.composite.val);
-    lua_pushtablenumber(L, "mode", cfn->mode);
-    lua_pushtablenumber(L, "active", cfn->active);
+    lua_pushtablenumber(L, "switch", CFN_SWITCH(cfn));
+    lua_pushtablenumber(L, "function", CFN_FUNC(cfn));
+    lua_pushtablezstring(L, "name", cfn->play.name);
+    lua_pushtablenumber(L, "value", cfn->all.val);
+    lua_pushtablenumber(L, "mode", cfn->all.mode);
+    lua_pushtablenumber(L, "active", CFN_ACTIVE(cfn));
   }
   else {
     lua_pushnil(L);
@@ -588,23 +592,23 @@ static int luaModelSetCustomFunction(lua_State *L)
       luaL_checktype(L, -2, LUA_TSTRING); // key is string
       const char * key = luaL_checkstring(L, -2);
       if (!strcmp(key, "switch")) {
-        cfn->swtch = luaL_checkinteger(L, -1);
+        CFN_SWITCH(cfn) = luaL_checkinteger(L, -1);
       }
       else if (!strcmp(key, "function")) {
-        cfn->func = luaL_checkinteger(L, -1);
+        CFN_FUNC(cfn) = luaL_checkinteger(L, -1);
       }
       else if (!strcmp(key, "name")) {
         const char * name = luaL_checkstring(L, -1);
-        str2zchar(cfn->param.name, name, sizeof(cfn->param.name));
+        str2zchar(cfn->play.name, name, sizeof(cfn->play.name));
       }
       else if (!strcmp(key, "value")) {
-        cfn->param.composite.val = luaL_checkinteger(L, -1);
+        cfn->all.val = luaL_checkinteger(L, -1);
       }
       else if (!strcmp(key, "mode")) {
-        cfn->mode = luaL_checkinteger(L, -1);
+        cfn->all.mode = luaL_checkinteger(L, -1);
       }
       else if (!strcmp(key, "active")) {
-        cfn->active = luaL_checkinteger(L, -1);
+        CFN_ACTIVE(cfn) = luaL_checkinteger(L, -1);
       }
     }
   }
