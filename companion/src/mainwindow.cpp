@@ -2203,6 +2203,28 @@ void MainWindow::updateProfilesActions()
 
 void MainWindow::createProfile()
 {
+  int firstFreeIndex = 0;
+  QSettings settings;
+  settings.beginGroup("Profiles");
+  for (int i=0; firstFreeIndex ==0 && i<MAX_PROFILES; i++) {
+    QString profile=QString("profile%1").arg(i+1);
+    settings.beginGroup(profile);  
+    QString name=settings.value("Name","").toString();
+    if (name.isEmpty())
+      firstFreeIndex = i+1;
+    settings.endGroup();
+  }
+  settings.endGroup();
+  if (firstFreeIndex == 0)  // Could not find free index
+    return;
+
+  settings.beginGroup("Profiles");
+  settings.beginGroup(QString("profile%1").arg(firstFreeIndex));
+  settings.setValue("Name",QString("profile%1").arg(firstFreeIndex));
+  settings.endGroup();
+  settings.endGroup();
+
+  updateMenus();
 }
 
 QString MainWindow::strippedName(const QString &fullFileName)
