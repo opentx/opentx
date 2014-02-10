@@ -35,6 +35,7 @@
  */
 
 #include "opentx.h"
+#include "stamp-opentx.h"
 
 #if !defined(SIMU)
 extern "C" {
@@ -74,6 +75,12 @@ void hook(lua_State* L, lua_Debug *ar)
     lua_sethook(L, hook, LUA_MASKLINE, 0);
     luaL_error(L, "");
   }
+}
+
+static int luaGetVersion(lua_State *L)
+{
+  lua_pushnumber(L, VERS_NUM);
+  return 1;
 }
 
 static int luaGetTime(lua_State *L)
@@ -507,7 +514,7 @@ static int luaModelDeleteMix(lua_State *L)
   return 0;
 }
 
-static int luaModelGetCustomSwitch(lua_State *L)
+static int luaModelGetLogicalSwitch(lua_State *L)
 {
   int idx = luaL_checkunsigned(L, 1);
   if (idx < NUM_CSW) {
@@ -527,7 +534,7 @@ static int luaModelGetCustomSwitch(lua_State *L)
   return 1;
 }
 
-static int luaModelSetCustomSwitch(lua_State *L)
+static int luaModelSetLogicalSwitch(lua_State *L)
 {
   int idx = luaL_checkunsigned(L, 1);
   if (idx < NUM_CSW) {
@@ -784,8 +791,8 @@ static const luaL_Reg modelLib[] = {
   { "getMix", luaModelGetMix },
   { "insertMix", luaModelInsertMix },
   { "deleteMix", luaModelDeleteMix },
-  { "getCustomSwitch", luaModelGetCustomSwitch },
-  { "setCustomSwitch", luaModelSetCustomSwitch },
+  { "getLogicalSwitch", luaModelGetLogicalSwitch },
+  { "setLogicalSwitch", luaModelSetLogicalSwitch },
   { "getCustomFunction", luaModelGetCustomFunction },
   { "setCustomFunction", luaModelSetCustomFunction },
   { "getOutput", luaModelGetOutput },
@@ -823,6 +830,7 @@ void luaInit()
 
   // Push openTX functions
   lua_register(L, "getTime", luaGetTime);
+  lua_register(L, "getVersion", luaGetVersion);
   lua_register(L, "getValue", luaGetValue);
   lua_register(L, "playFile", luaPlayFile);
   lua_register(L, "popupInput", luaPopupInput);

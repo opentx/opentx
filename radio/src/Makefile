@@ -1082,13 +1082,11 @@ sym: $(TARGET).sym
 
 # Build stamp-file
 stamp_header:
-	@echo
-	@echo "Generate Version-stamp:"
-	@echo "//Automatically generated file (Makefile) - do not edit" > stamp-opentx.h
+	@echo "// Automatically generated file (Makefile) - do not edit" > stamp-opentx.h
 	@echo "#define DATE_STR \"`date +%Y-%m-%d | tr -d '\r\n'`\"" >> stamp-opentx.h
 	@echo "#define TIME_STR \"`date +%H:%M:%S | tr -d '\r\n'`\"" >> stamp-opentx.h
 	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx.h
-	@cat stamp-opentx.h
+	@echo "#define VERS_NUM $(VERSION)" >> stamp-opentx.h
 
 9x-stamp:
 	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-9x.txt
