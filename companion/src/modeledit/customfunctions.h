@@ -19,6 +19,7 @@ class RepeatComboBox: public QComboBox
 
   public:
     RepeatComboBox(QWidget *parent, int & repeatParam);
+    void update();
 
   signals:
     void modified();
@@ -55,7 +56,13 @@ class CustomFunctionsPanel : public ModelPanel
     void fswCut();
 
   private:
+    void populateFuncCB(QComboBox *b, unsigned int value);
+    void populateGVmodeCB(QComboBox *b, unsigned int value);
+    void populateFuncParamCB(QComboBox *b, const ModelData & model, uint function, unsigned int value, unsigned int adjustmode=0);
+    void populateFuncParamArmTCB(QComboBox *b, char * value, QStringList & paramsList);
+
     GeneralSettings & generalSettings;
+    QStringList paramarmList;
     bool phononLock;
     QComboBox * fswtchSwtch[C9X_MAX_CUSTOM_FUNCTIONS];
     QComboBox * fswtchFunc[C9X_MAX_CUSTOM_FUNCTIONS];
@@ -65,7 +72,7 @@ class CustomFunctionsPanel : public ModelPanel
     QComboBox * fswtchParamT[C9X_MAX_CUSTOM_FUNCTIONS];
     QComboBox * fswtchParamArmT[C9X_MAX_CUSTOM_FUNCTIONS];
     QCheckBox * fswtchEnable[C9X_MAX_CUSTOM_FUNCTIONS];
-    QComboBox * fswtchRepeat[C9X_MAX_CUSTOM_FUNCTIONS];
+    RepeatComboBox * fswtchRepeat[C9X_MAX_CUSTOM_FUNCTIONS];
     QComboBox * fswtchGVmode[C9X_MAX_CUSTOM_FUNCTIONS];
 #ifdef PHONON
     Phonon::MediaObject *clickObject;

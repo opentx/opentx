@@ -30,7 +30,7 @@ ModelEdit::ModelEdit(RadioData & radioData, int modelId, bool openWizard, bool i
   addTab(new InputsPanel(this, model, radioData.generalSettings), tr("Inputs"));
   addTab(new MixesPanel(this, model, radioData.generalSettings), tr("Mixes"));
   addTab(new Channels(this, model), tr("Channels"));
-  addTab(new CustomSwitchesPanel(this, model), tr("Logical Switches"));
+  addTab(new LogicalSwitchesPanel(this, model), tr("Logical Switches"));
   if (GetEepromInterface()->getCapability(CustomFunctions))
     addTab(new CustomFunctionsPanel(this, model, radioData.generalSettings), tr("Switch Assignment"));
   addTab(new Curves(this, model), tr("Curves"));

@@ -42,48 +42,66 @@ class SwitchesConversionTable: public ConversionTable {
     SwitchesConversionTable(BoardEnum board, unsigned int version, unsigned long flags=0)
     {
       int val=0;
-
-      addConversion(RawSwitch(SWITCH_TYPE_NONE), val++);
+      int offset=0;
+      if (flags & POPULATE_TIMER_MODES) {
+        offset = 4;
+        for (int i=0; i<5; i++) {
+          addConversion(RawSwitch(SWITCH_TYPE_TIMER_MODE, i), val++);
+        }
+      }
+      else {
+        addConversion(RawSwitch(SWITCH_TYPE_NONE), val++);
+      }
 
       for (int i=1; i<=MAX_SWITCHES_POSITION(board); i++) {
         int s = switchIndex(i, board, version);
-        addConversion(RawSwitch(SWITCH_TYPE_SWITCH, -s), -val);
+        addConversion(RawSwitch(SWITCH_TYPE_SWITCH, -s), -val+offset);
         addConversion(RawSwitch(SWITCH_TYPE_SWITCH, s), val++);
       }
 
-      for (int i=1; i<=MAX_CUSTOM_SWITCHES(board, version); i++) {
-        addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, -i), -val);
-        addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, i), val++);
-      }
-
-      if (IS_TARANIS(board) && version >= 216) {
-        for (int i=0; i<2; i++) {
-          for (int j=0; j<6; j++) {
-            addConversion(RawSwitch(SWITCH_TYPE_MULTIPOS_POT, i*6+j), val++);
-          }
+      if (version >= 216) {
+        for (int i=1; i<=GetEepromInterface()->getCapability(MultiposPots) * GetEepromInterface()->getCapability(MultiposPotsPositions); i++) {
+          addConversion(RawSwitch(SWITCH_TYPE_MULTIPOS_POT, -i), -val+offset);
+          addConversion(RawSwitch(SWITCH_TYPE_MULTIPOS_POT, i), val++);
         }
       }
 
-      addConversion(RawSwitch(SWITCH_TYPE_OFF), -val);
-      addConversion(RawSwitch(SWITCH_TYPE_ON), val++);
+      if (version >= 216) {
+        for (int i=1; i<=8; i++) {
+          addConversion(RawSwitch(SWITCH_TYPE_TRIM, -i), -val+offset);
+          addConversion(RawSwitch(SWITCH_TYPE_TRIM, i), val++);
+        }
+      }
 
-      for (int i=1; i<=MAX_SWITCHES_POSITION(board); i++) {
-        int s = switchIndex(i, board, version);
-        // addConversion(RawSwitch(SWITCH_TYPE_MOMENT_SWITCH, -s), -val);
-        addConversion(RawSwitch(SWITCH_TYPE_MOMENT_SWITCH, s), val++);
+      if (version >= 216) {
+        for (int i=1; i<=MAX_ROTARY_ENCODERS(board); i++) {
+          addConversion(RawSwitch(SWITCH_TYPE_ROTARY_ENCODER, -i), -val+offset);
+          addConversion(RawSwitch(SWITCH_TYPE_ROTARY_ENCODER, i), val++);
+        }
       }
 
       for (int i=1; i<=MAX_CUSTOM_SWITCHES(board, version); i++) {
-        // addConversion(RawSwitch(SWITCH_TYPE_MOMENT_VIRTUAL, -i), -val);
-        addConversion(RawSwitch(SWITCH_TYPE_MOMENT_VIRTUAL, i), val++);
+        addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, -i), -val+offset);
+        addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, i), val++);
       }
 
-      // addConversion(RawSwitch(SWITCH_TYPE_ONM, 1 ), -val);
-      addConversion(RawSwitch(SWITCH_TYPE_ONM, 0 ), val++);
-      addConversion(RawSwitch(SWITCH_TYPE_TRN, 0), val++);
-      addConversion(RawSwitch(SWITCH_TYPE_TRN, 1), val++);        
-      addConversion(RawSwitch(SWITCH_TYPE_REA, 0), val++);
-      addConversion(RawSwitch(SWITCH_TYPE_REA, 1), val++);        
+      addConversion(RawSwitch(SWITCH_TYPE_OFF), -val+offset);
+      addConversion(RawSwitch(SWITCH_TYPE_ON), val++);
+
+      if (version < 216) {
+        // previous "moment" switches
+        for (int i=1; i<=MAX_SWITCHES_POSITION(board); i++) {
+          int s = switchIndex(i, board, version);
+          addConversion(RawSwitch(SWITCH_TYPE_SWITCH, s), val++);
+        }
+
+        for (int i=1; i<=MAX_CUSTOM_SWITCHES(board, version); i++) {
+          addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, i), val++);
+        }
+
+        // previous "One" switch
+        addConversion(RawSwitch(SWITCH_TYPE_ON), val++);
+      }
     }
 
   protected:
@@ -264,59 +282,6 @@ class SourcesConversionTable: public ConversionTable {
     }
 };
 
-class TimerModeConversionTable: public ConversionTable {
-
-  public:
-    TimerModeConversionTable(BoardEnum board, unsigned int version, unsigned long flags=0)
-    {
-      int val=0;
-
-      addConversion(TMRMODE_OFF, val++);
-      addConversion(TMRMODE_ABS, val++);
-      addConversion(TMRMODE_THs, val++);
-      addConversion(TMRMODE_THp, val++);
-      addConversion(TMRMODE_THt, val++);
-
-      int swCount = MAX_SWITCHES_POSITION(board) + MAX_CUSTOM_SWITCHES(board, version);
-
-      for (int i=0; i<swCount; i++) {
-        int s = switchIndex(i+1, board, version) - 1;
-        addConversion(TMRMODE_FIRST_SWITCH+i, val+s);
-        addConversion(TMRMODE_FIRST_MOMENT_SWITCH+i, val+s+swCount);
-        addConversion(TMRMODE_FIRST_NEG_SWITCH-i, -1-s);
-        addConversion(TMRMODE_FIRST_NEG_MOMENT_SWITCH-i, -1-s-swCount);
-      }
-    }
-};
-
-class TimerModeField: public ConversionField< SignedField<8> > {
-  public:
-    TimerModeField(TimerMode & mode, BoardEnum board, unsigned int version, unsigned long flags=0):
-      ConversionField< SignedField<8> >(_mode, &conversionTable, "TimerMode"),
-      conversionTable(board, version, flags),
-      mode(mode),
-      _mode(0)
-    {
-    }
-
-  virtual void beforeExport()
-  {
-    _mode = mode;
-    ConversionField< SignedField<8> >::beforeExport();
-  }
-
-  virtual void afterImport()
-  {
-    ConversionField< SignedField<8> >::afterImport();
-    mode = (TimerMode)_mode;
-  }
-
-  protected:
-    TimerModeConversionTable conversionTable;
-    TimerMode & mode;
-    int _mode;
-};
-
 template <int N>
 class SwitchField: public ConversionField< SignedField<N> > {
   public:
@@ -433,6 +398,12 @@ class PhaseField: public TransformedField {
         for (int i=0; i<NUM_STICKS; i++)
           internalField.Append(new SignedField<2>(trimExt[i]));
       }
+      else if (board == BOARD_TARANIS && version >= 216) {
+        for (int i=0; i<NUM_STICKS; i++) {
+          internalField.Append(new SignedField<11>(phase.trim[i]));
+          internalField.Append(new UnsignedField<5>(trimMode[i]));
+        }
+      }
       else {
         for (int i=0; i<NUM_STICKS; i++)
           internalField.Append(new SignedField<16>(trimBase[i]));
@@ -467,19 +438,27 @@ class PhaseField: public TransformedField {
     virtual void beforeExport()
     {
       for (int i=0; i<NUM_STICKS; i++) {
-        int trim;
-        if (phase.trimRef[i] >= 0) {
-          trim = 501 + phase.trimRef[i] - (phase.trimRef[i] >= index ? 1 : 0);
+        if (board == BOARD_TARANIS && version >= 216) {
+          if (phase.trimMode[i] < 0)
+            trimMode[i] = TRIM_MODE_NONE;
+          else
+            trimMode[i] = 2*phase.trimRef[i] + phase.trimMode[i];
         }
         else {
-          trim = std::max(-500, std::min(500, phase.trim[i]));
-        }
-        if (board == BOARD_STOCK || (board == BOARD_M128 && version >= 215)) {
-          trimBase[i] = trim >> 2;
-          trimExt[i] = (trim & 0x03);
-        }
-        else {
-          trimBase[i] = trim;
+          int trim;
+          if (phase.trimMode[i] < 0)
+            trim = 0;
+          else if (phase.trimRef[i] != index)
+            trim = 501 + phase.trimRef[i] - (phase.trimRef[i] > index ? 1 : 0);
+          else
+            trim = std::max(-500, std::min(500, phase.trim[i]));
+          if (board == BOARD_STOCK || (board == BOARD_M128 && version >= 215)) {
+            trimBase[i] = trim >> 2;
+            trimExt[i] = (trim & 0x03);
+          }
+          else {
+            trimBase[i] = trim;
+          }
         }
       }
     }
@@ -487,21 +466,31 @@ class PhaseField: public TransformedField {
     virtual void afterImport()
     {
       for (int i=0; i<NUM_STICKS; i++) {
-        int trim;
-        if (board == BOARD_STOCK || (board == BOARD_M128 && version >= 215))
-          trim = ((trimBase[i]) << 2) + (trimExt[i] & 0x03);
-        else
-          trim = trimBase[i];
-        if (trim > 500) {
-          phase.trimRef[i] = trim - 501;
-          if (phase.trimRef[i] >= index)
-            phase.trimRef[i] += 1;
-          phase.trim[i] = 0;
+        if (board == BOARD_TARANIS && version >= 216) {
+          if (trimMode[i] == TRIM_MODE_NONE) {
+            phase.trimMode[i] = -1;
+          }
+          else {
+            phase.trimMode[i] = trimMode[i] % 2;
+            phase.trimRef[i] = trimMode[i] / 2;
+          }
         }
         else {
-          phase.trim[i] = trim;
+          int trim;
+          if (board == BOARD_STOCK || (board == BOARD_M128 && version >= 215))
+            trim = ((trimBase[i]) << 2) + (trimExt[i] & 0x03);
+          else
+            trim = trimBase[i];
+          if (trim > 500) {
+            phase.trimRef[i] = trim - 501;
+            if (phase.trimRef[i] >= index)
+              phase.trimRef[i] += 1;
+            phase.trim[i] = 0;
+          }
+          else {
+            phase.trim[i] = trim;
+          }
         }
-
       }
     }
 
@@ -514,6 +503,7 @@ class PhaseField: public TransformedField {
     int rotencCount;
     int trimBase[NUM_STICKS];
     int trimExt[NUM_STICKS];
+    unsigned int trimMode[NUM_STICKS];
 };
 
 
@@ -1055,42 +1045,46 @@ class CurvesField: public TransformedField {
     int _points[C9X_MAX_CURVES*C9X_MAX_POINTS*2];
 };
 
-class CustomSwitchesFunctionsTable: public ConversionTable {
+class LogicalSwitchesFunctionsTable: public ConversionTable {
 
   public:
-    CustomSwitchesFunctionsTable(BoardEnum board, unsigned int version)
+    LogicalSwitchesFunctionsTable(BoardEnum board, unsigned int version)
     {
       int val=0;
       bool afterrelease21March2013 = IS_AFTER_RELEASE_21_MARCH_2013(board, version);
-      addConversion(CS_FN_OFF, val++);
-      if (afterrelease21March2013)
-        addConversion(CS_FN_VEQUAL, val++);
-      addConversion(CS_FN_VPOS, val++);
-      addConversion(CS_FN_VNEG, val++);
-      addConversion(CS_FN_APOS, val++);
-      addConversion(CS_FN_ANEG, val++);
-      addConversion(CS_FN_AND, val++);
-      addConversion(CS_FN_OR, val++);
-      addConversion(CS_FN_XOR, val++);
-      addConversion(CS_FN_EQUAL, val++);
-      if (!afterrelease21March2013)
-        addConversion(CS_FN_NEQUAL, val++);
-      addConversion(CS_FN_GREATER, val++);
-      addConversion(CS_FN_LESS, val++);
-      if (!afterrelease21March2013) {
-        addConversion(CS_FN_EGREATER, val++);
-        addConversion(CS_FN_ELESS, val++);
+      addConversion(LS_FN_OFF, val++);
+      if (release21March2013)
+        addConversion(LS_FN_VEQUAL, val++);
+      addConversion(LS_FN_VPOS, val++);
+      addConversion(LS_FN_VNEG, val++);
+      if (IS_ARM(board) && version >= 216) val++; // later RANGE
+      addConversion(LS_FN_APOS, val++);
+      addConversion(LS_FN_ANEG, val++);
+      addConversion(LS_FN_AND, val++);
+      addConversion(LS_FN_OR, val++);
+      addConversion(LS_FN_XOR, val++);
+      if (IS_ARM(board) && version >= 216) addConversion(LS_FN_STAY, val++);
+      addConversion(LS_FN_EQUAL, val++);
+      if (!release21March2013)
+        addConversion(LS_FN_NEQUAL, val++);
+      addConversion(LS_FN_GREATER, val++);
+      addConversion(LS_FN_LESS, val++);
+      if (!release21March2013) {
+        addConversion(LS_FN_EGREATER, val++);
+        addConversion(LS_FN_ELESS, val++);
       }
-      addConversion(CS_FN_DPOS, val++);
-      addConversion(CS_FN_DAPOS, val++);
-      addConversion(CS_FN_TIM, val++);
+      addConversion(LS_FN_DPOS, val++);
+      addConversion(LS_FN_DAPOS, val++);
+      addConversion(LS_FN_TIMER, val++);
+      if (version >= 216)
+        addConversion(LS_FN_STICKY, val++);
     }
 };
 
-class CustomSwitchesAndSwitchesConversionTable: public ConversionTable {
+class AndSwitchesConversionTable: public ConversionTable {
 
   public:
-    CustomSwitchesAndSwitchesConversionTable(BoardEnum board, unsigned int version)
+    AndSwitchesConversionTable(BoardEnum board, unsigned int version)
     {
       int val=0;
       addConversion(RawSwitch(SWITCH_TYPE_NONE), val++);
@@ -1128,6 +1122,29 @@ class CustomSwitchesAndSwitchesConversionTable: public ConversionTable {
       }
     }
 
+    static ConversionTable * getInstance(BoardEnum board, unsigned int version)
+    {
+      if (IS_ARM(board) && version >= 216)
+        return new SwitchesConversionTable(board, version);
+      else
+        return new AndSwitchesConversionTable(board, version);
+
+#if 0
+      static std::list<Cache> internalCache;
+
+      for (std::list<Cache>::iterator it=internalCache.begin(); it!=internalCache.end(); it++) {
+        Cache element = *it;
+        if (element.board == board && element.version == version && element.flags == flags)
+          return element.table;
+      }
+
+      Cache element(board, version, flags, new SwitchesConversionTable(board, version, flags));
+      internalCache.push_back(element);
+      return element.table;
+#endif
+    }
+
+
   protected:
 
     void addConversion(const RawSwitch & sw, const int b)
@@ -1136,11 +1153,11 @@ class CustomSwitchesAndSwitchesConversionTable: public ConversionTable {
     }
 };
 
-class CustomSwitchField: public TransformedField {
+class LogicalSwitchField: public TransformedField {
   public:
-    CustomSwitchField(CustomSwData & csw, BoardEnum board, unsigned int version, unsigned int variant):
+    LogicalSwitchField(LogicalSwitchData & csw, BoardEnum board, unsigned int version, unsigned int variant):
       TransformedField(internalField),
-      internalField("CustomSwitch"),
+      internalField("LogicalSwitch"),
       csw(csw),
       board(board),
       version(version),
@@ -1148,9 +1165,14 @@ class CustomSwitchField: public TransformedField {
       functionsConversionTable(board, version),
       sourcesConversionTable(SourcesConversionTable::getInstance(board, version, variant, (version >= 214 || (!IS_ARM(board) && version >= 213)) ? 0 : FLAG_NOSWITCHES)),
       switchesConversionTable(SwitchesConversionTable::getInstance(board, version)),
-      andswitchesConversionTable(board, version)
+      andswitchesConversionTable(AndSwitchesConversionTable::getInstance(board, version))
     {
-      if (IS_ARM(board) && version >= 215) {
+      if (IS_ARM(board) && version >= 216) {
+        internalField.Append(new SignedField<8>(v1));
+        internalField.Append(new SignedField<16>(v2));
+        internalField.Append(new SignedField<16>(v3));
+      }
+      else if (IS_ARM(board) && version >= 215) {
         internalField.Append(new SignedField<16>(v1));
         internalField.Append(new SignedField<16>(v2));
       }
@@ -1164,13 +1186,13 @@ class CustomSwitchField: public TransformedField {
         internalField.Append(new UnsignedField<8>(csw.delay));
         internalField.Append(new UnsignedField<8>(csw.duration));
         if (version >= 214) {
-          internalField.Append(new ConversionField< SignedField<8> >((int &)csw.andsw, &andswitchesConversionTable, "AND switch"));
+          internalField.Append(new ConversionField< SignedField<8> >((int &)csw.andsw, andswitchesConversionTable, "AND switch"));
         }
       }
       else {
         if (version >= 213) {
           internalField.Append(new ConversionField< UnsignedField<4> >(csw.func, &functionsConversionTable, "Function"));
-          internalField.Append(new ConversionField< UnsignedField<4> >(csw.andsw, &andswitchesConversionTable, "AND switch"));
+          internalField.Append(new ConversionField< UnsignedField<4> >((unsigned int &)csw.andsw, andswitchesConversionTable, "AND switch"));
         }
         else {
           internalField.Append(new ConversionField< UnsignedField<8> >(csw.func, &functionsConversionTable, "Function"));
@@ -1180,54 +1202,65 @@ class CustomSwitchField: public TransformedField {
 
     virtual void beforeExport()
     {
-      v1 = csw.val1;
-      v2 = csw.val2;
-
-      if ((csw.func >= CS_FN_VPOS && csw.func <= CS_FN_ANEG) || (csw.func >= CS_FN_EQUAL && csw.func!=CS_FN_TIM)) {
-        sourcesConversionTable->exportValue(csw.val1, v1);
+      if (csw.func == LS_FN_STAY) {
+        switchesConversionTable->exportValue(csw.val1, v1);
+        v2 = csw.val2;
+        v3 = csw.val3;
       }
-
-      if (csw.func >= CS_FN_EQUAL && csw.func <= CS_FN_ELESS) {
-        sourcesConversionTable->exportValue(csw.val2, v2);
-      }
-
-      if (csw.func >= CS_FN_AND && csw.func <= CS_FN_XOR) {
+      else if ((csw.func >= LS_FN_AND && csw.func <= LS_FN_XOR) || csw.func == LS_FN_STICKY) {
         switchesConversionTable->exportValue(csw.val1, v1);
         switchesConversionTable->exportValue(csw.val2, v2);
+      }
+      else if (csw.func >= LS_FN_EQUAL && csw.func <= LS_FN_ELESS) {
+        sourcesConversionTable->exportValue(csw.val1, v1);
+        sourcesConversionTable->exportValue(csw.val2, v2);
+      }
+      else {
+        if ((csw.func >= LS_FN_VPOS && csw.func <= LS_FN_ANEG) || (csw.func >= LS_FN_EQUAL && csw.func!=LS_FN_TIMER))
+          sourcesConversionTable->exportValue(csw.val1, v1);
+        else
+          v1 = csw.val1;
+        v2 = csw.val2;
       }
     }
 
     virtual void afterImport()
     {
-      csw.val1 = v1;
-      csw.val2 = v2;
-
-      if ((csw.func >= CS_FN_VPOS && csw.func <= CS_FN_ANEG) || (csw.func >= CS_FN_EQUAL && csw.func!=CS_FN_TIM)) {
-        sourcesConversionTable->importValue(v1, csw.val1);
+      if (csw.func == LS_FN_STAY) {
+        switchesConversionTable->importValue(v1, csw.val1);
+        csw.val2 = v2;
+        csw.val3 = v3;
       }
-
-      if (csw.func >= CS_FN_EQUAL && csw.func <= CS_FN_ELESS) {
-        sourcesConversionTable->importValue(v2, csw.val2);
-      }
-
-      if (csw.func >= CS_FN_AND && csw.func <= CS_FN_XOR) {
+      else if ((csw.func >= LS_FN_AND && csw.func <= LS_FN_XOR) || csw.func == LS_FN_STICKY) {
         switchesConversionTable->importValue(v1, csw.val1);
         switchesConversionTable->importValue(v2, csw.val2);
+      }
+      else if (csw.func >= LS_FN_EQUAL && csw.func <= LS_FN_ELESS) {
+        sourcesConversionTable->importValue(v1, csw.val1);
+        sourcesConversionTable->importValue(v2, csw.val2);
+      }
+      else {
+        if ((csw.func >= LS_FN_VPOS && csw.func <= LS_FN_ANEG) || (csw.func >= LS_FN_EQUAL && csw.func!=LS_FN_TIMER))
+          sourcesConversionTable->importValue(v1, csw.val1);
+        else
+          csw.val1 = v1;
+        csw.val2 = v2;
       }
     }
 
   protected:
     StructField internalField;
-    CustomSwData & csw;
+    LogicalSwitchData & csw;
     BoardEnum board;
     unsigned int version;
     unsigned int variant;
-    CustomSwitchesFunctionsTable functionsConversionTable;
+    LogicalSwitchesFunctionsTable functionsConversionTable;
     SourcesConversionTable * sourcesConversionTable;
     SwitchesConversionTable * switchesConversionTable;
-    CustomSwitchesAndSwitchesConversionTable andswitchesConversionTable;
+    ConversionTable * andswitchesConversionTable;
     int v1;
     int v2;
+    int v3;
 };
 
 class CustomFunctionsConversionTable: public ConversionTable {
@@ -1237,7 +1270,13 @@ class CustomFunctionsConversionTable: public ConversionTable {
     {
       int val=0;
 
-      if (IS_ARM(board) || version < 213) {
+      if (version >= 216) {
+        for (int i=0; i<32; i++) {
+          addConversion(i, val);
+        }
+        val++;
+      }
+      else if (IS_ARM(board) || version < 213) {
         for (int i=0; i<16; i++) {
           addConversion(val, val);
           val++;
@@ -1249,32 +1288,72 @@ class CustomFunctionsConversionTable: public ConversionTable {
         }
         val+=4;
       }
-      addConversion(FuncTrainer, val++);
-      addConversion(FuncTrainerRUD, val++);
-      addConversion(FuncTrainerELE, val++);
-      addConversion(FuncTrainerTHR, val++);
-      addConversion(FuncTrainerAIL, val++);
-      addConversion(FuncInstantTrim, val++);
-      addConversion(FuncPlaySound, val++);
-      if (!IS_TARANIS(board))
-        addConversion(FuncPlayHaptic, val++);
-      addConversion(FuncReset, val++);
-      addConversion(FuncVario, val++);
-      addConversion(FuncPlayPrompt, val++);
-      if (version >= 213 && !IS_ARM(board))
-        addConversion(FuncPlayBoth, val++);
-      addConversion(FuncPlayValue, val++);
-      if (board == BOARD_GRUVIN9X || IS_ARM(board) )
-        addConversion(FuncLogs, val++);
-      if (IS_ARM(board))
-        addConversion(FuncVolume, val++);
-      addConversion(FuncBacklight, val++);
-      if (IS_ARM(board)) {
-        addConversion(FuncBackgroundMusic, val++);
-        addConversion(FuncBackgroundMusicPause, val++);
+
+      if (version >= 216) {
+        addConversion(FuncTrainer, val);
+        addConversion(FuncTrainerRUD, val);
+        addConversion(FuncTrainerELE, val);
+        addConversion(FuncTrainerTHR, val);
+        addConversion(FuncTrainerAIL, val);
+        val++;
       }
-      for (int i=0; i<5; i++)
-        addConversion(FuncAdjustGV1+i, val++);
+      else {
+        addConversion(FuncTrainer, val++);
+        addConversion(FuncTrainerRUD, val++);
+        addConversion(FuncTrainerELE, val++);
+        addConversion(FuncTrainerTHR, val++);
+        addConversion(FuncTrainerAIL, val++);
+      }
+      addConversion(FuncInstantTrim, val++);
+      if (version >= 216) {
+        addConversion(FuncReset, val++);
+        if (IS_ARM(board)) {
+          addConversion(FuncSetTimer1, val);
+          addConversion(FuncSetTimer2, val);
+          val++;
+        }
+        for (int i=0; i<MAX_GVARS(board, version); i++)
+          addConversion(FuncAdjustGV1+i, val);
+        val++;
+        if (IS_ARM(board))
+          addConversion(FuncVolume, val++);
+        addConversion(FuncPlaySound, val++);
+        addConversion(FuncPlayPrompt, val++);
+        if (version >= 213 && !IS_ARM(board))
+          addConversion(FuncPlayBoth, val++);
+        addConversion(FuncPlayValue, val++);
+        if (IS_ARM(board)) {
+          addConversion(FuncBackgroundMusic, val++);
+          addConversion(FuncBackgroundMusicPause, val++);
+        }
+        addConversion(FuncVario, val++);
+        addConversion(FuncPlayHaptic, val++);
+        if (board == BOARD_GRUVIN9X || IS_ARM(board) )
+          addConversion(FuncLogs, val++);
+        addConversion(FuncBacklight, val++);
+      }
+      else {
+        addConversion(FuncPlaySound, val++);
+        if (!IS_TARANIS(board))
+          addConversion(FuncPlayHaptic, val++);
+        addConversion(FuncReset, val++);
+        addConversion(FuncVario, val++);
+        addConversion(FuncPlayPrompt, val++);
+        if (version >= 213 && !IS_ARM(board))
+          addConversion(FuncPlayBoth, val++);
+        addConversion(FuncPlayValue, val++);
+        if (board == BOARD_GRUVIN9X || IS_ARM(board) )
+          addConversion(FuncLogs, val++);
+        if (IS_ARM(board))
+          addConversion(FuncVolume, val++);
+        addConversion(FuncBacklight, val++);
+        if (IS_ARM(board)) {
+          addConversion(FuncBackgroundMusic, val++);
+          addConversion(FuncBackgroundMusicPause, val++);
+        }
+        for (int i=0; i<5; i++)
+          addConversion(FuncAdjustGV1+i, val++);
+      }
     }
 };
 
@@ -1317,9 +1396,9 @@ class SwitchesWarningField: public TransformedField {
     unsigned int version;
 };
 
-class CustomFunctionField: public TransformedField {
+class ArmCustomFunctionField: public TransformedField {
   public:
-    CustomFunctionField(FuncSwData & fn, BoardEnum board, unsigned int version, unsigned int variant):
+    ArmCustomFunctionField(FuncSwData & fn, BoardEnum board, unsigned int version, unsigned int variant):
       TransformedField(internalField),
       internalField("CustomFunction"),
       fn(fn),
@@ -1327,200 +1406,173 @@ class CustomFunctionField: public TransformedField {
       version(version),
       variant(variant),
       functionsConversionTable(board, version),
-      sourcesConversionTable(SourcesConversionTable::getInstance(board, version, variant, FLAG_NONONE)),
-      _param(0),
-      _delay(0),
-      _union_param(0)
+      sourcesConversionTable(SourcesConversionTable::getInstance(board, version, variant, version >= 216 ? 0 : FLAG_NONONE)),
+      _active(0)
     {
-      memset(_arm_param, 0, sizeof(_arm_param));
+      memset(_param, 0, sizeof(_param));
 
       internalField.Append(new SwitchField<8>(fn.swtch, board, version));
-      if (IS_ARM(board)) {
-        internalField.Append(new ConversionField< UnsignedField<8> >((unsigned int &)fn.func, &functionsConversionTable, "Function", ::QObject::tr("OpenTX on this board doesn't accept this function")));
-        if (IS_TARANIS(board))
-          internalField.Append(new CharField<10>(_arm_param));
-        else
-          internalField.Append(new CharField<6>(_arm_param));
-        if (version >= 214) {
-          internalField.Append(new UnsignedField<2>(_mode));
-          internalField.Append(new SignedField<6>(_delay));
-        }
-        else {
-          internalField.Append(new UnsignedField<8>((unsigned int &)_delay));
-        }
-        if (version < 214)
-          internalField.Append(new SpareBitsField<8>());
+      internalField.Append(new ConversionField< UnsignedField<8> >((unsigned int &)fn.func, &functionsConversionTable, "Function", ::QObject::tr("OpenTX on this board doesn't accept this function")));
+
+      if (IS_TARANIS(board))
+        internalField.Append(new CharField<10>(_param, false));
+      else
+        internalField.Append(new CharField<6>(_param, false));
+
+      if (version >= 216) {
+        internalField.Append(new UnsignedField<8>(_active));
+      }
+      else if (version >= 214) {
+        internalField.Append(new UnsignedField<2>(_mode));
+        internalField.Append(new UnsignedField<6>(_active));
       }
       else {
-        if (version >= 213) {
-          internalField.Append(new UnsignedField<3>(_union_param));
-          internalField.Append(new ConversionField< UnsignedField<5> >((unsigned int &)fn.func, &functionsConversionTable, "Function", ::QObject::tr("OpenTX on this board doesn't accept this function")));
-        }
-        else {
-          internalField.Append(new ConversionField< UnsignedField<7> >((unsigned int &)fn.func, &functionsConversionTable, "Function", ::QObject::tr("OpenTX on this board doesn't accept this function")));
-          internalField.Append(new BoolField<1>((bool &)fn.enabled));
-        }
-        internalField.Append(new UnsignedField<8>(_param));
+        internalField.Append(new UnsignedField<8>((unsigned int &)_active));
+        internalField.Append(new SpareBitsField<8>());
       }
     }
 
     virtual void beforeExport()
     {
-      if (IS_ARM(board)) {
-        _mode = 0;
-        if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayValue)
-          _delay = (version >= 216 ? fn.repeatParam : (fn.repeatParam/5));
-        else
-          _delay = (fn.enabled ? 1 : 0);
-        if (fn.func <= FuncInstantTrim) {
-          *((uint32_t *)_arm_param) = fn.param;
-        }
-        else if (fn.func == FuncPlayPrompt || fn.func == FuncBackgroundMusic) {
-          memcpy(_arm_param, fn.paramarm, sizeof(_arm_param));
-        }
-        else if (fn.func >= FuncAdjustGV1 && fn.func <= FuncAdjustGVLast) {
-          unsigned int value;
-          if (version >= 214) {
-            _mode = fn.adjustMode;
-            if (fn.adjustMode == 1)
-              sourcesConversionTable->exportValue(fn.param, (int &)value);
-            else if (fn.adjustMode == 2)
-              value = RawSource(fn.param).index;
-            else
-              value = fn.param;
-          }
-          else {
-            unsigned int value;
-            sourcesConversionTable->exportValue(fn.param, (int &)value);
-          }
-          *((uint32_t *)_arm_param) = value;
-        }
-        else if (fn.func == FuncPlayValue || fn.func == FuncVolume) {
-          unsigned int value;
-          sourcesConversionTable->exportValue(fn.param, (int &)value);
-          *((uint32_t *)_arm_param) = value;
+      _mode = 0;
+
+      if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayValue)
+        _active = (version >= 216 ? fn.repeatParam : (fn.repeatParam/5));
+      else
+        _active = (fn.enabled ? 1 : 0);
+
+      if (fn.func >= FuncSafetyCh1 && fn.func <= FuncSafetyCh32) {
+        if (version >= 216) {
+          *((uint16_t *)_param) = fn.param;
+          *((uint8_t *)(_param+3)) = fn.func - FuncSafetyCh1;
         }
         else {
-          *((uint32_t *)_arm_param) = fn.param;
+          *((uint32_t *)_param) = fn.param;
         }
       }
+      else if (fn.func >= FuncTrainer && fn.func <= FuncTrainerAIL) {
+        if (version >= 216)
+          *((uint8_t *)(_param+3)) = fn.func - FuncTrainer;
+      }
+      else if (fn.func >= FuncSetTimer1 && fn.func <= FuncSetTimer2) {
+        if (version >= 216) {
+          *((uint16_t *)_param) = fn.param;
+          *((uint8_t *)(_param+3)) = fn.func - FuncSetTimer1;
+        }
+      }
+      else if (fn.func == FuncPlayPrompt || fn.func == FuncBackgroundMusic) {
+        memcpy(_param, fn.paramarm, sizeof(_param));
+      }
+      else if (fn.func >= FuncAdjustGV1 && fn.func <= FuncAdjustGVLast) {
+        if (version >= 216) {
+          *((uint8_t *)(_param+2)) = fn.adjustMode;
+          *((uint8_t *)(_param+3)) = fn.func - FuncAdjustGV1;
+          unsigned int value;
+          if (fn.adjustMode == 1)
+            sourcesConversionTable->exportValue(fn.param, (int &)value);
+          else if (fn.adjustMode == 2)
+            value = RawSource(fn.param).index;
+          else
+            value = fn.param;
+          *((uint16_t *)_param) = value;
+        }
+        else if (version >= 214) {
+          unsigned int value;
+          _mode = fn.adjustMode;
+          if (fn.adjustMode == 1)
+            sourcesConversionTable->exportValue(fn.param, (int &)value);
+          else if (fn.adjustMode == 2)
+            value = RawSource(fn.param).index;
+          else
+            value = fn.param;
+          *((uint32_t *)_param) = value;
+        }
+        else {
+          unsigned int value;
+          sourcesConversionTable->exportValue(fn.param, (int &)value);
+          *((uint32_t *)_param) = value;
+        }
+      }
+      else if (fn.func == FuncPlayValue || fn.func == FuncVolume) {
+        unsigned int value;
+        sourcesConversionTable->exportValue(fn.param, (int &)value);
+        if (version >= 216)
+          *((uint16_t *)_param) = value;
+        else
+          *((uint32_t *)_param) = value;
+      }
       else {
-        /* the default behavior */
-        _param = fn.param;
-        _union_param = (fn.enabled ? 1 : 0);
-        if (fn.func >= FuncAdjustGV1 && fn.func <= FuncAdjustGVLast) {
-          if (version >= 213) {
-            _union_param += (fn.adjustMode << 1);
-            if (fn.adjustMode == 1)
-              sourcesConversionTable->exportValue(fn.param, (int &)_param);
-            else if (fn.adjustMode == 2)
-              _param = RawSource(fn.param).index;
-          }
-          else {
-            sourcesConversionTable->exportValue(fn.param, (int &)_param);
-          }
-        }
-        else if (fn.func == FuncPlayValue) {
-          if (version >= 213) {
-            _union_param = fn.repeatParam / 10;
-            sourcesConversionTable->exportValue(fn.param, (int &)_param);
-          }
-          else {
-            SourcesConversionTable::getInstance(board, version, variant, FLAG_NONONE|FLAG_NOSWITCHES)->exportValue(fn.param, (int &)_param);
-          }
-        }
-        else if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayBoth) {
-          if (version >= 213)
-            _union_param = fn.repeatParam / 10;
-        }
-        else if (fn.func <= FuncSafetyCh16) {
-          if (version >= 213)
-            _union_param += ((fn.func % 4) << 1);
-        }
+        *((uint32_t *)_param) = fn.param;
       }
     }
 
     virtual void afterImport()
     {
-      if (IS_ARM(board)) {
-        if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayValue)
-          fn.repeatParam = (version >= 216 ? _delay : (_delay*5));
-        else
-          fn.enabled = (_delay & 0x01);
+      if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayValue)
+        fn.repeatParam = (version >= 216 ? _active : (_active*5));
+      else
+        fn.enabled = (_active & 0x01);
 
-        unsigned int value = *((uint32_t *)_arm_param);
-        if (fn.func <= FuncTrainer) {
-            fn.param = (int)value;
-        }
-        else if (fn.func <= FuncInstantTrim) {
-          fn.param = value;
-        }
-        else if (fn.func == FuncPlayPrompt || fn.func == FuncBackgroundMusic) {
-          memcpy(fn.paramarm, _arm_param, sizeof(fn.paramarm));
-        }
-        else if (fn.func == FuncVolume) {
-          sourcesConversionTable->importValue(value, (int &)fn.param);
-        }
-        else if (fn.func >= FuncAdjustGV1 && fn.func <= FuncAdjustGVLast) {
-          if (version >= 214) {
-            fn.adjustMode = _mode;
-            if (fn.adjustMode == 1)
-              sourcesConversionTable->importValue(value, (int &)fn.param);
-            else if (fn.adjustMode == 2)
-              fn.param = RawSource(SOURCE_TYPE_GVAR, value).toValue();
-            else
-              fn.param = value;
-          }
-          else {
-            sourcesConversionTable->importValue(value, (int &)fn.param);
-          }
-        }
-        else if (fn.func == FuncPlayValue) {
-          if (version >= 213)
-            sourcesConversionTable->importValue(value, (int &)fn.param);
-          else
-            SourcesConversionTable::getInstance(board, version, variant, FLAG_NONONE|FLAG_NOSWITCHES)->importValue(value, (int &)fn.param);
-        }
-        else {
-          fn.param = value;
-        }
+      unsigned int value=0, mode=0, index=0;
+      if (version >= 216) {
+        value = *((uint16_t *)_param);
+        mode = *((uint8_t *)(_param+2));
+        index = *((uint8_t *)(_param+3));
       }
       else {
-        fn.param = _param;
-        if (version >= 213) {
-          fn.enabled = (_union_param & 0x01);
+        value = *((uint32_t *)_param);
+      }
+
+      if (fn.func >= FuncSafetyCh1 && fn.func <= FuncSafetyCh32) {
+        fn.func = AssignFunc(fn.func + index);
+        fn.param = (int)value;
+      }
+      else if (fn.func >= FuncSetTimer1 && fn.func <= FuncSetTimer2) {
+        fn.func = AssignFunc(fn.func + index);
+        fn.param = (int)value;
+      }
+      else if (fn.func >= FuncTrainer && fn.func <= FuncTrainerAIL) {
+        fn.func = AssignFunc(fn.func + index);
+        fn.param = value;
+      }
+      else if (fn.func == FuncPlayPrompt || fn.func == FuncBackgroundMusic) {
+        memcpy(fn.paramarm, _param, sizeof(fn.paramarm));
+      }
+      else if (fn.func == FuncVolume) {
+        sourcesConversionTable->importValue(value, (int &)fn.param);
+      }
+      else if (fn.func >= FuncAdjustGV1 && fn.func <= FuncAdjustGVLast) {
+        if (version >= 216) {
+          fn.func = AssignFunc(fn.func + index);
+          fn.adjustMode = mode;
+          if (fn.adjustMode == 1)
+            sourcesConversionTable->importValue(value, (int &)fn.param);
+          else if (fn.adjustMode == 2)
+            fn.param = RawSource(SOURCE_TYPE_GVAR, value).toValue();
+          else
+            fn.param = value;
         }
-        if (fn.func >= FuncAdjustGV1 && fn.func <= FuncAdjustGVLast) {
-          if (version >= 213) {
-            fn.adjustMode = ((_union_param >> 1) & 0x03);
-            if (fn.adjustMode == 1)
-              sourcesConversionTable->importValue(_param, (int &)fn.param);
-            else if (fn.adjustMode == 2)
-              fn.param = RawSource(SOURCE_TYPE_GVAR, _param).toValue();
-          }
-          else {
-            sourcesConversionTable->importValue(_param, (int &)fn.param);
-          }
+        else if (version >= 214) {
+          fn.adjustMode = _mode;
+          if (fn.adjustMode == 1)
+            sourcesConversionTable->importValue(value, (int &)fn.param);
+          else if (fn.adjustMode == 2)
+            fn.param = RawSource(SOURCE_TYPE_GVAR, value).toValue();
+          else
+            fn.param = value;
         }
-        else if (fn.func == FuncPlayValue) {
-          if (version >= 213) {
-            fn.repeatParam = _union_param * 10;
-            sourcesConversionTable->importValue(_param, (int &)fn.param);
-          }
-          else {
-            SourcesConversionTable::getInstance(board, version, variant, FLAG_NONONE|FLAG_NOSWITCHES)->importValue(_param, (int &)fn.param);
-          }
+        else {
+          sourcesConversionTable->importValue(value, (int &)fn.param);
         }
-        else if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayBoth) {
-          if (version >= 213)
-            fn.repeatParam = _union_param * 10;
-        }
-        else if (fn.func <= FuncSafetyCh16) {
-          if (version >= 213) {
-            fn.func = AssignFunc(((fn.func >> 2) << 2) + ((_union_param >> 1) & 0x03));
-          }
-          fn.param = (int8_t)fn.param;
-        }
+      }
+      else if (fn.func == FuncPlayValue) {
+        if (version >= 213)
+          sourcesConversionTable->importValue(value, (int &)fn.param);
+        else
+          SourcesConversionTable::getInstance(board, version, variant, FLAG_NONONE|FLAG_NOSWITCHES)->importValue(value, (int &)fn.param);
+      }
+      else {
+        fn.param = value;
       }
     }
 
@@ -1532,11 +1584,170 @@ class CustomFunctionField: public TransformedField {
     unsigned int variant;
     CustomFunctionsConversionTable functionsConversionTable;
     SourcesConversionTable * sourcesConversionTable;
-    char _arm_param[10];
+    char _param[10];
+    unsigned int _active;
+    unsigned int _mode;
+};
+
+class AvrCustomFunctionField: public TransformedField {
+  public:
+    AvrCustomFunctionField(FuncSwData & fn, BoardEnum board, unsigned int version, unsigned int variant):
+      TransformedField(internalField),
+      internalField("CustomFunction"),
+      fn(fn),
+      board(board),
+      version(version),
+      variant(variant),
+      functionsConversionTable(board, version),
+      sourcesConversionTable(SourcesConversionTable::getInstance(board, version, variant, version >= 216 ? 0 : FLAG_NONONE)),
+      _param(0),
+      _union_param(0),
+      _active(0)
+    {
+      if (version >= 216) {
+        internalField.Append(new SwitchField<6>(fn.swtch, board, version));
+        internalField.Append(new ConversionField< UnsignedField<4> >((unsigned int &)fn.func, &functionsConversionTable, "Function", ::QObject::tr("OpenTX on this board doesn't accept this function")));
+        internalField.Append(new UnsignedField<5>(_union_param));
+        internalField.Append(new UnsignedField<1>(_active));
+      }
+      if (version >= 213) {
+        internalField.Append(new SwitchField<8>(fn.swtch, board, version));
+        internalField.Append(new UnsignedField<3>(_union_param));
+        internalField.Append(new ConversionField< UnsignedField<5> >((unsigned int &)fn.func, &functionsConversionTable, "Function", ::QObject::tr("OpenTX on this board doesn't accept this function")));
+      }
+      else {
+        internalField.Append(new SwitchField<8>(fn.swtch, board, version));
+        internalField.Append(new ConversionField< UnsignedField<7> >((unsigned int &)fn.func, &functionsConversionTable, "Function", ::QObject::tr("OpenTX on this board doesn't accept this function")));
+        internalField.Append(new BoolField<1>((bool &)fn.enabled));
+      }
+      internalField.Append(new UnsignedField<8>(_param));
+    }
+
+    virtual void beforeExport()
+    {
+      _param = fn.param;
+      _active = (fn.enabled ? 1 : 0);
+
+      if (fn.func >= FuncSafetyCh1 && fn.func <= FuncSafetyCh32) {
+        if (version >= 216)
+          _union_param = fn.func - FuncSafetyCh1;
+        else if (version >= 213)
+          _active += ((fn.func % 4) << 1);
+      }
+      else if (fn.func >= FuncTrainer && fn.func <= FuncTrainerAIL) {
+        if (version >= 216)
+          _union_param = fn.func - FuncTrainer;
+      }
+      else if (fn.func >= FuncAdjustGV1 && fn.func <= FuncAdjustGVLast) {
+        if (version >= 216) {
+          _union_param = fn.adjustMode;
+          _union_param += (fn.func - FuncAdjustGV1) << 2;
+          if (fn.adjustMode == 1)
+            sourcesConversionTable->exportValue(fn.param, (int &)_param);
+          else if (fn.adjustMode == 2)
+            _param = RawSource(fn.param).index;
+        }
+        else if (version >= 213) {
+          _active += (fn.adjustMode << 1);
+          if (fn.adjustMode == 1)
+            sourcesConversionTable->exportValue(fn.param, (int &)_param);
+          else if (fn.adjustMode == 2)
+            _param = RawSource(fn.param).index;
+        }
+        else {
+          sourcesConversionTable->exportValue(fn.param, (int &)_param);
+        }
+      }
+      else if (fn.func == FuncPlayValue) {
+        if (version >= 216) {
+          _union_param = fn.repeatParam / 10;
+          sourcesConversionTable->exportValue(fn.param, (int &)_param);
+        }
+        else if (version >= 213) {
+          _active = fn.repeatParam / 10;
+          sourcesConversionTable->exportValue(fn.param, (int &)_param);
+        }
+        else {
+          SourcesConversionTable::getInstance(board, version, variant, FLAG_NONONE|FLAG_NOSWITCHES)->exportValue(fn.param, (int &)_param);
+        }
+      }
+      else if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayBoth) {
+        if (version >= 216) {
+          _union_param = fn.repeatParam / 10;
+        }
+        else if (version >= 213) {
+          _active = fn.repeatParam / 10;
+        }
+      }
+    }
+
+    virtual void afterImport()
+    {
+      fn.param = _param;
+      if (version >= 213) {
+        fn.enabled = (_active & 0x01);
+      }
+
+      if (fn.func >= FuncSafetyCh1 && fn.func <= FuncSafetyCh32) {
+        if (version >= 216)
+          fn.func = AssignFunc(fn.func + _union_param);
+        else if (version >= 213)
+          fn.func = AssignFunc(((fn.func >> 2) << 2) + ((_active >> 1) & 0x03));
+        fn.param = (int8_t)fn.param;
+      }
+      else if (fn.func >= FuncTrainer && fn.func <= FuncTrainerAIL) {
+        if (version >= 216)
+          fn.func = AssignFunc(fn.func + _union_param);
+      }
+      else if (fn.func >= FuncAdjustGV1 && fn.func <= FuncAdjustGVLast) {
+        if (version >= 216) {
+          fn.func = AssignFunc(fn.func + (_union_param >> 2));
+          fn.adjustMode = (_union_param & 0x03);
+        }
+        else if (version >= 213) {
+          fn.adjustMode = ((_active >> 1) & 0x03);
+          if (fn.adjustMode == 1)
+            sourcesConversionTable->importValue(_param, (int &)fn.param);
+          else if (fn.adjustMode == 2)
+            fn.param = RawSource(SOURCE_TYPE_GVAR, _param).toValue();
+        }
+        else {
+          sourcesConversionTable->importValue(_param, (int &)fn.param);
+        }
+      }
+      else if (fn.func == FuncPlayValue) {
+        if (version >= 216) {
+          fn.repeatParam = _union_param * 10;
+          sourcesConversionTable->importValue(_param, (int &)fn.param);
+        }
+        else if (version >= 213) {
+          fn.repeatParam = _active * 10;
+          sourcesConversionTable->importValue(_param, (int &)fn.param);
+        }
+        else {
+          SourcesConversionTable::getInstance(board, version, variant, FLAG_NONONE|FLAG_NOSWITCHES)->importValue(_param, (int &)fn.param);
+        }
+      }
+      else if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayBoth) {
+        if (version >= 216)
+          fn.repeatParam = _union_param * 10;
+        else if (version >= 213)
+          fn.repeatParam = _active * 10;
+      }
+    }
+
+  protected:
+    StructField internalField;
+    FuncSwData & fn;
+    BoardEnum board;
+    unsigned int version;
+    unsigned int variant;
+    CustomFunctionsConversionTable functionsConversionTable;
+    SourcesConversionTable * sourcesConversionTable;
     unsigned int _param;
-    int _delay;
     unsigned int _mode;
     unsigned int _union_param;
+    unsigned int _active;
 };
 
 class FrskyScreenField: public DataField {
@@ -1812,7 +2023,7 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
   }
 
   for (int i=0; i<O9X_MAX_TIMERS; i++) {
-    internalField.Append(new TimerModeField(modelData.timers[i].mode, board, version));
+    internalField.Append(new SwitchField<8>(modelData.timers[i].mode, board, version, POPULATE_TIMER_MODES));
     if ((IS_ARM(board) || IS_2560(board)) && version >= 216) {
       internalField.Append(new UnsignedField<16>(modelData.timers[i].val));
       internalField.Append(new UnsignedField<2>(modelData.timers[i].countdownBeep));
@@ -1888,9 +2099,13 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
     internalField.Append(new ExpoField(modelData.expoData[i], board, version));
   internalField.Append(new CurvesField(modelData.curves, board, version));
   for (int i=0; i<MAX_CUSTOM_SWITCHES(board, version); i++)
-    internalField.Append(new CustomSwitchField(modelData.customSw[i], board, version, variant));
-  for (int i=0; i<MAX_CUSTOM_FUNCTIONS(board, version); i++)
-    internalField.Append(new CustomFunctionField(modelData.funcSw[i], board, version, variant));
+    internalField.Append(new LogicalSwitchField(modelData.customSw[i], board, version, variant));
+  for (int i=0; i<MAX_CUSTOM_FUNCTIONS(board, version); i++) {
+    if (IS_ARM(board))
+      internalField.Append(new ArmCustomFunctionField(modelData.funcSw[i], board, version, variant));
+    else
+      internalField.Append(new AvrCustomFunctionField(modelData.funcSw[i], board, version, variant));
+  }
   internalField.Append(new HeliField(modelData.swashRingData, board, version, variant));
   for (int i=0; i<MAX_PHASES(board, version); i++)
     internalField.Append(new PhaseField(modelData.phaseData[i], i, board, version));
@@ -2022,6 +2237,7 @@ Open9xGeneralDataNew::Open9xGeneralDataNew(GeneralSettings & generalData, BoardE
   internalField("General Settings"),
   generalData(generalData),
   board(board),
+  version(version),
   inputsCount(IS_TARANIS(board) ? 8 : 7)
 {
   generalData.version = version;
@@ -2151,10 +2367,23 @@ Open9xGeneralDataNew::Open9xGeneralDataNew(GeneralSettings & generalData, BoardE
 void Open9xGeneralDataNew::beforeExport()
 {
   uint16_t sum = 0;
-  for (int i=0; i<inputsCount; i++)
-    sum += generalData.calibMid[i];
-  for (int i=0; i<5; i++)
-    sum += generalData.calibSpanNeg[i];
+  if (version >= 216) {
+    int count = 0;
+    for (int i=0; i<inputsCount; i++) {
+      sum += generalData.calibMid[i];
+      if (++count == inputsCount+5) break;
+      sum += generalData.calibSpanNeg[i];
+      if (++count == inputsCount+5) break;
+      sum += generalData.calibSpanPos[i];
+      if (++count == inputsCount+5) break;
+    }
+  }
+  else {
+    for (int i=0; i<inputsCount; i++)
+      sum += generalData.calibMid[i];
+    for (int i=0; i<5; i++)
+      sum += generalData.calibSpanNeg[i];
+  }
   chkSum = sum;
 }
 

@@ -495,6 +495,13 @@ void ModelEdit::on_ca_ctype_CB_currentIndexChanged()
     }
 }
 
+float c9xexpou(float point, float coeff)
+{
+  float x=point*1024.0/100.0;
+  float k=coeff*256.0/100.0;
+  return ((k*x*x*x/(1024*1024) + x*(256-k) + 128) / 256)/1024.0*100;
+}
+
 void ModelEdit::on_ca_apply_PB_clicked()
 {
     int index=ui->ca_ctype_CB->currentIndex();

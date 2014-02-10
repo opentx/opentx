@@ -234,37 +234,38 @@ bool switchState(EnumKeys enuk)
   return result;
 }
 
-#ifndef SIMU
-FORCEINLINE
-#endif
-void readKeysAndTrims()
+// Trim switches ...
+static const pm_uchar crossTrim[] PROGMEM ={
+  1<<INP_D_TRM_LH_DWN,  // bit 7
+  1<<INP_D_TRM_LH_UP,
+  1<<INP_D_TRM_LV_DWN,
+  1<<INP_D_TRM_LV_UP,
+  1<<INP_D_TRM_RV_DWN,
+  1<<INP_D_TRM_RV_UP,
+  1<<INP_D_TRM_RH_DWN,
+  1<<INP_D_TRM_RH_UP    // bit 0
+};
+
+uint8_t trimDown(uint8_t idx)
+{
+  uint8_t in = ~PIND;
+  return (in & pgm_read_byte(crossTrim+idx));
+}
+
+FORCEINLINE void readKeysAndTrims()
 {
   uint8_t enuk = KEY_MENU;
 
   // User buttons ...
   uint8_t in = ~PINB;
-
-  for(int i=1; i<7; i++)
-  {
-    //INP_B_KEY_MEN 1  .. INP_B_KEY_LFT 6
-    keys[enuk].input(in & (1<<i),(EnumKeys)enuk);
+  for (int i=1; i<7; i++) {
+    // INP_B_KEY_MEN 1  .. INP_B_KEY_LFT 6
+    keys[enuk].input(in & (1<<i), (EnumKeys)enuk);
     ++enuk;
   }
 
-  // Trim switches ...
-  static const pm_uchar crossTrim[] PROGMEM ={
-    1<<INP_D_TRM_LH_DWN,  // bit 7
-    1<<INP_D_TRM_LH_UP,
-    1<<INP_D_TRM_LV_DWN,
-    1<<INP_D_TRM_LV_UP,
-    1<<INP_D_TRM_RV_DWN,
-    1<<INP_D_TRM_RV_UP,
-    1<<INP_D_TRM_RH_DWN,
-    1<<INP_D_TRM_RH_UP    // bit 0
-  };
-
+  // Trims ...
   in = ~PIND;
-
   for (int i=0; i<8; i++) {
     // INP_D_TRM_RH_UP   0 .. INP_D_TRM_LH_UP   7
     keys[enuk].input(in & pgm_read_byte(crossTrim+i), (EnumKeys)enuk);

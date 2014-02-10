@@ -110,27 +110,27 @@ PACK(typedef struct t_Open9xGruvin9xMixData_v211 {
   t_Open9xGruvin9xMixData_v211() { memset(this, 0, sizeof(t_Open9xGruvin9xMixData_v211)); }
 }) Open9xGruvin9xMixData_v211;
 
-PACK(typedef struct t_Open9xGruvin9xCustomSwData_v207 { // Custom Switches data
+PACK(typedef struct t_Open9xGruvin9xLogicalSwitchData_v207 { // Custom Switches data
   int8_t  v1; //input
   int8_t  v2; //offset
   uint8_t func;
 
-  operator CustomSwData();
-  t_Open9xGruvin9xCustomSwData_v207() { memset(this, 0, sizeof(t_Open9xGruvin9xCustomSwData_v207)); }
+  operator LogicalSwitchData();
+  t_Open9xGruvin9xLogicalSwitchData_v207() { memset(this, 0, sizeof(t_Open9xGruvin9xLogicalSwitchData_v207)); }
   int8_t fromSource(RawSource source);
   RawSource toSource(int8_t value);
-}) Open9xGruvin9xCustomSwData_v207;
+}) Open9xGruvin9xLogicalSwitchData_v207;
 
-PACK(typedef struct t_Open9xGruvin9xCustomSwData_v209 { // Custom Switches data
+PACK(typedef struct t_Open9xGruvin9xLogicalSwitchData_v209 { // Custom Switches data
   int8_t  v1; //input
   int8_t  v2; //offset
   uint8_t func;
 
-  operator CustomSwData();
-  t_Open9xGruvin9xCustomSwData_v209() { memset(this, 0, sizeof(t_Open9xGruvin9xCustomSwData_v209)); }
+  operator LogicalSwitchData();
+  t_Open9xGruvin9xLogicalSwitchData_v209() { memset(this, 0, sizeof(t_Open9xGruvin9xLogicalSwitchData_v209)); }
   int8_t fromSource(RawSource source);
   RawSource toSource(int8_t value);
-}) Open9xGruvin9xCustomSwData_v209;
+}) Open9xGruvin9xLogicalSwitchData_v209;
 
 PACK(typedef struct t_Open9xGruvin9xFuncSwData_v203 { // Function Switches data
   int8_t  swtch; // input
@@ -194,7 +194,7 @@ PACK(typedef struct t_Open9xGruvin9xModelData_v207 {
   Open9xExpoData_v201  expoData[O9X_MAX_EXPOS];
   int8_t    curves5[O9X_209_MAX_CURVE5][5];
   int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xGruvin9xCustomSwData_v207  customSw[O9X_NUM_CSW];
+  Open9xGruvin9xLogicalSwitchData_v207  customSw[O9X_NUM_CSW];
   Open9xFuncSwData_v203 funcSw[O9X_NUM_FSW];
   Open9xGruvin9xSwashRingData_v208 swashR;
   Open9xGruvin9xPhaseData_v207 phaseData[O9X_MAX_PHASES];
@@ -228,7 +228,7 @@ PACK(typedef struct t_Open9xGruvin9xModelData_v208 {
   Open9xExpoData_v201  expoData[O9X_MAX_EXPOS];
   int8_t    curves5[O9X_209_MAX_CURVE5][5];
   int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xGruvin9xCustomSwData_v207  customSw[O9X_NUM_CSW];
+  Open9xGruvin9xLogicalSwitchData_v207  customSw[O9X_NUM_CSW];
   Open9xGruvin9xFuncSwData_v203 funcSw[O9X_NUM_FSW];
   Open9xGruvin9xSwashRingData_v208 swashR;
   Open9xGruvin9xPhaseData_v208 phaseData[O9X_MAX_PHASES];
@@ -267,7 +267,7 @@ PACK(typedef struct t_Open9xGruvin9xModelData_v209 {
   Open9xExpoData_v201  expoData[O9X_MAX_EXPOS];
   int8_t    curves5[O9X_209_MAX_CURVE5][5];
   int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xGruvin9xCustomSwData_v209  customSw[O9X_NUM_CSW];
+  Open9xGruvin9xLogicalSwitchData_v209  customSw[O9X_NUM_CSW];
   Open9xGruvin9xFuncSwData_v203 funcSw[O9X_NUM_FSW];
   Open9xGruvin9xSwashRingData_v209 swashR;
   Open9xGruvin9xPhaseData_v208 phaseData[O9X_MAX_PHASES];
@@ -307,7 +307,7 @@ PACK(typedef struct t_Open9xGruvin9xModelData_v210 {
   Open9xExpoData_v201  expoData[O9X_MAX_EXPOS];
   int8_t    curves[O9X_MAX_CURVES];
   int8_t    points[O9X_NUM_POINTS];
-  Open9xGruvin9xCustomSwData_v209  customSw[O9X_NUM_CSW];
+  Open9xGruvin9xLogicalSwitchData_v209  customSw[O9X_NUM_CSW];
   Open9xGruvin9xFuncSwData_v210 funcSw[O9X_NUM_FSW];
   Open9xGruvin9xSwashRingData_v209 swashR;
   Open9xGruvin9xPhaseData_v208 phaseData[O9X_MAX_PHASES];
@@ -345,7 +345,7 @@ PACK(typedef struct t_Open9xGruvin9xModelData_v211 {
   Open9xExpoData_v211  expoData[O9X_MAX_EXPOS];
   int8_t    curves[O9X_MAX_CURVES];
   int8_t    points[O9X_NUM_POINTS];
-  Open9xGruvin9xCustomSwData_v209  customSw[O9X_NUM_CSW];
+  Open9xGruvin9xLogicalSwitchData_v209  customSw[O9X_NUM_CSW];
   Open9xGruvin9xFuncSwData_v210 funcSw[O9X_NUM_FSW];
   Open9xGruvin9xSwashRingData_v209 swashR;
   Open9xGruvin9xPhaseData_v208 phaseData[O9X_MAX_PHASES];

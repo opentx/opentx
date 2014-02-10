@@ -237,7 +237,7 @@ int Gruvin9xInterface::getCapability(const Capability capability)
       return 9;
     case CustomFunctions:
       return 12;
-    case CustomSwitches:
+    case LogicalSwitches:
       return 12;
     case CSFunc:
       return 13;

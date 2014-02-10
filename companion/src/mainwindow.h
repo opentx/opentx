@@ -64,6 +64,7 @@ QT_END_NAMESPACE
 class MainWindow : public QMainWindow
 {
     friend class preferencesDialog;
+    friend class fwPreferencesDialog;
     friend class MdiChild; // TODO GetAvrdudeArgs could be external to this class
 
     Q_OBJECT
@@ -82,6 +83,33 @@ public slots:
     void unloadProfile();
     
 private slots:
+    void openDocumentURL();
+
+    void setLanguage(QString langString);
+    void setDefaultLanguage() {setLanguage("");};
+    void setCZLanguage() {setLanguage("cs_CZ");};
+    void setDELanguage() {setLanguage("de_DE");};
+    void setENLanguage() {setLanguage("en");};
+    void setFRLanguage() {setLanguage("fr_FR");};
+    void setITLanguage() {setLanguage("it_IT");};
+    void setHELanguage() {setLanguage("he_IL");};
+    void setPLLanguage() {setLanguage("pl_PL");};
+    void setPTLanguage() {setLanguage("pt_PT");};
+    void setRULanguage() {setLanguage("ru_RU");};
+    void setSELanguage() {setLanguage("sv_SE");};
+
+    void setTheme(int index);
+    void setClassicTheme()   {setTheme(0);};
+    void setMonochromeTheme(){setTheme(1);};
+    void setMonoWhiteTheme() {setTheme(2);};
+    void setMonoBlueTheme()  {setTheme(3);};
+
+    void setIconThemeSize(int index);
+    void setSmallIconThemeSize()  {setIconThemeSize(0);};
+    void setNormalIconThemeSize() {setIconThemeSize(1);};
+    void setBigIconThemeSize()    {setIconThemeSize(2);};
+    void setHugeIconThemeSize()   {setIconThemeSize(3);};
+
     void checkForUpdates(bool ignoreSettings, QString & fwId);
     void checkForUpdateFinished(QNetworkReply * reply);
     void displayWarnings();
@@ -119,14 +147,15 @@ private slots:
     void print();
     void loadBackup();
     void preferences();
+    void appPreferences();
+    void fwPreferences();
     void updateMenus();
     MdiChild *createMdiChild();
-    void switchLayoutDirection();
     void setActiveSubWindow(QWidget *window);
     QMenu * createRecentFileMenu();
     QMenu * createProfilesMenu();
     void autoClose();
-
+  
 private:
     void createActions();
     void createMenus();
@@ -152,7 +181,6 @@ private:
     QStringList GetReceiveFlashCommand(const QString &filename);
     QStringList GetSendFlashCommand(const QString &filename);
     int getEpromVersion(QString fileName);
-
 
     bool convertEEPROM(QString backupFile, QString restoreFile, QString flashFile);
     bool isValidEEPROM(QString eepromfile);
@@ -183,6 +211,7 @@ private:
 
     QMenu *fileMenu;
     QMenu *editMenu;
+    QMenu *settingsMenu;
     QMenu *burnMenu;
     QMenu *helpMenu;
     QToolBar *fileToolBar;
@@ -196,6 +225,8 @@ private:
     QAction *saveAsAct;
     QAction *exitAct;
     QAction *preferencesAct;
+    QAction *appPreferencesAct;
+    QAction *fwPreferencesAct;
     QAction *checkForUpdatesAct;
     QAction *contributorsAct;
     QAction *changelogAct;
@@ -222,6 +253,26 @@ private:
     QAction *logsAct;
     QAction *recentFileActs[MAX_RECENT];
     QAction *profileActs[MAX_PROFILES];
+    QAction *classicThemeAct;
+    QAction *monoThemeAct;
+    QAction *monoBlueThemeAct;
+    QAction *monoWhiteThemeAct;
+    QAction *smallIconAct;
+    QAction *normalIconAct;
+    QAction *bigIconAct;
+    QAction *hugeIconAct;
+    QAction *defaultLanguageAct;
+    QAction *englishLanguageAct;
+    QAction *czechLanguageAct;
+    QAction *germanLanguageAct;
+    QAction *frenchLanguageAct;
+    QAction *italianLanguageAct;
+    QAction *hebrewLanguageAct;
+    QAction *polishLanguageAct;
+    QAction *portugueseLanguageAct;
+    QAction *swedishLanguageAct;
+    QAction *russianLanguageAct;
+    QAction *openDocumentURLAct;
     QString fwToUpdate;
     QToolButton * profileButton;
 };

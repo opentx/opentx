@@ -5,7 +5,7 @@
 #include <QCheckBox>
 #include "eeprominterface.h"
 
-namespace Ui {
+namespace Ui { 
     class preferencesDialog;
 }
 

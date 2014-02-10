@@ -668,82 +668,110 @@ PACK( union u_int8int16_t {
 
 #endif
 
+enum LogicalSwitchesFunctions {
+  LS_FUNC_NONE,
+  LS_FUNC_VEQUAL, // v==offset
+  LS_FUNC_VPOS,   // v>offset
+  LS_FUNC_VNEG,   // v<offset
 #if defined(CPUARM)
-#define MAX_CSW_DURATION 120 /*60s*/
-#define MAX_CSW_DELAY    120 /*60s*/
-#define MAX_CSW_ANDSW    NUM_SWITCH
-typedef int16_t csw_telemetry_value_t;
-PACK(typedef struct t_CustomSwData { // Custom Switches data
-  int16_t v1;
+  LS_FUNC_RANGE,
+#endif
+  LS_FUNC_APOS,   // |v|>offset
+  LS_FUNC_ANEG,   // |v|<offset
+  LS_FUNC_AND,
+  LS_FUNC_OR,
+  LS_FUNC_XOR,
+#if defined(CPUARM)
+  LS_FUNC_STAY,
+#endif
+  LS_FUNC_EQUAL,
+  LS_FUNC_GREATER,
+  LS_FUNC_LESS,
+  LS_FUNC_DIFFEGREATER,
+  LS_FUNC_ADIFFEGREATER,
+  LS_FUNC_TIMER,
+  LS_FUNC_STICKY,
+  LS_FUNC_COUNT,
+  LS_FUNC_MAX = LS_FUNC_COUNT-1
+};
+
+#if defined(CPUARM)
+#define MAX_LS_DURATION 120 /*60s*/
+#define MAX_LS_DELAY    120 /*60s*/
+#define MAX_LS_ANDSW    SWSRC_LAST
+typedef int16_t ls_telemetry_value_t;
+PACK(typedef struct t_LogicalSwitchData { // Custom Switches data
+  int8_t  v1;
   int16_t v2;
+  int16_t v3;
   uint8_t func;
   uint8_t delay;
   uint8_t duration;
   int8_t  andsw;
-}) CustomSwData;
+}) LogicalSwitchData;
 #else
-typedef uint8_t csw_telemetry_value_t;
-#define MAX_CSW_ANDSW    15
-PACK(typedef struct t_CustomSwData { // Custom Switches data
+typedef uint8_t ls_telemetry_value_t;
+#define MAX_LS_ANDSW    15
+PACK(typedef struct t_LogicalSwitchData { // Custom Switches data
   int8_t  v1; //input
   int8_t  v2; //offset
   uint8_t func:4;
   uint8_t andsw:4;
-}) CustomSwData;
+}) LogicalSwitchData;
 #endif
 
 enum Functions {
-#if defined(CPUARM)
-  FUNC_SAFETY_CH1,
-  FUNC_SAFETY_CH16=FUNC_SAFETY_CH1+15,
-#else
-  FUNC_SAFETY_GROUP1,
-  FUNC_SAFETY_GROUP2,
-  FUNC_SAFETY_GROUP3,
-  FUNC_SAFETY_GROUP4,
-#endif
+  // first the functions which need a checkbox
+  FUNC_SAFETY_CHANNEL,
   FUNC_TRAINER,
-  FUNC_TRAINER_RUD,
-  FUNC_TRAINER_ELE,
-  FUNC_TRAINER_THR,
-  FUNC_TRAINER_AIL,
   FUNC_INSTANT_TRIM,
-  FUNC_PLAY_SOUND,
-#if !defined(PCBTARANIS)
-  FUNC_HAPTIC,
-#endif
   FUNC_RESET,
-  FUNC_VARIO,
+#if defined(CPUARM)
+  FUNC_SET_TIMER,
+#endif
+  FUNC_ADJUST_GVAR,
+#if defined(CPUARM)
+  FUNC_VOLUME,
+#endif
+
+  // then the other functions
+  FUNC_FIRST_WITHOUT_ENABLE,
+  FUNC_PLAY_SOUND = FUNC_FIRST_WITHOUT_ENABLE,
   FUNC_PLAY_TRACK,
 #if !defined(CPUARM)
   FUNC_PLAY_BOTH,
 #endif
   FUNC_PLAY_VALUE,
-#if !defined(PCBSTD)
-  FUNC_LOGS,
-#endif
-#if defined(CPUARM)
-  FUNC_VOLUME,
-#endif
-  FUNC_BACKLIGHT,
 #if defined(CPUARM)
   FUNC_BACKGND_MUSIC,
   FUNC_BACKGND_MUSIC_PAUSE,
 #endif
-#if defined(GVARS)
-  FUNC_ADJUST_GV1,
-  FUNC_ADJUST_GVLAST = (FUNC_ADJUST_GV1 + (MAX_GVARS-1)),
+  FUNC_VARIO,
+  FUNC_HAPTIC,
+#if !defined(PCBSTD)
+  FUNC_LOGS,
 #endif
+  FUNC_BACKLIGHT,
 #if defined(DEBUG)
   FUNC_TEST, // should remain the last before MAX as not added in companion9x
 #endif
   FUNC_MAX
 };
 
-#if defined(GVARS)
-  #define IS_ADJUST_GV_FUNCTION(sd)  (CFN_FUNC(sd) >= FUNC_ADJUST_GV1 && CFN_FUNC(sd) <= FUNC_ADJUST_GVLAST)
+#define HAS_ENABLE_PARAM(func) (func < FUNC_FIRST_WITHOUT_ENABLE)
+
+#if defined(CPUARM)
+  #define IS_PLAY_BOTH_FUNC(func) (0)
+  #define IS_VOLUME_FUNC(func)    (func == FUNC_VOLUME)
 #else
-  #define IS_ADJUST_GV_FUNCTION(sd)  (0)
+  #define IS_PLAY_BOTH_FUNC(func) (func == FUNC_PLAY_BOTH)
+  #define IS_VOLUME_FUNC(func)    (0)
+#endif
+
+#if defined(GVARS)
+  #define IS_ADJUST_GV_FUNC(func) (func == FUNC_ADJUST_GVAR)
+#else
+  #define IS_ADJUST_GV_FUNC(func) (0)
 #endif
 
 #if defined(VOICE)
@@ -786,56 +814,70 @@ PACK(typedef struct t_CustomFnData { // Function Switches data
   int8_t  swtch;
   uint8_t func;
   PACK(union {
-    char name[LEN_CFN_NAME];
+    struct {
+      char name[LEN_CFN_NAME];
+    } play;
+
     struct {
       int16_t val;
-      int16_t ext1;
-      int16_t ext2;
-    } composite;
-  }) param;
-  uint8_t mode:2;
-  uint8_t active:6;
+      uint8_t mode;
+      uint8_t param;
+      int16_t spare2;
+    } all;
+
+    struct {
+      int32_t val1;
+      int16_t val2;
+    } clear;
+  });
+  uint8_t active;
 }) CustomFnData;
 #define CFN_EMPTY(p)            (!(p)->swtch)
+#define CFN_SWITCH(p)           ((p)->swtch)
 #define CFN_FUNC(p)             ((p)->func)
 #define CFN_ACTIVE(p)           ((p)->active)
-#define CFN_CH_NUMBER(p)        (CFN_FUNC(p))
+#define CFN_CH_INDEX(p)         ((p)->all.param)
+#define CFN_GVAR_INDEX(p)       ((p)->all.param)
+#define CFN_TIMER_INDEX(p)      ((p)->all.param)
 #define CFN_PLAY_REPEAT(p)      ((p)->active)
 #define CFN_PLAY_REPEAT_MUL     1
 #define CFN_PLAY_REPEAT_NOSTART 0x3F
-#define CFN_GVAR_MODE(p)        ((p)->mode)
-#define CFN_PARAM(p)            ((p)->param.composite.val)
-#define CFN_RESET(p)            (p->active = 0, memset(&(p)->param, 0, sizeof((p)->param)))
+#define CFN_GVAR_MODE(p)        ((p)->all.mode)
+#define CFN_PARAM(p)            ((p)->all.val)
+#define CFN_RESET(p)            ((p)->active=0, (p)->clear.val1=0, (p)->clear.val2=0)
 #else
 PACK(typedef struct t_CustomFnData {
-  int8_t  swtch; // input
-  union {
+  PACK(union {
     struct {
-      uint8_t param:3;
-      uint8_t func:5;
-    } func_param;
+      int8_t   swtch:6;
+      uint16_t func:4;
+      uint8_t  mode:2;
+      uint8_t  param:3;
+      uint8_t  active:1;
+    } gvar;
 
     struct {
-      uint8_t active:1;
-      uint8_t param:2;
-      uint8_t func:5;
-    } func_param_enable;
+      int8_t   swtch:6;
+      uint16_t func:4;
+      uint8_t  param:4;
+      uint8_t  spare:1;
+      uint8_t  active:1;
+    } all;
+  });
 
-    struct {
-      uint8_t active:1;
-      uint8_t func:7;
-    } func_safety;
-  } internal;
-  uint8_t param;
+  uint8_t value;
 }) CustomFnData;
-#define CFN_FUNC(p)         ((p)->internal.func_param.func)
-#define CFN_ACTIVE(p)       ((p)->internal.func_param_enable.active)
-#define CFN_CH_NUMBER(p)    ((p)->internal.func_safety.func)
-#define CFN_PLAY_REPEAT(p)  ((p)->internal.func_param.param)
+#define CFN_SWITCH(p)       ((p)->all.swtch)
+#define CFN_FUNC(p)         ((p)->all.func)
+#define CFN_ACTIVE(p)       ((p)->all.active)
+#define CFN_CH_INDEX(p)     ((p)->all.param)
+#define CFN_TIMER_INDEX(p)  ((p)->all.param)
+#define CFN_GVAR_INDEX(p)   ((p)->gvar.param)
+#define CFN_PLAY_REPEAT(p)  ((p)->all.param)
 #define CFN_PLAY_REPEAT_MUL 10
-#define CFN_GVAR_MODE(p)    ((p)->internal.func_param_enable.param)
-#define CFN_PARAM(p)        ((p)->param)
-#define CFN_RESET(p)        ((p)->internal.func_param_enable.active = 0, CFN_PARAM(p) = 0)
+#define CFN_GVAR_MODE(p)    ((p)->gvar.mode)
+#define CFN_PARAM(p)        ((p)->value)
+#define CFN_RESET(p)        ((p)->all.active = 0, CFN_PARAM(p) = 0)
 #endif
 
 enum TelemetryUnit {
@@ -1101,8 +1143,18 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 #if defined(PCBSTD)
   #define TRIMS_ARRAY       int8_t trim[4]; int8_t trim_ext:8
   #define TRIMS_ARRAY_SIZE  5
+  #define trim_t            int16_t
 #else
-  #define TRIMS_ARRAY       int16_t trim[4]
+  #if defined(PCBTARANIS)
+    PACK(typedef struct {
+      int16_t  value:11;
+      uint16_t mode:5;
+    }) trim_t;
+    #define TRIM_MODE_NONE  0x1F  // 0b11111
+  #else
+    #define trim_t          int16_t
+  #endif
+  #define TRIMS_ARRAY       trim_t trim[4]
   #define TRIMS_ARRAY_SIZE  8
 #endif
 
@@ -1156,6 +1208,7 @@ enum SwitchSources {
   SWSRC_SG2,
   SWSRC_SH0,
   SWSRC_SH2,
+  SWSRC_TRAINER = SWSRC_SH2,
 #else
   SWSRC_ID0 = SWSRC_FIRST_SWITCH,
   SWSRC_ID1,
@@ -1171,11 +1224,37 @@ enum SwitchSources {
   SWSRC_AIL,
   SWSRC_GEA,
   SWSRC_TRN,
+  SWSRC_TRAINER = SWSRC_TRN,
+#endif
+
+  SWSRC_LAST_SWITCH = SWSRC_TRAINER,
+
+#if defined(PCBTARANIS)
+  SWSRC_P11,
+  SWSRC_P16 = SWSRC_P11+5,
+  SWSRC_P21,
+  SWSRC_P26 = SWSRC_P21+5,
+#endif
+
+  SWSRC_FIRST_TRIM,
+  SWSRC_TrimRudLeft = SWSRC_FIRST_TRIM,
+  SWSRC_TrimRudRight,
+  SWSRC_TrimEleDown,
+  SWSRC_TrimEleUp,
+  SWSRC_TrimThrDown,
+  SWSRC_TrimThrUp,
+  SWSRC_TrimAilLeft,
+  SWSRC_TrimAilRight,
+  SWSRC_LAST_TRIM = SWSRC_TrimAilRight,
+
+#if defined(PCBSKY9X)
+  SWSRC_REa,
+#elif defined(PCBGRUVIN9X) || defined(PCBMEGA2560)
+  SWSRC_REa,
+  SWSRC_REb,
 #endif
 
   SWSRC_FIRST_CSW,
-  SWSRC_LAST_SWITCH = SWSRC_FIRST_CSW-1,
-
   SWSRC_SW1 = SWSRC_FIRST_CSW,
   SWSRC_SW2,
   SWSRC_SW3,
@@ -1190,34 +1269,11 @@ enum SwitchSources {
   SWSRC_SWC,
   SWSRC_LAST_CSW = SWSRC_SW1+NUM_CSW-1,
 
-#if defined(PCBTARANIS)
-  SWSRC_P11,
-  SWSRC_P16 = SWSRC_P11+5,
-  SWSRC_P21,
-  SWSRC_P26 = SWSRC_P21+5,
-#endif
-
   SWSRC_ON,
-
-  SWSRC_FIRST_MOMENT_SWITCH,
-  SWSRC_LAST_MOMENT_SWITCH = SWSRC_FIRST_MOMENT_SWITCH+SWSRC_LAST_CSW,
-
-#if !defined(PCBSTD)
-  SWSRC_TRAINER_SHORT,
-  SWSRC_TRAINER_LONG,
-#endif
-
-#if ROTARY_ENCODERS > 0
-  SWSRC_FIRST_ROTENC_SWITCH,
-  SWSRC_LAST_ROTENC_SWITCH = SWSRC_FIRST_ROTENC_SWITCH+(2*ROTARY_ENCODERS)-1,
-#endif
-
-  SWSRC_COUNT,
-  SWSRC_FIRST = -SWSRC_LAST_MOMENT_SWITCH,
-  SWSRC_LAST = SWSRC_COUNT-1,
-
   SWSRC_OFF = -SWSRC_ON,
-  SWSRC_TRAINER = SWSRC_SW1-1,
+
+  SWSRC_FIRST = SWSRC_OFF,
+  SWSRC_LAST = SWSRC_ON
 };
 
 enum MixSources {
@@ -1485,7 +1541,7 @@ PACK(typedef struct t_ModelData {
   CURVDATA  curves[MAX_CURVES];
   int8_t    points[NUM_POINTS];
   
-  CustomSwData customSw[NUM_CSW];
+  LogicalSwitchData customSw[NUM_CSW];
   CustomFnData funcSw[NUM_CFN];
   SwashRingData swashR;
   PhaseData phaseData[MAX_PHASES];

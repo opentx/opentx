@@ -124,7 +124,7 @@ PACK(typedef struct {
 }) TimerData_v215;
 
 PACK(typedef struct {
-  TRIMS_ARRAY;
+  int16_t trim[4];
   int8_t swtch;       // swtch of phase[0] is not used
   char name[LEN_FP_NAME];
   uint8_t fadeIn;
@@ -170,7 +170,7 @@ PACK(typedef struct {
   int16_t   curves[16];
   int8_t    points[NUM_POINTS];
 
-  CustomSwData customSw[NUM_CSW];
+  LogicalSwitchData customSw[NUM_CSW];
   CustomFnData funcSw[NUM_CFN];
   SwashRingData swashR;
   PhaseData_v215 phaseData[MAX_PHASES];
@@ -198,15 +198,18 @@ void ConvertGeneralSettings_215_to_216(EEGeneral &settings)
 #if defined(PCBTARANIS)
 int ConvertSwitch_215_to_216(int swtch)
 {
-  if (swtch < SWSRC_ON)
+  if (swtch <= SWSRC_LAST_SWITCH)
     return swtch;
   else
-    return swtch + (2*6); // 2 * 6-pos pots added as switches
+    return swtch + (2*4) + (2*6); // 4 trims and 2 * 6-pos added as switches
 }
 #else
 inline int ConvertSwitch_215_to_216(int swtch)
 {
-  return swtch;
+  if (swtch <= SWSRC_LAST_SWITCH)
+    return swtch;
+  else
+    return swtch + (2*4) + 1; // 4 trims and REa added
 }
 #endif
 
@@ -221,7 +224,7 @@ void ConvertModel_215_to_216(ModelData &model)
   // Custom Switches: better precision for x when A comes from telemetry
   // Main View: altitude in top bar
   // Mixes: GVARS in weight moved from 512 to 4096 and -512 to -4096, because GVARS may be used in limits [-1250:1250]
-  // Switches: two 6-pos pots added
+  // Switches: two 6-pos pots added, REa added to Sky9x
 
   TRACE("Model conversion from v215 to v216");
 
@@ -378,15 +381,15 @@ void ConvertModel_215_to_216(ModelData &model)
   for (uint8_t i=0; i<32; i++) {
     g_model.customSw[i] = oldModel.customSw[i];
 #if defined(PCBTARANIS)
-    CustomSwData * cs = &g_model.customSw[i];
+    LogicalSwitchData * cs = &g_model.customSw[i];
     uint8_t cstate = cswFamily(cs->func);
-    if (cstate == CS_VOFS || cstate == CS_VCOMP || cstate == CS_VDIFF) {
+    if (cstate == LS_FAMILY_OFS || cstate == LS_FAMILY_COMP || cstate == LS_FAMILY_DIFF) {
       if (cs->v1 > 0) cs->v1 += MAX_INPUTS + MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS;
       if (cs->v1 > MIXSRC_GVAR1+4) cs->v1 += 4;
     }
-    if (cstate == CS_VOFS || cstate == CS_VDIFF) {
+    if (cstate == LS_FAMILY_OFS || cstate == LS_FAMILY_DIFF) {
       if (cs->v1 >= MIXSRC_FIRST_TELEM) {
-        switch (cs->v1) {
+        switch ((uint8_t)cs->v1) {
           case MIXSRC_FIRST_TELEM + TELEM_TM1-1:
           case MIXSRC_FIRST_TELEM + TELEM_TM2-1:
             cs->v2 = (cs->v2+128) * 3;
@@ -428,7 +431,7 @@ void ConvertModel_215_to_216(ModelData &model)
         }
       }
     }
-    if (cstate == CS_VCOMP) {
+    if (cstate == LS_FAMILY_COMP) {
       if (cs->v2 > 0) cs->v2 += MAX_INPUTS + MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS;
       if (cs->v2 > MIXSRC_GVAR1+4) cs->v2 += 4;
     }
@@ -437,7 +440,7 @@ void ConvertModel_215_to_216(ModelData &model)
   for (uint8_t i=0; i<32; i++) {
     g_model.funcSw[i] = oldModel.funcSw[i];
     CustomFnData *sd = &g_model.funcSw[i];
-    if (CFN_FUNC(sd) == FUNC_PLAY_VALUE || CFN_FUNC(sd) == FUNC_VOLUME || (IS_ADJUST_GV_FUNCTION(sd) && CFN_GVAR_MODE(sd) == FUNC_ADJUST_GVAR_SOURCE)) {
+    if (CFN_FUNC(sd) == FUNC_PLAY_VALUE || CFN_FUNC(sd) == FUNC_VOLUME || (IS_ADJUST_GV_FUNC(CFN_FUNC(sd)) && CFN_GVAR_MODE(sd) == FUNC_ADJUST_GVAR_SOURCE)) {
 #if defined(PCBTARANIS)
       CFN_PARAM(sd) += 1 + MAX_INPUTS + MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS;
 #endif
@@ -455,6 +458,22 @@ void ConvertModel_215_to_216(ModelData &model)
 
   for (uint8_t i=0; i<9; i++) {
     memcpy(&g_model.phaseData[i], &oldModel.phaseData[i], sizeof(oldModel.phaseData[i])); // the last 4 gvars will remain blank
+#if defined(PCBTARANIS)
+    for (uint8_t t=0; t<4; t++) {
+      int trim = oldModel.phaseData[i].trim[t];
+      if (trim > 500) {
+        trim -= 501;
+        if (trim >= i)
+          trim += 1;
+        g_model.phaseData[i].trim[t].mode = 2*trim;
+        g_model.phaseData[i].trim[t].value = 0;
+      }
+      else {
+        g_model.phaseData[i].trim[t].mode = 2*i;
+        g_model.phaseData[i].trim[t].value = trim;
+      }
+    }
+#endif
   }
   g_model.thrTraceSrc = oldModel.thrTraceSrc;
   g_model.switchWarningStates = oldModel.switchWarningStates >> 1;

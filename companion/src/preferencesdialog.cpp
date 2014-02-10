@@ -4,7 +4,7 @@
 #include "eeprominterface.h"
 #include "splashlibrary.h"
 #include "helpers.h"
-#ifdef JOYSTICKS
+#ifdef JOYSTICKS 
 #include "joystick.h"
 #include "joystickdialog.h"
 #endif
@@ -40,7 +40,6 @@ preferencesDialog::preferencesDialog(QWidget *parent) :
     connect(OptionCheckBox[i], SIGNAL(toggled(bool)), this, SLOT(firmwareOptionChanged(bool)));
   }
 
-  populateLocale();
   initSettings();
   connect(ui->downloadVerCB, SIGNAL(currentIndexChanged(int)), this, SLOT(baseFirmwareChanged()));
   connect(this, SIGNAL(accepted()), this, SLOT(writeValues()));
@@ -254,11 +253,6 @@ void preferencesDialog::firmwareChanged()
 void preferencesDialog::writeValues()
 {
   QSettings settings;
-  if (ui->locale_QB->currentIndex() > 0)
-    settings.setValue("locale", ui->locale_QB->itemData(ui->locale_QB->currentIndex()));
-  else
-    settings.remove("locale");
-  
   settings.setValue("default_channel_order", ui->channelorderCB->currentIndex());
   settings.setValue("default_mode", ui->stickmodeCB->currentIndex());
   settings.setValue("cpu_id", ui->CPU_ID_LE->text());
@@ -267,8 +261,6 @@ void preferencesDialog::writeValues()
   settings.setValue("rename_firmware_files", ui->renameFirmware->isChecked());
   settings.setValue("wizardEnable", ui->wizardEnable_ChkB->isChecked());
   settings.setValue("show_splash", ui->showSplash->isChecked());
-  settings.setValue("theme", ui->theme_CB->currentIndex());
-  settings.setValue("icon_size", ui->iconSize_CB->currentIndex());
   settings.setValue("simuSW", ui->simuSW->isChecked());
   settings.setValue("history_size", ui->historySize->value());
   settings.setValue("burnFirmware", ui->burnFirmware->isChecked());
@@ -387,9 +379,6 @@ void preferencesDialog::populateFirmwareOptions(const FirmwareInfo * firmware)
 void preferencesDialog::initSettings()
 {
   QSettings settings;
-  int i = ui->locale_QB->findData(settings.value("locale"));
-  if (i < 0) i = 0;
-  ui->locale_QB->setCurrentIndex(i);
   ui->snapshotClipboardCKB->setChecked(settings.value("snapshot_to_clipboard", false).toBool());
   if (ui->snapshotClipboardCKB->isChecked()) {
     ui->snapshotPath->setDisabled(true);
@@ -408,8 +397,6 @@ void preferencesDialog::initSettings()
   ui->renameFirmware->setChecked(settings.value("rename_firmware_files", false).toBool());
   ui->wizardEnable_ChkB->setChecked(settings.value("wizardEnable", true).toBool());
   ui->showSplash->setChecked(settings.value("show_splash", true).toBool());
-  ui->theme_CB->setCurrentIndex(settings.value("theme", 1).toInt());
-  ui->iconSize_CB->setCurrentIndex(settings.value("icon_size", 2).toInt());
   ui->historySize->setValue(settings.value("history_size", 10).toInt());
   ui->backLightColor->setCurrentIndex(settings.value("backLight", 0).toInt());
   ui->startupCheck_fw->setChecked(settings.value("startup_check_fw", true).toBool());
@@ -499,25 +486,6 @@ void preferencesDialog::initSettings()
   }
 #endif  
   firmwareChanged();
-}
-
-void preferencesDialog::populateLocale()
-{
-  ui->ProfSave_PB->setEnabled(true);
-  ui->locale_QB->clear();
-  ui->locale_QB->addItem("System default language", "");
-  ui->locale_QB->addItem("English", "en");
-
-  QStringList strl = QApplication::arguments();
-  if (!strl.count()) return;
-
-  QDir directory = QDir(":/");
-  QStringList files = directory.entryList(QStringList("companion_*.qm"), QDir::Files | QDir::NoSymLinks);
-
-  foreach(QString file, files) {
-    QLocale loc(file.mid(10, 2));
-    ui->locale_QB->addItem(QLocale::languageToString(loc.language()), loc.name());
-  }
 }
 
 void preferencesDialog::on_fw_dnld_clicked()

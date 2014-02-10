@@ -17,9 +17,9 @@ RawSwitch er9xToSwitch(int8_t sw)
   else if (sw == -22)
     return RawSwitch(SWITCH_TYPE_OFF);
   else if (swa <= 22+9)
-    return RawSwitch(SWITCH_TYPE_MOMENT_SWITCH, sw > 0 ? sw-22 : sw+22);
+    return RawSwitch(SWITCH_TYPE_SWITCH, sw > 0 ? sw-22 : sw+22);
   else
-    return RawSwitch(SWITCH_TYPE_MOMENT_VIRTUAL, sw > 0 ? sw-22-9 : sw+22+9);
+    return RawSwitch(SWITCH_TYPE_VIRTUAL, sw > 0 ? sw-22-9 : sw+22+9);
 }
 
 t_Er9xTrainerMix::t_Er9xTrainerMix()
@@ -269,22 +269,22 @@ RawSource er9xToSource(int8_t value)
   }
 }
 
-Er9xCustomSwData::operator CustomSwData ()
+Er9xLogicalSwitchData::operator LogicalSwitchData ()
 {
-  CustomSwData c9x;
+  LogicalSwitchData c9x;
   c9x.func = func;
   c9x.val1 = v1;
   c9x.val2 = v2;
   
-  if ((c9x.func >= CS_FN_VPOS && c9x.func <= CS_FN_ANEG) || c9x.func >= CS_FN_EQUAL) {
+  if ((c9x.func >= LS_FN_VPOS && c9x.func <= LS_FN_ANEG) || c9x.func >= LS_FN_EQUAL) {
     c9x.val1 = er9xToSource(v1).toValue();
   }
 
-  if (c9x.func >= CS_FN_EQUAL) {
+  if (c9x.func >= LS_FN_EQUAL) {
     c9x.val2 = er9xToSource(v2).toValue();
   }
 
-  if (c9x.func >= CS_FN_AND && c9x.func <= CS_FN_XOR) {
+  if (c9x.func >= LS_FN_AND && c9x.func <= LS_FN_XOR) {
     c9x.val1 = er9xToSwitch(v1).toValue();
     c9x.val2 = er9xToSwitch(v2).toValue();
   }
@@ -296,14 +296,6 @@ Er9xCustomSwData::operator CustomSwData ()
 t_Er9xSafetySwData::t_Er9xSafetySwData()
 {
   memset(this, 0, sizeof(t_Er9xSafetySwData));
-}
-
-t_Er9xSafetySwData::operator SafetySwData ()
-{
-  SafetySwData c9x;
-  c9x.swtch = er9xToSwitch(swtch);
-  c9x.val = val;
-  return c9x;
 }
 
 t_Er9xFrSkyChannelData::t_Er9xFrSkyChannelData()
@@ -343,10 +335,11 @@ t_Er9xFrSkyData::operator FrSkyData ()
   return c9x;
 }
 
-TimerMode getEr9xTimerMode(int mode)
+RawSwitch getEr9xTimerMode(int mode)
 {
+  /*
   if (mode <= -33)
-    return TimerMode(TMRMODE_FIRST_NEG_MOMENT_SWITCH+(mode+33));
+    return TimerMode(TMRMODE_FIRST_NEG_SWITCH+(mode+33));
   else if (mode <= -1)
     return TimerMode(TMRMODE_FIRST_NEG_SWITCH+(mode+1));
   else if (mode < 16)
@@ -354,7 +347,9 @@ TimerMode getEr9xTimerMode(int mode)
   else if (mode < 16+21)
     return TimerMode(TMRMODE_FIRST_SWITCH+(mode-16));
   else
-    return TimerMode(TMRMODE_FIRST_MOMENT_SWITCH+(mode-16-21));
+    return TimerMode(TMRMODE_FIRST_SWITCH+(mode-16-21));
+    */
+  return RawSwitch();
 }
 
 t_Er9xModelData::operator ModelData ()
@@ -381,7 +376,7 @@ t_Er9xModelData::operator ModelData ()
       break;
   }
   c9x.traineron= traineron;
-  c9x.t2throttle =  t2throttle;
+  // c9x.t2throttle =  t2throttle;
   c9x.moduleData[0].ppmFrameLength=ppmFrameLength;
   c9x.moduleData[0].channelsCount = 8 + 2 * ppmNCH;
   c9x.thrTrim = thrTrim;
@@ -471,8 +466,8 @@ t_Er9xModelData::operator ModelData ()
   for (int i=0; i<ER9X_NUM_CSW; i++)
     c9x.customSw[i] = customSw[i];
 
-  for (int i=0; i<ER9X_NUM_CHNOUT; i++)
-    c9x.safetySw[i] = safetySw[i];
+  // for (int i=0; i<ER9X_NUM_CHNOUT; i++)
+  //   c9x.safetySw[i] = safetySw[i];
 
   c9x.frsky = frsky;
   c9x.frsky.usrProto=FrSkyUsrProto;

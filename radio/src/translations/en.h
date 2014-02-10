@@ -35,7 +35,7 @@
  */
  /* Formatting octal codes available in TR_ strings:
  *  \037\x       -sets LCD x-coord (x value in octal)
- *  \036         -newline (ARM boards only)
+ *  \036         -newline
  *  \001 to \035 -extended spacing (value * FW/2)
  *  \0           -ends actual string
  */
@@ -150,8 +150,25 @@
 #define LEN_VMIXTRIMS          "\003"
 #define TR_VMIXTRIMS           "OFF""ON\0""Rud""Ele""Thr""Ail"
 
+#if defined(PCBTARANIS)
+  #define TR_CSWTIMER          "Timer"
+  #define TR_CSWSTICKY         "Stcky"
+  #define TR_CSWRANGE          "Range"
+  #define TR_CSWSTAY           "Edge\0"
+#else
+  #define TR_CSWTIMER          "Tim\0 "
+  #define TR_CSWSTICKY         "Glue\0"
+  #if defined(CPUARM)
+    #define TR_CSWRANGE        "Rnge\0"
+    #define TR_CSWSTAY         "Edge\0"
+  #else
+    #define TR_CSWRANGE
+    #define TR_CSWSTAY
+  #endif
+#endif
+
 #define LEN_VCSWFUNC           "\005"
-#define TR_VCSWFUNC            "---\0 ""a{x\0 ""a>x\0 ""a<x\0 ""|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 ""a=b\0 ""a>b\0 ""a<b\0 ""d}x\0 ""|d|}x""TIM\0"
+#define TR_VCSWFUNC            "---\0 ""a{x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""d}x\0 ""|d|}x" TR_CSWTIMER TR_CSWSTICKY
 
 #define LEN_VFSWFUNC           "\012"
 
@@ -167,9 +184,7 @@
   #define TR_SOUND             "Beep\0     "
 #endif
 
-#if defined(PCBTARANIS)
-  #define TR_HAPTIC
-#elif defined(HAPTIC)
+#if defined(HAPTIC)
   #define TR_HAPTIC            "Haptic\0   "
 #else
   #define TR_HAPTIC            "[Haptic]\0 "
@@ -189,7 +204,6 @@
   #define TR_PLAY_VALUE        "[Play Val]"
 #endif
 
-#define TR_CFN_VOLUME          "Volume\0   "
 #define TR_CFN_BG_MUSIC        "BgMusic\0  ""BgMusic ||"
 
 #if defined(SDCARD)
@@ -198,10 +212,10 @@
   #define TR_SDCLOGS           "[SD Logs]\0"
 #endif
 
-#ifdef GVARS
-  #define TR_CFN_ADJUST_GVAR   "Adjust \0  "
+#if defined(GVARS)
+  #define TR_ADJUST_GVAR       "Adjust \0  "
 #else
-  #define TR_CFN_ADJUST_GVAR
+  #define TR_ADJUST_GVAR       "[AdjustGV]"
 #endif
 
 #ifdef DEBUG
@@ -211,11 +225,11 @@
 #endif
 
 #if defined(CPUARM)
-  #define TR_VFSWFUNC          "Safety\0   ""Trainer\0  ""Inst. Trim" TR_SOUND TR_HAPTIC "Reset\0    " TR_VVARIO TR_PLAY_TRACK TR_PLAY_VALUE TR_SDCLOGS TR_CFN_VOLUME "Backlight\0" TR_CFN_BG_MUSIC TR_CFN_ADJUST_GVAR TR_CFN_TEST
+  #define TR_VFSWFUNC          "Safety\0   ""Trainer\0  ""Inst. Trim""Reset\0    ""Set \0     " TR_ADJUST_GVAR "Volume\0   " TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Backlight\0" TR_CFN_TEST
 #elif defined(PCBGRUVIN9X)
-  #define TR_VFSWFUNC          "Safety\0   ""Trainer\0  ""Inst. Trim" TR_SOUND TR_HAPTIC "Reset\0    " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_SDCLOGS "Backlight\0" TR_CFN_ADJUST_GVAR TR_CFN_TEST
+  #define TR_VFSWFUNC          "Safety\0   ""Trainer\0  ""Inst. Trim""Reset\0    " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC TR_SDCLOGS "Backlight\0" TR_CFN_TEST
 #else
-  #define TR_VFSWFUNC          "Safety\0   ""Trainer\0  ""Inst. Trim" TR_SOUND TR_HAPTIC "Reset\0    " TR_VVARIO TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE "Backlight\0" TR_CFN_ADJUST_GVAR TR_CFN_TEST
+  #define TR_VFSWFUNC          "Safety\0   ""Trainer\0  ""Inst. Trim""Reset\0    " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC "Backlight\0" TR_CFN_TEST
 #endif
 
 #define LEN_VFSWRESET          TR("\004", "\011")
@@ -304,7 +318,7 @@
 #define TR_VSWASHTYPE          "---\0""120\0""120X""140\0""90\0"
 
 #define LEN_VKEYS              "\005"
-#define TR_VKEYS               TR(" Menu"" Exit"" Down""   Up""Right"" Left", " Menu"" Exit""Enter"" Page"" Plus""Minus")
+#define TR_VKEYS               TR("Menu\0""Exit\0""Down\0""Up\0  ""Right""Left\0", "Menu\0""Exit\0""Enter""Page\0""Plus\0""Minus")
 
 #define LEN_VRENCODERS         "\003"
 #define TR_VRENCODERS          "REa""REb"
@@ -326,28 +340,33 @@
 #endif
 
 #if defined(CPUARM)
-  #define TR_CUSTOMSW          "CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC""CSD""CSE""CSF""CSG""CSH""CSI""CSJ""CSK""CSL""CSM""CSN""CSO""CSP""CSQ""CSR""CSS""CST""CSU""CSV""CSW"
+  #define TR_CUSTOMSW          "LS1""LS2""LS3""LS4""LS5""LS6""LS7""LS8""LS9""LSA""LSB""LSC""LSD""LSE""LSF""LSG""LSH""LSI""LSJ""LSK""LSL""LSM""LSN""LSO""LSP""LSQ""LSR""LSS""LST""LSU""LSV""LSW"
 #elif defined(PCBGRUVIN9X) || defined(CPUM2561) || defined(CPUM128)
-  #define TR_CUSTOMSW          "CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC""CSD""CSE""CSF"
+  #define TR_CUSTOMSW          "LS1""LS2""LS3""LS4""LS5""LS6""LS7""LS8""LS9""LSA""LSB""LSC""LSD""LSE""LSF"
 #else
-  #define TR_CUSTOMSW          "CS1""CS2""CS3""CS4""CS5""CS6""CS7""CS8""CS9""CSA""CSB""CSC"
+  #define TR_CUSTOMSW          "LS1""LS2""LS3""LS4""LS5""LS6""LS7""LS8""LS9""LSA""LSB""LSC"
+#endif
+
+#define TR_TRIMS_SWITCHES      "tRl""tRr""tEd""tEu""tTd""tTu""tAl""tAr"
+
+#if defined(PCBSKY9X)
+  #define TR_ROTARY_ENCODERS   "REa\0"
+  #define TR_ROTENC_SWITCHES   "REa"
+#elif defined(PCBGRUVIN9X) || defined(PCBMEGA2560)
+  #define TR_ROTARY_ENCODERS   "REa\0""REb\0"
+  #define TR_ROTENC_SWITCHES   "REa""REb"
+#else
+  #define TR_ROTARY_ENCODERS
+  #define TR_ROTENC_SWITCHES
 #endif
 
 #if defined(PCBTARANIS)
   #define TR_6POS_POTS         "P11""P12""P13""P14""P15""P16""P21""P22""P23""P24""P25""P26"
-  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_CUSTOMSW TR_6POS_POTS "One"
+  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_6POS_POTS TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_CUSTOMSW
+#elif defined(CPUARM)
+  #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_CUSTOMSW
 #else
-  #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_CUSTOMSW "One"
-#endif
-
-#if defined(PCBSKY9X)
-  #define TR_ROTARY_ENCODERS_VSRCRAW "REnc"
-#elif defined(PCBGRUVIN9X) && ROTARY_ENCODERS > 2
-  #define TR_ROTARY_ENCODERS_VSRCRAW "REa ""REb ""REc ""REd "
-#elif defined(PCBGRUVIN9X) && ROTARY_ENCODERS <= 2
-  #define TR_ROTARY_ENCODERS_VSRCRAW "REa ""REb "
-#else
-  #define TR_ROTARY_ENCODERS_VSRCRAW
+  #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_CUSTOMSW
 #endif
 
 #if defined(HELI)
@@ -356,7 +375,7 @@
   #define TR_CYC_VSRCRAW       "[C1]""[C2]""[C3]"
 #endif
 
-#define TR_VSRCRAW             "---\0""Rud\0""Ele\0""Thr\0""Ail\0" TR_POTS_VSRCRAW TR_ROTARY_ENCODERS_VSRCRAW "MAX\0" TR_CYC_VSRCRAW "TrmR" "TrmE" "TrmT" "TrmA" TR_SW_VSRCRAW
+#define TR_VSRCRAW             "---\0""Rud\0""Ele\0""Thr\0""Ail\0" TR_POTS_VSRCRAW TR_ROTARY_ENCODERS "MAX\0" TR_CYC_VSRCRAW "TrmR" "TrmE" "TrmT" "TrmA" TR_SW_VSRCRAW
 
 #define LEN_VTMRMODES          "\003"
 #define TR_VTMRMODES           "OFF""ABS""THs""TH%""THt"
@@ -407,13 +426,13 @@
   #define TR_EXPONAME          "Expo Name"
 #endif
 #define TR_BITMAP              "Model Image"
-#define TR_TIMER               TR("Timer","Timer ")
-#define TR_ELIMITS             TR("E.Limits","Extended Limits")
-#define TR_ETRIMS              TR("E.Trims","Extended Trims")
+#define TR_TIMER               TR("Timer", "Timer ")
+#define TR_ELIMITS             TR("E.Limits", "Extended Limits")
+#define TR_ETRIMS              TR("E.Trims", "Extended Trims")
 #define TR_TRIMINC             "Trim Step"
-#define TR_TTRACE              TR("T-Source","Throttle Source")
-#define TR_TTRIM               TR("T-Trim","Throttle Trim")
-#define TR_BEEPCTR             TR("Ctr Beep","Center Beep")
+#define TR_TTRACE              TR("T-Source", "Throttle Source")
+#define TR_TTRIM               TR("T-Trim", "Throttle Trim")
+#define TR_BEEPCTR             TR("Ctr Beep", "Center Beep")
 #define TR_PROTO               TR(INDENT "Proto", INDENT "Protocol")
 #define TR_PPMFRAME            TR("PPM frame", INDENT "PPM frame")
 #define TR_MS                  "ms"
@@ -495,17 +514,15 @@
 #define TR_CAL                 "Cal"
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
-#define TR_MENUTOSTART         CENTER "\006" TR_ENTER " TO START"
-#define TR_SETMIDPOINT         TR(CENTER "\003SET STICKS MIDPOINT",CENTER "\003CENTER STICKS/SLIDERS")
+#define TR_MENUTOSTART         CENTER "\010" TR_ENTER " TO START"
+#define TR_SETMIDPOINT         TR(CENTER "\004SET STICKS MIDPOINT",CENTER "\004CENTER STICKS/SLIDERS")
 #define TR_MOVESTICKSPOTS      CENTER "\006MOVE STICKS/POTS"
 #define TR_RXBATT              "Rx Batt:"
 #define TR_TXnRX               "Tx:\0Rx:"
 #define OFS_RX                 4
 #define TR_ACCEL               "Acc:"
 #define TR_NODATA              CENTER "NO DATA"
-#define TR_TM1TM2              "TM1\037\146TM2"
-#define TR_THRTHP              "THR\037\146TH%"
-#define TR_TOT                 "TOT"
+#define TR_TOTTM1TM2THRTHP     "\037\146TOT\036TM1\037\146TM2\036THR\037\146TH%"
 #define TR_TMR1LATMAXUS        "Tmr1Lat max\037\124us"
 #define STR_US                 (STR_TMR1LATMAXUS+13)
 #define TR_TMR1LATMINUS        "Tmr1Lat min\037\124us"
@@ -715,9 +732,9 @@
 #endif
 
 // Taranis column headers
-#define TR_PHASES_HEADERS      { " Name ", " Switch ", " Trims ", " Fade In ", " Fade Out " }
+#define TR_PHASES_HEADERS      { " Name ", " Switch ", " Rudder Trim ", " Elevator Trim ", " Throttle Trim ", " Aileron Trim ", " Fade In ", " Fade Out " }
 #define TR_LIMITS_HEADERS      { " Name ", " Subtrim ", " Min ", " Max ", " Direction ", " Curve ", " PPM Center ", " Subtrim mode " }
-#define TR_CSW_HEADERS         { " Function ", " V1 ", " V2 ", " AND Switch ", " Duration ", " Delay " }
+#define TR_CSW_HEADERS         { " Function ", " V1 ", " V2 ", " V2 ", " AND Switch ", " Duration ", " Delay " }
 
 // About screen
 #define TR_ABOUTUS             TR(" ABOUT ", "ABOUT")
@@ -770,7 +787,7 @@
 #define TR_CHR_LONG   'l'
 #define TR_CHR_TOGGLE 't'
 #define TR_CHR_HOUR   'h'
-#define TR_CHR_INPUT           'I'   // Values between A-I will work
+#define TR_CHR_INPUT  'I'   // Values between A-I will work
 
 #define TR_BEEP_VOLUME         "Beep Volume"
 #define TR_WAV_VOLUME          "Wav Volume"
