@@ -1053,7 +1053,7 @@ class LogicalSwitchesFunctionsTable: public ConversionTable {
       int val=0;
       bool afterrelease21March2013 = IS_AFTER_RELEASE_21_MARCH_2013(board, version);
       addConversion(LS_FN_OFF, val++);
-      if (release21March2013)
+      if (afterrelease21March2013)
         addConversion(LS_FN_VEQUAL, val++);
       addConversion(LS_FN_VPOS, val++);
       addConversion(LS_FN_VNEG, val++);
@@ -1065,11 +1065,11 @@ class LogicalSwitchesFunctionsTable: public ConversionTable {
       addConversion(LS_FN_XOR, val++);
       if (IS_ARM(board) && version >= 216) addConversion(LS_FN_STAY, val++);
       addConversion(LS_FN_EQUAL, val++);
-      if (!release21March2013)
+      if (!afterrelease21March2013)
         addConversion(LS_FN_NEQUAL, val++);
       addConversion(LS_FN_GREATER, val++);
       addConversion(LS_FN_LESS, val++);
-      if (!release21March2013) {
+      if (!afterrelease21March2013) {
         addConversion(LS_FN_EGREATER, val++);
         addConversion(LS_FN_ELESS, val++);
       }
