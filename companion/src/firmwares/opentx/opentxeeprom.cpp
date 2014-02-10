@@ -1293,7 +1293,7 @@ class SwitchesWarningField: public TransformedField {
     virtual void beforeExport()
     {
       bool release21March2013 = IS_RELEASE_21_MARCH_2013(board, version);
-      if (release21March2013) {
+      if (release21March2013 && version < 216) {
         _sw = (sw & 0xC1) + ((sw & 0x30) >> 3) + ((sw & 0x0E) << 2);
       }
       else {
@@ -1304,7 +1304,7 @@ class SwitchesWarningField: public TransformedField {
     virtual void afterImport()
     {
       bool release21March2013 = IS_RELEASE_21_MARCH_2013(board, version);
-      if (release21March2013) {
+      if (release21March2013 && version < 216) {
         sw = (_sw & 0xC1) + ((_sw & 0x38) >> 2) + ((_sw & 0x06) << 3);
       }
       else {
@@ -1939,10 +1939,6 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
   }
   else if ((board == BOARD_STOCK || board == BOARD_M128) && (variant & MAVLINK_VARIANT)) {
     internalField.Append(new MavlinkField(modelData.mavlink, board, version));
-  }
-
-  if (!IS_ARM(board) && (version >= 216)) {
-    internalField.Append(new UnsignedField<8>(modelData.nSwToWarn));
   }
 
   if (IS_TARANIS(board) && version < 215) {

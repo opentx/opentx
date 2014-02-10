@@ -1163,17 +1163,18 @@ void menuModelSetup(uint8_t event)
             switch(event) {
               CASE_EVT_ROTARY_BREAK
               case EVT_KEY_BREAK(KEY_ENTER):
-                  killEvents(event);
+                killEvents(event);
 #if defined(CPUM64)
+                g_model.nSwToWarn ^= (1 << m_posHorz);
+                eeDirty(EE_MODEL);
+#else
+                if (m_posHorz < NUM_SWITCHES-1) {
                   g_model.nSwToWarn ^= (1 << m_posHorz);
                   eeDirty(EE_MODEL);
-#else
-                  if (m_posHorz < NUM_SWITCHES-1) {
-                    g_model.nSwToWarn ^= (1 << m_posHorz);
-                    eeDirty(EE_MODEL);
-                  }
+                }
 #endif
                 break;
+                
               case EVT_KEY_LONG(KEY_ENTER):
 #if defined(CPUM64)
                 getMovedSwitch();
@@ -1189,7 +1190,7 @@ void menuModelSetup(uint8_t event)
                   eeDirty(EE_MODEL);
                 }
 #endif
-              break; 
+                break; 
             }
           }
         }
@@ -1200,7 +1201,7 @@ void menuModelSetup(uint8_t event)
 #if defined(PCBTARANIS)
           c = "\300-\301"[states & 0x03];
           lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+i*(2*FW), y, 'A'+i, line && (m_posHorz == i) ? INVERS : 0);
-          if(swactive) lcd_putc(MODEL_SETUP_2ND_COLUMN+i*(2*FW)+FWNUM, y, c);
+          if (swactive) lcd_putc(MODEL_SETUP_2ND_COLUMN+i*(2*FW)+FWNUM, y, c);
           lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+((NUM_SWITCHES-1)*2*FW+2), y, PSTR("<]"), (m_posHorz == NUM_SWITCHES-1 && !s_noHi) ? line : 0); 
           states >>= 2;
 #else
@@ -1211,14 +1212,14 @@ void menuModelSetup(uint8_t event)
             states >>= 2;
           }
           else {
-            if (states & 0x01 && swactive)
+            if ((states & 0x01) && swactive)
               attr = INVERS;
             c = pgm_read_byte(STR_VSWITCHES - 2 + 9 + (3*i));
             states >>= 1;
           }
-          if(line && (m_posHorz == i)) {
+          if (line && (m_posHorz == i)) {
             attr = BLINK;
-            if(swactive)
+            if (swactive)
               attr |= INVERS;
           }
           lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+i*FW, y, (swactive || (attr & BLINK)) ? c : '-', attr);

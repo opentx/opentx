@@ -588,12 +588,11 @@ void Setup::updateStartupSwitches()
   lock = true;
 
   unsigned int switchStates = model.switchWarningStates;
-  bool enabled;
 
   for (int i=0; i<GetEepromInterface()->getCapability(Switches)-1; i++) {
     QSlider * slider = startupSwitchesSliders[i];
     QCheckBox * cb = startupSwitchesCheckboxes[i];
-    enabled = !(model.nSwToWarn & (1 << i));
+    bool enabled = !(model.nSwToWarn & (1 << i));
     slider->setEnabled(enabled);
     cb->setChecked(enabled);
     if (IS_TARANIS(GetEepromInterface()->getBoard())) {
@@ -640,12 +639,7 @@ void Setup::startupSwitchEdited(int value)
     model.switchWarningStates &= ~mask;
 
     if (value) {
-      if (shift == 0) {
-        model.switchWarningStates |= value;
-      }
-      else {
-        model.switchWarningStates |= (value << shift);
-      }
+      model.switchWarningStates |= (value << shift);
     }
 
     updateStartupSwitches();
