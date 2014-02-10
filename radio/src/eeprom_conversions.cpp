@@ -260,7 +260,7 @@ void ConvertModel_215_to_216(ModelData &model)
 
   memcpy(&g_model.header, &oldModel.header, sizeof(g_model.header));
   for (uint8_t i=0; i<2; i++) {
-    g_model.timers[i].mode = oldModel.timers[i].mode;
+    g_model.timers[i].mode = oldModel.timers[i].mode > 4 ? ConvertSwitch_215_to_216(oldModel.timers[i].mode): oldModel.timers[i].mode;
     g_model.timers[i].start = oldModel.timers[i].start;
     g_model.timers[i].minuteBeep = oldModel.timers[i].minuteBeep;
     g_model.timers[i].persistent = oldModel.timers[i].persistent;
@@ -470,7 +470,7 @@ void ConvertModel_215_to_216(ModelData &model)
   }
   for (uint8_t i=0; i<32; i++) {
     CustomFnData & fn = g_model.funcSw[i];
-    fn.swtch = oldModel.funcSw[i].swtch;
+    fn.swtch = ConvertSwitch_215_to_216(oldModel.funcSw[i].swtch);
     fn.func = oldModel.funcSw[i].func;
     if (fn.func <= 15) {
       fn.all.param = fn.func;
