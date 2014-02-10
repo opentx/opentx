@@ -505,6 +505,7 @@
 #define TR_SPLASHSCREEN        "Splash screen"
 #define TR_THROTTLEWARNING     TR("T-Warning","Throttle Warning")
 #define TR_SWITCHWARNING       TR("S-Warning","Switch Warning")
+#define TR_POTWARNING          TR("Pot Warn.","Pot Warning")
 #define TR_TIMEZONE            TR("Time Zone","GPS Time zone")
 #define TR_RXCHANNELORD        TR("Rx Channel Ord","Default channel order")
 #define TR_SLAVE               "Slave"
@@ -611,7 +612,7 @@
 #define TR_EEPROMWARN          "EEPROM"
 #define TR_THROTTLEWARN        "THROTTLE"
 #define TR_ALARMSWARN          "ALARMS"
-#define TR_SWITCHWARN          "SWITCH"
+#define TR_SWITCHWARN          TR("SWITCH","CONTROL")
 #define TR_INVERT_THR          TR("Invert Thr?","Invert Throttle?")
 #define TR_SPEAKER_VOLUME      INDENT "Volume"
 #define TR_LCD                 "LCD"
@@ -698,6 +699,7 @@
 #define TR_LOWALARM            INDENT "Low Alarm"
 #define TR_CRITICALALARM       INDENT "Critical Alarm"
 #define TR_PERSISTENT_MAH      INDENT "Store mAh"
+#define TR_CHECKLIST           "Display Checklist"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 #define TR_UART3MODE           "Serial port"
 #define TR_POT1TYPE            "S1 Type"

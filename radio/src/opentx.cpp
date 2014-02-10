@@ -2236,6 +2236,16 @@ void checkAll()
 
   checkTHR();
   checkSwitches();
+
+#if defined(PCBTARANIS)
+  if (modelHasNotes() && g_model.displayText) {
+    char filename[sizeof(MODELS_PATH)+1+sizeof(g_model.header.name)+sizeof(TEXT_EXT)] = MODELS_PATH "/";
+    char *buf = strcat_modelname(&filename[sizeof(MODELS_PATH)], g_eeGeneral.currModel);
+    strcpy(buf, TEXT_EXT);
+    pushMenuTextView(filename);
+  }
+#endif
+
   clearKeyEvents();
 }
 
@@ -2298,39 +2308,100 @@ void checkSwitches()
 {
   swstate_t last_bad_switches = 0xff;
   swstate_t states = g_model.switchWarningStates;
+#if defined(PCBTARANIS)
+  uint8_t bad_pots = 0, last_bad_pots = 0xff;
+#endif
 
   while (1) {
 
-#if defined(TELEMETRY_MOD_14051)
+#if defined(TELEMETRY_MOD_14051) || defined(PCBTARANIS)
     getADC();
 #endif
 
     getMovedSwitch();
-
-    switches_states <<= 1;
-
-    if ((states & 0x01) || (states == switches_states)) {
-      return;
+  
+    uint8_t warn = false;
+#if defined(PCBTARANIS)
+    for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
+      if (!(g_model.nSwToWarn & (1<<i))) {
+        swstate_t mask = (0x03 << (i*2));
+        if(!((states & mask) == (switches_states & mask)))
+          warn = true;
+      }
     }
+    uint8_t potMode = g_model.nPotsToWarn >> 6;
+    if(potMode) {
+      perOut(e_perout_mode_normal, 0);
+      bad_pots = 0;
+        for (uint8_t i=0; i<NUM_POTS; i++) 
+          if(!(g_model.nPotsToWarn & (1 << i)) && (abs(g_model.potPosition[i] - (getValue(MIXSRC_FIRST_POT+i) >> 3)) > 2)) {
+            warn = true;
+            bad_pots  |= (1<<i);
+          }
+    }
+#else
+    for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
+      if (!(g_model.nSwToWarn & (1<<i))) {
+      	if (i == 0) {
+      		if((states & 0x03) != (switches_states & 0x03))
+      			warn = true;
+      		}
+        else if((states & (1<<(i+1))) != (switches_states & (1<<(i+1))))
+           warn = true;
+      }
+    }
+#endif
+
+    if(!warn) return;
 
     // first - display warning
+#if defined(PCBTARANIS)
+    if ((last_bad_switches != switches_states) || (last_bad_pots != bad_pots)) {
+      MESSAGE(STR_SWITCHWARN, NULL, STR_PRESSANYKEYTOSKIP, ((last_bad_switches == 0xff) || (last_bad_pots == 0xff)) ? AU_SWITCH_ALERT : AU_NONE);
+      for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
+        if(!(g_model.nSwToWarn & (1<<i))) {
+          swstate_t mask = (0x03 << (i*2));
+          uint8_t attr = ((states & mask) == (switches_states & mask)) ? 0 : INVERS;
+          char c = "\300-\301"[(states & mask) >> (i*2)];
+          lcd_putcAtt(60+i*(2*FW+FW/2), 4*FH+3, 'A'+i, attr);
+          lcd_putcAtt(60+i*(2*FW+FW/2)+FW, 4*FH+3, c, attr);
+        }
+      }
+      if(potMode) {
+        for (uint8_t i=0; i<NUM_POTS; i++) {
+          if (!(g_model.nPotsToWarn & (1 << i))) {
+            uint8_t flags = 0;
+            if (abs(g_model.potPosition[i] - (calibratedStick[NUM_STICKS+i] >> 3)) > 2) {
+            	switch (i) {
+                case 0:
+                case 1:
+                  lcd_putc(60+i*(5*FW)+2*FW+2, 6*FH-2, g_model.potPosition[i] > (getValue(MIXSRC_FIRST_POT+i) >> 3) ? 126 : 127);
+                  break;
+            	  case 2:
+            	  case 3:
+                  lcd_putc(60+i*(5*FW)+2*FW+2, 6*FH-2, g_model.potPosition[i] > (getValue(MIXSRC_FIRST_POT+i) >> 3) ? '\300' : '\301');
+                  break;
+              }
+              flags = INVERS;
+            }
+            lcd_putsiAtt(60+i*(5*FW), 6*FH-2, STR_VSRCRAW, NUM_STICKS+1+i, flags);
+          }
+        }
+      }
+      last_bad_pots = bad_pots;
+#else
     if (last_bad_switches != switches_states) {
       MESSAGE(STR_SWITCHWARN, NULL, STR_PRESSANYKEYTOSKIP, last_bad_switches == 0xff ? AU_SWITCH_ALERT : AU_NONE);
-#if defined(PCBTARANIS)
-      for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
-        swstate_t mask = (0x03 << (1+i*2));
-        uint8_t attr = ((states & mask) == (switches_states & mask)) ? 0 : INVERS;
-        char c = "\300-\301"[(states & mask) >> (1+i*2)];
-        lcd_putcAtt(60+i*(2*FW+FW/2), 5*FH, 'A'+i, attr);
-        lcd_putcAtt(60+i*(2*FW+FW/2)+FW, 5*FH, c, attr);
-      }
-#else
       uint8_t x = 2;
-      for (uint8_t i=1; i<NUM_PSWITCH-1; i++) {
-        uint8_t attr = (states & (1 << i)) == (switches_states & (1 << i)) ? 0 : INVERS;
-        putsSwitches(x, 5*FH, (i>2?(i+1):1+((states>>1)&0x3)), attr);
-        if (i == 1 && attr) i++;
-        if (i != 1) x += 3*FW+FW/2;
+      for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
+        uint8_t attr;
+        if (i == 0)
+        	attr = ((states & 0x03) != (switches_states & 0x03)) ? INVERS : 0;
+        else
+        	attr = (states & (1 << (i+1))) == (switches_states & (1 << (i+1))) ? 0 : INVERS;
+        if(!(g_model.nSwToWarn & (1<<i)))
+        	putsSwitches(x, 5*FH, (i>0?(i+3):(states&0x3)+1), attr);        
+        x += 3*FW+FW/2;
       }
 #endif
       lcdRefresh();
@@ -4294,8 +4365,10 @@ void opentxClose()
   hapticOff();
 #endif
 
+  saveTimers();
+
 #if defined(CPUARM) && defined(FRSKY)
-  if((g_model.frsky.mAhPersistent) && (g_model.frsky.storedMah != frskyData.hub.currentConsumption)) {
+  if ((g_model.frsky.mAhPersistent) && (g_model.frsky.storedMah != frskyData.hub.currentConsumption)) {
     g_model.frsky.storedMah = frskyData.hub.currentConsumption;
     eeDirty(EE_MODEL);
   }
@@ -4305,20 +4378,24 @@ void opentxClose()
   }
 #endif
 
-  saveTimers();
-
 #if defined(PCBSKY9X)
   uint32_t mAhUsed = g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.currentCalib) / 8192 / 36;
-  if (g_eeGeneral.mAhUsed != mAhUsed)
+  if (g_eeGeneral.mAhUsed != mAhUsed) {
     g_eeGeneral.mAhUsed = mAhUsed;
+  }
 #endif
 
-#if defined(CPUARM) && !defined(REVA)
-  if (sessionTimer > 0)
-    g_eeGeneral.globalTimer += sessionTimer;
+#if defined(PCBTARANIS)
+  if ((g_model.nPotsToWarn >> 6) == 2) {
+    for (uint8_t i=0; i<NUM_POTS ; i++)
+      if (!(g_model.nPotsToWarn & (1 << i)))
+        g_model.potPosition[i] = getValue(MIXSRC_FIRST_POT+i) >> 3;
+    eeDirty(EE_MODEL);
+  }
 #endif
 
   g_eeGeneral.unexpectedShutdown = 0;
+
   eeDirty(EE_GENERAL);
   eeCheck(true);
 }
@@ -4909,6 +4986,12 @@ void saveTimers()
       }
     }
   }
+
+#if defined(CPUARM) && !defined(REVA)
+  if (sessionTimer > 0) {
+    g_eeGeneral.globalTimer += sessionTimer;
+  }
+#endif
 }
 #endif
 

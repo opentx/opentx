@@ -111,6 +111,8 @@ PACK(typedef struct {
 }) MixData_v215;
 #endif
 
+
+
 PACK(typedef struct {
   int8_t    mode;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
   uint16_t  start:12;
@@ -474,7 +476,8 @@ void ConvertModel_215_to_216(ModelData &model)
 #endif
   }
   g_model.thrTraceSrc = oldModel.thrTraceSrc;
-  g_model.switchWarningStates = oldModel.switchWarningStates;
+  g_model.switchWarningStates = oldModel.switchWarningStates >> 1;
+  g_model.nSwToWarn = (oldModel.switchWarningStates & 0x01) ? 0xFF : 0;
   for (uint8_t i=0; i<5; i++) {
     memcpy(g_model.gvars[i].name, oldModel.gvar_names[i], LEN_GVAR_NAME);
   }

@@ -883,8 +883,12 @@ class ModelData {
     SwashRingData swashRingData;
     unsigned int  thrTraceSrc;
     int8_t   traineron;  // 0 disable trainer, 1 allow trainer
-    unsigned int   modelId;
+    unsigned int modelId;
     unsigned int switchWarningStates;
+    unsigned int nSwToWarn;
+    unsigned int nPotsToWarn;
+    int          potPosition[C9X_NUM_POTS];
+    bool         displayText;
     // TODO structure
     char     gvars_names[C9X_MAX_GVARS][6+1];
     bool     gvars_popups[C9X_MAX_GVARS];
@@ -1030,6 +1034,7 @@ enum Capability {
  CSFunc,
  LCDWidth,
  GetThrSwitch,
+ HasDisplayText,
  VirtualInputs,
  LuaInputs,
  LimitsPer1000,
