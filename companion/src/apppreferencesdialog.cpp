@@ -14,7 +14,7 @@ appPreferencesDialog::appPreferencesDialog(QWidget *parent) :
   ui(new Ui::appPreferencesDialog)
 {
   ui->setupUi(this);
-  setWindowIcon(CompanionIcon("preferences.png"));
+  setWindowIcon(CompanionIcon("apppreferences.png"));
   initSettings();
   connect(this, SIGNAL(accepted()), this, SLOT(writeValues()));
 #ifndef JOYSTICKS
@@ -56,6 +56,18 @@ void appPreferencesDialog::writeValues()
     settings.remove("js_ctrl");
   }
 
+  settings.setValue("default_channel_order", ui->channelorderCB->currentIndex());
+  settings.setValue("default_mode", ui->stickmodeCB->currentIndex());
+  settings.setValue("rename_firmware_files", ui->renameFirmware->isChecked());
+  settings.setValue("burnFirmware", ui->burnFirmware->isChecked());
+  settings.setValue("profileId", ui->ProfSlot_SB->value());
+  settings.setValue("sdPath", ui->sdPath->text());
+  settings.setValue("SplashFileName", ui->SplashFileName->text());
+  if (!ui->SplashFileName->text().isEmpty())
+    settings.setValue("SplashImage", "");
+  
+  saveProfile();
+
   MainWindow * mw = (MainWindow *)this->parent();
   mw->unloadProfile();
 }
@@ -75,6 +87,7 @@ void appPreferencesDialog::initSettings()
 {
   QSettings settings;
   ui->snapshotClipboardCKB->setChecked(settings.value("snapshot_to_clipboard", false).toBool());
+  ui->burnFirmware->setChecked(settings.value("burnFirmware", true).toBool());
   
   QString Path=settings.value("snapshotPath", "").toString();
   if (QDir(Path).exists()) {
@@ -142,6 +155,24 @@ void appPreferencesDialog::initSettings()
     ui->joystickcalButton->setDisabled(true);
   }
 #endif  
+//  Profile Tab Inits  
+  ui->channelorderCB->setCurrentIndex(settings.value("default_channel_order", 0).toInt());
+  ui->stickmodeCB->setCurrentIndex(settings.value("default_mode", 1).toInt());
+  ui->renameFirmware->setChecked(settings.value("rename_firmware_files", false).toBool());
+  Path=settings.value("sdPath", "").toString();
+  if (QDir(Path).exists()) {
+    ui->sdPath->setText(Path);
+  }
+  ui->ProfSlot_SB->setValue(settings.value("profileId", 1).toInt());
+  on_ProfSlot_SB_valueChanged();
+  QString fileName=settings.value("SplashFileName","").toString();
+  if (!fileName.isEmpty()) {
+    QFile file(fileName);
+    if (file.exists()){ 
+      ui->SplashFileName->setText(fileName);
+      displayImage( fileName );
+    }
+  }
 }
 
 void appPreferencesDialog::on_libraryPathButton_clicked()
@@ -221,4 +252,130 @@ void appPreferencesDialog::on_joystickcalButton_clicked() {
    jd->exec();
 }
 #endif
+
+// ******** Profile tab functions
+
+void appPreferencesDialog::on_sdPathButton_clicked()
+{
+  QSettings settings;
+  QString fileName = QFileDialog::getExistingDirectory(this,tr("Select the folder replicating your SD structure"), settings.value("sdPath").toString());
+  if (!fileName.isEmpty()) {
+    ui->sdPath->setText(fileName);
+  }
+}
+
+void appPreferencesDialog::on_ProfSlot_SB_valueChanged()
+{
+  QSettings settings;
+  settings.beginGroup("Profiles");
+  QString profile=QString("profile%1").arg(ui->ProfSlot_SB->value());
+  settings.beginGroup(profile);
+  QString name=settings.value("Name","").toString();
+  ui->ProfName_LE->setText(name);
+/*  if (!(name.isEmpty())) {
+    QString firmwarename=settings.value("firmware", default_firmware_id).toString();
+    FirmwareInfo * fw = getFirmware(firmwarename);
+    int i=0;
+    foreach(FirmwareInfo * firmware, firmwares) {
+      if (fw == firmware) {
+        qDebug() << fw->id;
+        qDebug() << firmware->id;
+        qDebug() << i;
+        ui->downloadVerCB->setCurrentIndex(i);
+        break;
+      }
+      i++;
+    }
+    baseFirmwareChanged();
+    populateFirmwareOptions(fw);
+  }*/
+  settings.endGroup();
+  settings.endGroup();
+}
+
+
+void appPreferencesDialog::saveProfile()
+{
+  QSettings settings;
+  QString profile=QString("profile%1").arg(ui->ProfSlot_SB->value());
+  QString name=ui->ProfName_LE->text();
+  if (name.isEmpty()) {
+    name = profile;
+    ui->ProfName_LE->setText(name);
+  }
+  settings.beginGroup("Profiles");
+  settings.beginGroup(profile);
+  settings.setValue("Name",name);
+  settings.setValue("default_channel_order", ui->channelorderCB->currentIndex());
+  settings.setValue("default_mode", ui->stickmodeCB->currentIndex());
+  settings.setValue("burnFirmware", ui->burnFirmware->isChecked());
+  settings.setValue("rename_firmware_files", ui->renameFirmware->isChecked());
+  settings.setValue("sdPath", ui->sdPath->text());
+  settings.setValue("SplashFileName", ui->SplashFileName->text());
+  settings.endGroup();
+  settings.endGroup();
+}
+
+void appPreferencesDialog::on_removeProfileButton_clicked()
+{
+  QSettings settings;
+  QString profile=QString("profile%1").arg(ui->ProfSlot_SB->value());
+  settings.remove(profile);
+}
+
+bool appPreferencesDialog::displayImage( QString fileName )
+{
+  QImage image(fileName);
+  if (image.isNull()) 
+  {
+    QMessageBox::critical(this, tr("Error"), tr("Cannot load %1.").arg(fileName));
+    return false;
+  }
+
+  int width=ui->imageLabel->width();
+  ui->imageLabel->setPixmap(QPixmap::fromImage(image.scaled(width, 64)));
+  if (width==212) {
+    image=image.convertToFormat(QImage::Format_RGB32);
+    QRgb col;
+    int gray, height = image.height();
+    for (int i = 0; i < width; ++i) {
+      for (int j = 0; j < height; ++j) {
+        col = image.pixel(i, j);
+        gray = qGray(col);
+        image.setPixel(i, j, qRgb(gray, gray, gray));
+      }
+    }      
+    ui->imageLabel->setPixmap(QPixmap::fromImage(image));
+  } 
+  else {
+    ui->imageLabel->setPixmap(QPixmap::fromImage(image.convertToFormat(QImage::Format_Mono)));
+  }
+  return true;
+}
+
+void appPreferencesDialog::on_SplashSelect_clicked()
+{
+  QString supportedImageFormats;
+  for (int formatIndex = 0; formatIndex < QImageReader::supportedImageFormats().count(); formatIndex++) {
+    supportedImageFormats += QLatin1String(" *.") + QImageReader::supportedImageFormats()[formatIndex];
+  }
+
+  QSettings settings;
+  QString fileName = QFileDialog::getOpenFileName(this,
+          tr("Open Image to load"), settings.value("lastImagesDir").toString(), tr("Images (%1)").arg(supportedImageFormats));
+
+  if (!fileName.isEmpty()) {
+    settings.setValue("lastImagesDir", QFileInfo(fileName).dir().absolutePath());
+    
+    if (displayImage(fileName))
+      ui->SplashFileName->setText(fileName);
+  }
+}
+
+void appPreferencesDialog::on_clearImageButton_clicked() {
+  ui->imageLabel->clear();
+  ui->SplashFileName->clear();
+}
+
+
 

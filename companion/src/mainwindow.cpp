@@ -1701,10 +1701,6 @@ void MainWindow::createActions()
     logsAct->setStatusTip(tr("Open log file"));
     connect(logsAct, SIGNAL(triggered()), this, SLOT(logFile()));
     
-    preferencesAct = new QAction(tr("&Old Preferences Dialog..."), this);
-    preferencesAct->setStatusTip(tr("Used the old Preferences Dialog"));
-    connect(preferencesAct, SIGNAL(triggered()), this, SLOT(preferences()));
-
     appPreferencesAct = new QAction(CompanionIcon("apppreferences.png"), tr("&Setting..."), this);
     appPreferencesAct->setStatusTip(tr("Edit Settings"));
     connect(appPreferencesAct, SIGNAL(triggered()), this, SLOT(appPreferences()));
@@ -1977,7 +1973,6 @@ void MainWindow::createMenus()
     settingsMenu->addSeparator();
     settingsMenu->addAction(appPreferencesAct);
     settingsMenu->addAction(customizeSplashAct);
-    settingsMenu->addAction(preferencesAct);
     settingsMenu->addAction(burnConfigAct);
 
     burnMenu = menuBar()->addMenu(tr("&Read/Write"));

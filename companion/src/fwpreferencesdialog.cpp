@@ -12,7 +12,7 @@ fwPreferencesDialog::fwPreferencesDialog(QWidget *parent) :
   updateLock(false)
 {
   ui->setupUi(this);
-  setWindowIcon(CompanionIcon("preferences.png"));
+  setWindowIcon(CompanionIcon("fwpreferences.png"));
 
   QCheckBox * OptionCheckBox[]= {
       ui->optionCheckBox_1, ui->optionCheckBox_2, ui->optionCheckBox_3, ui->optionCheckBox_4,  ui->optionCheckBox_5, ui->optionCheckBox_6,  ui->optionCheckBox_7,
@@ -38,7 +38,7 @@ fwPreferencesDialog::fwPreferencesDialog(QWidget *parent) :
   connect(ui->downloadVerCB, SIGNAL(currentIndexChanged(int)), this, SLOT(baseFirmwareChanged()));
   connect(this, SIGNAL(accepted()), this, SLOT(writeValues()));
 
-  resize(0,0);
+  shrink();
 }
 
 
@@ -47,32 +47,43 @@ fwPreferencesDialog::~fwPreferencesDialog()
   delete ui;
 }
 
+void fwPreferencesDialog::showVoice(bool show)
+{
+  if (show)
+    showVoice();
+  else
+    hideVoice();
+}
+
+void fwPreferencesDialog::showVoice()
+{
+  ui->voiceLine->show(); 
+  ui->voiceLabel->show();
+  ui->voiceCombo->show();
+  ui->voice_dnld->show();
+}
+
+void fwPreferencesDialog::hideVoice()
+{
+  ui->voiceLine->hide(); 
+  ui->voiceLabel->hide();
+  ui->voiceCombo->hide();
+  ui->voice_dnld->hide();  
+  QTimer::singleShot(0, this, SLOT(shrink()));
+}
+
+void fwPreferencesDialog::shrink()
+{
+    resize(0,0);
+}
+
 void fwPreferencesDialog::baseFirmwareChanged()
 {
   QVariant selected_firmware = ui->downloadVerCB->itemData(ui->downloadVerCB->currentIndex());
   voice=NULL;
   foreach(FirmwareInfo * firmware, firmwares) {
     if (firmware->id == selected_firmware) {
-      if (firmware->voice) {
-        ui->voiceLabel->show();
-        ui->voiceCombo->show();
-        ui->voice_dnld->show();
-        ui->sdPathButton->show();
-        ui->sdPath->show();
-        ui->sdPathLabel->show();
-        ui->voiceLabel->setEnabled(true);
-        ui->voiceCombo->setEnabled(true);
-        ui->voice_dnld->setEnabled(true);
-        ui->sdPathButton->setEnabled(true);
-        ui->sdPath->setEnabled(true);
-      } else {
-        ui->voiceLabel->hide();
-        ui->voiceCombo->hide();
-        ui->voice_dnld->hide();        
-        ui->sdPathButton->hide();
-        ui->sdPath->hide();
-        ui->sdPathLabel->hide();
-      }
+      showVoice(firmware->voice);
       populateFirmwareOptions(firmware);
       break;
     }
@@ -109,11 +120,6 @@ FirmwareVariant fwPreferencesDialog::getFirmwareVariant()
   return default_firmware_variant;
 }
 
-void fwPreferencesDialog::firmwareLangChanged()
-{
-  firmwareChanged();
-}
-
 void fwPreferencesDialog::firmwareOptionChanged(bool state)
 {
   QCheckBox *cb = qobject_cast<QCheckBox*>(sender());
@@ -134,19 +140,7 @@ void fwPreferencesDialog::firmwareOptionChanged(bool state)
                 }
               }
               if (voice) {
-                if (voice->isChecked()) {
-                  ui->voiceLabel->setEnabled(true);
-                  ui->voiceCombo->setEnabled(true);
-                  ui->voice_dnld->setEnabled(true);
-                  ui->sdPathButton->setEnabled(true);
-                  ui->sdPath->setEnabled(true);
-                } else {
-                  ui->voiceLabel->setDisabled(true);
-                  ui->voiceCombo->setDisabled(true);
-                  ui->voice_dnld->setDisabled(true);
-                  ui->sdPathButton->setDisabled(true);
-                  ui->sdPath->setDisabled(true);
-                }
+                showVoice(voice->isChecked());
               }
               
               return firmwareChanged();
@@ -157,35 +151,22 @@ void fwPreferencesDialog::firmwareOptionChanged(bool state)
     }
   } else if (cb && !state) {
     if (cb->text()=="voice") {
-      ui->voiceLabel->setDisabled(true);
-      ui->voiceCombo->setDisabled(true);
-      ui->voice_dnld->setDisabled(true);
-      ui->sdPathButton->setEnabled(true);
-      ui->sdPath->setEnabled(true);
+      hideVoice();
     }
   }
-  if (voice ) {
-    if (voice->isChecked()) {
-      ui->voiceLabel->setEnabled(true);
-      ui->voiceCombo->setEnabled(true);
-      ui->voice_dnld->setEnabled(true);
-    } else {
-      ui->voiceLabel->setDisabled(true);
-      ui->voiceCombo->setDisabled(true);
-      ui->voice_dnld->setDisabled(true);
-      ui->sdPathButton->setDisabled(true);
-      ui->sdPath->setDisabled(true);
-    }
+  if (voice) {
+    showVoice(voice->isChecked());
   }  else if (firmware) {
     if (firmware->voice) {
-      ui->voiceLabel->setEnabled(true);
-      ui->voiceCombo->setEnabled(true);
-      ui->voice_dnld->setEnabled(true);    
-      ui->sdPathButton->setEnabled(true);
-      ui->sdPath->setEnabled(true);
+      showVoice();    
     }
   }
   return firmwareChanged();
+}
+
+void fwPreferencesDialog::firmwareLangChanged()
+{
+  firmwareChanged();
 }
 
 void fwPreferencesDialog::firmwareChanged()
@@ -233,18 +214,10 @@ void fwPreferencesDialog::firmwareChanged()
 void fwPreferencesDialog::writeValues()
 {
   QSettings settings;
-  settings.setValue("default_channel_order", ui->channelorderCB->currentIndex());
-  settings.setValue("default_mode", ui->stickmodeCB->currentIndex());
+
   settings.setValue("cpu_id", ui->CPU_ID_LE->text());
-  settings.setValue("rename_firmware_files", ui->renameFirmware->isChecked());
-  settings.setValue("burnFirmware", ui->burnFirmware->isChecked());
   current_firmware_variant = getFirmwareVariant();
   settings.setValue("firmware", current_firmware_variant.id);
-  settings.setValue("profileId", ui->ProfSlot_SB->value());
-  settings.setValue("sdPath", ui->sdPath->text());
-  settings.setValue("SplashFileName", ui->SplashFileName->text());
-  if (!ui->SplashFileName->text().isEmpty())
-    settings.setValue("SplashImage", "");
 
   MainWindow * mw = (MainWindow *)this->parent();
   mw->unloadProfile();
@@ -269,14 +242,7 @@ void fwPreferencesDialog::populateFirmwareOptions(const FirmwareInfo * firmware)
       ui->voiceCombo->setCurrentIndex(ui->voiceCombo->count() - 1);
   }
 
-  if (ui->langCombo->count()) {
-    ui->langCombo->show();
-    ui->langLabel->show();
-  }
-  else {
-    ui->langCombo->hide();
-    ui->langLabel->hide();
-  }
+  showVoice(ui->langCombo->count()!=0);
 
   int index = 0;
   foreach(QList<Option> opts, parent->opts) {
@@ -294,25 +260,7 @@ void fwPreferencesDialog::populateFirmwareOptions(const FirmwareInfo * firmware)
             
           if (opt.name==QString("voice")) {
             voice=cb;
-            ui->voiceLabel->show();
-            ui->voiceCombo->show();
-            ui->voice_dnld->show();
-            ui->sdPathButton->show();
-            ui->sdPath->show();
-            ui->sdPathLabel->show();
-            if (current_firmware_variant.id.contains(opt.name) ||firmware->voice) {
-              ui->voiceLabel->setEnabled(true);
-              ui->voiceCombo->setEnabled(true);
-              ui->voice_dnld->setEnabled(true);
-              ui->sdPathButton->setEnabled(true);
-              ui->sdPath->setEnabled(true);
-            } else {
-              ui->voiceLabel->setDisabled(true);
-              ui->voiceCombo->setDisabled(true);
-              ui->voice_dnld->setDisabled(true);
-              ui->sdPathButton->setDisabled(true);
-              ui->sdPath->setDisabled(true);
-            }
+            showVoice(current_firmware_variant.id.contains(opt.name) ||firmware->voice);
           }
         }
       }
@@ -331,16 +279,8 @@ void fwPreferencesDialog::populateFirmwareOptions(const FirmwareInfo * firmware)
 void fwPreferencesDialog::initSettings()
 {
   QSettings settings;
-  ui->channelorderCB->setCurrentIndex(settings.value("default_channel_order", 0).toInt());
-  ui->stickmodeCB->setCurrentIndex(settings.value("default_mode", 1).toInt());
-  ui->renameFirmware->setChecked(settings.value("rename_firmware_files", false).toBool());
-  ui->burnFirmware->setChecked(settings.value("burnFirmware", true).toBool());
-  ui->CPU_ID_LE->setText(settings.value("cpu_id", "").toString());
-  QString Path=settings.value("sdPath", "").toString();
-  if (QDir(Path).exists()) {
-    ui->sdPath->setText(Path);
-  }
 
+  ui->CPU_ID_LE->setText(settings.value("cpu_id", "").toString());
   FirmwareInfo * current_firmware = GetCurrentFirmware();
 
   foreach(FirmwareInfo * firmware, firmwares) {
@@ -351,27 +291,31 @@ void fwPreferencesDialog::initSettings()
   }
   
   baseFirmwareChanged();
-
-  ui->ProfSlot_SB->setValue(settings.value("profileId", 1).toInt());
-  on_ProfSlot_SB_valueChanged();
-  QString fileName=settings.value("SplashFileName","").toString();
-  if (!fileName.isEmpty()) {
-    QFile file(fileName);
-    if (file.exists()){ 
-      ui->SplashFileName->setText(fileName);
-    }
-  }
   firmwareChanged();
+}
+
+void fwPreferencesDialog::on_checkFWUpdates_clicked()
+{
+    QSettings settings;
+
+    FirmwareVariant variant = getFirmwareVariant();
+    if (settings.value("burnFirmware", true).toBool()) {
+      current_firmware_variant = variant;
+      settings.setValue("firmware", variant.id);
+    }
+    MainWindow * mw = (MainWindow *)this->parent();
+    mw->checkForUpdates(true, variant.id);
+    firmwareChanged();
 }
 
 void fwPreferencesDialog::on_fw_dnld_clicked()
 {
+  QSettings settings;
   MainWindow * mw = (MainWindow *)this->parent();
   FirmwareVariant variant = getFirmwareVariant();
   writeValues();
   if (!variant.firmware->getUrl(variant.id).isNull()) {
-    if (ui->burnFirmware->isChecked()) {
-      QSettings settings;
+    if (settings.value("burnFirmware", true).toBool()) {
       current_firmware_variant = getFirmwareVariant();
       settings.setValue("firmware", current_firmware_variant.id);
     }
@@ -382,126 +326,10 @@ void fwPreferencesDialog::on_fw_dnld_clicked()
 
 void fwPreferencesDialog::on_voice_dnld_clicked()
 {
-  ui->ProfSave_PB->setEnabled(true);
   QString url="http://fw.opentx.it/voices/";
   FirmwareVariant variant = getFirmwareVariant();
   url.append(QString("%1/%2/").arg(variant.firmware->id).arg(ui->voiceCombo->currentText()));
   QDesktopServices::openUrl(url);
 }
 
-void fwPreferencesDialog::on_sdPathButton_clicked()
-{
-  QSettings settings;
-  QString fileName = QFileDialog::getExistingDirectory(this,tr("Select the folder replicating your SD structure"), settings.value("sdPath").toString());
-  if (!fileName.isEmpty()) {
-    ui->sdPath->setText(fileName);
-  }
-  ui->ProfSave_PB->setEnabled(true);
-}
-
-void fwPreferencesDialog::on_ProfSlot_SB_valueChanged()
-{
-  QSettings settings;
-  settings.beginGroup("Profiles");
-  QString profile=QString("profile%1").arg(ui->ProfSlot_SB->value());
-  settings.beginGroup(profile);
-  QString name=settings.value("Name","").toString();
-  ui->ProfName_LE->setText(name);
-/*  if (!(name.isEmpty())) {
-    QString firmwarename=settings.value("firmware", default_firmware_id).toString();
-    FirmwareInfo * fw = getFirmware(firmwarename);
-    int i=0;
-    foreach(FirmwareInfo * firmware, firmwares) {
-      if (fw == firmware) {
-        qDebug() << fw->id;
-        qDebug() << firmware->id;
-        qDebug() << i;
-        ui->downloadVerCB->setCurrentIndex(i);
-        break;
-      }
-      i++;
-    }
-    baseFirmwareChanged();
-    populateFirmwareOptions(fw);
-  }*/
-  settings.endGroup();
-  settings.endGroup();
-}
-
-void fwPreferencesDialog::on_ProfSave_PB_clicked()
-{
-  QSettings settings;
-  settings.beginGroup("Profiles");
-  QString profile=QString("profile%1").arg(ui->ProfSlot_SB->value());
-  QString name=ui->ProfName_LE->text();
-  if (name.isEmpty()) {
-    int ret = QMessageBox::question(this, "Companion", 
-                tr("Profile name is empty, profile slot %1 will be deleted.<br>Are you sure ?").arg(ui->ProfSlot_SB->value()) ,
-                QMessageBox::Yes | QMessageBox::No);
-    if (ret==QMessageBox::Yes) {
-      settings.remove(profile);
-    } else {
-      settings.beginGroup(profile);
-      ui->ProfName_LE->setText(settings.value("Name","").toString());
-    }
-  } else {
-    settings.beginGroup(profile);
-    settings.setValue("Name",name);
-    settings.setValue("default_channel_order", ui->channelorderCB->currentIndex());
-    settings.setValue("default_mode", ui->stickmodeCB->currentIndex());
-    settings.setValue("burnFirmware", ui->burnFirmware->isChecked());
-    settings.setValue("rename_firmware_files", ui->renameFirmware->isChecked());
-    settings.setValue("sdPath", ui->sdPath->text());
-    settings.setValue("SplashFileName", ui->SplashFileName->text());
-    current_firmware_variant = getFirmwareVariant();
-    settings.setValue("firmware", current_firmware_variant.id);
-    settings.endGroup();
-    settings.endGroup();
-  }
-}
-
-void fwPreferencesDialog::on_SplashSelect_clicked()
-{
-  QString supportedImageFormats;
-  for (int formatIndex = 0; formatIndex < QImageReader::supportedImageFormats().count(); formatIndex++) {
-    supportedImageFormats += QLatin1String(" *.") + QImageReader::supportedImageFormats()[formatIndex];
-  }
-
-  QSettings settings;
-  QString fileName = QFileDialog::getOpenFileName(this,
-          tr("Open Image to load"), settings.value("lastImagesDir").toString(), tr("Images (%1)").arg(supportedImageFormats));
-
-  if (!fileName.isEmpty()) {
-    settings.setValue("lastImagesDir", QFileInfo(fileName).dir().absolutePath());
-    QImage image(fileName);
-    if (image.isNull()) {
-      QMessageBox::critical(this, tr("Error"), tr("Cannot load %1.").arg(fileName));
-      return;
-    }
-    ui->SplashFileName->setText(fileName);
-  }
-}
-
-
-void fwPreferencesDialog::on_clearImageButton_clicked() {
-  ui->SplashFileName->clear();
-}
-
-void fwPreferencesDialog::on_checkFWUpdates_clicked()
-{
-    FirmwareVariant variant = getFirmwareVariant();
-    if (ui->burnFirmware->isChecked()) {
-      QSettings settings;
-      current_firmware_variant = variant;
-      settings.setValue("firmware", variant.id);
-    }
-    MainWindow * mw = (MainWindow *)this->parent();
-    mw->checkForUpdates(true, variant.id);
-    firmwareChanged();
-}
-
-void fwPreferencesDialog::shrink()
-{
-    resize(0,0);
-}
 

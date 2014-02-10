@@ -24,6 +24,9 @@ private:
     QList<QCheckBox *> optionsCheckBoxes;
     bool updateLock;
 
+    void showVoice(bool);
+    void showVoice();
+    void hideVoice();
     void populateLocale();
     void populateFirmwareOptions(const FirmwareInfo *);
     FirmwareVariant getFirmwareVariant();
@@ -39,12 +42,7 @@ private slots:
     void firmwareChanged();
     void on_fw_dnld_clicked();
     void on_voice_dnld_clicked();
-    void on_sdPathButton_clicked();
     void on_checkFWUpdates_clicked();
-    void on_ProfSlot_SB_valueChanged();
-    void on_ProfSave_PB_clicked();
-    void on_SplashSelect_clicked();
-    void on_clearImageButton_clicked();
 };
 
 #endif // FWPREFERENCESDIALOG_H

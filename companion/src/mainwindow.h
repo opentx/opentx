@@ -224,7 +224,6 @@ private:
     QAction *saveAct;
     QAction *saveAsAct;
     QAction *exitAct;
-    QAction *preferencesAct;
     QAction *appPreferencesAct;
     QAction *fwPreferencesAct;
     QAction *checkForUpdatesAct;
