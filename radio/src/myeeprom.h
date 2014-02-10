@@ -775,9 +775,9 @@ enum Functions {
 #endif
 
 #if defined(VOICE)
-  #define HAS_REPEAT_PARAM(sd) (CFN_FUNC(sd) == FUNC_PLAY_SOUND || (CFN_FUNC(sd) >= FUNC_PLAY_TRACK && CFN_FUNC(sd) <= FUNC_PLAY_VALUE))
+  #define HAS_REPEAT_PARAM(func) (func == FUNC_PLAY_SOUND || (func >= FUNC_PLAY_TRACK && func <= FUNC_PLAY_VALUE))
 #else
-  #define HAS_REPEAT_PARAM(sd) (CFN_FUNC(sd) == FUNC_PLAY_SOUND)
+  #define HAS_REPEAT_PARAM(func) (func == FUNC_PLAY_SOUND)
 #endif
 
 enum ResetFunctionParam {
