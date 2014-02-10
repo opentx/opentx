@@ -985,6 +985,17 @@ extern uint8_t g_tmr1Latency_min;
 extern uint16_t maxMixerDuration;
 extern uint16_t lastMixerDuration;
 
+#if defined(PCBTARANIS)
+
+enum eUsbMode {
+  um_MassStorage,
+  um_Joystick
+};
+
+extern enum eUsbMode usbMode;
+#endif
+
+
 #if defined(THRTRACE)
   #define MAXTRACE (LCD_W - 8)
   extern uint8_t  s_traceBuf[MAXTRACE];

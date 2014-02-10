@@ -30,7 +30,7 @@
 #ifndef __USB_HID_CORE_H_
 #define __USB_HID_CORE_H_
 
-#include  "usbd_ioreq.h"
+#include  "../../../Core/inc/usbd_ioreq.h"
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
   * @{

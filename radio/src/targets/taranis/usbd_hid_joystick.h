@@ -1,10 +1,10 @@
 /**
   ******************************************************************************
-  * @file    usb_bsp.h
+  * @file    usbd_hid_core.h
   * @author  MCD Application Team
-  * @version V2.1.0
+  * @version V1.1.0
   * @date    19-March-2012
-  * @brief   Specific api's relative to the used hardware platform
+  * @brief   header file for the usbd_hid_core.c file.
   ******************************************************************************
   * @attention
   *
@@ -23,76 +23,87 @@
   * limitations under the License.
   *
   ******************************************************************************
-  */
-
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __USB_BSP__H__
-#define __USB_BSP__H__
+  */ 
 
 /* Includes ------------------------------------------------------------------*/
-#include "usb_core.h"
 
-/** @addtogroup USB_OTG_DRIVER
+#ifndef __USB_HID_CORE_H_
+#define __USB_HID_CORE_H_
+
+#include  "usbd_ioreq.h"
+
+/** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
   * @{
   */
   
-/** @defgroup USB_BSP
-  * @brief This file is the 
+/** @defgroup USBD_HID
+  * @brief This file is the Header file for USBD_msc.c
   * @{
   */ 
 
 
-/** @defgroup USB_BSP_Exported_Defines
+/** @defgroup USBD_HID_Exported_Defines
   * @{
   */ 
+#define USB_HID_CONFIG_DESC_SIZ       34
+#define USB_HID_DESC_SIZ              9
+
+#define HID_DESCRIPTOR_TYPE           0x21
+#define HID_REPORT_DESC               0x22
+
+
+#define HID_REQ_SET_PROTOCOL          0x0B
+#define HID_REQ_GET_PROTOCOL          0x03
+
+#define HID_REQ_SET_IDLE              0x0A
+#define HID_REQ_GET_IDLE              0x02
+
+#define HID_REQ_SET_REPORT            0x09
+#define HID_REQ_GET_REPORT            0x01
 /**
   * @}
   */ 
 
 
-/** @defgroup USB_BSP_Exported_Types
+/** @defgroup USBD_CORE_Exported_TypesDefinitions
+  * @{
+  */
+
+
+/**
+  * @}
+  */ 
+
+
+
+/** @defgroup USBD_CORE_Exported_Macros
   * @{
   */ 
+
 /**
   * @}
   */ 
 
-
-/** @defgroup USB_BSP_Exported_Macros
+/** @defgroup USBD_CORE_Exported_Variables
   * @{
   */ 
+
+extern USBD_Class_cb_TypeDef  USBD_HID_cb;
 /**
   * @}
   */ 
 
-/** @defgroup USB_BSP_Exported_Variables
+/** @defgroup USB_CORE_Exported_Functions
   * @{
   */ 
+uint8_t USBD_HID_SendReport (USB_OTG_CORE_HANDLE  *pdev, 
+                                 uint8_t *report,
+                                 uint16_t len);
 /**
   * @}
   */ 
 
-/** @defgroup USB_BSP_Exported_FunctionsPrototype
-  * @{
-  */ 
-void BSP_Init(void);
-
-void USB_OTG_BSP_Init (USB_OTG_CORE_HANDLE *pdev);
-void USB_OTG_BSP_Deinit(USB_OTG_CORE_HANDLE *pdev);
-void USB_OTG_BSP_uDelay (const uint32_t usec);
-void USB_OTG_BSP_mDelay (const uint32_t msec);
-void USB_OTG_BSP_EnableInterrupt (USB_OTG_CORE_HANDLE *pdev);
-void USB_OTG_BSP_DisableInterrupt (USB_OTG_CORE_HANDLE *pdev);
-#ifdef USE_HOST_MODE
-void USB_OTG_BSP_ConfigVBUS(USB_OTG_CORE_HANDLE *pdev);
-void USB_OTG_BSP_DriveVBUS(USB_OTG_CORE_HANDLE *pdev,uint8_t state);
-#endif
-/**
-  * @}
-  */ 
-
-#endif //__USB_BSP__H__
-
+#endif  // __USB_HID_CORE_H_
 /**
   * @}
   */ 
@@ -100,5 +111,5 @@ void USB_OTG_BSP_DriveVBUS(USB_OTG_CORE_HANDLE *pdev,uint8_t state);
 /**
   * @}
   */ 
+  
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
-

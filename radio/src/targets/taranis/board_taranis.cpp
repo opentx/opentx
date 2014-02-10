@@ -108,7 +108,22 @@ void configure_pins( uint32_t pins, uint16_t config )
 
 bool usbPlugged(void)
 {
-  return GPIO_ReadInputDataBit(GPIOA, PIN_FS_VBUS);
+  //debounce
+  static bool Debounced = false;
+  static bool Previous = false;
+  if ( GPIO_ReadInputDataBit(GPIOA, PIN_FS_VBUS) ) {
+    if ( Previous ) {
+      Debounced = true;
+    }
+    Previous = true;
+  }
+  else {
+    if ( ! Previous ) {
+      Debounced = false;
+    }
+    Previous = false;
+  }
+  return Debounced;
 }
 
 #if !defined(SIMU)
@@ -128,7 +143,22 @@ void usbInit()
 
 void usbStart()
 {
+  if ( usbMode == um_MassStorage) 
+  {
+    //intialize USB as MSC device
   USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID, &USR_desc, &USBD_MSC_cb, &USR_cb);
+}
+  else   
+  {
+    //intialize USB as HID device
+    USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID, &USR_desc, &USBD_HID_cb, &USR_cb);
+  }
+
+}
+
+void usbStop()
+{
+  USBD_DeInit(&USB_OTG_dev);
 }
 #endif
 
