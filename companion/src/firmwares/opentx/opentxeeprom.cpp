@@ -1292,20 +1292,17 @@ class SwitchesWarningField: public TransformedField {
 
     virtual void beforeExport()
     {
-      bool afterrelease21March2013 = IS_AFTER_RELEASE_21_MARCH_2013(board, version);
-      if (afterrelease21March2013 && version < 216) {
-        _sw = (sw & 0xC1) + ((sw & 0x30) >> 3) + ((sw & 0x0E) << 2);
-      }
-      else {
         _sw = sw;
-      }
     }
 
     virtual void afterImport()
     {
       bool afterrelease21March2013 = IS_AFTER_RELEASE_21_MARCH_2013(board, version);
       if (afterrelease21March2013 && version < 216) {
-        sw = (_sw & 0xC1) + ((_sw & 0x38) >> 2) + ((_sw & 0x06) << 3);
+        sw = _sw >> 1;
+      }
+      else if (!afterrelease21March2013) {
+        sw = ((_sw & 0xC1) + ((_sw & 0x38) >> 2) + ((_sw & 0x06) << 3)) >> 1;
       }
       else {
         sw = _sw;
@@ -1909,7 +1906,7 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
   }
 
   if (IS_TARANIS(board))
-    internalField.Append(new UnsignedField<16>(modelData.switchWarningStates));
+    internalField.Append(new SwitchesWarningField<16>(modelData.switchWarningStates, board, version));
   else
     internalField.Append(new SwitchesWarningField<8>(modelData.switchWarningStates, board, version));
 
