@@ -63,7 +63,6 @@ QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {
-    friend class preferencesDialog;
     friend class fwPreferencesDialog;
     friend class MdiChild; // TODO GetAvrdudeArgs could be external to this class
 
@@ -80,7 +79,6 @@ protected:
 
 public slots:
     void downloadLatestFW(FirmwareInfo *firmware, const QString & firmwareId);
-    void unloadProfile();
     
 private slots:
     void openDocumentURL();
@@ -146,10 +144,10 @@ private slots:
     void compare();
     void print();
     void loadBackup();
-    void preferences();
     void appPreferences();
     void fwPreferences();
     void updateMenus();
+    void createProfile();
     MdiChild *createMdiChild();
     void setActiveSubWindow(QWidget *window);
     QMenu * createRecentFileMenu();
@@ -191,7 +189,6 @@ private:
     QString installer_fileName;
     QString downloadedFW;
     QString downloadedFWFilename;
-    QString ActiveProfileName;
     downloadDialog * downloadDialog_forWait;
 
     bool checkCompanion9x;
@@ -199,7 +196,7 @@ private:
     bool needRename;
     bool showcheckForUpdatesResult;
     int MaxRecentFiles;
-    int ActiveProfile;
+//    int ActiveProfile;
     int currentFWrev;
     int currentFWrev_temp;
     int NewFwRev;
@@ -224,7 +221,6 @@ private:
     QAction *saveAct;
     QAction *saveAsAct;
     QAction *exitAct;
-    QAction *preferencesAct;
     QAction *appPreferencesAct;
     QAction *fwPreferencesAct;
     QAction *checkForUpdatesAct;
@@ -253,6 +249,7 @@ private:
     QAction *logsAct;
     QAction *recentFileActs[MAX_RECENT];
     QAction *profileActs[MAX_PROFILES];
+    QAction *createProfileAct;
     QAction *classicThemeAct;
     QAction *monoThemeAct;
     QAction *monoBlueThemeAct;

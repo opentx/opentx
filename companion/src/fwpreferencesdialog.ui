@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>620</width>
-    <height>658</height>
+    <height>437</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -32,186 +32,31 @@
    <property name="margin">
     <number>6</number>
    </property>
-   <item row="21" column="5">
-    <widget class="QPushButton" name="voice_dnld">
-     <property name="text">
-      <string>Download Voice</string>
+   <item row="38" column="5">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
-    </widget>
-   </item>
-   <item row="35" column="2" colspan="3">
-    <widget class="QCheckBox" name="burnFirmware">
-     <property name="text">
-      <string>Offer to write FW to Tx after download</string>
-     </property>
-    </widget>
-   </item>
-   <item row="10" column="2">
-    <widget class="QCheckBox" name="optionCheckBox_9">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>CheckBox</string>
-     </property>
-    </widget>
-   </item>
-   <item row="10" column="3">
-    <widget class="QCheckBox" name="optionCheckBox_10">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>CheckBox</string>
-     </property>
-    </widget>
-   </item>
-   <item row="18" column="5">
-    <widget class="QPushButton" name="fw_dnld">
-     <property name="text">
-      <string>Download FW</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="0" colspan="2">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Options</string>
-     </property>
-    </widget>
-   </item>
-   <item row="12" column="4">
-    <widget class="QCheckBox" name="optionCheckBox_19">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>CheckBox</string>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="5">
-    <widget class="QCheckBox" name="optionCheckBox_8">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>CheckBox</string>
-     </property>
-    </widget>
-   </item>
-   <item row="14" column="2">
-    <widget class="QCheckBox" name="optionCheckBox_25">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>CheckBox</string>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="4">
-    <widget class="QCheckBox" name="optionCheckBox_7">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>CheckBox</string>
-     </property>
-    </widget>
-   </item>
-   <item row="11" column="4">
-    <widget class="QCheckBox" name="optionCheckBox_15">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>CheckBox</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="4">
-    <widget class="QCheckBox" name="optionCheckBox_3">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>CheckBox</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0" colspan="2">
-    <widget class="QLabel" name="CPU_ID_LABEL">
-     <property name="text">
-      <string>Processor ID</string>
-     </property>
-    </widget>
-   </item>
-   <item row="17" column="4">
-    <widget class="QCheckBox" name="optionCheckBox_39">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>CheckBox</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="2" colspan="4">
-    <widget class="QLabel" name="FwInfo">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>FwInfo</string>
-     </property>
-    </widget>
-   </item>
-   <item row="17" column="5">
-    <widget class="QCheckBox" name="optionCheckBox_40">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>CheckBox</string>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
    <item row="11" column="3">
     <widget class="QCheckBox" name="optionCheckBox_14">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>CheckBox</string>
+     </property>
+    </widget>
+   </item>
+   <item row="15" column="5">
+    <widget class="QCheckBox" name="optionCheckBox_32">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -246,35 +91,6 @@
      </property>
     </widget>
    </item>
-   <item row="32" column="0" colspan="2">
-    <widget class="QLabel" name="label_14">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Default Stick Mode</string>
-     </property>
-    </widget>
-   </item>
-   <item row="33" column="0" colspan="2">
-    <widget class="QLabel" name="label_13">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Channel Order</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
    <item row="8" column="2">
     <widget class="QCheckBox" name="optionCheckBox_2">
      <property name="sizePolicy">
@@ -299,60 +115,6 @@
      <property name="text">
       <string>CheckBox</string>
      </property>
-    </widget>
-   </item>
-   <item row="32" column="2" colspan="2">
-    <widget class="QComboBox" name="stickmodeCB">
-     <property name="maximumSize">
-      <size>
-       <width>190</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="whatsThis">
-      <string>Mode selection:
-
-Mode 1:
-  Left stick:  Elevator, Rudder
-  Right stick:  Throttle, Aileron
-
-Mode 2:
-  Left stick:  Throttle, Rudder
-  Right stick:  Elevator, Aileron
-
-Mode 3:
-  Left stick:  Elevator, Aileron
-  Right stick:  Throttle, Rudder
-
-Mode 4:
-  Left stick:  Throttle, Aileron
-  Right stick:  Elevator, Rudder
-
-</string>
-     </property>
-     <property name="currentIndex">
-      <number>1</number>
-     </property>
-     <item>
-      <property name="text">
-       <string>Mode 1 (RUD ELE THR AIL)</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Mode 2 (RUD THR ELE AIL)</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Mode 3 (AIL ELE THR RUD)</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Mode 4 (AIL THR ELE RUD)</string>
-      </property>
-     </item>
     </widget>
    </item>
    <item row="15" column="2">
@@ -394,6 +156,9 @@ Mode 4:
      </property>
     </widget>
    </item>
+   <item row="3" column="2" colspan="3">
+    <widget class="QComboBox" name="downloadVerCB"/>
+   </item>
    <item row="7" column="2">
     <widget class="QComboBox" name="langCombo">
      <property name="sizePolicy">
@@ -410,8 +175,8 @@ Mode 4:
      </property>
     </widget>
    </item>
-   <item row="3" column="2" colspan="3">
-    <widget class="QComboBox" name="downloadVerCB"/>
+   <item row="5" column="2" colspan="3">
+    <widget class="QLineEdit" name="CPU_ID_LE"/>
    </item>
    <item row="3" column="0" colspan="2">
     <widget class="QLabel" name="label_6">
@@ -434,159 +199,6 @@ Mode 4:
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
      </property>
-    </widget>
-   </item>
-   <item row="5" column="2" colspan="3">
-    <widget class="QLineEdit" name="CPU_ID_LE"/>
-   </item>
-   <item row="33" column="2" colspan="2">
-    <widget class="QComboBox" name="channelorderCB">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>75</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="whatsThis">
-      <string>Channel order
-
-This is used by the templated to determine which channel goes to what number output.</string>
-     </property>
-     <property name="currentIndex">
-      <number>0</number>
-     </property>
-     <item>
-      <property name="text">
-       <string notr="true">R E T A</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">R E A T</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">R T E A</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">R T A E</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">R A E T</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">R A T E</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">E R T A</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">E R A T</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">E T R A</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">E T A R</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">E A R T</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">E A T R</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">T R E A</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">T R A E</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">T E R A</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">T E A R</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">T A R E</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">T A E R</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">A R E T</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">A R T E</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">A E R T</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">A E T R</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">A T R E</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string notr="true">A T E R</string>
-      </property>
-     </item>
     </widget>
    </item>
    <item row="8" column="5">
@@ -630,19 +242,6 @@ This is used by the templated to determine which channel goes to what number out
    </item>
    <item row="9" column="2">
     <widget class="QCheckBox" name="optionCheckBox_5">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>CheckBox</string>
-     </property>
-    </widget>
-   </item>
-   <item row="15" column="5">
-    <widget class="QCheckBox" name="optionCheckBox_32">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -914,40 +513,6 @@ This is used by the templated to determine which channel goes to what number out
      </property>
     </widget>
    </item>
-   <item row="34" column="2" colspan="3">
-    <widget class="QCheckBox" name="renameFirmware">
-     <property name="text">
-      <string>Append version number to FW file name</string>
-     </property>
-    </widget>
-   </item>
-   <item row="46" column="5">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="23" column="0">
-    <widget class="QLabel" name="label_16">
-     <property name="font">
-      <font>
-       <family>Sans Serif</family>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>Profile</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
    <item row="3" column="5">
     <widget class="QPushButton" name="checkFWUpdates">
      <property name="minimumSize">
@@ -958,37 +523,6 @@ This is used by the templated to determine which channel goes to what number out
      </property>
      <property name="text">
       <string>Check for updates</string>
-     </property>
-    </widget>
-   </item>
-   <item row="25" column="2" colspan="3">
-    <widget class="QLineEdit" name="SplashFileName">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="21" column="2">
-    <widget class="QComboBox" name="voiceCombo">
-     <property name="maximumSize">
-      <size>
-       <width>50</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="toolTip">
-      <string>Set language of voice.
-May be different from firmware language</string>
-     </property>
-    </widget>
-   </item>
-   <item row="25" column="5">
-    <widget class="QPushButton" name="SplashSelect">
-     <property name="text">
-      <string>Open Image</string>
      </property>
     </widget>
    </item>
@@ -1006,109 +540,202 @@ May be different from firmware language</string>
      </property>
     </widget>
    </item>
-   <item row="25" column="0">
-    <widget class="QLabel" name="label_8">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Splash Screen</string>
-     </property>
-    </widget>
-   </item>
-   <item row="32" column="5">
-    <widget class="QPushButton" name="clearImageButton">
-     <property name="text">
-      <string>Clear Image</string>
-     </property>
-    </widget>
-   </item>
-   <item row="23" column="3" colspan="2">
-    <widget class="QLineEdit" name="ProfName_LE"/>
-   </item>
-   <item row="23" column="2">
-    <widget class="QSpinBox" name="ProfSlot_SB">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
+   <item row="21" column="2">
+    <widget class="QComboBox" name="voiceCombo">
      <property name="maximumSize">
       <size>
-       <width>16777215</width>
+       <width>50</width>
        <height>16777215</height>
       </size>
      </property>
-     <property name="minimum">
-      <number>1</number>
-     </property>
-     <property name="maximum">
-      <number>10</number>
+     <property name="toolTip">
+      <string>Set language of voice.
+May be different from firmware language</string>
      </property>
     </widget>
    </item>
-   <item row="22" column="0" colspan="6">
-    <widget class="Line" name="line_5">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="20" column="0" colspan="6">
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="45" column="0" colspan="6">
-    <widget class="Line" name="line_6">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="24" column="5">
-    <widget class="QPushButton" name="sdPathButton">
+   <item row="21" column="5">
+    <widget class="QPushButton" name="voice_dnld">
      <property name="text">
-      <string>Open Folder</string>
+      <string>Download Voice</string>
      </property>
     </widget>
    </item>
-   <item row="24" column="2" colspan="3">
-    <widget class="QLineEdit" name="sdPath">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="24" column="0">
-    <widget class="QLabel" name="sdPathLabel">
+   <item row="10" column="2">
+    <widget class="QCheckBox" name="optionCheckBox_9">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
      <property name="text">
-      <string>SD Structure path</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      <string>CheckBox</string>
      </property>
     </widget>
    </item>
-   <item row="35" column="5">
-    <widget class="QPushButton" name="ProfSave_PB">
+   <item row="10" column="3">
+    <widget class="QCheckBox" name="optionCheckBox_10">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
-      <string>Save Profile</string>
+      <string>CheckBox</string>
+     </property>
+    </widget>
+   </item>
+   <item row="18" column="5">
+    <widget class="QPushButton" name="fw_dnld">
+     <property name="text">
+      <string>Download FW</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0" colspan="2">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Options</string>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="4">
+    <widget class="QCheckBox" name="optionCheckBox_19">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>CheckBox</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="5">
+    <widget class="QCheckBox" name="optionCheckBox_8">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>CheckBox</string>
+     </property>
+    </widget>
+   </item>
+   <item row="14" column="2">
+    <widget class="QCheckBox" name="optionCheckBox_25">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>CheckBox</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="4">
+    <widget class="QCheckBox" name="optionCheckBox_7">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>CheckBox</string>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="4">
+    <widget class="QCheckBox" name="optionCheckBox_15">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>CheckBox</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="4">
+    <widget class="QCheckBox" name="optionCheckBox_3">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>CheckBox</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="2">
+    <widget class="QLabel" name="CPU_ID_LABEL">
+     <property name="text">
+      <string>Processor ID</string>
+     </property>
+    </widget>
+   </item>
+   <item row="17" column="4">
+    <widget class="QCheckBox" name="optionCheckBox_39">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>CheckBox</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2" colspan="4">
+    <widget class="QLabel" name="FwInfo">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>FwInfo</string>
+     </property>
+    </widget>
+   </item>
+   <item row="17" column="5">
+    <widget class="QCheckBox" name="optionCheckBox_40">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>CheckBox</string>
+     </property>
+    </widget>
+   </item>
+   <item row="20" column="1" colspan="5">
+    <widget class="Line" name="voiceLine">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="37" column="1" colspan="5">
+    <widget class="Line" name="line_6">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
@@ -1161,10 +788,6 @@ May be different from firmware language</string>
   <tabstop>optionCheckBox_40</tabstop>
   <tabstop>optionCheckBox_41</tabstop>
   <tabstop>optionCheckBox_42</tabstop>
-  <tabstop>stickmodeCB</tabstop>
-  <tabstop>channelorderCB</tabstop>
-  <tabstop>renameFirmware</tabstop>
-  <tabstop>burnFirmware</tabstop>
  </tabstops>
  <resources>
   <include location="companion.qrc"/>

@@ -23,6 +23,10 @@ public:
 private:
     Ui::appPreferencesDialog *ui;
     void initSettings();
+    bool displayImage( QString fileName );
+    void saveProfile();
+    void loadProfileString(QString profile, QString label);
+    void loadProfile();
 
 private slots:
     void writeValues();
@@ -31,6 +35,12 @@ private slots:
     void on_snapshotClipboardCKB_clicked();
     void on_backupPathButton_clicked();
     void on_ge_pathButton_clicked();
+
+    void on_sdPathButton_clicked();
+    void on_removeProfileButton_clicked();
+    void on_SplashSelect_clicked();
+    void on_clearImageButton_clicked();
+
 #ifdef JOYSTICKS
     void on_joystickChkB_clicked();
     void on_joystickcalButton_clicked();
