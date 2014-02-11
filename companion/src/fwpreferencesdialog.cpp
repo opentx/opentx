@@ -218,9 +218,6 @@ void fwPreferencesDialog::writeValues()
   settings.setValue("cpu_id", ui->CPU_ID_LE->text());
   current_firmware_variant = getFirmwareVariant();
   settings.setValue("firmware", current_firmware_variant.id);
-
-  MainWindow * mw = (MainWindow *)this->parent();
-  mw->unloadProfile();
 }
 
 void fwPreferencesDialog::populateFirmwareOptions(const FirmwareInfo * firmware)

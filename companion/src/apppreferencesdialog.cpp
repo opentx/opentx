@@ -60,16 +60,13 @@ void appPreferencesDialog::writeValues()
   settings.setValue("default_mode", ui->stickmodeCB->currentIndex());
   settings.setValue("rename_firmware_files", ui->renameFirmware->isChecked());
   settings.setValue("burnFirmware", ui->burnFirmware->isChecked());
-  settings.setValue("profileId", ui->ProfSlot_SB->value());
+  settings.setValue("profileId", ui->profileIndexLE->text());
   settings.setValue("sdPath", ui->sdPath->text());
   settings.setValue("SplashFileName", ui->SplashFileName->text());
   if (!ui->SplashFileName->text().isEmpty())
     settings.setValue("SplashImage", "");
   
   saveProfile();
-
-  MainWindow * mw = (MainWindow *)this->parent();
-  mw->unloadProfile();
 }
 
 void appPreferencesDialog::on_snapshotPathButton_clicked()
@@ -163,8 +160,8 @@ void appPreferencesDialog::initSettings()
   if (QDir(Path).exists()) {
     ui->sdPath->setText(Path);
   }
-  ui->ProfSlot_SB->setValue(settings.value("profileId", 1).toInt());
-  on_ProfSlot_SB_valueChanged();
+  ui->profileIndexLE->setText(settings.value("profileId", "").toString());
+
   QString fileName=settings.value("SplashFileName","").toString();
   if (!fileName.isEmpty()) {
     QFile file(fileName);
@@ -264,40 +261,11 @@ void appPreferencesDialog::on_sdPathButton_clicked()
   }
 }
 
-void appPreferencesDialog::on_ProfSlot_SB_valueChanged()
-{
-  QSettings settings;
-  settings.beginGroup("Profiles");
-  QString profile=QString("profile%1").arg(ui->ProfSlot_SB->value());
-  settings.beginGroup(profile);
-  QString name=settings.value("Name","").toString();
-  ui->ProfName_LE->setText(name);
-/*  if (!(name.isEmpty())) {
-    QString firmwarename=settings.value("firmware", default_firmware_id).toString();
-    FirmwareInfo * fw = getFirmware(firmwarename);
-    int i=0;
-    foreach(FirmwareInfo * firmware, firmwares) {
-      if (fw == firmware) {
-        qDebug() << fw->id;
-        qDebug() << firmware->id;
-        qDebug() << i;
-        ui->downloadVerCB->setCurrentIndex(i);
-        break;
-      }
-      i++;
-    }
-    baseFirmwareChanged();
-    populateFirmwareOptions(fw);
-  }*/
-  settings.endGroup();
-  settings.endGroup();
-}
-
-
 void appPreferencesDialog::saveProfile()
 {
   QSettings settings;
-  QString profile=QString("profile%1").arg(ui->ProfSlot_SB->value());
+
+  QString profile=QString("profile") + settings.value("profileId").toString();
   QString name=ui->ProfName_LE->text();
   if (name.isEmpty()) {
     name = profile;
@@ -316,11 +284,51 @@ void appPreferencesDialog::saveProfile()
   settings.endGroup();
 }
 
+void appPreferencesDialog::loadProfileString(QString profile, QString label)
+{
+  QSettings settings;
+  QString value;
+
+  settings.beginGroup("Profiles");
+  settings.beginGroup(profile);
+  value = settings.value(label).toString();
+  settings.endGroup();
+  settings.endGroup();
+
+  settings.setValue( label, value ); 
+}
+
+void appPreferencesDialog::loadProfile()
+{
+  QSettings settings;
+  QString profile=QString("profile") + settings.value("profileId").toString();
+
+  loadProfileString( profile, "Name" );
+  loadProfileString( profile, "default_channel_order" );
+  loadProfileString( profile, "default_mode" );
+  loadProfileString( profile, "burnFirmware" );
+  loadProfileString( profile, "rename_firmware_files" );
+  loadProfileString( profile, "sdPath" );
+  loadProfileString( profile, "SplashFileName" );
+}
+
 void appPreferencesDialog::on_removeProfileButton_clicked()
 {
   QSettings settings;
-  QString profile=QString("profile%1").arg(ui->ProfSlot_SB->value());
-  settings.remove(profile);
+  QString profileId = settings.value("profileId").toString(); 
+  if ( profileId == "1" )
+     QMessageBox::information(this, tr("Not possible to remove profile"), tr("The default profile can not be removed."));
+  else
+  {
+    QString profile=QString("profile") + profileId;
+    settings.beginGroup("Profiles");
+    settings.remove(profile);
+    settings.endGroup();
+    settings.setValue("profileId", "1");
+
+    loadProfile();
+    initSettings();
+  }
 }
 
 bool appPreferencesDialog::displayImage( QString fileName )

@@ -124,12 +124,6 @@ MainWindow::MainWindow():
     updateMenus();
 
     readSettings();
-    FirmwareInfo *firmware = GetCurrentFirmware();
-    if (ActiveProfile) {
-      setWindowTitle(tr("Companion - Models and Settings Editor - %1 - profile %2").arg(firmware->name).arg(ActiveProfileName));
-    } else {
-      setWindowTitle(tr("Companion - Models and Settings Editor - %1").arg(firmware->name));
-    }
     setUnifiedTitleAndToolBarOnMac(true);
     this->setWindowIcon(QIcon(":/icon.png"));
     this->setIconSize(QSize(32,32));
@@ -758,11 +752,10 @@ void MainWindow::loadProfile()
     if (action) {
       int profnum=action->data().toInt();
       QSettings settings;
-      settings.setValue("ActiveProfile",profnum);
+      settings.setValue("profileId",profnum);
       settings.beginGroup("Profiles");
       QString profile=QString("profile%1").arg(profnum);
       settings.beginGroup(profile);
-      ActiveProfile=profnum;
       ActiveProfileName=settings.value("Name", "").toString();
       chord=settings.value("default_channel_order", 0).toInt();
       defmod=settings.value("default_mode", 0).toInt();
@@ -785,46 +778,15 @@ void MainWindow::loadProfile()
       settings.setValue("SplashFileName", SplashFileName);
       settings.setValue("SplashImage", SplashImage);
       settings.setValue("firmware", firmware_id);
-      settings.setValue("profileId", profnum);
       current_firmware_variant = GetFirmwareVariant(firmware_id);
-      FirmwareInfo *firmware = GetCurrentFirmware();    
-      setWindowTitle(tr("Companion - Models and Settings Editor - %1").arg(firmware->name));
-      // settings.setValue("lastDir", QFileInfo(fileName).dir().absolutePath());
+
       foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
         MdiChild *mdiChild = qobject_cast<MdiChild *>(window->widget());
         mdiChild->eepromInterfaceChanged();
       }
-      setWindowTitle(tr("Companion - Models and Settings Editor - %1 - profile %2").arg(firmware->name).arg(ActiveProfileName));
-    }
-}
 
-void MainWindow::unloadProfile()
-{
-    ActiveProfile=0;
-    ActiveProfileName="";
-    QSettings settings;
-    settings.setValue("ActiveProfile", 0);
-    FirmwareInfo *firmware = GetCurrentFirmware();    
-    setWindowTitle(tr("Companion - Models and Settings Editor - %1").arg(firmware->name));
-}
-
-void MainWindow::preferences()
-{
-    preferencesDialog *pd = new preferencesDialog(this);
-    pd->exec();
-    FirmwareInfo *firmware = GetCurrentFirmware();    
-    if (ActiveProfile) {
-      setWindowTitle(tr("Companion - Models and Settings Editor - %1 - profile %2").arg(firmware->name).arg(ActiveProfileName));
+      updateMenus();
     }
-    else {
-      setWindowTitle(tr("Companion - Models and Settings Editor - %1").arg(firmware->name));
-    }
-
-    foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
-      MdiChild *mdiChild = qobject_cast<MdiChild *>(window->widget());
-      mdiChild->eepromInterfaceChanged();
-    }
-    updateMenus();
 }
 
 void MainWindow::appPreferences()
@@ -838,14 +800,6 @@ void MainWindow::fwPreferences()
 {
     fwPreferencesDialog *pd = new fwPreferencesDialog(this);
     pd->exec();
-    FirmwareInfo *firmware = GetCurrentFirmware();    
-    if (ActiveProfile) {
-      setWindowTitle(tr("Companion - Models and Settings Editor - %1 - profile %2").arg(firmware->name).arg(ActiveProfileName));
-    }
-    else {
-      setWindowTitle(tr("Companion - Models and Settings Editor - %1").arg(firmware->name));
-    }
-
     foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
       MdiChild *mdiChild = qobject_cast<MdiChild *>(window->widget());
       mdiChild->eepromInterfaceChanged();
@@ -1640,19 +1594,9 @@ void MainWindow::updateMenus()
     compareAct->setEnabled(activeMdiChild());
     updateRecentFileActions();
     updateProfilesActions();
-    bool notfound=true;
+
     QSettings settings;
-    settings.beginGroup("Profiles");
-    for (int i=0; i<MAX_PROFILES; i++) {
-      QString profile=QString("profile%1").arg(i+1);
-      settings.beginGroup(profile);
-      QString name=settings.value("Name","").toString();
-      if (!name.isEmpty()) {
-        notfound=false;
-      }
-      settings.endGroup();
-    }
-    profileButton->setDisabled(notfound);
+    setWindowTitle(tr("OpenTX Companion - FW: %1 - Profile: %2").arg(GetCurrentFirmware()->name).arg(settings.value("profileId").toString()));
 }
 
 MdiChild *MainWindow::createMdiChild()
@@ -2015,8 +1959,12 @@ QMenu *MainWindow::createRecentFileMenu()
 QMenu *MainWindow::createProfilesMenu()
 {
     QMenu *profilesMenu=new QMenu(tr("Radio Settings Profiles"));
-    for ( int i = 0; i < MAX_PROFILES; ++i)
+    int i;
+    for ( i = 0; i < MAX_PROFILES; ++i) {
       profilesMenu->addAction(profileActs[i]);
+    }
+    if ( i>0 )
+      profilesMenu->addSeparator();
     profilesMenu->addAction(createProfileAct);
     profilesMenu->setIcon(CompanionIcon("profiles.png"));
     return profilesMenu;
@@ -2034,11 +1982,14 @@ void MainWindow::createToolBars()
       case 1:
         size=QSize(24,24);
         break;
+      case 2:
+        size=QSize(32,32);
+        break;
       case 3:
         size=QSize(48,48);
         break;
       default:
-        size=QSize(32,32);
+        size=QSize(24,24);
         break;        
     }
     fileToolBar = addToolBar(tr("File"));
@@ -2046,11 +1997,11 @@ void MainWindow::createToolBars()
     fileToolBar->setObjectName("File");
     fileToolBar->addAction(newAct);
     fileToolBar->addAction(openAct);
-    QToolButton * recentToolButton = new QToolButton;
-    recentToolButton->setPopupMode(QToolButton::InstantPopup);
-    recentToolButton->setMenu(createRecentFileMenu());
-    recentToolButton->setIcon(CompanionIcon("recentdocument.png"));
-    recentToolButton->setToolTip(tr("Recent Files"));
+      QToolButton * recentToolButton = new QToolButton;
+      recentToolButton->setPopupMode(QToolButton::InstantPopup);
+      recentToolButton->setMenu(createRecentFileMenu());
+      recentToolButton->setIcon(CompanionIcon("recentdocument.png"));
+      recentToolButton->setToolTip(tr("Recent Files"));
     fileToolBar->addWidget(recentToolButton);
     fileToolBar->addAction(saveAct);
     fileToolBar->addAction(logsAct);
@@ -2058,24 +2009,12 @@ void MainWindow::createToolBars()
     fileToolBar->addAction(appPreferencesAct);
     fileToolBar->addAction(fwPreferencesAct);
     fileToolBar->addAction(customizeSplashAct);
-    profileButton = new QToolButton;
-    profileButton->setPopupMode(QToolButton::InstantPopup);
-    profileButton->setMenu(createProfilesMenu());
-    profileButton->setIcon(CompanionIcon("profiles.png"));
-    profileButton->setToolTip(tr("Firmware Profiles"));
+      profileButton = new QToolButton;
+      profileButton->setPopupMode(QToolButton::InstantPopup);
+      profileButton->setMenu(createProfilesMenu());
+      profileButton->setIcon(CompanionIcon("profiles.png"));
+      profileButton->setToolTip(tr("Firmware Profiles"));
     fileToolBar->addWidget(profileButton);
-    bool notfound=true;
-    settings.beginGroup("Profiles");
-    for (int i=0; i<MAX_PROFILES; i++) {
-      QString profile=QString("profile%1").arg(i+1);
-      settings.beginGroup(profile);
-      QString name=settings.value("Name","").toString();
-      if (!name.isEmpty()) {
-        notfound=false;
-      }
-      settings.endGroup();
-    }
-    profileButton->setDisabled(notfound);
     fileToolBar->addSeparator();
     fileToolBar->addAction(simulateAct);
     fileToolBar->addAction(printAct);
@@ -2087,7 +2026,6 @@ void MainWindow::createToolBars()
     editToolBar->addAction(cutAct);
     editToolBar->addAction(copyAct);
     editToolBar->addAction(pasteAct);
-
     
     burnToolBar = new QToolBar(tr("Write"));
     addToolBar( Qt::LeftToolBarArea, burnToolBar );
@@ -2123,15 +2061,18 @@ void MainWindow::readSettings()
     checkCompanion9x = settings.value("startup_check_companion", true).toBool();
     checkFW = settings.value("startup_check_fw", true).toBool();
     MaxRecentFiles =settings.value("history_size",10).toInt();
-    ActiveProfile=settings.value("activeprofile",0).toInt();
-    if (ActiveProfile) {
-      settings.beginGroup("Profiles");
-      QString profile=QString("profile%1").arg(ActiveProfile);
-      settings.beginGroup(profile);
-      ActiveProfileName=settings.value("Name","").toString();
-      settings.endGroup();
-      settings.endGroup();
+    if (settings.value("profileId",0).toInt() == 0)
+    {
+      createProfile();
+      settings.setValue("profileId", "1");
     }
+    int activeProfile=settings.value("profileId",0).toInt();
+    settings.beginGroup("Profiles");
+    QString profile=QString("profile%1").arg(activeProfile);
+    settings.beginGroup(profile);
+    ActiveProfileName=settings.value("Name","").toString();
+    settings.endGroup();
+    settings.endGroup();
 }
 
 MdiChild *MainWindow::activeMdiChild()
@@ -2184,6 +2125,8 @@ void MainWindow::updateProfilesActions()
  {
     int i;
     QSettings settings;
+    int activeProfile = settings.value("profileId").toInt();
+
     settings.beginGroup("Profiles");
     for (i=0; i<MAX_PROFILES; i++) {
       QString profile=QString("profile%1").arg(i+1);
@@ -2194,6 +2137,11 @@ void MainWindow::updateProfilesActions()
         profileActs[i]->setText(text);
         profileActs[i]->setData(i+1);
         profileActs[i]->setVisible(true);
+        if ((i+1) == activeProfile)
+          profileActs[i]->setIcon(CompanionIcon("arrow-right.png"));
+        else
+          profileActs[i]->setIcon(CompanionIcon(""));
+
       } else {
         profileActs[i]->setVisible(false);
       }

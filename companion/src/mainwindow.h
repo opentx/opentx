@@ -63,7 +63,6 @@ QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {
-    friend class preferencesDialog;
     friend class fwPreferencesDialog;
     friend class MdiChild; // TODO GetAvrdudeArgs could be external to this class
 
@@ -80,7 +79,6 @@ protected:
 
 public slots:
     void downloadLatestFW(FirmwareInfo *firmware, const QString & firmwareId);
-    void unloadProfile();
     
 private slots:
     void openDocumentURL();
@@ -146,7 +144,6 @@ private slots:
     void compare();
     void print();
     void loadBackup();
-    void preferences();
     void appPreferences();
     void fwPreferences();
     void updateMenus();
@@ -200,7 +197,7 @@ private:
     bool needRename;
     bool showcheckForUpdatesResult;
     int MaxRecentFiles;
-    int ActiveProfile;
+//    int ActiveProfile;
     int currentFWrev;
     int currentFWrev_temp;
     int NewFwRev;
