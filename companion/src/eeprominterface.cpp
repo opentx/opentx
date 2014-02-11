@@ -734,7 +734,7 @@ GeneralSettings::GeneralSettings()
   QSettings settings;
   templateSetup = settings.value("default_channel_order", 0).toInt();
   stickMode = settings.value("default_mode", 1).toInt();
-  int profile_id = settings.value("ActiveProfile", 0).toInt();
+  int profile_id = settings.value("profileId", 0).toInt();
   if (profile_id>0) {
     settings.beginGroup("Profiles");
     QString profile=QString("profile%1").arg(profile_id);

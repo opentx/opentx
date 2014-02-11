@@ -17,6 +17,9 @@ class Side
 public:
   Side();
   void copyImage( Side );
+  bool displayImage( QString fileName, Source source );
+  bool saveImage();
+  bool refreshImage();
 
   QLabel *imageLabel;
   QLineEdit *fileNameEdit;
@@ -24,6 +27,9 @@ public:
   QPushButton *invertButton;
   QToolButton *libraryButton;
 
+  QString *saveToFileName;
+
+private:
   Source *source;
 };
 
