@@ -749,7 +749,7 @@ extern uint8_t pxxFlag[NUM_MODULES];
 #define ZCHAR_MAX (LEN_STD_CHARS + LEN_SPECIAL_CHARS)
 
 char idx2char(int8_t idx);
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
 int8_t char2idx(char c);
 void str2zchar(char *dest, const char *src, int size);
 void zchar2str(char *dest, const char *src, int size);

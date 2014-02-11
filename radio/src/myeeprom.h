@@ -1404,11 +1404,14 @@ enum MixSources {
 #define MIN_POINTS 3
 #define MAX_POINTS 17
 
-#define TMRMODE_NONE     0
-#define TMRMODE_ABS      1
-#define TMRMODE_THR      2
-#define TMRMODE_THR_REL  3
-#define TMRMODE_THR_TRG  4
+enum TimerModes {
+  TMRMODE_NONE,
+  TMRMODE_ABS,
+  TMRMODE_THR,
+  TMRMODE_THR_REL,
+  TMRMODE_THR_TRG,
+  TMRMODE_FIRST_SWITCH
+};
 
 #define COUNTDOWN_SILENT 0
 #define COUNTDOWN_BEEPS  1
@@ -1504,7 +1507,7 @@ enum FailsafeModes {
   #define BeepANACenter uint8_t
 #endif
 
-PACK(typedef struct t_ModelHeader {
+PACK(typedef struct {
   char      name[LEN_MODEL_NAME]; // must be first for eeLoadModelName
   uint8_t   modelId;
   MODELDATA_BITMAP
