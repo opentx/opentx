@@ -198,7 +198,7 @@ char idx2char(int8_t idx)
   return ' ';
 }
 
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
 int8_t char2idx(char c)
 {
   if (c == '_') return 37;

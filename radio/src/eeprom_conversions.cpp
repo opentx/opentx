@@ -111,8 +111,6 @@ PACK(typedef struct {
 }) MixData_v215;
 #endif
 
-
-
 PACK(typedef struct {
   int8_t    mode;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
   uint16_t  start:12;
@@ -235,7 +233,9 @@ int ConvertSource_215_to_216(int source, bool insertZero=false)
 
 int ConvertSwitch_215_to_216(int swtch)
 {
-  if (swtch <= SWSRC_LAST_SWITCH)
+  if (swtch < 0)
+    return -ConvertSwitch_215_to_216(-swtch);
+  else if (swtch <= SWSRC_LAST_SWITCH)
     return swtch;
   else
     return swtch + (2*4) + (2*6); // 4 trims and 2 * 6-pos added as switches
@@ -271,22 +271,28 @@ void ConvertModel_215_to_216(ModelData &model)
   // Mixes: GVARS in weight moved from 512 to 4096 and -512 to -4096, because GVARS may be used in limits [-1250:1250]
   // Switches: two 6-pos pots added, REa added to Sky9x
 
-  TRACE("Model conversion from v215 to v216");
-
   assert(sizeof(ModelData_v215) <= sizeof(ModelData));
 
   ModelData_v215 oldModel;
   memcpy(&oldModel, &model, sizeof(oldModel));
   memset(&model, 0, sizeof(ModelData));
 
+  char name[LEN_MODEL_NAME+1];
+  zchar2str(name, oldModel.header.name, LEN_MODEL_NAME);
+  TRACE("Model %s conversion from v215 to v216", name);
+
   memcpy(&g_model.header, &oldModel.header, sizeof(g_model.header));
   for (uint8_t i=0; i<2; i++) {
-    g_model.timers[i].mode = oldModel.timers[i].mode > 4 ? ConvertSwitch_215_to_216(oldModel.timers[i].mode): oldModel.timers[i].mode;
-    g_model.timers[i].start = oldModel.timers[i].start;
-    g_model.timers[i].minuteBeep = oldModel.timers[i].minuteBeep;
-    g_model.timers[i].persistent = oldModel.timers[i].persistent;
-    g_model.timers[i].countdownBeep = oldModel.timers[i].countdownBeep;
-    g_model.timers[i].value = oldModel.timers[i].value;
+    TimerData & timer = g_model.timers[i];
+    if (oldModel.timers[i].mode >= TMRMODE_FIRST_SWITCH)
+      timer.mode = TMRMODE_FIRST_SWITCH + ConvertSwitch_215_to_216(oldModel.timers[i].mode - TMRMODE_FIRST_SWITCH + 1) - 1;
+    else
+      timer.mode = oldModel.timers[i].mode;
+    timer.start = oldModel.timers[i].start;
+    timer.minuteBeep = oldModel.timers[i].minuteBeep;
+    timer.persistent = oldModel.timers[i].persistent;
+    timer.countdownBeep = oldModel.timers[i].countdownBeep;
+    timer.value = oldModel.timers[i].value;
   }
   g_model.protocol = oldModel.protocol;
   g_model.thrTrim = oldModel.thrTrim;
