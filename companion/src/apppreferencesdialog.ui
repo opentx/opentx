@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>685</width>
-    <height>431</height>
+    <height>462</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -888,7 +888,7 @@ This is used by the templated to determine which channel goes to what number out
         </widget>
        </item>
        <item row="0" column="2">
-        <widget class="QLineEdit" name="ProfName_LE">
+        <widget class="QLineEdit" name="profileNameLE">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -930,6 +930,20 @@ This is used by the templated to determine which channel goes to what number out
            <width>30</width>
            <height>16777215</height>
           </size>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Firmware</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" colspan="2">
+        <widget class="QLineEdit" name="firmwareLE">
+         <property name="enabled">
+          <bool>false</bool>
          </property>
         </widget>
        </item>

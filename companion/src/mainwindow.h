@@ -189,7 +189,6 @@ private:
     QString installer_fileName;
     QString downloadedFW;
     QString downloadedFWFilename;
-    QString ActiveProfileName;
     downloadDialog * downloadDialog_forWait;
 
     bool checkCompanion9x;

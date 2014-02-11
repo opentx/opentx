@@ -61,10 +61,12 @@ void appPreferencesDialog::writeValues()
   settings.setValue("rename_firmware_files", ui->renameFirmware->isChecked());
   settings.setValue("burnFirmware", ui->burnFirmware->isChecked());
   settings.setValue("profileId", ui->profileIndexLE->text());
+  settings.setValue("Name", ui->profileNameLE->text());
   settings.setValue("sdPath", ui->sdPath->text());
   settings.setValue("SplashFileName", ui->SplashFileName->text());
   if (!ui->SplashFileName->text().isEmpty())
     settings.setValue("SplashImage", "");
+  settings.setValue("firmware", ui->firmwareLE->text());
   
   saveProfile();
 }
@@ -161,6 +163,7 @@ void appPreferencesDialog::initSettings()
     ui->sdPath->setText(Path);
   }
   ui->profileIndexLE->setText(settings.value("profileId", "").toString());
+  ui->profileNameLE->setText(settings.value("Name", "").toString());
 
   QString fileName=settings.value("SplashFileName","").toString();
   if (!fileName.isEmpty()) {
@@ -170,6 +173,7 @@ void appPreferencesDialog::initSettings()
       displayImage( fileName );
     }
   }
+  ui->firmwareLE->setText(settings.value("firmware","").toString());
 }
 
 void appPreferencesDialog::on_libraryPathButton_clicked()
@@ -266,10 +270,10 @@ void appPreferencesDialog::saveProfile()
   QSettings settings;
 
   QString profile=QString("profile") + settings.value("profileId").toString();
-  QString name=ui->ProfName_LE->text();
+  QString name=ui->profileNameLE->text();
   if (name.isEmpty()) {
     name = profile;
-    ui->ProfName_LE->setText(name);
+    ui->profileNameLE->setText(name);
   }
   settings.beginGroup("Profiles");
   settings.beginGroup(profile);
@@ -280,6 +284,7 @@ void appPreferencesDialog::saveProfile()
   settings.setValue("rename_firmware_files", ui->renameFirmware->isChecked());
   settings.setValue("sdPath", ui->sdPath->text());
   settings.setValue("SplashFileName", ui->SplashFileName->text());
+  settings.setValue("firmware", ui->firmwareLE->text());
   settings.endGroup();
   settings.endGroup();
 }
@@ -310,6 +315,7 @@ void appPreferencesDialog::loadProfile()
   loadProfileString( profile, "rename_firmware_files" );
   loadProfileString( profile, "sdPath" );
   loadProfileString( profile, "SplashFileName" );
+  loadProfileString( profile, "firmware" );
 }
 
 void appPreferencesDialog::on_removeProfileButton_clicked()

@@ -746,8 +746,6 @@ void MainWindow::loadProfile()
 {
     QSettings settings;
     QAction *action = qobject_cast<QAction *>(sender());
-    int chord,defmod, burnfw;
-    bool renfw;
 
     if (action) {
       int profnum=action->data().toInt();
@@ -756,12 +754,12 @@ void MainWindow::loadProfile()
       settings.beginGroup("Profiles");
       QString profile=QString("profile%1").arg(profnum);
       settings.beginGroup(profile);
-      ActiveProfileName=settings.value("Name", "").toString();
-      chord=settings.value("default_channel_order", 0).toInt();
-      defmod=settings.value("default_mode", 0).toInt();
-      burnfw=settings.value("burnFirmware", 0).toInt();
+      QString profileName=settings.value("Name", "").toString();
+      int chord=settings.value("default_channel_order", 0).toInt();
+      int defmod=settings.value("default_mode", 0).toInt();
+      bool burnfw=settings.value("burnFirmware", false).toBool();
       QString sdPath=settings.value("sdPath", ".").toString();
-      renfw=settings.value("rename_firmware_files", false).toBool();
+      bool renfw=settings.value("rename_firmware_files", false).toBool();
       QString SplashFileName=settings.value("SplashFileName","").toString();
       QString SplashImage=settings.value("SplashImage", "").toString();            
       QString firmware_id=settings.value("firmware", default_firmware_variant.id).toString();
@@ -770,6 +768,7 @@ void MainWindow::loadProfile()
       settings.setValue("firmware", firmware_id);
       settings.endGroup();
       settings.endGroup();
+      settings.setValue("Name", profileName );
       settings.setValue("default_channel_order", chord);
       settings.setValue("default_mode", defmod);
       settings.setValue("burnFirmware", burnfw);
@@ -2066,13 +2065,6 @@ void MainWindow::readSettings()
       createProfile();
       settings.setValue("profileId", "1");
     }
-    int activeProfile=settings.value("profileId",0).toInt();
-    settings.beginGroup("Profiles");
-    QString profile=QString("profile%1").arg(activeProfile);
-    settings.beginGroup(profile);
-    ActiveProfileName=settings.value("Name","").toString();
-    settings.endGroup();
-    settings.endGroup();
 }
 
 MdiChild *MainWindow::activeMdiChild()
