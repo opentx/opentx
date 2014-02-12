@@ -57,7 +57,6 @@ extern "C" {
 #include "aspi.h"
 #include "i2c.h"
 #include "audio_driver.h"
-#include "usb_joystick.h"
 
 #define PERI1_FREQUENCY 30000000
 #define PERI2_FREQUENCY 60000000
@@ -175,6 +174,7 @@ void usbInit(void);
 void usbStart(void);
 void usbStop();
 bool usbPlugged(void);
+void usb_joystick_update(void);
 
 // EEPROM driver
 #if !defined(SIMU)

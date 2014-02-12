@@ -645,7 +645,7 @@ ifeq ($(PCB), TARANIS)
   SRC += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_bot.c
   SRC += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_core.c
   SRC += targets/taranis/usbd_hid_joystick.c
-  EXTRABOARDSRC += targets/taranis/usbd_usr.cpp targets/taranis/usbd_storage_msd.cpp targets/taranis/usb_joystick.cpp targets/taranis/usbd_desc.cpp 
+  EXTRABOARDSRC += targets/taranis/usbd_usr.cpp targets/taranis/usbd_storage_msd.cpp targets/taranis/usbd_desc.cpp 
   SRC += targets/sky9x/syscalls.c
   
   ifeq ($(SDCARD), YES)
