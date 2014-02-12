@@ -98,9 +98,10 @@ private slots:
 
     void setTheme(int index);
     void setClassicTheme()   {setTheme(0);};
-    void setMonochromeTheme(){setTheme(1);};
+    void setNewTheme()       {setTheme(1);};
     void setMonoWhiteTheme() {setTheme(2);};
-    void setMonoBlueTheme()  {setTheme(3);};
+    void setMonochromeTheme(){setTheme(3);};
+    void setMonoBlueTheme()  {setTheme(4);};
 
     void setIconThemeSize(int index);
     void setSmallIconThemeSize()  {setIconThemeSize(0);};
@@ -251,6 +252,7 @@ private:
     QAction *profileActs[MAX_PROFILES];
     QAction *createProfileAct;
     QAction *classicThemeAct;
+    QAction *newThemeAct;
     QAction *monoThemeAct;
     QAction *monoBlueThemeAct;
     QAction *monoWhiteThemeAct;
