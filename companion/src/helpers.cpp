@@ -924,10 +924,13 @@ QString getTheme()
       Theme="monowhite";
       break;
     case 3:
+      Theme="monochrome";
+      break;
+    case 4:
       Theme="monoblue";
       break;
     default:
-      Theme="monochrome";
+      Theme="new";
       break;          
   }
   return Theme;

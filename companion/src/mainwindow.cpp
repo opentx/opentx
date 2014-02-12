@@ -1776,9 +1776,12 @@ void MainWindow::createActions()
     createProfileAct->setStatusTip(tr("Create a new Radio Setting Profile"));
     connect(createProfileAct, SIGNAL(triggered()), this, SLOT(createProfile()));
 
-    classicThemeAct = new QAction(tr("Classic"), this);
-    classicThemeAct->setStatusTip(tr("The multicolor classical Companion icon theme"));
+    classicThemeAct = new QAction(tr("Classical"), this);
+    classicThemeAct->setStatusTip(tr("The classical Companion icon theme"));
     connect(classicThemeAct, SIGNAL(triggered()), this, SLOT(setClassicTheme()));
+    newThemeAct = new QAction(tr("New"), this);
+    newThemeAct->setStatusTip(tr("The Companion 2.0 colored icon theme"));
+    connect(newThemeAct, SIGNAL(triggered()), this, SLOT(setNewTheme()));
     monoThemeAct = new QAction("Monochrome",this);
     monoThemeAct->setStatusTip(tr("A monochrome black icon theme"));
     connect(monoThemeAct, SIGNAL(triggered()), this, SLOT(setMonochromeTheme()));
@@ -1903,6 +1906,7 @@ void MainWindow::createMenus()
       languageMenu->addAction(russianLanguageAct);
     settingsMenu->addMenu(themeMenu);
       themeMenu->addAction(classicThemeAct);
+      themeMenu->addAction(newThemeAct);
       themeMenu->addAction(monoThemeAct);
       themeMenu->addAction(monoBlueThemeAct);
       themeMenu->addAction(monoWhiteThemeAct);
