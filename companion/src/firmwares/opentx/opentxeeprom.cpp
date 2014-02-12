@@ -1165,7 +1165,10 @@ class LogicalSwitchField: public TransformedField {
       functionsConversionTable(board, version),
       sourcesConversionTable(SourcesConversionTable::getInstance(board, version, variant, (version >= 214 || (!IS_ARM(board) && version >= 213)) ? 0 : FLAG_NOSWITCHES)),
       switchesConversionTable(SwitchesConversionTable::getInstance(board, version)),
-      andswitchesConversionTable(AndSwitchesConversionTable::getInstance(board, version))
+      andswitchesConversionTable(AndSwitchesConversionTable::getInstance(board, version)),
+      v1(0),
+      v2(0),
+      v3(0)
     {
       if (IS_ARM(board) && version >= 216) {
         internalField.Append(new SignedField<8>(v1));
@@ -1202,7 +1205,11 @@ class LogicalSwitchField: public TransformedField {
 
     virtual void beforeExport()
     {
-      if (csw.func == LS_FN_STAY) {
+      if (csw.func == LS_FN_TIMER) {
+        v1 = csw.val1;
+        v2 = csw.val2;
+      }
+      else if (csw.func == LS_FN_STAY) {
         switchesConversionTable->exportValue(csw.val1, v1);
         v2 = csw.val2;
         v3 = csw.val3;
@@ -1215,18 +1222,19 @@ class LogicalSwitchField: public TransformedField {
         sourcesConversionTable->exportValue(csw.val1, v1);
         sourcesConversionTable->exportValue(csw.val2, v2);
       }
-      else {
-        if ((csw.func >= LS_FN_VPOS && csw.func <= LS_FN_ANEG) || (csw.func >= LS_FN_EQUAL && csw.func!=LS_FN_TIMER))
-          sourcesConversionTable->exportValue(csw.val1, v1);
-        else
-          v1 = csw.val1;
+      else if (csw.func != LS_FN_OFF) {
+        sourcesConversionTable->exportValue(csw.val1, v1);
         v2 = csw.val2;
       }
     }
 
     virtual void afterImport()
     {
-      if (csw.func == LS_FN_STAY) {
+      if (csw.func == LS_FN_TIMER) {
+        csw.val1 = v1;
+        csw.val2 = v2;
+      }
+      else if (csw.func == LS_FN_STAY) {
         switchesConversionTable->importValue(v1, csw.val1);
         csw.val2 = v2;
         csw.val3 = v3;
@@ -1236,14 +1244,11 @@ class LogicalSwitchField: public TransformedField {
         switchesConversionTable->importValue(v2, csw.val2);
       }
       else if (csw.func >= LS_FN_EQUAL && csw.func <= LS_FN_ELESS) {
-        sourcesConversionTable->importValue(v1, csw.val1);
-        sourcesConversionTable->importValue(v2, csw.val2);
+        sourcesConversionTable->importValue((uint8_t)v1, csw.val1);
+        sourcesConversionTable->importValue((uint8_t)v2, csw.val2);
       }
-      else {
-        if ((csw.func >= LS_FN_VPOS && csw.func <= LS_FN_ANEG) || (csw.func >= LS_FN_EQUAL && csw.func!=LS_FN_TIMER))
-          sourcesConversionTable->importValue(v1, csw.val1);
-        else
-          csw.val1 = v1;
+      else if (csw.func != LS_FN_OFF) {
+        sourcesConversionTable->importValue((uint8_t)v1, csw.val1);
         csw.val2 = v2;
       }
     }
