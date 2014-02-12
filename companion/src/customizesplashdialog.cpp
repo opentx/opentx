@@ -15,6 +15,7 @@ Side::Side(){
   saveButton = 0;
   saveToFileName = new QString("");
   source = new Source(UNDEFINED);
+  format = new LCDFormat(LCDTARANIS);
 }
 
 void Side::copyImage( Side side )
@@ -36,14 +37,17 @@ bool Side::displayImage( QString fileName, Source pictSource )
       return false;
     else
       image = flash.getSplash();
+      *format = flash.getSplashWidth()==WIDTH_TARANIS ? LCDTARANIS : LCD9X;
   }
   else {
    image.load(fileName);
+   if (pictSource== PICT)
+     *format = image.width()>WIDTH_9X ? LCDTARANIS : LCD9X;
   }
   if (image.isNull()) {
     return false;
   }
-  if (imageLabel->width()==424) {
+  if (*format==LCDTARANIS) {
     image=image.convertToFormat(QImage::Format_RGB32);
     QRgb col;
     int gray;
@@ -58,9 +62,14 @@ bool Side::displayImage( QString fileName, Source pictSource )
     }      
     imageLabel->setPixmap(QPixmap::fromImage(image.scaled(imageLabel->width()/2, imageLabel->height()/2)));
   }
-  else {
+  else
     imageLabel->setPixmap(QPixmap::fromImage(image.scaled(imageLabel->width()/2, imageLabel->height()/2).convertToFormat(QImage::Format_Mono)));
-  }
+  
+  if (*format == LCD9X)
+      imageLabel->setFixedSize(WIDTH_9X*2, HEIGHT_9X*2);
+  else
+      imageLabel->setFixedSize(WIDTH_TARANIS*2, HEIGHT_TARANIS*2);
+  
   switch (pictSource){
     case FW:
          fileNameEdit->setText(QObject::tr("FW: %1").arg(fileName));
