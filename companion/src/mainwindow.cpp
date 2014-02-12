@@ -1583,8 +1583,7 @@ void MainWindow::updateMenus()
     burnToAct->setEnabled(hasMdiChild);
     separatorAct->setVisible(hasMdiChild);
     
-    bool hasSelection = (activeMdiChild() &&
-                         activeMdiChild()->hasSelection());
+    bool hasSelection = (activeMdiChild() && activeMdiChild()->hasSelection());
     cutAct->setEnabled(hasSelection);
     copyAct->setEnabled(hasSelection);
     simulateAct->setEnabled(hasSelection);
@@ -1593,6 +1592,9 @@ void MainWindow::updateMenus()
     compareAct->setEnabled(activeMdiChild());
     updateRecentFileActions();
     updateProfilesActions();
+    updateLanguageActions();
+    updateIconSizeActions();
+    updateIconThemeActions();
 
     QSettings settings;
     setWindowTitle(tr("OpenTX Companion - FW: %1 - Profile: %2").arg(GetCurrentFirmware()->name).arg(settings.value("profileId").toString()));
@@ -1766,9 +1768,13 @@ void MainWindow::createActions()
     }
     updateRecentFileActions();
 
+    QActionGroup *profilesAlignmentGroup = new QActionGroup(this);
+
     for (int i=0; i<MAX_PROFILES; i++) {
       profileActs[i] = new QAction(this);
       profileActs[i]->setVisible(false);
+      profileActs[i]->setCheckable(true);
+      profilesAlignmentGroup->addAction(profileActs[i]);
       connect(profileActs[i], SIGNAL(triggered()), this, SLOT(loadProfile()));
     }
     updateProfilesActions();
@@ -1776,86 +1782,138 @@ void MainWindow::createActions()
     createProfileAct->setStatusTip(tr("Create a new Radio Setting Profile"));
     connect(createProfileAct, SIGNAL(triggered()), this, SLOT(createProfile()));
 
+    QActionGroup *themeAlignmentGroup = new QActionGroup(this);
+
     classicThemeAct = new QAction(tr("Classical"), this);
+    classicThemeAct->setCheckable(true);
     classicThemeAct->setStatusTip(tr("The classical Companion icon theme"));
+    themeAlignmentGroup->addAction(classicThemeAct);
     connect(classicThemeAct, SIGNAL(triggered()), this, SLOT(setClassicTheme()));
+
     newThemeAct = new QAction(tr("New"), this);
+    newThemeAct->setCheckable(true);
     newThemeAct->setStatusTip(tr("The Companion 2.0 colored icon theme"));
+    themeAlignmentGroup->addAction(newThemeAct);
     connect(newThemeAct, SIGNAL(triggered()), this, SLOT(setNewTheme()));
+
     monoThemeAct = new QAction("Monochrome",this);
+    monoThemeAct->setCheckable(true);
     monoThemeAct->setStatusTip(tr("A monochrome black icon theme"));
+    themeAlignmentGroup->addAction(monoThemeAct);
     connect(monoThemeAct, SIGNAL(triggered()), this, SLOT(setMonochromeTheme()));
+
     monoWhiteThemeAct = new QAction("MonoWhite",this);
+    monoWhiteThemeAct->setCheckable(true);
     monoWhiteThemeAct->setStatusTip(tr("A monochrome white icon theme"));
+    themeAlignmentGroup->addAction(monoWhiteThemeAct);
     connect(monoWhiteThemeAct, SIGNAL(triggered()), this, SLOT(setMonoWhiteTheme()));
+
     monoBlueThemeAct = new QAction("MonoBlue",this);
+    monoBlueThemeAct->setCheckable(true);
     monoBlueThemeAct->setStatusTip(tr("A monochrome blue icon theme"));
+    themeAlignmentGroup->addAction(monoBlueThemeAct);
     connect(monoBlueThemeAct, SIGNAL(triggered()), this, SLOT(setMonoBlueTheme()));
+
+    QActionGroup *iconAlignmentGroup = new QActionGroup(this);
 
     smallIconAct = new QAction(tr("Small"),this);
     smallIconAct->setStatusTip(tr("Use small toolbar icons"));
+    smallIconAct->setCheckable(true);
+    iconAlignmentGroup->addAction(smallIconAct);
     connect(smallIconAct, SIGNAL(triggered()), this, SLOT(setSmallIconThemeSize()));
+
     normalIconAct = new QAction(this);
     normalIconAct->setStatusTip(tr("Use normal size toolbar icons"));
     normalIconAct->setText(tr("Normal"));
+    normalIconAct->setCheckable(true);
+    iconAlignmentGroup->addAction(normalIconAct);
     connect(normalIconAct, SIGNAL(triggered()), this, SLOT(setNormalIconThemeSize()));
+
     bigIconAct = new QAction(this);
     bigIconAct->setStatusTip(tr("Use big toolbar icons"));
     bigIconAct->setText(tr("Big"));
+    bigIconAct->setCheckable(true);
+    iconAlignmentGroup->addAction(bigIconAct);
     connect(bigIconAct, SIGNAL(triggered()), this, SLOT(setBigIconThemeSize()));
+
     hugeIconAct = new QAction(this);    
     hugeIconAct->setStatusTip(tr("Use huge toolbar icons"));
     hugeIconAct->setText(tr("Huge"));   
+    hugeIconAct->setCheckable(true);
+    iconAlignmentGroup->addAction(hugeIconAct);
     connect(hugeIconAct, SIGNAL(triggered()), this, SLOT(setHugeIconThemeSize()));
+
+    QActionGroup *languageAlignmentGroup = new QActionGroup(this);
 
     defaultLanguageAct = new QAction(tr("System default language"),this);
     defaultLanguageAct->setStatusTip(tr("Use system default language in menus"));
+    defaultLanguageAct->setCheckable(true);
+    languageAlignmentGroup->addAction(defaultLanguageAct);
     connect(defaultLanguageAct, SIGNAL(triggered()), this, SLOT(setDefaultLanguage()));
 
     czechLanguageAct = new QAction(tr("Czech"),this);
     czechLanguageAct->setStatusTip(tr("Use Czech in menus"));
+    czechLanguageAct->setCheckable(true);
+    languageAlignmentGroup->addAction(czechLanguageAct);
     connect(czechLanguageAct, SIGNAL(triggered()), this, SLOT(setCZLanguage()));
 
     germanLanguageAct = new QAction(tr("German"),this);
     germanLanguageAct->setStatusTip(tr("Use German in menus"));
+    germanLanguageAct->setCheckable(true);
+    languageAlignmentGroup->addAction(germanLanguageAct);
     connect(germanLanguageAct, SIGNAL(triggered()), this, SLOT(setDELanguage()));
 
     englishLanguageAct = new QAction(tr("English"),this);
     englishLanguageAct->setStatusTip(tr("Use English in menus"));
+    englishLanguageAct->setCheckable(true);
+    languageAlignmentGroup->addAction(englishLanguageAct);
     connect(englishLanguageAct, SIGNAL(triggered()), this, SLOT(setENLanguage()));
 
     frenchLanguageAct = new QAction(tr("French"),this);
     frenchLanguageAct->setStatusTip(tr("Use French in menus"));
+    frenchLanguageAct->setCheckable(true);
+    languageAlignmentGroup->addAction(frenchLanguageAct);
     connect(frenchLanguageAct, SIGNAL(triggered()), this, SLOT(setFRLanguage()));
 
     italianLanguageAct = new QAction(tr("Italian"),this);
     italianLanguageAct->setStatusTip(tr("Use Italian in menus"));
+    italianLanguageAct->setCheckable(true);
+    languageAlignmentGroup->addAction(italianLanguageAct);
     connect(italianLanguageAct, SIGNAL(triggered()), this, SLOT(setITLanguage()));
 
     hebrewLanguageAct = new QAction(tr("Hebrew"),this);
     hebrewLanguageAct->setStatusTip(tr("Use Hebrew in menus"));
+    hebrewLanguageAct->setCheckable(true);
+    languageAlignmentGroup->addAction(hebrewLanguageAct);
     connect(hebrewLanguageAct, SIGNAL(triggered()), this, SLOT(setHELanguage()));
 
     polishLanguageAct = new QAction(tr("Polish"),this);
     polishLanguageAct->setStatusTip(tr("Use Polish in menus"));
+    polishLanguageAct->setCheckable(true);
+    languageAlignmentGroup->addAction(polishLanguageAct);
     connect(polishLanguageAct, SIGNAL(triggered()), this, SLOT(setPLLanguage()));
 
     portugueseLanguageAct = new QAction(tr("Portuguese"),this);
     portugueseLanguageAct->setStatusTip(tr("Use Portuguese in menus"));
+    portugueseLanguageAct->setCheckable(true);
+    languageAlignmentGroup->addAction(portugueseLanguageAct);
     connect(portugueseLanguageAct, SIGNAL(triggered()), this, SLOT(setPTLanguage()));
 
     swedishLanguageAct = new QAction(tr("Swedish"),this);
     swedishLanguageAct->setStatusTip(tr("Use Swedish in menus"));
+    swedishLanguageAct->setCheckable(true);
+    languageAlignmentGroup->addAction(swedishLanguageAct);
     connect(swedishLanguageAct, SIGNAL(triggered()), this, SLOT(setSELanguage()));
 
     russianLanguageAct = new QAction(tr("Russian"),this);
     russianLanguageAct->setStatusTip(tr("Use Russian in menus"));
+    russianLanguageAct->setCheckable(true);
+    languageAlignmentGroup->addAction(russianLanguageAct);
     connect(russianLanguageAct, SIGNAL(triggered()), this, SLOT(setRULanguage()));
 
     openDocumentURLAct = new QAction(tr("Manuals and other Documents"),this);
     openDocumentURLAct->setStatusTip(tr("Open the OpenTX document page in a web browser"));
     connect(openDocumentURLAct, SIGNAL(triggered()), this, SLOT(openDocumentURL()));
-
 }
 
 void MainWindow::createMenus()
@@ -1904,6 +1962,8 @@ void MainWindow::createMenus()
       languageMenu->addAction(portugueseLanguageAct);
       languageMenu->addAction(swedishLanguageAct);
       languageMenu->addAction(russianLanguageAct);
+
+
     settingsMenu->addMenu(themeMenu);
       themeMenu->addAction(classicThemeAct);
       themeMenu->addAction(newThemeAct);
@@ -2113,36 +2173,86 @@ void MainWindow::updateRecentFileActions()
     }
     for ( j = numRecentFiles; j < MaxRecentFiles; ++j)
       recentFileActs[j]->setVisible(false);
- 
-    // separatorAct->setVisible(numRecentFiles > 0);
+}
+
+void MainWindow::updateIconSizeActions()
+{
+  QSettings settings;
+  int size = settings.value("icon_size","0").toInt();
+  switch (size){
+    case 0:  smallIconAct->setChecked(true);  break;
+    case 1:  normalIconAct->setChecked(true); break;
+    case 2:  bigIconAct->setChecked(true);    break;
+    case 3:  hugeIconAct->setChecked(true);   break;
+  }
+}
+
+void MainWindow::updateLanguageActions()
+{
+  QSettings settings;
+  QString langId = settings.value("locale","").toString();
+
+  if (langId=="") 
+    defaultLanguageAct->setChecked(true);
+  else if (langId=="cs_CZ") 
+    czechLanguageAct->setChecked(true);
+  else if (langId=="de_DE") 
+    germanLanguageAct->setChecked(true);
+  else if (langId=="en") 
+    englishLanguageAct->setChecked(true);
+  else if (langId=="fr_FR") 
+    frenchLanguageAct->setChecked(true);
+  else if (langId=="it_IT") 
+    italianLanguageAct->setChecked(true);
+  else if (langId=="he_IL") 
+    hebrewLanguageAct->setChecked(true);
+  else if (langId=="pl_PL") 
+    polishLanguageAct->setChecked(true);
+  else if (langId=="pt_PT") 
+    portugueseLanguageAct->setChecked(true);
+  else if (langId=="ru_RU") 
+    russianLanguageAct->setChecked(true);
+  else if (langId=="sv_SE") 
+    swedishLanguageAct->setChecked(true);
+}
+
+void MainWindow::updateIconThemeActions()
+{
+  QSettings settings;
+  int size = settings.value("theme","1").toInt();
+  switch (size){
+    case 0:  classicThemeAct->setChecked(true);   break;
+    case 1:  newThemeAct->setChecked(true);       break;
+    case 2:  monoWhiteThemeAct->setChecked(true); break;
+    case 3:  monoThemeAct->setChecked(true);      break;
+    case 4:  monoBlueThemeAct->setChecked(true);  break;
+  }
 }
 
 void MainWindow::updateProfilesActions()
- {
-    int i;
-    QSettings settings;
-    int activeProfile = settings.value("profileId").toInt();
+{
+  int i;
+  QSettings settings;
+  int activeProfile = settings.value("profileId").toInt();
 
-    settings.beginGroup("Profiles");
-    for (i=0; i<MAX_PROFILES; i++) {
-      QString profile=QString("profile%1").arg(i+1);
-      settings.beginGroup(profile);
-      QString name=settings.value("Name","").toString();
-      if (!name.isEmpty()) {
-        QString text = tr("&%1 %2").arg(i + 1).arg(name);
-        profileActs[i]->setText(text);
-        profileActs[i]->setData(i+1);
-        profileActs[i]->setVisible(true);
-        if ((i+1) == activeProfile)
-          profileActs[i]->setIcon(CompanionIcon("arrow-right.png"));
-        else
-          profileActs[i]->setIcon(CompanionIcon(""));
-
-      } else {
-        profileActs[i]->setVisible(false);
-      }
-      settings.endGroup();
+  settings.beginGroup("Profiles");
+  for (i=0; i<MAX_PROFILES; i++) {
+    QString profile=QString("profile%1").arg(i+1);
+    settings.beginGroup(profile);
+    QString name=settings.value("Name","").toString();
+    if (!name.isEmpty()) {
+      QString text = tr("&%1 %2").arg(i + 1).arg(name);
+      profileActs[i]->setText(text);
+      profileActs[i]->setData(i+1);
+      profileActs[i]->setVisible(true);
+      if ((i+1) == activeProfile)
+        profileActs[i]->setChecked(true);
+    } 
+    else {
+      profileActs[i]->setVisible(false);
     }
+    settings.endGroup();
+  }
 }
 
 void MainWindow::createProfile()
