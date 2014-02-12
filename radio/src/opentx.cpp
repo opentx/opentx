@@ -4556,13 +4556,11 @@ void perMain()
     //decide on usb mode
     //if switch SA is UP then joystick
     //else mass storage
-    if ( switchState(SW_SA0) ) {
+    if ( switchState(KEY_EXIT) ) {
       usbMode = um_Joystick;
     }
     else {
       usbMode = um_MassStorage ;
-    }
-    if ( usbMode == um_MassStorage ) {
       opentxClose();
     }
     usbStart();
