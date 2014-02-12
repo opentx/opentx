@@ -521,7 +521,7 @@
 #define TR_TXnRX               "Tx:\0Rx:"
 #define OFS_RX                 4
 #define TR_ACCEL               "Acc:"
-#define TR_NODATA              CENTER "NO DATA"
+#define TR_NODATA              CENTER "BRAK DANYCH"
 #define TR_TOTTM1TM2THRTHP     "\037\146TOT\036TM1\037\146TM2\036THR\037\146TH%"
 #define TR_TMR1LATMAXUS        "Tmr1Lat max\037\124us"
 #define STR_US                 (STR_TMR1LATMAXUS+12)
@@ -529,10 +529,10 @@
 #define TR_TMR1JITTERUS        "Tmr1 Jitter\037\124us"
 
 #if defined(CPUARM)
-  #define TR_TMIXMAXMS         "Tmix max"
+  #define TR_TMIXMAXMS         "Tmix maks"
   #define TR_FREESTACKMINB     "Wolny stos"
 #else
-  #define TR_TMIXMAXMS         "Tmix max\037\124ms"
+  #define TR_TMIXMAXMS         "Tmix maks\037\124ms"
   #define TR_FREESTACKMINB     "Wolny stos\037\124b"
 #endif
 

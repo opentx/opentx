@@ -449,7 +449,7 @@ void ConvertModel_215_to_216(ModelData &model)
     else if (cstate == LS_FAMILY_OFS || cstate == LS_FAMILY_COMP || cstate == LS_FAMILY_DIFF) {
       sw.v1 = ConvertSource_215_to_216(sw.v1);
       if (cstate == LS_FAMILY_OFS || cstate == LS_FAMILY_DIFF) {
-        if (sw.v1 >= MIXSRC_FIRST_TELEM) {
+        if ((uint8_t)sw.v1 >= MIXSRC_FIRST_TELEM) {
           switch ((uint8_t)sw.v1) {
             case MIXSRC_FIRST_TELEM + TELEM_TM1-1:
             case MIXSRC_FIRST_TELEM + TELEM_TM2-1:
@@ -492,7 +492,7 @@ void ConvertModel_215_to_216(ModelData &model)
           }
         }
       }
-      if (cstate == LS_FAMILY_COMP) {
+      else if (cstate == LS_FAMILY_COMP) {
         sw.v2 = ConvertSource_215_to_216(sw.v2);
       }
     }
