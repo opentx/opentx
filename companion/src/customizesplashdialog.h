@@ -10,7 +10,13 @@ namespace Ui
   class customizeSplashDialog;
 }
 
+const int WIDTH_TARANIS = 212;
+const int HEIGHT_TARANIS = 64;
+const int WIDTH_9X = 128;
+const int HEIGHT_9X = 64;
+
 enum Source {FW, PICT, PROFILE, UNDEFINED};
+enum LCDFormat {LCD9X, LCDTARANIS};
 
 class Side
 {
@@ -31,6 +37,7 @@ public:
 
 private:
   Source *source;
+  LCDFormat *format;
 };
 
 class customizeSplashDialog : public QDialog

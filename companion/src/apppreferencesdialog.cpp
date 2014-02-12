@@ -2,6 +2,7 @@
 #include "ui_apppreferencesdialog.h"
 #include "mainwindow.h"
 #include "helpers.h"
+#include "flashinterface.h"
 #ifdef JOYSTICKS
 #include "joystick.h"
 #include "joystickdialog.h"
@@ -339,16 +340,26 @@ void appPreferencesDialog::on_removeProfileButton_clicked()
 
 bool appPreferencesDialog::displayImage( QString fileName )
 {
+  QSettings settings;
+
   QImage image(fileName);
   if (image.isNull()) 
-  {
-    QMessageBox::critical(this, tr("Error"), tr("Cannot load %1.").arg(fileName));
     return false;
-  }
 
-  int width=ui->imageLabel->width();
-  ui->imageLabel->setPixmap(QPixmap::fromImage(image.scaled(width, 64)));
-  if (width==212) {
+// This code below just figures out if the width of the latest firmware is 128 or 212. It works , but...
+  QString filePath1 = settings.value("lastFlashDir", "").toString() + "/" + settings.value("firmware", "").toString() + ".bin";
+  QString filePath2 = settings.value("lastFlashDir", "").toString() + "/" + settings.value("firmware", "").toString() + ".hex";
+  QFile file(filePath1);
+  if (!file.exists())
+    filePath1 = filePath2;
+  int width = SPLASH_WIDTH;
+  FlashInterface flash(filePath1);
+  if (flash.hasSplash())
+    width = flash.getSplashWidth(); // Returns SPLASHX9D_HEIGHT if filePath1 does not exist!
+// There must be a cleaner way of finding out the width of the firmware splash!
+
+  ui->imageLabel->setPixmap(QPixmap::fromImage(image.scaled(width, SPLASH_HEIGHT)));
+  if (width==SPLASHX9D_WIDTH) {
     image=image.convertToFormat(QImage::Format_RGB32);
     QRgb col;
     int gray, height = image.height();
@@ -364,6 +375,11 @@ bool appPreferencesDialog::displayImage( QString fileName )
   else {
     ui->imageLabel->setPixmap(QPixmap::fromImage(image.convertToFormat(QImage::Format_Mono)));
   }
+  if (width == SPLASH_WIDTH)
+      ui->imageLabel->setFixedSize(SPLASH_WIDTH, SPLASH_HEIGHT);
+  else
+     ui->imageLabel->setFixedSize(SPLASHX9D_WIDTH, SPLASHX9D_HEIGHT);
+
   return true;
 }
 
