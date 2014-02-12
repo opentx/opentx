@@ -120,7 +120,7 @@ void USBD_USR_DeviceConnected (void)
 void USBD_USR_DeviceDisconnected (void)
 {
   if ( usbMode == um_MassStorage ) {
-    //reset only in USB mass storage mode
+    //reset system if in USB mass storage mode
     NVIC_SystemReset();
   }
 }

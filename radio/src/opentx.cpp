@@ -4554,8 +4554,8 @@ void perMain()
   static bool usbStarted = false;
   if (!usbStarted && usbPlugged()) {
     //decide on usb mode
-    //if switch SA is UP then joystick
-    //else mass storage
+    //if EXIT key is pressed then go to joystick mode
+    //else goto mass storage mode
     if ( switchState(KEY_EXIT) ) {
       usbMode = um_Joystick;
     }
