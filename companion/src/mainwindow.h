@@ -163,6 +163,10 @@ private:
     void readSettings();
     void updateRecentFileActions();
     void updateProfilesActions();
+    void updateIconSizeActions();
+    void updateLanguageActions();
+    void updateIconThemeActions();
+
     int getFileType(const QString &fullFileName);
     QString FindTaranisPath();
     QString Theme;
