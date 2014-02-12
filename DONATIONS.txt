@@ -96,7 +96,6 @@ Michael Collins
 Michael Manning
 Craig Lorentz
 Jonathan Modellismo - jonathan.it
-Aviomotive - www.aviomotive.com
 André Lasseret
 Felipe Alexandre de Oliveira
 Brian Harris
@@ -316,3 +315,6 @@ Henry Deucker
 Christian Fuchs
 Arold Reinders
 Robert Miller
+Aviomotive - www.aviomotive.com
+Mark Gaskievicz
+Roland Müller

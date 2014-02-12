@@ -63,7 +63,7 @@ QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {
-    friend class preferencesDialog;
+    friend class fwPreferencesDialog;
     friend class MdiChild; // TODO GetAvrdudeArgs could be external to this class
 
     Q_OBJECT
@@ -79,9 +79,10 @@ protected:
 
 public slots:
     void downloadLatestFW(FirmwareInfo *firmware, const QString & firmwareId);
-    void unloadProfile();
     
 private slots:
+    void openDocumentURL();
+
     void setLanguage(QString langString);
     void setDefaultLanguage() {setLanguage("");};
     void setCZLanguage() {setLanguage("cs_CZ");};
@@ -97,9 +98,10 @@ private slots:
 
     void setTheme(int index);
     void setClassicTheme()   {setTheme(0);};
-    void setMonochromeTheme(){setTheme(1);};
+    void setNewTheme()       {setTheme(1);};
     void setMonoWhiteTheme() {setTheme(2);};
-    void setMonoBlueTheme()  {setTheme(3);};
+    void setMonochromeTheme(){setTheme(3);};
+    void setMonoBlueTheme()  {setTheme(4);};
 
     void setIconThemeSize(int index);
     void setSmallIconThemeSize()  {setIconThemeSize(0);};
@@ -143,8 +145,10 @@ private slots:
     void compare();
     void print();
     void loadBackup();
-    void preferences();
+    void appPreferences();
+    void fwPreferences();
     void updateMenus();
+    void createProfile();
     MdiChild *createMdiChild();
     void setActiveSubWindow(QWidget *window);
     QMenu * createRecentFileMenu();
@@ -186,7 +190,6 @@ private:
     QString installer_fileName;
     QString downloadedFW;
     QString downloadedFWFilename;
-    QString ActiveProfileName;
     downloadDialog * downloadDialog_forWait;
 
     bool checkCompanion9x;
@@ -194,7 +197,7 @@ private:
     bool needRename;
     bool showcheckForUpdatesResult;
     int MaxRecentFiles;
-    int ActiveProfile;
+//    int ActiveProfile;
     int currentFWrev;
     int currentFWrev_temp;
     int NewFwRev;
@@ -219,7 +222,8 @@ private:
     QAction *saveAct;
     QAction *saveAsAct;
     QAction *exitAct;
-    QAction *preferencesAct;
+    QAction *appPreferencesAct;
+    QAction *fwPreferencesAct;
     QAction *checkForUpdatesAct;
     QAction *contributorsAct;
     QAction *changelogAct;
@@ -246,7 +250,9 @@ private:
     QAction *logsAct;
     QAction *recentFileActs[MAX_RECENT];
     QAction *profileActs[MAX_PROFILES];
+    QAction *createProfileAct;
     QAction *classicThemeAct;
+    QAction *newThemeAct;
     QAction *monoThemeAct;
     QAction *monoBlueThemeAct;
     QAction *monoWhiteThemeAct;
@@ -265,6 +271,7 @@ private:
     QAction *portugueseLanguageAct;
     QAction *swedishLanguageAct;
     QAction *russianLanguageAct;
+    QAction *openDocumentURLAct;
     QString fwToUpdate;
     QToolButton * profileButton;
 };

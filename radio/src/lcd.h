@@ -83,7 +83,6 @@
 /* no 0x80 here because of "GV"1 which is aligned LEFT */
 /* no 0x10 here because of "MODEL"01 which uses LEADING0 */
 #define BSS             0x20
-#define STRCONDENSED    0x80 /* means that THRm will be displayed as THR */
 #define ZCHAR           0x80
 
 /* lcd outdez flags */
@@ -174,7 +173,7 @@ void putsFlightPhase(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att=0);
 void putsCurveRef(xcoord_t x, uint8_t y, CurveRef &curve, LcdFlags att);
 #endif
 void putsCurve(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att=0);
-void putsTmrMode(xcoord_t x, uint8_t y, int8_t mode, LcdFlags att);
+void putsTimerMode(xcoord_t x, uint8_t y, int8_t mode, LcdFlags att=0);
 void putsTrimMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, LcdFlags att);
 #if defined(ROTARY_ENCODERS)
   void putsRotaryEncoderMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, LcdFlags att);

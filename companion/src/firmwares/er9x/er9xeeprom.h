@@ -154,21 +154,20 @@ PACK(typedef struct t_Er9xMixData {
 }) Er9xMixData;
 
 
-PACK(typedef struct t_Er9xCustomSwData { // Custom Switches data
+PACK(typedef struct t_Er9xLogicalSwitchData { // Custom Switches data
   int8_t  v1; //input
   int8_t  v2; //offset
   uint8_t func:4;
   uint8_t andsw:4;
 
-  operator CustomSwData();
-  t_Er9xCustomSwData() { memset(this, 0, sizeof(t_Er9xCustomSwData)); }
-}) Er9xCustomSwData;
+  operator LogicalSwitchData();
+  t_Er9xLogicalSwitchData() { memset(this, 0, sizeof(t_Er9xLogicalSwitchData)); }
+}) Er9xLogicalSwitchData;
 
 PACK(typedef struct t_Er9xSafetySwData { // Custom Switches data
   int8_t  swtch;
   int8_t  val;
 
-  operator SafetySwData();
   t_Er9xSafetySwData();
 }) Er9xSafetySwData;
 
@@ -242,7 +241,7 @@ PACK(typedef struct t_Er9xModelData {
   int8_t    trim[4];
   int8_t    curves5[ER9X_MAX_CURVE5][5];
   int8_t    curves9[ER9X_MAX_CURVE9][9];
-  Er9xCustomSwData   customSw[ER9X_NUM_CSW];
+  Er9xLogicalSwitchData   customSw[ER9X_NUM_CSW];
   uint8_t   frSkyVoltThreshold ;
   int8_t   tmrModeB;
   uint8_t   numVoice;

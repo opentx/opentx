@@ -11,8 +11,10 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer):
 {
   ui->setupUi(this);
 
+  lock = true;
+
   // Mode
-  populateTimerSwitchCB(ui->mode, timer.mode);
+  populateSwitchCB(ui->mode, timer.mode, POPULATE_TIMER_MODES);
 
   if (!GetEepromInterface()->getCapability(PermTimers)) {
     ui->persistent->hide();
@@ -23,6 +25,8 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer):
   ui->countdownBeep->addItem(tr("Beeps"));
   if (IS_ARM(GetEepromInterface()->getBoard()) || IS_2560(GetEepromInterface()->getBoard()))
     ui->countdownBeep->addItem(tr("Countdown"));
+
+  lock = false;
 }
 
 TimerPanel::~TimerPanel()
@@ -63,8 +67,10 @@ void TimerPanel::on_value_editingFinished()
 
 void TimerPanel::on_mode_currentIndexChanged(int index)
 {
-  timer.mode = TimerMode(ui->mode->itemData(index).toInt());
-  emit modified();
+  if (!lock) {
+    timer.mode = RawSwitch(ui->mode->itemData(index).toInt());
+    emit modified();
+  }
 }
 
 void TimerPanel::on_persistent_toggled(bool checked)
@@ -123,20 +129,20 @@ ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module
 
   if (GetEepromInterface()->getCapability(HasFailsafe)) {
     for (int i=0; i<16; i++) {
-      QSlider * slider = new QSlider(this);
-      slider->setMinimumSize(QSize(30, 50));
-      slider->setRange(-100, 100);
-      QSpinBox * spinbox = new QSpinBox(this);
+      QLabel * label = new QLabel(this);
+      label->setText(QString::number(i+1));
+      QDoubleSpinBox * spinbox = new QDoubleSpinBox(this);
       spinbox->setMinimumSize(QSize(20, 0));
       spinbox->setRange(-100, 100);
-      slider->setProperty("index", i);
+      spinbox->setSingleStep(0.1);
+      spinbox->setDecimals(1);
+      spinbox->setValue(((double)module.failsafeChannels[i]*100)/1024);
+      label->setProperty("index", i);
       spinbox->setProperty("index", i);
-      failsafeSliders << slider;
       failsafeSpins << spinbox;
-      ui->failsafesLayout->addWidget(slider, 2*(i/8), i%8, Qt::AlignHCenter);
+      ui->failsafesLayout->addWidget(label, 2*(i/8), i%8, Qt::AlignHCenter);
       ui->failsafesLayout->addWidget(spinbox, 1+2*(i/8), i%8, Qt::AlignHCenter);
-      connect(slider, SIGNAL(valueChanged(int)), this, SLOT(onFailsafeChannelChanged(int)));
-      connect(slider, SIGNAL(valueChanged(int)), this, SLOT(onFailsafeChannelChanged(int)));
+      connect(spinbox, SIGNAL(valueChanged(double)), this, SLOT(onFailsafeSpinChanged(double)));
     }
   }
 
@@ -217,10 +223,6 @@ void ModulePanel::update()
     ui->failsafeMode->setVisible(mask & MASK_FAILSAFES);
     ui->failsafeMode->setCurrentIndex(module.failsafeMode);
     ui->failsafesFrame->setEnabled(module.failsafeMode == 1);
-    for (int i=0; i<failsafeSliders.size(); i++) {
-      failsafeSliders[i]->setValue(module.failsafeChannels[i]);
-      failsafeSpins[i]->setValue(module.failsafeChannels[i]);
-    }
   }
   else {
     mask = 0;
@@ -302,16 +304,12 @@ void ModulePanel::on_failsafeMode_currentIndexChanged(int value)
   }
 }
 
-void ModulePanel::onFailsafeChannelChanged(int value)
+void ModulePanel::onFailsafeSpinChanged(double value)
 {
   if (!lock) {
-    lock = true;
     int index = sender()->property("index").toInt();
-    module.failsafeChannels[index] = value;
-    failsafeSpins[index]->setValue(value);
-    failsafeSliders[index]->setValue(value);
+    module.failsafeChannels[index] = (value*1024)/100;
     emit modified();
-    lock = false;
   }
 }
 
@@ -394,6 +392,10 @@ Setup::Setup(QWidget *parent, ModelData & model):
     ui->modelImage_label->hide();
     ui->imagePreview->hide();
   }
+  
+  if (!GetEepromInterface()->getCapability(HasDisplayText)) {
+    ui->displayText->hide();
+  }
 
   // Beep Center checkboxes
   int analogs = 4 + GetEepromInterface()->getCapability(Pots);
@@ -405,14 +407,12 @@ Setup::Setup(QWidget *parent, ModelData & model):
     connect(checkbox, SIGNAL(toggled(bool)), this, SLOT(onBeepCenterToggled(bool)));
     centerBeepCheckboxes << checkbox;
   }
-  ui->switchesStartupLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum), 0, analogs+GetEepromInterface()->getCapability(RotaryEncoders));
 
   // Startup switches warnings
-  ui->switchesStartupWarning->setProperty("index", 0);
-  connect(ui->switchesStartupWarning, SIGNAL(currentIndexChanged(int)), this, SLOT(startupSwitchEdited(int)));
   for (int i=0; i<GetEepromInterface()->getCapability(Switches)-1; i++) {
-    QLabel * label = new QLabel();
-    QSlider * slider = new QSlider();
+    QLabel * label = new QLabel(this);
+    QSlider * slider = new QSlider(this);
+    QCheckBox * cb = new QCheckBox(this);
     slider->setProperty("index", i+1);
     slider->setOrientation(Qt::Vertical);
     slider->setMinimum(0);
@@ -431,13 +431,35 @@ Setup::Setup(QWidget *parent, ModelData & model):
       label->setText(switches9X[i]);
       slider->setMaximum(i==0 ? 2 : 1);
     }
+    cb->setProperty("index", i+1);
     ui->switchesStartupLayout->addWidget(label, 0, i+1);
+    ui->switchesStartupLayout->setAlignment(label, Qt::AlignCenter);
     ui->switchesStartupLayout->addWidget(slider, 1, i+1);
+    ui->switchesStartupLayout->setAlignment(slider, Qt::AlignCenter);
+    ui->switchesStartupLayout->addWidget(cb, 2, i+1);
+    ui->switchesStartupLayout->setAlignment(cb, Qt::AlignCenter);
     connect(slider, SIGNAL(valueChanged(int)), this, SLOT(startupSwitchEdited(int)));
+    connect(cb, SIGNAL(toggled(bool)), this, SLOT(startupSwitchToggled(bool)));
     startupSwitchesSliders << slider;
+    startupSwitchesCheckboxes << cb;
   }
   ui->switchesStartupLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum), 0, GetEepromInterface()->getCapability(Switches));
 
+  // Pot warnings
+  if(IS_TARANIS(GetEepromInterface()->getBoard())) {
+    for (int i=0; i<GetEepromInterface()->getCapability(Pots); i++) {
+      QCheckBox * cb = new QCheckBox(this);
+      cb->setProperty("index", i+1);
+      cb->setText(AnalogString(i+4));
+      ui->potWarningLayout->addWidget(cb, 0, i+1);
+      connect(cb, SIGNAL(toggled(bool)), this, SLOT(potWarningToggled(bool)));
+      potWarningCheckboxes << cb;
+    }
+  }
+  else {
+    ui->label_potWarning->hide();
+    ui->potWarningMode->hide();
+  }
   lock = false;
 }
 
@@ -535,9 +557,14 @@ void Setup::update()
   ui->throttleTrim->setChecked(model.thrTrim);
   ui->extendedLimits->setChecked(model.extendedLimits);
   ui->extendedTrims->setChecked(model.extendedTrims);
+  ui->displayText->setChecked(model.displayText);
 
   updateBeepCenter();
   updateStartupSwitches();
+  
+  if(IS_TARANIS(GetEepromInterface()->getBoard())) {
+    updatePotWarnings();
+  }
 
   for (int i=0; i<C9X_MAX_TIMERS; i++)
     timers[i]->update();
@@ -559,13 +586,13 @@ void Setup::updateStartupSwitches()
   lock = true;
 
   unsigned int switchStates = model.switchWarningStates;
-  bool enabled = !(switchStates & 0x01);
-  ui->switchesStartupWarning->setCurrentIndex(switchStates & 0x01);
-  switchStates >>= 1;
 
   for (int i=0; i<GetEepromInterface()->getCapability(Switches)-1; i++) {
     QSlider * slider = startupSwitchesSliders[i];
+    QCheckBox * cb = startupSwitchesCheckboxes[i];
+    bool enabled = !(model.nSwToWarn & (1 << i));
     slider->setEnabled(enabled);
+    cb->setChecked(enabled);
     if (IS_TARANIS(GetEepromInterface()->getBoard())) {
       slider->setValue(i==5 ? (switchStates & 0x3)/2 : switchStates & 0x3);
       switchStates >>= 2;
@@ -586,41 +613,102 @@ void Setup::startupSwitchEdited(int value)
     unsigned int mask;
     int index = sender()->property("index").toInt();
 
-    if (index == 0) {
-      mask = 0x01;
-    }
-    else if (IS_TARANIS(GetEepromInterface()->getBoard())) {
-      if (index == 6)
-        mask = 0x02 << (index*2 - 1);
+    if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+      if (index == 6) {
+        shift = (index - 1) * 2;
+        mask = 0x02 << shift;
+        shift++;
+      }
       else {
-        shift = index*2 - 1;
+        shift = (index - 1) * 2;
         mask = 0x03 << shift;
       }
     }
     else {
       if (index == 1) {
-        shift = 1;
-        mask = 0x03 << shift;
+        mask = 0x03;
       }
       else {
-        mask = 0x01 << (index+1);
+        shift = index;
+        mask = 0x01 << shift;
       }
     }
 
     model.switchWarningStates &= ~mask;
 
     if (value) {
-      if (shift == 0) {
-        model.switchWarningStates |= mask;
-      }
-      else {
-        model.switchWarningStates |= (value << shift);
-      }
+      model.switchWarningStates |= (value << shift);
     }
 
     updateStartupSwitches();
     emit modified();
   }
+}
+
+void Setup::startupSwitchToggled(bool checked)
+{
+  if (!lock) {
+    int index = sender()->property("index").toInt()-1;
+  
+    if (checked)
+      model.nSwToWarn &= ~(1 << index);
+    else
+      model.nSwToWarn |= (1 << index);
+
+    updateStartupSwitches();
+    emit modified();
+  }
+}
+
+void Setup::updatePotWarnings()
+{
+  lock = true;
+  int mode = model.nPotsToWarn >> 6;
+  ui->potWarningMode->setCurrentIndex(mode);
+
+  if (mode == 0)
+    model.nPotsToWarn = 0x3F;
+
+  for (int i=0; i<potWarningCheckboxes.size(); i++) {
+    bool enabled = !(model.nPotsToWarn & (1 << i));
+
+    potWarningCheckboxes[i]->setChecked(enabled);
+    potWarningCheckboxes[i]->setDisabled(mode == 0);
+  }
+  lock = false;
+}
+
+void Setup::potWarningToggled(bool checked)
+{
+  if (!lock) {
+    int index = sender()->property("index").toInt()-1;
+
+    if(checked)
+      model.nPotsToWarn &= ~(1 << index);
+    else
+      model.nPotsToWarn |= (1 << index);
+
+    updatePotWarnings();
+    emit modified();
+  }
+}
+
+void Setup::on_potWarningMode_currentIndexChanged(int index)
+{
+  if (!lock) {
+    int mask = 0xC0;
+    model.nPotsToWarn = model.nPotsToWarn & ~mask;
+    model.nPotsToWarn = model.nPotsToWarn | ((index << 6) & mask);
+
+    updatePotWarnings();
+    emit modified();
+  }
+}
+
+void Setup::on_displayText_toggled(bool checked)
+{
+  model.displayText = checked;
+  emit modified();
 }
 
 void Setup::on_throttleTrim_toggled(bool checked)

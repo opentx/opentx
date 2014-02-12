@@ -352,7 +352,7 @@ void TelemetryCustomScreen::updateBar(int line)
     RawSource source = RawSource(SOURCE_TYPE_TELEMETRY, index-1, &model);
     RawSourceRange range = source.getRange(true);
     int max = round((range.max - range.min) / range.step);
-    if (255-screen.body.bars[line].barMax > max)
+    if (int(255-screen.body.bars[line].barMax) > max)
       screen.body.bars[line].barMax = 255 - max;
     minSB[line]->setEnabled(true);
     minSB[line]->setDecimals(range.decimals);

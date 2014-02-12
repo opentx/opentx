@@ -120,7 +120,7 @@ void varioWakeup()
   static tmr10ms_t s_varioTmr;
   tmr10ms_t tmr10ms = get_tmr10ms();
   
-  if (isFunctionActive(FUNC_VARIO)) {
+  if (isFunctionActive(FUNCTION_VARIO)) {
 #if defined(AUDIO)
     cli();
     int16_t verticalSpeed = frskyData.hub.varioSpeed;
@@ -164,14 +164,10 @@ void varioWakeup()
 
     if (verticalSpeed < 0 || (int16_t)(s_varioTmr-tmr10ms) < 0) {
 #if defined(CPUARM)
-      uint16_t SoundVarioBeepTime;
-      uint16_t SoundVarioBeepFreq;
+      int SoundVarioBeepTime;
+      int SoundVarioBeepFreq;
       if (verticalSpeed > 0) {
-        if (verticalSpeed > 1276) {
-          SoundVarioBeepTime=5;
-        } else {
-          SoundVarioBeepTime = 320 - (verticalSpeed >> 2);
-        }
+        SoundVarioBeepTime = min(5, 320 - (verticalSpeed >> 2));
         SoundVarioBeepFreq = 1000 + verticalSpeed;
       }
       else {

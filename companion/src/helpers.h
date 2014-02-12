@@ -4,7 +4,7 @@
 #include <QtGui>
 #include "eeprominterface.h"
 
-#define TMR_NUM_OPTION  (TMR_VAROFS+2*9+2*GetEepromInterface()->getCapability(CustomSwitches)-1)
+#define TMR_NUM_OPTION  (TMR_VAROFS+2*9+2*GetEepromInterface()->getCapability(LogicalSwitches)-1)
 
 //convert from mode 1 to mode generalSettings.stickMode
 //NOTICE!  =>  1..4 -> 1..4
@@ -82,19 +82,13 @@ class CurveGroup : public QObject {
 };
 
 #define POPULATE_ONOFF        0x01
-#define POPULATE_MSWITCHES    0x02
-#define POPULATE_AND_SWITCHES 0x04
-void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr=0, UseContext context=DefaultContext);
-void populateFuncCB(QComboBox *b, unsigned int value);
-void populateGVmodeCB(QComboBox *b, unsigned int value);
-QString FuncParam(uint function, int value, QString paramT="",unsigned int adjustmode=0);
-void populateFuncParamCB(QComboBox *b, const ModelData & model, uint function, unsigned int value, unsigned int adjustmode=0);
-void populateFuncParamArmTCB(QComboBox *b, ModelData * g_model, char * value, QStringList & paramsList);
+#define POPULATE_TIMER_MODES  0x02
+void populateAndSwitchCB(QComboBox *b, const RawSwitch & value);
+void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr=0);
+
 void populatePhasesCB(QComboBox *b, int value);
 void populateGvarUseCB(QComboBox *b, unsigned int phase);
 void populateCustomScreenFieldCB(QComboBox *b, unsigned int value, bool last, int hubproto);
-void populateTimerSwitchCB(QComboBox *b, int value);
-QString getCustomSwitchStr(CustomSwData * customSw, const ModelData & model);
 QString getProtocolStr(const int proto);
 QString getPhasesStr(unsigned int phases, ModelData & model);
 
@@ -113,13 +107,8 @@ QString getPhasesStr(unsigned int phases, ModelData & model);
 void populateGVCB(QComboBox *b, int value);
 void populateSourceCB(QComboBox *b, const RawSource &source, const ModelData & model, unsigned int flags);
 void populateCSWCB(QComboBox *b, int value);
-QString getTimerMode(int tm);
-QString getTimerModeB(int tm);
 QString getPhaseName(int val, char * phasename=NULL);
 QString getInputStr(ModelData & model, int index);
-QString getCSWFunc(int val);
-QString getFuncName(unsigned int val);
-QString getRepeatString(unsigned int val);
 QString getSignedStr(int value);
 QString getGVarString(int16_t val, bool sign=false);
 QString image2qstring(QImage image);
@@ -139,7 +128,6 @@ QString getFrSkyProtocol(int protocol);
 QString getFrSkyMeasure(int units);
 QString getFrSkySrc(int index);
 
-float c9xexpou(float point, float coeff);
 float ValToTim(int value);
 int TimToVal(float value);
 

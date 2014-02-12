@@ -356,7 +356,7 @@ void simulatorDialog::loadParams(RadioData &radioData, const int model_idx)
 
     beepVal = 0;
     beepShow = 0;
-    switches=txInterface->getCapability(CustomSwitches);
+    switches=txInterface->getCapability(LogicalSwitches);
     if ( switches < 13) {
       ui->cswitch_13->hide();
       ui->labelCSW_13->hide();

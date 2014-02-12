@@ -228,18 +228,6 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
 #endif
       }
     }
-
-    if (event == EVT_KEY_LONG(KEY_ENTER) && i_max > SWSRC_ON) {
-      s_editMode = !s_editMode;
-      if (newval > SWSRC_ON)
-        newval -= (NUM_SWITCH+1);
-      else if (newval > 0)
-        newval += (NUM_SWITCH+1);
-      else if (newval < SWSRC_OFF)
-        newval += (NUM_SWITCH+1);
-      else if (newval < 0)
-        newval -= (NUM_SWITCH+1);
-    }
   }
 #endif
 
@@ -976,7 +964,7 @@ int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, LcdFlags attr, uint8_t
 {
   lcd_putsColumnLeft(x, y, STR_SWITCH);
   putsSwitches(x,  y, value, attr);
-  if (attr) CHECK_INCDEC_MODELSWITCH(event, value, -NUM_SWITCH, NUM_SWITCH);
+  if (attr) CHECK_INCDEC_MODELSWITCH(event, value, SWSRC_FIRST, SWSRC_LAST);
   return value;
 }
 
@@ -1045,6 +1033,16 @@ int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t m
   return value;
 }
 #endif
+
+void repeatLastCursorMove(uint8_t event)
+{
+  if (CURSOR_MOVED_LEFT(event) || CURSOR_MOVED_RIGHT(event)) {
+    putEvent(event);
+  }
+  else {
+    m_posHorz = 0;
+  }
+}
 
 #if LCD_W >= 212
 #define MENU_X   30
@@ -1221,8 +1219,8 @@ bool isSourceAvailable(int16_t source)
   }
 
   if (source>=MIXSRC_SW1 && source<=MIXSRC_LAST_CSW) {
-    CustomSwData * cs = cswAddress(source-MIXSRC_SW1);
-    return (cs->func != CS_OFF);
+    LogicalSwitchData * cs = cswAddress(source-MIXSRC_SW1);
+    return (cs->func != LS_FUNC_NONE);
   }
 
 #if !defined(GVARS)
@@ -1250,7 +1248,7 @@ bool isInputSourceAvailable(int16_t source)
   return false;
 }
 
-bool isSwitchAvailable(int16_t swtch)
+bool isSwitchAvailableInLogicalSwitches(int16_t swtch)
 {
   if (swtch < 0) {
     if (swtch <= -SWSRC_ON)
@@ -1276,11 +1274,45 @@ bool isSwitchAvailable(int16_t swtch)
   }
 #endif
 
+  return true;
+}
+
+bool isSwitchAvailable(int16_t swtch)
+{
+  if (!isSwitchAvailableInLogicalSwitches(swtch)) {
+    return false;
+  }
+
   if (swtch >= SWSRC_FIRST_CSW && swtch <= SWSRC_LAST_CSW) {
-    CustomSwData * cs = cswAddress(swtch-SWSRC_FIRST_CSW);
-    return (cs->func != CS_OFF);
+    LogicalSwitchData * cs = cswAddress(swtch-SWSRC_FIRST_CSW);
+    return (cs->func != LS_FUNC_NONE);
   }
   
   return true;
+}
+
+// Not available yet, will be needed if we implement the Range function later...
+bool isLogicalSwitchFunctionAvailable(int16_t function)
+{
+  return function != LS_FUNC_RANGE;
+}
+
+bool isAssignableFunctionAvailable(int16_t function)
+{
+  switch (function) {
+
+#if !defined(HAPTIC)
+    case FUNC_HAPTIC:
+      return false;
+#endif
+
+#if !defined(GVARS)
+    case FUNC_ADJUST_GVAR:
+      return false;
+#endif
+
+    default:
+      return true;
+  }
 }
 #endif

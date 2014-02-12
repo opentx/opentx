@@ -72,7 +72,6 @@ const uint8_t modn12x3[4][4]= {
 #define C9X_MAX_POINTS            17
 #define C9X_MAX_GVARS             9
 #define C9X_MAX_ENCODERS          2
-#define NUM_SAFETY_CHNOUT         16
 #define C9X_NUM_CHNOUT            32 // number of real output channels
 #define C9X_NUM_CSW               32 // number of custom switches
 #define C9X_MAX_CUSTOM_FUNCTIONS  32 // number of functions assigned to switches
@@ -146,44 +145,6 @@ enum EnumKeys {
   KEY_LEFT,
 #endif
 };
-
-enum CSFunction {
-  CS_FN_OFF,
-  CS_FN_VPOS,
-  CS_FN_VNEG,
-  CS_FN_APOS,
-  CS_FN_ANEG,
-  CS_FN_AND,
-  CS_FN_OR,
-  CS_FN_XOR,
-  CS_FN_EQUAL,
-  CS_FN_NEQUAL,
-  CS_FN_GREATER,
-  CS_FN_LESS,
-  CS_FN_EGREATER,
-  CS_FN_ELESS,
-  CS_FN_DPOS,
-  CS_FN_DAPOS,
-  CS_FN_VEQUAL, // added at the end to avoid everything renumbered
-  CS_FN_TIM,
-  CS_FN_MAXF
-};
-
-enum CSFunctionFamily {
-  CS_FAMILY_VOFS,
-  CS_FAMILY_VBOOL,
-  CS_FAMILY_VCOMP,
-  CS_FAMILY_TIMERS
-};
-
-inline CSFunctionFamily getCSFunctionFamily(int fn)
-{
-  if (fn==CS_FN_TIM) {
-    return (CS_FAMILY_TIMERS);
-  } else {
-    return ((fn<CS_FN_AND || fn>CS_FN_ELESS) ? CS_FAMILY_VOFS : (fn<CS_FN_EQUAL ? CS_FAMILY_VBOOL : CS_FAMILY_VCOMP));
-  }
-}
 
 #define CHAR_FOR_NAMES " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-."
 #define CHAR_FOR_NAMES_REGEX "[ A-Za-z0-9_.-,]*"
@@ -357,13 +318,11 @@ enum RawSwitchType {
   SWITCH_TYPE_SWITCH,
   SWITCH_TYPE_VIRTUAL,
   SWITCH_TYPE_MULTIPOS_POT,
-  SWITCH_TYPE_MOMENT_SWITCH,
-  SWITCH_TYPE_MOMENT_VIRTUAL,
+  SWITCH_TYPE_TRIM,
+  SWITCH_TYPE_ROTARY_ENCODER,
   SWITCH_TYPE_ON,
   SWITCH_TYPE_OFF,
-  SWITCH_TYPE_ONM,
-  SWITCH_TYPE_TRN,
-  SWITCH_TYPE_REA,
+  SWITCH_TYPE_TIMER_MODE
 };
 
 class RawSwitch {
@@ -617,30 +576,63 @@ class MixData {
     void clear() { memset(this, 0, sizeof(MixData)); }
 };
 
-class CustomSwData { // Custom Switches data
-  public:
-    CustomSwData() { clear(); }
-    int  val1; //input
-    int  val2; //offset
-    unsigned int func;
-    unsigned int delay;
-    unsigned int duration;
-    unsigned int andsw;
-    void clear() { memset(this, 0, sizeof(CustomSwData)); }
+enum CSFunction {
+  LS_FN_OFF,
+  LS_FN_VPOS,
+  LS_FN_VNEG,
+  LS_FN_APOS,
+  LS_FN_ANEG,
+  LS_FN_AND,
+  LS_FN_OR,
+  LS_FN_XOR,
+  LS_FN_EQUAL,
+  LS_FN_NEQUAL,
+  LS_FN_GREATER,
+  LS_FN_LESS,
+  LS_FN_EGREATER,
+  LS_FN_ELESS,
+  LS_FN_DPOS,
+  LS_FN_DAPOS,
+  LS_FN_VEQUAL, // added at the end to avoid everything renumbered
+  LS_FN_TIMER,
+  LS_FN_STICKY,
+  LS_FN_STAY,
+  // later ... LS_FN_RANGE,
+  LS_FN_MAX
 };
 
-class SafetySwData { // Custom Switches data
-  public:
-    SafetySwData() { clear(); }
-    RawSwitch  swtch;
-    int        val;
+enum CSFunctionFamily {
+  LS_FAMILY_VOFS,
+  LS_FAMILY_VBOOL,
+  LS_FAMILY_VCOMP,
+  LS_FAMILY_TIMER,
+  LS_FAMILY_STICKY,
+  LS_FAMILY_STAY,
+};
 
-    void clear() { memset(this, 0, sizeof(SafetySwData)); }
+class LogicalSwitchData { // Custom Switches data
+  public:
+    LogicalSwitchData(unsigned int func=0)
+    {
+      clear();
+      this->func = func;
+    }
+    unsigned int func;
+    int val1;
+    int val2;
+    int val3;
+    unsigned int delay;
+    unsigned int duration;
+    int andsw;
+    void clear() { memset(this, 0, sizeof(LogicalSwitchData)); }
+    CSFunctionFamily getFunctionFamily();
+    QString funcToString();
+    QString toString(const ModelData & model);
 };
 
 enum AssignFunc {
   FuncSafetyCh1 = 0,
-  FuncSafetyCh16 = FuncSafetyCh1+15,
+  FuncSafetyCh32 = FuncSafetyCh1+C9X_NUM_CHNOUT-1,
   FuncTrainer,
   FuncTrainerRUD,
   FuncTrainerELE,
@@ -650,6 +642,8 @@ enum AssignFunc {
   FuncPlaySound,
   FuncPlayHaptic,
   FuncReset,
+  FuncSetTimer1,
+  FuncSetTimer2,
   FuncVario,
   FuncPlayPrompt,
   FuncPlayBoth,
@@ -666,7 +660,7 @@ enum AssignFunc {
 
 class FuncSwData { // Function Switches data
   public:
-    FuncSwData() { clear(); }
+    FuncSwData(AssignFunc func=FuncSafetyCh1) { clear(); this->func = func; }
     RawSwitch    swtch;
     AssignFunc   func;
     int param;
@@ -675,6 +669,10 @@ class FuncSwData { // Function Switches data
     unsigned int adjustMode;
     int repeatParam;
     void clear() { memset(this, 0, sizeof(FuncSwData)); }
+    QString funcToString();
+    QString paramToString();
+    QString repeatToString();
+    QStringList toStringList();
 };
 
 class PhaseData {
@@ -809,32 +807,17 @@ class MavlinkData {
     void clear() { memset(this, 0, sizeof(MavlinkData)); }
 };
 
-enum TimerMode {
-  TMRMODE_OFF=0,
-  TMRMODE_ABS,
-  TMRMODE_THs,
-  TMRMODE_THp,
-  TMRMODE_THt,
-  TMRMODE_FIRST_SWITCH,
-  TMRMODE_FIRST_MOMENT_SWITCH = TMRMODE_FIRST_SWITCH+64,
-  TMRMODE_FIRST_CHPERC = TMRMODE_FIRST_MOMENT_SWITCH+64,
-  
-  TMRMODE_FIRST_NEG_SWITCH=-TMRMODE_FIRST_SWITCH,
-  TMRMODE_FIRST_NEG_MOMENT_SWITCH=-TMRMODE_FIRST_MOMENT_SWITCH,
-   /* sw/!sw, !m_sw/!m_sw */
-};
-
 class TimerData {
   public:
     TimerData() { clear(); }
-    TimerMode    mode;   // timer trigger source -> off, abs, THs, TH%, THt, sw/!sw, !m_sw/!m_sw
+    RawSwitch    mode;
     bool         minuteBeep;
     unsigned int countdownBeep;
     bool         dir;    // 0=>Count Down, 1=>Count Up
     unsigned int val;
     bool         persistent;
     int          pvalue;
-    void clear() { memset(this, 0, sizeof(TimerData)); }
+    void clear() { memset(this, 0, sizeof(TimerData)); mode = RawSwitch(SWITCH_TYPE_TIMER_MODE, 0); }
 };
 
 enum Protocol {
@@ -895,15 +878,17 @@ class ModelData {
     ExpoData  expoData[C9X_MAX_EXPOS];
 
     CurveData curves[C9X_MAX_CURVES];
-    CustomSwData  customSw[C9X_NUM_CSW];
+    LogicalSwitchData  customSw[C9X_NUM_CSW];
     FuncSwData    funcSw[C9X_MAX_CUSTOM_FUNCTIONS];
-    SafetySwData  safetySw[C9X_NUM_CHNOUT];
     SwashRingData swashRingData;
     unsigned int  thrTraceSrc;
     int8_t   traineron;  // 0 disable trainer, 1 allow trainer
-    int8_t   t2throttle;  // Start timer2 using throttle
-    unsigned int   modelId;
+    unsigned int modelId;
     unsigned int switchWarningStates;
+    unsigned int nSwToWarn;
+    unsigned int nPotsToWarn;
+    int          potPosition[C9X_NUM_POTS];
+    bool         displayText;
     // TODO structure
     char     gvars_names[C9X_MAX_GVARS][6+1];
     bool     gvars_popups[C9X_MAX_GVARS];
@@ -963,10 +948,10 @@ enum Capability {
  Pots,
  Switches,
  SwitchesPositions,
- CustomSwitches,
+ LogicalSwitches,
  CustomAndSwitches,
  HasNegAndSwitches,
- CustomSwitchesExt,
+ LogicalSwitchesExt,
  RotaryEncoders,
  Outputs,
  ChannelsName,
@@ -1049,6 +1034,7 @@ enum Capability {
  CSFunc,
  LCDWidth,
  GetThrSwitch,
+ HasDisplayText,
  VirtualInputs,
  LuaInputs,
  LimitsPer1000,
@@ -1099,10 +1085,6 @@ class EEPROMInterface
     virtual int getCapability(const Capability) = 0;
     
     virtual int isAvailable(Protocol proto, int port=0) = 0;
-
-    virtual bool isAvailable(const RawSwitch & swtch, UseContext context) { return true; }
-
-    virtual bool isAvailable(const RawSource & source, UseContext context) { return true; }
 
     virtual SimulatorInterface * getSimulator() = 0;
 
@@ -1185,14 +1167,14 @@ inline void applyStickModeToModel(ModelData &model, unsigned int mode)
   // virtual switches
   for (int i=0; i<C9X_NUM_CSW; i++) {
     RawSource source;
-    switch (getCSFunctionFamily(model.customSw[i].func)) {
-      case CS_FAMILY_VCOMP:
+    switch (model.customSw[i].getFunctionFamily()) {
+      case LS_FAMILY_VCOMP:
         source = RawSource(model.customSw[i].val2);
         if (source.type == SOURCE_TYPE_STICK)
           source.index = applyStickMode(source.index + 1, mode) - 1;
         model.customSw[i].val2 = source.toValue();
         // no break
-      case CS_FAMILY_VOFS:
+      case LS_FAMILY_VOFS:
         source = RawSource(model.customSw[i].val1);
         if (source.type == SOURCE_TYPE_STICK)
           source.index = applyStickMode(source.index + 1, mode) - 1;

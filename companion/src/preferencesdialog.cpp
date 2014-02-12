@@ -4,7 +4,7 @@
 #include "eeprominterface.h"
 #include "splashlibrary.h"
 #include "helpers.h"
-#ifdef JOYSTICKS
+#ifdef JOYSTICKS 
 #include "joystick.h"
 #include "joystickdialog.h"
 #endif
