@@ -212,10 +212,10 @@
   #define TR_SDCLOGS         "[Logować]\0 "
 #endif
 
-#ifdef GVARS
-  #define TR_CFN_ADJUST_GVAR     "Ustaw \0    "
+#if defined(GVARS)
+  #define TR_ADJUST_GVAR     "Ustaw \0    "
 #else
-  #define TR_CFN_ADJUST_GVAR     "[UstawZG]\0"
+  #define TR_ADJUST_GVAR     "[UstawZG]\0"
 #endif
 
 #ifdef DEBUG
@@ -224,13 +224,24 @@
   #define TR_CFN_TEST
 #endif
 
+//#if defined(CPUARM)
+//  #define TR_VFSWFUNC          "Bezp.\0     ""Trener \0   ""Inst-Trim  ""Reset      " TR_ADJUST_GVAR "Głośność\0  " TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podświetl. " TR_CFN_TEST
+//#elif defined(PCBGRUVIN9X)
+//  #define TR_VFSWFUNC          "Bezp.\0     ""Trener \0   ""Inst-Trim  ""Reset      " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podświetl. " TR_CFN_TEST
+//#else
+//  #define TR_VFSWFUNC          "Bezp.\0     ""Trener \0   ""Inst-Trim  ""Reset      " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC "Podświetl. " TR_CFN_TEST
+//#endif
+
+
 #if defined(CPUARM)
-  #define TR_VFSWFUNC          "Bezp.\0     ""Trener \0   ""Inst-Trim  ""Reset      " TR_ADJUST_GVAR "Głośność\0  " TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podświetl. " TR_CFN_TEST
+  #define TR_VFSWFUNC          "Safety\0   ""Trainer\0  ""Inst. Trim""Reset\0    ""Set \0     " TR_ADJUST_GVAR "Volume\0   " TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Backlight\0" TR_CFN_TEST
 #elif defined(PCBGRUVIN9X)
-  #define TR_VFSWFUNC          "Bezp.\0     ""Trener \0   ""Inst-Trim  ""Reset      " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podświetl. " TR_CFN_TEST
+  #define TR_VFSWFUNC          "Safety\0   ""Trainer\0  ""Inst. Trim""Reset\0    " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC TR_SDCLOGS "Backlight\0" TR_CFN_TEST
 #else
-  #define TR_VFSWFUNC          "Bezp.\0     ""Trener \0   ""Inst-Trim  ""Reset      " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC "Podświetl. " TR_CFN_TEST
+  #define TR_VFSWFUNC          "Safety\0   ""Trainer\0  ""Inst. Trim""Reset\0    " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC "Backlight\0" TR_CFN_TEST
 #endif
+
+
 
 #define LEN_VFSWRESET          TR("\004", "\012")
 
