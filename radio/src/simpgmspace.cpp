@@ -534,7 +534,9 @@ FRESULT f_chdir (const TCHAR *name)
 
 FRESULT f_opendir (DIR * rep, const TCHAR * name)
 {
-  rep->fs = (FATFS *)simu::opendir(convertSimuPath(name));
+  char *path = convertSimuPath(name);
+  TRACE("f_opendir(%s)", path);
+  rep->fs = (FATFS *)simu::opendir(path);
   return FR_OK;
 }
 
