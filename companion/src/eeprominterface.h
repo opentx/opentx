@@ -856,6 +856,17 @@ class ModuleData {
     void clear() { memset(this, 0, sizeof(ModuleData)); }
 };
 
+#define C9X_MAX_SCRIPTS       3
+#define C9X_MAX_SCRIPT_INPUTS 10
+class ScriptData {
+  public:
+    ScriptData() { clear(); }
+    char    filename[10+1];
+    char    name[10+1];
+    int     inputs[C9X_MAX_SCRIPT_INPUTS];
+    void clear() { memset(this, 0, sizeof(ScriptData)); }
+};
+
 class ModelData {
   public:
     ModelData();
@@ -909,6 +920,8 @@ class ModelData {
     unsigned int trainerMode;
 
     ModuleData moduleData[C9X_NUM_MODULES+1/*trainer*/];
+
+    ScriptData scriptData[C9X_MAX_SCRIPTS];
 
     void clear();
     bool isempty();

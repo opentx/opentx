@@ -2203,14 +2203,21 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
   }
 
   if (IS_TARANIS(board) && version >= 216) {
-    // TODO ScriptData scriptsData[MAX_SCRIPTS];
-    internalField.Append(new SpareBitsField<720>());
-    for (int i=0; i<32; i++)
+    for (int i=0; i<3; i++) {
+      ScriptData & script = modelData.scriptData[i];
+      internalField.Append(new ZCharField<10>(script.filename));
+      internalField.Append(new ZCharField<10>(script.name));
+      for (int j=0; j<10; j++) {
+        internalField.Append(new SignedField<8>(script.inputs[j]));
+      }
+    }
+    for (int i=0; i<32; i++) {
       internalField.Append(new ZCharField<4>(modelData.inputNames[i]));
+    }
     internalField.Append(new UnsignedField<8>(modelData.nPotsToWarn));
     for (int i=0; i < GetEepromInterface()->getCapability(Pots); i++) {
       internalField.Append(new SignedField<8>(modelData.potPosition[i]));
-    }
+    }    
   }
 }
 
