@@ -235,8 +235,13 @@ class SourcesConversionTable: public ConversionTable {
         if (afterrelease21March2013)
           addConversion(RawSource(SOURCE_TYPE_TELEMETRY, 0), val++);
 
-        for (int i=1; i<TELEMETRY_SOURCE_ACC; i++)
+        for (int i=1; i<TELEMETRY_SOURCE_ACC; i++) {
+          if (version < 216) {
+            if (i==TELEMETRY_SOURCE_ASPD-1 || i==TELEMETRY_SOURCE_DTE-1 || i==TELEMETRY_SOURCE_CELL_MIN-1 || i==TELEMETRY_SOURCE_VFAS_MIN-1)
+              continue;
+          }
           addConversion(RawSource(SOURCE_TYPE_TELEMETRY, i), val++);
+        }
       }
     }
 

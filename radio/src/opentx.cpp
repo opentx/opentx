@@ -1291,9 +1291,11 @@ getvalue_t getValue(uint8_t i)
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ACCz) return frskyData.hub.accelZ;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_HDG) return frskyData.hub.gpsCourse_bp;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_VSPD) return frskyData.hub.varioSpeed;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ASPD) return frskyData.hub.airSpeed;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_DTE) return frskyData.hub.dTE;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_MIN_A1) return frskyData.analog[0].min;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_MIN_A2) return frskyData.analog[1].min;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_MAX_POWER) return *(((int16_t*)(&frskyData.hub.minAltitude))+i-(MIXSRC_FIRST_TELEM-1+TELEM_MIN_ALT));
+  else if (i<=MIXSRC_FIRST_TELEM-1+TELEM_CSW_MAX) return *(((int16_t*)(&frskyData.hub.minAltitude))+i-(MIXSRC_FIRST_TELEM-1+TELEM_MIN_ALT));
 #endif
 #endif
   else return 0;
@@ -3113,11 +3115,13 @@ PLAY_FUNCTION(playValue, uint8_t idx)
       }
 
     case MIXSRC_FIRST_TELEM+TELEM_CELL-1:
+    case MIXSRC_FIRST_TELEM+TELEM_MIN_CELL-1:
       PLAY_NUMBER(val/10, 1+UNIT_VOLTS, PREC1);
       break;
 
     case MIXSRC_FIRST_TELEM+TELEM_VFAS-1:
     case MIXSRC_FIRST_TELEM+TELEM_CELLS_SUM-1:
+    case MIXSRC_FIRST_TELEM+TELEM_MIN_VFAS-1:
       PLAY_NUMBER(val, 1+UNIT_VOLTS, PREC1);
       break;
 
@@ -3133,6 +3137,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
       break;
 
     case MIXSRC_FIRST_TELEM+TELEM_VSPD-1:
+    case MIXSRC_FIRST_TELEM+TELEM_ASPD-1:
       PLAY_NUMBER(val/10, 1+UNIT_METERS_PER_SECOND, PREC1);
       break;
 

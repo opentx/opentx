@@ -141,6 +141,8 @@ PACK(struct FrskySerialData {
     uint16_t minCellVolts;
 
     bool     varioHighPrecision;
+    int16_t  airSpeed;
+    int16_t  dTE;
 });
 
 struct FrskyData {

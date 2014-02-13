@@ -228,6 +228,13 @@ int ConvertSource_215_to_216(int source, bool insertZero=false)
   // 4 GVARS added
   if (source > MIXSRC_GVAR1+4)
     source += 4;
+  // ASpd and dTE added
+  if (source >= MIXSRC_FIRST_TELEM-1+TELEM_ASPD)
+    source += 2;
+  // Cel- and Vfas- added
+  if (source >= MIXSRC_FIRST_TELEM-1+TELEM_MIN_CELL)
+    source += 2;
+
   return source;
 }
 
@@ -241,11 +248,19 @@ int ConvertSwitch_215_to_216(int swtch)
     return swtch + (2*4) + (2*6); // 4 trims and 2 * 6-pos added as switches
 }
 #else
-int ConvertSource_215_to_216(int source, bool removeZero=false)
+int ConvertSource_215_to_216(int source, bool insertZero=false)
 {
+  if (insertZero)
+    source += 1;
   // 4 GVARS added
   if (source > MIXSRC_GVAR1+4)
     source += 4;
+  // ASpd and dTE added
+  if (source >= MIXSRC_FIRST_TELEM-1+TELEM_ASPD)
+    source += 2;
+  // Cel- and Vfas- added
+  if (source >= MIXSRC_FIRST_TELEM-1+TELEM_MIN_CELL)
+    source += 2;
   return source;
 }
 
