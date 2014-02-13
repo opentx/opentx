@@ -4554,14 +4554,14 @@ void perMain()
   static bool usbStarted = false;
   if (!usbStarted && usbPlugged()) {
     //decide on usb mode
-    //if EXIT key is pressed then go to joystick mode
-    //else goto mass storage mode
+    //if EXIT key is pressed then go to mass storage mode 
+    //else goto joystick mode (default)
     if ( switchState(KEY_EXIT) ) {
-      usbMode = um_Joystick;
-    }
-    else {
       usbMode = um_MassStorage ;
       opentxClose();
+    }
+    else {
+      usbMode = um_Joystick;
     }
     usbStart();
     usbStarted = true;
