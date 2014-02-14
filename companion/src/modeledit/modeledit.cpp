@@ -107,35 +107,13 @@ void ModelEdit::on_pushButton_clicked()
   launchSimulation();
 }
 
-// TODO merge both
-#include "simulatordialog.h"
-#include "xsimulatordialog.h"
-
 void ModelEdit::launchSimulation()
 {
-  if (GetEepromInterface()->getSimulator()) {
-    RadioData *simuData = new RadioData();
-    simuData->generalSettings = generalSettings;
-    simuData->models[modelId] = model;
-    if (GetEepromInterface()->getCapability(SimulatorType)) {
-      xsimulatorDialog *sd = new xsimulatorDialog(this);
-      sd->loadParams(*simuData, modelId);
-      sd->exec();
-      delete sd;
-    }
-    else {
-      simulatorDialog *sd = new simulatorDialog(this);
-      sd->loadParams(*simuData, modelId);
-      sd->exec();
-      delete sd;
-    }
-    delete simuData;
-  }
-  else {
-    QMessageBox::warning(NULL,
-        QObject::tr("Warning"),
-        QObject::tr("Simulator for this firmware is not yet available"));
-  }
+  RadioData *simuData = new RadioData();
+  simuData->generalSettings = generalSettings;
+  simuData->models[0] = model;
+  startSimulation(this, *simuData, 0);
+  delete simuData;
 }
 
 

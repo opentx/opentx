@@ -950,7 +950,6 @@ enum Capability {
  FlightPhases,
  FlightModesName,
  FlightPhasesHaveFades,
- SimulatorType,
  Mixes,
  MixesWithoutExpo,
  Timers,
@@ -1059,15 +1058,8 @@ enum Capability {
  HasFasOffset,
  HasMahPersistent,
  MultiposPots,
- MultiposPotsPositions
-};
-
-enum UseContext {
-  DefaultContext,
-  TimerContext,
-  FlightPhaseContext,
-  MixerContext,
-  ExpoContext,
+ MultiposPotsPositions,
+ SimulatorVariant,
 };
 
 class SimulatorInterface;
@@ -1102,7 +1094,7 @@ class EEPROMInterface
     
     virtual int isAvailable(Protocol proto, int port=0) = 0;
 
-    virtual SimulatorInterface * getSimulator() = 0;
+    virtual SimulatorInterface * getSimulator() { return NULL; }
 
     virtual const int getEEpromSize() = 0;
 

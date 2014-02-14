@@ -131,4 +131,6 @@ QString getFrSkySrc(int index);
 float ValToTim(int value);
 int TimToVal(float value);
 
+void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx);
+
 #endif // HELPERS_H

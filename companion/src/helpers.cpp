@@ -1,5 +1,6 @@
 #include <QtGui>
 #include "helpers.h"
+#include "simulatordialog.h"
 
 QString getPhaseName(int val, char * phasename)
 {
@@ -945,3 +946,34 @@ CompanionIcon::CompanionIcon(QString baseimage)
   addFile(":/themes/"+theme+"/48/"+baseimage, QSize(48,48));
 }
 
+void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
+{
+  if (GetEepromInterface()->getSimulator()) {
+    RadioData * simuData = new RadioData(radioData);
+    unsigned int flags = 0;
+    if (modelIdx >= 0) {
+      flags |= SIMULATOR_FLAGS_NOTX;
+      simuData->generalSettings.currModel = modelIdx;
+    }
+    if (radioData.generalSettings.stickMode & 1) {
+      flags |= SIMULATOR_FLAGS_STICK_MODE_LEFT;
+    }
+    BoardEnum board = GetEepromInterface()->getBoard();
+    SimulatorDialog * sd;
+    if (IS_TARANIS(board))
+      sd = new SimulatorDialogTaranis(parent, flags);
+    else
+      sd = new SimulatorDialog9X(parent, flags);
+    QByteArray eeprom(GetEepromInterface()->getEEpromSize(), 0);
+    GetEepromInterface()->save((uint8_t *)eeprom.data(), *simuData, GetEepromInterface()->getCapability(SimulatorVariant));
+    delete simuData;
+    sd->start(eeprom);
+    sd->exec();
+    delete sd;
+  }
+  else {
+    QMessageBox::warning(NULL,
+      QObject::tr("Warning"),
+      QObject::tr("Simulator for this firmware is not yet available"));
+  }
+}
