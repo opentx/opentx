@@ -208,7 +208,7 @@ TX_CADDY = NO
 IRPROTOS = NO
 
 # TRANSLATIONS
-# Values = cz, de, en, fr, it, se, es, pl, pt
+# Values = cz, de, en, fi, fr, it, se, es, pl, pt
 TRANSLATIONS = EN
 
 # TTS
@@ -1070,7 +1070,7 @@ else
   build: stamp_header tra lbm allsrc.cpp elf remallsrc bin
 endif
 
-tra: translations/cz.h translations/de.h translations/es.h translations/fr.h translations/it.h translations/pl.h translations/pt.h translations/se.h
+tra: translations/cz.h translations/de.h translations/es.h translations/fi.h translations/fr.h translations/it.h translations/pl.h translations/pt.h translations/se.h
 lbm: fonts bitmaps/sticks.lbm
   
 elf: $(TARGET).elf
@@ -1138,6 +1138,11 @@ translations/es.h: translations/es.h.txt
 	@echo
 	@echo "Create Spanish language specific header files"
 	$(TRANSLATE) translations/es.h.txt translations/es.h es
+
+translations/fi.h: translations/fi.h.txt 
+	@echo
+	@echo "Create Finnish language specific header files"
+	$(TRANSLATE) translations/fi.h.txt translations/fi.h fi
 
 translations/fr.h: translations/fr.h.txt 
 	@echo
