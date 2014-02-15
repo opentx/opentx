@@ -582,7 +582,7 @@ void ConvertModel_215_to_216(ModelData &model)
     }
     if (fn.func == FUNC_PLAY_VALUE || fn.func == FUNC_VOLUME || (IS_ADJUST_GV_FUNC(fn.func) && fn.all.mode == FUNC_ADJUST_GVAR_SOURCE)) {
 #if defined(PCBTARANIS)
-      fn.all.param = ConvertSource_215_to_216(fn.all.param, true);
+      fn.all.val = ConvertSource_215_to_216(fn.all.val, true);
 #endif
     }
   }
