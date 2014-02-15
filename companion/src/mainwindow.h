@@ -88,6 +88,7 @@ private slots:
     void setCZLanguage() {setLanguage("cs_CZ");};
     void setDELanguage() {setLanguage("de_DE");};
     void setENLanguage() {setLanguage("en");};
+    void setFILanguage() {setLanguage("fi_FI");};
     void setFRLanguage() {setLanguage("fr_FR");};
     void setITLanguage() {setLanguage("it_IT");};
     void setHELanguage() {setLanguage("he_IL");};
@@ -272,6 +273,7 @@ private:
     QAction *czechLangAct;
     QAction *germanLangAct;
     QAction *frenchLangAct;
+    QAction *finnishLangAct;
     QAction *italianLangAct;
     QAction *hebrewLangAct;
     QAction *polishLangAct;
