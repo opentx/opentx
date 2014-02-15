@@ -2415,7 +2415,7 @@ Write anyway ?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1554"/>
         <source>About Companion</source>
-        <translation type="unfinished"></translation>
+        <translation>Noin Companion</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1582"/>
@@ -2697,7 +2697,7 @@ Write anyway ?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1685"/>
         <source>About</source>
-        <translation type="unfinished"></translation>
+        <translation>Noin</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1685"/>
