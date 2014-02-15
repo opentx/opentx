@@ -45,7 +45,7 @@
 #define TR_OFFON               "WYŁ""ZAŁ"
 
 #define LEN_MMMINV             "\003"
-#define TR_MMMINV              "---""INV"
+#define TR_MMMINV              "---""REV"
 
 #define LEN_NCHANNELS          "\004"
 #define TR_NCHANNELS           "\0014KN\0016KN\0018KN10KN12KN14KN16KN"
@@ -148,7 +148,7 @@
 #define TR_VMLTPX2             "+=""*="":="
 
 #define LEN_VMIXTRIMS          "\004"
-#define TR_VMIXTRIMS           "WYł\0""ZAŁ\0""SK\0 ""SW\0 ""GAZ\0""Lotk"
+#define TR_VMIXTRIMS           "WYŁ\0""ZAŁ\0""SK\0 ""SW\0 ""GAZ\0""Lotk"
 
 #if defined(PCBTARANIS)
   #define TR_CSWTIMER          "Timer"
