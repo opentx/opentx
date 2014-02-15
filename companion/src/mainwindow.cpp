@@ -98,24 +98,7 @@ MainWindow::MainWindow():
 
     MaxRecentFiles=MAX_RECENT;
     QSettings settings;
-    int icon_size=settings.value("icon_size", 1).toInt();
-    switch (icon_size) {
-      case 0:
-        ISize="16";
-        break;
-      case 1:
-        ISize="24";
-        break;
-      case 2:
-        ISize="32";
-        break;
-      case 3:
-        ISize="48";
-        break;
-      default:
-        ISize="24";
-        break;        
-    }
+
     restoreGeometry(settings.value("mainWindowGeometry").toByteArray());
     createActions();
 
@@ -162,7 +145,7 @@ MainWindow::MainWindow():
       int fileType = getFileType(str);
 
       if(fileType==FILE_TYPE_HEX) {
-        burnToFlash(str);
+        writeFlash(str);
       }
 
       if(fileType==FILE_TYPE_EEPE || fileType==FILE_TYPE_EEPM || fileType==FILE_TYPE_BIN) {
@@ -236,7 +219,7 @@ void MainWindow::checkForUpdates(bool ignoreSettings, QString & fwId)
       }
     }
     
-    if (checkCompanion9x || ignoreSettings) {
+    if (checkCompanion || ignoreSettings) {
       check2done = false;
       manager2 = new QNetworkAccessManager(this);
       connect(manager2, SIGNAL(finished(QNetworkReply*)),this, SLOT(checkForUpdateFinished(QNetworkReply*)));
@@ -352,8 +335,6 @@ void MainWindow::reply1Accepted()
 {
     QString errormsg;
     QSettings settings;
-    bool autoflash=settings.value("burnFirmware", true).toBool();
-    bool addversion=settings.value("rename_firmware_files", false).toBool();
     settings.beginGroup("FwRevisions");
     if (downloadedFWFilename.isEmpty()) {
       if (!(downloadedFW.isEmpty())) {
@@ -438,7 +419,7 @@ void MainWindow::reply1Accepted()
       int pos=rev.lastIndexOf("-r");
       if (pos>0) {
         currentFWrev=rev.mid(pos+2).toInt();
-        if (addversion && needRename) {
+        if (settings.value("rename_firmware_files", false).toBool() && needRename) {
           QFileInfo fi(downloadedFWFilename);
           QString path=fi.path()+QDir::separator ();
           path.append(fi.completeBaseName());
@@ -451,10 +432,10 @@ void MainWindow::reply1Accepted()
           downloadedFWFilename=path;
         }
         settings.setValue(downloadedFW, currentFWrev);
-        if (autoflash) {
+        if (settings.value("burnFirmware", true).toBool()) {
           int ret = QMessageBox::question(this, "Companion", tr("Do you want to write the firmware to the transmitter now ?"), QMessageBox::Yes | QMessageBox::No);
           if (ret == QMessageBox::Yes) {
-            burnToFlash(downloadedFWFilename);
+            writeFlash(downloadedFWFilename);
           }
         }
       }
@@ -859,10 +840,10 @@ void MainWindow::paste()
       activeMdiChild()->paste();
 }
 
-void MainWindow::burnTo()
+void MainWindow::writeEeprom()
 {
     if (activeMdiChild())
-      activeMdiChild()->burnTo();
+      activeMdiChild()->writeEeprom();
 }
 
 void MainWindow::simulate()
@@ -1083,7 +1064,7 @@ QString MainWindow::FindTaranisPath()
 }
 
 
-void MainWindow::burnFrom()
+void MainWindow::readEeprom()
 {
     QString tempDir = QDir::tempPath();
     QString tempFile;
@@ -1124,7 +1105,7 @@ void MainWindow::burnFrom()
     }
 }
 
-void MainWindow::burnExtToEEPROM()
+void MainWindow::writeFileToEeprom()
 {
     QSettings settings;
     QString fileName;
@@ -1378,7 +1359,7 @@ bool MainWindow::convertEEPROM(QString backupFile, QString restoreFile, QString 
     return true;
 }
 
-void MainWindow::burnToFlash(QString fileToFlash)
+void MainWindow::writeFlash(QString fileToFlash)
 {
     QSettings settings;
     QString fileName;
@@ -1477,7 +1458,7 @@ void MainWindow::burnToFlash(QString fileToFlash)
     }
 }
 
-void MainWindow::burnExtFromEEPROM()
+void MainWindow::readEepromToFile()
 {
     QSettings settings;
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save transmitter Models and Settings to File"), settings.value("lastDir").toString(), tr(EXTERNAL_EEPROM_FILES_FILTER));
@@ -1509,7 +1490,7 @@ void MainWindow::burnExtFromEEPROM()
     }
 }
 
-void MainWindow::burnFromFlash()
+void MainWindow::readFlash()
 {
     QSettings settings;
     QString fileName = QFileDialog::getSaveFileName(this,tr("Read Tx Firmware to File"), settings.value("lastFlashDir").toString(),tr(FLASH_FILES_FILTER));
@@ -1581,7 +1562,7 @@ void MainWindow::updateMenus()
     saveAct->setEnabled(hasMdiChild);
     saveAsAct->setEnabled(hasMdiChild);
     pasteAct->setEnabled(hasMdiChild ? activeMdiChild()->hasPasteData() : false);
-    burnToAct->setEnabled(hasMdiChild);
+    writeEepromAct->setEnabled(hasMdiChild);
     separatorAct->setVisible(hasMdiChild);
     
     bool hasSelection = (activeMdiChild() && activeMdiChild()->hasSelection());
@@ -1670,8 +1651,8 @@ void MainWindow::createActions()
     openAct =            addAct("open.png",   tr("Open..."),    tr("Open an existing file"),                   QKeySequence::Open,   SLOT(openFile()));
     saveAct =            addAct("save.png",   tr("Save..."),    tr("Save the document to disk"),               QKeySequence::Save,   SLOT(save()));
     saveAsAct =          addAct("saveas.png", tr("Save As..."), tr("Save the document to disk"),               QKeySequence::SaveAs, SLOT(saveAs()));
-	exitAct =            addAct("exit.png",   tr("Exit"),       tr("Exit the application"),                    QKeySequence::Quit,   SLOT(newFile()));
-	cutAct =             addAct("cut.png",    tr("Cut"),        tr("Cut current selection to the clipboard"),  QKeySequence::Cut,    SLOT(cut()));
+    exitAct =            addAct("exit.png",   tr("Exit"),       tr("Exit the application"),                    QKeySequence::Quit,   SLOT(newFile()));
+    cutAct =             addAct("cut.png",    tr("Cut"),        tr("Cut current selection to the clipboard"),  QKeySequence::Cut,    SLOT(cut()));
     copyAct =            addAct("copy.png",   tr("Copy..."),    tr("Copy current selection to the clipboard"), QKeySequence::Copy,   SLOT(copy()));
     pasteAct =           addAct("paste.png",  tr("Paste..."),   tr("Paste clipboard into current selection"),  QKeySequence::Paste,  SLOT(paste()));
  
@@ -1708,22 +1689,22 @@ void MainWindow::createActions()
     logsAct =            addAct("logs.png",          tr("Logs"),                   tr("Open log file"),                      SLOT(logFile()));
     appPrefsAct =        addAct("apppreferences.png",tr("Setting..."),             tr("Edit Settings"),                      SLOT(appPrefs()));
     fwPrefsAct =         addAct("fwpreferences.png", tr("Downloads..."),           tr("Download firmware and voice files"),  SLOT(fwPrefs()));
-    checkForUpdatesAct = addAct("update.png",        tr("Check for updates..."),   tr("Check for new version of Companion"), SLOT(doUpdates()));
+    checkForUpdatesAct = addAct("update.png",        tr("Check for updates..."),   tr("Check OpenTX and Companion updates"), SLOT(doUpdates()));
     changelogAct =       addAct("changelog.png",     tr("ChangeLog..."),           tr("Show Companion changelog"),           SLOT(changelog()));
     fwchangelogAct =     addAct("changelog.png",     tr("Firmware ChangeLog..."),  tr("Show firmware changelog"),            SLOT(fwchangelog()));
     compareAct =         addAct("compare.png",       tr("Compare..."),             tr("Compare models"),                     SLOT(compare()));
     editSplashAct =      addAct("paintbrush.png",    tr("Edit Tx Splash Image..."),tr("edit the splash screen of your TX"),  SLOT(customizeSplash()));
     burnListAct =        addAct("list.png",          tr("List programmers"),       tr("List available programmers"),         SLOT(burnList()));
     burnFusesAct =       addAct("fuses.png",         tr("Fuses..."),               tr("Show fuses dialog"),                  SLOT(burnFuses()));
-    burnFromFlashAct =   addAct("read_flash.png",    tr("Read Firmware"),          tr("Read firmware from transmitter"),     SLOT(burnFromFlash()));
-    burnToFlashAct =     addAct("write_flash.png",   tr("Write Firmware"),         tr("Write firmware to transmitter"),      SLOT(burnToFlash()));
+    readFlashAct =       addAct("read_flash.png",    tr("Read Firmware"),          tr("Read firmware from transmitter"),     SLOT(readFlash()));
+    writeFlashAct =      addAct("write_flash.png",   tr("Write Firmware"),         tr("Write firmware to transmitter"),      SLOT(writeFlash()));
     createProfileAct =   addAct("",                  tr("New Profile"),            tr("Create a new Radio Setting Profile"), SLOT(createProfile()));
     openDocURLAct =      addAct("",                  tr("Manuals and other Documents"),      tr("Open the OpenTX document page in a web browser"), SLOT(openDocURL()));
-    burnToAct =          addAct("write_eeprom.png",  tr("Write Models and Settings To Tx"),  tr("Write Models and Settings to transmitter"),       SLOT(burnTo()));
-    burnFromAct =        addAct("read_eeprom.png",   tr("Read Models and Settings From Tx"), tr("Read Models and Settings from transmitter"),      SLOT(burnFrom()));
+    writeEepromAct =     addAct("write_eeprom.png",  tr("Write Models and Settings To Tx"),  tr("Write Models and Settings to transmitter"),       SLOT(writeEeprom()));
+    readEepromAct =      addAct("read_eeprom.png",   tr("Read Models and Settings From Tx"), tr("Read Models and Settings from transmitter"),      SLOT(readEeprom()));
     burnConfigAct =      addAct("configure.png",     tr("Configure connection software..."), tr("Configure software for reading from and writing to the transmitter"), SLOT(burnConfig()));
-    burnExtToEEPROMAct = addAct("write_eeprom_file.png",   tr("Write Models and Settings from file to Tx"), tr("Write Models and Settings from file to transmitter"), SLOT(burnExtToEEPROM()));
-    burnExtFromEEPROMAct = addAct("read_eeprom_file.png",  tr("Save Tx Models and Settings to file"),       tr("Save the Models and Settings from the transmitter to a file"), SLOT(burnExtFromEEPROM()));
+    writeFileToEepromAct = addAct("write_eeprom_file.png",   tr("Write Models and Settings from file to Tx"), tr("Write Models and Settings from file to transmitter"), SLOT(writeFileToEeprom()));
+    readEepromToFileAct = addAct("read_eeprom_file.png",  tr("Save Tx Models and Settings to file"),       tr("Save the Models and Settings from the transmitter to a file"), SLOT(readEepromToFile()));
     contributorsAct =    addAct("contributors.png",  tr("Contributors"),            tr("A tribute to those who have contributed to OpenTX and Companion"), SLOT(contributors()));
     
     compareAct->setEnabled(false);
@@ -1795,14 +1776,14 @@ void MainWindow::createMenus()
     settingsMenu->addAction(burnConfigAct);
 
     burnMenu = menuBar()->addMenu(tr("Read/Write"));
-    burnMenu->addAction(burnToAct);
-    burnMenu->addAction(burnFromAct);
+    burnMenu->addAction(writeEepromAct);
+    burnMenu->addAction(readEepromAct);
     burnMenu->addSeparator();
-    burnMenu->addAction(burnExtToEEPROMAct);
-    burnMenu->addAction(burnExtFromEEPROMAct);
+    burnMenu->addAction(writeFileToEepromAct);
+    burnMenu->addAction(readEepromToFileAct);
     burnMenu->addSeparator();
-    burnMenu->addAction(burnToFlashAct);
-    burnMenu->addAction(burnFromFlashAct);
+    burnMenu->addAction(writeFlashAct);
+    burnMenu->addAction(readFlashAct);
     burnMenu->addSeparator();
     burnMenu->addSeparator();
     EEPROMInterface *eepromInterface = GetEepromInterface();
@@ -1873,11 +1854,14 @@ void MainWindow::createToolBars()
     fileToolBar->setObjectName("File");
     fileToolBar->addAction(newAct);
     fileToolBar->addAction(openAct);
-      QToolButton * recentToolButton = new QToolButton;
-      recentToolButton->setPopupMode(QToolButton::InstantPopup);
-      recentToolButton->setMenu(createRecentFileMenu());
-      recentToolButton->setIcon(CompanionIcon("recentdocument.png"));
-      recentToolButton->setToolTip(tr("Recent Files"));
+
+    QToolButton * recentToolButton = new QToolButton;
+    recentToolButton->setPopupMode(QToolButton::InstantPopup);
+    recentToolButton->setMenu(createRecentFileMenu());
+    recentToolButton->setIcon(CompanionIcon("recentdocument.png"));
+    recentToolButton->setToolTip(tr("Recent Files"));
+	  recentToolButton->setStatusTip(tr("Show a selection list of recent documents"));
+
     fileToolBar->addWidget(recentToolButton);
     fileToolBar->addAction(saveAct);
     fileToolBar->addAction(logsAct);
@@ -1885,11 +1869,14 @@ void MainWindow::createToolBars()
     fileToolBar->addAction(appPrefsAct);
     fileToolBar->addAction(fwPrefsAct);
     fileToolBar->addAction(editSplashAct);
-      profileButton = new QToolButton;
-      profileButton->setPopupMode(QToolButton::InstantPopup);
-      profileButton->setMenu(createProfilesMenu());
-      profileButton->setIcon(CompanionIcon("profiles.png"));
-      profileButton->setToolTip(tr("Firmware Profiles"));
+
+    QToolButton * profileButton = new QToolButton;
+    profileButton->setPopupMode(QToolButton::InstantPopup);
+    profileButton->setMenu(createProfilesMenu());
+    profileButton->setIcon(CompanionIcon("profiles.png"));
+    profileButton->setToolTip(tr("Radio Profiles"));
+	  profileButton->setStatusTip(tr("Show a selection list of radio settings profiles"));
+
     fileToolBar->addWidget(profileButton);
     fileToolBar->addSeparator();
     fileToolBar->addAction(simulateAct);
@@ -1907,14 +1894,14 @@ void MainWindow::createToolBars()
     addToolBar( Qt::LeftToolBarArea, burnToolBar );
     burnToolBar->setIconSize(size);
     burnToolBar->setObjectName("Write");
-    burnToolBar->addAction(burnToAct);
-    burnToolBar->addAction(burnFromAct);
+    burnToolBar->addAction(writeEepromAct);
+    burnToolBar->addAction(readEepromAct);
     burnToolBar->addSeparator();
-    burnToolBar->addAction(burnExtToEEPROMAct);
-    burnToolBar->addAction(burnExtFromEEPROMAct);
+    burnToolBar->addAction(writeFileToEepromAct);
+    burnToolBar->addAction(readEepromToFileAct);
     burnToolBar->addSeparator();
-    burnToolBar->addAction(burnToFlashAct);
-    burnToolBar->addAction(burnFromFlashAct);
+    burnToolBar->addAction(writeFlashAct);
+    burnToolBar->addAction(readFlashAct);
     burnToolBar->addSeparator();
     burnToolBar->addAction(burnConfigAct);
 
@@ -1934,7 +1921,7 @@ void MainWindow::readSettings()
 {
     QSettings settings;
     restoreState(settings.value("mainWindowState").toByteArray());
-    checkCompanion9x = settings.value("startup_check_companion", true).toBool();
+    checkCompanion = settings.value("startup_check_companion", true).toBool();
     checkFW = settings.value("startup_check_fw", true).toBool();
     MaxRecentFiles =settings.value("history_size",10).toInt();
     if (settings.value("profileId",0).toInt() == 0)

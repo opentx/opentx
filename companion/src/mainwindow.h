@@ -127,12 +127,12 @@ private slots:
     void logFile();
     void copy();
     void paste();
-    void burnTo();
-    void burnFrom();
-    void burnToFlash(QString fileToFlash="");
-    void burnFromFlash();
-    void burnExtToEEPROM();
-    void burnExtFromEEPROM();
+    void writeEeprom();
+    void readEeprom();
+    void writeFlash(QString fileToFlash="");
+    void readFlash();
+    void writeFileToEeprom();
+    void readEepromToFile();
     void burnConfig();
     void burnList();
     void burnFuses();
@@ -200,7 +200,7 @@ private:
     QString downloadedFWFilename;
     downloadDialog * downloadDialog_forWait;
 
-    bool checkCompanion9x;
+    bool checkCompanion;
     bool checkFW;
     bool needRename;
     bool showcheckForUpdatesResult;
@@ -240,15 +240,15 @@ private:
     QAction *cutAct;
     QAction *copyAct;
     QAction *pasteAct;
-    QAction *burnToAct;
-    QAction *burnFromAct;
+    QAction *writeEepromAct;
+    QAction *readEepromAct;
     QAction *burnConfigAct;
     QAction *burnListAct;
     QAction *burnFusesAct;
-    QAction *burnToFlashAct;
-    QAction *burnFromFlashAct;
-    QAction *burnExtToEEPROMAct;
-    QAction *burnExtFromEEPROMAct;
+    QAction *writeFlashAct;
+    QAction *readFlashAct;
+    QAction *writeFileToEepromAct;
+    QAction *readEepromToFileAct;
     QAction *simulateAct;
     QAction *separatorAct;
     QAction *aboutAct;
@@ -280,7 +280,6 @@ private:
     QAction *russianLangAct;
     QAction *openDocURLAct;
     QString fwToUpdate;
-    QToolButton * profileButton;
 };
 
 #endif
