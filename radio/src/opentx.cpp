@@ -1484,17 +1484,18 @@ bool getSwitch(int8_t swtch)
           }
         }
         else {
+          uint8_t v1 = cs->v1;
 #if defined(FRSKY)
           // Telemetry
-          if (cs->v1 >= MIXSRC_FIRST_TELEM) {
-            if ((!TELEMETRY_STREAMING() && cs->v1 >= MIXSRC_FIRST_TELEM+TELEM_FIRST_STREAMED_VALUE-1) || IS_FAI_FORBIDDEN(cs->v1-1))
+          if (v1 >= MIXSRC_FIRST_TELEM) {
+            if ((!TELEMETRY_STREAMING() && v1 >= MIXSRC_FIRST_TELEM+TELEM_FIRST_STREAMED_VALUE-1) || IS_FAI_FORBIDDEN(v1-1))
               return swtch > 0 ? false : true;
 
             y = convertCswTelemValue(cs);
 
 #if defined(FRSKY_HUB) && defined(GAUGES)
             if (s == LS_FAMILY_OFS) {
-              uint8_t idx = cs->v1-MIXSRC_FIRST_TELEM+1-TELEM_ALT;
+              uint8_t idx = v1-MIXSRC_FIRST_TELEM+1-TELEM_ALT;
               if (idx < THLD_MAX) {
                 // Fill the threshold array
                 barsThresholds[idx] = 128 + cs->v2;
@@ -1502,17 +1503,17 @@ bool getSwitch(int8_t swtch)
             }
 #endif
           }
-          else if (cs->v1 >= MIXSRC_GVAR1) {
+          else if (v1 >= MIXSRC_GVAR1) {
             y = cs->v2;
           }
           else {
             y = calc100toRESX(cs->v2);
           }
 #else
-          if (cs->v1 >= MIXSRC_FIRST_TELEM) {
+          if (v1 >= MIXSRC_FIRST_TELEM) {
             y = (int16_t)3 * (128+cs->v2); // it's a Timer
           }
-          else if (cs->v1 >= MIXSRC_GVAR1) {
+          else if (v1 >= MIXSRC_GVAR1) {
             y = cs->v2; // it's a GVAR
           }
           else {
@@ -1523,7 +1524,7 @@ bool getSwitch(int8_t swtch)
           switch (cs->func) {
             case LS_FUNC_VEQUAL:
 #if defined(GVARS)
-              if (cs->v1 >= MIXSRC_GVAR1 && cs->v1 <= MIXSRC_LAST_GVAR)
+              if (v1 >= MIXSRC_GVAR1 && v1 <= MIXSRC_LAST_GVAR)
                 result = (x==y);
               else
 #endif

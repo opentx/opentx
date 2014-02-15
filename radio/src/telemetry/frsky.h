@@ -139,6 +139,8 @@ PACK(struct FrskySerialData {
   int16_t  maxTemperature2;
   uint16_t maxGpsSpeed;
   uint16_t maxGpsDistance;
+  int16_t  minCell;
+  int16_t  minVfas;
   uint16_t maxCurrent;
   uint16_t maxPower;
   /* end */

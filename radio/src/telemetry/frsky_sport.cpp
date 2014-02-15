@@ -214,8 +214,8 @@ void processHubPacket(uint8_t id, uint16_t value)
 #else
       frskyData.hub.vfas = ((frskyData.hub.volts_bp * 100 + frskyData.hub.volts_ap * 10) * 21) / 110;
 #endif
-      /* TODO later if (!frskyData.hub.minVfas || frskyData.hub.minVfas > frskyData.hub.vfas)
-        frskyData.hub.minVfas = frskyData.hub.vfas; */
+      if (!frskyData.hub.minVfas || frskyData.hub.vfas < frskyData.hub.minVfas)
+        frskyData.hub.minVfas = frskyData.hub.vfas;
       break;
 
     case BARO_ALT_AP_ID:
@@ -268,6 +268,8 @@ void processHubPacket(uint8_t id, uint16_t value)
         if (!frskyData.hub.minCellVolts || cellVolts < frskyData.hub.minCellVolts || battnumber==frskyData.hub.minCellIdx) {
           frskyData.hub.minCellIdx = battnumber;
           frskyData.hub.minCellVolts = cellVolts;
+          if (!frskyData.hub.minCell || frskyData.hub.minCellVolts < frskyData.hub.minCell)
+            frskyData.hub.minCell = frskyData.hub.minCellVolts;
         }
       }
       break;
@@ -761,6 +763,8 @@ void resetTelemetry()
   frskyData.rssi[1].value = 30;
   frskyData.hub.fuelLevel = 75;
   frskyData.hub.rpm = 12000;
+  frskyData.hub.vfas = 100;
+  frskyData.hub.minVfas = 90;
 
   frskyData.hub.gpsFix = 1;
   frskyData.hub.gpsLatitude_bp = 4401;
