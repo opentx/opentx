@@ -35,61 +35,58 @@ appPreferencesDialog::~appPreferencesDialog()
 
 void appPreferencesDialog::writeValues()
 {
-  QSettings settings;
-  settings.setValue("startup_check_companion", ui->startupCheck_companion9x->isChecked());
-  settings.setValue("startup_check_fw", ui->startupCheck_fw->isChecked());
-  settings.setValue("wizardEnable", ui->wizardEnable_ChkB->isChecked());
-  settings.setValue("show_splash", ui->showSplash->isChecked());
-  settings.setValue("simuSW", ui->simuSW->isChecked());
-  settings.setValue("history_size", ui->historySize->value());
-  settings.setValue("backLight", ui->backLightColor->currentIndex());
-  settings.setValue("libraryPath", ui->libraryPath->text());
-  settings.setValue("gePath", ui->ge_lineedit->text());
-  settings.setValue("embedded_splashes", ui->splashincludeCB->currentIndex());
-  settings.setValue("backupEnable", ui->backupEnable->isChecked());
+  glob.startup_check_companion(ui->startupCheck_companion9x->isChecked());
+  glob.startup_check_fw(ui->startupCheck_fw->isChecked());
+  glob.wizardEnable(ui->wizardEnable_ChkB->isChecked());
+  glob.show_splash(ui->showSplash->isChecked());
+  glob.simuSW(ui->simuSW->isChecked());
+  glob.history_size(ui->historySize->value());
+  glob.backLight(ui->backLightColor->currentIndex());
+  glob.libraryPath(ui->libraryPath->text());
+  glob.gePath(ui->ge_lineedit->text());
+  glob.embedded_splashes(ui->splashincludeCB->currentIndex());
+  glob.backupEnable(ui->backupEnable->isChecked());
 
   if (ui->joystickChkB ->isChecked() && ui->joystickCB->isEnabled()) {
-    settings.setValue("js_support", ui->joystickChkB ->isChecked());  
-    settings.setValue("js_ctrl", ui->joystickCB ->currentIndex());
+    glob.js_support(ui->joystickChkB ->isChecked());  
+    glob.js_ctrl(ui->joystickCB ->currentIndex());
   }
   else {
-    settings.remove("js_support");
-    settings.remove("js_ctrl");
+    glob.js_support(false);
+    glob.js_ctrl(0);
   }
 
-  settings.setValue("default_channel_order", ui->channelorderCB->currentIndex());
-  settings.setValue("default_mode", ui->stickmodeCB->currentIndex());
-  settings.setValue("rename_firmware_files", ui->renameFirmware->isChecked());
-  settings.setValue("burnFirmware", ui->burnFirmware->isChecked());
-  settings.setValue("profileId", ui->profileIndexLE->text());
-  settings.setValue("Name", ui->profileNameLE->text());
-  settings.setValue("sdPath", ui->sdPath->text());
-  settings.setValue("SplashFileName", ui->SplashFileName->text());
+  glob.default_channel_order(ui->channelorderCB->currentIndex());
+  glob.default_mode(ui->stickmodeCB->currentIndex());
+  glob.rename_firmware_files(ui->renameFirmware->isChecked());
+  glob.burnFirmware(ui->burnFirmware->isChecked());
+  glob.profileId(ui->profileIndexLE->text().toInt());
+  glob.Name(ui->profileNameLE->text());
+  glob.sdPath(ui->sdPath->text());
+  glob.SplashFileName(ui->SplashFileName->text());
   if (!ui->SplashFileName->text().isEmpty())
-    settings.setValue("SplashImage", "");
-  settings.setValue("firmware", ui->firmwareLE->text());
+    glob.SplashImage("");
+  glob.firmware(ui->firmwareLE->text());
   
   saveProfile();
 }
 
 void appPreferencesDialog::on_snapshotPathButton_clicked()
 {
-  QSettings settings;
-  QString fileName = QFileDialog::getExistingDirectory(this,tr("Select your snapshot folder"), settings.value("snapshotPath").toString());
+  QString fileName = QFileDialog::getExistingDirectory(this,tr("Select your snapshot folder"), glob.snapshotpath());
   if (!fileName.isEmpty()) {
-    settings.setValue("snapshotpath", fileName);
-    settings.setValue("snapshot_to_clipboard", false);
+    glob.snapshotpath(fileName);
+    glob.snapshot_to_clipboard(false);
     ui->snapshotPath->setText(fileName);
   }
 }
 
 void appPreferencesDialog::initSettings()
 {
-  QSettings settings;
-  ui->snapshotClipboardCKB->setChecked(settings.value("snapshot_to_clipboard", false).toBool());
-  ui->burnFirmware->setChecked(settings.value("burnFirmware", true).toBool());
+  ui->snapshotClipboardCKB->setChecked(glob.snapshot_to_clipboard());
+  ui->burnFirmware->setChecked(glob.burnFirmware());
   
-  QString Path=settings.value("snapshotPath", "").toString();
+  QString Path=glob.snapshotpath();
   if (QDir(Path).exists()) {
     ui->snapshotPath->setText(Path);
     ui->snapshotPath->setReadOnly(true);
@@ -98,38 +95,38 @@ void appPreferencesDialog::initSettings()
     ui->snapshotPath->setDisabled(true);
     ui->snapshotPathButton->setDisabled(true);
   }
-  ui->startupCheck_companion9x->setChecked(settings.value("startup_check_companion", true).toBool());
-  ui->startupCheck_fw->setChecked(settings.value("startup_check_fw", true).toBool());
-  ui->wizardEnable_ChkB->setChecked(settings.value("wizardEnable", true).toBool());
-  ui->showSplash->setChecked(settings.value("show_splash", true).toBool());
-  ui->historySize->setValue(settings.value("history_size", 10).toInt());
-  ui->backLightColor->setCurrentIndex(settings.value("backLight", 0).toInt());
-  ui->simuSW->setChecked(settings.value("simuSW", false).toBool());
+  ui->startupCheck_companion9x->setChecked(glob.startup_check_companion());
+  ui->startupCheck_fw->setChecked(glob.startup_check_fw());
+  ui->wizardEnable_ChkB->setChecked(glob.wizardEnable());
+  ui->showSplash->setChecked(glob.show_splash());
+  ui->historySize->setValue(glob.history_size());
+  ui->backLightColor->setCurrentIndex(glob.backLight());
+  ui->simuSW->setChecked(glob.simuSW());
 
-  Path=settings.value("libraryPath", "").toString();
+  Path=glob.libraryPath();
   if (QDir(Path).exists()) {
     ui->libraryPath->setText(Path);
   }
-  Path=settings.value("gePath", "").toString();
+  Path=glob.gePath();
   if (QFile(Path).exists()) {
     ui->ge_lineedit->setText(Path);
   }  
-  Path=settings.value("backupPath", "").toString();
+  Path=glob.backupPath();
   if (!Path.isEmpty()) {
     if (QDir(Path).exists()) {
       ui->backupPath->setText(Path);
       ui->backupEnable->setEnabled(true);
-      ui->backupEnable->setChecked(settings.value("backupEnable", true).toBool());
+      ui->backupEnable->setChecked(glob.backupEnable());
     } else {
       ui->backupEnable->setDisabled(true);
     }
   } else {
       ui->backupEnable->setDisabled(true);
   }
-  ui->splashincludeCB->setCurrentIndex(settings.value("embedded_splashes", 0).toInt());
+  ui->splashincludeCB->setCurrentIndex(glob.embedded_splashes());
 
 #ifdef JOYSTICKS
-  ui->joystickChkB->setChecked(settings.value("js_support", false).toBool());
+  ui->joystickChkB->setChecked(glob.js_support());
   if (ui->joystickChkB->isChecked()) {
     QStringList joystickNames;
     joystickNames << tr("No joysticks found");
@@ -147,7 +144,7 @@ void appPreferencesDialog::initSettings()
     }
     ui->joystickCB->clear();
     ui->joystickCB->insertItems(0, joystickNames);
-    ui->joystickCB->setCurrentIndex(settings.value("js_ctrl", 0).toInt());
+    ui->joystickCB->setCurrentIndex(glob.js_ctrl());
   }
   else {
     ui->joystickCB->clear();
@@ -156,17 +153,17 @@ void appPreferencesDialog::initSettings()
   }
 #endif  
 //  Profile Tab Inits  
-  ui->channelorderCB->setCurrentIndex(settings.value("default_channel_order", 0).toInt());
-  ui->stickmodeCB->setCurrentIndex(settings.value("default_mode", 1).toInt());
-  ui->renameFirmware->setChecked(settings.value("rename_firmware_files", false).toBool());
-  Path=settings.value("sdPath", "").toString();
+  ui->channelorderCB->setCurrentIndex(glob.default_channel_order());
+  ui->stickmodeCB->setCurrentIndex(glob.default_mode());
+  ui->renameFirmware->setChecked(glob.rename_firmware_files());
+  Path=glob.sdPath();
   if (QDir(Path).exists()) {
     ui->sdPath->setText(Path);
   }
-  ui->profileIndexLE->setText(settings.value("profileId", "").toString());
-  ui->profileNameLE->setText(settings.value("Name", "").toString());
+  ui->profileIndexLE->setText(QString(glob.profileId()));
+  ui->profileNameLE->setText(glob.Name());
 
-  QString fileName=settings.value("SplashFileName","").toString();
+  QString fileName=glob.SplashFileName();
   if (!fileName.isEmpty()) {
     QFile file(fileName);
     if (file.exists()){ 
@@ -174,40 +171,37 @@ void appPreferencesDialog::initSettings()
       displayImage( fileName );
     }
   }
-  ui->firmwareLE->setText(settings.value("firmware","").toString());
+  ui->firmwareLE->setText(glob.firmware());
 }
 
 void appPreferencesDialog::on_libraryPathButton_clicked()
 {
-  QSettings settings;
-  QString fileName = QFileDialog::getExistingDirectory(this,tr("Select your library folder"), settings.value("libraryPath").toString());
+  QString fileName = QFileDialog::getExistingDirectory(this,tr("Select your library folder"), glob.libraryPath());
   if (!fileName.isEmpty()) {
-    settings.setValue("libraryPath", fileName);
+    glob.libraryPath(fileName);
     ui->libraryPath->setText(fileName);
   }
 }
 
 void appPreferencesDialog::on_snapshotClipboardCKB_clicked()
 {
-  QSettings settings;
   if (ui->snapshotClipboardCKB->isChecked()) {
     ui->snapshotPath->setDisabled(true);
     ui->snapshotPathButton->setDisabled(true);
-    settings.setValue("snapshot_to_clipboard", true);
+    glob.snapshot_to_clipboard(true);
   } else {
     ui->snapshotPath->setEnabled(true);
     ui->snapshotPath->setReadOnly(true);
     ui->snapshotPathButton->setEnabled(true);
-    settings.setValue("snapshot_to_clipboard", false);
+    glob.snapshot_to_clipboard(false);
   }
 }
 
 void appPreferencesDialog::on_backupPathButton_clicked()
 {
-  QSettings settings;
-  QString fileName = QFileDialog::getExistingDirectory(this,tr("Select your Models and Settings backup folder"), settings.value("backupPath").toString());
+  QString fileName = QFileDialog::getExistingDirectory(this,tr("Select your Models and Settings backup folder"), glob.backupPath());
   if (!fileName.isEmpty()) {
-    settings.setValue("backupPath", fileName);
+    glob.backupPath(fileName);
     ui->backupPath->setText(fileName);
   }
   ui->backupEnable->setEnabled(true);
@@ -215,7 +209,6 @@ void appPreferencesDialog::on_backupPathButton_clicked()
 
 void appPreferencesDialog::on_ge_pathButton_clicked()
 {
-  QSettings settings;
   QString fileName = QFileDialog::getOpenFileName(this, tr("Select Google Earth executable"),ui->ge_lineedit->text());
   if (!fileName.isEmpty()) {
     ui->ge_lineedit->setText(fileName);
@@ -259,8 +252,7 @@ void appPreferencesDialog::on_joystickcalButton_clicked() {
 
 void appPreferencesDialog::on_sdPathButton_clicked()
 {
-  QSettings settings;
-  QString fileName = QFileDialog::getExistingDirectory(this,tr("Select the folder replicating your SD structure"), settings.value("sdPath").toString());
+  QString fileName = QFileDialog::getExistingDirectory(this,tr("Select the folder replicating your SD structure"), glob.sdPath());
   if (!fileName.isEmpty()) {
     ui->sdPath->setText(fileName);
   }
@@ -270,7 +262,7 @@ void appPreferencesDialog::saveProfile()
 {
   QSettings settings;
 
-  QString profile=QString("profile") + settings.value("profileId").toString();
+  QString profile=QString("profile") + glob.profileId();
   QString name=ui->profileNameLE->text();
   if (name.isEmpty()) {
     name = profile;
@@ -306,8 +298,7 @@ void appPreferencesDialog::loadProfileString(QString profile, QString label)
 
 void appPreferencesDialog::loadProfile()
 {
-  QSettings settings;
-  QString profile=QString("profile") + settings.value("profileId").toString();
+  QString profile=QString("profile") + glob.profileId();
 
   loadProfileString( profile, "Name" );
   loadProfileString( profile, "default_channel_order" );
@@ -322,12 +313,11 @@ void appPreferencesDialog::loadProfile()
 void appPreferencesDialog::on_removeProfileButton_clicked()
 {
   QSettings settings;
-  QString profileId = settings.value("profileId").toString(); 
-  if ( profileId == "1" )
+  if ( glob.profileId() == 1 )
      QMessageBox::information(this, tr("Not possible to remove profile"), tr("The default profile can not be removed."));
   else
   {
-    QString profile=QString("profile") + profileId;
+    QString profile=QString("profile") + glob.profileId();
     settings.beginGroup("Profiles");
     settings.remove(profile);
     settings.endGroup();
@@ -340,15 +330,13 @@ void appPreferencesDialog::on_removeProfileButton_clicked()
 
 bool appPreferencesDialog::displayImage( QString fileName )
 {
-  QSettings settings;
-
   QImage image(fileName);
   if (image.isNull()) 
     return false;
 
 // This code below just figures out if the width of the latest firmware is 128 or 212. It works , but...
-  QString filePath1 = settings.value("lastFlashDir", "").toString() + "/" + settings.value("firmware", "").toString() + ".bin";
-  QString filePath2 = settings.value("lastFlashDir", "").toString() + "/" + settings.value("firmware", "").toString() + ".hex";
+  QString filePath1 = glob.lastFlashDir() + "/" + glob.firmware() + ".bin";
+  QString filePath2 = glob.lastFlashDir() + "/" + glob.firmware() + ".hex";
   QFile file(filePath1);
   if (!file.exists())
     filePath1 = filePath2;
@@ -390,12 +378,11 @@ void appPreferencesDialog::on_SplashSelect_clicked()
     supportedImageFormats += QLatin1String(" *.") + QImageReader::supportedImageFormats()[formatIndex];
   }
 
-  QSettings settings;
   QString fileName = QFileDialog::getOpenFileName(this,
-          tr("Open Image to load"), settings.value("lastImagesDir").toString(), tr("Images (%1)").arg(supportedImageFormats));
+          tr("Open Image to load"), glob.lastImagesDir(), tr("Images (%1)").arg(supportedImageFormats));
 
   if (!fileName.isEmpty()) {
-    settings.setValue("lastImagesDir", QFileInfo(fileName).dir().absolutePath());
+    glob.lastImagesDir(QFileInfo(fileName).dir().absolutePath());
     
     if (displayImage(fileName))
       ui->SplashFileName->setText(fileName);

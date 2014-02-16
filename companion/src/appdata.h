@@ -205,7 +205,7 @@ public:
     int generalEditTab()           { return _generalEditTab;         }
     int icon_size()                { return _icon_size;              }
     int history_size()             { return _history_size;           }
-    int js_ctr()                   { return _js_ctrl;                }
+    int js_ctrl()                  { return _js_ctrl;                }
     int modelEditTab()             { return _modelEditTab;           }
     int profileId()                { return _profileId;              }
     int theme()                    { return _theme;                  }
