@@ -57,8 +57,8 @@ RawSourceRange RawSource::getRange(bool singleprec)
           break;
         case TELEMETRY_SOURCE_TIMER1:
         case TELEMETRY_SOURCE_TIMER2:
-          result.step = singleprec ? 3 : 1;
-          result.max = singleprec ? 765 : 7200;
+          result.step = singleprec ? 5 : 1;
+          result.max = singleprec ? 255*5 : 7200;
           break;
         case TELEMETRY_SOURCE_RSSI_TX:
         case TELEMETRY_SOURCE_RSSI_RX:

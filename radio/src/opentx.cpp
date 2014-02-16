@@ -1994,7 +1994,7 @@ getvalue_t convert8bitsTelemValue(uint8_t channel, ls_telemetry_value_t value)
   switch (channel) {
     case TELEM_TM1:
     case TELEM_TM2:
-      result = value * 3;
+      result = value * 5;
       break;
 #if defined(FRSKY)
     case TELEM_ALT:
