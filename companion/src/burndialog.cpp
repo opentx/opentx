@@ -212,8 +212,8 @@ void burnDialog::checkFw(QString fileName)
       ui->SplashFrame->show();
       ui->ImageLoadButton->setEnabled(true);
       ui->libraryButton->setEnabled(true);
-      ui->FwImage->setFixedSize(flash.getSplashWidth(),flash.getSplashHeight());
-      ui->imageLabel->setFixedSize(flash.getSplashWidth(),flash.getSplashHeight());
+      ui->FwImage->setFixedSize(flash.getSplashWidth(), flash.getSplashHeight());
+      ui->imageLabel->setFixedSize(flash.getSplashWidth(), flash.getSplashHeight());
       ui->FwImage->show();
       ui->FwImage->setPixmap(QPixmap::fromImage(flash.getSplash()));
       QString ImageStr = settings.value("SplashImage", "").toString();

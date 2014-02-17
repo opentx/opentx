@@ -413,7 +413,7 @@ bool FlashInterface::setSplash(const QImage & newsplash)
   }
 }
 
-uint FlashInterface::getSplashWidth()
+int FlashInterface::getSplashWidth()
 {
   return splash_width;
 }

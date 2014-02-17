@@ -167,7 +167,7 @@ void varioWakeup()
       int SoundVarioBeepTime;
       int SoundVarioBeepFreq;
       if (verticalSpeed > 0) {
-        SoundVarioBeepTime = min(5, 320 - (verticalSpeed >> 2));
+        SoundVarioBeepTime = max(5, 320 - (verticalSpeed >> 2));
         SoundVarioBeepFreq = 1000 + verticalSpeed;
       }
       else {

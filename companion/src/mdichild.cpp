@@ -506,7 +506,7 @@ QString MdiChild::strippedName(const QString &fullFileName)
   return QFileInfo(fullFileName).fileName();
 }
 
-void MdiChild::burnTo()  // write to Tx
+void MdiChild::writeEeprom()  // write to Tx
 {
   QSettings settings;
   bool backupEnable=settings.value("backupEnable", true).toBool();
