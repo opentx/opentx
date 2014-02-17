@@ -6,6 +6,7 @@
 #include <QCheckBox>
 #include <QDoubleSpinBox>
 #include "helpers.h"
+#include "appdata.h"
 
 RepeatComboBox::RepeatComboBox(QWidget *parent, int & repeatParam):
   QComboBox(parent),
@@ -74,8 +75,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
       }
     }
 
-    QSettings settings;
-    QString path = settings.value("sdPath", ".").toString();
+    QString path = glob.pro[glob.profileId()].sdPath();
     path.append("/SOUNDS/");
     QString lang = generalSettings.ttsLanguage;
     if (lang.isEmpty())
@@ -225,8 +225,7 @@ void CustomFunctionsPanel::playMusic()
     QPushButton *playButton = qobject_cast<QPushButton*>(sender());
     int index=playButton->objectName().mid(5,2).toInt();
     QString function=playButton->objectName().left(4);
-    QSettings settings;
-    QString path = settings.value("sdPath", ".").toString();
+    QString path =  glob.pro[glob.profileId()].sdPath();
     QDir qd(path);
     QString track;
     if (qd.exists()) {

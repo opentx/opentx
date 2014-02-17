@@ -364,11 +364,11 @@ class AppData:DataObj
     QStringList _recentFileList;
     QByteArray _mainWindowGeometry;
     QByteArray _mainWindowState; 
+    QByteArray _modelEditGeometry;
 
     QString _locale;
     QString _cpu_id;
     QString _lastFw;
-    QString _modelEditGeometry;
 
     QString _backupPath;
     QString _gePath;
@@ -409,11 +409,11 @@ public:
     QStringList recentFileList()   { return _recentFileList;         }
     QByteArray mainWindowGeometry(){ return _mainWindowGeometry;     }
     QByteArray mainWindowState()   { return _mainWindowState;        }
+    QByteArray modelEditGeometry() { return _modelEditGeometry;      }
 
     QString locale()               { return _locale;                 }
     QString cpu_id()               { return _cpu_id;                 }
     QString lastFw()               { return _lastFw;                 }
-    QString modelEditGeometry()    { return _modelEditGeometry;      }
 
     QString backupPath()           { return _backupPath;             }
     QString gePath()               { return _gePath;                 }
@@ -452,11 +452,11 @@ public:
     void recentFileList       (const QStringList l) { store(l, _recentFileList,     "recentFileList"    );}
     void mainWindowGeometry   (const QByteArray a)  { store(a, _mainWindowGeometry, "mainWindowGeometry");}
     void mainWindowState      (const QByteArray a)  { store(a, _mainWindowState,    "mainWindowState"   );}
+    void modelEditGeometry    (const QByteArray a)  { store(a, _modelEditGeometry,  "modelEditGeometry" );}
 
     void locale               (const QString str) { store(str, _locale,             "locale"            );}
     void cpu_id               (const QString str) { store(str, _cpu_id,             "cpu_id"            );}
     void lastFw               (const QString str) { store(str, _lastFw,             "lastFw"            );}
-    void modelEditGeometry    (const QString str) { store(str, _modelEditGeometry,  "modelEditGeometry" );}
 
     void backupPath           (const QString str) { store(str, _backupPath,         "backupPath"        );}
     void gePath               (const QString str) { store(str, _gePath,             "gePath"            );}
@@ -542,11 +542,11 @@ public:
         getset( _recentFileList,          "recentFileList"          ,"" );
         getset( _mainWindowGeometry,      "mainWindowGeometry"      ,"" );
         getset( _mainWindowState,         "mainWindowState"         ,"" );
+        getset( _modelEditGeometry,       "modelEditGeometry"       ,"" );
         
         getset( _locale,                  "locale"                  ,"" );
         getset( _cpu_id,                  "cpu_id"                  ,"" );
         getset( _lastFw,                  "lastFw"                  ,"" );
-        getset( _modelEditGeometry,       "modelEditGeometry"       ,"" );
 
         getset( _backupPath,              "backupPath"              ,"" );
         getset( _gePath,                  "gePath"                  ,"" );

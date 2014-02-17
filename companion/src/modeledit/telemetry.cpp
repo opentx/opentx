@@ -3,6 +3,7 @@
 #include "ui_telemetry_analog.h"
 #include "ui_telemetry_customscreen.h"
 #include "helpers.h"
+#include "appdata.h"
 
 TelemetryAnalog::TelemetryAnalog(QWidget *parent, FrSkyChannelData & analog):
   QWidget(parent),
@@ -456,8 +457,7 @@ TelemetryPanel::~TelemetryPanel()
 
 void TelemetryPanel::setup()
 {
-    QSettings settings;
-    QString firmware_id = settings.value("firmware", default_firmware_variant.id).toString();
+    QString firmware_id = glob.pro[glob.profileId()].firmware();
 
     lock=true;
 

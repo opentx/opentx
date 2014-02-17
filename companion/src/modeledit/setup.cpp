@@ -3,6 +3,7 @@
 #include "ui_setup_timer.h"
 #include "ui_setup_module.h"
 #include "helpers.h"
+#include "appdata.h"
 
 TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer):
   ModelPanel(parent, model),
@@ -347,8 +348,7 @@ Setup::Setup(QWidget *parent, ModelData & model):
   if (GetEepromInterface()->getCapability(ModelImage)) {
     QStringList items;
     items.append("");
-    QSettings settings;
-    QString path = settings.value("sdPath", ".").toString();
+    QString path = glob.pro[glob.profileId()].sdPath();
     path.append("/BMP/");
     QDir qd(path);
     int vml = GetEepromInterface()->getCapability(VoicesMaxLength)+4;
@@ -515,8 +515,7 @@ void Setup::on_image_currentIndexChanged(int index)
 {
   if (!lock) {
     strncpy(model.bitmap, ui->image->currentText().toAscii(), GetEepromInterface()->getCapability(VoicesMaxLength));
-    QSettings settings;
-    QString path=settings.value("sdPath", ".").toString();
+    QString path=glob.pro[glob.profileId()].sdPath();
     path.append("/BMP/");
     QDir qd(path);
     if (qd.exists()) {
