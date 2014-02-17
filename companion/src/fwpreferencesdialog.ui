@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Downloads and Profiles</string>
+   <string>Downloads</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="verticalSpacing">

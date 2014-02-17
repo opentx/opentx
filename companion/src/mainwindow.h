@@ -81,13 +81,14 @@ public slots:
     void downloadLatestFW(FirmwareInfo *firmware, const QString & firmwareId);
     
 private slots:
-    void openDocumentURL();
+    void openDocURL();
 
     void setLanguage(QString langString);
-    void setDefaultLanguage() {setLanguage("");};
+    void setSysLanguage() {setLanguage("");};
     void setCZLanguage() {setLanguage("cs_CZ");};
     void setDELanguage() {setLanguage("de_DE");};
     void setENLanguage() {setLanguage("en");};
+    void setFILanguage() {setLanguage("fi_FI");};
     void setFRLanguage() {setLanguage("fr_FR");};
     void setITLanguage() {setLanguage("it_IT");};
     void setHELanguage() {setLanguage("he_IL");};
@@ -127,12 +128,12 @@ private slots:
     void logFile();
     void copy();
     void paste();
-    void burnTo();
-    void burnFrom();
-    void burnToFlash(QString fileToFlash="");
-    void burnFromFlash();
-    void burnExtenalToEEPROM();
-    void burnExtenalFromEEPROM();
+    void writeEeprom();
+    void readEeprom();
+    void writeFlash(QString fileToFlash="");
+    void readFlash();
+    void writeFileToEeprom();
+    void readEepromToFile();
     void burnConfig();
     void burnList();
     void burnFuses();
@@ -145,8 +146,8 @@ private slots:
     void compare();
     void print();
     void loadBackup();
-    void appPreferences();
-    void fwPreferences();
+    void appPrefs();
+    void fwPrefs();
     void updateMenus();
     void createProfile();
     MdiChild *createMdiChild();
@@ -157,12 +158,20 @@ private slots:
   
 private:
     void createActions();
+    QAction * addAct(QString, QString, QString, QKeySequence::StandardKey, const char *);
+    QAction * addAct(QActionGroup *, QString, QString, const char *);
+    QAction * addAct(QString, QString, QString, const char *);
+
     void createMenus();
     void createToolBars();
     void createStatusBar();
     void readSettings();
     void updateRecentFileActions();
     void updateProfilesActions();
+    void updateIconSizeActions();
+    void updateLanguageActions();
+    void updateIconThemeActions();
+
     int getFileType(const QString &fullFileName);
     QString FindTaranisPath();
     QString Theme;
@@ -192,12 +201,11 @@ private:
     QString downloadedFWFilename;
     downloadDialog * downloadDialog_forWait;
 
-    bool checkCompanion9x;
+    bool checkCompanion;
     bool checkFW;
     bool needRename;
     bool showcheckForUpdatesResult;
     int MaxRecentFiles;
-//    int ActiveProfile;
     int currentFWrev;
     int currentFWrev_temp;
     int NewFwRev;
@@ -222,26 +230,26 @@ private:
     QAction *saveAct;
     QAction *saveAsAct;
     QAction *exitAct;
-    QAction *appPreferencesAct;
-    QAction *fwPreferencesAct;
+    QAction *appPrefsAct;
+    QAction *fwPrefsAct;
     QAction *checkForUpdatesAct;
     QAction *contributorsAct;
     QAction *changelogAct;
     QAction *fwchangelogAct;
     QAction *compareAct;
-    QAction *customizeSplashAct;
+    QAction *editSplashAct;
     QAction *cutAct;
     QAction *copyAct;
     QAction *pasteAct;
-    QAction *burnToAct;
-    QAction *burnFromAct;
+    QAction *writeEepromAct;
+    QAction *readEepromAct;
     QAction *burnConfigAct;
     QAction *burnListAct;
     QAction *burnFusesAct;
-    QAction *burnToFlashAct;
-    QAction *burnFromFlashAct;
-    QAction *burnExtenalToEEPROMAct;
-    QAction *burnExtenalFromEEPROMAct;
+    QAction *writeFlashAct;
+    QAction *readFlashAct;
+    QAction *writeFileToEepromAct;
+    QAction *readEepromToFileAct;
     QAction *simulateAct;
     QAction *separatorAct;
     QAction *aboutAct;
@@ -254,26 +262,26 @@ private:
     QAction *classicThemeAct;
     QAction *newThemeAct;
     QAction *monoThemeAct;
-    QAction *monoBlueThemeAct;
-    QAction *monoWhiteThemeAct;
+    QAction *monoBlueAct;
+    QAction *monoWhiteAct;
     QAction *smallIconAct;
     QAction *normalIconAct;
     QAction *bigIconAct;
     QAction *hugeIconAct;
-    QAction *defaultLanguageAct;
-    QAction *englishLanguageAct;
-    QAction *czechLanguageAct;
-    QAction *germanLanguageAct;
-    QAction *frenchLanguageAct;
-    QAction *italianLanguageAct;
-    QAction *hebrewLanguageAct;
-    QAction *polishLanguageAct;
-    QAction *portugueseLanguageAct;
-    QAction *swedishLanguageAct;
-    QAction *russianLanguageAct;
-    QAction *openDocumentURLAct;
+    QAction *sysLangAct;
+    QAction *englishLangAct;
+    QAction *czechLangAct;
+    QAction *germanLangAct;
+    QAction *frenchLangAct;
+    QAction *finnishLangAct;
+    QAction *italianLangAct;
+    QAction *hebrewLangAct;
+    QAction *polishLangAct;
+    QAction *portugueseLangAct;
+    QAction *swedishLangAct;
+    QAction *russianLangAct;
+    QAction *openDocURLAct;
     QString fwToUpdate;
-    QToolButton * profileButton;
 };
 
 #endif

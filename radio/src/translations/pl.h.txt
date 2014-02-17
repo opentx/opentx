@@ -45,7 +45,7 @@
 #define TR_OFFON               "WYŁ""ZAŁ"
 
 #define LEN_MMMINV             "\003"
-#define TR_MMMINV              "---""INV"
+#define TR_MMMINV              "---""REV"
 
 #define LEN_NCHANNELS          "\004"
 #define TR_NCHANNELS           "\0014KN\0016KN\0018KN10KN12KN14KN16KN"
@@ -148,7 +148,7 @@
 #define TR_VMLTPX2             "+=""*="":="
 
 #define LEN_VMIXTRIMS          "\004"
-#define TR_VMIXTRIMS           "WYł\0""ZAŁ\0""SK\0 ""SW\0 ""GAZ\0""Lotk"
+#define TR_VMIXTRIMS           "WYŁ\0""ZAŁ\0""SK\0 ""SW\0 ""GAZ\0""Lotk"
 
 #if defined(PCBTARANIS)
   #define TR_CSWTIMER          "Timer"
@@ -212,10 +212,10 @@
   #define TR_SDCLOGS         "[Logować]\0 "
 #endif
 
-#ifdef GVARS
-  #define TR_CFN_ADJUST_GVAR     "Ustaw \0    "
+#if defined(GVARS)
+  #define TR_ADJUST_GVAR     "Ustaw \0    "
 #else
-  #define TR_CFN_ADJUST_GVAR     "[UstawZG]\0"
+  #define TR_ADJUST_GVAR     "[UstawZG]\0"
 #endif
 
 #ifdef DEBUG
@@ -224,13 +224,24 @@
   #define TR_CFN_TEST
 #endif
 
+//#if defined(CPUARM)
+//  #define TR_VFSWFUNC          "Bezp.\0     ""Trener \0   ""Inst-Trim  ""Reset      " TR_ADJUST_GVAR "Głośność\0  " TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podświetl. " TR_CFN_TEST
+//#elif defined(PCBGRUVIN9X)
+//  #define TR_VFSWFUNC          "Bezp.\0     ""Trener \0   ""Inst-Trim  ""Reset      " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podświetl. " TR_CFN_TEST
+//#else
+//  #define TR_VFSWFUNC          "Bezp.\0     ""Trener \0   ""Inst-Trim  ""Reset      " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC "Podświetl. " TR_CFN_TEST
+//#endif
+
+
 #if defined(CPUARM)
-  #define TR_VFSWFUNC          "Bezp.\0     ""Trener \0   ""Inst-Trim  ""Reset      " TR_ADJUST_GVAR "Głośność\0  " TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podświetl. " TR_CFN_TEST
+  #define TR_VFSWFUNC          "Safety\0   ""Trainer\0  ""Inst. Trim""Reset\0    ""Set \0     " TR_ADJUST_GVAR "Volume\0   " TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Backlight\0" TR_CFN_TEST
 #elif defined(PCBGRUVIN9X)
-  #define TR_VFSWFUNC          "Bezp.\0     ""Trener \0   ""Inst-Trim  ""Reset      " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podświetl. " TR_CFN_TEST
+  #define TR_VFSWFUNC          "Safety\0   ""Trainer\0  ""Inst. Trim""Reset\0    " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC TR_SDCLOGS "Backlight\0" TR_CFN_TEST
 #else
-  #define TR_VFSWFUNC          "Bezp.\0     ""Trener \0   ""Inst-Trim  ""Reset      " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC "Podświetl. " TR_CFN_TEST
+  #define TR_VFSWFUNC          "Safety\0   ""Trainer\0  ""Inst. Trim""Reset\0    " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC "Backlight\0" TR_CFN_TEST
 #endif
+
+
 
 #define LEN_VFSWRESET          TR("\004", "\012")
 
@@ -261,7 +272,7 @@
   #define TR_RSSI_0            "Tx\0 "
   #define TR_RSSI_1            "Rx\0 "
 #endif
-#define TR_VTELEMCHNS          "---\0""Bat\0""Tmr1""Tmr2" TR_RSSI_0 TR_RSSI_1 "A1\0 ""A2\0 ""Wys\0""Rpm\0""Pali""T1\0 ""T2\0 ""Spd\0""Dyst""GAlt""Cell""Cels""Vfas""Curr""Cnsp""Moc\0""AccX""AccY""AccZ""Hdg\0""VSpd""A1-\0""A2-\0""Wys-""Wys+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Cur+""Moc+""Acc\0""Time"
+#define TR_VTELEMCHNS          "---\0""Bat\0""Tmr1""Tmr2" TR_RSSI_0 TR_RSSI_1 "A1\0 ""A2\0 ""Wys\0""Rpm\0""Pali""T1\0 ""T2\0 ""Spd\0""Dyst""GAlt""Cell""Cels""Vfas""Curr""Cnsp""Moc\0""AccX""AccY""AccZ""Hdg\0""VSpd""ASpd""dTE\0""A1-\0""A2-\0""Wys-""Wys+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Cel-""Vfs-""Cur+""Moc+""Acc\0""Time"
 
 #if defined(CPUARM)
   #define LEN_VUNITSSYSTEM     TR("\006", "\012")
