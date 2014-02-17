@@ -160,7 +160,7 @@ void appPreferencesDialog::initSettings()
   if (QDir(Path).exists()) {
     ui->sdPath->setText(Path);
   }
-  ui->profileIndexLE->setText(QString(glob.profileId()));
+  ui->profileIndexLE->setText(QString("%1").arg(glob.profileId()));
   ui->profileNameLE->setText(glob.Name());
 
   QString fileName=glob.SplashFileName();
@@ -260,54 +260,34 @@ void appPreferencesDialog::on_sdPathButton_clicked()
 
 void appPreferencesDialog::saveProfile()
 {
-  QSettings settings;
-
-  QString profile=QString("profile") + glob.profileId();
+  // The profile name may NEVER be empty
+  QString profile=QString("profile") + QString("%1").arg(glob.profileId());
   QString name=ui->profileNameLE->text();
   if (name.isEmpty()) {
     name = profile;
     ui->profileNameLE->setText(name);
   }
-  settings.beginGroup("Profiles");
-  settings.beginGroup(profile);
-  settings.setValue("Name",name);
-  settings.setValue("default_channel_order", ui->channelorderCB->currentIndex());
-  settings.setValue("default_mode", ui->stickmodeCB->currentIndex());
-  settings.setValue("burnFirmware", ui->burnFirmware->isChecked());
-  settings.setValue("rename_firmware_files", ui->renameFirmware->isChecked());
-  settings.setValue("sdPath", ui->sdPath->text());
-  settings.setValue("SplashFileName", ui->SplashFileName->text());
-  settings.setValue("firmware", ui->firmwareLE->text());
-  settings.endGroup();
-  settings.endGroup();
+  glob.profile[glob.profileId()].Name( name );
+  glob.profile[glob.profileId()].default_channel_order( ui->channelorderCB->currentIndex());
+  glob.profile[glob.profileId()].default_mode( ui->stickmodeCB->currentIndex());
+  glob.profile[glob.profileId()].burnFirmware( ui->burnFirmware->isChecked());
+  glob.profile[glob.profileId()].rename_firmware_files( ui->renameFirmware->isChecked());
+  glob.profile[glob.profileId()].sdPath( ui->sdPath->text());
+  glob.profile[glob.profileId()].SplashFileName( ui->SplashFileName->text());
+  glob.profile[glob.profileId()].firmware( ui->firmwareLE->text());
 }
 
-void appPreferencesDialog::loadProfileString(QString profile, QString label)
+void appPreferencesDialog::loadFromProfile()
 {
-  QSettings settings;
-  QString value;
-
-  settings.beginGroup("Profiles");
-  settings.beginGroup(profile);
-  value = settings.value(label).toString();
-  settings.endGroup();
-  settings.endGroup();
-
-  settings.setValue( label, value ); 
-}
-
-void appPreferencesDialog::loadProfile()
-{
-  QString profile=QString("profile") + glob.profileId();
-
-  loadProfileString( profile, "Name" );
-  loadProfileString( profile, "default_channel_order" );
-  loadProfileString( profile, "default_mode" );
-  loadProfileString( profile, "burnFirmware" );
-  loadProfileString( profile, "rename_firmware_files" );
-  loadProfileString( profile, "sdPath" );
-  loadProfileString( profile, "SplashFileName" );
-  loadProfileString( profile, "firmware" );
+  int i = glob.profileId();
+  glob.Name( glob.profile[i].Name() );
+  glob.default_channel_order( glob.profile[i].default_channel_order());
+  glob.default_mode( glob.profile[i].default_mode());
+  glob.burnFirmware( glob.profile[i].burnFirmware());
+  glob.rename_firmware_files( glob.profile[i].rename_firmware_files());
+  glob.sdPath( glob.profile[i].sdPath());
+  glob.SplashFileName( glob.profile[i].SplashFileName());
+  glob.firmware( glob.profile[i].firmware());
 }
 
 void appPreferencesDialog::on_removeProfileButton_clicked()
@@ -317,13 +297,13 @@ void appPreferencesDialog::on_removeProfileButton_clicked()
      QMessageBox::information(this, tr("Not possible to remove profile"), tr("The default profile can not be removed."));
   else
   {
-    QString profile=QString("profile") + glob.profileId();
+    QString profile=QString("profile") + QString("%1").arg(glob.profileId());
     settings.beginGroup("Profiles");
     settings.remove(profile);
     settings.endGroup();
-    settings.setValue("profileId", "1");
+    glob.profileId( 1 );
 
-    loadProfile();
+    loadFromProfile();
     initSettings();
   }
 }
