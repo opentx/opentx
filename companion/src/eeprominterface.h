@@ -198,8 +198,6 @@ enum TelemetrySource {
   TELEMETRY_SOURCE_ACCZ,
   TELEMETRY_SOURCE_HDG,
   TELEMETRY_SOURCE_VERTICAL_SPEED,
-  TELEMETRY_SOURCE_ASPD,
-  TELEMETRY_SOURCE_DTE,
   TELEMETRY_SOURCE_A1_MIN,
   TELEMETRY_SOURCE_A2_MIN,
   TELEMETRY_SOURCE_ALT_MIN,
@@ -209,8 +207,7 @@ enum TelemetrySource {
   TELEMETRY_SOURCE_T2_MAX,
   TELEMETRY_SOURCE_SPEED_MAX,
   TELEMETRY_SOURCE_DIST_MAX,
-  TELEMETRY_SOURCE_CELL_MIN,
-  TELEMETRY_SOURCE_VFAS_MIN,
+  TELEMETRY_SOURCE_CURRENT_MAX,
   TELEMETRY_SOURCE_POWER_MAX,
   TELEMETRY_SOURCE_ACC,
   TELEMETRY_SOURCE_GPS_TIME,
@@ -856,17 +853,6 @@ class ModuleData {
     void clear() { memset(this, 0, sizeof(ModuleData)); }
 };
 
-#define C9X_MAX_SCRIPTS       3
-#define C9X_MAX_SCRIPT_INPUTS 10
-class ScriptData {
-  public:
-    ScriptData() { clear(); }
-    char    filename[10+1];
-    char    name[10+1];
-    int     inputs[C9X_MAX_SCRIPT_INPUTS];
-    void clear() { memset(this, 0, sizeof(ScriptData)); }
-};
-
 class ModelData {
   public:
     ModelData();
@@ -920,8 +906,6 @@ class ModelData {
     unsigned int trainerMode;
 
     ModuleData moduleData[C9X_NUM_MODULES+1/*trainer*/];
-
-    ScriptData scriptData[C9X_MAX_SCRIPTS];
 
     void clear();
     bool isempty();

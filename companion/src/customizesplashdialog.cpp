@@ -37,7 +37,7 @@ bool Side::displayImage( QString fileName, Source pictSource )
       return false;
     else
       image = flash.getSplash();
-      *format = (flash.getSplashWidth()==WIDTH_TARANIS ? LCDTARANIS : LCD9X);
+      *format = flash.getSplashWidth()==WIDTH_TARANIS ? LCDTARANIS : LCD9X;
   }
   else {
    image.load(fileName);

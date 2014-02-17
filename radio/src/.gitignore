@@ -1,6 +1,7 @@
 /stamp-opentx.h
 /opentx.elf
 /simu
+/eeprom.bin
 /opentx.hex
 /opentx.map
 /simu.d
@@ -8,9 +9,7 @@
 /*.sh
 /*.o
 /*.bin
-/*.bin.*
 /*.lst
 /SCRIPTS
 /SOUNDS
 /LOGS
-/*.bat

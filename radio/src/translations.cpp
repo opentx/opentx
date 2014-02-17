@@ -585,8 +585,6 @@ const pm_uchar font_5x7[] PROGMEM = {
 #include "font_cz_05x07.lbm"
 #elif defined(TRANSLATIONS_ES)
 #include "font_es_05x07.lbm"
-#elif defined(TRANSLATIONS_FI)
-#include "font_fi_05x07.lbm"
 #elif defined(TRANSLATIONS_FR)
 #include "font_fr_05x07.lbm"
 #elif defined(TRANSLATIONS_IT)
@@ -615,8 +613,6 @@ const pm_uchar font_10x14[] PROGMEM = {
   #include "font_cz_10x14.lbm"
   #elif defined(TRANSLATIONS_ES)
   #include "font_es_10x14.lbm"
-  #elif defined(TRANSLATIONS_FI)
-  #include "font_fi_10x14.lbm"
   #elif defined(TRANSLATIONS_FR)
   #include "font_fr_10x14.lbm"
   #elif defined(TRANSLATIONS_IT)
@@ -644,8 +640,6 @@ const pm_uchar font_4x6[] PROGMEM = {
 #include "font_cz_04x06.lbm"
 #elif defined(TRANSLATIONS_ES)
 #include "font_es_04x06.lbm"
-#elif defined(TRANSLATIONS_FI)
-#include "font_fi_04x06.lbm"
 #elif defined(TRANSLATIONS_FR)
 #include "font_fr_04x06.lbm"
 #elif defined(TRANSLATIONS_IT)
@@ -667,8 +661,6 @@ const pm_uchar font_8x10[] PROGMEM = {
 #include "font_cz_08x10.lbm"
 #elif defined(TRANSLATIONS_ES)
 #include "font_es_08x10.lbm"
-#elif defined(TRANSLATIONS_FI)
-#include "font_fi_08x10.lbm"
 #elif defined(TRANSLATIONS_FR)
 #include "font_fr_08x10.lbm"
 #elif defined(TRANSLATIONS_IT)

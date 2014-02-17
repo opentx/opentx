@@ -49,8 +49,7 @@
 #define PPM_CENTER_ADJUSTABLE
 #define PPM_LIMITS_SYMETRICAL
 #define FAI_CHOICE
-#define LUA
-#define LUA_MODEL_SCRIPTS
+
 #define EEPROM_VARIANT 3
 
 #undef min
@@ -116,36 +115,6 @@ inline int geteepromsize() {
 #include "radio/src/translations/tts_pt.cpp"
 #include "radio/src/translations/tts_sk.cpp"
 #include "radio/src/translations/tts_pl.cpp"
-
-#include "radio/src/lua.cpp"
-#include "radio/src/lua/src/lapi.c"
-#include "radio/src/lua/src/lcode.c"
-#include "radio/src/lua/src/lctype.c"
-#include "radio/src/lua/src/ldebug.c"
-#include "radio/src/lua/src/ldo.c"
-#include "radio/src/lua/src/ldump.c"
-#include "radio/src/lua/src/lfunc.c"
-#include "radio/src/lua/src/lgc.c"
-#include "radio/src/lua/src/llex.c"
-#include "radio/src/lua/src/lmem.c"
-#include "radio/src/lua/src/lobject.c"
-#include "radio/src/lua/src/lopcodes.c"
-#include "radio/src/lua/src/lparser.c"
-#include "radio/src/lua/src/lstate.c"
-#include "radio/src/lua/src/lstring.c"
-#include "radio/src/lua/src/ltable.c"
-#include "radio/src/lua/src/ltm.c"
-#include "radio/src/lua/src/lundump.c"
-#include "radio/src/lua/src/lvm.c"
-#include "radio/src/lua/src/lzio.c"
-#include "radio/src/lua/src/lbaselib.c"
-#include "radio/src/lua/src/linit.c"
-#include "radio/src/lua/src/lmathlib.c"
-#include "radio/src/lua/src/loadlib.c"
-#include "radio/src/lua/src/lauxlib.c"
-#include "radio/src/lua/src/ltablib.c"
-#include "radio/src/lua/src/lcorolib.c"
-
   
 int16_t g_anas[NUM_STICKS+BOARD_X9D_NUM_POTS];
 

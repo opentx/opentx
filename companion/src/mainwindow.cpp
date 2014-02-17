@@ -98,16 +98,32 @@ MainWindow::MainWindow():
 
     MaxRecentFiles=MAX_RECENT;
     QSettings settings;
-
+    int icon_size=settings.value("icon_size", 1).toInt();
+    switch (icon_size) {
+      case 0:
+        ISize="16";
+        break;
+      case 1:
+        ISize="24";
+        break;
+      case 2:
+        ISize="32";
+        break;
+      case 3:
+        ISize="48";
+        break;
+      default:
+        ISize="24";
+        break;        
+    }
     restoreGeometry(settings.value("mainWindowGeometry").toByteArray());
     createActions();
-
     createMenus();
     createToolBars();
     createStatusBar();
     updateMenus();
-    readSettings();
 
+    readSettings();
     setUnifiedTitleAndToolBarOnMac(true);
     this->setWindowIcon(QIcon(":/icon.png"));
     this->setIconSize(QSize(32,32));
@@ -145,7 +161,7 @@ MainWindow::MainWindow():
       int fileType = getFileType(str);
 
       if(fileType==FILE_TYPE_HEX) {
-        writeFlash(str);
+        burnToFlash(str);
       }
 
       if(fileType==FILE_TYPE_EEPE || fileType==FILE_TYPE_EEPM || fileType==FILE_TYPE_BIN) {
@@ -219,7 +235,7 @@ void MainWindow::checkForUpdates(bool ignoreSettings, QString & fwId)
       }
     }
     
-    if (checkCompanion || ignoreSettings) {
+    if (checkCompanion9x || ignoreSettings) {
       check2done = false;
       manager2 = new QNetworkAccessManager(this);
       connect(manager2, SIGNAL(finished(QNetworkReply*)),this, SLOT(checkForUpdateFinished(QNetworkReply*)));
@@ -335,6 +351,8 @@ void MainWindow::reply1Accepted()
 {
     QString errormsg;
     QSettings settings;
+    bool autoflash=settings.value("burnFirmware", true).toBool();
+    bool addversion=settings.value("rename_firmware_files", false).toBool();
     settings.beginGroup("FwRevisions");
     if (downloadedFWFilename.isEmpty()) {
       if (!(downloadedFW.isEmpty())) {
@@ -419,7 +437,7 @@ void MainWindow::reply1Accepted()
       int pos=rev.lastIndexOf("-r");
       if (pos>0) {
         currentFWrev=rev.mid(pos+2).toInt();
-        if (settings.value("rename_firmware_files", false).toBool() && needRename) {
+        if (addversion && needRename) {
           QFileInfo fi(downloadedFWFilename);
           QString path=fi.path()+QDir::separator ();
           path.append(fi.completeBaseName());
@@ -432,10 +450,10 @@ void MainWindow::reply1Accepted()
           downloadedFWFilename=path;
         }
         settings.setValue(downloadedFW, currentFWrev);
-        if (settings.value("burnFirmware", true).toBool()) {
+        if (autoflash) {
           int ret = QMessageBox::question(this, "Companion", tr("Do you want to write the firmware to the transmitter now ?"), QMessageBox::Yes | QMessageBox::No);
           if (ret == QMessageBox::Yes) {
-            writeFlash(downloadedFWFilename);
+            burnToFlash(downloadedFWFilename);
           }
         }
       }
@@ -663,7 +681,7 @@ void MainWindow::newFile()
     child->show();
 }
 
-void MainWindow::openDocURL()
+void MainWindow::openDocumentURL()
 {
   QString link = "http://www.open-tx.org/documents.html";
   QDesktopServices::openUrl(QUrl(link));
@@ -770,14 +788,14 @@ void MainWindow::loadProfile()
     }
 }
 
-void MainWindow::appPrefs()
+void MainWindow::appPreferences()
 {
     appPreferencesDialog *pd = new appPreferencesDialog(this);
     pd->exec();
     updateMenus();
 }
 
-void MainWindow::fwPrefs()
+void MainWindow::fwPreferences()
 {
     fwPreferencesDialog *pd = new fwPreferencesDialog(this);
     pd->exec();
@@ -840,10 +858,10 @@ void MainWindow::paste()
       activeMdiChild()->paste();
 }
 
-void MainWindow::writeEeprom()
+void MainWindow::burnTo()
 {
     if (activeMdiChild())
-      activeMdiChild()->writeEeprom();
+      activeMdiChild()->burnTo();
 }
 
 void MainWindow::simulate()
@@ -1064,7 +1082,7 @@ QString MainWindow::FindTaranisPath()
 }
 
 
-void MainWindow::readEeprom()
+void MainWindow::burnFrom()
 {
     QString tempDir = QDir::tempPath();
     QString tempFile;
@@ -1105,7 +1123,7 @@ void MainWindow::readEeprom()
     }
 }
 
-void MainWindow::writeFileToEeprom()
+void MainWindow::burnExtenalToEEPROM()
 {
     QSettings settings;
     QString fileName;
@@ -1359,7 +1377,7 @@ bool MainWindow::convertEEPROM(QString backupFile, QString restoreFile, QString 
     return true;
 }
 
-void MainWindow::writeFlash(QString fileToFlash)
+void MainWindow::burnToFlash(QString fileToFlash)
 {
     QSettings settings;
     QString fileName;
@@ -1458,7 +1476,7 @@ void MainWindow::writeFlash(QString fileToFlash)
     }
 }
 
-void MainWindow::readEepromToFile()
+void MainWindow::burnExtenalFromEEPROM()
 {
     QSettings settings;
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save transmitter Models and Settings to File"), settings.value("lastDir").toString(), tr(EXTERNAL_EEPROM_FILES_FILTER));
@@ -1490,7 +1508,7 @@ void MainWindow::readEepromToFile()
     }
 }
 
-void MainWindow::readFlash()
+void MainWindow::burnFromFlash()
 {
     QSettings settings;
     QString fileName = QFileDialog::getSaveFileName(this,tr("Read Tx Firmware to File"), settings.value("lastFlashDir").toString(),tr(FLASH_FILES_FILTER));
@@ -1562,10 +1580,11 @@ void MainWindow::updateMenus()
     saveAct->setEnabled(hasMdiChild);
     saveAsAct->setEnabled(hasMdiChild);
     pasteAct->setEnabled(hasMdiChild ? activeMdiChild()->hasPasteData() : false);
-    writeEepromAct->setEnabled(hasMdiChild);
+    burnToAct->setEnabled(hasMdiChild);
     separatorAct->setVisible(hasMdiChild);
     
-    bool hasSelection = (activeMdiChild() && activeMdiChild()->hasSelection());
+    bool hasSelection = (activeMdiChild() &&
+                         activeMdiChild()->hasSelection());
     cutAct->setEnabled(hasSelection);
     copyAct->setEnabled(hasSelection);
     simulateAct->setEnabled(hasSelection);
@@ -1574,9 +1593,6 @@ void MainWindow::updateMenus()
     compareAct->setEnabled(activeMdiChild());
     updateRecentFileActions();
     updateProfilesActions();
-    updateLanguageActions();
-    updateIconSizeActions();
-    updateIconThemeActions();
 
     QSettings settings;
     setWindowTitle(tr("OpenTX Companion - FW: %1 - Profile: %2").arg(GetCurrentFirmware()->name).arg(settings.value("profileId").toString()));
@@ -1597,38 +1613,151 @@ MdiChild *MainWindow::createMdiChild()
     return child;
 }
 
-QAction * MainWindow::addAct(QString icon, QString sName, QString lName, QKeySequence::StandardKey shortcut, const char *slot)
-{
-	QAction * newAction = new QAction( this );
-	if (!icon.isEmpty())
-      newAction->setIcon(CompanionIcon(icon));
-	if (!sName.isEmpty()) 
-	  newAction->setText(sName);
-	if (!lName.isEmpty())
-	  newAction->setStatusTip(lName);
-	if (shortcut != 0)
-	  newAction->setShortcuts(shortcut);
-    connect(newAction, SIGNAL(triggered()), this, slot);
-	return newAction;
-}
-
-QAction * MainWindow::addAct(QString icon, QString sName, QString lName, const char *slot)
-{
-  return addAct(icon, sName, lName, QKeySequence::UnknownKey, slot);
-}
-
-QAction * MainWindow::addAct(QActionGroup *aGroup, QString sName, QString lName, const char *slot)
-{
-   QAction *action = addAct("", sName, lName, QKeySequence::UnknownKey, slot);
-   action->setCheckable(true);
-   aGroup->addAction(action);   
-   return action;
-}
-
 void MainWindow::createActions()
 {
+    newAct = new QAction(CompanionIcon("new.png"), tr("&New"), this);
+    newAct->setShortcuts(QKeySequence::New);
+    newAct->setStatusTip(tr("Create a new file"));
+    connect(newAct, SIGNAL(triggered()), this, SLOT(newFile()));
+
+    openAct = new QAction(CompanionIcon("open.png"), tr("&Open..."), this);
+    openAct->setShortcuts(QKeySequence::Open);
+    openAct->setStatusTip(tr("Open an existing file"));
+    connect(openAct, SIGNAL(triggered()), this, SLOT(openFile()));
+    
+    loadbackupAct = new QAction(CompanionIcon("open.png"), tr("&loadBackup..."), this);
+    loadbackupAct->setStatusTip(tr("Load backup from file"));
+    connect(loadbackupAct, SIGNAL(triggered()), this, SLOT(loadBackup()));
+
+    saveAct = new QAction(CompanionIcon("save.png"), tr("&Save"), this);
+    saveAct->setShortcuts(QKeySequence::Save);
+    saveAct->setStatusTip(tr("Save the document to disk"));
+    connect(saveAct, SIGNAL(triggered()), this, SLOT(save()));
+
+    saveAsAct = new QAction(CompanionIcon("saveas.png"), tr("Save &As..."), this);
+    saveAsAct->setShortcuts(QKeySequence::SaveAs);
+    saveAsAct->setStatusTip(tr("Save the document under a new name"));
+    connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
+
+    logsAct = new QAction(CompanionIcon("logs.png"), tr("Lo&gs"), this);
+    logsAct->setShortcut(tr("Ctrl+G"));
+    logsAct->setStatusTip(tr("Open log file"));
+    connect(logsAct, SIGNAL(triggered()), this, SLOT(logFile()));
+    
+    appPreferencesAct = new QAction(CompanionIcon("apppreferences.png"), tr("&Setting..."), this);
+    appPreferencesAct->setStatusTip(tr("Edit Settings"));
+    connect(appPreferencesAct, SIGNAL(triggered()), this, SLOT(appPreferences()));
+
+    fwPreferencesAct = new QAction(CompanionIcon("fwpreferences.png"), tr("&Downloads..."), this);
+    fwPreferencesAct->setStatusTip(tr("Download firmware and voice files"));
+    connect(fwPreferencesAct, SIGNAL(triggered()), this, SLOT(fwPreferences()));
+
+    checkForUpdatesAct = new QAction(CompanionIcon("update.png"), tr("&Check for updates..."), this);
+    checkForUpdatesAct->setStatusTip(tr("Check for new version of Companion"));
+    connect(checkForUpdatesAct, SIGNAL(triggered()), this, SLOT(doUpdates()));
+
+    contributorsAct = new QAction(CompanionIcon("contributors.png"), tr("Contributors &List..."), this);
+    contributorsAct->setStatusTip(tr("Show Companion contributors list"));
+    connect(contributorsAct, SIGNAL(triggered()), this, SLOT(contributors()));
+
+    changelogAct = new QAction(CompanionIcon("changelog.png"), tr("ChangeLog..."), this);
+    changelogAct->setStatusTip(tr("Show Companion changelog"));
+    connect(changelogAct, SIGNAL(triggered()), this, SLOT(changelog()));
+
+    fwchangelogAct = new QAction(CompanionIcon("changelog.png"), tr("Firmware ChangeLog..."), this);
+    fwchangelogAct->setStatusTip(tr("Show firmware changelog"));
+    connect(fwchangelogAct, SIGNAL(triggered()), this, SLOT(fwchangelog()));
+    
+    compareAct = new QAction(CompanionIcon("compare.png"), tr("Compare..."), this);
+    compareAct->setStatusTip(tr("Compare models"));
+    compareAct->setEnabled(false);
+    connect(compareAct, SIGNAL(triggered()), this, SLOT(compare()));
+    
+    customizeSplashAct = new QAction(CompanionIcon("paintbrush.png"), tr("Configure transmitter start screen..."), this);
+    customizeSplashAct->setStatusTip(tr("Customize the splash screen of your TX"));
+    connect(customizeSplashAct, SIGNAL(triggered()), this, SLOT(customizeSplash()));
+    
+    exitAct = new QAction(CompanionIcon("exit.png"), tr("E&xit"), this);
+    exitAct->setShortcuts(QKeySequence::Quit);
+    exitAct->setStatusTip(tr("Exit the application"));
+    connect(exitAct, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
+
+    cutAct = new QAction(CompanionIcon("cut.png"), tr("Cu&t"), this);
+    cutAct->setShortcuts(QKeySequence::Cut);
+    cutAct->setStatusTip(tr("Cut the current selection's contents to the "
+                            "clipboard"));
+    connect(cutAct, SIGNAL(triggered()), this, SLOT(cut()));
+
+    copyAct = new QAction(CompanionIcon("copy.png"), tr("&Copy"), this);
+    copyAct->setShortcuts(QKeySequence::Copy);
+    copyAct->setStatusTip(tr("Copy the current selection's contents to the "
+                             "clipboard"));
+    connect(copyAct, SIGNAL(triggered()), this, SLOT(copy()));
+
+    pasteAct = new QAction(CompanionIcon("paste.png"), tr("&Paste"), this);
+    pasteAct->setShortcuts(QKeySequence::Paste);
+    pasteAct->setStatusTip(tr("Paste the clipboard's contents into the current "
+                              "selection"));
+    connect(pasteAct, SIGNAL(triggered()), this, SLOT(paste()));
+
+    burnToAct = new QAction(CompanionIcon("write_eeprom.png"), tr("&Write Models and Settings To Tx"), this);
+    burnToAct->setShortcut(tr("Ctrl+Alt+W"));
+    burnToAct->setStatusTip(tr("Write Models and Settings to transmitter"));
+    connect(burnToAct,SIGNAL(triggered()),this,SLOT(burnTo()));
+
+    burnFromAct = new QAction(CompanionIcon("read_eeprom.png"), tr("&Read Models and Settings From Tx"), this);
+    burnFromAct->setShortcut(tr("Ctrl+Alt+R"));
+    burnFromAct->setStatusTip(tr("Read Models and Settings from transmitter"));
+    connect(burnFromAct,SIGNAL(triggered()),this,SLOT(burnFrom()));
+
+    burnToFlashAct = new QAction(CompanionIcon("write_flash.png"), tr("Write Firmware"), this);
+    burnToFlashAct->setStatusTip(tr("Write firmware to transmitter"));
+    connect(burnToFlashAct,SIGNAL(triggered()),this,SLOT(burnToFlash()));
+
+    burnExtenalToEEPROMAct = new QAction(CompanionIcon("write_eeprom_file.png"), tr("Write Models and Settings from file to Tx"), this);
+    burnExtenalToEEPROMAct->setStatusTip(tr("Write Models and Settings from file to transmitter"));
+    connect(burnExtenalToEEPROMAct,SIGNAL(triggered()),this,SLOT(burnExtenalToEEPROM()));
+
+    burnExtenalFromEEPROMAct = new QAction(CompanionIcon("read_eeprom_file.png"), tr("Save transmitter Models and Settings to file"), this);
+    burnExtenalFromEEPROMAct->setStatusTip(tr("Save the Models and Settings from the transmitter to a file"));
+    connect(burnExtenalFromEEPROMAct,SIGNAL(triggered()),this,SLOT(burnExtenalFromEEPROM()));
+
+    burnFromFlashAct = new QAction(CompanionIcon("read_flash.png"), tr("Read Firmware"), this);
+    burnFromFlashAct->setStatusTip(tr("Read firmware from transmitter"));
+    connect(burnFromFlashAct,SIGNAL(triggered()),this,SLOT(burnFromFlash()));
+
+    burnConfigAct = new QAction(CompanionIcon("configure.png"), tr("&Configure connection software..."), this);
+    burnConfigAct->setStatusTip(tr("Configure software for reading from and writing to the transmitter"));
+    connect(burnConfigAct,SIGNAL(triggered()),this,SLOT(burnConfig()));
+    EEPROMInterface *eepromInterface = GetEepromInterface();
+    if (!IS_ARM(eepromInterface->getBoard())) {
+      burnListAct = new QAction(CompanionIcon("list.png"), tr("&List programmers"), this);
+      burnListAct->setStatusTip(tr("List available programmers"));
+      connect(burnListAct,SIGNAL(triggered()),this,SLOT(burnList()));
+
+      burnFusesAct = new QAction(CompanionIcon("fuses.png"), tr("&Fuses..."), this);
+      burnFusesAct->setStatusTip(tr("Show fuses dialog"));
+      connect(burnFusesAct,SIGNAL(triggered()),this,SLOT(burnFuses()));
+    }
+
+    simulateAct = new QAction(CompanionIcon("simulate.png"), tr("&Simulate"), this);
+    simulateAct->setShortcut(tr("Alt+S"));
+    simulateAct->setStatusTip(tr("Simulate selected model."));
+    simulateAct->setEnabled(false);
+    connect(simulateAct,SIGNAL(triggered()),this,SLOT(simulate()));
+
+    printAct = new QAction(CompanionIcon("print.png"), tr("&Print"), this);
+    printAct->setShortcut(tr("Ctrl+P"));
+    printAct->setStatusTip(tr("Print current model."));
+    printAct->setEnabled(false);
+    connect(printAct,SIGNAL(triggered()),this,SLOT(print()));
+
     separatorAct = new QAction(this);
     separatorAct->setSeparator(true);
+
+    aboutAct = new QAction(CompanionIcon("information.png"), tr("&About"), this);
+    aboutAct->setStatusTip(tr("Show the application's About box"));
+    connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
 
     for (int i = 0; i < MaxRecentFiles; ++i)  {
       recentFileActs[i] = new QAction(this);
@@ -1637,80 +1766,96 @@ void MainWindow::createActions()
     }
     updateRecentFileActions();
 
-    QActionGroup *profilesAlignmentGroup = new QActionGroup(this);
     for (int i=0; i<MAX_PROFILES; i++) {
       profileActs[i] = new QAction(this);
       profileActs[i]->setVisible(false);
-      profileActs[i]->setCheckable(true);
-      profilesAlignmentGroup->addAction(profileActs[i]);
       connect(profileActs[i], SIGNAL(triggered()), this, SLOT(loadProfile()));
     }
     updateProfilesActions();
+    createProfileAct = new QAction(tr("New Profile"), this);
+    createProfileAct->setStatusTip(tr("Create a new Radio Setting Profile"));
+    connect(createProfileAct, SIGNAL(triggered()), this, SLOT(createProfile()));
 
-    newAct =             addAct("new.png",    tr("New"),        tr("Create a new file"),                       QKeySequence::New,    SLOT(newFile()));
-    openAct =            addAct("open.png",   tr("Open..."),    tr("Open an existing file"),                   QKeySequence::Open,   SLOT(openFile()));
-    saveAct =            addAct("save.png",   tr("Save..."),    tr("Save the document to disk"),               QKeySequence::Save,   SLOT(save()));
-    saveAsAct =          addAct("saveas.png", tr("Save As..."), tr("Save the document to disk"),               QKeySequence::SaveAs, SLOT(saveAs()));
-    exitAct =            addAct("exit.png",   tr("Exit"),       tr("Exit the application"),                    QKeySequence::Quit,   SLOT(newFile()));
-    cutAct =             addAct("cut.png",    tr("Cut"),        tr("Cut current selection to the clipboard"),  QKeySequence::Cut,    SLOT(cut()));
-    copyAct =            addAct("copy.png",   tr("Copy..."),    tr("Copy current selection to the clipboard"), QKeySequence::Copy,   SLOT(copy()));
-    pasteAct =           addAct("paste.png",  tr("Paste..."),   tr("Paste clipboard into current selection"),  QKeySequence::Paste,  SLOT(paste()));
- 
-    QActionGroup *themeAlignGroup = new QActionGroup(this);
-    classicThemeAct =    addAct( themeAlignGroup,    tr("Classical"),       tr("The classical Companion icon theme"),   SLOT(setClassicTheme()));
-    newThemeAct =        addAct( themeAlignGroup,    tr("New"),             tr("The new Companion 2 icon theme"),       SLOT(setNewTheme()));
-    monoThemeAct =       addAct( themeAlignGroup,    tr("Monochrome"),      tr("A monochrome black icon theme"),        SLOT(setMonochromeTheme()));
-    monoWhiteAct =       addAct( themeAlignGroup,    tr("MonoWhite"),       tr("A monochrome white icon theme"),        SLOT(setMonoWhiteTheme()));
-    monoBlueAct =        addAct( themeAlignGroup,    tr("MonoBlue"),        tr("A monochrome blue icon theme"),         SLOT(setMonoBlueTheme()));
+    classicThemeAct = new QAction(tr("Classical"), this);
+    classicThemeAct->setStatusTip(tr("The classical Companion icon theme"));
+    connect(classicThemeAct, SIGNAL(triggered()), this, SLOT(setClassicTheme()));
+    newThemeAct = new QAction(tr("New"), this);
+    newThemeAct->setStatusTip(tr("The Companion 2.0 colored icon theme"));
+    connect(newThemeAct, SIGNAL(triggered()), this, SLOT(setNewTheme()));
+    monoThemeAct = new QAction("Monochrome",this);
+    monoThemeAct->setStatusTip(tr("A monochrome black icon theme"));
+    connect(monoThemeAct, SIGNAL(triggered()), this, SLOT(setMonochromeTheme()));
+    monoWhiteThemeAct = new QAction("MonoWhite",this);
+    monoWhiteThemeAct->setStatusTip(tr("A monochrome white icon theme"));
+    connect(monoWhiteThemeAct, SIGNAL(triggered()), this, SLOT(setMonoWhiteTheme()));
+    monoBlueThemeAct = new QAction("MonoBlue",this);
+    monoBlueThemeAct->setStatusTip(tr("A monochrome blue icon theme"));
+    connect(monoBlueThemeAct, SIGNAL(triggered()), this, SLOT(setMonoBlueTheme()));
 
-    QActionGroup *iconAlignGroup = new QActionGroup(this);
-    smallIconAct =       addAct( iconAlignGroup,     tr("Small"),           tr("Use small toolbar icons"),              SLOT(setSmallIconThemeSize()));
-    normalIconAct =      addAct( iconAlignGroup,     tr("Normal"),          tr("Use normal size toolbar icons"),        SLOT(setNormalIconThemeSize()));
-    bigIconAct =         addAct( iconAlignGroup,     tr("Big"),             tr("Use big toolbar icons"),                SLOT(setBigIconThemeSize()));
-    hugeIconAct =        addAct( iconAlignGroup,     tr("Huge"),            tr("Use huge toolbar icons"),               SLOT(setHugeIconThemeSize()));
+    smallIconAct = new QAction(tr("Small"),this);
+    smallIconAct->setStatusTip(tr("Use small toolbar icons"));
+    connect(smallIconAct, SIGNAL(triggered()), this, SLOT(setSmallIconThemeSize()));
+    normalIconAct = new QAction(this);
+    normalIconAct->setStatusTip(tr("Use normal size toolbar icons"));
+    normalIconAct->setText(tr("Normal"));
+    connect(normalIconAct, SIGNAL(triggered()), this, SLOT(setNormalIconThemeSize()));
+    bigIconAct = new QAction(this);
+    bigIconAct->setStatusTip(tr("Use big toolbar icons"));
+    bigIconAct->setText(tr("Big"));
+    connect(bigIconAct, SIGNAL(triggered()), this, SLOT(setBigIconThemeSize()));
+    hugeIconAct = new QAction(this);    
+    hugeIconAct->setStatusTip(tr("Use huge toolbar icons"));
+    hugeIconAct->setText(tr("Huge"));   
+    connect(hugeIconAct, SIGNAL(triggered()), this, SLOT(setHugeIconThemeSize()));
 
-    QActionGroup *langAlignGroup = new QActionGroup(this);
-    sysLangAct =         addAct( langAlignGroup,     tr("System language"), tr("Use system language in menus"),         SLOT(setSysLanguage()));
-    czechLangAct =       addAct( langAlignGroup,     tr("Czech"),           tr("Use Czech in menus"),                   SLOT(setCZLanguage()));
-    germanLangAct =      addAct( langAlignGroup,     tr("German"),          tr("Use German in menus"),                  SLOT(setDELanguage()));
-    englishLangAct =     addAct( langAlignGroup,     tr("English"),         tr("Use English in menus"),                 SLOT(setENLanguage()));
-    finnishLangAct =     addAct( langAlignGroup,     tr("Finnish"),         tr("Use Finnish in menus"),                 SLOT(setFILanguage()));
-    frenchLangAct =      addAct( langAlignGroup,     tr("French"),          tr("Use French in menus"),                  SLOT(setFRLanguage()));
-    italianLangAct =     addAct( langAlignGroup,     tr("Italian"),         tr("Use Italian in menus"),                 SLOT(setITLanguage()));
-    hebrewLangAct =      addAct( langAlignGroup,     tr("Hebrew"),          tr("Use Hebrew in menus"),                  SLOT(setHELanguage()));
-    polishLangAct =      addAct( langAlignGroup,     tr("Polish"),          tr("Use Polish in menus"),                  SLOT(setPLLanguage()));
-    portugueseLangAct =  addAct( langAlignGroup,     tr("Portuguese"),      tr("Use Portuguese in menus"),              SLOT(setPTLanguage()));
-    swedishLangAct =     addAct( langAlignGroup,     tr("Swedish"),         tr("Use Swedish in menus"),                 SLOT(setSELanguage()));
-    russianLangAct =     addAct( langAlignGroup,     tr("Russian"),         tr("Use Russian in menus"),                 SLOT(setRULanguage()));
+    defaultLanguageAct = new QAction(tr("System default language"),this);
+    defaultLanguageAct->setStatusTip(tr("Use system default language in menus"));
+    connect(defaultLanguageAct, SIGNAL(triggered()), this, SLOT(setDefaultLanguage()));
 
-    aboutAct =           addAct("information.png",   tr("About"),                  tr("Show the application's About box"),   SLOT(about()));
-    printAct =           addAct("print.png",         tr("Print"),                  tr("Print current model"),                SLOT(print()));
-    simulateAct =        addAct("simulate.png",      tr("Simulate"),               tr("Simulate selected model"),            SLOT(simulate()));
-    loadbackupAct =      addAct("open.png",          tr("loadBackup..."),          tr("Load backup from file"),              SLOT(loadBackup()));
-    logsAct =            addAct("logs.png",          tr("Logs"),                   tr("Open log file"),                      SLOT(logFile()));
-    appPrefsAct =        addAct("apppreferences.png",tr("Setting..."),             tr("Edit Settings"),                      SLOT(appPrefs()));
-    fwPrefsAct =         addAct("fwpreferences.png", tr("Downloads..."),           tr("Download firmware and voice files"),  SLOT(fwPrefs()));
-    checkForUpdatesAct = addAct("update.png",        tr("Check for updates..."),   tr("Check OpenTX and Companion updates"), SLOT(doUpdates()));
-    changelogAct =       addAct("changelog.png",     tr("ChangeLog..."),           tr("Show Companion changelog"),           SLOT(changelog()));
-    fwchangelogAct =     addAct("changelog.png",     tr("Firmware ChangeLog..."),  tr("Show firmware changelog"),            SLOT(fwchangelog()));
-    compareAct =         addAct("compare.png",       tr("Compare..."),             tr("Compare models"),                     SLOT(compare()));
-    editSplashAct =      addAct("paintbrush.png",    tr("Edit Tx Splash Image..."),tr("edit the splash screen of your TX"),  SLOT(customizeSplash()));
-    burnListAct =        addAct("list.png",          tr("List programmers"),       tr("List available programmers"),         SLOT(burnList()));
-    burnFusesAct =       addAct("fuses.png",         tr("Fuses..."),               tr("Show fuses dialog"),                  SLOT(burnFuses()));
-    readFlashAct =       addAct("read_flash.png",    tr("Read Firmware"),          tr("Read firmware from transmitter"),     SLOT(readFlash()));
-    writeFlashAct =      addAct("write_flash.png",   tr("Write Firmware"),         tr("Write firmware to transmitter"),      SLOT(writeFlash()));
-    createProfileAct =   addAct("",                  tr("New Profile"),            tr("Create a new Radio Setting Profile"), SLOT(createProfile()));
-    openDocURLAct =      addAct("",                  tr("Manuals and other Documents"),      tr("Open the OpenTX document page in a web browser"), SLOT(openDocURL()));
-    writeEepromAct =     addAct("write_eeprom.png",  tr("Write Models and Settings To Tx"),  tr("Write Models and Settings to transmitter"),       SLOT(writeEeprom()));
-    readEepromAct =      addAct("read_eeprom.png",   tr("Read Models and Settings From Tx"), tr("Read Models and Settings from transmitter"),      SLOT(readEeprom()));
-    burnConfigAct =      addAct("configure.png",     tr("Configure connection software..."), tr("Configure software for reading from and writing to the transmitter"), SLOT(burnConfig()));
-    writeFileToEepromAct = addAct("write_eeprom_file.png",   tr("Write Models and Settings from file to Tx"), tr("Write Models and Settings from file to transmitter"), SLOT(writeFileToEeprom()));
-    readEepromToFileAct = addAct("read_eeprom_file.png",  tr("Save Tx Models and Settings to file"),       tr("Save the Models and Settings from the transmitter to a file"), SLOT(readEepromToFile()));
-    contributorsAct =    addAct("contributors.png",  tr("Contributors"),            tr("A tribute to those who have contributed to OpenTX and Companion"), SLOT(contributors()));
-    
-    compareAct->setEnabled(false);
-    simulateAct->setEnabled(false);
-    printAct->setEnabled(false);
+    czechLanguageAct = new QAction(tr("Czech"),this);
+    czechLanguageAct->setStatusTip(tr("Use Czech in menus"));
+    connect(czechLanguageAct, SIGNAL(triggered()), this, SLOT(setCZLanguage()));
+
+    germanLanguageAct = new QAction(tr("German"),this);
+    germanLanguageAct->setStatusTip(tr("Use German in menus"));
+    connect(germanLanguageAct, SIGNAL(triggered()), this, SLOT(setDELanguage()));
+
+    englishLanguageAct = new QAction(tr("English"),this);
+    englishLanguageAct->setStatusTip(tr("Use English in menus"));
+    connect(englishLanguageAct, SIGNAL(triggered()), this, SLOT(setENLanguage()));
+
+    frenchLanguageAct = new QAction(tr("French"),this);
+    frenchLanguageAct->setStatusTip(tr("Use French in menus"));
+    connect(frenchLanguageAct, SIGNAL(triggered()), this, SLOT(setFRLanguage()));
+
+    italianLanguageAct = new QAction(tr("Italian"),this);
+    italianLanguageAct->setStatusTip(tr("Use Italian in menus"));
+    connect(italianLanguageAct, SIGNAL(triggered()), this, SLOT(setITLanguage()));
+
+    hebrewLanguageAct = new QAction(tr("Hebrew"),this);
+    hebrewLanguageAct->setStatusTip(tr("Use Hebrew in menus"));
+    connect(hebrewLanguageAct, SIGNAL(triggered()), this, SLOT(setHELanguage()));
+
+    polishLanguageAct = new QAction(tr("Polish"),this);
+    polishLanguageAct->setStatusTip(tr("Use Polish in menus"));
+    connect(polishLanguageAct, SIGNAL(triggered()), this, SLOT(setPLLanguage()));
+
+    portugueseLanguageAct = new QAction(tr("Portuguese"),this);
+    portugueseLanguageAct->setStatusTip(tr("Use Portuguese in menus"));
+    connect(portugueseLanguageAct, SIGNAL(triggered()), this, SLOT(setPTLanguage()));
+
+    swedishLanguageAct = new QAction(tr("Swedish"),this);
+    swedishLanguageAct->setStatusTip(tr("Use Swedish in menus"));
+    connect(swedishLanguageAct, SIGNAL(triggered()), this, SLOT(setSELanguage()));
+
+    russianLanguageAct = new QAction(tr("Russian"),this);
+    russianLanguageAct->setStatusTip(tr("Use Russian in menus"));
+    connect(russianLanguageAct, SIGNAL(triggered()), this, SLOT(setRULanguage()));
+
+    openDocumentURLAct = new QAction(tr("Manuals and other Documents"),this);
+    openDocumentURLAct->setStatusTip(tr("Open the OpenTX document page in a web browser"));
+    connect(openDocumentURLAct, SIGNAL(triggered()), this, SLOT(openDocumentURL()));
+
 }
 
 void MainWindow::createMenus()
@@ -1720,8 +1865,8 @@ void MainWindow::createMenus()
     QMenu *languageMenu=new QMenu(tr("Set Menu Language"));
     QMenu *themeMenu=new QMenu(tr("Set Icon Theme"));
     QMenu *iconThemeSizeMenu=new QMenu(tr("Set Icon Size"));
-
-    fileMenu = menuBar()->addMenu(tr("File"));
+    
+    fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(newAct);
     fileMenu->addAction(openAct);
     fileMenu->addAction(saveAct);
@@ -1737,55 +1882,53 @@ void MainWindow::createMenus()
     fileMenu->addAction(printAct);
     fileMenu->addAction(compareAct);
     fileMenu->addSeparator();
-    fileMenu->addAction(fwPrefsAct);
+    fileMenu->addAction(fwPreferencesAct);
     fileMenu->addMenu(createProfilesMenu());
     fileMenu->addAction(exitAct);
 
-    editMenu = menuBar()->addMenu(tr("Edit"));
+    editMenu = menuBar()->addMenu(tr("&Edit"));
     editMenu->addAction(cutAct);
     editMenu->addAction(copyAct);
     editMenu->addAction(pasteAct);
 
-    settingsMenu = menuBar()->addMenu(tr("Settings"));
+    settingsMenu = menuBar()->addMenu(tr("&Settings"));
     settingsMenu->addMenu(languageMenu);
-      languageMenu->addAction(sysLangAct);
-      languageMenu->addAction(englishLangAct);
-      languageMenu->addAction(czechLangAct);
-      languageMenu->addAction(germanLangAct);
-      languageMenu->addAction(finnishLangAct);
-      languageMenu->addAction(frenchLangAct);
-      languageMenu->addAction(hebrewLangAct);
-      languageMenu->addAction(italianLangAct);
-      languageMenu->addAction(polishLangAct);
-      languageMenu->addAction(portugueseLangAct);
-      languageMenu->addAction(swedishLangAct);
-      languageMenu->addAction(russianLangAct);
-
+      languageMenu->addAction(defaultLanguageAct);
+      languageMenu->addAction(englishLanguageAct);
+      languageMenu->addAction(czechLanguageAct);
+      languageMenu->addAction(germanLanguageAct);
+      languageMenu->addAction(frenchLanguageAct);
+      languageMenu->addAction(hebrewLanguageAct);
+      languageMenu->addAction(italianLanguageAct);
+      languageMenu->addAction(polishLanguageAct);
+      languageMenu->addAction(portugueseLanguageAct);
+      languageMenu->addAction(swedishLanguageAct);
+      languageMenu->addAction(russianLanguageAct);
     settingsMenu->addMenu(themeMenu);
       themeMenu->addAction(classicThemeAct);
       themeMenu->addAction(newThemeAct);
       themeMenu->addAction(monoThemeAct);
-      themeMenu->addAction(monoBlueAct);
-      themeMenu->addAction(monoWhiteAct);
+      themeMenu->addAction(monoBlueThemeAct);
+      themeMenu->addAction(monoWhiteThemeAct);
     settingsMenu->addMenu(iconThemeSizeMenu);
       iconThemeSizeMenu->addAction(smallIconAct);
       iconThemeSizeMenu->addAction(normalIconAct);
       iconThemeSizeMenu->addAction(bigIconAct);
       iconThemeSizeMenu->addAction(hugeIconAct);
     settingsMenu->addSeparator();
-    settingsMenu->addAction(appPrefsAct);
-    settingsMenu->addAction(editSplashAct);
+    settingsMenu->addAction(appPreferencesAct);
+    settingsMenu->addAction(customizeSplashAct);
     settingsMenu->addAction(burnConfigAct);
 
-    burnMenu = menuBar()->addMenu(tr("Read/Write"));
-    burnMenu->addAction(writeEepromAct);
-    burnMenu->addAction(readEepromAct);
+    burnMenu = menuBar()->addMenu(tr("&Read/Write"));
+    burnMenu->addAction(burnToAct);
+    burnMenu->addAction(burnFromAct);
     burnMenu->addSeparator();
-    burnMenu->addAction(writeFileToEepromAct);
-    burnMenu->addAction(readEepromToFileAct);
+    burnMenu->addAction(burnExtenalToEEPROMAct);
+    burnMenu->addAction(burnExtenalFromEEPROMAct);
     burnMenu->addSeparator();
-    burnMenu->addAction(writeFlashAct);
-    burnMenu->addAction(readFlashAct);
+    burnMenu->addAction(burnToFlashAct);
+    burnMenu->addAction(burnFromFlashAct);
     burnMenu->addSeparator();
     burnMenu->addSeparator();
     EEPROMInterface *eepromInterface = GetEepromInterface();
@@ -1794,12 +1937,13 @@ void MainWindow::createMenus()
       burnMenu->addAction(burnListAct);
     }
     menuBar()->addSeparator();
-    helpMenu = menuBar()->addMenu(tr("Help"));
+
+    helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addSeparator();
     helpMenu->addAction(checkForUpdatesAct);
     helpMenu->addSeparator();
     helpMenu->addAction(aboutAct);
-    helpMenu->addAction(openDocURLAct);
+    helpMenu->addAction(openDocumentURLAct);
     helpMenu->addSeparator();
     helpMenu->addAction(changelogAct);
     helpMenu->addAction(fwchangelogAct);
@@ -1856,29 +2000,23 @@ void MainWindow::createToolBars()
     fileToolBar->setObjectName("File");
     fileToolBar->addAction(newAct);
     fileToolBar->addAction(openAct);
-
-    QToolButton * recentToolButton = new QToolButton;
-    recentToolButton->setPopupMode(QToolButton::InstantPopup);
-    recentToolButton->setMenu(createRecentFileMenu());
-    recentToolButton->setIcon(CompanionIcon("recentdocument.png"));
-    recentToolButton->setToolTip(tr("Recent Files"));
-	  recentToolButton->setStatusTip(tr("Show a selection list of recent documents"));
-
+      QToolButton * recentToolButton = new QToolButton;
+      recentToolButton->setPopupMode(QToolButton::InstantPopup);
+      recentToolButton->setMenu(createRecentFileMenu());
+      recentToolButton->setIcon(CompanionIcon("recentdocument.png"));
+      recentToolButton->setToolTip(tr("Recent Files"));
     fileToolBar->addWidget(recentToolButton);
     fileToolBar->addAction(saveAct);
     fileToolBar->addAction(logsAct);
     fileToolBar->addSeparator();
-    fileToolBar->addAction(appPrefsAct);
-    fileToolBar->addAction(fwPrefsAct);
-    fileToolBar->addAction(editSplashAct);
-
-    QToolButton * profileButton = new QToolButton;
-    profileButton->setPopupMode(QToolButton::InstantPopup);
-    profileButton->setMenu(createProfilesMenu());
-    profileButton->setIcon(CompanionIcon("profiles.png"));
-    profileButton->setToolTip(tr("Radio Profiles"));
-	  profileButton->setStatusTip(tr("Show a selection list of radio settings profiles"));
-
+    fileToolBar->addAction(appPreferencesAct);
+    fileToolBar->addAction(fwPreferencesAct);
+    fileToolBar->addAction(customizeSplashAct);
+      profileButton = new QToolButton;
+      profileButton->setPopupMode(QToolButton::InstantPopup);
+      profileButton->setMenu(createProfilesMenu());
+      profileButton->setIcon(CompanionIcon("profiles.png"));
+      profileButton->setToolTip(tr("Firmware Profiles"));
     fileToolBar->addWidget(profileButton);
     fileToolBar->addSeparator();
     fileToolBar->addAction(simulateAct);
@@ -1896,14 +2034,14 @@ void MainWindow::createToolBars()
     addToolBar( Qt::LeftToolBarArea, burnToolBar );
     burnToolBar->setIconSize(size);
     burnToolBar->setObjectName("Write");
-    burnToolBar->addAction(writeEepromAct);
-    burnToolBar->addAction(readEepromAct);
+    burnToolBar->addAction(burnToAct);
+    burnToolBar->addAction(burnFromAct);
     burnToolBar->addSeparator();
-    burnToolBar->addAction(writeFileToEepromAct);
-    burnToolBar->addAction(readEepromToFileAct);
+    burnToolBar->addAction(burnExtenalToEEPROMAct);
+    burnToolBar->addAction(burnExtenalFromEEPROMAct);
     burnToolBar->addSeparator();
-    burnToolBar->addAction(writeFlashAct);
-    burnToolBar->addAction(readFlashAct);
+    burnToolBar->addAction(burnToFlashAct);
+    burnToolBar->addAction(burnFromFlashAct);
     burnToolBar->addSeparator();
     burnToolBar->addAction(burnConfigAct);
 
@@ -1923,7 +2061,7 @@ void MainWindow::readSettings()
 {
     QSettings settings;
     restoreState(settings.value("mainWindowState").toByteArray());
-    checkCompanion = settings.value("startup_check_companion", true).toBool();
+    checkCompanion9x = settings.value("startup_check_companion", true).toBool();
     checkFW = settings.value("startup_check_fw", true).toBool();
     MaxRecentFiles =settings.value("history_size",10).toInt();
     if (settings.value("profileId",0).toInt() == 0)
@@ -1975,88 +2113,36 @@ void MainWindow::updateRecentFileActions()
     }
     for ( j = numRecentFiles; j < MaxRecentFiles; ++j)
       recentFileActs[j]->setVisible(false);
-}
-
-void MainWindow::updateIconSizeActions()
-{
-  QSettings settings;
-  int size = settings.value("icon_size","0").toInt();
-  switch (size){
-    case 0:  smallIconAct->setChecked(true);  break;
-    case 1:  normalIconAct->setChecked(true); break;
-    case 2:  bigIconAct->setChecked(true);    break;
-    case 3:  hugeIconAct->setChecked(true);   break;
-  }
-}
-
-void MainWindow::updateLanguageActions()
-{
-  QSettings settings;
-  QString langId = settings.value("locale","").toString();
-
-  if (langId=="") 
-    sysLangAct->setChecked(true);
-  else if (langId=="cs_CZ") 
-    czechLangAct->setChecked(true);
-  else if (langId=="de_DE") 
-    germanLangAct->setChecked(true);
-  else if (langId=="en") 
-    englishLangAct->setChecked(true);
-  else if (langId=="fi_FI") 
-    finnishLangAct->setChecked(true);
-  else if (langId=="fr_FR") 
-    frenchLangAct->setChecked(true);
-  else if (langId=="it_IT") 
-    italianLangAct->setChecked(true);
-  else if (langId=="he_IL") 
-    hebrewLangAct->setChecked(true);
-  else if (langId=="pl_PL") 
-    polishLangAct->setChecked(true);
-  else if (langId=="pt_PT") 
-    portugueseLangAct->setChecked(true);
-  else if (langId=="ru_RU") 
-    russianLangAct->setChecked(true);
-  else if (langId=="sv_SE") 
-    swedishLangAct->setChecked(true);
-}
-
-void MainWindow::updateIconThemeActions()
-{
-  QSettings settings;
-  int size = settings.value("theme","1").toInt();
-  switch (size){
-    case 0:  classicThemeAct->setChecked(true); break;
-    case 1:  newThemeAct->setChecked(true);     break;
-    case 2:  monoWhiteAct->setChecked(true);    break;
-    case 3:  monoThemeAct->setChecked(true);    break;
-    case 4:  monoBlueAct->setChecked(true);     break;
-  }
+ 
+    // separatorAct->setVisible(numRecentFiles > 0);
 }
 
 void MainWindow::updateProfilesActions()
-{
-  int i;
-  QSettings settings;
-  int activeProfile = settings.value("profileId").toInt();
+ {
+    int i;
+    QSettings settings;
+    int activeProfile = settings.value("profileId").toInt();
 
-  settings.beginGroup("Profiles");
-  for (i=0; i<MAX_PROFILES; i++) {
-    QString profile=QString("profile%1").arg(i+1);
-    settings.beginGroup(profile);
-    QString name=settings.value("Name","").toString();
-    if (!name.isEmpty()) {
-      QString text = tr("&%1 %2").arg(i + 1).arg(name);
-      profileActs[i]->setText(text);
-      profileActs[i]->setData(i+1);
-      profileActs[i]->setVisible(true);
-      if ((i+1) == activeProfile)
-        profileActs[i]->setChecked(true);
-    } 
-    else {
-      profileActs[i]->setVisible(false);
+    settings.beginGroup("Profiles");
+    for (i=0; i<MAX_PROFILES; i++) {
+      QString profile=QString("profile%1").arg(i+1);
+      settings.beginGroup(profile);
+      QString name=settings.value("Name","").toString();
+      if (!name.isEmpty()) {
+        QString text = tr("&%1 %2").arg(i + 1).arg(name);
+        profileActs[i]->setText(text);
+        profileActs[i]->setData(i+1);
+        profileActs[i]->setVisible(true);
+        if ((i+1) == activeProfile)
+          profileActs[i]->setIcon(CompanionIcon("arrow-right.png"));
+        else
+          profileActs[i]->setIcon(CompanionIcon(""));
+
+      } else {
+        profileActs[i]->setVisible(false);
+      }
+      settings.endGroup();
     }
-    settings.endGroup();
-  }
 }
 
 void MainWindow::createProfile()

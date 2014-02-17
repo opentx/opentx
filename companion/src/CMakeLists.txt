@@ -80,15 +80,7 @@ IF( Subversion_FOUND )
   # Subversion_WC_INFO( ${PROJECT_SOURCE_DIR} C9X )
 ENDIF( )
 
-set(RADIO_SRC_DIRECTORY ${PROJECT_SOURCE_DIR}/../../radio/src)
-
-include_directories(
-  ${CMAKE_CURRENT_BINARY_DIR}
-  ${RADIO_SRC_DIRECTORY}/../..
-  ${RADIO_SRC_DIRECTORY}
-  ${RADIO_SRC_DIRECTORY}/fonts/std
-  ${RADIO_SRC_DIRECTORY}/lua/src
-)
+INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR} ${PROJECT_SOURCE_DIR}/../.. ${PROJECT_SOURCE_DIR}/../../radio/src/fonts/std )
 
 set(TH9X_CHECKOUT_DIRECTORY ${PROJECT_BINARY_DIR}/firmwares/th9x)
 add_custom_command(
@@ -116,6 +108,8 @@ add_custom_command(
   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/firmwares/ersky9x/ersky9xsimulator.cpp ${ERSKY9X_CHECKOUT_DIRECTORY}
   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/firmwares/ersky9x/ersky9xsimulator.cpp
 )
+
+set(RADIO_SRC_DIRECTORY ${PROJECT_SOURCE_DIR}/../../radio/src)
 
 add_custom_command(
   OUTPUT ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
@@ -304,7 +298,8 @@ ENDIF( )
 INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} )
 INCLUDE_DIRECTORIES( ${CMAKE_SOURCE_DIR} )
 
-SET( LANGUAGES he pl pt ru de fr it sv cs fi)
+
+SET( LANGUAGES he pl pt ru de fr it sv cs )
 FOREACH( language ${LANGUAGES} )
   SET( companion_TS ${companion_TS} translations/companion_${language}.ts )
 ENDFOREACH( language )

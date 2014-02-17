@@ -235,13 +235,8 @@ class SourcesConversionTable: public ConversionTable {
         if (afterrelease21March2013)
           addConversion(RawSource(SOURCE_TYPE_TELEMETRY, 0), val++);
 
-        for (int i=1; i<TELEMETRY_SOURCE_ACC; i++) {
-          if (version < 216) {
-            if (i==TELEMETRY_SOURCE_ASPD-1 || i==TELEMETRY_SOURCE_DTE-1 || i==TELEMETRY_SOURCE_CELL_MIN-1 || i==TELEMETRY_SOURCE_VFAS_MIN-1)
-              continue;
-          }
+        for (int i=1; i<TELEMETRY_SOURCE_ACC; i++)
           addConversion(RawSource(SOURCE_TYPE_TELEMETRY, i), val++);
-        }
       }
     }
 
@@ -2203,21 +2198,14 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
   }
 
   if (IS_TARANIS(board) && version >= 216) {
-    for (int i=0; i<3; i++) {
-      ScriptData & script = modelData.scriptData[i];
-      internalField.Append(new ZCharField<10>(script.filename));
-      internalField.Append(new ZCharField<10>(script.name));
-      for (int j=0; j<10; j++) {
-        internalField.Append(new SignedField<8>(script.inputs[j]));
-      }
-    }
-    for (int i=0; i<32; i++) {
+    // TODO ScriptData scriptsData[MAX_SCRIPTS];
+    internalField.Append(new SpareBitsField<720>());
+    for (int i=0; i<32; i++)
       internalField.Append(new ZCharField<4>(modelData.inputNames[i]));
-    }
     internalField.Append(new UnsignedField<8>(modelData.nPotsToWarn));
     for (int i=0; i < GetEepromInterface()->getCapability(Pots); i++) {
       internalField.Append(new SignedField<8>(modelData.potPosition[i]));
-    }    
+    }
   }
 }
 

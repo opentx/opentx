@@ -216,7 +216,7 @@ TX_CADDY = NO
 IRPROTOS = NO
 
 # TRANSLATIONS
-# Values = cz, de, en, fi, fr, it, se, es, pl, pt
+# Values = cz, de, en, fr, it, se, es, pl, pt
 TRANSLATIONS = EN
 
 # TTS
@@ -257,10 +257,6 @@ GVARS = NO
 # Enable another 3 positions switch to replace a pot
 # Values = NO, POT1, POT2, POT3,
 3POS = NO
-
-# Lua interpreter embedded
-# Values = NO, NO_MODEL_SCRIPTS, YES 
-LUA = NO
 
 # Menu Lock modes
 # Values = NO, READONLY, NOMENUS 
@@ -659,20 +655,6 @@ ifeq ($(PCB), TARANIS)
   EXTRABOARDSRC += targets/taranis/usbd_usr.cpp targets/taranis/usbd_storage_msd.cpp
   SRC += targets/sky9x/syscalls.c
   
-  ifneq ($(LUA), NO)
-    ifeq ($(LUA), YES)
-      CPPDEFS += -DLUA_MODEL_SCRIPTS
-    endif
-    CPPDEFS += -DLUA
-    INCDIRS += lua/src
-    CPPSRC += lua.cpp
-    LUASRC = lua/src/lapi.c lua/src/lcode.c lua/src/lctype.c lua/src/ldebug.c lua/src/ldo.c lua/src/ldump.c lua/src/lfunc.c lua/src/lgc.c lua/src/llex.c lua/src/lmem.c \
-           lua/src/lobject.c lua/src/lopcodes.c lua/src/lparser.c lua/src/lstate.c lua/src/lstring.c lua/src/ltable.c lua/src/ltm.c lua/src/lundump.c lua/src/lvm.c lua/src/lzio.c \
-           lua/src/lbaselib.c lua/src/linit.c lua/src/lmathlib.c lua/src/loadlib.c lua/src/lauxlib.c lua/src/ltablib.c lua/src/lcorolib.c 
-           # lua/src/loslib.c lua/src/lbitlib.c lua/src/lstrlib.c lua/src/liolib.c lua/src/ldblib.c
-    SRC += $(LUASRC) 
-  endif           
-
   ifeq ($(SDCARD), YES)
     EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/taranis/diskio.cpp
     CPPDEFS += -DVOICE
@@ -1086,7 +1068,7 @@ else
   build: stamp_header tra lbm allsrc.cpp elf remallsrc bin
 endif
 
-tra: translations/cz.h translations/de.h translations/es.h translations/fi.h translations/fr.h translations/it.h translations/pl.h translations/pt.h translations/se.h
+tra: translations/cz.h translations/de.h translations/es.h translations/fr.h translations/it.h translations/pl.h translations/pt.h translations/se.h
 lbm: fonts bitmaps/sticks.lbm
   
 elf: $(TARGET).elf
@@ -1098,11 +1080,13 @@ sym: $(TARGET).sym
 
 # Build stamp-file
 stamp_header:
-	@echo "// Automatically generated file (Makefile) - do not edit" > stamp-opentx.h
+	@echo
+	@echo "Generate Version-stamp:"
+	@echo "//Automatically generated file (Makefile) - do not edit" > stamp-opentx.h
 	@echo "#define DATE_STR \"`date +%Y-%m-%d | tr -d '\r\n'`\"" >> stamp-opentx.h
 	@echo "#define TIME_STR \"`date +%H:%M:%S | tr -d '\r\n'`\"" >> stamp-opentx.h
 	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx.h
-	@echo "#define VERS_NUM $(VERSION)" >> stamp-opentx.h
+	@cat stamp-opentx.h
 
 9x-stamp:
 	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-9x.txt
@@ -1154,11 +1138,6 @@ translations/es.h: translations/es.h.txt
 	@echo
 	@echo "Create Spanish language specific header files"
 	$(TRANSLATE) translations/es.h.txt translations/es.h es
-
-translations/fi.h: translations/fi.h.txt 
-	@echo
-	@echo "Create Finnish language specific header files"
-	$(TRANSLATE) translations/fi.h.txt translations/fi.h fi
 
 translations/fr.h: translations/fr.h.txt 
 	@echo
@@ -1245,7 +1224,7 @@ FOXLIB=-L/usr/local/lib \
        -Wl,-rpath,$(FOXPATH)/src/.libs
 
 simu: stamp_header $(BOARDSRC) $(CPPSRC) Makefile simu.cpp simpgmspace.cpp *.h tra lbm eeprom.bin
-	g++ $(CPPFLAGS) $(INCFLAGS) simu.cpp $(BOARDSRC) $(CPPSRC) $(LUASRC) simpgmspace.cpp -MD -DSIMU -O0 -o simu $(FOXINC) $(FOXLIB) -pthread -fexceptions
+	g++ $(CPPFLAGS) $(INCFLAGS) simu.cpp $(BOARDSRC) $(CPPSRC) simpgmspace.cpp -MD -DSIMU -O0 -o simu $(FOXINC) $(FOXLIB) -pthread -fexceptions
 
 eeprom.bin:
 	dd if=/dev/zero of=$@ bs=1 count=2048

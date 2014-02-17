@@ -124,7 +124,7 @@ PACK(struct FrskySerialData {
   uint16_t currentConsumption; // 0x35 openXsensor only! Otherwise calculated by the Tx from current
   uint16_t currentPrescale;
   uint16_t power;              // 0x37 openXsensor only! Otherwise calculated by the Tx from current and voltage
-  int16_t  airSpeed;
+  int16_t  spare2;
 
   uint16_t vfas;             // 0x39  Added to FrSky protocol for home made sensors with a better precision
   uint16_t volts_bp;         // 0x3A
@@ -139,13 +139,9 @@ PACK(struct FrskySerialData {
   int16_t  maxTemperature2;
   uint16_t maxGpsSpeed;
   uint16_t maxGpsDistance;
-  int16_t  minCell;
-  int16_t  minVfas;
   uint16_t maxCurrent;
   uint16_t maxPower;
   /* end */
-
-  int16_t  dTE;
 });
 #elif defined(WS_HOW_HIGH)
 PACK(struct FrskySerialData {

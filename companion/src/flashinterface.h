@@ -59,7 +59,7 @@ public:
   QImage getSplash();
   bool setSplash(const QImage & newsplash);
   bool hasSplash();
-  int getSplashWidth();
+  uint getSplashWidth();
   uint getSplashHeight();
   uint getSplashColors();
   QImage::Format getSplashFormat();

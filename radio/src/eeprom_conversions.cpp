@@ -228,13 +228,6 @@ int ConvertSource_215_to_216(int source, bool insertZero=false)
   // 4 GVARS added
   if (source > MIXSRC_GVAR1+4)
     source += 4;
-  // ASpd and dTE added
-  if (source >= MIXSRC_FIRST_TELEM-1+TELEM_ASPD)
-    source += 2;
-  // Cel- and Vfas- added
-  if (source >= MIXSRC_FIRST_TELEM-1+TELEM_MIN_CELL)
-    source += 2;
-
   return source;
 }
 
@@ -248,19 +241,11 @@ int ConvertSwitch_215_to_216(int swtch)
     return swtch + (2*4) + (2*6); // 4 trims and 2 * 6-pos added as switches
 }
 #else
-int ConvertSource_215_to_216(int source, bool insertZero=false)
+int ConvertSource_215_to_216(int source, bool removeZero=false)
 {
-  if (insertZero)
-    source += 1;
   // 4 GVARS added
   if (source > MIXSRC_GVAR1+4)
     source += 4;
-  // ASpd and dTE added
-  if (source >= MIXSRC_FIRST_TELEM-1+TELEM_ASPD)
-    source += 2;
-  // Cel- and Vfas- added
-  if (source >= MIXSRC_FIRST_TELEM-1+TELEM_MIN_CELL)
-    source += 2;
   return source;
 }
 
@@ -582,7 +567,7 @@ void ConvertModel_215_to_216(ModelData &model)
     }
     if (fn.func == FUNC_PLAY_VALUE || fn.func == FUNC_VOLUME || (IS_ADJUST_GV_FUNC(fn.func) && fn.all.mode == FUNC_ADJUST_GVAR_SOURCE)) {
 #if defined(PCBTARANIS)
-      fn.all.val = ConvertSource_215_to_216(fn.all.val, true);
+      fn.all.param = ConvertSource_215_to_216(fn.all.param, true);
 #endif
     }
   }

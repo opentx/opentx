@@ -57,8 +57,8 @@ RawSourceRange RawSource::getRange(bool singleprec)
           break;
         case TELEMETRY_SOURCE_TIMER1:
         case TELEMETRY_SOURCE_TIMER2:
-          result.step = singleprec ? 5 : 1;
-          result.max = singleprec ? 255*5 : 7200;
+          result.step = singleprec ? 3 : 1;
+          result.max = singleprec ? 765 : 7200;
           break;
         case TELEMETRY_SOURCE_RSSI_TX:
         case TELEMETRY_SOURCE_RSSI_RX:
@@ -175,9 +175,9 @@ QString RawSource::toString()
   static const QString telemetry[]   = { QObject::tr("Batt"), QObject::tr("Timer1"), QObject::tr("Timer2"),
                             (IS_TARANIS(GetEepromInterface()->getBoard()) ? QObject::tr("SWR") :  QObject::tr("Tx")), (IS_TARANIS(GetEepromInterface()->getBoard()) ? QObject::tr("RSSI") :  QObject::tr("Rx")), QObject::tr("A1"), QObject::tr("A2"), QObject::tr("Alt"), QObject::tr("Rpm"), QObject::tr("Fuel"), QObject::tr("T1"),
                             QObject::tr("T2"), QObject::tr("Speed"), QObject::tr("Dist"), QObject::tr("GPS Alt"), QObject::tr("Cell"), QObject::tr("Cels"), QObject::tr("Vfas"), QObject::tr("Curr"),
-                            QObject::tr("Cnsp"), QObject::tr("Powr"), QObject::tr("AccX"), QObject::tr("AccY"), QObject::tr("AccZ"), QObject::tr("HDG "), QObject::tr("VSpd"), QObject::tr("ASpd"), QObject::tr("dTE"),
-                            QObject::tr("A1-"),  QObject::tr("A2-"), QObject::tr("Alt-"), QObject::tr("Alt+"), QObject::tr("Rpm+"), QObject::tr("T1+"), QObject::tr("T2+"), QObject::tr("Spd+"), QObject::tr("Dst+"), QObject::tr("Cel-"), QObject::tr("Vfs-"), QObject::tr("Cur+"), QObject::tr("Pwr+"),
-                            QObject::tr("ACC "), QObject::tr("Time"),
+                            QObject::tr("Cnsp"), QObject::tr("Powr"), QObject::tr("AccX"), QObject::tr("AccY"), QObject::tr("AccZ"), QObject::tr("HDG "), QObject::tr("VSpd"), QObject::tr("A1-"),
+                            QObject::tr("A2-"), QObject::tr("Alt-"), QObject::tr("Alt+"), QObject::tr("Rpm+"), QObject::tr("T1+"), QObject::tr("T2+"), QObject::tr("Spd+"), QObject::tr("Dst+"),
+                            QObject::tr("Cur+"), QObject::tr("Pwr+"), QObject::tr("ACC "), QObject::tr("Time"),
                           };
 
   static const QString virtualSwitches[] = { QObject::tr("LS1"), QObject::tr("LS2"), QObject::tr("LS3"), QObject::tr("LS4"), QObject::tr("LS5"), QObject::tr("LS6"), QObject::tr("LS7"), QObject::tr("LS8"), QObject::tr("LS9"), QObject::tr("LSA"),
