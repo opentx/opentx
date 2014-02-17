@@ -230,8 +230,12 @@ class Profile:DataObj
 
 
     // All the set declarations
+    void Name                    (const QString str) { if (str.isEmpty())  // Name may never be empty!
+                                                         store("----", _Name,        "Name"                  ,"Profiles", QString("profile%1").arg(index));
+                                                       else
+                                                         store(str,    _Name,        "Name"                  ,"Profiles", QString("profile%1").arg(index));}
+
     void firmware                (const QString str) { store(str, _firmware,         "firmware"              ,"Profiles", QString("profile%1").arg(index));}
-    void Name                    (const QString str) { store(str, _Name,             "Name"                  ,"Profiles", QString("profile%1").arg(index));}
     void sdPath                  (const QString str) { store(str, _sdPath,           "sdPath"                ,"Profiles", QString("profile%1").arg(index));}
     void SplashFileName          (const QString str) { store(str, _SplashFileName,   "SplashFileName"        ,"Profiles", QString("profile%1").arg(index));}
     void burnFirmware            (const bool bl) { store(bl, _burnFirmware,          "burnFirmware"          ,"Profiles", QString("profile%1").arg(index));}
@@ -258,17 +262,33 @@ class Profile:DataObj
         index = -1;
     }
 
-    void init(int newIndex)
+    void remove()
+    {    
+      // Remove all profile values from settings file
+      QSettings settings(PRODUCT, COMPANY);
+      settings.beginGroup("Profiles");
+      settings.remove(QString("profile%1").arg(index));
+      settings.endGroup();
+
+      // Reset all profile variables to initial values
+      init(index);
+    }
+
+    bool existsOnDisk()
     {
-        index = newIndex;
+      QSettings settings(PRODUCT, COMPANY);
+      settings.beginGroup("Profiles");
+      settings.beginGroup(QString("profile%1").arg(index));
+      QStringList keyList = settings.allKeys();
+      settings.endGroup();
+      settings.endGroup();
 
-        QString pName;
-        retrieve( pName, "Name", "", "Profiles", QString("profile%1").arg(newIndex));
-        if ( newIndex > 1 && pName.isEmpty())
-          return;
+      return (keyList.length() > 0);
+    }
 
+    void flush()
+    {
         // Load and store all variables. Use default values if setting values are missing
-
         getset( _firmware,                "firmware"                ,""      ,"Profiles", QString("profile%1").arg(index));
         getset( _Name,                    "Name"                    ,"----"  ,"Profiles", QString("profile%1").arg(index));
         getset( _sdPath,                  "sdPath"                  ,""      ,"Profiles", QString("profile%1").arg(index));
@@ -289,7 +309,43 @@ class Profile:DataObj
         getset( _StickPotCalib,           "StickPotCalib"           ,""      ,"Profiles", QString("profile%1").arg(index));
         getset( _TrainerCalib,            "TrainerCalib"            ,""      ,"Profiles", QString("profile%1").arg(index));
         getset( _VbatCalib,               "VbatCalib"               ,""      ,"Profiles", QString("profile%1").arg(index));
-        getset( _vBatWarn,                "vBatWarn"                ,""      ,"Profiles", QString("profile%1").arg(index));
+        getset( _vBatWarn,                "vBatWarn"                ,""      ,"Profiles", QString("profile%1").arg(index));     
+    }
+
+    void init(int newIndex)
+    {
+        index = newIndex;
+
+        _firmware =              "";
+        _Name =                  "";
+        _sdPath =                "";
+        _SplashFileName =        "";
+        _burnFirmware =          false;
+        _rename_firmware_files = false;
+        _default_channel_order = 0;
+        _default_mode =          1;
+
+        _Beeper =                "";
+        _countryCode =           "";
+        _currentCalib =          "";
+        _Display =               "";
+        _GSStickMode =           "";
+        _Haptic =                "";
+        _PPM_Multiplier =        "";
+        _Speaker =               "";
+        _StickPotCalib =         "";
+        _TrainerCalib =          "";
+        _VbatCalib =             "";
+        _vBatWarn =              "";
+        
+        QString pName;
+        retrieve( pName, "Name", "", "Profiles", QString("profile%1").arg(index));
+
+        // Do not write empty profiles to disk except the default (0) profile.
+        if ( index > 0 && !existsOnDisk())
+          return;
+
+        flush();
     }
 };
 
@@ -307,7 +363,6 @@ class AppData:DataObj
     QString _firmware;
     QString _locale;
     QString _cpu_id;
-    QString _SplashImage;
     QString _Name;
     QString _SplashFileName;
     QString _modelEditGeometry;
@@ -360,7 +415,6 @@ public:
     QString firmware()             { return _firmware;               }
     QString locale()               { return _locale;                 }
     QString cpu_id()               { return _cpu_id;                 }
-    QString SplashImage()          { return _SplashImage;            }
     QString Name()                 { return _Name;                   }
     QString SplashFileName()       { return _SplashFileName;         }
     QString modelEditGeometry()    { return _modelEditGeometry;      }
@@ -409,7 +463,6 @@ public:
     void firmware             (const QString str) { store(str, _firmware,           "firmware"          );}
     void locale               (const QString str) { store(str, _locale,             "locale"            );}
     void cpu_id               (const QString str) { store(str, _cpu_id,             "cpu_id"            );}
-    void SplashImage          (const QString str) { store(str, _SplashImage,        "SplashImage"       );}
     void Name                 (const QString str) { store(str, _Name,               "Name"              );}
     void SplashFileName       (const QString str) { store(str, _SplashFileName,     "SplashFileName"    );}
     void modelEditGeometry    (const QString str) { store(str, _modelEditGeometry,  "modelEditGeometry" );}
@@ -466,7 +519,7 @@ public:
      
         //Initialize the index variables of the profiles
         for (int i=0; i<MAX_PROFILES; i++)
-          profile[i].init( i+1 );
+          profile[i].init( i );
 
 
 
@@ -479,8 +532,7 @@ public:
         getset( _firmware,                "firmware"                ,"" );
         getset( _locale,                  "locale"                  ,"" );
         getset( _cpu_id,                  "cpu_id"                  ,"" );
-        getset( _SplashImage,             "SplashImage"             ,"" );
-        getset( _Name,                    "Name"                    ,"profile1" );
+        getset( _Name,                    "Name"                    ,"----" );
         getset( _SplashFileName,          "SplashFileName"          ,"" );
         getset( _modelEditGeometry,       "modelEditGeometry"       ,"" );
 
@@ -516,7 +568,7 @@ public:
         getset( _js_ctrl,                 "js_ctrl"                 ,0  ); 
         getset( _history_size,            "history_size"            ,10 );
         getset( _modelEditTab,            "modelEditTab"            ,0  );
-        getset( _profileId,               "profileId"               ,1  );
+        getset( _profileId,               "profileId"               ,0  );
         getset( _theme,                   "theme"                   ,1  ); 
         getset( _warningId,               "warningId"               ,0  );
     }

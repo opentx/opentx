@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>685</width>
-    <height>462</height>
+    <height>446</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -839,16 +839,6 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </widget>
        </item>
-       <item row="0" column="2">
-        <widget class="QLineEdit" name="profileNameLE">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-        </widget>
-       </item>
        <item row="9" column="1" colspan="6">
         <widget class="Line" name="line_6">
          <property name="orientation">
@@ -872,7 +862,35 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </widget>
        </item>
-       <item row="0" column="1">
+       <item row="1" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Firmware</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" colspan="2">
+        <widget class="QLineEdit" name="firmwareLE">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="6">
+        <widget class="QPushButton" name="SplashSelect">
+         <property name="text">
+          <string>Select Image</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="6">
+        <widget class="QPushButton" name="clearImageButton">
+         <property name="text">
+          <string>Clear Image</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="6">
         <widget class="QLineEdit" name="profileIndexLE">
          <property name="enabled">
           <bool>false</bool>
@@ -885,17 +903,13 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>Firmware</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1" colspan="2">
-        <widget class="QLineEdit" name="firmwareLE">
-         <property name="enabled">
-          <bool>false</bool>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="profileNameLE">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
          </property>
         </widget>
        </item>
@@ -930,20 +944,6 @@ This is used by the templated to determine which channel goes to what number out
          </property>
          <property name="scaledContents">
           <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="6">
-        <widget class="QPushButton" name="SplashSelect">
-         <property name="text">
-          <string>Select Image</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="6">
-        <widget class="QPushButton" name="clearImageButton">
-         <property name="text">
-          <string>Clear Image</string>
          </property>
         </widget>
        </item>

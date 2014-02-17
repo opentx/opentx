@@ -64,8 +64,6 @@ void appPreferencesDialog::writeValues()
   glob.Name(ui->profileNameLE->text());
   glob.sdPath(ui->sdPath->text());
   glob.SplashFileName(ui->SplashFileName->text());
-  if (!ui->SplashFileName->text().isEmpty())
-    glob.SplashImage("");
   glob.firmware(ui->firmwareLE->text());
   
   saveProfile();
@@ -85,13 +83,10 @@ void appPreferencesDialog::initSettings()
 {
   ui->snapshotClipboardCKB->setChecked(glob.snapshot_to_clipboard());
   ui->burnFirmware->setChecked(glob.burnFirmware());
-  
-  QString Path=glob.snapshotpath();
-  if (QDir(Path).exists()) {
-    ui->snapshotPath->setText(Path);
-    ui->snapshotPath->setReadOnly(true);
-  }
-  if (ui->snapshotClipboardCKB->isChecked()) {
+  ui->snapshotPath->setText(glob.snapshotpath());
+  ui->snapshotPath->setReadOnly(true);
+  if (ui->snapshotClipboardCKB->isChecked())
+  {
     ui->snapshotPath->setDisabled(true);
     ui->snapshotPathButton->setDisabled(true);
   }
@@ -102,19 +97,12 @@ void appPreferencesDialog::initSettings()
   ui->historySize->setValue(glob.history_size());
   ui->backLightColor->setCurrentIndex(glob.backLight());
   ui->simuSW->setChecked(glob.simuSW());
+  ui->libraryPath->setText(glob.libraryPath());
+  ui->ge_lineedit->setText(glob.gePath());
 
-  Path=glob.libraryPath();
-  if (QDir(Path).exists()) {
-    ui->libraryPath->setText(Path);
-  }
-  Path=glob.gePath();
-  if (QFile(Path).exists()) {
-    ui->ge_lineedit->setText(Path);
-  }  
-  Path=glob.backupPath();
-  if (!Path.isEmpty()) {
-    if (QDir(Path).exists()) {
-      ui->backupPath->setText(Path);
+  if (!glob.backupPath().isEmpty()) {
+    if (QDir(glob.backupPath()).exists()) {
+      ui->backupPath->setText(glob.backupPath());
       ui->backupEnable->setEnabled(true);
       ui->backupEnable->setChecked(glob.backupEnable());
     } else {
@@ -156,22 +144,12 @@ void appPreferencesDialog::initSettings()
   ui->channelorderCB->setCurrentIndex(glob.default_channel_order());
   ui->stickmodeCB->setCurrentIndex(glob.default_mode());
   ui->renameFirmware->setChecked(glob.rename_firmware_files());
-  Path=glob.sdPath();
-  if (QDir(Path).exists()) {
-    ui->sdPath->setText(Path);
-  }
+  ui->sdPath->setText(glob.sdPath());
   ui->profileIndexLE->setText(QString("%1").arg(glob.profileId()));
   ui->profileNameLE->setText(glob.Name());
-
-  QString fileName=glob.SplashFileName();
-  if (!fileName.isEmpty()) {
-    QFile file(fileName);
-    if (file.exists()){ 
-      ui->SplashFileName->setText(fileName);
-      displayImage( fileName );
-    }
-  }
   ui->firmwareLE->setText(glob.firmware());
+  ui->SplashFileName->setText(glob.SplashFileName());
+  displayImage( glob.SplashFileName() );
 }
 
 void appPreferencesDialog::on_libraryPathButton_clicked()
@@ -261,13 +239,10 @@ void appPreferencesDialog::on_sdPathButton_clicked()
 void appPreferencesDialog::saveProfile()
 {
   // The profile name may NEVER be empty
-  QString profile=QString("profile") + QString("%1").arg(glob.profileId());
-  QString name=ui->profileNameLE->text();
-  if (name.isEmpty()) {
-    name = profile;
-    ui->profileNameLE->setText(name);
-  }
-  glob.profile[glob.profileId()].Name( name );
+  if (ui->profileNameLE->text().isEmpty())
+    ui->profileNameLE->setText("----");
+
+  glob.profile[glob.profileId()].Name( ui->profileNameLE->text() );
   glob.profile[glob.profileId()].default_channel_order( ui->channelorderCB->currentIndex());
   glob.profile[glob.profileId()].default_mode( ui->stickmodeCB->currentIndex());
   glob.profile[glob.profileId()].burnFirmware( ui->burnFirmware->isChecked());
@@ -293,16 +268,12 @@ void appPreferencesDialog::loadFromProfile()
 void appPreferencesDialog::on_removeProfileButton_clicked()
 {
   QSettings settings;
-  if ( glob.profileId() == 1 )
+  if ( glob.profileId() == 0 )
      QMessageBox::information(this, tr("Not possible to remove profile"), tr("The default profile can not be removed."));
   else
   {
-    QString profile=QString("profile") + QString("%1").arg(glob.profileId());
-    settings.beginGroup("Profiles");
-    settings.remove(profile);
-    settings.endGroup();
-    glob.profileId( 1 );
-
+    glob.profile[glob.profileId()].remove();
+    glob.profileId( 0 );
     loadFromProfile();
     initSettings();
   }
@@ -310,6 +281,9 @@ void appPreferencesDialog::on_removeProfileButton_clicked()
 
 bool appPreferencesDialog::displayImage( QString fileName )
 {
+  // Start by filling the pixmap with white
+  ui->imageLabel->setPixmap(QPixmap());
+
   QImage image(fileName);
   if (image.isNull()) 
     return false;
@@ -361,11 +335,11 @@ void appPreferencesDialog::on_SplashSelect_clicked()
   QString fileName = QFileDialog::getOpenFileName(this,
           tr("Open Image to load"), glob.lastImagesDir(), tr("Images (%1)").arg(supportedImageFormats));
 
-  if (!fileName.isEmpty()) {
+  if (!fileName.isEmpty()){
     glob.lastImagesDir(QFileInfo(fileName).dir().absolutePath());
-    
-    if (displayImage(fileName))
-      ui->SplashFileName->setText(fileName);
+   
+    displayImage(fileName);
+    ui->SplashFileName->setText(fileName);
   }
 }
 

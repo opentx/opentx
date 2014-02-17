@@ -102,12 +102,6 @@ MainWindow::MainWindow():
 
     restoreState(glob.mainWindowState());
 
-    if (glob.profileId() == 0)
-    {
-      createProfile();
-      glob.profileId( 1 );
-    }
-
     setUnifiedTitleAndToolBarOnMac(true);
     this->setWindowIcon(QIcon(":/icon.png"));
     this->setIconSize(QSize(32,32));
@@ -708,42 +702,33 @@ void MainWindow::openRecentFile()
     }
 }
 
-void MainWindow::loadProfile()
+void MainWindow::loadProfile()  //TODO Load all variables - Also HW!
 {
-    QSettings settings;
     QAction *action = qobject_cast<QAction *>(sender());
 
     if (action) {
+      // Set the new profile number
       int profnum=action->data().toInt();
-      QSettings settings;
-      settings.setValue("profileId",profnum);
-      settings.beginGroup("Profiles");
-      QString profile=QString("profile%1").arg(profnum);
-      settings.beginGroup(profile);
-      QString profileName=settings.value("Name", "").toString();
-      int chord=settings.value("default_channel_order", 0).toInt();
-      int defmod=settings.value("default_mode", 0).toInt();
-      bool burnfw=settings.value("burnFirmware", false).toBool();
-      QString sdPath=settings.value("sdPath", ".").toString();
-      bool renfw=settings.value("rename_firmware_files", false).toBool();
-      QString SplashFileName=settings.value("SplashFileName","").toString();
-      QString SplashImage=settings.value("SplashImage", "").toString();            
-      QString firmware_id=settings.value("firmware", default_firmware_variant.id).toString();
-      firmware_id.replace("open9x","opentx");
-      firmware_id.replace("x9da","taranis");
-      settings.setValue("firmware", firmware_id);
-      settings.endGroup();
-      settings.endGroup();
-      settings.setValue("Name", profileName );
-      settings.setValue("default_channel_order", chord);
-      settings.setValue("default_mode", defmod);
-      settings.setValue("burnFirmware", burnfw);
-      settings.setValue("rename_firmware_files", renfw);
-      settings.setValue("sdPath", sdPath);
-      settings.setValue("SplashFileName", SplashFileName);
-      settings.setValue("SplashImage", SplashImage);
-      settings.setValue("firmware", firmware_id);
-      current_firmware_variant = GetFirmwareVariant(firmware_id);
+      glob.profileId( profnum );
+
+      // Upgrade old firmware names
+      QString firmware = glob.profile[profnum].firmware();  
+      firmware.replace("open9x","opentx");
+      firmware.replace("x9da","taranis");
+      glob.profile[profnum].firmware(firmware);
+
+      // Copy profile data from profile to main variables
+      glob.Name( glob.profile[profnum].Name() );
+      glob.default_channel_order( glob.profile[profnum].default_channel_order() );
+      glob.default_mode( glob.profile[profnum].default_mode() );
+      glob.burnFirmware( glob.profile[profnum].burnFirmware() );
+      glob.rename_firmware_files( glob.profile[profnum].rename_firmware_files() );
+      glob.sdPath( glob.profile[profnum].sdPath() );
+      glob.SplashFileName( glob.profile[profnum].SplashFileName() );
+      glob.firmware( glob.profile[profnum].firmware() );
+
+      // TODO Get rid of this global variable - glob.firmware is the real source
+      current_firmware_variant = GetFirmwareVariant(glob.firmware());  
 
       foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
         MdiChild *mdiChild = qobject_cast<MdiChild *>(window->widget());
@@ -1091,7 +1076,6 @@ void MainWindow::readEeprom()
 
 void MainWindow::writeFileToEeprom()
 {
-    QSettings settings;
     QString fileName;
     bool backup = false;
     burnDialog *cd = new burnDialog(this, 1, &fileName, &backup);
@@ -1559,7 +1543,7 @@ void MainWindow::updateMenus()
     updateIconSizeActions();
     updateIconThemeActions();
 
-    setWindowTitle(tr("OpenTX Companion - FW: %1 - Profile: %2").arg(GetCurrentFirmware()->name).arg( QString("%1").arg(glob.profileId()) ));
+    setWindowTitle(tr("OpenTX Companion - FW: %1 - Profile: %2").arg(GetCurrentFirmware()->name).arg( glob.Name() ));
 }
 
 MdiChild *MainWindow::createMdiChild()
@@ -1802,8 +1786,8 @@ QMenu *MainWindow::createProfilesMenu()
     for ( i = 0; i < MAX_PROFILES; ++i) {
       profilesMenu->addAction(profileActs[i]);
     }
-    if ( i>0 )
-      profilesMenu->addSeparator();
+    profilesMenu->addSeparator();
+
     profilesMenu->addAction(createProfileAct);
     profilesMenu->setIcon(CompanionIcon("profiles.png"));
     return profilesMenu;
@@ -1996,52 +1980,34 @@ void MainWindow::updateIconThemeActions()
 
 void MainWindow::updateProfilesActions()
 {
-  int i;
-  QSettings settings;
-  int activeProfile = glob.profileId();
-
-  settings.beginGroup("Profiles");
-  for (i=0; i<MAX_PROFILES; i++) {
-    QString profile=QString("profile%1").arg(i+1);
-    settings.beginGroup(profile);
-    QString name=settings.value("Name","").toString();
-    if (!name.isEmpty()) {
-      QString text = tr("&%1 %2").arg(i + 1).arg(name);
+  for (int i=0; i<MAX_PROFILES; i++) 
+  {
+    if (!glob.profile[i].Name().isEmpty()) 
+    {
+      QString text = tr("&%1: %2").arg(i).arg(glob.profile[i].Name());
       profileActs[i]->setText(text);
-      profileActs[i]->setData(i+1);
+      profileActs[i]->setData(i);
       profileActs[i]->setVisible(true);
-      if ((i+1) == activeProfile)
+      if (i == glob.profileId())
         profileActs[i]->setChecked(true);
     } 
-    else {
+    else 
+    {
       profileActs[i]->setVisible(false);
     }
-    settings.endGroup();
   }
 }
 
 void MainWindow::createProfile()
-{
-  int firstFreeIndex = 0;
-  QSettings settings;
-  settings.beginGroup("Profiles");
-  for (int i=0; firstFreeIndex ==0 && i<MAX_PROFILES; i++) {
-    QString profile=QString("profile%1").arg(i+1);
-    settings.beginGroup(profile);  
-    QString name=settings.value("Name","").toString();
-    if (name.isEmpty())
-      firstFreeIndex = i+1;
-    settings.endGroup();
-  }
-  settings.endGroup();
-  if (firstFreeIndex == 0)  // Could not find free index
+{ int i;
+  for (i=0; i<MAX_PROFILES && !glob.profile[i].Name().isEmpty(); i++)
+    ;
+  if (i==MAX_PROFILES)  //Failed to find free slot
     return;
-
-  settings.beginGroup("Profiles");
-  settings.beginGroup(QString("profile%1").arg(firstFreeIndex));
-  settings.setValue("Name",QString("profile%1").arg(firstFreeIndex));
-  settings.endGroup();
-  settings.endGroup();
+ 
+  // Create profile name and force a flush to file
+  glob.profile[i].Name( QString("profile%1").arg(i));
+  glob.profile[i].flush();
 
   updateMenus();
 }
