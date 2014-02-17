@@ -49,7 +49,6 @@
 #include "avroutputdialog.h"
 #include "comparedialog.h"
 #include "logsdialog.h"
-#include "preferencesdialog.h"
 #include "apppreferencesdialog.h"
 #include "fwpreferencesdialog.h"
 #include "flashinterface.h"
@@ -63,6 +62,7 @@
 #include "hexinterface.h"
 #include "warnings.h"
 #include "helpers.h"
+#include "appdata.h"
 #include "firmwares/opentx/opentxinterface.h" // TODO get rid of this include
 
 #define DONATE_STR      "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QUZ48K4SEXDP2"
@@ -408,7 +408,7 @@ void MainWindow::reply1Accepted()
       int pos=rev.lastIndexOf("-r");
       if (pos>0) {
         currentFWrev=rev.mid(pos+2).toInt();
-        if (settings.value("rename_firmware_files", false).toBool() && needRename) {
+        if (glob.pro[glob.profileId()].rename_firmware_files() && needRename) {
           QFileInfo fi(downloadedFWFilename);
           QString path=fi.path()+QDir::separator ();
           path.append(fi.completeBaseName());
@@ -421,7 +421,7 @@ void MainWindow::reply1Accepted()
           downloadedFWFilename=path;
         }
         settings.setValue(downloadedFW, currentFWrev);
-        if (settings.value("burnFirmware", true).toBool()) {
+        if (glob.pro[glob.profileId()].burnFirmware()) {
           int ret = QMessageBox::question(this, "Companion", tr("Do you want to write the firmware to the transmitter now ?"), QMessageBox::Yes | QMessageBox::No);
           if (ret == QMessageBox::Yes) {
             writeFlash(downloadedFWFilename);
@@ -558,7 +558,7 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
           QString url = GetFirmware(fwToUpdate)->getUrl(fwToUpdate);
           QString ext = url.mid(url.lastIndexOf("."));
           needRename=false;
-          bool addversion=glob.rename_firmware_files();
+          bool addversion=glob.pro[glob.profileId()].rename_firmware_files();
           QString fileName;
           if (addversion) {
             fileName = QFileDialog::getSaveFileName(this, tr("Save As"), glob.lastFlashDir() + "/" + fwToUpdate + newrev + ext);
@@ -711,24 +711,8 @@ void MainWindow::loadProfile()  //TODO Load all variables - Also HW!
       int profnum=action->data().toInt();
       glob.profileId( profnum );
 
-      // Upgrade old firmware names
-      QString firmware = glob.profile[profnum].firmware();  
-      firmware.replace("open9x","opentx");
-      firmware.replace("x9da","taranis");
-      glob.profile[profnum].firmware(firmware);
-
-      // Copy profile data from profile to main variables
-      glob.Name( glob.profile[profnum].Name() );
-      glob.default_channel_order( glob.profile[profnum].default_channel_order() );
-      glob.default_mode( glob.profile[profnum].default_mode() );
-      glob.burnFirmware( glob.profile[profnum].burnFirmware() );
-      glob.rename_firmware_files( glob.profile[profnum].rename_firmware_files() );
-      glob.sdPath( glob.profile[profnum].sdPath() );
-      glob.SplashFileName( glob.profile[profnum].SplashFileName() );
-      glob.firmware( glob.profile[profnum].firmware() );
-
-      // TODO Get rid of this global variable - glob.firmware is the real source
-      current_firmware_variant = GetFirmwareVariant(glob.firmware());  
+      // TODO Get rid of this global variable - The profile.firmware is the real source
+      current_firmware_variant = GetFirmwareVariant(glob.pro[glob.profileId()].firmware());  
 
       foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
         MdiChild *mdiChild = qobject_cast<MdiChild *>(window->widget());
@@ -1543,7 +1527,7 @@ void MainWindow::updateMenus()
     updateIconSizeActions();
     updateIconThemeActions();
 
-    setWindowTitle(tr("OpenTX Companion - FW: %1 - Profile: %2").arg(GetCurrentFirmware()->name).arg( glob.Name() ));
+    setWindowTitle(tr("OpenTX Companion - FW: %1 - Profile: %2").arg(GetCurrentFirmware()->name).arg( glob.pro[glob.profileId()].Name() ));
 }
 
 MdiChild *MainWindow::createMdiChild()
@@ -1909,20 +1893,25 @@ void MainWindow::setActiveSubWindow(QWidget *window)
 
 void MainWindow::updateRecentFileActions()
  {
-    int i,j, numRecentFiles;
-    QSettings settings;
-    QStringList files = settings.value("recentFileList").toStringList();
+    int i, numRecentFiles;
  
+    //  Hide all document slots
+    for ( i=0 ; i < glob.history_size(); i++)
+      recentFileActs[i]->setVisible(false);
+
+    // Fill slots with content and unhide them
+    QStringList files = glob.recentFileList();
     numRecentFiles = qMin(files.size(), glob.history_size());
  
-    for ( i = 0; i < numRecentFiles; ++i)  {
-      QString text = tr("&%1 %2").arg(i + 1).arg(strippedName(files[i]));
-      recentFileActs[i]->setText(text);
-      recentFileActs[i]->setData(files[i]);
-      recentFileActs[i]->setVisible(true);
+    for ( i = 0; i < numRecentFiles; i++)  {
+      QString text = strippedName(files[i]);
+      if (!text.trimmed().isEmpty())
+      {
+        recentFileActs[i]->setText(text);
+        recentFileActs[i]->setData(files[i]);
+        recentFileActs[i]->setVisible(true);
+      }
     }
-    for ( j = numRecentFiles; j < glob.history_size(); ++j)
-      recentFileActs[j]->setVisible(false);
 }
 
 void MainWindow::updateIconSizeActions()
@@ -1982,9 +1971,9 @@ void MainWindow::updateProfilesActions()
 {
   for (int i=0; i<MAX_PROFILES; i++) 
   {
-    if (!glob.profile[i].Name().isEmpty()) 
+    if (!glob.pro[i].Name().isEmpty()) 
     {
-      QString text = tr("&%1: %2").arg(i).arg(glob.profile[i].Name());
+      QString text = tr("&%1: %2").arg(i).arg(glob.pro[i].Name());
       profileActs[i]->setText(text);
       profileActs[i]->setData(i);
       profileActs[i]->setVisible(true);
@@ -2000,14 +1989,14 @@ void MainWindow::updateProfilesActions()
 
 void MainWindow::createProfile()
 { int i;
-  for (i=0; i<MAX_PROFILES && !glob.profile[i].Name().isEmpty(); i++)
+  for (i=0; i<MAX_PROFILES && !glob.pro[i].Name().isEmpty(); i++)
     ;
   if (i==MAX_PROFILES)  //Failed to find free slot
     return;
  
   // Create profile name and force a flush to file
-  glob.profile[i].Name( QString("profile%1").arg(i));
-  glob.profile[i].flush();
+  glob.pro[i].Name( QString("profile%1").arg(i));
+  glob.pro[i].flush();
 
   updateMenus();
 }

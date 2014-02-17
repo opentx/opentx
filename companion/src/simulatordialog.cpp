@@ -3,6 +3,7 @@
 #include <iostream>
 #include "helpers.h"
 #include "simulatorinterface.h"
+#include "appdata.h"
 #ifdef JOYSTICKS
 #include "joystick.h"
 #endif
@@ -33,8 +34,8 @@ simulatorDialog::simulatorDialog(QWidget *parent) :
     beepShow = 0;
 
     QSettings settings;
-    backLight = settings.value("backLight",0).toInt();
-    bool simuSW=settings.value("simuSW",false).toBool();
+    backLight = glob.backLight();
+    bool simuSW=glob.simuSW();
     switch (backLight) {
         case 1:
             ui->lcd->setBackgroundColor(166,247,159);
@@ -75,8 +76,8 @@ simulatorDialog::simulatorDialog(QWidget *parent) :
     }
 
 #ifdef JOYSTICKS
-    bool js_enable=settings.value("js_support",false).toBool();
-    int js_ctrl=settings.value("js_ctrl",-1).toInt();
+    bool js_enable=glob.js_support();
+    int js_ctrl=glob.js_ctrl();
     if (js_enable) {
       settings.beginGroup("JsCalibration");
       int count=0;
@@ -211,8 +212,7 @@ void simulatorDialog::setupTimer()
 void simulatorDialog::onButtonPressed(int value)
 {
   if (value==Qt::Key_Print) {
-      QSettings settings;
-      bool toclipboard=settings.value("snapshot_to_clipboard", false).toBool();
+      bool toclipboard=glob.snapshot_to_clipboard();
       QString fileName ="";
       if (!toclipboard) {
         fileName = QString("screenshot-%1.png").arg(++screenshotIdx);

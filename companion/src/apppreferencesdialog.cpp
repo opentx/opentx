@@ -1,6 +1,7 @@
 #include "apppreferencesdialog.h"
 #include "ui_apppreferencesdialog.h"
 #include "mainwindow.h"
+#include "appdata.h"
 #include "helpers.h"
 #include "flashinterface.h"
 #ifdef JOYSTICKS
@@ -56,15 +57,16 @@ void appPreferencesDialog::writeValues()
     glob.js_ctrl(0);
   }
 
-  glob.default_channel_order(ui->channelorderCB->currentIndex());
-  glob.default_mode(ui->stickmodeCB->currentIndex());
-  glob.rename_firmware_files(ui->renameFirmware->isChecked());
-  glob.burnFirmware(ui->burnFirmware->isChecked());
   glob.profileId(ui->profileIndexLE->text().toInt());
-  glob.Name(ui->profileNameLE->text());
-  glob.sdPath(ui->sdPath->text());
-  glob.SplashFileName(ui->SplashFileName->text());
-  glob.firmware(ui->firmwareLE->text());
+
+  glob.pro[glob.profileId()].default_channel_order(ui->channelorderCB->currentIndex());
+  glob.pro[glob.profileId()].default_mode(ui->stickmodeCB->currentIndex());
+  glob.pro[glob.profileId()].rename_firmware_files(ui->renameFirmware->isChecked());
+  glob.pro[glob.profileId()].burnFirmware(ui->burnFirmware->isChecked());
+  glob.pro[glob.profileId()].Name(ui->profileNameLE->text());
+  glob.pro[glob.profileId()].sdPath(ui->sdPath->text());
+  glob.pro[glob.profileId()].SplashFileName(ui->SplashFileName->text());
+  glob.pro[glob.profileId()].firmware(ui->firmwareLE->text());
   
   saveProfile();
 }
@@ -82,7 +84,7 @@ void appPreferencesDialog::on_snapshotPathButton_clicked()
 void appPreferencesDialog::initSettings()
 {
   ui->snapshotClipboardCKB->setChecked(glob.snapshot_to_clipboard());
-  ui->burnFirmware->setChecked(glob.burnFirmware());
+  ui->burnFirmware->setChecked(glob.pro[glob.profileId()].burnFirmware());
   ui->snapshotPath->setText(glob.snapshotpath());
   ui->snapshotPath->setReadOnly(true);
   if (ui->snapshotClipboardCKB->isChecked())
@@ -141,15 +143,15 @@ void appPreferencesDialog::initSettings()
   }
 #endif  
 //  Profile Tab Inits  
-  ui->channelorderCB->setCurrentIndex(glob.default_channel_order());
-  ui->stickmodeCB->setCurrentIndex(glob.default_mode());
-  ui->renameFirmware->setChecked(glob.rename_firmware_files());
-  ui->sdPath->setText(glob.sdPath());
+  ui->channelorderCB->setCurrentIndex(glob.pro[glob.profileId()].default_channel_order());
+  ui->stickmodeCB->setCurrentIndex(glob.pro[glob.profileId()].default_mode());
+  ui->renameFirmware->setChecked(glob.pro[glob.profileId()].rename_firmware_files());
+  ui->sdPath->setText(glob.pro[glob.profileId()].sdPath());
   ui->profileIndexLE->setText(QString("%1").arg(glob.profileId()));
-  ui->profileNameLE->setText(glob.Name());
-  ui->firmwareLE->setText(glob.firmware());
-  ui->SplashFileName->setText(glob.SplashFileName());
-  displayImage( glob.SplashFileName() );
+  ui->profileNameLE->setText(glob.pro[glob.profileId()].Name());
+  ui->firmwareLE->setText(glob.pro[glob.profileId()].firmware());
+  ui->SplashFileName->setText(glob.pro[glob.profileId()].SplashFileName());
+  displayImage( glob.pro[glob.profileId()].SplashFileName() );
 }
 
 void appPreferencesDialog::on_libraryPathButton_clicked()
@@ -230,7 +232,7 @@ void appPreferencesDialog::on_joystickcalButton_clicked() {
 
 void appPreferencesDialog::on_sdPathButton_clicked()
 {
-  QString fileName = QFileDialog::getExistingDirectory(this,tr("Select the folder replicating your SD structure"), glob.sdPath());
+  QString fileName = QFileDialog::getExistingDirectory(this,tr("Select the folder replicating your SD structure"), glob.pro[glob.profileId()].sdPath());
   if (!fileName.isEmpty()) {
     ui->sdPath->setText(fileName);
   }
@@ -242,63 +244,41 @@ void appPreferencesDialog::saveProfile()
   if (ui->profileNameLE->text().isEmpty())
     ui->profileNameLE->setText("----");
 
-  glob.profile[glob.profileId()].Name( ui->profileNameLE->text() );
-  glob.profile[glob.profileId()].default_channel_order( ui->channelorderCB->currentIndex());
-  glob.profile[glob.profileId()].default_mode( ui->stickmodeCB->currentIndex());
-  glob.profile[glob.profileId()].burnFirmware( ui->burnFirmware->isChecked());
-  glob.profile[glob.profileId()].rename_firmware_files( ui->renameFirmware->isChecked());
-  glob.profile[glob.profileId()].sdPath( ui->sdPath->text());
-  glob.profile[glob.profileId()].SplashFileName( ui->SplashFileName->text());
-  glob.profile[glob.profileId()].firmware( ui->firmwareLE->text());
-}
-
-void appPreferencesDialog::loadFromProfile()
-{
-  int i = glob.profileId();
-  glob.Name( glob.profile[i].Name() );
-  glob.default_channel_order( glob.profile[i].default_channel_order());
-  glob.default_mode( glob.profile[i].default_mode());
-  glob.burnFirmware( glob.profile[i].burnFirmware());
-  glob.rename_firmware_files( glob.profile[i].rename_firmware_files());
-  glob.sdPath( glob.profile[i].sdPath());
-  glob.SplashFileName( glob.profile[i].SplashFileName());
-  glob.firmware( glob.profile[i].firmware());
+  glob.pro[glob.profileId()].Name( ui->profileNameLE->text() );
+  glob.pro[glob.profileId()].default_channel_order( ui->channelorderCB->currentIndex());
+  glob.pro[glob.profileId()].default_mode( ui->stickmodeCB->currentIndex());
+  glob.pro[glob.profileId()].burnFirmware( ui->burnFirmware->isChecked());
+  glob.pro[glob.profileId()].rename_firmware_files( ui->renameFirmware->isChecked());
+  glob.pro[glob.profileId()].sdPath( ui->sdPath->text());
+  glob.pro[glob.profileId()].SplashFileName( ui->SplashFileName->text());
+  glob.pro[glob.profileId()].firmware( ui->firmwareLE->text());
 }
 
 void appPreferencesDialog::on_removeProfileButton_clicked()
 {
-  QSettings settings;
   if ( glob.profileId() == 0 )
      QMessageBox::information(this, tr("Not possible to remove profile"), tr("The default profile can not be removed."));
   else
   {
-    glob.profile[glob.profileId()].remove();
+    glob.pro[glob.profileId()].remove();
     glob.profileId( 0 );
-    loadFromProfile();
     initSettings();
   }
 }
 
 bool appPreferencesDialog::displayImage( QString fileName )
 {
-  // Start by filling the pixmap with white
+  // Start by clearing the pixmap
   ui->imageLabel->setPixmap(QPixmap());
 
   QImage image(fileName);
   if (image.isNull()) 
     return false;
 
-// This code below just figures out if the width of the latest firmware is 128 or 212. It works , but...
-  QString filePath1 = glob.lastFlashDir() + "/" + glob.firmware() + ".bin";
-  QString filePath2 = glob.lastFlashDir() + "/" + glob.firmware() + ".hex";
-  QFile file(filePath1);
-  if (!file.exists())
-    filePath1 = filePath2;
+  // Use the firmware name to determine splash width
   int width = SPLASH_WIDTH;
-  FlashInterface flash(filePath1);
-  if (flash.hasSplash())
-    width = flash.getSplashWidth(); // Returns SPLASHX9D_HEIGHT if filePath1 does not exist!
-// There must be a cleaner way of finding out the width of the firmware splash!
+  if (glob.pro[glob.profileId()].firmware().contains("taranis"))
+    width = SPLASHX9D_WIDTH;
 
   ui->imageLabel->setPixmap(QPixmap::fromImage(image.scaled(width, SPLASH_HEIGHT)));
   if (width==SPLASHX9D_WIDTH) {

@@ -45,12 +45,12 @@
 #include <QString>
 #include <QDir>
 #include <QFileInfo>
-#include <QSettings>
 #include <QSplashScreen>
 #include <QThread>
 #include <iostream>
 #include "mainwindow.h"
 #include "eeprominterface.h"
+#include "appdata.h"
 
 #if defined WIN32 || !defined __GNUC__
 #include <windows.h>
@@ -98,19 +98,15 @@ int main(int argc, char *argv[])
 
   QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 
-  if (glob.firmware().isEmpty())
-    glob.firmware(default_firmware_variant.id);
-  QString tmp_id = glob.firmware();
-  tmp_id.replace("open9x", "opentx");
-  tmp_id.replace("x9da", "taranis");
-  glob.firmware(tmp_id);
+  if (glob.pro[glob.profileId()].firmware().isEmpty())
+    glob.pro[glob.profileId()].firmware(default_firmware_variant.id);
 
-  QPixmap pixmap = QPixmap(glob.firmware().contains("taranis") ? ":/images/splasht.png" : ":/images/splash.png");
+  QPixmap pixmap = QPixmap(glob.pro[glob.profileId()].firmware().contains("taranis") ? ":/images/splasht.png" : ":/images/splash.png");
   QSplashScreen *splash = new QSplashScreen(pixmap);
 
   RegisterFirmwares();
 
-  current_firmware_variant = GetFirmwareVariant(glob.firmware());
+  current_firmware_variant = GetFirmwareVariant(glob.pro[glob.profileId()].firmware());
 
   MainWindow *mainWin = new MainWindow();
   if (glob.show_splash()) {

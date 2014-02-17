@@ -18,6 +18,7 @@
 #define lcd_widget_h
 
 #include <QWidget>
+#include "appdata.h"
 
 class lcdWidget : public QWidget {
   public:
@@ -58,11 +59,10 @@ class lcdWidget : public QWidget {
       QPixmap buffer(2*lcdWidth, 2*lcdHeight);
       QPainter p(&buffer);
       doPaint(p);
-      QSettings settings;
-      bool toclipboard=settings.value("snapshot_to_clipboard", false).toBool();
+      bool toclipboard=glob.snapshot_to_clipboard();
       QApplication::clipboard()->setPixmap( buffer );
       if (!toclipboard) {
-        QString Path=settings.value("snapshotPath", "").toString();
+        QString Path=glob.snapshotpath();
         if (Path.isEmpty() || !QDir(Path).exists()) {
           Path=".";
         }

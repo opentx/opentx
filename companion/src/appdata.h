@@ -187,6 +187,7 @@ class Profile:DataObj
     QString _SplashFileName;
     bool    _burnFirmware;
     bool    _rename_firmware_files;
+    bool    _patchImage;
     int     _default_channel_order;
     int     _default_mode;
 
@@ -212,6 +213,7 @@ class Profile:DataObj
     QString SplashFileName()       { return _SplashFileName;         }
     bool burnFirmware()            { return _burnFirmware;           }
     bool rename_firmware_files()   { return _rename_firmware_files;  }
+    bool patchImage()              { return _patchImage;             }
     int default_channel_order()    { return _default_channel_order;  }
     int default_mode()             { return _default_mode;           }
 
@@ -240,6 +242,7 @@ class Profile:DataObj
     void SplashFileName          (const QString str) { store(str, _SplashFileName,   "SplashFileName"        ,"Profiles", QString("profile%1").arg(index));}
     void burnFirmware            (const bool bl) { store(bl, _burnFirmware,          "burnFirmware"          ,"Profiles", QString("profile%1").arg(index));}
     void rename_firmware_files   (const bool bl) { store(bl, _rename_firmware_files, "rename_firmware_files" ,"Profiles", QString("profile%1").arg(index));}
+    void patchImage              (const bool bl) { store(bl, _patchImage,            "patchImage"            ,"Profiles", QString("profile%1").arg(index));}
     void default_channel_order   (const int it)  { store(it, _default_channel_order, "default_channel_order" ,"Profiles", QString("profile%1").arg(index));}
     void default_mode            (const int it)  { store(it, _default_mode,          "default_mode"          ,"Profiles", QString("profile%1").arg(index));}
 
@@ -295,6 +298,7 @@ class Profile:DataObj
         getset( _SplashFileName,          "SplashFileName"          ,""      ,"Profiles", QString("profile%1").arg(index));
         getset( _burnFirmware,            "burnFirmware"            ,false   ,"Profiles", QString("profile%1").arg(index));
         getset( _rename_firmware_files,   "rename_firmware_files"   ,false   ,"Profiles", QString("profile%1").arg(index));
+        getset( _patchImage,              "patchImage"              ,false   ,"Profiles", QString("profile%1").arg(index));
         getset( _default_channel_order,   "default_channel_order"   ,0       ,"Profiles", QString("profile%1").arg(index));
         getset( _default_mode,            "default_mode"            ,1       ,"Profiles", QString("profile%1").arg(index));
 
@@ -322,6 +326,7 @@ class Profile:DataObj
         _SplashFileName =        "";
         _burnFirmware =          false;
         _rename_firmware_files = false;
+        _patchImage =            false;
         _default_channel_order = 0;
         _default_mode =          1;
 
@@ -353,18 +358,16 @@ class AppData:DataObj
 {
     // All the global variables
   public:
-    Profile profile[MAX_PROFILES];
+    Profile pro[MAX_PROFILES];
 
-  private:
+   private:
     QStringList _recentFileList;
     QByteArray _mainWindowGeometry;
     QByteArray _mainWindowState; 
 
-    QString _firmware;
     QString _locale;
     QString _cpu_id;
-    QString _Name;
-    QString _SplashFileName;
+    QString _lastFw;
     QString _modelEditGeometry;
 
     QString _backupPath;
@@ -372,16 +375,15 @@ class AppData:DataObj
     QString _lastDir;
     QString _lastFlashDir;
     QString _lastImagesDir;
+    QString _lastLogDir;
     QString _libraryPath;
-    QString _sdPath;
     QString _snapshotpath;
 
     bool _backupEnable;
     bool _backupOnFlash;
-    bool _burnFirmware;
     bool _maximized;
     bool _js_support;
-    bool _rename_firmware_files;
+    bool _rev4asupport;
     bool _show_splash;
     bool _snapshot_to_clipboard;
     bool _startup_check_companion;
@@ -390,8 +392,6 @@ class AppData:DataObj
     bool _wizardEnable;
 
     int _backLight;
-    int _default_channel_order;
-    int _default_mode;
     int _embedded_splashes;  // Shouldn't this be bool ??
     int _fwserver;
     int _generalEditTab;
@@ -403,8 +403,6 @@ class AppData:DataObj
     int _theme;
     int _warningId;
 
-    // Storage functions
-
 
 public:
     // All the get declarations
@@ -412,11 +410,9 @@ public:
     QByteArray mainWindowGeometry(){ return _mainWindowGeometry;     }
     QByteArray mainWindowState()   { return _mainWindowState;        }
 
-    QString firmware()             { return _firmware;               }
     QString locale()               { return _locale;                 }
     QString cpu_id()               { return _cpu_id;                 }
-    QString Name()                 { return _Name;                   }
-    QString SplashFileName()       { return _SplashFileName;         }
+    QString lastFw()               { return _lastFw;                 }
     QString modelEditGeometry()    { return _modelEditGeometry;      }
 
     QString backupPath()           { return _backupPath;             }
@@ -424,16 +420,15 @@ public:
     QString lastDir()              { return _lastDir;                }
     QString lastFlashDir()         { return _lastFlashDir;           }
     QString lastImagesDir()        { return _lastImagesDir;          }
+    QString lastLogDir()           { return _lastLogDir;             }
     QString libraryPath()          { return _libraryPath;            }
-    QString sdPath()               { return _sdPath;                 }
     QString snapshotpath()         { return _snapshotpath;           }
 
     bool backupEnable()            { return _backupEnable;           }
     bool backupOnFlash()           { return _backupOnFlash;          }
-    bool burnFirmware()            { return _burnFirmware;           }
     bool js_support()              { return _js_support;             }
+    bool rev4asupport()            { return _rev4asupport;           }
     bool maximized()               { return _maximized;              }
-    bool rename_firmware_files()   { return _rename_firmware_files;  }
     bool show_splash()             { return _show_splash;            }
     bool snapshot_to_clipboard()   { return _snapshot_to_clipboard;  }
     bool startup_check_companion() { return _startup_check_companion;}
@@ -442,8 +437,6 @@ public:
     bool wizardEnable()            { return _wizardEnable;           }
 
     int backLight()                { return _backLight;              }
-    int default_channel_order()    { return _default_channel_order;  }
-    int default_mode()             { return _default_mode;           }
     int embedded_splashes()        { return _embedded_splashes;      }
     int fwserver()                 { return _fwserver;               }
     int generalEditTab()           { return _generalEditTab;         }
@@ -455,16 +448,14 @@ public:
     int theme()                    { return _theme;                  }
     int warningId()                { return _warningId;              }
 
-    // All the set declarations
+// All the set declarations
     void recentFileList       (const QStringList l) { store(l, _recentFileList,     "recentFileList"    );}
     void mainWindowGeometry   (const QByteArray a)  { store(a, _mainWindowGeometry, "mainWindowGeometry");}
     void mainWindowState      (const QByteArray a)  { store(a, _mainWindowState,    "mainWindowState"   );}
 
-    void firmware             (const QString str) { store(str, _firmware,           "firmware"          );}
     void locale               (const QString str) { store(str, _locale,             "locale"            );}
     void cpu_id               (const QString str) { store(str, _cpu_id,             "cpu_id"            );}
-    void Name                 (const QString str) { store(str, _Name,               "Name"              );}
-    void SplashFileName       (const QString str) { store(str, _SplashFileName,     "SplashFileName"    );}
+    void lastFw               (const QString str) { store(str, _lastFw,             "lastFw"            );}
     void modelEditGeometry    (const QString str) { store(str, _modelEditGeometry,  "modelEditGeometry" );}
 
     void backupPath           (const QString str) { store(str, _backupPath,         "backupPath"        );}
@@ -472,16 +463,15 @@ public:
     void lastDir              (const QString str) { store(str, _lastDir,            "lastDir"           );}
     void lastFlashDir         (const QString str) { store(str, _lastFlashDir,       "lastFlashDir"      );}
     void lastImagesDir        (const QString str) { store(str, _lastImagesDir,      "lastImagesDir"     );}
+    void lastLogDir           (const QString str) { store(str, _lastLogDir,         "lastLogDir"        );}
     void libraryPath          (const QString str) { store(str, _libraryPath,        "libraryPath"       );}
-    void sdPath               (const QString str) { store(str, _sdPath,             "sdPath"            );}
     void snapshotpath         (const QString str) { store(str, _snapshotpath,       "snapshotpath"      );}
 
     void backupEnable            (const bool bl) { store(bl, _backupEnable,            "backupEnable"            );}
     void backupOnFlash           (const bool bl) { store(bl, _backupOnFlash,           "backupOnFlash"           );}
-    void burnFirmware            (const bool bl) { store(bl, _burnFirmware,            "burnFirmware"            );}
     void maximized               (const bool bl) { store(bl, _maximized,               "maximized"               );}
     void js_support              (const bool bl) { store(bl, _js_support,              "js_support"              );}
-    void rename_firmware_files   (const bool bl) { store(bl, _rename_firmware_files,   "rename_firmware_files"   );}
+    void rev4asupport            (const bool bl) { store(bl, _rev4asupport,            "rev4asupport"            );}
     void show_splash             (const bool bl) { store(bl, _show_splash,             "show_splash"             );}
     void snapshot_to_clipboard   (const bool bl) { store(bl, _snapshot_to_clipboard,   "snapshot_to_clipboard"   );}
     void startup_check_companion (const bool bl) { store(bl, _startup_check_companion, "startup_check_companion" );}
@@ -490,8 +480,6 @@ public:
     void wizardEnable            (const bool bl) { store(bl, _wizardEnable,            "wizardEnable"            );}
 
     void backLight               (const int it) { store(it, _backLight,                 "backLight"               );}
-    void default_channel_order   (const int it) { store(it, _default_channel_order,     "default_channel_order"   );}
-    void default_mode            (const int it) { store(it, _default_mode,              "default_mode"            );}
     void embedded_splashes       (const int it) { store(it, _embedded_splashes,         "embedded_splashes"       );}
     void fwserver                (const int it) { store(it, _fwserver,                  "fwserver"                );}
     void generalEditTab          (const int it) { store(it, _generalEditTab,            "generalEditTab"          );}
@@ -506,22 +494,48 @@ public:
     // Constructor
     AppData()
     {
-        // Start by hijacking all left over settings from companion9x, but only do it one time
+        //Initialize the profiles
+        for (int i=0; i<MAX_PROFILES; i++)
+          pro[i].init( i );
+
+        // Import settings from companion9x, but only do it one time.
         // Use "location" tag as an indicator that the settings are missing 
         QSettings c9x_settings("companion9x", "companion9x");
         QSettings settings(PRODUCT, COMPANY);
-        if (!settings.contains("locale")) {
+        if (!settings.contains("locale"))
+        {
           QStringList keys = c9x_settings.allKeys();
-          for (QStringList::iterator i=keys.begin(); i!=keys.end(); i++) {
+          for (QStringList::iterator i=keys.begin(); i!=keys.end(); i++)
+          {
             settings.setValue(*i, c9x_settings.value(*i));
           }
-        }
+          // Convert firmware name
+          QString firmware = settings.value("firmware", "").toString();  
+          firmware.replace("open9x","opentx");
+          firmware.replace("x9da","taranis");
      
-        //Initialize the index variables of the profiles
-        for (int i=0; i<MAX_PROFILES; i++)
-          profile[i].init( i );
+          // Move Companion9x settings to profile0, the new default profile
+          pro[0].firmware(firmware);
+          pro[0].Name(settings.value(                 "Name",                     ""    ).toString());
+          pro[0].sdPath(settings.value(               "sdPath",                   ""    ).toString());
+          pro[0].SplashFileName(settings.value(       "SplashFileName",           ""    ).toString());
+          pro[0].burnFirmware(settings.value(         "burnFirmware",             false ).toBool());
+          pro[0].rename_firmware_files(settings.value("rename_firmware_files",    false ).toBool());
+          pro[0].patchImage(settings.value(           "patchImage",               false ).toBool());
+          pro[0].default_channel_order(settings.value("default_channel_order",    "0"   ).toInt());
+          pro[0].default_mode(settings.value(         "default_mode",             "1"   ).toInt());
 
-
+          // Delete unused settings
+          settings.remove("firmware");
+          settings.remove("Name");
+          settings.remove("sdPath");
+          settings.remove("SplashFileName");
+          settings.remove("burnFirmware");
+          settings.remove("rename_firmware_files");
+          settings.remove("patchImage");
+          settings.remove("default_channel_order");
+          settings.remove("default_mode");
+        }
 
         // Load and store all variables. Use default values if setting values are missing
 
@@ -529,11 +543,9 @@ public:
         getset( _mainWindowGeometry,      "mainWindowGeometry"      ,"" );
         getset( _mainWindowState,         "mainWindowState"         ,"" );
         
-        getset( _firmware,                "firmware"                ,"" );
         getset( _locale,                  "locale"                  ,"" );
         getset( _cpu_id,                  "cpu_id"                  ,"" );
-        getset( _Name,                    "Name"                    ,"----" );
-        getset( _SplashFileName,          "SplashFileName"          ,"" );
+        getset( _lastFw,                  "lastFw"                  ,"" );
         getset( _modelEditGeometry,       "modelEditGeometry"       ,"" );
 
         getset( _backupPath,              "backupPath"              ,"" );
@@ -541,16 +553,15 @@ public:
         getset( _lastDir,                 "lastDir"                 ,"" );
         getset( _lastFlashDir,            "lastFlashDir"            ,"" );
         getset( _lastImagesDir,           "lastImagesDir"           ,"" );
+        getset( _lastLogDir,              "lastLogDir"              ,"" );
         getset( _libraryPath,             "libraryPath"             ,"" );
-        getset( _sdPath,                  "sdPath"                  ,"" );
         getset( _snapshotpath,            "snapshotpath"            ,"" );
 
         getset( _backupEnable,            "backupEnable"            ,false );
         getset( _backupOnFlash,           "backupOnFlash"           ,true  );
-        getset( _burnFirmware,            "burnFirmware"            ,false );
         getset( _js_support,              "js_support"              ,false );
+        getset( _rev4asupport,            "rev4asupport"            ,false );
         getset( _maximized,               "maximized"               ,false );
-        getset( _rename_firmware_files,   "rename_firmware_files"   ,false );
         getset( _show_splash,             "show_splash"             ,true  );
         getset( _snapshot_to_clipboard,   "snapshot_to_clipboard"   ,false );
         getset( _startup_check_companion, "startup_check_companion" ,true  );
@@ -559,8 +570,6 @@ public:
         getset( _wizardEnable,            "wizardEnable"            ,true  );
 
         getset( _backLight,               "backLight"               ,0  );
-        getset( _default_channel_order,   "default_channel_order"   ,0  );
-        getset( _default_mode,            "default_mode"            ,1  );
         getset( _embedded_splashes,       "embedded_splashes"       ,0  );
         getset( _fwserver,                "fwserver"                ,0  );
         getset( _generalEditTab,          "generalEditTab"          ,0  );
