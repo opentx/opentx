@@ -239,6 +239,8 @@ enum BeeperMode {
   int8_t   beepVolume; \
   int8_t   wavVolume; \
   int8_t   varioVolume; \
+  int8_t   varioPitch; \
+  int8_t   varioRange; \
   int8_t   backgroundVolume;
 #endif
 

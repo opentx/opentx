@@ -655,7 +655,11 @@ void telemetryWakeup()
 #endif
 
 #if defined(VARIO)
+#if 1
+  #warning "test removed for vario tests"
+#else
   if (TELEMETRY_STREAMING() && !IS_FAI_ENABLED())
+#endif
     varioWakeup();
 #endif
 

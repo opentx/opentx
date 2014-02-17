@@ -4530,7 +4530,7 @@ void perMain()
 
   checkBacklight();
 
-#if defined(FRSKY) || defined(MAVLINK)
+#if !defined(CPUARM) && (defined(FRSKY) || defined(MAVLINK))
   telemetryWakeup();
 #endif
 
@@ -5187,6 +5187,10 @@ void mixerTask(void * pdata)
       bool tick10ms = doMixerCalculations();
       CoLeaveMutexSection(mixerMutex);
       if (tick10ms) checkTrims();
+
+#if defined(FRSKY) || defined(MAVLINK)
+      telemetryWakeup();
+#endif
 
       if (heartbeat == HEART_WDT_CHECK) {
         wdt_reset();

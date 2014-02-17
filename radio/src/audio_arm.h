@@ -47,7 +47,7 @@
 #define AUDIO_BUFFER_SIZE     (AUDIO_SAMPLE_RATE*AUDIO_BUFFER_DURATION/1000)
 #define AUDIO_BUFFER_COUNT    (3)
 
-#define BEEP_MIN_FREQ         (110)
+#define BEEP_MIN_FREQ         (150)
 #define BEEP_DEFAULT_FREQ     (2250)
 #define BEEP_KEY_UP_FREQ      (BEEP_DEFAULT_FREQ+150)
 #define BEEP_KEY_DOWN_FREQ    (BEEP_DEFAULT_FREQ-150)
@@ -106,7 +106,7 @@ class AudioContext {
       struct {
         double step;
         double idx;
-        int volume;
+        float  volume;
       } tone;
     } state;
 
