@@ -106,7 +106,7 @@ class AudioContext {
       struct {
         double step;
         double idx;
-        double volume;
+        int volume;
       } tone;
     } state;
 
