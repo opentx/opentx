@@ -348,7 +348,7 @@ Setup::Setup(QWidget *parent, ModelData & model):
   if (GetEepromInterface()->getCapability(ModelImage)) {
     QStringList items;
     items.append("");
-    QString path = glob.pro[glob.profileId()].sdPath();
+    QString path = g.profile[g.id()].sdPath();
     path.append("/BMP/");
     QDir qd(path);
     int vml = GetEepromInterface()->getCapability(VoicesMaxLength)+4;
@@ -515,7 +515,7 @@ void Setup::on_image_currentIndexChanged(int index)
 {
   if (!lock) {
     strncpy(model.bitmap, ui->image->currentText().toAscii(), GetEepromInterface()->getCapability(VoicesMaxLength));
-    QString path=glob.pro[glob.profileId()].sdPath();
+    QString path=g.profile[g.id()].sdPath();
     path.append("/BMP/");
     QDir qd(path);
     if (qd.exists()) {

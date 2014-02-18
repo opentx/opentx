@@ -180,7 +180,7 @@ void MdiChild::OpenEditWindow(bool wizard=false)
     }
     if (isNew && !wizard) {
       int ret;
-      bool wizardEnable=glob.wizardEnable();
+      bool wizardEnable=g.wizardEnable();
       if (wizardEnable) {
         ret = QMessageBox::question(this, tr("Companion"), tr("Do you want to use model wizard? "), QMessageBox::Yes | QMessageBox::No);
         if (ret == QMessageBox::Yes) {
@@ -189,7 +189,7 @@ void MdiChild::OpenEditWindow(bool wizard=false)
           qSleep(500);
           ret = QMessageBox::question(this, tr("Companion"), tr("Ask this question again ? "), QMessageBox::Yes | QMessageBox::No);
           if (ret == QMessageBox::No) {
-            glob.wizardEnable( false );
+            g.wizardEnable( false );
           }
         }
       }
@@ -351,28 +351,28 @@ bool MdiChild::saveAs(bool isNew)
       curFile.replace(".eepe", ".bin");
       QFileInfo fi(curFile);
 #ifdef __APPLE__
-      fileName = QFileDialog::getSaveFileName(this, tr("Save As"), glob.lastDir() + "/" +fi.fileName());
+      fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.lastDir() + "/" +fi.fileName());
 #else
-      fileName = QFileDialog::getSaveFileName(this, tr("Save As"), glob.lastDir() + "/" +fi.fileName(), tr(BIN_FILES_FILTER));
+      fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.lastDir() + "/" +fi.fileName(), tr(BIN_FILES_FILTER));
 #endif      
     }
     else {
       QFileInfo fi(curFile);
 #ifdef __APPLE__
-      fileName = QFileDialog::getSaveFileName(this, tr("Save As"), glob.lastDir() + "/" +fi.fileName());
+      fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.lastDir() + "/" +fi.fileName());
 #else
-      fileName = QFileDialog::getSaveFileName(this, tr("Save As"), glob.lastDir() + "/" +fi.fileName(), tr(EEPROM_FILES_FILTER));
+      fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.lastDir() + "/" +fi.fileName(), tr(EEPROM_FILES_FILTER));
 #endif      
     }
     if (fileName.isEmpty())
       return false;
     if (fileName.contains("rev4a")) {
-      glob.rev4asupport( true );
+      g.rev4asupport( true );
     }
     if (fileName.contains("norev4a")) {
-      glob.rev4asupport( false );
+      g.rev4asupport( false );
     }
-    glob.lastDir( QFileInfo(fileName).dir().absolutePath() );
+    g.lastDir( QFileInfo(fileName).dir().absolutePath() );
     if (isNew)
       return saveFile(fileName);
     else 
@@ -489,14 +489,14 @@ void MdiChild::setCurrentFile(const QString &fileName)
   fileChanged = false;
   setWindowModified(false);
   updateTitle();
-  int MaxRecentFiles = glob.history_size();
-  QStringList files = glob.recentFileList();
+  int MaxRecentFiles = g.history_size();
+  QStringList files = g.recentFileList();
   files.removeAll(fileName);
   files.prepend(fileName);
   while (files.size() > MaxRecentFiles)
       files.removeLast();
  
-  glob.recentFileList( files );
+  g.recentFileList( files );
 }
 
 QString MdiChild::strippedName(const QString &fullFileName)
@@ -506,8 +506,8 @@ QString MdiChild::strippedName(const QString &fullFileName)
 
 void MdiChild::writeEeprom()  // write to Tx
 {
-  bool backupEnable=glob.backupEnable();
-  QString backupPath=glob.backupPath();
+  bool backupEnable=g.backupEnable();
+  QString backupPath=g.backupPath();
   if (!backupPath.isEmpty()) {
     if (!QDir(backupPath).exists()) {
       if (backupEnable) {
@@ -518,7 +518,7 @@ void MdiChild::writeEeprom()  // write to Tx
   } else {
     backupEnable=false;
   }
-  QString stickCal=glob.pro[glob.profileId()].StickPotCalib();
+  QString stickCal=g.profile[g.id()].StickPotCalib();
   burnConfigDialog bcd;
   QString tempDir    = QDir::tempPath();
   QString tempFile = tempDir + "/temp.bin";
@@ -681,7 +681,7 @@ void MdiChild::setEEpromAvail(int eavail)
 
 bool MdiChild::loadBackup()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), glob.lastDir(),tr(EEPROM_FILES_FILTER));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), g.lastDir(),tr(EEPROM_FILES_FILTER));
     if (fileName.isEmpty())
       return false;
     QFile file(fileName);

@@ -1,5 +1,6 @@
 #include "joystickdialog.h"
 #include "ui_joystickdialog.h"
+#include "appdata.h"
 #include <QtGui>
 
 joystickDialog::joystickDialog(QWidget *parent, int stick) :
@@ -130,27 +131,20 @@ void joystickDialog::on_okButton_clicked() {
     return;
   }
   joystick->close();
-  QSettings settings;
-  settings.beginGroup("JsCalibration");
   for (int i=0; i<8;i++) {
-    settings.remove(QString("stick%1_axe").arg(i));
-    settings.remove(QString("stick%1_max").arg(i));
-    settings.remove(QString("stick%1_med").arg(i));
-    settings.remove(QString("stick%1_min").arg(i));
-    settings.remove(QString("stick%1_inv").arg(i));
+    g.joystick[i].remove();
   }
   QCheckBox * ib[]={ui->ChInv_1, ui->ChInv_2, ui->ChInv_3, ui->ChInv_4, ui->ChInv_5, ui->ChInv_6, ui->ChInv_7, ui->ChInv_8};
   foreach(QComboBox *cb, findChildren<QComboBox *>(QRegExp("jsmapCB_[0-9]+"))) {
     int axe=cb->objectName().mid(cb->objectName().lastIndexOf("_")+1).toInt()-1;
     int stick=cb->currentIndex();
-    if (stick>0) {
-      settings.setValue(QString("stick%1_axe").arg(stick),axe);
-      settings.setValue(QString("stick%1_max").arg(stick),jscal[axe][2]);
-      settings.setValue(QString("stick%1_med").arg(stick),jscal[axe][1]);
-      settings.setValue(QString("stick%1_min").arg(stick),jscal[axe][0]);
-      settings.setValue(QString("stick%1_inv").arg(stick),ib[axe]->isChecked() ? 1 : 0);
+    if (stick > 0) {
+      g.joystick[stick].stick_axe( axe );
+      g.joystick[stick].stick_max( jscal[axe][2] );
+      g.joystick[stick].stick_med( jscal[axe][1] );
+      g.joystick[stick].stick_min( jscal[axe][0] );
+      g.joystick[stick].stick_inv( ib[axe]->isChecked() ? 1 : 0 );
     }
   }
-  settings.endGroup();
   this->close();
 }

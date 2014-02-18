@@ -36,87 +36,87 @@ appPreferencesDialog::~appPreferencesDialog()
 
 void appPreferencesDialog::writeValues()
 {
-  glob.startup_check_companion(ui->startupCheck_companion9x->isChecked());
-  glob.startup_check_fw(ui->startupCheck_fw->isChecked());
-  glob.wizardEnable(ui->wizardEnable_ChkB->isChecked());
-  glob.show_splash(ui->showSplash->isChecked());
-  glob.simuSW(ui->simuSW->isChecked());
-  glob.history_size(ui->historySize->value());
-  glob.backLight(ui->backLightColor->currentIndex());
-  glob.libraryPath(ui->libraryPath->text());
-  glob.gePath(ui->ge_lineedit->text());
-  glob.embedded_splashes(ui->splashincludeCB->currentIndex());
-  glob.backupEnable(ui->backupEnable->isChecked());
+  g.startup_check_companion(ui->startupCheck_companion9x->isChecked());
+  g.startup_check_fw(ui->startupCheck_fw->isChecked());
+  g.wizardEnable(ui->wizardEnable_ChkB->isChecked());
+  g.show_splash(ui->showSplash->isChecked());
+  g.simuSW(ui->simuSW->isChecked());
+  g.history_size(ui->historySize->value());
+  g.backLight(ui->backLightColor->currentIndex());
+  g.libraryPath(ui->libraryPath->text());
+  g.gePath(ui->ge_lineedit->text());
+  g.embedded_splashes(ui->splashincludeCB->currentIndex());
+  g.backupEnable(ui->backupEnable->isChecked());
 
   if (ui->joystickChkB ->isChecked() && ui->joystickCB->isEnabled()) {
-    glob.js_support(ui->joystickChkB ->isChecked());  
-    glob.js_ctrl(ui->joystickCB ->currentIndex());
+    g.js_support(ui->joystickChkB ->isChecked());  
+    g.js_ctrl(ui->joystickCB ->currentIndex());
   }
   else {
-    glob.js_support(false);
-    glob.js_ctrl(0);
+    g.js_support(false);
+    g.js_ctrl(0);
   }
 
-  glob.profileId(ui->profileIndexLE->text().toInt());
+  g.id(ui->profileIndexLE->text().toInt());
 
-  glob.pro[glob.profileId()].default_channel_order(ui->channelorderCB->currentIndex());
-  glob.pro[glob.profileId()].default_mode(ui->stickmodeCB->currentIndex());
-  glob.pro[glob.profileId()].rename_firmware_files(ui->renameFirmware->isChecked());
-  glob.pro[glob.profileId()].burnFirmware(ui->burnFirmware->isChecked());
-  glob.pro[glob.profileId()].Name(ui->profileNameLE->text());
-  glob.pro[glob.profileId()].sdPath(ui->sdPath->text());
-  glob.pro[glob.profileId()].SplashFileName(ui->SplashFileName->text());
-  glob.pro[glob.profileId()].firmware(ui->firmwareLE->text());
+  g.profile[g.id()].default_channel_order(ui->channelorderCB->currentIndex());
+  g.profile[g.id()].default_mode(ui->stickmodeCB->currentIndex());
+  g.profile[g.id()].rename_firmware_files(ui->renameFirmware->isChecked());
+  g.profile[g.id()].burnFirmware(ui->burnFirmware->isChecked());
+  g.profile[g.id()].Name(ui->profileNameLE->text());
+  g.profile[g.id()].sdPath(ui->sdPath->text());
+  g.profile[g.id()].SplashFileName(ui->SplashFileName->text());
+  g.profile[g.id()].firmware(ui->firmwareLE->text());
   
   saveProfile();
 }
 
 void appPreferencesDialog::on_snapshotPathButton_clicked()
 {
-  QString fileName = QFileDialog::getExistingDirectory(this,tr("Select your snapshot folder"), glob.snapshotpath());
+  QString fileName = QFileDialog::getExistingDirectory(this,tr("Select your snapshot folder"), g.snapshotpath());
   if (!fileName.isEmpty()) {
-    glob.snapshotpath(fileName);
-    glob.snapshot_to_clipboard(false);
+    g.snapshotpath(fileName);
+    g.snapshot_to_clipboard(false);
     ui->snapshotPath->setText(fileName);
   }
 }
 
 void appPreferencesDialog::initSettings()
 {
-  ui->snapshotClipboardCKB->setChecked(glob.snapshot_to_clipboard());
-  ui->burnFirmware->setChecked(glob.pro[glob.profileId()].burnFirmware());
-  ui->snapshotPath->setText(glob.snapshotpath());
+  ui->snapshotClipboardCKB->setChecked(g.snapshot_to_clipboard());
+  ui->burnFirmware->setChecked(g.profile[g.id()].burnFirmware());
+  ui->snapshotPath->setText(g.snapshotpath());
   ui->snapshotPath->setReadOnly(true);
   if (ui->snapshotClipboardCKB->isChecked())
   {
     ui->snapshotPath->setDisabled(true);
     ui->snapshotPathButton->setDisabled(true);
   }
-  ui->startupCheck_companion9x->setChecked(glob.startup_check_companion());
-  ui->startupCheck_fw->setChecked(glob.startup_check_fw());
-  ui->wizardEnable_ChkB->setChecked(glob.wizardEnable());
-  ui->showSplash->setChecked(glob.show_splash());
-  ui->historySize->setValue(glob.history_size());
-  ui->backLightColor->setCurrentIndex(glob.backLight());
-  ui->simuSW->setChecked(glob.simuSW());
-  ui->libraryPath->setText(glob.libraryPath());
-  ui->ge_lineedit->setText(glob.gePath());
+  ui->startupCheck_companion9x->setChecked(g.startup_check_companion());
+  ui->startupCheck_fw->setChecked(g.startup_check_fw());
+  ui->wizardEnable_ChkB->setChecked(g.wizardEnable());
+  ui->showSplash->setChecked(g.show_splash());
+  ui->historySize->setValue(g.history_size());
+  ui->backLightColor->setCurrentIndex(g.backLight());
+  ui->simuSW->setChecked(g.simuSW());
+  ui->libraryPath->setText(g.libraryPath());
+  ui->ge_lineedit->setText(g.gePath());
 
-  if (!glob.backupPath().isEmpty()) {
-    if (QDir(glob.backupPath()).exists()) {
-      ui->backupPath->setText(glob.backupPath());
+  if (!g.backupPath().isEmpty()) {
+    if (QDir(g.backupPath()).exists()) {
+      ui->backupPath->setText(g.backupPath());
       ui->backupEnable->setEnabled(true);
-      ui->backupEnable->setChecked(glob.backupEnable());
+      ui->backupEnable->setChecked(g.backupEnable());
     } else {
       ui->backupEnable->setDisabled(true);
     }
   } else {
       ui->backupEnable->setDisabled(true);
   }
-  ui->splashincludeCB->setCurrentIndex(glob.embedded_splashes());
+  ui->splashincludeCB->setCurrentIndex(g.embedded_splashes());
 
 #ifdef JOYSTICKS
-  ui->joystickChkB->setChecked(glob.js_support());
+  ui->joystickChkB->setChecked(g.js_support());
   if (ui->joystickChkB->isChecked()) {
     QStringList joystickNames;
     joystickNames << tr("No joysticks found");
@@ -134,7 +134,7 @@ void appPreferencesDialog::initSettings()
     }
     ui->joystickCB->clear();
     ui->joystickCB->insertItems(0, joystickNames);
-    ui->joystickCB->setCurrentIndex(glob.js_ctrl());
+    ui->joystickCB->setCurrentIndex(g.js_ctrl());
   }
   else {
     ui->joystickCB->clear();
@@ -143,22 +143,22 @@ void appPreferencesDialog::initSettings()
   }
 #endif  
 //  Profile Tab Inits  
-  ui->channelorderCB->setCurrentIndex(glob.pro[glob.profileId()].default_channel_order());
-  ui->stickmodeCB->setCurrentIndex(glob.pro[glob.profileId()].default_mode());
-  ui->renameFirmware->setChecked(glob.pro[glob.profileId()].rename_firmware_files());
-  ui->sdPath->setText(glob.pro[glob.profileId()].sdPath());
-  ui->profileIndexLE->setText(QString("%1").arg(glob.profileId()));
-  ui->profileNameLE->setText(glob.pro[glob.profileId()].Name());
-  ui->firmwareLE->setText(glob.pro[glob.profileId()].firmware());
-  ui->SplashFileName->setText(glob.pro[glob.profileId()].SplashFileName());
-  displayImage( glob.pro[glob.profileId()].SplashFileName() );
+  ui->channelorderCB->setCurrentIndex(g.profile[g.id()].default_channel_order());
+  ui->stickmodeCB->setCurrentIndex(g.profile[g.id()].default_mode());
+  ui->renameFirmware->setChecked(g.profile[g.id()].rename_firmware_files());
+  ui->sdPath->setText(g.profile[g.id()].sdPath());
+  ui->profileIndexLE->setText(QString("%1").arg(g.id()));
+  ui->profileNameLE->setText(g.profile[g.id()].Name());
+  ui->firmwareLE->setText(g.profile[g.id()].firmware());
+  ui->SplashFileName->setText(g.profile[g.id()].SplashFileName());
+  displayImage( g.profile[g.id()].SplashFileName() );
 }
 
 void appPreferencesDialog::on_libraryPathButton_clicked()
 {
-  QString fileName = QFileDialog::getExistingDirectory(this,tr("Select your library folder"), glob.libraryPath());
+  QString fileName = QFileDialog::getExistingDirectory(this,tr("Select your library folder"), g.libraryPath());
   if (!fileName.isEmpty()) {
-    glob.libraryPath(fileName);
+    g.libraryPath(fileName);
     ui->libraryPath->setText(fileName);
   }
 }
@@ -168,20 +168,20 @@ void appPreferencesDialog::on_snapshotClipboardCKB_clicked()
   if (ui->snapshotClipboardCKB->isChecked()) {
     ui->snapshotPath->setDisabled(true);
     ui->snapshotPathButton->setDisabled(true);
-    glob.snapshot_to_clipboard(true);
+    g.snapshot_to_clipboard(true);
   } else {
     ui->snapshotPath->setEnabled(true);
     ui->snapshotPath->setReadOnly(true);
     ui->snapshotPathButton->setEnabled(true);
-    glob.snapshot_to_clipboard(false);
+    g.snapshot_to_clipboard(false);
   }
 }
 
 void appPreferencesDialog::on_backupPathButton_clicked()
 {
-  QString fileName = QFileDialog::getExistingDirectory(this,tr("Select your Models and Settings backup folder"), glob.backupPath());
+  QString fileName = QFileDialog::getExistingDirectory(this,tr("Select your Models and Settings backup folder"), g.backupPath());
   if (!fileName.isEmpty()) {
-    glob.backupPath(fileName);
+    g.backupPath(fileName);
     ui->backupPath->setText(fileName);
   }
   ui->backupEnable->setEnabled(true);
@@ -232,7 +232,7 @@ void appPreferencesDialog::on_joystickcalButton_clicked() {
 
 void appPreferencesDialog::on_sdPathButton_clicked()
 {
-  QString fileName = QFileDialog::getExistingDirectory(this,tr("Select the folder replicating your SD structure"), glob.pro[glob.profileId()].sdPath());
+  QString fileName = QFileDialog::getExistingDirectory(this,tr("Select the folder replicating your SD structure"), g.profile[g.id()].sdPath());
   if (!fileName.isEmpty()) {
     ui->sdPath->setText(fileName);
   }
@@ -244,24 +244,24 @@ void appPreferencesDialog::saveProfile()
   if (ui->profileNameLE->text().isEmpty())
     ui->profileNameLE->setText("----");
 
-  glob.pro[glob.profileId()].Name( ui->profileNameLE->text() );
-  glob.pro[glob.profileId()].default_channel_order( ui->channelorderCB->currentIndex());
-  glob.pro[glob.profileId()].default_mode( ui->stickmodeCB->currentIndex());
-  glob.pro[glob.profileId()].burnFirmware( ui->burnFirmware->isChecked());
-  glob.pro[glob.profileId()].rename_firmware_files( ui->renameFirmware->isChecked());
-  glob.pro[glob.profileId()].sdPath( ui->sdPath->text());
-  glob.pro[glob.profileId()].SplashFileName( ui->SplashFileName->text());
-  glob.pro[glob.profileId()].firmware( ui->firmwareLE->text());
+  g.profile[g.id()].Name( ui->profileNameLE->text() );
+  g.profile[g.id()].default_channel_order( ui->channelorderCB->currentIndex());
+  g.profile[g.id()].default_mode( ui->stickmodeCB->currentIndex());
+  g.profile[g.id()].burnFirmware( ui->burnFirmware->isChecked());
+  g.profile[g.id()].rename_firmware_files( ui->renameFirmware->isChecked());
+  g.profile[g.id()].sdPath( ui->sdPath->text());
+  g.profile[g.id()].SplashFileName( ui->SplashFileName->text());
+  g.profile[g.id()].firmware( ui->firmwareLE->text());
 }
 
 void appPreferencesDialog::on_removeProfileButton_clicked()
 {
-  if ( glob.profileId() == 0 )
+  if ( g.id() == 0 )
      QMessageBox::information(this, tr("Not possible to remove profile"), tr("The default profile can not be removed."));
   else
   {
-    glob.pro[glob.profileId()].remove();
-    glob.profileId( 0 );
+    g.profile[g.id()].remove();
+    g.id( 0 );
     initSettings();
   }
 }
@@ -277,7 +277,7 @@ bool appPreferencesDialog::displayImage( QString fileName )
 
   // Use the firmware name to determine splash width
   int width = SPLASH_WIDTH;
-  if (glob.pro[glob.profileId()].firmware().contains("taranis"))
+  if (g.profile[g.id()].firmware().contains("taranis"))
     width = SPLASHX9D_WIDTH;
 
   ui->imageLabel->setPixmap(QPixmap::fromImage(image.scaled(width, SPLASH_HEIGHT)));
@@ -313,10 +313,10 @@ void appPreferencesDialog::on_SplashSelect_clicked()
   }
 
   QString fileName = QFileDialog::getOpenFileName(this,
-          tr("Open Image to load"), glob.lastImagesDir(), tr("Images (%1)").arg(supportedImageFormats));
+          tr("Open Image to load"), g.lastImagesDir(), tr("Images (%1)").arg(supportedImageFormats));
 
   if (!fileName.isEmpty()){
-    glob.lastImagesDir(QFileInfo(fileName).dir().absolutePath());
+    g.lastImagesDir(QFileInfo(fileName).dir().absolutePath());
    
     displayImage(fileName);
     ui->SplashFileName->setText(fileName);

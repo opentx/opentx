@@ -22,7 +22,7 @@ ModelEdit::ModelEdit(RadioData & radioData, int modelId, bool openWizard, bool i
   generalSettings(radioData.generalSettings)
 {
   ui->setupUi(this);
-  restoreGeometry(glob.modelEditGeometry());  
+  restoreGeometry(g.modelEditGeometry());  
   ui->pushButton->setIcon(CompanionIcon("simulate.png"));
   addTab(new Setup(this, model), tr("Setup"));
   addTab(new HeliPanel(this, model), tr("Heli"));
@@ -45,7 +45,7 @@ ModelEdit::~ModelEdit()
 
 void ModelEdit::closeEvent(QCloseEvent *event)
 {
-  glob.modelEditGeometry( saveGeometry() );
+  g.modelEditGeometry( saveGeometry() );
 }
 
 class VerticalScrollArea : public QScrollArea

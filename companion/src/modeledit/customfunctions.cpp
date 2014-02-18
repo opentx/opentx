@@ -75,7 +75,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
       }
     }
 
-    QString path = glob.pro[glob.profileId()].sdPath();
+    QString path = g.profile[g.id()].sdPath();
     path.append("/SOUNDS/");
     QString lang = generalSettings.ttsLanguage;
     if (lang.isEmpty())
@@ -225,7 +225,7 @@ void CustomFunctionsPanel::playMusic()
     QPushButton *playButton = qobject_cast<QPushButton*>(sender());
     int index=playButton->objectName().mid(5,2).toInt();
     QString function=playButton->objectName().left(4);
-    QString path =  glob.pro[glob.profileId()].sdPath();
+    QString path =  g.profile[g.id()].sdPath();
     QDir qd(path);
     QString track;
     if (qd.exists()) {

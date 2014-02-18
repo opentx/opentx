@@ -914,7 +914,7 @@ QString getCenterBeep(ModelData * g_model)
 
 QString getTheme()
 {
-  int theme_set = glob.theme();
+  int theme_set = g.theme();
   QString Theme;
   switch(theme_set) {
     case 0:

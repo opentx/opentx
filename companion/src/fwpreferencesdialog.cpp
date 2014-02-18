@@ -188,11 +188,8 @@ void fwPreferencesDialog::firmwareChanged()
     ui->CPU_ID_LE->hide();
     ui->CPU_ID_LABEL->hide();
   }
-  QSettings settings;
-  settings.beginGroup("FwRevisions");
-  int fwrev = settings.value(variant.id, -1).toInt();
-  settings.endGroup();
-  if (fwrev != -1) {
+  int fwrev = g.fwRev.get(variant.id);
+  if (fwrev != 0) {
     ui->FwInfo->setText(tr("Last downloaded release: %1").arg(fwrev));
     if (!stamp.isEmpty()) {
       ui->checkFWUpdates->show();
@@ -214,9 +211,9 @@ void fwPreferencesDialog::firmwareChanged()
 
 void fwPreferencesDialog::writeValues()
 {
-  glob.cpu_id( ui->CPU_ID_LE->text() );
+  g.cpu_id( ui->CPU_ID_LE->text() );
   current_firmware_variant = getFirmwareVariant();
-  glob.pro[glob.profileId()].firmware( current_firmware_variant.id );
+  g.profile[g.id()].firmware( current_firmware_variant.id );
 }
 
 void fwPreferencesDialog::populateFirmwareOptions(const FirmwareInfo * firmware)
@@ -274,7 +271,7 @@ void fwPreferencesDialog::populateFirmwareOptions(const FirmwareInfo * firmware)
 
 void fwPreferencesDialog::initSettings()
 {
-  ui->CPU_ID_LE->setText(glob.cpu_id());
+  ui->CPU_ID_LE->setText(g.cpu_id());
   FirmwareInfo * current_firmware = GetCurrentFirmware();
 
   foreach(FirmwareInfo * firmware, firmwares) {
@@ -291,9 +288,9 @@ void fwPreferencesDialog::initSettings()
 void fwPreferencesDialog::on_checkFWUpdates_clicked()
 {
     FirmwareVariant variant = getFirmwareVariant();
-    if (glob.pro[glob.profileId()].burnFirmware()) {
+    if (g.profile[g.id()].burnFirmware()) {
       current_firmware_variant = variant;
-      glob.pro[glob.profileId()].firmware( variant.id );
+      g.profile[g.id()].firmware( variant.id );
     }
     MainWindow * mw = (MainWindow *)this->parent();
     mw->checkForUpdates(true, variant.id);
@@ -306,9 +303,9 @@ void fwPreferencesDialog::on_fw_dnld_clicked()
   FirmwareVariant variant = getFirmwareVariant();
   writeValues();
   if (!variant.firmware->getUrl(variant.id).isNull()) {
-    if (glob.pro[glob.profileId()].burnFirmware()) {
+    if (g.profile[g.id()].burnFirmware()) {
       current_firmware_variant = getFirmwareVariant();
-      glob.pro[glob.profileId()].firmware( current_firmware_variant.id );
+      g.profile[g.id()].firmware( current_firmware_variant.id );
     }
     mw->downloadLatestFW(current_firmware_variant.firmware, current_firmware_variant.id);
   }

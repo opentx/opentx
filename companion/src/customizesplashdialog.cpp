@@ -46,7 +46,7 @@ bool Side::displayImage( QString fileName, Source pictSource )
     if (pictSource== PICT)
       *format = image.width()>WIDTH_9X ? LCDTARANIS : LCD9X;
     else if (pictSource == PROFILE)
-      *format = (glob.pro[glob.profileId()].firmware().contains("taranis")) ? LCDTARANIS : LCD9X; 
+      *format = (g.profile[g.id()].firmware().contains("taranis")) ? LCDTARANIS : LCD9X; 
   }
   if (image.isNull()) {
     return false;
@@ -115,7 +115,7 @@ bool Side::saveImage()
     }
     QImage image = imageLabel->pixmap()->toImage().scaled(flash.getSplashWidth(), flash.getSplashHeight());
     if (flash.setSplash(image) && (flash.saveFlash(*saveToFileName) > 0)) {
-      glob.lastFlashDir( QFileInfo(*saveToFileName).dir().absolutePath() );
+      g.lastFlashDir( QFileInfo(*saveToFileName).dir().absolutePath() );
     }
     else {
       return false;
@@ -124,7 +124,7 @@ bool Side::saveImage()
   else if (*source == PICT) {
     QImage image = imageLabel->pixmap()->toImage().scaled(imageLabel->width()/2, imageLabel->height()/2).convertToFormat(QImage::Format_Indexed8);
     if (image.save(*saveToFileName)) {
-      glob.lastImagesDir( QFileInfo(*saveToFileName).dir().absolutePath() );
+      g.lastImagesDir( QFileInfo(*saveToFileName).dir().absolutePath() );
     }
     else {
       return false;
@@ -181,12 +181,12 @@ void customizeSplashDialog::on_leftLoadFwButton_clicked() {loadFirmware(left);}
 void customizeSplashDialog::on_rightLoadFwButton_clicked() {loadFirmware(right);}
 void customizeSplashDialog::loadFirmware(Side side)
 {
-  QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), glob.lastFlashDir(), FLASH_FILES_FILTER);
+  QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), g.lastFlashDir(), FLASH_FILES_FILTER);
   if (!fileName.isEmpty()) {
     if (!side.displayImage( fileName, FW ))
       QMessageBox::critical(this, tr("Error"), tr("Cannot load embedded FW image from %1.").arg(fileName));
     else
-    glob.lastFlashDir( QFileInfo(fileName).dir().absolutePath() );
+    g.lastFlashDir( QFileInfo(fileName).dir().absolutePath() );
   }
 }
 
@@ -199,13 +199,13 @@ void customizeSplashDialog::loadPicture(Side side)
     supportedImageFormats += QLatin1String(" *.") + QImageReader::supportedImageFormats()[formatIndex];
   }
   QString fileName = QFileDialog::getOpenFileName(this,
-          tr("Open Image to load"), glob.lastImagesDir(), tr("Images (%1)").arg(supportedImageFormats));
+          tr("Open Image to load"), g.lastImagesDir(), tr("Images (%1)").arg(supportedImageFormats));
 
   if (!fileName.isEmpty()) {
     if (!side.displayImage( fileName, PICT ))
       QMessageBox::critical(this, tr("Error"), tr("Cannot load the image file %1.").arg(fileName));
     else
-      glob.lastImagesDir( QFileInfo(fileName).dir().absolutePath() );
+      g.lastImagesDir( QFileInfo(fileName).dir().absolutePath() );
   }
 }
 
@@ -213,7 +213,7 @@ void customizeSplashDialog::on_leftLoadProfileButton_clicked() {loadProfile(left
 void customizeSplashDialog::on_rightLoadProfileButton_clicked() {loadProfile(right);}
 void customizeSplashDialog::loadProfile(Side side)
 {
-  QString fileName=glob.pro[glob.profileId()].SplashFileName();
+  QString fileName=g.profile[g.id()].SplashFileName();
 
   if (!fileName.isEmpty()) {
     if (!side.displayImage( fileName, PROFILE ))

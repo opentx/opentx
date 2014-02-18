@@ -62,7 +62,7 @@ void splashLibrary::setupPage(int page) {
 
 void splashLibrary::getFileList() {
   imageList.clear();
-  if (glob.embedded_splashes() == 0) {
+  if (g.embedded_splashes() == 0) {
     QDir myRes(":/images/library");
     QStringList tmp = myRes.entryList();
     for (int i = 0; i < tmp.size(); i++) {
@@ -70,7 +70,7 @@ void splashLibrary::getFileList() {
       imageList.append(":/images/library/" + fileInfo.fileName());
     }
   }
-  QString libraryPath = glob.libraryPath();
+  QString libraryPath = g.libraryPath();
   if (!libraryPath.isEmpty()) {
     if (QDir(libraryPath).exists()) {
       QStringList supportedImageFormats;

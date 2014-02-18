@@ -75,7 +75,7 @@ class MyProxyStyle : public QProxyStyle
 #endif
 
 // Global data and storge object
-AppData glob;
+AppData g;
 
 int main(int argc, char *argv[])
 {
@@ -90,26 +90,26 @@ int main(int argc, char *argv[])
 #endif
 
   QTranslator companionTranslator;
-  companionTranslator.load(":/companion_" + glob.locale());
+  companionTranslator.load(":/companion_" + g.locale());
   QTranslator qtTranslator;
-  qtTranslator.load((QString)"qt_" + glob.locale().left(2), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+  qtTranslator.load((QString)"qt_" + g.locale().left(2), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
   app.installTranslator(&companionTranslator);
   app.installTranslator(&qtTranslator);
 
   QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 
-  if (glob.pro[glob.profileId()].firmware().isEmpty())
-    glob.pro[glob.profileId()].firmware(default_firmware_variant.id);
+  if (g.profile[g.id()].firmware().isEmpty())
+    g.profile[g.id()].firmware(default_firmware_variant.id);
 
-  QPixmap pixmap = QPixmap(glob.pro[glob.profileId()].firmware().contains("taranis") ? ":/images/splasht.png" : ":/images/splash.png");
+  QPixmap pixmap = QPixmap(g.profile[g.id()].firmware().contains("taranis") ? ":/images/splasht.png" : ":/images/splash.png");
   QSplashScreen *splash = new QSplashScreen(pixmap);
 
   RegisterFirmwares();
 
-  current_firmware_variant = GetFirmwareVariant(glob.pro[glob.profileId()].firmware());
+  current_firmware_variant = GetFirmwareVariant(g.profile[g.id()].firmware());
 
   MainWindow *mainWin = new MainWindow();
-  if (glob.show_splash()) {
+  if (g.show_splash()) {
     splash->show();
     QTimer::singleShot(1000*SPLASH_TIME, splash, SLOT(close()));
     QTimer::singleShot(1000*SPLASH_TIME, mainWin, SLOT(show()));
