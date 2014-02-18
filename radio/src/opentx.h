@@ -1334,7 +1334,7 @@ enum FunctionsActive {
 #define VARIO_FREQUENCY_ZERO   700/*Hz*/
 #define VARIO_FREQUENCY_RANGE  1000/*Hz*/
 #define VARIO_REPEAT_ZERO      500/*ms*/
-#define VARIO_REPEAT_MAX       50/*ms*/
+#define VARIO_REPEAT_MAX       80/*ms*/
 
 extern MASK_FUNC_TYPE activeFunctions;
 extern MASK_CFN_TYPE  activeFnSwitches;

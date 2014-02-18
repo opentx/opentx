@@ -2538,7 +2538,7 @@ uint8_t checkTrim(uint8_t event)
     thro = (idx==THR_STICK && g_model.thrTrim);
 #endif
     int8_t trimInc = g_model.trimInc + 1;
-    int8_t v = (trimInc==-1) ? min(32, abs(before)/4+1) : (1 << trimInc);
+    int8_t v = (trimInc==-1) ? min(32, abs(before)/4+1) : (1 << trimInc); // TODO flash saving if (trimInc < 0)
     if (thro) v = 4; // if throttle trim and trim trottle then step=4
     int16_t after = (k&1) ? before + v : before - v;   // positive = k&1
 #if defined(CPUARM)
