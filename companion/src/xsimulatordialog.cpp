@@ -3,6 +3,7 @@
 #include <iostream>
 #include "helpers.h"
 #include "simulatorinterface.h"
+#include "appdata.h"
 #ifdef JOYSTICKS
 #include "joystick.h"
 #endif
@@ -179,8 +180,7 @@ void xsimulatorDialog::setupTimer()
 void xsimulatorDialog::onButtonPressed(int value)
 {
   if (value==Qt::Key_Print) {
-      QSettings settings;
-      bool toclipboard=settings.value("snapshot_to_clipboard", false).toBool();
+      bool toclipboard=glob.snapshot_to_clipboard();
       QString fileName ="";
       if (!toclipboard) {
         fileName = QString("screenshot-%1.png").arg(++screenshotIdx);

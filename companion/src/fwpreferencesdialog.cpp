@@ -3,6 +3,7 @@
 #include "mainwindow.h"
 #include "eeprominterface.h"
 #include "helpers.h"
+#include "appdata.h"
 #include <QDesktopServices>
 #include <QtGui>
 
@@ -213,11 +214,9 @@ void fwPreferencesDialog::firmwareChanged()
 
 void fwPreferencesDialog::writeValues()
 {
-  QSettings settings;
-
-  settings.setValue("cpu_id", ui->CPU_ID_LE->text());
+  glob.cpu_id( ui->CPU_ID_LE->text() );
   current_firmware_variant = getFirmwareVariant();
-  settings.setValue("firmware", current_firmware_variant.id);
+  glob.pro[glob.profileId()].firmware( current_firmware_variant.id );
 }
 
 void fwPreferencesDialog::populateFirmwareOptions(const FirmwareInfo * firmware)
@@ -275,9 +274,7 @@ void fwPreferencesDialog::populateFirmwareOptions(const FirmwareInfo * firmware)
 
 void fwPreferencesDialog::initSettings()
 {
-  QSettings settings;
-
-  ui->CPU_ID_LE->setText(settings.value("cpu_id", "").toString());
+  ui->CPU_ID_LE->setText(glob.cpu_id());
   FirmwareInfo * current_firmware = GetCurrentFirmware();
 
   foreach(FirmwareInfo * firmware, firmwares) {
@@ -293,12 +290,10 @@ void fwPreferencesDialog::initSettings()
 
 void fwPreferencesDialog::on_checkFWUpdates_clicked()
 {
-    QSettings settings;
-
     FirmwareVariant variant = getFirmwareVariant();
-    if (settings.value("burnFirmware", true).toBool()) {
+    if (glob.pro[glob.profileId()].burnFirmware()) {
       current_firmware_variant = variant;
-      settings.setValue("firmware", variant.id);
+      glob.pro[glob.profileId()].firmware( variant.id );
     }
     MainWindow * mw = (MainWindow *)this->parent();
     mw->checkForUpdates(true, variant.id);
@@ -307,14 +302,13 @@ void fwPreferencesDialog::on_checkFWUpdates_clicked()
 
 void fwPreferencesDialog::on_fw_dnld_clicked()
 {
-  QSettings settings;
   MainWindow * mw = (MainWindow *)this->parent();
   FirmwareVariant variant = getFirmwareVariant();
   writeValues();
   if (!variant.firmware->getUrl(variant.id).isNull()) {
-    if (settings.value("burnFirmware", true).toBool()) {
+    if (glob.pro[glob.profileId()].burnFirmware()) {
       current_firmware_variant = getFirmwareVariant();
-      settings.setValue("firmware", current_firmware_variant.id);
+      glob.pro[glob.profileId()].firmware( current_firmware_variant.id );
     }
     mw->downloadLatestFW(current_firmware_variant.firmware, current_firmware_variant.id);
   }

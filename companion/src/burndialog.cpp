@@ -7,6 +7,7 @@
 #include "splashlibrary.h"
 #include "flashinterface.h"
 #include "hexinterface.h"
+#include "appdata.h"
 
 burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * backupEE, QString DocName):
   QDialog(parent),
@@ -58,15 +59,7 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
     else {
       setWindowTitle(tr("Write Models and Settings in %1 to TX").arg(DocName));
     }
-    QSettings settings;
-    int profileid=settings.value("profileId", 1).toInt();
-    settings.beginGroup("Profiles");
-    QString profile=QString("profile%1").arg(profileid);
-    settings.beginGroup(profile);
-    QString Name=settings.value("Name","").toString();
-    settings.endGroup();
-    settings.endGroup();
-    ui->profile_label->setText(tr("Current profile")+QString(": ")+Name);
+    ui->profile_label->setText(tr("Current profile")+QString(": ")+glob.pro[glob.profileId()].Name());
   }
   if (!hexfileName->isEmpty()) {
     ui->FWFileName->setText(*hexfileName);
@@ -77,9 +70,8 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
       burnraw=false;
       if (checkeEprom(*hexfileName)) {
         QSettings settings;
-        int profileid=settings.value("profileId", 1).toInt();
         settings.beginGroup("Profiles");
-        QString profile=QString("profile%1").arg(profileid);
+        QString profile=QString("profile%1").arg(glob.profileId());
         settings.beginGroup(profile);
         QString Name=settings.value("Name","").toString();
         QString calib=settings.value("StickPotCalib","").toString();
@@ -119,9 +111,8 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
     hexfileName->clear();
   }
   else if (Type==2) {
-    QSettings settings;
     QString FileName;
-    FileName = settings.value("lastFw").toString();
+    FileName = glob.lastFw();
     QFile file(FileName);
     if (file.exists()) {
       checkFw(FileName);
@@ -138,7 +129,7 @@ burnDialog::~burnDialog()
 void burnDialog::on_FlashLoadButton_clicked()
 {
   QString fileName;
-  QSettings settings;
+
   ui->ImageLoadButton->setDisabled(true);
   ui->libraryButton->setDisabled(true);
   ui->InvertColorButton->setDisabled(true);
@@ -155,11 +146,11 @@ void burnDialog::on_FlashLoadButton_clicked()
   ui->EEbackupCB->hide();
   QTimer::singleShot(0, this, SLOT(shrink()));
   if (hexType==2) {
-    fileName = QFileDialog::getOpenFileName(this, tr("Open"), settings.value("lastFlashDir").toString(), FLASH_FILES_FILTER);
+    fileName = QFileDialog::getOpenFileName(this, tr("Open"), glob.lastFlashDir(), FLASH_FILES_FILTER);
     checkFw(fileName);
   }
   else {
-    QString fileName = QFileDialog::getOpenFileName(this,tr("Choose file to load Models and Settings from"), settings.value("lastDir").toString(), tr(EXTERNAL_EEPROM_FILES_FILTER));
+    QString fileName = QFileDialog::getOpenFileName(this,tr("Choose file to load Models and Settings from"), glob.lastDir(), tr(EXTERNAL_EEPROM_FILES_FILTER));
     if (checkeEprom(fileName)) {
       if (burnraw==false) {
         ui->BurnFlashButton->setEnabled(true);
@@ -191,7 +182,6 @@ void burnDialog::checkFw(QString fileName)
   if (fileName.isEmpty()) {
     return;
   }
-  QSettings settings;
   if (!IS_TARANIS(GetEepromInterface()->getBoard())) {
     ui->EEbackupCB->show();
   }
@@ -216,8 +206,8 @@ void burnDialog::checkFw(QString fileName)
       ui->imageLabel->setFixedSize(flash.getSplashWidth(), flash.getSplashHeight());
       ui->FwImage->show();
       ui->FwImage->setPixmap(QPixmap::fromImage(flash.getSplash()));
-      QString ImageStr = settings.value("SplashImage", "").toString();
-      bool PatchFwCB = settings.value("patchImage", false).toBool();
+      QString ImageStr = glob.pro[glob.profileId()].SplashFileName();
+      bool PatchFwCB = glob.pro[glob.profileId()].patchImage();
       if (!ImageStr.isEmpty()) {
         QImage Image = qstring2image(ImageStr);
         ui->imageLabel->setPixmap(QPixmap::fromImage(Image.convertToFormat(flash.getSplashFormat())));
@@ -260,7 +250,7 @@ void burnDialog::checkFw(QString fileName)
     ui->BurnFlashButton->setEnabled(true);
   }  
   QTimer::singleShot(0, this, SLOT(shrink()));
-  settings.setValue("lastFlashDir", QFileInfo(fileName).dir().absolutePath());
+  glob.lastFlashDir( QFileInfo(fileName).dir().absolutePath() );
 }
 
 bool burnDialog::checkeEprom(QString fileName)
@@ -360,12 +350,11 @@ void burnDialog::on_ImageLoadButton_clicked()
     supportedImageFormats += QLatin1String(" *.") + QImageReader::supportedImageFormats()[formatIndex];
   }
 
-  QSettings settings;
   QString fileName = QFileDialog::getOpenFileName(this,
-          tr("Open Image to load"), settings.value("lastImagesDir").toString(), tr("Images (%1)").arg(supportedImageFormats));
+          tr("Open Image to load"), glob.lastImagesDir(), tr("Images (%1)").arg(supportedImageFormats));
 
   if (!fileName.isEmpty()) {
-    settings.setValue("lastImagesDir", QFileInfo(fileName).dir().absolutePath());
+    glob.lastImagesDir( QFileInfo(fileName).dir().absolutePath() );
     QImage image(fileName);
     if (image.isNull()) {
       QMessageBox::critical(this, tr("Error"), tr("Cannot load %1.").arg(fileName));
@@ -442,11 +431,10 @@ void burnDialog::on_BurnFlashButton_clicked()
   if (hexType==2) {
     QString fileName=ui->FWFileName->text();
     if (!fileName.isEmpty()) {
-      QSettings settings;
-      settings.setValue("lastFlashDir", QFileInfo(fileName).dir().absolutePath());
-      settings.setValue("lastFw", fileName);
+      glob.lastFlashDir( QFileInfo(fileName).dir().absolutePath() );
+      glob.lastFw( fileName );
       if (ui->PatchFWCB->isChecked()) {
-        settings.setValue("patchImage", true);
+        glob.pro[glob.profileId()].patchImage( true );
         QImage image = ui->imageLabel->pixmap()->toImage().scaled(ui->imageLabel->width(), ui->imageLabel->height());
         if (!image.isNull()) {
           QString tempDir    = QDir::tempPath();
@@ -469,7 +457,7 @@ void burnDialog::on_BurnFlashButton_clicked()
           QMessageBox::critical(this, tr("Warning"), tr("Custom image not found"));
         }
       } else {
-            settings.setValue("patchImage", false);
+            glob.pro[glob.profileId()].patchImage( false );
             hexfileName->clear();
             hexfileName->append(fileName);
       }
@@ -480,7 +468,7 @@ void burnDialog::on_BurnFlashButton_clicked()
   }
   if (hexType==1) {
     QSettings settings;
-    int profileid=settings.value("profileId", 1).toInt();
+    int profileid=glob.profileId();
     settings.beginGroup("Profiles");
     QString profile=QString("profile%1").arg(profileid);
     settings.beginGroup(profile);
@@ -656,8 +644,7 @@ void burnDialog::on_PreferredImageCB_toggled(bool checked)
 {
   QString tmpFileName;
   if (checked) {
-    QSettings settings;
-    QString ImageStr = settings.value("SplashImage", "").toString();
+    QString ImageStr = glob.pro[glob.profileId()].SplashFileName();
     if (!ImageStr.isEmpty()) {
       QImage Image = qstring2image(ImageStr);
       if (ui->imageLabel->width()!=128) {

@@ -7,6 +7,7 @@
 #include "firmwares/opentx/opentxinterface.h"
 #include "firmwares/ersky9x/ersky9xinterface.h"
 #include "qsettings.h"
+#include "appdata.h"
 #include "helpers.h"
 
 QString EEPROMWarnings;
@@ -734,8 +735,8 @@ GeneralSettings::GeneralSettings()
   QSettings settings;
   templateSetup = settings.value("default_channel_order", 0).toInt();
   stickMode = settings.value("default_mode", 1).toInt();
-  int profile_id = settings.value("profileId", 0).toInt();
-  if (profile_id>0) {
+  int profile_id = glob.profileId();
+  if (profile_id>-1) {
     settings.beginGroup("Profiles");
     QString profile=QString("profile%1").arg(profile_id);
     settings.beginGroup(profile);
@@ -990,14 +991,12 @@ ModelData ModelData::removeGlobalVars()
 QList<EEPROMInterface *> eepromInterfaces;
 void RegisterEepromInterfaces()
 {
-  QSettings settings;
-  int rev4a = settings.value("rev4asupport",0).toInt();
   eepromInterfaces.push_back(new Open9xInterface(BOARD_STOCK));
   eepromInterfaces.push_back(new Open9xInterface(BOARD_M128));
   eepromInterfaces.push_back(new Open9xInterface(BOARD_GRUVIN9X));
   eepromInterfaces.push_back(new Open9xInterface(BOARD_SKY9X));
   eepromInterfaces.push_back(new Open9xInterface(BOARD_TARANIS));
-  if (rev4a)
+  if (glob.rev4asupport())
     eepromInterfaces.push_back(new Open9xInterface(BOARD_TARANIS_REV4a));
   eepromInterfaces.push_back(new Gruvin9xInterface(BOARD_STOCK));
   eepromInterfaces.push_back(new Gruvin9xInterface(BOARD_GRUVIN9X));
