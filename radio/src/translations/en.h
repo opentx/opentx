@@ -297,11 +297,11 @@
 #define LEN_VOLTSRC            "\003"
 #define TR_VOLTSRC             "---""A1\0""A2\0""FAS""Cel"
 
-#define LEN_VARIOSRC           "\005"
+#define LEN_VARIOSRC           "\004"
 #if defined(FRSKY_SPORT)
-  #define TR_VARIOSRC          "Vario""A1\0  ""A2\0"
+  #define TR_VARIOSRC          "VSpd""A1\0 ""A2\0 ""dTE\0"
 #else
-  #define TR_VARIOSRC          "Alti\0""Alti+""Vario""A1\0  ""A2\0"
+  #define TR_VARIOSRC          "Alt\0""Alt+""VSpd""A1\0 ""A2\0"
 #endif
 
 #define LEN_VSCREEN            "\004"

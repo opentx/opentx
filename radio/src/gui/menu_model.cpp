@@ -5627,10 +5627,7 @@ void menuModelTelemetry(uint8_t event)
         }
 #else
         lcd_outdezAtt(TELEM_COL2, y, -10+g_model.frsky.varioMin, (m_posHorz<=0 ? attr : 0)|LEFT);
-        if (g_model.frsky.varioCenterMin == -16)
-          lcd_putsAtt(TELEM_COL2+4*FW-2, y, STR_OFF, m_posHorz==1 ? attr : 0);
-        else
-          lcd_outdezAtt(TELEM_COL2+7*FW-2, y, -5+g_model.frsky.varioCenterMin, ((m_posHorz<0 || m_posHorz==1) ? attr : 0)|PREC1);
+        lcd_outdezAtt(TELEM_COL2+7*FW-2, y, -5+g_model.frsky.varioCenterMin, ((m_posHorz<0 || m_posHorz==1) ? attr : 0)|PREC1);
         lcd_outdezAtt(TELEM_COL2+10*FW, y, 5+g_model.frsky.varioCenterMax, ((m_posHorz<0 || m_posHorz==2) ? attr : 0)|PREC1);
         lcd_outdezAtt(TELEM_COL2+13*FW+2, y, 10+g_model.frsky.varioMax, ((m_posHorz<0 || m_posHorz==3) ? attr : 0));
         if (attr && (s_editMode>0 || p1valdiff)) {
