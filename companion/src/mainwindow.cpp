@@ -1677,7 +1677,7 @@ void MainWindow::createActions()
  
     QActionGroup *themeAlignGroup = new QActionGroup(this);
     classicThemeAct =    addAct( themeAlignGroup,    tr("Classical"),       tr("The classical Companion icon theme"),   SLOT(setClassicTheme()));
-    newThemeAct =        addAct( themeAlignGroup,    tr("Yerico"),          tr("Yellow round honey sweet icon theme"),  SLOT(setYericoTheme()));
+    yericoThemeAct =     addAct( themeAlignGroup,    tr("Yerico"),          tr("Yellow round honey sweet icon theme"),  SLOT(setYericoTheme()));
     monoThemeAct =       addAct( themeAlignGroup,    tr("Monochrome"),      tr("A monochrome black icon theme"),        SLOT(setMonochromeTheme()));
     monoWhiteAct =       addAct( themeAlignGroup,    tr("MonoWhite"),       tr("A monochrome white icon theme"),        SLOT(setMonoWhiteTheme()));
     monoBlueAct =        addAct( themeAlignGroup,    tr("MonoBlue"),        tr("A monochrome blue icon theme"),         SLOT(setMonoBlueTheme()));
@@ -2035,7 +2035,7 @@ void MainWindow::updateIconThemeActions()
   int size = settings.value("theme","1").toInt();
   switch (size){
     case 0:  classicThemeAct->setChecked(true); break;
-    case 1:  newThemeAct->setChecked(true);     break;
+    case 1:  yericoThemeAct->setChecked(true);  break;
     case 2:  monoWhiteAct->setChecked(true);    break;
     case 3:  monoThemeAct->setChecked(true);    break;
     case 4:  monoBlueAct->setChecked(true);     break;
