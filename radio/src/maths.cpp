@@ -159,6 +159,7 @@ void varioWakeup()
 
     if ((int16_t)(s_varioTmr - tmr10ms) < 0) {
 #if defined(CPUARM)
+      s_varioTmr = tmr10ms;
       int varioBeepFreq, varioBeepTime;
       if (verticalSpeed > varioCenterMin) {
         varioBeepFreq = VARIO_FREQUENCY_ZERO + (g_eeGeneral.varioPitch*10) + (((VARIO_FREQUENCY_RANGE+(g_eeGeneral.varioRange*10)) * verticalSpeed) / varioMax);
@@ -167,13 +168,11 @@ void varioWakeup()
         if (verticalSpeed >= varioCenterMax || varioCenterMin == varioCenterMax)
           varioBeepTime = period / 4;
         else
-          varioBeepTime = period * (172 - ((verticalSpeed-varioCenterMin) * 64 / (varioCenterMax-varioCenterMin))) / 256;
-        s_varioTmr = tmr10ms + (period/10);
+          varioBeepTime = period * (85 - ((verticalSpeed-varioCenterMin) * 25 / (varioCenterMax-varioCenterMin))) / 100;
       }
       else {
         varioBeepFreq = VARIO_FREQUENCY_ZERO + (g_eeGeneral.varioPitch*10) - (((VARIO_FREQUENCY_ZERO+(g_eeGeneral.varioPitch*10)-BEEP_MIN_FREQ) * verticalSpeed) / varioMin);
         varioBeepTime = 80; // TODO 20 // continuous beep: we will enter again here before the tone ends
-        s_varioTmr = tmr10ms + 1;
       }
 #else
       uint8_t varioBeepFreq, varioBeepTime;
@@ -187,7 +186,6 @@ void varioWakeup()
       }
       s_varioTmr = tmr10ms + (varioBeepTime/2);
 #endif
-
       AUDIO_VARIO(varioBeepFreq, varioBeepTime);
     }
 #endif

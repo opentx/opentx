@@ -255,7 +255,8 @@ void CustomFunctionsPanel::playMusic()
         clickObject->play();
         playBT[index]->setObjectName(QString("stop_%1").arg(index));
         playBT[index]->setIcon(CompanionIcon("stop.png"));
-      } else {
+      }
+      else {
         clickObject->stop();
         clickObject->clear();
         playBT[index]->setObjectName(QString("play_%1").arg(index));

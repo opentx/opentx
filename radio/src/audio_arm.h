@@ -62,9 +62,11 @@ struct AudioBuffer {
   uint8_t  state;
 };
 
-#define FRAGMENT_EMPTY     0
-#define FRAGMENT_TONE      1
-#define FRAGMENT_FILE      2
+enum FragmentTypes {
+  FRAGMENT_EMPTY,
+  FRAGMENT_TONE,
+  FRAGMENT_FILE,
+};
 
 struct AudioFragment {
   uint8_t type;
@@ -107,12 +109,15 @@ class AudioContext {
         double step;
         double idx;
         float  volume;
+        uint16_t freq;
+        uint16_t duration;
+        uint16_t pause;
       } tone;
     } state;
 
     inline void clear()
     {
-      fragment.clear();
+      memset(this, 0, sizeof(AudioContext));
     }
 };
 
@@ -128,7 +133,7 @@ class AudioQueue {
 
     void start();
 
-    void play(uint16_t freq, uint16_t len, uint16_t pause=0, uint8_t flags=0, int8_t freqIncr=0);
+    void playTone(uint16_t freq, uint16_t len, uint16_t pause=0, uint8_t flags=0, int8_t freqIncr=0);
 
     void playFile(const char *filename, uint8_t flags=0, uint8_t id=0);
 
@@ -177,7 +182,7 @@ class AudioQueue {
     void wakeup();
 
     int mixAudioContext(AudioContext &context, AudioBuffer *buffer, int beepVolume, int wavVolume, unsigned int fade);
-    int mixBeep(AudioContext &context, AudioBuffer *buffer, int volume, unsigned int fade);
+    int mixTone(AudioContext &context, AudioBuffer *buffer, int volume, unsigned int fade);
     int mixWav(AudioContext &context, AudioBuffer *buffer, int volume, unsigned int fade);
 
     volatile bool state;
@@ -252,13 +257,11 @@ void audioStart();
 #define AUDIO_INACTIVITY()       AUDIO_BUZZER(audioEvent(AU_INACTIVITY), beep(3))
 #define AUDIO_MIX_WARNING(x)     AUDIO_BUZZER(audioEvent(AU_MIX_WARNING_1+x-1), beep(1))
 #define AUDIO_POT_MIDDLE(x)      AUDIO_BUZZER(audioEvent(AU_STICK1_MIDDLE+x), beep(2))
-#define AUDIO_VARIO_UP()         audioEvent(AU_KEYPAD_UP)
-#define AUDIO_VARIO_DOWN()       audioEvent(AU_KEYPAD_DOWN)
 #define AUDIO_TRIM_MIDDLE(f)     AUDIO_BUZZER(audioEvent(AU_TRIM_MIDDLE, f), beep(2))
 #define AUDIO_TRIM_END(f)        AUDIO_BUZZER(audioEvent(AU_TRIM_END, f), beep(2))
 #define AUDIO_TRIM(event, f)     AUDIO_BUZZER(audioEvent(AU_TRIM_MOVE, f), { if (!IS_KEY_FIRST(event)) warble = true; beep(1); })
 #define AUDIO_PLAY(p)            audioEvent(p)
-#define AUDIO_VARIO(f, t)        audioQueue.play(f, t, 0, PLAY_BACKGROUND)
+#define AUDIO_VARIO(f, t)        audioQueue.playTone(f, t, 0, PLAY_BACKGROUND)
 
 #if defined(PCBTARANIS)
 #define AUDIO_A1_ORANGE()        audioEvent(AU_A1_ORANGE)
