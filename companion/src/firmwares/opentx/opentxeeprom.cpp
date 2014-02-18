@@ -20,7 +20,7 @@
 #define MAX_CHANNELS(board, version)         (IS_ARM(board) ? 32 : 16)
 #define MAX_EXPOS(board, version)            (IS_ARM(board) ? ((IS_TARANIS(board) && version >= 216) ? 64 : 32) : (IS_DBLRAM(board, version) ? 16 : 14))
 #define MAX_CUSTOM_SWITCHES(board, version)  (IS_ARM(board) ? 32 : (IS_DBLEEPROM(board, version) ? 15 : 12))
-#define MAX_CUSTOM_FUNCTIONS(board, version) (IS_ARM(board) ? 32 : (IS_DBLEEPROM(board, version) ? 24 : 16))
+#define MAX_CUSTOM_FUNCTIONS(board, version) (IS_ARM(board) ? (version >= 216 ? 64 : 32) : (IS_DBLEEPROM(board, version) ? 24 : 16))
 #define MAX_CURVES(board, version)           (IS_ARM(board) ? ((IS_TARANIS(board) && version >= 216) ? 32 : 16) : O9X_MAX_CURVES)
 #define MAX_GVARS(board, version)            ((IS_ARM(board) && version >= 216) ? 9 : 5)
 
@@ -1424,7 +1424,9 @@ class ArmCustomFunctionField: public TransformedField {
       internalField.Append(new SwitchField<8>(fn.swtch, board, version));
       internalField.Append(new ConversionField< UnsignedField<8> >((unsigned int &)fn.func, &functionsConversionTable, "Function", ::QObject::tr("OpenTX on this board doesn't accept this function")));
 
-      if (IS_TARANIS(board))
+      if (IS_TARANIS(board) && version >= 216)
+        internalField.Append(new CharField<8>(_param, false));
+      else if (IS_TARANIS(board))
         internalField.Append(new CharField<10>(_param, false));
       else
         internalField.Append(new CharField<6>(_param, false));

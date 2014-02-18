@@ -144,7 +144,7 @@ PACK(typedef struct {
   int8_t  swtch;
   uint8_t func;
   PACK(union {
-    char name[LEN_CFN_NAME];
+    char name[10];
     struct {
       int16_t val;
       int16_t ext1;
@@ -193,7 +193,7 @@ PACK(typedef struct {
   int8_t    points[NUM_POINTS];
 
   LogicalSwitchData_v215 customSw[NUM_CSW];
-  CustomFnData_v215 funcSw[NUM_CFN];
+  CustomFnData_v215 funcSw[32];
   SwashRingData swashR;
   PhaseData_v215 phaseData[MAX_PHASES];
 
@@ -575,7 +575,7 @@ void ConvertModel_215_to_216(ModelData &model)
     }
 
     if (fn.func == FUNC_PLAY_TRACK || fn.func == FUNC_BACKGND_MUSIC) {
-      memcpy(fn.play.name, oldModel.funcSw[i].param.name, LEN_CFN_NAME);
+      memcpy(fn.play.name, oldModel.funcSw[i].param.name, 8);
     }
     else {
       fn.all.val = oldModel.funcSw[i].param.composite.val;

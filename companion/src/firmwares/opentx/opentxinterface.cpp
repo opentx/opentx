@@ -521,7 +521,7 @@ int Open9xInterface::getCapability(const Capability capability)
       return (IS_TARANIS(board) ? 22 : 9);
     case CustomFunctions:
       if (IS_ARM(board))
-        return 32;
+        return 64;
       else if (board==BOARD_GRUVIN9X||board==BOARD_M128)
         return 24;
       else
@@ -554,7 +554,7 @@ int Open9xInterface::getCapability(const Capability capability)
     case VoicesAsNumbers:
       return (IS_ARM(board) ? 0 : 1);
     case VoicesMaxLength:
-      return (IS_ARM(board) ? (IS_TARANIS(board) ? 10 :  6) : 0);
+      return (IS_ARM(board) ? (IS_TARANIS(board) ? 8 :  6) : 0);
     case MultiLangVoice:
       return (IS_ARM(board) ? 1 : 0);
     case SoundPitch:

@@ -74,7 +74,7 @@
   #define MAX_MIXERS  64
   #define MAX_EXPOS   64
   #define NUM_CSW     32 // number of custom switches
-  #define NUM_CFN     32 // number of functions assigned to switches
+  #define NUM_CFN     64 // number of functions assigned to switches
   #define MAX_SCRIPTS 3
   #define MAX_INPUTS  32
 #elif defined(CPUARM)
@@ -84,7 +84,7 @@
   #define MAX_MIXERS  64
   #define MAX_EXPOS   32
   #define NUM_CSW     32 // number of custom switches
-  #define NUM_CFN     32 // number of functions assigned to switches
+  #define NUM_CFN     64 // number of functions assigned to switches
 #elif defined(CPUM2560) || defined(CPUM2561)
   #define MAX_MODELS  30
   #define NUM_CHNOUT  16 // number of real output channels CH1-CH16
@@ -806,7 +806,7 @@ enum AdjustGvarFunctionParam {
 
 #if defined(CPUARM)
 #if defined(PCBTARANIS)
- #define LEN_CFN_NAME 10
+ #define LEN_CFN_NAME 8
 #else
  #define LEN_CFN_NAME 6
 #endif
