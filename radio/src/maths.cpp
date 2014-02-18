@@ -167,7 +167,7 @@ void varioWakeup()
         if (verticalSpeed >= varioCenterMax || varioCenterMin == varioCenterMax)
           varioBeepTime = period / 4;
         else
-          varioBeepTime = period * (256 - ((verticalSpeed-varioCenterMin) * 172 / (varioCenterMax-varioCenterMin))) / 256;
+          varioBeepTime = period * (172 - ((verticalSpeed-varioCenterMin) * 64 / (varioCenterMax-varioCenterMin))) / 256;
         s_varioTmr = tmr10ms + (period/10);
       }
       else {
