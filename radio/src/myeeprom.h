@@ -241,6 +241,7 @@ enum BeeperMode {
   int8_t   varioVolume; \
   int8_t   varioPitch; \
   int8_t   varioRange; \
+  int8_t   varioRepeat; \
   int8_t   backgroundVolume;
 #endif
 

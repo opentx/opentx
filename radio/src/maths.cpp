@@ -162,9 +162,12 @@ void varioWakeup()
       int varioBeepFreq, varioBeepTime;
       if (verticalSpeed > varioCenterMin) {
         varioBeepFreq = VARIO_FREQUENCY_ZERO + (g_eeGeneral.varioPitch*10) + (((VARIO_FREQUENCY_RANGE+(g_eeGeneral.varioRange*10)) * verticalSpeed) / varioMax);
-        int period = VARIO_PERIOD_ZERO - ((VARIO_PERIOD_ZERO-VARIO_PERIOD_MAX) * verticalSpeed) / varioMax;
-        // TODO something exponential would be better
-        varioBeepTime = (verticalSpeed > varioCenterMax ? (period / 4) : (period / 2));
+        int period = VARIO_REPEAT_ZERO + (g_eeGeneral.varioRepeat*10);
+        period -= ((period-VARIO_REPEAT_MAX) * verticalSpeed) / varioMax;
+        if (verticalSpeed >= varioCenterMax || varioCenterMin == varioCenterMax)
+          varioBeepTime = period / 4;
+        else
+          varioBeepTime = period * (256 - ((verticalSpeed-varioCenterMin) * 172 / (varioCenterMax-varioCenterMin))) / 256;
         s_varioTmr = tmr10ms + (period/10);
       }
       else {
