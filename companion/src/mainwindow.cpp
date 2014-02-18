@@ -1677,7 +1677,7 @@ void MainWindow::createActions()
  
     QActionGroup *themeAlignGroup = new QActionGroup(this);
     classicThemeAct =    addAct( themeAlignGroup,    tr("Classical"),       tr("The classical Companion icon theme"),   SLOT(setClassicTheme()));
-    newThemeAct =        addAct( themeAlignGroup,    tr("New"),             tr("The new Companion 2 icon theme"),       SLOT(setNewTheme()));
+    newThemeAct =        addAct( themeAlignGroup,    tr("Yerico"),          tr("Yellow round honey sweet icon theme"),  SLOT(setYericoTheme()));
     monoThemeAct =       addAct( themeAlignGroup,    tr("Monochrome"),      tr("A monochrome black icon theme"),        SLOT(setMonochromeTheme()));
     monoWhiteAct =       addAct( themeAlignGroup,    tr("MonoWhite"),       tr("A monochrome white icon theme"),        SLOT(setMonoWhiteTheme()));
     monoBlueAct =        addAct( themeAlignGroup,    tr("MonoBlue"),        tr("A monochrome blue icon theme"),         SLOT(setMonoBlueTheme()));
@@ -1780,7 +1780,7 @@ void MainWindow::createMenus()
 
     settingsMenu->addMenu(themeMenu);
       themeMenu->addAction(classicThemeAct);
-      themeMenu->addAction(newThemeAct);
+      themeMenu->addAction(yericoThemeAct);
       themeMenu->addAction(monoThemeAct);
       themeMenu->addAction(monoBlueAct);
       themeMenu->addAction(monoWhiteAct);

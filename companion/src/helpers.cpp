@@ -930,7 +930,7 @@ QString getTheme()
       Theme="monoblue";
       break;
     default:
-      Theme="new";
+      Theme="yerico";
       break;          
   }
   return Theme;
