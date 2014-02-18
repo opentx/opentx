@@ -78,6 +78,7 @@ struct AudioFragment {
       uint16_t duration;
       uint16_t pause;
       int8_t   freqIncr;
+      uint8_t  reset;
     } tone;
 
     char file[AUDIO_FILENAME_MAXLEN+1];
@@ -93,31 +94,39 @@ class AudioContext {
   public:
     AudioFragment fragment;
 
-    union {
 #if defined(SDCARD)
-      struct {
-        FIL      file;
-        uint8_t  codec;
-        uint32_t freq;
-        uint32_t size;
-        uint8_t  resampleRatio;
-        uint16_t readSize;
-      } wav;
+    struct {
+      FIL      file;
+      uint8_t  codec;
+      uint32_t freq;
+      uint32_t size;
+      uint8_t  resampleRatio;
+      uint16_t readSize;
+    } wav;
 #endif
 
-      struct {
-        double step;
-        double idx;
-        float  volume;
-        uint16_t freq;
-        uint16_t duration;
-        uint16_t pause;
-      } tone;
-    } state;
+    struct {
+      double step;
+      double idx;
+      float  volume;
+      uint16_t freq;
+      uint16_t duration;
+      uint16_t pause;
+      inline void clear()
+      {
+        step = 0;
+        idx = 0;
+        volume = 0;
+        freq = 0;
+        duration = 0;
+        pause = 0;
+      }
+    } tone;
 
     inline void clear()
     {
-      memset(this, 0, sizeof(AudioContext));
+      fragment.clear();
+      tone.clear();
     }
 };
 
@@ -261,7 +270,7 @@ void audioStart();
 #define AUDIO_TRIM_END(f)        AUDIO_BUZZER(audioEvent(AU_TRIM_END, f), beep(2))
 #define AUDIO_TRIM(event, f)     AUDIO_BUZZER(audioEvent(AU_TRIM_MOVE, f), { if (!IS_KEY_FIRST(event)) warble = true; beep(1); })
 #define AUDIO_PLAY(p)            audioEvent(p)
-#define AUDIO_VARIO(f, t)        audioQueue.playTone(f, t, 0, PLAY_BACKGROUND)
+#define AUDIO_VARIO(fq, t, p, f) audioQueue.playTone(fq, t, p, f)
 
 #if defined(PCBTARANIS)
 #define AUDIO_A1_ORANGE()        audioEvent(AU_A1_ORANGE)

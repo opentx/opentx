@@ -452,35 +452,35 @@ int AudioQueue::mixWav(AudioContext &context, AudioBuffer *buffer, int volume, u
   AudioFragment & fragment = context.fragment;
 
   if (fragment.file[1]) {
-    result = f_open(&context.state.wav.file, fragment.file, FA_OPEN_EXISTING | FA_READ);
+    result = f_open(&context.wav.file, fragment.file, FA_OPEN_EXISTING | FA_READ);
     fragment.file[1] = 0;
     if (result == FR_OK) {
-      result = f_read(&context.state.wav.file, wavBuffer, RIFF_CHUNK_SIZE+8, &read);
+      result = f_read(&context.wav.file, wavBuffer, RIFF_CHUNK_SIZE+8, &read);
       if (result == FR_OK && read == RIFF_CHUNK_SIZE+8 && !memcmp(wavBuffer, "RIFF", 4) && !memcmp(wavBuffer+8, "WAVEfmt ", 8)) {
         uint32_t size = *((uint32_t *)(wavBuffer+16));
-        result = (size < 256 ? f_read(&context.state.wav.file, wavBuffer, size+8, &read) : FR_DENIED);
+        result = (size < 256 ? f_read(&context.wav.file, wavBuffer, size+8, &read) : FR_DENIED);
         if (result == FR_OK && read == size+8) {
-          context.state.wav.codec = ((uint16_t *)wavBuffer)[0];
-          context.state.wav.freq = ((uint16_t *)wavBuffer)[2];
+          context.wav.codec = ((uint16_t *)wavBuffer)[0];
+          context.wav.freq = ((uint16_t *)wavBuffer)[2];
           uint32_t *wavSamplesPtr = (uint32_t *)(wavBuffer + size);
           uint32_t size = wavSamplesPtr[1];
-          if (context.state.wav.freq != 0 && context.state.wav.freq * (AUDIO_SAMPLE_RATE / context.state.wav.freq) == AUDIO_SAMPLE_RATE) {
-            context.state.wav.resampleRatio = (AUDIO_SAMPLE_RATE / context.state.wav.freq);
-            context.state.wav.readSize = (context.state.wav.codec == CODEC_ID_PCM_S16LE ? 2*AUDIO_BUFFER_SIZE : AUDIO_BUFFER_SIZE) / context.state.wav.resampleRatio;
+          if (context.wav.freq != 0 && context.wav.freq * (AUDIO_SAMPLE_RATE / context.wav.freq) == AUDIO_SAMPLE_RATE) {
+            context.wav.resampleRatio = (AUDIO_SAMPLE_RATE / context.wav.freq);
+            context.wav.readSize = (context.wav.codec == CODEC_ID_PCM_S16LE ? 2*AUDIO_BUFFER_SIZE : AUDIO_BUFFER_SIZE) / context.wav.resampleRatio;
           }
           else {
             result = FR_DENIED;
           }
           while (result == FR_OK && memcmp(wavSamplesPtr, "data", 4) != 0) {
-            result = f_lseek(&context.state.wav.file, f_tell(&context.state.wav.file)+size);
+            result = f_lseek(&context.wav.file, f_tell(&context.wav.file)+size);
             if (result == FR_OK) {
-              result = f_read(&context.state.wav.file, wavBuffer, 8, &read);
+              result = f_read(&context.wav.file, wavBuffer, 8, &read);
               if (read != 8) result = FR_DENIED;
               wavSamplesPtr = (uint32_t *)wavBuffer;
               size = wavSamplesPtr[1];
             }
           }
-          context.state.wav.size = size;
+          context.wav.size = size;
         }
         else {
           result = FR_DENIED;
@@ -494,34 +494,34 @@ int AudioQueue::mixWav(AudioContext &context, AudioBuffer *buffer, int volume, u
 
   read = 0;
   if (result == FR_OK) {
-    result = f_read(&context.state.wav.file, wavBuffer, context.state.wav.readSize, &read);
+    result = f_read(&context.wav.file, wavBuffer, context.wav.readSize, &read);
     if (result == FR_OK) {
-      if (read > context.state.wav.size) {
-        read = context.state.wav.size;
+      if (read > context.wav.size) {
+        read = context.wav.size;
       }
-      context.state.wav.size -= read;
+      context.wav.size -= read;
 
-      if (read != context.state.wav.readSize) {
-        f_close(&context.state.wav.file);
+      if (read != context.wav.readSize) {
+        f_close(&context.wav.file);
         fragment.clear();
       }
 
       uint16_t * samples = buffer->data;
-      if (context.state.wav.codec == CODEC_ID_PCM_S16LE) {
+      if (context.wav.codec == CODEC_ID_PCM_S16LE) {
         read /= 2;
         for (uint32_t i=0; i<read; i++) {
-          for (uint8_t j=0; j<context.state.wav.resampleRatio; j++)
+          for (uint8_t j=0; j<context.wav.resampleRatio; j++)
             mix(samples++, ((int16_t *)wavBuffer)[i], fade+2-volume);
         }
       }
-      else if (context.state.wav.codec == CODEC_ID_PCM_ALAW) {
+      else if (context.wav.codec == CODEC_ID_PCM_ALAW) {
         for (uint32_t i=0; i<read; i++)
-          for (uint8_t j=0; j<context.state.wav.resampleRatio; j++)
+          for (uint8_t j=0; j<context.wav.resampleRatio; j++)
             mix(samples++, alawTable[wavBuffer[i]], fade+2-volume);
       }
-      else if (context.state.wav.codec == CODEC_ID_PCM_MULAW) {
+      else if (context.wav.codec == CODEC_ID_PCM_MULAW) {
         for (uint32_t i=0; i<read; i++)
-          for (uint8_t j=0; j<context.state.wav.resampleRatio; j++)
+          for (uint8_t j=0; j<context.wav.resampleRatio; j++)
             mix(samples++, ulawTable[wavBuffer[i]], fade+2-volume);
       }
 
@@ -555,15 +555,20 @@ int AudioQueue::mixTone(AudioContext &context, AudioBuffer *buffer, int volume, 
   int duration = 0;
   int result = 0;
 
-  int remainingDuration = fragment.tone.duration - context.state.tone.duration;
+  int remainingDuration = fragment.tone.duration - context.tone.duration;
   if (remainingDuration > 0) {
     int points;
-    double toneIdx = context.state.tone.idx;
+    double toneIdx = context.tone.idx;
 
-    if (fragment.tone.freq != context.state.tone.freq) {
-      context.state.tone.freq = fragment.tone.freq;
-      context.state.tone.step = double(DIM(sineValues)*fragment.tone.freq) / AUDIO_SAMPLE_RATE;
-      context.state.tone.volume = evalVolumeRatio(fragment.tone.freq, volume);
+    if (fragment.tone.reset) {
+      context.tone.duration = 0;
+      context.tone.pause = 0;
+    }
+
+    if (fragment.tone.freq != context.tone.freq) {
+      context.tone.freq = fragment.tone.freq;
+      context.tone.step = double(DIM(sineValues)*fragment.tone.freq) / AUDIO_SAMPLE_RATE;
+      context.tone.volume = evalVolumeRatio(fragment.tone.freq, volume);
     }
 
     if (fragment.tone.freqIncr) {
@@ -577,38 +582,37 @@ int AudioQueue::mixTone(AudioContext &context, AudioBuffer *buffer, int volume, 
     else {
       duration = remainingDuration;
       points = (duration * AUDIO_BUFFER_SIZE) / AUDIO_BUFFER_DURATION;
-      unsigned int end = toneIdx + (context.state.tone.step * points);
+      unsigned int end = toneIdx + (context.tone.step * points);
       if (end > DIM(sineValues))
         end -= (end % DIM(sineValues));
       else
         end = DIM(sineValues);
-      points = (double(end) - toneIdx) / context.state.tone.step;
+      points = (double(end) - toneIdx) / context.tone.step;
     }
 
     for (int i=0; i<points; i++) {
-      int16_t sample = sineValues[int(toneIdx)] / context.state.tone.volume;
+      int16_t sample = sineValues[int(toneIdx)] / context.tone.volume;
       mix(&buffer->data[i], sample, fade);
-      toneIdx += context.state.tone.step;
+      toneIdx += context.tone.step;
       if ((unsigned int)toneIdx >= DIM(sineValues))
         toneIdx -= DIM(sineValues);
     }
 
     if (remainingDuration > AUDIO_BUFFER_DURATION) {
-      context.state.tone.duration += AUDIO_BUFFER_DURATION;
-      context.state.tone.idx = toneIdx;
+      context.tone.duration += AUDIO_BUFFER_DURATION;
+      context.tone.idx = toneIdx;
       return AUDIO_BUFFER_SIZE;
     }
     else {
-      context.state.tone.duration = 32000; // once the tone is finished, it's not possible to update its frequency and duration
-      context.state.tone.idx = 0;
+      context.tone.duration = 32000; // once the tone is finished, it's not possible to update its frequency and duration
     }
   }
 
-  remainingDuration = fragment.tone.pause - context.state.tone.pause;
+  remainingDuration = fragment.tone.pause - context.tone.pause;
   if (remainingDuration > 0) {
     result = AUDIO_BUFFER_SIZE;
-    context.state.tone.pause += min<unsigned int>(AUDIO_BUFFER_DURATION-duration, fragment.tone.pause);
-    if (fragment.tone.pause > context.state.tone.pause)
+    context.tone.pause += min<unsigned int>(AUDIO_BUFFER_DURATION-duration, fragment.tone.pause);
+    if (fragment.tone.pause > context.tone.pause)
       return result;
   }
 
@@ -729,10 +733,13 @@ void AudioQueue::playTone(uint16_t freq, uint16_t len, uint16_t pause, uint8_t f
 
   if (flags & PLAY_BACKGROUND) {
     AudioFragment & fragment = backgroundContext.fragment;
+    if (fragment.type != FRAGMENT_TONE)
+      backgroundContext.clear();
     fragment.type = FRAGMENT_TONE;
     fragment.tone.freq = freq;
     fragment.tone.duration = len;
     fragment.tone.pause = pause;
+    fragment.tone.reset = (flags & PLAY_NOW);
   }
   else {
     freq += g_eeGeneral.speakerPitch * 15;

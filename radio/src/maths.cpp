@@ -114,7 +114,53 @@ void getGpsDistance()
 }
 #endif
 
-#if defined(FRSKY) && defined(VARIO)
+#if defined(CPUARM)
+
+void varioWakeup()
+{
+  if (isFunctionActive(FUNCTION_VARIO)) {
+    int varioFreq, varioDuration, varioPause=0;
+    uint8_t varioFlags;
+
+#if 1
+    #warning "Ele stick for vario tests"
+    int verticalSpeed = getValue(MIXSRC_Ele);
+#else
+    int verticalSpeed = frskyData.hub.varioSpeed;
+#endif
+
+    int varioCenterMin = (int)g_model.frsky.varioCenterMin * 10 - 50;
+    int varioCenterMax = (int)g_model.frsky.varioCenterMax * 10 + 50;
+    int varioMax = (10+(int)g_model.frsky.varioMax) * 100;
+    int varioMin = (-10+(int)g_model.frsky.varioMin) * 100;
+
+    if (verticalSpeed > varioMax)
+      verticalSpeed = varioMax;
+    else if (verticalSpeed < varioMin)
+      verticalSpeed = varioMin;
+
+    if (verticalSpeed > varioCenterMin) {
+      varioFreq = VARIO_FREQUENCY_ZERO + (g_eeGeneral.varioPitch*10) + (((VARIO_FREQUENCY_RANGE+(g_eeGeneral.varioRange*10)) * verticalSpeed) / varioMax);
+      int varioPeriod = VARIO_REPEAT_MAX + ((VARIO_REPEAT_ZERO+(g_eeGeneral.varioRepeat*10)-VARIO_REPEAT_MAX) * (varioMax-verticalSpeed) * (varioMax-verticalSpeed)) / (varioMax * varioMax);
+      if (verticalSpeed >= varioCenterMax || varioCenterMin == varioCenterMax)
+        varioDuration = varioPeriod / 4;
+      else
+        varioDuration = varioPeriod * (85 - (((verticalSpeed-varioCenterMin) * 25) / (varioCenterMax-varioCenterMin))) / 100;
+      varioPause = varioPeriod - varioDuration;
+      varioFlags = PLAY_BACKGROUND;
+    }
+    else {
+      varioFreq = VARIO_FREQUENCY_ZERO + (g_eeGeneral.varioPitch*10) - (((VARIO_FREQUENCY_ZERO+(g_eeGeneral.varioPitch*10)-BEEP_MIN_FREQ) * verticalSpeed) / varioMin);
+      varioDuration = 80; // TODO 20 // continuous beep: we will enter again here before the tone ends
+      varioFlags = PLAY_BACKGROUND|PLAY_NOW;
+    }
+
+    AUDIO_VARIO(varioFreq, varioDuration, varioPause, varioFlags);
+  }
+}
+
+#elif defined(FRSKY) && defined(VARIO)
+
 void varioWakeup()
 {
   static tmr10ms_t s_varioTmr;
@@ -123,12 +169,7 @@ void varioWakeup()
   if (isFunctionActive(FUNCTION_VARIO)) {
 #if defined(AUDIO)
     cli();
-#if 1
-    #warning "Ele stick for vario tests"
-    int verticalSpeed = getValue(MIXSRC_Ele);
-#else
     int verticalSpeed = frskyData.hub.varioSpeed;
-#endif
     sei();
     
 #if defined(PCBSTD)
@@ -140,10 +181,10 @@ void varioWakeup()
       verticalSpeed = (verticalSpeed * 10) / ((varioMax-varioCenterMax) / 100);
 
       if ((int16_t)(s_varioTmr-tmr10ms) < 0) {
-        uint8_t varioBeepFreq = (verticalSpeed * 10 + 16000) >> 8;
-        uint8_t varioBeepTime = (1600 - verticalSpeed) / 100;
-        s_varioTmr = tmr10ms + (varioBeepTime*2);
-        AUDIO_VARIO(varioBeepFreq, varioBeepTime);
+        uint8_t varioFreq = (verticalSpeed * 10 + 16000) >> 8;
+        uint8_t varioDuration = (1600 - verticalSpeed) / 100;
+        s_varioTmr = tmr10ms + (varioDuration*2);
+        AUDIO_VARIO(varioFreq, varioDuration);
       }
     }
 #else
@@ -158,34 +199,17 @@ void varioWakeup()
       verticalSpeed = varioMin;
 
     if ((int16_t)(s_varioTmr - tmr10ms) < 0) {
-#if defined(CPUARM)
-      s_varioTmr = tmr10ms;
-      int varioBeepFreq, varioBeepTime;
-      if (verticalSpeed > varioCenterMin) {
-        varioBeepFreq = VARIO_FREQUENCY_ZERO + (g_eeGeneral.varioPitch*10) + (((VARIO_FREQUENCY_RANGE+(g_eeGeneral.varioRange*10)) * verticalSpeed) / varioMax);
-        int period = VARIO_REPEAT_MAX + ((VARIO_REPEAT_ZERO+(g_eeGeneral.varioRepeat*10)-VARIO_REPEAT_MAX) * verticalSpeed * verticalSpeed) / (varioMax * varioMax);
-        if (verticalSpeed >= varioCenterMax || varioCenterMin == varioCenterMax)
-          varioBeepTime = period / 4;
-        else
-          varioBeepTime = period * (85 - ((verticalSpeed-varioCenterMin) * 25 / (varioCenterMax-varioCenterMin))) / 100;
-      }
-      else {
-        varioBeepFreq = VARIO_FREQUENCY_ZERO + (g_eeGeneral.varioPitch*10) - (((VARIO_FREQUENCY_ZERO+(g_eeGeneral.varioPitch*10)-BEEP_MIN_FREQ) * verticalSpeed) / varioMin);
-        varioBeepTime = 80; // TODO 20 // continuous beep: we will enter again here before the tone ends
-      }
-#else
-      uint8_t varioBeepFreq, varioBeepTime;
+      uint8_t varioFreq, varioDuration;
       if (verticalSpeed > 0) {
-        varioBeepFreq = (verticalSpeed * 4 + 8000) >> 7;
-        varioBeepTime = (8000 - verticalSpeed * 5) / 100;
+        varioFreq = (verticalSpeed * 4 + 8000) >> 7;
+        varioDuration = (8000 - verticalSpeed * 5) / 100;
       }
       else {
-        varioBeepFreq = (verticalSpeed * 3 + 8000) >> 7;
-        varioBeepTime = 20;
+        varioFreq = (verticalSpeed * 3 + 8000) >> 7;
+        varioDuration = 20;
       }
-      s_varioTmr = tmr10ms + (varioBeepTime/2);
-#endif
-      AUDIO_VARIO(varioBeepFreq, varioBeepTime);
+      s_varioTmr = tmr10ms + (varioDuration/2);
+      AUDIO_VARIO(varioFreq, varioDuration);
     }
 #endif
 
@@ -217,4 +241,5 @@ void varioWakeup()
     s_varioTmr = tmr10ms;
   }
 }
+
 #endif
