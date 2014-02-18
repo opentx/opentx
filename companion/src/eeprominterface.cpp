@@ -6,7 +6,7 @@
 #include "firmwares/gruvin9x/gruvin9xinterface.h"
 #include "firmwares/opentx/opentxinterface.h"
 #include "firmwares/ersky9x/ersky9xinterface.h"
-#include "qsettings.h"
+#include "appdata.h"
 #include "helpers.h"
 
 QString EEPROMWarnings;
@@ -731,34 +731,25 @@ GeneralSettings::GeneralSettings()
     calibSpanNeg[i] = 0x180;
     calibSpanPos[i] = 0x180;
   }
-  QSettings settings;
-  templateSetup = settings.value("default_channel_order", 0).toInt();
-  stickMode = settings.value("default_mode", 1).toInt();
-  int profile_id = settings.value("profileId", 0).toInt();
-  if (profile_id>0) {
-    settings.beginGroup("Profiles");
-    QString profile=QString("profile%1").arg(profile_id);
-    settings.beginGroup(profile);
-    QString t_calib=settings.value("StickPotCalib","").toString();
+  templateSetup = g.profile[g.id()].default_channel_order();
+  stickMode = g.profile[g.id()].default_mode();
+
+    QString t_calib=g.profile[g.id()].StickPotCalib();
     int potsnum=GetEepromInterface()->getCapability(Pots);
     if (t_calib.isEmpty()) {
-      settings.endGroup();
-      settings.endGroup();
       return;
     } else {
-      QString t_trainercalib=settings.value("TrainerCalib","").toString();
-      int8_t t_vBatCalib=(int8_t)settings.value("VbatCalib", vBatCalib).toInt();
-      int8_t t_currentCalib=(int8_t)settings.value("currentCalib", currentCalib).toInt();
-      int8_t t_PPM_Multiplier=(int8_t)settings.value("PPM_Multiplier", PPM_Multiplier).toInt();
-      uint8_t t_stickMode=(uint8_t)settings.value("GSStickMode", stickMode).toUInt();
-      uint8_t t_vBatWarn=(uint8_t)settings.value("vBatWarn",vBatWarn).toUInt();
-      QString t_DisplaySet=settings.value("Display","").toString();
-      QString t_BeeperSet=settings.value("Beeper","").toString();
-      QString t_HapticSet=settings.value("Haptic","").toString();
-      QString t_SpeakerSet=settings.value("Speaker","").toString();
-      QString t_CountrySet=settings.value("countryCode","").toString();
-      settings.endGroup();
-      settings.endGroup();
+      QString t_trainercalib=g.profile[g.id()].TrainerCalib();
+      int8_t t_vBatCalib=(int8_t)g.profile[g.id()].VbatCalib();
+      int8_t t_currentCalib=(int8_t)g.profile[g.id()].currentCalib();
+      int8_t t_PPM_Multiplier=(int8_t)g.profile[g.id()].PPM_Multiplier();
+      uint8_t t_stickMode=(uint8_t)g.profile[g.id()].GSStickMode();
+      uint8_t t_vBatWarn=(uint8_t)g.profile[g.id()].vBatWarn();
+      QString t_DisplaySet=g.profile[g.id()].Display();
+      QString t_BeeperSet=g.profile[g.id()].Beeper();
+      QString t_HapticSet=g.profile[g.id()].Haptic();
+      QString t_SpeakerSet=g.profile[g.id()].Speaker();
+      QString t_CountrySet=g.profile[g.id()].countryCode();
 
       if ((t_calib.length()==(NUM_STICKS+potsnum)*12) && (t_trainercalib.length()==16)) {
         QString Byte;
@@ -840,7 +831,7 @@ GeneralSettings::GeneralSettings()
         }      
       }
     }
-  }
+  
 }
 
 ModelData::ModelData()
@@ -990,14 +981,12 @@ ModelData ModelData::removeGlobalVars()
 QList<EEPROMInterface *> eepromInterfaces;
 void RegisterEepromInterfaces()
 {
-  QSettings settings;
-  int rev4a = settings.value("rev4asupport",0).toInt();
   eepromInterfaces.push_back(new Open9xInterface(BOARD_STOCK));
   eepromInterfaces.push_back(new Open9xInterface(BOARD_M128));
   eepromInterfaces.push_back(new Open9xInterface(BOARD_GRUVIN9X));
   eepromInterfaces.push_back(new Open9xInterface(BOARD_SKY9X));
   eepromInterfaces.push_back(new Open9xInterface(BOARD_TARANIS));
-  if (rev4a)
+  if (g.rev4asupport())
     eepromInterfaces.push_back(new Open9xInterface(BOARD_TARANIS_REV4a));
   eepromInterfaces.push_back(new Gruvin9xInterface(BOARD_STOCK));
   eepromInterfaces.push_back(new Gruvin9xInterface(BOARD_GRUVIN9X));

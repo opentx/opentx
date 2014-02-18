@@ -3,6 +3,7 @@
 #include <iostream>
 #include "helpers.h"
 #include "simulatorinterface.h"
+#include "appdata.h"
 #ifdef JOYSTICKS
 #include "joystick.h"
 #endif
@@ -32,9 +33,8 @@ simulatorDialog::simulatorDialog(QWidget *parent) :
     beepVal = 0;
     beepShow = 0;
 
-    QSettings settings;
-    backLight = settings.value("backLight",0).toInt();
-    bool simuSW=settings.value("simuSW",false).toBool();
+    backLight = g.backLight();
+    bool simuSW=g.simuSW();
     switch (backLight) {
         case 1:
             ui->lcd->setBackgroundColor(166,247,159);
@@ -75,23 +75,21 @@ simulatorDialog::simulatorDialog(QWidget *parent) :
     }
 
 #ifdef JOYSTICKS
-    bool js_enable=settings.value("js_support",false).toBool();
-    int js_ctrl=settings.value("js_ctrl",-1).toInt();
+    bool js_enable=g.js_support();
+    int js_ctrl=g.js_ctrl();
     if (js_enable) {
-      settings.beginGroup("JsCalibration");
       int count=0;
       for (int j=0; j<8;j++){
-        int axe=settings.value(QString("stick%1_axe").arg(j),-1).toInt();
+        int axe = g.joystick[j].stick_axe();
         if (axe>=0 && axe<8) {
           jsmap[axe]=j;
-          jscal[axe][0]=settings.value(QString("stick%1_min").arg(j),-32767).toInt();
-          jscal[axe][1]=settings.value(QString("stick%1_med").arg(j),0).toInt();
-          jscal[axe][2]=settings.value(QString("stick%1_max").arg(j),0).toInt();
-          jscal[axe][3]=settings.value(QString("stick%1_inv").arg(j),0).toInt();
+          jscal[axe][0]=g.joystick[j].stick_min();
+          jscal[axe][1]=g.joystick[j].stick_med();
+          jscal[axe][2]=g.joystick[j].stick_max();
+          jscal[axe][3]=g.joystick[j].stick_inv();
           count++;
         }
       }
-      settings.endGroup();
       if (count<3) {
         QMessageBox::critical(this, tr("Warning"), tr("Joystick enabled but not configured correctly"));
       }
@@ -211,8 +209,7 @@ void simulatorDialog::setupTimer()
 void simulatorDialog::onButtonPressed(int value)
 {
   if (value==Qt::Key_Print) {
-      QSettings settings;
-      bool toclipboard=settings.value("snapshot_to_clipboard", false).toBool();
+      bool toclipboard=g.snapshot_to_clipboard();
       QString fileName ="";
       if (!toclipboard) {
         fileName = QString("screenshot-%1.png").arg(++screenshotIdx);
@@ -493,6 +490,7 @@ void simulatorDialog::on_trimVRight_valueChanged(int value)
   simulator->setTrim(2, value);
 }
 
+
 void simulatorDialog::setValues()
 {
   TxOutputs outputs;
@@ -667,6 +665,7 @@ void simulatorDialog::on_holdRightX_clicked(bool checked)
 void simulatorDialog::on_holdRightY_clicked(bool checked)
 {
     nodeRight->setCenteringY(!checked);
+
 }
 
 

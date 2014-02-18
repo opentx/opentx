@@ -18,6 +18,7 @@
 #define lcd_widget_h
 
 #include <QWidget>
+#include "appdata.h"
 
 class lcdWidget : public QWidget {
   public:
@@ -48,9 +49,9 @@ class lcdWidget : public QWidget {
 
     void setBackgroundColor(int red, int green, int blue)
     {
-      r = red;
-      g = green;
-      b = blue;
+      _r = red;
+      _g = green;
+      _b = blue;
     }
 
     void makeScreenshot(const QString & fileName)
@@ -58,11 +59,10 @@ class lcdWidget : public QWidget {
       QPixmap buffer(2*lcdWidth, 2*lcdHeight);
       QPainter p(&buffer);
       doPaint(p);
-      QSettings settings;
-      bool toclipboard=settings.value("snapshot_to_clipboard", false).toBool();
+      bool toclipboard=g.snapshot_to_clipboard();
       QApplication::clipboard()->setPixmap( buffer );
       if (!toclipboard) {
-        QString Path=settings.value("snapshotPath", "").toString();
+        QString Path=g.snapshotpath();
         if (Path.isEmpty() || !QDir(Path).exists()) {
           Path=".";
         }
@@ -98,14 +98,14 @@ class lcdWidget : public QWidget {
     unsigned char *previousBuf;
 
     bool lightEnable;
-    int r, g, b;
+    int _r, _g, _b;
 
     inline void doPaint(QPainter & p)
     {
       QRgb rgb;
 
       if (lightEnable)
-        rgb = qRgb(r, g, b);
+        rgb = qRgb(_r, _g, _b);
       else
         rgb = qRgb(161, 161, 161);
 
@@ -136,7 +136,7 @@ class lcdWidget : public QWidget {
                 if (z != previousDepth) {
                   previousDepth = z;
                   if (lightEnable)
-                    rgb = qRgb(r-(z*r)/15, g-(z*g)/15, b-(z*b)/15);
+                    rgb = qRgb(_r-(z*_r)/15, _g-(z*_g)/15, _b-(z*_b)/15);
                   else
                     rgb = qRgb(161-(z*161)/15, 161-(z*161)/15, 161-(z*161)/15);
                   p.setPen(rgb);

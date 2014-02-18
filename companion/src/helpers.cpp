@@ -1,4 +1,5 @@
 #include <QtGui>
+#include "appdata.h"
 #include "helpers.h"
 
 QString getPhaseName(int val, char * phasename)
@@ -913,8 +914,7 @@ QString getCenterBeep(ModelData * g_model)
 
 QString getTheme()
 {
-  QSettings settings;
-  int theme_set = settings.value("theme", 1).toInt();
+  int theme_set = g.theme();
   QString Theme;
   switch(theme_set) {
     case 0:

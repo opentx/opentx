@@ -1,6 +1,6 @@
 #include "splashlibrary.h"
 #include "ui_splashlibrary.h"
-
+#include "appdata.h"
 #include <QtGui>
 #include "helpers.h"
 //#include "splashlabel.h"
@@ -61,9 +61,8 @@ void splashLibrary::setupPage(int page) {
 }
 
 void splashLibrary::getFileList() {
-  QSettings settings;
   imageList.clear();
-  if (settings.value("embedded_splashes", 0).toInt() == 0) {
+  if (g.embedded_splashes() == 0) {
     QDir myRes(":/images/library");
     QStringList tmp = myRes.entryList();
     for (int i = 0; i < tmp.size(); i++) {
@@ -71,7 +70,7 @@ void splashLibrary::getFileList() {
       imageList.append(":/images/library/" + fileInfo.fileName());
     }
   }
-  QString libraryPath = settings.value("libraryPath", "").toString();
+  QString libraryPath = g.libraryPath();
   if (!libraryPath.isEmpty()) {
     if (QDir(libraryPath).exists()) {
       QStringList supportedImageFormats;
