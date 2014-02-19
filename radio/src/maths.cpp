@@ -140,18 +140,18 @@ void varioWakeup()
       verticalSpeed = varioMin;
 
     if (verticalSpeed > varioCenterMin) {
-      varioFreq = VARIO_FREQUENCY_ZERO + (g_eeGeneral.varioPitch*10) + (((VARIO_FREQUENCY_RANGE+(g_eeGeneral.varioRange*10)) * verticalSpeed) / varioMax);
-      int varioPeriod = VARIO_REPEAT_MAX + ((VARIO_REPEAT_ZERO+(g_eeGeneral.varioRepeat*10)-VARIO_REPEAT_MAX) * (varioMax-verticalSpeed) * (varioMax-verticalSpeed)) / (varioMax * varioMax);
+      varioFreq = VARIO_FREQUENCY_ZERO + (g_eeGeneral.varioPitch*10) + (((VARIO_FREQUENCY_RANGE+(g_eeGeneral.varioRange*10)) * (verticalSpeed-varioCenterMin)) / varioMax);
+      int varioPeriod = VARIO_REPEAT_MAX + ((VARIO_REPEAT_ZERO+(g_eeGeneral.varioRepeat*10)-VARIO_REPEAT_MAX) * (varioMax-verticalSpeed) * (varioMax-verticalSpeed)) / ((varioMax-varioCenterMin) * (varioMax-varioCenterMin));
       if (verticalSpeed >= varioCenterMax || varioCenterMin == varioCenterMax)
-        varioDuration = varioPeriod / 4;
+        varioDuration = varioPeriod / 5;
       else
         varioDuration = varioPeriod * (85 - (((verticalSpeed-varioCenterMin) * 25) / (varioCenterMax-varioCenterMin))) / 100;
       varioPause = varioPeriod - varioDuration;
       varioFlags = PLAY_BACKGROUND;
     }
     else {
-      varioFreq = VARIO_FREQUENCY_ZERO + (g_eeGeneral.varioPitch*10) - (((VARIO_FREQUENCY_ZERO+(g_eeGeneral.varioPitch*10)-BEEP_MIN_FREQ) * verticalSpeed) / varioMin);
-      varioDuration = 80; // TODO 20 // continuous beep: we will enter again here before the tone ends
+      varioFreq = VARIO_FREQUENCY_ZERO + (g_eeGeneral.varioPitch*10) - (((VARIO_FREQUENCY_ZERO+(g_eeGeneral.varioPitch*10)-((VARIO_FREQUENCY_ZERO + (g_eeGeneral.varioPitch*10))/2)) * (verticalSpeed-varioCenterMin)) / varioMin);
+      varioDuration = 80; // continuous beep: we will enter again here before the tone ends
       varioFlags = PLAY_BACKGROUND|PLAY_NOW;
     }
 

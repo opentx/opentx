@@ -90,20 +90,9 @@ struct AudioFragment {
   }
 };
 
-class AudioContext {
+class ToneContext {
   public:
     AudioFragment fragment;
-
-#if defined(SDCARD)
-    struct {
-      FIL      file;
-      uint8_t  codec;
-      uint32_t freq;
-      uint32_t size;
-      uint8_t  resampleRatio;
-      uint16_t readSize;
-    } wav;
-#endif
 
     struct {
       double step;
@@ -112,22 +101,46 @@ class AudioContext {
       uint16_t freq;
       uint16_t duration;
       uint16_t pause;
-      inline void clear()
-      {
-        step = 0;
-        idx = 0;
-        volume = 0;
-        freq = 0;
-        duration = 0;
-        pause = 0;
-      }
-    } tone;
+    } state;
+
+    inline void clear()
+    {
+      memset(this, 0, sizeof(ToneContext));
+    }
+
+    int mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade);
+};
+
+class WavContext {
+  public:
+    AudioFragment fragment;
+
+    struct {
+      FIL      file;
+      uint8_t  codec;
+      uint32_t freq;
+      uint32_t size;
+      uint8_t  resampleRatio;
+      uint16_t readSize;
+    } state;
 
     inline void clear()
     {
       fragment.clear();
-      tone.clear();
     }
+
+    int mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade);
+};
+
+class MixedContext {
+  public:
+    union {
+      AudioFragment fragment;
+      ToneContext tone;
+      WavContext wav;
+    };
+
+    int mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade);
 };
 
 bool dacQueue(AudioBuffer *buffer);
@@ -190,19 +203,16 @@ class AudioQueue {
 
     void wakeup();
 
-    int mixAudioContext(AudioContext &context, AudioBuffer *buffer, int beepVolume, int wavVolume, unsigned int fade);
-    int mixTone(AudioContext &context, AudioBuffer *buffer, int volume, unsigned int fade);
-    int mixWav(AudioContext &context, AudioBuffer *buffer, int volume, unsigned int fade);
-
     volatile bool state;
     uint8_t ridx;
     uint8_t widx;
 
     AudioFragment fragments[AUDIO_QUEUE_LENGTH];
 
-    AudioContext backgroundContext; // for background music / vario
-    AudioContext currentContext;
-    AudioContext foregroundContext; // for important beeps
+    MixedContext normalContext;
+    WavContext   backgroundContext;
+    ToneContext  priorityContext;
+    ToneContext  varioContext;
 
     AudioBuffer buffers[AUDIO_BUFFER_COUNT];
     uint8_t bufferRIdx;

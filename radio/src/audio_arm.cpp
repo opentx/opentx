@@ -435,7 +435,7 @@ void AudioQueue::pushBuffer(AudioBuffer *buffer)
   __enable_irq();
 }
 
-void mix(uint16_t * result, int sample, unsigned int fade)
+void mixSample(uint16_t * result, int sample, unsigned int fade)
 {
   *result = limit(0, *result + ((sample >> fade) >> 4), 4095);
 }
@@ -445,42 +445,41 @@ void mix(uint16_t * result, int sample, unsigned int fade)
 #define RIFF_CHUNK_SIZE 12
 uint8_t wavBuffer[AUDIO_BUFFER_SIZE*2];
 
-int AudioQueue::mixWav(AudioContext &context, AudioBuffer *buffer, int volume, unsigned int fade)
+int WavContext::mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade)
 {
   FRESULT result = FR_OK;
   UINT read = 0;
-  AudioFragment & fragment = context.fragment;
 
   if (fragment.file[1]) {
-    result = f_open(&context.wav.file, fragment.file, FA_OPEN_EXISTING | FA_READ);
+    result = f_open(&state.file, fragment.file, FA_OPEN_EXISTING | FA_READ);
     fragment.file[1] = 0;
     if (result == FR_OK) {
-      result = f_read(&context.wav.file, wavBuffer, RIFF_CHUNK_SIZE+8, &read);
+      result = f_read(&state.file, wavBuffer, RIFF_CHUNK_SIZE+8, &read);
       if (result == FR_OK && read == RIFF_CHUNK_SIZE+8 && !memcmp(wavBuffer, "RIFF", 4) && !memcmp(wavBuffer+8, "WAVEfmt ", 8)) {
         uint32_t size = *((uint32_t *)(wavBuffer+16));
-        result = (size < 256 ? f_read(&context.wav.file, wavBuffer, size+8, &read) : FR_DENIED);
+        result = (size < 256 ? f_read(&state.file, wavBuffer, size+8, &read) : FR_DENIED);
         if (result == FR_OK && read == size+8) {
-          context.wav.codec = ((uint16_t *)wavBuffer)[0];
-          context.wav.freq = ((uint16_t *)wavBuffer)[2];
+          state.codec = ((uint16_t *)wavBuffer)[0];
+          state.freq = ((uint16_t *)wavBuffer)[2];
           uint32_t *wavSamplesPtr = (uint32_t *)(wavBuffer + size);
           uint32_t size = wavSamplesPtr[1];
-          if (context.wav.freq != 0 && context.wav.freq * (AUDIO_SAMPLE_RATE / context.wav.freq) == AUDIO_SAMPLE_RATE) {
-            context.wav.resampleRatio = (AUDIO_SAMPLE_RATE / context.wav.freq);
-            context.wav.readSize = (context.wav.codec == CODEC_ID_PCM_S16LE ? 2*AUDIO_BUFFER_SIZE : AUDIO_BUFFER_SIZE) / context.wav.resampleRatio;
+          if (state.freq != 0 && state.freq * (AUDIO_SAMPLE_RATE / state.freq) == AUDIO_SAMPLE_RATE) {
+            state.resampleRatio = (AUDIO_SAMPLE_RATE / state.freq);
+            state.readSize = (state.codec == CODEC_ID_PCM_S16LE ? 2*AUDIO_BUFFER_SIZE : AUDIO_BUFFER_SIZE) / state.resampleRatio;
           }
           else {
             result = FR_DENIED;
           }
           while (result == FR_OK && memcmp(wavSamplesPtr, "data", 4) != 0) {
-            result = f_lseek(&context.wav.file, f_tell(&context.wav.file)+size);
+            result = f_lseek(&state.file, f_tell(&state.file)+size);
             if (result == FR_OK) {
-              result = f_read(&context.wav.file, wavBuffer, 8, &read);
+              result = f_read(&state.file, wavBuffer, 8, &read);
               if (read != 8) result = FR_DENIED;
               wavSamplesPtr = (uint32_t *)wavBuffer;
               size = wavSamplesPtr[1];
             }
           }
-          context.wav.size = size;
+          state.size = size;
         }
         else {
           result = FR_DENIED;
@@ -494,46 +493,46 @@ int AudioQueue::mixWav(AudioContext &context, AudioBuffer *buffer, int volume, u
 
   read = 0;
   if (result == FR_OK) {
-    result = f_read(&context.wav.file, wavBuffer, context.wav.readSize, &read);
+    result = f_read(&state.file, wavBuffer, state.readSize, &read);
     if (result == FR_OK) {
-      if (read > context.wav.size) {
-        read = context.wav.size;
+      if (read > state.size) {
+        read = state.size;
       }
-      context.wav.size -= read;
+      state.size -= read;
 
-      if (read != context.wav.readSize) {
-        f_close(&context.wav.file);
+      if (read != state.readSize) {
+        f_close(&state.file);
         fragment.clear();
       }
 
       uint16_t * samples = buffer->data;
-      if (context.wav.codec == CODEC_ID_PCM_S16LE) {
+      if (state.codec == CODEC_ID_PCM_S16LE) {
         read /= 2;
         for (uint32_t i=0; i<read; i++) {
-          for (uint8_t j=0; j<context.wav.resampleRatio; j++)
-            mix(samples++, ((int16_t *)wavBuffer)[i], fade+2-volume);
+          for (uint8_t j=0; j<state.resampleRatio; j++)
+            mixSample(samples++, ((int16_t *)wavBuffer)[i], fade+2-volume);
         }
       }
-      else if (context.wav.codec == CODEC_ID_PCM_ALAW) {
+      else if (state.codec == CODEC_ID_PCM_ALAW) {
         for (uint32_t i=0; i<read; i++)
-          for (uint8_t j=0; j<context.wav.resampleRatio; j++)
-            mix(samples++, alawTable[wavBuffer[i]], fade+2-volume);
+          for (uint8_t j=0; j<state.resampleRatio; j++)
+            mixSample(samples++, alawTable[wavBuffer[i]], fade+2-volume);
       }
-      else if (context.wav.codec == CODEC_ID_PCM_MULAW) {
+      else if (state.codec == CODEC_ID_PCM_MULAW) {
         for (uint32_t i=0; i<read; i++)
-          for (uint8_t j=0; j<context.wav.resampleRatio; j++)
-            mix(samples++, ulawTable[wavBuffer[i]], fade+2-volume);
+          for (uint8_t j=0; j<state.resampleRatio; j++)
+            mixSample(samples++, ulawTable[wavBuffer[i]], fade+2-volume);
       }
 
       return samples - buffer->data;
     }
   }
 
-  context.clear();
+  clear();
   return -result;
 }
 #else
-int AudioQueue::mixWav(AudioContext &context, AudioBuffer *buffer, int volume, unsigned int fade)
+int WavContext::mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade)
 {
   return 0;
 }
@@ -549,26 +548,25 @@ inline float evalVolumeRatio(int freq, int volume)
   return result;
 }
 
-int AudioQueue::mixTone(AudioContext &context, AudioBuffer *buffer, int volume, unsigned int fade)
+int ToneContext::mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade)
 {
-  AudioFragment & fragment = context.fragment;
   int duration = 0;
   int result = 0;
 
-  int remainingDuration = fragment.tone.duration - context.tone.duration;
+  int remainingDuration = fragment.tone.duration - state.duration;
   if (remainingDuration > 0) {
     int points;
-    double toneIdx = context.tone.idx;
+    double toneIdx = state.idx;
 
     if (fragment.tone.reset) {
-      context.tone.duration = 0;
-      context.tone.pause = 0;
+      state.duration = 0;
+      state.pause = 0;
     }
 
-    if (fragment.tone.freq != context.tone.freq) {
-      context.tone.freq = fragment.tone.freq;
-      context.tone.step = double(DIM(sineValues)*fragment.tone.freq) / AUDIO_SAMPLE_RATE;
-      context.tone.volume = evalVolumeRatio(fragment.tone.freq, volume);
+    if (fragment.tone.freq != state.freq) {
+      state.freq = fragment.tone.freq;
+      state.step = double(DIM(sineValues)*fragment.tone.freq) / AUDIO_SAMPLE_RATE;
+      state.volume = evalVolumeRatio(fragment.tone.freq, volume);
     }
 
     if (fragment.tone.freqIncr) {
@@ -582,59 +580,41 @@ int AudioQueue::mixTone(AudioContext &context, AudioBuffer *buffer, int volume, 
     else {
       duration = remainingDuration;
       points = (duration * AUDIO_BUFFER_SIZE) / AUDIO_BUFFER_DURATION;
-      unsigned int end = toneIdx + (context.tone.step * points);
+      unsigned int end = toneIdx + (state.step * points);
       if (end > DIM(sineValues))
         end -= (end % DIM(sineValues));
       else
         end = DIM(sineValues);
-      points = (double(end) - toneIdx) / context.tone.step;
+      points = (double(end) - toneIdx) / state.step;
     }
 
     for (int i=0; i<points; i++) {
-      int16_t sample = sineValues[int(toneIdx)] / context.tone.volume;
-      mix(&buffer->data[i], sample, fade);
-      toneIdx += context.tone.step;
+      int16_t sample = sineValues[int(toneIdx)] / state.volume;
+      mixSample(&buffer->data[i], sample, fade);
+      toneIdx += state.step;
       if ((unsigned int)toneIdx >= DIM(sineValues))
         toneIdx -= DIM(sineValues);
     }
 
     if (remainingDuration > AUDIO_BUFFER_DURATION) {
-      context.tone.duration += AUDIO_BUFFER_DURATION;
-      context.tone.idx = toneIdx;
+      state.duration += AUDIO_BUFFER_DURATION;
+      state.idx = toneIdx;
       return AUDIO_BUFFER_SIZE;
     }
     else {
-      context.tone.duration = 32000; // once the tone is finished, it's not possible to update its frequency and duration
+      state.duration = 32000; // once the tone is finished, it's not possible to update its frequency and duration
     }
   }
 
-  remainingDuration = fragment.tone.pause - context.tone.pause;
+  remainingDuration = fragment.tone.pause - state.pause;
   if (remainingDuration > 0) {
     result = AUDIO_BUFFER_SIZE;
-    context.tone.pause += min<unsigned int>(AUDIO_BUFFER_DURATION-duration, fragment.tone.pause);
-    if (fragment.tone.pause > context.tone.pause)
+    state.pause += min<unsigned int>(AUDIO_BUFFER_DURATION-duration, fragment.tone.pause);
+    if (fragment.tone.pause > state.pause)
       return result;
   }
 
-  context.clear();
-  return result;
-}
-
-int AudioQueue::mixAudioContext(AudioContext &context, AudioBuffer *buffer, int beepVolume, int wavVolume, unsigned int fade)
-{
-  int result;
-  AudioFragment & fragment = context.fragment;
-
-  if (fragment.type == FRAGMENT_TONE) {
-    result = mixTone(context, buffer, beepVolume, fade);
-  }
-  else if (fragment.type == FRAGMENT_FILE) {
-    result = mixWav(context, buffer, wavVolume, fade);
-  }
-  else {
-    result = 0;
-  }
-
+  clear();
   return result;
 }
 
@@ -651,15 +631,20 @@ void AudioQueue::wakeup()
       buffer->data[i] = 0x8000 >> 4; /* silence */
     }
 
-    // mix the foreground context
-    result = mixAudioContext(foregroundContext, buffer, g_eeGeneral.beepVolume, g_eeGeneral.wavVolume, fade);
+    // mix the priority context (only tones)
+    result = priorityContext.mixBuffer(buffer, g_eeGeneral.beepVolume, fade);
     if (result > 0) {
       size = result;
       fade += 1;
     }
 
-    // mix the normal context
-    result = mixAudioContext(currentContext, buffer, g_eeGeneral.beepVolume, g_eeGeneral.wavVolume, fade);
+    // mix the normal context (tones and wavs)
+    if (normalContext.fragment.type == FRAGMENT_TONE)
+      result = normalContext.tone.mixBuffer(buffer, g_eeGeneral.beepVolume, fade);
+    else if (normalContext.fragment.type == FRAGMENT_FILE)
+      result = normalContext.wav.mixBuffer(buffer, g_eeGeneral.wavVolume, fade);
+    else
+      result = 0;
     if (result > 0) {
       size = max(size, result);
       fade += 1;
@@ -667,8 +652,7 @@ void AudioQueue::wakeup()
     else {
       CoEnterMutexSection(audioMutex);
       if (ridx != widx) {
-        currentContext.clear();
-        currentContext.fragment = fragments[ridx];
+        normalContext.fragment = fragments[ridx];
         if (!fragments[ridx].repeat--) {
           ridx = (ridx + 1) % AUDIO_QUEUE_LENGTH;
         }
@@ -676,9 +660,16 @@ void AudioQueue::wakeup()
       CoLeaveMutexSection(audioMutex);
     }
 
+    // mix the vario context
+    result = varioContext.mixBuffer(buffer, g_eeGeneral.varioVolume, fade);
+    if (result > 0) {
+      size = max(size, result);
+      fade += 1;
+    }
+
     // mix the background context
     if (!isFunctionActive(FUNCTION_BACKGND_MUSIC_PAUSE)) {
-      result = mixAudioContext(backgroundContext, buffer, g_eeGeneral.varioVolume, g_eeGeneral.backgroundVolume, fade);
+      result = backgroundContext.mixBuffer(buffer, g_eeGeneral.backgroundVolume, fade);
       if (result > 0) {
         size = max(size, result);
       }
@@ -711,7 +702,7 @@ void AudioQueue::pause(uint16_t len)
 
 bool AudioQueue::isPlaying(uint8_t id)
 {
-  if (currentContext.fragment.id == id || backgroundContext.fragment.id == id)
+  if (normalContext.fragment.id == id || backgroundContext.fragment.id == id)
     return true;
 
   uint8_t i = ridx;
@@ -732,9 +723,7 @@ void AudioQueue::playTone(uint16_t freq, uint16_t len, uint16_t pause, uint8_t f
     freq = BEEP_MIN_FREQ;
 
   if (flags & PLAY_BACKGROUND) {
-    AudioFragment & fragment = backgroundContext.fragment;
-    if (fragment.type != FRAGMENT_TONE)
-      backgroundContext.clear();
+    AudioFragment & fragment = varioContext.fragment;
     fragment.type = FRAGMENT_TONE;
     fragment.tone.freq = freq;
     fragment.tone.duration = len;
@@ -746,9 +735,9 @@ void AudioQueue::playTone(uint16_t freq, uint16_t len, uint16_t pause, uint8_t f
     len = getToneLength(len);
 
     if (flags & PLAY_NOW) {
-      AudioFragment & fragment = foregroundContext.fragment;
+      AudioFragment & fragment = priorityContext.fragment;
       if (fragment.type == FRAGMENT_EMPTY) {
-        foregroundContext.clear();
+        priorityContext.clear();
         fragment.type = FRAGMENT_TONE;
         fragment.repeat = flags & 0x0f;
         fragment.tone.freq = freq;
@@ -805,9 +794,9 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
     fragment.id = id;
   }
   else if (flags & PLAY_NOW) {
-    AudioFragment & fragment = foregroundContext.fragment;
+    AudioFragment & fragment = priorityContext.fragment;
     if (fragment.type == FRAGMENT_EMPTY) {
-      foregroundContext.clear();
+      priorityContext.clear();
       fragment.type = FRAGMENT_FILE;
       strcpy(fragment.file, filename);
       fragment.repeat = flags & 0x0f;
@@ -857,8 +846,9 @@ void AudioQueue::reset()
 {
   CoEnterMutexSection(audioMutex);
   widx = ridx;                      // clean the queue
-  foregroundContext.clear();
-  currentContext.clear();
+  priorityContext.clear();
+  normalContext.tone.clear();
+  varioContext.clear();
   backgroundContext.clear();
   CoLeaveMutexSection(audioMutex);
 }
