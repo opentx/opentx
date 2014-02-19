@@ -2205,7 +2205,7 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
   }
 
   if (IS_TARANIS(board) && version >= 216) {
-    for (int i=0; i<3; i++) {
+    for (int i=0; i<7; i++) {
       ScriptData & script = modelData.scriptData[i];
       internalField.Append(new ZCharField<10>(script.filename));
       internalField.Append(new ZCharField<10>(script.name));
