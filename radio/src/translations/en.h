@@ -614,7 +614,7 @@
 #define TR_ALARMSWARN          "ALARMS"
 #define TR_SWITCHWARN          TR("SWITCH","CONTROL")
 #define TR_INVERT_THR          TR("Invert Thr?","Invert Throttle?")
-#define TR_SPEAKER_VOLUME      INDENT "Volume"
+#define TR_SPEAKER_VOLUME      INDENT "Volume" // TODO could be TR_VOLUME ?
 #define TR_LCD                 "LCD"
 #define TR_BRIGHTNESS          INDENT "Brightness"
 #define TR_CPU_TEMP            "CPU Temp.\016>"
@@ -791,7 +791,7 @@
 
 #define TR_BEEP_VOLUME         "Beep Volume"
 #define TR_WAV_VOLUME          "Wav Volume"
-#define TR_VARIO_VOLUME        "Vario Volume"
+#define TR_VARIO_VOLUME        "Vario Volume" // TODO may be removed
 #define TR_BG_VOLUME           "Bg Volume"
 
 #define TR_TOP_BAR             "Top Bar"
