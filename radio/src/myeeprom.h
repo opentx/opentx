@@ -323,8 +323,9 @@ enum BacklightMode {
   #define SPLASH_MODE uint8_t splashMode:1; uint8_t spare4:2
 #endif
 
-#if defined(PCBTARANIS)
 #define POTS_POS_COUNT 6
+
+#if defined(PCBTARANIS)
 PACK(typedef struct {
   uint8_t count;
   uint8_t steps[POTS_POS_COUNT-1];
