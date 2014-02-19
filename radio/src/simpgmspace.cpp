@@ -551,9 +551,11 @@ FRESULT f_readdir (DIR * rep, FILINFO * fil)
   fil->fattrib = (ent->d_type == DT_DIR ? AM_DIR : 0);
 #else
   if (ent->d_type == simu::DT_UNKNOWN) {
+    fil->fattrib = 0;
     struct stat buf;
-    lstat(ent->d_name, &buf);
-    fil->fattrib = (S_ISDIR(buf.st_mode) ? AM_DIR : 0);
+    if (stat(ent->d_name, &buf) == 0) {
+      fil->fattrib = (S_ISDIR(buf.st_mode) ? AM_DIR : 0);
+    }
   }
   else {
     fil->fattrib = (ent->d_type == simu::DT_DIR ? AM_DIR : 0);
@@ -564,6 +566,7 @@ FRESULT f_readdir (DIR * rep, FILINFO * fil)
   memset(fil->lfname, 0, SD_SCREEN_FILE_LENGTH);
   strncpy(fil->fname, ent->d_name, 13-1);
   strcpy(fil->lfname, ent->d_name);
+  // TRACE("f_readdir(): %s", fil->fname);
   return FR_OK;
 }
 

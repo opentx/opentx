@@ -778,7 +778,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
     vertpos_t realPgOfs = s_pgOfs;
     vertpos_t realMaxrow = maxrow;
     for (vertpos_t i=1; i<=maxrow; i++) {
-      if (horTab[i] == HIDDEN_ROW) {
+      if (MAXCOL_RAW(i) == HIDDEN_ROW) {
         realMaxrow--;
         if (i < l_posVert)
           realPosVert--;
@@ -790,7 +790,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
     else if (realPosVert<1+realPgOfs) realPgOfs = realPosVert-1;
     s_pgOfs = realPgOfs;
     for (vertpos_t i=1; i<=realPgOfs; i++) {
-      if (horTab[i] == HIDDEN_ROW) {
+      if (MAXCOL_RAW(i) == HIDDEN_ROW) {
         s_pgOfs++;
       }
     }
