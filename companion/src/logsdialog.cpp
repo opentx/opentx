@@ -584,9 +584,9 @@ void logsDialog::moveLegend()
 
 void logsDialog::on_fileOpen_BT_clicked()
 {
-  QString fileName = QFileDialog::getOpenFileName(this,tr("Select your log file"), g.lastLogDir());
+  QString fileName = QFileDialog::getOpenFileName(this,tr("Select your log file"), g.logDir());
   if (!fileName.isEmpty()) {
-    g.lastLogDir( fileName );
+    g.logDir( fileName );
     ui->FileName_LE->setText(fileName);
     if (cvsFileParse()) {
       ui->FieldsTW->clear();

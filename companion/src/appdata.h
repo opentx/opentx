@@ -1,4 +1,6 @@
 // Companion Application Data Class.
+// Author Kjell Kernen
+
 // All temporary and permanent global variables are defined here to make 
 // initialization and storage safe and visible.
 // Do not access variables in QSettings directly, it is not type safe!
@@ -224,27 +226,27 @@ class JStickData:DataObj
 private:
 	int index;
 
-	int _stick_axe;
-	int _stick_min;
-	int _stick_med;
-	int _stick_max;
-	int _stick_inv;
+	int _stickAxe;
+	int _stickMin;
+	int _stickMed;
+	int _stickMax;
+	int _stickInv;
 
 public:
 public:
 	// All the get declarations
-	int stick_axe() { return _stick_axe; }
-	int stick_min() { return _stick_min; }
-	int stick_med() { return _stick_med; }
-	int stick_max() { return _stick_max; }
-	int stick_inv() { return _stick_inv; }
+	int stick_axe() { return _stickAxe; }
+	int stick_min() { return _stickMin; }
+	int stick_med() { return _stickMed; }
+	int stick_max() { return _stickMax; }
+	int stick_inv() { return _stickInv; }
 
 	// All the set declarations
-	void stick_axe(const int it) { store( it, _stick_axe, QString("stick%1_axe").arg(index), "JsCalibration" );}
-	void stick_min(const int it) { store( it, _stick_min, QString("stick%1_min").arg(index), "JsCalibration" );}
-	void stick_med(const int it) { store( it, _stick_med, QString("stick%1_med").arg(index), "JsCalibration" );}
-	void stick_max(const int it) { store( it, _stick_max, QString("stick%1_max").arg(index), "JsCalibration" );}
-	void stick_inv(const int it) { store( it, _stick_inv, QString("stick%1_inv").arg(index), "JsCalibration" );}
+	void stick_axe(const int it) { store( it, _stickAxe, QString("stick%1_axe").arg(index), "JsCalibration" );}
+	void stick_min(const int it) { store( it, _stickMin, QString("stick%1_min").arg(index), "JsCalibration" );}
+	void stick_med(const int it) { store( it, _stickMed, QString("stick%1_med").arg(index), "JsCalibration" );}
+	void stick_max(const int it) { store( it, _stickMax, QString("stick%1_max").arg(index), "JsCalibration" );}
+	void stick_inv(const int it) { store( it, _stickInv, QString("stick%1_inv").arg(index), "JsCalibration" );}
 
 	// Constructor
 	JStickData()
@@ -281,11 +283,11 @@ public:
 	void init(int newIndex)
 	{
 		index = newIndex;
-		_stick_axe = -1;
-		_stick_min = -32767;
-		_stick_med = 0;
-		_stick_max = 0;
-		_stick_inv = 0;
+		_stickAxe = -1;
+		_stickMin = -32767;
+		_stickMed = 0;
+		_stickMax = 0;
+		_stickInv = 0;
 
 		// Do not write empty joystick calibrations to disk.
 		if ( !existsOnDisk() )
@@ -296,11 +298,11 @@ public:
 
 	void flush()
 	{
-		getset( _stick_axe, QString("stick%1_axe").arg(index), -1,     "JsCalibration" );
-		getset( _stick_min, QString("stick%1_min").arg(index), -32767, "JsCalibration" );
-		getset( _stick_med, QString("stick%1_med").arg(index),  0,     "JsCalibration" );
-		getset( _stick_max, QString("stick%1_max").arg(index),  0,     "JsCalibration" );
-		getset( _stick_inv, QString("stick%1_inv").arg(index),  0,     "JsCalibration" );
+		getset( _stickAxe, QString("stick%1_axe").arg(index), -1,     "JsCalibration" );
+		getset( _stickMin, QString("stick%1_min").arg(index), -32767, "JsCalibration" );
+		getset( _stickMed, QString("stick%1_med").arg(index),  0,     "JsCalibration" );
+		getset( _stickMax, QString("stick%1_max").arg(index),  0,     "JsCalibration" );
+		getset( _stickInv, QString("stick%1_inv").arg(index),  0,     "JsCalibration" );
 	}
 };
 
@@ -312,81 +314,81 @@ private:
 
 	// Application Variables
 	QString _firmware;
-	QString _Name;
+	QString _name;
 	QString _sdPath;
-	QString _SplashFileName;
+	QString _splashFile;
 	bool    _burnFirmware;
-	bool    _rename_firmware_files;
+	bool    _renameFwFiles;
 	bool    _patchImage;
-	int     _default_channel_order;
-	int     _default_mode;
+	int     _channelOrder;
+	int     _defaultMode;
 
 	// Firmware Variables
-	QString _Beeper;
+	QString _beeper;
 	QString _countryCode;
-	QString _Display;
-	QString _Haptic;
-	QString _Speaker;
-	QString _StickPotCalib;
-	QString _TrainerCalib;
+	QString _display;
+	QString _haptic;
+	QString _speaker;
+	QString _stickPotCalib;
+	QString _trainerCalib;
 	int     _currentCalib;
-	int     _GSStickMode;
-	int     _PPM_Multiplier;
-	int     _VbatCalib;
+	int     _gsStickMode;
+	int     _ppmMultiplier;
+	int     _vBatCalib;
 	int     _vBatWarn;
 
 public:
 	// All the get declarations
-	QString firmware()             { return _firmware;               }
-	QString Name()                 { return _Name;                   }
-	QString sdPath()               { return _sdPath;                 }
-	QString SplashFileName()       { return _SplashFileName;         }
-	bool burnFirmware()            { return _burnFirmware;           }
-	bool rename_firmware_files()   { return _rename_firmware_files;  }
-	bool patchImage()              { return _patchImage;             }
-	int default_channel_order()    { return _default_channel_order;  }
-	int default_mode()             { return _default_mode;           }
+	QString firmware()      { return _firmware;      }
+	QString name()          { return _name;          }
+	QString sdPath()        { return _sdPath;        }
+	QString splashFile()    { return _splashFile;    }
+	bool    burnFirmware()  { return _burnFirmware;  }
+	bool    renameFwFiles() { return _renameFwFiles; }
+	bool    patchImage()    { return _patchImage;    }
+	int     channelOrder()  { return _channelOrder;  }
+	int     defaultMode()   { return _defaultMode;   }
 
-	QString Beeper()               { return _Beeper;                 }
-	QString countryCode()          { return _countryCode;            }
-	QString Display()              { return _Display;                }
-	QString Haptic()               { return _Haptic;                 }
-	QString Speaker()              { return _Speaker;                }
-	QString StickPotCalib()        { return _StickPotCalib;          }
-	QString TrainerCalib()         { return _TrainerCalib;           }
-	int     currentCalib()         { return _currentCalib;           }
-	int     GSStickMode()          { return _GSStickMode;            }
-	int     PPM_Multiplier()       { return _PPM_Multiplier;         }
-	int     VbatCalib()            { return _VbatCalib;              }
-	int     vBatWarn()             { return _vBatWarn;               }
+	QString beeper()        { return _beeper;        }
+	QString countryCode()   { return _countryCode;   }
+	QString display()       { return _display;       }
+	QString haptic()        { return _haptic;        }
+	QString speaker()       { return _speaker;       }
+	QString stickPotCalib() { return _stickPotCalib; }
+	QString trainerCalib()  { return _trainerCalib;  }
+	int     currentCalib()  { return _currentCalib;  }
+	int     gsStickMode()   { return _gsStickMode;   }
+	int     ppmMultiplier() { return _ppmMultiplier; }
+	int     vBatCalib()     { return _vBatCalib;     }
+	int     vBatWarn()      { return _vBatWarn;      }
 
 	// All the set declarations
-	void Name                    (const QString str) { if (str.isEmpty())  // Name may never be empty!
-		store("----", _Name,        "Name"                  ,"Profiles", QString("profile%1").arg(index));
-	else
-		store(str,    _Name,        "Name"                  ,"Profiles", QString("profile%1").arg(index));}
+	void name          (const QString x) { if (x.isEmpty())  // Name may never be empty!
+		                                   store("----", _name,     "Name"                  ,"Profiles", QString("profile%1").arg(index));
+	                                    else
+		                                   store(x, _name,          "Name"                  ,"Profiles", QString("profile%1").arg(index));}
 
-	void firmware                (const QString str) { store(str, _firmware,         "firmware"              ,"Profiles", QString("profile%1").arg(index));}
-	void sdPath                  (const QString str) { store(str, _sdPath,           "sdPath"                ,"Profiles", QString("profile%1").arg(index));}
-	void SplashFileName          (const QString str) { store(str, _SplashFileName,   "SplashFileName"        ,"Profiles", QString("profile%1").arg(index));}
-	void burnFirmware            (const bool bl) { store(bl, _burnFirmware,          "burnFirmware"          ,"Profiles", QString("profile%1").arg(index));}
-	void rename_firmware_files   (const bool bl) { store(bl, _rename_firmware_files, "rename_firmware_files" ,"Profiles", QString("profile%1").arg(index));}
-	void patchImage              (const bool bl) { store(bl, _patchImage,            "patchImage"            ,"Profiles", QString("profile%1").arg(index));}
-	void default_channel_order   (const int it)  { store(it, _default_channel_order, "default_channel_order" ,"Profiles", QString("profile%1").arg(index));}
-	void default_mode            (const int it)  { store(it, _default_mode,          "default_mode"          ,"Profiles", QString("profile%1").arg(index));}
+	void firmware      (const QString x) { store(x, _firmware,      "firmware"              ,"Profiles", QString("profile%1").arg(index));}
+	void sdPath        (const QString x) { store(x, _sdPath,        "sdPath"                ,"Profiles", QString("profile%1").arg(index));}
+	void splashFile    (const QString x) { store(x, _splashFile,    "SplashFileName"        ,"Profiles", QString("profile%1").arg(index));}
+	void burnFirmware  (const bool    x) { store(x, _burnFirmware,  "burnFirmware"          ,"Profiles", QString("profile%1").arg(index));}
+	void renameFwFiles (const bool    x) { store(x, _renameFwFiles, "rename_firmware_files" ,"Profiles", QString("profile%1").arg(index));}
+	void patchImage    (const bool    x) { store(x, _patchImage,    "patchImage"            ,"Profiles", QString("profile%1").arg(index));}
+	void channelOrder  (const int     x) { store(x, _channelOrder,  "default_channel_order" ,"Profiles", QString("profile%1").arg(index));}
+	void defaultMode   (const int     x) { store(x, _defaultMode,   "default_mode"          ,"Profiles", QString("profile%1").arg(index));}
 
-	void Beeper                  (const QString str) { store(str, _Beeper,           "Beeper"                ,"Profiles", QString("profile%1").arg(index));}
-	void countryCode             (const QString str) { store(str, _countryCode,      "countryCode"           ,"Profiles", QString("profile%1").arg(index));}
-	void Display                 (const QString str) { store(str, _Display,          "Display"               ,"Profiles", QString("profile%1").arg(index));}
-	void Haptic                  (const QString str) { store(str, _Haptic,           "Haptic"                ,"Profiles", QString("profile%1").arg(index));}
-	void Speaker                 (const QString str) { store(str, _Speaker,          "Speaker"               ,"Profiles", QString("profile%1").arg(index));}
-	void StickPotCalib           (const QString str) { store(str, _StickPotCalib,    "StickPotCalib"         ,"Profiles", QString("profile%1").arg(index));}
-	void TrainerCalib            (const QString str) { store(str, _TrainerCalib,     "TrainerCalib"          ,"Profiles", QString("profile%1").arg(index));}
-	void currentCalib            (const int it)      { store(it,  _currentCalib,     "currentCalib"          ,"Profiles", QString("profile%1").arg(index));}
-	void GSStickMode             (const int it)      { store(it,  _GSStickMode,      "GSStickMode"           ,"Profiles", QString("profile%1").arg(index));}
-	void PPM_Multiplier          (const int it)      { store(it,  _PPM_Multiplier,   "PPM_Multiplier"        ,"Profiles", QString("profile%1").arg(index));}
-	void VbatCalib               (const int it)      { store(it,  _VbatCalib,        "VbatCalib"             ,"Profiles", QString("profile%1").arg(index));}
-	void vBatWarn                (const int it)      { store(it,  _vBatWarn,         "vBatWarn"              ,"Profiles", QString("profile%1").arg(index));}
+	void beeper        (const QString x) { store(x, _beeper,        "Beeper"                ,"Profiles", QString("profile%1").arg(index));}
+	void countryCode   (const QString x) { store(x, _countryCode,   "countryCode"           ,"Profiles", QString("profile%1").arg(index));}
+	void display       (const QString x) { store(x, _display,       "Display"               ,"Profiles", QString("profile%1").arg(index));}
+	void haptic        (const QString x) { store(x, _haptic,        "Haptic"                ,"Profiles", QString("profile%1").arg(index));}
+	void speaker       (const QString x) { store(x, _speaker,       "Speaker"               ,"Profiles", QString("profile%1").arg(index));}
+	void stickPotCalib (const QString x) { store(x, _stickPotCalib, "StickPotCalib"         ,"Profiles", QString("profile%1").arg(index));}
+	void trainerCalib  (const QString x) { store(x, _trainerCalib,  "TrainerCalib"          ,"Profiles", QString("profile%1").arg(index));}
+	void currentCalib  (const int     x) { store(x, _currentCalib,  "currentCalib"          ,"Profiles", QString("profile%1").arg(index));}
+	void gsStickMode   (const int     x) { store(x, _gsStickMode,   "GSStickMode"           ,"Profiles", QString("profile%1").arg(index));}
+	void ppmMultiplier (const int     x) { store(x, _ppmMultiplier, "PPM_Multiplier"        ,"Profiles", QString("profile%1").arg(index));}
+	void vBatCalib     (const int     x) { store(x, _vBatCalib,     "VbatCalib"             ,"Profiles", QString("profile%1").arg(index));}
+	void vBatWarn      (const int     x) { store(x, _vBatWarn,      "vBatWarn"              ,"Profiles", QString("profile%1").arg(index));}
 
 	// Constructor
 	Profile()
@@ -422,32 +424,29 @@ public:
 	{
 		index = newIndex;
 
-		_firmware =              "";
-		_Name =                  "";
-		_sdPath =                "";
-		_SplashFileName =        "";
-		_burnFirmware =          false;
-		_rename_firmware_files = false;
-		_patchImage =            false;
-		_default_channel_order = 0;
-		_default_mode =          1;
+		_firmware =      "";
+		_name =          "";
+		_sdPath =        "";
+		_splashFile =    "";
+		_burnFirmware =  false;
+		_renameFwFiles = false;
+		_patchImage =    false;
+		_channelOrder =  0;
+		_defaultMode =   1;
 
-		_Beeper =                "";
-		_countryCode =           "";
-		_Display =               "";
-		_Haptic =                "";
-		_Speaker =               "";
-		_StickPotCalib =         "";
-		_TrainerCalib =          "";
+		_beeper =        "";
+		_countryCode =   "";
+		_display =       "";
+		_haptic =        "";
+		_speaker =       "";
+		_stickPotCalib = "";
+		_trainerCalib =  "";
 
-		_currentCalib =          0;
-		_GSStickMode =           0;
-		_PPM_Multiplier =        0;
-		_VbatCalib =             0;
-		_vBatWarn =              0;
-
-		QString pName;
-		retrieve( pName, "Name", "", "Profiles", QString("profile%1").arg(index));
+		_currentCalib =  0;
+		_gsStickMode =   0;
+		_ppmMultiplier = 0;
+		_vBatCalib =     0;
+		_vBatWarn =      0;
 
 		// Do not write empty profiles to disk except the default (0) profile.
 		if ( index > 0 && !existsOnDisk())
@@ -459,28 +458,28 @@ public:
 	void flush()
 	{
 		// Load and store all variables. Use default values if setting values are missing
-		getset( _firmware,                "firmware"                ,""      ,"Profiles", QString("profile%1").arg(index));
-		getset( _Name,                    "Name"                    ,"----"  ,"Profiles", QString("profile%1").arg(index));
-		getset( _sdPath,                  "sdPath"                  ,""      ,"Profiles", QString("profile%1").arg(index));
-		getset( _SplashFileName,          "SplashFileName"          ,""      ,"Profiles", QString("profile%1").arg(index));
-		getset( _burnFirmware,            "burnFirmware"            ,false   ,"Profiles", QString("profile%1").arg(index));
-		getset( _rename_firmware_files,   "rename_firmware_files"   ,false   ,"Profiles", QString("profile%1").arg(index));
-		getset( _patchImage,              "patchImage"              ,false   ,"Profiles", QString("profile%1").arg(index));
-		getset( _default_channel_order,   "default_channel_order"   ,0       ,"Profiles", QString("profile%1").arg(index));
-		getset( _default_mode,            "default_mode"            ,1       ,"Profiles", QString("profile%1").arg(index));
+		getset( _firmware,      "firmware"              ,""     ,"Profiles", QString("profile%1").arg(index));
+		getset( _name,          "Name"                  ,"----" ,"Profiles", QString("profile%1").arg(index));
+		getset( _sdPath,        "sdPath"                ,""     ,"Profiles", QString("profile%1").arg(index));
+		getset( _splashFile,    "SplashFileName"        ,""     ,"Profiles", QString("profile%1").arg(index));
+		getset( _burnFirmware,  "burnFirmware"          ,false  ,"Profiles", QString("profile%1").arg(index));
+		getset( _renameFwFiles, "rename_firmware_files" ,false  ,"Profiles", QString("profile%1").arg(index));
+		getset( _patchImage,    "patchImage"            ,false  ,"Profiles", QString("profile%1").arg(index));
+		getset( _channelOrder,  "default_channel_order" ,0      ,"Profiles", QString("profile%1").arg(index));
+		getset( _defaultMode,   "default_mode"          ,1      ,"Profiles", QString("profile%1").arg(index));
 
-		getset( _Beeper,                  "Beeper"                  ,""      ,"Profiles", QString("profile%1").arg(index));
-		getset( _countryCode,             "countryCode"             ,""      ,"Profiles", QString("profile%1").arg(index));
-		getset( _Display,                 "Display"                 ,""      ,"Profiles", QString("profile%1").arg(index));
-		getset( _Haptic,                  "Haptic"                  ,""      ,"Profiles", QString("profile%1").arg(index));
-		getset( _Speaker,                 "Speaker"                 ,""      ,"Profiles", QString("profile%1").arg(index));
-		getset( _StickPotCalib,           "StickPotCalib"           ,""      ,"Profiles", QString("profile%1").arg(index));
-		getset( _TrainerCalib,            "TrainerCalib"            ,""      ,"Profiles", QString("profile%1").arg(index));
-		getset( _currentCalib,            "currentCalib"            ,0       ,"Profiles", QString("profile%1").arg(index));
-		getset( _GSStickMode,             "GSStickMode"             ,0       ,"Profiles", QString("profile%1").arg(index));
-		getset( _PPM_Multiplier,          "PPM_Multiplier"          ,0       ,"Profiles", QString("profile%1").arg(index));
-		getset( _VbatCalib,               "VbatCalib"               ,0       ,"Profiles", QString("profile%1").arg(index));
-		getset( _vBatWarn,                "vBatWarn"                ,0       ,"Profiles", QString("profile%1").arg(index));
+		getset( _beeper,        "Beeper"                ,""     ,"Profiles", QString("profile%1").arg(index));
+		getset( _countryCode,   "countryCode"           ,""     ,"Profiles", QString("profile%1").arg(index));
+		getset( _display,       "Display"               ,""     ,"Profiles", QString("profile%1").arg(index));
+		getset( _haptic,        "Haptic"                ,""     ,"Profiles", QString("profile%1").arg(index));
+		getset( _speaker,       "Speaker"               ,""     ,"Profiles", QString("profile%1").arg(index));
+		getset( _stickPotCalib, "StickPotCalib"         ,""     ,"Profiles", QString("profile%1").arg(index));
+		getset( _trainerCalib,  "TrainerCalib"          ,""     ,"Profiles", QString("profile%1").arg(index));
+		getset( _currentCalib,  "currentCalib"          ,0      ,"Profiles", QString("profile%1").arg(index));
+		getset( _gsStickMode,   "GSStickMode"           ,0      ,"Profiles", QString("profile%1").arg(index));
+		getset( _ppmMultiplier, "PPM_Multiplier"        ,0      ,"Profiles", QString("profile%1").arg(index));
+		getset( _vBatCalib,     "VbatCalib"             ,0      ,"Profiles", QString("profile%1").arg(index));
+		getset( _vBatWarn,      "vBatWarn"              ,0      ,"Profiles", QString("profile%1").arg(index));
 	}
 };
 
@@ -493,168 +492,168 @@ public:
 	FwRevision fwRev;
 
 private:
-	QStringList _recentFileList;
-	QByteArray _mainWindowGeometry;
-	QByteArray _mainWindowState;
-	QByteArray _modelEditGeometry;
+	QStringList _recentFiles;
+	QByteArray _mainWinGeo;
+	QByteArray _mainWinState;
+	QByteArray _modelEditGeo;
 
-	QString _arm_mcu;
-	QString _avr_arguments;
-	QString _avr_port;
-	QString _avrdude_location;
-	QString _cpu_id;
-	QString _dfu_arguments;
-	QString _dfu_location;
+	QString _armMcu;
+	QString _avrArguments;
+	QString _avrPort;
+	QString _avrdudeLocation;
+	QString _cpuId;
+	QString _dfuArguments;
+	QString _dfuLocation;
 	QString _lastFw;
 	QString _locale;
 	QString _mcu;
 	QString _programmer;
-	QString _samba_location;
-	QString _samba_port;
+	QString _sambaLocation;
+	QString _sambaPort;
 
-	QString _backupPath;
-	QString _compilationServer;
+	QString _backupDir;
+	QString _compileServer;
 	QString _gePath;
 	QString _lastDir;
-	QString _lastFlashDir;
-	QString _lastImagesDir;
-	QString _lastLogDir;
-	QString _libraryPath;
-	QString _snapshotpath;
+	QString _flashDir;
+	QString _imagesDir;
+	QString _logDir;
+	QString _libDir;
+	QString _snapshotDir;
 
-	bool _backupEnable;
+	bool _enableBackup;
 	bool _backupOnFlash;
 	bool _maximized;
-	bool _js_support;
-	bool _rev4asupport;
-	bool _show_splash;
-	bool _snapshot_to_clipboard;
-	bool _startup_check_companion;
-	bool _startup_check_fw;
+	bool _jsSupport;
+	bool _rev4aSupport;
+	bool _showSplash;
+	bool _snapToClpbrd;
+	bool _autoCheckApp;
+	bool _autoCheckFw;
 	bool _simuSW;
-	bool _wizardEnable;
+	bool _enableWizard;
 
 	int _backLight;
-	int _embedded_splashes;  // Shouldn't this be bool ??
-	int _fwserver;
+	int _embedSplashes;
+	int _fwServerFails;
 	int _generalEditTab;
-	int _icon_size;
-	int _js_ctrl;
-	int _history_size;
+	int _iconSize;
+	int _jsCtrl;
+	int _historySize;
 	int _modelEditTab;
-	int _profileId;
+	int _id;
 	int _theme;
 	int _warningId;
 
 
 public:
 	// All the get declarations
-	QStringList recentFileList()   { return _recentFileList;         }
-	QByteArray mainWindowGeometry(){ return _mainWindowGeometry;     }
-	QByteArray mainWindowState()   { return _mainWindowState;        }
-	QByteArray modelEditGeometry() { return _modelEditGeometry;      }
+	QStringList recentFiles() { return _recentFiles;     }
+	QByteArray mainWinGeo()   { return _mainWinGeo;      }
+	QByteArray mainWinState() { return _mainWinState;    }
+	QByteArray modelEditGeo() { return _modelEditGeo;    }
 
-	QString arm_mcu()              { return _arm_mcu;                }
-	QString avr_arguments()        { return _avr_arguments;          }
-	QString avr_port()             { return _avr_port;               }
-	QString avrdude_location()     { return _avrdude_location;       }
-	QString cpu_id()               { return _cpu_id;                 }
-	QString dfu_arguments()        { return _dfu_arguments;          }
-	QString dfu_location()         { return _dfu_location;           }
-	QString lastFw()               { return _lastFw;                 }
-	QString locale()               { return _locale;                 }
-	QString mcu()                  { return _mcu;                    }
-	QString programmer()           { return _programmer;             }
-	QString samba_location()       { return _samba_location;         }
-	QString samba_port()           { return _samba_port;             }
+	QString armMcu()          { return _armMcu;          }
+	QString avrArguments()    { return _avrArguments;    }
+	QString avrPort()         { return _avrPort;         }
+	QString avrdudeLocation() { return _avrdudeLocation; }
+	QString cpuId()           { return _cpuId;           }
+	QString dfuArguments()    { return _dfuArguments;    }
+	QString dfuLocation()     { return _dfuLocation;     }
+	QString lastFw()          { return _lastFw;          }
+	QString locale()          { return _locale;          }
+	QString mcu()             { return _mcu;             }
+	QString programmer()      { return _programmer;      }
+	QString sambaLocation()   { return _sambaLocation;   }
+	QString sambaPort()       { return _sambaPort;       }
 
-	QString backupPath()           { return _backupPath;             }
-	QString compilationServer()    { return _compilationServer;      }
-	QString gePath()               { return _gePath;                 }
-	QString lastDir()              { return _lastDir;                }
-	QString lastFlashDir()         { return _lastFlashDir;           }
-	QString lastImagesDir()        { return _lastImagesDir;          }
-	QString lastLogDir()           { return _lastLogDir;             }
-	QString libraryPath()          { return _libraryPath;            }
-	QString snapshotpath()         { return _snapshotpath;           }
+	QString backupDir()       { return _backupDir;       }
+	QString compileServer()   { return _compileServer;   }
+	QString gePath()          { return _gePath;          }
+	QString lastDir()         { return _lastDir;         }
+	QString flashDir()        { return _flashDir;        }
+	QString imagesDir()       { return _imagesDir;       }
+	QString logDir()          { return _logDir;          }
+	QString libDir()          { return _libDir;          }
+	QString snapshotDir()     { return _snapshotDir;     }
 
-	bool backupEnable()            { return _backupEnable;           }
-	bool backupOnFlash()           { return _backupOnFlash;          }
-	bool js_support()              { return _js_support;             }
-	bool rev4asupport()            { return _rev4asupport;           }
-	bool maximized()               { return _maximized;              }
-	bool show_splash()             { return _show_splash;            }
-	bool snapshot_to_clipboard()   { return _snapshot_to_clipboard;  }
-	bool startup_check_companion() { return _startup_check_companion;}
-	bool startup_check_fw()        { return _startup_check_fw;       }
-	bool simuSW()                  { return _simuSW;                 }
-	bool wizardEnable()            { return _wizardEnable;           }
+	bool enableBackup()       { return _enableBackup;    }
+	bool backupOnFlash()      { return _backupOnFlash;   }
+	bool jsSupport()          { return _jsSupport;       }
+	bool rev4aSupport()       { return _rev4aSupport;    }
+	bool maximized()          { return _maximized;       }
+	bool showSplash()         { return _showSplash;      }
+	bool snapToClpbrd()       { return _snapToClpbrd;    }
+	bool autoCheckApp()       { return _autoCheckApp;    }
+	bool autoCheckFw()        { return _autoCheckFw;     }
+	bool simuSW()             { return _simuSW;          }
+	bool enableWizard()       { return _enableWizard;    }
 
-	int backLight()                { return _backLight;              }
-	int embedded_splashes()        { return _embedded_splashes;      }
-	int fwserver()                 { return _fwserver;               }
-	int generalEditTab()           { return _generalEditTab;         }
-	int icon_size()                { return _icon_size;              }
-	int history_size()             { return _history_size;           }
-	int js_ctrl()                  { return _js_ctrl;                }
-	int modelEditTab()             { return _modelEditTab;           }
-	int id()                       { return _profileId;              }
-	int theme()                    { return _theme;                  }
-	int warningId()                { return _warningId;              }
+	int backLight()           { return _backLight;       }
+	int embedSplashes()       { return _embedSplashes;   }
+	int fwServerFails()       { return _fwServerFails;   }
+	int generalEditTab()      { return _generalEditTab;  }
+	int iconSize()            { return _iconSize;        }
+	int historySize()         { return _historySize;     }
+	int jsCtrl()              { return _jsCtrl;          }
+	int modelEditTab()        { return _modelEditTab;    }
+	int id()                  { return _id;              }
+	int theme()               { return _theme;           }
+	int warningId()           { return _warningId;       }
 
 	// All the set declarations
-	void recentFileList       (const QStringList l) { store(l, _recentFileList,     "recentFileList"    );}
-	void mainWindowGeometry   (const QByteArray a)  { store(a, _mainWindowGeometry, "mainWindowGeometry");}
-	void mainWindowState      (const QByteArray a)  { store(a, _mainWindowState,    "mainWindowState"   );}
-	void modelEditGeometry    (const QByteArray a)  { store(a, _modelEditGeometry,  "modelEditGeometry" );}
+	void recentFiles     (const QStringList x) { store(x, _recentFiles,     "recentFileList"          );}
+	void mainWinGeo      (const QByteArray  x) { store(x, _mainWinGeo,      "mainWindowGeometry"      );}
+	void mainWinState    (const QByteArray  x) { store(x, _mainWinState,    "mainWindowState"         );}
+	void modelEditGeo    (const QByteArray  x) { store(x, _modelEditGeo,    "modelEditGeometry"       );}
 
-	void arm_mcu              (const QString str) { store(str, _arm_mcu,            "arm_mcu"           );}
-	void avr_arguments        (const QString str) { store(str, _avr_arguments,      "avr_arguments"     );}
-	void avr_port             (const QString str) { store(str, _avr_port,           "avr_port"          );}
-	void avrdude_location     (const QString str) { store(str, _avrdude_location,   "avrdude_location"  );}
-	void cpu_id               (const QString str) { store(str, _cpu_id,             "cpu_id"            );}
-	void dfu_arguments        (const QString str) { store(str, _dfu_arguments,      "dfu_arguments"     );}
-	void dfu_location         (const QString str) { store(str, _dfu_location,       "dfu_location"      );}
-	void lastFw               (const QString str) { store(str, _lastFw,             "lastFw"            );}
-	void locale               (const QString str) { store(str, _locale,             "locale"            );}
-	void mcu                  (const QString str) { store(str, _mcu,                "mcu"               );}
-	void programmer           (const QString str) { store(str, _programmer,         "programmer"        );}
-	void samba_location       (const QString str) { store(str, _samba_location,     "samba_location"    );}
-	void samba_port           (const QString str) { store(str, _samba_port,         "samba_port"        );}
+	void armMcu          (const QString     x) { store(x, _armMcu,          "arm_mcu"                 );}
+	void avrArguments    (const QString     x) { store(x, _avrArguments,    "avr_arguments"           );}
+	void avrPort         (const QString     x) { store(x, _avrPort,         "avr_port"                );}
+	void avrdudeLocation (const QString     x) { store(x, _avrdudeLocation, "avrdudeLocation"         );}
+	void cpuId           (const QString     x) { store(x, _cpuId,           "cpu_id"                  );}
+	void dfuArguments    (const QString     x) { store(x, _dfuArguments,    "dfu_arguments"           );}
+	void dfuLocation     (const QString     x) { store(x, _dfuLocation,     "dfu_location"            );}
+	void lastFw          (const QString     x) { store(x, _lastFw,          "lastFw"                  );}
+	void locale          (const QString     x) { store(x, _locale,          "locale"                  );}
+	void mcu             (const QString     x) { store(x, _mcu,             "mcu"                     );}
+	void programmer      (const QString     x) { store(x, _programmer,      "programmer"              );}
+	void sambaLocation   (const QString     x) { store(x, _sambaLocation,   "samba_location"          );}
+	void sambaPort       (const QString     x) { store(x, _sambaPort,       "samba_port"              );}
 
-	void backupPath           (const QString str) { store(str, _backupPath,         "backupPath"        );}
-	void compilationServer    (const QString str) { store(str, _compilationServer,  "compilation-server");}
-	void gePath               (const QString str) { store(str, _gePath,             "gePath"            );}
-	void lastDir              (const QString str) { store(str, _lastDir,            "lastDir"           );}
-	void lastFlashDir         (const QString str) { store(str, _lastFlashDir,       "lastFlashDir"      );}
-	void lastImagesDir        (const QString str) { store(str, _lastImagesDir,      "lastImagesDir"     );}
-	void lastLogDir           (const QString str) { store(str, _lastLogDir,         "lastLogDir"        );}
-	void libraryPath          (const QString str) { store(str, _libraryPath,        "libraryPath"       );}
-	void snapshotpath         (const QString str) { store(str, _snapshotpath,       "snapshotpath"      );}
+	void backupDir       (const QString     x) { store(x, _backupDir,       "backupPath"              );}
+	void compileServer   (const QString     x) { store(x, _compileServer,   "compilation-server"      );}
+	void gePath          (const QString     x) { store(x, _gePath,          "gePath"                  );}
+	void lastDir         (const QString     x) { store(x, _lastDir,         "lastDir"                 );}
+	void flashDir        (const QString     x) { store(x, _flashDir,        "lastFlashDir"            );}
+	void imagesDir       (const QString     x) { store(x, _imagesDir,       "lastImagesDir"           );}
+	void logDir          (const QString     x) { store(x, _logDir,          "lastLogDir"              );}
+	void libDir          (const QString     x) { store(x, _libDir,          "libraryPath"             );}
+	void snapshotDir     (const QString     x) { store(x, _snapshotDir,     "snapshotpath"            );}
 
-	void backupEnable            (const bool bl) { store(bl, _backupEnable,            "backupEnable"            );}
-	void backupOnFlash           (const bool bl) { store(bl, _backupOnFlash,           "backupOnFlash"           );}
-	void maximized               (const bool bl) { store(bl, _maximized,               "maximized"               );}
-	void js_support              (const bool bl) { store(bl, _js_support,              "js_support"              );}
-	void rev4asupport            (const bool bl) { store(bl, _rev4asupport,            "rev4asupport"            );}
-	void show_splash             (const bool bl) { store(bl, _show_splash,             "show_splash"             );}
-	void snapshot_to_clipboard   (const bool bl) { store(bl, _snapshot_to_clipboard,   "snapshot_to_clipboard"   );}
-	void startup_check_companion (const bool bl) { store(bl, _startup_check_companion, "startup_check_companion" );}
-	void startup_check_fw        (const bool bl) { store(bl, _startup_check_fw,        "startup_check_fw"        );}
-	void simuSW                  (const bool bl) { store(bl, _simuSW,                  "simuSW"                  );}
-	void wizardEnable            (const bool bl) { store(bl, _wizardEnable,            "wizardEnable"            );}
+	void enableBackup    (const bool        x) { store(x, _enableBackup,    "backupEnable"            );}
+	void backupOnFlash   (const bool        x) { store(x, _backupOnFlash,   "backupOnFlash"           );}
+	void maximized       (const bool        x) { store(x, _maximized,       "maximized"               );}
+	void jsSupport       (const bool        x) { store(x, _jsSupport,       "js_support"              );}
+	void rev4aSupport    (const bool        x) { store(x, _rev4aSupport,    "rev4asupport"            );}
+	void showSplash      (const bool        x) { store(x, _showSplash,      "show_splash"             );}
+	void snapToClpbrd    (const bool        x) { store(x, _snapToClpbrd,    "snapshot_to_clipboard"   );}
+	void autoCheckApp    (const bool        x) { store(x, _autoCheckApp,    "startup_check_companion" );}
+	void autoCheckFw     (const bool        x) { store(x, _autoCheckFw,     "startup_check_fw"        );}
+	void simuSW          (const bool        x) { store(x, _simuSW,          "simuSW"                  );}
+	void enableWizard    (const bool        x) { store(x, _enableWizard,    "wizardEnable"            );}
 
-	void backLight               (const int it) { store(it, _backLight,                 "backLight"               );}
-	void embedded_splashes       (const int it) { store(it, _embedded_splashes,         "embedded_splashes"       );}
-	void fwserver                (const int it) { store(it, _fwserver,                  "fwserver"                );}
-	void generalEditTab          (const int it) { store(it, _generalEditTab,            "generalEditTab"          );}
-	void icon_size               (const int it) { store(it, _icon_size,                 "icon_size"               );}
-	void history_size            (const int it) { store(it, _history_size,              "history_size"            );}
-	void js_ctrl                 (const int it) { store(it, _js_ctrl,                   "js_ctrl"                 );}
-	void modelEditTab            (const int it) { store(it, _modelEditTab,              "modelEditTab"            );}
-	void id                      (const int it) { store(it, _profileId,                 "profileId"               );}
-	void theme                   (const int it) { store(it, _theme,                     "theme"                   );}
-	void warningId               (const int it) { store(it, _warningId,                 "warningId"               );}
+	void backLight       (const int         x) { store(x, _backLight,       "backLight"               );}
+	void embedSplashes   (const int         x) { store(x, _embedSplashes,   "embedded_splashes"       );}
+	void fwServerFails   (const int         x) { store(x, _fwServerFails,   "fwserver"                );}
+	void generalEditTab  (const int         x) { store(x, _generalEditTab,  "generalEditTab"          );}
+	void iconSize        (const int         x) { store(x, _iconSize,        "icon_size"               );}
+	void historySize     (const int         x) { store(x, _historySize,     "history_size"            );}
+	void jsCtrl          (const int         x) { store(x, _jsCtrl,          "js_ctrl"                 );}
+	void modelEditTab    (const int         x) { store(x, _modelEditTab,    "modelEditTab"            );}
+	void id              (const int         x) { store(x, _id,              "profileId"               );}
+	void theme           (const int         x) { store(x, _theme,           "theme"                   );}
+	void warningId       (const int         x) { store(x, _warningId,       "warningId"               );}
 
 	// Constructor
 	AppData()
@@ -684,15 +683,15 @@ public:
 			firmware.replace("x9da","taranis");
 
 			// Move Companion9x settings to profile0, the new default profile
-			profile[0].firmware(firmware);
-			profile[0].Name(settings.value(                 "Name",                     ""    ).toString());
-			profile[0].sdPath(settings.value(               "sdPath",                   ""    ).toString());
-			profile[0].SplashFileName(settings.value(       "SplashFileName",           ""    ).toString());
-			profile[0].burnFirmware(settings.value(         "burnFirmware",             false ).toBool());
-			profile[0].rename_firmware_files(settings.value("rename_firmware_files",    false ).toBool());
-			profile[0].patchImage(settings.value(           "patchImage",               false ).toBool());
-			profile[0].default_channel_order(settings.value("default_channel_order",    "0"   ).toInt());
-			profile[0].default_mode(settings.value(         "default_mode",             "1"   ).toInt());
+			profile[0].firmware( firmware );
+			profile[0].name( settings.value(          "Name",                  ""    ).toString());
+			profile[0].sdPath( settings.value(        "sdPath",                ""    ).toString());
+			profile[0].splashFile( settings.value(    "SplashFileName",        ""    ).toString());
+			profile[0].burnFirmware( settings.value(  "burnFirmware",          false ).toBool());
+			profile[0].renameFwFiles( settings.value( "rename_firmware_files", false ).toBool());
+			profile[0].patchImage( settings.value(    "patchImage",            false ).toBool());
+			profile[0].channelOrder( settings.value(  "default_channel_order", "0"   ).toInt());
+			profile[0].defaultMode( settings.value(   "default_mode",          "1"   ).toInt());
 
 			// Delete unused settings
 			settings.remove("firmware");
@@ -707,60 +706,58 @@ public:
 		}
 
 		// Load and store all variables. Use default values if setting values are missing
+		getset( _recentFiles,     "recentFileList"          ,"" );
+		getset( _mainWinGeo,      "mainWindowGeometry"      ,"" );
+		getset( _mainWinState,    "mainWindowState"         ,"" );
+		getset( _modelEditGeo,    "modelEditGeometry"       ,"" );
 
-		getset( _recentFileList,          "recentFileList"          ,"" );
-		getset( _mainWindowGeometry,      "mainWindowGeometry"      ,"" );
-		getset( _mainWindowState,         "mainWindowState"         ,"" );
-		getset( _modelEditGeometry,       "modelEditGeometry"       ,"" );
+		getset( _armMcu,          "arm_mcu"                 ,"at91sam3s4-9x" );
+		getset( _avrArguments,    "avr_arguments"           ,"" );
+		getset( _avrPort,         "avr_port"                ,"" );
+		getset( _avrdudeLocation, "avrdudeLocation"        ,"" );
+		getset( _cpuId,           "cpu_id"                  ,"" );
+		getset( _dfuArguments,    "dfu_arguments"           ,"-a 0" );
+		getset( _dfuLocation,     "dfu_location"            ,"" );
+		getset( _lastFw,          "lastFw"                  ,"" );
+		getset( _locale,          "locale"                  ,"" );
+		getset( _mcu,             "mcu"                     ,"m64" );
+		getset( _programmer,      "programmer"              ,"usbasp" );
+		getset( _sambaLocation,   "samba_location"          ,"" );
+		getset( _sambaPort,       "samba_port"              ,"\\USBserial\\COM23" );
 
-		getset( _arm_mcu,                 "arm_mcu"                 ,"at91sam3s4-9x" );
-		getset( _avr_arguments,           "avr_arguments"           ,"" );
-		getset( _avr_port,                "avr_port"                ,"" );
-		getset( _avrdude_location,        "avrdude_location"        ,"" );
-		getset( _cpu_id,                  "cpu_id"                  ,"" );
-		getset( _dfu_arguments,           "dfu_arguments"           ,"-a 0" );
-		getset( _dfu_location,            "dfu_location"            ,"" );
-		getset( _lastFw,                  "lastFw"                  ,"" );
-		getset( _locale,                  "locale"                  ,"" );
-		getset( _mcu,                     "mcu"                     ,"m64" );
-		getset( _programmer,              "programmer"              ,"usbasp" );
-		getset( _samba_location,          "samba_location"          ,"" );
-		getset( _samba_port,              "samba_port"              ,"\\USBserial\\COM23" );
+		getset( _backupDir,       "backupPath"              ,"" );
+		getset( _compileServer,   "compilation-server"      ,"" );
+		getset( _gePath,          "gePath"                  ,"" );
+		getset( _lastDir,         "lastDir"                 ,"" );
+		getset( _flashDir,        "lastFlashDir"            ,"" );
+		getset( _imagesDir,       "lastImagesDir"           ,"" );
+		getset( _logDir,          "lastLogDir"              ,"" );
+		getset( _libDir,          "libraryPath"             ,"" );
+		getset( _snapshotDir,     "snapshotpath"            ,"" );
 
-		getset( _backupPath,              "backupPath"              ,"" );
-		getset( _compilationServer,       "compilation-server"      ,"" );
-		getset( _gePath,                  "gePath"                  ,"" );
-		getset( _lastDir,                 "lastDir"                 ,"" );
-		getset( _lastFlashDir,            "lastFlashDir"            ,"" );
-		getset( _lastImagesDir,           "lastImagesDir"           ,"" );
-		getset( _lastLogDir,              "lastLogDir"              ,"" );
-		getset( _libraryPath,             "libraryPath"             ,"" );
-		getset( _snapshotpath,            "snapshotpath"            ,"" );
+		getset( _enableBackup,    "backupEnable"            ,false );
+		getset( _backupOnFlash,   "backupOnFlash"           ,true  );
+		getset( _jsSupport,       "js_support"              ,false );
+		getset( _rev4aSupport,    "rev4asupport"            ,false );
+		getset( _maximized,       "maximized"               ,false );
+		getset( _showSplash,      "show_splash"             ,true  );
+		getset( _snapToClpbrd,    "snapshot_to_clipboard"   ,false );
+		getset( _autoCheckApp,    "startup_check_companion" ,true  );
+		getset( _autoCheckFw,     "startup_check_fw"        ,true  );
+		getset( _simuSW,          "simuSW"                  ,false );
+		getset( _enableWizard,    "wizardEnable"            ,true  );
 
-		getset( _backupEnable,            "backupEnable"            ,false );
-		getset( _backupOnFlash,           "backupOnFlash"           ,true  );
-		getset( _js_support,              "js_support"              ,false );
-		getset( _rev4asupport,            "rev4asupport"            ,false );
-		getset( _maximized,               "maximized"               ,false );
-		getset( _show_splash,             "show_splash"             ,true  );
-		getset( _snapshot_to_clipboard,   "snapshot_to_clipboard"   ,false );
-		getset( _startup_check_companion, "startup_check_companion" ,true  );
-		getset( _startup_check_fw,        "startup_check_fw"        ,true  );
-		getset( _simuSW,                  "simuSW"                  ,false );
-		getset( _wizardEnable,            "wizardEnable"            ,true  );
-
-		getset( _backLight,               "backLight"               ,0  );
-		getset( _embedded_splashes,       "embedded_splashes"       ,0  );
-		getset( _fwserver,                "fwserver"                ,0  );
-		getset( _generalEditTab,          "generalEditTab"          ,0  );
-		getset( _icon_size,               "icon_size"               ,2  );
-		getset( _js_ctrl,                 "js_ctrl"                 ,0  );
-		getset( _history_size,            "history_size"            ,10 );
-		getset( _modelEditTab,            "modelEditTab"            ,0  );
-		getset( _profileId,               "profileId"               ,0  );
-		getset( _theme,                   "theme"                   ,1  );
-		getset( _warningId,               "warningId"               ,0  );
-
+		getset( _backLight,       "backLight"               ,0  );
+		getset( _embedSplashes,   "embedded_splashes"       ,0  );
+		getset( _fwServerFails,   "fwserver"                ,0  );
+		getset( _generalEditTab,  "generalEditTab"          ,0  );
+		getset( _iconSize,        "icon_size"               ,2  );
+		getset( _jsCtrl,          "js_ctrl"                 ,0  );
+		getset( _historySize,     "history_size"            ,10 );
+		getset( _modelEditTab,    "modelEditTab"            ,0  );
+		getset( _id,              "profileId"               ,0  );
+		getset( _theme,           "theme"                   ,1  );
+		getset( _warningId,       "warningId"               ,0  );
 	}
 };
 

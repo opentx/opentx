@@ -109,7 +109,7 @@ int main(int argc, char *argv[])
   current_firmware_variant = GetFirmwareVariant(g.profile[g.id()].firmware());
 
   MainWindow *mainWin = new MainWindow();
-  if (g.show_splash()) {
+  if (g.showSplash()) {
     splash->show();
     QTimer::singleShot(1000*SPLASH_TIME, splash, SLOT(close()));
     QTimer::singleShot(1000*SPLASH_TIME, mainWin, SLOT(show()));

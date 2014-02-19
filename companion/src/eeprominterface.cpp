@@ -731,24 +731,24 @@ GeneralSettings::GeneralSettings()
     calibSpanNeg[i] = 0x180;
     calibSpanPos[i] = 0x180;
   }
-  templateSetup = g.profile[g.id()].default_channel_order();
-  stickMode = g.profile[g.id()].default_mode();
+  templateSetup = g.profile[g.id()].channelOrder();
+  stickMode = g.profile[g.id()].defaultMode();
 
-    QString t_calib=g.profile[g.id()].StickPotCalib();
+    QString t_calib=g.profile[g.id()].stickPotCalib();
     int potsnum=GetEepromInterface()->getCapability(Pots);
     if (t_calib.isEmpty()) {
       return;
     } else {
-      QString t_trainercalib=g.profile[g.id()].TrainerCalib();
-      int8_t t_vBatCalib=(int8_t)g.profile[g.id()].VbatCalib();
+      QString t_trainercalib=g.profile[g.id()].trainerCalib();
+      int8_t t_vBatCalib=(int8_t)g.profile[g.id()].vBatCalib();
       int8_t t_currentCalib=(int8_t)g.profile[g.id()].currentCalib();
-      int8_t t_PPM_Multiplier=(int8_t)g.profile[g.id()].PPM_Multiplier();
-      uint8_t t_stickMode=(uint8_t)g.profile[g.id()].GSStickMode();
+      int8_t t_PPM_Multiplier=(int8_t)g.profile[g.id()].ppmMultiplier();
+      uint8_t t_stickMode=(uint8_t)g.profile[g.id()].gsStickMode();
       uint8_t t_vBatWarn=(uint8_t)g.profile[g.id()].vBatWarn();
-      QString t_DisplaySet=g.profile[g.id()].Display();
-      QString t_BeeperSet=g.profile[g.id()].Beeper();
-      QString t_HapticSet=g.profile[g.id()].Haptic();
-      QString t_SpeakerSet=g.profile[g.id()].Speaker();
+      QString t_DisplaySet=g.profile[g.id()].display();
+      QString t_BeeperSet=g.profile[g.id()].beeper();
+      QString t_HapticSet=g.profile[g.id()].haptic();
+      QString t_SpeakerSet=g.profile[g.id()].speaker();
       QString t_CountrySet=g.profile[g.id()].countryCode();
 
       if ((t_calib.length()==(NUM_STICKS+potsnum)*12) && (t_trainercalib.length()==16)) {
@@ -986,7 +986,7 @@ void RegisterEepromInterfaces()
   eepromInterfaces.push_back(new Open9xInterface(BOARD_GRUVIN9X));
   eepromInterfaces.push_back(new Open9xInterface(BOARD_SKY9X));
   eepromInterfaces.push_back(new Open9xInterface(BOARD_TARANIS));
-  if (g.rev4asupport())
+  if (g.rev4aSupport())
     eepromInterfaces.push_back(new Open9xInterface(BOARD_TARANIS_REV4a));
   eepromInterfaces.push_back(new Gruvin9xInterface(BOARD_STOCK));
   eepromInterfaces.push_back(new Gruvin9xInterface(BOARD_GRUVIN9X));

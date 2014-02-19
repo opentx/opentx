@@ -100,7 +100,7 @@ MainWindow::MainWindow():
     createStatusBar();
     updateMenus();
 
-    restoreState(g.mainWindowState());
+    restoreState(g.mainWinState());
 
     setUnifiedTitleAndToolBarOnMac(true);
     this->setWindowIcon(QIcon(":/icon.png"));
@@ -110,7 +110,7 @@ MainWindow::MainWindow():
     
     // give time to the splash to disappear and main window to open before starting updates
     int updateDelay = 1000;
-    bool showSplash = g.show_splash();
+    bool showSplash = g.showSplash();
     if (showSplash) {
       updateDelay += (SPLASH_TIME*1000); 
     }
@@ -200,7 +200,7 @@ void MainWindow::checkForUpdates(bool ignoreSettings, QString & fwId)
     QString stamp = GetFirmware(fwToUpdate)->stamp;
 
     if (!stamp.isEmpty()) {
-      if (g.startup_check_fw() || ignoreSettings) {
+      if (g.autoCheckFw() || ignoreSettings) {
         check1done=false;
         manager1 = new QNetworkAccessManager(this);
         connect(manager1, SIGNAL(finished(QNetworkReply*)), this, SLOT(reply1Finished(QNetworkReply*)));
@@ -211,7 +211,7 @@ void MainWindow::checkForUpdates(bool ignoreSettings, QString & fwId)
       }
     }
     
-    if (g.startup_check_companion() || ignoreSettings) {
+    if (g.autoCheckApp() || ignoreSettings) {
       check2done = false;
       manager2 = new QNetworkAccessManager(this);
       connect(manager2, SIGNAL(finished(QNetworkReply*)),this, SLOT(checkForUpdateFinished(QNetworkReply*)));
@@ -302,9 +302,9 @@ void MainWindow::downloadLatestFW(FirmwareInfo * firmware, const QString & firmw
 {
     QString url, ext, cpuid;
     url = firmware->getUrl(firmwareId);
-    cpuid=g.cpu_id();
+    cpuid=g.cpuId();
     ext = url.mid(url.lastIndexOf("."));
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.lastFlashDir() + "/" + firmwareId + ext);
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.flashDir() + "/" + firmwareId + ext);
     if (!fileName.isEmpty()) {
       downloadedFW = firmwareId;
       needRename=true;
@@ -313,7 +313,7 @@ void MainWindow::downloadLatestFW(FirmwareInfo * firmware, const QString & firmw
         url.append("&cpuid=");
         url.append(cpuid);
       }
-      g.lastFlashDir(QFileInfo(fileName).dir().absolutePath());
+      g.flashDir(QFileInfo(fileName).dir().absolutePath());
       downloadDialog * dd = new downloadDialog(this, url, fileName);
       connect(dd, SIGNAL(accepted()), this, SLOT(reply1Accepted()));
       dd->exec();
@@ -404,7 +404,7 @@ void MainWindow::reply1Accepted()
       int pos=rev.lastIndexOf("-r");
       if (pos>0) {
         currentFWrev=rev.mid(pos+2).toInt();
-        if (g.profile[g.id()].rename_firmware_files() && needRename) {
+        if (g.profile[g.id()].renameFwFiles() && needRename) {
           QFileInfo fi(downloadedFWFilename);
           QString path=fi.path()+QDir::separator ();
           path.append(fi.completeBaseName());
@@ -440,7 +440,7 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
       // TODO delete downloadDialog_forWait?
     }
     
-    cpuid=g.cpu_id();
+    cpuid=g.cpuId();
     QByteArray qba = reply->readAll();
     int i = qba.indexOf("SVN_VERS");
     int warning = qba.indexOf("WARNING");
@@ -454,7 +454,7 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
 
       if(!cres) {
         QMessageBox::warning(this, "Companion", tr("Unable to check for updates."));
-        g.fwserver(g.fwserver()+1);
+        g.fwServerFails(g.fwServerFails()+1);
         return;
       }
 
@@ -548,12 +548,12 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
           QString url = GetFirmware(fwToUpdate)->getUrl(fwToUpdate);
           QString ext = url.mid(url.lastIndexOf("."));
           needRename=false;
-          bool addversion=g.profile[g.id()].rename_firmware_files();
+          bool addversion=g.profile[g.id()].renameFwFiles();
           QString fileName;
           if (addversion) {
-            fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.lastFlashDir() + "/" + fwToUpdate + newrev + ext);
+            fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.flashDir() + "/" + fwToUpdate + newrev + ext);
           } else {
-            fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.lastFlashDir() + "/" + fwToUpdate + ext);
+            fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.flashDir() + "/" + fwToUpdate + ext);
           }
           if (!fileName.isEmpty()) {
             if (!cpuid.isEmpty()) {
@@ -561,7 +561,7 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
               url.append(cpuid);
             }              
             downloadedFWFilename = fileName;
-            g.lastFlashDir(QFileInfo(fileName).dir().absolutePath());
+            g.flashDir(QFileInfo(fileName).dir().absolutePath());
             downloadDialog * dd = new downloadDialog(this, url, fileName);
             currentFWrev_temp = NewFwRev;
             connect(dd, SIGNAL(accepted()), this, SLOT(reply1Accepted()));
@@ -575,7 +575,7 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
     } else {
       if(check1done && check2done) {
         QMessageBox::warning(this, "Companion", tr("Unable to check for updates."));
-        g.fwserver(g.fwserver()+1);
+        g.fwServerFails(g.fwServerFails()+1);
         return;
       }
     }    
@@ -583,8 +583,8 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    g.mainWindowGeometry(saveGeometry());
-    g.mainWindowState(saveState());
+    g.mainWinGeo(saveGeometry());
+    g.mainWinState(saveState());
     mdiArea->closeAllSubWindows();
     if (mdiArea->currentSubWindow()) {
       event->ignore();
@@ -618,7 +618,7 @@ void  MainWindow::setTheme(int index)
 
 void  MainWindow::setIconThemeSize(int index)
 {    
-    g.icon_size( index );
+    g.iconSize( index );
 
     QMessageBox msgBox;
     msgBox.setText(tr("The icon size will be used the next time you start Companion."));
@@ -1061,8 +1061,8 @@ void MainWindow::writeFileToEeprom()
       if (!isValidEEPROM(fileName))
         ret = QMessageBox::question(this, "Companion", tr("The file %1\nhas not been recognized as a valid Models and Settings file\nWrite anyway ?").arg(QFileInfo(fileName).fileName()), QMessageBox::Yes | QMessageBox::No);
       if (ret != QMessageBox::Yes) return;
-      bool backupEnable = g.backupEnable();
-      QString backupPath = g.backupPath();
+      bool backupEnable = g.enableBackup();
+      QString backupPath = g.backupDir();
       if (!backupPath.isEmpty()) {
         if (!QDir(backupPath).exists()) {
           if (backupEnable) {
@@ -1316,8 +1316,8 @@ void MainWindow::writeFlash(QString fileToFlash)
       if (backup) {
         QString tempDir    = QDir::tempPath();
         QString backupFile = tempDir + "/backup.bin";
-        bool backupEnable=g.backupEnable();
-        QString backupPath=g.backupPath();
+        bool backupEnable=g.enableBackup();
+        QString backupPath=g.backupDir();
         if (!backupPath.isEmpty() && !IS_TARANIS(GetEepromInterface()->getBoard())) {
           if (!QDir(backupPath).exists()) {
             if (backupEnable) {
@@ -1371,8 +1371,8 @@ void MainWindow::writeFlash(QString fileToFlash)
         }
       }
       else {
-        bool backupEnable=g.backupEnable();
-        QString backupPath=g.backupPath();
+        bool backupEnable=g.enableBackup();
+        QString backupPath=g.backupDir();
         if (!QDir(backupPath).exists()) {
           if (backupEnable) {
             QMessageBox::warning(this, tr("Backup is impossible"), tr("The backup dir set in preferences does not exist"));
@@ -1432,13 +1432,13 @@ void MainWindow::readEepromToFile()
 
 void MainWindow::readFlash()
 {
-    QString fileName = QFileDialog::getSaveFileName(this,tr("Read Tx Firmware to File"), g.lastFlashDir(),tr(FLASH_FILES_FILTER));
+    QString fileName = QFileDialog::getSaveFileName(this,tr("Read Tx Firmware to File"), g.flashDir(),tr(FLASH_FILES_FILTER));
     if (!fileName.isEmpty()) {
         QFile file(fileName);
         if (file.exists()) {
           file.remove();
         }
-        g.lastFlashDir(QFileInfo(fileName).dir().absolutePath());
+        g.flashDir(QFileInfo(fileName).dir().absolutePath());
         QStringList str = GetReceiveFlashCommand(fileName);
         avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, "Read Firmware From Tx");
         ad->setWindowIcon(CompanionIcon("read_flash.png"));
@@ -1517,7 +1517,7 @@ void MainWindow::updateMenus()
     updateIconSizeActions();
     updateIconThemeActions();
 
-    setWindowTitle(tr("OpenTX Companion - FW: %1 - Profile: %2").arg(GetCurrentFirmware()->name).arg( g.profile[g.id()].Name() ));
+    setWindowTitle(tr("OpenTX Companion - FW: %1 - Profile: %2").arg(GetCurrentFirmware()->name).arg( g.profile[g.id()].name() ));
 }
 
 MdiChild *MainWindow::createMdiChild()
@@ -1770,7 +1770,7 @@ QMenu *MainWindow::createProfilesMenu()
 void MainWindow::createToolBars()
 {
     QSize size;
-    switch(g.icon_size()) {
+    switch(g.iconSize()) {
       case 0:
         size=QSize(16,16);
         break;
@@ -1886,12 +1886,12 @@ void MainWindow::updateRecentFileActions()
     int i, numRecentFiles;
  
     //  Hide all document slots
-    for ( i=0 ; i < g.history_size(); i++)
+    for ( i=0 ; i < g.historySize(); i++)
       recentFileActs[i]->setVisible(false);
 
     // Fill slots with content and unhide them
-    QStringList files = g.recentFileList();
-    numRecentFiles = qMin(files.size(), g.history_size());
+    QStringList files = g.recentFiles();
+    numRecentFiles = qMin(files.size(), g.historySize());
  
     for ( i = 0; i < numRecentFiles; i++)  {
       QString text = strippedName(files[i]);
@@ -1906,7 +1906,7 @@ void MainWindow::updateRecentFileActions()
 
 void MainWindow::updateIconSizeActions()
 {
-  switch (g.icon_size())
+  switch (g.iconSize())
   {
     case 0:  smallIconAct->setChecked(true);  break;
     case 1:  normalIconAct->setChecked(true); break;
@@ -1961,9 +1961,9 @@ void MainWindow::updateProfilesActions()
 {
   for (int i=0; i<MAX_PROFILES; i++) 
   {
-    if (!g.profile[i].Name().isEmpty()) 
+    if (!g.profile[i].name().isEmpty()) 
     {
-      QString text = tr("&%1: %2").arg(i).arg(g.profile[i].Name());
+      QString text = tr("&%1: %2").arg(i).arg(g.profile[i].name());
       profileActs[i]->setText(text);
       profileActs[i]->setData(i);
       profileActs[i]->setVisible(true);
@@ -1979,13 +1979,13 @@ void MainWindow::updateProfilesActions()
 
 void MainWindow::createProfile()
 { int i;
-  for (i=0; i<MAX_PROFILES && !g.profile[i].Name().isEmpty(); i++)
+  for (i=0; i<MAX_PROFILES && !g.profile[i].name().isEmpty(); i++)
     ;
   if (i==MAX_PROFILES)  //Failed to find free slot
     return;
  
   // Create profile name and force a flush to file
-  g.profile[i].Name( QString("profile%1").arg(i));
+  g.profile[i].name( QString("profile%1").arg(i));
   g.profile[i].flush();
 
   updateMenus();

@@ -180,7 +180,7 @@ void MdiChild::OpenEditWindow(bool wizard=false)
     }
     if (isNew && !wizard) {
       int ret;
-      bool wizardEnable=g.wizardEnable();
+      bool wizardEnable=g.enableWizard();
       if (wizardEnable) {
         ret = QMessageBox::question(this, tr("Companion"), tr("Do you want to use model wizard? "), QMessageBox::Yes | QMessageBox::No);
         if (ret == QMessageBox::Yes) {
@@ -189,7 +189,7 @@ void MdiChild::OpenEditWindow(bool wizard=false)
           qSleep(500);
           ret = QMessageBox::question(this, tr("Companion"), tr("Ask this question again ? "), QMessageBox::Yes | QMessageBox::No);
           if (ret == QMessageBox::No) {
-            g.wizardEnable( false );
+            g.enableWizard( false );
           }
         }
       }
@@ -367,10 +367,10 @@ bool MdiChild::saveAs(bool isNew)
     if (fileName.isEmpty())
       return false;
     if (fileName.contains("rev4a")) {
-      g.rev4asupport( true );
+      g.rev4aSupport( true );
     }
     if (fileName.contains("norev4a")) {
-      g.rev4asupport( false );
+      g.rev4aSupport( false );
     }
     g.lastDir( QFileInfo(fileName).dir().absolutePath() );
     if (isNew)
@@ -489,14 +489,14 @@ void MdiChild::setCurrentFile(const QString &fileName)
   fileChanged = false;
   setWindowModified(false);
   updateTitle();
-  int MaxRecentFiles = g.history_size();
-  QStringList files = g.recentFileList();
+  int MaxRecentFiles = g.historySize();
+  QStringList files = g.recentFiles();
   files.removeAll(fileName);
   files.prepend(fileName);
   while (files.size() > MaxRecentFiles)
       files.removeLast();
  
-  g.recentFileList( files );
+  g.recentFiles( files );
 }
 
 QString MdiChild::strippedName(const QString &fullFileName)
@@ -506,8 +506,8 @@ QString MdiChild::strippedName(const QString &fullFileName)
 
 void MdiChild::writeEeprom()  // write to Tx
 {
-  bool backupEnable=g.backupEnable();
-  QString backupPath=g.backupPath();
+  bool backupEnable=g.enableBackup();
+  QString backupPath=g.backupDir();
   if (!backupPath.isEmpty()) {
     if (!QDir(backupPath).exists()) {
       if (backupEnable) {
@@ -518,7 +518,7 @@ void MdiChild::writeEeprom()  // write to Tx
   } else {
     backupEnable=false;
   }
-  QString stickCal=g.profile[g.id()].StickPotCalib();
+  QString stickCal=g.profile[g.id()].stickPotCalib();
   burnConfigDialog bcd;
   QString tempDir    = QDir::tempPath();
   QString tempFile = tempDir + "/temp.bin";

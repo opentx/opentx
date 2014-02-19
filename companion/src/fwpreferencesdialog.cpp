@@ -211,7 +211,7 @@ void fwPreferencesDialog::firmwareChanged()
 
 void fwPreferencesDialog::writeValues()
 {
-  g.cpu_id( ui->CPU_ID_LE->text() );
+  g.cpuId( ui->CPU_ID_LE->text() );
   current_firmware_variant = getFirmwareVariant();
   g.profile[g.id()].firmware( current_firmware_variant.id );
 }
@@ -271,7 +271,7 @@ void fwPreferencesDialog::populateFirmwareOptions(const FirmwareInfo * firmware)
 
 void fwPreferencesDialog::initSettings()
 {
-  ui->CPU_ID_LE->setText(g.cpu_id());
+  ui->CPU_ID_LE->setText(g.cpuId());
   FirmwareInfo * current_firmware = GetCurrentFirmware();
 
   foreach(FirmwareInfo * firmware, firmwares) {

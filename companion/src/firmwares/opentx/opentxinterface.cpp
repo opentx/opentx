@@ -934,10 +934,10 @@ bool Open9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esiz
 
 QString geturl( int board)
 {
-   QString url = g.compilationServer();
+   QString url = g.compileServer();
    if (url.isEmpty()){
       url= OPENTX_FIRMWARE_DOWNLOADS;
-      g.compilationServer(url);
+      g.compileServer(url);
    }
     switch(board) {
       case BOARD_STOCK:
@@ -959,10 +959,10 @@ QString geturl( int board)
 
 QString getstamp( int board)
 {
-   QString url = g.compilationServer();
+   QString url = g.compileServer();
    if (url.isEmpty()){
       url= OPENTX_FIRMWARE_DOWNLOADS;
-      g.compilationServer(url);
+      g.compileServer(url);
    }
     url.append("/stamp-opentx-");
     switch(board) {
@@ -991,10 +991,10 @@ QString getstamp( int board)
 
 QString getrnurl( int board)
 {
-   QString url = g.compilationServer();
+   QString url = g.compileServer();
    if (url.isEmpty()){
       url= OPENTX_FIRMWARE_DOWNLOADS;
-      g.compilationServer(url);
+      g.compileServer(url);
    }
    url.append("/releasenotes-");
    switch(board) {
@@ -1221,7 +1221,7 @@ void RegisterOpen9xFirmwares()
   open9x->addOptions(fai_options);
   firmwares.push_back(open9x);
 
-  if (g.rev4asupport()) {
+  if (g.rev4aSupport()) {
     open9x = new Open9xFirmware("opentx-taranisrev4a", QObject::tr("OpenTX for FrSky Taranis Rev4a"), new Open9xInterface(BOARD_TARANIS_REV4a), geturl(BOARD_TARANIS_REV4a), getstamp(BOARD_TARANIS_REV4a),getrnurl(BOARD_TARANIS), true);
     open9x->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
     open9x->addOption("notemplates", QObject::tr("Disable TEMPLATES menu"));

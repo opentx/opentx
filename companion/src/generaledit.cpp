@@ -22,7 +22,7 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
 
     QString firmware_id = g.profile[g.id()].firmware();
     ui->tabWidget->setCurrentIndex( g.generalEditTab() );
-    QString name=g.profile[g.id()].Name();
+    QString name=g.profile[g.id()].name();
     if (name.isEmpty()) {
       ui->calstore_PB->setDisabled(true);
     }
@@ -70,7 +70,7 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
     }
     ui->profile_CB->clear();
     for ( int i = 0; i < MAX_PROFILES; ++i) {
-      QString name=g.profile[i].Name();
+      QString name=g.profile[i].name();
       if (!name.isEmpty()) {
         ui->profile_CB->addItem(name, i);
         if (i==g.id()) {
@@ -1209,21 +1209,21 @@ void GeneralEdit::on_swGEAChkB_stateChanged(int )
 void GeneralEdit::on_calretrieve_PB_clicked()
 {
   int profile_id=ui->profile_CB->itemData(ui->profile_CB->currentIndex()).toInt();
-  QString calib=g.profile[profile_id].StickPotCalib();
+  QString calib=g.profile[profile_id].stickPotCalib();
   int potsnum=GetEepromInterface()->getCapability(Pots);
   if (calib.isEmpty()) {
     return;
   } else {
-    QString trainercalib = g.profile[profile_id].TrainerCalib();
-    int8_t vBatCalib = (int8_t)g.profile[profile_id].VbatCalib();
+    QString trainercalib = g.profile[profile_id].trainerCalib();
+    int8_t vBatCalib = (int8_t)g.profile[profile_id].vBatCalib();
     int8_t currentCalib = (int8_t)g.profile[profile_id].currentCalib();
-    int8_t PPM_Multiplier = (int8_t)g.profile[profile_id].PPM_Multiplier();
-    uint8_t GSStickMode = (uint8_t)g.profile[profile_id].GSStickMode();
+    int8_t PPM_Multiplier = (int8_t)g.profile[profile_id].ppmMultiplier();
+    uint8_t GSStickMode = (uint8_t)g.profile[profile_id].gsStickMode();
     uint8_t vBatWarn = (uint8_t)g.profile[profile_id].vBatWarn();
-    QString DisplaySet = g.profile[profile_id].Display();
-    QString BeeperSet = g.profile[profile_id].Beeper();
-    QString HapticSet = g.profile[profile_id].Haptic();
-    QString SpeakerSet = g.profile[profile_id].Speaker();
+    QString DisplaySet = g.profile[profile_id].display();
+    QString BeeperSet = g.profile[profile_id].beeper();
+    QString HapticSet = g.profile[profile_id].haptic();
+    QString SpeakerSet = g.profile[profile_id].speaker();
     QString CountrySet = g.profile[profile_id].countryCode();
     
     if ((calib.length()==(NUM_STICKS+potsnum)*12) && (trainercalib.length()==16)) {
@@ -1319,13 +1319,13 @@ void GeneralEdit::on_calstore_PB_clicked()
 {
   int profile_id=ui->profile_CB->itemData(ui->profile_CB->currentIndex()).toInt();
 
-  QString name=g.profile[profile_id].Name();
+  QString name=g.profile[profile_id].name();
   int potsnum=GetEepromInterface()->getCapability(Pots);
   if (name.isEmpty()) {
     ui->calstore_PB->setDisabled(true);
     return;
   } else {
-    QString calib=g.profile[profile_id].StickPotCalib();
+    QString calib=g.profile[profile_id].stickPotCalib();
     if (!(calib.isEmpty())) {
       int ret = QMessageBox::question(this, "Companion", 
                       tr("Do you want to store calibration in %1 profile<br>overwriting existing calibration?").arg(name) ,
@@ -1340,21 +1340,21 @@ void GeneralEdit::on_calstore_PB_clicked()
       calib.append(QString("%1").arg((uint16_t)g_eeGeneral.calibSpanNeg[i], 4, 16, QChar('0')));
       calib.append(QString("%1").arg((uint16_t)g_eeGeneral.calibSpanPos[i], 4, 16, QChar('0')));
     }
-    g.profile[profile_id].StickPotCalib( calib );
+    g.profile[profile_id].stickPotCalib( calib );
     calib.clear();
     for (int i=0; i< 4; i++) {
       calib.append(QString("%1").arg((uint16_t)g_eeGeneral.trainer.calib[i], 4, 16, QChar('0')));
     }
-    g.profile[profile_id].TrainerCalib( calib );
-    g.profile[profile_id].VbatCalib( g_eeGeneral.vBatCalib );
+    g.profile[profile_id].trainerCalib( calib );
+    g.profile[profile_id].vBatCalib( g_eeGeneral.vBatCalib );
     g.profile[profile_id].currentCalib( g_eeGeneral.currentCalib );
     g.profile[profile_id].vBatWarn( g_eeGeneral.vBatWarn );
-    g.profile[profile_id].PPM_Multiplier( g_eeGeneral.PPM_Multiplier );
-    g.profile[profile_id].GSStickMode( g_eeGeneral.stickMode );
-    g.profile[profile_id].Display( QString("%1%2%3").arg((g_eeGeneral.optrexDisplay ? 1:0), 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.contrast, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.backlightBright, 2, 16, QChar('0')) );
-    g.profile[profile_id].Beeper( QString("%1%2").arg(((uint8_t)g_eeGeneral.beeperMode), 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.beeperLength, 2, 16, QChar('0')));
-    g.profile[profile_id].Haptic( QString("%1%2%3").arg(((uint8_t)g_eeGeneral.hapticMode), 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.hapticStrength, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.hapticLength, 2, 16, QChar('0')));
-    g.profile[profile_id].Speaker( QString("%1%2%3").arg((uint8_t)g_eeGeneral.speakerMode, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.speakerPitch, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.speakerVolume, 2, 16, QChar('0')));
+    g.profile[profile_id].ppmMultiplier( g_eeGeneral.PPM_Multiplier );
+    g.profile[profile_id].gsStickMode( g_eeGeneral.stickMode );
+    g.profile[profile_id].display( QString("%1%2%3").arg((g_eeGeneral.optrexDisplay ? 1:0), 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.contrast, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.backlightBright, 2, 16, QChar('0')) );
+    g.profile[profile_id].beeper( QString("%1%2").arg(((uint8_t)g_eeGeneral.beeperMode), 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.beeperLength, 2, 16, QChar('0')));
+    g.profile[profile_id].haptic( QString("%1%2%3").arg(((uint8_t)g_eeGeneral.hapticMode), 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.hapticStrength, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.hapticLength, 2, 16, QChar('0')));
+    g.profile[profile_id].speaker( QString("%1%2%3").arg((uint8_t)g_eeGeneral.speakerMode, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.speakerPitch, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.speakerVolume, 2, 16, QChar('0')));
     g.profile[profile_id].countryCode( QString("%1%2%3").arg((uint8_t)g_eeGeneral.countryCode, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.imperial, 2, 16, QChar('0')).arg(g_eeGeneral.ttsLanguage));
     QMessageBox::information(this, "Companion", tr("Calibration and HW parameters saved."));
   }

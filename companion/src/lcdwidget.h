@@ -59,10 +59,10 @@ class lcdWidget : public QWidget {
       QPixmap buffer(2*lcdWidth, 2*lcdHeight);
       QPainter p(&buffer);
       doPaint(p);
-      bool toclipboard=g.snapshot_to_clipboard();
+      bool toclipboard=g.snapToClpbrd();
       QApplication::clipboard()->setPixmap( buffer );
       if (!toclipboard) {
-        QString Path=g.snapshotpath();
+        QString Path=g.snapshotDir();
         if (Path.isEmpty() || !QDir(Path).exists()) {
           Path=".";
         }

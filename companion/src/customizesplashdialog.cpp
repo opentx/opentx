@@ -115,7 +115,7 @@ bool Side::saveImage()
     }
     QImage image = imageLabel->pixmap()->toImage().scaled(flash.getSplashWidth(), flash.getSplashHeight());
     if (flash.setSplash(image) && (flash.saveFlash(*saveToFileName) > 0)) {
-      g.lastFlashDir( QFileInfo(*saveToFileName).dir().absolutePath() );
+      g.flashDir( QFileInfo(*saveToFileName).dir().absolutePath() );
     }
     else {
       return false;
@@ -124,7 +124,7 @@ bool Side::saveImage()
   else if (*source == PICT) {
     QImage image = imageLabel->pixmap()->toImage().scaled(imageLabel->width()/2, imageLabel->height()/2).convertToFormat(QImage::Format_Indexed8);
     if (image.save(*saveToFileName)) {
-      g.lastImagesDir( QFileInfo(*saveToFileName).dir().absolutePath() );
+      g.imagesDir( QFileInfo(*saveToFileName).dir().absolutePath() );
     }
     else {
       return false;
@@ -181,12 +181,12 @@ void customizeSplashDialog::on_leftLoadFwButton_clicked() {loadFirmware(left);}
 void customizeSplashDialog::on_rightLoadFwButton_clicked() {loadFirmware(right);}
 void customizeSplashDialog::loadFirmware(Side side)
 {
-  QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), g.lastFlashDir(), FLASH_FILES_FILTER);
+  QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), g.flashDir(), FLASH_FILES_FILTER);
   if (!fileName.isEmpty()) {
     if (!side.displayImage( fileName, FW ))
       QMessageBox::critical(this, tr("Error"), tr("Cannot load embedded FW image from %1.").arg(fileName));
     else
-    g.lastFlashDir( QFileInfo(fileName).dir().absolutePath() );
+    g.flashDir( QFileInfo(fileName).dir().absolutePath() );
   }
 }
 
@@ -199,13 +199,13 @@ void customizeSplashDialog::loadPicture(Side side)
     supportedImageFormats += QLatin1String(" *.") + QImageReader::supportedImageFormats()[formatIndex];
   }
   QString fileName = QFileDialog::getOpenFileName(this,
-          tr("Open Image to load"), g.lastImagesDir(), tr("Images (%1)").arg(supportedImageFormats));
+          tr("Open Image to load"), g.imagesDir(), tr("Images (%1)").arg(supportedImageFormats));
 
   if (!fileName.isEmpty()) {
     if (!side.displayImage( fileName, PICT ))
       QMessageBox::critical(this, tr("Error"), tr("Cannot load the image file %1.").arg(fileName));
     else
-      g.lastImagesDir( QFileInfo(fileName).dir().absolutePath() );
+      g.imagesDir( QFileInfo(fileName).dir().absolutePath() );
   }
 }
 
@@ -213,7 +213,7 @@ void customizeSplashDialog::on_leftLoadProfileButton_clicked() {loadProfile(left
 void customizeSplashDialog::on_rightLoadProfileButton_clicked() {loadProfile(right);}
 void customizeSplashDialog::loadProfile(Side side)
 {
-  QString fileName=g.profile[g.id()].SplashFileName();
+  QString fileName=g.profile[g.id()].splashFile();
 
   if (!fileName.isEmpty()) {
     if (!side.displayImage( fileName, PROFILE ))

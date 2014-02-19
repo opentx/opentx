@@ -59,7 +59,7 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
     else {
       setWindowTitle(tr("Write Models and Settings in %1 to TX").arg(DocName));
     }
-    ui->profile_label->setText(tr("Current profile")+QString(": ")+g.profile[g.id()].Name());
+    ui->profile_label->setText(tr("Current profile")+QString(": ")+g.profile[g.id()].name());
   }
   if (!hexfileName->isEmpty()) {
     ui->FWFileName->setText(*hexfileName);
@@ -69,13 +69,13 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
     else {
       burnraw=false;
       if (checkeEprom(*hexfileName)) {
-        QString Name = g.profile[g.id()].Name();
-        QString calib = g.profile[g.id()].StickPotCalib();
-        QString trainercalib = g.profile[g.id()].TrainerCalib();
-        QString DisplaySet = g.profile[g.id()].Display();
-        QString BeeperSet = g.profile[g.id()].Beeper();
-        QString HapticSet = g.profile[g.id()].Haptic();
-        QString SpeakerSet = g.profile[g.id()].Speaker();
+        QString Name = g.profile[g.id()].name();
+        QString calib = g.profile[g.id()].stickPotCalib();
+        QString trainercalib = g.profile[g.id()].trainerCalib();
+        QString DisplaySet = g.profile[g.id()].display();
+        QString BeeperSet = g.profile[g.id()].beeper();
+        QString HapticSet = g.profile[g.id()].haptic();
+        QString SpeakerSet = g.profile[g.id()].speaker();
         if (!Name.isEmpty()) {
           ui->profile_label->show();
           ui->patchcalib_CB->show();
@@ -140,7 +140,7 @@ void burnDialog::on_FlashLoadButton_clicked()
   ui->EEbackupCB->hide();
   QTimer::singleShot(0, this, SLOT(shrink()));
   if (hexType==2) {
-    fileName = QFileDialog::getOpenFileName(this, tr("Open"), g.lastFlashDir(), FLASH_FILES_FILTER);
+    fileName = QFileDialog::getOpenFileName(this, tr("Open"), g.flashDir(), FLASH_FILES_FILTER);
     checkFw(fileName);
   }
   else {
@@ -200,7 +200,7 @@ void burnDialog::checkFw(QString fileName)
       ui->imageLabel->setFixedSize(flash.getSplashWidth(), flash.getSplashHeight());
       ui->FwImage->show();
       ui->FwImage->setPixmap(QPixmap::fromImage(flash.getSplash()));
-      QString ImageStr = g.profile[g.id()].SplashFileName();
+      QString ImageStr = g.profile[g.id()].splashFile();
       bool PatchFwCB = g.profile[g.id()].patchImage();
       if (!ImageStr.isEmpty()) {
         QImage Image = qstring2image(ImageStr);
@@ -244,7 +244,7 @@ void burnDialog::checkFw(QString fileName)
     ui->BurnFlashButton->setEnabled(true);
   }  
   QTimer::singleShot(0, this, SLOT(shrink()));
-  g.lastFlashDir( QFileInfo(fileName).dir().absolutePath() );
+  g.flashDir( QFileInfo(fileName).dir().absolutePath() );
 }
 
 bool burnDialog::checkeEprom(QString fileName)
@@ -345,10 +345,10 @@ void burnDialog::on_ImageLoadButton_clicked()
   }
 
   QString fileName = QFileDialog::getOpenFileName(this,
-          tr("Open Image to load"), g.lastImagesDir(), tr("Images (%1)").arg(supportedImageFormats));
+          tr("Open Image to load"), g.imagesDir(), tr("Images (%1)").arg(supportedImageFormats));
 
   if (!fileName.isEmpty()) {
-    g.lastImagesDir( QFileInfo(fileName).dir().absolutePath() );
+    g.imagesDir( QFileInfo(fileName).dir().absolutePath() );
     QImage image(fileName);
     if (image.isNull()) {
       QMessageBox::critical(this, tr("Error"), tr("Cannot load %1.").arg(fileName));
@@ -425,7 +425,7 @@ void burnDialog::on_BurnFlashButton_clicked()
   if (hexType==2) {
     QString fileName=ui->FWFileName->text();
     if (!fileName.isEmpty()) {
-      g.lastFlashDir( QFileInfo(fileName).dir().absolutePath() );
+      g.flashDir( QFileInfo(fileName).dir().absolutePath() );
       g.lastFw( fileName );
       if (ui->PatchFWCB->isChecked()) {
         g.profile[g.id()].patchImage( true );
@@ -461,19 +461,19 @@ void burnDialog::on_BurnFlashButton_clicked()
     }
   }
   if (hexType==1) {
-    QString calib = g.profile[g.id()].StickPotCalib();
-    QString trainercalib = g.profile[g.id()].TrainerCalib();
+    QString calib = g.profile[g.id()].stickPotCalib();
+    QString trainercalib = g.profile[g.id()].trainerCalib();
     int potsnum=GetEepromInterface()->getCapability(Pots);
-    int8_t vBatCalib=(int8_t) g.profile[g.id()].VbatCalib();
+    int8_t vBatCalib=(int8_t) g.profile[g.id()].vBatCalib();
     int8_t currentCalib=(int8_t) g.profile[g.id()].currentCalib();
-    int8_t PPM_Multiplier=(int8_t) g.profile[g.id()].PPM_Multiplier();
-    uint8_t GSStickMode=(uint8_t) g.profile[g.id()].GSStickMode();
+    int8_t PPM_Multiplier=(int8_t) g.profile[g.id()].ppmMultiplier();
+    uint8_t GSStickMode=(uint8_t) g.profile[g.id()].gsStickMode();
     uint8_t vBatWarn=(uint8_t) g.profile[g.id()].vBatWarn();
     
-    QString DisplaySet= g.profile[g.id()].Display();
-    QString BeeperSet= g.profile[g.id()].Beeper();
-    QString HapticSet= g.profile[g.id()].Haptic();
-    QString SpeakerSet= g.profile[g.id()].Speaker();
+    QString DisplaySet= g.profile[g.id()].display();
+    QString BeeperSet= g.profile[g.id()].beeper();
+    QString HapticSet= g.profile[g.id()].haptic();
+    QString SpeakerSet= g.profile[g.id()].speaker();
     bool patch=false;
     if (ui->patchcalib_CB->isChecked()) {
       if ((calib.length()==(NUM_STICKS+potsnum)*12) && (trainercalib.length()==16)) {
@@ -631,7 +631,7 @@ void burnDialog::on_PreferredImageCB_toggled(bool checked)
 {
   QString tmpFileName;
   if (checked) {
-    QString ImageStr = g.profile[g.id()].SplashFileName();
+    QString ImageStr = g.profile[g.id()].splashFile();
     if (!ImageStr.isEmpty()) {
       QImage Image = qstring2image(ImageStr);
       if (ui->imageLabel->width()!=128) {

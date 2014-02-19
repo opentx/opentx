@@ -37,9 +37,9 @@ xsimulatorDialog::xsimulatorDialog(QWidget *parent) :
     this->setFixedSize(this->width(), this->height());
     bool simuSW = g.simuSW();
 #ifdef JOYSTICKS
-    int js_ctrl = g.js_ctrl();
+    int js_ctrl = g.jsCtrl();
 
-    if (g.js_support()) {
+    if (g.jsSupport()) {
       int count=0;
       for (int j=0; j<8;j++){
         int axe=g.joystick[j].stick_axe();
@@ -177,7 +177,7 @@ void xsimulatorDialog::setupTimer()
 void xsimulatorDialog::onButtonPressed(int value)
 {
   if (value==Qt::Key_Print) {
-      bool toclipboard=g.snapshot_to_clipboard();
+      bool toclipboard=g.snapToClpbrd();
       QString fileName ="";
       if (!toclipboard) {
         fileName = QString("screenshot-%1.png").arg(++screenshotIdx);

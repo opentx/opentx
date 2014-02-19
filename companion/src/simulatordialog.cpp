@@ -75,8 +75,8 @@ simulatorDialog::simulatorDialog(QWidget *parent) :
     }
 
 #ifdef JOYSTICKS
-    bool js_enable=g.js_support();
-    int js_ctrl=g.js_ctrl();
+    bool js_enable=g.jsSupport();
+    int js_ctrl=g.jsCtrl();
     if (js_enable) {
       int count=0;
       for (int j=0; j<8;j++){
@@ -209,7 +209,7 @@ void simulatorDialog::setupTimer()
 void simulatorDialog::onButtonPressed(int value)
 {
   if (value==Qt::Key_Print) {
-      bool toclipboard=g.snapshot_to_clipboard();
+      bool toclipboard=g.snapToClpbrd();
       QString fileName ="";
       if (!toclipboard) {
         fileName = QString("screenshot-%1.png").arg(++screenshotIdx);

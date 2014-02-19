@@ -84,9 +84,9 @@ burnConfigDialog::~burnConfigDialog()
 
 void burnConfigDialog::getSettings()
 {
-    avrLoc   = g.avrdude_location();
-    sambaLoc = g.samba_location();
-    dfuLoc =   g.dfu_location();
+    avrLoc   = g.avrdudeLocation();
+    sambaLoc = g.sambaLocation();
+    dfuLoc =   g.dfuLocation();
 
 #if defined WIN32 || !defined __GNUC__
     if ( avrLoc.isEmpty())
@@ -112,13 +112,13 @@ void burnConfigDialog::getSettings()
 #endif
 
 
-    dfuArgs = g.dfu_arguments().split(" ", QString::SkipEmptyParts);
-    avrArgs = g.avr_arguments().split(" ", QString::SkipEmptyParts);
+    dfuArgs = g.dfuArguments().split(" ", QString::SkipEmptyParts);
+    avrArgs = g.avrArguments().split(" ", QString::SkipEmptyParts);
     avrProgrammer =  g.programmer();
-    avrPort = g.avr_port();
+    avrPort = g.avrPort();
     avrMCU = g.mcu();
-    armMCU = g.arm_mcu();
-    sambaPort = g.samba_port();
+    armMCU = g.armMcu();
+    sambaPort = g.sambaPort();
 
     ui->avrdude_location->setText(getAVRDUDE());
     ui->avrArgs->setText(getAVRArgs().join(" "));
@@ -147,16 +147,16 @@ void burnConfigDialog::getSettings()
 
 void burnConfigDialog::putSettings()
 {
-    g.avrdude_location( avrLoc );
+    g.avrdudeLocation( avrLoc );
     g.programmer( avrProgrammer);
     g.mcu( avrMCU );
-    g.avr_port( avrPort );
-    g.avr_arguments( avrArgs.join(" ") );
-    g.samba_location( sambaLoc );
-    g.samba_port( sambaPort );
-    g.arm_mcu( armMCU );
-    g.dfu_location( dfuLoc );
-    g.dfu_arguments( dfuArgs.join(" ") );
+    g.avrPort( avrPort );
+    g.avrArguments( avrArgs.join(" ") );
+    g.sambaLocation( sambaLoc );
+    g.sambaPort( sambaPort );
+    g.armMcu( armMCU );
+    g.dfuLocation( dfuLoc );
+    g.dfuArguments( dfuArgs.join(" ") );
 }
 
 void burnConfigDialog::populateProgrammers()
