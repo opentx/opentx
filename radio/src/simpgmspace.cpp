@@ -300,7 +300,7 @@ void *main_thread(void *)
     eeReadAll(); // load general setup and selected model
 
 #if defined(CPUARM) && defined(SDCARD)
-    refreshSystemAudioFiles();
+    referenceSystemAudioFiles();
 #endif
 
     if (g_eeGeneral.backlightMode != e_backlight_mode_off) backlightOn(); // on Tx start turn the light on
@@ -473,9 +473,10 @@ char *convertSimuPath(const char *path)
 
 FRESULT f_stat (const TCHAR * name, FILINFO *)
 {
+  char *path = convertSimuPath(name);
   struct stat tmp;
-  // printf("f_stat(%s)\n", path); fflush(stdout);
-  return stat(convertSimuPath(name), &tmp) ? FR_INVALID_NAME : FR_OK;
+  TRACE("f_stat(%s)", path);
+  return stat(path, &tmp) ? FR_INVALID_NAME : FR_OK;
 }
 
 FRESULT f_mount (BYTE, FATFS*)

@@ -277,16 +277,21 @@ void audioStart();
 
 #define AUDIO_HEARTBEAT()
 
-#define SYSTEM_AUDIO_CATEGORY 0
-#define MODEL_AUDIO_CATEGORY  1
-#define PHASE_AUDIO_CATEGORY  2
-#define MIXER_AUDIO_CATEGORY  3
+enum AutomaticPromptsCategories {
+  SYSTEM_AUDIO_CATEGORY,
+  MODEL_AUDIO_CATEGORY,
+  PHASE_AUDIO_CATEGORY,
+  SWITCH_AUDIO_CATEGORY,
+  LOGICAL_SWITCH_AUDIO_CATEGORY,
+};
 
-#define AUDIO_EVENT_OFF       0
-#define AUDIO_EVENT_ON        1
-#define AUDIO_EVENT_BG        2
+enum AutomaticPromptsEvents {
+  AUDIO_EVENT_OFF,
+  AUDIO_EVENT_ON,
+  AUDIO_EVENT_MID,
+};
 
-extern void pushPrompt(uint16_t prompt, uint8_t id=0);
+void pushPrompt(uint16_t prompt, uint8_t id=0);
 
 #define I18N_PLAY_FUNCTION(lng, x, ...) void lng ## _ ## x(__VA_ARGS__, uint8_t id)
 #define PLAY_FUNCTION(x, ...)    void x(__VA_ARGS__, uint8_t id)
@@ -300,15 +305,16 @@ extern void pushPrompt(uint16_t prompt, uint8_t id=0);
 #define AUDIO_RESET()            audioQueue.reset()
 
 #if defined(SDCARD)
-  #define PLAY_PHASE_OFF(phase) do { char filename[AUDIO_FILENAME_MAXLEN+1]; if (isAudioFileAvailable((PHASE_AUDIO_CATEGORY << 24) + (phase << 16) + AUDIO_EVENT_OFF, filename)) audioQueue.playFile(filename); } while (0)
-  #define PLAY_PHASE_ON(phase)  do { char filename[AUDIO_FILENAME_MAXLEN+1]; if (isAudioFileAvailable((PHASE_AUDIO_CATEGORY << 24) + (phase << 16) + AUDIO_EVENT_ON, filename)) audioQueue.playFile(filename); } while (0)
+  #define PLAY_PHASE_OFF(phase) do { char filename[AUDIO_FILENAME_MAXLEN+1]; if (isAudioFileReferenced((PHASE_AUDIO_CATEGORY << 24) + (phase << 16) + AUDIO_EVENT_OFF, filename)) audioQueue.playFile(filename); } while (0)
+  #define PLAY_PHASE_ON(phase)  do { char filename[AUDIO_FILENAME_MAXLEN+1]; if (isAudioFileReferenced((PHASE_AUDIO_CATEGORY << 24) + (phase << 16) + AUDIO_EVENT_ON, filename)) audioQueue.playFile(filename); } while (0)
 #else
   #define PLAY_PHASE_OFF(phase)
   #define PLAY_PHASE_ON(phase)
 #endif
 
-extern void refreshSystemAudioFiles();
-extern void refreshModelAudioFiles();
-extern bool isAudioFileAvailable(uint32_t i, char * filename);
+void referenceSystemAudioFiles();
+void referenceModelAudioFiles();
+
+bool isAudioFileReferenced(uint32_t i, char * filename/*at least AUDIO_FILENAME_MAXLEN+1 long*/);
 
 #endif

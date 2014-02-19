@@ -1014,7 +1014,7 @@ void sdMountPoll()
 
     case SD_ST_DATA:
       if (!usbPlugged() && f_mount(0, &g_FATFS_Obj) == FR_OK) {
-        refreshSystemAudioFiles();
+        referenceSystemAudioFiles();
         Card_state = SD_ST_MOUNTED;
       }
       break;
@@ -1082,7 +1082,7 @@ void sdInit()
   Card_state = SD_ST_DATA;
 
   if (f_mount(0, &g_FATFS_Obj) == FR_OK) {
-    refreshSystemAudioFiles();
+    referenceSystemAudioFiles();
     Card_state = SD_ST_MOUNTED;
   }
 
