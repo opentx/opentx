@@ -53,7 +53,6 @@
 #define SOUNDS_EXT          ".wav"
 #define BITMAPS_EXT         ".bmp"
 #define SCRIPTS_EXT         ".lua"
-#define MIXES_EXT           ".mix"
 #define TEXT_EXT            ".txt"
 
 extern FATFS g_FATFS_Obj;

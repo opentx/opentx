@@ -75,7 +75,7 @@
   #define MAX_EXPOS   64
   #define NUM_CSW     32 // number of custom switches
   #define NUM_CFN     64 // number of functions assigned to switches
-  #define MAX_SCRIPTS 3
+  #define MAX_SCRIPTS 7
   #define MAX_INPUTS  32
 #elif defined(CPUARM)
   #define MAX_MODELS  60

@@ -5139,8 +5139,8 @@ void onModelCustomScriptMenu(const char *result)
   ScriptData &sd = g_model.scriptsData[s_currIdx];
 
   if (result == STR_UPDATE_LIST) {
-    if (!listSdFiles(SCRIPTS_PATH, MIXES_EXT, sizeof(sd.file), NULL)) {
-      POPUP_WARNING(STR_NO_BITMAPS_ON_SD);
+    if (!listSdFiles(SCRIPTS_PATH, SCRIPTS_EXT, sizeof(sd.file), NULL)) {
+      POPUP_WARNING(STR_NO_SCRIPTS_ON_SD);
       s_menu_flags = 0;
     }
   }
@@ -5187,7 +5187,7 @@ void menuModelCustomScriptOne(uint8_t event)
         lcd_putsiAtt(SCRIPT_ONE_2ND_COLUMN_POS, y, STR_VCSWFUNC, 0, attr);
       if (attr && event==EVT_KEY_BREAK(KEY_ENTER) && !READ_ONLY()) {
         s_editMode = 0;
-        if (listSdFiles(SCRIPTS_PATH, MIXES_EXT, sizeof(sd.file), sd.file, LIST_NONE_SD_FILE)) {
+        if (listSdFiles(SCRIPTS_PATH, SCRIPTS_EXT, sizeof(sd.file), sd.file, LIST_NONE_SD_FILE)) {
           menuHandler = onModelCustomScriptMenu;
         }
         else {

@@ -856,7 +856,7 @@ class ModuleData {
     void clear() { memset(this, 0, sizeof(ModuleData)); }
 };
 
-#define C9X_MAX_SCRIPTS       3
+#define C9X_MAX_SCRIPTS       7
 #define C9X_MAX_SCRIPT_INPUTS 10
 class ScriptData {
   public:
