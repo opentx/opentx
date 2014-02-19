@@ -48,9 +48,9 @@
 #include "downloaddialog.h"
 #include "eeprominterface.h"
 
-#define MAX_RECENT  15
-#define MAX_PROFILES  10
 #define SPLASH_TIME 5
+#define MAX_RECENT 10
+#define MAX_PROFILES 15
 
 class MdiChild;
 QT_BEGIN_NAMESPACE
@@ -165,7 +165,6 @@ private:
     void createMenus();
     void createToolBars();
     void createStatusBar();
-    void readSettings();
     void updateRecentFileActions();
     void updateProfilesActions();
     void updateIconSizeActions();
@@ -201,11 +200,8 @@ private:
     QString downloadedFWFilename;
     downloadDialog * downloadDialog_forWait;
 
-    bool checkCompanion;
-    bool checkFW;
     bool needRename;
     bool showcheckForUpdatesResult;
-    int MaxRecentFiles;
     int currentFWrev;
     int currentFWrev_temp;
     int NewFwRev;

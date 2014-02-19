@@ -26,6 +26,7 @@
 #include "opentxSky9xsimulator.h"
 #include "opentxTaranisSimulator.h"
 #include "file.h"
+#include "appdata.h"
 
 #define FILE_TYP_GENERAL 1
 #define FILE_TYP_MODEL   2
@@ -933,9 +934,11 @@ bool Open9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esiz
 
 QString geturl( int board)
 {
-    QSettings settings;
-    QString url = settings.value("compilation-server", OPENTX_FIRMWARE_DOWNLOADS).toString();
-
+   QString url = g.compileServer();
+   if (url.isEmpty()){
+      url= OPENTX_FIRMWARE_DOWNLOADS;
+      g.compileServer(url);
+   }
     switch(board) {
       case BOARD_STOCK:
       case BOARD_M128:
@@ -956,8 +959,11 @@ QString geturl( int board)
 
 QString getstamp( int board)
 {
-    QSettings settings;
-    QString url = settings.value("compilation-server", OPENTX_FIRMWARE_DOWNLOADS).toString();
+   QString url = g.compileServer();
+   if (url.isEmpty()){
+      url= OPENTX_FIRMWARE_DOWNLOADS;
+      g.compileServer(url);
+   }
     url.append("/stamp-opentx-");
     switch(board) {
       case BOARD_STOCK:
@@ -985,8 +991,11 @@ QString getstamp( int board)
 
 QString getrnurl( int board)
 {
-   QSettings settings;
-   QString url = settings.value("compilation-server", OPENTX_FIRMWARE_DOWNLOADS).toString();
+   QString url = g.compileServer();
+   if (url.isEmpty()){
+      url= OPENTX_FIRMWARE_DOWNLOADS;
+      g.compileServer(url);
+   }
    url.append("/releasenotes-");
    switch(board) {
       case BOARD_STOCK:
@@ -1212,9 +1221,7 @@ void RegisterOpen9xFirmwares()
   open9x->addOptions(fai_options);
   firmwares.push_back(open9x);
 
-  QSettings settings;
-  int rev4a = settings.value("rev4asupport",0).toInt();
-  if (rev4a) {
+  if (g.rev4aSupport()) {
     open9x = new Open9xFirmware("opentx-taranisrev4a", QObject::tr("OpenTX for FrSky Taranis Rev4a"), new Open9xInterface(BOARD_TARANIS_REV4a), geturl(BOARD_TARANIS_REV4a), getstamp(BOARD_TARANIS_REV4a),getrnurl(BOARD_TARANIS), true);
     open9x->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
     open9x->addOption("notemplates", QObject::tr("Disable TEMPLATES menu"));

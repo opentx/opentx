@@ -19,6 +19,7 @@
 #include "er9xeeprom.h"
 #include "er9xsimulator.h"
 #include "file.h"
+#include "appdata.h"
 
 #define FILE_TYP_GENERAL 1
 #define FILE_TYP_MODEL   2
@@ -44,8 +45,7 @@ const char * Er9xInterface::getName()
 
 const int Er9xInterface::getEEpromSize()
 {
-  QSettings settings;
-  QString avrMCU = settings.value("mcu", QString("m64")).toString();
+  QString avrMCU = g.mcu();
   if (avrMCU==QString("m128")) {
     return 2*EESIZE_STOCK;
   }

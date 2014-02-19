@@ -18,6 +18,7 @@
 #include "gruvin9xinterface.h"
 #include "gruvin9xeeprom.h"
 #include "file.h"
+#include "appdata.h"
 
 #define FILE_TYP_GENERAL 1
 #define FILE_TYP_MODEL   2
@@ -47,8 +48,7 @@ const char * Gruvin9xInterface::getName()
 const int Gruvin9xInterface::getEEpromSize()
 {
   if (board == BOARD_STOCK) {
-    QSettings settings;
-    QString avrMCU = settings.value("mcu", QString("m64")).toString();
+    QString avrMCU = g.mcu();
     if (avrMCU==QString("m128")) {
       return EESIZE_STOCK*2;
     }
