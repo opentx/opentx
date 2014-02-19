@@ -296,8 +296,18 @@ bool isAudioFileReferenced(uint32_t i, char * filename)
 
   return false;
 }
+
+void playModelEvent(uint8_t category, uint8_t index, uint8_t event)
+{
+  char filename[AUDIO_FILENAME_MAXLEN+1];
+  if (isAudioFileReferenced((category << 24) + (index << 16) + event, filename)) {
+    audioQueue.playFile(filename);
+  }
+}
 #else
+
 #define isAudioFileReferenced(i, f) false
+
 #endif
 
 // TODO should be generated and in flash rather than in ram

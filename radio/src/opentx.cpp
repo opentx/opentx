@@ -1322,26 +1322,65 @@ tmr10ms_t switchesMidposStart[6] = { 0 };
 uint32_t  switchesPos = 0;
 tmr10ms_t potsLastposStart[NUM_XPOTS];
 uint8_t   potsPos[NUM_XPOTS];
+
+uint32_t check2PosSwitchPosition(EnumKeys sw)
+{
+  uint32_t result;
+  uint32_t index;
+
+  if (switchState(sw))
+    index = sw - SW_SA0;
+  else
+    index = sw - SW_SA0 + 1;
+
+  result = (1 << index);
+
+  if (!(switchesPos & result)) {
+    PLAY_SWITCH_MOVED(index);
+  }
+
+  return result;
+}
+
 #define DELAY_SWITCH_3POS    10/*100ms*/
-#define CHECK_2POS(sw)       newPos |= (switchState(sw ## 0) ? (1 << (sw ## 0 - SW_SA0)) : (1 << (sw ## 0 - SW_SA0 + 1)))
-#define CHECK_3POS(idx, sw)  if (switchState(sw ## 0)) { \
-                               newPos |= (1 << (sw ## 0 - SW_SA0)); \
-                               switchesMidposStart[idx] = 0; \
-                             } \
-                             else if (switchState(sw ## 2)) { \
-                               newPos |= (1 << (sw ## 0 - SW_SA0 + 2)); \
-                               switchesMidposStart[idx] = 0; \
-                             } \
-                             else if ((switchesPos & (1 << (sw ## 0 - SW_SA0 + 1))) || (switchesMidposStart[idx] && (tmr10ms_t)(get_tmr10ms() - switchesMidposStart[idx]) > DELAY_SWITCH_3POS)) { \
-                               newPos |= (1 << (sw ## 0 - SW_SA0 + 1)); \
-                               switchesMidposStart[idx] = 0; \
-                             } \
-                             else { \
-                               if (!switchesMidposStart[idx]) { \
-                                 switchesMidposStart[idx] = get_tmr10ms(); \
-                               } \
-                               newPos |= (switchesPos & (0x7 << (sw ## 0 - SW_SA0))); \
-                             }
+uint32_t check3PosSwitchPosition(uint8_t idx, EnumKeys sw)
+{
+  uint32_t result;
+  uint32_t index;
+
+  if (switchState(sw)) {
+    index = sw - SW_SA0;
+    result = (1 << index);
+    switchesMidposStart[idx] = 0;
+  }
+  else if (switchState(EnumKeys(sw+2))) {
+    index = sw - SW_SA0 + 2;
+    result = (1 << index);
+    switchesMidposStart[idx] = 0;
+  }
+  else if ((switchesPos & (1 << (sw - SW_SA0 + 1))) || (switchesMidposStart[idx] && (tmr10ms_t)(get_tmr10ms() - switchesMidposStart[idx]) > DELAY_SWITCH_3POS)) {
+    index = sw - SW_SA0 + 1;
+    result = (1 << index);
+    switchesMidposStart[idx] = 0;
+  }
+  else {
+    index = sw - SW_SA0 + 1;
+    if (!switchesMidposStart[idx]) {
+      switchesMidposStart[idx] = get_tmr10ms();
+    }
+    result = (switchesPos & (0x7 << (sw - SW_SA0)));
+  }
+
+  if (!(switchesPos & result)) {
+    PLAY_SWITCH_MOVED(index);
+  }
+
+  return result;
+}
+
+#define CHECK_2POS(sw)       newPos |= check2PosSwitchPosition(sw ## 0)
+#define CHECK_3POS(idx, sw)  newPos |= check3PosSwitchPosition(idx, sw ## 0)
+
 void getSwitchesPosition()
 {
   uint32_t newPos = 0;
