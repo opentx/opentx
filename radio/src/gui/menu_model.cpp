@@ -5181,7 +5181,7 @@ void menuModelCustomScriptOne(uint8_t event)
 
     if (i == ITEM_MODEL_CUSTOMSCRIPT_FILE) {
       lcd_putsLeft(y, "Script");
-      if (ZEXIST(sd.file) > 0)
+      if (ZEXIST(sd.file))
         lcd_putsnAtt(SCRIPT_ONE_2ND_COLUMN_POS, y, sd.file, sizeof(sd.file), attr);
       else
         lcd_putsiAtt(SCRIPT_ONE_2ND_COLUMN_POS, y, STR_VCSWFUNC, 0, attr);
@@ -5672,7 +5672,7 @@ void menuModelTelemetry(uint8_t event)
         putsStrIdx(0*FW, y, STR_SCREEN, screenIndex+1);
 #if defined(GAUGES)
         bool screenType = IS_BARS_SCREEN(screenIndex);
-        if (screenType != selectMenuItem(TELEM_SCRTYPE_COL, y, PSTR(""), STR_VSCREEN, screenType, 0, 1, attr, event))
+        if (screenType != (bool)selectMenuItem(TELEM_SCRTYPE_COL, y, PSTR(""), STR_VSCREEN, screenType, 0, 1, attr, event))
           g_model.frsky.screensType ^= (1 << screenIndex);
 #endif
         break;
@@ -5683,7 +5683,7 @@ void menuModelTelemetry(uint8_t event)
         putsStrIdx(0*FW, y, STR_SCREEN, screenIndex);
 #if defined(GAUGES)
         bool screenType = g_model.frsky.screensType & screenIndex;
-        if (screenType != selectMenuItem(TELEM_SCRTYPE_COL, y, PSTR(""), STR_VSCREEN, screenType, 0, 1, attr, event))
+        if (screenType != (bool)selectMenuItem(TELEM_SCRTYPE_COL, y, PSTR(""), STR_VSCREEN, screenType, 0, 1, attr, event))
           g_model.frsky.screensType ^= screenIndex;
 #endif
         break;

@@ -146,6 +146,7 @@ customizeSplashDialog::customizeSplashDialog(QWidget *parent) :
   ui(new Ui::customizeSplashDialog)
 {
   ui->setupUi(this);
+  this->setWindowIcon(CompanionIcon("paint.png"));
   ui->leftLibraryButton->setIcon(CompanionIcon("library.png"));
   ui->rightLibraryButton->setIcon(CompanionIcon("library.png"));
   

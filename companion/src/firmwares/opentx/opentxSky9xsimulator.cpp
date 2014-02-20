@@ -133,7 +133,7 @@ uint8_t getStickMode()
 
 using namespace Open9xSky9x;
 
-Open9xSky9xSimulator::Open9xSky9xSimulator(Open9xInterface * open9xInterface):
+Open9xSky9xSimulator::Open9xSky9xSimulator(OpenTxInterface * open9xInterface):
   open9xInterface(open9xInterface)
 {
     QString path=g.profile[g.id()].sdPath()+"/";
@@ -162,11 +162,18 @@ bool Open9xSky9xSimulator::lcdChanged(bool & lightEnable)
 #include "simulatorimport.h"
 }
 
-void Open9xSky9xSimulator::start(RadioData &radioData, bool tests)
+void Open9xSky9xSimulator::start(QByteArray & eeprom, bool tests)
 {
   g_rotenc[0] = 0;
-  open9xInterface->save(&eeprom[0], radioData);
+  memcpy(Open9xSky9x::eeprom, eeprom.data(), std::min<int>(sizeof(Open9xSky9x::eeprom), eeprom.size()));
   StartEepromThread(NULL);
+  StartMainThread(tests);
+}
+
+void Open9xSky9xSimulator::start(const char * filename, bool tests)
+{
+  g_rotenc[0] = 0;
+  StartEepromThread(filename);
   StartMainThread(tests);
 }
 

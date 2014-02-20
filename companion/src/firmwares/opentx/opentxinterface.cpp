@@ -43,18 +43,18 @@ size_t SizeOfArray( T(&)[ N ] )
   return N;
 }
 
-Open9xInterface::Open9xInterface(BoardEnum board):
+OpenTxInterface::OpenTxInterface(BoardEnum board):
   EEPROMInterface(board),
   efile(new EFile())
 {
 }
 
-Open9xInterface::~Open9xInterface()
+OpenTxInterface::~OpenTxInterface()
 {
   delete efile;
 }
 
-const char * Open9xInterface::getName()
+const char * OpenTxInterface::getName()
 {
   switch (board) {
     case BOARD_STOCK:
@@ -74,7 +74,7 @@ const char * Open9xInterface::getName()
   }
 }
 
-const int Open9xInterface::getEEpromSize()
+const int OpenTxInterface::getEEpromSize()
 {
   switch (board) {
     case BOARD_STOCK:
@@ -94,7 +94,7 @@ const int Open9xInterface::getEEpromSize()
   }
 }
 
-const int Open9xInterface::getMaxModels()
+const int OpenTxInterface::getMaxModels()
 {
   if (IS_ARM(board))
     return 60;
@@ -107,7 +107,7 @@ const int Open9xInterface::getMaxModels()
 }
 
 template <class T>
-bool Open9xInterface::loadModel(ModelData &model, uint8_t *data, int index, unsigned int stickMode)
+bool OpenTxInterface::loadModel(ModelData &model, uint8_t *data, int index, unsigned int stickMode)
 {
   T _model;
   
@@ -140,7 +140,7 @@ bool Open9xInterface::loadModel(ModelData &model, uint8_t *data, int index, unsi
 }
 
 template <class T>
-bool Open9xInterface::loadModelVariant(unsigned int index, ModelData &model, uint8_t *data, unsigned int version, unsigned int variant)
+bool OpenTxInterface::loadModelVariant(unsigned int index, ModelData &model, uint8_t *data, unsigned int version, unsigned int variant)
 {
   T open9xModel(model, board, version, variant);
 
@@ -167,7 +167,7 @@ bool Open9xInterface::loadModelVariant(unsigned int index, ModelData &model, uin
   return true;
 }
 
-bool Open9xInterface::loadModel(uint8_t version, ModelData &model, uint8_t *data, int index, unsigned int variant, unsigned int stickMode)
+bool OpenTxInterface::loadModel(uint8_t version, ModelData &model, uint8_t *data, int index, unsigned int variant, unsigned int stickMode)
 {
   if (version == 201) {
     return loadModel<Open9xModelData_v201>(model, data, index, stickMode);
@@ -248,7 +248,7 @@ bool Open9xInterface::loadModel(uint8_t version, ModelData &model, uint8_t *data
 }
 
 template <class T>
-bool Open9xInterface::loadGeneral(GeneralSettings &settings, unsigned int version)
+bool OpenTxInterface::loadGeneral(GeneralSettings &settings, unsigned int version)
 {
   QByteArray eepromData(sizeof(settings), 0); // GeneralSettings should be always bigger than the EEPROM struct
   T open9xSettings(settings, board, version);
@@ -264,7 +264,7 @@ bool Open9xInterface::loadGeneral(GeneralSettings &settings, unsigned int versio
 }
 
 template <class T>
-bool Open9xInterface::saveGeneral(GeneralSettings &settings, BoardEnum board, uint32_t version, uint32_t variant)
+bool OpenTxInterface::saveGeneral(GeneralSettings &settings, BoardEnum board, uint32_t version, uint32_t variant)
 {
   T open9xSettings(settings, board, version, variant);
   // open9xSettings.Dump();
@@ -275,7 +275,7 @@ bool Open9xInterface::saveGeneral(GeneralSettings &settings, BoardEnum board, ui
 }
 
 template <class T>
-bool Open9xInterface::saveModel(unsigned int index, ModelData &model, unsigned int version, unsigned int variant)
+bool OpenTxInterface::saveModel(unsigned int index, ModelData &model, unsigned int version, unsigned int variant)
 {
   T open9xModel(model, board, version, variant);
   // open9xModel.Dump();
@@ -285,12 +285,12 @@ bool Open9xInterface::saveModel(unsigned int index, ModelData &model, unsigned i
   return (sz == eeprom.size());
 }
 
-bool Open9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
+bool OpenTxInterface::loadxml(RadioData &radioData, QDomDocument &doc)
 {
   return false;
 }
 
-bool Open9xInterface::load(RadioData &radioData, uint8_t *eeprom, int size)
+bool OpenTxInterface::load(RadioData &radioData, uint8_t *eeprom, int size)
 {
   std::cout << "trying " << getName() << " import...";
 
@@ -351,7 +351,7 @@ bool Open9xInterface::load(RadioData &radioData, uint8_t *eeprom, int size)
   return true;
 }
 
-int Open9xInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t variant, uint8_t version)
+int OpenTxInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t variant, uint8_t version)
 {
   EEPROMWarnings.clear();
 
@@ -404,7 +404,7 @@ int Open9xInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t varian
   return size;
 }
 
-int Open9xInterface::getSize(ModelData &model)
+int OpenTxInterface::getSize(ModelData &model)
 {
   if (board == BOARD_SKY9X)
     return 0;
@@ -427,7 +427,7 @@ int Open9xInterface::getSize(ModelData &model)
   return efile->size(0);
 }
 
-int Open9xInterface::getSize(GeneralSettings &settings)
+int OpenTxInterface::getSize(GeneralSettings &settings)
 {
   if (board == BOARD_SKY9X)
     return 0;
@@ -447,17 +447,12 @@ int Open9xInterface::getSize(GeneralSettings &settings)
   return efile->size(0);
 }
 
-int Open9xInterface::getCapability(const Capability capability)
+int OpenTxInterface::getCapability(const Capability capability)
 {
   switch (capability) {
     case OwnerName:
       return 0;
     case ModelImage:
-      if (IS_TARANIS(board))
-        return 1;
-      else
-        return 0;
-    case SimulatorType:
       if (IS_TARANIS(board))
         return 1;
       else
@@ -688,12 +683,19 @@ int Open9xInterface::getCapability(const Capability capability)
       return IS_TARANIS(board) ? 2 : 0;
     case MultiposPotsPositions:
       return IS_TARANIS(board) ? 6 : 0;
+    case SimulatorVariant:
+      if (board == BOARD_STOCK)
+        return SIMU_STOCK_VARIANTS;
+      else if (board == BOARD_M128)
+        return SIMU_M128_VARIANTS;
+      else
+        return 0;
     default:
       return 0;
   }
 }
 
-int Open9xInterface::isAvailable(Protocol proto, int port)
+int OpenTxInterface::isAvailable(Protocol proto, int port)
 {
   if (IS_TARANIS(board)) {
     switch (port) {
@@ -778,7 +780,7 @@ int Open9xInterface::isAvailable(Protocol proto, int port)
   }
 }
 
-SimulatorInterface * Open9xInterface::getSimulator()
+SimulatorInterface * OpenTxInterface::getSimulator()
 {
   switch (board) {
     case BOARD_STOCK:
@@ -790,7 +792,6 @@ SimulatorInterface * Open9xInterface::getSimulator()
     case BOARD_SKY9X:
       return new Open9xSky9xSimulator(this);
     case BOARD_TARANIS:
-      return new OpentxTaranisSimulator(this);
     case BOARD_TARANIS_REV4a:
       return new OpentxTaranisSimulator(this);
     default:
@@ -803,7 +804,7 @@ size_t getSizeA(T (&)[SIZE]) {
     return SIZE;
 }
 
-bool Open9xInterface::checkVersion(unsigned int version)
+bool OpenTxInterface::checkVersion(unsigned int version)
 {
   switch(version) {
     case 201:
@@ -869,7 +870,7 @@ bool Open9xInterface::checkVersion(unsigned int version)
   return true;
 }
 
-bool Open9xInterface::checkVariant(unsigned int version, unsigned int variant)
+bool OpenTxInterface::checkVariant(unsigned int version, unsigned int variant)
 {
   if (board == BOARD_M128 && !(variant & 0x8000)) {
     if (version == 212) {
@@ -891,7 +892,7 @@ bool Open9xInterface::checkVariant(unsigned int version, unsigned int variant)
   }
 }
 
-bool Open9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index)
+bool OpenTxInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index)
 {
   std::cout << "trying " << getName() << " backup import...";
 
@@ -1024,7 +1025,7 @@ void RegisterOpen9xFirmwares()
   Option extr_options[] = { { "frsky", QObject::tr("Support for frsky telemetry mod"), FRSKY_VARIANT }, { "jeti", QObject::tr("Support for jeti telemetry mod"), 0 }, { "ardupilot", QObject::tr("Support for receiving ardupilot data"), 0 }, { "nmea", QObject::tr("Support for receiving NMEA data"), 0 }, { "mavlink", QObject::tr("Support for MAVLINK devices"), MAVLINK_VARIANT }, { NULL } };
   Option fai_options[] = { { "faichoice", QObject::tr("Possibility to enable FAI MODE at field") }, { "faimode", QObject::tr("FAI MODE always enabled") }, { NULL } };
   /* 9x board */
-  open9x = new Open9xFirmware("opentx-9x", QObject::tr("OpenTX for 9X board"), new Open9xInterface(BOARD_STOCK), geturl(BOARD_STOCK), getstamp(BOARD_STOCK), getrnurl(BOARD_STOCK), false);
+  open9x = new Open9xFirmware("opentx-9x", QObject::tr("OpenTX for 9X board"), new OpenTxInterface(BOARD_STOCK), geturl(BOARD_STOCK), getstamp(BOARD_STOCK), getrnurl(BOARD_STOCK), false);
   open9x->addOptions(ext_options);
   open9x->addOption("heli", QObject::tr("Enable heli menu and cyclic mix support"));
   open9x->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
@@ -1061,7 +1062,7 @@ void RegisterOpen9xFirmwares()
   firmwares.push_back(open9x);
 
   /* 9x board with M128 chip */
-  open9x = new Open9xFirmware("opentx-9x128", QObject::tr("OpenTX for M128 / 9X board"), new Open9xInterface(BOARD_M128), geturl(BOARD_M128), getstamp(BOARD_M128),getrnurl(BOARD_M128), false);
+  open9x = new Open9xFirmware("opentx-9x128", QObject::tr("OpenTX for M128 / 9X board"), new OpenTxInterface(BOARD_M128), geturl(BOARD_M128), getstamp(BOARD_M128),getrnurl(BOARD_M128), false);
   open9x->addOptions(ext_options);
   open9x->addOption("heli", QObject::tr("Enable heli menu and cyclic mix support"));
   open9x->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
@@ -1093,7 +1094,7 @@ void RegisterOpen9xFirmwares()
   firmwares.push_back(open9x);
 
   /* 9XR board */
-  open9x = new Open9xFirmware("opentx-9xr", QObject::tr("OpenTX for 9XR"), new Open9xInterface(BOARD_STOCK), geturl(BOARD_STOCK), getstamp(BOARD_STOCK),getrnurl(BOARD_STOCK), false);
+  open9x = new Open9xFirmware("opentx-9xr", QObject::tr("OpenTX for 9XR"), new OpenTxInterface(BOARD_STOCK), geturl(BOARD_STOCK), getstamp(BOARD_STOCK),getrnurl(BOARD_STOCK), false);
   open9x->addOptions(extr_options);
   open9x->addOption("heli", QObject::tr("Enable heli menu and cyclic mix support"));
   open9x->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
@@ -1127,7 +1128,7 @@ void RegisterOpen9xFirmwares()
   firmwares.push_back(open9x);
 
   /* 9XR board with M128 chip */
-  open9x = new Open9xFirmware("opentx-9xr128", QObject::tr("OpenTX for 9XR with M128 chip"), new Open9xInterface(BOARD_M128), geturl(BOARD_M128), getstamp(BOARD_M128),getrnurl(BOARD_M128), false);
+  open9x = new Open9xFirmware("opentx-9xr128", QObject::tr("OpenTX for 9XR with M128 chip"), new OpenTxInterface(BOARD_M128), geturl(BOARD_M128), getstamp(BOARD_M128),getrnurl(BOARD_M128), false);
   open9x->addOptions(extr_options);
   open9x->addOption("heli", QObject::tr("Enable heli menu and cyclic mix support"));
   open9x->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
@@ -1157,7 +1158,7 @@ void RegisterOpen9xFirmwares()
   firmwares.push_back(open9x);
 
   /* Gruvin9x board */
-  open9x = new Open9xFirmware("opentx-gruvin9x", QObject::tr("OpenTX for Gruvin9x board / 9X"), new Open9xInterface(BOARD_GRUVIN9X), geturl(BOARD_GRUVIN9X), getstamp(BOARD_GRUVIN9X),getrnurl(BOARD_GRUVIN9X), false);
+  open9x = new Open9xFirmware("opentx-gruvin9x", QObject::tr("OpenTX for Gruvin9x board / 9X"), new OpenTxInterface(BOARD_GRUVIN9X), geturl(BOARD_GRUVIN9X), getstamp(BOARD_GRUVIN9X),getrnurl(BOARD_GRUVIN9X), false);
   open9x->setVariantBase(FRSKY_VARIANT);
   open9x->addOption("heli", QObject::tr("Enable heli menu and cyclic mix support"));
   open9x->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
@@ -1187,7 +1188,7 @@ void RegisterOpen9xFirmwares()
 
 #ifndef __APPLE__
   /* SKY9X board */
-  open9x = new Open9xFirmware("opentx-sky9x", QObject::tr("OpenTX for Sky9x board / 9X"), new Open9xInterface(BOARD_SKY9X), geturl(BOARD_SKY9X), getstamp(BOARD_SKY9X),getrnurl(BOARD_SKY9X), true);
+  open9x = new Open9xFirmware("opentx-sky9x", QObject::tr("OpenTX for Sky9x board / 9X"), new OpenTxInterface(BOARD_SKY9X), geturl(BOARD_SKY9X), getstamp(BOARD_SKY9X),getrnurl(BOARD_SKY9X), true);
   open9x->setVariantBase(FRSKY_VARIANT);
   open9x->addOption("heli", QObject::tr("Enable HELI menu and cyclic mix support"));
   open9x->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
@@ -1212,7 +1213,7 @@ void RegisterOpen9xFirmwares()
 #endif
   
   /* Taranis board */
-  open9x = new Open9xFirmware("opentx-taranis", QObject::tr("OpenTX for FrSky Taranis"), new Open9xInterface(BOARD_TARANIS), geturl(BOARD_TARANIS), getstamp(BOARD_TARANIS),getrnurl(BOARD_TARANIS), true);
+  open9x = new Open9xFirmware("opentx-taranis", QObject::tr("OpenTX for FrSky Taranis"), new OpenTxInterface(BOARD_TARANIS), geturl(BOARD_TARANIS), getstamp(BOARD_TARANIS),getrnurl(BOARD_TARANIS), true);
   open9x->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
   open9x->addOption("notemplates", QObject::tr("Disable TEMPLATES menu"));
   open9x->addOption("nogvars", QObject::tr("Disable Global variables"));

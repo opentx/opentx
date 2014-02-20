@@ -2,6 +2,7 @@
 #include "appdata.h"
 #include "ui_logsdialog.h"
 #include "qcustomplot.h"
+#include "helpers.h"
 #if defined WIN32 || !defined __GNUC__
 #include <windows.h>
 #else
@@ -15,6 +16,7 @@ logsDialog::logsDialog(QWidget *parent) :
   csvlog.clear();
   srand(QDateTime::currentDateTime().toTime_t());
   ui->setupUi(this);
+  this->setWindowIcon(CompanionIcon("logs.png"));
   palette.clear();
   plotLock=false;
   for (int i=0; i< 60; i++) 

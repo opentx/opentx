@@ -12,11 +12,11 @@
 ;General
 
   ;Name and file
-  Name "openTx companion"
+  Name "OpenTX companion"
   OutFile "companionInstall_v@C9X_VERSION@.exe"
 
   ;Default installation folder
-  InstallDir "$PROGRAMFILES\openTx companion"
+  InstallDir "$PROGRAMFILES\OpenTX companion"
   
   ;Get installation folder from registry if available
   InstallDirRegKey HKCU "Software\companion9x" ""
@@ -95,12 +95,13 @@
 ;--------------------------------
 ;Installer Sections
 
-Section "openTx companion" SecDummy
+Section "OpenTX companion" SecDummy
 
   SetOutPath "$INSTDIR"
   
   File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\license.txt"
   File "Release\companion.exe"
+  File "Release\simulator.exe"
   ${!defineifexist} PTHREAD_WINDIR "C:\Programs\pthreads\Pre-built.2\lib\pthreadVC2.dll"
   !ifdef PTHREAD_WINDIR
   File "C:\Programs\pthreads\Pre-built.2\lib\pthreadVC2.dll"
@@ -155,8 +156,8 @@ SectionEnd
 ;Descriptions
 
   ;Language strings
-  LangString DESC_SecDummy ${LANG_ENGLISH} "Models and settings editor for openTx"
-  LangString DESC_SecDummy ${LANG_FRENCH} "Editeur de réglages et modèles pour openTx"
+  LangString DESC_SecDummy ${LANG_ENGLISH} "Models and settings editor for OpenTX"
+  LangString DESC_SecDummy ${LANG_FRENCH} "Editeur de réglages et modèles pour OpenTX"
 
   ;Assign language strings to sections
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
@@ -172,6 +173,7 @@ Section "Uninstall"
   
   Delete "$INSTDIR\license.txt"
   Delete "$INSTDIR\companion.exe"
+  Delete "$INSTDIR\simulator.exe"
   Delete "$INSTDIR\pthreadVC2.dll"
   Delete "$INSTDIR\xerces-c_3_1.dll"
   Delete "$INSTDIR\SDL.dll"

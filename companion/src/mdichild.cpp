@@ -48,8 +48,6 @@
 #include "generaledit.h"
 #include "avroutputdialog.h"
 #include "burnconfigdialog.h"
-#include "simulatordialog.h"
-#include "xsimulatordialog.h"
 #include "printdialog.h"
 #include "burndialog.h"
 #include "helpers.h"
@@ -70,6 +68,7 @@ MdiChild::MdiChild():
   fileChanged(false)
 {
   ui->setupUi(this);
+  this->setWindowIcon(CompanionIcon("open.png"));
   ui->SimulateTxButton->setIcon(CompanionIcon("simulate.png"));
   setAttribute(Qt::WA_DeleteOnClose);
 
@@ -143,25 +142,7 @@ void MdiChild::setModified()
 
 void MdiChild::on_SimulateTxButton_clicked()
 {
-  if (GetEepromInterface()->getSimulator()) {
-    if (GetEepromInterface()->getCapability(SimulatorType)==1) {
-      xsimulatorDialog * sd = new xsimulatorDialog(this);
-      sd->loadParams(radioData);
-      sd->exec();
-      delete sd;
-    }
-    else {
-      simulatorDialog * sd = new simulatorDialog(this);
-      sd->loadParams(radioData);
-      sd->exec();
-      delete sd;
-    }
-  }
-  else {
-    QMessageBox::warning(NULL,
-        QObject::tr("Warning"),
-        QObject::tr("Simulator for this firmware is not yet available"));
-  }
+  startSimulation(this, radioData, -1);
 }
 
 void MdiChild::OpenEditWindow(bool wizard=false)
@@ -638,22 +619,9 @@ void MdiChild::writeEeprom()  // write to Tx
 
 void MdiChild::simulate()
 {
-    if(ui->modelsList->currentRow()<1) return;
-    if (GetEepromInterface()->getSimulator()) {
-      if (GetEepromInterface()->getCapability(SimulatorType)) {
-        xsimulatorDialog sd(this);
-        sd.loadParams(radioData, ui->modelsList->currentRow()-1);
-        sd.exec();
-      } else {
-        simulatorDialog sd(this);
-        sd.loadParams(radioData, ui->modelsList->currentRow()-1);
-        sd.exec();
-      }
-    }  else {
-      QMessageBox::warning(NULL,
-      QObject::tr("Warning"),
-      QObject::tr("Simulator for this firmware is not yet available"));
-    }
+  if (ui->modelsList->currentRow() >= 1) {
+    startSimulation(this, radioData, ui->modelsList->currentRow()-1);
+  }
 }
 
 void MdiChild::print(int model, QString filename)

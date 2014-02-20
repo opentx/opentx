@@ -72,50 +72,9 @@ ELSE( )
   LINK_DIRECTORIES( /usr/local/lib )
 ENDIF( )
 
-INCLUDE_DIRECTORIES( ${XSD_INCLUDE_DIR} )
-
-FIND_PACKAGE( Subversion )
-SET( C9X_WC_REVISION 0 )
-IF( Subversion_FOUND )
-  # Subversion_WC_INFO( ${PROJECT_SOURCE_DIR} C9X )
-ENDIF( )
-
 set(RADIO_SRC_DIRECTORY ${PROJECT_SOURCE_DIR}/../../radio/src)
-
-include_directories(
-  ${CMAKE_CURRENT_BINARY_DIR}
-  ${RADIO_SRC_DIRECTORY}/../..
-  ${RADIO_SRC_DIRECTORY}
-  ${RADIO_SRC_DIRECTORY}/fonts/std
-  ${RADIO_SRC_DIRECTORY}/lua/src
-)
-
-set(TH9X_CHECKOUT_DIRECTORY ${PROJECT_BINARY_DIR}/firmwares/th9x)
-add_custom_command(
-  OUTPUT ${TH9X_CHECKOUT_DIRECTORY}/th9xsimulator.cpp
-  COMMAND ${CMAKE_COMMAND} -E make_directory ${TH9X_CHECKOUT_DIRECTORY}
-  COMMAND cd ${TH9X_CHECKOUT_DIRECTORY} && svn checkout http://th9x.googlecode.com/svn/trunk/src@285 .
-  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/firmwares/th9x/th9xsimulator.cpp ${TH9X_CHECKOUT_DIRECTORY}
-  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/firmwares/th9x/th9xsimulator.cpp
-)
-
-set(ER9X_CHECKOUT_DIRECTORY ${PROJECT_BINARY_DIR}/firmwares/er9x)
-add_custom_command(
-  OUTPUT ${ER9X_CHECKOUT_DIRECTORY}/er9xsimulator.cpp
-  COMMAND ${CMAKE_COMMAND} -E make_directory ${ER9X_CHECKOUT_DIRECTORY}
-  COMMAND cd ${ER9X_CHECKOUT_DIRECTORY} && svn checkout http://er9x.googlecode.com/svn/trunk/src@790 .
-  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/firmwares/er9x/er9xsimulator.cpp ${ER9X_CHECKOUT_DIRECTORY}
-  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/firmwares/er9x/er9xsimulator.cpp
-)
-
-set(ERSKY9X_CHECKOUT_DIRECTORY ${PROJECT_BINARY_DIR}/firmwares/ersky9x)
-add_custom_command(
-  OUTPUT ${ERSKY9X_CHECKOUT_DIRECTORY}/ersky9xsimulator.cpp
-  COMMAND ${CMAKE_COMMAND} -E make_directory ${ERSKY9X_CHECKOUT_DIRECTORY}
-  COMMAND cd ${ERSKY9X_CHECKOUT_DIRECTORY} && svn checkout http://ersky9x.googlecode.com/svn/trunk/src@170 .
-  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/firmwares/ersky9x/ersky9xsimulator.cpp ${ERSKY9X_CHECKOUT_DIRECTORY}
-  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/firmwares/ersky9x/ersky9xsimulator.cpp
-)
+set(SIMU_SRC_DIRECTORY ${PROJECT_SOURCE_DIR}/simulation)
+set(COMPANION_SRC_DIRECTORY ${PROJECT_SOURCE_DIR})
 
 add_custom_command(
   OUTPUT ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
@@ -124,7 +83,18 @@ add_custom_command(
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )
 
+include_directories(
+  ${CMAKE_CURRENT_BINARY_DIR}
+  ${PROJECT_SOURCE_DIR}/../..
+  ${SIMU_SRC_DIRECTORY}
+  ${RADIO_SRC_DIRECTORY}
+  ${RADIO_SRC_DIRECTORY}/fonts/std
+  ${RADIO_SRC_DIRECTORY}/lua/src
+  ${XSD_INCLUDE_DIR}
+)
+
 add_subdirectory(modeledit)
+add_subdirectory(simulation)
 
 SET( companion_SRCS
      eeprominterface.cpp
@@ -135,10 +105,8 @@ SET( companion_SRCS
      ${PROJECT_BINARY_DIR}/radio.cxx
      firmwares/th9x/th9xeeprom.cpp
      firmwares/th9x/th9xinterface.cpp
-     ${TH9X_CHECKOUT_DIRECTORY}/th9xsimulator.cpp
      firmwares/er9x/er9xeeprom.cpp
      firmwares/er9x/er9xinterface.cpp
-     ${ER9X_CHECKOUT_DIRECTORY}/er9xsimulator.cpp
      firmwares/gruvin9x/gruvin9xeeprom.cpp
      firmwares/gruvin9x/gruvin9xinterface.cpp  
      firmwares/opentx/opentxeeprom.cpp
@@ -153,7 +121,6 @@ SET( companion_SRCS
      firmwares/opentx/opentxsimulator.cpp  
      firmwares/ersky9x/ersky9xeeprom.cpp
      firmwares/ersky9x/ersky9xinterface.cpp
-     ${ERSKY9X_CHECKOUT_DIRECTORY}/ersky9xsimulator.cpp
      ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
 	 appdata.cpp
      helpers.cpp
@@ -173,8 +140,6 @@ SET( companion_SRCS
      fusesdialog.cpp
      logsdialog.cpp
      downloaddialog.cpp
-     simulatordialog.cpp
-     xsimulatordialog.cpp
      splashlibrary.cpp
      mainwindow.cpp
      main.cpp
@@ -197,17 +162,10 @@ SET( companion_MOC_HDRS
      splashlabel.h
      burndialog.h
      downloaddialog.h
-     cursorwidget.h
-     menuwidget.h
-     simulatordialog.h
-     xcursorwidget.h
-     xmenuwidget.h
-     xsimulatordialog.h
      generaledit.h
      modelslist.h
      mdichild.h
      mainwindow.h
-     myslider.h
      modelconfigdialog.h
      qcustomplot.h
      helpers.h
@@ -221,8 +179,6 @@ SET( companion_UIS
      logsdialog.ui
      apppreferencesdialog.ui
      fwpreferencesdialog.ui
-     simulatordialog.ui
-     xsimulatordialog.ui
      burnconfigdialog.ui
      downloaddialog.ui
      generaledit.ui
@@ -233,25 +189,6 @@ SET( companion_UIS
      burndialog.ui
      modelconfigdialog.ui
 )
-
-IF ( SDL_FOUND )
-  SET( companion_SRCS
-       ${companion_SRCS}
-       joystick.cpp
-       joystickdialog.cpp
-     )
-  
-  SET( companion_MOC_HDRS
-       ${companion_MOC_HDRS}
-       joystick.h
-       joystickdialog.h
-     )
-     
-  SET( companion_UIS
-       ${companion_UIS}
-       joystickdialog.ui
-     ) 
-ENDIF( ) 
 
 SET( companion_RCS
      companion.qrc
@@ -293,8 +230,6 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/translations.qrc.in ${CMAKE_CURRENT_B
 # Subversion_WC_INFO( ${PROJECT_SOURCE_DIR}/../${FIRMWARE} G9X )
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/firmwares/opentx/stamp-opentx.h.in ${CMAKE_CURRENT_BINARY_DIR}/stamp-opentx.h @ONLY)
 
-SET( PATCH_FLAGS "--binary" )
-
 IF( WIN32 )
   SET( companion_SRCS ${companion_SRCS} icon.rc )
   IF ( NOT MSVC )
@@ -323,7 +258,87 @@ ELSE( )
     ADD_EXECUTABLE( ${PROJECT_NAME} WIN32 ${companion_SRCS} ${companion_QM} )
 ENDIF( )
 
-TARGET_LINK_LIBRARIES( ${PROJECT_NAME} modeledit ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} )
+TARGET_LINK_LIBRARIES( ${PROJECT_NAME} modeledit simulation ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} )
+
+############# Standalone simu ###############
+
+set(TH9X_CHECKOUT_DIRECTORY ${PROJECT_BINARY_DIR}/firmwares/th9x)
+add_custom_command(
+  OUTPUT ${TH9X_CHECKOUT_DIRECTORY}/th9xsimulator.cpp
+  COMMAND ${CMAKE_COMMAND} -E make_directory ${TH9X_CHECKOUT_DIRECTORY}
+  COMMAND cd ${TH9X_CHECKOUT_DIRECTORY} && svn checkout http://th9x.googlecode.com/svn/trunk/src@285 .
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/firmwares/th9x/th9xsimulator.cpp ${TH9X_CHECKOUT_DIRECTORY}
+  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/firmwares/th9x/th9xsimulator.cpp
+)
+
+set(ER9X_CHECKOUT_DIRECTORY ${PROJECT_BINARY_DIR}/firmwares/er9x)
+add_custom_command(
+  OUTPUT ${ER9X_CHECKOUT_DIRECTORY}/er9xsimulator.cpp
+  COMMAND ${CMAKE_COMMAND} -E make_directory ${ER9X_CHECKOUT_DIRECTORY}
+  COMMAND cd ${ER9X_CHECKOUT_DIRECTORY} && svn checkout http://er9x.googlecode.com/svn/trunk/src@790 .
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/firmwares/er9x/er9xsimulator.cpp ${ER9X_CHECKOUT_DIRECTORY}
+  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/firmwares/er9x/er9xsimulator.cpp
+)
+
+set(ERSKY9X_CHECKOUT_DIRECTORY ${PROJECT_BINARY_DIR}/firmwares/ersky9x)
+add_custom_command(
+  OUTPUT ${ERSKY9X_CHECKOUT_DIRECTORY}/ersky9xsimulator.cpp
+  COMMAND ${CMAKE_COMMAND} -E make_directory ${ERSKY9X_CHECKOUT_DIRECTORY}
+  COMMAND cd ${ERSKY9X_CHECKOUT_DIRECTORY} && svn checkout http://ersky9x.googlecode.com/svn/trunk/src@170 .
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/firmwares/ersky9x/ersky9xsimulator.cpp ${ERSKY9X_CHECKOUT_DIRECTORY}
+  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/firmwares/ersky9x/ersky9xsimulator.cpp
+)
+
+set(simu_SRCS
+  eeprominterface.cpp
+  firmwares/th9x/th9xeeprom.cpp # TODO not needed
+  firmwares/th9x/th9xinterface.cpp
+  ${TH9X_CHECKOUT_DIRECTORY}/th9xsimulator.cpp
+  firmwares/er9x/er9xeeprom.cpp # TODO not needed
+  firmwares/er9x/er9xinterface.cpp
+  ${ER9X_CHECKOUT_DIRECTORY}/er9xsimulator.cpp
+  firmwares/gruvin9x/gruvin9xeeprom.cpp # TODO not needed
+  firmwares/gruvin9x/gruvin9xinterface.cpp  
+  firmwares/opentx/opentxeeprom.cpp # TODO not needed
+  firmwares/opentx/open9xStockeeprom.cpp # TODO not needed
+  firmwares/opentx/open9xGruvin9xeeprom.cpp # TODO not needed
+  firmwares/opentx/open9xSky9xeeprom.cpp # TODO not needed
+  firmwares/opentx/opentxinterface.cpp
+  firmwares/opentx/opentxTaranisSimulator.cpp
+  firmwares/opentx/opentxSky9xsimulator.cpp
+  firmwares/opentx/opentxGruvin9xsimulator.cpp
+  firmwares/opentx/opentxM128simulator.cpp
+  firmwares/opentx/opentxsimulator.cpp  
+  firmwares/ersky9x/ersky9xeeprom.cpp # TODO not needed
+  firmwares/ersky9x/ersky9xinterface.cpp
+  ${ERSKY9X_CHECKOUT_DIRECTORY}/ersky9xsimulator.cpp
+  ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
+  file.cpp # TODO not needed
+  modeledit/node.cpp
+  modeledit/edge.cpp # TODO not needed
+  simulation/main.cpp
+)
+
+set(simu_HDRS
+  modeledit/node.h  
+)
+
+qt4_wrap_cpp(simu_SRCS ${simu_HDRS} )
+qt4_add_resources(simu_SRCS companion.qrc) # TODO not needed
+
+if(WIN32)
+  set(simu_SRCS ${simu_SRCS} icon.rc)
+endif()
+
+add_executable(simulator WIN32 ${simu_SRCS})
+
+if(SDL_FOUND)
+  target_link_libraries(simulator simulation ${QT_LIBRARIES} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS})
+else()
+  target_link_libraries(simulator simulation ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS})
+endif()
+
+############# Packaging ####################
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     INSTALL( TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin )
@@ -367,7 +382,8 @@ IF( WIN32 )
 
   ADD_CUSTOM_TARGET( installer
     DEPENDS ${PROJECT_BINARY_DIR}/companionInstall.exe
-    SOURCES ${PROJECT_BINARY_DIR}/companion.nsi)
+    SOURCES ${PROJECT_BINARY_DIR}/companion.nsi
+  )
 ENDIF( )
 
 IF( APPLE )

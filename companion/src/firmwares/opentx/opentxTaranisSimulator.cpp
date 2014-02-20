@@ -178,7 +178,7 @@ void resetTrims()
 
 using namespace Open9xX9D;
 
-OpentxTaranisSimulator::OpentxTaranisSimulator(Open9xInterface * open9xInterface):
+OpentxTaranisSimulator::OpentxTaranisSimulator(OpenTxInterface * open9xInterface):
   open9xInterface(open9xInterface)
 {
   taranisSimulatorBoard = GetEepromInterface()->getBoard();
@@ -208,10 +208,16 @@ bool OpentxTaranisSimulator::lcdChanged(bool & lightEnable)
 #include "simulatorimport.h"
 }
 
-void OpentxTaranisSimulator::start(RadioData &radioData, bool tests)
+void OpentxTaranisSimulator::start(QByteArray & eeprom, bool tests)
 {
-  open9xInterface->save(Open9xX9D::eeprom, radioData);
+  memcpy(Open9xX9D::eeprom, eeprom.data(), std::min<int>(sizeof(Open9xX9D::eeprom), eeprom.size()));
   StartEepromThread(NULL);
+  StartMainThread(tests);
+}
+
+void OpentxTaranisSimulator::start(const char * filename, bool tests)
+{
+  StartEepromThread(filename);
   StartMainThread(tests);
 }
 

@@ -4,6 +4,7 @@
 #include <QDialog>
 #include "modeledit/node.h"
 #include "eeprominterface.h"
+
 #ifdef JOYSTICKS
 #include "joystick.h"
 #endif
@@ -16,26 +17,52 @@
 #define FLASH_DURATION 10
 
 namespace Ui {
-    class simulatorDialog;
+  class SimulatorDialog9X;
+  class SimulatorDialogTaranis;
 }
 
-class simulatorDialog : public QDialog
+// TODO rename + move?
+class lcdWidget;
+class mySlider;
+
+#define SIMULATOR_FLAGS_NOTX            1
+#define SIMULATOR_FLAGS_STICK_MODE_LEFT 2
+
+class SimulatorDialog : public QDialog
 {
-    Q_OBJECT
+  Q_OBJECT
 
-public:
-    explicit simulatorDialog(QWidget *parent = 0);
-    ~simulatorDialog();
+  public:
+    explicit SimulatorDialog(QWidget * parent = NULL, unsigned int flags=0);
+    virtual ~SimulatorDialog();
 
-    void loadParams(RadioData &radioData, const int model_idx=-1);
+    void start(const char * filename);
+    void start(QByteArray & eeprom);
 
-private:
-    Ui::simulatorDialog *ui;
+  protected:
+    template <class T> void initUi(T * ui);
+    virtual void setLightOn(bool enable) { }
+    virtual void updateBeepButton() { }
+
+    unsigned int flags;
+    lcdWidget * lcd;
+    QGraphicsView * leftStick, * rightStick;
+    QDial * dialP_1, * dialP_2, * dialP_3, * dialP_4;
+    mySlider * trimHLeft, * trimVLeft, * trimHRight, * trimVRight;
+    QLabel * leftXPerc, * rightXPerc, * leftYPerc, * rightYPerc;
+    QTabWidget * tabWidget;
+    QGridLayout * logicalSwitchesLayout;
+    QGridLayout * channelsLayout;
+    QVector<QLabel *> logicalSwitchLabels;
+    QVector<QSlider *> channelSliders;
+    QVector<QLabel *> channelValues;
+
+    void init();
     Node *nodeLeft;
     Node *nodeRight;
     QTimer *timer;
     QString windowName;
-    int backLight;
+    unsigned int backLight;
     bool lightOn;
     int switches;
 #ifdef JOYSTICKS
@@ -44,31 +71,14 @@ private:
     int jsmap[8];
 #endif
 
-    
-    /* quint16 s_timeCumTot;
-    quint16 s_timeCumAbs;
-    quint16 s_timeCumSw;
-    quint16 s_timeCumThr;
-    quint16 s_timeCum16ThrP;
-    quint8  s_timerState;
-    quint8  beepAgain;
-    quint16 g_LightOffCounter;
-    qint16  s_timerVal;
-    quint16 s_time;
-    quint16 s_cnt;
-    quint16 s_sum;
-    quint8  sw_toggled; */
-
     EEPROMInterface *txInterface;
     SimulatorInterface *simulator;
-    RadioData g_radioData;
-    int g_modelIdx;
-    
+
     void setupSticks();
     void setupTimer();
     void resizeEvent(QResizeEvent *event  = 0);
 
-    void getValues();
+    virtual void getValues() = 0;
     void setValues();
     void centerSticks();
     // void timerTick();
@@ -79,9 +89,11 @@ private:
     void setTrims();
 
     int beepVal;
-    int beepShow;
 
-protected:
+    int lcdWidth;
+    int lcdDepth;
+
+  protected:
     virtual void closeEvent(QCloseEvent *);
     virtual void mousePressEvent(QMouseEvent *);
     virtual void mouseReleaseEvent(QMouseEvent *);
@@ -89,11 +101,10 @@ protected:
     virtual void keyPressEvent(QKeyEvent *);
     virtual void keyReleaseEvent(QKeyEvent *);
     static int screenshotIdx;
-    static uint32_t switchstatus;
     int buttonPressed;
     bool middleButtonPressed;
 
-private slots:
+  private slots:
     void onButtonPressed(int value);
     void on_FixRightY_clicked(bool checked);
     void on_FixRightX_clicked(bool checked);
@@ -108,11 +119,49 @@ private slots:
     void on_trimHRight_valueChanged(int);
     void on_trimVRight_valueChanged(int);
     void onTimerEvent();
-    void dialChanged();
+
 #ifdef JOYSTICKS
     void onjoystickAxisValueChanged(int axis, int value);
 #endif
  
+};
+
+class SimulatorDialog9X: public SimulatorDialog
+{
+  Q_OBJECT
+
+  public:
+    explicit SimulatorDialog9X(QWidget * parent = NULL, unsigned int flags=0);
+    virtual ~SimulatorDialog9X();
+
+  protected:
+    virtual void getValues();
+    virtual void setLightOn(bool enable);
+    virtual void updateBeepButton();
+
+  private slots:
+    void dialChanged();
+
+  private:
+    Ui::SimulatorDialog9X * ui;
+    int beepShow;
+
+};
+
+class SimulatorDialogTaranis: public SimulatorDialog
+{
+  Q_OBJECT
+
+  public:
+    explicit SimulatorDialogTaranis(QWidget * parent = NULL, unsigned int flags=0);
+    virtual ~SimulatorDialogTaranis();
+
+  protected:
+    virtual void getValues();
+
+  private:
+    Ui::SimulatorDialogTaranis * ui;
+
 };
 
 #endif // SIMULATORDIALOG_H

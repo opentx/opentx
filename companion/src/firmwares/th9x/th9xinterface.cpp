@@ -202,5 +202,5 @@ int Th9xInterface::isAvailable(Protocol proto, int port)
 
 SimulatorInterface * Th9xInterface::getSimulator()
 {
-  return new Th9xSimulator(this);
+  return NULL; // new Th9xSimulator(this);
 }
