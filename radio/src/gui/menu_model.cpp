@@ -5181,7 +5181,7 @@ void menuModelCustomScriptOne(uint8_t event)
 
     if (i == ITEM_MODEL_CUSTOMSCRIPT_FILE) {
       lcd_putsLeft(y, "Script");
-      if (ZEXIST(sd.file) > 0)
+      if (ZEXIST(sd.file))
         lcd_putsnAtt(SCRIPT_ONE_2ND_COLUMN_POS, y, sd.file, sizeof(sd.file), attr);
       else
         lcd_putsiAtt(SCRIPT_ONE_2ND_COLUMN_POS, y, STR_VCSWFUNC, 0, attr);

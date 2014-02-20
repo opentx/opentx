@@ -3253,7 +3253,7 @@ void evalFunctions()
       bool active = getSwitch(swtch);
 
       if (HAS_ENABLE_PARAM(CFN_FUNC(sd))) {
-        active &= CFN_ACTIVE(sd);
+        active &= (bool)CFN_ACTIVE(sd);
       }
 
       if (active || IS_PLAY_BOTH_FUNC(CFN_FUNC(sd))) {
