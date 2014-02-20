@@ -1400,13 +1400,17 @@ void getSwitchesPosition(bool play)
       if (calib->count>0 && calib->count<POTS_POS_COUNT) {
         uint8_t pos = anaIn(POT1+i) / (2*RESX/calib->count);
         uint8_t previousPos = potsPos[i] >> 4;
+        uint8_t previousStoredPos = potsPos[i] & 0x0F;
         if (pos != previousPos) {
           potsLastposStart[i] = get_tmr10ms();
-          potsPos[i] = (pos << 4) | (potsPos[i] & 0x0f);
+          potsPos[i] = (pos << 4) | previousStoredPos;
         }
         else if ((tmr10ms_t)(get_tmr10ms() - potsLastposStart[i]) > DELAY_SWITCH_3POS) {
           potsLastposStart[i] = 0;
-          potsPos[i] = (pos << 4) | (pos);
+          potsPos[i] = (pos << 4) | pos;
+          if (play && previousStoredPos != pos) {
+            PLAY_SWITCH_MOVED(SWSRC_LAST_SWITCH+i*POTS_POS_COUNT+pos);
+          }
         }
       }
     }

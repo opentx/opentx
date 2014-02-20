@@ -306,9 +306,9 @@ void pushPrompt(uint16_t prompt, uint8_t id=0);
 
 #if defined(SDCARD)
   void playModelEvent(uint8_t category, uint8_t index, uint8_t event=0);
-  #define PLAY_PHASE_OFF(phase)          playModelEvent(PHASE_AUDIO_CATEGORY, phase, AUDIO_EVENT_OFF)
-  #define PLAY_PHASE_ON(phase)           playModelEvent(PHASE_AUDIO_CATEGORY, phase, AUDIO_EVENT_ON)
-  #define PLAY_SWITCH_MOVED(sw)          playModelEvent(SWITCH_AUDIO_CATEGORY, sw)
+  #define PLAY_PHASE_OFF(phase)  playModelEvent(PHASE_AUDIO_CATEGORY, phase, AUDIO_EVENT_OFF)
+  #define PLAY_PHASE_ON(phase)   playModelEvent(PHASE_AUDIO_CATEGORY, phase, AUDIO_EVENT_ON)
+  #define PLAY_SWITCH_MOVED(sw)  playModelEvent(SWITCH_AUDIO_CATEGORY, sw)
 #else
   #define PLAY_PHASE_OFF(phase)
   #define PLAY_PHASE_ON(phase)
