@@ -15,7 +15,7 @@
 #define MAX_PROFILES 15
 #define MAX_JOYSTICKS 8
 
-class DataObj
+class CompanionDataObj
 {
 public:
 	void clear (const QString tag1="", const QString tag2="", const QString tag3="")
@@ -199,7 +199,7 @@ public:
 	}
 }; 
 
-class FwRevision:DataObj
+class FwRevision:CompanionDataObj
 {
 public:
 	int get( const QString fwName )
@@ -221,7 +221,7 @@ public:
 	}
 };
 
-class JStickData:DataObj
+class JStickData:CompanionDataObj
 {
 private:
 	int index;
@@ -306,7 +306,7 @@ public:
 	}
 };
 
-class Profile:DataObj
+class Profile:CompanionDataObj
 {
 private:
 	// Class Internal Variable
@@ -483,7 +483,7 @@ public:
 	}
 };
 
-class AppData:DataObj
+class AppData:CompanionDataObj
 {
 	// All the global variables
 public:
@@ -501,6 +501,7 @@ private:
 	QString _avrArguments;
 	QString _avrPort;
 	QString _avrdudeLocation;
+	QString _compileServer;
 	QString _cpuId;
 	QString _dfuArguments;
 	QString _dfuLocation;
@@ -512,14 +513,14 @@ private:
 	QString _sambaPort;
 
 	QString _backupDir;
-	QString _compileServer;
 	QString _gePath;
-	QString _lastDir;
+	QString _eepromDir;
 	QString _flashDir;
 	QString _imagesDir;
 	QString _logDir;
 	QString _libDir;
 	QString _snapshotDir;
+	QString _updatesDir;
 
 	bool _enableBackup;
 	bool _backupOnFlash;
@@ -557,6 +558,7 @@ public:
 	QString avrArguments()    { return _avrArguments;    }
 	QString avrPort()         { return _avrPort;         }
 	QString avrdudeLocation() { return _avrdudeLocation; }
+	QString compileServer()   { return _compileServer;   }
 	QString cpuId()           { return _cpuId;           }
 	QString dfuArguments()    { return _dfuArguments;    }
 	QString dfuLocation()     { return _dfuLocation;     }
@@ -568,14 +570,14 @@ public:
 	QString sambaPort()       { return _sambaPort;       }
 
 	QString backupDir()       { return _backupDir;       }
-	QString compileServer()   { return _compileServer;   }
 	QString gePath()          { return _gePath;          }
-	QString lastDir()         { return _lastDir;         }
+	QString eepromDir()       { return _eepromDir;       }
 	QString flashDir()        { return _flashDir;        }
 	QString imagesDir()       { return _imagesDir;       }
 	QString logDir()          { return _logDir;          }
 	QString libDir()          { return _libDir;          }
 	QString snapshotDir()     { return _snapshotDir;     }
+	QString updatesDir()      { return _updatesDir;      }
 
 	bool enableBackup()       { return _enableBackup;    }
 	bool backupOnFlash()      { return _backupOnFlash;   }
@@ -611,6 +613,7 @@ public:
 	void avrArguments    (const QString     x) { store(x, _avrArguments,    "avr_arguments"           );}
 	void avrPort         (const QString     x) { store(x, _avrPort,         "avr_port"                );}
 	void avrdudeLocation (const QString     x) { store(x, _avrdudeLocation, "avrdudeLocation"         );}
+	void compileServer   (const QString     x) { store(x, _compileServer,   "compilation-server"      );}
 	void cpuId           (const QString     x) { store(x, _cpuId,           "cpu_id"                  );}
 	void dfuArguments    (const QString     x) { store(x, _dfuArguments,    "dfu_arguments"           );}
 	void dfuLocation     (const QString     x) { store(x, _dfuLocation,     "dfu_location"            );}
@@ -622,14 +625,14 @@ public:
 	void sambaPort       (const QString     x) { store(x, _sambaPort,       "samba_port"              );}
 
 	void backupDir       (const QString     x) { store(x, _backupDir,       "backupPath"              );}
-	void compileServer   (const QString     x) { store(x, _compileServer,   "compilation-server"      );}
 	void gePath          (const QString     x) { store(x, _gePath,          "gePath"                  );}
-	void lastDir         (const QString     x) { store(x, _lastDir,         "lastDir"                 );}
+	void eepromDir       (const QString     x) { store(x, _eepromDir,       "lastDir"                 );}
 	void flashDir        (const QString     x) { store(x, _flashDir,        "lastFlashDir"            );}
 	void imagesDir       (const QString     x) { store(x, _imagesDir,       "lastImagesDir"           );}
 	void logDir          (const QString     x) { store(x, _logDir,          "lastLogDir"              );}
 	void libDir          (const QString     x) { store(x, _libDir,          "libraryPath"             );}
 	void snapshotDir     (const QString     x) { store(x, _snapshotDir,     "snapshotpath"            );}
+	void updatesDir      (const QString     x) { store(x, _updatesDir,      "lastUpdatesDir"          );}
 
 	void enableBackup    (const bool        x) { store(x, _enableBackup,    "backupEnable"            );}
 	void backupOnFlash   (const bool        x) { store(x, _backupOnFlash,   "backupOnFlash"           );}
@@ -715,6 +718,7 @@ public:
 		getset( _avrArguments,    "avr_arguments"           ,"" );
 		getset( _avrPort,         "avr_port"                ,"" );
 		getset( _avrdudeLocation, "avrdudeLocation"        ,"" );
+		getset( _compileServer,   "compilation-server"      ,"" );
 		getset( _cpuId,           "cpu_id"                  ,"" );
 		getset( _dfuArguments,    "dfu_arguments"           ,"-a 0" );
 		getset( _dfuLocation,     "dfu_location"            ,"" );
@@ -726,14 +730,14 @@ public:
 		getset( _sambaPort,       "samba_port"              ,"\\USBserial\\COM23" );
 
 		getset( _backupDir,       "backupPath"              ,"" );
-		getset( _compileServer,   "compilation-server"      ,"" );
 		getset( _gePath,          "gePath"                  ,"" );
-		getset( _lastDir,         "lastDir"                 ,"" );
+		getset( _eepromDir,       "lastDir"                 ,"" );
 		getset( _flashDir,        "lastFlashDir"            ,"" );
 		getset( _imagesDir,       "lastImagesDir"           ,"" );
 		getset( _logDir,          "lastLogDir"              ,"" );
 		getset( _libDir,          "libraryPath"             ,"" );
 		getset( _snapshotDir,     "snapshotpath"            ,"" );
+		getset( _updatesDir,      "lastUpdatesDir"          ,"" );
 
 		getset( _enableBackup,    "backupEnable"            ,false );
 		getset( _backupOnFlash,   "backupOnFlash"           ,true  );

@@ -351,17 +351,17 @@ bool MdiChild::saveAs(bool isNew)
       curFile.replace(".eepe", ".bin");
       QFileInfo fi(curFile);
 #ifdef __APPLE__
-      fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.lastDir() + "/" +fi.fileName());
+      fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName());
 #else
-      fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.lastDir() + "/" +fi.fileName(), tr(BIN_FILES_FILTER));
+      fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName(), tr(BIN_FILES_FILTER));
 #endif      
     }
     else {
       QFileInfo fi(curFile);
 #ifdef __APPLE__
-      fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.lastDir() + "/" +fi.fileName());
+      fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName());
 #else
-      fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.lastDir() + "/" +fi.fileName(), tr(EEPROM_FILES_FILTER));
+      fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName(), tr(EEPROM_FILES_FILTER));
 #endif      
     }
     if (fileName.isEmpty())
@@ -372,7 +372,7 @@ bool MdiChild::saveAs(bool isNew)
     if (fileName.contains("norev4a")) {
       g.rev4aSupport( false );
     }
-    g.lastDir( QFileInfo(fileName).dir().absolutePath() );
+    g.eepromDir( QFileInfo(fileName).dir().absolutePath() );
     if (isNew)
       return saveFile(fileName);
     else 
@@ -681,7 +681,7 @@ void MdiChild::setEEpromAvail(int eavail)
 
 bool MdiChild::loadBackup()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), g.lastDir(),tr(EEPROM_FILES_FILTER));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), g.eepromDir(),tr(EEPROM_FILES_FILTER));
     if (fileName.isEmpty())
       return false;
     QFile file(fileName);

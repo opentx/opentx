@@ -263,12 +263,12 @@ void MainWindow::checkForUpdateFinished(QNetworkReply * reply)
 
         if (ret == QMessageBox::Yes) {
 #if defined __APPLE__          
-          QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.lastUpdatesDir() + QString(C9X_INSTALLER).arg(version));
+          QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.updatesDir() + QString(C9X_INSTALLER).arg(version));
 #else            
-          QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.lastUpdatesDir() + QString(C9X_INSTALLER).arg(version), tr("Executable (*.exe)"));
+          QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.updatesDir() + QString(C9X_INSTALLER).arg(version), tr("Executable (*.exe)"));
 #endif
           if (!fileName.isEmpty()) {
-            g.lastUpdatesDir(QFileInfo(fileName).dir().absolutePath());
+            g.updatesDir(QFileInfo(fileName).dir().absolutePath());
             downloadDialog * dd = new downloadDialog(this, QString(OPENTX_COMPANION_DOWNLOADS C9X_INSTALLER).arg(version), fileName);
             installer_fileName = fileName;
             connect(dd, SIGNAL(accepted()), this, SLOT(updateDownloaded()));
@@ -642,9 +642,9 @@ void MainWindow::openDocURL()
 
 void MainWindow::openFile()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), g.lastDir(), tr(EEPROM_FILES_FILTER));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), g.eepromDir(), tr(EEPROM_FILES_FILTER));
     if (!fileName.isEmpty()) {
-      g.lastDir(QFileInfo(fileName).dir().absolutePath());
+      g.eepromDir(QFileInfo(fileName).dir().absolutePath());
 
       QMdiSubWindow *existing = findMdiChild(fileName);
       if (existing) {
@@ -1055,7 +1055,7 @@ void MainWindow::writeFileToEeprom()
     burnDialog *cd = new burnDialog(this, 1, &fileName, &backup);
     cd->exec();
     if (!fileName.isEmpty()) {
-      g.lastDir(QFileInfo(fileName).dir().absolutePath());
+      g.eepromDir(QFileInfo(fileName).dir().absolutePath());
       int ret = QMessageBox::question(this, "Companion", tr("Write Models and settings from %1 to the Tx?").arg(QFileInfo(fileName).fileName()), QMessageBox::Yes | QMessageBox::No);
       if (ret != QMessageBox::Yes) return;
       if (!isValidEEPROM(fileName))
@@ -1401,7 +1401,7 @@ void MainWindow::writeFlash(QString fileToFlash)
 
 void MainWindow::readEepromToFile()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save transmitter Models and Settings to File"), g.lastDir(), tr(EXTERNAL_EEPROM_FILES_FILTER));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save transmitter Models and Settings to File"), g.eepromDir(), tr(EXTERNAL_EEPROM_FILES_FILTER));
     if (!fileName.isEmpty()) {
       EEPROMInterface *eepromInterface = GetEepromInterface();
       if (IS_TARANIS(eepromInterface->getBoard())) {
@@ -1420,7 +1420,7 @@ void MainWindow::readEepromToFile()
         }
       }
       else {
-        g.lastDir(QFileInfo(fileName).dir().absolutePath());
+        g.eepromDir(QFileInfo(fileName).dir().absolutePath());
         QStringList str = GetReceiveEEpromCommand(fileName);
         avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Read Models and Settings From Tx"));
         ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
@@ -2088,7 +2088,7 @@ void MainWindow::dropEvent(QDropEvent *event)
     QString fileName = urls.first().toLocalFile();
     if (fileName.isEmpty())
       return;
-    g.lastDir(QFileInfo(fileName).dir().absolutePath());
+    g.eepromDir(QFileInfo(fileName).dir().absolutePath());
 
     QMdiSubWindow *existing = findMdiChild(fileName);
     if (existing) {
