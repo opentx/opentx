@@ -230,7 +230,7 @@ void referenceModelAudioFiles()
   sdAvailableLogicalSwitchAudioFiles = 0;
 
   char * filename = getModelPath(path);
-// TODO au cas ou ...  *(filename-1) = '\0';
+  *(filename-1) = '\0';
 
   FRESULT res = f_opendir(&dir, path);        /* Open the directory */
   if (res == FR_OK) {
