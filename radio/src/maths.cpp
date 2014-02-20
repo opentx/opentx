@@ -122,12 +122,14 @@ void varioWakeup()
     int varioFreq, varioDuration, varioPause=0;
     uint8_t varioFlags;
 
-#if 1
-    #warning "Ele stick for vario tests"
-    int verticalSpeed = getValue(MIXSRC_Ele);
-#else
-    int verticalSpeed = frskyData.hub.varioSpeed;
-#endif
+    int verticalSpeed;
+    if (g_model.frsky.varioSource == VARIO_SOURCE_DTE) {
+      #warning "Ele stick for vario tests"
+      verticalSpeed = getValue(MIXSRC_Ele);
+    }
+    else {
+      verticalSpeed = frskyData.hub.varioSpeed;
+    }
 
     int varioCenterMin = (int)g_model.frsky.varioCenterMin * 10 - 50;
     int varioCenterMax = (int)g_model.frsky.varioCenterMax * 10 + 50;
