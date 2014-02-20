@@ -13,6 +13,7 @@ set(simulation_HDRS
   menuwidget.h
   xcursorwidget.h
   xmenuwidget.h
+  myslider.h
 )
 
 if(SDL_FOUND)
