@@ -672,7 +672,7 @@ void MainWindow::openDocURL()
 void MainWindow::openFile()
 {
     QSettings settings;
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), settings.value("lastDir").toString(),tr(EEPROM_FILES_FILTER));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Models and Settings file"), settings.value("lastDir").toString(),tr(EEPROM_FILES_FILTER));
     if (!fileName.isEmpty()) {
       settings.setValue("lastDir", QFileInfo(fileName).dir().absolutePath());
 
@@ -1551,6 +1551,7 @@ void MainWindow::about()
     aboutStr.append("<br/><br/>");
     aboutStr.append(tr("Copyright") + " Bertrand Songis & Romolo Manfredini<br/>&copy; 2011-2014<br/>");
     QMessageBox msgBox(this);
+    msgBox.setWindowIcon(CompanionIcon("information.png"));
     msgBox.setWindowTitle(tr("About Companion"));
     msgBox.setText(aboutStr);
     msgBox.exec();

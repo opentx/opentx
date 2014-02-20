@@ -2,13 +2,14 @@
 #include "ui_downloaddialog.h"
 #include <QMessageBox>
 #include <QtGui>
+#include "helpers.h"
 
 downloadDialog::downloadDialog(QWidget *parent, QString src, QString tgt) :
     QDialog(parent),
     ui(new Ui::downloadDialog)
 {
     ui->setupUi(this);
-
+    this->setWindowIcon(CompanionIcon("fwpreferences.png"));
     ui->progressBar->setValue(1);
     ui->progressBar->setMinimum(0);
     ui->progressBar->setMaximum(0);

@@ -1,13 +1,14 @@
 #include "fusesdialog.h"
 #include "ui_fusesdialog.h"
-
 #include "burnconfigdialog.h"
+#include "helpers.h"
 
 fusesDialog::fusesDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::fusesDialog)
 {
     ui->setupUi(this);
+    this->setWindowIcon(CompanionIcon("fuses.png"));
 }
 
 fusesDialog::~fusesDialog()
