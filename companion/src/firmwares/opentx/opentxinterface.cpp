@@ -1223,7 +1223,7 @@ void RegisterOpen9xFirmwares()
   firmwares.push_back(open9x);
 
   if (g.rev4aSupport()) {
-    open9x = new Open9xFirmware("opentx-taranisrev4a", QObject::tr("OpenTX for FrSky Taranis Rev4a"), new Open9xInterface(BOARD_TARANIS_REV4a), geturl(BOARD_TARANIS_REV4a), getstamp(BOARD_TARANIS_REV4a),getrnurl(BOARD_TARANIS), true);
+    open9x = new Open9xFirmware("opentx-taranisrev4a", QObject::tr("OpenTX for FrSky Taranis Rev4a"), new OpenTxInterface(BOARD_TARANIS_REV4a), geturl(BOARD_TARANIS_REV4a), getstamp(BOARD_TARANIS_REV4a),getrnurl(BOARD_TARANIS), true);
     open9x->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
     open9x->addOption("notemplates", QObject::tr("Disable TEMPLATES menu"));
     open9x->addOption("nogvars", QObject::tr("Disable Global variables"));
