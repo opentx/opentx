@@ -230,8 +230,6 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/translations.qrc.in ${CMAKE_CURRENT_B
 # Subversion_WC_INFO( ${PROJECT_SOURCE_DIR}/../${FIRMWARE} G9X )
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/firmwares/opentx/stamp-opentx.h.in ${CMAKE_CURRENT_BINARY_DIR}/stamp-opentx.h @ONLY)
 
-SET( PATCH_FLAGS "--binary" )
-
 IF( WIN32 )
   SET( companion_SRCS ${companion_SRCS} icon.rc )
   IF ( NOT MSVC )

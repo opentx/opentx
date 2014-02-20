@@ -1,3 +1,5 @@
+INCLUDE( ${QT_USE_FILE} )
+
 set(TH9X_CHECKOUT_DIRECTORY ${PROJECT_BINARY_DIR}/firmwares/th9x)
 add_custom_command(
   OUTPUT ${TH9X_CHECKOUT_DIRECTORY}/th9xsimulator.cpp
@@ -62,8 +64,6 @@ if(SDL_FOUND)
 endif() 
 
 include_directories(
-  # ${CMAKE_BINARY_DIR} 
-  # ${CMAKE_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${PROJECT_SOURCE_DIR}
   ${PROJECT_SOURCE_DIR}/../..
@@ -116,6 +116,18 @@ set(simu_HDRS
 qt4_wrap_cpp(simu_SRCS ${simu_HDRS} )
 qt4_add_resources(simu_SRCS ${COMPANION_SRC_DIRECTORY}/companion.qrc) # TODO not needed
 
+IF( MSVC )
+  SET(CMAKE_CXX_FLAGS "/EHsc /LD")
+  INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/winbuild C:/Programs/pthreads/Pre-built.2/include C:/Programs/msinttypes)
+  LINK_DIRECTORIES( C:/Programs/pthreads/Pre-built.2/lib/ )
+  SET( PTHREAD_LIBRARY pthreadVC2.lib )
+ELSE( )
+  SET( PTHREAD_LIBRARY pthread )
+  ADD_DEFINITIONS( -Wall )
+  LINK_DIRECTORIES( /usr/local/lib )
+ENDIF( )
+
+
 add_executable(simu WIN32 ${simu_SRCS})
 
-target_link_libraries(simu simulation ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS})
+target_link_libraries(simu simulation ${QT_LIBRARIES} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS})
