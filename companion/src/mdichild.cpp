@@ -69,6 +69,7 @@ MdiChild::MdiChild():
   fileChanged(false)
 {
   ui->setupUi(this);
+  this->setWindowIcon(CompanionIcon("open.png"));
   ui->SimulateTxButton->setIcon(CompanionIcon("simulate.png"));
   setAttribute(Qt::WA_DeleteOnClose);
 

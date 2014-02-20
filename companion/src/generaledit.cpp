@@ -18,7 +18,7 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
     g_eeGeneral(radioData.generalSettings)
 {
     ui->setupUi(this);
-    this->setWindowIcon(QIcon(":/icon.png"));
+    this->setWindowIcon(CompanionIcon("open.png"));
 
     QSettings settings;
     QString firmware_id = settings.value("firmware", default_firmware_variant.id).toString();

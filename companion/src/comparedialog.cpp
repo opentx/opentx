@@ -29,6 +29,7 @@ compareDialog::compareDialog(QWidget *parent, GeneralSettings *gg) :
     ui(new Ui::compareDialog)
 {
   ui->setupUi(this);
+  this->setWindowIcon(CompanionIcon("compare.png"));
   g_eeGeneral = gg;
   eepromInterface = GetEepromInterface();
   te = ui->textEdit;

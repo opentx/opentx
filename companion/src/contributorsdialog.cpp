@@ -1,6 +1,7 @@
 #include "contributorsdialog.h"
 #include "ui_contributorsdialog.h"
 #include <QtGui>
+#include "helpers.h"
 
 contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnurl) :
     QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint),
@@ -10,6 +11,7 @@ contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnu
     switch (contest) {
       case 0:
       {
+        this->setWindowIcon(CompanionIcon("contributors.png"));
         QFile file(":/DONATIONS.txt");
         QString str;
         str.append("<html><head>");
@@ -79,6 +81,7 @@ contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnu
       
       case 1:
       {
+        this->setWindowIcon(CompanionIcon("changelog.png"));
         QFile file(":/releasenotes.txt");
         if(file.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
           ui->textEditor->setHtml(file.readAll());
@@ -91,6 +94,7 @@ contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnu
       case 2:
       {
         if (!rnurl.isEmpty()) {
+          this->setWindowIcon(CompanionIcon("changelog.png"));
           this->setWindowTitle(tr("OpenTX Release Notes"));
           manager = new QNetworkAccessManager(this);
           connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));

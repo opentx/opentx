@@ -19,6 +19,7 @@ printDialog::printDialog(QWidget *parent, GeneralSettings *gg, ModelData *gm, QS
     ui(new Ui::printDialog)
 {
     ui->setupUi(this);
+    this->setWindowIcon(CompanionIcon("print.png"));
     g_model = gm;
     g_eeGeneral = gg;
     printfilename=filename;
