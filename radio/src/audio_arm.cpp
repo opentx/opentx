@@ -290,7 +290,7 @@ bool isAudioFileReferenced(uint32_t i, char * filename)
 
   if (category == SYSTEM_AUDIO_CATEGORY) {
     if (sdAvailableSystemAudioFiles & MASK_SYSTEM_AUDIO_FILE(event)) {
-      getSystemAudioFile(filename, index);
+      getSystemAudioFile(filename, event);
       return true;
     }
   }
