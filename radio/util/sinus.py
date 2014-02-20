@@ -3,7 +3,7 @@
 import math
 
 samples = 1024
-amplitudes = (60000, 4096, 1024)
+amplitudes = (28000, 0, 28000, 0, 28000)
 
 for i in range(samples):
   sample = 0.0
