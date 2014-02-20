@@ -37,6 +37,47 @@ void getEEPROMString(char *dst, const char *src, int size)
   }
 }
 
+float ValToTim(int value)
+{
+   return ((value < -109 ? 129+value : (value < 7 ? (113+value)*5 : (53+value)*10))/10.0);
+}
+
+int TimToVal(float value)
+{
+  int temp;
+  if (value>60) {
+    temp=136+round((value-60));
+  }
+  else if (value>2) {
+    temp=20+round((value-2.0)*2.0);
+  }
+  else {
+    temp=round(value*10.0);
+  }
+  return (temp-129);
+}
+
+QString getSignedStr(int value)
+{
+  return value > 0 ? QString("+%1").arg(value) : QString("%1").arg(value);
+}
+
+QString getGVarString(int16_t val, bool sign)
+{
+  if (val >= -10000 && val <= 10000) {
+    if (sign)
+      return QString("%1%").arg(getSignedStr(val));
+    else
+      return QString("%1%").arg(val);
+  }
+  else {
+    if (val<0)
+      return QObject::tr("-GV%1").arg(-val-10000);
+    else
+      return QObject::tr("GV%1").arg(val-10000);
+  }
+}
+
 RawSourceRange RawSource::getRange(bool singleprec)
 {
   RawSourceRange result;

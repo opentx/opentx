@@ -109,8 +109,6 @@ void populateSourceCB(QComboBox *b, const RawSource &source, const ModelData & m
 void populateCSWCB(QComboBox *b, int value);
 QString getPhaseName(int val, char * phasename=NULL);
 QString getInputStr(ModelData & model, int index);
-QString getSignedStr(int value);
-QString getGVarString(int16_t val, bool sign=false);
 QString image2qstring(QImage image);
 QImage qstring2image(QString imagestr);
 int findmult(float value, float base);
@@ -127,9 +125,6 @@ QString getFrSkyUnits(int units);
 QString getFrSkyProtocol(int protocol);
 QString getFrSkyMeasure(int units);
 QString getFrSkySrc(int index);
-
-float ValToTim(int value);
-int TimToVal(float value);
 
 void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx);
 

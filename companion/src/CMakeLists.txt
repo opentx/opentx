@@ -314,7 +314,7 @@ set(simu_SRCS
   ${ERSKY9X_CHECKOUT_DIRECTORY}/ersky9xsimulator.cpp
   ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
   file.cpp # TODO not needed
-  helpers.cpp # TODO not needed
+  # helpers.cpp # TODO not needed
   modeledit/node.cpp
   modeledit/edge.cpp # TODO not needed
   simulation/main.cpp
@@ -322,7 +322,7 @@ set(simu_SRCS
 
 set(simu_HDRS
   modeledit/node.h  
-  helpers.h # TODO not needed
+  # helpers.h # TODO not needed
   myslider.h # TODO not needed
 )
 

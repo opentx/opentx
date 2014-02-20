@@ -1116,6 +1116,12 @@ extern QString EEPROMWarnings;
 void setEEPROMString(char *dst, const char *src, int size);
 void getEEPROMString(char *dst, const char *src, int size);
 
+float ValToTim(int value);
+int TimToVal(float value);
+
+QString getSignedStr(int value);
+QString getGVarString(int16_t val, bool sign=false);
+
 inline int applyStickMode(int stick, unsigned int mode)
 {
   if (mode == 0 || mode > 4) {
