@@ -491,8 +491,8 @@ void processSportPacket(uint8_t *packet)
         uint32_t minCell, minCellNum;
         
         //TODO: Use reported total voltages (bits 4-7)?
-        frskyData.hub.cellVolts[battnumber] = ((cells & 0x000FFF00) >> 8) / 10;
-        frskyData.hub.cellVolts[battnumber+1] = ((cells & 0xFFF00000) >> 20) / 10;
+        frskyData.hub.cellVolts[battnumber] = ((cells & 0x000FFF00) >> 8) / 5;
+        frskyData.hub.cellVolts[battnumber+1] = ((cells & 0xFFF00000) >> 20) / 5;
         
         if (frskyData.hub.cellsCount < battnumber+2)
           frskyData.hub.cellsCount = battnumber+2;
