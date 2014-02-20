@@ -1323,7 +1323,7 @@ uint32_t  switchesPos = 0;
 tmr10ms_t potsLastposStart[NUM_XPOTS];
 uint8_t   potsPos[NUM_XPOTS];
 
-uint32_t check2PosSwitchPosition(EnumKeys sw)
+uint32_t check2PosSwitchPosition(EnumKeys sw, bool play)
 {
   uint32_t result;
   uint32_t index;
@@ -1335,7 +1335,7 @@ uint32_t check2PosSwitchPosition(EnumKeys sw)
 
   result = (1 << index);
 
-  if (!(switchesPos & result)) {
+  if (play && !(switchesPos & result)) {
     PLAY_SWITCH_MOVED(index);
   }
 
@@ -1343,7 +1343,7 @@ uint32_t check2PosSwitchPosition(EnumKeys sw)
 }
 
 #define DELAY_SWITCH_3POS    10/*100ms*/
-uint32_t check3PosSwitchPosition(uint8_t idx, EnumKeys sw)
+uint32_t check3PosSwitchPosition(uint8_t idx, EnumKeys sw, bool play)
 {
   uint32_t result;
   uint32_t index;
@@ -1371,17 +1371,17 @@ uint32_t check3PosSwitchPosition(uint8_t idx, EnumKeys sw)
     result = (switchesPos & (0x7 << (sw - SW_SA0)));
   }
 
-  if (!(switchesPos & result)) {
+  if (play && !(switchesPos & result)) {
     PLAY_SWITCH_MOVED(index);
   }
 
   return result;
 }
 
-#define CHECK_2POS(sw)       newPos |= check2PosSwitchPosition(sw ## 0)
-#define CHECK_3POS(idx, sw)  newPos |= check3PosSwitchPosition(idx, sw ## 0)
+#define CHECK_2POS(sw)       newPos |= check2PosSwitchPosition(sw ## 0, play)
+#define CHECK_3POS(idx, sw)  newPos |= check3PosSwitchPosition(idx, sw ## 0, play)
 
-void getSwitchesPosition()
+void getSwitchesPosition(bool play)
 {
   uint32_t newPos = 0;
   CHECK_3POS(0, SW_SA);
@@ -1415,7 +1415,7 @@ void getSwitchesPosition()
 #define SWITCH_POSITION(sw)  (switchesPos & (1<<(sw)))
 #define POT_POSITION(sw)     ((potsPos[(sw)/POTS_POS_COUNT] & 0x0f) == ((sw) % POTS_POS_COUNT))
 #else
-#define getSwitchesPosition()
+#define getSwitchesPosition(...)
 #define SWITCH_POSITION(idx) switchState((EnumKeys)(SW_BASE+(idx)))
 #endif
 
@@ -3903,17 +3903,25 @@ void doMixerCalculations()
   PORTH |= 0x40; // PORTH:6 LOW->HIGH signals start of mixer interrupt
 #endif
 
-  static tmr10ms_t lastTMR;
+  static tmr10ms_t lastTMR = 0;
 
   tmr10ms_t tmr10ms = get_tmr10ms();
-  uint8_t tick10ms = (tmr10ms >= lastTMR ? tmr10ms - lastTMR : 1);  // handle tick10ms overrun
-  //@@@ open.20.fsguruh: correct overflow handling costs a lot of code; happens only each 11 min;
+  uint8_t tick10ms = (tmr10ms >= lastTMR ? tmr10ms - lastTMR : 1);
+  // handle tick10ms overrun
+  // correct overflow handling costs a lot of code; happens only each 11 min;
   // therefore forget the exact calculation and use only 1 instead; good compromise
+
+#if !defined(CPUARM)
   lastTMR = tmr10ms;
+#endif
 
   getADC();
 
-  getSwitchesPosition();
+  getSwitchesPosition(lastTMR != 0);
+
+#if defined(CPUARM)
+  lastTMR = tmr10ms;
+#endif
 
 #if defined(PCBSKY9X) && !defined(REVA) && !defined(SIMU)
   Current_analogue = (Current_analogue*31 + s_anaFilt[8] ) >> 5 ;
