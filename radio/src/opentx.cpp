@@ -2419,8 +2419,8 @@ void checkSwitches()
                 case 1:
                   lcd_putc(60+i*(5*FW)+2*FW+2, 6*FH-2, g_model.potPosition[i] > (getValue(MIXSRC_FIRST_POT+i) >> 3) ? 126 : 127);
                   break;
-            	  case 2:
-            	  case 3:
+                case 2:
+                case 3:
                   lcd_putc(60+i*(5*FW)+2*FW+2, 6*FH-2, g_model.potPosition[i] > (getValue(MIXSRC_FIRST_POT+i) >> 3) ? '\300' : '\301');
                   break;
               }
@@ -2438,11 +2438,11 @@ void checkSwitches()
       for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
         uint8_t attr;
         if (i == 0)
-        	attr = ((states & 0x03) != (switches_states & 0x03)) ? INVERS : 0;
+          attr = ((states & 0x03) != (switches_states & 0x03)) ? INVERS : 0;
         else
-        	attr = (states & (1 << (i+1))) == (switches_states & (1 << (i+1))) ? 0 : INVERS;
-        if(!(g_model.nSwToWarn & (1<<i)))
-        	putsSwitches(x, 5*FH, (i>0?(i+3):(states&0x3)+1), attr);        
+          attr = (states & (1 << (i+1))) == (switches_states & (1 << (i+1))) ? 0 : INVERS;
+        if (!(g_model.nSwToWarn & (1<<i)))
+          putsSwitches(x, 5*FH, (i>0?(i+3):(states&0x3)+1), attr);
         x += 3*FW+FW/2;
       }
 #endif
