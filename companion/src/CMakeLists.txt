@@ -155,6 +155,7 @@ SET( companion_SRCS
      firmwares/ersky9x/ersky9xinterface.cpp
      ${ERSKY9X_CHECKOUT_DIRECTORY}/ersky9xsimulator.cpp
      ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
+	 appdata.cpp
      helpers.cpp
      mdichild.cpp
      generaledit.cpp
