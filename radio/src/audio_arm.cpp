@@ -266,7 +266,7 @@ void referenceModelAudioFiles()
       // Logical Switches Audio Files <switchname>-[on|off].wav
       for (int i=0; i<NUM_CSW && !found; i++) {
         for (int event=0; event<2; event++) {
-          getLogicalSwitchAudioFile(filename, i, event);
+          getLogicalSwitchAudioFile(path, i, event);
           if (!strcmp(filename, fn)) {
             sdAvailableLogicalSwitchAudioFiles |= MASK_LOGICAL_SWITCH_AUDIO_FILE(i, event);
             found = true;
