@@ -169,6 +169,7 @@ char * getModelPath(char * path)
   strncpy(path+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
   char * result = strcat_modelname(path+sizeof(SOUNDS_PATH), g_eeGeneral.currModel);
   *result++ = '/';
+  *result = '\0';
   return result;
 }
 
@@ -229,6 +230,7 @@ void referenceModelAudioFiles()
   sdAvailableLogicalSwitchAudioFiles = 0;
 
   char * filename = getModelPath(path);
+// TODO au cas ou ...  *(filename-1) = '\0';
 
   FRESULT res = f_opendir(&dir, path);        /* Open the directory */
   if (res == FR_OK) {
