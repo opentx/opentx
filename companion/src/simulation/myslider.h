@@ -1,9 +1,6 @@
-/* 
- * File:   mySlider.h
- * Author: Romolo Manfredini
- *
- * Created on 11 gennaio 2012, 23.39
- */
+#ifndef MYSLIDER_H
+#define MYSLIDER_H
+
 #include <QSlider>
 #include <QtGui>
 
@@ -31,4 +28,4 @@ protected:
   }
 };
 
-
+#endif

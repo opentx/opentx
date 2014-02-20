@@ -47,7 +47,9 @@ class SimulatorInterface {
 
   public:
 
-    virtual void start(RadioData &radioData, bool tests) = 0;
+    virtual void start(QByteArray & eeprom, bool tests=true) = 0;
+
+    virtual void start(const char * filename, bool tests=true) = 0;
 
     virtual void stop() = 0;
 

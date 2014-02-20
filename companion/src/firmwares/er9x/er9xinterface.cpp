@@ -303,7 +303,7 @@ int Er9xInterface::isAvailable(Protocol prot, int port)
 
 SimulatorInterface * Er9xInterface::getSimulator()
 {
-  return new Er9xSimulator(this);
+  return NULL; // new Er9xSimulator(this);
 }
 
 

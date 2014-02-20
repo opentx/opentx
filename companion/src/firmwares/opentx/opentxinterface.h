@@ -23,13 +23,13 @@
 
 class EFile;
 
-class Open9xInterface : public EEPROMInterface
+class OpenTxInterface : public EEPROMInterface
 {
   public:
 
-    Open9xInterface(BoardEnum board);
+    OpenTxInterface(BoardEnum board);
 
-    virtual ~Open9xInterface();
+    virtual ~OpenTxInterface();
 
     virtual const char * getName();
 
