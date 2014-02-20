@@ -331,7 +331,11 @@ endif()
 
 add_executable(simulator WIN32 ${simu_SRCS})
 
-target_link_libraries(simulator simulation ${QT_LIBRARIES} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS})
+if(SDL_FOUND)
+  target_link_libraries(simulator simulation ${QT_LIBRARIES} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS})
+else()
+  target_link_libraries(simulator simulation ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS})
+endif()
 
 ############# Packaging ####################
 
