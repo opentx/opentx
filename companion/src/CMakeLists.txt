@@ -73,7 +73,7 @@ ELSE( )
 ENDIF( )
 
 set(RADIO_SRC_DIRECTORY ${PROJECT_SOURCE_DIR}/../../radio/src)
-set(SIMU_SRC_DIRECTORY ${PROJECT_SOURCE_DIR}/simulator)
+set(SIMU_SRC_DIRECTORY ${PROJECT_SOURCE_DIR}/simulation)
 set(COMPANION_SRC_DIRECTORY ${PROJECT_SOURCE_DIR})
 
 add_custom_command(
@@ -94,7 +94,7 @@ include_directories(
 )
 
 add_subdirectory(modeledit)
-add_subdirectory(simulator)
+add_subdirectory(simulation)
 
 SET( companion_SRCS
      eeprominterface.cpp
@@ -260,6 +260,85 @@ ENDIF( )
 
 TARGET_LINK_LIBRARIES( ${PROJECT_NAME} modeledit simulation ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} )
 
+############# Standalone simu ###############
+
+set(TH9X_CHECKOUT_DIRECTORY ${PROJECT_BINARY_DIR}/firmwares/th9x)
+add_custom_command(
+  OUTPUT ${TH9X_CHECKOUT_DIRECTORY}/th9xsimulator.cpp
+  COMMAND ${CMAKE_COMMAND} -E make_directory ${TH9X_CHECKOUT_DIRECTORY}
+  COMMAND cd ${TH9X_CHECKOUT_DIRECTORY} && svn checkout http://th9x.googlecode.com/svn/trunk/src@285 .
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/firmwares/th9x/th9xsimulator.cpp ${TH9X_CHECKOUT_DIRECTORY}
+  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/firmwares/th9x/th9xsimulator.cpp
+)
+
+set(ER9X_CHECKOUT_DIRECTORY ${PROJECT_BINARY_DIR}/firmwares/er9x)
+add_custom_command(
+  OUTPUT ${ER9X_CHECKOUT_DIRECTORY}/er9xsimulator.cpp
+  COMMAND ${CMAKE_COMMAND} -E make_directory ${ER9X_CHECKOUT_DIRECTORY}
+  COMMAND cd ${ER9X_CHECKOUT_DIRECTORY} && svn checkout http://er9x.googlecode.com/svn/trunk/src@790 .
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/firmwares/er9x/er9xsimulator.cpp ${ER9X_CHECKOUT_DIRECTORY}
+  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/firmwares/er9x/er9xsimulator.cpp
+)
+
+set(ERSKY9X_CHECKOUT_DIRECTORY ${PROJECT_BINARY_DIR}/firmwares/ersky9x)
+add_custom_command(
+  OUTPUT ${ERSKY9X_CHECKOUT_DIRECTORY}/ersky9xsimulator.cpp
+  COMMAND ${CMAKE_COMMAND} -E make_directory ${ERSKY9X_CHECKOUT_DIRECTORY}
+  COMMAND cd ${ERSKY9X_CHECKOUT_DIRECTORY} && svn checkout http://ersky9x.googlecode.com/svn/trunk/src@170 .
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/firmwares/ersky9x/ersky9xsimulator.cpp ${ERSKY9X_CHECKOUT_DIRECTORY}
+  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/firmwares/ersky9x/ersky9xsimulator.cpp
+)
+
+set(simu_SRCS
+  eeprominterface.cpp
+  firmwares/th9x/th9xeeprom.cpp # TODO not needed
+  firmwares/th9x/th9xinterface.cpp
+  ${TH9X_CHECKOUT_DIRECTORY}/th9xsimulator.cpp
+  firmwares/er9x/er9xeeprom.cpp # TODO not needed
+  firmwares/er9x/er9xinterface.cpp
+  ${ER9X_CHECKOUT_DIRECTORY}/er9xsimulator.cpp
+  firmwares/gruvin9x/gruvin9xeeprom.cpp # TODO not needed
+  firmwares/gruvin9x/gruvin9xinterface.cpp  
+  firmwares/opentx/opentxeeprom.cpp # TODO not needed
+  firmwares/opentx/open9xStockeeprom.cpp # TODO not needed
+  firmwares/opentx/open9xGruvin9xeeprom.cpp # TODO not needed
+  firmwares/opentx/open9xSky9xeeprom.cpp # TODO not needed
+  firmwares/opentx/opentxinterface.cpp
+  firmwares/opentx/opentxTaranisSimulator.cpp
+  firmwares/opentx/opentxSky9xsimulator.cpp
+  firmwares/opentx/opentxGruvin9xsimulator.cpp
+  firmwares/opentx/opentxM128simulator.cpp
+  firmwares/opentx/opentxsimulator.cpp  
+  firmwares/ersky9x/ersky9xeeprom.cpp # TODO not needed
+  firmwares/ersky9x/ersky9xinterface.cpp
+  ${ERSKY9X_CHECKOUT_DIRECTORY}/ersky9xsimulator.cpp
+  ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
+  file.cpp # TODO not needed
+  helpers.cpp # TODO not needed
+  modeledit/node.cpp
+  modeledit/edge.cpp # TODO not needed
+  simulation/main.cpp
+)
+
+set(simu_HDRS
+  modeledit/node.h  
+  helpers.h # TODO not needed
+  myslider.h # TODO not needed
+)
+
+qt4_wrap_cpp(simu_SRCS ${simu_HDRS} )
+qt4_add_resources(simu_SRCS companion.qrc) # TODO not needed
+
+if(WIN32)
+  set(simu_SRCS ${simu_SRCS} icon.rc)
+endif()
+
+add_executable(simulator WIN32 ${simu_SRCS})
+
+target_link_libraries(simulator simulation ${QT_LIBRARIES} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS})
+
+############# Packaging ####################
+
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     INSTALL( TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin )
     INSTALL( FILES companion.desktop DESTINATION share/applications )
@@ -302,7 +381,8 @@ IF( WIN32 )
 
   ADD_CUSTOM_TARGET( installer
     DEPENDS ${PROJECT_BINARY_DIR}/companionInstall.exe
-    SOURCES ${PROJECT_BINARY_DIR}/companion.nsi)
+    SOURCES ${PROJECT_BINARY_DIR}/companion.nsi
+  )
 ENDIF( )
 
 IF( APPLE )
