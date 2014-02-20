@@ -163,12 +163,18 @@ void referenceSystemAudioFiles()
 
 const char * suffixes[] = { "-off", "-on" };
 
+char * getModelPath(char * path)
+{
+  strcpy(path, SOUNDS_PATH "/");
+  strncpy(path+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
+  char * result = strcat_modelname(path+sizeof(SOUNDS_PATH), g_eeGeneral.currModel);
+  *result++ = '/';
+  return result;
+}
+
 void getPhaseAudioFile(char * filename, int index, unsigned int event)
 {
-  strcpy(filename, SOUNDS_PATH "/");
-  strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
-  char *str = strcat_modelname(filename+sizeof(SOUNDS_PATH), g_eeGeneral.currModel);
-  *str++ = '/';
+  char * str = getModelPath(filename);
   char * tmp = strcat_phasename(str, index);
   strcpy(tmp, suffixes[event]);
   strcat(tmp, SOUNDS_EXT);
@@ -176,10 +182,7 @@ void getPhaseAudioFile(char * filename, int index, unsigned int event)
 
 void getSwitchAudioFile(char * filename, int index)
 {
-  strcpy(filename, SOUNDS_PATH "/");
-  strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
-  char *str = strcat_modelname(filename+sizeof(SOUNDS_PATH), g_eeGeneral.currModel);
-  *str++ = '/';
+  char * str = getModelPath(filename);
   int len = STR_VSWITCHES[0];
   strncpy(str, &STR_VSWITCHES[1+len*index], len);
   str += len-1;
@@ -203,10 +206,7 @@ void getSwitchAudioFile(char * filename, int index)
 
 void getLogicalSwitchAudioFile(char * filename, int index, unsigned int event)
 {
-  strcpy(filename, SOUNDS_PATH "/");
-  strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
-  char *str = strcat_modelname(filename+sizeof(SOUNDS_PATH), g_eeGeneral.currModel);
-  *str++ = '/';
+  char * str = getModelPath(filename);
   int len = STR_VSWITCHES[0];
   strncpy(str, &STR_VSWITCHES[1+len*(index+SWSRC_FIRST_CSW-1)], len);
   str += len;
@@ -216,46 +216,65 @@ void getLogicalSwitchAudioFile(char * filename, int index, unsigned int event)
 
 void referenceModelAudioFiles()
 {
-  char filename[AUDIO_FILENAME_MAXLEN+1];
+  char path[AUDIO_FILENAME_MAXLEN+1];
+  FILINFO fno;
+  DIR dir;
+  char *fn;   /* This function is assuming non-Unicode cfg. */
+  TCHAR lfn[_MAX_LFN + 1];
+  fno.lfname = lfn;
+  fno.lfsize = sizeof(lfn);
 
-  {
-    // Phases Audio Files <phasename>-[on|off].wav
-    uint32_t mask = 0;
-    for (int i=0; i<MAX_PHASES; i++) {
-      for (int event=0; event<2; event++) {
-        getPhaseAudioFile(filename, i, event);
-        if (isFileAvailable(filename)) {
-          mask |= MASK_PHASE_AUDIO_FILE(i, event);
+  sdAvailablePhaseAudioFiles = 0;
+  sdAvailableSwitchAudioFiles = 0;
+  sdAvailableLogicalSwitchAudioFiles = 0;
+
+  char * filename = getModelPath(path);
+
+  FRESULT res = f_opendir(&dir, path);        /* Open the directory */
+  if (res == FR_OK) {
+    for (;;) {
+      res = f_readdir(&dir, &fno);                   /* Read a directory item */
+      if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
+      fn = *fno.lfname ? fno.lfname : fno.fname;
+      uint8_t len = strlen(fn);
+      bool found = false;
+
+      // Eliminates directories / non wav files
+      if (len < 5 || strcasecmp(fn+len-4, SOUNDS_EXT) || (fno.fattrib & AM_DIR)) continue;
+
+      // Phases Audio Files <phasename>-[on|off].wav
+      for (int i=0; i<MAX_PHASES && !found; i++) {
+        for (int event=0; event<2; event++) {
+          getPhaseAudioFile(path, i, event);
+          if (!strcmp(filename, fn)) {
+            sdAvailablePhaseAudioFiles |= MASK_PHASE_AUDIO_FILE(i, event);
+            found = true;
+            break;
+          }
+        }
+      }
+
+      // Switches Audio Files <switchname>-[up|mid|down].wav
+      for (int i=0; i<SWSRC_LAST_SWITCH+NUM_XPOTS*POTS_POS_COUNT && !found; i++) {
+        getSwitchAudioFile(path, i);
+        if (!strcmp(filename, fn)) {
+          sdAvailableSwitchAudioFiles |= MASK_SWITCH_AUDIO_FILE(i);
+          found = true;
+        }
+      }
+
+      // Logical Switches Audio Files <switchname>-[on|off].wav
+      for (int i=0; i<NUM_CSW && !found; i++) {
+        for (int event=0; event<2; event++) {
+          getLogicalSwitchAudioFile(filename, i, event);
+          if (isFileAvailable(filename)) {
+            sdAvailableLogicalSwitchAudioFiles |= MASK_LOGICAL_SWITCH_AUDIO_FILE(i, event);
+            found = true;
+            break;
+          }
         }
       }
     }
-    sdAvailablePhaseAudioFiles = mask;
-  }
-
-  {
-    // Switches Audio Files <switchname>-[up|mid|down].wav
-    uint32_t mask = 0;
-    for (int i=0; i<SWSRC_LAST_SWITCH+NUM_XPOTS*POTS_POS_COUNT; i++) {
-      getSwitchAudioFile(filename, i);
-      if (isFileAvailable(filename)) {
-        mask |= MASK_SWITCH_AUDIO_FILE(i);
-      }
-    }
-    sdAvailableSwitchAudioFiles = mask;
-  }
-
-  {
-    // Logical Switches Audio Files <switchname>-[on|off].wav
-    uint64_t mask = 0;
-    for (int i=0; i<NUM_CSW; i++) {
-      for (int event=0; event<2; event++) {
-        getLogicalSwitchAudioFile(filename, i, event);
-        if (isFileAvailable(filename)) {
-          mask |= MASK_LOGICAL_SWITCH_AUDIO_FILE(i, event);
-        }
-      }
-    }
-    sdAvailableLogicalSwitchAudioFiles = mask;
   }
 }
 
