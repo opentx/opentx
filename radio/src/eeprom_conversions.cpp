@@ -212,9 +212,27 @@ PACK(typedef struct {
 
 }) ModelData_v215;
 
+PACK(typedef struct {
+  uint8_t   version;
+  uint16_t  variant;
+  int16_t   calibMid[NUM_STICKS+NUM_POTS];
+  int16_t   calibSpanNeg[NUM_STICKS+NUM_POTS];
+  int16_t   calibSpanPos[NUM_STICKS+NUM_POTS];
+  uint16_t  chkSum;
+}) GeneralSettings_v215;
+
 void ConvertGeneralSettings_215_to_216(EEGeneral &settings)
 {
+  GeneralSettings_v215 oldSettings;
+  memcpy(&oldSettings, &settings, sizeof(oldSettings));
+
   settings.version = 216;
+  for (int i=0; i<NUM_STICKS+NUM_POTS; i++) {
+    settings.calib[i].mid = oldSettings.calibMid[i];
+    settings.calib[i].spanNeg = oldSettings.calibSpanNeg[i];
+    settings.calib[i].spanPos = oldSettings.calibSpanPos[i];
+  }
+  settings.chkSum = evalChkSum();
 }
 
 #if defined(PCBTARANIS)
