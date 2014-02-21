@@ -2347,6 +2347,8 @@ void checkAll()
 #endif
 
   clearKeyEvents();
+
+  SKIP_AUTOMATIC_PROMPTS();
 }
 
 #if defined(MODULE_ALWAYS_SEND_PULSES)

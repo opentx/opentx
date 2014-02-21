@@ -135,26 +135,63 @@ bool isFileAvailable(const char * filename)
   return f_stat(filename, &info) == FR_OK;
 }
 
+char * getAudioPath(char * path)
+{
+  strcpy(path, SOUNDS_PATH "/");
+  strncpy(path+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
+  return path + sizeof(SOUNDS_PATH);
+}
+
+char * getSystemAudioPath(char * path)
+{
+  char * str = getAudioPath(path);
+  strcpy(str, SYSTEM_SUBDIR "/");
+  return str + sizeof(SYSTEM_SUBDIR);
+}
+
 void getSystemAudioFile(char * filename, int index)
 {
-  strcpy(filename, SYSTEM_SOUNDS_PATH "/");
-  strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
-  strcpy(filename+sizeof(SYSTEM_SOUNDS_PATH), audioFilenames[index]);
-  strcat(filename+sizeof(SYSTEM_SOUNDS_PATH), SOUNDS_EXT);
+  char * str = getAudioPath(filename);
+  strcpy(str, audioFilenames[index]);
+  strcat(str, SOUNDS_EXT);
 }
 
 void referenceSystemAudioFiles()
 {
-  char filename[AUDIO_FILENAME_MAXLEN+1];
+  char path[AUDIO_FILENAME_MAXLEN+1];
+  FILINFO fno;
+  DIR dir;
+  char *fn;   /* This function is assuming non-Unicode cfg. */
+  TCHAR lfn[_MAX_LFN + 1];
+  fno.lfname = lfn;
+  fno.lfsize = sizeof(lfn);
+
   uint64_t availableAudioFiles = 0;
 
   assert(sizeof(audioFilenames)==AU_FRSKY_FIRST*sizeof(char *));
   assert(sizeof(sdAvailableSystemAudioFiles)*8 >= AU_FRSKY_FIRST);
 
-  for (int i=0; i<AU_FRSKY_FIRST; i++) {
-    getSystemAudioFile(filename, i);
-    if (isFileAvailable(filename)) {
-      availableAudioFiles |= MASK_SYSTEM_AUDIO_FILE(i);
+  char * filename = getSystemAudioPath(path);
+  *(filename-1) = '\0';
+
+  FRESULT res = f_opendir(&dir, path);        /* Open the directory */
+  if (res == FR_OK) {
+    for (;;) {
+      res = f_readdir(&dir, &fno);                   /* Read a directory item */
+      if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
+      fn = *fno.lfname ? fno.lfname : fno.fname;
+      uint8_t len = strlen(fn);
+
+      // Eliminates directories / non wav files
+      if (len < 5 || strcasecmp(fn+len-4, SOUNDS_EXT) || (fno.fattrib & AM_DIR)) continue;
+
+      for (int i=0; i<AU_FRSKY_FIRST; i++) {
+        getSystemAudioFile(path, i);
+        if (!strcmp(filename, fn)) {
+          availableAudioFiles |= MASK_SYSTEM_AUDIO_FILE(i);
+          break;
+        }
+      }
     }
   }
 
@@ -1070,16 +1107,13 @@ void audioEvent(uint8_t e, uint16_t f)
 void pushPrompt(uint16_t prompt, uint8_t id)
 {
 #if defined(SDCARD)
-
-  char filename[] = SYSTEM_SOUNDS_PATH "/0000" SOUNDS_EXT;
-  strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
-
+  char filename[AUDIO_FILENAME_MAXLEN+1];
+  char * str = getSystemAudioPath(filename);
+  strcpy(str, "0000" SOUNDS_EXT);
   for (int8_t i=3; i>=0; i--) {
-    filename[sizeof(SYSTEM_SOUNDS_PATH)+i] = '0' + (prompt%10);
+    str[i] = '0' + (prompt%10);
     prompt /= 10;
   }
-
   audioQueue.playFile(filename, 0, id);
-
 #endif
 }
