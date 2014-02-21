@@ -622,7 +622,7 @@ void AudioQueue::wakeup()
     }
 
     // mix the background context
-    if (!isFunctionActive(FUNCTION_BACKGND_MUSIC_PAUSE)) {
+    if (isFunctionActive(FUNCTION_BACKGND_MUSIC) && !isFunctionActive(FUNCTION_BACKGND_MUSIC_PAUSE)) {
       result = backgroundContext.mixBuffer(buffer, g_eeGeneral.backgroundVolume, fade);
       if (result > 0) {
         size = max(size, result);

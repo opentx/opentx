@@ -3259,7 +3259,7 @@ void evalFunctions()
 
       if (active || IS_PLAY_BOTH_FUNC(CFN_FUNC(sd))) {
 
-        switch(CFN_FUNC(sd)) {
+        switch (CFN_FUNC(sd)) {
 
           case FUNC_SAFETY_CHANNEL:
             safetyCh[CFN_CH_INDEX(sd)] = CFN_PARAM(sd);
@@ -3479,11 +3479,6 @@ void evalFunctions()
         lastFunctionTime[i] = 0;
 #if defined(CPUARM)
         fnSwitchDuration[i] = 0;
-#endif
-#if defined(CPUARM) && defined(SDCARD)
-        if (CFN_FUNC(sd) == FUNC_BACKGND_MUSIC && isFunctionActive(FUNCTION_BACKGND_MUSIC)) {
-          STOP_PLAY(i+1);
-        }
 #endif
       }
     }
