@@ -1309,7 +1309,6 @@ getvalue_t getValue(uint8_t i)
 
 volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_used = 0;
 volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_value = 0;
-/* recursive function. stack as of today (16/03/2012) grows by 8bytes at each call, which is ok! */
 
 #if defined(CPUARM)
 uint32_t cswDelays[NUM_CSW];
@@ -1425,6 +1424,8 @@ void getSwitchesPosition(bool play)
 
 int16_t csLastValue[NUM_CSW];
 #define CS_LAST_VALUE_INIT -32768
+
+/* recursive function. stack as of today (16/03/2012) grows by 8bytes at each call, which is ok! */
 bool getSwitch(int8_t swtch)
 {
   bool result;

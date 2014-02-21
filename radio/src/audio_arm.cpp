@@ -118,12 +118,12 @@ const char * audioFilenames[] = {
 
 uint64_t sdAvailableSystemAudioFiles = 0;
 uint32_t sdAvailablePhaseAudioFiles = 0;
-uint32_t sdAvailableSwitchAudioFiles = 0;
+uint64_t sdAvailableSwitchAudioFiles = 0;
 uint64_t sdAvailableLogicalSwitchAudioFiles = 0;
 
 #define MASK_SYSTEM_AUDIO_FILE(index)                 ((uint64_t)1 << index)
 #define MASK_PHASE_AUDIO_FILE(index, event)           ((uint32_t)1 << (2*index+event))
-#define MASK_SWITCH_AUDIO_FILE(index)                 ((uint32_t)1 << index)
+#define MASK_SWITCH_AUDIO_FILE(index)                 ((uint64_t)1 << index)
 #define MASK_LOGICAL_SWITCH_AUDIO_FILE(index, event)  ((uint64_t)1 << (2*index+event))
 
 bool isFileAvailable(const char * filename)
