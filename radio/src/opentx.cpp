@@ -1327,7 +1327,7 @@ uint32_t  switchesPos = 0;
 tmr10ms_t potsLastposStart[NUM_XPOTS];
 uint8_t   potsPos[NUM_XPOTS];
 
-uint32_t check2PosSwitchPosition(EnumKeys sw, bool play)
+uint32_t check2PosSwitchPosition(EnumKeys sw, bool startup)
 {
   uint32_t result;
   uint32_t index;
@@ -1339,7 +1339,7 @@ uint32_t check2PosSwitchPosition(EnumKeys sw, bool play)
 
   result = (1 << index);
 
-  if (play && !(switchesPos & result)) {
+  if (!startup && !(switchesPos & result)) {
     PLAY_SWITCH_MOVED(index);
   }
 
@@ -1347,7 +1347,7 @@ uint32_t check2PosSwitchPosition(EnumKeys sw, bool play)
 }
 
 #define DELAY_SWITCH_3POS    10/*100ms*/
-uint32_t check3PosSwitchPosition(uint8_t idx, EnumKeys sw, bool play)
+uint32_t check3PosSwitchPosition(uint8_t idx, EnumKeys sw, bool startup)
 {
   uint32_t result;
   uint32_t index;
@@ -1362,7 +1362,7 @@ uint32_t check3PosSwitchPosition(uint8_t idx, EnumKeys sw, bool play)
     result = (1 << index);
     switchesMidposStart[idx] = 0;
   }
-  else if ((switchesPos & (1 << (sw - SW_SA0 + 1))) || (switchesMidposStart[idx] && (tmr10ms_t)(get_tmr10ms() - switchesMidposStart[idx]) > DELAY_SWITCH_3POS)) {
+  else if (startup || (switchesPos & (1 << (sw - SW_SA0 + 1))) || (switchesMidposStart[idx] && (tmr10ms_t)(get_tmr10ms() - switchesMidposStart[idx]) > DELAY_SWITCH_3POS)) {
     index = sw - SW_SA0 + 1;
     result = (1 << index);
     switchesMidposStart[idx] = 0;
@@ -1375,17 +1375,17 @@ uint32_t check3PosSwitchPosition(uint8_t idx, EnumKeys sw, bool play)
     result = (switchesPos & (0x7 << (sw - SW_SA0)));
   }
 
-  if (play && !(switchesPos & result)) {
+  if (!startup && !(switchesPos & result)) {
     PLAY_SWITCH_MOVED(index);
   }
 
   return result;
 }
 
-#define CHECK_2POS(sw)       newPos |= check2PosSwitchPosition(sw ## 0, play)
-#define CHECK_3POS(idx, sw)  newPos |= check3PosSwitchPosition(idx, sw ## 0, play)
+#define CHECK_2POS(sw)       newPos |= check2PosSwitchPosition(sw ## 0, startup)
+#define CHECK_3POS(idx, sw)  newPos |= check3PosSwitchPosition(idx, sw ## 0, startup)
 
-void getSwitchesPosition(bool play)
+void getSwitchesPosition(bool startup)
 {
   uint32_t newPos = 0;
   CHECK_3POS(0, SW_SA);
@@ -1409,10 +1409,10 @@ void getSwitchesPosition(bool play)
           potsLastposStart[i] = get_tmr10ms();
           potsPos[i] = (pos << 4) | previousStoredPos;
         }
-        else if ((tmr10ms_t)(get_tmr10ms() - potsLastposStart[i]) > DELAY_SWITCH_3POS) {
+        else if (startup || (tmr10ms_t)(get_tmr10ms() - potsLastposStart[i]) > DELAY_SWITCH_3POS) {
           potsLastposStart[i] = 0;
           potsPos[i] = (pos << 4) | pos;
-          if (play && previousStoredPos != pos) {
+          if (!startup && previousStoredPos != pos) {
             PLAY_SWITCH_MOVED(SWSRC_LAST_SWITCH+i*POTS_POS_COUNT+pos);
           }
         }
@@ -2460,14 +2460,15 @@ void checkSwitches()
       }
     }
     uint8_t potMode = g_model.nPotsToWarn >> 6;
-    if(potMode) {
+    if (potMode) {
       perOut(e_perout_mode_normal, 0);
       bad_pots = 0;
-        for (uint8_t i=0; i<NUM_POTS; i++) 
-          if(!(g_model.nPotsToWarn & (1 << i)) && (abs(g_model.potPosition[i] - (getValue(MIXSRC_FIRST_POT+i) >> 3)) > 2)) {
-            warn = true;
-            bad_pots  |= (1<<i);
-          }
+      for (uint8_t i=0; i<NUM_POTS; i++) {
+        if (!(g_model.nPotsToWarn & (1 << i)) && (abs(g_model.potPosition[i] - (getValue(MIXSRC_FIRST_POT+i) >> 3)) > 2)) {
+          warn = true;
+          bad_pots  |= (1<<i);
+        }
+      }
     }
 #else
     for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
@@ -2497,7 +2498,7 @@ void checkSwitches()
     if ((last_bad_switches != switches_states) || (last_bad_pots != bad_pots)) {
       MESSAGE(STR_SWITCHWARN, NULL, STR_PRESSANYKEYTOSKIP, ((last_bad_switches == 0xff) || (last_bad_pots == 0xff)) ? AU_SWITCH_ALERT : AU_NONE);
       for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
-        if(!(g_model.nSwToWarn & (1<<i))) {
+        if (!(g_model.nSwToWarn & (1<<i))) {
           swstate_t mask = (0x03 << (i*2));
           uint8_t attr = ((states & mask) == (switches_states & mask)) ? 0 : INVERS;
           char c = "\300-\301"[(states & mask) >> (i*2)];
@@ -4018,7 +4019,7 @@ void doMixerCalculations()
 
   getADC();
 
-  getSwitchesPosition(lastTMR != 0);
+  getSwitchesPosition(lastTMR == 0);
 
 #if defined(CPUARM)
   lastTMR = tmr10ms;
