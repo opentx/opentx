@@ -697,10 +697,6 @@ ifeq ($(PCB), TARANIS)
     CPPSRC += protocols/hubsan.cpp
     CPPSRC += targets/taranis/a7105_driver.cpp
   endif
-  
-  ifeq ($(TURNIGY_TRANSMITTER_FIX), YES)
-    $(error TURNIGY_TRANSMITTER_FIX is not yet implemented for Taranis. If this is actually needed, getSwitch() needs to be modified)
-  endif
 endif
 
 CC      = $(TRGT)gcc
@@ -774,7 +770,11 @@ ifeq ($(NAVIGATION), ROTENC)
 endif
 
 ifeq ($(TURNIGY_TRANSMITTER_FIX), YES)
-  CPPDEFS += -DMODULE_ALWAYS_SEND_PULSES
+  ifeq ($(PCB), TARANIS)
+    $(warning TURNIGY_TRANSMITTER_FIX is not available on Taranis)
+  else
+    CPPDEFS += -DMODULE_ALWAYS_SEND_PULSES
+  endif
 endif
 
 ifeq ($(AUTOSWITCH), YES)
