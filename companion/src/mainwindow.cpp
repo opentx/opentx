@@ -1981,14 +1981,11 @@ void MainWindow::updateProfilesActions()
 
 void MainWindow::createProfile()
 { int i;
-  for (i=0; i<MAX_PROFILES && !g.profile[i].name().isEmpty(); i++)
+for (i=0; i<MAX_PROFILES && g.profile[i].existsOnDisk(); i++)
     ;
   if (i==MAX_PROFILES)  //Failed to find free slot
     return;
  
-  // Create profile by forcing it to write to disk
-  g.profile[i].flush();
-
   // Copy current profile to new and give it a new name
   g.profile[i] = g.profile[g.id()];
   g.profile[i].name( QString("New Radio"));
