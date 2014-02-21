@@ -808,7 +808,6 @@ enum PerOutMode {
 extern uint8_t startupWarningState;
 
 enum StartupWarningStates {
-  STARTUP_WARNING_INIT,
   STARTUP_WARNING_THROTTLE,
   STARTUP_WARNING_SWITCHES,
   STARTUP_WARNING_DONE,

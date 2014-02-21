@@ -2287,7 +2287,7 @@ void checkAll()
 #endif
 
 #if defined(MODULE_ALWAYS_SEND_PULSES)
-  startupWarningState = STARTUP_WARNING_INIT;
+  startupWarningState = STARTUP_WARNING_THROTTLE;
 #else
   checkTHR();
   checkSwitches();
@@ -2308,12 +2308,12 @@ void checkAll()
 #if defined(MODULE_ALWAYS_SEND_PULSES)
 void checkStartupWarnings()
 {
-  if (startupWarningState >= STARTUP_WARNING_DONE) return;   // no more checks
-
-  if (startupWarningState < STARTUP_WARNING_SWITCHES)
-    checkTHR();
-  else
-    checkSwitches();
+  if (startupWarningState < STARTUP_WARNING_DONE) {
+    if (startupWarningState == STARTUP_WARNING_THROTTLE)
+      checkTHR();
+    else
+      checkSwitches();
+  }
 }
 #endif
 
@@ -2333,27 +2333,19 @@ void checkTHR()
   // throttle channel is either the stick according stick mode (already handled in evalInputs)
   // or P1 to P3;
   // in case an output channel is choosen as throttle source (thrTraceSrc>NUM_POTS) we assume the throttle stick is the input
-  // no other information avaialbe at the moment, and good enough to my option (otherwise too much exceptions...)  
+  // no other information available at the moment, and good enough to my option (otherwise too much exceptions...)
 
 #if defined(MODULE_ALWAYS_SEND_PULSES)
   int16_t v = calibratedStick[thrchn];
-  if ((v<=(THRCHK_DEADBAND-1024)) || g_model.disableThrottleWarning) {
-    startupWarningState = STARTUP_WARNING_SWITCHES; // TODO += 1
+  if (v<=THRCHK_DEADBAND-1024 || g_model.disableThrottleWarning || pwrCheck()==e_power_off || keyDown()) {
+    startupWarningState = STARTUP_WARNING_THROTTLE+1;
   }
   else {
     calibratedStick[thrchn] = -1024;
 #if !defined(PCBTARANIS)    
     rawAnas[thrchn] = anas[thrchn] = calibratedStick[thrchn];
 #endif  
-    if (startupWarningState < STARTUP_WARNING_THROTTLE) {
-      // warning message is not yet visible
-      MESSAGE(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_THROTTLE_ALERT);
-      startupWarningState = STARTUP_WARNING_THROTTLE;
-    }
-    else if (pwrCheck()==e_power_off || keyDown()) {
-      // key pressed -> disable warning
-      startupWarningState = STARTUP_WARNING_SWITCHES;
-    }
+    MESSAGE(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_THROTTLE_ALERT);
   }
 #else
   if (g_model.disableThrottleWarning) return;
@@ -2386,7 +2378,7 @@ void checkAlarm() // added by Gohst
 
 void checkSwitches()
 {
-#ifdef MODULE_ALWAYS_SEND_PULSES
+#if defined(MODULE_ALWAYS_SEND_PULSES)
   static swstate_t last_bad_switches = 0xff;
 #else
   swstate_t last_bad_switches = 0xff;
@@ -2397,13 +2389,13 @@ void checkSwitches()
   uint8_t bad_pots = 0, last_bad_pots = 0xff;
 #endif
 
-#ifndef MODULE_ALWAYS_SEND_PULSES
+#if !defined(MODULE_ALWAYS_SEND_PULSES)
   while (1) {
 
 #if defined(TELEMETRY_MOD_14051) || defined(PCBTARANIS)
     getADC();
 #endif
-#endif  //MODULE_ALWAYS_SEND_PULSES
+#endif  // !defined(MODULE_ALWAYS_SEND_PULSES)
 
     getMovedSwitch();
   
@@ -2430,24 +2422,24 @@ void checkSwitches()
     for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
       if (!(g_model.nSwToWarn & (1<<i))) {
       	if (i == 0) {
-      		if((states & 0x03) != (switches_states & 0x03))
-      			warn = true;
-      		}
-        else if((states & (1<<(i+1))) != (switches_states & (1<<(i+1))))
-           warn = true;
+      	  if ((states & 0x03) != (switches_states & 0x03)) {
+      	    warn = true;
+      	  }
+      	}
+        else if ((states & (1<<(i+1))) != (switches_states & (1<<(i+1)))) {
+          warn = true;
+        }
       }
     }
 #endif
 
-#if defined(MODULE_ALWAYS_SEND_PULSES)
     if (!warn) {
-      startupWarningState = STARTUP_WARNING_DONE;
+#if defined(MODULE_ALWAYS_SEND_PULSES)
+      startupWarningState = STARTUP_WARNING_SWITCHES+1;
       last_bad_switches = 0xff;
+#endif
       return;
     }
-#else
-    if(!warn) return;
-#endif
 
     // first - display warning
 #if defined(PCBTARANIS)
@@ -2504,14 +2496,12 @@ void checkSwitches()
     }
 
 #if defined(MODULE_ALWAYS_SEND_PULSES)
-    // startupWarningState=e_InWarnSwitchWarnActive; not needed, because redraw is prevented with last switch compare
     if (pwrCheck()==e_power_off || keyDown()) {
-      startupWarningState = STARTUP_WARNING_DONE;
+      startupWarningState = STARTUP_WARNING_SWITCHES+1;
       last_bad_switches = 0xff;
-      // return; // Usb on or power off
-    }    
-#else    
-    if (pwrCheck()==e_power_off || keyDown()) return; // Usb on or power off
+    }
+#else
+    if (pwrCheck()==e_power_off || keyDown()) return;
 
     checkBacklight();
 
