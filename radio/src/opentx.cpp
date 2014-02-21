@@ -1327,7 +1327,7 @@ uint32_t  switchesPos = 0;
 tmr10ms_t potsLastposStart[NUM_XPOTS];
 uint8_t   potsPos[NUM_XPOTS];
 
-uint32_t check2PosSwitchPosition(EnumKeys sw, bool startup)
+uint32_t check2PosSwitchPosition(EnumKeys sw)
 {
   uint32_t result;
   uint32_t index;
@@ -1339,7 +1339,7 @@ uint32_t check2PosSwitchPosition(EnumKeys sw, bool startup)
 
   result = (1 << index);
 
-  if (!startup && !(switchesPos & result)) {
+  if (!(switchesPos & result)) {
     PLAY_SWITCH_MOVED(index);
   }
 
@@ -1375,14 +1375,14 @@ uint32_t check3PosSwitchPosition(uint8_t idx, EnumKeys sw, bool startup)
     result = (switchesPos & (0x7 << (sw - SW_SA0)));
   }
 
-  if (!startup && !(switchesPos & result)) {
+  if (!(switchesPos & result)) {
     PLAY_SWITCH_MOVED(index);
   }
 
   return result;
 }
 
-#define CHECK_2POS(sw)       newPos |= check2PosSwitchPosition(sw ## 0, startup)
+#define CHECK_2POS(sw)       newPos |= check2PosSwitchPosition(sw ## 0)
 #define CHECK_3POS(idx, sw)  newPos |= check3PosSwitchPosition(idx, sw ## 0, startup)
 
 void getSwitchesPosition(bool startup)
@@ -1412,7 +1412,7 @@ void getSwitchesPosition(bool startup)
         else if (startup || (tmr10ms_t)(get_tmr10ms() - potsLastposStart[i]) > DELAY_SWITCH_3POS) {
           potsLastposStart[i] = 0;
           potsPos[i] = (pos << 4) | pos;
-          if (!startup && previousStoredPos != pos) {
+          if (previousStoredPos != pos) {
             PLAY_SWITCH_MOVED(SWSRC_LAST_SWITCH+i*POTS_POS_COUNT+pos);
           }
         }
@@ -1650,10 +1650,14 @@ bool getSwitch(int8_t swtch)
       }
 #endif
 
-      if (result)
+      if (result) {
+        PLAY_LOGICAL_SWITCH_ON(cs_idx);
         s_last_switch_value |= mask;
-      else
+      }
+      else {
+        PLAY_LOGICAL_SWITCH_OFF(cs_idx);
         s_last_switch_value &= ~mask;
+      }
     }
   }
 
@@ -2998,10 +3002,13 @@ void resetAll()
 #if defined(FRSKY)
   resetTelemetry();
 #endif
-  for (uint8_t i=0; i<NUM_CSW; i++)
+  for (uint8_t i=0; i<NUM_CSW; i++) {
     csLastValue[i] = CS_LAST_VALUE_INIT;
+  }
 
   s_last_switch_value = 0;
+
+  SKIP_AUTOMATIC_PROMPTS();
 
   RESET_THR_TRACE();
 }
