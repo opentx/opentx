@@ -1651,11 +1651,11 @@ bool getSwitch(int8_t swtch)
 #endif
 
       if (result) {
-        PLAY_LOGICAL_SWITCH_ON(cs_idx);
+        if (!(s_last_switch_value&mask)) PLAY_LOGICAL_SWITCH_ON(cs_idx);
         s_last_switch_value |= mask;
       }
       else {
-        PLAY_LOGICAL_SWITCH_OFF(cs_idx);
+        if (s_last_switch_value&mask) PLAY_LOGICAL_SWITCH_OFF(cs_idx);
         s_last_switch_value &= ~mask;
       }
     }
@@ -3405,7 +3405,7 @@ void evalFunctions()
 
       if (active || IS_PLAY_BOTH_FUNC(CFN_FUNC(sd))) {
 
-        switch(CFN_FUNC(sd)) {
+        switch (CFN_FUNC(sd)) {
 
           case FUNC_SAFETY_CHANNEL:
             safetyCh[CFN_CH_INDEX(sd)] = CFN_PARAM(sd);
