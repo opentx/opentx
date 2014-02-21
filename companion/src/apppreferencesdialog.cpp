@@ -56,9 +56,6 @@ void appPreferencesDialog::writeValues()
     g.jsSupport(false);
     g.jsCtrl(0);
   }
-
-  g.id(ui->profileIndexLE->text().toInt());
-
   g.profile[g.id()].channelOrder(ui->channelorderCB->currentIndex());
   g.profile[g.id()].defaultMode(ui->stickmodeCB->currentIndex());
   g.profile[g.id()].renameFwFiles(ui->renameFirmware->isChecked());
@@ -147,7 +144,6 @@ void appPreferencesDialog::initSettings()
   ui->stickmodeCB->setCurrentIndex(g.profile[g.id()].defaultMode());
   ui->renameFirmware->setChecked(g.profile[g.id()].renameFwFiles());
   ui->sdPath->setText(g.profile[g.id()].sdPath());
-  ui->profileIndexLE->setText(QString("%1").arg(g.id()));
   ui->profileNameLE->setText(g.profile[g.id()].name());
   ui->firmwareLE->setText(g.profile[g.id()].firmware());
   ui->SplashFileName->setText(g.profile[g.id()].splashFile());

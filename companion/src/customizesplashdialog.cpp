@@ -14,9 +14,19 @@ Side::Side(){
   imageLabel = 0;
   fileNameEdit = 0;
   saveButton = 0;
+  loadFwButton=0;
+  loadPictButton = 0;
+  loadProfileButton = 0;
   saveToFileName = new QString("");
   source = new Source(UNDEFINED);
   format = new LCDFormat(LCDTARANIS);
+}
+
+void Side::markSourceButton()
+{
+    loadFwButton->setChecked(*source == FW ? true : false );
+    loadPictButton->setChecked(*source == PICT ? true : false );
+    loadProfileButton->setChecked(*source == PROFILE ? true : false );
 }
 
 void Side::copyImage( Side side )
@@ -160,8 +170,17 @@ customizeSplashDialog::customizeSplashDialog(QWidget *parent) :
   right.libraryButton = ui->rightLibraryButton;
   left.invertButton = ui->leftInvertButton;
   right.invertButton = ui->rightInvertButton;
+  
+  left.loadFwButton =  ui->leftLoadFwButton;
+  right.loadFwButton =  ui->rightLoadFwButton;
+  left.loadPictButton =  ui->leftLoadPictButton;
+  right.loadPictButton =  ui->rightLoadPictButton;
+  left.loadProfileButton =  ui->leftLoadProfileButton;
+  right.loadProfileButton =  ui->rightLoadProfileButton;
 
   loadProfile(left);
+  left.markSourceButton();
+
   resize(0,0);
 }
 
@@ -189,6 +208,7 @@ void customizeSplashDialog::loadFirmware(Side side)
     else
     g.flashDir( QFileInfo(fileName).dir().absolutePath() );
   }
+  side.markSourceButton();
 }
 
 void customizeSplashDialog::on_leftLoadPictButton_clicked() {loadPicture(left);}
@@ -208,6 +228,7 @@ void customizeSplashDialog::loadPicture(Side side)
     else
       g.imagesDir( QFileInfo(fileName).dir().absolutePath() );
   }
+  side.markSourceButton();
 }
 
 void customizeSplashDialog::on_leftLoadProfileButton_clicked() {loadProfile(left);}
@@ -220,6 +241,7 @@ void customizeSplashDialog::loadProfile(Side side)
     if (!side.displayImage( fileName, PROFILE ))
       QMessageBox::critical(this, tr("Error"), tr("Cannot load the profile image %1.").arg(fileName));
   }
+  side.markSourceButton();
 }
 
 void customizeSplashDialog::on_leftLibraryButton_clicked(){libraryButton_clicked(left);}

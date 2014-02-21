@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>685</width>
-    <height>446</height>
+    <height>442</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -133,12 +133,12 @@
          </property>
          <item>
           <property name="text">
-           <string>Include companion splashes</string>
+           <string>Only show user splash images</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>Only user defined splashes</string>
+           <string>Show user and companion splash images</string>
           </property>
          </item>
         </widget>
@@ -706,13 +706,6 @@ This is used by the templated to determine which channel goes to what number out
          </item>
         </widget>
        </item>
-       <item row="3" column="1" colspan="5">
-        <widget class="Line" name="line_3">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
        <item row="10" column="0">
         <widget class="QLabel" name="label_14">
          <property name="sizePolicy">
@@ -809,6 +802,12 @@ This is used by the templated to determine which channel goes to what number out
            <height>0</height>
           </size>
          </property>
+         <property name="maximumSize">
+          <size>
+           <width>350</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="readOnly">
           <bool>true</bool>
          </property>
@@ -862,8 +861,14 @@ This is used by the templated to determine which channel goes to what number out
          </property>
          <property name="minimumSize">
           <size>
-           <width>0</width>
+           <width>350</width>
            <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>350</width>
+           <height>16777215</height>
           </size>
          </property>
          <property name="readOnly">
@@ -883,6 +888,18 @@ This is used by the templated to determine which channel goes to what number out
          <property name="enabled">
           <bool>false</bool>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>350</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>350</width>
+           <height>16777215</height>
+          </size>
+         </property>
         </widget>
        </item>
        <item row="4" column="6">
@@ -899,25 +916,18 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </widget>
        </item>
-       <item row="0" column="6">
-        <widget class="QLineEdit" name="profileIndexLE">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>30</width>
-           <height>16777215</height>
-          </size>
-         </property>
-        </widget>
-       </item>
        <item row="0" column="1">
         <widget class="QLineEdit" name="profileNameLE">
          <property name="minimumSize">
           <size>
-           <width>0</width>
+           <width>350</width>
            <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>350</width>
+           <height>16777215</height>
           </size>
          </property>
         </widget>
@@ -953,6 +963,13 @@ This is used by the templated to determine which channel goes to what number out
          </property>
          <property name="scaledContents">
           <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1" colspan="6">
+        <widget class="Line" name="line_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
          </property>
         </widget>
        </item>
