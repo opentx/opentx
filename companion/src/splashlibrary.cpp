@@ -1,14 +1,16 @@
 #include "splashlibrary.h"
 #include "ui_splashlibrary.h"
-
+#include "appdata.h"
 #include <QtGui>
 #include "helpers.h"
 //#include "splashlabel.h"
 #include "flashinterface.h"
+#include "helpers.h"
 
 splashLibrary::splashLibrary(QWidget *parent, QString * fileName) : QDialog(parent), ui(new Ui::splashLibrary) {
   splashFileName = fileName;
   ui->setupUi(this);
+  this->setWindowIcon(CompanionIcon("library.png"));
   ui->nextPage->setIcon(CompanionIcon("arrow-right.png"));
   ui->prevPage->setIcon(CompanionIcon("arrow-left.png"));
   page = 0;
@@ -61,9 +63,8 @@ void splashLibrary::setupPage(int page) {
 }
 
 void splashLibrary::getFileList() {
-  QSettings settings;
   imageList.clear();
-  if (settings.value("embedded_splashes", 0).toInt() == 0) {
+  if (g.embedSplashes()) {
     QDir myRes(":/images/library");
     QStringList tmp = myRes.entryList();
     for (int i = 0; i < tmp.size(); i++) {
@@ -71,7 +72,7 @@ void splashLibrary::getFileList() {
       imageList.append(":/images/library/" + fileInfo.fileName());
     }
   }
-  QString libraryPath = settings.value("libraryPath", "").toString();
+  QString libraryPath = g.libDir();
   if (!libraryPath.isEmpty()) {
     if (QDir(libraryPath).exists()) {
       QStringList supportedImageFormats;

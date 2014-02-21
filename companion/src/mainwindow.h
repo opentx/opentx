@@ -48,9 +48,9 @@
 #include "downloaddialog.h"
 #include "eeprominterface.h"
 
-#define MAX_RECENT  15
-#define MAX_PROFILES  10
 #define SPLASH_TIME 5
+#define MAX_RECENT 10
+#define MAX_PROFILES 15
 
 class MdiChild;
 QT_BEGIN_NAMESPACE
@@ -99,7 +99,7 @@ private slots:
 
     void setTheme(int index);
     void setClassicTheme()   {setTheme(0);};
-    void setNewTheme()       {setTheme(1);};
+    void setYericoTheme()    {setTheme(1);};
     void setMonoWhiteTheme() {setTheme(2);};
     void setMonochromeTheme(){setTheme(3);};
     void setMonoBlueTheme()  {setTheme(4);};
@@ -165,7 +165,6 @@ private:
     void createMenus();
     void createToolBars();
     void createStatusBar();
-    void readSettings();
     void updateRecentFileActions();
     void updateProfilesActions();
     void updateIconSizeActions();
@@ -201,11 +200,8 @@ private:
     QString downloadedFWFilename;
     downloadDialog * downloadDialog_forWait;
 
-    bool checkCompanion;
-    bool checkFW;
     bool needRename;
     bool showcheckForUpdatesResult;
-    int MaxRecentFiles;
     int currentFWrev;
     int currentFWrev_temp;
     int NewFwRev;
@@ -260,7 +256,7 @@ private:
     QAction *profileActs[MAX_PROFILES];
     QAction *createProfileAct;
     QAction *classicThemeAct;
-    QAction *newThemeAct;
+    QAction *yericoThemeAct;
     QAction *monoThemeAct;
     QAction *monoBlueAct;
     QAction *monoWhiteAct;

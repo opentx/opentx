@@ -6,12 +6,12 @@
 /simu.d
 /snapshot_*.png
 /*.sh
+/*.bat
 /*.o
 /*.bin
 /*.bin.*
 /*.lst
 /SCRIPTS
+/TEMPLATES
 /SOUNDS
 /LOGS
-/*.bat
-/TEMPLATES

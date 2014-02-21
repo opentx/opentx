@@ -107,7 +107,7 @@ uint8_t getStickMode()
 
 using namespace Open9x;
 
-Open9xSimulator::Open9xSimulator(Open9xInterface * open9xInterface):
+Open9xSimulator::Open9xSimulator(OpenTxInterface * open9xInterface):
     open9xInterface(open9xInterface)
 {
 #define INIT_IMPORT
@@ -132,10 +132,17 @@ bool Open9xSimulator::lcdChanged(bool & lightEnable)
 #include "simulatorimport.h"
 }
 
-void Open9xSimulator::start(RadioData &radioData, bool tests)
+void Open9xSimulator::start(QByteArray & eeprom, bool tests)
 {
-  open9xInterface->save(&Open9x::eeprom[0], radioData, SIMU_STOCK_VARIANTS);
+  memcpy(&Open9x::eeprom[0], eeprom.data(), 2048);
   StartEepromThread(NULL);
+  StartMainThread(tests);
+}
+
+void Open9xSimulator::start(const char * filename, bool tests)
+{
+  // open9xInterface->save(&Open9x::eeprom[0], radioData, SIMU_STOCK_VARIANTS);
+  StartEepromThread(filename);
   StartMainThread(tests);
 }
 

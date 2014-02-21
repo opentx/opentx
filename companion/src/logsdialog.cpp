@@ -1,6 +1,8 @@
 #include "logsdialog.h"
+#include "appdata.h"
 #include "ui_logsdialog.h"
 #include "qcustomplot.h"
+#include "helpers.h"
 #if defined WIN32 || !defined __GNUC__
 #include <windows.h>
 #else
@@ -14,6 +16,7 @@ logsDialog::logsDialog(QWidget *parent) :
   csvlog.clear();
   srand(QDateTime::currentDateTime().toTime_t());
   ui->setupUi(this);
+  this->setWindowIcon(CompanionIcon("logs.png"));
   palette.clear();
   plotLock=false;
   for (int i=0; i< 60; i++) 
@@ -38,8 +41,7 @@ logsDialog::logsDialog(QWidget *parent) :
   ui->customPlot->legend->setSelectedFont(legendFont);
   ui->customPlot->legend->setSelectable(QCPLegend::spItems); // legend box shall not be selectable, only legend items
   ui->customPlot->legend->setVisible(false);
-  QSettings settings;
-  QString Path=settings.value("gePath", "").toString();
+  QString Path=g.gePath();
   if (Path.isEmpty() || !QFile(Path).exists()) {
     ui->mapsButton->hide();
   }  
@@ -202,8 +204,7 @@ void logsDialog::on_mapsButton_clicked() {
         ,F_F,F_F,F_F,F_F,I_F,I_F,I_F,I_F\
         ,I_F,I_F,I_F,I_F,I_F,I_F,I_F,I_F,I_F,I_F,I_F,I_F};
     
-  QSettings settings;
-  QString gePath=settings.value("gePath", "").toString();
+  QString gePath=g.gePath();
   if (gePath.isEmpty() || !QFile(gePath).exists()) {
     ui->FieldsTW->setDisabled(false);
     ui->logTable->setDisabled(false);
@@ -585,10 +586,9 @@ void logsDialog::moveLegend()
 
 void logsDialog::on_fileOpen_BT_clicked()
 {
-  QSettings settings;
-  QString fileName = QFileDialog::getOpenFileName(this,tr("Select your log file"), settings.value("lastLogDir").toString());
+  QString fileName = QFileDialog::getOpenFileName(this,tr("Select your log file"), g.logDir());
   if (!fileName.isEmpty()) {
-    settings.setValue("lastLogDir", fileName);
+    g.logDir( fileName );
     ui->FileName_LE->setText(fileName);
     if (cvsFileParse()) {
       ui->FieldsTW->clear();

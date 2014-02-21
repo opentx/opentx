@@ -365,9 +365,9 @@ void StartEepromThread(const char *filename)
 {
   eepromFile = filename;
   if (eepromFile) {
-    fp = fopen(eepromFile, "r+");
+    fp = fopen(eepromFile, "rb+");
     if (!fp)
-      fp = fopen(eepromFile, "w+");
+      fp = fopen(eepromFile, "wb+");
     if (!fp) perror("error in fopen");
   }
 #ifdef __APPLE__
@@ -496,7 +496,7 @@ FRESULT f_open (FIL * fil, const TCHAR *name, BYTE flag)
       return FR_INVALID_NAME;
     fil->fsize = tmp.st_size;
   }
-  fil->fs = (FATFS*)fopen(path, (flag & FA_WRITE) ? "w+" : "r+");
+  fil->fs = (FATFS*)fopen(path, (flag & FA_WRITE) ? "wb+" : "rb+");
   return FR_OK;
 }
 

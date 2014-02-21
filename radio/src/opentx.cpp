@@ -51,6 +51,9 @@ int24_t act   [MAX_MIXERS] = {0};
 SwOn    swOn  [MAX_MIXERS]; // TODO better name later...
 
 uint8_t mixWarning;
+#if defined(MODULE_ALWAYS_SEND_PULSES)
+  uint8_t startupWarningState;
+#endif
 
 #if defined(CPUARM)
 #define MENUS_STACK_SIZE    2000
@@ -1247,9 +1250,11 @@ getvalue_t getValue(uint8_t i)
   else if (i==MIXSRC_SH) return (switchState(SW_SH0) ? -1024 : 1024);
   else if (i<=MIXSRC_LAST_CSW) return getSwitch(SWSRC_FIRST_CSW+i-MIXSRC_FIRST_CSW) ? 1024 : -1024;
 #else
-  else if (i==MIXSRC_3POS) return (switchState(SW_ID0) ? -1024 : (switchState(SW_ID1) ? 0 : 1024));
+  else if (i==MIXSRC_3POS) return (getSwitch(SW_ID0-SW_BASE+1) ? -1024 : (getSwitch(SW_ID1-SW_BASE+1) ? 0 : 1024));
+  // don't use switchState directly to give getSwitch possibility to hack values if needed for switch warning 
 #if defined(EXTRA_3POS)
-  else if (i==MIXSRC_3POS2) return (switchState(SW_ID3) ? -1024 : (switchState(SW_ID4) ? 0 : 1024));
+  else if (i==MIXSRC_3POS2) return (getSwitch(SW_ID3-SW_BASE+1) ? -1024 : (getSwitch(SW_ID4-SW_BASE+1) ? 0 : 1024));
+  // don't use switchState directly to give getSwitch possibility to hack values if needed for switch warning 
 #endif
   else if (i<=MIXSRC_LAST_CSW) return getSwitch(SWSRC_THR+i-MIXSRC_THR) ? 1024 : -1024;
 #endif
@@ -1280,7 +1285,7 @@ getvalue_t getValue(uint8_t i)
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_SPEED) return TELEMETRY_GPS_SPEED_BP;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_DIST) return frskyData.hub.gpsDistance;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_GPSALT) return TELEMETRY_GPS_ALT_BP;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_CELL) return (int16_t)frskyData.hub.minCellVolts * 2;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_CELL) return (int16_t)TELEMETRY_MIN_CELL_VOLTAGE;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_CELLS_SUM) return (int16_t)frskyData.hub.cellsSum;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_VFAS) return (int16_t)frskyData.hub.vfas;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_CURRENT) return (int16_t)frskyData.hub.current;
@@ -1440,6 +1445,20 @@ bool getSwitch(int8_t swtch)
   }
   else if (cs_idx <= SWSRC_LAST_SWITCH) {
     result = SWITCH_POSITION(cs_idx-SWSRC_FIRST_SWITCH);
+#if defined(MODULE_ALWAYS_SEND_PULSES)
+    if (startupWarningState < STARTUP_WARNING_DONE) {
+      // if throttle or switch warning is currently active, ignore actual stick position and use wanted values
+      if (cs_idx <= 3) {
+        if (!(g_model.nSwToWarn&1)) {     // ID1 to ID3 is just one bit in nSwToWarn
+          result = (cs_idx)==((g_model.switchWarningStates&3)+1);  // overwrite result with desired value
+        }
+      }
+      else if (!(g_model.nSwToWarn & (1<<(cs_idx-3)))) {
+        // current switch should not be ignored for warning
+        result = g_model.switchWarningStates & (1<<(cs_idx-2)); // overwrite result with desired value
+      }
+    }
+#endif
   }
 #if defined(PCBTARANIS)
   else if (cs_idx <= SWSRC_P26) {
@@ -1665,6 +1684,30 @@ int8_t getMovedSwitch()
     }
   }
 #else
+  // saves about 50 bytes flash
+  // return delivers 1 to 3 for ID1 to ID3
+  // 4..8 for all other switches if changed to true
+  // -4..-8 for all other switches if changed to false
+  // 9 for Trainer switch if changed to true; Change to false is ignored
+  
+  swstate_t mask=0x80;
+  for (uint8_t i=NUM_PSWITCH; i>1; i--) {
+    bool prev;
+    // mask= (1<<(i-2));
+    prev=(switches_states & mask);
+    // don't use getSwitch here to always get the proper value, even getSwitch manipulates
+    // bool next = getSwitch(i);
+    bool next = switchState((EnumKeys)(SW_BASE+i-1));
+    if (prev!=next) {
+      if (((i<NUM_PSWITCH) && (i>3)) || next==true) 
+        result = next ? i : -i;
+      if ((i<=3) && (result==0)) result=1;
+      switches_states ^= mask;
+    }
+    mask>>=1;
+  } //endfor
+
+/*
   for (uint8_t i=NUM_PSWITCH; i>0; i--) {
     bool prev;
     swstate_t mask = 0;
@@ -1675,7 +1718,9 @@ int8_t getMovedSwitch()
       mask = (1<<(i-2));
       prev = (switches_states & mask);
     }
-    bool next = getSwitch(i);
+    // don't use getSwitch here to always get the proper value, because getSwitch manipulates
+    // bool next = getSwitch(i);
+    bool next = switchState((EnumKeys)(SW_BASE+i-1));
     if (prev != next) {
       if (i!=NUM_PSWITCH || next==true)
         result = next ? i : -i;
@@ -1685,7 +1730,7 @@ int8_t getMovedSwitch()
         switches_states = (switches_states & 0xFC) | (i-1);
       }
     }
-  }
+  } //endfor */
 #endif
 
   if ((tmr10ms_t)(get_tmr10ms() - s_move_last_time) > 10)
@@ -2281,8 +2326,12 @@ void checkAll()
   checkLowEEPROM();
 #endif
 
+#if defined(MODULE_ALWAYS_SEND_PULSES)
+  startupWarningState = STARTUP_WARNING_THROTTLE;
+#else
   checkTHR();
   checkSwitches();
+#endif
 
 #if defined(PCBTARANIS)
   if (modelHasNotes() && g_model.displayText) {
@@ -2296,6 +2345,18 @@ void checkAll()
   clearKeyEvents();
 }
 
+#if defined(MODULE_ALWAYS_SEND_PULSES)
+void checkStartupWarnings()
+{
+  if (startupWarningState < STARTUP_WARNING_DONE) {
+    if (startupWarningState == STARTUP_WARNING_THROTTLE)
+      checkTHR();
+    else
+      checkSwitches();
+  }
+}
+#endif
+
 #if !defined(PCBSKY9X)
 void checkLowEEPROM()
 {
@@ -2308,72 +2369,94 @@ void checkLowEEPROM()
 
 void checkTHR()
 {
+  uint8_t thrchn = ((g_model.thrTraceSrc==0) || (g_model.thrTraceSrc>NUM_POTS)) ? THR_STICK : g_model.thrTraceSrc+NUM_STICKS-1;
+  // throttle channel is either the stick according stick mode (already handled in evalInputs)
+  // or P1 to P3;
+  // in case an output channel is choosen as throttle source (thrTraceSrc>NUM_POTS) we assume the throttle stick is the input
+  // no other information available at the moment, and good enough to my option (otherwise too much exceptions...)
+
+#if defined(MODULE_ALWAYS_SEND_PULSES)
+  int16_t v = calibratedStick[thrchn];
+  if (v<=THRCHK_DEADBAND-1024 || g_model.disableThrottleWarning || pwrCheck()==e_power_off || keyDown()) {
+    startupWarningState = STARTUP_WARNING_THROTTLE+1;
+  }
+  else {
+    calibratedStick[thrchn] = -1024;
+#if !defined(PCBTARANIS)    
+    rawAnas[thrchn] = anas[thrchn] = calibratedStick[thrchn];
+#endif  
+    MESSAGE(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_THROTTLE_ALERT);
+  }
+#else
   if (g_model.disableThrottleWarning) return;
 
-  uint8_t thrchn = (2-(stickMode&1)); //stickMode=0123 -> thr=2121
+  evalInputs(e_perout_mode_notrainer); // let do evalInputs do the job
 
-#ifdef SIMU
-  int16_t lowLim = THRCHK_DEADBAND - 1024 ;
-#else
-  getADC();   // if thr is down - do not display warning at all
-  CalibData * calib = &g_eeGeneral.calib[thrchn];
-  int16_t lowLim = calib->mid;
-  lowLim = (g_model.throttleReversed ? - lowLim - calib->spanPos : lowLim - calib->spanNeg);
-  lowLim += THRCHK_DEADBAND;
-#endif
-  int16_t v = thrAnaIn(thrchn);
+  int16_t v = calibratedStick[thrchn];   
+  if (v<=(THRCHK_DEADBAND-1024)) return;  // prevent warning if throttle input OK
 
-  if (v<=lowLim) return;
+  // first - display warning; also deletes inputs if any have been before
+  MESSAGE(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_THROTTLE_ALERT);  
+  
+  while (1) {
+  
+    SIMU_SLEEP(1);
 
-  // first - display warning
-  MESSAGE(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_THROTTLE_ALERT);
+    getADC();
 
-  while (1)
-  {
-      SIMU_SLEEP(1);
+    evalInputs(e_perout_mode_notrainer); // let do evalInputs do the job
+    v = calibratedStick[thrchn];   
 
-      getADC();
-
-      int16_t v = thrAnaIn(thrchn);
-
-      if (pwrCheck()==e_power_off || keyDown() || v<=lowLim)
-        break;
-
-      checkBacklight();
-
-      wdt_reset();
+    if (pwrCheck()==e_power_off || keyDown() || v<=(THRCHK_DEADBAND-1024))
+      break;
+        
+    checkBacklight();
+    
+    wdt_reset();
   }
+#endif
 }
 
 void checkAlarm() // added by Gohst
 {
-  if (g_eeGeneral.disableAlarmWarning) return;
-  if (IS_SOUND_OFF()) ALERT(STR_ALARMSWARN, STR_ALARMSDISABLED, AU_ERROR);
+  if (g_eeGeneral.disableAlarmWarning) 
+    return;
+
+  if (IS_SOUND_OFF())
+    ALERT(STR_ALARMSWARN, STR_ALARMSDISABLED, AU_ERROR);
 }
 
 void checkSwitches()
 {
+#if defined(MODULE_ALWAYS_SEND_PULSES)
+  static swstate_t last_bad_switches = 0xff;
+#else
   swstate_t last_bad_switches = 0xff;
+#endif
   swstate_t states = g_model.switchWarningStates;
+  
 #if defined(PCBTARANIS)
   uint8_t bad_pots = 0, last_bad_pots = 0xff;
 #endif
 
+#if !defined(MODULE_ALWAYS_SEND_PULSES)
   while (1) {
 
 #if defined(TELEMETRY_MOD_14051) || defined(PCBTARANIS)
     getADC();
 #endif
+#endif  // !defined(MODULE_ALWAYS_SEND_PULSES)
 
     getMovedSwitch();
   
-    uint8_t warn = false;
+    bool warn = false;
 #if defined(PCBTARANIS)
     for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
       if (!(g_model.nSwToWarn & (1<<i))) {
         swstate_t mask = (0x03 << (i*2));
-        if(!((states & mask) == (switches_states & mask)))
+        if (!((states & mask) == (switches_states & mask))) {
           warn = true;
+        }
       }
     }
     uint8_t potMode = g_model.nPotsToWarn >> 6;
@@ -2390,16 +2473,24 @@ void checkSwitches()
     for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
       if (!(g_model.nSwToWarn & (1<<i))) {
       	if (i == 0) {
-      		if((states & 0x03) != (switches_states & 0x03))
-      			warn = true;
-      		}
-        else if((states & (1<<(i+1))) != (switches_states & (1<<(i+1))))
-           warn = true;
+      	  if ((states & 0x03) != (switches_states & 0x03)) {
+      	    warn = true;
+      	  }
+      	}
+        else if ((states & (1<<(i+1))) != (switches_states & (1<<(i+1)))) {
+          warn = true;
+        }
       }
     }
 #endif
 
-    if(!warn) return;
+    if (!warn) {
+#if defined(MODULE_ALWAYS_SEND_PULSES)
+      startupWarningState = STARTUP_WARNING_SWITCHES+1;
+      last_bad_switches = 0xff;
+#endif
+      return;
+    }
 
     // first - display warning
 #if defined(PCBTARANIS)
@@ -2414,7 +2505,7 @@ void checkSwitches()
           lcd_putcAtt(60+i*(2*FW+FW/2)+FW, 4*FH+3, c, attr);
         }
       }
-      if(potMode) {
+      if (potMode) {
         for (uint8_t i=0; i<NUM_POTS; i++) {
           if (!(g_model.nPotsToWarn & (1 << i))) {
             uint8_t flags = 0;
@@ -2455,7 +2546,13 @@ void checkSwitches()
       last_bad_switches = switches_states;
     }
 
-    if (pwrCheck()==e_power_off || keyDown()) return; // Usb on or power off
+#if defined(MODULE_ALWAYS_SEND_PULSES)
+    if (pwrCheck()==e_power_off || keyDown()) {
+      startupWarningState = STARTUP_WARNING_SWITCHES+1;
+      last_bad_switches = 0xff;
+    }
+#else
+    if (pwrCheck()==e_power_off || keyDown()) return;
 
     checkBacklight();
 
@@ -2463,6 +2560,7 @@ void checkSwitches()
 
     SIMU_SLEEP(1);
   }
+#endif    
 }
 
 void alert(const pm_char * t, const pm_char *s MESSAGE_SOUND_ARG)
@@ -2683,12 +2781,6 @@ uint16_t BandGap = 2040 ;
 #elif defined(PCBSTD)
 uint16_t BandGap ;
 #endif
-
-int16_t thrAnaIn(uint8_t chan)
-{
-  int16_t v = anaIn(chan);
-  return (g_model.throttleReversed) ? -v : v;
-}
 
 #if !defined(SIMU)
 uint16_t anaIn(uint8_t chan)
@@ -3298,7 +3390,7 @@ void evalFunctions()
       bool active = getSwitch(swtch);
 
       if (HAS_ENABLE_PARAM(CFN_FUNC(sd))) {
-        active &= CFN_ACTIVE(sd);
+        active &= (bool)CFN_ACTIVE(sd);
       }
 
       if (active || IS_PLAY_BOTH_FUNC(CFN_FUNC(sd))) {
@@ -3551,6 +3643,10 @@ uint8_t s_perout_flight_phase;
 void perOut(uint8_t mode, uint8_t tick10ms)
 {
   evalInputs(mode);
+  
+#if defined(MODULE_ALWAYS_SEND_PULSES)
+  checkStartupWarnings();
+#endif
   
 #if defined(HELI)
   if (g_model.swashR.value) {
@@ -4537,6 +4633,13 @@ void perMain()
   if (currentSpeakerVolume != requiredSpeakerVolume) {
     currentSpeakerVolume = requiredSpeakerVolume;
     setVolume(currentSpeakerVolume);
+  }
+#endif
+
+#if defined(MODULE_ALWAYS_SEND_PULSES)
+  if (startupWarningState < STARTUP_WARNING_DONE) {
+    // don't do menu's until throttle and switch warnings are handled
+    return;
   }
 #endif
 

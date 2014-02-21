@@ -1,5 +1,7 @@
 #include <QtGui>
+#include "appdata.h"
 #include "helpers.h"
+#include "simulatordialog.h"
 
 QString getPhaseName(int val, char * phasename)
 {
@@ -635,24 +637,6 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData & 
   b->setMaxVisibleItems(10);
 }
 
-float ValToTim(int value)
-{
-   return ((value < -109 ? 129+value : (value < 7 ? (113+value)*5 : (53+value)*10))/10.0);   
-}
-
-int TimToVal(float value)
-{
-  int temp;
-  if (value>60) {
-    temp=136+round((value-60));
-  } else if (value>2) {
-    temp=20+round((value-2.0)*2.0);
-  } else {
-    temp=round(value*10.0);
-  }
-  return (temp-129);
-}  
-
 void populateCSWCB(QComboBox *b, int value)
 {
   int order[] = {
@@ -692,27 +676,6 @@ void populateCSWCB(QComboBox *b, int value)
     }
   }
   b->setMaxVisibleItems(10);
-}
-
-QString getSignedStr(int value)
-{
-  return value > 0 ? QString("+%1").arg(value) : QString("%1").arg(value);
-}
-
-QString getGVarString(int16_t val, bool sign)
-{
-  if (val >= -10000 && val <= 10000) {
-    if (sign)
-      return QString("%1%").arg(getSignedStr(val));
-    else
-      return QString("%1%").arg(val);
-  }
-  else {
-    if (val<0)
-      return QObject::tr("-GV%1").arg(-val-10000);
-    else
-      return QObject::tr("GV%1").arg(val-10000);
-  }
 }
 
 QString image2qstring(QImage image)
@@ -913,8 +876,7 @@ QString getCenterBeep(ModelData * g_model)
 
 QString getTheme()
 {
-  QSettings settings;
-  int theme_set = settings.value("theme", 1).toInt();
+  int theme_set = g.theme();
   QString Theme;
   switch(theme_set) {
     case 0:
@@ -930,7 +892,7 @@ QString getTheme()
       Theme="monoblue";
       break;
     default:
-      Theme="new";
+      Theme="yerico";
       break;          
   }
   return Theme;
@@ -945,3 +907,34 @@ CompanionIcon::CompanionIcon(QString baseimage)
   addFile(":/themes/"+theme+"/48/"+baseimage, QSize(48,48));
 }
 
+void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
+{
+  if (GetEepromInterface()->getSimulator()) {
+    RadioData * simuData = new RadioData(radioData);
+    unsigned int flags = 0;
+    if (modelIdx >= 0) {
+      flags |= SIMULATOR_FLAGS_NOTX;
+      simuData->generalSettings.currModel = modelIdx;
+    }
+    if (radioData.generalSettings.stickMode & 1) {
+      flags |= SIMULATOR_FLAGS_STICK_MODE_LEFT;
+    }
+    BoardEnum board = GetEepromInterface()->getBoard();
+    SimulatorDialog * sd;
+    if (IS_TARANIS(board))
+      sd = new SimulatorDialogTaranis(parent, flags);
+    else
+      sd = new SimulatorDialog9X(parent, flags);
+    QByteArray eeprom(GetEepromInterface()->getEEpromSize(), 0);
+    GetEepromInterface()->save((uint8_t *)eeprom.data(), *simuData, GetEepromInterface()->getCapability(SimulatorVariant));
+    delete simuData;
+    sd->start(eeprom);
+    sd->exec();
+    delete sd;
+  }
+  else {
+    QMessageBox::warning(NULL,
+      QObject::tr("Warning"),
+      QObject::tr("Simulator for this firmware is not yet available"));
+  }
+}

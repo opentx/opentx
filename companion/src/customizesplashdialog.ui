@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1086</width>
+    <width>1087</width>
     <height>285</height>
    </rect>
   </property>
@@ -21,10 +21,6 @@
   </property>
   <property name="windowTitle">
    <string>Transmitter Splash Screen Editor</string>
-  </property>
-  <property name="windowIcon">
-   <iconset resource="companion.qrc">
-    <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_13">
    <property name="spacing">

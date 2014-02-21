@@ -19,6 +19,7 @@
 #include "th9xeeprom.h"
 #include "th9xsimulator.h"
 #include "file.h"
+#include "appdata.h"
 
 #define FILE_TYP_GENERAL 1
 #define FILE_TYP_MODEL   2
@@ -44,8 +45,7 @@ const char * Th9xInterface::getName()
 
 const int Th9xInterface::getEEpromSize()
 {
-  QSettings settings;
-  QString avrMCU = settings.value("mcu", QString("m64")).toString();
+  QString avrMCU = g.mcu();
   if (avrMCU==QString("m128")) {
     return 2*EESIZE_STOCK;
   }
@@ -202,5 +202,5 @@ int Th9xInterface::isAvailable(Protocol proto, int port)
 
 SimulatorInterface * Th9xInterface::getSimulator()
 {
-  return new Th9xSimulator(this);
+  return NULL; // new Th9xSimulator(this);
 }

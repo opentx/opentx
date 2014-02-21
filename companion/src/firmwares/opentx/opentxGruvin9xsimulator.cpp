@@ -105,7 +105,7 @@ uint8_t getStickMode()
 
 using namespace Open9xGruvin9x;
 
-Open9xGruvin9xSimulator::Open9xGruvin9xSimulator(Open9xInterface * open9xInterface):
+Open9xGruvin9xSimulator::Open9xGruvin9xSimulator(OpenTxInterface * open9xInterface):
   open9xInterface(open9xInterface)
 {
 }
@@ -128,12 +128,20 @@ bool Open9xGruvin9xSimulator::lcdChanged(bool & lightEnable)
 #include "simulatorimport.h"
 }
 
-void Open9xGruvin9xSimulator::start(RadioData &radioData, bool tests)
+void Open9xGruvin9xSimulator::start(QByteArray & eeprom, bool tests)
 {
   g_rotenc[0] = 0;
   g_rotenc[1] = 0;
-  open9xInterface->save(&eeprom[0], radioData, SIMU_GRUVIN9X_VARIANTS);
+  memcpy(Open9xGruvin9x::eeprom, eeprom.data(), std::min<int>(sizeof(Open9xGruvin9x::eeprom), eeprom.size()));
   StartEepromThread(NULL);
+  StartMainThread(tests);
+}
+
+void Open9xGruvin9xSimulator::start(const char * filename, bool tests)
+{
+  g_rotenc[0] = 0;
+  g_rotenc[1] = 0;
+  StartEepromThread(filename);
   StartMainThread(tests);
 }
 

@@ -3,6 +3,7 @@
 #include "ui_setup_timer.h"
 #include "ui_setup_module.h"
 #include "helpers.h"
+#include "appdata.h"
 
 TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer):
   ModelPanel(parent, model),
@@ -347,8 +348,7 @@ Setup::Setup(QWidget *parent, ModelData & model):
   if (GetEepromInterface()->getCapability(ModelImage)) {
     QStringList items;
     items.append("");
-    QSettings settings;
-    QString path = settings.value("sdPath", ".").toString();
+    QString path = g.profile[g.id()].sdPath();
     path.append("/BMP/");
     QDir qd(path);
     int vml = GetEepromInterface()->getCapability(VoicesMaxLength)+4;
@@ -476,7 +476,7 @@ void Setup::on_extendedLimits_toggled(bool checked)
 
 void Setup::on_throttleWarning_toggled(bool checked)
 {
-  model.disableThrottleWarning = checked;
+  model.disableThrottleWarning = !checked;
   emit modified();
 }
 
@@ -515,8 +515,7 @@ void Setup::on_image_currentIndexChanged(int index)
 {
   if (!lock) {
     strncpy(model.bitmap, ui->image->currentText().toAscii(), GetEepromInterface()->getCapability(VoicesMaxLength));
-    QSettings settings;
-    QString path=settings.value("sdPath", ".").toString();
+    QString path=g.profile[g.id()].sdPath();
     path.append("/BMP/");
     QDir qd(path);
     if (qd.exists()) {
@@ -550,7 +549,7 @@ void Setup::update()
 
   ui->throttleReverse->setChecked(model.throttleReversed);
   populateTTraceCB(ui->throttleSource, model.thrTraceSrc);
-  ui->throttleWarning->setChecked(model.disableThrottleWarning);
+  ui->throttleWarning->setChecked(!model.disableThrottleWarning);
 
   //trim inc, thro trim, thro expo, instatrim
   ui->trimIncrement->setCurrentIndex(model.trimInc+2);

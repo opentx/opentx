@@ -19,10 +19,6 @@
   <property name="windowTitle">
    <string>General Edit</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="companion.qrc">
-    <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
-  </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
   </property>
@@ -1559,10 +1555,10 @@ Acceptable values are 5v..10v</string>
          <property name="sizeConstraint">
           <enum>QLayout::SetMinimumSize</enum>
          </property>
-         <property name="verticalSpacing">
+         <property name="topMargin">
           <number>0</number>
          </property>
-         <property name="topMargin">
+         <property name="verticalSpacing">
           <number>0</number>
          </property>
          <item row="0" column="2">

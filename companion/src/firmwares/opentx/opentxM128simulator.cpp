@@ -103,7 +103,7 @@ uint8_t getStickMode()
 
 using namespace Open9xM128;
 
-Open9xM128Simulator::Open9xM128Simulator(Open9xInterface * open9xInterface):
+Open9xM128Simulator::Open9xM128Simulator(OpenTxInterface * open9xInterface):
   open9xInterface(open9xInterface)
 {
 }
@@ -126,10 +126,16 @@ bool Open9xM128Simulator::lcdChanged(bool & lightEnable)
 #include "simulatorimport.h"
 }
 
-void Open9xM128Simulator::start(RadioData &radioData, bool tests)
+void Open9xM128Simulator::start(QByteArray & eeprom, bool tests)
 {
-  open9xInterface->save(&eeprom[0], radioData, SIMU_M128_VARIANTS);
+  memcpy(Open9xM128::eeprom, eeprom.data(), std::min<int>(sizeof(Open9xM128::eeprom), eeprom.size()));
   StartEepromThread(NULL);
+  StartMainThread(tests);
+}
+
+void Open9xM128Simulator::start(const char * filename, bool tests)
+{
+  StartEepromThread(filename);
   StartMainThread(tests);
 }
 

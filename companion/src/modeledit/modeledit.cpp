@@ -11,6 +11,7 @@
 #include "customswitches.h"
 #include "customfunctions.h"
 #include "telemetry.h"
+#include "appdata.h"
 #include <QScrollArea>
 
 ModelEdit::ModelEdit(RadioData & radioData, int modelId, bool openWizard, bool isNew, QWidget *parent) :
@@ -21,8 +22,7 @@ ModelEdit::ModelEdit(RadioData & radioData, int modelId, bool openWizard, bool i
   generalSettings(radioData.generalSettings)
 {
   ui->setupUi(this);
-  QSettings settings;
-  restoreGeometry(settings.value("modelEditGeometry").toByteArray());  
+  restoreGeometry(g.modelEditGeo());  
   ui->pushButton->setIcon(CompanionIcon("simulate.png"));
   addTab(new Setup(this, model), tr("Setup"));
   addTab(new HeliPanel(this, model), tr("Heli"));
@@ -45,8 +45,7 @@ ModelEdit::~ModelEdit()
 
 void ModelEdit::closeEvent(QCloseEvent *event)
 {
-  QSettings settings;
-  settings.setValue("modelEditGeometry", saveGeometry());
+  g.modelEditGeo( saveGeometry() );
 }
 
 class VerticalScrollArea : public QScrollArea
@@ -107,35 +106,13 @@ void ModelEdit::on_pushButton_clicked()
   launchSimulation();
 }
 
-// TODO merge both
-#include "simulatordialog.h"
-#include "xsimulatordialog.h"
-
 void ModelEdit::launchSimulation()
 {
-  if (GetEepromInterface()->getSimulator()) {
-    RadioData *simuData = new RadioData();
-    simuData->generalSettings = generalSettings;
-    simuData->models[modelId] = model;
-    if (GetEepromInterface()->getCapability(SimulatorType)) {
-      xsimulatorDialog *sd = new xsimulatorDialog(this);
-      sd->loadParams(*simuData, modelId);
-      sd->exec();
-      delete sd;
-    }
-    else {
-      simulatorDialog *sd = new simulatorDialog(this);
-      sd->loadParams(*simuData, modelId);
-      sd->exec();
-      delete sd;
-    }
-    delete simuData;
-  }
-  else {
-    QMessageBox::warning(NULL,
-        QObject::tr("Warning"),
-        QObject::tr("Simulator for this firmware is not yet available"));
-  }
+  RadioData *simuData = new RadioData();
+  simuData->generalSettings = generalSettings;
+  simuData->models[0] = model;
+  startSimulation(this, *simuData, 0);
+  delete simuData;
 }
 
 

@@ -3,6 +3,7 @@
 #include "mainwindow.h"
 #include "eeprominterface.h"
 #include "helpers.h"
+#include "appdata.h"
 #include <QDesktopServices>
 #include <QtGui>
 
@@ -187,11 +188,8 @@ void fwPreferencesDialog::firmwareChanged()
     ui->CPU_ID_LE->hide();
     ui->CPU_ID_LABEL->hide();
   }
-  QSettings settings;
-  settings.beginGroup("FwRevisions");
-  int fwrev = settings.value(variant.id, -1).toInt();
-  settings.endGroup();
-  if (fwrev != -1) {
+  int fwrev = g.fwRev.get(variant.id);
+  if (fwrev != 0) {
     ui->FwInfo->setText(tr("Last downloaded release: %1").arg(fwrev));
     if (!stamp.isEmpty()) {
       ui->checkFWUpdates->show();
@@ -213,11 +211,9 @@ void fwPreferencesDialog::firmwareChanged()
 
 void fwPreferencesDialog::writeValues()
 {
-  QSettings settings;
-
-  settings.setValue("cpu_id", ui->CPU_ID_LE->text());
+  g.cpuId( ui->CPU_ID_LE->text() );
   current_firmware_variant = getFirmwareVariant();
-  settings.setValue("firmware", current_firmware_variant.id);
+  g.profile[g.id()].firmware( current_firmware_variant.id );
 }
 
 void fwPreferencesDialog::populateFirmwareOptions(const FirmwareInfo * firmware)
@@ -275,9 +271,7 @@ void fwPreferencesDialog::populateFirmwareOptions(const FirmwareInfo * firmware)
 
 void fwPreferencesDialog::initSettings()
 {
-  QSettings settings;
-
-  ui->CPU_ID_LE->setText(settings.value("cpu_id", "").toString());
+  ui->CPU_ID_LE->setText(g.cpuId());
   FirmwareInfo * current_firmware = GetCurrentFirmware();
 
   foreach(FirmwareInfo * firmware, firmwares) {
@@ -293,12 +287,10 @@ void fwPreferencesDialog::initSettings()
 
 void fwPreferencesDialog::on_checkFWUpdates_clicked()
 {
-    QSettings settings;
-
     FirmwareVariant variant = getFirmwareVariant();
-    if (settings.value("burnFirmware", true).toBool()) {
+    if (g.profile[g.id()].burnFirmware()) {
       current_firmware_variant = variant;
-      settings.setValue("firmware", variant.id);
+      g.profile[g.id()].firmware( variant.id );
     }
     MainWindow * mw = (MainWindow *)this->parent();
     mw->checkForUpdates(true, variant.id);
@@ -307,14 +299,13 @@ void fwPreferencesDialog::on_checkFWUpdates_clicked()
 
 void fwPreferencesDialog::on_fw_dnld_clicked()
 {
-  QSettings settings;
   MainWindow * mw = (MainWindow *)this->parent();
   FirmwareVariant variant = getFirmwareVariant();
   writeValues();
   if (!variant.firmware->getUrl(variant.id).isNull()) {
-    if (settings.value("burnFirmware", true).toBool()) {
+    if (g.profile[g.id()].burnFirmware()) {
       current_firmware_variant = getFirmwareVariant();
-      settings.setValue("firmware", current_firmware_variant.id);
+      g.profile[g.id()].firmware( current_firmware_variant.id );
     }
     mw->downloadLatestFW(current_firmware_variant.firmware, current_firmware_variant.id);
   }
