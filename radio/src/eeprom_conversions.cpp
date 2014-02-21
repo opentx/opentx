@@ -610,6 +610,7 @@ void ConvertModel_215_to_216(ModelData &model)
 
   for (uint8_t i=0; i<9; i++) {
     memcpy(&g_model.phaseData[i], &oldModel.phaseData[i], sizeof(oldModel.phaseData[i])); // the last 4 gvars will remain blank
+    g_model.phaseData[i].swtch = ConvertSwitch_215_to_216(oldModel.phaseData[i].swtch);
 #if defined(PCBTARANIS)
     for (uint8_t t=0; t<4; t++) {
       int trim = oldModel.phaseData[i].trim[t];
