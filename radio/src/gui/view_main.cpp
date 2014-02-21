@@ -318,7 +318,7 @@ void displayTopBar()
   /* RTC time */
   struct gtm t;
   gettime(&t);
-  lcd_putcAtt(BAR_TIME_X+1, BAR_Y+1, ':', BLINK);
+  lcd_putcAtt(BAR_TIME_X+1, BAR_Y+1, t.tm_sec%2 ? ':' : ' ', 0);
   lcd_outdezNAtt(BAR_TIME_X+1, BAR_Y+1, t.tm_hour, LEADING0, 2);
   lcd_outdezNAtt(BAR_TIME_X+3*FWNUM-1, BAR_Y+1, t.tm_min, LEADING0, 2);
 
