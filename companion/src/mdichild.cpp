@@ -51,6 +51,7 @@
 #include "printdialog.h"
 #include "burndialog.h"
 #include "helpers.h"
+#include "appdata.h"
 #include <QFileInfo>
 
 #if defined WIN32 || !defined __GNUC__
@@ -160,8 +161,7 @@ void MdiChild::OpenEditWindow(bool wizard=false)
     }
     if (isNew && !wizard) {
       int ret;
-      QSettings settings;
-      bool wizardEnable=settings.value("wizardEnable", true).toBool();
+      bool wizardEnable=g.enableWizard();
       if (wizardEnable) {
         ret = QMessageBox::question(this, tr("Companion"), tr("Do you want to use model wizard? "), QMessageBox::Yes | QMessageBox::No);
         if (ret == QMessageBox::Yes) {
@@ -170,7 +170,7 @@ void MdiChild::OpenEditWindow(bool wizard=false)
           qSleep(500);
           ret = QMessageBox::question(this, tr("Companion"), tr("Ask this question again ? "), QMessageBox::Yes | QMessageBox::No);
           if (ret == QMessageBox::No) {
-            settings.setValue("wizardEnable", false);
+            g.enableWizard( false );
           }
         }
       }
@@ -327,34 +327,33 @@ bool MdiChild::save()
 
 bool MdiChild::saveAs(bool isNew)
 {
-    QSettings settings;
     QString fileName;
     if (GetEepromInterface()->getBoard() == BOARD_SKY9X) {
       curFile.replace(".eepe", ".bin");
       QFileInfo fi(curFile);
 #ifdef __APPLE__
-      fileName = QFileDialog::getSaveFileName(this, tr("Save As"), settings.value("lastDir").toString() + "/" +fi.fileName());
+      fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName());
 #else
-      fileName = QFileDialog::getSaveFileName(this, tr("Save As"), settings.value("lastDir").toString() + "/" +fi.fileName(), tr(BIN_FILES_FILTER));
+      fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName(), tr(BIN_FILES_FILTER));
 #endif      
     }
     else {
       QFileInfo fi(curFile);
 #ifdef __APPLE__
-      fileName = QFileDialog::getSaveFileName(this, tr("Save As"), settings.value("lastDir").toString() + "/" +fi.fileName());
+      fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName());
 #else
-      fileName = QFileDialog::getSaveFileName(this, tr("Save As"), settings.value("lastDir").toString() + "/" +fi.fileName(), tr(EEPROM_FILES_FILTER));
+      fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName(), tr(EEPROM_FILES_FILTER));
 #endif      
     }
     if (fileName.isEmpty())
       return false;
     if (fileName.contains("rev4a")) {
-      settings.setValue("rev4asupport", 1);
+      g.rev4aSupport( true );
     }
     if (fileName.contains("norev4a")) {
-      settings.setValue("rev4asupport", 0);
+      g.rev4aSupport( false );
     }
-    settings.setValue("lastDir", QFileInfo(fileName).dir().absolutePath());
+    g.eepromDir( QFileInfo(fileName).dir().absolutePath() );
     if (isNew)
       return saveFile(fileName);
     else 
@@ -471,15 +470,14 @@ void MdiChild::setCurrentFile(const QString &fileName)
   fileChanged = false;
   setWindowModified(false);
   updateTitle();
-  QSettings settings;
-  int MaxRecentFiles =settings.value("history_size",10).toInt();
-  QStringList files = settings.value("recentFileList").toStringList();
+  int MaxRecentFiles = g.historySize();
+  QStringList files = g.recentFiles();
   files.removeAll(fileName);
   files.prepend(fileName);
   while (files.size() > MaxRecentFiles)
       files.removeLast();
  
-  settings.setValue("recentFileList", files);
+  g.recentFiles( files );
 }
 
 QString MdiChild::strippedName(const QString &fullFileName)
@@ -489,9 +487,8 @@ QString MdiChild::strippedName(const QString &fullFileName)
 
 void MdiChild::writeEeprom()  // write to Tx
 {
-  QSettings settings;
-  bool backupEnable=settings.value("backupEnable", true).toBool();
-  QString backupPath=settings.value("backupPath", "").toString();
+  bool backupEnable=g.enableBackup();
+  QString backupPath=g.backupDir();
   if (!backupPath.isEmpty()) {
     if (!QDir(backupPath).exists()) {
       if (backupEnable) {
@@ -502,13 +499,7 @@ void MdiChild::writeEeprom()  // write to Tx
   } else {
     backupEnable=false;
   }
-  int profileid=settings.value("profileId", 1).toInt();
-  settings.beginGroup("Profiles");
-  QString profile=QString("profile%1").arg(profileid);
-  settings.beginGroup(profile);
-  QString stickCal=settings.value("StickPotCalib","").toString();
-  settings.endGroup();
-  settings.endGroup();
+  QString stickCal=g.profile[g.id()].stickPotCalib();
   burnConfigDialog bcd;
   QString tempDir    = QDir::tempPath();
   QString tempFile = tempDir + "/temp.bin";
@@ -658,8 +649,7 @@ void MdiChild::setEEpromAvail(int eavail)
 
 bool MdiChild::loadBackup()
 {
-    QSettings settings;
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), settings.value("lastDir").toString(),tr(EEPROM_FILES_FILTER));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), g.eepromDir(),tr(EEPROM_FILES_FILTER));
     if (fileName.isEmpty())
       return false;
     QFile file(fileName);

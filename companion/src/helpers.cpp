@@ -1,4 +1,5 @@
 #include <QtGui>
+#include "appdata.h"
 #include "helpers.h"
 #include "simulatordialog.h"
 
@@ -875,8 +876,7 @@ QString getCenterBeep(ModelData * g_model)
 
 QString getTheme()
 {
-  QSettings settings;
-  int theme_set = settings.value("theme", 1).toInt();
+  int theme_set = g.theme();
   QString Theme;
   switch(theme_set) {
     case 0:

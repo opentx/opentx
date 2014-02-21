@@ -96,102 +96,103 @@ include_directories(
 add_subdirectory(modeledit)
 add_subdirectory(simulation)
 
-SET( companion_SRCS
-     eeprominterface.cpp
-     hexinterface.cpp
-     flashinterface.cpp
-     file.cpp
-     xmlinterface.cpp
-     ${PROJECT_BINARY_DIR}/radio.cxx
-     firmwares/th9x/th9xeeprom.cpp
-     firmwares/th9x/th9xinterface.cpp
-     firmwares/er9x/er9xeeprom.cpp
-     firmwares/er9x/er9xinterface.cpp
-     firmwares/gruvin9x/gruvin9xeeprom.cpp
-     firmwares/gruvin9x/gruvin9xinterface.cpp  
-     firmwares/opentx/opentxeeprom.cpp
-     firmwares/opentx/open9xStockeeprom.cpp
-     firmwares/opentx/open9xGruvin9xeeprom.cpp
-     firmwares/opentx/open9xSky9xeeprom.cpp
-     firmwares/opentx/opentxinterface.cpp
-     firmwares/opentx/opentxTaranisSimulator.cpp
-     firmwares/opentx/opentxSky9xsimulator.cpp
-     firmwares/opentx/opentxGruvin9xsimulator.cpp
-     firmwares/opentx/opentxM128simulator.cpp
-     firmwares/opentx/opentxsimulator.cpp  
-     firmwares/ersky9x/ersky9xeeprom.cpp
-     firmwares/ersky9x/ersky9xinterface.cpp
-     ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
-     helpers.cpp
-     mdichild.cpp
-     generaledit.cpp
-     modelslist.cpp
-     mountlist.cpp 
-     avroutputdialog.cpp
-     apppreferencesdialog.cpp
-     fwpreferencesdialog.cpp
-     burnconfigdialog.cpp
-     comparedialog.cpp
-     contributorsdialog.cpp
-     customizesplashdialog.cpp
-     burndialog.cpp
-     printdialog.cpp
-     fusesdialog.cpp
-     logsdialog.cpp
-     downloaddialog.cpp
-     splashlibrary.cpp
-     mainwindow.cpp
-     main.cpp
-     modelconfigdialog.cpp
-     qcustomplot.cpp
+set(companion_SRCS
+  eeprominterface.cpp
+  hexinterface.cpp
+  flashinterface.cpp
+  file.cpp
+  xmlinterface.cpp
+  ${PROJECT_BINARY_DIR}/radio.cxx
+  firmwares/th9x/th9xeeprom.cpp
+  firmwares/th9x/th9xinterface.cpp
+  firmwares/er9x/er9xeeprom.cpp
+  firmwares/er9x/er9xinterface.cpp
+  firmwares/gruvin9x/gruvin9xeeprom.cpp
+  firmwares/gruvin9x/gruvin9xinterface.cpp  
+  firmwares/opentx/opentxeeprom.cpp
+  firmwares/opentx/open9xStockeeprom.cpp
+  firmwares/opentx/open9xGruvin9xeeprom.cpp
+  firmwares/opentx/open9xSky9xeeprom.cpp
+  firmwares/opentx/opentxinterface.cpp
+  firmwares/opentx/opentxTaranisSimulator.cpp
+  firmwares/opentx/opentxSky9xsimulator.cpp
+  firmwares/opentx/opentxGruvin9xsimulator.cpp
+  firmwares/opentx/opentxM128simulator.cpp
+  firmwares/opentx/opentxsimulator.cpp  
+  firmwares/ersky9x/ersky9xeeprom.cpp
+  firmwares/ersky9x/ersky9xinterface.cpp
+  ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
+  appdata.cpp
+  helpers.cpp
+  mdichild.cpp
+  generaledit.cpp
+  modelslist.cpp
+  mountlist.cpp 
+  avroutputdialog.cpp
+  apppreferencesdialog.cpp
+  fwpreferencesdialog.cpp
+  burnconfigdialog.cpp
+  comparedialog.cpp
+  contributorsdialog.cpp
+  customizesplashdialog.cpp
+  burndialog.cpp
+  printdialog.cpp
+  fusesdialog.cpp
+  logsdialog.cpp
+  downloaddialog.cpp
+  splashlibrary.cpp
+  mainwindow.cpp
+  companion.cpp
+  modelconfigdialog.cpp
+  qcustomplot.cpp
 )
 
-SET( companion_MOC_HDRS
-     avroutputdialog.h
-     apppreferencesdialog.h
-     fwpreferencesdialog.h
-     burnconfigdialog.h
-     comparedialog.h
-     printdialog.h
-     fusesdialog.h
-     logsdialog.h
-     contributorsdialog.h
-     customizesplashdialog.h
-     splashlibrary.h
-     splashlabel.h
-     burndialog.h
-     downloaddialog.h
-     generaledit.h
-     modelslist.h
-     mdichild.h
-     mainwindow.h
-     modelconfigdialog.h
-     qcustomplot.h
-     helpers.h
+set(companion_MOC_HDRS
+  avroutputdialog.h
+  apppreferencesdialog.h
+  fwpreferencesdialog.h
+  burnconfigdialog.h
+  comparedialog.h
+  printdialog.h
+  fusesdialog.h
+  logsdialog.h
+  contributorsdialog.h
+  customizesplashdialog.h
+  splashlibrary.h
+  splashlabel.h
+  burndialog.h
+  downloaddialog.h
+  generaledit.h
+  modelslist.h
+  mdichild.h
+  mainwindow.h
+  modelconfigdialog.h
+  qcustomplot.h
+  helpers.h
 )
      
-SET( companion_UIS
-     mdichild.ui
-     avroutputdialog.ui
-     comparedialog.ui
-     fusesdialog.ui
-     logsdialog.ui
-     apppreferencesdialog.ui
-     fwpreferencesdialog.ui
-     burnconfigdialog.ui
-     downloaddialog.ui
-     generaledit.ui
-     printdialog.ui
-     contributorsdialog.ui
-     customizesplashdialog.ui
-     splashlibrary.ui
-     burndialog.ui
-     modelconfigdialog.ui
+set(companion_UIS
+  mdichild.ui
+  avroutputdialog.ui
+  comparedialog.ui
+  fusesdialog.ui
+  logsdialog.ui
+  apppreferencesdialog.ui
+  fwpreferencesdialog.ui
+  burnconfigdialog.ui
+  downloaddialog.ui
+  generaledit.ui
+  printdialog.ui
+  contributorsdialog.ui
+  customizesplashdialog.ui
+  splashlibrary.ui
+  burndialog.ui
+  modelconfigdialog.ui
 )
 
-SET( companion_RCS
-     companion.qrc
-     ${CMAKE_CURRENT_BINARY_DIR}/translations.qrc
+set(companion_RCS
+  companion.qrc
+  ${CMAKE_CURRENT_BINARY_DIR}/translations.qrc
 )
 
 MACRO (TODAY RESULT)
@@ -315,7 +316,8 @@ set(simu_SRCS
   file.cpp # TODO not needed
   modeledit/node.cpp
   modeledit/edge.cpp # TODO not needed
-  simulation/main.cpp
+  appdata.cpp
+  simulator.cpp
 )
 
 set(simu_HDRS

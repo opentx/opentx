@@ -16,6 +16,7 @@
 
 #include "opentxTaranisSimulator.h"
 #include "opentxinterface.h"
+#include "appdata.h"
 
 #define SIMU
 #define SIMU_EXCEPTIONS
@@ -181,8 +182,7 @@ OpentxTaranisSimulator::OpentxTaranisSimulator(OpenTxInterface * open9xInterface
   open9xInterface(open9xInterface)
 {
   taranisSimulatorBoard = GetEepromInterface()->getBoard();
-  QSettings settings;
-  QString path=settings.value("sdPath", ".").toString()+"/";
+  QString path=g.profile[g.id()].sdPath()+"/";
   int i=0;
   for (i=0; i< std::min(path.length(),1022); i++) {
     simuSdDirectory[i]=path.at(i).toAscii();
