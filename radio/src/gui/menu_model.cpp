@@ -4107,7 +4107,7 @@ void menuModelGVars(uint8_t event)
     putsStrIdx(0, y, STR_GV, i+1, (sub==i && m_posHorz<0) ? INVERS : 0);
 
     for (uint8_t j=0; j<1+MAX_PHASES; j++) {
-      LcdFlags attr = ((sub==i && m_posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
+      LcdFlags attr = ((sub==i && m_posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0)|((j>0 && getFlightPhase()==(j-1)) ? BOLD : 0);
       xcoord_t x = 12*FW + FWNUM + (j-1)*(2+3*FWNUM) - 3;
 
 #if MAX_GVARS == 6
@@ -4140,7 +4140,7 @@ void menuModelGVars(uint8_t event)
               lcd_outdezAtt(x, y, v, attr);
             vmin = -GVAR_MAX; vmax = GVAR_MAX;
           }
-          if (attr) {
+          if (attr & ~BOLD) {
             if (event == EVT_KEY_LONG(KEY_ENTER)) {
               s_editMode = 2; // TODO constant for that ...
               v = (v > GVAR_MAX ? 0 : GVAR_MAX+1);
