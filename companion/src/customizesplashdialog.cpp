@@ -182,10 +182,10 @@ void customizeSplashDialog::on_leftLoadFwButton_clicked() {loadFirmware(left);}
 void customizeSplashDialog::on_rightLoadFwButton_clicked() {loadFirmware(right);}
 void customizeSplashDialog::loadFirmware(Side side)
 {
-  QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), g.flashDir(), FLASH_FILES_FILTER);
+  QString fileName = QFileDialog::getOpenFileName(this, tr("Open Firmware File"), g.flashDir(), FLASH_FILES_FILTER);
   if (!fileName.isEmpty()) {
     if (!side.displayImage( fileName, FW ))
-      QMessageBox::critical(this, tr("Error"), tr("Cannot load embedded FW image from %1.").arg(fileName));
+      QMessageBox::critical(this, tr("Error"), tr("Can not load embedded image from firmware file %1.").arg(fileName));
     else
     g.flashDir( QFileInfo(fileName).dir().absolutePath() );
   }

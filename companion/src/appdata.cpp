@@ -280,35 +280,31 @@ void JStickData::flush()
 
 // ** Profile class********************
 // Get declarations
-QString Profile::firmware()      { return _firmware;      }
-QString Profile::name()          { return _name;          }
-QString Profile::sdPath()        { return _sdPath;        }
-QString Profile::splashFile()    { return _splashFile;    }
-bool    Profile::burnFirmware()  { return _burnFirmware;  }
-bool    Profile::renameFwFiles() { return _renameFwFiles; }
-bool    Profile::patchImage()    { return _patchImage;    }
-int     Profile::channelOrder()  { return _channelOrder;  }
-int     Profile::defaultMode()   { return _defaultMode;   }
+QString Profile::firmware()      const { return _firmware;      }
+QString Profile::name()          const { return _name;          }
+QString Profile::sdPath()        const { return _sdPath;        }
+QString Profile::splashFile()    const { return _splashFile;    }
+bool    Profile::burnFirmware()  const { return _burnFirmware;  }
+bool    Profile::renameFwFiles() const { return _renameFwFiles; }
+bool    Profile::patchImage()    const { return _patchImage;    }
+int     Profile::channelOrder()  const { return _channelOrder;  }
+int     Profile::defaultMode()   const { return _defaultMode;   }
 
-QString Profile::beeper()        { return _beeper;        }
-QString Profile::countryCode()   { return _countryCode;   }
-QString Profile::display()       { return _display;       }
-QString Profile::haptic()        { return _haptic;        }
-QString Profile::speaker()       { return _speaker;       }
-QString Profile::stickPotCalib() { return _stickPotCalib; }
-QString Profile::trainerCalib()  { return _trainerCalib;  }
-int     Profile::currentCalib()  { return _currentCalib;  }
-int     Profile::gsStickMode()   { return _gsStickMode;   }
-int     Profile::ppmMultiplier() { return _ppmMultiplier; }
-int     Profile::vBatCalib()     { return _vBatCalib;     }
-int     Profile::vBatWarn()      { return _vBatWarn;      }
+QString Profile::beeper()        const { return _beeper;        }
+QString Profile::countryCode()   const { return _countryCode;   }
+QString Profile::display()       const { return _display;       }
+QString Profile::haptic()        const { return _haptic;        }
+QString Profile::speaker()       const { return _speaker;       }
+QString Profile::stickPotCalib() const { return _stickPotCalib; }
+QString Profile::trainerCalib()  const { return _trainerCalib;  }
+int     Profile::currentCalib()  const { return _currentCalib;  }
+int     Profile::gsStickMode()   const { return _gsStickMode;   }
+int     Profile::ppmMultiplier() const { return _ppmMultiplier; }
+int     Profile::vBatCalib()     const { return _vBatCalib;     }
+int     Profile::vBatWarn()      const { return _vBatWarn;      }
 
 // Set declarations
-void Profile::name          (const QString x) { if (x.isEmpty())  // Name may never be empty!
-	store("----", _name, "Name", "Profiles", QString("profile%1").arg(index));
-else
-	store(x,      _name, "Name", "Profiles", QString("profile%1").arg(index));}
-
+void Profile::name          (const QString x) { store(x, _name,          "Name"                  ,"Profiles", QString("profile%1").arg(index));}
 void Profile::firmware      (const QString x) { store(x, _firmware,      "firmware"              ,"Profiles", QString("profile%1").arg(index));}
 void Profile::sdPath        (const QString x) { store(x, _sdPath,        "sdPath"                ,"Profiles", QString("profile%1").arg(index));}
 void Profile::splashFile    (const QString x) { store(x, _splashFile,    "SplashFileName"        ,"Profiles", QString("profile%1").arg(index));}
@@ -335,6 +331,34 @@ void Profile::vBatWarn      (const int     x) { store(x, _vBatWarn,      "vBatWa
 Profile::Profile()
 {
 	index = -1;
+}
+
+// The default copy operator can not be used since the index variable would be destroyed 
+Profile& Profile::operator=(const Profile& rhs)
+{
+	_name          = rhs.name();
+	_firmware      = rhs.firmware();
+	_sdPath        = rhs.sdPath();
+	_splashFile    = rhs.splashFile();
+	_burnFirmware  = rhs.burnFirmware();
+	_renameFwFiles = rhs.renameFwFiles();
+	_patchImage    = rhs.patchImage();
+	_channelOrder  = rhs.channelOrder();
+	_defaultMode   = rhs.defaultMode();
+	_beeper        = rhs.beeper();
+	_countryCode   = rhs.countryCode();
+	_display       = rhs.display();
+	_haptic        = rhs.haptic();
+	_speaker       = rhs.speaker();
+	_stickPotCalib = rhs.stickPotCalib();
+	_trainerCalib  = rhs.trainerCalib();
+	_currentCalib  = rhs.currentCalib();
+	_gsStickMode   = rhs.gsStickMode();
+	_ppmMultiplier = rhs.ppmMultiplier();
+	_vBatCalib     = rhs.vBatCalib();
+	_vBatWarn      = rhs.vBatWarn();
+	
+    return *this;
 }
 
 void Profile::remove()
@@ -400,7 +424,7 @@ void Profile::flush()
 {
 	// Load and store all variables. Use default values if setting values are missing
 	getset( _firmware,      "firmware"              ,""     ,"Profiles", QString("profile%1").arg(index));
-	getset( _name,          "Name"                  ,"----" ,"Profiles", QString("profile%1").arg(index));
+	getset( _name,          "Name"                  ,""     ,"Profiles", QString("profile%1").arg(index));
 	getset( _sdPath,        "sdPath"                ,""     ,"Profiles", QString("profile%1").arg(index));
 	getset( _splashFile,    "SplashFileName"        ,""     ,"Profiles", QString("profile%1").arg(index));
 	getset( _burnFirmware,  "burnFirmware"          ,false  ,"Profiles", QString("profile%1").arg(index));

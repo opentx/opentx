@@ -1,4 +1,4 @@
-// Companion Application Data Class Definition.
+// Companion Application Data Class Declaration.
 // Author Kjell Kernen
 
 // All temporary and permanent global variables are defined here to make 
@@ -118,28 +118,28 @@ class Profile: protected CompStoreObj
 
   public:
     // All the get definitions
-    QString firmware();
-    QString name();
-    QString sdPath();
-    QString splashFile();
-    bool    burnFirmware();
-    bool    renameFwFiles();
-    bool    patchImage();
-    int     channelOrder();
-    int     defaultMode();
+    QString firmware() const;
+    QString name() const;
+    QString sdPath() const;
+    QString splashFile() const;
+    bool    burnFirmware() const;
+    bool    renameFwFiles() const;
+    bool    patchImage() const;
+    int     channelOrder() const;
+    int     defaultMode() const;
 
-    QString beeper();
-    QString countryCode();
-    QString display();
-    QString haptic();
-    QString speaker();
-    QString stickPotCalib();
-    QString trainerCalib();
-    int     currentCalib();
-    int     gsStickMode();
-    int     ppmMultiplier();
-    int     vBatCalib();
-    int     vBatWarn();
+    QString beeper() const;
+    QString countryCode() const;
+    QString display() const;
+    QString haptic() const;
+    QString speaker() const;
+    QString stickPotCalib() const;
+    QString trainerCalib() const;
+    int     currentCalib() const;
+    int     gsStickMode() const;
+    int     ppmMultiplier() const;
+    int     vBatCalib() const;
+    int     vBatWarn() const;
 
     // All the set definitions
     void name          (const QString);
@@ -166,6 +166,7 @@ class Profile: protected CompStoreObj
     void vBatWarn      (const int);
 
     Profile();
+	Profile& operator=(const Profile&);
     void remove();
     bool existsOnDisk();
     void init(int newIndex);
