@@ -151,7 +151,7 @@ char * getSystemAudioPath(char * path)
 
 void getSystemAudioFile(char * filename, int index)
 {
-  char * str = getAudioPath(filename);
+  char * str = getSystemAudioPath(filename);
   strcpy(str, audioFilenames[index]);
   strcat(str, SOUNDS_EXT);
 }
