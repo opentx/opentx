@@ -1688,53 +1688,24 @@ int8_t getMovedSwitch()
     }
   }
 #else
-  // saves about 50 bytes flash
   // return delivers 1 to 3 for ID1 to ID3
   // 4..8 for all other switches if changed to true
   // -4..-8 for all other switches if changed to false
   // 9 for Trainer switch if changed to true; Change to false is ignored
-  
-  swstate_t mask=0x80;
+  swstate_t mask = 0x80;
   for (uint8_t i=NUM_PSWITCH; i>1; i--) {
     bool prev;
-    // mask= (1<<(i-2));
-    prev=(switches_states & mask);
+    prev = (switches_states & mask);
     // don't use getSwitch here to always get the proper value, even getSwitch manipulates
-    // bool next = getSwitch(i);
-    bool next = switchState((EnumKeys)(SW_BASE+i-1));
-    if (prev!=next) {
-      if (((i<NUM_PSWITCH) && (i>3)) || next==true) 
-        result = next ? i : -i;
-      if ((i<=3) && (result==0)) result=1;
-      switches_states ^= mask;
-    }
-    mask>>=1;
-  } //endfor
-
-/*
-  for (uint8_t i=NUM_PSWITCH; i>0; i--) {
-    bool prev;
-    swstate_t mask = 0;
-    if (i <= 3) {
-      prev = ((switches_states & 0x03) == (i-1));
-    }
-    else {
-      mask = (1<<(i-2));
-      prev = (switches_states & mask);
-    }
-    // don't use getSwitch here to always get the proper value, because getSwitch manipulates
-    // bool next = getSwitch(i);
     bool next = switchState((EnumKeys)(SW_BASE+i-1));
     if (prev != next) {
-      if (i!=NUM_PSWITCH || next==true)
+      if (((i<NUM_PSWITCH) && (i>3)) || next==true) 
         result = next ? i : -i;
-      if (mask)
-        switches_states ^= mask;
-      else {
-        switches_states = (switches_states & 0xFC) | (i-1);
-      }
+      if (i<=3 && result==0) result = 1;
+      switches_states ^= mask;
     }
-  } //endfor */
+    mask >>= 1;
+  }
 #endif
 
   if ((tmr10ms_t)(get_tmr10ms() - s_move_last_time) > 10)
