@@ -3,6 +3,9 @@
 
 #include "appdata.h"
 
+// Global data and storage object
+AppData g;
+
 // ** CompStoreObj class********************
 void CompStoreObj::clear (const QString tag1, const QString tag2, const QString tag3)
 {

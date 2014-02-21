@@ -74,9 +74,6 @@ class MyProxyStyle : public QProxyStyle
  };
 #endif
 
-// Global data and storge object
-AppData g;
-
 int main(int argc, char *argv[])
 {
   Q_INIT_RESOURCE(companion);
