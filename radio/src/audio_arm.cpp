@@ -360,7 +360,7 @@ tmr10ms_t timeAutomaticPromptsSilence = 0;
 void playModelEvent(uint8_t category, uint8_t index, uint8_t event)
 {
   char filename[AUDIO_FILENAME_MAXLEN+1];
-  if ((get_tmr10ms()-timeAutomaticPromptsSilence > 10) && isAudioFileReferenced((category << 24) + (index << 16) + event, filename)) {
+  if ((get_tmr10ms()-timeAutomaticPromptsSilence > 50) && isAudioFileReferenced((category << 24) + (index << 16) + event, filename)) {
     audioQueue.playFile(filename);
   }
 }
