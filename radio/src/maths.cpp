@@ -171,7 +171,7 @@ void varioWakeup()
   if (isFunctionActive(FUNCTION_VARIO)) {
 #if defined(AUDIO)
     cli();
-    int verticalSpeed = frskyData.hub.varioSpeed;
+    int16_t verticalSpeed = frskyData.hub.varioSpeed;
     sei();
     
 #if defined(PCBSTD)

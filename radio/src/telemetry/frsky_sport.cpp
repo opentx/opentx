@@ -36,46 +36,46 @@
 
 #include "../opentx.h"
 
-#define START_STOP         0x7e
-#define BYTESTUFF          0x7d
-#define STUFF_MASK         0x20
+#define START_STOP              0x7e
+#define BYTESTUFF               0x7d
+#define STUFF_MASK              0x20
 
 // FrSky PRIM IDs (1 byte)
-#define DATA_FRAME         0x10
+#define DATA_FRAME              0x10
 
 // FrSky old DATA IDs (1 byte)
-#define GPS_ALT_BP_ID      0x01
-#define TEMP1_ID           0x02
-#define RPM_ID             0x03
-#define FUEL_ID            0x04
-#define TEMP2_ID           0x05
-#define VOLTS_ID           0x06
-#define GPS_ALT_AP_ID      0x09
-#define BARO_ALT_BP_ID     0x10
-#define GPS_SPEED_BP_ID    0x11
-#define GPS_LONG_BP_ID     0x12
-#define GPS_LAT_BP_ID      0x13
-#define GPS_COURS_BP_ID    0x14
-#define GPS_DAY_MONTH_ID   0x15
-#define GPS_YEAR_ID        0x16
-#define GPS_HOUR_MIN_ID    0x17
-#define GPS_SEC_ID         0x18
-#define GPS_SPEED_AP_ID    0x19
-#define GPS_LONG_AP_ID     0x1A
-#define GPS_LAT_AP_ID      0x1B
-#define GPS_COURS_AP_ID    0x1C
-#define BARO_ALT_AP_ID     0x21
-#define GPS_LONG_EW_ID     0x22
-#define GPS_LAT_NS_ID      0x23
-#define ACCEL_X_ID         0x24
-#define ACCEL_Y_ID         0x25
-#define ACCEL_Z_ID         0x26
-#define CURRENT_ID         0x28
-#define VARIO_ID           0x30
-#define VFAS_ID            0x39
-#define VOLTS_BP_ID        0x3A
-#define VOLTS_AP_ID        0x3B
-#define FRSKY_LAST_ID      0x3F
+#define GPS_ALT_BP_ID           0x01
+#define TEMP1_ID                0x02
+#define RPM_ID                  0x03
+#define FUEL_ID                 0x04
+#define TEMP2_ID                0x05
+#define VOLTS_ID                0x06
+#define GPS_ALT_AP_ID           0x09
+#define BARO_ALT_BP_ID          0x10
+#define GPS_SPEED_BP_ID         0x11
+#define GPS_LONG_BP_ID          0x12
+#define GPS_LAT_BP_ID           0x13
+#define GPS_COURS_BP_ID         0x14
+#define GPS_DAY_MONTH_ID        0x15
+#define GPS_YEAR_ID             0x16
+#define GPS_HOUR_MIN_ID         0x17
+#define GPS_SEC_ID              0x18
+#define GPS_SPEED_AP_ID         0x19
+#define GPS_LONG_AP_ID          0x1A
+#define GPS_LAT_AP_ID           0x1B
+#define GPS_COURS_AP_ID         0x1C
+#define BARO_ALT_AP_ID          0x21
+#define GPS_LONG_EW_ID          0x22
+#define GPS_LAT_NS_ID           0x23
+#define ACCEL_X_ID              0x24
+#define ACCEL_Y_ID              0x25
+#define ACCEL_Z_ID              0x26
+#define CURRENT_ID              0x28
+#define VARIO_ID                0x30
+#define VFAS_ID                 0x39
+#define VOLTS_BP_ID             0x3A
+#define VOLTS_AP_ID             0x3B
+#define FRSKY_LAST_ID           0x3F
 
 // FrSky new DATA IDs (2 bytes)
 #define RSSI_ID                 0xf101
@@ -119,8 +119,8 @@
 #define GPS_TIME_DATE_LAST_ID   0x085f
 
 // FrSky wrong IDs ?
-#define BETA_VARIO_ID      0x8030
-#define BETA_BARO_ALT_ID   0x8010
+#define BETA_VARIO_ID           0x8030
+#define BETA_BARO_ALT_ID        0x8010
 
 uint8_t telemetryState = TELEMETRY_INIT;
 
@@ -255,17 +255,16 @@ void processHubPacket(uint8_t id, uint16_t value)
       break;
 
     case VOLTS_ID:
-      // Voltage => Cell number + Cell voltage
     {
+      // Voltage => Cell number + Cell voltage
       uint8_t battnumber = ((frskyData.hub.volts & 0x00F0) >> 4);
       if (battnumber < 12) {
         if (frskyData.hub.cellsCount < battnumber+1) {
           frskyData.hub.cellsCount = battnumber+1;
         }
-        // TODO precision could be 0.01V instead of 0.02V
-        uint8_t cellVolts = (uint8_t)(((((frskyData.hub.volts & 0xFF00) >> 8) + ((frskyData.hub.volts & 0x000F) << 8)))/10);
+        uint16_t cellVolts = (uint16_t)(((((frskyData.hub.volts & 0xFF00) >> 8) + ((frskyData.hub.volts & 0x000F) << 8))) / 5);
         frskyData.hub.cellVolts[battnumber] = cellVolts;
-        if (!frskyData.hub.minCellVolts || cellVolts < frskyData.hub.minCellVolts || battnumber==frskyData.hub.minCellIdx) {
+        if (!frskyData.hub.minCellVolts || cellVolts<frskyData.hub.minCellVolts || battnumber==frskyData.hub.minCellIdx) {
           frskyData.hub.minCellIdx = battnumber;
           frskyData.hub.minCellVolts = cellVolts;
           if (!frskyData.hub.minCell || frskyData.hub.minCellVolts < frskyData.hub.minCell)
@@ -492,8 +491,8 @@ void processSportPacket(uint8_t *packet)
         uint32_t minCell, minCellNum;
         
         //TODO: Use reported total voltages (bits 4-7)?
-        frskyData.hub.cellVolts[battnumber] = ((cells & 0x000FFF00) >> 8) / 10;
-        frskyData.hub.cellVolts[battnumber+1] = ((cells & 0xFFF00000) >> 20) / 10;
+        frskyData.hub.cellVolts[battnumber] = ((cells & 0x000FFF00) >> 8) / 5;
+        frskyData.hub.cellVolts[battnumber+1] = ((cells & 0xFFF00000) >> 20) / 5;
         
         if (frskyData.hub.cellsCount < battnumber+2)
           frskyData.hub.cellsCount = battnumber+2;
@@ -576,7 +575,7 @@ void telemetryInterrupt10ms()
 #if defined(FRSKY_HUB)
   for (uint8_t i=0; i<frskyData.hub.cellsCount; i++)
     voltage += frskyData.hub.cellVolts[i];
-  voltage /= 5;
+  voltage /= 10;
   frskyData.hub.cellsSum = voltage;
 #endif
 

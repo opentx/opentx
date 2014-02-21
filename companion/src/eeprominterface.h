@@ -953,7 +953,6 @@ enum Capability {
  FlightPhases,
  FlightModesName,
  FlightPhasesHaveFades,
- SimulatorType,
  Mixes,
  MixesWithoutExpo,
  Timers,
@@ -1062,15 +1061,8 @@ enum Capability {
  HasFasOffset,
  HasMahPersistent,
  MultiposPots,
- MultiposPotsPositions
-};
-
-enum UseContext {
-  DefaultContext,
-  TimerContext,
-  FlightPhaseContext,
-  MixerContext,
-  ExpoContext,
+ MultiposPotsPositions,
+ SimulatorVariant,
 };
 
 class SimulatorInterface;
@@ -1105,7 +1097,7 @@ class EEPROMInterface
     
     virtual int isAvailable(Protocol proto, int port=0) = 0;
 
-    virtual SimulatorInterface * getSimulator() = 0;
+    virtual SimulatorInterface * getSimulator() { return NULL; }
 
     virtual const int getEEpromSize() = 0;
 
@@ -1126,6 +1118,12 @@ extern QString EEPROMWarnings;
 /* EEPROM string conversion functions */
 void setEEPROMString(char *dst, const char *src, int size);
 void getEEPROMString(char *dst, const char *src, int size);
+
+float ValToTim(int value);
+int TimToVal(float value);
+
+QString getSignedStr(int value);
+QString getGVarString(int16_t val, bool sign=false);
 
 inline int applyStickMode(int stick, unsigned int mode)
 {

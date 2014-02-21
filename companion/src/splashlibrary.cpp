@@ -5,10 +5,12 @@
 #include "helpers.h"
 //#include "splashlabel.h"
 #include "flashinterface.h"
+#include "helpers.h"
 
 splashLibrary::splashLibrary(QWidget *parent, QString * fileName) : QDialog(parent), ui(new Ui::splashLibrary) {
   splashFileName = fileName;
   ui->setupUi(this);
+  this->setWindowIcon(CompanionIcon("library.png"));
   ui->nextPage->setIcon(CompanionIcon("arrow-right.png"));
   ui->prevPage->setIcon(CompanionIcon("arrow-left.png"));
   page = 0;

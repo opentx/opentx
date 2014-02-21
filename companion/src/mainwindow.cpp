@@ -672,7 +672,7 @@ void MainWindow::openDocURL()
 void MainWindow::openFile()
 {
     QSettings settings;
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), settings.value("lastDir").toString(),tr(EEPROM_FILES_FILTER));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Models and Settings file"), settings.value("lastDir").toString(),tr(EEPROM_FILES_FILTER));
     if (!fileName.isEmpty()) {
       settings.setValue("lastDir", QFileInfo(fileName).dir().absolutePath());
 
@@ -1551,6 +1551,7 @@ void MainWindow::about()
     aboutStr.append("<br/><br/>");
     aboutStr.append(tr("Copyright") + " Bertrand Songis & Romolo Manfredini<br/>&copy; 2011-2014<br/>");
     QMessageBox msgBox(this);
+    msgBox.setWindowIcon(CompanionIcon("information.png"));
     msgBox.setWindowTitle(tr("About Companion"));
     msgBox.setText(aboutStr);
     msgBox.exec();
@@ -1658,7 +1659,7 @@ void MainWindow::createActions()
  
     QActionGroup *themeAlignGroup = new QActionGroup(this);
     classicThemeAct =    addAct( themeAlignGroup,    tr("Classical"),       tr("The classical Companion icon theme"),   SLOT(setClassicTheme()));
-    newThemeAct =        addAct( themeAlignGroup,    tr("New"),             tr("The new Companion 2 icon theme"),       SLOT(setNewTheme()));
+    yericoThemeAct =     addAct( themeAlignGroup,    tr("Yerico"),          tr("Yellow round honey sweet icon theme"),  SLOT(setYericoTheme()));
     monoThemeAct =       addAct( themeAlignGroup,    tr("Monochrome"),      tr("A monochrome black icon theme"),        SLOT(setMonochromeTheme()));
     monoWhiteAct =       addAct( themeAlignGroup,    tr("MonoWhite"),       tr("A monochrome white icon theme"),        SLOT(setMonoWhiteTheme()));
     monoBlueAct =        addAct( themeAlignGroup,    tr("MonoBlue"),        tr("A monochrome blue icon theme"),         SLOT(setMonoBlueTheme()));
@@ -1763,7 +1764,7 @@ void MainWindow::createMenus()
 
     settingsMenu->addMenu(themeMenu);
       themeMenu->addAction(classicThemeAct);
-      themeMenu->addAction(newThemeAct);
+      themeMenu->addAction(yericoThemeAct);
       themeMenu->addAction(monoThemeAct);
       themeMenu->addAction(monoBlueAct);
       themeMenu->addAction(monoWhiteAct);
@@ -2026,7 +2027,7 @@ void MainWindow::updateIconThemeActions()
   int size = settings.value("theme","1").toInt();
   switch (size){
     case 0:  classicThemeAct->setChecked(true); break;
-    case 1:  newThemeAct->setChecked(true);     break;
+    case 1:  yericoThemeAct->setChecked(true);  break;
     case 2:  monoWhiteAct->setChecked(true);    break;
     case 3:  monoThemeAct->setChecked(true);    break;
     case 4:  monoBlueAct->setChecked(true);     break;
