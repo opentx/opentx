@@ -145,11 +145,7 @@ char * getAudioPath(char * path)
 char * getSystemAudioPath(char * path)
 {
   char * str = getAudioPath(path);
-<<<<<<< HEAD
   strcpy(str, SYSTEM_SUBDIR "/");
-=======
-  strcpy(path, SYSTEM_SUBDIR "/");
->>>>>>> 5f560e8d1b2815267f118be59c9269ed42357d66
   return str + sizeof(SYSTEM_SUBDIR);
 }
 
