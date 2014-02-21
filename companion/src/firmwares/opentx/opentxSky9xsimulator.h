@@ -20,15 +20,17 @@
 #include "simulatorinterface.h"
 
 class RadioData;
-class Open9xInterface;
+class OpenTxInterface;
 
 class Open9xSky9xSimulator : public SimulatorInterface {
 
   public:
 
-    Open9xSky9xSimulator(Open9xInterface *);
+    Open9xSky9xSimulator(OpenTxInterface *);
 
-    virtual void start(RadioData & radioData, bool tests);
+    virtual void start(QByteArray & eeprom, bool tests=true);
+
+    virtual void start(const char * filename, bool tests=true);
 
     virtual void stop();
 
@@ -54,7 +56,7 @@ class Open9xSky9xSimulator : public SimulatorInterface {
 
   protected:
 
-    Open9xInterface * open9xInterface;
+    OpenTxInterface * open9xInterface;
 };
 
 #endif
