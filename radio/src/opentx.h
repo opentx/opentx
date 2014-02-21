@@ -804,15 +804,14 @@ enum PerOutMode {
 };
 
 
-#ifdef INPUT_WARNINGS_GENERATE_SIM_DATA
-extern uint8_t checkWarningState;
+#if defined(MODULE_ALWAYS_SEND_PULSES)
+extern uint8_t startupWarningState;
 
-enum InputWarningStates {
-  e_InWarnBegin               = 0,
-  e_InWarnThrottleWarnActive  = 1,
-  e_InWarnStartSwitchWarn     = 2,
-  // e_InWarnSwitchWarnActive    = 3,  currently not needed
-  e_InWarnFinished            = 3,
+enum StartupWarningStates {
+  STARTUP_WARNING_INIT,
+  STARTUP_WARNING_THROTTLE,
+  STARTUP_WARNING_SWITCHES,
+  STARTUP_WARNING_DONE,
 };
 #endif
 
