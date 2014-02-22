@@ -658,7 +658,8 @@ enum AssignFunc {
   FuncBackgroundMusicPause,
   FuncAdjustGV1,
   FuncAdjustGVLast = FuncAdjustGV1+C9X_MAX_GVARS-1,
-  FuncCount
+  FuncCount,
+  FuncReserve = -1
 };
 
 class FuncSwData { // Function Switches data

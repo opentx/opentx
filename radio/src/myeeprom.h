@@ -732,6 +732,9 @@ enum Functions {
   FUNC_ADJUST_GVAR,
 #if defined(CPUARM)
   FUNC_VOLUME,
+  FUNC_RESERVE1,
+  FUNC_RESERVE2,
+  FUNC_RESERVE3,
 #endif
 
   // then the other functions
@@ -743,6 +746,9 @@ enum Functions {
 #endif
   FUNC_PLAY_VALUE,
 #if defined(CPUARM)
+  FUNC_PLAY_DIFF,
+  FUNC_RESERVE4,
+  FUNC_RESERVE5,
   FUNC_BACKGND_MUSIC,
   FUNC_BACKGND_MUSIC_PAUSE,
 #endif

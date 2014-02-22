@@ -1311,6 +1311,14 @@ bool isAssignableFunctionAvailable(int16_t function)
       return false;
 #endif
 
+    case FUNC_PLAY_DIFF:
+    case FUNC_RESERVE1:
+    case FUNC_RESERVE2:
+    case FUNC_RESERVE3:
+    case FUNC_RESERVE4:
+    case FUNC_RESERVE5:
+      return false;
+
     default:
       return true;
   }

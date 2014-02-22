@@ -224,8 +224,10 @@
   #define TR_CFN_TEST
 #endif
 
+#define TR_CFN_RESERVE         "[reserve]\0"
+
 #if defined(CPUARM)
-  #define TR_VFSWFUNC          "Safety\0   ""Trainer\0  ""Inst. Trim""Reset\0    ""Set \0     " TR_ADJUST_GVAR "Volume\0   " TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Backlight\0" TR_CFN_TEST
+  #define TR_VFSWFUNC          "Safety\0   ""Trainer\0  ""Inst. Trim""Reset\0    ""Set \0     " TR_ADJUST_GVAR "Volume\0   " TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_RESERVE TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Backlight\0" TR_CFN_TEST
 #elif defined(PCBGRUVIN9X)
   #define TR_VFSWFUNC          "Safety\0   ""Trainer\0  ""Inst. Trim""Reset\0    " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC TR_SDCLOGS "Backlight\0" TR_CFN_TEST
 #else

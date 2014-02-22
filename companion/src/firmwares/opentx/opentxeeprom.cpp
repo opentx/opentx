@@ -1319,7 +1319,9 @@ class CustomFunctionsConversionTable: public ConversionTable {
         addConversion(FuncTrainerTHR, val++);
         addConversion(FuncTrainerAIL, val++);
       }
+
       addConversion(FuncInstantTrim, val++);
+
       if (version >= 216) {
         addConversion(FuncReset, val++);
         if (IS_ARM(board)) {
@@ -1330,14 +1332,21 @@ class CustomFunctionsConversionTable: public ConversionTable {
         for (int i=0; i<MAX_GVARS(board, version); i++)
           addConversion(FuncAdjustGV1+i, val);
         val++;
-        if (IS_ARM(board))
+        if (IS_ARM(board)) {
           addConversion(FuncVolume, val++);
+          addConversion(FuncReserve, val++);
+          addConversion(FuncReserve, val++);
+          addConversion(FuncReserve, val++);
+        }
         addConversion(FuncPlaySound, val++);
         addConversion(FuncPlayPrompt, val++);
         if (version >= 213 && !IS_ARM(board))
           addConversion(FuncPlayBoth, val++);
         addConversion(FuncPlayValue, val++);
         if (IS_ARM(board)) {
+          addConversion(FuncReserve, val++);
+          addConversion(FuncReserve, val++);
+          addConversion(FuncReserve, val++);
           addConversion(FuncBackgroundMusic, val++);
           addConversion(FuncBackgroundMusicPause, val++);
         }
