@@ -140,7 +140,7 @@ void burnDialog::on_FlashLoadButton_clicked()
   ui->EEbackupCB->hide();
   QTimer::singleShot(0, this, SLOT(shrink()));
   if (hexType==2) {
-    fileName = QFileDialog::getOpenFileName(this, tr("Open"), g.flashDir(), FLASH_FILES_FILTER);
+    fileName = QFileDialog::getOpenFileName(this, tr("Open Firmware File"), g.flashDir(), FLASH_FILES_FILTER);
     checkFw(fileName);
   }
   else {

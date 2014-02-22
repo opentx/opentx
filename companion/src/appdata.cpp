@@ -9,201 +9,201 @@ AppData g;
 // ** CompStoreObj class********************
 void CompStoreObj::clear (const QString tag1, const QString tag2, const QString tag3)
 {
-	QSettings settings(PRODUCT, COMPANY);
-	if (tag2.isEmpty())
-	{
-		settings.remove(tag1);
-	}
-	else if (tag3.isEmpty())
-	{
-		settings.beginGroup(tag1);
-		settings.remove(tag2);
-		settings.endGroup();
-	}
-	else
-	{
-		settings.beginGroup(tag1);
-		settings.beginGroup(tag2);
-		settings.remove(tag3);
-		settings.endGroup();
-		settings.endGroup();
-	}
+    QSettings settings(PRODUCT, COMPANY);
+    if (tag2.isEmpty())
+    {
+        settings.remove(tag1);
+    }
+    else if (tag3.isEmpty())
+    {
+        settings.beginGroup(tag1);
+        settings.remove(tag2);
+        settings.endGroup();
+    }
+    else
+    {
+        settings.beginGroup(tag1);
+        settings.beginGroup(tag2);
+        settings.remove(tag3);
+        settings.endGroup();
+        settings.endGroup();
+    }
 }
 
 void CompStoreObj::store(const QByteArray newArray, QByteArray &array, const QString tag, const QString group1, const QString group2 )
 {
-	QSettings settings(PRODUCT, COMPANY);
-	if (!group1.isEmpty()) settings.beginGroup(group1);
-	if (!group2.isEmpty()) settings.beginGroup(group2);
+    QSettings settings(PRODUCT, COMPANY);
+    if (!group1.isEmpty()) settings.beginGroup(group1);
+    if (!group2.isEmpty()) settings.beginGroup(group2);
 
-	settings.setValue(tag, newArray);
-	array = newArray;
+    settings.setValue(tag, newArray);
+    array = newArray;
 
-	if (!group1.isEmpty()) settings.endGroup();
-	if (!group2.isEmpty()) settings.endGroup();
+    if (!group1.isEmpty()) settings.endGroup();
+    if (!group2.isEmpty()) settings.endGroup();
 }
 
 void CompStoreObj::store(const QStringList newSList, QStringList &stringList, const QString tag, const QString group1, const QString group2 )
 {
-	QSettings settings(PRODUCT, COMPANY);
-	if (!group1.isEmpty()) settings.beginGroup(group1);
-	if (!group2.isEmpty()) settings.beginGroup(group2);
+    QSettings settings(PRODUCT, COMPANY);
+    if (!group1.isEmpty()) settings.beginGroup(group1);
+    if (!group2.isEmpty()) settings.beginGroup(group2);
 
-	settings.setValue(tag, newSList);
-	stringList = newSList;
+    settings.setValue(tag, newSList);
+    stringList = newSList;
 
-	if (!group1.isEmpty()) settings.endGroup();
-	if (!group2.isEmpty()) settings.endGroup();
+    if (!group1.isEmpty()) settings.endGroup();
+    if (!group2.isEmpty()) settings.endGroup();
 }
 
 void CompStoreObj::store(const QString newString, QString &string, const QString tag, const QString group1, const QString group2 )
 {
-	QSettings settings(PRODUCT, COMPANY);
-	if (!group1.isEmpty()) settings.beginGroup(group1);
-	if (!group2.isEmpty()) settings.beginGroup(group2);
+    QSettings settings(PRODUCT, COMPANY);
+    if (!group1.isEmpty()) settings.beginGroup(group1);
+    if (!group2.isEmpty()) settings.beginGroup(group2);
 
-	settings.setValue(tag, newString);
-	string = newString;
+    settings.setValue(tag, newString);
+    string = newString;
 
-	if (!group1.isEmpty()) settings.endGroup();
-	if (!group2.isEmpty()) settings.endGroup();
+    if (!group1.isEmpty()) settings.endGroup();
+    if (!group2.isEmpty()) settings.endGroup();
 }
 
 void CompStoreObj::store(const bool newTruth, bool &truth, const QString tag, const QString group1, const QString group2 )
 {
-	QSettings settings(PRODUCT, COMPANY);
-	if (!group1.isEmpty()) settings.beginGroup(group1);
-	if (!group2.isEmpty()) settings.beginGroup(group2);
+    QSettings settings(PRODUCT, COMPANY);
+    if (!group1.isEmpty()) settings.beginGroup(group1);
+    if (!group2.isEmpty()) settings.beginGroup(group2);
 
-	settings.setValue(tag, newTruth);
-	truth = newTruth;
+    settings.setValue(tag, newTruth);
+    truth = newTruth;
 
-	if (!group1.isEmpty()) settings.endGroup();
-	if (!group2.isEmpty()) settings.endGroup();
+    if (!group1.isEmpty()) settings.endGroup();
+    if (!group2.isEmpty()) settings.endGroup();
 }
 
 void CompStoreObj::store(const int newNumber, int &number, const QString tag, const QString group1, const QString group2 )
 {
-	QSettings settings(PRODUCT, COMPANY);
-	if (!group1.isEmpty()) settings.beginGroup(group1);
-	if (!group2.isEmpty()) settings.beginGroup(group2);
+    QSettings settings(PRODUCT, COMPANY);
+    if (!group1.isEmpty()) settings.beginGroup(group1);
+    if (!group2.isEmpty()) settings.beginGroup(group2);
 
-	settings.setValue(tag, newNumber);
-	number = newNumber;
+    settings.setValue(tag, newNumber);
+    number = newNumber;
 
-	if (!group1.isEmpty()) settings.endGroup();
-	if (!group2.isEmpty()) settings.endGroup();
+    if (!group1.isEmpty()) settings.endGroup();
+    if (!group2.isEmpty()) settings.endGroup();
 }
 
 // Retrieval functions
 void CompStoreObj::retrieve( QByteArray &array, const QString tag, const QString def, const QString group1, const QString group2 )
 {
-	QSettings settings(PRODUCT, COMPANY);
-	if (!group1.isEmpty()) settings.beginGroup(group1);
-	if (!group2.isEmpty()) settings.beginGroup(group2);
+    QSettings settings(PRODUCT, COMPANY);
+    if (!group1.isEmpty()) settings.beginGroup(group1);
+    if (!group2.isEmpty()) settings.beginGroup(group2);
 
-	array = settings.value(tag, def).toByteArray();
+    array = settings.value(tag, def).toByteArray();
 
-	if (!group1.isEmpty()) settings.endGroup();
-	if (!group2.isEmpty()) settings.endGroup();
+    if (!group1.isEmpty()) settings.endGroup();
+    if (!group2.isEmpty()) settings.endGroup();
 }
 
 void CompStoreObj::retrieve( QStringList &stringList, const QString tag, const QString def, const QString group1, const QString group2 )
 {
-	QSettings settings(PRODUCT, COMPANY);
-	if (!group1.isEmpty()) settings.beginGroup(group1);
-	if (!group2.isEmpty()) settings.beginGroup(group2);
+    QSettings settings(PRODUCT, COMPANY);
+    if (!group1.isEmpty()) settings.beginGroup(group1);
+    if (!group2.isEmpty()) settings.beginGroup(group2);
 
-	stringList = settings.value(tag, def).toStringList();
+    stringList = settings.value(tag, def).toStringList();
 
-	if (!group1.isEmpty()) settings.endGroup();
-	if (!group2.isEmpty()) settings.endGroup();
+    if (!group1.isEmpty()) settings.endGroup();
+    if (!group2.isEmpty()) settings.endGroup();
 }
 
 void CompStoreObj::retrieve( QString &string, const QString tag, const QString def, const QString group1, const QString group2 )
 {
-	QSettings settings(PRODUCT, COMPANY);
-	if (!group1.isEmpty()) settings.beginGroup(group1);
-	if (!group2.isEmpty()) settings.beginGroup(group2);
+    QSettings settings(PRODUCT, COMPANY);
+    if (!group1.isEmpty()) settings.beginGroup(group1);
+    if (!group2.isEmpty()) settings.beginGroup(group2);
 
-	string = settings.value(tag, def).toString();
+    string = settings.value(tag, def).toString();
 
-	if (!group1.isEmpty()) settings.endGroup();
-	if (!group2.isEmpty()) settings.endGroup();
+    if (!group1.isEmpty()) settings.endGroup();
+    if (!group2.isEmpty()) settings.endGroup();
 }
 
 void CompStoreObj::retrieve( bool &truth, const QString tag, const bool def, const QString group1, const QString group2 )
 {
-	QSettings settings(PRODUCT, COMPANY);
-	if (!group1.isEmpty()) settings.beginGroup(group1);
-	if (!group2.isEmpty()) settings.beginGroup(group2);
+    QSettings settings(PRODUCT, COMPANY);
+    if (!group1.isEmpty()) settings.beginGroup(group1);
+    if (!group2.isEmpty()) settings.beginGroup(group2);
 
-	truth = settings.value(tag, def).toBool();
+    truth = settings.value(tag, def).toBool();
 
-	if (!group1.isEmpty()) settings.endGroup();
-	if (!group2.isEmpty()) settings.endGroup();
+    if (!group1.isEmpty()) settings.endGroup();
+    if (!group2.isEmpty()) settings.endGroup();
 }
 
 void CompStoreObj::retrieve( int &number, const QString tag, const int def, const QString group1, const QString group2 )
 {
-	QSettings settings(PRODUCT, COMPANY);
-	if (!group1.isEmpty()) settings.beginGroup(group1);
-	if (!group2.isEmpty()) settings.beginGroup(group2);
+    QSettings settings(PRODUCT, COMPANY);
+    if (!group1.isEmpty()) settings.beginGroup(group1);
+    if (!group2.isEmpty()) settings.beginGroup(group2);
 
-	number = settings.value(tag, def).toInt();
+    number = settings.value(tag, def).toInt();
 
-	if (!group1.isEmpty()) settings.endGroup();
-	if (!group2.isEmpty()) settings.endGroup();
+    if (!group1.isEmpty()) settings.endGroup();
+    if (!group2.isEmpty()) settings.endGroup();
 }
 
 // Retrieve and Store functions
 void CompStoreObj::getset( QByteArray &array, const QString tag, const QString def, const QString group1, const QString group2 )
 {
-	retrieve( array, tag, def, group1, group2);
-	store(array, array, tag, group1, group2);
+    retrieve( array, tag, def, group1, group2);
+    store(array, array, tag, group1, group2);
 }
 
 void CompStoreObj::getset( QStringList &stringList, const QString tag, const QString def, const QString group1, const QString group2 )
 {
-	retrieve( stringList, tag, def, group1, group2);
-	store(stringList, stringList, tag, group1, group2);
+    retrieve( stringList, tag, def, group1, group2);
+    store(stringList, stringList, tag, group1, group2);
 }
 
 void CompStoreObj::getset( QString &string, const QString tag, const QString def, const QString group1, const QString group2 )
 {
-	retrieve( string, tag, def, group1, group2);
-	store(string, string, tag, group1, group2);
+    retrieve( string, tag, def, group1, group2);
+    store(string, string, tag, group1, group2);
 }
 
 void CompStoreObj::getset( bool &truth, const QString tag, const bool def, const QString group1, const QString group2 )
 {
-	retrieve( truth, tag, def, group1, group2);
-	store(truth, truth, tag, group1, group2);
+    retrieve( truth, tag, def, group1, group2);
+    store(truth, truth, tag, group1, group2);
 }
 
 void CompStoreObj::getset( int &number, const QString tag, const int def, const QString group1, const QString group2 )
 {
-	retrieve( number, tag, def, group1, group2);
-	store(number, number, tag, group1, group2);
+    retrieve( number, tag, def, group1, group2);
+    store(number, number, tag, group1, group2);
 }
 
 // ** FwRevision class********************
 int FwRevision::get( const QString fwName )
 {
-	QString result;
-	retrieve( result, fwName, "", "FwRevisions" );
-	return result.toInt();
+    QString result;
+    retrieve( result, fwName, "", "FwRevisions" );
+    return result.toInt();
 }
 
 void FwRevision::set( const QString fwName, const int fwRevision )
 {
-	QString tempString= QString("%1").arg(fwRevision);
-	store( tempString, tempString, fwName, "FwRevisions" );
+    QString tempString= QString("%1").arg(fwRevision);
+    store( tempString, tempString, fwName, "FwRevisions" );
 }
 
 void FwRevision::remove( const QString tag )
 {
-	clear( "FwRevisions", tag );
+    clear( "FwRevisions", tag );
 }
 
 // ** JStickData class********************
@@ -224,91 +224,87 @@ void JStickData::stick_inv(const int it) { store( it, _stickInv, QString("stick%
 // Constructor
 JStickData::JStickData()
 {
-	index = -1;
+    index = -1;
 }
 
 void JStickData::remove()
 {
-	// Remove all JStickData values from settings file
-	QSettings settings(PRODUCT, COMPANY);
-	settings.beginGroup( "JsCalibration" );
-	settings.remove( QString( "stick%1_axe").arg(index) );
-	settings.remove( QString( "stick%1_min").arg(index) );
-	settings.remove( QString( "stick%1_med").arg(index) );
-	settings.remove( QString( "stick%1_max").arg(index) );
-	settings.remove( QString( "stick%1_inv").arg(index) );
-	settings.endGroup();
+    // Remove all JStickData values from settings file
+    QSettings settings(PRODUCT, COMPANY);
+    settings.beginGroup( "JsCalibration" );
+    settings.remove( QString( "stick%1_axe").arg(index) );
+    settings.remove( QString( "stick%1_min").arg(index) );
+    settings.remove( QString( "stick%1_med").arg(index) );
+    settings.remove( QString( "stick%1_max").arg(index) );
+    settings.remove( QString( "stick%1_inv").arg(index) );
+    settings.endGroup();
 
-	// Reset all JStickData variables to initial values
-	init(index);
+    // Reset all JStickData variables to initial values
+    init(index);
 }
 
 bool JStickData::existsOnDisk()
 {
-	QSettings settings(PRODUCT, COMPANY);
-	settings.beginGroup("JsCalibration");
-	int axe = settings.value( QString("stick%1_axe").arg(index), -1 ).toInt();
-	settings.endGroup();
+    QSettings settings(PRODUCT, COMPANY);
+    settings.beginGroup("JsCalibration");
+    int axe = settings.value( QString("stick%1_axe").arg(index), -1 ).toInt();
+    settings.endGroup();
 
-	return (axe > -1);
+    return (axe > -1);
 }
 
 void JStickData::init(int newIndex)
 {
-	index = newIndex;
-	_stickAxe = -1;
-	_stickMin = -32767;
-	_stickMed = 0;
-	_stickMax = 0;
-	_stickInv = 0;
+    index = newIndex;
+    _stickAxe = -1;
+    _stickMin = -32767;
+    _stickMed = 0;
+    _stickMax = 0;
+    _stickInv = 0;
 
-	// Do not write empty joystick calibrations to disk.
-	if ( !existsOnDisk() )
-		return;
+    // Do not write empty joystick calibrations to disk.
+    if ( !existsOnDisk() )
+        return;
 
-	flush();
+    flush();
 }
 
 void JStickData::flush()
 {
-	getset( _stickAxe, QString("stick%1_axe").arg(index), -1,     "JsCalibration" );
-	getset( _stickMin, QString("stick%1_min").arg(index), -32767, "JsCalibration" );
-	getset( _stickMed, QString("stick%1_med").arg(index),  0,     "JsCalibration" );
-	getset( _stickMax, QString("stick%1_max").arg(index),  0,     "JsCalibration" );
-	getset( _stickInv, QString("stick%1_inv").arg(index),  0,     "JsCalibration" );
+    getset( _stickAxe, QString("stick%1_axe").arg(index), -1,     "JsCalibration" );
+    getset( _stickMin, QString("stick%1_min").arg(index), -32767, "JsCalibration" );
+    getset( _stickMed, QString("stick%1_med").arg(index),  0,     "JsCalibration" );
+    getset( _stickMax, QString("stick%1_max").arg(index),  0,     "JsCalibration" );
+    getset( _stickInv, QString("stick%1_inv").arg(index),  0,     "JsCalibration" );
 }
 
 // ** Profile class********************
 // Get declarations
-QString Profile::firmware()      { return _firmware;      }
-QString Profile::name()          { return _name;          }
-QString Profile::sdPath()        { return _sdPath;        }
-QString Profile::splashFile()    { return _splashFile;    }
-bool    Profile::burnFirmware()  { return _burnFirmware;  }
-bool    Profile::renameFwFiles() { return _renameFwFiles; }
-bool    Profile::patchImage()    { return _patchImage;    }
-int     Profile::channelOrder()  { return _channelOrder;  }
-int     Profile::defaultMode()   { return _defaultMode;   }
+QString Profile::firmware()      const { return _firmware;      }
+QString Profile::name()          const { return _name;          }
+QString Profile::sdPath()        const { return _sdPath;        }
+QString Profile::splashFile()    const { return _splashFile;    }
+bool    Profile::burnFirmware()  const { return _burnFirmware;  }
+bool    Profile::renameFwFiles() const { return _renameFwFiles; }
+bool    Profile::patchImage()    const { return _patchImage;    }
+int     Profile::channelOrder()  const { return _channelOrder;  }
+int     Profile::defaultMode()   const { return _defaultMode;   }
 
-QString Profile::beeper()        { return _beeper;        }
-QString Profile::countryCode()   { return _countryCode;   }
-QString Profile::display()       { return _display;       }
-QString Profile::haptic()        { return _haptic;        }
-QString Profile::speaker()       { return _speaker;       }
-QString Profile::stickPotCalib() { return _stickPotCalib; }
-QString Profile::trainerCalib()  { return _trainerCalib;  }
-int     Profile::currentCalib()  { return _currentCalib;  }
-int     Profile::gsStickMode()   { return _gsStickMode;   }
-int     Profile::ppmMultiplier() { return _ppmMultiplier; }
-int     Profile::vBatCalib()     { return _vBatCalib;     }
-int     Profile::vBatWarn()      { return _vBatWarn;      }
+QString Profile::beeper()        const { return _beeper;        }
+QString Profile::countryCode()   const { return _countryCode;   }
+QString Profile::display()       const { return _display;       }
+QString Profile::haptic()        const { return _haptic;        }
+QString Profile::speaker()       const { return _speaker;       }
+QString Profile::stickPotCalib() const { return _stickPotCalib; }
+QString Profile::trainerCalib()  const { return _trainerCalib;  }
+int     Profile::currentCalib()  const { return _currentCalib;  }
+int     Profile::gsStickMode()   const { return _gsStickMode;   }
+int     Profile::ppmMultiplier() const { return _ppmMultiplier; }
+int     Profile::vBatCalib()     const { return _vBatCalib;     }
+int     Profile::vBatWarn()      const { return _vBatWarn;      }
 
 // Set declarations
-void Profile::name          (const QString x) { if (x.isEmpty())  // Name may never be empty!
-	store("----", _name, "Name", "Profiles", QString("profile%1").arg(index));
-else
-	store(x,      _name, "Name", "Profiles", QString("profile%1").arg(index));}
-
+void Profile::name          (const QString x) { store(x, _name,          "Name"                  ,"Profiles", QString("profile%1").arg(index));}
 void Profile::firmware      (const QString x) { store(x, _firmware,      "firmware"              ,"Profiles", QString("profile%1").arg(index));}
 void Profile::sdPath        (const QString x) { store(x, _sdPath,        "sdPath"                ,"Profiles", QString("profile%1").arg(index));}
 void Profile::splashFile    (const QString x) { store(x, _splashFile,    "SplashFileName"        ,"Profiles", QString("profile%1").arg(index));}
@@ -334,93 +330,121 @@ void Profile::vBatWarn      (const int     x) { store(x, _vBatWarn,      "vBatWa
 // Constructor
 Profile::Profile()
 {
-	index = -1;
+    index = -1;
+}
+
+// The default copy operator can not be used since the index variable would be destroyed 
+Profile& Profile::operator=(const Profile& rhs)
+{
+    name         ( rhs.name()          );
+    firmware     ( rhs.firmware()      );
+    sdPath       ( rhs.sdPath()        );
+    splashFile   ( rhs.splashFile()    );
+    burnFirmware ( rhs.burnFirmware()  );
+    renameFwFiles( rhs.renameFwFiles() );
+    patchImage   ( rhs.patchImage()    );
+    channelOrder ( rhs.channelOrder()  );
+    defaultMode  ( rhs.defaultMode()   );
+    beeper       ( rhs.beeper()        );
+    countryCode  ( rhs.countryCode()   );
+    display      ( rhs.display()       );
+    haptic       ( rhs.haptic()        );
+    speaker      ( rhs.speaker()       );
+    stickPotCalib( rhs.stickPotCalib() );
+    trainerCalib ( rhs.trainerCalib()  );
+    currentCalib ( rhs.currentCalib()  );
+    gsStickMode  ( rhs.gsStickMode()   );
+    ppmMultiplier( rhs.ppmMultiplier() );
+    vBatCalib    ( rhs.vBatCalib()     );
+    vBatWarn     ( rhs.vBatWarn()      );
+
+    return *this;
 }
 
 void Profile::remove()
 {
-	// Remove all profile values from settings file
-	QSettings settings(PRODUCT, COMPANY);
-	settings.beginGroup("Profiles");
-	settings.remove(QString("profile%1").arg(index));
-	settings.endGroup();
+    // Remove all profile values from settings file
+    QSettings settings(PRODUCT, COMPANY);
+    settings.beginGroup("Profiles");
+    settings.remove(QString("profile%1").arg(index));
+    settings.endGroup();
 
-	// Reset all profile variables to initial values
-	init(index);
+    // Reset all profile variables to initial values
+    init(index);
 }
 
 bool Profile::existsOnDisk()
 {
-	QSettings settings(PRODUCT, COMPANY);
-	settings.beginGroup("Profiles");
-	settings.beginGroup(QString("profile%1").arg(index));
-	QStringList keyList = settings.allKeys();
-	settings.endGroup();
-	settings.endGroup();
+    QSettings settings(PRODUCT, COMPANY);
+    settings.beginGroup("Profiles");
+    settings.beginGroup(QString("profile%1").arg(index));
+    QStringList keyList = settings.allKeys();
+    settings.endGroup();
+    settings.endGroup();
 
-	return (keyList.length() > 0);
+    return (keyList.length() > 0);
 }
 
 void Profile::init(int newIndex)
 {
-	index = newIndex;
+    index = newIndex;
 
-	_firmware =      "";
-	_name =          "";
-	_sdPath =        "";
-	_splashFile =    "";
-	_burnFirmware =  false;
-	_renameFwFiles = false;
-	_patchImage =    false;
-	_channelOrder =  0;
-	_defaultMode =   1;
+    _firmware =      "";
+    _name =          "";
+    _sdPath =        "";
+    _splashFile =    "";
+    _burnFirmware =  false;
+    _renameFwFiles = false;
+    _patchImage =    false;
+    _channelOrder =  0;
+    _defaultMode =   1;
 
-	_beeper =        "";
-	_countryCode =   "";
-	_display =       "";
-	_haptic =        "";
-	_speaker =       "";
-	_stickPotCalib = "";
-	_trainerCalib =  "";
+    _beeper =        "";
+    _countryCode =   "";
+    _display =       "";
+    _haptic =        "";
+    _speaker =       "";
+    _stickPotCalib = "";
+    _trainerCalib =  "";
 
-	_currentCalib =  0;
-	_gsStickMode =   0;
-	_ppmMultiplier = 0;
-	_vBatCalib =     0;
-	_vBatWarn =      0;
+    _currentCalib =  0;
+    _gsStickMode =   0;
+    _ppmMultiplier = 0;
+    _vBatCalib =     0;
+    _vBatWarn =      0;
 
-	// Do not write empty profiles to disk except the default (0) profile.
-	if ( index > 0 && !existsOnDisk())
-		return;
+    // Do not write empty profiles to disk except the default (0) profile.
+    if ( index > 0 && !existsOnDisk())
+        return;
 
-	flush();
+    flush();
 }
 
 void Profile::flush()
 {
-	// Load and store all variables. Use default values if setting values are missing
-	getset( _firmware,      "firmware"              ,""     ,"Profiles", QString("profile%1").arg(index));
-	getset( _name,          "Name"                  ,"----" ,"Profiles", QString("profile%1").arg(index));
-	getset( _sdPath,        "sdPath"                ,""     ,"Profiles", QString("profile%1").arg(index));
-	getset( _splashFile,    "SplashFileName"        ,""     ,"Profiles", QString("profile%1").arg(index));
-	getset( _burnFirmware,  "burnFirmware"          ,false  ,"Profiles", QString("profile%1").arg(index));
-	getset( _renameFwFiles, "rename_firmware_files" ,false  ,"Profiles", QString("profile%1").arg(index));
-	getset( _patchImage,    "patchImage"            ,false  ,"Profiles", QString("profile%1").arg(index));
-	getset( _channelOrder,  "default_channel_order" ,0      ,"Profiles", QString("profile%1").arg(index));
-	getset( _defaultMode,   "default_mode"          ,1      ,"Profiles", QString("profile%1").arg(index));
+    // Load and store all variables. Use default values if setting values are missing
+    getset( _firmware,      "firmware"              ,""     ,"Profiles", QString("profile%1").arg(index));
+    getset( _name,          "Name"                  ,""     ,"Profiles", QString("profile%1").arg(index));
+    getset( _sdPath,        "sdPath"                ,""     ,"Profiles", QString("profile%1").arg(index));
+    getset( _splashFile,    "SplashFileName"        ,""     ,"Profiles", QString("profile%1").arg(index));
+    getset( _burnFirmware,  "burnFirmware"          ,false  ,"Profiles", QString("profile%1").arg(index));
+    getset( _renameFwFiles, "rename_firmware_files" ,false  ,"Profiles", QString("profile%1").arg(index));
+    getset( _patchImage,    "patchImage"            ,false  ,"Profiles", QString("profile%1").arg(index));
+    getset( _channelOrder,  "default_channel_order" ,0      ,"Profiles", QString("profile%1").arg(index));
+    getset( _defaultMode,   "default_mode"          ,1      ,"Profiles", QString("profile%1").arg(index));
 
-	getset( _beeper,        "Beeper"                ,""     ,"Profiles", QString("profile%1").arg(index));
-	getset( _countryCode,   "countryCode"           ,""     ,"Profiles", QString("profile%1").arg(index));
-	getset( _display,       "Display"               ,""     ,"Profiles", QString("profile%1").arg(index));
-	getset( _haptic,        "Haptic"                ,""     ,"Profiles", QString("profile%1").arg(index));
-	getset( _speaker,       "Speaker"               ,""     ,"Profiles", QString("profile%1").arg(index));
-	getset( _stickPotCalib, "StickPotCalib"         ,""     ,"Profiles", QString("profile%1").arg(index));
-	getset( _trainerCalib,  "TrainerCalib"          ,""     ,"Profiles", QString("profile%1").arg(index));
-	getset( _currentCalib,  "currentCalib"          ,0      ,"Profiles", QString("profile%1").arg(index));
-	getset( _gsStickMode,   "GSStickMode"           ,0      ,"Profiles", QString("profile%1").arg(index));
-	getset( _ppmMultiplier, "PPM_Multiplier"        ,0      ,"Profiles", QString("profile%1").arg(index));
-	getset( _vBatCalib,     "VbatCalib"             ,0      ,"Profiles", QString("profile%1").arg(index));
-	getset( _vBatWarn,      "vBatWarn"              ,0      ,"Profiles", QString("profile%1").arg(index));
+    getset( _beeper,        "Beeper"                ,""     ,"Profiles", QString("profile%1").arg(index));
+    getset( _countryCode,   "countryCode"           ,""     ,"Profiles", QString("profile%1").arg(index));
+    getset( _display,       "Display"               ,""     ,"Profiles", QString("profile%1").arg(index));
+    getset( _haptic,        "Haptic"                ,""     ,"Profiles", QString("profile%1").arg(index));
+    getset( _speaker,       "Speaker"               ,""     ,"Profiles", QString("profile%1").arg(index));
+    getset( _stickPotCalib, "StickPotCalib"         ,""     ,"Profiles", QString("profile%1").arg(index));
+    getset( _trainerCalib,  "TrainerCalib"          ,""     ,"Profiles", QString("profile%1").arg(index));
+    getset( _currentCalib,  "currentCalib"          ,0      ,"Profiles", QString("profile%1").arg(index));
+    getset( _gsStickMode,   "GSStickMode"           ,0      ,"Profiles", QString("profile%1").arg(index));
+    getset( _ppmMultiplier, "PPM_Multiplier"        ,0      ,"Profiles", QString("profile%1").arg(index));
+    getset( _vBatCalib,     "VbatCalib"             ,0      ,"Profiles", QString("profile%1").arg(index));
+    getset( _vBatWarn,      "vBatWarn"              ,0      ,"Profiles", QString("profile%1").arg(index));
 }
 
 
@@ -539,105 +563,119 @@ void AppData::warningId       (const int         x) { store(x, _warningId,      
 // Constructor
 AppData::AppData()
 {
-	//Initialize the profiles
-	for (int i=0; i<MAX_PROFILES; i++)
-		profile[i].init( i );
+    //Initialize the profiles
+    for (int i=0; i<MAX_PROFILES; i++)
+        profile[i].init( i );
 
-	//Initialize the joysticks
-	for (int i=0; i<MAX_JOYSTICKS; i++)
-		joystick[i].init( i );
+    //Initialize the joysticks
+    for (int i=0; i<MAX_JOYSTICKS; i++)
+        joystick[i].init( i );
 
-	// Import settings from companion9x, but only do it one time.
-	// Use "location" tag as an indicator that the settings are missing
-	QSettings c9x_settings("companion9x", "companion9x");
-	QSettings settings(PRODUCT, COMPANY);
-	if (!settings.contains("locale"))
-	{
-		QStringList keys = c9x_settings.allKeys();
-		for (QStringList::iterator i=keys.begin(); i!=keys.end(); i++)
-		{
-			settings.setValue(*i, c9x_settings.value(*i));
-		}
-		// Convert firmware name
-		QString firmware = settings.value("firmware", "").toString();
-		firmware.replace("open9x","opentx");
-		firmware.replace("x9da","taranis");
+    // Import settings from companion9x, but only do it one time.
+    QSettings c9x_settings("companion9x", "companion9x");
+    QSettings settings(PRODUCT, COMPANY);
+    if (profile[0].name().isEmpty() )
+    {
+        // Copy all settings from companion9x to companion
+        QStringList keys = c9x_settings.allKeys();
+        for (QStringList::iterator i=keys.begin(); i!=keys.end(); i++)
+        {
+            settings.setValue(*i, c9x_settings.value(*i));
+        }
 
-		// Move Companion9x settings to profile0, the new default profile
-		profile[0].firmware( firmware );
-		profile[0].name( settings.value(          "Name",                  ""    ).toString());
-		profile[0].sdPath( settings.value(        "sdPath",                ""    ).toString());
-		profile[0].splashFile( settings.value(    "SplashFileName",        ""    ).toString());
-		profile[0].burnFirmware( settings.value(  "burnFirmware",          false ).toBool());
-		profile[0].renameFwFiles( settings.value( "rename_firmware_files", false ).toBool());
-		profile[0].patchImage( settings.value(    "patchImage",            false ).toBool());
-		profile[0].channelOrder( settings.value(  "default_channel_order", "0"   ).toInt());
-		profile[0].defaultMode( settings.value(   "default_mode",          "1"   ).toInt());
+        // Store old values in new locations
+        autoCheckApp(settings.value("startup_check_companion9x", true).toBool());
 
-		// Delete unused settings
-		settings.remove("firmware");
-		settings.remove("Name");
-		settings.remove("sdPath");
-		settings.remove("SplashFileName");
-		settings.remove("burnFirmware");
-		settings.remove("rename_firmware_files");
-		settings.remove("patchImage");
-		settings.remove("default_channel_order");
-		settings.remove("default_mode");
-	}
+        // Convert and store the firmware name
+        QString firmware = settings.value("firmware", "").toString();
+        firmware.replace("open9x","opentx");
+        firmware.replace("x9da","taranis");
+        profile[0].firmware( firmware );
 
-	// Load and store all variables. Use default values if setting values are missing
-	getset( _recentFiles,     "recentFileList"          ,"" );
-	getset( _mainWinGeo,      "mainWindowGeometry"      ,"" );
-	getset( _mainWinState,    "mainWindowState"         ,"" );
-	getset( _modelEditGeo,    "modelEditGeometry"       ,"" );
+        // Move the Companion9x profile settings to profile0, the new default profile
+        profile[0].name( settings.value(          "Name",                  ""    ).toString());
+        profile[0].sdPath( settings.value(        "sdPath",                ""    ).toString());
+        profile[0].splashFile( settings.value(    "SplashFileName",        ""    ).toString());
+        profile[0].burnFirmware( settings.value(  "burnFirmware",          false ).toBool());
+        profile[0].renameFwFiles( settings.value( "rename_firmware_files", false ).toBool());
+        profile[0].patchImage( settings.value(    "patchImage",            false ).toBool());
+        profile[0].channelOrder( settings.value(  "default_channel_order", "0"   ).toInt());
+        profile[0].defaultMode( settings.value(   "default_mode",          "1"   ).toInt());
 
-	getset( _armMcu,          "arm_mcu"                 ,"at91sam3s4-9x" );
-	getset( _avrArguments,    "avr_arguments"           ,"" );
-	getset( _avrPort,         "avr_port"                ,"" );
-	getset( _avrdudeLocation, "avrdudeLocation"        ,"" );
-	getset( _compileServer,   "compilation-server"      ,"" );
-	getset( _cpuId,           "cpu_id"                  ,"" );
-	getset( _dfuArguments,    "dfu_arguments"           ,"-a 0" );
-	getset( _dfuLocation,     "dfu_location"            ,"" );
-	getset( _lastFw,          "lastFw"                  ,"" );
-	getset( _locale,          "locale"                  ,"" );
-	getset( _mcu,             "mcu"                     ,"m64" );
-	getset( _programmer,      "programmer"              ,"usbasp" );
-	getset( _sambaLocation,   "samba_location"          ,"" );
-	getset( _sambaPort,       "samba_port"              ,"\\USBserial\\COM23" );
+        // Ensure that the default profile has a name
+        if ( profile[0].name().isEmpty() )
+            profile[0].name("My Radio");
 
-	getset( _backupDir,       "backupPath"              ,"" );
-	getset( _gePath,          "gePath"                  ,"" );
-	getset( _eepromDir,       "lastDir"                 ,"" );
-	getset( _flashDir,        "lastFlashDir"            ,"" );
-	getset( _imagesDir,       "lastImagesDir"           ,"" );
-	getset( _logDir,          "lastLogDir"              ,"" );
-	getset( _libDir,          "libraryPath"             ,"" );
-	getset( _snapshotDir,     "snapshotpath"            ,"" );
-	getset( _updatesDir,      "lastUpdatesDir"          ,"" );
+        // Delete obsolete settings fields
+        settings.remove("ActiveProfile");
+        settings.remove("burnFirmware");
+        settings.remove("custom_id");
+        settings.remove("default_channel_order");
+        settings.remove("default_mode");
+        settings.remove("firmware");
+        settings.remove("Name");
+        settings.remove("patchImage");
+        settings.remove("rename_firmware_files");
+        settings.remove("sdPath");
+        settings.remove("SplashFileName");
+        settings.remove("startup_check_companion9x");
 
-	getset( _enableBackup,    "backupEnable"            ,false );
-	getset( _backupOnFlash,   "backupOnFlash"           ,true  );
-	getset( _jsSupport,       "js_support"              ,false );
-	getset( _rev4aSupport,    "rev4asupport"            ,false );
-	getset( _maximized,       "maximized"               ,false );
-	getset( _showSplash,      "show_splash"             ,true  );
-	getset( _snapToClpbrd,    "snapshot_to_clipboard"   ,false );
-	getset( _autoCheckApp,    "startup_check_companion" ,true  );
-	getset( _autoCheckFw,     "startup_check_fw"        ,true  );
-	getset( _simuSW,          "simuSW"                  ,false );
-	getset( _enableWizard,    "wizardEnable"            ,true  );
+        // Select the new default profile as current profile
+        id( 0 );
+    }
 
-	getset( _backLight,       "backLight"               ,0  );
-	getset( _embedSplashes,   "embedded_splashes"       ,0  );
-	getset( _fwServerFails,   "fwserver"                ,0  );
-	getset( _generalEditTab,  "generalEditTab"          ,0  );
-	getset( _iconSize,        "icon_size"               ,2  );
-	getset( _jsCtrl,          "js_ctrl"                 ,0  );
-	getset( _historySize,     "history_size"            ,10 );
-	getset( _modelEditTab,    "modelEditTab"            ,0  );
-	getset( _id,              "profileId"               ,0  );
-	getset( _theme,           "theme"                   ,1  );
-	getset( _warningId,       "warningId"               ,0  );
+    // Load and store all variables. Use default values if setting values are missing
+    getset( _recentFiles,     "recentFileList"          ,"" );
+    getset( _mainWinGeo,      "mainWindowGeometry"      ,"" );
+    getset( _mainWinState,    "mainWindowState"         ,"" );
+    getset( _modelEditGeo,    "modelEditGeometry"       ,"" );
+
+    getset( _armMcu,          "arm_mcu"                 ,"at91sam3s4-9x" );
+    getset( _avrArguments,    "avr_arguments"           ,"" );
+    getset( _avrPort,         "avr_port"                ,"" );
+    getset( _avrdudeLocation, "avrdudeLocation"        ,"" );
+    getset( _compileServer,   "compilation-server"      ,"" );
+    getset( _cpuId,           "cpu_id"                  ,"" );
+    getset( _dfuArguments,    "dfu_arguments"           ,"-a 0" );
+    getset( _dfuLocation,     "dfu_location"            ,"" );
+    getset( _lastFw,          "lastFw"                  ,"" );
+    getset( _locale,          "locale"                  ,"" );
+    getset( _mcu,             "mcu"                     ,"m64" );
+    getset( _programmer,      "programmer"              ,"usbasp" );
+    getset( _sambaLocation,   "samba_location"          ,"" );
+    getset( _sambaPort,       "samba_port"              ,"\\USBserial\\COM23" );
+
+    getset( _backupDir,       "backupPath"              ,"" );
+    getset( _gePath,          "gePath"                  ,"" );
+    getset( _eepromDir,       "lastDir"                 ,"" );
+    getset( _flashDir,        "lastFlashDir"            ,"" );
+    getset( _imagesDir,       "lastImagesDir"           ,"" );
+    getset( _logDir,          "lastLogDir"              ,"" );
+    getset( _libDir,          "libraryPath"             ,"" );
+    getset( _snapshotDir,     "snapshotpath"            ,"" );
+    getset( _updatesDir,      "lastUpdatesDir"          ,"" );
+
+    getset( _enableBackup,    "backupEnable"            ,false );
+    getset( _backupOnFlash,   "backupOnFlash"           ,true  );
+    getset( _jsSupport,       "js_support"              ,false );
+    getset( _rev4aSupport,    "rev4asupport"            ,false );
+    getset( _maximized,       "maximized"               ,false );
+    getset( _showSplash,      "show_splash"             ,true  );
+    getset( _snapToClpbrd,    "snapshot_to_clipboard"   ,false );
+    getset( _autoCheckApp,    "startup_check_companion" ,true  );
+    getset( _autoCheckFw,     "startup_check_fw"        ,true  );
+    getset( _simuSW,          "simuSW"                  ,false );
+    getset( _enableWizard,    "wizardEnable"            ,true  );
+
+    getset( _backLight,       "backLight"               ,0  );
+    getset( _embedSplashes,   "embedded_splashes"       ,0  );
+    getset( _fwServerFails,   "fwserver"                ,0  );
+    getset( _generalEditTab,  "generalEditTab"          ,0  );
+    getset( _iconSize,        "icon_size"               ,2  );
+    getset( _jsCtrl,          "js_ctrl"                 ,0  );
+    getset( _historySize,     "history_size"            ,10 );
+    getset( _modelEditTab,    "modelEditTab"            ,0  );
+    getset( _id,              "profileId"               ,0  );
+    getset( _theme,           "theme"                   ,1  );
+    getset( _warningId,       "warningId"               ,0  );
 }

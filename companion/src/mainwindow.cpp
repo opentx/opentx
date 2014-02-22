@@ -642,7 +642,7 @@ void MainWindow::openDocURL()
 
 void MainWindow::openFile()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), g.eepromDir(), tr(EEPROM_FILES_FILTER));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Models and Settings file"), g.eepromDir(), tr(EEPROM_FILES_FILTER));
     if (!fileName.isEmpty()) {
       g.eepromDir(QFileInfo(fileName).dir().absolutePath());
 
@@ -1586,17 +1586,17 @@ void MainWindow::createActions()
     }
     updateProfilesActions();
 
-    newAct =             addAct("new.png",    tr("New"),        tr("Create a new file"),                       QKeySequence::New,    SLOT(newFile()));
-    openAct =            addAct("open.png",   tr("Open..."),    tr("Open an existing file"),                   QKeySequence::Open,   SLOT(openFile()));
-    saveAct =            addAct("save.png",   tr("Save..."),    tr("Save the document to disk"),               QKeySequence::Save,   SLOT(save()));
-    saveAsAct =          addAct("saveas.png", tr("Save As..."), tr("Save the document to disk"),               QKeySequence::SaveAs, SLOT(saveAs()));
-    exitAct =            addAct("exit.png",   tr("Exit"),       tr("Exit the application"),                    QKeySequence::Quit,   SLOT(newFile()));
-    cutAct =             addAct("cut.png",    tr("Cut"),        tr("Cut current selection to the clipboard"),  QKeySequence::Cut,    SLOT(cut()));
-    copyAct =            addAct("copy.png",   tr("Copy..."),    tr("Copy current selection to the clipboard"), QKeySequence::Copy,   SLOT(copy()));
-    pasteAct =           addAct("paste.png",  tr("Paste..."),   tr("Paste clipboard into current selection"),  QKeySequence::Paste,  SLOT(paste()));
+    newAct =             addAct("new.png",    tr("New Models+Settings"),        tr("Create a new Models and Settings file"), QKeySequence::New,    SLOT(newFile()));
+    openAct =            addAct("open.png",   tr("Open Models+Settings..."),    tr("Open Models and Settings file"),         QKeySequence::Open,   SLOT(openFile()));
+    saveAct =            addAct("save.png",   tr("Save Models+Settings..."),    tr("Save Models and Settings file"),         QKeySequence::Save,   SLOT(save()));
+    saveAsAct =          addAct("saveas.png", tr("Save Models+Settings as..."), tr("Save Models and Settings file"),         QKeySequence::SaveAs, SLOT(saveAs()));
+    exitAct =            addAct("exit.png",   tr("Exit"),                       tr("Exit the application"),                  QKeySequence::Quit,   SLOT(newFile()));
+    cutAct =             addAct("cut.png",    tr("Cut Model"),                  tr("Cut current model to the clipboard"),    QKeySequence::Cut,    SLOT(cut()));
+    copyAct =            addAct("copy.png",   tr("Copy Model..."),              tr("Copy current model to the clipboard"),   QKeySequence::Copy,   SLOT(copy()));
+    pasteAct =           addAct("paste.png",  tr("Paste Model..."),             tr("Paste model from clipboard"),            QKeySequence::Paste,  SLOT(paste()));
  
     QActionGroup *themeAlignGroup = new QActionGroup(this);
-    classicThemeAct =    addAct( themeAlignGroup,    tr("Classical"),       tr("The classical Companion icon theme"),   SLOT(setClassicTheme()));
+    classicThemeAct =    addAct( themeAlignGroup,    tr("Classical"),       tr("The classic companion9x icon theme"),   SLOT(setClassicTheme()));
     yericoThemeAct =     addAct( themeAlignGroup,    tr("Yerico"),          tr("Yellow round honey sweet icon theme"),  SLOT(setYericoTheme()));
     monoThemeAct =       addAct( themeAlignGroup,    tr("Monochrome"),      tr("A monochrome black icon theme"),        SLOT(setMonochromeTheme()));
     monoWhiteAct =       addAct( themeAlignGroup,    tr("MonoWhite"),       tr("A monochrome white icon theme"),        SLOT(setMonoWhiteTheme()));
@@ -1622,30 +1622,30 @@ void MainWindow::createActions()
     swedishLangAct =     addAct( langAlignGroup,     tr("Swedish"),         tr("Use Swedish in menus"),                 SLOT(setSELanguage()));
     russianLangAct =     addAct( langAlignGroup,     tr("Russian"),         tr("Use Russian in menus"),                 SLOT(setRULanguage()));
 
-    aboutAct =           addAct("information.png",   tr("About"),                  tr("Show the application's About box"),   SLOT(about()));
-    printAct =           addAct("print.png",         tr("Print"),                  tr("Print current model"),                SLOT(print()));
-    simulateAct =        addAct("simulate.png",      tr("Simulate"),               tr("Simulate selected model"),            SLOT(simulate()));
-    loadbackupAct =      addAct("open.png",          tr("loadBackup..."),          tr("Load backup from file"),              SLOT(loadBackup()));
-    logsAct =            addAct("logs.png",          tr("Logs"),                   tr("Open log file"),                      SLOT(logFile()));
-    appPrefsAct =        addAct("apppreferences.png",tr("Setting..."),             tr("Edit Settings"),                      SLOT(appPrefs()));
-    fwPrefsAct =         addAct("fwpreferences.png", tr("Downloads..."),           tr("Download firmware and voice files"),  SLOT(fwPrefs()));
-    checkForUpdatesAct = addAct("update.png",        tr("Check for updates..."),   tr("Check OpenTX and Companion updates"), SLOT(doUpdates()));
-    changelogAct =       addAct("changelog.png",     tr("ChangeLog..."),           tr("Show Companion changelog"),           SLOT(changelog()));
-    fwchangelogAct =     addAct("changelog.png",     tr("Firmware ChangeLog..."),  tr("Show firmware changelog"),            SLOT(fwchangelog()));
-    compareAct =         addAct("compare.png",       tr("Compare..."),             tr("Compare models"),                     SLOT(compare()));
-    editSplashAct =      addAct("paintbrush.png",    tr("Edit Tx Splash Image..."),tr("edit the splash screen of your TX"),  SLOT(customizeSplash()));
-    burnListAct =        addAct("list.png",          tr("List programmers"),       tr("List available programmers"),         SLOT(burnList()));
-    burnFusesAct =       addAct("fuses.png",         tr("Fuses..."),               tr("Show fuses dialog"),                  SLOT(burnFuses()));
-    readFlashAct =       addAct("read_flash.png",    tr("Read Firmware"),          tr("Read firmware from transmitter"),     SLOT(readFlash()));
-    writeFlashAct =      addAct("write_flash.png",   tr("Write Firmware"),         tr("Write firmware to transmitter"),      SLOT(writeFlash()));
-    createProfileAct =   addAct("",                  tr("New Profile"),            tr("Create a new Radio Setting Profile"), SLOT(createProfile()));
+    aboutAct =           addAct("information.png",   tr("About..."),                tr("Show the application's About box"),   SLOT(about()));
+    printAct =           addAct("print.png",         tr("Print..."),                tr("Print current model"),                SLOT(print()));
+    simulateAct =        addAct("simulate.png",      tr("Simulate..."),             tr("Simulate current model"),             SLOT(simulate()));
+    loadbackupAct =      addAct("open.png",          tr("Load Backup..."),          tr("Load backup from file"),              SLOT(loadBackup()));
+    logsAct =            addAct("logs.png",          tr("View Log File..."),        tr("Open and view log file"),             SLOT(logFile()));
+    appPrefsAct =        addAct("apppreferences.png",tr("Settings..."),             tr("Edit Settings"),                      SLOT(appPrefs()));	
+    fwPrefsAct =         addAct("fwpreferences.png", tr("Download..."),             tr("Download firmware and voice files"),  SLOT(fwPrefs()));
+    checkForUpdatesAct = addAct("update.png",        tr("Check for Updates..."),    tr("Check OpenTX and Companion updates"), SLOT(doUpdates()));
+    changelogAct =       addAct("changelog.png",     tr("Companion Changes..."),    tr("Show Companion change log"),          SLOT(changelog()));
+    fwchangelogAct =     addAct("changelog.png",     tr("Firmware Changes..."),     tr("Show firmware change log"),           SLOT(fwchangelog()));
+    compareAct =         addAct("compare.png",       tr("Compare Models..."),       tr("Compare models"),                     SLOT(compare()));
+    editSplashAct =      addAct("paintbrush.png",    tr("Edit Tx Splash Image..."), tr("Edit the splash image of your TX"),   SLOT(customizeSplash()));
+    burnListAct =        addAct("list.png",          tr("List programmers..."),     tr("List available programmers"),         SLOT(burnList()));
+    burnFusesAct =       addAct("fuses.png",         tr("Fuses..."),                tr("Show fuses dialog"),                  SLOT(burnFuses()));
+    readFlashAct =       addAct("read_flash.png",    tr("Read Firmware"),           tr("Read firmware from transmitter"),     SLOT(readFlash()));
+    writeFlashAct =      addAct("write_flash.png",   tr("Write Firmware"),          tr("Write firmware to transmitter"),      SLOT(writeFlash()));
+    createProfileAct =   addAct("",                  tr("Add Radio Profile"),             tr("Create a new Radio Setting Profile"), SLOT(createProfile()));
     openDocURLAct =      addAct("",                  tr("Manuals and other Documents"),      tr("Open the OpenTX document page in a web browser"), SLOT(openDocURL()));
     writeEepromAct =     addAct("write_eeprom.png",  tr("Write Models and Settings To Tx"),  tr("Write Models and Settings to transmitter"),       SLOT(writeEeprom()));
     readEepromAct =      addAct("read_eeprom.png",   tr("Read Models and Settings From Tx"), tr("Read Models and Settings from transmitter"),      SLOT(readEeprom()));
-    burnConfigAct =      addAct("configure.png",     tr("Configure connection software..."), tr("Configure software for reading from and writing to the transmitter"), SLOT(burnConfig()));
-    writeFileToEepromAct = addAct("write_eeprom_file.png",   tr("Write Models and Settings from file to Tx"), tr("Write Models and Settings from file to transmitter"), SLOT(writeFileToEeprom()));
-    readEepromToFileAct = addAct("read_eeprom_file.png",  tr("Save Tx Models and Settings to file"),       tr("Save the Models and Settings from the transmitter to a file"), SLOT(readEepromToFile()));
-    contributorsAct =    addAct("contributors.png",  tr("Contributors"),            tr("A tribute to those who have contributed to OpenTX and Companion"), SLOT(contributors()));
+    burnConfigAct =      addAct("configure.png",     tr("Configure Communications..."), tr("Configure software for communicating with the transmitter"), SLOT(burnConfig()));
+    writeFileToEepromAct = addAct("write_eeprom_file.png", tr("Write Models and Settings from file to Tx"), tr("Write Models and Settings from file to transmitter"), SLOT(writeFileToEeprom()));
+    readEepromToFileAct = addAct("read_eeprom_file.png", tr("Save Tx Models and Settings to file"), tr("Save the Models and Settings from the transmitter to a file"), SLOT(readEepromToFile()));
+    contributorsAct =    addAct("contributors.png",  tr("Contributors..."), tr("A tribute to those who have contributed to OpenTX and Companion"), SLOT(contributors()));
     
     compareAct->setEnabled(false);
     simulateAct->setEnabled(false);
@@ -1655,7 +1655,7 @@ void MainWindow::createActions()
 void MainWindow::createMenus()
 
 {
-    QMenu *recentFileMenu=new QMenu(tr("Recent Files"));
+    QMenu *recentFileMenu=new QMenu(tr("Recent Models+Settings"));
     QMenu *languageMenu=new QMenu(tr("Set Menu Language"));
     QMenu *themeMenu=new QMenu(tr("Set Icon Theme"));
     QMenu *iconThemeSizeMenu=new QMenu(tr("Set Icon Size"));
@@ -1671,13 +1671,12 @@ void MainWindow::createMenus()
       recentFileMenu->addAction(recentFileActs[i]);
     fileMenu->addSeparator();
     fileMenu->addAction(logsAct);
+    fileMenu->addAction(fwPrefsAct);
     fileMenu->addSeparator();
     fileMenu->addAction(simulateAct);
     fileMenu->addAction(printAct);
     fileMenu->addAction(compareAct);
     fileMenu->addSeparator();
-    fileMenu->addAction(fwPrefsAct);
-    fileMenu->addMenu(createProfilesMenu());
     fileMenu->addAction(exitAct);
 
     editMenu = menuBar()->addMenu(tr("Edit"));
@@ -1713,6 +1712,7 @@ void MainWindow::createMenus()
       iconThemeSizeMenu->addAction(hugeIconAct);
     settingsMenu->addSeparator();
     settingsMenu->addAction(appPrefsAct);
+    settingsMenu->addMenu(createProfilesMenu());
     settingsMenu->addAction(editSplashAct);
     settingsMenu->addAction(burnConfigAct);
 
@@ -1756,7 +1756,7 @@ QMenu *MainWindow::createRecentFileMenu()
 
 QMenu *MainWindow::createProfilesMenu()
 {
-    QMenu *profilesMenu=new QMenu(tr("Radio Settings Profiles"));
+    QMenu *profilesMenu=new QMenu(tr("Radio Settings Profile"));
     int i;
     for ( i = 0; i < MAX_PROFILES; ++i) {
       profilesMenu->addAction(profileActs[i]);
@@ -1798,25 +1798,26 @@ void MainWindow::createToolBars()
     recentToolButton->setPopupMode(QToolButton::InstantPopup);
     recentToolButton->setMenu(createRecentFileMenu());
     recentToolButton->setIcon(CompanionIcon("recentdocument.png"));
-    recentToolButton->setToolTip(tr("Recent Files"));
-	  recentToolButton->setStatusTip(tr("Show a selection list of recent documents"));
+    recentToolButton->setToolTip(tr("Recent Models+Settings"));
+	  recentToolButton->setStatusTip(tr("Show recent Models+Settings documents"));
 
     fileToolBar->addWidget(recentToolButton);
     fileToolBar->addAction(saveAct);
+    fileToolBar->addSeparator();
     fileToolBar->addAction(logsAct);
+    fileToolBar->addAction(fwPrefsAct);
     fileToolBar->addSeparator();
     fileToolBar->addAction(appPrefsAct);
-    fileToolBar->addAction(fwPrefsAct);
-    fileToolBar->addAction(editSplashAct);
 
     QToolButton * profileButton = new QToolButton;
     profileButton->setPopupMode(QToolButton::InstantPopup);
     profileButton->setMenu(createProfilesMenu());
     profileButton->setIcon(CompanionIcon("profiles.png"));
-    profileButton->setToolTip(tr("Radio Profiles"));
+    profileButton->setToolTip(tr("Radio Settings Profile"));
 	  profileButton->setStatusTip(tr("Show a selection list of radio settings profiles"));
 
     fileToolBar->addWidget(profileButton);
+    fileToolBar->addAction(editSplashAct);
     fileToolBar->addSeparator();
     fileToolBar->addAction(simulateAct);
     fileToolBar->addAction(printAct);
@@ -1962,9 +1963,9 @@ void MainWindow::updateProfilesActions()
 {
   for (int i=0; i<MAX_PROFILES; i++) 
   {
-    if (!g.profile[i].name().isEmpty()) 
+    if (g.profile[i].existsOnDisk()) 
     {
-      QString text = tr("&%1: %2").arg(i).arg(g.profile[i].name());
+      QString text = tr("%2").arg(g.profile[i].name());
       profileActs[i]->setText(text);
       profileActs[i]->setData(i);
       profileActs[i]->setVisible(true);
@@ -1980,15 +1981,16 @@ void MainWindow::updateProfilesActions()
 
 void MainWindow::createProfile()
 { int i;
-  for (i=0; i<MAX_PROFILES && !g.profile[i].name().isEmpty(); i++)
+for (i=0; i<MAX_PROFILES && g.profile[i].existsOnDisk(); i++)
     ;
   if (i==MAX_PROFILES)  //Failed to find free slot
     return;
  
-  // Create profile name and force a flush to file
-  g.profile[i].name( QString("profile%1").arg(i));
-  g.profile[i].flush();
+  // Copy current profile to new and give it a new name
+  g.profile[i] = g.profile[g.id()];
+  g.profile[i].name( QString("New Radio"));
 
+  g.id(i);
   updateMenus();
 }
 
