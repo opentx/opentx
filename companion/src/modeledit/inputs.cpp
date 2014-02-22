@@ -83,7 +83,10 @@ void InputsPanel::update()
       curDest = md->chn;
     }
     else {
-      str = "   ";
+      if (GetEepromInterface()->getCapability(VirtualInputs))
+        str = "        ";
+      else
+        str = "   ";
     }
 
     if (GetEepromInterface()->getCapability(VirtualInputs)) {
