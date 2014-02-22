@@ -906,13 +906,9 @@ void setTrimValue(uint8_t phase, uint8_t idx, int trim);
 #endif
 
 #if defined(CPUARM)
-  #define GV1_SMALL  128
-  #define GV1_LARGE  4096
   #define GV_GET_GV1_VALUE(max)        ( (max<=GV_RANGESMALL && min>=GV_RANGESMALL_NEG) ? GV1_SMALL : GV1_LARGE )
   #define GV_INDEX_CALCULATION(x,max)  ( (max<=GV_RANGESMALL && min>=GV_RANGESMALL_NEG) ? (uint8_t) x-GV1_SMALL : ((x&(GV1_LARGE*2-1))-GV1_LARGE) )
 #else
-  #define GV1_SMALL  128
-  #define GV1_LARGE  256
   #define GV_GET_GV1_VALUE(max)        ( (max<=GV_RANGESMALL) ? GV1_SMALL : GV1_LARGE )
   #define GV_INDEX_CALCULATION(x,max)  ( (max<=GV1_SMALL) ? (uint8_t) x-GV1_SMALL : ((x&(GV1_LARGE*2-1))-GV1_LARGE) )
 #endif
@@ -927,6 +923,21 @@ void setTrimValue(uint8_t phase, uint8_t idx, int trim);
 #define GV_RANGESMALL_NEG  (-GV1_SMALL + (RESERVE_RANGE_FOR_GVARS+1))
 #define GV_RANGELARGE      (GV1_LARGE - (RESERVE_RANGE_FOR_GVARS+1))
 #define GV_RANGELARGE_NEG  (-GV1_LARGE + (RESERVE_RANGE_FOR_GVARS+1))
+#if defined(CPUARM)
+  // the define GV1_LARGE marks the highest bit value used for this variables
+  // because this would give too big numbers for ARM, we limit it further for
+  // offset and weight
+  #define GV_RANGELARGE_WEIGHT      (GV_RANGE_WEIGHT)
+  #define GV_RANGELARGE_WEIGHT_NEG (-GV_RANGE_WEIGHT)
+  #define GV_RANGELARGE_OFFSET      (GV_RANGE_OFFSET)
+  #define GV_RANGELARGE_OFFSET_NEG (-GV_RANGE_OFFSET)
+#else
+  // for stock we just use as much as possible
+  #define GV_RANGELARGE_WEIGHT      GV_RANGELARGE
+  #define GV_RANGELARGE_WEIGHT_NEG  GV_RANGELARGE_NEG
+  #define GV_RANGELARGE_OFFSET      GV_RANGELARGE
+  #define GV_RANGELARGE_OFFSET_NEG  GV_RANGELARGE_NEG
+#endif
 
 extern uint16_t s_timeCumTot;
 extern uint16_t s_timeCumThr;
