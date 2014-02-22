@@ -476,7 +476,7 @@ void Setup::on_extendedLimits_toggled(bool checked)
 
 void Setup::on_throttleWarning_toggled(bool checked)
 {
-  model.disableThrottleWarning = checked;
+  model.disableThrottleWarning = !checked;
   emit modified();
 }
 
@@ -549,7 +549,7 @@ void Setup::update()
 
   ui->throttleReverse->setChecked(model.throttleReversed);
   populateTTraceCB(ui->throttleSource, model.thrTraceSrc);
-  ui->throttleWarning->setChecked(model.disableThrottleWarning);
+  ui->throttleWarning->setChecked(!model.disableThrottleWarning);
 
   //trim inc, thro trim, thro expo, instatrim
   ui->trimIncrement->setCurrentIndex(model.trimInc+2);
