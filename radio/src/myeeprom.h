@@ -527,7 +527,7 @@ PACK(typedef struct t_LimitData {
 // because this would give too big numbers for ARM, we limit it further for offset and weight
 // must be smaller than GV1_LARGE - RESERVE_RANGE_FOR_GVARS -1
 #define GV_RANGE_WEIGHT 500
-#define GV_RANGE_OFFSET 490
+#define GV_RANGE_OFFSET 500
 
 #define DELAY_STEP  10
 #define SLOW_STEP   10
