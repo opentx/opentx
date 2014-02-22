@@ -232,8 +232,9 @@ class SourcesConversionTable: public ConversionTable {
           }
         }
 
-        if (afterrelease21March2013)
+        if (afterrelease21March2013) {
           addConversion(RawSource(SOURCE_TYPE_TELEMETRY, 0), val++);
+        }
 
         for (int i=1; i<TELEMETRY_SOURCE_ACC; i++) {
           if (version < 216) {
@@ -241,6 +242,12 @@ class SourcesConversionTable: public ConversionTable {
               continue;
           }
           addConversion(RawSource(SOURCE_TYPE_TELEMETRY, i), val++);
+          if (version >= 216 && IS_ARM(board)) {
+            if (i==TELEMETRY_SOURCE_DTE)
+              val += 5;
+            if (i==TELEMETRY_SOURCE_POWER_MAX)
+              val += 5;
+          }
         }
       }
     }
@@ -312,6 +319,57 @@ class SwitchField: public ConversionField< SignedField<N> > {
   protected:
     RawSwitch & sw;
     int _switch;
+};
+
+template <int N>
+class TelemetrySourceField: public TransformedField {
+  public:
+    TelemetrySourceField(unsigned int & source, BoardEnum board, unsigned int version):
+      TransformedField(internalField),
+      internalField(_source),
+      source(source),
+      board(board),
+      version(version),
+      _source(0)
+    {
+    }
+
+    virtual void beforeExport()
+    {
+      _source = source;
+
+      if (source > 0 && !IS_AFTER_RELEASE_21_MARCH_2013(board, version))
+        _source--;
+
+      if (IS_ARM(board) && version >= 216) {
+        if (source > 1+TELEMETRY_SOURCE_DTE)
+          _source += 5;
+        if (source > 1+TELEMETRY_SOURCE_POWER_MAX)
+          _source += 5;
+      }
+    }
+
+    virtual void afterImport()
+    {
+      source = _source;
+
+      if (source > 0 && !IS_AFTER_RELEASE_21_MARCH_2013(board, version))
+        source++;
+
+      if (IS_ARM(board) && version >= 216) {
+        if (source > 1+TELEMETRY_SOURCE_DTE)
+          source -= 5;
+        if (source > 1+TELEMETRY_SOURCE_POWER_MAX)
+          source -= 5;
+      }
+    }
+
+  protected:
+    UnsignedField<N> internalField;
+    unsigned int & source;
+    BoardEnum board;
+    unsigned int version;
+    unsigned int _source;
 };
 
 template <int N>
@@ -1783,15 +1841,15 @@ class FrskyScreenField: public DataField {
       version(version)
     {
       for (int i=0; i<4; i++) {
-        bars.Append(new UnsignedField<8>(_screen.body.bars[i].source));
-        bars.Append(new UnsignedField<8>(_screen.body.bars[i].barMin));
-        bars.Append(new UnsignedField<8>(_screen.body.bars[i].barMax));
+        bars.Append(new TelemetrySourceField<8>(screen.body.bars[i].source, board, version));
+        bars.Append(new UnsignedField<8>(screen.body.bars[i].barMin));
+        bars.Append(new UnsignedField<8>(screen.body.bars[i].barMax));
       }
 
       int columns=(IS_TARANIS(board) ? 3:2);
       for (int i=0; i<4; i++) {
         for (int j=0; j<columns; j++) {
-          numbers.Append(new UnsignedField<8>(_screen.body.lines[i].source[j]));
+          numbers.Append(new TelemetrySourceField<8>(screen.body.lines[i].source[j], board, version));
         }
       }
       if (!IS_TARANIS(board)) {
@@ -1803,23 +1861,6 @@ class FrskyScreenField: public DataField {
 
     virtual void ExportBits(QBitArray & output)
     {
-      _screen = screen;
-
-      bool afterrelease21March2013 = IS_AFTER_RELEASE_21_MARCH_2013(board, version);
-      if (!afterrelease21March2013) {
-        for (int i=0; i<4; i++) {
-          if (_screen.body.bars[i].source > 0)
-            _screen.body.bars[i].source--;
-        }
-        int columns=(IS_TARANIS(board) ? 3:2);
-        for (int i=0; i<4; i++) {
-          for (int j=0; j<columns;j++) {
-            if (_screen.body.lines[i].source[j] > 0)
-              _screen.body.lines[i].source[j]--;
-          }
-        }
-      }
-
       if (screen.type == 0)
         numbers.ExportBits(output);
       else
@@ -1828,34 +1869,14 @@ class FrskyScreenField: public DataField {
 
     virtual void ImportBits(QBitArray & input)
     {
-      _screen = screen;
-
-      bool afterrelease21March2013 = IS_AFTER_RELEASE_21_MARCH_2013(board, version);
-
       // NOTA: screen.type should have been imported first!
       if (screen.type == 0) {
         numbers.ImportBits(input);
-        if (!afterrelease21March2013) {
-          int columns=(IS_TARANIS(board) ? 3:2);
-          for (int i=0; i<4; i++) {
-            for (int j=0; j<columns;j++) {
-              if (_screen.body.lines[i].source[j] > 0)
-                _screen.body.lines[i].source[j]++;
-            }
-          }
-        }
       }
       else {
         bars.ImportBits(input);
-        if (!afterrelease21March2013) {
-          for (int i=0; i<4; i++) {
-            if (_screen.body.bars[i].source > 0)
-              _screen.body.bars[i].source++;
-          }
-        }
       }
 
-      screen = _screen;
     }
 
     virtual unsigned int size()
@@ -1869,7 +1890,6 @@ class FrskyScreenField: public DataField {
 
   protected:
     FrSkyScreenData & screen;
-    FrSkyScreenData _screen;
     BoardEnum board;
     unsigned int version;
     StructField bars;
