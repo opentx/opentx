@@ -124,7 +124,7 @@ void varioWakeup()
 
     int verticalSpeed = frskyData.hub.varioSpeed;
 
-#if defined(PCBTARANIS)
+#if 0
     if (g_model.frsky.varioSource == VARIO_SOURCE_DTE) {
       #warning "Ele stick for vario tests"
       verticalSpeed = getValue(MIXSRC_Ele);
