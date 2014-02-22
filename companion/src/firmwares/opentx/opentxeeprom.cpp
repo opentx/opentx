@@ -164,7 +164,7 @@ class SourcesConversionTable: public ConversionTable {
       if (IS_TARANIS(board) && version >= 216) {
         for (int i=0; i<32; i++)
           addConversion(RawSource(SOURCE_TYPE_VIRTUAL_INPUT, i), val++);
-        for (int i=0; i<3; i++) {
+        for (int i=0; i<7; i++) {
           for (int j=0; j<6; j++) {
             addConversion(RawSource(SOURCE_TYPE_LUA_INPUT, i*16+j), val++);
           }
