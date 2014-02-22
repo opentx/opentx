@@ -1841,25 +1841,25 @@ Jesteś pewien ?</translation>
     <name>InputsPanel</name>
     <message>
         <location filename="../modeledit/inputs.cpp" line="18"/>
-        <location filename="../modeledit/inputs.cpp" line="366"/>
+        <location filename="../modeledit/inputs.cpp" line="369"/>
         <source>Move Up</source>
         <translation>W górę</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="20"/>
-        <location filename="../modeledit/inputs.cpp" line="366"/>
+        <location filename="../modeledit/inputs.cpp" line="369"/>
         <source>Ctrl+Up</source>
         <translation>Ctrl+Up</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="21"/>
-        <location filename="../modeledit/inputs.cpp" line="367"/>
+        <location filename="../modeledit/inputs.cpp" line="370"/>
         <source>Move Down</source>
         <translation>W dół</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="23"/>
-        <location filename="../modeledit/inputs.cpp" line="367"/>
+        <location filename="../modeledit/inputs.cpp" line="370"/>
         <source>Ctrl+Down</source>
         <translation>Ctrl+Down</translation>
     </message>
@@ -1869,112 +1869,112 @@ Jesteś pewien ?</translation>
         <translation>Wyczyść wszytkie ustawienia</translation>
     </message>
     <message>
-        <location filename="../modeledit/inputs.cpp" line="90"/>
+        <location filename="../modeledit/inputs.cpp" line="93"/>
         <source>Source(%1)</source>
         <translation>Źródło(%1)</translation>
     </message>
     <message>
-        <location filename="../modeledit/inputs.cpp" line="92"/>
+        <location filename="../modeledit/inputs.cpp" line="95"/>
         <source>No Trim</source>
         <translation>Bez trymera</translation>
     </message>
     <message>
-        <location filename="../modeledit/inputs.cpp" line="106"/>
+        <location filename="../modeledit/inputs.cpp" line="109"/>
         <source>Weight(%1)</source>
         <translation>Waga(%1)</translation>
     </message>
     <message>
-        <location filename="../modeledit/inputs.cpp" line="113"/>
+        <location filename="../modeledit/inputs.cpp" line="116"/>
         <source>Switch(%1)</source>
         <translation>Przełącznik(%1)</translation>
     </message>
     <message>
-        <location filename="../modeledit/inputs.cpp" line="145"/>
+        <location filename="../modeledit/inputs.cpp" line="148"/>
         <source>Not enough available inputs!</source>
         <translation>Za mało dostępnych wejść!</translation>
     </message>
     <message>
-        <location filename="../modeledit/inputs.cpp" line="225"/>
+        <location filename="../modeledit/inputs.cpp" line="228"/>
         <source>Delete Selected Inputs?</source>
         <translation>Skasować Wybrane Wejścia?</translation>
     </message>
     <message>
-        <location filename="../modeledit/inputs.cpp" line="357"/>
+        <location filename="../modeledit/inputs.cpp" line="360"/>
         <source>&amp;Add</source>
         <translation>&amp;Dodaj</translation>
     </message>
     <message>
-        <location filename="../modeledit/inputs.cpp" line="357"/>
+        <location filename="../modeledit/inputs.cpp" line="360"/>
         <source>Ctrl+A</source>
         <translation>Ctrl+A</translation>
     </message>
     <message>
-        <location filename="../modeledit/inputs.cpp" line="358"/>
+        <location filename="../modeledit/inputs.cpp" line="361"/>
         <source>&amp;Edit</source>
         <translation>&amp;Edycja</translation>
     </message>
     <message>
-        <location filename="../modeledit/inputs.cpp" line="358"/>
+        <location filename="../modeledit/inputs.cpp" line="361"/>
         <source>Enter</source>
         <translation>Enter</translation>
     </message>
     <message>
-        <location filename="../modeledit/inputs.cpp" line="360"/>
+        <location filename="../modeledit/inputs.cpp" line="363"/>
         <source>&amp;Delete</source>
         <translation>&amp;Wykasuj</translation>
     </message>
     <message>
-        <location filename="../modeledit/inputs.cpp" line="360"/>
+        <location filename="../modeledit/inputs.cpp" line="363"/>
         <source>Delete</source>
         <translation>Wykasuj</translation>
     </message>
     <message>
-        <location filename="../modeledit/inputs.cpp" line="361"/>
+        <location filename="../modeledit/inputs.cpp" line="364"/>
         <source>&amp;Copy</source>
         <translation>&amp;Kopiuj</translation>
     </message>
     <message>
-        <location filename="../modeledit/inputs.cpp" line="361"/>
+        <location filename="../modeledit/inputs.cpp" line="364"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../modeledit/inputs.cpp" line="362"/>
+        <location filename="../modeledit/inputs.cpp" line="365"/>
         <source>&amp;Cut</source>
         <translation>&amp;Wytnij</translation>
     </message>
     <message>
-        <location filename="../modeledit/inputs.cpp" line="362"/>
+        <location filename="../modeledit/inputs.cpp" line="365"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../modeledit/inputs.cpp" line="363"/>
+        <location filename="../modeledit/inputs.cpp" line="366"/>
         <source>&amp;Paste</source>
         <translation>&amp;Wklej</translation>
     </message>
     <message>
-        <location filename="../modeledit/inputs.cpp" line="363"/>
+        <location filename="../modeledit/inputs.cpp" line="366"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../modeledit/inputs.cpp" line="364"/>
+        <location filename="../modeledit/inputs.cpp" line="367"/>
         <source>Du&amp;plicate</source>
         <translation>&amp;Zduplikuj</translation>
     </message>
     <message>
-        <location filename="../modeledit/inputs.cpp" line="364"/>
+        <location filename="../modeledit/inputs.cpp" line="367"/>
         <source>Ctrl+U</source>
         <translation>Ctrl+U</translation>
     </message>
     <message>
-        <location filename="../modeledit/inputs.cpp" line="463"/>
+        <location filename="../modeledit/inputs.cpp" line="466"/>
         <source>Clear Inputs?</source>
         <translation>Wyczyść Wejścia?</translation>
     </message>
     <message>
-        <location filename="../modeledit/inputs.cpp" line="463"/>
+        <location filename="../modeledit/inputs.cpp" line="466"/>
         <source>Really clear all the inputs?</source>
         <translation>Czy na pewno wyczyścić wszystkie wejścia?</translation>
     </message>
@@ -2310,30 +2310,14 @@ Chcesz pobrać teraz?</translation>
         <translation>OpenTX Companion - FW: %1 - Profil: %2</translation>
     </message>
     <message>
-        <source>&amp;Setting...</source>
-        <translation type="obsolete">&amp;Ustawienia...</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1630"/>
         <source>Edit Settings</source>
         <translation>Edycja Ustawień</translation>
     </message>
     <message>
-        <source>&amp;Downloads...</source>
-        <translation type="obsolete">&amp;Pobieranie...</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1631"/>
         <source>Download firmware and voice files</source>
         <translation>Pobierz firmware i pliki dźwiękowe</translation>
-    </message>
-    <message>
-        <source>Configure transmitter start screen...</source>
-        <translation type="obsolete">Ustawienia ekranu startowego radia...</translation>
-    </message>
-    <message>
-        <source>&amp;Configure connection software...</source>
-        <translation type="obsolete">&amp;Ustawienia oprogramowania łączącego...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1641"/>
@@ -2344,14 +2328,6 @@ Chcesz pobrać teraz?</translation>
         <location filename="../mainwindow.cpp" line="1641"/>
         <source>Create a new Radio Setting Profile</source>
         <translation>Utwórz nowy Profil Ustawień Radia</translation>
-    </message>
-    <message>
-        <source>Classic</source>
-        <translation type="obsolete">Klasyczna</translation>
-    </message>
-    <message>
-        <source>The multicolor classical Companion icon theme</source>
-        <translation type="obsolete">Wielokolorowy klasyczny wygląd ikon Companion</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1601"/>
@@ -2409,14 +2385,6 @@ Chcesz pobrać teraz?</translation>
         <translation>Olbrzymie</translation>
     </message>
     <message>
-        <source>System default language</source>
-        <translation type="obsolete">Podstawowy język systemu</translation>
-    </message>
-    <message>
-        <source>Use system default language in menus</source>
-        <translation type="obsolete">Użyj podstawowego języka systemu w menu</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1613"/>
         <source>Czech</source>
         <translation>Czeski</translation>
@@ -2449,12 +2417,12 @@ Chcesz pobrać teraz?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1616"/>
         <source>Finnish</source>
-        <translation type="unfinished"></translation>
+        <translation>Fiński</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1616"/>
         <source>Use Finnish in menus</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj Fińskiego w menu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1617"/>
@@ -2642,21 +2610,9 @@ Chcesz pobrać teraz?</translation>
         <translation>Ustaw wielkość ikon</translation>
     </message>
     <message>
-        <source>&amp;Settings</source>
-        <translation type="obsolete">&amp;Ustawienia</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1759"/>
         <source>Radio Settings Profiles</source>
         <translation>Profile Ustawień Radia</translation>
-    </message>
-    <message>
-        <source>Companion - Models and Settings Editor - %1 - profile %2</source>
-        <translation type="obsolete">Companion - Edytor Modeli i Ustawień -  %1 - profil %2</translation>
-    </message>
-    <message>
-        <source>Companion - Models and Settings Editor - %1</source>
-        <translation type="obsolete">Companion - Edytor Modeli i Ustawień -  %1</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="260"/>
@@ -2847,17 +2803,9 @@ Czy mimo wszystko zapisać?</translation>
         <translation>O aplikacji Companion</translation>
     </message>
     <message>
-        <source>&amp;New</source>
-        <translation type="obsolete">&amp;Nowy</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1589"/>
         <source>Create a new file</source>
         <translation>Utwórz nowy plik</translation>
-    </message>
-    <message>
-        <source>&amp;Open...</source>
-        <translation type="obsolete">&amp;Otwórz...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1590"/>
@@ -2865,17 +2813,9 @@ Czy mimo wszystko zapisać?</translation>
         <translation>Otwórz istniejący plik</translation>
     </message>
     <message>
-        <source>&amp;loadBackup...</source>
-        <translation type="obsolete">&amp;Załaduj backup...</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1628"/>
         <source>Load backup from file</source>
         <translation>Załaduj backup z pliku</translation>
-    </message>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">&amp;Zapisz</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1591"/>
@@ -2884,41 +2824,9 @@ Czy mimo wszystko zapisać?</translation>
         <translation>Zapisz dokument na dysku</translation>
     </message>
     <message>
-        <source>Save &amp;As...</source>
-        <translation type="obsolete">Zapisz j&amp;ako...</translation>
-    </message>
-    <message>
-        <source>Save the document under a new name</source>
-        <translation type="obsolete">Zapisz dokument pod nową nazwą</translation>
-    </message>
-    <message>
-        <source>Lo&amp;gs</source>
-        <translation type="obsolete">Lo&amp;gi</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1629"/>
         <source>Open log file</source>
         <translation>Otwórz plik logów</translation>
-    </message>
-    <message>
-        <source>&amp;Downloads and Profiles...</source>
-        <translation type="obsolete">&amp;Pobrania i profile...</translation>
-    </message>
-    <message>
-        <source>Firmware and voice file downloads as well as profile definition.</source>
-        <translation type="obsolete">Pobrania plików Firmware i głosów jak również definicje profili.</translation>
-    </message>
-    <message>
-        <source>&amp;Check for updates...</source>
-        <translation type="obsolete">&amp;Sprawdź aktualizacje...</translation>
-    </message>
-    <message>
-        <source>Check for new version of Companion</source>
-        <translation type="obsolete">Sprawdź nową wersję Companion</translation>
-    </message>
-    <message>
-        <source>Show Companion contributors list</source>
-        <translation type="obsolete">Pokaz listę twórców Companion</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1633"/>
@@ -2926,17 +2834,9 @@ Czy mimo wszystko zapisać?</translation>
         <translation>Zobacz zmiany w Companion</translation>
     </message>
     <message>
-        <source>&amp;Write Models and Settings To Tx</source>
-        <translation type="obsolete">&amp;Zapisz Modele i Ustawienia do radia</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1643"/>
         <source>Write Models and Settings to transmitter</source>
         <translation>Zapisz Modele i Ustawienia do radia</translation>
-    </message>
-    <message>
-        <source>&amp;Read Models and Settings From Tx</source>
-        <translation type="obsolete">&amp;Wczytaj Modele i Ustawienia z radia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1644"/>
@@ -2999,10 +2899,6 @@ Czy mimo wszystko zapisać?</translation>
         <translation>Wytnij zaznaczenie do schowka</translation>
     </message>
     <message>
-        <source>The new Companion 2 icon theme</source>
-        <translation type="obsolete">Nowy  zestaw ikon Companion 2</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1601"/>
         <source>Monochrome</source>
         <translation>Monochromatyczny</translation>
@@ -3043,10 +2939,6 @@ Czy mimo wszystko zapisać?</translation>
         <translation>Zapisz Modele i Ustawienia z pliku do radia</translation>
     </message>
     <message>
-        <source>Save transmitter Models and Settings to file</source>
-        <translation type="obsolete">Zapisz Modele i Ustawienia do pliku</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1647"/>
         <source>Save the Models and Settings from the transmitter to a file</source>
         <translation>Zapisz Modele i Ustawienia z radia do pliku</translation>
@@ -3059,12 +2951,12 @@ Czy mimo wszystko zapisać?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1600"/>
         <source>Yerico</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1600"/>
         <source>Yellow round honey sweet icon theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Żółty zaokrąglony miodiowy motyw ikon</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1639"/>
@@ -3075,10 +2967,6 @@ Czy mimo wszystko zapisać?</translation>
         <location filename="../mainwindow.cpp" line="1645"/>
         <source>Configure software for reading from and writing to the transmitter</source>
         <translation>Ustawienia oprogramowania do odczytu i zapisu radia</translation>
-    </message>
-    <message>
-        <source>&amp;Read/Write</source>
-        <translation type="obsolete">&amp;Odczyt/Zapis</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1832"/>
@@ -3095,26 +2983,6 @@ Czy mimo wszystko zapisać?</translation>
         <location filename="../mainwindow.cpp" line="2070"/>
         <source>Invalid binary Models and Settings File %1</source>
         <translation>Błędny binarny plik %1 Modeli i Ustawień</translation>
-    </message>
-    <message>
-        <source>Contributors &amp;List...</source>
-        <translation type="obsolete">&amp;Lista twórców...</translation>
-    </message>
-    <message>
-        <source>&amp;Old Preferences Dialog...</source>
-        <translation type="obsolete">&amp;Stary ekran preferencji...</translation>
-    </message>
-    <message>
-        <source>Used the old Preferences Dialog</source>
-        <translation type="obsolete">Użyty stary ekran preferencji</translation>
-    </message>
-    <message>
-        <source>&amp;Application Preferences...</source>
-        <translation type="obsolete">Preferencje &amp;Aplikacji...</translation>
-    </message>
-    <message>
-        <source>Edit application preferences</source>
-        <translation type="obsolete">Edycja preferencji aplikacji</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1633"/>
@@ -3142,45 +3010,9 @@ Czy mimo wszystko zapisać?</translation>
         <translation>Porównaj modele</translation>
     </message>
     <message>
-        <source>Customize the splash screen of your TX</source>
-        <translation type="obsolete">Personalizuj obrazek na swoim radiu</translation>
-    </message>
-    <message>
-        <source>E&amp;xit</source>
-        <translation type="obsolete">Za&amp;kończ</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1593"/>
         <source>Exit the application</source>
         <translation>Zakończ aplikację companion9x</translation>
-    </message>
-    <message>
-        <source>Cu&amp;t</source>
-        <translation type="obsolete">&amp;Wytnij</translation>
-    </message>
-    <message>
-        <source>Cut the current selection&apos;s contents to the clipboard</source>
-        <translation type="obsolete">Wytnij zaznaczenie do schowka</translation>
-    </message>
-    <message>
-        <source>&amp;Copy</source>
-        <translation type="obsolete">&amp;Kopiuj</translation>
-    </message>
-    <message>
-        <source>Copy the current selection&apos;s contents to the clipboard</source>
-        <translation type="obsolete">Kopiuj zaznaczenie do schowka</translation>
-    </message>
-    <message>
-        <source>&amp;Paste</source>
-        <translation type="obsolete">&amp;Wklej</translation>
-    </message>
-    <message>
-        <source>Paste the clipboard&apos;s contents into the current selection</source>
-        <translation type="obsolete">Wklej zawartość schowka na aktualnej pozycji</translation>
-    </message>
-    <message>
-        <source>&amp;List programmers</source>
-        <translation type="obsolete">&amp;Lista programatorów</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1637"/>
@@ -3188,33 +3020,9 @@ Czy mimo wszystko zapisać?</translation>
         <translation>Lista dostępnych programatorów</translation>
     </message>
     <message>
-        <source>&amp;Fuses...</source>
-        <translation type="obsolete">Ustawienia &amp;mikro-kontrolera...</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1638"/>
         <source>Show fuses dialog</source>
         <translation>Pokaż okno ustawień mikro-kontrolera</translation>
-    </message>
-    <message>
-        <source>&amp;Simulate</source>
-        <translation type="obsolete">&amp;Symulator</translation>
-    </message>
-    <message>
-        <source>Simulate selected model.</source>
-        <translation type="obsolete">Symulacja wybranego modelu.</translation>
-    </message>
-    <message>
-        <source>&amp;Print</source>
-        <translation type="obsolete">&amp;Drukuj</translation>
-    </message>
-    <message>
-        <source>Print current model.</source>
-        <translation type="obsolete">Wydrukuj aktualny model.</translation>
-    </message>
-    <message>
-        <source>&amp;About</source>
-        <translation type="obsolete">&amp;O aplikacji</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1625"/>
@@ -3237,35 +3045,15 @@ Czy mimo wszystko zapisać?</translation>
         <translation>Nowy</translation>
     </message>
     <message>
-        <source>The Companion 2.0 colored icon theme</source>
-        <translation type="obsolete">Kolowy zestaw ikon Companion 2.0</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1658"/>
         <location filename="../mainwindow.cpp" line="1801"/>
         <source>Recent Files</source>
         <translation>Poprzednie pliki</translation>
     </message>
     <message>
-        <source>Firmware Profiles</source>
-        <translation type="obsolete">Profile firmware</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1659"/>
         <source>Set Menu Language</source>
         <translation>Ustaw język menu</translation>
-    </message>
-    <message>
-        <source>&amp;File</source>
-        <translation type="obsolete">&amp;Plik</translation>
-    </message>
-    <message>
-        <source>&amp;Edit</source>
-        <translation type="obsolete">&amp;Edycja</translation>
-    </message>
-    <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">&amp;Pomoc</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1663"/>
@@ -3318,7 +3106,7 @@ Czy mimo wszystko zapisać?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1967"/>
         <source>&amp;%1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;%1: %2</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2008"/>
@@ -5441,7 +5229,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../helpers.cpp" line="53"/>
         <source>Finnish</source>
-        <translation type="unfinished"></translation>
+        <translation>Fiński</translation>
     </message>
     <message>
         <location filename="../helpers.cpp" line="88"/>
@@ -6117,26 +5905,26 @@ p, li { white-space: pre-wrap; }
         <translation>Równoległe użycie expo i krzywych nie jest dłużej wspierane </translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="988"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="993"/>
         <source>openTx only accepts %1 points in all curves</source>
         <translation>openTx dopuszcza tylko %1 punktów dla wszystkich krzywych</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1425"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1619"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1626"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1630"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1430"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1624"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1631"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1635"/>
         <source>OpenTX on this board doesn&apos;t accept this function</source>
         <translation>OpenTX na tej platformie nie dopuszcza tej funkcji</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2070"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2174"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2075"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2179"/>
         <source>OpenTX doesn&apos;t accept this protocol</source>
         <translation>OpenTX nie obsługuje tego protokołu</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2077"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2082"/>
         <source>OpenTX doesn&apos;t allow this number of channels</source>
         <translation>OpenTX nie obsługuje tej ilości kanałów</translation>
     </message>
@@ -6227,10 +6015,6 @@ Zespół OpenTX/Companion.</translation>
         <translation>Źródło gazu</translation>
     </message>
     <message>
-        <source>Switch startup  Warning</source>
-        <translation type="obsolete">Ostrzeżenie o przełącznikach przy uruchomieniu</translation>
-    </message>
-    <message>
         <location filename="../modeledit/setup.ui" line="165"/>
         <source>Center beep</source>
         <translation>Pikanie przy centrowaniu</translation>
@@ -6241,17 +6025,9 @@ Zespół OpenTX/Companion.</translation>
         <translation>Kroki trymera</translation>
     </message>
     <message>
-        <source>ON</source>
-        <translation type="obsolete">Włącz</translation>
-    </message>
-    <message>
         <location filename="../modeledit/setup.ui" line="365"/>
         <source>OFF</source>
         <translation>Wyłącz</translation>
-    </message>
-    <message>
-        <source>Check</source>
-        <translation type="obsolete">Sprawdzenie</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="87"/>
@@ -6350,27 +6126,27 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
         <location filename="../simulation/simulatordialog.cpp" line="227"/>
         <location filename="../simulation/simulatordialog.cpp" line="249"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Ostrzeżenie</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog.cpp" line="227"/>
         <source>Joystick enabled but not configured correctly</source>
-        <translation type="unfinished"></translation>
+        <translation>Joystick uaktywniony ale nieprawidłowo skonfigurowany</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog.cpp" line="249"/>
         <source>Cannot open joystick, joystick disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie mogę otworzyć joysticka, dezaktywowany</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog.cpp" line="258"/>
         <source>Simulating Tx (%1)</source>
-        <translation type="unfinished">Symulacja Tx (%1)</translation>
+        <translation>Symulacja Tx (%1)</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog.cpp" line="393"/>
         <source>Firmware %1 error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Firmware %1 błąd: %2</translation>
     </message>
 </context>
 <context>
@@ -6378,7 +6154,7 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="26"/>
         <source>Companion Simulator</source>
-        <translation type="unfinished">Symulator Companion</translation>
+        <translation>Symulator Companion</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="80"/>
@@ -6386,51 +6162,51 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
         <location filename="../simulation/simulatordialog-9x.ui" line="416"/>
         <location filename="../simulation/simulatordialog-9x.ui" line="769"/>
         <source>Right Double Click to Reset</source>
-        <translation type="unfinished"></translation>
+        <translation>Powójne kliknięcie PPM w celu zresetowania</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="140"/>
         <source>THR</source>
-        <translation type="unfinished"></translation>
+        <translation>Gaz</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="170"/>
         <source>RUD</source>
-        <translation type="unfinished">SK</translation>
+        <translation>SK</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="200"/>
         <source>ELE</source>
-        <translation type="unfinished">SW</translation>
+        <translation>SW</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="230"/>
         <source>AIL</source>
-        <translation type="unfinished"></translation>
+        <translation>Lotki</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="264"/>
         <location filename="../simulation/simulatordialog-9x.ui" line="637"/>
         <source>Hold X</source>
-        <translation type="unfinished">Przytrzymaj X</translation>
+        <translation>Przytrzymaj X</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="294"/>
         <location filename="../simulation/simulatordialog-9x.ui" line="667"/>
         <source>Fix X</source>
-        <translation type="unfinished">Zablokuj X</translation>
+        <translation>Zablokuj X</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="324"/>
         <location filename="../simulation/simulatordialog-9x.ui" line="697"/>
         <source>Fix Y</source>
-        <translation type="unfinished">Zablokuj Y</translation>
+        <translation>Zablokuj Y</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="354"/>
         <location filename="../simulation/simulatordialog-9x.ui" line="727"/>
         <source>Hold Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Przytrzymaj Y</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="374"/>
@@ -6438,7 +6214,7 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
         <location filename="../simulation/simulatordialog-9x.ui" line="747"/>
         <location filename="../simulation/simulatordialog-9x.ui" line="757"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation>Etykieta</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="470"/>
@@ -6468,39 +6244,39 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="807"/>
         <source>BEEP</source>
-        <translation type="unfinished">Zvuk</translation>
+        <translation>Dźwięk</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="845"/>
         <source>P1</source>
-        <translation type="unfinished">Potencjometr1</translation>
+        <translation>Potencjometr1</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="867"/>
         <location filename="../simulation/simulatordialog-9x.ui" line="927"/>
         <location filename="../simulation/simulatordialog-9x.ui" line="984"/>
         <source>0 %</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="902"/>
         <source>P2</source>
-        <translation type="unfinished">Potencjometr2</translation>
+        <translation>Potencjometr2</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="962"/>
         <source>P3</source>
-        <translation type="unfinished"></translation>
+        <translation>Potencjometr 3</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="1047"/>
         <source>9x Simulator</source>
-        <translation type="unfinished">Symulator 9x</translation>
+        <translation>Symulator 9x</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="1240"/>
         <source>Outputs</source>
-        <translation type="unfinished">Wyjścia</translation>
+        <translation>Wyjścia</translation>
     </message>
 </context>
 <context>
@@ -6508,31 +6284,31 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="26"/>
         <source>Companion Simulator</source>
-        <translation type="unfinished">Symulator Companion</translation>
+        <translation>Symulator Companion</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="150"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="716"/>
         <source>Hold Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Przytrzymaj Y</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="180"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="746"/>
         <source>Fix Y</source>
-        <translation type="unfinished">Zablokuj Y</translation>
+        <translation>Zablokuj Y</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="210"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="776"/>
         <source>Fix X</source>
-        <translation type="unfinished">Zablokuj X</translation>
+        <translation>Zablokuj X</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="240"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="806"/>
         <source>Hold X</source>
-        <translation type="unfinished">Przytrzymaj X</translation>
+        <translation>Przytrzymaj X</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="264"/>
@@ -6552,13 +6328,13 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
         <location filename="../simulation/simulatordialog-taranis.ui" line="991"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1015"/>
         <source>Right Double Click to Reset</source>
-        <translation type="unfinished"></translation>
+        <translation>Powójne kliknięcie PPM w celu zresetowania</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="377"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="585"/>
         <source>S2</source>
-        <translation type="unfinished">Poten 2</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="437"/>
@@ -6584,7 +6360,7 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
         <location filename="../simulation/simulatordialog-taranis.ui" line="873"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="883"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation>Etykieta</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="843"/>
@@ -6626,12 +6402,12 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1269"/>
         <source>Taranis Simulator</source>
-        <translation type="unfinished">Symulator Taranis</translation>
+        <translation>Symulator Taranis</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1424"/>
         <source>Outputs</source>
-        <translation type="unfinished">Wyjścia</translation>
+        <translation>Wyjścia</translation>
     </message>
 </context>
 <context>
@@ -7097,10 +6873,6 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
 <context>
     <name>appPreferencesDialog</name>
     <message>
-        <source>Application Preferences</source>
-        <translation type="obsolete">Preferencje Aplikacji</translation>
-    </message>
-    <message>
         <location filename="../apppreferencesdialog.ui" line="456"/>
         <source>Simulator capture folder</source>
         <translation>Katalog zapisu symulatora</translation>
@@ -7520,14 +7292,6 @@ To ustawienie jest używane przez szablony, określa jakie wyjście przypisane j
         <location filename="../apppreferencesdialog.cpp" line="261"/>
         <source>The default profile can not be removed.</source>
         <translation>Podstawowy profil nie moze być usunięty.</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Błąd</translation>
-    </message>
-    <message>
-        <source>Cannot load %1.</source>
-        <translation type="obsolete">Nie mogę załadować %1.</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="317"/>
@@ -8174,7 +7938,7 @@ m2560 dla platformy V4</translation>
     <message>
         <location filename="../comparedialog.ui" line="29"/>
         <source>Compare Models</source>
-        <translation type="unfinished"></translation>
+        <translation>Porównaj modele</translation>
     </message>
     <message>
         <location filename="../comparedialog.ui" line="49"/>
@@ -8843,10 +8607,6 @@ m2560 dla platformy V4</translation>
         <translation>Nieudany zapis obrazka do %1</translation>
     </message>
     <message>
-        <source>Could not find bitmap to replace in file</source>
-        <translation type="obsolete">Nie mogę znaleźć bitmapy w celu zastąpienia pliku</translation>
-    </message>
-    <message>
         <location filename="../customizesplashdialog.cpp" line="203"/>
         <source>Open Image to load</source>
         <translation>Otwórz obrazek do załadowania</translation>
@@ -8855,18 +8615,6 @@ m2560 dla platformy V4</translation>
         <location filename="../customizesplashdialog.cpp" line="203"/>
         <source>Images (%1)</source>
         <translation>Obrazki (%1)</translation>
-    </message>
-    <message>
-        <source>Cannot load %1.</source>
-        <translation type="obsolete">Nie mogę wczytać %1.</translation>
-    </message>
-    <message>
-        <source>Could not store image in firmware file %1</source>
-        <translation type="obsolete">Nie mogę zapamiętać obrazka w pliku firmware %1</translation>
-    </message>
-    <message>
-        <source>The image file %1 could not be stored</source>
-        <translation type="obsolete">Nie mogę zapamiętać pliku %1</translation>
     </message>
 </context>
 <context>
@@ -9094,58 +8842,14 @@ May be different from firmware language</source>
 Moze być inny od języka firmware</translation>
     </message>
     <message>
-        <source>SD Structure path</source>
-        <translation type="obsolete">Struktura karty SD</translation>
-    </message>
-    <message>
         <location filename="../fwpreferencesdialog.ui" line="685"/>
         <source>Processor ID</source>
         <translation>ID procesora</translation>
     </message>
     <message>
-        <source>Default Stick Mode</source>
-        <translation type="obsolete">Bazowy mod drążków</translation>
-    </message>
-    <message>
-        <source>Channel Order</source>
-        <translation type="obsolete">Kolejność kanałów</translation>
-    </message>
-    <message>
-        <source>Mode 1 (RUD ELE THR AIL)</source>
-        <translation type="obsolete">Mod 1 (SK.SW.Gaz.Lot)</translation>
-    </message>
-    <message>
-        <source>Mode 2 (RUD THR ELE AIL)</source>
-        <translation type="obsolete">Mod 2 (SK.Gaz.SW.Lot)</translation>
-    </message>
-    <message>
-        <source>Mode 4 (AIL THR ELE RUD)</source>
-        <translation type="obsolete">Mod 4 (Lot.Gaz.SW.SK)</translation>
-    </message>
-    <message>
         <location filename="../fwpreferencesdialog.ui" line="600"/>
         <source>Options</source>
         <translation>Opcje</translation>
-    </message>
-    <message>
-        <source>Channel order
-
-This is used by the templated to determine which channel goes to what number output.</source>
-        <translation type="obsolete">Kolejność kanałów
-
-To ustawienie jest używane przez szablony, określa jakie wyjście przypisane jest do kanału.</translation>
-    </message>
-    <message>
-        <source>Open Folder</source>
-        <translation type="obsolete">Otwórz katalog</translation>
-    </message>
-    <message>
-        <source>Offer to write FW to Tx after download</source>
-        <translation type="obsolete">Zaproponuj zapisanie FirmWare do radia po pobraniu</translation>
-    </message>
-    <message>
-        <source>Save Profile</source>
-        <translation type="obsolete">Zapisz profil</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="87"/>
@@ -9163,134 +8867,14 @@ To ustawienie jest używane przez szablony, określa jakie wyjście przypisane j
         <translation>TYp Firmware</translation>
     </message>
     <message>
-        <source>Append version number to FW file name</source>
-        <translation type="obsolete">Dodaj numer Firmware do nazwy pliku</translation>
-    </message>
-    <message>
         <location filename="../fwpreferencesdialog.ui" line="560"/>
         <source>Download Voice</source>
         <translation>Pobierz Głos</translation>
     </message>
     <message>
-        <source>Downloads and Profiles</source>
-        <translation type="obsolete">Pobrania i profile</translation>
-    </message>
-    <message>
         <location filename="../fwpreferencesdialog.ui" line="711"/>
         <source>FwInfo</source>
         <translation>Informacje o Firmware</translation>
-    </message>
-    <message>
-        <source>R E T A</source>
-        <translation type="obsolete">K W G L</translation>
-    </message>
-    <message>
-        <source>R E A T</source>
-        <translation type="obsolete">K W L G</translation>
-    </message>
-    <message>
-        <source>R T E A</source>
-        <translation type="obsolete">K W G L</translation>
-    </message>
-    <message>
-        <source>R T A E</source>
-        <translation type="obsolete">K G L W</translation>
-    </message>
-    <message>
-        <source>R A E T</source>
-        <translation type="obsolete">K W L G</translation>
-    </message>
-    <message>
-        <source>R A T E</source>
-        <translation type="obsolete">K G L W</translation>
-    </message>
-    <message>
-        <source>E R T A</source>
-        <translation type="obsolete">W K G L</translation>
-    </message>
-    <message>
-        <source>E R A T</source>
-        <translation type="obsolete">W K L G</translation>
-    </message>
-    <message>
-        <source>E T R A</source>
-        <translation type="obsolete">W G K L</translation>
-    </message>
-    <message>
-        <source>E T A R</source>
-        <translation type="obsolete">W G L K</translation>
-    </message>
-    <message>
-        <source>E A R T</source>
-        <translation type="obsolete">W L K G</translation>
-    </message>
-    <message>
-        <source>E A T R</source>
-        <translation type="obsolete">W L G K</translation>
-    </message>
-    <message>
-        <source>T R E A</source>
-        <translation type="obsolete">G K W L</translation>
-    </message>
-    <message>
-        <source>T R A E</source>
-        <translation type="obsolete">G K L W</translation>
-    </message>
-    <message>
-        <source>T E R A</source>
-        <translation type="obsolete">G W K L</translation>
-    </message>
-    <message>
-        <source>T E A R</source>
-        <translation type="obsolete">G W L K</translation>
-    </message>
-    <message>
-        <source>T A R E</source>
-        <translation type="obsolete">G L K W</translation>
-    </message>
-    <message>
-        <source>T A E R</source>
-        <translation type="obsolete">G L W K</translation>
-    </message>
-    <message>
-        <source>A R E T</source>
-        <translation type="obsolete">L K W G</translation>
-    </message>
-    <message>
-        <source>A R T E</source>
-        <translation type="obsolete">L R G W</translation>
-    </message>
-    <message>
-        <source>A E R T</source>
-        <translation type="obsolete">L W K G</translation>
-    </message>
-    <message>
-        <source>A E T R</source>
-        <translation type="obsolete">L W G K</translation>
-    </message>
-    <message>
-        <source>A T R E</source>
-        <translation type="obsolete">L G K W</translation>
-    </message>
-    <message>
-        <source>A T E R</source>
-        <translation type="obsolete">L G W K</translation>
-    </message>
-    <message>
-        <source>Profile</source>
-        <translation type="obsolete">Profile</translation>
-    </message>
-    <message>
-        <source>Open Image</source>
-        <translation type="obsolete">Otwórz obrazek</translation>
-    </message>
-    <message>
-        <source>Splash Screen</source>
-        <translation type="obsolete">Ekran startowy</translation>
-    </message>
-    <message>
-        <source>Clear Image</source>
-        <translation type="obsolete">Wyczyść obrazek</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="593"/>
@@ -9316,30 +8900,6 @@ To ustawienie jest używane przez szablony, określa jakie wyjście przypisane j
         <location filename="../fwpreferencesdialog.cpp" line="206"/>
         <source>The selected firmware cannot be downloaded by Companion.</source>
         <translation>Companion nie moze pobrac wybranego firmware.</translation>
-    </message>
-    <message>
-        <source>Select the folder replicating your SD structure</source>
-        <translation type="obsolete">Wybierz folder do zreplikowania struktury Twojej karty SD</translation>
-    </message>
-    <message>
-        <source>Profile name is empty, profile slot %1 will be deleted.&lt;br&gt;Are you sure ?</source>
-        <translation type="obsolete">Nazwa profilu jest pusta, slot %1 będzie skasowany.&lt;br&gt;Jesteś pewien ?</translation>
-    </message>
-    <message>
-        <source>Open Image to load</source>
-        <translation type="obsolete">Otwórz obrazek do załadowania</translation>
-    </message>
-    <message>
-        <source>Images (%1)</source>
-        <translation type="obsolete">Obrazki (%1)</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Błąd</translation>
-    </message>
-    <message>
-        <source>Cannot load %1.</source>
-        <translation type="obsolete">Nie mogę załadować %1.</translation>
     </message>
 </context>
 <context>
@@ -10607,79 +10167,6 @@ Mode 4:
         <source>Use clipboard only</source>
         <translation>Użycie schowka do kopiowania</translation>
     </message>
-    <message>
-        <source>Last downloaded release: %1</source>
-        <translation type="obsolete">Ostatnie pobrane wydanie: %1</translation>
-    </message>
-    <message>
-        <source>Image stored in settings</source>
-        <translation type="obsolete">Logo zapamietane w ustawieniach</translation>
-    </message>
-    <message>
-        <source>No joysticks found</source>
-        <translation type="obsolete">Brak oysticka</translation>
-    </message>
-    <message>
-        <source>Select the folder replicating your SD structure</source>
-        <translation type="obsolete">Wybierz folder do zreplikowania struktury Twojej karty SD</translation>
-    </message>
-    <message>
-        <source>Profile name is empty, profile slot %1 will be deleted.&lt;br&gt;Are you sure ?</source>
-        <translation type="obsolete">Nazwa profilu jest pusta, slot %1 będzie skasowany.&lt;br&gt;Jesteś pewien ?</translation>
-    </message>
-    <message>
-        <source>Select your library folder</source>
-        <oldsource>Support for SD memory card</oldsource>
-        <translation type="obsolete">Wybierz katalog bibliteki</translation>
-    </message>
-    <message>
-        <source>Select your snapshot folder</source>
-        <translation type="obsolete">Katalog obrazków dla symulatora</translation>
-    </message>
-    <message>
-        <source>The selected firmware has never been downloaded by Companion.</source>
-        <translation type="obsolete">Wybrany firmware nie został nigdy pobrany przez Companion.</translation>
-    </message>
-    <message>
-        <source>The selected firmware cannot be downloaded by Companion.</source>
-        <translation type="obsolete">Companion nie moze pobrac wybranego firmware.</translation>
-    </message>
-    <message>
-        <source>Select your Models and Settings backup folder</source>
-        <translation type="obsolete">Wybierz folder do backupowania Modeli i Ustawień</translation>
-    </message>
-    <message>
-        <source>Select Google Earth executable</source>
-        <translation type="obsolete">Wybierz wykonywalny plik Google Earth</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Błąd</translation>
-    </message>
-    <message>
-        <source>Cannot load %1.</source>
-        <translation type="obsolete">nie mogę wczytać %1.</translation>
-    </message>
-    <message>
-        <source>Export profile As</source>
-        <translation type="obsolete">Wyeksportuj profil jako</translation>
-    </message>
-    <message>
-        <source>Profile slot is not empty, profile slot %1 will we overwritten.&lt;br&gt;Are you sure ?</source>
-        <translation type="obsolete">Slot profilu nie jest pusty, slot %1 zostanie zapisany.&lt;br&gt;Jesteś pewien ?</translation>
-    </message>
-    <message>
-        <source>Open Profile to import</source>
-        <translation type="obsolete">Otworzyć PRofil do zaimportowania</translation>
-    </message>
-    <message>
-        <source>Open Image to load</source>
-        <translation type="obsolete">Otworzyć obrazek</translation>
-    </message>
-    <message>
-        <source>Images (%1)</source>
-        <translation type="obsolete">Obrazki (%1)</translation>
-    </message>
 </context>
 <context>
     <name>printDialog</name>
@@ -11131,293 +10618,6 @@ Mode 4:
     </message>
 </context>
 <context>
-    <name>simulatorDialog</name>
-    <message>
-        <source>Right Double Click to Reset</source>
-        <translation type="obsolete">Powójne kliknięcie RP myszy w celu zresetowania</translation>
-    </message>
-    <message>
-        <source>THR</source>
-        <translation type="obsolete">Gaz</translation>
-    </message>
-    <message>
-        <source>RUD</source>
-        <translation type="obsolete">SK</translation>
-    </message>
-    <message>
-        <source>ELE</source>
-        <translation type="obsolete">SW</translation>
-    </message>
-    <message>
-        <source>AIL</source>
-        <translation type="obsolete">Lot</translation>
-    </message>
-    <message>
-        <source>Hold X</source>
-        <translation type="obsolete">Przytrzymaj X</translation>
-    </message>
-    <message>
-        <source>Fix X</source>
-        <translation type="obsolete">Zablokuj X</translation>
-    </message>
-    <message>
-        <source>Fix Y</source>
-        <translation type="obsolete">Zablokuj Y</translation>
-    </message>
-    <message>
-        <source>Hold Y</source>
-        <translation type="obsolete">Zablokuj Y</translation>
-    </message>
-    <message>
-        <source>P1</source>
-        <translation type="obsolete">Potencjometr1</translation>
-    </message>
-    <message>
-        <source>P2</source>
-        <translation type="obsolete">Potencjometr2</translation>
-    </message>
-    <message>
-        <source>P3</source>
-        <translation type="obsolete">Potencjometr3</translation>
-    </message>
-    <message>
-        <source>9x Simulator</source>
-        <translation type="obsolete">Symulator 9x</translation>
-    </message>
-    <message>
-        <source>Outputs</source>
-        <translation type="obsolete">Wyjścia</translation>
-    </message>
-    <message>
-        <source>LS1</source>
-        <translation type="obsolete">PL1</translation>
-    </message>
-    <message>
-        <source>LS2</source>
-        <translation type="obsolete">PL2</translation>
-    </message>
-    <message>
-        <source>LS3</source>
-        <translation type="obsolete">PL3</translation>
-    </message>
-    <message>
-        <source>LS4</source>
-        <translation type="obsolete">PL4</translation>
-    </message>
-    <message>
-        <source>LS5</source>
-        <translation type="obsolete">PL5</translation>
-    </message>
-    <message>
-        <source>LS6</source>
-        <translation type="obsolete">PL6</translation>
-    </message>
-    <message>
-        <source>LS7</source>
-        <translation type="obsolete">PL7</translation>
-    </message>
-    <message>
-        <source>LS8</source>
-        <translation type="obsolete">PL8</translation>
-    </message>
-    <message>
-        <source>LS9</source>
-        <translation type="obsolete">PL9</translation>
-    </message>
-    <message>
-        <source>LSA</source>
-        <translation type="obsolete">PLA</translation>
-    </message>
-    <message>
-        <source>LSB</source>
-        <translation type="obsolete">PLB</translation>
-    </message>
-    <message>
-        <source>LSC</source>
-        <translation type="obsolete">PLC</translation>
-    </message>
-    <message>
-        <source>LSD</source>
-        <translation type="obsolete">PLD</translation>
-    </message>
-    <message>
-        <source>LSE</source>
-        <translation type="obsolete">PLE</translation>
-    </message>
-    <message>
-        <source>LSF</source>
-        <translation type="obsolete">PLF</translation>
-    </message>
-    <message>
-        <source>LSG</source>
-        <translation type="obsolete">PLG</translation>
-    </message>
-    <message>
-        <source>LSH</source>
-        <translation type="obsolete">PLH</translation>
-    </message>
-    <message>
-        <source>LSI</source>
-        <translation type="obsolete">PLI</translation>
-    </message>
-    <message>
-        <source>LSJ</source>
-        <translation type="obsolete">PLJ</translation>
-    </message>
-    <message>
-        <source>LSK</source>
-        <translation type="obsolete">PLK</translation>
-    </message>
-    <message>
-        <source>LSL</source>
-        <translation type="obsolete">PLL</translation>
-    </message>
-    <message>
-        <source>LSM</source>
-        <translation type="obsolete">PLM,</translation>
-    </message>
-    <message>
-        <source>LSN</source>
-        <translation type="obsolete">PLN</translation>
-    </message>
-    <message>
-        <source>LSO</source>
-        <translation type="obsolete">PLO</translation>
-    </message>
-    <message>
-        <source>LSP</source>
-        <translation type="obsolete">PLP</translation>
-    </message>
-    <message>
-        <source>LSQ</source>
-        <translation type="obsolete">PLQ</translation>
-    </message>
-    <message>
-        <source>LSR</source>
-        <translation type="obsolete">PLR</translation>
-    </message>
-    <message>
-        <source>LSS</source>
-        <translation type="obsolete">PLS</translation>
-    </message>
-    <message>
-        <source>LST</source>
-        <translation type="obsolete">PLT</translation>
-    </message>
-    <message>
-        <source>LSU</source>
-        <translation type="obsolete">PLU</translation>
-    </message>
-    <message>
-        <source>LSV</source>
-        <translation type="obsolete">PLV</translation>
-    </message>
-    <message>
-        <source>LSW</source>
-        <translation type="obsolete">PLW</translation>
-    </message>
-    <message>
-        <source>BEEP</source>
-        <translation type="obsolete">Zvuk</translation>
-    </message>
-    <message>
-        <source>Companion Simulator</source>
-        <translation type="obsolete">Symulator Companion</translation>
-    </message>
-    <message>
-        <source>CH1</source>
-        <translation type="obsolete">Kanał 01</translation>
-    </message>
-    <message>
-        <source>CH9</source>
-        <translation type="obsolete">Kanał 09</translation>
-    </message>
-    <message>
-        <source>CH2</source>
-        <translation type="obsolete">Kanał 02</translation>
-    </message>
-    <message>
-        <source>CH10</source>
-        <translation type="obsolete">Kanał 10</translation>
-    </message>
-    <message>
-        <source>CH3</source>
-        <translation type="obsolete">Kanał 03</translation>
-    </message>
-    <message>
-        <source>CH11</source>
-        <translation type="obsolete">Kanał 11</translation>
-    </message>
-    <message>
-        <source>CH4</source>
-        <translation type="obsolete">Kanał 04</translation>
-    </message>
-    <message>
-        <source>CH12</source>
-        <translation type="obsolete">Kanał 12</translation>
-    </message>
-    <message>
-        <source>CH5</source>
-        <translation type="obsolete">Kanał 05</translation>
-    </message>
-    <message>
-        <source>CH13</source>
-        <translation type="obsolete">Kanał 13</translation>
-    </message>
-    <message>
-        <source>CH6</source>
-        <translation type="obsolete">Kanał 06</translation>
-    </message>
-    <message>
-        <source>CH14</source>
-        <translation type="obsolete">Kanał 14</translation>
-    </message>
-    <message>
-        <source>CH7</source>
-        <translation type="obsolete">Kanał 07</translation>
-    </message>
-    <message>
-        <source>CH15</source>
-        <translation type="obsolete">Kanał 15</translation>
-    </message>
-    <message>
-        <source>CH8</source>
-        <translation type="obsolete">Kanał 08</translation>
-    </message>
-    <message>
-        <source>CH16</source>
-        <translation type="obsolete">Kanał 16</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation type="obsolete">Ostrzeżnie</translation>
-    </message>
-    <message>
-        <source>Joystick enabled but not configured correctly</source>
-        <translation type="obsolete">Joystick uaktywniony ale nieprawidłowo skonfigurowany</translation>
-    </message>
-    <message>
-        <source>Cannot open joystick, joystick disabled</source>
-        <translation type="obsolete">Nie mogę otworzyć joysticka, dezaktywowany</translation>
-    </message>
-    <message>
-        <source>Firmware %1 error: %2</source>
-        <translation type="obsolete">Firmware %1 błąd: %2</translation>
-    </message>
-    <message>
-        <source> - Flight mode: %1(%2)</source>
-        <translation type="obsolete"> - Tryb lotu: %1(%2)</translation>
-    </message>
-    <message>
-        <source>Simulating Tx (%1)</source>
-        <translation type="obsolete">Symulacja Tx (%1)</translation>
-    </message>
-    <message>
-        <source>Simulating </source>
-        <translation type="obsolete">Symulacja </translation>
-    </message>
-</context>
-<context>
     <name>splashLibrary</name>
     <message>
         <location filename="../splashlibrary.ui" line="47"/>
@@ -11449,277 +10649,6 @@ Mode 4:
         <location filename="../splashlibrary.cpp" line="99"/>
         <source>No valid image found in library, check your settings</source>
         <translation>Nie znaleziono prawodłowego obrazka w biblitece, sprawdź ustawienia</translation>
-    </message>
-</context>
-<context>
-    <name>xsimulatorDialog</name>
-    <message>
-        <source>Right Double Click to Reset</source>
-        <translation type="obsolete">Podwójne klikniecie RP myszy w celu zresetowania</translation>
-    </message>
-    <message>
-        <source>Hold X</source>
-        <translation type="obsolete">Przytrzymaj X</translation>
-    </message>
-    <message>
-        <source>Fix X</source>
-        <translation type="obsolete">Zablokuj X</translation>
-    </message>
-    <message>
-        <source>Fix Y</source>
-        <translation type="obsolete">Zablokuj Y</translation>
-    </message>
-    <message>
-        <source>Hold Y</source>
-        <translation type="obsolete">Przytrzymaj Y</translation>
-    </message>
-    <message>
-        <source>S2</source>
-        <translation type="obsolete">Poten 2</translation>
-    </message>
-    <message>
-        <source>RS</source>
-        <translation type="obsolete">P suwak</translation>
-    </message>
-    <message>
-        <source>S1</source>
-        <translation type="obsolete">Poten 1</translation>
-    </message>
-    <message>
-        <source>LS</source>
-        <translation type="obsolete">L suwak</translation>
-    </message>
-    <message>
-        <source>Outputs</source>
-        <translation type="obsolete">Wyjścia</translation>
-    </message>
-    <message>
-        <source>CH1</source>
-        <translation type="obsolete">Kanał 01</translation>
-    </message>
-    <message>
-        <source>Taranis Simulator</source>
-        <translation type="obsolete">Symulator Taranis</translation>
-    </message>
-    <message>
-        <source>Companion Simulator</source>
-        <translation type="obsolete">Symulator Companion</translation>
-    </message>
-    <message>
-        <source>CH9</source>
-        <translation type="obsolete">Kanał 09</translation>
-    </message>
-    <message>
-        <source>CH2</source>
-        <translation type="obsolete">Kanał 02</translation>
-    </message>
-    <message>
-        <source>CH10</source>
-        <translation type="obsolete">Kanał 10</translation>
-    </message>
-    <message>
-        <source>CH3</source>
-        <translation type="obsolete">Kanał 03</translation>
-    </message>
-    <message>
-        <source>CH11</source>
-        <translation type="obsolete">Kanał 11</translation>
-    </message>
-    <message>
-        <source>CH4</source>
-        <translation type="obsolete">Kanał 04</translation>
-    </message>
-    <message>
-        <source>CH12</source>
-        <translation type="obsolete">Kanał 12</translation>
-    </message>
-    <message>
-        <source>CH5</source>
-        <translation type="obsolete">Kanał 05</translation>
-    </message>
-    <message>
-        <source>CH13</source>
-        <translation type="obsolete">Kanał 13</translation>
-    </message>
-    <message>
-        <source>CH6</source>
-        <translation type="obsolete">Kanał 06</translation>
-    </message>
-    <message>
-        <source>CH14</source>
-        <translation type="obsolete">Kanał 14</translation>
-    </message>
-    <message>
-        <source>CH7</source>
-        <translation type="obsolete">Kanał 07</translation>
-    </message>
-    <message>
-        <source>CH15</source>
-        <translation type="obsolete">Kanał 15</translation>
-    </message>
-    <message>
-        <source>CH8</source>
-        <translation type="obsolete">Kanał 08</translation>
-    </message>
-    <message>
-        <source>CH16</source>
-        <translation type="obsolete">Kanał 16</translation>
-    </message>
-    <message>
-        <source>LSK</source>
-        <translation type="obsolete">PLK</translation>
-    </message>
-    <message>
-        <source>LSC</source>
-        <translation type="obsolete">PLC</translation>
-    </message>
-    <message>
-        <source>LSD</source>
-        <translation type="obsolete">PLD</translation>
-    </message>
-    <message>
-        <source>LS7</source>
-        <translation type="obsolete">PL7</translation>
-    </message>
-    <message>
-        <source>LSL</source>
-        <translation type="obsolete">PLL</translation>
-    </message>
-    <message>
-        <source>LSB</source>
-        <translation type="obsolete">PLB</translation>
-    </message>
-    <message>
-        <source>LS1</source>
-        <translation type="obsolete">PL1</translation>
-    </message>
-    <message>
-        <source>LSH</source>
-        <translation type="obsolete">PLH</translation>
-    </message>
-    <message>
-        <source>LSG</source>
-        <translation type="obsolete">PLG</translation>
-    </message>
-    <message>
-        <source>LSE</source>
-        <translation type="obsolete">PLE</translation>
-    </message>
-    <message>
-        <source>LSF</source>
-        <translation type="obsolete">PLF</translation>
-    </message>
-    <message>
-        <source>LS8</source>
-        <translation type="obsolete">PL8</translation>
-    </message>
-    <message>
-        <source>LS9</source>
-        <translation type="obsolete">PL9</translation>
-    </message>
-    <message>
-        <source>LSA</source>
-        <translation type="obsolete">PLA</translation>
-    </message>
-    <message>
-        <source>LSM</source>
-        <translation type="obsolete">PLM,</translation>
-    </message>
-    <message>
-        <source>LSJ</source>
-        <translation type="obsolete">PLJ</translation>
-    </message>
-    <message>
-        <source>LSI</source>
-        <translation type="obsolete">PLI</translation>
-    </message>
-    <message>
-        <source>LS4</source>
-        <translation type="obsolete">PL4</translation>
-    </message>
-    <message>
-        <source>LS5</source>
-        <translation type="obsolete">PL5</translation>
-    </message>
-    <message>
-        <source>LS2</source>
-        <translation type="obsolete">PL2</translation>
-    </message>
-    <message>
-        <source>LS3</source>
-        <translation type="obsolete">PL3</translation>
-    </message>
-    <message>
-        <source>LS6</source>
-        <translation type="obsolete">PL6</translation>
-    </message>
-    <message>
-        <source>LSN</source>
-        <translation type="obsolete">PLN</translation>
-    </message>
-    <message>
-        <source>LSO</source>
-        <translation type="obsolete">PLO</translation>
-    </message>
-    <message>
-        <source>LSP</source>
-        <translation type="obsolete">PLP</translation>
-    </message>
-    <message>
-        <source>LSQ</source>
-        <translation type="obsolete">PLQ</translation>
-    </message>
-    <message>
-        <source>LSR</source>
-        <translation type="obsolete">PLR</translation>
-    </message>
-    <message>
-        <source>LSS</source>
-        <translation type="obsolete">PLS</translation>
-    </message>
-    <message>
-        <source>LST</source>
-        <translation type="obsolete">PLT</translation>
-    </message>
-    <message>
-        <source>LSU</source>
-        <translation type="obsolete">PLU</translation>
-    </message>
-    <message>
-        <source>LSV</source>
-        <translation type="obsolete">PLV</translation>
-    </message>
-    <message>
-        <source>LSW</source>
-        <translation type="obsolete">PLW</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation type="obsolete">Osrzeżenie</translation>
-    </message>
-    <message>
-        <source>Joystick enabled but not configured correctly</source>
-        <translation type="obsolete">Joystick aktywny ale nie skonfogurowany prawidłowo</translation>
-    </message>
-    <message>
-        <source>Cannot open joystick, joystick disabled</source>
-        <translation type="obsolete">Nie mogę otworzyć joystika, Joystik wyłaczony</translation>
-    </message>
-    <message>
-        <source>Firmware %1 error: %2</source>
-        <translation type="obsolete">Firmware %1 bład: %2</translation>
-    </message>
-    <message>
-        <source> - Flight mode: %1(%2)</source>
-        <translation type="obsolete"> - Tryb lotu: %1(%2)</translation>
-    </message>
-    <message>
-        <source>Simulating Tx (%1)</source>
-        <translation type="obsolete">Symulacja Tx (%1)</translation>
-    </message>
-    <message>
-        <source>Simulating </source>
-        <translation type="obsolete">Symulacja </translation>
     </message>
 </context>
 </TS>
