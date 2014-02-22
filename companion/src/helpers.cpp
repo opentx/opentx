@@ -694,6 +694,14 @@ QString image2qstring(QImage image)
     return ImageStr;
 }
 
+// TODO KKERNEN 20140222
+// I am sure that this code has had some kind of function, but now it only seems to cause
+// problems. I think it is an attempt to open an image file from a double byte string which
+// is first converted to a single byte string. Only used in burndialog.cpp
+// It doesn't work for me in 2.0. I do not know why. I doubt it has ever worked for files or 
+// file paths containing non-english characters.
+// Code can be removed ,when 2.0 is tested.
+
 QImage qstring2image(QString imagestr)
 {
   bool ok;

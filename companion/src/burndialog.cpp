@@ -203,7 +203,8 @@ void burnDialog::checkFw(QString fileName)
       QString ImageStr = g.profile[g.id()].splashFile();
       bool PatchFwCB = g.profile[g.id()].patchImage();
       if (!ImageStr.isEmpty()) {
-        QImage Image = qstring2image(ImageStr);
+        QImage Image;
+        Image.load(ImageStr);
         ui->imageLabel->setPixmap(QPixmap::fromImage(Image.convertToFormat(flash.getSplashFormat())));
         ui->InvertColorButton->setEnabled(true);
         ui->PreferredImageCB->setChecked(true);
@@ -633,7 +634,8 @@ void burnDialog::on_PreferredImageCB_toggled(bool checked)
   if (checked) {
     QString ImageStr = g.profile[g.id()].splashFile();
     if (!ImageStr.isEmpty()) {
-      QImage Image = qstring2image(ImageStr);
+      QImage Image;
+      Image.load( ImageStr );
       if (ui->imageLabel->width()!=128) {
         Image=Image.convertToFormat(QImage::Format_RGB32);
         QRgb col;
