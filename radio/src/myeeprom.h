@@ -519,6 +519,16 @@ PACK(typedef struct t_LimitData {
 #define MLTPX_REP   2
 
 #if defined(CPUARM)
+// highest bit used for small values in mix 128 --> 8 bit is enough
+#define GV1_SMALL  128
+// highest bit used for large values in mix 4096 --> 12 bits is used (type for weight and offset has even 16 bits)
+#define GV1_LARGE  4096
+// the define GV1_LARGE marks the highest bit value used for this variables
+// because this would give too big numbers for ARM, we limit it further for offset and weight
+// must be smaller than GV1_LARGE - RESERVE_RANGE_FOR_GVARS -1
+#define GV_RANGE_WEIGHT 500
+#define GV_RANGE_OFFSET 490
+
 #define DELAY_STEP  10
 #define SLOW_STEP   10
 #define DELAY_MAX   (25*DELAY_STEP) /* 25 seconds */
@@ -584,6 +594,12 @@ PACK( union u_int8int16_t {
 // #define MD_SETOFFSET(md, val) md->offset = val
 
 #else
+
+// highest bit used for small values in mix 128 --> 8 bit is enough
+#define GV1_SMALL  128
+// highest bit used for large values in mix 256 --> 9 bits is used (8 bits + 1 extra bit from weightMode/offsetMode)
+#define GV1_LARGE  256
+
 #define DELAY_STEP  2
 #define SLOW_STEP   2
 #define DELAY_MAX   15 /* 7.5 seconds */
