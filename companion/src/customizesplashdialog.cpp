@@ -56,7 +56,7 @@ bool Side::displayImage( QString fileName, Source pictSource )
     if (pictSource== PICT)
       *format = image.width()>WIDTH_9X ? LCDTARANIS : LCD9X;
     else if (pictSource == PROFILE)
-      *format = (g.profile[g.id()].firmware().contains("taranis")) ? LCDTARANIS : LCD9X; 
+      *format = (g.profile[g.id()].fwType().contains("taranis")) ? LCDTARANIS : LCD9X; 
   }
   if (image.isNull()) {
     return false;

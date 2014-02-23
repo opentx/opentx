@@ -109,8 +109,7 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
     hexfileName->clear();
   }
   else if (Type==FLASH_FILE_TYPE) {
-    QString FileName;
-    FileName = g.lastFw();
+    QString FileName = g.profile[g.id()].fwName();
     QFile file(FileName);
     if (file.exists()) {
       checkFw(FileName);
@@ -353,31 +352,32 @@ void burnDialog::on_useFwImageCB_clicked()
   FlashInterface flash(fileName);
   if (!flash.isValid()) {
     QMessageBox::critical(this, tr("Error"), tr( "The firmware file is not valid." ));
-    return;
   }
-  if (!flash.hasSplash()) {
-    QMessageBox::critical(this, tr("Error"), tr( "There is no start screen image in the firmware file." ));
-    return;
+  else {
+    if (!flash.hasSplash()) {
+      QMessageBox::critical(this, tr("Error"), tr( "There is no start screen image in the firmware file." ));
+    }
+    else{
+      imageSource = FIRMWARE;
+      imageFile = fileName;
+    }
   }
-  imageSource = FIRMWARE;
-  imageFile = fileName;
   updateUI();
 }
 
 void burnDialog::on_useProfileImageCB_clicked()
 {
   QString fileName = g.profile[g.id()].splashFile();
-  if (fileName.isEmpty()){
-    QMessageBox::critical(this, tr("Error"), tr( "The radio profile has no defined start screen." ));
-    return;
+  if (!fileName.isEmpty()){
+    QImage image(fileName);
+    if (image.isNull()) {
+      QMessageBox::critical(this, tr("Error"), tr("The profile image %1 does not contain an image.").arg(fileName));
+    }
+    else {
+      imageSource = PROFILE;
+      imageFile = fileName;
+    }
   }
-  QImage image(fileName);
-  if (image.isNull()) {
-    QMessageBox::critical(this, tr("Error"), tr("The profile image %1 does not seem to contain an image.").arg(fileName));
-    return;
-  }
-  imageSource = PROFILE;
-  imageFile = fileName;
   updateUI();
 }
 
@@ -388,17 +388,17 @@ void burnDialog::on_useAnotherImageCB_clicked()
     supportedImageFormats += QLatin1String(" *.") + QImageReader::supportedImageFormats()[formatIndex];
   }
   QString fileName = QFileDialog::getOpenFileName(this, tr("Open image file to use as Tx start screen"), g.imagesDir(), tr("Images (%1)").arg(supportedImageFormats));
-  if (fileName.isEmpty()){
-    return;
+  if (!fileName.isEmpty()){
+    g.imagesDir( QFileInfo(fileName).dir().absolutePath() );
+    QImage image(fileName);
+    if (image.isNull()) {
+      QMessageBox::critical(this, tr("Error"), tr("Image could not be loaded from %1").arg(fileName));
+    }
+    else{
+      imageSource = ANOTHER;
+      imageFile = fileName;
+    }  
   }
-  g.imagesDir( QFileInfo(fileName).dir().absolutePath() );
-  QImage image(fileName);
-  if (image.isNull()) {
-    QMessageBox::critical(this, tr("Error"), tr("Image could not be loaded from %1").arg(fileName));
-    return;
-  }
-  imageSource = ANOTHER;
-  imageFile = fileName;
   updateUI();
 }
 
@@ -407,16 +407,16 @@ void burnDialog::on_useLibraryImageCB_clicked()
   QString fileName;
   splashLibrary *ld = new splashLibrary(this,&fileName);
   ld->exec();
-  if (fileName.isEmpty()) {
-    return;
+  if (!fileName.isEmpty()) {
+    QImage image(fileName);
+    if (image.isNull()) {
+      QMessageBox::critical(this, tr("Error"), tr("The library image could not be loaded"));
+    }
+    else{
+      imageSource = LIBRARY;
+      imageFile = fileName;
+    }
   }
-  QImage image(fileName);
-  if (image.isNull()) {
-    QMessageBox::critical(this, tr("Error"), tr("The library image could not be loaded"));
-    return;
-  }
-  imageSource = LIBRARY;
-  imageFile = fileName;
   updateUI();
 }
 
@@ -426,7 +426,6 @@ void burnDialog::on_BurnFlashButton_clicked()
     QString fileName=ui->FWFileName->text();
     if (!fileName.isEmpty()) {
       g.flashDir( QFileInfo(fileName).dir().absolutePath() );
-      g.lastFw( fileName );
       if (!ui->useFwImageCB->isChecked()) {
         QImage image = ui->imageLabel->pixmap()->toImage().scaled(ui->imageLabel->width(), ui->imageLabel->height());
         if (!image.isNull()) {

@@ -92,13 +92,13 @@ class Profile: protected CompStoreObj
     int index;
 
     // Application Variables
-    QString _firmware;
+    QString _fwName;
+    QString _fwType;
     QString _name;
     QString _sdPath;
     QString _splashFile;
     bool    _burnFirmware;
     bool    _renameFwFiles;
-    bool    _patchImage;
     int     _channelOrder;
     int     _defaultMode;
 
@@ -118,13 +118,13 @@ class Profile: protected CompStoreObj
 
   public:
     // All the get definitions
-    QString firmware() const;
+    QString fwName() const;
+    QString fwType() const;
     QString name() const;
     QString sdPath() const;
     QString splashFile() const;
     bool    burnFirmware() const;
     bool    renameFwFiles() const;
-    bool    patchImage() const;    //TODO This variable is unused and should be removed
     int     channelOrder() const;
     int     defaultMode() const;
 
@@ -143,12 +143,12 @@ class Profile: protected CompStoreObj
 
     // All the set definitions
     void name          (const QString);
-    void firmware      (const QString);
+    void fwName        (const QString);
+    void fwType        (const QString);
     void sdPath        (const QString);
     void splashFile    (const QString);
     void burnFirmware  (const bool);
     void renameFwFiles (const bool);
-    void patchImage    (const bool);
     void channelOrder  (const int);
     void defaultMode   (const int);
 
@@ -195,7 +195,6 @@ class AppData: protected CompStoreObj
     QString _cpuId;
     QString _dfuArguments;
     QString _dfuLocation;
-    QString _lastFw;
     QString _locale;
     QString _mcu;
     QString _programmer;
@@ -251,7 +250,7 @@ class AppData: protected CompStoreObj
     QString cpuId();
     QString dfuArguments();
     QString dfuLocation();
-    QString lastFw();
+    QString lastFw();  
     QString locale();
     QString mcu();
     QString programmer();
