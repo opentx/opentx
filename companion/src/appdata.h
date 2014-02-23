@@ -124,7 +124,7 @@ class Profile: protected CompStoreObj
     QString splashFile() const;
     bool    burnFirmware() const;
     bool    renameFwFiles() const;
-    bool    patchImage() const;
+    bool    patchImage() const;    //TODO This variable is unused and should be removed
     int     channelOrder() const;
     int     defaultMode() const;
 

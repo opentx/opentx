@@ -36,17 +36,21 @@ public:
 
 private slots:
   void on_FlashLoadButton_clicked();
-  void on_ImageLoadButton_clicked();
-  void on_libraryButton_clicked();
   void on_BurnFlashButton_clicked();
   void on_cancelButton_clicked();
-  void on_InvertColorButton_clicked();
   void on_EEbackupCB_clicked();
-  void on_PreferredImageCB_toggled(bool checked);
-  void on_EEpromCB_toggled(bool checked);
-  void checkFw(QString fileName);
+  void on_EEpromCB_toggled(bool checked);  
   bool checkeEprom(QString fileName);
+  void on_useProfileImageCB_clicked();
+  void on_useFwImageCB_clicked();
+  void on_useLibraryImageCB_clicked();
+  void on_useAnotherImageCB_clicked();
+
+  void checkFw(QString fileName);
+  void displaySplash();
+  void updateUI();
   void shrink();
+
 
 private:
   Ui::burnDialog *ui;
@@ -55,6 +59,9 @@ private:
   int hexType;
   RadioData radioData;
   bool burnraw;
+  enum ImageSource {FIRMWARE, PROFILE, LIBRARY, ANOTHER};
+  ImageSource imageSource;
+  QString imageFile;
 };
 
 #endif // BURNDIALOG_H
