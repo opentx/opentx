@@ -666,6 +666,7 @@
 #define TR_SD_SIZE             "Wielkość:"
 #define TR_TYPE                TR_SD_TYPE
 #define TR_GLOBAL_VARS         "Zmienne globalne"
+#define TR_GLOBAL_V            "GLOBAL V."
 #define TR_GLOBAL_VAR          "Zmienna globalna"
 #define TR_MENUGLOBALVARS      "ZMIENNE GLOBALNE"
 #define TR_OWN                 "Własność"

@@ -4094,7 +4094,7 @@ void menuModelGVars(uint8_t event)
   bool first2seconds = (tmr10ms - menuEntryTime > 200); /*2 seconds*/
 
   if (first2seconds) {
-    menuTitle = "GLOBAL V."; // TODO translate
+    menuTitle = STR_GLOBAL_V;
     for (int i=0; i<MAX_GVARS; i++) {
       putsStrIdx(GVARS_FM_COLUMN(i)-16, 1, STR_FP, i, SMLSIZE|(getFlightPhase()==i ? INVERS : 0));
     }

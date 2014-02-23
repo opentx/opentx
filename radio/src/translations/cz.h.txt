@@ -655,6 +655,7 @@
 #define TR_SD_SIZE             "Velikost:"
 #define TR_TYPE                TR_SD_TYPE
 #define TR_GLOBAL_VARS         "Globální proměnné"
+#define TR_GLOBAL_V            "GLOBAL V."
 #define TR_GLOBAL_VAR          "Global Variable"
 #define TR_MENUGLOBALVARS      "GLOBÁLNÍ PROMěNNÉ"
 #define TR_OWN                 " \043 "
