@@ -141,6 +141,8 @@ void burnDialog::on_FlashLoadButton_clicked()
   QTimer::singleShot(0, this, SLOT(shrink()));
   if (hexType==FLASH_FILE_TYPE) {
     fileName = QFileDialog::getOpenFileName(this, tr("Open Firmware File"), g.flashDir(), FLASH_FILES_FILTER);
+    if(fileName.isEmpty())
+      return;
     checkFw(fileName);
   }
   else {

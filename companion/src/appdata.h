@@ -287,7 +287,7 @@ class AppData: protected CompStoreObj
     int iconSize();
     int historySize();
     int jsCtrl();
-    int modelEditTab();
+    int modelEditTab();  // This variable is unused an can be removed
     int id();
     int theme();
     int warningId();
