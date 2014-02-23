@@ -956,7 +956,10 @@ This is used by the templated to determine which channel goes to what number out
           <enum>QFrame::Panel</enum>
          </property>
          <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
+          <enum>QFrame::Plain</enum>
+         </property>
+         <property name="lineWidth">
+          <number>1</number>
          </property>
          <property name="text">
           <string/>

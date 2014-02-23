@@ -279,7 +279,7 @@
                <enum>QFrame::Panel</enum>
               </property>
               <property name="frameShadow">
-               <enum>QFrame::Raised</enum>
+               <enum>QFrame::Plain</enum>
               </property>
               <property name="text">
                <string/>
@@ -374,12 +374,21 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>BurnFlashButton</tabstop>
   <tabstop>FWFileName</tabstop>
   <tabstop>FlashLoadButton</tabstop>
+  <tabstop>DateField</tabstop>
+  <tabstop>SVNField</tabstop>
+  <tabstop>ModField</tabstop>
+  <tabstop>useProfileImageCB</tabstop>
+  <tabstop>useFwImageCB</tabstop>
+  <tabstop>useLibraryImageCB</tabstop>
+  <tabstop>useAnotherImageCB</tabstop>
   <tabstop>EEbackupCB</tabstop>
+  <tabstop>patchcalib_CB</tabstop>
+  <tabstop>patchhw_CB</tabstop>
   <tabstop>EEpromCB</tabstop>
   <tabstop>cancelButton</tabstop>
-  <tabstop>BurnFlashButton</tabstop>
  </tabstops>
  <resources>
   <include location="companion.qrc"/>

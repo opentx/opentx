@@ -279,29 +279,9 @@ bool appPreferencesDialog::displayImage( QString fileName )
   int width = SPLASH_WIDTH;
   if (g.profile[g.id()].fwType().contains("taranis"))
     width = SPLASHX9D_WIDTH;
-
-  ui->imageLabel->setPixmap(QPixmap::fromImage(image.scaled(width, SPLASH_HEIGHT)));
-  if (width==SPLASHX9D_WIDTH) {
-    image=image.convertToFormat(QImage::Format_RGB32);
-    QRgb col;
-    int gray, height = image.height();
-    for (int i = 0; i < width; ++i) {
-      for (int j = 0; j < height; ++j) {
-        col = image.pixel(i, j);
-        gray = qGray(col);
-        image.setPixel(i, j, qRgb(gray, gray, gray));
-      }
-    }      
-    ui->imageLabel->setPixmap(QPixmap::fromImage(image));
-  } 
-  else {
-    ui->imageLabel->setPixmap(QPixmap::fromImage(image.convertToFormat(QImage::Format_Mono)));
-  }
-  if (width == SPLASH_WIDTH)
-      ui->imageLabel->setFixedSize(SPLASH_WIDTH, SPLASH_HEIGHT);
-  else
-     ui->imageLabel->setFixedSize(SPLASHX9D_WIDTH, SPLASHX9D_HEIGHT);
-
+  
+  ui->imageLabel->setPixmap( makePixMap( image, g.profile[g.id()].fwType()));
+  ui->imageLabel->setFixedSize(width, SPLASH_HEIGHT);
   return true;
 }
 

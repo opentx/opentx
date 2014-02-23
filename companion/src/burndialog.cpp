@@ -311,26 +311,7 @@ void burnDialog::displaySplash()
   if (image.isNull()) {
     return;
   }
-  if (ui->imageLabel->width()!=128) {
-    image=image.convertToFormat(QImage::Format_RGB32);
-    QRgb col;
-    int gray;
-    int width = image.width();
-    int height = image.height();
-    for (int i = 0; i < width; ++i)
-    {
-      for (int j = 0; j < height; ++j)
-      {
-        col = image.pixel(i, j);
-        gray = qGray(col);
-        image.setPixel(i, j, qRgb(gray, gray, gray));
-      }
-    }      
-    ui->imageLabel->setPixmap(QPixmap::fromImage(image.scaled(ui->imageLabel->width(), ui->imageLabel->height())));
-  } 
-  else {
-    ui->imageLabel->setPixmap(QPixmap::fromImage(image.scaled(ui->imageLabel->width(), ui->imageLabel->height()).convertToFormat(QImage::Format_Mono)));
-  }
+  ui->imageLabel->setPixmap( makePixMap( image, g.profile[g.id()].fwType()));
 }
 
 void burnDialog::updateUI()
