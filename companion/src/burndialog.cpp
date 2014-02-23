@@ -9,6 +9,7 @@
 #include "hexinterface.h"
 #include "appdata.h"
 
+// Type 1 = Burn EEPROM, Type 2= Burn Flash
 burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * backupEE, QString DocName):
   QDialog(parent),
   ui(new Ui::burnDialog),
@@ -27,13 +28,11 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
     imageSource=FIRMWARE;
     imageFile="";
   }
-  updateUI();
-
   ui->SplashFrame->hide();
   ui->FramFWInfo->hide();
   ui->EEbackupCB->hide();
   ui->EEbackupCB->setCheckState(*backup ? Qt::Checked : Qt::Unchecked);
-  if (Type == 2) {
+  if (Type == FLASH_FILE_TYPE ) {
     ui->EEpromCB->hide();
     ui->profile_label->hide();
     ui->patchcalib_CB->hide();
@@ -68,7 +67,7 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
   }
   if (!hexfileName->isEmpty()) {
     ui->FWFileName->setText(*hexfileName);
-    if (Type==2) {
+    if (Type==FLASH_FILE_TYPE) {
       checkFw(*hexfileName);
     }
     else {
@@ -109,7 +108,7 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
     ui->FlashLoadButton->hide();   
     hexfileName->clear();
   }
-  else if (Type==2) {
+  else if (Type==FLASH_FILE_TYPE) {
     QString FileName;
     FileName = g.lastFw();
     QFile file(FileName);
@@ -117,6 +116,7 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
       checkFw(FileName);
     }
   }
+  updateUI();
   resize(0, 0);
 }
 
@@ -139,7 +139,7 @@ void burnDialog::on_FlashLoadButton_clicked()
   ui->BurnFlashButton->setDisabled(true);
   ui->EEbackupCB->hide();
   QTimer::singleShot(0, this, SLOT(shrink()));
-  if (hexType==2) {
+  if (hexType==FLASH_FILE_TYPE) {
     fileName = QFileDialog::getOpenFileName(this, tr("Open Firmware File"), g.flashDir(), FLASH_FILES_FILTER);
     checkFw(fileName);
   }
@@ -177,6 +177,7 @@ void burnDialog::checkFw(QString fileName)
   if (fileName.isEmpty()) {
     return;
   }
+
   if (!IS_TARANIS(GetEepromInterface()->getBoard())) {
     ui->EEbackupCB->show();
   }
@@ -191,40 +192,17 @@ void burnDialog::checkFw(QString fileName)
     ui->DateField->setText(flash.getDate() + " " + flash.getTime());
     ui->SVNField->setText(flash.getSvn());
     ui->ModField->setText(flash.getBuild());
-    ui->BurnFlashButton->setEnabled(true);
-    ui->BurnFlashButton->setText(tr("Write to TX"));
+
+    ui->SplashFrame->hide();
     if (flash.hasSplash()) {
       ui->SplashFrame->show();
       ui->imageLabel->setFixedSize(flash.getSplashWidth(), flash.getSplashHeight());
-      QString ImageStr = g.profile[g.id()].splashFile();
-      if (!ImageStr.isEmpty()) {
-        QImage Image;
-        Image.load(ImageStr);
-        ui->imageLabel->setPixmap(QPixmap::fromImage(Image.convertToFormat(flash.getSplashFormat())));
-      }
-      else {
-        QString fileName=imageFile;
-        if (!fileName.isEmpty()) {
-          QImage image(fileName);
-          if (!image.isNull()) {
-            ui->imageLabel->setPixmap(QPixmap::fromImage(image.scaled(ui->imageLabel->width(), ui->imageLabel->height()).convertToFormat(flash.getSplashFormat())));
-          }
-          else {
-          }
-        }
-        else {
-        }
-      }
-    }
-    else {
-      ui->SplashFrame->hide();
     }
   }
   else {
-    QMessageBox::warning(this, tr("Warning"), tr("%1 is not a known firmware").arg(fileName));
-    ui->BurnFlashButton->setText(tr("Burn anyway !"));
-    ui->BurnFlashButton->setEnabled(true);
+    QMessageBox::warning(this, tr("Warning"), tr("%1 may not be a valid firmware file").arg(fileName));
   }  
+  ui->BurnFlashButton->setEnabled(true);
   QTimer::singleShot(0, this, SLOT(shrink()));
   g.flashDir( QFileInfo(fileName).dir().absolutePath() );
 }
@@ -356,6 +334,9 @@ void burnDialog::displaySplash()
 
 void burnDialog::updateUI()
 {
+  if (hexType==EEPROM_FILE_TYPE)
+    return;
+
   ui->useProfileImageCB->setChecked( imageSource == PROFILE );
   ui->useFwImageCB->setChecked( imageSource == FIRMWARE );
   ui->useLibraryImageCB->setChecked( imageSource == LIBRARY );
@@ -439,7 +420,7 @@ void burnDialog::on_useLibraryImageCB_clicked()
 
 void burnDialog::on_BurnFlashButton_clicked()
 {
-  if (hexType==2) {
+  if (hexType==FLASH_FILE_TYPE) {
     QString fileName=ui->FWFileName->text();
     if (!fileName.isEmpty()) {
       g.flashDir( QFileInfo(fileName).dir().absolutePath() );
@@ -475,7 +456,7 @@ void burnDialog::on_BurnFlashButton_clicked()
       hexfileName->clear();     
     }
   }
-  if (hexType==1) {
+  if (hexType==EEPROM_FILE_TYPE) {
     QString calib = g.profile[g.id()].stickPotCalib();
     QString trainercalib = g.profile[g.id()].trainerCalib();
     int potsnum=GetEepromInterface()->getCapability(Pots);
@@ -626,11 +607,7 @@ void burnDialog::on_cancelButton_clicked()
 
 void burnDialog::on_EEpromCB_toggled(bool checked)
 {
-  if (ui->EEpromCB->isChecked()) {
-    *backup=true;
-  } else {
-    *backup=false;
-  }
+  *backup = ui->EEpromCB->isChecked();
 }
 
 void burnDialog::shrink()
@@ -640,9 +617,5 @@ void burnDialog::shrink()
 
 void burnDialog::on_EEbackupCB_clicked()
 {
-  if (ui->EEbackupCB->isChecked()) {
-    *backup=true;
-  } else {
-    *backup=false;
-  }
+  *backup = ui->EEbackupCB->isChecked();
 }
