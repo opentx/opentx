@@ -358,6 +358,10 @@ void onLongMenuPress(const char *result)
 }
 #endif
 
+#if defined(CPUARM)
+tmr10ms_t menuEntryTime;
+#endif
+
 bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow)
 {
   vertpos_t l_posVert = m_posVert;
@@ -522,6 +526,9 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
   switch(event)
   {
     case EVT_ENTRY:
+#if defined(CPUARM)
+      menuEntryTime = get_tmr10ms();
+#endif
       l_posVert = POS_VERT_INIT;
       l_posHorz = POS_HORZ_INIT(l_posVert);
       SET_SCROLLBAR_X(LCD_W-1);
@@ -538,6 +545,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 
 #if defined(PCBTARANIS)
     case EVT_ENTRY_UP:
+      menuEntryTime = get_tmr10ms();
       s_editMode = 0;
       l_posHorz = POS_HORZ_INIT(l_posVert);
       SET_SCROLLBAR_X(LCD_W-1);

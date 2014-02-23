@@ -88,6 +88,10 @@ inline void displayColumnHeader(const char **headers, uint8_t index)
   #define horzpos_t uint8_t
 #endif
 
+#if defined(CPUARM)
+  extern tmr10ms_t menuEntryTime;
+#endif
+
 extern vertpos_t m_posVert;
 extern horzpos_t m_posHorz;
 extern vertpos_t s_pgOfs;
