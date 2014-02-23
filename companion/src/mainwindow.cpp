@@ -308,7 +308,7 @@ void MainWindow::downloadLatestFW(FirmwareInfo * firmware, const QString & firmw
     if (!fileName.isEmpty()) {
       downloadedFW = firmwareId;
       needRename=true;
-      downloadedFWFilename = fileName;
+      g.profile[g.id()].fwName( fileName );
       if (!cpuid.isEmpty()) {
         url.append("&cpuid=");
         url.append(cpuid);
@@ -323,7 +323,7 @@ void MainWindow::downloadLatestFW(FirmwareInfo * firmware, const QString & firmw
 void MainWindow::reply1Accepted()
 {
     QString errormsg;
-    if (downloadedFWFilename.isEmpty()) {
+    if (g.profile[g.id()].fwName().isEmpty()) {
       if (!(downloadedFW.isEmpty())) {
         QFile file(downloadedFW);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {  //reading HEX TEXT file
@@ -364,11 +364,11 @@ void MainWindow::reply1Accepted()
         g.fwRev.set(downloadedFW, currentFWrev);
       }
     } else {
-      QFile file(downloadedFWFilename);
+      QFile file(g.profile[g.id()].fwName());
       if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {  //reading HEX TEXT file
       QMessageBox::critical(this, tr("Error"),
                               tr("Error opening file %1:\n%2.")
-                              .arg(downloadedFWFilename)
+                              .arg(g.profile[g.id()].fwName())
                               .arg(file.errorString()));
         return;
       }
@@ -399,13 +399,13 @@ void MainWindow::reply1Accepted()
         return;
       }
       file.close();
-      FlashInterface flash(downloadedFWFilename);
+      FlashInterface flash(g.profile[g.id()].fwName());
       QString rev=flash.getSvn();
       int pos=rev.lastIndexOf("-r");
       if (pos>0) {
         currentFWrev=rev.mid(pos+2).toInt();
         if (g.profile[g.id()].renameFwFiles() && needRename) {
-          QFileInfo fi(downloadedFWFilename);
+          QFileInfo fi(g.profile[g.id()].fwName());
           QString path=fi.path()+QDir::separator ();
           path.append(fi.completeBaseName());
           path.append(rev.mid(pos));
@@ -413,14 +413,14 @@ void MainWindow::reply1Accepted()
           path.append(fi.suffix());
           QDir qd;
           qd.remove(path);
-          qd.rename(downloadedFWFilename,path);
-          downloadedFWFilename=path;
+          qd.rename(g.profile[g.id()].fwName(),path);
+          g.profile[g.id()].fwName(path);
         }
         g.fwRev.set(downloadedFW, currentFWrev);
         if (g.profile[g.id()].burnFirmware()) {
           int ret = QMessageBox::question(this, "Companion", tr("Do you want to write the firmware to the transmitter now ?"), QMessageBox::Yes | QMessageBox::No);
           if (ret == QMessageBox::Yes) {
-            writeFlash(downloadedFWFilename);
+            writeFlash(g.profile[g.id()].fwName());
           }
         }
       }
@@ -560,7 +560,7 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
               url.append("&cpuid=");
               url.append(cpuid);
             }              
-            downloadedFWFilename = fileName;
+            g.profile[g.id()].fwName( fileName );
             g.flashDir(QFileInfo(fileName).dir().absolutePath());
             downloadDialog * dd = new downloadDialog(this, url, fileName);
             currentFWrev_temp = NewFwRev;
@@ -702,7 +702,7 @@ void MainWindow::loadProfile()  //TODO Load all variables - Also HW!
       g.id( profnum );
 
       // TODO Get rid of this global variable - The profile.firmware is the real source
-      current_firmware_variant = GetFirmwareVariant(g.profile[g.id()].firmware());  
+      current_firmware_variant = GetFirmwareVariant(g.profile[g.id()].fwType());  
 
       foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
         MdiChild *mdiChild = qobject_cast<MdiChild *>(window->widget());

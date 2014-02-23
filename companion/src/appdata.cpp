@@ -188,17 +188,17 @@ void CompStoreObj::getset( int &number, const QString tag, const int def, const 
 }
 
 // ** FwRevision class********************
-int FwRevision::get( const QString fwName )
+int FwRevision::get( const QString fwType )
 {
     QString result;
-    retrieve( result, fwName, "", "FwRevisions" );
+    retrieve( result, fwType, "", "FwRevisions" );
     return result.toInt();
 }
 
-void FwRevision::set( const QString fwName, const int fwRevision )
+void FwRevision::set( const QString fwType, const int fwRevision )
 {
     QString tempString= QString("%1").arg(fwRevision);
-    store( tempString, tempString, fwName, "FwRevisions" );
+    store( tempString, tempString, fwType, "FwRevisions" );
 }
 
 void FwRevision::remove( const QString tag )
@@ -280,13 +280,13 @@ void JStickData::flush()
 
 // ** Profile class********************
 // Get declarations
-QString Profile::firmware()      const { return _firmware;      }
+QString Profile::fwName()        const { return _fwName;        }
+QString Profile::fwType()        const { return _fwType;        }
 QString Profile::name()          const { return _name;          }
 QString Profile::sdPath()        const { return _sdPath;        }
 QString Profile::splashFile()    const { return _splashFile;    }
 bool    Profile::burnFirmware()  const { return _burnFirmware;  }
 bool    Profile::renameFwFiles() const { return _renameFwFiles; }
-bool    Profile::patchImage()    const { return _patchImage;    }
 int     Profile::channelOrder()  const { return _channelOrder;  }
 int     Profile::defaultMode()   const { return _defaultMode;   }
 
@@ -305,12 +305,12 @@ int     Profile::vBatWarn()      const { return _vBatWarn;      }
 
 // Set declarations
 void Profile::name          (const QString x) { store(x, _name,          "Name"                  ,"Profiles", QString("profile%1").arg(index));}
-void Profile::firmware      (const QString x) { store(x, _firmware,      "firmware"              ,"Profiles", QString("profile%1").arg(index));}
+void Profile::fwName        (const QString x) { store(x, _fwName,        "fwName"                ,"Profiles", QString("profile%1").arg(index));}
+void Profile::fwType        (const QString x) { store(x, _fwType,        "fwType"                ,"Profiles", QString("profile%1").arg(index));}
 void Profile::sdPath        (const QString x) { store(x, _sdPath,        "sdPath"                ,"Profiles", QString("profile%1").arg(index));}
 void Profile::splashFile    (const QString x) { store(x, _splashFile,    "SplashFileName"        ,"Profiles", QString("profile%1").arg(index));}
 void Profile::burnFirmware  (const bool    x) { store(x, _burnFirmware,  "burnFirmware"          ,"Profiles", QString("profile%1").arg(index));}
 void Profile::renameFwFiles (const bool    x) { store(x, _renameFwFiles, "rename_firmware_files" ,"Profiles", QString("profile%1").arg(index));}
-void Profile::patchImage    (const bool    x) { store(x, _patchImage,    "patchImage"            ,"Profiles", QString("profile%1").arg(index));}
 void Profile::channelOrder  (const int     x) { store(x, _channelOrder,  "default_channel_order" ,"Profiles", QString("profile%1").arg(index));}
 void Profile::defaultMode   (const int     x) { store(x, _defaultMode,   "default_mode"          ,"Profiles", QString("profile%1").arg(index));}
 
@@ -337,12 +337,12 @@ Profile::Profile()
 Profile& Profile::operator=(const Profile& rhs)
 {
     name         ( rhs.name()          );
-    firmware     ( rhs.firmware()      );
+    fwName       ( rhs.fwName()        );
+    fwType       ( rhs.fwType()        );
     sdPath       ( rhs.sdPath()        );
     splashFile   ( rhs.splashFile()    );
     burnFirmware ( rhs.burnFirmware()  );
     renameFwFiles( rhs.renameFwFiles() );
-    patchImage   ( rhs.patchImage()    );
     channelOrder ( rhs.channelOrder()  );
     defaultMode  ( rhs.defaultMode()   );
     beeper       ( rhs.beeper()        );
@@ -389,13 +389,13 @@ void Profile::init(int newIndex)
 {
     index = newIndex;
 
-    _firmware =      "";
+    _fwName =        "";
+    _fwType =        "";
     _name =          "";
     _sdPath =        "";
     _splashFile =    "";
     _burnFirmware =  false;
     _renameFwFiles = false;
-    _patchImage =    false;
     _channelOrder =  0;
     _defaultMode =   1;
 
@@ -423,13 +423,13 @@ void Profile::init(int newIndex)
 void Profile::flush()
 {
     // Load and store all variables. Use default values if setting values are missing
-    getset( _firmware,      "firmware"              ,""     ,"Profiles", QString("profile%1").arg(index));
+    getset( _fwName,        "fwName"                ,""     ,"Profiles", QString("profile%1").arg(index));
+    getset( _fwType,        "fwType"                ,""     ,"Profiles", QString("profile%1").arg(index));
     getset( _name,          "Name"                  ,""     ,"Profiles", QString("profile%1").arg(index));
     getset( _sdPath,        "sdPath"                ,""     ,"Profiles", QString("profile%1").arg(index));
     getset( _splashFile,    "SplashFileName"        ,""     ,"Profiles", QString("profile%1").arg(index));
     getset( _burnFirmware,  "burnFirmware"          ,false  ,"Profiles", QString("profile%1").arg(index));
     getset( _renameFwFiles, "rename_firmware_files" ,false  ,"Profiles", QString("profile%1").arg(index));
-    getset( _patchImage,    "patchImage"            ,false  ,"Profiles", QString("profile%1").arg(index));
     getset( _channelOrder,  "default_channel_order" ,0      ,"Profiles", QString("profile%1").arg(index));
     getset( _defaultMode,   "default_mode"          ,1      ,"Profiles", QString("profile%1").arg(index));
 
@@ -464,7 +464,6 @@ QString AppData::compileServer()   { return _compileServer;   }
 QString AppData::cpuId()           { return _cpuId;           }
 QString AppData::dfuArguments()    { return _dfuArguments;    }
 QString AppData::dfuLocation()     { return _dfuLocation;     }
-QString AppData::lastFw()          { return _lastFw;          }
 QString AppData::locale()          { return _locale;          }
 QString AppData::mcu()             { return _mcu;             }
 QString AppData::programmer()      { return _programmer;      }
@@ -519,7 +518,6 @@ void AppData::compileServer   (const QString     x) { store(x, _compileServer,  
 void AppData::cpuId           (const QString     x) { store(x, _cpuId,           "cpu_id"                  );}
 void AppData::dfuArguments    (const QString     x) { store(x, _dfuArguments,    "dfu_arguments"           );}
 void AppData::dfuLocation     (const QString     x) { store(x, _dfuLocation,     "dfu_location"            );}
-void AppData::lastFw          (const QString     x) { store(x, _lastFw,          "lastFw"                  );}
 void AppData::locale          (const QString     x) { store(x, _locale,          "locale"                  );}
 void AppData::mcu             (const QString     x) { store(x, _mcu,             "mcu"                     );}
 void AppData::programmer      (const QString     x) { store(x, _programmer,      "programmer"              );}
@@ -586,11 +584,11 @@ AppData::AppData()
         // Store old values in new locations
         autoCheckApp(settings.value("startup_check_companion9x", true).toBool());
 
-        // Convert and store the firmware name
-        QString firmware = settings.value("firmware", "").toString();
-        firmware.replace("open9x","opentx");
-        firmware.replace("x9da","taranis");
-        profile[0].firmware( firmware );
+        // Convert and store the firmware type
+        QString fwType  = settings.value("firmware", "").toString();
+        fwType.replace("open9x","opentx");
+        fwType.replace("x9da","taranis");
+        profile[0].fwType( fwType );
 
         // Move the Companion9x profile settings to profile0, the new default profile
         profile[0].name( settings.value(          "Name",                  ""    ).toString());
@@ -598,7 +596,6 @@ AppData::AppData()
         profile[0].splashFile( settings.value(    "SplashFileName",        ""    ).toString());
         profile[0].burnFirmware( settings.value(  "burnFirmware",          false ).toBool());
         profile[0].renameFwFiles( settings.value( "rename_firmware_files", false ).toBool());
-        profile[0].patchImage( settings.value(    "patchImage",            false ).toBool());
         profile[0].channelOrder( settings.value(  "default_channel_order", "0"   ).toInt());
         profile[0].defaultMode( settings.value(   "default_mode",          "1"   ).toInt());
 
@@ -613,6 +610,7 @@ AppData::AppData()
         settings.remove("default_channel_order");
         settings.remove("default_mode");
         settings.remove("firmware");
+        settings.remove("lastFw");
         settings.remove("Name");
         settings.remove("patchImage");
         settings.remove("rename_firmware_files");
@@ -638,7 +636,6 @@ AppData::AppData()
     getset( _cpuId,           "cpu_id"                  ,"" );
     getset( _dfuArguments,    "dfu_arguments"           ,"-a 0" );
     getset( _dfuLocation,     "dfu_location"            ,"" );
-    getset( _lastFw,          "lastFw"                  ,"" );
     getset( _locale,          "locale"                  ,"" );
     getset( _mcu,             "mcu"                     ,"m64" );
     getset( _programmer,      "programmer"              ,"usbasp" );
