@@ -3,7 +3,7 @@
 import math
 
 samples = 1024
-amplitudes = (63000, 0, 20000, 0, 20000)
+amplitudes = (32000, 0, 4000, 0, 4000)
 
 max = 0
 min = 0
