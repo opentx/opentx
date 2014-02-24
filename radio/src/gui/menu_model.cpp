@@ -4363,7 +4363,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
       case LS_FIELD_DURATION:
         lcd_putsLeft(y, STR_DURATION);
         if (cs->duration > 0)
-          lcd_outdezAtt(CSWONE_2ND_COLUMN, y, 5*cs->duration, attr|PREC1|LEFT);
+          lcd_outdezAtt(CSWONE_2ND_COLUMN, y, cs->duration, attr|PREC1|LEFT);
         else
           lcd_putsiAtt(CSWONE_2ND_COLUMN, y, STR_MMMINV, 0, attr);
         if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, cs->duration, MAX_LS_DURATION);
@@ -4371,7 +4371,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
       case LS_FIELD_DELAY:
         lcd_putsLeft(y, STR_DELAY);
         if (cs->delay > 0)
-          lcd_outdezAtt(CSWONE_2ND_COLUMN, y, 5*cs->delay, attr|PREC1|LEFT);
+          lcd_outdezAtt(CSWONE_2ND_COLUMN, y, cs->delay, attr|PREC1|LEFT);
         else
           lcd_putsiAtt(CSWONE_2ND_COLUMN, y, STR_MMMINV, 0, attr);
         if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, cs->delay, MAX_LS_DELAY);

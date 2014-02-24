@@ -539,9 +539,9 @@ QString LogicalSwitchData::toString(const ModelData & model)
 
   if (GetEepromInterface()->getCapability(LogicalSwitchesExt)) {
     if (delay)
-      result += QObject::tr(" Delay %1 sec").arg(delay/2.0);
+      result += QObject::tr(" Delay %1 sec").arg(delay/10.0);
     if (duration)
-      result += QObject::tr(" Duration %1 sec").arg(duration/2.0);
+      result += QObject::tr(" Duration %1 sec").arg(duration/10.0);
   }
 
   return result;
