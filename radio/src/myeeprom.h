@@ -937,10 +937,20 @@ enum TelemetrySource {
   TELEM_TX_VOLTAGE,
   TELEM_TM1,
   TELEM_TM2,
+#if defined(CPUARM)
+  TELEM_SWR,
+#endif
   TELEM_RSSI_TX,
   TELEM_RSSI_RX,
+#if defined(CPUARM)
+  TELEM_RX_VOLTAGE,
+#endif
   TELEM_A1,
   TELEM_A2,
+#if defined(CPUARM)
+  TELEM_A3,
+  TELEM_A4,
+#endif
   TELEM_ALT,
   TELEM_RPM,
   TELEM_FUEL,
@@ -971,6 +981,10 @@ enum TelemetrySource {
 #endif
   TELEM_MIN_A1,
   TELEM_MIN_A2,
+#if defined(CPUARM)
+  TELEM_MIN_A3,
+  TELEM_MIN_A4,
+#endif
   TELEM_MIN_ALT,
   TELEM_MAX_ALT,
   TELEM_MAX_RPM,
@@ -999,12 +1013,7 @@ enum TelemetrySource {
   TELEM_DISPLAY_MAX = TELEM_TM2, // because used also in PlayValue
 #endif
   TELEM_STATUS_MAX = TELEM_GPS_TIME,
-#if defined(FRSKY_SPORT)
-  TELEM_SWR = TELEM_RSSI_TX,
-  TELEM_FIRST_STREAMED_VALUE = TELEM_RSSI_RX,
-#else
   TELEM_FIRST_STREAMED_VALUE = TELEM_RSSI_TX,
-#endif
 };
 
 enum VarioSource {

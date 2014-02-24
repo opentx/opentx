@@ -1236,6 +1236,14 @@ bool isSourceAvailable(int source)
 
 bool isTelemetrySourceAvailable(int source)
 {
+  if (source == TELEM_RX_VOLTAGE || source == TELEM_A3 || source == TELEM_A4 || source == TELEM_MIN_A3 || source == TELEM_MIN_A4)
+    return false;
+
+#if defined(PCBTARANIS)
+  if (source == TELEM_RSSI_TX)
+    return false;
+#endif
+
   if (source >= TELEM_RESERVE1 && source <= TELEM_RESERVE5)
     return false;
 

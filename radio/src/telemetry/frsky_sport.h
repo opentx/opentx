@@ -150,6 +150,7 @@ PACK(struct FrskySerialData {
 struct FrskyData {
   FrskyValueWithMinMax analog[2];
   FrskyValueWithMinMax rssi[2];
+  FrskyValueWithMinMax swr;
   FrskySerialData hub;
 };
 

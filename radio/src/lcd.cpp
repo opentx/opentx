@@ -1269,6 +1269,9 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
       putsTelemetryValue(x, y, val, UNIT_RAW, att|PREC2);
       break;
 
+#if defined(CPUARM)
+    case TELEM_SWR-1:
+#endif
     case TELEM_RSSI_TX-1:
     case TELEM_RSSI_RX-1:
       putsTelemetryValue(x, y, val, UNIT_RAW, att);

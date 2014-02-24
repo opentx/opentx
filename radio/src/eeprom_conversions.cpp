@@ -235,6 +235,33 @@ void ConvertGeneralSettings_215_to_216(EEGeneral &settings)
   settings.chkSum = evalChkSum();
 }
 
+int ConvertTelemetrySource_215_to_216(int source)
+{
+  // TELEM_RSSI_TX added
+  if (source >= TELEM_RSSI_TX)
+    source += 1;
+  // RxBatt added
+  if (source >= TELEM_RX_VOLTAGE)
+    source += 1;
+  // A3 and A4 added
+  if (source >= TELEM_A3)
+    source += 2;
+  // ASpd and dTE added + 5 reserve
+  if (source >= TELEM_ASPD)
+    source += 7;
+  // A3 and A4 MIN added
+  if (source >= TELEM_MIN_A3)
+    source += 2;
+  // Cel- and Vfas- added
+  if (source >= TELEM_MIN_CELL)
+    source += 2;
+  // 5 reserve added
+  if (source >= TELEM_RESERVE6)
+    source += 5;
+
+  return source;
+}
+
 #if defined(PCBTARANIS)
 int ConvertSource_215_to_216(int source, bool insertZero=false)
 {
@@ -246,12 +273,9 @@ int ConvertSource_215_to_216(int source, bool insertZero=false)
   // 4 GVARS added
   if (source > MIXSRC_GVAR1+4)
     source += 4;
-  // ASpd and dTE added
-  if (source >= MIXSRC_FIRST_TELEM-1+TELEM_ASPD)
-    source += 2;
-  // Cel- and Vfas- added
-  if (source >= MIXSRC_FIRST_TELEM-1+TELEM_MIN_CELL)
-    source += 2;
+  // Telemetry conversions
+  if (source >= MIXSRC_FIRST_TELEM)
+    source = MIXSRC_FIRST_TELEM + ConvertTelemetrySource_215_to_216(source-MIXSRC_FIRST_TELEM+1) - 1;
 
   return source;
 }
@@ -273,12 +297,10 @@ int ConvertSource_215_to_216(int source, bool insertZero=false)
   // 4 GVARS added
   if (source > MIXSRC_GVAR1+4)
     source += 4;
-  // ASpd and dTE added
-  if (source >= MIXSRC_FIRST_TELEM-1+TELEM_ASPD)
-    source += 2;
-  // Cel- and Vfas- added
-  if (source >= MIXSRC_FIRST_TELEM-1+TELEM_MIN_CELL)
-    source += 2;
+  // Telemetry conversions
+  if (source >= MIXSRC_FIRST_TELEM)
+    source = MIXSRC_FIRST_TELEM + ConvertTelemetrySource_215_to_216(source-MIXSRC_FIRST_TELEM+1) - 1;
+
   return source;
 }
 
@@ -636,6 +658,24 @@ void ConvertModel_215_to_216(ModelData &model)
   }
 
   memcpy(&g_model.frsky, &oldModel.frsky, sizeof(oldModel.frsky));
+  for (int i=0; i<3; i++) {
+    if (g_model.frsky.screensType & (1<<i)) {
+      // gauges
+      for (int j=0; j<4; j++) {
+        uint8_t & source = g_model.frsky.screens[i].bars[j].source;
+        source = ConvertTelemetrySource_215_to_216(source);
+      }
+    }
+    else {
+      // numbers
+      for (int j=0; j<4; j++) {
+        for (int k=0; k<NUM_LINE_ITEMS; k++) {
+          uint8_t & source = g_model.frsky.screens[i].lines[j].sources[k];
+          source = ConvertTelemetrySource_215_to_216(source);
+        }
+      }
+    }
+  }
 
 #if defined(PCBTARANIS)
   g_model.externalModule = oldModel.externalModule;

@@ -187,6 +187,9 @@ PACK(struct FrskySerialData {
 struct FrskyData {
   FrskyValueWithMinMax analog[2];
   FrskyValueWithMin    rssi[2];
+#if defined(CPUARM)
+  FrskyValueWithMinMax swr;
+#endif
   FrskySerialData hub;
 };
 

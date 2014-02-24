@@ -1269,6 +1269,9 @@ getvalue_t getValue(uint8_t i)
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_TX_VOLTAGE) return g_vbat100mV;
   else if (i<=MIXSRC_FIRST_TELEM-1+TELEM_TM2) return timersStates[i-MIXSRC_FIRST_TELEM+1-TELEM_TM1].val;
 #if defined(FRSKY)
+#if defined(CPUARM)
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_SWR) return frskyData.swr.value;
+#endif
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RSSI_TX) return frskyData.rssi[1].value;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RSSI_RX) return frskyData.rssi[0].value;
   else if (i<=MIXSRC_FIRST_TELEM-1+TELEM_A2) return frskyData.analog[i-MIXSRC_FIRST_TELEM+1-TELEM_A1].value;
@@ -1981,6 +1984,9 @@ ls_telemetry_value_t minTelemValue(uint8_t channel)
 {
   switch (channel) {
     case TELEM_FUEL:
+#if defined(CPUARM)
+    case TELEM_SWR:
+#endif
     case TELEM_RSSI_TX:
     case TELEM_RSSI_RX:
       return 0;
@@ -2000,6 +2006,9 @@ ls_telemetry_value_t maxTelemValue(uint8_t channel)
 {
   switch (channel) {
     case TELEM_FUEL:
+#if defined(CPUARM)
+    case TELEM_SWR:
+#endif
     case TELEM_RSSI_TX:
     case TELEM_RSSI_RX:
       return 100;
@@ -3171,13 +3180,13 @@ PLAY_FUNCTION(playValue, uint8_t idx)
     case MIXSRC_FIRST_TELEM+TELEM_TM2-1:
       PLAY_DURATION(val);
       break;
-#if defined(FRSKY)
-    case MIXSRC_FIRST_TELEM+TELEM_RSSI_TX-1:
-#if defined(PCBTARANIS)
-      // On Taranis RSSI_TX is used for SWR
+#if defined(CPUARM)
+    case MIXSRC_FIRST_TELEM+TELEM_SWR-1:
       PLAY_NUMBER(val, 0, 0);
       break;
 #endif
+#if defined(FRSKY)
+    case MIXSRC_FIRST_TELEM+TELEM_RSSI_TX-1:
     case MIXSRC_FIRST_TELEM+TELEM_RSSI_RX-1:
       PLAY_NUMBER(val, 1+UNIT_DBM, 0);
       break;
