@@ -1545,7 +1545,12 @@ bool getSwitch(int8_t swtch)
 #endif
 
           switch (cs->func) {
+#if defined(CPUARM)
             case LS_FUNC_VEQUAL:
+              result = (x==y);
+              break;
+#endif
+            case LS_FUNC_VALMOSTEQUAL:
 #if defined(GVARS)
               if (v1 >= MIXSRC_GVAR1 && v1 <= MIXSRC_LAST_GVAR)
                 result = (x==y);

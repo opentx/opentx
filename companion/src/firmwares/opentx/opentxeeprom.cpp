@@ -1063,8 +1063,10 @@ class LogicalSwitchesFunctionsTable: public ConversionTable {
       int val=0;
       bool afterrelease21March2013 = IS_AFTER_RELEASE_21_MARCH_2013(board, version);
       addConversion(LS_FN_OFF, val++);
-      if (afterrelease21March2013)
+      if (IS_ARM(board) && version >= 216)
         addConversion(LS_FN_VEQUAL, val++);
+      if (afterrelease21March2013)
+        addConversion(LS_FN_VALMOSTEQUAL, val++);
       addConversion(LS_FN_VPOS, val++);
       addConversion(LS_FN_VNEG, val++);
       if (IS_ARM(board) && version >= 216) val++; // later RANGE

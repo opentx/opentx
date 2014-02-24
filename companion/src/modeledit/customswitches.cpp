@@ -121,7 +121,7 @@ void LogicalSwitchesPanel::v1Edited(int value)
     if (model.customSw[i].getFunctionFamily() == LS_FAMILY_VOFS) {
       RawSource source = RawSource(model.customSw[i].val1, &model);
       if (source.type == SOURCE_TYPE_TELEMETRY) {
-        if (model.customSw[i].func > LS_FN_ELESS && model.customSw[i].func < LS_FN_VEQUAL) {
+        if (model.customSw[i].func == LS_FN_DPOS || model.customSw[i].func == LS_FN_DAPOS) {
           model.customSw[i].val2 = 0;
         }
         else {
@@ -130,7 +130,7 @@ void LogicalSwitchesPanel::v1Edited(int value)
       }
       else {
         RawSourceRange range = source.getRange();
-        if (model.customSw[i].func > LS_FN_ELESS && model.customSw[i].func < LS_FN_VEQUAL) {
+        if (model.customSw[i].func == LS_FN_DPOS || model.customSw[i].func == LS_FN_DAPOS) {
           model.customSw[i].val2 = (cswitchOffset[i]->value() / range.step);
         }
         else {
@@ -208,7 +208,7 @@ void LogicalSwitchesPanel::edited()
         {
           source = RawSource(model.customSw[i].val1, &model);
           RawSourceRange range = source.getRange();
-          if (model.customSw[i].func>LS_FN_ELESS && model.customSw[i].func<LS_FN_VEQUAL) {
+          if (model.customSw[i].func == LS_FN_DPOS || model.customSw[i].func == LS_FN_DAPOS) {
             model.customSw[i].val2 = (cswitchOffset[i]->value() / range.step);
             cswitchOffset[i]->setValue(model.customSw[i].val2*range.step);
           }
@@ -269,7 +269,7 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
         populateSourceCB(cswitchSource1[i], source, model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (GetEepromInterface()->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
         cswitchOffset[i]->setDecimals(range.decimals);
         cswitchOffset[i]->setSingleStep(range.step);
-        if (model.customSw[i].func>LS_FN_ELESS && model.customSw[i].func<LS_FN_VEQUAL) {
+        if (model.customSw[i].func == LS_FN_DPOS || model.customSw[i].func == LS_FN_DAPOS) {
           cswitchOffset[i]->setMinimum(range.step*-127);
           cswitchOffset[i]->setMaximum(range.step*127);
           cswitchOffset[i]->setValue(range.step*model.customSw[i].val2);

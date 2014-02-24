@@ -597,6 +597,7 @@ enum CSFunction {
   LS_FN_DPOS,
   LS_FN_DAPOS,
   LS_FN_VEQUAL, // added at the end to avoid everything renumbered
+  LS_FN_VALMOSTEQUAL,
   LS_FN_TIMER,
   LS_FN_STICKY,
   LS_FN_STAY,
