@@ -935,10 +935,10 @@ void luaLoadModelScript(uint8_t index)
   sid.state = SCRIPT_NOFILE;
 
   if (ZEXIST(sd.file)) {
-    char filename[sizeof(SCRIPTS_PATH)+sizeof(sd.file)+sizeof(MIXES_EXT)] = SCRIPTS_PATH "/";
+    char filename[sizeof(SCRIPTS_PATH)+sizeof(sd.file)+sizeof(SCRIPTS_EXT)] = SCRIPTS_PATH "/";
     strncpy(filename+sizeof(SCRIPTS_PATH), sd.file, sizeof(sd.file));
     filename[sizeof(SCRIPTS_PATH)+sizeof(sd.file)] = '\0';
-    strcat(filename+sizeof(SCRIPTS_PATH), MIXES_EXT);
+    strcat(filename+sizeof(SCRIPTS_PATH), SCRIPTS_EXT);
     luaLoad(filename, sid);
   }
 }
