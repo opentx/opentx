@@ -88,6 +88,7 @@ void getGpsDistance()
   result += dist*dist;
 
   frskyData.hub.gpsDistance = isqrt32(result);
+  TRACE("distance = %d", frskyData.hub.gpsDistance);
   if (frskyData.hub.gpsDistance > frskyData.hub.maxGpsDistance)
     frskyData.hub.maxGpsDistance = frskyData.hub.gpsDistance;
 }

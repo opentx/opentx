@@ -2112,22 +2112,24 @@ FORCEINLINE void convertUnit(getvalue_t & val, uint8_t & unit)
       val *= 115;
       val >>= 6;
     }
-    if (unit == UNIT_METERS) {
+    if (unit == UNIT_DIST) {
       // m to ft *105/32
       val = val * 3 + (val >> 2) + (val >> 5);
     }
     if (unit == UNIT_FEET) {
-      unit = UNIT_METERS;
+      unit = UNIT_DIST;
     }
     if (unit == UNIT_KTS) {
-      unit = UNIT_KMH;
+      // kts to mph
+      unit = UNIT_SPEED;
+      val = (val * 31) / 27;
     }
   }
   else {
     if (unit == UNIT_KTS) {
       // kts to km/h
-      unit = UNIT_KMH;
-      val = (val * 46) / 25;
+      unit = UNIT_SPEED;
+      val = (val * 50) / 27;
     }
   }
 }
@@ -3238,7 +3240,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
 
     case MIXSRC_FIRST_TELEM+TELEM_ALT-1:
 #if defined(PCBTARANIS)
-      PLAY_NUMBER(val/10, 1+UNIT_METERS, PREC1);
+      PLAY_NUMBER(val/10, 1+UNIT_DIST, PREC1);
       break;
 #endif
     case MIXSRC_FIRST_TELEM+TELEM_MIN_ALT-1:
@@ -3248,7 +3250,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
         PLAY_NUMBER(val, 1+UNIT_FEET, 0);
       else
 #endif
-        PLAY_NUMBER(val, 1+UNIT_METERS, 0);
+        PLAY_NUMBER(val, 1+UNIT_DIST, 0);
       break;
 
     case MIXSRC_FIRST_TELEM+TELEM_RPM-1:

@@ -1185,14 +1185,14 @@ void putsTelemetryValue(xcoord_t x, uint8_t y, lcdint_t val, uint8_t unit, uint8
 }
 
 const pm_uint8_t bchunit_ar[] PROGMEM = {
-  UNIT_METERS,  // Alt
+  UNIT_DIST,    // Alt
   UNIT_RAW,     // Rpm
   UNIT_PERCENT, // Fuel
   UNIT_DEGREES, // T1
   UNIT_DEGREES, // T2
   UNIT_KTS,     // Speed
-  UNIT_METERS,  // Dist
-  UNIT_METERS,  // GPS Alt
+  UNIT_DIST,    // Dist
+  UNIT_DIST,    // GPS Alt
 };
 
 void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, uint8_t att)
@@ -1276,7 +1276,7 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
 
 #if defined(FRSKY_SPORT)
     case TELEM_ALT-1:
-      putsTelemetryValue(x, y, val/10, UNIT_METERS, att|PREC1);
+      putsTelemetryValue(x, y, val/10, UNIT_DIST, att|PREC1);
       break;
 #elif defined(WS_HOW_HIGH)
     case TELEM_ALT-1:
