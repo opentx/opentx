@@ -4661,7 +4661,7 @@ void menuModelLogicalSwitches(uint8_t event)
 #if defined(CPUARM)
     // CSW duration
     if (cs->duration > 0)
-      lcd_outdezAtt(CSW_5TH_COLUMN, y, 5*cs->duration, (horz==LS_FIELD_DURATION ? attr : 0)|PREC1|LEFT);
+      lcd_outdezAtt(CSW_5TH_COLUMN, y, cs->duration, (horz==LS_FIELD_DURATION ? attr : 0)|PREC1|LEFT);
     else
       lcd_putsiAtt(CSW_5TH_COLUMN, y, STR_MMMINV, 0, horz==LS_FIELD_DURATION ? attr : 0);
 
@@ -4673,7 +4673,7 @@ void menuModelLogicalSwitches(uint8_t event)
       }
     }
     else if (cs->delay > 0) {
-      lcd_outdezAtt(CSW_6TH_COLUMN, y, 5*cs->delay, (horz==LS_FIELD_DELAY ? attr : 0)|PREC1|LEFT);
+      lcd_outdezAtt(CSW_6TH_COLUMN, y, cs->delay, (horz==LS_FIELD_DELAY ? attr : 0)|PREC1|LEFT);
     }
     else {
       lcd_putsiAtt(CSW_6TH_COLUMN, y, STR_MMMINV, 0, horz==LS_FIELD_DELAY ? attr : 0);
