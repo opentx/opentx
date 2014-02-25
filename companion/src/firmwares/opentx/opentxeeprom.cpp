@@ -896,7 +896,12 @@ class ExpoField: public TransformedField {
 
     virtual void afterImport()
     {
-      expo.weight     = smallGvarToC9x(_weight);
+      if (IS_TARANIS(board) && version < 216) {
+        expo.srcRaw = RawSource(SOURCE_TYPE_STICK, expo.chn);
+      }
+
+      expo.weight = smallGvarToC9x(_weight);
+
       if (!IS_TARANIS(board) || version < 216) {
         if (!_curveMode)
           expo.curve = CurveReference(CurveReference::CURVE_REF_EXPO, smallGvarToC9x(_curveParam));

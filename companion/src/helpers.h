@@ -128,4 +128,6 @@ QString getFrSkySrc(int index);
 
 void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx);
 
+QPixmap makePixMap( QImage image, QString firmwareType );
+
 #endif // HELPERS_H

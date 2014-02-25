@@ -2,6 +2,7 @@
 #include "appdata.h"
 #include "helpers.h"
 #include "simulatordialog.h"
+#include "flashinterface.h"
 
 QString getPhaseName(int val, char * phasename)
 {
@@ -694,6 +695,14 @@ QString image2qstring(QImage image)
     return ImageStr;
 }
 
+// TODO KKERNEN 20140222
+// I am sure that this code has had some kind of function, but now it only seems to cause
+// problems. I think it is an attempt to open an image file from a double byte string which
+// is first converted to a single byte string. Only used in burndialog.cpp
+// It doesn't work for me in 2.0. I do not know why. I doubt it has ever worked for files or 
+// file paths containing non-english characters.
+// Code can be removed ,when 2.0 is tested.
+
 QImage qstring2image(QString imagestr)
 {
   bool ok;
@@ -937,4 +946,25 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
       QObject::tr("Warning"),
       QObject::tr("Simulator for this firmware is not yet available"));
   }
+}
+
+QPixmap makePixMap( QImage image, QString firmwareType )
+{
+  if (firmwareType.contains( "taranis" )) {
+    image = image.convertToFormat(QImage::Format_RGB32);
+    QRgb col;
+    int gray;
+    for (int i = 0; i < image.width(); ++i) {
+      for (int j = 0; j < image.height(); ++j) {
+        col = image.pixel(i, j);
+        gray = qGray(col);
+        image.setPixel(i, j, qRgb(gray, gray, gray));
+      }
+    }
+    image = image.scaled(SPLASHX9D_WIDTH, SPLASHX9D_HEIGHT); 
+  } 
+  else {
+    image = image.scaled(SPLASH_WIDTH, SPLASH_HEIGHT).convertToFormat(QImage::Format_Mono);
+  }
+  return(QPixmap::fromImage(image));
 }

@@ -56,9 +56,6 @@ void appPreferencesDialog::writeValues()
     g.jsSupport(false);
     g.jsCtrl(0);
   }
-
-  g.id(ui->profileIndexLE->text().toInt());
-
   g.profile[g.id()].channelOrder(ui->channelorderCB->currentIndex());
   g.profile[g.id()].defaultMode(ui->stickmodeCB->currentIndex());
   g.profile[g.id()].renameFwFiles(ui->renameFirmware->isChecked());
@@ -66,7 +63,8 @@ void appPreferencesDialog::writeValues()
   g.profile[g.id()].name(ui->profileNameLE->text());
   g.profile[g.id()].sdPath(ui->sdPath->text());
   g.profile[g.id()].splashFile(ui->SplashFileName->text());
-  g.profile[g.id()].firmware(ui->firmwareLE->text());
+  g.profile[g.id()].fwName(ui->fwNameLE->text());
+  g.profile[g.id()].fwType(ui->fwTypeLE->text());
   
   saveProfile();
 }
@@ -147,9 +145,9 @@ void appPreferencesDialog::initSettings()
   ui->stickmodeCB->setCurrentIndex(g.profile[g.id()].defaultMode());
   ui->renameFirmware->setChecked(g.profile[g.id()].renameFwFiles());
   ui->sdPath->setText(g.profile[g.id()].sdPath());
-  ui->profileIndexLE->setText(QString("%1").arg(g.id()));
   ui->profileNameLE->setText(g.profile[g.id()].name());
-  ui->firmwareLE->setText(g.profile[g.id()].firmware());
+  ui->fwNameLE->setText(g.profile[g.id()].fwName());
+  ui->fwTypeLE->setText(g.profile[g.id()].fwType());
   ui->SplashFileName->setText(g.profile[g.id()].splashFile());
 
   displayImage( g.profile[g.id()].splashFile() );
@@ -252,7 +250,8 @@ void appPreferencesDialog::saveProfile()
   g.profile[g.id()].renameFwFiles( ui->renameFirmware->isChecked());
   g.profile[g.id()].sdPath( ui->sdPath->text());
   g.profile[g.id()].splashFile( ui->SplashFileName->text());
-  g.profile[g.id()].firmware( ui->firmwareLE->text());
+  g.profile[g.id()].fwName( ui->fwNameLE->text());
+  g.profile[g.id()].fwType( ui->fwTypeLE->text());
 }
 
 void appPreferencesDialog::on_removeProfileButton_clicked()
@@ -278,31 +277,11 @@ bool appPreferencesDialog::displayImage( QString fileName )
 
   // Use the firmware name to determine splash width
   int width = SPLASH_WIDTH;
-  if (g.profile[g.id()].firmware().contains("taranis"))
+  if (g.profile[g.id()].fwType().contains("taranis"))
     width = SPLASHX9D_WIDTH;
-
-  ui->imageLabel->setPixmap(QPixmap::fromImage(image.scaled(width, SPLASH_HEIGHT)));
-  if (width==SPLASHX9D_WIDTH) {
-    image=image.convertToFormat(QImage::Format_RGB32);
-    QRgb col;
-    int gray, height = image.height();
-    for (int i = 0; i < width; ++i) {
-      for (int j = 0; j < height; ++j) {
-        col = image.pixel(i, j);
-        gray = qGray(col);
-        image.setPixel(i, j, qRgb(gray, gray, gray));
-      }
-    }      
-    ui->imageLabel->setPixmap(QPixmap::fromImage(image));
-  } 
-  else {
-    ui->imageLabel->setPixmap(QPixmap::fromImage(image.convertToFormat(QImage::Format_Mono)));
-  }
-  if (width == SPLASH_WIDTH)
-      ui->imageLabel->setFixedSize(SPLASH_WIDTH, SPLASH_HEIGHT);
-  else
-     ui->imageLabel->setFixedSize(SPLASHX9D_WIDTH, SPLASHX9D_HEIGHT);
-
+  
+  ui->imageLabel->setPixmap( makePixMap( image, g.profile[g.id()].fwType()));
+  ui->imageLabel->setFixedSize(width, SPLASH_HEIGHT);
   return true;
 }
 

@@ -2366,7 +2366,7 @@ void checkTHR()
   }
 #else
   if (g_model.disableThrottleWarning) return;
-
+  getADC();
   evalInputs(e_perout_mode_notrainer); // let do evalInputs do the job
 
   int16_t v = calibratedStick[thrchn];   

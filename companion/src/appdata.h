@@ -1,4 +1,4 @@
-// Companion Application Data Class Definition.
+// Companion Application Data Class Declaration.
 // Author Kjell Kernen
 
 // All temporary and permanent global variables are defined here to make 
@@ -92,13 +92,13 @@ class Profile: protected CompStoreObj
     int index;
 
     // Application Variables
-    QString _firmware;
+    QString _fwName;
+    QString _fwType;
     QString _name;
     QString _sdPath;
     QString _splashFile;
     bool    _burnFirmware;
     bool    _renameFwFiles;
-    bool    _patchImage;
     int     _channelOrder;
     int     _defaultMode;
 
@@ -118,37 +118,37 @@ class Profile: protected CompStoreObj
 
   public:
     // All the get definitions
-    QString firmware();
-    QString name();
-    QString sdPath();
-    QString splashFile();
-    bool    burnFirmware();
-    bool    renameFwFiles();
-    bool    patchImage();
-    int     channelOrder();
-    int     defaultMode();
+    QString fwName() const;
+    QString fwType() const;
+    QString name() const;
+    QString sdPath() const;
+    QString splashFile() const;
+    bool    burnFirmware() const;
+    bool    renameFwFiles() const;
+    int     channelOrder() const;
+    int     defaultMode() const;
 
-    QString beeper();
-    QString countryCode();
-    QString display();
-    QString haptic();
-    QString speaker();
-    QString stickPotCalib();
-    QString trainerCalib();
-    int     currentCalib();
-    int     gsStickMode();
-    int     ppmMultiplier();
-    int     vBatCalib();
-    int     vBatWarn();
+    QString beeper() const;
+    QString countryCode() const;
+    QString display() const;
+    QString haptic() const;
+    QString speaker() const;
+    QString stickPotCalib() const;
+    QString trainerCalib() const;
+    int     currentCalib() const;
+    int     gsStickMode() const;
+    int     ppmMultiplier() const;
+    int     vBatCalib() const;
+    int     vBatWarn() const;
 
     // All the set definitions
     void name          (const QString);
-    void firmware      (const QString);
+    void fwName        (const QString);
+    void fwType        (const QString);
     void sdPath        (const QString);
     void splashFile    (const QString);
     void burnFirmware  (const bool);
     void renameFwFiles (const bool);
-    void patchImage    (const bool);
     void channelOrder  (const int);
     void defaultMode   (const int);
 
@@ -166,6 +166,7 @@ class Profile: protected CompStoreObj
     void vBatWarn      (const int);
 
     Profile();
+	Profile& operator=(const Profile&);
     void remove();
     bool existsOnDisk();
     void init(int newIndex);
@@ -194,7 +195,6 @@ class AppData: protected CompStoreObj
     QString _cpuId;
     QString _dfuArguments;
     QString _dfuLocation;
-    QString _lastFw;
     QString _locale;
     QString _mcu;
     QString _programmer;
@@ -250,7 +250,7 @@ class AppData: protected CompStoreObj
     QString cpuId();
     QString dfuArguments();
     QString dfuLocation();
-    QString lastFw();
+    QString lastFw();  
     QString locale();
     QString mcu();
     QString programmer();
@@ -286,7 +286,7 @@ class AppData: protected CompStoreObj
     int iconSize();
     int historySize();
     int jsCtrl();
-    int modelEditTab();
+    int modelEditTab();  // This variable is unused an can be removed
     int id();
     int theme();
     int warningId();

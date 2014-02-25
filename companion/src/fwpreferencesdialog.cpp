@@ -213,7 +213,7 @@ void fwPreferencesDialog::writeValues()
 {
   g.cpuId( ui->CPU_ID_LE->text() );
   current_firmware_variant = getFirmwareVariant();
-  g.profile[g.id()].firmware( current_firmware_variant.id );
+  g.profile[g.id()].fwType( current_firmware_variant.id );
 }
 
 void fwPreferencesDialog::populateFirmwareOptions(const FirmwareInfo * firmware)
@@ -290,7 +290,7 @@ void fwPreferencesDialog::on_checkFWUpdates_clicked()
     FirmwareVariant variant = getFirmwareVariant();
     if (g.profile[g.id()].burnFirmware()) {
       current_firmware_variant = variant;
-      g.profile[g.id()].firmware( variant.id );
+      g.profile[g.id()].fwType( variant.id );
     }
     MainWindow * mw = (MainWindow *)this->parent();
     mw->checkForUpdates(true, variant.id);
@@ -305,7 +305,7 @@ void fwPreferencesDialog::on_fw_dnld_clicked()
   if (!variant.firmware->getUrl(variant.id).isNull()) {
     if (g.profile[g.id()].burnFirmware()) {
       current_firmware_variant = getFirmwareVariant();
-      g.profile[g.id()].firmware( current_firmware_variant.id );
+      g.profile[g.id()].fwType( current_firmware_variant.id );
     }
     mw->downloadLatestFW(current_firmware_variant.firmware, current_firmware_variant.id);
   }
