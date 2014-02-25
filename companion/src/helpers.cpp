@@ -643,6 +643,7 @@ void populateCSWCB(QComboBox *b, int value)
   int order[] = {
     LS_FN_OFF,
     LS_FN_VEQUAL, // added at the end to avoid everything renumbered
+    LS_FN_VALMOSTEQUAL, // added at the end to avoid everything renumbered
     LS_FN_VPOS,
     LS_FN_VNEG,
     // LS_FN_RANGE,

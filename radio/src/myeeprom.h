@@ -687,7 +687,10 @@ PACK( union u_int8int16_t {
 
 enum LogicalSwitchesFunctions {
   LS_FUNC_NONE,
+#if defined(CPUARM)
   LS_FUNC_VEQUAL, // v==offset
+#endif
+  LS_FUNC_VALMOSTEQUAL, // v~=offset
   LS_FUNC_VPOS,   // v>offset
   LS_FUNC_VNEG,   // v<offset
 #if defined(CPUARM)

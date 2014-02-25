@@ -428,6 +428,8 @@ QString LogicalSwitchData::funcToString()
     case LS_FN_DAPOS:
       return QObject::tr("|d|>=x");
     case LS_FN_VEQUAL:
+      return QObject::tr("a=x");
+    case LS_FN_VALMOSTEQUAL:
       return QObject::tr("a~x");
     case LS_FN_TIMER:
       return QObject::tr("Timer");

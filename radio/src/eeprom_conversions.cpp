@@ -466,6 +466,7 @@ void ConvertModel_215_to_216(ModelData &model)
   for (uint8_t i=0; i<32; i++) {
     LogicalSwitchData & sw = g_model.customSw[i];
     sw.func = oldModel.customSw[i].func;
+    if (sw.func >= LS_FUNC_VEQUAL) sw.func += 1;
     if (sw.func >= LS_FUNC_RANGE) sw.func += 1;
     if (sw.func >= LS_FUNC_STAY) sw.func += 1;
     sw.v1 = oldModel.customSw[i].v1;
