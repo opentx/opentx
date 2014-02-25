@@ -17,7 +17,6 @@ public:
     ~splashLibrary();
 
 private slots:
-    void shrink() ;
     void dclose();
     void onButtonPressed(int button);
     void on_nextPage_clicked();

@@ -41,7 +41,7 @@ bool Side::displayImage( QString fileName, Source pictSource )
 
   if (fileName.isEmpty())
     return false;
-  
+
   // Determine which picture format to use
   if (pictSource == FW ){
     FlashInterface flash(fileName);
@@ -49,60 +49,46 @@ bool Side::displayImage( QString fileName, Source pictSource )
       return false;
     else
       image = flash.getSplash();
-      *format = (flash.getSplashWidth()==WIDTH_TARANIS ? LCDTARANIS : LCD9X);
+    *format = (flash.getSplashWidth()==WIDTH_TARANIS ? LCDTARANIS : LCD9X);
   }
   else {
     image.load(fileName);
     if (pictSource== PICT)
       *format = image.width()>WIDTH_9X ? LCDTARANIS : LCD9X;
     else if (pictSource == PROFILE)
-      *format = (g.profile[g.id()].firmware().contains("taranis")) ? LCDTARANIS : LCD9X; 
+      *format = (g.profile[g.id()].fwType().contains("taranis")) ? LCDTARANIS : LCD9X; 
   }
   if (image.isNull()) {
     return false;
   }
-  // Prepare and display image
+  // Load image
   if (*format==LCDTARANIS) {
-    image=image.convertToFormat(QImage::Format_RGB32);
-    QRgb col;
-    int gray;
-    int width = image.width();
-    int height = image.height();
-    for (int i = 0; i < width; ++i) {
-        for (int j = 0; j < height; ++j) {
-            col = image.pixel(i, j);
-            gray = qGray(col);
-            image.setPixel(i, j, qRgb(gray, gray, gray));
-        }
-    }      
-    imageLabel->setPixmap(QPixmap::fromImage(image.scaled(imageLabel->width()/2, imageLabel->height()/2)));
+    imageLabel->setPixmap( makePixMap( image, "taranis" ));
+    imageLabel->setFixedSize(WIDTH_TARANIS*2, HEIGHT_TARANIS*2);
   }
-  else
-    imageLabel->setPixmap(QPixmap::fromImage(image.scaled(imageLabel->width()/2, imageLabel->height()/2).convertToFormat(QImage::Format_Mono)));
-  
-  if (*format == LCD9X)
-      imageLabel->setFixedSize(WIDTH_9X*2, HEIGHT_9X*2);
-  else
-      imageLabel->setFixedSize(WIDTH_TARANIS*2, HEIGHT_TARANIS*2);
-  
+  else {
+    imageLabel->setPixmap( makePixMap( image, "9x" )); 
+    imageLabel->setFixedSize(WIDTH_9X*2, HEIGHT_9X*2);
+  }
+
   switch (pictSource){
-    case FW:
-         fileNameEdit->setText(QObject::tr("FW: %1").arg(fileName));
-         *saveToFileName = fileName;
-         *source=FW;
-       break;
-    case PICT:
-         fileNameEdit->setText(QObject::tr("Pict: %1").arg(fileName));
-         *saveToFileName = fileName;
-         *source=PICT;
-       break;
-    case PROFILE:
-         fileNameEdit->setText(QObject::tr("Profile image"));
-         *saveToFileName = fileName;
-         *source=PROFILE;
-      break;
-    default:
-     break;
+  case FW:
+    fileNameEdit->setText(QObject::tr("FW: %1").arg(fileName));
+    *saveToFileName = fileName;
+    *source=FW;
+    break;
+  case PICT:
+    fileNameEdit->setText(QObject::tr("Pict: %1").arg(fileName));
+    *saveToFileName = fileName;
+    *source=PICT;
+    break;
+  case PROFILE:
+    fileNameEdit->setText(QObject::tr("Profile image"));
+    *saveToFileName = fileName;
+    *source=PROFILE;
+    break;
+  default:
+    break;
   }
   saveButton->setEnabled(true);
   libraryButton->setEnabled(true);

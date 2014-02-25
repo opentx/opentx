@@ -197,7 +197,6 @@ private:
 
     QString installer_fileName;
     QString downloadedFW;
-    QString downloadedFWFilename;
     downloadDialog * downloadDialog_forWait;
 
     bool needRename;

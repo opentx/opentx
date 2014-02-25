@@ -20,7 +20,7 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
     ui->setupUi(this);
     this->setWindowIcon(CompanionIcon("open.png"));
 
-    QString firmware_id = g.profile[g.id()].firmware();
+    QString firmware_id = g.profile[g.id()].fwType();
     ui->tabWidget->setCurrentIndex( g.generalEditTab() );
     QString name=g.profile[g.id()].name();
     if (name.isEmpty()) {
@@ -74,7 +74,7 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
       if (!name.isEmpty()) {
         ui->profile_CB->addItem(name, i);
         if (i==g.id()) {
-          ui->profile_CB->setCurrentIndex(ui->profile_CB->count());
+          ui->profile_CB->setCurrentIndex(ui->profile_CB->count()-1);
         }
       }
     }

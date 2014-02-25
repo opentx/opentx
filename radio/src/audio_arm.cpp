@@ -117,132 +117,260 @@ const char * audioFilenames[] = {
 };
 
 uint64_t sdAvailableSystemAudioFiles = 0;
-uint8_t  sdAvailablePhaseAudioFiles[MAX_PHASES] = { 0 };
-uint8_t  sdAvailableMixerAudioFiles[MAX_MIXERS] = { 0 };
+uint32_t sdAvailablePhaseAudioFiles = 0;
+uint64_t sdAvailableSwitchAudioFiles = 0;
+uint64_t sdAvailableLogicalSwitchAudioFiles = 0;
 
-void refreshSystemAudioFiles()
+#define MASK_SYSTEM_AUDIO_FILE(index)                 ((uint64_t)1 << index)
+#define MASK_PHASE_AUDIO_FILE(index, event)           ((uint32_t)1 << (2*index+event))
+#define MASK_SWITCH_AUDIO_FILE(index)                 ((uint64_t)1 << index)
+#define MASK_LOGICAL_SWITCH_AUDIO_FILE(index, event)  ((uint64_t)1 << (2*index+event))
+
+bool isFileAvailable(const char * filename)
 {
   FILINFO info;
-#if _USE_LFN
   TCHAR lfn[_MAX_LFN + 1];
   info.lfname = lfn;
   info.lfsize = sizeof(lfn);
-#endif
+  return f_stat(filename, &info) == FR_OK;
+}
 
-  char filename[32] = SYSTEM_SOUNDS_PATH "/";
-  strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
+char * getAudioPath(char * path)
+{
+  strcpy(path, SOUNDS_PATH "/");
+  strncpy(path+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
+  return path + sizeof(SOUNDS_PATH);
+}
+
+char * getSystemAudioPath(char * path)
+{
+  char * str = getAudioPath(path);
+  strcpy(str, SYSTEM_SUBDIR "/");
+  return str + sizeof(SYSTEM_SUBDIR);
+}
+
+void getSystemAudioFile(char * filename, int index)
+{
+  char * str = getSystemAudioPath(filename);
+  strcpy(str, audioFilenames[index]);
+  strcat(str, SOUNDS_EXT);
+}
+
+void referenceSystemAudioFiles()
+{
+  char path[AUDIO_FILENAME_MAXLEN+1];
+  FILINFO fno;
+  DIR dir;
+  char *fn;   /* This function is assuming non-Unicode cfg. */
+  TCHAR lfn[_MAX_LFN + 1];
+  fno.lfname = lfn;
+  fno.lfsize = sizeof(lfn);
+
+  uint64_t availableAudioFiles = 0;
 
   assert(sizeof(audioFilenames)==AU_FRSKY_FIRST*sizeof(char *));
   assert(sizeof(sdAvailableSystemAudioFiles)*8 >= AU_FRSKY_FIRST);
 
-  uint64_t availableAudioFiles = 0;
+  char * filename = getSystemAudioPath(path);
+  *(filename-1) = '\0';
 
-  for (uint32_t i=0; i<AU_FRSKY_FIRST; i++) {
-    strcpy(filename+sizeof(SYSTEM_SOUNDS_PATH), audioFilenames[i]);
-    strcat(filename+sizeof(SYSTEM_SOUNDS_PATH), SOUNDS_EXT);
-    if (f_stat(filename, &info) == FR_OK)
-      availableAudioFiles |= ((uint64_t)1 << i);
+  FRESULT res = f_opendir(&dir, path);        /* Open the directory */
+  if (res == FR_OK) {
+    for (;;) {
+      res = f_readdir(&dir, &fno);                   /* Read a directory item */
+      if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
+      fn = *fno.lfname ? fno.lfname : fno.fname;
+      uint8_t len = strlen(fn);
+
+      // Eliminates directories / non wav files
+      if (len < 5 || strcasecmp(fn+len-4, SOUNDS_EXT) || (fno.fattrib & AM_DIR)) continue;
+
+      for (int i=0; i<AU_FRSKY_FIRST; i++) {
+        getSystemAudioFile(path, i);
+        if (!strcmp(filename, fn)) {
+          availableAudioFiles |= MASK_SYSTEM_AUDIO_FILE(i);
+          break;
+        }
+      }
+    }
   }
 
   sdAvailableSystemAudioFiles = availableAudioFiles;
 }
 
-const char * suffixes[] = { "-OFF", "-ON", /*"-BG", */NULL };
+const char * suffixes[] = { "-off", "-on" };
 
-inline uint8_t getAvailableFiles(char *prefix, FILINFO &info, char *filename)
+char * getModelPath(char * path)
 {
-  uint8_t result = 0;
-
-  for (uint8_t i=0; suffixes[i]; i++) {
-    strcpy(prefix, suffixes[i]);
-    strcat(prefix, SOUNDS_EXT);
-    if (f_stat(filename, &info) == FR_OK)
-      result |= ((uint8_t)1 << i);
-  }
-
+  strcpy(path, SOUNDS_PATH "/");
+  strncpy(path+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
+  char * result = strcat_modelname(path+sizeof(SOUNDS_PATH), g_eeGeneral.currModel);
+  *result++ = '/';
+  *result = '\0';
   return result;
 }
 
-void refreshModelAudioFiles()
+void getPhaseAudioFile(char * filename, int index, unsigned int event)
 {
-  FILINFO info;
+  char * str = getModelPath(filename);
+  char * tmp = strcat_phasename(str, index);
+  strcpy(tmp, suffixes[event]);
+  strcat(tmp, SOUNDS_EXT);
+}
+
+void getSwitchAudioFile(char * filename, int index)
+{
+  char * str = getModelPath(filename);
+  int len = STR_VSWITCHES[0];
+  strncpy(str, &STR_VSWITCHES[1+len*index], len);
+  str += len-1;
+  if (*str == '\300') {
+    strcpy(str, "-up");
+    str += 3;
+  }
+  else if (*str == '-') {
+    strcpy(str, "-mid");
+    str += 4;
+  }
+  else if (*str == '\301') {
+    strcpy(str, "-down");
+    str += 5;
+  }
+  else {
+    str += 1;
+  }
+  strcat(str, SOUNDS_EXT);
+}
+
+void getLogicalSwitchAudioFile(char * filename, int index, unsigned int event)
+{
+  char * str = getModelPath(filename);
+  int len = STR_VSWITCHES[0];
+  strncpy(str, &STR_VSWITCHES[1+len*(index+SWSRC_FIRST_CSW-1)], len);
+  str += len;
+  strcpy(str, suffixes[event]);
+  strcat(str, SOUNDS_EXT);
+}
+
+void referenceModelAudioFiles()
+{
+  char path[AUDIO_FILENAME_MAXLEN+1];
+  FILINFO fno;
+  DIR dir;
+  char *fn;   /* This function is assuming non-Unicode cfg. */
   TCHAR lfn[_MAX_LFN + 1];
-  info.lfname = lfn;
-  info.lfsize = sizeof(lfn);
+  fno.lfname = lfn;
+  fno.lfsize = sizeof(lfn);
 
-  char filename[AUDIO_FILENAME_MAXLEN+1] = SOUNDS_PATH "/";
-  strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
-  
-  if (sdMounted()) {
-    char *buf = strcat_modelname(&filename[sizeof(SOUNDS_PATH)], g_eeGeneral.currModel);
-    *buf++ = '/';
+  sdAvailablePhaseAudioFiles = 0;
+  sdAvailableSwitchAudioFiles = 0;
+  sdAvailableLogicalSwitchAudioFiles = 0;
 
-    for (uint32_t i=0; i<MAX_PHASES; i++) {
-      char *tmp = strcat_phasename(buf, i);
-      sdAvailablePhaseAudioFiles[i] = (tmp != buf ? getAvailableFiles(strcat_phasename(buf, i), info, filename) : 0);
+  char * filename = getModelPath(path);
+  *(filename-1) = '\0';
+
+  FRESULT res = f_opendir(&dir, path);        /* Open the directory */
+  if (res == FR_OK) {
+    for (;;) {
+      res = f_readdir(&dir, &fno);                   /* Read a directory item */
+      if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
+      fn = *fno.lfname ? fno.lfname : fno.fname;
+      uint8_t len = strlen(fn);
+      bool found = false;
+
+      // Eliminates directories / non wav files
+      if (len < 5 || strcasecmp(fn+len-4, SOUNDS_EXT) || (fno.fattrib & AM_DIR)) continue;
+
+      // Phases Audio Files <phasename>-[on|off].wav
+      for (int i=0; i<MAX_PHASES && !found; i++) {
+        for (int event=0; event<2; event++) {
+          getPhaseAudioFile(path, i, event);
+          if (!strcmp(filename, fn)) {
+            sdAvailablePhaseAudioFiles |= MASK_PHASE_AUDIO_FILE(i, event);
+            found = true;
+            break;
+          }
+        }
+      }
+
+      // Switches Audio Files <switchname>-[up|mid|down].wav
+      for (int i=0; i<SWSRC_LAST_SWITCH+NUM_XPOTS*POTS_POS_COUNT && !found; i++) {
+        getSwitchAudioFile(path, i);
+        if (!strcmp(filename, fn)) {
+          sdAvailableSwitchAudioFiles |= MASK_SWITCH_AUDIO_FILE(i);
+          found = true;
+        }
+      }
+
+      // Logical Switches Audio Files <switchname>-[on|off].wav
+      for (int i=0; i<NUM_CSW && !found; i++) {
+        for (int event=0; event<2; event++) {
+          getLogicalSwitchAudioFile(path, i, event);
+          if (!strcmp(filename, fn)) {
+            sdAvailableLogicalSwitchAudioFiles |= MASK_LOGICAL_SWITCH_AUDIO_FILE(i, event);
+            found = true;
+            break;
+          }
+        }
+      }
     }
-
-    /* for (uint32_t i=0; i<MAX_MIXERS; i++) {
-      char *tmp = strcat_mixername_nodefault(buf, i);
-      sdAvailableMixerAudioFiles[i] = (tmp != buf ? getAvailableFiles(tmp, info, filename) : 0);
-    } */
   }
 }
 
-bool isAudioFileAvailable(uint32_t i, char * filename)
+bool isAudioFileReferenced(uint32_t i, char * filename)
 {
   uint8_t category = (i >> 24);
   uint8_t index = (i >> 16) & 0xFF;
   uint8_t event = i & 0xFF;
 
 #if 0
-  printf("isAudioFileAvailable(%08x)\n", i); fflush(stdout);
+  printf("isAudioFileReferenced(%08x)\n", i); fflush(stdout);
 #endif
 
   if (category == SYSTEM_AUDIO_CATEGORY) {
-    if (sdAvailableSystemAudioFiles & ((uint64_t)1 << event)) {
-      strcpy(filename, SYSTEM_SOUNDS_PATH "/");
-      strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
-      strcpy(filename+sizeof(SYSTEM_SOUNDS_PATH), audioFilenames[i]);
-      strcat(filename+sizeof(SYSTEM_SOUNDS_PATH), SOUNDS_EXT);
+    if (sdAvailableSystemAudioFiles & MASK_SYSTEM_AUDIO_FILE(event)) {
+      getSystemAudioFile(filename, event);
       return true;
     }
   }
   else if (category == PHASE_AUDIO_CATEGORY) {
-    if (sdAvailablePhaseAudioFiles[index] & ((uint32_t)1 << event)) {
-      strcpy(filename, SOUNDS_PATH "/");
-      strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
-      char *str = strcat_modelname(filename+sizeof(SOUNDS_PATH), g_eeGeneral.currModel);
-      *str++ = '/';
-      char * tmp = strcat_phasename(str, index);
-      if (tmp != str) {
-        strcpy(tmp, suffixes[event]);
-        strcat(tmp, SOUNDS_EXT);
-        return true;
-      }
+    if (sdAvailablePhaseAudioFiles & MASK_PHASE_AUDIO_FILE(index, event)) {
+      getPhaseAudioFile(filename, index, event);
+      return true;
     }
   }
-  else if (category == MIXER_AUDIO_CATEGORY) {
-    if (sdAvailableMixerAudioFiles[index] & ((uint32_t)1 << event)) {
-      strcpy(filename, SOUNDS_PATH "/");
-      strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
-      char *str = strcat_modelname(filename+sizeof(SOUNDS_PATH), g_eeGeneral.currModel);
-      *str++ = '/';
-      char * tmp = strcat_mixername(str, index);
-      if (tmp != str) {
-        strcpy(tmp, suffixes[event]);
-        strcat(tmp, SOUNDS_EXT);
-        return true;
-      }
+  else if (category == SWITCH_AUDIO_CATEGORY) {
+    if (sdAvailableSwitchAudioFiles & MASK_SWITCH_AUDIO_FILE(index)) {
+      getSwitchAudioFile(filename, index);
+      return true;
+    }
+  }
+  else if (category == LOGICAL_SWITCH_AUDIO_CATEGORY) {
+    if (sdAvailableLogicalSwitchAudioFiles & MASK_LOGICAL_SWITCH_AUDIO_FILE(index, event)) {
+      getLogicalSwitchAudioFile(filename, index, event);
+      return true;
     }
   }
 
   return false;
 }
+
+tmr10ms_t timeAutomaticPromptsSilence = 0;
+
+void playModelEvent(uint8_t category, uint8_t index, uint8_t event)
+{
+  char filename[AUDIO_FILENAME_MAXLEN+1];
+  if ((get_tmr10ms()-timeAutomaticPromptsSilence > 50) && isAudioFileReferenced((category << 24) + (index << 16) + event, filename)) {
+    audioQueue.playFile(filename);
+  }
+}
 #else
-#define isAudioFileAvailable(i, f) false
+
+#define isAudioFileReferenced(i, f) false
+
 #endif
 
+// TODO should be generated and in flash rather than in ram
 int16_t alawTable[256];
 int16_t ulawTable[256];
 
@@ -757,10 +885,6 @@ void AudioQueue::reset()
 
 void audioEvent(uint8_t e, uint16_t f)
 {
-#if defined(SDCARD)
-  char filename[AUDIO_FILENAME_MAXLEN+1];
-#endif
-
 #if defined(HAPTIC)
   haptic.event(e); //do this before audio to help sync timings
 #endif
@@ -773,7 +897,8 @@ void audioEvent(uint8_t e, uint16_t f)
 
   if (g_eeGeneral.beepMode>0 || (g_eeGeneral.beepMode==0 && e>=AU_TRIM_MOVE) || (g_eeGeneral.beepMode>=-1 && e<=AU_ERROR)) {
 #if defined(SDCARD)
-    if (e < AU_FRSKY_FIRST && isAudioFileAvailable(e, filename)) {
+    char filename[AUDIO_FILENAME_MAXLEN+1];
+    if (e < AU_FRSKY_FIRST && isAudioFileReferenced(e, filename)) {
       audioQueue.playFile(filename);
     }
     else
@@ -982,16 +1107,13 @@ void audioEvent(uint8_t e, uint16_t f)
 void pushPrompt(uint16_t prompt, uint8_t id)
 {
 #if defined(SDCARD)
-
-  char filename[] = SYSTEM_SOUNDS_PATH "/0000" SOUNDS_EXT;
-  strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
-
+  char filename[AUDIO_FILENAME_MAXLEN+1];
+  char * str = getSystemAudioPath(filename);
+  strcpy(str, "0000" SOUNDS_EXT);
   for (int8_t i=3; i>=0; i--) {
-    filename[sizeof(SYSTEM_SOUNDS_PATH)+i] = '0' + (prompt%10);
+    str[i] = '0' + (prompt%10);
     prompt /= 10;
   }
-
   audioQueue.playFile(filename, 0, id);
-
 #endif
 }
