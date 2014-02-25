@@ -655,6 +655,7 @@
 #define TR_SD_SIZE             "Size:"
 #define TR_TYPE                "Type"
 #define TR_GLOBAL_VARS         "Global Variables"
+#define TR_GLOBAL_V            "GLOBAL V."
 #define TR_GLOBAL_VAR          "Global Variable"
 #define TR_MENUGLOBALVARS      "GLOBAL VARIABLES"
 #define TR_OWN                 "Own"

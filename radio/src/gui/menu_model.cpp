@@ -4085,9 +4085,25 @@ void onGVARSMenu(const char *result)
   }
 }
 
+#define GVARS_FM_COLUMN(p) (12*FW + FWNUM + (p)*(2+3*FWNUM) - 3)
+
 void menuModelGVars(uint8_t event)
 {
-  MENU(STR_MENUGLOBALVARS, menuTabModel, e_GVars, 1+MAX_GVARS, {0, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES});
+  tmr10ms_t tmr10ms = get_tmr10ms();
+  const char * menuTitle;
+  bool first2seconds = (tmr10ms - menuEntryTime > 200); /*2 seconds*/
+
+  if (first2seconds) {
+    menuTitle = STR_GLOBAL_V;
+    for (int i=0; i<MAX_GVARS; i++) {
+      putsStrIdx(GVARS_FM_COLUMN(i)-16, 1, STR_FP, i, SMLSIZE|(getFlightPhase()==i ? INVERS : 0));
+    }
+  }
+  else {
+    menuTitle = STR_MENUGLOBALVARS;
+  }
+
+  MENU_FLAGS(menuTitle, menuTabModel, e_GVars, first2seconds ? CHECK_FLAG_NO_SCREEN_INDEX : 0, 1+MAX_GVARS, {0, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES, NAVIGATION_LINE_BY_LINE|MAX_PHASES});
 
   uint8_t sub = m_posVert - 1;
 
@@ -4108,7 +4124,7 @@ void menuModelGVars(uint8_t event)
 
     for (uint8_t j=0; j<1+MAX_PHASES; j++) {
       LcdFlags attr = ((sub==i && m_posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
-      xcoord_t x = 12*FW + FWNUM + (j-1)*(2+3*FWNUM) - 3;
+      xcoord_t x = GVARS_FM_COLUMN(j-1);
 
 #if MAX_GVARS == 6
       if (i==0 && j!=9) putsStrIdx(x+2, FH+1, STR_FP, j, SMLSIZE);

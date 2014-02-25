@@ -88,6 +88,10 @@ inline void displayColumnHeader(const char **headers, uint8_t index)
   #define horzpos_t uint8_t
 #endif
 
+#if defined(CPUARM)
+  extern tmr10ms_t menuEntryTime;
+#endif
+
 extern vertpos_t m_posVert;
 extern horzpos_t m_posHorz;
 extern vertpos_t s_pgOfs;
@@ -226,7 +230,14 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 #else
   #define NAVIGATION_LINE_BY_LINE  0
 #endif
-bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *subTab, uint8_t subTabMax, vertpos_t maxrow);
+
+#if defined(PCBTARANIS)
+  #define CHECK_FLAG_NO_SCREEN_INDEX   1
+  bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow, uint8_t flags=0);
+#else
+  bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow);
+#endif
+
 bool check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t maxrow);
 bool check_submenu_simple(check_event_t event, uint8_t maxrow);
 
@@ -242,9 +253,17 @@ void title(const pm_char * s);
 #define MENU_CHECK(tab, menu, lines_count) \
   check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, (lines_count)-1)
 
+#define MENU_CHECK_FLAGS(tab, menu, flags, lines_count) \
+  check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, (lines_count)-1, flags)
+
 #define MENU(title, tab, menu, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
   if (!MENU_CHECK(tab, menu, lines_count)) return; \
+  TITLE(title)
+
+#define MENU_FLAGS(title, tab, menu, flags, lines_count, ...) \
+  MENU_TAB(__VA_ARGS__); \
+  if (!MENU_CHECK_FLAGS(tab, menu, flags, lines_count)) return; \
   TITLE(title)
 
 #define SIMPLE_MENU_NOTITLE(tab, menu, lines_count) \
