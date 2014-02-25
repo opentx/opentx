@@ -803,6 +803,18 @@ enum PerOutMode {
   e_perout_mode_noinput = e_perout_mode_notrainer+e_perout_mode_notrims+e_perout_mode_nosticks
 };
 
+
+#if defined(MODULE_ALWAYS_SEND_PULSES)
+extern uint8_t startupWarningState;
+
+enum StartupWarningStates {
+  STARTUP_WARNING_THROTTLE,
+  STARTUP_WARNING_SWITCHES,
+  STARTUP_WARNING_DONE,
+};
+#endif
+
+
 // Fiddle to force compiler to use a pointer
 #if defined(CPUARM) || defined(SIMU)
   #define FORCE_INDIRECT(ptr)
@@ -894,13 +906,9 @@ void setTrimValue(uint8_t phase, uint8_t idx, int trim);
 #endif
 
 #if defined(CPUARM)
-  #define GV1_SMALL  128
-  #define GV1_LARGE  4096
   #define GV_GET_GV1_VALUE(max)        ( (max<=GV_RANGESMALL && min>=GV_RANGESMALL_NEG) ? GV1_SMALL : GV1_LARGE )
   #define GV_INDEX_CALCULATION(x,max)  ( (max<=GV_RANGESMALL && min>=GV_RANGESMALL_NEG) ? (uint8_t) x-GV1_SMALL : ((x&(GV1_LARGE*2-1))-GV1_LARGE) )
 #else
-  #define GV1_SMALL  128
-  #define GV1_LARGE  256
   #define GV_GET_GV1_VALUE(max)        ( (max<=GV_RANGESMALL) ? GV1_SMALL : GV1_LARGE )
   #define GV_INDEX_CALCULATION(x,max)  ( (max<=GV1_SMALL) ? (uint8_t) x-GV1_SMALL : ((x&(GV1_LARGE*2-1))-GV1_LARGE) )
 #endif
@@ -915,6 +923,21 @@ void setTrimValue(uint8_t phase, uint8_t idx, int trim);
 #define GV_RANGESMALL_NEG  (-GV1_SMALL + (RESERVE_RANGE_FOR_GVARS+1))
 #define GV_RANGELARGE      (GV1_LARGE - (RESERVE_RANGE_FOR_GVARS+1))
 #define GV_RANGELARGE_NEG  (-GV1_LARGE + (RESERVE_RANGE_FOR_GVARS+1))
+#if defined(CPUARM)
+  // the define GV1_LARGE marks the highest bit value used for this variables
+  // because this would give too big numbers for ARM, we limit it further for
+  // offset and weight
+  #define GV_RANGELARGE_WEIGHT      (GV_RANGE_WEIGHT)
+  #define GV_RANGELARGE_WEIGHT_NEG (-GV_RANGE_WEIGHT)
+  #define GV_RANGELARGE_OFFSET      (GV_RANGE_OFFSET)
+  #define GV_RANGELARGE_OFFSET_NEG (-GV_RANGE_OFFSET)
+#else
+  // for stock we just use as much as possible
+  #define GV_RANGELARGE_WEIGHT      GV_RANGELARGE
+  #define GV_RANGELARGE_WEIGHT_NEG  GV_RANGELARGE_NEG
+  #define GV_RANGELARGE_OFFSET      GV_RANGELARGE
+  #define GV_RANGELARGE_OFFSET_NEG  GV_RANGELARGE_NEG
+#endif
 
 extern uint16_t s_timeCumTot;
 extern uint16_t s_timeCumThr;
@@ -1211,8 +1234,8 @@ int applyCurve(int x, int8_t idx);
 void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS_INC);
 int16_t applyLimits(uint8_t channel, int32_t value);
 
+void evalInputs(uint8_t mode);
 uint16_t anaIn(uint8_t chan);
-int16_t thrAnaIn(uint8_t chan);
 extern int16_t calibratedStick[NUM_STICKS+NUM_POTS];
 
 #define FLASH_DURATION 20 /*200ms*/
@@ -1620,8 +1643,7 @@ uint8_t zlen(const char *str, uint8_t size);
 bool zexist(const char *str, uint8_t size);
 char * strcat_zchar(char * dest, char * name, uint8_t size, const char *defaultName, uint8_t defaultNameSize, uint8_t defaultIdx);
 #define strcat_modelname(dest, idx) strcat_zchar(dest, modelHeaders[idx].name, LEN_MODEL_NAME, STR_MODEL, PSIZE(TR_MODEL), idx+1)
-#define strcat_phasename(dest, idx) strcat_zchar(dest, g_model.phaseData[idx].name, LEN_FP_NAME, NULL, 0, 0)
-#define strcat_mixername(dest, idx) strcat_zchar(dest, g_model.mixData[idx].name, LEN_EXPOMIX_NAME, NULL, 0, 0)
+#define strcat_phasename(dest, idx) strcat_zchar(dest, g_model.phaseData[idx].name, LEN_FP_NAME, STR_FP, PSIZE(TR_FP), idx+1)
 #define ZLEN(s) zlen(s, sizeof(s))
 #define ZEXIST(s) zexist(s, sizeof(s))
 #endif

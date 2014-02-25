@@ -300,7 +300,7 @@ void *main_thread(void *)
     eeReadAll(); // load general setup and selected model
 
 #if defined(CPUARM) && defined(SDCARD)
-    refreshSystemAudioFiles();
+    referenceSystemAudioFiles();
 #endif
 
     if (g_eeGeneral.backlightMode != e_backlight_mode_off) backlightOn(); // on Tx start turn the light on
@@ -473,9 +473,10 @@ char *convertSimuPath(const char *path)
 
 FRESULT f_stat (const TCHAR * name, FILINFO *)
 {
+  char *path = convertSimuPath(name);
   struct stat tmp;
-  // printf("f_stat(%s)\n", path); fflush(stdout);
-  return stat(convertSimuPath(name), &tmp) ? FR_INVALID_NAME : FR_OK;
+  TRACE("f_stat(%s)", path);
+  return stat(path, &tmp) ? FR_INVALID_NAME : FR_OK;
 }
 
 FRESULT f_mount (BYTE, FATFS*)
@@ -550,9 +551,11 @@ FRESULT f_readdir (DIR * rep, FILINFO * fil)
   fil->fattrib = (ent->d_type == DT_DIR ? AM_DIR : 0);
 #else
   if (ent->d_type == simu::DT_UNKNOWN) {
+    fil->fattrib = 0;
     struct stat buf;
-    lstat(ent->d_name, &buf);
-    fil->fattrib = (S_ISDIR(buf.st_mode) ? AM_DIR : 0);
+    if (stat(ent->d_name, &buf) == 0) {
+      fil->fattrib = (S_ISDIR(buf.st_mode) ? AM_DIR : 0);
+    }
   }
   else {
     fil->fattrib = (ent->d_type == simu::DT_DIR ? AM_DIR : 0);
@@ -563,6 +566,7 @@ FRESULT f_readdir (DIR * rep, FILINFO * fil)
   memset(fil->lfname, 0, SD_SCREEN_FILE_LENGTH);
   strncpy(fil->fname, ent->d_name, 13-1);
   strcpy(fil->lfname, ent->d_name);
+  // TRACE("f_readdir(): %s", fil->fname);
   return FR_OK;
 }
 

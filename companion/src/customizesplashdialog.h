@@ -22,6 +22,7 @@ class Side
 {
 public:
   Side();
+  void markSourceButton();
   void copyImage( Side );
   bool displayImage( QString fileName, Source source );
   bool saveImage();
@@ -32,6 +33,9 @@ public:
   QPushButton *saveButton;
   QPushButton *invertButton;
   QToolButton *libraryButton;
+  QPushButton *loadFwButton;
+  QPushButton *loadPictButton;
+  QPushButton *loadProfileButton;
 
   QString *saveToFileName;
 

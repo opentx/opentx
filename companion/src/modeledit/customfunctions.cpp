@@ -6,6 +6,7 @@
 #include <QCheckBox>
 #include <QDoubleSpinBox>
 #include "helpers.h"
+#include "appdata.h"
 
 RepeatComboBox::RepeatComboBox(QWidget *parent, int & repeatParam):
   QComboBox(parent),
@@ -74,8 +75,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
       }
     }
 
-    QSettings settings;
-    QString path = settings.value("sdPath", ".").toString();
+    QString path = g.profile[g.id()].sdPath();
     path.append("/SOUNDS/");
     QString lang = generalSettings.ttsLanguage;
     if (lang.isEmpty())
@@ -162,7 +162,8 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
 
 #ifdef PHONON
     playBT[i] = new QPushButton(this);
-    playBT[i]->setObjectName(QString("play_%1").arg(i));
+    playBT[i]->setProperty("index", i);
+    playBT[i]->setProperty("state", "play");
     playBT[i]->setIcon(CompanionIcon("play.png"));
     paramLayout->addWidget(playBT[i]);
     connect(playBT[i], SIGNAL(pressed()), this, SLOT(playMusic()));
@@ -222,44 +223,43 @@ void CustomFunctionsPanel::mediaPlayer_state(Phonon::State newState, Phonon::Sta
 
 void CustomFunctionsPanel::playMusic()
 {
-    QPushButton *playButton = qobject_cast<QPushButton*>(sender());
-    int index=playButton->objectName().mid(5,2).toInt();
-    QString function=playButton->objectName().left(4);
-    QSettings settings;
-    QString path = settings.value("sdPath", ".").toString();
+    QPushButton * button = qobject_cast<QPushButton*>(sender());
+    int index = button->property("index").toInt();
+    QString function = button->property("state").toString();
+    QString path = g.profile[g.id()].sdPath();
     QDir qd(path);
     QString track;
     if (qd.exists()) {
       if (GetEepromInterface()->getCapability(VoicesAsNumbers)) {
-        track=path+QString("/%1.wav").arg(int(fswtchParam[index]->value()),4,10,(const QChar)'0');
+        track = path + QString("/%1.wav").arg(int(fswtchParam[index]->value()), 4, 10, (const QChar)'0');
       }
       else {
         path.append("/SOUNDS/");
         QString lang = generalSettings.ttsLanguage;
         if (lang.isEmpty())
-          lang="en";
+          lang = "en";
         path.append(lang);
-        if (fswtchParamArmT[index]->currentText()!="----") {
-          track=path+"/"+fswtchParamArmT[index]->currentText()+".wav";
+        if (fswtchParamArmT[index]->currentText() != "----") {
+          track = path + "/" + fswtchParamArmT[index]->currentText() + ".wav";
         }
       }
       QFile file(track);
       if (!file.exists()) {
         QMessageBox::critical(this, tr("Error"), tr("Unable to find sound file %1!").arg(track));
-        track.clear();
+        return;
       }
 #ifdef PHONON
-      if (function=="play" && !track.isEmpty()) {
+      if (function=="play") {
         clickObject->clear();
         clickObject->setCurrentSource(Phonon::MediaSource(track));
         clickObject->play();
-        playBT[index]->setObjectName(QString("stop_%1").arg(index));
+        playBT[index]->setProperty("state", "stop");
         playBT[index]->setIcon(CompanionIcon("stop.png"));
       }
       else {
         clickObject->stop();
         clickObject->clear();
-        playBT[index]->setObjectName(QString("play_%1").arg(index));
+        playBT[index]->setProperty("state", "play");
         playBT[index]->setIcon(CompanionIcon("play.png"));
       }
 #endif

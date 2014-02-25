@@ -404,7 +404,7 @@ void eeLoadModel(uint8_t id)
 #endif
 
 #if defined(CPUARM) && defined(SDCARD)
-    refreshModelAudioFiles();
+    referenceModelAudioFiles();
 #endif
 
     LOAD_MODEL_BITMAP();

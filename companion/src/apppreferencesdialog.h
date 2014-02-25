@@ -26,7 +26,7 @@ private:
     bool displayImage( QString fileName );
     void saveProfile();
     void loadProfileString(QString profile, QString label);
-    void loadProfile();
+    void loadFromProfile();
 
 private slots:
     void writeValues();

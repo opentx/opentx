@@ -67,6 +67,14 @@ EXT = STD
 # Values = YES, NO, CHOICE
 FAI = NO
 
+# the latests deliveries for Turnigy 9x transmitters (since 2 years now, 2014) do not stop sending if no pulses are generated.
+# This fact totally breaks the nice throttle and switch warning concept, because even we prevent sending pulses the
+# transmitter modul ignores this, and continous to send the last value or 0 at beginning. And 0 means in the middle of throttle -> 50%.
+# To cope with this situation, we need a new concept how to handle throttle and switch warnings.
+# if you have a 0 value (50% ) for throttle, while throttle warning is active, you should activate this switch
+# Values = YES, NO
+TURNIGY_TRANSMITTER_FIX = NO
+
 # Enable heli menu
 # Values = YES, NO
 HELI = NO
@@ -759,6 +767,14 @@ ifeq ($(NAVIGATION), STICKS)
 endif
 ifeq ($(NAVIGATION), ROTENC)
   CPPDEFS += -DROTARY_ENCODER_NAVIGATION
+endif
+
+ifeq ($(TURNIGY_TRANSMITTER_FIX), YES)
+  ifeq ($(PCB), TARANIS)
+    $(warning TURNIGY_TRANSMITTER_FIX is not available on Taranis)
+  else
+    CPPDEFS += -DMODULE_ALWAYS_SEND_PULSES
+  endif
 endif
 
 ifeq ($(AUTOSWITCH), YES)

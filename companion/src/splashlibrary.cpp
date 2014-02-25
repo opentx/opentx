@@ -1,9 +1,8 @@
 #include "splashlibrary.h"
 #include "ui_splashlibrary.h"
-
+#include "appdata.h"
 #include <QtGui>
 #include "helpers.h"
-//#include "splashlabel.h"
 #include "flashinterface.h"
 #include "helpers.h"
 
@@ -23,7 +22,6 @@ splashLibrary::splashLibrary(QWidget *parent, QString * fileName) : QDialog(pare
   foreach(splashLabel *sl, findChildren<splashLabel *>()) {
     connect(sl, SIGNAL(buttonPressed(int)), this, SLOT(onButtonPressed(int)));
   }
-  resize(0, 0);
 }
 
 splashLibrary::~splashLibrary() {
@@ -40,7 +38,7 @@ void splashLibrary::setupPage(int page) {
     if ((i + 20 * page) < imageList.size()) {
       QImage image(imageList.at(i + 20 * page));
       if (!image.isNull()) {
-        sl[i]->setPixmap(QPixmap::fromImage(image.scaled(SPLASH_WIDTH, SPLASH_HEIGHT).convertToFormat(QImage::Format_Mono)));
+        sl[i]->setPixmap(makePixMap(image, g.profile[g.id()].fwType()));
         sl[i]->setEnabled(true);
         sl[i]->setId((i + 20 * page));
         sl[i]->setStyleSheet("border:1px solid; border-color:#999999;");
@@ -63,9 +61,8 @@ void splashLibrary::setupPage(int page) {
 }
 
 void splashLibrary::getFileList() {
-  QSettings settings;
   imageList.clear();
-  if (settings.value("embedded_splashes", 0).toInt() == 0) {
+  if (g.embedSplashes()) {
     QDir myRes(":/images/library");
     QStringList tmp = myRes.entryList();
     for (int i = 0; i < tmp.size(); i++) {
@@ -73,7 +70,7 @@ void splashLibrary::getFileList() {
       imageList.append(":/images/library/" + fileInfo.fileName());
     }
   }
-  QString libraryPath = settings.value("libraryPath", "").toString();
+  QString libraryPath = g.libDir();
   if (!libraryPath.isEmpty()) {
     if (QDir(libraryPath).exists()) {
       QStringList supportedImageFormats;
@@ -103,10 +100,6 @@ void splashLibrary::getFileList() {
   else {
     imageList.sort();
   }
-}
-
-void splashLibrary::shrink() {
-  resize(0, 0);
 }
 
 void splashLibrary::dclose() {

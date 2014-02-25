@@ -11,6 +11,7 @@
 #include "customswitches.h"
 #include "customfunctions.h"
 #include "telemetry.h"
+#include "appdata.h"
 #include <QScrollArea>
 
 ModelEdit::ModelEdit(RadioData & radioData, int modelId, bool openWizard, bool isNew, QWidget *parent) :
@@ -21,8 +22,7 @@ ModelEdit::ModelEdit(RadioData & radioData, int modelId, bool openWizard, bool i
   generalSettings(radioData.generalSettings)
 {
   ui->setupUi(this);
-  QSettings settings;
-  restoreGeometry(settings.value("modelEditGeometry").toByteArray());  
+  restoreGeometry(g.modelEditGeo());  
   ui->pushButton->setIcon(CompanionIcon("simulate.png"));
   addTab(new Setup(this, model), tr("Setup"));
   addTab(new HeliPanel(this, model), tr("Heli"));
@@ -45,8 +45,7 @@ ModelEdit::~ModelEdit()
 
 void ModelEdit::closeEvent(QCloseEvent *event)
 {
-  QSettings settings;
-  settings.setValue("modelEditGeometry", saveGeometry());
+  g.modelEditGeo( saveGeometry() );
 }
 
 class VerticalScrollArea : public QScrollArea

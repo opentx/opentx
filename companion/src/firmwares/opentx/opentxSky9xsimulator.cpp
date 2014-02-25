@@ -16,6 +16,7 @@
 
 #include "opentxSky9xsimulator.h"
 #include "opentxinterface.h"
+#include "appdata.h"
 
 #define SIMU
 #define SIMU_EXCEPTIONS
@@ -135,8 +136,7 @@ using namespace Open9xSky9x;
 Open9xSky9xSimulator::Open9xSky9xSimulator(OpenTxInterface * open9xInterface):
   open9xInterface(open9xInterface)
 {
-    QSettings settings;
-    QString path=settings.value("sdPath", ".").toString()+"/";
+    QString path=g.profile[g.id()].sdPath()+"/";
     int i=0;
     for (i=0; i< std::min(path.length(),1022); i++) {
       simuSdDirectory[i]=path.at(i).toAscii();

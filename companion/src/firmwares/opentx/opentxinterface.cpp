@@ -26,6 +26,7 @@
 #include "opentxSky9xsimulator.h"
 #include "opentxTaranisSimulator.h"
 #include "file.h"
+#include "appdata.h"
 
 #define FILE_TYP_GENERAL 1
 #define FILE_TYP_MODEL   2
@@ -516,7 +517,7 @@ int OpenTxInterface::getCapability(const Capability capability)
       return (IS_TARANIS(board) ? 22 : 9);
     case CustomFunctions:
       if (IS_ARM(board))
-        return 32;
+        return 64;
       else if (board==BOARD_GRUVIN9X||board==BOARD_M128)
         return 24;
       else
@@ -549,7 +550,7 @@ int OpenTxInterface::getCapability(const Capability capability)
     case VoicesAsNumbers:
       return (IS_ARM(board) ? 0 : 1);
     case VoicesMaxLength:
-      return (IS_ARM(board) ? (IS_TARANIS(board) ? 10 :  6) : 0);
+      return (IS_ARM(board) ? (IS_TARANIS(board) ? 8 :  6) : 0);
     case MultiLangVoice:
       return (IS_ARM(board) ? 1 : 0);
     case SoundPitch:
@@ -934,9 +935,11 @@ bool OpenTxInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esiz
 
 QString geturl( int board)
 {
-    QSettings settings;
-    QString url = settings.value("compilation-server", OPENTX_FIRMWARE_DOWNLOADS).toString();
-
+   QString url = g.compileServer();
+   if (url.isEmpty()){
+      url= OPENTX_FIRMWARE_DOWNLOADS;
+      g.compileServer(url);
+   }
     switch(board) {
       case BOARD_STOCK:
       case BOARD_M128:
@@ -957,8 +960,11 @@ QString geturl( int board)
 
 QString getstamp( int board)
 {
-    QSettings settings;
-    QString url = settings.value("compilation-server", OPENTX_FIRMWARE_DOWNLOADS).toString();
+   QString url = g.compileServer();
+   if (url.isEmpty()){
+      url= OPENTX_FIRMWARE_DOWNLOADS;
+      g.compileServer(url);
+   }
     url.append("/stamp-opentx-");
     switch(board) {
       case BOARD_STOCK:
@@ -986,8 +992,11 @@ QString getstamp( int board)
 
 QString getrnurl( int board)
 {
-   QSettings settings;
-   QString url = settings.value("compilation-server", OPENTX_FIRMWARE_DOWNLOADS).toString();
+   QString url = g.compileServer();
+   if (url.isEmpty()){
+      url= OPENTX_FIRMWARE_DOWNLOADS;
+      g.compileServer(url);
+   }
    url.append("/releasenotes-");
    switch(board) {
       case BOARD_STOCK:
@@ -1213,9 +1222,7 @@ void RegisterOpen9xFirmwares()
   open9x->addOptions(fai_options);
   firmwares.push_back(open9x);
 
-  QSettings settings;
-  int rev4a = settings.value("rev4asupport",0).toInt();
-  if (rev4a) {
+  if (g.rev4aSupport()) {
     open9x = new Open9xFirmware("opentx-taranisrev4a", QObject::tr("OpenTX for FrSky Taranis Rev4a"), new OpenTxInterface(BOARD_TARANIS_REV4a), geturl(BOARD_TARANIS_REV4a), getstamp(BOARD_TARANIS_REV4a),getrnurl(BOARD_TARANIS), true);
     open9x->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
     open9x->addOption("notemplates", QObject::tr("Disable TEMPLATES menu"));

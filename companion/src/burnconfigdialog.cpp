@@ -3,6 +3,7 @@
 #include "avroutputdialog.h"
 #include "eeprominterface.h"
 #include "helpers.h"
+#include "appdata.h"
 #include <QtGui>
 
 #if !defined WIN32 && defined __GNUC__
@@ -83,33 +84,42 @@ burnConfigDialog::~burnConfigDialog()
 
 void burnConfigDialog::getSettings()
 {
-    QSettings settings;
+    avrLoc   = g.avrdudeLocation();
+    sambaLoc = g.sambaLocation();
+    dfuLoc =   g.dfuLocation();
+
 #if defined WIN32 || !defined __GNUC__
-    avrLoc   = settings.value("avrdude_location", QFileInfo("avrdude.exe").absoluteFilePath()).toString();
-    sambaLoc = settings.value("samba_location", QFileInfo("sam-ba.exe").absoluteFilePath()).toString();
-    dfuLoc = settings.value("dfu_location", QFileInfo("dfu-util.exe").absoluteFilePath()).toString();
+    if ( avrLoc.isEmpty())
+      avrLoc = QFileInfo("avrdude.exe").absoluteFilePath();
+    if ( sambaLoc.isEmpty())
+      sambaLoc = QFileInfo("sam-ba.exe").absoluteFilePath();
+    if ( dfuLoc.isEmpty())
+      dfuLoc =  QFileInfo("dfu-util.exe").absoluteFilePath();
 #elif defined __APPLE__
-    avrLoc   = settings.value("avrdude_location", "/usr/local/bin/avrdude").toString();
-    sambaLoc = settings.value("samba_location", "/usr/local/bin/sam-ba").toString();
-    dfuLoc = settings.value("dfu_location", QFileInfo("/opt/local/bin/dfu-util").absoluteFilePath()).toString();
+    if ( avrLoc.isEmpty())
+      avrLoc = "/usr/local/bin/avrdude";
+    if ( sambaLoc.isEmpty())
+      sambaLoc = "/usr/local/bin/sam-ba";
+    if ( dfuLoc.isEmpty())
+      dfuLoc =  QFileInfo("/opt/local/bin/dfu-util").absoluteFilePath();
 #else
-    avrLoc   = settings.value("avrdude_location", "/usr/bin/avrdude").toString();
-    sambaLoc = settings.value("samba_location", "/usr/bin/sam-ba").toString();
-    dfuLoc = settings.value("dfu_location", QFileInfo("/usr/bin/dfu-util").absoluteFilePath()).toString();
+    if ( avrLoc.isEmpty())
+      avrLoc = "/usr/bin/avrdude";
+    if ( sambaLoc.isEmpty())
+      sambaLoc = "/usr/bin/sam-ba";
+    if ( dfuLoc.isEmpty())
+      dfuLoc =  QFileInfo("/usr/bin/dfu-util").absoluteFilePath();
 #endif
-    QString str = settings.value("avr_arguments").toString();
-    avrArgs = str.split(" ", QString::SkipEmptyParts);
 
-    avrProgrammer =  settings.value("programmer", QString("usbasp")).toString();
 
-    avrMCU = settings.value("mcu", QString("m64")).toString();
-    armMCU = settings.value("arm_mcu", QString("at91sam3s4-9x")).toString();
+    dfuArgs = g.dfuArguments().split(" ", QString::SkipEmptyParts);
+    avrArgs = g.avrArguments().split(" ", QString::SkipEmptyParts);
+    avrProgrammer =  g.programmer();
+    avrPort = g.avrPort();
+    avrMCU = g.mcu();
+    armMCU = g.armMcu();
+    sambaPort = g.sambaPort();
 
-    avrPort   = settings.value("avr_port", "").toString();
-    sambaPort = settings.value("samba_port", "\\USBserial\\COM23").toString();
-    
-    str = settings.value("dfu_arguments", "-a 0").toString();
-    dfuArgs = str.split(" ", QString::SkipEmptyParts);
     ui->avrdude_location->setText(getAVRDUDE());
     ui->avrArgs->setText(getAVRArgs().join(" "));
 
@@ -137,17 +147,16 @@ void burnConfigDialog::getSettings()
 
 void burnConfigDialog::putSettings()
 {
-    QSettings settings;
-    settings.setValue("avrdude_location", avrLoc);
-    settings.setValue("programmer", avrProgrammer);
-    settings.setValue("mcu", avrMCU);
-    settings.setValue("avr_port", avrPort);
-    settings.setValue("avr_arguments", avrArgs.join(" "));
-    settings.setValue("samba_location", sambaLoc);
-    settings.setValue("samba_port", sambaPort);
-    settings.setValue("arm_mcu", armMCU);
-    settings.setValue("dfu_location", dfuLoc);
-    settings.setValue("dfu_arguments", dfuArgs.join(" "));
+    g.avrdudeLocation( avrLoc );
+    g.programmer( avrProgrammer);
+    g.mcu( avrMCU );
+    g.avrPort( avrPort );
+    g.avrArguments( avrArgs.join(" ") );
+    g.sambaLocation( sambaLoc );
+    g.sambaPort( sambaPort );
+    g.armMcu( armMCU );
+    g.dfuLocation( dfuLoc );
+    g.dfuArguments( dfuArgs.join(" ") );
 }
 
 void burnConfigDialog::populateProgrammers()

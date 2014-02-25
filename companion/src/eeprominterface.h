@@ -74,7 +74,7 @@ const uint8_t modn12x3[4][4]= {
 #define C9X_MAX_ENCODERS          2
 #define C9X_NUM_CHNOUT            32 // number of real output channels
 #define C9X_NUM_CSW               32 // number of custom switches
-#define C9X_MAX_CUSTOM_FUNCTIONS  32 // number of functions assigned to switches
+#define C9X_MAX_CUSTOM_FUNCTIONS  64 // number of functions assigned to switches
 #define C9X_NUM_MODULES           2
 
 #define STK_RUD  1
@@ -859,7 +859,7 @@ class ModuleData {
     void clear() { memset(this, 0, sizeof(ModuleData)); }
 };
 
-#define C9X_MAX_SCRIPTS       3
+#define C9X_MAX_SCRIPTS       7
 #define C9X_MAX_SCRIPT_INPUTS 10
 class ScriptData {
   public:

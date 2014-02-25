@@ -969,7 +969,7 @@ FIL g_telemetryFile = {0};
 void sdInit()
 {
   if (f_mount(0, &g_FATFS_Obj) == FR_OK) {
-    refreshSystemAudioFiles();
+    referenceSystemAudioFiles();
     
 #if defined(DEBUG)
     f_open(&g_telemetryFile, LOGS_PATH "/sport.log", FA_OPEN_ALWAYS | FA_WRITE);

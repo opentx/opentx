@@ -144,7 +144,7 @@ PACK(typedef struct {
   int8_t  swtch;
   uint8_t func;
   PACK(union {
-    char name[LEN_CFN_NAME];
+    char name[10];
     struct {
       int16_t val;
       int16_t ext1;
@@ -193,7 +193,7 @@ PACK(typedef struct {
   int8_t    points[NUM_POINTS];
 
   LogicalSwitchData_v215 customSw[NUM_CSW];
-  CustomFnData_v215 funcSw[NUM_CFN];
+  CustomFnData_v215 funcSw[32];
   SwashRingData swashR;
   PhaseData_v215 phaseData[MAX_PHASES];
 
@@ -212,9 +212,27 @@ PACK(typedef struct {
 
 }) ModelData_v215;
 
+PACK(typedef struct {
+  uint8_t   version;
+  uint16_t  variant;
+  int16_t   calibMid[NUM_STICKS+NUM_POTS];
+  int16_t   calibSpanNeg[NUM_STICKS+NUM_POTS];
+  int16_t   calibSpanPos[NUM_STICKS+NUM_POTS];
+  uint16_t  chkSum;
+}) GeneralSettings_v215;
+
 void ConvertGeneralSettings_215_to_216(EEGeneral &settings)
 {
+  GeneralSettings_v215 oldSettings;
+  memcpy(&oldSettings, &settings, sizeof(oldSettings));
+
   settings.version = 216;
+  for (int i=0; i<NUM_STICKS+NUM_POTS; i++) {
+    settings.calib[i].mid = oldSettings.calibMid[i];
+    settings.calib[i].spanNeg = oldSettings.calibSpanNeg[i];
+    settings.calib[i].spanPos = oldSettings.calibSpanPos[i];
+  }
+  settings.chkSum = evalChkSum();
 }
 
 #if defined(PCBTARANIS)
@@ -575,7 +593,7 @@ void ConvertModel_215_to_216(ModelData &model)
     }
 
     if (fn.func == FUNC_PLAY_TRACK || fn.func == FUNC_BACKGND_MUSIC) {
-      memcpy(fn.play.name, oldModel.funcSw[i].param.name, LEN_CFN_NAME);
+      memcpy(fn.play.name, oldModel.funcSw[i].param.name, 8);
     }
     else {
       fn.all.val = oldModel.funcSw[i].param.composite.val;
@@ -592,6 +610,7 @@ void ConvertModel_215_to_216(ModelData &model)
 
   for (uint8_t i=0; i<9; i++) {
     memcpy(&g_model.phaseData[i], &oldModel.phaseData[i], sizeof(oldModel.phaseData[i])); // the last 4 gvars will remain blank
+    g_model.phaseData[i].swtch = ConvertSwitch_215_to_216(oldModel.phaseData[i].swtch);
 #if defined(PCBTARANIS)
     for (uint8_t t=0; t<4; t++) {
       int trim = oldModel.phaseData[i].trim[t];

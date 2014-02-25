@@ -49,7 +49,6 @@
 #include "avroutputdialog.h"
 #include "comparedialog.h"
 #include "logsdialog.h"
-#include "preferencesdialog.h"
 #include "apppreferencesdialog.h"
 #include "fwpreferencesdialog.h"
 #include "flashinterface.h"
@@ -63,6 +62,7 @@
 #include "hexinterface.h"
 #include "warnings.h"
 #include "helpers.h"
+#include "appdata.h"
 #include "firmwares/opentx/opentxinterface.h" // TODO get rid of this include
 
 #define DONATE_STR      "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QUZ48K4SEXDP2"
@@ -90,23 +90,17 @@ MainWindow::MainWindow():
     mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     setCentralWidget(mdiArea);
-    connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)),
-            this, SLOT(updateMenus()));
+    connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)), this, SLOT(updateMenus()));
     windowMapper = new QSignalMapper(this);
-    connect(windowMapper, SIGNAL(mapped(QWidget*)),
-            this, SLOT(setActiveSubWindow(QWidget*)));
+    connect(windowMapper, SIGNAL(mapped(QWidget*)), this, SLOT(setActiveSubWindow(QWidget*)));
 
-    MaxRecentFiles=MAX_RECENT;
-    QSettings settings;
-
-    restoreGeometry(settings.value("mainWindowGeometry").toByteArray());
     createActions();
-
     createMenus();
     createToolBars();
     createStatusBar();
     updateMenus();
-    readSettings();
+
+    restoreState(g.mainWinState());
 
     setUnifiedTitleAndToolBarOnMac(true);
     this->setWindowIcon(QIcon(":/icon.png"));
@@ -116,7 +110,7 @@ MainWindow::MainWindow():
     
     // give time to the splash to disappear and main window to open before starting updates
     int updateDelay = 1000;
-    bool showSplash = settings.value("show_splash", true).toBool();
+    bool showSplash = g.showSplash();
     if (showSplash) {
       updateDelay += (SPLASH_TIME*1000); 
     }
@@ -169,8 +163,7 @@ MainWindow::MainWindow():
 
 void MainWindow::displayWarnings()
 {
-  QSettings settings;
-  int warnId=settings.value("warningId", 0 ).toInt();
+  int warnId=g.warningId();
   if (warnId<WARNING_ID && warnId!=0) {
     int res=0;
     if (WARNING_LEVEL>0) {
@@ -181,10 +174,10 @@ void MainWindow::displayWarnings()
       res = QMessageBox::question(this, "Companion",tr("Display previous message again at startup ?"),QMessageBox::Yes | QMessageBox::No);
     }
     if (res == QMessageBox::No) {
-      settings.setValue("warningId", WARNING_ID);
+      g.warningId(WARNING_ID);
     }
   } else if (warnId==0) {
-    settings.setValue("warningId", WARNING_ID);    
+    g.warningId(WARNING_ID);    
   }
 }
 
@@ -203,12 +196,11 @@ void MainWindow::checkForUpdates(bool ignoreSettings, QString & fwId)
     showcheckForUpdatesResult = ignoreSettings;
     check1done = true;
     check2done = true;
-    QSettings settings;
     fwToUpdate = fwId;
     QString stamp = GetFirmware(fwToUpdate)->stamp;
 
     if (!stamp.isEmpty()) {
-      if (checkFW || ignoreSettings) {
+      if (g.autoCheckFw() || ignoreSettings) {
         check1done=false;
         manager1 = new QNetworkAccessManager(this);
         connect(manager1, SIGNAL(finished(QNetworkReply*)), this, SLOT(reply1Finished(QNetworkReply*)));
@@ -219,7 +211,7 @@ void MainWindow::checkForUpdates(bool ignoreSettings, QString & fwId)
       }
     }
     
-    if (checkCompanion || ignoreSettings) {
+    if (g.autoCheckApp() || ignoreSettings) {
       check2done = false;
       manager2 = new QNetworkAccessManager(this);
       connect(manager2, SIGNAL(finished(QNetworkReply*)),this, SLOT(checkForUpdateFinished(QNetworkReply*)));
@@ -269,16 +261,14 @@ void MainWindow::checkForUpdateFinished(QNetworkReply * reply)
                                                             "Would you like to download it?").arg(version) ,
                                         QMessageBox::Yes | QMessageBox::No);
 
-        QSettings settings;
-
         if (ret == QMessageBox::Yes) {
 #if defined __APPLE__          
-          QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), settings.value("lastUpdatesDir").toString() + QString(C9X_INSTALLER).arg(version));
+          QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.updatesDir() + QString(C9X_INSTALLER).arg(version));
 #else            
-          QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), settings.value("lastUpdatesDir").toString() + QString(C9X_INSTALLER).arg(version), tr("Executable (*.exe)"));
+          QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.updatesDir() + QString(C9X_INSTALLER).arg(version), tr("Executable (*.exe)"));
 #endif
           if (!fileName.isEmpty()) {
-            settings.setValue("lastUpdatesDir", QFileInfo(fileName).dir().absolutePath());
+            g.updatesDir(QFileInfo(fileName).dir().absolutePath());
             downloadDialog * dd = new downloadDialog(this, QString(OPENTX_COMPANION_DOWNLOADS C9X_INSTALLER).arg(version), fileName);
             installer_fileName = fileName;
             connect(dd, SIGNAL(accepted()), this, SLOT(updateDownloaded()));
@@ -311,20 +301,19 @@ void MainWindow::updateDownloaded()
 void MainWindow::downloadLatestFW(FirmwareInfo * firmware, const QString & firmwareId)
 {
     QString url, ext, cpuid;
-    QSettings settings;
     url = firmware->getUrl(firmwareId);
-    cpuid=settings.value("cpuid","").toString();
+    cpuid=g.cpuId();
     ext = url.mid(url.lastIndexOf("."));
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), settings.value("lastFlashDir").toString() + "/" + firmwareId + ext);
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.flashDir() + "/" + firmwareId + ext);
     if (!fileName.isEmpty()) {
       downloadedFW = firmwareId;
       needRename=true;
-      downloadedFWFilename = fileName;
+      g.profile[g.id()].fwName( fileName );
       if (!cpuid.isEmpty()) {
         url.append("&cpuid=");
         url.append(cpuid);
       }
-      settings.setValue("lastFlashDir", QFileInfo(fileName).dir().absolutePath());
+      g.flashDir(QFileInfo(fileName).dir().absolutePath());
       downloadDialog * dd = new downloadDialog(this, url, fileName);
       connect(dd, SIGNAL(accepted()), this, SLOT(reply1Accepted()));
       dd->exec();
@@ -334,9 +323,7 @@ void MainWindow::downloadLatestFW(FirmwareInfo * firmware, const QString & firmw
 void MainWindow::reply1Accepted()
 {
     QString errormsg;
-    QSettings settings;
-    settings.beginGroup("FwRevisions");
-    if (downloadedFWFilename.isEmpty()) {
+    if (g.profile[g.id()].fwName().isEmpty()) {
       if (!(downloadedFW.isEmpty())) {
         QFile file(downloadedFW);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {  //reading HEX TEXT file
@@ -370,19 +357,18 @@ void MainWindow::reply1Accepted()
           }
           file.close();
           QMessageBox::critical(this, tr("Error"), errormsg);
-          settings.endGroup();
           return;
         }
         file.close();
         currentFWrev = currentFWrev_temp;
-        settings.setValue(downloadedFW, currentFWrev);
+        g.fwRev.set(downloadedFW, currentFWrev);
       }
     } else {
-      QFile file(downloadedFWFilename);
+      QFile file(g.profile[g.id()].fwName());
       if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {  //reading HEX TEXT file
       QMessageBox::critical(this, tr("Error"),
                               tr("Error opening file %1:\n%2.")
-                              .arg(downloadedFWFilename)
+                              .arg(g.profile[g.id()].fwName())
                               .arg(file.errorString()));
         return;
       }
@@ -410,17 +396,16 @@ void MainWindow::reply1Accepted()
         }
         file.close();
         QMessageBox::critical(this, tr("Error"), errormsg);
-        settings.endGroup();
         return;
       }
       file.close();
-      FlashInterface flash(downloadedFWFilename);
+      FlashInterface flash(g.profile[g.id()].fwName());
       QString rev=flash.getSvn();
       int pos=rev.lastIndexOf("-r");
       if (pos>0) {
         currentFWrev=rev.mid(pos+2).toInt();
-        if (settings.value("rename_firmware_files", false).toBool() && needRename) {
-          QFileInfo fi(downloadedFWFilename);
+        if (g.profile[g.id()].renameFwFiles() && needRename) {
+          QFileInfo fi(g.profile[g.id()].fwName());
           QString path=fi.path()+QDir::separator ();
           path.append(fi.completeBaseName());
           path.append(rev.mid(pos));
@@ -428,19 +413,18 @@ void MainWindow::reply1Accepted()
           path.append(fi.suffix());
           QDir qd;
           qd.remove(path);
-          qd.rename(downloadedFWFilename,path);
-          downloadedFWFilename=path;
+          qd.rename(g.profile[g.id()].fwName(),path);
+          g.profile[g.id()].fwName(path);
         }
-        settings.setValue(downloadedFW, currentFWrev);
-        if (settings.value("burnFirmware", true).toBool()) {
+        g.fwRev.set(downloadedFW, currentFWrev);
+        if (g.profile[g.id()].burnFirmware()) {
           int ret = QMessageBox::question(this, "Companion", tr("Do you want to write the firmware to the transmitter now ?"), QMessageBox::Yes | QMessageBox::No);
           if (ret == QMessageBox::Yes) {
-            writeFlash(downloadedFWFilename);
+            writeFlash(g.profile[g.id()].fwName());
           }
         }
       }
     }
-    settings.endGroup();
 }
 
 void MainWindow::reply1Finished(QNetworkReply * reply)
@@ -456,8 +440,7 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
       // TODO delete downloadDialog_forWait?
     }
     
-    QSettings settings;
-    cpuid=settings.value("cpuid","").toString();
+    cpuid=g.cpuId();
     QByteArray qba = reply->readAll();
     int i = qba.indexOf("SVN_VERS");
     int warning = qba.indexOf("WARNING");
@@ -471,17 +454,13 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
 
       if(!cres) {
         QMessageBox::warning(this, "Companion", tr("Unable to check for updates."));
-        int server = settings.value("fwserver",0).toInt();
-        server++;
-        settings.setValue("fwserver",server);
+        g.fwServerFails(g.fwServerFails()+1);
         return;
       }
 
       if(rev>0) {
         NewFwRev=rev;
-        settings.beginGroup("FwRevisions");
-        OldFwRev = settings.value(fwToUpdate, 0).toInt();
-        settings.endGroup();
+        OldFwRev = g.fwRev.get(fwToUpdate);
         QMessageBox msgBox;
         QSpacerItem* horizontalSpacer = new QSpacerItem(500, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
         QGridLayout* layout = (QGridLayout*)msgBox.layout();
@@ -552,9 +531,7 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
         if (ignore) {
           int res = QMessageBox::question(this, "Companion",tr("Ignore this version (r%1)?").arg(rev), QMessageBox::Yes | QMessageBox::No);
           if (res==QMessageBox::Yes)   {
-            settings.beginGroup("FwRevisions");
-            settings.setValue(fwToUpdate, NewFwRev);
-            settings.endGroup();
+            g.fwRev.set(fwToUpdate, NewFwRev);
           }
         } else if (download == true) {
           if (warning>0) {
@@ -571,20 +548,20 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
           QString url = GetFirmware(fwToUpdate)->getUrl(fwToUpdate);
           QString ext = url.mid(url.lastIndexOf("."));
           needRename=false;
-          bool addversion=settings.value("rename_firmware_files", false).toBool();
+          bool addversion=g.profile[g.id()].renameFwFiles();
           QString fileName;
           if (addversion) {
-            fileName = QFileDialog::getSaveFileName(this, tr("Save As"), settings.value("lastFlashDir").toString() + "/" + fwToUpdate + newrev + ext);
+            fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.flashDir() + "/" + fwToUpdate + newrev + ext);
           } else {
-            fileName = QFileDialog::getSaveFileName(this, tr("Save As"), settings.value("lastFlashDir").toString() + "/" + fwToUpdate + ext);
+            fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.flashDir() + "/" + fwToUpdate + ext);
           }
           if (!fileName.isEmpty()) {
             if (!cpuid.isEmpty()) {
               url.append("&cpuid=");
               url.append(cpuid);
             }              
-            downloadedFWFilename = fileName;
-            settings.setValue("lastFlashDir", QFileInfo(fileName).dir().absolutePath());
+            g.profile[g.id()].fwName( fileName );
+            g.flashDir(QFileInfo(fileName).dir().absolutePath());
             downloadDialog * dd = new downloadDialog(this, url, fileName);
             currentFWrev_temp = NewFwRev;
             connect(dd, SIGNAL(accepted()), this, SLOT(reply1Accepted()));
@@ -598,9 +575,7 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
     } else {
       if(check1done && check2done) {
         QMessageBox::warning(this, "Companion", tr("Unable to check for updates."));
-        int server = settings.value("fwserver",0).toInt();
-        server++;
-        settings.setValue("fwserver",server);
+        g.fwServerFails(g.fwServerFails()+1);
         return;
       }
     }    
@@ -608,9 +583,8 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    QSettings settings;
-    settings.setValue("mainWindowGeometry", saveGeometry());
-    settings.setValue("mainWindowState", saveState());
+    g.mainWinGeo(saveGeometry());
+    g.mainWinState(saveState());
     mdiArea->closeAllSubWindows();
     if (mdiArea->currentSubWindow()) {
       event->ignore();
@@ -622,8 +596,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void  MainWindow::setLanguage(QString langString)
 {    
-    QSettings settings;
-    settings.setValue("locale", langString );
+    g.locale( langString );
     
     QMessageBox msgBox;
     msgBox.setText(tr("The selected language will be used the next time you start Companion."));
@@ -634,8 +607,7 @@ void  MainWindow::setLanguage(QString langString)
 
 void  MainWindow::setTheme(int index)
 {    
-    QSettings settings;
-    settings.setValue("theme", index );
+    g.theme( index );
     
     QMessageBox msgBox;
     msgBox.setText(tr("The new theme will be loaded the next time you start Companion."));
@@ -646,8 +618,7 @@ void  MainWindow::setTheme(int index)
 
 void  MainWindow::setIconThemeSize(int index)
 {    
-    QSettings settings;
-    settings.setValue("icon_size", index );
+    g.iconSize( index );
 
     QMessageBox msgBox;
     msgBox.setText(tr("The icon size will be used the next time you start Companion."));
@@ -671,10 +642,9 @@ void MainWindow::openDocURL()
 
 void MainWindow::openFile()
 {
-    QSettings settings;
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Models and Settings file"), settings.value("lastDir").toString(),tr(EEPROM_FILES_FILTER));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Models and Settings file"), g.eepromDir(), tr(EEPROM_FILES_FILTER));
     if (!fileName.isEmpty()) {
-      settings.setValue("lastDir", QFileInfo(fileName).dir().absolutePath());
+      g.eepromDir(QFileInfo(fileName).dir().absolutePath());
 
       QMdiSubWindow *existing = findMdiChild(fileName);
       if (existing) {
@@ -704,11 +674,9 @@ void MainWindow::saveAs()
 
 void MainWindow::openRecentFile()
  {
-    QSettings settings;
     QAction *action = qobject_cast<QAction *>(sender());
     if (action) {
       QString fileName=action->data().toString();
-      // settings.setValue("lastDir", QFileInfo(fileName).dir().absolutePath());
 
       QMdiSubWindow *existing = findMdiChild(fileName);
       if (existing) {
@@ -724,42 +692,17 @@ void MainWindow::openRecentFile()
     }
 }
 
-void MainWindow::loadProfile()
+void MainWindow::loadProfile()  //TODO Load all variables - Also HW!
 {
-    QSettings settings;
     QAction *action = qobject_cast<QAction *>(sender());
 
     if (action) {
+      // Set the new profile number
       int profnum=action->data().toInt();
-      QSettings settings;
-      settings.setValue("profileId",profnum);
-      settings.beginGroup("Profiles");
-      QString profile=QString("profile%1").arg(profnum);
-      settings.beginGroup(profile);
-      QString profileName=settings.value("Name", "").toString();
-      int chord=settings.value("default_channel_order", 0).toInt();
-      int defmod=settings.value("default_mode", 0).toInt();
-      bool burnfw=settings.value("burnFirmware", false).toBool();
-      QString sdPath=settings.value("sdPath", ".").toString();
-      bool renfw=settings.value("rename_firmware_files", false).toBool();
-      QString SplashFileName=settings.value("SplashFileName","").toString();
-      QString SplashImage=settings.value("SplashImage", "").toString();            
-      QString firmware_id=settings.value("firmware", default_firmware_variant.id).toString();
-      firmware_id.replace("open9x","opentx");
-      firmware_id.replace("x9da","taranis");
-      settings.setValue("firmware", firmware_id);
-      settings.endGroup();
-      settings.endGroup();
-      settings.setValue("Name", profileName );
-      settings.setValue("default_channel_order", chord);
-      settings.setValue("default_mode", defmod);
-      settings.setValue("burnFirmware", burnfw);
-      settings.setValue("rename_firmware_files", renfw);
-      settings.setValue("sdPath", sdPath);
-      settings.setValue("SplashFileName", SplashFileName);
-      settings.setValue("SplashImage", SplashImage);
-      settings.setValue("firmware", firmware_id);
-      current_firmware_variant = GetFirmwareVariant(firmware_id);
+      g.id( profnum );
+
+      // TODO Get rid of this global variable - The profile.firmware is the real source
+      current_firmware_variant = GetFirmwareVariant(g.profile[g.id()].fwType());  
 
       foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
         MdiChild *mdiChild = qobject_cast<MdiChild *>(window->widget());
@@ -1107,20 +1050,19 @@ void MainWindow::readEeprom()
 
 void MainWindow::writeFileToEeprom()
 {
-    QSettings settings;
     QString fileName;
     bool backup = false;
     burnDialog *cd = new burnDialog(this, 1, &fileName, &backup);
     cd->exec();
     if (!fileName.isEmpty()) {
-      settings.setValue("lastDir", QFileInfo(fileName).dir().absolutePath());
+      g.eepromDir(QFileInfo(fileName).dir().absolutePath());
       int ret = QMessageBox::question(this, "Companion", tr("Write Models and settings from %1 to the Tx?").arg(QFileInfo(fileName).fileName()), QMessageBox::Yes | QMessageBox::No);
       if (ret != QMessageBox::Yes) return;
       if (!isValidEEPROM(fileName))
         ret = QMessageBox::question(this, "Companion", tr("The file %1\nhas not been recognized as a valid Models and Settings file\nWrite anyway ?").arg(QFileInfo(fileName).fileName()), QMessageBox::Yes | QMessageBox::No);
       if (ret != QMessageBox::Yes) return;
-      bool backupEnable = settings.value("backupEnable", true).toBool();
-      QString backupPath = settings.value("backupPath", "").toString();
+      bool backupEnable = g.enableBackup();
+      QString backupPath = g.backupDir();
       if (!backupPath.isEmpty()) {
         if (!QDir(backupPath).exists()) {
           if (backupEnable) {
@@ -1361,9 +1303,8 @@ bool MainWindow::convertEEPROM(QString backupFile, QString restoreFile, QString 
 
 void MainWindow::writeFlash(QString fileToFlash)
 {
-    QSettings settings;
     QString fileName;
-    bool backup = settings.value("backupOnFlash", false).toBool();
+    bool backup = g.backupOnFlash();
     if(!fileToFlash.isEmpty())
       fileName = fileToFlash;
     burnDialog *cd = new burnDialog(this, 2, &fileName, &backup);
@@ -1371,12 +1312,12 @@ void MainWindow::writeFlash(QString fileToFlash)
     if (IS_TARANIS(GetEepromInterface()->getBoard()))
       backup=false;
     if (!fileName.isEmpty()) {
-      settings.setValue("backupOnFlash", backup);
+      g.backupOnFlash(backup);
       if (backup) {
         QString tempDir    = QDir::tempPath();
         QString backupFile = tempDir + "/backup.bin";
-        bool backupEnable=settings.value("backupEnable", true).toBool();
-        QString backupPath=settings.value("backupPath", "").toString();
+        bool backupEnable=g.enableBackup();
+        QString backupPath=g.backupDir();
         if (!backupPath.isEmpty() && !IS_TARANIS(GetEepromInterface()->getBoard())) {
           if (!QDir(backupPath).exists()) {
             if (backupEnable) {
@@ -1430,8 +1371,8 @@ void MainWindow::writeFlash(QString fileToFlash)
         }
       }
       else {
-        bool backupEnable=settings.value("backupEnable", true).toBool();
-        QString backupPath=settings.value("backupPath", "").toString();
+        bool backupEnable=g.enableBackup();
+        QString backupPath=g.backupDir();
         if (!QDir(backupPath).exists()) {
           if (backupEnable) {
             QMessageBox::warning(this, tr("Backup is impossible"), tr("The backup dir set in preferences does not exist"));
@@ -1460,8 +1401,7 @@ void MainWindow::writeFlash(QString fileToFlash)
 
 void MainWindow::readEepromToFile()
 {
-    QSettings settings;
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save transmitter Models and Settings to File"), settings.value("lastDir").toString(), tr(EXTERNAL_EEPROM_FILES_FILTER));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save transmitter Models and Settings to File"), g.eepromDir(), tr(EXTERNAL_EEPROM_FILES_FILTER));
     if (!fileName.isEmpty()) {
       EEPROMInterface *eepromInterface = GetEepromInterface();
       if (IS_TARANIS(eepromInterface->getBoard())) {
@@ -1480,7 +1420,7 @@ void MainWindow::readEepromToFile()
         }
       }
       else {
-        settings.setValue("lastDir", QFileInfo(fileName).dir().absolutePath());
+        g.eepromDir(QFileInfo(fileName).dir().absolutePath());
         QStringList str = GetReceiveEEpromCommand(fileName);
         avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Read Models and Settings From Tx"));
         ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
@@ -1492,14 +1432,13 @@ void MainWindow::readEepromToFile()
 
 void MainWindow::readFlash()
 {
-    QSettings settings;
-    QString fileName = QFileDialog::getSaveFileName(this,tr("Read Tx Firmware to File"), settings.value("lastFlashDir").toString(),tr(FLASH_FILES_FILTER));
+    QString fileName = QFileDialog::getSaveFileName(this,tr("Read Tx Firmware to File"), g.flashDir(),tr(FLASH_FILES_FILTER));
     if (!fileName.isEmpty()) {
         QFile file(fileName);
         if (file.exists()) {
           file.remove();
         }
-        settings.setValue("lastFlashDir",QFileInfo(fileName).dir().absolutePath());
+        g.flashDir(QFileInfo(fileName).dir().absolutePath());
         QStringList str = GetReceiveFlashCommand(fileName);
         avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, "Read Firmware From Tx");
         ad->setWindowIcon(CompanionIcon("read_flash.png"));
@@ -1579,8 +1518,7 @@ void MainWindow::updateMenus()
     updateIconSizeActions();
     updateIconThemeActions();
 
-    QSettings settings;
-    setWindowTitle(tr("OpenTX Companion - FW: %1 - Profile: %2").arg(GetCurrentFirmware()->name).arg(settings.value("profileId").toString()));
+    setWindowTitle(tr("OpenTX Companion - FW: %1 - Profile: %2").arg(GetCurrentFirmware()->name).arg( g.profile[g.id()].name() ));
 }
 
 MdiChild *MainWindow::createMdiChild()
@@ -1631,7 +1569,7 @@ void MainWindow::createActions()
     separatorAct = new QAction(this);
     separatorAct->setSeparator(true);
 
-    for (int i = 0; i < MaxRecentFiles; ++i)  {
+    for (int i = 0; i < MAX_RECENT; ++i)  {
       recentFileActs[i] = new QAction(this);
       recentFileActs[i]->setVisible(false);
       connect(recentFileActs[i], SIGNAL(triggered()), this, SLOT(openRecentFile()));
@@ -1648,17 +1586,17 @@ void MainWindow::createActions()
     }
     updateProfilesActions();
 
-    newAct =             addAct("new.png",    tr("New"),        tr("Create a new file"),                       QKeySequence::New,    SLOT(newFile()));
-    openAct =            addAct("open.png",   tr("Open..."),    tr("Open an existing file"),                   QKeySequence::Open,   SLOT(openFile()));
-    saveAct =            addAct("save.png",   tr("Save..."),    tr("Save the document to disk"),               QKeySequence::Save,   SLOT(save()));
-    saveAsAct =          addAct("saveas.png", tr("Save As..."), tr("Save the document to disk"),               QKeySequence::SaveAs, SLOT(saveAs()));
-    exitAct =            addAct("exit.png",   tr("Exit"),       tr("Exit the application"),                    QKeySequence::Quit,   SLOT(newFile()));
-    cutAct =             addAct("cut.png",    tr("Cut"),        tr("Cut current selection to the clipboard"),  QKeySequence::Cut,    SLOT(cut()));
-    copyAct =            addAct("copy.png",   tr("Copy..."),    tr("Copy current selection to the clipboard"), QKeySequence::Copy,   SLOT(copy()));
-    pasteAct =           addAct("paste.png",  tr("Paste..."),   tr("Paste clipboard into current selection"),  QKeySequence::Paste,  SLOT(paste()));
+    newAct =             addAct("new.png",    tr("New Models+Settings"),        tr("Create a new Models and Settings file"), QKeySequence::New,    SLOT(newFile()));
+    openAct =            addAct("open.png",   tr("Open Models+Settings..."),    tr("Open Models and Settings file"),         QKeySequence::Open,   SLOT(openFile()));
+    saveAct =            addAct("save.png",   tr("Save Models+Settings..."),    tr("Save Models and Settings file"),         QKeySequence::Save,   SLOT(save()));
+    saveAsAct =          addAct("saveas.png", tr("Save Models+Settings as..."), tr("Save Models and Settings file"),         QKeySequence::SaveAs, SLOT(saveAs()));
+    exitAct =            addAct("exit.png",   tr("Exit"),                       tr("Exit the application"),                  QKeySequence::Quit,   SLOT(newFile()));
+    cutAct =             addAct("cut.png",    tr("Cut Model"),                  tr("Cut current model to the clipboard"),    QKeySequence::Cut,    SLOT(cut()));
+    copyAct =            addAct("copy.png",   tr("Copy Model..."),              tr("Copy current model to the clipboard"),   QKeySequence::Copy,   SLOT(copy()));
+    pasteAct =           addAct("paste.png",  tr("Paste Model..."),             tr("Paste model from clipboard"),            QKeySequence::Paste,  SLOT(paste()));
  
     QActionGroup *themeAlignGroup = new QActionGroup(this);
-    classicThemeAct =    addAct( themeAlignGroup,    tr("Classical"),       tr("The classical Companion icon theme"),   SLOT(setClassicTheme()));
+    classicThemeAct =    addAct( themeAlignGroup,    tr("Classical"),       tr("The classic companion9x icon theme"),   SLOT(setClassicTheme()));
     yericoThemeAct =     addAct( themeAlignGroup,    tr("Yerico"),          tr("Yellow round honey sweet icon theme"),  SLOT(setYericoTheme()));
     monoThemeAct =       addAct( themeAlignGroup,    tr("Monochrome"),      tr("A monochrome black icon theme"),        SLOT(setMonochromeTheme()));
     monoWhiteAct =       addAct( themeAlignGroup,    tr("MonoWhite"),       tr("A monochrome white icon theme"),        SLOT(setMonoWhiteTheme()));
@@ -1684,30 +1622,30 @@ void MainWindow::createActions()
     swedishLangAct =     addAct( langAlignGroup,     tr("Swedish"),         tr("Use Swedish in menus"),                 SLOT(setSELanguage()));
     russianLangAct =     addAct( langAlignGroup,     tr("Russian"),         tr("Use Russian in menus"),                 SLOT(setRULanguage()));
 
-    aboutAct =           addAct("information.png",   tr("About"),                  tr("Show the application's About box"),   SLOT(about()));
-    printAct =           addAct("print.png",         tr("Print"),                  tr("Print current model"),                SLOT(print()));
-    simulateAct =        addAct("simulate.png",      tr("Simulate"),               tr("Simulate selected model"),            SLOT(simulate()));
-    loadbackupAct =      addAct("open.png",          tr("loadBackup..."),          tr("Load backup from file"),              SLOT(loadBackup()));
-    logsAct =            addAct("logs.png",          tr("Logs"),                   tr("Open log file"),                      SLOT(logFile()));
-    appPrefsAct =        addAct("apppreferences.png",tr("Setting..."),             tr("Edit Settings"),                      SLOT(appPrefs()));
-    fwPrefsAct =         addAct("fwpreferences.png", tr("Downloads..."),           tr("Download firmware and voice files"),  SLOT(fwPrefs()));
-    checkForUpdatesAct = addAct("update.png",        tr("Check for updates..."),   tr("Check OpenTX and Companion updates"), SLOT(doUpdates()));
-    changelogAct =       addAct("changelog.png",     tr("ChangeLog..."),           tr("Show Companion changelog"),           SLOT(changelog()));
-    fwchangelogAct =     addAct("changelog.png",     tr("Firmware ChangeLog..."),  tr("Show firmware changelog"),            SLOT(fwchangelog()));
-    compareAct =         addAct("compare.png",       tr("Compare..."),             tr("Compare models"),                     SLOT(compare()));
-    editSplashAct =      addAct("paintbrush.png",    tr("Edit Tx Splash Image..."),tr("edit the splash screen of your TX"),  SLOT(customizeSplash()));
-    burnListAct =        addAct("list.png",          tr("List programmers"),       tr("List available programmers"),         SLOT(burnList()));
-    burnFusesAct =       addAct("fuses.png",         tr("Fuses..."),               tr("Show fuses dialog"),                  SLOT(burnFuses()));
-    readFlashAct =       addAct("read_flash.png",    tr("Read Firmware"),          tr("Read firmware from transmitter"),     SLOT(readFlash()));
-    writeFlashAct =      addAct("write_flash.png",   tr("Write Firmware"),         tr("Write firmware to transmitter"),      SLOT(writeFlash()));
-    createProfileAct =   addAct("",                  tr("New Profile"),            tr("Create a new Radio Setting Profile"), SLOT(createProfile()));
+    aboutAct =           addAct("information.png",   tr("About..."),                tr("Show the application's About box"),   SLOT(about()));
+    printAct =           addAct("print.png",         tr("Print..."),                tr("Print current model"),                SLOT(print()));
+    simulateAct =        addAct("simulate.png",      tr("Simulate..."),             tr("Simulate current model"),             SLOT(simulate()));
+    loadbackupAct =      addAct("open.png",          tr("Load Backup..."),          tr("Load backup from file"),              SLOT(loadBackup()));
+    logsAct =            addAct("logs.png",          tr("View Log File..."),        tr("Open and view log file"),             SLOT(logFile()));
+    appPrefsAct =        addAct("apppreferences.png",tr("Settings..."),             tr("Edit Settings"),                      SLOT(appPrefs()));	
+    fwPrefsAct =         addAct("fwpreferences.png", tr("Download..."),             tr("Download firmware and voice files"),  SLOT(fwPrefs()));
+    checkForUpdatesAct = addAct("update.png",        tr("Check for Updates..."),    tr("Check OpenTX and Companion updates"), SLOT(doUpdates()));
+    changelogAct =       addAct("changelog.png",     tr("Companion Changes..."),    tr("Show Companion change log"),          SLOT(changelog()));
+    fwchangelogAct =     addAct("changelog.png",     tr("Firmware Changes..."),     tr("Show firmware change log"),           SLOT(fwchangelog()));
+    compareAct =         addAct("compare.png",       tr("Compare Models..."),       tr("Compare models"),                     SLOT(compare()));
+    editSplashAct =      addAct("paintbrush.png",    tr("Edit Tx Splash Image..."), tr("Edit the splash image of your TX"),   SLOT(customizeSplash()));
+    burnListAct =        addAct("list.png",          tr("List programmers..."),     tr("List available programmers"),         SLOT(burnList()));
+    burnFusesAct =       addAct("fuses.png",         tr("Fuses..."),                tr("Show fuses dialog"),                  SLOT(burnFuses()));
+    readFlashAct =       addAct("read_flash.png",    tr("Read Firmware"),           tr("Read firmware from transmitter"),     SLOT(readFlash()));
+    writeFlashAct =      addAct("write_flash.png",   tr("Write Firmware"),          tr("Write firmware to transmitter"),      SLOT(writeFlash()));
+    createProfileAct =   addAct("",                  tr("Add Radio Profile"),             tr("Create a new Radio Setting Profile"), SLOT(createProfile()));
     openDocURLAct =      addAct("",                  tr("Manuals and other Documents"),      tr("Open the OpenTX document page in a web browser"), SLOT(openDocURL()));
     writeEepromAct =     addAct("write_eeprom.png",  tr("Write Models and Settings To Tx"),  tr("Write Models and Settings to transmitter"),       SLOT(writeEeprom()));
     readEepromAct =      addAct("read_eeprom.png",   tr("Read Models and Settings From Tx"), tr("Read Models and Settings from transmitter"),      SLOT(readEeprom()));
-    burnConfigAct =      addAct("configure.png",     tr("Configure connection software..."), tr("Configure software for reading from and writing to the transmitter"), SLOT(burnConfig()));
-    writeFileToEepromAct = addAct("write_eeprom_file.png",   tr("Write Models and Settings from file to Tx"), tr("Write Models and Settings from file to transmitter"), SLOT(writeFileToEeprom()));
-    readEepromToFileAct = addAct("read_eeprom_file.png",  tr("Save Tx Models and Settings to file"),       tr("Save the Models and Settings from the transmitter to a file"), SLOT(readEepromToFile()));
-    contributorsAct =    addAct("contributors.png",  tr("Contributors"),            tr("A tribute to those who have contributed to OpenTX and Companion"), SLOT(contributors()));
+    burnConfigAct =      addAct("configure.png",     tr("Configure Communications..."), tr("Configure software for communicating with the transmitter"), SLOT(burnConfig()));
+    writeFileToEepromAct = addAct("write_eeprom_file.png", tr("Write Models and Settings from file to Tx"), tr("Write Models and Settings from file to transmitter"), SLOT(writeFileToEeprom()));
+    readEepromToFileAct = addAct("read_eeprom_file.png", tr("Save Tx Models and Settings to file"), tr("Save the Models and Settings from the transmitter to a file"), SLOT(readEepromToFile()));
+    contributorsAct =    addAct("contributors.png",  tr("Contributors..."), tr("A tribute to those who have contributed to OpenTX and Companion"), SLOT(contributors()));
     
     compareAct->setEnabled(false);
     simulateAct->setEnabled(false);
@@ -1717,7 +1655,7 @@ void MainWindow::createActions()
 void MainWindow::createMenus()
 
 {
-    QMenu *recentFileMenu=new QMenu(tr("Recent Files"));
+    QMenu *recentFileMenu=new QMenu(tr("Recent Models+Settings"));
     QMenu *languageMenu=new QMenu(tr("Set Menu Language"));
     QMenu *themeMenu=new QMenu(tr("Set Icon Theme"));
     QMenu *iconThemeSizeMenu=new QMenu(tr("Set Icon Size"));
@@ -1729,17 +1667,16 @@ void MainWindow::createMenus()
     fileMenu->addAction(saveAsAct);
     fileMenu->addMenu(recentFileMenu);
     recentFileMenu->setIcon(CompanionIcon("recentdocument.png"));
-    for (int i=0; i<MaxRecentFiles; ++i)
+    for (int i=0; i<MAX_RECENT; ++i)
       recentFileMenu->addAction(recentFileActs[i]);
     fileMenu->addSeparator();
     fileMenu->addAction(logsAct);
+    fileMenu->addAction(fwPrefsAct);
     fileMenu->addSeparator();
     fileMenu->addAction(simulateAct);
     fileMenu->addAction(printAct);
     fileMenu->addAction(compareAct);
     fileMenu->addSeparator();
-    fileMenu->addAction(fwPrefsAct);
-    fileMenu->addMenu(createProfilesMenu());
     fileMenu->addAction(exitAct);
 
     editMenu = menuBar()->addMenu(tr("Edit"));
@@ -1775,6 +1712,7 @@ void MainWindow::createMenus()
       iconThemeSizeMenu->addAction(hugeIconAct);
     settingsMenu->addSeparator();
     settingsMenu->addAction(appPrefsAct);
+    settingsMenu->addMenu(createProfilesMenu());
     settingsMenu->addAction(editSplashAct);
     settingsMenu->addAction(burnConfigAct);
 
@@ -1811,20 +1749,20 @@ void MainWindow::createMenus()
 QMenu *MainWindow::createRecentFileMenu()
 {
     QMenu *recentFileMenu = new QMenu(this);
-    for ( int i = 0; i < MaxRecentFiles; ++i)
+    for ( int i = 0; i < MAX_RECENT; ++i)
       recentFileMenu->addAction(recentFileActs[i]);
     return recentFileMenu;
 }
 
 QMenu *MainWindow::createProfilesMenu()
 {
-    QMenu *profilesMenu=new QMenu(tr("Radio Settings Profiles"));
+    QMenu *profilesMenu=new QMenu(tr("Radio Settings Profile"));
     int i;
     for ( i = 0; i < MAX_PROFILES; ++i) {
       profilesMenu->addAction(profileActs[i]);
     }
-    if ( i>0 )
-      profilesMenu->addSeparator();
+    profilesMenu->addSeparator();
+
     profilesMenu->addAction(createProfileAct);
     profilesMenu->setIcon(CompanionIcon("profiles.png"));
     return profilesMenu;
@@ -1832,10 +1770,8 @@ QMenu *MainWindow::createProfilesMenu()
 
 void MainWindow::createToolBars()
 {
-    QSettings settings;
-    int icon_size=settings.value("icon_size",2 ).toInt();
     QSize size;
-    switch(icon_size) {
+    switch(g.iconSize()) {
       case 0:
         size=QSize(16,16);
         break;
@@ -1862,25 +1798,26 @@ void MainWindow::createToolBars()
     recentToolButton->setPopupMode(QToolButton::InstantPopup);
     recentToolButton->setMenu(createRecentFileMenu());
     recentToolButton->setIcon(CompanionIcon("recentdocument.png"));
-    recentToolButton->setToolTip(tr("Recent Files"));
-	  recentToolButton->setStatusTip(tr("Show a selection list of recent documents"));
+    recentToolButton->setToolTip(tr("Recent Models+Settings"));
+	  recentToolButton->setStatusTip(tr("Show recent Models+Settings documents"));
 
     fileToolBar->addWidget(recentToolButton);
     fileToolBar->addAction(saveAct);
+    fileToolBar->addSeparator();
     fileToolBar->addAction(logsAct);
+    fileToolBar->addAction(fwPrefsAct);
     fileToolBar->addSeparator();
     fileToolBar->addAction(appPrefsAct);
-    fileToolBar->addAction(fwPrefsAct);
-    fileToolBar->addAction(editSplashAct);
 
     QToolButton * profileButton = new QToolButton;
     profileButton->setPopupMode(QToolButton::InstantPopup);
     profileButton->setMenu(createProfilesMenu());
     profileButton->setIcon(CompanionIcon("profiles.png"));
-    profileButton->setToolTip(tr("Radio Profiles"));
+    profileButton->setToolTip(tr("Radio Settings Profile"));
 	  profileButton->setStatusTip(tr("Show a selection list of radio settings profiles"));
 
     fileToolBar->addWidget(profileButton);
+    fileToolBar->addAction(editSplashAct);
     fileToolBar->addSeparator();
     fileToolBar->addAction(simulateAct);
     fileToolBar->addAction(printAct);
@@ -1920,20 +1857,6 @@ void MainWindow::createStatusBar()
     statusBar()->showMessage(tr("Ready"));
 }
 
-void MainWindow::readSettings()
-{
-    QSettings settings;
-    restoreState(settings.value("mainWindowState").toByteArray());
-    checkCompanion = settings.value("startup_check_companion", true).toBool();
-    checkFW = settings.value("startup_check_fw", true).toBool();
-    MaxRecentFiles =settings.value("history_size",10).toInt();
-    if (settings.value("profileId",0).toInt() == 0)
-    {
-      createProfile();
-      settings.setValue("profileId", "1");
-    }
-}
-
 MdiChild *MainWindow::activeMdiChild()
 {
     if (QMdiSubWindow *activeSubWindow = mdiArea->activeSubWindow())
@@ -1962,27 +1885,31 @@ void MainWindow::setActiveSubWindow(QWidget *window)
 
 void MainWindow::updateRecentFileActions()
  {
-    int i,j, numRecentFiles;
-    QSettings settings;
-    QStringList files = settings.value("recentFileList").toStringList();
+    int i, numRecentFiles;
  
-    numRecentFiles = qMin(files.size(), (int)MaxRecentFiles);
+    //  Hide all document slots
+    for ( i=0 ; i < g.historySize(); i++)
+      recentFileActs[i]->setVisible(false);
+
+    // Fill slots with content and unhide them
+    QStringList files = g.recentFiles();
+    numRecentFiles = qMin(files.size(), g.historySize());
  
-    for ( i = 0; i < numRecentFiles; ++i)  {
-      QString text = tr("&%1 %2").arg(i + 1).arg(strippedName(files[i]));
-      recentFileActs[i]->setText(text);
-      recentFileActs[i]->setData(files[i]);
-      recentFileActs[i]->setVisible(true);
+    for ( i = 0; i < numRecentFiles; i++)  {
+      QString text = strippedName(files[i]);
+      if (!text.trimmed().isEmpty())
+      {
+        recentFileActs[i]->setText(text);
+        recentFileActs[i]->setData(files[i]);
+        recentFileActs[i]->setVisible(true);
+      }
     }
-    for ( j = numRecentFiles; j < MaxRecentFiles; ++j)
-      recentFileActs[j]->setVisible(false);
 }
 
 void MainWindow::updateIconSizeActions()
 {
-  QSettings settings;
-  int size = settings.value("icon_size","0").toInt();
-  switch (size){
+  switch (g.iconSize())
+  {
     case 0:  smallIconAct->setChecked(true);  break;
     case 1:  normalIconAct->setChecked(true); break;
     case 2:  bigIconAct->setChecked(true);    break;
@@ -1992,8 +1919,7 @@ void MainWindow::updateIconSizeActions()
 
 void MainWindow::updateLanguageActions()
 {
-  QSettings settings;
-  QString langId = settings.value("locale","").toString();
+  QString langId = g.locale();
 
   if (langId=="") 
     sysLangAct->setChecked(true);
@@ -2023,9 +1949,8 @@ void MainWindow::updateLanguageActions()
 
 void MainWindow::updateIconThemeActions()
 {
-  QSettings settings;
-  int size = settings.value("theme","1").toInt();
-  switch (size){
+  switch (g.theme())
+  {
     case 0:  classicThemeAct->setChecked(true); break;
     case 1:  yericoThemeAct->setChecked(true);  break;
     case 2:  monoWhiteAct->setChecked(true);    break;
@@ -2036,53 +1961,36 @@ void MainWindow::updateIconThemeActions()
 
 void MainWindow::updateProfilesActions()
 {
-  int i;
-  QSettings settings;
-  int activeProfile = settings.value("profileId").toInt();
-
-  settings.beginGroup("Profiles");
-  for (i=0; i<MAX_PROFILES; i++) {
-    QString profile=QString("profile%1").arg(i+1);
-    settings.beginGroup(profile);
-    QString name=settings.value("Name","").toString();
-    if (!name.isEmpty()) {
-      QString text = tr("&%1 %2").arg(i + 1).arg(name);
+  for (int i=0; i<MAX_PROFILES; i++) 
+  {
+    if (g.profile[i].existsOnDisk()) 
+    {
+      QString text = tr("%2").arg(g.profile[i].name());
       profileActs[i]->setText(text);
-      profileActs[i]->setData(i+1);
+      profileActs[i]->setData(i);
       profileActs[i]->setVisible(true);
-      if ((i+1) == activeProfile)
+      if (i == g.id())
         profileActs[i]->setChecked(true);
     } 
-    else {
+    else 
+    {
       profileActs[i]->setVisible(false);
     }
-    settings.endGroup();
   }
 }
 
 void MainWindow::createProfile()
-{
-  int firstFreeIndex = 0;
-  QSettings settings;
-  settings.beginGroup("Profiles");
-  for (int i=0; firstFreeIndex ==0 && i<MAX_PROFILES; i++) {
-    QString profile=QString("profile%1").arg(i+1);
-    settings.beginGroup(profile);  
-    QString name=settings.value("Name","").toString();
-    if (name.isEmpty())
-      firstFreeIndex = i+1;
-    settings.endGroup();
-  }
-  settings.endGroup();
-  if (firstFreeIndex == 0)  // Could not find free index
+{ int i;
+for (i=0; i<MAX_PROFILES && g.profile[i].existsOnDisk(); i++)
+    ;
+  if (i==MAX_PROFILES)  //Failed to find free slot
     return;
+ 
+  // Copy current profile to new and give it a new name
+  g.profile[i] = g.profile[g.id()];
+  g.profile[i].name( QString("New Radio"));
 
-  settings.beginGroup("Profiles");
-  settings.beginGroup(QString("profile%1").arg(firstFreeIndex));
-  settings.setValue("Name",QString("profile%1").arg(firstFreeIndex));
-  settings.endGroup();
-  settings.endGroup();
-
+  g.id(i);
   updateMenus();
 }
 
@@ -2183,8 +2091,7 @@ void MainWindow::dropEvent(QDropEvent *event)
     QString fileName = urls.first().toLocalFile();
     if (fileName.isEmpty())
       return;
-    QSettings settings;
-    settings.setValue("lastDir", QFileInfo(fileName).dir().absolutePath());
+    g.eepromDir(QFileInfo(fileName).dir().absolutePath());
 
     QMdiSubWindow *existing = findMdiChild(fileName);
     if (existing) {
