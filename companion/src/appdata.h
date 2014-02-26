@@ -166,7 +166,7 @@ class Profile: protected CompStoreObj
     void vBatWarn      (const int);
 
     Profile();
-	Profile& operator=(const Profile&);
+    Profile& operator=(const Profile&);
     void remove();
     bool existsOnDisk();
     void init(int newIndex);

@@ -92,5 +92,5 @@ private:
 protected:
   bool isValidFlag;
 };
-#endif	/* FLASHINTERFACE_H */
+#endif /* FLASHINTERFACE_H */
 

@@ -1538,17 +1538,17 @@ MdiChild *MainWindow::createMdiChild()
 
 QAction * MainWindow::addAct(QString icon, QString sName, QString lName, QKeySequence::StandardKey shortcut, const char *slot)
 {
-	QAction * newAction = new QAction( this );
-	if (!icon.isEmpty())
+  QAction * newAction = new QAction( this );
+  if (!icon.isEmpty())
       newAction->setIcon(CompanionIcon(icon));
-	if (!sName.isEmpty()) 
-	  newAction->setText(sName);
-	if (!lName.isEmpty())
-	  newAction->setStatusTip(lName);
-	if (shortcut != 0)
-	  newAction->setShortcuts(shortcut);
+  if (!sName.isEmpty()) 
+    newAction->setText(sName);
+  if (!lName.isEmpty())
+    newAction->setStatusTip(lName);
+  if (shortcut != 0)
+    newAction->setShortcuts(shortcut);
     connect(newAction, SIGNAL(triggered()), this, slot);
-	return newAction;
+  return newAction;
 }
 
 QAction * MainWindow::addAct(QString icon, QString sName, QString lName, const char *slot)
@@ -1627,7 +1627,7 @@ void MainWindow::createActions()
     simulateAct =        addAct("simulate.png",      tr("Simulate..."),             tr("Simulate current model"),             SLOT(simulate()));
     loadbackupAct =      addAct("open.png",          tr("Load Backup..."),          tr("Load backup from file"),              SLOT(loadBackup()));
     logsAct =            addAct("logs.png",          tr("View Log File..."),        tr("Open and view log file"),             SLOT(logFile()));
-    appPrefsAct =        addAct("apppreferences.png",tr("Settings..."),             tr("Edit Settings"),                      SLOT(appPrefs()));	
+    appPrefsAct =        addAct("apppreferences.png",tr("Settings..."),             tr("Edit Settings"),                      SLOT(appPrefs()));
     fwPrefsAct =         addAct("fwpreferences.png", tr("Download..."),             tr("Download firmware and voice files"),  SLOT(fwPrefs()));
     checkForUpdatesAct = addAct("update.png",        tr("Check for Updates..."),    tr("Check OpenTX and Companion updates"), SLOT(doUpdates()));
     changelogAct =       addAct("changelog.png",     tr("Companion Changes..."),    tr("Show Companion change log"),          SLOT(changelog()));
@@ -1799,7 +1799,7 @@ void MainWindow::createToolBars()
     recentToolButton->setMenu(createRecentFileMenu());
     recentToolButton->setIcon(CompanionIcon("recentdocument.png"));
     recentToolButton->setToolTip(tr("Recent Models+Settings"));
-	  recentToolButton->setStatusTip(tr("Show recent Models+Settings documents"));
+    recentToolButton->setStatusTip(tr("Show recent Models+Settings documents"));
 
     fileToolBar->addWidget(recentToolButton);
     fileToolBar->addAction(saveAct);
@@ -1814,7 +1814,7 @@ void MainWindow::createToolBars()
     profileButton->setMenu(createProfilesMenu());
     profileButton->setIcon(CompanionIcon("profiles.png"));
     profileButton->setToolTip(tr("Radio Settings Profile"));
-	  profileButton->setStatusTip(tr("Show a selection list of radio settings profiles"));
+    profileButton->setStatusTip(tr("Show a selection list of radio settings profiles"));
 
     fileToolBar->addWidget(profileButton);
     fileToolBar->addAction(editSplashAct);
