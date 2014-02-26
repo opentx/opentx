@@ -239,6 +239,9 @@ enum BeeperMode {
   int8_t   beepVolume; \
   int8_t   wavVolume; \
   int8_t   varioVolume; \
+  int8_t   varioPitch; \
+  int8_t   varioRange; \
+  int8_t   varioRepeat; \
   int8_t   backgroundVolume;
 #endif
 
@@ -1015,7 +1018,11 @@ enum VarioSource {
   VARIO_SOURCE_VARIO,
   VARIO_SOURCE_A1,
   VARIO_SOURCE_A2,
-  VARIO_SOURCE_LAST = VARIO_SOURCE_A2
+#if defined(FRSKY_SPORT)
+  VARIO_SOURCE_DTE,
+#endif
+  VARIO_SOURCE_COUNT,
+  VARIO_SOURCE_LAST = VARIO_SOURCE_COUNT-1
 };
 
 #if defined(FRSKY_HUB)

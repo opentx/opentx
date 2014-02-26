@@ -462,6 +462,9 @@ class GeneralSettings {
     int beepVolume;
     int wavVolume;
     int varioVolume;
+    int varioPitch;
+    int varioRange;
+    int varioRepeat;
     int backgroundVolume;
     unsigned int mavbaud;
     unsigned int switchUnlockStates;

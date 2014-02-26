@@ -2379,6 +2379,11 @@ Open9xGeneralDataNew::Open9xGeneralDataNew(GeneralSettings & generalData, BoardE
       internalField.Append(new SignedField<8>(generalData.beepVolume));
       internalField.Append(new SignedField<8>(generalData.wavVolume));
       internalField.Append(new SignedField<8>(generalData.varioVolume));
+      if (version >= 216) {
+        internalField.Append(new SignedField<8>(generalData.varioPitch));
+        internalField.Append(new SignedField<8>(generalData.varioRange));
+        internalField.Append(new SignedField<8>(generalData.varioRepeat));
+      }
       internalField.Append(new SignedField<8>(generalData.backgroundVolume));
     }
     if (IS_TARANIS(board) && version >= 216) {
