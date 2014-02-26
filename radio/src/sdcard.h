@@ -44,7 +44,7 @@
 #define LOGS_PATH           ROOT_PATH "LOGS"   // no trailing slash = important
 #define SOUNDS_PATH         ROOT_PATH "SOUNDS/en" // no trailing slash = important
 #define SOUNDS_PATH_LNG_OFS (sizeof(SOUNDS_PATH)-3)
-#define SYSTEM_SOUNDS_PATH  SOUNDS_PATH "/SYSTEM" // no trailing slash = important
+#define SYSTEM_SUBDIR       "SYSTEM" // no trailing slash = important
 #define BITMAPS_PATH        ROOT_PATH "BMP"
 #define SCRIPTS_PATH        ROOT_PATH "SCRIPTS"
 
@@ -53,7 +53,6 @@
 #define SOUNDS_EXT          ".wav"
 #define BITMAPS_EXT         ".bmp"
 #define SCRIPTS_EXT         ".lua"
-#define MIXES_EXT           ".mix"
 #define TEXT_EXT            ".txt"
 
 extern FATFS g_FATFS_Obj;

@@ -74,7 +74,7 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
       if (!name.isEmpty()) {
         ui->profile_CB->addItem(name, i);
         if (i==g.id()) {
-          ui->profile_CB->setCurrentIndex(ui->profile_CB->count());
+          ui->profile_CB->setCurrentIndex(ui->profile_CB->count()-1);
         }
       }
     }
