@@ -719,8 +719,8 @@ enum LogicalSwitchesFunctions {
 };
 
 #if defined(CPUARM)
-#define MAX_LS_DURATION 120 /*60s*/
-#define MAX_LS_DELAY    120 /*60s*/
+#define MAX_LS_DURATION 250 /*25s*/
+#define MAX_LS_DELAY    250 /*25s*/
 #define MAX_LS_ANDSW    SWSRC_LAST
 typedef int16_t ls_telemetry_value_t;
 PACK(typedef struct t_LogicalSwitchData { // Custom Switches data

@@ -1198,8 +1198,9 @@ class LogicalSwitchField: public TransformedField {
 
       if (IS_ARM(board)) {
         internalField.Append(new ConversionField< UnsignedField<8> >(csw.func, &functionsConversionTable, "Function"));
-        internalField.Append(new UnsignedField<8>(csw.delay));
-        internalField.Append(new UnsignedField<8>(csw.duration));
+        int scale = (version >= 216 ? 0 : 5);
+        internalField.Append(new ConversionField< UnsignedField<8> >(csw.delay, 0, scale));
+        internalField.Append(new ConversionField< UnsignedField<8> >(csw.duration, 0, scale));
         if (version >= 214) {
           internalField.Append(new ConversionField< SignedField<8> >((int &)csw.andsw, andswitchesConversionTable, "AND switch"));
         }

@@ -471,8 +471,8 @@ void ConvertModel_215_to_216(ModelData &model)
     if (sw.func >= LS_FUNC_STAY) sw.func += 1;
     sw.v1 = oldModel.customSw[i].v1;
     sw.v2 = oldModel.customSw[i].v2;
-    sw.delay = oldModel.customSw[i].delay;
-    sw.duration = oldModel.customSw[i].duration;
+    sw.delay = oldModel.customSw[i].delay * 5;
+    sw.duration = oldModel.customSw[i].duration * 5;
     sw.andsw = ConvertSwitch_215_to_216(oldModel.customSw[i].andsw);
 #if defined(PCBTARANIS)
     uint8_t cstate = cswFamily(sw.func);

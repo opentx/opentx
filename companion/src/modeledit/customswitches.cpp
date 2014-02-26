@@ -85,8 +85,8 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model):
       // Duration
       cswitchDuration[i] = new QDoubleSpinBox(this);
       cswitchDuration[i]->setProperty("index", i);
-      cswitchDuration[i]->setSingleStep(0.5);
-      cswitchDuration[i]->setMaximum(50);
+      cswitchDuration[i]->setSingleStep(0.1);
+      cswitchDuration[i]->setMaximum(25);
       cswitchDuration[i]->setMinimum(0);
       cswitchDuration[i]->setAccelerated(true);
       cswitchDuration[i]->setDecimals(1);
@@ -96,8 +96,8 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model):
       // Delay
       cswitchDelay[i] = new QDoubleSpinBox(this);
       cswitchDelay[i]->setProperty("index", i);
-      cswitchDelay[i]->setSingleStep(0.5);
-      cswitchDelay[i]->setMaximum(50);
+      cswitchDelay[i]->setSingleStep(0.1);
+      cswitchDelay[i]->setMaximum(25);
       cswitchDelay[i]->setMinimum(0);
       cswitchDelay[i]->setAccelerated(true);
       cswitchDelay[i]->setDecimals(1);
@@ -164,14 +164,14 @@ void LogicalSwitchesPanel::andEdited(int value)
 void LogicalSwitchesPanel::durationEdited(double duration)
 {
   int index = sender()->property("index").toInt();
-  model.customSw[index].duration = (uint8_t)round(duration*2);
+  model.customSw[index].duration = (uint8_t)round(duration*10);
   emit modified();
 }
 
 void LogicalSwitchesPanel::delayEdited(double delay)
 {
   int index = sender()->property("index").toInt();
-  model.customSw[index].delay = (uint8_t)round(delay*2);
+  model.customSw[index].delay = (uint8_t)round(delay*10);
   emit modified();
 }
 
@@ -325,8 +325,8 @@ void LogicalSwitchesPanel::update()
     lock = true;
     populateAndSwitchCB(cswitchAnd[i], RawSwitch(model.customSw[i].andsw));
     if (GetEepromInterface()->getCapability(LogicalSwitchesExt)) {
-      cswitchDuration[i]->setValue(model.customSw[i].duration/2.0);
-      cswitchDelay[i]->setValue(model.customSw[i].delay/2.0);
+      cswitchDuration[i]->setValue(model.customSw[i].duration/10.0);
+      cswitchDelay[i]->setValue(model.customSw[i].delay/10.0);
     }
     lock = false;
   }

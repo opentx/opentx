@@ -1634,13 +1634,13 @@ bool getSwitch(int8_t swtch)
             result = false;
         }
         else {
-          cswDelays[cs_idx] = get_tmr10ms() + (cs->delay*50);
+          cswDelays[cs_idx] = get_tmr10ms() + (cs->delay*10);
         }
       }
 
       if (cs->duration) {
         if (result && !cswStates[cs_idx]) {
-          cswDurations[cs_idx] = get_tmr10ms() + (cs->duration*50);
+          cswDurations[cs_idx] = get_tmr10ms() + (cs->duration*10);
         }
 
         cswStates[cs_idx] = result;
