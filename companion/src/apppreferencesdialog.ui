@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>685</width>
-    <height>442</height>
+    <height>462</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -26,20 +26,11 @@
    <string>Edit Settings</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="leftMargin">
-    <number>6</number>
-   </property>
-   <property name="topMargin">
-    <number>6</number>
-   </property>
-   <property name="rightMargin">
-    <number>6</number>
-   </property>
-   <property name="bottomMargin">
-    <number>6</number>
-   </property>
    <property name="verticalSpacing">
     <number>2</number>
+   </property>
+   <property name="margin">
+    <number>6</number>
    </property>
    <item row="2" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
@@ -502,7 +493,7 @@
        <string>Radio Settings Profile</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
-       <item row="11" column="1" colspan="4">
+       <item row="10" column="1" colspan="3">
         <widget class="QComboBox" name="stickmodeCB">
          <property name="maximumSize">
           <size>
@@ -556,7 +547,7 @@ Mode 4:
          </item>
         </widget>
        </item>
-       <item row="13" column="1" colspan="4">
+       <item row="12" column="1" colspan="3">
         <widget class="QComboBox" name="channelorderCB">
          <property name="sizePolicy">
           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -706,7 +697,7 @@ This is used by the templated to determine which channel goes to what number out
          </item>
         </widget>
        </item>
-       <item row="11" column="0">
+       <item row="10" column="0">
         <widget class="QLabel" name="label_14">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -726,7 +717,7 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </widget>
        </item>
-       <item row="16" column="1">
+       <item row="15" column="1">
         <spacer name="verticalSpacer_3">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -739,7 +730,7 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </spacer>
        </item>
-       <item row="5" column="0">
+       <item row="4" column="0">
         <widget class="QLabel" name="label_8">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -752,7 +743,7 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </widget>
        </item>
-       <item row="13" column="0">
+       <item row="12" column="0">
         <widget class="QLabel" name="label_13">
          <property name="sizePolicy">
           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
@@ -768,14 +759,14 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </widget>
        </item>
-       <item row="14" column="1" colspan="4">
+       <item row="13" column="1" colspan="3">
         <widget class="QCheckBox" name="renameFirmware">
          <property name="text">
           <string>Append version number to FW file name</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
+       <item row="2" column="0">
         <widget class="QLabel" name="sdPathLabel">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -791,7 +782,7 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </widget>
        </item>
-       <item row="3" column="1" colspan="3">
+       <item row="2" column="1" colspan="2">
         <widget class="QLineEdit" name="sdPath">
          <property name="enabled">
           <bool>true</bool>
@@ -813,7 +804,7 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </widget>
        </item>
-       <item row="3" column="5">
+       <item row="2" column="4">
         <spacer name="horizontalSpacer">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -826,35 +817,35 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </spacer>
        </item>
-       <item row="15" column="1" colspan="4">
+       <item row="14" column="1" colspan="3">
         <widget class="QCheckBox" name="burnFirmware">
          <property name="text">
           <string>Offer to write FW to Tx after download</string>
          </property>
         </widget>
        </item>
-       <item row="15" column="6">
+       <item row="14" column="5">
         <widget class="QPushButton" name="removeProfileButton">
          <property name="text">
           <string>Remove Profile</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="6">
+       <item row="2" column="5">
         <widget class="QPushButton" name="sdPathButton">
          <property name="text">
           <string>Open Folder</string>
          </property>
         </widget>
        </item>
-       <item row="10" column="1" colspan="6">
+       <item row="9" column="1" colspan="5">
         <widget class="Line" name="line_6">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
         </widget>
        </item>
-       <item row="5" column="1" colspan="3">
+       <item row="4" column="1" colspan="2">
         <widget class="QLineEdit" name="SplashFileName">
          <property name="enabled">
           <bool>true</bool>
@@ -876,43 +867,31 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>Firmware Variant</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1" colspan="2">
-        <widget class="QLineEdit" name="fwTypeLE">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>350</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>350</width>
-           <height>16777215</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="6">
+       <item row="4" column="5">
         <widget class="QPushButton" name="SplashSelect">
          <property name="text">
           <string>Select Image</string>
          </property>
         </widget>
        </item>
-       <item row="8" column="6">
+       <item row="1" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Radio Type</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="5">
         <widget class="QPushButton" name="clearImageButton">
          <property name="text">
           <string>Clear Image</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1" colspan="5">
+        <widget class="Line" name="line_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
          </property>
         </widget>
        </item>
@@ -932,7 +911,7 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </widget>
        </item>
-       <item row="8" column="1">
+       <item row="7" column="1">
         <widget class="QLabel" name="imageLabel">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -969,37 +948,43 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </widget>
        </item>
-       <item row="4" column="1" colspan="6">
-        <widget class="Line" name="line_3">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_4">
-         <property name="text">
-          <string>Firmware File</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLineEdit" name="fwNameLE">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>350</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>350</width>
-           <height>16777215</height>
-          </size>
-         </property>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="radioCB">
+         <item>
+          <property name="text">
+           <string>9X</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>9X with m128</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>9XR</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>9XR with m128</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Gruvin9x Board</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Sky9x Board</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Taranis</string>
+          </property>
+         </item>
         </widget>
        </item>
       </layout>

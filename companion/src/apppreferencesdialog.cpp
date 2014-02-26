@@ -60,13 +60,22 @@ void appPreferencesDialog::writeValues()
   g.profile[g.id()].defaultMode(ui->stickmodeCB->currentIndex());
   g.profile[g.id()].renameFwFiles(ui->renameFirmware->isChecked());
   g.profile[g.id()].burnFirmware(ui->burnFirmware->isChecked());
-  g.profile[g.id()].name(ui->profileNameLE->text());
   g.profile[g.id()].sdPath(ui->sdPath->text());
   g.profile[g.id()].splashFile(ui->SplashFileName->text());
-  g.profile[g.id()].fwName(ui->fwNameLE->text());
-  g.profile[g.id()].fwType(ui->fwTypeLE->text());
-  
-  saveProfile();
+
+  // The profile name may NEVER be empty
+  if (ui->profileNameLE->text().isEmpty())
+    g.profile[g.id()].name(tr("My Radio"));
+  else
+    g.profile[g.id()].name(ui->profileNameLE->text());
+
+  // If a new radio type has been choosen, several things need to change
+  if ( initialRadioType != ui->radioCB->currentIndex())
+  {
+    g.profile[g.id()].fwName("");
+    g.profile[g.id()].fwType(getDefaultFwType(ui->radioCB->currentIndex()));
+    current_firmware_variant = GetFirmwareVariant(g.profile[g.id()].fwType());  
+  }
 }
 
 void appPreferencesDialog::on_snapshotPathButton_clicked()
@@ -146,9 +155,10 @@ void appPreferencesDialog::initSettings()
   ui->renameFirmware->setChecked(g.profile[g.id()].renameFwFiles());
   ui->sdPath->setText(g.profile[g.id()].sdPath());
   ui->profileNameLE->setText(g.profile[g.id()].name());
-  ui->fwNameLE->setText(g.profile[g.id()].fwName());
-  ui->fwTypeLE->setText(g.profile[g.id()].fwType());
   ui->SplashFileName->setText(g.profile[g.id()].splashFile());
+
+  initialRadioType = getRadioType(g.profile[g.id()].fwType());
+  ui->radioCB->setCurrentIndex(initialRadioType);
 
   displayImage( g.profile[g.id()].splashFile() );
 }
@@ -237,23 +247,6 @@ void appPreferencesDialog::on_sdPathButton_clicked()
   }
 }
 
-void appPreferencesDialog::saveProfile()
-{
-  // The profile name may NEVER be empty
-  if (ui->profileNameLE->text().isEmpty())
-    ui->profileNameLE->setText("----");
-
-  g.profile[g.id()].name( ui->profileNameLE->text() );
-  g.profile[g.id()].channelOrder( ui->channelorderCB->currentIndex());
-  g.profile[g.id()].defaultMode( ui->stickmodeCB->currentIndex());
-  g.profile[g.id()].burnFirmware( ui->burnFirmware->isChecked());
-  g.profile[g.id()].renameFwFiles( ui->renameFirmware->isChecked());
-  g.profile[g.id()].sdPath( ui->sdPath->text());
-  g.profile[g.id()].splashFile( ui->SplashFileName->text());
-  g.profile[g.id()].fwName( ui->fwNameLE->text());
-  g.profile[g.id()].fwType( ui->fwTypeLE->text());
-}
-
 void appPreferencesDialog::on_removeProfileButton_clicked()
 {
   if ( g.id() == 0 )
@@ -265,6 +258,7 @@ void appPreferencesDialog::on_removeProfileButton_clicked()
     initSettings();
   }
 }
+
 
 bool appPreferencesDialog::displayImage( QString fileName )
 {
@@ -307,6 +301,7 @@ void appPreferencesDialog::on_clearImageButton_clicked() {
   ui->imageLabel->clear();
   ui->SplashFileName->clear();
 }
+
 
 
 
