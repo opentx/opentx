@@ -137,13 +137,17 @@ const pm_char * openLogs()
 #endif
 
 #if defined(FRSKY_HUB)
-    if (IS_USR_PROTO_FRSKY_HUB())
-      f_puts("GPS Date,GPS Time,Long,Lat,Course,GPS Speed,GPS Alt,Baro Alt,Vertical Speed,Temp1,Temp2,RPM,Fuel,Cell volts,Cell 1,Cell 2,Cell 3,Cell 4,Cell 5,Cell 6,Current,Consumption,Vfas,AccelX,AccelY,AccelZ,", &g_oLogFile);
+    if (IS_USR_PROTO_FRSKY_HUB()) {
+      f_puts("GPS Date,GPS Time,Long,Lat,Course,GPS Speed(", &g_oLogFile);
+      f_puts(TELEMETRY_GPS_SPEED_UNIT, &g_oLogFile);
+      f_puts("),GPS Alt,Baro Alt,Vertical Speed,Temp1,Temp2,RPM,Fuel,Cell volts,Cell 1,Cell 2,Cell 3,Cell 4,Cell 5,Cell 6,Current,Consumption,Vfas,AccelX,AccelY,AccelZ,", &g_oLogFile);
+    }
 #endif
 
 #if defined(WS_HOW_HIGH)
-    if (IS_USR_PROTO_WS_HOW_HIGH())
+    if (IS_USR_PROTO_WS_HOW_HIGH()) {
       f_puts("WSHH Alt,", &g_oLogFile);
+    }
 #endif
 
 #if defined(PCBTARANIS)
@@ -168,6 +172,12 @@ void closeLogs()
 {
   f_close(&g_oLogFile);
   lastLogTime = 0;
+}
+
+getvalue_t getConvertedTelemetryValue(getvalue_t val, uint8_t unit)
+{
+  convertUnit(val, unit);
+  return val;
 }
 
 // TODO test when disk full

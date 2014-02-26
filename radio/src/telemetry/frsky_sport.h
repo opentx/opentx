@@ -199,8 +199,9 @@ void resetTelemetry();
 #define TELEMETRY_BARO_ALT_ARGS         frskyData.hub.baroAltitude < 0 ? '-' : ' ', abs(frskyData.hub.baroAltitude / 100), abs(frskyData.hub.baroAltitude % 100),
 #define TELEMETRY_GPS_ALT_FORMAT        "%c%d.%02d,"
 #define TELEMETRY_GPS_ALT_ARGS          frskyData.hub.gpsAltitude < 0 ? '-' : ' ', abs(frskyData.hub.gpsAltitude / 100), abs(frskyData.hub.gpsAltitude % 100),
-#define TELEMETRY_GPS_SPEED_FORMAT      "%c%d.%02d,"
-#define TELEMETRY_GPS_SPEED_ARGS        frskyData.hub.gpsSpeed_bp < 0 ? '-' : ' ', abs(frskyData.hub.gpsSpeed_bp / 1000), abs(frskyData.hub.gpsSpeed_bp % 1000),
+#define TELEMETRY_GPS_SPEED_UNIT        (IS_IMPERIAL_ENABLE() ? SPEED_UNIT_IMP : SPEED_UNIT_METR)
+#define TELEMETRY_GPS_SPEED_FORMAT      "%d,"
+#define TELEMETRY_GPS_SPEED_ARGS        getConvertedTelemetryValue(frskyData.hub.gpsSpeed_bp, UNIT_KTS),
 #define TELEMETRY_CELLS_FORMAT          "%d.%d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,"
 #define TELEMETRY_CELLS_ARGS            frskyData.hub.cellsSum / 10, frskyData.hub.cellsSum % 10, TELEMETRY_CELL_VOLTAGE(0)/100, TELEMETRY_CELL_VOLTAGE(0)%100, TELEMETRY_CELL_VOLTAGE(1)/100, TELEMETRY_CELL_VOLTAGE(1)%100, TELEMETRY_CELL_VOLTAGE(2)/100, TELEMETRY_CELL_VOLTAGE(2)%100, TELEMETRY_CELL_VOLTAGE(3)/100, TELEMETRY_CELL_VOLTAGE(3)%100, TELEMETRY_CELL_VOLTAGE(4)/100, TELEMETRY_CELL_VOLTAGE(4)%100, TELEMETRY_CELL_VOLTAGE(5)/100, TELEMETRY_CELL_VOLTAGE(5)%100, 
 #define TELEMETRY_CURRENT_FORMAT        "%d.%d,"

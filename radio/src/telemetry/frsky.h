@@ -238,8 +238,9 @@ void resetTelemetry();
 #define TELEMETRY_BARO_ALT_ARGS                 frskyData.hub.baroAltitude_bp,
 #define TELEMETRY_GPS_ALT_FORMAT                "%d,"
 #define TELEMETRY_GPS_ALT_ARGS                  frskyData.hub.gpsAltitude_bp,
-#define TELEMETRY_GPS_SPEED_FORMAT              "%d.%02d,"
-#define TELEMETRY_GPS_SPEED_ARGS                TELEMETRY_GPS_SPEED_BP, TELEMETRY_GPS_SPEED_AP,
+#define TELEMETRY_GPS_SPEED_UNIT                (IS_IMPERIAL_ENABLE() ? SPEED_UNIT_IMP : SPEED_UNIT_METR)
+#define TELEMETRY_GPS_SPEED_FORMAT              "%d,"
+#define TELEMETRY_GPS_SPEED_ARGS                getConvertedTelemetryValue(frskyData.hub.gpsSpeed_bp, UNIT_KTS),
 #define TELEMETRY_CELLS_FORMAT                  "%d.%d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,"
 #define TELEMETRY_CELLS_ARGS                    frskyData.hub.cellsSum / 10, frskyData.hub.cellsSum % 10, frskyData.hub.cellVolts[0]*2/100, frskyData.hub.cellVolts[0]*2%100, frskyData.hub.cellVolts[1]*2/100, frskyData.hub.cellVolts[1]*2%100, frskyData.hub.cellVolts[2]*2/100, frskyData.hub.cellVolts[2]*2%100, frskyData.hub.cellVolts[3]*2/100, frskyData.hub.cellVolts[3]*2%100, frskyData.hub.cellVolts[4]*2/100, frskyData.hub.cellVolts[4]*2%100, frskyData.hub.cellVolts[5]*2/100, frskyData.hub.cellVolts[5]*2%100,
 #define TELEMETRY_CURRENT_FORMAT                "%d.%02d,"
