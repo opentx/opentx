@@ -3780,7 +3780,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
           continue;
       }
       else if (!mixEnabled) {
-        if (md->speedDown && md->mltpx!=MLTPX_REP) {
+        if ((md->speedDown || md->speedUp) && md->mltpx!=MLTPX_REP) {
           if (mixCondition) {
             v = (md->mltpx == MLTPX_ADD ? 0 : RESX);
             apply_offset_and_curve = false;
@@ -3825,6 +3825,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       //========== SPEED ===============
       // now its on input side, but without weight compensation. More like other remote controls
       // lower weight causes slower movement
+
       if (mode <= e_perout_mode_inactive_phase && (md->speedUp || md->speedDown)) { // there are delay values
 #define DEL_MULT_SHIFT 8
         // we recale to a mult 256 higher value for calculation
