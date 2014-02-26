@@ -650,12 +650,14 @@ class ConversionField: public TransformedField {
         if (!error.isEmpty())
           EEPROMWarnings += error + "\n";
       }
-      else if (shift) {
+
+      if (shift) {
         if (val < min) _field = min + shift;
         else if (val > max) _field = max + shift;
         else _field = val + shift;
       }
-      else {
+
+      if (exportFunc) {
         _field = exportFunc(val);
       }
     }
@@ -666,10 +668,12 @@ class ConversionField: public TransformedField {
         if (table->importValue(_field, field))
           return;
       }
-      else if (shift) {
+
+      if (shift) {
         field = _field - shift;
       }
-      else {
+
+      if (importFunc) {
         field = importFunc(_field);
       }
 
