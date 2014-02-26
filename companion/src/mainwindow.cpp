@@ -673,23 +673,23 @@ void MainWindow::saveAs()
 }
 
 void MainWindow::openRecentFile()
- {
-    QAction *action = qobject_cast<QAction *>(sender());
-    if (action) {
-      QString fileName=action->data().toString();
+{
+  QAction *action = qobject_cast<QAction *>(sender());
+  if (action) {
+    QString fileName = action->data().toString();
 
-      QMdiSubWindow *existing = findMdiChild(fileName);
-      if (existing) {
-          mdiArea->setActiveSubWindow(existing);
-          return;
-      }
-
+    QMdiSubWindow *existing = findMdiChild(fileName);
+    if (existing) {
+      mdiArea->setActiveSubWindow(existing);
+    }
+    else {
       MdiChild *child = createMdiChild();
       if (child->loadFile(fileName)) {
-          statusBar()->showMessage(tr("File loaded"), 2000);
-          child->show();
+        statusBar()->showMessage(tr("File loaded"), 2000);
+        child->show();
       }
     }
+  }
 }
 
 void MainWindow::loadProfile()  //TODO Load all variables - Also HW!
