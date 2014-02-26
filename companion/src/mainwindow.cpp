@@ -1558,10 +1558,10 @@ QAction * MainWindow::addAct(QString icon, QString sName, QString lName, const c
 
 QAction * MainWindow::addAct(QActionGroup *aGroup, QString sName, QString lName, const char *slot)
 {
-   QAction *action = addAct("", sName, lName, QKeySequence::UnknownKey, slot);
-   action->setCheckable(true);
-   aGroup->addAction(action);   
-   return action;
+  QAction *action = addAct("", sName, lName, QKeySequence::UnknownKey, slot);
+  action->setCheckable(true);
+  aGroup->addAction(action);   
+  return action;
 }
 
 void MainWindow::createActions()
@@ -1884,7 +1884,7 @@ void MainWindow::setActiveSubWindow(QWidget *window)
 }
 
 void MainWindow::updateRecentFileActions()
- {
+{
     int i, numRecentFiles;
  
     //  Hide all document slots
@@ -1995,7 +1995,7 @@ for (i=0; i<MAX_PROFILES && g.profile[i].existsOnDisk(); i++)
 }
 
 QString MainWindow::strippedName(const QString &fullFileName)
- {
+{
     return QFileInfo(fullFileName).fileName();
 }
 
