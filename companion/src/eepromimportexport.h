@@ -669,9 +669,7 @@ class ConversionField: public TransformedField {
           return;
       }
 
-      if (shift) {
-        field = _field - shift;
-      }
+      field = _field - shift;
 
       if (importFunc) {
         field = importFunc(_field);
