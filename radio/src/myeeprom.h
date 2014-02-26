@@ -829,9 +829,9 @@ enum AdjustGvarFunctionParam {
 
 #if defined(CPUARM)
 #if defined(PCBTARANIS)
- #define LEN_CFN_NAME 8
+  #define LEN_CFN_NAME 8
 #else
- #define LEN_CFN_NAME 6
+  #define LEN_CFN_NAME 6
 #endif
 PACK(typedef struct t_CustomFnData { // Function Switches data
   int8_t  swtch;

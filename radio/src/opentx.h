@@ -585,24 +585,28 @@ extern uint8_t channel_order(uint8_t x);
 class Key
 {
 #define FILTERBITS      4
+
 #ifdef SIMU
-#define FFVAL 1
+  #define FFVAL 1
 #else
-#define FFVAL          ((1<<FILTERBITS)-1)
+  #define FFVAL          ((1<<FILTERBITS)-1)
 #endif
+
 #define KSTATE_OFF      0
 #define KSTATE_RPTDELAY 95 // gruvin: delay state before key repeating starts
 #define KSTATE_START    97
 #define KSTATE_PAUSE    98
 #define KSTATE_KILLED   99
-  uint8_t m_vals;   // key debounce?  4 = 40ms
-  uint8_t m_cnt;
-  uint8_t m_state;
-public:
-  void input(bool val, EnumKeys enuk);
-  bool state()       { return m_vals > 0; }
-  void pauseEvents() { m_state = KSTATE_PAUSE; m_cnt = 0; }
-  void killEvents()  { m_state = KSTATE_KILLED; }
+
+  private:
+    uint8_t m_vals;   // key debounce?  4 = 40ms
+    uint8_t m_cnt;
+    uint8_t m_state;
+  public:
+    void input(bool val, EnumKeys enuk);
+    bool state()       { return m_vals > 0; }
+    void pauseEvents() { m_state = KSTATE_PAUSE; m_cnt = 0; }
+    void killEvents()  { m_state = KSTATE_KILLED; }
 };
 
 extern Key keys[NUM_KEYS];

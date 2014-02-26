@@ -124,12 +124,12 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_VTELEMCHNS         (OFS_FUNCSOUNDS + sizeof(TR_FUNCSOUNDS))
 #if defined(FRSKY) || defined(CPUARM)
   #if defined(CPUARM)
-   #define OFS_VTELEMUNIT_IMP  (OFS_VTELEMCHNS + sizeof(TR_VTELEMCHNS))
-   #define OFS_VTELEMUNIT_NORM (OFS_VTELEMUNIT_IMP + sizeof(TR_VTELEMUNIT_IMP))
-   #define OFS_VALARM          (OFS_VTELEMUNIT_NORM + sizeof(TR_VTELEMUNIT_NORM))
+    #define OFS_VTELEMUNIT_IMP  (OFS_VTELEMCHNS + sizeof(TR_VTELEMCHNS))
+    #define OFS_VTELEMUNIT_NORM (OFS_VTELEMUNIT_IMP + sizeof(TR_VTELEMUNIT_IMP))
+    #define OFS_VALARM          (OFS_VTELEMUNIT_NORM + sizeof(TR_VTELEMUNIT_NORM))
   #else
-   #define OFS_VTELEMUNIT      (OFS_VTELEMCHNS + sizeof(TR_VTELEMCHNS))
-   #define OFS_VALARM          (OFS_VTELEMUNIT + sizeof(TR_VTELEMUNIT))
+    #define OFS_VTELEMUNIT      (OFS_VTELEMCHNS + sizeof(TR_VTELEMCHNS))
+    #define OFS_VALARM          (OFS_VTELEMUNIT + sizeof(TR_VTELEMUNIT))
   #endif
   #define OFS_VALARMFN         (OFS_VALARM + sizeof(TR_VALARM))
   #define OFS_VTELPROTO        (OFS_VALARMFN + sizeof(TR_VALARMFN))
