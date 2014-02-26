@@ -62,7 +62,7 @@ bool Th9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
   return false;
 }
 
-bool Th9xInterface::load(RadioData &radioData, uint8_t *eeprom, int size)
+bool Th9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {
   std::cout << "trying th9x import... ";
 
@@ -71,7 +71,7 @@ bool Th9xInterface::load(RadioData &radioData, uint8_t *eeprom, int size)
     return false;
   }
 
-  if (!efile->EeFsOpen(eeprom, size, BOARD_STOCK)) {
+  if (!efile->EeFsOpen((uint8_t *)eeprom, size, BOARD_STOCK)) {
     std::cout << "wrong file system\n";
     return false;
   }

@@ -104,7 +104,7 @@ MainWindow::MainWindow():
 
     setUnifiedTitleAndToolBarOnMac(true);
     this->setWindowIcon(QIcon(":/icon.png"));
-    this->setIconSize(QSize(32,32));
+    this->setIconSize(QSize(32, 32));
     QNetworkProxyFactory::setUseSystemConfiguration(true);
     setAcceptDrops(true);
     
@@ -468,7 +468,7 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
         if (OldFwRev == 0) {
           showcheckForUpdatesResult = false; // update is available - do not show dialog
           QString rn = GetFirmware(fwToUpdate)->rnurl;
-          QAbstractButton *rnButton;
+          QAbstractButton *rnButton = NULL;
           msgBox.setWindowTitle("Companion");
           msgBox.setInformativeText(tr("Firmware %1 does not seem to have ever been downloaded.\nVersion %2 is available.\nDo you want to download it now ?").arg(fwToUpdate).arg(NewFwRev));
           QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
@@ -1198,17 +1198,15 @@ bool MainWindow::isValidEEPROM(QString eepromfile)
       if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return false;
       eeprom_size = file.size();
-      uint8_t *eeprom = (uint8_t *)malloc(eeprom_size);
+      QByteArray eeprom(eeprom_size, 0);
       QTextStream inputStream(&file);
-      eeprom_size = HexInterface(inputStream).load(eeprom, eeprom_size);
+      eeprom_size = HexInterface(inputStream).load((uint8_t *)eeprom.data(), eeprom_size);
       if (!eeprom_size) {
-        free(eeprom);
         return false;
       }
       file.close();
       RadioData * radioData = new RadioData();
-      bool result = LoadEeprom(*radioData, eeprom, eeprom_size);
-      free(eeprom);
+      bool result = LoadEeprom(*radioData, (uint8_t *)eeprom.data(), eeprom_size);
       delete radioData;
       return result;
     }
@@ -1216,17 +1214,14 @@ bool MainWindow::isValidEEPROM(QString eepromfile)
       if (!file.open(QFile::ReadOnly))
         return false;
       eeprom_size = file.size();
-      uint8_t *eeprom = (uint8_t *)malloc(eeprom_size);
-      memset(eeprom, 0, eeprom_size);
-      long read = file.read((char*)eeprom, eeprom_size);
+      QByteArray eeprom(eeprom_size, 0);
+      long read = file.read(eeprom.data(), eeprom_size);
       file.close();
       if (read != eeprom_size) {
-        free(eeprom);
         return false;
       }
       RadioData * radioData = new RadioData();
-      bool result = LoadEeprom(*radioData, eeprom, eeprom_size);
-      free(eeprom);
+      bool result = LoadEeprom(*radioData, (uint8_t *)eeprom.data(), eeprom_size);
       delete radioData;
       return result;
     }
@@ -1280,24 +1275,23 @@ bool MainWindow::convertEEPROM(QString backupFile, QString restoreFile, QString 
     if (!file.open(QIODevice::ReadOnly))
       return false;
 
-    uint8_t *eeprom = (uint8_t *)malloc(eeprom_size);
-    long result = file.read((char*)eeprom, eeprom_size);
+    QByteArray eeprom(eeprom_size, 0);
+    long result = file.read(eeprom.data(), eeprom_size);
     file.close();
 
     QSharedPointer<RadioData> radioData = QSharedPointer<RadioData>(new RadioData());
-    if (!LoadEeprom(*radioData, eeprom, eeprom_size) || !firmware->saveEEPROM(eeprom, *radioData, variant, version))
+    if (!LoadEeprom(*radioData, (uint8_t *)eeprom.data(), eeprom_size) || !firmware->saveEEPROM((uint8_t *)eeprom.data(), *radioData, variant, version))
       return false;
 
     QFile file2(restoreFile);
     if (!file2.open(QIODevice::WriteOnly))
       return false;
 
-    result = file2.write((char*)eeprom, eeprom_size);
+    result = file2.write(eeprom.constData(), eeprom_size);
     file2.close();
     if (result != eeprom_size)
       return false;
 
-    free(eeprom);
     return true;
 }
 
@@ -2060,15 +2054,14 @@ int MainWindow::getEpromVersion(QString fileName)
       QMessageBox::critical(this, tr("Error"),tr("Error opening file %1:\n%2.").arg(fileName).arg(file.errorString()));
       return -1;
     }
-    uint8_t *eeprom = (uint8_t *)malloc(eeprom_size);
-    memset(eeprom, 0, eeprom_size);
-    long result = file.read((char*)eeprom, eeprom_size);
+    QByteArray eeprom(eeprom_size, 0);
+    long result = file.read(eeprom.data(), eeprom_size);
     file.close();
     if (result != eeprom_size) {
       QMessageBox::critical(this, tr("Error"),tr("Error reading file %1:\n%2.").arg(fileName).arg(file.errorString()));
       return -1;
     }
-    if (!LoadEeprom(testData, eeprom, eeprom_size)) {
+    if (!LoadEeprom(testData, (uint8_t *)eeprom.data(), eeprom_size)) {
       QMessageBox::critical(this, tr("Error"),tr("Invalid binary Models and Settings File %1").arg(fileName));
       return -1;
     }

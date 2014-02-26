@@ -290,7 +290,7 @@ bool OpenTxInterface::loadxml(RadioData &radioData, QDomDocument &doc)
   return false;
 }
 
-bool OpenTxInterface::load(RadioData &radioData, uint8_t *eeprom, int size)
+bool OpenTxInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {
   std::cout << "trying " << getName() << " import...";
 
@@ -305,7 +305,8 @@ bool OpenTxInterface::load(RadioData &radioData, uint8_t *eeprom, int size)
       if (notnull) {
         std::cout << " wrong size (" << size << ")\n";
         return false;
-      } else {
+      }
+      else {
         QMessageBox::warning(NULL, "companion", QObject::tr("Your radio probably uses a wrong firmware,\n eeprom size is 4096 but only the first 2048 are used"));
         size=2048;
       }
@@ -315,7 +316,7 @@ bool OpenTxInterface::load(RadioData &radioData, uint8_t *eeprom, int size)
     }
   }
 
-  if (!efile->EeFsOpen(eeprom, size, board)) {
+  if (!efile->EeFsOpen((uint8_t *)eeprom, size, board)) {
     std::cout << " wrong file system\n";
     return false;
   }

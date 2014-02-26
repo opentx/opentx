@@ -1050,7 +1050,7 @@ void RegisterFirmwares()
   RegisterEepromInterfaces();
 }
 
-bool LoadEeprom(RadioData &radioData, uint8_t *eeprom, int size)
+bool LoadEeprom(RadioData &radioData, const uint8_t *eeprom, const int size)
 {
   foreach(EEPROMInterface *eepromInterface, eepromInterfaces) {
     if (eepromInterface->load(radioData, eeprom, size))
