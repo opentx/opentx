@@ -1263,6 +1263,49 @@ class LogicalSwitchField: public TransformedField {
       else if (csw.func != LS_FN_OFF) {
         sourcesConversionTable->importValue((uint8_t)v1, csw.val1);
         csw.val2 = v2;
+        RawSource val1(csw.val1);
+        if (IS_ARM(board) && version < 216 && val1.type == SOURCE_TYPE_TELEMETRY) {
+          switch (val1.index) {
+            case TELEMETRY_SOURCE_TIMER1:
+            case TELEMETRY_SOURCE_TIMER2:
+              csw.val2 = (csw.val2 + 128) * 3;
+              break;
+            case TELEMETRY_SOURCE_ALT:
+            case TELEMETRY_SOURCE_GPS_ALT:
+            case TELEMETRY_SOURCE_ALT_MIN:
+            case TELEMETRY_SOURCE_ALT_MAX:
+              csw.val2 = (csw.val2 + 128) * 8 - 500;
+              break;
+            case TELEMETRY_SOURCE_RPM:
+            case TELEMETRY_SOURCE_RPM_MAX:
+              csw.val2 = (csw.val2 + 128) * 50;
+              break;
+            case TELEMETRY_SOURCE_T1:
+            case TELEMETRY_SOURCE_T2:
+            case TELEMETRY_SOURCE_T1_MAX:
+            case TELEMETRY_SOURCE_T2_MAX:
+              csw.val2 = (csw.val2 + 128) + 30;
+              break;
+            case TELEMETRY_SOURCE_CELL:
+            case TELEMETRY_SOURCE_HDG:
+              csw.val2 = (csw.val2 + 128) * 2;
+              break;
+            case TELEMETRY_SOURCE_DIST:
+            case TELEMETRY_SOURCE_DIST_MAX:
+              csw.val2 = (csw.val2 + 128) * 8;
+              break;
+            case TELEMETRY_SOURCE_CURRENT:
+            case TELEMETRY_SOURCE_POWER:
+              csw.val2 = (csw.val2 + 128) * 5;
+              break;
+            case TELEMETRY_SOURCE_CONSUMPTION:
+              csw.val2 = (csw.val2 + 128) * 20;
+              break;
+            default:
+              csw.val2 += 128;
+              break;
+          }
+        }
       }
     }
 
