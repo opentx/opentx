@@ -4559,11 +4559,11 @@ void menuModelLogicalSwitches(uint8_t event)
     // CSW params
     uint8_t cstate = cswFamily(cs->func);
 #if defined(CPUARM)
-    int16_t v1_unsigned=(uint8_t)cs->v1, v1_min=0, v1_max=MIXSRC_LAST_TELEM, v2_min=0, v2_max=MIXSRC_LAST_TELEM;
+    int16_t v1_val=cs->v1, v1_min=0, v1_max=MIXSRC_LAST_TELEM, v2_min=0, v2_max=MIXSRC_LAST_TELEM;
     int16_t v3_min=0, v3_max=100;
 #else
     int8_t v1_min=0, v1_max=MIXSRC_LAST_TELEM, v2_min=0, v2_max=MIXSRC_LAST_TELEM;
-    uint8_t v1_unsigned = cs->v1;
+    #define v1_val cs->v1
 #endif
 
     if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY) {
@@ -4599,7 +4599,7 @@ void menuModelLogicalSwitches(uint8_t event)
     }
 #endif
     else if (cstate == LS_FAMILY_COMP) {
-      putsMixerSource(CSW_2ND_COLUMN, y, v1_unsigned, attr1);
+      putsMixerSource(CSW_2ND_COLUMN, y, v1_val, attr1);
       putsMixerSource(CSW_3RD_COLUMN, y, cs->v2, attr2);
       INCDEC_SET_FLAG(INCDEC_SOURCE);
       INCDEC_ENABLE_CHECK(isSourceAvailable);
@@ -4613,7 +4613,10 @@ void menuModelLogicalSwitches(uint8_t event)
       INCDEC_ENABLE_CHECK(NULL);
     }
     else {
-      putsMixerSource(CSW_2ND_COLUMN, y, v1_unsigned, attr1);
+#if defined(CPUARM)
+      v1_val = (uint8_t)cs->v1;
+#endif
+      putsMixerSource(CSW_2ND_COLUMN, y, v1_val, attr1);
       if (horz == 1) {
         INCDEC_SET_FLAG(INCDEC_SOURCE);
         INCDEC_ENABLE_CHECK(isSourceAvailable);
@@ -4623,11 +4626,11 @@ void menuModelLogicalSwitches(uint8_t event)
         INCDEC_ENABLE_CHECK(NULL);
       }
 #if defined(FRSKY)
-      if (v1_unsigned >= MIXSRC_FIRST_TELEM) {
-        putsTelemetryChannel(CSW_3RD_COLUMN, y, v1_unsigned - MIXSRC_FIRST_TELEM, convertCswTelemValue(cs), LEFT|attr2);
-        v2_max = maxTelemValue(v1_unsigned - MIXSRC_FIRST_TELEM + 1);
+      if (v1_val >= MIXSRC_FIRST_TELEM) {
+        putsTelemetryChannel(CSW_3RD_COLUMN, y, v1_val - MIXSRC_FIRST_TELEM, convertCswTelemValue(cs), LEFT|attr2);
+        v2_max = maxTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
 #if defined(CPUARM)
-        v2_min = minTelemValue(v1_unsigned - MIXSRC_FIRST_TELEM + 1);
+        v2_min = minTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
         if (cs->v2 < v2_min || cs->v2 > v2_max) {
           cs->v2 = 0;
           eeDirty(EE_MODEL);
@@ -4652,8 +4655,8 @@ void menuModelLogicalSwitches(uint8_t event)
         v2_min = -125; v2_max = 125;
       }
 #else
-      if (v1_unsigned >= MIXSRC_FIRST_TELEM) {
-        putsTelemetryChannel(CSW_3RD_COLUMN, y, v1_unsigned - MIXSRC_FIRST_TELEM, convertCswTelemValue(cs), LEFT|attr2);
+      if (v1_val >= MIXSRC_FIRST_TELEM) {
+        putsTelemetryChannel(CSW_3RD_COLUMN, y, v1_val - MIXSRC_FIRST_TELEM, convertCswTelemValue(cs), LEFT|attr2);
         v2_min = -128; v2_max = 127;
       }
       else {
@@ -4728,17 +4731,17 @@ void menuModelLogicalSwitches(uint8_t event)
           break;
         }
         case LS_FIELD_V1:
-          cs->v1 = CHECK_INCDEC_PARAM(event, v1_unsigned, v1_min, v1_max);
+          cs->v1 = CHECK_INCDEC_PARAM(event, v1_val, v1_min, v1_max);
           break;
         case LS_FIELD_V2:
           cs->v2 = CHECK_INCDEC_PARAM(event, cs->v2, v2_min, v2_max);
 #if defined(PCBTARANIS)
-          if (cstate==LS_FAMILY_OFS && v1_unsigned!=0 && event==EVT_KEY_LONG(KEY_ENTER)) {
+          if (cstate==LS_FAMILY_OFS && cs->v1!=0 && event==EVT_KEY_LONG(KEY_ENTER)) {
             killEvents(event);
-            getvalue_t x = getValue(v1_unsigned);
-            if (v1_unsigned < MIXSRC_GVAR1)
+            getvalue_t x = getValue(v1_val);
+            if (v1_val < MIXSRC_GVAR1)
               cs->v2 = calcRESXto100(x);
-            else if (v1_unsigned - MIXSRC_FIRST_TELEM + 1 == TELEM_ALT)
+            else if (v1_val - MIXSRC_FIRST_TELEM + 1 == TELEM_ALT)
               cs->v2 *= 100;
             eeDirty(EE_MODEL);
           }
