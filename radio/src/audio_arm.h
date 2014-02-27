@@ -47,11 +47,10 @@
 #define AUDIO_BUFFER_SIZE     (AUDIO_SAMPLE_RATE*AUDIO_BUFFER_DURATION/1000)
 #define AUDIO_BUFFER_COUNT    (3)
 
-#define BEEP_MIN_FREQ         (440)
+#define BEEP_MIN_FREQ         (150)
 #define BEEP_DEFAULT_FREQ     (2250)
 #define BEEP_KEY_UP_FREQ      (BEEP_DEFAULT_FREQ+150)
 #define BEEP_KEY_DOWN_FREQ    (BEEP_DEFAULT_FREQ-150)
-#define BEEP_POINTS_COUNT     100
 
 #define AUDIO_BUFFER_FREE     (0)
 #define AUDIO_BUFFER_FILLED   (1)
@@ -63,9 +62,11 @@ struct AudioBuffer {
   uint8_t  state;
 };
 
-#define FRAGMENT_EMPTY     0
-#define FRAGMENT_TONE      1
-#define FRAGMENT_FILE      2
+enum FragmentTypes {
+  FRAGMENT_EMPTY,
+  FRAGMENT_TONE,
+  FRAGMENT_FILE,
+};
 
 struct AudioFragment {
   uint8_t type;
@@ -77,6 +78,7 @@ struct AudioFragment {
       uint16_t duration;
       uint16_t pause;
       int8_t   freqIncr;
+      uint8_t  reset;
     } tone;
 
     char file[AUDIO_FILENAME_MAXLEN+1];
@@ -88,34 +90,57 @@ struct AudioFragment {
   }
 };
 
-class AudioContext {
+class ToneContext {
   public:
     AudioFragment fragment;
 
-    union {
-#if defined(SDCARD)
-      struct {
-        FIL      file;
-        uint8_t  codec;
-        uint32_t freq;
-        uint32_t size;
-        uint8_t  resampleRatio;
-        uint16_t readSize;
-      } wav;
-#endif
+    struct {
+      double step;
+      double idx;
+      float  volume;
+      uint16_t freq;
+      uint16_t duration;
+      uint16_t pause;
+    } state;
 
-      struct {
-        int16_t points[BEEP_POINTS_COUNT];
-        uint8_t  count;
-        uint8_t  idx;
-        uint16_t freq;
-      } tone;
+    inline void clear()
+    {
+      memset(this, 0, sizeof(ToneContext));
+    }
+
+    int mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade);
+};
+
+class WavContext {
+  public:
+    AudioFragment fragment;
+
+    struct {
+      FIL      file;
+      uint8_t  codec;
+      uint32_t freq;
+      uint32_t size;
+      uint8_t  resampleRatio;
+      uint16_t readSize;
     } state;
 
     inline void clear()
     {
       fragment.clear();
     }
+
+    int mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade);
+};
+
+class MixedContext {
+  public:
+    union {
+      AudioFragment fragment;
+      ToneContext tone;
+      WavContext wav;
+    };
+
+    int mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade);
 };
 
 bool dacQueue(AudioBuffer *buffer);
@@ -130,7 +155,7 @@ class AudioQueue {
 
     void start();
 
-    void play(uint16_t freq, uint16_t len, uint16_t pause=0, uint8_t flags=0, int8_t freqIncr=0);
+    void playTone(uint16_t freq, uint16_t len, uint16_t pause=0, uint8_t flags=0, int8_t freqIncr=0);
 
     void playFile(const char *filename, uint8_t flags=0, uint8_t id=0);
 
@@ -178,19 +203,16 @@ class AudioQueue {
 
     void wakeup();
 
-    int mixAudioContext(AudioContext &context, AudioBuffer *buffer, int beepVolume, int wavVolume, unsigned int fade);
-    int mixBeep(AudioContext &context, AudioBuffer *buffer, int volume, unsigned int fade);
-    int mixWav(AudioContext &context, AudioBuffer *buffer, int volume, unsigned int fade);
-
     volatile bool state;
     uint8_t ridx;
     uint8_t widx;
 
     AudioFragment fragments[AUDIO_QUEUE_LENGTH];
 
-    AudioContext backgroundContext; // for background music / vario
-    AudioContext currentContext;
-    AudioContext foregroundContext; // for important beeps
+    MixedContext normalContext;
+    WavContext   backgroundContext;
+    ToneContext  priorityContext;
+    ToneContext  varioContext;
 
     AudioBuffer buffers[AUDIO_BUFFER_COUNT];
     uint8_t bufferRIdx;
@@ -254,13 +276,11 @@ void audioStart();
 #define AUDIO_INACTIVITY()       AUDIO_BUZZER(audioEvent(AU_INACTIVITY), beep(3))
 #define AUDIO_MIX_WARNING(x)     AUDIO_BUZZER(audioEvent(AU_MIX_WARNING_1+x-1), beep(1))
 #define AUDIO_POT_MIDDLE(x)      AUDIO_BUZZER(audioEvent(AU_STICK1_MIDDLE+x), beep(2))
-#define AUDIO_VARIO_UP()         audioEvent(AU_KEYPAD_UP)
-#define AUDIO_VARIO_DOWN()       audioEvent(AU_KEYPAD_DOWN)
 #define AUDIO_TRIM_MIDDLE(f)     AUDIO_BUZZER(audioEvent(AU_TRIM_MIDDLE, f), beep(2))
 #define AUDIO_TRIM_END(f)        AUDIO_BUZZER(audioEvent(AU_TRIM_END, f), beep(2))
 #define AUDIO_TRIM(event, f)     AUDIO_BUZZER(audioEvent(AU_TRIM_MOVE, f), { if (!IS_KEY_FIRST(event)) warble = true; beep(1); })
 #define AUDIO_PLAY(p)            audioEvent(p)
-#define AUDIO_VARIO(f, t)        audioQueue.play(f, t, 0, PLAY_BACKGROUND)
+#define AUDIO_VARIO(fq, t, p, f) audioQueue.playTone(fq, t, p, f)
 
 #if defined(PCBTARANIS)
 #define AUDIO_A1_ORANGE()        audioEvent(AU_A1_ORANGE)
@@ -277,16 +297,21 @@ void audioStart();
 
 #define AUDIO_HEARTBEAT()
 
-#define SYSTEM_AUDIO_CATEGORY 0
-#define MODEL_AUDIO_CATEGORY  1
-#define PHASE_AUDIO_CATEGORY  2
-#define MIXER_AUDIO_CATEGORY  3
+enum AutomaticPromptsCategories {
+  SYSTEM_AUDIO_CATEGORY,
+  MODEL_AUDIO_CATEGORY,
+  PHASE_AUDIO_CATEGORY,
+  SWITCH_AUDIO_CATEGORY,
+  LOGICAL_SWITCH_AUDIO_CATEGORY,
+};
 
-#define AUDIO_EVENT_OFF       0
-#define AUDIO_EVENT_ON        1
-#define AUDIO_EVENT_BG        2
+enum AutomaticPromptsEvents {
+  AUDIO_EVENT_OFF,
+  AUDIO_EVENT_ON,
+  AUDIO_EVENT_MID,
+};
 
-extern void pushPrompt(uint16_t prompt, uint8_t id=0);
+void pushPrompt(uint16_t prompt, uint8_t id=0);
 
 #define I18N_PLAY_FUNCTION(lng, x, ...) void lng ## _ ## x(__VA_ARGS__, uint8_t id)
 #define PLAY_FUNCTION(x, ...)    void x(__VA_ARGS__, uint8_t id)
@@ -300,15 +325,26 @@ extern void pushPrompt(uint16_t prompt, uint8_t id=0);
 #define AUDIO_RESET()            audioQueue.reset()
 
 #if defined(SDCARD)
-  #define PLAY_PHASE_OFF(phase) do { char filename[AUDIO_FILENAME_MAXLEN+1]; if (isAudioFileAvailable((PHASE_AUDIO_CATEGORY << 24) + (phase << 16) + AUDIO_EVENT_OFF, filename)) audioQueue.playFile(filename); } while (0)
-  #define PLAY_PHASE_ON(phase)  do { char filename[AUDIO_FILENAME_MAXLEN+1]; if (isAudioFileAvailable((PHASE_AUDIO_CATEGORY << 24) + (phase << 16) + AUDIO_EVENT_ON, filename)) audioQueue.playFile(filename); } while (0)
+  extern tmr10ms_t timeAutomaticPromptsSilence;
+  void playModelEvent(uint8_t category, uint8_t index, uint8_t event=0);
+  #define PLAY_PHASE_OFF(phase)         playModelEvent(PHASE_AUDIO_CATEGORY, phase, AUDIO_EVENT_OFF)
+  #define PLAY_PHASE_ON(phase)          playModelEvent(PHASE_AUDIO_CATEGORY, phase, AUDIO_EVENT_ON)
+  #define PLAY_SWITCH_MOVED(sw)         playModelEvent(SWITCH_AUDIO_CATEGORY, sw)
+  #define PLAY_LOGICAL_SWITCH_OFF(sw)   playModelEvent(LOGICAL_SWITCH_AUDIO_CATEGORY, sw, AUDIO_EVENT_OFF)
+  #define PLAY_LOGICAL_SWITCH_ON(sw)    playModelEvent(LOGICAL_SWITCH_AUDIO_CATEGORY, sw, AUDIO_EVENT_ON)
+  #define SKIP_AUTOMATIC_PROMPTS()      timeAutomaticPromptsSilence = get_tmr10ms()
 #else
   #define PLAY_PHASE_OFF(phase)
   #define PLAY_PHASE_ON(phase)
+  #define PLAY_SWITCH_MOVED(sw)
+  #define PLAY_LOGICAL_SWITCH_OFF(sw)
+  #define PLAY_LOGICAL_SWITCH_ON(sw)
+  #define SKIP_AUTOMATIC_PROMPTS()
 #endif
 
-extern void refreshSystemAudioFiles();
-extern void refreshModelAudioFiles();
-extern bool isAudioFileAvailable(uint32_t i, char * filename);
+void referenceSystemAudioFiles();
+void referenceModelAudioFiles();
+
+bool isAudioFileReferenced(uint32_t i, char * filename/*at least AUDIO_FILENAME_MAXLEN+1 long*/);
 
 #endif

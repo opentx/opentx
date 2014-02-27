@@ -167,8 +167,14 @@
   #endif
 #endif
 
+#if defined(CPUARM)
+  #define TR_CSWEQUAL      "a=x\0 "
+#else
+  #define TR_CSWEQUAL
+#endif
+
 #define LEN_VCSWFUNC           "\005"
-#define TR_VCSWFUNC            "---\0 ""a{x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""d}x\0 ""|d|}x" TR_CSWTIMER TR_CSWSTICKY
+#define TR_VCSWFUNC            "---\0 " TR_CSWEQUAL "a{x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""d}x\0 ""|d|}x" TR_CSWTIMER TR_CSWSTICKY
 
 #define LEN_VFSWFUNC           "\012"
 
@@ -307,11 +313,11 @@
 #define LEN_VOLTSRC            "\003"
 #define TR_VOLTSRC             "---""A1\0""A2\0""FAS""Cel"
 
-#define LEN_VARIOSRC           "\005"
+#define LEN_VARIOSRC           "\004"
 #if defined(FRSKY_SPORT)
-  #define TR_VARIOSRC          "Vario""A1\0  ""A2\0"
+  #define TR_VARIOSRC          "VSpd""A1\0 ""A2\0 ""dTE\0"
 #else
-  #define TR_VARIOSRC          "Alti\0""Alti+""Vario""A1\0  ""A2\0"
+  #define TR_VARIOSRC          "Alt\0""Alt+""VSpd""A1\0 ""A2\0"
 #endif
 
 #define LEN_VSCREEN            "\004"
@@ -624,7 +630,7 @@
 #define TR_ALARMSWARN          "ALARMS"
 #define TR_SWITCHWARN          TR("SWITCH","CONTROL")
 #define TR_INVERT_THR          TR("Invert Thr?","Invert Throttle?")
-#define TR_SPEAKER_VOLUME      INDENT "Volume"
+#define TR_SPEAKER_VOLUME      INDENT "Volume" // TODO could be TR_VOLUME ?
 #define TR_LCD                 "LCD"
 #define TR_BRIGHTNESS          INDENT "Brightness"
 #define TR_CPU_TEMP            "CPU Temp.\016>"
@@ -665,6 +671,7 @@
 #define TR_SD_SIZE             "Size:"
 #define TR_TYPE                "Type"
 #define TR_GLOBAL_VARS         "Global Variables"
+#define TR_GLOBAL_V            "GLOBAL V."
 #define TR_GLOBAL_VAR          "Global Variable"
 #define TR_MENUGLOBALVARS      "GLOBAL VARIABLES"
 #define TR_OWN                 "Own"
@@ -801,7 +808,7 @@
 
 #define TR_BEEP_VOLUME         "Beep Volume"
 #define TR_WAV_VOLUME          "Wav Volume"
-#define TR_VARIO_VOLUME        "Vario Volume"
+#define TR_VARIO_VOLUME        "Vario Volume" // TODO may be removed
 #define TR_BG_VOLUME           "Bg Volume"
 
 #define TR_TOP_BAR             "Top Bar"

@@ -227,7 +227,7 @@ void audioQueue::event(uint8_t e, uint8_t f)
           break;
         default:
         {
-          const static pm_uint8_t singleSounds[] PROGMEM = {
+          static const pm_uint8_t singleSounds[] PROGMEM = {
               70, 10, 2, PLAY_REPEAT(2)|PLAY_NOW,  // INACTIVITY
               BEEP_DEFAULT_FREQ, 40, 1, PLAY_NOW,  // ERROR
               BEEP_KEY_UP_FREQ, 10, 1, PLAY_NOW,   // KEYPAD_UP

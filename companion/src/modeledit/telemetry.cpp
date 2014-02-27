@@ -457,7 +457,7 @@ TelemetryPanel::~TelemetryPanel()
 
 void TelemetryPanel::setup()
 {
-    QString firmware_id = g.profile[g.id()].firmware();
+    QString firmware_id = g.profile[g.id()].fwType();
 
     lock=true;
 

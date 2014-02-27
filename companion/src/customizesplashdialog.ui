@@ -258,6 +258,9 @@
            <property name="text">
             <string>Load Profile</string>
            </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
          <item>
@@ -265,12 +268,18 @@
            <property name="text">
             <string>Load FW</string>
            </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="leftLoadPictButton">
            <property name="text">
             <string>Load Pict</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -554,6 +563,9 @@
            <property name="text">
             <string>Load Profile</string>
            </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
          <item>
@@ -564,12 +576,18 @@
            <property name="text">
             <string>Load FW</string>
            </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="rightLoadPictButton">
            <property name="text">
             <string>Load Pict</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
            </property>
           </widget>
          </item>

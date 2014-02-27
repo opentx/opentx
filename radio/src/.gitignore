@@ -1,7 +1,6 @@
 /stamp-opentx.h
 /opentx.elf
 /simu
-/opentx.hex
 /opentx.map
 /simu.d
 /snapshot_*.png
@@ -10,6 +9,7 @@
 /*.o
 /*.bin
 /*.bin.*
+/*.hex
 /*.lst
 /SCRIPTS
 /TEMPLATES

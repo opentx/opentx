@@ -57,22 +57,22 @@
 <context>
     <name>CurveGroup</name>
     <message>
-        <location filename="../helpers.cpp" line="232"/>
+        <location filename="../helpers.cpp" line="233"/>
         <source>Diff</source>
         <translation>Róźnicowość</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="233"/>
+        <location filename="../helpers.cpp" line="234"/>
         <source>Expo</source>
         <translation>Expo</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="234"/>
+        <location filename="../helpers.cpp" line="235"/>
         <source>Func</source>
         <translation>Funkcja</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="235"/>
+        <location filename="../helpers.cpp" line="236"/>
         <source>Curve</source>
         <translation>Krzywa</translation>
     </message>
@@ -168,57 +168,57 @@
         <translation>FS%1</translation>
     </message>
     <message>
-        <location filename="../modeledit/customfunctions.cpp" line="179"/>
+        <location filename="../modeledit/customfunctions.cpp" line="180"/>
         <source>ON</source>
         <translation>Włącz</translation>
     </message>
     <message>
-        <location filename="../modeledit/customfunctions.cpp" line="247"/>
+        <location filename="../modeledit/customfunctions.cpp" line="248"/>
         <source>Error</source>
         <translation>Błąd</translation>
     </message>
     <message>
-        <location filename="../modeledit/customfunctions.cpp" line="247"/>
+        <location filename="../modeledit/customfunctions.cpp" line="248"/>
         <source>Unable to find sound file %1!</source>
         <translation>Nie mogę odnaleźć pliku dźwiękowego %1!</translation>
     </message>
     <message>
-        <location filename="../modeledit/customfunctions.cpp" line="537"/>
+        <location filename="../modeledit/customfunctions.cpp" line="539"/>
         <source>&amp;Delete</source>
         <translation>&amp;Wykasuj</translation>
     </message>
     <message>
-        <location filename="../modeledit/customfunctions.cpp" line="537"/>
+        <location filename="../modeledit/customfunctions.cpp" line="539"/>
         <source>Delete</source>
         <translation>Wykasuj</translation>
     </message>
     <message>
-        <location filename="../modeledit/customfunctions.cpp" line="538"/>
+        <location filename="../modeledit/customfunctions.cpp" line="540"/>
         <source>&amp;Copy</source>
         <translation>&amp;Kopiuj</translation>
     </message>
     <message>
-        <location filename="../modeledit/customfunctions.cpp" line="538"/>
+        <location filename="../modeledit/customfunctions.cpp" line="540"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../modeledit/customfunctions.cpp" line="539"/>
+        <location filename="../modeledit/customfunctions.cpp" line="541"/>
         <source>&amp;Cut</source>
         <translation>&amp;Wytnij</translation>
     </message>
     <message>
-        <location filename="../modeledit/customfunctions.cpp" line="539"/>
+        <location filename="../modeledit/customfunctions.cpp" line="541"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../modeledit/customfunctions.cpp" line="540"/>
+        <location filename="../modeledit/customfunctions.cpp" line="542"/>
         <source>&amp;Paste</source>
         <translation>&amp;Wklej</translation>
     </message>
     <message>
-        <location filename="../modeledit/customfunctions.cpp" line="540"/>
+        <location filename="../modeledit/customfunctions.cpp" line="542"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
@@ -2064,7 +2064,7 @@ Jesteś pewien ?</translation>
         <location filename="../mainwindow.cpp" line="149"/>
         <location filename="../mainwindow.cpp" line="657"/>
         <location filename="../mainwindow.cpp" line="689"/>
-        <location filename="../mainwindow.cpp" line="2102"/>
+        <location filename="../mainwindow.cpp" line="2104"/>
         <source>File loaded</source>
         <translation>Plik załadowany</translation>
     </message>
@@ -2123,23 +2123,23 @@ Jesteś pewien ?</translation>
         <location filename="../mainwindow.cpp" line="369"/>
         <location filename="../mainwindow.cpp" line="398"/>
         <location filename="../mainwindow.cpp" line="882"/>
-        <location filename="../mainwindow.cpp" line="2008"/>
-        <location filename="../mainwindow.cpp" line="2014"/>
-        <location filename="../mainwindow.cpp" line="2022"/>
-        <location filename="../mainwindow.cpp" line="2045"/>
-        <location filename="../mainwindow.cpp" line="2051"/>
-        <location filename="../mainwindow.cpp" line="2058"/>
-        <location filename="../mainwindow.cpp" line="2066"/>
-        <location filename="../mainwindow.cpp" line="2070"/>
+        <location filename="../mainwindow.cpp" line="2010"/>
+        <location filename="../mainwindow.cpp" line="2016"/>
+        <location filename="../mainwindow.cpp" line="2024"/>
+        <location filename="../mainwindow.cpp" line="2047"/>
+        <location filename="../mainwindow.cpp" line="2053"/>
+        <location filename="../mainwindow.cpp" line="2060"/>
+        <location filename="../mainwindow.cpp" line="2068"/>
+        <location filename="../mainwindow.cpp" line="2072"/>
         <source>Error</source>
         <translation>Błąd</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="331"/>
         <location filename="../mainwindow.cpp" line="370"/>
-        <location filename="../mainwindow.cpp" line="2014"/>
-        <location filename="../mainwindow.cpp" line="2022"/>
-        <location filename="../mainwindow.cpp" line="2058"/>
+        <location filename="../mainwindow.cpp" line="2016"/>
+        <location filename="../mainwindow.cpp" line="2024"/>
+        <location filename="../mainwindow.cpp" line="2060"/>
         <source>Error opening file %1:
 %2.</source>
         <translation>Błąd otwarcia pliku %1:
@@ -2310,19 +2310,54 @@ Chcesz pobrać teraz?</translation>
         <translation>OpenTX Companion - FW: %1 - Profil: %2</translation>
     </message>
     <message>
+        <location filename="../mainwindow.cpp" line="1625"/>
+        <source>About...</source>
+        <translation>O aplikacji...</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1626"/>
+        <source>Print...</source>
+        <translation>Drukuj...</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1627"/>
+        <source>Simulate...</source>
+        <translation>Symulacja...</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1627"/>
+        <source>Simulate current model</source>
+        <translation>Symulacja aktualnego modelu</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1628"/>
+        <source>Load Backup...</source>
+        <translation>Załaduj backup...</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1629"/>
+        <source>View Log File...</source>
+        <translation>Obejrzyj plik logów...</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1629"/>
+        <source>Open and view log file</source>
+        <translation>Otwórz i obejrzyj plik logów</translation>
+    </message>
+    <message>
         <location filename="../mainwindow.cpp" line="1630"/>
         <source>Edit Settings</source>
         <translation>Edycja Ustawień</translation>
     </message>
     <message>
+        <location filename="../mainwindow.cpp" line="1630"/>
+        <source>Settings...</source>
+        <translation>Ustawienia...</translation>
+    </message>
+    <message>
         <location filename="../mainwindow.cpp" line="1631"/>
         <source>Download firmware and voice files</source>
         <translation>Pobierz firmware i pliki dźwiękowe</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1641"/>
-        <source>New Profile</source>
-        <translation>Nowy Profil</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1641"/>
@@ -2333,6 +2368,78 @@ Chcesz pobrać teraz?</translation>
         <location filename="../mainwindow.cpp" line="1601"/>
         <source>A monochrome black icon theme</source>
         <translation>Monochromatyczny czarny wygląd ikon</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="645"/>
+        <location filename="../mainwindow.cpp" line="1590"/>
+        <source>Open Models and Settings file</source>
+        <translation>Otwórz plik Modeli i Ustawień</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1589"/>
+        <source>New Models+Settings</source>
+        <translation>Nowe Modele+Ustawienia</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1589"/>
+        <source>Create a new Models and Settings file</source>
+        <translation>Utwórz nowy plik Modeli i Ustawień</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1590"/>
+        <source>Open Models+Settings...</source>
+        <translation>Otwórz Modele i Ustawienia...</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1591"/>
+        <source>Save Models+Settings...</source>
+        <translation>Zapisz Modele i Ustawienia...</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1591"/>
+        <location filename="../mainwindow.cpp" line="1592"/>
+        <source>Save Models and Settings file</source>
+        <translation>Zapisz plik Modeli i Ustawień</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1592"/>
+        <source>Save Models+Settings as...</source>
+        <translation>Zapisz Modele+Ustawienia jako...</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1594"/>
+        <source>Cut Model</source>
+        <translation>Wytnij Model</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1594"/>
+        <source>Cut current model to the clipboard</source>
+        <translation>Wytnij aktualny model do schowka</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1595"/>
+        <source>Copy Model...</source>
+        <translation>Kopiuj Model...</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1595"/>
+        <source>Copy current model to the clipboard</source>
+        <translation>Wytnij aktualny model do schowka</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1596"/>
+        <source>Paste Model...</source>
+        <translation>Wklej Model...</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1596"/>
+        <source>Paste model from clipboard</source>
+        <translation>Wklaj Model ze schowka</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1599"/>
+        <source>The classic companion9x icon theme</source>
+        <translation>Klasyczny zestaw ikon Companion</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1602"/>
@@ -2495,54 +2602,20 @@ Chcesz pobrać teraz?</translation>
         <translation>Użyj Rosyjskiego w menu</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1625"/>
-        <source>About</source>
-        <translation>O aplikacji</translation>
+        <location filename="../mainwindow.cpp" line="1759"/>
+        <location filename="../mainwindow.cpp" line="1816"/>
+        <source>Radio Settings Profile</source>
+        <translation>Profil Ustawień Radia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1626"/>
-        <source>Print</source>
-        <translation>Drukuj</translation>
+        <location filename="../mainwindow.cpp" line="1802"/>
+        <source>Show recent Models+Settings documents</source>
+        <translation>Pokaż ostatanie dokumenty Modeli i Ustawień</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1626"/>
         <source>Print current model</source>
         <translation>Drukuj aktualny model</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1627"/>
-        <source>Simulate</source>
-        <translation>Symulacja</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1627"/>
-        <source>Simulate selected model</source>
-        <translation>Symulacja wybranego modelu</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1628"/>
-        <source>loadBackup...</source>
-        <translation>Załaduj backup...</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1629"/>
-        <source>Logs</source>
-        <translation>Logi</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1630"/>
-        <source>Setting...</source>
-        <translation>Ustawienia...</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1631"/>
-        <source>Downloads...</source>
-        <translation>Pobieranie...</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1632"/>
-        <source>Check for updates...</source>
-        <translation>Sprawdź aktualizacje...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1632"/>
@@ -2553,16 +2626,6 @@ Chcesz pobrać teraz?</translation>
         <location filename="../mainwindow.cpp" line="1636"/>
         <source>Edit Tx Splash Image...</source>
         <translation>Edytor erkanu startowego radia...</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1636"/>
-        <source>edit the splash screen of your TX</source>
-        <translation>Edytuj ekran startowy swojego radia</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1637"/>
-        <source>List programmers</source>
-        <translation>Lista programatorów</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1638"/>
@@ -2580,24 +2643,25 @@ Chcesz pobrać teraz?</translation>
         <translation>Otwórz stronę dokumentacji OpenTX w przeglądarce</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1645"/>
-        <source>Configure connection software...</source>
-        <translation>Ustawienia oprogramowania łączącego...</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1647"/>
         <source>Save Tx Models and Settings to file</source>
         <translation>Zapisz modele radia i ustawienia do pliku</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1648"/>
-        <source>Contributors</source>
-        <translation>Współpracownicy</translation>
+        <source>A tribute to those who have contributed to OpenTX and Companion</source>
+        <translation>Hołd dla tych, którzy przyczynili się do rozwoju OpenTX i Companion</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1648"/>
-        <source>A tribute to those who have contributed to OpenTX and Companion</source>
-        <translation>Hołd dla tych, którzy przyczynili się do rozwoju OpenTX i Companion</translation>
+        <source>Contributors...</source>
+        <translation>Współpracownicy...</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1658"/>
+        <location filename="../mainwindow.cpp" line="1801"/>
+        <source>Recent Models+Settings</source>
+        <translation>Ostatnie Modele+Ustawienia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1660"/>
@@ -2608,11 +2672,6 @@ Chcesz pobrać teraz?</translation>
         <location filename="../mainwindow.cpp" line="1661"/>
         <source>Set Icon Size</source>
         <translation>Ustaw wielkość ikon</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1759"/>
-        <source>Radio Settings Profiles</source>
-        <translation>Profile Ustawień Radia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="260"/>
@@ -2666,11 +2725,6 @@ Chcesz pobrać teraz?</translation>
         <location filename="../mainwindow.cpp" line="624"/>
         <source>The icon size will be used the next time you start Companion.</source>
         <translation>Wybrana wiekość ikon będzie użyta po ponownym uruchomieniu Comapnion.</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="645"/>
-        <source>Open</source>
-        <translation>Otwórz</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1032"/>
@@ -2803,35 +2857,9 @@ Czy mimo wszystko zapisać?</translation>
         <translation>O aplikacji Companion</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1589"/>
-        <source>Create a new file</source>
-        <translation>Utwórz nowy plik</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1590"/>
-        <source>Open an existing file</source>
-        <translation>Otwórz istniejący plik</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1628"/>
         <source>Load backup from file</source>
         <translation>Załaduj backup z pliku</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1591"/>
-        <location filename="../mainwindow.cpp" line="1592"/>
-        <source>Save the document to disk</source>
-        <translation>Zapisz dokument na dysku</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1629"/>
-        <source>Open log file</source>
-        <translation>Otwórz plik logów</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1633"/>
-        <source>Show Companion changelog</source>
-        <translation>Zobacz zmiany w Companion</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1643"/>
@@ -2849,54 +2877,9 @@ Czy mimo wszystko zapisać?</translation>
         <translation>Zapisz firmware</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1590"/>
-        <source>Open...</source>
-        <translation>Otwórz...</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1591"/>
-        <source>Save...</source>
-        <translation>Zapisz...</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1592"/>
-        <source>Save As...</source>
-        <translation>Zapisz jako...</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1593"/>
         <source>Exit</source>
         <translation>Zakończ</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1594"/>
-        <source>Cut</source>
-        <translation>Wytnij</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1594"/>
-        <source>Cut current selection to the clipboard</source>
-        <translation>Wytnij zaznaczenie do schowka</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1595"/>
-        <source>Copy...</source>
-        <translation>Kopiuj...</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1595"/>
-        <source>Copy current selection to the clipboard</source>
-        <translation>Wytnij zaznaczenie do schowka</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1596"/>
-        <source>Paste...</source>
-        <translation>Wklej...</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1596"/>
-        <source>Paste clipboard into current selection</source>
-        <translation>Wytnij zaznaczenie do schowka</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1601"/>
@@ -2924,9 +2907,69 @@ Czy mimo wszystko zapisać?</translation>
         <translation>Użyj języka systemu w menu</translation>
     </message>
     <message>
+        <location filename="../mainwindow.cpp" line="1631"/>
+        <source>Download...</source>
+        <translation>Pobieranie...</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1632"/>
+        <source>Check for Updates...</source>
+        <translation>Sprawdź aktualizacje...</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1633"/>
+        <source>Companion Changes...</source>
+        <translation>Zmiany w Companion...</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1633"/>
+        <source>Show Companion change log</source>
+        <translation>Pokaż log zmian Companion</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1634"/>
+        <source>Firmware Changes...</source>
+        <translation>Zmiany w Firmware...</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1634"/>
+        <source>Show firmware change log</source>
+        <translation>Pokaż log zmian Firmware</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1635"/>
+        <source>Compare Models...</source>
+        <translation>Porównaj modele...</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1636"/>
+        <source>Edit the splash image of your TX</source>
+        <translation>Edytuj ekran startowy swojego radia</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1637"/>
+        <source>List programmers...</source>
+        <translation>Lista programistów...</translation>
+    </message>
+    <message>
         <location filename="../mainwindow.cpp" line="1640"/>
         <source>Write firmware to transmitter</source>
         <translation>Zapisz firmware do radia</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1641"/>
+        <source>Add Radio Profile</source>
+        <translation>Dodaj profil radia</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1645"/>
+        <source>Configure Communications...</source>
+        <translation>Ustaw komunikację...</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1645"/>
+        <source>Configure software for communicating with the transmitter</source>
+        <translation>Ustaw oprogramowanie komunikacyjne z radiem</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1646"/>
@@ -2964,45 +3007,25 @@ Czy mimo wszystko zapisać?</translation>
         <translation>Wczytaj Firmware z radia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1645"/>
-        <source>Configure software for reading from and writing to the transmitter</source>
-        <translation>Ustawienia oprogramowania do odczytu i zapisu radia</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1832"/>
+        <location filename="../mainwindow.cpp" line="1833"/>
         <source>Write</source>
         <translation>Zapis</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2045"/>
-        <location filename="../mainwindow.cpp" line="2051"/>
+        <location filename="../mainwindow.cpp" line="1968"/>
+        <source>%2</source>
+        <translation>%2</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="2047"/>
+        <location filename="../mainwindow.cpp" line="2053"/>
         <source>Invalid Models and Settings File %1</source>
         <translation>Błędny plik %1 Modeli i Ustawień</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2070"/>
+        <location filename="../mainwindow.cpp" line="2072"/>
         <source>Invalid binary Models and Settings File %1</source>
         <translation>Błędny binarny plik %1 Modeli i Ustawień</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1633"/>
-        <source>ChangeLog...</source>
-        <translation>Zmiany...</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1634"/>
-        <source>Firmware ChangeLog...</source>
-        <translation>Zmiany firmware...</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1634"/>
-        <source>Show firmware changelog</source>
-        <translation>Zobacz zmiany w firmware</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1635"/>
-        <source>Compare...</source>
-        <translation>Porównaj...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1635"/>
@@ -3035,22 +3058,6 @@ Czy mimo wszystko zapisać?</translation>
         <translation>Klasyczny</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1599"/>
-        <source>The classical Companion icon theme</source>
-        <translation>Klasyczny zestaw ikon Companion</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1589"/>
-        <source>New</source>
-        <translation>Nowy</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1658"/>
-        <location filename="../mainwindow.cpp" line="1801"/>
-        <source>Recent Files</source>
-        <translation>Poprzednie pliki</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1659"/>
         <source>Set Menu Language</source>
         <translation>Ustaw język menu</translation>
@@ -3062,13 +3069,13 @@ Czy mimo wszystko zapisać?</translation>
         <translation>Plik</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1683"/>
-        <location filename="../mainwindow.cpp" line="1825"/>
+        <location filename="../mainwindow.cpp" line="1682"/>
+        <location filename="../mainwindow.cpp" line="1826"/>
         <source>Edit</source>
         <translation>Edycja</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1688"/>
+        <location filename="../mainwindow.cpp" line="1687"/>
         <source>Settings</source>
         <translation>Ustawienia</translation>
     </message>
@@ -3079,19 +3086,9 @@ Czy mimo wszystko zapisać?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1736"/>
-        <location filename="../mainwindow.cpp" line="1847"/>
+        <location filename="../mainwindow.cpp" line="1848"/>
         <source>Help</source>
         <translation>Pomoc</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1802"/>
-        <source>Show a selection list of recent documents</source>
-        <translation>Pokaż listę wyboru poprzednich dokumentów</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1816"/>
-        <source>Radio Profiles</source>
-        <translation>Profile Radia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1817"/>
@@ -3099,22 +3096,17 @@ Czy mimo wszystko zapisać?</translation>
         <translation>Pokaż listę wyboru profili ustawiań radia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1856"/>
+        <location filename="../mainwindow.cpp" line="1857"/>
         <source>Ready</source>
         <translation>Gotowe</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1967"/>
-        <source>&amp;%1: %2</source>
-        <translation>&amp;%1: %2</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="2008"/>
+        <location filename="../mainwindow.cpp" line="2010"/>
         <source>Unable to find file %1!</source>
         <translation>Nie mogę znaleźć pliku %1!</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2066"/>
+        <location filename="../mainwindow.cpp" line="2068"/>
         <source>Error reading file %1:
 %2.</source>
         <translation>Błąd odczytu pliku %1:
@@ -3149,16 +3141,17 @@ Czy mimo wszystko zapisać?</translation>
         <location filename="../mdichild.cpp" line="413"/>
         <location filename="../mdichild.cpp" line="418"/>
         <location filename="../mdichild.cpp" line="508"/>
-        <location filename="../mdichild.cpp" line="658"/>
-        <location filename="../mdichild.cpp" line="666"/>
-        <location filename="../mdichild.cpp" line="678"/>
-        <location filename="../mdichild.cpp" line="687"/>
+        <location filename="../mdichild.cpp" line="554"/>
+        <location filename="../mdichild.cpp" line="660"/>
+        <location filename="../mdichild.cpp" line="668"/>
+        <location filename="../mdichild.cpp" line="680"/>
+        <location filename="../mdichild.cpp" line="689"/>
         <source>Error</source>
         <translation>Błąd</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="206"/>
-        <location filename="../mdichild.cpp" line="658"/>
+        <location filename="../mdichild.cpp" line="660"/>
         <source>Unable to find file %1!</source>
         <translation>Nie mogę odnaleźć pliku %1!</translation>
     </message>
@@ -3166,7 +3159,7 @@ Czy mimo wszystko zapisać?</translation>
         <location filename="../mdichild.cpp" line="215"/>
         <location filename="../mdichild.cpp" line="226"/>
         <location filename="../mdichild.cpp" line="282"/>
-        <location filename="../mdichild.cpp" line="667"/>
+        <location filename="../mdichild.cpp" line="669"/>
         <source>Error opening file %1:
 %2.</source>
         <translation>Błąd otwarcia pliku %1:
@@ -3228,7 +3221,7 @@ Czy mimo wszystko zapisać?</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="294"/>
-        <location filename="../mdichild.cpp" line="679"/>
+        <location filename="../mdichild.cpp" line="681"/>
         <source>Error reading file %1:
 %2.</source>
         <translation>Błąd odczytu pliku %1:
@@ -3258,58 +3251,58 @@ Zapisać?</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="522"/>
-        <location filename="../mdichild.cpp" line="577"/>
-        <location filename="../mdichild.cpp" line="597"/>
+        <location filename="../mdichild.cpp" line="578"/>
+        <location filename="../mdichild.cpp" line="599"/>
         <source>Taranis radio not found</source>
         <translation>Nie odnaleziono Radia Taranis</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="522"/>
-        <location filename="../mdichild.cpp" line="577"/>
-        <location filename="../mdichild.cpp" line="597"/>
+        <location filename="../mdichild.cpp" line="578"/>
+        <location filename="../mdichild.cpp" line="599"/>
         <source>Impossible to identify the radio on your system, please verify the eeprom disk is connected.</source>
         <translation>Identyfikacja radia w Twoim systemie nie jest możliwa, sprawdź dysk eeprom podpięty do komputera.</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="527"/>
-        <location filename="../mdichild.cpp" line="535"/>
-        <location filename="../mdichild.cpp" line="586"/>
+        <location filename="../mdichild.cpp" line="528"/>
+        <location filename="../mdichild.cpp" line="537"/>
+        <location filename="../mdichild.cpp" line="587"/>
         <source>Backup EEPROM From Tx</source>
         <translation>Backup EEPROM z radia</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="552"/>
+        <location filename="../mdichild.cpp" line="554"/>
         <source>Cannot check eeprom compatibility! Continue anyway?</source>
         <translation>Nie mogę sprawdzić kompatybilności EEprom! Kontynuować ?</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="560"/>
-        <location filename="../mdichild.cpp" line="563"/>
+        <location filename="../mdichild.cpp" line="561"/>
+        <location filename="../mdichild.cpp" line="564"/>
         <source>Warning</source>
         <translation>Ostrzeżenie</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="560"/>
+        <location filename="../mdichild.cpp" line="561"/>
         <source>Firmware in radio is of a different family of eeprom written, check file and preferences!</source>
         <translation>Firmware w radiu jest różny od zapisanego eepromu, sprawdź plik i ustawienia!</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="563"/>
+        <location filename="../mdichild.cpp" line="564"/>
         <source>Firmware in flash is outdated, please upgrade!</source>
         <translation>Firmware w radiu jest przestarzały. Proszę zaktualizować!</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="603"/>
+        <location filename="../mdichild.cpp" line="605"/>
         <source>Write EEPROM To Tx</source>
         <translation>Zapis EEPROM do radia</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="652"/>
-        <source>Open</source>
-        <translation>Otwórz</translation>
+        <location filename="../mdichild.cpp" line="654"/>
+        <source>Open backup Models and Settings file</source>
+        <translation>Otwórz plik backupu Modeli i Ustawień</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="688"/>
+        <location filename="../mdichild.cpp" line="690"/>
         <source>Invalid binary backup File %1</source>
         <translation>nieprawidłowy binarny plik %1</translation>
     </message>
@@ -4112,70 +4105,70 @@ p, li { white-space: pre-wrap; }
     <name>QObject</name>
     <message>
         <location filename="../eeprominterface.cpp" line="196"/>
-        <location filename="../helpers.cpp" line="43"/>
+        <location filename="../helpers.cpp" line="44"/>
         <source>Rud</source>
         <translation>SK</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="196"/>
-        <location filename="../helpers.cpp" line="43"/>
+        <location filename="../helpers.cpp" line="44"/>
         <source>Ele</source>
         <translation>SW</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="196"/>
-        <location filename="../helpers.cpp" line="43"/>
+        <location filename="../helpers.cpp" line="44"/>
         <source>Thr</source>
         <translation>Gaz</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="196"/>
-        <location filename="../helpers.cpp" line="43"/>
+        <location filename="../helpers.cpp" line="44"/>
         <source>Ail</source>
         <translation>Lotki</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="197"/>
-        <location filename="../helpers.cpp" line="43"/>
-        <location filename="../helpers.cpp" line="67"/>
+        <location filename="../helpers.cpp" line="44"/>
+        <location filename="../helpers.cpp" line="68"/>
         <source>P1</source>
         <translation>Potencjometr 1</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="197"/>
-        <location filename="../helpers.cpp" line="43"/>
-        <location filename="../helpers.cpp" line="67"/>
+        <location filename="../helpers.cpp" line="44"/>
+        <location filename="../helpers.cpp" line="68"/>
         <source>P2</source>
         <translation>Potencjometr 2</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="197"/>
-        <location filename="../helpers.cpp" line="43"/>
-        <location filename="../helpers.cpp" line="67"/>
+        <location filename="../helpers.cpp" line="44"/>
+        <location filename="../helpers.cpp" line="68"/>
         <source>P3</source>
         <translation>Potencjometr 3</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="198"/>
-        <location filename="../helpers.cpp" line="68"/>
+        <location filename="../helpers.cpp" line="69"/>
         <source>S1</source>
         <translation>Potencjometr 1</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="198"/>
-        <location filename="../helpers.cpp" line="68"/>
+        <location filename="../helpers.cpp" line="69"/>
         <source>S2</source>
         <translation>Potencjometr 2</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="198"/>
-        <location filename="../helpers.cpp" line="68"/>
+        <location filename="../helpers.cpp" line="69"/>
         <source>LS</source>
         <translation>Lewy suwak</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="198"/>
-        <location filename="../helpers.cpp" line="68"/>
+        <location filename="../helpers.cpp" line="69"/>
         <source>RS</source>
         <translation>Prawy suwak</translation>
     </message>
@@ -4202,14 +4195,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="208"/>
         <location filename="../eeprominterface.cpp" line="320"/>
-        <location filename="../modeledit/customfunctions.cpp" line="633"/>
+        <location filename="../modeledit/customfunctions.cpp" line="635"/>
         <source>REa</source>
         <translation>Pokrętło :a</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="208"/>
         <location filename="../eeprominterface.cpp" line="320"/>
-        <location filename="../modeledit/customfunctions.cpp" line="634"/>
+        <location filename="../modeledit/customfunctions.cpp" line="636"/>
         <source>REb</source>
         <translation>Pokrętło :b</translation>
     </message>
@@ -4694,26 +4687,26 @@ p, li { white-space: pre-wrap; }
         <location filename="../eeprominterface.cpp" line="231"/>
         <location filename="../eeprominterface.cpp" line="265"/>
         <location filename="../eeprominterface.cpp" line="351"/>
-        <location filename="../helpers.cpp" line="144"/>
+        <location filename="../helpers.cpp" line="145"/>
         <source>----</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="67"/>
         <location filename="../helpers.cpp" line="68"/>
+        <location filename="../helpers.cpp" line="69"/>
         <source>THR</source>
         <translation>THR</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="347"/>
-        <location filename="../helpers.cpp" line="362"/>
+        <location filename="../helpers.cpp" line="363"/>
         <source>ON</source>
         <translation>Włącz</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="324"/>
         <location filename="../eeprominterface.cpp" line="349"/>
-        <location filename="../helpers.cpp" line="362"/>
+        <location filename="../helpers.cpp" line="363"/>
         <source>OFF</source>
         <translation>Wyłącz</translation>
     </message>
@@ -5160,7 +5153,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="401"/>
-        <location filename="../helpers.cpp" line="937"/>
+        <location filename="../helpers.cpp" line="946"/>
         <source>Warning</source>
         <translation>Ostrzeżenie</translation>
     </message>
@@ -5170,94 +5163,94 @@ p, li { white-space: pre-wrap; }
         <translation>EEPROM zapisany z tymi ostrzeżeniami:</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="10"/>
-        <location filename="../helpers.cpp" line="16"/>
+        <location filename="../helpers.cpp" line="11"/>
+        <location filename="../helpers.cpp" line="17"/>
         <source>FM%1</source>
         <oldsource>FP%1</oldsource>
         <translation>FM%1</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="31"/>
+        <location filename="../helpers.cpp" line="32"/>
         <source>Input%1</source>
         <translation>Wejście %1</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="53"/>
+        <location filename="../helpers.cpp" line="54"/>
         <source>English</source>
         <translation>Angielski</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="53"/>
+        <location filename="../helpers.cpp" line="54"/>
         <source>French</source>
         <translation>Francuski</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="53"/>
+        <location filename="../helpers.cpp" line="54"/>
         <source>Italian</source>
         <translation>Włoski</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="53"/>
+        <location filename="../helpers.cpp" line="54"/>
         <source>German</source>
         <translation>Niemiecki</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="53"/>
+        <location filename="../helpers.cpp" line="54"/>
         <source>Czech</source>
         <translation>Czeski</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="53"/>
+        <location filename="../helpers.cpp" line="54"/>
         <source>Slovak</source>
         <translation>Słowacki</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="53"/>
+        <location filename="../helpers.cpp" line="54"/>
         <source>Spanish</source>
         <translation>Hiszpański</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="53"/>
+        <location filename="../helpers.cpp" line="54"/>
         <source>Portuguese</source>
         <translation>Portugalski</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="53"/>
+        <location filename="../helpers.cpp" line="54"/>
         <source>Polish</source>
         <translation>Polski</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="53"/>
+        <location filename="../helpers.cpp" line="54"/>
         <source>Finnish</source>
         <translation>Fiński</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="88"/>
+        <location filename="../helpers.cpp" line="89"/>
         <source>No</source>
         <translation>Nie</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="88"/>
+        <location filename="../helpers.cpp" line="89"/>
         <source>RotEnc A</source>
         <translation>Pokrętło :A</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="88"/>
+        <location filename="../helpers.cpp" line="89"/>
         <source>Rot Enc B</source>
         <translation>Pokrętło :B</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="88"/>
+        <location filename="../helpers.cpp" line="89"/>
         <source>Rot Enc C</source>
         <translation>Pokrętło :C</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="88"/>
+        <location filename="../helpers.cpp" line="89"/>
         <source>Rot Enc D</source>
         <translation>Pokrętło :D</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="88"/>
+        <location filename="../helpers.cpp" line="89"/>
         <source>Rot Enc E</source>
         <translation>Pokrętło :E</translation>
     </message>
@@ -5280,22 +5273,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="219"/>
         <source>ASpd</source>
-        <translation type="unfinished"></translation>
+        <translation>ASpd</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="219"/>
         <source>dTE</source>
-        <translation type="unfinished"></translation>
+        <translation>dTE</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="220"/>
         <source>Cel-</source>
-        <translation type="unfinished"></translation>
+        <translation>Cel-</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="220"/>
         <source>Vfs-</source>
-        <translation type="unfinished"></translation>
+        <translation>Vfs-</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="313"/>
@@ -5340,22 +5333,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="324"/>
         <source>ABS</source>
-        <translation type="unfinished"></translation>
+        <translation>ABS</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="325"/>
         <source>THs</source>
-        <translation type="unfinished"></translation>
+        <translation>THs</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="325"/>
         <source>TH%</source>
-        <translation type="unfinished"></translation>
+        <translation>TH%</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="325"/>
         <source>THt</source>
-        <translation type="unfinished"></translation>
+        <translation>THt</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="355"/>
@@ -5574,138 +5567,138 @@ p, li { white-space: pre-wrap; }
         <translation>&lt;font color=red&gt;&lt;b&gt;Niespójny parametr&lt;/b&gt;&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="../modeledit/customfunctions.cpp" line="630"/>
+        <location filename="../modeledit/customfunctions.cpp" line="632"/>
         <source>Rotary Encoder</source>
         <translation>Pokrętło</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="140"/>
+        <location filename="../helpers.cpp" line="141"/>
         <source>!Flight mode %1</source>
         <translation>!Faza lotu %1</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="142"/>
+        <location filename="../helpers.cpp" line="143"/>
         <source>Flight mode %1</source>
         <translation>Faza lotu %1</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="744"/>
+        <location filename="../helpers.cpp" line="753"/>
         <source>Yellow</source>
         <translation>Żółty</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="746"/>
+        <location filename="../helpers.cpp" line="755"/>
         <source>Orange</source>
         <translation>Pomarańczowy</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="748"/>
+        <location filename="../helpers.cpp" line="757"/>
         <source>Red</source>
         <translation>Czerwony</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="782"/>
+        <location filename="../helpers.cpp" line="791"/>
         <source>Winged Shadow How High</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="784"/>
+        <location filename="../helpers.cpp" line="793"/>
         <source>Winged Shadow How High (not supported)</source>
         <translation>Winged Shadow How High (nie obsługiwane)</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="786"/>
+        <location filename="../helpers.cpp" line="795"/>
         <source>FrSky Sensor Hub</source>
         <translation>Hub sensora FrSky</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="788"/>
-        <location filename="../helpers.cpp" line="842"/>
+        <location filename="../helpers.cpp" line="797"/>
+        <location filename="../helpers.cpp" line="851"/>
         <source>None</source>
         <translation>Żaden</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="796"/>
+        <location filename="../helpers.cpp" line="805"/>
         <source>Imperial</source>
         <translation>Imperialne</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="798"/>
+        <location filename="../helpers.cpp" line="807"/>
         <source>Metric</source>
         <translation>Metryczne</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="810"/>
+        <location filename="../helpers.cpp" line="819"/>
         <source>Extra Fine</source>
         <translation>Bardzo dokładne</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="811"/>
+        <location filename="../helpers.cpp" line="820"/>
         <source>Fine</source>
         <translation>Dokładne</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="812"/>
+        <location filename="../helpers.cpp" line="821"/>
         <source>Medium</source>
         <translation>Średni</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="813"/>
+        <location filename="../helpers.cpp" line="822"/>
         <source>Coarse</source>
         <translation>Gruby</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="814"/>
+        <location filename="../helpers.cpp" line="823"/>
         <source>Exponential</source>
         <translation>Eksponencjalny</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="820"/>
+        <location filename="../helpers.cpp" line="829"/>
         <source>Count Up</source>
         <translation>Licz</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="820"/>
+        <location filename="../helpers.cpp" line="829"/>
         <source>Count Down</source>
         <translation>Odliczaj</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="821"/>
+        <location filename="../helpers.cpp" line="830"/>
         <source>%1:%2, </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="829"/>
+        <location filename="../helpers.cpp" line="838"/>
         <source>: %1 Channels, %2usec Delay</source>
         <translation>:Kanały  %1, opóźnienie %2usX</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="853"/>
+        <location filename="../helpers.cpp" line="862"/>
         <source>Flight modes(%1)</source>
         <translation>Fazy lotu(%1)</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="855"/>
+        <location filename="../helpers.cpp" line="864"/>
         <source>Flight mode(%1)</source>
         <translation>Faza lotu (%1)</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="866"/>
+        <location filename="../helpers.cpp" line="875"/>
         <source>Rudder</source>
         <translation>SK</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="867"/>
+        <location filename="../helpers.cpp" line="876"/>
         <source>Elevator</source>
         <translation>SW</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="868"/>
+        <location filename="../helpers.cpp" line="877"/>
         <source>Throttle</source>
         <translation>Gaz</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="869"/>
+        <location filename="../helpers.cpp" line="878"/>
         <source>Aileron</source>
         <translation>Lotki</translation>
     </message>
@@ -5716,43 +5709,43 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="399"/>
-        <location filename="../helpers.cpp" line="43"/>
-        <location filename="../helpers.cpp" line="771"/>
+        <location filename="../helpers.cpp" line="44"/>
+        <location filename="../helpers.cpp" line="780"/>
         <source>---</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="43"/>
+        <location filename="../helpers.cpp" line="44"/>
         <source>Rud Trim</source>
         <translation>Trymer SK</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="43"/>
+        <location filename="../helpers.cpp" line="44"/>
         <source>Ele Trim</source>
         <translation>Trymer SW</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="43"/>
+        <location filename="../helpers.cpp" line="44"/>
         <source>Thr Trim</source>
         <translation>Trymer gazu</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="43"/>
+        <location filename="../helpers.cpp" line="44"/>
         <source>Ail Trim</source>
         <translation>Trymer lotek</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="43"/>
+        <location filename="../helpers.cpp" line="44"/>
         <source>Rot Enc</source>
         <translation>Pokrętło</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="53"/>
+        <location filename="../helpers.cpp" line="54"/>
         <source>Swedish</source>
         <translation>Szwedzki</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="81"/>
+        <location filename="../helpers.cpp" line="82"/>
         <source>CH%1</source>
         <translation>Kan %1</translation>
     </message>
@@ -5780,7 +5773,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../eeprominterface.cpp" line="216"/>
         <location filename="../eeprominterface.cpp" line="578"/>
         <location filename="../eeprominterface.cpp" line="708"/>
-        <location filename="../modeledit/customfunctions.cpp" line="624"/>
+        <location filename="../modeledit/customfunctions.cpp" line="626"/>
         <source>Timer1</source>
         <translation></translation>
     </message>
@@ -5788,21 +5781,21 @@ p, li { white-space: pre-wrap; }
         <location filename="../eeprominterface.cpp" line="216"/>
         <location filename="../eeprominterface.cpp" line="579"/>
         <location filename="../eeprominterface.cpp" line="709"/>
-        <location filename="../modeledit/customfunctions.cpp" line="625"/>
+        <location filename="../modeledit/customfunctions.cpp" line="627"/>
         <source>Timer2</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="580"/>
         <location filename="../eeprominterface.cpp" line="710"/>
-        <location filename="../modeledit/customfunctions.cpp" line="626"/>
+        <location filename="../modeledit/customfunctions.cpp" line="628"/>
         <source>All</source>
         <translation>Wszystkie</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="581"/>
         <location filename="../eeprominterface.cpp" line="711"/>
-        <location filename="../modeledit/customfunctions.cpp" line="627"/>
+        <location filename="../modeledit/customfunctions.cpp" line="629"/>
         <source>Telemetry</source>
         <translation>Telemetria</translation>
     </message>
@@ -5835,66 +5828,66 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/customfunctions.cpp" line="580"/>
+        <location filename="../modeledit/customfunctions.cpp" line="582"/>
         <source>Value</source>
         <translation>Wartość</translation>
     </message>
     <message>
-        <location filename="../modeledit/customfunctions.cpp" line="581"/>
+        <location filename="../modeledit/customfunctions.cpp" line="583"/>
         <source>Source</source>
         <translation>Źródło</translation>
     </message>
     <message>
-        <location filename="../modeledit/customfunctions.cpp" line="582"/>
+        <location filename="../modeledit/customfunctions.cpp" line="584"/>
         <source>GVAR</source>
         <translation>Zmienna</translation>
     </message>
     <message>
-        <location filename="../modeledit/customfunctions.cpp" line="583"/>
+        <location filename="../modeledit/customfunctions.cpp" line="585"/>
         <source>Increment</source>
         <translation>Zwiększanie</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="352"/>
+        <location filename="../helpers.cpp" line="353"/>
         <source>Own value</source>
         <translation>Własny Wartość</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="355"/>
+        <location filename="../helpers.cpp" line="356"/>
         <source>Flight mode %1 value</source>
         <oldsource>Flight phase %1 value</oldsource>
         <translation>Wartość Fazy lotu FL%1</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="362"/>
+        <location filename="../helpers.cpp" line="363"/>
         <source>Keys</source>
         <translation>Przyciski</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="362"/>
+        <location filename="../helpers.cpp" line="363"/>
         <source>Sticks</source>
         <translation>Drążki</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="362"/>
+        <location filename="../helpers.cpp" line="363"/>
         <source>Keys + Sticks</source>
         <translation>Przyciski i Drążki</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="75"/>
-        <location filename="../helpers.cpp" line="504"/>
+        <location filename="../helpers.cpp" line="505"/>
         <source>-GV%1</source>
         <translation>-ZG%1</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="77"/>
         <location filename="../eeprominterface.cpp" line="263"/>
-        <location filename="../helpers.cpp" line="521"/>
+        <location filename="../helpers.cpp" line="522"/>
         <source>GV%1</source>
         <translation>ZG%1</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="938"/>
+        <location filename="../helpers.cpp" line="947"/>
         <source>Simulator for this firmware is not yet available</source>
         <translation>Nie jest dostępny symulator dla tego firmware</translation>
     </message>
@@ -5972,17 +5965,17 @@ Zespół OpenTX/Companion.</translation>
         <translation>Użyj trymerów dla Fazy Lotu %1 + Własne trymery jako offset</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="80"/>
+        <location filename="../customizesplashdialog.cpp" line="76"/>
         <source>FW: %1</source>
         <translation>FW:%1</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="85"/>
+        <location filename="../customizesplashdialog.cpp" line="81"/>
         <source>Pict: %1</source>
         <translation>Obrazek:%1</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="90"/>
+        <location filename="../customizesplashdialog.cpp" line="86"/>
         <source>Profile image</source>
         <translation>Obrazek Profilu</translation>
     </message>
@@ -6219,27 +6212,27 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="470"/>
         <source>TRN</source>
-        <translation type="unfinished"></translation>
+        <translation>TRN</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="497"/>
         <source>GEA</source>
-        <translation type="unfinished"></translation>
+        <translation>GEA</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="530"/>
         <source>ID0</source>
-        <translation type="unfinished"></translation>
+        <translation>ID0</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="567"/>
         <source>ID1</source>
-        <translation type="unfinished"></translation>
+        <translation>DI1</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="600"/>
         <source>ID2</source>
-        <translation type="unfinished"></translation>
+        <translation>ID2</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="807"/>
@@ -6314,13 +6307,13 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
         <location filename="../simulation/simulatordialog-taranis.ui" line="264"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="555"/>
         <source>SD</source>
-        <translation type="unfinished"></translation>
+        <translation>SD</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="304"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="545"/>
         <source>SC</source>
-        <translation type="unfinished"></translation>
+        <translation>SC</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="347"/>
@@ -6334,25 +6327,25 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
         <location filename="../simulation/simulatordialog-taranis.ui" line="377"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="585"/>
         <source>S2</source>
-        <translation type="unfinished"></translation>
+        <translation>S2</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="437"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="565"/>
         <source>SG</source>
-        <translation type="unfinished"></translation>
+        <translation>SG</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="480"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="595"/>
         <source>RS</source>
-        <translation type="unfinished"></translation>
+        <translation>RS</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="514"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="575"/>
         <source>SH</source>
-        <translation type="unfinished"></translation>
+        <translation>SH</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="629"/>
@@ -6366,38 +6359,38 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
         <location filename="../simulation/simulatordialog-taranis.ui" line="843"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1219"/>
         <source>S1</source>
-        <translation type="unfinished"></translation>
+        <translation>S1</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="907"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1189"/>
         <source>SB</source>
-        <translation type="unfinished"></translation>
+        <translation>SB</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="963"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1179"/>
         <source>SA</source>
-        <translation type="unfinished"></translation>
+        <translation>SA</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1061"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1199"/>
         <source>SE</source>
-        <translation type="unfinished"></translation>
+        <translation>SE</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1089"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1111"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1114"/>
         <source>SF</source>
-        <translation type="unfinished"></translation>
+        <translation>SF</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1157"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1209"/>
         <source>LS</source>
-        <translation type="unfinished"></translation>
+        <translation>LS</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1269"/>
@@ -6873,25 +6866,25 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
 <context>
     <name>appPreferencesDialog</name>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="456"/>
+        <location filename="../apppreferencesdialog.ui" line="465"/>
         <source>Simulator capture folder</source>
         <translation>Katalog zapisu symulatora</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="449"/>
+        <location filename="../apppreferencesdialog.ui" line="458"/>
         <source>Remember simulator switch values</source>
         <translation>Zapamiętaj ustawienia przełączników w symulatorze</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="170"/>
-        <location filename="../apppreferencesdialog.ui" line="237"/>
-        <location filename="../apppreferencesdialog.ui" line="354"/>
-        <location filename="../apppreferencesdialog.ui" line="838"/>
+        <location filename="../apppreferencesdialog.ui" line="179"/>
+        <location filename="../apppreferencesdialog.ui" line="246"/>
+        <location filename="../apppreferencesdialog.ui" line="363"/>
+        <location filename="../apppreferencesdialog.ui" line="846"/>
         <source>Open Folder</source>
         <translation>Otwórz katalog</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="113"/>
+        <location filename="../apppreferencesdialog.ui" line="122"/>
         <source>User Splash Screens</source>
         <translation>Użyj ekranu powitalnego</translation>
     </message>
@@ -6901,47 +6894,52 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
         <translation>Edycja Ustawień</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="52"/>
+        <location filename="../apppreferencesdialog.ui" line="61"/>
         <source>Application Settings</source>
         <translation>Ustawienia Aplikacji</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="325"/>
+        <location filename="../apppreferencesdialog.ui" line="136"/>
+        <source>Only show user splash images</source>
+        <translation>Pokaż tylko ekrany powitalne użytkownika</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="141"/>
+        <source>Show user and companion splash images</source>
+        <translation>Pokaż ekrany powitalne użytkownika i Companion</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="334"/>
         <source>Simulator Settings</source>
         <translation>Ustawienia Symulatora</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="384"/>
+        <location filename="../apppreferencesdialog.ui" line="393"/>
         <source>Blue</source>
         <translation>Niebieskie</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="389"/>
+        <location filename="../apppreferencesdialog.ui" line="398"/>
         <source>Green</source>
         <translation>Zielone</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="394"/>
+        <location filename="../apppreferencesdialog.ui" line="403"/>
         <source>Red</source>
         <translation>Czerwone</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="399"/>
+        <location filename="../apppreferencesdialog.ui" line="408"/>
         <source>Orange</source>
         <translation>Pomarańczowe</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="404"/>
+        <location filename="../apppreferencesdialog.ui" line="413"/>
         <source>Yellow</source>
         <translation>Żółte</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="493"/>
-        <source>Radio Settings</source>
-        <translation>Ustawienia Radia</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="505"/>
+        <location filename="../apppreferencesdialog.ui" line="514"/>
         <source>Mode selection:
 
 Mode 1:
@@ -6964,27 +6962,27 @@ Mode 4:
         <translation></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="530"/>
+        <location filename="../apppreferencesdialog.ui" line="539"/>
         <source>Mode 1 (RUD ELE THR AIL)</source>
         <translation>Mod 1 (SK.SW.Gaz.Lot)</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="535"/>
+        <location filename="../apppreferencesdialog.ui" line="544"/>
         <source>Mode 2 (RUD THR ELE AIL)</source>
         <translation>Mod 2 (SK.Gaz.SW.Lot)</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="540"/>
+        <location filename="../apppreferencesdialog.ui" line="549"/>
         <source>Mode 3 (AIL ELE THR RUD)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="545"/>
+        <location filename="../apppreferencesdialog.ui" line="554"/>
         <source>Mode 4 (AIL THR ELE RUD)</source>
         <translation>Mod 4 (Lot.Gaz.SW.SK)</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="571"/>
+        <location filename="../apppreferencesdialog.ui" line="580"/>
         <source>Channel order
 
 This is used by the templated to determine which channel goes to what number output.</source>
@@ -6993,313 +6991,317 @@ This is used by the templated to determine which channel goes to what number out
 To ustawienie jest używane przez szablony, określa jakie wyjście przypisane jest do kanału.</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="580"/>
+        <location filename="../apppreferencesdialog.ui" line="589"/>
         <source>R E T A</source>
         <translation>K W G L</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="585"/>
+        <location filename="../apppreferencesdialog.ui" line="594"/>
         <source>R E A T</source>
         <translation>K W L G</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="590"/>
+        <location filename="../apppreferencesdialog.ui" line="599"/>
         <source>R T E A</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="595"/>
+        <location filename="../apppreferencesdialog.ui" line="604"/>
         <source>R T A E</source>
         <translation>K G L W</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="600"/>
+        <location filename="../apppreferencesdialog.ui" line="609"/>
         <source>R A E T</source>
         <translation>K L W G</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="605"/>
+        <location filename="../apppreferencesdialog.ui" line="614"/>
         <source>R A T E</source>
         <translation>K L G W</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="610"/>
+        <location filename="../apppreferencesdialog.ui" line="619"/>
         <source>E R T A</source>
         <translation>W K G L</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="615"/>
+        <location filename="../apppreferencesdialog.ui" line="624"/>
         <source>E R A T</source>
         <translation>W K L G</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="620"/>
+        <location filename="../apppreferencesdialog.ui" line="629"/>
         <source>E T R A</source>
         <translation>W G K L</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="625"/>
+        <location filename="../apppreferencesdialog.ui" line="634"/>
         <source>E T A R</source>
         <translation>W G L K</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="630"/>
+        <location filename="../apppreferencesdialog.ui" line="639"/>
         <source>E A R T</source>
         <translation>W L K G</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="635"/>
+        <location filename="../apppreferencesdialog.ui" line="644"/>
         <source>E A T R</source>
         <translation>W L G K</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="640"/>
+        <location filename="../apppreferencesdialog.ui" line="649"/>
         <source>T R E A</source>
         <translation>G K W L</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="645"/>
+        <location filename="../apppreferencesdialog.ui" line="654"/>
         <source>T R A E</source>
         <translation>G K L W</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="650"/>
+        <location filename="../apppreferencesdialog.ui" line="659"/>
         <source>T E R A</source>
         <translation>G W K L</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="655"/>
+        <location filename="../apppreferencesdialog.ui" line="664"/>
         <source>T E A R</source>
         <translation>G W L K</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="660"/>
+        <location filename="../apppreferencesdialog.ui" line="669"/>
         <source>T A R E</source>
         <translation>G L K W</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="665"/>
+        <location filename="../apppreferencesdialog.ui" line="674"/>
         <source>T A E R</source>
         <translation>G L W K</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="670"/>
+        <location filename="../apppreferencesdialog.ui" line="679"/>
         <source>A R E T</source>
         <translation>L K W G</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="675"/>
+        <location filename="../apppreferencesdialog.ui" line="684"/>
         <source>A R T E</source>
         <translation>L R G W</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="680"/>
+        <location filename="../apppreferencesdialog.ui" line="689"/>
         <source>A E R T</source>
         <translation>L W K G</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="685"/>
+        <location filename="../apppreferencesdialog.ui" line="694"/>
         <source>A E T R</source>
         <translation>L W G K</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="690"/>
+        <location filename="../apppreferencesdialog.ui" line="699"/>
         <source>A T R E</source>
         <translation>L G K W</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="695"/>
+        <location filename="../apppreferencesdialog.ui" line="704"/>
         <source>A T E R</source>
         <translation>L G W K</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="716"/>
+        <location filename="../apppreferencesdialog.ui" line="718"/>
         <source>Default Stick Mode</source>
         <translation>Bazowy mod drążków</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="723"/>
-        <source>Settings Profile</source>
-        <translation>Ustawienia Profilu</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="749"/>
+        <location filename="../apppreferencesdialog.ui" line="751"/>
         <source>Splash Screen</source>
         <translation>Ekran startowy</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="762"/>
+        <location filename="../apppreferencesdialog.ui" line="764"/>
         <source>Channel Order</source>
         <translation>Kolejność kanałów</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="772"/>
+        <location filename="../apppreferencesdialog.ui" line="774"/>
         <source>Append version number to FW file name</source>
         <translation>Dodaj numer Firmware do nazwy pliku</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="785"/>
+        <location filename="../apppreferencesdialog.ui" line="787"/>
         <source>SD Structure path</source>
         <translation>Struktura karty SD</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="882"/>
+        <source>Firmware Variant</source>
+        <translation>Wariant Firmware</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="908"/>
         <source>Select Image</source>
         <translation>Wybierz obrazek</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="824"/>
+        <location filename="../apppreferencesdialog.ui" line="982"/>
+        <source>Firmware File</source>
+        <translation>Plik Firmware</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="832"/>
         <source>Offer to write FW to Tx after download</source>
         <translation>Zaproponuj zapisanie FirmWare do radia po pobraniu</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="831"/>
+        <location filename="../apppreferencesdialog.ui" line="502"/>
+        <source>Radio Settings Profile</source>
+        <translation>Profil Ustawień Radia</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="725"/>
+        <source>Profile Name</source>
+        <translation>Nazwa profilu</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="839"/>
         <source>Remove Profile</source>
         <translation>Usuń Profil</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="889"/>
+        <location filename="../apppreferencesdialog.ui" line="915"/>
         <source>Clear Image</source>
         <translation>Wyczyść obrazek</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="868"/>
         <source>Firmware</source>
-        <translation>Firmware</translation>
+        <translation type="obsolete">Firmware</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="127"/>
-        <source>Include companion splashes</source>
-        <translation>Załącz ekrany powitalne</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="132"/>
-        <source>Only user defined splashes</source>
-        <translation>Tylko własne ekrany powitalne</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="223"/>
+        <location filename="../apppreferencesdialog.ui" line="232"/>
         <source>Splash Screen Library</source>
         <translation>Biblioteka ekranół powitalnych</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="210"/>
+        <location filename="../apppreferencesdialog.ui" line="219"/>
         <source>Files to keep</source>
         <translation>Pkili to zapamiętania</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="337"/>
+        <location filename="../apppreferencesdialog.ui" line="346"/>
         <source>Simulator BackLight</source>
         <translation>Podświetlenie symularota</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="78"/>
+        <location filename="../apppreferencesdialog.ui" line="87"/>
         <source>Automatic Backup Folder</source>
         <translation>Automatyczny Katalog Backupów</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="425"/>
+        <location filename="../apppreferencesdialog.ui" line="434"/>
         <source>Only capture to clipboard</source>
         <translation>Przechwyć tylko do schowka</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="418"/>
+        <location filename="../apppreferencesdialog.ui" line="427"/>
         <source>Joystick</source>
         <translation>Joystick</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="197"/>
+        <location filename="../apppreferencesdialog.ui" line="206"/>
         <source>Find Executable</source>
         <translation>Znajdź plik wykonywalny</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="140"/>
+        <location filename="../apppreferencesdialog.ui" line="149"/>
         <source>Google Earth Executable</source>
         <translation>Plik wykonywalny Google Earth</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="442"/>
+        <location filename="../apppreferencesdialog.ui" line="451"/>
         <source>Calibrate</source>
         <translation>Kalibracja</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="347"/>
+        <location filename="../apppreferencesdialog.ui" line="356"/>
         <source>Enable</source>
         <translation>Aktywowany</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="291"/>
+        <location filename="../apppreferencesdialog.ui" line="300"/>
         <source>Show splash screen when Companion starts</source>
         <translation>Pokaz ekran startowy przy uruchamianiu Companion</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="147"/>
+        <location filename="../apppreferencesdialog.ui" line="156"/>
         <source>Automatic check for OpenTX firmware updates</source>
         <translation>Automatycznie sprawdź aktualizacje firmware OpenTX</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="264"/>
+        <location filename="../apppreferencesdialog.ui" line="273"/>
         <source>Automatic check for Companion updates</source>
         <translation>Automatycznie sprawdź aktualizacje Companion</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="281"/>
+        <location filename="../apppreferencesdialog.ui" line="290"/>
         <source>Offer to use wizard for new models</source>
         <translation>Zaproponuj użycie konfiguratora dla nowych modeli</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="230"/>
+        <location filename="../apppreferencesdialog.ui" line="239"/>
         <source>Enable automatic backup before writing firmware</source>
         <translation>Uaktywnij automatyczny backup przed zapisem firmware</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="76"/>
+        <location filename="../apppreferencesdialog.cpp" line="74"/>
         <source>Select your snapshot folder</source>
         <translation>Katalog zrzutów</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="122"/>
-        <location filename="../apppreferencesdialog.cpp" line="203"/>
+        <location filename="../apppreferencesdialog.cpp" line="120"/>
+        <location filename="../apppreferencesdialog.cpp" line="201"/>
         <source>No joysticks found</source>
         <translation>Brak oysticka</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="160"/>
+        <location filename="../apppreferencesdialog.cpp" line="158"/>
         <source>Select your library folder</source>
         <translation>Wybierz katalog bibliteki</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="183"/>
+        <location filename="../apppreferencesdialog.cpp" line="181"/>
         <source>Select your Models and Settings backup folder</source>
         <translation>Wybierz folder do backupowania Modeli i Ustawień</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="193"/>
+        <location filename="../apppreferencesdialog.cpp" line="191"/>
         <source>Select Google Earth executable</source>
         <translation>Wybierz wykonywalny plik Google Earth</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="236"/>
+        <location filename="../apppreferencesdialog.cpp" line="234"/>
         <source>Select the folder replicating your SD structure</source>
         <translation>Wybierz folder do zreplikowania struktury Twojej karty SD</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="261"/>
+        <location filename="../apppreferencesdialog.cpp" line="260"/>
         <source>Not possible to remove profile</source>
         <translation>Usunięcie profilu jest niemożliwe</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="261"/>
+        <location filename="../apppreferencesdialog.cpp" line="260"/>
         <source>The default profile can not be removed.</source>
         <translation>Podstawowy profil nie moze być usunięty.</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="317"/>
+        <location filename="../apppreferencesdialog.cpp" line="296"/>
         <source>Open Image to load</source>
         <translation>Otwórz obrazek do załadowania</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="317"/>
+        <location filename="../apppreferencesdialog.cpp" line="296"/>
         <source>Images (%1)</source>
         <translation>Obrazki (%1)</translation>
     </message>
@@ -7683,250 +7685,292 @@ m2560 dla platformy V4</translation>
         <translation>Własne logo</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="99"/>
-        <location filename="../burndialog.cpp" line="194"/>
+        <location filename="../burndialog.ui" line="73"/>
         <source>Write to TX</source>
         <translation>Zapisz do radia</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="123"/>
+        <location filename="../burndialog.ui" line="84"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Modify calibration parameters using settings from current profile&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Zmiana parametrów kalibracji przy użyciu aktualnego profilu&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="126"/>
+        <location filename="../burndialog.ui" line="87"/>
         <source>Patch calibration setting from profile</source>
         <translation>Zamień ustawienia kalibracji wartościami z profilu</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="133"/>
+        <location filename="../burndialog.ui" line="94"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Modify HW parameters using settings from current profile&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Zmień ustawiania parametrów HW przy pomocy wartości z aktualnego profilu&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="136"/>
+        <location filename="../burndialog.ui" line="97"/>
         <source>Patch HW setting from profile</source>
         <translation>Zmień ustawiania parametrów HW wartościami z profilu</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="199"/>
+        <location filename="../burndialog.ui" line="147"/>
         <source>Date &amp; Time</source>
         <translation>Data i Czas</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="213"/>
+        <location filename="../burndialog.ui" line="323"/>
+        <source>Use firmware start screen</source>
+        <translation>Użyj ekranu startowego z firmware</translation>
+    </message>
+    <message>
+        <location filename="../burndialog.ui" line="330"/>
+        <source>Use another start screen</source>
+        <translation>Użyj innego ekranu startowego</translation>
+    </message>
+    <message>
+        <location filename="../burndialog.ui" line="343"/>
+        <source>Use profile start screen</source>
+        <translation>Użyj ekranu startowego z profilu</translation>
+    </message>
+    <message>
+        <location filename="../burndialog.ui" line="350"/>
+        <source>Use library start screen</source>
+        <translation>Użyj ekranu startowego z biblioteki</translation>
+    </message>
+    <message>
+        <location filename="../burndialog.ui" line="140"/>
         <source>SVN</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="227"/>
+        <location filename="../burndialog.ui" line="126"/>
         <source>Variant</source>
         <translation>Wariant</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="334"/>
         <source>Invert Color</source>
-        <translation>Odwróć kolory</translation>
+        <translation type="obsolete">Odwróć kolory</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="446"/>
         <source>Load Image</source>
-        <translation>Otwórz logo</translation>
+        <translation type="obsolete">Otwórz logo</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="453"/>
         <source>Open Splash Library</source>
-        <translation>Otwórz bibliotekę obrazków</translation>
+        <translation type="obsolete">Otwórz bibliotekę obrazków</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="456"/>
-        <source>...</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../burndialog.ui" line="390"/>
         <source>Substitute image in firmware</source>
-        <translation>Zmień logo w firmware</translation>
+        <translation type="obsolete">Zmień logo w firmware</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="261"/>
-        <location filename="../burndialog.cpp" line="37"/>
+        <location filename="../burndialog.ui" line="188"/>
+        <location filename="../burndialog.cpp" line="46"/>
         <source>Browse for file</source>
         <translation>Przeglądaj pliki</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="276"/>
+        <location filename="../burndialog.ui" line="203"/>
         <source>Allows Companion to write to older version of the firmware</source>
         <translation>Pozwól Companion na zapis do starszej wersji firmware</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="289"/>
+        <location filename="../burndialog.ui" line="216"/>
         <source>Backup and restore Models and Settings</source>
         <translation>Zbakupuj i odtwórz Modele i Ustawienia</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="383"/>
         <source>Use image in settings</source>
-        <translation>Użyj Logo w ustawieniach</translation>
+        <translation type="obsolete">Użyj Logo w ustawieniach</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="279"/>
+        <location filename="../burndialog.ui" line="206"/>
         <source>Check Firmware compatibility</source>
         <translation>Sprawdź kompatybilność firmware</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="305"/>
+        <location filename="../burndialog.ui" line="232"/>
         <source>Current Profile</source>
         <translation>Aktualny profil</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="70"/>
+        <location filename="../burndialog.ui" line="57"/>
         <source>Cancel</source>
         <translation>Przerwij</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="31"/>
+        <location filename="../burndialog.cpp" line="40"/>
         <source>Write firmware to TX</source>
         <translation>Zapisz firmware do radia</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="62"/>
+        <location filename="../burndialog.cpp" line="66"/>
         <source>Current profile</source>
         <translation>Aktualny profil</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="143"/>
-        <source>Open</source>
-        <translation>Otwórz</translation>
-    </message>
-    <message>
-        <location filename="../burndialog.cpp" line="242"/>
-        <location filename="../burndialog.cpp" line="447"/>
-        <location filename="../burndialog.cpp" line="451"/>
-        <location filename="../burndialog.cpp" line="459"/>
-        <location filename="../burndialog.cpp" line="508"/>
-        <location filename="../burndialog.cpp" line="562"/>
+        <location filename="../burndialog.cpp" line="204"/>
+        <location filename="../burndialog.cpp" line="426"/>
+        <location filename="../burndialog.cpp" line="430"/>
+        <location filename="../burndialog.cpp" line="437"/>
+        <location filename="../burndialog.cpp" line="486"/>
+        <location filename="../burndialog.cpp" line="540"/>
         <source>Warning</source>
         <translation>Ostrzeżenie</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="242"/>
         <source>%1 is not a known firmware</source>
-        <translation>%1 nie jest znanym firmware</translation>
+        <translation type="obsolete">%1 nie jest znanym firmware</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="243"/>
         <source>Burn anyway !</source>
-        <translation>Wypiecz mimo wszystko !</translation>
+        <translation type="obsolete">Wypiecz mimo wszystko !</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="257"/>
-        <location filename="../burndialog.cpp" line="264"/>
-        <location filename="../burndialog.cpp" line="272"/>
-        <location filename="../burndialog.cpp" line="317"/>
-        <location filename="../burndialog.cpp" line="325"/>
-        <location filename="../burndialog.cpp" line="354"/>
-        <location filename="../burndialog.cpp" line="392"/>
-        <location filename="../burndialog.cpp" line="576"/>
-        <location filename="../burndialog.cpp" line="581"/>
-        <location filename="../burndialog.cpp" line="589"/>
+        <location filename="../burndialog.cpp" line="218"/>
+        <location filename="../burndialog.cpp" line="225"/>
+        <location filename="../burndialog.cpp" line="233"/>
+        <location filename="../burndialog.cpp" line="278"/>
+        <location filename="../burndialog.cpp" line="286"/>
+        <location filename="../burndialog.cpp" line="335"/>
+        <location filename="../burndialog.cpp" line="339"/>
+        <location filename="../burndialog.cpp" line="355"/>
+        <location filename="../burndialog.cpp" line="376"/>
+        <location filename="../burndialog.cpp" line="394"/>
+        <location filename="../burndialog.cpp" line="554"/>
+        <location filename="../burndialog.cpp" line="559"/>
+        <location filename="../burndialog.cpp" line="567"/>
         <source>Error</source>
         <translation>Błąd</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="257"/>
+        <location filename="../burndialog.cpp" line="218"/>
         <source>Unable to find file %1!</source>
         <translation>Nie mogę odnaleźć pliku %1!</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="264"/>
-        <location filename="../burndialog.cpp" line="272"/>
-        <location filename="../burndialog.cpp" line="317"/>
+        <location filename="../burndialog.cpp" line="225"/>
+        <location filename="../burndialog.cpp" line="233"/>
+        <location filename="../burndialog.cpp" line="278"/>
         <source>Error opening file %1:
 %2.</source>
         <translation>Błąd otwarcia pliku %1:
 %2.</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="57"/>
+        <location filename="../burndialog.cpp" line="61"/>
         <source>Write Models and Settings to TX</source>
         <translation>Zapisz Modele i Ustawienia do radia</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="60"/>
+        <location filename="../burndialog.cpp" line="64"/>
         <source>Write Models and Settings in %1 to TX</source>
         <translation>Zapisz Modele i Ustawienia w %1 do radia</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="147"/>
+        <location filename="../burndialog.cpp" line="142"/>
+        <source>Open Firmware File</source>
+        <translation>Otwórz plik Firmware</translation>
+    </message>
+    <message>
+        <location filename="../burndialog.cpp" line="148"/>
         <source>Choose file to load Models and Settings from</source>
         <translation>Wybierz plik Modeli i Ustawien do wczytania</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="295"/>
-        <location filename="../burndialog.cpp" line="305"/>
-        <location filename="../burndialog.cpp" line="329"/>
+        <location filename="../burndialog.cpp" line="204"/>
+        <source>%1 may not be a valid firmware file</source>
+        <translation>%1 moze nie być prawidłowym plikiem firmware</translation>
+    </message>
+    <message>
+        <location filename="../burndialog.cpp" line="256"/>
+        <location filename="../burndialog.cpp" line="266"/>
+        <location filename="../burndialog.cpp" line="290"/>
         <source>Invalid binary Models and Settings File %1, Proceed anyway ?</source>
         <translation>Nieprawidłowy plik Modeli i Ustawień : %1. Kontynuować ?</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="325"/>
+        <location filename="../burndialog.cpp" line="286"/>
         <source>Error reading file %1:
 %2.</source>
         <translation>Błąd odczytu pliku %1:
 %2.</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="348"/>
-        <source>Open Image to load</source>
-        <translation>Otwórz plik z logo</translation>
+        <location filename="../burndialog.cpp" line="335"/>
+        <source>The firmware file is not valid.</source>
+        <translation>Plik firmware jest błedny.</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="348"/>
+        <location filename="../burndialog.cpp" line="339"/>
+        <source>There is no start screen image in the firmware file.</source>
+        <translation>Brak obrazka ekranu startowego w firmware.</translation>
+    </message>
+    <message>
+        <location filename="../burndialog.cpp" line="355"/>
+        <source>The profile image %1 does not contain an image.</source>
+        <translation>Obraz profilu %1 nie zawiera obrazka.</translation>
+    </message>
+    <message>
+        <location filename="../burndialog.cpp" line="371"/>
+        <source>Open image file to use as Tx start screen</source>
+        <translation>Otwórz plik obrazka by użyć go jako ekran startowy radia</translation>
+    </message>
+    <message>
+        <location filename="../burndialog.cpp" line="376"/>
+        <source>Image could not be loaded from %1</source>
+        <translation>Obrazek nie moze być załadowany z %1</translation>
+    </message>
+    <message>
+        <location filename="../burndialog.cpp" line="394"/>
+        <source>The library image could not be loaded</source>
+        <translation>Obrazek z biblioteki nie może być załadowany</translation>
+    </message>
+    <message>
+        <source>Open Image to load</source>
+        <translation type="obsolete">Otwórz plik z logo</translation>
+    </message>
+    <message>
+        <location filename="../burndialog.cpp" line="371"/>
         <source>Images (%1)</source>
         <translation>Obrazki (%1)</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="354"/>
-        <location filename="../burndialog.cpp" line="392"/>
         <source>Cannot load %1.</source>
-        <translation>Nie mogę załadować %1.</translation>
+        <translation type="obsolete">Nie mogę załadować %1.</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="447"/>
+        <location filename="../burndialog.cpp" line="426"/>
         <source>Cannot save customized firmware</source>
         <translation>Nie mogę zapisać przystosowanego firmware</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="451"/>
+        <location filename="../burndialog.cpp" line="430"/>
         <source>Custom image not found</source>
         <translation>Własny obrazek nie odnaleziony</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="459"/>
+        <location filename="../burndialog.cpp" line="437"/>
         <source>No firmware selected</source>
         <translation>Brak wyboru firmware</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="508"/>
+        <location filename="../burndialog.cpp" line="486"/>
         <source>Wrong radio calibration data in profile, Settings not patched</source>
         <translation>Błędna kalibracja radia w profilu, Ustawienia nie spatchowane</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="562"/>
+        <location filename="../burndialog.cpp" line="540"/>
         <source>Wrong radio setting data in profile, Settings not patched</source>
         <translation>Błędne ustawienia radia w profilu, Ustawienia nie spatchowane</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="576"/>
-        <location filename="../burndialog.cpp" line="581"/>
+        <location filename="../burndialog.cpp" line="554"/>
+        <location filename="../burndialog.cpp" line="559"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation>Nie mogę zapisać pliku %1:
 %2.</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="589"/>
+        <location filename="../burndialog.cpp" line="567"/>
         <source>Error writing file %1:
 %2.</source>
         <translation>Błąd zapisu pliku %1:
@@ -8501,118 +8545,118 @@ m2560 dla platformy V4</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="206"/>
-        <location filename="../customizesplashdialog.ui" line="502"/>
+        <location filename="../customizesplashdialog.ui" line="511"/>
         <source>Invert</source>
         <translation>Odwróć</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.ui" line="266"/>
-        <location filename="../customizesplashdialog.ui" line="565"/>
+        <location filename="../customizesplashdialog.ui" line="269"/>
+        <location filename="../customizesplashdialog.ui" line="577"/>
         <source>Load FW</source>
         <translation>Otwórz firmware</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.ui" line="273"/>
-        <location filename="../customizesplashdialog.ui" line="572"/>
+        <location filename="../customizesplashdialog.ui" line="279"/>
+        <location filename="../customizesplashdialog.ui" line="587"/>
         <source>Load Pict</source>
         <translation>Otwórz obrazek</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="259"/>
-        <location filename="../customizesplashdialog.ui" line="555"/>
+        <location filename="../customizesplashdialog.ui" line="564"/>
         <source>Load Profile</source>
         <translation>Załaduj profil</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.ui" line="296"/>
-        <location filename="../customizesplashdialog.ui" line="595"/>
+        <location filename="../customizesplashdialog.ui" line="305"/>
+        <location filename="../customizesplashdialog.ui" line="613"/>
         <source>Save</source>
         <translation>Zapisz</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="229"/>
-        <location filename="../customizesplashdialog.ui" line="525"/>
+        <location filename="../customizesplashdialog.ui" line="534"/>
         <source>Open Splash Library</source>
         <translation>Otwórz bibliotekę obrazków</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="232"/>
-        <location filename="../customizesplashdialog.ui" line="323"/>
-        <location filename="../customizesplashdialog.ui" line="333"/>
-        <location filename="../customizesplashdialog.ui" line="528"/>
+        <location filename="../customizesplashdialog.ui" line="332"/>
+        <location filename="../customizesplashdialog.ui" line="342"/>
+        <location filename="../customizesplashdialog.ui" line="537"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="185"/>
-        <source>Open</source>
-        <translation>Otwórz</translation>
-    </message>
-    <message>
-        <location filename="../customizesplashdialog.cpp" line="188"/>
-        <location filename="../customizesplashdialog.cpp" line="207"/>
-        <location filename="../customizesplashdialog.cpp" line="221"/>
-        <location filename="../customizesplashdialog.cpp" line="234"/>
+        <location filename="../customizesplashdialog.cpp" line="193"/>
+        <location filename="../customizesplashdialog.cpp" line="213"/>
+        <location filename="../customizesplashdialog.cpp" line="228"/>
+        <location filename="../customizesplashdialog.cpp" line="242"/>
         <source>Error</source>
         <translation>Błąd</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="188"/>
-        <source>Cannot load embedded FW image from %1.</source>
-        <translation>Nie mogę załadować wstawionego obrazu FW z %1.</translation>
-    </message>
-    <message>
-        <location filename="../customizesplashdialog.cpp" line="207"/>
+        <location filename="../customizesplashdialog.cpp" line="213"/>
         <source>Cannot load the image file %1.</source>
         <translation>Nie mogę załadować pliku obrazka %1.</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="221"/>
+        <location filename="../customizesplashdialog.cpp" line="228"/>
         <source>Cannot load the profile image %1.</source>
         <translation>Nie mogę załadować obrazu Profilu %1.</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="234"/>
+        <location filename="../customizesplashdialog.cpp" line="242"/>
         <source>Cannot load the library image %1.</source>
         <translation>Nie mogę załadować obrazu biblioteki %1.</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="243"/>
+        <location filename="../customizesplashdialog.cpp" line="251"/>
         <source>File Saved</source>
         <translation>Plik Zapisany</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="243"/>
+        <location filename="../customizesplashdialog.cpp" line="251"/>
         <source>The image was saved to the file %1</source>
         <translation>Obraz został zapisany do pliku %1</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="245"/>
+        <location filename="../customizesplashdialog.cpp" line="253"/>
         <source>Image Refresh Error</source>
         <translation>Błąd odświeżenia obrazka</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="245"/>
+        <location filename="../customizesplashdialog.cpp" line="253"/>
         <source>Failed to refresh image from file %1</source>
         <translation>Nieudane odswieżenie obrazka z pliku %1</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="249"/>
+        <location filename="../customizesplashdialog.cpp" line="257"/>
         <source>File Save Error</source>
         <translation>Błąd zapisu pliku</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="249"/>
+        <location filename="../customizesplashdialog.cpp" line="257"/>
         <source>Failed to write image to %1</source>
         <translation>Nieudany zapis obrazka do %1</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="203"/>
+        <location filename="../customizesplashdialog.cpp" line="209"/>
         <source>Open Image to load</source>
         <translation>Otwórz obrazek do załadowania</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="203"/>
+        <location filename="../customizesplashdialog.cpp" line="190"/>
+        <source>Open Firmware File</source>
+        <translation>Otwórz plik Firmware</translation>
+    </message>
+    <message>
+        <location filename="../customizesplashdialog.cpp" line="193"/>
+        <source>Can not load embedded image from firmware file %1.</source>
+        <translation>Nie mogę załądować wbudowanego obrazka z pliku Firmware %1.</translation>
+    </message>
+    <message>
+        <location filename="../customizesplashdialog.cpp" line="209"/>
         <source>Images (%1)</source>
         <translation>Obrazki (%1)</translation>
     </message>
@@ -10621,32 +10665,32 @@ Mode 4:
     <name>splashLibrary</name>
     <message>
         <location filename="../splashlibrary.ui" line="47"/>
-        <location filename="../splashlibrary.ui" line="942"/>
+        <location filename="../splashlibrary.ui" line="879"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../splashlibrary.cpp" line="62"/>
+        <location filename="../splashlibrary.cpp" line="60"/>
         <source>Splash Library - page %1 of %2</source>
         <translation>Biblioteka obrazków - strona %1 z %2</translation>
     </message>
     <message>
-        <location filename="../splashlibrary.cpp" line="93"/>
+        <location filename="../splashlibrary.cpp" line="91"/>
         <source>Warning</source>
         <translation>Ostrzeżenie</translation>
     </message>
     <message>
-        <location filename="../splashlibrary.cpp" line="93"/>
+        <location filename="../splashlibrary.cpp" line="91"/>
         <source>Invalid image in library %1</source>
         <translation>Nieprawidłowy obrazek w bibliotece %1</translation>
     </message>
     <message>
-        <location filename="../splashlibrary.cpp" line="99"/>
+        <location filename="../splashlibrary.cpp" line="97"/>
         <source>Information</source>
         <translation>Informacja</translation>
     </message>
     <message>
-        <location filename="../splashlibrary.cpp" line="99"/>
+        <location filename="../splashlibrary.cpp" line="97"/>
         <source>No valid image found in library, check your settings</source>
         <translation>Nie znaleziono prawodłowego obrazka w biblitece, sprawdź ustawienia</translation>
     </message>

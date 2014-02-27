@@ -74,8 +74,8 @@
   #define MAX_MIXERS  64
   #define MAX_EXPOS   64
   #define NUM_CSW     32 // number of custom switches
-  #define NUM_CFN     32 // number of functions assigned to switches
-  #define MAX_SCRIPTS 3
+  #define NUM_CFN     64 // number of functions assigned to switches
+  #define MAX_SCRIPTS 7
   #define MAX_INPUTS  32
 #elif defined(CPUARM)
   #define MAX_MODELS  60
@@ -84,7 +84,7 @@
   #define MAX_MIXERS  64
   #define MAX_EXPOS   32
   #define NUM_CSW     32 // number of custom switches
-  #define NUM_CFN     32 // number of functions assigned to switches
+  #define NUM_CFN     64 // number of functions assigned to switches
 #elif defined(CPUM2560) || defined(CPUM2561)
   #define MAX_MODELS  30
   #define NUM_CHNOUT  16 // number of real output channels CH1-CH16
@@ -239,6 +239,9 @@ enum BeeperMode {
   int8_t   beepVolume; \
   int8_t   wavVolume; \
   int8_t   varioVolume; \
+  int8_t   varioPitch; \
+  int8_t   varioRange; \
+  int8_t   varioRepeat; \
   int8_t   backgroundVolume;
 #endif
 
@@ -323,8 +326,9 @@ enum BacklightMode {
   #define SPLASH_MODE uint8_t splashMode:1; uint8_t spare4:2
 #endif
 
-#if defined(PCBTARANIS)
 #define POTS_POS_COUNT 6
+
+#if defined(PCBTARANIS)
 PACK(typedef struct {
   uint8_t count;
   uint8_t steps[POTS_POS_COUNT-1];
@@ -519,6 +523,16 @@ PACK(typedef struct t_LimitData {
 #define MLTPX_REP   2
 
 #if defined(CPUARM)
+// highest bit used for small values in mix 128 --> 8 bit is enough
+#define GV1_SMALL  128
+// highest bit used for large values in mix 4096 --> 12 bits is used (type for weight and offset has even 16 bits)
+#define GV1_LARGE  4096
+// the define GV1_LARGE marks the highest bit value used for this variables
+// because this would give too big numbers for ARM, we limit it further for offset and weight
+// must be smaller than GV1_LARGE - RESERVE_RANGE_FOR_GVARS -1
+#define GV_RANGE_WEIGHT 500
+#define GV_RANGE_OFFSET 500
+
 #define DELAY_STEP  10
 #define SLOW_STEP   10
 #define DELAY_MAX   (25*DELAY_STEP) /* 25 seconds */
@@ -584,6 +598,12 @@ PACK( union u_int8int16_t {
 // #define MD_SETOFFSET(md, val) md->offset = val
 
 #else
+
+// highest bit used for small values in mix 128 --> 8 bit is enough
+#define GV1_SMALL  128
+// highest bit used for large values in mix 256 --> 9 bits is used (8 bits + 1 extra bit from weightMode/offsetMode)
+#define GV1_LARGE  256
+
 #define DELAY_STEP  2
 #define SLOW_STEP   2
 #define DELAY_MAX   15 /* 7.5 seconds */
@@ -670,7 +690,10 @@ PACK( union u_int8int16_t {
 
 enum LogicalSwitchesFunctions {
   LS_FUNC_NONE,
+#if defined(CPUARM)
   LS_FUNC_VEQUAL, // v==offset
+#endif
+  LS_FUNC_VALMOSTEQUAL, // v~=offset
   LS_FUNC_VPOS,   // v>offset
   LS_FUNC_VNEG,   // v<offset
 #if defined(CPUARM)
@@ -696,8 +719,8 @@ enum LogicalSwitchesFunctions {
 };
 
 #if defined(CPUARM)
-#define MAX_LS_DURATION 120 /*60s*/
-#define MAX_LS_DELAY    120 /*60s*/
+#define MAX_LS_DURATION 250 /*25s*/
+#define MAX_LS_DELAY    250 /*25s*/
 #define MAX_LS_ANDSW    SWSRC_LAST
 typedef int16_t ls_telemetry_value_t;
 PACK(typedef struct t_LogicalSwitchData { // Custom Switches data
@@ -812,9 +835,9 @@ enum AdjustGvarFunctionParam {
 
 #if defined(CPUARM)
 #if defined(PCBTARANIS)
- #define LEN_CFN_NAME 10
+  #define LEN_CFN_NAME 8
 #else
- #define LEN_CFN_NAME 6
+  #define LEN_CFN_NAME 6
 #endif
 PACK(typedef struct t_CustomFnData { // Function Switches data
   int8_t  swtch;
@@ -1024,7 +1047,11 @@ enum VarioSource {
   VARIO_SOURCE_VARIO,
   VARIO_SOURCE_A1,
   VARIO_SOURCE_A2,
-  VARIO_SOURCE_LAST = VARIO_SOURCE_A2
+#if defined(FRSKY_SPORT)
+  VARIO_SOURCE_DTE,
+#endif
+  VARIO_SOURCE_COUNT,
+  VARIO_SOURCE_LAST = VARIO_SOURCE_COUNT-1
 };
 
 #if defined(FRSKY_HUB)

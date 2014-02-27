@@ -1317,7 +1317,6 @@ getvalue_t getValue(uint8_t i)
 
 volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_used = 0;
 volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_value = 0;
-/* recursive function. stack as of today (16/03/2012) grows by 8bytes at each call, which is ok! */
 
 #if defined(CPUARM)
 uint32_t cswDelays[NUM_CSW];
@@ -1330,27 +1329,66 @@ tmr10ms_t switchesMidposStart[6] = { 0 };
 uint32_t  switchesPos = 0;
 tmr10ms_t potsLastposStart[NUM_XPOTS];
 uint8_t   potsPos[NUM_XPOTS];
+
+uint32_t check2PosSwitchPosition(EnumKeys sw)
+{
+  uint32_t result;
+  uint32_t index;
+
+  if (switchState(sw))
+    index = sw - SW_SA0;
+  else
+    index = sw - SW_SA0 + 1;
+
+  result = (1 << index);
+
+  if (!(switchesPos & result)) {
+    PLAY_SWITCH_MOVED(index);
+  }
+
+  return result;
+}
+
 #define DELAY_SWITCH_3POS    10/*100ms*/
-#define CHECK_2POS(sw)       newPos |= (switchState(sw ## 0) ? (1 << (sw ## 0 - SW_SA0)) : (1 << (sw ## 0 - SW_SA0 + 1)))
-#define CHECK_3POS(idx, sw)  if (switchState(sw ## 0)) { \
-                               newPos |= (1 << (sw ## 0 - SW_SA0)); \
-                               switchesMidposStart[idx] = 0; \
-                             } \
-                             else if (switchState(sw ## 2)) { \
-                               newPos |= (1 << (sw ## 0 - SW_SA0 + 2)); \
-                               switchesMidposStart[idx] = 0; \
-                             } \
-                             else if ((switchesPos & (1 << (sw ## 0 - SW_SA0 + 1))) || (switchesMidposStart[idx] && (tmr10ms_t)(get_tmr10ms() - switchesMidposStart[idx]) > DELAY_SWITCH_3POS)) { \
-                               newPos |= (1 << (sw ## 0 - SW_SA0 + 1)); \
-                               switchesMidposStart[idx] = 0; \
-                             } \
-                             else { \
-                               if (!switchesMidposStart[idx]) { \
-                                 switchesMidposStart[idx] = get_tmr10ms(); \
-                               } \
-                               newPos |= (switchesPos & (0x7 << (sw ## 0 - SW_SA0))); \
-                             }
-void getSwitchesPosition()
+uint32_t check3PosSwitchPosition(uint8_t idx, EnumKeys sw, bool startup)
+{
+  uint32_t result;
+  uint32_t index;
+
+  if (switchState(sw)) {
+    index = sw - SW_SA0;
+    result = (1 << index);
+    switchesMidposStart[idx] = 0;
+  }
+  else if (switchState(EnumKeys(sw+2))) {
+    index = sw - SW_SA0 + 2;
+    result = (1 << index);
+    switchesMidposStart[idx] = 0;
+  }
+  else if (startup || (switchesPos & (1 << (sw - SW_SA0 + 1))) || (switchesMidposStart[idx] && (tmr10ms_t)(get_tmr10ms() - switchesMidposStart[idx]) > DELAY_SWITCH_3POS)) {
+    index = sw - SW_SA0 + 1;
+    result = (1 << index);
+    switchesMidposStart[idx] = 0;
+  }
+  else {
+    index = sw - SW_SA0 + 1;
+    if (!switchesMidposStart[idx]) {
+      switchesMidposStart[idx] = get_tmr10ms();
+    }
+    result = (switchesPos & (0x7 << (sw - SW_SA0)));
+  }
+
+  if (!(switchesPos & result)) {
+    PLAY_SWITCH_MOVED(index);
+  }
+
+  return result;
+}
+
+#define CHECK_2POS(sw)       newPos |= check2PosSwitchPosition(sw ## 0)
+#define CHECK_3POS(idx, sw)  newPos |= check3PosSwitchPosition(idx, sw ## 0, startup)
+
+void getSwitchesPosition(bool startup)
 {
   uint32_t newPos = 0;
   CHECK_3POS(0, SW_SA);
@@ -1369,13 +1407,17 @@ void getSwitchesPosition()
       if (calib->count>0 && calib->count<POTS_POS_COUNT) {
         uint8_t pos = anaIn(POT1+i) / (2*RESX/calib->count);
         uint8_t previousPos = potsPos[i] >> 4;
+        uint8_t previousStoredPos = potsPos[i] & 0x0F;
         if (pos != previousPos) {
           potsLastposStart[i] = get_tmr10ms();
-          potsPos[i] = (pos << 4) | (potsPos[i] & 0x0f);
+          potsPos[i] = (pos << 4) | previousStoredPos;
         }
-        else if ((tmr10ms_t)(get_tmr10ms() - potsLastposStart[i]) > DELAY_SWITCH_3POS) {
+        else if (startup || (tmr10ms_t)(get_tmr10ms() - potsLastposStart[i]) > DELAY_SWITCH_3POS) {
           potsLastposStart[i] = 0;
-          potsPos[i] = (pos << 4) | (pos);
+          potsPos[i] = (pos << 4) | pos;
+          if (previousStoredPos != pos) {
+            PLAY_SWITCH_MOVED(SWSRC_LAST_SWITCH+i*POTS_POS_COUNT+pos);
+          }
         }
       }
     }
@@ -1384,16 +1426,14 @@ void getSwitchesPosition()
 #define SWITCH_POSITION(sw)  (switchesPos & (1<<(sw)))
 #define POT_POSITION(sw)     ((potsPos[(sw)/POTS_POS_COUNT] & 0x0f) == ((sw) % POTS_POS_COUNT))
 #else
-#define getSwitchesPosition()
+#define getSwitchesPosition(...)
 #define SWITCH_POSITION(idx) switchState((EnumKeys)(SW_BASE+(idx)))
 #endif
 
 int16_t csLastValue[NUM_CSW];
 #define CS_LAST_VALUE_INIT -32768
-// param swtch may be (negativ sign ignored)
-// 0 --> no source 
-// 1 .. 9 (or max switches) --> returns switch value including 3pos 
-// others internal switches etc.
+
+/* recursive function. stack as of today (16/03/2012) grows by 8bytes at each call, which is ok! */
 bool getSwitch(int8_t swtch)
 {
   bool result;
@@ -1548,7 +1588,12 @@ bool getSwitch(int8_t swtch)
 #endif
 
           switch (cs->func) {
+#if defined(CPUARM)
             case LS_FUNC_VEQUAL:
+              result = (x==y);
+              break;
+#endif
+            case LS_FUNC_VALMOSTEQUAL:
 #if defined(GVARS)
               if (v1 >= MIXSRC_GVAR1 && v1 <= MIXSRC_LAST_GVAR)
                 result = (x==y);
@@ -1592,13 +1637,13 @@ bool getSwitch(int8_t swtch)
             result = false;
         }
         else {
-          cswDelays[cs_idx] = get_tmr10ms() + (cs->delay*50);
+          cswDelays[cs_idx] = get_tmr10ms() + (cs->delay*10);
         }
       }
 
       if (cs->duration) {
         if (result && !cswStates[cs_idx]) {
-          cswDurations[cs_idx] = get_tmr10ms() + (cs->duration*50);
+          cswDurations[cs_idx] = get_tmr10ms() + (cs->duration*10);
         }
 
         cswStates[cs_idx] = result;
@@ -1613,10 +1658,14 @@ bool getSwitch(int8_t swtch)
       }
 #endif
 
-      if (result)
+      if (result) {
+        if (!(s_last_switch_value&mask)) PLAY_LOGICAL_SWITCH_ON(cs_idx);
         s_last_switch_value |= mask;
-      else
+      }
+      else {
+        if (s_last_switch_value&mask) PLAY_LOGICAL_SWITCH_OFF(cs_idx);
         s_last_switch_value &= ~mask;
+      }
     }
   }
 
@@ -1647,53 +1696,24 @@ int8_t getMovedSwitch()
     }
   }
 #else
-  // saves about 50 bytes flash
   // return delivers 1 to 3 for ID1 to ID3
   // 4..8 for all other switches if changed to true
   // -4..-8 for all other switches if changed to false
   // 9 for Trainer switch if changed to true; Change to false is ignored
-  
-  swstate_t mask=0x80;
+  swstate_t mask = 0x80;
   for (uint8_t i=NUM_PSWITCH; i>1; i--) {
     bool prev;
-    // mask= (1<<(i-2));
-    prev=(switches_states & mask);
+    prev = (switches_states & mask);
     // don't use getSwitch here to always get the proper value, even getSwitch manipulates
-    // bool next = getSwitch(i);
-    bool next = switchState((EnumKeys)(SW_BASE+i-1));
-    if (prev!=next) {
-      if (((i<NUM_PSWITCH) && (i>3)) || next==true) 
-        result = next ? i : -i;
-      if ((i<=3) && (result==0)) result=1;
-      switches_states ^= mask;
-    }
-    mask>>=1;
-  } //endfor
-
-/*
-  for (uint8_t i=NUM_PSWITCH; i>0; i--) {
-    bool prev;
-    swstate_t mask = 0;
-    if (i <= 3) {
-      prev = ((switches_states & 0x03) == (i-1));
-    }
-    else {
-      mask = (1<<(i-2));
-      prev = (switches_states & mask);
-    }
-    // don't use getSwitch here to always get the proper value, because getSwitch manipulates
-    // bool next = getSwitch(i);
     bool next = switchState((EnumKeys)(SW_BASE+i-1));
     if (prev != next) {
-      if (i!=NUM_PSWITCH || next==true)
+      if (((i<NUM_PSWITCH) && (i>3)) || next==true) 
         result = next ? i : -i;
-      if (mask)
-        switches_states ^= mask;
-      else {
-        switches_states = (switches_states & 0xFC) | (i-1);
-      }
+      if (i<=3 && result==0) result = 1;
+      switches_states ^= mask;
     }
-  } //endfor */
+    mask >>= 1;
+  }
 #endif
 
   if ((tmr10ms_t)(get_tmr10ms() - s_move_last_time) > 10)
@@ -2312,6 +2332,8 @@ void checkAll()
 #endif
 
   clearKeyEvents();
+
+  SKIP_AUTOMATIC_PROMPTS();
 }
 
 #if defined(MODULE_ALWAYS_SEND_PULSES)
@@ -2360,30 +2382,39 @@ void checkTHR()
   if (g_model.disableThrottleWarning) return;
   getADC();
   evalInputs(e_perout_mode_notrainer); // let do evalInputs do the job
+
   int16_t v = calibratedStick[thrchn];   
   if (v<=(THRCHK_DEADBAND-1024)) return;  // prevent warning if throttle input OK
+
   // first - display warning; also deletes inputs if any have been before
   MESSAGE(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_THROTTLE_ALERT);  
   
-  while (1)  {
-      SIMU_SLEEP(1);
-      getADC();
+  while (1) {
+  
+    SIMU_SLEEP(1);
 
-      evalInputs(e_perout_mode_notrainer); // let do evalInputs do the job
-      v = calibratedStick[thrchn];   
-      if (pwrCheck()==e_power_off || keyDown() || v<=(THRCHK_DEADBAND-1024))
-        break;
+    getADC();
+
+    evalInputs(e_perout_mode_notrainer); // let do evalInputs do the job
+    v = calibratedStick[thrchn];   
+
+    if (pwrCheck()==e_power_off || keyDown() || v<=(THRCHK_DEADBAND-1024))
+      break;
         
-      checkBacklight();
-      wdt_reset();
-  }//endwhile
+    checkBacklight();
+    
+    wdt_reset();
+  }
 #endif
 }
 
 void checkAlarm() // added by Gohst
 {
-  if (g_eeGeneral.disableAlarmWarning) return;
-  if (IS_SOUND_OFF()) ALERT(STR_ALARMSWARN, STR_ALARMSDISABLED, AU_ERROR);
+  if (g_eeGeneral.disableAlarmWarning) 
+    return;
+
+  if (IS_SOUND_OFF())
+    ALERT(STR_ALARMSWARN, STR_ALARMSDISABLED, AU_ERROR);
 }
 
 void checkSwitches()
@@ -2414,19 +2445,21 @@ void checkSwitches()
     for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
       if (!(g_model.nSwToWarn & (1<<i))) {
         swstate_t mask = (0x03 << (i*2));
-        if(!((states & mask) == (switches_states & mask)))
+        if (!((states & mask) == (switches_states & mask))) {
           warn = true;
+        }
       }
     }
     uint8_t potMode = g_model.nPotsToWarn >> 6;
-    if(potMode) {
+    if (potMode) {
       perOut(e_perout_mode_normal, 0);
       bad_pots = 0;
-        for (uint8_t i=0; i<NUM_POTS; i++) 
-          if(!(g_model.nPotsToWarn & (1 << i)) && (abs(g_model.potPosition[i] - (getValue(MIXSRC_FIRST_POT+i) >> 3)) > 2)) {
-            warn = true;
-            bad_pots  |= (1<<i);
-          }
+      for (uint8_t i=0; i<NUM_POTS; i++) {
+        if (!(g_model.nPotsToWarn & (1 << i)) && (abs(g_model.potPosition[i] - (getValue(MIXSRC_FIRST_POT+i) >> 3)) > 2)) {
+          warn = true;
+          bad_pots  |= (1<<i);
+        }
+      }
     }
 #else
     for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
@@ -2456,7 +2489,7 @@ void checkSwitches()
     if ((last_bad_switches != switches_states) || (last_bad_pots != bad_pots)) {
       MESSAGE(STR_SWITCHWARN, NULL, STR_PRESSANYKEYTOSKIP, ((last_bad_switches == 0xff) || (last_bad_pots == 0xff)) ? AU_SWITCH_ALERT : AU_NONE);
       for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
-        if(!(g_model.nSwToWarn & (1<<i))) {
+        if (!(g_model.nSwToWarn & (1<<i))) {
           swstate_t mask = (0x03 << (i*2));
           uint8_t attr = ((states & mask) == (switches_states & mask)) ? 0 : INVERS;
           char c = "\300-\301"[(states & mask) >> (i*2)];
@@ -2464,7 +2497,7 @@ void checkSwitches()
           lcd_putcAtt(60+i*(2*FW+FW/2)+FW, 4*FH+3, c, attr);
         }
       }
-      if(potMode) {
+      if (potMode) {
         for (uint8_t i=0; i<NUM_POTS; i++) {
           if (!(g_model.nPotsToWarn & (1 << i))) {
             uint8_t flags = 0;
@@ -2474,8 +2507,8 @@ void checkSwitches()
                 case 1:
                   lcd_putc(60+i*(5*FW)+2*FW+2, 6*FH-2, g_model.potPosition[i] > (getValue(MIXSRC_FIRST_POT+i) >> 3) ? 126 : 127);
                   break;
-            	  case 2:
-            	  case 3:
+                case 2:
+                case 3:
                   lcd_putc(60+i*(5*FW)+2*FW+2, 6*FH-2, g_model.potPosition[i] > (getValue(MIXSRC_FIRST_POT+i) >> 3) ? '\300' : '\301');
                   break;
               }
@@ -2493,11 +2526,11 @@ void checkSwitches()
       for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
         uint8_t attr;
         if (i == 0)
-        	attr = ((states & 0x03) != (switches_states & 0x03)) ? INVERS : 0;
+          attr = ((states & 0x03) != (switches_states & 0x03)) ? INVERS : 0;
         else
-        	attr = (states & (1 << (i+1))) == (switches_states & (1 << (i+1))) ? 0 : INVERS;
-        if(!(g_model.nSwToWarn & (1<<i)))
-        	putsSwitches(x, 5*FH, (i>0?(i+3):(states&0x3)+1), attr);        
+          attr = (states & (1 << (i+1))) == (switches_states & (1 << (i+1))) ? 0 : INVERS;
+        if (!(g_model.nSwToWarn & (1<<i)))
+          putsSwitches(x, 5*FH, (i>0?(i+3):(states&0x3)+1), attr);
         x += 3*FW+FW/2;
       }
 #endif
@@ -2639,7 +2672,7 @@ uint8_t checkTrim(uint8_t event)
     thro = (idx==THR_STICK && g_model.thrTrim);
 #endif
     int8_t trimInc = g_model.trimInc + 1;
-    int8_t v = (trimInc==-1) ? min(32, abs(before)/4+1) : (1 << trimInc);
+    int8_t v = (trimInc==-1) ? min(32, abs(before)/4+1) : (1 << trimInc); // TODO flash saving if (trimInc < 0)
     if (thro) v = 4; // if throttle trim and trim trottle then step=4
     int16_t after = (k&1) ? before + v : before - v;   // positive = k&1
 #if defined(CPUARM)
@@ -2956,10 +2989,13 @@ void resetAll()
 #if defined(FRSKY)
   resetTelemetry();
 #endif
-  for (uint8_t i=0; i<NUM_CSW; i++)
+  for (uint8_t i=0; i<NUM_CSW; i++) {
     csLastValue[i] = CS_LAST_VALUE_INIT;
+  }
 
   s_last_switch_value = 0;
+
+  SKIP_AUTOMATIC_PROMPTS();
 
   RESET_THR_TRACE();
 }
@@ -3354,7 +3390,7 @@ void evalFunctions()
 
       if (active || IS_PLAY_BOTH_FUNC(CFN_FUNC(sd))) {
 
-        switch(CFN_FUNC(sd)) {
+        switch (CFN_FUNC(sd)) {
 
           case FUNC_SAFETY_CHANNEL:
             safetyCh[CFN_CH_INDEX(sd)] = CFN_PARAM(sd);
@@ -3575,11 +3611,6 @@ void evalFunctions()
 #if defined(CPUARM)
         fnSwitchDuration[i] = 0;
 #endif
-#if defined(CPUARM) && defined(SDCARD)
-        if (CFN_FUNC(sd) == FUNC_BACKGND_MUSIC && isFunctionActive(FUNCTION_BACKGND_MUSIC)) {
-          STOP_PLAY(i+1);
-        }
-#endif
       }
     }
   }
@@ -3758,7 +3789,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
           continue;
       }
       else if (!mixEnabled) {
-        if (md->speedDown && md->mltpx!=MLTPX_REP) {
+        if ((md->speedDown || md->speedUp) && md->mltpx!=MLTPX_REP) {
           if (mixCondition) {
             v = (md->mltpx == MLTPX_ADD ? 0 : RESX);
             apply_offset_and_curve = false;
@@ -3803,6 +3834,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       //========== SPEED ===============
       // now its on input side, but without weight compensation. More like other remote controls
       // lower weight causes slower movement
+
       if (mode <= e_perout_mode_inactive_phase && (md->speedUp || md->speedDown)) { // there are delay values
 #define DEL_MULT_SHIFT 8
         // we recale to a mult 256 higher value for calculation
@@ -3963,17 +3995,25 @@ void doMixerCalculations()
   PORTH |= 0x40; // PORTH:6 LOW->HIGH signals start of mixer interrupt
 #endif
 
-  static tmr10ms_t lastTMR;
+  static tmr10ms_t lastTMR = 0;
 
   tmr10ms_t tmr10ms = get_tmr10ms();
-  uint8_t tick10ms = (tmr10ms >= lastTMR ? tmr10ms - lastTMR : 1);  // handle tick10ms overrun
-  //@@@ open.20.fsguruh: correct overflow handling costs a lot of code; happens only each 11 min;
+  uint8_t tick10ms = (tmr10ms >= lastTMR ? tmr10ms - lastTMR : 1);
+  // handle tick10ms overrun
+  // correct overflow handling costs a lot of code; happens only each 11 min;
   // therefore forget the exact calculation and use only 1 instead; good compromise
+
+#if !defined(CPUARM)
   lastTMR = tmr10ms;
+#endif
 
   getADC();
 
-  getSwitchesPosition();
+  getSwitchesPosition(lastTMR == 0);
+
+#if defined(CPUARM)
+  lastTMR = tmr10ms;
+#endif
 
 #if defined(PCBSKY9X) && !defined(REVA) && !defined(SIMU)
   Current_analogue = (Current_analogue*31 + s_anaFilt[8] ) >> 5 ;
@@ -4636,7 +4676,7 @@ void perMain()
 
   checkBacklight();
 
-#if defined(FRSKY) || defined(MAVLINK)
+#if !defined(CPUARM) && (defined(FRSKY) || defined(MAVLINK))
   telemetryWakeup();
 #endif
 
@@ -5293,6 +5333,10 @@ void mixerTask(void * pdata)
       bool tick10ms = doMixerCalculations();
       CoLeaveMutexSection(mixerMutex);
       if (tick10ms) checkTrims();
+
+#if defined(FRSKY) || defined(MAVLINK)
+      telemetryWakeup();
+#endif
 
       if (heartbeat == HEART_WDT_CHECK) {
         wdt_reset();

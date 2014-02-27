@@ -95,15 +95,18 @@ int main(int argc, char *argv[])
 
   QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 
-  if (g.profile[g.id()].firmware().isEmpty())
-    g.profile[g.id()].firmware(default_firmware_variant.id);
+  if (g.profile[g.id()].fwType().isEmpty()){
+    g.profile[g.id()].fwType(default_firmware_variant.id);
+    g.profile[g.id()].fwName("");
+  }
+    
 
-  QPixmap pixmap = QPixmap(g.profile[g.id()].firmware().contains("taranis") ? ":/images/splasht.png" : ":/images/splash.png");
+  QPixmap pixmap = QPixmap(g.profile[g.id()].fwType().contains("taranis") ? ":/images/splasht.png" : ":/images/splash.png");
   QSplashScreen *splash = new QSplashScreen(pixmap);
 
   RegisterFirmwares();
 
-  current_firmware_variant = GetFirmwareVariant(g.profile[g.id()].firmware());
+  current_firmware_variant = GetFirmwareVariant(g.profile[g.id()].fwType());
 
   MainWindow *mainWin = new MainWindow();
   if (g.showSplash()) {

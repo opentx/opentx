@@ -9,6 +9,7 @@
 #include "hexinterface.h"
 #include "appdata.h"
 
+// Type 1 = Burn EEPROM, Type 2= Burn Flash
 burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * backupEE, QString DocName):
   QDialog(parent),
   ui(new Ui::burnDialog),
@@ -17,17 +18,25 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
   hexType(Type)
 {
   ui->setupUi(this);
-  ui->libraryButton->setIcon(CompanionIcon("library.png"));
+
+  if(!g.profile[g.id()].splashFile().isEmpty()){
+    imageSource=PROFILE;
+    imageFile=g.profile[g.id()].splashFile();
+  }
+  else{
+    ui->useProfileImageCB->setDisabled(true);
+    imageSource=FIRMWARE;
+    imageFile="";
+  }
   ui->SplashFrame->hide();
   ui->FramFWInfo->hide();
   ui->EEbackupCB->hide();
   ui->EEbackupCB->setCheckState(*backup ? Qt::Checked : Qt::Unchecked);
-  if (Type == 2) {
+  if (Type == FLASH_FILE_TYPE ) {
     ui->EEpromCB->hide();
     ui->profile_label->hide();
     ui->patchcalib_CB->hide();
     ui->patchhw_CB->hide();
-    ui->InvertColorButton->setDisabled(true);
     setWindowTitle(tr("Write firmware to TX"));
     if (IS_TARANIS(GetEepromInterface()->getBoard())) {
       ui->EEbackupCB->hide();
@@ -39,12 +48,7 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
     ui->patchcalib_CB->hide();
     ui->patchhw_CB->hide();
     ui->EEpromCB->hide();
-    ui->ImageLoadButton->setDisabled(true);
-    ui->libraryButton->setDisabled(true);
-    ui->InvertColorButton->setDisabled(true);
     ui->BurnFlashButton->setDisabled(true);
-    ui->ImageFileName->clear();
-    ui->FwImage->clear();
     ui->FWFileName->clear();
     ui->DateField->clear();
     ui->SVNField->clear();
@@ -63,7 +67,7 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
   }
   if (!hexfileName->isEmpty()) {
     ui->FWFileName->setText(*hexfileName);
-    if (Type==2) {
+    if (Type==FLASH_FILE_TYPE) {
       checkFw(*hexfileName);
     }
     else {
@@ -104,14 +108,14 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
     ui->FlashLoadButton->hide();   
     hexfileName->clear();
   }
-  else if (Type==2) {
-    QString FileName;
-    FileName = g.lastFw();
+  else if (Type==FLASH_FILE_TYPE) {
+    QString FileName = g.profile[g.id()].fwName();
     QFile file(FileName);
     if (file.exists()) {
       checkFw(FileName);
     }
   }
+  updateUI();
   resize(0, 0);
 }
 
@@ -124,12 +128,7 @@ void burnDialog::on_FlashLoadButton_clicked()
 {
   QString fileName;
 
-  ui->ImageLoadButton->setDisabled(true);
-  ui->libraryButton->setDisabled(true);
-  ui->InvertColorButton->setDisabled(true);
   ui->BurnFlashButton->setDisabled(true);
-  ui->ImageFileName->clear();
-  ui->FwImage->clear();
   ui->FWFileName->clear();
   ui->DateField->clear();
   ui->SVNField->clear();
@@ -139,8 +138,10 @@ void burnDialog::on_FlashLoadButton_clicked()
   ui->BurnFlashButton->setDisabled(true);
   ui->EEbackupCB->hide();
   QTimer::singleShot(0, this, SLOT(shrink()));
-  if (hexType==2) {
-    fileName = QFileDialog::getOpenFileName(this, tr("Open"), g.flashDir(), FLASH_FILES_FILTER);
+  if (hexType==FLASH_FILE_TYPE) {
+    fileName = QFileDialog::getOpenFileName(this, tr("Open Firmware File"), g.flashDir(), FLASH_FILES_FILTER);
+    if(fileName.isEmpty())
+      return;
     checkFw(fileName);
   }
   else {
@@ -169,6 +170,7 @@ void burnDialog::on_FlashLoadButton_clicked()
       QTimer::singleShot(0, this, SLOT(shrink()));
     }
   }
+  updateUI();
 }
 
 void burnDialog::checkFw(QString fileName)
@@ -176,6 +178,7 @@ void burnDialog::checkFw(QString fileName)
   if (fileName.isEmpty()) {
     return;
   }
+
   if (!IS_TARANIS(GetEepromInterface()->getBoard())) {
     ui->EEbackupCB->show();
   }
@@ -190,59 +193,17 @@ void burnDialog::checkFw(QString fileName)
     ui->DateField->setText(flash.getDate() + " " + flash.getTime());
     ui->SVNField->setText(flash.getSvn());
     ui->ModField->setText(flash.getBuild());
-    ui->BurnFlashButton->setEnabled(true);
-    ui->BurnFlashButton->setText(tr("Write to TX"));
+
+    ui->SplashFrame->hide();
     if (flash.hasSplash()) {
       ui->SplashFrame->show();
-      ui->ImageLoadButton->setEnabled(true);
-      ui->libraryButton->setEnabled(true);
-      ui->FwImage->setFixedSize(flash.getSplashWidth(), flash.getSplashHeight());
       ui->imageLabel->setFixedSize(flash.getSplashWidth(), flash.getSplashHeight());
-      ui->FwImage->show();
-      ui->FwImage->setPixmap(QPixmap::fromImage(flash.getSplash()));
-      QString ImageStr = g.profile[g.id()].splashFile();
-      bool PatchFwCB = g.profile[g.id()].patchImage();
-      if (!ImageStr.isEmpty()) {
-        QImage Image = qstring2image(ImageStr);
-        ui->imageLabel->setPixmap(QPixmap::fromImage(Image.convertToFormat(flash.getSplashFormat())));
-        ui->InvertColorButton->setEnabled(true);
-        ui->PreferredImageCB->setChecked(true);
-        ui->PatchFWCB->setChecked(PatchFwCB);
-      }
-      else {
-        QString fileName=ui->ImageFileName->text();
-        if (!fileName.isEmpty()) {
-          QImage image(fileName);
-          if (!image.isNull()) {
-            ui->InvertColorButton->setEnabled(true);
-            ui->imageLabel->setPixmap(QPixmap::fromImage(image.scaled(ui->imageLabel->width(), ui->imageLabel->height()).convertToFormat(flash.getSplashFormat())));
-            ui->PatchFWCB->setEnabled(true);
-            ui->PatchFWCB->setChecked(PatchFwCB);
-          }
-          else {
-            ui->PatchFWCB->setDisabled(true);
-            ui->PatchFWCB->setChecked(false);
-            ui->PreferredImageCB->setDisabled(true);         
-          }
-        }
-        else {
-          ui->PatchFWCB->setDisabled(true);
-          ui->PatchFWCB->setChecked(false);
-          ui->PreferredImageCB->setDisabled(true);
-        }
-      }
-    }
-    else {
-      ui->FwImage->hide();
-      ui->ImageFileName->setText("");
-      ui->SplashFrame->hide();
     }
   }
   else {
-    QMessageBox::warning(this, tr("Warning"), tr("%1 is not a known firmware").arg(fileName));
-    ui->BurnFlashButton->setText(tr("Burn anyway !"));
-    ui->BurnFlashButton->setEnabled(true);
+    QMessageBox::warning(this, tr("Warning"), tr("%1 may not be a valid firmware file").arg(fileName));
   }  
+  ui->BurnFlashButton->setEnabled(true);
   QTimer::singleShot(0, this, SLOT(shrink()));
   g.flashDir( QFileInfo(fileName).dir().absolutePath() );
 }
@@ -337,51 +298,92 @@ bool burnDialog::checkeEprom(QString fileName)
   return true;
 }
 
-void burnDialog::on_ImageLoadButton_clicked()
+void burnDialog::displaySplash()
+{
+  QImage image;
+  if (imageSource == FIRMWARE){
+    FlashInterface flash(ui->FWFileName->text());
+    image = flash.getSplash();
+  }
+  else{
+    image.load(imageFile);
+  }
+  if (image.isNull()) {
+    return;
+  }
+  ui->imageLabel->setPixmap( makePixMap( image, g.profile[g.id()].fwType()));
+}
+
+void burnDialog::updateUI()
+{
+  if (hexType==EEPROM_FILE_TYPE)
+    return;
+
+  ui->useProfileImageCB->setChecked( imageSource == PROFILE );
+  ui->useFwImageCB->setChecked( imageSource == FIRMWARE );
+  ui->useLibraryImageCB->setChecked( imageSource == LIBRARY );
+  ui->useAnotherImageCB->setChecked( imageSource == ANOTHER );
+  
+  displaySplash();
+}
+
+void burnDialog::on_useFwImageCB_clicked()
+{
+  QString fileName = ui->FWFileName->text();
+  FlashInterface flash(fileName);
+  if (!flash.isValid()) {
+    QMessageBox::critical(this, tr("Error"), tr( "The firmware file is not valid." ));
+  }
+  else {
+    if (!flash.hasSplash()) {
+      QMessageBox::critical(this, tr("Error"), tr( "There is no start screen image in the firmware file." ));
+    }
+    else{
+      imageSource = FIRMWARE;
+      imageFile = fileName;
+    }
+  }
+  updateUI();
+}
+
+void burnDialog::on_useProfileImageCB_clicked()
+{
+  QString fileName = g.profile[g.id()].splashFile();
+  if (!fileName.isEmpty()){
+    QImage image(fileName);
+    if (image.isNull()) {
+      QMessageBox::critical(this, tr("Error"), tr("The profile image %1 does not contain an image.").arg(fileName));
+    }
+    else {
+      imageSource = PROFILE;
+      imageFile = fileName;
+    }
+  }
+  updateUI();
+}
+
+void burnDialog::on_useAnotherImageCB_clicked()
 {
   QString supportedImageFormats;
   for (int formatIndex = 0; formatIndex < QImageReader::supportedImageFormats().count(); formatIndex++) {
     supportedImageFormats += QLatin1String(" *.") + QImageReader::supportedImageFormats()[formatIndex];
   }
-
-  QString fileName = QFileDialog::getOpenFileName(this,
-          tr("Open Image to load"), g.imagesDir(), tr("Images (%1)").arg(supportedImageFormats));
-
-  if (!fileName.isEmpty()) {
+  QString fileName = QFileDialog::getOpenFileName(this, tr("Open image file to use as Tx start screen"), g.imagesDir(), tr("Images (%1)").arg(supportedImageFormats));
+  if (!fileName.isEmpty()){
     g.imagesDir( QFileInfo(fileName).dir().absolutePath() );
     QImage image(fileName);
     if (image.isNull()) {
-      QMessageBox::critical(this, tr("Error"), tr("Cannot load %1.").arg(fileName));
-      ui->PatchFWCB->setDisabled(true);
-      ui->PatchFWCB->setChecked(false);
-      ui->InvertColorButton->setDisabled(true);
-      return;
+      QMessageBox::critical(this, tr("Error"), tr("Image could not be loaded from %1").arg(fileName));
     }
-    ui->ImageFileName->setText(fileName);
-    ui->InvertColorButton->setEnabled(true);
-    if (ui->imageLabel->width()!=128) {
-      image=image.convertToFormat(QImage::Format_RGB32);
-      QRgb col;
-      int gray;
-      int width = image.width();
-      int height = image.height();
-      for (int i = 0; i < width; ++i) {
-        for (int j = 0; j < height; ++j) {
-          col = image.pixel(i, j);
-          gray = qGray(col);
-          image.setPixel(i, j, qRgb(gray, gray, gray));
-        }
-      }      
-      ui->imageLabel->setPixmap(QPixmap::fromImage(image.scaled(ui->imageLabel->width(), ui->imageLabel->height())));
-    }
-    else {
-      ui->imageLabel->setPixmap(QPixmap::fromImage(image.scaled(ui->imageLabel->width(), ui->imageLabel->height()).convertToFormat(QImage::Format_Mono)));
-    }
-    ui->PatchFWCB->setEnabled(true);
+    else{
+      imageSource = ANOTHER;
+      imageFile = fileName;
+    }  
   }
+  updateUI();
 }
 
-void burnDialog::on_libraryButton_clicked()
+void burnDialog::on_useLibraryImageCB_clicked()
 {
   QString fileName;
   splashLibrary *ld = new splashLibrary(this,&fileName);
@@ -389,49 +391,26 @@ void burnDialog::on_libraryButton_clicked()
   if (!fileName.isEmpty()) {
     QImage image(fileName);
     if (image.isNull()) {
-      QMessageBox::critical(this, tr("Error"), tr("Cannot load %1.").arg(fileName));
-      ui->PatchFWCB->setDisabled(true);
-      ui->PatchFWCB->setChecked(false);
-      ui->InvertColorButton->setDisabled(true);
-      return;
+      QMessageBox::critical(this, tr("Error"), tr("The library image could not be loaded"));
     }
-    ui->ImageFileName->setText(fileName);
-    ui->InvertColorButton->setEnabled(true);
-    if (ui->imageLabel->width()!=128) {
-      image=image.convertToFormat(QImage::Format_RGB32);
-      QRgb col;
-      int gray;
-      int width = image.width();
-      int height = image.height();
-      for (int i = 0; i < width; ++i)
-      {
-          for (int j = 0; j < height; ++j)
-          {
-              col = image.pixel(i, j);
-              gray = qGray(col);
-              image.setPixel(i, j, qRgb(gray, gray, gray));
-          }
-      }      
-      ui->imageLabel->setPixmap(QPixmap::fromImage(image.scaled(ui->imageLabel->width(), ui->imageLabel->height())));
-    } else {
-      ui->imageLabel->setPixmap(QPixmap::fromImage(image.scaled(ui->imageLabel->width(), ui->imageLabel->height()).convertToFormat(QImage::Format_Mono)));
+    else{
+      imageSource = LIBRARY;
+      imageFile = fileName;
     }
-    ui->PatchFWCB->setEnabled(true);
   }
+  updateUI();
 }
 
 void burnDialog::on_BurnFlashButton_clicked()
 {
-  if (hexType==2) {
+  if (hexType==FLASH_FILE_TYPE) {
     QString fileName=ui->FWFileName->text();
     if (!fileName.isEmpty()) {
       g.flashDir( QFileInfo(fileName).dir().absolutePath() );
-      g.lastFw( fileName );
-      if (ui->PatchFWCB->isChecked()) {
-        g.profile[g.id()].patchImage( true );
+      if (!ui->useFwImageCB->isChecked()) {
         QImage image = ui->imageLabel->pixmap()->toImage().scaled(ui->imageLabel->width(), ui->imageLabel->height());
         if (!image.isNull()) {
-          QString tempDir    = QDir::tempPath();
+          QString tempDir = QDir::tempPath();
           QString tempFile;
           if (getFileType(fileName) == FILE_TYPE_HEX)
             tempFile = tempDir + "/flash.hex";
@@ -451,7 +430,6 @@ void burnDialog::on_BurnFlashButton_clicked()
           QMessageBox::critical(this, tr("Warning"), tr("Custom image not found"));
         }
       } else {
-            g.profile[g.id()].patchImage( false );
             hexfileName->clear();
             hexfileName->append(fileName);
       }
@@ -460,7 +438,7 @@ void burnDialog::on_BurnFlashButton_clicked()
       hexfileName->clear();     
     }
   }
-  if (hexType==1) {
+  if (hexType==EEPROM_FILE_TYPE) {
     QString calib = g.profile[g.id()].stickPotCalib();
     QString trainercalib = g.profile[g.id()].trainerCalib();
     int potsnum=GetEepromInterface()->getCapability(Pots);
@@ -609,98 +587,9 @@ void burnDialog::on_cancelButton_clicked()
   this->close();  
 }
 
-void burnDialog::on_InvertColorButton_clicked()
-{
-  if (ui->imageLabel->pixmap()) {
-    QImage image = ui->imageLabel->pixmap()->toImage();
-    image.invertPixels();
-    ui->imageLabel->setPixmap(QPixmap::fromImage(image));
-  }
-}
-
 void burnDialog::on_EEpromCB_toggled(bool checked)
 {
-  if (ui->EEpromCB->isChecked()) {
-    *backup=true;
-  } else {
-    *backup=false;
-  }
-}
-
-void burnDialog::on_PreferredImageCB_toggled(bool checked)
-{
-  QString tmpFileName;
-  if (checked) {
-    QString ImageStr = g.profile[g.id()].splashFile();
-    if (!ImageStr.isEmpty()) {
-      QImage Image = qstring2image(ImageStr);
-      if (ui->imageLabel->width()!=128) {
-        Image=Image.convertToFormat(QImage::Format_RGB32);
-        QRgb col;
-        int gray;
-        int width = Image.width();
-        int height = Image.height();
-        for (int i = 0; i < width; ++i)
-        {
-            for (int j = 0; j < height; ++j)
-            {
-                col = Image.pixel(i, j);
-                gray = qGray(col);
-                Image.setPixel(i, j, qRgb(gray, gray, gray));
-            }
-        }
-      } else {
-         Image=Image.convertToFormat(QImage::Format_Mono);
-      }
-      ui->imageLabel->setPixmap(QPixmap::fromImage(Image));
-      ui->InvertColorButton->setEnabled(true);
-      ui->PreferredImageCB->setChecked(true);
-      ui->ImageFileName->setDisabled(true);
-      ui->ImageLoadButton->setDisabled(true);
-      ui->libraryButton->setDisabled(true);
-      ui->PatchFWCB->setEnabled(true);
-    }
-  } else {
-    ui->imageLabel->clear();
-    ui->ImageLoadButton->setEnabled(true);
-    ui->libraryButton->setEnabled(true);
-    tmpFileName = ui->ImageFileName->text();
-    if (!tmpFileName.isEmpty()) {
-      QImage image(tmpFileName);
-      if (!image.isNull()) {
-        if (ui->imageLabel->width()!=128) {
-          image=image.convertToFormat(QImage::Format_RGB32);
-          QRgb col;
-          int gray;
-          int width = image.width();
-          int height = image.height();
-          for (int i = 0; i < width; ++i)
-          {
-              for (int j = 0; j < height; ++j)
-              {
-                  col = image.pixel(i, j);
-                  gray = qGray(col);
-                  image.setPixel(i, j, qRgb(gray, gray, gray));
-              }
-          }
-        } else {
-           image=image.convertToFormat(QImage::Format_Mono);
-        }        
-        ui->imageLabel->setPixmap(QPixmap::fromImage(image.scaled(ui->imageLabel->width(), ui->imageLabel->height())));
-        ui->InvertColorButton->setEnabled(true);
-        ui->ImageFileName->setEnabled(true);
-        ui->PatchFWCB->setDisabled(false);
-      } else {
-        ui->InvertColorButton->setDisabled(true);
-        ui->PatchFWCB->setDisabled(true);
-        ui->PatchFWCB->setChecked(false);
-      }
-    } else {
-      ui->InvertColorButton->setDisabled(true);
-      ui->PatchFWCB->setDisabled(true);
-      ui->PatchFWCB->setChecked(false);
-    }
-  }
+  *backup = ui->EEpromCB->isChecked();
 }
 
 void burnDialog::shrink()
@@ -710,9 +599,5 @@ void burnDialog::shrink()
 
 void burnDialog::on_EEbackupCB_clicked()
 {
-  if (ui->EEbackupCB->isChecked()) {
-    *backup=true;
-  } else {
-    *backup=false;
-  }
+  *backup = ui->EEbackupCB->isChecked();
 }

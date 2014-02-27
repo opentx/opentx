@@ -56,19 +56,26 @@ void appPreferencesDialog::writeValues()
     g.jsSupport(false);
     g.jsCtrl(0);
   }
-
-  g.id(ui->profileIndexLE->text().toInt());
-
   g.profile[g.id()].channelOrder(ui->channelorderCB->currentIndex());
   g.profile[g.id()].defaultMode(ui->stickmodeCB->currentIndex());
   g.profile[g.id()].renameFwFiles(ui->renameFirmware->isChecked());
   g.profile[g.id()].burnFirmware(ui->burnFirmware->isChecked());
-  g.profile[g.id()].name(ui->profileNameLE->text());
   g.profile[g.id()].sdPath(ui->sdPath->text());
   g.profile[g.id()].splashFile(ui->SplashFileName->text());
-  g.profile[g.id()].firmware(ui->firmwareLE->text());
-  
-  saveProfile();
+
+  // The profile name may NEVER be empty
+  if (ui->profileNameLE->text().isEmpty())
+    g.profile[g.id()].name(tr("My Radio"));
+  else
+    g.profile[g.id()].name(ui->profileNameLE->text());
+
+  // If a new radio type has been choosen, several things need to change
+  if ( initialRadioType != ui->radioCB->currentIndex())
+  {
+    g.profile[g.id()].fwName("");
+    g.profile[g.id()].fwType(getDefaultFwType(ui->radioCB->currentIndex()));
+    current_firmware_variant = GetFirmwareVariant(g.profile[g.id()].fwType());  
+  }
 }
 
 void appPreferencesDialog::on_snapshotPathButton_clicked()
@@ -147,10 +154,11 @@ void appPreferencesDialog::initSettings()
   ui->stickmodeCB->setCurrentIndex(g.profile[g.id()].defaultMode());
   ui->renameFirmware->setChecked(g.profile[g.id()].renameFwFiles());
   ui->sdPath->setText(g.profile[g.id()].sdPath());
-  ui->profileIndexLE->setText(QString("%1").arg(g.id()));
   ui->profileNameLE->setText(g.profile[g.id()].name());
-  ui->firmwareLE->setText(g.profile[g.id()].firmware());
   ui->SplashFileName->setText(g.profile[g.id()].splashFile());
+
+  initialRadioType = getRadioType(g.profile[g.id()].fwType());
+  ui->radioCB->setCurrentIndex(initialRadioType);
 
   displayImage( g.profile[g.id()].splashFile() );
 }
@@ -239,22 +247,6 @@ void appPreferencesDialog::on_sdPathButton_clicked()
   }
 }
 
-void appPreferencesDialog::saveProfile()
-{
-  // The profile name may NEVER be empty
-  if (ui->profileNameLE->text().isEmpty())
-    ui->profileNameLE->setText("----");
-
-  g.profile[g.id()].name( ui->profileNameLE->text() );
-  g.profile[g.id()].channelOrder( ui->channelorderCB->currentIndex());
-  g.profile[g.id()].defaultMode( ui->stickmodeCB->currentIndex());
-  g.profile[g.id()].burnFirmware( ui->burnFirmware->isChecked());
-  g.profile[g.id()].renameFwFiles( ui->renameFirmware->isChecked());
-  g.profile[g.id()].sdPath( ui->sdPath->text());
-  g.profile[g.id()].splashFile( ui->SplashFileName->text());
-  g.profile[g.id()].firmware( ui->firmwareLE->text());
-}
-
 void appPreferencesDialog::on_removeProfileButton_clicked()
 {
   if ( g.id() == 0 )
@@ -267,6 +259,7 @@ void appPreferencesDialog::on_removeProfileButton_clicked()
   }
 }
 
+
 bool appPreferencesDialog::displayImage( QString fileName )
 {
   // Start by clearing the pixmap
@@ -278,31 +271,11 @@ bool appPreferencesDialog::displayImage( QString fileName )
 
   // Use the firmware name to determine splash width
   int width = SPLASH_WIDTH;
-  if (g.profile[g.id()].firmware().contains("taranis"))
+  if (g.profile[g.id()].fwType().contains("taranis"))
     width = SPLASHX9D_WIDTH;
-
-  ui->imageLabel->setPixmap(QPixmap::fromImage(image.scaled(width, SPLASH_HEIGHT)));
-  if (width==SPLASHX9D_WIDTH) {
-    image=image.convertToFormat(QImage::Format_RGB32);
-    QRgb col;
-    int gray, height = image.height();
-    for (int i = 0; i < width; ++i) {
-      for (int j = 0; j < height; ++j) {
-        col = image.pixel(i, j);
-        gray = qGray(col);
-        image.setPixel(i, j, qRgb(gray, gray, gray));
-      }
-    }      
-    ui->imageLabel->setPixmap(QPixmap::fromImage(image));
-  } 
-  else {
-    ui->imageLabel->setPixmap(QPixmap::fromImage(image.convertToFormat(QImage::Format_Mono)));
-  }
-  if (width == SPLASH_WIDTH)
-      ui->imageLabel->setFixedSize(SPLASH_WIDTH, SPLASH_HEIGHT);
-  else
-     ui->imageLabel->setFixedSize(SPLASHX9D_WIDTH, SPLASHX9D_HEIGHT);
-
+  
+  ui->imageLabel->setPixmap( makePixMap( image, g.profile[g.id()].fwType()));
+  ui->imageLabel->setFixedSize(width, SPLASH_HEIGHT);
   return true;
 }
 
@@ -328,6 +301,7 @@ void appPreferencesDialog::on_clearImageButton_clicked() {
   ui->imageLabel->clear();
   ui->SplashFileName->clear();
 }
+
 
 
 
