@@ -191,7 +191,7 @@
 #if defined(AUDIO)
   #define TR_SOUND             "\222 Dźwięk\0  "
 #else
-  #define TR_SOUND             "Pikanie\0  "
+  #define TR_SOUND             "Pikanie\0   "
 #endif
 
 #if defined(HAPTIC)
@@ -210,8 +210,8 @@
   #define TR_PLAY_VALUE        "\222 Wartość\0 "
 #else
   #define TR_PLAY_TRACK        "[\222]Ścieżka "
-  #define TR_PLAY_BOTH         "[\222 Oba]\0  "
-  #define TR_PLAY_VALUE        "[\222 Wart.]\0"
+  #define TR_PLAY_BOTH         "[\222 Oba]\0   "
+  #define TR_PLAY_VALUE        "[\222 Wart.]\0 "
 #endif
 
 #define TR_CFN_BG_MUSIC      "Muz. tła   " "Muz. tła ||"
@@ -225,11 +225,11 @@
 #if defined(GVARS)
   #define TR_ADJUST_GVAR     "Ustaw \0    "
 #else
-  #define TR_ADJUST_GVAR     "[UstawZG]\0"
+  #define TR_ADJUST_GVAR     "[UstawZG]\0 "
 #endif
 
 #ifdef DEBUG
-  #define TR_CFN_TEST            "Test\0     "
+  #define TR_CFN_TEST            "Test\0      "
 #else
   #define TR_CFN_TEST
 #endif
