@@ -174,7 +174,11 @@
 #endif
 
 #define LEN_VCSWFUNC           "\005"
-#define TR_VCSWFUNC            "---\0 " TR_CSWEQUAL "a{x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""d}x\0 ""|d|}x" TR_CSWTIMER TR_CSWSTICKY
+#if defined(CPUARM)
+#define TR_VCSWFUNC            "---\0 " TR_CSWEQUAL "a{x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""Δ}x\0 ""|Δ|}x" TR_CSWTIMER TR_CSWSTICKY
+#else
+#define TR_VCSWFUNC            "---\0 " TR_CSWEQUAL "a{x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""^}x\0 ""|^|}x" TR_CSWTIMER TR_CSWSTICKY
+#endif
 
 #define LEN_VFSWFUNC           "\013"
 
@@ -231,7 +235,7 @@
 #endif
 
 #if defined(CPUARM)
-  #define TR_VFSWFUNC          "Zámek \0    ""Trenér \0   ""Insta-Trim\0""Reset\0     " TR_ADJUST_GVAR "Hlasitost\0 " TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podsvětlení" TR_CFN_TEST
+  #define TR_VFSWFUNC          "Zámek \0    ""Trenér \0   ""Insta-Trim\0""Reset\0     ""Set \0      " TR_ADJUST_GVAR "Hlasitost\0 " TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podsvětlení" TR_CFN_TEST
 #elif defined(PCBGRUVIN9X)
   #define TR_VFSWFUNC          "Zámek \0    ""Trenér \0   ""Insta-Trim\0""Reset\0     " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podsvětlení" TR_CFN_TEST
 #else

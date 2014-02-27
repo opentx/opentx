@@ -106,6 +106,9 @@ translations = {'cz': [('\\200', u'á'),
                        ('\\203', u'Å'),
                        ('\\204', u'Ä'),
                        ('\\205', u'Ö')],
+
+		'all': [('\\306', u'Δ')],
+
                }
 
 # Take care of command line options
@@ -119,7 +122,7 @@ args =  parser.parse_args()
 if args.language not in translations:
     parser.error(args.language  + ' is not a supported language. Try one of the supported ones: ' + str(translations.keys()))
     system.exit()
-    
+
 # Read the input file into a buffer
 in_file = codecs.open( args.input, "r", "utf-8" )
 text = in_file.read()
@@ -131,7 +134,13 @@ for before, after in translations[args.language]:
         text = text.replace(before, after)
     else:
         text = text.replace(after, before)
-		
+
+for before, after in translations["all"]:
+    if args.reverse:
+        text = text.replace(before, after)
+    else:
+        text = text.replace(after, before)
+
 # Write the result to a temporary file
 out_file = codecs.open(args.output, 'w', 'utf-8')
 out_file.write( text )
