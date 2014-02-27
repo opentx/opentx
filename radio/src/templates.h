@@ -53,8 +53,8 @@
  *
  */
 
-#ifndef TEMPLATES_H
-#define TEMPLATES_H
+#ifndef TEMPLATES_H_
+#define TEMPLATES_H_
 
 #include <inttypes.h>
 

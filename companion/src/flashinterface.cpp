@@ -52,7 +52,7 @@ FlashInterface::FlashInterface(QString fileName)
       char * bin_flash = (char *)malloc(MAX_FSIZE);
       flash_size = file.read(bin_flash, MAX_FSIZE);
       flash = QByteArray(bin_flash, flash_size);
-	  free(bin_flash);
+      free(bin_flash);
     }
     else {
       flash = QByteArray(temp, flash_size);

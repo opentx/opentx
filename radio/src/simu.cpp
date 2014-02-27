@@ -51,23 +51,24 @@ int g_snapshot_idx = 0;
 class Open9xSim: public FXMainWindow
 {
   FXDECLARE(Open9xSim)
-public:
-  Open9xSim(){};
-  Open9xSim(FXApp* a);
-  long onKeypress(FXObject*,FXSelector,void*);
-  long onTimeout(FXObject*,FXSelector,void*);
-  void makeSnapshot(const FXDrawable* drawable);
-  void doEvents();
-  void refreshDiplay();
 
-private:
-  FXImage       *bmp;
-  FXImageFrame  *bmf;
-  bool           firstTime;
+  public:
+    Open9xSim(){};
+    Open9xSim(FXApp* a);
+    long onKeypress(FXObject*,FXSelector,void*);
+    long onTimeout(FXObject*,FXSelector,void*);
+    void makeSnapshot(const FXDrawable* drawable);
+    void doEvents();
+    void refreshDiplay();
 
-public:
-  FXSlider      *sliders[8];
-  FXKnob        *knobs[NUM_POTS];
+  private:
+    FXImage       *bmp;
+    FXImageFrame  *bmf;
+    bool           firstTime;
+
+  public:
+    FXSlider      *sliders[8];
+    FXKnob        *knobs[NUM_POTS];
 };
 // Message Map
 FXDEFMAP(Open9xSim) Open9xSimMap[]={

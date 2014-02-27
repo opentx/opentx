@@ -57,22 +57,22 @@
 <context>
     <name>CurveGroup</name>
     <message>
-        <location filename="../helpers.cpp" line="232"/>
+        <location filename="../helpers.cpp" line="233"/>
         <source>Diff</source>
         <translation>Róźnicowość</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="233"/>
+        <location filename="../helpers.cpp" line="234"/>
         <source>Expo</source>
         <translation>Expo</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="234"/>
+        <location filename="../helpers.cpp" line="235"/>
         <source>Func</source>
         <translation>Funkcja</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="235"/>
+        <location filename="../helpers.cpp" line="236"/>
         <source>Curve</source>
         <translation>Krzywa</translation>
     </message>
@@ -4105,70 +4105,70 @@ p, li { white-space: pre-wrap; }
     <name>QObject</name>
     <message>
         <location filename="../eeprominterface.cpp" line="196"/>
-        <location filename="../helpers.cpp" line="43"/>
+        <location filename="../helpers.cpp" line="44"/>
         <source>Rud</source>
         <translation>SK</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="196"/>
-        <location filename="../helpers.cpp" line="43"/>
+        <location filename="../helpers.cpp" line="44"/>
         <source>Ele</source>
         <translation>SW</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="196"/>
-        <location filename="../helpers.cpp" line="43"/>
+        <location filename="../helpers.cpp" line="44"/>
         <source>Thr</source>
         <translation>Gaz</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="196"/>
-        <location filename="../helpers.cpp" line="43"/>
+        <location filename="../helpers.cpp" line="44"/>
         <source>Ail</source>
         <translation>Lotki</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="197"/>
-        <location filename="../helpers.cpp" line="43"/>
-        <location filename="../helpers.cpp" line="67"/>
+        <location filename="../helpers.cpp" line="44"/>
+        <location filename="../helpers.cpp" line="68"/>
         <source>P1</source>
         <translation>Potencjometr 1</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="197"/>
-        <location filename="../helpers.cpp" line="43"/>
-        <location filename="../helpers.cpp" line="67"/>
+        <location filename="../helpers.cpp" line="44"/>
+        <location filename="../helpers.cpp" line="68"/>
         <source>P2</source>
         <translation>Potencjometr 2</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="197"/>
-        <location filename="../helpers.cpp" line="43"/>
-        <location filename="../helpers.cpp" line="67"/>
+        <location filename="../helpers.cpp" line="44"/>
+        <location filename="../helpers.cpp" line="68"/>
         <source>P3</source>
         <translation>Potencjometr 3</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="198"/>
-        <location filename="../helpers.cpp" line="68"/>
+        <location filename="../helpers.cpp" line="69"/>
         <source>S1</source>
         <translation>Potencjometr 1</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="198"/>
-        <location filename="../helpers.cpp" line="68"/>
+        <location filename="../helpers.cpp" line="69"/>
         <source>S2</source>
         <translation>Potencjometr 2</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="198"/>
-        <location filename="../helpers.cpp" line="68"/>
+        <location filename="../helpers.cpp" line="69"/>
         <source>LS</source>
         <translation>Lewy suwak</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="198"/>
-        <location filename="../helpers.cpp" line="68"/>
+        <location filename="../helpers.cpp" line="69"/>
         <source>RS</source>
         <translation>Prawy suwak</translation>
     </message>
@@ -4687,26 +4687,26 @@ p, li { white-space: pre-wrap; }
         <location filename="../eeprominterface.cpp" line="231"/>
         <location filename="../eeprominterface.cpp" line="265"/>
         <location filename="../eeprominterface.cpp" line="351"/>
-        <location filename="../helpers.cpp" line="144"/>
+        <location filename="../helpers.cpp" line="145"/>
         <source>----</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="67"/>
         <location filename="../helpers.cpp" line="68"/>
+        <location filename="../helpers.cpp" line="69"/>
         <source>THR</source>
         <translation>THR</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="347"/>
-        <location filename="../helpers.cpp" line="362"/>
+        <location filename="../helpers.cpp" line="363"/>
         <source>ON</source>
         <translation>Włącz</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="324"/>
         <location filename="../eeprominterface.cpp" line="349"/>
-        <location filename="../helpers.cpp" line="362"/>
+        <location filename="../helpers.cpp" line="363"/>
         <source>OFF</source>
         <translation>Wyłącz</translation>
     </message>
@@ -5153,7 +5153,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="401"/>
-        <location filename="../helpers.cpp" line="945"/>
+        <location filename="../helpers.cpp" line="946"/>
         <source>Warning</source>
         <translation>Ostrzeżenie</translation>
     </message>
@@ -5163,94 +5163,94 @@ p, li { white-space: pre-wrap; }
         <translation>EEPROM zapisany z tymi ostrzeżeniami:</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="10"/>
-        <location filename="../helpers.cpp" line="16"/>
+        <location filename="../helpers.cpp" line="11"/>
+        <location filename="../helpers.cpp" line="17"/>
         <source>FM%1</source>
         <oldsource>FP%1</oldsource>
         <translation>FM%1</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="31"/>
+        <location filename="../helpers.cpp" line="32"/>
         <source>Input%1</source>
         <translation>Wejście %1</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="53"/>
+        <location filename="../helpers.cpp" line="54"/>
         <source>English</source>
         <translation>Angielski</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="53"/>
+        <location filename="../helpers.cpp" line="54"/>
         <source>French</source>
         <translation>Francuski</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="53"/>
+        <location filename="../helpers.cpp" line="54"/>
         <source>Italian</source>
         <translation>Włoski</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="53"/>
+        <location filename="../helpers.cpp" line="54"/>
         <source>German</source>
         <translation>Niemiecki</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="53"/>
+        <location filename="../helpers.cpp" line="54"/>
         <source>Czech</source>
         <translation>Czeski</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="53"/>
+        <location filename="../helpers.cpp" line="54"/>
         <source>Slovak</source>
         <translation>Słowacki</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="53"/>
+        <location filename="../helpers.cpp" line="54"/>
         <source>Spanish</source>
         <translation>Hiszpański</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="53"/>
+        <location filename="../helpers.cpp" line="54"/>
         <source>Portuguese</source>
         <translation>Portugalski</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="53"/>
+        <location filename="../helpers.cpp" line="54"/>
         <source>Polish</source>
         <translation>Polski</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="53"/>
+        <location filename="../helpers.cpp" line="54"/>
         <source>Finnish</source>
         <translation>Fiński</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="88"/>
+        <location filename="../helpers.cpp" line="89"/>
         <source>No</source>
         <translation>Nie</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="88"/>
+        <location filename="../helpers.cpp" line="89"/>
         <source>RotEnc A</source>
         <translation>Pokrętło :A</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="88"/>
+        <location filename="../helpers.cpp" line="89"/>
         <source>Rot Enc B</source>
         <translation>Pokrętło :B</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="88"/>
+        <location filename="../helpers.cpp" line="89"/>
         <source>Rot Enc C</source>
         <translation>Pokrętło :C</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="88"/>
+        <location filename="../helpers.cpp" line="89"/>
         <source>Rot Enc D</source>
         <translation>Pokrętło :D</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="88"/>
+        <location filename="../helpers.cpp" line="89"/>
         <source>Rot Enc E</source>
         <translation>Pokrętło :E</translation>
     </message>
@@ -5572,133 +5572,133 @@ p, li { white-space: pre-wrap; }
         <translation>Pokrętło</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="140"/>
+        <location filename="../helpers.cpp" line="141"/>
         <source>!Flight mode %1</source>
         <translation>!Faza lotu %1</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="142"/>
+        <location filename="../helpers.cpp" line="143"/>
         <source>Flight mode %1</source>
         <translation>Faza lotu %1</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="752"/>
+        <location filename="../helpers.cpp" line="753"/>
         <source>Yellow</source>
         <translation>Żółty</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="754"/>
+        <location filename="../helpers.cpp" line="755"/>
         <source>Orange</source>
         <translation>Pomarańczowy</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="756"/>
+        <location filename="../helpers.cpp" line="757"/>
         <source>Red</source>
         <translation>Czerwony</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="790"/>
+        <location filename="../helpers.cpp" line="791"/>
         <source>Winged Shadow How High</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="792"/>
+        <location filename="../helpers.cpp" line="793"/>
         <source>Winged Shadow How High (not supported)</source>
         <translation>Winged Shadow How High (nie obsługiwane)</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="794"/>
+        <location filename="../helpers.cpp" line="795"/>
         <source>FrSky Sensor Hub</source>
         <translation>Hub sensora FrSky</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="796"/>
-        <location filename="../helpers.cpp" line="850"/>
+        <location filename="../helpers.cpp" line="797"/>
+        <location filename="../helpers.cpp" line="851"/>
         <source>None</source>
         <translation>Żaden</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="804"/>
+        <location filename="../helpers.cpp" line="805"/>
         <source>Imperial</source>
         <translation>Imperialne</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="806"/>
+        <location filename="../helpers.cpp" line="807"/>
         <source>Metric</source>
         <translation>Metryczne</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="818"/>
+        <location filename="../helpers.cpp" line="819"/>
         <source>Extra Fine</source>
         <translation>Bardzo dokładne</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="819"/>
+        <location filename="../helpers.cpp" line="820"/>
         <source>Fine</source>
         <translation>Dokładne</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="820"/>
+        <location filename="../helpers.cpp" line="821"/>
         <source>Medium</source>
         <translation>Średni</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="821"/>
+        <location filename="../helpers.cpp" line="822"/>
         <source>Coarse</source>
         <translation>Gruby</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="822"/>
+        <location filename="../helpers.cpp" line="823"/>
         <source>Exponential</source>
         <translation>Eksponencjalny</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="828"/>
+        <location filename="../helpers.cpp" line="829"/>
         <source>Count Up</source>
         <translation>Licz</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="828"/>
+        <location filename="../helpers.cpp" line="829"/>
         <source>Count Down</source>
         <translation>Odliczaj</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="829"/>
+        <location filename="../helpers.cpp" line="830"/>
         <source>%1:%2, </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="837"/>
+        <location filename="../helpers.cpp" line="838"/>
         <source>: %1 Channels, %2usec Delay</source>
         <translation>:Kanały  %1, opóźnienie %2usX</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="861"/>
+        <location filename="../helpers.cpp" line="862"/>
         <source>Flight modes(%1)</source>
         <translation>Fazy lotu(%1)</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="863"/>
+        <location filename="../helpers.cpp" line="864"/>
         <source>Flight mode(%1)</source>
         <translation>Faza lotu (%1)</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="874"/>
+        <location filename="../helpers.cpp" line="875"/>
         <source>Rudder</source>
         <translation>SK</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="875"/>
+        <location filename="../helpers.cpp" line="876"/>
         <source>Elevator</source>
         <translation>SW</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="876"/>
+        <location filename="../helpers.cpp" line="877"/>
         <source>Throttle</source>
         <translation>Gaz</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="877"/>
+        <location filename="../helpers.cpp" line="878"/>
         <source>Aileron</source>
         <translation>Lotki</translation>
     </message>
@@ -5709,43 +5709,43 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="399"/>
-        <location filename="../helpers.cpp" line="43"/>
-        <location filename="../helpers.cpp" line="779"/>
+        <location filename="../helpers.cpp" line="44"/>
+        <location filename="../helpers.cpp" line="780"/>
         <source>---</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="43"/>
+        <location filename="../helpers.cpp" line="44"/>
         <source>Rud Trim</source>
         <translation>Trymer SK</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="43"/>
+        <location filename="../helpers.cpp" line="44"/>
         <source>Ele Trim</source>
         <translation>Trymer SW</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="43"/>
+        <location filename="../helpers.cpp" line="44"/>
         <source>Thr Trim</source>
         <translation>Trymer gazu</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="43"/>
+        <location filename="../helpers.cpp" line="44"/>
         <source>Ail Trim</source>
         <translation>Trymer lotek</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="43"/>
+        <location filename="../helpers.cpp" line="44"/>
         <source>Rot Enc</source>
         <translation>Pokrętło</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="53"/>
+        <location filename="../helpers.cpp" line="54"/>
         <source>Swedish</source>
         <translation>Szwedzki</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="81"/>
+        <location filename="../helpers.cpp" line="82"/>
         <source>CH%1</source>
         <translation>Kan %1</translation>
     </message>
@@ -5848,46 +5848,46 @@ p, li { white-space: pre-wrap; }
         <translation>Zwiększanie</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="352"/>
+        <location filename="../helpers.cpp" line="353"/>
         <source>Own value</source>
         <translation>Własny Wartość</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="355"/>
+        <location filename="../helpers.cpp" line="356"/>
         <source>Flight mode %1 value</source>
         <oldsource>Flight phase %1 value</oldsource>
         <translation>Wartość Fazy lotu FL%1</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="362"/>
+        <location filename="../helpers.cpp" line="363"/>
         <source>Keys</source>
         <translation>Przyciski</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="362"/>
+        <location filename="../helpers.cpp" line="363"/>
         <source>Sticks</source>
         <translation>Drążki</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="362"/>
+        <location filename="../helpers.cpp" line="363"/>
         <source>Keys + Sticks</source>
         <translation>Przyciski i Drążki</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="75"/>
-        <location filename="../helpers.cpp" line="504"/>
+        <location filename="../helpers.cpp" line="505"/>
         <source>-GV%1</source>
         <translation>-ZG%1</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="77"/>
         <location filename="../eeprominterface.cpp" line="263"/>
-        <location filename="../helpers.cpp" line="521"/>
+        <location filename="../helpers.cpp" line="522"/>
         <source>GV%1</source>
         <translation>ZG%1</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="946"/>
+        <location filename="../helpers.cpp" line="947"/>
         <source>Simulator for this firmware is not yet available</source>
         <translation>Nie jest dostępny symulator dla tego firmware</translation>
     </message>
@@ -5965,17 +5965,17 @@ Zespół OpenTX/Companion.</translation>
         <translation>Użyj trymerów dla Fazy Lotu %1 + Własne trymery jako offset</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="90"/>
+        <location filename="../customizesplashdialog.cpp" line="76"/>
         <source>FW: %1</source>
         <translation>FW:%1</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="95"/>
+        <location filename="../customizesplashdialog.cpp" line="81"/>
         <source>Pict: %1</source>
         <translation>Obrazek:%1</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="100"/>
+        <location filename="../customizesplashdialog.cpp" line="86"/>
         <source>Profile image</source>
         <translation>Obrazek Profilu</translation>
     </message>
@@ -7136,9 +7136,19 @@ To ustawienie jest używane przez szablony, określa jakie wyjście przypisane j
         <translation>Struktura karty SD</translation>
     </message>
     <message>
+        <location filename="../apppreferencesdialog.ui" line="882"/>
+        <source>Firmware Variant</source>
+        <translation>Wariant Firmware</translation>
+    </message>
+    <message>
         <location filename="../apppreferencesdialog.ui" line="908"/>
         <source>Select Image</source>
         <translation>Wybierz obrazek</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="982"/>
+        <source>Firmware File</source>
+        <translation>Plik Firmware</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="832"/>
@@ -7166,9 +7176,8 @@ To ustawienie jest używane przez szablony, określa jakie wyjście przypisane j
         <translation>Wyczyść obrazek</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="882"/>
         <source>Firmware</source>
-        <translation>Firmware</translation>
+        <translation type="obsolete">Firmware</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="232"/>
@@ -7246,53 +7255,53 @@ To ustawienie jest używane przez szablony, określa jakie wyjście przypisane j
         <translation>Uaktywnij automatyczny backup przed zapisem firmware</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="73"/>
+        <location filename="../apppreferencesdialog.cpp" line="74"/>
         <source>Select your snapshot folder</source>
         <translation>Katalog zrzutów</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="119"/>
-        <location filename="../apppreferencesdialog.cpp" line="199"/>
+        <location filename="../apppreferencesdialog.cpp" line="120"/>
+        <location filename="../apppreferencesdialog.cpp" line="201"/>
         <source>No joysticks found</source>
         <translation>Brak oysticka</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="156"/>
+        <location filename="../apppreferencesdialog.cpp" line="158"/>
         <source>Select your library folder</source>
         <translation>Wybierz katalog bibliteki</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="179"/>
+        <location filename="../apppreferencesdialog.cpp" line="181"/>
         <source>Select your Models and Settings backup folder</source>
         <translation>Wybierz folder do backupowania Modeli i Ustawień</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="189"/>
+        <location filename="../apppreferencesdialog.cpp" line="191"/>
         <source>Select Google Earth executable</source>
         <translation>Wybierz wykonywalny plik Google Earth</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="232"/>
+        <location filename="../apppreferencesdialog.cpp" line="234"/>
         <source>Select the folder replicating your SD structure</source>
         <translation>Wybierz folder do zreplikowania struktury Twojej karty SD</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="257"/>
+        <location filename="../apppreferencesdialog.cpp" line="260"/>
         <source>Not possible to remove profile</source>
         <translation>Usunięcie profilu jest niemożliwe</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="257"/>
+        <location filename="../apppreferencesdialog.cpp" line="260"/>
         <source>The default profile can not be removed.</source>
         <translation>Podstawowy profil nie moze być usunięty.</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="313"/>
+        <location filename="../apppreferencesdialog.cpp" line="296"/>
         <source>Open Image to load</source>
         <translation>Otwórz obrazek do załadowania</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.cpp" line="313"/>
+        <location filename="../apppreferencesdialog.cpp" line="296"/>
         <source>Images (%1)</source>
         <translation>Obrazki (%1)</translation>
     </message>
@@ -7676,250 +7685,292 @@ m2560 dla platformy V4</translation>
         <translation>Własne logo</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="99"/>
-        <location filename="../burndialog.cpp" line="194"/>
+        <location filename="../burndialog.ui" line="73"/>
         <source>Write to TX</source>
         <translation>Zapisz do radia</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="123"/>
+        <location filename="../burndialog.ui" line="84"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Modify calibration parameters using settings from current profile&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Zmiana parametrów kalibracji przy użyciu aktualnego profilu&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="126"/>
+        <location filename="../burndialog.ui" line="87"/>
         <source>Patch calibration setting from profile</source>
         <translation>Zamień ustawienia kalibracji wartościami z profilu</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="133"/>
+        <location filename="../burndialog.ui" line="94"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Modify HW parameters using settings from current profile&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Zmień ustawiania parametrów HW przy pomocy wartości z aktualnego profilu&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="136"/>
+        <location filename="../burndialog.ui" line="97"/>
         <source>Patch HW setting from profile</source>
         <translation>Zmień ustawiania parametrów HW wartościami z profilu</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="199"/>
+        <location filename="../burndialog.ui" line="147"/>
         <source>Date &amp; Time</source>
         <translation>Data i Czas</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="213"/>
+        <location filename="../burndialog.ui" line="323"/>
+        <source>Use firmware start screen</source>
+        <translation>Użyj ekranu startowego z firmware</translation>
+    </message>
+    <message>
+        <location filename="../burndialog.ui" line="330"/>
+        <source>Use another start screen</source>
+        <translation>Użyj innego ekranu startowego</translation>
+    </message>
+    <message>
+        <location filename="../burndialog.ui" line="343"/>
+        <source>Use profile start screen</source>
+        <translation>Użyj ekranu startowego z profilu</translation>
+    </message>
+    <message>
+        <location filename="../burndialog.ui" line="350"/>
+        <source>Use library start screen</source>
+        <translation>Użyj ekranu startowego z biblioteki</translation>
+    </message>
+    <message>
+        <location filename="../burndialog.ui" line="140"/>
         <source>SVN</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="227"/>
+        <location filename="../burndialog.ui" line="126"/>
         <source>Variant</source>
         <translation>Wariant</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="334"/>
         <source>Invert Color</source>
-        <translation>Odwróć kolory</translation>
+        <translation type="obsolete">Odwróć kolory</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="446"/>
         <source>Load Image</source>
-        <translation>Otwórz logo</translation>
+        <translation type="obsolete">Otwórz logo</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="453"/>
         <source>Open Splash Library</source>
-        <translation>Otwórz bibliotekę obrazków</translation>
+        <translation type="obsolete">Otwórz bibliotekę obrazków</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="456"/>
-        <source>...</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../burndialog.ui" line="390"/>
         <source>Substitute image in firmware</source>
-        <translation>Zmień logo w firmware</translation>
+        <translation type="obsolete">Zmień logo w firmware</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="261"/>
-        <location filename="../burndialog.cpp" line="37"/>
+        <location filename="../burndialog.ui" line="188"/>
+        <location filename="../burndialog.cpp" line="46"/>
         <source>Browse for file</source>
         <translation>Przeglądaj pliki</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="276"/>
+        <location filename="../burndialog.ui" line="203"/>
         <source>Allows Companion to write to older version of the firmware</source>
         <translation>Pozwól Companion na zapis do starszej wersji firmware</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="289"/>
+        <location filename="../burndialog.ui" line="216"/>
         <source>Backup and restore Models and Settings</source>
         <translation>Zbakupuj i odtwórz Modele i Ustawienia</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="383"/>
         <source>Use image in settings</source>
-        <translation>Użyj Logo w ustawieniach</translation>
+        <translation type="obsolete">Użyj Logo w ustawieniach</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="279"/>
+        <location filename="../burndialog.ui" line="206"/>
         <source>Check Firmware compatibility</source>
         <translation>Sprawdź kompatybilność firmware</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="305"/>
+        <location filename="../burndialog.ui" line="232"/>
         <source>Current Profile</source>
         <translation>Aktualny profil</translation>
     </message>
     <message>
-        <location filename="../burndialog.ui" line="70"/>
+        <location filename="../burndialog.ui" line="57"/>
         <source>Cancel</source>
         <translation>Przerwij</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="31"/>
+        <location filename="../burndialog.cpp" line="40"/>
         <source>Write firmware to TX</source>
         <translation>Zapisz firmware do radia</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="62"/>
+        <location filename="../burndialog.cpp" line="66"/>
         <source>Current profile</source>
         <translation>Aktualny profil</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="243"/>
-        <location filename="../burndialog.cpp" line="448"/>
-        <location filename="../burndialog.cpp" line="452"/>
-        <location filename="../burndialog.cpp" line="460"/>
-        <location filename="../burndialog.cpp" line="509"/>
-        <location filename="../burndialog.cpp" line="563"/>
+        <location filename="../burndialog.cpp" line="204"/>
+        <location filename="../burndialog.cpp" line="426"/>
+        <location filename="../burndialog.cpp" line="430"/>
+        <location filename="../burndialog.cpp" line="437"/>
+        <location filename="../burndialog.cpp" line="486"/>
+        <location filename="../burndialog.cpp" line="540"/>
         <source>Warning</source>
         <translation>Ostrzeżenie</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="243"/>
         <source>%1 is not a known firmware</source>
-        <translation>%1 nie jest znanym firmware</translation>
+        <translation type="obsolete">%1 nie jest znanym firmware</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="244"/>
         <source>Burn anyway !</source>
-        <translation>Wypiecz mimo wszystko !</translation>
+        <translation type="obsolete">Wypiecz mimo wszystko !</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="258"/>
-        <location filename="../burndialog.cpp" line="265"/>
-        <location filename="../burndialog.cpp" line="273"/>
-        <location filename="../burndialog.cpp" line="318"/>
-        <location filename="../burndialog.cpp" line="326"/>
+        <location filename="../burndialog.cpp" line="218"/>
+        <location filename="../burndialog.cpp" line="225"/>
+        <location filename="../burndialog.cpp" line="233"/>
+        <location filename="../burndialog.cpp" line="278"/>
+        <location filename="../burndialog.cpp" line="286"/>
+        <location filename="../burndialog.cpp" line="335"/>
+        <location filename="../burndialog.cpp" line="339"/>
         <location filename="../burndialog.cpp" line="355"/>
-        <location filename="../burndialog.cpp" line="393"/>
-        <location filename="../burndialog.cpp" line="577"/>
-        <location filename="../burndialog.cpp" line="582"/>
-        <location filename="../burndialog.cpp" line="590"/>
+        <location filename="../burndialog.cpp" line="376"/>
+        <location filename="../burndialog.cpp" line="394"/>
+        <location filename="../burndialog.cpp" line="554"/>
+        <location filename="../burndialog.cpp" line="559"/>
+        <location filename="../burndialog.cpp" line="567"/>
         <source>Error</source>
         <translation>Błąd</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="258"/>
+        <location filename="../burndialog.cpp" line="218"/>
         <source>Unable to find file %1!</source>
         <translation>Nie mogę odnaleźć pliku %1!</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="265"/>
-        <location filename="../burndialog.cpp" line="273"/>
-        <location filename="../burndialog.cpp" line="318"/>
+        <location filename="../burndialog.cpp" line="225"/>
+        <location filename="../burndialog.cpp" line="233"/>
+        <location filename="../burndialog.cpp" line="278"/>
         <source>Error opening file %1:
 %2.</source>
         <translation>Błąd otwarcia pliku %1:
 %2.</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="57"/>
+        <location filename="../burndialog.cpp" line="61"/>
         <source>Write Models and Settings to TX</source>
         <translation>Zapisz Modele i Ustawienia do radia</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="60"/>
+        <location filename="../burndialog.cpp" line="64"/>
         <source>Write Models and Settings in %1 to TX</source>
         <translation>Zapisz Modele i Ustawienia w %1 do radia</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="143"/>
+        <location filename="../burndialog.cpp" line="142"/>
         <source>Open Firmware File</source>
         <translation>Otwórz plik Firmware</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="147"/>
+        <location filename="../burndialog.cpp" line="148"/>
         <source>Choose file to load Models and Settings from</source>
         <translation>Wybierz plik Modeli i Ustawien do wczytania</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="296"/>
-        <location filename="../burndialog.cpp" line="306"/>
-        <location filename="../burndialog.cpp" line="330"/>
+        <location filename="../burndialog.cpp" line="204"/>
+        <source>%1 may not be a valid firmware file</source>
+        <translation>%1 moze nie być prawidłowym plikiem firmware</translation>
+    </message>
+    <message>
+        <location filename="../burndialog.cpp" line="256"/>
+        <location filename="../burndialog.cpp" line="266"/>
+        <location filename="../burndialog.cpp" line="290"/>
         <source>Invalid binary Models and Settings File %1, Proceed anyway ?</source>
         <translation>Nieprawidłowy plik Modeli i Ustawień : %1. Kontynuować ?</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="326"/>
+        <location filename="../burndialog.cpp" line="286"/>
         <source>Error reading file %1:
 %2.</source>
         <translation>Błąd odczytu pliku %1:
 %2.</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="349"/>
-        <source>Open Image to load</source>
-        <translation>Otwórz plik z logo</translation>
+        <location filename="../burndialog.cpp" line="335"/>
+        <source>The firmware file is not valid.</source>
+        <translation>Plik firmware jest błedny.</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="349"/>
+        <location filename="../burndialog.cpp" line="339"/>
+        <source>There is no start screen image in the firmware file.</source>
+        <translation>Brak obrazka ekranu startowego w firmware.</translation>
+    </message>
+    <message>
+        <location filename="../burndialog.cpp" line="355"/>
+        <source>The profile image %1 does not contain an image.</source>
+        <translation>Obraz profilu %1 nie zawiera obrazka.</translation>
+    </message>
+    <message>
+        <location filename="../burndialog.cpp" line="371"/>
+        <source>Open image file to use as Tx start screen</source>
+        <translation>Otwórz plik obrazka by użyć go jako ekran startowy radia</translation>
+    </message>
+    <message>
+        <location filename="../burndialog.cpp" line="376"/>
+        <source>Image could not be loaded from %1</source>
+        <translation>Obrazek nie moze być załadowany z %1</translation>
+    </message>
+    <message>
+        <location filename="../burndialog.cpp" line="394"/>
+        <source>The library image could not be loaded</source>
+        <translation>Obrazek z biblioteki nie może być załadowany</translation>
+    </message>
+    <message>
+        <source>Open Image to load</source>
+        <translation type="obsolete">Otwórz plik z logo</translation>
+    </message>
+    <message>
+        <location filename="../burndialog.cpp" line="371"/>
         <source>Images (%1)</source>
         <translation>Obrazki (%1)</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="355"/>
-        <location filename="../burndialog.cpp" line="393"/>
         <source>Cannot load %1.</source>
-        <translation>Nie mogę załadować %1.</translation>
+        <translation type="obsolete">Nie mogę załadować %1.</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="448"/>
+        <location filename="../burndialog.cpp" line="426"/>
         <source>Cannot save customized firmware</source>
         <translation>Nie mogę zapisać przystosowanego firmware</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="452"/>
+        <location filename="../burndialog.cpp" line="430"/>
         <source>Custom image not found</source>
         <translation>Własny obrazek nie odnaleziony</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="460"/>
+        <location filename="../burndialog.cpp" line="437"/>
         <source>No firmware selected</source>
         <translation>Brak wyboru firmware</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="509"/>
+        <location filename="../burndialog.cpp" line="486"/>
         <source>Wrong radio calibration data in profile, Settings not patched</source>
         <translation>Błędna kalibracja radia w profilu, Ustawienia nie spatchowane</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="563"/>
+        <location filename="../burndialog.cpp" line="540"/>
         <source>Wrong radio setting data in profile, Settings not patched</source>
         <translation>Błędne ustawienia radia w profilu, Ustawienia nie spatchowane</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="577"/>
-        <location filename="../burndialog.cpp" line="582"/>
+        <location filename="../burndialog.cpp" line="554"/>
+        <location filename="../burndialog.cpp" line="559"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation>Nie mogę zapisać pliku %1:
 %2.</translation>
     </message>
     <message>
-        <location filename="../burndialog.cpp" line="590"/>
+        <location filename="../burndialog.cpp" line="567"/>
         <source>Error writing file %1:
 %2.</source>
         <translation>Błąd zapisu pliku %1:
@@ -8537,75 +8588,75 @@ m2560 dla platformy V4</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="207"/>
-        <location filename="../customizesplashdialog.cpp" line="227"/>
+        <location filename="../customizesplashdialog.cpp" line="193"/>
+        <location filename="../customizesplashdialog.cpp" line="213"/>
+        <location filename="../customizesplashdialog.cpp" line="228"/>
         <location filename="../customizesplashdialog.cpp" line="242"/>
-        <location filename="../customizesplashdialog.cpp" line="256"/>
         <source>Error</source>
         <translation>Błąd</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="227"/>
+        <location filename="../customizesplashdialog.cpp" line="213"/>
         <source>Cannot load the image file %1.</source>
         <translation>Nie mogę załadować pliku obrazka %1.</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="242"/>
+        <location filename="../customizesplashdialog.cpp" line="228"/>
         <source>Cannot load the profile image %1.</source>
         <translation>Nie mogę załadować obrazu Profilu %1.</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="256"/>
+        <location filename="../customizesplashdialog.cpp" line="242"/>
         <source>Cannot load the library image %1.</source>
         <translation>Nie mogę załadować obrazu biblioteki %1.</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="265"/>
+        <location filename="../customizesplashdialog.cpp" line="251"/>
         <source>File Saved</source>
         <translation>Plik Zapisany</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="265"/>
+        <location filename="../customizesplashdialog.cpp" line="251"/>
         <source>The image was saved to the file %1</source>
         <translation>Obraz został zapisany do pliku %1</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="267"/>
+        <location filename="../customizesplashdialog.cpp" line="253"/>
         <source>Image Refresh Error</source>
         <translation>Błąd odświeżenia obrazka</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="267"/>
+        <location filename="../customizesplashdialog.cpp" line="253"/>
         <source>Failed to refresh image from file %1</source>
         <translation>Nieudane odswieżenie obrazka z pliku %1</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="271"/>
+        <location filename="../customizesplashdialog.cpp" line="257"/>
         <source>File Save Error</source>
         <translation>Błąd zapisu pliku</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="271"/>
+        <location filename="../customizesplashdialog.cpp" line="257"/>
         <source>Failed to write image to %1</source>
         <translation>Nieudany zapis obrazka do %1</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="223"/>
+        <location filename="../customizesplashdialog.cpp" line="209"/>
         <source>Open Image to load</source>
         <translation>Otwórz obrazek do załadowania</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="204"/>
+        <location filename="../customizesplashdialog.cpp" line="190"/>
         <source>Open Firmware File</source>
         <translation>Otwórz plik Firmware</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="207"/>
+        <location filename="../customizesplashdialog.cpp" line="193"/>
         <source>Can not load embedded image from firmware file %1.</source>
         <translation>Nie mogę załądować wbudowanego obrazka z pliku Firmware %1.</translation>
     </message>
     <message>
-        <location filename="../customizesplashdialog.cpp" line="223"/>
+        <location filename="../customizesplashdialog.cpp" line="209"/>
         <source>Images (%1)</source>
         <translation>Obrazki (%1)</translation>
     </message>
@@ -10614,32 +10665,32 @@ Mode 4:
     <name>splashLibrary</name>
     <message>
         <location filename="../splashlibrary.ui" line="47"/>
-        <location filename="../splashlibrary.ui" line="942"/>
+        <location filename="../splashlibrary.ui" line="879"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../splashlibrary.cpp" line="62"/>
+        <location filename="../splashlibrary.cpp" line="60"/>
         <source>Splash Library - page %1 of %2</source>
         <translation>Biblioteka obrazków - strona %1 z %2</translation>
     </message>
     <message>
-        <location filename="../splashlibrary.cpp" line="93"/>
+        <location filename="../splashlibrary.cpp" line="91"/>
         <source>Warning</source>
         <translation>Ostrzeżenie</translation>
     </message>
     <message>
-        <location filename="../splashlibrary.cpp" line="93"/>
+        <location filename="../splashlibrary.cpp" line="91"/>
         <source>Invalid image in library %1</source>
         <translation>Nieprawidłowy obrazek w bibliotece %1</translation>
     </message>
     <message>
-        <location filename="../splashlibrary.cpp" line="99"/>
+        <location filename="../splashlibrary.cpp" line="97"/>
         <source>Information</source>
         <translation>Informacja</translation>
     </message>
     <message>
-        <location filename="../splashlibrary.cpp" line="99"/>
+        <location filename="../splashlibrary.cpp" line="97"/>
         <source>No valid image found in library, check your settings</source>
         <translation>Nie znaleziono prawodłowego obrazka w biblitece, sprawdź ustawienia</translation>
     </message>

@@ -428,6 +428,8 @@ QString LogicalSwitchData::funcToString()
     case LS_FN_DAPOS:
       return QObject::tr("|d|>=x");
     case LS_FN_VEQUAL:
+      return QObject::tr("a=x");
+    case LS_FN_VALMOSTEQUAL:
       return QObject::tr("a~x");
     case LS_FN_TIMER:
       return QObject::tr("Timer");
@@ -539,9 +541,9 @@ QString LogicalSwitchData::toString(const ModelData & model)
 
   if (GetEepromInterface()->getCapability(LogicalSwitchesExt)) {
     if (delay)
-      result += QObject::tr(" Delay %1 sec").arg(delay/2.0);
+      result += QObject::tr(" Delay %1 sec").arg(delay/10.0);
     if (duration)
-      result += QObject::tr(" Duration %1 sec").arg(duration/2.0);
+      result += QObject::tr(" Duration %1 sec").arg(duration/10.0);
   }
 
   return result;
@@ -940,6 +942,7 @@ void ModelData::setDefault(uint8_t id)
   clear();
   used = true;
   sprintf(name, "MODEL%02d", id+1);
+  modelId = id+1;
 }
 
 int ModelData::getTrimValue(int phaseIdx, int trimIdx)
@@ -1048,7 +1051,7 @@ void RegisterFirmwares()
   RegisterEepromInterfaces();
 }
 
-bool LoadEeprom(RadioData &radioData, uint8_t *eeprom, int size)
+bool LoadEeprom(RadioData &radioData, const uint8_t *eeprom, const int size)
 {
   foreach(EEPROMInterface *eepromInterface, eepromInterfaces) {
     if (eepromInterface->load(radioData, eeprom, size))

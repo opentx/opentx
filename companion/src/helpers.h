@@ -128,6 +128,13 @@ QString getFrSkySrc(int index);
 
 void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx);
 
+// Format a pixmap to fit on the radio using a specific firmware
 QPixmap makePixMap( QImage image, QString firmwareType );
+
+// Return a radio type derived from a firmware type string 
+int getRadioType(QString firmwareType);
+
+// Return the default firmware string for a specified radio
+QString getDefaultFwType( int radioType );
 
 #endif // HELPERS_H

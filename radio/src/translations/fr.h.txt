@@ -167,8 +167,14 @@
   #endif
 #endif
 
+#if defined(CPUARM)
+  #define TR_CSWEQUAL      "a=x\0 "
+#else
+  #define TR_CSWEQUAL
+#endif
+
 #define LEN_VCSWFUNC     "\005"
-#define TR_VCSWFUNC      "---\0 ""a{x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""d}x\0 ""|d|}x" TR_CSWTIMER TR_CSWSTICKY
+#define TR_VCSWFUNC      "---\0 " TR_CSWEQUAL "a{x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""d}x\0 ""|d|}x" TR_CSWTIMER TR_CSWSTICKY
 
 #define LEN_VFSWFUNC     "\015"
 
@@ -261,7 +267,7 @@
   #define TR_RSSI_0            "Tx\0 "
   #define TR_RSSI_1            "Rx\0 "
 #endif
-#define TR_VTELEMCHNS          "---\0""Batt""Chr1""Chr2" TR_RSSI_0 TR_RSSI_1 "A1\0 ""A2\0 ""Alt\0""Rpm\0""Carb""T1\0 ""T2\0 ""Vit\0""Dist""AltG""Elem""Velm""Vfas""Cour""Cnsm""Puis""AccX""AccY""AccZ""Cap\0""VitV""ASpd""dTE\0""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Vit+""Dst+""Cel-""Vfs-""Cur+""Pwr+""Acc\0""Time"
+#define TR_VTELEMCHNS          "---\0""Batt""Chr1""Chr2" TR_RSSI_0 TR_RSSI_1 "A1\0 ""A2\0 ""Alt\0""Rpm\0""Carb""T1\0 ""T2\0 ""Vit\0""Dist""AltG""Elem""Velm""Vfas""Cour""Cnsm""Puis""AccX""AccY""AccZ""Cap\0""VitV""VitA""dET\0""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Vit+""Dst+""Elm-""Vfs-""Cur+""Pui+""Acc\0""Tmps"
 
 #if defined(CPUARM)
   #define LEN_VUNITSSYSTEM     TR("\006", "\012")
@@ -578,8 +584,8 @@
 
 #define TR_MENUCURVES          "COURBES"
 #define TR_MENUCURVE           "COURBE"
-#define TR_MENUCUSTOMSWITCH    "INTER PERS."
-#define TR_MENUCUSTOMSWITCHES  "INTERS PERS."
+#define TR_MENUCUSTOMSWITCH    "INTER LOG."
+#define TR_MENUCUSTOMSWITCHES  TR("INTERS LOG.","INTERS LOGIQUES")
 #define TR_MENUCUSTOMFUNC      TR("FONCTIONS SPEC.","FONCTIONS SPECIALES")
 #define TR_MENUTELEMETRY       "TELEMESURE"
 #define TR_MENUTEMPLATES       "GABARITS"
@@ -655,6 +661,7 @@
 #define TR_SD_SIZE             "Taille:"
 #define TR_TYPE                "Type"
 #define TR_GLOBAL_VARS         "Variables Globales"
+#define TR_GLOBAL_V            "V. GLOBALES"
 #define TR_GLOBAL_VAR          "Variable globale"
 #define TR_MENUGLOBALVARS      "VARIABLES GLOBALES"
 #define TR_OWN                 "Pers"
@@ -746,7 +753,7 @@
 #define TR_ABOUT_OPENTX_5      TR("bienvenues!","sont bienvenues!")
 
 #define TR_ABOUT_BERTRAND_1    "Bertrand Songis"
-#define TR_ABOUT_BERTRAND_2    TR("Auteur\001principal\001d'openTx","Auteur principal d'openTx")
+#define TR_ABOUT_BERTRAND_2    TR("Auteur\001principal\001d'OpenTX","Auteur principal d'OpenTX")
 #define TR_ABOUT_BERTRAND_3    TR("Codéveloppeur\001de\001C9X","Codéveloppeur de Companion9x")
 
 #define TR_ABOUT_MIKE_1        "Mike Blandford"

@@ -21,10 +21,10 @@ public:
     Joystick *joystick;
 
 private:
+    int initialRadioType;
     Ui::appPreferencesDialog *ui;
     void initSettings();
     bool displayImage( QString fileName );
-    void saveProfile();
     void loadProfileString(QString profile, QString label);
     void loadFromProfile();
 

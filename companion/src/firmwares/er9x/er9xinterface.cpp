@@ -114,7 +114,7 @@ bool Er9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
   return true;
 }
 
-bool Er9xInterface::load(RadioData &radioData, uint8_t *eeprom, int size)
+bool Er9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {
   std::cout << "trying er9x import... ";
 
@@ -123,7 +123,7 @@ bool Er9xInterface::load(RadioData &radioData, uint8_t *eeprom, int size)
     return false;
   }
 
-  if (!efile->EeFsOpen(eeprom, size, BOARD_STOCK)) {
+  if (!efile->EeFsOpen((uint8_t *)eeprom, size, BOARD_STOCK)) {
     std::cout << "wrong file system\n";
     return false;
   }

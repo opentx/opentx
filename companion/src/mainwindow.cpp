@@ -104,7 +104,7 @@ MainWindow::MainWindow():
 
     setUnifiedTitleAndToolBarOnMac(true);
     this->setWindowIcon(QIcon(":/icon.png"));
-    this->setIconSize(QSize(32,32));
+    this->setIconSize(QSize(32, 32));
     QNetworkProxyFactory::setUseSystemConfiguration(true);
     setAcceptDrops(true);
     
@@ -468,7 +468,7 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
         if (OldFwRev == 0) {
           showcheckForUpdatesResult = false; // update is available - do not show dialog
           QString rn = GetFirmware(fwToUpdate)->rnurl;
-          QAbstractButton *rnButton;
+          QAbstractButton *rnButton = NULL;
           msgBox.setWindowTitle("Companion");
           msgBox.setInformativeText(tr("Firmware %1 does not seem to have ever been downloaded.\nVersion %2 is available.\nDo you want to download it now ?").arg(fwToUpdate).arg(NewFwRev));
           QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
@@ -673,23 +673,23 @@ void MainWindow::saveAs()
 }
 
 void MainWindow::openRecentFile()
- {
-    QAction *action = qobject_cast<QAction *>(sender());
-    if (action) {
-      QString fileName=action->data().toString();
+{
+  QAction *action = qobject_cast<QAction *>(sender());
+  if (action) {
+    QString fileName = action->data().toString();
 
-      QMdiSubWindow *existing = findMdiChild(fileName);
-      if (existing) {
-          mdiArea->setActiveSubWindow(existing);
-          return;
-      }
-
+    QMdiSubWindow *existing = findMdiChild(fileName);
+    if (existing) {
+      mdiArea->setActiveSubWindow(existing);
+    }
+    else {
       MdiChild *child = createMdiChild();
       if (child->loadFile(fileName)) {
-          statusBar()->showMessage(tr("File loaded"), 2000);
-          child->show();
+        statusBar()->showMessage(tr("File loaded"), 2000);
+        child->show();
       }
     }
+  }
 }
 
 void MainWindow::loadProfile()  //TODO Load all variables - Also HW!
@@ -1198,17 +1198,15 @@ bool MainWindow::isValidEEPROM(QString eepromfile)
       if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return false;
       eeprom_size = file.size();
-      uint8_t *eeprom = (uint8_t *)malloc(eeprom_size);
+      QByteArray eeprom(eeprom_size, 0);
       QTextStream inputStream(&file);
-      eeprom_size = HexInterface(inputStream).load(eeprom, eeprom_size);
+      eeprom_size = HexInterface(inputStream).load((uint8_t *)eeprom.data(), eeprom_size);
       if (!eeprom_size) {
-        free(eeprom);
         return false;
       }
       file.close();
       RadioData * radioData = new RadioData();
-      bool result = LoadEeprom(*radioData, eeprom, eeprom_size);
-      free(eeprom);
+      bool result = LoadEeprom(*radioData, (uint8_t *)eeprom.data(), eeprom_size);
       delete radioData;
       return result;
     }
@@ -1216,17 +1214,14 @@ bool MainWindow::isValidEEPROM(QString eepromfile)
       if (!file.open(QFile::ReadOnly))
         return false;
       eeprom_size = file.size();
-      uint8_t *eeprom = (uint8_t *)malloc(eeprom_size);
-      memset(eeprom, 0, eeprom_size);
-      long read = file.read((char*)eeprom, eeprom_size);
+      QByteArray eeprom(eeprom_size, 0);
+      long read = file.read(eeprom.data(), eeprom_size);
       file.close();
       if (read != eeprom_size) {
-        free(eeprom);
         return false;
       }
       RadioData * radioData = new RadioData();
-      bool result = LoadEeprom(*radioData, eeprom, eeprom_size);
-      free(eeprom);
+      bool result = LoadEeprom(*radioData, (uint8_t *)eeprom.data(), eeprom_size);
       delete radioData;
       return result;
     }
@@ -1280,24 +1275,23 @@ bool MainWindow::convertEEPROM(QString backupFile, QString restoreFile, QString 
     if (!file.open(QIODevice::ReadOnly))
       return false;
 
-    uint8_t *eeprom = (uint8_t *)malloc(eeprom_size);
-    long result = file.read((char*)eeprom, eeprom_size);
+    QByteArray eeprom(eeprom_size, 0);
+    long result = file.read(eeprom.data(), eeprom_size);
     file.close();
 
     QSharedPointer<RadioData> radioData = QSharedPointer<RadioData>(new RadioData());
-    if (!LoadEeprom(*radioData, eeprom, eeprom_size) || !firmware->saveEEPROM(eeprom, *radioData, variant, version))
+    if (!LoadEeprom(*radioData, (uint8_t *)eeprom.data(), eeprom_size) || !firmware->saveEEPROM((uint8_t *)eeprom.data(), *radioData, variant, version))
       return false;
 
     QFile file2(restoreFile);
     if (!file2.open(QIODevice::WriteOnly))
       return false;
 
-    result = file2.write((char*)eeprom, eeprom_size);
+    result = file2.write(eeprom.constData(), eeprom_size);
     file2.close();
     if (result != eeprom_size)
       return false;
 
-    free(eeprom);
     return true;
 }
 
@@ -1538,17 +1532,17 @@ MdiChild *MainWindow::createMdiChild()
 
 QAction * MainWindow::addAct(QString icon, QString sName, QString lName, QKeySequence::StandardKey shortcut, const char *slot)
 {
-	QAction * newAction = new QAction( this );
-	if (!icon.isEmpty())
+  QAction * newAction = new QAction( this );
+  if (!icon.isEmpty())
       newAction->setIcon(CompanionIcon(icon));
-	if (!sName.isEmpty()) 
-	  newAction->setText(sName);
-	if (!lName.isEmpty())
-	  newAction->setStatusTip(lName);
-	if (shortcut != 0)
-	  newAction->setShortcuts(shortcut);
+  if (!sName.isEmpty()) 
+    newAction->setText(sName);
+  if (!lName.isEmpty())
+    newAction->setStatusTip(lName);
+  if (shortcut != 0)
+    newAction->setShortcuts(shortcut);
     connect(newAction, SIGNAL(triggered()), this, slot);
-	return newAction;
+  return newAction;
 }
 
 QAction * MainWindow::addAct(QString icon, QString sName, QString lName, const char *slot)
@@ -1558,10 +1552,10 @@ QAction * MainWindow::addAct(QString icon, QString sName, QString lName, const c
 
 QAction * MainWindow::addAct(QActionGroup *aGroup, QString sName, QString lName, const char *slot)
 {
-   QAction *action = addAct("", sName, lName, QKeySequence::UnknownKey, slot);
-   action->setCheckable(true);
-   aGroup->addAction(action);   
-   return action;
+  QAction *action = addAct("", sName, lName, QKeySequence::UnknownKey, slot);
+  action->setCheckable(true);
+  aGroup->addAction(action);   
+  return action;
 }
 
 void MainWindow::createActions()
@@ -1627,7 +1621,7 @@ void MainWindow::createActions()
     simulateAct =        addAct("simulate.png",      tr("Simulate..."),             tr("Simulate current model"),             SLOT(simulate()));
     loadbackupAct =      addAct("open.png",          tr("Load Backup..."),          tr("Load backup from file"),              SLOT(loadBackup()));
     logsAct =            addAct("logs.png",          tr("View Log File..."),        tr("Open and view log file"),             SLOT(logFile()));
-    appPrefsAct =        addAct("apppreferences.png",tr("Settings..."),             tr("Edit Settings"),                      SLOT(appPrefs()));	
+    appPrefsAct =        addAct("apppreferences.png",tr("Settings..."),             tr("Edit Settings"),                      SLOT(appPrefs()));
     fwPrefsAct =         addAct("fwpreferences.png", tr("Download..."),             tr("Download firmware and voice files"),  SLOT(fwPrefs()));
     checkForUpdatesAct = addAct("update.png",        tr("Check for Updates..."),    tr("Check OpenTX and Companion updates"), SLOT(doUpdates()));
     changelogAct =       addAct("changelog.png",     tr("Companion Changes..."),    tr("Show Companion change log"),          SLOT(changelog()));
@@ -1799,7 +1793,7 @@ void MainWindow::createToolBars()
     recentToolButton->setMenu(createRecentFileMenu());
     recentToolButton->setIcon(CompanionIcon("recentdocument.png"));
     recentToolButton->setToolTip(tr("Recent Models+Settings"));
-	  recentToolButton->setStatusTip(tr("Show recent Models+Settings documents"));
+    recentToolButton->setStatusTip(tr("Show recent Models+Settings documents"));
 
     fileToolBar->addWidget(recentToolButton);
     fileToolBar->addAction(saveAct);
@@ -1814,7 +1808,7 @@ void MainWindow::createToolBars()
     profileButton->setMenu(createProfilesMenu());
     profileButton->setIcon(CompanionIcon("profiles.png"));
     profileButton->setToolTip(tr("Radio Settings Profile"));
-	  profileButton->setStatusTip(tr("Show a selection list of radio settings profiles"));
+    profileButton->setStatusTip(tr("Show a selection list of radio settings profiles"));
 
     fileToolBar->addWidget(profileButton);
     fileToolBar->addAction(editSplashAct);
@@ -1884,7 +1878,7 @@ void MainWindow::setActiveSubWindow(QWidget *window)
 }
 
 void MainWindow::updateRecentFileActions()
- {
+{
     int i, numRecentFiles;
  
     //  Hide all document slots
@@ -1995,7 +1989,7 @@ for (i=0; i<MAX_PROFILES && g.profile[i].existsOnDisk(); i++)
 }
 
 QString MainWindow::strippedName(const QString &fullFileName)
- {
+{
     return QFileInfo(fullFileName).fileName();
 }
 
@@ -2060,15 +2054,14 @@ int MainWindow::getEpromVersion(QString fileName)
       QMessageBox::critical(this, tr("Error"),tr("Error opening file %1:\n%2.").arg(fileName).arg(file.errorString()));
       return -1;
     }
-    uint8_t *eeprom = (uint8_t *)malloc(eeprom_size);
-    memset(eeprom, 0, eeprom_size);
-    long result = file.read((char*)eeprom, eeprom_size);
+    QByteArray eeprom(eeprom_size, 0);
+    long result = file.read(eeprom.data(), eeprom_size);
     file.close();
     if (result != eeprom_size) {
       QMessageBox::critical(this, tr("Error"),tr("Error reading file %1:\n%2.").arg(fileName).arg(file.errorString()));
       return -1;
     }
-    if (!LoadEeprom(testData, eeprom, eeprom_size)) {
+    if (!LoadEeprom(testData, (uint8_t *)eeprom.data(), eeprom_size)) {
       QMessageBox::critical(this, tr("Error"),tr("Invalid binary Models and Settings File %1").arg(fileName));
       return -1;
     }

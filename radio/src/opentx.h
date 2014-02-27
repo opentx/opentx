@@ -585,24 +585,28 @@ extern uint8_t channel_order(uint8_t x);
 class Key
 {
 #define FILTERBITS      4
+
 #ifdef SIMU
-#define FFVAL 1
+  #define FFVAL 1
 #else
-#define FFVAL          ((1<<FILTERBITS)-1)
+  #define FFVAL          ((1<<FILTERBITS)-1)
 #endif
+
 #define KSTATE_OFF      0
 #define KSTATE_RPTDELAY 95 // gruvin: delay state before key repeating starts
 #define KSTATE_START    97
 #define KSTATE_PAUSE    98
 #define KSTATE_KILLED   99
-  uint8_t m_vals;   // key debounce?  4 = 40ms
-  uint8_t m_cnt;
-  uint8_t m_state;
-public:
-  void input(bool val, EnumKeys enuk);
-  bool state()       { return m_vals > 0; }
-  void pauseEvents() { m_state = KSTATE_PAUSE; m_cnt = 0; }
-  void killEvents()  { m_state = KSTATE_KILLED; }
+
+  private:
+    uint8_t m_vals;   // key debounce?  4 = 40ms
+    uint8_t m_cnt;
+    uint8_t m_state;
+  public:
+    void input(bool val, EnumKeys enuk);
+    bool state()       { return m_vals > 0; }
+    void pauseEvents() { m_state = KSTATE_PAUSE; m_cnt = 0; }
+    void killEvents()  { m_state = KSTATE_KILLED; }
 };
 
 extern Key keys[NUM_KEYS];
@@ -1354,6 +1358,10 @@ enum FunctionsActive {
 #endif
 };
 
+#define VARIO_FREQUENCY_ZERO   700/*Hz*/
+#define VARIO_FREQUENCY_RANGE  1000/*Hz*/
+#define VARIO_REPEAT_ZERO      500/*ms*/
+#define VARIO_REPEAT_MAX       80/*ms*/
 
 extern MASK_FUNC_TYPE activeFunctions;
 extern MASK_CFN_TYPE  activeFnSwitches;
@@ -1639,8 +1647,7 @@ uint8_t zlen(const char *str, uint8_t size);
 bool zexist(const char *str, uint8_t size);
 char * strcat_zchar(char * dest, char * name, uint8_t size, const char *defaultName, uint8_t defaultNameSize, uint8_t defaultIdx);
 #define strcat_modelname(dest, idx) strcat_zchar(dest, modelHeaders[idx].name, LEN_MODEL_NAME, STR_MODEL, PSIZE(TR_MODEL), idx+1)
-#define strcat_phasename(dest, idx) strcat_zchar(dest, g_model.phaseData[idx].name, LEN_FP_NAME, NULL, 0, 0)
-#define strcat_mixername(dest, idx) strcat_zchar(dest, g_model.mixData[idx].name, LEN_EXPOMIX_NAME, NULL, 0, 0)
+#define strcat_phasename(dest, idx) strcat_zchar(dest, g_model.phaseData[idx].name, LEN_FP_NAME, STR_FP, PSIZE(TR_FP), idx+1)
 #define ZLEN(s) zlen(s, sizeof(s))
 #define ZEXIST(s) zexist(s, sizeof(s))
 #endif

@@ -144,7 +144,7 @@ PACK(typedef struct {
   int8_t  swtch;
   uint8_t func;
   PACK(union {
-    char name[LEN_CFN_NAME];
+    char name[10];
     struct {
       int16_t val;
       int16_t ext1;
@@ -193,7 +193,7 @@ PACK(typedef struct {
   int8_t    points[NUM_POINTS];
 
   LogicalSwitchData_v215 customSw[NUM_CSW];
-  CustomFnData_v215 funcSw[NUM_CFN];
+  CustomFnData_v215 funcSw[32];
   SwashRingData swashR;
   PhaseData_v215 phaseData[MAX_PHASES];
 
@@ -466,12 +466,13 @@ void ConvertModel_215_to_216(ModelData &model)
   for (uint8_t i=0; i<32; i++) {
     LogicalSwitchData & sw = g_model.customSw[i];
     sw.func = oldModel.customSw[i].func;
+    if (sw.func >= LS_FUNC_VEQUAL) sw.func += 1;
     if (sw.func >= LS_FUNC_RANGE) sw.func += 1;
     if (sw.func >= LS_FUNC_STAY) sw.func += 1;
     sw.v1 = oldModel.customSw[i].v1;
     sw.v2 = oldModel.customSw[i].v2;
-    sw.delay = oldModel.customSw[i].delay;
-    sw.duration = oldModel.customSw[i].duration;
+    sw.delay = oldModel.customSw[i].delay * 5;
+    sw.duration = oldModel.customSw[i].duration * 5;
     sw.andsw = ConvertSwitch_215_to_216(oldModel.customSw[i].andsw);
 #if defined(PCBTARANIS)
     uint8_t cstate = cswFamily(sw.func);
@@ -593,7 +594,7 @@ void ConvertModel_215_to_216(ModelData &model)
     }
 
     if (fn.func == FUNC_PLAY_TRACK || fn.func == FUNC_BACKGND_MUSIC) {
-      memcpy(fn.play.name, oldModel.funcSw[i].param.name, LEN_CFN_NAME);
+      memcpy(fn.play.name, oldModel.funcSw[i].param.name, 8);
     }
     else {
       fn.all.val = oldModel.funcSw[i].param.composite.val;

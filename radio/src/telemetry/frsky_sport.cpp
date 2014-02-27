@@ -650,8 +650,9 @@ void telemetryWakeup()
 #endif
 
 #if defined(VARIO)
-  if (TELEMETRY_STREAMING() && !IS_FAI_ENABLED())
+  if (TELEMETRY_STREAMING() && !IS_FAI_ENABLED()) {
     varioWakeup();
+  }
 #endif
 
   static tmr10ms_t alarmsCheckTime = 0;

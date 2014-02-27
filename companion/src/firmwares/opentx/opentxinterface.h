@@ -37,7 +37,7 @@ class OpenTxInterface : public EEPROMInterface
 
     virtual const int getMaxModels();
 
-    virtual bool load(RadioData &, uint8_t *eeprom, int size);
+    virtual bool load(RadioData &, const uint8_t *eeprom, int size);
 
     virtual bool loadBackup(RadioData &, uint8_t *eeprom, int esize, int index);
     
