@@ -1790,6 +1790,7 @@ void MainWindow::createToolBars()
 
     QToolButton * recentToolButton = new QToolButton;
     recentToolButton->setPopupMode(QToolButton::InstantPopup);
+    recentToolButton->setFocusPolicy(Qt::NoFocus);
     recentToolButton->setMenu(createRecentFileMenu());
     recentToolButton->setIcon(CompanionIcon("recentdocument.png"));
     recentToolButton->setToolTip(tr("Recent Models+Settings"));
@@ -1805,6 +1806,7 @@ void MainWindow::createToolBars()
 
     QToolButton * profileButton = new QToolButton;
     profileButton->setPopupMode(QToolButton::InstantPopup);
+    profileButton->setFocusPolicy(Qt::NoFocus);
     profileButton->setMenu(createProfilesMenu());
     profileButton->setIcon(CompanionIcon("profiles.png"));
     profileButton->setToolTip(tr("Radio Settings Profile"));
