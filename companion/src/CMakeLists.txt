@@ -83,6 +83,13 @@ add_custom_command(
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )
 
+add_custom_command(
+  OUTPUT ${RADIO_SRC_DIRECTORY}/translations/en.h
+  COMMAND make tra
+  DEPENDS ${RADIO_SRC_DIRECTORY}/translations/en.h.txt
+  WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
+)
+
 include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${PROJECT_SOURCE_DIR}/../..
@@ -122,6 +129,7 @@ set(companion_SRCS
   firmwares/ersky9x/ersky9xeeprom.cpp
   firmwares/ersky9x/ersky9xinterface.cpp
   ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
+  ${RADIO_SRC_DIRECTORY}/translations/en.h
   appdata.cpp
   helpers.cpp
   mdichild.cpp
@@ -313,6 +321,7 @@ set(simu_SRCS
   firmwares/ersky9x/ersky9xinterface.cpp
   ${ERSKY9X_CHECKOUT_DIRECTORY}/ersky9xsimulator.cpp
   ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
+  ${RADIO_SRC_DIRECTORY}/translations/en.h
   file.cpp # TODO not needed
   modeledit/node.cpp
   modeledit/edge.cpp # TODO not needed
