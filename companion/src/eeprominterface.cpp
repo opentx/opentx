@@ -942,6 +942,7 @@ void ModelData::setDefault(uint8_t id)
   clear();
   used = true;
   sprintf(name, "MODEL%02d", id+1);
+  modelId = id+1;
 }
 
 int ModelData::getTrimValue(int phaseIdx, int trimIdx)
