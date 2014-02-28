@@ -77,6 +77,7 @@
   #define NUM_CFN     64 // number of functions assigned to switches
   #define MAX_SCRIPTS 7
   #define MAX_INPUTS  32
+  #define NUM_PPM     16
 #elif defined(CPUARM)
   #define MAX_MODELS  60
   #define NUM_CHNOUT  32 // number of real output channels CH1-CH32
@@ -85,6 +86,7 @@
   #define MAX_EXPOS   32
   #define NUM_CSW     32 // number of custom switches
   #define NUM_CFN     64 // number of functions assigned to switches
+  #define NUM_PPM     16
 #elif defined(CPUM2560) || defined(CPUM2561)
   #define MAX_MODELS  30
   #define NUM_CHNOUT  16 // number of real output channels CH1-CH16
@@ -93,6 +95,7 @@
   #define MAX_EXPOS   16
   #define NUM_CSW     15 // number of custom switches
   #define NUM_CFN     24 // number of functions assigned to switches
+  #define NUM_PPM     8
 #elif defined(CPUM128)
   #define MAX_MODELS  30
   #define NUM_CHNOUT  16 // number of real output channels CH1-CH16
@@ -101,6 +104,7 @@
   #define MAX_EXPOS   14
   #define NUM_CSW     15 // number of custom switches
   #define NUM_CFN     24 // number of functions assigned to switches
+  #define NUM_PPM     8
 #else
   #define MAX_MODELS  16
   #define NUM_CHNOUT  16 // number of real output channels CH1-CH16
@@ -109,9 +113,12 @@
   #define MAX_EXPOS   14
   #define NUM_CSW     12 // number of custom switches
   #define NUM_CFN     16 // number of functions assigned to switches
+  #define NUM_PPM     8
 #endif
 
 #define MAX_TIMERS    2
+#define NUM_CYC       3
+#define NUM_CAL_PPM   4
 
 #if defined(PCBTARANIS)
   enum CurveType {
@@ -1156,6 +1163,14 @@ PACK(typedef struct t_MavlinkData {
 }) MavlinkData;
 #endif
 
+enum SwashType {
+  SWASH_TYPE_120,
+  SWASH_TYPE_120X,
+  SWASH_TYPE_140,
+  SWASH_TYPE_90,
+  SWASH_TYPE_MAX = SWASH_TYPE_90
+};
+
 PACK(typedef struct t_SwashRingData { // Swash Ring data
   uint8_t   invertELE:1;
   uint8_t   invertAIL:1;
@@ -1427,7 +1442,7 @@ enum MixSources {
   MIXSRC_LAST_CSW = MIXSRC_FIRST_CSW+NUM_CSW-1,
 
   MIXSRC_FIRST_PPM,
-  MIXSRC_LAST_PPM = MIXSRC_FIRST_PPM + 7,
+  MIXSRC_LAST_PPM = MIXSRC_FIRST_PPM+NUM_PPM-1,
 
   MIXSRC_FIRST_CH,
   MIXSRC_CH1 = MIXSRC_FIRST_CH,

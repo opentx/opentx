@@ -162,7 +162,7 @@ enum HeliSwashTypes {
 #define BOARD_X9D_NUM_POTS  4
 #define C9X_NUM_POTS        4
 #define NUM_CAL_PPM         4
-#define NUM_PPM             8
+#define NUM_PPM(board)      (IS_ARM(board) ? 16 : 8)
 #define NUM_CYC             3
 #define C9X_NUM_SWITCHES    10
 #define C9X_NUM_KEYS        6

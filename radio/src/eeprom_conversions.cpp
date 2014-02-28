@@ -270,6 +270,9 @@ int ConvertSource_215_to_216(int source, bool insertZero=false)
   // Virtual Inputs and Lua Outputs added
   if (source > 0)
     source += MAX_INPUTS + MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS;
+  // PPM9-PPM16 added
+  if (source > MIXSRC_FIRST_PPM+7)
+    source += 8;
   // 4 GVARS added
   if (source > MIXSRC_GVAR1+4)
     source += 4;

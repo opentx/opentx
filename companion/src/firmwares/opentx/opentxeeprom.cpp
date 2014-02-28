@@ -23,6 +23,7 @@
 #define MAX_CUSTOM_FUNCTIONS(board, version) (IS_ARM(board) ? (version >= 216 ? 64 : 32) : (IS_DBLEEPROM(board, version) ? 24 : 16))
 #define MAX_CURVES(board, version)           (IS_ARM(board) ? ((IS_TARANIS(board) && version >= 216) ? 32 : 16) : O9X_MAX_CURVES)
 #define MAX_GVARS(board, version)            ((IS_ARM(board) && version >= 216) ? 9 : 5)
+#define NUM_PPM_INPUTS(board, version)       ((IS_ARM(board) && version >= 216) ? 16 : 8)
 
 #define IS_AFTER_RELEASE_21_MARCH_2013(board, version) (version >= 214 || (!IS_ARM(board) && version >= 213))
 #define IS_AFTER_RELEASE_23_MARCH_2013(board, version) (version >= 214 || (board==BOARD_STOCK && version >= 213))
@@ -218,7 +219,7 @@ class SourcesConversionTable: public ConversionTable {
           addConversion(RawSource(SOURCE_TYPE_CYC, i), val++);
       }
 
-      for (int i=0; i<8; i++)
+      for (int i=0; i<NUM_PPM_INPUTS(board, version); i++)
         addConversion(RawSource(SOURCE_TYPE_PPM, i), val++);
 
       for (int i=0; i<MAX_CHANNELS(board, version); i++)

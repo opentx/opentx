@@ -599,7 +599,7 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData & 
       if (item == source) b->setCurrentIndex(b->count()-1);
     }
 
-    for (int i=0; i<NUM_PPM; i++) {
+    for (int i=0; i<NUM_PPM(GetEepromInterface()->getBoard()); i++) {
       item = RawSource(SOURCE_TYPE_PPM, i);
       b->addItem(item.toString(), item.toValue());
       if (item == source) b->setCurrentIndex(b->count()-1);
