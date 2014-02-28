@@ -273,6 +273,11 @@
 #endif
 #define TR_VTELEMCHNS          "---\0""Bat\0""Tmr1""Tmr2" TR_RSSI_0 TR_RSSI_1 "A1\0 ""A2\0 ""Wys\0""Rpm\0""Pali""T1\0 ""T2\0 ""Spd\0""Dyst""GAlt""Cell""Cels""Vfas""Curr""Cnsp""Moc\0""AccX""AccY""AccZ""Hdg\0""VSpd""ASpd""dTE\0""A1-\0""A2-\0""Wys-""Wys+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Cel-""Vfs-""Cur+""Moc+""Acc\0""Time"
 
+#define LENGTH_UNIT_IMP        "ft\0"
+#define SPEED_UNIT_IMP         "mph"
+#define LENGTH_UNIT_METR       "m\0 "
+#define SPEED_UNIT_METR        "kmh"
+
 #if defined(CPUARM)
   #define LEN_VUNITSSYSTEM     TR("\006", "\012")
   #define TR_VUNITSSYSTEM      TR("Metr.\0""Imper.", "Metryczne\0""Imperialne")
