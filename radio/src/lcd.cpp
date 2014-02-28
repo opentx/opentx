@@ -1243,6 +1243,7 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
     case TELEM_TX_VOLTAGE-1:
     case TELEM_VFAS-1:
     case TELEM_CELLS_SUM-1:
+    case TELEM_MIN_CELLS_SUM-1:
     case TELEM_MIN_VFAS-1:
       putsTelemetryValue(x, y, val, UNIT_VOLTS, att|PREC1);
       break;

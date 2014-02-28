@@ -252,9 +252,9 @@ int ConvertTelemetrySource_215_to_216(int source)
   // A3 and A4 MIN added
   if (source >= TELEM_MIN_A3)
     source += 2;
-  // Cel- and Vfas- added
+  // Cel- Cels- and Vfas- added
   if (source >= TELEM_MIN_CELL)
-    source += 2;
+    source += 3;
   // 5 reserve added
   if (source >= TELEM_RESERVE6)
     source += 5;

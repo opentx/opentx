@@ -577,6 +577,9 @@ void telemetryInterrupt10ms()
     voltage += frskyData.hub.cellVolts[i];
   voltage /= 10;
   frskyData.hub.cellsSum = voltage;
+  if (frskyData.hub.cellsSum < frskyData.hub.minCells) {
+    frskyData.hub.minCells = frskyData.hub.cellsSum;
+  }
 #endif
 
   if (TELEMETRY_STREAMING()) {

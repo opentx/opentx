@@ -226,7 +226,7 @@ QString RawSource::toString()
     QObject::tr("HDG "), QObject::tr("VSpd"), QObject::tr("ASpd"), QObject::tr("dTE"),
     QObject::tr("A1-"),  QObject::tr("A2-"), QObject::tr("A3-"),  QObject::tr("A4-"),
     QObject::tr("Alt-"), QObject::tr("Alt+"), QObject::tr("Rpm+"), QObject::tr("T1+"), QObject::tr("T2+"), QObject::tr("Spd+"), QObject::tr("Dst+"),
-    QObject::tr("Cel-"), QObject::tr("Vfs-"), QObject::tr("Cur+"), QObject::tr("Pwr+"),
+    QObject::tr("Cel-"), QObject::tr("Cels-"), QObject::tr("Vfs-"), QObject::tr("Cur+"), QObject::tr("Pwr+"),
     QObject::tr("ACC"), QObject::tr("Time"),
   };
 

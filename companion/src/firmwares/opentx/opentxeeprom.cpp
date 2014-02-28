@@ -234,7 +234,7 @@ class SourcesConversionTable: public ConversionTable {
 
         for (int i=0; i<TELEMETRY_SOURCE_ACC; i++) {
           if (version < 216) {
-            if (i==TELEMETRY_SOURCE_SWR || i==TELEMETRY_SOURCE_RX_BATT || i==TELEMETRY_SOURCE_A3 || i==TELEMETRY_SOURCE_A4 || i==TELEMETRY_SOURCE_ASPD || i==TELEMETRY_SOURCE_DTE || i==TELEMETRY_SOURCE_CELL_MIN || i==TELEMETRY_SOURCE_VFAS_MIN)
+            if (i==TELEMETRY_SOURCE_SWR || i==TELEMETRY_SOURCE_RX_BATT || i==TELEMETRY_SOURCE_A3 || i==TELEMETRY_SOURCE_A4 || i==TELEMETRY_SOURCE_ASPD || i==TELEMETRY_SOURCE_DTE || i==TELEMETRY_SOURCE_CELL_MIN || i==TELEMETRY_SOURCE_CELLS_MIN || i==TELEMETRY_SOURCE_VFAS_MIN)
               continue;
           }
           addConversion(RawSource(SOURCE_TYPE_TELEMETRY, i), val++);
