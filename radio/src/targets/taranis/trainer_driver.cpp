@@ -126,7 +126,7 @@ extern "C" void TIM3_IRQHandler()
 
     // We process g_ppmInsright here to make servo movement as smooth as possible
     //    while under trainee control
-    if ((val>4000) && (val < 19000)) { // G: Prioritize reset pulse. (Needed when less than 8 incoming pulses)
+    if ((val>4000) && (val < 19000)) { // G: Prioritize reset pulse. (Needed when less than 16 incoming pulses)
       ppmInState = 1; // triggered
     }
     else {
