@@ -1415,6 +1415,9 @@ bool isInputSourceAvailable(int source)
   if (source>=MIXSRC_FIRST_CH && source<=MIXSRC_LAST_CH)
     return true;
 
+  if (source>=MIXSRC_FIRST_PPM && source<=MIXSRC_LAST_PPM)
+    return true;
+
   if (source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM)
     return isTelemetrySourceAvailable(source-MIXSRC_FIRST_TELEM+1);
 
