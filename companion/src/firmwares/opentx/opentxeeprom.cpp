@@ -232,13 +232,9 @@ class SourcesConversionTable: public ConversionTable {
           }
         }
 
-        if (afterrelease21March2013) {
-          addConversion(RawSource(SOURCE_TYPE_TELEMETRY, 0), val++);
-        }
-
-        for (int i=1; i<TELEMETRY_SOURCE_ACC; i++) {
+        for (int i=0; i<TELEMETRY_SOURCE_ACC; i++) {
           if (version < 216) {
-            if (i==TELEMETRY_SOURCE_ASPD-1 || i==TELEMETRY_SOURCE_DTE-1 || i==TELEMETRY_SOURCE_CELL_MIN-1 || i==TELEMETRY_SOURCE_VFAS_MIN-1)
+            if (i==TELEMETRY_SOURCE_SWR || i==TELEMETRY_SOURCE_RX_BATT || i==TELEMETRY_SOURCE_A3 || i==TELEMETRY_SOURCE_A4 || i==TELEMETRY_SOURCE_ASPD || i==TELEMETRY_SOURCE_DTE || i==TELEMETRY_SOURCE_CELL_MIN || i==TELEMETRY_SOURCE_VFAS_MIN)
               continue;
           }
           addConversion(RawSource(SOURCE_TYPE_TELEMETRY, i), val++);
@@ -332,70 +328,70 @@ class TelemetrySourcesConversionTable: public ConversionTable {
         addConversion(0, val++);
       }
 
-      addConversion(TELEMETRY_SOURCE_TX_BATT, val++);
-      addConversion(TELEMETRY_SOURCE_TIMER1, val++);
-      addConversion(TELEMETRY_SOURCE_TIMER2, val++);
+      addConversion(1+TELEMETRY_SOURCE_TX_BATT, val++);
+      addConversion(1+TELEMETRY_SOURCE_TIMER1, val++);
+      addConversion(1+TELEMETRY_SOURCE_TIMER2, val++);
       if (IS_ARM(board) && version >= 216)
-        addConversion(TELEMETRY_SOURCE_SWR, val++);
-      addConversion(TELEMETRY_SOURCE_RSSI_TX, val++);
-      addConversion(TELEMETRY_SOURCE_RSSI_RX, val++);
+        addConversion(1+TELEMETRY_SOURCE_SWR, val++);
+      addConversion(1+TELEMETRY_SOURCE_RSSI_TX, val++);
+      addConversion(1+TELEMETRY_SOURCE_RSSI_RX, val++);
       if (IS_ARM(board) && version >= 216)
-        addConversion(TELEMETRY_SOURCE_RX_BATT, val++);
-      addConversion(TELEMETRY_SOURCE_A1, val++);
-      addConversion(TELEMETRY_SOURCE_A2, val++);
-      if (IS_ARM(board) && version >= 216)
-        addConversion(TELEMETRY_SOURCE_A3, val++);
-      if (IS_ARM(board) && version >= 216)
-        addConversion(TELEMETRY_SOURCE_A4, val++);
-      addConversion(TELEMETRY_SOURCE_ALT, val++);
-      addConversion(TELEMETRY_SOURCE_RPM, val++);
-      addConversion(TELEMETRY_SOURCE_FUEL, val++);
-      addConversion(TELEMETRY_SOURCE_T1, val++);
-      addConversion(TELEMETRY_SOURCE_T2, val++);
-      addConversion(TELEMETRY_SOURCE_SPEED, val++);
-      addConversion(TELEMETRY_SOURCE_DIST, val++);
-      addConversion(TELEMETRY_SOURCE_GPS_ALT, val++);
-      addConversion(TELEMETRY_SOURCE_CELL, val++);
-      addConversion(TELEMETRY_SOURCE_CELLS_SUM, val++);
-      addConversion(TELEMETRY_SOURCE_VFAS, val++);
-      addConversion(TELEMETRY_SOURCE_CURRENT, val++);
-      addConversion(TELEMETRY_SOURCE_CONSUMPTION, val++);
-      addConversion(TELEMETRY_SOURCE_POWER, val++);
-      addConversion(TELEMETRY_SOURCE_ACCX, val++);
-      addConversion(TELEMETRY_SOURCE_ACCY, val++);
-      addConversion(TELEMETRY_SOURCE_ACCZ, val++);
-      addConversion(TELEMETRY_SOURCE_HDG, val++);
-      addConversion(TELEMETRY_SOURCE_VERTICAL_SPEED, val++);
+        addConversion(1+TELEMETRY_SOURCE_RX_BATT, val++);
+      addConversion(1+TELEMETRY_SOURCE_A1, val++);
+      addConversion(1+TELEMETRY_SOURCE_A2, val++);
+      if (IS_ARM(board) && version >= 216) {
+        addConversion(1+TELEMETRY_SOURCE_A3, val++);
+        addConversion(1+TELEMETRY_SOURCE_A4, val++);
+      }
+      addConversion(1+TELEMETRY_SOURCE_ALT, val++);
+      addConversion(1+TELEMETRY_SOURCE_RPM, val++);
+      addConversion(1+TELEMETRY_SOURCE_FUEL, val++);
+      addConversion(1+TELEMETRY_SOURCE_T1, val++);
+      addConversion(1+TELEMETRY_SOURCE_T2, val++);
+      addConversion(1+TELEMETRY_SOURCE_SPEED, val++);
+      addConversion(1+TELEMETRY_SOURCE_DIST, val++);
+      addConversion(1+TELEMETRY_SOURCE_GPS_ALT, val++);
+      addConversion(1+TELEMETRY_SOURCE_CELL, val++);
+      addConversion(1+TELEMETRY_SOURCE_CELLS_SUM, val++);
+      addConversion(1+TELEMETRY_SOURCE_VFAS, val++);
+      addConversion(1+TELEMETRY_SOURCE_CURRENT, val++);
+      addConversion(1+TELEMETRY_SOURCE_CONSUMPTION, val++);
+      addConversion(1+TELEMETRY_SOURCE_POWER, val++);
+      addConversion(1+TELEMETRY_SOURCE_ACCX, val++);
+      addConversion(1+TELEMETRY_SOURCE_ACCY, val++);
+      addConversion(1+TELEMETRY_SOURCE_ACCZ, val++);
+      addConversion(1+TELEMETRY_SOURCE_HDG, val++);
+      addConversion(1+TELEMETRY_SOURCE_VERTICAL_SPEED, val++);
       if (version >= 216) {
-        addConversion(TELEMETRY_SOURCE_ASPD, val++);
-        addConversion(TELEMETRY_SOURCE_DTE, val++);
+        addConversion(1+TELEMETRY_SOURCE_ASPD, val++);
+        addConversion(1+TELEMETRY_SOURCE_DTE, val++);
       }
       if (IS_ARM(board) && version >= 216) {
         for (int i=0; i<5; i++)
-          addConversion(TELEMETRY_SOURCE_RESERVE, val++);
+          addConversion(1+TELEMETRY_SOURCE_RESERVE, val++);
       }
-      addConversion(TELEMETRY_SOURCE_A1_MIN, val++);
-      addConversion(TELEMETRY_SOURCE_A2_MIN, val++);
+      addConversion(1+TELEMETRY_SOURCE_A1_MIN, val++);
+      addConversion(1+TELEMETRY_SOURCE_A2_MIN, val++);
       if (IS_ARM(board) && version >= 216) {
-        addConversion(TELEMETRY_SOURCE_A3_MIN, val++);
-        addConversion(TELEMETRY_SOURCE_A4_MIN, val++);
+        addConversion(1+TELEMETRY_SOURCE_A3_MIN, val++);
+        addConversion(1+TELEMETRY_SOURCE_A4_MIN, val++);
       }
-      addConversion(TELEMETRY_SOURCE_ALT_MIN, val++);
-      addConversion(TELEMETRY_SOURCE_ALT_MAX, val++);
-      addConversion(TELEMETRY_SOURCE_RPM_MAX, val++);
-      addConversion(TELEMETRY_SOURCE_T1_MAX, val++);
-      addConversion(TELEMETRY_SOURCE_T2_MAX, val++);
-      addConversion(TELEMETRY_SOURCE_SPEED_MAX, val++);
-      addConversion(TELEMETRY_SOURCE_DIST_MAX, val++);
-      addConversion(TELEMETRY_SOURCE_CELL_MIN, val++);
-      addConversion(TELEMETRY_SOURCE_VFAS_MIN, val++);
-      addConversion(TELEMETRY_SOURCE_POWER_MAX, val++);
+      addConversion(1+TELEMETRY_SOURCE_ALT_MIN, val++);
+      addConversion(1+TELEMETRY_SOURCE_ALT_MAX, val++);
+      addConversion(1+TELEMETRY_SOURCE_RPM_MAX, val++);
+      addConversion(1+TELEMETRY_SOURCE_T1_MAX, val++);
+      addConversion(1+TELEMETRY_SOURCE_T2_MAX, val++);
+      addConversion(1+TELEMETRY_SOURCE_SPEED_MAX, val++);
+      addConversion(1+TELEMETRY_SOURCE_DIST_MAX, val++);
+      addConversion(1+TELEMETRY_SOURCE_CELL_MIN, val++);
+      addConversion(1+TELEMETRY_SOURCE_VFAS_MIN, val++);
+      addConversion(1+TELEMETRY_SOURCE_POWER_MAX, val++);
       if (IS_ARM(board) && version >= 216) {
         for (int i=0; i<5; i++)
-          addConversion(TELEMETRY_SOURCE_RESERVE, val++);
+          addConversion(1+TELEMETRY_SOURCE_RESERVE, val++);
       }
-      addConversion(TELEMETRY_SOURCE_ACC, val++);
-      addConversion(TELEMETRY_SOURCE_GPS_TIME, val++);
+      addConversion(1+TELEMETRY_SOURCE_ACC, val++);
+      addConversion(1+TELEMETRY_SOURCE_GPS_TIME, val++);
     }
 };
 
