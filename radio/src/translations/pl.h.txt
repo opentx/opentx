@@ -174,7 +174,11 @@
 #endif
 
 #define LEN_VCSWFUNC           "\005"
-#define TR_VCSWFUNC            "---\0 " TR_CSWEQUAL "a{x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""d}x\0 ""|d|}x" TR_CSWTIMER TR_CSWSTICKY
+#if defined(CPUARM)
+#define TR_VCSWFUNC            "---\0 " TR_CSWEQUAL "a{x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""Δ}x\0 ""|Δ|}x" TR_CSWTIMER TR_CSWSTICKY
+#else
+#define TR_VCSWFUNC            "---\0 " TR_CSWEQUAL "a{x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""^}x\0 ""|^|}x" TR_CSWTIMER TR_CSWSTICKY
+#endif
 
 #define LEN_VFSWFUNC           "\013"
 
@@ -187,7 +191,7 @@
 #if defined(AUDIO)
   #define TR_SOUND             "\222 Dźwięk\0  "
 #else
-  #define TR_SOUND             "Pikanie\0  "
+  #define TR_SOUND             "Pikanie\0   "
 #endif
 
 #if defined(HAPTIC)
@@ -206,8 +210,8 @@
   #define TR_PLAY_VALUE        "\222 Wartość\0 "
 #else
   #define TR_PLAY_TRACK        "[\222]Ścieżka "
-  #define TR_PLAY_BOTH         "[\222 Oba]\0  "
-  #define TR_PLAY_VALUE        "[\222 Wart.]\0"
+  #define TR_PLAY_BOTH         "[\222 Oba]\0   "
+  #define TR_PLAY_VALUE        "[\222 Wart.]\0 "
 #endif
 
 #define TR_CFN_BG_MUSIC      "Muz. tła   " "Muz. tła ||"
@@ -221,33 +225,22 @@
 #if defined(GVARS)
   #define TR_ADJUST_GVAR     "Ustaw \0    "
 #else
-  #define TR_ADJUST_GVAR     "[UstawZG]\0"
+  #define TR_ADJUST_GVAR     "[UstawZG]\0 "
 #endif
 
 #ifdef DEBUG
-  #define TR_CFN_TEST            "Test\0     "
+  #define TR_CFN_TEST            "Test\0      "
 #else
   #define TR_CFN_TEST
 #endif
 
-//#if defined(CPUARM)
-//  #define TR_VFSWFUNC          "Bezp.\0     ""Trener \0   ""Inst-Trim  ""Reset      " TR_ADJUST_GVAR "Głośność\0  " TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podświetl. " TR_CFN_TEST
-//#elif defined(PCBGRUVIN9X)
-//  #define TR_VFSWFUNC          "Bezp.\0     ""Trener \0   ""Inst-Trim  ""Reset      " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podświetl. " TR_CFN_TEST
-//#else
-//  #define TR_VFSWFUNC          "Bezp.\0     ""Trener \0   ""Inst-Trim  ""Reset      " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC "Podświetl. " TR_CFN_TEST
-//#endif
-
-
 #if defined(CPUARM)
-  #define TR_VFSWFUNC          "Safety\0   ""Trainer\0  ""Inst. Trim""Reset\0    ""Set \0     " TR_ADJUST_GVAR "Volume\0   " TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Backlight\0" TR_CFN_TEST
+  #define TR_VFSWFUNC          "Bezp.\0     ""Trener \0   ""Inst-Trim  ""Reset      ""Set \0      " TR_ADJUST_GVAR "Głośność\0  " TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podświetl. " TR_CFN_TEST
 #elif defined(PCBGRUVIN9X)
-  #define TR_VFSWFUNC          "Safety\0   ""Trainer\0  ""Inst. Trim""Reset\0    " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC TR_SDCLOGS "Backlight\0" TR_CFN_TEST
+  #define TR_VFSWFUNC          "Bezp.\0     ""Trener \0   ""Inst-Trim  ""Reset      " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podświetl. " TR_CFN_TEST
 #else
-  #define TR_VFSWFUNC          "Safety\0   ""Trainer\0  ""Inst. Trim""Reset\0    " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC "Backlight\0" TR_CFN_TEST
+  #define TR_VFSWFUNC          "Bezp.\0     ""Trener \0   ""Inst-Trim  ""Reset      " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC "Podświetl. " TR_CFN_TEST
 #endif
-
-
 
 #define LEN_VFSWRESET          TR("\004", "\012")
 
@@ -357,11 +350,11 @@
 #endif
 
 #if defined(CPUARM)
-  #define TR_CUSTOMSW          "PL1""PL2""PL3""PL4""PL5""PL6""PL7""PL8""PL9""PLA""PLB""PLC""PLD""PLE""PLF""PLG""PLH""PLI""PLJ""PLK""PLL""PLM""PLN""PLO""PLP""PLQ""PLR""PLS""PLT""PLU""PLV""PLW"
+  #define TR_LOGICALSW          "PL1""PL2""PL3""PL4""PL5""PL6""PL7""PL8""PL9""PLA""PLB""PLC""PLD""PLE""PLF""PLG""PLH""PLI""PLJ""PLK""PLL""PLM""PLN""PLO""PLP""PLQ""PLR""PLS""PLT""PLU""PLV""PLW"
 #elif defined(PCBGRUVIN9X) || defined(CPUM2561) || defined(CPUM128)
-  #define TR_CUSTOMSW          "PL1""PL2""PL3""PL4""PL5""PL6""PL7""PL8""PL9""PLA""PLB""PLC""PLD""PLE""PLF"
+  #define TR_LOGICALSW          "PL1""PL2""PL3""PL4""PL5""PL6""PL7""PL8""PL9""PLA""PLB""PLC""PLD""PLE""PLF"
 #else
-  #define TR_CUSTOMSW          "PL1""PL2""PL3""PL4""PL5""PL6""PL7""PL8""PL9""PLA""PLB""PLC"
+  #define TR_LOGICALSW          "PL1""PL2""PL3""PL4""PL5""PL6""PL7""PL8""PL9""PLA""PLB""PLC"
 #endif
 
 #define TR_TRIMS_SWITCHES      "tRl""tRr""tEd""tEu""tTd""tTu""tAl""tAr"
@@ -379,11 +372,11 @@
 
 #if defined(PCBTARANIS)
   #define TR_6POS_POTS         "P11""P12""P13""P14""P15""P16""P21""P22""P23""P24""P25""P26"
-  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_6POS_POTS TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_CUSTOMSW
+  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_6POS_POTS TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW
 #elif defined(CPUARM)
-  #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "GAZ""SK""SW""LOL""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_CUSTOMSW
+  #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "GAZ""SK""SW""LOL""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW
 #else
-  #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "GAZ""SK""SW""LOT""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_CUSTOMSW
+  #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "GAZ""SK""SW""LOT""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW
 #endif
 
 #if defined(HELI)
@@ -595,8 +588,8 @@
 
 #define TR_MENUCURVES          "KRZYWE"
 #define TR_MENUCURVE           "KRZYWA"
-#define TR_MENUCUSTOMSWITCH    "PRZEŁ. LOGICZNY"
-#define TR_MENUCUSTOMSWITCHES   TR("PRZEŁ. LOG.", "PRZEŁ. LOGICZNE")
+#define TR_MENULOGICALSWITCH    "PRZEŁ. LOGICZNY"
+#define TR_MENULOGICALSWITCHES   TR("PRZEŁ. LOG.", "PRZEŁ. LOGICZNE")
 #define TR_MENUCUSTOMFUNC      "FUNKCJE SPECJALNE"
 #define TR_MENUTELEMETRY       "TELEMETRIA"
 #define TR_MENUTEMPLATES       "SZABLONY"

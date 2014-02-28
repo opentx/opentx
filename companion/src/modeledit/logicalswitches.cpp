@@ -1,4 +1,4 @@
-#include "customswitches.h"
+#include "logicalswitches.h"
 #include <QLabel>
 #include <QLineEdit>
 #include <QSpinBox>

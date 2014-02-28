@@ -1086,7 +1086,7 @@ else
   build: stamp_header tra lbm allsrc.cpp elf remallsrc bin
 endif
 
-tra: translations/cz.h translations/de.h translations/es.h translations/fi.h translations/fr.h translations/it.h translations/pl.h translations/pt.h translations/se.h
+tra: translations/en.h translations/cz.h translations/de.h translations/es.h translations/fi.h translations/fr.h translations/it.h translations/pl.h translations/pt.h translations/se.h
 lbm: fonts bitmaps/sticks.lbm
   
 elf: $(TARGET).elf
@@ -1139,6 +1139,11 @@ taranis-stamp:
 	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-taranis.txt
 	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx-taranis.txt
 	@cat stamp-opentx-taranis.txt
+
+translations/en.h: translations/en.h.txt
+	@echo
+	@echo "Create English language specific header files"
+	$(TRANSLATE) translations/en.h.txt translations/en.h en
 
 translations/cz.h: translations/cz.h.txt
 	@echo

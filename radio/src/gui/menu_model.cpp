@@ -4254,7 +4254,7 @@ enum LogicalSwitchFields {
 
 void menuModelLogicalSwitchOne(uint8_t event)
 {
-  TITLE(STR_MENUCUSTOMSWITCH);
+  TITLE(STR_MENULOGICALSWITCH);
 
   LogicalSwitchData * cs = cswAddress(s_currIdx);
   uint8_t sw = SWSRC_SW1+s_currIdx;
@@ -4398,7 +4398,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
 
 void menuModelLogicalSwitches(uint8_t event)
 {
-  SIMPLE_MENU(STR_MENUCUSTOMSWITCHES, menuTabModel, e_LogicalSwitches, NUM_CSW+1);
+  SIMPLE_MENU(STR_MENULOGICALSWITCHES, menuTabModel, e_LogicalSwitches, NUM_CSW+1);
 
   uint8_t y = 0;
   uint8_t k = 0;
@@ -4516,7 +4516,7 @@ void menuModelLogicalSwitches(uint8_t event)
 {
   INCDEC_DECLARE_VARS();
 
-  MENU(STR_MENUCUSTOMSWITCHES, menuTabModel, e_LogicalSwitches, NUM_CSW+1, {0, NAVIGATION_LINE_BY_LINE|LS_FIELD_LAST/*repeated...*/});
+  MENU(STR_MENULOGICALSWITCHES, menuTabModel, e_LogicalSwitches, NUM_CSW+1, {0, NAVIGATION_LINE_BY_LINE|LS_FIELD_LAST/*repeated...*/});
 
   uint8_t   y = 0;
   uint8_t   k = 0;
