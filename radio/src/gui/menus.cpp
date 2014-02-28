@@ -1397,6 +1397,9 @@ bool isTelemetrySourceAvailable(int source)
 
   if (source >= TELEM_RESERVE6 && source <= TELEM_RESERVE10)
     return false;
+    
+  if (source == TELEM_DTE)
+    return false;
 
   return true;
 }
