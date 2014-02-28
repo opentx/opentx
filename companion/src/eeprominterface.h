@@ -74,7 +74,7 @@ const uint8_t modn12x3[4][4]= {
 #define C9X_MAX_ENCODERS          2
 #define C9X_NUM_CHNOUT            32 // number of real output channels
 #define C9X_NUM_CSW               32 // number of custom switches
-#define C9X_MAX_CUSTOM_FUNCTIONS  32 // number of functions assigned to switches
+#define C9X_MAX_CUSTOM_FUNCTIONS  64 // number of functions assigned to switches
 #define C9X_NUM_MODULES           2
 
 #define STK_RUD  1
@@ -468,6 +468,9 @@ class GeneralSettings {
     int beepVolume;
     int wavVolume;
     int varioVolume;
+    int varioPitch;
+    int varioRange;
+    int varioRepeat;
     int backgroundVolume;
     unsigned int mavbaud;
     unsigned int switchUnlockStates;
@@ -603,6 +606,7 @@ enum CSFunction {
   LS_FN_DPOS,
   LS_FN_DAPOS,
   LS_FN_VEQUAL, // added at the end to avoid everything renumbered
+  LS_FN_VALMOSTEQUAL,
   LS_FN_TIMER,
   LS_FN_STICKY,
   LS_FN_STAY,
@@ -863,7 +867,7 @@ class ModuleData {
     void clear() { memset(this, 0, sizeof(ModuleData)); }
 };
 
-#define C9X_MAX_SCRIPTS       3
+#define C9X_MAX_SCRIPTS       7
 #define C9X_MAX_SCRIPT_INPUTS 10
 class ScriptData {
   public:
@@ -1085,7 +1089,7 @@ class EEPROMInterface
 
     inline BoardEnum getBoard() { return board; }
 
-    virtual bool load(RadioData &radioData, uint8_t *eeprom, int size) = 0;
+    virtual bool load(RadioData &radioData, const uint8_t *eeprom, int size) = 0;
 
     virtual bool loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index) = 0;
     
@@ -1214,7 +1218,7 @@ inline void applyStickModeToModel(ModelData &model, unsigned int mode)
 void RegisterFirmwares();
 
 bool LoadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index);
-bool LoadEeprom(RadioData &radioData, uint8_t *eeprom, int size);
+bool LoadEeprom(RadioData &radioData, const uint8_t *eeprom, int size);
 bool LoadEepromXml(RadioData &radioData, QDomDocument &doc);
 
 struct Option {

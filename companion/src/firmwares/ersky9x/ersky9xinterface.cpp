@@ -151,7 +151,7 @@ bool Ersky9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
   return true;
 }
 
-bool Ersky9xInterface::load(RadioData &radioData, uint8_t *eeprom, int size)
+bool Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {
   std::cout << "trying ersky9x import... ";
 
@@ -160,7 +160,7 @@ bool Ersky9xInterface::load(RadioData &radioData, uint8_t *eeprom, int size)
     return false;
   }
 
-  if (!efile->EeFsOpen(eeprom, size, BOARD_SKY9X)) {
+  if (!efile->EeFsOpen((uint8_t *)eeprom, size, BOARD_SKY9X)) {
     std::cout << "wrong file system\n";
     return false;
   }

@@ -102,6 +102,10 @@ void beep(uint8_t val);
 
   #define PLAY_PHASE_OFF(phase)
   #define PLAY_PHASE_ON(phase)
+  #define PLAY_SWITCH_MOVED(sw)
+  #define PLAY_LOGICAL_SWITCH_OFF(sw)
+  #define PLAY_LOGICAL_SWITCH_ON(sw)
+  #define SKIP_AUTOMATIC_PROMPTS()
 #endif
 
 #if !defined(CPUARM)

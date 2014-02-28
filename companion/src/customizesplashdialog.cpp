@@ -14,9 +14,19 @@ Side::Side(){
   imageLabel = 0;
   fileNameEdit = 0;
   saveButton = 0;
+  loadFwButton=0;
+  loadPictButton = 0;
+  loadProfileButton = 0;
   saveToFileName = new QString("");
   source = new Source(UNDEFINED);
   format = new LCDFormat(LCDTARANIS);
+}
+
+void Side::markSourceButton()
+{
+    loadFwButton->setChecked(*source == FW ? true : false );
+    loadPictButton->setChecked(*source == PICT ? true : false );
+    loadProfileButton->setChecked(*source == PROFILE ? true : false );
 }
 
 void Side::copyImage( Side side )
@@ -31,7 +41,7 @@ bool Side::displayImage( QString fileName, Source pictSource )
 
   if (fileName.isEmpty())
     return false;
-  
+
   // Determine which picture format to use
   if (pictSource == FW ){
     FlashInterface flash(fileName);
@@ -39,60 +49,46 @@ bool Side::displayImage( QString fileName, Source pictSource )
       return false;
     else
       image = flash.getSplash();
-      *format = (flash.getSplashWidth()==WIDTH_TARANIS ? LCDTARANIS : LCD9X);
+    *format = (flash.getSplashWidth()==WIDTH_TARANIS ? LCDTARANIS : LCD9X);
   }
   else {
     image.load(fileName);
     if (pictSource== PICT)
       *format = image.width()>WIDTH_9X ? LCDTARANIS : LCD9X;
     else if (pictSource == PROFILE)
-      *format = (g.profile[g.id()].firmware().contains("taranis")) ? LCDTARANIS : LCD9X; 
+      *format = (g.profile[g.id()].fwType().contains("taranis")) ? LCDTARANIS : LCD9X; 
   }
   if (image.isNull()) {
     return false;
   }
-  // Prepare and display image
+  // Load image
   if (*format==LCDTARANIS) {
-    image=image.convertToFormat(QImage::Format_RGB32);
-    QRgb col;
-    int gray;
-    int width = image.width();
-    int height = image.height();
-    for (int i = 0; i < width; ++i) {
-        for (int j = 0; j < height; ++j) {
-            col = image.pixel(i, j);
-            gray = qGray(col);
-            image.setPixel(i, j, qRgb(gray, gray, gray));
-        }
-    }      
-    imageLabel->setPixmap(QPixmap::fromImage(image.scaled(imageLabel->width()/2, imageLabel->height()/2)));
+    imageLabel->setPixmap( makePixMap( image, "taranis" ));
+    imageLabel->setFixedSize(WIDTH_TARANIS*2, HEIGHT_TARANIS*2);
   }
-  else
-    imageLabel->setPixmap(QPixmap::fromImage(image.scaled(imageLabel->width()/2, imageLabel->height()/2).convertToFormat(QImage::Format_Mono)));
-  
-  if (*format == LCD9X)
-      imageLabel->setFixedSize(WIDTH_9X*2, HEIGHT_9X*2);
-  else
-      imageLabel->setFixedSize(WIDTH_TARANIS*2, HEIGHT_TARANIS*2);
-  
+  else {
+    imageLabel->setPixmap( makePixMap( image, "9x" )); 
+    imageLabel->setFixedSize(WIDTH_9X*2, HEIGHT_9X*2);
+  }
+
   switch (pictSource){
-    case FW:
-         fileNameEdit->setText(QObject::tr("FW: %1").arg(fileName));
-         *saveToFileName = fileName;
-         *source=FW;
-       break;
-    case PICT:
-         fileNameEdit->setText(QObject::tr("Pict: %1").arg(fileName));
-         *saveToFileName = fileName;
-         *source=PICT;
-       break;
-    case PROFILE:
-         fileNameEdit->setText(QObject::tr("Profile image"));
-         *saveToFileName = fileName;
-         *source=PROFILE;
-      break;
-    default:
-     break;
+  case FW:
+    fileNameEdit->setText(QObject::tr("FW: %1").arg(fileName));
+    *saveToFileName = fileName;
+    *source=FW;
+    break;
+  case PICT:
+    fileNameEdit->setText(QObject::tr("Pict: %1").arg(fileName));
+    *saveToFileName = fileName;
+    *source=PICT;
+    break;
+  case PROFILE:
+    fileNameEdit->setText(QObject::tr("Profile image"));
+    *saveToFileName = fileName;
+    *source=PROFILE;
+    break;
+  default:
+    break;
   }
   saveButton->setEnabled(true);
   libraryButton->setEnabled(true);
@@ -160,8 +156,17 @@ customizeSplashDialog::customizeSplashDialog(QWidget *parent) :
   right.libraryButton = ui->rightLibraryButton;
   left.invertButton = ui->leftInvertButton;
   right.invertButton = ui->rightInvertButton;
+  
+  left.loadFwButton =  ui->leftLoadFwButton;
+  right.loadFwButton =  ui->rightLoadFwButton;
+  left.loadPictButton =  ui->leftLoadPictButton;
+  right.loadPictButton =  ui->rightLoadPictButton;
+  left.loadProfileButton =  ui->leftLoadProfileButton;
+  right.loadProfileButton =  ui->rightLoadProfileButton;
 
   loadProfile(left);
+  left.markSourceButton();
+
   resize(0,0);
 }
 
@@ -182,13 +187,14 @@ void customizeSplashDialog::on_leftLoadFwButton_clicked() {loadFirmware(left);}
 void customizeSplashDialog::on_rightLoadFwButton_clicked() {loadFirmware(right);}
 void customizeSplashDialog::loadFirmware(Side side)
 {
-  QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), g.flashDir(), FLASH_FILES_FILTER);
+  QString fileName = QFileDialog::getOpenFileName(this, tr("Open Firmware File"), g.flashDir(), FLASH_FILES_FILTER);
   if (!fileName.isEmpty()) {
     if (!side.displayImage( fileName, FW ))
-      QMessageBox::critical(this, tr("Error"), tr("Cannot load embedded FW image from %1.").arg(fileName));
+      QMessageBox::critical(this, tr("Error"), tr("Can not load embedded image from firmware file %1.").arg(fileName));
     else
     g.flashDir( QFileInfo(fileName).dir().absolutePath() );
   }
+  side.markSourceButton();
 }
 
 void customizeSplashDialog::on_leftLoadPictButton_clicked() {loadPicture(left);}
@@ -208,6 +214,7 @@ void customizeSplashDialog::loadPicture(Side side)
     else
       g.imagesDir( QFileInfo(fileName).dir().absolutePath() );
   }
+  side.markSourceButton();
 }
 
 void customizeSplashDialog::on_leftLoadProfileButton_clicked() {loadProfile(left);}
@@ -220,6 +227,7 @@ void customizeSplashDialog::loadProfile(Side side)
     if (!side.displayImage( fileName, PROFILE ))
       QMessageBox::critical(this, tr("Error"), tr("Cannot load the profile image %1.").arg(fileName));
   }
+  side.markSourceButton();
 }
 
 void customizeSplashDialog::on_leftLibraryButton_clicked(){libraryButton_clicked(left);}

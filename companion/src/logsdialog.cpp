@@ -657,7 +657,7 @@ bool logsDialog::cvsFileParse()
       QString line=buffer.trimmed();
       list.clear();
       if(line.size()<1){
-        list << "";		
+        list << "";
       } else {
         while (line.size()>pos2 && (pos2 = rx2.indexIn(line, pos2)) != -1) {
           QString col;

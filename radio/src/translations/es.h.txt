@@ -167,8 +167,14 @@
   #endif
 #endif
 
+#if defined(CPUARM)
+  #define TR_CSWEQUAL      "a=x\0 "
+#else
+  #define TR_CSWEQUAL
+#endif
+
 #define LEN_VCSWFUNC           "\005"
-#define TR_VCSWFUNC            "---\0 ""a{x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""d}x\0 ""|d|}x" TR_CSWTIMER TR_CSWSTICKY
+#define TR_VCSWFUNC            "---\0 " TR_CSWEQUAL "a{x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""d}x\0 ""|d|}x" TR_CSWTIMER TR_CSWSTICKY
 
 #define LEN_VFSWFUNC           "\012"
 
@@ -655,6 +661,7 @@
 #define TR_SD_SIZE             "Tamaño:"
 #define TR_TYPE                "Tipo"
 #define TR_GLOBAL_VARS         "Global Variables"
+#define TR_GLOBAL_V            "GLOBAL V."
 #define TR_GLOBAL_VAR          "Global Variable"
 #define TR_MENUGLOBALVARS      "GLOBAL VARIABLES"
 #define TR_OWN                 "Propio"

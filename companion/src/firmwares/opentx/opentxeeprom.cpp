@@ -20,7 +20,7 @@
 #define MAX_CHANNELS(board, version)         (IS_ARM(board) ? 32 : 16)
 #define MAX_EXPOS(board, version)            (IS_ARM(board) ? ((IS_TARANIS(board) && version >= 216) ? 64 : 32) : (IS_DBLRAM(board, version) ? 16 : 14))
 #define MAX_CUSTOM_SWITCHES(board, version)  (IS_ARM(board) ? 32 : (IS_DBLEEPROM(board, version) ? 15 : 12))
-#define MAX_CUSTOM_FUNCTIONS(board, version) (IS_ARM(board) ? 32 : (IS_DBLEEPROM(board, version) ? 24 : 16))
+#define MAX_CUSTOM_FUNCTIONS(board, version) (IS_ARM(board) ? (version >= 216 ? 64 : 32) : (IS_DBLEEPROM(board, version) ? 24 : 16))
 #define MAX_CURVES(board, version)           (IS_ARM(board) ? ((IS_TARANIS(board) && version >= 216) ? 32 : 16) : O9X_MAX_CURVES)
 #define MAX_GVARS(board, version)            ((IS_ARM(board) && version >= 216) ? 9 : 5)
 
@@ -164,7 +164,7 @@ class SourcesConversionTable: public ConversionTable {
       if (IS_TARANIS(board) && version >= 216) {
         for (int i=0; i<32; i++)
           addConversion(RawSource(SOURCE_TYPE_VIRTUAL_INPUT, i), val++);
-        for (int i=0; i<3; i++) {
+        for (int i=0; i<7; i++) {
           for (int j=0; j<6; j++) {
             addConversion(RawSource(SOURCE_TYPE_LUA_INPUT, i*16+j), val++);
           }
@@ -1163,8 +1163,10 @@ class LogicalSwitchesFunctionsTable: public ConversionTable {
       int val=0;
       bool afterrelease21March2013 = IS_AFTER_RELEASE_21_MARCH_2013(board, version);
       addConversion(LS_FN_OFF, val++);
-      if (afterrelease21March2013)
+      if (IS_ARM(board) && version >= 216)
         addConversion(LS_FN_VEQUAL, val++);
+      if (afterrelease21March2013)
+        addConversion(LS_FN_VALMOSTEQUAL, val++);
       addConversion(LS_FN_VPOS, val++);
       addConversion(LS_FN_VNEG, val++);
       if (IS_ARM(board) && version >= 216) val++; // later RANGE
@@ -1296,8 +1298,9 @@ class LogicalSwitchField: public TransformedField {
 
       if (IS_ARM(board)) {
         internalField.Append(new ConversionField< UnsignedField<8> >(csw.func, &functionsConversionTable, "Function"));
-        internalField.Append(new UnsignedField<8>(csw.delay));
-        internalField.Append(new UnsignedField<8>(csw.duration));
+        int scale = (version >= 216 ? 0 : 5);
+        internalField.Append(new ConversionField< UnsignedField<8> >(csw.delay, 0, scale));
+        internalField.Append(new ConversionField< UnsignedField<8> >(csw.duration, 0, scale));
         if (version >= 214) {
           internalField.Append(new ConversionField< SignedField<8> >((int &)csw.andsw, andswitchesConversionTable, "AND switch"));
         }
@@ -1360,6 +1363,49 @@ class LogicalSwitchField: public TransformedField {
       else if (csw.func != LS_FN_OFF) {
         sourcesConversionTable->importValue((uint8_t)v1, csw.val1);
         csw.val2 = v2;
+        RawSource val1(csw.val1);
+        if (IS_ARM(board) && version < 216 && val1.type == SOURCE_TYPE_TELEMETRY) {
+          switch (val1.index) {
+            case TELEMETRY_SOURCE_TIMER1:
+            case TELEMETRY_SOURCE_TIMER2:
+              csw.val2 = (csw.val2 + 128) * 3;
+              break;
+            case TELEMETRY_SOURCE_ALT:
+            case TELEMETRY_SOURCE_GPS_ALT:
+            case TELEMETRY_SOURCE_ALT_MIN:
+            case TELEMETRY_SOURCE_ALT_MAX:
+              csw.val2 = (csw.val2 + 128) * 8 - 500;
+              break;
+            case TELEMETRY_SOURCE_RPM:
+            case TELEMETRY_SOURCE_RPM_MAX:
+              csw.val2 = (csw.val2 + 128) * 50;
+              break;
+            case TELEMETRY_SOURCE_T1:
+            case TELEMETRY_SOURCE_T2:
+            case TELEMETRY_SOURCE_T1_MAX:
+            case TELEMETRY_SOURCE_T2_MAX:
+              csw.val2 = (csw.val2 + 128) + 30;
+              break;
+            case TELEMETRY_SOURCE_CELL:
+            case TELEMETRY_SOURCE_HDG:
+              csw.val2 = (csw.val2 + 128) * 2;
+              break;
+            case TELEMETRY_SOURCE_DIST:
+            case TELEMETRY_SOURCE_DIST_MAX:
+              csw.val2 = (csw.val2 + 128) * 8;
+              break;
+            case TELEMETRY_SOURCE_CURRENT:
+            case TELEMETRY_SOURCE_POWER:
+              csw.val2 = (csw.val2 + 128) * 5;
+              break;
+            case TELEMETRY_SOURCE_CONSUMPTION:
+              csw.val2 = (csw.val2 + 128) * 20;
+              break;
+            default:
+              csw.val2 += 128;
+              break;
+          }
+        }
       }
     }
 
@@ -1538,7 +1584,9 @@ class ArmCustomFunctionField: public TransformedField {
       internalField.Append(new SwitchField<8>(fn.swtch, board, version));
       internalField.Append(new ConversionField< UnsignedField<8> >((unsigned int &)fn.func, &functionsConversionTable, "Function", ::QObject::tr("OpenTX on this board doesn't accept this function")));
 
-      if (IS_TARANIS(board))
+      if (IS_TARANIS(board) && version >= 216)
+        internalField.Append(new CharField<8>(_param, false));
+      else if (IS_TARANIS(board))
         internalField.Append(new CharField<10>(_param, false));
       else
         internalField.Append(new CharField<6>(_param, false));
@@ -2279,7 +2327,7 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
   }
 
   if (IS_TARANIS(board) && version >= 216) {
-    for (int i=0; i<3; i++) {
+    for (int i=0; i<7; i++) {
       ScriptData & script = modelData.scriptData[i];
       internalField.Append(new ZCharField<10>(script.filename));
       internalField.Append(new ZCharField<10>(script.name));
@@ -2446,6 +2494,11 @@ Open9xGeneralDataNew::Open9xGeneralDataNew(GeneralSettings & generalData, BoardE
       internalField.Append(new SignedField<8>(generalData.beepVolume));
       internalField.Append(new SignedField<8>(generalData.wavVolume));
       internalField.Append(new SignedField<8>(generalData.varioVolume));
+      if (version >= 216) {
+        internalField.Append(new SignedField<8>(generalData.varioPitch));
+        internalField.Append(new SignedField<8>(generalData.varioRange));
+        internalField.Append(new SignedField<8>(generalData.varioRepeat));
+      }
       internalField.Append(new SignedField<8>(generalData.backgroundVolume));
     }
     if (IS_TARANIS(board) && version >= 216) {
