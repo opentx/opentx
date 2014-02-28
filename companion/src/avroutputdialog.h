@@ -52,9 +52,7 @@ private:
     quint8 lfuse;
     quint8 hfuse;
     quint8 efuse;
-    QString prevLine;
     QString currLine;
-    QString prevStdLine;
     QString currStdLine;
     int phase;
     QString winTitle;
