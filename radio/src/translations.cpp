@@ -296,8 +296,8 @@ const pm_char STR_MENUINPUTS[] PROGMEM = TR_MENUINPUTS;
 const pm_char STR_MENULIMITS[] PROGMEM = TR_MENULIMITS;
 const pm_char STR_MENUCURVES[] PROGMEM = TR_MENUCURVES;
 const pm_char STR_MENUCURVE[] PROGMEM = TR_MENUCURVE;
-const pm_char STR_MENUCUSTOMSWITCH[] PROGMEM = TR_MENUCUSTOMSWITCH;
-const pm_char STR_MENUCUSTOMSWITCHES[] PROGMEM = TR_MENUCUSTOMSWITCHES;
+const pm_char STR_MENULOGICALSWITCH[] PROGMEM = TR_MENULOGICALSWITCH;
+const pm_char STR_MENULOGICALSWITCHES[] PROGMEM = TR_MENULOGICALSWITCHES;
 const pm_char STR_MENUCUSTOMFUNC[] PROGMEM = TR_MENUCUSTOMFUNC;
 
 #if defined(LUA)
@@ -579,7 +579,11 @@ const pm_char STR_VIEW_TEXT[] PROGMEM = "View text";
 #endif
 
 const pm_uchar font_5x7[] PROGMEM = {
+#if defined (CPUARM)
 #include "font_05x07.lbm"
+#else
+#include "font_05x07_avr.lbm"
+#endif
 #if defined(TRANSLATIONS_DE)
 #include "font_de_05x07.lbm"
 #elif defined(TRANSLATIONS_CZ)

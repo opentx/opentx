@@ -8,7 +8,7 @@
 #include "channels.h"
 #include "curves.h"
 #include "../helpers.h"
-#include "customswitches.h"
+#include "logicalswitches.h"
 #include "customfunctions.h"
 #include "telemetry.h"
 #include "appdata.h"
