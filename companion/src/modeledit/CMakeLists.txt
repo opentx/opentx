@@ -16,7 +16,7 @@ set(modeledit_SRCS
   inputs.cpp
   mixes.cpp
   channels.cpp
-  customswitches.cpp
+  logicalswitches.cpp
   customfunctions.cpp
   # templates.cpp
   mixerslist.cpp
@@ -30,7 +30,7 @@ set(modeledit_HDRS
   inputs.h
   mixes.h
   channels.h
-  customswitches.h
+  logicalswitches.h
   customfunctions.h
   # templates.h
   mixerslist.h
