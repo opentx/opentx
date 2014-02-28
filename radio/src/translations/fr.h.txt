@@ -385,7 +385,7 @@
 #define TR_CYC_VSRCRAW "[C1]""[C2]""[C3]"
 #endif
 
-#define TR_VSRCRAW       "---\0""Dir\0""Prf\0""Gaz\0""Ail\0" TR_POTS_VSRCRAW TR_ROTARY_ENCODER "MAX\0" TR_CYC_VSRCRAW "TrmD" "TrmP" "TrmG" "TrmA" TR_SW_VSRCRAW
+#define TR_VSRCRAW       "---\0""Dir\0""Prf\0""Gaz\0""Ail\0" TR_POTS_VSRCRAW TR_ROTARY_ENCODERS "MAX\0" TR_CYC_VSRCRAW "TrmD" "TrmP" "TrmG" "TrmA" TR_SW_VSRCRAW
 
 #define LEN_VTMRMODES    "\003"
 #define TR_VTMRMODES     "OFF""ABS""GZs""GZ%""GZt"
