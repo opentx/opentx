@@ -1376,6 +1376,9 @@ bool isSourceAvailable(int16_t source)
     return false;
 #endif
 
+  if (source == MIXSRC_FIRST_TELEM+TELEM_DTE-1)
+    return false;
+
   return true;
 }
 
@@ -1389,6 +1392,9 @@ bool isInputSourceAvailable(int16_t source)
 
   if (source>=MIXSRC_FIRST_CH && source<=MIXSRC_LAST_CH)
     return true;
+
+  if (source == MIXSRC_FIRST_TELEM+TELEM_DTE-1)
+    return false;
 
   if (source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM)
     return true;
