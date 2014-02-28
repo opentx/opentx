@@ -171,7 +171,7 @@ extern int8_t s_editMode;       // global editmode
 #define HIDDEN_ROW     ((uint8_t)-2)
 
 #if defined(CPUARM)
-typedef bool (*IsValueAvailable)(int16_t);
+typedef bool (*IsValueAvailable)(int);
 int16_t checkIncDec(uint8_t event, int16_t i_pval, int16_t i_min, int16_t i_max, uint8_t i_flags=0, IsValueAvailable isValueAvailable=NULL);
 #else
 int16_t checkIncDec(uint8_t event, int16_t i_pval, int16_t i_min, int16_t i_max, uint8_t i_flags=0);
@@ -194,10 +194,18 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
   var = checkIncDecModelZero(event,var,max)
 
 #if defined(CPUARM)
-  bool isLogicalSwitchFunctionAvailable(int16_t function);
-  bool isAssignableFunctionAvailable(int16_t function);
-  bool isSwitchAvailable(int16_t swtch);
-  bool isSwitchAvailableInLogicalSwitches(int16_t swtch);
+  #define CHECK_INCDEC_MODELVAR_ZERO_CHECK(event, var, max, check) \
+    var = checkIncDec(event, var, 0, max, EE_MODEL, check)
+#else
+  #define CHECK_INCDEC_MODELVAR_ZERO_CHECK(event, var, max, check) \
+    CHECK_INCDEC_MODELVAR_ZERO(event, var, max)
+#endif
+
+#if defined(CPUARM)
+  bool isLogicalSwitchFunctionAvailable(int function);
+  bool isAssignableFunctionAvailable(int function);
+  bool isSwitchAvailable(int swtch);
+  bool isSwitchAvailableInLogicalSwitches(int swtch);
   #define AUTOSWITCH_ENTER_LONG() (attr && event==EVT_KEY_LONG(KEY_ENTER))
   #define CHECK_INCDEC_MODELSWITCH(event, var, min, max) \
     var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SWITCH|NO_INCDEC_MARKS, isSwitchAvailable)
@@ -211,8 +219,9 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 #endif
 
 #if defined(CPUARM)
-  bool isSourceAvailable(int16_t source);
-  bool isInputSourceAvailable(int16_t source);
+  bool isSourceAvailable(int source);
+  bool isTelemetrySourceAvailable(int source);
+  bool isInputSourceAvailable(int source);
   #define CHECK_INCDEC_MODELSOURCE(event, var, min, max) \
     var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isSourceAvailable)
 #elif defined(AUTOSOURCE)

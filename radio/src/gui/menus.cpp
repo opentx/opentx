@@ -113,7 +113,7 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
 #endif
 {
   int16_t newval = val;
-  
+
 #if defined(DBLKEYS)
   uint8_t in = KEYS_PRESSED();
   if (EVT_KEY_MASK(event)) {
@@ -1333,7 +1333,7 @@ void drawStatusLine()
 #endif
 
 #if defined(CPUARM)
-bool isSourceAvailable(int16_t source)
+bool isSourceAvailable(int source)
 {
 #if defined(PCBTARANIS)
   if (source>=MIXSRC_FIRST_INPUT && source<=MIXSRC_LAST_INPUT) {
@@ -1376,10 +1376,35 @@ bool isSourceAvailable(int16_t source)
     return false;
 #endif
 
+  if (source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM)
+    return isTelemetrySourceAvailable(source-MIXSRC_FIRST_TELEM+1);
+
   return true;
 }
 
-bool isInputSourceAvailable(int16_t source)
+bool isTelemetrySourceAvailable(int source)
+{
+  if (source == TELEM_RX_VOLTAGE || source == TELEM_A3 || source == TELEM_A4 || source == TELEM_MIN_A3 || source == TELEM_MIN_A4)
+    return false;
+
+#if defined(PCBTARANIS)
+  if (source == TELEM_RSSI_TX)
+    return false;
+#endif
+
+  if (source >= TELEM_RESERVE1 && source <= TELEM_RESERVE5)
+    return false;
+
+  if (source >= TELEM_RESERVE6 && source <= TELEM_RESERVE10)
+    return false;
+    
+  if (source == TELEM_DTE)
+    return false;
+
+  return true;
+}
+
+bool isInputSourceAvailable(int source)
 {
   if (source>=MIXSRC_Rud && source<=MIXSRC_MAX)
     return true;
@@ -1391,12 +1416,12 @@ bool isInputSourceAvailable(int16_t source)
     return true;
 
   if (source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM)
-    return true;
+    return isTelemetrySourceAvailable(source-MIXSRC_FIRST_TELEM+1);
 
   return false;
 }
 
-bool isSwitchAvailableInLogicalSwitches(int16_t swtch)
+bool isSwitchAvailableInLogicalSwitches(int swtch)
 {
   if (swtch < 0) {
     if (swtch <= -SWSRC_ON)
@@ -1425,7 +1450,7 @@ bool isSwitchAvailableInLogicalSwitches(int16_t swtch)
   return true;
 }
 
-bool isSwitchAvailable(int16_t swtch)
+bool isSwitchAvailable(int swtch)
 {
   if (!isSwitchAvailableInLogicalSwitches(swtch)) {
     return false;
@@ -1439,13 +1464,12 @@ bool isSwitchAvailable(int16_t swtch)
   return true;
 }
 
-// Not available yet, will be needed if we implement the Range function later...
-bool isLogicalSwitchFunctionAvailable(int16_t function)
+bool isLogicalSwitchFunctionAvailable(int function)
 {
   return function != LS_FUNC_RANGE;
 }
 
-bool isAssignableFunctionAvailable(int16_t function)
+bool isAssignableFunctionAvailable(int function)
 {
   switch (function) {
 
@@ -1458,6 +1482,14 @@ bool isAssignableFunctionAvailable(int16_t function)
     case FUNC_ADJUST_GVAR:
       return false;
 #endif
+
+    case FUNC_PLAY_DIFF:
+    case FUNC_RESERVE1:
+    case FUNC_RESERVE2:
+    case FUNC_RESERVE3:
+    case FUNC_RESERVE4:
+    case FUNC_RESERVE5:
+      return false;
 
     default:
       return true;

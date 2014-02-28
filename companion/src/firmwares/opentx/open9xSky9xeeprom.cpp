@@ -268,11 +268,11 @@ t_Open9xArmMixData_v208::operator MixData ()
     else if (srcRaw <= 9+9+O9X_ARM_NUM_CSW+NUM_CYC) {
       c9x.srcRaw = RawSource(SOURCE_TYPE_CYC, srcRaw-10-9-O9X_ARM_NUM_CSW);
     }
-    else if (srcRaw <= 9+9+O9X_ARM_NUM_CSW+NUM_CYC+NUM_PPM) {
+    else if (srcRaw <= 9+9+O9X_ARM_NUM_CSW+NUM_CYC+8) {
       c9x.srcRaw = RawSource(SOURCE_TYPE_PPM, srcRaw-10-9-O9X_ARM_NUM_CSW-NUM_CYC);
     }
     else {
-      c9x.srcRaw = RawSource(SOURCE_TYPE_CH, srcRaw-10-9-O9X_ARM_NUM_CSW-NUM_CYC-NUM_PPM);
+      c9x.srcRaw = RawSource(SOURCE_TYPE_CH, srcRaw-10-9-O9X_ARM_NUM_CSW-NUM_CYC-8);
     }
     c9x.weight = weight;
     c9x.swtch = open9xArmToSwitch(swtch);
@@ -334,11 +334,11 @@ t_Open9xArmMixData_v209::operator MixData ()
     else if (srcRaw <= 13+9+O9X_ARM_NUM_CSW+NUM_CYC) {
       c9x.srcRaw = RawSource(SOURCE_TYPE_CYC, srcRaw-14-9-O9X_ARM_NUM_CSW);
     }
-    else if (srcRaw <= 13+9+O9X_ARM_NUM_CSW+NUM_CYC+NUM_PPM) {
+    else if (srcRaw <= 13+9+O9X_ARM_NUM_CSW+NUM_CYC+8) {
       c9x.srcRaw = RawSource(SOURCE_TYPE_PPM, srcRaw-14-9-O9X_ARM_NUM_CSW-NUM_CYC);
     }
     else {
-      c9x.srcRaw = RawSource(SOURCE_TYPE_CH, srcRaw-14-9-O9X_ARM_NUM_CSW-NUM_CYC-NUM_PPM);
+      c9x.srcRaw = RawSource(SOURCE_TYPE_CH, srcRaw-14-9-O9X_ARM_NUM_CSW-NUM_CYC-8);
     }
     c9x.weight = weight;
 
@@ -400,11 +400,11 @@ t_Open9xArmMixData_v210::operator MixData ()
     else if (srcRaw <= 13+9+O9X_ARM_NUM_CSW+NUM_CYC) {
       c9x.srcRaw = RawSource(SOURCE_TYPE_CYC, srcRaw-14-9-O9X_ARM_NUM_CSW);
     }
-    else if (srcRaw <= 13+9+O9X_ARM_NUM_CSW+NUM_CYC+NUM_PPM) {
+    else if (srcRaw <= 13+9+O9X_ARM_NUM_CSW+NUM_CYC+8) {
       c9x.srcRaw = RawSource(SOURCE_TYPE_PPM, srcRaw-14-9-O9X_ARM_NUM_CSW-NUM_CYC);
     }
     else {
-      c9x.srcRaw = RawSource(SOURCE_TYPE_CH, srcRaw-14-9-O9X_ARM_NUM_CSW-NUM_CYC-NUM_PPM);
+      c9x.srcRaw = RawSource(SOURCE_TYPE_CH, srcRaw-14-9-O9X_ARM_NUM_CSW-NUM_CYC-8);
     }
     c9x.weight = weight;
 
@@ -470,11 +470,11 @@ t_Open9xArmMixData_v212::operator MixData ()
     else if (srcRaw <= 14+9+O9X_ARM_NUM_CSW+NUM_CYC) {
       c9x.srcRaw = RawSource(SOURCE_TYPE_CYC, srcRaw-15-9-O9X_ARM_NUM_CSW);
     }
-    else if (srcRaw <= 14+9+O9X_ARM_NUM_CSW+NUM_CYC+NUM_PPM) {
+    else if (srcRaw <= 14+9+O9X_ARM_NUM_CSW+NUM_CYC+8) {
       c9x.srcRaw = RawSource(SOURCE_TYPE_PPM, srcRaw-15-9-O9X_ARM_NUM_CSW-NUM_CYC);
     }
     else {
-      c9x.srcRaw = RawSource(SOURCE_TYPE_CH, srcRaw-15-9-O9X_ARM_NUM_CSW-NUM_CYC-NUM_PPM);
+      c9x.srcRaw = RawSource(SOURCE_TYPE_CH, srcRaw-15-9-O9X_ARM_NUM_CSW-NUM_CYC-8);
     }
     c9x.weight = weight;
 

@@ -23,6 +23,7 @@
 #define MAX_CUSTOM_FUNCTIONS(board, version) (IS_ARM(board) ? (version >= 216 ? 64 : 32) : (IS_DBLEEPROM(board, version) ? 24 : 16))
 #define MAX_CURVES(board, version)           (IS_ARM(board) ? ((IS_TARANIS(board) && version >= 216) ? 32 : 16) : O9X_MAX_CURVES)
 #define MAX_GVARS(board, version)            ((IS_ARM(board) && version >= 216) ? 9 : 5)
+#define NUM_PPM_INPUTS(board, version)       ((IS_ARM(board) && version >= 216) ? 16 : 8)
 
 #define IS_AFTER_RELEASE_21_MARCH_2013(board, version) (version >= 214 || (!IS_ARM(board) && version >= 213))
 #define IS_AFTER_RELEASE_23_MARCH_2013(board, version) (version >= 214 || (board==BOARD_STOCK && version >= 213))
@@ -218,7 +219,7 @@ class SourcesConversionTable: public ConversionTable {
           addConversion(RawSource(SOURCE_TYPE_CYC, i), val++);
       }
 
-      for (int i=0; i<8; i++)
+      for (int i=0; i<NUM_PPM_INPUTS(board, version); i++)
         addConversion(RawSource(SOURCE_TYPE_PPM, i), val++);
 
       for (int i=0; i<MAX_CHANNELS(board, version); i++)
@@ -232,15 +233,18 @@ class SourcesConversionTable: public ConversionTable {
           }
         }
 
-        if (afterrelease21March2013)
-          addConversion(RawSource(SOURCE_TYPE_TELEMETRY, 0), val++);
-
-        for (int i=1; i<TELEMETRY_SOURCE_ACC; i++) {
+        for (int i=0; i<TELEMETRY_SOURCE_ACC; i++) {
           if (version < 216) {
-            if (i==TELEMETRY_SOURCE_ASPD-1 || i==TELEMETRY_SOURCE_DTE-1 || i==TELEMETRY_SOURCE_CELL_MIN-1 || i==TELEMETRY_SOURCE_VFAS_MIN-1)
+            if (i==TELEMETRY_SOURCE_SWR || i==TELEMETRY_SOURCE_RX_BATT || i==TELEMETRY_SOURCE_A3 || i==TELEMETRY_SOURCE_A4 || i==TELEMETRY_SOURCE_ASPD || i==TELEMETRY_SOURCE_DTE || i==TELEMETRY_SOURCE_CELL_MIN || i==TELEMETRY_SOURCE_CELLS_MIN || i==TELEMETRY_SOURCE_VFAS_MIN)
               continue;
           }
           addConversion(RawSource(SOURCE_TYPE_TELEMETRY, i), val++);
+          if (version >= 216 && IS_ARM(board)) {
+            if (i==TELEMETRY_SOURCE_DTE)
+              val += 5;
+            if (i==TELEMETRY_SOURCE_POWER_MAX)
+              val += 5;
+          }
         }
       }
     }
@@ -312,6 +316,103 @@ class SwitchField: public ConversionField< SignedField<N> > {
   protected:
     RawSwitch & sw;
     int _switch;
+};
+
+class TelemetrySourcesConversionTable: public ConversionTable {
+
+  public:
+    TelemetrySourcesConversionTable(BoardEnum board, unsigned int version)
+    {
+      int val = 0;
+
+      if (IS_AFTER_RELEASE_21_MARCH_2013(board, version)) {
+        addConversion(0, val++);
+      }
+
+      addConversion(1+TELEMETRY_SOURCE_TX_BATT, val++);
+      addConversion(1+TELEMETRY_SOURCE_TIMER1, val++);
+      addConversion(1+TELEMETRY_SOURCE_TIMER2, val++);
+      if (IS_ARM(board) && version >= 216)
+        addConversion(1+TELEMETRY_SOURCE_SWR, val++);
+      addConversion(1+TELEMETRY_SOURCE_RSSI_TX, val++);
+      addConversion(1+TELEMETRY_SOURCE_RSSI_RX, val++);
+      if (IS_ARM(board) && version >= 216)
+        addConversion(1+TELEMETRY_SOURCE_RX_BATT, val++);
+      addConversion(1+TELEMETRY_SOURCE_A1, val++);
+      addConversion(1+TELEMETRY_SOURCE_A2, val++);
+      if (IS_ARM(board) && version >= 216) {
+        addConversion(1+TELEMETRY_SOURCE_A3, val++);
+        addConversion(1+TELEMETRY_SOURCE_A4, val++);
+      }
+      addConversion(1+TELEMETRY_SOURCE_ALT, val++);
+      addConversion(1+TELEMETRY_SOURCE_RPM, val++);
+      addConversion(1+TELEMETRY_SOURCE_FUEL, val++);
+      addConversion(1+TELEMETRY_SOURCE_T1, val++);
+      addConversion(1+TELEMETRY_SOURCE_T2, val++);
+      addConversion(1+TELEMETRY_SOURCE_SPEED, val++);
+      addConversion(1+TELEMETRY_SOURCE_DIST, val++);
+      addConversion(1+TELEMETRY_SOURCE_GPS_ALT, val++);
+      addConversion(1+TELEMETRY_SOURCE_CELL, val++);
+      addConversion(1+TELEMETRY_SOURCE_CELLS_SUM, val++);
+      addConversion(1+TELEMETRY_SOURCE_VFAS, val++);
+      addConversion(1+TELEMETRY_SOURCE_CURRENT, val++);
+      addConversion(1+TELEMETRY_SOURCE_CONSUMPTION, val++);
+      addConversion(1+TELEMETRY_SOURCE_POWER, val++);
+      addConversion(1+TELEMETRY_SOURCE_ACCX, val++);
+      addConversion(1+TELEMETRY_SOURCE_ACCY, val++);
+      addConversion(1+TELEMETRY_SOURCE_ACCZ, val++);
+      addConversion(1+TELEMETRY_SOURCE_HDG, val++);
+      addConversion(1+TELEMETRY_SOURCE_VERTICAL_SPEED, val++);
+      if (version >= 216) {
+        addConversion(1+TELEMETRY_SOURCE_ASPD, val++);
+        addConversion(1+TELEMETRY_SOURCE_DTE, val++);
+      }
+      if (IS_ARM(board) && version >= 216) {
+        for (int i=0; i<5; i++)
+          addConversion(1+TELEMETRY_SOURCE_RESERVE, val++);
+      }
+      addConversion(1+TELEMETRY_SOURCE_A1_MIN, val++);
+      addConversion(1+TELEMETRY_SOURCE_A2_MIN, val++);
+      if (IS_ARM(board) && version >= 216) {
+        addConversion(1+TELEMETRY_SOURCE_A3_MIN, val++);
+        addConversion(1+TELEMETRY_SOURCE_A4_MIN, val++);
+      }
+      addConversion(1+TELEMETRY_SOURCE_ALT_MIN, val++);
+      addConversion(1+TELEMETRY_SOURCE_ALT_MAX, val++);
+      addConversion(1+TELEMETRY_SOURCE_RPM_MAX, val++);
+      addConversion(1+TELEMETRY_SOURCE_T1_MAX, val++);
+      addConversion(1+TELEMETRY_SOURCE_T2_MAX, val++);
+      addConversion(1+TELEMETRY_SOURCE_SPEED_MAX, val++);
+      addConversion(1+TELEMETRY_SOURCE_DIST_MAX, val++);
+      addConversion(1+TELEMETRY_SOURCE_CELL_MIN, val++);
+      addConversion(1+TELEMETRY_SOURCE_VFAS_MIN, val++);
+      addConversion(1+TELEMETRY_SOURCE_POWER_MAX, val++);
+      if (IS_ARM(board) && version >= 216) {
+        for (int i=0; i<5; i++)
+          addConversion(1+TELEMETRY_SOURCE_RESERVE, val++);
+      }
+      addConversion(1+TELEMETRY_SOURCE_ACC, val++);
+      addConversion(1+TELEMETRY_SOURCE_GPS_TIME, val++);
+    }
+};
+
+template <int N>
+class TelemetrySourceField: public ConversionField< UnsignedField<N> > {
+  public:
+    TelemetrySourceField(unsigned int & source, BoardEnum board, unsigned int version):
+      ConversionField< UnsignedField<N> >(source, &conversionTable, "Telemetry source"),
+      conversionTable(board, version),
+      source(source),
+      board(board),
+      version(version)
+    {
+    }
+
+  protected:
+    TelemetrySourcesConversionTable conversionTable;
+    unsigned int & source;
+    BoardEnum board;
+    unsigned int version;
 };
 
 template <int N>
@@ -1365,7 +1466,9 @@ class CustomFunctionsConversionTable: public ConversionTable {
         addConversion(FuncTrainerTHR, val++);
         addConversion(FuncTrainerAIL, val++);
       }
+
       addConversion(FuncInstantTrim, val++);
+
       if (version >= 216) {
         addConversion(FuncReset, val++);
         if (IS_ARM(board)) {
@@ -1376,14 +1479,21 @@ class CustomFunctionsConversionTable: public ConversionTable {
         for (int i=0; i<MAX_GVARS(board, version); i++)
           addConversion(FuncAdjustGV1+i, val);
         val++;
-        if (IS_ARM(board))
+        if (IS_ARM(board)) {
           addConversion(FuncVolume, val++);
+          addConversion(FuncReserve, val++);
+          addConversion(FuncReserve, val++);
+          addConversion(FuncReserve, val++);
+        }
         addConversion(FuncPlaySound, val++);
         addConversion(FuncPlayPrompt, val++);
         if (version >= 213 && !IS_ARM(board))
           addConversion(FuncPlayBoth, val++);
         addConversion(FuncPlayValue, val++);
         if (IS_ARM(board)) {
+          addConversion(FuncReserve, val++);
+          addConversion(FuncReserve, val++);
+          addConversion(FuncReserve, val++);
           addConversion(FuncBackgroundMusic, val++);
           addConversion(FuncBackgroundMusicPause, val++);
         }
@@ -1822,15 +1932,15 @@ class FrskyScreenField: public DataField {
       version(version)
     {
       for (int i=0; i<4; i++) {
-        bars.Append(new UnsignedField<8>(_screen.body.bars[i].source));
-        bars.Append(new UnsignedField<8>(_screen.body.bars[i].barMin));
-        bars.Append(new UnsignedField<8>(_screen.body.bars[i].barMax));
+        bars.Append(new TelemetrySourceField<8>(screen.body.bars[i].source, board, version));
+        bars.Append(new UnsignedField<8>(screen.body.bars[i].barMin));
+        bars.Append(new UnsignedField<8>(screen.body.bars[i].barMax));
       }
 
       int columns=(IS_TARANIS(board) ? 3:2);
       for (int i=0; i<4; i++) {
         for (int j=0; j<columns; j++) {
-          numbers.Append(new UnsignedField<8>(_screen.body.lines[i].source[j]));
+          numbers.Append(new TelemetrySourceField<8>(screen.body.lines[i].source[j], board, version));
         }
       }
       if (!IS_TARANIS(board)) {
@@ -1842,23 +1952,6 @@ class FrskyScreenField: public DataField {
 
     virtual void ExportBits(QBitArray & output)
     {
-      _screen = screen;
-
-      bool afterrelease21March2013 = IS_AFTER_RELEASE_21_MARCH_2013(board, version);
-      if (!afterrelease21March2013) {
-        for (int i=0; i<4; i++) {
-          if (_screen.body.bars[i].source > 0)
-            _screen.body.bars[i].source--;
-        }
-        int columns=(IS_TARANIS(board) ? 3:2);
-        for (int i=0; i<4; i++) {
-          for (int j=0; j<columns;j++) {
-            if (_screen.body.lines[i].source[j] > 0)
-              _screen.body.lines[i].source[j]--;
-          }
-        }
-      }
-
       if (screen.type == 0)
         numbers.ExportBits(output);
       else
@@ -1867,34 +1960,14 @@ class FrskyScreenField: public DataField {
 
     virtual void ImportBits(QBitArray & input)
     {
-      _screen = screen;
-
-      bool afterrelease21March2013 = IS_AFTER_RELEASE_21_MARCH_2013(board, version);
-
       // NOTA: screen.type should have been imported first!
       if (screen.type == 0) {
         numbers.ImportBits(input);
-        if (!afterrelease21March2013) {
-          int columns=(IS_TARANIS(board) ? 3:2);
-          for (int i=0; i<4; i++) {
-            for (int j=0; j<columns;j++) {
-              if (_screen.body.lines[i].source[j] > 0)
-                _screen.body.lines[i].source[j]++;
-            }
-          }
-        }
       }
       else {
         bars.ImportBits(input);
-        if (!afterrelease21March2013) {
-          for (int i=0; i<4; i++) {
-            if (_screen.body.bars[i].source > 0)
-              _screen.body.bars[i].source++;
-          }
-        }
       }
 
-      screen = _screen;
     }
 
     virtual unsigned int size()
@@ -1908,7 +1981,6 @@ class FrskyScreenField: public DataField {
 
   protected:
     FrSkyScreenData & screen;
-    FrSkyScreenData _screen;
     BoardEnum board;
     unsigned int version;
     StructField bars;

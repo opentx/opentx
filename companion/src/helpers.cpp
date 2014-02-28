@@ -102,7 +102,7 @@ void populateCustomScreenFieldCB(QComboBox *b, unsigned int value, bool last=fal
 
   b->addItem(RawSource(SOURCE_TYPE_NONE, 0).toString());
 
-  for (unsigned int i = 0; i < (last ? TELEMETRY_SOURCES_DISPLAY_COUNT : TELEMETRY_SOURCES_STATUS_COUNT); i++) {
+  for (unsigned int i = 0; i <= (last ? TELEMETRY_SOURCES_DISPLAY_COUNT : TELEMETRY_SOURCES_STATUS_COUNT); i++) {
     b->addItem(RawSource(SOURCE_TYPE_TELEMETRY, i).toString());
     if (!(i>=sizeof(telem_hub)/sizeof(int) || telem_hub[i]==0 || ((telem_hub[i]>=hubproto) && hubproto!=0))) {
       QModelIndex index = b->model()->index(i, 0);
@@ -599,7 +599,7 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData & 
       if (item == source) b->setCurrentIndex(b->count()-1);
     }
 
-    for (int i=0; i<NUM_PPM; i++) {
+    for (int i=0; i<NUM_PPM(GetEepromInterface()->getBoard()); i++) {
       item = RawSource(SOURCE_TYPE_PPM, i);
       b->addItem(item.toString(), item.toValue());
       if (item == source) b->setCurrentIndex(b->count()-1);

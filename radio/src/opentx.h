@@ -622,16 +622,6 @@ enum BaseCurves {
   CURVE_BASE
 };
 
-#define SWASH_TYPE_120   1
-#define SWASH_TYPE_120X  2
-#define SWASH_TYPE_140   3
-#define SWASH_TYPE_90    4
-#define SWASH_TYPE_NUM   4
-
-#define NUM_CYC         3
-#define NUM_CAL_PPM     4
-#define NUM_PPM         8
-
 #define THRCHK_DEADBAND 16
 
 #if defined(FSPLASH) || defined(XSPLASH)
@@ -1205,7 +1195,7 @@ extern uint8_t            g_beepCnt;
 extern uint8_t            g_beepVal[5];
 
 extern uint8_t            ppmInState; //0=unsync 1..8= wait for value i-1
-extern int16_t            g_ppmIns[8];
+extern int16_t            g_ppmIns[NUM_PPM];
 extern int32_t            chans[NUM_CHNOUT];
 extern int16_t            ex_chans[NUM_CHNOUT]; // Outputs (before LIMITS) of the last perMain
 extern int16_t            channelOutputs[NUM_CHNOUT];

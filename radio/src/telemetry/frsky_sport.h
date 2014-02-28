@@ -124,6 +124,7 @@ PACK(struct FrskySerialData {
     uint16_t maxGpsSpeed;
     uint16_t maxGpsDistance;
     int16_t  minCell;
+    int16_t  minCells;
     int16_t  minVfas;
     uint16_t maxCurrent;
     uint16_t maxPower;
@@ -150,6 +151,7 @@ PACK(struct FrskySerialData {
 struct FrskyData {
   FrskyValueWithMinMax analog[2];
   FrskyValueWithMinMax rssi[2];
+  FrskyValueWithMinMax swr;
   FrskySerialData hub;
 };
 
