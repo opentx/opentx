@@ -130,7 +130,7 @@ extern "C" void TIM3_IRQHandler()
       ppmInState = 1; // triggered
     }
     else {
-      if (ppmInState && (ppmInState<=8)) {
+      if (ppmInState && (ppmInState<=16)) {
         if ((val>800) && (val<2200)) {
           g_ppmIns[ppmInState++ - 1] = (int16_t)(val - 1500)*(g_eeGeneral.PPM_Multiplier+10)/10; //+-500 != 512, but close enough.
         }
