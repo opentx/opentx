@@ -147,7 +147,7 @@ const pm_char * openLogs()
 #endif
 
 #if defined(PCBTARANIS)
-    f_puts("Rud,Ele,Thr,Ail,S1,S2,LS,RS,SA,SB,SC,SD,SE,SF,SG,SH\n", &g_oLogFile);
+    f_puts("Rud,Ele,Thr,Ail,S1,S2,S3,LS,RS,SA,SB,SC,SD,SE,SF,SG,SH\n", &g_oLogFile);
 #else
     f_puts("Rud,Ele,Thr,Ail,P1,P2,P3,THR,RUD,ELE,ID0,ID1,ID2,AIL,GEA,TRN\n", &g_oLogFile);
 #endif

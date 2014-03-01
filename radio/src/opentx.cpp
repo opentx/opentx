@@ -520,7 +520,7 @@ uint16_t evalChkSum()
 {
   uint16_t sum = 0;
   const int16_t *calibValues = (const int16_t *) &g_eeGeneral.calib[0];
-  for (int i=0; i<NUM_STICKS+NUM_POTS+5; i++)
+  for (int i=0; i<12; i++)
     sum += calibValues[i];
   return sum;
 }
@@ -1404,7 +1404,7 @@ void getSwitchesPosition(bool startup)
   for (int i=0; i<NUM_XPOTS; i++) {
     if (g_eeGeneral.potsType & (1 << i)) {
       StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[POT1+i];
-      if (calib->count>0 && calib->count<POTS_POS_COUNT) {
+      if (calib->count>0 && calib->count<XPOTS_MULTIPOS_COUNT) {
         uint8_t pos = anaIn(POT1+i) / (2*RESX/calib->count);
         uint8_t previousPos = potsPos[i] >> 4;
         uint8_t previousStoredPos = potsPos[i] & 0x0F;
@@ -1416,7 +1416,7 @@ void getSwitchesPosition(bool startup)
           potsLastposStart[i] = 0;
           potsPos[i] = (pos << 4) | pos;
           if (previousStoredPos != pos) {
-            PLAY_SWITCH_MOVED(SWSRC_LAST_SWITCH+i*POTS_POS_COUNT+pos);
+            PLAY_SWITCH_MOVED(SWSRC_LAST_SWITCH+i*XPOTS_MULTIPOS_COUNT+pos);
           }
         }
       }
@@ -1424,7 +1424,7 @@ void getSwitchesPosition(bool startup)
   }
 }
 #define SWITCH_POSITION(sw)  (switchesPos & (1<<(sw)))
-#define POT_POSITION(sw)     ((potsPos[(sw)/POTS_POS_COUNT] & 0x0f) == ((sw) % POTS_POS_COUNT))
+#define POT_POSITION(sw)     ((potsPos[(sw)/XPOTS_MULTIPOS_COUNT] & 0x0f) == ((sw) % XPOTS_MULTIPOS_COUNT))
 #else
 #define getSwitchesPosition(...)
 #define SWITCH_POSITION(idx) switchState((EnumKeys)(SW_BASE+(idx)))
@@ -1464,8 +1464,8 @@ bool getSwitch(int8_t swtch)
 #endif
   }
 #if defined(PCBTARANIS)
-  else if (cs_idx <= SWSRC_P26) {
-    result = POT_POSITION(cs_idx-SWSRC_P11);
+  else if (cs_idx <= SWSRC_LAST_MULTIPOS_SWITCH) {
+    result = POT_POSITION(cs_idx-SWSRC_FIRST_MULTIPOS_SWITCH);
   }
 #endif
   else if (cs_idx <= SWSRC_LAST_TRIM) {
@@ -2815,7 +2815,7 @@ void getADC()
 #if defined(PCBTARANIS)
     if (s_noScroll) v = temp[x] >> 1;
     StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[x];
-    if (!s_noScroll && IS_MULTIPOS_POT(x) && calib->count>0 && calib->count<POTS_POS_COUNT) {
+    if (!s_noScroll && IS_POT_MULTIPOS(x) && calib->count>0 && calib->count<XPOTS_MULTIPOS_COUNT) {
       uint8_t vShifted = (v >> 4);
       s_anaFilt[x] = 2*RESX;
       for (int i=0; i<calib->count; i++) {
@@ -3078,7 +3078,7 @@ void evalInputs(uint8_t mode)
 
 #ifndef SIMU
     if (i < NUM_STICKS+NUM_POTS) {
-      if (IS_MULTIPOS_POT(i)) {
+      if (IS_POT_MULTIPOS(i)) {
         v -= RESX;
       }
       else {

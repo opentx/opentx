@@ -1351,6 +1351,12 @@ bool isSourceAvailable(int source)
     return false;
 #endif
 
+#if defined(PCBTARANIS)
+  if (source>=MIXSRC_FIRST_POT && source<=MIXSRC_LAST_POT) {
+    return IS_POT_AVAILABLE(POT1+source-MIXSRC_FIRST_POT);
+  }
+#endif
+
 #if !defined(HELI)
   if (source>=MIXSRC_CYC1 && source<=MIXSRC_CYC3)
     return false;
@@ -1438,11 +1444,11 @@ bool isSwitchAvailableInLogicalSwitches(int swtch)
   }
 
 #if defined(PCBTARANIS)
-  if (swtch >= SWSRC_P11 && swtch <= SWSRC_P26) {
-    int index = (swtch - SWSRC_P11) / POTS_POS_COUNT;
-    if (g_eeGeneral.potsType & (1<<index)) {
+  if (swtch >= SWSRC_FIRST_MULTIPOS_SWITCH && swtch <= SWSRC_LAST_MULTIPOS_SWITCH) {
+    int index = (swtch - SWSRC_FIRST_MULTIPOS_SWITCH) / XPOTS_MULTIPOS_COUNT;
+    if (IS_POT_MULTIPOS(POT1+index)) {
       StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[POT1+index];
-      return (calib->count >= ((swtch - SWSRC_P11) % POTS_POS_COUNT));
+      return (calib->count >= ((swtch - SWSRC_FIRST_MULTIPOS_SWITCH) % XPOTS_MULTIPOS_COUNT));
     }
     else {
       return false;

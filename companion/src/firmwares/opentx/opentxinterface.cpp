@@ -671,6 +671,8 @@ int OpenTxInterface::getCapability(const Capability capability)
     case HasDisplayText:
     case VirtualInputs:
       return IS_TARANIS(board) ? 32 : 0;
+    case TrainerInputs:
+      return IS_ARM(board) ? 16 : 8;
     case LuaInputs:
     case LimitsPer1000:
     case EnhancedCurves:

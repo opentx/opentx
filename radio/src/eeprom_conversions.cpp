@@ -212,12 +212,18 @@ PACK(typedef struct {
 
 }) ModelData_v215;
 
+#if defined(PCBTARANIS)
+  #define NUM_POTS_215 4
+#else
+  #define NUM_POTS_215 3
+#endif
+
 PACK(typedef struct {
   uint8_t   version;
   uint16_t  variant;
-  int16_t   calibMid[NUM_STICKS+NUM_POTS];
-  int16_t   calibSpanNeg[NUM_STICKS+NUM_POTS];
-  int16_t   calibSpanPos[NUM_STICKS+NUM_POTS];
+  int16_t   calibMid[NUM_STICKS+NUM_POTS_215];
+  int16_t   calibSpanNeg[NUM_STICKS+NUM_POTS_215];
+  int16_t   calibSpanPos[NUM_STICKS+NUM_POTS_215];
   uint16_t  chkSum;
 }) GeneralSettings_v215;
 
@@ -227,10 +233,14 @@ void ConvertGeneralSettings_215_to_216(EEGeneral &settings)
   memcpy(&oldSettings, &settings, sizeof(oldSettings));
 
   settings.version = 216;
-  for (int i=0; i<NUM_STICKS+NUM_POTS; i++) {
-    settings.calib[i].mid = oldSettings.calibMid[i];
-    settings.calib[i].spanNeg = oldSettings.calibSpanNeg[i];
-    settings.calib[i].spanPos = oldSettings.calibSpanPos[i];
+  for (int i=0, j=0; i<NUM_STICKS+NUM_POTS; i++) {
+    settings.calib[i].mid = oldSettings.calibMid[j];
+    settings.calib[i].spanNeg = oldSettings.calibSpanNeg[j];
+    settings.calib[i].spanPos = oldSettings.calibSpanPos[j];
+#if defined(PCBTARANIS)
+    if (i==POT3) continue;
+#endif
+    j++;
   }
   settings.chkSum = evalChkSum();
 }
@@ -270,6 +280,9 @@ int ConvertSource_215_to_216(int source, bool insertZero=false)
   // Virtual Inputs and Lua Outputs added
   if (source > 0)
     source += MAX_INPUTS + MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS;
+  // S3 added
+  if (source > MIXSRC_POT2)
+    source += 1;
   // PPM9-PPM16 added
   if (source > MIXSRC_FIRST_PPM+7)
     source += 8;
@@ -290,7 +303,7 @@ int ConvertSwitch_215_to_216(int swtch)
   else if (swtch <= SWSRC_LAST_SWITCH)
     return swtch;
   else
-    return swtch + (2*4) + (2*6); // 4 trims and 2 * 6-pos added as switches
+    return swtch + (2*4) + (3*6); // 4 trims and 2 * 6-pos added as switches
 }
 #else
 int ConvertSource_215_to_216(int source, bool insertZero=false)
