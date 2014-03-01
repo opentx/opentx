@@ -440,8 +440,8 @@
 #define TR_ELIMITS             TR("Gränser++","Utökade Gränser")
 #define TR_ETRIMS              TR("Trimmar++","Utökade Trimmar")
 #define TR_TRIMINC             TR("Trimning","Trimökning")
-#define TR_TTRACE              "Följ Gas"
-#define TR_TTRIM               "Gastrim"
+#define TR_TTRACE              INDENT"Följ Gas"
+#define TR_TTRIM               INDENT"Gastrim"
 #define TR_BEEPCTR             TR("Cent.pip", "Centerpip")
 #define TR_PROTO               TR(INDENT"Proto",INDENT"Protokoll")
 #define TR_PPMFRAME            "PPM-paket"
@@ -504,7 +504,8 @@
 #define TR_MEMORYWARNING       INDENT"Lite Minne"
 #define TR_ALARMWARNING        INDENT"Ljud Av"
 #define TR_RENAVIG             "RotEnc Navig"
-#define TR_THROTTLEREVERSE     "Revers.Gas"
+#define TR_THROTTLE_LABEL      "Throttle"
+#define TR_THROTTLEREVERSE     INDENT"Revers.Gas"
 #define TR_MINUTEBEEP          INDENT"Minutpip"
 #define TR_BEEPCOUNTDOWN       INDENT"Räkna Ned"
 #define TR_PERSISTENT          TR("Jämt på ",INDENT"Alltid På")
@@ -513,9 +514,9 @@
 #define TR_BLONBRIGHTNESS      INDENT"På Ljusstyrka"
 #define TR_BLOFFBRIGHTNESS     INDENT"Av Ljusstyrka"
 #define TR_SPLASHSCREEN        "Startbild"
-#define TR_THROTTLEWARNING     "Gasvarning"
-#define TR_SWITCHWARNING       TR("Bryt.varn.","Brytarvarning")
-#define TR_POTWARNING          TR("Pot Warn.","Pot Warning")
+#define TR_THROTTLEWARNING     TR("Gasvarning",INDENT"Gasvarning")
+#define TR_SWITCHWARNING       TR("Bryt.varn.",INDENT"Brytarvarning")
+#define TR_POTWARNING          TR("Pot Warn.",INDENT"Pot Warning")
 #define TR_TIMEZONE            TR("Tidszon","GPS Tidszon")
 #define TR_RXCHANNELORD        "Kanaler i RX"
 #define TR_SLAVE               "Elev"
@@ -710,7 +711,8 @@
 #define TR_LOWALARM            INDENT "Låg-alarm"
 #define TR_CRITICALALARM       INDENT "Kritiskt alarm"
 #define TR_PERSISTENT_MAH      INDENT "Store mAh"
-#define TR_CHECKLIST           "Display Checklist"
+#define TR_PREFLIGHT           "Preflight Checks"
+#define TR_CHECKLIST           INDENT "Display Checklist"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 #define TR_UART3MODE           "Serieporten"
 #define TR_POT1TYPE            "S1-ratten"
