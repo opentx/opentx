@@ -511,7 +511,7 @@ int OpenTxInterface::getCapability(const Capability capability)
       else
         return 0;
     case Pots:
-      return (IS_TARANIS(board) ? 4 : 3);
+      return (IS_TARANIS(board) ? 5 : 3);
     case Switches:
       return (IS_TARANIS(board) ? 8 : 7);
     case SwitchesPositions:
@@ -683,7 +683,7 @@ int OpenTxInterface::getCapability(const Capability capability)
     case HasMahPersistent:
       return (IS_ARM(board) ? true : false);
     case MultiposPots:
-      return IS_TARANIS(board) ? 2 : 0;
+      return IS_TARANIS(board) ? 3 : 0;
     case MultiposPotsPositions:
       return IS_TARANIS(board) ? 6 : 0;
     case SimulatorVariant:

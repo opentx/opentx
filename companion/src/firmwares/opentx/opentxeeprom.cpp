@@ -11,7 +11,7 @@
 #define HAS_PERSISTENT_TIMERS(board)         (IS_ARM(board) || board == BOARD_GRUVIN9X)
 #define HAS_LARGE_LCD(board)                 IS_TARANIS(board)
 #define MAX_VIEWS(board)                     (HAS_LARGE_LCD(board) ? 2 : 256)
-#define MAX_POTS(board)                      (IS_TARANIS(board) ? 4 : 3)
+#define MAX_POTS(board, version)             (IS_TARANIS(board) ? (version>=216 ? 5 : 4) : 3)
 #define MAX_SWITCHES(board)                  (IS_TARANIS(board) ? 8 : 7)
 #define MAX_SWITCHES_POSITION(board)         (IS_TARANIS(board) ? 22 : 9)
 #define MAX_ROTARY_ENCODERS(board)           (board==BOARD_GRUVIN9X ? 2 : (board==BOARD_SKY9X ? 1 : 0))
@@ -60,8 +60,8 @@ class SwitchesConversionTable: public ConversionTable {
         addConversion(RawSwitch(SWITCH_TYPE_SWITCH, s), val++);
       }
 
-      if (version >= 216) {
-        for (int i=1; i<=GetEepromInterface()->getCapability(MultiposPots) * GetEepromInterface()->getCapability(MultiposPotsPositions); i++) {
+      if (IS_TARANIS(board) && version >= 216) {
+        for (int i=1; i<=3*6; i++) {
           addConversion(RawSwitch(SWITCH_TYPE_MULTIPOS_POT, -i), -val+offset);
           addConversion(RawSwitch(SWITCH_TYPE_MULTIPOS_POT, i), val++);
         }
@@ -172,7 +172,7 @@ class SourcesConversionTable: public ConversionTable {
         }
       }
 
-      for (int i=0; i<4+MAX_POTS(board); i++)
+      for (int i=0; i<4+MAX_POTS(board, version); i++)
         addConversion(RawSource(SOURCE_TYPE_STICK, i), val++);
 
       for (int i=0; i<MAX_ROTARY_ENCODERS(board); i++)
@@ -2380,7 +2380,7 @@ Open9xGeneralDataNew::Open9xGeneralDataNew(GeneralSettings & generalData, BoardE
   generalData(generalData),
   board(board),
   version(version),
-  inputsCount(IS_TARANIS(board) ? 8 : 7)
+  inputsCount(4 + MAX_POTS(board, version))
 {
   generalData.version = version;
   generalData.variant = variant;
