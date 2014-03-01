@@ -440,8 +440,8 @@
 #define TR_ELIMITS             TR("Limiti.E","Limiti Estesi")
 #define TR_ETRIMS              TR("Trim Ext","Trim Estesi")
 #define TR_TRIMINC             "Trim Step"
-#define TR_TTRACE              TR(INDENT "T-Source",INDENT "Throttle Source")
-#define TR_TTRIM               TR(INDENT "T-Trim",INDENT "Throttle Trim")
+#define TR_TTRACE              TR("T-Source",INDENT "Throttle Source")
+#define TR_TTRIM               TR("T-Trim",INDENT "Throttle Trim")
 #define TR_BEEPCTR             TR("Ctr Beep","Center Beep")
 #define TR_PROTO               TR(INDENT "Proto", INDENT "Protocollo")
 #define TR_PPMFRAME            TR("PPM frame", INDENT "PPM frame")
@@ -505,7 +505,7 @@
 #define TR_ALARMWARNING        INDENT"Spento"
 #define TR_RENAVIG             "Navig RotEnc "
 #define TR_THROTTLE_LABEL      "Throttle"
-#define TR_THROTTLEREVERSE     TR(INDENT "Thr inv.", INDENT "Throttle Inverso")
+#define TR_THROTTLEREVERSE     TR("Thr inv.", INDENT "Throttle Inverso")
 #define TR_MINUTEBEEP          INDENT"Minuto"
 #define TR_BEEPCOUNTDOWN       TR(INDENT"Conto rov",INDENT"Conto rovescia")
 #define TR_PERSISTENT          TR(INDENT"Persist.",INDENT"Persistente")

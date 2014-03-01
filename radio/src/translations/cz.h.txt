@@ -440,8 +440,8 @@
 #define TR_ELIMITS             TR("Limit+25%", "Kanál +/- 125%")
 #define TR_ETRIMS              TR("širšíTrim", "Široký trim")
 #define TR_TRIMINC             TR("KrokTrimu", "Krok trimu")
-#define TR_TTRACE              TR(INDENT "StopaPlyn", INDENT "Stopař plynu")
-#define TR_TTRIM               TR(INDENT "TrimPlynu", INDENT "Trim-volnoběh")
+#define TR_TTRACE              TR("StopaPlyn", INDENT "Stopař plynu")
+#define TR_TTRIM               TR("TrimPlynu", INDENT "Trim-volnoběh")
 #define TR_BEEPCTR             "(\043)Středy"
 #define TR_PROTO               INDENT"Protokol"
 #define TR_PPMFRAME            "PPM frame"
@@ -505,7 +505,7 @@
 #define TR_ALARMWARNING        INDENT"Vypnutý zvuk"
 #define TR_RENAVIG             "Navig. RotEnc"
 #define TR_THROTTLE_LABEL      "Plyn"
-#define TR_THROTTLEREVERSE     INDENT "Revers"
+#define TR_THROTTLEREVERSE     TR("ReversPlyn", INDENT"Revers plynu")
 #define TR_MINUTEBEEP          TR(INDENT"Minuta", INDENT"Oznamovat minuty")
 #define TR_BEEPCOUNTDOWN       INDENT"Odpočet"
 #define TR_PERSISTENT          INDENT"Trvalé"

@@ -440,8 +440,8 @@
 #define TR_ELIMITS             TR("Gränser++","Utökade Gränser")
 #define TR_ETRIMS              TR("Trimmar++","Utökade Trimmar")
 #define TR_TRIMINC             TR("Trimning","Trimökning")
-#define TR_TTRACE              INDENT"Följ Gas"
-#define TR_TTRIM               INDENT"Gastrim"
+#define TR_TTRACE              TR("Följ Gas",INDENT"Följ Gas")
+#define TR_TTRIM               TR("Gastrim",INDENT"Gastrim")
 #define TR_BEEPCTR             TR("Cent.pip", "Centerpip")
 #define TR_PROTO               TR(INDENT"Proto",INDENT"Protokoll")
 #define TR_PPMFRAME            "PPM-paket"
@@ -505,7 +505,7 @@
 #define TR_ALARMWARNING        INDENT"Ljud Av"
 #define TR_RENAVIG             "RotEnc Navig"
 #define TR_THROTTLE_LABEL      "Throttle"
-#define TR_THROTTLEREVERSE     INDENT"Revers.Gas"
+#define TR_THROTTLEREVERSE     TR("Revers.Gas",INDENT"Revers.Gas")
 #define TR_MINUTEBEEP          INDENT"Minutpip"
 #define TR_BEEPCOUNTDOWN       INDENT"Räkna Ned"
 #define TR_PERSISTENT          TR("Jämt på ",INDENT"Alltid På")

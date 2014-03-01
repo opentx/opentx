@@ -370,7 +370,6 @@ extern const pm_char STR_INACTIVITYALARM[];
 extern const pm_char STR_MEMORYWARNING[];
 extern const pm_char STR_ALARMWARNING[];
 extern const pm_char STR_RENAVIG[];
-extern const pm_char STR_THROTTLE_LABEL[];
 extern const pm_char STR_THROTTLEREVERSE[];
 extern const pm_char STR_MINUTEBEEP[];
 extern const pm_char STR_BEEPCOUNTDOWN[];
@@ -693,6 +692,7 @@ extern const pm_char STR_VIEW_TEXT[];
   extern const pm_char STR_UART3MODE[];
   extern const pm_char STR_POT1TYPE[];
   extern const pm_char STR_POT2TYPE[];
+  extern const pm_char STR_THROTTLE_LABEL[];
 #endif
 
 #if MENUS_LOCK == 1

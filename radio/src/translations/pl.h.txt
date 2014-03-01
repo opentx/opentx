@@ -440,8 +440,8 @@
 #define TR_ELIMITS             TR("Limit+25%", "Kanał +/- 125%")
 #define TR_ETRIMS              TR("Trymery 100%", "Poszerzone Trymery")
 #define TR_TRIMINC             TR("Krok Trymera", "Krok trymera")
-#define TR_TTRACE              TR(INDENT"Źródło gazu", INDENT"Źródło gazu")
-#define TR_TTRIM               TR(INDENT"Trymer gazu", INDENT"Trymer gazu")
+#define TR_TTRACE              TR("Źródło gazu", INDENT"Źródło gazu")
+#define TR_TTRIM               TR("Trymer gazu", INDENT"Trymer gazu")
 #define TR_BEEPCTR             "(\043)Pikanie środka"
 #define TR_PROTO               INDENT"Protokól"
 #define TR_PPMFRAME            "Ramka PPM"
@@ -505,7 +505,7 @@
 #define TR_ALARMWARNING        INDENT"Wyłącz dźwięk"
 #define TR_RENAVIG             "Nawigacja potencjometrem"
 #define TR_THROTTLE_LABEL      "Throttle"
-#define TR_THROTTLEREVERSE     TR(INDENT"Odwróć gaz", INDENT"Odwróć gaz")
+#define TR_THROTTLEREVERSE     TR("Odwróć gaz", INDENT"Odwróć gaz")
 #define TR_MINUTEBEEP          TR(INDENT"Minuta", INDENT"Pik co minutę")
 #define TR_BEEPCOUNTDOWN       TR(INDENT"Odliczanie", INDENT"Odliczanie")
 #define TR_PERSISTENT          INDENT"Dokładny"

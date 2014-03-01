@@ -440,8 +440,8 @@
 #define TR_ELIMITS             TR("Limites ét","Limites étendues")
 #define TR_ETRIMS              TR("Trims ét.","Trims étendus")
 #define TR_TRIMINC             TR("Pas Trim","Pas des trims")
-#define TR_TTRACE              INDENT"Source gaz"
-#define TR_TTRIM               INDENT"Trim gaz"
+#define TR_TTRACE              TR("Source gaz",INDENT"Source gaz")
+#define TR_TTRIM               TR("Trim gaz",INDENT"Trim gaz")
 #define TR_BEEPCTR             TR("Bips centr","Bips centrage")
 #define TR_PROTO               TR(INDENT"Proto.",INDENT"Protocole")
 #define TR_PPMFRAME            INDENT"Trame PPM"
@@ -505,7 +505,7 @@
 #define TR_ALARMWARNING        TR(INDENT"Silence",INDENT"Sons désactivés")
 #define TR_RENAVIG             "Navig EncRot"
 #define TR_THROTTLE_LABEL      "Gaz"
-#define TR_THROTTLEREVERSE     TR(INDENT"Inv. gaz",INDENT"Inversion gaz")
+#define TR_THROTTLEREVERSE     TR("Inv. gaz",INDENT"Inversion gaz")
 #define TR_MINUTEBEEP          TR(INDENT"Bip min.",INDENT"Annonces minutes")
 #define TR_BEEPCOUNTDOWN       TR(INDENT"Bip fin",INDENT"Compte à rebours")
 #define TR_PERSISTENT          TR(INDENT"Persist.",INDENT"Persistant")
