@@ -644,6 +644,7 @@ int ToneContext::mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade)
     double toneIdx = state.idx;
 
     if (fragment.tone.reset) {
+      fragment.tone.reset = 0;
       state.duration = 0;
       state.pause = 0;
     }
