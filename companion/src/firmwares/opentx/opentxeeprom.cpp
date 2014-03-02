@@ -1091,7 +1091,7 @@ class CurvesField: public TransformedField {
         CurveData *curve = &curves[i];
         int size = (curve->type == CurveData::CURVE_TYPE_CUSTOM ? curve->count * 2 - 2 : curve->count);
         if (offset+size > maxPoints) {
-          EEPROMWarnings += ::QObject::tr("openTx only accepts %1 points in all curves").arg(maxPoints) + "\n";
+          EEPROMWarnings += ::QObject::tr("OpenTX only accepts %1 points in all curves").arg(maxPoints) + "\n";
           break;
         }
         if (!IS_TARANIS(board) || version < 216) {
@@ -1126,6 +1126,16 @@ class CurvesField: public TransformedField {
             curve->count = size;
             curve->type = CurveData::CURVE_TYPE_STANDARD;
           }
+        }
+
+        if (curve->count > 17) {
+          qDebug() << "Wrong points count" << curve->count;
+          curve->count = 0;
+          for (int j=0; j<maxCurves; j++) {
+            CurveData *curve = &curves[j];
+            curve->clear(5);
+          }
+          return;
         }
 
         for (int j=0; j<curve->count; j++) {
@@ -2518,11 +2528,11 @@ void Open9xGeneralDataNew::beforeExport()
     int count = 0;
     for (int i=0; i<inputsCount; i++) {
       sum += generalData.calibMid[i];
-      if (++count == inputsCount+5) break;
+      if (++count == 12) break;
       sum += generalData.calibSpanNeg[i];
-      if (++count == inputsCount+5) break;
+      if (++count == 12) break;
       sum += generalData.calibSpanPos[i];
-      if (++count == inputsCount+5) break;
+      if (++count == 12) break;
     }
   }
   else {

@@ -225,6 +225,59 @@ PACK(typedef struct {
   int16_t   calibSpanNeg[NUM_STICKS+NUM_POTS_215];
   int16_t   calibSpanPos[NUM_STICKS+NUM_POTS_215];
   uint16_t  chkSum;
+  int8_t    currModel;
+  uint8_t   contrast;
+  uint8_t   vBatWarn;
+  int8_t    vBatCalib;
+  int8_t    backlightMode;
+  TrainerData trainer;
+  uint8_t   view;            // index of view in main screen
+  int8_t    buzzerMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
+  uint8_t   fai:1;
+  int8_t    beepMode:2;      // -2=quiet, -1=only alarms, 0=no keys, 1=all
+  uint8_t   alarmsFlash:1;
+  uint8_t   disableMemoryWarning:1;
+  uint8_t   disableAlarmWarning:1;
+  uint8_t   stickMode:2;
+  int8_t    timezone:5;
+  uint8_t   spare1:1;
+  uint8_t   inactivityTimer;
+  uint8_t   mavbaud:3;
+  SPLASH_MODE; /* 3bits */
+  int8_t    hapticMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
+  uint8_t   blOffBright:4;
+  uint8_t   blOnBright:4;
+  uint8_t   lightAutoOff;
+  uint8_t   templateSetup;   // RETA order for receiver channels
+  int8_t    PPM_Multiplier;
+  int8_t    hapticLength;
+  uint8_t   reNavigation;    // not used on STOCK board
+  int8_t    beepLength:3;
+  uint8_t   hapticStrength:3;
+  uint8_t   gpsFormat:1;
+  uint8_t   unexpectedShutdown:1;
+  uint8_t   speakerPitch;
+  int8_t    speakerVolume;
+  int8_t    vBatMin;
+  int8_t    vBatMax;
+  uint8_t   backlightBright;
+  int8_t    currentCalib;
+  int8_t    temperatureWarn;
+  uint8_t   mAhWarn;
+  uint16_t  mAhUsed;
+  uint32_t  globalTimer;
+  int8_t    temperatureCalib;
+  uint8_t   btBaudrate;
+  uint8_t   optrexDisplay;
+  uint8_t   sticksGain;
+  uint8_t   rotarySteps;
+  uint8_t   countryCode;
+  uint8_t   imperial;
+  char      ttsLanguage[2];
+  int8_t    beepVolume;
+  int8_t    wavVolume;
+  int8_t    varioVolume;
+  int8_t    backgroundVolume;
 }) GeneralSettings_v215;
 
 void ConvertGeneralSettings_215_to_216(EEGeneral &settings)
@@ -243,6 +296,8 @@ void ConvertGeneralSettings_215_to_216(EEGeneral &settings)
     j++;
   }
   settings.chkSum = evalChkSum();
+
+  memcpy(&settings.currModel, &oldSettings.currModel, sizeof(GeneralSettings_v215)-offsetof(GeneralSettings_v215, currModel));
 }
 
 int ConvertTelemetrySource_215_to_216(int source)
