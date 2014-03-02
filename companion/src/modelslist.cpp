@@ -105,12 +105,12 @@ void ModelsListWidget::ShowContextMenu(const QPoint& pos)
 
 void ModelsListWidget::OpenEditWindow()
 {
-  ((MdiChild *)parent())->OpenEditWindow(false);
+  ((MdiChild *)parent())->OpenEditWindow();
 }
 
 void ModelsListWidget::OpenWizard()
 {
-  ((MdiChild *)parent())->OpenEditWindow(true);
+  ((MdiChild *)parent())->openWizard();
 }
 
 void ModelsListWidget::LoadBackup()
@@ -229,6 +229,7 @@ void ModelsListWidget::dropEvent(QDropEvent *event)
 
     // QMessageBox::warning(this, tr("Companion"),tr("Index :%1").arg(row));
     const QMimeData  *mimeData = event->mimeData();
+
     if(mimeData->hasFormat("application/x-companion"))
     {
         QByteArray gmData = mimeData->data("application/x-companion");

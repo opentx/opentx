@@ -151,8 +151,8 @@ set(companion_SRCS
   splashlibrary.cpp
   mainwindow.cpp
   companion.cpp
-  modelconfigdialog.cpp
   qcustomplot.cpp
+  wizarddialog.cpp
 )
 
 set(companion_MOC_HDRS
@@ -174,9 +174,9 @@ set(companion_MOC_HDRS
   modelslist.h
   mdichild.h
   mainwindow.h
-  modelconfigdialog.h
   qcustomplot.h
   helpers.h
+  wizarddialog.h
 )
      
 set(companion_UIS
@@ -195,7 +195,6 @@ set(companion_UIS
   customizesplashdialog.ui
   splashlibrary.ui
   burndialog.ui
-  modelconfigdialog.ui
 )
 
 set(companion_RCS

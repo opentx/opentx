@@ -52,6 +52,7 @@
 #include "burndialog.h"
 #include "helpers.h"
 #include "appdata.h"
+#include "wizarddialog.h"
 #include <QFileInfo>
 
 #if defined WIN32 || !defined __GNUC__
@@ -109,6 +110,12 @@ void MdiChild::copy()
   ui->modelsList->copy();
 }
 
+void MdiChild::openWizard()
+{
+  WizardDialog *wizard = new WizardDialog(this);
+  wizard->show();
+}
+
 void MdiChild::paste()
 {
   ui->modelsList->paste();
@@ -145,9 +152,10 @@ void MdiChild::on_SimulateTxButton_clicked()
   startSimulation(this, radioData, -1);
 }
 
-void MdiChild::OpenEditWindow(bool wizard=false)
+void MdiChild::OpenEditWindow()
 {
   int row = ui->modelsList->currentRow();
+  bool wizard=false;
 
   if (row) {
     //TODO error checking
@@ -159,10 +167,9 @@ void MdiChild::OpenEditWindow(bool wizard=false)
       isNew = true; //modeledit - clear mixes, apply first template
       setModified();
     }
-    if (isNew && !wizard) {
+    if (isNew) {
       int ret;
-      bool wizardEnable=g.enableWizard();
-      if (wizardEnable) {
+      if (g.enableWizard()) {
         ret = QMessageBox::question(this, tr("Companion"), tr("Do you want to use model wizard? "), QMessageBox::Yes | QMessageBox::No);
         if (ret == QMessageBox::Yes) {
           wizard=true;
