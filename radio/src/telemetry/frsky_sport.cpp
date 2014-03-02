@@ -200,7 +200,7 @@ void processHubPacket(uint8_t id, uint16_t value)
       break;
 
     case CURRENT_ID:
-      if(((int16_t)frskyData.hub.current + g_model.frsky.fasOffset)>0)
+      if ((int16_t)frskyData.hub.current > 0 && ((int16_t)frskyData.hub.current + g_model.frsky.fasOffset) > 0)
         frskyData.hub.current += g_model.frsky.fasOffset;
       else
         frskyData.hub.current = 0;
