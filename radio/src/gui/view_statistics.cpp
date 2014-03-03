@@ -152,8 +152,8 @@ void menuStatisticsDebug(uint8_t event)
 
 #if defined(PCBSKY9X)
   lcd_putsLeft(3*FH, STR_CPU_TEMP);
-  putsTelemetryValue(MENU_DEBUG_COL_OFS, 3*FH, getTemperature(), UNIT_DEGREES, 0);
-  putsTelemetryValue(20*FW+2, 3*FH, maxTemperature+g_eeGeneral.temperatureCalib, UNIT_DEGREES, 0);
+  putsTelemetryValue(MENU_DEBUG_COL_OFS, 3*FH, getTemperature(), UNIT_TEMPERATURE, 0);
+  putsTelemetryValue(20*FW+2, 3*FH, maxTemperature+g_eeGeneral.temperatureCalib, UNIT_TEMPERATURE, 0);
 #endif
 
 #if defined(PCBSKY9X)
@@ -169,8 +169,8 @@ void menuStatisticsDebug(uint8_t event)
     lcd_putsAtt(9*FW+2, 4*FH, PSTR("Upgr.TinyApp"),INVERS);
   }
   else {
-    putsTelemetryValue(MENU_DEBUG_COL_OFS, 4*FH, Coproc_temp, UNIT_DEGREES, 0);
-    putsTelemetryValue(20*FW+2, 4*FH, Coproc_maxtemp, UNIT_DEGREES, 0);
+    putsTelemetryValue(MENU_DEBUG_COL_OFS, 4*FH, Coproc_temp, UNIT_TEMPERATURE, 0);
+    putsTelemetryValue(20*FW+2, 4*FH, Coproc_maxtemp, UNIT_TEMPERATURE, 0);
   }
 #elif defined(PCBTARANIS) && !defined(SIMU)
   lcd_putsLeft(4*FH, "Free Mem");

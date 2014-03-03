@@ -184,6 +184,7 @@ void resetTelemetry();
 #define TELEMETRY_MIN_CELL_VOLTAGE      frskyData.hub.minCellVolts
 
 #define TELEMETRY_BARO_ALT_AVAILABLE()  (frskyData.hub.baroAltitudeOffset)
+#define TELEMETRY_BARO_ALT_UNIT         (IS_IMPERIAL_ENABLE() ? LENGTH_UNIT_IMP : LENGTH_UNIT_METR)
 
 #define TELEMETRY_GPS_SPEED_BP          frskyData.hub.gpsSpeed_bp
 #define TELEMETRY_GPS_SPEED_AP          frskyData.hub.gpsSpeed_ap
@@ -195,8 +196,9 @@ void resetTelemetry();
 #define TELEMETRY_RELATIVE_BARO_ALT_BP  (frskyData.hub.baroAltitude / 100)
 #define TELEMETRY_RELATIVE_BARO_ALT_AP  (frskyData.hub.baroAltitude % 100)
 
+#define TELEMETRY_BARO_ALT_PREPARE()    div_t baroAltitudeDivision = div(getConvertedTelemetryValue(frskyData.hub.baroAltitude, UNIT_DIST), 100)
 #define TELEMETRY_BARO_ALT_FORMAT       "%c%d.%02d,"
-#define TELEMETRY_BARO_ALT_ARGS         frskyData.hub.baroAltitude < 0 ? '-' : ' ', abs(frskyData.hub.baroAltitude / 100), abs(frskyData.hub.baroAltitude % 100),
+#define TELEMETRY_BARO_ALT_ARGS         frskyData.hub.baroAltitude < 0 ? '-' : ' ', abs(baroAltitudeDivision.quot), abs(baroAltitudeDivision.rem),
 #define TELEMETRY_GPS_ALT_FORMAT        "%c%d.%02d,"
 #define TELEMETRY_GPS_ALT_ARGS          frskyData.hub.gpsAltitude < 0 ? '-' : ' ', abs(frskyData.hub.gpsAltitude / 100), abs(frskyData.hub.gpsAltitude % 100),
 #define TELEMETRY_GPS_SPEED_UNIT        (IS_IMPERIAL_ENABLE() ? SPEED_UNIT_IMP : SPEED_UNIT_METR)

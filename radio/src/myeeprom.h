@@ -910,7 +910,7 @@ enum TelemetryUnit {
   UNIT_RAW,
   UNIT_SPEED,
   UNIT_DIST,
-  UNIT_DEGREES,
+  UNIT_TEMPERATURE,
   UNIT_PERCENT,
   UNIT_MILLIAMPS,
   UNIT_A1A2_MAX = UNIT_MILLIAMPS,
@@ -924,6 +924,7 @@ enum TelemetryUnit {
   UNIT_SECONDS,
   UNIT_RPMS,
   UNIT_G,
+  UNIT_HDG,
 };
 
 #if defined(CPUARM)

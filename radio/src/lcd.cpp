@@ -1180,16 +1180,17 @@ void putsTelemetryValue(xcoord_t x, uint8_t y, lcdint_t val, uint8_t unit, uint8
 {
   convertUnit(val, unit);
   lcd_outdezAtt(x, y, val, att & (~NO_UNIT));
-  if (!(att & NO_UNIT) && unit != UNIT_RAW)
+  if (!(att & NO_UNIT) && unit != UNIT_RAW) {
     lcd_putsiAtt(lcdLastPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
+  }
 }
 
 const pm_uint8_t bchunit_ar[] PROGMEM = {
   UNIT_DIST,    // Alt
   UNIT_RAW,     // Rpm
   UNIT_PERCENT, // Fuel
-  UNIT_DEGREES, // T1
-  UNIT_DEGREES, // T2
+  UNIT_TEMPERATURE, // T1
+  UNIT_TEMPERATURE, // T2
   UNIT_KTS,     // Speed
   UNIT_DIST,    // Dist
   UNIT_DIST,    // GPS Alt
@@ -1299,7 +1300,7 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
       if (channel >= TELEM_MIN_ALT-1 && channel <= TELEM_MAX_ALT-1)
         unit = 0;
       if (channel == TELEM_HDG-1)
-        unit = 3;
+        unit = UNIT_HDG;
       putsTelemetryValue(x, y, val, pgm_read_byte(bchunit_ar+unit), att);
       break;
     }

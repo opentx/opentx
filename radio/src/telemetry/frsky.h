@@ -227,6 +227,7 @@ void resetTelemetry();
 #define TELEMETRY_MIN_CELL_VOLTAGE  (frskyData.hub.minCellVolts * 2)
 
 #define TELEMETRY_BARO_ALT_AVAILABLE()          (frskyData.hub.baroAltitudeOffset)
+#define TELEMETRY_BARO_ALT_UNIT                 (IS_IMPERIAL_ENABLE() ? LENGTH_UNIT_IMP : LENGTH_UNIT_METR)
 
 #define TELEMETRY_RELATIVE_BARO_ALT_BP          frskyData.hub.baroAltitude_bp
 #define TELEMETRY_RELATIVE_BARO_ALT_AP          frskyData.hub.baroAltitude_ap

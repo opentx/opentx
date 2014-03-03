@@ -2127,7 +2127,7 @@ getvalue_t convertCswTelemValue(LogicalSwitchData * cs)
 FORCEINLINE void convertUnit(getvalue_t & val, uint8_t & unit)
 {
   if (IS_IMPERIAL_ENABLE()) {
-    if (unit == UNIT_DEGREES) {
+    if (unit == UNIT_TEMPERATURE) {
       val += 18;
       val *= 115;
       val >>= 6;
@@ -2151,6 +2151,10 @@ FORCEINLINE void convertUnit(getvalue_t & val, uint8_t & unit)
       unit = UNIT_SPEED;
       val = (val * 50) / 27;
     }
+  }
+
+  if (unit == UNIT_HDG) {
+    unit = UNIT_TEMPERATURE;
   }
 }
 #endif
@@ -3295,7 +3299,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
       break;
 
     case MIXSRC_FIRST_TELEM+TELEM_HDG-1:
-      PLAY_NUMBER(val, 1+UNIT_DEGREES, 0);
+      PLAY_NUMBER(val, 1+UNIT_HDG, 0);
       break;
 
     default:
