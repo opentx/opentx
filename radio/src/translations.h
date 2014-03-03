@@ -689,8 +689,6 @@ extern const pm_char STR_VIEW_TEXT[];
   extern const pm_char STR_POTWARNING[];
   extern const pm_char STR_CHECKLIST[];
   extern const pm_char STR_UART3MODE[];
-  extern const pm_char STR_POT1TYPE[];
-  extern const pm_char STR_POT2TYPE[];
 #endif
 
 #if MENUS_LOCK == 1

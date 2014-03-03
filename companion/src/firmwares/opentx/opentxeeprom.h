@@ -51,9 +51,9 @@
 #define O9X_ARM_MAX_CSFUNCOLD  13
 #define O9X_ARM_MAX_CSFUNC     15
 
-class Open9xGeneralDataNew: public TransformedField {
+class OpenTxGeneralData: public TransformedField {
   public:
-    Open9xGeneralDataNew(GeneralSettings & generalData, BoardEnum board, unsigned int version, unsigned int variant=0);
+    OpenTxGeneralData(GeneralSettings & generalData, BoardEnum board, unsigned int version, unsigned int variant=0);
 
   protected:
     virtual void beforeExport();
@@ -113,9 +113,9 @@ class ChannelsConversionTable: public ConversionTable
 };
 
 
-class Open9xModelDataNew: public TransformedField {
+class OpenTxModelData: public TransformedField {
   public:
-    Open9xModelDataNew(ModelData & modelData, BoardEnum board, unsigned int version, unsigned int variant);
+    OpenTxModelData(ModelData & modelData, BoardEnum board, unsigned int version, unsigned int variant);
 
     const char * getName() { return name; }
 
@@ -126,6 +126,7 @@ class Open9xModelDataNew: public TransformedField {
     StructField internalField;
     ModelData & modelData;
     BoardEnum board;
+    unsigned int version;
     unsigned int variant;
 
   private:

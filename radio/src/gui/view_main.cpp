@@ -122,8 +122,10 @@ void drawPotsBars()
   // Optimization by Mike Blandford
   uint8_t x, i, len ;  // declare temporary variables
   for (x=LCD_W/2-5, i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; x+=5, i++) {
-    len = ((calibratedStick[i]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
-    V_BAR(x, LCD_H-8, len)
+    if (IS_POT_AVAILABLE(i)) {
+      len = ((calibratedStick[i]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
+      V_BAR(x, LCD_H-8, len)
+    }
   }
 }
 
@@ -196,8 +198,11 @@ void displayTrims(uint8_t phase)
 void displaySliders()
 {
   for (uint8_t i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; i++) {
-    xcoord_t x = (i%2 ? LCD_W-5 : 3);
-    int8_t y = (i>NUM_STICKS+1 ? LCD_H/2+1 : 1);
+    if (i == POT3) {
+      continue;
+    }
+    xcoord_t x = ((i==POT1 || i==SLIDER1) ? 3 : LCD_W-5);
+    int8_t y = (i>=SLIDER1 ? LCD_H/2+1 : 1);
     lcd_vline(x, y, LCD_H/2-2);
     lcd_vline(x+1, y, LCD_H/2-2);
     y += LCD_H/2-4;

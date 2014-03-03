@@ -498,8 +498,6 @@ const pm_char STR_VIEW_TEXT[] PROGMEM = "View text";
   const pm_char STR_POTWARNING[] PROGMEM = TR_POTWARNING;
   const pm_char STR_CHECKLIST[] PROGMEM = TR_CHECKLIST;
   const pm_char STR_UART3MODE[] PROGMEM = TR_UART3MODE;
-  const pm_char STR_POT1TYPE[] PROGMEM = TR_POT1TYPE;
-  const pm_char STR_POT2TYPE[] PROGMEM = TR_POT2TYPE;
 #endif
 
 #if MENUS_LOCK == 1

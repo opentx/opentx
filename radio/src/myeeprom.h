@@ -68,52 +68,62 @@
 #endif
 
 #if defined(PCBTARANIS)
-  #define MAX_MODELS  60
-  #define NUM_CHNOUT  32 // number of real output channels CH1-CH32
-  #define MAX_PHASES  9
-  #define MAX_MIXERS  64
-  #define MAX_EXPOS   64
-  #define NUM_CSW     32 // number of custom switches
-  #define NUM_CFN     64 // number of functions assigned to switches
-  #define MAX_SCRIPTS 7
-  #define MAX_INPUTS  32
-  #define NUM_PPM     16
+  #define MAX_MODELS    60
+  #define NUM_CHNOUT    32 // number of real output channels CH1-CH32
+  #define MAX_PHASES    9
+  #define MAX_MIXERS    64
+  #define MAX_EXPOS     64
+  #define NUM_CSW       32 // number of custom switches
+  #define NUM_CFN       64 // number of functions assigned to switches
+  #define MAX_SCRIPTS   7
+  #define MAX_INPUTS    32
+  #define NUM_PPM       16
+  #define NUM_POTS      5
+  #define NUM_XPOTS     3
 #elif defined(CPUARM)
-  #define MAX_MODELS  60
-  #define NUM_CHNOUT  32 // number of real output channels CH1-CH32
-  #define MAX_PHASES  9
-  #define MAX_MIXERS  64
-  #define MAX_EXPOS   32
-  #define NUM_CSW     32 // number of custom switches
-  #define NUM_CFN     64 // number of functions assigned to switches
-  #define NUM_PPM     16
+  #define MAX_MODELS    60
+  #define NUM_CHNOUT    32 // number of real output channels CH1-CH32
+  #define MAX_PHASES    9
+  #define MAX_MIXERS    64
+  #define MAX_EXPOS     32
+  #define NUM_CSW       32 // number of custom switches
+  #define NUM_CFN       64 // number of functions assigned to switches
+  #define NUM_PPM       16
+  #define NUM_POTS      3
+  #define NUM_XPOTS     0
 #elif defined(CPUM2560) || defined(CPUM2561)
-  #define MAX_MODELS  30
-  #define NUM_CHNOUT  16 // number of real output channels CH1-CH16
-  #define MAX_PHASES  6
-  #define MAX_MIXERS  32
-  #define MAX_EXPOS   16
-  #define NUM_CSW     15 // number of custom switches
-  #define NUM_CFN     24 // number of functions assigned to switches
-  #define NUM_PPM     8
+  #define MAX_MODELS    30
+  #define NUM_CHNOUT    16 // number of real output channels CH1-CH16
+  #define MAX_PHASES    6
+  #define MAX_MIXERS    32
+  #define MAX_EXPOS     16
+  #define NUM_CSW       15 // number of custom switches
+  #define NUM_CFN       24 // number of functions assigned to switches
+  #define NUM_PPM       8
+  #define NUM_POTS      3
+  #define NUM_XPOTS     0
 #elif defined(CPUM128)
-  #define MAX_MODELS  30
-  #define NUM_CHNOUT  16 // number of real output channels CH1-CH16
-  #define MAX_PHASES  5
-  #define MAX_MIXERS  32
-  #define MAX_EXPOS   14
-  #define NUM_CSW     15 // number of custom switches
-  #define NUM_CFN     24 // number of functions assigned to switches
-  #define NUM_PPM     8
+  #define MAX_MODELS    30
+  #define NUM_CHNOUT    16 // number of real output channels CH1-CH16
+  #define MAX_PHASES    5
+  #define MAX_MIXERS    32
+  #define MAX_EXPOS     14
+  #define NUM_CSW       15 // number of custom switches
+  #define NUM_CFN       24 // number of functions assigned to switches
+  #define NUM_PPM       8
+  #define NUM_POTS      3
+  #define NUM_XPOTS     0
 #else
-  #define MAX_MODELS  16
-  #define NUM_CHNOUT  16 // number of real output channels CH1-CH16
-  #define MAX_PHASES  5
-  #define MAX_MIXERS  32
-  #define MAX_EXPOS   14
-  #define NUM_CSW     12 // number of custom switches
-  #define NUM_CFN     16 // number of functions assigned to switches
-  #define NUM_PPM     8
+  #define MAX_MODELS    16
+  #define NUM_CHNOUT    16 // number of real output channels CH1-CH16
+  #define MAX_PHASES    5
+  #define MAX_MIXERS    32
+  #define MAX_EXPOS     14
+  #define NUM_CSW       12 // number of custom switches
+  #define NUM_CFN       16 // number of functions assigned to switches
+  #define NUM_PPM       8
+  #define NUM_POTS      3
+  #define NUM_XPOTS     0
 #endif
 
 #define MAX_TIMERS    2
@@ -333,12 +343,12 @@ enum BacklightMode {
   #define SPLASH_MODE uint8_t splashMode:1; uint8_t spare4:2
 #endif
 
-#define POTS_POS_COUNT 6
+#define XPOTS_MULTIPOS_COUNT 6
 
 #if defined(PCBTARANIS)
 PACK(typedef struct {
   uint8_t count;
-  uint8_t steps[POTS_POS_COUNT-1];
+  uint8_t steps[XPOTS_MULTIPOS_COUNT-1];
 }) StepsCalibData;
 #endif
 
@@ -1305,10 +1315,8 @@ enum SwitchSources {
   SWSRC_LAST_SWITCH = SWSRC_TRAINER,
 
 #if defined(PCBTARANIS)
-  SWSRC_P11,
-  SWSRC_P16 = SWSRC_P11+5,
-  SWSRC_P21,
-  SWSRC_P26 = SWSRC_P21+5,
+  SWSRC_FIRST_MULTIPOS_SWITCH,
+  SWSRC_LAST_MULTIPOS_SWITCH = SWSRC_FIRST_MULTIPOS_SWITCH + (NUM_XPOTS*XPOTS_MULTIPOS_COUNT) - 1,
 #endif
 
   SWSRC_FIRST_TRIM,
@@ -1369,11 +1377,12 @@ enum MixSources {
 
   MIXSRC_FIRST_POT,
 #if defined(PCBTARANIS)
-  MIXSRC_S1 = MIXSRC_FIRST_POT,
-  MIXSRC_S2,
-  MIXSRC_S3,
-  MIXSRC_S4,
-  MIXSRC_LAST_POT = MIXSRC_S4,
+  MIXSRC_POT1 = MIXSRC_FIRST_POT,
+  MIXSRC_POT2,
+  MIXSRC_POT3,
+  MIXSRC_SLIDER1,
+  MIXSRC_SLIDER2,
+  MIXSRC_LAST_POT = MIXSRC_SLIDER2,
 #else
   MIXSRC_P1 = MIXSRC_FIRST_POT,
   MIXSRC_P2,

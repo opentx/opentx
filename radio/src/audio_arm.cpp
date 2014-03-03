@@ -381,7 +381,7 @@ void referenceModelAudioFiles()
       }
 
       // Switches Audio Files <switchname>-[up|mid|down].wav
-      for (int i=0; i<SWSRC_LAST_SWITCH+NUM_XPOTS*POTS_POS_COUNT && !found; i++) {
+      for (int i=0; i<SWSRC_LAST_SWITCH+NUM_XPOTS*XPOTS_MULTIPOS_COUNT && !found; i++) {
         getSwitchAudioFile(path, i);
         if (!strcmp(filename, fn)) {
           sdAvailableSwitchAudioFiles |= MASK_SWITCH_AUDIO_FILE(i);
