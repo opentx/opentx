@@ -502,12 +502,19 @@ class CurveReference {
     QString toString();
 };
 
+enum InputMode {
+  INPUT_MODE_NONE,
+  INPUT_MODE_POS,
+  INPUT_MODE_NEG,
+  INPUT_MODE_BOTH
+};
+
 class ExpoData {
   public:
     ExpoData() { clear(); }
     RawSource srcRaw;
     unsigned int scale;
-    unsigned int mode;         // 0=end, 1=pos, 2=neg, 3=both
+    unsigned int mode;
     unsigned int chn;
     RawSwitch swtch;
     unsigned int phases;        // -5=!FP4, 0=normal, 5=FP4
@@ -880,6 +887,10 @@ class ScriptData {
 class ModelData {
   public:
     ModelData();
+
+    ExpoData * insertInput(const int idx);
+    void removeInput(const int idx);
+
     bool      used;
     char      name[12+1];
     uint8_t   modelVoice;

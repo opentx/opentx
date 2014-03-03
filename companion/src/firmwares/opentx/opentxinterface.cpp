@@ -236,11 +236,11 @@ bool OpenTxInterface::loadModel(uint8_t version, ModelData &model, uint8_t *data
       return loadModel<Open9xArmModelData_v212>(model, data, index);
     }
     else {
-      return loadModelVariant<Open9xModelDataNew>(index, model, data, version, variant);
+      return loadModelVariant<OpenTxModelData>(index, model, data, version, variant);
     }
   }
   else if (version >= 213) {
-    return loadModelVariant<Open9xModelDataNew>(index, model, data, version, variant);
+    return loadModelVariant<OpenTxModelData>(index, model, data, version, variant);
   }
 
   std::cout << " ko\n";
@@ -336,7 +336,7 @@ bool OpenTxInterface::load(RadioData &radioData, const uint8_t *eeprom, int size
     return false;
   }
 
-  if (!loadGeneral<Open9xGeneralDataNew>(radioData.generalSettings, version)) {
+  if (!loadGeneral<OpenTxGeneralData>(radioData.generalSettings, version)) {
     std::cout << " ko\n";
     return false;
   }
@@ -383,14 +383,14 @@ int OpenTxInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t varian
     variant |= M128_VARIANT;
   }
   
-  int result = saveGeneral<Open9xGeneralDataNew>(radioData.generalSettings, board, version, variant);
+  int result = saveGeneral<OpenTxGeneralData>(radioData.generalSettings, board, version, variant);
   if (!result) {
     return 0;
   }
 
   for (int i=0; i<getMaxModels(); i++) {
     if (!radioData.models[i].isempty()) {
-      result = saveModel<Open9xModelDataNew>(i, radioData.models[i], version, variant);
+      result = saveModel<OpenTxModelData>(i, radioData.models[i], version, variant);
       if (!result) {
         return 0;
       }
@@ -417,7 +417,7 @@ int OpenTxInterface::getSize(ModelData &model)
   uint8_t tmp[EESIZE_RLC_MAX];
   efile->EeFsCreate(tmp, EESIZE_RLC_MAX, board);
 
-  Open9xModelDataNew open9xModel(model, board, 255, GetCurrentFirmwareVariant());
+  OpenTxModelData open9xModel(model, board, 255, GetCurrentFirmwareVariant());
 
   QByteArray eeprom;
   open9xModel.Export(eeprom);
@@ -436,7 +436,7 @@ int OpenTxInterface::getSize(GeneralSettings &settings)
   uint8_t tmp[EESIZE_RLC_MAX];
   efile->EeFsCreate(tmp, EESIZE_RLC_MAX, board);
 
-  Open9xGeneralDataNew open9xGeneral(settings, board, 255, GetCurrentFirmwareVariant());
+  OpenTxGeneralData open9xGeneral(settings, board, 255, GetCurrentFirmwareVariant());
   // open9xGeneral.Dump();
 
   QByteArray eeprom;

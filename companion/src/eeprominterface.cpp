@@ -242,10 +242,13 @@ QString RawSource::toString()
   }
   switch (type) {
     case SOURCE_TYPE_VIRTUAL_INPUT:
-      if (model && strlen(model->inputNames[index]) > 0)
-        return QString(model->inputNames[index]);
-      else
-        return QObject::tr("Input %1").arg(index+1);
+    {
+      QString result = QObject::tr("[I%1]").arg(index+1);
+      if (model && strlen(model->inputNames[index]) > 0) {
+        result += QString(model->inputNames[index]);
+      }
+      return result;
+    }
     case SOURCE_TYPE_STICK:
       return AnalogString(index);
     case SOURCE_TYPE_TRIM:
@@ -891,6 +894,19 @@ GeneralSettings::GeneralSettings()
 ModelData::ModelData()
 {
   clear();
+}
+
+ExpoData * ModelData::insertInput(const int idx)
+{
+  memmove(&expoData[idx+1], &expoData[idx], (C9X_MAX_EXPOS-(idx+1))*sizeof(ExpoData));
+  expoData[idx].clear();
+  return &expoData[idx];
+}
+
+void ModelData::removeInput(const int idx)
+{
+  memmove(&expoData[idx], &expoData[idx+1], (C9X_MAX_EXPOS-(idx+1))*sizeof(ExpoData));
+  expoData[C9X_MAX_EXPOS-1].clear();
 }
 
 void ModelData::clearInputs()

@@ -733,12 +733,13 @@ void importGvarParam(int & gvar, const int _gvar)
 
 class MixField: public TransformedField {
   public:
-    MixField(MixData & mix, BoardEnum board, unsigned int version):
+    MixField(MixData & mix, BoardEnum board, unsigned int version, ModelData * model):
       TransformedField(internalField),
       internalField("Mix"),
       mix(mix),
       board(board),
-      version(version)
+      version(version),
+      model(model)
     {
       if (IS_TARANIS(board) && version >= 216) {
         internalField.Append(new UnsignedField<8>(_destCh));
@@ -878,6 +879,14 @@ class MixField: public TransformedField {
 
     virtual void afterImport()
     {
+      if (IS_TARANIS(board) || version < 216) {
+        if (mix.srcRaw.type == SOURCE_TYPE_STICK && mix.srcRaw.index < NUM_STICKS) {
+          if (!mix.noExpo) {
+            mix.srcRaw = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, mix.srcRaw.index, model);
+          }
+        }
+      }
+
       if (mix.srcRaw.type != SOURCE_TYPE_NONE) {
         mix.destCh = _destCh + 1;
         if (!IS_ARM(board) || version < 216) {
@@ -908,6 +917,7 @@ class MixField: public TransformedField {
     MixData & mix;
     BoardEnum board;
     unsigned int version;
+    ModelData * model;
     unsigned int _destCh;
     bool _curveMode;
     int _curveParam;
@@ -917,11 +927,11 @@ class MixField: public TransformedField {
     unsigned int _offsetMode;
 };
 
-class ExpoField: public TransformedField {
+class InputField: public TransformedField {
   public:
-    ExpoField(ExpoData & expo, BoardEnum board, unsigned int version):
+    InputField(ExpoData & expo, BoardEnum board, unsigned int version):
       TransformedField(internalField),
-      internalField("Expo"),
+      internalField("Input"),
       expo(expo),
       board(board),
       version(version)
@@ -940,11 +950,11 @@ class ExpoField: public TransformedField {
         internalField.Append(new SpareBitsField<8>());
       }
       else if (IS_ARM(board)) {
-        internalField.Append(new UnsignedField<8>(expo.mode));
-        internalField.Append(new UnsignedField<8>(expo.chn));
+        internalField.Append(new UnsignedField<8>(expo.mode, "Mode"));
+        internalField.Append(new UnsignedField<8>(expo.chn, "Channel"));
         internalField.Append(new SwitchField<8>(expo.swtch, board, version));
-        internalField.Append(new UnsignedField<16>(expo.phases));
-        internalField.Append(new SignedField<8>(_weight));
+        internalField.Append(new UnsignedField<16>(expo.phases, "Phases"));
+        internalField.Append(new SignedField<8>(_weight, "Weight"));
         internalField.Append(new BoolField<8>(_curveMode));
         if (HAS_LARGE_LCD(board)) {
           internalField.Append(new ZCharField<8>(expo.name));
@@ -979,6 +989,7 @@ class ExpoField: public TransformedField {
     virtual void beforeExport()
     {
       _weight    = smallGvarToEEPROM(expo.weight);
+
       if (!IS_TARANIS(board) || version < 216) {
         if (expo.curve.type==CurveReference::CURVE_REF_FUNC && expo.curve.value) {
           _curveMode = true;
@@ -998,7 +1009,9 @@ class ExpoField: public TransformedField {
     virtual void afterImport()
     {
       if (IS_TARANIS(board) && version < 216) {
-        expo.srcRaw = RawSource(SOURCE_TYPE_STICK, expo.chn);
+        if (expo.mode) {
+          expo.srcRaw = RawSource(SOURCE_TYPE_STICK, expo.chn);
+        }
       }
 
       expo.weight = smallGvarToC9x(_weight);
@@ -1278,13 +1291,14 @@ class AndSwitchesConversionTable: public ConversionTable {
 
 class LogicalSwitchField: public TransformedField {
   public:
-    LogicalSwitchField(LogicalSwitchData & csw, BoardEnum board, unsigned int version, unsigned int variant):
+    LogicalSwitchField(LogicalSwitchData & csw, BoardEnum board, unsigned int version, unsigned int variant, ModelData * model=NULL):
       TransformedField(internalField),
       internalField("LogicalSwitch"),
       csw(csw),
       board(board),
       version(version),
       variant(variant),
+      model(model),
       functionsConversionTable(board, version),
       sourcesConversionTable(SourcesConversionTable::getInstance(board, version, variant, (version >= 214 || (!IS_ARM(board) && version >= 213)) ? 0 : FLAG_NOSWITCHES)),
       switchesConversionTable(SwitchesConversionTable::getInstance(board, version)),
@@ -1374,7 +1388,7 @@ class LogicalSwitchField: public TransformedField {
       else if (csw.func != LS_FN_OFF) {
         sourcesConversionTable->importValue((uint8_t)v1, csw.val1);
         csw.val2 = v2;
-        RawSource val1(csw.val1);
+        RawSource val1(csw.val1, model);
         if (IS_ARM(board) && version < 216 && val1.type == SOURCE_TYPE_TELEMETRY) {
           switch (val1.index) {
             case TELEMETRY_SOURCE_TIMER1:
@@ -1426,6 +1440,7 @@ class LogicalSwitchField: public TransformedField {
     BoardEnum board;
     unsigned int version;
     unsigned int variant;
+    ModelData * model;
     LogicalSwitchesFunctionsTable functionsConversionTable;
     SourcesConversionTable * sourcesConversionTable;
     SwitchesConversionTable * switchesConversionTable;
@@ -2143,11 +2158,12 @@ class MavlinkField: public StructField {
 int exportPpmDelay(int delay) { return (delay - 300) / 50; }
 int importPpmDelay(int delay) { return 300 + 50 * delay; }
 
-Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, unsigned int version, unsigned int variant):
+OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigned int version, unsigned int variant):
   TransformedField(internalField),
   internalField("ModelData"),
   modelData(modelData),
   board(board),
+  version(version),
   variant(variant),
   protocolsConversionTable(board)
 {
@@ -2237,14 +2253,14 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
     internalField.Append(new UnsignedField<8>(modelData.beepANACenter));
 
   for (int i=0; i<MAX_MIXERS(board, version); i++)
-    internalField.Append(new MixField(modelData.mixData[i], board, version));
+    internalField.Append(new MixField(modelData.mixData[i], board, version, &modelData));
   for (int i=0; i<MAX_CHANNELS(board, version); i++)
     internalField.Append(new LimitField(modelData.limitData[i], board, version));
   for (int i=0; i<MAX_EXPOS(board, version); i++)
-    internalField.Append(new ExpoField(modelData.expoData[i], board, version));
+    internalField.Append(new InputField(modelData.expoData[i], board, version));
   internalField.Append(new CurvesField(modelData.curves, board, version));
   for (int i=0; i<MAX_CUSTOM_SWITCHES(board, version); i++)
-    internalField.Append(new LogicalSwitchField(modelData.customSw[i], board, version, variant));
+    internalField.Append(new LogicalSwitchField(modelData.customSw[i], board, version, variant, &modelData));
   for (int i=0; i<MAX_CUSTOM_FUNCTIONS(board, version); i++) {
     if (IS_ARM(board))
       internalField.Append(new ArmCustomFunctionField(modelData.funcSw[i], board, version, variant));
@@ -2356,7 +2372,7 @@ Open9xModelDataNew::Open9xModelDataNew(ModelData & modelData, BoardEnum board, u
   }
 }
 
-void Open9xModelDataNew::beforeExport()
+void OpenTxModelData::beforeExport()
 {
   // qDebug() << QString("before export model") << modelData.name;
 
@@ -2370,9 +2386,28 @@ void Open9xModelDataNew::beforeExport()
   }
 }
 
-void Open9xModelDataNew::afterImport()
+void OpenTxModelData::afterImport()
 {
   // qDebug() << QString("after import model") << modelData.name ;
+
+  if (IS_TARANIS(board) && version < 216) {
+    for (unsigned int i=0; i<NUM_STICKS; i++) {
+      for (int j=0; j<64; j++) {
+        ExpoData * expo = &modelData.expoData[j];
+        if (expo->mode == INPUT_MODE_BOTH && expo->chn == i && expo->phases == 0 && expo->swtch.type == SWITCH_TYPE_NONE)
+          break;
+        if (expo->mode == 0 || expo->chn > i) {
+          ExpoData * newExpo = modelData.insertInput(j);
+          newExpo->mode = INPUT_MODE_BOTH;
+          newExpo->srcRaw = RawSource(SOURCE_TYPE_STICK, i);
+          newExpo->chn = i;
+          newExpo->weight = 100;
+          break;
+        }
+      }
+      strncpy(modelData.inputNames[i], AnalogString(i).toLatin1().constData(), sizeof(modelData.inputNames[i])-1);
+    }
+  }
 
   for (int module=0; module<3; module++) {
     if (modelData.moduleData[module].protocol == PXX_XJT_X16 || modelData.moduleData[module].protocol == LP45) {
@@ -2384,7 +2419,7 @@ void Open9xModelDataNew::afterImport()
   }
 }
 
-Open9xGeneralDataNew::Open9xGeneralDataNew(GeneralSettings & generalData, BoardEnum board, unsigned int version, unsigned int variant):
+OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum board, unsigned int version, unsigned int variant):
   TransformedField(internalField),
   internalField("General Settings"),
   generalData(generalData),
@@ -2521,7 +2556,7 @@ Open9xGeneralDataNew::Open9xGeneralDataNew(GeneralSettings & generalData, BoardE
   }
 }
 
-void Open9xGeneralDataNew::beforeExport()
+void OpenTxGeneralData::beforeExport()
 {
   uint16_t sum = 0;
   if (version >= 216) {
@@ -2544,6 +2579,6 @@ void Open9xGeneralDataNew::beforeExport()
   chkSum = sum;
 }
 
-void Open9xGeneralDataNew::afterImport()
+void OpenTxGeneralData::afterImport()
 {
 }
