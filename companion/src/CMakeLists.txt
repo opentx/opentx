@@ -152,6 +152,7 @@ set(companion_SRCS
   mainwindow.cpp
   companion.cpp
   qcustomplot.cpp
+  wizarddata.cpp
   wizarddialog.cpp
 )
 
@@ -176,6 +177,7 @@ set(companion_MOC_HDRS
   mainwindow.h
   qcustomplot.h
   helpers.h
+  wizarddata.h
   wizarddialog.h
 )
      
