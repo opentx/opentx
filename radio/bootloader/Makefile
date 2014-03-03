@@ -123,24 +123,24 @@ endif
 UADEFS = 
 
 ifeq ($(PCB), TARANIS)
-SRC  = system_stm32f2xx.c \
-       stm32f2xx_rcc.c \
-       stm32f2xx_gpio.c \
-       stm32f2xx_spi.c \
-       misc.c \
-		 ccsbcs.c \
-       usb/usb_core.c \
-       usb/usb_dcd.c \
-       usb/usb_dcd_int.c \
-       usb/usbd_core.c \
-       usb/usbd_ioreq.c \
-       usb/usbd_req.c \
-       usb/usbd_msc_data.c \
-       usb/usbd_msc_scsi.c \
-       usb/usbd_msc_bot.c \
-       usb/usbd_msc_core.c \
-       usb/usbd_desc.c \
-       usb/usb_bsp.c
+SRC  =	system_stm32f2xx.c \
+	stm32f2xx_rcc.c \
+	stm32f2xx_gpio.c \
+	stm32f2xx_spi.c \
+	misc.c \
+	ccsbcs.c \
+	../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/src/usb_core.c \
+	../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/src/usb_dcd.c \
+	../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/src/usb_dcd_int.c \
+	../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/src/usbd_core.c \
+	../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/src/usbd_ioreq.c \
+	../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/src/usbd_req.c \
+	../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_data.c \
+	../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_scsi.c \
+	../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_bot.c \
+	../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_core.c \
+	../src/targets/taranis/usbd_desc.c \
+	../src/targets/taranis/usb_bsp.c
 
 CPPSRC = aspi.cpp \
          lcd_driver.cpp \

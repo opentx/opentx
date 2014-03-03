@@ -68,7 +68,7 @@
 extern "C" {
 #include "usb_dcd_int.h"
 #include "usb_bsp.h"
-#include "usbd_desc.h"
+#include "../src/targets/taranis/usbd_desc.h"
 #include "usbd_msc_core.h"
 #include "usbd_usr.h"
 }
