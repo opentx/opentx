@@ -65,11 +65,18 @@ QString Channel::toString()
   return str;
 }
 
+Mix::Mix()
+{
+  complete = false;
+  name = "";
+  vehicle = NOVEHICLE;
+}
+
 QString Mix::toString()
 {
   QString str;
   str = QString(tr("Model Name: ")) + name + "\n";
-  str += QString(tr("Model Type: ")) + vehicleName(vehicleType) + "\n";
+  str += QString(tr("Model Type: ")) + vehicleName(vehicle) + "\n";
   for (int i=0; i<MAX_CHANNELS; i++){
     if (!channel[i].isEmpty()){
       str += QString(tr("Channel %1: ").arg(i+1));

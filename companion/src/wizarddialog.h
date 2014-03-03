@@ -302,6 +302,7 @@ class ConclusionPage: public StandardPage
 public:
   ConclusionPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage=-1);  
   void initializePage();
+  bool validatePage();
 private:
   QCheckBox *proceedCB;
   QLabel *textLabel;

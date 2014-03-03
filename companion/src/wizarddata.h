@@ -43,10 +43,12 @@ class Mix:QObject
 {
   Q_OBJECT
 public:
+  bool complete;
   QString name;
-  Vehicle vehicleType;
+  Vehicle vehicle;
   Channel channel[MAX_CHANNELS];
 
+  Mix();
   QString toString();
 };
 

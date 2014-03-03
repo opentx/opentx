@@ -213,11 +213,11 @@ bool ModelSelectionPage::validatePage()
 {
   wizDlg->mix.name = nameLineEdit->text();
   if (multirotorRB->isChecked())
-    wizDlg->mix.vehicleType = MULTICOPTER;
+    wizDlg->mix.vehicle = MULTICOPTER;
   else if (helicopterRB->isChecked())
-    wizDlg->mix.vehicleType = HELICOPTER;
+    wizDlg->mix.vehicle = HELICOPTER;
   else
-    wizDlg->mix.vehicleType = PLANE;
+    wizDlg->mix.vehicle = PLANE;
   return true;
 }
 
@@ -721,6 +721,11 @@ ConclusionPage::ConclusionPage(WizardDialog *dlg, QString image, QString title, 
 void ConclusionPage::initializePage(){
 
   textLabel->setText(wizDlg->mix.toString());
+}
+
+bool ConclusionPage::validatePage() {
+  wizDlg->mix.complete = true;
+  return true;
 }
 
 

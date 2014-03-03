@@ -186,7 +186,10 @@ void MdiChild::wizardEdit()
   if (row > 0) {
     checkAndInitModel(row);
     WizardDialog *wizard = new WizardDialog(this);
-    wizard->show();
+    wizard->exec();
+    if (wizard->mix.complete){
+      //TODO Save data accessible in wizard->mix.
+    }
   }
 }
 
