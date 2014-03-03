@@ -221,7 +221,6 @@ class AppData: protected CompStoreObj
     bool _autoCheckApp;
     bool _autoCheckFw;
     bool _simuSW;
-    bool _enableWizard;
 
     int _backLight;
     int _embedSplashes;
@@ -230,7 +229,6 @@ class AppData: protected CompStoreObj
     int _iconSize;
     int _jsCtrl;
     int _historySize;
-    int _modelEditTab;
     int _id;
     int _theme;
     int _warningId;
@@ -277,7 +275,6 @@ class AppData: protected CompStoreObj
     bool autoCheckApp();
     bool autoCheckFw();
     bool simuSW();
-    bool enableWizard();
 
     int backLight();
     int embedSplashes();
@@ -286,7 +283,6 @@ class AppData: protected CompStoreObj
     int iconSize();
     int historySize();
     int jsCtrl();
-    int modelEditTab();  // This variable is unused an can be removed
     int id();
     int theme();
     int warningId();

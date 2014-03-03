@@ -110,11 +110,6 @@ void MdiChild::copy()
   ui->modelsList->copy();
 }
 
-void MdiChild::openWizard()
-{
-  WizardDialog *wizard = new WizardDialog(this);
-  wizard->show();
-}
 
 void MdiChild::paste()
 {
@@ -152,47 +147,63 @@ void MdiChild::on_SimulateTxButton_clicked()
   startSimulation(this, radioData, -1);
 }
 
-void MdiChild::OpenEditWindow()
+void MdiChild::checkAndInitModel( int row )
+{
+  ModelData &model = radioData.models[row - 1];
+  if (model.isempty()) {
+    model.setDefault(row - 1);
+    setModified();
+  }
+}
+
+void MdiChild::generalEdit()
+{
+  GeneralEdit *t = new GeneralEdit(radioData, this);
+  connect(t, SIGNAL(modelValuesChanged()), this, SLOT(setModified()));
+  t->show();
+}
+
+void MdiChild::modelEdit()
 {
   int row = ui->modelsList->currentRow();
-  bool wizard=false;
 
-  if (row) {
-    //TODO error checking
-    bool isNew = false;
+  if (row == 0){
+    generalEdit();
+  } 
+  else {
+    checkAndInitModel( row );
     ModelData &model = radioData.models[row - 1];
-
-    if (model.isempty()) {
-      model.setDefault(row - 1);
-      isNew = true; //modeledit - clear mixes, apply first template
-      setModified();
-    }
-    if (isNew) {
-      int ret;
-      if (g.enableWizard()) {
-        ret = QMessageBox::question(this, tr("Companion"), tr("Do you want to use model wizard? "), QMessageBox::Yes | QMessageBox::No);
-        if (ret == QMessageBox::Yes) {
-          wizard=true;
-        } else {
-          qSleep(500);
-          ret = QMessageBox::question(this, tr("Companion"), tr("Ask this question again ? "), QMessageBox::Yes | QMessageBox::No);
-          if (ret == QMessageBox::No) {
-            g.enableWizard( false );
-          }
-        }
-      }
-    }
-    ModelEdit *t = new ModelEdit(radioData, (row - 1), wizard, this);
-    // TODO if (isNew && !wizard) t->applyBaseTemplate();
+    ModelEdit *t = new ModelEdit(radioData, (row - 1), false, this);
     t->setWindowTitle(tr("Editing model %1: ").arg(row) + model.name);
     connect(t, SIGNAL(modified()), this, SLOT(setModified()));
-    //t->exec();
     t->show();
   }
-  else {
-    GeneralEdit *t = new GeneralEdit(radioData, this);
-    connect(t, SIGNAL(modelValuesChanged()), this, SLOT(setModified()));
-    t->show();
+}
+
+void MdiChild::wizardEdit()
+{
+  int row = ui->modelsList->currentRow();
+  if (row > 0) {
+    checkAndInitModel(row);
+    WizardDialog *wizard = new WizardDialog(this);
+    wizard->show();
+  }
+}
+
+void MdiChild::openEditWindow()
+{
+  int row = ui->modelsList->currentRow();
+  if (row == 0){
+    generalEdit();
+  }
+  else{
+    ModelData &model = radioData.models[row - 1];
+    if (model.isempty()) {
+      wizardEdit();
+    }
+    else {
+      modelEdit();
+    }
   }
 }
 

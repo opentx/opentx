@@ -490,7 +490,6 @@ bool AppData::snapToClpbrd()       { return _snapToClpbrd;    }
 bool AppData::autoCheckApp()       { return _autoCheckApp;    }
 bool AppData::autoCheckFw()        { return _autoCheckFw;     }
 bool AppData::simuSW()             { return _simuSW;          }
-bool AppData::enableWizard()       { return _enableWizard;    }
 
 int AppData::backLight()           { return _backLight;       }
 int AppData::embedSplashes()       { return _embedSplashes;   }
@@ -499,7 +498,6 @@ int AppData::generalEditTab()      { return _generalEditTab;  }
 int AppData::iconSize()            { return _iconSize;        }
 int AppData::historySize()         { return _historySize;     }
 int AppData::jsCtrl()              { return _jsCtrl;          }
-int AppData::modelEditTab()        { return _modelEditTab;    }
 int AppData::id()                  { return _id;              }
 int AppData::theme()               { return _theme;           }
 int AppData::warningId()           { return _warningId;       }
@@ -544,7 +542,6 @@ void AppData::snapToClpbrd    (const bool        x) { store(x, _snapToClpbrd,   
 void AppData::autoCheckApp    (const bool        x) { store(x, _autoCheckApp,    "startup_check_companion" );}
 void AppData::autoCheckFw     (const bool        x) { store(x, _autoCheckFw,     "startup_check_fw"        );}
 void AppData::simuSW          (const bool        x) { store(x, _simuSW,          "simuSW"                  );}
-void AppData::enableWizard    (const bool        x) { store(x, _enableWizard,    "wizardEnable"            );}
 
 void AppData::backLight       (const int         x) { store(x, _backLight,       "backLight"               );}
 void AppData::embedSplashes   (const int         x) { store(x, _embedSplashes,   "embedded_splashes"       );}
@@ -553,7 +550,6 @@ void AppData::generalEditTab  (const int         x) { store(x, _generalEditTab, 
 void AppData::iconSize        (const int         x) { store(x, _iconSize,        "icon_size"               );}
 void AppData::historySize     (const int         x) { store(x, _historySize,     "history_size"            );}
 void AppData::jsCtrl          (const int         x) { store(x, _jsCtrl,          "js_ctrl"                 );}
-void AppData::modelEditTab    (const int         x) { store(x, _modelEditTab,    "modelEditTab"            );}
 void AppData::id              (const int         x) { store(x, _id,              "profileId"               );}
 void AppData::theme           (const int         x) { store(x, _theme,           "theme"                   );}
 void AppData::warningId       (const int         x) { store(x, _warningId,       "warningId"               );}
@@ -611,12 +607,14 @@ AppData::AppData()
         settings.remove("default_mode");
         settings.remove("firmware");
         settings.remove("lastFw");
+        settings.remove("modelEditTab");
         settings.remove("Name");
         settings.remove("patchImage");
         settings.remove("rename_firmware_files");
         settings.remove("sdPath");
         settings.remove("SplashFileName");
         settings.remove("startup_check_companion9x");
+        settings.remove("wizardEnable");
 
         // Select the new default profile as current profile
         id( 0 );
@@ -662,7 +660,6 @@ AppData::AppData()
     getset( _autoCheckApp,    "startup_check_companion" ,true  );
     getset( _autoCheckFw,     "startup_check_fw"        ,true  );
     getset( _simuSW,          "simuSW"                  ,false );
-    getset( _enableWizard,    "wizardEnable"            ,true  );
 
     getset( _backLight,       "backLight"               ,0  );
     getset( _embedSplashes,   "embedded_splashes"       ,0  );
@@ -671,7 +668,6 @@ AppData::AppData()
     getset( _iconSize,        "icon_size"               ,2  );
     getset( _jsCtrl,          "js_ctrl"                 ,0  );
     getset( _historySize,     "history_size"            ,10 );
-    getset( _modelEditTab,    "modelEditTab"            ,0  );
     getset( _id,              "profileId"               ,0  );
     getset( _theme,           "theme"                   ,1  );
     getset( _warningId,       "warningId"               ,0  );

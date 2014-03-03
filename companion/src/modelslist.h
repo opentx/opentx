@@ -81,6 +81,7 @@ public slots:
     void copy();
     void paste();
     void print();
+    void EditModel();
     void OpenEditWindow();
     void LoadBackup();
     void OpenWizard();

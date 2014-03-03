@@ -89,11 +89,14 @@ private slots:
     void qSleep(int ms);
 
 public slots:
-    void OpenEditWindow();
+    void checkAndInitModel(int row);
+    void generalEdit();
+    void modelEdit();
+    void wizardEdit();
+    void openEditWindow();
     
     void cut();
     void copy();
-    void openWizard();
     void paste();
     void writeEeprom();
     void simulate();

@@ -85,7 +85,7 @@ void ModelsListWidget::ShowContextMenu(const QPoint& pos)
     bool hasData = mimeData->hasFormat("application/x-companion");
 
     QMenu contextMenu;
-    contextMenu.addAction(CompanionIcon("edit.png"), tr("&Edit"),this,SLOT(OpenEditWindow()));
+    contextMenu.addAction(CompanionIcon("edit.png"), tr("&Edit"),this,SLOT(EditModel()));
     contextMenu.addAction(CompanionIcon("open.png"), tr("&Restore from backup"),this,SLOT(LoadBackup()));
     contextMenu.addAction(CompanionIcon("wizard.png"), tr("&Model Wizard"),this,SLOT(OpenWizard()));
     contextMenu.addSeparator();
@@ -103,14 +103,19 @@ void ModelsListWidget::ShowContextMenu(const QPoint& pos)
     contextMenu.exec(globalPos);
 }
 
+void ModelsListWidget::EditModel()
+{
+  ((MdiChild *)parent())->modelEdit();
+}
+
 void ModelsListWidget::OpenEditWindow()
 {
-  ((MdiChild *)parent())->OpenEditWindow();
+  ((MdiChild *)parent())->openEditWindow();
 }
 
 void ModelsListWidget::OpenWizard()
 {
-  ((MdiChild *)parent())->openWizard();
+  ((MdiChild *)parent())->wizardEdit();
 }
 
 void ModelsListWidget::LoadBackup()
