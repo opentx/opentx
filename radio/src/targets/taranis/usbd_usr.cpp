@@ -26,7 +26,7 @@
   */ 
 
 /* Includes ------------------------------------------------------------------*/
-#include "../opentx.h"
+#include "../../opentx.h"
 
 extern "C" {
 #include "usbd_usr.h"
@@ -119,7 +119,9 @@ void USBD_USR_DeviceConnected (void)
 */
 void USBD_USR_DeviceDisconnected (void)
 {
+#if !defined(BOOT)
   NVIC_SystemReset();
+#endif
 }
 
 

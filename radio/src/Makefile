@@ -708,8 +708,8 @@ ifeq ($(PCB), TARANIS)
   endif
   
   ifeq ($(BOOTLOADER), YES)
-    CPPDEFS += -DBOOTLOADER
     CPPSRC += loadboot.cpp
+    CPPDEFS += -DBOOTLOADER
   endif
 endif
 

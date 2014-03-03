@@ -10,7 +10,7 @@
   ******************************************************************************
 */
 
-#include "../opentx.h"
+#include "../../opentx.h"
 #include "./STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_gpio.h"
 
 /**

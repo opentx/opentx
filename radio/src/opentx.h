@@ -1111,7 +1111,7 @@ template<class t> void swap(t & a, t & b) { t tmp = b; b = a; a = tmp; }
 uint16_t isqrt32(uint32_t n);
 #endif
 
-#if defined(CPUARM)
+#if defined(CPUARM) && !defined(BOOT)
 #if !defined(SIMU)
 extern "C" {
 #include <CoOS.h>
@@ -1513,7 +1513,9 @@ enum AUDIO_SOUNDS {
 #include "targets/gruvin9x/somo14d.h"
 #endif
 
+#if !defined(BOOT)
 #include "translations.h"
+#endif
 
 #if defined(HAPTIC)
 #include "haptic.h"

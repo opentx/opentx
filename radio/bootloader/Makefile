@@ -142,13 +142,13 @@ SRC  =	system_stm32f2xx.c \
 	../src/targets/taranis/usbd_desc.c \
 	../src/targets/taranis/usb_bsp.c
 
-CPPSRC = aspi.cpp \
+CPPSRC = ../src/targets/taranis/aspi.cpp \
          lcd_driver.cpp \
          driversboot.cpp \
          logicioboot.cpp \
          ff.cpp \
 			x9ddiskio.cpp \
-         usbd_usr.cpp \
+         ../src/targets/taranis/usbd_usr.cpp \
          usbd_storage_msd.cpp \
        	i2c_ee.cpp \
          lcdboot.cpp \
