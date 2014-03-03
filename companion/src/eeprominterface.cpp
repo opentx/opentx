@@ -795,7 +795,8 @@ GeneralSettings::GeneralSettings()
     int potsnum=GetEepromInterface()->getCapability(Pots);
     if (t_calib.isEmpty()) {
       return;
-    } else {
+    }
+    else {
       QString t_trainercalib=g.profile[g.id()].trainerCalib();
       int8_t t_vBatCalib=(int8_t)g.profile[g.id()].vBatCalib();
       int8_t t_currentCalib=(int8_t)g.profile[g.id()].currentCalib();
@@ -891,6 +892,12 @@ GeneralSettings::GeneralSettings()
   
 }
 
+RawSource GeneralSettings::getDefaultSource(unsigned int channel)
+{
+  unsigned int stick_index = chout_ar[4*templateSetup + channel] - 1;
+  return RawSource(SOURCE_TYPE_STICK, stick_index);
+}
+
 ModelData::ModelData()
 {
   clear();
@@ -930,7 +937,7 @@ void ModelData::clear()
   moduleData[0].ppmDelay = 300;
   moduleData[1].ppmDelay = 300;
   moduleData[2].ppmDelay = 300;
-  int board=GetEepromInterface()->getBoard();
+  int board = GetEepromInterface()->getBoard();
   if (IS_TARANIS(board)) {
     moduleData[0].protocol=PXX_XJT_X16;
     moduleData[1].protocol=OFF;
@@ -964,12 +971,38 @@ bool ModelData::isempty()
   return !used;
 }
 
-void ModelData::setDefault(uint8_t id)
+void ModelData::setDefaultMixes(GeneralSettings & settings)
+{
+  if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+    for (int i=0; i<NUM_STICKS; i++) {
+      ExpoData * expo = &expoData[i];
+      expo->chn = i;
+      expo->mode = INPUT_MODE_BOTH;
+      expo->srcRaw = settings.getDefaultSource(i);
+      expo->weight = 100;
+      strncpy(inputNames[i], expo->srcRaw.toString().toLatin1().constData(), sizeof(inputNames[i])-1);
+      MixData * mix = &mixData[i];
+      mix->destCh = i+1;
+      mix->weight = 100;
+      mix->srcRaw = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, i, this);
+    }
+  }
+  else {
+    for (int i=0; i<NUM_STICKS; i++) {
+      mixData[i].destCh = i+1;
+      mixData[i].srcRaw = RawSource(SOURCE_TYPE_STICK, i);
+      mixData[i].weight = 100;
+     }
+  }
+}
+
+void ModelData::setDefaultValues(unsigned int id, GeneralSettings & settings)
 {
   clear();
   used = true;
   sprintf(name, "MODEL%02d", id+1);
   modelId = id+1;
+  setDefaultMixes(settings);
 }
 
 int ModelData::getTrimValue(int phaseIdx, int trimIdx)

@@ -107,10 +107,11 @@ const uint8_t modn12x3[4][4]= {
 #define DSW_SG2 20
 
 const uint8_t chout_ar[] = { //First number is 0..23 -> template setup,  Second is relevant channel out
-1,2,3,4 , 1,2,4,3 , 1,3,2,4 , 1,3,4,2 , 1,4,2,3 , 1,4,3,2,
-2,1,3,4 , 2,1,4,3 , 2,3,1,4 , 2,3,4,1 , 2,4,1,3 , 2,4,3,1,
-3,1,2,4 , 3,1,4,2 , 3,2,1,4 , 3,2,4,1 , 3,4,1,2 , 3,4,2,1,
-4,1,2,3 , 4,1,3,2 , 4,2,1,3 , 4,2,3,1 , 4,3,1,2 , 4,3,2,1    }; // TODO delete it?
+  1,2,3,4 , 1,2,4,3 , 1,3,2,4 , 1,3,4,2 , 1,4,2,3 , 1,4,3,2,
+  2,1,3,4 , 2,1,4,3 , 2,3,1,4 , 2,3,4,1 , 2,4,1,3 , 2,4,3,1,
+  3,1,2,4 , 3,1,4,2 , 3,2,1,4 , 3,2,4,1 , 3,4,1,2 , 3,4,2,1,
+  4,1,2,3 , 4,1,3,2 , 4,2,1,3 , 4,2,3,1 , 4,3,1,2 , 4,3,2,1
+}; // TODO delete it?
 
 // Beep center bits
 #define BC_BIT_RUD (0x01)
@@ -400,6 +401,9 @@ enum BeeperMode {
 class GeneralSettings {
   public:
     GeneralSettings();
+
+    RawSource getDefaultSource(unsigned int channel);
+
     unsigned int version;
     unsigned int variant;
     int   calibMid[NUM_STICKS+C9X_NUM_POTS];
@@ -437,7 +441,7 @@ class GeneralSettings {
     unsigned int  backlightDelay;
     bool   blightinv;
     bool   stickScroll;
-    unsigned int   templateSetup;  //RETA order according to chout_ar array // TODO enum
+    unsigned int   templateSetup;  //RETA order according to chout_ar array
     int    PPM_Multiplier;
     int    hapticLength;
     unsigned int   reNavigation;
@@ -946,7 +950,8 @@ class ModelData {
 
     void clear();
     bool isempty();
-    void setDefault(uint8_t id);
+    void setDefaultMixes(GeneralSettings & settings);
+    void setDefaultValues(unsigned int id, GeneralSettings & settings);
 
     int getTrimValue(int phaseIdx, int trimIdx);
     void setTrimValue(int phaseIdx, int trimIdx, int value);
