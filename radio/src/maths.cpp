@@ -195,12 +195,12 @@ void varioWakeup()
     int varioMax = (10+(int)g_model.frsky.varioMax) * 100;
     int varioMin = (-10+(int)g_model.frsky.varioMin) * 100;
 
-    if (verticalSpeed > varioMax)
-      verticalSpeed = varioMax;
-    else if (verticalSpeed < varioMin)
-      verticalSpeed = varioMin;
+    if (verticalSpeed < varioCenterMin || (verticalSpeed > varioCenterMax && (int16_t)(s_varioTmr - tmr10ms) < 0)) {
+      if (verticalSpeed > varioMax)
+        verticalSpeed = varioMax;
+      else if (verticalSpeed < varioMin)
+        verticalSpeed = varioMin;
 
-    if ((int16_t)(s_varioTmr - tmr10ms) < 0) {
       uint8_t varioFreq, varioDuration;
       if (verticalSpeed > 0) {
         varioFreq = (verticalSpeed * 4 + 8000) >> 7;
