@@ -211,21 +211,31 @@ QString RotaryEncoderString(int index)
 
 QString RawSource::toString()
 {
-  static const QString trims[]       = { QObject::tr("TrmR"), QObject::tr("TrmE"), QObject::tr("TrmT"), QObject::tr("TrmA")};
+  static const QString trims[] = {
+    QObject::tr("TrmR"), QObject::tr("TrmE"), QObject::tr("TrmT"), QObject::tr("TrmA")
+  };
 
-  static const QString telemetry[]   = { QObject::tr("Batt"), QObject::tr("Timer1"), QObject::tr("Timer2"),
-                            (IS_TARANIS(GetEepromInterface()->getBoard()) ? QObject::tr("SWR") :  QObject::tr("Tx")), (IS_TARANIS(GetEepromInterface()->getBoard()) ? QObject::tr("RSSI") :  QObject::tr("Rx")), QObject::tr("A1"), QObject::tr("A2"), QObject::tr("Alt"), QObject::tr("Rpm"), QObject::tr("Fuel"), QObject::tr("T1"),
-                            QObject::tr("T2"), QObject::tr("Speed"), QObject::tr("Dist"), QObject::tr("GPS Alt"), QObject::tr("Cell"), QObject::tr("Cels"), QObject::tr("Vfas"), QObject::tr("Curr"),
-                            QObject::tr("Cnsp"), QObject::tr("Powr"), QObject::tr("AccX"), QObject::tr("AccY"), QObject::tr("AccZ"), QObject::tr("HDG "), QObject::tr("VSpd"), QObject::tr("ASpd"), QObject::tr("dTE"),
-                            QObject::tr("A1-"),  QObject::tr("A2-"), QObject::tr("Alt-"), QObject::tr("Alt+"), QObject::tr("Rpm+"), QObject::tr("T1+"), QObject::tr("T2+"), QObject::tr("Spd+"), QObject::tr("Dst+"), QObject::tr("Cel-"), QObject::tr("Vfs-"), QObject::tr("Cur+"), QObject::tr("Pwr+"),
-                            QObject::tr("ACC "), QObject::tr("Time"),
-                          };
+  static const QString telemetry[] = {
+    QObject::tr("Batt"), QObject::tr("Timer1"), QObject::tr("Timer2"),
+    QObject::tr("SWR"), QObject::tr("RSSI Tx"), QObject::tr("RSSI Rx"), QObject::tr("Rx Batt"),
+    QObject::tr("A1"), QObject::tr("A2"), QObject::tr("A3"), QObject::tr("A4"),
+    QObject::tr("Alt"), QObject::tr("Rpm"), QObject::tr("Fuel"), QObject::tr("T1"), QObject::tr("T2"),
+    QObject::tr("Speed"), QObject::tr("Dist"), QObject::tr("GPS Alt"),
+    QObject::tr("Cell"), QObject::tr("Cels"), QObject::tr("Vfas"), QObject::tr("Curr"), QObject::tr("Cnsp"), QObject::tr("Powr"),
+    QObject::tr("AccX"), QObject::tr("AccY"), QObject::tr("AccZ"),
+    QObject::tr("HDG "), QObject::tr("VSpd"), QObject::tr("ASpd"), QObject::tr("dTE"),
+    QObject::tr("A1-"),  QObject::tr("A2-"), QObject::tr("A3-"),  QObject::tr("A4-"),
+    QObject::tr("Alt-"), QObject::tr("Alt+"), QObject::tr("Rpm+"), QObject::tr("T1+"), QObject::tr("T2+"), QObject::tr("Spd+"), QObject::tr("Dst+"),
+    QObject::tr("Cel-"), QObject::tr("Cels-"), QObject::tr("Vfs-"), QObject::tr("Cur+"), QObject::tr("Pwr+"),
+    QObject::tr("ACC"), QObject::tr("Time"),
+  };
 
-  static const QString virtualSwitches[] = { QObject::tr("LS1"), QObject::tr("LS2"), QObject::tr("LS3"), QObject::tr("LS4"), QObject::tr("LS5"), QObject::tr("LS6"), QObject::tr("LS7"), QObject::tr("LS8"), QObject::tr("LS9"), QObject::tr("LSA"),
-                            QObject::tr("LSB"), QObject::tr("LSC"), QObject::tr("LSD"), QObject::tr("LSE"), QObject::tr("LSF"), QObject::tr("LSG"), QObject::tr("LSH"), QObject::tr("LSI"), QObject::tr("LSJ"), QObject::tr("LSK"),
-                            QObject::tr("LSL"), QObject::tr("LSM"), QObject::tr("LSN"), QObject::tr("LSO"), QObject::tr("LSP"), QObject::tr("LSQ"), QObject::tr("LSR"), QObject::tr("LSS"), QObject::tr("LST"), QObject::tr("LSU"),
-                            QObject::tr("LSV"), QObject::tr("LSW")
-                          };
+  static const QString virtualSwitches[] = {
+    QObject::tr("LS1"), QObject::tr("LS2"), QObject::tr("LS3"), QObject::tr("LS4"), QObject::tr("LS5"), QObject::tr("LS6"), QObject::tr("LS7"), QObject::tr("LS8"), QObject::tr("LS9"), QObject::tr("LSA"),
+    QObject::tr("LSB"), QObject::tr("LSC"), QObject::tr("LSD"), QObject::tr("LSE"), QObject::tr("LSF"), QObject::tr("LSG"), QObject::tr("LSH"), QObject::tr("LSI"), QObject::tr("LSJ"), QObject::tr("LSK"),
+    QObject::tr("LSL"), QObject::tr("LSM"), QObject::tr("LSN"), QObject::tr("LSO"), QObject::tr("LSP"), QObject::tr("LSQ"), QObject::tr("LSR"), QObject::tr("LSS"), QObject::tr("LST"), QObject::tr("LSU"),
+    QObject::tr("LSV"), QObject::tr("LSW")
+  };
   
   if (index<0) {
     return QObject::tr("----");

@@ -199,7 +199,7 @@ void processHubPacket(uint8_t id, uint16_t value)
       break;
 
     case CURRENT_ID:
-      if (((int16_t)frskyData.hub.current + g_model.frsky.fasOffset)>0)
+      if ((int16_t)frskyData.hub.current > 0 && ((int16_t)frskyData.hub.current + g_model.frsky.fasOffset) > 0)
         frskyData.hub.current += g_model.frsky.fasOffset;
       else
         frskyData.hub.current = 0;
@@ -323,7 +323,7 @@ void processSportPacket(uint8_t *packet)
         frskyData.rssi[0].set(SPORT_DATA_U8(packet));
       }
       if (appId == SWR_ID) {
-        frskyData.rssi[1].set(SPORT_DATA_U8(packet));
+        frskyData.swr.set(SPORT_DATA_U8(packet));
       }
       else if (appId == ADC1_ID || appId == ADC2_ID) {
         // A1/A2 of DxR receivers
@@ -573,6 +573,9 @@ void telemetryInterrupt10ms()
     voltage += frskyData.hub.cellVolts[i];
   voltage /= 10;
   frskyData.hub.cellsSum = voltage;
+  if (frskyData.hub.cellsSum < frskyData.hub.minCells) {
+    frskyData.hub.minCells = frskyData.hub.cellsSum;
+  }
 #endif
 
   if (TELEMETRY_STREAMING()) {
@@ -663,7 +666,7 @@ void telemetryWakeup()
     alarmsCheckTime = get_tmr10ms() + 100; /* next check in 1second */
 
     if (alarmsCheckStep == 0) {
-      if ((IS_MODULE_XJT(0) || IS_MODULE_XJT(1)) && frskyData.rssi[1].value > 0x33) {
+      if ((IS_MODULE_XJT(0) || IS_MODULE_XJT(1)) && frskyData.swr.value > 0x33) {
         AUDIO_SWR_RED();
         s_global_warning = STR_ANTENNAPROBLEM;
         alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3seconds */
@@ -756,7 +759,7 @@ void resetTelemetry()
   frskyData.analog[0].set(120);
   frskyData.analog[1].set(240);
   frskyData.rssi[0].value = 75;
-  frskyData.rssi[1].value = 30;
+  frskyData.swr.value = 30;
   frskyData.hub.fuelLevel = 75;
   frskyData.hub.rpm = 12000;
   frskyData.hub.vfas = 100;

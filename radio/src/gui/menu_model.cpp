@@ -1815,7 +1815,7 @@ enum FlightModesItems {
   ITEM_PHASES_LAST = ITEM_PHASES_COUNT-1
 };
 
-bool isTrimModeAvailable(int16_t mode)
+bool isTrimModeAvailable(int mode)
 {
   return (mode == TRIM_MODE_NONE || (mode%2) == 0 || (mode/2) != (m_posVert-1));
 }
@@ -2186,7 +2186,7 @@ void menuModelHeli(uint8_t event)
     uint8_t attr = (sub == i ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
     switch(i) {
       case ITEM_HELI_SWASHTYPE:
-        g_model.swashR.type = selectMenuItem(HELI_PARAM_OFS, y, STR_SWASHTYPE, STR_VSWASHTYPE, g_model.swashR.type, 0, SWASH_TYPE_NUM, attr, event);
+        g_model.swashR.type = selectMenuItem(HELI_PARAM_OFS, y, STR_SWASHTYPE, STR_VSWASHTYPE, g_model.swashR.type, 0, SWASH_TYPE_MAX, attr, event);
         break;
 
       case ITEM_HELI_COLLECTIVE:
@@ -5754,7 +5754,7 @@ void menuModelTelemetry(uint8_t event)
           if (attr && (s_editMode>0 || p1valdiff)) {
             switch (m_posHorz) {
               case 0:
-                bar.source = checkIncDecModel(event, barSource, 0, TELEM_DISPLAY_MAX);
+                bar.source = CHECK_INCDEC_MODELVAR_ZERO_CHECK(event, barSource, TELEM_DISPLAY_MAX, isTelemetrySourceAvailable);
                 if (checkIncDec_Ret) {
                   bar.barMin = 0;
                   bar.barMax = 255 - maxBarTelemValue(bar.source);
@@ -5782,7 +5782,7 @@ void menuModelTelemetry(uint8_t event)
 #endif
             lcd_putsiAtt(pos[c], y, STR_VTELEMCHNS, value, cellAttr);
             if (cellAttr && (s_editMode>0 || p1valdiff)) {
-              CHECK_INCDEC_MODELVAR_ZERO(event, value, (lineIndex==3 && c==0) ? TELEM_STATUS_MAX : TELEM_DISPLAY_MAX);
+              CHECK_INCDEC_MODELVAR_ZERO_CHECK(event, value, (lineIndex==3 && c==0) ? TELEM_STATUS_MAX : TELEM_DISPLAY_MAX, isTelemetrySourceAvailable);
             }
           }
           if (attr && m_posHorz == NUM_LINE_ITEMS) {

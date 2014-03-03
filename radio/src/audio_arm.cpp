@@ -277,7 +277,7 @@ void referenceSystemAudioFiles()
         if (!strcmp(filename, fn)) {
           availableAudioFiles |= MASK_SYSTEM_AUDIO_FILE(i);
           break;
-  }
+        }
       }
     }
   }
@@ -303,7 +303,7 @@ void getPhaseAudioFile(char * filename, int index, unsigned int event)
   char * tmp = strcat_phasename(str, index);
   strcpy(tmp, suffixes[event]);
   strcat(tmp, SOUNDS_EXT);
-  }
+}
 
 void getSwitchAudioFile(char * filename, int index)
 {
@@ -314,7 +314,7 @@ void getSwitchAudioFile(char * filename, int index)
   if (*str == '\300') {
     strcpy(str, "-up");
     str += 3;
-}
+  }
   else if (*str == '-') {
     strcpy(str, "-mid");
     str += 4;
@@ -376,7 +376,7 @@ void referenceModelAudioFiles()
             sdAvailablePhaseAudioFiles |= MASK_PHASE_AUDIO_FILE(i, event);
             found = true;
             break;
-    }
+          }
         }
       }
 
@@ -386,8 +386,8 @@ void referenceModelAudioFiles()
         if (!strcmp(filename, fn)) {
           sdAvailableSwitchAudioFiles |= MASK_SWITCH_AUDIO_FILE(i);
           found = true;
-  }
-}
+        }
+      }
 
       // Logical Switches Audio Files <switchname>-[on|off].wav
       for (int i=0; i<NUM_CSW && !found; i++) {
@@ -430,7 +430,7 @@ bool isAudioFileReferenced(uint32_t i, char * filename)
     if (sdAvailableSwitchAudioFiles & MASK_SWITCH_AUDIO_FILE(index)) {
       getSwitchAudioFile(filename, index);
       return true;
-  }
+    }
   }
   else if (category == LOGICAL_SWITCH_AUDIO_CATEGORY) {
     if (sdAvailableLogicalSwitchAudioFiles & MASK_LOGICAL_SWITCH_AUDIO_FILE(index, event)) {
@@ -589,19 +589,24 @@ int WavContext::mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade)
       if (state.codec == CODEC_ID_PCM_S16LE) {
         read /= 2;
         for (uint32_t i=0; i<read; i++) {
-          for (uint8_t j=0; j<state.resampleRatio; j++)
+          for (uint8_t j=0; j<state.resampleRatio; j++) {
             mixSample(samples++, ((int16_t *)wavBuffer)[i], fade+2-volume);
+          }
         }
       }
       else if (state.codec == CODEC_ID_PCM_ALAW) {
-        for (uint32_t i=0; i<read; i++)
-          for (uint8_t j=0; j<state.resampleRatio; j++)
+        for (uint32_t i=0; i<read; i++) {
+          for (uint8_t j=0; j<state.resampleRatio; j++) {
             mixSample(samples++, alawTable[wavBuffer[i]], fade+2-volume);
+          }
+        }
       }
       else if (state.codec == CODEC_ID_PCM_MULAW) {
-        for (uint32_t i=0; i<read; i++)
-          for (uint8_t j=0; j<state.resampleRatio; j++)
+        for (uint32_t i=0; i<read; i++) {
+          for (uint8_t j=0; j<state.resampleRatio; j++) {
             mixSample(samples++, ulawTable[wavBuffer[i]], fade+2-volume);
+          }
+        }
       }
 
       return samples - buffer->data;
@@ -639,6 +644,7 @@ int ToneContext::mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade)
     double toneIdx = state.idx;
 
     if (fragment.tone.reset) {
+      fragment.tone.reset = 0;
       state.duration = 0;
       state.pause = 0;
     }
