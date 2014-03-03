@@ -301,22 +301,22 @@ RawSource gruvin9xToSource(int8_t value)
   }
 }
 
-Gruvin9xCustomSwData::operator CustomSwData ()
+Gruvin9xLogicalSwitchData::operator LogicalSwitchData ()
 {
-  CustomSwData c9x;
+  LogicalSwitchData c9x;
   c9x.func = func;
   c9x.val1 = v1;
   c9x.val2 = v2;
 
-  if ((c9x.func >= CS_FN_VPOS && c9x.func <= CS_FN_ANEG) || c9x.func >= CS_FN_EQUAL) {
+  if ((c9x.func >= LS_FN_VPOS && c9x.func <= LS_FN_ANEG) || c9x.func >= LS_FN_EQUAL) {
     c9x.val1 = gruvin9xToSource(v1).toValue();
   }
 
-  if (c9x.func >= CS_FN_EQUAL) {
+  if (c9x.func >= LS_FN_EQUAL) {
     c9x.val2 = gruvin9xToSource(v2).toValue();
   }
 
-  if (c9x.func >= CS_FN_AND && c9x.func <= CS_FN_XOR) {
+  if (c9x.func >= LS_FN_AND && c9x.func <= LS_FN_XOR) {
     c9x.val1 = gruvin9xToSwitch(v1).toValue();
     c9x.val2 = gruvin9xToSwitch(v2).toValue();
   }
@@ -329,14 +329,6 @@ Gruvin9xFuncSwData::operator FuncSwData ()
   FuncSwData c9x;
   c9x.swtch = gruvin9xToSwitch(swtch);
   c9x.func = (AssignFunc)(func + G9X_NUM_CHNOUT);
-  return c9x;
-}
-
-t_Gruvin9xSafetySwData::operator SafetySwData ()
-{
-  SafetySwData c9x;
-  c9x.swtch = gruvin9xToSwitch(swtch);
-  c9x.val = val;
   return c9x;
 }
 
@@ -381,7 +373,7 @@ t_Gruvin9xPhaseData_v106::operator PhaseData ()
   return c9x;
 }
 
-extern TimerMode getEr9xTimerMode(int mode);
+extern RawSwitch getEr9xTimerMode(int mode);
 
 t_Gruvin9xTimerData::operator TimerData ()
 {
@@ -458,7 +450,7 @@ t_Gruvin9xModelData_v102::operator ModelData ()
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
   c9x.thrTrim = thrTrim;
   c9x.thrExpo = thrExpo;
-  c9x.trimInc = trimInc;
+  c9x.trimInc = trimInc-2;
   c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
   c9x.beepANACenter = beepANACenter;
   c9x.moduleData[0].ppmPulsePol = pulsePol;
@@ -489,8 +481,8 @@ t_Gruvin9xModelData_v102::operator ModelData ()
 
   for (int i=0; i<G9X_NUM_CSW; i++)
     c9x.customSw[i] = customSw[i];
-  for (int i=0; i<G9X_NUM_CHNOUT; i++)
-    c9x.safetySw[i] = safetySw[i];
+  // for (int i=0; i<G9X_NUM_CHNOUT; i++)
+  //  c9x.safetySw[i] = safetySw[i];
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;
   return c9x;
@@ -529,7 +521,7 @@ t_Gruvin9xModelData_v103::operator ModelData ()
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
   c9x.thrTrim = thrTrim;
   c9x.thrExpo = thrExpo;
-  c9x.trimInc = trimInc;
+  c9x.trimInc = trimInc-2;
   c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
   c9x.beepANACenter = beepANACenter;
   c9x.moduleData[0].ppmPulsePol = pulsePol;
@@ -560,8 +552,8 @@ t_Gruvin9xModelData_v103::operator ModelData ()
 
   for (int i=0; i<G9X_NUM_CSW; i++)
     c9x.customSw[i] = customSw[i];
-  for (int i=0; i<G9X_NUM_CHNOUT; i++)
-    c9x.safetySw[i] = safetySw[i];
+  // for (int i=0; i<G9X_NUM_CHNOUT; i++)
+  //   c9x.safetySw[i] = safetySw[i];
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;
   return c9x;
@@ -600,7 +592,7 @@ t_Gruvin9xModelData_v105::operator ModelData ()
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
   c9x.thrTrim = thrTrim;
   c9x.thrExpo = thrExpo;
-  c9x.trimInc = trimInc;
+  c9x.trimInc = trimInc-2;
   c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
   c9x.beepANACenter = beepANACenter;
   c9x.moduleData[0].ppmPulsePol = pulsePol;
@@ -650,8 +642,8 @@ t_Gruvin9xModelData_v105::operator ModelData ()
     c9x.customSw[i] = customSw[i];
   for (int i=0; i<G9X_NUM_FSW; i++)
     c9x.funcSw[i] = funcSw[i];
-  for (int i=0; i<G9X_NUM_CHNOUT; i++)
-    c9x.safetySw[i] = safetySw[i];
+  // for (int i=0; i<G9X_NUM_CHNOUT; i++)
+  //  c9x.safetySw[i] = safetySw[i];
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;
 
@@ -691,7 +683,7 @@ t_Gruvin9xModelData_v106::operator ModelData ()
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
   c9x.thrTrim = thrTrim;
   c9x.thrExpo = thrExpo;
-  c9x.trimInc = trimInc;
+  c9x.trimInc = trimInc-2;
   c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
   c9x.beepANACenter = beepANACenter;
   c9x.moduleData[0].ppmPulsePol = pulsePol;
@@ -734,8 +726,8 @@ t_Gruvin9xModelData_v106::operator ModelData ()
     c9x.customSw[i] = customSw[i];
   for (int i=0; i<G9X_NUM_FSW; i++)
     c9x.funcSw[i] = funcSw[i];
-  for (int i=0; i<G9X_NUM_CHNOUT; i++)
-    c9x.safetySw[i] = safetySw[i];
+  // for (int i=0; i<G9X_NUM_CHNOUT; i++)
+  //   c9x.safetySw[i] = safetySw[i];
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;
 

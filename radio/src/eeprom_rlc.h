@@ -161,10 +161,10 @@ inline uint8_t write_errno() { return s_write_err; }
 
 class RlcFile: public EFile
 {
-  uint8_t  m_bRlc;      // control byte for run length decoder
-  uint8_t  m_zeroes;
+    uint8_t  m_bRlc;      // control byte for run length decoder
+    uint8_t  m_zeroes;
 
-  uint8_t m_flags;
+    uint8_t m_flags;
 #define WRITE_FIRST_LINK               0x01
 #define WRITE_NEXT_LINK_1              0x02
 #define WRITE_NEXT_LINK_2              0x03
@@ -173,41 +173,41 @@ class RlcFile: public EFile
 #define WRITE_FREE_UNUSED_BLOCKS_STEP2 0x30
 #define WRITE_FINAL_DIRENT_STEP        0x40
 #define WRITE_TMP_DIRENT_STEP          0x50
-  uint8_t m_write_step;
-  uint16_t m_rlc_len;
-  uint8_t * m_rlc_buf;
-  uint8_t m_cur_rlc_len;
-  uint8_t m_write1_byte;
-  uint8_t m_write_len;
-  uint8_t * m_write_buf;
+    uint8_t m_write_step;
+    uint16_t m_rlc_len;
+    uint8_t * m_rlc_buf;
+    uint8_t m_cur_rlc_len;
+    uint8_t m_write1_byte;
+    uint8_t m_write_len;
+    uint8_t * m_write_buf;
 #if defined (EEPROM_PROGRESS_BAR)
-  uint8_t m_ratio;
+    uint8_t m_ratio;
 #endif
 
-public:
+  public:
 
-  void openRlc(uint8_t i_fileId);
+    void openRlc(uint8_t i_fileId);
 
-  void create(uint8_t i_fileId, uint8_t typ, uint8_t sync_write);
+    void create(uint8_t i_fileId, uint8_t typ, uint8_t sync_write);
 
-  /// copy contents of i_fileSrc to i_fileDst
-  bool copy(uint8_t i_fileDst, uint8_t i_fileSrc);
+    /// copy contents of i_fileSrc to i_fileDst
+    bool copy(uint8_t i_fileDst, uint8_t i_fileSrc);
 
-  inline bool isWriting() { return m_write_step != 0; }
-  void write(uint8_t *buf, uint8_t i_len);
-  void write1(uint8_t b);
-  void nextWriteStep();
-  void nextRlcWriteStep();
-  void writeRlc(uint8_t i_fileId, uint8_t typ, uint8_t *buf, uint16_t i_len, uint8_t sync_write);
+    inline bool isWriting() { return m_write_step != 0; }
+    void write(uint8_t *buf, uint8_t i_len);
+    void write1(uint8_t b);
+    void nextWriteStep();
+    void nextRlcWriteStep();
+    void writeRlc(uint8_t i_fileId, uint8_t typ, uint8_t *buf, uint16_t i_len, uint8_t sync_write);
 
-  // flush the current write operation if any
-  void flush();
+    // flush the current write operation if any
+    void flush();
 
-  // read from opened file and decode rlc-coded data
-  uint16_t readRlc(uint8_t *buf, uint16_t i_len);
+    // read from opened file and decode rlc-coded data
+    uint16_t readRlc(uint8_t *buf, uint16_t i_len);
 
 #if defined (EEPROM_PROGRESS_BAR)
-  void DisplayProgressBar(uint8_t x);
+    void DisplayProgressBar(uint8_t x);
 #endif
 };
 

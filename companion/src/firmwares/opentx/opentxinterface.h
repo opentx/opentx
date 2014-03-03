@@ -18,15 +18,18 @@
 
 #include "eeprominterface.h"
 
+#define OPENTX_COMPANION_DOWNLOADS   "http://downloads.open-tx.org/companion"
+#define OPENTX_FIRMWARE_DOWNLOADS    "http://downloads.open-tx.org/firmware"
+
 class EFile;
 
-class Open9xInterface : public EEPROMInterface
+class OpenTxInterface : public EEPROMInterface
 {
   public:
 
-    Open9xInterface(BoardEnum board);
+    OpenTxInterface(BoardEnum board);
 
-    virtual ~Open9xInterface();
+    virtual ~OpenTxInterface();
 
     virtual const char * getName();
 
@@ -34,7 +37,7 @@ class Open9xInterface : public EEPROMInterface
 
     virtual const int getMaxModels();
 
-    virtual bool load(RadioData &, uint8_t *eeprom, int size);
+    virtual bool load(RadioData &, const uint8_t *eeprom, int size);
 
     virtual bool loadBackup(RadioData &, uint8_t *eeprom, int esize, int index);
     
@@ -91,6 +94,7 @@ class Open9xFirmware: public FirmwareInfo {
       addLanguage("se");
       addLanguage("cz");
       addLanguage("es");
+      addLanguage("pl");
       addLanguage("pt");
 
       addTTSLanguage("en");
@@ -100,6 +104,7 @@ class Open9xFirmware: public FirmwareInfo {
       addTTSLanguage("se");
       addTTSLanguage("cz");
       addTTSLanguage("sk");
+      addTTSLanguage("pl");
       addTTSLanguage("pt");
       addTTSLanguage("es");
     }

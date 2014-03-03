@@ -71,10 +71,10 @@ FrskyData frskyData;
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
 void checkMinMaxAltitude()
 {
-  if (TELEMETRY_ALT_BP > frskyData.hub.maxAltitude)
-    frskyData.hub.maxAltitude = TELEMETRY_ALT_BP;
-  if (TELEMETRY_ALT_BP < frskyData.hub.minAltitude)
-    frskyData.hub.minAltitude = TELEMETRY_ALT_BP;
+  if (TELEMETRY_RELATIVE_BARO_ALT_BP > frskyData.hub.maxAltitude)
+    frskyData.hub.maxAltitude = TELEMETRY_RELATIVE_BARO_ALT_BP;
+  if (TELEMETRY_RELATIVE_BARO_ALT_BP < frskyData.hub.minAltitude)
+    frskyData.hub.minAltitude = TELEMETRY_RELATIVE_BARO_ALT_BP;
 }
 #endif
 
@@ -191,6 +191,12 @@ void parseTelemHubByte(uint8_t byte)
       break;
 
     case offsetof(FrskySerialData, current):
+#if defined(FAS_OFFSET) || !defined(CPUM64)
+      if(((int16_t)frskyData.hub.current + g_model.frsky.fasOffset)>0)
+        frskyData.hub.current += g_model.frsky.fasOffset;
+      else
+        frskyData.hub.current = 0;
+#endif
       if (frskyData.hub.current > frskyData.hub.maxCurrent)
         frskyData.hub.maxCurrent = frskyData.hub.current;
       break;
@@ -694,6 +700,9 @@ void telemetryInterrupt10ms()
     voltage += frskyData.hub.cellVolts[i];
   voltage /= 5;
   frskyData.hub.cellsSum = voltage;
+  if (frskyData.hub.cellsSum < frskyData.hub.minCells) {
+    frskyData.hub.minCells = frskyData.hub.cellsSum;
+  }
 #endif
 
   if (TELEMETRY_STREAMING()) {

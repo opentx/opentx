@@ -14,15 +14,14 @@ MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
   QPushButton * qbUp = new QPushButton(this);
   QPushButton * qbDown = new QPushButton(this);
   QPushButton * qbClear = new QPushButton(this);
-
   qbUp->setText(tr("Move Up"));
-  qbUp->setIcon(QIcon(":/images/moveup.png"));
+  qbUp->setIcon(CompanionIcon("moveup.png"));
   qbUp->setShortcut(QKeySequence(tr("Ctrl+Up")));
   qbDown->setText(tr("Move Down"));
-  qbDown->setIcon(QIcon(":/images/movedown.png"));
+  qbDown->setIcon(CompanionIcon("movedown.png"));
   qbDown->setShortcut(QKeySequence(tr("Ctrl+Down")));
   qbClear->setText(tr("Clear Mixes"));
-  qbClear->setIcon(QIcon(":/images/clear.png"));
+  qbClear->setIcon(CompanionIcon("clear.png"));
 
   mixesLayout->addWidget(MixerlistWidget,1,1,1,3);
   mixesLayout->addWidget(qbUp,2,1);
@@ -54,15 +53,16 @@ void MixesPanel::update()
   int i;
   unsigned int outputs = GetEepromInterface()->getCapability(Outputs);
   int showNames = false; // TODO in a menu ui->showNames_Ckb->isChecked();
-  for(i=0; i<GetEepromInterface()->getCapability(Mixes); i++) {
+  for (i=0; i<GetEepromInterface()->getCapability(Mixes); i++) {
     MixData *md = &model.mixData[i];
     if ((md->destCh==0) || (md->destCh>outputs+(unsigned int)GetEepromInterface()->getCapability(ExtraChannels))) continue;
     QString str = "";
-    while(curDest<(md->destCh-1)) {
+    while (curDest<(md->destCh-1)) {
       curDest++;
       if (curDest > outputs) {
         str = tr("X%1  ").arg(curDest-outputs);
-      } else {
+      }
+      else {
         str = tr("CH%1%2").arg(curDest/10).arg(curDest%10);
         if (GetEepromInterface()->getCapability(HasChNames) && showNames) {
           QString name=model.limitData[curDest-1].name;
@@ -81,7 +81,8 @@ void MixesPanel::update()
 
     if (md->destCh > outputs) {
       str = tr("X%1  ").arg(md->destCh-outputs);
-    } else {
+    }
+    else {
       str = tr("CH%1%2").arg(md->destCh/10).arg(md->destCh%10);
       str.append("  ");
       if (GetEepromInterface()->getCapability(HasChNames) && showNames) {
@@ -98,7 +99,7 @@ void MixesPanel::update()
       str.fill(' ');
     }
 
-    switch(md->mltpx) {
+    switch (md->mltpx) {
       case (1): str += " *"; break;
       case (2): str += " R"; break;
       default:  str += "  "; break;
@@ -111,22 +112,26 @@ void MixesPanel::update()
     QString phasesStr = getPhasesStr(md->phases, model);
     if (!phasesStr.isEmpty()) str += " " + phasesStr;
 
-    if (md->swtch.type != SWITCH_TYPE_NONE) str += " " + tr("Switch(%1)").arg(md->swtch.toString());
-
-    if (md->carryTrim>0) {
-      str += " " + tr("No Trim");
+    if (md->swtch.type != SWITCH_TYPE_NONE) {
+      str += " " + tr("Switch(%1)").arg(md->swtch.toString());
     }
-    else if (md->carryTrim<0) {
-      str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString();
+
+    if (!GetEepromInterface()->getCapability(VirtualInputs)) {
+      if (md->carryTrim>0) {
+        str += " " + tr("No Trim");
+      }
+      else if (md->carryTrim<0) {
+        str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString();
+      }
     }
 
     if (md->noExpo)      str += " " + tr("No DR/Expo");
     if (md->sOffset)     str += " " + tr("Offset(%1)").arg(getGVarString(md->sOffset));
     if (md->curve.value) str += " " + md->curve.toString();
 
-    int scale=GetEepromInterface()->getCapability(SlowScale);
-    if (scale==0)
-      scale=1;
+    int scale = GetEepromInterface()->getCapability(SlowScale);
+    if (scale == 0)
+      scale = 1;
     if (md->delayDown || md->delayUp)
       str += tr(" Delay(u%1:d%2)").arg((double)md->delayUp/scale).arg((double)md->delayDown/scale);
     if (md->speedDown || md->speedUp)
@@ -143,8 +148,8 @@ void MixesPanel::update()
     qba.append((quint8)i);
     qba.append((const char*)md, sizeof(MixData));
     QListWidgetItem *itm = new QListWidgetItem(str);
-    itm->setData(Qt::UserRole,qba);  // mix number
-    MixerlistWidget->addItem(itm);//(str);
+    itm->setData(Qt::UserRole, qba);  // mix number
+    MixerlistWidget->addItem(itm); //(str);
   }
 
   while(curDest<outputs+GetEepromInterface()->getCapability(ExtraChannels)) {
@@ -176,7 +181,7 @@ void MixesPanel::update()
 bool MixesPanel::gm_insertMix(int idx)
 {
     if (idx<0 || idx>=GetEepromInterface()->getCapability(Mixes) || model.mixData[GetEepromInterface()->getCapability(Mixes)-1].destCh > 0) {
-      QMessageBox::information(this, "companion9x", tr("Not enough available mixers!"));
+      QMessageBox::information(this, "companion", tr("Not enough available mixers!"));
       return false;
     }
 
@@ -205,7 +210,7 @@ void MixesPanel::gm_openMix(int index)
     emit modified();
     update();
 
-    MixerDialog *g = new MixerDialog(this, &mixd, generalSettings.stickMode);
+    MixerDialog *g = new MixerDialog(this, model, &mixd, generalSettings.stickMode);
     if(g->exec()) {
       model.mixData[index] = mixd;
       emit modified();
@@ -281,7 +286,7 @@ void MixesPanel::mixersDelete(bool ask)
     QMessageBox::StandardButton ret = QMessageBox::No;
 
     if(ask)
-      ret = QMessageBox::warning(this, "companion9x",
+      ret = QMessageBox::warning(this, "companion",
                tr("Delete Selected Mixes?"),
                QMessageBox::Yes | QMessageBox::No);
 
@@ -310,13 +315,13 @@ void MixesPanel::mixersCopy()
     }
 
     QMimeData *mimeData = new QMimeData;
-    mimeData->setData("application/x-companion9x-mix", mxData);
+    mimeData->setData("application/x-companion-mix", mxData);
     QApplication::clipboard()->setMimeData(mimeData,QClipboard::Clipboard);
 }
 
 void MixesPanel::pasteMixerMimeData(const QMimeData * mimeData, int destIdx)
 {
-  if(mimeData->hasFormat("application/x-companion9x-mix")) {
+  if(mimeData->hasFormat("application/x-companion-mix")) {
     int idx; // mixer index
     int dch;
 
@@ -328,7 +333,7 @@ void MixesPanel::pasteMixerMimeData(const QMimeData * mimeData, int destIdx)
       dch = model.mixData[idx].destCh;
     }
 
-    QByteArray mxData = mimeData->data("application/x-companion9x-mix");
+    QByteArray mxData = mimeData->data("application/x-companion-mix");
 
     int i = 0;
     while(i<mxData.size()) {
@@ -410,20 +415,20 @@ void MixesPanel::mixerlistWidget_customContextMenuRequested(QPoint pos)
 
     const QClipboard *clipboard = QApplication::clipboard();
     const QMimeData *mimeData = clipboard->mimeData();
-    bool hasData = mimeData->hasFormat("application/x-companion9x-mix");
+    bool hasData = mimeData->hasFormat("application/x-companion-mix");
 
     QMenu contextMenu;
-    contextMenu.addAction(QIcon(":/images/add.png"), tr("&Add"),this,SLOT(mixerAdd()),tr("Ctrl+A"));
-    contextMenu.addAction(QIcon(":/images/edit.png"), tr("&Edit"),this,SLOT(mixerOpen()),tr("Enter"));
+    contextMenu.addAction(CompanionIcon("add.png"), tr("&Add"),this,SLOT(mixerAdd()),tr("Ctrl+A"));
+    contextMenu.addAction(CompanionIcon("edit.png"), tr("&Edit"),this,SLOT(mixerOpen()),tr("Enter"));
     contextMenu.addSeparator();
-    contextMenu.addAction(QIcon(":/images/clear.png"), tr("&Delete"),this,SLOT(mixersDelete()),tr("Delete"));
-    contextMenu.addAction(QIcon(":/images/copy.png"), tr("&Copy"),this,SLOT(mixersCopy()),tr("Ctrl+C"));
-    contextMenu.addAction(QIcon(":/images/cut.png"), tr("&Cut"),this,SLOT(mixersCut()),tr("Ctrl+X"));
-    contextMenu.addAction(QIcon(":/images/paste.png"), tr("&Paste"),this,SLOT(mixersPaste()),tr("Ctrl+V"))->setEnabled(hasData);
-    contextMenu.addAction(QIcon(":/images/duplicate.png"), tr("Du&plicate"),this,SLOT(mixersDuplicate()),tr("Ctrl+U"));
+    contextMenu.addAction(CompanionIcon("clear.png"), tr("&Delete"),this,SLOT(mixersDelete()),tr("Delete"));
+    contextMenu.addAction(CompanionIcon("copy.png"), tr("&Copy"),this,SLOT(mixersCopy()),tr("Ctrl+C"));
+    contextMenu.addAction(CompanionIcon("cut.png"), tr("&Cut"),this,SLOT(mixersCut()),tr("Ctrl+X"));
+    contextMenu.addAction(CompanionIcon("paste.png"), tr("&Paste"),this,SLOT(mixersPaste()),tr("Ctrl+V"))->setEnabled(hasData);
+    contextMenu.addAction(CompanionIcon("duplicate.png"), tr("Du&plicate"),this,SLOT(mixersDuplicate()),tr("Ctrl+U"));
     contextMenu.addSeparator();
-    contextMenu.addAction(QIcon(":/images/moveup.png"), tr("Move Up"),this,SLOT(moveMixUp()),tr("Ctrl+Up"));
-    contextMenu.addAction(QIcon(":/images/movedown.png"), tr("Move Down"),this,SLOT(moveMixDown()),tr("Ctrl+Down"));
+    contextMenu.addAction(CompanionIcon("moveup.png"), tr("Move Up"),this,SLOT(moveMixUp()),tr("Ctrl+Up"));
+    contextMenu.addAction(CompanionIcon("movedown.png"), tr("Move Down"),this,SLOT(moveMixDown()),tr("Ctrl+Down"));
 
     contextMenu.exec(globalPos);
 }

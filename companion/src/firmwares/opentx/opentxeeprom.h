@@ -30,8 +30,6 @@
 
 #define SIMU_STOCK_VARIANTS    (GVARS_VARIANT|FRSKY_VARIANT)
 #define SIMU_M128_VARIANTS     (M128_VARIANT|SIMU_STOCK_VARIANTS)
-#define SIMU_GRUVIN9X_VARIANTS (0)
-#define SIMU_ARM_VARIANTS      (0)
 
 #define O9X_MAX_TIMERS         2
 #define O9X_MAX_PHASES         5
@@ -53,9 +51,9 @@
 #define O9X_ARM_MAX_CSFUNCOLD  13
 #define O9X_ARM_MAX_CSFUNC     15
 
-class Open9xGeneralDataNew: public TransformedField {
+class OpenTxGeneralData: public TransformedField {
   public:
-    Open9xGeneralDataNew(GeneralSettings & generalData, BoardEnum board, unsigned int version, unsigned int variant=0);
+    OpenTxGeneralData(GeneralSettings & generalData, BoardEnum board, unsigned int version, unsigned int variant=0);
 
   protected:
     virtual void beforeExport();
@@ -64,6 +62,7 @@ class Open9xGeneralDataNew: public TransformedField {
     StructField internalField;
     GeneralSettings & generalData;
     BoardEnum board;
+    unsigned int version;
     int inputsCount;
     unsigned int chkSum;
 };
@@ -74,8 +73,9 @@ class ProtocolsConversionTable: public ConversionTable
     ProtocolsConversionTable(BoardEnum board)
     {
       int val = 0;
-      if (IS_TARANIS(board))
+      if (IS_TARANIS(board)) {
         addConversion(OFF, val++);
+      }
       addConversion(PPM, val++);
       if (!IS_ARM(board)) {
         addConversion(PPM16, val++);
@@ -86,9 +86,13 @@ class ProtocolsConversionTable: public ConversionTable
         addConversion(PXX_XJT_D8, val);
         addConversion(PXX_XJT_LR12, val++);
       }
-      addConversion(PXX_DJT, val++);
+      else {
+        addConversion(PXX_DJT, val++);
+      }
       if (IS_TARANIS(board)) {
-        addConversion(DSM2, val++);
+        addConversion(LP45, val);
+        addConversion(DSM2, val);
+        addConversion(DSMX, val++);
       }
       else {
         addConversion(LP45, val++);
@@ -109,9 +113,9 @@ class ChannelsConversionTable: public ConversionTable
 };
 
 
-class Open9xModelDataNew: public TransformedField {
+class OpenTxModelData: public TransformedField {
   public:
-    Open9xModelDataNew(ModelData & modelData, BoardEnum board, unsigned int version, unsigned int variant);
+    OpenTxModelData(ModelData & modelData, BoardEnum board, unsigned int version, unsigned int variant);
 
     const char * getName() { return name; }
 
@@ -122,11 +126,12 @@ class Open9xModelDataNew: public TransformedField {
     StructField internalField;
     ModelData & modelData;
     BoardEnum board;
+    unsigned int version;
     unsigned int variant;
 
   private:
     char name[256];
-    signed int subprotocols[C9X_NUM_MODULES+1/*trainer*/];
+    int subprotocols[C9X_NUM_MODULES+1/*trainer*/];
     ProtocolsConversionTable protocolsConversionTable;
     ChannelsConversionTable channelsConversionTable;
 };

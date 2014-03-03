@@ -22,10 +22,6 @@
      <property name="text">
       <string>Simulate Tx</string>
      </property>
-     <property name="icon">
-      <iconset resource="companion.qrc">
-       <normaloff>:/images/simulate.png</normaloff>:/images/simulate.png</iconset>
-     </property>
     </widget>
    </item>
   </layout>

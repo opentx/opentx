@@ -19,13 +19,13 @@ RawSwitch open9xArmToSwitch(int8_t sw)
   else if (sw == 42)
     return RawSwitch(SWITCH_TYPE_ON);
   else if (sw == 84)
-    return RawSwitch(SWITCH_TYPE_ONM);
+    return RawSwitch(SWITCH_TYPE_ON);
   else if (sw == -42)
     return RawSwitch(SWITCH_TYPE_OFF);
   else if (swa <= 42+9)
-    return RawSwitch(SWITCH_TYPE_MOMENT_SWITCH, sw > 0 ? sw-42 : sw+42);
+    return RawSwitch(SWITCH_TYPE_SWITCH, sw > 0 ? sw-42 : sw+42);
   else
-    return RawSwitch(SWITCH_TYPE_MOMENT_VIRTUAL, sw > 0 ? sw-42-9 : sw+42+9);
+    return RawSwitch(SWITCH_TYPE_VIRTUAL, sw > 0 ? sw-42-9 : sw+42+9);
 }
 
 RawSource open9xArm208ToSource(int8_t value)
@@ -124,9 +124,9 @@ RawSource open9xArm210ToSource(int8_t value)
 t_Open9xArmTimerData_v202::operator TimerData ()
 {
   TimerData c9x;
-
+/*
   if (mode <= -42)
-    c9x.mode = TimerMode(TMRMODE_FIRST_NEG_MOMENT_SWITCH+(mode+22));
+    c9x.mode = TimerMode(TMRMODE_FIRST_NEG_SWITCH+(mode+22));
   else if (mode <= -1)
     c9x.mode = TimerMode(TMRMODE_FIRST_NEG_SWITCH+(mode+1));
   else if (mode < 5)
@@ -134,8 +134,8 @@ t_Open9xArmTimerData_v202::operator TimerData ()
   else if (mode < 5+41)
     c9x.mode = TimerMode(TMRMODE_FIRST_SWITCH+(mode-5));
   else
-    c9x.mode = TimerMode(TMRMODE_FIRST_MOMENT_SWITCH+(mode-5-21));
-
+    c9x.mode = TimerMode(TMRMODE_FIRST_SWITCH+(mode-5-21));
+*/
   c9x.val = val;
   c9x.persistent = false;
   c9x.dir = (val == 0);
@@ -268,11 +268,11 @@ t_Open9xArmMixData_v208::operator MixData ()
     else if (srcRaw <= 9+9+O9X_ARM_NUM_CSW+NUM_CYC) {
       c9x.srcRaw = RawSource(SOURCE_TYPE_CYC, srcRaw-10-9-O9X_ARM_NUM_CSW);
     }
-    else if (srcRaw <= 9+9+O9X_ARM_NUM_CSW+NUM_CYC+NUM_PPM) {
+    else if (srcRaw <= 9+9+O9X_ARM_NUM_CSW+NUM_CYC+8) {
       c9x.srcRaw = RawSource(SOURCE_TYPE_PPM, srcRaw-10-9-O9X_ARM_NUM_CSW-NUM_CYC);
     }
     else {
-      c9x.srcRaw = RawSource(SOURCE_TYPE_CH, srcRaw-10-9-O9X_ARM_NUM_CSW-NUM_CYC-NUM_PPM);
+      c9x.srcRaw = RawSource(SOURCE_TYPE_CH, srcRaw-10-9-O9X_ARM_NUM_CSW-NUM_CYC-8);
     }
     c9x.weight = weight;
     c9x.swtch = open9xArmToSwitch(swtch);
@@ -334,11 +334,11 @@ t_Open9xArmMixData_v209::operator MixData ()
     else if (srcRaw <= 13+9+O9X_ARM_NUM_CSW+NUM_CYC) {
       c9x.srcRaw = RawSource(SOURCE_TYPE_CYC, srcRaw-14-9-O9X_ARM_NUM_CSW);
     }
-    else if (srcRaw <= 13+9+O9X_ARM_NUM_CSW+NUM_CYC+NUM_PPM) {
+    else if (srcRaw <= 13+9+O9X_ARM_NUM_CSW+NUM_CYC+8) {
       c9x.srcRaw = RawSource(SOURCE_TYPE_PPM, srcRaw-14-9-O9X_ARM_NUM_CSW-NUM_CYC);
     }
     else {
-      c9x.srcRaw = RawSource(SOURCE_TYPE_CH, srcRaw-14-9-O9X_ARM_NUM_CSW-NUM_CYC-NUM_PPM);
+      c9x.srcRaw = RawSource(SOURCE_TYPE_CH, srcRaw-14-9-O9X_ARM_NUM_CSW-NUM_CYC-8);
     }
     c9x.weight = weight;
 
@@ -400,11 +400,11 @@ t_Open9xArmMixData_v210::operator MixData ()
     else if (srcRaw <= 13+9+O9X_ARM_NUM_CSW+NUM_CYC) {
       c9x.srcRaw = RawSource(SOURCE_TYPE_CYC, srcRaw-14-9-O9X_ARM_NUM_CSW);
     }
-    else if (srcRaw <= 13+9+O9X_ARM_NUM_CSW+NUM_CYC+NUM_PPM) {
+    else if (srcRaw <= 13+9+O9X_ARM_NUM_CSW+NUM_CYC+8) {
       c9x.srcRaw = RawSource(SOURCE_TYPE_PPM, srcRaw-14-9-O9X_ARM_NUM_CSW-NUM_CYC);
     }
     else {
-      c9x.srcRaw = RawSource(SOURCE_TYPE_CH, srcRaw-14-9-O9X_ARM_NUM_CSW-NUM_CYC-NUM_PPM);
+      c9x.srcRaw = RawSource(SOURCE_TYPE_CH, srcRaw-14-9-O9X_ARM_NUM_CSW-NUM_CYC-8);
     }
     c9x.weight = weight;
 
@@ -470,11 +470,11 @@ t_Open9xArmMixData_v212::operator MixData ()
     else if (srcRaw <= 14+9+O9X_ARM_NUM_CSW+NUM_CYC) {
       c9x.srcRaw = RawSource(SOURCE_TYPE_CYC, srcRaw-15-9-O9X_ARM_NUM_CSW);
     }
-    else if (srcRaw <= 14+9+O9X_ARM_NUM_CSW+NUM_CYC+NUM_PPM) {
+    else if (srcRaw <= 14+9+O9X_ARM_NUM_CSW+NUM_CYC+8) {
       c9x.srcRaw = RawSource(SOURCE_TYPE_PPM, srcRaw-15-9-O9X_ARM_NUM_CSW-NUM_CYC);
     }
     else {
-      c9x.srcRaw = RawSource(SOURCE_TYPE_CH, srcRaw-15-9-O9X_ARM_NUM_CSW-NUM_CYC-NUM_PPM);
+      c9x.srcRaw = RawSource(SOURCE_TYPE_CH, srcRaw-15-9-O9X_ARM_NUM_CSW-NUM_CYC-8);
     }
     c9x.weight = weight;
 
@@ -501,22 +501,22 @@ t_Open9xArmMixData_v212::operator MixData ()
   return c9x;
 }
 
-t_Open9xArmCustomSwData_v208::operator CustomSwData ()
+t_Open9xArmLogicalSwitchData_v208::operator LogicalSwitchData ()
 {
-  CustomSwData c9x;
+  LogicalSwitchData c9x;
   c9x.func = func;
   c9x.val1 = v1;
   c9x.val2 = v2;
 
-  if ((c9x.func >= CS_FN_VPOS && c9x.func <= CS_FN_ANEG) || c9x.func >= CS_FN_EQUAL) {
+  if ((c9x.func >= LS_FN_VPOS && c9x.func <= LS_FN_ANEG) || c9x.func >= LS_FN_EQUAL) {
     c9x.val1 = open9xArm208ToSource(v1).toValue();
   }
 
-  if (c9x.func >= CS_FN_EQUAL) {
+  if (c9x.func >= LS_FN_EQUAL) {
     c9x.val2 = open9xArm208ToSource(v2).toValue();
   }
 
-  if (c9x.func >= CS_FN_AND && c9x.func <= CS_FN_XOR) {
+  if (c9x.func >= LS_FN_AND && c9x.func <= LS_FN_XOR) {
     c9x.val1 = open9xArmToSwitch(v1).toValue();
     c9x.val2 = open9xArmToSwitch(v2).toValue();
   }
@@ -524,22 +524,22 @@ t_Open9xArmCustomSwData_v208::operator CustomSwData ()
   return c9x;
 }
 
-t_Open9xArmCustomSwData_v209::operator CustomSwData ()
+t_Open9xArmLogicalSwitchData_v209::operator LogicalSwitchData ()
 {
-  CustomSwData c9x;
+  LogicalSwitchData c9x;
   c9x.func = func;
   c9x.val1 = v1;
   c9x.val2 = v2;
 
-  if ((c9x.func >= CS_FN_VPOS && c9x.func <= CS_FN_ANEG) || c9x.func >= CS_FN_EQUAL) {
+  if ((c9x.func >= LS_FN_VPOS && c9x.func <= LS_FN_ANEG) || c9x.func >= LS_FN_EQUAL) {
     c9x.val1 = open9xArm209ToSource(v1).toValue();
   }
 
-  if (c9x.func >= CS_FN_EQUAL) {
+  if (c9x.func >= LS_FN_EQUAL) {
     c9x.val2 = open9xArm209ToSource(v2).toValue();
   }
 
-  if (c9x.func >= CS_FN_AND && c9x.func <= CS_FN_XOR) {
+  if (c9x.func >= LS_FN_AND && c9x.func <= LS_FN_XOR) {
     c9x.val1 = open9xArmToSwitch(v1).toValue();
     c9x.val2 = open9xArmToSwitch(v2).toValue();
   }
@@ -547,24 +547,24 @@ t_Open9xArmCustomSwData_v209::operator CustomSwData ()
   return c9x;
 }
 
-t_Open9xArmCustomSwData_v210::operator CustomSwData ()
+t_Open9xArmLogicalSwitchData_v210::operator LogicalSwitchData ()
 {
-  CustomSwData c9x;
+  LogicalSwitchData c9x;
   c9x.func = func;
   c9x.val1 = v1;
   c9x.val2 = v2;
   c9x.delay = delay;
   c9x.duration = duration;
   
-  if ((c9x.func >= CS_FN_VPOS && c9x.func <= CS_FN_ANEG) || c9x.func >= CS_FN_EQUAL) {
+  if ((c9x.func >= LS_FN_VPOS && c9x.func <= LS_FN_ANEG) || c9x.func >= LS_FN_EQUAL) {
     c9x.val1 = open9xArm210ToSource(v1).toValue();
   }
 
-  if (c9x.func >= CS_FN_EQUAL && c9x.func <= CS_FN_ELESS) {
+  if (c9x.func >= LS_FN_EQUAL && c9x.func <= LS_FN_ELESS) {
     c9x.val2 = open9xArm210ToSource(v2).toValue();
   }
 
-  if (c9x.func >= CS_FN_AND && c9x.func <= CS_FN_XOR) {
+  if (c9x.func >= LS_FN_AND && c9x.func <= LS_FN_XOR) {
     c9x.val1 = open9xArmToSwitch(v1).toValue();
     c9x.val2 = open9xArmToSwitch(v2).toValue();
   }
@@ -577,7 +577,7 @@ t_Open9xArmFuncSwData_v208::operator FuncSwData ()
   FuncSwData c9x;
   c9x.swtch = open9xArmToSwitch(swtch);
   c9x.func = (AssignFunc)(func);
-  if (c9x.func <= FuncSafetyCh16) {
+  if (c9x.func <= FuncSafetyCh32) {
     c9x.enabled=param & 0x01;
     c9x.param = (param>>1)<<1;
   }
@@ -760,7 +760,7 @@ t_Open9xArmModelData_v208::operator ModelData ()
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
   c9x.thrTrim = thrTrim;
-  c9x.trimInc = trimInc;
+  c9x.trimInc = trimInc - 2;
   c9x.disableThrottleWarning=disableThrottleWarning;
   c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
   c9x.beepANACenter = beepANACenter;
@@ -849,7 +849,7 @@ t_Open9xArmModelData_v209::operator ModelData ()
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
   c9x.thrTrim = thrTrim;
-  c9x.trimInc = trimInc;
+  c9x.trimInc = trimInc - 2;
   c9x.disableThrottleWarning=disableThrottleWarning;
   c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
   c9x.beepANACenter = beepANACenter;
@@ -939,7 +939,7 @@ t_Open9xArmModelData_v210::operator ModelData ()
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
   c9x.thrTrim = thrTrim;
-  c9x.trimInc = trimInc;
+  c9x.trimInc = trimInc - 2;
   c9x.disableThrottleWarning=disableThrottleWarning;
   c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
   c9x.beepANACenter = beepANACenter;
@@ -1023,7 +1023,7 @@ t_Open9xArmModelData_v211::operator ModelData ()
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
   c9x.thrTrim = thrTrim;
-  c9x.trimInc = trimInc;
+  c9x.trimInc = trimInc - 2;
   c9x.disableThrottleWarning=disableThrottleWarning;
   c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
   c9x.beepANACenter = beepANACenter;
@@ -1110,7 +1110,7 @@ t_Open9xArmModelData_v212::operator ModelData ()
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
   c9x.thrTrim = thrTrim;
-  c9x.trimInc = trimInc;
+  c9x.trimInc = trimInc - 2;
   c9x.disableThrottleWarning=disableThrottleWarning;
   c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
   c9x.beepANACenter = beepANACenter;

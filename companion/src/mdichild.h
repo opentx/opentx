@@ -94,7 +94,7 @@ public slots:
     void cut();
     void copy();
     void paste();
-    void burnTo();
+    void writeEeprom();
     void simulate();
     void print(int model=-1, QString filename="");
     void setModified();

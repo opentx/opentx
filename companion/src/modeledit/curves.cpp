@@ -2,12 +2,11 @@
 #include "ui_curves.h"
 #include "node.h"
 #include "edge.h"
+#include "helpers.h"
 #include <QSpinBox>
 #include <QCheckBox>
 #include <QPushButton>
 #include <QMessageBox>
-
-// TODO Capability CustomCurves to be removed
 
 #define GFX_MARGIN 16
 
@@ -75,17 +74,16 @@ Curves::Curves(QWidget * parent, ModelData & model):
 {
   ui->setupUi(this);
 
+  lock = true;
+
   if (!GetEepromInterface()->getCapability(HasCvNames)) {
-    ui->cname_LE->hide();
-    ui->cname_label->hide();
+    ui->curveName->hide();
+    ui->curveNameLabel->hide();
   }
 
   QGraphicsScene *scene = new QGraphicsScene(ui->curvePreview);
   scene->setItemIndexMethod(QGraphicsScene::NoIndex);
   ui->curvePreview->setScene(scene);
-
-  QIcon clearIcon;
-  clearIcon.addFile(":/images/clear.png", QSize(), QIcon::Normal, QIcon::Off);
 
   for (int i=0; i<GetEepromInterface()->getCapability(NumCurves); i++) {
     visibleCurves[i] = false;
@@ -94,7 +92,7 @@ Curves::Curves(QWidget * parent, ModelData & model):
     QPushButton * reset = new QPushButton(this);
     reset->setProperty("index", i);
     reset->setMinimumSize(QSize(0, 0));
-    reset->setIcon(clearIcon);
+    reset->setIcon(CompanionIcon("clear.png"));
     reset->setIconSize(QSize(14, 14));
     connect(reset, SIGNAL(clicked()), this, SLOT(resetCurve()));
     ui->curvesLayout->addWidget(reset, i, 0, 1, 1);
@@ -134,7 +132,20 @@ Curves::Curves(QWidget * parent, ModelData & model):
     spnx[i]->setAccelerated(true);
     connect(spnx[i], SIGNAL(valueChanged(int)), this, SLOT(onPointEdited()));
     ui->pointsLayout->addWidget(spnx[i], i, 1, 1, 1);
+
+    bool insert;
+    if (GetEepromInterface()->getCapability(EnhancedCurves)) {
+      insert = (i >= 1);
+    }
+    else {
+      insert = (i==2 || i==4 || i==8 || i==16);
+    }
+    if (insert) {
+      ui->curvePoints->addItem(tr("%1 points").arg(i+1), i+1);
+    }
   }
+
+  lock = false;
 }
 
 Curves::~Curves()
@@ -154,7 +165,7 @@ void Curves::resetCurve()
 {
   QPushButton *button = (QPushButton *)sender();
   int index = button->property("index").toInt();
-  int res = QMessageBox::question(this, "companion9x", tr("Are you sure you want to reset curve %1 ?").arg(index+1), QMessageBox::Yes | QMessageBox::No);
+  int res = QMessageBox::question(this, "companion", tr("Are you sure you want to reset curve %1 ?").arg(index+1), QMessageBox::Yes | QMessageBox::No);
   if (res == QMessageBox::Yes) {
     model.curves[index].clear(5);
     update();
@@ -175,7 +186,7 @@ void Curves::update()
   lock = true;
 
   if (GetEepromInterface()->getCapability(HasCvNames)) {
-    ui->cname_LE->setText(model.curves[currentCurve].name);
+    ui->curveName->setText(model.curves[currentCurve].name);
   }
 
   int count = model.curves[currentCurve].count;
@@ -217,14 +228,27 @@ void Curves::setCurrentCurve(int index)
 
 void Curves::updateCurveType()
 {
-  int index = (model.curves[currentCurve].type == CurveData::CURVE_TYPE_CUSTOM ? 1 : 0);
-  if (model.curves[currentCurve].count==5)
-    index += 2;
-  else if (model.curves[currentCurve].count==9)
-    index += 4;
-  else if (model.curves[currentCurve].count==17)
-    index += 6;
-  ui->curvetype_CB->setCurrentIndex(index);
+  lock = true;
+
+  int index = 0;
+
+  if (GetEepromInterface()->getCapability(EnhancedCurves)) {
+    index = model.curves[currentCurve].count - 2;
+  }
+  else {
+    if (model.curves[currentCurve].count == 5)
+      index += 2;
+    else if (model.curves[currentCurve].count == 9)
+      index += 4;
+    else if (model.curves[currentCurve].count == 17)
+      index += 6;
+  }
+
+  ui->curvePoints->setCurrentIndex(index);
+  ui->curveCustom->setCurrentIndex(model.curves[currentCurve].type);
+  ui->curveSmooth->setCurrentIndex(model.curves[currentCurve].smooth);
+
+  lock = false;
 }
 
 void Curves::updateCurve()
@@ -335,61 +359,83 @@ void Curves::onNodeUnfocus()
   updateCurve();
 }
 
-void Curves::on_curvetype_CB_currentIndexChanged(int index)
+bool Curves::allowCurveType(int points, CurveData::CurveType type)
 {
-  static const int numpoint[] = {3,3,5,5,9,9,17,17};
-  static const CurveData::CurveType types[] = {CurveData::CURVE_TYPE_STANDARD, CurveData::CURVE_TYPE_CUSTOM, CurveData::CURVE_TYPE_STANDARD, CurveData::CURVE_TYPE_CUSTOM, CurveData::CURVE_TYPE_STANDARD, CurveData::CURVE_TYPE_CUSTOM, CurveData::CURVE_TYPE_STANDARD, CurveData::CURVE_TYPE_CUSTOM};
+  int numcurves = GetEepromInterface()->getCapability(NumCurves);
 
-  if (!lock) {
-    lock = true;
+  int totalpoints = 0;
+  for (int i=0; i<numcurves; i++) {
+    int cvPoints = (i==currentCurve ? points : model.curves[i].count);
+    CurveData::CurveType cvType = (i==currentCurve ? type : model.curves[i].type);
+    totalpoints += cvPoints + (cvType==CurveData::CURVE_TYPE_CUSTOM ? cvPoints-2 : 0);
+  }
 
-    int numcurves = GetEepromInterface()->getCapability(NumCurves);
-    // int currpoints = model.curves[currentCurve].count;
-    // bool currcustom = model.curves[currentCurve].custom;
-
-    int totalpoints=0;
-    for (int i=0; i<numcurves; i++) {
-      if (i!=currentCurve) {
-        totalpoints += model.curves[i].count;
-        if (model.curves[i].type == CurveData::CURVE_TYPE_CUSTOM) {
-          totalpoints += model.curves[i].count-2;
-        }
-      }
-    }
-    totalpoints += numpoint[index];
-    if (types[index] == CurveData::CURVE_TYPE_CUSTOM) {
-      totalpoints += numpoint[index]-2;
-    }
-
-    int fwpoints = GetEepromInterface()->getCapability(NumCurvePoints);
-    if (fwpoints!=0) {
-      if (fwpoints < totalpoints) {
-        QMessageBox::warning(this, "companion9x", tr("Not enough free points in EEPROM to store the curve."));
-        updateCurveType();
-        lock = false;
-        return;
-      }
-    }
-
-    model.curves[currentCurve].count = numpoint[index];
-    model.curves[currentCurve].type = types[index];
-
-    // TODO something better!
-    for (int i=0; i<C9X_MAX_POINTS; i++) {
-      model.curves[currentCurve].points[i].x = (i >= model.curves[currentCurve].count-1 ? +100 : -100 + (200*i)/(numpoint[index]-1));
-      model.curves[currentCurve].points[i].y = 0;
-    }
-
-    update();
-    emit modified();
-    lock = false;
+  int fwpoints = GetEepromInterface()->getCapability(NumCurvePoints);
+  if (totalpoints > fwpoints) {
+    QMessageBox::warning(this, "companion", tr("Not enough free points in EEPROM to store the curve."));
+    return false;
+  }
+  else {
+    return true;
   }
 }
 
-void Curves::on_cname_LE_editingFinished()
+void Curves::on_curvePoints_currentIndexChanged(int index)
+{
+  if (!lock) {
+    int numpoints = ((QComboBox *)sender())->itemData(index).toInt();
+
+    if (allowCurveType(numpoints, model.curves[currentCurve].type)) {
+      model.curves[currentCurve].count = numpoints;
+
+      // TODO something better + reuse!
+      for (int i=0; i<C9X_MAX_POINTS; i++) {
+        model.curves[currentCurve].points[i].x = (i >= model.curves[currentCurve].count-1 ? +100 : -100 + (200*i)/(numpoints-1));
+        model.curves[currentCurve].points[i].y = 0;
+      }
+
+      update();
+      emit modified();
+    }
+    else {
+      updateCurveType();
+    }
+  }
+}
+
+void Curves::on_curveCustom_currentIndexChanged(int index)
+{
+  if (!lock) {
+    CurveData::CurveType type = (CurveData::CurveType)index;
+    int numpoints = ui->curvePoints->itemData(ui->curvePoints->currentIndex()).toInt();
+    if (allowCurveType(model.curves[currentCurve].count, type)) {
+      model.curves[currentCurve].type = type;
+
+      // TODO something better + reuse!
+      for (int i=0; i<C9X_MAX_POINTS; i++) {
+        model.curves[currentCurve].points[i].x = (i >= model.curves[currentCurve].count-1 ? +100 : -100 + (200*i)/(numpoints-1));
+        model.curves[currentCurve].points[i].y = 0;
+      }
+
+      update();
+      emit modified();
+    }
+    else {
+      updateCurveType();
+    }
+  }
+}
+
+void Curves::on_curveSmooth_currentIndexChanged(int index)
+{
+  model.curves[currentCurve].smooth = index;
+  update();
+}
+
+void Curves::on_curveName_editingFinished()
 {
   memset(model.curves[currentCurve].name, 0, sizeof(model.curves[currentCurve].name));
-  strcpy(model.curves[currentCurve].name, ui->cname_LE->text().toAscii());
+  strcpy(model.curves[currentCurve].name, ui->curveName->text().toAscii());
   emit modified();
 }
 
@@ -447,6 +493,13 @@ void ModelEdit::on_ca_ctype_CB_currentIndexChanged()
         ui->ca_ymax_SB->setValue(100);
         break;
     }
+}
+
+float c9xexpou(float point, float coeff)
+{
+  float x=point*1024.0/100.0;
+  float k=coeff*256.0/100.0;
+  return ((k*x*x*x/(1024*1024) + x*(256-k) + 128) / 256)/1024.0*100;
 }
 
 void ModelEdit::on_ca_apply_PB_clicked()
@@ -600,9 +653,9 @@ void ModelEdit::on_ca_apply_PB_clicked()
 
 void ModelEdit::clearCurves(bool ask)
 {
-    if(ask) {
-      int res = QMessageBox::question(this,tr("Clear Curves?"),tr("Really clear all the curves?"),QMessageBox::Yes | QMessageBox::No);
-      if(res!=QMessageBox::Yes) return;
+    if (ask) {
+      int res = QMessageBox::question(this, tr("Clear Curves?"), tr("Really clear all the curves?"), QMessageBox::Yes | QMessageBox::No);
+      if (res!=QMessageBox::Yes) return;
     }
     curvesLock=true;
     for (int j=0; j<16; j++) {
@@ -623,45 +676,9 @@ void ModelEdit::clearCurves(bool ask)
     currentCurve=0;
     curvesLock=false;
     ui->curvetype_CB->setCurrentIndex(2);
-    ui->cname_LE->clear();
+    ui->curveName->clear();
     updateSettings();
     drawCurve();
-}
-
-void ModelEdit::setCurve(uint8_t c, int8_t ar[])
-{
-    int len=sizeof(ar)/sizeof(int8_t);
-    if (GetEepromInterface()->getCapability(CustomCurves)) {
-      if (GetEepromInterface()->getCapability(NumCurves)>c) {
-        if (len<9) {
-          model.curves[c].count=5;
-          model.curves[c].custom=false;
-          for (int i=0; i< 5; i++) {
-            model.curves[c].points[i].y=ar[i];
-          }
-        } else {
-          model.curves[c].count=5;
-          model.curves[c].custom=false;
-          for (int i=0; i< 5; i++) {
-            model.curves[c].points[i].y=ar[i];
-          }
-        }
-      }
-    } else {
-      if (len<9) {
-        model.curves[c].count=5;
-        model.curves[c].custom=false;
-        for (int i=0; i< 5; i++) {
-          model.curves[c].points[i].y=ar[i];
-        }
-      } else {
-        model.curves[c+8].count=5;
-        model.curves[c+8].custom=false;
-        for (int i=0; i< 5; i++) {
-          model.curves[c+8].points[i].y=ar[i];
-        }
-      }
-    }
 }
 
 void ModelEdit::ControlCurveSignal(bool flag)

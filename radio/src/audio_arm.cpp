@@ -41,23 +41,110 @@ extern OS_MutexID audioMutex;
 
 const int16_t sineValues[] =
 {
-  0, 64, 128, 191, 254, 316, 376, 435, 493, 548,
-  601, 652, 700, 746, 789, 828, 864, 897, 926, 952,
-  973, 991, 1005, 1015, 1021, 1024, 1021, 1015, 1005, 991,
-  973, 952, 926, 897, 864, 828, 789, 746, 700, 652,
-  601, 548, 493, 435, 376, 316, 254, 191, 128, 64,
-  0, -64, -128, -191, -254, -316, -376, -435, -493, -548,
-  -601, -652, -700, -746, -789, -828, -864, -897, -926, -952,
-  -973, -991, -1005, -1015, -1021, -1024, -1021, -1015, -1005, -991,
-  -973, -952, -926, -897, -864, -828, -789, -746, -700, -652,
-  -601, -548, -493, -435, -376, -316, -254, -191, -128, -64,
+    0, 196, 392, 588, 784, 980, 1175, 1370, 1564, 1758,
+    1951, 2143, 2335, 2525, 2715, 2904, 3091, 3278, 3463, 3647,
+    3829, 4011, 4190, 4369, 4545, 4720, 4894, 5065, 5235, 5403,
+    5569, 5733, 5895, 6055, 6213, 6369, 6522, 6673, 6822, 6969,
+    7113, 7255, 7395, 7532, 7667, 7799, 7929, 8056, 8180, 8302,
+    8422, 8539, 8653, 8765, 8874, 8980, 9084, 9185, 9283, 9379,
+    9472, 9562, 9650, 9735, 9818, 9898, 9975, 10050, 10123, 10192,
+    10260, 10324, 10387, 10447, 10504, 10559, 10612, 10663, 10711, 10757,
+    10801, 10843, 10882, 10920, 10955, 10989, 11020, 11050, 11078, 11104,
+    11128, 11151, 11172, 11191, 11209, 11225, 11240, 11254, 11266, 11277,
+    11287, 11296, 11303, 11310, 11316, 11320, 11324, 11327, 11330, 11331,
+    11332, 11333, 11333, 11333, 11332, 11331, 11329, 11328, 11326, 11324,
+    11323, 11321, 11319, 11318, 11316, 11315, 11314, 11313, 11313, 11313,
+    11314, 11315, 11317, 11319, 11323, 11326, 11331, 11336, 11342, 11349,
+    11356, 11365, 11375, 11385, 11397, 11409, 11423, 11437, 11453, 11470,
+    11488, 11507, 11527, 11548, 11571, 11595, 11620, 11646, 11673, 11702,
+    11732, 11763, 11795, 11828, 11863, 11899, 11936, 11974, 12013, 12054,
+    12095, 12138, 12182, 12227, 12273, 12320, 12368, 12417, 12467, 12518,
+    12570, 12623, 12676, 12731, 12786, 12842, 12898, 12956, 13014, 13072,
+    13131, 13191, 13251, 13311, 13372, 13433, 13495, 13556, 13618, 13680,
+    13743, 13805, 13867, 13929, 13991, 14053, 14115, 14177, 14238, 14299,
+    14359, 14419, 14479, 14538, 14597, 14655, 14712, 14768, 14824, 14879,
+    14933, 14986, 15039, 15090, 15140, 15189, 15237, 15284, 15330, 15375,
+    15418, 15460, 15500, 15539, 15577, 15614, 15648, 15682, 15714, 15744,
+    15772, 15799, 15825, 15849, 15871, 15891, 15910, 15927, 15942, 15955,
+    15967, 15977, 15985, 15991, 15996, 15999, 16000, 15999, 15996, 15991,
+    15985, 15977, 15967, 15955, 15942, 15927, 15910, 15891, 15871, 15849,
+    15825, 15799, 15772, 15744, 15714, 15682, 15648, 15614, 15577, 15539,
+    15500, 15460, 15418, 15375, 15330, 15284, 15237, 15189, 15140, 15090,
+    15039, 14986, 14933, 14879, 14824, 14768, 14712, 14655, 14597, 14538,
+    14479, 14419, 14359, 14299, 14238, 14177, 14115, 14053, 13991, 13929,
+    13867, 13805, 13743, 13680, 13618, 13556, 13495, 13433, 13372, 13311,
+    13251, 13191, 13131, 13072, 13014, 12956, 12898, 12842, 12786, 12731,
+    12676, 12623, 12570, 12518, 12467, 12417, 12368, 12320, 12273, 12227,
+    12182, 12138, 12095, 12054, 12013, 11974, 11936, 11899, 11863, 11828,
+    11795, 11763, 11732, 11702, 11673, 11646, 11620, 11595, 11571, 11548,
+    11527, 11507, 11488, 11470, 11453, 11437, 11423, 11409, 11397, 11385,
+    11375, 11365, 11356, 11349, 11342, 11336, 11331, 11326, 11323, 11319,
+    11317, 11315, 11314, 11313, 11313, 11313, 11314, 11315, 11316, 11318,
+    11319, 11321, 11323, 11324, 11326, 11328, 11329, 11331, 11332, 11333,
+    11333, 11333, 11332, 11331, 11330, 11327, 11324, 11320, 11316, 11310,
+    11303, 11296, 11287, 11277, 11266, 11254, 11240, 11225, 11209, 11191,
+    11172, 11151, 11128, 11104, 11078, 11050, 11020, 10989, 10955, 10920,
+    10882, 10843, 10801, 10757, 10711, 10663, 10612, 10559, 10504, 10447,
+    10387, 10324, 10260, 10192, 10123, 10050, 9975, 9898, 9818, 9735,
+    9650, 9562, 9472, 9379, 9283, 9185, 9084, 8980, 8874, 8765,
+    8653, 8539, 8422, 8302, 8180, 8056, 7929, 7799, 7667, 7532,
+    7395, 7255, 7113, 6969, 6822, 6673, 6522, 6369, 6213, 6055,
+    5895, 5733, 5569, 5403, 5235, 5065, 4894, 4720, 4545, 4369,
+    4190, 4011, 3829, 3647, 3463, 3278, 3091, 2904, 2715, 2525,
+    2335, 2143, 1951, 1758, 1564, 1370, 1175, 980, 784, 588,
+    392, 196, 0, -196, -392, -588, -784, -980, -1175, -1370,
+    -1564, -1758, -1951, -2143, -2335, -2525, -2715, -2904, -3091, -3278,
+    -3463, -3647, -3829, -4011, -4190, -4369, -4545, -4720, -4894, -5065,
+    -5235, -5403, -5569, -5733, -5895, -6055, -6213, -6369, -6522, -6673,
+    -6822, -6969, -7113, -7255, -7395, -7532, -7667, -7799, -7929, -8056,
+    -8180, -8302, -8422, -8539, -8653, -8765, -8874, -8980, -9084, -9185,
+    -9283, -9379, -9472, -9562, -9650, -9735, -9818, -9898, -9975, -10050,
+    -10123, -10192, -10260, -10324, -10387, -10447, -10504, -10559, -10612, -10663,
+    -10711, -10757, -10801, -10843, -10882, -10920, -10955, -10989, -11020, -11050,
+    -11078, -11104, -11128, -11151, -11172, -11191, -11209, -11225, -11240, -11254,
+    -11266, -11277, -11287, -11296, -11303, -11310, -11316, -11320, -11324, -11327,
+    -11330, -11331, -11332, -11333, -11333, -11333, -11332, -11331, -11329, -11328,
+    -11326, -11324, -11323, -11321, -11319, -11318, -11316, -11315, -11314, -11313,
+    -11313, -11313, -11314, -11315, -11317, -11319, -11323, -11326, -11331, -11336,
+    -11342, -11349, -11356, -11365, -11375, -11385, -11397, -11409, -11423, -11437,
+    -11453, -11470, -11488, -11507, -11527, -11548, -11571, -11595, -11620, -11646,
+    -11673, -11702, -11732, -11763, -11795, -11828, -11863, -11899, -11936, -11974,
+    -12013, -12054, -12095, -12138, -12182, -12227, -12273, -12320, -12368, -12417,
+    -12467, -12518, -12570, -12623, -12676, -12731, -12786, -12842, -12898, -12956,
+    -13014, -13072, -13131, -13191, -13251, -13311, -13372, -13433, -13495, -13556,
+    -13618, -13680, -13743, -13805, -13867, -13929, -13991, -14053, -14115, -14177,
+    -14238, -14299, -14359, -14419, -14479, -14538, -14597, -14655, -14712, -14768,
+    -14824, -14879, -14933, -14986, -15039, -15090, -15140, -15189, -15237, -15284,
+    -15330, -15375, -15418, -15460, -15500, -15539, -15577, -15614, -15648, -15682,
+    -15714, -15744, -15772, -15799, -15825, -15849, -15871, -15891, -15910, -15927,
+    -15942, -15955, -15967, -15977, -15985, -15991, -15996, -15999, -16000, -15999,
+    -15996, -15991, -15985, -15977, -15967, -15955, -15942, -15927, -15910, -15891,
+    -15871, -15849, -15825, -15799, -15772, -15744, -15714, -15682, -15648, -15614,
+    -15577, -15539, -15500, -15460, -15418, -15375, -15330, -15284, -15237, -15189,
+    -15140, -15090, -15039, -14986, -14933, -14879, -14824, -14768, -14712, -14655,
+    -14597, -14538, -14479, -14419, -14359, -14299, -14238, -14177, -14115, -14053,
+    -13991, -13929, -13867, -13805, -13743, -13680, -13618, -13556, -13495, -13433,
+    -13372, -13311, -13251, -13191, -13131, -13072, -13014, -12956, -12898, -12842,
+    -12786, -12731, -12676, -12623, -12570, -12518, -12467, -12417, -12368, -12320,
+    -12273, -12227, -12182, -12138, -12095, -12054, -12013, -11974, -11936, -11899,
+    -11863, -11828, -11795, -11763, -11732, -11702, -11673, -11646, -11620, -11595,
+    -11571, -11548, -11527, -11507, -11488, -11470, -11453, -11437, -11423, -11409,
+    -11397, -11385, -11375, -11365, -11356, -11349, -11342, -11336, -11331, -11326,
+    -11323, -11319, -11317, -11315, -11314, -11313, -11313, -11313, -11314, -11315,
+    -11316, -11318, -11319, -11321, -11323, -11324, -11326, -11328, -11329, -11331,
+    -11332, -11333, -11333, -11333, -11332, -11331, -11330, -11327, -11324, -11320,
+    -11316, -11310, -11303, -11296, -11287, -11277, -11266, -11254, -11240, -11225,
+    -11209, -11191, -11172, -11151, -11128, -11104, -11078, -11050, -11020, -10989,
+    -10955, -10920, -10882, -10843, -10801, -10757, -10711, -10663, -10612, -10559,
+    -10504, -10447, -10387, -10324, -10260, -10192, -10123, -10050, -9975, -9898,
+    -9818, -9735, -9650, -9562, -9472, -9379, -9283, -9185, -9084, -8980,
+    -8874, -8765, -8653, -8539, -8422, -8302, -8180, -8056, -7929, -7799,
+    -7667, -7532, -7395, -7255, -7113, -6969, -6822, -6673, -6522, -6369,
+    -6213, -6055, -5895, -5733, -5569, -5403, -5235, -5065, -4894, -4720,
+    -4545, -4369, -4190, -4011, -3829, -3647, -3463, -3278, -3091, -2904,
+    -2715, -2525, -2335, -2143, -1951, -1758, -1564, -1370, -1175, -980,
+    -784, -588, -392, -196,
 };
-
-#if 1
-  const unsigned int toneVolumes[] = { 2, 4, 8, 12, 16 };
-#else
-  const unsigned int toneVolumes[] = { 4000, 8000, 16000, 24000, 32000 };
-#endif
 
 #if defined(SDCARD)
 const char * audioFilenames[] = {
@@ -117,180 +204,261 @@ const char * audioFilenames[] = {
 };
 
 uint64_t sdAvailableSystemAudioFiles = 0;
-uint8_t  sdAvailablePhaseAudioFiles[MAX_PHASES] = { 0 };
-uint8_t  sdAvailableMixerAudioFiles[MAX_MIXERS] = { 0 };
+uint32_t sdAvailablePhaseAudioFiles = 0;
+uint64_t sdAvailableSwitchAudioFiles = 0;
+uint64_t sdAvailableLogicalSwitchAudioFiles = 0;
 
-void refreshSystemAudioFiles()
+#define MASK_SYSTEM_AUDIO_FILE(index)                 ((uint64_t)1 << index)
+#define MASK_PHASE_AUDIO_FILE(index, event)           ((uint32_t)1 << (2*index+event))
+#define MASK_SWITCH_AUDIO_FILE(index)                 ((uint64_t)1 << index)
+#define MASK_LOGICAL_SWITCH_AUDIO_FILE(index, event)  ((uint64_t)1 << (2*index+event))
+
+bool isFileAvailable(const char * filename)
 {
   FILINFO info;
-#if _USE_LFN
   TCHAR lfn[_MAX_LFN + 1];
   info.lfname = lfn;
   info.lfsize = sizeof(lfn);
-#endif
+  return f_stat(filename, &info) == FR_OK;
+}
 
-  char filename[32] = SYSTEM_SOUNDS_PATH "/";
-  strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
+char * getAudioPath(char * path)
+{
+  strcpy(path, SOUNDS_PATH "/");
+  strncpy(path+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
+  return path + sizeof(SOUNDS_PATH);
+}
+
+char * getSystemAudioPath(char * path)
+{
+  char * str = getAudioPath(path);
+  strcpy(str, SYSTEM_SUBDIR "/");
+  return str + sizeof(SYSTEM_SUBDIR);
+}
+
+void getSystemAudioFile(char * filename, int index)
+{
+  char * str = getSystemAudioPath(filename);
+  strcpy(str, audioFilenames[index]);
+  strcat(str, SOUNDS_EXT);
+}
+
+void referenceSystemAudioFiles()
+{
+  char path[AUDIO_FILENAME_MAXLEN+1];
+  FILINFO fno;
+  DIR dir;
+  char *fn;   /* This function is assuming non-Unicode cfg. */
+  TCHAR lfn[_MAX_LFN + 1];
+  fno.lfname = lfn;
+  fno.lfsize = sizeof(lfn);
+
+  uint64_t availableAudioFiles = 0;
 
   assert(sizeof(audioFilenames)==AU_FRSKY_FIRST*sizeof(char *));
   assert(sizeof(sdAvailableSystemAudioFiles)*8 >= AU_FRSKY_FIRST);
 
-  uint64_t availableAudioFiles = 0;
+  char * filename = getSystemAudioPath(path);
+  *(filename-1) = '\0';
 
-  for (uint32_t i=0; i<AU_FRSKY_FIRST; i++) {
-    strcpy(filename+sizeof(SYSTEM_SOUNDS_PATH), audioFilenames[i]);
-    strcat(filename+sizeof(SYSTEM_SOUNDS_PATH), SOUNDS_EXT);
-    if (f_stat(filename, &info) == FR_OK)
-      availableAudioFiles |= ((uint64_t)1 << i);
+  FRESULT res = f_opendir(&dir, path);        /* Open the directory */
+  if (res == FR_OK) {
+    for (;;) {
+      res = f_readdir(&dir, &fno);                   /* Read a directory item */
+      if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
+      fn = *fno.lfname ? fno.lfname : fno.fname;
+      uint8_t len = strlen(fn);
+
+      // Eliminates directories / non wav files
+      if (len < 5 || strcasecmp(fn+len-4, SOUNDS_EXT) || (fno.fattrib & AM_DIR)) continue;
+
+      for (int i=0; i<AU_FRSKY_FIRST; i++) {
+        getSystemAudioFile(path, i);
+        if (!strcmp(filename, fn)) {
+          availableAudioFiles |= MASK_SYSTEM_AUDIO_FILE(i);
+          break;
+        }
+      }
+    }
   }
 
   sdAvailableSystemAudioFiles = availableAudioFiles;
 }
 
-const char * suffixes[] = { "-OFF", "-ON", /*"-BG", */NULL };
+const char * suffixes[] = { "-off", "-on" };
 
-inline uint8_t getAvailableFiles(char *prefix, FILINFO &info, char *filename)
+char * getModelPath(char * path)
 {
-  uint8_t result = 0;
-
-  for (uint8_t i=0; suffixes[i]; i++) {
-    strcpy(prefix, suffixes[i]);
-    strcat(prefix, SOUNDS_EXT);
-    if (f_stat(filename, &info) == FR_OK)
-      result |= ((uint8_t)1 << i);
-  }
-
+  strcpy(path, SOUNDS_PATH "/");
+  strncpy(path+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
+  char * result = strcat_modelname(path+sizeof(SOUNDS_PATH), g_eeGeneral.currModel);
+  *result++ = '/';
+  *result = '\0';
   return result;
 }
 
-void refreshModelAudioFiles()
+void getPhaseAudioFile(char * filename, int index, unsigned int event)
 {
-  FILINFO info;
+  char * str = getModelPath(filename);
+  char * tmp = strcat_phasename(str, index);
+  strcpy(tmp, suffixes[event]);
+  strcat(tmp, SOUNDS_EXT);
+}
+
+void getSwitchAudioFile(char * filename, int index)
+{
+  char * str = getModelPath(filename);
+  int len = STR_VSWITCHES[0];
+  strncpy(str, &STR_VSWITCHES[1+len*index], len);
+  str += len-1;
+  if (*str == '\300') {
+    strcpy(str, "-up");
+    str += 3;
+  }
+  else if (*str == '-') {
+    strcpy(str, "-mid");
+    str += 4;
+  }
+  else if (*str == '\301') {
+    strcpy(str, "-down");
+    str += 5;
+  }
+  else {
+    str += 1;
+  }
+  strcat(str, SOUNDS_EXT);
+}
+
+void getLogicalSwitchAudioFile(char * filename, int index, unsigned int event)
+{
+  char * str = getModelPath(filename);
+  int len = STR_VSWITCHES[0];
+  strncpy(str, &STR_VSWITCHES[1+len*(index+SWSRC_FIRST_CSW-1)], len);
+  str += len;
+  strcpy(str, suffixes[event]);
+  strcat(str, SOUNDS_EXT);
+}
+
+void referenceModelAudioFiles()
+{
+  char path[AUDIO_FILENAME_MAXLEN+1];
+  FILINFO fno;
+  DIR dir;
+  char *fn;   /* This function is assuming non-Unicode cfg. */
   TCHAR lfn[_MAX_LFN + 1];
-  info.lfname = lfn;
-  info.lfsize = sizeof(lfn);
+  fno.lfname = lfn;
+  fno.lfsize = sizeof(lfn);
 
-  char filename[AUDIO_FILENAME_MAXLEN+1] = SOUNDS_PATH "/";
-  strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
+  sdAvailablePhaseAudioFiles = 0;
+  sdAvailableSwitchAudioFiles = 0;
+  sdAvailableLogicalSwitchAudioFiles = 0;
   
-  if (sdMounted()) {
-    char *buf = strcat_modelname(&filename[sizeof(SOUNDS_PATH)], g_eeGeneral.currModel);
-    *buf++ = '/';
+  char * filename = getModelPath(path);
+  *(filename-1) = '\0';
 
-    for (uint32_t i=0; i<MAX_PHASES; i++) {
-      char *tmp = strcat_phasename(buf, i);
-      sdAvailablePhaseAudioFiles[i] = (tmp != buf ? getAvailableFiles(strcat_phasename(buf, i), info, filename) : 0);
+  FRESULT res = f_opendir(&dir, path);        /* Open the directory */
+  if (res == FR_OK) {
+    for (;;) {
+      res = f_readdir(&dir, &fno);                   /* Read a directory item */
+      if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
+      fn = *fno.lfname ? fno.lfname : fno.fname;
+      uint8_t len = strlen(fn);
+      bool found = false;
+
+      // Eliminates directories / non wav files
+      if (len < 5 || strcasecmp(fn+len-4, SOUNDS_EXT) || (fno.fattrib & AM_DIR)) continue;
+
+      // Phases Audio Files <phasename>-[on|off].wav
+      for (int i=0; i<MAX_PHASES && !found; i++) {
+        for (int event=0; event<2; event++) {
+          getPhaseAudioFile(path, i, event);
+          if (!strcmp(filename, fn)) {
+            sdAvailablePhaseAudioFiles |= MASK_PHASE_AUDIO_FILE(i, event);
+            found = true;
+            break;
+          }
+        }
+      }
+
+      // Switches Audio Files <switchname>-[up|mid|down].wav
+      for (int i=0; i<SWSRC_LAST_SWITCH+NUM_XPOTS*XPOTS_MULTIPOS_COUNT && !found; i++) {
+        getSwitchAudioFile(path, i);
+        if (!strcmp(filename, fn)) {
+          sdAvailableSwitchAudioFiles |= MASK_SWITCH_AUDIO_FILE(i);
+          found = true;
+        }
+      }
+
+      // Logical Switches Audio Files <switchname>-[on|off].wav
+      for (int i=0; i<NUM_CSW && !found; i++) {
+        for (int event=0; event<2; event++) {
+          getLogicalSwitchAudioFile(path, i, event);
+          if (!strcmp(filename, fn)) {
+            sdAvailableLogicalSwitchAudioFiles |= MASK_LOGICAL_SWITCH_AUDIO_FILE(i, event);
+            found = true;
+            break;
+          }
+        }
+      }
     }
-
-    /* for (uint32_t i=0; i<MAX_MIXERS; i++) {
-      char *tmp = strcat_mixername_nodefault(buf, i);
-      sdAvailableMixerAudioFiles[i] = (tmp != buf ? getAvailableFiles(tmp, info, filename) : 0);
-    } */
   }
 }
 
-bool isAudioFileAvailable(uint32_t i, char * filename)
+bool isAudioFileReferenced(uint32_t i, char * filename)
 {
   uint8_t category = (i >> 24);
   uint8_t index = (i >> 16) & 0xFF;
   uint8_t event = i & 0xFF;
 
 #if 0
-  printf("isAudioFileAvailable(%08x)\n", i); fflush(stdout);
+  printf("isAudioFileReferenced(%08x)\n", i); fflush(stdout);
 #endif
 
   if (category == SYSTEM_AUDIO_CATEGORY) {
-    if (sdAvailableSystemAudioFiles & ((uint64_t)1 << event)) {
-      strcpy(filename, SYSTEM_SOUNDS_PATH "/");
-      strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
-      strcpy(filename+sizeof(SYSTEM_SOUNDS_PATH), audioFilenames[i]);
-      strcat(filename+sizeof(SYSTEM_SOUNDS_PATH), SOUNDS_EXT);
+    if (sdAvailableSystemAudioFiles & MASK_SYSTEM_AUDIO_FILE(event)) {
+      getSystemAudioFile(filename, event);
       return true;
     }
   }
   else if (category == PHASE_AUDIO_CATEGORY) {
-    if (sdAvailablePhaseAudioFiles[index] & ((uint32_t)1 << event)) {
-      strcpy(filename, SOUNDS_PATH "/");
-      strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
-      char *str = strcat_modelname(filename+sizeof(SOUNDS_PATH), g_eeGeneral.currModel);
-      *str++ = '/';
-      char * tmp = strcat_phasename(str, index);
-      if (tmp != str) {
-        strcpy(tmp, suffixes[event]);
-        strcat(tmp, SOUNDS_EXT);
+    if (sdAvailablePhaseAudioFiles & MASK_PHASE_AUDIO_FILE(index, event)) {
+      getPhaseAudioFile(filename, index, event);
         return true;
       }
     }
+  else if (category == SWITCH_AUDIO_CATEGORY) {
+    if (sdAvailableSwitchAudioFiles & MASK_SWITCH_AUDIO_FILE(index)) {
+      getSwitchAudioFile(filename, index);
+      return true;
+    }
   }
-  else if (category == MIXER_AUDIO_CATEGORY) {
-    if (sdAvailableMixerAudioFiles[index] & ((uint32_t)1 << event)) {
-      strcpy(filename, SOUNDS_PATH "/");
-      strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
-      char *str = strcat_modelname(filename+sizeof(SOUNDS_PATH), g_eeGeneral.currModel);
-      *str++ = '/';
-      char * tmp = strcat_mixername(str, index);
-      if (tmp != str) {
-        strcpy(tmp, suffixes[event]);
-        strcat(tmp, SOUNDS_EXT);
+  else if (category == LOGICAL_SWITCH_AUDIO_CATEGORY) {
+    if (sdAvailableLogicalSwitchAudioFiles & MASK_LOGICAL_SWITCH_AUDIO_FILE(index, event)) {
+      getLogicalSwitchAudioFile(filename, index, event);
         return true;
       }
     }
-  }
 
   return false;
 }
-#else
-#define isAudioFileAvailable(i, f) false
-#endif
 
-int16_t alawTable[256];
-int16_t ulawTable[256];
+tmr10ms_t timeAutomaticPromptsSilence = 0;
 
-#define         SIGN_BIT        (0x80)      /* Sign bit for a A-law byte. */
-#define         QUANT_MASK      (0xf)       /* Quantization field mask. */
-#define         SEG_SHIFT       (4)         /* Left shift for segment number. */
-#define         SEG_MASK        (0x70)      /* Segment field mask. */
-#define         BIAS            (0x84)      /* Bias for linear code. */
-
-static short alaw2linear(unsigned char a_val)
+void playModelEvent(uint8_t category, uint8_t index, uint8_t event)
 {
-  int t;
-  int seg;
-
-  a_val ^= 0x55;
-
-  t = a_val & QUANT_MASK;
-  seg = ((unsigned)a_val & SEG_MASK) >> SEG_SHIFT;
-  if(seg) t= (t + t + 1 + 32) << (seg + 2);
-  else    t= (t + t + 1     ) << 3;
-
-  return (a_val & SIGN_BIT) ? t : -t;
-}
-
-static short ulaw2linear(unsigned char u_val)
-{
-  int t;
-
-  /* Complement to obtain normal u-law value. */
-  u_val = ~u_val;
-
-  /*
-   * Extract and bias the quantization bits. Then
-   * shift up by the segment number and subtract out the bias.
-   */
-  t = ((u_val & QUANT_MASK) << 3) + BIAS;
-  t <<= ((unsigned)u_val & SEG_MASK) >> SEG_SHIFT;
-
-  return (u_val & SIGN_BIT) ? (BIAS - t) : (t - BIAS);
-}
-
-void codecsInit()
-{
-  for (uint32_t i=0; i<256; i++) {
-    alawTable[i] = alaw2linear(i);
-    ulawTable[i] = ulaw2linear(i);
+  char filename[AUDIO_FILENAME_MAXLEN+1];
+  if ((get_tmr10ms()-timeAutomaticPromptsSilence > 50) && isAudioFileReferenced((category << 24) + (index << 16) + event, filename)) {
+    audioQueue.playFile(filename);
   }
 }
+#else
+
+#define isAudioFileReferenced(i, f) false
+
+#endif
+
+const int16_t alawTable[256] = { -5504, -5248, -6016, -5760, -4480, -4224, -4992, -4736, -7552, -7296, -8064, -7808, -6528, -6272, -7040, -6784, -2752, -2624, -3008, -2880, -2240, -2112, -2496, -2368, -3776, -3648, -4032, -3904, -3264, -3136, -3520, -3392, -22016, -20992, -24064, -23040, -17920, -16896, -19968, -18944, -30208, -29184, -32256, -31232, -26112, -25088, -28160, -27136, -11008, -10496, -12032, -11520, -8960, -8448, -9984, -9472, -15104, -14592, -16128, -15616, -13056, -12544, -14080, -13568, -344, -328, -376, -360, -280, -264, -312, -296, -472, -456, -504, -488, -408, -392, -440, -424, -88, -72, -120, -104, -24, -8, -56, -40, -216, -200, -248, -232, -152, -136, -184, -168, -1376, -1312, -1504, -1440, -1120, -1056, -1248, -1184, -1888, -1824, -2016, -1952, -1632, -1568, -1760, -1696, -688, -656, -752, -720, -560, -528, -624, -592, -944, -912, -1008, -976, -816, -784, -880, -848, 5504, 5248, 6016, 5760, 4480, 4224, 4992, 4736, 7552, 7296, 8064, 7808, 6528, 6272, 7040, 6784, 2752, 2624, 3008, 2880, 2240, 2112, 2496, 2368, 3776, 3648, 4032, 3904, 3264, 3136, 3520, 3392, 22016, 20992, 24064, 23040, 17920, 16896, 19968, 18944, 30208, 29184, 32256, 31232, 26112, 25088, 28160, 27136, 11008, 10496, 12032, 11520, 8960, 8448, 9984, 9472, 15104, 14592, 16128, 15616, 13056, 12544, 14080, 13568, 344, 328, 376, 360, 280, 264, 312, 296, 472, 456, 504, 488, 408, 392, 440, 424, 88, 72, 120, 104, 24, 8, 56, 40, 216, 200, 248, 232, 152, 136, 184, 168, 1376, 1312, 1504, 1440, 1120, 1056, 1248, 1184, 1888, 1824, 2016, 1952, 1632, 1568, 1760, 1696, 688, 656, 752, 720, 560, 528, 624, 592, 944, 912, 1008, 976, 816, 784, 880, 848 };
+const int16_t ulawTable[256] = { -32124, -31100, -30076, -29052, -28028, -27004, -25980, -24956, -23932, -22908, -21884, -20860, -19836, -18812, -17788, -16764, -15996, -15484, -14972, -14460, -13948, -13436, -12924, -12412, -11900, -11388, -10876, -10364, -9852, -9340, -8828, -8316, -7932, -7676, -7420, -7164, -6908, -6652, -6396, -6140, -5884, -5628, -5372, -5116, -4860, -4604, -4348, -4092, -3900, -3772, -3644, -3516, -3388, -3260, -3132, -3004, -2876, -2748, -2620, -2492, -2364, -2236, -2108, -1980, -1884, -1820, -1756, -1692, -1628, -1564, -1500, -1436, -1372, -1308, -1244, -1180, -1116, -1052, -988, -924, -876, -844, -812, -780, -748, -716, -684, -652, -620, -588, -556, -524, -492, -460, -428, -396, -372, -356, -340, -324, -308, -292, -276, -260, -244, -228, -212, -196, -180, -164, -148, -132, -120, -112, -104, -96, -88, -80, -72, -64, -56, -48, -40, -32, -24, -16, -8, 0, 32124, 31100, 30076, 29052, 28028, 27004, 25980, 24956, 23932, 22908, 21884, 20860, 19836, 18812, 17788, 16764, 15996, 15484, 14972, 14460, 13948, 13436, 12924, 12412, 11900, 11388, 10876, 10364, 9852, 9340, 8828, 8316, 7932, 7676, 7420, 7164, 6908, 6652, 6396, 6140, 5884, 5628, 5372, 5116, 4860, 4604, 4348, 4092, 3900, 3772, 3644, 3516, 3388, 3260, 3132, 3004, 2876, 2748, 2620, 2492, 2364, 2236, 2108, 1980, 1884, 1820, 1756, 1692, 1628, 1564, 1500, 1436, 1372, 1308, 1244, 1180, 1116, 1052, 988, 924, 876, 844, 812, 780, 748, 716, 684, 652, 620, 588, 556, 524, 492, 460, 428, 396, 372, 356, 340, 324, 308, 292, 276, 260, 244, 228, 212, 196, 180, 164, 148, 132, 120, 112, 104, 96, 88, 80, 72, 64, 56, 48, 40, 32, 24, 16, 8, 0 };
 
 AudioQueue audioQueue;
 
@@ -320,7 +488,6 @@ void audioTask(void* pdata)
 
 #if defined(SDCARD)
   if (!unexpectedShutdown) {
-    codecsInit();
     sdInit();
     AUDIO_TADA();
   }
@@ -348,7 +515,7 @@ void AudioQueue::pushBuffer(AudioBuffer *buffer)
   __enable_irq();
 }
 
-void mix(uint16_t * result, int sample, unsigned int fade)
+void mixSample(uint16_t * result, int sample, unsigned int fade)
 {
   *result = limit(0, *result + ((sample >> fade) >> 4), 4095);
 }
@@ -358,42 +525,41 @@ void mix(uint16_t * result, int sample, unsigned int fade)
 #define RIFF_CHUNK_SIZE 12
 uint8_t wavBuffer[AUDIO_BUFFER_SIZE*2];
 
-int AudioQueue::mixWav(AudioContext &context, AudioBuffer *buffer, int volume, unsigned int fade)
+int WavContext::mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade)
 {
   FRESULT result = FR_OK;
   UINT read = 0;
-  AudioFragment & fragment = context.fragment;
 
   if (fragment.file[1]) {
-    result = f_open(&context.state.wav.file, fragment.file, FA_OPEN_EXISTING | FA_READ);
+    result = f_open(&state.file, fragment.file, FA_OPEN_EXISTING | FA_READ);
     fragment.file[1] = 0;
     if (result == FR_OK) {
-      result = f_read(&context.state.wav.file, wavBuffer, RIFF_CHUNK_SIZE+8, &read);
+      result = f_read(&state.file, wavBuffer, RIFF_CHUNK_SIZE+8, &read);
       if (result == FR_OK && read == RIFF_CHUNK_SIZE+8 && !memcmp(wavBuffer, "RIFF", 4) && !memcmp(wavBuffer+8, "WAVEfmt ", 8)) {
         uint32_t size = *((uint32_t *)(wavBuffer+16));
-        result = (size < 256 ? f_read(&context.state.wav.file, wavBuffer, size+8, &read) : FR_DENIED);
+        result = (size < 256 ? f_read(&state.file, wavBuffer, size+8, &read) : FR_DENIED);
         if (result == FR_OK && read == size+8) {
-          context.state.wav.codec = ((uint16_t *)wavBuffer)[0];
-          context.state.wav.freq = ((uint16_t *)wavBuffer)[2];
+          state.codec = ((uint16_t *)wavBuffer)[0];
+          state.freq = ((uint16_t *)wavBuffer)[2];
           uint32_t *wavSamplesPtr = (uint32_t *)(wavBuffer + size);
           uint32_t size = wavSamplesPtr[1];
-          if (context.state.wav.freq != 0 && context.state.wav.freq * (AUDIO_SAMPLE_RATE / context.state.wav.freq) == AUDIO_SAMPLE_RATE) {
-            context.state.wav.resampleRatio = (AUDIO_SAMPLE_RATE / context.state.wav.freq);
-            context.state.wav.readSize = (context.state.wav.codec == CODEC_ID_PCM_S16LE ? 2*AUDIO_BUFFER_SIZE : AUDIO_BUFFER_SIZE) / context.state.wav.resampleRatio;
+          if (state.freq != 0 && state.freq * (AUDIO_SAMPLE_RATE / state.freq) == AUDIO_SAMPLE_RATE) {
+            state.resampleRatio = (AUDIO_SAMPLE_RATE / state.freq);
+            state.readSize = (state.codec == CODEC_ID_PCM_S16LE ? 2*AUDIO_BUFFER_SIZE : AUDIO_BUFFER_SIZE) / state.resampleRatio;
           }
           else {
             result = FR_DENIED;
           }
           while (result == FR_OK && memcmp(wavSamplesPtr, "data", 4) != 0) {
-            result = f_lseek(&context.state.wav.file, f_tell(&context.state.wav.file)+size);
+            result = f_lseek(&state.file, f_tell(&state.file)+size);
             if (result == FR_OK) {
-              result = f_read(&context.state.wav.file, wavBuffer, 8, &read);
+              result = f_read(&state.file, wavBuffer, 8, &read);
               if (read != 8) result = FR_DENIED;
               wavSamplesPtr = (uint32_t *)wavBuffer;
               size = wavSamplesPtr[1];
             }
           }
-          context.state.wav.size = size;
+          state.size = size;
         }
         else {
           result = FR_DENIED;
@@ -407,128 +573,134 @@ int AudioQueue::mixWav(AudioContext &context, AudioBuffer *buffer, int volume, u
 
   read = 0;
   if (result == FR_OK) {
-    result = f_read(&context.state.wav.file, wavBuffer, context.state.wav.readSize, &read);
+    result = f_read(&state.file, wavBuffer, state.readSize, &read);
     if (result == FR_OK) {
-      if (read > context.state.wav.size) {
-        read = context.state.wav.size;
+      if (read > state.size) {
+        read = state.size;
       }
-      context.state.wav.size -= read;
+      state.size -= read;
 
-      if (read != context.state.wav.readSize) {
-        f_close(&context.state.wav.file);
+      if (read != state.readSize) {
+        f_close(&state.file);
         fragment.clear();
       }
 
       uint16_t * samples = buffer->data;
-      if (context.state.wav.codec == CODEC_ID_PCM_S16LE) {
+      if (state.codec == CODEC_ID_PCM_S16LE) {
         read /= 2;
         for (uint32_t i=0; i<read; i++) {
-          for (uint8_t j=0; j<context.state.wav.resampleRatio; j++)
-            mix(samples++, ((int16_t *)wavBuffer)[i], fade+2-volume);
+          for (uint8_t j=0; j<state.resampleRatio; j++) {
+            mixSample(samples++, ((int16_t *)wavBuffer)[i], fade+2-volume);
+          }
         }
       }
-      else if (context.state.wav.codec == CODEC_ID_PCM_ALAW) {
-        for (uint32_t i=0; i<read; i++)
-          for (uint8_t j=0; j<context.state.wav.resampleRatio; j++)
-            mix(samples++, alawTable[wavBuffer[i]], fade+2-volume);
+      else if (state.codec == CODEC_ID_PCM_ALAW) {
+        for (uint32_t i=0; i<read; i++) {
+          for (uint8_t j=0; j<state.resampleRatio; j++) {
+            mixSample(samples++, alawTable[wavBuffer[i]], fade+2-volume);
+          }
+        }
       }
-      else if (context.state.wav.codec == CODEC_ID_PCM_MULAW) {
-        for (uint32_t i=0; i<read; i++)
-          for (uint8_t j=0; j<context.state.wav.resampleRatio; j++)
-            mix(samples++, ulawTable[wavBuffer[i]], fade+2-volume);
+      else if (state.codec == CODEC_ID_PCM_MULAW) {
+        for (uint32_t i=0; i<read; i++) {
+          for (uint8_t j=0; j<state.resampleRatio; j++) {
+            mixSample(samples++, ulawTable[wavBuffer[i]], fade+2-volume);
+          }
+        }
       }
 
       return samples - buffer->data;
     }
   }
 
-  fragment.clear();
+  clear();
   return -result;
 }
 #else
-int AudioQueue::mixWav(AudioContext &context, AudioBuffer *buffer, int volume, unsigned int fade)
+int WavContext::mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade)
 {
   return 0;
 }
 #endif
 
-int AudioQueue::mixBeep(AudioContext &context, AudioBuffer *buffer, int volume, unsigned int fade)
+const unsigned int toneVolumes[] = { 10, 8, 6, 4, 2 };
+inline float evalVolumeRatio(int freq, int volume)
 {
-  AudioFragment & fragment = context.fragment;
-  int duration = 0;
-  int result = 0;
-
-  if (fragment.tone.duration > 0) {
-    result = AUDIO_BUFFER_SIZE;
-    if (fragment.tone.freq && context.state.tone.freq!=fragment.tone.freq && (!fragment.tone.freqIncr || abs(context.state.tone.freq-fragment.tone.freq) > 100)) {
-      int periods = BEEP_POINTS_COUNT / ((AUDIO_SAMPLE_RATE / fragment.tone.freq) + 1);
-      context.state.tone.count = (periods * AUDIO_SAMPLE_RATE) / fragment.tone.freq;
-      if (context.state.tone.idx >= context.state.tone.count) context.state.tone.idx = 0;
-#if 1
-      for (unsigned int i=0; i<context.state.tone.count; i++)
-        context.state.tone.points[i] = sineValues[((DIM(sineValues)*periods*i)/context.state.tone.count) % DIM(sineValues)] * (toneVolumes[2+volume]);
-#else
-      double t = (M_PI * 2 * periods) / context.state.tone.count;
-      for (unsigned int i=0; i<context.state.tone.count; i++)
-        context.state.tone.points[i] = sin(t*i) * (toneVolumes[2+volume]);
-#endif
-    }
-
-    if (fragment.tone.freqIncr)
-      fragment.tone.freq += AUDIO_BUFFER_DURATION * fragment.tone.freqIncr;
-    else
-      fragment.tone.freq = 0;
-
-    duration = AUDIO_BUFFER_DURATION;
-    int points = AUDIO_BUFFER_SIZE;
-    bool end = false;
-
-    if (fragment.tone.duration <= AUDIO_BUFFER_DURATION) {
-      duration = fragment.tone.duration;
-      points = duration*(AUDIO_BUFFER_SIZE/AUDIO_BUFFER_DURATION);
-      end = true;
-    }
-
-    for (int i=0; i<points; i++) {
-      mix(&buffer->data[i], context.state.tone.points[context.state.tone.idx], fade);
-      context.state.tone.idx = context.state.tone.idx + 1;
-      if (context.state.tone.idx >= context.state.tone.count) {
-        context.state.tone.idx = 0;
-        if (end && i+BEEP_POINTS_COUNT>points) break;
-      }
-    }
-
-    fragment.tone.duration -= duration;
-    if (fragment.tone.duration > 0)
-      return AUDIO_BUFFER_SIZE;
+  float result = toneVolumes[2+volume];
+  if (freq < 330) {
+    result = (result * freq * freq) / (330 * 330);
   }
-
-  if (fragment.tone.pause > 0) {
-    result = AUDIO_BUFFER_SIZE;
-    fragment.tone.pause -= min<unsigned int>(AUDIO_BUFFER_DURATION-duration, fragment.tone.pause);
-    if (fragment.tone.pause > 0)
-      return AUDIO_BUFFER_SIZE;
-  }
-
-  fragment.clear();
   return result;
 }
 
-int AudioQueue::mixAudioContext(AudioContext &context, AudioBuffer *buffer, int beepVolume, int wavVolume, unsigned int fade)
+int ToneContext::mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade)
 {
-  int result;
-  AudioFragment & fragment = context.fragment;
+  int duration = 0;
+  int result = 0;
 
-  if (fragment.type == FRAGMENT_TONE) {
-    result = mixBeep(context, buffer, beepVolume, fade);
-  }
-  else if (fragment.type == FRAGMENT_FILE) {
-    result = mixWav(context, buffer, wavVolume, fade);
-  }
-  else {
-    result = 0;
+  int remainingDuration = fragment.tone.duration - state.duration;
+  if (remainingDuration > 0) {
+    int points;
+    double toneIdx = state.idx;
+
+    if (fragment.tone.reset) {
+      fragment.tone.reset = 0;
+      state.duration = 0;
+      state.pause = 0;
+    }
+
+    if (fragment.tone.freq != state.freq) {
+      state.freq = fragment.tone.freq;
+      state.step = double(DIM(sineValues)*fragment.tone.freq) / AUDIO_SAMPLE_RATE;
+      state.volume = evalVolumeRatio(fragment.tone.freq, volume);
+    }
+
+    if (fragment.tone.freqIncr) {
+      fragment.tone.freq += AUDIO_BUFFER_DURATION * fragment.tone.freqIncr;
+    }
+
+    if (remainingDuration > AUDIO_BUFFER_DURATION) {
+      duration = AUDIO_BUFFER_DURATION;
+      points = AUDIO_BUFFER_SIZE;
+    }
+    else {
+      duration = remainingDuration;
+      points = (duration * AUDIO_BUFFER_SIZE) / AUDIO_BUFFER_DURATION;
+      unsigned int end = toneIdx + (state.step * points);
+      if (end > DIM(sineValues))
+        end -= (end % DIM(sineValues));
+      else
+        end = DIM(sineValues);
+      points = (double(end) - toneIdx) / state.step;
+    }
+
+    for (int i=0; i<points; i++) {
+      int16_t sample = sineValues[int(toneIdx)] / state.volume;
+      mixSample(&buffer->data[i], sample, fade);
+      toneIdx += state.step;
+      if ((unsigned int)toneIdx >= DIM(sineValues))
+        toneIdx -= DIM(sineValues);
+    }
+
+    if (remainingDuration > AUDIO_BUFFER_DURATION) {
+      state.duration += AUDIO_BUFFER_DURATION;
+      state.idx = toneIdx;
+      return AUDIO_BUFFER_SIZE;
+    }
+    else {
+      state.duration = 32000; // once the tone is finished, it's not possible to update its frequency and duration
+    }
   }
 
+  remainingDuration = fragment.tone.pause - state.pause;
+  if (remainingDuration > 0) {
+    result = AUDIO_BUFFER_SIZE;
+    state.pause += min<unsigned int>(AUDIO_BUFFER_DURATION-duration, fragment.tone.pause);
+    if (fragment.tone.pause > state.pause)
+      return result;
+  }
+
+  clear();
   return result;
 }
 
@@ -545,15 +717,20 @@ void AudioQueue::wakeup()
       buffer->data[i] = 0x8000 >> 4; /* silence */
     }
 
-    // mix the foreground context
-    result = mixAudioContext(foregroundContext, buffer, g_eeGeneral.beepVolume, g_eeGeneral.wavVolume, fade);
+    // mix the priority context (only tones)
+    result = priorityContext.mixBuffer(buffer, g_eeGeneral.beepVolume, fade);
     if (result > 0) {
-      size = max(size, result);
+      size = result;
       fade += 1;
     }
 
-    // mix the normal context
-    result = mixAudioContext(currentContext, buffer, g_eeGeneral.beepVolume, g_eeGeneral.wavVolume, fade);
+    // mix the normal context (tones and wavs)
+    if (normalContext.fragment.type == FRAGMENT_TONE)
+      result = normalContext.tone.mixBuffer(buffer, g_eeGeneral.beepVolume, fade);
+    else if (normalContext.fragment.type == FRAGMENT_FILE)
+      result = normalContext.wav.mixBuffer(buffer, g_eeGeneral.wavVolume, fade);
+    else
+      result = 0;
     if (result > 0) {
       size = max(size, result);
       fade += 1;
@@ -561,8 +738,7 @@ void AudioQueue::wakeup()
     else {
       CoEnterMutexSection(audioMutex);
       if (ridx != widx) {
-        currentContext.clear();
-        currentContext.fragment = fragments[ridx];
+        normalContext.fragment = fragments[ridx];
         if (!fragments[ridx].repeat--) {
           ridx = (ridx + 1) % AUDIO_QUEUE_LENGTH;
         }
@@ -570,9 +746,16 @@ void AudioQueue::wakeup()
       CoLeaveMutexSection(audioMutex);
     }
 
+    // mix the vario context
+    result = varioContext.mixBuffer(buffer, g_eeGeneral.varioVolume, fade);
+    if (result > 0) {
+      size = max(size, result);
+      fade += 1;
+    }
+
     // mix the background context
-    if (!isFunctionActive(FUNC_BACKGND_MUSIC_PAUSE)) {
-      result = mixAudioContext(backgroundContext, buffer, g_eeGeneral.varioVolume, g_eeGeneral.backgroundVolume, fade);
+    if (isFunctionActive(FUNCTION_BACKGND_MUSIC) && !isFunctionActive(FUNCTION_BACKGND_MUSIC_PAUSE)) {
+      result = backgroundContext.mixBuffer(buffer, g_eeGeneral.backgroundVolume, fade);
       if (result > 0) {
         size = max(size, result);
       }
@@ -600,12 +783,12 @@ inline unsigned int getToneLength(uint16_t len)
 
 void AudioQueue::pause(uint16_t len)
 {
-  play(0, 0, len);
+  playTone(0, 0, len);
 }	
 
 bool AudioQueue::isPlaying(uint8_t id)
 {
-  if (currentContext.fragment.id == id || backgroundContext.fragment.id == id)
+  if (normalContext.fragment.id == id || backgroundContext.fragment.id == id)
     return true;
 
   uint8_t i = ridx;
@@ -618,7 +801,7 @@ bool AudioQueue::isPlaying(uint8_t id)
   return false;
 }
 
-void AudioQueue::play(uint16_t freq, uint16_t len, uint16_t pause, uint8_t flags, int8_t freqIncr)
+void AudioQueue::playTone(uint16_t freq, uint16_t len, uint16_t pause, uint8_t flags, int8_t freqIncr)
 {
   CoEnterMutexSection(audioMutex);
 
@@ -626,21 +809,21 @@ void AudioQueue::play(uint16_t freq, uint16_t len, uint16_t pause, uint8_t flags
     freq = BEEP_MIN_FREQ;
 
   if (flags & PLAY_BACKGROUND) {
-    AudioFragment & fragment = backgroundContext.fragment;
-    backgroundContext.clear();
+    AudioFragment & fragment = varioContext.fragment;
     fragment.type = FRAGMENT_TONE;
     fragment.tone.freq = freq;
     fragment.tone.duration = len;
     fragment.tone.pause = pause;
+    fragment.tone.reset = (flags & PLAY_NOW);
   }
   else {
     freq += g_eeGeneral.speakerPitch * 15;
     len = getToneLength(len);
 
     if (flags & PLAY_NOW) {
-      AudioFragment & fragment = foregroundContext.fragment;
+      AudioFragment & fragment = priorityContext.fragment;
       if (fragment.type == FRAGMENT_EMPTY) {
-        foregroundContext.clear();
+        priorityContext.clear();
         fragment.type = FRAGMENT_TONE;
         fragment.repeat = flags & 0x0f;
         fragment.tone.freq = freq;
@@ -679,6 +862,9 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
   if (!sdMounted())
     return;
 
+  if (g_eeGeneral.beepMode == e_mode_quiet)
+    return;
+
   if (strlen(filename) > AUDIO_FILENAME_MAXLEN) {
     POPUP_WARNING(STR_PATH_TOO_LONG);
     return;
@@ -694,9 +880,9 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
     fragment.id = id;
   }
   else if (flags & PLAY_NOW) {
-    AudioFragment & fragment = foregroundContext.fragment;
+    AudioFragment & fragment = priorityContext.fragment;
     if (fragment.type == FRAGMENT_EMPTY) {
-      foregroundContext.clear();
+      priorityContext.clear();
       fragment.type = FRAGMENT_FILE;
       strcpy(fragment.file, filename);
       fragment.repeat = flags & 0x0f;
@@ -737,7 +923,7 @@ void AudioQueue::stopSD()
 {
   sdAvailableSystemAudioFiles = 0;
   reset();
-  play(0, 0, 100, PLAY_NOW);        // insert a 100ms pause
+  playTone(0, 0, 100, PLAY_NOW);        // insert a 100ms pause
 }
 
 #endif
@@ -746,18 +932,15 @@ void AudioQueue::reset()
 {
   CoEnterMutexSection(audioMutex);
   widx = ridx;                      // clean the queue
-  foregroundContext.clear();
-  currentContext.clear();
+  priorityContext.clear();
+  normalContext.tone.clear();
+  varioContext.clear();
   backgroundContext.clear();
   CoLeaveMutexSection(audioMutex);
 }
 
 void audioEvent(uint8_t e, uint16_t f)
 {
-#if defined(SDCARD)
-  char filename[AUDIO_FILENAME_MAXLEN+1];
-#endif
-
 #if defined(HAPTIC)
   haptic.event(e); //do this before audio to help sync timings
 #endif
@@ -770,7 +953,8 @@ void audioEvent(uint8_t e, uint16_t f)
 
   if (g_eeGeneral.beepMode>0 || (g_eeGeneral.beepMode==0 && e>=AU_TRIM_MOVE) || (g_eeGeneral.beepMode>=-1 && e<=AU_ERROR)) {
 #if defined(SDCARD)
-    if (e < AU_FRSKY_FIRST && isAudioFileAvailable(e, filename)) {
+    char filename[AUDIO_FILENAME_MAXLEN+1];
+    if (e < AU_FRSKY_FIRST && isAudioFileReferenced(e, filename)) {
       audioQueue.playFile(filename);
     }
     else
@@ -779,23 +963,23 @@ void audioEvent(uint8_t e, uint16_t f)
       switch (e) {
         // inactivity timer alert
         case AU_INACTIVITY:
-          audioQueue.play(2250, 80, 20, PLAY_REPEAT(2));
+          audioQueue.playTone(2250, 80, 20, PLAY_REPEAT(2));
           break;
         // low battery in tx
         case AU_TX_BATTERY_LOW:
-          audioQueue.play(1950, 160, 20, PLAY_REPEAT(2), 1);
-          audioQueue.play(2550, 160, 20, PLAY_REPEAT(2), -1);
+          audioQueue.playTone(1950, 160, 20, PLAY_REPEAT(2), 1);
+          audioQueue.playTone(2550, 160, 20, PLAY_REPEAT(2), -1);
           break;
 #if defined(PCBSKY9X)
         case AU_TX_MAH_HIGH:
           // TODO Rob something better here?
-          audioQueue.play(1950, 160, 20, PLAY_REPEAT(2), 1);
-          audioQueue.play(2550, 160, 20, PLAY_REPEAT(2), -1);
+          audioQueue.playTone(1950, 160, 20, PLAY_REPEAT(2), 1);
+          audioQueue.playTone(2550, 160, 20, PLAY_REPEAT(2), -1);
           break;
         case AU_TX_TEMP_HIGH:
           // TODO Rob something better here?
-          audioQueue.play(1950, 160, 20, PLAY_REPEAT(2), 1);
-          audioQueue.play(2550, 160, 20, PLAY_REPEAT(2), -1);
+          audioQueue.playTone(1950, 160, 20, PLAY_REPEAT(2), 1);
+          audioQueue.playTone(2550, 160, 20, PLAY_REPEAT(2), -1);
           break;
 #endif
 #if defined(VOICE)
@@ -803,43 +987,43 @@ void audioEvent(uint8_t e, uint16_t f)
         case AU_SWITCH_ALERT:
 #endif
         case AU_ERROR:
-          audioQueue.play(BEEP_DEFAULT_FREQ, 200, 20, PLAY_NOW);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ, 200, 20, PLAY_NOW);
           break;
         // keypad up (seems to be used when going left/right through system menu options. 0-100 scales etc)
         case AU_KEYPAD_UP:
-          audioQueue.play(BEEP_KEY_UP_FREQ, 80, 20, PLAY_NOW);
+          audioQueue.playTone(BEEP_KEY_UP_FREQ, 80, 20, PLAY_NOW);
           break;
         // keypad down (seems to be used when going left/right through system menu options. 0-100 scales etc)
         case AU_KEYPAD_DOWN:
-          audioQueue.play(BEEP_KEY_DOWN_FREQ, 80, 20, PLAY_NOW);
+          audioQueue.playTone(BEEP_KEY_DOWN_FREQ, 80, 20, PLAY_NOW);
           break;
         // menu display (also used by a few generic beeps)
         case AU_MENUS:
-          audioQueue.play(BEEP_DEFAULT_FREQ, 80, 20, PLAY_NOW);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ, 80, 20, PLAY_NOW);
           break;
         // trim move
         case AU_TRIM_MOVE:
-          audioQueue.play(f, 40, 20, PLAY_NOW);
+          audioQueue.playTone(f, 40, 20, PLAY_NOW);
           break;
         // trim center
         case AU_TRIM_MIDDLE:
-          audioQueue.play(f, 80, 20, PLAY_NOW);
+          audioQueue.playTone(f, 80, 20, PLAY_NOW);
           break;
         // trim center
         case AU_TRIM_END:
-          audioQueue.play(f, 80, 20, PLAY_NOW);
+          audioQueue.playTone(f, 80, 20, PLAY_NOW);
           break;          
         // warning one
         case AU_WARNING1:
-          audioQueue.play(BEEP_DEFAULT_FREQ, 80, 20, PLAY_NOW);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ, 80, 20, PLAY_NOW);
           break;
         // warning two
         case AU_WARNING2:
-          audioQueue.play(BEEP_DEFAULT_FREQ, 160, 20, PLAY_NOW);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ, 160, 20, PLAY_NOW);
           break;
         // warning three
         case AU_WARNING3:
-          audioQueue.play(BEEP_DEFAULT_FREQ, 200, 20, PLAY_NOW);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ, 200, 20, PLAY_NOW);
           break;
         // pot/stick center
         case AU_STICK1_MIDDLE:
@@ -854,120 +1038,120 @@ void audioEvent(uint8_t e, uint16_t f)
 #else
         case AU_POT3_MIDDLE:
 #endif
-          audioQueue.play(BEEP_DEFAULT_FREQ+1500, 80, 20, PLAY_NOW);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ+1500, 80, 20, PLAY_NOW);
           break;
         // mix warning 1
         case AU_MIX_WARNING_1:
-          audioQueue.play(BEEP_DEFAULT_FREQ+1440, 48, 32);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ+1440, 48, 32);
           break;
         // mix warning 2
         case AU_MIX_WARNING_2:
-          audioQueue.play(BEEP_DEFAULT_FREQ+1560, 48, 32, PLAY_REPEAT(1));
+          audioQueue.playTone(BEEP_DEFAULT_FREQ+1560, 48, 32, PLAY_REPEAT(1));
           break;
         // mix warning 3
         case AU_MIX_WARNING_3:
-          audioQueue.play(BEEP_DEFAULT_FREQ+1680, 48, 32, PLAY_REPEAT(2));
+          audioQueue.playTone(BEEP_DEFAULT_FREQ+1680, 48, 32, PLAY_REPEAT(2));
           break;
         // timer == 0
         case AU_TIMER_00:
-          audioQueue.play(BEEP_DEFAULT_FREQ+150, 240, 20, PLAY_NOW);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ+150, 300, 20, PLAY_NOW);
           break;
         // timer <= 10 seconds left
         case AU_TIMER_LT10:
-          audioQueue.play(BEEP_DEFAULT_FREQ+150, 120, 20, PLAY_NOW);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ+150, 120, 20, PLAY_NOW);
           break;
         // timer 20 seconds left
         case AU_TIMER_20:
-          audioQueue.play(BEEP_DEFAULT_FREQ+150, 120, 20, PLAY_REPEAT(1)|PLAY_NOW);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ+150, 120, 20, PLAY_REPEAT(1)|PLAY_NOW);
           break;
         // timer 30 seconds left
         case AU_TIMER_30:
-          audioQueue.play(BEEP_DEFAULT_FREQ+150, 120, 20, PLAY_REPEAT(2)|PLAY_NOW);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ+150, 120, 20, PLAY_REPEAT(2)|PLAY_NOW);
           break;
 #if defined(PCBTARANIS)
         case AU_A1_ORANGE:
-          audioQueue.play(BEEP_DEFAULT_FREQ+600, 200, 20, PLAY_NOW);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ+600, 200, 20, PLAY_NOW);
           break;
         case AU_A1_RED:
-          audioQueue.play(BEEP_DEFAULT_FREQ+600, 200, 20, PLAY_REPEAT(1)|PLAY_NOW);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ+600, 200, 20, PLAY_REPEAT(1)|PLAY_NOW);
           break;
         case AU_A2_ORANGE:
-          audioQueue.play(BEEP_DEFAULT_FREQ+1500, 200, 20, PLAY_NOW);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ+1500, 200, 20, PLAY_NOW);
           break;
         case AU_A2_RED:
-          audioQueue.play(BEEP_DEFAULT_FREQ+1500, 200, 20, PLAY_REPEAT(1)|PLAY_NOW);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ+1500, 200, 20, PLAY_REPEAT(1)|PLAY_NOW);
           break;
         case AU_RSSI_ORANGE:
-          audioQueue.play(BEEP_DEFAULT_FREQ+1500, 800, 20, PLAY_NOW);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ+1500, 800, 20, PLAY_NOW);
           break;
         case AU_RSSI_RED:
-          audioQueue.play(BEEP_DEFAULT_FREQ+1800, 800, 20, PLAY_REPEAT(1)|PLAY_NOW);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ+1800, 800, 20, PLAY_REPEAT(1)|PLAY_NOW);
           break;
         case AU_SWR_RED:
-          audioQueue.play(450, 160, 40, PLAY_REPEAT(2), 1);
+          audioQueue.playTone(450, 160, 40, PLAY_REPEAT(2), 1);
           break;
 #endif
         case AU_FRSKY_BEEP1:
-          audioQueue.play(BEEP_DEFAULT_FREQ, 60, 20);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ, 60, 20);
           break;
         case AU_FRSKY_BEEP2:
-          audioQueue.play(BEEP_DEFAULT_FREQ, 120, 20);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ, 120, 20);
           break;
         case AU_FRSKY_BEEP3:
-          audioQueue.play(BEEP_DEFAULT_FREQ, 200, 20);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ, 200, 20);
           break;
         case AU_FRSKY_WARN1:
-          audioQueue.play(BEEP_DEFAULT_FREQ+600, 120, 40, PLAY_REPEAT(2));
+          audioQueue.playTone(BEEP_DEFAULT_FREQ+600, 120, 40, PLAY_REPEAT(2));
           break;
         case AU_FRSKY_WARN2:
-          audioQueue.play(BEEP_DEFAULT_FREQ+900, 120, 40, PLAY_REPEAT(2));
+          audioQueue.playTone(BEEP_DEFAULT_FREQ+900, 120, 40, PLAY_REPEAT(2));
           break;
         case AU_FRSKY_CHEEP:
-          audioQueue.play(BEEP_DEFAULT_FREQ+900, 80, 20, PLAY_REPEAT(2), 2);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ+900, 80, 20, PLAY_REPEAT(2), 2);
           break;
         case AU_FRSKY_RING:
-          audioQueue.play(BEEP_DEFAULT_FREQ+750, 40, 20, PLAY_REPEAT(10));
-          audioQueue.play(BEEP_DEFAULT_FREQ+750, 40, 80, PLAY_REPEAT(1));
-          audioQueue.play(BEEP_DEFAULT_FREQ+750, 40, 20, PLAY_REPEAT(10));
+          audioQueue.playTone(BEEP_DEFAULT_FREQ+750, 40, 20, PLAY_REPEAT(10));
+          audioQueue.playTone(BEEP_DEFAULT_FREQ+750, 40, 80, PLAY_REPEAT(1));
+          audioQueue.playTone(BEEP_DEFAULT_FREQ+750, 40, 20, PLAY_REPEAT(10));
           break;
         case AU_FRSKY_SCIFI:
-          audioQueue.play(2550, 80, 20, PLAY_REPEAT(2), -1);
-          audioQueue.play(1950, 80, 20, PLAY_REPEAT(2), 1);
-          audioQueue.play(2250, 80, 20, 0);
+          audioQueue.playTone(2550, 80, 20, PLAY_REPEAT(2), -1);
+          audioQueue.playTone(1950, 80, 20, PLAY_REPEAT(2), 1);
+          audioQueue.playTone(2250, 80, 20, 0);
           break;
         case AU_FRSKY_ROBOT:
-          audioQueue.play(2250, 40,  20,  PLAY_REPEAT(1));
-          audioQueue.play(1650, 120, 20, PLAY_REPEAT(1));
-          audioQueue.play(2550, 120, 20, PLAY_REPEAT(1));
+          audioQueue.playTone(2250, 40,  20,  PLAY_REPEAT(1));
+          audioQueue.playTone(1650, 120, 20, PLAY_REPEAT(1));
+          audioQueue.playTone(2550, 120, 20, PLAY_REPEAT(1));
           break;
         case AU_FRSKY_CHIRP:
-          audioQueue.play(BEEP_DEFAULT_FREQ+1200, 40, 20, PLAY_REPEAT(2));
-          audioQueue.play(BEEP_DEFAULT_FREQ+1620, 40, 20, PLAY_REPEAT(3));
+          audioQueue.playTone(BEEP_DEFAULT_FREQ+1200, 40, 20, PLAY_REPEAT(2));
+          audioQueue.playTone(BEEP_DEFAULT_FREQ+1620, 40, 20, PLAY_REPEAT(3));
           break;
         case AU_FRSKY_TADA:
-          audioQueue.play(1650, 80, 40);
-          audioQueue.play(2850, 80, 40);
-          audioQueue.play(3450, 64, 36, PLAY_REPEAT(2));
+          audioQueue.playTone(1650, 80, 40);
+          audioQueue.playTone(2850, 80, 40);
+          audioQueue.playTone(3450, 64, 36, PLAY_REPEAT(2));
           break;
         case AU_FRSKY_CRICKET:
-          audioQueue.play(2550, 40, 80,  PLAY_REPEAT(3));
-          audioQueue.play(2550, 40, 160, PLAY_REPEAT(1));
-          audioQueue.play(2550, 40, 80,  PLAY_REPEAT(3));
+          audioQueue.playTone(2550, 40, 80,  PLAY_REPEAT(3));
+          audioQueue.playTone(2550, 40, 160, PLAY_REPEAT(1));
+          audioQueue.playTone(2550, 40, 80,  PLAY_REPEAT(3));
           break;
         case AU_FRSKY_SIREN:
-          audioQueue.play(450, 160, 40, PLAY_REPEAT(2), 2);
+          audioQueue.playTone(450, 160, 40, PLAY_REPEAT(2), 2);
           break;
         case AU_FRSKY_ALARMC:
-          audioQueue.play(1650, 32, 68,  PLAY_REPEAT(2));
-          audioQueue.play(2250, 64, 156, PLAY_REPEAT(1));
-          audioQueue.play(1650, 64, 76,  PLAY_REPEAT(2));
-          audioQueue.play(2250, 32, 168, PLAY_REPEAT(1));
+          audioQueue.playTone(1650, 32, 68,  PLAY_REPEAT(2));
+          audioQueue.playTone(2250, 64, 156, PLAY_REPEAT(1));
+          audioQueue.playTone(1650, 64, 76,  PLAY_REPEAT(2));
+          audioQueue.playTone(2250, 32, 168, PLAY_REPEAT(1));
           break;
         case AU_FRSKY_RATATA:
-          audioQueue.play(BEEP_DEFAULT_FREQ+1500, 40, 80, PLAY_REPEAT(10));
+          audioQueue.playTone(BEEP_DEFAULT_FREQ+1500, 40, 80, PLAY_REPEAT(10));
           break;
         case AU_FRSKY_TICK:
-          audioQueue.play(BEEP_DEFAULT_FREQ+1500, 40, 400, PLAY_REPEAT(2));
+          audioQueue.playTone(BEEP_DEFAULT_FREQ+1500, 40, 400, PLAY_REPEAT(2));
           break;
         default:
           break;
@@ -979,16 +1163,13 @@ void audioEvent(uint8_t e, uint16_t f)
 void pushPrompt(uint16_t prompt, uint8_t id)
 {
 #if defined(SDCARD)
-
-  char filename[] = SYSTEM_SOUNDS_PATH "/0000" SOUNDS_EXT;
-  strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
-
+  char filename[AUDIO_FILENAME_MAXLEN+1];
+  char * str = getSystemAudioPath(filename);
+  strcpy(str, "0000" SOUNDS_EXT);
   for (int8_t i=3; i>=0; i--) {
-    filename[sizeof(SYSTEM_SOUNDS_PATH)+i] = '0' + (prompt%10);
+    str[i] = '0' + (prompt%10);
     prompt /= 10;
   }
-
   audioQueue.playFile(filename, 0, id);
-
 #endif
 }

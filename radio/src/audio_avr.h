@@ -141,7 +141,7 @@ void audioDefevent(uint8_t e);
 #define AUDIO_TIMER_LT10(m, x)   AUDIO_BUZZER(audioDefevent(AU_TIMER_LT10), beep(2))
 #define AUDIO_TIMER_00(m)        AUDIO_BUZZER(audioDefevent(AU_TIMER_00), beep(3))
 #define AUDIO_MIX_WARNING(x)     AUDIO_BUZZER(audioDefevent(AU_MIX_WARNING_1+x-1), beep(1))
-#define AUDIO_POT_MIDDLE(x)      AUDIO_BUZZER(audioDefevent(AU_POT_MIDDLE), beep(2))
+#define AUDIO_POT_MIDDLE()       AUDIO_BUZZER(audioDefevent(AU_POT_MIDDLE), beep(2))
 #define AUDIO_VARIO_UP()         audioDefevent(AU_KEYPAD_UP)
 #define AUDIO_VARIO_DOWN()       audioDefevent(AU_KEYPAD_DOWN)
 #define AUDIO_TRIM_MIDDLE(f)     AUDIO_BUZZER(audio.event(AU_TRIM_MIDDLE, f), beep(2))
@@ -157,5 +157,9 @@ void audioDefevent(uint8_t e);
 
 #define PLAY_PHASE_OFF(phase)
 #define PLAY_PHASE_ON(phase)
+#define PLAY_SWITCH_MOVED(sw)
+#define PLAY_LOGICAL_SWITCH_OFF(sw)
+#define PLAY_LOGICAL_SWITCH_ON(sw)
+#define SKIP_AUTOMATIC_PROMPTS()
 
 #endif

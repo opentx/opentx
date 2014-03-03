@@ -6,20 +6,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>926</width>
-    <height>333</height>
+    <width>788</width>
+    <height>528</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="companion.qrc">
-    <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
-  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QTextBrowser" name="textBrowser"/>
+    <widget class="QTextEdit" name="textEditor"/>
    </item>
   </layout>
  </widget>

@@ -87,7 +87,7 @@ void beep(uint8_t val);
   #define AUDIO_WARNING1()         beep(3)
   #define AUDIO_ERROR()            beep(4)
   #define AUDIO_MIX_WARNING(x)     beep(1)
-  #define AUDIO_POT_MIDDLE(x)      beep(2)
+  #define AUDIO_POT_MIDDLE()       beep(2)
   #define AUDIO_TIMER_LT10(m, x)   beep(2)
   #define AUDIO_TIMER_00(m)        beep(3)
   #define AUDIO_VARIO_UP()         _beep(1)
@@ -102,6 +102,10 @@ void beep(uint8_t val);
 
   #define PLAY_PHASE_OFF(phase)
   #define PLAY_PHASE_ON(phase)
+  #define PLAY_SWITCH_MOVED(sw)
+  #define PLAY_LOGICAL_SWITCH_OFF(sw)
+  #define PLAY_LOGICAL_SWITCH_ON(sw)
+  #define SKIP_AUTOMATIC_PROMPTS()
 #endif
 
 #if !defined(CPUARM)

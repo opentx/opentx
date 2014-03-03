@@ -2,18 +2,6 @@
 #include "helpers.h"
 #include "th9xeeprom.h"
 
-int8_t th9xFromSwitch(const RawSwitch & sw)
-{
-  switch (sw.type) {
-    case SWITCH_TYPE_SWITCH:
-      return sw.index;
-    case SWITCH_TYPE_VIRTUAL:
-      return sw.index > 0 ? (9 + sw.index) : (-9 -sw.index);
-    default:
-      return 0;
-  }
-}
-
 RawSwitch th9xToSwitch(int8_t sw)
 {
   if (sw == 0)
@@ -181,22 +169,22 @@ t_Th9xMixData::operator MixData ()
   return c9x;
 }
 
-t_Th9xCustomSwData::operator CustomSwData ()
+t_Th9xLogicalSwitchData::operator LogicalSwitchData ()
 {
-  CustomSwData c9x;
+  LogicalSwitchData c9x;
   c9x.func = opCmp;
   c9x.val1 = val1;
   c9x.val2 = val2;
 
-  if ((c9x.func >= CS_FN_VPOS && c9x.func <= CS_FN_ANEG) || c9x.func >= CS_FN_EQUAL) {
+  if ((c9x.func >= LS_FN_VPOS && c9x.func <= LS_FN_ANEG) || c9x.func >= LS_FN_EQUAL) {
     c9x.val1 = toSource(val1).toValue();
   }
 
-  if (c9x.func >= CS_FN_EQUAL) {
+  if (c9x.func >= LS_FN_EQUAL) {
     c9x.val2 = toSource(val2).toValue();
   }
 
-  if (c9x.func >= CS_FN_AND && c9x.func <= CS_FN_XOR) {
+  if (c9x.func >= LS_FN_AND && c9x.func <= LS_FN_XOR) {
     c9x.val1 = th9xToSwitch(val1).toValue();
     c9x.val2 = th9xToSwitch(val2).toValue();
   }
@@ -204,7 +192,7 @@ t_Th9xCustomSwData::operator CustomSwData ()
   return c9x;
 }
 
-int8_t t_Th9xCustomSwData::fromSource(RawSource source)
+int8_t t_Th9xLogicalSwitchData::fromSource(RawSource source)
 {
   int v1 = 0;
   if (source.type == SOURCE_TYPE_STICK)
@@ -228,7 +216,7 @@ int8_t t_Th9xCustomSwData::fromSource(RawSource source)
   return v1;
 }
 
-RawSource t_Th9xCustomSwData::toSource(int8_t value)
+RawSource t_Th9xLogicalSwitchData::toSource(int8_t value)
 {
   if (value == 0) {
     return RawSource(SOURCE_TYPE_NONE);
@@ -266,7 +254,7 @@ t_Th9xModelData::operator ModelData ()
   ModelData c9x;
   c9x.used = true;
   getEEPROMString(c9x.name, name, sizeof(name));
-  switch(tmrMode) {
+  /*switch(tmrMode) {
     case 1:
       c9x.timers[0].mode = TMRMODE_ABS;
       break;
@@ -279,7 +267,7 @@ t_Th9xModelData::operator ModelData ()
     default:
       c9x.timers[0].mode = TMRMODE_OFF;
       break;
-  }
+  }*/
   // c9x.timers[0].dir = tmrDir;
   c9x.timers[0].val = tmrVal;
   /*c9x.protocol = (Protocol)protocol;

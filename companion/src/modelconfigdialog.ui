@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>773</width>
-    <height>591</height>
+    <width>793</width>
+    <height>599</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -24,10 +24,6 @@
   </property>
   <property name="windowTitle">
    <string>Model Configuration Wizard</string>
-  </property>
-  <property name="windowIcon">
-   <iconset resource="companion.qrc">
-    <normaloff>:/images/configure.png</normaloff>:/images/configure.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0,1" columnstretch="0,0,1,1,1,1">
    <item row="3" column="2">

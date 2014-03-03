@@ -93,6 +93,17 @@ class DataField {
     const char *name;
 };
 
+class ProxyField: public DataField {
+  public:
+    ProxyField():
+      DataField("Proxy")
+    {
+    }
+
+    virtual DataField * getField() = 0;
+
+};
+
 template<int N>
 class UnsignedField: public DataField {
   public:
@@ -273,9 +284,10 @@ class SpareBitsField: public UnsignedField<N> {
 template<int N>
 class CharField: public DataField {
   public:
-    CharField(char *field):
+    CharField(char *field, bool truncate=true):
       DataField("Char"),
-      field(field)
+      field(field),
+      truncate(truncate)
     {
     }
 
@@ -283,7 +295,7 @@ class CharField: public DataField {
     {
       output.resize(N*8);
       int b = 0;
-      int len = strlen(field);
+      int len = truncate ? strlen(field) : N;
       for (int i=0; i<N; i++) {
         int idx = (i>=len ? 0 : field[i]);
         for (int j=0; j<8; j++, b++) {
@@ -313,6 +325,7 @@ class CharField: public DataField {
 
   protected:
     char * field;
+    bool truncate;
 };
 
 int8_t char2idx(char c);
@@ -637,12 +650,14 @@ class ConversionField: public TransformedField {
         if (!error.isEmpty())
           EEPROMWarnings += error + "\n";
       }
-      else if (shift) {
+
+      if (shift) {
         if (val < min) _field = min + shift;
         else if (val > max) _field = max + shift;
         else _field = val + shift;
       }
-      else {
+
+      if (exportFunc) {
         _field = exportFunc(val);
       }
     }
@@ -653,10 +668,10 @@ class ConversionField: public TransformedField {
         if (table->importValue(_field, field))
           return;
       }
-      else if (shift) {
-        field = _field - shift;
-      }
-      else {
+
+      field = _field - shift;
+
+      if (importFunc) {
         field = importFunc(_field);
       }
 

@@ -383,7 +383,6 @@ void eeLoadModel(uint8_t id)
       resumePulses();
     }
 
-    activeSwitches = 0;
     activeFnSwitches = 0;
     activeFunctions = 0;
     memclear(lastFunctionTime, sizeof(lastFunctionTime));
@@ -405,7 +404,7 @@ void eeLoadModel(uint8_t id)
 #endif
 
 #if defined(CPUARM) && defined(SDCARD)
-    refreshModelAudioFiles();
+    referenceModelAudioFiles();
 #endif
 
     LOAD_MODEL_BITMAP();
@@ -546,52 +545,24 @@ void ee32_process()
     Eeprom32_process_state = E32_READSENDING ;
   }
 
-  if ( Eeprom32_process_state == E32_READSENDING )
-  {
-#if 0
-    if ( Spi_complete )
-    {
-      uint32_t blank = 1 ;
-      x = Eeprom32_data_size + sizeof( struct t_eeprom_header ) ;	// Size needing to be checked
-      p = (uint8_t *) &Eeprom_buffer ;
-      while ( x )
-      {
-        if ( *p++ != 0xFF )
-        {
-          blank = 0 ;
-          break ;
-        }
-        x -= 1 ;
-      }
-      // If not blank, sort erasing here
-      if ( blank )
-      {
-        Eeprom32_state_after_erase = E32_IDLE ; // TODO really needed?
-        Eeprom32_process_state = E32_WRITESTART ;
-      }
-      else
-      {
-#endif
+  if (Eeprom32_process_state == E32_READSENDING) {
 #ifdef SIMU
-        Eeprom32_process_state = E32_WRITESTART ;
+    Eeprom32_process_state = E32_WRITESTART ;
 #else
-        eeAddress = Eeprom32_address ;
-        eeprom_write_enable() ;
-        p = Spi_tx_buf ;
-        *p = 0x20 ;		// Block Erase command
-        *(p+1) = eeAddress >> 16 ;
-        *(p+2) = eeAddress >> 8 ;
-        *(p+3) = eeAddress ;		// 3 bytes address
-        spi_PDC_action( p, 0, 0, 4, 0 ) ;
-        Eeprom32_process_state = E32_ERASESENDING ;
-        Eeprom32_state_after_erase = E32_WRITESTART ;
+    eeAddress = Eeprom32_address ;
+    eeprom_write_enable() ;
+    p = Spi_tx_buf ;
+    *p = 0x20 ;		// Block Erase command
+    *(p+1) = eeAddress >> 16 ;
+    *(p+2) = eeAddress >> 8 ;
+    *(p+3) = eeAddress ;		// 3 bytes address
+    spi_PDC_action( p, 0, 0, 4, 0 ) ;
+    Eeprom32_process_state = E32_ERASESENDING ;
+    Eeprom32_state_after_erase = E32_WRITESTART ;
 #endif
-      // }
-   // }
   }
 
-  if ( Eeprom32_process_state == E32_WRITESTART )
-  {
+  if (Eeprom32_process_state == E32_WRITESTART) {
     uint32_t total_size ;
     p = Eeprom32_source_address;
     q = (uint8_t *) &Eeprom_buffer.data;

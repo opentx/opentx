@@ -7,9 +7,11 @@
 #include "mixes.h"
 #include "channels.h"
 #include "curves.h"
-#include "customswitches.h"
+#include "../helpers.h"
+#include "logicalswitches.h"
 #include "customfunctions.h"
 #include "telemetry.h"
+#include "appdata.h"
 #include <QScrollArea>
 
 ModelEdit::ModelEdit(RadioData & radioData, int modelId, bool openWizard, bool isNew, QWidget *parent) :
@@ -17,20 +19,21 @@ ModelEdit::ModelEdit(RadioData & radioData, int modelId, bool openWizard, bool i
   ui(new Ui::ModelEdit),
   modelId(modelId),
   model(radioData.models[modelId]),
-  generalSettings(generalSettings)
+  generalSettings(radioData.generalSettings)
 {
   ui->setupUi(this);
+  restoreGeometry(g.modelEditGeo());  
+  ui->pushButton->setIcon(CompanionIcon("simulate.png"));
   addTab(new Setup(this, model), tr("Setup"));
   addTab(new HeliPanel(this, model), tr("Heli"));
   addTab(new FlightModes(this, model, radioData.generalSettings), tr("Flight Modes"));
   addTab(new InputsPanel(this, model, radioData.generalSettings), tr("Inputs"));
   addTab(new MixesPanel(this, model, radioData.generalSettings), tr("Mixes"));
   addTab(new Channels(this, model), tr("Channels"));
-  addTab(new CustomSwitchesPanel(this, model), tr("Custom Switches"));
+  addTab(new LogicalSwitchesPanel(this, model), tr("Logical Switches"));
   if (GetEepromInterface()->getCapability(CustomFunctions))
-    addTab(new CustomFunctionsPanel(this, model, radioData.generalSettings), tr("Assignable Functions"));
+    addTab(new CustomFunctionsPanel(this, model, radioData.generalSettings), tr("Switch Assignment"));
   addTab(new Curves(this, model), tr("Curves"));
-  // TODO remove this capability if (!GetEepromInterface()->getCapability(FSSwitch))
   if (GetEepromInterface()->getCapability(Telemetry) & TM_HASTELEMETRY)
     addTab(new TelemetryPanel(this, model), tr("Telemetry"));
 }
@@ -38,6 +41,11 @@ ModelEdit::ModelEdit(RadioData & radioData, int modelId, bool openWizard, bool i
 ModelEdit::~ModelEdit()
 {
   delete ui;
+}
+
+void ModelEdit::closeEvent(QCloseEvent *event)
+{
+  g.modelEditGeo( saveGeometry() );
 }
 
 class VerticalScrollArea : public QScrollArea
@@ -98,33 +106,13 @@ void ModelEdit::on_pushButton_clicked()
   launchSimulation();
 }
 
-// TODO merge both
-#include "simulatordialog.h"
-#include "xsimulatordialog.h"
-
 void ModelEdit::launchSimulation()
 {
-  if (GetEepromInterface()->getSimulator()) {
-    RadioData *simuData = new RadioData();
-    simuData->generalSettings = generalSettings;
-    simuData->models[modelId] = model;
-    if (GetEepromInterface()->getCapability(SimulatorType)) {
-      xsimulatorDialog sd(this);
-      sd.loadParams(*simuData, modelId);
-      sd.exec();
-    }
-    else {
-      simulatorDialog sd(this);
-      sd.loadParams(*simuData, modelId);
-      sd.exec();
-    }
-    delete simuData;
-  }
-  else {
-    QMessageBox::warning(NULL,
-        QObject::tr("Warning"),
-        QObject::tr("Simulator for this firmware is not yet available"));
-  }
+  RadioData *simuData = new RadioData();
+  simuData->generalSettings = generalSettings;
+  simuData->models[0] = model;
+  startSimulation(this, *simuData, 0);
+  delete simuData;
 }
 
 

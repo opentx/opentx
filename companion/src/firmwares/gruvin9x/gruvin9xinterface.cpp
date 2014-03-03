@@ -18,6 +18,7 @@
 #include "gruvin9xinterface.h"
 #include "gruvin9xeeprom.h"
 #include "file.h"
+#include "appdata.h"
 
 #define FILE_TYP_GENERAL 1
 #define FILE_TYP_MODEL   2
@@ -47,8 +48,7 @@ const char * Gruvin9xInterface::getName()
 const int Gruvin9xInterface::getEEpromSize()
 {
   if (board == BOARD_STOCK) {
-    QSettings settings("companion9x", "companion9x");
-    QString avrMCU = settings.value("mcu", QString("m64")).toString();
+    QString avrMCU = g.mcu();
     if (avrMCU==QString("m128")) {
       return EESIZE_STOCK*2;
     }
@@ -99,7 +99,7 @@ bool Gruvin9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
 }
 
 
-bool Gruvin9xInterface::load(RadioData &radioData, uint8_t *eeprom, int size)
+bool Gruvin9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {
   std::cout << "trying " << getName() << " import... ";
 
@@ -108,7 +108,7 @@ bool Gruvin9xInterface::load(RadioData &radioData, uint8_t *eeprom, int size)
     return false;
   }
 
-  if (!efile->EeFsOpen(eeprom, size, BOARD_STOCK)) {
+  if (!efile->EeFsOpen((uint8_t *)eeprom, size, BOARD_STOCK)) {
     std::cout << "wrong file system\n";
     return false;
   }
@@ -237,7 +237,7 @@ int Gruvin9xInterface::getCapability(const Capability capability)
       return 9;
     case CustomFunctions:
       return 12;
-    case CustomSwitches:
+    case LogicalSwitches:
       return 12;
     case CSFunc:
       return 13;

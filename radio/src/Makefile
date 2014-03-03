@@ -67,6 +67,14 @@ EXT = STD
 # Values = YES, NO, CHOICE
 FAI = NO
 
+# the latests deliveries for Turnigy 9x transmitters (since 2 years now, 2014) do not stop sending if no pulses are generated.
+# This fact totally breaks the nice throttle and switch warning concept, because even we prevent sending pulses the
+# transmitter modul ignores this, and continous to send the last value or 0 at beginning. And 0 means in the middle of throttle -> 50%.
+# To cope with this situation, we need a new concept how to handle throttle and switch warnings.
+# if you have a 0 value (50% ) for throttle, while throttle warning is active, you should activate this switch
+# Values = YES, NO
+TURNIGY_TRANSMITTER_FIX = NO
+
 # Enable heli menu
 # Values = YES, NO
 HELI = NO
@@ -159,6 +167,10 @@ PPM_UNIT = PERCENT_PREC1
 # Values = YES, NO
 FRSKY_HUB = YES
 
+# FrSky FAS current sensor offset compensation
+# Values = YES, NO
+FAS_OFFSET = NO
+
 # WS HowHigh 
 # Values = YES, NO
 WS_HOW_HIGH = YES
@@ -204,7 +216,7 @@ TX_CADDY = NO
 IRPROTOS = NO
 
 # TRANSLATIONS
-# Values = cz, de, en, fr, it, se, es, pl, pt
+# Values = cz, de, en, fi, fr, it, se, es, pl, pt
 TRANSLATIONS = EN
 
 # TTS
@@ -246,6 +258,10 @@ GVARS = NO
 # Values = NO, POT1, POT2, POT3,
 3POS = NO
 
+# Lua interpreter embedded
+# Values = NO, NO_MODEL_SCRIPTS, YES 
+LUA = NO
+
 # Menu Lock modes
 # Values = NO, READONLY, NOMENUS 
 MENUS_LOCK == NO
@@ -259,9 +275,9 @@ BOOTLOADER = YES
 # Define programs and commands.
 SHELL = sh
 IMG2LBM = -python ../util/img2lbm.py
-TRANSLATE = -python ../util/translate.py
-SVNREV = $(shell sh -c "svnversion | egrep -o '[[:digit:]]+[[:alpha:]]*$$'")
 BIN2LBM = -python ../util/bin2lbm.py
+TRANSLATE = -python ../util/translate.py
+VERSION = 2.0
 
 SRC =
 CPPSRC =
@@ -286,7 +302,7 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   ARCH = AVR
   TRGT = avr-
   MCU = atmega64
-  OPT = s  
+  OPT = s
   SDCARD = NO
   THR_TRACE = NO
   INCDIRS += targets/stock
@@ -336,6 +352,10 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   
   ifeq ($(SP22), YES)
    CPPDEFS += -DSP22
+  endif
+  
+  ifeq ($(FAS_OFFSET), YES)
+   CPPDEFS += -DFAS_OFFSET
   endif
 endif
 
@@ -621,7 +641,7 @@ ifeq ($(PCB), TARANIS)
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp eeprom_conversions.cpp
   PULSESSRC = protocols/pulses_arm.cpp protocols/ppm_arm.cpp protocols/pxx_arm.cpp
   CPPSRC += audio_arm.cpp
-  CPPSRC += targets/taranis/pwr_driver.cpp targets/taranis/pulses_driver.cpp targets/taranis/keys_driver.cpp targets/taranis/adc_driver.cpp targets/taranis/trainer_driver.cpp targets/taranis/audio_driver.cpp targets/taranis/delays.cpp targets/taranis/uart_driver.cpp targets/taranis/sport_driver.cpp
+  CPPSRC += targets/taranis/pwr_driver.cpp targets/taranis/pulses_driver.cpp targets/taranis/keys_driver.cpp targets/taranis/adc_driver.cpp targets/taranis/trainer_driver.cpp targets/taranis/audio_driver.cpp targets/taranis/delays.cpp targets/taranis/uart3_driver.cpp targets/taranis/sport_driver.cpp
   CPPSRC += bmp.cpp gui/view_channels.cpp gui/view_about.cpp gui/view_text.cpp
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/system_stm32f2xx.c
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/misc.c
@@ -648,6 +668,20 @@ ifeq ($(PCB), TARANIS)
   EXTRABOARDSRC += targets/taranis/usbd_usr.cpp targets/taranis/usbd_storage_msd.cpp
   SRC += targets/sky9x/syscalls.c
   
+  ifneq ($(LUA), NO)
+    ifeq ($(LUA), YES)
+      CPPDEFS += -DLUA_MODEL_SCRIPTS
+    endif
+    CPPDEFS += -DLUA
+    INCDIRS += lua/src
+    CPPSRC += lua.cpp
+    LUASRC = lua/src/lapi.c lua/src/lcode.c lua/src/lctype.c lua/src/ldebug.c lua/src/ldo.c lua/src/ldump.c lua/src/lfunc.c lua/src/lgc.c lua/src/llex.c lua/src/lmem.c \
+           lua/src/lobject.c lua/src/lopcodes.c lua/src/lparser.c lua/src/lstate.c lua/src/lstring.c lua/src/ltable.c lua/src/ltm.c lua/src/lundump.c lua/src/lvm.c lua/src/lzio.c \
+           lua/src/lbaselib.c lua/src/linit.c lua/src/lmathlib.c lua/src/loadlib.c lua/src/lauxlib.c lua/src/ltablib.c lua/src/lcorolib.c 
+           # lua/src/loslib.c lua/src/lbitlib.c lua/src/lstrlib.c lua/src/liolib.c lua/src/ldblib.c
+    SRC += $(LUASRC) 
+  endif           
+
   ifeq ($(SDCARD), YES)
     EXTRABOARDSRC += FatFs/ff.c FatFs/fattime.c FatFs/option/ccsbcs.c targets/taranis/diskio.cpp
     CPPDEFS += -DVOICE
@@ -749,6 +783,14 @@ ifeq ($(NAVIGATION), ROTENC)
   CPPDEFS += -DROTARY_ENCODER_NAVIGATION
 endif
 
+ifeq ($(TURNIGY_TRANSMITTER_FIX), YES)
+  ifeq ($(PCB), TARANIS)
+    $(warning TURNIGY_TRANSMITTER_FIX is not available on Taranis)
+  else
+    CPPDEFS += -DMODULE_ALWAYS_SEND_PULSES
+  endif
+endif
+
 ifeq ($(AUTOSWITCH), YES)
   CPPDEFS += -DAUTOSWITCH
 endif
@@ -793,10 +835,8 @@ ifneq ($(PCB), TARANIS)
 endif
 
 ifneq ($(FONT), STD)
-  CPPDEFS += -DFONT_$(FONT)
   INCDIRS += fonts/$(shell sh -c "echo $(FONT) | tr '[:upper:]' '[:lower:]'")
 endif
-
 INCDIRS += fonts/std
   
 ifeq ($(THR_TRACE), YES)
@@ -1066,7 +1106,7 @@ endif
 	$(MAKE) -C ../bootloader PCB=$(PCB)
 	$(BIN2LBM) bootloader.lbm ../bootloader/bootloader_ramBoot.bin
 
-tra: translations/cz.h translations/de.h translations/es.h translations/fr.h translations/it.h translations/pl.h translations/pt.h translations/se.h
+tra: translations/en.h translations/cz.h translations/de.h translations/es.h translations/fi.h translations/fr.h translations/it.h translations/pl.h translations/pt.h translations/se.h
 lbm: fonts bitmaps/sticks.lbm
   
 elf: $(TARGET).elf
@@ -1078,96 +1118,96 @@ sym: $(TARGET).sym
 
 # Build stamp-file
 stamp_header:
-	@echo
-	@echo "Generate Version-stamp:"
-	@echo "//Automatically generated file (Makefile) - do not edit" > stamp-opentx.h
+	@echo "// Automatically generated file (Makefile) - do not edit" > stamp-opentx.h
 	@echo "#define DATE_STR \"`date +%Y-%m-%d | tr -d '\r\n'`\"" >> stamp-opentx.h
 	@echo "#define TIME_STR \"`date +%H:%M:%S | tr -d '\r\n'`\"" >> stamp-opentx.h
-	@echo "#define SVN_STR  \"opentx-r$(SVNREV)\"" >> stamp-opentx.h
-	@cat stamp-opentx.h
+	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx.h
+	@echo "#define VERS_NUM $(VERSION)" >> stamp-opentx.h
 
-stock-stamp:
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-stock.txt
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-stock.txt
-	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-stock.txt
-	@cat stamp-opentx-stock.txt
+9x-stamp:
+	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-9x.txt
+	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-9x.txt
+	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx-9x.txt
+	@cat stamp-opentx-9x.txt
 
-stock128-stamp:
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-stock128.txt
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-stock128.txt
-	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-stock128.txt
-	@cat stamp-opentx-stock128.txt
+9x128-stamp:
+	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-9x128.txt
+	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-9x128.txt
+	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx-9x128.txt
+	@cat stamp-opentx-9x128.txt
 
-stock2561-stamp:
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-stock2561.txt
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-stock2561.txt
-	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-stock2561.txt
-	@cat stamp-opentx-stock2561.txt
+9x2561-stamp:
+	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-9x2561.txt
+	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-9x2561.txt
+	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx-9x2561.txt
+	@cat stamp-opentx-9x2561.txt
 	
-v4-stamp:
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-v4.txt
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-v4.txt
-	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-v4.txt
-	@cat stamp-opentx-v4.txt
+gruvin9x-stamp:
+	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-gruvin9x.txt
+	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-gruvin9x.txt
+	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx-gruvin9x.txt
+	@cat stamp-opentx-9x.txt
 
-arm-stamp:
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-arm.txt
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-arm.txt
-	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-arm.txt
-	@cat stamp-opentx-arm.txt
+sky9x-stamp:
+	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-sky9x.txt
+	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-sky9x.txt
+	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx-sky9x.txt
+	@cat stamp-opentx-sky9x.txt
 
 taranis-stamp:
 	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-taranis.txt
 	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-taranis.txt
-	@echo "#define SVN_VERS \"opentx-r$(SVNREV)\"" >> stamp-opentx-taranis.txt
+	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx-taranis.txt
 	@cat stamp-opentx-taranis.txt
+
+translations/en.h: translations/en.h.txt
+	@echo
+	@echo "Create English language specific header files"
+	$(TRANSLATE) translations/en.h.txt translations/en.h en
 
 translations/cz.h: translations/cz.h.txt
 	@echo
-	@echo "Create language specific header files"
-	@echo "Czech"
+	@echo "Create Czech language specific header files"
 	$(TRANSLATE) translations/cz.h.txt translations/cz.h cz
 
 translations/de.h: translations/de.h.txt  
 	@echo
-	@echo "Create language specific header files"
-	@echo "German"
+	@echo "Create German language specific header files"
 	$(TRANSLATE) translations/de.h.txt translations/de.h de
 
 translations/es.h: translations/es.h.txt 
 	@echo
-	@echo "Create language specific header files"
-	@echo "Spanish"
+	@echo "Create Spanish language specific header files"
 	$(TRANSLATE) translations/es.h.txt translations/es.h es
+
+translations/fi.h: translations/fi.h.txt 
+	@echo
+	@echo "Create Finnish language specific header files"
+	$(TRANSLATE) translations/fi.h.txt translations/fi.h fi
 
 translations/fr.h: translations/fr.h.txt 
 	@echo
-	@echo "Create language specific header files"
-	@echo "French"
+	@echo "Create French language specific header files"
 	$(TRANSLATE) translations/fr.h.txt translations/fr.h fr
 
 translations/it.h: translations/it.h.txt 
 	@echo
-	@echo "Create language specific header files"
-	@echo "Italian"
+	@echo "Create Italian language specific header files"
 	$(TRANSLATE) translations/it.h.txt translations/it.h it
 
 translations/pl.h: translations/pl.h.txt 
 	@echo
-	@echo "Create language specific header files"
-	@echo "Polish"
+	@echo "Create Polish language specific header files"
 	$(TRANSLATE) translations/pl.h.txt translations/pl.h pl
 
 translations/pt.h: translations/pt.h.txt
 	@echo
-	@echo "Create language specific header files"
-	@echo "Portugese"
+	@echo "Create Portugese language specific header files"
 	$(TRANSLATE) translations/pt.h.txt translations/pt.h pt
 
 translations/se.h: translations/se.h.txt 
 	@echo
-	@echo "Create language specific header files"
-	@echo "Swedish"
+	@echo "Create Swedish language specific header files"
 	$(TRANSLATE) translations/se.h.txt translations/se.h se
 
 .PHONY: fonts
@@ -1230,7 +1270,7 @@ FOXLIB=-L/usr/local/lib \
        -Wl,-rpath,$(FOXPATH)/src/.libs
 
 simu: stamp_header $(BOARDSRC) $(CPPSRC) Makefile simu.cpp simpgmspace.cpp *.h tra lbm eeprom.bin
-	g++ $(CPPFLAGS) $(INCFLAGS) simu.cpp $(BOARDSRC) $(CPPSRC) simpgmspace.cpp -MD -DSIMU -O0 -o simu $(FOXINC) $(FOXLIB) -pthread -fexceptions
+	g++ $(CPPFLAGS) $(INCFLAGS) simu.cpp $(BOARDSRC) $(CPPSRC) $(LUASRC) simpgmspace.cpp -MD -DSIMU -O0 -o simu $(FOXINC) $(FOXLIB) -pthread -fexceptions
 
 eeprom.bin:
 	dd if=/dev/zero of=$@ bs=1 count=2048
@@ -1385,11 +1425,11 @@ GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 # conservative and not optimized.  This is fine as Google Test
 # compiles fast and for ordinary users its source rarely changes.
 gtest-all.o : $(GTEST_SRCS_)
-	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -c \
+	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -I$(GTEST_DIR)/include -c \
             $(GTEST_DIR)/src/gtest-all.cc
 
 gtest_main.o : $(GTEST_SRCS_)
-	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -c \
+	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -I$(GTEST_DIR)/include -c \
             $(GTEST_DIR)/src/gtest_main.cc
 
 gtest.a : gtest-all.o
@@ -1403,4 +1443,4 @@ gtest_main.a : gtest-all.o gtest_main.o
 # function.
 
 gtests: $(BOARDSRC) $(CPPSRC) gtests.cpp simpgmspace.cpp *.h gtest_main.a
-	g++ -std=gnu++0x $(CPPFLAGS) $(BOARDSRC) $(CPPSRC) gtests.cpp simpgmspace.cpp -I$(GTEST_DIR) -o gtests -lpthread -MD -DSIMU gtest_main.a 
+	g++ -std=gnu++0x $(CPPFLAGS) $(BOARDSRC) $(CPPSRC) gtests.cpp simpgmspace.cpp -I$(GTEST_DIR) ${INCFLAGS} -I$(GTEST_DIR)/include -o gtests -lpthread -MD -DSIMU gtest_main.a 

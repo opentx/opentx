@@ -19,6 +19,7 @@
 #include "th9xeeprom.h"
 #include "th9xsimulator.h"
 #include "file.h"
+#include "appdata.h"
 
 #define FILE_TYP_GENERAL 1
 #define FILE_TYP_MODEL   2
@@ -44,8 +45,7 @@ const char * Th9xInterface::getName()
 
 const int Th9xInterface::getEEpromSize()
 {
-  QSettings settings("companion9x", "companion9x");
-  QString avrMCU = settings.value("mcu", QString("m64")).toString();
+  QString avrMCU = g.mcu();
   if (avrMCU==QString("m128")) {
     return 2*EESIZE_STOCK;
   }
@@ -62,7 +62,7 @@ bool Th9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
   return false;
 }
 
-bool Th9xInterface::load(RadioData &radioData, uint8_t *eeprom, int size)
+bool Th9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {
   std::cout << "trying th9x import... ";
 
@@ -71,7 +71,7 @@ bool Th9xInterface::load(RadioData &radioData, uint8_t *eeprom, int size)
     return false;
   }
 
-  if (!efile->EeFsOpen(eeprom, size, BOARD_STOCK)) {
+  if (!efile->EeFsOpen((uint8_t *)eeprom, size, BOARD_STOCK)) {
     std::cout << "wrong file system\n";
     return false;
   }
@@ -157,7 +157,7 @@ int Th9xInterface::getCapability(const Capability capability)
       return 9;
     case CustomFunctions:
       return 0;
-    case CustomSwitches:
+    case LogicalSwitches:
       return TH9X_MAX_SWITCHES;
     case Outputs:
       return 8;
@@ -202,5 +202,5 @@ int Th9xInterface::isAvailable(Protocol proto, int port)
 
 SimulatorInterface * Th9xInterface::getSimulator()
 {
-  return new Th9xSimulator(this);
+  return NULL; // new Th9xSimulator(this);
 }

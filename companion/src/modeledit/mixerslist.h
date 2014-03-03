@@ -6,24 +6,19 @@
 class MixersList : public QListWidget
 {
     Q_OBJECT
-public:
-    explicit MixersList(QWidget *parent, bool expo);
-//    QMimeData * mimeData ( const QList<QListWidgetItem *> items );
 
+  public:
+    explicit MixersList(QWidget *parent, bool expo);
     void keyPressEvent(QKeyEvent *event);
 
-
-signals:
+  signals:
     void mimeDropped(int index, const QMimeData *data, Qt::DropAction action);
     void keyWasPressed(QKeyEvent *event);
 
-
-protected:
-
-public slots:
+  public slots:
     bool dropMimeData(int index, const QMimeData *data, Qt::DropAction action);
 
-private:
+  private:
     QPoint dragStartPosition;
     bool expo;
 

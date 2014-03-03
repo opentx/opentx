@@ -51,10 +51,7 @@ extern void rtcdriver_settime(struct gtm * t);
    implementations (e.g., UNICOS 9.0 on a Cray Y-MP EL) don't shift
    right in the usual way when A < 0, so SHR falls back on division if
    ordinary A >> B doesn't seem to be the usual signed shift.  */
-#define SHR(a, b)       \
-  (-1 >> 1 == -1        \
-   ? (a) >> (b)         \
-   : (a) / (1 << (b)) - ((a) % (1 << (b)) < 0))
+#define SHR(a, b) (-1 >> 1 == -1 ? (a) >> (b) : (a) / (1 << (b)) - ((a) % (1 << (b)) < 0))
 
 /* The extra casts in the following macros work around compiler bugs,
    e.g., in Cray C 5.0.3.0.  */
@@ -487,7 +484,7 @@ __mktime_internal (struct gtm *tp,
 gtime_t
 gmktime (struct gtm *tp)
 {
- // no time zone stuff. Just do the math ;)
+  // no time zone stuff. Just do the math ;)
   static gtime_t localtime_offset;
   return __mktime_internal (tp, __localtime_r, &localtime_offset);
 }

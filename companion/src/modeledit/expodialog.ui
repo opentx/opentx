@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>370</width>
-    <height>331</height>
+    <width>381</width>
+    <height>414</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -26,32 +26,39 @@
    <string/>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="../companion.qrc">
     <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="2" column="1">
+    <widget class="QComboBox" name="sourceCB">
+     <property name="whatsThis">
+      <string>The source for the mixer</string>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0">
-    <widget class="QLabel" name="label_name">
+    <widget class="QLabel" name="inputNameLabel">
      <property name="text">
-      <string>Name</string>
+      <string>Input name</string>
      </property>
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QLineEdit" name="expoName">
+    <widget class="QLineEdit" name="inputName">
      <property name="maxLength">
       <number>6</number>
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="6" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
       <string>Weight</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
+   <item row="6" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0,1,0">
      <item>
       <widget class="QCheckBox" name="weightGV">
@@ -66,7 +73,7 @@
      <item>
       <widget class="QComboBox" name="weightCB">
        <property name="whatsThis">
-        <string>Phase used by the expo.</string>
+        <string>Phase used by the input.</string>
        </property>
       </widget>
      </item>
@@ -85,14 +92,14 @@
      </item>
     </layout>
    </item>
-   <item row="6" column="0">
+   <item row="8" column="0">
     <widget class="QLabel" name="label_phases">
      <property name="text">
       <string>Flight modes</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="1">
+   <item row="8" column="1">
     <layout class="QGridLayout" name="gridLayout_4">
      <item row="0" column="0">
       <widget class="QLabel" name="lb_FP0">
@@ -249,29 +256,29 @@
      </item>
     </layout>
    </item>
-   <item row="7" column="0">
+   <item row="9" column="0">
     <widget class="QLabel" name="label_7">
      <property name="text">
       <string>Switch</string>
      </property>
     </widget>
    </item>
-   <item row="7" column="1">
+   <item row="9" column="1">
     <widget class="QComboBox" name="switchesCB">
      <property name="whatsThis">
-      <string>Switch used by the expo.
-If blank then the expo is considered to be &quot;ON&quot; all the time.</string>
+      <string>Switch used by the input.
+If blank then the input is considered to be &quot;ON&quot; all the time.</string>
      </property>
     </widget>
    </item>
-   <item row="9" column="0">
+   <item row="11" column="0">
     <widget class="QLabel" name="sideLabel">
      <property name="text">
       <string>Stick Side</string>
      </property>
     </widget>
    </item>
-   <item row="9" column="1">
+   <item row="11" column="1">
     <widget class="QComboBox" name="sideCB">
      <item>
       <property name="text">
@@ -290,7 +297,7 @@ If blank then the expo is considered to be &quot;ON&quot; all the time.</string>
      </item>
     </widget>
    </item>
-   <item row="11" column="0" colspan="2">
+   <item row="13" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="minimumSize">
       <size>
@@ -309,7 +316,7 @@ If blank then the expo is considered to be &quot;ON&quot; all the time.</string>
      </property>
     </widget>
    </item>
-   <item row="10" column="0" colspan="2">
+   <item row="12" column="0" colspan="2">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -322,15 +329,8 @@ If blank then the expo is considered to be &quot;ON&quot; all the time.</string>
      </property>
     </spacer>
    </item>
-   <item row="2" column="1">
-    <widget class="QComboBox" name="sourceCB">
-     <property name="whatsThis">
-      <string>The source for the mixer</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QDoubleSpinBox" name="scaleSB">
+   <item row="3" column="1">
+    <widget class="QDoubleSpinBox" name="scale">
      <property name="whatsThis">
       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -352,28 +352,21 @@ p, li { white-space: pre-wrap; }
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item row="3" column="0">
     <widget class="QLabel" name="scaleLabel">
      <property name="text">
       <string>Scale</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="5" column="0">
     <widget class="QLabel" name="trimLabel">
      <property name="text">
       <string>Include Trim</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="sourceLabel">
-     <property name="text">
-      <string>Source</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
+   <item row="5" column="1">
     <widget class="QComboBox" name="trimCB">
      <item>
       <property name="text">
@@ -387,14 +380,14 @@ p, li { white-space: pre-wrap; }
      </item>
     </widget>
    </item>
-   <item row="5" column="0">
+   <item row="7" column="0">
     <widget class="QLabel" name="label_curves">
      <property name="text">
       <string>Curve</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="1">
+   <item row="7" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0,1,0">
      <item>
       <widget class="QComboBox" name="curveTypeCB">
@@ -402,7 +395,7 @@ p, li { white-space: pre-wrap; }
         <string/>
        </property>
        <property name="whatsThis">
-        <string>The curve used by the expo</string>
+        <string>The curve used by the input</string>
        </property>
       </widget>
      </item>
@@ -425,10 +418,57 @@ p, li { white-space: pre-wrap; }
      </item>
     </layout>
    </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="sourceLabel">
+     <property name="text">
+      <string>Source</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="lineNameLabel">
+     <property name="text">
+      <string>Line name</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLineEdit" name="lineName">
+     <property name="maxLength">
+      <number>6</number>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>inputName</tabstop>
+  <tabstop>lineName</tabstop>
+  <tabstop>sourceCB</tabstop>
+  <tabstop>scale</tabstop>
+  <tabstop>trimCB</tabstop>
+  <tabstop>weightGV</tabstop>
+  <tabstop>weightSB</tabstop>
+  <tabstop>weightCB</tabstop>
+  <tabstop>curveTypeCB</tabstop>
+  <tabstop>curveGVarCB</tabstop>
+  <tabstop>curveValueCB</tabstop>
+  <tabstop>curveValueSB</tabstop>
+  <tabstop>cb_FP0</tabstop>
+  <tabstop>cb_FP1</tabstop>
+  <tabstop>cb_FP2</tabstop>
+  <tabstop>cb_FP3</tabstop>
+  <tabstop>cb_FP4</tabstop>
+  <tabstop>cb_FP5</tabstop>
+  <tabstop>cb_FP6</tabstop>
+  <tabstop>cb_FP7</tabstop>
+  <tabstop>cb_FP8</tabstop>
+  <tabstop>switchesCB</tabstop>
+  <tabstop>sideCB</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources>
-  <include location="companion9x.qrc"/>
+  <include location="../companion.qrc"/>
  </resources>
  <connections>
   <connection>

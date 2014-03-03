@@ -19,6 +19,7 @@
 #include "er9xeeprom.h"
 #include "er9xsimulator.h"
 #include "file.h"
+#include "appdata.h"
 
 #define FILE_TYP_GENERAL 1
 #define FILE_TYP_MODEL   2
@@ -44,8 +45,7 @@ const char * Er9xInterface::getName()
 
 const int Er9xInterface::getEEpromSize()
 {
-  QSettings settings("companion9x", "companion9x");
-  QString avrMCU = settings.value("mcu", QString("m64")).toString();
+  QString avrMCU = g.mcu();
   if (avrMCU==QString("m128")) {
     return 2*EESIZE_STOCK;
   }
@@ -75,11 +75,11 @@ inline void applyStickModeToModel(Er9xModelData & model, unsigned int mode)
   for (int i=0; i<ER9X_MAX_MIXERS; i++)
     model.mixData[i].srcRaw = applyStickMode(model.mixData[i].srcRaw, mode);
   for (int i=0; i<ER9X_NUM_CSW; i++) {
-    switch (getCSFunctionFamily(model.customSw[i].func)) {
-      case CS_FAMILY_VCOMP:
+    switch (LogicalSwitchData(model.customSw[i].func).getFunctionFamily()) {
+      case LS_FAMILY_VCOMP:
         model.customSw[i].v2 = applyStickMode(model.customSw[i].v2, mode);
         // no break
-      case CS_FAMILY_VOFS:
+      case LS_FAMILY_VOFS:
         model.customSw[i].v1 = applyStickMode(model.customSw[i].v1, mode);
         break;
       default:
@@ -114,7 +114,7 @@ bool Er9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
   return true;
 }
 
-bool Er9xInterface::load(RadioData &radioData, uint8_t *eeprom, int size)
+bool Er9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {
   std::cout << "trying er9x import... ";
 
@@ -123,7 +123,7 @@ bool Er9xInterface::load(RadioData &radioData, uint8_t *eeprom, int size)
     return false;
   }
 
-  if (!efile->EeFsOpen(eeprom, size, BOARD_STOCK)) {
+  if (!efile->EeFsOpen((uint8_t *)eeprom, size, BOARD_STOCK)) {
     std::cout << "wrong file system\n";
     return false;
   }
@@ -239,7 +239,7 @@ int Er9xInterface::getCapability(const Capability capability)
       return 9;
     case CustomFunctions:
       return 0;
-    case CustomSwitches:
+    case LogicalSwitches:
       return 12;
     case CustomAndSwitches:
         return 5;
@@ -281,9 +281,6 @@ int Er9xInterface::getCapability(const Capability capability)
     case ModelVoice:
     case Gvars:
       return 7;
-    case GvarsHaveSources:
-    case GvarsAsSources:
-     return 1;
     case GetThrSwitch:
       return DSW_THR;     
     default:
@@ -306,7 +303,7 @@ int Er9xInterface::isAvailable(Protocol prot, int port)
 
 SimulatorInterface * Er9xInterface::getSimulator()
 {
-  return new Er9xSimulator(this);
+  return NULL; // new Er9xSimulator(this);
 }
 
 

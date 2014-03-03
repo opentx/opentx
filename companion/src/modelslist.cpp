@@ -41,38 +41,39 @@
 
 #include "modelslist.h"
 #include "mdichild.h"
+#include "helpers.h"
 
 class DragDropHeader {
-public:
-  DragDropHeader():
-    general_settings(false),
-    models_count(0)
-  {
-  }
-  bool general_settings;
-  uint8_t models_count;
-  uint8_t models[C9X_MAX_MODELS];
+  public:
+    DragDropHeader():
+      general_settings(false),
+      models_count(0)
+    {
+    }
+    bool general_settings;
+    uint8_t models_count;
+    uint8_t models[C9X_MAX_MODELS];
 };
 
 ModelsListWidget::ModelsListWidget(QWidget *parent):
   QListWidget(parent)
 {
-    this->setFont(QFont("Courier New",12));
-    radioData = &((MdiChild *)parent)->radioData;
-    refreshList();
+  setFont(QFont("Courier New",12));
+  radioData = &((MdiChild *)parent)->radioData;
+  refreshList();
 
-    connect(this, SIGNAL(itemActivated(QListWidgetItem*)), this, SLOT(OpenEditWindow()));
-    connect(this, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(ShowContextMenu(const QPoint&)));
-    connect(this, SIGNAL(currentRowChanged(int)), this, SLOT(viableModelSelected(int)));
+  connect(this, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(OpenEditWindow()));
+  connect(this, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(ShowContextMenu(const QPoint&)));
+  connect(this, SIGNAL(currentRowChanged(int)), this, SLOT(viableModelSelected(int)));
 
-    setContextMenuPolicy(Qt::CustomContextMenu);
-    setSelectionMode(QAbstractItemView::ExtendedSelection);
-    setDragEnabled(true);
-    setAcceptDrops(true);
-    setDragDropOverwriteMode(true);
-    setDropIndicatorShown(true);
+  setContextMenuPolicy(Qt::CustomContextMenu);
+  setSelectionMode(QAbstractItemView::ExtendedSelection);
+  setDragEnabled(true);
+  setAcceptDrops(true);
+  setDragDropOverwriteMode(true);
+  setDropIndicatorShown(true);
 
-    active_highlight_color = this->palette().color(QPalette::Active, QPalette::Highlight);
+  active_highlight_color = palette().color(QPalette::Active, QPalette::Highlight);
 }
 
 void ModelsListWidget::ShowContextMenu(const QPoint& pos)
@@ -81,24 +82,24 @@ void ModelsListWidget::ShowContextMenu(const QPoint& pos)
 
     const QClipboard *clipboard = QApplication::clipboard();
     const QMimeData *mimeData = clipboard->mimeData();
-    bool hasData = mimeData->hasFormat("application/x-companion9x");
+    bool hasData = mimeData->hasFormat("application/x-companion");
 
     QMenu contextMenu;
-    contextMenu.addAction(QIcon(":/images/edit.png"), tr("&Edit"),this,SLOT(OpenEditWindow()));
-    contextMenu.addAction(QIcon(":/images/open.png"), tr("&Restore from backup"),this,SLOT(LoadBackup()));    
-    contextMenu.addAction(QIcon(":/images/wizard.png"), tr("&Model Wizard"),this,SLOT(OpenWizard()));
+    contextMenu.addAction(CompanionIcon("edit.png"), tr("&Edit"),this,SLOT(OpenEditWindow()));
+    contextMenu.addAction(CompanionIcon("open.png"), tr("&Restore from backup"),this,SLOT(LoadBackup()));
+    contextMenu.addAction(CompanionIcon("wizard.png"), tr("&Model Wizard"),this,SLOT(OpenWizard()));
     contextMenu.addSeparator();
-    contextMenu.addAction(QIcon(":/images/clear.png"), tr("&Delete"),this,SLOT(confirmDelete()),tr("Delete"));
-    contextMenu.addAction(QIcon(":/images/copy.png"), tr("&Copy"),this,SLOT(copy()),tr("Ctrl+C"));
-    contextMenu.addAction(QIcon(":/images/cut.png"), tr("&Cut"),this,SLOT(cut()),tr("Ctrl+X"));
-    contextMenu.addAction(QIcon(":/images/paste.png"), tr("&Paste"),this,SLOT(paste()),tr("Ctrl+V"))->setEnabled(hasData);
-    contextMenu.addAction(QIcon(":/images/duplicate.png"), tr("D&uplicate"),this,SLOT(duplicate()),tr("Ctrl+U"));
+    contextMenu.addAction(CompanionIcon("clear.png"), tr("&Delete"),this,SLOT(confirmDelete()),tr("Delete"));
+    contextMenu.addAction(CompanionIcon("copy.png"), tr("&Copy"),this,SLOT(copy()),tr("Ctrl+C"));
+    contextMenu.addAction(CompanionIcon("cut.png"), tr("&Cut"),this,SLOT(cut()),tr("Ctrl+X"));
+    contextMenu.addAction(CompanionIcon("paste.png"), tr("&Paste"),this,SLOT(paste()),tr("Ctrl+V"))->setEnabled(hasData);
+    contextMenu.addAction(CompanionIcon("duplicate.png"), tr("D&uplicate"),this,SLOT(duplicate()),tr("Ctrl+U"));
     contextMenu.addSeparator();
-    contextMenu.addAction(QIcon(":/images/currentmodel.png"), tr("&Use as default"),this,SLOT(setdefault()));
+    contextMenu.addAction(CompanionIcon("currentmodel.png"), tr("&Use as default"),this,SLOT(setdefault()));
     contextMenu.addSeparator();
-    contextMenu.addAction(QIcon(":/images/print.png"), tr("P&rint model"),this, SLOT(print()),tr("Alt+R"));
+    contextMenu.addAction(CompanionIcon("print.png"), tr("P&rint model"),this, SLOT(print()),tr("Alt+R"));
     contextMenu.addSeparator();
-    contextMenu.addAction(QIcon(":/images/simulate.png"), tr("&Simulate model"),this, SLOT(simulate()),tr("Alt+S"));
+    contextMenu.addAction(CompanionIcon("simulate.png"), tr("&Simulate model"),this, SLOT(simulate()),tr("Alt+S"));
     contextMenu.exec(globalPos);
 }
 
@@ -161,7 +162,7 @@ void ModelsListWidget::mouseMoveEvent(QMouseEvent *event)
     doCopy(&gmData);
 
     QMimeData *mimeData = new QMimeData;
-    mimeData->setData("application/x-companion9x", gmData);
+    mimeData->setData("application/x-companion", gmData);
 
     drag->setMimeData(mimeData);
 
@@ -189,7 +190,7 @@ void ModelsListWidget::restoreSelection()
 
 void ModelsListWidget::dragEnterEvent(QDragEnterEvent *event)
 {
-    if (event->mimeData()->hasFormat("application/x-companion9x"))
+    if (event->mimeData()->hasFormat("application/x-companion"))
     {
          event->acceptProposedAction();
          saveSelection();
@@ -205,9 +206,9 @@ void ModelsListWidget::dragMoveEvent(QDragMoveEvent *event)
 {
     int row=this->indexAt(event->pos()).row();
     const QMimeData *mimeData = event->mimeData();
-    if (mimeData->hasFormat("application/x-companion9x"))
+    if (mimeData->hasFormat("application/x-companion"))
     {
-         QByteArray gmData = mimeData->data("application/x-companion9x");
+         QByteArray gmData = mimeData->data("application/x-companion");
          event->acceptProposedAction();
          clearSelection();
          DragDropHeader *header = (DragDropHeader *)gmData.data();
@@ -228,9 +229,9 @@ void ModelsListWidget::dropEvent(QDropEvent *event)
 
     // QMessageBox::warning(this, tr("Companion"),tr("Index :%1").arg(row));
     const QMimeData  *mimeData = event->mimeData();
-    if(mimeData->hasFormat("application/x-companion9x"))
+    if(mimeData->hasFormat("application/x-companion"))
     {
-        QByteArray gmData = mimeData->data("application/x-companion9x");
+        QByteArray gmData = mimeData->data("application/x-companion");
         if (event->source() && event->dropAction() == Qt::MoveAction)
           ((ModelsListWidget*)event->source())->doCut(&gmData);
         doPaste(&gmData, row);
@@ -425,7 +426,7 @@ void ModelsListWidget::copy()
     doCopy(&gmData);
 
     QMimeData *mimeData = new QMimeData;
-    mimeData->setData("application/x-companion9x", gmData);
+    mimeData->setData("application/x-companion", gmData);
 
     QClipboard *clipboard = QApplication::clipboard();
     clipboard->setMimeData(mimeData,QClipboard::Clipboard);
@@ -433,7 +434,7 @@ void ModelsListWidget::copy()
 
 void ModelsListWidget::doPaste(QByteArray *gmData, int index)
 {
-  //QByteArray gmData = mimeD->data("application/x-companion9x");
+  //QByteArray gmData = mimeD->data("application/x-companion");
   char *gData = gmData->data()+sizeof(DragDropHeader);//new char[gmData.size() + 1];
   int i = sizeof(DragDropHeader);
   int id = index;
@@ -490,7 +491,7 @@ bool ModelsListWidget::hasPasteData()
     const QClipboard *clipboard = QApplication::clipboard();
     const QMimeData *mimeData = clipboard->mimeData();
 
-    return mimeData->hasFormat("application/x-companion9x");
+    return mimeData->hasFormat("application/x-companion");
 }
 
 void ModelsListWidget::paste()
@@ -499,7 +500,7 @@ void ModelsListWidget::paste()
         const QClipboard *clipboard = QApplication::clipboard();
         const QMimeData *mimeData = clipboard->mimeData();
 
-        QByteArray gmData = mimeData->data("application/x-companion9x");
+        QByteArray gmData = mimeData->data("application/x-companion");
         doPaste(&gmData,this->currentRow());
     }
 }

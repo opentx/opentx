@@ -443,7 +443,7 @@
        </widget>
       </item>
       <item row="7" column="0" alignment="Qt::AlignRight">
-       <widget class="QLabel" name="label_failsafeFrame">
+       <widget class="QLabel" name="failsafesLayoutLabel">
         <property name="maximumSize">
          <size>
           <width>16777215</width>

@@ -22,8 +22,10 @@ class Curves : public ModelPanel
     void resetCurve();
     void editCurve();
     void plotCurve(bool checked);
-    void on_cname_LE_editingFinished();
-    void on_curvetype_CB_currentIndexChanged(int index);
+    void on_curveName_editingFinished();
+    void on_curvePoints_currentIndexChanged(int index);
+    void on_curveCustom_currentIndexChanged(int index);
+    void on_curveSmooth_currentIndexChanged(int index);
     void onPointEdited();
     void onNodeMoved(int x, int y);
     void onNodeFocus();
@@ -41,6 +43,7 @@ class Curves : public ModelPanel
     void setCurrentCurve(int index);
     void updateCurve();
     void updateCurveType();
+    bool allowCurveType(int points, CurveData::CurveType type);
 
 };
 

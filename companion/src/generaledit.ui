@@ -19,10 +19,6 @@
   <property name="windowTitle">
    <string>General Edit</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="companion.qrc">
-    <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
-  </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
   </property>
@@ -110,7 +106,7 @@
 These will be relevant for all models in the same EEPROM.</string>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tabSetup">
       <attribute name="title">
@@ -759,122 +755,122 @@ This is used by the templated to determine which channel goes to what number out
          </property>
          <item>
           <property name="text">
-           <string notr="true">R E T A</string>
+           <string>R E T A</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string notr="true">R E A T</string>
+           <string>R E A T</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string notr="true">R T E A</string>
+           <string>R T E A</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string notr="true">R T A E</string>
+           <string>R T A E</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string notr="true">R A E T</string>
+           <string>R A E T</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string notr="true">R A T E</string>
+           <string>R A T E</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string notr="true">E R T A</string>
+           <string>E R T A</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string notr="true">E R A T</string>
+           <string>E R A T</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string notr="true">E T R A</string>
+           <string>E T R A</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string notr="true">E T A R</string>
+           <string>E T A R</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string notr="true">E A R T</string>
+           <string>E A R T</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string notr="true">E A T R</string>
+           <string>E A T R</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string notr="true">T R E A</string>
+           <string>T R E A</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string notr="true">T R A E</string>
+           <string>T R A E</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string notr="true">T E R A</string>
+           <string>T E R A</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string notr="true">T E A R</string>
+           <string>T E A R</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string notr="true">T A R E</string>
+           <string>T A R E</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string notr="true">T A E R</string>
+           <string>T A E R</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string notr="true">A R E T</string>
+           <string>A R E T</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string notr="true">A R T E</string>
+           <string>A R T E</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string notr="true">A E R T</string>
+           <string>A E R T</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string notr="true">A E T R</string>
+           <string>A E T R</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string notr="true">A T R E</string>
+           <string>A T R E</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string notr="true">A T E R</string>
+           <string>A T E R</string>
           </property>
          </item>
         </widget>
@@ -1559,10 +1555,10 @@ Acceptable values are 5v..10v</string>
          <property name="sizeConstraint">
           <enum>QLayout::SetMinimumSize</enum>
          </property>
-         <property name="verticalSpacing">
+         <property name="topMargin">
           <number>0</number>
          </property>
-         <property name="topMargin">
+         <property name="verticalSpacing">
           <number>0</number>
          </property>
          <item row="0" column="2">
@@ -3491,6 +3487,91 @@ p, li { white-space: pre-wrap; }
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0" colspan="4">
+        <widget class="Line" name="potsTypeSeparator">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>10</height>
+          </size>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QComboBox" name="pot1Type">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="statusTip">
+          <string/>
+         </property>
+         <property name="whatsThis">
+          <string>Beeper volume
+
+0 - Quiet.  No beeps at all.
+1 - No Keys.  Normal beeps but menu keys do not beep.
+2 - Normal.
+3 - Loud.
+4 - Extra loud.</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>Pot (normal)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Multipos Switch</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="pot1TypeLabel">
+         <property name="text">
+          <string>S1 Type</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1">
+        <widget class="QComboBox" name="pot2Type">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="statusTip">
+          <string/>
+         </property>
+         <property name="whatsThis">
+          <string>Beeper volume
+
+0 - Quiet.  No beeps at all.
+1 - No Keys.  Normal beeps but menu keys do not beep.
+2 - Normal.
+3 - Loud.
+4 - Extra loud.</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>Pot (normal)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Multipos Switch</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="7" column="0">
+        <widget class="QLabel" name="pot2TypeLabel">
+         <property name="text">
+          <string>S2 Type</string>
          </property>
         </widget>
        </item>

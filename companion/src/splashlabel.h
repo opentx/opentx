@@ -14,7 +14,7 @@
  *
  */
 #ifndef SPLASHLABEL_H
-#define	SPLASHLABEL_H
+#define SPLASHLABEL_H
 
 #include <QLabel>
 #include <QWidget>
@@ -77,5 +77,5 @@ signals:
 private:
   int index;
 };
-#endif	/* SPLASHLABEL_H */
+#endif /* SPLASHLABEL_H */
 

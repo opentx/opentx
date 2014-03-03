@@ -88,6 +88,10 @@ inline void displayColumnHeader(const char **headers, uint8_t index)
   #define horzpos_t uint8_t
 #endif
 
+#if defined(CPUARM)
+  extern tmr10ms_t menuEntryTime;
+#endif
+
 extern vertpos_t m_posVert;
 extern horzpos_t m_posHorz;
 extern vertpos_t s_pgOfs;
@@ -167,7 +171,7 @@ extern int8_t s_editMode;       // global editmode
 #define HIDDEN_ROW     ((uint8_t)-2)
 
 #if defined(CPUARM)
-typedef bool (*IsValueAvailable)(int16_t);
+typedef bool (*IsValueAvailable)(int);
 int16_t checkIncDec(uint8_t event, int16_t i_pval, int16_t i_min, int16_t i_max, uint8_t i_flags=0, IsValueAvailable isValueAvailable=NULL);
 #else
 int16_t checkIncDec(uint8_t event, int16_t i_pval, int16_t i_min, int16_t i_max, uint8_t i_flags=0);
@@ -190,7 +194,18 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
   var = checkIncDecModelZero(event,var,max)
 
 #if defined(CPUARM)
-  bool isSwitchAvailable(int16_t swtch);
+  #define CHECK_INCDEC_MODELVAR_ZERO_CHECK(event, var, max, check) \
+    var = checkIncDec(event, var, 0, max, EE_MODEL, check)
+#else
+  #define CHECK_INCDEC_MODELVAR_ZERO_CHECK(event, var, max, check) \
+    CHECK_INCDEC_MODELVAR_ZERO(event, var, max)
+#endif
+
+#if defined(CPUARM)
+  bool isLogicalSwitchFunctionAvailable(int function);
+  bool isAssignableFunctionAvailable(int function);
+  bool isSwitchAvailable(int swtch);
+  bool isSwitchAvailableInLogicalSwitches(int swtch);
   #define AUTOSWITCH_ENTER_LONG() (attr && event==EVT_KEY_LONG(KEY_ENTER))
   #define CHECK_INCDEC_MODELSWITCH(event, var, min, max) \
     var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SWITCH|NO_INCDEC_MARKS, isSwitchAvailable)
@@ -204,8 +219,9 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 #endif
 
 #if defined(CPUARM)
-  bool isSourceAvailable(int16_t source);
-  bool isInputSourceAvailable(int16_t source);
+  bool isSourceAvailable(int source);
+  bool isTelemetrySourceAvailable(int source);
+  bool isInputSourceAvailable(int source);
   #define CHECK_INCDEC_MODELSOURCE(event, var, min, max) \
     var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isSourceAvailable)
 #elif defined(AUTOSOURCE)
@@ -223,7 +239,14 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 #else
   #define NAVIGATION_LINE_BY_LINE  0
 #endif
-bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *subTab, uint8_t subTabMax, vertpos_t maxrow);
+
+#if defined(PCBTARANIS)
+  #define CHECK_FLAG_NO_SCREEN_INDEX   1
+  bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow, uint8_t flags=0);
+#else
+  bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow);
+#endif
+
 bool check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t maxrow);
 bool check_submenu_simple(check_event_t event, uint8_t maxrow);
 
@@ -239,9 +262,17 @@ void title(const pm_char * s);
 #define MENU_CHECK(tab, menu, lines_count) \
   check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, (lines_count)-1)
 
+#define MENU_CHECK_FLAGS(tab, menu, flags, lines_count) \
+  check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, (lines_count)-1, flags)
+
 #define MENU(title, tab, menu, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
   if (!MENU_CHECK(tab, menu, lines_count)) return; \
+  TITLE(title)
+
+#define MENU_FLAGS(title, tab, menu, flags, lines_count, ...) \
+  MENU_TAB(__VA_ARGS__); \
+  if (!MENU_CHECK_FLAGS(tab, menu, flags, lines_count)) return; \
   TITLE(title)
 
 #define SIMPLE_MENU_NOTITLE(tab, menu, lines_count) \
@@ -369,6 +400,7 @@ void displayWarning(uint8_t event);
 #if defined(PCBTARANIS)
 void menuChannelsView(uint8_t event);
 void pushMenuTextView(const char *filename);
+bool modelHasNotes();
 #endif
 
 #define LABEL(...) (uint8_t)-1
@@ -400,7 +432,8 @@ void pushMenuTextView(const char *filename);
   #define REPEAT_LAST_CURSOR_MOVE() { if (EVT_KEY_MASK(event) >= 0x0e) putEvent(event); else m_posHorz = 0; }
   #define MOVE_CURSOR_FROM_HERE()   if (m_posHorz > 0) REPEAT_LAST_CURSOR_MOVE()
 #else
-  #define REPEAT_LAST_CURSOR_MOVE() m_posHorz = 0;
+  void repeatLastCursorMove(uint8_t event);
+  #define REPEAT_LAST_CURSOR_MOVE() repeatLastCursorMove(event)
   #define MOVE_CURSOR_FROM_HERE()   REPEAT_LAST_CURSOR_MOVE()
 #endif
 

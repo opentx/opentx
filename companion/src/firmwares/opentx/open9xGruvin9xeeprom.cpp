@@ -293,22 +293,22 @@ RawSource open9xV4209ToSource(int8_t value)
   }
 }
 
-Open9xGruvin9xCustomSwData_v207::operator CustomSwData ()
+Open9xGruvin9xLogicalSwitchData_v207::operator LogicalSwitchData ()
 {
-  CustomSwData c9x;
+  LogicalSwitchData c9x;
   c9x.func = func;
   c9x.val1 = v1;
   c9x.val2 = v2;
 
-  if ((c9x.func >= CS_FN_VPOS && c9x.func <= CS_FN_ANEG) || c9x.func >= CS_FN_EQUAL) {
+  if ((c9x.func >= LS_FN_VPOS && c9x.func <= LS_FN_ANEG) || c9x.func >= LS_FN_EQUAL) {
     c9x.val1 = open9xV4207ToSource(v1).toValue();
   }
 
-  if (c9x.func >= CS_FN_EQUAL) {
+  if (c9x.func >= LS_FN_EQUAL) {
     c9x.val2 = open9xV4207ToSource(v2).toValue();
   }
 
-  if (c9x.func >= CS_FN_AND && c9x.func <= CS_FN_XOR) {
+  if (c9x.func >= LS_FN_AND && c9x.func <= LS_FN_XOR) {
     c9x.val1 = open9xStockToSwitch(v1).toValue();
     c9x.val2 = open9xStockToSwitch(v2).toValue();
   }
@@ -316,22 +316,22 @@ Open9xGruvin9xCustomSwData_v207::operator CustomSwData ()
   return c9x;
 }
 
-Open9xGruvin9xCustomSwData_v209::operator CustomSwData ()
+Open9xGruvin9xLogicalSwitchData_v209::operator LogicalSwitchData ()
 {
-  CustomSwData c9x;
+  LogicalSwitchData c9x;
   c9x.func = func;
   c9x.val1 = v1;
   c9x.val2 = v2;
 
-  if ((c9x.func >= CS_FN_VPOS && c9x.func <= CS_FN_ANEG) || c9x.func >= CS_FN_EQUAL) {
+  if ((c9x.func >= LS_FN_VPOS && c9x.func <= LS_FN_ANEG) || c9x.func >= LS_FN_EQUAL) {
     c9x.val1 = open9xV4209ToSource(v1).toValue();
   }
 
-  if (c9x.func >= CS_FN_EQUAL && c9x.func <= CS_FN_ELESS) {
+  if (c9x.func >= LS_FN_EQUAL && c9x.func <= LS_FN_ELESS) {
     c9x.val2 = open9xV4209ToSource(v2).toValue();
   }
 
-  if (c9x.func >= CS_FN_AND && c9x.func <= CS_FN_XOR) {
+  if (c9x.func >= LS_FN_AND && c9x.func <= LS_FN_XOR) {
     c9x.val1 = open9xStockToSwitch(v1).toValue();
     c9x.val2 = open9xStockToSwitch(v2).toValue();
   }
@@ -454,7 +454,7 @@ t_Open9xGruvin9xModelData_v207::operator ModelData ()
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
   c9x.thrTrim = thrTrim;
-  c9x.trimInc = trimInc;
+  c9x.trimInc = trimInc - 2;
   c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
   c9x.beepANACenter = beepANACenter;
   c9x.moduleData[0].ppmPulsePol = pulsePol;
@@ -538,7 +538,7 @@ t_Open9xGruvin9xModelData_v208::operator ModelData ()
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
   c9x.thrTrim = thrTrim;
-  c9x.trimInc = trimInc;
+  c9x.trimInc = trimInc - 2;
   c9x.disableThrottleWarning=disableThrottleWarning;
   c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
   c9x.beepANACenter = beepANACenter;
@@ -627,7 +627,7 @@ t_Open9xGruvin9xModelData_v209::operator ModelData ()
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
   c9x.thrTrim = thrTrim;
-  c9x.trimInc = trimInc;
+  c9x.trimInc = trimInc - 2;
   c9x.disableThrottleWarning=disableThrottleWarning;
   c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
   c9x.beepANACenter = beepANACenter;
@@ -717,7 +717,7 @@ t_Open9xGruvin9xModelData_v210::operator ModelData ()
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
   c9x.thrTrim = thrTrim;
-  c9x.trimInc = trimInc;
+  c9x.trimInc = trimInc - 2;
   c9x.disableThrottleWarning=disableThrottleWarning;
   c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
   c9x.beepANACenter = beepANACenter;
@@ -804,7 +804,7 @@ t_Open9xGruvin9xModelData_v211::operator ModelData ()
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
   c9x.thrTrim = thrTrim;
-  c9x.trimInc = trimInc;
+  c9x.trimInc = trimInc - 2;
   c9x.disableThrottleWarning=disableThrottleWarning;
   c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
   c9x.beepANACenter = beepANACenter;

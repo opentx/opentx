@@ -4,7 +4,7 @@
 #include <QtGui>
 #include "eeprominterface.h"
 
-#define TMR_NUM_OPTION  (TMR_VAROFS+2*9+2*GetEepromInterface()->getCapability(CustomSwitches)-1)
+#define TMR_NUM_OPTION  (TMR_VAROFS+2*9+2*GetEepromInterface()->getCapability(LogicalSwitches)-1)
 
 //convert from mode 1 to mode generalSettings.stickMode
 //NOTICE!  =>  1..4 -> 1..4
@@ -23,11 +23,40 @@
 #define TRIM_OFF 1
 #define TRIM_OFFSET 2
 
+#define TRIM_MODE_NONE  0x1F  // 0b11111
+
 void populateGvSourceCB(QComboBox *b, int value);
 void populateVoiceLangCB(QComboBox *b, QString language);
 void populateTTraceCB(QComboBox *b, int value);
 void populateRotEncCB(QComboBox *b, int value, int renumber);
 void populateBacklightCB(QComboBox *b, const uint8_t value);
+
+QString getTheme();
+
+class CompanionIcon: public QIcon {
+  public:
+    CompanionIcon(QString baseimage);
+};
+
+class GVarGroup : public QObject {
+
+  Q_OBJECT
+
+  public:
+    GVarGroup(QCheckBox *weightGV, QSpinBox *weightSB, QComboBox *weightCB, int & weight, const int deflt, const int mini, const int maxi, const unsigned int flags=0);
+
+  protected slots:
+    void gvarCBChanged(int);
+    void valuesChanged();
+
+  protected:
+    QCheckBox *weightGV;
+    QSpinBox *weightSB;
+    QComboBox *weightCB;
+    int & weight;
+    const unsigned int flags;
+    bool lock;
+};
 
 class CurveGroup : public QObject {
 
@@ -53,47 +82,33 @@ class CurveGroup : public QObject {
 };
 
 #define POPULATE_ONOFF        0x01
-#define POPULATE_MSWITCHES    0x02
-#define POPULATE_AND_SWITCHES 0x04
-void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr=0, UseContext context=DefaultContext);
-void populateFuncCB(QComboBox *b, unsigned int value);
-void populateRepeatCB(QComboBox *b, unsigned int value);
-void populateGVmodeCB(QComboBox *b, unsigned int value);
-QString FuncParam(uint function, int value, QString paramT="",unsigned int adjustmode=0);
-void populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsigned int adjustmode=0);
-void populateFuncParamArmTCB(QComboBox *b, ModelData * g_model, char * value, QStringList & paramsList);
+#define POPULATE_TIMER_MODES  0x02
+void populateAndSwitchCB(QComboBox *b, const RawSwitch & value);
+void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr=0);
+
 void populatePhasesCB(QComboBox *b, int value);
-void populateTrimUseCB(QComboBox *b, unsigned int phase);
 void populateGvarUseCB(QComboBox *b, unsigned int phase);
 void populateCustomScreenFieldCB(QComboBox *b, unsigned int value, bool last, int hubproto);
-void populateTimerSwitchCB(QComboBox *b, int value);
-QString getCustomSwitchStr(CustomSwData * customSw, const ModelData & model);
 QString getProtocolStr(const int proto);
 QString getPhasesStr(unsigned int phases, ModelData & model);
 
-#define POPULATE_SOURCES       1
-#define POPULATE_TRIMS         2
-#define POPULATE_SWITCHES      4
-#define POPULATE_GVARS         8
-#define POPULATE_TELEMETRY    16
-#define POPULATE_TELEMETRYEXT 32
+#define POPULATE_SOURCES        1
+#define POPULATE_TRIMS          2
+#define POPULATE_SWITCHES       4
+#define POPULATE_GVARS          8
+#define POPULATE_TELEMETRY      16
+#define POPULATE_TELEMETRYEXT   32
+#define POPULATE_VIRTUAL_INPUTS 64
 
 #define GVARS_VARIANT 0x0001
 #define FRSKY_VARIANT 0x0002
 
 // void populateGVarCB(QComboBox *b, int value, int min, int max,int pgvars=5); //TODO: Clean Up
 void populateGVCB(QComboBox *b, int value);
-void populateSourceCB(QComboBox *b, const RawSource &source, unsigned int flags);
+void populateSourceCB(QComboBox *b, const RawSource &source, const ModelData & model, unsigned int flags);
 void populateCSWCB(QComboBox *b, int value);
-QString getTimerMode(int tm);
-QString getTimerModeB(int tm);
 QString getPhaseName(int val, char * phasename=NULL);
-QString getStickStr(int index);
-QString getCSWFunc(int val);
-QString getFuncName(unsigned int val);
-QString getRepeatString(unsigned int val);
-QString getSignedStr(int value);
-QString getGVarString(int16_t val, bool sign=false);
+QString getInputStr(ModelData & model, int index);
 QString image2qstring(QImage image);
 QImage qstring2image(QString imagestr);
 int findmult(float value, float base);
@@ -110,9 +125,16 @@ QString getFrSkyUnits(int units);
 QString getFrSkyProtocol(int protocol);
 QString getFrSkyMeasure(int units);
 QString getFrSkySrc(int index);
-float getBarValue(int barId, int value, FrSkyData *fd);
-float c9xexpou(float point, float coeff);
-float ValToTim(int value);
-int TimToVal(float value);
+
+void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx);
+
+// Format a pixmap to fit on the radio using a specific firmware
+QPixmap makePixMap( QImage image, QString firmwareType );
+
+// Return a radio type derived from a firmware type string 
+int getRadioType(QString firmwareType);
+
+// Return the default firmware string for a specified radio
+QString getDefaultFwType( int radioType );
 
 #endif // HELPERS_H

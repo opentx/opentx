@@ -91,8 +91,6 @@ TEST(Trims, infiniteChainedTrims)
 
 TEST(outdezNAtt, test_unsigned)
 {
-  uint16_t altitude = 65530;
-
   uint8_t refBuf[sizeof(displayBuf)];
   memset(displayBuf, 0, sizeof(displayBuf));
   lcd_putc(0*FWNUM, 0, '6');
@@ -103,12 +101,12 @@ TEST(outdezNAtt, test_unsigned)
   memcpy(refBuf, displayBuf, sizeof(displayBuf));
 
   memset(displayBuf, 0, sizeof(displayBuf));
-  lcd_outdezNAtt(1, 0, altitude, LEFT|UNSIGN);
+  lcd_outdezNAtt(0, 0, 65530, LEFT|UNSIGN);
 
   EXPECT_EQ(memcmp(refBuf, displayBuf, sizeof(displayBuf)), 0) << "Unsigned numbers will be bad displayed";
 }
 
-TEST(EEPROM, 1000_random_writes)
+TEST(EEPROM, 100_random_writes)
 {
   eepromFile = NULL; // in memory
   RlcFile f;
@@ -117,7 +115,7 @@ TEST(EEPROM, 1000_random_writes)
 
   EeFsFormat();
 
-  for(int i=0; i<1000; i++) {
+  for(int i=0; i<100; i++) {
     int size = rand()%800;
     for(int j=0; j<size; j++) {
       buf[j] = rand() < (RAND_MAX/10000*i) ? 0 : (j&0xff);
@@ -295,8 +293,8 @@ TEST(FrSkySPORT, checkCrc)
 TEST(getSwitch, undefCSW)
 {
   MODEL_RESET();
-  EXPECT_EQ(getSwitch(MAX_PSWITCH), false);
-  EXPECT_EQ(getSwitch(-MAX_PSWITCH), true); // no good answer there!
+  EXPECT_EQ(getSwitch(NUM_PSWITCH), false);
+  EXPECT_EQ(getSwitch(-NUM_PSWITCH), true); // no good answer there!
 }
 #endif
 
@@ -304,8 +302,8 @@ TEST(getSwitch, circularCSW)
 {
   MODEL_RESET();
   MIXER_RESET();
-  g_model.customSw[0] = { SWSRC_SW1, SWSRC_SW1, CS_OR };
-  g_model.customSw[1] = { SWSRC_SW1, SWSRC_SW1, CS_AND };
+  g_model.customSw[0] = { SWSRC_SW1, SWSRC_SW1, LS_FUNC_OR };
+  g_model.customSw[1] = { SWSRC_SW1, SWSRC_SW1, LS_FUNC_AND };
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
   EXPECT_EQ(getSwitch(-SWSRC_SW1), true);
   EXPECT_EQ(getSwitch(SWSRC_SW2), false);
@@ -324,8 +322,8 @@ TEST(getSwitch, recursiveSW)
   MODEL_RESET();
   MIXER_RESET();
 
-  g_model.customSw[0] = { SWSRC_RUD, -SWSRC_SW2, CS_OR };
-  g_model.customSw[1] = { SWSRC_ELE, -SWSRC_SW1, CS_OR };
+  g_model.customSw[0] = { SWSRC_RUD, -SWSRC_SW2, LS_FUNC_OR };
+  g_model.customSw[1] = { SWSRC_ELE, -SWSRC_SW1, LS_FUNC_OR };
 
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
   EXPECT_EQ(getSwitch(SWSRC_SW2), true);
@@ -578,6 +576,34 @@ TEST(Mixer, SlowOnSwitch)
 
   simuSetSwitch(0, 0);
   CHECK_SLOW_MOVEMENT(0, -1, 250);
+}
+
+TEST(Mixer, SlowUpOnSwitch)
+{
+  MODEL_RESET();
+  MIXER_RESET();
+  g_model.mixData[0].destCh = 0;
+  g_model.mixData[0].mltpx = MLTPX_ADD;
+  g_model.mixData[0].srcRaw = MIXSRC_MAX;
+  g_model.mixData[0].weight = 100;
+  g_model.mixData[0].swtch = SWSRC_THR;
+  g_model.mixData[0].speedUp = 10;
+  g_model.mixData[0].speedDown = 0;
+
+  simuSetSwitch(0, 0);
+  perOut(e_perout_mode_normal, 0);
+  EXPECT_EQ(chans[0], 0);
+
+  simuSetSwitch(0, 1);
+  CHECK_SLOW_MOVEMENT(0, +1, 250);
+
+  simuSetSwitch(0, 0);
+  perOut(e_perout_mode_normal, 1);
+  EXPECT_EQ(chans[0], 0);
+
+  lastAct = 0;
+  simuSetSwitch(0, 1);
+  CHECK_SLOW_MOVEMENT(0, +1, 100);
 }
 
 TEST(Mixer, SlowOnPhase)

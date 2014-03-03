@@ -15,6 +15,9 @@ class ModelEdit : public QDialog
   public:
     explicit ModelEdit(RadioData & radioData, int modelId , bool openWizard =false, bool inNew =false, QWidget *parent = 0);
     ~ModelEdit();
+  
+  protected:
+    void closeEvent(QCloseEvent *event);
 
   signals:
     void modified();

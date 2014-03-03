@@ -29,6 +29,7 @@ compareDialog::compareDialog(QWidget *parent, GeneralSettings *gg) :
     ui(new Ui::compareDialog)
 {
   ui->setupUi(this);
+  this->setWindowIcon(CompanionIcon("compare.png"));
   g_eeGeneral = gg;
   eepromInterface = GetEepromInterface();
   te = ui->textEdit;
@@ -48,7 +49,7 @@ compareDialog::compareDialog(QWidget *parent, GeneralSettings *gg) :
 
 void compareDialog::dragMoveEvent(QDragMoveEvent *event)
 {
-  if (event->mimeData()->hasFormat("application/x-companion9x")) {   
+  if (event->mimeData()->hasFormat("application/x-companion")) {   
     event->acceptProposedAction();
   } else {
     event->ignore();
@@ -58,7 +59,7 @@ void compareDialog::dragMoveEvent(QDragMoveEvent *event)
 void compareDialog::dragEnterEvent(QDragEnterEvent *event)
 {
   // accept just text/uri-list mime format
-  if (event->mimeData()->hasFormat("application/x-companion9x")) {   
+  if (event->mimeData()->hasFormat("application/x-companion")) {   
     event->acceptProposedAction();
   } else {
     event->ignore();
@@ -83,7 +84,6 @@ void compareDialog::printDiff()
   printCurves();
   printGvars();
   printSwitches();
-  printSafetySwitches();
   printFSwitches();
   printFrSky();
   te->scrollToAnchor("1");
@@ -95,8 +95,8 @@ void compareDialog::dropEvent(QDropEvent *event)
   const QMimeData  *mimeData = event->mimeData();
   if (child) {
     if (child->objectName().contains("label_1")) {        
-      if(mimeData->hasFormat("application/x-companion9x")) {
-        QByteArray gmData = mimeData->data("application/x-companion9x");
+      if(mimeData->hasFormat("application/x-companion")) {
+        QByteArray gmData = mimeData->data("application/x-companion");
         DragDropHeader *header = (DragDropHeader *)gmData.data();
         if (!header->general_settings) {
           char *gData = gmData.data()+sizeof(DragDropHeader);//new char[gmData.size() + 1];
@@ -120,8 +120,8 @@ void compareDialog::dropEvent(QDropEvent *event)
       }          
     }
     else if (child->objectName().contains("label_2")) {
-      if(mimeData->hasFormat("application/x-companion9x")) {
-        QByteArray gmData = mimeData->data("application/x-companion9x");
+      if(mimeData->hasFormat("application/x-companion")) {
+        QByteArray gmData = mimeData->data("application/x-companion");
         DragDropHeader *header = (DragDropHeader *)gmData.data();
         if (!header->general_settings) {
           char *gData = gmData.data()+sizeof(DragDropHeader);//new char[gmData.size() + 1];
@@ -305,7 +305,7 @@ void compareDialog::printPhases()
   str.append("</b></td><td rowspan=2 align=\"center\" valign=\"bottom\"><b>"+tr("Switch")+"</b></td></tr><tr><td align=center width=\"80\"><b>"+tr("Flight mode name"));
   str.append("</b></td><td align=center width=\"30\"><b>"+tr("IN")+"</b></td><td align=center width=\"30\"><b>"+tr("OUT")+"</b></td>");
   for (i=0; i<4; i++) {
-    str.append(QString("<td width=\"40\" align=\"center\"><b>%1</b></td>").arg(getStickStr(i)));
+    str.append(QString("<td width=\"40\" align=\"center\"><b>%1</b></td>").arg(getInputStr(*g_model1, i)));
   }
   str.append("</tr>");
   for (i=0; i<GetEepromInterface()->getCapability(FlightPhases); i++) {
@@ -406,7 +406,7 @@ void compareDialog::printPhases()
   str.append("</b></td><td rowspan=2 align=\"center\" valign=\"bottom\"><b>"+tr("Switch")+"</b></td></tr><tr><td align=center width=\"80\"><b>"+tr("Flight mode name"));
   str.append("</b></td><td align=center width=\"30\"><b>"+tr("IN")+"</b></td><td align=center width=\"30\"><b>"+tr("OUT")+"</b></td>");
   for (i=0; i<4; i++) {
-    str.append(QString("<td width=\"40\" align=\"center\"><b>%1</b></td>").arg(getStickStr(i)));
+    str.append(QString("<td width=\"40\" align=\"center\"><b>%1</b></td>").arg(getInputStr(*g_model1, i)));
   }
   str.append("</tr>");
   for (i=0; i<GetEepromInterface()->getCapability(FlightPhases); i++) {
@@ -694,7 +694,7 @@ void compareDialog::printExpos()
         }
       }
       str.append("</table></td>");
-      str.append("<td width=\"10%\" align=\"center\" valign=\"middle\"><b>"+getStickStr(i)+"</b></td>");
+      str.append("<td width=\"10%\" align=\"center\" valign=\"middle\"><b>"+getInputStr(*g_model2, i)+"</b></td>");
       str.append("<td width=\"45%\">");
       str.append("<table border=0 cellspacing=0 cellpadding=0>");
       for (int j=0; j<C9X_MAX_EXPOS; j++) {
@@ -1038,19 +1038,19 @@ void compareDialog::printSwitches()
     int sc=0;
     QString color;
     QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
-    str.append("<tr><td><h2>"+tr("Custom Switches")+"</h2></td></tr>");
+    str.append("<tr><td><h2>"+tr("Logical Switches")+"</h2></td></tr>");
     str.append("<tr><td><table border=1 cellspacing=0 cellpadding=1 width=\"100%\">");
-    for (int i=0; i<GetEepromInterface()->getCapability(CustomSwitches); i++) {
-      QString sw1 = getCustomSwitchStr(&g_model1->customSw[i], *g_model1);
-      QString sw2 = getCustomSwitchStr(&g_model2->customSw[i], *g_model2);
+    for (int i=0; i<GetEepromInterface()->getCapability(LogicalSwitches); i++) {
+      QString sw1 = g_model1->customSw[i].toString(*g_model1);
+      QString sw2 = g_model2->customSw[i].toString(*g_model2);
       if (!(sw1.isEmpty() && sw2.isEmpty())) {
         str.append("<tr>");
         color=getColor1(sw1,sw2);
         str.append(QString("<td  width=\"45%\"><font color=%1>").arg(color)+sw1+"</font></td>");
         if (i<9) {
-          str.append("<td align=\"center\" width=\"10%\"><b>"+tr("CS")+QString("%1</b></td>").arg(i+1));
+          str.append("<td align=\"center\" width=\"10%\"><b>"+tr("LS")+QString("%1</b></td>").arg(i+1));
         } else {
-          str.append("<td align=\"center\" width=\"10%\"><b>"+tr("CS")+('A'+(i-9))+"</b></td>");
+          str.append("<td align=\"center\" width=\"10%\"><b>"+tr("LS")+('A'+(i-9))+"</b></td>");
         }
         color=getColor2(sw1,sw2);
         str.append(QString("<td  width=\"45%\"><font color=%1>").arg(color)+sw2+"</font></td>");
@@ -1069,7 +1069,7 @@ void compareDialog::printFSwitches()
   QString color2;
   int sc=0;
   QString str = "<table border=1 cellspacing=0 cellpadding=3 style=\"page-break-before:always;\" width=\"100%\">";
-  str.append("<tr><td><h2>"+tr("Custom Functions")+"</h2></td></tr>");
+  str.append("<tr><td><h2>"+tr("Switch Assignment")+"</h2></td></tr>");
   str.append("<tr><td><table border=1 cellspacing=0 cellpadding=1 width=\"100%\"><tr>");
   str.append("<td width=\"7%\" align=\"center\"><b>"+tr("Switch")+"</b></td>");
   str.append("<td width=\"12%\" align=\"center\"><b>"+tr("Function")+"</b></td>");
@@ -1096,8 +1096,8 @@ void compareDialog::printFSwitches()
       str.append("<tr>");
       if (g_model1->funcSw[i].swtch.type) {
         str.append(doTC(g_model1->funcSw[i].swtch.toString(),color1));
-        str.append(doTC(getFuncName(g_model1->funcSw[i].func),color1));
-        str.append(doTC(FuncParam(g_model1->funcSw[i].func,g_model1->funcSw[i].param,g_model1->funcSw[i].paramarm, g_model1->funcSw[i].adjustMode),color1));        
+        str.append(doTC(g_model1->funcSw[i].funcToString(),color1));
+        str.append(doTC(g_model1->funcSw[i].paramToString(),color1));
         int index=g_model1->funcSw[i].func;
         if (index==FuncPlaySound || index==FuncPlayHaptic || index==FuncPlayValue || index==FuncPlayPrompt || index==FuncPlayBoth || index==FuncBackgroundMusic) {
           str.append(doTC(QString("%1").arg(g_model1->funcSw[i].repeatParam),color1));
@@ -1115,8 +1115,8 @@ void compareDialog::printFSwitches()
       str.append(doTC(tr("CF")+QString("%1").arg(i+1),"",true));
       if (g_model2->funcSw[i].swtch.type) {
         str.append(doTC(g_model2->funcSw[i].swtch.toString(),color2));
-        str.append(doTC(getFuncName(g_model2->funcSw[i].func),color2));
-        str.append(doTC(FuncParam(g_model2->funcSw[i].func,g_model2->funcSw[i].param,g_model2->funcSw[i].paramarm, g_model2->funcSw[i].adjustMode),color2));        
+        str.append(doTC(g_model2->funcSw[i].funcToString(),color2));
+        str.append(doTC(g_model2->funcSw[i].paramToString(),color2));
         int index=g_model2->funcSw[i].func;
         if (index==FuncPlaySound || index==FuncPlayHaptic || index==FuncPlayValue || index==FuncPlayPrompt || index==FuncPlayBoth || index==FuncBackgroundMusic) {
           str.append(doTC(QString("%1").arg(g_model2->funcSw[i].repeatParam),color2));
@@ -1130,55 +1130,6 @@ void compareDialog::printFSwitches()
         }
       }
       else {
-        str.append("<td>&nbsp;</td><td>&nbsp;</td>");
-      }
-      str.append("</tr>");
-      sc++;
-    }
-}
-  str.append("</table></td></tr></table>");
-  str.append("<br>");
-  if (sc!=0)
-      te->append(str);
-}
-
-void compareDialog::printSafetySwitches()
-{
-  QString color1;
-  QString color2;
-  int sc=0;
-  QString str = "<table border=1 cellspacing=0 cellpadding=3  style=\"page-break-before:always;\" width=\"100%\">";
-  str.append("<tr><td><h2>"+tr("Safety Switches")+"</h2></td></tr>");
-  str.append("<tr><td><table border=1 cellspacing=0 cellpadding=1 width=\"100%\"><tr>");
-  str.append("<td width=\"8%\" align=\"center\"><b>"+tr("Switch")+"</b></td>");
-  str.append("<td width=\"37%\" align=\"center\"><b>"+tr("Value")+"</b></td>");
-  str.append("<td width=\"10%\">&nbsp;</td>");
-  str.append("<td width=\"8%\" align=\"center\"><b>"+tr("Switch")+"</b></td>");
-  str.append("<td width=\"37%\" align=\"center\"><b>"+tr("Value")+"</b></td>");
-  str.append("</tr>");
-  for(int i=0; i<GetEepromInterface()->getCapability(Outputs); i++)
-  {
-    if ((g_model1->safetySw[i].swtch.type!=SWITCH_TYPE_NONE)||(g_model2->safetySw[i].swtch.type!=SWITCH_TYPE_NONE)) {
-      if ((g_model1->safetySw[i].swtch!=g_model2->safetySw[i].swtch)||(g_model1->safetySw[i].val!=g_model2->safetySw[i].val)) {
-        color1="green";
-        color2="red";
-      } else {
-        color1="grey";
-        color2="grey";
-      }
-      str.append("<tr>");
-      if (g_model1->safetySw[i].swtch.type) {
-        str.append(doTC(g_model1->safetySw[i].swtch.toString(),color1));
-        str.append(doTC(QString::number(g_model1->safetySw[i].val),color1));
-      }
-      else {
-        str.append("<td>&nbsp;</td><td>&nbsp;</td>");
-      }
-      str.append(doTC(tr("CH")+QString("%1").arg(i+1),"",true));
-      if (g_model2->safetySw[i].swtch.type) {
-        str.append(doTC(g_model2->safetySw[i].swtch.toString(),color2));
-        str.append(doTC(QString::number(g_model2->safetySw[i].val),color2));
-      } else {
         str.append("<td>&nbsp;</td><td>&nbsp;</td>");
       }
       str.append("</tr>");
@@ -1260,6 +1211,7 @@ void compareDialog::printFrSky()
   color=getColor1(fd1->rssiAlarms[1].value,fd2->rssiAlarms[1].value);
   str.append("<td align=\"center\"><font color="+color+">"+QString::number(fd1->rssiAlarms[1].value,10)+"</td>");
   str.append("</table>");
+#if 0
   if (GetEepromInterface()->getCapability(TelemetryBars) || GetEepromInterface()->getCapability(TelemetryCSFields)) {
     int cols=GetEepromInterface()->getCapability(TelemetryColsCSFields);
     if (cols==0) cols=2;
@@ -1300,13 +1252,13 @@ void compareDialog::printFrSky()
           if (fd1->screens[0].type==fd2->screens[0].type)
             color=getColor1(fd1->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].source);
           str.append("<td  align=\"Center\"><font color="+color+">"+getFrSkySrc(fd1->screens[0].body.bars[i].source)+"</font></td>");
-          value1=getBarValue(fd1->screens[0].body.bars[i].source,fd1->screens[0].body.bars[i].barMin,fd1);
-          value2=getBarValue(fd2->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].barMin,fd2);
+          // TODO value1 = getBarValue(fd1->screens[0].body.bars[i].source,fd1->screens[0].body.bars[i].barMin,fd1);
+          // TODO value2 = getBarValue(fd2->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].barMin,fd2);
           if (fd1->screens[0].type==fd2->screens[0].type)
             color=getColor1(value1,value2);
           str.append("<td  align=\"Right\"><font color="+color+">"+QString::number(value1)+"</td>");
-          value1=getBarValue(fd1->screens[0].body.bars[i].source,fd1->screens[0].body.bars[i].barMax,fd1);
-          value2=getBarValue(fd2->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].barMax,fd2);
+          // TODO value1=getBarValue(fd1->screens[0].body.bars[i].source,fd1->screens[0].body.bars[i].barMax,fd1);
+          // TODO value2=getBarValue(fd2->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].barMax,fd2);
           if (fd1->screens[0].type==fd2->screens[0].type)
            color=getColor1(value1,value2);
           str.append("<td  align=\"Right\"><font color="+color+">"+QString::number(value1)+"</td></tr>");
@@ -1315,6 +1267,7 @@ void compareDialog::printFrSky()
       }
     }
   }
+#endif
   
   str.append("</td><td width=\"50%\">");
   str.append("<table border=1 cellspacing=0 cellpadding=1 width=\"100%\">");
@@ -1377,7 +1330,7 @@ void compareDialog::printFrSky()
   color=getColor2(fd1->rssiAlarms[1].value,fd2->rssiAlarms[1].value);
   str.append("<td align=\"center\"><font color="+color+">"+QString::number(fd2->rssiAlarms[1].value,10)+"</td>");
   str.append("</table></br>");
-
+#if 0
   if (GetEepromInterface()->getCapability(TelemetryBars) || GetEepromInterface()->getCapability(TelemetryCSFields)) {
     int cols=GetEepromInterface()->getCapability(TelemetryColsCSFields);
     if (cols==0) cols=2;
@@ -1418,13 +1371,13 @@ void compareDialog::printFrSky()
           if (fd1->screens[0].type==fd2->screens[0].type)
             color=getColor2(fd1->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].source);
           str.append("<td  align=\"Center\"><font color="+color+">"+getFrSkySrc(fd2->screens[0].body.bars[i].source)+"</font></td>");
-          value1=getBarValue(fd1->screens[0].body.bars[i].source,fd1->screens[0].body.bars[i].barMin,fd1);
-          value2=getBarValue(fd2->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].barMin,fd2);
+          // TODO value1=getBarValue(fd1->screens[0].body.bars[i].source,fd1->screens[0].body.bars[i].barMin,fd1);
+          // TODO value2=getBarValue(fd2->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].barMin,fd2);
           if (fd1->screens[0].type==fd2->screens[0].type)
             color=getColor2(value1,value2);
           str.append("<td  align=\"Right\"><font color="+color+">"+QString::number(value2)+"</font></td>");
-          value1=getBarValue(fd1->screens[0].body.bars[i].source,fd1->screens[0].body.bars[i].barMax,fd1);
-          value2=getBarValue(fd2->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].barMax,fd2);
+          // TODO value1=getBarValue(fd1->screens[0].body.bars[i].source,fd1->screens[0].body.bars[i].barMax,fd1);
+          // TODO value2=getBarValue(fd2->screens[0].body.bars[i].source,fd2->screens[0].body.bars[i].barMax,fd2);
           if (fd1->screens[0].type==fd2->screens[0].type)
             color=getColor2(value1,value2);
           str.append("<td  align=\"Right\"><font color="+color+">"+QString::number(value2)+"</font></td></tr>");
@@ -1433,6 +1386,7 @@ void compareDialog::printFrSky()
       }
     }
   }
+#endif
   str.append("</td></tr></table>");
   te->append(str);
 }

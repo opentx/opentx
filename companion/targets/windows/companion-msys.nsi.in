@@ -12,11 +12,11 @@
 ;General
 
   ;Name and file
-  Name "openTx companion"
+  Name "OpenTX companion"
   OutFile "companionInstall_v@C9X_VERSION@.exe"
 
   ;Default installation folder
-  InstallDir "$PROGRAMFILES\openTx companion"
+  InstallDir "$PROGRAMFILES\OpenTX companion"
   
   ;Get installation folder from registry if available
   InstallDirRegKey HKCU "Software\companion9x" ""
@@ -76,7 +76,7 @@
 ;--------------------------------
 ;Installer Sections
 
-Section "openTx companion" SecDummy
+Section "OpenTX companion" SecDummy
 
   SetOutPath "$INSTDIR"
   
@@ -129,8 +129,8 @@ SectionEnd
 ;Descriptions
 
   ;Language strings
-  LangString DESC_SecDummy ${LANG_ENGLISH} "Models and settings editor for openTx"
-  LangString DESC_SecDummy ${LANG_FRENCH} "Editeur de réglages et modèles pour openTx"
+  LangString DESC_SecDummy ${LANG_ENGLISH} "Models and settings editor for OpenTX"
+  LangString DESC_SecDummy ${LANG_FRENCH} "Editeur de réglages et modèles pour OpenTX"
 
   ;Assign language strings to sections
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN

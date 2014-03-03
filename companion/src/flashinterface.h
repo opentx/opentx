@@ -59,7 +59,7 @@ public:
   QImage getSplash();
   bool setSplash(const QImage & newsplash);
   bool hasSplash();
-  uint getSplashWidth();
+  int getSplashWidth();
   uint getSplashHeight();
   uint getSplashColors();
   QImage::Format getSplashFormat();
@@ -92,5 +92,5 @@ private:
 protected:
   bool isValidFlag;
 };
-#endif	/* FLASHINTERFACE_H */
+#endif /* FLASHINTERFACE_H */
 

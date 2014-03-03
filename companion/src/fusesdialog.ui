@@ -13,10 +13,6 @@
   <property name="windowTitle">
    <string>Fuses</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="companion.qrc">
-    <normaloff>:/images/fuses.png</normaloff>:/images/fuses.png</iconset>
-  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="0" colspan="2">
     <widget class="QPushButton" name="readFuses">

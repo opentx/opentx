@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>726</width>
-    <height>54</height>
+    <width>586</width>
+    <height>38</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,6 +34,23 @@
     <widget class="QComboBox" name="mode"/>
    </item>
    <item>
+    <widget class="QLabel" name="countdownBeepLabel">
+     <property name="text">
+      <string>Countdown</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="countdownBeep"/>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="minuteBeep">
+     <property name="text">
+      <string>MinuteBeep</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QCheckBox" name="persistent">
      <property name="text">
       <string>Persistent</string>
@@ -44,20 +61,6 @@
     <widget class="QLabel" name="persistentValue">
      <property name="text">
       <string> (00:00:00)</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QCheckBox" name="minuteBeep">
-     <property name="text">
-      <string>MinuteBeep</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QCheckBox" name="countdownBeep">
-     <property name="text">
-      <string>CountDownBeep</string>
      </property>
     </widget>
    </item>
