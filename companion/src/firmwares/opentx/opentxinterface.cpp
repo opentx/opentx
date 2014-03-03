@@ -368,7 +368,7 @@ int OpenTxInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t varian
         version = 216;
         break;
       case BOARD_9XRPRO:
-        version = 215;
+        version = 216;
         break;
       case BOARD_GRUVIN9X:
         version = 216;
