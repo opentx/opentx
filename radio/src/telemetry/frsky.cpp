@@ -71,10 +71,10 @@ FrskyData frskyData;
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
 void checkMinMaxAltitude()
 {
-  if (TELEMETRY_ALT_BP > frskyData.hub.maxAltitude)
-    frskyData.hub.maxAltitude = TELEMETRY_ALT_BP;
-  if (TELEMETRY_ALT_BP < frskyData.hub.minAltitude)
-    frskyData.hub.minAltitude = TELEMETRY_ALT_BP;
+  if (TELEMETRY_RELATIVE_BARO_ALT_BP > frskyData.hub.maxAltitude)
+    frskyData.hub.maxAltitude = TELEMETRY_RELATIVE_BARO_ALT_BP;
+  if (TELEMETRY_RELATIVE_BARO_ALT_BP < frskyData.hub.minAltitude)
+    frskyData.hub.minAltitude = TELEMETRY_RELATIVE_BARO_ALT_BP;
 }
 #endif
 

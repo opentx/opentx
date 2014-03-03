@@ -42,9 +42,9 @@ enum PolishPrompts {
   PL_PROMPT_AMPS = PL_PROMPT_UNITS_BASE+(UNIT_AMPS*4),
   PL_PROMPT_METERS_PER_SECOND = PL_PROMPT_UNITS_BASE+(UNIT_METERS_PER_SECOND*4),
   PL_PROMPT_SPARE1 = PL_PROMPT_UNITS_BASE+(UNIT_RAW*4),
-  PL_PROMPT_KMH = PL_PROMPT_UNITS_BASE+(UNIT_KMH*4),
-  PL_PROMPT_METERS = PL_PROMPT_UNITS_BASE+(UNIT_METERS*4),
-  PL_PROMPT_DEGREES = PL_PROMPT_UNITS_BASE+(UNIT_DEGREES*4),
+  PL_PROMPT_KMH = PL_PROMPT_UNITS_BASE+(UNIT_SPEED*4),
+  PL_PROMPT_METERS = PL_PROMPT_UNITS_BASE+(UNIT_DIST*4),
+  PL_PROMPT_DEGREES = PL_PROMPT_UNITS_BASE+(UNIT_TEMPERATURE*4),
   PL_PROMPT_PERCENT = PL_PROMPT_UNITS_BASE+(UNIT_PERCENT*4),
   PL_PROMPT_MILLIAMPS = PL_PROMPT_UNITS_BASE+(UNIT_MILLIAMPS*4),
   PL_PROMPT_MAH = PL_PROMPT_UNITS_BASE+(UNIT_MAH*4),
@@ -129,12 +129,15 @@ I18N_PLAY_FUNCTION(pl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     unit--;
     convertUnit(number, unit);
     if (IS_IMPERIAL_ENABLE()) {
-      if (unit == UNIT_METERS) {
+      if (unit == UNIT_DIST) {
         unit = UNIT_FEET;
+      }
+      if (unit == UNIT_SPEED) {
+    	unit = UNIT_KTS;
       }
     }
 #if defined(CPUARM)
-    if ((att & PREC1) && (unit == UNIT_FEET || (unit == UNIT_METERS && number >= 100))) {
+    if ((att & PREC1) && (unit == UNIT_FEET || (unit == UNIT_DIST && number >= 100))) {
       number /= 10;
       att -= PREC1;
     }

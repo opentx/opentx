@@ -44,36 +44,36 @@
 #include "helpers.h"
 
 class DragDropHeader {
-public:
-  DragDropHeader():
-    general_settings(false),
-    models_count(0)
-  {
-  }
-  bool general_settings;
-  uint8_t models_count;
-  uint8_t models[C9X_MAX_MODELS];
+  public:
+    DragDropHeader():
+      general_settings(false),
+      models_count(0)
+    {
+    }
+    bool general_settings;
+    uint8_t models_count;
+    uint8_t models[C9X_MAX_MODELS];
 };
 
 ModelsListWidget::ModelsListWidget(QWidget *parent):
   QListWidget(parent)
 {
-    this->setFont(QFont("Courier New",12));
-    radioData = &((MdiChild *)parent)->radioData;
-    refreshList();
+  setFont(QFont("Courier New",12));
+  radioData = &((MdiChild *)parent)->radioData;
+  refreshList();
 
-    connect(this, SIGNAL(itemActivated(QListWidgetItem*)), this, SLOT(OpenEditWindow()));
-    connect(this, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(ShowContextMenu(const QPoint&)));
-    connect(this, SIGNAL(currentRowChanged(int)), this, SLOT(viableModelSelected(int)));
+  connect(this, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(OpenEditWindow()));
+  connect(this, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(ShowContextMenu(const QPoint&)));
+  connect(this, SIGNAL(currentRowChanged(int)), this, SLOT(viableModelSelected(int)));
 
-    setContextMenuPolicy(Qt::CustomContextMenu);
-    setSelectionMode(QAbstractItemView::ExtendedSelection);
-    setDragEnabled(true);
-    setAcceptDrops(true);
-    setDragDropOverwriteMode(true);
-    setDropIndicatorShown(true);
+  setContextMenuPolicy(Qt::CustomContextMenu);
+  setSelectionMode(QAbstractItemView::ExtendedSelection);
+  setDragEnabled(true);
+  setAcceptDrops(true);
+  setDragDropOverwriteMode(true);
+  setDropIndicatorShown(true);
 
-    active_highlight_color = this->palette().color(QPalette::Active, QPalette::Highlight);
+  active_highlight_color = palette().color(QPalette::Active, QPalette::Highlight);
 }
 
 void ModelsListWidget::ShowContextMenu(const QPoint& pos)

@@ -107,10 +107,11 @@ const uint8_t modn12x3[4][4]= {
 #define DSW_SG2 20
 
 const uint8_t chout_ar[] = { //First number is 0..23 -> template setup,  Second is relevant channel out
-1,2,3,4 , 1,2,4,3 , 1,3,2,4 , 1,3,4,2 , 1,4,2,3 , 1,4,3,2,
-2,1,3,4 , 2,1,4,3 , 2,3,1,4 , 2,3,4,1 , 2,4,1,3 , 2,4,3,1,
-3,1,2,4 , 3,1,4,2 , 3,2,1,4 , 3,2,4,1 , 3,4,1,2 , 3,4,2,1,
-4,1,2,3 , 4,1,3,2 , 4,2,1,3 , 4,2,3,1 , 4,3,1,2 , 4,3,2,1    }; // TODO delete it?
+  1,2,3,4 , 1,2,4,3 , 1,3,2,4 , 1,3,4,2 , 1,4,2,3 , 1,4,3,2,
+  2,1,3,4 , 2,1,4,3 , 2,3,1,4 , 2,3,4,1 , 2,4,1,3 , 2,4,3,1,
+  3,1,2,4 , 3,1,4,2 , 3,2,1,4 , 3,2,4,1 , 3,4,1,2 , 3,4,2,1,
+  4,1,2,3 , 4,1,3,2 , 4,2,1,3 , 4,2,3,1 , 4,3,1,2 , 4,3,2,1
+}; // TODO delete it?
 
 // Beep center bits
 #define BC_BIT_RUD (0x01)
@@ -159,10 +160,8 @@ enum HeliSwashTypes {
 
 #define NUM_STICKS          4
 #define BOARD_9X_NUM_POTS   3
-#define BOARD_X9D_NUM_POTS  4
-#define C9X_NUM_POTS        4
+#define C9X_NUM_POTS        5
 #define NUM_CAL_PPM         4
-#define NUM_PPM(board)      (IS_ARM(board) ? 16 : 8)
 #define NUM_CYC             3
 #define C9X_NUM_SWITCHES    10
 #define C9X_NUM_KEYS        6
@@ -402,6 +401,9 @@ enum BeeperMode {
 class GeneralSettings {
   public:
     GeneralSettings();
+
+    RawSource getDefaultSource(unsigned int channel);
+
     unsigned int version;
     unsigned int variant;
     int   calibMid[NUM_STICKS+C9X_NUM_POTS];
@@ -439,7 +441,7 @@ class GeneralSettings {
     unsigned int  backlightDelay;
     bool   blightinv;
     bool   stickScroll;
-    unsigned int   templateSetup;  //RETA order according to chout_ar array // TODO enum
+    unsigned int   templateSetup;  //RETA order according to chout_ar array
     int    PPM_Multiplier;
     int    hapticLength;
     unsigned int   reNavigation;
@@ -504,12 +506,19 @@ class CurveReference {
     QString toString();
 };
 
+enum InputMode {
+  INPUT_MODE_NONE,
+  INPUT_MODE_POS,
+  INPUT_MODE_NEG,
+  INPUT_MODE_BOTH
+};
+
 class ExpoData {
   public:
     ExpoData() { clear(); }
     RawSource srcRaw;
     unsigned int scale;
-    unsigned int mode;         // 0=end, 1=pos, 2=neg, 3=both
+    unsigned int mode;
     unsigned int chn;
     RawSwitch swtch;
     unsigned int phases;        // -5=!FP4, 0=normal, 5=FP4
@@ -882,6 +891,10 @@ class ScriptData {
 class ModelData {
   public:
     ModelData();
+
+    ExpoData * insertInput(const int idx);
+    void removeInput(const int idx);
+
     bool      used;
     char      name[12+1];
     uint8_t   modelVoice;
@@ -937,7 +950,8 @@ class ModelData {
 
     void clear();
     bool isempty();
-    void setDefault(uint8_t id);
+    void setDefaultMixes(GeneralSettings & settings);
+    void setDefaultValues(unsigned int id, GeneralSettings & settings);
 
     int getTrimValue(int phaseIdx, int trimIdx);
     void setTrimValue(int phaseIdx, int trimIdx, int value);
@@ -1063,6 +1077,7 @@ enum Capability {
  GetThrSwitch,
  HasDisplayText,
  VirtualInputs,
+ TrainerInputs,
  LuaInputs,
  LimitsPer1000,
  EnhancedCurves,

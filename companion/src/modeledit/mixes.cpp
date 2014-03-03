@@ -53,15 +53,16 @@ void MixesPanel::update()
   int i;
   unsigned int outputs = GetEepromInterface()->getCapability(Outputs);
   int showNames = false; // TODO in a menu ui->showNames_Ckb->isChecked();
-  for(i=0; i<GetEepromInterface()->getCapability(Mixes); i++) {
+  for (i=0; i<GetEepromInterface()->getCapability(Mixes); i++) {
     MixData *md = &model.mixData[i];
     if ((md->destCh==0) || (md->destCh>outputs+(unsigned int)GetEepromInterface()->getCapability(ExtraChannels))) continue;
     QString str = "";
-    while(curDest<(md->destCh-1)) {
+    while (curDest<(md->destCh-1)) {
       curDest++;
       if (curDest > outputs) {
         str = tr("X%1  ").arg(curDest-outputs);
-      } else {
+      }
+      else {
         str = tr("CH%1%2").arg(curDest/10).arg(curDest%10);
         if (GetEepromInterface()->getCapability(HasChNames) && showNames) {
           QString name=model.limitData[curDest-1].name;
@@ -80,7 +81,8 @@ void MixesPanel::update()
 
     if (md->destCh > outputs) {
       str = tr("X%1  ").arg(md->destCh-outputs);
-    } else {
+    }
+    else {
       str = tr("CH%1%2").arg(md->destCh/10).arg(md->destCh%10);
       str.append("  ");
       if (GetEepromInterface()->getCapability(HasChNames) && showNames) {
@@ -97,7 +99,7 @@ void MixesPanel::update()
       str.fill(' ');
     }
 
-    switch(md->mltpx) {
+    switch (md->mltpx) {
       case (1): str += " *"; break;
       case (2): str += " R"; break;
       default:  str += "  "; break;
@@ -110,7 +112,9 @@ void MixesPanel::update()
     QString phasesStr = getPhasesStr(md->phases, model);
     if (!phasesStr.isEmpty()) str += " " + phasesStr;
 
-    if (md->swtch.type != SWITCH_TYPE_NONE) str += " " + tr("Switch(%1)").arg(md->swtch.toString());
+    if (md->swtch.type != SWITCH_TYPE_NONE) {
+      str += " " + tr("Switch(%1)").arg(md->swtch.toString());
+    }
 
     if (!GetEepromInterface()->getCapability(VirtualInputs)) {
       if (md->carryTrim>0) {
@@ -125,9 +129,9 @@ void MixesPanel::update()
     if (md->sOffset)     str += " " + tr("Offset(%1)").arg(getGVarString(md->sOffset));
     if (md->curve.value) str += " " + md->curve.toString();
 
-    int scale=GetEepromInterface()->getCapability(SlowScale);
-    if (scale==0)
-      scale=1;
+    int scale = GetEepromInterface()->getCapability(SlowScale);
+    if (scale == 0)
+      scale = 1;
     if (md->delayDown || md->delayUp)
       str += tr(" Delay(u%1:d%2)").arg((double)md->delayUp/scale).arg((double)md->delayDown/scale);
     if (md->speedDown || md->speedUp)
@@ -144,8 +148,8 @@ void MixesPanel::update()
     qba.append((quint8)i);
     qba.append((const char*)md, sizeof(MixData));
     QListWidgetItem *itm = new QListWidgetItem(str);
-    itm->setData(Qt::UserRole,qba);  // mix number
-    MixerlistWidget->addItem(itm);//(str);
+    itm->setData(Qt::UserRole, qba);  // mix number
+    MixerlistWidget->addItem(itm); //(str);
   }
 
   while(curDest<outputs+GetEepromInterface()->getCapability(ExtraChannels)) {

@@ -122,8 +122,10 @@ void drawPotsBars()
   // Optimization by Mike Blandford
   uint8_t x, i, len ;  // declare temporary variables
   for (x=LCD_W/2-5, i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; x+=5, i++) {
-    len = ((calibratedStick[i]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
-    V_BAR(x, LCD_H-8, len)
+    if (IS_POT_AVAILABLE(i)) {
+      len = ((calibratedStick[i]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
+      V_BAR(x, LCD_H-8, len)
+    }
   }
 }
 
@@ -196,8 +198,11 @@ void displayTrims(uint8_t phase)
 void displaySliders()
 {
   for (uint8_t i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; i++) {
-    xcoord_t x = (i%2 ? LCD_W-5 : 3);
-    int8_t y = (i>NUM_STICKS+1 ? LCD_H/2+1 : 1);
+    if (i == POT3) {
+      continue;
+    }
+    xcoord_t x = ((i==POT1 || i==SLIDER1) ? 3 : LCD_W-5);
+    int8_t y = (i>=SLIDER1 ? LCD_H/2+1 : 1);
     lcd_vline(x, y, LCD_H/2-2);
     lcd_vline(x+1, y, LCD_H/2-2);
     y += LCD_H/2-4;
@@ -268,9 +273,9 @@ void displayTopBar()
     }
 
     /* Altitude */
-    if (g_model.frsky.altitudeDisplayed && frskyData.hub.baroAltitudeOffset) {
+    if (g_model.frsky.altitudeDisplayed && TELEMETRY_BARO_ALT_AVAILABLE()) {
       LCD_ICON(altitude_icon_x, BAR_Y, ICON_ALTITUDE);
-      putsTelemetryValue(altitude_icon_x+2*FW-1, BAR_Y+1, TELEMETRY_ALT_BP, UNIT_METERS, LEFT);
+      putsTelemetryValue(altitude_icon_x+2*FW-1, BAR_Y+1, TELEMETRY_RELATIVE_BARO_ALT_BP, UNIT_SPEED, LEFT);
     }
   }
 
@@ -406,7 +411,7 @@ void displayBattVoltage()
 void displayVoltageOrAlarm()
 {
   if (g_vbat100mV > g_eeGeneral.vBatWarn && g_eeGeneral.temperatureWarn && getTemperature() >= g_eeGeneral.temperatureWarn) {
-    putsTelemetryValue(6*FW-1, 3*FH, getTemperature(), UNIT_DEGREES, BLINK|INVERS|DBLSIZE);
+    putsTelemetryValue(6*FW-1, 3*FH, getTemperature(), UNIT_TEMPERATURE, BLINK|INVERS|DBLSIZE);
   }
   else if (g_vbat100mV > g_eeGeneral.vBatWarn && g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.currentCalib)/8192/36) / 500 >= g_eeGeneral.mAhWarn) {
     putsTelemetryValue(7*FW-1, 3*FH, (g_eeGeneral.mAhUsed + Current_used*(488 + g_eeGeneral.currentCalib)/8192/36)/10, UNIT_MAH, BLINK|INVERS|DBLSIZE);

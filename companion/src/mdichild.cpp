@@ -151,7 +151,7 @@ void MdiChild::checkAndInitModel( int row )
 {
   ModelData &model = radioData.models[row - 1];
   if (model.isempty()) {
-    model.setDefault(row - 1);
+    model.setDefaultValues(row - 1, radioData.generalSettings);
     setModified();
   }
 }

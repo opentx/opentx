@@ -212,13 +212,72 @@ PACK(typedef struct {
 
 }) ModelData_v215;
 
+#if defined(PCBTARANIS)
+  #define NUM_POTS_215 4
+#else
+  #define NUM_POTS_215 3
+#endif
+
 PACK(typedef struct {
   uint8_t   version;
   uint16_t  variant;
-  int16_t   calibMid[NUM_STICKS+NUM_POTS];
-  int16_t   calibSpanNeg[NUM_STICKS+NUM_POTS];
-  int16_t   calibSpanPos[NUM_STICKS+NUM_POTS];
+  int16_t   calibMid[NUM_STICKS+NUM_POTS_215];
+  int16_t   calibSpanNeg[NUM_STICKS+NUM_POTS_215];
+  int16_t   calibSpanPos[NUM_STICKS+NUM_POTS_215];
   uint16_t  chkSum;
+  int8_t    currModel;
+  uint8_t   contrast;
+  uint8_t   vBatWarn;
+  int8_t    vBatCalib;
+  int8_t    backlightMode;
+  TrainerData trainer;
+  uint8_t   view;            // index of view in main screen
+  int8_t    buzzerMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
+  uint8_t   fai:1;
+  int8_t    beepMode:2;      // -2=quiet, -1=only alarms, 0=no keys, 1=all
+  uint8_t   alarmsFlash:1;
+  uint8_t   disableMemoryWarning:1;
+  uint8_t   disableAlarmWarning:1;
+  uint8_t   stickMode:2;
+  int8_t    timezone:5;
+  uint8_t   spare1:1;
+  uint8_t   inactivityTimer;
+  uint8_t   mavbaud:3;
+  SPLASH_MODE; /* 3bits */
+  int8_t    hapticMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
+  uint8_t   blOffBright:4;
+  uint8_t   blOnBright:4;
+  uint8_t   lightAutoOff;
+  uint8_t   templateSetup;   // RETA order for receiver channels
+  int8_t    PPM_Multiplier;
+  int8_t    hapticLength;
+  uint8_t   reNavigation;    // not used on STOCK board
+  int8_t    beepLength:3;
+  uint8_t   hapticStrength:3;
+  uint8_t   gpsFormat:1;
+  uint8_t   unexpectedShutdown:1;
+  uint8_t   speakerPitch;
+  int8_t    speakerVolume;
+  int8_t    vBatMin;
+  int8_t    vBatMax;
+  uint8_t   backlightBright;
+  int8_t    currentCalib;
+  int8_t    temperatureWarn;
+  uint8_t   mAhWarn;
+  uint16_t  mAhUsed;
+  uint32_t  globalTimer;
+  int8_t    temperatureCalib;
+  uint8_t   btBaudrate;
+  uint8_t   optrexDisplay;
+  uint8_t   sticksGain;
+  uint8_t   rotarySteps;
+  uint8_t   countryCode;
+  uint8_t   imperial;
+  char      ttsLanguage[2];
+  int8_t    beepVolume;
+  int8_t    wavVolume;
+  int8_t    varioVolume;
+  int8_t    backgroundVolume;
 }) GeneralSettings_v215;
 
 void ConvertGeneralSettings_215_to_216(EEGeneral &settings)
@@ -227,12 +286,18 @@ void ConvertGeneralSettings_215_to_216(EEGeneral &settings)
   memcpy(&oldSettings, &settings, sizeof(oldSettings));
 
   settings.version = 216;
-  for (int i=0; i<NUM_STICKS+NUM_POTS; i++) {
-    settings.calib[i].mid = oldSettings.calibMid[i];
-    settings.calib[i].spanNeg = oldSettings.calibSpanNeg[i];
-    settings.calib[i].spanPos = oldSettings.calibSpanPos[i];
+  for (int i=0, j=0; i<NUM_STICKS+NUM_POTS; i++) {
+    settings.calib[i].mid = oldSettings.calibMid[j];
+    settings.calib[i].spanNeg = oldSettings.calibSpanNeg[j];
+    settings.calib[i].spanPos = oldSettings.calibSpanPos[j];
+#if defined(PCBTARANIS)
+    if (i==POT3) continue;
+#endif
+    j++;
   }
   settings.chkSum = evalChkSum();
+
+  memcpy(&settings.currModel, &oldSettings.currModel, sizeof(GeneralSettings_v215)-offsetof(GeneralSettings_v215, currModel));
 }
 
 int ConvertTelemetrySource_215_to_216(int source)
@@ -270,6 +335,9 @@ int ConvertSource_215_to_216(int source, bool insertZero=false)
   // Virtual Inputs and Lua Outputs added
   if (source > 0)
     source += MAX_INPUTS + MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS;
+  // S3 added
+  if (source > MIXSRC_POT2)
+    source += 1;
   // PPM9-PPM16 added
   if (source > MIXSRC_FIRST_PPM+7)
     source += 8;
@@ -290,7 +358,7 @@ int ConvertSwitch_215_to_216(int swtch)
   else if (swtch <= SWSRC_LAST_SWITCH)
     return swtch;
   else
-    return swtch + (2*4) + (2*6); // 4 trims and 2 * 6-pos added as switches
+    return swtch + (2*4) + (3*6); // 4 trims and 2 * 6-pos added as switches
 }
 #else
 int ConvertSource_215_to_216(int source, bool insertZero=false)
