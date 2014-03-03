@@ -440,8 +440,8 @@
 #define TR_ELIMITS             TR("Limit+25%", "Kanał +/- 125%")
 #define TR_ETRIMS              TR("Trymery 100%", "Poszerzone Trymery")
 #define TR_TRIMINC             TR("Krok Trymera", "Krok trymera")
-#define TR_TTRACE              TR("Źródło gazu", INDENT"Źródło gazu")
-#define TR_TTRIM               TR("Trymer gazu", INDENT"Trymer gazu")
+#define TR_TTRACE              TR("Źródło gazu", INDENT "Źródło gazu")
+#define TR_TTRIM               TR("Trymer gazu", INDENT "Trymer gazu")
 #define TR_BEEPCTR             "(\043)Pikanie środka"
 #define TR_PROTO               INDENT"Protokól"
 #define TR_PPMFRAME            "Ramka PPM"
@@ -505,18 +505,18 @@
 #define TR_ALARMWARNING        INDENT"Wyłącz dźwięk"
 #define TR_RENAVIG             "Nawigacja potencjometrem"
 #define TR_THROTTLE_LABEL      "Throttle"
-#define TR_THROTTLEREVERSE     TR("Odwróć gaz", INDENT"Odwróć gaz")
-#define TR_MINUTEBEEP          TR(INDENT"Minuta", INDENT"Pik co minutę")
-#define TR_BEEPCOUNTDOWN       TR(INDENT"Odliczanie", INDENT"Odliczanie")
+#define TR_THROTTLEREVERSE     TR("Odwróć gaz", INDENT "Odwróć gaz")
+#define TR_MINUTEBEEP          TR(INDENT "Minuta", INDENT "Pik co minutę")
+#define TR_BEEPCOUNTDOWN       TR(INDENT "Odliczanie", INDENT "Odliczanie")
 #define TR_PERSISTENT          INDENT"Dokładny"
 #define TR_BACKLIGHT_LABEL     "Podświetlenie"
 #define TR_BLDELAY             INDENT"Czas trwania"
 #define TR_BLONBRIGHTNESS      INDENT"Jasnośc wł."
 #define TR_BLOFFBRIGHTNESS     INDENT"Jasność wył."
 #define TR_SPLASHSCREEN        "Logo ekranu"
-#define TR_THROTTLEWARNING     TR("(\043)Gaz",INDENT"(\043)Gaz")
-#define TR_SWITCHWARNING       TR("(\043)Przełącznik",INDENT"(\043)Przełącznik")
-#define TR_POTWARNING          TR("Pot Warn.",INDENT"Pot Warning")
+#define TR_THROTTLEWARNING     TR("(\043)Gaz", INDENT "(\043)Gaz")
+#define TR_SWITCHWARNING       TR("(\043)Przełącznik", INDENT "(\043)Przełącznik")
+#define TR_POTWARNING          TR("Pot Warn.", INDENT "Pot Warning")
 #define TR_TIMEZONE            "Strefa czasowa"
 #define TR_RXCHANNELORD        TR("Kolejność kanałów", "Bazowa kolejność kanałów")
 #define TR_SLAVE               "Uczeń"
@@ -712,7 +712,7 @@
 #define TR_CRITICALALARM       INDENT "Alarm krytyczny"
 #define TR_PERSISTENT_MAH      INDENT "Zapisz mAh"
 #define TR_PREFLIGHT           "Preflight Checks"
-#define TR_CHECKLIST           INDENT"Display Checklist"
+#define TR_CHECKLIST           INDENT "Display Checklist"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 #define TR_UART3MODE           "Port szreg."
 #define TR_POT1TYPE            "Typ S1"

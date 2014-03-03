@@ -440,8 +440,8 @@
 #define TR_ELIMITS             TR("Limiti.E","Limiti Estesi")
 #define TR_ETRIMS              TR("Trim Ext","Trim Estesi")
 #define TR_TRIMINC             "Trim Step"
-#define TR_TTRACE              TR("T-Source",INDENT "Throttle Source")
-#define TR_TTRIM               TR("T-Trim",INDENT "Throttle Trim")
+#define TR_TTRACE              TR("T-Source", INDENT "Throttle Source")
+#define TR_TTRIM               TR("T-Trim", INDENT "Throttle Trim")
 #define TR_BEEPCTR             TR("Ctr Beep","Center Beep")
 #define TR_PROTO               TR(INDENT "Proto", INDENT "Protocollo")
 #define TR_PPMFRAME            TR("PPM frame", INDENT "PPM frame")
@@ -514,9 +514,9 @@
 #define TR_BLONBRIGHTNESS      TR(INDENT"Lumin. ON",INDENT"Luminosità ON")
 #define TR_BLOFFBRIGHTNESS     TR(INDENT"Lumin. OFF",INDENT"Luminosità OFF")
 #define TR_SPLASHSCREEN        TR("Schermo avvio", "Schermata di avvio")
-#define TR_THROTTLEWARNING     TR("All. Thr", INDENT"Allarme Throttle")
-#define TR_SWITCHWARNING       TR("Avv. Int.", INDENT"Avviso Interr.")
-#define TR_POTWARNING          TR("Pot Warn.", INDENT"Pot Warning")
+#define TR_THROTTLEWARNING     TR("All. Thr", INDENT "Allarme Throttle")
+#define TR_SWITCHWARNING       TR("Avv. Int.", INDENT "Avviso Interr.")
+#define TR_POTWARNING          TR("Pot Warn.", INDENT "Pot Warning")
 #define TR_TIMEZONE            "Ora locale"
 #define TR_RXCHANNELORD        "Ordine ch RX"
 #define TR_SLAVE               "Allievo"

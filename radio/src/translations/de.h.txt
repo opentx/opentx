@@ -441,7 +441,7 @@
 #define TR_ETRIMS              TR("Erw.Trims","Erweit. Trimmung")
 #define TR_TRIMINC             TR("Trim Schr.","Trimm Schritte")
 #define TR_TTRACE              TR("Gasquelle", INDENT "Gas Quelle")
-#define TR_TTRIM               TR("Gastrim",INDENT "Gas Trimmung")
+#define TR_TTRIM               TR("Gastrim", INDENT "Gas Trimmung")
 #define TR_BEEPCTR             TR("Mitt.Piep","Mittelst. Pieps")
 #define TR_PROTO               TR(INDENT"Proto.",INDENT"Protokoll")
 #define TR_PPMFRAME            "PPM Einst."
@@ -515,7 +515,7 @@
 #define TR_BLOFFBRIGHTNESS     INDENT"Aus Helligkeit"
 #define TR_SPLASHSCREEN        "Startbild"
 #define TR_THROTTLEWARNING     TR("Gas Alarm", INDENT "Gas Alarm")
-#define TR_SWITCHWARNING       TR("Sch. Alarm",INDENT "Schalter Alarm")
+#define TR_SWITCHWARNING       TR("Sch. Alarm", INDENT "Schalter Alarm")
 #define TR_POTWARNING          TR("Pot Warn.", INDENT "Pot Warning")
 #define TR_TIMEZONE            TR("Zeitzone","GPS Zeit Zone")
 #define TR_RXCHANNELORD        TR("Kanalanordnung","Kanalvoreinstellung")
