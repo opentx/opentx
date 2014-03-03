@@ -125,8 +125,8 @@ extern const pm_char STR_OPEN9X[];
 #if defined(FRSKY) || defined(CPUARM)
   #if defined(CPUARM)
     #define OFS_VTELEMUNIT_IMP  (OFS_VTELEMCHNS + sizeof(TR_VTELEMCHNS))
-    #define OFS_VTELEMUNIT_NORM (OFS_VTELEMUNIT_IMP + sizeof(TR_VTELEMUNIT_IMP))
-    #define OFS_VALARM          (OFS_VTELEMUNIT_NORM + sizeof(TR_VTELEMUNIT_NORM))
+    #define OFS_VTELEMUNIT_METR (OFS_VTELEMUNIT_IMP + sizeof(TR_VTELEMUNIT_IMP))
+    #define OFS_VALARM          (OFS_VTELEMUNIT_METR + sizeof(TR_VTELEMUNIT_METR))
   #else
     #define OFS_VTELEMUNIT      (OFS_VTELEMCHNS + sizeof(TR_VTELEMCHNS))
     #define OFS_VALARM          (OFS_VTELEMUNIT + sizeof(TR_VTELEMUNIT))
@@ -220,7 +220,7 @@ extern const pm_char STR_OPEN9X[];
 
 #if defined(FRSKY) || defined(CPUARM)
   #if defined(CPUARM)
-    #define STR_VTELEMUNIT     (STR_OPEN9X + (g_eeGeneral.imperial ? OFS_VTELEMUNIT_IMP : OFS_VTELEMUNIT_NORM))
+    #define STR_VTELEMUNIT     (STR_OPEN9X + (g_eeGeneral.imperial ? OFS_VTELEMUNIT_IMP : OFS_VTELEMUNIT_METR))
   #else
     #define STR_VTELEMUNIT     (STR_OPEN9X + OFS_VTELEMUNIT)
   #endif

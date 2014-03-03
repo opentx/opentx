@@ -1278,7 +1278,7 @@ getvalue_t getValue(uint8_t i)
 #if defined(FRSKY_SPORT)
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ALT) return frskyData.hub.baroAltitude;
 #elif defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ALT) return TELEMETRY_ALT_BP;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ALT) return TELEMETRY_RELATIVE_BARO_ALT_BP;
 #endif
 #if defined(FRSKY_HUB)
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RPM) return frskyData.hub.rpm;
@@ -1287,7 +1287,7 @@ getvalue_t getValue(uint8_t i)
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_T2) return frskyData.hub.temperature2;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_SPEED) return TELEMETRY_GPS_SPEED_BP;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_DIST) return frskyData.hub.gpsDistance;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_GPSALT) return TELEMETRY_GPS_ALT_BP;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_GPSALT) return TELEMETRY_RELATIVE_GPS_ALT_BP;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_CELL) return (int16_t)TELEMETRY_MIN_CELL_VOLTAGE;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_CELLS_SUM) return (int16_t)frskyData.hub.cellsSum;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_VFAS) return (int16_t)frskyData.hub.vfas;
@@ -2136,28 +2136,34 @@ getvalue_t convertCswTelemValue(LogicalSwitchData * cs)
 FORCEINLINE void convertUnit(getvalue_t & val, uint8_t & unit)
 {
   if (IS_IMPERIAL_ENABLE()) {
-    if (unit == UNIT_DEGREES) {
+    if (unit == UNIT_TEMPERATURE) {
       val += 18;
       val *= 115;
       val >>= 6;
     }
-    if (unit == UNIT_METERS) {
+    if (unit == UNIT_DIST) {
       // m to ft *105/32
       val = val * 3 + (val >> 2) + (val >> 5);
     }
     if (unit == UNIT_FEET) {
-      unit = UNIT_METERS;
+      unit = UNIT_DIST;
     }
     if (unit == UNIT_KTS) {
-      unit = UNIT_KMH;
+      // kts to mph
+      unit = UNIT_SPEED;
+      val = (val * 31) / 27;
     }
   }
   else {
     if (unit == UNIT_KTS) {
       // kts to km/h
-      unit = UNIT_KMH;
-      val = (val * 46) / 25;
+      unit = UNIT_SPEED;
+      val = (val * 50) / 27;
     }
+  }
+
+  if (unit == UNIT_HDG) {
+    unit = UNIT_TEMPERATURE;
   }
 }
 #endif
@@ -3284,7 +3290,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
 
     case MIXSRC_FIRST_TELEM+TELEM_ALT-1:
 #if defined(PCBTARANIS)
-      PLAY_NUMBER(val/10, 1+UNIT_METERS, PREC1);
+      PLAY_NUMBER(val/10, 1+UNIT_DIST, PREC1);
       break;
 #endif
     case MIXSRC_FIRST_TELEM+TELEM_MIN_ALT-1:
@@ -3294,7 +3300,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
         PLAY_NUMBER(val, 1+UNIT_FEET, 0);
       else
 #endif
-        PLAY_NUMBER(val, 1+UNIT_METERS, 0);
+        PLAY_NUMBER(val, 1+UNIT_DIST, 0);
       break;
 
     case MIXSRC_FIRST_TELEM+TELEM_RPM-1:
@@ -3303,7 +3309,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
       break;
 
     case MIXSRC_FIRST_TELEM+TELEM_HDG-1:
-      PLAY_NUMBER(val, 1+UNIT_DEGREES, 0);
+      PLAY_NUMBER(val, 1+UNIT_HDG, 0);
       break;
 
     default:

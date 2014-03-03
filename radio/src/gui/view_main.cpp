@@ -268,9 +268,9 @@ void displayTopBar()
     }
 
     /* Altitude */
-    if (g_model.frsky.altitudeDisplayed && frskyData.hub.baroAltitudeOffset) {
+    if (g_model.frsky.altitudeDisplayed && TELEMETRY_BARO_ALT_AVAILABLE()) {
       LCD_ICON(altitude_icon_x, BAR_Y, ICON_ALTITUDE);
-      putsTelemetryValue(altitude_icon_x+2*FW-1, BAR_Y+1, TELEMETRY_ALT_BP, UNIT_METERS, LEFT);
+      putsTelemetryValue(altitude_icon_x+2*FW-1, BAR_Y+1, TELEMETRY_RELATIVE_BARO_ALT_BP, UNIT_SPEED, LEFT);
     }
   }
 
@@ -406,7 +406,7 @@ void displayBattVoltage()
 void displayVoltageOrAlarm()
 {
   if (g_vbat100mV > g_eeGeneral.vBatWarn && g_eeGeneral.temperatureWarn && getTemperature() >= g_eeGeneral.temperatureWarn) {
-    putsTelemetryValue(6*FW-1, 3*FH, getTemperature(), UNIT_DEGREES, BLINK|INVERS|DBLSIZE);
+    putsTelemetryValue(6*FW-1, 3*FH, getTemperature(), UNIT_TEMPERATURE, BLINK|INVERS|DBLSIZE);
   }
   else if (g_vbat100mV > g_eeGeneral.vBatWarn && g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.currentCalib)/8192/36) / 500 >= g_eeGeneral.mAhWarn) {
     putsTelemetryValue(7*FW-1, 3*FH, (g_eeGeneral.mAhUsed + Current_used*(488 + g_eeGeneral.currentCalib)/8192/36)/10, UNIT_MAH, BLINK|INVERS|DBLSIZE);

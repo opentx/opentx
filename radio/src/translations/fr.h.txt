@@ -273,11 +273,16 @@
 #endif
 #define TR_VTELEMCHNS          "---\0""Batt""Chr1""Chr2" TR_RSSI_0 TR_RSSI_1 "A1\0 ""A2\0 ""Alt\0""Rpm\0""Carb""T1\0 ""T2\0 ""Vit\0""Dist""AltG""Elem""Velm""Vfas""Cour""Cnsm""Puis""AccX""AccY""AccZ""Cap\0""VitV""VitA""dET\0""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Vit+""Dst+""Elm-""Els-""Vfs-""Cur+""Pui+""Acc\0""Tmps"
 
+#define LENGTH_UNIT_IMP        "ft\0"
+#define SPEED_UNIT_IMP         "mph"
+#define LENGTH_UNIT_METR       "m\0 "
+#define SPEED_UNIT_METR        "kmh"
+
 #if defined(CPUARM)
   #define LEN_VUNITSSYSTEM     TR("\006", "\012")
   #define TR_VUNITSSYSTEM      TR("Métr.\0""Impér.", "Métriques\0""Impériales")
-  #define LEN_VTELEMUNIT_NORM  "\003"
-  #define TR_VTELEMUNIT_NORM   "v\0 ""A\0 ""m/s""-\0 ""kmh""m\0 ""@\0 ""%\0 ""mA\0""mAh""W\0 "
+  #define LEN_VTELEMUNIT_METR  "\003"
+  #define TR_VTELEMUNIT_METR   "v\0 ""A\0 ""m/s""-\0 ""kmh""m\0 ""@\0 ""%\0 ""mA\0""mAh""W\0 "
   #define LEN_VTELEMUNIT_IMP   "\003"
   #define TR_VTELEMUNIT_IMP    "v\0 ""A\0 ""m/s""-\0 ""kts""ft\0""@\0 ""%\0 ""mA\0""mAh""W\0 "
 #else
