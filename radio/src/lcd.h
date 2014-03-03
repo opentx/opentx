@@ -78,12 +78,11 @@
 
 /* lcd putc flags */
 #define CONDENSED       0x08
-
+#define FIXEDWIDTH      0x10
 /* lcd puts flags */
 /* no 0x80 here because of "GV"1 which is aligned LEFT */
 /* no 0x10 here because of "MODEL"01 which uses LEADING0 */
 #define BSS             0x20
-#define STRCONDENSED    0x40 /* means that THRm will be displayed as THR */
 #define ZCHAR           0x80
 
 /* lcd outdez flags */
@@ -139,6 +138,7 @@
 
 extern uint8_t displayBuf[DISPLAY_BUF_SIZE];
 extern uint8_t lcdLastPos;
+extern uint8_t lcdNextPos;
 
 #if defined(PCBSTD) && defined(VOICE)
   extern volatile uint8_t LcdLock ;
@@ -173,7 +173,7 @@ void putsFlightPhase(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att=0);
 void putsCurveRef(xcoord_t x, uint8_t y, CurveRef &curve, LcdFlags att);
 #endif
 void putsCurve(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att=0);
-void putsTmrMode(xcoord_t x, uint8_t y, int8_t mode, LcdFlags att);
+void putsTimerMode(xcoord_t x, uint8_t y, int8_t mode, LcdFlags att=0);
 void putsTrimMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, LcdFlags att);
 #if defined(ROTARY_ENCODERS)
   void putsRotaryEncoderMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, LcdFlags att);
@@ -198,6 +198,7 @@ void putsTime(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 #define DOTTED 0x55
 
 void lcd_plot(xcoord_t x, uint8_t y, LcdFlags att=0);
+void lcd_mask(uint8_t *p, uint8_t mask, LcdFlags att=0);
 void lcd_hline(xcoord_t x, uint8_t y, xcoord_t w, LcdFlags att=0);
 void lcd_hlineStip(xcoord_t x, uint8_t y, xcoord_t w, uint8_t pat, LcdFlags att=0);
 void lcd_vline(xcoord_t x, int8_t y, int8_t h);
@@ -226,14 +227,14 @@ void lcdDrawTelemetryTopBar();
     lcd_vline(xx-1,yy-ll,ll); \
     lcd_vline(xx  ,yy-ll,ll); \
     lcd_vline(xx+1,yy-ll,ll);
-
+/*
 #define LCD_2DOTS(x, y, att)     \
     lcd_putcAtt(x, y, ' ', att); \
     lcd_vline(x+4, y+3, 2);      \
     lcd_vline(x+5, y+3, 2);      \
     lcd_vline(x+4, y+8, 2);      \
     lcd_vline(x+5, y+8, 2);
-
+*/
 void lcd_img(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t idx, LcdFlags att=0);
 void lcd_bmp(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t offset=0, uint8_t width=0);
 #define LCD_ICON(x, y, icon) lcd_bmp(x, y, icons, icon)

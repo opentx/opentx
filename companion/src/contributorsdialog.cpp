@@ -1,7 +1,7 @@
 #include "contributorsdialog.h"
 #include "ui_contributorsdialog.h"
 #include <QtGui>
-#define CLINESEP "=====================================================\n"
+#include "helpers.h"
 
 contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnurl) :
     QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint),
@@ -9,44 +9,92 @@ contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnu
 {
     ui->setupUi(this);
     switch (contest) {
-      case 0: {
-        ui->textBrowser->insertPlainText(CLINESEP);
-        ui->textBrowser->insertPlainText(tr("People who have contributed to this project")+"\n");
-        ui->textBrowser->insertPlainText(CLINESEP);
-        QFile file(":/contributors");
-        if(file.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
-            ui->textBrowser->insertPlainText(file.readAll());
+      case 0:
+      {
+        this->setWindowIcon(CompanionIcon("contributors.png"));
+        QFile file(":/DONATIONS.txt");
+        QString str;
+        str.append("<html><head>");
+        str.append("<style type=\"text/css\">\n");
+        str.append(".mycss\n{\nfont-weight:normal;\ncolor:#000000;vertical-align: top;font-size:10px;text-align:left;font-family:arial, helvetica, sans-serif;\n}\n");
+        str.append(".mycssb\n{\nfont-weight:bold;\ncolor:#C00000;vertical-align: top;font-size:10px;text-align:left;font-family:arial, helvetica, sans-serif;\n}\n");
+        str.append(".myhead\n{\nfont-weight:bold;\ncolor:#000000;font-size:14px;text-align:left;font-family:arial, helvetica, sans-serif;\n}\n");
+        str.append("</style>\n</head><body class=\"mycss\"><table width=\"100%\" border=0 cellspacing=0 cellpadding=2>");
+        str.append("<tr><td class=\"myhead\">"+tr("People who have contributed to this project")+"</td></tr>");
+        str.append("</table>");
+        str.append("<table width=\"100%\" border=0 cellspacing=0 cellpadding=2>");
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+          int columns=6;
+          float cwidth=100.0/columns;
+          while (!file.atEnd()) {
+            str.append("<tr>");
+            for (int i=0; i<columns; i++) {
+              str.append(QString("<td width=\"%1%\" ").arg(cwidth));
+              if (!file.atEnd()) {
+                QByteArray line = file.readLine();
+                if (line.contains("monthly") || line.contains("mensual")) {
+                  str.append("class=\"mycssb\">");
+                } else {
+                  str.append("class=\"mycss\">");
+                }
+                str.append(line.trimmed()+"</td>");
+              } else {
+                str.append("class=\"mycss\">&nbsp;</td>");
+              }
+            }
+            str.append("</tr>");
+          }
         }
-        ui->textBrowser->insertPlainText("\n");
-        ui->textBrowser->insertPlainText(CLINESEP);
-        ui->textBrowser->insertPlainText(tr("Coders")+"\n");
-        ui->textBrowser->insertPlainText(CLINESEP);
-        QFile file2(":/coders");
+        str.append("</table>");
+        QFile file2(":/CREDITS.txt");
+        str.append("<table width=\"100%\" border=0 cellspacing=0 cellpadding=2>");
+        str.append("<tr><td class=\"mycss\">&nbsp;</td></tr>");
+        str.append("<tr><td class=\"myhead\">"+tr("Coders")+"</td></tr>");
+        str.append("</table>");
+        str.append("<table width=\"100%\" border=0 cellspacing=0 cellpadding=2>");
         if(file2.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
-            ui->textBrowser->insertPlainText(file2.readAll());
+          while (!file2.atEnd()) {
+            str.append("<tr>");
+            for (int i=0; i<3; i++) {
+              str.append("<td width=\"33.33%\" class=\"mycss\">");
+              if (!file2.atEnd()) {
+                QByteArray line = file2.readLine();
+                str.append(line.trimmed());
+              } else {
+                str.append("&nbsp;");
+              }
+              str.append("</td>");
+            }
+            str.append("</tr>");
+          }
         }
-        ui->textBrowser->insertPlainText("\n\n\n");
-        ui->textBrowser->insertPlainText(tr("Honors go to Rafal Tomczak (RadioClone) and Thomas Husterer (th9x) \nof course. Also to Erez Raviv (er9x) and it's fantastic eePe, from which\ncompanion9x was forked out."));
-        ui->textBrowser->insertPlainText("\n\n");
-        ui->textBrowser->insertPlainText(tr("Thank you all !!!"));
-        ui->textBrowser->setReadOnly(true);
-        ui->textBrowser->verticalScrollBar()->setValue(0);
-        this->setWindowTitle(tr("Contributors"));
-        }
+        str.append("<tr><td class=\"mycss\">&nbsp;</td></tr>");
+        str.append("<tr><td colspan=3 class=\"mycss\">" + tr("Honors go to Rafal Tomczak (RadioClone), Thomas Husterer (th9x) and Erez Raviv (er9x and eePe)") + "<br/></td></tr>");
+        str.append("<tr><td colspan=3 class=\"mycss\">" + tr("Thank you all !!!") + "</td></tr>");
+        str.append("</table>");
+        str.append("</body></html>");        
+        ui->textEditor->setHtml(str);
+        ui->textEditor->scroll(0, 0);
+        setWindowTitle(tr("Contributors"));
         break;
+      }
       
-      case 1:{
-        QFile file(":/releasenotes");
+      case 1:
+      {
+        this->setWindowIcon(CompanionIcon("changelog.png"));
+        QFile file(":/releasenotes.txt");
         if(file.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
-          ui->textBrowser->insertHtml(file.readAll());
+          ui->textEditor->setHtml(file.readAll());
         }
-        ui->textBrowser->setReadOnly(true);
-        ui->textBrowser->verticalScrollBar()->setValue(0);
-        this->setWindowTitle(tr("Companion9x Release Notes"));
-        }
+        ui->textEditor->scroll(0,0);
+        setWindowTitle(tr("Companion Release Notes"));
         break;
-      case 2:{
+      }
+
+      case 2:
+      {
         if (!rnurl.isEmpty()) {
+          this->setWindowIcon(CompanionIcon("changelog.png"));
           this->setWindowTitle(tr("OpenTX Release Notes"));
           manager = new QNetworkAccessManager(this);
           connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
@@ -54,7 +102,8 @@ contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnu
           QNetworkRequest request(url);
           request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
           manager->get(request);
-        } else {
+        }
+        else {
           QTimer::singleShot(0, this, SLOT(forceClose()));                
         }
         break;
@@ -64,7 +113,7 @@ contributorsDialog::contributorsDialog(QWidget *parent, int contest, QString rnu
 
 void contributorsDialog::showEvent ( QShowEvent * )
 {
-    ui->textBrowser->verticalScrollBar()->setValue(0);
+    ui->textEditor->scroll(0, 0);
 }
 
 contributorsDialog::~contributorsDialog()
@@ -74,9 +123,10 @@ contributorsDialog::~contributorsDialog()
 
 void contributorsDialog::replyFinished(QNetworkReply * reply)
 {
-    ui->textBrowser->insertHtml(reply->readAll());
+    ui->textEditor->setHtml(reply->readAll());
 }
 
-void contributorsDialog::forceClose() {
+void contributorsDialog::forceClose()
+{
     accept();;
 }

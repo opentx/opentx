@@ -124,7 +124,7 @@ PACK(struct FrskySerialData {
   uint16_t currentConsumption; // 0x35 openXsensor only! Otherwise calculated by the Tx from current
   uint16_t currentPrescale;
   uint16_t power;              // 0x37 openXsensor only! Otherwise calculated by the Tx from current and voltage
-  int16_t  spare2;
+  int16_t  airSpeed;
 
   uint16_t vfas;             // 0x39  Added to FrSky protocol for home made sensors with a better precision
   uint16_t volts_bp;         // 0x3A
@@ -139,9 +139,14 @@ PACK(struct FrskySerialData {
   int16_t  maxTemperature2;
   uint16_t maxGpsSpeed;
   uint16_t maxGpsDistance;
+  int16_t  minCell;
+  int16_t  minCells;
+  int16_t  minVfas;
   uint16_t maxCurrent;
   uint16_t maxPower;
   /* end */
+
+  int16_t  dTE;
 });
 #elif defined(WS_HOW_HIGH)
 PACK(struct FrskySerialData {
@@ -183,6 +188,9 @@ PACK(struct FrskySerialData {
 struct FrskyData {
   FrskyValueWithMinMax analog[2];
   FrskyValueWithMin    rssi[2];
+#if defined(CPUARM)
+  FrskyValueWithMinMax swr;
+#endif
   FrskySerialData hub;
 };
 
@@ -217,29 +225,41 @@ bool FRSKY_alarmRaised(uint8_t idx);
 
 void resetTelemetry();
 
-#define TELEMETRY_ALT_BP          frskyData.hub.baroAltitude_bp
-#define TELEMETRY_ALT_AP          frskyData.hub.baroAltitude_ap
-#define TELEMETRY_GPS_SPEED_BP    frskyData.hub.gpsSpeed_bp
-#define TELEMETRY_GPS_SPEED_AP    frskyData.hub.gpsSpeed_ap
-#define TELEMETRY_GPS_ALT_AP      frskyData.hub.gpsAltitude_ap
-#define TELEMETRY_GPS_ALT_BP      frskyData.hub.gpsAltitude_bp
-#define TELEMETRY_ALT             frskyData.hub.baroAltitude_bp, frskyData.hub.baroAltitude_ap      
-#define TELEMETRY_ALT_FORMAT      "%d.%02d,"
-#define TELEMETRY_CELLS           frskyData.hub.cellsSum / 10, frskyData.hub.cellsSum % 10, frskyData.hub.cellVolts[0]*2/100, frskyData.hub.cellVolts[0]*2%100, frskyData.hub.cellVolts[1]*2/100, frskyData.hub.cellVolts[1]*2%100, frskyData.hub.cellVolts[2]*2/100, frskyData.hub.cellVolts[2]*2%100, frskyData.hub.cellVolts[3]*2/100, frskyData.hub.cellVolts[3]*2%100, frskyData.hub.cellVolts[4]*2/100, frskyData.hub.cellVolts[4]*2%100, frskyData.hub.cellVolts[5]*2/100, frskyData.hub.cellVolts[5]*2%100
-#define TELEMETRY_CELLS_FORMAT    "%d.%d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,"
-#define TELEMETRY_CURRENT         frskyData.hub.current / 100, frskyData.hub.current % 100
-#define TELEMETRY_CURRENT_FORMAT  "%d.%02d,"
-#define TELEMETRY_VFAS            frskyData.hub.vfas / 10, frskyData.hub.vfas % 10
-#define TELEMETRY_VFAS_FORMAT     "%d.%d,"
-#define TELEMETRY_VSPEED          frskyData.hub.varioSpeed < 0 ? '-' : ' ', frskyData.hub.varioSpeed / 100, frskyData.hub.varioSpeed % 100
-#define TELEMETRY_VSPEED_FORMAT   "%c%d.%02d,"
+#define TELEMETRY_STREAMING()           (frskyStreaming > 0)
 
-#define TELEMETRY_STREAMING()     (frskyStreaming > 0)
+#define TELEMETRY_CELL_VOLTAGE(k)       (frskyData.hub.cellVolts[k] * 2)
+#define TELEMETRY_MIN_CELL_VOLTAGE      (frskyData.hub.minCellVolts * 2)
+
+#define TELEMETRY_BARO_ALT_AVAILABLE()  (frskyData.hub.baroAltitudeOffset)
+#define TELEMETRY_BARO_ALT_UNIT         (IS_IMPERIAL_ENABLE() ? LENGTH_UNIT_IMP : LENGTH_UNIT_METR)
+
+#define TELEMETRY_RELATIVE_BARO_ALT_BP  frskyData.hub.baroAltitude_bp
+#define TELEMETRY_RELATIVE_BARO_ALT_AP  frskyData.hub.baroAltitude_ap
+#define TELEMETRY_RELATIVE_GPS_ALT_BP   frskyData.hub.gpsAltitude_bp
+#define TELEMETRY_GPS_SPEED_BP          frskyData.hub.gpsSpeed_bp
+#define TELEMETRY_GPS_SPEED_AP          frskyData.hub.gpsSpeed_ap
+
+#define TELEMETRY_BARO_ALT_PREPARE()
+#define TELEMETRY_BARO_ALT_FORMAT       "%d,"
+#define TELEMETRY_BARO_ALT_ARGS         frskyData.hub.baroAltitude_bp,
+#define TELEMETRY_GPS_ALT_FORMAT        "%d,"
+#define TELEMETRY_GPS_ALT_ARGS          frskyData.hub.gpsAltitude_bp,
+#define TELEMETRY_GPS_SPEED_UNIT        (IS_IMPERIAL_ENABLE() ? SPEED_UNIT_IMP : SPEED_UNIT_METR)
+#define TELEMETRY_GPS_SPEED_FORMAT      "%d,"
+#define TELEMETRY_GPS_SPEED_ARGS        getConvertedTelemetryValue(frskyData.hub.gpsSpeed_bp, UNIT_KTS),
+#define TELEMETRY_CELLS_FORMAT          "%d.%d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,"
+#define TELEMETRY_CELLS_ARGS            frskyData.hub.cellsSum / 10, frskyData.hub.cellsSum % 10, frskyData.hub.cellVolts[0]*2/100, frskyData.hub.cellVolts[0]*2%100, frskyData.hub.cellVolts[1]*2/100, frskyData.hub.cellVolts[1]*2%100, frskyData.hub.cellVolts[2]*2/100, frskyData.hub.cellVolts[2]*2%100, frskyData.hub.cellVolts[3]*2/100, frskyData.hub.cellVolts[3]*2%100, frskyData.hub.cellVolts[4]*2/100, frskyData.hub.cellVolts[4]*2%100, frskyData.hub.cellVolts[5]*2/100, frskyData.hub.cellVolts[5]*2%100,
+#define TELEMETRY_CURRENT_FORMAT        "%d.%02d,"
+#define TELEMETRY_CURRENT_ARGS          frskyData.hub.current / 100, frskyData.hub.current % 100,
+#define TELEMETRY_VFAS_FORMAT           "%d.%d,"
+#define TELEMETRY_VFAS_ARGS             frskyData.hub.vfas / 10, frskyData.hub.vfas % 10,
+#define TELEMETRY_VSPEED_FORMAT         "%c%d.%02d,"
+#define TELEMETRY_VSPEED_ARGS           frskyData.hub.varioSpeed < 0 ? '-' : ' ', frskyData.hub.varioSpeed / 100, frskyData.hub.varioSpeed % 100,
 
 #if defined(FRSKY_HUB)
-  #define TELEMETRY_OPENXSENSOR() (frskyData.hub.openXsensor)
+  #define TELEMETRY_OPENXSENSOR()       (frskyData.hub.openXsensor)
 #else
-  #define TELEMETRY_OPENXSENSOR() (0)
+  #define TELEMETRY_OPENXSENSOR()       (0)
 #endif
 
 #endif

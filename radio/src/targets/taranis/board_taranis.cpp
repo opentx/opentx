@@ -155,6 +155,7 @@ void init5msTimer()
   TIM14->CR1 = 5 ;
   TIM14->DIER |= 1 ;
   NVIC_EnableIRQ(TIM8_TRG_COM_TIM14_IRQn) ;
+  NVIC_SetPriority(TIM8_TRG_COM_TIM14_IRQn, 7);
 }
 
 void stop5msTimer( void )
@@ -191,9 +192,6 @@ void boardInit()
   adcInit();
   delaysInit();
   audioInit();
-#if defined(DEBUG)
-  uartInit(DEBUG_UART_BAUDRATE);
-#endif
   init5msTimer();
   __enable_irq();
   eepromInit();

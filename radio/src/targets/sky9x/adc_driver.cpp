@@ -45,12 +45,12 @@ const char ana_direction[NUMBER_ANALOG] = {1, 1, 0, 1 ,0 ,1 ,0, 0, 0};
 
 // Settings for mode register ADC_MR
 // USEQ off - silicon problem, doesn't work
-// TRANSFER = 1
-// TRACKTIM = 4 (5 clock periods)
-// ANACH = 0
-// SETTLING = 1 (not used if ANACH = 0)
-// STARTUP = 1 (8 clock periods)
-// PRESCAL = 3.6 MHz clock (between 1 and 20MHz)
+// TRANSFER = 3
+// TRACKTIM = 15 (16 clock periods)
+// ANACH = 1
+// SETTLING = 6 (not used if ANACH = 0)
+// STARTUP = 6 (96 clock periods)
+// PRESCAL = 9.0 MHz clock (between 1 and 20MHz)
 // FREERUN = 0
 // FWUP = 0
 // SLEEP = 0
@@ -66,7 +66,7 @@ void adcInit()
   // Enable peripheral clock ADC = bit 29
   PMC->PMC_PCER0 |= 0x20000000L ;               // Enable peripheral clock to ADC
   padc = ADC ;
-  padc->ADC_MR = 0x14110000 | timer ;  // 0001 0100 0001 0001 xxxx xxxx 0000 0000
+  padc->ADC_MR = 0x3FB60000 | timer ;  // 0011 1111 1011 0110 xxxx xxxx 0000 0000
   padc->ADC_ACR = ADC_ACR_TSON ;                        // Turn on temp sensor
 #if defined(REVA)
   padc->ADC_CHER = 0x0000E23E ;  // channels 1,2,3,4,5,9,13,14,15

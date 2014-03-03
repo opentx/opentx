@@ -323,7 +323,10 @@ unsigned int EFile::readRlc12(uint8_t *buf, unsigned int i_len, bool rlc2)
 
       if (read(&m_bRlc, 1) !=1) break; //read how many bytes to read
 
-      assert(m_bRlc & 0x7f);
+      if (!(m_bRlc & 0x7f)) {
+        qDebug() << "RLC decoding error!";
+        return 0;
+      }
       
       if (rlc2) {
         if(m_bRlc&0x80){ // if contains high byte

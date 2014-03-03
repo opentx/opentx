@@ -19,6 +19,7 @@
 #include "th9xeeprom.h"
 #include "th9xsimulator.h"
 #include "file.h"
+#include "appdata.h"
 
 #define FILE_TYP_GENERAL 1
 #define FILE_TYP_MODEL   2
@@ -44,8 +45,7 @@ const char * Th9xInterface::getName()
 
 const int Th9xInterface::getEEpromSize()
 {
-  QSettings settings("companion9x", "companion9x");
-  QString avrMCU = settings.value("mcu", QString("m64")).toString();
+  QString avrMCU = g.mcu();
   if (avrMCU==QString("m128")) {
     return 2*EESIZE_STOCK;
   }
@@ -62,7 +62,7 @@ bool Th9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
   return false;
 }
 
-bool Th9xInterface::load(RadioData &radioData, uint8_t *eeprom, int size)
+bool Th9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {
   std::cout << "trying th9x import... ";
 
@@ -71,7 +71,7 @@ bool Th9xInterface::load(RadioData &radioData, uint8_t *eeprom, int size)
     return false;
   }
 
-  if (!efile->EeFsOpen(eeprom, size, BOARD_STOCK)) {
+  if (!efile->EeFsOpen((uint8_t *)eeprom, size, BOARD_STOCK)) {
     std::cout << "wrong file system\n";
     return false;
   }
@@ -124,56 +124,20 @@ bool Th9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize,
 
 int Th9xInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t variant, uint8_t version)
 {
-  EEPROMWarnings.clear();
+  std::cout << "NO!\n";
+  // TODO a warning
 
-  efile->EeFsCreate(eeprom, getEEpromSize(), BOARD_STOCK);
-
-  Th9xGeneral th9xGeneral(radioData.generalSettings);
-  int sz = efile->writeRlc2(FILE_GENERAL, FILE_TYP_GENERAL, (uint8_t*)&th9xGeneral, sizeof(Th9xGeneral));
-  if(sz != sizeof(Th9xGeneral)) {
-    return 0;
-  }
-
-  for (int i=0; i<getMaxModels(); i++) {
-    if (!radioData.models[i].isempty()) {
-      Th9xModelData th9xModel(radioData.models[i]);
-      sz = efile->writeRlc2(FILE_MODEL(i), FILE_TYP_MODEL, (uint8_t*)&th9xModel, sizeof(Th9xModelData));
-      if(sz != sizeof(Th9xModelData)) {
-        return 0;
-      }
-    }
-  }
-
-  return getEEpromSize();
+  return 0;
 }
 
 int Th9xInterface::getSize(ModelData &model)
 {
-  if (model.isempty())
-    return 0;
-
-  uint8_t tmp[2*EESIZE_STOCK];
-  efile->EeFsCreate(tmp, getEEpromSize(), BOARD_STOCK);
-
-  Th9xModelData th9xModel(model);
-  int sz = efile->writeRlc2(0, FILE_TYP_MODEL, (uint8_t*)&th9xModel, sizeof(Th9xModelData));
-  if(sz != sizeof(Th9xModelData)) {
-     return -1;
-  }
-  return efile->size(0);
+  return 0;
 }
 
 int Th9xInterface::getSize(GeneralSettings &settings)
 {
-  uint8_t tmp[2*EESIZE_STOCK];
-  efile->EeFsCreate(tmp, getEEpromSize(), BOARD_STOCK);
-
-  Th9xGeneral th9xGeneral(settings);
-  int sz = efile->writeRlc2(0, FILE_TYP_GENERAL, (uint8_t*)&th9xGeneral, sizeof(Th9xGeneral));
-  if(sz != sizeof(th9xGeneral)) {
-    return -1;
-  }
-  return efile->size(0);
+  return 0;
 }
 
 int Th9xInterface::getCapability(const Capability capability)
@@ -181,12 +145,6 @@ int Th9xInterface::getCapability(const Capability capability)
   switch (capability) {
     case Mixes:
       return TH9X_MAX_MIXERS;
-    case NumCurves3:
-      return TH9X_MAX_CURVES3;
-    case NumCurves5:
-      return TH9X_MAX_CURVES5;      
-    case NumCurves9:
-      return TH9X_MAX_CURVES9;
     case OwnerName:
       return 0;
     case Timers:
@@ -199,7 +157,7 @@ int Th9xInterface::getCapability(const Capability capability)
       return 9;
     case CustomFunctions:
       return 0;
-    case CustomSwitches:
+    case LogicalSwitches:
       return TH9X_MAX_SWITCHES;
     case Outputs:
       return 8;
@@ -244,5 +202,5 @@ int Th9xInterface::isAvailable(Protocol proto, int port)
 
 SimulatorInterface * Th9xInterface::getSimulator()
 {
-  return new Th9xSimulator(this);
+  return NULL; // new Th9xSimulator(this);
 }

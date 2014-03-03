@@ -3,15 +3,19 @@
 #include "helpers.h"
 #include "eeprominterface.h"
 #include <QtGui>
+#include "helpers.h"
+
 #define NUM_CH 10
+
 modelConfigDialog::modelConfigDialog(RadioData &radioData, uint64_t * result, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::modelConfigDialog),
     radioData(radioData),
     result(result),
-    g_eeGeneral(radioData.generalSettings)
+    generalSettings(radioData.generalSettings)
 {
     ui->setupUi(this);
+    this->setWindowIcon(CompanionIcon("wizard.png"));
     rxLock=false;
     ruddercolor << "#ffd100" << "#ffff00";
     throttlecolor << "#e40000";

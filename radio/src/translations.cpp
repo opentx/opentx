@@ -55,6 +55,10 @@ const pm_char STR_OPEN9X[] PROGMEM =
 #endif
     ISTR(TRNMODE)
     ISTR(TRNCHN)
+#if defined(PCBTARANIS)
+    ISTR(UART3MODES)
+    ISTR(POTTYPES)
+#endif
     ISTR(VTRIMINC)
     ISTR(RETA123)
     ISTR(VPROTOS)
@@ -72,7 +76,7 @@ const pm_char STR_OPEN9X[] PROGMEM =
 #if defined(FRSKY) || defined(CPUARM)
   #if defined(CPUARM)
     ISTR(VTELEMUNIT_IMP)
-    ISTR(VTELEMUNIT_NORM)
+    ISTR(VTELEMUNIT_METR)
   #else
     ISTR(VTELEMUNIT)
   #endif
@@ -241,9 +245,7 @@ const pm_char STR_RXBATT[] PROGMEM = TR_RXBATT;
 const pm_char STR_TX[] PROGMEM = TR_TXnRX;
 const pm_char STR_ACCEL[] PROGMEM = TR_ACCEL;
 const pm_char STR_NODATA[] PROGMEM = TR_NODATA;
-const pm_char STR_TM1TM2[] PROGMEM = TR_TM1TM2;
-const pm_char STR_THRTHP[] PROGMEM = TR_THRTHP;
-const pm_char STR_TOT[] PROGMEM = TR_TOT;
+const pm_char STR_TOTTM1TM2THRTHP[] PROGMEM = TR_TOTTM1TM2THRTHP;
 const pm_char STR_TMR1LATMAXUS[] PROGMEM = TR_TMR1LATMAXUS;
 const pm_char STR_TMR1LATMINUS[] PROGMEM = TR_TMR1LATMINUS;
 const pm_char STR_TMR1JITTERUS[] PROGMEM = TR_TMR1JITTERUS;
@@ -266,6 +268,10 @@ const pm_char STR_EEPROMFORMATTING[] PROGMEM = TR_EEPROMFORMATTING;
 const pm_char STR_EEPROMOVERFLOW[] PROGMEM = TR_EEPROMOVERFLOW;
 const pm_char STR_TRIMS2OFFSETS[] PROGMEM = TR_TRIMS2OFFSETS;
 const pm_char STR_MENURADIOSETUP[] PROGMEM = TR_MENURADIOSETUP;
+
+#if defined(FAS_OFFSET) || !defined(CPUM64)
+const pm_char STR_FAS_OFFSET[] PROGMEM = TR_FAS_OFFSET;
+#endif
 
 #if defined(CPUM2560) || defined(CPUARM)
 const pm_char STR_MENUDATEANDTIME[] PROGMEM = TR_MENUDATEANDTIME;
@@ -290,8 +296,8 @@ const pm_char STR_MENUINPUTS[] PROGMEM = TR_MENUINPUTS;
 const pm_char STR_MENULIMITS[] PROGMEM = TR_MENULIMITS;
 const pm_char STR_MENUCURVES[] PROGMEM = TR_MENUCURVES;
 const pm_char STR_MENUCURVE[] PROGMEM = TR_MENUCURVE;
-const pm_char STR_MENUCUSTOMSWITCH[] PROGMEM = TR_MENUCUSTOMSWITCH;
-const pm_char STR_MENUCUSTOMSWITCHES[] PROGMEM = TR_MENUCUSTOMSWITCHES;
+const pm_char STR_MENULOGICALSWITCH[] PROGMEM = TR_MENULOGICALSWITCH;
+const pm_char STR_MENULOGICALSWITCHES[] PROGMEM = TR_MENULOGICALSWITCHES;
 const pm_char STR_MENUCUSTOMFUNC[] PROGMEM = TR_MENUCUSTOMFUNC;
 
 #if defined(LUA)
@@ -443,6 +449,7 @@ const pm_char STR_SD_SECTORS[] PROGMEM = TR_SD_SECTORS;
 const pm_char STR_SD_SIZE[] PROGMEM = TR_SD_SIZE;
 const pm_char STR_TYPE[] PROGMEM = TR_TYPE;
 const pm_char STR_GLOBAL_VARS[] PROGMEM = TR_GLOBAL_VARS;
+const pm_char STR_GLOBAL_V[] PROGMEM = TR_GLOBAL_V;
 const pm_char STR_GLOBAL_VAR[] PROGMEM = TR_GLOBAL_VAR;
 const pm_char STR_OWN[] PROGMEM = TR_OWN;
 const pm_char STR_ROTARY_ENCODER[] PROGMEM = TR_ROTARY_ENCODER;
@@ -455,6 +462,7 @@ const pm_char STR_VIEW_TEXT[] PROGMEM = "View text";
   const pm_char STR_MODELNAME[] PROGMEM = TR_MODELNAME;
   const pm_char STR_PHASENAME[] PROGMEM = TR_PHASENAME;
   const pm_char STR_MIXNAME[] PROGMEM = TR_MIXNAME;
+  const pm_char STR_INPUTNAME[] PROGMEM = TR_INPUTNAME;
   const pm_char STR_EXPONAME[] PROGMEM = TR_EXPONAME;
 #endif
 
@@ -482,11 +490,14 @@ const pm_char STR_VIEW_TEXT[] PROGMEM = "View text";
   const pm_char STR_CLEAR[] PROGMEM = "Clear";
   const pm_char STR_RESET[] PROGMEM = "Reset";
   const pm_char STR_COPY_TRIMS_TO_OFFSET[] = "Copy Trims To Offset";
-  const pm_char STR_TOP_BAR[] PROGMEM = "Top Bar";
-  const pm_char STR_ALTITUDE[] PROGMEM = INDENT "Altitude";
+  const pm_char STR_TOP_BAR[] PROGMEM = TR_TOP_BAR;
+  const pm_char STR_ALTITUDE[] PROGMEM = TR_ALTITUDE;
   const pm_char STR_SCALE[] PROGMEM = "Scale";
   const pm_char STR_VIEW_CHANNELS[] PROGMEM = "View Channels";
   const pm_char STR_VIEW_NOTES[] PROGMEM = "View Notes";
+  const pm_char STR_POTWARNING[] PROGMEM = TR_POTWARNING;
+  const pm_char STR_CHECKLIST[] PROGMEM = TR_CHECKLIST;
+  const pm_char STR_UART3MODE[] PROGMEM = TR_UART3MODE;
 #endif
 
 #if MENUS_LOCK == 1
@@ -566,13 +577,19 @@ const pm_char STR_VIEW_TEXT[] PROGMEM = "View text";
 #endif
 
 const pm_uchar font_5x7[] PROGMEM = {
+#if defined (CPUARM)
 #include "font_05x07.lbm"
+#else
+#include "font_05x07_avr.lbm"
+#endif
 #if defined(TRANSLATIONS_DE)
 #include "font_de_05x07.lbm"
 #elif defined(TRANSLATIONS_CZ)
 #include "font_cz_05x07.lbm"
 #elif defined(TRANSLATIONS_ES)
 #include "font_es_05x07.lbm"
+#elif defined(TRANSLATIONS_FI)
+#include "font_fi_05x07.lbm"
 #elif defined(TRANSLATIONS_FR)
 #include "font_fr_05x07.lbm"
 #elif defined(TRANSLATIONS_IT)
@@ -586,6 +603,12 @@ const pm_uchar font_5x7[] PROGMEM = {
 #endif
 };
 
+#if !defined(CPUM64) || defined(EXTSTD)
+const pm_uchar font_5x7_B[] PROGMEM = {
+#include "font_05x07_B_compressed.lbm"
+};
+#endif
+
 const pm_uchar font_10x14[] PROGMEM = {
 #include "font_10x14_compressed.lbm"
 #if defined(CPUARM)
@@ -595,6 +618,8 @@ const pm_uchar font_10x14[] PROGMEM = {
   #include "font_cz_10x14.lbm"
   #elif defined(TRANSLATIONS_ES)
   #include "font_es_10x14.lbm"
+  #elif defined(TRANSLATIONS_FI)
+  #include "font_fi_10x14.lbm"
   #elif defined(TRANSLATIONS_FR)
   #include "font_fr_10x14.lbm"
   #elif defined(TRANSLATIONS_IT)
@@ -622,6 +647,8 @@ const pm_uchar font_4x6[] PROGMEM = {
 #include "font_cz_04x06.lbm"
 #elif defined(TRANSLATIONS_ES)
 #include "font_es_04x06.lbm"
+#elif defined(TRANSLATIONS_FI)
+#include "font_fi_04x06.lbm"
 #elif defined(TRANSLATIONS_FR)
 #include "font_fr_04x06.lbm"
 #elif defined(TRANSLATIONS_IT)
@@ -643,6 +670,8 @@ const pm_uchar font_8x10[] PROGMEM = {
 #include "font_cz_08x10.lbm"
 #elif defined(TRANSLATIONS_ES)
 #include "font_es_08x10.lbm"
+#elif defined(TRANSLATIONS_FI)
+#include "font_fi_08x10.lbm"
 #elif defined(TRANSLATIONS_FR)
 #include "font_fr_08x10.lbm"
 #elif defined(TRANSLATIONS_IT)

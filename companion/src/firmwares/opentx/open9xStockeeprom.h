@@ -65,7 +65,6 @@ PACK(typedef struct t_Open9xFrSkyRSSIAlarm {
   int8_t        value:6;
   FrSkyRSSIAlarm get(int index);
   t_Open9xFrSkyRSSIAlarm() { memset(this, 0, sizeof(t_Open9xFrSkyRSSIAlarm)); }
-  t_Open9xFrSkyRSSIAlarm(int index, FrSkyRSSIAlarm&);
 }) Open9xFrSkyRSSIAlarm;
 
 PACK(typedef struct t_Open9xExpoData_v201 {
@@ -80,8 +79,6 @@ PACK(typedef struct t_Open9xExpoData_v201 {
 
   operator ExpoData();
   t_Open9xExpoData_v201() { memset(this, 0, sizeof(t_Open9xExpoData_v201)); }
-  t_Open9xExpoData_v201(ExpoData&);
-
 }) Open9xExpoData_v201;
 
 PACK(typedef struct t_Open9xExpoData_v211 {
@@ -95,8 +92,6 @@ PACK(typedef struct t_Open9xExpoData_v211 {
 
   operator ExpoData();
   t_Open9xExpoData_v211() { memset(this, 0, sizeof(t_Open9xExpoData_v211)); }
-  t_Open9xExpoData_v211(ExpoData&);
-
 }) Open9xExpoData_v211;
 
 PACK(typedef struct t_Open9xLimitData_v201 {
@@ -107,8 +102,6 @@ PACK(typedef struct t_Open9xLimitData_v201 {
 
   operator LimitData();
   t_Open9xLimitData_v201() { memset(this, 0, sizeof(t_Open9xLimitData_v201)); }
-  t_Open9xLimitData_v201(LimitData&);
-
 }) Open9xLimitData_v201;
 
 PACK(typedef struct t_Open9xLimitData_v211 {
@@ -121,8 +114,6 @@ PACK(typedef struct t_Open9xLimitData_v211 {
 
   operator LimitData();
   t_Open9xLimitData_v211() { memset(this, 0, sizeof(t_Open9xLimitData_v211)); }
-  t_Open9xLimitData_v211(LimitData&);
-
 }) Open9xLimitData_v211;
 
 PACK(typedef struct t_Open9xMixData_v201 {
@@ -143,8 +134,6 @@ PACK(typedef struct t_Open9xMixData_v201 {
 
   operator MixData();
   t_Open9xMixData_v201() { memset(this, 0, sizeof(t_Open9xMixData_v201)); }
-  t_Open9xMixData_v201(MixData&);
-
 }) Open9xMixData_v201;
 
 PACK(typedef struct t_Open9xMixData_v203 {
@@ -165,8 +154,6 @@ PACK(typedef struct t_Open9xMixData_v203 {
 
   operator MixData();
   t_Open9xMixData_v203() { memset(this, 0, sizeof(t_Open9xMixData_v203)); }
-  t_Open9xMixData_v203(MixData&);
-
 }) Open9xMixData_v203;
 
 PACK(typedef struct t_Open9xMixData_v205 {
@@ -188,8 +175,6 @@ PACK(typedef struct t_Open9xMixData_v205 {
 
  operator MixData();
   t_Open9xMixData_v205() { memset(this, 0, sizeof(t_Open9xMixData_v205)); }
-  t_Open9xMixData_v205(MixData&);
-
 }) Open9xMixData_v205;
 
 PACK(typedef struct t_Open9xMixData_v209 {
@@ -211,8 +196,6 @@ PACK(typedef struct t_Open9xMixData_v209 {
 
  operator MixData();
   t_Open9xMixData_v209() { memset(this, 0, sizeof(t_Open9xMixData_v209)); }
-  t_Open9xMixData_v209(MixData&);
-
 }) Open9xMixData_v209;
 
 PACK(typedef struct t_Open9xMixData_v211 {
@@ -236,38 +219,32 @@ PACK(typedef struct t_Open9xMixData_v211 {
 
  operator MixData();
   t_Open9xMixData_v211() { memset(this, 0, sizeof(t_Open9xMixData_v211)); }
-  t_Open9xMixData_v211(MixData&);
-
 }) Open9xMixData_v211;
 
-PACK(typedef struct t_Open9xCustomSwData_v208 { // Custom Switches data
+PACK(typedef struct t_Open9xLogicalSwitchData_v208 { // Custom Switches data
   int8_t  v1; //input
   int8_t  v2; //offset
   uint8_t func;
 
-  operator CustomSwData();
-  t_Open9xCustomSwData_v208() { memset(this, 0, sizeof(t_Open9xCustomSwData_v208)); }
-  t_Open9xCustomSwData_v208(CustomSwData&);
-}) Open9xCustomSwData_v208;
+  operator LogicalSwitchData();
+  t_Open9xLogicalSwitchData_v208() { memset(this, 0, sizeof(t_Open9xLogicalSwitchData_v208)); }
+  t_Open9xLogicalSwitchData_v208(LogicalSwitchData&);
+}) Open9xLogicalSwitchData_v208;
 
-PACK(typedef struct t_Open9xCustomSwData_v209 { // Custom Switches data
+PACK(typedef struct t_Open9xLogicalSwitchData_v209 { // Custom Switches data
   int8_t  v1; //input
   int8_t  v2; //offset
   uint8_t func;
 
-  operator CustomSwData();
-  t_Open9xCustomSwData_v209() { memset(this, 0, sizeof(t_Open9xCustomSwData_v209)); }
-  t_Open9xCustomSwData_v209(CustomSwData&);
-}) Open9xCustomSwData_v209;
+  operator LogicalSwitchData();
+  t_Open9xLogicalSwitchData_v209() { memset(this, 0, sizeof(t_Open9xLogicalSwitchData_v209)); }
+}) Open9xLogicalSwitchData_v209;
 
 PACK(typedef struct t_Open9xSafetySwData { // Safety Switches data
   int8_t  swtch;
   int8_t  val;
 
-  operator SafetySwData();
   t_Open9xSafetySwData() { memset(this, 0, sizeof(t_Open9xSafetySwData)); }
-  t_Open9xSafetySwData(SafetySwData&);
-
 }) Open9xSafetySwData;
 
 PACK(typedef struct t_Open9xFuncSwData_v201 { // Function Switches data
@@ -276,8 +253,6 @@ PACK(typedef struct t_Open9xFuncSwData_v201 { // Function Switches data
 
   operator FuncSwData();
   t_Open9xFuncSwData_v201() { memset(this, 0, sizeof(t_Open9xFuncSwData_v201)); }
-  t_Open9xFuncSwData_v201(FuncSwData&);
-
 }) Open9xFuncSwData_v201;
 
 PACK(typedef struct t_Open9xFuncSwData_v203 { // Function Switches data
@@ -287,8 +262,6 @@ PACK(typedef struct t_Open9xFuncSwData_v203 { // Function Switches data
 
   operator FuncSwData();
   t_Open9xFuncSwData_v203() { memset(this, 0, sizeof(t_Open9xFuncSwData_v203)); }
-  t_Open9xFuncSwData_v203(FuncSwData&);
-
 }) Open9xFuncSwData_v203;
 
 PACK(typedef struct t_Open9xFuncSwData_v210 { // Function Switches data
@@ -299,8 +272,6 @@ PACK(typedef struct t_Open9xFuncSwData_v210 { // Function Switches data
 
   operator FuncSwData();
   t_Open9xFuncSwData_v210() { memset(this, 0, sizeof(t_Open9xFuncSwData_v210)); }
-  t_Open9xFuncSwData_v210(FuncSwData&);
-
 }) Open9xFuncSwData_v210;
 
 PACK(typedef struct t_Open9xFrSkyChannelData_v201 {
@@ -316,8 +287,6 @@ PACK(typedef struct t_Open9xFrSkyChannelData_v201 {
 
   operator FrSkyChannelData();
   t_Open9xFrSkyChannelData_v201() { memset(this, 0, sizeof(t_Open9xFrSkyChannelData_v201)); }
-  t_Open9xFrSkyChannelData_v201(FrSkyChannelData&);
-
 }) Open9xFrSkyChannelData_v201;
 
 PACK(typedef struct t_Open9xFrSkyChannelData_v203 {
@@ -333,8 +302,6 @@ PACK(typedef struct t_Open9xFrSkyChannelData_v203 {
 
   operator FrSkyChannelData();
   t_Open9xFrSkyChannelData_v203() { memset(this, 0, sizeof(t_Open9xFrSkyChannelData_v203)); }
-  t_Open9xFrSkyChannelData_v203(FrSkyChannelData&);
-
 }) Open9xFrSkyChannelData_v203;
 
 PACK(typedef struct t_Open9xFrSkyChannelData_v204 {
@@ -348,8 +315,6 @@ PACK(typedef struct t_Open9xFrSkyChannelData_v204 {
 
   operator FrSkyChannelData();
   t_Open9xFrSkyChannelData_v204() { memset(this, 0, sizeof(t_Open9xFrSkyChannelData_v204)); }
-  t_Open9xFrSkyChannelData_v204(FrSkyChannelData&);
-
 }) Open9xFrSkyChannelData_v204;
 
 PACK(typedef struct t_Open9xFrSkyChannelData_v208 {
@@ -363,37 +328,30 @@ PACK(typedef struct t_Open9xFrSkyChannelData_v208 {
 
   operator FrSkyChannelData();
   t_Open9xFrSkyChannelData_v208() { memset(this, 0, sizeof(t_Open9xFrSkyChannelData_v208)); }
-  t_Open9xFrSkyChannelData_v208(FrSkyChannelData&);
-
 }) Open9xFrSkyChannelData_v208;
 
 PACK(typedef struct t_Open9xFrSkyData_v201 {
-	Open9xFrSkyChannelData_v201 channels[2];
+  Open9xFrSkyChannelData_v201 channels[2];
 
-	operator FrSkyData();
-	t_Open9xFrSkyData_v201() { memset(this, 0, sizeof(t_Open9xFrSkyData_v201)); }
-
+  operator FrSkyData();
+  t_Open9xFrSkyData_v201() { memset(this, 0, sizeof(t_Open9xFrSkyData_v201)); }
 }) Open9xFrSkyData_v201;
 
 PACK(typedef struct t_Open9xFrSkyData_v202 {
-	Open9xFrSkyChannelData_v201 channels[2];
-	uint8_t usrProto:2;  // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh
-	uint8_t spare:6;
+  Open9xFrSkyChannelData_v201 channels[2];
+  uint8_t usrProto:2;  // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh
+  uint8_t spare:6;
 
-	operator FrSkyData();
-	t_Open9xFrSkyData_v202() { memset(this, 0, sizeof(t_Open9xFrSkyData_v202)); }
-	t_Open9xFrSkyData_v202(FrSkyData&);
-
+  operator FrSkyData();
+  t_Open9xFrSkyData_v202() { memset(this, 0, sizeof(t_Open9xFrSkyData_v202)); }
 }) Open9xFrSkyData_v202;
 
 PACK(typedef struct t_Open9xFrSkyData_v203 {
-        Open9xFrSkyChannelData_v203 channels[2];
-        uint8_t usrProto;  // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh
+  Open9xFrSkyChannelData_v203 channels[2];
+  uint8_t usrProto;  // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh
 
-        operator FrSkyData();
-        t_Open9xFrSkyData_v203() { memset(this, 0, sizeof(t_Open9xFrSkyData_v203)); }
-        t_Open9xFrSkyData_v203(FrSkyData&);
-
+  operator FrSkyData();
+  t_Open9xFrSkyData_v203() { memset(this, 0, sizeof(t_Open9xFrSkyData_v203)); }
 }) Open9xFrSkyData_v203;
 
 PACK(typedef struct t_Open9xFrSkyBarData_v204 {
@@ -403,8 +361,6 @@ PACK(typedef struct t_Open9xFrSkyBarData_v204 {
 
   operator FrSkyBarData();
   t_Open9xFrSkyBarData_v204() { memset(this, 0, sizeof(t_Open9xFrSkyBarData_v204)); }
-  t_Open9xFrSkyBarData_v204(FrSkyBarData&);
-
 }) Open9xFrSkyBarData_v204;
 
 PACK(typedef struct t_Open9xFrSkyData_v204 {
@@ -417,7 +373,6 @@ PACK(typedef struct t_Open9xFrSkyData_v204 {
 
   operator FrSkyData();
   t_Open9xFrSkyData_v204() { memset(this, 0, sizeof(t_Open9xFrSkyData_v204)); }
-  t_Open9xFrSkyData_v204(FrSkyData&);
 }) Open9xFrSkyData_v204;
 
 PACK(typedef struct t_Open9xFrSkyData_v205 {
@@ -431,7 +386,6 @@ PACK(typedef struct t_Open9xFrSkyData_v205 {
 
   operator FrSkyData();
   t_Open9xFrSkyData_v205() { memset(this, 0, sizeof(t_Open9xFrSkyData_v205)); }
-  t_Open9xFrSkyData_v205(FrSkyData&);
 }) Open9xFrSkyData_v205;
 
 PACK(typedef struct t_Open9xFrSkyData_v208 {
@@ -445,7 +399,6 @@ PACK(typedef struct t_Open9xFrSkyData_v208 {
 
   operator FrSkyData();
   t_Open9xFrSkyData_v208() { memset(this, 0, sizeof(t_Open9xFrSkyData_v208)); }
-  t_Open9xFrSkyData_v208(FrSkyData&);
 }) Open9xFrSkyData_v208;
 
 PACK(typedef struct t_Open9xFrSkyData_v210 {
@@ -466,7 +419,6 @@ PACK(typedef struct t_Open9xFrSkyData_v210 {
 
   operator FrSkyData();
   t_Open9xFrSkyData_v210() { memset(this, 0, sizeof(t_Open9xFrSkyData_v210)); }
-  t_Open9xFrSkyData_v210(FrSkyData&);
 }) Open9xFrSkyData_v210;
 
 PACK(typedef struct t_Open9xSwashRingData_v208 { // Swash Ring data
@@ -479,8 +431,6 @@ PACK(typedef struct t_Open9xSwashRingData_v208 { // Swash Ring data
 
   operator SwashRingData();
   t_Open9xSwashRingData_v208() { memset(this, 0, sizeof(t_Open9xSwashRingData_v208)); }
-  t_Open9xSwashRingData_v208(SwashRingData&);
-
 }) Open9xSwashRingData_v208;
 
 PACK(typedef struct t_Open9xSwashRingData_v209 { // Swash Ring data
@@ -493,8 +443,6 @@ PACK(typedef struct t_Open9xSwashRingData_v209 { // Swash Ring data
 
   operator SwashRingData();
   t_Open9xSwashRingData_v209() { memset(this, 0, sizeof(t_Open9xSwashRingData_v209)); }
-  t_Open9xSwashRingData_v209(SwashRingData&);
-
 }) Open9xSwashRingData_v209;
 
 PACK(typedef struct t_Open9xPhaseData_v201 {
@@ -507,7 +455,6 @@ PACK(typedef struct t_Open9xPhaseData_v201 {
 
   operator PhaseData();
   t_Open9xPhaseData_v201() { memset(this, 0, sizeof(t_Open9xPhaseData_v201)); }
-  t_Open9xPhaseData_v201(PhaseData &eepe);
 }) Open9xPhaseData_v201;
 
 PACK(typedef struct t_Open9xTimerData_v201 {
@@ -526,7 +473,6 @@ PACK(typedef struct t_Open9xTimerData_v202 {
 
   operator TimerData();
   t_Open9xTimerData_v202() { memset(this, 0, sizeof(t_Open9xTimerData_v202)); }
-  t_Open9xTimerData_v202(TimerData &eepe);
 }) Open9xTimerData_v202;
 
 PACK(typedef struct t_Open9xTimerDataExtra {
@@ -570,7 +516,7 @@ PACK(typedef struct t_Open9xModelData_v201 {
   Open9xExpoData_v201  expoData[O9X_MAX_EXPOS];
   int8_t    curves5[O9X_209_MAX_CURVE5][5];
   int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xCustomSwData_v208  customSw[O9X_NUM_CSW];
+  Open9xLogicalSwitchData_v208  customSw[O9X_NUM_CSW];
   Open9xSafetySwData  safetySw[O9X_NUM_CHNOUT];
   Open9xFuncSwData_v201 funcSw[12];
   Open9xSwashRingData_v208 swashR;
@@ -579,8 +525,6 @@ PACK(typedef struct t_Open9xModelData_v201 {
 
   operator ModelData();
   t_Open9xModelData_v201() { memset(this, 0, sizeof(t_Open9xModelData_v201)); }
-  t_Open9xModelData_v201(ModelData&);
-
 }) Open9xModelData_v201;
 
 PACK(typedef struct t_Open9xModelData_v202 {
@@ -603,7 +547,7 @@ PACK(typedef struct t_Open9xModelData_v202 {
   Open9xExpoData_v201  expoData[O9X_MAX_EXPOS];
   int8_t    curves5[O9X_209_MAX_CURVE5][5];
   int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xCustomSwData_v208  customSw[O9X_NUM_CSW];
+  Open9xLogicalSwitchData_v208  customSw[O9X_NUM_CSW];
   Open9xSafetySwData  safetySw[O9X_NUM_CHNOUT];
   Open9xFuncSwData_v201 funcSw[12];
   Open9xSwashRingData_v208 swashR;
@@ -615,8 +559,6 @@ PACK(typedef struct t_Open9xModelData_v202 {
 
   operator ModelData();
   t_Open9xModelData_v202() { memset(this, 0, sizeof(t_Open9xModelData_v202)); }
-  t_Open9xModelData_v202(ModelData&);
-
 }) Open9xModelData_v202;
 
 PACK(typedef struct t_Open9xModelData_v203 {
@@ -639,7 +581,7 @@ PACK(typedef struct t_Open9xModelData_v203 {
   Open9xExpoData_v201  expoData[O9X_MAX_EXPOS];
   int8_t    curves5[O9X_209_MAX_CURVE5][5];
   int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xCustomSwData_v208 customSw[O9X_NUM_CSW];
+  Open9xLogicalSwitchData_v208 customSw[O9X_NUM_CSW];
   Open9xFuncSwData_v203 funcSw[O9X_NUM_FSW];
   Open9xSwashRingData_v208 swashR;
   Open9xPhaseData_v201 phaseData[O9X_MAX_PHASES];
@@ -650,8 +592,6 @@ PACK(typedef struct t_Open9xModelData_v203 {
 
   operator ModelData();
   t_Open9xModelData_v203() { memset(this, 0, sizeof(t_Open9xModelData_v203)); }
-  t_Open9xModelData_v203(ModelData&);
-
 }) Open9xModelData_v203;
 
 PACK(typedef struct t_Open9xModelData_v204 {
@@ -674,7 +614,7 @@ PACK(typedef struct t_Open9xModelData_v204 {
   Open9xExpoData_v201  expoData[O9X_MAX_EXPOS];
   int8_t    curves5[O9X_209_MAX_CURVE5][5];
   int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xCustomSwData_v208  customSw[O9X_NUM_CSW];
+  Open9xLogicalSwitchData_v208  customSw[O9X_NUM_CSW];
   Open9xFuncSwData_v203 funcSw[O9X_NUM_FSW];
   Open9xSwashRingData_v208 swashR;
   Open9xPhaseData_v201 phaseData[O9X_MAX_PHASES];
@@ -686,8 +626,6 @@ PACK(typedef struct t_Open9xModelData_v204 {
 
   operator ModelData();
   t_Open9xModelData_v204() { memset(this, 0, sizeof(t_Open9xModelData_v204)); }
-  t_Open9xModelData_v204(ModelData&);
-
 }) Open9xModelData_v204;
 
 PACK(typedef struct t_Open9xModelData_v205 {
@@ -709,7 +647,7 @@ PACK(typedef struct t_Open9xModelData_v205 {
   Open9xExpoData_v201  expoData[O9X_MAX_EXPOS];
   int8_t    curves5[O9X_209_MAX_CURVE5][5];
   int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xCustomSwData_v208  customSw[O9X_NUM_CSW];
+  Open9xLogicalSwitchData_v208  customSw[O9X_NUM_CSW];
   Open9xFuncSwData_v203 funcSw[O9X_NUM_FSW];
   Open9xSwashRingData_v208 swashR;
   Open9xPhaseData_v201 phaseData[O9X_MAX_PHASES];
@@ -723,8 +661,6 @@ PACK(typedef struct t_Open9xModelData_v205 {
 
   operator ModelData();
   t_Open9xModelData_v205() { memset(this, 0, sizeof(t_Open9xModelData_v205)); }
-  t_Open9xModelData_v205(ModelData&);
-
 }) Open9xModelData_v205;
 
 PACK(typedef struct t_Open9xModelData_v208 {
@@ -746,7 +682,7 @@ PACK(typedef struct t_Open9xModelData_v208 {
   Open9xExpoData_v201  expoData[O9X_MAX_EXPOS];
   int8_t    curves5[O9X_209_MAX_CURVE5][5];
   int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xCustomSwData_v208  customSw[O9X_NUM_CSW];
+  Open9xLogicalSwitchData_v208  customSw[O9X_NUM_CSW];
   Open9xFuncSwData_v203 funcSw[O9X_NUM_FSW];
   Open9xSwashRingData_v208 swashR;
   Open9xPhaseData_v201 phaseData[O9X_MAX_PHASES];
@@ -764,8 +700,6 @@ PACK(typedef struct t_Open9xModelData_v208 {
 
   operator ModelData();
   t_Open9xModelData_v208() { memset(this, 0, sizeof(t_Open9xModelData_v208)); }
-  t_Open9xModelData_v208(ModelData&);
-
 }) Open9xModelData_v208;
 
 PACK(typedef struct t_Open9xModelData_v209 {
@@ -787,7 +721,7 @@ PACK(typedef struct t_Open9xModelData_v209 {
   Open9xExpoData_v201  expoData[O9X_MAX_EXPOS];
   int8_t    curves5[O9X_209_MAX_CURVE5][5];
   int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xCustomSwData_v209  customSw[O9X_NUM_CSW];
+  Open9xLogicalSwitchData_v209  customSw[O9X_NUM_CSW];
   Open9xFuncSwData_v203 funcSw[O9X_NUM_FSW];
   Open9xSwashRingData_v209 swashR;
   Open9xPhaseData_v201 phaseData[O9X_MAX_PHASES];
@@ -806,8 +740,6 @@ PACK(typedef struct t_Open9xModelData_v209 {
 
   operator ModelData();
   t_Open9xModelData_v209() { memset(this, 0, sizeof(t_Open9xModelData_v209)); }
-  t_Open9xModelData_v209(ModelData&);
-
 }) Open9xModelData_v209;
 
 PACK(typedef struct t_Open9xModelData_v210 {
@@ -829,7 +761,7 @@ PACK(typedef struct t_Open9xModelData_v210 {
   Open9xExpoData_v201  expoData[O9X_MAX_EXPOS];
   int8_t    curves[O9X_MAX_CURVES];
   int8_t    points[O9X_NUM_POINTS];
-  Open9xCustomSwData_v209  customSw[O9X_NUM_CSW];
+  Open9xLogicalSwitchData_v209  customSw[O9X_NUM_CSW];
   Open9xFuncSwData_v210 funcSw[O9X_NUM_FSW];
   Open9xSwashRingData_v209 swashR;
   Open9xPhaseData_v201 phaseData[O9X_MAX_PHASES];
@@ -846,8 +778,6 @@ PACK(typedef struct t_Open9xModelData_v210 {
 
   operator ModelData();
   t_Open9xModelData_v210() { memset(this, 0, sizeof(t_Open9xModelData_v210)); }
-  t_Open9xModelData_v210(ModelData&);
-
 }) Open9xModelData_v210;
 
 PACK(typedef struct t_Open9xModelData_v211 {
@@ -869,7 +799,7 @@ PACK(typedef struct t_Open9xModelData_v211 {
   Open9xExpoData_v211  expoData[O9X_MAX_EXPOS];
   int8_t    curves[O9X_MAX_CURVES];
   int8_t    points[O9X_NUM_POINTS];
-  Open9xCustomSwData_v209  customSw[O9X_NUM_CSW];
+  Open9xLogicalSwitchData_v209  customSw[O9X_NUM_CSW];
   Open9xFuncSwData_v210 funcSw[O9X_NUM_FSW];
   Open9xSwashRingData_v209 swashR;
   Open9xPhaseData_v201 phaseData[O9X_MAX_PHASES];
@@ -884,8 +814,6 @@ PACK(typedef struct t_Open9xModelData_v211 {
 
   operator ModelData();
   t_Open9xModelData_v211() { memset(this, 0, sizeof(t_Open9xModelData_v211)); }
-  t_Open9xModelData_v211(ModelData&);
-
 }) Open9xModelData_v211;
 
 #endif

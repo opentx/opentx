@@ -74,11 +74,11 @@ inline void applyStickModeToModel(Ersky9xModelData_v10 & model, unsigned int mod
   for (int i=0; i<ERSKY9X_MAX_MIXERS_V10; i++)
     model.mixData[i].srcRaw = applyStickMode(model.mixData[i].srcRaw, mode);
   for (int i=0; i<ERSKY9X_NUM_CSW_V10; i++) {
-    switch (getCSFunctionFamily(model.customSw[i].func)) {
-      case CS_FAMILY_VCOMP:
+    switch (LogicalSwitchData(model.customSw[i].func).getFunctionFamily()) {
+      case LS_FAMILY_VCOMP:
         model.customSw[i].v2 = applyStickMode(model.customSw[i].v2, mode);
         // no break
-      case CS_FAMILY_VOFS:
+      case LS_FAMILY_VOFS:
         model.customSw[i].v1 = applyStickMode(model.customSw[i].v1, mode);
         break;
       default:
@@ -106,11 +106,11 @@ inline void applyStickModeToModel(Ersky9xModelData_v11 & model, unsigned int mod
   for (int i=0; i<ERSKY9X_MAX_MIXERS_V11; i++)
     model.mixData[i].srcRaw = applyStickMode(model.mixData[i].srcRaw, mode);
   for (int i=0; i<ERSKY9X_NUM_CSW_V11; i++) {
-    switch (getCSFunctionFamily(model.customSw[i].func)) {
-      case CS_FAMILY_VCOMP:
+    switch (LogicalSwitchData(model.customSw[i].func).getFunctionFamily()) {
+      case LS_FAMILY_VCOMP:
         model.customSw[i].v2 = applyStickMode(model.customSw[i].v2, mode);
         // no break
-      case CS_FAMILY_VOFS:
+      case LS_FAMILY_VOFS:
         model.customSw[i].v1 = applyStickMode(model.customSw[i].v1, mode);
         break;
       default:
@@ -151,7 +151,7 @@ bool Ersky9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
   return true;
 }
 
-bool Ersky9xInterface::load(RadioData &radioData, uint8_t *eeprom, int size)
+bool Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {
   std::cout << "trying ersky9x import... ";
 
@@ -160,7 +160,7 @@ bool Ersky9xInterface::load(RadioData &radioData, uint8_t *eeprom, int size)
     return false;
   }
 
-  if (!efile->EeFsOpen(eeprom, size, BOARD_SKY9X)) {
+  if (!efile->EeFsOpen((uint8_t *)eeprom, size, BOARD_SKY9X)) {
     std::cout << "wrong file system\n";
     return false;
   }
@@ -228,33 +228,10 @@ bool Ersky9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esi
 
 int Ersky9xInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t variant, uint8_t version)
 {
-  EEPROMWarnings.clear();
+  std::cout << "NO!\n";
+  // TODO an error
 
-  efile->EeFsCreate(eeprom, EESIZE_SKY9X, BOARD_SKY9X);
-
-  Ersky9xGeneral ersky9xGeneral(radioData.generalSettings);
-  int sz = efile->writeRlc2(FILE_GENERAL, FILE_TYP_GENERAL, (uint8_t*)&ersky9xGeneral, sizeof(Ersky9xGeneral));
-  if(sz != sizeof(Ersky9xGeneral)) {
-    return 0;
-  }
-
-  for (int i=0; i<getMaxModels(); i++) {
-    if (!radioData.models[i].isempty()) {
-      Ersky9xModelData_v11 ersky9xModel(radioData.models[i]);
-      applyStickModeToModel(ersky9xModel, radioData.generalSettings.stickMode+1);
-      sz = efile->writeRlc2(FILE_MODEL(i), FILE_TYP_MODEL, (uint8_t*)&ersky9xModel, sizeof(Ersky9xModelData_v11));
-      if(sz != sizeof(Ersky9xModelData_v11)) {
-        return 0;
-      }
-    }
-  }
-
-  if (!EEPROMWarnings.isEmpty())
-    QMessageBox::warning(NULL,
-        QObject::tr("Warning"),
-        QObject::tr("EEPROM saved with these warnings:") + "\n- " + EEPROMWarnings.remove(EEPROMWarnings.length()-1, 1).replace("\n", "\n- "));
-
-  return EESIZE_SKY9X;
+  return 0;
 }
 
 int Ersky9xInterface::getSize(ModelData &model)
@@ -272,12 +249,6 @@ int Ersky9xInterface::getCapability(const Capability capability)
   switch (capability) {
     case Mixes:
       return ERSKY9X_MAX_MIXERS_V11;
-    case NumCurves5:
-      return ERSKY9X_MAX_CURVE5;
-    case NumCurves9:
-      return ERSKY9X_MAX_CURVE9;
-    case MixFmTrim:
-      return 1;      
     case PPMExtCtrl:
       return 1;
     case ModelTrainerEnable:
@@ -306,17 +277,15 @@ int Ersky9xInterface::getCapability(const Capability capability)
       return 2;
     case Pots:
       return 3;
-    case GvarsNum:
+    case Gvars:
       return 7;
-    case GvarsOfsNum:
-      return 5;
     case Switches:
       return 7;
     case SwitchesPositions:
       return 9;
     case CustomFunctions:
       return 0;
-    case CustomSwitches:
+    case LogicalSwitches:
       return ERSKY9X_NUM_CSW_V11;
     case CustomAndSwitches:
       return 1;
@@ -338,8 +307,6 @@ int Ersky9xInterface::getCapability(const Capability capability)
       return 1;
     case OptrexDisplay:
       return 1;
-    case TimerTriggerB:
-      return 2;
     case HasAltitudeSel:
     case HasCurrentCalibration:
     case HasVolume:
@@ -350,13 +317,6 @@ int Ersky9xInterface::getCapability(const Capability capability)
       return 125;
     case MaxVolume:
       return 23;
-    case Gvars:
-    case GvarsHaveSources:
-    case GvarsAsSources:
-    case GvarsAsWeight:
-      return 1;
-    case InstantTrimSW:
-      return 1;
     case TelemetryMaxMultiplier:
       return 2;
     case LCDWidth:
@@ -383,7 +343,7 @@ int Ersky9xInterface::isAvailable(Protocol prot, int port)
 
 SimulatorInterface * Ersky9xInterface::getSimulator()
 {
-  return new Ersky9xSimulator(this);
+  return NULL; // new Ersky9xSimulator(this);
 }
 
 

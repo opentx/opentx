@@ -46,6 +46,9 @@
 #elif defined(TRANSLATIONS_SE)
 #include "translations/se.h"
 #define LEN_SPECIAL_CHARS 6
+#elif defined(TRANSLATIONS_FI)
+#include "translations/fi.h"
+#define LEN_SPECIAL_CHARS 6
 #elif defined(TRANSLATIONS_DE)
 #include "translations/de.h"
 #define LEN_SPECIAL_CHARS 6
@@ -99,7 +102,13 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_TRNMODE            (OFS_VBEEPMODE + sizeof(TR_VBEEPMODE))
 #endif
 #define OFS_TRNCHN             (OFS_TRNMODE + sizeof(TR_TRNMODE))
-#define OFS_VTRIMINC           (OFS_TRNCHN + sizeof(TR_TRNCHN))
+#if defined(PCBTARANIS)
+  #define OFS_UART3MODES       (OFS_TRNCHN + sizeof(TR_TRNCHN))
+  #define OFS_POTTYPES         (OFS_UART3MODES + sizeof(TR_UART3MODES))
+  #define OFS_VTRIMINC         (OFS_POTTYPES + sizeof(TR_POTTYPES))
+#else
+  #define OFS_VTRIMINC         (OFS_TRNCHN + sizeof(TR_TRNCHN))
+#endif
 #define OFS_RETA123            (OFS_VTRIMINC + sizeof(TR_VTRIMINC))
 #define OFS_VPROTOS            (OFS_RETA123 + sizeof(TR_RETA123))
 #define OFS_POSNEG             (OFS_VPROTOS + sizeof(TR_VPROTOS))
@@ -115,12 +124,12 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_VTELEMCHNS         (OFS_FUNCSOUNDS + sizeof(TR_FUNCSOUNDS))
 #if defined(FRSKY) || defined(CPUARM)
   #if defined(CPUARM)
-   #define OFS_VTELEMUNIT_IMP  (OFS_VTELEMCHNS + sizeof(TR_VTELEMCHNS))
-   #define OFS_VTELEMUNIT_NORM (OFS_VTELEMUNIT_IMP + sizeof(TR_VTELEMUNIT_IMP))
-   #define OFS_VALARM          (OFS_VTELEMUNIT_NORM + sizeof(TR_VTELEMUNIT_NORM))
+    #define OFS_VTELEMUNIT_IMP  (OFS_VTELEMCHNS + sizeof(TR_VTELEMCHNS))
+    #define OFS_VTELEMUNIT_METR (OFS_VTELEMUNIT_IMP + sizeof(TR_VTELEMUNIT_IMP))
+    #define OFS_VALARM          (OFS_VTELEMUNIT_METR + sizeof(TR_VTELEMUNIT_METR))
   #else
-   #define OFS_VTELEMUNIT      (OFS_VTELEMCHNS + sizeof(TR_VTELEMCHNS))
-   #define OFS_VALARM          (OFS_VTELEMUNIT + sizeof(TR_VTELEMUNIT))
+    #define OFS_VTELEMUNIT      (OFS_VTELEMCHNS + sizeof(TR_VTELEMCHNS))
+    #define OFS_VALARM          (OFS_VTELEMUNIT + sizeof(TR_VTELEMUNIT))
   #endif
   #define OFS_VALARMFN         (OFS_VALARM + sizeof(TR_VALARM))
   #define OFS_VTELPROTO        (OFS_VALARMFN + sizeof(TR_VALARMFN))
@@ -190,6 +199,8 @@ extern const pm_char STR_OPEN9X[];
 #define STR_VBEEPMODE          (STR_OPEN9X + OFS_VBEEPMODE)
 #define STR_TRNMODE            (STR_OPEN9X + OFS_TRNMODE)
 #define STR_TRNCHN             (STR_OPEN9X + OFS_TRNCHN)
+#define STR_UART3MODES         (STR_OPEN9X + OFS_UART3MODES)
+#define STR_POTTYPES           (STR_OPEN9X + OFS_POTTYPES)
 #define STR_VTRIMINC           (STR_OPEN9X + OFS_VTRIMINC)
 #define STR_RETA123            (STR_OPEN9X + OFS_RETA123)
 #define STR_VPROTOS            (STR_OPEN9X + OFS_VPROTOS)
@@ -209,7 +220,7 @@ extern const pm_char STR_OPEN9X[];
 
 #if defined(FRSKY) || defined(CPUARM)
   #if defined(CPUARM)
-    #define STR_VTELEMUNIT     (STR_OPEN9X + (g_eeGeneral.imperial ? OFS_VTELEMUNIT_IMP : OFS_VTELEMUNIT_NORM))
+    #define STR_VTELEMUNIT     (STR_OPEN9X + (g_eeGeneral.imperial ? OFS_VTELEMUNIT_IMP : OFS_VTELEMUNIT_METR))
   #else
     #define STR_VTELEMUNIT     (STR_OPEN9X + OFS_VTELEMUNIT)
   #endif
@@ -391,9 +402,7 @@ extern const pm_char STR_TX[];
 #define STR_RX (STR_TX+OFS_RX)
 extern const pm_char STR_ACCEL[];
 extern const pm_char STR_NODATA[];
-extern const pm_char STR_TM1TM2[];
-extern const pm_char STR_THRTHP[];
-extern const pm_char STR_TOT[];
+extern const pm_char STR_TOTTM1TM2THRTHP[];
 extern const pm_char STR_TMR1LATMAXUS[];
 extern const pm_char STR_TMR1LATMINUS[];
 extern const pm_char STR_TMR1JITTERUS[];
@@ -434,8 +443,8 @@ extern const pm_char STR_MENUINPUTS[];
 extern const pm_char STR_MENULIMITS[];
 extern const pm_char STR_MENUCURVES[];
 extern const pm_char STR_MENUCURVE[];
-extern const pm_char STR_MENUCUSTOMSWITCH[];
-extern const pm_char STR_MENUCUSTOMSWITCHES[];
+extern const pm_char STR_MENULOGICALSWITCH[];
+extern const pm_char STR_MENULOGICALSWITCHES[];
 extern const pm_char STR_MENUCUSTOMFUNC[];
 extern const pm_char STR_MENUCUSTOMSCRIPTS[];
 extern const pm_char STR_MENUCUSTOMSCRIPT[];
@@ -447,6 +456,10 @@ extern const pm_char STR_MENUGLOBALVARS[];
 extern const pm_char STR_INVERT_THR[];
 extern const pm_char STR_AND_SWITCH[];
 extern const pm_char STR_CF[];
+
+#if defined(FAS_OFFSET) || !defined(CPUM64)
+extern const pm_char STR_FAS_OFFSET[];
+#endif
 
 #if defined(DSM2) || defined(PXX)
 extern const pm_char STR_RXNUM[];
@@ -536,6 +549,9 @@ extern const pm_char STR_RESET_BTN[];
 
 extern const pm_uchar font_5x7[];
 extern const pm_uchar font_10x14[];
+#if !defined(CPUM64) || defined(EXTSTD)
+extern const pm_uchar font_5x7_B[];
+#endif
 
 #if defined(CPUARM)
 extern const pm_uchar font_3x5[];
@@ -595,6 +611,7 @@ extern const pm_char STR_SD_SECTORS[];
 extern const pm_char STR_SD_SIZE[];
 extern const pm_char STR_TYPE[];
 extern const pm_char STR_GLOBAL_VARS[];
+extern const pm_char STR_GLOBAL_V[];
 extern const pm_char STR_GLOBAL_VAR[];
 extern const pm_char STR_OWN[];
 extern const pm_char STR_ROTARY_ENCODER[];
@@ -631,6 +648,7 @@ extern const pm_char STR_VIEW_TEXT[];
   extern const pm_char STR_MODELNAME[];
   extern const pm_char STR_PHASENAME[];
   extern const pm_char STR_MIXNAME[];
+  extern const pm_char STR_INPUTNAME[];
   extern const pm_char STR_EXPONAME[];
 #else
   #define STR_MODELNAME STR_NAME
@@ -668,6 +686,9 @@ extern const pm_char STR_VIEW_TEXT[];
   extern const pm_char STR_SCALE[];
   extern const pm_char STR_VIEW_CHANNELS[];
   extern const pm_char STR_VIEW_NOTES[];
+  extern const pm_char STR_POTWARNING[];
+  extern const pm_char STR_CHECKLIST[];
+  extern const pm_char STR_UART3MODE[];
 #endif
 
 #if MENUS_LOCK == 1
@@ -750,5 +771,6 @@ extern const pm_char STR_VIEW_TEXT[];
 #define CHR_LONG   TR_CHR_LONG
 #define CHR_TOGGLE TR_CHR_TOGGLE
 #define CHR_HOUR   TR_CHR_HOUR
+#define CHR_INPUT  TR_CHR_INPUT
 
 #endif

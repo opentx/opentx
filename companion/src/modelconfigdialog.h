@@ -23,7 +23,7 @@ private:
     int ModelType;
     RadioData &radioData;
     uint64_t * result;
-    GeneralSettings g_eeGeneral;
+    GeneralSettings generalSettings;
     QStringList ruddercolor;
     QStringList aileroncolor;
     QStringList elevatorcolor;

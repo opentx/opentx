@@ -122,7 +122,7 @@ PACK(typedef struct {
 }) TimerData_v215;
 
 PACK(typedef struct {
-  TRIMS_ARRAY;
+  int16_t trim[4];
   int8_t swtch;       // swtch of phase[0] is not used
   char name[LEN_FP_NAME];
   uint8_t fadeIn;
@@ -130,6 +130,46 @@ PACK(typedef struct {
   ROTARY_ENCODER_ARRAY;
   gvar_t gvars[5];
 }) PhaseData_v215;
+
+PACK(typedef struct {
+  int16_t v1;
+  int16_t v2;
+  uint8_t func;
+  uint8_t delay;
+  uint8_t duration;
+  int8_t  andsw;
+}) LogicalSwitchData_v215;
+
+PACK(typedef struct {
+  int8_t  swtch;
+  uint8_t func;
+  PACK(union {
+    char name[10];
+    struct {
+      int16_t val;
+      int16_t ext1;
+      int16_t ext2;
+    } composite;
+  }) param;
+  uint8_t mode:2;
+  uint8_t active:6;
+}) CustomFnData_v215;
+
+PACK(typedef struct {
+  FrSkyChannelData channels[2];
+  uint8_t usrProto; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh, 3=Halcyon
+  uint8_t voltsSource;
+  uint8_t blades;   // How many blades for RPMs, 0=2 blades, 1=3 blades
+  uint8_t currentSource;
+  uint8_t screensType;
+  FrSkyScreenData screens[MAX_FRSKY_SCREENS];
+  uint8_t varioSource;
+  int8_t  varioCenterMax;
+  int8_t  varioCenterMin;
+  int8_t  varioMin;
+  int8_t  varioMax;
+  FrSkyRSSIAlarm rssiAlarms[2];
+}) FrSkyData_v215;
 
 PACK(typedef struct {
   ModelHeader header;
@@ -152,8 +192,8 @@ PACK(typedef struct {
   int16_t   curves[16];
   int8_t    points[NUM_POINTS];
 
-  CustomSwData customSw[NUM_CSW];
-  CustomFnData funcSw[NUM_CFN];
+  LogicalSwitchData_v215 customSw[NUM_CSW];
+  CustomFnData_v215 funcSw[32];
   SwashRingData swashR;
   PhaseData_v215 phaseData[MAX_PHASES];
 
@@ -162,9 +202,9 @@ PACK(typedef struct {
 
   swstate_t switchWarningStates;
 
-  char      gvar_names[5][LEN_GVAR_NAME];
+  char gvar_names[5][LEN_GVAR_NAME];
 
-  TELEMETRY_DATA
+  FrSkyData_v215 frsky;
 
   ROTARY_ENCODER_ARRAY_EXTRA
 
@@ -172,10 +212,177 @@ PACK(typedef struct {
 
 }) ModelData_v215;
 
+#if defined(PCBTARANIS)
+  #define NUM_POTS_215 4
+#else
+  #define NUM_POTS_215 3
+#endif
+
+PACK(typedef struct {
+  uint8_t   version;
+  uint16_t  variant;
+  int16_t   calibMid[NUM_STICKS+NUM_POTS_215];
+  int16_t   calibSpanNeg[NUM_STICKS+NUM_POTS_215];
+  int16_t   calibSpanPos[NUM_STICKS+NUM_POTS_215];
+  uint16_t  chkSum;
+  int8_t    currModel;
+  uint8_t   contrast;
+  uint8_t   vBatWarn;
+  int8_t    vBatCalib;
+  int8_t    backlightMode;
+  TrainerData trainer;
+  uint8_t   view;            // index of view in main screen
+  int8_t    buzzerMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
+  uint8_t   fai:1;
+  int8_t    beepMode:2;      // -2=quiet, -1=only alarms, 0=no keys, 1=all
+  uint8_t   alarmsFlash:1;
+  uint8_t   disableMemoryWarning:1;
+  uint8_t   disableAlarmWarning:1;
+  uint8_t   stickMode:2;
+  int8_t    timezone:5;
+  uint8_t   spare1:1;
+  uint8_t   inactivityTimer;
+  uint8_t   mavbaud:3;
+  SPLASH_MODE; /* 3bits */
+  int8_t    hapticMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
+  uint8_t   blOffBright:4;
+  uint8_t   blOnBright:4;
+  uint8_t   lightAutoOff;
+  uint8_t   templateSetup;   // RETA order for receiver channels
+  int8_t    PPM_Multiplier;
+  int8_t    hapticLength;
+  uint8_t   reNavigation;    // not used on STOCK board
+  int8_t    beepLength:3;
+  uint8_t   hapticStrength:3;
+  uint8_t   gpsFormat:1;
+  uint8_t   unexpectedShutdown:1;
+  uint8_t   speakerPitch;
+  int8_t    speakerVolume;
+  int8_t    vBatMin;
+  int8_t    vBatMax;
+  uint8_t   backlightBright;
+  int8_t    currentCalib;
+  int8_t    temperatureWarn;
+  uint8_t   mAhWarn;
+  uint16_t  mAhUsed;
+  uint32_t  globalTimer;
+  int8_t    temperatureCalib;
+  uint8_t   btBaudrate;
+  uint8_t   optrexDisplay;
+  uint8_t   sticksGain;
+  uint8_t   rotarySteps;
+  uint8_t   countryCode;
+  uint8_t   imperial;
+  char      ttsLanguage[2];
+  int8_t    beepVolume;
+  int8_t    wavVolume;
+  int8_t    varioVolume;
+  int8_t    backgroundVolume;
+}) GeneralSettings_v215;
+
 void ConvertGeneralSettings_215_to_216(EEGeneral &settings)
 {
+  GeneralSettings_v215 oldSettings;
+  memcpy(&oldSettings, &settings, sizeof(oldSettings));
+
   settings.version = 216;
+  for (int i=0, j=0; i<NUM_STICKS+NUM_POTS; i++) {
+    settings.calib[i].mid = oldSettings.calibMid[j];
+    settings.calib[i].spanNeg = oldSettings.calibSpanNeg[j];
+    settings.calib[i].spanPos = oldSettings.calibSpanPos[j];
+#if defined(PCBTARANIS)
+    if (i==POT3) continue;
+#endif
+    j++;
+  }
+  settings.chkSum = evalChkSum();
+
+  memcpy(&settings.currModel, &oldSettings.currModel, sizeof(GeneralSettings_v215)-offsetof(GeneralSettings_v215, currModel));
 }
+
+int ConvertTelemetrySource_215_to_216(int source)
+{
+  // TELEM_RSSI_TX added
+  if (source >= TELEM_RSSI_TX)
+    source += 1;
+  // RxBatt added
+  if (source >= TELEM_RX_VOLTAGE)
+    source += 1;
+  // A3 and A4 added
+  if (source >= TELEM_A3)
+    source += 2;
+  // ASpd and dTE added + 5 reserve
+  if (source >= TELEM_ASPD)
+    source += 7;
+  // A3 and A4 MIN added
+  if (source >= TELEM_MIN_A3)
+    source += 2;
+  // Cel- Cels- and Vfas- added
+  if (source >= TELEM_MIN_CELL)
+    source += 3;
+  // 5 reserve added
+  if (source >= TELEM_RESERVE6)
+    source += 5;
+
+  return source;
+}
+
+#if defined(PCBTARANIS)
+int ConvertSource_215_to_216(int source, bool insertZero=false)
+{
+  if (insertZero)
+    source += 1;
+  // Virtual Inputs and Lua Outputs added
+  if (source > 0)
+    source += MAX_INPUTS + MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS;
+  // S3 added
+  if (source > MIXSRC_POT2)
+    source += 1;
+  // PPM9-PPM16 added
+  if (source > MIXSRC_FIRST_PPM+7)
+    source += 8;
+  // 4 GVARS added
+  if (source > MIXSRC_GVAR1+4)
+    source += 4;
+  // Telemetry conversions
+  if (source >= MIXSRC_FIRST_TELEM)
+    source = MIXSRC_FIRST_TELEM + ConvertTelemetrySource_215_to_216(source-MIXSRC_FIRST_TELEM+1) - 1;
+
+  return source;
+}
+
+int ConvertSwitch_215_to_216(int swtch)
+{
+  if (swtch < 0)
+    return -ConvertSwitch_215_to_216(-swtch);
+  else if (swtch <= SWSRC_LAST_SWITCH)
+    return swtch;
+  else
+    return swtch + (2*4) + (3*6); // 4 trims and 2 * 6-pos added as switches
+}
+#else
+int ConvertSource_215_to_216(int source, bool insertZero=false)
+{
+  if (insertZero)
+    source += 1;
+  // 4 GVARS added
+  if (source > MIXSRC_GVAR1+4)
+    source += 4;
+  // Telemetry conversions
+  if (source >= MIXSRC_FIRST_TELEM)
+    source = MIXSRC_FIRST_TELEM + ConvertTelemetrySource_215_to_216(source-MIXSRC_FIRST_TELEM+1) - 1;
+
+  return source;
+}
+
+int ConvertSwitch_215_to_216(int swtch)
+{
+  if (swtch <= SWSRC_LAST_SWITCH)
+    return swtch;
+  else
+    return swtch + (2*4) + 1; // 4 trims and REa added
+}
+#endif
 
 void ConvertModel_215_to_216(ModelData &model)
 {
@@ -188,8 +395,7 @@ void ConvertModel_215_to_216(ModelData &model)
   // Custom Switches: better precision for x when A comes from telemetry
   // Main View: altitude in top bar
   // Mixes: GVARS in weight moved from 512 to 4096 and -512 to -4096, because GVARS may be used in limits [-1250:1250]
-
-  TRACE("Model conversion from v215 to v216");
+  // Switches: two 6-pos pots added, REa added to Sky9x
 
   assert(sizeof(ModelData_v215) <= sizeof(ModelData));
 
@@ -197,18 +403,26 @@ void ConvertModel_215_to_216(ModelData &model)
   memcpy(&oldModel, &model, sizeof(oldModel));
   memset(&model, 0, sizeof(ModelData));
 
+  char name[LEN_MODEL_NAME+1];
+  zchar2str(name, oldModel.header.name, LEN_MODEL_NAME);
+  TRACE("Model %s conversion from v215 to v216", name);
+
   memcpy(&g_model.header, &oldModel.header, sizeof(g_model.header));
   for (uint8_t i=0; i<2; i++) {
-    g_model.timers[i].mode = oldModel.timers[i].mode;
-    g_model.timers[i].start = oldModel.timers[i].start;
-    g_model.timers[i].minuteBeep = oldModel.timers[i].minuteBeep;
-    g_model.timers[i].persistent = oldModel.timers[i].persistent;
-    g_model.timers[i].countdownBeep = oldModel.timers[i].countdownBeep;
-    g_model.timers[i].value = oldModel.timers[i].value;
+    TimerData & timer = g_model.timers[i];
+    if (oldModel.timers[i].mode >= TMRMODE_FIRST_SWITCH)
+      timer.mode = TMRMODE_FIRST_SWITCH + ConvertSwitch_215_to_216(oldModel.timers[i].mode - TMRMODE_FIRST_SWITCH + 1) - 1;
+    else
+      timer.mode = oldModel.timers[i].mode;
+    timer.start = oldModel.timers[i].start;
+    timer.minuteBeep = oldModel.timers[i].minuteBeep;
+    timer.persistent = oldModel.timers[i].persistent;
+    timer.countdownBeep = oldModel.timers[i].countdownBeep;
+    timer.value = oldModel.timers[i].value;
   }
   g_model.protocol = oldModel.protocol;
   g_model.thrTrim = oldModel.thrTrim;
-  g_model.trimInc = oldModel.trimInc;
+  g_model.trimInc = oldModel.trimInc - 2;
   g_model.disableThrottleWarning = oldModel.disableThrottleWarning;
   g_model.extendedLimits = oldModel.extendedLimits;
   g_model.extendedTrims = oldModel.extendedTrims;
@@ -216,43 +430,44 @@ void ConvertModel_215_to_216(ModelData &model)
   g_model.beepANACenter = oldModel.beepANACenter;
 
   for (uint8_t i=0; i<64; i++) {
+    MixData & mix = g_model.mixData[i];
 #if defined(PCBTARANIS)
-    g_model.mixData[i].destCh = oldModel.mixData[i].destCh;
-    g_model.mixData[i].phases = oldModel.mixData[i].phases;
-    g_model.mixData[i].mltpx = oldModel.mixData[i].mltpx;
-    g_model.mixData[i].weight = oldModel.mixData[i].weight;
-    g_model.mixData[i].swtch = oldModel.mixData[i].swtch;
+    mix.destCh = oldModel.mixData[i].destCh;
+    mix.phases = oldModel.mixData[i].phases;
+    mix.mltpx = oldModel.mixData[i].mltpx;
+    mix.weight = oldModel.mixData[i].weight;
+    mix.swtch = ConvertSwitch_215_to_216(oldModel.mixData[i].swtch);
     if (oldModel.mixData[i].curveMode==0/*differential*/) {
-      g_model.mixData[i].curve.type = CURVE_REF_DIFF;
-      g_model.mixData[i].curve.value = oldModel.mixData[i].curveParam;
+      mix.curve.type = CURVE_REF_DIFF;
+      mix.curve.value = oldModel.mixData[i].curveParam;
     }
     else if (oldModel.mixData[i].curveParam <= 6) {
-      g_model.mixData[i].curve.type = CURVE_REF_FUNC;
-      g_model.mixData[i].curve.value = oldModel.mixData[i].curveParam;
+      mix.curve.type = CURVE_REF_FUNC;
+      mix.curve.value = oldModel.mixData[i].curveParam;
     }
     else {
-      g_model.mixData[i].curve.type = CURVE_REF_CUSTOM;
-      g_model.mixData[i].curve.value = oldModel.mixData[i].curveParam - 6;
+      mix.curve.type = CURVE_REF_CUSTOM;
+      mix.curve.value = oldModel.mixData[i].curveParam - 6;
     }
-    g_model.mixData[i].mixWarn = oldModel.mixData[i].mixWarn;
-    g_model.mixData[i].delayUp = oldModel.mixData[i].delayUp;
-    g_model.mixData[i].delayDown = oldModel.mixData[i].delayDown;
-    g_model.mixData[i].speedUp = oldModel.mixData[i].speedUp;
-    g_model.mixData[i].speedDown = oldModel.mixData[i].speedDown;
-    g_model.mixData[i].srcRaw = oldModel.mixData[i].srcRaw;
-    if (g_model.mixData[i].srcRaw > 4 || oldModel.mixData[i].noExpo)
-      g_model.mixData[i].srcRaw += MAX_INPUTS + MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS;
-    g_model.mixData[i].offset = oldModel.mixData[i].offset;
-    memcpy(g_model.mixData[i].name, oldModel.mixData[i].name, LEN_EXPOMIX_NAME);
+    mix.mixWarn = oldModel.mixData[i].mixWarn;
+    mix.delayUp = oldModel.mixData[i].delayUp;
+    mix.delayDown = oldModel.mixData[i].delayDown;
+    mix.speedUp = oldModel.mixData[i].speedUp;
+    mix.speedDown = oldModel.mixData[i].speedDown;
+    mix.srcRaw = oldModel.mixData[i].srcRaw;
+    if (mix.srcRaw > 4 || oldModel.mixData[i].noExpo)
+      mix.srcRaw = ConvertSource_215_to_216(mix.srcRaw);
+    mix.offset = oldModel.mixData[i].offset;
+    memcpy(mix.name, oldModel.mixData[i].name, LEN_EXPOMIX_NAME);
 #else
-    memcpy(&g_model.mixData[i], &oldModel.mixData[i], sizeof(g_model.mixData[i]));
+    memcpy(&mix, &oldModel.mixData[i], sizeof(mix));
 #endif
-    if (g_model.mixData[i].weight <= -508)
-      g_model.mixData[i].weight = g_model.mixData[i].weight + 512 - 4096;
-    else if (g_model.mixData[i].weight >= 507)
-      g_model.mixData[i].weight = g_model.mixData[i].weight - 512 + 4096;
+    if (mix.weight <= -508)
+      mix.weight = mix.weight + 512 - 4096;
+    else if (mix.weight >= 507)
+      mix.weight = mix.weight - 512 + 4096;
     else
-      g_model.mixData[i].offset = g_model.mixData[i].offset * g_model.mixData[i].weight / 100;
+      mix.offset = mix.offset * mix.weight / 100;
   }
   for (uint8_t i=0; i<32; i++) {
     g_model.limitData[i].min = 10 * oldModel.limitData[i].min;
@@ -281,7 +496,7 @@ void ConvertModel_215_to_216(ModelData &model)
       }
       g_model.expoData[i].srcRaw = MIXSRC_Rud+chn;
       g_model.expoData[i].chn = chn;
-      g_model.expoData[i].swtch = oldModel.expoData[i].swtch;
+      g_model.expoData[i].swtch = ConvertSwitch_215_to_216(oldModel.expoData[i].swtch);
       g_model.expoData[i].phases = oldModel.expoData[i].phases;
       g_model.expoData[i].weight = oldModel.expoData[i].weight;
       memcpy(&g_model.expoData[i].name, &oldModel.expoData[i].name, LEN_EXPOMIX_NAME);
@@ -342,92 +557,197 @@ void ConvertModel_215_to_216(ModelData &model)
     g_model.points[i] = oldModel.points[i];
   }
   for (uint8_t i=0; i<32; i++) {
-    g_model.customSw[i] = oldModel.customSw[i];
+    LogicalSwitchData & sw = g_model.customSw[i];
+    sw.func = oldModel.customSw[i].func;
+    if (sw.func >= LS_FUNC_VEQUAL) sw.func += 1;
+    if (sw.func >= LS_FUNC_RANGE) sw.func += 1;
+    if (sw.func >= LS_FUNC_STAY) sw.func += 1;
+    sw.v1 = oldModel.customSw[i].v1;
+    sw.v2 = oldModel.customSw[i].v2;
+    sw.delay = oldModel.customSw[i].delay * 5;
+    sw.duration = oldModel.customSw[i].duration * 5;
+    sw.andsw = ConvertSwitch_215_to_216(oldModel.customSw[i].andsw);
 #if defined(PCBTARANIS)
-    CustomSwData * cs = &g_model.customSw[i];
-    uint8_t cstate = cswFamily(cs->func);
-    if (cstate == CS_VOFS || cstate == CS_VCOMP || cstate == CS_VDIFF) {
-      if (cs->v1 > 0) cs->v1 += MAX_INPUTS + MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS;
-      if (cs->v1 > MIXSRC_GVAR1+4) cs->v1 += 4;
+    uint8_t cstate = cswFamily(sw.func);
+    if (cstate == LS_FAMILY_BOOL) {
+      sw.v1 = ConvertSwitch_215_to_216(sw.v1);
+      sw.v2 = ConvertSwitch_215_to_216(sw.v2);
     }
-    if (cstate == CS_VOFS || cstate == CS_VDIFF) {
-      if (cs->v1 >= MIXSRC_FIRST_TELEM) {
-        switch (cs->v1) {
-          case MIXSRC_FIRST_TELEM + TELEM_TM1-1:
-          case MIXSRC_FIRST_TELEM + TELEM_TM2-1:
-            cs->v2 = (cs->v2+128) * 3;
-            break;
-          case MIXSRC_FIRST_TELEM + TELEM_ALT-1:
-          case MIXSRC_FIRST_TELEM + TELEM_GPSALT-1:
-          case MIXSRC_FIRST_TELEM + TELEM_MIN_ALT-1:
-          case MIXSRC_FIRST_TELEM + TELEM_MAX_ALT-1:
-            cs->v2 = (cs->v2+128) * 8 - 500;
-            break;
-          case MIXSRC_FIRST_TELEM + TELEM_RPM-1:
-          case MIXSRC_FIRST_TELEM + TELEM_MAX_RPM-1:
-            cs->v2 = (cs->v2+128) * 50;
-            break;
-          case MIXSRC_FIRST_TELEM + TELEM_T1-1:
-          case MIXSRC_FIRST_TELEM + TELEM_T2-1:
-          case MIXSRC_FIRST_TELEM + TELEM_MAX_T1-1:
-          case MIXSRC_FIRST_TELEM + TELEM_MAX_T2-1:
-            cs->v2 = (cs->v2+128) + 30;
-            break;
-          case MIXSRC_FIRST_TELEM + TELEM_CELL-1:
-          case MIXSRC_FIRST_TELEM + TELEM_HDG-1:
-            cs->v2 = (cs->v2+128) * 2;
-            break;
-          case MIXSRC_FIRST_TELEM + TELEM_DIST-1:
-          case MIXSRC_FIRST_TELEM + TELEM_MAX_DIST-1:
-            cs->v2 = (cs->v2+128) * 8;
-            break;
-          case MIXSRC_FIRST_TELEM + TELEM_CURRENT-1:
-          case MIXSRC_FIRST_TELEM + TELEM_POWER-1:
-            cs->v2 = (cs->v2+128) * 5;
-            break;
-          case MIXSRC_FIRST_TELEM + TELEM_CONSUMPTION-1:
-            cs->v2 = (cs->v2+128) * 20;
-            break;
-          default:
-            cs->v2 += 128;
-            break;
+    else if (cstate == LS_FAMILY_OFS || cstate == LS_FAMILY_COMP || cstate == LS_FAMILY_DIFF) {
+      sw.v1 = ConvertSource_215_to_216(sw.v1);
+      if (cstate == LS_FAMILY_OFS || cstate == LS_FAMILY_DIFF) {
+        if ((uint8_t)sw.v1 >= MIXSRC_FIRST_TELEM) {
+          switch ((uint8_t)sw.v1) {
+            case MIXSRC_FIRST_TELEM + TELEM_TM1-1:
+            case MIXSRC_FIRST_TELEM + TELEM_TM2-1:
+              sw.v2 = (sw.v2+128) * 3;
+              break;
+            case MIXSRC_FIRST_TELEM + TELEM_ALT-1:
+            case MIXSRC_FIRST_TELEM + TELEM_GPSALT-1:
+            case MIXSRC_FIRST_TELEM + TELEM_MIN_ALT-1:
+            case MIXSRC_FIRST_TELEM + TELEM_MAX_ALT-1:
+              sw.v2 = (sw.v2+128) * 8 - 500;
+              break;
+            case MIXSRC_FIRST_TELEM + TELEM_RPM-1:
+            case MIXSRC_FIRST_TELEM + TELEM_MAX_RPM-1:
+              sw.v2 = (sw.v2+128) * 50;
+              break;
+            case MIXSRC_FIRST_TELEM + TELEM_T1-1:
+            case MIXSRC_FIRST_TELEM + TELEM_T2-1:
+            case MIXSRC_FIRST_TELEM + TELEM_MAX_T1-1:
+            case MIXSRC_FIRST_TELEM + TELEM_MAX_T2-1:
+              sw.v2 = (sw.v2+128) + 30;
+              break;
+            case MIXSRC_FIRST_TELEM + TELEM_CELL-1:
+            case MIXSRC_FIRST_TELEM + TELEM_HDG-1:
+              sw.v2 = (sw.v2+128) * 2;
+              break;
+            case MIXSRC_FIRST_TELEM + TELEM_DIST-1:
+            case MIXSRC_FIRST_TELEM + TELEM_MAX_DIST-1:
+              sw.v2 = (sw.v2+128) * 8;
+              break;
+            case MIXSRC_FIRST_TELEM + TELEM_CURRENT-1:
+            case MIXSRC_FIRST_TELEM + TELEM_POWER-1:
+              sw.v2 = (sw.v2+128) * 5;
+              break;
+            case MIXSRC_FIRST_TELEM + TELEM_CONSUMPTION-1:
+              sw.v2 = (sw.v2+128) * 20;
+              break;
+            default:
+              sw.v2 += 128;
+              break;
+          }
         }
       }
-    }
-    if (cstate == CS_VCOMP) {
-      if (cs->v2 > 0) cs->v2 += MAX_INPUTS + MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS;
-      if (cs->v2 > MIXSRC_GVAR1+4) cs->v2 += 4;
+      else if (cstate == LS_FAMILY_COMP) {
+        sw.v2 = ConvertSource_215_to_216(sw.v2);
+      }
     }
 #endif
   }
   for (uint8_t i=0; i<32; i++) {
-    g_model.funcSw[i] = oldModel.funcSw[i];
-    CustomFnData *sd = &g_model.funcSw[i];
-    if (CFN_FUNC(sd) == FUNC_PLAY_VALUE || CFN_FUNC(sd) == FUNC_VOLUME || (IS_ADJUST_GV_FUNCTION(sd) && CFN_GVAR_MODE(sd) == FUNC_ADJUST_GVAR_SOURCE)) {
-#if defined(PCBTARANIS)
-      CFN_PARAM(sd) += 1 + MAX_INPUTS + MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS;
-#endif
-      if (CFN_PARAM(sd) > MIXSRC_GVAR1+4) CFN_PARAM(sd) += 4;
+    CustomFnData & fn = g_model.funcSw[i];
+    fn.swtch = ConvertSwitch_215_to_216(oldModel.funcSw[i].swtch);
+    fn.func = oldModel.funcSw[i].func;
+    if (fn.func <= 15) {
+      fn.all.param = fn.func;
+      fn.func = FUNC_SAFETY_CHANNEL;
     }
-    if (HAS_REPEAT_PARAM(sd))
-      CFN_PLAY_REPEAT(sd) *= 5;
+    else if (fn.func <= 20) {
+      fn.all.param = fn.func - 16;
+      fn.func = FUNC_TRAINER;
+    }
+    else if (fn.func == 21) {
+      fn.func = FUNC_INSTANT_TRIM;
+    }
+    else if (fn.func == 22) {
+      fn.func = FUNC_PLAY_SOUND;
+    }
+#if defined(PCBSKY9X)
+    else if (fn.func == 23) {
+      fn.func = FUNC_HAPTIC;
+    }
+#endif
+    else if (fn.func == 23+IS_PCBSKY9X) {
+      fn.func = FUNC_RESET;
+    }
+    else if (fn.func == 24+IS_PCBSKY9X) {
+      fn.func = FUNC_VARIO;
+    }
+    else if (fn.func == 25+IS_PCBSKY9X) {
+      fn.func = FUNC_PLAY_TRACK;
+    }
+    else if (fn.func == 26+IS_PCBSKY9X) {
+      fn.func = FUNC_PLAY_VALUE;
+    }
+    else if (fn.func == 27+IS_PCBSKY9X) {
+      fn.func = FUNC_LOGS;
+    }
+    else if (fn.func == 28+IS_PCBSKY9X) {
+      fn.func = FUNC_VOLUME;
+    }
+    else if (fn.func == 29+IS_PCBSKY9X) {
+      fn.func = FUNC_BACKLIGHT;
+    }
+    else if (fn.func == 30+IS_PCBSKY9X) {
+      fn.func = FUNC_BACKGND_MUSIC;
+    }
+    else if (fn.func == 31+IS_PCBSKY9X) {
+      fn.func = FUNC_BACKGND_MUSIC_PAUSE;
+    }
+    else {
+      fn.all.param = fn.func - 32 - IS_PCBSKY9X;
+      fn.all.mode = oldModel.funcSw[i].mode;
+      fn.func = FUNC_ADJUST_GVAR;
+    }
+
+    fn.active = oldModel.funcSw[i].active;
+    if (HAS_REPEAT_PARAM(fn.func)) {
+      fn.active *= 5;
+    }
+
+    if (fn.func == FUNC_PLAY_TRACK || fn.func == FUNC_BACKGND_MUSIC) {
+      memcpy(fn.play.name, oldModel.funcSw[i].param.name, 8);
+    }
+    else {
+      fn.all.val = oldModel.funcSw[i].param.composite.val;
+    }
+    if (fn.func == FUNC_PLAY_VALUE || fn.func == FUNC_VOLUME || (IS_ADJUST_GV_FUNC(fn.func) && fn.all.mode == FUNC_ADJUST_GVAR_SOURCE)) {
+#if defined(PCBTARANIS)
+      fn.all.val = ConvertSource_215_to_216(fn.all.val, true);
+#endif
+    }
   }
 
   g_model.swashR = oldModel.swashR;
-#if defined(PCBTARANIS)
-  if (g_model.swashR.collectiveSource > 0) g_model.swashR.collectiveSource += MAX_INPUTS + MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS;
-  if (g_model.swashR.collectiveSource > MIXSRC_GVAR1+4) g_model.swashR.collectiveSource += 4;
-#endif
+  g_model.swashR.collectiveSource = ConvertSource_215_to_216(g_model.swashR.collectiveSource);
 
   for (uint8_t i=0; i<9; i++) {
     memcpy(&g_model.phaseData[i], &oldModel.phaseData[i], sizeof(oldModel.phaseData[i])); // the last 4 gvars will remain blank
+    g_model.phaseData[i].swtch = ConvertSwitch_215_to_216(oldModel.phaseData[i].swtch);
+#if defined(PCBTARANIS)
+    for (uint8_t t=0; t<4; t++) {
+      int trim = oldModel.phaseData[i].trim[t];
+      if (trim > 500) {
+        trim -= 501;
+        if (trim >= i)
+          trim += 1;
+        g_model.phaseData[i].trim[t].mode = 2*trim;
+        g_model.phaseData[i].trim[t].value = 0;
+      }
+      else {
+        g_model.phaseData[i].trim[t].mode = 2*i;
+        g_model.phaseData[i].trim[t].value = trim;
+      }
+    }
+#endif
   }
   g_model.thrTraceSrc = oldModel.thrTraceSrc;
-  g_model.switchWarningStates = oldModel.switchWarningStates;
+  g_model.switchWarningStates = oldModel.switchWarningStates >> 1;
+  g_model.nSwToWarn = (oldModel.switchWarningStates & 0x01) ? 0xFF : 0;
   for (uint8_t i=0; i<5; i++) {
     memcpy(g_model.gvars[i].name, oldModel.gvar_names[i], LEN_GVAR_NAME);
   }
-  g_model.frsky = oldModel.frsky;
+
+  memcpy(&g_model.frsky, &oldModel.frsky, sizeof(oldModel.frsky));
+  for (int i=0; i<3; i++) {
+    if (g_model.frsky.screensType & (1<<i)) {
+      // gauges
+      for (int j=0; j<4; j++) {
+        uint8_t & source = g_model.frsky.screens[i].bars[j].source;
+        source = ConvertTelemetrySource_215_to_216(source);
+      }
+    }
+    else {
+      // numbers
+      for (int j=0; j<4; j++) {
+        for (int k=0; k<NUM_LINE_ITEMS; k++) {
+          uint8_t & source = g_model.frsky.screens[i].lines[j].sources[k];
+          source = ConvertTelemetrySource_215_to_216(source);
+        }
+      }
+    }
+  }
 
 #if defined(PCBTARANIS)
   g_model.externalModule = oldModel.externalModule;

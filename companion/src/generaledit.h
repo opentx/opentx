@@ -119,16 +119,15 @@ private slots:
     void on_varioVolume_SL_valueChanged();
     void on_wavVolume_SL_valueChanged();
     
+    void on_pot1Type_currentIndexChanged(int index);
+    void on_pot2Type_currentIndexChanged(int index);
+
     void on_stickmodeCB_currentIndexChanged(int index);
     void on_channelorderCB_currentIndexChanged(int index);
     void on_beeperCB_currentIndexChanged(int index);
     void on_memwarnChkB_stateChanged(int );
-    void on_swtchWarnCB_currentIndexChanged(int index);
-    void on_swtchWarnChkB_stateChanged(int );
     void on_telalarmsChkB_stateChanged(int );
-    void on_thrwarnChkB_stateChanged(int );
     void on_inputfilterCB_currentIndexChanged(int index);
-    void on_thrrevChkB_stateChanged(int );
     void on_inactimerSB_editingFinished();
     void on_backlightautoSB_editingFinished();
     void on_backlightswCB_currentIndexChanged(int index);

@@ -113,7 +113,7 @@ void MAVLINK_reset(uint8_t warm_reset) {
 	memset(&telemetry_data, 0, sizeof(telemetry_data));
 	telemetry_data.rcv_control_mode = ERROR_NUM_MODES;
 	telemetry_data.req_mode = ERROR_NUM_MODES;
-	
+
 	telemetry_data.type = MAV_TYPE_ENUM_END;
 	telemetry_data.autopilot = MAV_AUTOPILOT_ENUM_END;
 	telemetry_data.type_autopilot = MAVLINK_INVALID_TYPE;
@@ -139,7 +139,7 @@ void MAVLINK_Init(void) {
  *	characters are used. To get the full message you can use the commented
  *	funtion below.
  */
- 
+
 static inline void REC_MAVLINK_MSG_ID_STATUSTEXT(const mavlink_message_t* msg) {
 	_MAV_RETURN_char_array(msg, mav_statustext, LEN_STATUSTEXT,  1);
 }
@@ -152,7 +152,7 @@ static inline void REC_MAVLINK_MSG_ID_STATUSTEXT(const mavlink_message_t* msg) {
  *	\todo Add battery remaining variable in telemetry_data struct for estimated
  *	remaining battery. Decoding funtion allready in place.
  */
- 
+
 static inline void REC_MAVLINK_MSG_ID_SYS_STATUS(const mavlink_message_t* msg) {
 	telemetry_data.vbat = mavlink_msg_sys_status_get_voltage_battery(msg) / 100; // Voltage * 10
 	telemetry_data.ibat = mavlink_msg_sys_status_get_current_battery(msg) / 10;
@@ -204,48 +204,48 @@ static inline void REC_MAVLINK_MSG_ID_VFR_HUD(const mavlink_message_t* msg) {
 
 /*!	\brief Heartbeat message
  *	\details Heartbeat message is used for the following information:
- *	type and autopilot is used to determain if the UAV is a ArduPlane or Arducopter
+ *	type and autopilot is used to determine if the UAV is an ArduPlane or Arducopter
  */
-static inline void REC_MAVLINK_MSG_ID_HEARTBEAT(const mavlink_message_t* msg) {	
+static inline void REC_MAVLINK_MSG_ID_HEARTBEAT(const mavlink_message_t* msg) {
 	telemetry_data.mode  = mavlink_msg_heartbeat_get_base_mode(msg);
-	telemetry_data.custom_mode  = mavlink_msg_heartbeat_get_custom_mode(msg);	
+	telemetry_data.custom_mode  = mavlink_msg_heartbeat_get_custom_mode(msg);
 	telemetry_data.status = mavlink_msg_heartbeat_get_system_status(msg);
 	telemetry_data.mav_sysid = msg->sysid;
 	telemetry_data.mav_compid = msg->compid;
 	uint8_t type = mavlink_msg_heartbeat_get_type(msg);
 	uint8_t autopilot = mavlink_msg_heartbeat_get_autopilot(msg);
-	if ((type != telemetry_data.type) || (autopilot != telemetry_data.autopilot))
-	{
+	if (type != telemetry_data.type || autopilot != telemetry_data.autopilot) {
 		telemetry_data.type = mavlink_msg_heartbeat_get_type(msg);
 		telemetry_data.autopilot = mavlink_msg_heartbeat_get_autopilot(msg);
-		if (autopilot == MAV_AUTOPILOT_ARDUPILOTMEGA)
-		{
-			if ((type == MAV_TYPE_QUADROTOR) ||
-				(type == MAV_TYPE_COAXIAL) ||
-				(type == MAV_TYPE_HELICOPTER) ||
-				(type == MAV_TYPE_HEXAROTOR) ||
-				(type == MAV_TYPE_OCTOROTOR) ||
-				(type == MAV_TYPE_TRICOPTER))
-				{
-					telemetry_data.type_autopilot = MAVLINK_ARDUCOPTER;
-				}
-			else if (type == MAV_TYPE_FIXED_WING)
-				{
-					telemetry_data.type_autopilot = MAVLINK_ARDUPLANE;
-				}
-			else
+		if (autopilot == MAV_AUTOPILOT_ARDUPILOTMEGA) {
+			if (type == MAV_TYPE_QUADROTOR ||
+					type == MAV_TYPE_COAXIAL ||
+					type == MAV_TYPE_HELICOPTER ||
+					type == MAV_TYPE_HEXAROTOR ||
+					type == MAV_TYPE_OCTOROTOR ||
+					type == MAV_TYPE_TRICOPTER) {
+				telemetry_data.type_autopilot = MAVLINK_ARDUCOPTER;
+			}
+			else if (type == MAV_TYPE_FIXED_WING) {
+				telemetry_data.type_autopilot = MAVLINK_ARDUPLANE;
+			}
+			else {
 				telemetry_data.type_autopilot = MAVLINK_INVALID_TYPE;
+			}
 		}
-		else
+		else {
 			telemetry_data.type_autopilot = MAVLINK_INVALID_TYPE;
+		}
 	}
-	telemetry_data.active = (telemetry_data.mode & MAV_MODE_FLAG_SAFETY_ARMED) ? true : false; 
+	telemetry_data.active = (telemetry_data.mode & MAV_MODE_FLAG_SAFETY_ARMED) ? true : false;
 	mav_heartbeat = 3; // 450ms display '*'
 	mav_heartbeat_recv = 1;
 }
+
 static inline void REC_MAVLINK_MSG_ID_HIL_CONTROLS(const mavlink_message_t* msg) {
 	telemetry_data.nav_mode = mavlink_msg_hil_controls_get_mode(msg);
 }
+
 /*!	\brief Process GPS raw intger message
  *	\details This message contains the following data:
  *		- fix type: 0-1: no fix, 2: 2D fix, 3: 3D fix.
@@ -257,7 +257,7 @@ static inline void REC_MAVLINK_MSG_ID_HIL_CONTROLS(const mavlink_message_t* msg)
  */
 static inline void REC_MAVLINK_MSG_ID_GPS_RAW_INT(const mavlink_message_t* msg) {
 	telemetry_data.fix_type = mavlink_msg_gps_raw_int_get_fix_type(msg);
-	telemetry_data.loc_current.lat = mavlink_msg_gps_raw_int_get_lat(msg) / 1E7;	
+	telemetry_data.loc_current.lat = mavlink_msg_gps_raw_int_get_lat(msg) / 1E7;
 	telemetry_data.loc_current.lon = mavlink_msg_gps_raw_int_get_lon(msg) / 1E7;
 	telemetry_data.loc_current.gps_alt = mavlink_msg_gps_raw_int_get_alt(msg) / 1E3;
 	telemetry_data.eph = mavlink_msg_gps_raw_int_get_eph(msg) / 100.0;
@@ -266,26 +266,25 @@ static inline void REC_MAVLINK_MSG_ID_GPS_RAW_INT(const mavlink_message_t* msg) 
 	telemetry_data.satellites_visible = mavlink_msg_gps_raw_int_get_satellites_visible(msg);
 }
 
-
 #ifdef MAVLINK_PARAMS
-const pm_char * getParamId(uint8_t idx) {
-	const pm_char *mav_params_id [((NB_PID_PARAMS / 2) + 4)]  = { //
-					//
-									PSTR("RATE_YAW"), // Rate Yaw
-									PSTR("STB_YAW"), // Stabilize Yaw
-									PSTR("RATE_PIT"), // Rate Pitch
-									PSTR("STB_PIT"), // Stabilize Pitch
-									PSTR("RATE_RLL"), // Rate Roll
-									PSTR("STB_RLL"), // Stabilize Roll
-									PSTR("THR_ALT"), // PSTR("THR_BAR"), // Altitude Hold
-									PSTR("HLD_LON"), // Loiter
-									PSTR("HLD_LAT"), // Loiter
-									PSTR("NAV_LON"), // Nav WP
-									PSTR("NAV_LAT"), // Nav WP
-									PSTR("LOW_VOLT"), // Battery low voltage
-									PSTR("VOLT_DIVIDER"), //
-									PSTR("BATT_MONITOR"), //
-									PSTR("BATT_CAPACITY") };
+const pm_char *getParamId(uint8_t idx) {
+	const pm_char *mav_params_id [((NB_PID_PARAMS / 2) + 4)]  = {
+		PSTR("RATE_YAW"), // Rate Yaw
+		PSTR("STB_YAW"), // Stabilize Yaw
+		PSTR("RATE_PIT"), // Rate Pitch
+		PSTR("STB_PIT"), // Stabilize Pitch
+		PSTR("RATE_RLL"), // Rate Roll
+		PSTR("STB_RLL"), // Stabilize Roll
+		PSTR("THR_ALT"), // PSTR("THR_BAR"), // Altitude Hold
+		PSTR("HLD_LON"), // Loiter
+		PSTR("HLD_LAT"), // Loiter
+		PSTR("NAV_LON"), // Nav WP
+		PSTR("NAV_LAT"), // Nav WP
+		PSTR("LOW_VOLT"), // Battery low voltage
+		PSTR("VOLT_DIVIDER"), //
+		PSTR("BATT_MONITOR"), //
+		PSTR("BATT_CAPACITY")
+	};
 	uint8_t i;
 	if (idx < NB_PID_PARAMS) {
 		i = idx / 2;
@@ -433,7 +432,7 @@ static inline void handleMessage(mavlink_message_t* p_rxmsg) {
 		break;
 	case MAVLINK_MSG_ID_VFR_HUD:
 		REC_MAVLINK_MSG_ID_VFR_HUD(p_rxmsg);
-		break;	
+		break;
 	case MAVLINK_MSG_ID_HIL_CONTROLS:
 		REC_MAVLINK_MSG_ID_HIL_CONTROLS(p_rxmsg);
 		break;
@@ -453,8 +452,8 @@ static inline void handleMessage(mavlink_message_t* p_rxmsg) {
 
 /*!	\brief Mavlink message parser
  *	\details Parses the characters in to a mavlink message.
- *	Case statement parses each character as it is recieved. 
- *	\attention One big change form the 0.9 to 1.0 version is the 
+ *	Case statement parses each character as it is recieved.
+ *	\attention One big change form the 0.9 to 1.0 version is the
  *	MAVLINK_CRC_EXTRA. This requires the mavlink_message_crcs array of 256 bytes.
  *	\todo create dot for the statemachine
  */
@@ -464,9 +463,9 @@ static void MAVLINK_parse_char(uint8_t c) {
 	//! The currently decoded message
 	static mavlink_message_t* p_rxmsg = &m_mavlink_message;
 	//! The current decode status
-	mavlink_status_t* p_status = mavlink_get_channel_status(MAVLINK_COMM_0); 
-	
-	
+	mavlink_status_t* p_status = mavlink_get_channel_status(MAVLINK_COMM_0);
+
+
 #if MAVLINK_CRC_EXTRA
 	static const uint8_t mavlink_message_crcs[256] PROGMEM = MAVLINK_MESSAGE_CRCS;
 #define MAVLINK_MESSAGE_CRC(msgid) mavlink_message_crcs[msgid]
@@ -715,7 +714,7 @@ static inline void MAVLINK_msg_set_mode_send(uint8_t mode) {
 #endif
 /*!	\brief Telemetry monitoring, calls \link MAVLINK10mspoll.
  *	\todo Reimplemnt \link MAVLINK10mspoll
- *	
+ *
  */
 void telemetryWakeup() {
 	uint16_t tmr10ms = get_tmr10ms();

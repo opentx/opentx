@@ -57,15 +57,13 @@ void menuStatisticsView(uint8_t event)
       return;
   }
 
-  lcd_puts(  1*FW, FH*1, STR_TM1TM2);
+  lcd_puts(  1*FW, FH*0, STR_TOTTM1TM2THRTHP);
   putsTime(    5*FW+5*FWNUM+1, FH*1, timersStates[0].val, 0, 0);
   putsTime(   12*FW+5*FWNUM+1, FH*1, timersStates[1].val, 0, 0);
 
-  lcd_puts(  1*FW, FH*2, STR_THRTHP);
   putsTime(    5*FW+5*FWNUM+1, FH*2, s_timeCumThr, 0, 0);
   putsTime(   12*FW+5*FWNUM+1, FH*2, s_timeCum16ThrP/16, 0, 0);
 
-  lcd_puts( 17*FW, FH*0, STR_TOT);
   putsTime(   12*FW+5*FWNUM+1, FH*0, s_timeCumTot, 0, 0);
   
 #if defined(PCBTARANIS)
@@ -154,8 +152,8 @@ void menuStatisticsDebug(uint8_t event)
 
 #if defined(PCBSKY9X)
   lcd_putsLeft(3*FH, STR_CPU_TEMP);
-  putsTelemetryValue(MENU_DEBUG_COL_OFS, 3*FH, getTemperature(), UNIT_DEGREES, 0);
-  putsTelemetryValue(20*FW+2, 3*FH, maxTemperature+g_eeGeneral.temperatureCalib, UNIT_DEGREES, 0);
+  putsTelemetryValue(MENU_DEBUG_COL_OFS, 3*FH, getTemperature(), UNIT_TEMPERATURE, 0);
+  putsTelemetryValue(20*FW+2, 3*FH, maxTemperature+g_eeGeneral.temperatureCalib, UNIT_TEMPERATURE, 0);
 #endif
 
 #if defined(COPROCESSOR)
@@ -171,8 +169,8 @@ void menuStatisticsDebug(uint8_t event)
     lcd_putsAtt(9*FW+2, 4*FH, PSTR("Upgr.TinyApp"),INVERS);
   }
   else {
-    putsTelemetryValue(MENU_DEBUG_COL_OFS, 4*FH, Coproc_temp, UNIT_DEGREES, 0);
-    putsTelemetryValue(20*FW+2, 4*FH, Coproc_maxtemp, UNIT_DEGREES, 0);
+    putsTelemetryValue(MENU_DEBUG_COL_OFS, 4*FH, Coproc_temp, UNIT_TEMPERATURE, 0);
+    putsTelemetryValue(20*FW+2, 4*FH, Coproc_maxtemp, UNIT_TEMPERATURE, 0);
   }
 #elif defined(PCBTARANIS) && !defined(SIMU)
   lcd_putsLeft(4*FH, "Free Mem");

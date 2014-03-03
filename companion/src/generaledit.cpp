@@ -1,9 +1,9 @@
 #include "generaledit.h"
 #include "ui_generaledit.h"
 #include "helpers.h"
+#include "appdata.h"
 #include <QtGui>
 
-#define MAX_PROFILES  10
 #define BIT_WARN_THR     ( 0x01 )
 #define BIT_WARN_SW      ( 0x02 )
 #define BIT_WARN_MEM     ( 0x04 )
@@ -18,20 +18,14 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
     g_eeGeneral(radioData.generalSettings)
 {
     ui->setupUi(this);
-    this->setWindowIcon(QIcon(":/icon.png"));
+    this->setWindowIcon(CompanionIcon("open.png"));
 
-    QSettings settings("companion9x", "companion9x");
-    QString firmware_id = settings.value("firmware", default_firmware_variant.id).toString();
-    ui->tabWidget->setCurrentIndex(settings.value("generalEditTab", 0).toInt());
-    int profile_id=settings.value("profileId", 0).toInt();
-    settings.beginGroup("Profiles");
-    QString profile=QString("profile%1").arg(profile_id);
-    settings.beginGroup(profile);
-    QString name=settings.value("Name","").toString();
+    QString firmware_id = g.profile[g.id()].fwType();
+    ui->tabWidget->setCurrentIndex( g.generalEditTab() );
+    QString name=g.profile[g.id()].name();
     if (name.isEmpty()) {
       ui->calstore_PB->setDisabled(true);
     }
-    settings.endGroup();
     EEPROMInterface *eepromInterface = GetEepromInterface();
     QLabel * pmsl[] = {ui->ro_label,ui->ro1_label,ui->ro2_label,ui->ro3_label,ui->ro4_label,ui->ro5_label,ui->ro6_label,ui->ro7_label,ui->ro8_label, NULL};
     QSlider * tpmsld[] = {ui->chkSA, ui->chkSB, ui->chkSC, ui->chkSD, ui->chkSE, ui->chkSF, ui->chkSG, ui->chkSH, NULL};
@@ -64,7 +58,8 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
         }
         this->layout()->removeItem(ui->TaranisReadOnlyUnlock);
       }
-    } else {
+    }
+    else {
       for (int i=0; pmsl[i]; i++) {
         pmsl[i]->hide();
       }
@@ -75,18 +70,14 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
     }
     ui->profile_CB->clear();
     for ( int i = 0; i < MAX_PROFILES; ++i) {
-      QString profile=QString("profile%1").arg(i+1);
-      settings.beginGroup(profile);
-      QString name=settings.value("Name","").toString();
+      QString name=g.profile[i].name();
       if (!name.isEmpty()) {
-        ui->profile_CB->addItem(name, i+1);
-        if ((i+1)==profile_id) {
+        ui->profile_CB->addItem(name, i);
+        if (i==g.id()) {
           ui->profile_CB->setCurrentIndex(ui->profile_CB->count()-1);
         }
       }
-      settings.endGroup();
     }
-    settings.endGroup();
     
     QRegExp rx(CHAR_FOR_NAMES_REGEX);
     ui->ownerNameLE->setValidator(new QRegExpValidator(rx, this));
@@ -170,21 +161,9 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
       ui->crosstrimChkB->hide();
       ui->crosstrimLB->hide();
     }
-   if (!GetEepromInterface()->getCapability(HasPPMSim)) {
+    if (!GetEepromInterface()->getCapability(HasPPMSim)) {
       ui->PPMSimLB->hide();
       ui->PPMSimChkB->hide();
-    }
-     
-    if (GetEepromInterface()->getCapability(PerModelThrottleWarning)) {
-      ui->thrwarnChkB->setDisabled(true);
-      ui->thrwarnChkB->hide();
-      ui->thrwarnLabel->hide();
-    }
-    if (GetEepromInterface()->getCapability(pmSwitchMask)) {
-      ui->swwarn_label->hide();
-      ui->swtchWarnCB->hide();
-      ui->swtchWarnChkB->hide();
-      layout()->removeItem(ui->swwarn_layout);
     }
     if (!GetEepromInterface()->getCapability( HasPxxCountry)) {
       ui->countrycode_label->hide();
@@ -322,11 +301,8 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
       ui->swID0ChkB->hide();
       ui->swID1ChkB->hide();
       ui->swID2ChkB->hide();
-      ui->swtchWarnChkB->hide();
       this->layout()->removeItem(ui->switchMaskLayout);
     } else {
-      ui->swtchWarnCB->setDisabled(true);
-      ui->swtchWarnCB->hide();
       setSwitchDefPos();
     }
     if (!GetEepromInterface()->getCapability(TelemetryAlarm)) {
@@ -339,12 +315,6 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
       ui->re_CB->hide();
     } else {
       populateRotEncCB(ui->re_CB, g_eeGeneral.reNavigation, renumber);
-    }
-    if (GetEepromInterface()->getCapability(PerModelThrottleInvert)) {
-      ui->label_thrrev->hide();
-      ui->thrrevChkB->hide();
-    } else {
-      ui->thrrevChkB->setChecked(g_eeGeneral.throttleReversed);
     }
     ui->telalarmsChkB->setChecked(g_eeGeneral.enableTelemetryAlarm);
     ui->PotScrollEnableChkB->setChecked(!g_eeGeneral.disablePotScroll);
@@ -359,9 +329,6 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
     ui->StickScrollChkB->setChecked(g_eeGeneral.stickScroll);
     ui->PPMSimChkB->setChecked(g_eeGeneral.enablePpmsim);
     ui->inputfilterCB->setCurrentIndex(g_eeGeneral.filterInput);
-    ui->thrwarnChkB->setChecked(!g_eeGeneral.disableThrottleWarning);   //Default is zero=checked
-    ui->swtchWarnChkB->setChecked(g_eeGeneral.switchWarning == -1);
-    ui->swtchWarnCB->setCurrentIndex(g_eeGeneral.switchWarning == -1 ? 2 : g_eeGeneral.switchWarning);
     ui->memwarnChkB->setChecked(!g_eeGeneral.disableMemoryWarning);   //Default is zero=checked
     ui->alarmwarnChkB->setChecked(!g_eeGeneral.disableAlarmWarning);//Default is zero=checked
     ui->enableTelemetryAlarmChkB->setChecked(g_eeGeneral.enableTelemetryAlarm);
@@ -397,11 +364,35 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
     for (int i=0; tpmsld[i]; i++) {
       connect(tpmsld[i], SIGNAL(valueChanged(int)),this,SLOT(unlockSwitchEdited()));
     }
+
+    if (GetEepromInterface()->getCapability(MultiposPots)) {
+      ui->pot1Type->setCurrentIndex(g_eeGeneral.potsType[0]);
+      ui->pot2Type->setCurrentIndex(g_eeGeneral.potsType[1]);
+    }
+    else {
+      ui->potsTypeSeparator->hide();
+      ui->pot1Type->hide();
+      ui->pot1TypeLabel->hide();
+      ui->pot2Type->hide();
+      ui->pot2TypeLabel->hide();
+    }
 }
 
 GeneralEdit::~GeneralEdit()
 {
     delete ui;
+}
+
+void GeneralEdit::on_pot1Type_currentIndexChanged(int index)
+{
+  g_eeGeneral.potsType[0] = index;
+  updateSettings();
+}
+
+void GeneralEdit::on_pot2Type_currentIndexChanged(int index)
+{
+  g_eeGeneral.potsType[1] = index;
+  updateSettings();
 }
 
 void GeneralEdit::unlockSwitchEdited()
@@ -622,33 +613,9 @@ void GeneralEdit::on_inactimerSB_editingFinished()
     updateSettings();
 }
 
-void GeneralEdit::on_thrrevChkB_stateChanged(int )
-{
-    g_eeGeneral.throttleReversed = ui->thrrevChkB->isChecked() ? 1 : 0;
-    updateSettings();
-}
-
 void GeneralEdit::on_inputfilterCB_currentIndexChanged(int index)
 {
     g_eeGeneral.filterInput = index;
-    updateSettings();
-}
-
-void GeneralEdit::on_thrwarnChkB_stateChanged(int )
-{
-    g_eeGeneral.disableThrottleWarning = ui->thrwarnChkB->isChecked() ? 0 : 1;
-    updateSettings();
-}
-
-void GeneralEdit::on_swtchWarnCB_currentIndexChanged(int index)
-{
-    g_eeGeneral.switchWarning = (index == 2 ? -1 : index);
-    updateSettings();
-}
-
-void GeneralEdit::on_swtchWarnChkB_stateChanged(int )
-{
-    g_eeGeneral.switchWarning = ui->swtchWarnChkB->isChecked() ? -1 : 0;
     updateSettings();
 }
 
@@ -993,9 +960,7 @@ void GeneralEdit::on_PPM4_editingFinished()
 
 void GeneralEdit::on_tabWidget_currentChanged(int index)
 {
-  // TODO why er9x here
-    QSettings settings("companion9x", "companion9x");
-    settings.setValue("generalEditTab",index);//ui->tabWidget->currentIndex());
+    g.generalEditTab(index);
 }
 
 
@@ -1074,7 +1039,7 @@ void GeneralEdit::on_blinvert_cb_stateChanged(int )
 void GeneralEdit::on_faimode_CB_stateChanged(int )
 {
     if (ui->faimode_CB->isChecked()) {
-      int ret = QMessageBox::question(this, "companion9x", 
+      int ret = QMessageBox::question(this, "Companion", 
                      tr("If you enable FAI, you loose the vario, the play functions, the telemetry screen.\nThis function cannot be disabled by the radio.\nAre you sure ?") ,
                      QMessageBox::Yes | QMessageBox::No);
       if (ret==QMessageBox::Yes) {
@@ -1243,31 +1208,23 @@ void GeneralEdit::on_swGEAChkB_stateChanged(int )
 
 void GeneralEdit::on_calretrieve_PB_clicked()
 {
-  QSettings settings("companion9x", "companion9x");
   int profile_id=ui->profile_CB->itemData(ui->profile_CB->currentIndex()).toInt();
-  settings.beginGroup("Profiles");
-  QString profile=QString("profile%1").arg(profile_id);
-  settings.beginGroup(profile);
-  QString calib=settings.value("StickPotCalib","").toString();
+  QString calib=g.profile[profile_id].stickPotCalib();
   int potsnum=GetEepromInterface()->getCapability(Pots);
   if (calib.isEmpty()) {
-    settings.endGroup();
-    settings.endGroup();
     return;
   } else {
-    QString trainercalib=settings.value("TrainerCalib","").toString();
-    int8_t vBatCalib=(int8_t)settings.value("VbatCalib", g_eeGeneral.vBatCalib).toInt();
-    int8_t currentCalib=(int8_t)settings.value("currentCalib", g_eeGeneral.currentCalib).toInt();
-    int8_t PPM_Multiplier=(int8_t)settings.value("PPM_Multiplier", g_eeGeneral.PPM_Multiplier).toInt();
-    uint8_t GSStickMode=(uint8_t)settings.value("GSStickMode", g_eeGeneral.stickMode).toUInt();
-    uint8_t vBatWarn=(uint8_t)settings.value("vBatWarn",g_eeGeneral.vBatWarn).toUInt();
-    QString DisplaySet=settings.value("Display","").toString();
-    QString BeeperSet=settings.value("Beeper","").toString();
-    QString HapticSet=settings.value("Haptic","").toString();
-    QString SpeakerSet=settings.value("Speaker","").toString();
-    QString CountrySet=settings.value("countryCode","").toString();
-    settings.endGroup();
-    settings.endGroup();
+    QString trainercalib = g.profile[profile_id].trainerCalib();
+    int8_t vBatCalib = (int8_t)g.profile[profile_id].vBatCalib();
+    int8_t currentCalib = (int8_t)g.profile[profile_id].currentCalib();
+    int8_t PPM_Multiplier = (int8_t)g.profile[profile_id].ppmMultiplier();
+    uint8_t GSStickMode = (uint8_t)g.profile[profile_id].gsStickMode();
+    uint8_t vBatWarn = (uint8_t)g.profile[profile_id].vBatWarn();
+    QString DisplaySet = g.profile[profile_id].display();
+    QString BeeperSet = g.profile[profile_id].beeper();
+    QString HapticSet = g.profile[profile_id].haptic();
+    QString SpeakerSet = g.profile[profile_id].speaker();
+    QString CountrySet = g.profile[profile_id].countryCode();
     
     if ((calib.length()==(NUM_STICKS+potsnum)*12) && (trainercalib.length()==16)) {
       QString Byte;
@@ -1360,27 +1317,20 @@ void GeneralEdit::on_calretrieve_PB_clicked()
 
 void GeneralEdit::on_calstore_PB_clicked()
 {
-  QSettings settings("companion9x", "companion9x");
   int profile_id=ui->profile_CB->itemData(ui->profile_CB->currentIndex()).toInt();
-  settings.beginGroup("Profiles");
-  QString profile=QString("profile%1").arg(profile_id);
-  settings.beginGroup(profile);
-  QString name=settings.value("Name","").toString();
+
+  QString name=g.profile[profile_id].name();
   int potsnum=GetEepromInterface()->getCapability(Pots);
   if (name.isEmpty()) {
     ui->calstore_PB->setDisabled(true);
-    settings.endGroup();
-    settings.endGroup();
     return;
   } else {
-    QString calib=settings.value("StickPotCalib","").toString();
+    QString calib=g.profile[profile_id].stickPotCalib();
     if (!(calib.isEmpty())) {
-      int ret = QMessageBox::question(this, "companion9x", 
+      int ret = QMessageBox::question(this, "Companion", 
                       tr("Do you want to store calibration in %1 profile<br>overwriting existing calibration?").arg(name) ,
                       QMessageBox::Yes | QMessageBox::No);
       if (ret == QMessageBox::No) {
-        settings.endGroup();
-        settings.endGroup();
         return;
       }
     }
@@ -1390,25 +1340,23 @@ void GeneralEdit::on_calstore_PB_clicked()
       calib.append(QString("%1").arg((uint16_t)g_eeGeneral.calibSpanNeg[i], 4, 16, QChar('0')));
       calib.append(QString("%1").arg((uint16_t)g_eeGeneral.calibSpanPos[i], 4, 16, QChar('0')));
     }
-    settings.setValue("StickPotCalib",calib);
+    g.profile[profile_id].stickPotCalib( calib );
     calib.clear();
     for (int i=0; i< 4; i++) {
       calib.append(QString("%1").arg((uint16_t)g_eeGeneral.trainer.calib[i], 4, 16, QChar('0')));
     }
-    settings.setValue("TrainerCalib",calib);
-    settings.setValue("VbatCalib",g_eeGeneral.vBatCalib);
-    settings.setValue("currentCalib",g_eeGeneral.currentCalib);
-    settings.setValue("vBatWarn",g_eeGeneral.vBatWarn);
-    settings.setValue("PPM_Multiplier",g_eeGeneral.PPM_Multiplier);
-    settings.setValue("GSStickMode",g_eeGeneral.stickMode);
-    settings.setValue("Display",QString("%1%2%3").arg((g_eeGeneral.optrexDisplay ? 1:0), 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.contrast, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.backlightBright, 2, 16, QChar('0')));
-    settings.setValue("Beeper",QString("%1%2").arg(((uint8_t)g_eeGeneral.beeperMode), 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.beeperLength, 2, 16, QChar('0')));
-    settings.setValue("Haptic",QString("%1%2%3").arg(((uint8_t)g_eeGeneral.hapticMode), 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.hapticStrength, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.hapticLength, 2, 16, QChar('0')));
-    settings.setValue("Speaker",QString("%1%2%3").arg((uint8_t)g_eeGeneral.speakerMode, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.speakerPitch, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.speakerVolume, 2, 16, QChar('0')));
-    settings.setValue("countryCode",QString("%1%2%3").arg((uint8_t)g_eeGeneral.countryCode, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.imperial, 2, 16, QChar('0')).arg(g_eeGeneral.ttsLanguage));
-    settings.endGroup();
-    settings.endGroup();
-    QMessageBox::information(this, "companion9x", tr("Calibration and HW parameters saved."));
+    g.profile[profile_id].trainerCalib( calib );
+    g.profile[profile_id].vBatCalib( g_eeGeneral.vBatCalib );
+    g.profile[profile_id].currentCalib( g_eeGeneral.currentCalib );
+    g.profile[profile_id].vBatWarn( g_eeGeneral.vBatWarn );
+    g.profile[profile_id].ppmMultiplier( g_eeGeneral.PPM_Multiplier );
+    g.profile[profile_id].gsStickMode( g_eeGeneral.stickMode );
+    g.profile[profile_id].display( QString("%1%2%3").arg((g_eeGeneral.optrexDisplay ? 1:0), 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.contrast, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.backlightBright, 2, 16, QChar('0')) );
+    g.profile[profile_id].beeper( QString("%1%2").arg(((uint8_t)g_eeGeneral.beeperMode), 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.beeperLength, 2, 16, QChar('0')));
+    g.profile[profile_id].haptic( QString("%1%2%3").arg(((uint8_t)g_eeGeneral.hapticMode), 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.hapticStrength, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.hapticLength, 2, 16, QChar('0')));
+    g.profile[profile_id].speaker( QString("%1%2%3").arg((uint8_t)g_eeGeneral.speakerMode, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.speakerPitch, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.speakerVolume, 2, 16, QChar('0')));
+    g.profile[profile_id].countryCode( QString("%1%2%3").arg((uint8_t)g_eeGeneral.countryCode, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.imperial, 2, 16, QChar('0')).arg(g_eeGeneral.ttsLanguage));
+    QMessageBox::information(this, "Companion", tr("Calibration and HW parameters saved."));
   }
 }
 

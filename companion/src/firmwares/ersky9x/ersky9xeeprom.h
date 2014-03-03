@@ -19,8 +19,7 @@
 #include <inttypes.h>
 #include "eeprominterface.h"
 
-extern TimerMode getEr9xTimerMode(int mode);
-extern int setEr9xTimerMode(TimerMode mode);
+extern RawSwitch getEr9xTimerMode(int mode);
 
 //eeprom data
 #define ERSKY9X_MAX_MIXERS_V10  32
@@ -51,8 +50,6 @@ PACK(typedef struct t_Ersky9xTrainerMix {
 
   operator TrainerMix();
   t_Ersky9xTrainerMix();
-  t_Ersky9xTrainerMix(TrainerMix&);
-
 }) Ersky9xTrainerMix; //
 
 PACK(typedef struct t_Ersky9xTrainerData {
@@ -61,8 +58,6 @@ PACK(typedef struct t_Ersky9xTrainerData {
 
   operator TrainerData();
   t_Ersky9xTrainerData();
-  t_Ersky9xTrainerData(TrainerData&);
-
 }) Ersky9xTrainerData;
 
 PACK(typedef struct t_Ersky9xGeneral {
@@ -122,8 +117,6 @@ PACK(typedef struct t_Ersky9xGeneral {
   uint8_t	 rotaryDivisor ;
   operator GeneralSettings();
   t_Ersky9xGeneral();
-  t_Ersky9xGeneral(GeneralSettings&);
-
 }) Ersky9xGeneral;
 
 PACK(typedef struct t_Ersky9xExpoData {
@@ -143,7 +136,6 @@ PACK(typedef struct t_Ersky9xLimitData {
 
   operator LimitData();
   t_Ersky9xLimitData() ;
-  t_Ersky9xLimitData(LimitData&);
 }) Ersky9xLimitData;
 
 #define MLTPX_ADD  0
@@ -170,7 +162,6 @@ PACK(typedef struct t_Ersky9xMixData_v10 {
 
   operator MixData();
   t_Ersky9xMixData_v10();
-  t_Ersky9xMixData_v10(MixData&);
 }) Ersky9xMixData_v10;
 
 PACK(typedef struct t_Ersky9xMixData_v11 {
@@ -192,40 +183,33 @@ PACK(typedef struct t_Ersky9xMixData_v11 {
   uint8_t  res[4];
   operator MixData();
   t_Ersky9xMixData_v11();
-  t_Ersky9xMixData_v11(MixData&);
 }) Ersky9xMixData_v11;
 
-PACK(typedef struct t_Ersky9xCustomSwData_v10 { // Custom Switches data
+PACK(typedef struct t_Ersky9xLogicalSwitchData_v10 { // Custom Switches data
   int8_t  v1; //input
   int8_t  v2; //offset
   uint8_t func;
 
-  operator CustomSwData();
-  t_Ersky9xCustomSwData_v10() { memset(this, 0, sizeof(t_Ersky9xCustomSwData_v10)); }
-  t_Ersky9xCustomSwData_v10(CustomSwData&);
+  operator LogicalSwitchData();
+  t_Ersky9xLogicalSwitchData_v10() { memset(this, 0, sizeof(t_Ersky9xLogicalSwitchData_v10)); }
+}) Ersky9xLogicalSwitchData_v10;
 
-}) Ersky9xCustomSwData_v10;
-
-PACK(typedef struct t_Ersky9xCustomSwData_v11 { // Custom Switches data
+PACK(typedef struct t_Ersky9xLogicalSwitchData_v11 { // Custom Switches data
   int8_t  v1; //input
   int8_t  v2; 		//offset
   uint8_t func;
   uint8_t andsw;
   uint8_t res ;
 
-  operator CustomSwData();
-  t_Ersky9xCustomSwData_v11() { memset(this, 0, sizeof(t_Ersky9xCustomSwData_v11)); }
-  t_Ersky9xCustomSwData_v11(CustomSwData&);
-
-}) Ersky9xCustomSwData_v11;
+  operator LogicalSwitchData();
+  t_Ersky9xLogicalSwitchData_v11() { memset(this, 0, sizeof(t_Ersky9xLogicalSwitchData_v11)); }
+}) Ersky9xLogicalSwitchData_v11;
 
 PACK(typedef struct t_Ersky9xSafetySwData_v10 { // Custom Switches data
   int8_t  swtch;
   int8_t  val;
 
-  operator SafetySwData();
   t_Ersky9xSafetySwData_v10();
-  t_Ersky9xSafetySwData_v10(SafetySwData&);
 }) Ersky9xSafetySwData_v10;
 
 PACK(typedef struct t_Ersky9xSafetySwData_v11 { // Custom Switches data
@@ -244,9 +228,7 @@ PACK(typedef struct t_Ersky9xSafetySwData_v11 { // Custom Switches data
     } vs ;
   } opt ;
 
-  operator SafetySwData();
   t_Ersky9xSafetySwData_v11();
-  t_Ersky9xSafetySwData_v11(SafetySwData&);
 }) Ersky9xSafetySwData_v11;
 
 PACK(typedef struct t_Ersky9xgvar {
@@ -281,7 +263,6 @@ PACK(typedef struct t_Ersky9xFrSkyChannelData_v10 {
 
   operator FrSkyChannelData();
   t_Ersky9xFrSkyChannelData_v10();
-  t_Ersky9xFrSkyChannelData_v10(FrSkyChannelData&);
 }) Ersky9xFrSkyChannelData_v10;
 
 PACK(typedef struct t_Ersky9xFrSkyData_v10 {
@@ -289,7 +270,6 @@ PACK(typedef struct t_Ersky9xFrSkyData_v10 {
 
   operator FrSkyData();
   t_Ersky9xFrSkyData_v10();
-  t_Ersky9xFrSkyData_v10(FrSkyData&);
 }) Ersky9xFrSkyData_v10;
 
 PACK(typedef struct t_Ersky9xFrSkyChannelData_v11 {
@@ -303,7 +283,6 @@ PACK(typedef struct t_Ersky9xFrSkyChannelData_v11 {
   
   operator FrSkyChannelData();
   t_Ersky9xFrSkyChannelData_v11();
-  t_Ersky9xFrSkyChannelData_v11(FrSkyChannelData&);
 }) Ersky9xFrSkyChannelData_v11;
 
 PACK(typedef struct t_Ersky9xFrSkyData_v11 {
@@ -311,7 +290,6 @@ PACK(typedef struct t_Ersky9xFrSkyData_v11 {
 
   operator FrSkyData();
   t_Ersky9xFrSkyData_v11();
-  t_Ersky9xFrSkyData_v11(FrSkyData&);
 }) Ersky9xFrSkyData_v11;
 
 PACK(typedef struct t_Ersky9xFrSkyalarms_v11 {
@@ -382,7 +360,7 @@ PACK(typedef struct t_Ersky9xModelData_v10 {
   int8_t    trim[4];
   int8_t    curves5[ERSKY9X_MAX_CURVE5][5];
   int8_t    curves9[ERSKY9X_MAX_CURVE9][9];
-  Ersky9xCustomSwData_v10   customSw[ERSKY9X_NUM_CSW_V10];
+  Ersky9xLogicalSwitchData_v10   customSw[ERSKY9X_NUM_CSW_V10];
   uint8_t   frSkyVoltThreshold ;
   uint8_t   res3[2];
   Ersky9xSafetySwData_v10  safetySw[ERSKY9X_NUM_CHNOUT_V10];
@@ -390,7 +368,6 @@ PACK(typedef struct t_Ersky9xModelData_v10 {
   Ersky9xTimerMode_v10 timer[2] ;
   operator ModelData();
   t_Ersky9xModelData_v10() { memset(this, 0, sizeof(t_Ersky9xModelData_v10)); }
-  t_Ersky9xModelData_v10(ModelData&);
 }) Ersky9xModelData_v10;
 
 PACK(typedef struct t_Ersky9xModelData_v11 {
@@ -432,7 +409,7 @@ PACK(typedef struct t_Ersky9xModelData_v11 {
   int8_t    curves5[ERSKY9X_MAX_CURVE5][5];
   int8_t    curves9[ERSKY9X_MAX_CURVE9][9];
   int8_t    curvexy[18];
-  Ersky9xCustomSwData_v11   customSw[ERSKY9X_NUM_CSW_V11];
+  Ersky9xLogicalSwitchData_v11   customSw[ERSKY9X_NUM_CSW_V11];
   uint8_t   frSkyVoltThreshold ;
   uint8_t   bt_telemetry;
   uint8_t   numVoice;		// 0-16, rest are Safety switches
@@ -449,8 +426,6 @@ PACK(typedef struct t_Ersky9xModelData_v11 {
 
   operator ModelData();
   t_Ersky9xModelData_v11() { memset(this, 0, sizeof(t_Ersky9xModelData_v11)); }
-  t_Ersky9xModelData_v11(ModelData&);
 }) Ersky9xModelData_v11;
 
 #endif
-/*eof*/

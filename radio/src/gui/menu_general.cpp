@@ -75,7 +75,7 @@ enum EnumTabDiag {
   e_Vers,
   e_Keys,
   e_Ana,
-  IF_PCBSKY9X(e_Hardware)
+  IF_CPUARM(e_Hardware)
   e_Calib
 };
 
@@ -95,7 +95,7 @@ const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
   menuGeneralVersion,
   menuGeneralDiagKeys,
   menuGeneralDiagAna,
-  IF_PCBSKY9X(menuGeneralHardware)
+  IF_CPUARM(menuGeneralHardware)
   menuGeneralCalib
 };
 
@@ -149,10 +149,14 @@ enum menuGeneralSetupItems {
   IF_VOICE(ITEM_SETUP_SPEAKER_VOLUME)
   IF_CPUARM(ITEM_SETUP_BEEP_VOLUME)
   IF_CPUARM(ITEM_SETUP_WAV_VOLUME)
-  IF_CPUARM(ITEM_SETUP_VARIO_VOLUME)
   IF_CPUARM(ITEM_SETUP_BACKGROUND_VOLUME)
   ITEM_SETUP_BEEP_LENGTH,
   IF_AUDIO(ITEM_SETUP_SPEAKER_PITCH)
+  IF_CPUARM(ITEM_SETUP_VARIO_LABEL)
+  IF_CPUARM(ITEM_SETUP_VARIO_VOLUME)
+  IF_CPUARM(ITEM_SETUP_VARIO_PITCH)
+  IF_CPUARM(ITEM_SETUP_VARIO_RANGE)
+  IF_CPUARM(ITEM_SETUP_VARIO_REPEAT)
   IF_HAPTIC(ITEM_SETUP_HAPTIC_LABEL)
   IF_HAPTIC(ITEM_SETUP_HAPTIC_MODE)
   IF_HAPTIC(ITEM_SETUP_HAPTIC_LENGTH)
@@ -160,8 +164,8 @@ enum menuGeneralSetupItems {
   ITEM_SETUP_CONTRAST,
   ITEM_SETUP_ALARMS_LABEL,
   ITEM_SETUP_BATTERY_WARNING,
-  IF_PCBSKY9X(ITEM_SETUP_CAPACITY_WARNING)
-  IF_PCBSKY9X(ITEM_SETUP_TEMPERATURE_WARNING)
+  CASE_PCBSKY9X(ITEM_SETUP_CAPACITY_WARNING)
+  CASE_PCBSKY9X(ITEM_SETUP_TEMPERATURE_WARNING)
   ITEM_SETUP_INACTIVITY_ALARM,
   ITEM_SETUP_MEMORY_WARNING,
   ITEM_SETUP_ALARM_WARNING,
@@ -211,7 +215,7 @@ void menuGeneralSetup(uint8_t event)
   }
 #endif
 
-  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) IF_BATTGRAPH(1) LABEL(SOUND), IF_AUDIO(0) IF_BUZZER(0) IF_VOICE(0) IF_CPUARM(0) IF_CPUARM(0) IF_CPUARM(0) IF_CPUARM(0) 0, IF_AUDIO(0) IF_HAPTIC(LABEL(HAPTIC)) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) 0, LABEL(ALARMS), 0, IF_PCBSKY9X(0) IF_PCBSKY9X(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) LABEL(BACKLIGHT), 0, 0, IF_CPUARM(0) CASE_PWM_BACKLIGHT(0) CASE_PWM_BACKLIGHT(0) 0, IF_SPLASH(0) IF_GPS(0) IF_GPS(0) IF_PXX(0) IF_CPUARM(0) IF_CPUARM(0) IF_FAI_CHOICE(0) 0, LABEL(TX_MODE), CASE_PCBTARANIS(0) 1/*to force edit mode*/});
+  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) IF_BATTGRAPH(1) LABEL(SOUND), IF_AUDIO(0) IF_BUZZER(0) IF_VOICE(0) IF_CPUARM(0) IF_CPUARM(0) IF_CPUARM(0) 0, IF_AUDIO(0) IF_CPUARM(LABEL(VARIO)) IF_CPUARM(0) IF_CPUARM(0) IF_CPUARM(0) IF_CPUARM(0) IF_HAPTIC(LABEL(HAPTIC)) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) 0, LABEL(ALARMS), 0, CASE_PCBSKY9X(0) CASE_PCBSKY9X(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) LABEL(BACKLIGHT), 0, 0, IF_CPUARM(0) CASE_PWM_BACKLIGHT(0) CASE_PWM_BACKLIGHT(0) 0, IF_SPLASH(0) IF_GPS(0) IF_GPS(0) IF_PXX(0) IF_CPUARM(0) IF_CPUARM(0) IF_FAI_CHOICE(0) 0, LABEL(TX_MODE), CASE_PCBTARANIS(0) 1/*to force edit mode*/});
 
   uint8_t sub = m_posVert - 1;
 
@@ -258,7 +262,7 @@ void menuGeneralSetup(uint8_t event)
 
       case ITEM_SETUP_TIME:
         lcd_putsLeft(y, STR_TIME);
-        lcd_putc(RADIO_SETUP_TIME_COLUMN-1, y, ':'); lcd_putc(RADIO_SETUP_TIME_COLUMN+3*FW-4, y, ':');
+        lcd_putc(RADIO_SETUP_TIME_COLUMN+1, y, ':'); lcd_putc(RADIO_SETUP_TIME_COLUMN+3*FW-2, y, ':');
         for (uint8_t j=0; j<3; j++) {
           uint8_t rowattr = (m_posHorz==j ? attr : 0);
           switch (j) {
@@ -357,9 +361,6 @@ void menuGeneralSetup(uint8_t event)
       case ITEM_SETUP_WAV_VOLUME:
         SLIDER_5POS(y, g_eeGeneral.wavVolume, STR_WAV_VOLUME, event, attr);
         break;
-      case ITEM_SETUP_VARIO_VOLUME:
-        SLIDER_5POS(y, g_eeGeneral.varioVolume, STR_VARIO_VOLUME, event, attr);
-        break;
       case ITEM_SETUP_BACKGROUND_VOLUME:
         SLIDER_5POS(y, g_eeGeneral.backgroundVolume, STR_BG_VOLUME, event, attr);
         break;
@@ -376,6 +377,33 @@ void menuGeneralSetup(uint8_t event)
         if (attr) {
           CHECK_INCDEC_GENVAR(event, g_eeGeneral.speakerPitch, 0, 20);
         }
+        break;
+#endif
+
+#if defined(CPUARM)
+      case ITEM_SETUP_VARIO_LABEL:
+        lcd_putsLeft(y, STR_VARIO);
+        break;
+      case ITEM_SETUP_VARIO_VOLUME:
+        SLIDER_5POS(y, g_eeGeneral.varioVolume, TR_SPEAKER_VOLUME, event, attr);
+        break;
+      case ITEM_SETUP_VARIO_PITCH:
+        lcd_putsLeft(y, "\001Pitch at Zero");
+        lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, VARIO_FREQUENCY_ZERO+(g_eeGeneral.varioPitch*10), attr|LEFT);
+        lcd_putsAtt(lcdLastPos, y, "Hz", attr);
+        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.varioPitch, -40, 40);
+        break;
+      case ITEM_SETUP_VARIO_RANGE:
+        lcd_putsLeft(y, "\001Pitch at Max");
+        lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, VARIO_FREQUENCY_ZERO+(g_eeGeneral.varioPitch*10)+VARIO_FREQUENCY_RANGE+(g_eeGeneral.varioRange*10), attr|LEFT);
+        lcd_putsAtt(lcdLastPos, y, "Hz", attr);
+        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.varioRange, -80, 80);
+        break;
+      case ITEM_SETUP_VARIO_REPEAT:
+        lcd_putsLeft(y, "\001Repeat at Zero");
+        lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, VARIO_REPEAT_ZERO+(g_eeGeneral.varioRepeat*10), attr|LEFT);
+        lcd_putsAtt(lcdLastPos, y, "ms", attr);
+        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.varioRepeat, -30, 50);
         break;
 #endif
 
@@ -449,7 +477,7 @@ void menuGeneralSetup(uint8_t event)
 #if defined(PCBSKY9X)
       case ITEM_SETUP_TEMPERATURE_WARNING:
         lcd_putsLeft(y, STR_TEMPWARNING);
-        putsTelemetryValue(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.temperatureWarn, UNIT_DEGREES, attr|LEFT) ;
+        putsTelemetryValue(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.temperatureWarn, UNIT_TEMPERATURE, attr|LEFT) ;
         if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.temperatureWarn, 0, 120); // 0 means no alarm
         break;
 #endif
@@ -1037,19 +1065,17 @@ void menuGeneralVersion(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUVERSION, menuTabDiag, e_Vers, 1);
 
-  lcd_putsLeft(2*FH, stamp1);
-  lcd_putsLeft(3*FH, stamp2);
-  lcd_putsLeft(4*FH, stamp3);
+  lcd_putsLeft(2*FH, vers_stamp);
+  
 #if defined(COPROCESSOR)
   if (Coproc_valid == 1) {
-     lcd_putsLeft(5*FH, PSTR("CoPr:"));
-     lcd_outdez8(10*FW, 5*FH, Coproc_read);
+     lcd_putsLeft(6*FH, PSTR("CoPr:"));
+     lcd_outdez8(10*FW, 6*FH, Coproc_read);
   }
   else {
-     lcd_putsLeft(5*FH, PSTR("CoPr: ---"));
+     lcd_putsLeft(6*FH, PSTR("CoPr: ---"));
   }
-#endif  
-  lcd_putsLeft(7*FH, eeprom_stamp);
+#endif
 }
 
 void displayKeyState(uint8_t x, uint8_t y, EnumKeys key)
@@ -1065,13 +1091,14 @@ void menuGeneralDiagKeys(uint8_t event)
   lcd_puts(14*FW, 3*FH, STR_VTRIM);
 
   for(uint8_t i=0; i<9; i++) {
-    uint8_t y = i*FH; //+FH;
 #if !defined(PCBTARANIS)
-    if(i>(SW_ID0-SW_BASE)) y-=FH; //overwrite ID0
+    uint8_t y = i*FH-FH;
+    if(i==(SW_ID0-SW_BASE)) continue; //ignore ID0
     putsSwitches(8*FW, y, i+1, 0); //ohne off,on
     displayKeyState(11*FW+2, y, (EnumKeys)(SW_BASE+i));
-#endif
-
+#else
+    uint8_t y = i*FH;
+#endif    
     if (i<8) {
       y = i/2*FH+FH*4;
       lcd_img(14*FW, y, sticks, i/2, 0);
@@ -1113,7 +1140,7 @@ void menuGeneralDiagAna(uint8_t event)
     uint8_t y = 1+FH+(i/2)*FH;
     uint8_t x = i&1 ? 64+5 : 0;
     putsStrIdx(x, y, PSTR("A"), i+1);
-    lcd_putc(x+2*FWNUM, y, ':');
+    lcd_putc(lcdNextPos, y, ':');
     lcd_outhex4(x+3*FW-1, y, anaIn(i));
     lcd_outdez8(x+10*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
   }
@@ -1127,7 +1154,7 @@ void menuGeneralDiagAna(uint8_t event)
 #if defined(PCBTARANIS)
   lcd_putsLeft(6*FH+1, STR_BATT_CALIB);
   static int32_t adcBatt;
-  adcBatt = ((adcBatt * 7) + anaIn(8)) / 8;
+  adcBatt = ((adcBatt * 7) + anaIn(TX_VOLTAGE)) / 8;
   uint32_t batCalV = (adcBatt + (adcBatt*g_eeGeneral.vBatCalib)/128) * BATT_SCALE;
   batCalV >>= 11;
   batCalV += 2; // because of the diode
@@ -1135,7 +1162,7 @@ void menuGeneralDiagAna(uint8_t event)
 #elif defined(PCBSKY9X)
   lcd_putsLeft(5*FH+1, STR_BATT_CALIB);
   static int32_t adcBatt;
-  adcBatt = ((adcBatt * 7) + anaIn(7)) / 8;
+  adcBatt = ((adcBatt * 7) + anaIn(TX_VOLTAGE)) / 8;
   uint32_t batCalV = (adcBatt + adcBatt*(g_eeGeneral.vBatCalib)/128) * 4191;
   batCalV /= 55296;
   putsVolts(LEN_CALIB_FIELDS*FW+4*FW, 5*FH+1, batCalV, (m_posVert==1 ? INVERS : 0));
@@ -1143,7 +1170,7 @@ void menuGeneralDiagAna(uint8_t event)
   lcd_putsLeft(6*FH-2, STR_BATT_CALIB);
   // Gruvin wants 2 decimal places and instant update of volts calib field when button pressed
   static uint16_t adcBatt;
-  adcBatt = ((adcBatt * 7) + anaIn(7)) / 8; // running average, sourced directly (to avoid unending debate :P)
+  adcBatt = ((adcBatt * 7) + anaIn(TX_VOLTAGE)) / 8; // running average, sourced directly (to avoid unending debate :P)
   uint32_t batCalV = ((uint32_t)adcBatt*1390 + (10*(int32_t)adcBatt*g_eeGeneral.vBatCalib)/8) / BandGap;
   lcd_outdezNAtt(LEN_CALIB_FIELDS*FW+4*FW, 6*FH-2, batCalV, PREC2|(m_posVert==1 ? INVERS : 0));
 #else
@@ -1160,12 +1187,63 @@ void menuGeneralDiagAna(uint8_t event)
 
 #if defined(PCBSKY9X)
   lcd_putsLeft(7*FH+1, STR_TEMP_CALIB);
-  putsTelemetryValue(LEN_CALIB_FIELDS*FW+4*FW, 7*FH+1, getTemperature(), UNIT_DEGREES, (m_posVert==3 ? INVERS : 0)) ;
+  putsTelemetryValue(LEN_CALIB_FIELDS*FW+4*FW, 7*FH+1, getTemperature(), UNIT_TEMPERATURE, (m_posVert==3 ? INVERS : 0)) ;
   if (m_posVert==3) CHECK_INCDEC_GENVAR(event, g_eeGeneral.temperatureCalib, -100, 100);
 #endif
 }
 
-#if defined(PCBSKY9X)
+#if defined(PCBTARANIS)
+enum menuGeneralHwItems {
+  ITEM_SETUP_HW_POT1,
+  ITEM_SETUP_HW_POT2,
+  ITEM_SETUP_HW_POT3,
+  ITEM_SETUP_HW_UART3_MODE,
+  ITEM_SETUP_HW_MAX
+};
+
+#define HW_SETTINGS_COLUMN 15*FW
+
+void menuGeneralHardware(uint8_t event)
+{
+  MENU(STR_HARDWARE, menuTabDiag, e_Hardware, ITEM_SETUP_HW_MAX+1, {0});
+
+  uint8_t sub = m_posVert - 1;
+    
+  for (uint8_t i=0; i<ITEM_SETUP_HW_MAX; i++) {
+    uint8_t y = 1 + 1*FH + i*FH;
+    uint8_t attr = (sub == i ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
+    switch(i) {
+      case ITEM_SETUP_HW_POT1:
+      case ITEM_SETUP_HW_POT2:
+      case ITEM_SETUP_HW_POT3:
+      {
+        int idx = i - ITEM_SETUP_HW_POT1;
+        uint8_t shift = (2*idx);
+        uint8_t mask = (0x03 << shift);
+        putsMixerSource(sizeof(TR_TYPE)*FW, y, MIXSRC_FIRST_POT+idx);
+        uint8_t potType = (g_eeGeneral.potsType & mask) >> shift;
+        if (potType == POT_TYPE_NONE && i < 2)
+          potType = 1;
+        potType = selectMenuItem(HW_SETTINGS_COLUMN, y, STR_TYPE, STR_POTTYPES, potType, 0, POT_TYPE_MAX, attr, event);
+        if (potType == POT_TYPE_POT && i < 2)
+          potType = 0;
+        g_eeGeneral.potsType &= ~mask;
+        g_eeGeneral.potsType |= (potType << shift);
+        break;
+      }
+
+      case ITEM_SETUP_HW_UART3_MODE:
+      	g_eeGeneral.uart3Mode = selectMenuItem(HW_SETTINGS_COLUMN, y, STR_UART3MODE, STR_UART3MODES, g_eeGeneral.uart3Mode, 0, UART_MODE_MAX, attr, event);
+        if (checkIncDec_Ret) {
+      	  uart3Init(g_eeGeneral.uart3Mode);
+      	}
+        break;
+
+    }
+  }
+}
+
+#elif defined(PCBSKY9X)
 enum menuGeneralHwItems {
   ITEM_SETUP_HW_OPTREX_DISPLAY,
   ITEM_SETUP_HW_STICKS_GAINS_LABELS,
@@ -1238,19 +1316,45 @@ void menuGeneralHardware(uint8_t event)
 }
 #endif
 
+#define XPOT_DELTA 5
 
 void menuCommonCalib(uint8_t event)
 {
-  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) { //get low and high vals for sticks and trims
+  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) { // get low and high vals for sticks and trims
     int16_t vt = anaIn(i);
     reusableBuffer.calib.loVals[i] = min(vt, reusableBuffer.calib.loVals[i]);
     reusableBuffer.calib.hiVals[i] = max(vt, reusableBuffer.calib.hiVals[i]);
-#if defined(PCBTARANIS)
-    if(i >= NUM_STICKS && i < NUM_STICKS+NUM_POTS-2) {
-#else
-    if (i >= NUM_STICKS) {
-#endif
+    if (i >= POT1 && i <= POT_LAST) {
       reusableBuffer.calib.midVals[i] = (reusableBuffer.calib.hiVals[i] + reusableBuffer.calib.loVals[i]) / 2;
+#if defined(PCBTARANIS)
+      uint8_t idx = i - POT1;
+      int count = reusableBuffer.calib.xpotsCalib[idx].stepsCount;
+      if (IS_POT_MULTIPOS(i) && count <= XPOTS_MULTIPOS_COUNT) {
+        if (reusableBuffer.calib.xpotsCalib[idx].lastCount == 0 || vt < reusableBuffer.calib.xpotsCalib[idx].lastPosition - XPOT_DELTA || vt > reusableBuffer.calib.xpotsCalib[idx].lastPosition + XPOT_DELTA) {
+          reusableBuffer.calib.xpotsCalib[idx].lastPosition = vt;
+          reusableBuffer.calib.xpotsCalib[idx].lastCount = 1;
+        }
+        else {
+          if (reusableBuffer.calib.xpotsCalib[idx].lastCount < 255) reusableBuffer.calib.xpotsCalib[idx].lastCount++;
+        }
+        if (reusableBuffer.calib.xpotsCalib[idx].lastCount == 10/*100ms*/) {
+          int16_t position = reusableBuffer.calib.xpotsCalib[idx].lastPosition;
+          bool found = false;
+          for (int j=0; j<count; j++) {
+            if (position >= reusableBuffer.calib.xpotsCalib[idx].steps[j]-XPOT_DELTA && position <= reusableBuffer.calib.xpotsCalib[idx].steps[j]+XPOT_DELTA) {
+              found = true;
+              break;
+            }
+          }
+          if (!found) {
+            if (count < XPOTS_MULTIPOS_COUNT) {
+              reusableBuffer.calib.xpotsCalib[idx].steps[count] = position;
+            }
+            reusableBuffer.calib.xpotsCalib[idx].stepsCount += 1;
+          }
+        }
+      }
+#endif
     }
   }
 
@@ -1284,6 +1388,12 @@ void menuCommonCalib(uint8_t event)
         reusableBuffer.calib.loVals[i] = 15000;
         reusableBuffer.calib.hiVals[i] = -15000;
         reusableBuffer.calib.midVals[i] = anaIn(i);
+#if defined(PCBTARANIS)
+        if (i<NUM_XPOTS) {
+          reusableBuffer.calib.xpotsCalib[i].stepsCount = 0;
+          reusableBuffer.calib.xpotsCalib[i].lastCount = 0;
+        }
+#endif
       }
       break;
 
@@ -1294,17 +1404,40 @@ void menuCommonCalib(uint8_t event)
       lcd_putsLeft(3*FH, STR_MENUWHENDONE);
 
       for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
-        if (abs(reusableBuffer.calib.loVals[i]-reusableBuffer.calib.hiVals[i])>50) {
-          g_eeGeneral.calibMid[i] = reusableBuffer.calib.midVals[i];
+        if (abs(reusableBuffer.calib.loVals[i]-reusableBuffer.calib.hiVals[i]) > 50) {
+          g_eeGeneral.calib[i].mid = reusableBuffer.calib.midVals[i];
           int16_t v = reusableBuffer.calib.midVals[i] - reusableBuffer.calib.loVals[i];
-          g_eeGeneral.calibSpanNeg[i] = v - v/STICK_TOLERANCE;
+          g_eeGeneral.calib[i].spanNeg = v - v/STICK_TOLERANCE;
           v = reusableBuffer.calib.hiVals[i] - reusableBuffer.calib.midVals[i];
-          g_eeGeneral.calibSpanPos[i] = v - v/STICK_TOLERANCE;
+          g_eeGeneral.calib[i].spanPos = v - v/STICK_TOLERANCE;
         }
       }
       break;
 
     case 3:
+#if defined(PCBTARANIS)
+      for (uint8_t i=POT1; i<=POT_LAST; i++) {
+        int idx = i - POT1;
+        int count = reusableBuffer.calib.xpotsCalib[idx].stepsCount;
+        if (IS_POT_MULTIPOS(i) && count > 1 && count <= XPOTS_MULTIPOS_COUNT) {
+          for (int j=0; j<count; j++) {
+            for (int k=j+1; k<count; k++) {
+              if (reusableBuffer.calib.xpotsCalib[idx].steps[k] < reusableBuffer.calib.xpotsCalib[idx].steps[j]) {
+                swap(reusableBuffer.calib.xpotsCalib[idx].steps[j], reusableBuffer.calib.xpotsCalib[idx].steps[k]);
+              }
+            }
+          }
+          StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[i];
+          calib->count = count - 1;
+          for (int j=0; j<calib->count; j++) {
+            calib->steps[j] = (reusableBuffer.calib.xpotsCalib[idx].steps[j+1] + reusableBuffer.calib.xpotsCalib[idx].steps[j]) >> 5;
+          }
+        }
+        else {
+          g_eeGeneral.potsType &= ~(1<<idx);
+        }
+      }
+#endif
       g_eeGeneral.chkSum = evalChkSum();
       eeDirty(EE_GENERAL);
       reusableBuffer.calib.state = 4;
@@ -1316,8 +1449,22 @@ void menuCommonCalib(uint8_t event)
   }
 
   doMainScreenGraphics();
+
 #if defined(PCBTARANIS)
   drawPotsBars();
+  for (int i=POT1; i<=POT_LAST; i++) {
+    uint8_t steps = 0;
+    if (reusableBuffer.calib.state == 2) {
+      steps = reusableBuffer.calib.xpotsCalib[i-POT1].stepsCount;
+    }
+    else if (IS_POT_MULTIPOS(i)) {
+      StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[i];
+      steps = calib->count + 1;
+    }
+    if (steps > 0 && steps <= XPOTS_MULTIPOS_COUNT) {
+      lcd_outdezAtt(LCD_W/2-2+(i-POT1)*5, LCD_H-6, steps, TINSIZE);
+    }
+  }
 #endif
 }
 

@@ -15,7 +15,8 @@
  */
 
 #include "opentxTaranisSimulator.h"
-#include "open9xinterface.h"
+#include "opentxinterface.h"
+#include "appdata.h"
 
 #define SIMU
 #define SIMU_EXCEPTIONS
@@ -35,6 +36,8 @@
 #define AUDIO
 #define VOICE
 #define PXX
+#define DSM2
+#define DSM2_PPM
 #define DBLKEYS
 #define AUTOSWITCH
 #define GRAPHICS
@@ -47,6 +50,8 @@
 #define PPM_CENTER_ADJUSTABLE
 #define PPM_LIMITS_SYMETRICAL
 #define FAI_CHOICE
+#define LUA
+#define LUA_MODEL_SCRIPTS
 #define EEPROM_VARIANT 3
 
 #undef min
@@ -65,6 +70,7 @@ inline int geteepromsize() {
 #include "radio/src/targets/taranis/board_taranis.cpp"
 #include "radio/src/protocols/ppm_arm.cpp"
 #include "radio/src/protocols/pxx_arm.cpp"
+#include "radio/src/protocols/dsm2_arm.cpp"
 #include "radio/src/targets/taranis/pwr_driver.cpp"
 #include "radio/src/eeprom_common.cpp"
 #include "radio/src/eeprom_conversions.cpp"
@@ -73,6 +79,7 @@ inline int geteepromsize() {
 #include "radio/src/targets/taranis/pulses_driver.cpp"
 #include "radio/src/targets/taranis/rtc_driver.cpp"
 #include "radio/src/targets/taranis/trainer_driver.cpp"
+#include "radio/src/targets/taranis/uart3_driver.cpp"
 #include "radio/src/protocols/pulses_arm.cpp"
 #include "radio/src/stamp.cpp"
 #include "radio/src/maths.cpp"
@@ -110,8 +117,38 @@ inline int geteepromsize() {
 #include "radio/src/translations/tts_pt.cpp"
 #include "radio/src/translations/tts_sk.cpp"
 #include "radio/src/translations/tts_pl.cpp"
+
+#include "radio/src/lua.cpp"
+#include "radio/src/lua/src/lapi.c"
+#include "radio/src/lua/src/lcode.c"
+#include "radio/src/lua/src/lctype.c"
+#include "radio/src/lua/src/ldebug.c"
+#include "radio/src/lua/src/ldo.c"
+#include "radio/src/lua/src/ldump.c"
+#include "radio/src/lua/src/lfunc.c"
+#include "radio/src/lua/src/lgc.c"
+#include "radio/src/lua/src/llex.c"
+#include "radio/src/lua/src/lmem.c"
+#include "radio/src/lua/src/lobject.c"
+#include "radio/src/lua/src/lopcodes.c"
+#include "radio/src/lua/src/lparser.c"
+#include "radio/src/lua/src/lstate.c"
+#include "radio/src/lua/src/lstring.c"
+#include "radio/src/lua/src/ltable.c"
+#include "radio/src/lua/src/ltm.c"
+#include "radio/src/lua/src/lundump.c"
+#include "radio/src/lua/src/lvm.c"
+#include "radio/src/lua/src/lzio.c"
+#include "radio/src/lua/src/lbaselib.c"
+#include "radio/src/lua/src/linit.c"
+#include "radio/src/lua/src/lmathlib.c"
+#include "radio/src/lua/src/loadlib.c"
+#include "radio/src/lua/src/lauxlib.c"
+#include "radio/src/lua/src/ltablib.c"
+#include "radio/src/lua/src/lcorolib.c"
+
   
-int16_t g_anas[NUM_STICKS+BOARD_X9D_NUM_POTS];
+int16_t g_anas[NUM_STICKS+5];
 
 uint16_t anaIn(uint8_t chan)
 {
@@ -128,7 +165,7 @@ bool hasExtendedTrims()
 
 uint8_t getStickMode()
 {
-  return g_eeGeneral.stickMode;
+  return limit<uint8_t>(0, g_eeGeneral.stickMode, 3);
 }
 
 void resetTrims()
@@ -141,12 +178,11 @@ void resetTrims()
 
 using namespace Open9xX9D;
 
-OpentxTaranisSimulator::OpentxTaranisSimulator(Open9xInterface * open9xInterface):
+OpentxTaranisSimulator::OpentxTaranisSimulator(OpenTxInterface * open9xInterface):
   open9xInterface(open9xInterface)
 {
   taranisSimulatorBoard = GetEepromInterface()->getBoard();
-  QSettings settings("companion9x", "companion9x");
-  QString path=settings.value("sdPath", ".").toString()+"/";
+  QString path=g.profile[g.id()].sdPath()+"/";
   int i=0;
   for (i=0; i< std::min(path.length(),1022); i++) {
     simuSdDirectory[i]=path.at(i).toAscii();
@@ -172,10 +208,16 @@ bool OpentxTaranisSimulator::lcdChanged(bool & lightEnable)
 #include "simulatorimport.h"
 }
 
-void OpentxTaranisSimulator::start(RadioData &radioData, bool tests)
+void OpentxTaranisSimulator::start(QByteArray & eeprom, bool tests)
 {
-  open9xInterface->save(Open9xX9D::eeprom, radioData);
+  memcpy(Open9xX9D::eeprom, eeprom.data(), std::min<int>(sizeof(Open9xX9D::eeprom), eeprom.size()));
   StartEepromThread(NULL);
+  StartMainThread(tests);
+}
+
+void OpentxTaranisSimulator::start(const char * filename, bool tests)
+{
+  StartEepromThread(filename);
   StartMainThread(tests);
 }
 
@@ -200,7 +242,7 @@ void OpentxTaranisSimulator::setValues(TxInputs &inputs)
 
 void OpentxTaranisSimulator::setTrim(unsigned int idx, int value)
 {
-  idx = Open9xX9D::modn12x3[4*getStickMode() + idx] - 1;
+  idx = Open9xX9D::modn12x3[4*getStickMode() + idx];
   uint8_t phase = getTrimFlightPhase(getFlightPhase(), idx);
   setTrimValue(phase, idx, value);
 }
@@ -214,7 +256,7 @@ void OpentxTaranisSimulator::getTrims(Trims & trims)
   }
 
   for (int i=0; i<2; i++) {
-    uint8_t idx = Open9xX9D::modn12x3[4*getStickMode() + i] - 1;
+    uint8_t idx = Open9xX9D::modn12x3[4*getStickMode() + i];
     int16_t tmp = trims.values[i];
     trims.values[i] = trims.values[idx];
     trims.values[idx] = tmp;

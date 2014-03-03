@@ -71,6 +71,7 @@ void init_trainer_ppm()
 
   TIM3->CR1 = TIM_CR1_CEN ;
   NVIC_EnableIRQ(TIM3_IRQn) ;
+  NVIC_SetPriority(TIM3_IRQn, 7);
 }
 
 // TODO - testing
@@ -99,6 +100,7 @@ void init_trainer_capture()
   TIM3->DIER |= TIM_DIER_CC3IE ;
   TIM3->CR1 = TIM_CR1_CEN ;
   NVIC_EnableIRQ(TIM3_IRQn) ;
+  NVIC_SetPriority(TIM3_IRQn, 7);
 }
 
 void stop_trainer_capture()
@@ -122,13 +124,13 @@ extern "C" void TIM3_IRQHandler()
     val = (uint16_t)(capture - lastCapt) / 2 ;
     lastCapt = capture;
 
-    // We prcoess g_ppmInsright here to make servo movement as smooth as possible
+    // We process g_ppmInsright here to make servo movement as smooth as possible
     //    while under trainee control
-    if ((val>4000) && (val < 19000)) { // G: Prioritize reset pulse. (Needed when less than 8 incoming pulses)
+    if ((val>4000) && (val < 19000)) { // G: Prioritize reset pulse. (Needed when less than 16 incoming pulses)
       ppmInState = 1; // triggered
     }
     else {
-      if (ppmInState && (ppmInState<=8)) {
+      if (ppmInState && (ppmInState<=16)) {
         if ((val>800) && (val<2200)) {
           g_ppmIns[ppmInState++ - 1] = (int16_t)(val - 1500)*(g_eeGeneral.PPM_Multiplier+10)/10; //+-500 != 512, but close enough.
         }

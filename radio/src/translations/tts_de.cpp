@@ -43,9 +43,9 @@ enum GermanPrompts {
   DE_PROMPT_AMPS = DE_PROMPT_UNITS_BASE+UNIT_AMPS,
   DE_PROMPT_METERS_PER_SECOND = DE_PROMPT_UNITS_BASE+UNIT_METERS_PER_SECOND,
   DE_PROMPT_SPARE1 = DE_PROMPT_UNITS_BASE+UNIT_RAW,
-  DE_PROMPT_KMH = DE_PROMPT_UNITS_BASE+UNIT_KMH,
-  DE_PROMPT_METERS = DE_PROMPT_UNITS_BASE+UNIT_METERS,
-  DE_PROMPT_DEGREES = DE_PROMPT_UNITS_BASE+UNIT_DEGREES,
+  DE_PROMPT_KMH = DE_PROMPT_UNITS_BASE+UNIT_SPEED,
+  DE_PROMPT_METERS = DE_PROMPT_UNITS_BASE+UNIT_DIST,
+  DE_PROMPT_DEGREES = DE_PROMPT_UNITS_BASE+UNIT_TEMPERATURE,
   DE_PROMPT_PERCENT = DE_PROMPT_UNITS_BASE+UNIT_PERCENT,
   DE_PROMPT_MILLIAMPS = DE_PROMPT_UNITS_BASE+UNIT_MILLIAMPS,
   DE_PROMPT_MAH = DE_PROMPT_UNITS_BASE+UNIT_MAH,
@@ -110,12 +110,15 @@ I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     unit--;
     convertUnit(number, unit);
     if (IS_IMPERIAL_ENABLE()) {
-      if (unit == UNIT_METERS) {
+      if (unit == UNIT_DIST) {
         unit = UNIT_FEET;
+      }
+      if (unit == UNIT_SPEED) {
+    	unit = UNIT_KTS;
       }
     }
 #if defined(CPUARM)
-    if ((att & PREC1) && (unit == UNIT_FEET || (unit == UNIT_METERS && number >= 100))) {
+    if ((att & PREC1) && (unit == UNIT_FEET || (unit == UNIT_DIST && number >= 100))) {
       number /= 10;
       att -= PREC1;
     }
