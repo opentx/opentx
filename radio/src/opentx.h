@@ -378,8 +378,6 @@ enum EnumKeys {
 #if defined(PCBTARANIS)
   #define NUM_SWITCHES  8
   #define IS_3POS(sw)   ((sw) != 5 && (sw) != 7)
-  #define NUM_POTS      4
-  #define NUM_XPOTS     2
   #define NUM_SW_SRCRAW 8
   #define SWSRC_THR     SWSRC_SF2
   #define SWSRC_GEA     SWSRC_SG2
@@ -391,8 +389,6 @@ enum EnumKeys {
   #define NUM_SWITCHES  7
   #define IS_3POS(sw)   ((sw) == 0)
   #define IS_MOMENTARY(sw) (sw == SWSRC_TRN)
-  #define NUM_POTS      3
-  #define NUM_XPOTS     0
   #define NUM_SW_SRCRAW 1
   #define SW_DSM2_BIND  SW_TRN
 #endif
@@ -413,10 +409,19 @@ enum EnumKeys {
 
 #include "myeeprom.h"
 
+enum PotType {
+  POT_TYPE_NONE,
+  POT_TYPE_POT,
+  POT_TYPE_MULTIPOS,
+  POT_TYPE_MAX=POT_TYPE_MULTIPOS
+};
+
 #if defined(PCBTARANIS)
-  #define IS_MULTIPOS_POT(x)   ((x)>=POT1 && (x)<=POT_LAST && (g_eeGeneral.potsType & (1 << ((x)-POT1))))
+  #define IS_POT_AVAILABLE(x)  ((x)!=POT3 || (g_eeGeneral.potsType & (0x03 << (2*((x)-POT1))))!=POT_TYPE_NONE)
+  #define IS_POT_MULTIPOS(x)   ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsType>>(2*((x)-POT1)))&0x03)==POT_TYPE_MULTIPOS)
 #else
-  #define IS_MULTIPOS_POT(x)   (false)
+  #define IS_POT_AVAILABLE(x)  (true)
+  #define IS_POT_MULTIPOS(x)   (false)
 #endif
 
 #if ROTARY_ENCODERS > 0
@@ -1044,7 +1049,8 @@ enum Analogs {
 #if defined(PCBTARANIS)
   POT1,
   POT2,
-  POT_LAST = POT2,
+  POT3,
+  POT_LAST = POT3,
   SLIDER1,
   SLIDER2,
 #else
@@ -1603,7 +1609,7 @@ union ReusableBuffer
 #if defined(PCBTARANIS)
         struct {
           uint8_t stepsCount;
-          int16_t steps[POTS_POS_COUNT];
+          int16_t steps[XPOTS_MULTIPOS_COUNT];
           uint8_t lastCount;
           int16_t lastPosition;
         } xpotsCalib[NUM_XPOTS];

@@ -195,12 +195,12 @@ QString AnalogString(int index)
 {
   static const QString sticks[]  = { QObject::tr("Rud"), QObject::tr("Ele"), QObject::tr("Thr"), QObject::tr("Ail") };
   static const QString pots9X[]  = { QObject::tr("P1"), QObject::tr("P2"), QObject::tr("P3") };
-  static const QString potsX9D[] = { QObject::tr("S1"), QObject::tr("S2"), QObject::tr("LS"), QObject::tr("RS") };
+  static const QString potsTaranis[] = { QObject::tr("S1"), QObject::tr("S2"), QObject::tr("S3"), QObject::tr("LS"), QObject::tr("RS") };
 
   if (index < 4)
     return CHECK_IN_ARRAY(sticks, index);
   else
-    return (IS_TARANIS(GetEepromInterface()->getBoard()) ? CHECK_IN_ARRAY(potsX9D, index-4) : CHECK_IN_ARRAY(pots9X, index-4));
+    return (IS_TARANIS(GetEepromInterface()->getBoard()) ? CHECK_IN_ARRAY(potsTaranis, index-4) : CHECK_IN_ARRAY(pots9X, index-4));
 }
 
 QString RotaryEncoderString(int index)
@@ -242,10 +242,13 @@ QString RawSource::toString()
   }
   switch (type) {
     case SOURCE_TYPE_VIRTUAL_INPUT:
-      if (model && strlen(model->inputNames[index]) > 0)
-        return QString(model->inputNames[index]);
-      else
-        return QObject::tr("Input %1").arg(index+1);
+    {
+      QString result = QObject::tr("[I%1]").arg(index+1);
+      if (model && strlen(model->inputNames[index]) > 0) {
+        result += QString(model->inputNames[index]);
+      }
+      return result;
+    }
     case SOURCE_TYPE_STICK:
       return AnalogString(index);
     case SOURCE_TYPE_TRIM:
@@ -316,7 +319,8 @@ QString RawSwitch::toString()
 
   static const QString multiposPots[] = {
     QObject::tr("S11"), QObject::tr("S12"), QObject::tr("S13"), QObject::tr("S14"), QObject::tr("S15"), QObject::tr("S16"),
-    QObject::tr("S21"), QObject::tr("S22"), QObject::tr("S23"), QObject::tr("S24"), QObject::tr("S25"), QObject::tr("S26")
+    QObject::tr("S21"), QObject::tr("S22"), QObject::tr("S23"), QObject::tr("S24"), QObject::tr("S25"), QObject::tr("S26"),
+    QObject::tr("S31"), QObject::tr("S32"), QObject::tr("S33"), QObject::tr("S34"), QObject::tr("S35"), QObject::tr("S36")
   };
 
   static const QString trimsSwitches[] = {
@@ -791,7 +795,8 @@ GeneralSettings::GeneralSettings()
     int potsnum=GetEepromInterface()->getCapability(Pots);
     if (t_calib.isEmpty()) {
       return;
-    } else {
+    }
+    else {
       QString t_trainercalib=g.profile[g.id()].trainerCalib();
       int8_t t_vBatCalib=(int8_t)g.profile[g.id()].vBatCalib();
       int8_t t_currentCalib=(int8_t)g.profile[g.id()].currentCalib();
@@ -887,9 +892,28 @@ GeneralSettings::GeneralSettings()
   
 }
 
+RawSource GeneralSettings::getDefaultSource(unsigned int channel)
+{
+  unsigned int stick_index = chout_ar[4*templateSetup + channel] - 1;
+  return RawSource(SOURCE_TYPE_STICK, stick_index);
+}
+
 ModelData::ModelData()
 {
   clear();
+}
+
+ExpoData * ModelData::insertInput(const int idx)
+{
+  memmove(&expoData[idx+1], &expoData[idx], (C9X_MAX_EXPOS-(idx+1))*sizeof(ExpoData));
+  expoData[idx].clear();
+  return &expoData[idx];
+}
+
+void ModelData::removeInput(const int idx)
+{
+  memmove(&expoData[idx], &expoData[idx+1], (C9X_MAX_EXPOS-(idx+1))*sizeof(ExpoData));
+  expoData[C9X_MAX_EXPOS-1].clear();
 }
 
 void ModelData::clearInputs()
@@ -913,7 +937,7 @@ void ModelData::clear()
   moduleData[0].ppmDelay = 300;
   moduleData[1].ppmDelay = 300;
   moduleData[2].ppmDelay = 300;
-  int board=GetEepromInterface()->getBoard();
+  int board = GetEepromInterface()->getBoard();
   if (IS_TARANIS(board)) {
     moduleData[0].protocol=PXX_XJT_X16;
     moduleData[1].protocol=OFF;
@@ -947,12 +971,38 @@ bool ModelData::isempty()
   return !used;
 }
 
-void ModelData::setDefault(uint8_t id)
+void ModelData::setDefaultMixes(GeneralSettings & settings)
+{
+  if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+    for (int i=0; i<NUM_STICKS; i++) {
+      ExpoData * expo = &expoData[i];
+      expo->chn = i;
+      expo->mode = INPUT_MODE_BOTH;
+      expo->srcRaw = settings.getDefaultSource(i);
+      expo->weight = 100;
+      strncpy(inputNames[i], expo->srcRaw.toString().toLatin1().constData(), sizeof(inputNames[i])-1);
+      MixData * mix = &mixData[i];
+      mix->destCh = i+1;
+      mix->weight = 100;
+      mix->srcRaw = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, i, this);
+    }
+  }
+  else {
+    for (int i=0; i<NUM_STICKS; i++) {
+      mixData[i].destCh = i+1;
+      mixData[i].srcRaw = RawSource(SOURCE_TYPE_STICK, i);
+      mixData[i].weight = 100;
+     }
+  }
+}
+
+void ModelData::setDefaultValues(unsigned int id, GeneralSettings & settings)
 {
   clear();
   used = true;
   sprintf(name, "MODEL%02d", id+1);
   modelId = id+1;
+  setDefaultMixes(settings);
 }
 
 int ModelData::getTrimValue(int phaseIdx, int trimIdx)

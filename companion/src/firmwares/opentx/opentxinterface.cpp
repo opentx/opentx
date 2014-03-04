@@ -236,11 +236,11 @@ bool OpenTxInterface::loadModel(uint8_t version, ModelData &model, uint8_t *data
       return loadModel<Open9xArmModelData_v212>(model, data, index);
     }
     else {
-      return loadModelVariant<Open9xModelDataNew>(index, model, data, version, variant);
+      return loadModelVariant<OpenTxModelData>(index, model, data, version, variant);
     }
   }
   else if (version >= 213) {
-    return loadModelVariant<Open9xModelDataNew>(index, model, data, version, variant);
+    return loadModelVariant<OpenTxModelData>(index, model, data, version, variant);
   }
 
   std::cout << " ko\n";
@@ -336,7 +336,7 @@ bool OpenTxInterface::load(RadioData &radioData, const uint8_t *eeprom, int size
     return false;
   }
 
-  if (!loadGeneral<Open9xGeneralDataNew>(radioData.generalSettings, version)) {
+  if (!loadGeneral<OpenTxGeneralData>(radioData.generalSettings, version)) {
     std::cout << " ko\n";
     return false;
   }
@@ -383,14 +383,14 @@ int OpenTxInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t varian
     variant |= M128_VARIANT;
   }
   
-  int result = saveGeneral<Open9xGeneralDataNew>(radioData.generalSettings, board, version, variant);
+  int result = saveGeneral<OpenTxGeneralData>(radioData.generalSettings, board, version, variant);
   if (!result) {
     return 0;
   }
 
   for (int i=0; i<getMaxModels(); i++) {
     if (!radioData.models[i].isempty()) {
-      result = saveModel<Open9xModelDataNew>(i, radioData.models[i], version, variant);
+      result = saveModel<OpenTxModelData>(i, radioData.models[i], version, variant);
       if (!result) {
         return 0;
       }
@@ -417,7 +417,7 @@ int OpenTxInterface::getSize(ModelData &model)
   uint8_t tmp[EESIZE_RLC_MAX];
   efile->EeFsCreate(tmp, EESIZE_RLC_MAX, board);
 
-  Open9xModelDataNew open9xModel(model, board, 255, GetCurrentFirmwareVariant());
+  OpenTxModelData open9xModel(model, board, 255, GetCurrentFirmwareVariant());
 
   QByteArray eeprom;
   open9xModel.Export(eeprom);
@@ -436,7 +436,7 @@ int OpenTxInterface::getSize(GeneralSettings &settings)
   uint8_t tmp[EESIZE_RLC_MAX];
   efile->EeFsCreate(tmp, EESIZE_RLC_MAX, board);
 
-  Open9xGeneralDataNew open9xGeneral(settings, board, 255, GetCurrentFirmwareVariant());
+  OpenTxGeneralData open9xGeneral(settings, board, 255, GetCurrentFirmwareVariant());
   // open9xGeneral.Dump();
 
   QByteArray eeprom;
@@ -511,7 +511,7 @@ int OpenTxInterface::getCapability(const Capability capability)
       else
         return 0;
     case Pots:
-      return (IS_TARANIS(board) ? 4 : 3);
+      return (IS_TARANIS(board) ? 5 : 3);
     case Switches:
       return (IS_TARANIS(board) ? 8 : 7);
     case SwitchesPositions:
@@ -671,6 +671,8 @@ int OpenTxInterface::getCapability(const Capability capability)
     case HasDisplayText:
     case VirtualInputs:
       return IS_TARANIS(board) ? 32 : 0;
+    case TrainerInputs:
+      return IS_ARM(board) ? 16 : 8;
     case LuaInputs:
     case LimitsPer1000:
     case EnhancedCurves:
@@ -681,7 +683,7 @@ int OpenTxInterface::getCapability(const Capability capability)
     case HasMahPersistent:
       return (IS_ARM(board) ? true : false);
     case MultiposPots:
-      return IS_TARANIS(board) ? 2 : 0;
+      return IS_TARANIS(board) ? 3 : 0;
     case MultiposPotsPositions:
       return IS_TARANIS(board) ? 6 : 0;
     case SimulatorVariant:

@@ -407,18 +407,18 @@ uint16_t anaIn(uint8_t chan)
   else if (chan<NUM_STICKS+NUM_POTS)
     return th9xSim->knobs[chan-NUM_STICKS]->getValue();
 #if defined(PCBTARANIS)
-  else if (chan == 8)
+  else if (chan == TX_VOLTAGE)
     return 1000;
 #elif defined(PCBSKY9X)
-  else if (chan == 7)
+  else if (chan == TX_VOLTAGE)
     return 1500;
-  else if (chan == 8)
+  else if (chan == TX_CURRENT)
     return 100;
 #elif defined(PCBGRUVIN9X)
-  else if (chan == 7)
+  else if (chan == TX_VOLTAGE)
     return 150;
 #else
-  else if (chan == 7)
+  else if (chan == TX_VOLTAGE)
     return 1500;
 #endif
   else

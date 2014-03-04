@@ -520,7 +520,7 @@ uint16_t evalChkSum()
 {
   uint16_t sum = 0;
   const int16_t *calibValues = (const int16_t *) &g_eeGeneral.calib[0];
-  for (int i=0; i<NUM_STICKS+NUM_POTS+5; i++)
+  for (int i=0; i<12; i++)
     sum += calibValues[i];
   return sum;
 }
@@ -1278,7 +1278,7 @@ getvalue_t getValue(uint8_t i)
 #if defined(FRSKY_SPORT)
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ALT) return frskyData.hub.baroAltitude;
 #elif defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ALT) return TELEMETRY_ALT_BP;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ALT) return TELEMETRY_RELATIVE_BARO_ALT_BP;
 #endif
 #if defined(FRSKY_HUB)
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RPM) return frskyData.hub.rpm;
@@ -1287,7 +1287,7 @@ getvalue_t getValue(uint8_t i)
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_T2) return frskyData.hub.temperature2;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_SPEED) return TELEMETRY_GPS_SPEED_BP;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_DIST) return frskyData.hub.gpsDistance;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_GPSALT) return TELEMETRY_GPS_ALT_BP;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_GPSALT) return TELEMETRY_RELATIVE_GPS_ALT_BP;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_CELL) return (int16_t)TELEMETRY_MIN_CELL_VOLTAGE;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_CELLS_SUM) return (int16_t)frskyData.hub.cellsSum;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_VFAS) return (int16_t)frskyData.hub.vfas;
@@ -1404,7 +1404,7 @@ void getSwitchesPosition(bool startup)
   for (int i=0; i<NUM_XPOTS; i++) {
     if (g_eeGeneral.potsType & (1 << i)) {
       StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[POT1+i];
-      if (calib->count>0 && calib->count<POTS_POS_COUNT) {
+      if (calib->count>0 && calib->count<XPOTS_MULTIPOS_COUNT) {
         uint8_t pos = anaIn(POT1+i) / (2*RESX/calib->count);
         uint8_t previousPos = potsPos[i] >> 4;
         uint8_t previousStoredPos = potsPos[i] & 0x0F;
@@ -1416,7 +1416,7 @@ void getSwitchesPosition(bool startup)
           potsLastposStart[i] = 0;
           potsPos[i] = (pos << 4) | pos;
           if (previousStoredPos != pos) {
-            PLAY_SWITCH_MOVED(SWSRC_LAST_SWITCH+i*POTS_POS_COUNT+pos);
+            PLAY_SWITCH_MOVED(SWSRC_LAST_SWITCH+i*XPOTS_MULTIPOS_COUNT+pos);
           }
         }
       }
@@ -1424,7 +1424,7 @@ void getSwitchesPosition(bool startup)
   }
 }
 #define SWITCH_POSITION(sw)  (switchesPos & (1<<(sw)))
-#define POT_POSITION(sw)     ((potsPos[(sw)/POTS_POS_COUNT] & 0x0f) == ((sw) % POTS_POS_COUNT))
+#define POT_POSITION(sw)     ((potsPos[(sw)/XPOTS_MULTIPOS_COUNT] & 0x0f) == ((sw) % XPOTS_MULTIPOS_COUNT))
 #else
 #define getSwitchesPosition(...)
 #define SWITCH_POSITION(idx) switchState((EnumKeys)(SW_BASE+(idx)))
@@ -1464,8 +1464,8 @@ bool getSwitch(int8_t swtch)
 #endif
   }
 #if defined(PCBTARANIS)
-  else if (cs_idx <= SWSRC_P26) {
-    result = POT_POSITION(cs_idx-SWSRC_P11);
+  else if (cs_idx <= SWSRC_LAST_MULTIPOS_SWITCH) {
+    result = POT_POSITION(cs_idx-SWSRC_FIRST_MULTIPOS_SWITCH);
   }
 #endif
   else if (cs_idx <= SWSRC_LAST_TRIM) {
@@ -2136,28 +2136,34 @@ getvalue_t convertCswTelemValue(LogicalSwitchData * cs)
 FORCEINLINE void convertUnit(getvalue_t & val, uint8_t & unit)
 {
   if (IS_IMPERIAL_ENABLE()) {
-    if (unit == UNIT_DEGREES) {
+    if (unit == UNIT_TEMPERATURE) {
       val += 18;
       val *= 115;
       val >>= 6;
     }
-    if (unit == UNIT_METERS) {
+    if (unit == UNIT_DIST) {
       // m to ft *105/32
       val = val * 3 + (val >> 2) + (val >> 5);
     }
     if (unit == UNIT_FEET) {
-      unit = UNIT_METERS;
+      unit = UNIT_DIST;
     }
     if (unit == UNIT_KTS) {
-      unit = UNIT_KMH;
+      // kts to mph
+      unit = UNIT_SPEED;
+      val = (val * 31) / 27;
     }
   }
   else {
     if (unit == UNIT_KTS) {
       // kts to km/h
-      unit = UNIT_KMH;
-      val = (val * 46) / 25;
+      unit = UNIT_SPEED;
+      val = (val * 50) / 27;
     }
+  }
+
+  if (unit == UNIT_HDG) {
+    unit = UNIT_TEMPERATURE;
   }
 }
 #endif
@@ -2815,7 +2821,7 @@ void getADC()
 #if defined(PCBTARANIS)
     if (s_noScroll) v = temp[x] >> 1;
     StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[x];
-    if (!s_noScroll && IS_MULTIPOS_POT(x) && calib->count>0 && calib->count<POTS_POS_COUNT) {
+    if (!s_noScroll && IS_POT_MULTIPOS(x) && calib->count>0 && calib->count<XPOTS_MULTIPOS_COUNT) {
       uint8_t vShifted = (v >> 4);
       s_anaFilt[x] = 2*RESX;
       for (int i=0; i<calib->count; i++) {
@@ -3078,7 +3084,7 @@ void evalInputs(uint8_t mode)
 
 #ifndef SIMU
     if (i < NUM_STICKS+NUM_POTS) {
-      if (IS_MULTIPOS_POT(i)) {
+      if (IS_POT_MULTIPOS(i)) {
         v -= RESX;
       }
       else {
@@ -3284,7 +3290,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
 
     case MIXSRC_FIRST_TELEM+TELEM_ALT-1:
 #if defined(PCBTARANIS)
-      PLAY_NUMBER(val/10, 1+UNIT_METERS, PREC1);
+      PLAY_NUMBER(val/10, 1+UNIT_DIST, PREC1);
       break;
 #endif
     case MIXSRC_FIRST_TELEM+TELEM_MIN_ALT-1:
@@ -3294,7 +3300,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
         PLAY_NUMBER(val, 1+UNIT_FEET, 0);
       else
 #endif
-        PLAY_NUMBER(val, 1+UNIT_METERS, 0);
+        PLAY_NUMBER(val, 1+UNIT_DIST, 0);
       break;
 
     case MIXSRC_FIRST_TELEM+TELEM_RPM-1:
@@ -3303,7 +3309,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
       break;
 
     case MIXSRC_FIRST_TELEM+TELEM_HDG-1:
-      PLAY_NUMBER(val, 1+UNIT_DEGREES, 0);
+      PLAY_NUMBER(val, 1+UNIT_HDG, 0);
       break;
 
     default:

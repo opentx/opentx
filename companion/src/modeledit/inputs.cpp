@@ -29,9 +29,9 @@ InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & g
   exposLayout->addWidget(qbClear,2,2);
   exposLayout->addWidget(qbDown,2,3);
 
-  connect(ExposlistWidget, SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(expolistWidget_customContextMenuRequested(QPoint)));
-  connect(ExposlistWidget, SIGNAL(doubleClicked(QModelIndex)),this,SLOT(expolistWidget_doubleClicked(QModelIndex)));
-  connect(ExposlistWidget, SIGNAL(mimeDropped(int,const QMimeData*,Qt::DropAction)),this,SLOT(mimeExpoDropped(int,const QMimeData*,Qt::DropAction)));
+  connect(ExposlistWidget, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(expolistWidget_customContextMenuRequested(QPoint)));
+  connect(ExposlistWidget, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(expolistWidget_doubleClicked(QModelIndex)));
+  connect(ExposlistWidget, SIGNAL(mimeDropped(int,const QMimeData*,Qt::DropAction)), this, SLOT(mimeExpoDropped(int, const QMimeData*, Qt::DropAction)));
 
   connect(qbUp, SIGNAL(pressed()),SLOT(moveExpoUp()));
   connect(qbDown, SIGNAL(pressed()),SLOT(moveExpoDown()));
@@ -58,7 +58,7 @@ void InputsPanel::update()
   ExposlistWidget->clear();
   int curDest = -1;
 
-  for(int i=0; i<C9X_MAX_EXPOS; i++) {
+  for (int i=0; i<C9X_MAX_EXPOS; i++) {
     ExpoData *md = &model.expoData[i];
 
     if (md->mode==0) break;
@@ -144,26 +144,24 @@ void InputsPanel::update()
 
 bool InputsPanel::gm_insertExpo(int idx)
 {
-    if (idx<0 || idx>=C9X_MAX_EXPOS || model.expoData[C9X_MAX_EXPOS-1].mode > 0) {
-      QMessageBox::information(this, "companion", tr("Not enough available inputs!"));
-      return false;
-    }
+  if (idx<0 || idx>=C9X_MAX_EXPOS || model.expoData[C9X_MAX_EXPOS-1].mode > 0) {
+    QMessageBox::information(this, "Companion", tr("Not enough available inputs!"));
+    return false;
+  }
 
-    int chn = model.expoData[idx].chn;
-    memmove(&model.expoData[idx+1],&model.expoData[idx],
-            (C9X_MAX_EXPOS-(idx+1))*sizeof(ExpoData) );
-    memset(&model.expoData[idx],0,sizeof(ExpoData));
-    model.expoData[idx].chn = chn;
-    model.expoData[idx].weight = 100;
-    model.expoData[idx].mode = 3 /* TODO enum */;
-    return true;
+  int chn = model.expoData[idx].chn;
+
+  ExpoData * newExpo = model.insertInput(idx);
+  newExpo->chn = chn;
+  newExpo->weight = 100;
+  newExpo->mode = INPUT_MODE_BOTH;
+
+  return true;
 }
 
 void InputsPanel::gm_deleteExpo(int index)
 {
-    memmove(&model.expoData[index],&model.expoData[index+1],
-              (C9X_MAX_EXPOS-(index+1))*sizeof(ExpoData));
-    memset(&model.expoData[C9X_MAX_EXPOS-1],0,sizeof(ExpoData));
+  model.removeInput(index);
 }
 
 void InputsPanel::gm_openExpo(int index)

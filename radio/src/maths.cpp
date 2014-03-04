@@ -105,7 +105,7 @@ void getGpsDistance()
   dist = frskyData.hub.distFromEarthAxis * angle / 1000000;
   result += dist*dist;
 
-  dist = abs(frskyData.hub.baroAltitudeOffset ? TELEMETRY_ALT_BP : TELEMETRY_GPS_ALT_BP);
+  dist = abs(TELEMETRY_BARO_ALT_AVAILABLE() ? TELEMETRY_RELATIVE_BARO_ALT_BP : TELEMETRY_RELATIVE_GPS_ALT_BP);
   result += dist*dist;
 
   frskyData.hub.gpsDistance = isqrt32(result);
@@ -195,12 +195,12 @@ void varioWakeup()
     int varioMax = (10+(int)g_model.frsky.varioMax) * 100;
     int varioMin = (-10+(int)g_model.frsky.varioMin) * 100;
 
-    if (verticalSpeed > varioMax)
-      verticalSpeed = varioMax;
-    else if (verticalSpeed < varioMin)
-      verticalSpeed = varioMin;
+    if (verticalSpeed < varioCenterMin || (verticalSpeed > varioCenterMax && (int16_t)(s_varioTmr - tmr10ms) < 0)) {
+      if (verticalSpeed > varioMax)
+        verticalSpeed = varioMax;
+      else if (verticalSpeed < varioMin)
+        verticalSpeed = varioMin;
 
-    if ((int16_t)(s_varioTmr - tmr10ms) < 0) {
       uint8_t varioFreq, varioDuration;
       if (verticalSpeed > 0) {
         varioFreq = (verticalSpeed * 4 + 8000) >> 7;

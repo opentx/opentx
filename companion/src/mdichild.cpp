@@ -155,7 +155,7 @@ void MdiChild::OpenEditWindow(bool wizard=false)
     ModelData &model = radioData.models[row - 1];
 
     if (model.isempty()) {
-      model.setDefault(row - 1);
+      model.setDefaultValues(row - 1, radioData.generalSettings);
       isNew = true; //modeledit - clear mixes, apply first template
       setModified();
     }

@@ -60,9 +60,9 @@
 
 volatile uint16_t Analog_values[NUMBER_ANALOG];
 #if defined(REV4a)
-const char ana_direction[NUMBER_ANALOG] = {0,1,0,1,  1,1,1,0,  0};
+const char ana_direction[NUMBER_ANALOG] = {0,1,0,1,  1,1,0,1,0,  0};
 #elif !defined(REV3)
-const char ana_direction[NUMBER_ANALOG] = {0,1,0,1,  1,0,1,0,  0};
+const char ana_direction[NUMBER_ANALOG] = {0,1,0,1,  1,0,0,1,0,  0};
 #endif
 
 void adcInit()
@@ -88,7 +88,7 @@ void adcInit()
   ADC1->CR1 = ADC_CR1_SCAN ;
   ADC1->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS ;
   ADC1->SQR1 = (NUMBER_ANALOG-1) << 20 ;             // NUMBER_ANALOG Channels
-  ADC1->SQR2 = SLIDE_L + (SLIDE_R<<5) + (BATTERY<<10) ;
+  ADC1->SQR2 = (SLIDE_L<<5) + (SLIDE_R<<10) + (BATTERY<<15) ;
   ADC1->SQR3 = STICK_LH + (STICK_LV<<5) + (STICK_RV<<10) + (STICK_RH<<15) + (POT_L<<20) + (POT_R<<25) ;
   ADC1->SMPR1 = SAMPTIME + (SAMPTIME<<3) + (SAMPTIME<<6) + (SAMPTIME<<9) + (SAMPTIME<<12)
                                                           + (SAMPTIME<<15) + (SAMPTIME<<18) + (SAMPTIME<<21) + (SAMPTIME<<24) ;
@@ -120,7 +120,6 @@ void adcRead()
     }
   }
   DMA2_Stream0->CR &= ~DMA_SxCR_EN ;              // Disable DMA
-  // return ( i < 10000 ) ? 1 : 0 ;
 
 #if !defined(REV3)
   // adc direction correct
@@ -136,9 +135,3 @@ void adcRead()
 void adcStop()
 {
 }
-
-
-
-
-
-
