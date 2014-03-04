@@ -99,7 +99,8 @@ else
   CPPDEFS += -DPCBTARANIS 
   FULL_PRJ = $(PROJECT)_ramBoot
   EXTRAINCDIRS += include
-#  EXTRAINCDIRS += ../targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include
+  EXTRAINCDIRS += ../src/targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc
+  EXTRAINCDIRS += ../src/targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include
  endif
 endif
 
@@ -111,9 +112,9 @@ UADEFS =
 
 ifeq ($(PCB), TARANIS)
 SRC  =	system_stm32f2xx.c \
-	stm32f2xx_rcc.c \
-	stm32f2xx_gpio.c \
-	stm32f2xx_spi.c \
+	../src/targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rcc.c \
+	../src/targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c \
+	../src/targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_spi.c \
 	misc.c \
 	ccsbcs.c \
 	../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/src/usb_core.c \
