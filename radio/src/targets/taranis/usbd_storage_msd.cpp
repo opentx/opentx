@@ -35,7 +35,7 @@ extern "C" {
 #include "usbd_msc_mem.h"
 #include "usb_conf.h"
 
-void eeprom_read_block (void *pointer_ram, uint16_t pointer_eeprom, size_t size);
+// void eeprom_read_block (void *pointer_ram, uint16_t pointer_eeprom, size_t size);
 
 #define STORAGE_LUN_NBR    2
 #define BLOCKSIZE          512

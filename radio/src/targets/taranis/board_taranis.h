@@ -45,17 +45,28 @@
 #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_dma.h"
 #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_usart.h"
 #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include/stm32f2xx.h"
+
+#ifdef __cplusplus
 extern "C" {
+#endif
+
 #include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/inc/usbd_msc_core.h"
 #include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/inc/usbd_usr.h"
 #include "usbd_desc.h"
 #include "usb_conf.h"
 #include "usbd_conf.h"
-}
+
 #include "hal.h"
 #include "aspi.h"
 #include "i2c.h"
+
+#ifdef __cplusplus
+}
+#endif
+
+#if !defined(BOOT)
 #include "audio_driver.h"
+#endif
 
 #define PERI1_FREQUENCY 30000000
 #define PERI2_FREQUENCY 60000000
@@ -97,11 +108,11 @@ void delay_01us(uint16_t nb);
   #define SD_GET_SIZE_MB()        (0)
   #define SD_GET_BLOCKNR()        (0)
   #define SD_GET_SPEED()          (0)
-  void sdInit();
-  void sdDone();
-  void sdPoll10ms();
+  void sdInit(void);
+  void sdDone(void);
+  void sdPoll10ms(void);
   #define sdMountPoll()
-  uint32_t sdMounted();
+  uint32_t sdMounted(void);
   #define SD_CARD_PRESENT()       (~SD_PRESENT_GPIO->IDR & SD_PRESENT_GPIO_Pin)
 #endif
 
@@ -116,15 +127,15 @@ void init_dsm2( uint32_t module_index );
 void disable_dsm2( uint32_t module_index );
 
 // Trainer driver
-void init_trainer_ppm();
-void stop_trainer_ppm();
-void init_trainer_capture();
-void stop_trainer_capture();
+void init_trainer_ppm(void);
+void stop_trainer_ppm(void);
+void init_trainer_capture(void);
+void stop_trainer_capture(void);
 
 // Keys driver
-void keysInit();
-uint32_t readKeys();
-uint32_t readTrims();
+void keysInit(void);
+uint32_t readKeys(void);
+uint32_t readTrims(void);
 #define TRIMS_PRESSED() (readTrims())
 #define KEYS_PRESSED()  (~readKeys())
 #define DBLKEYS_PRESSED_RGT_LFT(i) ((in & ((2<<KEY_PLUS) + (2<<KEY_MINUS))) == ((2<<KEY_PLUS) + (2<<KEY_MINUS)))
@@ -141,8 +152,8 @@ void watchdogInit(unsigned int duration);
 #endif
 
 // ADC driver
-void adcInit();
-void adcRead();
+void adcInit(void);
+void adcRead(void);
 extern volatile uint16_t Analog_values[];
 #if defined(REV3)
   #define BATT_SCALE    120
@@ -151,9 +162,9 @@ extern volatile uint16_t Analog_values[];
 #endif
 
 // Power driver
-void pwrInit();
-uint32_t pwrCheck();
-void pwrOff();
+void pwrInit(void);
+uint32_t pwrCheck(void);
+void pwrOff(void);
 #define UNEXPECTED_SHUTDOWN() (g_eeGeneral.unexpectedShutdown)
 #define INTERNAL_RF_ON()      GPIO_SetBits(GPIOPWR, PIN_INT_RF_PWR)
 #define INTERNAL_RF_OFF()     GPIO_ResetBits(GPIOPWR, PIN_INT_RF_PWR)
@@ -166,12 +177,14 @@ void pwrOff();
 #define __BACKLIGHT_OFF       TIM10->CCR1 = 0
 #define IS_BACKLIGHT_ON()     (TIM10->CCR1 != 0)
 
+#if !defined(BOOT)
 // USB driver
 #define BOOTLOADER_REQUEST()  (0)
 #define usbBootloader()
 void usbInit(void);
 void usbStart(void);
 bool usbPlugged(void);
+#endif
 
 // EEPROM driver
 #if !defined(SIMU)

@@ -32,7 +32,7 @@
 #include <string.h>
 //#include <stdlib.h>
 #include "drivers.h"
-#include "i2c_ee.h"
+#include "../src/targets/taranis/i2c.h"
 
 #include "diskio.h"
 //#include "board_taranis.h"

@@ -61,7 +61,7 @@
 #ifdef PCBTARANIS
 #include "stm32f2xx.h"
 #include "stm32f2xx_flash.h"
-#include "i2c_ee.h"
+#include "../src/targets/taranis/i2c.h"
 #include "hal.h"
 #include "timers.h"
 

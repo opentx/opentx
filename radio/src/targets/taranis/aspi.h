@@ -11,6 +11,10 @@
 #ifndef _ASPI_H_
 #define _ASPI_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "./STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include/stm32f2xx.h"
 
 #define __no_operation     __NOP
@@ -32,6 +36,10 @@
 
 void AspiCmd(u8 Command_Byte);
 void AspiData(u8 Para_data);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

@@ -15,7 +15,7 @@
 #include "stm32f2xx_gpio.h"
 #include "stm32f2xx_rcc.h"
 #include "hal.h"
-#include "aspi.h"
+#include "../src/targets/taranis/aspi.h"
 
 #include "timers.h"
 #include "lcd.h"
@@ -268,7 +268,7 @@ static void LCD_Init()
   AspiCmd(0xF7);   //ending row address of RAM program window.
   AspiCmd(0x9F);
 
-  AspiCmd(0xAF);	//dc2=1,IC into exit SLEEP MODE,	 dc3=1  gray=ON 开灰阶	,dc4=1  Green Enhanc mode disabled	  绿色增强模式关
+  AspiCmd(0xAF);	//dc2=1,IC into exit SLEEP MODE,	 dc3=1  gray=ON 锟斤拷锟揭斤拷	,dc4=1  Green Enhanc mode disabled	  锟斤拷色锟斤拷强模式锟斤拷
 	
 }
 
