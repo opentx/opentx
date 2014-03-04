@@ -115,8 +115,8 @@ SRC  =	system_stm32f2xx.c \
 	../src/targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rcc.c \
 	../src/targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c \
 	../src/targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_spi.c \
-	misc.c \
-	ccsbcs.c \
+	../src/targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/misc.c \
+	../src/FatFs/option/ccsbcs.c \
 	../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/src/usb_core.c \
 	../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/src/usb_dcd.c \
 	../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/src/usb_dcd_int.c \
@@ -131,17 +131,17 @@ SRC  =	system_stm32f2xx.c \
 	../src/targets/taranis/usb_bsp.c
 
 CPPSRC = ../src/targets/taranis/aspi.cpp \
-         lcd_driver.cpp \
-         driversboot.cpp \
-         logicioboot.cpp \
-         ff.cpp \
-			x9ddiskio.cpp \
-         ../src/targets/taranis/usbd_usr.cpp \
-         usbd_storage_msd.cpp \
+        lcd_driver.cpp \
+        driversboot.cpp \
+        logicioboot.cpp \
+        ff.cpp \
+	x9ddiskio.cpp \
+        ../src/targets/taranis/usbd_usr.cpp \
+        usbd_storage_msd.cpp \
        	i2c_ee.cpp \
-         lcdboot.cpp \
-			power.cpp \
-         boot.cpp
+        lcdboot.cpp \
+	power.cpp \
+        boot.cpp
 
 # List ASM source files here
 ASRC = startup_stm32f2xx.s
