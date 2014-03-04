@@ -149,6 +149,12 @@ extern uint8_t lcdNextPos;
   extern volatile uint32_t lcdInputs ;
 #endif
 
+#if defined(BOOT)
+// TODO quick & dirty :(
+typedef const unsigned char pm_uchar;
+typedef const char pm_char;
+#endif
+
 void lcd_putc(xcoord_t x, uint8_t y, const unsigned char c);
 void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags mode);
 void lcd_putsAtt(xcoord_t x, uint8_t y, const pm_char * s, LcdFlags mode);
@@ -169,7 +175,7 @@ void putsModelName(xcoord_t x, uint8_t y, char *name, uint8_t id, LcdFlags att);
 void putsSwitches(xcoord_t x, uint8_t y, int8_t swtch, LcdFlags att=0);
 void putsMixerSource(xcoord_t x, uint8_t y, uint8_t idx, LcdFlags att=0);
 void putsFlightPhase(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att=0);
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) && !defined(BOOT)
 void putsCurveRef(xcoord_t x, uint8_t y, CurveRef &curve, LcdFlags att);
 #endif
 void putsCurve(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att=0);
@@ -249,7 +255,11 @@ void lcdRefresh();
   const pm_char * bmpLoad(bmp_ptr_t &dest, const char *filename, const xcoord_t width, const uint8_t height);
 #endif
 
-#define BLINK_ON_PHASE (g_blinkTmr10ms & (1<<6))
+#if defined(BOOT)
+  #define BLINK_ON_PHASE (0)
+#else
+  #define BLINK_ON_PHASE (g_blinkTmr10ms & (1<<6))
+#endif
 
 #ifdef SIMU
   extern bool lcd_refresh;

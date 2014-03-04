@@ -27,7 +27,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "radio.h"
-#include "eeprom_rlc.h"
+#include "../src/eeprom_rlc.h"
 #include <stdint.h>
 #include <string.h>
 //#include <stdlib.h>

@@ -105,6 +105,7 @@ else
   EXTRAINCDIRS += ../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/inc
   EXTRAINCDIRS += ../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/inc
   EXTRAINCDIRS += ../src/targets/taranis
+  EXTRAINCDIRS += ../src/fonts/std
  endif
 endif
 
@@ -137,14 +138,15 @@ SRC  =	system_stm32f2xx.c \
 	../src/targets/taranis/aspi.c \
 	../src/targets/taranis/usb_bsp.c
 
-CPPSRC = lcd_driver.cpp \
+CPPSRC = ../src/targets/taranis/lcd_driver.cpp \
         driversboot.cpp \
         logicioboot.cpp \
         ff.cpp \
 	../src/targets/taranis/diskio.cpp \
         ../src/targets/taranis/usbd_usr.cpp \
         usbd_storage_msd.cpp \
-        lcdboot.cpp \
+        ../src/lcd.cpp \
+        ../src/translations.cpp \
 	power.cpp \
         boot.cpp
 

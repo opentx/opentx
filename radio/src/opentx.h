@@ -1513,9 +1513,7 @@ enum AUDIO_SOUNDS {
 #include "targets/gruvin9x/somo14d.h"
 #endif
 
-#if !defined(BOOT)
 #include "translations.h"
-#endif
 
 #if defined(HAPTIC)
 #include "haptic.h"
@@ -1634,7 +1632,7 @@ extern union ReusableBuffer reusableBuffer;
 void checkFlashOnBeep();
 
 #if defined(FRSKY) || defined(CPUARM)
-FORCEINLINE void convertUnit(getvalue_t & val, uint8_t & unit);
+void convertUnit(getvalue_t & val, uint8_t & unit); // TODO check FORCEINLINE on stock
 void putsTelemetryValue(xcoord_t x, uint8_t y, lcdint_t val, uint8_t unit, uint8_t att);
 #else
 #define convertUnit(...)

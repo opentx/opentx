@@ -49,6 +49,7 @@ void lcd_clear()
   memset(displayBuf, 0, sizeof(displayBuf));
 }
 
+#if !defined(BOOT)
 void lcd_img(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t idx, LcdFlags att)
 {
   const pm_uchar *q = img;
@@ -84,6 +85,7 @@ void lcd_img(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t idx, LcdFlags 
     }
   }
 }
+#endif
 
 uint8_t lcdLastPos;
 uint8_t lcdNextPos;
@@ -177,7 +179,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
     }   
   }
 
-#if defined(CPUARM)
+#if defined(CPUARM) && !defined(BOOT)
   else if (flags & MIDSIZE) {
     /* each letter consists of ten top bytes followed by
      * by ten bottom bytes (20 bytes per * char) */
@@ -329,7 +331,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
             LCD_BYTE_FILTER(r, ~mask, b >> (8-ym8));
         }
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) && !defined(BOOT)
         if (inv) {
           if (ym8) lcd_mask(p, 0x01 << (ym8-1), FORCE);
           else if (y) {
@@ -369,9 +371,11 @@ void lcd_putsnAtt(xcoord_t x, uint8_t y, const pm_char * s, uint8_t len, LcdFlag
       case BSS:
         c = *s;
         break;
+#if !defined(BOOT)
       case ZCHAR:
         c = idx2char(*s);
         break;
+#endif
       default:
         c = pgm_read_byte(s);
         break;
@@ -854,6 +858,7 @@ void lcd_invert_line(int8_t y)
   }
 }
 
+#if !defined(BOOT)
 #if defined(PCBTARANIS)
 void lcdDrawTelemetryTopBar()
 {
@@ -884,6 +889,7 @@ void lcdDrawTelemetryTopBar()
   }
   lcd_invert_line(0);
 }
+#endif
 #endif
 
 void putsTime(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFlags att2)
@@ -929,6 +935,7 @@ void putsTime(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFlags att2
   lcd_outdezNAtt(lcdNextPos, y, qr.rem, att2|LEADING0|LEFT, 2);
 }
 
+#if !defined(BOOT)
 // TODO to be optimized with putsTelemetryValue
 void putsVolts(xcoord_t x, uint8_t y, uint16_t volts, LcdFlags att)
 {
@@ -1175,7 +1182,7 @@ void putsRotaryEncoderMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, Lc
 }
 #endif
 
-#if defined(FRSKY) || defined(CPUARM)
+#if (defined(FRSKY) || defined(CPUARM)) && !defined(BOOT)
 void putsTelemetryValue(xcoord_t x, uint8_t y, lcdint_t val, uint8_t unit, uint8_t att)
 {
   convertUnit(val, unit);
@@ -1333,3 +1340,4 @@ void lcdSetContrast()
 {
   lcdSetRefVolt(g_eeGeneral.contrast);
 }
+#endif

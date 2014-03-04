@@ -63,7 +63,7 @@
 #include "stm32f2xx_flash.h"
 #include "../src/targets/taranis/i2c.h"
 #include "hal.h"
-#include "timers.h"
+// #include "timers.h"
 
 extern "C" {
 #include "usb_dcd_int.h"
@@ -75,8 +75,11 @@ extern "C" {
 
 #endif
 
+#include "board_taranis.h"
+#include "../src/lcd.h"
+
 #include "radio.h"
-#include "lcd.h"
+// #include "lcd.h"
 #include "ff.h"
 #include "diskio.h"
 #include "drivers.h"
@@ -405,7 +408,7 @@ void init10msTimer()
 	// Timer14
 	RCC->APB1ENR |= RCC_APB1ENR_TIM14EN ;		// Enable clock
 	TIM14->ARR = 9999 ;	// 10mS
-	TIM14->PSC = (Peri1_frequency*Timer_mult1) / 1000000 - 1 ;		// 1uS from 12MHz
+	TIM14->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 1000000 - 1 ;		// 1uS from 12MHz
 	TIM14->CCER = 0 ;	
 	TIM14->CCMR1 = 0 ;
 	TIM14->EGR = 0 ;
@@ -425,7 +428,7 @@ void init_hw_timer()
 	// Timer13
 	RCC->APB1ENR |= RCC_APB1ENR_TIM13EN ;		// Enable clock
 	TIM13->ARR = 65535 ;
-	TIM13->PSC = (Peri1_frequency*Timer_mult1) / 10000000 - 1 ;		// 0.1uS from 12MHz
+	TIM13->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 10000000 - 1 ;		// 0.1uS from 12MHz
 	TIM13->CCER = 0 ;	
 	TIM13->CCMR1 = 0 ;
 	TIM13->EGR = 0 ;
@@ -669,7 +672,7 @@ uint8_t flashFile( uint32_t index )
 	FRESULT fr ;
 	
 	lcd_clear() ;
-	lcd_puts_Pleft( 0, "\005Flash File" ) ;
+	lcd_putsLeft( 0, "\005Flash File" ) ;
 	if ( Valid == 0 )
 	{
 		// Validate file here
@@ -685,11 +688,11 @@ uint8_t flashFile( uint32_t index )
 	}
 	if ( Valid == 2 )
 	{
-	  lcd_puts_Pleft( 3*FH,"NOT A VALID FIRMWARE") ;
+	  lcd_putsLeft( 3*FH,"NOT A VALID FIRMWARE") ;
 #ifdef PCBTARANIS
-	  lcd_puts_Pleft( 6*FH,"\015[EXIT]") ;
+	  lcd_putsLeft( 6*FH,"\015[EXIT]") ;
 #else
-	  lcd_puts_Pleft( 6*FH,"\007[EXIT]") ;
+	  lcd_putsLeft( 6*FH,"\007[EXIT]") ;
 #endif
 		uint8_t event = getEvent() ;
 		if ( event == EVT_KEY_FIRST(BOOT_KEY_EXIT) )
@@ -698,14 +701,14 @@ uint8_t flashFile( uint32_t index )
 		}
 		return 4 ;		// 
 	}
-	lcd_putsn_P( 0, 2*FH, Filenames[index], DISPLAY_CHAR_WIDTH ) ;
+	lcd_putsnAtt( 0, 2*FH, Filenames[index], DISPLAY_CHAR_WIDTH, 0 ) ;
 
 #ifdef PCBTARANIS
-  lcd_puts_Pleft( 6*FH,"\010[ENTER]\021[EXIT]") ;
-  lcd_puts_Pleft( 5*FH,"\010YES\021NO") ;
+  lcd_putsLeft( 6*FH,"\010[ENTER]\021[EXIT]") ;
+  lcd_putsLeft( 5*FH,"\010YES\021NO") ;
 #else
-  lcd_puts_Pleft( 6*FH,"\003[MENU]\013[EXIT]") ;
-  lcd_puts_Pleft( 5*FH,"\003YES\013NO") ;
+  lcd_putsLeft( 6*FH,"\003[MENU]\013[EXIT]") ;
+  lcd_putsLeft( 5*FH,"\003YES\013NO") ;
 #endif
 	
 	uint8_t event = getEvent() ;
@@ -770,19 +773,19 @@ int main()
 	start_timer0() ;
 #endif
 
-	lcd_init() ;
+	lcdInit() ;
 #ifdef PCBSKY
 extern uint8_t OptrexDisplay ;
 	OptrexDisplay = 1 ;
 #endif
 	lcd_clear() ;
 #ifdef PCBTARANIS
-	lcd_puts_Pleft( 0, "\006Boot Loader" ) ;
+	lcd_putsLeft( 0, "\006Boot Loader" ) ;
 #endif
-	refreshDisplay() ;
+	lcdRefresh() ;
 #ifdef PCBSKY
 	OptrexDisplay = 0 ;
-	refreshDisplay() ;
+	lcdRefresh() ;
 #endif
 
 #ifdef PCBTARANIS
@@ -853,19 +856,19 @@ extern uint8_t OptrexDisplay ;
 			Tenms = 0 ;
 			lcd_clear() ;
 #ifdef PCBSKY
-			lcd_puts_Pleft( 0, "Boot Loader" ) ;
+			lcd_putsLeft( 0, "Boot Loader" ) ;
 #endif
 #ifdef PCBTARANIS
-			lcd_puts_Pleft( 0, "\006Boot Loader" ) ;
+			lcd_putsLeft( 0, "\006Boot Loader" ) ;
 #endif
 
 			if ( sdMounted() )
 			{
 #ifdef PCBSKY
-				lcd_puts_Pleft( 0, "\014Ready" ) ;
+				lcd_putsLeft( 0, "\014Ready" ) ;
 #endif
 #ifdef PCBTARANIS
-				lcd_puts_Pleft( 0, "\022Ready" ) ;
+				lcd_putsLeft( 0, "\022Ready" ) ;
 #endif
 
 				if ( usbPlugged() )
@@ -876,10 +879,10 @@ extern uint8_t OptrexDisplay ;
 				if ( state == ST_USB )
 				{
 #ifdef PCBSKY
-					lcd_puts_Pleft( 3*FH, "\010BUSY" ) ;
+					lcd_putsLeft( 3*FH, "\010BUSY" ) ;
 #endif
 #ifdef PCBTARANIS
-					lcd_puts_Pleft( 3*FH, "\016BUSY" ) ;
+					lcd_putsLeft( 3*FH, "\016BUSY" ) ;
 #endif
 					if ( usbPlugged() == 0 )
 					{
@@ -921,10 +924,10 @@ extern uint8_t OptrexDisplay ;
 				if ( state == ST_DIR_CHECK )
 				{
 #ifdef PCBSKY
-					lcd_puts_Pleft( 16, "\005No Firmware" ) ;
+					lcd_putsLeft( 16, "\005No Firmware" ) ;
 #endif
 #ifdef PCBTARANIS
-					lcd_puts_Pleft( 16, "\013No Firmware" ) ;
+					lcd_putsLeft( 16, "\013No Firmware" ) ;
 #endif
 				}
 				if ( state == ST_OPEN_DIR )
@@ -970,7 +973,7 @@ extern uint8_t OptrexDisplay ;
 						{
 							x = 0 ;
 						}
-						lcd_putsn_P( 0, 16+FH*i, &Filenames[i][x], DISPLAY_CHAR_WIDTH ) ;
+						lcd_putsnAtt( 0, 16+FH*i, &Filenames[i][x], DISPLAY_CHAR_WIDTH, 0 ) ;
 					}
 					{
 						uint8_t event = getEvent() ;
@@ -1030,7 +1033,8 @@ extern uint8_t OptrexDisplay ;
 							state = ST_REBOOT ;
 						}
 					}
-					lcd_char_inverse( 0, 2*FH+FH*vpos, DISPLAY_CHAR_WIDTH*FW, 0 ) ;
+					lcd_invert_line(2*FH+FH*vpos);
+					// lcd_char_inverse( 0, 2*FH+FH*vpos, DISPLAY_CHAR_WIDTH*FW, 0 ) ;
 				}
 				if ( state == ST_FLASH_CHECK )
 				{
@@ -1061,7 +1065,7 @@ extern uint8_t OptrexDisplay ;
 				{
 					// Commit to flashing
 					uint32_t blockOffset = 0 ;
-					lcd_puts_Pleft( 3*FH, "Flashing" ) ;
+					lcd_putsLeft( 3*FH, "Flashing" ) ;
 					while ( BlockCount )
 					{
 						program( (uint32_t *)firmwareAddress, &Block_buffer[blockOffset] ) ;	// size is 256 bytes
@@ -1098,7 +1102,7 @@ extern uint8_t OptrexDisplay ;
 				if ( state == ST_FLASH_DONE )
 				{
 					uint8_t event = getEvent() ;
-					lcd_puts_Pleft( 3*FH, "Flashing Complete" ) ;
+					lcd_putsLeft( 3*FH, "Flashing Complete" ) ;
 					if ( event == EVT_KEY_FIRST(BOOT_KEY_EXIT) )
 					{
 						state = ST_FILE_LIST ;
@@ -1111,7 +1115,7 @@ extern uint8_t OptrexDisplay ;
 			{
 				TenCount = 2 ;
 #endif			
-			refreshDisplay() ;
+			lcdRefresh() ;
 #ifdef PCBTARANIS
 			}
 #endif			
