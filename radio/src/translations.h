@@ -690,8 +690,6 @@ extern const pm_char STR_VIEW_TEXT[];
   extern const pm_char STR_PREFLIGHT[];
   extern const pm_char STR_CHECKLIST[];
   extern const pm_char STR_UART3MODE[];
-  extern const pm_char STR_POT1TYPE[];
-  extern const pm_char STR_POT2TYPE[];
   extern const pm_char STR_THROTTLE_LABEL[];
 #endif
 
