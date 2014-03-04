@@ -222,7 +222,7 @@ void MainWindow::checkForUpdates(bool ignoreSettings, QString & fwId)
 
     if(ignoreSettings) {
       downloadDialog_forWait = new downloadDialog(this, tr("Checking for updates"));
-      downloadDialog_forWait->show();
+      downloadDialog_forWait->exec();
     } else {
       downloadDialog_forWait = NULL; // TODO needed?
     }
@@ -272,7 +272,7 @@ void MainWindow::checkForUpdateFinished(QNetworkReply * reply)
             downloadDialog * dd = new downloadDialog(this, QString(OPENTX_COMPANION_DOWNLOADS C9X_INSTALLER).arg(version), fileName);
             installer_fileName = fileName;
             connect(dd, SIGNAL(accepted()), this, SLOT(updateDownloaded()));
-            dd->show();
+            dd->exec();
           }
         }
 #else
