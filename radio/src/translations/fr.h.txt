@@ -450,8 +450,8 @@
 #define TR_ELIMITS             TR("Limites ét", "Limites étendues")
 #define TR_ETRIMS              TR("Trims ét.", "Trims étendus")
 #define TR_TRIMINC             TR("Pas Trim", "Pas des trims")
-#define TR_TTRACE              "Source gaz"
-#define TR_TTRIM               "Trim gaz"
+#define TR_TTRACE              TR("Source gaz", INDENT "Source gaz")
+#define TR_TTRIM               TR("Trim gaz", INDENT "Trim gaz")
 #define TR_BEEPCTR             TR("Bips centr", "Bips centrage")
 #define TR_PROTO               TR(INDENT "Proto.", INDENT "Protocole")
 #define TR_PPMFRAME            INDENT "Trame PPM"
@@ -514,7 +514,8 @@
 #define TR_MEMORYWARNING       INDENT "Mémoire pleine"
 #define TR_ALARMWARNING        TR(INDENT "Silence",INDENT "Sons désactivés")
 #define TR_RENAVIG             "Navig EncRot"
-#define TR_THROTTLEREVERSE     TR("Inv. gaz","Inversion gaz")
+#define TR_THROTTLE_LABEL      "Gaz"
+#define TR_THROTTLEREVERSE     TR("Inv. gaz", INDENT "Inversion gaz")
 #define TR_MINUTEBEEP          TR(INDENT "Bip min.",INDENT "Annonces minutes")
 #define TR_BEEPCOUNTDOWN       TR(INDENT "Bip fin",INDENT "Compte à rebours")
 #define TR_PERSISTENT          TR(INDENT "Persist.",INDENT "Persistant")
@@ -523,9 +524,9 @@
 #define TR_BLONBRIGHTNESS      INDENT "Luminosité ON"
 #define TR_BLOFFBRIGHTNESS     INDENT "Luminosité OFF"
 #define TR_SPLASHSCREEN        "Logo d'accueil"
-#define TR_THROTTLEWARNING     "Alerte gaz"
-#define TR_SWITCHWARNING       TR("Alerte int","Alerte interrupt.")
-#define TR_POTWARNING          TR("Alerte pot","Alerte potentiom.")
+#define TR_THROTTLEWARNING     TR("Alerte gaz", INDENT "Alerte gaz")
+#define TR_SWITCHWARNING       TR("Alerte int", INDENT "Alerte interrupt.")
+#define TR_POTWARNING          TR("Alerte pot", INDENT "Alerte potentiom.")
 #define TR_TIMEZONE            "Fuseau horaire"
 #define TR_RXCHANNELORD        TR("Ordre voies RX","Ordre des voies préféré")
 #define TR_SLAVE               "Elève"
@@ -720,7 +721,8 @@
 #define TR_LOWALARM            INDENT "Alarme basse"
 #define TR_CRITICALALARM       INDENT "Alarme critique"
 #define TR_PERSISTENT_MAH      TR(INDENT "Enr. mAh", INDENT "Enregistrer mAh")
-#define TR_CHECKLIST           "Afficher notes"
+#define TR_PREFLIGHT           "Preflight Checks"
+#define TR_CHECKLIST           INDENT "Afficher notes"
 #define TR_FAS_OFFSET          TR(INDENT "Corr FAS", INDENT "Correction FAS")
 #define TR_UART3MODE           "Port série"
 
