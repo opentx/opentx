@@ -35,9 +35,10 @@
  */
 
 #include <string.h>
-#include "../FatFs/diskio.h"
-#include "../FatFs/ff.h"
-#include "../CoOS/kernel/CoOS.h"
+#include "board_taranis.h"
+#include "../../FatFs/diskio.h"
+#include "../../FatFs/ff.h"
+#include "../../CoOS/kernel/CoOS.h"
 #include "hal.h"
 
 /* Definitions for MMC/SDC command */
@@ -93,6 +94,7 @@ uint32_t transSpeed; */
 /*-----------------------------------------------------------------------*/
 /* Lock / unlock functions                                               */
 /*-----------------------------------------------------------------------*/
+#if !defined(BOOT)
 int ff_cre_syncobj (BYTE vol, _SYNC_t *mutex)
 {
   *mutex = CoCreateMutex();
@@ -114,6 +116,7 @@ int ff_del_syncobj (_SYNC_t mutex)
 {
   return 1;
 }
+#endif
 
 static const DWORD socket_state_mask_cp = (1 << 0);
 static const DWORD socket_state_mask_wp = (1 << 1);
@@ -124,7 +127,6 @@ DSTATUS Stat = STA_NOINIT;      /* Disk status */
 static volatile
 DWORD Timer1, Timer2;   /* 100Hz decrement timers */
 
-static
 BYTE CardType;                  /* Card type flags */
 
 enum speed_setting { INTERFACE_SLOW, INTERFACE_FAST };
@@ -655,7 +657,6 @@ DSTATUS disk_initialize (
 /*-----------------------------------------------------------------------*/
 /* Get Disk Status                                                       */
 /*-----------------------------------------------------------------------*/
-
 DSTATUS disk_status (
         BYTE drv                /* Physical drive number (0) */
 )
@@ -663,7 +664,6 @@ DSTATUS disk_status (
         if (drv) return STA_NOINIT;             /* Supports only single drive */
         return Stat;
 }
-
 
 
 /*-----------------------------------------------------------------------*/
@@ -966,7 +966,14 @@ FATFS g_FATFS_Obj;
 FIL g_telemetryFile = {0};
 #endif
 
-void sdInit()
+#if defined(BOOT)
+void sdInit(void)
+{
+ f_mount(0, &g_FATFS_Obj);
+}
+#else
+// TODO shouldn't be there!
+void sdInit(void)
 {
   if (f_mount(0, &g_FATFS_Obj) == FR_OK) {
     referenceSystemAudioFiles();
@@ -989,6 +996,7 @@ void sdDone()
     f_mount(0, 0); // unmount SD
   }
 }
+#endif
 
 uint32_t sdMounted()
 {

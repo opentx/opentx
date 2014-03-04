@@ -819,7 +819,7 @@ extern uint8_t OptrexDisplay ;
 
 #ifdef PCBTARANIS
 	// SD card detect pin
-	configure_pins( GPIO_Pin_CP, PIN_PORTD | PIN_INPUT | PIN_PULLUP ) ;
+	configure_pins( SD_PRESENT_GPIO_Pin, PIN_PORTD | PIN_INPUT | PIN_PULLUP ) ;
 	disk_initialize( 0 ) ;
 	sdInit() ;
 	unlockFlash() ;
@@ -859,7 +859,7 @@ extern uint8_t OptrexDisplay ;
 			lcd_puts_Pleft( 0, "\006Boot Loader" ) ;
 #endif
 
-			if ( sd_card_ready() )
+			if ( sdMounted() )
 			{
 #ifdef PCBSKY
 				lcd_puts_Pleft( 0, "\014Ready" ) ;

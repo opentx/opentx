@@ -76,12 +76,11 @@ typedef enum {
 /*---------------------------------------*/
 /* Prototypes for disk control functions */
 
-DSTATUS disk_initialize (BYTE);
-DSTATUS disk_status (BYTE);
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+DSTATUS disk_initialize (BYTE);
+DSTATUS disk_status (BYTE);
 DRESULT disk_read (BYTE, BYTE*, DWORD, BYTE);
 DRESULT disk_write (BYTE, const BYTE*, DWORD, BYTE);
 DRESULT disk_ioctl (BYTE, BYTE, BYTE*);
@@ -164,6 +163,7 @@ extern void sd_poll_10mS( void ) ;
 #ifdef PCBTARANIS
 extern void sdPoll10ms( void ) ;
 extern void sdInit( void ) ;
+uint32_t sdMounted(void);
 #endif
 extern uint32_t sd_card_ready( void ) ;
 extern uint32_t sd_read_block( uint32_t block_no, uint32_t *data ) ;

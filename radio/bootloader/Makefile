@@ -141,7 +141,7 @@ CPPSRC = lcd_driver.cpp \
         driversboot.cpp \
         logicioboot.cpp \
         ff.cpp \
-	x9ddiskio.cpp \
+	../src/targets/taranis/diskio.cpp \
         ../src/targets/taranis/usbd_usr.cpp \
         usbd_storage_msd.cpp \
         lcdboot.cpp \

@@ -33,9 +33,12 @@
 //#include <stdlib.h>
 #include "drivers.h"
 #include "../src/targets/taranis/i2c.h"
-
 #include "diskio.h"
 //#include "board_taranis.h"
+
+#include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_gpio.h"
+#include "hal.h"
+#define SD_CARD_PRESENT()       (~SD_PRESENT_GPIO->IDR & SD_PRESENT_GPIO_Pin)
 
 void I2C_EE_BufferWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint16_t NumByteToWrite) ;
 void eeprom_read_block (void *pointer_ram, uint16_t pointer_eeprom, size_t size);
@@ -156,7 +159,7 @@ int8_t STORAGE_GetCapacity (uint8_t lun, uint32_t *block_num, uint32_t *block_si
     *block_num  = EESIZE/BLOCKSIZE + 3 + 1024 ;
   }
   else {
-    if (socket_is_empty())
+    if (!SD_CARD_PRESENT())
       return -1;
   
     *block_size = BLOCKSIZE;
@@ -186,7 +189,7 @@ int8_t  STORAGE_IsReady (uint8_t lun)
     return 0;
   }
   else {
-    return !socket_is_empty() ? 0 : -1;
+    return SD_CARD_PRESENT() ? 0 : -1;
   }
 }
 
