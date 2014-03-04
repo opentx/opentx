@@ -189,15 +189,7 @@ void MdiChild::wizardEdit()
     wizard->exec();
     if (wizard->mix.complete){
       ModelData &model = radioData.models[row - 1];
-      
-      // Remove dicritics and filter off anything but chars from the new model name
-      QString newName(wizard->mix.name.normalized(QString::NormalizationForm_D));
-      newName = newName.replace(QRegExp("[^a-zA-Z\\s]"), "");
-      strncpy(model.name, newName.toAscii(), sizeof(model.name));
-      model.name[sizeof(model.name)-1]=0;
-
-      //TODO Save the rest of the wizard->mix data to model.
-      
+      model.importWizardData(row - 1, wizard->mix);
       setModified();
     }
   }

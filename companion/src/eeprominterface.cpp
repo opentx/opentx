@@ -8,6 +8,7 @@
 #include "firmwares/ersky9x/ersky9xinterface.h"
 #include "appdata.h"
 #include "helpers.h"
+#include "wizarddata.h"
 
 QString EEPROMWarnings;
 
@@ -969,6 +970,25 @@ void ModelData::clear()
 bool ModelData::isempty()
 {
   return !used;
+}
+
+void ModelData::importWizardData( unsigned int id, const WizMix mix )
+{
+  clear();
+  used = true;
+  modelId = id+1;
+
+  // Safe copy model name
+  strncpy ( name, mix.name, WIZ_MODEL_NAME_LENGTH);
+  name[WIZ_MODEL_NAME_LENGTH] = 0;
+
+  for (int i=0; i<WIZ_MAX_CHANNELS; i++ ){
+    Channel ch = mix.channel[i];
+    if (ch.sourceDlg > 0){
+
+      //**** INSERT MIXER HERE ****
+    }
+  }
 }
 
 void ModelData::setDefaultMixes(GeneralSettings & settings)

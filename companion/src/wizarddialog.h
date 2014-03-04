@@ -35,7 +35,7 @@ public:
     Page_Fblheli, Page_Helictrl, Page_Multirotor,
     Page_Conclusion };
 
-  Mix mix;
+  WizMix mix;
   WizardDialog(QWidget *parent = 0);
 
   private slots:
@@ -308,4 +308,19 @@ private:
   QLabel *textLabel;
 };
 
+class WizardPrinter:QObject
+{
+  Q_OBJECT
+public:
+  WizardPrinter( WizMix * );
+  QString print();
+private:
+  WizMix *mix;
+  QString inputName( Input );
+  QString vehicleName( Vehicle );
+  QString printChannel( Input, int, Input, int );
+};
 #endif  // WIZARDDIALOG_H
+
+
+

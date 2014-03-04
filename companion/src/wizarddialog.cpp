@@ -14,6 +14,7 @@
 
 #include <QtGui>
 #include "wizarddialog.h"
+#include "wizarddata.h"
 
 WizardDialog::WizardDialog(QWidget *parent)
   : QWizard(parent)
@@ -139,12 +140,12 @@ StandardPage::StandardPage(int currentPage, WizardDialog *dlg, QString image, QS
 
 void StandardPage::populateCB( QComboBox *CB )
 {
-  for (int j=0; j<MAX_CHANNELS; j++)
+  for (int j=0; j<WIZ_MAX_CHANNELS; j++)
     CB->removeItem(0);
 
-  for (int i=0; i<MAX_CHANNELS; i++)
+  for (int i=0; i<WIZ_MAX_CHANNELS; i++)
   {
-    if (wizDlg->mix.channel[i].isEmpty()){
+    if (wizDlg->mix.channel[i].sourceDlg < 0){
       CB->addItem(tr("Channel ") + QString("%1").arg(i+1), i);    
     }
   }
@@ -154,9 +155,9 @@ bool StandardPage::bookChannel(QString label, Input input1, int weight1, Input i
 {
   int index = label.right(1).toInt() - 1;
 
-  if (index<0 || index >= MAX_CHANNELS)
+  if (index<0 || index >= WIZ_MAX_CHANNELS)
     return false; 
-  if (!wizDlg->mix.channel[index].isEmpty())
+  if (!(wizDlg->mix.channel[index].sourceDlg < 0))
     return false;
 
   wizDlg->mix.channel[index].sourceDlg = pageCurrent;
@@ -170,7 +171,7 @@ bool StandardPage::bookChannel(QString label, Input input1, int weight1, Input i
 
 void StandardPage::releaseChannels()
 {
-  for (int i=0; i<MAX_CHANNELS; i++)
+  for (int i=0; i<WIZ_MAX_CHANNELS; i++)
   {
     if (wizDlg->mix.channel[i].sourceDlg == pageCurrent){
       wizDlg->mix.channel[i].clear();    
@@ -211,7 +212,13 @@ ModelSelectionPage::ModelSelectionPage(WizardDialog *dlg, QString image, QString
 
 bool ModelSelectionPage::validatePage()
 {
-  wizDlg->mix.name = nameLineEdit->text();
+  //Filter and insert model name in mix data
+  QString newName(nameLineEdit->text());
+  newName = (newName.normalized(QString::NormalizationForm_D));
+  newName = newName.replace(QRegExp("[^ A-Za-z0-9_.-,\\s]"), "");
+  strncpy( wizDlg->mix.name, newName.toAscii(), WIZ_MODEL_NAME_LENGTH);
+  wizDlg->mix.name[WIZ_MODEL_NAME_LENGTH]=0;
+
   if (multirotorRB->isChecked())
     wizDlg->mix.vehicle = MULTICOPTER;
   else if (helicopterRB->isChecked())
@@ -719,13 +726,68 @@ ConclusionPage::ConclusionPage(WizardDialog *dlg, QString image, QString title, 
 }
 
 void ConclusionPage::initializePage(){
-
-  textLabel->setText(wizDlg->mix.toString());
+  WizardPrinter p(&wizDlg->mix);
+  textLabel->setText(p.print());
 }
 
 bool ConclusionPage::validatePage() {
   wizDlg->mix.complete = true;
   return true;
 }
+
+
+QString WizardPrinter::inputName(Input input)
+{
+  switch (input){
+  case THROTTLE: return "THR";
+  case RUDDER:   return "RUD";
+  case ELEVATOR: return "ELE";
+  case AILERON:  return "AIL";
+  case FLAP:     return "FLP";
+  case AIRBREAK: return "AIR";
+  default:       return "---";
+  }
+}
+
+QString WizardPrinter::vehicleName(Vehicle vehicle)
+{
+  switch (vehicle){
+  case PLANE:       return "Plane";
+  case MULTICOPTER: return "Multicopter";
+  case HELICOPTER:  return "Helicopter";
+  default:          return "---";
+  }
+}
+
+WizardPrinter::WizardPrinter(WizMix *wizMix)
+{
+  mix = wizMix;
+}
+  
+  QString WizardPrinter::printChannel( Input input1, int weight1, Input input2, int weight2 )
+{
+  QString str;
+  str =  QString("[%1, %2]").arg(inputName(input1)).arg(weight1);
+  if ( input2 != NOINPUT )
+    str += QString("[%1, %2]").arg(inputName(input2)).arg(weight2);
+  return str;
+}
+
+QString WizardPrinter::print()
+{
+  QString str;
+  str = QString(tr("Model Name: ")) + mix->name + "\n";
+  str += QString(tr("Model Type: ")) + vehicleName(mix->vehicle) + "\n";
+  for (int i=0; i<WIZ_MAX_CHANNELS; i++){
+    if (!(mix->channel[i].sourceDlg < 0 )){
+      Channel ch = mix->channel[i];
+      str += QString(tr("Channel %1: ").arg(i+1));
+      str += printChannel(ch.input1, ch.weight1, ch.input2, ch.weight2 );
+      str += QString("\n");
+    }
+  }
+  return str;
+}
+
 
 

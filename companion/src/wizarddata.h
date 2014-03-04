@@ -14,14 +14,12 @@
 
 #ifndef WIZARDDATA_H
 #define WIZARDDATA_H
-#include <QObject> 
 
-#define MAX_CHANNELS 8
+#define WIZ_MAX_CHANNELS 8
+#define WIZ_MODEL_NAME_LENGTH 12
+
 enum Input {NOINPUT, THROTTLE, RUDDER, ELEVATOR, AILERON, FLAP, AIRBREAK};
 enum Vehicle {NOVEHICLE, PLANE, MULTICOPTER, HELICOPTER };
-
-QString inputName(Input);
-QString vehicleName(Input);
 
 class Channel
 {
@@ -33,23 +31,18 @@ public:
   int weight2;
 
   Channel();
-  bool isEmpty();
   void clear(); 
-
-  QString toString();
 };
 
-class Mix:QObject
+class WizMix
 {
-  Q_OBJECT
 public:
   bool complete;
-  QString name;
+  char name[WIZ_MODEL_NAME_LENGTH + 1];
   Vehicle vehicle;
-  Channel channel[MAX_CHANNELS];
+  Channel channel[WIZ_MAX_CHANNELS];
 
-  Mix();
-  QString toString();
+  WizMix();
 };
 
 #endif // WIZARDDATA_H
