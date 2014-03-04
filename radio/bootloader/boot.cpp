@@ -58,7 +58,7 @@
 #include "core_cm3.h"
 #endif
 
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 #include "stm32f2xx.h"
 #include "stm32f2xx_flash.h"
 #include "i2c_ee.h"
@@ -96,7 +96,7 @@ extern void usbMassStorage( void ) ;
 #define DISPLAY_CHAR_WIDTH	21
 #endif
 
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 #define BOOT_KEY_UP			KEY_PLUS
 #define BOOT_KEY_DOWN		KEY_MINUS
 #define BOOT_KEY_LEFT		KEY_MENU
@@ -208,12 +208,12 @@ static bool usbPlugged(void)
 	return PIOC->PIO_PDSR & 0x02000000 ;
 #endif
 	
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 	return GPIOA->IDR & 0x0200 ;
 #endif
 }
 
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 
 extern "C" {
 USB_OTG_CORE_HANDLE USB_OTG_dev;
@@ -399,7 +399,7 @@ extern "C" void TC2_IRQHandler()
 }
 #endif
 
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 void init10msTimer()
 {
 	// Timer14
@@ -686,7 +686,7 @@ uint8_t flashFile( uint32_t index )
 	if ( Valid == 2 )
 	{
 	  lcd_puts_Pleft( 3*FH,"NOT A VALID FIRMWARE") ;
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 	  lcd_puts_Pleft( 6*FH,"\015[EXIT]") ;
 #else
 	  lcd_puts_Pleft( 6*FH,"\007[EXIT]") ;
@@ -700,7 +700,7 @@ uint8_t flashFile( uint32_t index )
 	}
 	lcd_putsn_P( 0, 2*FH, Filenames[index], DISPLAY_CHAR_WIDTH ) ;
 
-#ifdef PCBX9D
+#ifdef PCBTARANIS
   lcd_puts_Pleft( 6*FH,"\010[ENTER]\021[EXIT]") ;
   lcd_puts_Pleft( 5*FH,"\010YES\021NO") ;
 #else
@@ -736,7 +736,7 @@ int main()
 {
 	uint32_t i ;
   uint8_t index = 0 ;
-#ifdef PCBX9D
+#ifdef PCBTARANIS
   uint8_t TenCount = 2 ;
 #endif			
   uint8_t maxhsize = DISPLAY_CHAR_WIDTH ;
@@ -745,7 +745,7 @@ int main()
 	uint32_t nameCount = 0 ;
 	uint32_t vpos = 0 ;
 	uint32_t hpos = 0 ;
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 	uint32_t firmwareAddress = 0x08000000 ;
 #endif			
 #ifdef PCBSKY
@@ -753,7 +753,7 @@ int main()
 #endif			
 	uint32_t firmwareWritten = 0 ;
 
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 	wdt_reset() ;
 	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN ; 		// Enable portA clock
 #endif
@@ -776,7 +776,7 @@ extern uint8_t OptrexDisplay ;
 	OptrexDisplay = 1 ;
 #endif
 	lcd_clear() ;
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 	lcd_puts_Pleft( 0, "\006Boot Loader" ) ;
 #endif
 	refreshDisplay() ;
@@ -785,7 +785,7 @@ extern uint8_t OptrexDisplay ;
 	refreshDisplay() ;
 #endif
 
-#ifdef PCBX9D	 
+#ifdef PCBTARANIS
 	init_keys() ;
 	I2C_EE_Init() ;
 	init_hw_timer()	;
@@ -805,7 +805,7 @@ extern uint8_t OptrexDisplay ;
 	FlashSize = ( (chip_id >> 8 ) & 0x000F ) == 9 ? 256 : 512 ; 
 #endif
 
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 	FlashSize = 512 ;
 #endif
 
@@ -817,7 +817,7 @@ extern uint8_t OptrexDisplay ;
 	}
 #endif
 
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 	// SD card detect pin
 	configure_pins( GPIO_Pin_CP, PIN_PORTD | PIN_INPUT | PIN_PULLUP ) ;
 	disk_initialize( 0 ) ;
@@ -855,7 +855,7 @@ extern uint8_t OptrexDisplay ;
 #ifdef PCBSKY
 			lcd_puts_Pleft( 0, "Boot Loader" ) ;
 #endif
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 			lcd_puts_Pleft( 0, "\006Boot Loader" ) ;
 #endif
 
@@ -864,7 +864,7 @@ extern uint8_t OptrexDisplay ;
 #ifdef PCBSKY
 				lcd_puts_Pleft( 0, "\014Ready" ) ;
 #endif
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 				lcd_puts_Pleft( 0, "\022Ready" ) ;
 #endif
 
@@ -878,7 +878,7 @@ extern uint8_t OptrexDisplay ;
 #ifdef PCBSKY
 					lcd_puts_Pleft( 3*FH, "\010BUSY" ) ;
 #endif
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 					lcd_puts_Pleft( 3*FH, "\016BUSY" ) ;
 #endif
 					if ( usbPlugged() == 0 )
@@ -923,7 +923,7 @@ extern uint8_t OptrexDisplay ;
 #ifdef PCBSKY
 					lcd_puts_Pleft( 16, "\005No Firmware" ) ;
 #endif
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 					lcd_puts_Pleft( 16, "\013No Firmware" ) ;
 #endif
 				}
@@ -1045,7 +1045,7 @@ extern uint8_t OptrexDisplay ;
 #ifdef PCBSKY
 						firmwareAddress = 0x00408000 ;
 #endif
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 						firmwareAddress = 0x08008000 ;
 #endif
 						firmwareWritten = 0 ;
@@ -1106,13 +1106,13 @@ extern uint8_t OptrexDisplay ;
 				}
 			}
 
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 			if ( --TenCount == 0 )
 			{
 				TenCount = 2 ;
 #endif			
 			refreshDisplay() ;
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 			}
 #endif			
 			if ( PowerUpDelay < 20 )	// 200 mS
@@ -1124,7 +1124,7 @@ extern uint8_t OptrexDisplay ;
 #ifdef PCBSKY
 				sd_poll_10mS() ;
 #endif			
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 				sdPoll10ms() ;
 #endif			
 			}

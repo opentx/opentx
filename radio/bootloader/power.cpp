@@ -38,7 +38,7 @@
 #endif
 
 
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 #include "stm32f2xx_gpio.h"
 #include "stm32f2xx_rcc.h"
 #include "hal.h"
@@ -80,7 +80,7 @@ void soft_power_off()
 
 #endif
 
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 
 void soft_power_off()
 {

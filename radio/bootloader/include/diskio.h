@@ -41,7 +41,8 @@
 #ifdef PCBSKY
 #include "board.h"
 #endif
-#ifdef PCBX9D
+
+#ifdef PCBTARANIS
 #include "stm32f2xx.h"
 #endif
 
@@ -133,10 +134,6 @@ void disk_timerproc (void);
 volatile extern BYTE Timer1, Timer2;	/* 100Hz decrement timer */
 #endif
 
-//#ifdef PCBX9D
-//volatile extern DWORD Timer1, Timer2;	/* 100Hz decrement timer */
-//#endif
-
 //------------------------------------------------------------------------------
 /// Detect if SD card is connected
 //------------------------------------------------------------------------------
@@ -164,7 +161,7 @@ extern uint32_t sd_acmd6( void ) ;
 extern uint32_t sd_acmd51( uint32_t *presult ) ;
 extern uint32_t sd_cmd13( uint32_t *status) ;
 extern void sd_poll_10mS( void ) ;
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 extern void sdPoll10ms( void ) ;
 extern void sdInit( void ) ;
 #endif

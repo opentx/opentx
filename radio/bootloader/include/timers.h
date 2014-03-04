@@ -25,7 +25,7 @@ extern void stop_timer0( void ) ;
 extern void init_pwm( void ) ;
 #endif
 
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 extern uint32_t Peri1_frequency ;
 extern uint32_t Peri2_frequency ;
 extern uint32_t Timer_mult1 ;

@@ -5,7 +5,7 @@
 #ifdef PCBSKY
 #define wdt_reset()	(WDT->WDT_CR = 0xA5000001)
 #endif
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 #define wdt_reset()	(IWDG->KR = 0x0000AAAAL)
 #endif
 
@@ -43,7 +43,7 @@ enum EnumKeys {
 } ;
 #endif
 
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 enum EnumKeys {
     KEY_MENU ,
     KEY_EXIT ,

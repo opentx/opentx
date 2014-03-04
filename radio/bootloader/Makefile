@@ -91,30 +91,17 @@ ifeq ($(RUN_FROM_FLASH), 1)
  CPPDEFS += -DPCBSKY 
  UDEFS = -Dat91sam3s8
 else
- ifeq ($(PCB), X9D)
-  ARCH = ARM
-  LDSCRIPT = stm32_ramBoot.ld
-  TRGT = arm-none-eabi-
-  CPPDEFS += -DHSE_VALUE=12000000
-  CPPDEFS += -DPCBX9D 
-  FULL_PRJ = $(PROJECT)_ramBoot
-  EXTRAINCDIRS += include
-#  EXTRAINCDIRS += ../x9d
- else
  ifeq ($(PCB), TARANIS)
   ARCH = ARM
   LDSCRIPT = stm32_ramBoot.ld
   TRGT = arm-none-eabi-
   CPPDEFS += -DHSE_VALUE=12000000
-  CPPDEFS += -DPCBX9D 
   CPPDEFS += -DPCBTARANIS 
   FULL_PRJ = $(PROJECT)_ramBoot
   EXTRAINCDIRS += include
 #  EXTRAINCDIRS += ../targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include
  endif
- endif
 endif
-
 
 
 # List all user C define here, like -D_DEBUG=1

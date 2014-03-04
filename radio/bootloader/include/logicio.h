@@ -13,7 +13,7 @@
 *
 ****************************************************************************/
 
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 #define PIN_MODE_MASK		0x0003
 #define PIN_INPUT				0x0000
 #define PIN_OUTPUT			0x0001
@@ -117,7 +117,7 @@ extern void config_free_pins( void ) ;
 #define GPIO_SetBits( port, bits ) (port->BSRRL = bits)
 #define GPIO_ReadInputDataBit( port, bit) ( (port->IDR & bit) ? Bit_SET : Bit_RESET)
 
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 uint32_t switchPosition( uint32_t swtch ) ;
 #endif
 

@@ -21,7 +21,7 @@
 #ifndef lcd_h
 #define lcd_h
 
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 #define DISPLAY_W 212
 #define DISPLAY_H  64
 #endif
@@ -110,7 +110,7 @@ extern void putsTime(uint8_t x,uint8_t y,int16_t tme,uint8_t att,uint8_t att2) ;
 extern void putsVolts(uint8_t x,uint8_t y, uint8_t volts, uint8_t att) ;
 extern void putsVBat(uint8_t x,uint8_t y,uint8_t att) ;
 
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 extern void backlight_set( uint16_t brightness ) ;
 #endif
 

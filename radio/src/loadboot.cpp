@@ -54,21 +54,16 @@
 #ifdef PCBTARANIS
  #include "stm32f2xx.h"
  #include "stm32f2xx_gpio.h"
-#else
- #ifdef PCBX9D
-  #include "x9d\stm32f2xx.h"
-  #include "x9d\stm32f2xx_gpio.h"
- #endif
 #endif
 
-#if defined(PCBX9D) || defined(PCBTARANIS)
+#if defined(PCBTARANIS)
 void bwdt_reset()
 {
-	IWDG->KR = 0xAAAA ;		// reload
+  IWDG->KR = 0xAAAA ;		// reload
 }
 #endif
 
-#if defined(PCBX9D) || defined(PCBTARANIS)
+#if defined(PCBTARANIS)
 
 __attribute__ ((section(".bootrodata"), used))
 void _bootStart( void ) ;
@@ -80,7 +75,7 @@ const uint32_t BootVectors[] = {
 } ;
 #endif
 
-#if defined(PCBX9D) || defined(PCBTARANIS)
+#if defined(PCBTARANIS)
 __attribute__ ((section(".bootrodata.*"), used))
 #endif
 
@@ -93,7 +88,7 @@ const uint8_t BootCode[] = {
 } ;
 
 
-#if defined(PCBX9D) || defined(PCBTARANIS)
+#if defined(PCBTARANIS)
 
 __attribute__ ((section(".bootrodata"), used))
 

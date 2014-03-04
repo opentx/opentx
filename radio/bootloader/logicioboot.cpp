@@ -25,7 +25,7 @@
 #include "drivers.h"
 #endif
 
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 #include "stm32f2xx.h"
 #include "stm32f2xx_gpio.h"
 #include "radio.h"
@@ -118,7 +118,7 @@ void configure_pins( uint32_t pins, uint16_t config )
 #endif
 
 
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 void configure_pins( uint32_t pins, uint16_t config )
 {
 	uint32_t address ;
@@ -389,7 +389,7 @@ uint32_t initReadTrims( void )
 }
 #endif // PCBSKY
 
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 void init_keys()
 {
 // Buttons PE10, 11, 12, PD2, 3, 7
@@ -453,5 +453,5 @@ void setup_switches()
 	
 }
 
-#endif  // PCBX9D
+#endif  // PCBTARANIS
 

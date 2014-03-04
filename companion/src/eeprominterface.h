@@ -125,28 +125,6 @@ const uint8_t chout_ar[] = { //First number is 0..23 -> template setup,  Second 
 #define BC_BIT_REA (0x80)
 #define BC_BIT_REB (0x100)
 
-// TODO remove this enum!
-enum EnumKeys {
-  KEY_MENU,
-  KEY_EXIT,
-#if defined(PCBACT)
-  KEY_CLR,
-  KEY_PAGE,
-  KEY_PLUS,  /* Fake, used for rotary encoder */
-  KEY_MINUS, /* Fake, used for rotary encoder */
-#elif defined(PCBX9D)
-  KEY_ENTER,
-  KEY_PAGE,
-  KEY_PLUS,
-  KEY_MINUS,
-#else
-  KEY_DOWN,
-  KEY_UP,
-  KEY_RIGHT,
-  KEY_LEFT,
-#endif
-};
-
 #define CHAR_FOR_NAMES " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-."
 #define CHAR_FOR_NAMES_REGEX "[ A-Za-z0-9_.-,]*"
 

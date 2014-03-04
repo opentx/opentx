@@ -33,7 +33,7 @@
 #ifdef PCBSKY
 #define wdt_reset()	(WDT->WDT_CR = 0xA5000001)
 #endif
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 #define wdt_reset()	(IWDG->KR = 0x0000AAAAL)
 #endif
 #endif
@@ -83,7 +83,7 @@ extern const char * const Swedish[] ;
 #define pgm_read_byte(p)	(*(p))
 
 
-#ifdef PCBX9D
+#ifdef PCBTARANIS
  #define NUMBER_ANALOG		9
 #else
 #ifdef REVX
@@ -132,7 +132,7 @@ enum EnumKeys {
     SW_Trainer
 #endif
 
-#ifdef PCBX9D
+#ifdef PCBTARANIS
   SW_SA0,
   SW_SA1,
   SW_SA2,
@@ -197,7 +197,7 @@ enum EnumKeys {
 #define MAX_SKYDRSWITCH (1+SW_Trainer-SW_ThrCt+1+NUM_SKYCSW)
 #endif
 
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 #define SW_BASE      SW_SA0
 #define SW_BASE_DIAG SW_SA0
 #define MAX_PSWITCH   (SW_SH2-SW_SA0+1)  // 9 physical switches
@@ -238,7 +238,7 @@ enum EnumKeys {
 #ifdef PCBSKY
 #define CSW_INDEX	9	// Index of first custom switch
 #endif
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 #define CSW_INDEX	22	// Index of first custom switch
 #endif
 
@@ -312,7 +312,7 @@ enum EnumKeys {
 #define MIX_CYC2  11
 #define MIX_CYC3  12
 #endif
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 #define MIX_P3    7
 #define MIX_P4    8
 #define MIX_MAX   9
@@ -497,7 +497,7 @@ extern uint8_t convert_mode_helper(uint8_t x) ;
 #define BACKLIGHT_OFF   (PWM->PWM_CH_NUM[0].PWM_CDTY = 100)
 #endif
 
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 extern void backlight_on( void ) ;
 extern void backlight_off( void ) ;
 #define BACKLIGHT_ON        backlight_on()
@@ -731,13 +731,13 @@ extern struct t_p1 P1values ;
 #ifdef PCBSKY
 extern uint16_t ResetReason ;
 #endif
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 extern uint32_t ResetReason ;
 #endif
 extern uint8_t unexpectedShutdown ;
 extern uint8_t SdMounted ;
 
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 #include "stm32f2xx.h"
 #include "rtc.h"
 #include "stm32f2xx_rtc.h"
@@ -749,7 +749,7 @@ void rtcInit( void ) ;
 extern void setVolume( uint8_t value ) ;
 extern uint8_t HoldVolume ;
 
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 #define INTERNAL_MODULE 0
 #define EXTERNAL_MODULE 1
 #define TRAINER_MODULE  2

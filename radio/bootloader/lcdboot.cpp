@@ -28,7 +28,7 @@
 //#include "myeeprom.h"
 #endif
 
-#ifdef PCBX9D
+#ifdef PCBTARANIS
  #include "radio.h"
 #endif
 
@@ -48,7 +48,7 @@ uint8_t Lcd_lastPos ;
 uint8_t DisplayBuf[DISPLAY_W*DISPLAY_H/8] ;
 #define DISPLAY_END (DisplayBuf+sizeof(DisplayBuf))
 
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 #define X9D_OFFSET		0
 #define DISPLAY_START (DisplayBuf + X9D_OFFSET)
 #else

@@ -27,7 +27,7 @@
 #endif
 
 
-#ifdef PCBX9D
+#ifdef PCBTARANIS
 #include "radio.h"
 #include "hal.h"
 #include "stm32f2xx.h"
