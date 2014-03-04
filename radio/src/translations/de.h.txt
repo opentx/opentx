@@ -69,7 +69,7 @@
 #define TR_UART3MODES          "AUS\0           ""S-Port Data Out\0""Debug\0         "
 
 #define LEN_POTTYPES           "\017"
-#define TR_POTTYPES            "Poti\0          ""Stufen-Schalter "
+#define TR_POTTYPES            "None\0          ""Poti\0          ""Stufen-Schalter "
 
 #define LEN_DATETIME           "\005"
 #define TR_DATETIME            "DATE:""ZEIT:"

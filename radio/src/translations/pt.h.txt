@@ -72,7 +72,7 @@
 #define TR_UART3MODES    "OFF\0           ""S-Port Mirror\0 ""Debug\0         "
 
 #define LEN_POTTYPES     "\017"
-#define TR_POTTYPES      "Pot\0           ""Multipos Switch"
+#define TR_POTTYPES      "None\0          ""Pot\0           ""Multipos Switch"
 
 #define LEN_DATETIME     "\005"
 #define TR_DATETIME      "DATA:""HORA:"
