@@ -111,6 +111,20 @@ bool dacQueue(AudioBuffer *buffer)
   }
 }
 
+void dacStart()
+{
+  DMA1->HIFCR = DMA_HIFCR_CTCIF5 | DMA_HIFCR_CHTIF5 | DMA_HIFCR_CTEIF5 | DMA_HIFCR_CDMEIF5 | DMA_HIFCR_CFEIF5 ; // Write ones to clear bits
+  DMA1_Stream5->CR |= DMA_SxCR_CIRC | DMA_SxCR_EN ;                               // Enable DMA channel
+  DAC->SR = DAC_SR_DMAUDR1 ;                      // Write 1 to clear flag
+  DAC->CR |= DAC_CR_EN1 | DAC_CR_DMAEN1 ;                 // Enable DAC
+}
+
+void dacStop()
+{
+  DMA1_Stream5->CR &= ~DMA_SxCR_CIRC ;
+}
+
+
 // Sound routines
 void audioInit()
 {

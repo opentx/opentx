@@ -638,7 +638,7 @@ ifeq ($(PCB), TARANIS)
   BOARDSRC = targets/taranis/board_taranis.cpp
   EXTRABOARDSRC += targets/taranis/lcd_driver.cpp targets/taranis/aspi.c targets/taranis/i2c.c targets/taranis/delays.c 
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
-  SRC += targets/taranis/pwr_driver.c
+  SRC += targets/taranis/pwr_driver.c targets/taranis/usb_driver.c
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp eeprom_conversions.cpp
   PULSESSRC = protocols/pulses_arm.cpp protocols/ppm_arm.cpp protocols/pxx_arm.cpp
   CPPSRC += audio_arm.cpp
@@ -1104,7 +1104,7 @@ endif
 # build bootloader
 .PHONY bootloader.lbm:
 	@echo "Building bootloader..."
-	$(MAKE) -C bootloader PCB=$(PCB)
+	$(MAKE) -C bootloader PCB=TARANIS
 	$(BIN2LBM) bootloader.lbm bootloader/bootloader_ramBoot.bin
 
 tra: translations/en.h translations/cz.h translations/de.h translations/es.h translations/fi.h translations/fr.h translations/it.h translations/pl.h translations/pt.h translations/se.h
