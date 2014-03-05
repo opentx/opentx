@@ -74,6 +74,7 @@ namespace Open9xGruvin9x {
 #include "radio/src/simpgmspace.cpp"
 #include "radio/src/templates.cpp"
 #include "radio/src/translations.cpp"
+#include "radio/src/fonts.cpp"
 #include "radio/src/audio_avr.cpp"
 #include "radio/src/buzzer.cpp"
 #include "radio/src/targets/gruvin9x/somo14d.cpp"

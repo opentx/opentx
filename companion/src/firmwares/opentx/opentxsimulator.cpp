@@ -78,6 +78,7 @@ namespace Open9x {
 #include "radio/src/telemetry/frsky.cpp"
 #include "radio/src/templates.cpp"
 #include "radio/src/translations.cpp"
+#include "radio/src/fonts.cpp"
 #include "radio/src/targets/stock/voice.cpp"
 #include "radio/src/buzzer.cpp"
 #include "radio/src/translations/tts_en.cpp"
