@@ -32,16 +32,7 @@
 #include "hal.h"
 #endif
 
-
-#ifndef SIMU
-#include "core_cm3.h"
-#endif
-
 #include "logicio.h"
-
-#ifdef PCBSKY
-#include "lcd.h"
-#endif
 
 
 #ifndef SIMU
