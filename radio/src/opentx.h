@@ -1514,6 +1514,7 @@ enum AUDIO_SOUNDS {
 #endif
 
 #include "translations.h"
+#include "fonts.h"
 
 #if defined(HAPTIC)
 #include "haptic.h"

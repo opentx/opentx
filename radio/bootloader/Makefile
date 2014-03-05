@@ -146,7 +146,7 @@ CPPSRC = ../src/targets/taranis/lcd_driver.cpp \
         ../src/targets/taranis/usbd_usr.cpp \
         usbd_storage_msd.cpp \
         ../src/lcd.cpp \
-        ../src/translations.cpp \
+        ../src/fonts.cpp \
 	power.cpp \
         boot.cpp
 
