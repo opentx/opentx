@@ -75,31 +75,14 @@ extern "C" {
 #include "../src/lcd.h"
 #include "../src/keys.h"
 
-// #include "radio.h"
 #include "../src/FatFs/ff.h"
 #include "../src/FatFs/diskio.h"
-//#include "drivers.h"
-// #include "logicio.h"
-
-#ifdef PCBSKY
-extern void usbMassStorage( void ) ;
-#endif
-
-#ifdef PCBSKY
-#define BOOT_KEY_UP			KEY_UP
-#define BOOT_KEY_DOWN		KEY_DOWN
-#define BOOT_KEY_LEFT		KEY_LEFT
-#define BOOT_KEY_RIGHT	KEY_RIGHT
-#define BOOT_KEY_MENU		KEY_MENU
-#define BOOT_KEY_EXIT		KEY_EXIT
-#define DISPLAY_CHAR_WIDTH	21
-#endif
 
 #ifdef PCBTARANIS
-#define BOOT_KEY_UP			KEY_PLUS
+#define BOOT_KEY_UP		KEY_PLUS
 #define BOOT_KEY_DOWN		KEY_MINUS
 #define BOOT_KEY_LEFT		KEY_MENU
-#define BOOT_KEY_RIGHT	KEY_PAGE
+#define BOOT_KEY_RIGHT	        KEY_PAGE
 #define BOOT_KEY_MENU		KEY_ENTER
 #define BOOT_KEY_EXIT		KEY_EXIT
 #define DISPLAY_CHAR_WIDTH	35
@@ -117,10 +100,6 @@ extern void usbMassStorage( void ) ;
 #define ST_REBOOT					11
 
 
-
-
-
-
 /*----------------------------------------------------------------------------
  *        Local variables
  *----------------------------------------------------------------------------*/
@@ -130,8 +109,6 @@ uint32_t FirmwareSize ;
 uint32_t Master_frequency ;
 volatile uint8_t  Tenms ;
 uint8_t EE_timer ;
-
-extern uint32_t sd_card_ready( void ) ;
 
 TCHAR FlashFilename[60] ;
 FATFS g_FATFS ;
@@ -325,11 +302,18 @@ void clearLockBits()
 }
 #endif
 
-void per10ms(void);
 void interrupt10ms(void)
 {
-	Tenms |= 1 ;			// 10 mS has passed
- 	per10ms() ;
+  Tenms |= 1 ;			// 10 mS has passed
+
+  uint8_t enuk = KEY_MENU;
+  uint8_t in = ~readKeys();
+
+  for (int i=1; i<7; i++) {
+    uint8_t value = in & (1<<i) ;
+    keys[enuk].input(value, (EnumKeys)enuk);
+    ++enuk;
+  }
 }
 
 #ifdef PCBSKY

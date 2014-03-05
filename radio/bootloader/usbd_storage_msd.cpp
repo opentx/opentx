@@ -25,14 +25,11 @@
   ******************************************************************************
   */ 
 
-/* Includes ------------------------------------------------------------------*/
-#include "radio.h"
-#include "../src/eeprom_rlc.h"
 #include <stdint.h>
 #include <string.h>
-//#include <stdlib.h>
-#include "drivers.h"
 #include "../src/targets/taranis/i2c.h"
+#include "../src/keys.h"
+#include "../src/eeprom_rlc.h"
 extern "C" {
 #include "../src/FatFs/diskio.h"
 }

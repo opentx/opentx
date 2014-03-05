@@ -98,7 +98,6 @@ else
   CPPDEFS += -DHSE_VALUE=12000000
   CPPDEFS += -DPCBTARANIS 
   FULL_PRJ = $(PROJECT)_ramBoot
-  EXTRAINCDIRS += include
   EXTRAINCDIRS += ../src/targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc
   EXTRAINCDIRS += ../src/targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include
   EXTRAINCDIRS += ../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc
@@ -143,8 +142,6 @@ SRC  =	system_stm32f2xx.c \
 
 CPPSRC = ../src/targets/taranis/lcd_driver.cpp \
 	../src/targets/taranis/keys_driver.cpp \
-        driversboot.cpp \
-        logicioboot.cpp \
 	../src/targets/taranis/diskio.cpp \
         ../src/targets/taranis/usbd_usr.cpp \
         usbd_storage_msd.cpp \
