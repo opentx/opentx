@@ -79,9 +79,8 @@ extern "C" {
 #include "../src/lcd.h"
 
 #include "radio.h"
-// #include "lcd.h"
-#include "ff.h"
-#include "diskio.h"
+#include "../src/FatFs/ff.h"
+#include "../src/FatFs/diskio.h"
 #include "drivers.h"
 #include "logicio.h"
 

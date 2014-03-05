@@ -180,12 +180,10 @@ static void card_power(BYTE on)
         on=on;
 }
 
-#if (STM32_SD_DISK_IOCTRL == 1)
 static int chk_power(void)
 {
         return 1; /* fake powered */
 }
-#endif
 
 /*-----------------------------------------------------------------------*/
 /* Transmit/Receive a byte to MMC via SPI  (Platform dependent)          */
@@ -503,7 +501,6 @@ BOOL rcvr_datablock (
 /* Send a data packet to MMC                                             */
 /*-----------------------------------------------------------------------*/
 
-#if _FS_READONLY == 0
 static
 BOOL xmit_datablock (
         const BYTE *buff,       /* 512 byte data block to be transmitted */
@@ -539,8 +536,6 @@ BOOL xmit_datablock (
 
         return TRUE;
 }
-#endif /* _READONLY */
-
 
 
 /*-----------------------------------------------------------------------*/
@@ -731,8 +726,6 @@ DRESULT disk_read (
 /* Write Sector(s)                                                       */
 /*-----------------------------------------------------------------------*/
 
-#if _FS_READONLY == 0
-
 // TODO quick & dirty
 int8_t SD_WriteSectors(uint8_t *buff, uint32_t sector, uint32_t count)
 {
@@ -751,6 +744,8 @@ int8_t SD_WriteSectors(uint8_t *buff, uint32_t sector, uint32_t count)
 
   return 0;
 }
+
+#if _FS_READONLY == 0
 
 DRESULT disk_write (
         BYTE drv,                       /* Physical drive number (0) */
@@ -793,7 +788,6 @@ DRESULT disk_write (
 /* Miscellaneous Functions                                               */
 /*-----------------------------------------------------------------------*/
 
-#if (STM32_SD_DISK_IOCTRL == 1)
 DRESULT disk_ioctl (
         BYTE drv,               /* Physical drive number (0) */
         BYTE ctrl,              /* Control code */
@@ -919,7 +913,6 @@ DRESULT disk_ioctl (
 
         return res;
 }
-#endif /* _USE_IOCTL != 0 */
 
 
 /*-----------------------------------------------------------------------*/

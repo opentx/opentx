@@ -33,7 +33,9 @@
 //#include <stdlib.h>
 #include "drivers.h"
 #include "../src/targets/taranis/i2c.h"
-#include "diskio.h"
+extern "C" {
+#include "../src/FatFs/diskio.h"
+}
 //#include "board_taranis.h"
 
 #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_gpio.h"
@@ -166,7 +168,7 @@ int8_t STORAGE_GetCapacity (uint8_t lun, uint32_t *block_num, uint32_t *block_si
 
     static DWORD sector_count = 0;
     if (sector_count == 0) {
-      if (disk_ioctl(0, GET_SECTOR_COUNT, (BYTE*)&sector_count) != RES_OK) {
+      if (disk_ioctl(0, GET_SECTOR_COUNT, &sector_count) != RES_OK) {
         sector_count = 0;
         return -1;
       }
