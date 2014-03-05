@@ -638,10 +638,11 @@ ifeq ($(PCB), TARANIS)
   BOARDSRC = targets/taranis/board_taranis.cpp
   EXTRABOARDSRC += targets/taranis/lcd_driver.cpp targets/taranis/aspi.c targets/taranis/i2c.c targets/taranis/delays.c 
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
+  SRC += targets/taranis/pwr_driver.c
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp eeprom_conversions.cpp
   PULSESSRC = protocols/pulses_arm.cpp protocols/ppm_arm.cpp protocols/pxx_arm.cpp
   CPPSRC += audio_arm.cpp
-  CPPSRC += targets/taranis/pwr_driver.cpp targets/taranis/pulses_driver.cpp targets/taranis/keys_driver.cpp targets/taranis/adc_driver.cpp targets/taranis/trainer_driver.cpp targets/taranis/audio_driver.cpp targets/taranis/uart3_driver.cpp targets/taranis/sport_driver.cpp
+  CPPSRC += targets/taranis/pulses_driver.cpp targets/taranis/keys_driver.cpp targets/taranis/adc_driver.cpp targets/taranis/trainer_driver.cpp targets/taranis/audio_driver.cpp targets/taranis/uart3_driver.cpp targets/taranis/sport_driver.cpp
   CPPSRC += bmp.cpp gui/view_channels.cpp gui/view_about.cpp gui/view_text.cpp
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/system_stm32f2xx.c
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/misc.c
@@ -1097,14 +1098,14 @@ all: begin gccversion sizebefore build sizeafter end
 ifeq ($(ARCH), AVR)
   build: stamp_header tra lbm allsrc.cpp elf remallsrc hex
 else
-  build: stamp_header tra lbm bootloader allsrc.cpp elf remallsrc bin
+  build: stamp_header tra lbm bootloader.lbm allsrc.cpp elf remallsrc bin
 endif
 
 # build bootloader
-.PHONY bootloader:
+.PHONY bootloader.lbm:
 	@echo "Building bootloader..."
-	$(MAKE) -C ../bootloader PCB=$(PCB)
-	$(BIN2LBM) bootloader.lbm ../bootloader/bootloader_ramBoot.bin
+	$(MAKE) -C bootloader PCB=$(PCB)
+	$(BIN2LBM) bootloader.lbm bootloader/bootloader_ramBoot.bin
 
 tra: translations/en.h translations/cz.h translations/de.h translations/es.h translations/fi.h translations/fr.h translations/it.h translations/pl.h translations/pt.h translations/se.h
 lbm: fonts bitmaps/sticks.lbm
@@ -1365,7 +1366,7 @@ clean_list :
 	$(REMOVE) allsrc.cpp
 	$(REMOVE) stamp-opentx.h
 	$(REMOVE) `find . -name "*.lbm"` 
-	$(MAKE) -C ../bootloader clean
+	$(MAKE) -C bootloader clean
 
 #### Install
 

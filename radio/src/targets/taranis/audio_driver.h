@@ -42,7 +42,7 @@ extern void audioEnd( void ) ;
 
 extern void setSampleRate(uint32_t frequency);
 
-extern bool dacIdle;
+extern int dacIdle;
 
 inline void dacStart()
 {

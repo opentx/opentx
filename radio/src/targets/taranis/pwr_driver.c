@@ -35,7 +35,7 @@
  */
 
 #include "board_taranis.h"
-#include "../src/pwr.h"
+#include "../pwr.h"
 
 void pwrInit()
 {

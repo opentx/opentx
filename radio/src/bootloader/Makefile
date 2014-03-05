@@ -93,18 +93,18 @@ ifeq ($(RUN_FROM_FLASH), 1)
 else
  ifeq ($(PCB), TARANIS)
   ARCH = ARM
-  LDSCRIPT = stm32_ramBoot.ld
+  LDSCRIPT = ../targets/taranis/stm32_ramBoot.ld
   TRGT = arm-none-eabi-
   CPPDEFS += -DHSE_VALUE=12000000
   CPPDEFS += -DPCBTARANIS 
   FULL_PRJ = $(PROJECT)_ramBoot
-  EXTRAINCDIRS += ../src/targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc
-  EXTRAINCDIRS += ../src/targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include
-  EXTRAINCDIRS += ../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc
-  EXTRAINCDIRS += ../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/inc
-  EXTRAINCDIRS += ../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/inc
-  EXTRAINCDIRS += ../src/targets/taranis
-  EXTRAINCDIRS += ../src/fonts/std
+  EXTRAINCDIRS += ../targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc
+  EXTRAINCDIRS += ../targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include
+  EXTRAINCDIRS += ../targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc
+  EXTRAINCDIRS += ../targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/inc
+  EXTRAINCDIRS += ../targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/inc
+  EXTRAINCDIRS += ../targets/taranis
+  EXTRAINCDIRS += ../fonts/std
  endif
 endif
 
@@ -115,43 +115,43 @@ endif
 UADEFS = 
 
 ifeq ($(PCB), TARANIS)
-SRC  =	system_stm32f2xx.c \
-       	../src/targets/taranis/i2c.c \
-       	../src/targets/taranis/delays.c \
-	../src/targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rcc.c \
-	../src/targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c \
-	../src/targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_spi.c \
-	../src/targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/misc.c \
-        ../src/FatFs/ff.c \
-	../src/FatFs/option/ccsbcs.c \
-	../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/src/usb_core.c \
-	../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/src/usb_dcd.c \
-	../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/src/usb_dcd_int.c \
-	../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/src/usbd_core.c \
-	../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/src/usbd_ioreq.c \
-	../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/src/usbd_req.c \
-	../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_data.c \
-	../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_scsi.c \
-	../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_bot.c \
-	../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_core.c \
-	../src/targets/taranis/usbd_desc.c \
-	../src/targets/taranis/aspi.c \
-	../src/targets/taranis/usb_bsp.c \
-	../src/targets/taranis/usb_driver.c \
-	../src/targets/taranis/pwr_driver.c	
+SRC  =	../targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/system_stm32f2xx.c \
+       	../targets/taranis/i2c.c \
+       	../targets/taranis/delays.c \
+	../targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rcc.c \
+	../targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c \
+	../targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_spi.c \
+	../targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/misc.c \
+        ../FatFs/ff.c \
+	../FatFs/option/ccsbcs.c \
+	../targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/src/usb_core.c \
+	../targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/src/usb_dcd.c \
+	../targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/src/usb_dcd_int.c \
+	../targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/src/usbd_core.c \
+	../targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/src/usbd_ioreq.c \
+	../targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/src/usbd_req.c \
+	../targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_data.c \
+	../targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_scsi.c \
+	../targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_bot.c \
+	../targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_core.c \
+	../targets/taranis/usbd_desc.c \
+	../targets/taranis/aspi.c \
+	../targets/taranis/usb_bsp.c \
+	../targets/taranis/usb_driver.c \
+	../targets/taranis/pwr_driver.c	
 
-CPPSRC = ../src/targets/taranis/lcd_driver.cpp \
-	../src/targets/taranis/keys_driver.cpp \
-	../src/targets/taranis/diskio.cpp \
-        ../src/targets/taranis/usbd_usr.cpp \
-        usbd_storage_msd.cpp \
-        ../src/lcd.cpp \
-        ../src/keys.cpp \
-        ../src/fonts.cpp \
+CPPSRC = ../targets/taranis/lcd_driver.cpp \
+	../targets/taranis/keys_driver.cpp \
+	../targets/taranis/diskio.cpp \
+        ../targets/taranis/usbd_usr.cpp \
+        ../targets/taranis/usbd_storage_msd.cpp \
+        ../lcd.cpp \
+        ../keys.cpp \
+        ../fonts.cpp \
         boot.cpp
 
 # List ASM source files here
-ASRC = ../src/targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/gcc_ride7/startup_stm32f2xx.s
+ASRC = ../targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/gcc_ride7/startup_stm32f2xx.s
 
 else
 

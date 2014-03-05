@@ -26,8 +26,8 @@
   */ 
 
 /* Includes ------------------------------------------------------------------*/
-#include "../opentx.h"
-#include "../FatFs/diskio.h"
+#include "../../opentx.h"
+#include "../../FatFs/diskio.h"
 #include "board_taranis.h"
 
 extern "C" {

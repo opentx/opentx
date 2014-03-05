@@ -57,13 +57,13 @@
 #ifdef PCBTARANIS
 #include "stm32f2xx.h"
 #include "stm32f2xx_flash.h"
-#include "../src/targets/taranis/i2c.h"
+#include "../targets/taranis/i2c.h"
 #include "hal.h"
 
 extern "C" {
 #include "usb_dcd_int.h"
 #include "usb_bsp.h"
-#include "../src/targets/taranis/usbd_desc.h"
+#include "../targets/taranis/usbd_desc.h"
 #include "usbd_msc_core.h"
 #include "usbd_usr.h"
 }
@@ -71,12 +71,12 @@ extern "C" {
 #endif
 
 #include "board_taranis.h"
-#include "../src/pwr.h"
-#include "../src/lcd.h"
-#include "../src/keys.h"
+#include "../pwr.h"
+#include "../lcd.h"
+#include "../keys.h"
 
-#include "../src/FatFs/ff.h"
-#include "../src/FatFs/diskio.h"
+#include "../FatFs/ff.h"
+#include "../FatFs/diskio.h"
 
 #ifdef PCBTARANIS
 #define BOOT_KEY_UP		KEY_PLUS
