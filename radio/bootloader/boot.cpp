@@ -53,17 +53,12 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#ifdef PCBSKY
-#include "AT91SAM3S4.h"
-#include "core_cm3.h"
-#endif
 
 #ifdef PCBTARANIS
 #include "stm32f2xx.h"
 #include "stm32f2xx_flash.h"
 #include "../src/targets/taranis/i2c.h"
 #include "hal.h"
-// #include "timers.h"
 
 extern "C" {
 #include "usb_dcd_int.h"
@@ -76,13 +71,15 @@ extern "C" {
 #endif
 
 #include "board_taranis.h"
+#include "../src/pwr.h"
 #include "../src/lcd.h"
+#include "../src/keys.h"
 
-#include "radio.h"
+// #include "radio.h"
 #include "../src/FatFs/ff.h"
 #include "../src/FatFs/diskio.h"
-#include "drivers.h"
-#include "logicio.h"
+//#include "drivers.h"
+// #include "logicio.h"
 
 #ifdef PCBSKY
 extern void usbMassStorage( void ) ;
@@ -204,37 +201,7 @@ void delay2ms()
 }
 #endif
 
-static bool usbPlugged(void)
-{
-#ifdef PCBSKY
-	return PIOC->PIO_PDSR & 0x02000000 ;
-#endif
-	
 #ifdef PCBTARANIS
-	return GPIOA->IDR & 0x0200 ;
-#endif
-}
-
-#ifdef PCBTARANIS
-
-extern "C" {
-USB_OTG_CORE_HANDLE USB_OTG_dev;
-
-void OTG_FS_IRQHandler(void)
-{
-  USBD_OTG_ISR_Handler (&USB_OTG_dev);
-}
-}
-
-static void usbInit()
-{
-  USB_OTG_BSP_Init(&USB_OTG_dev);
-}
-
-static void usbStart()
-{
-  USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID, &USR_desc, &USBD_MSC_cb, &USR_cb);
-}
 
 uint32_t isFirmwareStart( uint32_t *block )
 {
@@ -358,7 +325,8 @@ void clearLockBits()
 }
 #endif
 
-void interrupt10ms()
+void per10ms(void);
+void interrupt10ms(void)
 {
 	Tenms |= 1 ;			// 10 mS has passed
  	per10ms() ;
@@ -760,7 +728,7 @@ int main()
 	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN ; 		// Enable portA clock
 #endif
 
-	init_soft_power() ;
+	pwrInit() ;
 
 #ifdef PCBSKY
 	MATRIX->CCFG_SYSIO |= 0x000000F0L ;		// Disable syspins, enable B4,5,6,7
@@ -788,7 +756,7 @@ extern uint8_t OptrexDisplay ;
 #endif
 
 #ifdef PCBTARANIS
-	init_keys() ;
+	keysInit() ;
 	I2C_EE_Init() ;
 	init_hw_timer()	;
 #endif
@@ -821,7 +789,7 @@ extern uint8_t OptrexDisplay ;
 
 #ifdef PCBTARANIS
 	// SD card detect pin
-	configure_pins( SD_PRESENT_GPIO_Pin, PIN_PORTD | PIN_INPUT | PIN_PULLUP ) ;
+	// configure_pins( SD_PRESENT_GPIO_Pin, PIN_PORTD | PIN_INPUT | PIN_PULLUP ) ;
 	disk_initialize( 0 ) ;
 	sdInit() ;
 	unlockFlash() ;
@@ -1134,9 +1102,8 @@ extern uint8_t OptrexDisplay ;
 		}
 		if ((state < ST_FLASH_CHECK) || (state == ST_FLASH_DONE))
 		{
-			if ( check_soft_power() == POWER_OFF )
-			{
-				soft_power_off() ;
+			if (pwrCheck() == e_power_off )	{
+				pwrOff() ;
 				for(;;)
 				{
 					// Wait for power to go off
@@ -1152,7 +1119,7 @@ extern uint8_t OptrexDisplay ;
 		}
 		if ( state == ST_REBOOT )
 		{
-			if ( (~read_keys() & 0x7E) == 0 )
+			if ( (~readKeys() & 0x7E) == 0 )
 			{
 		  	NVIC_SystemReset() ;
 			}

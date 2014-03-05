@@ -75,6 +75,22 @@ extern "C" {
 #define JACK_PPM_OUT()
 #define JACK_PPM_IN()
 
+#define PIN_MODE_MASK           0x0003
+#define PIN_INPUT               0x0000
+#define PIN_OUTPUT              0x0001
+#define PIN_PERIPHERAL          0x0002
+#define PIN_ANALOG              0x0003
+#define PIN_PULL_MASK           0x000C
+#define PIN_PULLUP              0x0004
+#define PIN_NO_PULLUP           0x0000
+#define PIN_PULLDOWN            0x0008
+#define PIN_NO_PULLDOWN         0x0000
+#define PIN_PERI_MASK           0x00F0
+#define PIN_PUSHPULL            0x0000
+#define PIN_ODRAIN              0x8000
+#define PIN_PORT_MASK           0x0700
+#define PIN_SPEED_MASK          0x6000
+
 void configure_pins( uint32_t pins, uint16_t config );
 
 #define strcpy_P strcpy
@@ -160,6 +176,10 @@ extern volatile uint16_t Analog_values[];
   #define BATT_SCALE    150
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // Power driver
 void pwrInit(void);
 uint32_t pwrCheck(void);
@@ -176,13 +196,15 @@ void pwrOff(void);
 #define __BACKLIGHT_OFF       TIM10->CCR1 = 0
 #define IS_BACKLIGHT_ON()     (TIM10->CCR1 != 0)
 
-#if !defined(BOOT)
 // USB driver
+int usbPlugged(void);
 #define BOOTLOADER_REQUEST()  (0)
 #define usbBootloader()
 void usbInit(void);
 void usbStart(void);
-bool usbPlugged(void);
+
+#ifdef __cplusplus
+}
 #endif
 
 // EEPROM driver

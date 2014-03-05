@@ -137,17 +137,20 @@ SRC  =	system_stm32f2xx.c \
 	../src/targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_core.c \
 	../src/targets/taranis/usbd_desc.c \
 	../src/targets/taranis/aspi.c \
-	../src/targets/taranis/usb_bsp.c
+	../src/targets/taranis/usb_bsp.c \
+	../src/targets/taranis/usb_driver.c \
+	../src/targets/taranis/pwr_driver.c	
 
 CPPSRC = ../src/targets/taranis/lcd_driver.cpp \
+	../src/targets/taranis/keys_driver.cpp \
         driversboot.cpp \
         logicioboot.cpp \
 	../src/targets/taranis/diskio.cpp \
         ../src/targets/taranis/usbd_usr.cpp \
         usbd_storage_msd.cpp \
         ../src/lcd.cpp \
+        ../src/keys.cpp \
         ../src/fonts.cpp \
-	power.cpp \
         boot.cpp
 
 # List ASM source files here

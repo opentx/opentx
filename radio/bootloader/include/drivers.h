@@ -4,12 +4,7 @@
 
 extern volatile uint32_t Spi_complete ;
 
-extern void putEvent( register uint8_t evt) ;
-
 extern void per10ms( void ) ;
-extern uint8_t getEvent( void ) ;
-extern void pauseEvents(uint8_t event) ;
-extern void killEvents(uint8_t event) ;
 extern void init_spi( void ) ;
 extern void end_spi( void ) ;
 

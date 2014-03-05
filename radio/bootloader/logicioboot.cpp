@@ -25,14 +25,7 @@
 #include "drivers.h"
 #endif
 
-#ifdef PCBTARANIS
-#include "stm32f2xx.h"
-#include "stm32f2xx_gpio.h"
-#include "radio.h"
-#include "hal.h"
-#endif
-
-#include "logicio.h"
+#include "../src/opentx.h"
 
 
 #ifndef SIMU
@@ -40,7 +33,7 @@
 void configure_pins( uint32_t pins, uint16_t config )
 {
 	register Pio *pioptr ;
-	
+
 	pioptr = PIOA + ( ( config & PIN_PORT_MASK ) >> 6) ;
 	if ( config & PIN_PULLUP )
 	{
@@ -64,11 +57,11 @@ void configure_pins( uint32_t pins, uint16_t config )
 
 	if ( config & PIN_HIGH )
 	{
-		pioptr->PIO_SODR = pins ;		
+		pioptr->PIO_SODR = pins ;
 	}
 	else
 	{
-		pioptr->PIO_CODR = pins ;		
+		pioptr->PIO_CODR = pins ;
 	}
 
 	if ( config & PIN_INPUT )
@@ -99,11 +92,11 @@ void configure_pins( uint32_t pins, uint16_t config )
 
 	if ( config & PIN_ENABLE )
 	{
-		pioptr->PIO_PER = pins ;		
+		pioptr->PIO_PER = pins ;
 	}
 	else
 	{
-		pioptr->PIO_PDR = pins ;		
+		pioptr->PIO_PDR = pins ;
 	}
 }
 #endif
@@ -153,17 +146,17 @@ void configure_pins( uint32_t pins, uint16_t config )
     }
   }
 }
-		
+
 #endif
 
 
 
 #ifdef PCBSKY
-	
+
 void init_keys()
 {
 	register Pio *pioptr ;
-	
+
 	pioptr = PIOC ;
 	// Next section configures the key inputs on the LCD data
 	pioptr->PIO_PER = 0x0000003BL ;		// Enable bits 1,3,4,5, 0
@@ -230,7 +223,7 @@ void setup_switches()
 // PC21, PC19, PC15 (PPM2 output)
 void config_free_pins()
 {
-	
+
 	configure_pins( PIO_PB14, PIN_ENABLE | PIN_INPUT | PIN_PORTB | PIN_PULLUP ) ;
 
 }
@@ -255,7 +248,7 @@ uint32_t read_keys()
 	register uint32_t y ;
 
 	x = LcdLock ? LcdInputs : PIOC->PIO_PDSR << 1 ; // 6 LEFT, 5 RIGHT, 4 DOWN, 3 UP ()
-	
+
 	y = x & 0x00000020 ;		// RIGHT
 	if ( x & 0x00000004 )
 	{
@@ -300,7 +293,7 @@ uint32_t read_trims()
 	{
 		trims |= 1 ;
 	}
-    
+
 // TRIM_LV_DOWN  PA27 (PA24)
 	if ( ( trima & 0x01000000 ) == 0 )
 	{
@@ -375,74 +368,10 @@ uint32_t initReadTrims( void )
 	{
 		__asm("nop") ;
 	}
-	
+
 	return read_trims() ;
 }
 #endif // PCBSKY
 
-#ifdef PCBTARANIS
-void init_keys()
-{
-// Buttons PE10, 11, 12, PD2, 3, 7
-	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOEEN ; 		// Enable portE clock
-	configure_pins( 0x1C00, PIN_INPUT | PIN_PULLUP | PIN_PORTE ) ;
-	configure_pins( 0x008C, PIN_INPUT | PIN_PULLUP | PIN_PORTD ) ;
-}
 
-// Reqd. bit 6 LEFT, 5 RIGHT, 4 UP, 3 DOWN 2 EXIT 1 MENU
-uint32_t read_keys()
-{
-	register uint32_t x ;
-	register uint32_t y ;
-
-	x = GPIOD->IDR ; // 7 MENU, 3 PAGE(UP), 2 EXIT
-	
-	y = 0 ;
-	if ( x & PIN_BUTTON_MENU )
-	{
-		y |= 0x02 << KEY_MENU ;			// up
-//		y |= 0x02 << KEY_MENU ;			// MENU
-	}
-	if ( x & PIN_BUTTON_PAGE )
-	{
-		y |= 0x02 << KEY_PAGE ;		// LEFT
-	}
-	if ( x & PIN_BUTTON_EXIT )
-	{
-		y |= 0x02 << KEY_EXIT ;		// DOWN
-//		y |= 0x02 << KEY_EXIT ;			// EXIT
-	}
-	
-	x = GPIOE->IDR ; // 10 RIGHT(+), 11 LEFT(-), 12 ENT(DOWN)
-	if ( x & PIN_BUTTON_PLUS )
-	{
-		y |= 0x02 << KEY_PLUS ;			// MENU
-//		y |= 0x02 << KEY_UP ;			// up
-	}
-	if ( x & PIN_BUTTON_MINUS )
-	{
-		y |= 0x02 << KEY_MINUS ;		// RIGHT
-//		y |= 0x02 << KEY_DOWN ;		// DOWN
-	}
-	if ( x & PIN_BUTTON_ENTER )
-	{
-		y |= 0x02 << KEY_ENTER ;			// EXIT
-//		y |= 0x02 << KEY_RIGHT ;		// RIGHT
-	}
-	return y ;
-}
-
-// 
-void setup_switches()
-{
-	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN ; 		// Enable portA clock
-	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN ; 		// Enable portB clock
-	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOEEN ; 		// Enable portE clock
-	configure_pins( 0x0020, PIN_INPUT | PIN_PULLUP | PIN_PORTA ) ;
-	configure_pins( 0x003A, PIN_INPUT | PIN_PULLUP | PIN_PORTB ) ;
-	configure_pins( 0xE307, PIN_INPUT | PIN_PULLUP | PIN_PORTE ) ;
-	
-}
-
-#endif  // PCBTARANIS
 

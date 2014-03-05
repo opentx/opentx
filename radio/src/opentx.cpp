@@ -45,7 +45,6 @@ int16_t  anas [NUM_INPUTS] = {0};
 int16_t  trims[NUM_STICKS] = {0};
 int32_t  chans[NUM_CHNOUT] = {0};
 BeepANACenter bpanaCenter = 0;
-struct t_inactivity inactivity = {0};
 
 int24_t act   [MAX_MIXERS] = {0};
 SwOn    swOn  [MAX_MIXERS]; // TODO better name later...
