@@ -272,7 +272,7 @@ MENUS_LOCK == NO
 SHELL = sh
 IMG2LBM = -python ../util/img2lbm.py
 TRANSLATE = -python ../util/translate.py
-VERSION = 2.0
+VERSION = 1.99
 
 SRC =
 CPPSRC =
