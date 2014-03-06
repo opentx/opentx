@@ -12,14 +12,14 @@
 ;General
 
   ;Name and file
-  Name "OpenTX companion"
+  Name "OpenTX Companion"
   OutFile "companionInstall_v@C9X_VERSION@.exe"
 
   ;Default installation folder
-  InstallDir "$PROGRAMFILES\OpenTX companion"
+  InstallDir "$PROGRAMFILES\OpenTX"
   
   ;Get installation folder from registry if available
-  InstallDirRegKey HKCU "Software\companion9x" ""
+  InstallDirRegKey HKCU "Software\OpenTX" ""
   
   ;Compressor options
   SetCompressor /FINAL /SOLID lzma
@@ -66,7 +66,7 @@
   
   ;Start Menu Folder Page Configuration
   !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU" 
-  !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\companion9x" 
+  !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\OpenTX" 
   !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
   
   !insertmacro MUI_PAGE_STARTMENU Application $StartMenuFolder
@@ -77,7 +77,7 @@
     !define MUI_FINISHPAGE_NOAUTOCLOSE
     !define MUI_FINISHPAGE_RUN
     !define MUI_FINISHPAGE_RUN_CHECKED
-    !define MUI_FINISHPAGE_RUN_TEXT "Launch companion"
+    !define MUI_FINISHPAGE_RUN_TEXT "Launch OpenTX Companion"
     !define MUI_FINISHPAGE_RUN_FUNCTION "LaunchLink"
   #  !define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
   #  !define MUI_FINISHPAGE_SHOWREADME $INSTDIR\readme.txt
@@ -95,7 +95,7 @@
 ;--------------------------------
 ;Installer Sections
 
-Section "OpenTX companion" SecDummy
+Section "OpenTX Companion" SecDummy
 
   SetOutPath "$INSTDIR"
   
@@ -129,7 +129,7 @@ Section "OpenTX companion" SecDummy
   
   SetOutPath "$INSTDIR"
   ;Store installation folder
-  WriteRegStr HKCU "Software\companion9x" "" $INSTDIR
+  WriteRegStr HKCU "Software\OpenTX" "" $INSTDIR
   
   ;Associate with extentions ,bin and .hex
   ${registerExtension} "$INSTDIR\companion.exe" ".bin" "BIN_File"
@@ -207,7 +207,7 @@ Section "Uninstall"
   Delete "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk"
   RMDir "$SMPROGRAMS\$StartMenuFolder"
   
-  DeleteRegKey /ifempty HKCU "Software\companion9x"
+  DeleteRegKey /ifempty HKCU "Software\OpenTX"
 
 SectionEnd
 

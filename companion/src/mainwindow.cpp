@@ -1530,18 +1530,20 @@ MdiChild *MainWindow::createMdiChild()
     return child;
 }
 
-QAction * MainWindow::addAct(QString icon, QString sName, QString lName, QKeySequence::StandardKey shortcut, const char *slot)
+QAction * MainWindow::addAct(QString icon, QString sName, QString lName, QKeySequence::StandardKey shortcut, const char *slot, QObject *slotObj)
 {
   QAction * newAction = new QAction( this );
   if (!icon.isEmpty())
-      newAction->setIcon(CompanionIcon(icon));
+    newAction->setIcon(CompanionIcon(icon));
   if (!sName.isEmpty()) 
     newAction->setText(sName);
   if (!lName.isEmpty())
     newAction->setStatusTip(lName);
   if (shortcut != 0)
     newAction->setShortcuts(shortcut);
-    connect(newAction, SIGNAL(triggered()), this, slot);
+  if (slotObj == NULL)
+    slotObj = this;
+  connect(newAction, SIGNAL(triggered()), slotObj, slot);
   return newAction;
 }
 
@@ -1584,7 +1586,7 @@ void MainWindow::createActions()
     openAct =            addAct("open.png",   tr("Open Models+Settings..."),    tr("Open Models and Settings file"),         QKeySequence::Open,   SLOT(openFile()));
     saveAct =            addAct("save.png",   tr("Save Models+Settings..."),    tr("Save Models and Settings file"),         QKeySequence::Save,   SLOT(save()));
     saveAsAct =          addAct("saveas.png", tr("Save Models+Settings as..."), tr("Save Models and Settings file"),         QKeySequence::SaveAs, SLOT(saveAs()));
-    exitAct =            addAct("exit.png",   tr("Exit"),                       tr("Exit the application"),                  QKeySequence::Quit,   SLOT(newFile()));
+    exitAct =            addAct("exit.png",   tr("Exit"),                       tr("Exit the application"),                  QKeySequence::Quit,   SLOT(closeAllWindows()), qApp);
     cutAct =             addAct("cut.png",    tr("Cut Model"),                  tr("Cut current model to the clipboard"),    QKeySequence::Cut,    SLOT(cut()));
     copyAct =            addAct("copy.png",   tr("Copy Model..."),              tr("Copy current model to the clipboard"),   QKeySequence::Copy,   SLOT(copy()));
     pasteAct =           addAct("paste.png",  tr("Paste Model..."),             tr("Paste model from clipboard"),            QKeySequence::Paste,  SLOT(paste()));

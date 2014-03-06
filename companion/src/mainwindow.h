@@ -158,7 +158,7 @@ private slots:
   
 private:
     void createActions();
-    QAction * addAct(QString, QString, QString, QKeySequence::StandardKey, const char *);
+    QAction * addAct(QString, QString, QString, QKeySequence::StandardKey, const char *, QObject *slotObj=NULL);
     QAction * addAct(QActionGroup *, QString, QString, const char *);
     QAction * addAct(QString, QString, QString, const char *);
 
