@@ -277,8 +277,8 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>212</width>
-                <height>64</height>
+                <width>214</width>
+                <height>66</height>
                </size>
               </property>
               <property name="frameShape">
@@ -286,6 +286,9 @@
               </property>
               <property name="frameShadow">
                <enum>QFrame::Plain</enum>
+              </property>
+              <property name="lineWidth">
+               <number>0</number>
               </property>
               <property name="text">
                <string/>

@@ -484,7 +484,7 @@ This is used by the templated to determine which channel goes to what number out
           <enum>QFrame::Plain</enum>
          </property>
          <property name="lineWidth">
-          <number>1</number>
+          <number>0</number>
          </property>
          <property name="text">
           <string/>
