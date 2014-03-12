@@ -43,12 +43,16 @@
   #define xcoord_t      uint16_t
   #define CENTER        "\015"
   #define CENTER_OFS    (7*FW-FW/2)
+  #define CONTRAST_MIN  0
+  #define CONTRAST_MAX  45
 #else
   #define LCD_W         128
   #define LCD_H         64
   #define xcoord_t      uint8_t
   #define CENTER
   #define CENTER_OFS    0
+  #define CONTRAST_MIN  10
+  #define CONTRAST_MAX  45
 #endif
 
 #if defined(CPUARM)

@@ -70,6 +70,9 @@ RUN_FROM_FLASH = 0
  endif
 endif
 
+# PCB revision
+PCBREV =
+
 EXTRAINCDIRS =
 
 #
@@ -90,6 +93,14 @@ ifeq ($(RUN_FROM_FLASH), 1)
  TRGT = arm-none-eabi-
  CPPDEFS += -DPCBSKY 
  UDEFS = -Dat91sam3s8
+
+ # If REVX board
+ ifeq ($(REVX), 1)
+   CPPDEFS += -DREVX
+  endif
+
+  CPPDEFS += -DREVB
+
 else
  ifeq ($(PCB), TARANIS)
   ARCH = ARM
@@ -105,6 +116,15 @@ else
   EXTRAINCDIRS += ../targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/inc
   EXTRAINCDIRS += ../targets/taranis
   EXTRAINCDIRS += ../fonts/std
+  
+  ifeq ($(PCBREV), REV3)
+    CPPDEFS += -DREV3
+  else ifeq ($(PCBREV), REV4a)
+    CPPDEFS += -DREV4a
+  else
+    CPPDEFS += -DREV4
+  endif
+  
  endif
 endif
 
@@ -240,15 +260,8 @@ COBJS    = $(patsubst %,$(OBJDIR)/%,$(notdir $(CXOBJS) ))
 CPPOBJS  = $(patsubst %,$(OBJDIR)/%,$(notdir $(CPPXOBJS) ))
 DIRS = $(sort $(dir $(AXOBJS) $(CXOBJS) $(CPPXOBJS) ) )
 
-# If REVX board
-ifeq ($(REVX), 1)
- CPPDEFS += -DREVX
- EXT_MOD=REVB-X
-endif
 
 CPPDEFS += -DCPUARM
-
-CPPDEFS += -DREVB
 
 # If serial Debug required
 ifeq ($(DEBUG), 1)

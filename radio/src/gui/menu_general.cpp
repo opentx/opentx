@@ -432,12 +432,8 @@ void menuGeneralSetup(uint8_t event)
       case ITEM_SETUP_CONTRAST:
         lcd_putsLeft(y, STR_CONTRAST);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.contrast, attr|LEFT);
-        if(attr) {
-#if defined(PCBTARANIS)
-          CHECK_INCDEC_GENVAR(event, g_eeGeneral.contrast, 0, 45);
-#else
-          CHECK_INCDEC_GENVAR(event, g_eeGeneral.contrast, 10, 45);
-#endif          
+        if (attr) {
+          CHECK_INCDEC_GENVAR(event, g_eeGeneral.contrast, CONTRAST_MIN, CONTRAST_MAX);
           lcdSetContrast();
         }
         break;
@@ -601,24 +597,16 @@ void menuGeneralSetup(uint8_t event)
 #endif
 
 #if defined(MAVLINK)
-		case ITEM_MAVLINK_BAUD:
-			g_eeGeneral.mavbaud = selectMenuItem(RADIO_SETUP_2ND_COLUMN,  //Y
-				y, 					// Y
-				STR_MAVLINK_BAUD_LABEL, 			// pm_char *label
-				STR_MAVLINK_BAUDS, 		// pm_char *values
-//				PSTR("4800""9600""14400""19200""38400""57600""76800""115200"),
-				g_eeGeneral.mavbaud, 	// value
-				0, 	// min
-				7, 	// max
-				attr,  // attr
-				event);	// event
-			break;
+      case ITEM_MAVLINK_BAUD:
+        g_eeGeneral.mavbaud = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_MAVLINK_BAUD_LABEL, STR_MAVLINK_BAUDS, PSTR("4800""9600""14400""19200""38400""57600""76800""115200"), g_eeGeneral.mavbaud, 0, 7, attr, event);
+        break;
 #endif
 
       case ITEM_SETUP_RX_CHANNEL_ORD:
         lcd_putsLeft(y, STR_RXCHANNELORD); // RAET->AETR
-        for (uint8_t i=1; i<=4; i++)
+        for (uint8_t i=1; i<=4; i++) {
           putsChnLetter(RADIO_SETUP_2ND_COLUMN - FW + i*FW, y, channel_order(i), attr);
+        }
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.templateSetup, 0, 23);
         break;
 
@@ -629,7 +617,9 @@ void menuGeneralSetup(uint8_t event)
 
       case ITEM_SETUP_STICK_MODE:
         lcd_putcAtt(2*FW, y, '1'+g_eeGeneral.stickMode, attr);
-        for (uint8_t i=0; i<4; i++) putsMixerSource((6+4*i)*FW, y, MIXSRC_Rud + pgm_read_byte(modn12x3 + 4*g_eeGeneral.stickMode + i), 0);
+        for (uint8_t i=0; i<4; i++) {
+          putsMixerSource((6+4*i)*FW, y, MIXSRC_Rud + pgm_read_byte(modn12x3 + 4*g_eeGeneral.stickMode + i), 0);
+        }
         if (attr && s_editMode>0) {
           CHECK_INCDEC_GENVAR(event, g_eeGeneral.stickMode, 0, 3);
         }

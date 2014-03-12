@@ -203,14 +203,11 @@ int8_t STORAGE_Read (uint8_t lun,
                  uint16_t blk_len)
 {
   if (lun == 1) {
-    if (fat12Read(buf, blk_addr, blk_len) != 0) {
+    if (fat12Read(buf, blk_addr, blk_len) != 0)
       return -1;
-    }
   }
   else {
-    if (SD_ReadSectors(buf,
-                       blk_addr,
-                       blk_len) != 0) {
+    if (SD_ReadSectors(buf, blk_addr, blk_len) != 0) {
       return -1;
     }
   }
@@ -238,9 +235,7 @@ int8_t STORAGE_Write (uint8_t lun,
       return -1;
   }
   else {
-    if (SD_WriteSectors(buf,
-                        blk_addr,
-                        blk_len) != 0)
+    if (SD_WriteSectors(buf, blk_addr, blk_len) != 0)
       return -1;
   }
 

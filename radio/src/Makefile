@@ -1097,14 +1097,16 @@ all: begin gccversion sizebefore build sizeafter end
 # Change the build target to build a HEX file or a library.
 ifeq ($(ARCH), AVR)
   build: stamp_header tra lbm allsrc.cpp elf remallsrc hex
-else
+else ifeq ($(PCB), TARANIS)
   build: stamp_header tra lbm bootloader.lbm allsrc.cpp elf remallsrc bin
+else
+  build: stamp_header tra lbm allsrc.cpp elf remallsrc bin
 endif
 
 # build bootloader
 .PHONY bootloader.lbm:
 	@echo "Building bootloader..."
-	$(MAKE) -C bootloader PCB=TARANIS
+	$(MAKE) -C bootloader PCB=$(PCB) PCBREV=$(PCBREV)
 	$(BIN2LBM) bootloader.lbm bootloader/bootloader_ramBoot.bin
 
 tra: translations/en.h translations/cz.h translations/de.h translations/es.h translations/fi.h translations/fr.h translations/it.h translations/pl.h translations/pt.h translations/se.h

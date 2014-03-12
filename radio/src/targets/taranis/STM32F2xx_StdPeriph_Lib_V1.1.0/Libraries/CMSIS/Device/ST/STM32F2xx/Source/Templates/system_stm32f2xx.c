@@ -232,7 +232,7 @@ void SystemInit(void)
 #ifdef VECT_TAB_SRAM
   SCB->VTOR = SRAM_BASE | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal SRAM */
 #else
-  #if defined(BOOTLOADER)
+  #if defined(BOOTLOADER) || defined(BOOT)
     extern uint32_t g_pfnVectors ;
     SCB->VTOR = (uint32_t) &g_pfnVectors ; /* Vector Table Relocation in Internal FLASH */
   #else

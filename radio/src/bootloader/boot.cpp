@@ -49,7 +49,7 @@
 /*----------------------------------------------------------------------------
  *        Headers
  *----------------------------------------------------------------------------*/
- 
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -111,7 +111,6 @@ volatile uint8_t  Tenms ;
 uint8_t EE_timer ;
 
 TCHAR FlashFilename[60] ;
-FATFS g_FATFS ;
 FIL FlashFile ;
 DIR Dj ;
 FILINFO Finfo ;
@@ -194,7 +193,7 @@ uint32_t isFirmwareStart( uint32_t *block )
 	{
 		return 0 ;
 	}
-	return 1 ;	
+	return 1 ;
 }
 #endif
 
@@ -213,7 +212,7 @@ uint32_t isFirmwareStart( uint32_t *block )
 	{
 		return 0 ;
 	}
-	return 1 ;	
+	return 1 ;
 }
 #endif
 
@@ -253,16 +252,16 @@ uint32_t program( uint32_t *address, uint32_t *buffer )	// size is 256 bytes
 	FlashSectorNum = (uint32_t) address ;
 	FlashSectorNum >>= 8 ;		// page size is 256 bytes
 	FlashSectorNum &= 2047 ;	// max page number
-	
+
 	/* Send data to the sector here */
 	for ( i = 0 ; i < 64 ; i += 1 )
 	{
-		*address++ = *buffer++ ;		
+		*address++ = *buffer++ ;
 	}
 
 	/* build the command to send to EEFC */
 	flash_cmd = (0x5A << 24) | (FlashSectorNum << 8) | 0x03 ; //AT91C_MC_FCMD_EWP ;
-	
+
 	__disable_irq() ;
 	/* Call the IAP function with appropriate command */
 	i = IAP_Function( 0, flash_cmd ) ;
@@ -275,7 +274,7 @@ uint32_t readLockBits()
 {
 	// Always initialise this here, setting a default doesn't seem to work
 	IAP_Function = (uint32_t (*)(uint32_t, uint32_t))  *(( uint32_t *)0x00800008) ;
-	
+
 	uint32_t flash_cmd = (0x5A << 24) | 0x0A ; //AT91C_MC_FCMD_GLB ;
 	__disable_irq() ;
 	(void) IAP_Function( 0, flash_cmd ) ;
@@ -298,7 +297,7 @@ void clearLockBits()
 		/* Call the IAP function with appropriate command */
 		(void) IAP_Function( 0, flash_cmd ) ;
 		__enable_irq() ;
-	} 
+	}
 }
 #endif
 
@@ -335,7 +334,7 @@ void init10msTimer()
 	ptc->TC_CHANNEL[2].TC_CMR = 0x0009C003 ;	// 0000 0000 0000 1001 1100 0000 0000 0011
 																						// MCK/128, set @ RA, Clear @ RC waveform
 	ptc->TC_CHANNEL[2].TC_CCR = 5 ;		// Enable clock and trigger it (may only need trigger)
-	
+
 	NVIC_EnableIRQ(TC2_IRQn) ;
 	TC0->TC_CHANNEL[2].TC_IER = TC_IER0_CPCS ;
 }
@@ -349,7 +348,7 @@ extern "C" void TC2_IRQHandler()
 	(void) dummy ;		// Discard value - prevents compiler warning
 
 	interrupt10ms() ;
-	
+
 }
 #endif
 
@@ -360,7 +359,7 @@ void init10msTimer()
 	RCC->APB1ENR |= RCC_APB1ENR_TIM14EN ;		// Enable clock
 	TIM14->ARR = 9999 ;	// 10mS
 	TIM14->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 1000000 - 1 ;		// 1uS from 12MHz
-	TIM14->CCER = 0 ;	
+	TIM14->CCER = 0 ;
 	TIM14->CCMR1 = 0 ;
 	TIM14->EGR = 0 ;
 	TIM14->CR1 = 5 ;
@@ -380,7 +379,7 @@ void init_hw_timer()
 	RCC->APB1ENR |= RCC_APB1ENR_TIM13EN ;		// Enable clock
 	TIM13->ARR = 65535 ;
 	TIM13->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 10000000 - 1 ;		// 0.1uS from 12MHz
-	TIM13->CCER = 0 ;	
+	TIM13->CCER = 0 ;
 	TIM13->CCMR1 = 0 ;
 	TIM13->EGR = 0 ;
 	TIM13->CR1 = 1 ;
@@ -432,13 +431,13 @@ void eraseSector( uint32_t sector )
   FLASH->CR &= SECTOR_MASK;
   FLASH->CR |= FLASH_CR_SER | (sector<<3) ;
   FLASH->CR |= FLASH_CR_STRT;
-    
+
   /* Wait for operation to be completed */
 	waitFlashIdle() ;
-    
+
   /* if the erase operation is completed, disable the SER Bit */
   FLASH->CR &= (~FLASH_CR_SER);
-  FLASH->CR &= SECTOR_MASK; 
+  FLASH->CR &= SECTOR_MASK;
 }
 
 uint32_t program( uint32_t *address, uint32_t *buffer )	// size is 256 bytes
@@ -488,25 +487,25 @@ uint32_t program( uint32_t *address, uint32_t *buffer )	// size is 256 bytes
 	}
 
 	// Now program the 256 bytes
-	 
+
   for (i = 0 ; i < 64 ; i += 1 )
   {
     /* Device voltage range supposed to be [2.7V to 3.6V], the operation will
-       be done by word */ 
-    
+       be done by word */
+
 	  // Wait for last operation to be completed
 		waitFlashIdle() ;
-  
+
     FLASH->CR &= CR_PSIZE_MASK;
     FLASH->CR |= FLASH_PSIZE_WORD;
     FLASH->CR |= FLASH_CR_PG;
-  
+
     *address = *buffer ;
-        
+
     /* Wait for operation to be completed */
 		waitFlashIdle() ;
     FLASH->CR &= (~FLASH_CR_PG);
-		 
+
 		 /* Check the written value */
     if ( *address != *buffer )
     {
@@ -530,7 +529,7 @@ uint8_t *cpystr( uint8_t *dest, uint8_t *source )
   return dest - 1 ;
 }
 
-		
+
 FRESULT readBinDir( DIR *dj, FILINFO *fno )
 {
 	FRESULT fr ;
@@ -621,7 +620,7 @@ FRESULT openFirmwareFile( uint32_t index )
 uint8_t flashFile( uint32_t index )
 {
 	FRESULT fr ;
-	
+
 	lcd_clear() ;
 	lcd_putsLeft( 0, "\005Flash File" ) ;
 	if ( Valid == 0 )
@@ -630,7 +629,7 @@ uint8_t flashFile( uint32_t index )
 		// return 3 if invalid
 		fr = openFirmwareFile( index ) ;
 		fr = f_close( &FlashFile ) ;
-		
+
 		Valid = 1 ;
 		if ( isFirmwareStart( Block_buffer ) == 0 )
 		{
@@ -650,7 +649,7 @@ uint8_t flashFile( uint32_t index )
 		{
 			return 3 ;
 		}
-		return 4 ;		// 
+		return 4 ;		//
 	}
 	lcd_putsnAtt( 0, 2*FH, Filenames[index], DISPLAY_CHAR_WIDTH, 0 ) ;
 
@@ -661,13 +660,13 @@ uint8_t flashFile( uint32_t index )
   lcd_putsLeft( 6*FH,"\003[MENU]\013[EXIT]") ;
   lcd_putsLeft( 5*FH,"\003YES\013NO") ;
 #endif
-	
+
 	uint8_t event = getEvent() ;
 
 	if ( event == EVT_KEY_FIRST(BOOT_KEY_MENU) )
 	{
 		fr = openFirmwareFile( index ) ;
-		FirmwareSize = FileSize[index] ; 
+		FirmwareSize = FileSize[index] ;
 		if ( fr != FR_OK )
 		{
 			return 4 ;		// File open error
@@ -756,7 +755,7 @@ extern uint8_t OptrexDisplay ;
 #ifdef PCBSKY
 	uint32_t chip_id = CHIPID->CHIPID_CIDR ;
 
-	FlashSize = ( (chip_id >> 8 ) & 0x000F ) == 9 ? 256 : 512 ; 
+	FlashSize = ( (chip_id >> 8 ) & 0x000F ) == 9 ? 256 : 512 ;
 #endif
 
 #ifdef PCBTARANIS
@@ -774,7 +773,6 @@ extern uint8_t OptrexDisplay ;
 #ifdef PCBTARANIS
 	// SD card detect pin
 	// configure_pins( SD_PRESENT_GPIO_Pin, PIN_PORTD | PIN_INPUT | PIN_PULLUP ) ;
-	disk_initialize( 0 ) ;
 	sdInit() ;
 	unlockFlash() ;
 
@@ -787,7 +785,7 @@ extern uint8_t OptrexDisplay ;
 #ifdef PCBSKY
     usbMassStorage() ;
 #endif
-		
+
 		wdt_reset() ;
 
 		if ( Tenms )
@@ -804,29 +802,18 @@ extern uint8_t OptrexDisplay ;
 				}
 			}
 
-			Tenms = 0 ;
-			lcd_clear() ;
-#ifdef PCBSKY
-			lcd_putsLeft( 0, "Boot Loader" ) ;
-#endif
-#ifdef PCBTARANIS
-			lcd_putsLeft( 0, "\006Boot Loader" ) ;
-#endif
+			Tenms = 0;
+			lcd_clear();
+			lcd_putsLeft(0, CENTER "Boot Loader");
+			lcd_invert_line(0);
 
-			if ( sdMounted() )
 			{
-#ifdef PCBSKY
-				lcd_putsLeft( 0, "\014Ready" ) ;
-#endif
-#ifdef PCBTARANIS
-				lcd_putsLeft( 0, "\022Ready" ) ;
-#endif
 
 				if ( usbPlugged() )
 				{
 					state = ST_USB ;
 				}
-				
+
 				if ( state == ST_USB )
 				{
 #ifdef PCBSKY
@@ -849,11 +836,12 @@ extern uint8_t OptrexDisplay ;
 
 				if ( state == ST_START )
 				{
-  				fr = f_mount(0, &g_FATFS) ;
+  				  sdInit();
+  				  fr = FR_OK;
 				}
 				else
 				{
-					fr = FR_OK ;
+				  fr = FR_OK ;
 				}
 
 				if ( fr == FR_OK)
@@ -865,7 +853,7 @@ extern uint8_t OptrexDisplay ;
 				}
 				if ( state == ST_DIR_CHECK )
 				{
-					fr = f_chdir( (TCHAR *)"\\firmware" ) ;
+					fr = f_chdir("/firmware") ;
 					if ( fr == FR_OK )
 					{
 						state = ST_OPEN_DIR ;
@@ -875,15 +863,15 @@ extern uint8_t OptrexDisplay ;
 				if ( state == ST_DIR_CHECK )
 				{
 #ifdef PCBSKY
-					lcd_putsLeft( 16, "\005No Firmware" ) ;
+					lcd_putsLeft( 2*FH, "\005No Firmware" ) ;
 #endif
 #ifdef PCBTARANIS
-					lcd_putsLeft( 16, "\013No Firmware" ) ;
+					lcd_putsLeft( 2*FH, "\013No Firmware" ) ;
 #endif
 				}
 				if ( state == ST_OPEN_DIR )
 				{
-					fr = f_opendir( &Dj, (TCHAR *) "." ) ;
+					fr = f_opendir(&Dj, ".") ;
 					if ( fr == FR_OK )
 					{
 						state = ST_FILE_LIST ;
@@ -898,7 +886,7 @@ extern uint8_t OptrexDisplay ;
 					uint32_t limit = 6 ;
 					if ( nameCount < limit )
 					{
-						limit = nameCount ;						
+						limit = nameCount ;
 					}
 					maxhsize = 0 ;
 					for ( i = 0 ; i < limit ; i += 1 )
@@ -907,7 +895,7 @@ extern uint8_t OptrexDisplay ;
 						x = strlen( Filenames[i] ) ;
 						if ( x > maxhsize )
 						{
-							maxhsize = x ;							
+							maxhsize = x ;
 						}
 						if ( x > DISPLAY_CHAR_WIDTH )
 						{
@@ -963,14 +951,14 @@ extern uint8_t OptrexDisplay ;
 						{
 							if ( hpos + DISPLAY_CHAR_WIDTH < maxhsize )
 							{
-								hpos += 1 ;								
+								hpos += 1 ;
 							}
 						}
 						if ( ( event == EVT_KEY_REPT(BOOT_KEY_LEFT)) || ( event == EVT_KEY_FIRST(BOOT_KEY_LEFT) ) )
 						{
 							if ( hpos )
 							{
-								hpos -= 1 ;								
+								hpos -= 1 ;
 							}
 						}
 						if ( event == EVT_KEY_LONG(BOOT_KEY_MENU) )
@@ -984,7 +972,7 @@ extern uint8_t OptrexDisplay ;
 							state = ST_REBOOT ;
 						}
 					}
-					lcd_invert_line(2*FH+FH*vpos);
+					lcd_invert_line(2+vpos);
 					// lcd_char_inverse( 0, 2*FH+FH*vpos, DISPLAY_CHAR_WIDTH*FW, 0 ) ;
 				}
 				if ( state == ST_FLASH_CHECK )
@@ -993,7 +981,7 @@ extern uint8_t OptrexDisplay ;
 					FirmwareSize = FileSize[vpos] - 32768 ;
 					if ( i == 1 )
 					{
-						state = ST_FILE_LIST ;		// Canceled						
+						state = ST_FILE_LIST ;		// Canceled
 					}
 					if ( i == 2 )
 					{
@@ -1009,7 +997,7 @@ extern uint8_t OptrexDisplay ;
 					if ( i == 3 )
 					{
 						// Invalid file
-						state = ST_FILE_LIST ;		// Canceled						
+						state = ST_FILE_LIST ;		// Canceled
 					}
 				}
 				if ( state == ST_FLASHING )
@@ -1024,7 +1012,7 @@ extern uint8_t OptrexDisplay ;
 						firmwareAddress += 256 ;
 						if ( BlockCount > 256 )
 						{
-							BlockCount -= 256 ;							
+							BlockCount -= 256 ;
 						}
 						else
 						{
@@ -1061,37 +1049,29 @@ extern uint8_t OptrexDisplay ;
 				}
 			}
 
-#ifdef PCBTARANIS
-			if ( --TenCount == 0 )
-			{
-				TenCount = 2 ;
-#endif			
-			lcdRefresh() ;
-#ifdef PCBTARANIS
+			if ( --TenCount == 0 ) {
+			  TenCount = 2 ;
+			  lcdRefresh() ;
 			}
-#endif			
+
 			if ( PowerUpDelay < 20 )	// 200 mS
 			{
 				PowerUpDelay += 1 ;
 			}
 			else
 			{
-#ifdef PCBSKY
-				sd_poll_10mS() ;
-#endif			
-#ifdef PCBTARANIS
 				sdPoll10ms() ;
-#endif			
+
 			}
 		}
 		if ((state < ST_FLASH_CHECK) || (state == ST_FLASH_DONE))
 		{
 			if (pwrCheck() == e_power_off )	{
-				pwrOff() ;
-				for(;;)
-				{
+			  pwrOff() ;
+			  for(;;)
+			  {
 					// Wait for power to go off
-				}
+			  }
 			}
 		}
 		if ( state < ST_FILE_LIST )
@@ -1105,12 +1085,11 @@ extern uint8_t OptrexDisplay ;
 		{
 			if ( (~readKeys() & 0x7E) == 0 )
 			{
-		  	NVIC_SystemReset() ;
+			  NVIC_SystemReset() ;
 			}
 		}
 
 	}
-//	stop_timer0() ;
 
   return 0;
 }

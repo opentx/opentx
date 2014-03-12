@@ -13,7 +13,7 @@
 
 #define	WriteData(x)	 AspiData(x)
 #define	WriteCommand(x)	 AspiCmd(x)
-#define CONTRAST_OFS 5
+#define CONTRAST_OFS     5
 
 static void LCD_Init()
 {	
@@ -22,9 +22,9 @@ static void LCD_Init()
   AspiCmd(0xEA);	//set bias=1/10 :Command table NO.27
   AspiCmd(0x81);	//Set Vop
 #if defined(BOOT)
-  AspiCmd(CONTRAST_OFS);
+  AspiCmd(CONTRAST_OFS+25);
 #else
-  AspiCmd(g_eeGeneral.contrast+CONTRAST_OFS);		//0--255
+  AspiCmd(CONTRAST_OFS+g_eeGeneral.contrast);
 #endif
   AspiCmd(0xA6);	//inverse display off
   AspiCmd(0xD1);	//SET RGB:Command table NO.21 .SET RGB or BGR.  D1=RGB
