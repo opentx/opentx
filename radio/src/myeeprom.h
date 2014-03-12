@@ -446,15 +446,16 @@ PACK(typedef struct t_ExpoData {
   int8_t   swtch;
   uint16_t phases;
   int8_t   weight;
-  int8_t   carryTrim;
+  int8_t   carryTrim:6;
+  uint8_t  mode:2;
   char     name[LEN_EXPOMIX_NAME];
   int8_t   offset;
   CurveRef curve;
   uint8_t  spare;
 }) ExpoData;
 #define MIN_EXPO_WEIGHT         -100
-#define EXPO_VALID(ed)          ((ed)->srcRaw)
-#define EXPO_MODE_ENABLE(ed, v) (true)
+#define EXPO_VALID(ed)          ((ed)->mode)
+#define EXPO_MODE_ENABLE(ed, v) (((v)<0 && ((ed)->mode&1)) || ((v)>=0 && ((ed)->mode&2)))
 #elif defined(CPUARM)
 PACK(typedef struct t_ExpoData {
   uint8_t  mode;         // 0=end, 1=pos, 2=neg, 3=both
@@ -468,7 +469,7 @@ PACK(typedef struct t_ExpoData {
 }) ExpoData;
 #define MIN_EXPO_WEIGHT         0
 #define EXPO_VALID(ed)          ((ed)->mode)
-#define EXPO_MODE_ENABLE(ed, v) ((v<0 && (ed->mode&1)) || (v>=0 && (ed->mode&2)))
+#define EXPO_MODE_ENABLE(ed, v) (((v)<0 && ((ed)->mode&1)) || ((v)>=0 && ((ed)->mode&2)))
 #elif defined(CPUM2560) || defined(CPUM2561)
 PACK(typedef struct t_ExpoData {
   uint8_t mode:2;         // 0=end, 1=pos, 2=neg, 3=both
@@ -482,7 +483,7 @@ PACK(typedef struct t_ExpoData {
 }) ExpoData;
 #define MIN_EXPO_WEIGHT         0
 #define EXPO_VALID(ed)          ((ed)->mode)
-#define EXPO_MODE_ENABLE(ed, v) ((v<0 && (ed->mode&1)) || (v>=0 && (ed->mode&2)))
+#define EXPO_MODE_ENABLE(ed, v) (((v)<0 && ((ed)->mode&1)) || ((v)>=0 && ((ed)->mode&2)))
 #else
 PACK(typedef struct t_ExpoData {
   uint8_t mode:2;         // 0=end, 1=pos, 2=neg, 3=both
@@ -495,7 +496,7 @@ PACK(typedef struct t_ExpoData {
 }) ExpoData;
 #define MIN_EXPO_WEIGHT         0
 #define EXPO_VALID(ed)          ((ed)->mode)
-#define EXPO_MODE_ENABLE(ed, v) ((v<0 && (ed->mode&1)) || (v>=0 && (ed->mode&2)))
+#define EXPO_MODE_ENABLE(ed, v) (((v)<0 && ((ed)->mode&1)) || ((v)>=0 && ((ed)->mode&2)))
 #endif
 
 #if defined(CPUARM)
