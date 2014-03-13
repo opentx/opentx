@@ -317,15 +317,24 @@ ThrottlePage::ThrottlePage(WizardDialog *dlg, QString image, QString title, QStr
   l->addWidget(noMotorRB);
   l->addWidget(new QLabel(tr("<br>Throttle Channel:")));
   l->addWidget(throttleCB);
+
+  connect(motorRB, SIGNAL(toggled(bool)), this, SLOT(onMotorStateChanged(bool)));
 }
 
-void ThrottlePage::initializePage(){
+void ThrottlePage::initializePage()
+{
   populateCB(throttleCB);
 }
 
-bool ThrottlePage::validatePage() {
+bool ThrottlePage::validatePage()
+{
   releaseChannels();
   return bookChannel(throttleCB->currentText(), THROTTLE, 100 );
+}
+
+void ThrottlePage::onMotorStateChanged(bool toggled)
+{
+  throttleCB->setEnabled(toggled);
 }
 
 AileronsPage::AileronsPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage)

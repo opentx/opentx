@@ -105,14 +105,19 @@ private:
 class ThrottlePage: public StandardPage
 {
   Q_OBJECT
-public:
-  ThrottlePage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage=-1);  
-  void initializePage();
-  bool validatePage();
-private:
-  QRadioButton *motorRB;
-  QRadioButton *noMotorRB;
-  QComboBox *throttleCB;
+
+  public:
+    ThrottlePage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage=-1);
+    void initializePage();
+    bool validatePage();
+
+  protected slots:
+    void onMotorStateChanged(bool toggled);
+
+  private:
+    QRadioButton *motorRB;
+    QRadioButton *noMotorRB;
+    QComboBox *throttleCB;
 };
 
 class AileronsPage: public StandardPage

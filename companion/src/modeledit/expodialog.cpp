@@ -178,7 +178,8 @@ void ExpoDialog::valuesChanged()
           phtemp >>=1;
         }
       }
-    } else {
+    }
+    else {
       ed->phases=0;
     }  
 }
