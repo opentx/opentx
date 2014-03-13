@@ -28,10 +28,11 @@ QT_END_NAMESPACE
 class WizardDialog : public QWizard
 {
   Q_OBJECT
-public:
 
-  WizMix mix;
-  WizardDialog(const GeneralSettings & settings, const unsigned int modelId, QWidget *parent = 0);
+  public:
+    WizMix mix;
+    WizardDialog(const GeneralSettings & settings, const unsigned int modelId, QWidget *parent = 0);
+    const GeneralSettings & settings;
 
   private slots:
     void showHelp();
@@ -40,18 +41,25 @@ public:
 class  StandardPage: public QWizardPage
 {
   Q_OBJECT
-public:
-  StandardPage(WizardPage curPage, WizardDialog *dlg, QString image, QString title, QString text, int nextPage=-1);
-  WizardDialog *wizDlg;
-  void populateCB( QComboBox *);
-  bool bookChannel(QString label, Input input1, int weight1, Input input2=NOINPUT, int weight2=0 );
-  void releaseChannels();
-  void cleanupPage();
-private:
-  QLabel *topLabel;
-  WizardPage pageCurrent;
-  int pageFollower;
-  int nextId() const;
+
+  public:
+    StandardPage(WizardPage curPage, WizardDialog *dlg, QString image, QString title, QString text, int nextPage=-1);
+    WizardDialog *wizDlg;
+
+    // TODO public for these 3 ones?
+    bool bookChannel(QString label, Input input1, int weight1, Input input2=NOINPUT, int weight2=0 );
+    void releaseChannels();
+    void cleanupPage();
+
+  protected:
+    int getDefaultChannel(const Input input);
+    void populateCB(QComboBox * cb, int preferred=-1);
+
+  private:
+    QLabel *topLabel;
+    WizardPage pageCurrent;
+    int pageFollower;
+    int nextId() const;
 };
 
 class  ModelSelectionPage: public StandardPage

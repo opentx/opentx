@@ -18,7 +18,8 @@
 
 WizardDialog::WizardDialog(const GeneralSettings & settings, unsigned int modelId, QWidget *parent)
   : QWizard(parent),
-    mix(settings, modelId)
+    mix(settings, modelId),
+    settings(settings)
 {
   setWindowTitle(tr("Model Wizard"));
 
@@ -123,14 +124,13 @@ void WizardDialog::showHelp()
 }
 
 StandardPage::StandardPage(WizardPage currentPage, WizardDialog *dlg, QString image, QString title, QString text, int nextPage )
-  : QWizardPage()
+  : QWizardPage(),
+    wizDlg(dlg),
+    pageCurrent(currentPage),
+    pageFollower(nextPage)
 {
-  pageCurrent = currentPage;
-  pageFollower = nextPage;
-  wizDlg = dlg;
-
   setTitle(title);
-  setPixmap(QWizard::WatermarkPixmap, QPixmap(QString(":/images/wizard/") + image + QString(".png")));
+  setPixmap(QWizard::WatermarkPixmap, QPixmap(QString(":/images/wizard/%1.png").arg(image)));
   topLabel = new QLabel(text+"<br>");
   topLabel->setWordWrap(true);
 
@@ -139,14 +139,27 @@ StandardPage::StandardPage(WizardPage currentPage, WizardDialog *dlg, QString im
   setLayout(layout);
 }
 
-void StandardPage::populateCB( QComboBox *CB )
+int StandardPage::getDefaultChannel(const Input input)
 {
-  for (int j=0; j<WIZ_MAX_CHANNELS; j++)
-    CB->removeItem(0);
+  for (int channel=0; channel<4; channel++) {
+    unsigned int stick_index = chout_ar[4*wizDlg->settings.templateSetup + channel];
+    if (input == stick_index)
+      return channel;
+  }
+  return -1;
+}
+
+void StandardPage::populateCB(QComboBox *cb, int preferred)
+{
+  cb->clear();
 
   for (int i=0; i<WIZ_MAX_CHANNELS; i++) {
     if (wizDlg->mix.channel[i].page == Page_None) {
-      CB->addItem(tr("Channel %1").arg(i+1), i);
+      // this channel is not already used
+      cb->addItem(tr("Channel %1").arg(i+1), i);
+      if (preferred == i) {
+        cb->setCurrentIndex(cb->count()-1);
+      }
     }
   }
 }
@@ -323,7 +336,7 @@ ThrottlePage::ThrottlePage(WizardDialog *dlg, QString image, QString title, QStr
 
 void ThrottlePage::initializePage()
 {
-  populateCB(throttleCB);
+  populateCB(throttleCB, getDefaultChannel(THROTTLE));
 }
 
 bool ThrottlePage::validatePage()
