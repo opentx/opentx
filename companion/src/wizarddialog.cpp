@@ -164,20 +164,19 @@ void StandardPage::populateCB(QComboBox *cb, int preferred)
   }
 }
 
-bool StandardPage::bookChannel(QString label, Input input1, int weight1, Input input2, int weight2 )
+bool StandardPage::bookChannel(QComboBox * cb, Input input1, int weight1, Input input2, int weight2 )
 {
-  int index = label.right(1).toInt() - 1;
-
-  if (index<0 || index >= WIZ_MAX_CHANNELS)
+  int channel = cb->itemData(cb->currentIndex()).toInt();
+  if (channel<0 || channel>=WIZ_MAX_CHANNELS)
     return false; 
-  if (wizDlg->mix.channel[index].page != Page_None)
+  if (wizDlg->mix.channel[channel].page != Page_None)
     return false;
 
-  wizDlg->mix.channel[index].page = pageCurrent;
-  wizDlg->mix.channel[index].input1 = input1;
-  wizDlg->mix.channel[index].input2 = input2;
-  wizDlg->mix.channel[index].weight1 = weight1;  
-  wizDlg->mix.channel[index].weight2 = weight2;    
+  wizDlg->mix.channel[channel].page = pageCurrent;
+  wizDlg->mix.channel[channel].input1 = input1;
+  wizDlg->mix.channel[channel].input2 = input2;
+  wizDlg->mix.channel[channel].weight1 = weight1;
+  wizDlg->mix.channel[channel].weight2 = weight2;
 
   return true;
 }
@@ -342,7 +341,10 @@ void ThrottlePage::initializePage()
 bool ThrottlePage::validatePage()
 {
   releaseChannels();
-  return bookChannel(throttleCB->currentText(), THROTTLE, 100 );
+  if (motorRB->isChecked())
+    return bookChannel(throttleCB, THROTTLE, 100);
+  else
+    return true;
 }
 
 void ThrottlePage::onMotorStateChanged(bool toggled)
@@ -381,10 +383,10 @@ bool AileronsPage::validatePage() {
     return true;
   }
   if (oneAileronRB->isChecked()) { 
-    return (bookChannel(aileron1CB->currentText(), AILERON, 100 )); 
+    return (bookChannel(aileron1CB, AILERON, 100 ));
   }
-  return( bookChannel(aileron1CB->currentText(), AILERON, 100 ) && 
-    bookChannel(aileron2CB->currentText(), AILERON, 100 ));
+  return( bookChannel(aileron1CB, AILERON, 100 ) &&
+    bookChannel(aileron2CB, AILERON, 100 ));
 }
 
 FlapsPage::FlapsPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage)
@@ -418,10 +420,10 @@ bool FlapsPage::validatePage() {
     return true;
   }
   if (oneFlapRB->isChecked()) { 
-    return (bookChannel(flap1CB->currentText(), FLAP, 100 )); 
+    return (bookChannel(flap1CB, FLAP, 100 ));
   }
-  return( bookChannel(flap1CB->currentText(), FLAP, 100 ) && 
-    bookChannel(flap2CB->currentText(), FLAP, 100 ));
+  return( bookChannel(flap1CB, FLAP, 100 ) &&
+    bookChannel(flap2CB, FLAP, 100 ));
 }
 
 AirbreaksPage::AirbreaksPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage)
@@ -455,10 +457,10 @@ bool AirbreaksPage::validatePage() {
     return true;
   }
   if (oneAirbreakRB->isChecked()) { 
-    return (bookChannel(airbreak1CB->currentText(), AIRBREAK, 100 )); 
+    return (bookChannel(airbreak1CB, AIRBREAK, 100 ));
   }
-  return( bookChannel(airbreak1CB->currentText(), AIRBREAK, 100 ) && 
-    bookChannel(airbreak2CB->currentText(), AIRBREAK, 100 ));
+  return( bookChannel(airbreak1CB, AIRBREAK, 100 ) &&
+    bookChannel(airbreak2CB, AIRBREAK, 100 ));
 }
 
 BankPage::BankPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage)
@@ -487,10 +489,10 @@ void BankPage::initializePage(){
 bool BankPage::validatePage() {
   releaseChannels();
   if (oneElevonChRB->isChecked()) { 
-    return (bookChannel(elevon1CB->currentText(), AILERON, 100, ELEVATOR, 100 )); 
+    return (bookChannel(elevon1CB, AILERON, 100, ELEVATOR, 100 ));
   }
-  return( bookChannel(elevon1CB->currentText(), AILERON, 100, ELEVATOR, 100 ) && 
-    bookChannel(elevon2CB->currentText(), AILERON, 100, ELEVATOR, 100 ));
+  return( bookChannel(elevon1CB, AILERON, 100, ELEVATOR, 100 ) &&
+    bookChannel(elevon2CB, AILERON, 100, ELEVATOR, 100 ));
 }
 
 RudderPage::RudderPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage)
@@ -517,7 +519,7 @@ bool RudderPage::validatePage() {
   if (noRudderRB->isChecked())
     return true;
 
-  return (bookChannel(rudderCB->currentText(), RUDDER, 100)); 
+  return (bookChannel(rudderCB, RUDDER, 100));
 }
 
 VTailPage::VTailPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage)
@@ -540,8 +542,8 @@ void VTailPage::initializePage(){
 
 bool VTailPage::validatePage() {
   releaseChannels();
-  return( bookChannel(tail1CB->currentText(), ELEVATOR, 100, RUDDER, 100 ) && 
-    bookChannel(tail2CB->currentText(), ELEVATOR, 100, RUDDER, 100 ));
+  return (bookChannel(tail1CB, ELEVATOR, 100, RUDDER, 100) &&
+    bookChannel(tail2CB, ELEVATOR, 100, RUDDER, 100 ));
 }
 
 TailPage::TailPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage)
@@ -564,8 +566,8 @@ void TailPage::initializePage(){
 
 bool TailPage::validatePage() {
   releaseChannels();
-  return( bookChannel(elevatorCB->currentText(), ELEVATOR, 100 ) && 
-    bookChannel(rudderCB->currentText(),   RUDDER,   100 ));
+  return( bookChannel(elevatorCB, ELEVATOR, 100 ) &&
+    bookChannel(rudderCB,   RUDDER,   100 ));
 }
 
 SimpleTailPage::SimpleTailPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage)
@@ -584,7 +586,7 @@ void SimpleTailPage::initializePage(){
 
 bool SimpleTailPage::validatePage() {
   releaseChannels();
-  return( bookChannel(elevatorCB->currentText(), ELEVATOR, 100 ));
+  return( bookChannel(elevatorCB, ELEVATOR, 100 ));
 }
 
 CyclicPage::CyclicPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage)
@@ -661,10 +663,10 @@ void FblPage::initializePage(){
 
 bool FblPage::validatePage() {
   releaseChannels();
-  return( bookChannel(throttleCB->currentText(), THROTTLE, 100 ) && 
-    bookChannel(      yawCB->currentText(),      RUDDER,   100 ) &&
-    bookChannel(      pitchCB->currentText(),    ELEVATOR, 100 ) &&
-    bookChannel(      rollCB->currentText(),     AILERON,  100 ));
+  return( bookChannel(throttleCB, THROTTLE, 100 ) &&
+    bookChannel(      yawCB,      RUDDER,   100 ) &&
+    bookChannel(      pitchCB,    ELEVATOR, 100 ) &&
+    bookChannel(      rollCB,     AILERON,  100 ));
 }
 
 HeliPage::HeliPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage)
@@ -695,10 +697,10 @@ void HeliPage::initializePage(){
 
 bool HeliPage::validatePage() {
   releaseChannels();
-  return( bookChannel(throttleCB->currentText(), THROTTLE, 100 ) && 
-    bookChannel(      yawCB->currentText(),      RUDDER,   100 ) &&
-    bookChannel(      pitchCB->currentText(),    ELEVATOR, 100 ) &&
-    bookChannel(      rollCB->currentText(),     AILERON,  100 ));
+  return( bookChannel(throttleCB, THROTTLE, 100 ) &&
+    bookChannel(      yawCB,      RUDDER,   100 ) &&
+    bookChannel(      pitchCB,    ELEVATOR, 100 ) &&
+    bookChannel(      rollCB,     AILERON,  100 ));
 }
 
 MultirotorPage::MultirotorPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage)
@@ -729,10 +731,10 @@ void MultirotorPage::initializePage(){
 
 bool MultirotorPage::validatePage() {
   releaseChannels();
-  return( bookChannel(throttleCB->currentText(), THROTTLE, 100 ) && 
-    bookChannel(yawCB->currentText(),            RUDDER,   100 ) &&
-    bookChannel(pitchCB->currentText(),          ELEVATOR, 100 ) &&
-    bookChannel(rollCB->currentText(),           AILERON,  100 ));
+  return( bookChannel(throttleCB, THROTTLE, 100 ) &&
+    bookChannel(yawCB,            RUDDER,   100 ) &&
+    bookChannel(pitchCB,          ELEVATOR, 100 ) &&
+    bookChannel(rollCB,           AILERON,  100 ));
 }
 
 ConclusionPage::ConclusionPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage)
