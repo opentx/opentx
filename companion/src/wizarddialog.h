@@ -36,7 +36,7 @@ public:
     Page_Conclusion };
 
   WizMix mix;
-  WizardDialog(QWidget *parent = 0);
+  WizardDialog(const unsigned int modelId, QWidget *parent = 0);
 
   private slots:
     void showHelp();

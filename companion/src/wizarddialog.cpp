@@ -16,8 +16,9 @@
 #include "wizarddialog.h"
 #include "wizarddata.h"
 
-WizardDialog::WizardDialog(QWidget *parent)
-  : QWizard(parent)
+WizardDialog::WizardDialog(unsigned int modelId, QWidget *parent)
+  : QWizard(parent),
+    mix(modelId)
 {
   setWindowTitle(tr("Model Wizard"));
 

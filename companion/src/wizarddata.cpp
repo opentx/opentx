@@ -28,11 +28,33 @@ void Channel::clear()
   weight2 = 0;
 }
 
-WizMix::WizMix()
+WizMix::WizMix(const unsigned int modelId):
+  complete(false),
+  modelId(modelId),
+  vehicle(NOVEHICLE)
 {
-  complete = false;
   strcpy(name, "            ");
-  vehicle = NOVEHICLE;
+}
+
+WizMix::operator ModelData()
+{
+  ModelData model;
+
+  model.used = true;
+  model.modelId = modelId;
+
+  // Safe copy model name
+  strncpy(model.name, name, WIZ_MODEL_NAME_LENGTH);
+  model.name[WIZ_MODEL_NAME_LENGTH] = 0;
+
+  for (int i=0; i<WIZ_MAX_CHANNELS; i++ ) {
+    Channel ch = channel[i];
+    if (ch.sourceDlg > 0) {
+      //**** INSERT MIXER HERE ****
+    }
+  }
+
+  return model;
 }
 
 

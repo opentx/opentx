@@ -177,7 +177,6 @@ set(companion_MOC_HDRS
   mainwindow.h
   qcustomplot.h
   helpers.h
-  wizarddata.h
   wizarddialog.h
 )
      

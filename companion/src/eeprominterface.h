@@ -24,7 +24,6 @@
 #include <QList>
 #include <QtXml>
 #include <iostream>
-#include "wizarddata.h"
 
 #if __GNUC__
   #define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
@@ -951,7 +950,6 @@ class ModelData {
 
     void clear();
     bool isempty();
-    void importWizardData(unsigned int, const WizMix);
     void setDefaultMixes(GeneralSettings & settings);
     void setDefaultValues(unsigned int id, GeneralSettings & settings);
 
