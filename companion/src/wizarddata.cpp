@@ -21,16 +21,17 @@ Channel::Channel()
 
 void Channel::clear()
 {
-  sourceDlg = -1;
+  page = Page_None;
   input1 = NOINPUT;
   input2 = NOINPUT;
   weight1 = 0;  
   weight2 = 0;
 }
 
-WizMix::WizMix(const unsigned int modelId):
+WizMix::WizMix(const GeneralSettings & settings, const unsigned int modelId):
   complete(false),
   modelId(modelId),
+  settings(settings),
   vehicle(NOVEHICLE)
 {
   strcpy(name, "            ");
@@ -42,6 +43,7 @@ WizMix::operator ModelData()
 
   model.used = true;
   model.modelId = modelId;
+  model.setDefaultInputs(settings);
 
   // Safe copy model name
   strncpy(model.name, name, WIZ_MODEL_NAME_LENGTH);
@@ -49,8 +51,17 @@ WizMix::operator ModelData()
 
   for (int i=0; i<WIZ_MAX_CHANNELS; i++ ) {
     Channel ch = channel[i];
-    if (ch.sourceDlg > 0) {
-      //**** INSERT MIXER HERE ****
+    if (ch.page != Page_None) {
+      // qDebug() << "channel" << i << "page" << ch.page << ch.input1 << ch.input2;
+      MixData & mix = model.mixData[i];
+      mix.destCh = i+1;
+      if (ch.input1 >= RUDDER && ch.input1 <= AILERON) {
+        if (IS_TARANIS(GetEepromInterface()->getBoard()))
+          mix.srcRaw = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, ch.input1-1, &model);
+        else
+          mix.srcRaw = RawSource(SOURCE_TYPE_STICK, ch.input1-1);
+      }
+      mix.weight = ch.weight1;
     }
   }
 

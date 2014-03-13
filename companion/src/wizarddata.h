@@ -25,9 +25,9 @@
 
 enum Input {
   NOINPUT,
-  THROTTLE,
   RUDDER,
   ELEVATOR,
+  THROTTLE,
   AILERON,
   FLAP,
   AIRBREAK
@@ -40,10 +40,33 @@ enum Vehicle {
   HELICOPTER
 };
 
+enum WizardPage {
+  Page_None = -1,
+  Page_Models,
+  Page_Throttle,
+  Page_Wingtypes,
+  Page_Ailerons,
+  Page_Flaps,
+  Page_Airbrakes,
+  Page_Bank,
+  Page_Rudder,
+  Page_Tails,
+  Page_Tail,
+  Page_Vtail,
+  Page_Simpletail,
+  Page_Cyclic,
+  Page_Gyro,
+  Page_Flybar,
+  Page_Fblheli,
+  Page_Helictrl,
+  Page_Multirotor,
+  Page_Conclusion
+};
+
 class Channel
 {
   public:
-    int sourceDlg;     // Originating dialog, only of interest for producer
+    WizardPage page;     // Originating dialog, only of interest for producer
     Input input1;
     Input input2;
     int weight1;
@@ -59,10 +82,11 @@ class WizMix
     bool complete;
     char name[WIZ_MODEL_NAME_LENGTH + 1];
     unsigned int modelId;
+    const GeneralSettings & settings;
     Vehicle vehicle;
     Channel channel[WIZ_MAX_CHANNELS];
 
-    explicit WizMix(const unsigned int modelId);
+    WizMix(const GeneralSettings & settings, const unsigned int modelId);
     operator ModelData();
 
   private:

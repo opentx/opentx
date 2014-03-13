@@ -893,7 +893,7 @@ GeneralSettings::GeneralSettings()
   
 }
 
-RawSource GeneralSettings::getDefaultSource(unsigned int channel)
+RawSource GeneralSettings::getDefaultSource(unsigned int channel) const
 {
   unsigned int stick_index = chout_ar[4*templateSetup + channel] - 1;
   return RawSource(SOURCE_TYPE_STICK, stick_index);
@@ -902,6 +902,24 @@ RawSource GeneralSettings::getDefaultSource(unsigned int channel)
 ModelData::ModelData()
 {
   clear();
+}
+
+ModelData::ModelData(const ModelData & src)
+{
+  *this = src;
+}
+
+ModelData & ModelData::operator = (const ModelData & src)
+{
+  memcpy(this, &src, sizeof(ModelData));
+
+  for (int i=0; i<C9X_MAX_MIXERS; i++)
+    mixData[i].srcRaw.model = this;
+  for (int i=0; i<C9X_MAX_EXPOS; i++)
+    expoData[i].srcRaw.model = this;
+  swashRingData.collectiveSource.model = this;
+
+  return *this;
 }
 
 ExpoData * ModelData::insertInput(const int idx)
@@ -972,7 +990,7 @@ bool ModelData::isempty()
   return !used;
 }
 
-void ModelData::setDefaultMixes(GeneralSettings & settings)
+void ModelData::setDefaultInputs(const GeneralSettings & settings)
 {
   if (IS_TARANIS(GetEepromInterface()->getBoard())) {
     for (int i=0; i<NUM_STICKS; i++) {
@@ -982,22 +1000,30 @@ void ModelData::setDefaultMixes(GeneralSettings & settings)
       expo->srcRaw = settings.getDefaultSource(i);
       expo->weight = 100;
       strncpy(inputNames[i], expo->srcRaw.toString().toLatin1().constData(), sizeof(inputNames[i])-1);
-      MixData * mix = &mixData[i];
-      mix->destCh = i+1;
-      mix->weight = 100;
-      mix->srcRaw = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, i, this);
     }
-  }
-  else {
-    for (int i=0; i<NUM_STICKS; i++) {
-      mixData[i].destCh = i+1;
-      mixData[i].srcRaw = RawSource(SOURCE_TYPE_STICK, i);
-      mixData[i].weight = 100;
-     }
   }
 }
 
-void ModelData::setDefaultValues(unsigned int id, GeneralSettings & settings)
+void ModelData::setDefaultMixes(const GeneralSettings & settings)
+{
+  if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+    setDefaultInputs(settings);
+  }
+
+  for (int i=0; i<NUM_STICKS; i++) {
+    MixData * mix = &mixData[i];
+    mix->destCh = i+1;
+    mix->weight = 100;
+    if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+      mix->srcRaw = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, i, this);
+    }
+    else {
+      mix->srcRaw = RawSource(SOURCE_TYPE_STICK, i);
+    }
+  }
+}
+
+void ModelData::setDefaultValues(unsigned int id, const GeneralSettings & settings)
 {
   clear();
   used = true;

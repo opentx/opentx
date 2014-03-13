@@ -402,7 +402,7 @@ class GeneralSettings {
   public:
     GeneralSettings();
 
-    RawSource getDefaultSource(unsigned int channel);
+    RawSource getDefaultSource(unsigned int channel) const;
 
     unsigned int version;
     unsigned int variant;
@@ -891,6 +891,8 @@ class ScriptData {
 class ModelData {
   public:
     ModelData();
+    ModelData(const ModelData & src);
+    ModelData & operator = (const ModelData & src);
 
     ExpoData * insertInput(const int idx);
     void removeInput(const int idx);
@@ -950,8 +952,9 @@ class ModelData {
 
     void clear();
     bool isempty();
-    void setDefaultMixes(GeneralSettings & settings);
-    void setDefaultValues(unsigned int id, GeneralSettings & settings);
+    void setDefaultInputs(const GeneralSettings & settings);
+    void setDefaultMixes(const GeneralSettings & settings);
+    void setDefaultValues(unsigned int id, const GeneralSettings & settings);
 
     int getTrimValue(int phaseIdx, int trimIdx);
     void setTrimValue(int phaseIdx, int trimIdx, int value);

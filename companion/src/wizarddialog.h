@@ -29,14 +29,9 @@ class WizardDialog : public QWizard
 {
   Q_OBJECT
 public:
-  enum { Page_Models, Page_Throttle, Page_Wingtypes, Page_Ailerons, Page_Flaps, 
-    Page_Airbrakes, Page_Bank, Page_Rudder, Page_Tails, Page_Tail, 
-    Page_Vtail, Page_Simpletail, Page_Cyclic, Page_Gyro, Page_Flybar,
-    Page_Fblheli, Page_Helictrl, Page_Multirotor,
-    Page_Conclusion };
 
   WizMix mix;
-  WizardDialog(const unsigned int modelId, QWidget *parent = 0);
+  WizardDialog(const GeneralSettings & settings, const unsigned int modelId, QWidget *parent = 0);
 
   private slots:
     void showHelp();
@@ -46,7 +41,7 @@ class  StandardPage: public QWizardPage
 {
   Q_OBJECT
 public:
-  StandardPage(int curPage, WizardDialog *dlg, QString image, QString title, QString text, int nextPage=-1);
+  StandardPage(WizardPage curPage, WizardDialog *dlg, QString image, QString title, QString text, int nextPage=-1);
   WizardDialog *wizDlg;
   void populateCB( QComboBox *);
   bool bookChannel(QString label, Input input1, int weight1, Input input2=NOINPUT, int weight2=0 );
@@ -54,7 +49,7 @@ public:
   void cleanupPage();
 private:
   QLabel *topLabel;
-  int pageCurrent;
+  WizardPage pageCurrent;
   int pageFollower;
   int nextId() const;
 };
