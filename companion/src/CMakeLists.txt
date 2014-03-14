@@ -90,6 +90,13 @@ add_custom_command(
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )
 
+add_custom_command(
+  OUTPUT ${RADIO_SRC_DIRECTORY}/stamp-opentx.h
+  COMMAND make stamp_header
+  DEPENDS ${RADIO_SRC_DIRECTORY}/Makefile
+  WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
+)
+
 include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${PROJECT_SOURCE_DIR}/../..
@@ -128,6 +135,7 @@ set(companion_SRCS
   firmwares/opentx/opentxsimulator.cpp  
   firmwares/ersky9x/ersky9xeeprom.cpp
   firmwares/ersky9x/ersky9xinterface.cpp
+  ${RADIO_SRC_DIRECTORY}/stamp-opentx.h
   ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
   ${RADIO_SRC_DIRECTORY}/translations/en.h
   appdata.cpp
