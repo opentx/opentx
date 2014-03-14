@@ -9,6 +9,253 @@ namespace OpenTXspeak
 {
     public class SentenceTables
     {
+        private static string[] default_sk_system_strings =  
+        { 
+        };
+
+        private static string[] default_sk_other_strings = 
+        { 
+        };
+
+        private static string[] default_pl_system_strings =  
+        { 
+        };
+
+        private static string[] default_pl_other_strings = 
+        { 
+        };
+
+        private static string[] default_es_system_strings =  
+        { 
+        };
+
+        private static string[] default_es_other_strings = 
+        { 
+        };
+
+        private static string[] default_pt_system_strings =  
+        { 
+          "0000;0;0",
+          "0001;1;1",
+          "0002;2;2",
+          "0003;3;3",
+          "0004;4;4",
+          "0005;5;5",
+          "0006;6;6",
+          "0007;7;7",
+          "0008;8;8",
+          "0009;9;9",
+          "0010;10;10",
+          "0011;11;11",
+          "0012;12;12",
+          "0013;13;13",
+          "0014;14;14",
+          "0015;15;15",
+          "0016;16;16",
+          "0017;17;17",
+          "0018;18;18",
+          "0019;19;19",
+          "0020;20;20",
+          "0021;21;21",
+          "0022;22;24",
+          "0023;23;23",
+          "0024;24;24",
+          "0025;25;25",
+          "0026;26;26",
+          "0027;27;27",
+          "0028;28;28",
+          "0029;29;29",
+          "0030;30;30",
+          "0031;31;31",
+          "0032;32;32",
+          "0033;33;33",
+          "0034;34;34",
+          "0035;35;35",
+          "0036;36;36",
+          "0037;37;37",
+          "0038;38;38",
+          "0039;39;39",
+          "0040;40;40",
+          "0041;41;41",
+          "0042;42;42",
+          "0043;43;43",
+          "0044;44;44",
+          "0045;45;45",
+          "0046;46;46",
+          "0047;47;47",
+          "0048;48;48",
+          "0049;49;49",
+          "0050;50;50",
+          "0051;51;51",
+          "0052;52;52",
+          "0053;53;53",
+          "0054;54;54",
+          "0055;55;55",
+          "0056;56;56",
+          "0057;57;57",
+          "0058;58;58",
+          "0059;59;59",
+          "0060;60;60",
+          "0061;61;61",
+          "0062;62;62",
+          "0063;63;63",
+          "0064;64;64",
+          "0065;65;65",
+          "0066;66;66",
+          "0067;67;67",
+          "0068;68;68",
+          "0069;69;69",
+          "0070;70;70",
+          "0071;71;71",
+          "0072;72;72",
+          "0073;73;73",
+          "0074;74;74",
+          "0075;75;75",
+          "0076;76;76",
+          "0077;77;77",
+          "0078;78;78",
+          "0079;79;79",
+          "0080;80;80",
+          "0081;81;81",
+          "0082;82;82",
+          "0083;83;83",
+          "0084;84;84",
+          "0085;85;85",
+          "0086;86;86",
+          "0087;87;87",
+          "0088;88;88",
+          "0089;89;89",
+          "0090;90;90",
+          "0091;91;91",
+          "0092;92;92",
+          "0093;93;93",
+          "0094;94;94",
+          "0095;95;95",
+          "0096;96;96",
+          "0097;97;97",
+          "0098;98;98",
+          "0099;99;99",
+          "0100;100;100",
+          "0101;;cento",
+          "0102;;duzentos",
+          "0103;;trezentos", 
+          "0104;;quatrocentos", 
+          "0105;;quinhentos", 
+          "0106;;seiscentos", 
+          "0107;;setecentos", 
+          "0108;;oitocentos", 
+          "0109;;novecentos", 
+          "0110;;mil", 
+          "0111;;virgula", 
+          "0112;;uma", 
+          "0113;;duas", 
+          "0114;;e", 
+          "0115;;menos", 
+          "0116;;hora", 
+          "0117;;horas", 
+          "0118;;minuto", 
+          "0119;;minutos", 
+          "0120;;segundo", 
+          "0121;;segundos",
+          "0122;;Volt", 
+          "0123;;ampére", 
+          "0124;;metros por segundo", 
+          "0125;;", 
+          "0126;;quilômetros por hora", 
+          "0127;;metros", 
+          "0128;;graus", 
+          "0129;;cento",  
+          "0130;;miliamperes", 
+          "0131;;miliamperes por hora", 
+          "0132;;watt", 
+          "0133;;db", 
+          "0134;;pés", 
+          "0135;;nós", 
+          "0136;;horas", 
+          "0137;;minutos", 
+          "0138;;segundos", 
+          "0139;;RPM", 
+          "0140;;g",
+          "0141;;cronómetro", 
+          "0142;;cronómetro", 
+          "0143;;transmissão", 
+          "0144;;recepção", 
+          "0145;;A1", 
+          "0146;;A2", 
+          "0147;;altitude", 
+          "0148;;motor",
+          "0149;;combustível", 
+          "0150;;temperatura", 
+          "0151;;temperatura", 
+          "0152;;velocidade", 
+          "0153;;distância",
+          "0154;;altitude", 
+          "0155;;célula lipo",
+          "0156;;Total lipo", 
+          "0157;;tensão", 
+          "0158;;corrente", 
+          "0159;;consumo", 
+          "0160;;potência", 
+          "0161;;aceleração X", 
+          "0162;;aceleração Y", 
+          "0163;;aceleração Z",
+          "0164;;Direcção", 
+          "0165;;variómetro", 
+          "0166;;mínimo", 
+          "0167;;máximo",
+          "a1_org;;Alarme A1",
+          "a1_red;;A1 critica",
+          "a2_org;;Alarme A2",
+          "a2_red;;A2 critica",
+          "eebad;;eeprom corrompida", 
+          "eeformat;;formatação da eeprom em curso", 
+          "endtrim;;trim no máximo",
+          "error;;erro", 
+          "highmah;;assorbimento elevato",
+          "hightemp;;temperatura elevata",
+          "inactiv;;atenção, o rádio foi esquecido ligado, por favor desligue-o",
+          "midtrim;;trim centrado",
+          "midpot;;potenciómetro centrado",
+          "lowbatt;;bateria do rádio fraca", 
+          "rssi_org;;recepção de sinal muito baixa",
+          "rssi_red;;recepção de sinal crítica",
+          "swalert;;atenção, certifique-se que os interruptores estão na posição certa", 
+          "swr_red;;Problema com a antena do transmissor",
+          "thralert;;atenção,acelerador não está no mínimo", 
+          "timer10;;10 segundos",
+          "timer20;;20 segundos",
+          "timer30;;30 segundos"
+        };
+
+        private static string[] default_pt_other_strings = 
+        { 
+            "attero;;aterragem",
+            "crowof;;crou, desligado",
+            "crowon;;crou, activo",
+            "engoff;;motor desligado",
+            "flapdn;;flaps estendidos",
+            "flapup;;flaps recolhidos",
+            "fltmd1;;fase de voo 1",
+            "fltmd2;;fase de voo 2",
+            "fltmd3;;fase de voo 3",
+            "fltmd4;;fase de voo 4",
+            "fltmd5;;fase de voo 5",
+            "fltmd6;;fase de vôo 6",
+            "fltmd7;;fase de voo 7",
+            "fltmd8;;fase de voo 8",
+            "fltmd9;;fase de voo 9",
+            "geardn;;trem, em baixo.",
+            "gearup;;trem, em cima.",
+            "lowbat;;bateria fraca",
+            "nrmmod;;modo de voo normal",
+            "spdmod;;modo de velocidade",
+            "thmmod;;modo de térmica",
+            "trnoff;;modo de treino desligado",
+            "trnon;;modo de treino ligado",
+            "tohigh;;muito alto",
+            "tolow;;muito baixo"
+        };
+
         private static string[] default_cz_system_strings =  
         { 
           "0000;0;nula",
@@ -1337,29 +1584,36 @@ namespace OpenTXspeak
            "trnon;;écolage"
         };
 
-        public string[][] default_system_strings = new string[15][];
-        public string[][] default_other_strings = new string[15][];
+        public string[][] default_system_strings = new string[10][];
+        public string[][] default_other_strings = new string[10][];
 
         public int toInt(string langStr)
         {
             if (langStr == "cz") return 1;
             if (langStr == "de") return 2;
-            if (langStr == "fr") return 3;
-            if (langStr == "it") return 4;
-            if (langStr == "se") return 5;
+            if (langStr == "es") return 3;
+            if (langStr == "fr") return 4;
+            if (langStr == "it") return 5;
+            if (langStr == "pl") return 6;
+            if (langStr == "pt") return 7;
+            if (langStr == "se") return 8;
+            if (langStr == "sk") return 9;
             else return 0; //English default
         }
 
         public SentenceTables()
         {
-            default_other_strings[toInt("en")] = default_en_other_strings;
-            default_system_strings[toInt("en")] = default_en_system_strings;
-
             default_other_strings[toInt("cz")] = default_cz_other_strings;
             default_system_strings[toInt("cz")] = default_cz_system_strings;
 
             default_other_strings[toInt("de")] = default_de_other_strings;
             default_system_strings[toInt("de")] = default_de_system_strings;
+
+            default_other_strings[toInt("en")] = default_en_other_strings;
+            default_system_strings[toInt("en")] = default_en_system_strings;
+
+            default_other_strings[toInt("es")] = default_es_other_strings;
+            default_system_strings[toInt("es")] = default_es_system_strings;
 
             default_other_strings[toInt("fr")] = default_fr_other_strings;
             default_system_strings[toInt("fr")] = default_fr_system_strings;
@@ -1367,8 +1621,17 @@ namespace OpenTXspeak
             default_other_strings[toInt("it")] = default_it_other_strings;
             default_system_strings[toInt("it")] = default_it_system_strings;
 
+            default_other_strings[toInt("pl")] = default_pl_other_strings;
+            default_system_strings[toInt("pl")] = default_pl_system_strings;
+
+            default_other_strings[toInt("pt")] = default_pt_other_strings;
+            default_system_strings[toInt("pt")] = default_pt_system_strings;
+
             default_other_strings[toInt("se")] = default_se_other_strings;
             default_system_strings[toInt("se")] = default_se_system_strings;
+
+            default_other_strings[toInt("sk")] = default_sk_other_strings;
+            default_system_strings[toInt("sk")] = default_sk_system_strings;
         }
     }
 }

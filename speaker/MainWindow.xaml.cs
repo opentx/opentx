@@ -41,9 +41,13 @@ namespace OpenTXspeak
             languages.Add("English", "en");
             languages.Add("Czech", "cz");
             languages.Add("German", "de");
+            languages.Add("Spanish", "es");
             languages.Add("French", "fr");
             languages.Add("Italian", "it");
+            languages.Add("Polish", "pl");
+            languages.Add("Portuguese", "pt");
             languages.Add("Swedish", "se");
+            languages.Add("Slovak", "sk");
             curLang = languages[0];
             cbLanguages.SelectedIndex = 0; // Note: Sets current langugage -> triggers loadlanguage() 
         }
