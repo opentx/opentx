@@ -39,6 +39,9 @@ namespace OpenTXspeak
             cbVoices.SelectedIndex = 0;
 
             languages.Add("English", "en");
+            languages.Add("Czech", "cz");
+            languages.Add("German", "de");
+            languages.Add("French", "fr");
             languages.Add("Italian", "it");
             languages.Add("Swedish", "se");
             curLang = languages[0];
