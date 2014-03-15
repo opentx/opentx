@@ -616,7 +616,6 @@ static uint32_t PowerUpDelay;
 
 int main()
 {
-  uint32_t i;
   uint8_t index = 0;
 #if defined(PCBTARANIS)
   uint8_t TenCount = 2;
@@ -790,7 +789,7 @@ int main()
           limit = nameCount;
         }
         maxhsize = 0;
-        for (i = 0; i < limit; i += 1) {
+        for (uint32_t i=0; i<limit; i++) {
           uint32_t x;
           x = strlen(Filenames[i]);
           if (x > maxhsize) {
