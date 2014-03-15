@@ -101,17 +101,33 @@ int main(int argc, char *argv[])
 
   RegisterFirmwares();
   SimulatorDialog *dialog;
+  char * eepromFileName;
 
-  if (argc > 1 && !strcmp(argv[1], "taranis")) {
+  QMessageBox msgBox;
+  msgBox.setWindowTitle("Radio type");
+  msgBox.setText("Which radio type do you want to simulate?");
+  msgBox.setIcon(QMessageBox::Question);
+  QAbstractButton *taranisButton = msgBox.addButton("Taranis", QMessageBox::ActionRole);
+  QAbstractButton *stdButton = msgBox.addButton("9X", QMessageBox::ActionRole);
+  QPushButton *exitButton = msgBox.addButton(QMessageBox::Close);
+
+  msgBox.exec();
+  
+  if (msgBox.clickedButton() == exitButton)
+    return 0;
+
+  if (msgBox.clickedButton() == taranisButton) {
     current_firmware_variant = GetFirmwareVariant("opentx-taranis-en");
+    eepromFileName = "eeprom-taranis.bin";
     dialog = new SimulatorDialogTaranis();
   }
   else {
+  	eepromFileName = "eeprom-9x.bin";
     dialog = new SimulatorDialog9X();
   }
 
   dialog->show();
-  dialog->start("eeprom.bin");
+  dialog->start(eepromFileName);
 
   int result = app.exec();
 
