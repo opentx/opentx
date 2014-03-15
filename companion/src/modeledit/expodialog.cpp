@@ -93,6 +93,8 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, i
   for (int i=0; i<9; i++) {
     connect(cb_fp[i], SIGNAL(toggled(bool)), this, SLOT(valuesChanged()));
   }
+  if (GetEepromInterface()->getCapability(VirtualInputs))
+    connect(ui->inputName, SIGNAL(editingFinished()), this, SLOT(valuesChanged()));
   QTimer::singleShot(0, this, SLOT(shrink()));
 }
 
