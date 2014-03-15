@@ -106,6 +106,12 @@ namespace OpenTXspeak
             aboutWindow.ShowDialog();
         }
 
+        private void InstallVoices_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            InstallVoicesWindow installVoicesWindow = new InstallVoicesWindow();
+            installVoicesWindow.ShowDialog();
+        }
+
         private void buttonPlay_Click(object sender, RoutedEventArgs e)
         {
             lvSentences_MouseDoubleClick(sender, null);
