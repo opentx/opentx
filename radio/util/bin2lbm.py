@@ -2,10 +2,8 @@
 
 import sys
 
-fileout = sys.argv[1]
-print fileout
-filename = sys.argv[2]
-print filename
+filename = sys.argv[1]
+fileout = sys.argv[2]
 
 fr = open(filename, "rb")
 fw = open(fileout, "w")
@@ -19,5 +17,4 @@ while st:
   st = fr.read(16)
 
 fw.write("\n") 
-
 fw.close()

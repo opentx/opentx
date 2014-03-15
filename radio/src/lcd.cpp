@@ -800,7 +800,6 @@ void lcd_invert_line(int8_t y)
   }
 }
 
-#if !defined(BOOT)
 void lcd_rect(xcoord_t x, uint8_t y, xcoord_t w, uint8_t h, uint8_t pat, LcdFlags att)
 {
   lcd_vlineStip(x, y, h, pat);
@@ -810,6 +809,7 @@ void lcd_rect(xcoord_t x, uint8_t y, xcoord_t w, uint8_t h, uint8_t pat, LcdFlag
   lcd_hlineStip(x, y, w, pat);
 }
 
+#if !defined(BOOT)
 void lcd_filled_rect(xcoord_t x, int8_t y, xcoord_t w, uint8_t h, uint8_t pat, LcdFlags att)
 {
 #if defined(CPUM64)

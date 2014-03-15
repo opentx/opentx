@@ -53,7 +53,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef PCBTARANIS
+#if defined(PCBTARANIS)
 #include "stm32f2xx_flash.h"
 #endif
 
@@ -61,10 +61,13 @@
 #include "../pwr.h"
 #include "../lcd.h"
 #include "../keys.h"
+#include "../sdcard.h"
 #include "../FatFs/ff.h"
 #include "../FatFs/diskio.h"
+#include "../translations/en.h"
 
 #if defined(PCBTARANIS)
+  #define BOOTLOADER_TITLE      "Boot Loader - FrSky Taranis"
   #define BOOT_KEY_UP		KEY_PLUS
   #define BOOT_KEY_DOWN		KEY_MINUS
   #define BOOT_KEY_LEFT		KEY_MENU
@@ -72,19 +75,30 @@
   #define BOOT_KEY_MENU		KEY_ENTER
   #define BOOT_KEY_EXIT		KEY_EXIT
   #define DISPLAY_CHAR_WIDTH	35
+#elif defined(PCBSKY9X)
+  #define BOOTLOADER_TITLE      "Boot Loader - Sky9x"
+#endif
+
+#define BOOTLOADER_SIZE         0x8000
+
+#if defined(PCBTARANIS)
+  #define FIRMWARE_ADDRESS      0x08000000
+#elif defined(PCBSKY9X)
+  #define FIRMWARE_ADDRESS      0x00400000
 #endif
 
 // states
 enum BootLoaderStates {
   ST_START,
+  ST_FLASH_MENU,
   ST_DIR_CHECK,
   ST_OPEN_DIR,
   ST_FILE_LIST,
   ST_FLASH_CHECK,
   ST_FLASHING,
   ST_FLASH_DONE,
-  ST_USB = 10,
-  ST_REBOOT = 11,
+  ST_USB,
+  ST_REBOOT,
 };
 
 /*----------------------------------------------------------------------------
@@ -115,7 +129,7 @@ uint32_t LockBits;
 uint32_t Block_buffer[1024];
 UINT BlockCount;
 
-#ifdef PCBSKY
+#if defined(PCBSKY9X)
   extern int32_t EblockAddress;
 #endif
 
@@ -128,7 +142,7 @@ extern void writeBlock(void);
  *         Global functions
  *----------------------------------------------------------------------------*/
 
-#ifdef PCBSKY
+#if defined(PCBSKY9X)
 // Starts TIMER0 at full speed (MCK/2) for delay timing
 // @ 36MHz this is 18MHz
 // This was 6 MHz, we may need to slow it to TIMER_CLOCK2 (MCK/8=4.5 MHz)
@@ -163,8 +177,7 @@ void delay2ms()
 }
 #endif
 
-#ifdef PCBTARANIS
-
+#if defined(PCBTARANIS)
 uint32_t isFirmwareStart(uint32_t *block)
 {
   if ((block[0] & 0xFFFC0000) != 0x20000000) {
@@ -178,28 +191,23 @@ uint32_t isFirmwareStart(uint32_t *block)
   }
   return 1;
 }
-#endif
-
-#ifdef PCBSKY
+#elif defined(PCBSKY9X)
 uint32_t isFirmwareStart( uint32_t *block )
 {
-  if ( ( block[0] & 0xFFFE3000 ) != 0x20000000 )
-  {
+  if ((block[0] & 0xFFFE3000) != 0x20000000 ) {
     return 0;
   }
-  if ( ( block[1] & 0xFFF80000 ) != 0x00400000 )
-  {
+  if ((block[1] & 0xFFF80000) != 0x00400000) {
     return 0;
   }
-  if ( ( block[2] & 0xFFF80000 ) != 0x00400000 )
-  {
+  if ((block[2] & 0xFFF80000) != 0x00400000) {
     return 0;
   }
   return 1;
 }
 #endif
 
-#ifdef PCBSKY
+#if defined(PCBSKY9X)
 
 uint32_t (*IAP_Function)(uint32_t, uint32_t);
 
@@ -212,22 +220,17 @@ uint32_t program( uint32_t *address, uint32_t *buffer )	// size is 256 bytes
   //	uint32_t EFCIndex = 0; // 0:EEFC0, 1: EEFC1
   /* Initialize the function pointer (retrieve function address from NMI vector) */
 
-  if ( (uint32_t) address == 0x00408000 )
-  {
-    if ( isFirmwareStart( buffer) )
-    {
+  if ((uint32_t) address == FIRMWARE_START+BOOTLOADER_SIZE) {
+    if (isFirmwareStart(buffer))
       FlashBlocked = 0;
-    }
     else
-    {
       FlashBlocked = 1;
-    }
   }
 
-  if ( FlashBlocked )
-  {
+  if (FlashBlocked) {
     return 1;
   }
+
   // Always initialise this here, setting a default doesn't seem to work
   IAP_Function = (uint32_t (*)(uint32_t, uint32_t)) *(( uint32_t *)0x00800008);
   FlashSectorNum = (uint32_t) address;
@@ -294,7 +297,7 @@ void interrupt10ms(void)
   }
 }
 
-#ifdef PCBSKY
+#if defined(PCBSKY9X)
 void init10msTimer()
 {
   register Tc *ptc;
@@ -331,7 +334,7 @@ extern "C" void TC2_IRQHandler()
 }
 #endif
 
-#ifdef PCBTARANIS
+#if defined(PCBTARANIS)
 void init10msTimer()
 {
   // Timer14
@@ -558,67 +561,53 @@ uint32_t fillNames(uint32_t index)
 
 FRESULT openFirmwareFile(uint32_t index)
 {
-  cpystr(cpystr((uint8_t *) FlashFilename, (uint8_t *) "\\firmware\\"),
-      (uint8_t *) Filenames[index]);
+  cpystr(cpystr((uint8_t *)FlashFilename, (uint8_t *)FIRMWARES_PATH "/"), (uint8_t *) Filenames[index]);
   f_open(&FlashFile, FlashFilename, FA_READ);
-  f_lseek(&FlashFile, 32768);
+  f_lseek(&FlashFile, BOOTLOADER_SIZE);
   return f_read(&FlashFile, (BYTE *) Block_buffer, 4096, &BlockCount);
 }
 
-uint8_t flashFile(uint32_t index)
+int menuFlashFile(uint32_t index, uint8_t event)
 {
   FRESULT fr;
 
-  lcd_clear();
-  lcd_putsLeft(0, "\005Flash File");
+  lcd_putsLeft(2*FH, INDENT "Flash file " FIRMWARES_PATH "/");
+  lcd_putsnAtt(lcdLastPos, 2*FH, Filenames[index], DISPLAY_CHAR_WIDTH, 0);
+
   if (Valid == 0) {
     // Validate file here
     // return 3 if invalid
     fr = openFirmwareFile(index);
     fr = f_close(&FlashFile);
-
     Valid = 1;
     if (isFirmwareStart(Block_buffer) == 0) {
       Valid = 2;
     }
   }
+
   if (Valid == 2) {
-    lcd_putsLeft(3 * FH, "NOT A VALID FIRMWARE");
-#ifdef PCBTARANIS
-    lcd_putsLeft(6 * FH, "\015[EXIT]");
-#else
-    lcd_putsLeft( 6*FH,"\007[EXIT]");
-#endif
-    uint8_t event = getEvent();
-    if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT)) {
-      return 3;
+    lcd_putsLeft(4*FH, INDENT "Not a valid firmware!");
+    if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT) || event == EVT_KEY_FIRST(BOOT_KEY_MENU)) {
+      return 0;
     }
-    return 4;		//
+    return -1;
   }
-  lcd_putsnAtt(0, 2 * FH, Filenames[index], DISPLAY_CHAR_WIDTH, 0);
 
-#ifdef PCBTARANIS
-  lcd_putsLeft(6 * FH, "\010[ENTER]\021[EXIT]");
-  lcd_putsLeft(5 * FH, "\010YES\021NO");
-#else
-  lcd_putsLeft( 6*FH,"\003[MENU]\013[EXIT]");
-  lcd_putsLeft( 5*FH,"\003YES\013NO");
-#endif
+  lcd_putsLeft(6*FH, INDENT "[Enter Long] to confirm");
 
-  uint8_t event = getEvent();
-
-  if (event == EVT_KEY_FIRST(BOOT_KEY_MENU)) {
+  if (event == EVT_KEY_LONG(BOOT_KEY_MENU)) {
     fr = openFirmwareFile(index);
     FirmwareSize = FileSize[index];
     if (fr != FR_OK) {
-      return 4;		// File open error
+      return 0;		// File open error
     }
-    return 2;
-  }
-  if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT)) {
     return 1;
   }
-  return 0;
+  else if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT)) {
+    return 0;
+  }
+
+  return -1;
 }
 
 extern Key keys[];
@@ -629,7 +618,7 @@ int main()
 {
   uint32_t i;
   uint8_t index = 0;
-#ifdef PCBTARANIS
+#if defined(PCBTARANIS)
   uint8_t TenCount = 2;
 #endif			
   uint8_t maxhsize = DISPLAY_CHAR_WIDTH;
@@ -638,47 +627,41 @@ int main()
   uint32_t nameCount = 0;
   uint32_t vpos = 0;
   uint32_t hpos = 0;
-#ifdef PCBTARANIS
-  uint32_t firmwareAddress = 0x08000000;
-#endif			
-#ifdef PCBSKY
-  uint32_t firmwareAddress = 0x00400000;
-#endif			
+  uint32_t firmwareAddress = FIRMWARE_ADDRESS;
   uint32_t firmwareWritten = 0;
 
-#ifdef PCBTARANIS
+#if defined(PCBTARANIS)
   wdt_reset();
   RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN; 		// Enable portA clock
 #endif
 
   pwrInit();
 
-#ifdef PCBSKY
+#if defined(PCBSKY9X)
   MATRIX->CCFG_SYSIO |= 0x000000F0L;		// Disable syspins, enable B4,5,6,7
 #endif
 
-#ifdef PCBSKY
+#if defined(PCBSKY9X)
   init_SDcard();
   PIOC->PIO_PER = PIO_PC25;		// Enable bit C25 (USB-detect)
   start_timer0();
 #endif
 
   lcdInit();
-#ifdef PCBSKY
+#if defined(PCBSKY9X)
   extern uint8_t OptrexDisplay;
   OptrexDisplay = 1;
 #endif
   lcd_clear();
-#ifdef PCBTARANIS
-  lcd_putsLeft(0, "\006Boot Loader");
-#endif
+  lcd_putsLeft(0, BOOTLOADER_TITLE);
+  lcd_hline(0, 10, LCD_W);
   lcdRefresh();
-#ifdef PCBSKY
+#if defined(PCBSKY9X)
   OptrexDisplay = 0;
   lcdRefresh();
 #endif
 
-#ifdef PCBTARANIS
+#if defined(PCBTARANIS)
   keysInit();
   I2C_EE_Init();
   init_hw_timer();
@@ -687,261 +670,247 @@ int main()
   __enable_irq();
   init10msTimer();
 
-#ifdef PCBSKY
+#if defined(PCBSKY9X)
   EblockAddress = -1;
   init_spi();
 #endif
 
-#ifdef PCBSKY
+#if defined(PCBSKY9X)
   uint32_t chip_id = CHIPID->CHIPID_CIDR;
-
   FlashSize = ( (chip_id >> 8 ) & 0x000F ) == 9 ? 256 : 512;
-#endif
-
-#ifdef PCBTARANIS
+#elif defined(PCBTARANIS)
   FlashSize = 512;
 #endif
 
-#ifdef PCBSKY
+#if defined(PCBSKY9X)
   LockBits = readLockBits();
-  if ( LockBits )
-  {
+  if (LockBits) {
     clearLockBits();
   }
 #endif
 
-#ifdef PCBTARANIS
+#if defined(PCBTARANIS)
   // SD card detect pin
-  // configure_pins( SD_PRESENT_GPIO_Pin, PIN_PORTD | PIN_INPUT | PIN_PULLUP ) ;
   sdInit();
   unlockFlash();
-
   usbInit();
   usbStart();
 #endif
 
   for (;;) {
-#ifdef PCBSKY
-    usbMassStorage();
-#endif
-
     wdt_reset();
+
+    uint8_t event = getEvent();
 
     if (Tenms) {
       wdt_reset();  // Retrigger hardware watchdog
 
       if (EE_timer) {
         if (--EE_timer == 0) {
-#ifdef PCBSKY
+#if defined(PCBSKY9X)
           writeBlock();
 #endif
         }
       }
 
       Tenms = 0;
+
       lcd_clear();
-      lcd_putsLeft(0, CENTER "Boot Loader");
-      lcd_invert_line(0);
+      lcd_putsLeft(0, BOOTLOADER_TITLE);
+      lcd_hline(0, 10, LCD_W);
 
-      {
+      if (usbPlugged()) {
+        state = ST_USB;
+      }
 
-        if (usbPlugged()) {
-          state = ST_USB;
+      if (state == ST_START) {
+        lcd_putsLeft(2*FH, "\004Flash a firmware from the SD card");
+        lcd_putsLeft(3*FH, "\004Exit");
+        lcd_invert_line(2+vpos);
+        lcd_putsLeft(6*FH, INDENT "Or plug a USB cable for Massstorage");
+        if (event == EVT_KEY_FIRST(BOOT_KEY_DOWN) || event == EVT_KEY_FIRST(BOOT_KEY_UP)) {
+          vpos = (vpos+1) & 0x01;
         }
-
-        if (state == ST_USB) {
-#ifdef PCBSKY
-          lcd_putsLeft( 3*FH, "\010BUSY" );
-#endif
-#ifdef PCBTARANIS
-          lcd_putsLeft(3 * FH, "\016BUSY");
-#endif
-          if (usbPlugged() == 0) {
-            state = ST_START;
-          }
-#ifdef PCBSKY
-          lcd_putc( 0, 6*FH, 'F' );
-          lcd_putc( 6, 6*FH, '0' + FlashBlocked );
-          lcd_putc( 0, 7*FH, 'E' );
-          lcd_putc( 6, 7*FH, '0' + EepromBlocked );
-#endif
+        else if (event == EVT_KEY_FIRST(BOOT_KEY_MENU)) {
+          if (vpos == 0)
+            state = ST_FLASH_MENU;
+          else
+            state = ST_REBOOT;
         }
+      }
 
-        if (state == ST_START) {
-          sdInit();
-          fr = FR_OK;
+      if (state == ST_USB) {
+        lcd_putsLeft(4*FH, CENTER "\010U S B");
+        if (usbPlugged() == 0) {
+          vpos = 0;
+          state = ST_START;
+        }
+#if defined(PCBSKY9X)
+        usbMassStorage();
+        lcd_putc( 0, 6*FH, 'F' );
+        lcd_putc( 6, 6*FH, '0' + FlashBlocked );
+        lcd_putc( 0, 7*FH, 'E' );
+        lcd_putc( 6, 7*FH, '0' + EepromBlocked );
+#endif
+      }
+
+      if (state == ST_FLASH_MENU) {
+        sdInit();
+        state = ST_DIR_CHECK;
+      }
+
+      else if (state == ST_DIR_CHECK) {
+        fr = f_chdir(FIRMWARES_PATH);
+        if (fr == FR_OK) {
+          state = ST_OPEN_DIR;
         }
         else {
-          fr = FR_OK;
-        }
-
-        if (fr == FR_OK) {
-          if (state == ST_START) {
-            state = ST_DIR_CHECK;
-          }
-        }
-        if (state == ST_DIR_CHECK) {
-          fr = f_chdir("/firmware");
-          if (fr == FR_OK) {
-            state = ST_OPEN_DIR;
-            index = 0;
-          }
-        }
-        if (state == ST_DIR_CHECK) {
-#ifdef PCBSKY
-          lcd_putsLeft( 2*FH, "\005No Firmware" );
-#endif
-#ifdef PCBTARANIS
-          lcd_putsLeft(2 * FH, "\013No Firmware");
-#endif
-        }
-        if (state == ST_OPEN_DIR) {
-          fr = f_opendir(&Dj, ".");
-          if (fr == FR_OK) {
-            state = ST_FILE_LIST;
-            index = 0;
-            nameCount = fillNames(0);
-            hpos = 0;
+          lcd_putsLeft(2*FH, INDENT "No firmware in " FIRMWARES_PATH " directory");
+          if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT) || event == EVT_KEY_FIRST(BOOT_KEY_MENU)) {
             vpos = 0;
+            state = ST_START;
           }
         }
-        if (state == ST_FILE_LIST) {
-          uint32_t limit = 6;
-          if (nameCount < limit) {
-            limit = nameCount;
-          }
-          maxhsize = 0;
-          for (i = 0; i < limit; i += 1) {
-            uint32_t x;
-            x = strlen(Filenames[i]);
-            if (x > maxhsize) {
-              maxhsize = x;
-            }
-            if (x > DISPLAY_CHAR_WIDTH) {
-              if ((hpos + DISPLAY_CHAR_WIDTH) > x) {
-                x = x - DISPLAY_CHAR_WIDTH;
-              }
-              else {
-                x = hpos;
-              }
-            }
-            else {
-              x = 0;
-            }
-            lcd_putsnAtt(0, 16 + FH * i, &Filenames[i][x], DISPLAY_CHAR_WIDTH,
-                0);
-          }
-          {
-            uint8_t event = getEvent();
+      }
 
-            if ((event == EVT_KEY_REPT(BOOT_KEY_DOWN))
-                || event == EVT_KEY_FIRST(BOOT_KEY_DOWN)) {
-              if (vpos < limit - 1) {
-                vpos += 1;
-              }
-              else {
-                if (nameCount > limit) {
-                  index += 1;
-                  nameCount = fillNames(index);
-                }
-              }
-            }
-            if ((event == EVT_KEY_REPT(BOOT_KEY_UP))
-                || (event == EVT_KEY_FIRST(BOOT_KEY_UP))) {
-              if (vpos > 0) {
-                vpos -= 1;
-              }
-              else {
-                if (index) {
-                  index -= 1;
-                  nameCount = fillNames(index);
-                }
-              }
-            }
-            if ((event == EVT_KEY_REPT(BOOT_KEY_RIGHT))
-                || (event == EVT_KEY_FIRST(BOOT_KEY_RIGHT))) {
-              if (hpos + DISPLAY_CHAR_WIDTH < maxhsize) {
-                hpos += 1;
-              }
-            }
-            if ((event == EVT_KEY_REPT(BOOT_KEY_LEFT))
-                || (event == EVT_KEY_FIRST(BOOT_KEY_LEFT))) {
-              if (hpos) {
-                hpos -= 1;
-              }
-            }
-            if (event == EVT_KEY_LONG(BOOT_KEY_MENU)) {
-              // Select file to flash
-              state = ST_FLASH_CHECK;
-              Valid = 0;
-            }
-            if (event == EVT_KEY_LONG(BOOT_KEY_EXIT)) {
-              state = ST_REBOOT;
-            }
-          }
-          lcd_invert_line(2 + vpos);
-          // lcd_char_inverse( 0, 2*FH+FH*vpos, DISPLAY_CHAR_WIDTH*FW, 0 ) ;
+      if (state == ST_OPEN_DIR) {
+        index = 0;
+        fr = f_opendir(&Dj, ".");
+        if (fr == FR_OK) {
+          state = ST_FILE_LIST;
+          nameCount = fillNames(0);
+          hpos = 0;
+          vpos = 0;
         }
-        if (state == ST_FLASH_CHECK) {
-          i = flashFile(vpos);
-          FirmwareSize = FileSize[vpos] - 32768;
-          if (i == 1) {
-            state = ST_FILE_LIST;		// Canceled
-          }
-          if (i == 2) {
-#ifdef PCBSKY
-            firmwareAddress = 0x00408000;
-#endif
-#ifdef PCBTARANIS
-            firmwareAddress = 0x08008000;
-#endif
-            firmwareWritten = 0;
-            state = ST_FLASHING;		 // confirmed
-          }
-          if (i == 3) {
-            // Invalid file
-            state = ST_FILE_LIST;		// Canceled
-          }
+      }
+
+      if (state == ST_FILE_LIST) {
+        uint32_t limit = 6;
+        if (nameCount < limit) {
+          limit = nameCount;
         }
-        if (state == ST_FLASHING) {
-          // Commit to flashing
-          uint32_t blockOffset = 0;
-          lcd_putsLeft(3 * FH, "Flashing");
-          while (BlockCount) {
-            program((uint32_t *) firmwareAddress, &Block_buffer[blockOffset]);// size is 256 bytes
-            blockOffset += 64;		// 32-bit words (256 bytes)
-            firmwareAddress += 256;
-            if (BlockCount > 256) {
-              BlockCount -= 256;
+        maxhsize = 0;
+        for (i = 0; i < limit; i += 1) {
+          uint32_t x;
+          x = strlen(Filenames[i]);
+          if (x > maxhsize) {
+            maxhsize = x;
+          }
+          if (x > DISPLAY_CHAR_WIDTH) {
+            if (hpos + DISPLAY_CHAR_WIDTH > x) {
+              x = x - DISPLAY_CHAR_WIDTH;
             }
             else {
-              BlockCount = 0;
+              x = hpos;
             }
           }
-          firmwareWritten += 1;
-          uint32_t width = FirmwareSize / 4096;
-          lcd_hline(0, 5 * FH - 1, width + 1);
-          lcd_hline(0, 6 * FH, width + 1);
-          lcd_vline(width, 5 * FH, 8);
-          for (i = 0; i < firmwareWritten; i += 1) {
-            lcd_vline(i, 5 * FH, 8);
+          else {
+            x = 0;
           }
-          fr = f_read(&FlashFile, (BYTE *) Block_buffer, 4096, &BlockCount);
-          if (BlockCount == 0) {
-            state = ST_FLASH_DONE;
+          lcd_putsnAtt(INDENT_WIDTH, 16 + FH * i, &Filenames[i][x], DISPLAY_CHAR_WIDTH, 0);
+        }
+
+        if (event == EVT_KEY_REPT(BOOT_KEY_DOWN) || event == EVT_KEY_FIRST(BOOT_KEY_DOWN)) {
+          if (vpos < limit - 1) {
+            vpos += 1;
           }
-          if (firmwareWritten > FlashSize / 4 - 9)// (127-8, or 63-8) 4K blocks
-              {
-            state = ST_FLASH_DONE;				// Backstop
+          else {
+            if (nameCount > limit) {
+              index += 1;
+              nameCount = fillNames(index);
+            }
           }
         }
-        if (state == ST_FLASH_DONE) {
-          uint8_t event = getEvent();
-          lcd_putsLeft(3 * FH, "Flashing Complete");
-          if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT)) {
-            state = ST_FILE_LIST;
+        else if (event == EVT_KEY_REPT(BOOT_KEY_UP) || event == EVT_KEY_FIRST(BOOT_KEY_UP)) {
+          if (vpos > 0) {
+            vpos -= 1;
+          }
+          else {
+            if (index) {
+              index -= 1;
+              nameCount = fillNames(index);
+            }
           }
         }
+#if !defined(PCBTARANIS)
+        else if (event == EVT_KEY_REPT(BOOT_KEY_RIGHT) || event == EVT_KEY_FIRST(BOOT_KEY_RIGHT)) {
+          if (hpos + DISPLAY_CHAR_WIDTH < maxhsize) {
+            hpos += 1;
+          }
+        }
+        else if (event == EVT_KEY_REPT(BOOT_KEY_LEFT) || event == EVT_KEY_FIRST(BOOT_KEY_LEFT)) {
+          if (hpos) {
+            hpos -= 1;
+          }
+        }
+#endif
+        else if (event == EVT_KEY_FIRST(BOOT_KEY_MENU)) {
+          // Select file to flash
+          state = ST_FLASH_CHECK;
+          Valid = 0;
+        }
+        else if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT)) {
+          state = ST_START;
+          vpos = 0;
+        }
+
+        lcd_invert_line(2 + vpos);
+      }
+
+      else if (state == ST_FLASH_CHECK) {
+        int result = menuFlashFile(vpos, event);
+        FirmwareSize = FileSize[vpos] - BOOTLOADER_SIZE;
+        if (result == 0) {
+          // canceled
+          state = ST_FILE_LIST;
+        }
+        else if (result == 1) {
+          // confirmed
+          firmwareAddress = FIRMWARE_ADDRESS + BOOTLOADER_SIZE;
+          firmwareWritten = 0;
+          state = ST_FLASHING;
+        }
+      }
+
+      if (state == ST_FLASHING) {
+        // Commit to flashing
+        uint32_t blockOffset = 0;
+        lcd_putsLeft(2*FH, INDENT "Flashing...");
+        while (BlockCount) {
+          program((uint32_t *) firmwareAddress, &Block_buffer[blockOffset]); // size is 256 bytes
+          blockOffset += 64;		// 32-bit words (256 bytes)
+          firmwareAddress += 256;
+          if (BlockCount > 256) {
+            BlockCount -= 256;
+          }
+          else {
+            BlockCount = 0;
+          }
+        }
+        firmwareWritten += 4; // 4K blocks
+
+        lcd_rect(INDENT_WIDTH, 6*FH+4, 202, 3);
+        lcd_hline(INDENT_WIDTH, 6*FH+5, (200*firmwareWritten/(FlashSize-32)), FORCE);
+
+        fr = f_read(&FlashFile, (BYTE *)Block_buffer, sizeof(Block_buffer), &BlockCount);
+        if (BlockCount == 0) {
+          state = ST_FLASH_DONE;
+        }
+        if (firmwareWritten >= FlashSize - 32) {
+          state = ST_FLASH_DONE;				// Backstop
+        }
+      }
+
+      if (state == ST_FLASH_DONE) {
+        lcd_putsLeft(2*FH, INDENT "Flashing Complete");
+        if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT) || event == EVT_KEY_FIRST(BOOT_KEY_MENU)) {
+          state = ST_START;
+          vpos = 0;
+        }
+      }
+
+      if (event == EVT_KEY_LONG(BOOT_KEY_EXIT)) {
+        state = ST_REBOOT;
       }
 
       if (--TenCount == 0) {
@@ -949,34 +918,26 @@ int main()
         lcdRefresh();
       }
 
-      if (PowerUpDelay < 20)	// 200 mS
-          {
+      if (PowerUpDelay < 20) {	// 200 mS
         PowerUpDelay += 1;
       }
       else {
         sdPoll10ms();
+      }
+    }
 
+    if (pwrCheck() == e_power_off && state != ST_FLASHING && state != ST_USB) {
+      pwrOff();
+      for (;;) {
+        // Wait for power to go off
       }
     }
-    if ((state < ST_FLASH_CHECK) || (state == ST_FLASH_DONE)) {
-      if (pwrCheck() == e_power_off) {
-        pwrOff();
-        for (;;) {
-          // Wait for power to go off
-        }
-      }
-    }
-    if (state < ST_FILE_LIST) {
-      if (getEvent() == EVT_KEY_LONG(BOOT_KEY_EXIT)) {
-        state = ST_REBOOT;
-      }
-    }
+
     if (state == ST_REBOOT) {
       if ((~readKeys() & 0x7E) == 0) {
         NVIC_SystemReset();
       }
     }
-
   }
 
   return 0;

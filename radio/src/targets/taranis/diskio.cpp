@@ -433,30 +433,29 @@ void power_on (void)
 static
 void power_off (void)
 {
-  
   GPIO_InitTypeDef GPIO_InitStructure;
 
-	if (!(Stat & STA_NOINIT)) {
-		SELECT();
-		wait_ready();
-		release_spi();
-	}
+  if (!(Stat & STA_NOINIT)) {
+    SELECT();
+    wait_ready();
+    release_spi();
+  }
 
-	SPI_I2S_DeInit(SPI_SD);
-	SPI_Cmd(SPI_SD, DISABLE);
-	RCC_APBPeriphClockCmd_SPI_SD(RCC_APBPeriph_SPI_SD, DISABLE);
-    
-	//All SPI-Pins to input with weak internal pull-downs
-	GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_SPI_SD_SCK | GPIO_Pin_SPI_SD_MISO | GPIO_Pin_SPI_SD_MOSI;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  SPI_I2S_DeInit(SPI_SD);
+  SPI_Cmd(SPI_SD, DISABLE);
+  RCC_APBPeriphClockCmd_SPI_SD(RCC_APBPeriph_SPI_SD, DISABLE);
+
+  //All SPI-Pins to input with weak internal pull-downs
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_SPI_SD_SCK | GPIO_Pin_SPI_SD_MISO
+      | GPIO_Pin_SPI_SD_MOSI;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
-	GPIO_Init(GPIO_SPI_SD, &GPIO_InitStructure);
+  GPIO_Init(GPIO_SPI_SD, &GPIO_InitStructure);
 
-	card_power(0);
+  card_power(0);
 
-	Stat |= STA_NOINIT;		/* Set STA_NOINIT */
-	
+  Stat |= STA_NOINIT; /* Set STA_NOINIT */
 }
 
 /*-----------------------------------------------------------------------*/

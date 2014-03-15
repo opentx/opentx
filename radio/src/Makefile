@@ -286,7 +286,7 @@ EXTRAINCDIRS =
 
 # MCU name
 ifneq ($(PCB), $(filter $(PCB), STD 9X 9XR STD128 9X128 9XR128 9X2561 9XR2561 GRUVIN9X MEGA2560 SKY9X TARANIS))
-  $(error Sorry, the PCB $(PCB) is not supported yet in openTx)
+  $(error Sorry, the PCB $(PCB) is not supported yet in OpenTX)
 endif
 
 GVARS_VARIANT   = +1 
@@ -1104,10 +1104,15 @@ else
 endif
 
 # build bootloader
-.PHONY bootloader.lbm:
+# TODO
+# BL_SIZE=${shell sh -c "wc -c $^ | cut -d\  -f1"}
+# if $(BL_SIZE)>32768 then $(error Bootloader doesn't fit in 32k flash); fi
+bootloader.lbm: bootloader/bootloader_ramBoot.bin
+	$(BIN2LBM) $^ $@ 
+
+.PHONY bootloader/bootloader_ramBoot.bin:
 	@echo "Building bootloader..."
 	$(MAKE) -C bootloader PCB=$(PCB) PCBREV=$(PCBREV)
-	$(BIN2LBM) bootloader.lbm bootloader/bootloader_ramBoot.bin
 
 tra: translations/en.h translations/cz.h translations/de.h translations/es.h translations/fi.h translations/fr.h translations/it.h translations/pl.h translations/pt.h translations/se.h
 lbm: fonts bitmaps/sticks.lbm
@@ -1260,7 +1265,7 @@ sizeafter:
 	@if test -f $(TARGET).elf; then echo; echo $(MSG_SIZE_AFTER); $(ELFSIZE); fi
 
 # Display compiler version information.
-gccversion :
+gccversion:
 	@$(CC) --version
 
 FOXINC=-I/usr/local/include/fox-1.6 -I/usr/include/fox-1.6 \
@@ -1300,8 +1305,7 @@ endif
 %.eep: %.elf
 	@echo
 	@echo $(MSG_EEPROM) $@
-	-$(OBJCOPY) -j .eeprom --set-section-flags=.eeprom="alloc,load" \
---change-section-lma .eeprom=0 -O $(FORMAT) $< $@
+	-$(OBJCOPY) -j .eeprom --set-section-flags=.eeprom="alloc,load" --change-section-lma .eeprom=0 -O $(FORMAT) $< $@
 
 # Create a symbol table from ELF output file.
 %.sym: %.elf
