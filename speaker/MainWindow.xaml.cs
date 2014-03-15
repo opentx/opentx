@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -28,7 +29,12 @@ namespace OpenTXspeak
 
         public MainWindow()
         {
+            SplashScreen splash = new SplashScreen("speaker_logo.png");
+            splash.Show(true);
+            Thread.Sleep(1500);    
+
             InitializeComponent();
+
             lvSentences.ItemsSource = sentences;
             cbLanguages.ItemsSource = languages;
 
@@ -189,14 +195,14 @@ namespace OpenTXspeak
         public Sentence(string rawString)
         {
             string[] words = rawString.Split(';');
-            fileName = words[0];
+            fileName =    words[0].TrimStart(' ', '\"');
             description = words[1];
-            voiceString = words[2];
+            voiceString = words[2].TrimEnd('\"', ',', ' ');
         }
 
         public string toRaw()
         {
-            return fileName + ";" + description + ";" + voiceString;
+            return "\"" +fileName + ";" + description + ";" + voiceString + "\",";
         }
     }
 
@@ -204,7 +210,6 @@ namespace OpenTXspeak
     {
         public void Add(string rawString)
         {
-            string[] words = rawString.Split(';');
             this.Add(new Sentence(rawString));
         }
     }
