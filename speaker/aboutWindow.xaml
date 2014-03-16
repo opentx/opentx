@@ -1,0 +1,27 @@
+﻿<Window x:Class="OpenTXspeak.AboutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="OpenTX About Window" Height="241" Width="330" Icon="/OpenTXspeak;component/icon.ico" Background="Gray">
+    <Grid>
+        <StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Product:" Foreground="White">
+                </Label>
+                <Label Content="Product Name" Name="lblProductName"  Foreground="White"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Version:" Foreground="White"/>
+                <Label Content="Version" Name="lblVersion"  Foreground="White"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Author:"  Foreground="White"/>
+                <Label Content="Author:" Name="lblCompanyName"  Foreground="White"/>
+            </StackPanel>
+            <Label Content="Copyright" Name="lblCopyright"  Foreground="White"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="TextBlock" Name="description" Height="88" Margin="5,5,10,0" TextWrapping="Wrap" Width="200"  Foreground="White"/>
+                <Image Source="/OpenTXspeak;component/icon.ico" Stretch="Uniform" Height="90" Width="90" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>
