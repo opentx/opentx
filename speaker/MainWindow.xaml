@@ -112,9 +112,9 @@
             </StackPanel>
             <Button Content="Generate Voice Files" Name="buttonGenerate" Click="buttonSaveFiles_Click" Margin="10,10,10,0" />
             <Separator Height="5" />
-            <StackPanel Width="Auto" Orientation="Horizontal">
-                <TextBlock FontSize="18" Margin="55,0,55,0" VerticalAlignment="Center" MouseLeftButtonDown="InstallVoices_MouseLeftButtonDown" Cursor="Hand">Install Voices</TextBlock>
-                <Image Name="openTXLogo" Height="75" Width="75" Source="/OpenTXspeak;component/icon.ico" MouseLeftButtonDown="openTXLogo_MouseLeftButtonDown" HorizontalAlignment="Right" Cursor="Hand" Margin="0,0,5,0"/>
+            <StackPanel Width="Auto" Orientation="Vertical">
+                <TextBlock FontSize="18" VerticalAlignment="Center" MouseLeftButtonDown="InstallVoices_MouseLeftButtonDown" Cursor="Hand" HorizontalAlignment="Right" Margin="0,0,10,0">Install Voices</TextBlock>
+                <Image Name="openTXLogo" Height="48" Source="/OpenTXspeak;component/speaker_logo.png" MouseLeftButtonDown="openTXLogo_MouseLeftButtonDown" HorizontalAlignment="Right" Cursor="Hand" Margin="0,5,10,0"/>
             </StackPanel>
         </StackPanel>
     </Grid>
