@@ -455,8 +455,8 @@
 #define TR_ELIMITS             TR("E.Limits", "Extended Limits")
 #define TR_ETRIMS              TR("E.Trims", "Extended Trims")
 #define TR_TRIMINC             "Trim Step"
-#define TR_TTRACE              TR("T-Source", INDENT "Source")
-#define TR_TTRIM               TR("T-Trim", INDENT "Idle Trim")
+#define TR_TTRACE              TR("T-Source", INDENT "Timer Source")
+#define TR_TTRIM               TR("T-Trim", INDENT "Trim Idle Only")
 #define TR_BEEPCTR             TR("Ctr Beep", "Center Beep")
 #define TR_PROTO               TR(INDENT "Proto", INDENT "Protocol")
 #define TR_PPMFRAME            TR("PPM frame", INDENT "PPM frame")
@@ -530,8 +530,8 @@
 #define TR_BLOFFBRIGHTNESS     INDENT "OFF Brightness"
 #define TR_SPLASHSCREEN        "Splash screen"
 #define TR_THROTTLEWARNING     TR("T-Warning", INDENT "Throttle State")
-#define TR_SWITCHWARNING       TR("S-Warning", INDENT "Switch Position")
-#define TR_POTWARNING          TR("Pot Warn.", INDENT "Pot Setup")
+#define TR_SWITCHWARNING       TR("S-Warning", INDENT "Switch Positions")
+#define TR_POTWARNING          TR("Pot Warn.", INDENT "Pot Positions")
 #define TR_TIMEZONE            TR("Time Zone","GPS Time zone")
 #define TR_RXCHANNELORD        TR("Rx Channel Ord","Default channel order")
 #define TR_SLAVE               "Slave"
