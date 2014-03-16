@@ -515,6 +515,7 @@ void SimulatorDialogTaranis::getValues()
     {
       -ui->dialP_1->value(),
       ui->dialP_2->value(),
+      0,
       -ui->dialP_3->value(),
       ui->dialP_4->value()
     },

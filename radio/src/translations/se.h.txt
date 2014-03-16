@@ -72,7 +72,7 @@
 #define TR_UART3MODES          "Av\0               ""Spegling av S-Port""Debug\0            "
 
 #define LEN_POTTYPES           "\020"
-#define TR_POTTYPES            "None\0          ""Potentiometer\0  ""Flerlägesväljare"
+#define TR_POTTYPES            "Ingen\0          ""Potentiometer\0  ""Flerlägesväljare"
 
 #define LEN_DATETIME           "\005"
 #define TR_DATETIME            "DAG: ""TID: "
@@ -168,7 +168,7 @@
 #endif
 
 #if defined(CPUARM)
-  #define TR_CSWEQUAL      "a=x\0 "
+  #define TR_CSWEQUAL          "a=x\0 "
 #else
   #define TR_CSWEQUAL
 #endif
@@ -223,9 +223,9 @@
 #endif
  
 #ifdef GVARS
-  #define TR_ADJUST_GVAR   "Justera\0  "
+  #define TR_ADJUST_GVAR       "Justera\0  "
 #else
-  #define TR_ADJUST_GVAR   "[AdjustGV]"
+  #define TR_ADJUST_GVAR       "[Just. GV]"
 #endif
 
 #ifdef DEBUG
@@ -512,7 +512,7 @@
 #define TR_THROTTLE_LABEL      "Throttle"
 #define TR_THROTTLEREVERSE     TR("Revers.Gas", INDENT "Revers.Gas")
 #define TR_MINUTEBEEP          INDENT"Minutpip"
-#define TR_BEEPCOUNTDOWN       INDENT"Räkna Ned"
+#define TR_BEEPCOUNTDOWN       INDENT"Räkna ned"
 #define TR_PERSISTENT          TR("Jämt på ",INDENT"Alltid På")
 #define TR_BACKLIGHT_LABEL     "Belysning"
 #define TR_BLDELAY             INDENT"Av efter"
@@ -567,40 +567,40 @@
 #define TR_BADEEPROMDATA       "Minnet kan inte tolkas"
 #define TR_EEPROMFORMATTING    "Minnet Nollställs"
 #define TR_EEPROMOVERFLOW      "Minnesfel"
-#define TR_MENURADIOSETUP      "Inställningar"
-#define TR_MENUDATEANDTIME     "Dag och Tid"
-#define TR_MENUTRAINER         "Trainer (PPM in)"
-#define TR_MENUVERSION         "Version"
-#define TR_MENUDIAG            TR("Brytare","Test av Brytare")
-#define TR_MENUANA             "Analoga Värden"
-#define TR_MENUCALIBRATION     "Kalibrering"
+#define TR_MENURADIOSETUP      "INSTÄLLNINGAR"
+#define TR_MENUDATEANDTIME     "DAG OCH TID"
+#define TR_MENUTRAINER         "TRAINER (PPM IN)"
+#define TR_MENUVERSION         "VERSION"
+#define TR_MENUDIAG            TR("BRYTARE","TEST AV BRYTARE")
+#define TR_MENUANA             "ANALOGA VÄRDEN"
+#define TR_MENUCALIBRATION     "KALIBRERING"
 #define TR_TRIMS2OFFSETS       "\004[Spara Trimvärden]"
-#define TR_MENUMODELSEL        TR("Modell","Välj Modell")
-#define TR_MENUSETUP           TR("Värden","Modellinställningar")
-#define TR_MENUFLIGHTPHASE     "Flygläge"
-#define TR_MENUFLIGHTPHASES    "Flyglägen"
-#define TR_MENUHELISETUP       "Helikopter"
+#define TR_MENUMODELSEL        TR("MODELL","VÄLJ MODELL")
+#define TR_MENUSETUP           TR("VÄRDEN","MODELLINSTÄLLNINGAR")
+#define TR_MENUFLIGHTPHASE     "FLYGLÄGE"
+#define TR_MENUFLIGHTPHASES    "FLYGLÄGEN"
+#define TR_MENUHELISETUP       "HELIKOPTER"
 
 #if defined(PCBTARANIS)
-  #define TR_MENUINPUTS        TR("Filter","Filtrerad Insignal")
-  #define TR_MENULIMITS        "Gränser"
+  #define TR_MENUINPUTS        TR("FILTER","FILTRERAD INSIGNAL")
+  #define TR_MENULIMITS        "GRÄNSER"
 #elif defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...
-  #define TR_MENUINPUTS        "Spakar" 
-  #define TR_MENULIMITS        "Gränser"
+  #define TR_MENUINPUTS        "SPAKAR" 
+  #define TR_MENULIMITS        "GRÄNSER"
 #else
-  #define TR_MENUINPUTS        TR("DR/Expo","DualRates/Expo")
-  #define TR_MENULIMITS        "Gränser"
+  #define TR_MENUINPUTS        TR("DR/EXPO","DUALRATES/EXPO")
+  #define TR_MENULIMITS        "GRÄNSER"
 #endif
 
-#define TR_MENUCURVES          "Kurvor"
-#define TR_MENUCURVE           "Kurva"
-#define TR_MENULOGICALSWITCH    "Logisk Brytare"
-#define TR_MENULOGICALSWITCHES  "Logiska Brytare"
-#define TR_MENUCUSTOMFUNC      "BrytarFunktioner"
-#define TR_MENUTELEMETRY       "Telemetri"
-#define TR_MENUTEMPLATES       "Mallar"
-#define TR_MENUSTAT            "Statistik"
-#define TR_MENUDEBUG           "Debug"
+#define TR_MENUCURVES          "KURVOR"
+#define TR_MENUCURVE           "KURVA"
+#define TR_MENULOGICALSWITCH   "LOGISK BRYTARE"
+#define TR_MENULOGICALSWITCHES "LOGISKA BRYTARE"
+#define TR_MENUCUSTOMFUNC      "BRYTARFUNKTIONER"
+#define TR_MENUTELEMETRY       "TELEMETRI"
+#define TR_MENUTEMPLATES       "MALLAR"
+#define TR_MENUSTAT            "STATISTIK"
+#define TR_MENUDEBUG           "DEBUG"
 #define TR_RXNUM               "RxNum"
 #define TR_SYNCMENU            "Synk [MENU]"
 #define TR_LIMIT               INDENT"Nivå"
@@ -673,7 +673,7 @@
 #define TR_GLOBAL_VARS         "Globala Variabler"
 #define TR_GLOBAL_V            "GLOBAL V."
 #define TR_GLOBAL_VAR          "Global Variabel"
-#define TR_MENUGLOBALVARS      "Globala Variabler"
+#define TR_MENUGLOBALVARS      "GLOBALA VARIABLER"
 #define TR_OWN                 "Egen"
 #define TR_DATE                "Datum"
 #define TR_ROTARY_ENCODER      "R.Enks"
@@ -703,7 +703,7 @@
 #define TR_CF                  "BF"
 #define TR_SPEAKER             INDENT"Högtalare"
 #define TR_BUZZER              INDENT"Summer"
-#define TR_BYTES               "bytes"
+#define TR_BYTES               "byte"
 #define TR_MODULE_BIND         "[Bind]"
 #define TR_MODULE_RANGE        "[Testa]"
 #define TR_RESET_BTN           "[Nollställ]"
@@ -715,16 +715,16 @@
 #define TR_CHANNELRANGE        INDENT "Kanalområde"
 #define TR_LOWALARM            INDENT "Låg-alarm"
 #define TR_CRITICALALARM       INDENT "Kritiskt alarm"
-#define TR_PERSISTENT_MAH      INDENT "Store mAh"
+#define TR_PERSISTENT_MAH      INDENT "Lagra mAh"
 #define TR_PREFLIGHT           "Preflight Checks"
-#define TR_CHECKLIST           INDENT "Display Checklist"
+#define TR_CHECKLIST           INDENT "Visa checklisa"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 #define TR_UART3MODE           "Serieporten"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL  "Max RSSI"
   #define TR_MAVLINK_PC_RSSI_EN_LABEL     "PC RSSI EN"
-  #define TR_MAVMENUSETUP_TITLE           "MavlinkInställningar"
+  #define TR_MAVMENUSETUP_TITLE           "MAVLINKINSTÄLLNINGAR"
   #define TR_MAVLINK_BAUD_LABEL           "Baudrate"
   #define TR_MAVLINK_INFOS                "INFOS"
   #define TR_MAVLINK_MODE                 "LÄGE"

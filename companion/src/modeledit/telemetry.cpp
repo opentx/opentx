@@ -28,10 +28,20 @@ TelemetryAnalog::TelemetryAnalog(QWidget *parent, FrSkyChannelData & analog):
   update();
 
   ui->UnitCB->setCurrentIndex(analog.type);
-  ui->alarm1LevelCB->setCurrentIndex(analog.alarms[0].level);
-  ui->alarm1GreaterCB->setCurrentIndex(analog.alarms[0].greater);
-  ui->alarm2LevelCB->setCurrentIndex(analog.alarms[1].level);
-  ui->alarm2GreaterCB->setCurrentIndex(analog.alarms[1].greater);
+  if (!IS_TARANIS(GetEepromInterface()->getBoard())) {
+    ui->alarm1LevelCB->setCurrentIndex(analog.alarms[0].level);
+    ui->alarm1GreaterCB->setCurrentIndex(analog.alarms[0].greater);
+    ui->alarm2LevelCB->setCurrentIndex(analog.alarms[1].level);
+    ui->alarm2GreaterCB->setCurrentIndex(analog.alarms[1].greater);
+  }
+  else {
+    ui->alarm1LevelCB->hide();
+    ui->alarm2LevelCB->hide();
+    ui->alarm1GreaterCB->hide();
+    ui->alarm2GreaterCB->hide();
+    ui->alarm1Label->setText(tr("Low Alarm"));
+    ui->alarm2Label->setText(tr("Critical Alarm"));
+  }
 
   if (!(GetEepromInterface()->getCapability(Telemetry) & TM_HASOFFSET)) {
     ui->CalibSB->hide();
@@ -467,8 +477,16 @@ void TelemetryPanel::setup()
     }
     ui->rssiAlarm1SB->setValue(model.frsky.rssiAlarms[0].value);
     ui->rssiAlarm2SB->setValue(model.frsky.rssiAlarms[1].value);
-    ui->rssiAlarm1CB->setCurrentIndex(model.frsky.rssiAlarms[0].level);
-    ui->rssiAlarm2CB->setCurrentIndex(model.frsky.rssiAlarms[1].level);
+    if (!IS_TARANIS(GetEepromInterface()->getBoard())) {
+      ui->rssiAlarm1CB->setCurrentIndex(model.frsky.rssiAlarms[0].level);
+      ui->rssiAlarm2CB->setCurrentIndex(model.frsky.rssiAlarms[1].level);
+    }
+    else {
+      ui->rssiAlarm1CB->hide();
+      ui->rssiAlarm2CB->hide();
+      ui->rssiAlarm1Label->setText(tr("Low Alarm"));
+      ui->rssiAlarm2Label->setText(tr("Critical Alarm"));
+    }
 
     if (!GetEepromInterface()->getCapability(HasAltitudeSel)) {
       ui->AltitudeGPS_ChkB->hide();

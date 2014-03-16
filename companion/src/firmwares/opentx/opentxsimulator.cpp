@@ -53,6 +53,8 @@
 #define EEPROM_VARIANT SIMU_STOCK_VARIANTS
 #define GAUGES
 
+#define NUM_POTS  3
+
 #undef min
 #undef max
 

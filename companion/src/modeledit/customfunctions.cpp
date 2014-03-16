@@ -161,6 +161,12 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
     connect(fswtchParamArmT[i], SIGNAL(editTextChanged ( const QString)), this, SLOT(customFunctionEdited()));
 
 #ifdef PHONON
+    phononLock=false;
+    clickObject = new Phonon::MediaObject(this);
+    clickOutput = new Phonon::AudioOutput(Phonon::NoCategory, this);
+    Phonon::createPath(clickObject, clickOutput);
+    connect(clickObject, SIGNAL(stateChanged(Phonon::State,Phonon::State)),  this, SLOT(mediaPlayer_state(Phonon::State,Phonon::State)));
+
     playBT[i] = new QPushButton(this);
     playBT[i]->setProperty("index", i);
     playBT[i]->setProperty("state", "play");
@@ -203,6 +209,7 @@ void CustomFunctionsPanel::mediaPlayer_state(Phonon::State newState, Phonon::Sta
       clickObject->clearQueue();
       clickObject->clear();
       for (int i=0; i<GetEepromInterface()->getCapability(CustomFunctions); i++) {
+        playBT[i]->setProperty("state", "play");
         playBT[i]->setObjectName(QString("play_%1").arg(i));
         playBT[i]->setIcon(CompanionIcon("play.png"));
       }
