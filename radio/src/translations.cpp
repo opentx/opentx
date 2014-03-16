@@ -496,8 +496,10 @@ const pm_char STR_VIEW_TEXT[] PROGMEM = "View text";
   const pm_char STR_VIEW_CHANNELS[] PROGMEM = "View Channels";
   const pm_char STR_VIEW_NOTES[] PROGMEM = "View Notes";
   const pm_char STR_POTWARNING[] PROGMEM = TR_POTWARNING;
+  const pm_char STR_PREFLIGHT[] PROGMEM = TR_PREFLIGHT;
   const pm_char STR_CHECKLIST[] PROGMEM = TR_CHECKLIST;
   const pm_char STR_UART3MODE[] PROGMEM = TR_UART3MODE;
+  const pm_char STR_THROTTLE_LABEL[] PROGMEM = TR_THROTTLE_LABEL;
 #endif
 
 #if MENUS_LOCK == 1

@@ -72,7 +72,7 @@
 #define TR_UART3MODES          "OFF\0           ""S-Port Mirror\0 ""Debug\0         "
 
 #define LEN_POTTYPES           "\017"
-#define TR_POTTYPES            "Pot\0           ""Multipos Switch"
+#define TR_POTTYPES            "None\0          ""Pot\0           ""Multipos Switch"
 
 #define LEN_DATETIME           "\005"
 #define TR_DATETIME            "DATA:""HORA:"
@@ -445,8 +445,8 @@
 #define TR_ELIMITS             TR("E.Limite","Ampliar Limites")
 #define TR_ETRIMS              TR("E.Trims","Ampliar Trims")
 #define TR_TRIMINC             "Paso Trim"
-#define TR_TTRACE              TR("Fuente-A","Fuente Acelerad")
-#define TR_TTRIM               TR("Trim-A","Trim Acelerad")
+#define TR_TTRACE              TR("Fuente-A", INDENT "Fuente Acelerad")
+#define TR_TTRIM               TR("Trim-A", INDENT "Trim Acelerad")
 #define TR_BEEPCTR             TR("Ctr Beep","Center Beep")
 #define TR_PROTO               TR(INDENT"Proto",INDENT"Protocol")
 #define TR_PPMFRAME            "Trama PPM"
@@ -509,7 +509,8 @@
 #define TR_MEMORYWARNING       INDENT"Memoria Baja"
 #define TR_ALARMWARNING        INDENT"Sin Sonido"
 #define TR_RENAVIG             "RotEnc Navig"
-#define TR_THROTTLEREVERSE     TR("Invert_Acel", "Invertir Acel.")
+#define TR_THROTTLE_LABEL      "Throttle"
+#define TR_THROTTLEREVERSE     TR("Invert_Acel", INDENT "Invertir Acel.")
 #define TR_MINUTEBEEP          TR(INDENT"Minuto",INDENT"Cada Minuto")
 #define TR_BEEPCOUNTDOWN       INDENT"Cuentaatras"
 #define TR_PERSISTENT          TR(INDENT"Persist.",INDENT"Persistente")
@@ -518,9 +519,9 @@
 #define TR_BLONBRIGHTNESS      INDENT"MAS Brillo"
 #define TR_BLOFFBRIGHTNESS     INDENT"MENOS Brillo"
 #define TR_SPLASHSCREEN        "Ptalla.inicio"
-#define TR_THROTTLEWARNING     TR("Aviso-A", "Aviso Acelerador")
-#define TR_SWITCHWARNING       TR("Aviso-I", "Aviso Intrptor")
-#define TR_POTWARNING          TR("Pot Warn.","Pot Warning")
+#define TR_THROTTLEWARNING     TR("Aviso-A", INDENT "Aviso Acelerador")
+#define TR_SWITCHWARNING       TR("Aviso-I", INDENT "Aviso Intrptor")
+#define TR_POTWARNING          TR("Pot Warn.", INDENT "Pot Warning")
 #define TR_TIMEZONE            TR("Zona Hora", "GPS Zona Hora")
 #define TR_RXCHANNELORD        TR("Rx Orden canal", "Orden habitual canales")
 #define TR_SLAVE               "Esclavo"
@@ -715,7 +716,8 @@
 #define TR_LOWALARM            INDENT "Alarma baja"
 #define TR_CRITICALALARM       INDENT "Alarma Critica"
 #define TR_PERSISTENT_MAH      INDENT "Valor mAh"
-#define TR_CHECKLIST           "Display Checklist"
+#define TR_PREFLIGHT           "Preflight Checks"
+#define TR_CHECKLIST           INDENT "Display Checklist"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 #define TR_UART3MODE           "Serial port"
 
