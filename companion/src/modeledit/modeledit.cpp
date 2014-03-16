@@ -27,7 +27,8 @@ ModelEdit::ModelEdit(RadioData & radioData, int modelId, bool openWizard, bool i
   addTab(new Setup(this, model), tr("Setup"));
   addTab(new HeliPanel(this, model), tr("Heli"));
   addTab(new FlightModes(this, model, radioData.generalSettings), tr("Flight Modes"));
-  addTab(new InputsPanel(this, model, radioData.generalSettings), tr("Inputs"));
+  if (GetEepromInterface()->getCapability(VirtualInputs))
+    addTab(new InputsPanel(this, model, radioData.generalSettings), tr("Inputs"));
   addTab(new MixesPanel(this, model, radioData.generalSettings), tr("Mixes"));
   addTab(new Channels(this, model), tr("Channels"));
   addTab(new LogicalSwitchesPanel(this, model), tr("Logical Switches"));
