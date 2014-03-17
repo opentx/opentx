@@ -133,6 +133,7 @@ RawSourceRange RawSource::getRange(bool singleprec)
           result.max = 225;
           break;
         case TELEMETRY_SOURCE_RPM:
+        case TELEMETRY_SOURCE_RPM_MAX:
           result.step = singleprec ? 50 : 1;
           result.max = singleprec ? 12750 : 20000;
           break;
@@ -140,6 +141,7 @@ RawSourceRange RawSource::getRange(bool singleprec)
           result.max = 100;
           break;
         case TELEMETRY_SOURCE_SPEED:
+        case TELEMETRY_SOURCE_SPEED_MAX:
           result.step = singleprec ? 4 : 1;
           result.max = singleprec ? 944 : 2000;
           if (model && !model->frsky.imperial) {
@@ -148,6 +150,7 @@ RawSourceRange RawSource::getRange(bool singleprec)
           }
           break;
         case TELEMETRY_SOURCE_DIST:
+        case TELEMETRY_SOURCE_DIST_MAX:
           result.step = singleprec ? 8 : 1;
           result.max = singleprec ? 2040 : 10000;
           break;

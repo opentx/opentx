@@ -382,6 +382,8 @@ void TelemetryCustomScreen::update()
 
 void TelemetryCustomScreen::updateBar(int line)
 {
+  lock = true;
+
   int index = screen.body.bars[line].source;
   barsCB[line]->setCurrentIndex(index);
   if (index) {
@@ -407,6 +409,8 @@ void TelemetryCustomScreen::updateBar(int line)
     minSB[line]->setDisabled(true);
     maxSB[line]->setDisabled(true);
   }
+
+  lock = false;
 }
 
 void TelemetryCustomScreen::on_screenType_currentIndexChanged(int index)
@@ -428,13 +432,15 @@ void TelemetryCustomScreen::customFieldChanged(int value)
 
 void TelemetryCustomScreen::barSourceChanged(int index)
 {
-  QComboBox * cb = qobject_cast<QComboBox*>(sender());
-  int line = cb->property("index").toInt();
-  screen.body.bars[line].source = index;
-  screen.body.bars[line].barMin = 0;
-  screen.body.bars[line].barMax = 0;
-  updateBar(line);
-  emit modified();
+  if (!lock) {
+    QComboBox * cb = qobject_cast<QComboBox*>(sender());
+    int line = cb->property("index").toInt();
+    screen.body.bars[line].source = index;
+    screen.body.bars[line].barMin = 0;
+    screen.body.bars[line].barMax = 0;
+    updateBar(line);
+    emit modified();
+  }
 }
 
 void TelemetryCustomScreen::barMinChanged(double value)
