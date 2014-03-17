@@ -384,8 +384,12 @@ class TelemetrySourcesConversionTable: public ConversionTable {
       addConversion(1+TELEMETRY_SOURCE_T2_MAX, val++);
       addConversion(1+TELEMETRY_SOURCE_SPEED_MAX, val++);
       addConversion(1+TELEMETRY_SOURCE_DIST_MAX, val++);
-      addConversion(1+TELEMETRY_SOURCE_CELL_MIN, val++);
-      addConversion(1+TELEMETRY_SOURCE_VFAS_MIN, val++);
+      if (version >= 216) {
+        addConversion(1+TELEMETRY_SOURCE_CELL_MIN, val++);
+        addConversion(1+TELEMETRY_SOURCE_CELLS_MIN, val++);
+        addConversion(1+TELEMETRY_SOURCE_VFAS_MIN, val++);
+      }
+      addConversion(1+TELEMETRY_SOURCE_CURRENT_MAX, val++);
       addConversion(1+TELEMETRY_SOURCE_POWER_MAX, val++);
       if (IS_ARM(board) && version >= 216) {
         for (int i=0; i<5; i++)
@@ -1008,9 +1012,15 @@ class InputField: public TransformedField {
 
     virtual void afterImport()
     {
-      if (IS_TARANIS(board) && version < 216) {
-        if (expo.mode) {
-          expo.srcRaw = RawSource(SOURCE_TYPE_STICK, expo.chn);
+      if (IS_TARANIS(board)) {
+        if (version < 216) {
+          if (expo.mode) {
+            expo.srcRaw = RawSource(SOURCE_TYPE_STICK, expo.chn);
+          }
+        }
+        else {
+          if (expo.srcRaw.type != SOURCE_TYPE_NONE)
+            expo.mode = 3;
         }
       }
 

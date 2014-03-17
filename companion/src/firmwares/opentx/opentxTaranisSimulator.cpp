@@ -54,6 +54,8 @@
 #define LUA_MODEL_SCRIPTS
 #define EEPROM_VARIANT 3
 
+#define NUM_POTS  5
+
 #undef min
 #undef max
 
@@ -153,9 +155,6 @@ int16_t g_anas[NUM_STICKS+5];
 
 uint16_t anaIn(uint8_t chan)
 {
-  if (chan == 8)
-    return 1800;
-  else
     return g_anas[chan];
 }
 

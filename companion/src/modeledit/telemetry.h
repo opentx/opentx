@@ -61,6 +61,9 @@ class TelemetryCustomScreen : public ModelPanel
     void barMinChanged(double value);
     void barMaxChanged(double value);
 
+  protected:
+    void populateTelemetrySourceCB(QComboBox *b, unsigned int value, bool last, int hubproto);
+
   private:
     void updateBar(int line);
     Ui::TelemetryCustomScreen * ui;

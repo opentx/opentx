@@ -1972,8 +1972,8 @@ uint8_t getGVarFlightPhase(uint8_t phase, uint8_t idx)
 
 int16_t getGVarValue(int16_t x, int16_t min, int16_t max, int8_t phase)
 {
-  if (GV_IS_GV_VALUE(x,min,max)) {
-    int8_t idx = GV_INDEX_CALCULATION(x,max);
+  if (GV_IS_GV_VALUE(x, min, max)) {
+    int8_t idx = GV_INDEX_CALCULATION(x, max);
     int8_t mul = 1;
 
     if (idx < 0) {
@@ -1983,7 +1983,6 @@ int16_t getGVarValue(int16_t x, int16_t min, int16_t max, int8_t phase)
 
     x = GVAR_VALUE(idx, getGVarFlightPhase(phase, idx)) * mul;
   }
-
   return limit(min, x, max);
 }
 
@@ -2104,6 +2103,8 @@ getvalue_t convert8bitsTelemValue(uint8_t channel, ls_telemetry_value_t value)
       break;
     case TELEM_CURRENT:
     case TELEM_POWER:
+    case TELEM_MAX_CURRENT:
+    case TELEM_MAX_POWER:
       result = value * 5;
       break;
     case TELEM_CONSUMPTION:
@@ -2981,6 +2982,8 @@ void resetTimer(uint8_t idx)
   timerState.val_10ms = 0 ;
 }
 
+bool s_mixer_first_run_done = false;
+
 void resetAll()
 {
   static bool firstReset = true;
@@ -2999,6 +3002,7 @@ void resetAll()
   }
 
   s_last_switch_value = 0;
+  s_mixer_first_run_done = false;
 
   SKIP_AUTOMATIC_PROMPTS();
 
@@ -3350,12 +3354,14 @@ uint8_t fnSwitchDuration[NUM_CFN] = { 0 };
 
 inline void playCustomFunctionFile(CustomFnData *sd, uint8_t id)
 {
-  char filename[sizeof(SOUNDS_PATH)+sizeof(sd->play.name)+sizeof(SOUNDS_EXT)] = SOUNDS_PATH "/";
-  strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
-  strncpy(filename+sizeof(SOUNDS_PATH), sd->play.name, sizeof(sd->play.name));
-  filename[sizeof(SOUNDS_PATH)+sizeof(sd->play.name)] = '\0';
-  strcat(filename+sizeof(SOUNDS_PATH), SOUNDS_EXT);
-  PLAY_FILE(filename, sd->func==FUNC_BACKGND_MUSIC ? PLAY_BACKGROUND : 0, id);
+  if (sd->play.name[0] != '\0') {
+    char filename[sizeof(SOUNDS_PATH)+sizeof(sd->play.name)+sizeof(SOUNDS_EXT)] = SOUNDS_PATH "/";
+    strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
+    strncpy(filename+sizeof(SOUNDS_PATH), sd->play.name, sizeof(sd->play.name));
+    filename[sizeof(SOUNDS_PATH)+sizeof(sd->play.name)] = '\0';
+    strcat(filename+sizeof(SOUNDS_PATH), SOUNDS_EXT);
+    PLAY_FILE(filename, sd->func==FUNC_BACKGND_MUSIC ? PLAY_BACKGROUND : 0, id);
+  }
 }
 #endif
 
@@ -3851,21 +3857,21 @@ void perOut(uint8_t mode, uint8_t tick10ms)
           // the unit of the stored value is the value from md->speedUp or md->speedDown divide SLOW_STEP seconds; e.g. value 4 means 4/SLOW_STEP = 2 seconds for CPU64
           // because we get a tick each 10msec, we need 100 ticks for one second
           // the value in md->speedXXX gives the time it should take to do a full movement from -100 to 100 therefore 200%. This equals 2048 in recalculated internal range
-          if (tick10ms) {
+          if (tick10ms || !s_mixer_first_run_done) {
             // only if already time is passed add or substract a value according the speed configured
             int32_t rate = (int32_t) tick10ms << (DEL_MULT_SHIFT+11);  // = DEL_MULT*2048*tick10ms
             // rate equals a full range for one second; if less time is passed rate is accordingly smaller
             // if one second passed, rate would be 2048 (full motion)*256(recalculated weight)*100(100 ticks needed for one second)
             int32_t currentValue = ((int32_t) v<<DEL_MULT_SHIFT);
             if (diff > 0) {
-              if (md->speedUp > 0) {
+              if (s_mixer_first_run_done && md->speedUp > 0) {
                 // if a speed upwards is defined recalculate the new value according configured speed; the higher the speed the smaller the add value is
                 int32_t newValue = tact+rate/((int16_t)(100/SLOW_STEP)*md->speedUp);
                 if (newValue<currentValue) currentValue = newValue; // Endposition; prevent toggling around the destination
               }
             }
             else {  // if is <0 because ==0 is not possible
-              if (md->speedDown > 0) {
+              if (s_mixer_first_run_done && md->speedDown > 0) {
                 // see explanation in speedUp
                 int32_t newValue = tact-rate/((int16_t)(100/SLOW_STEP)*md->speedDown);
                 if (newValue>currentValue) currentValue = newValue; // Endposition; prevent toggling around the destination
@@ -4087,6 +4093,8 @@ void doMixerCalculations()
     s_perout_flight_phase = phase;
     perOut(e_perout_mode_normal, tick10ms);
   }
+
+  s_mixer_first_run_done = true;
 
   //========== FUNCTIONS ===============
   // must be done after mixing because some functions use the inputs/channels values

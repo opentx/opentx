@@ -54,6 +54,7 @@
 #define GPS
 #define FAI_CHOICE
 
+#define NUM_POTS  3
 #define EEPROM_VARIANT 3
 
 #undef min

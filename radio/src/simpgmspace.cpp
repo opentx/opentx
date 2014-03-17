@@ -101,12 +101,12 @@ sem_t *eeprom_write_sem;
 #if defined(PCBTARANIS)
 #define SWITCH_CASE(swtch, pin, mask) \
     case swtch: \
-      if (state) pin &= ~(mask); else pin |= (mask); \
+      if (state > 0) pin &= ~(mask); else pin |= (mask); \
       break;
 #else
 #define SWITCH_CASE(swtch, pin, mask) \
     case swtch: \
-      if (state) pin |= (mask); else pin &= ~(mask); \
+      if (state > 0) pin |= (mask); else pin &= ~(mask); \
       break;
 #endif
 #define SWITCH_3_CASE(swtch, pin1, pin2, mask1, mask2) \
@@ -116,13 +116,13 @@ sem_t *eeprom_write_sem;
       break;
 #define KEY_CASE(key, pin, mask) \
     case key: \
-      if (state) pin &= ~mask; else pin |= mask;\
+      if (state > 0) pin &= ~mask; else pin |= mask;\
       break;
 #define TRIM_CASE KEY_CASE
 #else
 #define SWITCH_CASE(swtch, pin, mask) \
     case swtch: \
-      if (state) pin &= ~(mask); else pin |= (mask); \
+      if (state > 0) pin &= ~(mask); else pin |= (mask); \
       break;
 #define SWITCH_3_CASE(swtch, pin1, pin2, mask1, mask2) \
     case swtch: \
@@ -131,7 +131,7 @@ sem_t *eeprom_write_sem;
       break;
 #define KEY_CASE(key, pin, mask) \
     case key: \
-      if (state) pin |= (mask); else pin &= ~(mask);\
+      if (state > 0) pin |= (mask); else pin &= ~(mask);\
       break;
 #define TRIM_CASE KEY_CASE
 #endif

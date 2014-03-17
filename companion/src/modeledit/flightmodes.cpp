@@ -194,33 +194,29 @@ void FlightMode::update()
 
   for (int i=0; i<gvCount; i++) {
     gvNames[i]->setText(model.gvars_names[i]);
-    if (phase.gvars[i] < 1024) {
-      gvValues[i]->setValue(phase.gvars[i]);
-      gvValues[i]->setDisabled(false);
+    gvValues[i]->setDisabled(false);
+    int idx = phase.gvars[i];
+    PhaseData *phasegvar = &phase;
+    while (idx >= 1024) {
+      idx -= 1025;
+      phasegvar = &model.phaseData[idx];
+    	idx = phasegvar->gvars[i];
+    	gvValues[i]->setDisabled(true);
     }
-    else {
-      int idx = phase.gvars[i] - 1025;
-      if (idx >= i) idx++;
-      // TODO no!!!!
-      PhaseData *phasegvar = &model.phaseData[idx];
-      gvValues[i]->setValue(phasegvar->gvars[i]);
-      gvValues[i]->setDisabled(true);
-    }
+    gvValues[i]->setValue(phasegvar->gvars[i]);
   }
 
-  for (int i=0; i<reCount; i++) {
-    if (phase.rotaryEncoders[i] < 1024) {
-      reValues[i]->setValue(phase.rotaryEncoders[i]);
-      reValues[i]->setDisabled(false);
-    }
-    else {
-      int idx = phase.rotaryEncoders[i] - 1025;
-      if (idx >= i) idx++;
-      // TODO no!!!!
-      PhaseData *phasere = &model.phaseData[idx];
-      reValues[i]->setValue(phasere->rotaryEncoders[i]);
+  for (int i=0; i<reCount; i++) {    
+    reValues[i]->setDisabled(false);
+    int idx = phase.rotaryEncoders[i];
+    PhaseData *phasere = &phase;
+    while (idx >= 1024) {
+      idx -= 1025;
+      phasere = &model.phaseData[idx];
+      idx = phasere->rotaryEncoders[i];
       reValues[i]->setDisabled(true);
     }
+    reValues[i]->setValue(phasere->rotaryEncoders[i]);
   }
 }
 
@@ -311,21 +307,12 @@ void FlightMode::phaseGVUse_currentIndexChanged(int index)
     QComboBox *comboBox = qobject_cast<QComboBox*>(sender());
     int gvar = comboBox->property("index").toInt();
     if (index == 0) {
-      int value = phase.gvars[gvar];
-      if (value>1024) {
-        value=0;
-      }
-      gvValues[gvar]->setValue(value);
-      gvValues[gvar]->setEnabled(true);
-      phase.gvars[gvar]=value;
+      phase.gvars[gvar]=0;
     }
     else {
       phase.gvars[gvar] = 1024+index;
-      // TOTO it's wrong!!!
-      int value = model.phaseData[index + (index>phaseIdx ? 0 :-1)].gvars[gvar];
-      gvValues[gvar]->setValue(value);
-      gvValues[gvar]->setDisabled(true);
     }
+    update();
     emit modified();
     lock = false;
   }
@@ -348,21 +335,12 @@ void FlightMode::phaseREUse_currentIndexChanged(int index)
     QComboBox *comboBox = qobject_cast<QComboBox*>(sender());
     int re = comboBox->property("index").toInt();
     if (index == 0) {
-      // TODO no!!!
-      int value = phase.rotaryEncoders[re];
-      if (value > 1024) {
-        value = 0;
-      }
-      reValues[re]->setValue(value);
-      reValues[re]->setEnabled(true);
-      phase.rotaryEncoders[re] = value;
+      phase.rotaryEncoders[re] = 0;
     }
     else {
-      phase.rotaryEncoders[re] = 1024 + index;
-      int value = model.phaseData[index + (index>phaseIdx ? 0 :-1)].rotaryEncoders[re];
-      reValues[re]->setValue(value);
-      reValues[re]->setDisabled(true)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ;
+      phase.rotaryEncoders[re] = 1024 + index;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ;
     }
+    update();
     lock = false;
     emit modified();
   }

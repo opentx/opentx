@@ -530,9 +530,9 @@ void printDialog::printCurves()
     qplot_color[7]=new QColor(0,0,255);
     qplot_color[8]=new QColor(0,127,255);
     qplot_color[9]=new QColor(127,0,255);
-    qplot_color[10]=new QColor(0,255,0);
-    qplot_color[11]=new QColor(0,255,127);
-    qplot_color[12]=new QColor(127,255,0);
+    qplot_color[10]=new QColor(0,200,0);
+    qplot_color[11]=new QColor(0,200,127);
+    qplot_color[12]=new QColor(127,200,0);
     qplot_color[13]=new QColor(255,0,0);
     qplot_color[14]=new QColor(255,0,127);
     qplot_color[15]=new QColor(255,127,0);

@@ -21,7 +21,7 @@
 
 struct TxInputs {
     int  sticks[NUM_STICKS]; /* lh lv rv rh */
-    int  pots[4]; /* TODO NUM_POTS */
+    int  pots[5]; /* TODO NUM_POTS */
     int  switches[10]; /* TODO NUM_SWITCHES */
     bool keys[6]; /* TODO NUM_KEYS */
     bool rotenc;

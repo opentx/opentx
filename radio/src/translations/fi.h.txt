@@ -42,16 +42,16 @@
    
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON              "\003"
-#define TR_OFFON               "OFF""ON\0"
+#define TR_OFFON               "POI""PÄÄ"
 
 #define LEN_MMMINV             "\003"
-#define TR_MMMINV              "---""INV"
+#define TR_MMMINV              "---""KÄÄ"
 
 #define LEN_NCHANNELS          "\004"
 #define TR_NCHANNELS           "\0014CH\0016CH\0018CH10CH12CH14CH16CH"
 
 #define LEN_VBEEPMODE          "\005"
-#define TR_VBEEPMODE           "Quiet""Alarm""NoKey""All  "
+#define TR_VBEEPMODE           "Äänet""Hälyt""EiNap""Kaikk"
 
 #define LEN_VBEEPLEN           "\005"
 #define TR_VBEEPLEN            "0====""=0===""==0==""===0=""====0"
@@ -69,22 +69,22 @@
 #define TR_TRNCHN              "CH1CH2CH3CH4"
 
 #define LEN_UART3MODES         "\017"
-#define TR_UART3MODES          "OFF\0           ""S-Port Mirror\0 ""Debug\0         "
+#define TR_UART3MODES          "POIS\0          ""S-Port Pelik\0  ""Debug\0         "
 
 #define LEN_POTTYPES           "\017"
-#define TR_POTTYPES            "Pot\0           ""Multipos Switch"
+#define TR_POTTYPES            "None\0          ""Potikka\0       ""Monias. Kytkin\0"
 
 #define LEN_DATETIME           "\005"
-#define TR_DATETIME            "DATE:""TIME:"
+#define TR_DATETIME            "PÄIV:""AIKA:"
 
 #define LEN_VLCD               "\006"
 #define TR_VLCD                "NormalOptrex"
 
 #define LEN_COUNTRYCODES       TR("\002", "\007")
-#define TR_COUNTRYCODES        TR("US""JP""EU", "America""Japan\0 ""Europe\0")
+#define TR_COUNTRYCODES        TR("US""JP""EU", "Amerikk""Japani\0""Euroopp")
 
 #define LEN_VTRIMINC           TR("\006", "\013")
-#define TR_VTRIMINC            TR("Expo\0 ""ExFine""Fine\0 ""Medium""Coarse", "Exponential""Extra Fine\0""Fine\0      ""Medium\0    ""Coarse\0    ")
+#define TR_VTRIMINC            TR("Expo\0 ""EriHie""Hieno\0""Keski\0""Karkea", "Exponential""Eri Hieno\0 ""Hieno\0     ""Keski\0     ""Karkea\0    ")
 
 #define LEN_VBEEPCOUNTDOWN     "\006"
 #define TR_VBEEPCOUNTDOWN      "SilentBeeps\0Voice\0"
@@ -445,8 +445,8 @@
 #define TR_ELIMITS             TR("E.Limits", "Extended Limits")
 #define TR_ETRIMS              TR("E.Trims", "Extended Trims")
 #define TR_TRIMINC             "Trim Step"
-#define TR_TTRACE              TR("T-Source", "Throttle Source")
-#define TR_TTRIM               TR("T-Trim", "Throttle Trim")
+#define TR_TTRACE              TR("T-Source", INDENT "Throttle Source")
+#define TR_TTRIM               TR("T-Trim", INDENT "Throttle Trim")
 #define TR_BEEPCTR             TR("Ctr Beep", "Center Beep")
 #define TR_PROTO               TR(INDENT "Proto", INDENT "Protocol")
 #define TR_PPMFRAME            TR("PPM frame", INDENT "PPM frame")
@@ -509,7 +509,8 @@
 #define TR_MEMORYWARNING       INDENT"Memory Low"
 #define TR_ALARMWARNING        INDENT"Sound Off"
 #define TR_RENAVIG             "RotEnc Navig"
-#define TR_THROTTLEREVERSE     TR("T-Reverse", "Throttle reverse")
+#define TR_THROTTLE_LABEL      "Throttle"
+#define TR_THROTTLEREVERSE     TR("T-Reverse", INDENT "Throttle reverse")
 #define TR_MINUTEBEEP          TR(INDENT"Minute",INDENT"Minute call")
 #define TR_BEEPCOUNTDOWN       INDENT"Countdown"
 #define TR_PERSISTENT          TR(INDENT"Persist.",INDENT"Persistent")
@@ -518,9 +519,9 @@
 #define TR_BLONBRIGHTNESS      INDENT"ON Brightness"
 #define TR_BLOFFBRIGHTNESS     INDENT"OFF Brightness"
 #define TR_SPLASHSCREEN        "Splash screen"
-#define TR_THROTTLEWARNING     TR("T-Warning","Throttle Warning")
-#define TR_SWITCHWARNING       TR("S-Warning","Switch Warning")
-#define TR_POTWARNING          TR("Pot Warn.","Pot Warning")
+#define TR_THROTTLEWARNING     TR("T-Warning", INDENT "Throttle Warning")
+#define TR_SWITCHWARNING       TR("S-Warning", INDENT "Switch Warning")
+#define TR_POTWARNING          TR("Pot Warn.", INDENT "Pot Warning")
 #define TR_TIMEZONE            TR("Time Zone","GPS Time zone")
 #define TR_RXCHANNELORD        TR("Rx Channel Ord","Default channel order")
 #define TR_SLAVE               "Slave"
@@ -715,7 +716,8 @@
 #define TR_LOWALARM            INDENT "Low Alarm"
 #define TR_CRITICALALARM       INDENT "Critical Alarm"
 #define TR_PERSISTENT_MAH      INDENT "Store mAh"
-#define TR_CHECKLIST           "Display Checklist"
+#define TR_PREFLIGHT           "Preflight Checks"
+#define TR_CHECKLIST           INDENT "Display Checklist"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 #define TR_UART3MODE           "Serial port"
 
@@ -797,18 +799,18 @@
 #define TR_ABOUT_PARENTS_3     "ER9X (Erez Raviv)"
 #define TR_ABOUT_PARENTS_4     "TH9X (Thomas Husterer)"
 
-#define TR_CHR_SHORT  's'
-#define TR_CHR_LONG   'l'
-#define TR_CHR_TOGGLE 't'
-#define TR_CHR_HOUR   'h'
-#define TR_CHR_INPUT  'I'   // Values between A-I will work
+#define TR_CHR_SHORT           's'
+#define TR_CHR_LONG            'l'
+#define TR_CHR_TOGGLE          't'
+#define TR_CHR_HOUR            'h'
+#define TR_CHR_INPUT           'I'   // Values between A-I will work
 
-#define TR_BEEP_VOLUME         "Beep Volume"
-#define TR_WAV_VOLUME          "Wav Volume"
-#define TR_VARIO_VOLUME        "Vario Volume"
-#define TR_BG_VOLUME           "Bg Volume"
+#define TR_BEEP_VOLUME         "Piip Voim"
+#define TR_WAV_VOLUME          "Wav Voim"
+#define TR_VARIO_VOLUME        "Variom Voim"
+#define TR_BG_VOLUME           "Tausta Voim"
 
-#define TR_TOP_BAR             "Top Bar"
-#define TR_ALTITUDE            INDENT "Altitude"
-#define TR_MODS_FORBIDDEN      "Modifications forbidden!"
-#define TR_UNLOCKED            "Unlocked"
+#define TR_TOP_BAR             "Ylä palkki"
+#define TR_ALTITUDE            INDENT "Korkeus"
+#define TR_MODS_FORBIDDEN      "Muutokset kielletty!"
+#define TR_UNLOCKED            "Avattu"
