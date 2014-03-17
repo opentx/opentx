@@ -1,4 +1,20 @@
-﻿using System;
+﻿/* This file is part of OpenTX Speaker.
+ * OpenTX Speaker is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * OpenTX Speaker is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with Foobar.  If not, see <http://www.gnu.org/licenses/>. 
+ *
+ * Copyright 2014 Kjell Kernen  */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -25,7 +41,6 @@ namespace OpenTXspeak
             AssemblyProductAttribute product = (AssemblyProductAttribute)app.GetCustomAttributes(typeof(AssemblyProductAttribute), false)[0];
             AssemblyCopyrightAttribute copyright = (AssemblyCopyrightAttribute)app.GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false)[0];
             AssemblyCompanyAttribute company = (AssemblyCompanyAttribute)app.GetCustomAttributes(typeof(AssemblyCompanyAttribute), false)[0];
-            AssemblyDescriptionAttribute description = (AssemblyDescriptionAttribute)app.GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false)[0];
             Version version = app.GetName().Version;
            
             this.Title = String.Format("About {0}", title.Title);
@@ -33,7 +48,6 @@ namespace OpenTXspeak
             this.lblVersion.Content = String.Format("Version {0}", version.ToString());
             this.lblCopyright.Content = copyright.Copyright.ToString();
             this.lblCompanyName.Content = company.Company;
-            this.description.Text = description.Description;
         }
     }
 }

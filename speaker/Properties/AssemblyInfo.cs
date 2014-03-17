@@ -1,4 +1,20 @@
-﻿using System.Reflection;
+﻿/* This file is part of OpenTX Speaker.
+* OpenTX Speaker is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+
+* OpenTX Speaker is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+
+* You should have received a copy of the GNU General Public License
+* along with Foobar.  If not, see <http://www.gnu.org/licenses/>. 
+*
+* Copyright 2014 Kjell Kernen  */
+
+using System.Reflection;
 using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -8,11 +24,11 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("OpenTX Speaker")]
-[assembly: AssemblyDescription("This application is used to edit OpenTX voice strings and generate audio files for use in the FrSky Taranis radio.")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Kjell Kernen")]
+[assembly: AssemblyCompany("OpenTX Team")]
 [assembly: AssemblyProduct("OpenTX Speaker")]
-[assembly: AssemblyCopyright("Copyright © The OpenTX Team 2014")]
+[assembly: AssemblyCopyright("Copyright © Kjell Kernen 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -51,5 +67,5 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.1")]
-[assembly: AssemblyFileVersion("1.1")]
+[assembly: AssemblyVersion("1.2")]
+[assembly: AssemblyFileVersion("1.2")]
