@@ -18,6 +18,7 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
   hexType(Type)
 {
   ui->setupUi(this);
+  setWindowIcon(CompanionIcon("write_flash.png"));
 
   if(!g.profile[g.id()].splashFile().isEmpty()){
     imageSource=PROFILE;
