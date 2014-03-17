@@ -31,11 +31,6 @@
 
 #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include/stm32f2xx.h"
 
-#define HID_IN_EP                    0x81
-#define HID_OUT_EP                   0x01
-
-#define HID_IN_PACKET                4
-#define HID_OUT_PACKET               4
 
 /* USB Core and PHY interface configuration.
    Tip: To avoid modifying these defines each time you need to change the USB

@@ -470,6 +470,36 @@ static uint32_t DCD_HandleInEP_ISR(USB_OTG_CORE_HANDLE *pdev)
       }       
       if (diepint.b.emptyintr)
       {
+        /*===============ADDED SECTION ==============================*/
+        /*  
+          This only applies to INTERRUPT transfer mode.
+          
+          diepint.b.emptyintr interrupt can't be reset by writing 1 to 
+          DIEPINT register. According to reference manual, this bit
+          is read-only.
+          
+          The CLEAR_IN_EP_INTR(epnum, emptyintr) does not work!
+          
+          The only way to stop this interrupt is to disable it using
+          mask register DIEPEMPMSK.
+          
+          Original code gets here, is unsuccessful at interrupt flag reset
+          and when interrupt handler returns, another one is fired again, 
+          robbing CPU time, which is then spent only in interrupt handlers
+          (this one and all other that have higher priority)
+
+          This only happens in HID mode (when interrupt in endpoint is
+          used) and when host is not actively polling device (us) for
+          update. This is situation on Linux when no program is using
+          joystick. The kernel/joystick driver stops polling device.
+
+        */
+        if ( pdev->dev.in_ep[epnum].type == USB_OTG_EP_INT ) {
+
+          fifoemptymsk = 0x1 << epnum;
+          USB_OTG_MODIFY_REG32(&pdev->regs.DREGS->DIEPEMPMSK, fifoemptymsk, 0);
+        }
+        /*===============END OF ADDED SECTION ==============================*/
         
         DCD_WriteEmptyTxFifo(pdev , epnum);
         

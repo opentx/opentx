@@ -47,6 +47,7 @@
 #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include/stm32f2xx.h"
 extern "C" {
 #include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/inc/usbd_msc_core.h"
+#include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/hid/inc/usbd_hid_core.h"
 #include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/inc/usbd_usr.h"
 #include "usbd_desc.h"
 #include "usb_conf.h"
@@ -171,7 +172,9 @@ void pwrOff();
 #define usbBootloader()
 void usbInit(void);
 void usbStart(void);
+void usbStop();
 bool usbPlugged(void);
+void usb_joystick_update(void);
 
 // EEPROM driver
 #if !defined(SIMU)

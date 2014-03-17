@@ -45,6 +45,11 @@
 #define MSC_MAX_PACKET                64
 
 #define MSC_MEDIA_PACKET             4096
+#define HID_IN_EP                    0x81
+#define HID_OUT_EP                   0x01
+
+#define HID_IN_PACKET                9
+#define HID_OUT_PACKET               9
 
 
 #endif //__USBD_CONF__H__
