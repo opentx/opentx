@@ -1973,8 +1973,8 @@ uint8_t getGVarFlightPhase(uint8_t phase, uint8_t idx)
 
 int16_t getGVarValue(int16_t x, int16_t min, int16_t max, int8_t phase)
 {
-  if (GV_IS_GV_VALUE(x,min,max)) {
-    int8_t idx = GV_INDEX_CALCULATION(x,max);
+  if (GV_IS_GV_VALUE(x, min, max)) {
+    int8_t idx = GV_INDEX_CALCULATION(x, max);
     int8_t mul = 1;
 
     if (idx < 0) {
@@ -1984,7 +1984,6 @@ int16_t getGVarValue(int16_t x, int16_t min, int16_t max, int8_t phase)
 
     x = GVAR_VALUE(idx, getGVarFlightPhase(phase, idx)) * mul;
   }
-
   return limit(min, x, max);
 }
 
