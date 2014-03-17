@@ -699,8 +699,6 @@ int main()
   for (;;) {
     wdt_reset();
 
-    uint8_t event = getEvent();
-
     if (Tenms) {
       wdt_reset();  // Retrigger hardware watchdog
 
@@ -717,6 +715,8 @@ int main()
       lcd_clear();
       lcd_putsLeft(0, BOOTLOADER_TITLE);
       lcd_hline(0, 10, LCD_W);
+
+      uint8_t event = getEvent();
 
       if (usbPlugged()) {
         state = ST_USB;

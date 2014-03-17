@@ -1104,10 +1104,8 @@ else
 endif
 
 # build bootloader
-# TODO
-# BL_SIZE=${shell sh -c "wc -c $^ | cut -d\  -f1"}
-# if $(BL_SIZE)>32768 then $(error Bootloader doesn't fit in 32k flash); fi
 bootloader.lbm: bootloader/bootloader_ramBoot.bin
+	test -z "$$(find $^ -size +32k)"
 	$(BIN2LBM) $^ $@ 
 
 .PHONY bootloader/bootloader_ramBoot.bin:

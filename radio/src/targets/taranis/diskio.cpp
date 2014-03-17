@@ -950,7 +950,9 @@ FIL g_telemetryFile = {0};
 #if defined(BOOT)
 void sdInit(void)
 {
- f_mount(0, &g_FATFS_Obj);
+  if (f_mount(0, &g_FATFS_Obj) == FR_OK) {
+    f_chdir("/");
+  }
 }
 #else
 // TODO shouldn't be there!
