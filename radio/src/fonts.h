@@ -34,30 +34,24 @@
  *
  */
 
-#ifndef audio_driver_h
-#define audio_driver_h
+#ifndef fonts_h
+#define fonts_h
 
-void audioInit( void ) ;
-void audioEnd( void ) ;
-void dacStart();
-void dacStop();
+extern const pm_uchar font_5x7[];
+extern const pm_uchar font_10x14[];
 
-extern void setSampleRate(uint32_t frequency);
+#if defined(BOLD_FONT) && (!defined(CPUM64) || defined(EXTSTD)) && !defined(BOOT)
+ #define BOLD_SPECIFIC_FONT
+ extern const pm_uchar font_5x7_B[];
+#endif
 
-extern int dacIdle;
-
-#define VOLUME_LEVEL_MAX  23
-#define VOLUME_LEVEL_DEF  12
-static const int8_t volumeScale[VOLUME_LEVEL_MAX+1] =
-{
-    0,  1,  2,  3,  5,  9,  13,  17,  22,  27,  33,  40,
-    64, 82, 96, 105, 112, 117, 120, 122, 124, 125, 126, 127
-} ;
-
-#if !defined(SIMU)
-#define setVolume(v) I2C_set_volume(volumeScale[min<uint8_t>(v, VOLUME_LEVEL_MAX)])
-#else
-#define setVolume(v)
+#if defined(CPUARM)
+extern const pm_uchar font_3x5[];
+extern const pm_uchar font_4x6[];
+extern const pm_uchar font_8x10[];
+extern const pm_uchar font_5x7_extra[];
+extern const pm_uchar font_10x14_extra[];
+extern const pm_uchar font_4x6_extra[];
 #endif
 
 #endif

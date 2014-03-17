@@ -73,9 +73,9 @@
 #define EOFS(x)  ( OFS_##x + sizeof(TR_##x) )
 
 #if LCD_W >= 212
-  #define TR(x,y) y
+  #define TR(x, y) y
 #else
-  #define TR(x,y) x
+  #define TR(x, y) x
 #endif
 
 // The non-0-terminated-strings
@@ -545,21 +545,6 @@ extern const pm_char STR_RESET_BTN[];
   extern const pm_char STR_MODELS_PATH[];
   extern const pm_char STR_MODELS_EXT[];
   #define STR_UPDATE_LIST STR_DELAYDOWN
-#endif
-
-extern const pm_uchar font_5x7[];
-extern const pm_uchar font_10x14[];
-#if !defined(CPUM64) || defined(EXTSTD)
-extern const pm_uchar font_5x7_B[];
-#endif
-
-#if defined(CPUARM)
-extern const pm_uchar font_3x5[];
-extern const pm_uchar font_4x6[];
-extern const pm_uchar font_8x10[];
-extern const pm_uchar font_5x7_extra[];
-extern const pm_uchar font_10x14_extra[];
-extern const pm_uchar font_4x6_extra[];
 #endif
 
 extern const pm_char STR_WARNING[];

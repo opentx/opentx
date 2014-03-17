@@ -34,30 +34,14 @@
  *
  */
 
-#ifndef audio_driver_h
-#define audio_driver_h
+#ifndef pwr_h
+#define pwr_h
 
-void audioInit( void ) ;
-void audioEnd( void ) ;
-void dacStart();
-void dacStop();
-
-extern void setSampleRate(uint32_t frequency);
-
-extern int dacIdle;
-
-#define VOLUME_LEVEL_MAX  23
-#define VOLUME_LEVEL_DEF  12
-static const int8_t volumeScale[VOLUME_LEVEL_MAX+1] =
-{
-    0,  1,  2,  3,  5,  9,  13,  17,  22,  27,  33,  40,
-    64, 82, 96, 105, 112, 117, 120, 122, 124, 125, 126, 127
-} ;
-
-#if !defined(SIMU)
-#define setVolume(v) I2C_set_volume(volumeScale[min<uint8_t>(v, VOLUME_LEVEL_MAX)])
-#else
-#define setVolume(v)
-#endif
+enum PowerState {
+  e_power_on,
+  e_power_trainer,
+  e_power_usb,
+  e_power_off
+};
 
 #endif
