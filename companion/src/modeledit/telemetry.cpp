@@ -291,7 +291,7 @@ TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model,
     for (int c=0; c<GetEepromInterface()->getCapability(TelemetryCustomScreensFieldsPerLine); c++) {
       fieldsCB[l][c] = new QComboBox(this);
       fieldsCB[l][c]->setProperty("index", c + (l<<8));
-      populateCustomScreenFieldCB(fieldsCB[l][c], screen.body.lines[l].source[c], (l<4), model.frsky.usrProto);
+      populateTelemetrySourceCB(fieldsCB[l][c], screen.body.lines[l].source[c], l==3, model.frsky.usrProto);
       ui->screenNumsLayout->addWidget(fieldsCB[l][c], l, c, 1, 1);
       connect(fieldsCB[l][c], SIGNAL(currentIndexChanged(int)), this, SLOT(customFieldChanged(int)));
     }
@@ -300,7 +300,7 @@ TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model,
   for (int l=0; l<4; l++) {
     barsCB[l] = new QComboBox(this);
     barsCB[l]->setProperty("index", l);
-    populateCustomScreenFieldCB(barsCB[l], screen.body.bars[l].source, false, model.frsky.usrProto);
+    populateTelemetrySourceCB(barsCB[l], screen.body.bars[l].source, false, model.frsky.usrProto);
     connect(barsCB[l], SIGNAL(currentIndexChanged(int)), this, SLOT(barSourceChanged(int)));
     ui->screenBarsLayout->addWidget(barsCB[l], l, 0, 1, 1);
 
@@ -324,6 +324,31 @@ TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model,
   }
 
   update();
+}
+
+void TelemetryCustomScreen::populateTelemetrySourceCB(QComboBox *b, unsigned int value, bool last, int hubproto)
+{
+  int telem_hub[] = {0,0,0,0,0,0,0,0,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,0,0,2,2,1,1,1,1,1,1};
+  b->clear();
+
+  b->addItem(RawSource(SOURCE_TYPE_NONE, 0).toString());
+
+  for (unsigned int i = 0; i < (last ? TELEMETRY_SOURCES_STATUS_COUNT : TELEMETRY_SOURCES_DISPLAY_COUNT); i++) {
+    b->addItem(RawSource(SOURCE_TYPE_TELEMETRY, i).toString());
+    if (!(i>=sizeof(telem_hub)/sizeof(int) || telem_hub[i]==0 || ((telem_hub[i]>=hubproto) && hubproto!=0))) {
+      QModelIndex index = b->model()->index(i, 0);
+      QVariant v(0);
+      b->model()->setData(index, v, Qt::UserRole - 1);
+    }
+  }
+
+  if (value>=sizeof(telem_hub)/sizeof(int))
+    b->setCurrentIndex(0);
+  else if (telem_hub[value]==0 || ((telem_hub[value]>=hubproto) && hubproto!=0)) {
+    b->setCurrentIndex(value);
+  }
+
+  b->setMaxVisibleItems(10);
 }
 
 TelemetryCustomScreen::~TelemetryCustomScreen()

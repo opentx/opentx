@@ -126,7 +126,9 @@ RawSourceRange RawSource::getRange(bool singleprec)
           result.max = singleprec ? 1540 : 3000;
           break;
         case TELEMETRY_SOURCE_T1:
+        case TELEMETRY_SOURCE_T1_MAX:
         case TELEMETRY_SOURCE_T2:
+        case TELEMETRY_SOURCE_T2_MAX:
           result.min = -30;
           result.max = 225;
           break;
@@ -150,17 +152,21 @@ RawSourceRange RawSource::getRange(bool singleprec)
           result.max = singleprec ? 2040 : 10000;
           break;
         case TELEMETRY_SOURCE_CELL:
+        case TELEMETRY_SOURCE_CELL_MIN:
           result.step = singleprec ? 0.02 : 0.01;
           result.max = 5.1;
           result.decimals = 2;
           break;
         case TELEMETRY_SOURCE_CELLS_SUM:
+        case TELEMETRY_SOURCE_CELLS_MIN:
         case TELEMETRY_SOURCE_VFAS:
+        case TELEMETRY_SOURCE_VFAS_MIN:
           result.step = 0.1;
           result.max = 25.5;
           result.decimals = 1;
           break;
         case TELEMETRY_SOURCE_CURRENT:
+        case TELEMETRY_SOURCE_CURRENT_MAX:
           result.step = singleprec ? 0.5 : 0.1;
           result.max = singleprec ? 127.5 : 200.0;
           result.decimals = 1;
@@ -170,6 +176,7 @@ RawSourceRange RawSource::getRange(bool singleprec)
           result.max = singleprec ? 5100 : 10000;
           break;
         case TELEMETRY_SOURCE_POWER:
+        case TELEMETRY_SOURCE_POWER_MAX:
           result.step = singleprec ? 5 : 1;
           result.max = singleprec ? 1275 : 2000;
           break;
@@ -221,12 +228,12 @@ QString RawSource::toString()
     QObject::tr("A1"), QObject::tr("A2"), QObject::tr("A3"), QObject::tr("A4"),
     QObject::tr("Alt"), QObject::tr("Rpm"), QObject::tr("Fuel"), QObject::tr("T1"), QObject::tr("T2"),
     QObject::tr("Speed"), QObject::tr("Dist"), QObject::tr("GPS Alt"),
-    QObject::tr("Cell"), QObject::tr("Cels"), QObject::tr("Vfas"), QObject::tr("Curr"), QObject::tr("Cnsp"), QObject::tr("Powr"),
+    QObject::tr("Cell"), QObject::tr("Cells"), QObject::tr("Vfas"), QObject::tr("Curr"), QObject::tr("Cnsp"), QObject::tr("Powr"),
     QObject::tr("AccX"), QObject::tr("AccY"), QObject::tr("AccZ"),
     QObject::tr("HDG "), QObject::tr("VSpd"), QObject::tr("ASpd"), QObject::tr("dTE"),
     QObject::tr("A1-"),  QObject::tr("A2-"), QObject::tr("A3-"),  QObject::tr("A4-"),
-    QObject::tr("Alt-"), QObject::tr("Alt+"), QObject::tr("Rpm+"), QObject::tr("T1+"), QObject::tr("T2+"), QObject::tr("Spd+"), QObject::tr("Dst+"),
-    QObject::tr("Cel-"), QObject::tr("Cels-"), QObject::tr("Vfs-"), QObject::tr("Cur+"), QObject::tr("Pwr+"),
+    QObject::tr("Alt-"), QObject::tr("Alt+"), QObject::tr("Rpm+"), QObject::tr("T1+"), QObject::tr("T2+"), QObject::tr("Speed+"), QObject::tr("Dist+"),
+    QObject::tr("Cell-"), QObject::tr("Cells-"), QObject::tr("Vfas-"), QObject::tr("Curr+"), QObject::tr("Powr+"),
     QObject::tr("ACC"), QObject::tr("Time"),
   };
 

@@ -88,7 +88,6 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr=
 
 void populatePhasesCB(QComboBox *b, int value);
 void populateGvarUseCB(QComboBox *b, unsigned int phase);
-void populateCustomScreenFieldCB(QComboBox *b, unsigned int value, bool last, int hubproto);
 QString getProtocolStr(const int proto);
 QString getPhasesStr(unsigned int phases, ModelData & model);
 
