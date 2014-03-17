@@ -2105,6 +2105,8 @@ getvalue_t convert8bitsTelemValue(uint8_t channel, ls_telemetry_value_t value)
       break;
     case TELEM_CURRENT:
     case TELEM_POWER:
+    case TELEM_MAX_CURRENT:
+    case TELEM_MAX_POWER:
       result = value * 5;
       break;
     case TELEM_CONSUMPTION:
