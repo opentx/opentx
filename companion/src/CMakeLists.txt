@@ -36,7 +36,7 @@ ELSE()
     MESSAGE( "SDL not found! Joysticks support will be disabled" )
 ENDIF()
 
-FIND_PACKAGE(Qt4 4.8.5 REQUIRED)
+FIND_PACKAGE(Qt4 4.8.4 REQUIRED)
 SET( QT_USE_QTNETWORK True )
 SET( QT_USE_QTXML True )
 INCLUDE( ${QT_USE_FILE} )
