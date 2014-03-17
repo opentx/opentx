@@ -115,14 +115,13 @@ int main(int argc, char *argv[])
   
   if (msgBox.clickedButton() == exitButton)
     return 0;
-
-  if (msgBox.clickedButton() == taranisButton) {
+  else if (msgBox.clickedButton() == taranisButton) {
     current_firmware_variant = GetFirmwareVariant("opentx-taranis-en");
     eepromFileName = "eeprom-taranis.bin";
     dialog = new SimulatorDialogTaranis();
   }
   else {
-  	eepromFileName = "eeprom-9x.bin";
+    eepromFileName = "eeprom-9x.bin";
     dialog = new SimulatorDialog9X();
   }
 
