@@ -1012,9 +1012,15 @@ class InputField: public TransformedField {
 
     virtual void afterImport()
     {
-      if (IS_TARANIS(board) && version < 216) {
-        if (expo.mode) {
-          expo.srcRaw = RawSource(SOURCE_TYPE_STICK, expo.chn);
+      if (IS_TARANIS(board)) {
+        if (version < 216) {
+          if (expo.mode) {
+            expo.srcRaw = RawSource(SOURCE_TYPE_STICK, expo.chn);
+          }
+        }
+        else {
+          if (expo.srcRaw.type != SOURCE_TYPE_NONE)
+            expo.mode = 3;
         }
       }
 
