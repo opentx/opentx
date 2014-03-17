@@ -69,7 +69,7 @@
 #define TR_UART3MODES          "AUS\0           ""S-Port Data Out\0""Debug\0         "
 
 #define LEN_POTTYPES           "\017"
-#define TR_POTTYPES            "Poti\0          ""Stufen-Schalter "
+#define TR_POTTYPES            "None\0          ""Poti\0          ""Stufen-Schalter "
 
 #define LEN_DATETIME           "\005"
 #define TR_DATETIME            "DATE:""ZEIT:"
@@ -447,8 +447,8 @@
 #define TR_ELIMITS             TR("Erw.Limit","Erweit. Limits")
 #define TR_ETRIMS              TR("Erw.Trims","Erweit. Trimmung")
 #define TR_TRIMINC             TR("Trim Schr.","Trimm Schritte")
-#define TR_TTRACE              TR("Gasquelle","Gas Verfolgung")
-#define TR_TTRIM               TR("Gastrim","Gas Trimmung")
+#define TR_TTRACE              TR("Gasquelle", INDENT "Gas Verfolgung")
+#define TR_TTRIM               TR("Gastrim", INDENT "Gas Trimmung")
 #define TR_BEEPCTR             TR("Mitt.Piep","Mittelst. Pieps")
 #define TR_PROTO               TR(INDENT"Proto.",INDENT"Protokoll")
 #define TR_PPMFRAME            "PPM Einst."
@@ -511,7 +511,8 @@
 #define TR_MEMORYWARNING       INDENT"Speicher voll"
 #define TR_ALARMWARNING        INDENT"Ton aus"
 #define TR_RENAVIG             "Drehgeb. Navig."
-#define TR_THROTTLEREVERSE     TR("Gas invers", "Vollgas hinten?") //Änderung wg TH9x, Taranis
+#define TR_THROTTLE_LABEL      "Gas"
+#define TR_THROTTLEREVERSE     TR("Gas invers", INDENT "Vollgas hinten?") //Änderung wg TH9x, Taranis
 #define TR_MINUTEBEEP          TR(INDENT"Minute",INDENT"Jede Minute")
 #define TR_BEEPCOUNTDOWN       INDENT"Countdown"
 #define TR_PERSISTENT          TR(INDENT"M-Zeit",INDENT"Modell Zeit")
@@ -520,9 +521,9 @@
 #define TR_BLONBRIGHTNESS      INDENT"An Helligkeit"
 #define TR_BLOFFBRIGHTNESS     INDENT"Aus Helligkeit"
 #define TR_SPLASHSCREEN        "Startbild"
-#define TR_THROTTLEWARNING     "Gas Alarm"
-#define TR_SWITCHWARNING       TR("Sch. Alarm","Schalter Alarm")
-#define TR_POTWARNING          TR("Pot Warn.","Poti Warnung")
+#define TR_THROTTLEWARNING     TR("Gas Alarm", INDENT "Gas Alarm")
+#define TR_SWITCHWARNING       TR("Sch. Alarm", INDENT "Schalter Alarm")
+#define TR_POTWARNING          TR("Pot Warn.", INDENT "Poti Warnung")
 #define TR_TIMEZONE            TR("Zeitzone","GPS Zeit Zone")
 #define TR_RXCHANNELORD        TR("Kanalanordnung","Kanalvoreinstellung")
 #define TR_SLAVE               "Schüler PPM1-8 als Ausgang"
@@ -717,7 +718,8 @@
 #define TR_LOWALARM            INDENT "Low Alarm"
 #define TR_CRITICALALARM       INDENT "Kritisch Alarm"
 #define TR_PERSISTENT_MAH      INDENT "Speichern mAh"
-#define TR_CHECKLIST           "Display Checklist"
+#define TR_PREFLIGHT           "Preflight Checks"
+#define TR_CHECKLIST           INDENT "Display Checklist"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 #define TR_UART3MODE           "Serial Port"
 

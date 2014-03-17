@@ -307,7 +307,9 @@
 #define STM32_SD_DISK_IOCTRL_FORCE      0
 
 //DMA
-#define STM32_SD_USE_DMA //Enable the DMA for SD 
+#if !defined(BOOT)
+#define STM32_SD_USE_DMA //Enable the DMA for SD
+#endif
 
 #ifdef STM32_SD_USE_DMA
 #define DMA_Channel_SPI_SD_RX    	DMA1_Stream3

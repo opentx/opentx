@@ -95,31 +95,6 @@ void populateRotEncCB(QComboBox *b, int value, int renumber)
   b->setCurrentIndex(value);
 }
 
-void populateCustomScreenFieldCB(QComboBox *b, unsigned int value, bool last=false, int hubproto=0)
-{
-  int telem_hub[] = {0,0,0,0,0,0,0,0,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,0,0,2,2,1,1,1,1,1,1};
-  b->clear();
-
-  b->addItem(RawSource(SOURCE_TYPE_NONE, 0).toString());
-
-  for (unsigned int i = 0; i <= (last ? TELEMETRY_SOURCES_DISPLAY_COUNT : TELEMETRY_SOURCES_STATUS_COUNT); i++) {
-    b->addItem(RawSource(SOURCE_TYPE_TELEMETRY, i).toString());
-    if (!(i>=sizeof(telem_hub)/sizeof(int) || telem_hub[i]==0 || ((telem_hub[i]>=hubproto) && hubproto!=0))) {
-      QModelIndex index = b->model()->index(i, 0);
-      QVariant v(0);
-      b->model()->setData(index, v, Qt::UserRole - 1);
-    }
-  }
-
-  if (value>=sizeof(telem_hub)/sizeof(int))
-    b->setCurrentIndex(0);
-  else if (telem_hub[value]==0 || ((telem_hub[value]>=hubproto) && hubproto!=0)) {
-    b->setCurrentIndex(value);
-  }
-
-  b->setMaxVisibleItems(10);
-}
-
 QString getProtocolStr(const int proto)
 {
   static const char *strings[] = { "OFF",

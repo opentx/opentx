@@ -3,11 +3,12 @@
 #include "eeprominterface.h"
 #include "helpers.h"
 
-ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, int stickMode) :
+ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, int stickMode, char * inputName) :
     QDialog(parent),
     ui(new Ui::ExpoDialog),
     model(model),
-    ed(expoData)
+    ed(expoData),
+    inputName(inputName)
 {
   ui->setupUi(this);
   QLabel * lb_fp[] = {ui->lb_FP0,ui->lb_FP1,ui->lb_FP2,ui->lb_FP3,ui->lb_FP4,ui->lb_FP5,ui->lb_FP6,ui->lb_FP7,ui->lb_FP8 };
@@ -76,7 +77,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, i
   }
 
   ui->inputName->setValidator(new QRegExpValidator(rx, this));
-  ui->inputName->setText(model.inputNames[ed->chn]);
+  ui->inputName->setText(inputName);
 
   ui->lineName->setValidator(new QRegExpValidator(rx, this));
   ui->lineName->setText(ed->name);
@@ -139,7 +140,7 @@ void ExpoDialog::valuesChanged()
     ed->mode   = ui->sideCB->currentIndex() + 1;
 
     strcpy(ed->name, ui->lineName->text().toAscii().data());
-    strcpy(model.inputNames[ed->chn], ui->inputName->text().toAscii().data());
+    strcpy(inputName, ui->inputName->text().toAscii().data());
 
     ed->phases=0;
     for (int i=8; i>=0 ; i--) {

@@ -34,26 +34,8 @@
  *
  */
 
-#include "../../opentx.h"
-
-void pwrOff()
-{
-  GPIO_ResetBits(GPIOPWR,PIN_MCU_PWR);
-}
-
-uint32_t pwrCheck()
-{
-#if defined(SIMU)
-  return e_power_on;
-#else
-  if (GPIO_ReadInputDataBit(GPIOPWR, PIN_PWR_STATUS) == Bit_RESET)
-    return e_power_on;
-  else if (usbPlugged())
-    return e_power_usb;
-  else
-    return e_power_off;
-#endif
-}
+#include "board_taranis.h"
+#include "../../pwr.h"
 
 void pwrInit()
 {
@@ -101,5 +83,25 @@ void pwrInit()
 #endif
 
   // Soft power ON
-  GPIO_SetBits(GPIOPWR,PIN_MCU_PWR);
+  GPIO_SetBits(GPIOPWR, PIN_MCU_PWR);
+}
+
+void pwrOff()
+{
+  GPIO_ResetBits(GPIOPWR, PIN_MCU_PWR);
+}
+
+// TODO enums should be UPPERCASE
+uint32_t pwrCheck()
+{
+#if defined(SIMU)
+  return e_power_on;
+#else
+  if (GPIO_ReadInputDataBit(GPIOPWR, PIN_PWR_STATUS) == Bit_RESET)
+    return e_power_on;
+  else if (usbPlugged())
+    return e_power_usb;
+  else
+    return e_power_off;
+#endif
 }

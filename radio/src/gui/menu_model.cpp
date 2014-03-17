@@ -870,13 +870,13 @@ enum menuModelSetupItems {
   ITEM_MODEL_EXTENDED_LIMITS,
   ITEM_MODEL_EXTENDED_TRIMS,
   ITEM_MODEL_TRIM_INC,
+  CASE_PCBTARANIS(ITEM_MODEL_THROTTLE_LABEL)
   ITEM_MODEL_THROTTLE_REVERSED,
   ITEM_MODEL_THROTTLE_TRACE,
   ITEM_MODEL_THROTTLE_TRIM,
+  CASE_PCBTARANIS(ITEM_MODEL_PREFLIGHT_LABEL)
+  CASE_PCBTARANIS(ITEM_MODEL_CHECKLIST_DISPLAY)
   ITEM_MODEL_THROTTLE_WARNING,
-#if defined(PCBTARANIS)
-  ITEM_MODEL_CHECKLIST_DISPLAY,
-#endif
   ITEM_MODEL_SWITCHES_WARNING,
   CASE_PCBTARANIS(ITEM_MODEL_POT_WARNING)
   ITEM_MODEL_BEEP_CENTER,
@@ -964,7 +964,7 @@ void menuModelSetup(uint8_t event)
   #define POT_WARN_ITEMS()           ((g_model.nPotsToWarn >> 6) ? (uint8_t)NUM_POTS : (uint8_t)0)
 
   bool CURSOR_ON_CELL = (m_posHorz >= 0);
-  MENU_TAB({ 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 1, 0, 0, 0, 0, 0, CASE_PCBTARANIS(0) 7, POT_WARN_ITEMS(), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), LABEL(InternalModule), 0, IF_PORT1_ON(1), IF_PORT1_ON(IS_D8_RX(0) ? (uint8_t)1 : (uint8_t)2), IF_PORT1_ON(FAILSAFE_ROWS(0)), LABEL(ExternalModule), (g_model.externalModule==MODULE_TYPE_XJT || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0, PORT2_CHANNELS_ROWS(), (IS_MODULE_XJT(1) && IS_D8_RX(1)) ? (uint8_t)1 : (IS_MODULE_PPM(1) || IS_MODULE_XJT(1) || IS_MODULE_DSM2(1)) ? (uint8_t)2 : HIDDEN_ROW, IF_PORT2_XJT(FAILSAFE_ROWS(1)), LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)});
+  MENU_TAB({ 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 1, 0,CASE_PCBTARANIS(LABEL(Throttle)) 0, 0, 0,CASE_PCBTARANIS(LABEL(PreflightCheck)) CASE_PCBTARANIS(0) 0, 7, POT_WARN_ITEMS(), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), LABEL(InternalModule), 0, IF_PORT1_ON(1), IF_PORT1_ON(IS_D8_RX(0) ? (uint8_t)1 : (uint8_t)2), IF_PORT1_ON(FAILSAFE_ROWS(0)), LABEL(ExternalModule), (g_model.externalModule==MODULE_TYPE_XJT || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0, PORT2_CHANNELS_ROWS(), (IS_MODULE_XJT(1) && IS_D8_RX(1)) ? (uint8_t)1 : (IS_MODULE_PPM(1) || IS_MODULE_XJT(1) || IS_MODULE_DSM2(1)) ? (uint8_t)2 : HIDDEN_ROW, IF_PORT2_XJT(FAILSAFE_ROWS(1)), LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)});
 #elif defined(CPUM64)
   #define CURSOR_ON_CELL             (true)
   #define MODEL_SETUP_MAX_LINES      ((IS_PPM_PROTOCOL(protocol)||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 1+ITEM_MODEL_SETUP_MAX : ITEM_MODEL_SETUP_MAX)
@@ -1121,6 +1121,12 @@ void menuModelSetup(uint8_t event)
         g_model.trimInc = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_TRIMINC, STR_VTRIMINC, g_model.trimInc, -2, 2, attr, event);
         break;
 
+#if defined(PCBTARANIS)
+      case ITEM_MODEL_THROTTLE_LABEL:
+        lcd_putsLeft(y, STR_THROTTLE_LABEL);
+        break;
+#endif
+
       case ITEM_MODEL_THROTTLE_REVERSED:
         g_model.throttleReversed = onoffMenuItem(g_model.throttleReversed, MODEL_SETUP_2ND_COLUMN, y, STR_THROTTLEREVERSE, attr, event ) ;
         break;
@@ -1142,16 +1148,20 @@ void menuModelSetup(uint8_t event)
         g_model.thrTrim = onoffMenuItem(g_model.thrTrim, MODEL_SETUP_2ND_COLUMN, y, STR_TTRIM, attr, event);
         break;
 
-      case ITEM_MODEL_THROTTLE_WARNING:
-        g_model.disableThrottleWarning = !onoffMenuItem(!g_model.disableThrottleWarning, MODEL_SETUP_2ND_COLUMN, y, STR_THROTTLEWARNING, attr, event);
-        break;
-        
 #if defined(PCBTARANIS)
+      case ITEM_MODEL_PREFLIGHT_LABEL:
+        lcd_putsLeft(y, STR_PREFLIGHT);
+        break;
+
       case ITEM_MODEL_CHECKLIST_DISPLAY:
         g_model.displayText = onoffMenuItem(g_model.displayText, MODEL_SETUP_2ND_COLUMN, y, STR_CHECKLIST, attr, event);
         break;
 #endif
 
+      case ITEM_MODEL_THROTTLE_WARNING:
+        g_model.disableThrottleWarning = !onoffMenuItem(!g_model.disableThrottleWarning, MODEL_SETUP_2ND_COLUMN, y, STR_THROTTLEWARNING, attr, event);
+        break;
+        
       case ITEM_MODEL_SWITCHES_WARNING:
       {
         lcd_putsLeft(y, STR_SWITCHWARNING);
@@ -1201,9 +1211,9 @@ void menuModelSetup(uint8_t event)
           uint8_t swactive = !(g_model.nSwToWarn & 1 << i);
 #if defined(PCBTARANIS)
           c = "\300-\301"[states & 0x03];
-          lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+i*(2*FW), y, 'A'+i, line && (m_posHorz == i) ? INVERS : 0);
-          if (swactive) lcd_putc(MODEL_SETUP_2ND_COLUMN+i*(2*FW)+FWNUM, y, c);
-          lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+((NUM_SWITCHES-1)*2*FW+2), y, PSTR("<]"), (m_posHorz == NUM_SWITCHES-1 && !s_noHi) ? line : 0); 
+          lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+i*(2*FW+1), y, 'A'+i, line && (m_posHorz == i) ? INVERS : 0);
+          if (swactive) lcd_putc(MODEL_SETUP_2ND_COLUMN+i*(2*FW+1)+FWNUM+1, y, c);
+          lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+((NUM_SWITCHES-1)*2*FW+8), y, PSTR("<]"), (m_posHorz == NUM_SWITCHES-1 && !s_noHi) ? line : 0); 
           states >>= 2;
 #else
           attr = 0;

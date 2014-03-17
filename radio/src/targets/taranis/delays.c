@@ -34,7 +34,7 @@
  *
  */
 
-#include "../../opentx.h"
+#include "board_taranis.h"
 
 void delaysInit(void)
 {

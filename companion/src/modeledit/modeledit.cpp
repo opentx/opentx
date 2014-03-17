@@ -22,6 +22,7 @@ ModelEdit::ModelEdit(RadioData & radioData, int modelId, bool openWizard, bool i
   generalSettings(radioData.generalSettings)
 {
   ui->setupUi(this);
+  setWindowIcon(CompanionIcon("edit.png"));
   restoreGeometry(g.modelEditGeo());  
   ui->pushButton->setIcon(CompanionIcon("simulate.png"));
   addTab(new Setup(this, model), tr("Setup"));

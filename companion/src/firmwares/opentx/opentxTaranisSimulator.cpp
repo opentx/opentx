@@ -73,7 +73,7 @@ inline int geteepromsize() {
 #include "radio/src/protocols/ppm_arm.cpp"
 #include "radio/src/protocols/pxx_arm.cpp"
 #include "radio/src/protocols/dsm2_arm.cpp"
-#include "radio/src/targets/taranis/pwr_driver.cpp"
+#include "radio/src/targets/taranis/pwr_driver.c"
 #include "radio/src/eeprom_common.cpp"
 #include "radio/src/eeprom_conversions.cpp"
 #include "radio/src/eeprom_rlc.cpp"
@@ -106,6 +106,7 @@ inline int geteepromsize() {
 #define SDCARD
 #include "radio/src/templates.cpp"
 #include "radio/src/translations.cpp"
+#include "radio/src/fonts.cpp"
 #include "radio/src/telemetry/frsky_sport.cpp"
 #include "radio/src/targets/taranis/audio_driver.cpp"
 #include "radio/src/audio_arm.cpp"

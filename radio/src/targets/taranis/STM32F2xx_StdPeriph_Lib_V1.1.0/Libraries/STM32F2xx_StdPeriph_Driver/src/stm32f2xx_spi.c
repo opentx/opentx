@@ -113,8 +113,8 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f2xx_spi.h"
-#include "stm32f2xx_rcc.h"
+#include "../inc/stm32f2xx_spi.h"
+#include "../inc/stm32f2xx_rcc.h"
 
 /** @addtogroup STM32F2xx_StdPeriph_Driver
   * @{

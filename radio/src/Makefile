@@ -266,11 +266,16 @@ LUA = NO
 # Values = NO, READONLY, NOMENUS 
 MENUS_LOCK == NO
 
+# Include bootloader, for now only for Taranis
+# Values = YES, NO
+BOOTLOADER = YES
+
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
 SHELL = sh
 IMG2LBM = -python ../util/img2lbm.py
+BIN2LBM = -python ../util/bin2lbm.py
 TRANSLATE = -python ../util/translate.py
 VERSION = 1.99
 
@@ -281,7 +286,7 @@ EXTRAINCDIRS =
 
 # MCU name
 ifneq ($(PCB), $(filter $(PCB), STD 9X 9XR STD128 9X128 9XR128 9X2561 9XR2561 GRUVIN9X MEGA2560 SKY9X TARANIS))
-  $(error Sorry, the PCB $(PCB) is not supported yet in openTx)
+  $(error Sorry, the PCB $(PCB) is not supported yet in OpenTX)
 endif
 
 GVARS_VARIANT   = +1 
@@ -613,7 +618,11 @@ ifeq ($(PCB), TARANIS)
   else
     CPPDEFS = -DREV4
   endif
-  LDSCRIPT = targets/taranis/stm32_flash.ld
+  ifeq ($(BOOTLOADER), YES)
+    LDSCRIPT = targets/taranis/stm32_flash_bl.ld
+  else
+    LDSCRIPT = targets/taranis/stm32_flash.ld
+  endif
   TRGT = arm-none-eabi-
   MCU  = cortex-m3
   OPT = 2
@@ -627,12 +636,13 @@ ifeq ($(PCB), TARANIS)
   EXTRAINCDIRS += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/inc 
   EXTRAINCDIRS += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/inc targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/hid/inc 
   BOARDSRC = targets/taranis/board_taranis.cpp
-  EXTRABOARDSRC += targets/taranis/lcd_driver.cpp targets/taranis/aspi.cpp targets/taranis/i2c.c
+  EXTRABOARDSRC += targets/taranis/lcd_driver.cpp targets/taranis/aspi.c targets/taranis/i2c.c targets/taranis/delays.c 
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
+  SRC += targets/taranis/pwr_driver.c targets/taranis/usb_driver.c
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp eeprom_conversions.cpp
   PULSESSRC = protocols/pulses_arm.cpp protocols/ppm_arm.cpp protocols/pxx_arm.cpp
   CPPSRC += audio_arm.cpp
-  CPPSRC += targets/taranis/pwr_driver.cpp targets/taranis/pulses_driver.cpp targets/taranis/keys_driver.cpp targets/taranis/adc_driver.cpp targets/taranis/trainer_driver.cpp targets/taranis/audio_driver.cpp targets/taranis/delays.cpp targets/taranis/uart3_driver.cpp targets/taranis/sport_driver.cpp
+  CPPSRC += targets/taranis/pulses_driver.cpp targets/taranis/keys_driver.cpp targets/taranis/adc_driver.cpp targets/taranis/trainer_driver.cpp targets/taranis/audio_driver.cpp targets/taranis/uart3_driver.cpp targets/taranis/sport_driver.cpp
   CPPSRC += bmp.cpp gui/view_channels.cpp gui/view_about.cpp gui/view_text.cpp
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/system_stm32f2xx.c
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/misc.c
@@ -697,6 +707,11 @@ ifeq ($(PCB), TARANIS)
     CPPSRC += protocols/hubsan.cpp
     CPPSRC += targets/taranis/a7105_driver.cpp
   endif
+  
+  ifeq ($(BOOTLOADER), YES)
+    CPPSRC += loadboot.cpp
+    CPPDEFS += -DBOOTLOADER
+  endif
 endif
 
 CC      = $(TRGT)gcc
@@ -728,7 +743,7 @@ else
   TTS_SRC = $(shell sh -c "if test -f $(STD_TTS_SRC); then echo $(STD_TTS_SRC); else echo translations/tts_en.cpp; fi")
 endif
 
-CPPSRC += opentx.cpp $(PULSESSRC) stamp.cpp gui/menus.cpp gui/menu_model.cpp gui/menu_general.cpp gui/view_main.cpp gui/view_statistics.cpp $(EEPROMSRC) lcd.cpp keys.cpp maths.cpp translations.cpp $(TTS_SRC)
+CPPSRC += opentx.cpp $(PULSESSRC) stamp.cpp gui/menus.cpp gui/menu_model.cpp gui/menu_general.cpp gui/view_main.cpp gui/view_statistics.cpp $(EEPROMSRC) lcd.cpp keys.cpp maths.cpp translations.cpp fonts.cpp $(TTS_SRC)
 
 # Debugging format.
 #     Native formats for AVR-GCC's -g are dwarf-2 [default] or stabs.
@@ -1082,9 +1097,20 @@ all: begin gccversion sizebefore build sizeafter end
 # Change the build target to build a HEX file or a library.
 ifeq ($(ARCH), AVR)
   build: stamp_header tra lbm allsrc.cpp elf remallsrc hex
+else ifeq ($(PCB), TARANIS)
+  build: stamp_header tra lbm bootloader.lbm allsrc.cpp elf remallsrc bin
 else
   build: stamp_header tra lbm allsrc.cpp elf remallsrc bin
 endif
+
+# build bootloader
+bootloader.lbm: bootloader/bootloader_ramBoot.bin
+	test -z "$$(find $^ -size +32k)"
+	$(BIN2LBM) $^ $@ 
+
+.PHONY bootloader/bootloader_ramBoot.bin:
+	@echo "Building bootloader..."
+	$(MAKE) -C bootloader PCB=$(PCB) PCBREV=$(PCBREV)
 
 tra: translations/en.h translations/cz.h translations/de.h translations/es.h translations/fi.h translations/fr.h translations/it.h translations/pl.h translations/pt.h translations/se.h
 lbm: fonts bitmaps/sticks.lbm
@@ -1237,7 +1263,7 @@ sizeafter:
 	@if test -f $(TARGET).elf; then echo; echo $(MSG_SIZE_AFTER); $(ELFSIZE); fi
 
 # Display compiler version information.
-gccversion :
+gccversion:
 	@$(CC) --version
 
 FOXINC=-I/usr/local/include/fox-1.6 -I/usr/include/fox-1.6 \
@@ -1277,8 +1303,7 @@ endif
 %.eep: %.elf
 	@echo
 	@echo $(MSG_EEPROM) $@
-	-$(OBJCOPY) -j .eeprom --set-section-flags=.eeprom="alloc,load" \
---change-section-lma .eeprom=0 -O $(FORMAT) $< $@
+	-$(OBJCOPY) -j .eeprom --set-section-flags=.eeprom="alloc,load" --change-section-lma .eeprom=0 -O $(FORMAT) $< $@
 
 # Create a symbol table from ELF output file.
 %.sym: %.elf
@@ -1344,6 +1369,8 @@ clean_list :
 	$(REMOVE) *.lst
 	$(REMOVE) allsrc.cpp
 	$(REMOVE) stamp-opentx.h
+	$(REMOVE) `find . -name "*.lbm"` 
+	$(MAKE) -C bootloader clean
 
 #### Install
 
