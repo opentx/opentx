@@ -183,7 +183,7 @@
 #define LEN_VFSWFUNC           "\012"
 
 #if defined(VARIO)
-  #define TR_VVARIO            "Vario     "
+  #define TR_VVARIO            "Vario\0    "
 #else
   #define TR_VVARIO            "[Vario]   "
 #endif
@@ -204,10 +204,10 @@
   #if defined(PCBSKY9X)
     #define TR_PLAY_TRACK      "Spela Spår"
   #else
-    #define TR_PLAY_TRACK      "Spela\0    "
+    #define TR_PLAY_TRACK      "Spela upp\0"
   #endif
   #define TR_PLAY_BOTH         "Spela Båda"
-  #define TR_PLAY_VALUE        "Spela Val "
+  #define TR_PLAY_VALUE        "Säg Värdet"
 #else
   #define TR_PLAY_TRACK        "[Sp. Spår]"
   #define TR_PLAY_BOTH         "[Sp. Båda]"
@@ -234,12 +234,14 @@
   #define TR_CFN_TEST
 #endif
 
+#define TR_CFN_RESERVE         "[reserve]\0"
+
 #if defined(CPUARM)
-  #define TR_VFSWFUNC          "Säkra\0    ""Trainer\0  ""Sätt Trim\0""Nollställ\0""Set \0     " TR_ADJUST_GVAR "Volym\0    " TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Belysning\0" TR_CFN_TEST
+  #define TR_VFSWFUNC          "Säkra \0   ""Trainer\0  ""Sätt Trim\0""Nollställ\0""Sätt\0     " TR_ADJUST_GVAR "Volym\0    " TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_RESERVE TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Belysning\0" TR_CFN_TEST
 #elif defined(PCBGRUVIN9X)
-  #define TR_VFSWFUNC          "Säkra\0    ""Trainer\0  ""Sätt Trim\0""Nollställ\0" TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC TR_SDCLOGS "Belysning\0" TR_CFN_TEST
+  #define TR_VFSWFUNC          "Säkra \0   ""Trainer \0 ""Sätt Trim\0""Nollställ\0" TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC TR_SDCLOGS "Belysning\0" TR_CFN_TEST
 #else
-  #define TR_VFSWFUNC          "Säkra\0    ""Trainer\0  ""Sätt Trim\0""Nollställ\0" TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC "Belysning\0" TR_CFN_TEST
+  #define TR_VFSWFUNC          "Säkra \0   ""Trainer \0 ""Sätt Trim\0""Nollställ\0" TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC "Belysning\0" TR_CFN_TEST
 #endif
 
 #define LEN_VFSWRESET          TR("\004", "\011")
@@ -390,7 +392,7 @@
   #define TR_CYC_VSRCRAW       "[C1]""[C2]""[C3]"
 #endif
 
-#define TR_VSRCRAW             "---\0""Rod\0""Höj\0""Gas\0""Ske\0" TR_POTS_VSRCRAW TR_ROTARY_ENCODER "MAX " TR_CYC_VSRCRAW "TrmR" "TrmH" "TrmG" "TrmS" TR_SW_VSRCRAW
+#define TR_VSRCRAW             "---\0""Rod\0""Hjd\0""Gas\0""Ske\0" TR_POTS_VSRCRAW TR_ROTARY_ENCODER "MAX " TR_CYC_VSRCRAW "TrmR" "TrmH" "TrmG" "TrmS" TR_SW_VSRCRAW
 
 #define LEN_VTMRMODES          "\003"
 #define TR_VTMRMODES           "Av\0""ABS""GAs""GA%""GAt"
@@ -486,7 +488,7 @@
 #define TR_DELAYUP             "Dröj Upp"
 #define TR_SLOWDOWN            "Trög Ned"
 #define TR_SLOWUP              "Trög Upp"
-#define TR_MIXER               "Mixar"
+#define TR_MIXER               "MIXAR"
 #define TR_CV                  "KU"
 #define TR_GV                  "GV"
 #define TR_ACHANNEL            "A\004kanal  "
@@ -509,8 +511,8 @@
 #define TR_MEMORYWARNING       INDENT"Lite Minne"
 #define TR_ALARMWARNING        INDENT"Ljud Av"
 #define TR_RENAVIG             "RotEnc Navig"
-#define TR_THROTTLE_LABEL      "Throttle"
-#define TR_THROTTLEREVERSE     TR("Revers.Gas", INDENT "Revers.Gas")
+#define TR_THROTTLE_LABEL      "Gas"
+#define TR_THROTTLEREVERSE     TR("Inv.Gas", INDENT "Inverterad Gas")
 #define TR_MINUTEBEEP          INDENT"Minutpip"
 #define TR_BEEPCOUNTDOWN       INDENT"Räkna ned"
 #define TR_PERSISTENT          TR("Jämt på ",INDENT"Alltid På")
@@ -521,7 +523,7 @@
 #define TR_SPLASHSCREEN        "Startbild"
 #define TR_THROTTLEWARNING     TR("Gasvarning", INDENT "Gasvarning")
 #define TR_SWITCHWARNING       TR("Bryt.varn.", INDENT "Brytarvarning")
-#define TR_POTWARNING          TR("Pot Warn.", INDENT "Pot Warning")
+#define TR_POTWARNING          TR("Rattvarn.", INDENT "Rattvarning")
 #define TR_TIMEZONE            TR("Tidszon","GPS Tidszon")
 #define TR_RXCHANNELORD        "Kanaler i RX"
 #define TR_SLAVE               "Elev"
@@ -582,7 +584,7 @@
 #define TR_MENUHELISETUP       "HELIKOPTER"
 
 #if defined(PCBTARANIS)
-  #define TR_MENUINPUTS        TR("FILTER","FILTRERAD INSIGNAL")
+  #define TR_MENUINPUTS        "INPUT"
   #define TR_MENULIMITS        "GRÄNSER"
 #elif defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...
   #define TR_MENUINPUTS        "SPAKAR" 
@@ -629,7 +631,7 @@
 #define TR_THROTTLEWARN        "GAS"
 #define TR_ALARMSWARN          "ALARM"
 #define TR_SWITCHWARN          "BRYTARE"
-#define TR_INVERT_THR          TR("Revers.Gas?", "Reversera Gasen?")
+#define TR_INVERT_THR          TR("Invert.Gas?", "Invertera Gasen?")
 #define TR_SPEAKER_VOLUME      INDENT "Volym"
 #define TR_LCD                 "LCD"
 #define TR_BRIGHTNESS          INDENT "Ljusstyrka"
@@ -699,7 +701,7 @@
 #define TR_RESET_TELEMETRY     "Nollställ Telemetri"
 #define TR_STATISTICS          "Statistik"
 #define TR_ABOUT_US            "Om Oss"
-#define TR_AND_SWITCH          "AND Brytare"
+#define TR_AND_SWITCH          "OCH Brytare"
 #define TR_CF                  "BF"
 #define TR_SPEAKER             INDENT"Högtalare"
 #define TR_BUZZER              INDENT"Summer"
@@ -716,7 +718,7 @@
 #define TR_LOWALARM            INDENT "Låg-alarm"
 #define TR_CRITICALALARM       INDENT "Kritiskt alarm"
 #define TR_PERSISTENT_MAH      INDENT "Lagra mAh"
-#define TR_PREFLIGHT           "Preflight Checks"
+#define TR_PREFLIGHT           "Startkontroller"
 #define TR_CHECKLIST           INDENT "Visa checklisa"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 #define TR_UART3MODE           "Serieporten"
@@ -803,7 +805,7 @@
 #define TR_CHR_LONG            'l'
 #define TR_CHR_TOGGLE          't'
 #define TR_CHR_HOUR            'h'
-#define TR_CHR_INPUT           'F'   // Values between A-I will work
+#define TR_CHR_INPUT           'I'   // Values between A-I will work
 
 #define TR_BEEP_VOLUME         "Volym Pip"
 #define TR_WAV_VOLUME          "Volym Wav"
