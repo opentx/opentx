@@ -11,7 +11,7 @@
 #define HAS_PERSISTENT_TIMERS(board)         (IS_ARM(board) || board == BOARD_GRUVIN9X)
 #define HAS_LARGE_LCD(board)                 IS_TARANIS(board)
 #define MAX_VIEWS(board)                     (HAS_LARGE_LCD(board) ? 2 : 256)
-#define MAX_POTS(board, version)             (IS_TARANIS(board) ? (version>=216 ? 5 : 4) : 3)
+#define MAX_POTS(board)                      (IS_TARANIS(board) ? 5 : 3)
 #define MAX_SWITCHES(board)                  (IS_TARANIS(board) ? 8 : 7)
 #define MAX_SWITCHES_POSITION(board)         (IS_TARANIS(board) ? 22 : 9)
 #define MAX_ROTARY_ENCODERS(board)           (board==BOARD_GRUVIN9X ? 2 : (board==BOARD_SKY9X ? 1 : 0))
@@ -172,8 +172,11 @@ class SourcesConversionTable: public ConversionTable {
         }
       }
 
-      for (int i=0; i<4+MAX_POTS(board, version); i++)
+      for (int i=0; i<4+MAX_POTS(board); i++) {
+        if (IS_TARANIS(board) && version < 216 && i==6)
+          continue;
         addConversion(RawSource(SOURCE_TYPE_STICK, i), val++);
+      }
 
       for (int i=0; i<MAX_ROTARY_ENCODERS(board); i++)
         addConversion(RawSource(SOURCE_TYPE_ROTARY_ENCODER, 0), val++);
@@ -2435,7 +2438,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
   generalData(generalData),
   board(board),
   version(version),
-  inputsCount(4 + MAX_POTS(board, version))
+  inputsCount(4 + MAX_POTS(board))
 {
   generalData.version = version;
   generalData.variant = variant;
@@ -2452,12 +2455,18 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
     }
   }
   else {
-    for (int i=0; i<inputsCount; i++)
-      internalField.Append(new SignedField<16>(generalData.calibMid[i]));
-    for (int i=0; i<inputsCount; i++)
-      internalField.Append(new SignedField<16>(generalData.calibSpanNeg[i]));
-    for (int i=0; i<inputsCount; i++)
-      internalField.Append(new SignedField<16>(generalData.calibSpanPos[i]));
+    for (int i=0; i<inputsCount; i++) {
+      if (!IS_TARANIS(board) || i!=6)
+        internalField.Append(new SignedField<16>(generalData.calibMid[i]));
+    }
+    for (int i=0; i<inputsCount; i++) {
+      if (!IS_TARANIS(board) || i!=6)
+        internalField.Append(new SignedField<16>(generalData.calibSpanNeg[i]));
+    }
+    for (int i=0; i<inputsCount; i++) {
+      if (!IS_TARANIS(board) || i!=6)
+        internalField.Append(new SignedField<16>(generalData.calibSpanPos[i]));
+    }
   }
 
   internalField.Append(new UnsignedField<16>(chkSum));
