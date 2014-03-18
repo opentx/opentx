@@ -2,6 +2,7 @@
 #include "ui_generaledit.h"
 #include "helpers.h"
 #include "appdata.h"
+#include <QDateTime>
 #include <QtGui>
 
 #define BIT_WARN_THR     ( 0x01 )
@@ -1356,6 +1357,9 @@ void GeneralEdit::on_calstore_PB_clicked()
     g.profile[profile_id].haptic( QString("%1%2%3").arg(((uint8_t)g_eeGeneral.hapticMode), 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.hapticStrength, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.hapticLength, 2, 16, QChar('0')));
     g.profile[profile_id].speaker( QString("%1%2%3").arg((uint8_t)g_eeGeneral.speakerMode, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.speakerPitch, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.speakerVolume, 2, 16, QChar('0')));
     g.profile[profile_id].countryCode( QString("%1%2%3").arg((uint8_t)g_eeGeneral.countryCode, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.imperial, 2, 16, QChar('0')).arg(g_eeGeneral.ttsLanguage));
+
+    QDateTime dateTime = QDateTime::currentDateTime();
+    g.profile[profile_id].timeStamp(dateTime.toString("yyyy-MM-dd hh:mm"));
     QMessageBox::information(this, "Companion", tr("Calibration and HW parameters saved."));
   }
 }
