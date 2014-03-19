@@ -73,7 +73,6 @@ inline int geteepromsize() {
 #include "radio/src/protocols/ppm_arm.cpp"
 #include "radio/src/protocols/pxx_arm.cpp"
 #include "radio/src/protocols/dsm2_arm.cpp"
-#include "radio/src/targets/taranis/pwr_driver.c"
 #include "radio/src/eeprom_common.cpp"
 #include "radio/src/eeprom_conversions.cpp"
 #include "radio/src/eeprom_rlc.cpp"

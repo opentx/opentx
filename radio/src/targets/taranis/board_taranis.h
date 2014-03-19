@@ -37,6 +37,8 @@
 #ifndef board_taranis_h
 #define board_taranis_h
 
+#include "stddef.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -45,15 +45,15 @@
  *
  ****************************************************************************/
 
+#if !defined(SIMU)
+
 #include <stdint.h>
 
-#ifdef PCBSKY
-#include "AT91SAM3S4.h"
-#endif
-
-#ifdef PCBTARANIS
-#include "stm32f2xx.h"
-#include "stm32f2xx_gpio.h"
+#if defined(PCBSKY9X)
+  #include "AT91SAM3S4.h"
+#elif defined(PCBTARANIS)
+  #include "stm32f2xx.h"
+  #include "stm32f2xx_gpio.h"
 #endif
 
 #if defined(PCBTARANIS)
@@ -61,9 +61,6 @@ void bwdt_reset()
 {
   IWDG->KR = 0xAAAA;		// reload
 }
-#endif
-
-#if defined(PCBTARANIS)
 
 __attribute__ ((section(".bootrodata"), used))
 void _bootStart(void);
@@ -71,13 +68,10 @@ void _bootStart(void);
 __attribute__ ((section(".isr_boot_vector"), used))
 const uint32_t BootVectors[] = { (uint32_t) &_estack,
     (uint32_t) (void (*)(void)) ((unsigned long) &_bootStart) };
-#endif
 
-#if defined(PCBTARANIS)
 __attribute__ ((section(".bootrodata.*"), used))
-#endif
 
-#ifdef PCBSKY
+#elif defined(PCBSKY9X)
 __attribute__ ((section(".bootrodata"), used))
 #endif
 
@@ -154,3 +148,4 @@ void _bootStart()
 }
 #endif
 
+#endif

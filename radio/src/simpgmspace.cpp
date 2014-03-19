@@ -637,6 +637,9 @@ void lcdRefresh()
 }
 
 #if defined(PCBTARANIS)
+void pwrInit() { }
+uint32_t pwrCheck() { return true; }
+void pwrOff() { }
 void usbStart() { }
 int usbPlugged() { return false; }
 void USART_DeInit(USART_TypeDef* ) { }
@@ -668,3 +671,4 @@ void RCC_LSEConfig(uint8_t RCC_LSE) { }
 FlagStatus RCC_GetFlagStatus(uint8_t RCC_FLAG) { return RESET; }
 ErrorStatus RTC_WaitForSynchro(void) { return SUCCESS; }
 #endif
+
