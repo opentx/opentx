@@ -234,8 +234,10 @@
   #define TR_CFN_TEST
 #endif
 
+#define TR_CFN_RESERVE         "[rezerva]\0 "
+
 #if defined(CPUARM)
-  #define TR_VFSWFUNC          "Zámek \0    ""Trenér \0   ""Insta-Trim\0""Reset\0     ""Set \0      " TR_ADJUST_GVAR "Hlasitost\0 " TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podsvětlení" TR_CFN_TEST
+  #define TR_VFSWFUNC          "Zámek \0    ""Trenér \0   ""Insta-Trim\0""Reset\0     ""Set \0      " TR_ADJUST_GVAR "Hlasitost\0 " TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_RESERVE TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podsvětlení" TR_CFN_TEST
 #elif defined(PCBGRUVIN9X)
   #define TR_VFSWFUNC          "Zámek \0    ""Trenér \0   ""Insta-Trim\0""Reset\0     " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podsvětlení" TR_CFN_TEST
 #else
@@ -436,18 +438,18 @@
 #define TR_MIXNAME             "Jméno"
 #define TR_INPUTNAME           "Jméno"
 #if defined(PCBTARANIS)
-  #define TR_EXPONAME          "Jméno"
+  #define TR_EXPONAME          "Poznámka"
 #else
   #define TR_EXPONAME          "Jméno"
 #endif
 #define TR_BITMAP              "Obrázek"
 #define TR_TIMER               "Stopky "
-#define TR_ELIMITS             TR("Limit+25%", "Kanál +/- 125%")
-#define TR_ETRIMS              TR("širšíTrim", "Široký trim")
-#define TR_TRIMINC             TR("KrokTrimu", "Krok trimu")
-#define TR_TTRACE              TR("StopaPlyn", INDENT "Stopař plynu")
-#define TR_TTRIM               TR("TrimPlynu", INDENT "Trim-volnoběh")
-#define TR_BEEPCTR             "\221\222 Středy"
+#define TR_ELIMITS             TR("Limit +25%", "Kanál +/- 125%")
+#define TR_ETRIMS              TR("širší Trim", "Široký trim")
+#define TR_TRIMINC             TR("Krok Trimu", "Krok trimu")
+#define TR_TTRACE              TR("TH stopek", INDENT "Stopa TH stopek")
+#define TR_TTRIM               TR("TrimPlynVol.", INDENT "Trim jen volnoběh")
+#define TR_BEEPCTR             "Středy \221\222"
 #define TR_PROTO               INDENT"Protokol"
 #define TR_PPMFRAME            "PPM frame"
 #define TR_MS                  "ms"
@@ -482,7 +484,7 @@
 #define TR_MIXWARNING          "Varování"
 #define TR_OFF                 "VYP"
 #define TR_MULTPX              TR("Mat.operace", "Operace")
-#define TR_DELAYDOWN           TR("Zpoždění Vyp", "Zdržet(-)")
+#define TR_DELAYDOWN           TR("Zpoždění Vyp", "Zdržet(x)")
 #define TR_DELAYUP             TR("Zpoždění Zap", "Zdržet(\43)")
 #define TR_SLOWDOWN            TR("Zpomalení(-)", "Zpomal(\177)")
 #define TR_SLOWUP              TR("Zpomalení(+)", "Zpomal(\176)")
@@ -582,7 +584,7 @@
 #define TR_MENUHELISETUP       "HELI"
 
 #if defined(PCBTARANIS)
-  #define TR_MENUINPUTS        "FILTRY VSTUPU"
+  #define TR_MENUINPUTS        "VSTUPY"
   #define TR_MENULIMITS        "SERVA"
 #elif defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...
   #define TR_MENUINPUTS        "DR/EXPO"
@@ -748,7 +750,7 @@
 #endif
 
 // Taranis column headers
-#define TR_PHASES_HEADERS      { " Jméno ", " Spínač ", " Trim směrovky", " Trim výškovky ", " Trim plynu", " Trim křidélek", " Přechod Zap ", " Přechod Vyp " }
+#define TR_PHASES_HEADERS      { " Jméno ", " Spínač ", " Trim směrovky ", " Trim výškovky ", " Trim plynu ", " Trim křidélek ", " Přechod náběhu ", " Přechod konce " }
 #define TR_LIMITS_HEADERS      { " Jméno ", " Subtrim ", " Min ", " Max ", " Směr ", " Křivka ", " Střed PPM ", " Symetrické " }
 #define TR_CSW_HEADERS         { " Funkce ", " Hodnota 1 ", " Hodnota 2 ", " Hodnota 2 ", " AND Spínač ", " Trvání ", " Zpoždění " }
 
@@ -803,7 +805,7 @@
 #define TR_CHR_LONG   'l'
 #define TR_CHR_TOGGLE 't'
 #define TR_CHR_HOUR   'h'
-#define TR_CHR_INPUT  'F'   // Values between A-I will work
+#define TR_CHR_INPUT  'I'   // Values between A-I will work
 
 #define TR_BEEP_VOLUME         "Pípání"
 #define TR_WAV_VOLUME          "Zvuky WAV"
