@@ -750,7 +750,7 @@
 #endif
 
 // Taranis column headers
-#define TR_PHASES_HEADERS      { " Namn ", " Brytare ", " Trimmar ", " Tona Upp ", " Tona Ned " }
+#define TR_PHASES_HEADERS      { " Namn ", " Brytare ", " Rudder Trim ", " Elevator Trim ", " Throttle Trim ", " Aileron Trim ", " Tona Upp ", " Tona Ned " }
 #define TR_LIMITS_HEADERS      { " Namn ", " Offset ", " Min ", " Max ", " Riktning ", " PPM-centrum ", " Symmetriskt " }
 #define TR_CSW_HEADERS         { " Funktion ", " V1 ", " V2 ", " V2 ", " AND Brytare ", " Tidslängd ", " Fördröj " }
 

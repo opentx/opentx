@@ -748,7 +748,7 @@
 #endif
 
 // Taranis column headers
-#define TR_PHASES_HEADERS      { " Nazwa ", " Przełącznik ", " Trymery ", " Pojawianie się  ", " Zanikanie " }
+#define TR_PHASES_HEADERS      { " Nazwa ", " Przełącznik ", " Rudder Trim ", " Elevator Trim ", " Throttle Trim ", " Aileron Trim ", " Pojawianie się  ", " Zanikanie " }
 #define TR_LIMITS_HEADERS      { " Nazwa ", " Subtrim ", " Min ", " Max ", " Kierunek ", " Krzywa ", " Środek PPM ", " Tryb subtrim " }
 #define TR_CSW_HEADERS         { " Funkcja ", " Param. 1 ", " Param 2 ", " Param 2 ", " AND Przełącznik ", " Czas trwania ", " Opóźnienie " }
 
