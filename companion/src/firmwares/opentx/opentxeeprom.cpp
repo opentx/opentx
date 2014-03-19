@@ -294,6 +294,32 @@ class SourcesConversionTable: public ConversionTable {
     }
 };
 
+ThrottleSourceConversionTable::ThrottleSourceConversionTable(BoardEnum board, unsigned int version)
+{
+  int val=0;
+
+  addConversion(THROTTLE_SOURCE_THR, val++);
+
+  if (IS_TARANIS(board)) {
+    addConversion(THROTTLE_SOURCE_S1, val++);
+    addConversion(THROTTLE_SOURCE_S2, val++);
+    if (version >= 216)
+      addConversion(THROTTLE_SOURCE_S3, val++);
+    addConversion(THROTTLE_SOURCE_LS, val++);
+    addConversion(THROTTLE_SOURCE_RS, val++);
+  }
+  else {
+    addConversion(THROTTLE_SOURCE_P1, val++);
+    addConversion(THROTTLE_SOURCE_P2, val++);
+    addConversion(THROTTLE_SOURCE_P3, val++);
+  }
+
+  for (int i=0; i<MAX_CHANNELS(board, version); i++) {
+    addConversion(THROTTLE_SOURCE_FIRST_CHANNEL+i, val++);
+  }
+}
+
+
 template <int N>
 class SwitchField: public ConversionField< SignedField<N> > {
   public:
@@ -2178,7 +2204,8 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   board(board),
   version(version),
   variant(variant),
-  protocolsConversionTable(board)
+  protocolsConversionTable(board),
+  throttleSourceConversionTable(board, version)
 {
   sprintf(name, "Model %s", modelData.name);
 
@@ -2288,7 +2315,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
     internalField.Append(new SignedField<8>(modelData.moduleData[0].ppmFrameLength));
   }
 
-  internalField.Append(new UnsignedField<8>(modelData.thrTraceSrc));
+  internalField.Append(new ConversionField< UnsignedField<8> >(modelData.thrTraceSrc, &throttleSourceConversionTable, "Throttle Source"));
 
   if (!afterrelease21March2013) {
     internalField.Append(new UnsignedField<8>(modelData.modelId));
