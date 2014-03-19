@@ -945,12 +945,13 @@ class InputField: public TransformedField {
     {
       if (IS_TARANIS(board) && version >= 216) {
         internalField.Append(new SourceField<8>(expo.srcRaw, board, version, 0));
-        internalField.Append(new UnsignedField<16>(expo.scale));
+        internalField.Append(new UnsignedField<16>(expo.scale, "Scale"));
         internalField.Append(new UnsignedField<8>(expo.chn, "Channel"));
         internalField.Append(new SwitchField<8>(expo.swtch, board, version));
         internalField.Append(new UnsignedField<16>(expo.phases));
         internalField.Append(new SignedField<8>(_weight, "Weight"));
-        internalField.Append(new SignedField<8>(expo.carryTrim));
+        internalField.Append(new SignedField<6>(expo.carryTrim, "CarryTrim"));
+        internalField.Append(new UnsignedField<2>(expo.mode, "Mode"));
         internalField.Append(new ZCharField<8>(expo.name));
         internalField.Append(new SignedField<8>(expo.offset, "Offset"));
         internalField.Append(new CurveReferenceField(expo.curve, board, version));
@@ -1020,10 +1021,6 @@ class InputField: public TransformedField {
           if (expo.mode) {
             expo.srcRaw = RawSource(SOURCE_TYPE_STICK, expo.chn);
           }
-        }
-        else {
-          if (expo.srcRaw.type != SOURCE_TYPE_NONE)
-            expo.mode = 3;
         }
       }
 

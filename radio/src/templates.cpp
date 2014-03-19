@@ -56,6 +56,10 @@
 
 #include "opentx.h"
 
+#if defined(PCBTARANIS)
+  #pragma message("Templates with virtual inputs (FrSky Taranis) are not implemented!")
+#endif
+
 MixData* setDest(uint8_t dch, uint8_t src, bool clear=false)
 {
   uint8_t i = 0;
@@ -184,13 +188,10 @@ void applyTemplate(uint8_t idx)
       // Simple 4-Ch
       case TMPL_SIMPLE_4CH:
         defaultInputs();
-#if defined(PCBTARANIS)
-  #pragma message("Templates with virtual inputs (FrSky Taranis) are not implemented!")
-#endif
-        setDest(ICC(STK_RUD), MIXSRC_Rud);
-        setDest(ICC(STK_ELE), MIXSRC_Ele);
-        setDest(ICC(STK_THR), MIXSRC_Thr);
-        setDest(ICC(STK_AIL), MIXSRC_Ail);
+        setDest(ICC(STK_RUD), TMPL_INPUT(STK_RUD));
+        setDest(ICC(STK_ELE), TMPL_INPUT(STK_ELE));
+        setDest(ICC(STK_THR), TMPL_INPUT(STK_THR));
+        setDest(ICC(STK_AIL), TMPL_INPUT(STK_AIL));
         break;
 
       // Sticky-T-Cut

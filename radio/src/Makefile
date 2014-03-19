@@ -994,8 +994,10 @@ ifeq ($(HELI), YES)
 endif
 
 ifeq ($(TEMPLATES), YES)
-  CPPDEFS += -DTEMPLATES
-  CPPSRC += templates.cpp
+  ifneq ($(PCB), TARANIS) 
+    CPPDEFS += -DTEMPLATES
+    CPPSRC += templates.cpp
+  endif
 endif
 
 ifeq ($(PXX), YES)
