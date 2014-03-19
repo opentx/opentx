@@ -110,11 +110,12 @@ namespace OpenTXspeak
 
         private void lvSentences_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            synth.SetOutputToDefaultAudioDevice();
-            synth.Rate = (int)this.voiceRateSlider.Value;
-
             if (this.lvSentences.SelectedItems.Count < 1)
                 return;
+
+            synth.SetOutputToDefaultAudioDevice();
+            synth.Rate = (int)this.voiceRateSlider.Value;
+            synth.Volume = (int)this.voiceVolumeSlider.Value;
 
             Sentence sentence = (Sentence)this.lvSentences.SelectedItem;
             synth.SelectVoice(cbVoices.Text);
@@ -153,7 +154,9 @@ namespace OpenTXspeak
             Cursor oldCursor = this.Cursor;
             this.Cursor = Cursors.Wait;
 
+            synth.SelectVoice(cbVoices.Text); 
             synth.Rate = (int)this.fileRateSlider.Value;
+            synth.Volume = (int)this.fileVolumeSlider.Value;
 
             int sampleRate = 32000;
             if ((bool)this.rb16khz.IsChecked)
