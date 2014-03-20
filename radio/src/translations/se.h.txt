@@ -84,7 +84,7 @@
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Amerika""Japan\0 ""Europa\0")
 
 #define LEN_TARANIS_PROTOCOLS  "\004"          
-#define TR_TARANIS_PROTOCOLS   "OFF\0""PPM\0""XJT\0""DSM2"
+#define TR_TARANIS_PROTOCOLS   "Av\0 ""PPM\0""XJT\0""DSM2"
 
 #define LEN_XJT_PROTOCOLS      "\004"
 #define TR_XJT_PROTOCOLS       "---\0""D16\0""D8\0 ""LR12"
@@ -161,15 +161,15 @@
 
 #if defined(PCBTARANIS)
   #define TR_CSWTIMER          "Timer"
-  #define TR_CSWSTICKY         "Stcky"
-  #define TR_CSWRANGE          "Range"
-  #define TR_CSWSTAY           "Edge\0"
+  #define TR_CSWSTICKY         "Seg\0 "
+  #define TR_CSWRANGE          "Vidd\0"
+  #define TR_CSWSTAY           "Kant\0"
 #else
   #define TR_CSWTIMER          "Tim\0 "
-  #define TR_CSWSTICKY         "Glue\0"
+  #define TR_CSWSTICKY         "Seg\0 "
   #if defined(CPUARM)
-    #define TR_CSWRANGE        "Rnge\0"
-    #define TR_CSWSTAY         "Edge\0"
+    #define TR_CSWRANGE        "Vidd\0"
+    #define TR_CSWSTAY         "Kant\0"
   #else
     #define TR_CSWRANGE
     #define TR_CSWSTAY
@@ -410,7 +410,7 @@
 #define TR_VTRAINERMODES       "Lärare""Elev\0."
 
 #define LEN_VFAILSAFE          "\011"
-#define TR_VFAILSAFE           "Lås Servo""Special\0 ""Pulsfritt"
+#define TR_VFAILSAFE           "Lås Servo""Anpassat\0""Pulsfritt"
 
 #if defined(MAVLINK)
   #define LEN_MAVLINK_BAUDS    "\006"
@@ -548,7 +548,7 @@
 #define TR_TXnRX               "Tx:\0Rx:"
 #define OFS_RX                 4
 #define TR_ACCEL               "Acc:"
-#define TR_NODATA              CENTER "NO DATA"
+#define TR_NODATA              CENTER "DATA SAKNAS"
 #define TR_TOTTM1TM2THRTHP     "\037\146TOT\036TM1\037\146TM2\036THR\037\146TH%"
 #define TR_TMR1LATMAXUS        "Tmr1Lat max\037\124us"
 #define STR_US                 (STR_TMR1LATMAXUS+13)
@@ -614,7 +614,7 @@
 #define TR_MENUTEMPLATES       "MALLAR"
 #define TR_MENUSTAT            "STATISTIK"
 #define TR_MENUDEBUG           "DEBUG"
-#define TR_RXNUM               TR("RxNum", "Mottagare nummer:")
+#define TR_RXNUM               TR("RxNum", "RxInställningar")
 #define TR_SYNCMENU            "Synk [MENU]"
 #define TR_LIMIT               INDENT"Nivå"
 #define TR_MINRSSI             "Min Rssi"
@@ -622,9 +622,9 @@
 #define TR_LONGITUDE           "Längdgrad"
 #define TR_GPSCOORD            TR("GPS-Koordinater", "GPS-koordinatsystem")
 #define TR_VARIO               TR("Vario", "Variometer")
-#define TR_PITCH_AT_ZERO       "\001Pitch at Zero"
-#define TR_PITCH_AT_MAX        "\001Pitch at Max"
-#define TR_REPEAT_AT_ZERO      "\001Repeat at Zero"
+#define TR_PITCH_AT_ZERO       "\001Ton vid Noll"
+#define TR_PITCH_AT_MAX        "\001Ton vid Max"
+#define TR_REPEAT_AT_ZERO      "\001Repetera vid Noll"
 #define TR_SHUTDOWN            "STäNGER AV"
 #define TR_BATT_CALIB          "Kalib. Batteri"
 #define TR_CURRENT_CALIB       "Kalib. Ström"
@@ -642,7 +642,7 @@
 #define TR_INCOMPATIBLE        "Inkompatibel"
 #define TR_WARNING             "VARNING"
 #define TR_EEPROMWARN          "EEPROM"
-#define TR_EEPROM_CONVERTING   "EEPROM Converting"
+#define TR_EEPROM_CONVERTING   "EEPROM Konvertering"
 #define TR_THROTTLEWARN        "GAS"
 #define TR_ALARMSWARN          "ALARM"
 #define TR_SWITCHWARN          "BRYTARE"
@@ -673,7 +673,7 @@
 #define TR_COPY_FILE           "Kopia"
 #define TR_RENAME_FILE         "Byt namn"
 #define TR_ASSIGN_BITMAP       "Tilldela ikon"
-#define TR_EXECUTE_FILE        "Execute"
+#define TR_EXECUTE_FILE        "Utför"
 #define TR_REMOVED             " raderad"
 #define TR_SD_INFO             "Information"
 #define TR_SD_FORMAT           "Format"
@@ -697,11 +697,11 @@
 #define TR_DATE                "Datum"
 #define TR_ROTARY_ENCODER      "R.Enks"
 #define TR_CHANNELS_MONITOR    "Kanalöversikt"
-#define TR_PATH_TOO_LONG       "Path too long"
-#define TR_VIEW_TEXT           "View text"
-#define TR_INTERNALRF          "Intern RF"
-#define TR_EXTERNALRF          "Extern RF"
-#define TR_FAILSAFE            "Failsafefunktion"
+#define TR_PATH_TOO_LONG       "För lång sökväg"
+#define TR_VIEW_TEXT           "Visa Text"
+#define TR_INTERNALRF          "Intern Radio"
+#define TR_EXTERNALRF          "Extern Radiomodul"
+#define TR_FAILSAFE            "Failsafeläge"
 #define TR_FAILSAFESET         "FailsafeInställning"
 #define TR_COUNTRYCODE         "Landskod"
 #define TR_VOICELANG           "Röstspråk"
@@ -736,16 +736,16 @@
 #define TR_CHANNELRANGE        INDENT "Kanalområde"
 #define TR_LOWALARM            INDENT "Låg-alarm"
 #define TR_CRITICALALARM       INDENT "Kritiskt alarm"
-#define TR_ENABLE_POPUP        "Enable Popup"
-#define TR_DISABLE_POPUP       "Disable Popup"
-#define TR_CURVE_PRESET        "Preset..."
-#define TR_PRESET              "Preset"
-#define TR_MIRROR              "Mirror"
-#define TR_CLEAR               "Clear"
-#define TR_RESET               "Reset"
-#define TR_COUNT               "Count"
-#define TR_SMOOTH              "Smooth"
-#define TR_COPY_TRIMS_TO_OFS   "Copy Trims To Offset"
+#define TR_ENABLE_POPUP        "Slå på Dialog"
+#define TR_DISABLE_POPUP       "Slå av Dialog"
+#define TR_CURVE_PRESET        "Lutning..."
+#define TR_PRESET              "Lutning"
+#define TR_MIRROR              "Spegla"
+#define TR_CLEAR               "Töm"
+#define TR_RESET               "Nollställ"
+#define TR_COUNT               "Antal"
+#define TR_SMOOTH              "Mjuk"
+#define TR_COPY_TRIMS_TO_OFS   "Spara trimmar som offset"
 #define TR_PERSISTENT_MAH      INDENT "Lagra mAh"
 #define TR_PREFLIGHT           "Startkontroller"
 #define TR_CHECKLIST           INDENT "Visa checklisa"
@@ -779,9 +779,9 @@
 #endif
 
 // Taranis column headers
-#define TR_PHASES_HEADERS      { " Namn ", " Brytare ", " Rudder Trim ", " Elevator Trim ", " Throttle Trim ", " Aileron Trim ", " Tona Upp ", " Tona Ned " }
+#define TR_PHASES_HEADERS      { " Namn ", " Brytare ", " Rodertrim ", " Höjdrodertrim ", " Gastrim ", " Skevrodertrim ", " Tona Upp ", " Tona Ned " }
 #define TR_LIMITS_HEADERS      { " Namn ", " Offset ", " Min ", " Max ", " Riktning ", " PPM-centrum ", " Symmetriskt " }
-#define TR_CSW_HEADERS         { " Funktion ", " V1 ", " V2 ", " V2 ", " AND Brytare ", " Tidslängd ", " Fördröj " }
+#define TR_CSW_HEADERS         { " Funktion ", " V1 ", " V2 ", " V2 ", " OCH Brytare ", " Tidslängd ", " Fördröj " }
 
 // About screen
 #define TR_ABOUTUS             "Om Oss"
@@ -844,8 +844,8 @@
 
 #define TR_TOP_BAR             "Top Bar"
 #define TR_ALTITUDE            INDENT "Höjd"
-#define TR_SCALE               "Scale"
-#define TR_VIEW_CHANNELS       "View Channels"
-#define TR_VIEW_NOTES          "View Notes"
+#define TR_SCALE               "Skala"
+#define TR_VIEW_CHANNELS       "Visa Kanaler"
+#define TR_VIEW_NOTES          "Visa Noteringars"
 #define TR_MODS_FORBIDDEN      "Modifikationer förbjudna!"
 #define TR_UNLOCKED            "Olåst"
