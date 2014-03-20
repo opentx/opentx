@@ -779,7 +779,7 @@ bool eeConvert()
   ALERT(STR_EEPROMWARN, msg, AU_BAD_EEPROM);
 
   // Message
-  MESSAGE(STR_EEPROMWARN, PSTR("EEPROM Converting"), NULL, AU_EEPROM_FORMATTING); // TODO translations
+  MESSAGE(STR_EEPROMWARN, STR_EEPROM_CONVERTING, NULL, AU_EEPROM_FORMATTING); // TODO translations
 
   // General Settings conversion
 #if defined(PCBTARANIS)

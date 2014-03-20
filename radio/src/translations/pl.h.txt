@@ -631,6 +631,7 @@
 #define TR_INCOMPATIBLE        "Niekompatybilne"
 #define TR_WARNING             "UWAGA"
 #define TR_EEPROMWARN          "EEPROM"
+#define TR_EEPROM_CONVERTING   "EEPROM Converting"
 #define TR_THROTTLEWARN        "GAZ"
 #define TR_ALARMSWARN          "ALARM"
 #define TR_SWITCHWARN          "Przełącznik"

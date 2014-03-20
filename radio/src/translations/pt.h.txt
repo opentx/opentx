@@ -631,6 +631,7 @@
 #define TR_INCOMPATIBLE        "Incompativel"
 #define TR_WARNING             "AVISO"
 #define TR_EEPROMWARN          "EEPROM"
+#define TR_EEPROM_CONVERTING   "EEPROM Converting"
 #define TR_THROTTLEWARN        "ACELERAD"
 #define TR_ALARMSWARN          "ALARMES"
 #define TR_SWITCHWARN          "CHAVES"

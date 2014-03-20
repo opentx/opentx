@@ -552,6 +552,7 @@ extern const pm_char STR_RESET_BTN[];
 
 extern const pm_char STR_WARNING[];
 extern const pm_char STR_EEPROMWARN[];
+extern const pm_char STR_EEPROM_CONVERTING[];
 extern const pm_char STR_THROTTLEWARN[];
 extern const pm_char STR_ALARMSWARN[];
 extern const pm_char STR_SWITCHWARN[];
