@@ -98,6 +98,9 @@
 #define LEN_VBEEPCOUNTDOWN     "\006"
 #define TR_VBEEPCOUNTDOWN      "Tyst\0 Pip\0  Röst\0 "
 
+#define LEN_CURVE_TYPES        "\010"
+#define TR_CURVE_TYPES         "Standard""Custom\0"
+
 #define LEN_RETA123            "\001"
 
 #if defined(PCBGRUVIN9X)
@@ -746,6 +749,19 @@
 #define TR_COUNT               "Antal"
 #define TR_SMOOTH              "Mjuk"
 #define TR_COPY_TRIMS_TO_OFS   "Spara trimmar som offset"
+=======
+#define TR_ENABLE_POPUP        "Enable Popup"
+#define TR_DISABLE_POPUP       "Disable Popup"
+#define TR_CURVE_PRESET        "Preset..."
+#define TR_PRESET              "Preset"
+#define TR_MIRROR              "Mirror"
+#define TR_CLEAR               "Clear"
+#define TR_RESET               "Reset"
+#define TR_COUNT               "Count"
+#define TR_PT                  "pt"
+#define TR_PTS                 "pts"
+#define TR_SMOOTH              "Smooth"
+#define TR_COPY_TRIMS_TO_OFS   "Copy Trims To Offset"
 #define TR_PERSISTENT_MAH      INDENT "Lagra mAh"
 #define TR_PREFLIGHT           "Startkontroller"
 #define TR_CHECKLIST           INDENT "Visa checklisa"

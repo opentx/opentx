@@ -98,6 +98,9 @@
 #define LEN_VBEEPCOUNTDOWN     "\007"
 #define TR_VBEEPCOUNTDOWN      "Cichy\0 ""Pikanie""Dźwięki"
 
+#define LEN_CURVE_TYPES        "\010"
+#define TR_CURVE_TYPES         "Standard""Custom\0"
+
 #define LEN_RETA123            "\001"
 
 #if defined(PCBGRUVIN9X)
@@ -742,6 +745,8 @@
 #define TR_CLEAR               "Clear"
 #define TR_RESET               "Reset"
 #define TR_COUNT               "Count"
+#define TR_PT                  "pt"
+#define TR_PTS                 "pts"
 #define TR_SMOOTH              "Smooth"
 #define TR_COPY_TRIMS_TO_OFS   "Copy Trims To Offset"
 #define TR_PERSISTENT_MAH      INDENT "Zapisz mAh"

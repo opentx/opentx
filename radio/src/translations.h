@@ -181,7 +181,8 @@ extern const pm_char STR_OPEN9X[];
   #define OFS_TARANIS_PROTOCOLS (OFS_VTRAINERMODES + sizeof(TR_VTRAINERMODES))
   #define OFS_XJT_PROTOCOLS     (OFS_TARANIS_PROTOCOLS + sizeof(TR_TARANIS_PROTOCOLS))
   #define OFS_DSM_PROTOCOLS     (OFS_XJT_PROTOCOLS + sizeof(TR_XJT_PROTOCOLS))
-  #define OFS_MAVLINK_BAUDS	(OFS_DSM_PROTOCOLS + sizeof(TR_DSM_PROTOCOLS))
+  #define OFS_CURVE_TYPES       (OFS_DSM_PROTOCOLS + sizeof(TR_DSM_PROTOCOLS))
+  #define OFS_MAVLINK_BAUDS     (OFS_CURVE_TYPES + sizeof(TR_CURVE_TYPES))
 #else
   #define OFS_MAVLINK_BAUDS	(OFS_VTRAINERMODES)
 #endif
@@ -278,6 +279,7 @@ extern const pm_char STR_OPEN9X[];
   #define STR_TARANIS_PROTOCOLS (STR_OPEN9X + OFS_TARANIS_PROTOCOLS)
   #define STR_XJT_PROTOCOLS     (STR_OPEN9X + OFS_XJT_PROTOCOLS)
   #define STR_DSM_PROTOCOLS     (STR_OPEN9X + OFS_DSM_PROTOCOLS)
+  #define STR_CURVE_TYPES       (STR_OPEN9X + OFS_CURVE_TYPES)
 #endif
 
 #if defined(MAVLINK)
@@ -676,6 +678,8 @@ extern const pm_char STR_VIEW_TEXT[];
   extern const pm_char STR_CLEAR[];
   extern const pm_char STR_RESET[];
 extern const pm_char STR_COUNT[];
+extern const pm_char STR_PT[];
+extern const pm_char STR_PTS[];
 extern const pm_char STR_SMOOTH[];
   extern const pm_char STR_COPY_TRIMS_TO_OFS[];
   extern const pm_char STR_TOP_BAR[];

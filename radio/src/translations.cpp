@@ -115,6 +115,7 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(TARANIS_PROTOCOLS)
     ISTR(XJT_PROTOCOLS)
     ISTR(DSM_PROTOCOLS)
+    ISTR(CURVE_TYPES)
 #endif
 #if defined(MAVLINK)
     ISTR(MAVLINK_BAUDS)
@@ -496,8 +497,10 @@ const pm_char STR_VIEW_TEXT[] PROGMEM = TR_VIEW_TEXT;
   const pm_char STR_MIRROR[] PROGMEM = TR_MIRROR;
   const pm_char STR_CLEAR[] PROGMEM = TR_CLEAR;
   const pm_char STR_RESET[] PROGMEM = TR_RESET;
-const pm_char STR_COUNT[] PROGMEM = TR_COUNT;
-const pm_char STR_SMOOTH[] PROGMEM = TR_SMOOTH;
+  const pm_char STR_COUNT[] PROGMEM = TR_COUNT;
+  const pm_char STR_PT[] PROGMEM = TR_PT;
+  const pm_char STR_PTS[] PROGMEM = TR_PTS;
+  const pm_char STR_SMOOTH[] PROGMEM = TR_SMOOTH;
   const pm_char STR_COPY_TRIMS_TO_OFS[] PROGMEM = TR_COPY_TRIMS_TO_OFS;
   const pm_char STR_TOP_BAR[] PROGMEM = TR_TOP_BAR;
   const pm_char STR_ALTITUDE[] PROGMEM = TR_ALTITUDE;

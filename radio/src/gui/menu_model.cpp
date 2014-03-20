@@ -2418,7 +2418,7 @@ void menuModelCurveOne(uint8_t event)
   CurveInfo & crv = g_model.curves[s_curveChan];
   int8_t * points = curveAddress(s_curveChan);
 
-  lcd_puts(9*FW, 0, "pt\003X\006Y");
+  lcd_puts(9*FW, 0, TR_PT "\003X\006Y");
   lcd_filled_rect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
 
   SIMPLE_SUBMENU(STR_MENUCURVE, 4 + 5+crv.points + (crv.type==CURVE_TYPE_CUSTOM ? 5+crv.points-2 : 0));
@@ -2429,7 +2429,7 @@ void menuModelCurveOne(uint8_t event)
 
   uint8_t attr = (m_posVert==1 ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
   lcd_putsLeft(3*FH+1, STR_TYPE);
-  lcd_putsiAtt(INDENT_WIDTH, 4*FH+1, "\010StandardCustom\0", crv.type, attr);
+  lcd_putsiAtt(INDENT_WIDTH, 4*FH+1, STR_CURVE_TYPES, crv.type, attr);
   if (attr) {
     uint8_t newType = checkIncDecModelZero(event, crv.type, CURVE_TYPE_LAST);
     if (newType != crv.type) {
@@ -2447,7 +2447,7 @@ void menuModelCurveOne(uint8_t event)
   attr = (m_posVert==2 ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
   lcd_putsLeft(5*FH+1, STR_COUNT);
   lcd_outdezAtt(INDENT_WIDTH, 6*FH+1, 5+crv.points, LEFT|attr);
-  lcd_putsAtt(lcdLastPos, 6*FH+1, PSTR("pts"), attr);
+  lcd_putsAtt(lcdLastPos, 6*FH+1, STR_PTS, attr);
   if (attr) {
     int8_t count = checkIncDecModel(event, crv.points, -3, 12); // 2pts - 17pts
     if (checkIncDec_Ret) {
@@ -4061,7 +4061,7 @@ void menuModelCurvesAll(uint8_t event)
       editName(4*FW, y, g_model.curveNames[k], sizeof(g_model.curveNames[k]), 0, 0);
       CurveInfo & crv = g_model.curves[k];
       lcd_outdezAtt(11*FW, y, 5+crv.points, LEFT);
-      lcd_putsAtt(lcdLastPos, y, PSTR("pts"), 0);
+      lcd_putsAtt(lcdLastPos, y, STR_PTS, 0);
 #endif
     }
   }
