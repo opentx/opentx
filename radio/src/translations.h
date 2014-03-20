@@ -692,6 +692,9 @@ extern const pm_char STR_SMOOTH[];
   extern const pm_char STR_CHECKLIST[];
   extern const pm_char STR_UART3MODE[];
   extern const pm_char STR_THROTTLE_LABEL[];
+  extern const pm_char STR_SCRIPT[];
+  extern const pm_char STR_INPUTS[];
+  extern const pm_char STR_OUTPUTS[]; 
 #endif
 
 #if MENUS_LOCK == 1

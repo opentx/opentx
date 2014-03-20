@@ -764,6 +764,9 @@
 #define TR_CHECKLIST           INDENT "Afficher notes"
 #define TR_FAS_OFFSET          TR(INDENT "Corr FAS", INDENT "Correction FAS")
 #define TR_UART3MODE           "Port série"
+#define TR_SCRIPT              "Script"
+#define TR_INPUTS              "Entrées"
+#define TR_OUTPUTS             "Sorties"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL  "RSSI Max"

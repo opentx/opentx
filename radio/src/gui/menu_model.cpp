@@ -5211,7 +5211,7 @@ void menuModelCustomScriptOne(uint8_t event)
     uint8_t attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
 
     if (i == ITEM_MODEL_CUSTOMSCRIPT_FILE) {
-      lcd_putsLeft(y, "Script");
+      lcd_putsLeft(y, STR_SCRIPT);
       if (ZEXIST(sd.file))
         lcd_putsnAtt(SCRIPT_ONE_2ND_COLUMN_POS, y, sd.file, sizeof(sd.file), attr);
       else
@@ -5228,11 +5228,11 @@ void menuModelCustomScriptOne(uint8_t event)
       }
     }
     else if (i == ITEM_MODEL_CUSTOMSCRIPT_NAME) {
-      lcd_putsLeft(y, "Name");
+      lcd_putsLeft(y, TR_NAME);
       editName(SCRIPT_ONE_2ND_COLUMN_POS, y, sd.name, sizeof(sd.name), event, attr);
     }
     else if (i == ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL) {
-      lcd_putsLeft(y, "Inputs");
+      lcd_putsLeft(y, STR_INPUTS);
     }
     else if (i <= ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL+scriptInternalData[s_currIdx].inputsCount) {
       int inputIdx = i-ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL-1;
@@ -5255,7 +5255,7 @@ void menuModelCustomScriptOne(uint8_t event)
 
   if (scriptInternalData[s_currIdx].outputsCount > 0) {
     lcd_vline(SCRIPT_ONE_3RD_COLUMN_POS-4, FH+1, LCD_H-FH-1);
-    lcd_puts(SCRIPT_ONE_3RD_COLUMN_POS, FH+1, "Outputs");
+    lcd_puts(SCRIPT_ONE_3RD_COLUMN_POS, FH+1, STR_OUTPUTS);
 
     for (int i=0; i<scriptInternalData[s_currIdx].outputsCount; i++) {
       putsMixerSource(SCRIPT_ONE_3RD_COLUMN_POS+INDENT_WIDTH, FH+1+FH+i*FH, MIXSRC_FIRST_LUA+(s_currIdx*MAX_SCRIPT_OUTPUTS)+i, 0);

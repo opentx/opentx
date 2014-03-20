@@ -512,6 +512,9 @@ const pm_char STR_VIEW_TEXT[] PROGMEM = TR_VIEW_TEXT;
   const pm_char STR_CHECKLIST[] PROGMEM = TR_CHECKLIST;
   const pm_char STR_UART3MODE[] PROGMEM = TR_UART3MODE;
   const pm_char STR_THROTTLE_LABEL[] PROGMEM = TR_THROTTLE_LABEL;
+  const pm_char STR_SCRIPT[] PROGMEM = TR_SCRIPT;
+  const pm_char STR_INPUTS[] PROGMEM = TR_INPUTS;
+  const pm_char STR_OUTPUTS[] PROGMEM = TR_OUTPUTS;  
 #endif
 
 #if MENUS_LOCK == 1
