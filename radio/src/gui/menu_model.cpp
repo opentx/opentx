@@ -4699,7 +4699,7 @@ void menuModelLogicalSwitches(uint8_t event)
 
     // CSW delay
     if (cstate == LS_FAMILY_STAY) {
-      lcd_puts(CSW_6TH_COLUMN, y, "N/A");
+      lcd_puts(CSW_6TH_COLUMN, y, STR_NA);
       if (attr && horz == LS_FIELD_DELAY) {
         REPEAT_LAST_CURSOR_MOVE();
       }
