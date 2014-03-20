@@ -3425,6 +3425,10 @@ void evalFunctions()
 #if defined(FRSKY)
                 || g_menuStack[0] == menuTelemetryFrsky
 #endif
+#if defined(PCBTARANIS)
+                || g_menuStack[0] == menuMainViewChannelsMonitor
+                || g_menuStack[0] == menuChannelsView
+#endif
               )
                 instantTrim();
             }
