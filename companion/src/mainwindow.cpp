@@ -1251,15 +1251,16 @@ bool MainWindow::convertEEPROM(QString backupFile, QString restoreFile, QString 
 
     if ((svnTags.at(0) == "open9x")||(svnTags.at(0) == "opentx")) {
       if (revision > 1464) {
-        QString fwBuild = flash.getBuild();
-        if (fwBuild.contains("-")) {
-          QStringList buildTags = fwBuild.split("-", QString::SkipEmptyParts);
+        QString fwEEprom = flash.getEEprom();
+        if (fwEEprom.contains("-")) {
+          QStringList buildTags = fwEEprom.split("-", QString::SkipEmptyParts);
           if (buildTags.size() >= 1)
             version = buildTags.at(0).toInt();
           if (buildTags.size() >= 2)
             variant = buildTags.at(1).toInt();
-        } else {
-          version = fwBuild.toInt(); // TODO changer le nom de la variable
+        }
+        else {
+          version = fwEEprom.toInt();
         }
       }
       else {

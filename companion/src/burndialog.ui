@@ -113,8 +113,15 @@
         <enum>QFrame::Raised</enum>
        </property>
        <layout class="QGridLayout" name="gridLayout_5">
+        <item row="3" column="0">
+         <widget class="QLabel" name="dateLabel">
+          <property name="text">
+           <string>Date &amp; Time</string>
+          </property>
+         </widget>
+        </item>
         <item row="1" column="1">
-         <widget class="QLineEdit" name="SVNField">
+         <widget class="QLineEdit" name="versionField">
           <property name="readOnly">
            <bool>true</bool>
           </property>
@@ -135,20 +142,13 @@
          </widget>
         </item>
         <item row="1" column="0">
-         <widget class="QLabel" name="svnLabel">
+         <widget class="QLabel" name="versionLabel">
           <property name="text">
-           <string>SVN</string>
+           <string>Version</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="dateLabel">
-          <property name="text">
-           <string>Date &amp; Time</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
+        <item row="3" column="1">
          <widget class="QLineEdit" name="DateField">
           <property name="readOnly">
            <bool>true</bool>
@@ -360,8 +360,7 @@
   <tabstop>BurnFlashButton</tabstop>
   <tabstop>FWFileName</tabstop>
   <tabstop>FlashLoadButton</tabstop>
-  <tabstop>DateField</tabstop>
-  <tabstop>SVNField</tabstop>
+  <tabstop>versionField</tabstop>
   <tabstop>ModField</tabstop>
   <tabstop>useProfileImageCB</tabstop>
   <tabstop>useFwImageCB</tabstop>
