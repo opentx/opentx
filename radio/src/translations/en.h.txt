@@ -515,7 +515,7 @@
 #define TR_RANGE               INDENT "Range"
 #define TR_BAR                 "Bar"
 #define TR_ALARM               INDENT "Alarm"
-#define TR_USRDATA             "UsrData"
+#define TR_USRDATA             TR("UsrData","User Data")
 #define TR_BLADES              INDENT "Blades"
 #define TR_SCREEN              "Screen "
 #define TR_SOUND_LABEL         "Sound"
@@ -596,7 +596,7 @@
 #define TR_MENUDIAG            TR("SWITCHES","SWITCH TEST")
 #define TR_MENUANA             TR("ANAS","ANALOG INPUTS")
 #define TR_MENUCALIBRATION     "CALIBRATION"
-#define TR_TRIMS2OFFSETS       "\006Trims => Offsets"
+#define TR_TRIMS2OFFSETS       "\006Trims => Subtrims"
 #define TR_MENUMODELSEL        TR("MODELSEL","MODEL SELECTION")
 #define TR_MENUSETUP           TR("SETUP","MODEL SETUP")
 #define TR_MENUFLIGHTPHASE     "FLIGHT MODE"
@@ -633,9 +633,9 @@
 #define TR_LONGITUDE           "Longitude"
 #define TR_GPSCOORD            TR("GPS Coords", "GPS coordinate format")
 #define TR_VARIO               TR("Vario", "Variometer")
-#define TR_PITCH_AT_ZERO       "\001Pitch at Zero"
-#define TR_PITCH_AT_MAX        "\001Pitch at Max"
-#define TR_REPEAT_AT_ZERO      "\001Repeat at Zero"
+#define TR_PITCH_AT_ZERO       INDENT "Pitch at Zero"
+#define TR_PITCH_AT_MAX        INDENT "Pitch at Max"
+#define TR_REPEAT_AT_ZERO      INDENT "Repeat at Zero"
 #define TR_SHUTDOWN            "SHUTTING DOWN"
 #define TR_BATT_CALIB          "Battery Calib"
 #define TR_CURRENT_CALIB       "Current Calib"
@@ -653,7 +653,7 @@
 #define TR_INCOMPATIBLE        "Incompatible"
 #define TR_WARNING             "WARNING"
 #define TR_EEPROMWARN          "EEPROM"
-#define TR_EEPROM_CONVERTING   "EEPROM Converting"
+#define TR_EEPROM_CONVERTING   "Converting EEPROM"
 #define TR_THROTTLEWARN        "THROTTLE"
 #define TR_ALARMSWARN          "ALARMS"
 #define TR_SWITCHWARN          TR("SWITCH","CONTROL")
@@ -758,7 +758,7 @@
 #define TR_PT                  "pt"
 #define TR_PTS                 "pts"
 #define TR_SMOOTH              "Smooth"
-#define TR_COPY_TRIMS_TO_OFS   "Copy Trims To Offset"
+#define TR_COPY_TRIMS_TO_OFS   "Copy Trim To Subtrim"
 #define TR_PERSISTENT_MAH      INDENT "Store mAh"
 #define TR_PREFLIGHT           "Preflight Checks"
 #define TR_CHECKLIST           INDENT "Display Checklist"
