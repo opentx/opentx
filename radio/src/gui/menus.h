@@ -202,6 +202,7 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 #endif
 
 #if defined(CPUARM)
+  bool isThrottleSourceAvailable(int source);
   bool isLogicalSwitchFunctionAvailable(int function);
   bool isAssignableFunctionAvailable(int function);
   bool isSwitchAvailable(int swtch);

@@ -725,7 +725,7 @@ void ConvertModel_215_to_216(ModelData &model)
   g_model.thrTraceSrc = oldModel.thrTraceSrc;
 #if defined(PCBTARANIS)
   // S3 added
-  if (g_model.thrTraceSrc >= 3)
+  if (g_model.thrTraceSrc >= THROTTLE_SOURCE_S3)
     g_model.thrTraceSrc += 1;
 #endif
   g_model.switchWarningStates = oldModel.switchWarningStates >> 1;
