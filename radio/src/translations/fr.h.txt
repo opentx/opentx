@@ -618,6 +618,9 @@
 #define TR_LONGITUDE           "Longitude"
 #define TR_GPSCOORD            TR("Coordonnées","Coordonnées GPS")
 #define TR_VARIO               TR("Vario","Variomètre")
+#define TR_PITCH_AT_ZERO       INDENT "Pitch au Zero"
+#define TR_PITCH_AT_MAX        INDENT "Pitch au Max"
+#define TR_REPEAT_AT_ZERO      INDENT "Repet au Zero"
 #define TR_SHUTDOWN            "ARRET EN COURS"
 #define TR_BATT_CALIB          "Calib. Batterie"
 #define TR_CURRENT_CALIB       "Calib. Courant"

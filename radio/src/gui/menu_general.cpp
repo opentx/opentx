@@ -388,19 +388,19 @@ void menuGeneralSetup(uint8_t event)
         SLIDER_5POS(y, g_eeGeneral.varioVolume, TR_SPEAKER_VOLUME, event, attr);
         break;
       case ITEM_SETUP_VARIO_PITCH:
-        lcd_putsLeft(y, "\001Pitch at Zero");
+        lcd_putsLeft(y, STR_PITCH_AT_ZERO);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, VARIO_FREQUENCY_ZERO+(g_eeGeneral.varioPitch*10), attr|LEFT);
         lcd_putsAtt(lcdLastPos, y, "Hz", attr);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.varioPitch, -40, 40);
         break;
       case ITEM_SETUP_VARIO_RANGE:
-        lcd_putsLeft(y, "\001Pitch at Max");
+        lcd_putsLeft(y, STR_PITCH_AT_MAX);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, VARIO_FREQUENCY_ZERO+(g_eeGeneral.varioPitch*10)+VARIO_FREQUENCY_RANGE+(g_eeGeneral.varioRange*10), attr|LEFT);
         lcd_putsAtt(lcdLastPos, y, "Hz", attr);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.varioRange, -80, 80);
         break;
       case ITEM_SETUP_VARIO_REPEAT:
-        lcd_putsLeft(y, "\001Repeat at Zero");
+        lcd_putsLeft(y, STR_REPEAT_AT_ZERO);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, VARIO_REPEAT_ZERO+(g_eeGeneral.varioRepeat*10), attr|LEFT);
         lcd_putsAtt(lcdLastPos, y, "ms", attr);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.varioRepeat, -30, 50);

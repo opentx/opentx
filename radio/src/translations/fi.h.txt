@@ -611,6 +611,9 @@
 #define TR_LONGITUDE           "Longitude"
 #define TR_GPSCOORD            TR("GPS Coords", "GPS coordinate format")
 #define TR_VARIO               TR("Vario", "Variometer")
+#define TR_PITCH_AT_ZERO       "\001Pitch at Zero"
+#define TR_PITCH_AT_MAX        "\001Pitch at Max"
+#define TR_REPEAT_AT_ZERO      "\001Repeat at Zero"
 #define TR_SHUTDOWN            "SHUTTING DOWN"
 #define TR_BATT_CALIB          "Battery Calib"
 #define TR_CURRENT_CALIB       "Current Calib"
