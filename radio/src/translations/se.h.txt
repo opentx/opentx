@@ -766,7 +766,7 @@
 #define TR_UART3MODE           "Serieporten"
 #define TR_SCRIPT              "Programkod"
 #define TR_INPUTS              "Input"
-#define TR_OUTPUTS             "Outputs
+#define TR_OUTPUTS             "Outputs"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL  "Max RSSI"
