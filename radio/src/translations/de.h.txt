@@ -37,6 +37,9 @@
  *  \0           -ends actual string
  */
  
+ 
+ 
+ 
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON              "\003"
 #define TR_OFFON               "AUS""EIN"
