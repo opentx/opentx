@@ -3813,7 +3813,7 @@ void onLimitsMenu(const char *result)
     ld->revert = false;
     ld->curve = 0;
   }
-  else if (result == STR_COPY_TRIMS_TO_OFFSET) {
+  else if (result == STR_COPY_TRIMS_TO_OFS) {
     copyTrimsToOffset(ch);
   }
 }
@@ -3892,7 +3892,7 @@ void menuModelLimits(uint8_t event)
     if (sub==k && m_posHorz < 0 && event==EVT_KEY_LONG(KEY_ENTER)) {
       killEvents(event);
       MENU_ADD_ITEM(STR_RESET);
-      MENU_ADD_ITEM(STR_COPY_TRIMS_TO_OFFSET);
+      MENU_ADD_ITEM(STR_COPY_TRIMS_TO_OFS);
       menuHandler = onLimitsMenu;
     }
 #else

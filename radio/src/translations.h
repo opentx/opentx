@@ -665,7 +665,7 @@ extern const pm_char STR_VIEW_TEXT[];
   extern const pm_char STR_MIRROR[];
   extern const pm_char STR_CLEAR[];
   extern const pm_char STR_RESET[];
-  extern const pm_char STR_COPY_TRIMS_TO_OFFSET[];
+  extern const pm_char STR_COPY_TRIMS_TO_OFS[];
   extern const pm_char STR_TOP_BAR[];
   extern const pm_char STR_ALTITUDE[];
   extern const pm_char STR_SCALE[];
