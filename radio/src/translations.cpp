@@ -455,8 +455,8 @@ const pm_char STR_OWN[] PROGMEM = TR_OWN;
 const pm_char STR_ROTARY_ENCODER[] PROGMEM = TR_ROTARY_ENCODER;
 const pm_char STR_DATE[] PROGMEM = TR_DATE;
 const pm_char STR_CHANNELS_MONITOR[] PROGMEM = TR_CHANNELS_MONITOR;
-const pm_char STR_PATH_TOO_LONG[] PROGMEM = "Path too long";
-const pm_char STR_VIEW_TEXT[] PROGMEM = "View text";
+const pm_char STR_PATH_TOO_LONG[] PROGMEM = TR_PATH_TOO_LONG;
+const pm_char STR_VIEW_TEXT[] PROGMEM = TR_VIEW_TEXT;
 
 #if LCD_W >= 212
   const pm_char STR_MODELNAME[] PROGMEM = TR_MODELNAME;

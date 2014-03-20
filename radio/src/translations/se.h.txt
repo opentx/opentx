@@ -680,6 +680,8 @@
 #define TR_DATE                "Datum"
 #define TR_ROTARY_ENCODER      "R.Enks"
 #define TR_CHANNELS_MONITOR    "Kanalöversikt"
+#define TR_PATH_TOO_LONG       "Path too long"
+#define TR_VIEW_TEXT           "View text"
 #define TR_INTERNALRF          "Intern RF"
 #define TR_EXTERNALRF          "Extern RF"
 #define TR_FAILSAFE            "Failsafefunktion"

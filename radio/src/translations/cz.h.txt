@@ -680,6 +680,8 @@
 #define TR_DATE                "Datum"
 #define TR_ROTARY_ENCODER      "R.Encs"
 #define TR_CHANNELS_MONITOR    "MONITOR KANÁLU"
+#define TR_PATH_TOO_LONG       "Path too long"
+#define TR_VIEW_TEXT           "View text"
 #define TR_INTERNALRF          "Vnitřní RF modul"
 #define TR_EXTERNALRF          "Externí RF modul"
 #define TR_FAILSAFE            "Mód Failsafe"
