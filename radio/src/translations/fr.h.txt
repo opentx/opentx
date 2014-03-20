@@ -735,6 +735,8 @@
 #define TR_MIRROR              "Mirroir"
 #define TR_CLEAR               "Réinitialiser"
 #define TR_RESET               "Reset"
+#define TR_COUNT               "Nb Points"
+#define TR_SMOOTH              "Lissage"
 #define TR_COPY_TRIMS_TO_OFS   "Trims vers offsets"
 #define TR_PERSISTENT_MAH      TR(INDENT "Enr. mAh", INDENT "Enregistrer mAh")
 #define TR_PREFLIGHT           "Vérifications avant vol"

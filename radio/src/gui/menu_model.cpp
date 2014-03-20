@@ -2445,7 +2445,7 @@ void menuModelCurveOne(uint8_t event)
   }
 
   attr = (m_posVert==2 ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
-  lcd_putsLeft(5*FH+1, "Count");
+  lcd_putsLeft(5*FH+1, STR_COUNT);
   lcd_outdezAtt(INDENT_WIDTH, 6*FH+1, 5+crv.points, LEFT|attr);
   lcd_putsAtt(lcdLastPos, 6*FH+1, PSTR("pts"), attr);
   if (attr) {
@@ -2466,7 +2466,7 @@ void menuModelCurveOne(uint8_t event)
     }
   }
 
-  lcd_putsLeft(7*FH+1, PSTR("Smooth"));
+  lcd_putsLeft(7*FH+1, STR_SMOOTH);
   menu_lcd_onoff(7*FW, 7*FH+1, crv.smooth, m_posVert==3 ? INVERS : 0);
   if (m_posVert==3) crv.smooth = checkIncDecModel(event, crv.smooth, 0, 1);
 
