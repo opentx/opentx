@@ -427,7 +427,12 @@ void ConvertModel_215_to_216(ModelData &model)
   g_model.extendedLimits = oldModel.extendedLimits;
   g_model.extendedTrims = oldModel.extendedTrims;
   g_model.throttleReversed = oldModel.throttleReversed;
+
+#if defined(PCBTARANIS)
+  g_model.beepANACenter = (oldModel.beepANACenter & 0x3f) | ((oldModel.beepANACenter & 0xc0) << 1);
+#else
   g_model.beepANACenter = oldModel.beepANACenter;
+#endif
 
   for (uint8_t i=0; i<64; i++) {
     MixData & mix = g_model.mixData[i];

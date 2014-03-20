@@ -107,7 +107,7 @@
     #define TR_RETA123         "DPGA123ab"
   #endif
 #elif defined(PCBTARANIS)
-  #define TR_RETA123           "DPGA12LR"
+  #define TR_RETA123           "DPGA123LR"
 #else
   #define TR_RETA123           "DPGA123"
 #endif

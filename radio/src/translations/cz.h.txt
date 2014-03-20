@@ -110,7 +110,7 @@
     #define TR_RETA123         "SVPK123ab"
   #endif
 #elif defined(PCBTARANIS)
-  #define TR_RETA123           "SVPK12LR"
+  #define TR_RETA123           "SVPK123LR"
 #else
   #define TR_RETA123           "SVPK123"
 #endif
