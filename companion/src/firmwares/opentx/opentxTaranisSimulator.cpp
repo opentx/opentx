@@ -23,7 +23,6 @@
 #define PCBTARANIS
 #define CPUARM
 #define HELI
-#define TEMPLATES
 #define SPLASH
 #define FLIGHT_MODES
 #define FRSKY
@@ -103,7 +102,6 @@ inline int geteepromsize() {
 #undef SDCARD
 #include "radio/src/simpgmspace.cpp"
 #define SDCARD
-#include "radio/src/templates.cpp"
 #include "radio/src/translations.cpp"
 #include "radio/src/fonts.cpp"
 #include "radio/src/telemetry/frsky_sport.cpp"
