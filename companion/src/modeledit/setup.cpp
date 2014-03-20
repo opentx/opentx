@@ -500,8 +500,10 @@ void Setup::on_trimIncrement_currentIndexChanged(int index)
 
 void Setup::on_throttleSource_currentIndexChanged(int index)
 {
-  model.thrTraceSrc = index;
-  emit modified();
+  if (!lock) {
+    model.thrTraceSrc = ui->throttleSource->itemData(index).toInt();
+    emit modified();
+  }
 }
 
 void Setup::on_name_editingFinished()
@@ -543,12 +545,45 @@ void Setup::on_image_currentIndexChanged(int index)
   }
 }
 
+void Setup::populateThrottleSourceCB()
+{
+  const QString sources9x[] = { QObject::tr("THR"), QObject::tr("P1"), QObject::tr("P2"), QObject::tr("P3")};
+  const QString sourcesTaranis[] = { QObject::tr("THR"), QObject::tr("S1"), QObject::tr("S2"), QObject::tr("S3"), QObject::tr("LS"), QObject::tr("RS")};
+
+  unsigned int i;
+
+  lock = true;
+
+  if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+    for (i=0; i<6; i++) {
+      ui->throttleSource->addItem(sourcesTaranis[i], i);
+    }
+  }
+  else {
+    for (i=0; i<4; i++) {
+      ui->throttleSource->addItem(sources9x[i], i);
+    }
+  }
+
+  if (model.thrTraceSrc < i)
+    ui->throttleSource->setCurrentIndex(model.thrTraceSrc);
+
+  int channels = (IS_ARM(GetEepromInterface()->getBoard()) ? 32 : 16);
+  for (int i=0; i<channels; i++) {
+    ui->throttleSource->addItem(QObject::tr("CH%1").arg(i+1, 2, 10, QChar('0')), THROTTLE_SOURCE_FIRST_CHANNEL+i);
+    if (model.thrTraceSrc == unsigned(THROTTLE_SOURCE_FIRST_CHANNEL+i))
+      ui->throttleSource->setCurrentIndex(ui->throttleSource->count()-1);
+  }
+
+  lock = false;
+}
+
 void Setup::update()
 {
   ui->name->setText(model.name);
 
   ui->throttleReverse->setChecked(model.throttleReversed);
-  populateTTraceCB(ui->throttleSource, model.thrTraceSrc);
+  populateThrottleSourceCB();
   ui->throttleWarning->setChecked(!model.disableThrottleWarning);
 
   //trim inc, thro trim, thro expo, instatrim

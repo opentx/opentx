@@ -52,7 +52,7 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
     ui->BurnFlashButton->setDisabled(true);
     ui->FWFileName->clear();
     ui->DateField->clear();
-    ui->SVNField->clear();
+    ui->versionField->clear();
     ui->ModField->clear();
     ui->FramFWInfo->hide();
     ui->SplashFrame->hide();
@@ -132,7 +132,7 @@ void burnDialog::on_FlashLoadButton_clicked()
   ui->BurnFlashButton->setDisabled(true);
   ui->FWFileName->clear();
   ui->DateField->clear();
-  ui->SVNField->clear();
+  ui->versionField->clear();
   ui->ModField->clear();
   ui->FramFWInfo->hide();
   ui->SplashFrame->hide();
@@ -192,8 +192,8 @@ void burnDialog::checkFw(QString fileName)
   if (flash.isValid()) {
     ui->FramFWInfo->show();
     ui->DateField->setText(flash.getDate() + " " + flash.getTime());
-    ui->SVNField->setText(flash.getSvn());
-    ui->ModField->setText(flash.getBuild());
+    ui->versionField->setText(flash.getVersion().isEmpty() ? flash.getSvn() : flash.getVersion());
+    ui->ModField->setText(flash.getEEprom());
 
     ui->SplashFrame->hide();
     if (flash.hasSplash()) {

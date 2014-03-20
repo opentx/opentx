@@ -83,11 +83,23 @@
 #define LEN_COUNTRYCODES       TR("\002", "\007")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "America""Japan\0 ""Europe\0")
 
+#define LEN_TARANIS_PROTOCOLS  "\004"          
+#define TR_TARANIS_PROTOCOLS   "OFF\0""PPM\0""XJT\0""DSM2"
+
+#define LEN_XJT_PROTOCOLS      "\004"
+#define TR_XJT_PROTOCOLS       "---\0""D16\0""D8\0 ""LR12"
+
+#define LEN_DSM_PROTOCOLS      "\004"
+#define TR_DSM_PROTOCOLS       "LP45""DSM2""DSMX"
+
 #define LEN_VTRIMINC           TR("\006", "\013")
 #define TR_VTRIMINC            TR("Expo\0 ""ExFine""Fine\0 ""Medium""Coarse", "Exponential""Extra Fine\0""Fine\0      ""Medium\0    ""Coarse\0    ")
 
 #define LEN_VBEEPCOUNTDOWN     "\006"
 #define TR_VBEEPCOUNTDOWN      "SilentBeeps\0Voice\0"
+
+#define LEN_CURVE_TYPES        "\010"
+#define TR_CURVE_TYPES         "Standard""Custom\0"
 
 #define LEN_RETA123            "\001"
 
@@ -98,7 +110,7 @@
     #define TR_RETA123         "RETA123ab"
   #endif
 #elif defined(PCBTARANIS)
-  #define TR_RETA123           "RETA12LR"
+  #define TR_RETA123           "RETA123LR"
 #else
   #define TR_RETA123           "RETA123"
 #endif
@@ -503,7 +515,7 @@
 #define TR_RANGE               INDENT "Range"
 #define TR_BAR                 "Bar"
 #define TR_ALARM               INDENT "Alarm"
-#define TR_USRDATA             "UsrData"
+#define TR_USRDATA             TR("UsrData","User Data")
 #define TR_BLADES              INDENT "Blades"
 #define TR_SCREEN              "Screen "
 #define TR_SOUND_LABEL         "Sound"
@@ -584,7 +596,7 @@
 #define TR_MENUDIAG            TR("SWITCHES","SWITCH TEST")
 #define TR_MENUANA             TR("ANAS","ANALOG INPUTS")
 #define TR_MENUCALIBRATION     "CALIBRATION"
-#define TR_TRIMS2OFFSETS       "\006Trims => Offsets"
+#define TR_TRIMS2OFFSETS       "\006Trims => Subtrims"
 #define TR_MENUMODELSEL        TR("MODELSEL","MODEL SELECTION")
 #define TR_MENUSETUP           TR("SETUP","MODEL SETUP")
 #define TR_MENUFLIGHTPHASE     "FLIGHT MODE"
@@ -606,7 +618,9 @@
 #define TR_MENUCURVE           "CURVE"
 #define TR_MENULOGICALSWITCH   "LOGICAL SWITCH"
 #define TR_MENULOGICALSWITCHES "LOGICAL SWITCHES"
-#define TR_MENUCUSTOMFUNC      "CUSTOM FUNCTIONS"
+#define TR_MENUCUSTOMFUNC      "SWITCH ASSIGNMENT"
+#define TR_MENUCUSTOMSCRIPTS   "CUSTOM SCRIPTS"
+#define TR_MENUCUSTOMSCRIPT    "CUSTOM SCRIPT"
 #define TR_MENUTELEMETRY       "TELEMETRY"
 #define TR_MENUTEMPLATES       "TEMPLATES"
 #define TR_MENUSTAT            "STATS"
@@ -619,6 +633,9 @@
 #define TR_LONGITUDE           "Longitude"
 #define TR_GPSCOORD            TR("GPS Coords", "GPS coordinate format")
 #define TR_VARIO               TR("Vario", "Variometer")
+#define TR_PITCH_AT_ZERO       INDENT "Pitch at Zero"
+#define TR_PITCH_AT_MAX        INDENT "Pitch at Max"
+#define TR_REPEAT_AT_ZERO      INDENT "Repeat at Zero"
 #define TR_SHUTDOWN            "SHUTTING DOWN"
 #define TR_BATT_CALIB          "Battery Calib"
 #define TR_CURRENT_CALIB       "Current Calib"
@@ -636,6 +653,7 @@
 #define TR_INCOMPATIBLE        "Incompatible"
 #define TR_WARNING             "WARNING"
 #define TR_EEPROMWARN          "EEPROM"
+#define TR_EEPROM_CONVERTING   "Converting EEPROM"
 #define TR_THROTTLEWARN        "THROTTLE"
 #define TR_ALARMSWARN          "ALARMS"
 #define TR_SWITCHWARN          TR("SWITCH","CONTROL")
@@ -660,11 +678,13 @@
 #define TR_NO_SOUNDS_ON_SD     "No Sounds on SD"
 #define TR_NO_MODELS_ON_SD     "No Models on SD"
 #define TR_NO_BITMAPS_ON_SD    "No Bitmaps on SD"
+#define TR_NO_SCRIPTS_ON_SD    "No Scripts on SD"
 #define TR_PLAY_FILE           "Play"
 #define TR_DELETE_FILE         "Delete"
 #define TR_COPY_FILE           "Copy"
 #define TR_RENAME_FILE         "Rename"
 #define TR_ASSIGN_BITMAP       "Assign Bitmap"
+#define TR_EXECUTE_FILE        "Execute"
 #define TR_REMOVED             " removed"
 #define TR_SD_INFO             "Information"
 #define TR_SD_FORMAT           "Format"
@@ -688,6 +708,8 @@
 #define TR_DATE                "Date"
 #define TR_ROTARY_ENCODER      "R.Encs"
 #define TR_CHANNELS_MONITOR    "CHANNEL MONITOR"
+#define TR_PATH_TOO_LONG       "Path too long"
+#define TR_VIEW_TEXT           "View text"
 #define TR_INTERNALRF          "Internal RF"
 #define TR_EXTERNALRF          "External RF"
 #define TR_FAILSAFE            INDENT "Failsafe mode"
@@ -725,11 +747,26 @@
 #define TR_CHANNELRANGE        INDENT "Channel Range"
 #define TR_LOWALARM            INDENT "Low Alarm"
 #define TR_CRITICALALARM       INDENT "Critical Alarm"
+#define TR_ENABLE_POPUP        "Enable Popup"
+#define TR_DISABLE_POPUP       "Disable Popup"
+#define TR_CURVE_PRESET        "Preset..."
+#define TR_PRESET              "Preset"
+#define TR_MIRROR              "Mirror"
+#define TR_CLEAR               "Clear"
+#define TR_RESET               "Reset"
+#define TR_COUNT               "Count"
+#define TR_PT                  "pt"
+#define TR_PTS                 "pts"
+#define TR_SMOOTH              "Smooth"
+#define TR_COPY_TRIMS_TO_OFS   "Copy Trim To Subtrim"
 #define TR_PERSISTENT_MAH      INDENT "Store mAh"
 #define TR_PREFLIGHT           "Preflight Checks"
 #define TR_CHECKLIST           INDENT "Display Checklist"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 #define TR_UART3MODE           "Serial port"
+#define TR_SCRIPT              "Script"
+#define TR_INPUTS              "Inputs"
+#define TR_OUTPUTS             "Outputs"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL  "Max RSSI"
@@ -822,5 +859,8 @@
 
 #define TR_TOP_BAR             "Top Bar"
 #define TR_ALTITUDE            INDENT "Altitude"
+#define TR_SCALE               "Scale"
+#define TR_VIEW_CHANNELS       "View Channels"
+#define TR_VIEW_NOTES          "View Notes"
 #define TR_MODS_FORBIDDEN      "Modifications forbidden!"
 #define TR_UNLOCKED            "Unlocked"

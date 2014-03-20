@@ -348,3 +348,5 @@ Martyn Coles
 Jose Sobral
 Heung Jin Choi
 Tomasz Janiak
+Fabien Gagné
+Joe Street

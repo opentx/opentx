@@ -388,19 +388,19 @@ void menuGeneralSetup(uint8_t event)
         SLIDER_5POS(y, g_eeGeneral.varioVolume, TR_SPEAKER_VOLUME, event, attr);
         break;
       case ITEM_SETUP_VARIO_PITCH:
-        lcd_putsLeft(y, "\001Pitch at Zero");
+        lcd_putsLeft(y, STR_PITCH_AT_ZERO);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, VARIO_FREQUENCY_ZERO+(g_eeGeneral.varioPitch*10), attr|LEFT);
         lcd_putsAtt(lcdLastPos, y, "Hz", attr);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.varioPitch, -40, 40);
         break;
       case ITEM_SETUP_VARIO_RANGE:
-        lcd_putsLeft(y, "\001Pitch at Max");
+        lcd_putsLeft(y, STR_PITCH_AT_MAX);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, VARIO_FREQUENCY_ZERO+(g_eeGeneral.varioPitch*10)+VARIO_FREQUENCY_RANGE+(g_eeGeneral.varioRange*10), attr|LEFT);
         lcd_putsAtt(lcdLastPos, y, "Hz", attr);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.varioRange, -80, 80);
         break;
       case ITEM_SETUP_VARIO_REPEAT:
-        lcd_putsLeft(y, "\001Repeat at Zero");
+        lcd_putsLeft(y, STR_REPEAT_AT_ZERO);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, VARIO_REPEAT_ZERO+(g_eeGeneral.varioRepeat*10), attr|LEFT);
         lcd_putsAtt(lcdLastPos, y, "ms", attr);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.varioRepeat, -30, 50);
@@ -1041,7 +1041,7 @@ void menuGeneralTrainer(uint8_t event)
     }
 
     if (attr) {
-      if (event==EVT_KEY_FIRST(KEY_MENU)){
+      if (event==EVT_KEY_FIRST(KEY_ENTER)){
         s_editMode = -1;
         memcpy(g_eeGeneral.trainer.calib, g_ppmIns, sizeof(g_eeGeneral.trainer.calib));
         eeDirty(EE_GENERAL);
@@ -1213,10 +1213,10 @@ void menuGeneralHardware(uint8_t event)
         putsMixerSource(sizeof(TR_TYPE)*FW, y, MIXSRC_FIRST_POT+idx);
         uint8_t potType = (g_eeGeneral.potsType & mask) >> shift;
         if (potType == POT_TYPE_NONE && i < 2)
-          potType = 1;
+          potType = POT_TYPE_POT;
         potType = selectMenuItem(HW_SETTINGS_COLUMN, y, STR_TYPE, STR_POTTYPES, potType, 0, POT_TYPE_MAX, attr, event);
         if (potType == POT_TYPE_POT && i < 2)
-          potType = 0;
+          potType = POT_TYPE_NONE;
         g_eeGeneral.potsType &= ~mask;
         g_eeGeneral.potsType |= (potType << shift);
         break;

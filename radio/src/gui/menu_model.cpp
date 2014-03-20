@@ -1134,7 +1134,7 @@ void menuModelSetup(uint8_t event)
       case ITEM_MODEL_THROTTLE_TRACE:
       {
         lcd_putsLeft(y, STR_TTRACE);
-        if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, g_model.thrTraceSrc, NUM_POTS+NUM_CHNOUT);
+        if (attr) CHECK_INCDEC_MODELVAR_ZERO_CHECK(event, g_model.thrTraceSrc, NUM_POTS+NUM_CHNOUT, isThrottleSourceAvailable);
         uint8_t idx = g_model.thrTraceSrc + MIXSRC_Thr;
         if (idx > MIXSRC_Thr)
           idx += 1;
@@ -1285,8 +1285,9 @@ void menuModelSetup(uint8_t event)
 
       case ITEM_MODEL_BEEP_CENTER:
         lcd_putsLeft(y, STR_BEEPCTR);
-        for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS; i++)
+        for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS; i++) {
           lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+i*FW, y, STR_RETA123, i, ((m_posHorz==i) && attr) ? BLINK|INVERS : (((g_model.beepANACenter & ((BeepANACenter)1<<i)) || (attr && m_posHorz<0)) ? INVERS : 0 ) );
+        }
         if (attr && CURSOR_ON_CELL) {
           if (event==EVT_KEY_BREAK(KEY_ENTER) || p1valdiff) {
             if (READ_ONLY_UNLOCKED()) {
@@ -1309,7 +1310,7 @@ void menuModelSetup(uint8_t event)
 
       case ITEM_MODEL_INTERNAL_MODULE_MODE:
         lcd_putsLeft(y, STR_MODE);
-        lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\004""OFF\0""D16\0""D8\0 ""LR12"), 1+g_model.moduleData[0].rfProtocol, attr);
+        lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[0].rfProtocol, attr);
         if (attr) {
           CHECK_INCDEC_MODELVAR(event, g_model.moduleData[0].rfProtocol, RF_PROTO_OFF, RF_PROTO_LAST);
           if (checkIncDec_Ret) {
@@ -1321,11 +1322,11 @@ void menuModelSetup(uint8_t event)
 
       case ITEM_MODEL_EXTERNAL_MODULE_MODE:
         lcd_putsLeft(y, STR_MODULE);
-        lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\004""OFF\0""PPM\0""XJT\0""DSM2"), g_model.externalModule, m_posHorz==0 ? attr : 0);
+        lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, STR_TARANIS_PROTOCOLS, g_model.externalModule, m_posHorz==0 ? attr : 0);
         if (g_model.externalModule == MODULE_TYPE_XJT)
-          lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+5*FW, y, PSTR("\004""OFF\0""D16\0""D8\0 ""LR12"), 1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, m_posHorz==1 ? attr : 0);
+          lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+5*FW, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, m_posHorz==1 ? attr : 0);
         else if (IS_MODULE_DSM2(EXTERNAL_MODULE))
-          lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+5*FW, y, PSTR("\004""LP45""DSM2""DSMX"), g_model.moduleData[EXTERNAL_MODULE].rfProtocol, m_posHorz==1 ? attr : 0);
+          lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+5*FW, y, STR_DSM_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, m_posHorz==1 ? attr : 0);
         if (attr && (editMode>0 || p1valdiff)) {
           switch (m_posHorz) {
             case 0:
@@ -2418,7 +2419,7 @@ void menuModelCurveOne(uint8_t event)
   CurveInfo & crv = g_model.curves[s_curveChan];
   int8_t * points = curveAddress(s_curveChan);
 
-  lcd_puts(9*FW, 0, "pt\003X\006Y");
+  lcd_puts(9*FW, 0, TR_PT "\003X\006Y");
   lcd_filled_rect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
 
   SIMPLE_SUBMENU(STR_MENUCURVE, 4 + 5+crv.points + (crv.type==CURVE_TYPE_CUSTOM ? 5+crv.points-2 : 0));
@@ -2429,7 +2430,7 @@ void menuModelCurveOne(uint8_t event)
 
   uint8_t attr = (m_posVert==1 ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
   lcd_putsLeft(3*FH+1, STR_TYPE);
-  lcd_putsiAtt(INDENT_WIDTH, 4*FH+1, "\010StandardCustom\0", crv.type, attr);
+  lcd_putsiAtt(INDENT_WIDTH, 4*FH+1, STR_CURVE_TYPES, crv.type, attr);
   if (attr) {
     uint8_t newType = checkIncDecModelZero(event, crv.type, CURVE_TYPE_LAST);
     if (newType != crv.type) {
@@ -2445,9 +2446,9 @@ void menuModelCurveOne(uint8_t event)
   }
 
   attr = (m_posVert==2 ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
-  lcd_putsLeft(5*FH+1, "Count");
+  lcd_putsLeft(5*FH+1, STR_COUNT);
   lcd_outdezAtt(INDENT_WIDTH, 6*FH+1, 5+crv.points, LEFT|attr);
-  lcd_putsAtt(lcdLastPos, 6*FH+1, PSTR("pts"), attr);
+  lcd_putsAtt(lcdLastPos, 6*FH+1, STR_PTS, attr);
   if (attr) {
     int8_t count = checkIncDecModel(event, crv.points, -3, 12); // 2pts - 17pts
     if (checkIncDec_Ret) {
@@ -2466,7 +2467,7 @@ void menuModelCurveOne(uint8_t event)
     }
   }
 
-  lcd_putsLeft(7*FH+1, PSTR("Smooth"));
+  lcd_putsLeft(7*FH+1, STR_SMOOTH);
   menu_lcd_onoff(7*FW, 7*FH+1, crv.smooth, m_posVert==3 ? INVERS : 0);
   if (m_posVert==3) crv.smooth = checkIncDecModel(event, crv.smooth, 0, 1);
 
@@ -3809,7 +3810,7 @@ void onLimitsMenu(const char *result)
     ld->revert = false;
     ld->curve = 0;
   }
-  else if (result == STR_COPY_TRIMS_TO_OFFSET) {
+  else if (result == STR_COPY_TRIMS_TO_OFS) {
     copyTrimsToOffset(ch);
   }
 }
@@ -3888,7 +3889,7 @@ void menuModelLimits(uint8_t event)
     if (sub==k && m_posHorz < 0 && event==EVT_KEY_LONG(KEY_ENTER)) {
       killEvents(event);
       MENU_ADD_ITEM(STR_RESET);
-      MENU_ADD_ITEM(STR_COPY_TRIMS_TO_OFFSET);
+      MENU_ADD_ITEM(STR_COPY_TRIMS_TO_OFS);
       menuHandler = onLimitsMenu;
     }
 #else
@@ -4057,7 +4058,7 @@ void menuModelCurvesAll(uint8_t event)
       editName(4*FW, y, g_model.curveNames[k], sizeof(g_model.curveNames[k]), 0, 0);
       CurveInfo & crv = g_model.curves[k];
       lcd_outdezAtt(11*FW, y, 5+crv.points, LEFT);
-      lcd_putsAtt(lcdLastPos, y, PSTR("pts"), 0);
+      lcd_putsAtt(lcdLastPos, y, STR_PTS, 0);
 #endif
     }
   }
@@ -4511,7 +4512,7 @@ void onLogicalSwitchesMenu(const char *result)
     *cs = clipboard.data.csw;
     eeDirty(EE_MODEL);
   }
-  else if (result == STR_DELETE) {
+  else if (result == STR_CLEAR) {
     memset(cs, 0, sizeof(LogicalSwitchData));
     eeDirty(EE_MODEL);
   }
@@ -4539,10 +4540,12 @@ void menuModelLogicalSwitches(uint8_t event)
   if (sub>=0 && horz<0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
     killEvents(event);
     LogicalSwitchData * cs = cswAddress(sub);
-    if (cs->func) MENU_ADD_ITEM(STR_COPY);
+    if (cs->func)
+      MENU_ADD_ITEM(STR_COPY);
     if (clipboard.type == CLIPBOARD_TYPE_CUSTOM_SWITCH)
       MENU_ADD_ITEM(STR_PASTE);
-    if (cs->func || cs->v1 || cs->v2 || cs->delay || cs->duration || cs->andsw) MENU_ADD_ITEM(STR_DELETE);
+    if (cs->func || cs->v1 || cs->v2 || cs->delay || cs->duration || cs->andsw)
+      MENU_ADD_ITEM(STR_CLEAR);
     menuHandler = onLogicalSwitchesMenu;
   }
 #endif
@@ -4692,7 +4695,7 @@ void menuModelLogicalSwitches(uint8_t event)
 
     // CSW delay
     if (cstate == LS_FAMILY_STAY) {
-      lcd_puts(CSW_6TH_COLUMN, y, "N/A");
+      lcd_puts(CSW_6TH_COLUMN, y, STR_NA);
       if (attr && horz == LS_FIELD_DELAY) {
         REPEAT_LAST_CURSOR_MOVE();
       }
@@ -4870,10 +4873,9 @@ void menuModelCustomFunctions(uint8_t event)
        MENU_ADD_ITEM(STR_PASTE);
      if (!CFN_EMPTY(sd) && CFN_EMPTY(&g_model.funcSw[NUM_CFN-1]))
        MENU_ADD_ITEM(STR_INSERT);
-     if (CFN_EMPTY(sd))
-       MENU_ADD_ITEM(STR_DELETE);
-     else
+     if (!CFN_EMPTY(sd))
        MENU_ADD_ITEM(STR_CLEAR);
+     MENU_ADD_ITEM(STR_DELETE);
      menuHandler = onCustomFunctionsMenu;
    }
 #endif
@@ -5205,7 +5207,7 @@ void menuModelCustomScriptOne(uint8_t event)
     uint8_t attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
 
     if (i == ITEM_MODEL_CUSTOMSCRIPT_FILE) {
-      lcd_putsLeft(y, "Script");
+      lcd_putsLeft(y, STR_SCRIPT);
       if (ZEXIST(sd.file))
         lcd_putsnAtt(SCRIPT_ONE_2ND_COLUMN_POS, y, sd.file, sizeof(sd.file), attr);
       else
@@ -5222,11 +5224,11 @@ void menuModelCustomScriptOne(uint8_t event)
       }
     }
     else if (i == ITEM_MODEL_CUSTOMSCRIPT_NAME) {
-      lcd_putsLeft(y, "Name");
+      lcd_putsLeft(y, TR_NAME);
       editName(SCRIPT_ONE_2ND_COLUMN_POS, y, sd.name, sizeof(sd.name), event, attr);
     }
     else if (i == ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL) {
-      lcd_putsLeft(y, "Inputs");
+      lcd_putsLeft(y, STR_INPUTS);
     }
     else if (i <= ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL+scriptInternalData[s_currIdx].inputsCount) {
       int inputIdx = i-ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL-1;
@@ -5249,7 +5251,7 @@ void menuModelCustomScriptOne(uint8_t event)
 
   if (scriptInternalData[s_currIdx].outputsCount > 0) {
     lcd_vline(SCRIPT_ONE_3RD_COLUMN_POS-4, FH+1, LCD_H-FH-1);
-    lcd_puts(SCRIPT_ONE_3RD_COLUMN_POS, FH+1, "Outputs");
+    lcd_puts(SCRIPT_ONE_3RD_COLUMN_POS, FH+1, STR_OUTPUTS);
 
     for (int i=0; i<scriptInternalData[s_currIdx].outputsCount; i++) {
       putsMixerSource(SCRIPT_ONE_3RD_COLUMN_POS+INDENT_WIDTH, FH+1+FH+i*FH, MIXSRC_FIRST_LUA+(s_currIdx*MAX_SCRIPT_OUTPUTS)+i, 0);

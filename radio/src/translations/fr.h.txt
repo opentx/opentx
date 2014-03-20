@@ -37,6 +37,9 @@
  *  \0           -ends actual string
  */
 
+
+
+
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON              "\003"
 #define TR_OFFON               "OFF""ON\0"
@@ -80,11 +83,23 @@
 #define LEN_COUNTRYCODES       TR("\002", "\006")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "USA\0  ""Japon\0""Europe")
 
+#define LEN_TARANIS_PROTOCOLS  "\004"          
+#define TR_TARANIS_PROTOCOLS   "OFF\0""PPM\0""XJT\0""DSM2"
+
+#define LEN_XJT_PROTOCOLS      "\004"
+#define TR_XJT_PROTOCOLS       "---\0""D16\0""D8\0 ""LR12"
+
+#define LEN_DSM_PROTOCOLS      "\004"
+#define TR_DSM_PROTOCOLS       "LP45""DSM2""DSMX"
+
 #define LEN_VTRIMINC           TR("\006","\013")
 #define TR_VTRIMINC            TR("Expo\0 ""ExFin\0""Fin\0  ""Moyen\0""Gros\0 ","Exponentiel""Extra Fin\0 ""Fin\0       ""Moyen\0     ""Grossier\0  ")
 
 #define LEN_VBEEPCOUNTDOWN     "\007"
 #define TR_VBEEPCOUNTDOWN      "Silence""Bips\0  ""Voix\0  "
+
+#define LEN_CURVE_TYPES        "\010"
+#define TR_CURVE_TYPES         "Standard""Libre\0"
 
 #define LEN_RETA123            "\001"
 
@@ -95,7 +110,7 @@
     #define TR_RETA123         "DPGA123ab"
   #endif
 #elif defined(PCBTARANIS)
-  #define TR_RETA123           "DPGA12LR"
+  #define TR_RETA123           "DPGA123LR"
 #else
   #define TR_RETA123           "DPGA123"
 #endif
@@ -314,7 +329,7 @@
 #define TR_VALARMFN            "<>"
 
 #define LEN_VTELPROTO          "\007"
-#define TR_VTELPROTO           "Aucun  ""Hub\0   ""WSHHigh""Halcyon"
+#define TR_VTELPROTO           "Aucun  ""Hub\0   ""WSHHigh"
 
 #define LEN_VOLTSRC            "\003"
 #define TR_VOLTSRC             "---""A1\0""A2\0""FAS""Cel"
@@ -581,7 +596,7 @@
 #define TR_MENUDIAG            TR("INTERS","TEST INTERRUPTEURS")
 #define TR_MENUANA             TR("ANAS","ENTREES ANALOGIQUES")
 #define TR_MENUCALIBRATION     "CALIBRATION"
-#define TR_TRIMS2OFFSETS       "\006Trims => Offsets"
+#define TR_TRIMS2OFFSETS       "\005Trims => Subtrims"
 #define TR_MENUMODELSEL        "MODELES"
 #define TR_MENUSETUP           TR("CONF. MODELE","CONFIGURATION")
 #define TR_MENUFLIGHTPHASE     "PHASE DE VOL"
@@ -604,6 +619,8 @@
 #define TR_MENULOGICALSWITCH   "INTER LOG."
 #define TR_MENULOGICALSWITCHES TR("INTERS LOG.","INTERS LOGIQUES")
 #define TR_MENUCUSTOMFUNC      TR("FONCTIONS SPEC.","FONCTIONS SPECIALES")
+#define TR_MENUCUSTOMSCRIPTS   "SCRIPTS PERSOS"
+#define TR_MENUCUSTOMSCRIPT    "SCRIPT PERSO"
 #define TR_MENUTELEMETRY       "TELEMESURE"
 #define TR_MENUTEMPLATES       "GABARITS"
 #define TR_MENUSTAT            TR("STATS","STATISTIQUES")
@@ -616,6 +633,9 @@
 #define TR_LONGITUDE           "Longitude"
 #define TR_GPSCOORD            TR("Coordonnées","Coordonnées GPS")
 #define TR_VARIO               TR("Vario","Variomètre")
+#define TR_PITCH_AT_ZERO       INDENT "Tonalité au zéro"
+#define TR_PITCH_AT_MAX        INDENT "Tonalité au max"
+#define TR_REPEAT_AT_ZERO      INDENT "Tonalité au zéro"
 #define TR_SHUTDOWN            "ARRET EN COURS"
 #define TR_BATT_CALIB          "Calib. Batterie"
 #define TR_CURRENT_CALIB       "Calib. Courant"
@@ -633,6 +653,7 @@
 #define TR_INCOMPATIBLE        "Incompatible"
 #define TR_WARNING             "ALERTE"
 #define TR_EEPROMWARN          "EEPROM"
+#define TR_EEPROM_CONVERTING   "Conversion EEPROM"
 #define TR_THROTTLEWARN        "GAZ"
 #define TR_ALARMSWARN          "SON"
 #define TR_SWITCHWARN          TR("INTERS","CONTROLES")
@@ -657,11 +678,13 @@
 #define TR_NO_SOUNDS_ON_SD     "Aucun son sur SD"
 #define TR_NO_MODELS_ON_SD     "Aucun modèle SD"
 #define TR_NO_BITMAPS_ON_SD    "Aucun Bitmap SD"
+#define TR_NO_SCRIPTS_ON_SD    "Aucun Script SD"
 #define TR_PLAY_FILE           "Lire"
 #define TR_DELETE_FILE         "Supprimer"
 #define TR_COPY_FILE           "Copier"
 #define TR_RENAME_FILE         "Renommer"
 #define TR_ASSIGN_BITMAP       "Sélectionner image"
+#define TR_EXECUTE_FILE        "Executer"
 #define TR_REMOVED             " supprimé"
 #define TR_SD_INFO             "Information"
 #define TR_SD_FORMAT           "Formater"
@@ -685,6 +708,8 @@
 #define TR_DATE                "Date"
 #define TR_ROTARY_ENCODER      "Enc.Rot."
 #define TR_CHANNELS_MONITOR    "MONITEUR CANAUX"
+#define TR_PATH_TOO_LONG       "Chemin trop long"
+#define TR_VIEW_TEXT           "Voir texte"
 #define TR_INTERNALRF          "HF interne"
 #define TR_EXTERNALRF          "HF externe"
 #define TR_FAILSAFE            INDENT "Type failsafe"
@@ -698,7 +723,7 @@
 #define TR_COPY                "Copier"
 #define TR_MOVE                "Déplacer"
 #define TR_PASTE               "Coller"
-#define TR_DELETE              "Effacer"
+#define TR_DELETE              "Supprimer"
 #define TR_INSERT              "Insérer"
 #define TR_RESET_FLIGHT        TR("Réinit. vol", "Réinitialiser vol")
 #define TR_RESET_TIMER1        TR("Réinit. Timer1", "Réinitialiser Timer1")
@@ -722,11 +747,26 @@
 #define TR_CHANNELRANGE        INDENT "Plage de canaux"
 #define TR_LOWALARM            INDENT "Alarme basse"
 #define TR_CRITICALALARM       INDENT "Alarme critique"
+#define TR_ENABLE_POPUP        "Activer Popup"
+#define TR_DISABLE_POPUP       "Désactiver Popup"
+#define TR_CURVE_PRESET        "Courbe standard..."
+#define TR_PRESET              "Pente"
+#define TR_MIRROR              "Miroir"
+#define TR_CLEAR               "Effacer"
+#define TR_RESET               "Réinitialiser"
+#define TR_COUNT               "Nb points"
+#define TR_PT                  "pt"
+#define TR_PTS                 "pts"
+#define TR_SMOOTH              "Lissage"
+#define TR_COPY_TRIMS_TO_OFS   "Trim vers subtrim"
 #define TR_PERSISTENT_MAH      TR(INDENT "Enr. mAh", INDENT "Enregistrer mAh")
 #define TR_PREFLIGHT           "Vérifications avant vol"
 #define TR_CHECKLIST           INDENT "Afficher notes"
 #define TR_FAS_OFFSET          TR(INDENT "Corr FAS", INDENT "Correction FAS")
 #define TR_UART3MODE           "Port série"
+#define TR_SCRIPT              "Script"
+#define TR_INPUTS              "Entrées"
+#define TR_OUTPUTS             "Sorties"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL  "RSSI Max"
@@ -810,14 +850,17 @@
 #define TR_CHR_LONG            'l'
 #define TR_CHR_TOGGLE          't'
 #define TR_CHR_HOUR            'h'
-#define TR_CHR_INPUT  'E'   // Values between A-I will work
+#define TR_CHR_INPUT           'E'   // Values between A-I will work
 
-#define TR_BEEP_VOLUME         "Beep Volume"
-#define TR_WAV_VOLUME          "Wav Volume"
-#define TR_VARIO_VOLUME        "Vario Volume"
-#define TR_BG_VOLUME           "Bg Volume"
+#define TR_BEEP_VOLUME         "Volume bips"
+#define TR_WAV_VOLUME          "Volume audio"
+#define TR_VARIO_VOLUME        "Volume vario"
+#define TR_BG_VOLUME           "Volume musique"
 
 #define TR_TOP_BAR             "Barre titre"
 #define TR_ALTITUDE            INDENT "Altitude"
+#define TR_SCALE               "Echelle"
+#define TR_VIEW_CHANNELS       "Voir Voies"
+#define TR_VIEW_NOTES          "Voir Notes"
 #define TR_MODS_FORBIDDEN      "Modifications désactivées!"
 #define TR_UNLOCKED            "Déverrouillé"

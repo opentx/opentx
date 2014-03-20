@@ -1606,6 +1606,22 @@ PACK(typedef struct {
   #define AVR_FIELD(x) x;
 #endif
 
+enum ThrottleSources {
+  THROTTLE_SOURCE_THR,
+#if defined(PCBTARANIS)
+  THROTTLE_SOURCE_S1,
+  THROTTLE_SOURCE_S2,
+  THROTTLE_SOURCE_S3,
+  THROTTLE_SOURCE_LS,
+  THROTTLE_SOURCE_RS,
+#else
+  THROTTLE_SOURCE_P1,
+  THROTTLE_SOURCE_P2,
+  THROTTLE_SOURCE_P3,
+#endif
+  THROTTLE_SOURCE_CH1,
+};
+
 PACK(typedef struct t_ModelData {
   ModelHeader header;
   TimerData timers[MAX_TIMERS];

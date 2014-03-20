@@ -1473,6 +1473,15 @@ bool isSwitchAvailable(int swtch)
   return true;
 }
 
+bool isThrottleSourceAvailable(int source)
+{
+#if defined(PCBTARANIS)
+  if (source == THROTTLE_SOURCE_S3 && !IS_POT_AVAILABLE(POT3))
+    return false;
+#endif
+  return true;
+}
+
 bool isLogicalSwitchFunctionAvailable(int function)
 {
   return function != LS_FUNC_RANGE;

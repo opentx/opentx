@@ -68,6 +68,7 @@ MdiChild::MdiChild():
   fileChanged(false)
 {
   ui->setupUi(this);
+
   this->setWindowIcon(CompanionIcon("open.png"));
   ui->SimulateTxButton->setIcon(CompanionIcon("simulate.png"));
   setAttribute(Qt::WA_DeleteOnClose);
@@ -166,7 +167,8 @@ void MdiChild::OpenEditWindow(bool wizard=false)
         ret = QMessageBox::question(this, tr("Companion"), tr("Do you want to use model wizard? "), QMessageBox::Yes | QMessageBox::No);
         if (ret == QMessageBox::Yes) {
           wizard=true;
-        } else {
+        }
+        else {
           qSleep(500);
           ret = QMessageBox::question(this, tr("Companion"), tr("Ask this question again ? "), QMessageBox::Yes | QMessageBox::No);
           if (ret == QMessageBox::No) {
@@ -496,7 +498,8 @@ void MdiChild::writeEeprom()  // write to Tx
       }
       backupEnable=false;
     }
-  } else {
+  }
+  else {
     backupEnable=false;
   }
   QString stickCal=g.profile[g.id()].stickPotCalib();
@@ -632,7 +635,8 @@ void MdiChild::print(int model, QString filename)
     
     printDialog *pd = new printDialog(this, &radioData.generalSettings, &radioData.models[model], filename);
     pd->show();    
-  } else {
+  }
+  else {
     if(ui->modelsList->currentRow()<1) return;
     printDialog *pd = new printDialog(this, &radioData.generalSettings, &radioData.models[ui->modelsList->currentRow()-1]);
     pd->show();
@@ -671,9 +675,8 @@ bool MdiChild::loadBackup()
                               .arg(file.errorString()));
         return false;
     }
-    uint8_t *eeprom = (uint8_t *)malloc(eeprom_size);
-    memset(eeprom, 0, eeprom_size);
-    long result = file.read((char*)eeprom, eeprom_size);
+    QByteArray eeprom(eeprom_size, 0);
+    long result = file.read((char*)eeprom.data(), eeprom_size);
     file.close();
 
     if (result != eeprom_size) {
@@ -685,7 +688,7 @@ bool MdiChild::loadBackup()
         return false;
     }
 
-    if (!LoadBackup(radioData, eeprom, eeprom_size, index)) {
+    if (!LoadBackup(radioData, (uint8_t *)eeprom.data(), eeprom_size, index)) {
       QMessageBox::critical(this, tr("Error"),
           tr("Invalid binary backup File %1")
           .arg(fileName));
@@ -693,6 +696,6 @@ bool MdiChild::loadBackup()
     }
 
     ui->modelsList->refreshList();
-    free(eeprom);
+
     return true;
 }

@@ -63,27 +63,6 @@ void populateVoiceLangCB(QComboBox *b, QString language)
   }
 }
 
-void populateTTraceCB(QComboBox *b, int value)
-{
-  const QString strings9x[] = { QObject::tr("THR"), QObject::tr("P1"), QObject::tr("P2"), QObject::tr("P3")};
-  const QString stringstaranis[] = { QObject::tr("THR"), QObject::tr("S1"), QObject::tr("S2"), QObject::tr("LS"), QObject::tr("RS")};
-  b->clear();
-  if (IS_TARANIS(GetEepromInterface()->getBoard())) {
-    for (int i=0; i< 5; i++) {
-      b->addItem(stringstaranis[i]);
-    }
-  } else {
-    for (int i=0; i< 4; i++) {
-      b->addItem(strings9x[i]);
-    }
-  }
-  int channels=(IS_ARM(GetEepromInterface()->getBoard()) ? 32 : 16);
-  for (int i=1; i<= channels; i++) {
-    b->addItem(QObject::tr("CH%1").arg(i, 2, 10, QChar('0')));
-  }
-  b->setCurrentIndex(value);
-}
-
 void populateRotEncCB(QComboBox *b, int value, int renumber)
 {
   QString strings[] = { QObject::tr("No"), QObject::tr("RotEnc A"), QObject::tr("Rot Enc B"), QObject::tr("Rot Enc C"), QObject::tr("Rot Enc D"), QObject::tr("Rot Enc E")};

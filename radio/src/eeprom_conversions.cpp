@@ -427,7 +427,12 @@ void ConvertModel_215_to_216(ModelData &model)
   g_model.extendedLimits = oldModel.extendedLimits;
   g_model.extendedTrims = oldModel.extendedTrims;
   g_model.throttleReversed = oldModel.throttleReversed;
+
+#if defined(PCBTARANIS)
+  g_model.beepANACenter = (oldModel.beepANACenter & 0x3f) | ((oldModel.beepANACenter & 0xc0) << 1);
+#else
   g_model.beepANACenter = oldModel.beepANACenter;
+#endif
 
   for (uint8_t i=0; i<64; i++) {
     MixData & mix = g_model.mixData[i];
@@ -723,6 +728,11 @@ void ConvertModel_215_to_216(ModelData &model)
 #endif
   }
   g_model.thrTraceSrc = oldModel.thrTraceSrc;
+#if defined(PCBTARANIS)
+  // S3 added
+  if (g_model.thrTraceSrc >= THROTTLE_SOURCE_S3)
+    g_model.thrTraceSrc += 1;
+#endif
   g_model.switchWarningStates = oldModel.switchWarningStates >> 1;
   g_model.nSwToWarn = (oldModel.switchWarningStates & 0x01) ? 0xFF : 0;
   for (uint8_t i=0; i<5; i++) {
@@ -779,7 +789,7 @@ bool eeConvert()
   ALERT(STR_EEPROMWARN, msg, AU_BAD_EEPROM);
 
   // Message
-  MESSAGE(STR_EEPROMWARN, PSTR("EEPROM Converting"), NULL, AU_EEPROM_FORMATTING); // TODO translations
+  MESSAGE(STR_EEPROMWARN, STR_EEPROM_CONVERTING, NULL, AU_EEPROM_FORMATTING); // TODO translations
 
   // General Settings conversion
 #if defined(PCBTARANIS)

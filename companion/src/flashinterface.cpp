@@ -13,6 +13,7 @@
  * GNU General Public License for more details.
  *
  */
+
 #include <QtGui>
 #include "hexinterface.h"
 #include "splash.h"
@@ -20,192 +21,77 @@
 
 int getFileType(const QString &fullFileName)
 {
-  if(QFileInfo(fullFileName).suffix().toUpper()=="HEX")  return FILE_TYPE_HEX;
-  if(QFileInfo(fullFileName).suffix().toUpper()=="BIN")  return FILE_TYPE_BIN;
-  if(QFileInfo(fullFileName).suffix().toUpper()=="EEPM") return FILE_TYPE_EEPM;
-  if(QFileInfo(fullFileName).suffix().toUpper()=="EEPE") return FILE_TYPE_EEPE;
-  if(QFileInfo(fullFileName).suffix().toUpper()=="XML") return FILE_TYPE_XML;
-  return 0;
+  QString suffix = QFileInfo(fullFileName).suffix().toUpper();
+  if (suffix == "HEX")
+    return FILE_TYPE_HEX;
+  else if (suffix == "BIN")
+    return FILE_TYPE_BIN;
+  else if (suffix == "EEPM")
+    return FILE_TYPE_EEPM;
+  else if (suffix == "EEPE")
+    return FILE_TYPE_EEPE;
+  else if (suffix == "XML")
+    return FILE_TYPE_XML;
+  else
+    return 0;
 }
 
-FlashInterface::FlashInterface(QString fileName)
+FlashInterface::FlashInterface(QString fileName):
+  flash(MAX_FSIZE, 0),
+  flash_size(0),
+  isValidFlag(false)
 {
-  char * temp = (char *)malloc(MAX_FSIZE);
-  date = "";
-  time = "";
-  svn = "";
-  build = "";
-  isValidFlag = true;
   QFile file(fileName);
-  flash_size=0;
-  if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) { //reading HEX TEXT file
-    isValidFlag = false;
-  }
-  else {
+  if (file.open(QIODevice::ReadOnly | QIODevice::Text)) { //reading HEX TEXT file
     QTextStream inputStream(&file);
-    flash_size = HexInterface(inputStream).load((uint8_t *)temp, MAX_FSIZE);
+    flash_size = HexInterface(inputStream).load((uint8_t *)flash.data(), MAX_FSIZE);
     file.close();
-    inputStream.reset();
     if (flash_size == 0) {
-      QFile file(fileName);
       file.open(QIODevice::ReadOnly);
-      char * bin_flash = (char *)malloc(MAX_FSIZE);
-      flash_size = file.read(bin_flash, MAX_FSIZE);
-      flash = QByteArray(bin_flash, flash_size);
-      free(bin_flash);
-    }
-    else {
-      flash = QByteArray(temp, flash_size);
+      flash_size = file.read((char *)flash.data(), MAX_FSIZE);
     }
     if (flash_size > 0) {
-      SeekSvn();
-      SeekDate();
-      SeekTime();
-      SeekBuild();
+      svn = seekLabel(SVN_MARK);
+      version = seekLabel(VERS_MARK);
+      date = seekLabel(DATE_MARK);
+      time = seekLabel(TIME_MARK);
+      eeprom = seekLabel(EEPR_MARK);
       SeekSplash();
-    }
-    else {
-      isValidFlag = false;
+      isValidFlag = true;
     }
   }
-  free(temp);
 }
 
-QString FlashInterface::getDate(void)
+QString FlashInterface::seekString(const QString & string)
 {
-  return date;
-}
+  QString result = "";
 
-QString FlashInterface::getTime(void)
-{
-  return time;
-}
-
-QString FlashInterface::getSvn(void)
-{
-  return svn;
-}
-
-QString FlashInterface::getBuild(void)
-{
-  return build;
-}
-
-int FlashInterface::getSize()
-{
-  return flash_size;
-}
-
-void FlashInterface::SeekSvn(void) 
-{
-  int i, start = -1, end = -1;
-  start = flash.indexOf(QString(SVN_MARK));
+  int start = flash.indexOf(string);
   if (start > 0) {
-    start += QString(SVN_MARK).length();
-    for (i = start; i < (start + 20); i++) {
-      if (flash.at(i) == 0) {
+    start += string.length();
+    int end = -1;
+    for (int i=start; i<start+20; i++) {
+      char c = flash.at(i);
+      if (c == '\0' || c == '\036') {
         end = i;
         break;
       }
     }
     if (end > 0) {
-      svn = QString(flash.mid(start, (end - start))).trimmed();
-    }
-    else {
-      svn = QString("");
+      result = flash.mid(start, (end - start)).trimmed();
     }
   }
+
+  return result;
 }
 
-void FlashInterface::SeekDate(void) 
+QString FlashInterface::seekLabel(const QString & label)
 {
-  int i, start = -1, end = -1, startsvn=0;
-  startsvn = flash.indexOf(QString(SVN_MARK));
-  if (startsvn>0) {
-    start = flash.indexOf(QString(DATE_MARK),startsvn);
-  } else {
-    start = flash.indexOf(QString(DATE_MARK));
-  }
-  if (start > 0) {
-    start += QString(DATE_MARK).length();
-    for (i = start; i < (start + 20); i++) {
-      if (flash.at(i) == 0) {
-        end = i;
-        break;
-      }
-    }
-    if (end > 0) {
-      date = QString(flash.mid(start, (end - start))).trimmed();
-    }
-    else {
-      date = QString("");
-    }
-  }
-}
+  QString result = seekString(label + "\037\033:");
+  if (!result.isEmpty())
+    return result;
 
-void FlashInterface::SeekTime(void)
-{
-  int i, start = -1, end = -1, startsvn=0;
-  startsvn = flash.indexOf(QString(SVN_MARK));
-  if (startsvn>0) {
-    start = flash.indexOf(QString(TIME_MARK),startsvn);
-  } else {
-    start = flash.indexOf(QString(TIME_MARK));
-  }
-  if (start > 0) {
-    start += QString(TIME_MARK).length();
-    for (i = start; i < (start + 20); i++) {
-      if (flash.at(i) == 0) {
-        end = i;
-        break;
-      }
-    }
-    if (end > 0) {
-      time = QString(flash.mid(start, (end - start))).trimmed();
-    }
-    else {
-      time = QString("");
-    }
-  }
-}
-
-void FlashInterface::SeekBuild(void) 
-{
-  int i, start = -1, end = -1;
-  start = flash.indexOf(QString(BLD_MARK));
-  if (start > 0) {
-    start += QString(BLD_MARK).length();
-    for (i = start; i < (start + 20); i++) {
-      if (flash.at(i) == 0) {
-        end = i;
-        break;
-      }
-    }
-    if (end > 0) {
-      build = QString(flash.mid(start, (end - start))).trimmed();
-    }
-    else {
-      build = QString("");
-    }
-  }
-  else {
-    start = flash.indexOf(QString(VAR_MARK));
-    if (start > 0) {
-      start += QString(VAR_MARK).length();
-      for (i = start; i < (start + 20); i++) {
-        if (flash.at(i) == 0) {
-          end = i;
-          break;
-        }
-      }
-      if (end > 0) {
-        build = QString(flash.mid(start, (end - start))).trimmed();
-      }
-      else {
-        build = QString("");
-      }
-    }
-  }
+  return seekString(label + ":");
 }
 
 void FlashInterface::SeekSplash(void) 

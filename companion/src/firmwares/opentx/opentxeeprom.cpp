@@ -294,6 +294,32 @@ class SourcesConversionTable: public ConversionTable {
     }
 };
 
+ThrottleSourceConversionTable::ThrottleSourceConversionTable(BoardEnum board, unsigned int version)
+{
+  int val=0;
+
+  addConversion(THROTTLE_SOURCE_THR, val++);
+
+  if (IS_TARANIS(board)) {
+    addConversion(THROTTLE_SOURCE_S1, val++);
+    addConversion(THROTTLE_SOURCE_S2, val++);
+    if (version >= 216)
+      addConversion(THROTTLE_SOURCE_S3, val++);
+    addConversion(THROTTLE_SOURCE_LS, val++);
+    addConversion(THROTTLE_SOURCE_RS, val++);
+  }
+  else {
+    addConversion(THROTTLE_SOURCE_P1, val++);
+    addConversion(THROTTLE_SOURCE_P2, val++);
+    addConversion(THROTTLE_SOURCE_P3, val++);
+  }
+
+  for (int i=0; i<MAX_CHANNELS(board, version); i++) {
+    addConversion(THROTTLE_SOURCE_FIRST_CHANNEL+i, val++);
+  }
+}
+
+
 template <int N>
 class SwitchField: public ConversionField< SignedField<N> > {
   public:
@@ -2175,7 +2201,8 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   board(board),
   version(version),
   variant(variant),
-  protocolsConversionTable(board)
+  protocolsConversionTable(board),
+  throttleSourceConversionTable(board, version)
 {
   sprintf(name, "Model %s", modelData.name);
 
@@ -2285,7 +2312,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
     internalField.Append(new SignedField<8>(modelData.moduleData[0].ppmFrameLength));
   }
 
-  internalField.Append(new UnsignedField<8>(modelData.thrTraceSrc));
+  internalField.Append(new ConversionField< UnsignedField<8> >(modelData.thrTraceSrc, &throttleSourceConversionTable, "Throttle Source"));
 
   if (!afterrelease21March2013) {
     internalField.Append(new UnsignedField<8>(modelData.modelId));
@@ -2565,8 +2592,8 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
     }
     if (IS_TARANIS(board) && version >= 216) {
       internalField.Append(new UnsignedField<8>(generalData.hw_uartMode));
-      for (int i=0; i<8; i++) {
-        internalField.Append(new UnsignedField<1>(generalData.potsType[i]));
+      for (int i=0; i<4; i++) {
+        internalField.Append(new UnsignedField<2>(potsType[i]));
       }
     }
   }
@@ -2585,6 +2612,11 @@ void OpenTxGeneralData::beforeExport()
       sum += generalData.calibSpanPos[i];
       if (++count == 12) break;
     }
+    for (int i=0; i<4; i++) {
+      potsType[i] = generalData.potsType[i];
+      if (i<2 && potsType[i] == 1)
+        potsType[i] = 0;
+    }
   }
   else {
     for (int i=0; i<inputsCount; i++)
@@ -2597,4 +2629,8 @@ void OpenTxGeneralData::beforeExport()
 
 void OpenTxGeneralData::afterImport()
 {
+  for (int i=0; i<4; i++) {
+    if (i<2 && generalData.potsType[i] == 0)
+      generalData.potsType[i] = 1;
+  }
 }
