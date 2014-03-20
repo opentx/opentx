@@ -619,8 +619,8 @@
 #define TR_MENULOGICALSWITCH    "PRZEŁ. LOGICZNY"
 #define TR_MENULOGICALSWITCHES   TR("PRZEŁ. LOG.", "PRZEŁ. LOGICZNE")
 #define TR_MENUCUSTOMFUNC      "FUNKCJE SPECJALNE"
-#define TR_MENUCUSTOMSCRIPTS   "CUSTOM SCRIPTS"
-#define TR_MENUCUSTOMSCRIPT    "CUSTOM SCRIPT"
+#define TR_MENUCUSTOMSCRIPTS   "WŁASNE SKRYPTY"
+#define TR_MENUCUSTOMSCRIPT    "WŁASNY SKRYPT"
 #define TR_MENUTELEMETRY       "TELEMETRIA"
 #define TR_MENUTEMPLATES       "SZABLONY"
 #define TR_MENUSTAT            "STATYSTYKA"
@@ -653,7 +653,7 @@
 #define TR_INCOMPATIBLE        "Niekompatybilne"
 #define TR_WARNING             "UWAGA"
 #define TR_EEPROMWARN          "EEPROM"
-#define TR_EEPROM_CONVERTING   "EEPROM Converting"
+#define TR_EEPROM_CONVERTING   "Konwersja EEPROM"
 #define TR_THROTTLEWARN        "GAZ"
 #define TR_ALARMSWARN          "ALARM"
 #define TR_SWITCHWARN          "Przełącznik"
@@ -684,7 +684,7 @@
 #define TR_COPY_FILE           "Kopiuj"
 #define TR_RENAME_FILE         "Zmień nazwę"
 #define TR_ASSIGN_BITMAP       "Wybierz obrazek"
-#define TR_EXECUTE_FILE        "Execute"
+#define TR_EXECUTE_FILE        "Wykonaj"
 #define TR_REMOVED             " skasowane"
 #define TR_SD_INFO             "Informacje"
 #define TR_SD_FORMAT           "Formatuj"
@@ -708,8 +708,8 @@
 #define TR_DATE                "Data"
 #define TR_ROTARY_ENCODER      "R.Encs"
 #define TR_CHANNELS_MONITOR    "MONITOR KANAŁÓW"
-#define TR_PATH_TOO_LONG       "Path too long"
-#define TR_VIEW_TEXT           "View text"
+#define TR_PATH_TOO_LONG       "Ścieżka za długa"
+#define TR_VIEW_TEXT           "Pokaż tekst"
 #define TR_INTERNALRF          "Wewnętrzny moduł RF"
 #define TR_EXTERNALRF          "Zewnętrzny moduł RF"
 #define TR_FAILSAFE            "Tryb Failsafe"
@@ -747,21 +747,21 @@
 #define TR_CHANNELRANGE        INDENT "Zakres kanału"
 #define TR_LOWALARM            INDENT "Alarm niski"
 #define TR_CRITICALALARM       INDENT "Alarm krytyczny"
-#define TR_ENABLE_POPUP        "Enable Popup"
-#define TR_DISABLE_POPUP       "Disable Popup"
+#define TR_ENABLE_POPUP        "Aktywuj Popup"
+#define TR_DISABLE_POPUP       "Wyłącz Popup"
 #define TR_CURVE_PRESET        "Preset..."
 #define TR_PRESET              "Preset"
-#define TR_MIRROR              "Mirror"
-#define TR_CLEAR               "Clear"
-#define TR_RESET               "Reset"
-#define TR_COUNT               "Count"
+#define TR_MIRROR              "Lutro"
+#define TR_CLEAR               "Wyczyść"
+#define TR_RESET               "Resetuj"
+#define TR_COUNT               "Licz"
 #define TR_PT                  "pt"
 #define TR_PTS                 "pts"
-#define TR_SMOOTH              "Smooth"
-#define TR_COPY_TRIMS_TO_OFS   "Copy Trims To Offset"
+#define TR_SMOOTH              "Gładka"
+#define TR_COPY_TRIMS_TO_OFS   "Skopiuj Trymery Do Offsetu"
 #define TR_PERSISTENT_MAH      INDENT "Zapisz mAh"
-#define TR_PREFLIGHT           "Preflight Checks"
-#define TR_CHECKLIST           INDENT "Display Checklist"
+#define TR_PREFLIGHT           "Lista Startowa"
+#define TR_CHECKLIST           INDENT "Pokaż Listę Startową"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 #define TR_UART3MODE           "Port szreg."
 
@@ -843,8 +843,8 @@
 #define TR_ABOUT_PARENTS_3     "ER9X (Erez Raviv)"
 #define TR_ABOUT_PARENTS_4     "TH9X (Thomas Husterer)"
 
-#define TR_CHR_SHORT  's'
-#define TR_CHR_LONG   'l'
+#define TR_CHR_SHORT  'k'
+#define TR_CHR_LONG   'd'
 #define TR_CHR_TOGGLE 't'
 #define TR_CHR_HOUR   'h'
 #define TR_CHR_INPUT  'I'   // Values between A-I will work
@@ -856,8 +856,8 @@
 
 #define TR_TOP_BAR             "Górny Pasek"
 #define TR_ALTITUDE            INDENT "Wysokość"
-#define TR_SCALE               "Scale"
-#define TR_VIEW_CHANNELS       "View Channels"
-#define TR_VIEW_NOTES          "View Notes"
+#define TR_SCALE               "Skala"
+#define TR_VIEW_CHANNELS       "Pokaż Kanały"
+#define TR_VIEW_NOTES          "Pokaż Notki"
 #define TR_MODS_FORBIDDEN      "Modyfikacje zabronione!"
 #define TR_UNLOCKED            "Odblokowane"
