@@ -4515,7 +4515,7 @@ void onLogicalSwitchesMenu(const char *result)
     *cs = clipboard.data.csw;
     eeDirty(EE_MODEL);
   }
-  else if (result == STR_DELETE) {
+  else if (result == STR_CLEAR) {
     memset(cs, 0, sizeof(LogicalSwitchData));
     eeDirty(EE_MODEL);
   }
@@ -4543,10 +4543,12 @@ void menuModelLogicalSwitches(uint8_t event)
   if (sub>=0 && horz<0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
     killEvents(event);
     LogicalSwitchData * cs = cswAddress(sub);
-    if (cs->func) MENU_ADD_ITEM(STR_COPY);
+    if (cs->func)
+      MENU_ADD_ITEM(STR_COPY);
     if (clipboard.type == CLIPBOARD_TYPE_CUSTOM_SWITCH)
       MENU_ADD_ITEM(STR_PASTE);
-    if (cs->func || cs->v1 || cs->v2 || cs->delay || cs->duration || cs->andsw) MENU_ADD_ITEM(STR_DELETE);
+    if (cs->func || cs->v1 || cs->v2 || cs->delay || cs->duration || cs->andsw)
+      MENU_ADD_ITEM(STR_CLEAR);
     menuHandler = onLogicalSwitchesMenu;
   }
 #endif
@@ -4874,10 +4876,9 @@ void menuModelCustomFunctions(uint8_t event)
        MENU_ADD_ITEM(STR_PASTE);
      if (!CFN_EMPTY(sd) && CFN_EMPTY(&g_model.funcSw[NUM_CFN-1]))
        MENU_ADD_ITEM(STR_INSERT);
-     if (CFN_EMPTY(sd))
-       MENU_ADD_ITEM(STR_DELETE);
-     else
+     if (!CFN_EMPTY(sd))
        MENU_ADD_ITEM(STR_CLEAR);
+     MENU_ADD_ITEM(STR_DELETE);
      menuHandler = onCustomFunctionsMenu;
    }
 #endif
