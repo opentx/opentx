@@ -80,6 +80,15 @@
 #define LEN_COUNTRYCODES       TR("\002", "\006")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "USA\0  ""Japon\0""Europe")
 
+#define LEN_TARANIS_PROTOCOLS  "\004"          
+#define TR_TARANIS_PROTOCOLS   "OFF\0""PPM\0""XJT\0""DSM2"
+
+#define LEN_XJT_PROTOCOLS      "\004"
+#define TR_XJT_PROTOCOLS       "---\0""D16\0""D8\0 ""LR12"
+
+#define LEN_DSM_PROTOCOLS      "\004"
+#define TR_DSM_PROTOCOLS       "LP45""DSM2""DSMX"
+
 #define LEN_VTRIMINC           TR("\006","\013")
 #define TR_VTRIMINC            TR("Expo\0 ""ExFin\0""Fin\0  ""Moyen\0""Gros\0 ","Exponentiel""Extra Fin\0 ""Fin\0       ""Moyen\0     ""Grossier\0  ")
 
