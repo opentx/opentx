@@ -121,6 +121,7 @@ private slots:
     
     void on_pot1Type_currentIndexChanged(int index);
     void on_pot2Type_currentIndexChanged(int index);
+    void on_pot3Type_currentIndexChanged(int index);
 
     void on_stickmodeCB_currentIndexChanged(int index);
     void on_channelorderCB_currentIndexChanged(int index);

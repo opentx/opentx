@@ -1213,10 +1213,10 @@ void menuGeneralHardware(uint8_t event)
         putsMixerSource(sizeof(TR_TYPE)*FW, y, MIXSRC_FIRST_POT+idx);
         uint8_t potType = (g_eeGeneral.potsType & mask) >> shift;
         if (potType == POT_TYPE_NONE && i < 2)
-          potType = 1;
+          potType = POT_TYPE_POT;
         potType = selectMenuItem(HW_SETTINGS_COLUMN, y, STR_TYPE, STR_POTTYPES, potType, 0, POT_TYPE_MAX, attr, event);
         if (potType == POT_TYPE_POT && i < 2)
-          potType = 0;
+          potType = POT_TYPE_NONE;
         g_eeGeneral.potsType &= ~mask;
         g_eeGeneral.potsType |= (potType << shift);
         break;

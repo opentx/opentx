@@ -65,6 +65,7 @@ class OpenTxGeneralData: public TransformedField {
     unsigned int version;
     int inputsCount;
     unsigned int chkSum;
+    unsigned int potsType[4];
 };
 
 class ProtocolsConversionTable: public ConversionTable

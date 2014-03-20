@@ -2595,8 +2595,8 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
     }
     if (IS_TARANIS(board) && version >= 216) {
       internalField.Append(new UnsignedField<8>(generalData.hw_uartMode));
-      for (int i=0; i<8; i++) {
-        internalField.Append(new UnsignedField<1>(generalData.potsType[i]));
+      for (int i=0; i<4; i++) {
+        internalField.Append(new UnsignedField<2>(potsType[i]));
       }
     }
   }
@@ -2615,6 +2615,11 @@ void OpenTxGeneralData::beforeExport()
       sum += generalData.calibSpanPos[i];
       if (++count == 12) break;
     }
+    for (int i=0; i<4; i++) {
+      potsType[i] = generalData.potsType[i];
+      if (i<2 && potsType[i] == 1)
+        potsType[i] = 0;
+    }
   }
   else {
     for (int i=0; i<inputsCount; i++)
@@ -2627,4 +2632,8 @@ void OpenTxGeneralData::beforeExport()
 
 void OpenTxGeneralData::afterImport()
 {
+  for (int i=0; i<4; i++) {
+    if (i<2 && generalData.potsType[i] == 0)
+      generalData.potsType[i] = 1;
+  }
 }

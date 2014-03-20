@@ -369,6 +369,7 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
     if (GetEepromInterface()->getCapability(MultiposPots)) {
       ui->pot1Type->setCurrentIndex(g_eeGeneral.potsType[0]);
       ui->pot2Type->setCurrentIndex(g_eeGeneral.potsType[1]);
+      ui->pot3Type->setCurrentIndex(g_eeGeneral.potsType[2]);
     }
     else {
       ui->potsTypeSeparator->hide();
@@ -376,6 +377,8 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
       ui->pot1TypeLabel->hide();
       ui->pot2Type->hide();
       ui->pot2TypeLabel->hide();
+      ui->pot3Type->hide();
+      ui->pot3TypeLabel->hide();
     }
 }
 
@@ -393,6 +396,12 @@ void GeneralEdit::on_pot1Type_currentIndexChanged(int index)
 void GeneralEdit::on_pot2Type_currentIndexChanged(int index)
 {
   g_eeGeneral.potsType[1] = index;
+  updateSettings();
+}
+
+void GeneralEdit::on_pot3Type_currentIndexChanged(int index)
+{
+  g_eeGeneral.potsType[2] = index;
   updateSettings();
 }
 
