@@ -820,5 +820,8 @@
 
 #define TR_TOP_BAR             "Górny Pasek"
 #define TR_ALTITUDE            INDENT "Wysokość"
+#define TR_SCALE               "Scale"
+#define TR_VIEW_CHANNELS       "View Channels"
+#define TR_VIEW_NOTES          "View Notes"
 #define TR_MODS_FORBIDDEN      "Modyfikacje zabronione!"
 #define TR_UNLOCKED            "Odblokowane"

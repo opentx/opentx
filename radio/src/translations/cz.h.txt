@@ -822,5 +822,8 @@
 
 #define TR_TOP_BAR             "Horní lišta"
 #define TR_ALTITUDE            INDENT "Výška"
+#define TR_SCALE               "Scale"
+#define TR_VIEW_CHANNELS       "View Channels"
+#define TR_VIEW_NOTES          "View Notes"
 #define TR_MODS_FORBIDDEN      "Změny nejsou povoleny!"
 #define TR_UNLOCKED            "Odemčeno"

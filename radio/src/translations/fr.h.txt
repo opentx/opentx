@@ -827,5 +827,8 @@
 
 #define TR_TOP_BAR             "Barre titre"
 #define TR_ALTITUDE            INDENT "Altitude"
+#define TR_SCALE               "Scale"
+#define TR_VIEW_CHANNELS       "View Channels"
+#define TR_VIEW_NOTES          "View Notes"
 #define TR_MODS_FORBIDDEN      "Modifications désactivées!"
 #define TR_UNLOCKED            "Déverrouillé"

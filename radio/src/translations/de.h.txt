@@ -822,5 +822,8 @@
 
 #define TR_TOP_BAR             "Info Zeile"
 #define TR_ALTITUDE            INDENT "Höhe"
+#define TR_SCALE               "Scale"
+#define TR_VIEW_CHANNELS       "View Channels"
+#define TR_VIEW_NOTES          "View Notes"
 #define TR_MODS_FORBIDDEN      "Veränderungen verboten!"
 #define TR_UNLOCKED            "Entsperrt"
