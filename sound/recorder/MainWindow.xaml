@@ -29,7 +29,7 @@
 
             <ListView Name="lvSentences" 
                       SelectionMode="Single" 
-                      MouseDoubleClick="lvSentences_MouseDoubleClick" 
+                      MouseDoubleClick="sentenceRowDblClk" 
                       VerticalAlignment="Stretch" >
 
 
@@ -55,7 +55,7 @@
                     <ComboBox Name="cbLanguages"
                               DisplayMemberPath="lName"
                               SelectedValuePath="sName"
-                              SelectionChanged="cbLanguages_SelectionChanged" 
+                              SelectionChanged="switchLanguage" 
                               Width="200" Height="23"  />
                 </StackPanel>
 
@@ -86,21 +86,21 @@
 
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
-                <Button Content="New Sentence" Width="120" Height="32" Name="buttonAddItem" Click="buttonAddItem_Click"/>
-                <Button Name="btnRecord" ToolTip="Start recording" Click="btnRecord_Click"  Margin="20,0,0,0" >
+                <Button Content="New Sentence" Width="120" Height="32" Name="buttonAddItem" Click="addSentence"/>
+                <Button Name="btnRecord" ToolTip="Start recording" Click="record"  Margin="20,0,0,0" >
                     <Image Height="32" Source="/OpenTXrecorder;component/record.png"/>
                 </Button>
-                <Button Name="btnStop" ToolTip="Stop recording"  Click="btnStop_Click"  Margin="5,0,0,0" >
+                <Button Name="btnStop" ToolTip="Stop recording"  Click="stop"  Margin="5,0,0,0" >
                     <Image Height="32" Source="/OpenTXrecorder;component/stop.png" />
                 </Button>
-                <Button Name="btnPlay" ToolTip="Play Sentence"  Click="btnPlay_Click"  Margin="30,0,0,0" >
+                <Button Name="btnPlay" ToolTip="Play Sentence"  Click="play"  Margin="30,0,0,0" >
                     <Image Height="32" Source="/OpenTXrecorder;component/play.png"  />
                 </Button>
             </StackPanel>
             <Separator Height="5" />
             <Label Content="RECORDING" Name="lblRecording" HorizontalAlignment="Center" Foreground="Red" FontSize="24" FontWeight="Black" Visibility="Hidden" />
         </StackPanel>
-        <Image Grid.Row="0" Grid.Column="1" Name="openTXLogo" Height="48"  MouseLeftButtonDown="openTXLogo_MouseLeftButtonDown" HorizontalAlignment="Right" Cursor="Hand" Margin="0,0,0,0" Source="/OpenTXrecorder;component/recorder_logo.png" Stretch="Uniform" VerticalAlignment="Bottom" />
+        <Image Grid.Row="0" Grid.Column="1" Name="openTXLogo" Height="48"  MouseLeftButtonDown="about" HorizontalAlignment="Right" Cursor="Hand" Margin="0,0,0,0" Source="/OpenTXrecorder;component/recorder_logo.png" Stretch="Uniform" VerticalAlignment="Bottom" />
 
     </Grid>
 

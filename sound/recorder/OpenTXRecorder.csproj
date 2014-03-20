@@ -81,6 +81,8 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="sentencetables.cs" />
+    <Compile Include="WaveIn.cs" />
+    <Compile Include="WaveNative.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
