@@ -1041,7 +1041,7 @@ void menuGeneralTrainer(uint8_t event)
     }
 
     if (attr) {
-      if (event==EVT_KEY_FIRST(KEY_MENU)){
+      if (event==EVT_KEY_FIRST(KEY_ENTER)){
         s_editMode = -1;
         memcpy(g_eeGeneral.trainer.calib, g_ppmIns, sizeof(g_eeGeneral.trainer.calib));
         eeDirty(EE_GENERAL);
