@@ -500,8 +500,10 @@ void Setup::on_trimIncrement_currentIndexChanged(int index)
 
 void Setup::on_throttleSource_currentIndexChanged(int index)
 {
-  model.thrTraceSrc = ui->throttleSource->itemData(index).toInt();
-  emit modified();
+  if (!lock) {
+    model.thrTraceSrc = ui->throttleSource->itemData(index).toInt();
+    emit modified();
+  }
 }
 
 void Setup::on_name_editingFinished()
@@ -550,6 +552,8 @@ void Setup::populateThrottleSourceCB()
 
   unsigned int i;
 
+  lock = true;
+
   if (IS_TARANIS(GetEepromInterface()->getBoard())) {
     for (i=0; i<6; i++) {
       ui->throttleSource->addItem(sourcesTaranis[i], i);
@@ -561,13 +565,17 @@ void Setup::populateThrottleSourceCB()
     }
   }
 
-  if (model.thrTraceSrc < i) ui->throttleSource->setCurrentIndex(model.thrTraceSrc);
+  if (model.thrTraceSrc < i)
+    ui->throttleSource->setCurrentIndex(model.thrTraceSrc);
 
   int channels = (IS_ARM(GetEepromInterface()->getBoard()) ? 32 : 16);
   for (int i=0; i<channels; i++) {
     ui->throttleSource->addItem(QObject::tr("CH%1").arg(i+1, 2, 10, QChar('0')), THROTTLE_SOURCE_FIRST_CHANNEL+i);
-    if (model.thrTraceSrc == unsigned(THROTTLE_SOURCE_FIRST_CHANNEL+i)) ui->throttleSource->setCurrentIndex(ui->throttleSource->count()-1);
+    if (model.thrTraceSrc == unsigned(THROTTLE_SOURCE_FIRST_CHANNEL+i))
+      ui->throttleSource->setCurrentIndex(ui->throttleSource->count()-1);
   }
+
+  lock = false;
 }
 
 void Setup::update()
