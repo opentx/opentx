@@ -99,7 +99,7 @@
 #define TR_VBEEPCOUNTDOWN      "Tyst\0 Pip\0  Röst\0 "
 
 #define LEN_CURVE_TYPES        "\010"
-#define TR_CURVE_TYPES         "Standard""Custom\0"
+#define TR_CURVE_TYPES         "Normal\0 ""Special\0"
 
 #define LEN_RETA123            "\001"
 
@@ -619,8 +619,8 @@
 #define TR_MENULOGICALSWITCH   "LOGISK BRYTARE"
 #define TR_MENULOGICALSWITCHES "LOGISKA BRYTARE"
 #define TR_MENUCUSTOMFUNC      "BRYTARFUNKTIONER"
-#define TR_MENUCUSTOMSCRIPTS   "CUSTOM SCRIPTS"
-#define TR_MENUCUSTOMSCRIPT    "CUSTOM SCRIPT"
+#define TR_MENUCUSTOMSCRIPTS   "SPECIALKOD"
+#define TR_MENUCUSTOMSCRIPT    "SPECIALKOD"
 #define TR_MENUTELEMETRY       "TELEMETRI"
 #define TR_MENUTEMPLATES       "MALLAR"
 #define TR_MENUSTAT            "STATISTIK"
@@ -678,7 +678,7 @@
 #define TR_NO_SOUNDS_ON_SD     "Inga ljud i SD"
 #define TR_NO_MODELS_ON_SD     "Ingen modell i SD"
 #define TR_NO_BITMAPS_ON_SD    "Ikoner saknas på SD"
-#define TR_NO_SCRIPTS_ON_SD    "No Scripts on SD"
+#define TR_NO_SCRIPTS_ON_SD    "Programkod saknas på SD"
 #define TR_PLAY_FILE           "Spela"
 #define TR_DELETE_FILE         "Radera"
 #define TR_COPY_FILE           "Kopia"
@@ -756,7 +756,7 @@
 #define TR_RESET               "Nollställ"
 #define TR_COUNT               "Antal"
 #define TR_PT                  "pt"
-#define TR_PTS                 "pts"
+#define TR_PTS                 "pkt"
 #define TR_SMOOTH              "Mjuk"
 #define TR_COPY_TRIMS_TO_OFS   "Spara trimmar som offset"
 #define TR_PERSISTENT_MAH      INDENT "Lagra mAh"
@@ -764,9 +764,9 @@
 #define TR_CHECKLIST           INDENT "Visa checklisa"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 #define TR_UART3MODE           "Serieporten"
-#define TR_SCRIPT              "Script"
-#define TR_INPUTS              "Inputs"
-#define TR_OUTPUTS             "Outputs"
+#define TR_SCRIPT              "Programkod"
+#define TR_INPUTS              "Input"
+#define TR_OUTPUTS             "Outputs
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL  "Max RSSI"
@@ -858,7 +858,7 @@
 #define TR_VARIO_VOLUME        "Volym Vario"
 #define TR_BG_VOLUME           "Volym Bg"
 
-#define TR_TOP_BAR             "Top Bar"
+#define TR_TOP_BAR             "Titelraden"
 #define TR_ALTITUDE            INDENT "Höjd"
 #define TR_SCALE               "Skala"
 #define TR_VIEW_CHANNELS       "Visa Kanaler"
