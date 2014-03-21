@@ -41,8 +41,13 @@ namespace OpenTXrecorder
 
         WavFileWriter filewriter;
         WaveInRecorder recorder;
-        byte[] tmparray;
-        bool isRecording = false;
+        byte[] recordingBuffer;
+        static int recSamplerate = 16000;  // 8000, 16000 or 32000
+        static int recBits = 16;           // 8 or 16
+        static int recChannels = 1;        // 1 or 2
+        static int recBuffersize = 1024 * 2;
+        public bool isRecording { get; set; }
+
 
         public MainWindow()
         {
@@ -51,6 +56,7 @@ namespace OpenTXrecorder
             Thread.Sleep(1500);
 
             InitializeComponent();
+            recordingBuffer = new byte[recBuffersize];
 
             lvSentences.ItemsSource = sentences;
             cbLanguages.ItemsSource = languages;
@@ -75,8 +81,8 @@ namespace OpenTXrecorder
 
             try
             {
-                system_strings = System.IO.File.ReadAllLines(env.systemSounds());
-                other_strings = System.IO.File.ReadAllLines(env.otherSounds());
+                system_strings = System.IO.File.ReadAllLines(env.systemSounds);
+                other_strings = System.IO.File.ReadAllLines(env.otherSounds);
             }
             catch (IOException)
             {
@@ -86,27 +92,27 @@ namespace OpenTXrecorder
             sentences.Clear();
 
             foreach (string str in system_strings)
-                sentences.Add(str, env.sysDir());
+                sentences.Add(str, env.sysDir);
 
             sentences.Add(@";^ System Sounds ^;", "");
 
             foreach (string str in other_strings)
-                sentences.Add(str, env.baseDir());
+                sentences.Add(str, env.baseDir);
 
             lvSentences.Items.Refresh(); // Workaround - Two way binding is better
         }
 
         private void saveLanguage()
         {
-            System.IO.Directory.CreateDirectory(env.sysDir());
-            StreamWriter sw = File.CreateText(env.systemSounds());
+            System.IO.Directory.CreateDirectory(env.sysDir);
+            StreamWriter sw = File.CreateText(env.systemSounds);
             int i;
             for (i = 0; sentences[i].fileName != ""; i++)
             {
                 sw.WriteLine(sentences[i].toRaw());
             }
             sw.Close();
-            sw = File.CreateText(env.otherSounds());
+            sw = File.CreateText(env.otherSounds);
             for (i++; i < sentences.Count; i++)
             {
                 sw.WriteLine(sentences[i].toRaw());
@@ -120,14 +126,29 @@ namespace OpenTXrecorder
             loadLanguage();
         }
 
-
         private void about(object sender, MouseButtonEventArgs e)
         {
             AboutWindow aboutWindow = new AboutWindow();
             aboutWindow.ShowDialog();
         }
 
-        private void sentenceRowDblClk(object sender, MouseButtonEventArgs e)
+        private void addSentence(object sender, RoutedEventArgs e)
+        {
+            int i = 0;
+            string newFile;
+            do
+            {
+                newFile = "new_file_" + i.ToString();
+                i++;
+            }
+            while (env.fileExists(newFile));
+            sentences.Add(new Sentence(newFile + ";New Description;New Voice Message", env.baseDir));
+            this.lvSentences.Items.Refresh();
+            this.lvSentences.SelectedIndex = this.lvSentences.Items.Count - 1;
+            this.lvSentences.ScrollIntoView(this.lvSentences.SelectedItem);
+        }
+
+        private void play(object sender, EventArgs e)
         {
             if (this.lvSentences.SelectedItems.Count < 1)
                 return;
@@ -147,27 +168,6 @@ namespace OpenTXrecorder
             }
         }
 
-        private void play(object sender, RoutedEventArgs e)
-        {
-            sentenceRowDblClk(null, null);
-        }
-
-        private void addSentence(object sender, RoutedEventArgs e)
-        {
-            int i = 0;
-            string newFile;
-            do
-            {
-                newFile = "new_file_" + i.ToString();
-                i++;
-            }
-            while (env.fileExists(newFile));
-            sentences.Add(new Sentence(newFile + ";New Description;New Voice Message", env.baseDir()));
-            this.lvSentences.Items.Refresh();
-            this.lvSentences.SelectedIndex = this.lvSentences.Items.Count - 1;
-            this.lvSentences.ScrollIntoView(this.lvSentences.SelectedItem);
-        }
-
         private void record(object sender, RoutedEventArgs e)
         {
             if (this.lvSentences.SelectedItems.Count < 1) return;
@@ -182,19 +182,11 @@ namespace OpenTXrecorder
                 Sentence sentence = (Sentence)this.lvSentences.SelectedItem;
                 string path = sentence.fullPath();
                 Directory.CreateDirectory(Path.GetDirectoryName(path));  // Create directory if it doesn't exist
-                System.IO.File.WriteAllText(path, "");                  // Creates and flushes a file if it does not exist
+                System.IO.File.WriteAllText(path, "");                   // Create and flush the file
 
-                int samplerate = 16000;
-                int bits = 16;      // 8 or 16
-                int channels = 1;   // 1 or 2
-
-                filewriter = new WavFileWriter(path, samplerate, bits, channels);
-                WaveFormat fmt = new WaveFormat(samplerate, bits, channels);
-
-                // devicenumber, wavformat, buffersize, callback
-                int buffersize = 1024 * 2;
-                tmparray = new byte[buffersize];
-                recorder = new WaveInRecorder(-1, fmt, buffersize, this.DataArrived);
+                filewriter = new WavFileWriter(path, recSamplerate, recBits, recChannels);
+                WaveFormat fmt = new WaveFormat(recSamplerate, recBits, recChannels);
+                recorder = new WaveInRecorder(-1, fmt, recBuffersize, this.DataArrived);
             }
         }
 
@@ -216,27 +208,24 @@ namespace OpenTXrecorder
 
         private void DataArrived(IntPtr data, int size)
         {
-            if (!isRecording)
-                return;
-
-            Marshal.Copy(data, tmparray, 0, size);
-            filewriter.Write(tmparray);
+            Marshal.Copy(data, recordingBuffer, 0, size);
+            filewriter.Write(recordingBuffer);
         }
     }
 
     public class Environment
     {
         public string shortLanguage { get; set; }
-        public string baseDir() { return @"SOUNDS\" + shortLanguage + @"\"; }
-        public string sysDir() { return @"SOUNDS\" + shortLanguage + @"\SYSTEM\"; }
-        public string otherSounds() { return baseDir() + "other_sounds.txt"; }
-        public string systemSounds() { return sysDir() + "system_sounds.txt"; }
+        public string baseDir { get { return @"SOUNDS\" + shortLanguage + @"\"; } }
+        public string sysDir { get { return @"SOUNDS\" + shortLanguage + @"\SYSTEM\"; } }
+        public string otherSounds { get { return baseDir + "other_sounds.txt"; } }
+        public string systemSounds { get { return sysDir + "system_sounds.txt"; } }
 
         public bool fileExists(string fName)
         {
-            if (File.Exists(System.AppDomain.CurrentDomain.BaseDirectory + baseDir() + fName + ".wav"))
+            if (File.Exists(System.AppDomain.CurrentDomain.BaseDirectory + baseDir + fName + ".wav"))
                 return true;
-            if (File.Exists(System.AppDomain.CurrentDomain.BaseDirectory + sysDir() + fName + ".wav"))
+            if (File.Exists(System.AppDomain.CurrentDomain.BaseDirectory + sysDir + fName + ".wav"))
                 return true;
             return false;
         }
