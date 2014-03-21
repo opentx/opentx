@@ -3426,8 +3426,8 @@ void evalFunctions()
           }
 
           case FUNC_INSTANT_TRIM:
+            newActiveFunctions |= (1 << FUNCTION_INSTANT_TRIM);
             if (!isFunctionActive(FUNCTION_INSTANT_TRIM)) {
-              newActiveFunctions |= (1 << FUNCTION_INSTANT_TRIM);
               if (g_menuStack[0] == menuMainView
 #if defined(FRSKY)
                 || g_menuStack[0] == menuTelemetryFrsky
@@ -3436,8 +3436,9 @@ void evalFunctions()
                 || g_menuStack[0] == menuMainViewChannelsMonitor
                 || g_menuStack[0] == menuChannelsView
 #endif
-              )
+              ) {
                 instantTrim();
+              }
             }
             break;
 
@@ -5082,7 +5083,11 @@ void instantTrim()
     if (i!=THR_STICK) {
       // don't instant trim the throttle stick
       uint8_t trim_phase = getTrimFlightPhase(s_perout_flight_phase, i);
+#if defined(PCBTARANIS)
+      int16_t trim = limit<int16_t>(TRIM_EXTENDED_MIN, (calibratedStick[i] + trims[i]) / 2, TRIM_EXTENDED_MAX);
+#else
       int16_t trim = limit<int16_t>(TRIM_EXTENDED_MIN, (anas[i] + trims[i]) / 2, TRIM_EXTENDED_MAX);
+#endif
       setTrimValue(trim_phase, i, trim);
     }
   }
