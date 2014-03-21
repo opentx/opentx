@@ -46,8 +46,6 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, i
   }
 
   if (GetEepromInterface()->getCapability(VirtualInputs)) {
-    ui->sideLabel->hide();
-    ui->sideCB->hide();
     ui->inputName->setMaxLength(4);
     populateSourceCB(ui->sourceCB, ed->srcRaw, model, POPULATE_SOURCES | POPULATE_SWITCHES | POPULATE_TRIMS | POPULATE_TELEMETRY);
     ui->sourceCB->removeItem(0);

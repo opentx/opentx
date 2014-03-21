@@ -98,12 +98,11 @@ void InputsPanel::update()
         str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString();
       }
     }
-    else {
-      switch (md->mode) {
-        case (1): str += " <-"; break;
-        case (2): str += " ->"; break;
-        default:  str += "   "; break;
-      };
+
+    switch (md->mode) {
+      case (1): str += " <-"; break;
+      case (2): str += " ->"; break;
+      default:  str += "   "; break;
     }
 
     str += " " + tr("Weight(%1)").arg(getGVarString(md->weight));

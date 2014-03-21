@@ -2738,9 +2738,8 @@ void insertExpoMix(uint8_t expo, uint8_t idx)
 #if defined(PCBTARANIS)
     expo->srcRaw = (s_currCh > 4 ? MIXSRC_Rud - 1 + s_currCh : MIXSRC_Rud - 1 + channel_order(s_currCh));
     expo->curve.type = CURVE_REF_EXPO;
-#else
-    expo->mode = 3; // pos&neg
 #endif
+    expo->mode = 3; // pos&neg
     expo->chn = s_currCh - 1;
     expo->weight = 100;
   }
@@ -2881,7 +2880,7 @@ enum ExposFields {
   IF_CURVES(EXPO_FIELD_CURVE)
   IF_FLIGHT_MODES(EXPO_FIELD_FLIGHT_PHASE)
   EXPO_FIELD_SWITCH,
-  CASE_9X(EXPO_FIELD_SIDE)
+  EXPO_FIELD_SIDE,
   CASE_PCBTARANIS(EXPO_FIELD_TRIM)
   EXPO_FIELD_MAX
 };
@@ -3015,11 +3014,9 @@ void menuModelExpoOne(uint8_t event)
         ed->swtch = switchMenuItem(EXPO_ONE_2ND_COLUMN-IF_9X(3*FW), y, ed->swtch, attr, event);
         break;
 
-#if !defined(PCBTARANIS)
       case EXPO_FIELD_SIDE:
-        ed->mode = 4 - selectMenuItem(EXPO_ONE_2ND_COLUMN-3*FW, y, STR_SIDE, STR_VSIDE, 4-ed->mode, 1, 3, attr, event);
+        ed->mode = 4 - selectMenuItem(EXPO_ONE_2ND_COLUMN-IF_9X(3*FW), y, STR_SIDE, STR_VSIDE, 4-ed->mode, 1, 3, attr, event);
         break;
-#endif
 
 #if defined(PCBTARANIS)
       case EXPO_FIELD_TRIM:
@@ -3287,8 +3284,9 @@ static uint8_t s_copySrcCh;
   #define EXPO_LINE_SRC_POS    9*FW-2
   #define EXPO_LINE_CURVE_POS  12*FW+4
   #define EXPO_LINE_SWITCH_POS 17*FW-1
+  #define EXPO_LINE_SIDE_POS   20*FW-2
   #define EXPO_LINE_SELECT_POS 5*FW+2
-  #define EXPO_LINE_FM_POS     LCD_W-LEN_EXPOMIX_NAME*FW-MENUS_SCROLLBAR_WIDTH-FW-1
+  #define EXPO_LINE_FM_POS     LCD_W-LEN_EXPOMIX_NAME*FW-MENUS_SCROLLBAR_WIDTH-FW
   #define EXPO_LINE_NAME_POS   LCD_W-LEN_EXPOMIX_NAME*FW-MENUS_SCROLLBAR_WIDTH
   #define MIX_LINE_WEIGHT_POS  11*FW+5
   #define MIX_LINE_CURVE_POS   12*FW+4
@@ -3579,9 +3577,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
 
             putsSwitches(EXPO_LINE_SWITCH_POS, y, ed->swtch, 0);
 
-#if !defined(PCBTARANIS)
             if (ed->mode!=3) lcd_putc(EXPO_LINE_SIDE_POS, y, ed->mode == 2 ? 126 : 127);
-#endif
 
 #if defined(CPUARM) && LCD_W >= 212
             displayFlightModes(EXPO_LINE_FM_POS, y, ed->phases);
