@@ -507,8 +507,10 @@ void ConvertModel_215_to_216(ModelData &model)
       g_model.expoData[i].weight = oldModel.expoData[i].weight;
       memcpy(&g_model.expoData[i].name, &oldModel.expoData[i].name, LEN_EXPOMIX_NAME);
       if (oldModel.expoData[i].curveMode==0/*expo*/) {
-        g_model.expoData[i].curve.type = CURVE_REF_EXPO;
-        g_model.expoData[i].curve.value = oldModel.expoData[i].curveParam;
+        if (oldModel.expoData[i].curveParam) {
+          g_model.expoData[i].curve.type = CURVE_REF_EXPO;
+          g_model.expoData[i].curve.value = oldModel.expoData[i].curveParam;
+        }
       }
       else if (oldModel.expoData[i].curveParam <= 6) {
         g_model.expoData[i].curve.type = CURVE_REF_FUNC;
@@ -710,24 +712,26 @@ void ConvertModel_215_to_216(ModelData &model)
   g_model.swashR.collectiveSource = ConvertSource_215_to_216(g_model.swashR.collectiveSource);
 
   for (uint8_t i=0; i<9; i++) {
-    memcpy(&g_model.phaseData[i], &oldModel.phaseData[i], sizeof(oldModel.phaseData[i])); // the last 4 gvars will remain blank
-    g_model.phaseData[i].swtch = ConvertSwitch_215_to_216(oldModel.phaseData[i].swtch);
+    if (oldModel.phaseData[i].swtch) {
+      memcpy(&g_model.phaseData[i], &oldModel.phaseData[i], sizeof(oldModel.phaseData[i])); // the last 4 gvars will remain blank
+      g_model.phaseData[i].swtch = ConvertSwitch_215_to_216(oldModel.phaseData[i].swtch);
 #if defined(PCBTARANIS)
-    for (uint8_t t=0; t<4; t++) {
-      int trim = oldModel.phaseData[i].trim[t];
-      if (trim > 500) {
-        trim -= 501;
-        if (trim >= i)
-          trim += 1;
-        g_model.phaseData[i].trim[t].mode = 2*trim;
-        g_model.phaseData[i].trim[t].value = 0;
+      for (uint8_t t=0; t<4; t++) {
+        int trim = oldModel.phaseData[i].trim[t];
+        if (trim > 500) {
+          trim -= 501;
+          if (trim >= i)
+            trim += 1;
+          g_model.phaseData[i].trim[t].mode = 2*trim;
+          g_model.phaseData[i].trim[t].value = 0;
+        }
+        else {
+          g_model.phaseData[i].trim[t].mode = 2*i;
+          g_model.phaseData[i].trim[t].value = trim;
+        }
       }
-      else {
-        g_model.phaseData[i].trim[t].mode = 2*i;
-        g_model.phaseData[i].trim[t].value = trim;
-      }
-    }
 #endif
+    }
   }
   g_model.thrTraceSrc = oldModel.thrTraceSrc;
 #if defined(PCBTARANIS)

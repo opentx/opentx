@@ -51,12 +51,14 @@
 #define TRACE_WARNING(...)    do { printf("-W- " __VA_ARGS__); fflush(stdout); } while(0)
 #define TRACE_WARNING_WP(...) do { printf(__VA_ARGS__); fflush(stdout); } while(0)
 #define TRACE_ERROR(...)      do { printf("-E- " __VA_ARGS__); fflush(stdout); } while(0)
-inline void dump(unsigned char *data, unsigned int size)
+inline void dump(void * data, unsigned int size)
 {
+  unsigned char *uchar_data = (unsigned char *)data;
+
   printf("DUMP %d bytes ...\n\r", size);
   unsigned int i = 0, j=0;
   while (i*32+j < size) {
-    printf("%.2X ", data[i*32+j]);
+    printf("%.2X ", uchar_data[i*32+j]);
     j++;
     if (j==32) {
       i++; j=0;
