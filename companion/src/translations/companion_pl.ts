@@ -97,12 +97,12 @@
     <message>
         <location filename="../modeledit/curves.ui" line="50"/>
         <source>Lines</source>
-        <translation>Linie</translation>
+        <translation>Łamana</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="55"/>
         <source>Smooth</source>
-        <translation>Gładkie</translation>
+        <translation>Gładka</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="65"/>
@@ -5319,7 +5319,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="256"/>
         <source>[I%1]</source>
-        <translation>[I%1]</translation>
+        <translation>[W%1]</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="333"/>
