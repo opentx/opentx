@@ -1003,7 +1003,7 @@ void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
         int16_t offset = GET_GVAR(ed->offset, -100, 100, s_perout_flight_phase);
         if (offset) v += calc100toRESX(offset);
         
-        //========== TRIMS ===============
+        //========== TRIMS ================
         if (!(mode & e_perout_mode_notrims)) {
           int8_t input_trim = ed->carryTrim;
           if (input_trim < TRIM_ON)
@@ -3086,7 +3086,7 @@ void evalInputs(uint8_t mode)
     int16_t v = anaIn(i);
 #endif
 
-#ifndef SIMU
+#if !defined(SIMU)
     if (i < NUM_STICKS+NUM_POTS) {
       if (IS_POT_MULTIPOS(i)) {
         v -= RESX;
@@ -3126,7 +3126,7 @@ void evalInputs(uint8_t mode)
 
     if (i < NUM_STICKS+NUM_POTS) {
 
-      calibratedStick[ch] = v; //for show in expo
+      calibratedStick[ch] = v; // for show in expo
 
       // filtering for center beep
       uint8_t tmp = (uint16_t)abs(v) / 16;
@@ -3149,6 +3149,12 @@ void evalInputs(uint8_t mode)
     }
 
     if (ch < NUM_STICKS) { //only do this for sticks
+#if defined(PCBTARANIS)
+      if (mode & e_perout_mode_nosticks) {
+        calibratedStick[ch] = 0;
+      }
+#endif
+
       if (mode <= e_perout_mode_inactive_phase && isFunctionActive(FUNCTION_TRAINER+ch)) {
         // trainer mode
         TrainerMix* td = &g_eeGeneral.trainer.mix[ch];
@@ -3194,7 +3200,7 @@ void evalInputs(uint8_t mode)
   }
 }
 
-#ifdef DEBUG
+#if defined(DEBUG)
 /*
  * This is a test function for debugging purpose, you may insert there your code and compile with the option DEBUG=YES
  */
@@ -3756,12 +3762,21 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       //========== VALUE ===============
       getvalue_t v = 0;
       if (mode > e_perout_mode_inactive_phase) {
+#if defined(PCBTARANIS)
+        if (!mixEnabled) {
+          continue;
+        }
+        else {
+          v = getValue(md->srcRaw);
+        }
+#else
         if (!mixEnabled || stickIndex >= NUM_STICKS || (stickIndex == THR_STICK && g_model.thrTrim)) {
           continue;
         }
         else {
           if (!(mode & e_perout_mode_nosticks)) v = anas[stickIndex];
         }
+#endif
       }
       else {
 #if !defined(PCBTARANIS)
@@ -5109,14 +5124,17 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
     zeros[i] = applyLimits(i, chans[i]);
   }
 
-  perOut(e_perout_mode_nosticks+e_perout_mode_notrainer, 0); // do output loop - only trims
+  perOut(e_perout_mode_noinput-e_perout_mode_notrims, 0); // do output loop - only trims
 
   for (uint8_t i=0; i<NUM_CHNOUT; i++) {
     int16_t output = applyLimits(i, chans[i]) - zeros[i];
     int16_t v = g_model.limitData[i].offset;
     if (g_model.limitData[i].revert) output = -output;
+#if defined(CPUARM)
+    v += (output * 125) / 128;
+#else
     v += output;
-    // TODO * 125 / 128 ?
+#endif
     g_model.limitData[i].offset = limit((int16_t)-1000, (int16_t)v, (int16_t)1000); // make sure the offset doesn't go haywire
   }
 
@@ -5126,7 +5144,6 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
       int16_t original_trim = getTrimValue(s_perout_flight_phase, i);
       for (uint8_t phase=0; phase<MAX_PHASES; phase++) {
 #if defined(PCBTARANIS)
-        // TODO needs to be tested.
         trim_t trim = getRawTrimValue(phase, i);
         if (trim.mode / 2 == phase)
           setTrimValue(phase, i, trim.value - original_trim);
