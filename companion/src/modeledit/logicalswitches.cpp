@@ -60,10 +60,11 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model):
     cswitchValue[i]->setVisible(false);
 
     // V2
+    QHBoxLayout *v2Layout = new QHBoxLayout();
     cswitchSource2[i] = new QComboBox(this);
     cswitchSource2[i]->setProperty("index", i);
     connect(cswitchSource2[i], SIGNAL(currentIndexChanged(int)), this, SLOT(v2Edited(int)));
-    gridLayout->addWidget(cswitchSource2[i], i+1, 3);
+    v2Layout->addWidget(cswitchSource2[i]);
     cswitchSource2[i]->setVisible(false);
     cswitchOffset[i] = new QDoubleSpinBox(this);
     cswitchOffset[i]->setProperty("index",i);
@@ -72,8 +73,18 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model):
     cswitchOffset[i]->setAccelerated(true);
     cswitchOffset[i]->setDecimals(0);
     connect(cswitchOffset[i], SIGNAL(editingFinished()), this, SLOT(edited()));
-    gridLayout->addWidget(cswitchOffset[i], i+1, 3);
     cswitchOffset[i]->setVisible(false);
+    v2Layout->addWidget(cswitchOffset[i]);
+    cswitchOffset2[i] = new QDoubleSpinBox(this);
+    cswitchOffset2[i]->setProperty("index",i);
+    cswitchOffset2[i]->setMaximum(125);
+    cswitchOffset2[i]->setMinimum(-125);
+    cswitchOffset2[i]->setAccelerated(true);
+    cswitchOffset2[i]->setDecimals(0);
+    connect(cswitchOffset2[i], SIGNAL(editingFinished()), this, SLOT(edited()));
+    cswitchOffset2[i]->setVisible(false);
+    v2Layout->addWidget(cswitchOffset2[i]);
+    gridLayout->addLayout(v2Layout, i+1, 3);
 
     // AND
     cswitchAnd[i] = new QComboBox(this);
@@ -205,19 +216,19 @@ void LogicalSwitchesPanel::edited()
     switch (model.customSw[i].getFunctionFamily())
     {
       case LS_FAMILY_VOFS:
-        {
-          source = RawSource(model.customSw[i].val1, &model);
-          RawSourceRange range = source.getRange();
-          if (model.customSw[i].func == LS_FN_DPOS || model.customSw[i].func == LS_FN_DAPOS) {
-            model.customSw[i].val2 = (cswitchOffset[i]->value() / range.step);
-            cswitchOffset[i]->setValue(model.customSw[i].val2*range.step);
-          }
-          else {
-            model.customSw[i].val2 = ((cswitchOffset[i]->value()-range.offset)/range.step)/* TODO - source.getRawOffset(model)*/;
-            cswitchOffset[i]->setValue((model.customSw[i].val2 /* + TODO source.getRawOffset(model)*/)*range.step+range.offset);
-          }
+      {
+        source = RawSource(model.customSw[i].val1, &model);
+        RawSourceRange range = source.getRange();
+        if (model.customSw[i].func == LS_FN_DPOS || model.customSw[i].func == LS_FN_DAPOS) {
+          model.customSw[i].val2 = (cswitchOffset[i]->value() / range.step);
+          cswitchOffset[i]->setValue(model.customSw[i].val2*range.step);
+        }
+        else {
+          model.customSw[i].val2 = ((cswitchOffset[i]->value()-range.offset)/range.step)/* TODO - source.getRawOffset(model)*/;
+          cswitchOffset[i]->setValue((model.customSw[i].val2 /* + TODO source.getRawOffset(model)*/)*range.step+range.offset);
         }
         break;
+      }
       case LS_FAMILY_TIMER:
         model.customSw[i].val1 = TimToVal(cswitchValue[i]->value());
         model.customSw[i].val2 = TimToVal(cswitchOffset[i]->value());
@@ -225,8 +236,14 @@ void LogicalSwitchesPanel::edited()
         updateTimerParam(cswitchOffset[i], model.customSw[i].val2);
         break;
       case LS_FAMILY_STAY:
-        model.customSw[i].val2 = TimToVal(cswitchOffset[i]->value());
-        updateTimerParam(cswitchOffset[i], model.customSw[i].val2, true);
+        if (sender() == cswitchOffset[i]) {
+          model.customSw[i].val2 = TimToVal(cswitchOffset[i]->value());
+          updateTimerParam(cswitchOffset[i], model.customSw[i].val2, true);
+        }
+        else {
+          model.customSw[i].val3 = TimToVal(cswitchOffset2[i]->value()) - model.customSw[i].val2;
+        }
+        updateTimerParam(cswitchOffset2[i], model.customSw[i].val2+model.customSw[i].val3, true);
         break;
       default:
         break;
@@ -243,76 +260,77 @@ void LogicalSwitchesPanel::updateTimerParam(QDoubleSpinBox *sb, int timer, bool 
   sb->setMinimum(allowZero ? 0.0 : 0.1);
   sb->setMaximum(175);
   float value = ValToTim(timer);
-  if (value>60)
+  if (value>=60)
     sb->setSingleStep(1);
-  else if (value>2)
+  else if (value>=2)
     sb->setSingleStep(0.5);
   else
     sb->setSingleStep(0.1);
   sb->setValue(value);
 }
 
+#define SOURCE1_VISIBLE  0x1
+#define SOURCE2_VISIBLE  0x2
+#define VALUE1_VISIBLE   0x4
+#define VALUE2_VISIBLE   0x8
+#define VALUE3_VISIBLE   0x10
+
 void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
 {
   lock = true;
 
-    RawSource source = RawSource(model.customSw[i].val1, &model);
-    RawSourceRange range = source.getRange();
+  unsigned int mask = 0;
+  RawSource source = RawSource(model.customSw[i].val1, &model);
+  RawSourceRange range = source.getRange();
 
-    switch (model.customSw[i].getFunctionFamily())
-    {
-      case LS_FAMILY_VOFS:
-        cswitchSource1[i]->setVisible(true);
-        cswitchSource2[i]->setVisible(false);
-        cswitchValue[i]->setVisible(false);
-        cswitchOffset[i]->setVisible(true);
-        populateSourceCB(cswitchSource1[i], source, model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (GetEepromInterface()->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
-        cswitchOffset[i]->setDecimals(range.decimals);
-        cswitchOffset[i]->setSingleStep(range.step);
-        if (model.customSw[i].func == LS_FN_DPOS || model.customSw[i].func == LS_FN_DAPOS) {
-          cswitchOffset[i]->setMinimum(range.step*-127);
-          cswitchOffset[i]->setMaximum(range.step*127);
-          cswitchOffset[i]->setValue(range.step*model.customSw[i].val2);
-        }
-        else {
-          cswitchOffset[i]->setMinimum(range.min);
-          cswitchOffset[i]->setMaximum(range.max);
-          cswitchOffset[i]->setValue(range.step*(model.customSw[i].val2/* TODO+source.getRawOffset(model)*/)+range.offset);
-        }
-        break;
-      case LS_FAMILY_VBOOL:
-      case LS_FAMILY_STICKY:
-        cswitchSource1[i]->setVisible(true);
-        cswitchSource2[i]->setVisible(true);
-        cswitchValue[i]->setVisible(false);
-        cswitchOffset[i]->setVisible(false);
-        populateSwitchCB(cswitchSource1[i], RawSwitch(model.customSw[i].val1));
-        populateSwitchCB(cswitchSource2[i], RawSwitch(model.customSw[i].val2));
-        break;
-      case LS_FAMILY_STAY:
-        cswitchSource1[i]->setVisible(true);
-        cswitchSource2[i]->setVisible(false);
-        cswitchValue[i]->setVisible(false);
-        populateSwitchCB(cswitchSource1[i], RawSwitch(model.customSw[i].val1));
-        updateTimerParam(cswitchOffset[i], model.customSw[i].val2, true);
-        break;
-      case LS_FAMILY_VCOMP:
-        cswitchSource1[i]->setVisible(true);
-        cswitchSource2[i]->setVisible(true);
-        cswitchValue[i]->setVisible(false);
-        cswitchOffset[i]->setVisible(false);
-        populateSourceCB(cswitchSource1[i], RawSource(model.customSw[i].val1), model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (GetEepromInterface()->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
-        populateSourceCB(cswitchSource2[i], RawSource(model.customSw[i].val2), model, POPULATE_SOURCES | POPULATE_TRIMS | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (GetEepromInterface()->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
-        break;
-      case LS_FAMILY_TIMER:
-        cswitchSource1[i]->setVisible(false);
-        cswitchSource2[i]->setVisible(false);
-        updateTimerParam(cswitchValue[i], model.customSw[i].val1);
-        updateTimerParam(cswitchOffset[i], model.customSw[i].val2);
-        break;
-    }
+  switch (model.customSw[i].getFunctionFamily())
+  {
+    case LS_FAMILY_VOFS:
+      mask |= SOURCE1_VISIBLE | VALUE2_VISIBLE;
+      populateSourceCB(cswitchSource1[i], source, model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (GetEepromInterface()->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
+      cswitchOffset[i]->setDecimals(range.decimals);
+      cswitchOffset[i]->setSingleStep(range.step);
+      if (model.customSw[i].func == LS_FN_DPOS || model.customSw[i].func == LS_FN_DAPOS) {
+        cswitchOffset[i]->setMinimum(range.step*-127);
+        cswitchOffset[i]->setMaximum(range.step*127);
+        cswitchOffset[i]->setValue(range.step*model.customSw[i].val2);
+      }
+      else {
+        cswitchOffset[i]->setMinimum(range.min);
+        cswitchOffset[i]->setMaximum(range.max);
+        cswitchOffset[i]->setValue(range.step*(model.customSw[i].val2/* TODO+source.getRawOffset(model)*/)+range.offset);
+      }
+      break;
+    case LS_FAMILY_VBOOL:
+    case LS_FAMILY_STICKY:
+      mask |= SOURCE1_VISIBLE | SOURCE2_VISIBLE;
+      populateSwitchCB(cswitchSource1[i], RawSwitch(model.customSw[i].val1));
+      populateSwitchCB(cswitchSource2[i], RawSwitch(model.customSw[i].val2));
+      break;
+    case LS_FAMILY_STAY:
+      mask |= SOURCE1_VISIBLE | VALUE2_VISIBLE | VALUE3_VISIBLE;
+      populateSwitchCB(cswitchSource1[i], RawSwitch(model.customSw[i].val1));
+      updateTimerParam(cswitchOffset[i], model.customSw[i].val2, true);
+      updateTimerParam(cswitchOffset2[i], model.customSw[i].val2+model.customSw[i].val3, true);
+      break;
+    case LS_FAMILY_VCOMP:
+      mask |= SOURCE1_VISIBLE | SOURCE2_VISIBLE;
+      populateSourceCB(cswitchSource1[i], RawSource(model.customSw[i].val1), model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (GetEepromInterface()->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
+      populateSourceCB(cswitchSource2[i], RawSource(model.customSw[i].val2), model, POPULATE_SOURCES | POPULATE_TRIMS | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (GetEepromInterface()->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
+      break;
+    case LS_FAMILY_TIMER:
+      updateTimerParam(cswitchValue[i], model.customSw[i].val1);
+      updateTimerParam(cswitchOffset[i], model.customSw[i].val2);
+      break;
+  }
 
-    lock = false;
+  cswitchSource1[i]->setVisible(mask & SOURCE1_VISIBLE);
+  cswitchSource2[i]->setVisible(mask & SOURCE2_VISIBLE);
+  cswitchValue[i]->setVisible(mask & VALUE1_VISIBLE);
+  cswitchOffset[i]->setVisible(mask & VALUE2_VISIBLE);
+  cswitchOffset2[i]->setVisible(mask & VALUE3_VISIBLE);
+
+  lock = false;
 }
 
 void LogicalSwitchesPanel::update()
