@@ -57,9 +57,7 @@
                               SelectionChanged="switchLanguage" 
                               Width="200" Height="23"  />
                 </StackPanel>
-
             </StackPanel>
-
             <Separator Height="5" />
             <TextBlock Text="Sentence" Margin="5,0,0,0" FontSize="18"   />
             <Grid Margin="10,0,0,0" DataContext="{Binding ElementName=lvSentences, Path=SelectedItem}" Width="Auto">
@@ -82,9 +80,24 @@
                 <TextBlock Text="Sentence" Grid.Row="2" Grid.Column="0" Margin="0,5,0,0"   />
                 <TextBox   Text="{Binding Path=voiceString}" Grid.Row="2" Grid.Column="1"  Margin="0,0,10,0"/>
             </Grid>
+            <Separator Height="5" Margin="0,5,0,0" />
 
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                <TextBlock Text="Cut Level" Width="70" Margin="10,10,0,0"   />
+                <Slider Name="noiceLevelSlider" 
+                        Value="800"
+                        Minimum="0" 
+                        Maximum="4000" 
+                        TickPlacement="BottomRight" 
+                        TickFrequency="100" 
+                        IsSnapToTickEnabled="True"
+                        Width="170" 
+                        Margin="10,10,10,0" ToolTip="Set Cut Level as low as possible" />
+                <TextBlock Text="{Binding ElementName=noiceLevelSlider, Path=Value}" Width="40" Margin="0,10,0,0"/>
+                <TextBlock Text="Voice Rate" Width="70" Margin="10,10,0,0"   />
+            </StackPanel>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
+             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
                 <Button Content="New Sentence" Width="120" Height="32" Name="buttonAddItem" Click="addSentence"/>
                 <Button Name="btnRecord" ToolTip="Start recording" Click="record"  Margin="20,0,0,0" >
                     <Image Height="32" Source="/OpenTXrecorder;component/record.png"/>

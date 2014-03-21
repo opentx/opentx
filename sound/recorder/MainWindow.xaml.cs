@@ -161,7 +161,7 @@ namespace OpenTXrecorder
             {
                 try
                 {
-                    SoundPlayer player = new SoundPlayer(sentence.fullPath());
+                    SoundPlayer player = new SoundPlayer(sentence.fullPath);
                     player.Play();
                 }
                 catch (Exception) { };  // Catch and disregard all media exceptions
@@ -180,7 +180,7 @@ namespace OpenTXrecorder
                 isRecording = true;
                 lblRecording.Visibility = System.Windows.Visibility.Visible;
                 Sentence sentence = (Sentence)this.lvSentences.SelectedItem;
-                string path = sentence.fullPath();
+                string path = sentence.fullPath;
                 Directory.CreateDirectory(Path.GetDirectoryName(path));  // Create directory if it doesn't exist
                 System.IO.File.WriteAllText(path, "");                   // Create and flush the file
 
@@ -199,11 +199,16 @@ namespace OpenTXrecorder
             recorder.Close();
             filewriter.Close();
 
+
             int index = this.lvSentences.SelectedIndex;
             lblRecording.Visibility = System.Windows.Visibility.Hidden;
             Sentence sentence = (Sentence)this.lvSentences.SelectedItem;
             loadLanguage();            // Called to refresh the sentence data of the current langugae
             this.lvSentences.SelectedIndex = index;
+
+            wavProcessor processor = new wavProcessor();
+            int noiceLevel = (int)this.noiceLevelSlider.Value;
+            processor.StripSilence(sentence.fullPath, noiceLevel );
         }
 
         private void DataArrived(IntPtr data, int size)
@@ -235,10 +240,9 @@ namespace OpenTXrecorder
             shortLanguage = str;
         }
     }
+    
+    // Data container classes
 
-    /* 
-     * Data container classes
-     */
     public class Languages : List<Language>
     {
         public void Add(string longer, string shorter)
@@ -276,12 +280,12 @@ namespace OpenTXrecorder
             description = words[1];
             voiceString = words[2].TrimEnd('\"', ',', ' ');
             path = dirPath;
-            fileExists = File.Exists(fullPath());
+            fileExists = File.Exists(fullPath);
         }
 
-        public string fullPath()
+        public string fullPath
         {
-            return System.AppDomain.CurrentDomain.BaseDirectory + path + fileName + ".wav";
+            get { return System.AppDomain.CurrentDomain.BaseDirectory + path + fileName + ".wav"; }
         }
 
         public string toRaw()

@@ -1,5 +1,5 @@
-/* 
- * This is free software: you can redistribute it and/or modify
+/* This file is part of OpenTX Recorder.
+ * OpenTX Recorder is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -10,7 +10,7 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with the code.  If not, see <http://www.gnu.org/licenses/>. 
+ * along with OpenTX Recorder.  If not, see <http://www.gnu.org/licenses/>. 
  *
  * Copyright 2014 Tomas Andersson  */
 
@@ -91,7 +91,7 @@ namespace WaveLib
 		}
 	}
 
-    class WavFileWriter
+    public class WavFileWriter
     {
         BinaryWriter filewriter;
         long audiobyteswritten;

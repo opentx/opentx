@@ -80,6 +80,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="clsWaveProcessor.cs" />
     <Compile Include="sentencetables.cs" />
     <Compile Include="WaveIn.cs" />
     <Compile Include="WaveNative.cs" />
