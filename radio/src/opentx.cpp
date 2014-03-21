@@ -4581,6 +4581,44 @@ void opentxClose()
 }
 #endif
 
+
+#if defined(PCBTARANIS) && !defined(SIMU)
+extern USB_OTG_CORE_HANDLE USB_OTG_dev;
+
+/*
+  Prepare and send new USB data packet
+
+  The format of HID_Buffer is defined by
+  USB endpoint description can be found in 
+  file usb_hid_joystick.c, variable HID_JOYSTICK_ReportDesc
+*/
+void usb_joystick_update(void)
+{
+  static uint8_t HID_Buffer[HID_IN_PACKET];
+  
+  //buttons
+  HID_Buffer[0] = 0; //buttons
+  for (int i = 0; i < 8; ++i) {
+    if ( channelOutputs[i+8] > 0 ) {
+      HID_Buffer[0] |= (1 << i);
+    } 
+  }
+
+  //analog values
+  //uint8_t * p = HID_Buffer + 1;
+  for (int i = 0; i < 8; ++i) {
+    int16_t value = channelOutputs[i] / 8;
+    if ( value > 127 ) value = 127;
+    else if ( value < -127 ) value = -127;
+    HID_Buffer[i+1] = static_cast<int8_t>(value);  
+  }
+
+  USBD_HID_SendReport (&USB_OTG_dev, HID_Buffer, HID_IN_PACKET );
+}
+
+#endif //#if defined(PCBTARANIS) && !defined(SIMU)
+
+
 void perMain()
 {
 #if defined(SIMU)
@@ -4732,14 +4770,24 @@ void perMain()
   }
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) && !defined(SIMU)
   static bool usbStarted = false;
   if (!usbStarted && usbPlugged()) {
-    opentxClose();
     usbStart();
     usbStarted = true;
   }
-#endif
+  
+  if (usbStarted) {
+    if (!usbPlugged()) {
+      //disable USB
+      usbStop();
+      usbStarted = false;
+    }
+    else {
+      usb_joystick_update(); 
+    }
+  }
+#endif //#if defined(PCBTARANIS) && !defined(SIMU)
 
 #if defined(NAVIGATION_STICKS)
   if (StickScrollAllowed) {
@@ -4808,28 +4856,22 @@ void perMain()
   const char *warn = s_warning;
   uint8_t menu = s_menu_count;
 
-  if (usbPlugged()) {
+  if (!LCD_LOCKED()) {
     lcd_clear();
-    menuMainView(0);
-  }
-  else {
-    if (!LCD_LOCKED()) {
-      lcd_clear();
-      g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
-      if (warn) DISPLAY_WARNING(evt);
+    g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
+    if (warn) DISPLAY_WARNING(evt);
 #if defined(NAVIGATION_MENUS)
-      if (menu) {
-        const char * result = displayMenu(evt);
-        if (result) {
-          menuHandler(result);
-          putEvent(EVT_MENU_UP);
-        }
+    if (menu) {
+      const char * result = displayMenu(evt);
+      if (result) {
+        menuHandler(result);
+        putEvent(EVT_MENU_UP);
       }
+    }
 #endif
 #if defined(LUA)
-      evt = 0;
+    evt = 0;
 #endif
-    }
   }
 
 #if defined(LUA)

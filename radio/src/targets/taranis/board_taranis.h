@@ -51,11 +51,14 @@ extern "C" {
 #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_dma.h"
 #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_usart.h"
 #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include/stm32f2xx.h"
-#include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/inc/usbd_msc_core.h"
-#include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/inc/usbd_usr.h"
-#include "usbd_desc.h"
-#include "usb_conf.h"
-#include "usbd_conf.h"
+#if !defined(SIMU)
+  #include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/inc/usbd_msc_core.h"
+  #include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/hid/inc/usbd_hid_core.h"
+  #include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/inc/usbd_usr.h"
+  #include "usbd_desc.h"
+  #include "usb_conf.h"
+  #include "usbd_conf.h"
+#endif
 
 #include "hal.h"
 #include "aspi.h"
@@ -199,11 +202,12 @@ void pwrOff(void);
 #define IS_BACKLIGHT_ON()     (TIM10->CCR1 != 0)
 
 // USB driver
-int usbPlugged(void);
 #define BOOTLOADER_REQUEST()  (0)
 #define usbBootloader()
+uint8_t usbPlugged(void);
 void usbInit(void);
 void usbStart(void);
+void usbStop(void);
 
 #ifdef __cplusplus
 }
