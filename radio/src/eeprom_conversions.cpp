@@ -501,6 +501,7 @@ void ConvertModel_215_to_216(ModelData &model)
       }
       g_model.expoData[i].srcRaw = MIXSRC_Rud+chn;
       g_model.expoData[i].chn = chn;
+      g_model.expoData[i].mode = oldModel.expoData[i].mode;
       g_model.expoData[i].swtch = ConvertSwitch_215_to_216(oldModel.expoData[i].swtch);
       g_model.expoData[i].phases = oldModel.expoData[i].phases;
       g_model.expoData[i].weight = oldModel.expoData[i].weight;
