@@ -460,7 +460,7 @@ QString LogicalSwitchData::funcToString()
     case LS_FN_STICKY:
       return QObject::tr("Sticky");
     case LS_FN_STAY:
-      return QObject::tr("Stay");
+      return QObject::tr("Edge");
     default:
       return QObject::tr("Unknown");
   }
