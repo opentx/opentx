@@ -266,10 +266,6 @@ LUA = NO
 # Values = NO, READONLY, NOMENUS 
 MENUS_LOCK == NO
 
-# Include bootloader, for now only for Taranis
-# Values = YES, NO
-BOOTLOADER = YES
-
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
@@ -618,11 +614,7 @@ ifeq ($(PCB), TARANIS)
   else
     CPPDEFS = -DREV4
   endif
-  ifeq ($(BOOTLOADER), YES)
-    LDSCRIPT = targets/taranis/stm32_flash_bl.ld
-  else
-    LDSCRIPT = targets/taranis/stm32_flash.ld
-  endif
+  LDSCRIPT = targets/taranis/stm32_flash_bl.ld
   TRGT = arm-none-eabi-
   MCU  = cortex-m3
   OPT = 2
@@ -630,7 +622,7 @@ ifeq ($(PCB), TARANIS)
   SDCARD = YES
   THR_TRACE = YES
   EXT = FRSKY
-  CPPDEFS += -DPCBTARANIS -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DPXX
+  CPPDEFS += -DPCBTARANIS -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DPXX -DBOOTLOADER
   INCDIRS += targets/taranis CoOS/kernel CoOS/portable
   EXTRAINCDIRS += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/include
   EXTRAINCDIRS += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/inc 
@@ -643,7 +635,7 @@ ifeq ($(PCB), TARANIS)
   PULSESSRC = protocols/pulses_arm.cpp protocols/ppm_arm.cpp protocols/pxx_arm.cpp
   CPPSRC += audio_arm.cpp
   CPPSRC += targets/taranis/pulses_driver.cpp targets/taranis/keys_driver.cpp targets/taranis/adc_driver.cpp targets/taranis/trainer_driver.cpp targets/taranis/audio_driver.cpp targets/taranis/uart3_driver.cpp targets/taranis/sport_driver.cpp
-  CPPSRC += bmp.cpp gui/view_channels.cpp gui/view_about.cpp gui/view_text.cpp
+  CPPSRC += bmp.cpp gui/view_channels.cpp gui/view_about.cpp gui/view_text.cpp loadboot.cpp
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/system_stm32f2xx.c
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/misc.c
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c
@@ -704,10 +696,6 @@ ifeq ($(PCB), TARANIS)
     CPPSRC += targets/taranis/a7105_driver.cpp
   endif
   
-  ifeq ($(BOOTLOADER), YES)
-    CPPSRC += loadboot.cpp
-    CPPDEFS += -DBOOTLOADER
-  endif
 endif
 
 CC      = $(TRGT)gcc
