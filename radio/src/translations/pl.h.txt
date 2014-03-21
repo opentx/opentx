@@ -164,15 +164,15 @@
 
 #if defined(PCBTARANIS)
   #define TR_CSWTIMER          "Timer"
-  #define TR_CSWSTICKY         "Stcky"
-  #define TR_CSWRANGE          "Range"
-  #define TR_CSWSTAY           "Edge\0"
+  #define TR_CSWSTICKY         "Trwały"
+  #define TR_CSWRANGE          "Zasięg"
+  #define TR_CSWSTAY           "Brzeg\0"
 #else
   #define TR_CSWTIMER          "Tim\0 "
-  #define TR_CSWSTICKY         "Glue\0"
+  #define TR_CSWSTICKY         "Klej\0"
   #if defined(CPUARM)
-    #define TR_CSWRANGE        "Rnge\0"
-    #define TR_CSWSTAY         "Edge\0"
+    #define TR_CSWRANGE        "Zasi\0"
+    #define TR_CSWSTAY         "Brzeg\0"
   #else
     #define TR_CSWRANGE
     #define TR_CSWSTAY
@@ -355,7 +355,7 @@
 #define TR_VSWASHTYPE          "--- ""120 ""120X""140 ""90\0"
 
 #define LEN_VKEYS              "\005"
-#define TR_VKEYS               TR("Menu\0""Wyjdź""W dół""Wgórę""Wpraw""Wlewo", "Menu\0""Wyjdź""W dół""Wgórę""Wpraw""Wlewo")
+#define TR_VKEYS               TR("Menu\0""Wyjdź""W dół""Wgórę""Wpraw""Wlewo", "Menu\0""Exit ""Enter ""Page ""Minus""Plus ")
 
 #define LEN_VRENCODERS         "\003"
 #define TR_VRENCODERS          "REa""REb"
@@ -508,7 +508,7 @@
 #define TR_DELAYUP             TR("Opóznienie (+)", "Opóznienie(\43)")
 #define TR_SLOWDOWN            TR("Spowolnienie(-)", "Spowolnienie(\177)")
 #define TR_SLOWUP              TR("Spowolnienie(+)", "Spowolnienie(\176)")
-#define TR_MIXER               "MIKSER"
+#define TR_MIXER               "MIKSERY"
 #define TR_CV                  "K"
 #define TR_GV                  "ZG"
 #define TR_ACHANNEL            "A\004Kanał"
@@ -543,7 +543,7 @@
 #define TR_SPLASHSCREEN        "Logo ekranu"
 #define TR_THROTTLEWARNING     TR("(\043)Gaz", INDENT "(\043)Gaz")
 #define TR_SWITCHWARNING       TR("(\043)Przełącznik", INDENT "(\043)Przełącznik")
-#define TR_POTWARNING          TR("Pot Warn.", INDENT "Pot Warning")
+#define TR_POTWARNING          TR("Ostrz.Poten.", INDENT "Ostrzeż. Potencj.")
 #define TR_TIMEZONE            "Strefa czasowa"
 #define TR_RXCHANNELORD        TR("Kolejność kanałów", "Bazowa kolejność kanałów")
 #define TR_SLAVE               "Uczeń"
@@ -633,9 +633,9 @@
 #define TR_LONGITUDE           "Dł.   geo."
 #define TR_GPSCOORD            "Typ koordynat GPS"
 #define TR_VARIO               "Wario"
-#define TR_PITCH_AT_ZERO       INDENT "Pitch at Zero"
-#define TR_PITCH_AT_MAX        INDENT "Pitch at Max"
-#define TR_REPEAT_AT_ZERO      INDENT "Repeat at Zero"
+#define TR_PITCH_AT_ZERO       INDENT "Ton przy Zerze"
+#define TR_PITCH_AT_MAX        INDENT "Ton przy Max"
+#define TR_REPEAT_AT_ZERO      INDENT "Powtórz przy Zerze"
 #define TR_SHUTDOWN            "Wyłączanie.."
 #define TR_BATT_CALIB          "Kalib:Baterii"
 #define TR_CURRENT_CALIB       " +=\006Kalibracja prądu"
@@ -678,7 +678,7 @@
 #define TR_NO_SOUNDS_ON_SD     "brak dźwięków na SD"
 #define TR_NO_MODELS_ON_SD     "brak modelu na SD"
 #define TR_NO_BITMAPS_ON_SD    "brak obrazków na SD"
-#define TR_NO_SCRIPTS_ON_SD    "No Scripts on SD"
+#define TR_NO_SCRIPTS_ON_SD    "brak skryptów na SD"
 #define TR_PLAY_FILE           "Odtwórz"
 #define TR_DELETE_FILE         "Skasuj"
 #define TR_COPY_FILE           "Kopiuj"
@@ -700,9 +700,9 @@
 #define TR_SD_SECTORS          "Sektory :"
 #define TR_SD_SIZE             "Wielkość:"
 #define TR_TYPE                TR_SD_TYPE
-#define TR_GLOBAL_VARS         "Zmienne globalne"
-#define TR_GLOBAL_V            "GLOBAL V."
-#define TR_GLOBAL_VAR          "Zmienna globalna"
+#define TR_GLOBAL_VARS         "Zmienne Globalne"
+#define TR_GLOBAL_V            "Zmien.Glob."
+#define TR_GLOBAL_VAR          "Zmienna Globalna"
 #define TR_MENUGLOBALVARS      "ZMIENNE GLOBALNE"
 #define TR_OWN                 "Własność"
 #define TR_DATE                "Data"
@@ -749,24 +749,24 @@
 #define TR_CRITICALALARM       INDENT "Alarm krytyczny"
 #define TR_ENABLE_POPUP        "Aktywuj Popup"
 #define TR_DISABLE_POPUP       "Wyłącz Popup"
-#define TR_CURVE_PRESET        "Preset..."
-#define TR_PRESET              "Preset"
+#define TR_CURVE_PRESET        "Predefinicja..."
+#define TR_PRESET              "Predefinicja"
 #define TR_MIRROR              "Lutro"
 #define TR_CLEAR               "Wyczyść"
 #define TR_RESET               "Resetuj"
-#define TR_COUNT               "Licz"
-#define TR_PT                  "pt"
-#define TR_PTS                 "pts"
+#define TR_COUNT               "Punkty"
+#define TR_PT                  "pkt"
+#define TR_PTS                 "pkt"
 #define TR_SMOOTH              "Gładka"
 #define TR_COPY_TRIMS_TO_OFS   "Skopiuj Trymery Do Offsetu"
 #define TR_PERSISTENT_MAH      INDENT "Zapisz mAh"
-#define TR_PREFLIGHT           "Lista Startowa"
-#define TR_CHECKLIST           INDENT "Pokaż Listę Startową"
+#define TR_PREFLIGHT           "Lista Ostrzeżeń"
+#define TR_CHECKLIST           INDENT "Pokaż Listę Ostrzeżeń"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 #define TR_UART3MODE           "Port szreg."
-#define TR_SCRIPT              "Script"
-#define TR_INPUTS              "Inputs"
-#define TR_OUTPUTS             "Outputs"
+#define TR_SCRIPT              "Skrypt"
+#define TR_INPUTS              "Wejścia"
+#define TR_OUTPUTS             "Wyjścia"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL  "Maks RSSI"
