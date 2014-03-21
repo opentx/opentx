@@ -537,6 +537,7 @@ void ConvertModel_215_to_216(ModelData &model)
       expo->chn = i;
       expo->weight = 100;
       expo->curve.type = CURVE_REF_EXPO;
+      expo->mode = 3;
     }
     for (int c=0; c<4; c++) {
       g_model.inputNames[i][c] = char2idx(STR_VSRCRAW[1+STR_VSRCRAW[0]*(i+1)+c]);
