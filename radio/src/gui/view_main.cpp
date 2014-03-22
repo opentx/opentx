@@ -275,7 +275,7 @@ void displayTopBar()
     /* Altitude */
     if (g_model.frsky.altitudeDisplayed && TELEMETRY_BARO_ALT_AVAILABLE()) {
       LCD_ICON(altitude_icon_x, BAR_Y, ICON_ALTITUDE);
-      putsTelemetryValue(altitude_icon_x+2*FW-1, BAR_Y+1, TELEMETRY_RELATIVE_BARO_ALT_BP, UNIT_SPEED, LEFT);
+      putsTelemetryValue(altitude_icon_x+2*FW-1, BAR_Y+1, TELEMETRY_RELATIVE_BARO_ALT_BP, UNIT_DIST, LEFT);
     }
   }
 
