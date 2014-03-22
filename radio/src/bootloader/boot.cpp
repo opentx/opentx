@@ -67,7 +67,7 @@
 #include "../translations/en.h"
 
 #if defined(PCBTARANIS)
-  #define BOOTLOADER_TITLE      "Boot Loader - FrSky Taranis"
+  #define BOOTLOADER_TITLE      " OpenTX Boot Loader v1.0"
   #define BOOT_KEY_UP		KEY_PLUS
   #define BOOT_KEY_DOWN		KEY_MINUS
   #define BOOT_KEY_LEFT		KEY_MENU
@@ -571,8 +571,7 @@ int menuFlashFile(uint32_t index, uint8_t event)
 {
   FRESULT fr;
 
-  lcd_putsLeft(2*FH, INDENT "Flash file " FIRMWARES_PATH "/");
-  lcd_putsnAtt(lcdLastPos, 2*FH, Filenames[index], DISPLAY_CHAR_WIDTH, 0);
+  lcd_putsLeft(4*FH, "\012Hold [ENT] to start loading" );
 
   if (Valid == 0) {
     // Validate file here
@@ -586,14 +585,12 @@ int menuFlashFile(uint32_t index, uint8_t event)
   }
 
   if (Valid == 2) {
-    lcd_putsLeft(4*FH, INDENT "Not a valid firmware!");
+    lcd_putsLeft(4*FH,  "\015Not a valid firmware!");
     if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT) || event == EVT_KEY_FIRST(BOOT_KEY_MENU)) {
       return 0;
     }
     return -1;
   }
-
-  lcd_putsLeft(6*FH, INDENT "[Enter Long] to confirm");
 
   if (event == EVT_KEY_LONG(BOOT_KEY_MENU)) {
     fr = openFirmwareFile(index);
@@ -653,7 +650,7 @@ int main()
 #endif
   lcd_clear();
   lcd_putsLeft(0, BOOTLOADER_TITLE);
-  lcd_hline(0, 10, LCD_W);
+  lcd_invert_line(0);
   lcdRefresh();
 #if defined(PCBSKY9X)
   OptrexDisplay = 0;
@@ -714,7 +711,7 @@ int main()
 
       lcd_clear();
       lcd_putsLeft(0, BOOTLOADER_TITLE);
-      lcd_hline(0, 10, LCD_W);
+      lcd_invert_line(0);
 
       uint8_t event = getEvent();
 
@@ -723,10 +720,10 @@ int main()
       }
 
       if (state == ST_START) {
-        lcd_putsLeft(2*FH, "\004Flash a firmware from the SD card");
-        lcd_putsLeft(3*FH, "\004Exit");
+        lcd_putsLeft(2*FH, "\010Load Firmware");
+        lcd_putsLeft(3*FH, "\010Exit");
         lcd_invert_line(2+vpos);
-        lcd_putsLeft(6*FH, INDENT "Or plug a USB cable for Massstorage");
+        lcd_putsLeft(6*FH, INDENT "Or plug in a USB cable for mass storage");
         if (event == EVT_KEY_FIRST(BOOT_KEY_DOWN) || event == EVT_KEY_FIRST(BOOT_KEY_UP)) {
           vpos = (vpos+1) & 0x01;
         }
@@ -739,7 +736,7 @@ int main()
       }
 
       if (state == ST_USB) {
-        lcd_putsLeft(4*FH, CENTER "\010U S B");
+        lcd_putsLeft(4*FH, "\026USB Connected");
         if (usbPlugged() == 0) {
           vpos = 0;
           state = ST_START;
@@ -874,7 +871,7 @@ int main()
       if (state == ST_FLASHING) {
         // Commit to flashing
         uint32_t blockOffset = 0;
-        lcd_putsLeft(2*FH, INDENT "Flashing...");
+        lcd_putsLeft(4*FH, "\032Loading...");
         while (BlockCount) {
           program((uint32_t *) firmwareAddress, &Block_buffer[blockOffset]); // size is 256 bytes
           blockOffset += 64;		// 32-bit words (256 bytes)
@@ -886,10 +883,11 @@ int main()
             BlockCount = 0;
           }
         }
-        firmwareWritten += 4; // 4K blocks
+        firmwareWritten += 8; // 4K blocks
 
-        lcd_rect(INDENT_WIDTH, 6*FH+4, 202, 3);
-        lcd_hline(INDENT_WIDTH, 6*FH+5, (200*firmwareWritten/(FlashSize-32)), FORCE);
+        lcd_rect(INDENT_WIDTH, 6*FH+4, 202, 4);
+        lcd_hline(INDENT_WIDTH, 6*FH+5, (200*firmwareWritten/(FlashSize-64)), FORCE);
+        lcd_hline(INDENT_WIDTH, 6*FH+6, (200*firmwareWritten/(FlashSize-64)), FORCE);
 
         fr = f_read(&FlashFile, (BYTE *)Block_buffer, sizeof(Block_buffer), &BlockCount);
         if (BlockCount == 0) {
@@ -901,7 +899,7 @@ int main()
       }
 
       if (state == ST_FLASH_DONE) {
-        lcd_putsLeft(2*FH, INDENT "Flashing Complete");
+        lcd_putsLeft(4*FH, "\024Loading Complete");
         if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT) || event == EVT_KEY_FIRST(BOOT_KEY_MENU)) {
           state = ST_START;
           vpos = 0;
