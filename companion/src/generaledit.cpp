@@ -380,6 +380,14 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
       ui->pot3Type->hide();
       ui->pot3TypeLabel->hide();
     }
+    
+    if (IS_TARANIS(eepromInterface->getBoard())) {
+      ui->serialPortMode->setCurrentIndex(g_eeGeneral.hw_uartMode);
+    }
+    else {
+      ui->serialPortMode->hide();
+      ui->serialPortLabel->hide();
+    }
 }
 
 GeneralEdit::~GeneralEdit()
@@ -402,6 +410,12 @@ void GeneralEdit::on_pot2Type_currentIndexChanged(int index)
 void GeneralEdit::on_pot3Type_currentIndexChanged(int index)
 {
   g_eeGeneral.potsType[2] = index;
+  updateSettings();
+}
+
+void GeneralEdit::on_serialPortMode_currentIndexChanged(int index)
+{
+  g_eeGeneral.hw_uartMode = index;
   updateSettings();
 }
 
