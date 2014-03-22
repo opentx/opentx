@@ -1029,7 +1029,8 @@ void menuGeneralTrainer(uint8_t event)
     lcd_outdezAtt(LEN_MULTIPLIER*FW+3*FW, 6*FH+1, g_eeGeneral.PPM_Multiplier+10, attr|PREC1);
     if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.PPM_Multiplier, -10, 40);
 
-    attr = (m_posVert==6) ? blink : 0;
+    attr = (m_posVert==6) ? INVERS : 0;
+    if (attr) s_editMode = 0;
     lcd_putsAtt(0*FW, 1+7*FH, STR_CAL, attr);
     for (uint8_t i=0; i<4; i++) {
       uint8_t x = (i*TRAINER_CALIB_POS+16)*FW/2;
@@ -1041,11 +1042,10 @@ void menuGeneralTrainer(uint8_t event)
     }
 
     if (attr) {
-      if (event==EVT_KEY_FIRST(KEY_ENTER)){
-        s_editMode = -1;
+      if (event==EVT_KEY_LONG(KEY_ENTER)){
         memcpy(g_eeGeneral.trainer.calib, g_ppmIns, sizeof(g_eeGeneral.trainer.calib));
         eeDirty(EE_GENERAL);
-        AUDIO_KEYPAD_UP();
+        AUDIO_WARNING1();
       }
     }
   }
