@@ -4592,7 +4592,7 @@ extern USB_OTG_CORE_HANDLE USB_OTG_dev;
   USB endpoint description can be found in 
   file usb_hid_joystick.c, variable HID_JOYSTICK_ReportDesc
 */
-void usb_joystick_update(void)
+void usbJoystickUpdate(void)
 {
   static uint8_t HID_Buffer[HID_IN_PACKET];
   
@@ -4784,7 +4784,7 @@ void perMain()
       usbStarted = false;
     }
     else {
-      usb_joystick_update(); 
+      usbJoystickUpdate();
     }
   }
 #endif //#if defined(PCBTARANIS) && !defined(SIMU)
