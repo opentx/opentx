@@ -38,7 +38,7 @@
 #include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc/usb_dcd_int.h"
 #include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc/usb_bsp.h"
 
-uint8_t usbPlugged(void)
+int usbPlugged(void)
 {
   //debounce
   static uint8_t debounced_state = 0;

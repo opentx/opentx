@@ -204,7 +204,7 @@ void pwrOff(void);
 // USB driver
 #define BOOTLOADER_REQUEST()  (0)
 #define usbBootloader()
-uint8_t usbPlugged(void);
+int usbPlugged(void);
 void usbInit(void);
 void usbStart(void);
 void usbStop(void);
