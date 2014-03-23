@@ -27,6 +27,7 @@ private:
     bool mavbaudEditLock;
     void getGeneralSwitchDefPos(int i, bool val);
     void setSwitchDefPos();
+    void updateVarioPitchRange();
     
 signals:
     void modelValuesChanged();
@@ -118,6 +119,10 @@ private slots:
     void on_bgVolume_SL_valueChanged();
     void on_varioVolume_SL_valueChanged();
     void on_wavVolume_SL_valueChanged();
+    
+    void on_varioP0_SB_editingFinished();
+    void on_varioPMax_SB_editingFinished();
+    void on_varioR0_SB_editingFinished();
     
     void on_pot1Type_currentIndexChanged(int index);
     void on_pot2Type_currentIndexChanged(int index);
