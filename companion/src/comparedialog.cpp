@@ -1069,7 +1069,7 @@ void compareDialog::printFSwitches()
   QString color2;
   int sc=0;
   QString str = "<table border=1 cellspacing=0 cellpadding=3 style=\"page-break-before:always;\" width=\"100%\">";
-  str.append("<tr><td><h2>"+tr("Switch Assignment")+"</h2></td></tr>");
+  str.append("<tr><td><h2>"+tr("Special Functions")+"</h2></td></tr>");
   str.append("<tr><td><table border=1 cellspacing=0 cellpadding=1 width=\"100%\"><tr>");
   str.append("<td width=\"7%\" align=\"center\"><b>"+tr("Switch")+"</b></td>");
   str.append("<td width=\"12%\" align=\"center\"><b>"+tr("Function")+"</b></td>");
@@ -1112,7 +1112,7 @@ void compareDialog::printFSwitches()
       } else {
         str.append("<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>");
       }
-      str.append(doTC(tr("CF")+QString("%1").arg(i+1),"",true));
+      str.append(doTC(tr("SF")+QString("%1").arg(i+1),"",true));
       if (g_model2->funcSw[i].swtch.type) {
         str.append(doTC(g_model2->funcSw[i].swtch.toString(),color2));
         str.append(doTC(g_model2->funcSw[i].funcToString(),color2));

@@ -697,7 +697,7 @@ void printDialog::printFSwitches()
 {
     int sc=0;
     QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
-    str.append("<tr><td><h2>"+tr("Switch Assignments")+"</h2></td></tr>");
+    str.append("<tr><td><h2>"+tr("Special Functions")+"</h2></td></tr>");
     str.append("<tr><td><table border=0 cellspacing=0 cellpadding=3><tr>");
     str.append(doTC(tr("Switch"), "", true));
     str.append(doTL(tr("Function"), "", true));

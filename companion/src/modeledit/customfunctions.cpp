@@ -104,7 +104,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
     label->setContextMenuPolicy(Qt::CustomContextMenu);
     label->setMouseTracking(true);
     label->setProperty("index", i);
-    label->setText(tr("CF%1").arg(i+1));
+    label->setText(tr("SF%1").arg(i+1));
     gridLayout->addWidget(label, i+1, 0);
     connect(label, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(fsw_customContextMenuRequested(QPoint)));
 
