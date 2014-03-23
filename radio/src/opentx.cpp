@@ -3253,7 +3253,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
       {
         if (TELEMETRY_STREAMING()) {
           uint8_t att = 0;
-          int16_t converted_value = applyChannelRatio(idx, val) / 10;
+          int16_t converted_value =  div10_and_round(applyChannelRatio(idx, val));;
           if (g_model.frsky.channels[idx].type < UNIT_RAW) {
             att = PREC1;
           }
@@ -3264,7 +3264,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
 
     case MIXSRC_FIRST_TELEM+TELEM_CELL-1:
     case MIXSRC_FIRST_TELEM+TELEM_MIN_CELL-1:
-      PLAY_NUMBER(val/10, 1+UNIT_VOLTS, PREC1);
+      PLAY_NUMBER(div10_and_round(val), 1+UNIT_VOLTS, PREC1);
       break;
 
     case MIXSRC_FIRST_TELEM+TELEM_VFAS-1:
@@ -3282,12 +3282,12 @@ PLAY_FUNCTION(playValue, uint8_t idx)
     case MIXSRC_FIRST_TELEM+TELEM_ACCx-1:
     case MIXSRC_FIRST_TELEM+TELEM_ACCy-1:
     case MIXSRC_FIRST_TELEM+TELEM_ACCz-1:
-      PLAY_NUMBER(val/10, 1+UNIT_G, PREC1);
+      PLAY_NUMBER(div10_and_round(val), 1+UNIT_G, PREC1);
       break;
 
     case MIXSRC_FIRST_TELEM+TELEM_VSPD-1:
     case MIXSRC_FIRST_TELEM+TELEM_ASPD-1:
-      PLAY_NUMBER(val/10, 1+UNIT_METERS_PER_SECOND, PREC1);
+      PLAY_NUMBER(div10_and_round(val), 1+UNIT_METERS_PER_SECOND, PREC1);
       break;
 
     case MIXSRC_FIRST_TELEM+TELEM_CONSUMPTION-1:
@@ -3300,7 +3300,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
 
     case MIXSRC_FIRST_TELEM+TELEM_ALT-1:
 #if defined(PCBTARANIS)
-      PLAY_NUMBER(val/10, 1+UNIT_DIST, PREC1);
+      PLAY_NUMBER(div10_and_round(val), 1+UNIT_DIST, PREC1);
       break;
 #endif
     case MIXSRC_FIRST_TELEM+TELEM_MIN_ALT-1:

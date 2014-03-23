@@ -1514,6 +1514,9 @@ getvalue_t convertCswTelemValue(LogicalSwitchData * cs);
 lcdint_t applyChannelRatio(uint8_t channel, lcdint_t val);
 #endif
 
+getvalue_t div10_and_round(getvalue_t value);
+
+
 #if defined(FRSKY)
 NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm);
 

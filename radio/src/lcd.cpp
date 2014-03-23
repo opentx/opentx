@@ -1190,7 +1190,7 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
     {
       lcdint_t converted_value = applyChannelRatio(channel, val);
       if (g_model.frsky.channels[channel].type >= UNIT_RAW) {
-        converted_value /= 10;
+        converted_value = div10_and_round(converted_value);
       }
       else {
 #if !defined(PCBTARANIS)
@@ -1198,7 +1198,7 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
           att |= PREC2;
         }
         else {
-          converted_value /= 10;
+          converted_value = div10_and_round(converted_value);
           att |= PREC1;
         }
 #else
@@ -1255,7 +1255,7 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
 
 #if defined(FRSKY_SPORT)
     case TELEM_ALT-1:
-      putsTelemetryValue(x, y, val/10, UNIT_DIST, att|PREC1);
+      putsTelemetryValue(x, y, div10_and_round(val), UNIT_DIST, att|PREC1);
       break;
 #elif defined(WS_HOW_HIGH)
     case TELEM_ALT-1:
