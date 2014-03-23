@@ -79,9 +79,7 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
         }
       }
     }
-    
-    QRegExp rx(CHAR_FOR_NAMES_REGEX);
-    ui->ownerNameLE->setValidator(new QRegExpValidator(rx, this));
+
     switchDefPosEditLock=true;
     populateBacklightCB(ui->backlightswCB, g_eeGeneral.backlightMode);
     bool voice = current_firmware_variant.id.contains("voice");
@@ -133,48 +131,12 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
       ui->varioPMax_SB->setValue(700+(g_eeGeneral.varioPitch*10)+1000+(g_eeGeneral.varioRange*10));
       ui->varioR0_SB->setValue(500+(g_eeGeneral.varioRepeat*10));
     }
-    
-    if (!GetEepromInterface()->getCapability(HasBlInvert)) {
-      ui->blinvert_cb->hide();
-      ui->blinvert_label->hide();
-    } else {
-      ui->blinvert_cb->setChecked(g_eeGeneral.blightinv);
-    }
     if (!GetEepromInterface()->getCapability(HasFAIMode)) {
       ui->faimode_CB->hide();
       ui->label_faimode->hide();
     }
     else {
       ui->faimode_CB->setChecked(g_eeGeneral.fai);
-    }
-    ui->ownerNameLE->setText(g_eeGeneral.ownerName);
-    if (!GetEepromInterface()->getCapability(OwnerName)) {
-      ui->ownerNameLE->setDisabled(true);
-      ui->label_ownerName->hide();
-      ui->ownerNameLE->hide();
-      ui->hideNameOnSplashChkB->setDisabled(true);
-      ui->hideNameOnSplashChkB->hide();
-      ui->label_hideOwnerName->hide();      
-    }
-    if (!GetEepromInterface()->getCapability(HasInputFilter)) {
-      ui->inputfilterCB->hide();
-      ui->inputfilterLabel->hide();
-    }
-    if (!GetEepromInterface()->getCapability(HasStickScroll)) {
-      ui->StickScrollChkB->hide();
-      ui->StickScrollLB->hide();
-    }
-    if (!GetEepromInterface()->getCapability(TelemetryInternalAlarm)) {
-      ui->frskyintalarmChkB->hide();
-      ui->label_frskyintalarm->hide();
-    }
-    if (!GetEepromInterface()->getCapability(HasCrossTrims)) {
-      ui->crosstrimChkB->hide();
-      ui->crosstrimLB->hide();
-    }
-    if (!GetEepromInterface()->getCapability(HasPPMSim)) {
-      ui->PPMSimLB->hide();
-      ui->PPMSimChkB->hide();
     }
     if (!GetEepromInterface()->getCapability( HasPxxCountry)) {
       ui->countrycode_label->hide();
@@ -223,9 +185,6 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
       ui->label_CurrentCalib->hide();
     }
     
-    if (GetEepromInterface()->getCapability(TelemetryRSSIModel) ) {
-        ui->tabWidget->removeTab(2);
-    }
     ui->tabWidget->setCurrentIndex(0);
 
     if (!GetEepromInterface()->getCapability(SoundMod)) {
@@ -245,14 +204,6 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
       ui->hapticStrengthSB->hide();
       ui->label_hapticStrengthSB->hide();
     } 
-
-    if (GetEepromInterface()->getCapability(PerModelTimers)) {
-      ui->beepCountDownChkB->hide();
-      ui->beepFlashChkB->hide();
-      ui->beepMinuteChkB->hide();
-      ui->label_timers->hide();
-    } 
-
     
     if (!GetEepromInterface()->getCapability(HapticMode)) {
       ui->hapticmodeCB->setDisabled(true);
@@ -260,66 +211,6 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
       ui->label_hapticmode->hide();
     } 
 
-    if (!GetEepromInterface()->getCapability(BandgapMeasure)) {
-      ui->BandGapEnableChkB->setDisabled(true);
-      ui->BandGapEnableChkB->hide();
-      ui->label_BandGapEnable->hide();
-    }
-
-    if (!GetEepromInterface()->getCapability(PotScrolling)) {
-      ui->PotScrollEnableChkB->setDisabled(true);
-      ui->PotScrollEnableChkB->hide();
-      ui->label_PotScrollEnable->hide();
-    } 
-    
-    if (!GetEepromInterface()->getCapability(TrainerSwitch)) {
-      ui->label_switch->hide();
-      ui->swtchCB_1->setDisabled(true);
-      ui->swtchCB_2->setDisabled(true);
-      ui->swtchCB_3->setDisabled(true);
-      ui->swtchCB_4->setDisabled(true);
-      ui->swtchCB_1->hide();
-      ui->swtchCB_2->hide();
-      ui->swtchCB_3->hide();
-      ui->swtchCB_4->hide();
-    } else {
-      populateSwitchCB(ui->swtchCB_1,g_eeGeneral.trainer.mix[0].swtch);
-      populateSwitchCB(ui->swtchCB_2,g_eeGeneral.trainer.mix[1].swtch);
-      populateSwitchCB(ui->swtchCB_3,g_eeGeneral.trainer.mix[2].swtch);
-      populateSwitchCB(ui->swtchCB_4,g_eeGeneral.trainer.mix[3].swtch);
-    }
-    if (!GetEepromInterface()->getCapability(BLonStickMove)) {
-      ui->blOnStickMoveSB->setDisabled(true);
-      ui->blOnStickMoveSB->hide();
-      ui->label_blOnStickMove->hide();
-    } else {
-      ui->blOnStickMoveSB->setValue(g_eeGeneral.lightOnStickMove*5);
-    }
-    if (!GetEepromInterface()->getCapability(gsSwitchMask)) {
-      ui->swAILChkB->setDisabled(true);
-      ui->swELEChkB->setDisabled(true);
-      ui->swTHRChkB->setDisabled(true);
-      ui->swRUDChkB->setDisabled(true);
-      ui->swGEAChkB->setDisabled(true);
-      ui->swID0ChkB->setDisabled(true);
-      ui->swID1ChkB->setDisabled(true);
-      ui->swID2ChkB->setDisabled(true);
-      ui->swAILChkB->hide();
-      ui->swELEChkB->hide();
-      ui->swTHRChkB->hide();
-      ui->swRUDChkB->hide();
-      ui->swGEAChkB->hide();
-      ui->swID0ChkB->hide();
-      ui->swID1ChkB->hide();
-      ui->swID2ChkB->hide();
-      this->layout()->removeItem(ui->switchMaskLayout);
-    } else {
-      setSwitchDefPos();
-    }
-    if (!GetEepromInterface()->getCapability(TelemetryAlarm)) {
-      ui->telalarmsChkB->hide();
-      ui->label_telalarms->hide();
-    }
     int renumber=GetEepromInterface()->getCapability(RotaryEncoders);
     if (renumber==0) {
       ui->re_label->hide();
@@ -327,28 +218,15 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
     } else {
       populateRotEncCB(ui->re_CB, g_eeGeneral.reNavigation, renumber);
     }
-    ui->telalarmsChkB->setChecked(g_eeGeneral.enableTelemetryAlarm);
-    ui->PotScrollEnableChkB->setChecked(!g_eeGeneral.disablePotScroll);
-    ui->BandGapEnableChkB->setChecked(!g_eeGeneral.disableBG);
     ui->contrastSB->setValue(g_eeGeneral.contrast);
     ui->battwarningDSB->setValue((double)g_eeGeneral.vBatWarn/10);
     ui->backlightautoSB->setValue(g_eeGeneral.backlightDelay*5);
     ui->inactimerSB->setValue(g_eeGeneral.inactivityTimer);
     
-    ui->crosstrimChkB->setChecked(g_eeGeneral.crosstrim);
-    ui->frskyintalarmChkB->setChecked(g_eeGeneral.frskyinternalalarm);
-    ui->StickScrollChkB->setChecked(g_eeGeneral.stickScroll);
-    ui->PPMSimChkB->setChecked(g_eeGeneral.enablePpmsim);
-    ui->inputfilterCB->setCurrentIndex(g_eeGeneral.filterInput);
     ui->memwarnChkB->setChecked(!g_eeGeneral.disableMemoryWarning);   //Default is zero=checked
     ui->alarmwarnChkB->setChecked(!g_eeGeneral.disableAlarmWarning);//Default is zero=checked
-    ui->enableTelemetryAlarmChkB->setChecked(g_eeGeneral.enableTelemetryAlarm);
 
-    ui->beepMinuteChkB->setChecked(g_eeGeneral.minuteBeep);
-    ui->beepCountDownChkB->setChecked(g_eeGeneral.preBeep);
-    ui->beepFlashChkB->setChecked(g_eeGeneral.flashBeep);
     ui->splashScreenChkB->setChecked(!g_eeGeneral.splashMode);
-    ui->hideNameOnSplashChkB->setChecked(!g_eeGeneral.hideNameOnSplash);
 
     ui->trnMode_1->setCurrentIndex(g_eeGeneral.trainer.mix[0].mode);
     ui->trnChn_1->setCurrentIndex(g_eeGeneral.trainer.mix[0].src);
@@ -462,9 +340,8 @@ void GeneralEdit::setValues()
     ui->speakerPitchSB->setValue(g_eeGeneral.speakerPitch);
     ui->hapticStrengthSB->setValue(g_eeGeneral.hapticStrength);
     ui->hapticmodeCB->setCurrentIndex(g_eeGeneral.hapticMode+2);
-    ui->battcalibDSB->setValue((double)g_eeGeneral.vBatCalib/10);
+    ui->battCalibDSB->setValue((double)g_eeGeneral.vBatCalib/10);
     ui->CurrentCalib_SB->setValue((double)g_eeGeneral.currentCalib);
-    ui->battCalib->setValue((double)g_eeGeneral.vBatCalib/10);
 
     ui->ana1Neg->setValue(g_eeGeneral.calibSpanNeg[0]);
     ui->ana2Neg->setValue(g_eeGeneral.calibSpanNeg[1]);
@@ -500,27 +377,6 @@ void GeneralEdit::setValues()
     ui->PPM_MultiplierDSB->setValue((qreal)(g_eeGeneral.PPM_Multiplier+10)/10);
 }
 
-void GeneralEdit::setSwitchDefPos()
-{
-    quint8 x = g_eeGeneral.switchWarningStates & 0x38;
-    if(x==0x00 || x==0x18 || x== 0x28 || x==0x38 || x==0x30) //illegal states for ID0/1/2
-    {
-        g_eeGeneral.switchWarningStates &= ~0x38; // turn all off, make sure only one is on
-        g_eeGeneral.switchWarningStates |=  0x08;
-    }
-
-    switchDefPosEditLock = true;
-    ui->swTHRChkB->setChecked(g_eeGeneral.switchWarningStates & 0x01);
-    ui->swRUDChkB->setChecked(g_eeGeneral.switchWarningStates & 0x02);
-    ui->swELEChkB->setChecked(g_eeGeneral.switchWarningStates & 0x04);
-    ui->swID0ChkB->setChecked(g_eeGeneral.switchWarningStates & 0x08);
-    ui->swID1ChkB->setChecked(g_eeGeneral.switchWarningStates & 0x10);
-    ui->swID2ChkB->setChecked(g_eeGeneral.switchWarningStates & 0x20);
-    ui->swAILChkB->setChecked(g_eeGeneral.switchWarningStates & 0x40);
-    ui->swGEAChkB->setChecked(g_eeGeneral.switchWarningStates & 0x80);
-    switchDefPosEditLock = false;
-}
-
 void GeneralEdit::updateSettings()
 {
     radioData.generalSettings = g_eeGeneral;
@@ -539,10 +395,9 @@ void GeneralEdit::on_battwarningDSB_editingFinished()
     updateSettings();
 }
 
-void GeneralEdit::on_battcalibDSB_editingFinished()
+void GeneralEdit::on_battCalibDSB_editingFinished()
 {
-    g_eeGeneral.vBatCalib = ui->battcalibDSB->value()*10;
-    ui->battCalib->setValue(ui->battcalibDSB->value());
+    g_eeGeneral.vBatCalib = ui->battCalibDSB->value()*10;
     updateSettings();
 }
 
@@ -630,26 +485,9 @@ void GeneralEdit::on_timezoneSB_editingFinished()
   updateSettings();
 }
 
-
-void GeneralEdit::on_blOnStickMoveSB_editingFinished()
-{
-    int i = ui->blOnStickMoveSB->value()/5;
-    if((i*5)!=ui->blOnStickMoveSB->value())
-        ui->blOnStickMoveSB->setValue(i*5);
-
-    g_eeGeneral.lightOnStickMove = i;
-    updateSettings();
-}
-
 void GeneralEdit::on_inactimerSB_editingFinished()
 {
     g_eeGeneral.inactivityTimer = ui->inactimerSB->value();
-    updateSettings();
-}
-
-void GeneralEdit::on_inputfilterCB_currentIndexChanged(int index)
-{
-    g_eeGeneral.filterInput = index;
     updateSettings();
 }
 
@@ -662,12 +500,6 @@ void GeneralEdit::on_memwarnChkB_stateChanged(int )
 void GeneralEdit::on_alarmwarnChkB_stateChanged(int )
 {
     g_eeGeneral.disableAlarmWarning = ui->alarmwarnChkB->isChecked() ? 0 : 1;
-    updateSettings();
-}
-
-void GeneralEdit::on_enableTelemetryAlarmChkB_stateChanged(int )
-{
-    g_eeGeneral.enableTelemetryAlarm = ui->enableTelemetryAlarmChkB->isChecked();
     updateSettings();
 }
 
@@ -919,13 +751,6 @@ void GeneralEdit::on_ana8Pos_editingFinished()
     updateSettings();
 }
 
-void GeneralEdit::on_battCalib_editingFinished()
-{
-    g_eeGeneral.vBatCalib = ui->battCalib->value()*10;
-    ui->battcalibDSB->setValue(ui->battCalib->value());
-    updateSettings();
-}
-
 void GeneralEdit::on_volume_SB_editingFinished()
 {
     g_eeGeneral.speakerVolume = ui->volume_SB->value();
@@ -1022,46 +847,15 @@ void GeneralEdit::on_tabWidget_currentChanged(int index)
     g.generalEditTab(index);
 }
 
-
-void GeneralEdit::on_beepMinuteChkB_stateChanged(int )
-{
-    g_eeGeneral.minuteBeep = ui->beepMinuteChkB->isChecked() ? 1 : 0;
-    updateSettings();
-}
-
-void GeneralEdit::on_beepCountDownChkB_stateChanged(int )
-{
-    g_eeGeneral.preBeep = ui->beepCountDownChkB->isChecked() ? 1 : 0;
-    updateSettings();
-}
-
-void GeneralEdit::on_beepFlashChkB_stateChanged(int )
-{
-    g_eeGeneral.flashBeep = ui->beepFlashChkB->isChecked() ? 1 : 0;
-    updateSettings();
-}
-
 void GeneralEdit::on_splashScreenChkB_stateChanged(int )
 {
     g_eeGeneral.splashMode = ui->splashScreenChkB->isChecked() ? 0 : 1;
     updateSettings();
 }
 
-void GeneralEdit::on_hideNameOnSplashChkB_stateChanged(int )
-{
-    g_eeGeneral.hideNameOnSplash = ui->hideNameOnSplashChkB->isChecked() ? 0 : 1;
-    updateSettings();
-}
-
 void GeneralEdit::on_PPM_MultiplierDSB_editingFinished()
 {
     g_eeGeneral.PPM_Multiplier = (int)(ui->PPM_MultiplierDSB->value()*10)-10;
-    updateSettings();
-}
-
-void GeneralEdit::on_ownerNameLE_editingFinished()
-{
-    strncpy(g_eeGeneral.ownerName, ui->ownerNameLE->text().toAscii(), 10);
     updateSettings();
 }
 
@@ -1083,18 +877,6 @@ void GeneralEdit::on_soundModeCB_currentIndexChanged(int index)
     updateSettings();
 }
 
-void GeneralEdit::on_PotScrollEnableChkB_stateChanged(int )
-{
-    g_eeGeneral.disablePotScroll = ui->PotScrollEnableChkB->isChecked() ? false : true;
-    updateSettings();
-}
-
-void GeneralEdit::on_blinvert_cb_stateChanged(int )
-{
-    g_eeGeneral.blightinv = ui->blinvert_cb->isChecked();
-    updateSettings();
-}
-
 void GeneralEdit::on_faimode_CB_stateChanged(int )
 {
     if (ui->faimode_CB->isChecked()) {
@@ -1109,159 +891,6 @@ void GeneralEdit::on_faimode_CB_stateChanged(int )
     } else {
       g_eeGeneral.fai = false;
     }
-    updateSettings();
-}
-
-void GeneralEdit::on_BandGapEnableChkB_stateChanged(int )
-{
-    g_eeGeneral.disableBG = ui->BandGapEnableChkB->isChecked() ? false : true;
-    updateSettings();
-}
-
-void GeneralEdit::on_crosstrimChkB_stateChanged(int )
-{
-    g_eeGeneral.crosstrim = ui->crosstrimChkB->isChecked() ? true : false;
-    updateSettings();
-}
-
-void GeneralEdit::on_frskyintalarmChkB_stateChanged(int )
-{
-    g_eeGeneral.frskyinternalalarm = ui->frskyintalarmChkB->isChecked() ? true : false  ;
-    updateSettings();
-}
-
-void GeneralEdit::on_StickScrollChkB_stateChanged(int )
-{
-    g_eeGeneral.stickScroll = ui->StickScrollChkB->isChecked() ? true : false;
-    updateSettings();
-}
-
-void GeneralEdit::on_PPMSimChkB_stateChanged(int )
-{
-    g_eeGeneral.enablePpmsim = ui->PPMSimChkB->isChecked() ? true : false;
-    updateSettings();
-}
-
-void GeneralEdit::on_swtchCB_1_currentIndexChanged(int index)
-{
-    g_eeGeneral.trainer.mix[0].swtch = RawSwitch(ui->swtchCB_1->itemData(ui->swtchCB_1->currentIndex()).toInt());
-    updateSettings();
-}
-
-void GeneralEdit::on_swtchCB_2_currentIndexChanged(int index)
-{
-    g_eeGeneral.trainer.mix[1].swtch = RawSwitch(ui->swtchCB_2->itemData(ui->swtchCB_2->currentIndex()).toInt());
-    updateSettings();
-}
-
-void GeneralEdit::on_swtchCB_3_currentIndexChanged(int index)
-{
-    g_eeGeneral.trainer.mix[2].swtch = RawSwitch(ui->swtchCB_3->itemData(ui->swtchCB_3->currentIndex()).toInt());
-    updateSettings();
-}
-
-void GeneralEdit::on_swtchCB_4_currentIndexChanged(int index)
-{
-    g_eeGeneral.trainer.mix[3].swtch = RawSwitch(ui->swtchCB_4->itemData(ui->swtchCB_4->currentIndex()).toInt());
-    updateSettings();
-}
-
-void GeneralEdit::getGeneralSwitchDefPos(int i, bool val)
-{
-    if(val)
-        g_eeGeneral.switchWarningStates |= (1<<(i-1));
-    else
-        g_eeGeneral.switchWarningStates &= ~(1<<(i-1));
-}
-
-void GeneralEdit::on_swTHRChkB_stateChanged(int )
-{
-    if(switchDefPosEditLock) return;
-    getGeneralSwitchDefPos(1,ui->swTHRChkB->isChecked());
-    updateSettings();
-}
-
-void GeneralEdit::on_telalarmsChkB_stateChanged(int )
-{
-    g_eeGeneral.enableTelemetryAlarm=ui->telalarmsChkB->isChecked();
-    updateSettings();
-}
-
-void GeneralEdit::on_swRUDChkB_stateChanged(int )
-{
-    if(switchDefPosEditLock) return;
-    getGeneralSwitchDefPos(2,ui->swRUDChkB->isChecked());
-    updateSettings();
-}
-void GeneralEdit::on_swELEChkB_stateChanged(int )
-{
-    getGeneralSwitchDefPos(3,ui->swELEChkB->isChecked());
-    updateSettings();
-}
-void GeneralEdit::on_swID0ChkB_stateChanged(int )
-{
-    if(switchDefPosEditLock) return;
-
-    if(ui->swID0ChkB->isChecked())
-    {
-        switchDefPosEditLock = true;
-        ui->swID1ChkB->setChecked(false);
-        ui->swID2ChkB->setChecked(false);
-        switchDefPosEditLock = false;
-    }
-    else
-        return;
-
-    g_eeGeneral.switchWarningStates &= ~0x30; //turn off ID1/2
-    getGeneralSwitchDefPos(4,ui->swID0ChkB->isChecked());
-    updateSettings();
-}
-void GeneralEdit::on_swID1ChkB_stateChanged(int )
-{
-    if(switchDefPosEditLock) return;
-
-    if(ui->swID1ChkB->isChecked())
-    {
-        switchDefPosEditLock = true;
-        ui->swID0ChkB->setChecked(false);
-        ui->swID2ChkB->setChecked(false);
-        switchDefPosEditLock = false;
-    }
-    else
-        return;
-
-    g_eeGeneral.switchWarningStates &= ~0x28; //turn off ID0/2
-    getGeneralSwitchDefPos(5,ui->swID1ChkB->isChecked());
-    updateSettings();
-}
-void GeneralEdit::on_swID2ChkB_stateChanged(int )
-{
-    if(switchDefPosEditLock) return;
-
-    if(ui->swID2ChkB->isChecked())
-    {
-        switchDefPosEditLock = true;
-        ui->swID0ChkB->setChecked(false);
-        ui->swID1ChkB->setChecked(false);
-        switchDefPosEditLock = false;
-    }
-    else
-        return;
-
-    g_eeGeneral.switchWarningStates &= ~0x18; //turn off ID1/2
-    getGeneralSwitchDefPos(6,ui->swID2ChkB->isChecked());
-    updateSettings();
-}
-void GeneralEdit::on_swAILChkB_stateChanged(int )
-{
-    if(switchDefPosEditLock) return;
-    getGeneralSwitchDefPos(7,ui->swAILChkB->isChecked());
-    updateSettings();
-}
-void GeneralEdit::on_swGEAChkB_stateChanged(int )
-{
-    if(switchDefPosEditLock) return;
-    getGeneralSwitchDefPos(8,ui->swGEAChkB->isChecked());
     updateSettings();
 }
 

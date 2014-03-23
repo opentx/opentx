@@ -219,8 +219,6 @@ int Gruvin9xInterface::getSize(GeneralSettings &settings)
 int Gruvin9xInterface::getCapability(const Capability capability)
 {
   switch (capability) {
-    case OwnerName:
-      return 0;
     case Mixes:
       return G9X_MAX_MIXERS;
     case FlightPhases:
