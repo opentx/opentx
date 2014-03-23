@@ -1349,7 +1349,7 @@ uint32_t check2PosSwitchPosition(EnumKeys sw)
   return result;
 }
 
-#define DELAY_SWITCH_3POS    10/*100ms*/
+#define DELAY_SWITCH_3POS    15/*150ms*/
 uint32_t check3PosSwitchPosition(uint8_t idx, EnumKeys sw, bool startup)
 {
   uint32_t result;
