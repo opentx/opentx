@@ -87,7 +87,7 @@
 #define TR_TARANIS_PROTOCOLS   "Av\0 ""PPM\0""XJT\0""DSM2"
 
 #define LEN_XJT_PROTOCOLS      "\004"
-#define TR_XJT_PROTOCOLS       "---\0""D16\0""D8\0 ""LR12"
+#define TR_XJT_PROTOCOLS       "Av\0 ""D16\0""D8\0 ""LR12"
 
 #define LEN_DSM_PROTOCOLS      "\004"
 #define TR_DSM_PROTOCOLS       "LP45""DSM2""DSMX"
