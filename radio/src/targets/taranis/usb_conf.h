@@ -154,15 +154,17 @@
 #endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
 
 /* __packed keyword used to decrease the data type alignment to 1-byte */
-#if defined (__CC_ARM)         /* ARM Compiler */
-  #define __packed    __packed
-#elif defined (__ICCARM__)     /* IAR Compiler */
-  #define __packed    __packed
-#elif defined   ( __GNUC__ )   /* GNU Compiler */                        
-  #define __packed    __attribute__ ((__packed__))
-#elif defined   (__TASKING__)  /* TASKING Compiler */
-  #define __packed    __unaligned
-#endif /* __CC_ARM */
+#if !defined(__packed)
+  #if defined (__CC_ARM)         /* ARM Compiler */
+    #define __packed    __packed
+  #elif defined (__ICCARM__)     /* IAR Compiler */
+    #define __packed    __packed
+  #elif defined   ( __GNUC__ )   /* GNU Compiler */                        
+    #define __packed    __attribute__ ((__packed__))
+  #elif defined   (__TASKING__)  /* TASKING Compiler */
+    #define __packed    __unaligned
+  #endif /* __CC_ARM */
+#endif
 
 #endif //__USB_CONF__H__
 
