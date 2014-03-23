@@ -255,22 +255,12 @@ int Ersky9xInterface::getCapability(const Capability capability)
       return 1;
     case Timer2ThrTrig:
       return 1;
-    case TrainerSwitch:
-      return 1;
-    case BandgapMeasure:
-      return 1;
-    case PotScrolling:
-      return 1;
     case SoundMod:
       return 1;
     case SoundPitch:
       return 1;
     case Haptic:
       return 1;
-    case OwnerName:
-      return 10;
-    case HasInputFilter:
-      return 0;
     case ModelVoice:
       return 1;
     case Timers:
@@ -296,10 +286,6 @@ int Ersky9xInterface::getCapability(const Capability capability)
     case ExtraChannels:
       return 0;
     case Simulation:
-      return 1;
-    case gsSwitchMask:
-      return 1;
-    case BLonStickMove:
       return 1;
     case Telemetry:
       return TM_HASTELEMETRY|TM_HASWSHH;

@@ -451,8 +451,6 @@ int OpenTxInterface::getSize(GeneralSettings &settings)
 int OpenTxInterface::getCapability(const Capability capability)
 {
   switch (capability) {
-    case OwnerName:
-      return 0;
     case ModelImage:
       if (IS_TARANIS(board))
         return 1;
@@ -619,8 +617,6 @@ int OpenTxInterface::getCapability(const Capability capability)
       return 1;
     case TelemetryRSSIModel:
       return 1;
-    case TelemetryAlarm:
-      return 0;
     case TelemetryTimeshift:
       return 1;
     case TelemetryMaxMultiplier:
@@ -676,8 +672,6 @@ int OpenTxInterface::getCapability(const Capability capability)
     case LuaInputs:
     case LimitsPer1000:
     case EnhancedCurves:
-    case TelemetryInternalAlarms:
-      return IS_TARANIS(board);
     case HasFasOffset:
       return (IS_STOCK(board) ? false : true);
     case HasMahPersistent:

@@ -271,10 +271,7 @@ void ModelsListWidget::refreshList()
     clear();
     int msize;
     div_t divresult;
-    QString name = radioData->generalSettings.ownerName;
-    if(!name.isEmpty())
-        name.prepend(" - ");
-    addItem(tr("General Settings") + name);
+    addItem(tr("General Settings"));
 
     EEPROMInterface *eepromInterface = GetEepromInterface();
     int availableEEpromSize = eepromInterface->getEEpromSize()-64; //let's consider fat
