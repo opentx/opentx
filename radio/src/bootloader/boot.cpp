@@ -883,11 +883,12 @@ int main()
             BlockCount = 0;
           }
         }
-        firmwareWritten += 8; // 4K blocks
+        firmwareWritten += 4; // 4K blocks
 
-        lcd_rect(INDENT_WIDTH, 6*FH+4, 202, 4);
-        lcd_hline(INDENT_WIDTH, 6*FH+5, (200*firmwareWritten/(FlashSize-64)), FORCE);
-        lcd_hline(INDENT_WIDTH, 6*FH+6, (200*firmwareWritten/(FlashSize-64)), FORCE);
+        lcd_rect( 3, 6*FH+4, 204, 7);
+        lcd_hline(5, 6*FH+6, (200*2*firmwareWritten-32)/(FlashSize), FORCE);
+        lcd_hline(5, 6*FH+7, (200*2*firmwareWritten-32)/(FlashSize), FORCE);
+        lcd_hline(5, 6*FH+8, (200*2*firmwareWritten-32)/(FlashSize), FORCE);
 
         fr = f_read(&FlashFile, (BYTE *)Block_buffer, sizeof(Block_buffer), &BlockCount);
         if (BlockCount == 0) {
