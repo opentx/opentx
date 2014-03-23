@@ -5620,7 +5620,7 @@ void menuModelTelemetry(uint8_t event)
       	lcd_outdezAtt(TELEM_COL2, y, g_model.frsky.fasOffset, attr|LEFT|PREC1);
         lcd_outdezAtt(TELEM_COL2+6*FW, y, frskyData.hub.current, LEFT|PREC1);
         lcd_putc(TELEM_COL2+8*FW, y, 'A');
-      	if (attr) g_model.frsky.fasOffset = checkIncDec(event, g_model.frsky.fasOffset, -15, 15, EE_MODEL);
+      	if (attr) g_model.frsky.fasOffset = checkIncDec(event, g_model.frsky.fasOffset, -120, 120, EE_MODEL);
         break;
 #endif
 
