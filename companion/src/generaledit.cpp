@@ -117,11 +117,21 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
       ui->bgVolume_label->hide();
       ui->wavVolume_SL->hide();
       ui->wavVolume_label->hide();
+      ui->varioP0_label->hide();
+      ui->varioP0_SB->hide();
+      ui->varioPMax_label->hide();
+      ui->varioPMax_SB->hide();
+      ui->varioR0_label->hide();
+      ui->varioR0_SB->hide();
     } else {
       ui->beepVolume_SL->setValue(g_eeGeneral.beepVolume);
       ui->varioVolume_SL->setValue(g_eeGeneral.varioVolume);
       ui->bgVolume_SL->setValue(g_eeGeneral.backgroundVolume);
       ui->wavVolume_SL->setValue(g_eeGeneral.wavVolume);
+      ui->varioP0_SB->setValue(700+(g_eeGeneral.varioPitch*10));
+      updateVarioPitchRange();
+      ui->varioPMax_SB->setValue(700+(g_eeGeneral.varioPitch*10)+1000+(g_eeGeneral.varioRange*10));
+      ui->varioR0_SB->setValue(500+(g_eeGeneral.varioRepeat*10));
     }
     
     if (!GetEepromInterface()->getCapability(HasBlInvert)) {
@@ -380,6 +390,14 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
       ui->pot3Type->hide();
       ui->pot3TypeLabel->hide();
     }
+    
+    if (IS_TARANIS(eepromInterface->getBoard())) {
+      ui->serialPortMode->setCurrentIndex(g_eeGeneral.hw_uartMode);
+    }
+    else {
+      ui->serialPortMode->hide();
+      ui->serialPortLabel->hide();
+    }
 }
 
 GeneralEdit::~GeneralEdit()
@@ -402,6 +420,12 @@ void GeneralEdit::on_pot2Type_currentIndexChanged(int index)
 void GeneralEdit::on_pot3Type_currentIndexChanged(int index)
 {
   g_eeGeneral.potsType[2] = index;
+  updateSettings();
+}
+
+void GeneralEdit::on_serialPortMode_currentIndexChanged(int index)
+{
+  g_eeGeneral.hw_uartMode = index;
   updateSettings();
 }
 
@@ -942,6 +966,31 @@ void GeneralEdit::on_bgVolume_SL_valueChanged()
 {
     g_eeGeneral.backgroundVolume=ui->bgVolume_SL->value();
     updateSettings();
+}
+
+void GeneralEdit::on_varioP0_SB_editingFinished()
+{
+  g_eeGeneral.varioPitch = (ui->varioP0_SB->value()-700)/10;
+  updateVarioPitchRange();
+  updateSettings();
+}
+
+void GeneralEdit::updateVarioPitchRange()
+{
+  ui->varioPMax_SB->setMaximum(700+(g_eeGeneral.varioPitch*10)+1000+800);
+  ui->varioPMax_SB->setMinimum(700+(g_eeGeneral.varioPitch*10)+1000-800);
+}
+
+void GeneralEdit::on_varioPMax_SB_editingFinished()
+{
+  g_eeGeneral.varioRange = (ui->varioPMax_SB->value()-(700+(g_eeGeneral.varioPitch*10))-1000)/10;
+  updateSettings();
+}
+
+void GeneralEdit::on_varioR0_SB_editingFinished()
+{
+  g_eeGeneral.varioRepeat = (ui->varioR0_SB->value()-500)/10;
+  updateSettings();
 }
 
 void GeneralEdit::on_PPM1_editingFinished()
