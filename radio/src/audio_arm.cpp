@@ -324,7 +324,7 @@ void getSwitchAudioFile(char * filename, int index)
     str += 5;
   }
   else {
-    str += 1;
+    *(str+1) = 0;
   }
   strcat(str, SOUNDS_EXT);
 }
