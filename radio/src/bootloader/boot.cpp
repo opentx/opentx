@@ -585,7 +585,7 @@ int menuFlashFile(uint32_t index, uint8_t event)
   }
 
   if (Valid == 2) {
-    lcd_putsLeft(4*FH,  "\015Not a valid firmware!");
+    lcd_putsLeft(4*FH,  "\011No firmware found in the file!");
     if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT) || event == EVT_KEY_FIRST(BOOT_KEY_MENU)) {
       return 0;
     }
