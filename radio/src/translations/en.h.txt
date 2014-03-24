@@ -345,7 +345,7 @@
 #define TR_VSCREEN             "Nums""Bars"
 
 #define LEN_GPSFORMAT          "\004"
-#define TR_GPSFORMAT           "HMS ""NMEA"
+#define TR_GPSFORMAT           "DMS\0""NMEA"
 
 #define LEN2_VTEMPLATES        13
 #define LEN_VTEMPLATES         "\015"
