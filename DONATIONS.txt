@@ -352,3 +352,4 @@ Fabien Gagné
 Joe Street
 Micha Ronen
 Albert Blondin
+Klaus Schuebel
