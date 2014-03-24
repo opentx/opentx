@@ -128,7 +128,7 @@ I18N_PLAY_FUNCTION(pt, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     }
 #if defined(CPUARM)
     if ((att & PREC1) && (unit == UNIT_FEET || (unit == UNIT_DIST && number >= 100))) {
-      number /= 10;
+      number = div10_and_round(number);
       att -= PREC1;
     }
 #endif
