@@ -119,10 +119,10 @@ namespace WaveLib
             filewriter.Write((uint)0); // chunkisize (filled in when we close)
         }
 
-        public void Write(byte[] data)
+        public void Write(byte[] data, int size)
         {
-            filewriter.Write(data);
-            audiobyteswritten += data.Length;
+            filewriter.Write(data, 0, size);
+            audiobyteswritten += size;
         }
 
         public void Close()

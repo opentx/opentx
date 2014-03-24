@@ -72,12 +72,11 @@ public class wavProcessor
         for (int ni = 0, m = startpos; m <= endpos; m++, ni++)
             newarr[ni] = arrfile[m];
 
-        //write file
+        // write file back
         waout.DataLength = newarr.Length;
-
-        WavFileWriter wfWriter = new WavFileWriter(@strPath, wain.SampleRate, wain.BitsPerSample, wain.Channels);
-        wfWriter.Write(newarr);
-        wfWriter.Close();
+        WavFileWriter writer = new WavFileWriter(@strPath, wain.SampleRate, wain.BitsPerSample, wain.Channels);
+        writer.Write(newarr, newarr.Length);
+        writer.Close();
 
         return true;
     }

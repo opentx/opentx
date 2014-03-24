@@ -214,7 +214,7 @@ namespace OpenTXrecorder
         private void DataArrived(IntPtr data, int size)
         {
             Marshal.Copy(data, recordingBuffer, 0, size);
-            filewriter.Write(recordingBuffer);
+            filewriter.Write(recordingBuffer, size);
         }
     }
 
