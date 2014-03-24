@@ -13,48 +13,41 @@ public class wavProcessor
     public int DataLength;
     public short BitsPerSample;
 
+    /// <summary>
     /// Filter out silence or noise from start and end of wave file. 
+    /// </summary>
+    /// <param name="strPath">Source wave file</param>
+    /// <param name="noiceLevel">Absolute value for noice threshold</param>
+    /// <returns>True/False</returns>
     public bool StripSilence(string strPath, int noiceLevel)
     {
-        if (strPath == null) strPath = "";
-        if (strPath == "") return false;
+        if ((strPath == null) || (strPath == ""))
+            return false;
 
+        // Read from file 
         wavProcessor wain = new wavProcessor();
-        wavProcessor waout = new wavProcessor();
-
-        waout.DataLength = waout.Length = 0;
-
         if (!wain.WaveHeaderIN(@strPath)) return false;
-
-        waout.DataLength = wain.DataLength;
-        waout.Length = wain.Length;
-
-        waout.BitsPerSample = wain.BitsPerSample;
-        waout.Channels = wain.Channels;
-        waout.SampleRate = wain.SampleRate;
-
         byte[] arrfile = GetWAVEData(strPath);
 
-        //check for silence
+        
         int startpos = 0;
         int endpos = arrfile.Length - 1;
-        //At start
-        try
+        
+        // Check for silence at start
+        for (int j = 0; j < arrfile.Length; j += 2)
         {
-            for (int j = 0; j < arrfile.Length; j += 2)
-            {
-                short snd = ComplementToSigned(ref arrfile, j);
-                if (snd > (-1 * noiceLevel) && snd < noiceLevel) startpos = j;
-                else
-                    break;
-            }
+            short snd = ComplementToSigned(ref arrfile, j);
+            if (snd > (-1 * noiceLevel) && snd < noiceLevel) startpos = j;
+            else
+                break;
         }
-        catch (Exception ex)
-        {
-            Console.Write(ex.Message);
-        }
+        // Allow room for tone-in buffer
+        int buffer = wain.SampleRate * (wain.BitsPerSample / 8) / 8;
+        startpos = startpos - buffer;
+        if (startpos < 0)
+            startpos = 0;
 
-        //At end
+        // Check foor silence at end
         for (int k = arrfile.Length - 1; k >= 0; k -= 2)
         {
             short snd = ComplementToSigned(ref arrfile, k - 1);
@@ -63,6 +56,10 @@ public class wavProcessor
             else
                 break;
         }
+        // Allow room for tone-out buffer
+        endpos = endpos + buffer;
+        if (endpos > (arrfile.Length - 1))
+            endpos = arrfile.Length - 1;
 
         if (startpos == endpos) return false;
         if ((endpos - startpos) < 1) return false;
@@ -73,7 +70,6 @@ public class wavProcessor
             newarr[ni] = arrfile[m];
 
         // write file back
-        waout.DataLength = newarr.Length;
         WavFileWriter writer = new WavFileWriter(@strPath, wain.SampleRate, wain.BitsPerSample, wain.Channels);
         writer.Write(newarr, newarr.Length);
         writer.Close();
@@ -82,9 +78,81 @@ public class wavProcessor
     }
 
     /// <summary>
+    /// Tone in wav file
+    /// </summary>
+    /// <param name="strPath">Source wave</param>
+    /// <returns>True/False</returns>
+    public bool ToneIn(string strPath)
+    {
+        if ((strPath == null) || (strPath == ""))
+            return false;
+
+        // Read from file
+        wavProcessor wain = new wavProcessor();
+        if (!wain.WaveHeaderIN(@strPath)) return false;
+        byte[] arrfile = GetWAVEData(strPath);
+
+        // Calculate constants
+        int start = 0;
+        int end = wain.SampleRate * (wain.BitsPerSample / 8) / 8; // 0.125 seconds
+        int span = end - start;
+
+        //change volume
+        for (int j = start; j < end; j += 2)
+        {
+            short snd = ComplementToSigned(ref arrfile, j);
+            snd = Convert.ToInt16(snd * (j / span));
+            byte[] newval = SignedToComplement(snd);
+            arrfile[j] = newval[0];
+            arrfile[j + 1] = newval[1];
+        }
+        // write file back
+        WavFileWriter writer = new WavFileWriter(@strPath, wain.SampleRate, wain.BitsPerSample, wain.Channels);
+        writer.Write(arrfile, arrfile.Length);
+        writer.Close();
+
+        return true;
+    }    
+    /// <summary>
+    /// Tone out wav file
+    /// </summary>
+    /// <param name="strPath">Source wave</param>
+    /// <returns>True/False</returns>
+    public bool ToneOut(string strPath)
+    {
+        if ((strPath == null) || (strPath == ""))
+            return false;
+
+        // Read from file
+        wavProcessor wain = new wavProcessor();
+        if (!wain.WaveHeaderIN(@strPath)) return false;
+        byte[] arrfile = GetWAVEData(strPath);
+
+        // Calculate constants
+        int end = wain.Length;
+        int start = end - (wain.SampleRate * (wain.BitsPerSample / 8) / 8); // 0.125 seconds from end
+        int span = end - start;
+
+        //change volume
+        for (int j = start; j < arrfile.Length; j += 2)
+        {
+            short snd = ComplementToSigned(ref arrfile, j);
+            snd = Convert.ToInt16(snd * (end - j) / span);
+
+            byte[] newval = SignedToComplement(snd);
+            arrfile[j] = newval[0];
+            arrfile[j + 1] = newval[1];
+        }
+        // write file back
+        WavFileWriter writer = new WavFileWriter(@strPath, wain.SampleRate, wain.BitsPerSample, wain.Channels);
+        writer.Write(arrfile, arrfile.Length);
+        writer.Close();
+
+        return true;
+    }
+
+    /// <summary>
     /// Read the wave file header and store the key values in public variable.
-    /// Adapted from - Concatenation Wave Files using C# 2005 by By Ehab Mohamed Essa
-    /// URL - http://www.codeproject.com/useritems/Concatenation_Wave_Files.asp
     /// </summary>
     /// <param name="strPath">The physical path of wave file incl. file name for reading</param>
     /// <returns>True/False</returns>
@@ -137,7 +205,19 @@ public class wavProcessor
             snd = Convert.ToInt16((~snd | 1));
         return snd;
     }
-
+    /// <summary>
+    /// Convert signed sample value back to 2's complement value equivalent to Stereo. This method is used 
+    /// by other public methods to equilibrate wave formats of different files.
+    /// </summary>
+    /// <param name="shtVal">The mono signed value as short</param>
+    /// <returns>Stereo 2's complement value as byte array</returns>
+    private byte[] SignedToComplement(short shtVal) //Convert to 2's complement and return as byte array of 2 bytes
+    {
+        byte[] bt = new byte[2];
+        shtVal = Convert.ToInt16((~shtVal | 1));
+        bt = BitConverter.GetBytes(shtVal);
+        return bt;
+    }
     /// <summary>
     /// Read the WAVE file then position to DADA segment and return the chunk as byte array 
     /// </summary>

@@ -208,7 +208,9 @@ namespace OpenTXrecorder
 
             wavProcessor processor = new wavProcessor();
             int noiceLevel = (int)this.noiceLevelSlider.Value;
-            processor.StripSilence(sentence.fullPath, noiceLevel );
+            processor.StripSilence(sentence.fullPath, noiceLevel);
+            processor.ToneIn(sentence.fullPath);
+            processor.ToneOut(sentence.fullPath);
         }
 
         private void DataArrived(IntPtr data, int size)
