@@ -18,6 +18,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Media;
 using System.Threading;
@@ -34,10 +35,10 @@ namespace OpenTXrecorder
 {
     public partial class MainWindow : Window
     {
-        SentenceTables tables = new SentenceTables();
-        Sentences sentences = new Sentences();
-        Languages languages = new Languages();
         Environment env;
+        SentenceTables tables = new SentenceTables();
+        public Sentences sentences { get; set; }
+        public Languages languages { get; set; }
 
         WavFileWriter filewriter;
         WaveInRecorder recorder;
@@ -51,15 +52,18 @@ namespace OpenTXrecorder
 
         public MainWindow()
         {
+            this.DataContext = this;
+            sentences = new Sentences();
+            languages = new Languages();
+            recordingBuffer = new byte[recBuffersize];
+
+            InitializeComponent();
+
+            // Start by displaying Splash Screen
             SplashScreen splash = new SplashScreen("recorder_logo.png");
             splash.Show(true);
             Thread.Sleep(1500);
 
-            InitializeComponent();
-            recordingBuffer = new byte[recBuffersize];
-
-            lvSentences.ItemsSource = sentences;
-            cbLanguages.ItemsSource = languages;
             languages.Add("English", "en");
             languages.Add("Czech", "cz");
             languages.Add("German", "de");
@@ -70,7 +74,9 @@ namespace OpenTXrecorder
             languages.Add("Swedish", "se");
             languages.Add("Slovak", "sk");
             languages.Add("Spanish", "es");
-            env = new Environment(languages[0].sName);
+
+            env = new Environment(languages[0]);
+
             cbLanguages.SelectedIndex = 0; // Note: Sets current langugage -> triggers loadlanguage() 
         }
 
@@ -86,8 +92,8 @@ namespace OpenTXrecorder
             }
             catch (IOException)
             {
-                system_strings = tables.default_system_strings[tables.toInt(env.shortLanguage)];
-                other_strings = tables.default_other_strings[tables.toInt(env.shortLanguage)];
+                system_strings = tables.default_system_strings[tables.toInt(env.lang.sName)];
+                other_strings = tables.default_other_strings[tables.toInt(env.lang.sName)];
             }
             sentences.Clear();
 
@@ -98,8 +104,6 @@ namespace OpenTXrecorder
 
             foreach (string str in other_strings)
                 sentences.Add(str, env.baseDir);
-
-            lvSentences.Items.Refresh(); // Workaround - Two way binding is better
         }
 
         private void saveLanguage()
@@ -122,7 +126,7 @@ namespace OpenTXrecorder
 
         private void switchLanguage(object sender, SelectionChangedEventArgs e)
         {
-            env = new Environment(((Language)e.AddedItems[0]).sName);
+            env = new Environment(((Language)e.AddedItems[0]));  // AddedItems is a strange name. It contains the last selection
             loadLanguage();
         }
 
@@ -143,7 +147,8 @@ namespace OpenTXrecorder
             }
             while (env.fileExists(newFile));
             sentences.Add(new Sentence(newFile + ";New Description;New Voice Message", env.baseDir));
-            this.lvSentences.Items.Refresh();
+
+            // Extremely ugly - direct access to the listview to scroll down and select the new object
             this.lvSentences.SelectedIndex = this.lvSentences.Items.Count - 1;
             this.lvSentences.ScrollIntoView(this.lvSentences.SelectedItem);
         }
@@ -211,6 +216,7 @@ namespace OpenTXrecorder
             processor.StripSilence(sentence.fullPath, noiceLevel);
             processor.ToneIn(sentence.fullPath);
             processor.ToneOut(sentence.fullPath);
+            processor.SpeedUp(sentence.fullPath, (int)this.speedSlider.Value);
         }
 
         private void DataArrived(IntPtr data, int size)
@@ -222,9 +228,9 @@ namespace OpenTXrecorder
 
     public class Environment
     {
-        public string shortLanguage { get; set; }
-        public string baseDir { get { return @"SOUNDS\" + shortLanguage + @"\"; } }
-        public string sysDir { get { return @"SOUNDS\" + shortLanguage + @"\SYSTEM\"; } }
+        public Language lang { get; set; }
+        public string baseDir { get { return @"SOUNDS\" + lang.sName + @"\"; } }
+        public string sysDir { get { return @"SOUNDS\" + lang.sName + @"\SYSTEM\"; } }
         public string otherSounds { get { return baseDir + "other_sounds.txt"; } }
         public string systemSounds { get { return sysDir + "system_sounds.txt"; } }
 
@@ -237,15 +243,15 @@ namespace OpenTXrecorder
             return false;
         }
 
-        public Environment(string str)
+        public Environment(Language language)
         {
-            shortLanguage = str;
+            lang = language;
         }
     }
     
     // Data container classes
 
-    public class Languages : List<Language>
+    public class Languages : ObservableCollection<Language>
     {
         public void Add(string longer, string shorter)
         {
@@ -259,7 +265,7 @@ namespace OpenTXrecorder
         public string sName { get; set; }
     }
 
-    public class Sentences : List<Sentence>
+    public class Sentences : ObservableCollection<Sentence>
     {
         public void Add(string rawString, string dirPath)
         {

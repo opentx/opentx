@@ -29,44 +29,33 @@ public class wavProcessor
         if (!wain.WaveHeaderIN(@strPath)) return false;
         byte[] arrfile = GetWAVEData(strPath);
 
-        
         int startpos = 0;
         int endpos = arrfile.Length - 1;
-        
+
         // Check for silence at start
-        for (int j = 0; j < arrfile.Length; j += 2)
-        {
-            short snd = ComplementToSigned(ref arrfile, j);
-            if (snd > (-1 * noiceLevel) && snd < noiceLevel) startpos = j;
-            else
-                break;
-        }
+        for (int j = 0; isSilence(arrfile, j, noiceLevel); j += 20)
+            startpos = j;
+
         // Allow room for tone-in buffer
-        int buffer = wain.SampleRate * (wain.BitsPerSample / 8) / 8;
+        int buffer = wain.SampleRate * (wain.BitsPerSample / 8) / 32; // 1/32 seconds lead time
         startpos = startpos - buffer;
         if (startpos < 0)
             startpos = 0;
 
-        // Check foor silence at end
-        for (int k = arrfile.Length - 1; k >= 0; k -= 2)
-        {
-            short snd = ComplementToSigned(ref arrfile, k - 1);
-            if (snd > (-1 * noiceLevel) && snd < noiceLevel)
-                endpos = k;
-            else
-                break;
-        }
+        // Check for silence at end. No need to check tone out buffer
+        for (int k = arrfile.Length - buffer; (k >= 0) && (isSilence(arrfile, k, noiceLevel)); k -= 20)
+            endpos = k;
+
         // Allow room for tone-out buffer
         endpos = endpos + buffer;
-        if (endpos > (arrfile.Length - 1))
-            endpos = arrfile.Length - 1;
+        if (endpos > arrfile.Length)
+            endpos = arrfile.Length - 2;
 
-        if (startpos == endpos) return false;
-        if ((endpos - startpos) < 1) return false;
+        if (startpos >= endpos)
+            return false;
 
-        byte[] newarr = new byte[(endpos - startpos) + 1];
-
-        for (int ni = 0, m = startpos; m <= endpos; m++, ni++)
+        byte[] newarr = new byte[endpos - startpos];
+        for (int ni = 0, m = startpos; ni < newarr.Length; m++, ni++)
             newarr[ni] = arrfile[m];
 
         // write file back
@@ -75,6 +64,23 @@ public class wavProcessor
         writer.Close();
 
         return true;
+    }
+
+    // Helper function that checks if the next 10 samples is silence
+    private bool isSilence(byte[] buff, int index, int noiceLevel)
+    {
+        if (buff.Length <= (index + 20))
+            return false;
+
+        int totalSnd = 0;
+        for (int i = 0; i < 20; i += 2)
+        {
+            short snd = ComplementToSigned(ref buff, i + index);
+            if (snd < 0)
+                snd = (short)(snd * -1);
+            totalSnd += snd;
+        }
+        return (totalSnd < (10 * noiceLevel));
     }
 
     /// <summary>
@@ -94,7 +100,7 @@ public class wavProcessor
 
         // Calculate constants
         int start = 0;
-        int end = wain.SampleRate * (wain.BitsPerSample / 8) / 8; // 0.125 seconds
+        int end = wain.SampleRate * (wain.BitsPerSample / 8) / 16; // 1/16 seconds
         int span = end - start;
 
         //change volume
@@ -112,7 +118,7 @@ public class wavProcessor
         writer.Close();
 
         return true;
-    }    
+    }
     /// <summary>
     /// Tone out wav file
     /// </summary>
@@ -130,7 +136,7 @@ public class wavProcessor
 
         // Calculate constants
         int end = wain.Length;
-        int start = end - (wain.SampleRate * (wain.BitsPerSample / 8) / 8); // 0.125 seconds from end
+        int start = end - (wain.SampleRate * (wain.BitsPerSample / 8) / 16); // 1/16 seconds from end
         int span = end - start;
 
         //change volume
@@ -148,6 +154,43 @@ public class wavProcessor
         writer.Write(arrfile, arrfile.Length);
         writer.Close();
 
+        return true;
+    }
+    /// <summary>
+    /// Speed up wav file to mimic Donald Duck
+    /// </summary>
+    /// <param name="strPath">Source wave</param>
+    /// <param name="speed">Speed between 0 and 19 </param>
+    /// <returns>True/False</returns>
+    public bool SpeedUp(string strPath, int speed)
+    {
+        if ((strPath == null) || (strPath == ""))
+            return false;
+
+        if ((speed < 0) || (speed > 19))
+            return false;
+
+        // Read from file
+        wavProcessor wain = new wavProcessor();
+        if (!wain.WaveHeaderIN(@strPath)) return false;
+        byte[] arrfile = GetWAVEData(strPath);
+        byte[] newfile = new byte[arrfile.Length];
+
+        int skip = 21-speed;
+        int j = 0;
+        for (int i = 0; i < arrfile.Length; i += 2)
+        {
+            if (skip > 20 || (((i/2) % skip) != 0))
+            {
+                newfile[j] = arrfile[i];
+                newfile[j + 1] = arrfile[i + 1];
+                j += 2;
+            }
+        }
+        // write file back
+        WavFileWriter writer = new WavFileWriter(@strPath, wain.SampleRate, wain.BitsPerSample, wain.Channels);
+        writer.Write(newfile, j);
+        writer.Close();
         return true;
     }
 
@@ -201,6 +244,7 @@ public class wavProcessor
     private short ComplementToSigned(ref byte[] bytArr, int intPos) // 2's complement to normal signed value
     {
         short snd = BitConverter.ToInt16(bytArr, intPos);
+        if (intPos >= bytArr.Length) return 0;
         if (snd != 0)
             snd = Convert.ToInt16((~snd | 1));
         return snd;

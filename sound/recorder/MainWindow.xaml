@@ -10,11 +10,11 @@
 
     
     <Window.Resources> 
-        <DataTemplate x:Key="image">
-            <Image x:Name="TheImage" />
+        <DataTemplate x:Key="imagePlay">
+            <Image x:Name="ThePlayImage" />
             <DataTemplate.Triggers>
                 <DataTrigger Binding="{Binding Path=fileExists}" Value="true">
-                    <Setter TargetName="TheImage" Property="Source" Value="/OpenTXrecorder;component/play.png" />
+                    <Setter TargetName="ThePlayImage" Property="Source" Value="/OpenTXrecorder;component/play.png" />
                 </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
@@ -30,15 +30,17 @@
             <ListView Name="lvSentences" 
                       SelectionMode="Single" 
                       MouseDoubleClick="play" 
-                      VerticalAlignment="Stretch" >
-
+                      VerticalAlignment="Stretch" 
+                      ItemsSource="{Binding sentences, Mode=TwoWay}"
+                      IsSynchronizedWithCurrentItem="True"
+                      >
                 <ListView.View>
                     <GridView>
                         <GridView.Columns>
                             <GridViewColumn Header="File Name" Width="90"  DisplayMemberBinding="{Binding fileName}" />
                             <GridViewColumn Header="Description" Width="190" DisplayMemberBinding="{Binding description}" />
                             <GridViewColumn Header="Voice" Width="190" DisplayMemberBinding="{Binding voiceString}" />
-                            <GridViewColumn Width="30" CellTemplate="{StaticResource image}" />
+                            <GridViewColumn Width="30" CellTemplate="{StaticResource imagePlay}" />
                         </GridView.Columns>
                     </GridView>
                 </ListView.View>
@@ -54,8 +56,9 @@
                     <ComboBox Name="cbLanguages"
                               DisplayMemberPath="lName"
                               SelectedValuePath="sName"
-                              SelectionChanged="switchLanguage" 
-                              Width="200" Height="23"  />
+                              SelectionChanged="switchLanguage"
+                              Width="200" Height="23"  
+                              ItemsSource="{Binding languages, Mode=TwoWay}" />
                 </StackPanel>
             </StackPanel>
             <Separator Height="5" />
@@ -83,6 +86,21 @@
             <Separator Height="5" Margin="0,5,0,0" />
 
             <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                <TextBlock Text="Speed Up" Width="70" Margin="10,10,0,0"   />
+                <Slider Name="speedSlider" 
+                        Value="0"
+                        Minimum="0" 
+                        Maximum="17" 
+                        TickPlacement="BottomRight" 
+                        TickFrequency="1" 
+                        IsSnapToTickEnabled="True"
+                        Width="170" 
+                        Margin="10,10,10,0" ToolTip="Increase speech speed" />
+                <TextBlock Text="{Binding ElementName=speedSlider, Path=Value}" Width="40" Margin="0,10,0,0"/>
+                <TextBlock Text="Voice Rate" Width="70" Margin="10,10,0,0"   />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
                 <TextBlock Text="Cut Level" Width="70" Margin="10,10,0,0"   />
                 <Slider Name="noiceLevelSlider" 
                         Value="800"
@@ -96,8 +114,7 @@
                 <TextBlock Text="{Binding ElementName=noiceLevelSlider, Path=Value}" Width="40" Margin="0,10,0,0"/>
                 <TextBlock Text="Voice Rate" Width="70" Margin="10,10,0,0"   />
             </StackPanel>
-
-             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
                 <Button Content="New Sentence" Width="120" Height="32" Name="buttonAddItem" Click="addSentence"/>
                 <Button Name="btnRecord" ToolTip="Start recording" Click="record"  Margin="20,0,0,0" >
                     <Image Height="32" Source="/OpenTXrecorder;component/record.png"/>
