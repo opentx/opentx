@@ -1271,7 +1271,7 @@ void menuModelSetup(uint8_t event)
           for (uint8_t i=0; i<NUM_POTS ; i++) {
             LcdFlags flags = ((m_posHorz==i+1) && attr) ? BLINK : 0;
             flags |= (!(g_model.nPotsToWarn & (1 << i))) ? INVERS : 0;
-            lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+5*FW+i*3*FW, y, STR_VSRCRAW, NUM_STICKS+1+i, flags); 
+            lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+5*FW+i*(2*FW+3), y, STR_VSRCRAW, NUM_STICKS+1+i, flags);
           }
        
         if (attr && (m_posHorz == 0)) {
