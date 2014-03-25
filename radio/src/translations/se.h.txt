@@ -421,7 +421,7 @@
 #define TR_VTRAINERMODES       "Lärare""Elev\0."
 
 #define LEN_VFAILSAFE          "\011"
-#define TR_VFAILSAFE           "Lås Servo""Anpassat\0""Pulsfritt"
+#define TR_VFAILSAFE           "Lås Servo""Anpassat\0""Pulsfritt""Receiver\0"
 
 #if defined(MAVLINK)
   #define LEN_MAVLINK_BAUDS    "\006"

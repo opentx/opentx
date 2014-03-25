@@ -421,7 +421,7 @@
 #define TR_VTRAINERMODES       "Trener""Uczeń\0"
 
 #define LEN_VFAILSAFE          "\011"
-#define TR_VFAILSAFE           "Utrzymuj\0""Własne\0  ""0 sygnału"
+#define TR_VFAILSAFE           "Utrzymuj\0""Własne\0  ""0 sygnału""Receiver\0"
 
 #if defined(MAVLINK)
   #define LEN_MAVLINK_BAUDS     "\006"

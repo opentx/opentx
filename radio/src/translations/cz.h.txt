@@ -421,7 +421,7 @@
 #define TR_VTRAINERMODES       "Učitel""Žák\0  "
 
 #define LEN_VFAILSAFE          "\011"
-#define TR_VFAILSAFE           "Držet\0   ""Vlastní\0 ""Bez pulzů"
+#define TR_VFAILSAFE           "Držet\0   ""Vlastní\0 ""Bez pulzů""Receiver\0"
 
 #if defined(MAVLINK)
   #define LEN_MAVLINK_BAUDS    "\006"

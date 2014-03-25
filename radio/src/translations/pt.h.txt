@@ -421,7 +421,7 @@
 #define TR_VTRAINERMODES       "Master""Slave\0"
 
 #define LEN_VFAILSAFE          "\011"
-#define TR_VFAILSAFE           "Hold\0    ""Custom\0  ""No pulses"
+#define TR_VFAILSAFE           "Hold\0    ""Custom\0  ""No pulses""Receiver\0"
 
 #if defined(MAVLINK)
   #define LEN_MAVLINK_BAUDS    "\006"
