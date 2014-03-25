@@ -440,6 +440,11 @@
           <string>No Pulses</string>
          </property>
         </item>
+        <item>
+         <property name="text">
+          <string>Receiver</string>
+         </property>
+        </item>
        </widget>
       </item>
       <item row="7" column="0" alignment="Qt::AlignRight">
