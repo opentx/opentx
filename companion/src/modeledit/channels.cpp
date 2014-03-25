@@ -18,6 +18,8 @@ Channels::Channels(QWidget * parent, ModelData & model):
   addLabel(gridLayout, tr("Min"), col++);
   addLabel(gridLayout, tr("Max"), col++);
   addLabel(gridLayout, tr("Invert"), col++);
+  if (IS_TARANIS(GetEepromInterface()->getBoard()))
+    addLabel(gridLayout, tr("Curve"), col++);
   if (GetEepromInterface()->getCapability(PPMCenter))
     addLabel(gridLayout, tr("Center"), col++);
   if (GetEepromInterface()->getCapability(SYMLimits))
@@ -87,6 +89,19 @@ Channels::Channels(QWidget * parent, ModelData & model):
     invCB->setCurrentIndex((model.limitData[i].revert) ? 1 : 0);
     connect(invCB, SIGNAL(currentIndexChanged(int)), this, SLOT(invEdited()));
     gridLayout->addWidget(invCB, i+1, col++, 1, 1);
+
+    // Curve
+    if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+      QComboBox * curveCB = new QComboBox(this);
+      curveCB->setProperty("index", i);
+      int numcurves = GetEepromInterface()->getCapability(NumCurves);
+      for (int j=-numcurves; j<=numcurves; j++) {
+        curveCB->addItem(CurveReference(CurveReference::CURVE_REF_CUSTOM, j).toString(), j);
+      }
+      curveCB->setCurrentIndex(model.limitData[i].curve.value+numcurves);
+      connect(curveCB, SIGNAL(currentIndexChanged(int)), this, SLOT(curveEdited()));
+      gridLayout->addWidget(curveCB, i+1, col++, 1, 1);
+    }
 
     // PPM center
     if (GetEepromInterface()->getCapability(PPMCenter)) {
@@ -165,6 +180,14 @@ void Channels::invEdited()
   QComboBox *cb = qobject_cast<QComboBox*>(sender());
   int index = cb->property("index").toInt();
   model.limitData[index].revert = cb->currentIndex();
+  emit modified();
+}
+
+void Channels::curveEdited()
+{
+  QComboBox *cb = qobject_cast<QComboBox*>(sender());
+  int index = cb->property("index").toInt();
+  model.limitData[index].curve = CurveReference(CurveReference::CURVE_REF_CUSTOM, cb->itemData(cb->currentIndex()).toInt());
   emit modified();
 }
 

@@ -246,7 +246,7 @@ void CurveGroup::update()
         if (lastType != curve.type) {
           lastType = curve.type;
           curveValueCB->clear();
-          for (int i=-numcurves; i<numcurves; i++) {
+          for (int i=-numcurves; i<=numcurves; i++) {
             curveValueCB->addItem(CurveReference(CurveReference::CURVE_REF_CUSTOM, i).toString());
           }
         }
