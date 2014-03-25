@@ -28,10 +28,7 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model):
     // The label
     QLabel * label = new QLabel(this);
     label->setProperty("index", i);
-    if (i < 9)
-      label->setText(tr("LS%1").arg(i+1));
-    else
-      label->setText(tr("LS%1").arg(QChar('A'+i-9)));
+    label->setText(tr("L%1").arg(i+1));
     label->setContextMenuPolicy(Qt::CustomContextMenu);
     label->setMouseTracking(true);
     connect(label, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(csw_customContextMenuRequested(QPoint)));
@@ -333,20 +330,25 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
   lock = false;
 }
 
+void LogicalSwitchesPanel::updateLine(int i)
+{
+  lock = true;
+  populateCSWCB(csw[i], model.customSw[i].func);
+  lock = true;
+  setSwitchWidgetVisibility(i);
+  lock = true;
+  populateAndSwitchCB(cswitchAnd[i], RawSwitch(model.customSw[i].andsw));
+  if (GetEepromInterface()->getCapability(LogicalSwitchesExt)) {
+    cswitchDuration[i]->setValue(model.customSw[i].duration/10.0);
+    cswitchDelay[i]->setValue(model.customSw[i].delay/10.0);
+  }
+  lock = false;
+}
+
 void LogicalSwitchesPanel::update()
 {
   for (int i=0; i<GetEepromInterface()->getCapability(LogicalSwitches); i++) {
-    lock = true;
-    populateCSWCB(csw[i], model.customSw[i].func);
-    lock = false;
-    setSwitchWidgetVisibility(i);
-    lock = true;
-    populateAndSwitchCB(cswitchAnd[i], RawSwitch(model.customSw[i].andsw));
-    if (GetEepromInterface()->getCapability(LogicalSwitchesExt)) {
-      cswitchDuration[i]->setValue(model.customSw[i].duration/10.0);
-      cswitchDelay[i]->setValue(model.customSw[i].delay/10.0);
-    }
-    lock = false;
+    updateLine(i);
   }
 }
 
@@ -356,36 +358,27 @@ void LogicalSwitchesPanel::cswPaste()
     const QMimeData *mimeData = clipboard->mimeData();
     if (mimeData->hasFormat("application/x-companion-csw")) {
       QByteArray cswData = mimeData->data("application/x-companion-csw");
-
       LogicalSwitchData *csw = &model.customSw[selectedSwitch];
       memcpy(csw, cswData.mid(0, sizeof(LogicalSwitchData)).constData(), sizeof(LogicalSwitchData));
       emit modified();
-      updateSelectedSwitch();
+      updateLine(selectedSwitch);
     }
 }
 
 void LogicalSwitchesPanel::cswDelete()
 {
-    model.customSw[selectedSwitch].clear();
-    emit modified();
-    updateSelectedSwitch();
+  model.customSw[selectedSwitch].clear();
+  emit modified();
+  updateLine(selectedSwitch);
 }
 
 void LogicalSwitchesPanel::cswCopy()
 {
-    QByteArray cswData;
-    cswData.append((char*)&model.customSw[selectedSwitch],sizeof(LogicalSwitchData));
-    QMimeData *mimeData = new QMimeData;
-    mimeData->setData("application/x-companion-csw", cswData);
-    QApplication::clipboard()->setMimeData(mimeData,QClipboard::Clipboard);
-}
-
-void LogicalSwitchesPanel::updateSelectedSwitch()
-{
-    lock = true;
-    populateCSWCB(csw[selectedSwitch], model.customSw[selectedSwitch].func);
-    setSwitchWidgetVisibility(selectedSwitch);
-    lock = false;
+  QByteArray cswData;
+  cswData.append((char*)&model.customSw[selectedSwitch],sizeof(LogicalSwitchData));
+  QMimeData *mimeData = new QMimeData;
+  mimeData->setData("application/x-companion-csw", cswData);
+  QApplication::clipboard()->setMimeData(mimeData,QClipboard::Clipboard);
 }
 
 void LogicalSwitchesPanel::cswCut()

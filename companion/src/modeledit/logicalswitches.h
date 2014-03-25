@@ -41,8 +41,7 @@ class LogicalSwitchesPanel : public ModelPanel
     void setSwitchWidgetVisibility(int i);
     int selectedSwitch;
 
-    void updateSelectedSwitch();
-    void updateV2(int index);
+    void updateLine(int index);
     void updateTimerParam(QDoubleSpinBox *sb, int timer, bool allowZero=false);
 
 };
