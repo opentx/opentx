@@ -1286,6 +1286,7 @@ void menuModelSetup(uint8_t event)
       case ITEM_MODEL_BEEP_CENTER:
         lcd_putsLeft(y, STR_BEEPCTR);
         for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS; i++) {
+          // TODO flash saving, \001 not needed in STR_RETA123
           lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+i*FW, y, STR_RETA123, i, ((m_posHorz==i) && attr) ? BLINK|INVERS : (((g_model.beepANACenter & ((BeepANACenter)1<<i)) || (attr && m_posHorz<0)) ? INVERS : 0 ) );
         }
         if (attr && CURSOR_ON_CELL) {
@@ -1791,7 +1792,7 @@ FlightModesType editFlightModes(uint8_t x, uint8_t y, uint8_t event, FlightModes
       if (posHorz==p) flags |= BLINK;
     }
     if (value & (1<<p))
-      lcd_putcAtt(x, y, ' ', flags);
+      lcd_putcAtt(x, y, ' ', flags|FIXEDWIDTH);
     else
       lcd_putcAtt(x, y, '0'+p, flags);
 #else
@@ -3277,21 +3278,22 @@ static uint8_t s_copySrcCh;
 #define _STR_MAX(x) PSTR("/" #x)
 #define STR_MAX(x) _STR_MAX(x)
 
-#define MIX_LINE_SRC_POS     4*FW-1
-
 #if LCD_W >= 212
-  #define EXPO_LINE_WEIGHT_POS 8*FW+3
-  #define EXPO_LINE_SRC_POS    9*FW-2
-  #define EXPO_LINE_CURVE_POS  12*FW+4
-  #define EXPO_LINE_SWITCH_POS 17*FW-1
-  #define EXPO_LINE_SIDE_POS   20*FW-2
+  #define EXPO_LINE_WEIGHT_POS 8*FW+8
+  #define EXPO_LINE_SRC_POS    9*FW+3
+  #define EXPO_LINE_CURVE_POS  12*FW+11
+  #define EXPO_LINE_TRIM_POS   19*FW-4
+  #define EXPO_LINE_SWITCH_POS 20*FW-1
+  #define EXPO_LINE_SIDE_POS   23*FW
+  #define EXPO_LINE_FM_POS     24*FW+2
   #define EXPO_LINE_SELECT_POS 5*FW+2
-  #define EXPO_LINE_FM_POS     LCD_W-LEN_EXPOMIX_NAME*FW-MENUS_SCROLLBAR_WIDTH-FW
   #define EXPO_LINE_NAME_POS   LCD_W-LEN_EXPOMIX_NAME*FW-MENUS_SCROLLBAR_WIDTH
-  #define MIX_LINE_WEIGHT_POS  11*FW+5
-  #define MIX_LINE_CURVE_POS   12*FW+4
-  #define MIX_LINE_SWITCH_POS  16*FW+1
-  #define MIX_LINE_DELAY_POS   19*FW+2
+  #define MIX_LINE_WEIGHT_POS  6*FW+8
+  #define MIX_LINE_SRC_POS     7*FW+3
+  #define MIX_LINE_CURVE_POS   13*FW+3
+  #define MIX_LINE_SWITCH_POS  21*FW-1
+  #define MIX_LINE_FM_POS      24*FW+2
+  #define MIX_LINE_DELAY_POS   18*FW+2
 #elif defined(CPUARM)
   #define EXPO_LINE_WEIGHT_POS 7*FW+1
   #define EXPO_LINE_EXPO_POS   10*FW+5
@@ -3300,6 +3302,7 @@ static uint8_t s_copySrcCh;
   #define EXPO_LINE_SELECT_POS 24
   #define EXPO_LINE_FM_POS
   #define EXPO_LINE_NAME_POS   LCD_W-sizeof(ed->name)*FW-MENUS_SCROLLBAR_WIDTH
+  #define MIX_LINE_SRC_POS     4*FW-1
   #define MIX_LINE_WEIGHT_POS  11*FW+3
   #define MIX_LINE_CURVE_POS   12*FW+2
   #define MIX_LINE_SWITCH_POS  16*FW
@@ -3315,6 +3318,7 @@ static uint8_t s_copySrcCh;
   #endif
   #define EXPO_LINE_FM_POS     LCD_W-FW-MENUS_SCROLLBAR_WIDTH
   #define EXPO_LINE_SELECT_POS 24
+  #define MIX_LINE_SRC_POS     4*FW-1
   #define MIX_LINE_WEIGHT_POS  11*FW+3
   #define MIX_LINE_CURVE_POS   12*FW+2
   #define MIX_LINE_SWITCH_POS  16*FW
@@ -3567,6 +3571,8 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
 #endif
 
 #if defined(PCBTARANIS)
+            if (ed->carryTrim != TRIM_ON)
+              lcd_putc(EXPO_LINE_TRIM_POS, y, ed->carryTrim > 0 ? '-' : STR_RETA123[-ed->carryTrim]);
             putsCurveRef(EXPO_LINE_CURVE_POS, y, ed->curve, 0);
 #else
             if (ed->curveMode == MODE_CURVE)
@@ -3580,7 +3586,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
             if (ed->mode!=3) lcd_putc(EXPO_LINE_SIDE_POS, y, ed->mode == 2 ? 126 : 127);
 
 #if defined(CPUARM) && LCD_W >= 212
-            displayFlightModes(EXPO_LINE_FM_POS, y, ed->phases);
+            if (ed->phases) lcd_puts(EXPO_LINE_FM_POS, y, STR_FP);
             if (ed->name[0]) lcd_putsnAtt(EXPO_LINE_NAME_POS, y, ed->name, sizeof(ed->name), ZCHAR | (isExpoActive(i) ? BOLD : 0));
 #elif defined(CPUARM)
             if (ed->name[0]) lcd_putsnAtt(EXPO_LINE_NAME_POS, y, ed->name, sizeof(ed->name), ZCHAR | (isExpoActive(i) ? BOLD : 0));
@@ -3601,10 +3607,6 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
 
             gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, attr | (isMixActive(i) ? BOLD : 0), event);
 
-#if LCD_W >= 212
-            displayFlightModes(EXPO_LINE_FM_POS, y, md->phases);
-#endif
-
 #if defined(CPUARM)
             if (md->name[0]) {
               lcd_putsnAtt(EXPO_LINE_NAME_POS, y, md->name, sizeof(md->name), ZCHAR | (isMixActive(i) ? BOLD : 0));
@@ -3615,6 +3617,8 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
 #endif
             {
 #if defined(PCBTARANIS)
+              putsCurveRef(MIX_LINE_CURVE_POS, y, md->curve, 0);
+              if (md->phases) lcd_puts(MIX_LINE_FM_POS, y, STR_FP);
 #else
               if (md->curveParam) {
                 if (md->curveMode == MODE_CURVE)
@@ -3623,7 +3627,9 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
                   displayGVar(MIX_LINE_CURVE_POS+3*FW, y, md->curveParam, -100, 100);
               }
 #endif
-              if (md->swtch) putsSwitches(MIX_LINE_SWITCH_POS, y, md->swtch);
+              if (md->swtch) {
+                putsSwitches(MIX_LINE_SWITCH_POS, y, md->swtch);
+              }
 
               char cs = ' ';
               if (md->speedDown || md->speedUp)
@@ -4409,7 +4415,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
 
 void menuModelLogicalSwitches(uint8_t event)
 {
-  SIMPLE_MENU(STR_MENULOGICALSWITCHES, menuTabModel, e_LogicalSwitches, NUM_CSW+1);
+  SIMPLE_MENU(STR_MENULOGICALSWITCHES, menuTabModel, e_LogicalSwitches, NUM_LOGICAL_SWITCH+1);
 
   uint8_t y = 0;
   uint8_t k = 0;
@@ -4527,7 +4533,7 @@ void menuModelLogicalSwitches(uint8_t event)
 {
   INCDEC_DECLARE_VARS();
 
-  MENU(STR_MENULOGICALSWITCHES, menuTabModel, e_LogicalSwitches, NUM_CSW+1, {0, NAVIGATION_LINE_BY_LINE|LS_FIELD_LAST/*repeated...*/});
+  MENU(STR_MENULOGICALSWITCHES, menuTabModel, e_LogicalSwitches, NUM_LOGICAL_SWITCH+1, {0, NAVIGATION_LINE_BY_LINE|LS_FIELD_LAST/*repeated...*/});
 
   uint8_t   y = 0;
   uint8_t   k = 0;

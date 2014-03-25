@@ -517,7 +517,7 @@ static int luaModelDeleteMix(lua_State *L)
 static int luaModelGetLogicalSwitch(lua_State *L)
 {
   int idx = luaL_checkunsigned(L, 1);
-  if (idx < NUM_CSW) {
+  if (idx < NUM_LOGICAL_SWITCH) {
     LogicalSwitchData * sw = cswAddress(idx);
     lua_newtable(L);
     lua_pushtablenumber(L, "function", sw->func);
@@ -537,7 +537,7 @@ static int luaModelGetLogicalSwitch(lua_State *L)
 static int luaModelSetLogicalSwitch(lua_State *L)
 {
   int idx = luaL_checkunsigned(L, 1);
-  if (idx < NUM_CSW) {
+  if (idx < NUM_LOGICAL_SWITCH) {
     LogicalSwitchData * sw = cswAddress(idx);
     luaL_checktype(L, -1, LUA_TTABLE);
     for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {

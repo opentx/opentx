@@ -377,11 +377,11 @@
 #endif
 
 #if defined(CPUARM)
-  #define TR_LOGICALSW         "LS1""LS2""LS3""LS4""LS5""LS6""LS7""LS8""LS9""LSA""LSB""LSC""LSD""LSE""LSF""LSG""LSH""LSI""LSJ""LSK""LSL""LSM""LSN""LSO""LSP""LSQ""LSR""LSS""LST""LSU""LSV""LSW"
+  #define TR_LOGICALSW         "L1\0""L2\0""L3\0""L4\0""L5\0""L6\0""L7\0""L8\0""L9\0""L10""L11""L12""L13""L14""L15""L16""L17""L18""L19""L20""L21""L22""L23""L24""L25""L26""L27""L28""L29""L30""L31""L32"
 #elif defined(PCBGRUVIN9X) || defined(CPUM2561) || defined(CPUM128)
-  #define TR_LOGICALSW         "LS1""LS2""LS3""LS4""LS5""LS6""LS7""LS8""LS9""LSA""LSB""LSC""LSD""LSE""LSF"
+  #define TR_LOGICALSW         "L1\0""L2\0""L3\0""L4\0""L5\0""L6\0""L7\0""L8\0""L9\0""L10""L11""L12""L13""L14""L15"
 #else
-  #define TR_LOGICALSW         "LS1""LS2""LS3""LS4""LS5""LS6""LS7""LS8""LS9""LSA""LSB""LSC"
+  #define TR_LOGICALSW         "L1\0""L2\0""L3\0""L4\0""L5\0""L6\0""L7\0""L8\0""L9\0""L10""L11""L12"
 #endif
 
 #define TR_TRIMS_SWITCHES      "tSl""tSr""tHd""tHu""tGd""tGu""tQl""tQr"
@@ -575,7 +575,7 @@
 #endif
 
 #define TR_MENUTORESET         CENTER TR_ENTER" für Reset"
-#define TR_PPM                 "PPM"
+#define TR_PPM_TRAINER         "TR"
 #define TR_CH                  "CH"
 #define TR_MODEL               "MODELL"
 #define TR_FP                  "FP"

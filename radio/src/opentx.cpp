@@ -1248,7 +1248,7 @@ getvalue_t getValue(uint8_t i)
   else if (i==MIXSRC_SF) return (switchState(SW_SF0) ? -1024 : 1024);
   else if (i==MIXSRC_SG) return (switchState(SW_SG0) ? -1024 : (switchState(SW_SG1) ? 0 : 1024));
   else if (i==MIXSRC_SH) return (switchState(SW_SH0) ? -1024 : 1024);
-  else if (i<=MIXSRC_LAST_CSW) return getSwitch(SWSRC_FIRST_CSW+i-MIXSRC_FIRST_CSW) ? 1024 : -1024;
+  else if (i<=MIXSRC_LAST_LOGICAL_SWITCH) return getSwitch(SWSRC_FIRST_CSW+i-MIXSRC_FIRST_LOGICAL_SWITCH) ? 1024 : -1024;
 #else
   else if (i==MIXSRC_3POS) return (getSwitch(SW_ID0-SW_BASE+1) ? -1024 : (getSwitch(SW_ID1-SW_BASE+1) ? 0 : 1024));
   // don't use switchState directly to give getSwitch possibility to hack values if needed for switch warning 
@@ -1256,10 +1256,10 @@ getvalue_t getValue(uint8_t i)
   else if (i==MIXSRC_3POS2) return (getSwitch(SW_ID3-SW_BASE+1) ? -1024 : (getSwitch(SW_ID4-SW_BASE+1) ? 0 : 1024));
   // don't use switchState directly to give getSwitch possibility to hack values if needed for switch warning 
 #endif
-  else if (i<=MIXSRC_LAST_CSW) return getSwitch(SWSRC_THR+i-MIXSRC_THR) ? 1024 : -1024;
+  else if (i<=MIXSRC_LAST_LOGICAL_SWITCH) return getSwitch(SWSRC_THR+i-MIXSRC_THR) ? 1024 : -1024;
 #endif
 
-  else if (i<=MIXSRC_LAST_PPM) { int16_t x = g_ppmIns[i-MIXSRC_FIRST_PPM]; if (i<MIXSRC_FIRST_PPM+NUM_CAL_PPM) { x-= g_eeGeneral.trainer.calib[i-MIXSRC_FIRST_PPM]; } return x*2; }
+  else if (i<=MIXSRC_LAST_TRAINER) { int16_t x = g_ppmIns[i-MIXSRC_FIRST_TRAINER]; if (i<MIXSRC_FIRST_TRAINER+NUM_CAL_PPM) { x-= g_eeGeneral.trainer.calib[i-MIXSRC_FIRST_TRAINER]; } return x*2; }
   else if (i<=MIXSRC_LAST_CH) return ex_chans[i-MIXSRC_CH1];
 
 #if defined(GVARS)
@@ -1319,9 +1319,9 @@ volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_used = 0;
 volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_value = 0;
 
 #if defined(CPUARM)
-uint32_t cswDelays[NUM_CSW];
-uint32_t cswDurations[NUM_CSW];
-uint8_t  cswStates[NUM_CSW];
+uint32_t cswDelays[NUM_LOGICAL_SWITCH];
+uint32_t cswDurations[NUM_LOGICAL_SWITCH];
+uint8_t  cswStates[NUM_LOGICAL_SWITCH];
 #endif
 
 #if defined(PCBTARANIS)
@@ -1430,7 +1430,7 @@ void getSwitchesPosition(bool startup)
 #define SWITCH_POSITION(idx) switchState((EnumKeys)(SW_BASE+(idx)))
 #endif
 
-int16_t csLastValue[NUM_CSW];
+int16_t csLastValue[NUM_LOGICAL_SWITCH];
 #define CS_LAST_VALUE_INIT -32768
 
 /* recursive function. stack as of today (16/03/2012) grows by 8bytes at each call, which is ok! */
@@ -2998,7 +2998,7 @@ void resetAll()
 #if defined(FRSKY)
   resetTelemetry();
 #endif
-  for (uint8_t i=0; i<NUM_CSW; i++) {
+  for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++) {
     csLastValue[i] = CS_LAST_VALUE_INIT;
   }
 
@@ -4312,7 +4312,7 @@ void doMixerCalculations()
     s_cnt_100ms -= 10;
     s_cnt_1s += 1;
 
-    for (uint8_t i=0; i<NUM_CSW; i++) {
+    for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++) {
       LogicalSwitchData * cs = cswAddress(i);
       if (cs->func == LS_FUNC_TIMER) {
         int16_t *lastValue = &csLastValue[i];
@@ -4953,7 +4953,7 @@ void perMain()
   }
 }
 
-int16_t g_ppmIns[NUM_PPM];
+int16_t g_ppmIns[NUM_TRAINER];
 uint8_t ppmInState = 0; // 0=unsync 1..8= wait for value i-1
 
 #if !defined(SIMU) && !defined(CPUARM)

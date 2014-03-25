@@ -73,11 +73,11 @@
   #define MAX_PHASES    9
   #define MAX_MIXERS    64
   #define MAX_EXPOS     64
-  #define NUM_CSW       32 // number of custom switches
+  #define NUM_LOGICAL_SWITCH       32 // number of custom switches
   #define NUM_CFN       64 // number of functions assigned to switches
   #define MAX_SCRIPTS   7
   #define MAX_INPUTS    32
-  #define NUM_PPM       16
+  #define NUM_TRAINER       16
   #define NUM_POTS      5
   #define NUM_XPOTS     3
 #elif defined(CPUARM)
@@ -86,9 +86,9 @@
   #define MAX_PHASES    9
   #define MAX_MIXERS    64
   #define MAX_EXPOS     32
-  #define NUM_CSW       32 // number of custom switches
+  #define NUM_LOGICAL_SWITCH       32 // number of custom switches
   #define NUM_CFN       64 // number of functions assigned to switches
-  #define NUM_PPM       16
+  #define NUM_TRAINER       16
   #define NUM_POTS      3
   #define NUM_XPOTS     0
 #elif defined(CPUM2560) || defined(CPUM2561)
@@ -97,9 +97,9 @@
   #define MAX_PHASES    6
   #define MAX_MIXERS    32
   #define MAX_EXPOS     16
-  #define NUM_CSW       15 // number of custom switches
+  #define NUM_LOGICAL_SWITCH       15 // number of custom switches
   #define NUM_CFN       24 // number of functions assigned to switches
-  #define NUM_PPM       8
+  #define NUM_TRAINER       8
   #define NUM_POTS      3
   #define NUM_XPOTS     0
 #elif defined(CPUM128)
@@ -108,9 +108,9 @@
   #define MAX_PHASES    5
   #define MAX_MIXERS    32
   #define MAX_EXPOS     14
-  #define NUM_CSW       15 // number of custom switches
+  #define NUM_LOGICAL_SWITCH       15 // number of custom switches
   #define NUM_CFN       24 // number of functions assigned to switches
-  #define NUM_PPM       8
+  #define NUM_TRAINER       8
   #define NUM_POTS      3
   #define NUM_XPOTS     0
 #else
@@ -119,9 +119,9 @@
   #define MAX_PHASES    5
   #define MAX_MIXERS    32
   #define MAX_EXPOS     14
-  #define NUM_CSW       12 // number of custom switches
+  #define NUM_LOGICAL_SWITCH       12 // number of custom switches
   #define NUM_CFN       16 // number of functions assigned to switches
-  #define NUM_PPM       8
+  #define NUM_TRAINER       8
   #define NUM_POTS      3
   #define NUM_XPOTS     0
 #endif
@@ -1351,7 +1351,7 @@ enum SwitchSources {
   SWSRC_SWA,
   SWSRC_SWB,
   SWSRC_SWC,
-  SWSRC_LAST_CSW = SWSRC_SW1+NUM_CSW-1,
+  SWSRC_LAST_CSW = SWSRC_SW1+NUM_LOGICAL_SWITCH-1,
 
   SWSRC_ON,
   SWSRC_OFF = -SWSRC_ON,
@@ -1444,16 +1444,16 @@ enum MixSources {
   MIXSRC_GEA,
   MIXSRC_TRN,
 #endif
-  MIXSRC_FIRST_CSW,
-  MIXSRC_SW1 = MIXSRC_FIRST_CSW,
+  MIXSRC_FIRST_LOGICAL_SWITCH,
+  MIXSRC_SW1 = MIXSRC_FIRST_LOGICAL_SWITCH,
   MIXSRC_SW9 = MIXSRC_SW1 + 8,
   MIXSRC_SWA,
   MIXSRC_SWB,
   MIXSRC_SWC,
-  MIXSRC_LAST_CSW = MIXSRC_FIRST_CSW+NUM_CSW-1,
+  MIXSRC_LAST_LOGICAL_SWITCH = MIXSRC_FIRST_LOGICAL_SWITCH+NUM_LOGICAL_SWITCH-1,
 
-  MIXSRC_FIRST_PPM,
-  MIXSRC_LAST_PPM = MIXSRC_FIRST_PPM+NUM_PPM-1,
+  MIXSRC_FIRST_TRAINER,
+  MIXSRC_LAST_TRAINER = MIXSRC_FIRST_TRAINER+NUM_TRAINER-1,
 
   MIXSRC_FIRST_CH,
   MIXSRC_CH1 = MIXSRC_FIRST_CH,
@@ -1645,7 +1645,7 @@ PACK(typedef struct t_ModelData {
   CURVDATA  curves[MAX_CURVES];
   int8_t    points[NUM_POINTS];
   
-  LogicalSwitchData customSw[NUM_CSW];
+  LogicalSwitchData customSw[NUM_LOGICAL_SWITCH];
   CustomFnData funcSw[NUM_CFN];
   SwashRingData swashR;
   PhaseData phaseData[MAX_PHASES];

@@ -958,16 +958,16 @@ void putsMixerSource(xcoord_t x, uint8_t y, uint8_t idx, LcdFlags att)
 #if defined(PCBTARANIS)
   else if (idx < MIXSRC_SW1)
     lcd_putsiAtt(x, y, STR_VSRCRAW, idx-MIXSRC_Rud+1, att);
-  else if (idx <= MIXSRC_LAST_CSW)
+  else if (idx <= MIXSRC_LAST_LOGICAL_SWITCH)
     putsSwitches(x, y, SWSRC_SW1+idx-MIXSRC_SW1, att);
 #else
   if (idx < MIXSRC_THR)
     lcd_putsiAtt(x, y, STR_VSRCRAW, idx, att);
-  else if (idx < MIXSRC_FIRST_PPM)
+  else if (idx < MIXSRC_FIRST_TRAINER)
     putsSwitches(x, y, idx-MIXSRC_THR+1+3*(1/*+EXTRA_3POS*/), att);
 #endif
   else if (idx < MIXSRC_CH1)
-    putsStrIdx(x, y, STR_PPM, idx-MIXSRC_FIRST_PPM+1, att);
+    putsStrIdx(x, y, STR_PPM_TRAINER, idx-MIXSRC_FIRST_TRAINER+1, att);
   else if (idx <= MIXSRC_LAST_CH) {
     putsStrIdx(x, y, STR_CH, idx-MIXSRC_CH1+1, att);
 #if defined(PCBTARANIS)
@@ -1036,12 +1036,12 @@ void putsCurveRef(xcoord_t x, uint8_t y, CurveRef &curve, LcdFlags att)
     switch (curve.type) {
       case CURVE_REF_DIFF:
         lcd_putcAtt(x, y, 'D', att);
-        lcd_outdezAtt(x+FW, y, curve.value, LEFT|att);
+        GVAR_MENU_ITEM(x+FW, y, curve.value, -100, 100, LEFT|att, 0, 0);
         break;
 
       case CURVE_REF_EXPO:
         lcd_putcAtt(x, y, 'E', att);
-        lcd_outdezAtt(x+FW, y, curve.value, LEFT|att);
+        GVAR_MENU_ITEM(x+FW, y, curve.value, -100, 100, LEFT|att, 0, 0);
         break;
 
       case CURVE_REF_FUNC:

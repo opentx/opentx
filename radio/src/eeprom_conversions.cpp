@@ -192,7 +192,7 @@ PACK(typedef struct {
   int16_t   curves[16];
   int8_t    points[NUM_POINTS];
 
-  LogicalSwitchData_v215 customSw[NUM_CSW];
+  LogicalSwitchData_v215 customSw[NUM_LOGICAL_SWITCH];
   CustomFnData_v215 funcSw[32];
   SwashRingData swashR;
   PhaseData_v215 phaseData[MAX_PHASES];
@@ -339,7 +339,7 @@ int ConvertSource_215_to_216(int source, bool insertZero=false)
   if (source > MIXSRC_POT2)
     source += 1;
   // PPM9-PPM16 added
-  if (source > MIXSRC_FIRST_PPM+7)
+  if (source > MIXSRC_FIRST_TRAINER+7)
     source += 8;
   // 4 GVARS added
   if (source > MIXSRC_GVAR1+4)

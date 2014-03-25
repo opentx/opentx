@@ -575,7 +575,7 @@
 #endif
 
 #define TR_MENUTORESET         CENTER TR_ENTER" Reinicia"
-#define TR_PPM                 "PPM"
+#define TR_PPM_TRAINER         "TR"
 #define TR_CH                  "CH"
 #define TR_MODEL               "MODEL"
 #define TR_FP                  "FP"
