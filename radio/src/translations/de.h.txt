@@ -458,16 +458,16 @@
 #define TR_MIXNAME             "Mix Name"
 #define TR_INPUTNAME           "Input Name"
 #if defined(PCBTARANIS)
-  #define TR_EXPONAME          "Linie Name"
+  #define TR_EXPONAME          "Info Name"
 #else
-  #define TR_EXPONAME          "Expo Name"
+  #define TR_EXPONAME          "Info Name"
 #endif
 #define TR_BITMAP              "Modell Bild"
 #define TR_TIMER               TR("Timer","Timer ")
 #define TR_ELIMITS             TR("Erw.Limit","Erweit. Limits")
 #define TR_ETRIMS              TR("Erw.Trims","Erweit. Trimmung")
 #define TR_TRIMINC             TR("Trim Schr.","Trimm Schritte")
-#define TR_TTRACE              TR("Gasquelle", INDENT "Gas Verfolgung")
+#define TR_TTRACE              TR("Gasquelle", INDENT "GasTimerQuelle")
 #define TR_TTRIM               TR("Gastrim", INDENT "Gas Trimmung")
 #define TR_BEEPCTR             TR("Mitt.Piep","Mittelst. Pieps")
 #define TR_PROTO               TR(INDENT"Proto.",INDENT"Protokoll")
