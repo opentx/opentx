@@ -1,4 +1,4 @@
-/*   German checked 28.02.2014 Test kleine Änderungen 
+/*   German checked 26.03.2014 004 Test kleine Änderungen 
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bernet Andre <bernet.andre@gmail.com>
@@ -349,7 +349,7 @@
 
 #define LEN2_VTEMPLATES        15  // max String Länge für Menü (original=13)
 #define LEN_VTEMPLATES         "\017"  // max String Länge 15+cr+lf
-#define TR_VTEMPLATES          "Misch. Lösch.\0 ""Einfach. 4-CH\0 ""Fixe Gassperre\0""V-Stabilisator\0""Delta Mischer\0 ""eCCPM\0         ""Hubschrauber\0  ""Servo Tester\0  "
+#define TR_VTEMPLATES          "Misch. Lösch.\0 ""Einfach. 4-CH\0 ""Fixe Gassperre\0""V-Leitwerk   \0 ""Delta Mischer\0 ""eCCPM\0         ""Hubschrauber\0  ""Servo Tester\0  "
 
 #define LEN_VSWASHTYPE         "\004"
 #define TR_VSWASHTYPE          "--- ""120 ""120X""140 ""90\0"
@@ -546,7 +546,7 @@
 #define TR_POTWARNING          TR("Pot Warn.", INDENT "Poti Warnung")
 #define TR_TIMEZONE            TR("Zeitzone","GPS Zeit Zone")
 #define TR_RXCHANNELORD        TR("Kanalanordnung","Kanalvoreinstellung")
-#define TR_SLAVE               "Schüler PPM1-8 als Ausgang"
+#define TR_SLAVE               "Schüler PPM1-16 als Ausgang"
 #define TR_MODESRC             " Modus\002% Quelle"
 #define TR_MULTIPLIER          "Multiplikator"
 #define TR_CAL                 "Kal."
@@ -608,7 +608,7 @@
   #define TR_MENULIMITS        "AUSGÄNGE"
 #elif defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...  #define TR_MENUDREXPO        "KNÜPPEL"
   #define TR_MENUINPUTS        "INPUTS"
-  #define TR_MENULIMITS        "AUSGÄNGE"
+  #define TR_MENULIMITS        "Servo Weg"
 #else
   #define TR_MENUINPUTS        TR("DR/EXPO","DUALRATE/EXPO")
   #define TR_MENULIMITS        TR("GRENZEN","SERVO WEG")
