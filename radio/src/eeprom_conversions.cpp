@@ -472,7 +472,7 @@ void ConvertModel_215_to_216(ModelData &model)
     else if (mix.weight >= 507)
       mix.weight = mix.weight - 512 + 4096;
     else
-      mix.offset = mix.offset * mix.weight / 100;
+      mix.offset = ((mix.offset * mix.weight) + 50) / 100;
   }
   for (uint8_t i=0; i<32; i++) {
     g_model.limitData[i].min = 10 * oldModel.limitData[i].min;
