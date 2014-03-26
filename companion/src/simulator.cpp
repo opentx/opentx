@@ -101,14 +101,14 @@ int main(int argc, char *argv[])
 
   RegisterFirmwares();
   SimulatorDialog *dialog;
-  char * eepromFileName;
+  const char * eepromFileName;
 
   QMessageBox msgBox;
   msgBox.setWindowTitle("Radio type");
   msgBox.setText("Which radio type do you want to simulate?");
   msgBox.setIcon(QMessageBox::Question);
   QAbstractButton *taranisButton = msgBox.addButton("Taranis", QMessageBox::ActionRole);
-  QAbstractButton *stdButton = msgBox.addButton("9X", QMessageBox::ActionRole);
+  msgBox.addButton("9X", QMessageBox::ActionRole);
   QPushButton *exitButton = msgBox.addButton(QMessageBox::Close);
 
   msgBox.exec();

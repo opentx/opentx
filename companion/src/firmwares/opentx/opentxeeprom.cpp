@@ -950,7 +950,7 @@ class MixField: public TransformedField {
 
       if (IS_TARANIS(board) || version < 216) {
         if (mix.sOffset >= -500 && mix.sOffset <= 500 && mix.weight >= -500 && mix.weight <= 500) {
-          mix.sOffset = ((mix.sOffset * mix.weight) + 50) / 100;
+          mix.sOffset = divRoundClosest(mix.sOffset * mix.weight, 100);
         }
       }
     }

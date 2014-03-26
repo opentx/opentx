@@ -1370,6 +1370,11 @@ inline unsigned int GetCurrentFirmwareVariant()
   return current_firmware_variant.variant;
 }
 
+inline int divRoundClosest(const int n, const int d)
+{
+  return ((n < 0) ^ (d < 0)) ? ((n - d/2)/d) : ((n + d/2)/d);
+}
+
 #define CHECK_IN_ARRAY(T, index) ((unsigned int)index < (unsigned int)(sizeof(T)/sizeof(T[0])) ? T[(unsigned int)index] : "???")
 
 #endif
