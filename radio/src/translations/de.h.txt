@@ -1,4 +1,4 @@
-/*   German checked 24.03.2014 Test 002 kleine Änderungen 
+/*   German checked 25.03.2014 Test 003 kleine Änderungen 
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bernet Andre <bernet.andre@gmail.com>
@@ -345,7 +345,7 @@
 #define TR_VSCREEN   	       "Werte\0""Balken" //Telemetrie Werte oder Balken
 
 #define LEN_GPSFORMAT          "\004"
-#define TR_GPSFORMAT           "HMS\0""NMEA"  //Koordinatenanzeige
+#define TR_GPSFORMAT           "GMS\0""NMEA"  //Koordinatenanzeige
 
 #define LEN2_VTEMPLATES        15  // max String Länge für Menü (original=13)
 #define LEN_VTEMPLATES         "\017"  // max String Länge 15+cr+lf
