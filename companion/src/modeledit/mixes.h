@@ -50,7 +50,7 @@ class MixesPanel : public ModelPanel
     void mixersDeleteList(QList<int> list);
     QList<int> createMixListFromSelected();
     void setSelectedByMixList(QList<int> list);
-
+    QString getChannelLabel(int curDest);
 };
 
 #endif // MIXES_H

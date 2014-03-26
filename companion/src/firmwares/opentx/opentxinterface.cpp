@@ -491,6 +491,8 @@ int OpenTxInterface::getCapability(const Capability capability)
     case FlightModesName:
     case GvarsName:
       return (IS_TARANIS(board) ? 10 : 6);
+    case HasChNames:
+      return (IS_TARANIS(board) ? 1 : 0);
     case GvarsInCS:
     case HasFAIMode:
       return 1;
