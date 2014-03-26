@@ -542,7 +542,7 @@ PACK(typedef struct t_LimitData {
 
 #if defined(CPUARM)
 #define GV1_SMALL       128
-#define GV1_LARGE       512
+#define GV1_LARGE       4096
 #define GV_RANGE_WEIGHT 500
 #define GV_RANGE_OFFSET 500
 #define DELAY_STEP      10
