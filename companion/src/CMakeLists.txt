@@ -160,6 +160,7 @@ set(companion_SRCS
   mainwindow.cpp
   companion.cpp
   modelconfigdialog.cpp
+  taranisnotfound.cpp
   qcustomplot.cpp
 )
 
@@ -183,6 +184,7 @@ set(companion_MOC_HDRS
   mdichild.h
   mainwindow.h
   modelconfigdialog.h
+  taranisnotfound.h
   qcustomplot.h
   helpers.h
 )
@@ -204,6 +206,7 @@ set(companion_UIS
   splashlibrary.ui
   burndialog.ui
   modelconfigdialog.ui
+  taranisnotfound.ui
 )
 
 set(companion_RCS
