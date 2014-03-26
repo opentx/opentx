@@ -1,4 +1,4 @@
-/*   German checked 28.02.2014 kleine Änderungen 
+/*   German checked 28.02.2014 Test kleine Änderungen 
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bernet Andre <bernet.andre@gmail.com>
@@ -589,7 +589,7 @@
 #define TR_BADEEPROMDATA       "EEPROM ungültig"
 #define TR_EEPROMFORMATTING    "EEPROM Initialisieren"
 #define TR_EEPROMOVERFLOW      "EEPROM Überlauf"
-#define TR_MENURADIOSETUP      TR("SENDER EINST.","SENDER GRUNGEINSTELLUNGEN")
+#define TR_MENURADIOSETUP      TR("SENDER EINST.","SENDER GRUNDEINSTELLUNGEN")
 #define TR_MENUDATEANDTIME     "DATUM UND ZEIT"
 #define TR_MENUTRAINER         TR("Lehr./Schül.","LEHRER/SCHÜLER")
 #define TR_MENUVERSION         "VERSION"
