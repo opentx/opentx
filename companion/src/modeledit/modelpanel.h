@@ -22,8 +22,11 @@ class ModelPanel : public QWidget
   protected:
     ModelData & model;
     bool lock;
-    void addLabel(QGridLayout * gridLayout, QString text, int col);
-
+    void addLabel(QGridLayout * gridLayout, QString text, int col, bool mimimize=false);
+    void addEmptyLabel(QGridLayout * gridLayout, int col);
+    void addHSpring(QGridLayout *, int col, int row);
+    void addVSpring(QGridLayout *, int col, int row);
+    void addDoubleSpring(QGridLayout *, int col, int row);
 };
 
 #endif // CHANNELS_H

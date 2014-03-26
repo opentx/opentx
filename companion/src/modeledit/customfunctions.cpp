@@ -57,7 +57,8 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
   addLabel(gridLayout, tr("Switch"), 1);
   addLabel(gridLayout, tr("Action"), 2);
   addLabel(gridLayout, tr("Parameters"), 3);
-  addLabel(gridLayout, tr("Enable"), 4);
+  addLabel(gridLayout, tr("Enable"), 4, true );
+  addEmptyLabel(gridLayout, 5 );
 
   lock = true;
   int num_fsw = GetEepromInterface()->getCapability(CustomFunctions);
@@ -104,12 +105,14 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
     label->setMouseTracking(true);
     label->setProperty("index", i);
     label->setText(tr("SF%1").arg(i+1));
-    gridLayout->addWidget(label, i+1, 0);
+    label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
     connect(label, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(fsw_customContextMenuRequested(QPoint)));
+    gridLayout->addWidget(label, i+1, 0);
 
     // The switch
     fswtchSwtch[i] = new QComboBox(this);
     fswtchSwtch[i]->setProperty("index", i);
+    fswtchSwtch[i]->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
     connect(fswtchSwtch[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
     gridLayout->addWidget(fswtchSwtch[i], i+1, 1);
     populateSwitchCB(fswtchSwtch[i], model.funcSw[i].swtch, POPULATE_ONOFF);
@@ -183,14 +186,13 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
     fswtchEnable[i] = new QCheckBox(this);
     fswtchEnable[i]->setProperty("index", i);
     fswtchEnable[i]->setText(tr("ON"));
+    fswtchEnable[i]->setFixedWidth( 50 );
     repeatLayout->addWidget(fswtchEnable[i], i+1);
     fswtchEnable[i]->setChecked(model.funcSw[i].enabled);
     connect(fswtchEnable[i], SIGNAL(stateChanged(int)), this, SLOT(customFunctionEdited()));
   }
-
-  QSpacerItem * verticalSpacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  gridLayout->addItem(verticalSpacer, num_fsw+1, 0);
-
+  // Push rows upward
+  addDoubleSpring(gridLayout, 5, num_fsw+1);
   lock = false;
 }
 
