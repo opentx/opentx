@@ -3748,7 +3748,7 @@ enum LimitsItems {
     #define LIMITS_DIRECTION_POS    21*FW
     #define LIMITS_MAX_POS          26*FW
     #define LIMITS_REVERT_POS       27*FW
-    #define LIMITS_CURVE_POS        32*FW
+    #define LIMITS_CURVE_POS        32*FW-3
   #endif
 #else
   #if defined(PPM_UNIT_US)
@@ -3884,10 +3884,16 @@ void menuModelLimits(uint8_t event)
     lcd_putc(LIMITS_DIRECTION_POS, y, swVal);
 #endif
 
-#if defined(PPM_CENTER_ADJUSTABLE)
-    int8_t limit = ((g_model.extendedLimits && !limitAddress(k)->ppmCenter) ? 125 : 100);
+#if defined(CPUARM)
+    int limit;
 #else
-    int8_t limit = (g_model.extendedLimits ? 125 : 100);
+    int8_t limit;
+#endif
+
+#if defined(PPM_CENTER_ADJUSTABLE)
+    limit = ((g_model.extendedLimits && !limitAddress(k)->ppmCenter) ? 125 : 100);
+#else
+    limit = (g_model.extendedLimits ? 125 : 100);
 #endif
 
 #if defined(PCBTARANIS)
