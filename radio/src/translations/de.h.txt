@@ -1,4 +1,4 @@
-/*   German checked 28.02.2014 kleine Änderungen 
+/*   German checked 25.03.2014 Test 003 kleine Änderungen 
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bernet Andre <bernet.andre@gmail.com>
@@ -163,16 +163,16 @@
 #define TR_VMIXTRIMS           "AUS""EIN""Sei""Höh""Gas""Que" //Mixer Trim Werte
 
 #if defined(PCBTARANIS)
-  #define TR_CSWTIMER          "Timer"
-  #define TR_CSWSTICKY         "Stcky"
-  #define TR_CSWRANGE          "Range"
-  #define TR_CSWSTAY           "Edge\0"
+  #define TR_CSWTIMER          "Takt\0" // TIM Taktgenerator
+  #define TR_CSWSTICKY         "SRFF\0" // Sticky= RS-Flip-Flop
+  #define TR_CSWRANGE          "Range"  // unklar
+  #define TR_CSWSTAY           "Puls\0" // Edge=einstellbarer Impuls
 #else
-  #define TR_CSWTIMER          "Tim\0 "
-  #define TR_CSWSTICKY         "Glue\0"
+  #define TR_CSWTIMER          "Takt\0" // 
+  #define TR_CSWSTICKY         "SRFF\0" //
   #if defined(CPUARM)
-    #define TR_CSWRANGE        "Rnge\0"
-    #define TR_CSWSTAY         "Edge\0"
+    #define TR_CSWRANGE        "Rnge\0" // 
+    #define TR_CSWSTAY         "Puls\0" //
   #else
     #define TR_CSWRANGE
     #define TR_CSWSTAY
@@ -345,7 +345,7 @@
 #define TR_VSCREEN   	       "Werte\0""Balken" //Telemetrie Werte oder Balken
 
 #define LEN_GPSFORMAT          "\004"
-#define TR_GPSFORMAT           "HMS\0""NMEA"  //Koordinatenanzeige
+#define TR_GPSFORMAT           "GMS\0""NMEA"  //Koordinatenanzeige
 
 #define LEN2_VTEMPLATES        15  // max String Länge für Menü (original=13)
 #define LEN_VTEMPLATES         "\017"  // max String Länge 15+cr+lf
@@ -464,7 +464,7 @@
 #endif
 #define TR_BITMAP              "Modell Bild"
 #define TR_TIMER               TR("Timer","Timer ")
-#define TR_ELIMITS             TR("Erw.Limit","Erweit. Limits")
+#define TR_ELIMITS             TR("Erw.Limit","Erweit. Wege 125%")
 #define TR_ETRIMS              TR("Erw.Trims","Erweit. Trimmung")
 #define TR_TRIMINC             TR("Trim Schr.","Trimm Schritte")
 #define TR_TTRACE              TR("Gasquelle", INDENT "Gas Verfolgung")
@@ -589,7 +589,7 @@
 #define TR_BADEEPROMDATA       "EEPROM ungültig"
 #define TR_EEPROMFORMATTING    "EEPROM Initialisieren"
 #define TR_EEPROMOVERFLOW      "EEPROM Überlauf"
-#define TR_MENURADIOSETUP      TR("SENDER EINST.","SENDER GRUNGEINSTELLUNGEN")
+#define TR_MENURADIOSETUP      TR("SENDER EINST.","SENDER GRUNDEINSTELLUNGEN")
 #define TR_MENUDATEANDTIME     "DATUM UND ZEIT"
 #define TR_MENUTRAINER         TR("Lehr./Schül.","LEHRER/SCHÜLER")
 #define TR_MENUVERSION         "VERSION"
@@ -605,7 +605,7 @@
 
 #if defined(PCBTARANIS)
   #define TR_MENUINPUTS        "INPUTS"
-  #define TR_MENULIMITS        "AUSGÄNGE"
+  #define TR_MENULIMITS        "SERVO WEG"
 #elif defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...  #define TR_MENUDREXPO        "KNÜPPEL"
   #define TR_MENUINPUTS        "INPUTS"
   #define TR_MENULIMITS        "AUSGÄNGE"
@@ -633,9 +633,9 @@
 #define TR_LONGITUDE           "Länge:"
 #define TR_GPSCOORD            TR("Gps Koord.","GPS Koordinaten Format")
 #define TR_VARIO               TR("Vario","----Variometer----")
-#define TR_PITCH_AT_ZERO       INDENT "Pitch at Zero"
-#define TR_PITCH_AT_MAX        INDENT "Pitch at Max"
-#define TR_REPEAT_AT_ZERO      INDENT "Repeat at Zero"
+#define TR_PITCH_AT_ZERO       INDENT "Niedrigster Ton"
+#define TR_PITCH_AT_MAX        INDENT "Höchster Ton"
+#define TR_REPEAT_AT_ZERO      INDENT "Wiederholrate"
 #define TR_SHUTDOWN            "Herunterfahren"
 #define TR_BATT_CALIB          "Akku. Kalib."
 #define TR_CURRENT_CALIB       "Stromkalib."
