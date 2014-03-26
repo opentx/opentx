@@ -1,4 +1,4 @@
-/*   German checked 23.03.2014 Test kleine Änderungen 
+/*   German checked 24.03.2014 Test 002 kleine Änderungen 
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bernet Andre <bernet.andre@gmail.com>
@@ -605,7 +605,7 @@
 
 #if defined(PCBTARANIS)
   #define TR_MENUINPUTS        "INPUTS"
-  #define TR_MENULIMITS        "AUSGÄNGE"
+  #define TR_MENULIMITS        "SERVO WEG"
 #elif defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...  #define TR_MENUDREXPO        "KNÜPPEL"
   #define TR_MENUINPUTS        "INPUTS"
   #define TR_MENULIMITS        "AUSGÄNGE"
@@ -633,9 +633,9 @@
 #define TR_LONGITUDE           "Länge:"
 #define TR_GPSCOORD            TR("Gps Koord.","GPS Koordinaten Format")
 #define TR_VARIO               TR("Vario","----Variometer----")
-#define TR_PITCH_AT_ZERO       INDENT "Pitch at Zero"
-#define TR_PITCH_AT_MAX        INDENT "Pitch at Max"
-#define TR_REPEAT_AT_ZERO      INDENT "Repeat at Zero"
+#define TR_PITCH_AT_ZERO       INDENT "Niedrigster Ton"
+#define TR_PITCH_AT_MAX        INDENT "Höchster Ton"
+#define TR_REPEAT_AT_ZERO      INDENT "Wiederholrate"
 #define TR_SHUTDOWN            "Herunterfahren"
 #define TR_BATT_CALIB          "Akku. Kalib."
 #define TR_CURRENT_CALIB       "Stromkalib."
