@@ -177,6 +177,7 @@ void MdiChild::OpenEditWindow(bool wizard=false)
         }
       }
     }
+    QApplication::setOverrideCursor(Qt::WaitCursor);
     ModelEdit *t = new ModelEdit(radioData, (row - 1), wizard, this);
     // TODO if (isNew && !wizard) t->applyBaseTemplate();
     t->setWindowTitle(tr("Editing model %1: ").arg(row) + model.name);
@@ -185,10 +186,12 @@ void MdiChild::OpenEditWindow(bool wizard=false)
     t->show();
   }
   else {
+    QApplication::setOverrideCursor(Qt::WaitCursor);
     GeneralEdit *t = new GeneralEdit(radioData, this);
     connect(t, SIGNAL(modelValuesChanged()), this, SLOT(setModified()));
     t->show();
   }
+  QApplication::restoreOverrideCursor();
 }
 
 void MdiChild::newFile()
