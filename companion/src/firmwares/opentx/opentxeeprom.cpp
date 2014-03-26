@@ -730,32 +730,36 @@ void concatGvarParam(int & gvar, const int _gvar, const unsigned int _gvarParam,
   }
 }
 
-void exportGvarParam(const int gvar, int & _gvar)
+void exportGvarParam(const int gvar, int & _gvar, int version)
 {
+  int GV1 = (version >= 216 ? 4096 : 512);
+
   if (gvar < -10000) {
-    _gvar = 512 + gvar + 10000;
+    _gvar = GV1 + gvar + 10000;
   }
   else if (gvar > 10000) {
-    _gvar = 512 + gvar - 10001;
+    _gvar = GV1 + gvar - 10001;
   }
   else {
     _gvar = gvar;
   }
 }
 
-void importGvarParam(int & gvar, const int _gvar)
+void importGvarParam(int & gvar, const int _gvar, int version)
 {
-  if (_gvar >= 512) {
-    gvar = 10001 + _gvar - 512;
+  int GV1 = (version >= 216 ? 4096 : 512);
+
+  if (_gvar >= GV1) {
+    gvar = 10001 + _gvar - GV1;
   }
-  else if (_gvar >= 512-5) {
-    gvar = -10000 + _gvar - 512;
+  else if (_gvar >= GV1-9) {
+    gvar = -10000 + _gvar - GV1;
   }
-  else if (_gvar < -512) {
-    gvar = -10000 + _gvar + 513;
+  else if (_gvar < -GV1) {
+    gvar = -10000 + _gvar + GV1 + 1;
   }
-  else if (_gvar < -512+5) {
-    gvar = 10000 + _gvar + 513;
+  else if (_gvar < -GV1+9) {
+    gvar = 10000 + _gvar + GV1 + 1;
   }
   else {
     gvar = _gvar;
@@ -898,9 +902,9 @@ class MixField: public TransformedField {
       }
 
       if (IS_ARM(board)) {
-        exportGvarParam(mix.weight, _weight);
+        exportGvarParam(mix.weight, _weight, version);
         if (version >= 214)
-          exportGvarParam(mix.sOffset, _offset);
+          exportGvarParam(mix.sOffset, _offset, version);
         else
           splitGvarParam(mix.sOffset, _offset, _offsetMode, board, version);
       }
@@ -933,9 +937,9 @@ class MixField: public TransformedField {
       }
 
       if (IS_ARM(board)) {
-        importGvarParam(mix.weight, _weight);
+        importGvarParam(mix.weight, _weight, version);
         if (version >= 214)
-          importGvarParam(mix.sOffset, _offset);
+          importGvarParam(mix.sOffset, _offset, version);
         else
           concatGvarParam(mix.sOffset, _offset, _offsetMode, board, version);
       }

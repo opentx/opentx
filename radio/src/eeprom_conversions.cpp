@@ -384,6 +384,16 @@ int ConvertSwitch_215_to_216(int swtch)
 }
 #endif
 
+int16_t ConvertGVAR_215_to_216(int16_t var)
+{
+  if (var <= -508)
+    return var + 512 - 4096;
+  else if (var >= 507)
+    return var - 512 + 4096;
+  else
+    return var;
+}
+
 void ConvertModel_215_to_216(ModelData &model)
 {
   // Virtual inputs added instead of Expo/DR
@@ -440,7 +450,7 @@ void ConvertModel_215_to_216(ModelData &model)
     mix.destCh = oldModel.mixData[i].destCh;
     mix.phases = oldModel.mixData[i].phases;
     mix.mltpx = oldModel.mixData[i].mltpx;
-    mix.weight = oldModel.mixData[i].weight;
+    mix.weight = ConvertGVAR_215_to_216(oldModel.mixData[i].weight);
     mix.swtch = ConvertSwitch_215_to_216(oldModel.mixData[i].swtch);
     if (oldModel.mixData[i].curveMode==0/*differential*/) {
       mix.curve.type = CURVE_REF_DIFF;
@@ -462,17 +472,14 @@ void ConvertModel_215_to_216(ModelData &model)
     mix.srcRaw = oldModel.mixData[i].srcRaw;
     if (mix.srcRaw > 4 || oldModel.mixData[i].noExpo)
       mix.srcRaw = ConvertSource_215_to_216(mix.srcRaw);
-    mix.offset = oldModel.mixData[i].offset;
+    mix.offset = ConvertGVAR_215_to_216(oldModel.mixData[i].offset);
     memcpy(mix.name, oldModel.mixData[i].name, LEN_EXPOMIX_NAME);
 #else
     memcpy(&mix, &oldModel.mixData[i], sizeof(mix));
 #endif
-    if (mix.weight <= -508)
-      mix.weight = mix.weight + 512 - 4096;
-    else if (mix.weight >= 507)
-      mix.weight = mix.weight - 512 + 4096;
-    else
+    if (!GV_IS_GV_VALUE(mix.weight, 500, 500) && !GV_IS_GV_VALUE(mix.offset, 500, 500)) {
       mix.offset = ((mix.offset * mix.weight) + 50) / 100;
+    }
   }
   for (uint8_t i=0; i<32; i++) {
     g_model.limitData[i].min = 10 * oldModel.limitData[i].min;
