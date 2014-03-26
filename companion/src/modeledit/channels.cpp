@@ -10,20 +10,24 @@ Channels::Channels(QWidget * parent, ModelData & model):
   ModelPanel(parent, model)
 {
   QGridLayout * gridLayout = new QGridLayout(this);
+  bool minimize = false;
 
   int col = 1;
   if (GetEepromInterface()->getCapability(ChannelsName))
+  {
+    minimize=true;
     addLabel(gridLayout, tr("Name"), col++);
-  addLabel(gridLayout, tr("Offset"), col++);
-  addLabel(gridLayout, tr("Min"), col++);
-  addLabel(gridLayout, tr("Max"), col++);
-  addLabel(gridLayout, tr("Invert"), col++);
+  }
+  addLabel(gridLayout, tr("Offset"), col++, minimize);
+  addLabel(gridLayout, tr("Min"), col++, minimize);
+  addLabel(gridLayout, tr("Max"), col++, minimize);
+  addLabel(gridLayout, tr("Invert"), col++, minimize);
   if (IS_TARANIS(GetEepromInterface()->getBoard()))
-    addLabel(gridLayout, tr("Curve"), col++);
+    addLabel(gridLayout, tr("Curve"), col++, minimize);
   if (GetEepromInterface()->getCapability(PPMCenter))
-    addLabel(gridLayout, tr("Center"), col++);
+    addLabel(gridLayout, tr("Center"), col++, minimize);
   if (GetEepromInterface()->getCapability(SYMLimits))
-    addLabel(gridLayout, tr("Sym"), col++);
+    addLabel(gridLayout, tr("Sym"), col++, true);
 
   for (int i=0; i<GetEepromInterface()->getCapability(Outputs); i++) {
     col = 0;
@@ -31,6 +35,7 @@ Channels::Channels(QWidget * parent, ModelData & model):
     // Channel label
     QLabel *label = new QLabel(this);
     label->setText(tr("Channel %1").arg(i+1));
+    label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
     gridLayout->addWidget(label, i+1, col++, 1, 1);
 
     // Channel name
@@ -125,9 +130,8 @@ Channels::Channels(QWidget * parent, ModelData & model):
       gridLayout->addWidget(symlimits, i+1, col++, 1, 1);
     }
   }
-
-  QSpacerItem * verticalSpacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  gridLayout->addItem(verticalSpacer, GetEepromInterface()->getCapability(Outputs)+1, 0, 1, 1);
+  // Push the rows up
+  addVSpring(gridLayout, 0,GetEepromInterface()->getCapability(Outputs)+1);
 }
 
 Channels::~Channels()

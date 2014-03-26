@@ -31,6 +31,7 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model):
     label->setText(tr("L%1").arg(i+1));
     label->setContextMenuPolicy(Qt::CustomContextMenu);
     label->setMouseTracking(true);
+    label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
     connect(label, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(csw_customContextMenuRequested(QPoint)));
     gridLayout->addWidget(label, i+1, 0);
 
@@ -113,10 +114,8 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model):
       gridLayout->addWidget(cswitchDelay[i], i+1, 6);
     }
   }
-
-  QSpacerItem * verticalSpacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-  gridLayout->addItem(verticalSpacer, GetEepromInterface()->getCapability(LogicalSwitches)+1, 0, 1, 1);
-
+  // Push rows upward
+  addVSpring(gridLayout,0,GetEepromInterface()->getCapability(LogicalSwitches)+1);
   lock = false;
 }
 
