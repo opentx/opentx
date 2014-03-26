@@ -594,7 +594,7 @@ int OpenTxInterface::getCapability(const Capability capability)
     case MixesWithoutExpo:
       return 1;
     case NumCurves:
-      return (IS_ARM(board) ? 16 : 8);
+      return (IS_TARANIS(board) ? 32 : (IS_ARM(board) ? 16 : 8));
     case HasMixerNames:
       return (IS_ARM(board) ? (IS_TARANIS(board) ? 8 : 6) : false);
     case HasExpoNames:
