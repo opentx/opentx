@@ -717,12 +717,13 @@ void setTrimValue(uint8_t phase, uint8_t idx, int trim);
 #if defined(CPUARM)
   #define GV_GET_GV1_VALUE(max)        ( (max<=GV_RANGESMALL && min>=GV_RANGESMALL_NEG) ? GV1_SMALL : GV1_LARGE )
   #define GV_INDEX_CALCULATION(x,max)  ( (max<=GV_RANGESMALL && min>=GV_RANGESMALL_NEG) ? (uint8_t) x-GV1_SMALL : ((x&(GV1_LARGE*2-1))-GV1_LARGE) )
+  #define GV_IS_GV_VALUE(x,min,max)    ( (max>GV1_SMALL || min<-GV1_SMALL) ? (x>GV_RANGELARGE || x<GV_RANGELARGE_NEG) : (x>max) || (x<min) )
 #else
   #define GV_GET_GV1_VALUE(max)        ( (max<=GV_RANGESMALL) ? GV1_SMALL : GV1_LARGE )
   #define GV_INDEX_CALCULATION(x,max)  ( (max<=GV1_SMALL) ? (uint8_t) x-GV1_SMALL : ((x&(GV1_LARGE*2-1))-GV1_LARGE) )
+  #define GV_IS_GV_VALUE(x,min,max)    ( (x>max) || (x<min) )
 #endif
 
-#define GV_IS_GV_VALUE(x,min,max)    ( (x>max) || (x<min) )
 #define GV_INDEX_CALC_DELTA(x,delta) ((x&(delta*2-1)) - delta)
 
 #define GV_CALC_VALUE_IDX_POS(idx,delta) (-delta+idx)
