@@ -63,6 +63,7 @@
 #include "warnings.h"
 #include "helpers.h"
 #include "appdata.h"
+#include "taranisnotfound.h"
 #include "firmwares/opentx/opentxinterface.h" // TODO get rid of this include
 
 #define DONATE_STR      "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QUZ48K4SEXDP2"
@@ -1024,7 +1025,8 @@ void MainWindow::readEeprom()
     if (IS_TARANIS(eepromInterface->getBoard())) {
       QString path=FindTaranisPath();
       if (path.isEmpty()) {
-        QMessageBox::warning(this, tr("Taranis radio not found"), tr("Impossible to identify the radio on your system, please verify the eeprom disk is connected."));
+        taranisNotFoundDialog *tnfd = new taranisNotFoundDialog(this);
+        tnfd->exec();
         res=false;
       } else {
         QStringList str;
@@ -1080,7 +1082,8 @@ void MainWindow::writeFileToEeprom()
           if (IS_TARANIS(eepromInterface->getBoard())) {
             QString path=FindTaranisPath();
             if (path.isEmpty()) {
-              QMessageBox::warning(this, tr("Taranis radio not found"), tr("Impossible to identify the radio on your system, please verify the eeprom disk is connected."));
+              taranisNotFoundDialog *tnfd = new taranisNotFoundDialog(this);
+              tnfd->exec();
               return;
             } else {
               QStringList str;
@@ -1131,7 +1134,8 @@ void MainWindow::writeFileToEeprom()
           if (IS_TARANIS(eepromInterface->getBoard())) {
             QString path=FindTaranisPath();
             if (path.isEmpty()) {
-              QMessageBox::warning(this, tr("Taranis radio not found"), tr("Impossible to identify the radio on your system, please verify the eeprom disk is connected."));
+              taranisNotFoundDialog *tnfd = new taranisNotFoundDialog(this);
+              tnfd->exec();
               return;
             } else {
               QStringList str;
@@ -1156,7 +1160,8 @@ void MainWindow::writeFileToEeprom()
       if (IS_TARANIS(eepromInterface->getBoard())) {
         QString path=FindTaranisPath();
         if (path.isEmpty()) {
-          QMessageBox::warning(this, tr("Taranis radio not found"), tr("Impossible to identify the radio on your system, please verify the eeprom disk is connected."));
+          taranisNotFoundDialog *tnfd = new taranisNotFoundDialog(this);
+          tnfd->exec();
           return;
         }
         else {
@@ -1402,7 +1407,8 @@ void MainWindow::readEepromToFile()
       if (IS_TARANIS(eepromInterface->getBoard())) {
         QString path=FindTaranisPath();
         if (path.isEmpty()) {
-          QMessageBox::warning(this, tr("Taranis radio not found"), tr("Impossible to identify the radio on your system, please verify that the eeprom disk is connected."));
+          taranisNotFoundDialog *tnfd = new taranisNotFoundDialog(this);
+          tnfd->exec();
           return;
         }
         else {
