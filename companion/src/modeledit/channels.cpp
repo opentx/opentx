@@ -125,6 +125,9 @@ Channels::Channels(QWidget * parent, ModelData & model):
       gridLayout->addWidget(symlimits, i+1, col++, 1, 1);
     }
   }
+
+  QSpacerItem * verticalSpacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  gridLayout->addItem(verticalSpacer, GetEepromInterface()->getCapability(Outputs)+1, 0, 1, 1);
 }
 
 Channels::~Channels()

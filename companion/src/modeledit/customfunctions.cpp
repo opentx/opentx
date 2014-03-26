@@ -54,11 +54,10 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
 {
   QGridLayout * gridLayout = new QGridLayout(this);
 
-  int col = 1;
-  addLabel(gridLayout, tr("Switch"), col++);
-  addLabel(gridLayout, tr("Action"), col++);
-  addLabel(gridLayout, tr("Parameters"), col++);
-  addLabel(gridLayout, tr("Enable"), col++);
+  addLabel(gridLayout, tr("Switch"), 1);
+  addLabel(gridLayout, tr("Action"), 2);
+  addLabel(gridLayout, tr("Parameters"), 3);
+  addLabel(gridLayout, tr("Enable"), 4);
 
   lock = true;
   int num_fsw = GetEepromInterface()->getCapability(CustomFunctions);
@@ -188,6 +187,9 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
     fswtchEnable[i]->setChecked(model.funcSw[i].enabled);
     connect(fswtchEnable[i], SIGNAL(stateChanged(int)), this, SLOT(customFunctionEdited()));
   }
+
+  QSpacerItem * verticalSpacer = new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+  gridLayout->addItem(verticalSpacer, num_fsw+1, 0);
 
   lock = false;
 }
