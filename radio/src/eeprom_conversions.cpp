@@ -478,7 +478,7 @@ void ConvertModel_215_to_216(ModelData &model)
     memcpy(&mix, &oldModel.mixData[i], sizeof(mix));
 #endif
     if (!GV_IS_GV_VALUE(mix.weight, 500, 500) && !GV_IS_GV_VALUE(mix.offset, 500, 500)) {
-      mix.offset = ((mix.offset * mix.weight) + 50) / 100;
+      mix.offset = divRoundClosest(mix.offset * mix.weight, 100);
     }
   }
   for (uint8_t i=0; i<32; i++) {
