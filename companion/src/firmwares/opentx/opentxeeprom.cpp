@@ -943,6 +943,12 @@ class MixField: public TransformedField {
         concatGvarParam(mix.weight, _weight, _weightMode, board, version);
         concatGvarParam(mix.sOffset, _offset, _offsetMode, board, version);
       }
+
+      if (IS_TARANIS(board) || version < 216) {
+        if (mix.sOffset >= -500 && mix.sOffset <= 500 && mix.weight >= -500 && mix.weight <= 500) {
+          mix.sOffset = ((mix.sOffset * mix.weight) + 50) / 100;
+        }
+      }
     }
 
   protected:
