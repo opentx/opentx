@@ -20,11 +20,11 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
   ui->setupUi(this);
   setWindowIcon(CompanionIcon("write_flash.png"));
 
-  if(!g.profile[g.id()].splashFile().isEmpty()){
+  if (!g.profile[g.id()].splashFile().isEmpty()){
     imageSource=PROFILE;
     imageFile=g.profile[g.id()].splashFile();
   }
-  else{
+  else {
     ui->useProfileImageCB->setDisabled(true);
     imageSource=FIRMWARE;
     imageFile="";
@@ -306,7 +306,7 @@ void burnDialog::displaySplash()
     FlashInterface flash(ui->FWFileName->text());
     image = flash.getSplash();
   }
-  else{
+  else {
     image.load(imageFile);
   }
   if (image.isNull()) {
@@ -426,15 +426,18 @@ void burnDialog::on_BurnFlashButton_clicked()
             hexfileName->clear();
             QMessageBox::critical(this, tr("Warning"), tr("Cannot save customized firmware"));
           }
-        } else {
+        }
+        else {
           hexfileName->clear();
           QMessageBox::critical(this, tr("Warning"), tr("Custom image not found"));
         }
-      } else {
-            hexfileName->clear();
-            hexfileName->append(fileName);
       }
-    } else {
+      else {
+        hexfileName->clear();
+        hexfileName->append(fileName);
+      }
+    }
+    else {
       QMessageBox::critical(this, tr("Warning"), tr("No firmware selected"));
       hexfileName->clear();     
     }

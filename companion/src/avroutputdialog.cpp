@@ -51,18 +51,20 @@ avrOutputDialog::avrOutputDialog(QWidget *parent, QString prog, QStringList arg,
         ui->progressBar->setMaximum(127);
         QTimer::singleShot(500, this, SLOT(doCopy()));
       }
-    } else {
-      if(wTitle.isEmpty())
-          setWindowTitle(getProgrammer() + " " + tr("result"));
+    }
+    else {
+      if (wTitle.isEmpty())
+        setWindowTitle(getProgrammer() + " " + tr("result"));
       else
-          setWindowTitle(getProgrammer() + " - " + wTitle);
+        setWindowTitle(getProgrammer() + " - " + wTitle);
       QFile exec;
       winTitle=wTitle;
       if (!(exec.exists(prog))) {
         QMessageBox::critical(this, "Companion", getProgrammer() + " " + tr("executable not found"));
         closeOpt = AVR_DIALOG_FORCE_CLOSE;
         QTimer::singleShot(0, this, SLOT(forceClose()));
-      } else {
+      }
+      else {
         foreach(QString str, arg) cmdLine.append(" " + str);
         lfuse = 0;
         hfuse = 0;
@@ -70,10 +72,11 @@ avrOutputDialog::avrOutputDialog(QWidget *parent, QString prog, QStringList arg,
         phase=0;
         currLine.clear();
         if (!displayDetails) {
-            ui->plainTextEdit->hide();
-            QTimer::singleShot(0, this, SLOT(shrink()));
-        } else {
-            ui->checkBox->setChecked(true);
+          ui->plainTextEdit->hide();
+          QTimer::singleShot(0, this, SLOT(shrink()));
+        }
+        else {
+          ui->checkBox->setChecked(true);
         }
         process = new QProcess(this);
         connect(process,SIGNAL(readyReadStandardError()), this, SLOT(doAddTextStdErr()));
@@ -241,10 +244,8 @@ void avrOutputDialog::doAddTextStdOut()
 
     if (text.contains("Complete ")) {
 #if !__GNUC__
-      if (kill_timer) {
-        delete kill_timer;
-        kill_timer = NULL;
-      }
+      delete kill_timer;
+      kill_timer = NULL;
 #endif
       int start = text.indexOf("Complete ");
       int end = text.indexOf("%");
