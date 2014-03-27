@@ -553,11 +553,13 @@ PACK(typedef struct t_LimitData {
 PACK(typedef struct t_MixData {
   uint8_t  destCh;
   uint16_t phases;
-  uint8_t  mltpx;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
+  uint8_t  mltpx:2;         // multiplex method: 0 means +=, 1 means *=, 2 means :=
+  uint8_t  carryTrim:1;
+  uint8_t  spare1:5;
   int16_t  weight;
   int8_t   swtch;
   CurveRef curve;
-  uint8_t  mixWarn:4;         // mixer warning
+  uint8_t  mixWarn:4;       // mixer warning
   uint8_t  srcVariant:4;
   uint8_t  delayUp;
   uint8_t  delayDown;
@@ -566,7 +568,7 @@ PACK(typedef struct t_MixData {
   uint8_t  srcRaw;
   int16_t  offset;
   char     name[LEN_EXPOMIX_NAME];
-  uint8_t  spare;
+  uint8_t  spare2;
 }) MixData;
 #else
 PACK(typedef struct t_MixData {

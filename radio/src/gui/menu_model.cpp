@@ -3069,7 +3069,7 @@ enum MixFields {
   MIX_FIELD_SOURCE,
   MIX_FIELD_WEIGHT,
   MIX_FIELD_OFFSET,
-  CASE_9X(MIX_FIELD_TRIM)
+  MIX_FIELD_TRIM,
   IF_CURVES(MIX_FIELD_CURVE)
   IF_FLIGHT_MODES(MIX_FIELD_FLIGHT_PHASE)
   MIX_FIELD_SWITCH,
@@ -3114,7 +3114,7 @@ void menuModelMixOne(uint8_t event)
   else
     SUBMENU_NOTITLE(MIX_FIELD_COUNT, {IF_CPUARM(0) 0, 0, 0, CASE_9X(1) IF_CURVES(1) IF_FLIGHT_MODES((MAX_PHASES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/});
 #else
-  SUBMENU_NOTITLE(MIX_FIELD_COUNT, {IF_CPUARM(0) 0, 0, 0, CASE_9X(1) IF_CURVES(1) IF_FLIGHT_MODES((MAX_PHASES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/});
+  SUBMENU_NOTITLE(MIX_FIELD_COUNT, {IF_CPUARM(0) 0, 0, 0, CASE_9X(1) CASE_PCBTARANIS(0) IF_CURVES(1) IF_FLIGHT_MODES((MAX_PHASES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/});
 #endif
 
 #if MENU_COLUMNS > 1
@@ -3169,17 +3169,19 @@ void menuModelMixOne(uint8_t event)
         break;
       }
 
-#if !defined(PCBTARANIS)
+#if defined(PCBTARANIS)
+      case MIX_FIELD_TRIM:
+        lcd_putsColumnLeft(COLUMN_X, y, STR_TRIM);
+        menu_lcd_onoff(COLUMN_X+MIXES_2ND_COLUMN, y, !md2->carryTrim, attr);
+        if (attr) md2->carryTrim = !checkIncDecModel(event, !md2->carryTrim, 0, 1);
+        break;
+#else
       case MIX_FIELD_TRIM:
       {
         uint8_t not_stick = (md2->srcRaw > NUM_STICKS);
         int8_t carryTrim = -md2->carryTrim;
         lcd_putsColumnLeft(COLUMN_X, y, STR_TRIM);
-#if LCD_W >= 212 && defined(TRANSLATIONS_FR)
-        lcd_putsiAtt((not_stick ? COLUMN_X+MIXES_2ND_COLUMN : COLUMN_X+11*FW-3), y, STR_VMIXTRIMS, (not_stick && carryTrim == 0) ? 0 : carryTrim+1, m_posHorz==0 ? attr : 0);
-#else
         lcd_putsiAtt((not_stick ? COLUMN_X+MIXES_2ND_COLUMN : COLUMN_X+6*FW-3), y, STR_VMIXTRIMS, (not_stick && carryTrim == 0) ? 0 : carryTrim+1, m_posHorz==0 ? attr : 0);
-#endif
         if (attr && m_posHorz==0 && (not_stick || editMode>0)) md2->carryTrim = -checkIncDecModel(event, carryTrim, not_stick ? TRIM_ON : -TRIM_OFF, -TRIM_AIL);
         if (!not_stick) {
           lcd_puts(COLUMN_X+MIXES_2ND_COLUMN, y, STR_DREX);

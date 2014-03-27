@@ -38,8 +38,10 @@
 
 // static variables used in perOut - moved here so they don't interfere with the stack
 // It's also easier to initialize them here.
-#if !defined(PCBTARANIS)
-int16_t  rawAnas[NUM_INPUTS] = {0};
+#if defined(PCBTARANIS)
+int8_t  virtualInputsTrims[NUM_INPUTS];
+#else
+int16_t rawAnas[NUM_INPUTS] = {0};
 #endif
 int16_t  anas [NUM_INPUTS] = {0};
 int16_t  trims[NUM_STICKS] = {0};
@@ -1004,16 +1006,12 @@ void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
         if (offset) v += calc100toRESX(offset);
         
         //========== TRIMS ================
-        if (!(mode & e_perout_mode_notrims)) {
-          int8_t input_trim = ed->carryTrim;
-          if (input_trim < TRIM_ON)
-            input_trim = -input_trim - 1;
-          else if (input_trim == TRIM_ON && ed->srcRaw >= MIXSRC_Rud && ed->srcRaw <= MIXSRC_Ail)
-            input_trim = ed->srcRaw - MIXSRC_Rud;
-          else
-            input_trim = -1;
-          if (input_trim >= 0) v += trims[input_trim];
-        }        
+        if (ed->carryTrim < TRIM_ON)
+          virtualInputsTrims[cur_chn] = -ed->carryTrim - 1;
+        else if (ed->carryTrim == TRIM_ON && ed->srcRaw >= MIXSRC_Rud && ed->srcRaw <= MIXSRC_Ail)
+          virtualInputsTrims[cur_chn] = ed->srcRaw - MIXSRC_Rud;
+        else
+          virtualInputsTrims[cur_chn] = -1;
 #endif
 
         anas[cur_chn] = v;
@@ -3840,14 +3838,27 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 #endif
       }
 
-#if !defined(PCBTARANIS) // (because trims are taken into account by INPUTS on Taranis)
       if (apply_offset_and_curve) {
+#if !defined(PCBTARANIS) // OFFSET is now applied AFTER weight on Taranis
         //========== OFFSET / SOURCE ===============
         int16_t offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, s_perout_flight_phase);
         if (offset) v += calc100toRESX_16Bits(offset);
+#endif
 
         //========== TRIMS ================
         if (!(mode & e_perout_mode_notrims)) {
+#if defined(PCBTARANIS)
+          if (!md->carryTrim) {
+            int8_t mix_trim;
+            if (stickIndex < NUM_STICKS)
+              mix_trim = stickIndex;
+            else if (md->srcRaw <= MIXSRC_LAST_INPUT)
+              mix_trim = virtualInputsTrims[md->srcRaw-1];
+            else
+              mix_trim = -1;
+            if (mix_trim >= 0) v += trims[mix_trim];
+          }
+#else
           int8_t mix_trim = md->carryTrim;
           if (mix_trim < TRIM_ON)
             mix_trim = -mix_trim - 1;
@@ -3856,9 +3867,9 @@ void perOut(uint8_t mode, uint8_t tick10ms)
           else
             mix_trim = -1;
           if (mix_trim >= 0) v += trims[mix_trim];
+#endif
         }
       }
-#endif
       
       // saves 12 bytes code if done here and not together with weight; unknown reason
       int16_t weight = GET_GVAR(MD_WEIGHT(md), GV_RANGELARGE_NEG, GV_RANGELARGE, s_perout_flight_phase);            

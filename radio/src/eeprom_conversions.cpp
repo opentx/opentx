@@ -450,6 +450,7 @@ void ConvertModel_215_to_216(ModelData &model)
     mix.destCh = oldModel.mixData[i].destCh;
     mix.phases = oldModel.mixData[i].phases;
     mix.mltpx = oldModel.mixData[i].mltpx;
+    if (oldModel.mixData[i].carryTrim == TRIM_OFF) mix.carryTrim = TRIM_OFF;
     mix.weight = ConvertGVAR_215_to_216(oldModel.mixData[i].weight);
     mix.swtch = ConvertSwitch_215_to_216(oldModel.mixData[i].swtch);
     if (oldModel.mixData[i].curveMode==0/*differential*/) {
