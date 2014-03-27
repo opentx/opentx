@@ -545,7 +545,9 @@ void printDialog::printCurves()
         c*=256;
         c+=b;
         sprintf(buffer,"%06x",c);
-        str.append(QString("<tr><td width=\"70\"><font color=#%1><b>").arg(buffer)+tr("Curve")+QString(" %1</b></font></td></tr>").arg(i+1));
+        if(i%2 == 0) str.append("<tr>");
+        str.append(QString("<td width=\"70\"><font color=#%1><b>").arg(buffer)+tr("Curve")+QString(" %1</b></font></td>").arg(i+1));
+        if(i%2) str.append("</tr>");
       }
       str.append("</table></td></tr><tr><td colspan=2><table border=1 cellspacing=0 cellpadding=3 width=\"100%\">");
       str.append("<tr>");
