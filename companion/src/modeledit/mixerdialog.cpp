@@ -27,12 +27,6 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, i
 
     gvWeightGroup = new GVarGroup(ui->weightGV, ui->weightSB, ui->weightCB, md->weight, 100, -limit, limit);
     gvOffsetGroup = new GVarGroup(ui->offsetGV, ui->offsetSB, ui->offsetCB, md->sOffset, 0, -limit, limit);
-
-    if (GetEepromInterface()->getCapability(VirtualInputs)) {
-      ui->trimLabel->hide();
-      ui->trimCB->hide();
-    }
-
     curveGroup = new CurveGroup(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, md->curve);
 
     ui->MixDR_CB->setChecked(md->noExpo==0);
@@ -41,10 +35,13 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, i
       ui->label_MixDR->hide();
     }
 
-    ui->trimCB->addItem(tr("Rud"), 1);
-    ui->trimCB->addItem(tr("Ele"), 2);
-    ui->trimCB->addItem(tr("Thr"), 3);
-    ui->trimCB->addItem(tr("Ail"), 4);
+    if (!GetEepromInterface()->getCapability(VirtualInputs)) {
+      ui->trimCB->addItem(tr("Rud"));
+      ui->trimCB->addItem(tr("Ele"));
+      ui->trimCB->addItem(tr("Thr"));
+      ui->trimCB->addItem(tr("Ail"));
+    }
+
     ui->trimCB->setCurrentIndex(1 - md->carryTrim);
 
     int namelength = GetEepromInterface()->getCapability(HasMixerNames);

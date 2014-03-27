@@ -781,7 +781,9 @@ class MixField: public TransformedField {
       if (IS_TARANIS(board) && version >= 216) {
         internalField.Append(new UnsignedField<8>(_destCh));
         internalField.Append(new UnsignedField<16>(mix.phases));
-        internalField.Append(new UnsignedField<8>((unsigned int &)mix.mltpx));
+        internalField.Append(new UnsignedField<2>((unsigned int &)mix.mltpx));
+        internalField.Append(new UnsignedField<1>((unsigned int &)mix.carryTrim));
+        internalField.Append(new SpareBitsField<5>());
         internalField.Append(new SignedField<16>(_weight));
         internalField.Append(new SwitchField<8>(mix.swtch, board, version));
         internalField.Append(new CurveReferenceField(mix.curve, board, version));
@@ -916,7 +918,7 @@ class MixField: public TransformedField {
 
     virtual void afterImport()
     {
-      if (IS_TARANIS(board) || version < 216) {
+      if (IS_TARANIS(board) && version < 216) {
         if (mix.srcRaw.type == SOURCE_TYPE_STICK && mix.srcRaw.index < NUM_STICKS) {
           if (!mix.noExpo) {
             mix.srcRaw = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, mix.srcRaw.index, model);
@@ -948,10 +950,11 @@ class MixField: public TransformedField {
         concatGvarParam(mix.sOffset, _offset, _offsetMode, board, version);
       }
 
-      if (IS_TARANIS(board) || version < 216) {
+      if (IS_TARANIS(board) && version < 216) {
         if (mix.sOffset >= -500 && mix.sOffset <= 500 && mix.weight >= -500 && mix.weight <= 500) {
           mix.sOffset = divRoundClosest(mix.sOffset * mix.weight, 100);
         }
+        if (mix.carryTrim < 0) mix.carryTrim = 0;
       }
     }
 

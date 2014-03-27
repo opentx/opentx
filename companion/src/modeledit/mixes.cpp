@@ -115,13 +115,11 @@ void MixesPanel::update()
       str += " " + tr("Switch(%1)").arg(md->swtch.toString());
     }
 
-    if (!GetEepromInterface()->getCapability(VirtualInputs)) {
-      if (md->carryTrim>0) {
-        str += " " + tr("No Trim");
-      }
-      else if (md->carryTrim<0) {
-        str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString();
-      }
+    if (md->carryTrim>0) {
+      str += " " + tr("No Trim");
+    }
+    else if (md->carryTrim<0) {
+      str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString();
     }
 
     if (md->noExpo)      str += " " + tr("No DR/Expo");
