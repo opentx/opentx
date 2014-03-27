@@ -4195,8 +4195,10 @@ void doMixerCalculations()
     // usually max is 1024 min is -1024 --> max-min = 2048 full range / 128 = max 16 steps
     
     gModelMax >>= (10-2);
-    if (gModelMax != 8)
-      val = (val << 3) / (gModelMax); // rescaling only needed if Min, Max differs
+
+    if (gModelMax != 0 && gModelMax != 8) {
+      val = (val << 3) / gModelMax; // rescaling only needed if Min, Max differs
+    }
     
     // if (gModelMax!=2048) val = (int32_t) (val << 11) / (gModelMax); // recaling only needed if Min, Max differs
     // val = val * 10 / (10+(lim->max-lim->min)/20);
