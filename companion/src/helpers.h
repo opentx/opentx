@@ -4,6 +4,8 @@
 #include <QtGui>
 #include "eeprominterface.h"
 
+extern const QColor colors[C9X_MAX_CURVES];
+
 #define TMR_NUM_OPTION  (TMR_VAROFS+2*9+2*GetEepromInterface()->getCapability(LogicalSwitches)-1)
 
 //convert from mode 1 to mode generalSettings.stickMode

@@ -4,6 +4,41 @@
 #include "simulatordialog.h"
 #include "flashinterface.h"
 
+const QColor colors[C9X_MAX_CURVES] = {
+  QColor(0,0,127),
+  QColor(0,127,0),
+  QColor(127,0,0),
+  QColor(0,127,127),
+  QColor(127,0,127),
+  QColor(127,127,0),
+  QColor(127,127,127),
+  QColor(0,0,255),
+  QColor(0,127,255),
+  QColor(127,0,255),
+  QColor(0,255,0),
+  QColor(0,255,127),
+  QColor(127,255,0),
+  QColor(255,0,0),
+  QColor(255,0,127),
+  QColor(255,127,0),
+  QColor(0,0,127),
+  QColor(0,127,0),
+  QColor(127,0,0),
+  QColor(0,127,127),
+  QColor(127,0,127),
+  QColor(127,127,0),
+  QColor(127,127,127),
+  QColor(0,0,255),
+  QColor(0,127,255),
+  QColor(127,0,255),
+  QColor(0,255,0),
+  QColor(0,255,127),
+  QColor(127,255,0),
+  QColor(255,0,0),
+  QColor(255,0,127),
+  QColor(255,127,0),
+};
+
 QString getPhaseName(int val, char * phasename)
 {
   if (!val) return "---";
