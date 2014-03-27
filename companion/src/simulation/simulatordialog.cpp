@@ -364,7 +364,7 @@ void SimulatorDialog9X::setLightOn(bool enable)
     list << "bl" << "gr" << "rd" << "or" << "yl";
     bg = QString("-") + list[backLight];
   }
-  ui->top->setStyleSheet(QString("background:url(:/images/9xdt.png%1);").arg(bg));
+  ui->top->setStyleSheet(QString("background:url(:/images/9xdt%1.png);").arg(bg));
   ui->bottom->setStyleSheet(QString("background:url(:/images/9xdb%1.png);").arg(bg));
   ui->left->setStyleSheet(QString("background:url(:/images/9xdl%1.png);").arg(bg));
   ui->right->setStyleSheet(QString("background:url(:/images/9xdr%1.png);").arg(bg));
