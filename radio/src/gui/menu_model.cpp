@@ -3944,6 +3944,7 @@ void menuModelLimits(uint8_t event)
         case ITEM_LIMITS_MIN:
 #if defined(CPUARM)
           ld->min = LIMITS_MIN_MAX_OFFSET + GVAR_MENU_ITEM(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET), -MIN_MAX_LIMIT, 0, MIN_MAX_ATTR, DBLKEYS_1000, event);
+          if (k==0) TRACE("ld->min = %d %d", ld->min, -MIN_MAX_LIMIT);
 #else
           lcd_outdezAtt(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET), MIN_MAX_ATTR);
           if (active) ld->min = LIMITS_MIN_MAX_OFFSET + checkIncDecModel(event, ld->min-LIMITS_MIN_MAX_OFFSET, -MIN_MAX_LIMIT, 0);
@@ -4197,23 +4198,6 @@ void menuModelGVars(uint8_t event)
     }
   }
 
-#if defined(CPUARM)
-  #define INCDEC_DECLARE_VARS()   uint8_t incdecFlag = EE_MODEL; IsValueAvailable isValueAvailable = NULL
-  #define INCDEC_SET_FLAG(f)      incdecFlag = (EE_MODEL|(f))
-  #define INCDEC_ENABLE_CHECK(fn) isValueAvailable = fn
-  #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, incdecFlag, isValueAvailable)
-#elif defined(CPUM64)
-  #define INCDEC_DECLARE_VARS()
-  #define INCDEC_SET_FLAG(f)
-  #define INCDEC_ENABLE_CHECK(fn)
-  #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, EE_MODEL)
-#else
-  #define INCDEC_DECLARE_VARS()   uint8_t incdecFlag = EE_MODEL
-  #define INCDEC_SET_FLAG(f)      incdecFlag = (EE_MODEL|(f))
-  #define INCDEC_ENABLE_CHECK(fn)
-  #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, incdecFlag)
-#endif
-
   if (m_posVert > 0 && m_posHorz < 0 && event==EVT_KEY_LONG(KEY_ENTER)) {
     killEvents(event);
     if (g_model.gvars[sub].popup)
@@ -4224,23 +4208,6 @@ void menuModelGVars(uint8_t event)
     menuHandler = onGVARSMenu;
   }
 }
-#endif
-
-#if defined(CPUARM)
-  #define INCDEC_DECLARE_VARS()   uint8_t incdecFlag = EE_MODEL; IsValueAvailable isValueAvailable = NULL
-  #define INCDEC_SET_FLAG(f)      incdecFlag = (EE_MODEL|(f))
-  #define INCDEC_ENABLE_CHECK(fn) isValueAvailable = fn
-  #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, incdecFlag, isValueAvailable)
-#elif defined(CPUM64)
-  #define INCDEC_DECLARE_VARS()
-  #define INCDEC_SET_FLAG(f)
-  #define INCDEC_ENABLE_CHECK(fn)
-  #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, EE_MODEL)
-#else
-  #define INCDEC_DECLARE_VARS()   uint8_t incdecFlag = EE_MODEL
-  #define INCDEC_SET_FLAG(f)      incdecFlag = (EE_MODEL|(f))
-  #define INCDEC_ENABLE_CHECK(fn)
-  #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, incdecFlag)
 #endif
 
 enum LogicalSwitchFields {
@@ -4273,6 +4240,23 @@ enum LogicalSwitchFields {
   #define CSW_4TH_COLUMN  (18*FW+2)
 #endif
 
+#if defined(CPUARM)
+  #define INCDEC_DECLARE_VARS()   uint8_t incdecFlag = EE_MODEL; IsValueAvailable isValueAvailable = NULL
+  #define INCDEC_SET_FLAG(f)      incdecFlag = (EE_MODEL|(f))
+  #define INCDEC_ENABLE_CHECK(fn) isValueAvailable = fn
+  #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, incdecFlag, isValueAvailable)
+#elif defined(CPUM64)
+  #define INCDEC_DECLARE_VARS()
+  #define INCDEC_SET_FLAG(f)
+  #define INCDEC_ENABLE_CHECK(fn)
+  #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, EE_MODEL)
+#else
+  #define INCDEC_DECLARE_VARS()   uint8_t incdecFlag = EE_MODEL
+  #define INCDEC_SET_FLAG(f)      incdecFlag = (EE_MODEL|(f))
+  #define INCDEC_ENABLE_CHECK(fn)
+  #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, incdecFlag)
+#endif
+
 #if defined(CPUARM) && LCD_W < 212
 
 #define CSWONE_2ND_COLUMN (11*FW)
@@ -4288,6 +4272,10 @@ void menuModelLogicalSwitchOne(uint8_t event)
   SUBMENU_NOTITLE(LS_FIELD_COUNT, {0, 0, 1, 0 /*, 0...*/});
 
   int8_t sub = m_posVert;
+
+  INCDEC_DECLARE_VARS();
+
+  int v1_val = cs->v1;
 
   for (uint8_t k=0; k<LCD_LINES-1; k++) {
     uint8_t y = 1 + (k+1)*FH;
@@ -4317,27 +4305,30 @@ void menuModelLogicalSwitchOne(uint8_t event)
       case LS_FIELD_V1:
       {
         lcd_putsLeft(y, STR_V1);
-        int8_t v1_min=0, v1_max=MIXSRC_LAST_TELEM;
+        int v1_min=0, v1_max=MIXSRC_LAST_TELEM;
         if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY || cstate == LS_FAMILY_STAY) {
-          putsSwitches(CSWONE_2ND_COLUMN, y, cs->v1, attr);
+          putsSwitches(CSWONE_2ND_COLUMN, y, v1_val, attr);
           v1_min = SWSRC_OFF+1; v1_max = SWSRC_ON-1;
         }
         else if (cstate == LS_FAMILY_TIMER) {
-          lcd_outdezAtt(CSWONE_2ND_COLUMN, y, cs->v1+1, LEFT|attr);
+          lcd_outdezAtt(CSWONE_2ND_COLUMN, y, v1_val+1, LEFT|attr);
           v1_max = 99;
         }
         else {
-          putsMixerSource(CSWONE_2ND_COLUMN, y, cs->v1, attr);
+          v1_val = (uint8_t)cs->v1;
+          putsMixerSource(CSWONE_2ND_COLUMN, y, v1_val, attr);
+          INCDEC_SET_FLAG(INCDEC_SOURCE);
+          INCDEC_ENABLE_CHECK(isSourceAvailable);
         }
         if (attr) {
-          CHECK_INCDEC_MODELVAR(event, cs->v1, v1_min, v1_max);
+	  cs->v1 = CHECK_INCDEC_PARAM(event, v1_val, v1_min, v1_max);
         }
         break;
       }
       case LS_FIELD_V2:
       {
         lcd_putsLeft(y, STR_V2);
-        int16_t v2_min=0, v2_max=MIXSRC_LAST_TELEM;
+        int v2_min=0, v2_max=MIXSRC_LAST_TELEM;
         if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY) {
           putsSwitches(CSWONE_2ND_COLUMN, y, cs->v2, attr);
           v2_min = SWSRC_OFF+1; v2_max = SWSRC_ON-1;
@@ -4364,22 +4355,17 @@ void menuModelLogicalSwitchOne(uint8_t event)
         }
         else if (cstate == LS_FAMILY_COMP) {
           putsMixerSource(CSWONE_2ND_COLUMN, y, cs->v2, attr);
+          INCDEC_SET_FLAG(INCDEC_SOURCE);
+          INCDEC_ENABLE_CHECK(isSourceAvailable);
         }
         else {
 #if defined(FRSKY)
-          if (cs->v1 >= MIXSRC_FIRST_TELEM) {
-            putsTelemetryChannel(CSWONE_2ND_COLUMN, y, cs->v1 - MIXSRC_FIRST_TELEM, convertCswTelemValue(cs), attr|LEFT);
-            v2_max = maxTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1);
-            if (cstate == LS_FAMILY_OFS) {
-              v2_min = -128;
-              v2_max -= 128;
-            }
-            else {
-              v2_max = min((uint8_t)127, (uint8_t)v2_max);
-              v2_min = -v2_max;
-            }
-            if (cs->v2 > v2_max) {
-              cs->v2 = v2_max;
+          if (v1_val >= MIXSRC_FIRST_TELEM) {
+            putsTelemetryChannel(CSWONE_2ND_COLUMN, y, v1_val - MIXSRC_FIRST_TELEM, convertCswTelemValue(cs), attr|LEFT);
+            v2_max = maxTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
+            v2_min = minTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
+            if (cs->v2 < v2_min || cs->v2 > v2_max) {
+              cs->v2 = 0;
               eeDirty(EE_MODEL);
             }
           }

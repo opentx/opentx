@@ -471,7 +471,7 @@
 #define TR_TTRIM               TR("T-Trim", INDENT "Trim Idle Only")
 #define TR_BEEPCTR             TR("Ctr Beep", "Center Beep")
 #define TR_PROTO               TR(INDENT "Proto", INDENT "Protocol")
-#define TR_PPMFRAME            TR("PPM frame", INDENT "PPM frame")
+#define TR_PPMFRAME            TR(INDENT "PPM frame", INDENT "PPM frame")
 #define TR_MS                  "ms"
 #define TR_SWITCH              "Switch"
 #define TR_TRIMS               "Trims"
@@ -625,7 +625,7 @@
 #define TR_MENUTEMPLATES       "TEMPLATES"
 #define TR_MENUSTAT            "STATS"
 #define TR_MENUDEBUG           "DEBUG"
-#define TR_RXNUM               TR("RxNum", INDENT "Receiver No.")
+#define TR_RXNUM               TR(INDENT "RxNum", INDENT "Receiver No.")
 #define TR_SYNCMENU            "[Sync]"
 #define TR_LIMIT               INDENT "Limit"
 #define TR_MINRSSI             "Min Rssi"
@@ -759,7 +759,7 @@
 #define TR_PTS                 "pts"
 #define TR_SMOOTH              "Smooth"
 #define TR_COPY_TRIMS_TO_OFS   "Copy Trim To Subtrim"
-#define TR_PERSISTENT_MAH      INDENT "Store mAh"
+#define TR_PERSISTENT_MAH      TR(INDENT "Str mAh", INDENT "Store mAh")
 #define TR_PREFLIGHT           "Preflight Checks"
 #define TR_CHECKLIST           INDENT "Display Checklist"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
