@@ -146,7 +146,7 @@ void burnDialog::on_FlashLoadButton_clicked()
     checkFw(fileName);
   }
   else {
-    QString fileName = QFileDialog::getOpenFileName(this,tr("Choose file to load Models and Settings from"), g.eepromDir(), tr(EXTERNAL_EEPROM_FILES_FILTER));
+    QString fileName = QFileDialog::getOpenFileName(this,tr("Choose file to load Models and Settings from"), g.eepromDir(), tr(EEPE_FILES_FILTER));
     if (checkeEprom(fileName)) {
       if (burnraw==false) {
         ui->BurnFlashButton->setEnabled(true);
