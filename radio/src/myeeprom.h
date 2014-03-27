@@ -499,7 +499,7 @@ PACK(typedef struct t_ExpoData {
 #define EXPO_MODE_ENABLE(ed, v) (((v)<0 && ((ed)->mode&1)) || ((v)>=0 && ((ed)->mode&2)))
 #endif
 
-#if defined(CPUARM)
+#if defined(PCBTARANIS)
   #define limit_min_max_t     int16_t
   #define LIMIT_MAX(lim)      (GV_IS_GV_VALUE(lim->max+1000, 0, 1250) ? GET_GVAR(lim->max+1000, 0, 125, s_perout_flight_phase)*10 : lim->max+1000)
   #define LIMIT_MIN(lim)      (GV_IS_GV_VALUE(lim->min-1000, -1250, 0) ? GET_GVAR(lim->min-1000, -125, 0, s_perout_flight_phase)*10 : lim->min-1000)

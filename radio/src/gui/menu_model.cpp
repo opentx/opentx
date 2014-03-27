@@ -3782,7 +3782,7 @@ enum LimitsItems {
   #endif
 #endif
 
-#if defined(CPUARM)
+#if defined(PCBTARANIS)
   #define LIMITS_MIN_MAX_OFFSET 1000
   #define CONVERT_US_MIN_MAX(x) (((x)*128)/250)
   #define MIN_MAX_LIMIT         (10*limit)
@@ -3886,7 +3886,7 @@ void menuModelLimits(uint8_t event)
     lcd_putc(LIMITS_DIRECTION_POS, y, swVal);
 #endif
 
-#if defined(CPUARM)
+#if defined(PCBTARANIS)
     int limit;
 #else
     int8_t limit;
@@ -3942,9 +3942,8 @@ void menuModelLimits(uint8_t event)
           break;
 
         case ITEM_LIMITS_MIN:
-#if defined(CPUARM)
+#if defined(PCBTARANIS)
           ld->min = LIMITS_MIN_MAX_OFFSET + GVAR_MENU_ITEM(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET), -MIN_MAX_LIMIT, 0, MIN_MAX_ATTR, DBLKEYS_1000, event);
-          if (k==0) TRACE("ld->min = %d %d", ld->min, -MIN_MAX_LIMIT);
 #else
           lcd_outdezAtt(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET), MIN_MAX_ATTR);
           if (active) ld->min = LIMITS_MIN_MAX_OFFSET + checkIncDecModel(event, ld->min-LIMITS_MIN_MAX_OFFSET, -MIN_MAX_LIMIT, 0);
@@ -3952,7 +3951,7 @@ void menuModelLimits(uint8_t event)
           break;
 
         case ITEM_LIMITS_MAX:
-#if defined(CPUARM)
+#if defined(PCBTARANIS)
           ld->max = -LIMITS_MIN_MAX_OFFSET + GVAR_MENU_ITEM(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET), 0, MIN_MAX_LIMIT, MIN_MAX_ATTR, DBLKEYS_1000, event);
 #else
           lcd_outdezAtt(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET), MIN_MAX_ATTR);

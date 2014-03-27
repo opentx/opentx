@@ -1090,7 +1090,7 @@ class LimitField: public StructField {
     LimitField(LimitData & limit, BoardEnum board, unsigned int version):
       StructField("Limit")
     {
-      if (IS_ARM(board) && version >= 216) {
+      if (IS_TARANIS(board) && version >= 216) {
         Append(new ConversionField< SignedField<16> >(limit.min, +1000));
         Append(new ConversionField< SignedField<16> >(limit.max, -1000));
       }
