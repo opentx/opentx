@@ -664,15 +664,19 @@ class ConversionField: public TransformedField {
 
     virtual void afterImport()
     {
+      field = _field;
+
       if (table) {
-        if (table->importValue(_field, field))
+        if (table->importValue(field, field))
           return;
       }
 
-      field -= shift;
+      if (shift) {
+        field -= shift;
+      }
 
       if (importFunc) {
-        field = importFunc(_field);
+        field = importFunc(field);
       }
 
       if (scale) {
