@@ -5,12 +5,12 @@ taranisNotFoundDialog::taranisNotFoundDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::taranisNotFoundDialog)
 {
-    ui->setupUi(this);
+  ui->setupUi(this);
 }
 
 taranisNotFoundDialog::~taranisNotFoundDialog()
 {
-    delete ui;
+  delete ui;
 }
 
 void taranisNotFoundDialog::on_OK_clicked()
