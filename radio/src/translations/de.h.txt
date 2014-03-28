@@ -1,4 +1,4 @@
-/*   German checked 25.03.2014 Test 003 kleine Änderungen 
+/*   German checked 28.03.2014 Test 007 kleine Änderungen 
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bernet Andre <bernet.andre@gmail.com>
@@ -99,7 +99,7 @@
 #define TR_VBEEPCOUNTDOWN      "Kein\0 Pieps\0Stimme"
 
 #define LEN_CURVE_TYPES        "\010"
-#define TR_CURVE_TYPES         "Standard""Custom\0"
+#define TR_CURVE_TYPES         "Nur Y\0""X und Y\0"
 
 #define LEN_RETA123            "\001"
 
@@ -331,14 +331,14 @@
 #define LEN_VTELPROTO          "\007"
 #define TR_VTELPROTO           "Kein\0  ""Hub\0   ""WSHHigh"
 
-#define LEN_VOLTSRC            "\003"
-#define TR_VOLTSRC             "---""A1\0""A2\0""FAS""Cel"
+#define LEN_VOLTSRC            TR("\003", "\007")
+#define TR_VOLTSRC             TR("---""A1\0""A2\0""FAS""Cel", "---\0   ""A1\0    ""A2\0    ""FAS\0   ""Cells\0 ")
 
-#define LEN_VARIOSRC           "\005"
+#define LEN_VARIOSRC           "\004"
 #if defined(FRSKY_SPORT)
-  #define TR_VARIOSRC          "Vario""A1\0  ""A2\0"
+  #define TR_VARIOSRC          "Vspd""A1\0 ""A2\0 ""dTE\0"
 #else
-  #define TR_VARIOSRC          "Alti\0""Alti+""Vario""A1\0  ""A2\0"
+  #define TR_VARIOSRC          "Alt\0""Alt+""Vspd""A1\0 ""A2\0 "
 #endif
 
 #define LEN_VSCREEN  	      "\006"
@@ -349,7 +349,7 @@
 
 #define LEN2_VTEMPLATES        15  // max String Länge für Menü (original=13)
 #define LEN_VTEMPLATES         "\017"  // max String Länge 15+cr+lf
-#define TR_VTEMPLATES          "Misch. Lösch.\0 ""Einfach. 4-CH\0 ""Fixe Gassperre\0""V-Stabilisator\0""Delta Mischer\0 ""eCCPM\0         ""Hubschrauber\0  ""Servo Tester\0  "
+#define TR_VTEMPLATES          "Misch. Lösch.\0 ""Einfach. 4-CH\0 ""Fixe Gassperre\0""V-Leitwerk\0""Delta Mischer\0 ""eCCPM\0         ""Hubschrauber\0  ""Servo Tester\0  "
 
 #define LEN_VSWASHTYPE         "\004"
 #define TR_VSWASHTYPE          "--- ""120 ""120X""140 ""90\0"
@@ -458,16 +458,16 @@
 #define TR_MIXNAME             "Mix Name"
 #define TR_INPUTNAME           "Input Name"
 #if defined(PCBTARANIS)
-  #define TR_EXPONAME          "Linie Name"
+  #define TR_EXPONAME          "Info   Name"
 #else
-  #define TR_EXPONAME          "Expo Name"
+  #define TR_EXPONAME          "Info   Name"
 #endif
 #define TR_BITMAP              "Modell Bild"
 #define TR_TIMER               TR("Timer","Timer ")
 #define TR_ELIMITS             TR("Erw.Limit","Erweit. Wege 125%")
 #define TR_ETRIMS              TR("Erw.Trims","Erweit. Trimmung")
 #define TR_TRIMINC             TR("Trim Schr.","Trimm Schritte")
-#define TR_TTRACE              TR("Gasquelle", INDENT "Gas Verfolgung")
+#define TR_TTRACE              TR("Gasquelle", INDENT "GasTimerQuelle")
 #define TR_TTRIM               TR("Gastrim", INDENT "Gas Trimmung")
 #define TR_BEEPCTR             TR("Mitt.Piep","Mittelst. Pieps")
 #define TR_PROTO               TR(INDENT"Proto.",INDENT"Protokoll")
@@ -515,9 +515,9 @@
 #define TR_RANGE               INDENT"Skala"
 #define TR_BAR                 "Streifen"
 #define TR_ALARM               INDENT"Alarm"
-#define TR_USRDATA             "Daten"
+#define TR_USRDATA             "Daten berechn."
 #define TR_BLADES              INDENT"Blätter"
-#define TR_SCREEN              "Bild "
+#define TR_SCREEN              "TelmBild "
 #define TR_SOUND_LABEL         "----Töne---------"
 #define TR_LENGTH              INDENT"Dauer"
 #define TR_SPKRPITCH           INDENT"Tonhöhe"
@@ -546,7 +546,7 @@
 #define TR_POTWARNING          TR("Pot Warn.", INDENT "Poti Warnung")
 #define TR_TIMEZONE            TR("Zeitzone","GPS Zeit Zone")
 #define TR_RXCHANNELORD        TR("Kanalanordnung","Kanalvoreinstellung")
-#define TR_SLAVE               "Schüler PPM1-8 als Ausgang"
+#define TR_SLAVE               "Schüler PPM1-16 als Ausgang"
 #define TR_MODESRC             " Modus\002% Quelle"
 #define TR_MULTIPLIER          "Multiplikator"
 #define TR_CAL                 "Kal."
@@ -608,7 +608,7 @@
   #define TR_MENULIMITS        "SERVO WEG"
 #elif defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...  #define TR_MENUDREXPO        "KNÜPPEL"
   #define TR_MENUINPUTS        "INPUTS"
-  #define TR_MENULIMITS        "AUSGÄNGE"
+  #define TR_MENULIMITS        "Servo Weg"
 #else
   #define TR_MENUINPUTS        TR("DR/EXPO","DUALRATE/EXPO")
   #define TR_MENULIMITS        TR("GRENZEN","SERVO WEG")
@@ -760,7 +760,7 @@
 #define TR_SMOOTH              "Smooth"
 #define TR_COPY_TRIMS_TO_OFS   "Copy Trims To Offset"
 #define TR_PERSISTENT_MAH      INDENT "Speichern mAh"
-#define TR_PREFLIGHT           "Preflight Checks"
+#define TR_PREFLIGHT           "---Preflight Checks---"
 #define TR_CHECKLIST           INDENT "Display Checklist"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 #define TR_UART3MODE           "Serial Port"
