@@ -788,7 +788,7 @@ class MixField: public TransformedField {
         internalField.Append(new SwitchField<8>(mix.swtch, board, version));
         internalField.Append(new CurveReferenceField(mix.curve, board, version));
         internalField.Append(new UnsignedField<4>(mix.mixWarn));
-        internalField.Append(new UnsignedField<4>(mix.srcVariant));
+        internalField.Append(new SpareBitsField<4>());
         internalField.Append(new UnsignedField<8>(mix.delayUp));
         internalField.Append(new UnsignedField<8>(mix.delayDown));
         internalField.Append(new UnsignedField<8>(mix.speedUp));
@@ -797,6 +797,26 @@ class MixField: public TransformedField {
         internalField.Append(new SignedField<16>(_offset));
         internalField.Append(new ZCharField<8>(mix.name));
         internalField.Append(new SpareBitsField<8>());
+      }
+      else if (IS_ARM(board) && version >= 216) {
+        internalField.Append(new UnsignedField<4>(_destCh));
+        internalField.Append(new UnsignedField<4>(mix.mixWarn));
+        internalField.Append(new UnsignedField<16>(mix.phases));
+        internalField.Append(new BoolField<1>(_curveMode));
+        internalField.Append(new BoolField<1>(mix.noExpo));
+        internalField.Append(new SignedField<3>(mix.carryTrim));
+        internalField.Append(new UnsignedField<2>((unsigned int &)mix.mltpx));
+        internalField.Append(new SpareBitsField<1>());
+        internalField.Append(new SignedField<16>(_weight));
+        internalField.Append(new SwitchField<8>(mix.swtch, board, version));
+        internalField.Append(new SignedField<8>(_curveParam));
+        internalField.Append(new UnsignedField<8>(mix.delayUp));
+        internalField.Append(new UnsignedField<8>(mix.delayDown));
+        internalField.Append(new UnsignedField<8>(mix.speedUp));
+        internalField.Append(new UnsignedField<8>(mix.speedDown));
+        internalField.Append(new SourceField<8>(mix.srcRaw, board, version, FLAG_NOTELEMETRY));
+        internalField.Append(new SignedField<16>(_offset));
+        internalField.Append(new ZCharField<6>(mix.name));
       }
       else if (IS_ARM(board)) {
         internalField.Append(new UnsignedField<8>(_destCh));
@@ -814,7 +834,7 @@ class MixField: public TransformedField {
         internalField.Append(new SignedField<8>(_curveParam));
         if (version >= 214) {
           internalField.Append(new UnsignedField<4>(mix.mixWarn));
-          internalField.Append(new UnsignedField<4>(mix.srcVariant));
+          internalField.Append(new SpareBitsField<4>());
         }
         else {
           internalField.Append(new UnsignedField<8>(mix.mixWarn));
@@ -995,6 +1015,16 @@ class InputField: public TransformedField {
         internalField.Append(new SignedField<8>(expo.offset, "Offset"));
         internalField.Append(new CurveReferenceField(expo.curve, board, version));
         internalField.Append(new SpareBitsField<8>());
+      }
+      else if (IS_ARM(board) && version >= 216) {
+        internalField.Append(new UnsignedField<2>(expo.mode, "Mode"));
+        internalField.Append(new UnsignedField<4>(expo.chn, "Channel"));
+        internalField.Append(new BoolField<2>(_curveMode));
+        internalField.Append(new SwitchField<8>(expo.swtch, board, version));
+        internalField.Append(new UnsignedField<16>(expo.phases, "Phases"));
+        internalField.Append(new SignedField<8>(_weight, "Weight"));
+        internalField.Append(new ZCharField<6>(expo.name));
+        internalField.Append(new SignedField<8>(_curveParam));
       }
       else if (IS_ARM(board)) {
         internalField.Append(new UnsignedField<8>(expo.mode, "Mode"));

@@ -593,7 +593,6 @@ class MixData {
     MixData() { clear(); }
     unsigned int destCh;            //        1..C9X_NUM_CHNOUT
     RawSource srcRaw;
-    unsigned int srcVariant;
     int     weight;
     RawSwitch swtch;
     CurveReference     curve;             //0=symmetrisch

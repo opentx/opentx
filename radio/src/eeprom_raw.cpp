@@ -359,9 +359,10 @@ void eeLoadModel(uint8_t id)
     memset(&g_model, 0, sizeof(g_model));
 
 #if defined(SIMU)
-    if (size > 0 && size != sizeof(g_model)) {
-      printf("Model data read=%d bytes vs %d bytes\n", size, (int)sizeof(ModelData));
-    }
+    if (sizeof(struct t_eeprom_header) + sizeof(g_model) > 4096)
+      TRACE("Model data size can't exceed %d bytes (%d bytes)", int(4096-sizeof(struct t_eeprom_header)), (int)sizeof(g_model));
+    else if (size > 0 && size != sizeof(g_model))
+      TRACE("Model data read=%d bytes vs %d bytes\n", size, (int)sizeof(ModelData));
 #endif
 
     if (size > sizeof(g_model)) {

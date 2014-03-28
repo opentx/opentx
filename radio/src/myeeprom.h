@@ -457,13 +457,13 @@ PACK(typedef struct t_ExpoData {
 #define EXPO_VALID(ed)          ((ed)->mode)
 #define EXPO_MODE_ENABLE(ed, v) (((v)<0 && ((ed)->mode&1)) || ((v)>=0 && ((ed)->mode&2)))
 #elif defined(CPUARM)
-PACK(typedef struct t_ExpoData {
-  uint8_t  mode;         // 0=end, 1=pos, 2=neg, 3=both
-  uint8_t  chn;
+PACK(typedef struct {
+  uint8_t  mode:2;         // 0=end, 1=pos, 2=neg, 3=both
+  uint8_t  chn:4;
+  uint8_t  curveMode:2;
   int8_t   swtch;
   uint16_t phases;
   int8_t   weight;
-  uint8_t  curveMode;
   char     name[LEN_EXPOMIX_NAME];
   int8_t   curveParam;
 }) ExpoData;
@@ -560,7 +560,7 @@ PACK(typedef struct t_MixData {
   int8_t   swtch;
   CurveRef curve;
   uint8_t  mixWarn:4;       // mixer warning
-  uint8_t  srcVariant:4;
+  uint8_t  spare2:4;
   uint8_t  delayUp;
   uint8_t  delayDown;
   uint8_t  speedUp;
@@ -568,11 +568,12 @@ PACK(typedef struct t_MixData {
   uint8_t  srcRaw;
   int16_t  offset;
   char     name[LEN_EXPOMIX_NAME];
-  uint8_t  spare2;
+  uint8_t  spare3;
 }) MixData;
 #else
-PACK(typedef struct t_MixData {
-  uint8_t  destCh;
+PACK(typedef struct {
+  uint8_t  destCh:4;
+  uint8_t  mixWarn:4;         // mixer warning
   uint16_t phases;
   uint8_t  curveMode:1;
   uint8_t  noExpo:1;
@@ -582,8 +583,6 @@ PACK(typedef struct t_MixData {
   int16_t  weight;
   int8_t   swtch;
   int8_t   curveParam;
-  uint8_t  mixWarn:4;         // mixer warning
-  uint8_t  srcVariant:4;
   uint8_t  delayUp;
   uint8_t  delayDown;
   uint8_t  speedUp;
