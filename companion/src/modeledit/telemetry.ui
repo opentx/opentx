@@ -47,10 +47,10 @@
          <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>0</number>
+         <number>3</number>
         </property>
         <property name="bottomMargin">
-         <number>0</number>
+         <number>3</number>
         </property>
         <item>
          <widget class="QLabel" name="label_7">
@@ -88,10 +88,10 @@
          <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>0</number>
+         <number>3</number>
         </property>
         <property name="bottomMargin">
-         <number>0</number>
+         <number>3</number>
         </property>
         <item>
          <widget class="QLabel" name="label_6">
@@ -135,10 +135,10 @@
          <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>0</number>
+         <number>3</number>
         </property>
         <property name="bottomMargin">
-         <number>0</number>
+         <number>3</number>
         </property>
         <item row="1" column="3">
          <spacer name="horizontalSpacer_2">
@@ -375,15 +375,15 @@
          <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>0</number>
+         <number>3</number>
         </property>
         <property name="bottomMargin">
-         <number>0</number>
+         <number>3</number>
         </property>
         <item>
          <layout class="QGridLayout" name="gridLayout_34" columnstretch="0,1,1,1">
           <property name="rightMargin">
-           <number>3</number>
+           <number>0</number>
           </property>
           <property name="horizontalSpacing">
            <number>9</number>
@@ -637,10 +637,10 @@
          <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>0</number>
+         <number>3</number>
         </property>
         <property name="bottomMargin">
-         <number>0</number>
+         <number>3</number>
         </property>
         <property name="spacing">
          <number>0</number>
@@ -947,10 +947,10 @@
        <number>0</number>
       </property>
       <property name="rightMargin">
-       <number>0</number>
+       <number>3</number>
       </property>
       <property name="bottomMargin">
-       <number>6</number>
+       <number>9</number>
       </property>
       <property name="spacing">
        <number>0</number>
@@ -958,7 +958,7 @@
       <item row="0" column="0">
        <layout class="QGridLayout" name="gridLayout">
         <property name="horizontalSpacing">
-         <number>9</number>
+         <number>6</number>
         </property>
         <property name="verticalSpacing">
          <number>0</number>
