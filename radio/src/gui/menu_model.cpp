@@ -4144,7 +4144,7 @@ void menuModelGVars(uint8_t event)
     uint8_t y = 1 + 3*FH + i*FH;
 #endif
 
-    if (g_model.gvars[i].popup) lcd_putc(3*FW-3, y, '!');
+    if (g_model.gvars[i].popup) lcd_putc(3*FW, y, '!');
     putsStrIdx(0, y, STR_GV, i+1, (sub==i && m_posHorz<0) ? INVERS : 0);
 
     for (uint8_t j=0; j<1+MAX_PHASES; j++) {
@@ -4183,7 +4183,6 @@ void menuModelGVars(uint8_t event)
           }
           if (attr) {
             if (event == EVT_KEY_LONG(KEY_ENTER)) {
-              s_editMode = 2; // TODO constant for that ...
               v = (v > GVAR_MAX ? 0 : GVAR_MAX+1);
               eeDirty(EE_MODEL);
             }
