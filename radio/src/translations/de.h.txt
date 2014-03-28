@@ -72,7 +72,7 @@
 #define TR_UART3MODES          "AUS\0           ""S-Port Data Out\0""Debug\0         "
 
 #define LEN_POTTYPES           "\017"
-#define TR_POTTYPES            "None\0          ""Poti\0          ""Stufen-Schalter "
+#define TR_POTTYPES            "Kein\0          ""Poti\0          ""Stufen-Schalter "
 
 #define LEN_DATETIME           "\005"
 #define TR_DATETIME            "DATE:""ZEIT:"
@@ -84,10 +84,10 @@
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Amerika""Japan\0 ""Europa\0")
 
 #define LEN_TARANIS_PROTOCOLS  "\004"          
-#define TR_TARANIS_PROTOCOLS   "OFF\0""PPM\0""XJT\0""DSM2"
+#define TR_TARANIS_PROTOCOLS   "AUS\0""PPM\0""XJT\0""DSM2"
 
 #define LEN_XJT_PROTOCOLS      "\004"
-#define TR_XJT_PROTOCOLS       "OFF\0""D16\0""D8\0 ""LR12"
+#define TR_XJT_PROTOCOLS       "AUS\0""D16\0""D8\0 ""LR12"
 
 #define LEN_DSM_PROTOCOLS      "\004"
 #define TR_DSM_PROTOCOLS       "LP45""DSM2""DSMX"
@@ -163,10 +163,10 @@
 #define TR_VMIXTRIMS           "AUS""EIN""Sei""Höh""Gas""Que" //Mixer Trim Werte
 
 #if defined(PCBTARANIS)
-  #define TR_CSWTIMER          "Takt\0" // TIM Taktgenerator
-  #define TR_CSWSTICKY         "SRFF\0" // Sticky= RS-Flip-Flop
+  #define TR_CSWTIMER          "Takt\0" // TIM = Takt = Taktgenerator
+  #define TR_CSWSTICKY         "SRFF\0" // Sticky = RS-Flip-Flop
   #define TR_CSWRANGE          "Range"  // unklar
-  #define TR_CSWSTAY           "Puls\0" // Edge=einstellbarer Impuls
+  #define TR_CSWSTAY           "Puls\0" // Edge = einstellbarer Impuls
 #else
   #define TR_CSWTIMER          "Takt\0" // 
   #define TR_CSWSTICKY         "SRFF\0" //
@@ -259,7 +259,7 @@
 #define LEN_VFSWRESET          TR("\004", "\011")
 
 #if defined(FRSKY)
-  #define TR_FSW_RESET_TELEM   TR("Telm", "Telemetry")
+  #define TR_FSW_RESET_TELEM   TR("Telm", "Telemetrie")
 #else
   #define TR_FSW_RESET_TELEM
 #endif
@@ -323,7 +323,7 @@
 #define STR_A                  (STR_VTELEMUNIT+4)
 
 #define LEN_VALARM             "\003"
-#define TR_VALARM              "---""Gel""Org""Rot"
+#define TR_VALARM              "---""Glb""Org""Rot"
 
 #define LEN_VALARMFN           "\001"
 #define TR_VALARMFN            "<>"
@@ -757,10 +757,10 @@
 #define TR_COUNT               "Count"
 #define TR_PT                  "pt"
 #define TR_PTS                 "pts"
-#define TR_SMOOTH              "Smooth"
-#define TR_COPY_TRIMS_TO_OFS   "Copy Trims To Offset"
+#define TR_SMOOTH              "Runden"
+#define TR_COPY_TRIMS_TO_OFS   "Kopy Trim to Servo-Offset"
 #define TR_PERSISTENT_MAH      INDENT "Speichern mAh"
-#define TR_PREFLIGHT           "---Preflight Checks---"
+#define TR_PREFLIGHT           "----Preflight Checks----"
 #define TR_CHECKLIST           INDENT "Display Checklist"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 #define TR_UART3MODE           "Serial Port"
