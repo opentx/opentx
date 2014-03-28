@@ -1919,7 +1919,7 @@ void incRotaryEncoder(uint8_t idx, int8_t inc)
   #define SET_GVAR_VALUE(idx, phase, value) \
     (GVAR_VALUE(idx, phase) = value, eeDirty(EE_MODEL))
 #else
-  #define SET_GVAR_VALUE(gvar, phase, value) \
+  #define SET_GVAR_VALUE(idx, phase, value) \
     GVAR_VALUE(idx, phase) = value; \
     eeDirty(EE_MODEL); \
     if (g_model.gvars[idx].popup) { \
@@ -2625,7 +2625,10 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
 }
 
 #if defined(GVARS)
-int8_t trimGvar[NUM_STICKS] = { -1, -1, -1, -1 };
+  int8_t trimGvar[NUM_STICKS] = { -1, -1, -1, -1 };
+  #define TRIM_REUSED(idx) trimGvar[idx] >= 0
+#else
+  #define TRIM_REUSED(idx) 0
 #endif
 
 #if defined(CPUARM)
@@ -2647,8 +2650,7 @@ uint8_t checkTrim(uint8_t event)
     bool thro;
 
 #if defined(GVARS)
-#define TRIM_REUSED() trimGvar[idx] >= 0
-    if (TRIM_REUSED()) {
+    if (TRIM_REUSED(idx)) {
 #if defined(PCBSTD)
       phase = 0;
 #else
@@ -2667,7 +2669,6 @@ uint8_t checkTrim(uint8_t event)
       thro = (idx==THR_STICK && g_model.thrTrim);
     }
 #else
-#define TRIM_REUSED() 0
     phase = getTrimFlightPhase(s_perout_flight_phase, idx);
 #if defined(PCBTARANIS)
     before = getTrimValue(phase, idx);
@@ -2693,7 +2694,7 @@ uint8_t checkTrim(uint8_t event)
     }
 
     if ((before<after && after>TRIM_MAX) || (before>after && after<TRIM_MIN)) {
-      if (!g_model.extendedTrims || TRIM_REUSED()) after = before;
+      if (!g_model.extendedTrims || TRIM_REUSED(idx)) after = before;
     }
 
     if (after < TRIM_EXTENDED_MIN) {
@@ -2704,7 +2705,7 @@ uint8_t checkTrim(uint8_t event)
     }
 
 #if defined(GVARS)
-    if (TRIM_REUSED()) {
+    if (TRIM_REUSED(idx)) {
       SET_GVAR_VALUE(trimGvar[idx], phase, after);
     }
     else {
