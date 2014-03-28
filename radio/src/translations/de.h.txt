@@ -1,4 +1,4 @@
-/*   German checked 28.03.2014 Test 007 kleine Änderungen 
+/*   German checked 28.03.2014 Test 008 kleine Änderungen 
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bernet Andre <bernet.andre@gmail.com>
@@ -758,7 +758,7 @@
 #define TR_PT                  "pt"
 #define TR_PTS                 "pts"
 #define TR_SMOOTH              "Runden"
-#define TR_COPY_TRIMS_TO_OFS   "Kopy Trim to Servo-Offset"
+#define TR_COPY_TRIMS_TO_OFS   "Kopie Trim to Servo-Subtrim"
 #define TR_PERSISTENT_MAH      INDENT "Speichern mAh"
 #define TR_PREFLIGHT           "----Preflight Checks----"
 #define TR_CHECKLIST           INDENT "Display Checklist"
