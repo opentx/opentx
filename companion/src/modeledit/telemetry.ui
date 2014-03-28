@@ -6,16 +6,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>692</width>
+    <width>822</width>
     <height>457</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,1">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,0,0">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_14" stretch="0,0,0">
+    <layout class="QHBoxLayout" name="horizontalLayout_14" stretch="0,0,0,0,0">
      <property name="sizeConstraint">
       <enum>QLayout::SetMinimumSize</enum>
      </property>
@@ -37,16 +37,20 @@
         <string>A1</string>
        </property>
        <property name="flat">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <layout class="QVBoxLayout" name="A1Layout">
-        <property name="topMargin">
-         <number>1</number>
-        </property>
-        <property name="bottomMargin">
-         <number>1</number>
+        <property name="margin">
+         <number>0</number>
         </property>
        </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="Line" name="line">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
       </widget>
      </item>
      <item>
@@ -54,14 +58,21 @@
        <property name="title">
         <string>A2</string>
        </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
        <layout class="QVBoxLayout" name="A2Layout">
-        <property name="topMargin">
-         <number>1</number>
-        </property>
-        <property name="bottomMargin">
-         <number>1</number>
+        <property name="margin">
+         <number>0</number>
         </property>
        </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="Line" name="line_2">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
       </widget>
      </item>
      <item>
@@ -75,11 +86,17 @@
        <property name="title">
         <string>RSSI</string>
        </property>
+       <property name="flat">
+        <bool>true</bool>
+       </property>
        <layout class="QGridLayout" name="gridLayout_7">
+        <property name="margin">
+         <number>0</number>
+        </property>
         <item row="0" column="0">
          <widget class="QLabel" name="rssiAlarm1Label">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -159,7 +176,7 @@
         <item row="1" column="0">
          <widget class="QLabel" name="rssiAlarm2Label">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -246,13 +263,33 @@
           </property>
          </spacer>
         </item>
+        <item row="0" column="3">
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
        </layout>
       </widget>
      </item>
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_13" stretch="1,1">
+    <widget class="Line" name="line_4">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_13" stretch="1,0,1">
      <property name="sizeConstraint">
       <enum>QLayout::SetMinimumSize</enum>
      </property>
@@ -487,6 +524,13 @@
          </layout>
         </item>
        </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="Line" name="line_3">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
       </widget>
      </item>
      <item>
@@ -771,6 +815,13 @@
     </layout>
    </item>
    <item>
+    <widget class="Line" name="line_5">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QGroupBox" name="variousGB">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -790,7 +841,14 @@
       </property>
       <item row="0" column="0">
        <layout class="QGridLayout" name="gridLayout">
-        <item row="1" column="1">
+        <item row="1" column="2">
+         <widget class="QLabel" name="mahCount_label">
+          <property name="text">
+           <string>mAh count</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="3">
          <widget class="QSpinBox" name="mahCount_SB">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -803,34 +861,7 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="1" alignment="Qt::AlignHCenter">
-         <widget class="QLabel" name="mahCount_label">
-          <property name="text">
-           <string>mAh count</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="0" alignment="Qt::AlignHCenter">
-         <widget class="QLabel" name="fasOffset_label">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>FAS Offset</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QCheckBox" name="mahCount_ChkB">
-          <property name="text">
-           <string>Persistent mAh</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
+        <item row="1" column="1">
          <widget class="QDoubleSpinBox" name="fasOffset_DSB">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -852,7 +883,27 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="2">
+        <item row="1" column="0">
+         <widget class="QLabel" name="fasOffset_label">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>FAS Offset</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="4">
+         <widget class="QCheckBox" name="mahCount_ChkB">
+          <property name="text">
+           <string>Persistent mAh</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="5">
          <spacer name="horizontalSpacer">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -868,6 +919,13 @@
        </layout>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="Line" name="line_6">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
     </widget>
    </item>
    <item>
