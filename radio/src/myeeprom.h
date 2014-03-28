@@ -883,7 +883,7 @@ PACK(typedef struct t_CustomFnData { // Function Switches data
 #define CFN_TIMER_INDEX(p)      ((p)->all.param)
 #define CFN_PLAY_REPEAT(p)      ((p)->active)
 #define CFN_PLAY_REPEAT_MUL     1
-#define CFN_PLAY_REPEAT_NOSTART 0x3F
+#define CFN_PLAY_REPEAT_NOSTART 0xFF
 #define CFN_GVAR_MODE(p)        ((p)->all.mode)
 #define CFN_PARAM(p)            ((p)->all.val)
 #define CFN_RESET(p)            ((p)->active=0, (p)->clear.val1=0, (p)->clear.val2=0)

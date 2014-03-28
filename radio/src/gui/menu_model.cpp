@@ -5128,16 +5128,16 @@ void menuModelCustomFunctions(uint8_t event)
 #if LCD_W >= 212
               lcd_putsAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN+2, y, "1x", attr);
 #else
-              lcd_putcAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF+1, y, '-', attr);
+              lcd_putcAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF+3, y, '-', attr);
 #endif
             }
 #if defined(CPUARM)
             else if (CFN_PLAY_REPEAT(sd) == CFN_PLAY_REPEAT_NOSTART) {
 #if LCD_W >= 212
-              lcd_putcAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN-2, y, '!', attr);
+              lcd_putcAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN-1, y, '!', attr);
               lcd_putsAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN+2, y, "1x", attr);
 #else
-              lcd_putcAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF+1, y, '!', attr);
+              lcd_putsAtt(MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF, y, "!-", attr);
 #endif
             }
 #endif
