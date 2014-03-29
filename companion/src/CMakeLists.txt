@@ -90,15 +90,12 @@ add_custom_command(
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )
 
-if(WIN32)
-else()
 add_custom_command(
   OUTPUT ${RADIO_SRC_DIRECTORY}/stamp-opentx.h
   COMMAND make stamp_header
   DEPENDS ${RADIO_SRC_DIRECTORY}/Makefile
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )
-endif()
 
 include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
