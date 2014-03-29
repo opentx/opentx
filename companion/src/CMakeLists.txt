@@ -398,7 +398,7 @@ IF( WIN32 )
   
   ADD_CUSTOM_COMMAND(OUTPUT ${PROJECT_BINARY_DIR}/companionInstall.exe
                      COMMAND "${NSIS_EXE}" ARGS companion.nsi
-                     DEPENDS ${PROJECT_NAME} ${PROJECT_BINARY_DIR}/companion.nsi
+                     DEPENDS ${PROJECT_NAME} simulator ${PROJECT_BINARY_DIR}/companion.nsi
                      COMMENT "Windows NSIS Installer")
 
   ADD_CUSTOM_TARGET( installer
