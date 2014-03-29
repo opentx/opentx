@@ -439,7 +439,7 @@ PACK(typedef struct t_CurveRef {
 #endif
 
 #if defined(PCBTARANIS)
-PACK(typedef struct t_ExpoData {
+PACK(typedef struct {
   uint8_t  srcRaw;
   uint16_t scale;
   uint8_t  chn;
@@ -550,7 +550,7 @@ PACK(typedef struct t_LimitData {
 #define DELAY_MAX       (25*DELAY_STEP) /* 25 seconds */
 #define SLOW_MAX        (25*SLOW_STEP)  /* 25 seconds */
 #if defined(PCBTARANIS)
-PACK(typedef struct t_MixData {
+PACK(typedef struct {
   uint8_t  destCh;
   uint16_t phases;
   uint8_t  mltpx:2;         // multiplex method: 0 means +=, 1 means *=, 2 means :=

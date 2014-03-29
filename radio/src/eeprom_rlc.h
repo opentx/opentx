@@ -241,4 +241,10 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc);
 const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name);
 #endif
 
+// For conversions
+#if defined(CPUARM)
+void loadGeneralSettings();
+void loadModel(int index);
+#endif
+
 #endif

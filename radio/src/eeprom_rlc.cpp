@@ -868,6 +868,23 @@ void RlcFile::DisplayProgressBar(uint8_t x)
   #define CHECK_EEPROM_VARIANT() (1)
 #endif
 
+// For conversions ...
+#if defined(CPUARM)
+void loadGeneralSettings()
+{
+  memset(&g_eeGeneral, 0, sizeof(g_eeGeneral));
+  theFile.openRlc(FILE_GENERAL);
+  theFile.readRlc((uint8_t*)&g_eeGeneral, sizeof(g_eeGeneral));
+}
+
+void loadModel(int index)
+{
+  memset(&g_model, 0, sizeof(g_model));
+  theFile.openRlc(FILE_MODEL(index));
+  theFile.readRlc((uint8_t*)&g_model, sizeof(g_model));
+}
+#endif
+
 bool eeLoadGeneral()
 {
   theFile.openRlc(FILE_GENERAL);
