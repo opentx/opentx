@@ -1,4 +1,4 @@
-/*   German checked 28.03.2014 Test 008 kleine Änderungen 
+/*   German checked 29.03.2014 Test 010 kleine Änderungen 
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bernet Andre <bernet.andre@gmail.com>
@@ -99,7 +99,7 @@
 #define TR_VBEEPCOUNTDOWN      "Kein\0 Pieps\0Stimme"
 
 #define LEN_CURVE_TYPES        "\010"
-#define TR_CURVE_TYPES         "Nur Y\0""X und Y\0"
+#define TR_CURVE_TYPES         " Nur Y  "" X und Y"      //"Standard""Custom\0"
 
 #define LEN_RETA123            "\001"
 
@@ -349,7 +349,7 @@
 
 #define LEN2_VTEMPLATES        15  // max String Länge für Menü (original=13)
 #define LEN_VTEMPLATES         "\017"  // max String Länge 15+cr+lf
-#define TR_VTEMPLATES          "Misch. Lösch.\0 ""Einfach. 4-CH\0 ""Fixe Gassperre\0""V-Leitwerk\0""Delta Mischer\0 ""eCCPM\0         ""Hubschrauber\0  ""Servo Tester\0  "
+#define TR_VTEMPLATES          "Misch. Lösch.\0 ""Einfach. 4-CH\0 ""Fixe Gassperre\0""V-Leitwerk\0    ""Delta Mischer\0 ""eCCPM\0         ""Hubschrauber\0  ""Servo Tester\0  "
 
 #define LEN_VSWASHTYPE         "\004"
 #define TR_VSWASHTYPE          "--- ""120 ""120X""140 ""90\0"
@@ -485,7 +485,7 @@
 #define TR_SWASHRING           TR("Zykl. Begrenz","Zyklische Begrenzung")
 #define TR_ELEDIRECTION        TR("Nick Richtung","   Nick Servo Richtung")
 #define TR_AILDIRECTION        TR("Roll Richtung","   Roll Servo Richtung") 
-#define TR_COLDIRECTION        TR("Pit. Richtung"," Pitch Servo Richtung")
+#define TR_COLDIRECTION        TR("Pit. Richtung","  Pitch Servo Richtung") 
 #define TR_MODE                INDENT"Modus"
 #define TR_NOFREEEXPO          "Expos voll!"
 #define TR_NOFREEMIXER         "Mischer voll!"
@@ -515,9 +515,9 @@
 #define TR_RANGE               INDENT"Skala"
 #define TR_BAR                 "Streifen"
 #define TR_ALARM               INDENT"Alarm"
-#define TR_USRDATA             "Daten berechn."
+#define TR_USRDATA             "Daten berechnen--"
 #define TR_BLADES              INDENT"Blätter"
-#define TR_SCREEN              "TelmBild "
+#define TR_SCREEN              "Telm-Bild "
 #define TR_SOUND_LABEL         "----Töne---------"
 #define TR_LENGTH              INDENT"Dauer"
 #define TR_SPKRPITCH           INDENT"Tonhöhe"
@@ -575,7 +575,7 @@
 #endif
 
 #define TR_MENUTORESET         CENTER TR_ENTER" für Reset"
-#define TR_PPM_TRAINER         "TR"
+#define TR_PPM_TRAINER         "TR"              //old #define TR_PPM      "PPM"
 #define TR_CH                  "CH"
 #define TR_MODEL               "MODELL"
 #define TR_FP                  "FP"
@@ -596,7 +596,7 @@
 #define TR_MENUDIAG            TR("Schalt.","Schalter Test")
 #define TR_MENUANA             "Analog Test"
 #define TR_MENUCALIBRATION     TR("KALIB. ANALOG","KALIBRIERUNG STICKS+POTIS")
-#define TR_TRIMS2OFFSETS       "\006Trims => Offset"
+#define TR_TRIMS2OFFSETS       "Kopie Trim to Servo-Subtrim"  // "Trims => Offset"
 #define TR_MENUMODELSEL        TR("MODELLE","MODELL WÄHLEN")
 #define TR_MENUSETUP           TR("KONF.","MODELL EINSTELLUNGEN")
 #define TR_MENUFLIGHTPHASE     "FLUGPHASE"
@@ -639,13 +639,13 @@
 #define TR_SHUTDOWN            "Herunterfahren"
 #define TR_BATT_CALIB          "Akku. Kalib."
 #define TR_CURRENT_CALIB       "Stromkalib."
-#define TR_VOLTAGE             INDENT"Spann."
+#define TR_VOLTAGE             INDENT"Spannung"
 #define TR_CURRENT             INDENT"Strom"
 #define TR_SELECT_MODEL        "Modell Wählen"
 #define TR_CREATE_MODEL        "Neues Modell"
 #define TR_COPY_MODEL          "Kopiere Modell"
 #define TR_MOVE_MODEL          "Verschiebe Modell"
-#define TR_BACKUP_MODEL        "Modell Backup"
+#define TR_BACKUP_MODEL        "Modell Backup auf SD"
 #define TR_DELETE_MODEL        "Modell Löschen" // TODO merged into DELETEMODEL?
 #define TR_RESTORE_MODEL       "Modell Restore"
 #define TR_SDCARD_ERROR        "SDcard Fehler"
@@ -754,11 +754,11 @@
 #define TR_MIRROR              "Mirror"
 #define TR_CLEAR               "Clear"
 #define TR_RESET               "Reset"
-#define TR_COUNT               "Count"
+#define TR_COUNT               "Punkte"
 #define TR_PT                  "pt"
 #define TR_PTS                 "pts"
 #define TR_SMOOTH              "Runden"
-#define TR_COPY_TRIMS_TO_OFS   "Kopie Trim to Servo-Subtrim"
+#define TR_COPY_TRIMS_TO_OFS   "Kopie Trim to Servo-Subtrim"  // "Trims => Offset"
 #define TR_PERSISTENT_MAH      INDENT "Speichern mAh"
 #define TR_PREFLIGHT           "----Preflight Checks----"
 #define TR_CHECKLIST           INDENT "Display Checklist"
@@ -857,7 +857,7 @@
 #define TR_VARIO_VOLUME        "Vario Lautst"
 #define TR_BG_VOLUME           "Bg      Lautst"
 
-#define TR_TOP_BAR             "Info Zeile"
+#define TR_TOP_BAR             "----Info Zeile----"
 #define TR_ALTITUDE            INDENT "Höhe"
 #define TR_SCALE               "Scale"
 #define TR_VIEW_CHANNELS       "View Channels"
