@@ -36,6 +36,7 @@
 
 #include "opentx.h"
 
+#if defined(PCBTARANIS)
 PACK(typedef struct {
   uint8_t  mode;         // 0=end, 1=pos, 2=neg, 3=both
   uint8_t  chn;
@@ -44,11 +45,21 @@ PACK(typedef struct {
   int8_t   weight;
   uint8_t  curveMode;
   char     name[LEN_EXPOMIX_NAME];
-#if defined(PCBTARANIS)
   uint8_t  spare[2];
-#endif
   int8_t   curveParam;
 }) ExpoData_v215;
+#else
+PACK(typedef struct {
+  uint8_t  mode;         // 0=end, 1=pos, 2=neg, 3=both
+  uint8_t  chn;
+  int8_t   swtch;
+  uint16_t phases;
+  int8_t   weight;
+  uint8_t  curveMode;
+  char     name[LEN_EXPOMIX_NAME];
+  int8_t   curveParam;
+}) ExpoData_v215;
+#endif
 
 #if defined(PCBTARANIS)
   #define LIMITDATA_V215_EXTRA  char name[LEN_CHANNEL_NAME];
