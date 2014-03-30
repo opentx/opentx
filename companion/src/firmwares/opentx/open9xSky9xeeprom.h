@@ -311,7 +311,7 @@ PACK(typedef struct t_Open9xArmFrSkyData_v211 {
   Open9xFrSkyRSSIAlarm rssiAlarms[2];
   uint8_t usrProto; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh
   uint8_t voltsSource;
-  uint8_t blades;   // How many blades for RPMs, 0=2 blades, 1=3 blades
+  uint8_t blades;   // How many blades for RPMs, 0=1 blade, 1=2 blades, etc
   uint8_t currentSource;
   Open9xArmFrSkyBarData_v210 bars[4];
   uint8_t lines[4*2*2];
