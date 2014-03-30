@@ -1143,7 +1143,7 @@ PACK(typedef struct t_FrSkyData {
   uint16_t storedMah:15;
   int8_t   fasOffset;
 }) FrSkyData;
-#define MIN_BLADES -1 // 1 blade
+#define MIN_BLADES 0 // 1 blade
 #define MAX_BLADES 18 // 20 blades / Poles for Electric Motor RPM Sensors
 #else
 #define MAX_FRSKY_SCREENS 2
