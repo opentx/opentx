@@ -1144,7 +1144,7 @@ PACK(typedef struct t_FrSkyData {
   int8_t   fasOffset;
 }) FrSkyData;
 #define MIN_BLADES -1 // 1 blade
-#define MAX_BLADES 3  // 5 blades
+#define MAX_BLADES 18 // 20 blades / Poles for Electric Motor RPM Sensors
 #else
 #define MAX_FRSKY_SCREENS 2
 PACK(typedef struct t_FrSkyData {
@@ -1164,7 +1164,7 @@ PACK(typedef struct t_FrSkyData {
   int8_t  fasOffset;
 }) FrSkyData;
 #define MIN_BLADES 0 // 2 blades
-#define MAX_BLADES 3 // 5 blades
+#define MAX_BLADES 18 // 20 blades / Poles for Electric Motor RPM Sensors
 #endif
 
 #if defined(MAVLINK)
