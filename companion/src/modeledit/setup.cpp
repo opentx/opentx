@@ -355,14 +355,13 @@ Setup::Setup(QWidget *parent, ModelData & model):
     QString path = g.profile[g.id()].sdPath();
     path.append("/BMP/");
     QDir qd(path);
-    int vml = GetEepromInterface()->getCapability(VoicesMaxLength)+4;
     if (qd.exists()) {
       QStringList filters;
       filters << "*.bmp" << "*.bmp";
       foreach ( QString file, qd.entryList(filters, QDir::Files) ) {
         QFileInfo fi(file);
         QString temp = fi.completeBaseName();
-        if (!items.contains(temp) && temp.length() <= vml) {
+        if (!items.contains(temp) && temp.length() <= 10+4) {
           items.append(temp);
         }
       }
@@ -520,8 +519,8 @@ void Setup::on_name_editingFinished()
 void Setup::on_image_currentIndexChanged(int index)
 {
   if (!lock) {
-    strncpy(model.bitmap, ui->image->currentText().toAscii(), GetEepromInterface()->getCapability(VoicesMaxLength));
-    QString path=g.profile[g.id()].sdPath();
+    strncpy(model.bitmap, ui->image->currentText().toAscii(), 10);
+    QString path = g.profile[g.id()].sdPath();
     path.append("/BMP/");
     QDir qd(path);
     if (qd.exists()) {
@@ -536,7 +535,7 @@ void Setup::on_image_currentIndexChanged(int index)
         image.load(fileName);
       }
       if (!image.isNull()) {
-        ui->imagePreview->setPixmap(QPixmap::fromImage(image.scaled( 64,32)));;
+        ui->imagePreview->setPixmap(QPixmap::fromImage(image.scaled(64, 32)));;
       }
       else {
         ui->imagePreview->clear();
