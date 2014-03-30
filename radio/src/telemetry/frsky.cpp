@@ -175,7 +175,7 @@ void parseTelemHubByte(uint8_t byte)
   switch ((uint8_t)structPos) {
 
     case offsetof(FrskySerialData, rpm):
-      frskyData.hub.rpm *= (uint8_t)60/(g_model.frsky.blades+2);
+      frskyData.hub.rpm *= (uint8_t)60/(g_model.frsky.blades+1);
       if (frskyData.hub.rpm > frskyData.hub.maxRpm)
         frskyData.hub.maxRpm = frskyData.hub.rpm;
       break;

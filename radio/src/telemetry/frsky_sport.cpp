@@ -183,7 +183,7 @@ void processHubPacket(uint8_t id, uint16_t value)
   switch (id) {
 
     case RPM_ID:
-      frskyData.hub.rpm *= (uint8_t)60/(g_model.frsky.blades+2);
+      frskyData.hub.rpm *= (uint8_t)60/(g_model.frsky.blades+1);
       if (frskyData.hub.rpm > frskyData.hub.maxRpm)
         frskyData.hub.maxRpm = frskyData.hub.rpm;
       break;
@@ -363,7 +363,7 @@ void processSportPacket(uint8_t *packet)
           frskyData.hub.maxTemperature2 = frskyData.hub.temperature2;
       }
       else if (appId >= RPM_FIRST_ID && appId <= RPM_LAST_ID) {
-        frskyData.hub.rpm = SPORT_DATA_U32(packet) / (g_model.frsky.blades+2);
+        frskyData.hub.rpm = SPORT_DATA_U32(packet) / (g_model.frsky.blades+1);
         if (frskyData.hub.rpm > frskyData.hub.maxRpm)
           frskyData.hub.maxRpm = frskyData.hub.rpm;
       }
