@@ -172,7 +172,7 @@ PACK(typedef struct {
   FrSkyChannelData channels[2];
   uint8_t usrProto; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh, 3=Halcyon
   uint8_t voltsSource;
-  uint8_t blades;   // How many blades for RPMs, 0=2 blades, 1=3 blades
+  uint8_t blades;   // How many blades for RPMs, 0=1 blade, 1=2 blades, etc
   uint8_t currentSource;
   uint8_t screensType;
   FrSkyScreenData screens[MAX_FRSKY_SCREENS];
