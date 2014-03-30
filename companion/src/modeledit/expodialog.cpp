@@ -1,6 +1,5 @@
 #include "expodialog.h"
 #include "ui_expodialog.h"
-#include "eeprominterface.h"
 #include "helpers.h"
 
 ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, int stickMode, char * inputName) :
@@ -94,6 +93,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, i
   }
   if (GetEepromInterface()->getCapability(VirtualInputs))
     connect(ui->inputName, SIGNAL(editingFinished()), this, SLOT(valuesChanged()));
+
   QTimer::singleShot(0, this, SLOT(shrink()));
 }
 

@@ -8,6 +8,14 @@ namespace Ui {
   class Curves;
 }
 
+typedef float (*curveFunction) (float x, float coeff, float yMin, float yMid, float yMax);
+
+struct CurveCreatorTemplate {
+  QString name;
+  unsigned int flags;
+  curveFunction function;
+};
+
 class Curves : public ModelPanel
 {
     Q_OBJECT
@@ -30,9 +38,12 @@ class Curves : public ModelPanel
     void onNodeMoved(int x, int y);
     void onNodeFocus();
     void onNodeUnfocus();
+    void on_curveType_currentIndexChanged();
+    void on_curveApply_clicked();
 
   protected:
     virtual void resizeEvent(QResizeEvent *event);
+    void addTemplate(QString name, unsigned int flags, curveFunction function);
 
   private:
     Ui::Curves *ui;
@@ -40,10 +51,13 @@ class Curves : public ModelPanel
     bool visibleCurves[C9X_MAX_CURVES];
     QSpinBox * spnx[C9X_MAX_POINTS];
     QSpinBox * spny[C9X_MAX_POINTS];
+    QVector<CurveCreatorTemplate> templates;
     void setCurrentCurve(int index);
     void updateCurve();
     void updateCurveType();
+    void updateCurvePoints();
     bool allowCurveType(int points, CurveData::CurveType type);
+    void setPointY(int i, int x, int y);
 
 };
 
