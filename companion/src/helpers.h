@@ -120,7 +120,6 @@ QString getCenterBeep(ModelData * g_model);
 
 /* FrSky helpers */
 QString getFrSkyAlarmType(int alarm);
-QString getFrSkyBlades(int blades);
 QString getFrSkyUnits(int units);
 QString getFrSkyProtocol(int protocol);
 QString getFrSkyMeasure(int units);

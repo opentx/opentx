@@ -750,19 +750,6 @@ QString getFrSkyAlarmType(int alarm)
   }
 }
 
-QString getFrSkyBlades(int blades)
-{
-  switch (blades) {
-    case 1:
-      return "3";
-    case 2:
-      return "4";
-    default:
-      return "2";
-  }
-}
-
-
 QString getFrSkyUnits(int units)
 {
   switch(units) {

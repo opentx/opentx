@@ -46,7 +46,7 @@ MixesPanel::~MixesPanel()
 QString MixesPanel::getChannelLabel(int curDest)
 {
   QString str;
-  unsigned int outputs = GetEepromInterface()->getCapability(Outputs);
+  int outputs = GetEepromInterface()->getCapability(Outputs);
   if (curDest > outputs) {
     str = QObject::tr("X%1  ").arg(curDest-outputs);
   }

@@ -1887,7 +1887,7 @@ class AvrCustomFunctionField: public TransformedField {
         internalField.Append(new UnsignedField<5>(_union_param));
         internalField.Append(new UnsignedField<1>(_active));
       }
-      if (version >= 213) {
+      else if (version >= 213) {
         internalField.Append(new SwitchField<8>(fn.swtch, board, version));
         internalField.Append(new UnsignedField<3>(_union_param));
         internalField.Append(new ConversionField< UnsignedField<5> >((unsigned int &)fn.func, &functionsConversionTable, "Function", ::QObject::tr("OpenTX on this board doesn't accept this function")));
@@ -2148,7 +2148,7 @@ class FrskyField: public StructField {
         else {
           Append(new UnsignedField<8>(frsky.voltsSource));
         }
-        Append(new UnsignedField<8>(frsky.blades));
+        Append(new ConversionField< SignedField<8> >(frsky.blades, -2));
         Append(new UnsignedField<8>(frsky.currentSource));
 
         Append(new UnsignedField<1>(frsky.screens[0].type));
@@ -2190,12 +2190,12 @@ class FrskyField: public StructField {
             Append(new UnsignedField<1>(frsky.channels[i].alarms[j].greater));
           Append(new UnsignedField<2>(frsky.channels[i].multiplier, 0, 3, "Multiplier"));
         }
-        Append(new UnsignedField<2>(frsky.usrProto));
-        Append(new UnsignedField<2>(frsky.blades));
+        Append(new UnsignedField<2>(frsky.usrProto, "USR Proto"));
+        Append(new ConversionField< UnsignedField<2> >((unsigned int &)frsky.blades, -2));
         Append(new UnsignedField<1>(frsky.screens[0].type));
         Append(new UnsignedField<1>(frsky.screens[1].type));
-        Append(new UnsignedField<2>(frsky.voltsSource));
-        Append(new SignedField<4>(frsky.varioMin));
+        Append(new UnsignedField<2>(frsky.voltsSource, "Volts Source"));
+        Append(new SignedField<4>(frsky.varioMin, "Vario Min"));
         Append(new SignedField<4>(frsky.varioMax));
         for (int i=0; i<2; i++) {
           Append(new ConversionField< UnsignedField<2> >(frsky.rssiAlarms[i].level, &rssiConversionTable[i], "RSSI level"));

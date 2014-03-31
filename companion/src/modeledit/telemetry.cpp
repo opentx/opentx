@@ -488,6 +488,10 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model):
     ui->customScreens->addTab(tab, tr("Telemetry screen %1").arg(i+1));
   }
 
+  if (IS_ARM(GetEepromInterface()->getBoard())) {
+    ui->bladesCount->setMinimum(1);
+  }
+
   setup();
 }
 
@@ -634,7 +638,7 @@ void TelemetryPanel::setup()
 
     ui->frskyProtoCB->setCurrentIndex(model.frsky.usrProto);
     ui->frskyUnitsCB->setCurrentIndex(model.frsky.imperial);
-    ui->frskyBladesCB->setCurrentIndex(model.frsky.blades);
+    ui->bladesCount->setValue(model.frsky.blades);
     ui->frskyCurrentCB->setCurrentIndex(model.frsky.currentSource);
     ui->frskyVoltCB->setCurrentIndex(model.frsky.voltsSource);
 
@@ -648,13 +652,13 @@ void TelemetryPanel::onAnalogModified()
 
 void TelemetryPanel::on_frskyUnitsCB_currentIndexChanged(int index)
 {
-    model.frsky.imperial=index;
+    model.frsky.imperial = index;
     emit modified();
 }
 
-void TelemetryPanel::on_frskyBladesCB_currentIndexChanged(int index)
+void TelemetryPanel::on_bladesCount_editingFinished()
 {
-    model.frsky.blades=index;
+    model.frsky.blades = ui->bladesCount->value();
     emit modified();
 }
 

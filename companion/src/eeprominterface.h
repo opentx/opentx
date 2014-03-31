@@ -817,7 +817,7 @@ class FrSkyData {
     FrSkyChannelData channels[2];
     unsigned int usrProto;
     unsigned int imperial;
-    unsigned int blades;
+    int blades;
     unsigned int voltsSource;
     bool altitudeDisplayed;
     unsigned int currentSource;
@@ -833,7 +833,7 @@ class FrSkyData {
     unsigned int storedMah;
     int fasOffset;
 
-    void clear() { memset(this, 0, sizeof(FrSkyData)); rssiAlarms[0].clear(2, 45); rssiAlarms[1].clear(3, 42); varioSource = 2/*VARIO*/; }
+    void clear();
 };
 
 class MavlinkData {
