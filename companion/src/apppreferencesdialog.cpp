@@ -104,6 +104,8 @@ void appPreferencesDialog::initSettings()
   ui->showSplash->setChecked(g.showSplash());
   ui->historySize->setValue(g.historySize());
   ui->backLightColor->setCurrentIndex(g.backLight());
+  if (getRadioType(g.profile[g.id()].fwType())==6)  // TODO - NOT AT ALL OK. THERE SHOULD BE A COMMON RADIO DEFINITION.
+    ui->backLightColor->setEnabled(false);
   ui->simuSW->setChecked(g.simuSW());
   ui->libraryPath->setText(g.libDir());
   ui->ge_lineedit->setText(g.gePath());

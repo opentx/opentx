@@ -159,7 +159,6 @@ set(companion_SRCS
   splashlibrary.cpp
   mainwindow.cpp
   companion.cpp
-  modelconfigdialog.cpp
   taranisnotfound.cpp
   qcustomplot.cpp
   wizarddata.cpp
@@ -185,7 +184,6 @@ set(companion_MOC_HDRS
   modelslist.h
   mdichild.h
   mainwindow.h
-  modelconfigdialog.h
   taranisnotfound.h
   qcustomplot.h
   helpers.h
@@ -208,7 +206,6 @@ set(companion_UIS
   customizesplashdialog.ui
   splashlibrary.ui
   burndialog.ui
-  modelconfigdialog.ui
   taranisnotfound.ui
 )
 

@@ -173,17 +173,20 @@ void MdiChild::modelEdit()
     generalEdit();
   } 
   else {
+    QApplication::setOverrideCursor(Qt::WaitCursor);
     checkAndInitModel( row );
     ModelData &model = radioData.models[row - 1];
     ModelEdit *t = new ModelEdit(radioData, (row - 1), false, this);
     t->setWindowTitle(tr("Editing model %1: ").arg(row) + model.name);
     connect(t, SIGNAL(modified()), this, SLOT(setModified()));
     t->show();
+    QApplication::restoreOverrideCursor();
   }
 }
 
 void MdiChild::wizardEdit()
 {
+return modelEdit();  // TODO FOR BERTRAND- REMOVE THIS LINE TO TURN THE WIZARD BACK ON
   int row = ui->modelsList->currentRow();
   if (row > 0) {
     checkAndInitModel(row);
@@ -198,7 +201,6 @@ void MdiChild::wizardEdit()
 
 void MdiChild::openEditWindow()
 {
-    QApplication::setOverrideCursor(Qt::WaitCursor);
   int row = ui->modelsList->currentRow();
   if (row == 0){
     generalEdit();
@@ -212,7 +214,6 @@ void MdiChild::openEditWindow()
       modelEdit();
     }
   }
-  QApplication::restoreOverrideCursor();
 }
 
 void MdiChild::newFile()
