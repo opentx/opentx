@@ -307,6 +307,7 @@ QString Profile::display()       const { return _display;       }
 QString Profile::haptic()        const { return _haptic;        }
 QString Profile::speaker()       const { return _speaker;       }
 QString Profile::stickPotCalib() const { return _stickPotCalib; }
+QString Profile::timeStamp()     const { return _timeStamp;     }
 QString Profile::trainerCalib()  const { return _trainerCalib;  }
 int     Profile::currentCalib()  const { return _currentCalib;  }
 int     Profile::gsStickMode()   const { return _gsStickMode;   }
@@ -331,6 +332,7 @@ void Profile::display       (const QString x) { store(x, _display,       "Displa
 void Profile::haptic        (const QString x) { store(x, _haptic,        "Haptic"                ,"Profiles", QString("profile%1").arg(index));}
 void Profile::speaker       (const QString x) { store(x, _speaker,       "Speaker"               ,"Profiles", QString("profile%1").arg(index));}
 void Profile::stickPotCalib (const QString x) { store(x, _stickPotCalib, "StickPotCalib"         ,"Profiles", QString("profile%1").arg(index));}
+void Profile::timeStamp     (const QString x) { store(x, _timeStamp,     "TimeStamp"             ,"Profiles", QString("profile%1").arg(index));}
 void Profile::trainerCalib  (const QString x) { store(x, _trainerCalib,  "TrainerCalib"          ,"Profiles", QString("profile%1").arg(index));}
 void Profile::currentCalib  (const int     x) { store(x, _currentCalib,  "currentCalib"          ,"Profiles", QString("profile%1").arg(index));}
 void Profile::gsStickMode   (const int     x) { store(x, _gsStickMode,   "GSStickMode"           ,"Profiles", QString("profile%1").arg(index));}
@@ -396,6 +398,24 @@ bool Profile::existsOnDisk()
     return (keyList.length() > 0);
 }
 
+void Profile::initFwVariables()
+{
+    _beeper =        "";
+    _countryCode =   "";
+    _display =       "";
+    _haptic =        "";
+    _speaker =       "";
+    _stickPotCalib = "";
+    _timeStamp =     "";
+    _trainerCalib =  "";
+
+    _currentCalib =  0;
+    _gsStickMode =   0;
+    _ppmMultiplier = 0;
+    _vBatCalib =     0;
+    _vBatWarn =      0;
+}
+
 void Profile::init(int newIndex)
 {
     index = newIndex;
@@ -410,19 +430,7 @@ void Profile::init(int newIndex)
     _channelOrder =  0;
     _defaultMode =   1;
 
-    _beeper =        "";
-    _countryCode =   "";
-    _display =       "";
-    _haptic =        "";
-    _speaker =       "";
-    _stickPotCalib = "";
-    _trainerCalib =  "";
-
-    _currentCalib =  0;
-    _gsStickMode =   0;
-    _ppmMultiplier = 0;
-    _vBatCalib =     0;
-    _vBatWarn =      0;
+    initFwVariables();
 
     // Do not write empty profiles to disk except the default (0) profile.
     if ( index > 0 && !existsOnDisk())
@@ -450,6 +458,7 @@ void Profile::flush()
     getset( _haptic,        "Haptic"                ,""     ,"Profiles", QString("profile%1").arg(index));
     getset( _speaker,       "Speaker"               ,""     ,"Profiles", QString("profile%1").arg(index));
     getset( _stickPotCalib, "StickPotCalib"         ,""     ,"Profiles", QString("profile%1").arg(index));
+    getset( _timeStamp,     "TimeStamp"             ,""     ,"Profiles", QString("profile%1").arg(index));
     getset( _trainerCalib,  "TrainerCalib"          ,""     ,"Profiles", QString("profile%1").arg(index));
     getset( _currentCalib,  "currentCalib"          ,0      ,"Profiles", QString("profile%1").arg(index));
     getset( _gsStickMode,   "GSStickMode"           ,0      ,"Profiles", QString("profile%1").arg(index));

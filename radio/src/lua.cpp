@@ -517,7 +517,7 @@ static int luaModelDeleteMix(lua_State *L)
 static int luaModelGetLogicalSwitch(lua_State *L)
 {
   int idx = luaL_checkunsigned(L, 1);
-  if (idx < NUM_CSW) {
+  if (idx < NUM_LOGICAL_SWITCH) {
     LogicalSwitchData * sw = cswAddress(idx);
     lua_newtable(L);
     lua_pushtablenumber(L, "function", sw->func);
@@ -537,7 +537,7 @@ static int luaModelGetLogicalSwitch(lua_State *L)
 static int luaModelSetLogicalSwitch(lua_State *L)
 {
   int idx = luaL_checkunsigned(L, 1);
-  if (idx < NUM_CSW) {
+  if (idx < NUM_LOGICAL_SWITCH) {
     LogicalSwitchData * sw = cswAddress(idx);
     luaL_checktype(L, -1, LUA_TTABLE);
     for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
@@ -824,18 +824,18 @@ void luaInit()
   // Init lua
   luaL_openlibs(L);
 
-  // Push openTX libs
+  // Push OpenTX libs
   lua_registerlib(L, "model", modelLib);
   lua_registerlib(L, "lcd", lcdLib);
 
-  // Push openTX functions
+  // Push OpenTX functions
   lua_register(L, "getTime", luaGetTime);
   lua_register(L, "getVersion", luaGetVersion);
   lua_register(L, "getValue", luaGetValue);
   lua_register(L, "playFile", luaPlayFile);
   lua_register(L, "popupInput", luaPopupInput);
 
-  // Push openTX constants
+  // Push OpenTX constants
   lua_registerint(L, "DBLSIZE", DBLSIZE);
   lua_registerint(L, "MIDSIZE", MIDSIZE);
   lua_registerint(L, "SMLSIZE", SMLSIZE);
@@ -844,11 +844,11 @@ void luaInit()
   lua_registerint(L, "VALUE", 0);
   lua_registerint(L, "SOURCE", 1);
   lua_registerint(L, "REPLACE", MLTPX_REP);
-  lua_registerint(L, "MIX_Rud", MIXSRC_Rud);
-  lua_registerint(L, "MIX_Ele", MIXSRC_Ele);
-  lua_registerint(L, "MIX_Thr", MIXSRC_Thr);
-  lua_registerint(L, "MIX_Ail", MIXSRC_Ail);
-  lua_registerint(L, "SW_Last", SWSRC_LAST_CSW);
+  lua_registerint(L, "STICK_RUDDER", MIXSRC_Rud);
+  lua_registerint(L, "STICK_ELEVATOR", MIXSRC_Ele);
+  lua_registerint(L, "STICK_THROTTLE", MIXSRC_Thr);
+  lua_registerint(L, "STICK_AILERON", MIXSRC_Ail);
+  lua_registerint(L, "SWITCH_LAST", SWSRC_LAST_CSW);
   lua_registerint(L, "EVT_MENU_BREAK", EVT_KEY_BREAK(KEY_MENU));
   lua_registerint(L, "EVT_PAGE_BREAK", EVT_KEY_BREAK(KEY_PAGE));
   lua_registerint(L, "EVT_ENTER_BREAK", EVT_KEY_BREAK(KEY_ENTER));

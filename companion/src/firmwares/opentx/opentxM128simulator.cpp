@@ -73,6 +73,7 @@ namespace Open9xM128 {
 #include "radio/src/simpgmspace.cpp"
 #include "radio/src/templates.cpp"
 #include "radio/src/translations.cpp"
+#include "radio/src/fonts.cpp"
 #include "radio/src/audio_avr.cpp"
 #include "radio/src/targets/stock/voice.cpp"
 #include "radio/src/telemetry/frsky.cpp"

@@ -213,22 +213,14 @@ int Er9xInterface::getCapability(const Capability capability)
       return 1;
     case Timer2ThrTrig:
       return 1;
-    case TrainerSwitch:
-      return 1;
     case OffsetWeight:
       return 125;
-    case BandgapMeasure:
-      return 1;
-    case PotScrolling:
-      return 1;
     case SoundMod:
       return 1;
     case SoundPitch:
       return 1;
     case Haptic:
       return 1;
-    case OwnerName:
-      return 10;
     case Timers:
       return 1;
     case Pots:
@@ -251,10 +243,6 @@ int Er9xInterface::getCapability(const Capability capability)
       return 0;
     case Simulation:
       return 1;
-    case gsSwitchMask:
-      return 1;
-    case BLonStickMove:
-      return 1;
     case Telemetry:
       return TM_HASTELEMETRY|TM_HASWSHH;
     case TelemetryUnits:
@@ -270,14 +258,9 @@ int Er9xInterface::getCapability(const Capability capability)
     case LCDWidth:
       return 128;
     case VoicesAsNumbers:
-    case TelemetryInternalAlarm:
-    case HasPPMSim:
-    case HasCrossTrims:
-    case HasStickScroll:
     case HasAltitudeSel:
     case HasContrast:
     case HasVolume:
-    case HasBlInvert:
     case ModelVoice:
     case Gvars:
       return 7;

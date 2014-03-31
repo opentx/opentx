@@ -37,25 +37,14 @@
 #ifndef audio_driver_h
 #define audio_driver_h
 
-extern void audioInit( void ) ;
-extern void audioEnd( void ) ;
+void audioInit( void ) ;
+void audioEnd( void ) ;
+void dacStart();
+void dacStop();
 
 extern void setSampleRate(uint32_t frequency);
 
-extern bool dacIdle;
-
-inline void dacStart()
-{
-  DMA1->HIFCR = DMA_HIFCR_CTCIF5 | DMA_HIFCR_CHTIF5 | DMA_HIFCR_CTEIF5 | DMA_HIFCR_CDMEIF5 | DMA_HIFCR_CFEIF5 ; // Write ones to clear bits
-  DMA1_Stream5->CR |= DMA_SxCR_CIRC | DMA_SxCR_EN ;                               // Enable DMA channel
-  DAC->SR = DAC_SR_DMAUDR1 ;                      // Write 1 to clear flag
-  DAC->CR |= DAC_CR_EN1 | DAC_CR_DMAEN1 ;                 // Enable DAC
-}
-
-inline void dacStop()
-{
-  DMA1_Stream5->CR &= ~DMA_SxCR_CIRC ;
-}
+extern int dacIdle;
 
 #define VOLUME_LEVEL_MAX  23
 #define VOLUME_LEVEL_DEF  12

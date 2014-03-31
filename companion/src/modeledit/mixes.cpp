@@ -43,6 +43,29 @@ MixesPanel::~MixesPanel()
 {
 }
 
+QString MixesPanel::getChannelLabel(int curDest)
+{
+  QString str;
+  int outputs = GetEepromInterface()->getCapability(Outputs);
+  if (curDest > outputs) {
+    str = QObject::tr("X%1  ").arg(curDest-outputs);
+  }
+  else {
+    str = QObject::tr("CH%1").arg(curDest);
+    str.append(" ");
+    str = str.left(4);
+    if (GetEepromInterface()->getCapability(HasChNames)) {
+      QString name = model.limitData[curDest-1].name;
+      if (!name.isEmpty()) {
+        name = QString("(") + name + QString(")");
+      }
+      name.append("        ");
+      str += name.left(8);
+    }
+  }
+  return str;
+}
+
 void MixesPanel::update()
 {
   // curDest -> destination channel4
@@ -52,26 +75,13 @@ void MixesPanel::update()
   unsigned int curDest = 0;
   int i;
   unsigned int outputs = GetEepromInterface()->getCapability(Outputs);
-  int showNames = false; // TODO in a menu ui->showNames_Ckb->isChecked();
   for (i=0; i<GetEepromInterface()->getCapability(Mixes); i++) {
     MixData *md = &model.mixData[i];
     if ((md->destCh==0) || (md->destCh>outputs+(unsigned int)GetEepromInterface()->getCapability(ExtraChannels))) continue;
     QString str = "";
-    while (curDest<(md->destCh-1)) {
+    while (curDest < md->destCh-1) {
       curDest++;
-      if (curDest > outputs) {
-        str = tr("X%1  ").arg(curDest-outputs);
-      }
-      else {
-        str = tr("CH%1%2").arg(curDest/10).arg(curDest%10);
-        if (GetEepromInterface()->getCapability(HasChNames) && showNames) {
-          QString name=model.limitData[curDest-1].name;
-          if (!name.isEmpty()) {
-            name.append("     ");
-            str=name.left(6);
-          }
-        }
-      }
+      str = getChannelLabel(curDest);
       qba.clear();
       qba.append((quint8)-curDest);
       QListWidgetItem *itm = new QListWidgetItem(str);
@@ -79,23 +89,12 @@ void MixesPanel::update()
       MixerlistWidget->addItem(itm);
     }
 
-    if (md->destCh > outputs) {
-      str = tr("X%1  ").arg(md->destCh-outputs);
-    }
-    else {
-      str = tr("CH%1%2").arg(md->destCh/10).arg(md->destCh%10);
-      str.append("  ");
-      if (GetEepromInterface()->getCapability(HasChNames) && showNames) {
-        QString name=model.limitData[md->destCh-1].name;
-        if (!name.isEmpty()) {
-          name.append("     ");
-          str=name.left(6);
-        }
-      }
-    }
+    str = getChannelLabel(md->destCh);
+
     if (curDest != md->destCh) {
       curDest = md->destCh;
-    } else {
+    }
+    else {
       str.fill(' ');
     }
 
@@ -116,13 +115,11 @@ void MixesPanel::update()
       str += " " + tr("Switch(%1)").arg(md->swtch.toString());
     }
 
-    if (!GetEepromInterface()->getCapability(VirtualInputs)) {
-      if (md->carryTrim>0) {
-        str += " " + tr("No Trim");
-      }
-      else if (md->carryTrim<0) {
-        str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString();
-      }
+    if (md->carryTrim>0) {
+      str += " " + tr("No Trim");
+    }
+    else if (md->carryTrim<0) {
+      str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString();
     }
 
     if (md->noExpo)      str += " " + tr("No DR/Expo");
@@ -154,21 +151,7 @@ void MixesPanel::update()
 
   while(curDest<outputs+GetEepromInterface()->getCapability(ExtraChannels)) {
     curDest++;
-    QString str;
-
-    if (curDest > outputs) {
-      str = tr("X%1  ").arg(curDest-outputs);
-    }
-    else {
-      str = tr("CH%1%2").arg(curDest/10).arg(curDest%10);
-      if (GetEepromInterface()->getCapability(HasChNames) && showNames) {
-        QString name=model.limitData[curDest-1].name;
-        if (!name.isEmpty()) {
-          name.append("     ");
-          str=name.left(6);
-        }
-      }
-    }
+    QString str = getChannelLabel(curDest);
     qba.clear();
     qba.append((quint8)-curDest);
     QListWidgetItem *itm = new QListWidgetItem(str);

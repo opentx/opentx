@@ -10,18 +10,24 @@ Channels::Channels(QWidget * parent, ModelData & model):
   ModelPanel(parent, model)
 {
   QGridLayout * gridLayout = new QGridLayout(this);
+  bool minimize = false;
 
   int col = 1;
   if (GetEepromInterface()->getCapability(ChannelsName))
+  {
+    minimize=true;
     addLabel(gridLayout, tr("Name"), col++);
-  addLabel(gridLayout, tr("Offset"), col++);
-  addLabel(gridLayout, tr("Min"), col++);
-  addLabel(gridLayout, tr("Max"), col++);
-  addLabel(gridLayout, tr("Invert"), col++);
+  }
+  addLabel(gridLayout, tr("Offset"), col++, minimize);
+  addLabel(gridLayout, tr("Min"), col++, minimize);
+  addLabel(gridLayout, tr("Max"), col++, minimize);
+  addLabel(gridLayout, tr("Invert"), col++, minimize);
+  if (IS_TARANIS(GetEepromInterface()->getBoard()))
+    addLabel(gridLayout, tr("Curve"), col++, minimize);
   if (GetEepromInterface()->getCapability(PPMCenter))
-    addLabel(gridLayout, tr("Center"), col++);
+    addLabel(gridLayout, tr("Center"), col++, minimize);
   if (GetEepromInterface()->getCapability(SYMLimits))
-    addLabel(gridLayout, tr("Sym"), col++);
+    addLabel(gridLayout, tr("Sym"), col++, true);
 
   for (int i=0; i<GetEepromInterface()->getCapability(Outputs); i++) {
     col = 0;
@@ -29,6 +35,7 @@ Channels::Channels(QWidget * parent, ModelData & model):
     // Channel label
     QLabel *label = new QLabel(this);
     label->setText(tr("Channel %1").arg(i+1));
+    label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
     gridLayout->addWidget(label, i+1, col++, 1, 1);
 
     // Channel name
@@ -88,6 +95,19 @@ Channels::Channels(QWidget * parent, ModelData & model):
     connect(invCB, SIGNAL(currentIndexChanged(int)), this, SLOT(invEdited()));
     gridLayout->addWidget(invCB, i+1, col++, 1, 1);
 
+    // Curve
+    if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+      QComboBox * curveCB = new QComboBox(this);
+      curveCB->setProperty("index", i);
+      int numcurves = GetEepromInterface()->getCapability(NumCurves);
+      for (int j=-numcurves; j<=numcurves; j++) {
+        curveCB->addItem(CurveReference(CurveReference::CURVE_REF_CUSTOM, j).toString(), j);
+      }
+      curveCB->setCurrentIndex(model.limitData[i].curve.value+numcurves);
+      connect(curveCB, SIGNAL(currentIndexChanged(int)), this, SLOT(curveEdited()));
+      gridLayout->addWidget(curveCB, i+1, col++, 1, 1);
+    }
+
     // PPM center
     if (GetEepromInterface()->getCapability(PPMCenter)) {
       QSpinBox * center = new QSpinBox(this);
@@ -110,6 +130,8 @@ Channels::Channels(QWidget * parent, ModelData & model):
       gridLayout->addWidget(symlimits, i+1, col++, 1, 1);
     }
   }
+  // Push the rows up
+  addVSpring(gridLayout, 0,GetEepromInterface()->getCapability(Outputs)+1);
 }
 
 Channels::~Channels()
@@ -165,6 +187,14 @@ void Channels::invEdited()
   QComboBox *cb = qobject_cast<QComboBox*>(sender());
   int index = cb->property("index").toInt();
   model.limitData[index].revert = cb->currentIndex();
+  emit modified();
+}
+
+void Channels::curveEdited()
+{
+  QComboBox *cb = qobject_cast<QComboBox*>(sender());
+  int index = cb->property("index").toInt();
+  model.limitData[index].curve = CurveReference(CurveReference::CURVE_REF_CUSTOM, cb->itemData(cb->currentIndex()).toInt());
   emit modified();
 }
 

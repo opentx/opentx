@@ -15,6 +15,7 @@ burnConfigDialog::burnConfigDialog(QWidget *parent) :
     ui(new Ui::burnConfigDialog)
 {
     ui->setupUi(this);
+    setWindowIcon(CompanionIcon("configure.png"));
     ui->avrdude_programmer->model()->sort(0);
 
     getSettings();

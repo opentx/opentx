@@ -49,7 +49,7 @@
 #include "eeprominterface.h"
 
 #define SPLASH_TIME 5
-#define MAX_RECENT 10
+#define MAX_RECENT 15
 #define MAX_PROFILES 15
 
 class MdiChild;
@@ -158,7 +158,7 @@ private slots:
   
 private:
     void createActions();
-    QAction * addAct(QString, QString, QString, QKeySequence::StandardKey, const char *);
+    QAction * addAct(QString, QString, QString, QKeySequence::StandardKey, const char *, QObject *slotObj=NULL);
     QAction * addAct(QActionGroup *, QString, QString, const char *);
     QAction * addAct(QString, QString, QString, const char *);
 

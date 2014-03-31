@@ -42,7 +42,8 @@ printDialog::printDialog(QWidget *parent, GeneralSettings *gg, ModelData *gm, QS
       if ((GetCurrentFirmwareVariant() & GVARS_VARIANT)) {
         gvars=1;
       }
-    } else {
+    }
+    else {
       gvars=1;
     }
     
@@ -519,23 +520,6 @@ void printDialog::printCurves()
     int i,r,g,b,c,count;
     char buffer[16];
     QPen pen(Qt::black, 2, Qt::SolidLine);
-    QColor * qplot_color[16];
-    qplot_color[0]=new QColor(0,0,127);
-    qplot_color[1]=new QColor(0,127,0);
-    qplot_color[2]=new QColor(127,0,0);
-    qplot_color[3]=new QColor(0,127,127);
-    qplot_color[4]=new QColor(127,0,127);
-    qplot_color[5]=new QColor(127,127,0);
-    qplot_color[6]=new QColor(127,127,127);
-    qplot_color[7]=new QColor(0,0,255);
-    qplot_color[8]=new QColor(0,127,255);
-    qplot_color[9]=new QColor(127,0,255);
-    qplot_color[10]=new QColor(0,255,0);
-    qplot_color[11]=new QColor(0,255,127);
-    qplot_color[12]=new QColor(127,255,0);
-    qplot_color[13]=new QColor(255,0,0);
-    qplot_color[14]=new QColor(255,0,127);
-    qplot_color[15]=new QColor(255,127,0);
     
     QString str = "<table border=1 cellspacing=0 cellpadding=3 style=\"page-break-before:auto;\" width=\"100%\"><tr><td><h2>";
     str.append(tr("Curves"));
@@ -552,16 +536,18 @@ void printDialog::printCurves()
       painter.drawRect(0,0,ISIZEW,ISIZEW);
       str.append("<table border=0 cellspacing=0 cellpadding=3 width=\"100%\">"+QString("<tr><td width=\"400\"><img src=\"%1\" border=0></td><td><table border=1 cellspacing=0 cellpadding=3 width=\"100%\">").arg(curvefile5));
       for(i=0; i<numcurves; i++) {
-        pen.setColor(*qplot_color[i]);
+        pen.setColor(colors[i]);
         painter.setPen(pen);
-        qplot_color[i]->getRgb(&r,&g,&b);
+        colors[i].getRgb(&r,&g,&b);
         c=r;
         c*=256;
         c+=g;
         c*=256;
         c+=b;
         sprintf(buffer,"%06x",c);
-        str.append(QString("<tr><td width=\"70\"><font color=#%1><b>").arg(buffer)+tr("Curve")+QString(" %1</b></font></td></tr>").arg(i+1));
+        if(i%2 == 0) str.append("<tr>");
+        str.append(QString("<td width=\"70\"><font color=#%1><b>").arg(buffer)+tr("Curve")+QString(" %1</b></font></td>").arg(i+1));
+        if(i%2) str.append("</tr>");
       }
       str.append("</table></td></tr><tr><td colspan=2><table border=1 cellspacing=0 cellpadding=3 width=\"100%\">");
       str.append("<tr>");
@@ -576,9 +562,9 @@ void printDialog::printCurves()
           str.append(doTC(tr("pt %1").arg(i+1), "", true));
       str.append("</tr>");
       for(i=0; i<numcurves; i++) {
-        pen.setColor(*qplot_color[i]);
+        pen.setColor(colors[i]);
         painter.setPen(pen);
-        qplot_color[i]->getRgb(&r,&g,&b);
+        colors[i].getRgb(&r,&g,&b);
         c=r;
         c*=256;
         c+=g;
@@ -697,7 +683,7 @@ void printDialog::printFSwitches()
 {
     int sc=0;
     QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
-    str.append("<tr><td><h2>"+tr("Switch Assignments")+"</h2></td></tr>");
+    str.append("<tr><td><h2>"+tr("Special Functions")+"</h2></td></tr>");
     str.append("<tr><td><table border=0 cellspacing=0 cellpadding=3><tr>");
     str.append(doTC(tr("Switch"), "", true));
     str.append(doTL(tr("Function"), "", true));
@@ -767,7 +753,7 @@ void printDialog::printFrSky()
   str.append("<tr><td colspan=10 align=\"Left\" height=\"4px\"></td></tr>");
   str.append("<tr><td colspan=2 align=\"Left\"><b>"+tr("Frsky serial protocol")+"</b></td><td colspan=8 align=\"left\">"+getFrSkyProtocol(fd->usrProto)+"</td></tr>");
   str.append("<tr><td colspan=2 align=\"Left\"><b>"+tr("System of units")+"</b></td><td colspan=8 align=\"left\">"+getFrSkyMeasure(fd->imperial)+"</td></tr>");
-  str.append("<tr><td colspan=2 align=\"Left\"><b>"+tr("Propeller blades")+"</b></td><td colspan=8 align=\"left\">"+getFrSkyBlades(fd->blades)+"</td></tr>");
+  str.append("<tr><td colspan=2 align=\"Left\"><b>"+tr("Blades")+"</b></td><td colspan=8 align=\"left\">"+fd->blades+"</td></tr>");
   str.append("<tr><td colspan=10 align=\"Left\" height=\"4px\"></td></tr></table>");
 #if 0
   if (GetEepromInterface()->getCapability(TelemetryBars) || (GetEepromInterface()->getCapability(TelemetryCSFields))) {

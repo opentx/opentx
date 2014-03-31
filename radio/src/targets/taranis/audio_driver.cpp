@@ -36,7 +36,7 @@
 
 #include "../../opentx.h"
 
-bool dacIdle = true;
+int dacIdle = 1;
 
 void setSampleRate(uint32_t frequency)
 {
@@ -96,7 +96,7 @@ void dacInit()
 bool dacQueue(AudioBuffer *buffer)
 {
   if (dacIdle) {
-    dacIdle = false;
+    dacIdle = 0;
     DMA1_Stream5->CR &= ~DMA_SxCR_EN ;                              // Disable DMA channel
     DMA1->HIFCR = DMA_HIFCR_CTCIF5 | DMA_HIFCR_CHTIF5 | DMA_HIFCR_CTEIF5 | DMA_HIFCR_CDMEIF5 | DMA_HIFCR_CFEIF5 ; // Write ones to clear bits
     DMA1_Stream5->M0AR = CONVERT_PTR(buffer->data);
@@ -110,6 +110,20 @@ bool dacQueue(AudioBuffer *buffer)
     return false;
   }
 }
+
+void dacStart()
+{
+  DMA1->HIFCR = DMA_HIFCR_CTCIF5 | DMA_HIFCR_CHTIF5 | DMA_HIFCR_CTEIF5 | DMA_HIFCR_CDMEIF5 | DMA_HIFCR_CFEIF5 ; // Write ones to clear bits
+  DMA1_Stream5->CR |= DMA_SxCR_CIRC | DMA_SxCR_EN ;                               // Enable DMA channel
+  DAC->SR = DAC_SR_DMAUDR1 ;                      // Write 1 to clear flag
+  DAC->CR |= DAC_CR_EN1 | DAC_CR_DMAEN1 ;                 // Enable DAC
+}
+
+void dacStop()
+{
+  DMA1_Stream5->CR &= ~DMA_SxCR_CIRC ;
+}
+
 
 // Sound routines
 void audioInit()
@@ -149,7 +163,7 @@ extern "C" void DMA1_Stream5_IRQHandler()
     DAC->SR = DAC_SR_DMAUDR1;                      // Write 1 to clear flag
   }
   else {
-    dacIdle = true;
+    dacIdle = 1;
   }
 }
 #endif

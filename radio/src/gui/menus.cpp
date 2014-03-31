@@ -1124,7 +1124,10 @@ int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t m
 #endif
 {
   uint16_t delta = GV_GET_GV1_VALUE(max);
-  bool invers = (attr & INVERS);  
+  bool invers = (attr & INVERS);
+
+  // TRACE("gvarMenuItem(val=%d min=%d max=%d)", value, min, max);
+
   if (invers && event == EVT_KEY_LONG(KEY_ENTER)) {
     s_editMode = !s_editMode;
 #if defined(CPUARM)
@@ -1372,7 +1375,7 @@ bool isSourceAvailable(int source)
     return false;
   }
 
-  if (source>=MIXSRC_SW1 && source<=MIXSRC_LAST_CSW) {
+  if (source>=MIXSRC_SW1 && source<=MIXSRC_LAST_LOGICAL_SWITCH) {
     LogicalSwitchData * cs = cswAddress(source-MIXSRC_SW1);
     return (cs->func != LS_FUNC_NONE);
   }
@@ -1421,7 +1424,7 @@ bool isInputSourceAvailable(int source)
   if (source>=MIXSRC_FIRST_CH && source<=MIXSRC_LAST_CH)
     return true;
 
-  if (source>=MIXSRC_FIRST_PPM && source<=MIXSRC_LAST_PPM)
+  if (source>=MIXSRC_FIRST_TRAINER && source<=MIXSRC_LAST_TRAINER)
     return true;
 
   if (source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM)
@@ -1470,6 +1473,15 @@ bool isSwitchAvailable(int swtch)
     return (cs->func != LS_FUNC_NONE);
   }
   
+  return true;
+}
+
+bool isThrottleSourceAvailable(int source)
+{
+#if defined(PCBTARANIS)
+  if (source == THROTTLE_SOURCE_S3 && !IS_POT_AVAILABLE(POT3))
+    return false;
+#endif
   return true;
 }
 

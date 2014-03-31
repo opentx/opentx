@@ -22,6 +22,7 @@ ModelEdit::ModelEdit(RadioData & radioData, int modelId, bool openWizard, bool i
   generalSettings(radioData.generalSettings)
 {
   ui->setupUi(this);
+  setWindowIcon(CompanionIcon("edit.png"));
   restoreGeometry(g.modelEditGeo());  
   ui->pushButton->setIcon(CompanionIcon("simulate.png"));
   addTab(new Setup(this, model), tr("Setup"));
@@ -32,7 +33,7 @@ ModelEdit::ModelEdit(RadioData & radioData, int modelId, bool openWizard, bool i
   addTab(new Channels(this, model), tr("Channels"));
   addTab(new LogicalSwitchesPanel(this, model), tr("Logical Switches"));
   if (GetEepromInterface()->getCapability(CustomFunctions))
-    addTab(new CustomFunctionsPanel(this, model, radioData.generalSettings), tr("Switch Assignment"));
+    addTab(new CustomFunctionsPanel(this, model, radioData.generalSettings), tr("Special Functions"));
   addTab(new Curves(this, model), tr("Curves"));
   if (GetEepromInterface()->getCapability(Telemetry) & TM_HASTELEMETRY)
     addTab(new TelemetryPanel(this, model), tr("Telemetry"));

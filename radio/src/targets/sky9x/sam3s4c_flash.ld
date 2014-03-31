@@ -71,9 +71,15 @@ SECTIONS
     */
    .text :
    {
-      _stext = .;          /* Provide the name for the start of this section */
+		FILL(0xFFFF)
       
-      CREATE_OBJECT_SYMBOLS
+		CREATE_OBJECT_SYMBOLS
+
+      *(.bootrodata)
+      *(.bootrodata.*)
+      
+      . = ALIGN(32768);       /* Align the start of the exidx part */
+		_stext = .;          /* Provide the name for the start of this section */
       KEEP(*(.vectors))
       
       *(.text)
@@ -129,11 +135,8 @@ SECTIONS
       
       . = ALIGN(4);        /* Align the end of the section */
    } > RAM
-   _ebss = .;              /* Provide the name for the end of this section */  
+   _ebss = .;              /* Provide the name for the end of this section */
    
-   . = ALIGN(4);           /* Align the end of the section */
-   __end = .;
-   _end = .;
    
    /* 
     * The ".stack" section is our stack.

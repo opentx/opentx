@@ -14,6 +14,10 @@
  *
  */
 
+#if !defined(NUM_LOGICAL_SWITCH) && defined(NUM_CSW)
+#define NUM_LOGICAL_SWITCH NUM_CSW
+#endif
+
 #ifdef INIT_IMPORT
 #undef INIT_IMPORT
 #ifdef FRSKY
@@ -49,7 +53,7 @@ if (inputs.rotenc) PIOB->PIO_PDSR &= ~0x40; else PIOB->PIO_PDSR |= 0x40;
 #undef GETVALUES_IMPORT
 memset(outputs.chans, 0, sizeof(outputs.chans));
 memcpy(outputs.chans, g_chans512, sizeof(g_chans512));
-for (int i=0; i<NUM_CSW; i++)
+for (int i=0; i<NUM_LOGICAL_SWITCH; i++)
 #if defined(BOLD_FONT)
   outputs.vsw[i] = getSwitch(SWSRC_SW1+i);
 #else

@@ -36,6 +36,29 @@
 
 #include "opentx.h"
 
+
+/*
+  Division by 10 and rounding or fixed point arithmetic values
+
+  Examples: 
+    value -> result
+    105 ->  11
+    104 ->  10
+   -205 -> -21
+   -204 -> -20 
+*/
+getvalue_t div10_and_round(getvalue_t value)
+{
+  if (value >= 0 ) {
+    value += 5;
+  }
+  else {
+    value -= 5;
+  }
+  return value/10;
+}
+
+
 #if defined(FRSKY)
 uint16_t getChannelRatio(uint8_t channel)
 {

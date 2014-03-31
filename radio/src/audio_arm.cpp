@@ -324,7 +324,7 @@ void getSwitchAudioFile(char * filename, int index)
     str += 5;
   }
   else {
-    str += 1;
+    *(str+1) = 0;
   }
   strcat(str, SOUNDS_EXT);
 }
@@ -390,7 +390,7 @@ void referenceModelAudioFiles()
       }
 
       // Logical Switches Audio Files <switchname>-[on|off].wav
-      for (int i=0; i<NUM_CSW && !found; i++) {
+      for (int i=0; i<NUM_LOGICAL_SWITCH && !found; i++) {
         for (int event=0; event<2; event++) {
           getLogicalSwitchAudioFile(path, i, event);
           if (!strcmp(filename, fn)) {

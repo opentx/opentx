@@ -54,11 +54,11 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
 {
   QGridLayout * gridLayout = new QGridLayout(this);
 
-  int col = 1;
-  addLabel(gridLayout, tr("Switch"), col++);
-  addLabel(gridLayout, tr("Action"), col++);
-  addLabel(gridLayout, tr("Parameters"), col++);
-  addLabel(gridLayout, tr("Enable"), col++);
+  addLabel(gridLayout, tr("Switch"), 1);
+  addLabel(gridLayout, tr("Action"), 2);
+  addLabel(gridLayout, tr("Parameters"), 3);
+  addLabel(gridLayout, tr("Enable"), 4, true );
+  addEmptyLabel(gridLayout, 5 );
 
   lock = true;
   int num_fsw = GetEepromInterface()->getCapability(CustomFunctions);
@@ -104,13 +104,15 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
     label->setContextMenuPolicy(Qt::CustomContextMenu);
     label->setMouseTracking(true);
     label->setProperty("index", i);
-    label->setText(tr("CF%1").arg(i+1));
-    gridLayout->addWidget(label, i+1, 0);
+    label->setText(tr("SF%1").arg(i+1));
+    label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
     connect(label, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(fsw_customContextMenuRequested(QPoint)));
+    gridLayout->addWidget(label, i+1, 0);
 
     // The switch
     fswtchSwtch[i] = new QComboBox(this);
     fswtchSwtch[i]->setProperty("index", i);
+    fswtchSwtch[i]->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
     connect(fswtchSwtch[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
     gridLayout->addWidget(fswtchSwtch[i], i+1, 1);
     populateSwitchCB(fswtchSwtch[i], model.funcSw[i].swtch, POPULATE_ONOFF);
@@ -161,6 +163,12 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
     connect(fswtchParamArmT[i], SIGNAL(editTextChanged ( const QString)), this, SLOT(customFunctionEdited()));
 
 #ifdef PHONON
+    phononLock=false;
+    clickObject = new Phonon::MediaObject(this);
+    clickOutput = new Phonon::AudioOutput(Phonon::NoCategory, this);
+    Phonon::createPath(clickObject, clickOutput);
+    connect(clickObject, SIGNAL(stateChanged(Phonon::State,Phonon::State)),  this, SLOT(mediaPlayer_state(Phonon::State,Phonon::State)));
+
     playBT[i] = new QPushButton(this);
     playBT[i]->setProperty("index", i);
     playBT[i]->setProperty("state", "play");
@@ -178,11 +186,13 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
     fswtchEnable[i] = new QCheckBox(this);
     fswtchEnable[i]->setProperty("index", i);
     fswtchEnable[i]->setText(tr("ON"));
+    fswtchEnable[i]->setFixedWidth( 50 );
     repeatLayout->addWidget(fswtchEnable[i], i+1);
     fswtchEnable[i]->setChecked(model.funcSw[i].enabled);
     connect(fswtchEnable[i], SIGNAL(stateChanged(int)), this, SLOT(customFunctionEdited()));
   }
-
+  // Push rows upward
+  addDoubleSpring(gridLayout, 5, num_fsw+1);
   lock = false;
 }
 
@@ -203,6 +213,7 @@ void CustomFunctionsPanel::mediaPlayer_state(Phonon::State newState, Phonon::Sta
       clickObject->clearQueue();
       clickObject->clear();
       for (int i=0; i<GetEepromInterface()->getCapability(CustomFunctions); i++) {
+        playBT[i]->setProperty("state", "play");
         playBT[i]->setObjectName(QString("play_%1").arg(i));
         playBT[i]->setIcon(CompanionIcon("play.png"));
       }

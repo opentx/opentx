@@ -6,6 +6,7 @@
 #include <QCheckBox>
 #include <QSlider>
 #include <QSpinBox>
+#include <QComboBox>
 #include <QLabel>
 
 namespace Ui {
@@ -104,6 +105,7 @@ class Setup : public ModelPanel
     void updateStartupSwitches();
     void updatePotWarnings();
     void updateBeepCenter();
+    void populateThrottleSourceCB();
 };
 
 #endif // SETUP_H

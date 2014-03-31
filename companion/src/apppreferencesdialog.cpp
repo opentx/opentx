@@ -68,12 +68,13 @@ void appPreferencesDialog::writeValues()
   else
     g.profile[g.id()].name(ui->profileNameLE->text());
 
-  // If a new radio type has been choosen, several things need to change
+  // If a new radio type has been choosen, several things need to reset
   if ( initialRadioType != ui->radioCB->currentIndex())
   {
     g.profile[g.id()].fwName("");
     g.profile[g.id()].fwType(getDefaultFwType(ui->radioCB->currentIndex()));
-    current_firmware_variant = GetFirmwareVariant(g.profile[g.id()].fwType());  
+    current_firmware_variant = GetFirmwareVariant(g.profile[g.id()].fwType());
+    g.profile[g.id()].initFwVariables();
   }
 }
 
@@ -154,11 +155,23 @@ void appPreferencesDialog::initSettings()
   ui->sdPath->setText(g.profile[g.id()].sdPath());
   ui->profileNameLE->setText(g.profile[g.id()].name());
   ui->SplashFileName->setText(g.profile[g.id()].splashFile());
-
   initialRadioType = getRadioType(g.profile[g.id()].fwType());
   ui->radioCB->setCurrentIndex(initialRadioType);
-
   displayImage( g.profile[g.id()].splashFile() );
+
+  QString hwSettings;
+  if (g.profile[g.id()].stickPotCalib() == "" ) {
+    hwSettings = QString(tr("EMPTY: No radio settings stored in profile"));
+  }
+  else  {
+    QString str = g.profile[g.id()].timeStamp();
+    if (str.isEmpty())
+      hwSettings = QString(tr("AVAILABLE: Radio settings of unknown age"));
+    else
+      hwSettings = QString(tr("AVAILABLE: Radio settings stored %1").arg(str));
+  }
+  ui->lblGeneralSettings->setText(hwSettings);
+
 }
 
 void appPreferencesDialog::on_libraryPathButton_clicked()

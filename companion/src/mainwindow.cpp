@@ -63,6 +63,7 @@
 #include "warnings.h"
 #include "helpers.h"
 #include "appdata.h"
+#include "taranisnotfound.h"
 #include "firmwares/opentx/opentxinterface.h" // TODO get rid of this include
 
 #define DONATE_STR      "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QUZ48K4SEXDP2"
@@ -222,7 +223,7 @@ void MainWindow::checkForUpdates(bool ignoreSettings, QString & fwId)
 
     if(ignoreSettings) {
       downloadDialog_forWait = new downloadDialog(this, tr("Checking for updates"));
-      downloadDialog_forWait->show();
+      downloadDialog_forWait->exec();
     } else {
       downloadDialog_forWait = NULL; // TODO needed?
     }
@@ -272,7 +273,7 @@ void MainWindow::checkForUpdateFinished(QNetworkReply * reply)
             downloadDialog * dd = new downloadDialog(this, QString(OPENTX_COMPANION_DOWNLOADS C9X_INSTALLER).arg(version), fileName);
             installer_fileName = fileName;
             connect(dd, SIGNAL(accepted()), this, SLOT(updateDownloaded()));
-            dd->show();
+            dd->exec();
           }
         }
 #else
@@ -1024,7 +1025,8 @@ void MainWindow::readEeprom()
     if (IS_TARANIS(eepromInterface->getBoard())) {
       QString path=FindTaranisPath();
       if (path.isEmpty()) {
-        QMessageBox::warning(this, tr("Taranis radio not found"), tr("Impossible to identify the radio on your system, please verify the eeprom disk is connected."));
+        taranisNotFoundDialog *tnfd = new taranisNotFoundDialog(this);
+        tnfd->exec();
         res=false;
       } else {
         QStringList str;
@@ -1080,7 +1082,8 @@ void MainWindow::writeFileToEeprom()
           if (IS_TARANIS(eepromInterface->getBoard())) {
             QString path=FindTaranisPath();
             if (path.isEmpty()) {
-              QMessageBox::warning(this, tr("Taranis radio not found"), tr("Impossible to identify the radio on your system, please verify the eeprom disk is connected."));
+              taranisNotFoundDialog *tnfd = new taranisNotFoundDialog(this);
+              tnfd->exec();
               return;
             } else {
               QStringList str;
@@ -1131,7 +1134,8 @@ void MainWindow::writeFileToEeprom()
           if (IS_TARANIS(eepromInterface->getBoard())) {
             QString path=FindTaranisPath();
             if (path.isEmpty()) {
-              QMessageBox::warning(this, tr("Taranis radio not found"), tr("Impossible to identify the radio on your system, please verify the eeprom disk is connected."));
+              taranisNotFoundDialog *tnfd = new taranisNotFoundDialog(this);
+              tnfd->exec();
               return;
             } else {
               QStringList str;
@@ -1156,7 +1160,8 @@ void MainWindow::writeFileToEeprom()
       if (IS_TARANIS(eepromInterface->getBoard())) {
         QString path=FindTaranisPath();
         if (path.isEmpty()) {
-          QMessageBox::warning(this, tr("Taranis radio not found"), tr("Impossible to identify the radio on your system, please verify the eeprom disk is connected."));
+          taranisNotFoundDialog *tnfd = new taranisNotFoundDialog(this);
+          tnfd->exec();
           return;
         }
         else {
@@ -1251,15 +1256,16 @@ bool MainWindow::convertEEPROM(QString backupFile, QString restoreFile, QString 
 
     if ((svnTags.at(0) == "open9x")||(svnTags.at(0) == "opentx")) {
       if (revision > 1464) {
-        QString fwBuild = flash.getBuild();
-        if (fwBuild.contains("-")) {
-          QStringList buildTags = fwBuild.split("-", QString::SkipEmptyParts);
+        QString fwEEprom = flash.getEEprom();
+        if (fwEEprom.contains("-")) {
+          QStringList buildTags = fwEEprom.split("-", QString::SkipEmptyParts);
           if (buildTags.size() >= 1)
             version = buildTags.at(0).toInt();
           if (buildTags.size() >= 2)
             variant = buildTags.at(1).toInt();
-        } else {
-          version = fwBuild.toInt(); // TODO changer le nom de la variable
+        }
+        else {
+          version = fwEEprom.toInt();
         }
       }
       else {
@@ -1401,7 +1407,8 @@ void MainWindow::readEepromToFile()
       if (IS_TARANIS(eepromInterface->getBoard())) {
         QString path=FindTaranisPath();
         if (path.isEmpty()) {
-          QMessageBox::warning(this, tr("Taranis radio not found"), tr("Impossible to identify the radio on your system, please verify that the eeprom disk is connected."));
+          taranisNotFoundDialog *tnfd = new taranisNotFoundDialog(this);
+          tnfd->exec();
           return;
         }
         else {
@@ -1530,18 +1537,20 @@ MdiChild *MainWindow::createMdiChild()
     return child;
 }
 
-QAction * MainWindow::addAct(QString icon, QString sName, QString lName, QKeySequence::StandardKey shortcut, const char *slot)
+QAction * MainWindow::addAct(QString icon, QString sName, QString lName, QKeySequence::StandardKey shortcut, const char *slot, QObject *slotObj)
 {
   QAction * newAction = new QAction( this );
   if (!icon.isEmpty())
-      newAction->setIcon(CompanionIcon(icon));
+    newAction->setIcon(CompanionIcon(icon));
   if (!sName.isEmpty()) 
     newAction->setText(sName);
   if (!lName.isEmpty())
     newAction->setStatusTip(lName);
   if (shortcut != 0)
     newAction->setShortcuts(shortcut);
-    connect(newAction, SIGNAL(triggered()), this, slot);
+  if (slotObj == NULL)
+    slotObj = this;
+  connect(newAction, SIGNAL(triggered()), slotObj, slot);
   return newAction;
 }
 
@@ -1584,7 +1593,7 @@ void MainWindow::createActions()
     openAct =            addAct("open.png",   tr("Open Models+Settings..."),    tr("Open Models and Settings file"),         QKeySequence::Open,   SLOT(openFile()));
     saveAct =            addAct("save.png",   tr("Save Models+Settings..."),    tr("Save Models and Settings file"),         QKeySequence::Save,   SLOT(save()));
     saveAsAct =          addAct("saveas.png", tr("Save Models+Settings as..."), tr("Save Models and Settings file"),         QKeySequence::SaveAs, SLOT(saveAs()));
-    exitAct =            addAct("exit.png",   tr("Exit"),                       tr("Exit the application"),                  QKeySequence::Quit,   SLOT(newFile()));
+    exitAct =            addAct("exit.png",   tr("Exit"),                       tr("Exit the application"),                  QKeySequence::Quit,   SLOT(closeAllWindows()), qApp);
     cutAct =             addAct("cut.png",    tr("Cut Model"),                  tr("Cut current model to the clipboard"),    QKeySequence::Cut,    SLOT(cut()));
     copyAct =            addAct("copy.png",   tr("Copy Model..."),              tr("Copy current model to the clipboard"),   QKeySequence::Copy,   SLOT(copy()));
     pasteAct =           addAct("paste.png",  tr("Paste Model..."),             tr("Paste model from clipboard"),            QKeySequence::Paste,  SLOT(paste()));

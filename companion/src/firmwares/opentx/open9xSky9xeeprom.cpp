@@ -681,7 +681,7 @@ t_Open9xArmFrSkyData_v210::operator FrSkyData ()
   c9x.channels[1] = channels[1];
   c9x.usrProto = usrProto;
   c9x.voltsSource = voltsSource;
-  c9x.blades = blades;
+  c9x.blades = blades+2;
   c9x.currentSource=currentSource;
   c9x.screens[0].type = 1;
   for (int i=0; i<4; i++) {
@@ -709,7 +709,7 @@ t_Open9xArmFrSkyData_v211::operator FrSkyData ()
   c9x.channels[1] = channels[1];
   c9x.usrProto = usrProto;
   c9x.voltsSource = voltsSource;
-  c9x.blades = blades;
+  c9x.blades = blades+2;
   c9x.currentSource=currentSource;
   c9x.screens[0].type = 1;
   for (int i=0; i<4; i++) {

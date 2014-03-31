@@ -388,19 +388,19 @@ void menuGeneralSetup(uint8_t event)
         SLIDER_5POS(y, g_eeGeneral.varioVolume, TR_SPEAKER_VOLUME, event, attr);
         break;
       case ITEM_SETUP_VARIO_PITCH:
-        lcd_putsLeft(y, "\001Pitch at Zero");
+        lcd_putsLeft(y, STR_PITCH_AT_ZERO);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, VARIO_FREQUENCY_ZERO+(g_eeGeneral.varioPitch*10), attr|LEFT);
         lcd_putsAtt(lcdLastPos, y, "Hz", attr);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.varioPitch, -40, 40);
         break;
       case ITEM_SETUP_VARIO_RANGE:
-        lcd_putsLeft(y, "\001Pitch at Max");
+        lcd_putsLeft(y, STR_PITCH_AT_MAX);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, VARIO_FREQUENCY_ZERO+(g_eeGeneral.varioPitch*10)+VARIO_FREQUENCY_RANGE+(g_eeGeneral.varioRange*10), attr|LEFT);
         lcd_putsAtt(lcdLastPos, y, "Hz", attr);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.varioRange, -80, 80);
         break;
       case ITEM_SETUP_VARIO_REPEAT:
-        lcd_putsLeft(y, "\001Repeat at Zero");
+        lcd_putsLeft(y, STR_REPEAT_AT_ZERO);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, VARIO_REPEAT_ZERO+(g_eeGeneral.varioRepeat*10), attr|LEFT);
         lcd_putsAtt(lcdLastPos, y, "ms", attr);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.varioRepeat, -30, 50);
@@ -432,12 +432,8 @@ void menuGeneralSetup(uint8_t event)
       case ITEM_SETUP_CONTRAST:
         lcd_putsLeft(y, STR_CONTRAST);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.contrast, attr|LEFT);
-        if(attr) {
-#if defined(PCBTARANIS)
-          CHECK_INCDEC_GENVAR(event, g_eeGeneral.contrast, 0, 45);
-#else
-          CHECK_INCDEC_GENVAR(event, g_eeGeneral.contrast, 10, 45);
-#endif          
+        if (attr) {
+          CHECK_INCDEC_GENVAR(event, g_eeGeneral.contrast, CONTRAST_MIN, CONTRAST_MAX);
           lcdSetContrast();
         }
         break;
@@ -601,24 +597,16 @@ void menuGeneralSetup(uint8_t event)
 #endif
 
 #if defined(MAVLINK)
-		case ITEM_MAVLINK_BAUD:
-			g_eeGeneral.mavbaud = selectMenuItem(RADIO_SETUP_2ND_COLUMN,  //Y
-				y, 					// Y
-				STR_MAVLINK_BAUD_LABEL, 			// pm_char *label
-				STR_MAVLINK_BAUDS, 		// pm_char *values
-//				PSTR("4800""9600""14400""19200""38400""57600""76800""115200"),
-				g_eeGeneral.mavbaud, 	// value
-				0, 	// min
-				7, 	// max
-				attr,  // attr
-				event);	// event
-			break;
+      case ITEM_MAVLINK_BAUD:
+        g_eeGeneral.mavbaud = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_MAVLINK_BAUD_LABEL, STR_MAVLINK_BAUDS, PSTR("4800""9600""14400""19200""38400""57600""76800""115200"), g_eeGeneral.mavbaud, 0, 7, attr, event);
+        break;
 #endif
 
       case ITEM_SETUP_RX_CHANNEL_ORD:
         lcd_putsLeft(y, STR_RXCHANNELORD); // RAET->AETR
-        for (uint8_t i=1; i<=4; i++)
+        for (uint8_t i=1; i<=4; i++) {
           putsChnLetter(RADIO_SETUP_2ND_COLUMN - FW + i*FW, y, channel_order(i), attr);
+        }
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.templateSetup, 0, 23);
         break;
 
@@ -629,7 +617,9 @@ void menuGeneralSetup(uint8_t event)
 
       case ITEM_SETUP_STICK_MODE:
         lcd_putcAtt(2*FW, y, '1'+g_eeGeneral.stickMode, attr);
-        for (uint8_t i=0; i<4; i++) putsMixerSource((6+4*i)*FW, y, MIXSRC_Rud + pgm_read_byte(modn12x3 + 4*g_eeGeneral.stickMode + i), 0);
+        for (uint8_t i=0; i<4; i++) {
+          putsMixerSource((6+4*i)*FW, y, MIXSRC_Rud + pgm_read_byte(modn12x3 + 4*g_eeGeneral.stickMode + i), 0);
+        }
         if (attr && s_editMode>0) {
           CHECK_INCDEC_GENVAR(event, g_eeGeneral.stickMode, 0, 3);
         }
@@ -1039,7 +1029,8 @@ void menuGeneralTrainer(uint8_t event)
     lcd_outdezAtt(LEN_MULTIPLIER*FW+3*FW, 6*FH+1, g_eeGeneral.PPM_Multiplier+10, attr|PREC1);
     if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.PPM_Multiplier, -10, 40);
 
-    attr = (m_posVert==6) ? blink : 0;
+    attr = (m_posVert==6) ? INVERS : 0;
+    if (attr) s_editMode = 0;
     lcd_putsAtt(0*FW, 1+7*FH, STR_CAL, attr);
     for (uint8_t i=0; i<4; i++) {
       uint8_t x = (i*TRAINER_CALIB_POS+16)*FW/2;
@@ -1051,11 +1042,10 @@ void menuGeneralTrainer(uint8_t event)
     }
 
     if (attr) {
-      if (event==EVT_KEY_FIRST(KEY_MENU)){
-        s_editMode = -1;
+      if (event==EVT_KEY_LONG(KEY_ENTER)){
         memcpy(g_eeGeneral.trainer.calib, g_ppmIns, sizeof(g_eeGeneral.trainer.calib));
         eeDirty(EE_GENERAL);
-        AUDIO_KEYPAD_UP();
+        AUDIO_WARNING1();
       }
     }
   }
@@ -1223,10 +1213,10 @@ void menuGeneralHardware(uint8_t event)
         putsMixerSource(sizeof(TR_TYPE)*FW, y, MIXSRC_FIRST_POT+idx);
         uint8_t potType = (g_eeGeneral.potsType & mask) >> shift;
         if (potType == POT_TYPE_NONE && i < 2)
-          potType = 1;
+          potType = POT_TYPE_POT;
         potType = selectMenuItem(HW_SETTINGS_COLUMN, y, STR_TYPE, STR_POTTYPES, potType, 0, POT_TYPE_MAX, attr, event);
         if (potType == POT_TYPE_POT && i < 2)
-          potType = 0;
+          potType = POT_TYPE_NONE;
         g_eeGeneral.potsType &= ~mask;
         g_eeGeneral.potsType |= (potType << shift);
         break;

@@ -451,8 +451,6 @@ int OpenTxInterface::getSize(GeneralSettings &settings)
 int OpenTxInterface::getCapability(const Capability capability)
 {
   switch (capability) {
-    case OwnerName:
-      return 0;
     case ModelImage:
       if (IS_TARANIS(board))
         return 1;
@@ -493,6 +491,8 @@ int OpenTxInterface::getCapability(const Capability capability)
     case FlightModesName:
     case GvarsName:
       return (IS_TARANIS(board) ? 10 : 6);
+    case HasChNames:
+      return (IS_TARANIS(board) ? 1 : 0);
     case GvarsInCS:
     case HasFAIMode:
       return 1;
@@ -594,7 +594,7 @@ int OpenTxInterface::getCapability(const Capability capability)
     case MixesWithoutExpo:
       return 1;
     case NumCurves:
-      return (IS_ARM(board) ? 16 : 8);
+      return (IS_TARANIS(board) ? 32 : (IS_ARM(board) ? 16 : 8));
     case HasMixerNames:
       return (IS_ARM(board) ? (IS_TARANIS(board) ? 8 : 6) : false);
     case HasExpoNames:
@@ -619,8 +619,6 @@ int OpenTxInterface::getCapability(const Capability capability)
       return 1;
     case TelemetryRSSIModel:
       return 1;
-    case TelemetryAlarm:
-      return 0;
     case TelemetryTimeshift:
       return 1;
     case TelemetryMaxMultiplier:
@@ -676,8 +674,6 @@ int OpenTxInterface::getCapability(const Capability capability)
     case LuaInputs:
     case LimitsPer1000:
     case EnhancedCurves:
-    case TelemetryInternalAlarms:
-      return IS_TARANIS(board);
     case HasFasOffset:
       return (IS_STOCK(board) ? false : true);
     case HasMahPersistent:

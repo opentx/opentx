@@ -4,6 +4,8 @@
 #include <QtGui>
 #include "eeprominterface.h"
 
+extern const QColor colors[C9X_MAX_CURVES];
+
 #define TMR_NUM_OPTION  (TMR_VAROFS+2*9+2*GetEepromInterface()->getCapability(LogicalSwitches)-1)
 
 //convert from mode 1 to mode generalSettings.stickMode
@@ -27,7 +29,6 @@
 
 void populateGvSourceCB(QComboBox *b, int value);
 void populateVoiceLangCB(QComboBox *b, QString language);
-void populateTTraceCB(QComboBox *b, int value);
 void populateRotEncCB(QComboBox *b, int value, int renumber);
 void populateBacklightCB(QComboBox *b, const uint8_t value);
 
@@ -88,7 +89,6 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr=
 
 void populatePhasesCB(QComboBox *b, int value);
 void populateGvarUseCB(QComboBox *b, unsigned int phase);
-void populateCustomScreenFieldCB(QComboBox *b, unsigned int value, bool last, int hubproto);
 QString getProtocolStr(const int proto);
 QString getPhasesStr(unsigned int phases, ModelData & model);
 
@@ -120,7 +120,6 @@ QString getCenterBeep(ModelData * g_model);
 
 /* FrSky helpers */
 QString getFrSkyAlarmType(int alarm);
-QString getFrSkyBlades(int blades);
 QString getFrSkyUnits(int units);
 QString getFrSkyProtocol(int protocol);
 QString getFrSkyMeasure(int units);

@@ -65,6 +65,7 @@ class OpenTxGeneralData: public TransformedField {
     unsigned int version;
     int inputsCount;
     unsigned int chkSum;
+    unsigned int potsType[4];
 };
 
 class ProtocolsConversionTable: public ConversionTable
@@ -102,6 +103,12 @@ class ProtocolsConversionTable: public ConversionTable
     }
 };
 
+class ThrottleSourceConversionTable: public ConversionTable {
+
+  public:
+    ThrottleSourceConversionTable(BoardEnum board, unsigned int version);
+};
+
 class ChannelsConversionTable: public ConversionTable
 {
   public:
@@ -133,6 +140,7 @@ class OpenTxModelData: public TransformedField {
     char name[256];
     int subprotocols[C9X_NUM_MODULES+1/*trainer*/];
     ProtocolsConversionTable protocolsConversionTable;
+    ThrottleSourceConversionTable throttleSourceConversionTable;
     ChannelsConversionTable channelsConversionTable;
 };
 

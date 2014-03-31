@@ -54,6 +54,7 @@
 #define GPS
 #define FAI_CHOICE
 
+#define NUM_POTS  3
 #define EEPROM_VARIANT 3
 
 #undef min
@@ -90,6 +91,7 @@ namespace Open9xSky9x {
 #include "radio/src/simpgmspace.cpp"
 #include "radio/src/templates.cpp"
 #include "radio/src/translations.cpp"
+#include "radio/src/fonts.cpp"
 #include "radio/src/telemetry/frsky.cpp"
 #include "radio/src/targets/sky9x/audio_driver.cpp"
 #include "radio/src/audio_arm.cpp"

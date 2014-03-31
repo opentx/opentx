@@ -37,6 +37,7 @@
 #include "opentx.h"
 
 uint8_t s_evt;
+struct t_inactivity inactivity = {0};
 
 #if defined(CPUARM)
 uint8_t getEvent(bool trim)
@@ -97,7 +98,9 @@ void Key::input(bool val, EnumKeys enuk)
       break;
 
     case KSTATE_RPTDELAY: // gruvin: delay state before first key repeat
-      if(m_cnt == KEY_LONG_DELAY) putEvent(EVT_KEY_LONG(enuk));
+      if (m_cnt == KEY_LONG_DELAY) {
+        putEvent(EVT_KEY_LONG(enuk));
+      }
       if (m_cnt == 40) {
         m_state = 16;
         m_cnt = 0;
@@ -108,17 +111,19 @@ void Key::input(bool val, EnumKeys enuk)
     case 8:
     case 4:
     case 2:
-      if(m_cnt >= 48)  { //3 6 12 24 48 pulses in every 480ms
+      if (m_cnt >= 48)  { //3 6 12 24 48 pulses in every 480ms
         m_state >>= 1;
         m_cnt     = 0;
       }
       // no break
     case 1:
-      if( (m_cnt & (m_state-1)) == 0)  putEvent(EVT_KEY_REPT(enuk));
+      if ((m_cnt & (m_state-1)) == 0) {
+        putEvent(EVT_KEY_REPT(enuk));
+      }
       break;
 
     case KSTATE_PAUSE: //pause
-      if(m_cnt >= 64)      {
+      if (m_cnt >= 64)      {
         m_state = 8;
         m_cnt   = 0;
       }

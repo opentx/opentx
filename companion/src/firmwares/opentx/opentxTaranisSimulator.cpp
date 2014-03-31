@@ -23,7 +23,6 @@
 #define PCBTARANIS
 #define CPUARM
 #define HELI
-#define TEMPLATES
 #define SPLASH
 #define FLIGHT_MODES
 #define FRSKY
@@ -54,6 +53,8 @@
 #define LUA_MODEL_SCRIPTS
 #define EEPROM_VARIANT 3
 
+#define NUM_POTS  5
+
 #undef min
 #undef max
 
@@ -71,7 +72,6 @@ inline int geteepromsize() {
 #include "radio/src/protocols/ppm_arm.cpp"
 #include "radio/src/protocols/pxx_arm.cpp"
 #include "radio/src/protocols/dsm2_arm.cpp"
-#include "radio/src/targets/taranis/pwr_driver.cpp"
 #include "radio/src/eeprom_common.cpp"
 #include "radio/src/eeprom_conversions.cpp"
 #include "radio/src/eeprom_rlc.cpp"
@@ -102,8 +102,8 @@ inline int geteepromsize() {
 #undef SDCARD
 #include "radio/src/simpgmspace.cpp"
 #define SDCARD
-#include "radio/src/templates.cpp"
 #include "radio/src/translations.cpp"
+#include "radio/src/fonts.cpp"
 #include "radio/src/telemetry/frsky_sport.cpp"
 #include "radio/src/targets/taranis/audio_driver.cpp"
 #include "radio/src/audio_arm.cpp"
@@ -152,9 +152,6 @@ int16_t g_anas[NUM_STICKS+5];
 
 uint16_t anaIn(uint8_t chan)
 {
-  if (chan == 8)
-    return 1800;
-  else
     return g_anas[chan];
 }
 

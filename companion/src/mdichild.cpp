@@ -53,6 +53,7 @@
 #include "helpers.h"
 #include "appdata.h"
 #include "wizarddialog.h"
+#include "taranisnotfound.h"
 #include <QFileInfo>
 
 #if defined WIN32 || !defined __GNUC__
@@ -69,6 +70,7 @@ MdiChild::MdiChild():
   fileChanged(false)
 {
   ui->setupUi(this);
+
   this->setWindowIcon(CompanionIcon("open.png"));
   ui->SimulateTxButton->setIcon(CompanionIcon("simulate.png"));
   setAttribute(Qt::WA_DeleteOnClose);
@@ -196,6 +198,7 @@ void MdiChild::wizardEdit()
 
 void MdiChild::openEditWindow()
 {
+    QApplication::setOverrideCursor(Qt::WaitCursor);
   int row = ui->modelsList->currentRow();
   if (row == 0){
     generalEdit();
@@ -209,6 +212,7 @@ void MdiChild::openEditWindow()
       modelEdit();
     }
   }
+  QApplication::restoreOverrideCursor();
 }
 
 void MdiChild::newFile()
@@ -518,7 +522,8 @@ void MdiChild::writeEeprom()  // write to Tx
       }
       backupEnable=false;
     }
-  } else {
+  }
+  else {
     backupEnable=false;
   }
   QString stickCal=g.profile[g.id()].stickPotCalib();
@@ -541,7 +546,8 @@ void MdiChild::writeEeprom()  // write to Tx
         if (IS_TARANIS(eepromInterface->getBoard())) {
           QString path=((MainWindow *)this->parent())->FindTaranisPath();
           if (path.isEmpty()) {
-            QMessageBox::warning(this, tr("Taranis radio not found"), tr("Impossible to identify the radio on your system, please verify the eeprom disk is connected."));
+            taranisNotFoundDialog *tnfd = new taranisNotFoundDialog(this);
+            tnfd->exec();
             return;
           }
           else {
@@ -597,7 +603,8 @@ void MdiChild::writeEeprom()  // write to Tx
         if (IS_TARANIS(eepromInterface->getBoard())) {
           QString path=((MainWindow *)this->parent())->FindTaranisPath();
           if (path.isEmpty()) {
-            QMessageBox::warning(this, tr("Taranis radio not found"), tr("Impossible to identify the radio on your system, please verify the eeprom disk is connected."));
+            taranisNotFoundDialog *tnfd = new taranisNotFoundDialog(this);
+            tnfd->exec();
             return;
           }
           else {
@@ -618,7 +625,8 @@ void MdiChild::writeEeprom()  // write to Tx
     if (IS_TARANIS(eepromInterface->getBoard())) {
       QString path=((MainWindow *)this->parent())->FindTaranisPath();
       if (path.isEmpty()) {
-        QMessageBox::warning(this, tr("Taranis radio not found"), tr("Impossible to identify the radio on your system, please verify the eeprom disk is connected."));
+        taranisNotFoundDialog *tnfd = new taranisNotFoundDialog(this);
+        tnfd->exec();
         return;
       }
       else {
@@ -654,7 +662,8 @@ void MdiChild::print(int model, QString filename)
     
     printDialog *pd = new printDialog(this, &radioData.generalSettings, &radioData.models[model], filename);
     pd->show();    
-  } else {
+  }
+  else {
     if(ui->modelsList->currentRow()<1) return;
     printDialog *pd = new printDialog(this, &radioData.generalSettings, &radioData.models[ui->modelsList->currentRow()-1]);
     pd->show();
@@ -693,9 +702,8 @@ bool MdiChild::loadBackup()
                               .arg(file.errorString()));
         return false;
     }
-    uint8_t *eeprom = (uint8_t *)malloc(eeprom_size);
-    memset(eeprom, 0, eeprom_size);
-    long result = file.read((char*)eeprom, eeprom_size);
+    QByteArray eeprom(eeprom_size, 0);
+    long result = file.read((char*)eeprom.data(), eeprom_size);
     file.close();
 
     if (result != eeprom_size) {
@@ -707,7 +715,7 @@ bool MdiChild::loadBackup()
         return false;
     }
 
-    if (!LoadBackup(radioData, eeprom, eeprom_size, index)) {
+    if (!LoadBackup(radioData, (uint8_t *)eeprom.data(), eeprom_size, index)) {
       QMessageBox::critical(this, tr("Error"),
           tr("Invalid binary backup File %1")
           .arg(fileName));
@@ -715,6 +723,6 @@ bool MdiChild::loadBackup()
     }
 
     ui->modelsList->refreshList();
-    free(eeprom);
+
     return true;
 }

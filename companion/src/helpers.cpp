@@ -4,6 +4,41 @@
 #include "simulatordialog.h"
 #include "flashinterface.h"
 
+const QColor colors[C9X_MAX_CURVES] = {
+  QColor(0,0,127),
+  QColor(0,127,0),
+  QColor(127,0,0),
+  QColor(0,127,127),
+  QColor(127,0,127),
+  QColor(127,127,0),
+  QColor(127,127,127),
+  QColor(0,0,255),
+  QColor(0,127,255),
+  QColor(127,0,255),
+  QColor(0,255,0),
+  QColor(0,255,127),
+  QColor(127,255,0),
+  QColor(255,0,0),
+  QColor(255,0,127),
+  QColor(255,127,0),
+  QColor(0,0,127),
+  QColor(0,127,0),
+  QColor(127,0,0),
+  QColor(0,127,127),
+  QColor(127,0,127),
+  QColor(127,127,0),
+  QColor(127,127,127),
+  QColor(0,0,255),
+  QColor(0,127,255),
+  QColor(127,0,255),
+  QColor(0,255,0),
+  QColor(0,255,127),
+  QColor(127,255,0),
+  QColor(255,0,0),
+  QColor(255,0,127),
+  QColor(255,127,0),
+};
+
 QString getPhaseName(int val, char * phasename)
 {
   if (!val) return "---";
@@ -63,27 +98,6 @@ void populateVoiceLangCB(QComboBox *b, QString language)
   }
 }
 
-void populateTTraceCB(QComboBox *b, int value)
-{
-  const QString strings9x[] = { QObject::tr("THR"), QObject::tr("P1"), QObject::tr("P2"), QObject::tr("P3")};
-  const QString stringstaranis[] = { QObject::tr("THR"), QObject::tr("S1"), QObject::tr("S2"), QObject::tr("LS"), QObject::tr("RS")};
-  b->clear();
-  if (IS_TARANIS(GetEepromInterface()->getBoard())) {
-    for (int i=0; i< 5; i++) {
-      b->addItem(stringstaranis[i]);
-    }
-  } else {
-    for (int i=0; i< 4; i++) {
-      b->addItem(strings9x[i]);
-    }
-  }
-  int channels=(IS_ARM(GetEepromInterface()->getBoard()) ? 32 : 16);
-  for (int i=1; i<= channels; i++) {
-    b->addItem(QObject::tr("CH%1").arg(i, 2, 10, QChar('0')));
-  }
-  b->setCurrentIndex(value);
-}
-
 void populateRotEncCB(QComboBox *b, int value, int renumber)
 {
   QString strings[] = { QObject::tr("No"), QObject::tr("RotEnc A"), QObject::tr("Rot Enc B"), QObject::tr("Rot Enc C"), QObject::tr("Rot Enc D"), QObject::tr("Rot Enc E")};
@@ -93,31 +107,6 @@ void populateRotEncCB(QComboBox *b, int value, int renumber)
     b->addItem(strings[i]);
   }
   b->setCurrentIndex(value);
-}
-
-void populateCustomScreenFieldCB(QComboBox *b, unsigned int value, bool last=false, int hubproto=0)
-{
-  int telem_hub[] = {0,0,0,0,0,0,0,0,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,0,0,2,2,1,1,1,1,1,1};
-  b->clear();
-
-  b->addItem(RawSource(SOURCE_TYPE_NONE, 0).toString());
-
-  for (unsigned int i = 0; i <= (last ? TELEMETRY_SOURCES_DISPLAY_COUNT : TELEMETRY_SOURCES_STATUS_COUNT); i++) {
-    b->addItem(RawSource(SOURCE_TYPE_TELEMETRY, i).toString());
-    if (!(i>=sizeof(telem_hub)/sizeof(int) || telem_hub[i]==0 || ((telem_hub[i]>=hubproto) && hubproto!=0))) {
-      QModelIndex index = b->model()->index(i, 0);
-      QVariant v(0);
-      b->model()->setData(index, v, Qt::UserRole - 1);
-    }
-  }
-
-  if (value>=sizeof(telem_hub)/sizeof(int))
-    b->setCurrentIndex(0);
-  else if (telem_hub[value]==0 || ((telem_hub[value]>=hubproto) && hubproto!=0)) {
-    b->setCurrentIndex(value);
-  }
-
-  b->setMaxVisibleItems(10);
 }
 
 QString getProtocolStr(const int proto)
@@ -292,7 +281,7 @@ void CurveGroup::update()
         if (lastType != curve.type) {
           lastType = curve.type;
           curveValueCB->clear();
-          for (int i=-numcurves; i<numcurves; i++) {
+          for (int i=-numcurves; i<=numcurves; i++) {
             curveValueCB->addItem(CurveReference(CurveReference::CURVE_REF_CUSTOM, i).toString());
           }
         }
@@ -760,19 +749,6 @@ QString getFrSkyAlarmType(int alarm)
       return "----";
   }
 }
-
-QString getFrSkyBlades(int blades)
-{
-  switch (blades) {
-    case 1:
-      return "3";
-    case 2:
-      return "4";
-    default:
-      return "2";
-  }
-}
-
 
 QString getFrSkyUnits(int units)
 {

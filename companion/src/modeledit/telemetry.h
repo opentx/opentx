@@ -61,6 +61,9 @@ class TelemetryCustomScreen : public ModelPanel
     void barMinChanged(double value);
     void barMaxChanged(double value);
 
+  protected:
+    void populateTelemetrySourceCB(QComboBox *b, unsigned int value, bool last, int hubproto);
+
   private:
     void updateBar(int line);
     Ui::TelemetryCustomScreen * ui;
@@ -86,7 +89,7 @@ class TelemetryPanel : public ModelPanel
     void onAnalogModified();
     void on_frskyProtoCB_currentIndexChanged(int index);
     void on_frskyUnitsCB_currentIndexChanged(int index);
-    void on_frskyBladesCB_currentIndexChanged(int index);
+    void on_bladesCount_editingFinished();
     void on_frskyCurrentCB_currentIndexChanged(int index);
     void on_frskyVoltCB_currentIndexChanged(int index);
     void on_AltitudeToolbar_ChkB_toggled(bool checked);

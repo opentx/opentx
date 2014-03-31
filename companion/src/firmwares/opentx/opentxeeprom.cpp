@@ -11,7 +11,7 @@
 #define HAS_PERSISTENT_TIMERS(board)         (IS_ARM(board) || board == BOARD_GRUVIN9X)
 #define HAS_LARGE_LCD(board)                 IS_TARANIS(board)
 #define MAX_VIEWS(board)                     (HAS_LARGE_LCD(board) ? 2 : 256)
-#define MAX_POTS(board, version)             (IS_TARANIS(board) ? (version>=216 ? 5 : 4) : 3)
+#define MAX_POTS(board)                      (IS_TARANIS(board) ? 5 : 3)
 #define MAX_SWITCHES(board)                  (IS_TARANIS(board) ? 8 : 7)
 #define MAX_SWITCHES_POSITION(board)         (IS_TARANIS(board) ? 22 : 9)
 #define MAX_ROTARY_ENCODERS(board)           (board==BOARD_GRUVIN9X ? 2 : (board==BOARD_SKY9X ? 1 : 0))
@@ -172,8 +172,11 @@ class SourcesConversionTable: public ConversionTable {
         }
       }
 
-      for (int i=0; i<4+MAX_POTS(board, version); i++)
+      for (int i=0; i<4+MAX_POTS(board); i++) {
+        if (IS_TARANIS(board) && version < 216 && i==6)
+          continue;
         addConversion(RawSource(SOURCE_TYPE_STICK, i), val++);
+      }
 
       for (int i=0; i<MAX_ROTARY_ENCODERS(board); i++)
         addConversion(RawSource(SOURCE_TYPE_ROTARY_ENCODER, 0), val++);
@@ -291,6 +294,32 @@ class SourcesConversionTable: public ConversionTable {
     }
 };
 
+ThrottleSourceConversionTable::ThrottleSourceConversionTable(BoardEnum board, unsigned int version)
+{
+  int val=0;
+
+  addConversion(THROTTLE_SOURCE_THR, val++);
+
+  if (IS_TARANIS(board)) {
+    addConversion(THROTTLE_SOURCE_S1, val++);
+    addConversion(THROTTLE_SOURCE_S2, val++);
+    if (version >= 216)
+      addConversion(THROTTLE_SOURCE_S3, val++);
+    addConversion(THROTTLE_SOURCE_LS, val++);
+    addConversion(THROTTLE_SOURCE_RS, val++);
+  }
+  else {
+    addConversion(THROTTLE_SOURCE_P1, val++);
+    addConversion(THROTTLE_SOURCE_P2, val++);
+    addConversion(THROTTLE_SOURCE_P3, val++);
+  }
+
+  for (int i=0; i<MAX_CHANNELS(board, version); i++) {
+    addConversion(THROTTLE_SOURCE_FIRST_CHANNEL+i, val++);
+  }
+}
+
+
 template <int N>
 class SwitchField: public ConversionField< SignedField<N> > {
   public:
@@ -384,8 +413,12 @@ class TelemetrySourcesConversionTable: public ConversionTable {
       addConversion(1+TELEMETRY_SOURCE_T2_MAX, val++);
       addConversion(1+TELEMETRY_SOURCE_SPEED_MAX, val++);
       addConversion(1+TELEMETRY_SOURCE_DIST_MAX, val++);
-      addConversion(1+TELEMETRY_SOURCE_CELL_MIN, val++);
-      addConversion(1+TELEMETRY_SOURCE_VFAS_MIN, val++);
+      if (version >= 216) {
+        addConversion(1+TELEMETRY_SOURCE_CELL_MIN, val++);
+        addConversion(1+TELEMETRY_SOURCE_CELLS_MIN, val++);
+        addConversion(1+TELEMETRY_SOURCE_VFAS_MIN, val++);
+      }
+      addConversion(1+TELEMETRY_SOURCE_CURRENT_MAX, val++);
       addConversion(1+TELEMETRY_SOURCE_POWER_MAX, val++);
       if (IS_ARM(board) && version >= 216) {
         for (int i=0; i<5; i++)
@@ -697,32 +730,36 @@ void concatGvarParam(int & gvar, const int _gvar, const unsigned int _gvarParam,
   }
 }
 
-void exportGvarParam(const int gvar, int & _gvar)
+void exportGvarParam(const int gvar, int & _gvar, int version)
 {
+  int GV1 = (version >= 216 ? 4096 : 512);
+
   if (gvar < -10000) {
-    _gvar = 512 + gvar + 10000;
+    _gvar = GV1 + gvar + 10000;
   }
   else if (gvar > 10000) {
-    _gvar = 512 + gvar - 10001;
+    _gvar = GV1 + gvar - 10001;
   }
   else {
     _gvar = gvar;
   }
 }
 
-void importGvarParam(int & gvar, const int _gvar)
+void importGvarParam(int & gvar, const int _gvar, int version)
 {
-  if (_gvar >= 512) {
-    gvar = 10001 + _gvar - 512;
+  int GV1 = (version >= 216 ? 4096 : 512);
+
+  if (_gvar >= GV1) {
+    gvar = 10001 + _gvar - GV1;
   }
-  else if (_gvar >= 512-5) {
-    gvar = -10000 + _gvar - 512;
+  else if (_gvar >= GV1-9) {
+    gvar = -10000 + _gvar - GV1;
   }
-  else if (_gvar < -512) {
-    gvar = -10000 + _gvar + 513;
+  else if (_gvar < -GV1) {
+    gvar = -10000 + _gvar + GV1 + 1;
   }
-  else if (_gvar < -512+5) {
-    gvar = 10000 + _gvar + 513;
+  else if (_gvar < -GV1+9) {
+    gvar = 10000 + _gvar + GV1 + 1;
   }
   else {
     gvar = _gvar;
@@ -744,12 +781,14 @@ class MixField: public TransformedField {
       if (IS_TARANIS(board) && version >= 216) {
         internalField.Append(new UnsignedField<8>(_destCh));
         internalField.Append(new UnsignedField<16>(mix.phases));
-        internalField.Append(new UnsignedField<8>((unsigned int &)mix.mltpx));
+        internalField.Append(new UnsignedField<2>((unsigned int &)mix.mltpx));
+        internalField.Append(new UnsignedField<1>((unsigned int &)mix.carryTrim));
+        internalField.Append(new SpareBitsField<5>());
         internalField.Append(new SignedField<16>(_weight));
         internalField.Append(new SwitchField<8>(mix.swtch, board, version));
         internalField.Append(new CurveReferenceField(mix.curve, board, version));
         internalField.Append(new UnsignedField<4>(mix.mixWarn));
-        internalField.Append(new UnsignedField<4>(mix.srcVariant));
+        internalField.Append(new SpareBitsField<4>());
         internalField.Append(new UnsignedField<8>(mix.delayUp));
         internalField.Append(new UnsignedField<8>(mix.delayDown));
         internalField.Append(new UnsignedField<8>(mix.speedUp));
@@ -758,6 +797,26 @@ class MixField: public TransformedField {
         internalField.Append(new SignedField<16>(_offset));
         internalField.Append(new ZCharField<8>(mix.name));
         internalField.Append(new SpareBitsField<8>());
+      }
+      else if (IS_ARM(board) && version >= 216) {
+        internalField.Append(new UnsignedField<4>(_destCh));
+        internalField.Append(new UnsignedField<4>(mix.mixWarn));
+        internalField.Append(new UnsignedField<16>(mix.phases));
+        internalField.Append(new BoolField<1>(_curveMode));
+        internalField.Append(new BoolField<1>(mix.noExpo));
+        internalField.Append(new SignedField<3>(mix.carryTrim));
+        internalField.Append(new UnsignedField<2>((unsigned int &)mix.mltpx));
+        internalField.Append(new SpareBitsField<1>());
+        internalField.Append(new SignedField<16>(_weight));
+        internalField.Append(new SwitchField<8>(mix.swtch, board, version));
+        internalField.Append(new SignedField<8>(_curveParam));
+        internalField.Append(new UnsignedField<8>(mix.delayUp));
+        internalField.Append(new UnsignedField<8>(mix.delayDown));
+        internalField.Append(new UnsignedField<8>(mix.speedUp));
+        internalField.Append(new UnsignedField<8>(mix.speedDown));
+        internalField.Append(new SourceField<8>(mix.srcRaw, board, version, FLAG_NOTELEMETRY));
+        internalField.Append(new SignedField<16>(_offset));
+        internalField.Append(new ZCharField<6>(mix.name));
       }
       else if (IS_ARM(board)) {
         internalField.Append(new UnsignedField<8>(_destCh));
@@ -775,7 +834,7 @@ class MixField: public TransformedField {
         internalField.Append(new SignedField<8>(_curveParam));
         if (version >= 214) {
           internalField.Append(new UnsignedField<4>(mix.mixWarn));
-          internalField.Append(new UnsignedField<4>(mix.srcVariant));
+          internalField.Append(new SpareBitsField<4>());
         }
         else {
           internalField.Append(new UnsignedField<8>(mix.mixWarn));
@@ -865,9 +924,9 @@ class MixField: public TransformedField {
       }
 
       if (IS_ARM(board)) {
-        exportGvarParam(mix.weight, _weight);
+        exportGvarParam(mix.weight, _weight, version);
         if (version >= 214)
-          exportGvarParam(mix.sOffset, _offset);
+          exportGvarParam(mix.sOffset, _offset, version);
         else
           splitGvarParam(mix.sOffset, _offset, _offsetMode, board, version);
       }
@@ -879,7 +938,7 @@ class MixField: public TransformedField {
 
     virtual void afterImport()
     {
-      if (IS_TARANIS(board) || version < 216) {
+      if (IS_TARANIS(board) && version < 216) {
         if (mix.srcRaw.type == SOURCE_TYPE_STICK && mix.srcRaw.index < NUM_STICKS) {
           if (!mix.noExpo) {
             mix.srcRaw = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, mix.srcRaw.index, model);
@@ -900,15 +959,22 @@ class MixField: public TransformedField {
       }
 
       if (IS_ARM(board)) {
-        importGvarParam(mix.weight, _weight);
+        importGvarParam(mix.weight, _weight, version);
         if (version >= 214)
-          importGvarParam(mix.sOffset, _offset);
+          importGvarParam(mix.sOffset, _offset, version);
         else
           concatGvarParam(mix.sOffset, _offset, _offsetMode, board, version);
       }
       else {
         concatGvarParam(mix.weight, _weight, _weightMode, board, version);
         concatGvarParam(mix.sOffset, _offset, _offsetMode, board, version);
+      }
+
+      if (IS_TARANIS(board) && version < 216) {
+        if (mix.sOffset >= -500 && mix.sOffset <= 500 && mix.weight >= -500 && mix.weight <= 500) {
+          mix.sOffset = divRoundClosest(mix.sOffset * mix.weight, 100);
+        }
+        if (mix.carryTrim < 0) mix.carryTrim = 0;
       }
     }
 
@@ -938,16 +1004,27 @@ class InputField: public TransformedField {
     {
       if (IS_TARANIS(board) && version >= 216) {
         internalField.Append(new SourceField<8>(expo.srcRaw, board, version, 0));
-        internalField.Append(new UnsignedField<16>(expo.scale));
+        internalField.Append(new UnsignedField<16>(expo.scale, "Scale"));
         internalField.Append(new UnsignedField<8>(expo.chn, "Channel"));
         internalField.Append(new SwitchField<8>(expo.swtch, board, version));
         internalField.Append(new UnsignedField<16>(expo.phases));
         internalField.Append(new SignedField<8>(_weight, "Weight"));
-        internalField.Append(new SignedField<8>(expo.carryTrim));
+        internalField.Append(new SignedField<6>(expo.carryTrim, "CarryTrim"));
+        internalField.Append(new UnsignedField<2>(expo.mode, "Mode"));
         internalField.Append(new ZCharField<8>(expo.name));
         internalField.Append(new SignedField<8>(expo.offset, "Offset"));
         internalField.Append(new CurveReferenceField(expo.curve, board, version));
         internalField.Append(new SpareBitsField<8>());
+      }
+      else if (IS_ARM(board) && version >= 216) {
+        internalField.Append(new UnsignedField<2>(expo.mode, "Mode"));
+        internalField.Append(new UnsignedField<4>(expo.chn, "Channel"));
+        internalField.Append(new BoolField<2>(_curveMode));
+        internalField.Append(new SwitchField<8>(expo.swtch, board, version));
+        internalField.Append(new UnsignedField<16>(expo.phases, "Phases"));
+        internalField.Append(new SignedField<8>(_weight, "Weight"));
+        internalField.Append(new ZCharField<6>(expo.name));
+        internalField.Append(new SignedField<8>(_curveParam));
       }
       else if (IS_ARM(board)) {
         internalField.Append(new UnsignedField<8>(expo.mode, "Mode"));
@@ -1008,9 +1085,11 @@ class InputField: public TransformedField {
 
     virtual void afterImport()
     {
-      if (IS_TARANIS(board) && version < 216) {
-        if (expo.mode) {
-          expo.srcRaw = RawSource(SOURCE_TYPE_STICK, expo.chn);
+      if (IS_TARANIS(board)) {
+        if (version < 216) {
+          if (expo.mode) {
+            expo.srcRaw = RawSource(SOURCE_TYPE_STICK, expo.chn);
+          }
         }
       }
 
@@ -1041,7 +1120,7 @@ class LimitField: public StructField {
     LimitField(LimitData & limit, BoardEnum board, unsigned int version):
       StructField("Limit")
     {
-      if (IS_ARM(board) && version >= 216) {
+      if (IS_TARANIS(board) && version >= 216) {
         Append(new ConversionField< SignedField<16> >(limit.min, +1000));
         Append(new ConversionField< SignedField<16> >(limit.max, -1000));
       }
@@ -1808,7 +1887,7 @@ class AvrCustomFunctionField: public TransformedField {
         internalField.Append(new UnsignedField<5>(_union_param));
         internalField.Append(new UnsignedField<1>(_active));
       }
-      if (version >= 213) {
+      else if (version >= 213) {
         internalField.Append(new SwitchField<8>(fn.swtch, board, version));
         internalField.Append(new UnsignedField<3>(_union_param));
         internalField.Append(new ConversionField< UnsignedField<5> >((unsigned int &)fn.func, &functionsConversionTable, "Function", ::QObject::tr("OpenTX on this board doesn't accept this function")));
@@ -2069,7 +2148,7 @@ class FrskyField: public StructField {
         else {
           Append(new UnsignedField<8>(frsky.voltsSource));
         }
-        Append(new UnsignedField<8>(frsky.blades));
+        Append(new ConversionField< SignedField<8> >(frsky.blades, -2));
         Append(new UnsignedField<8>(frsky.currentSource));
 
         Append(new UnsignedField<1>(frsky.screens[0].type));
@@ -2111,12 +2190,12 @@ class FrskyField: public StructField {
             Append(new UnsignedField<1>(frsky.channels[i].alarms[j].greater));
           Append(new UnsignedField<2>(frsky.channels[i].multiplier, 0, 3, "Multiplier"));
         }
-        Append(new UnsignedField<2>(frsky.usrProto));
-        Append(new UnsignedField<2>(frsky.blades));
+        Append(new UnsignedField<2>(frsky.usrProto, "USR Proto"));
+        Append(new ConversionField< UnsignedField<2> >((unsigned int &)frsky.blades, -2));
         Append(new UnsignedField<1>(frsky.screens[0].type));
         Append(new UnsignedField<1>(frsky.screens[1].type));
-        Append(new UnsignedField<2>(frsky.voltsSource));
-        Append(new SignedField<4>(frsky.varioMin));
+        Append(new UnsignedField<2>(frsky.voltsSource, "Volts Source"));
+        Append(new SignedField<4>(frsky.varioMin, "Vario Min"));
         Append(new SignedField<4>(frsky.varioMax));
         for (int i=0; i<2; i++) {
           Append(new ConversionField< UnsignedField<2> >(frsky.rssiAlarms[i].level, &rssiConversionTable[i], "RSSI level"));
@@ -2165,7 +2244,8 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   board(board),
   version(version),
   variant(variant),
-  protocolsConversionTable(board)
+  protocolsConversionTable(board),
+  throttleSourceConversionTable(board, version)
 {
   sprintf(name, "Model %s", modelData.name);
 
@@ -2275,7 +2355,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
     internalField.Append(new SignedField<8>(modelData.moduleData[0].ppmFrameLength));
   }
 
-  internalField.Append(new UnsignedField<8>(modelData.thrTraceSrc));
+  internalField.Append(new ConversionField< UnsignedField<8> >(modelData.thrTraceSrc, &throttleSourceConversionTable, "Throttle Source"));
 
   if (!afterrelease21March2013) {
     internalField.Append(new UnsignedField<8>(modelData.modelId));
@@ -2425,7 +2505,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
   generalData(generalData),
   board(board),
   version(version),
-  inputsCount(4 + MAX_POTS(board, version))
+  inputsCount(4 + MAX_POTS(board))
 {
   generalData.version = version;
   generalData.variant = variant;
@@ -2442,12 +2522,18 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
     }
   }
   else {
-    for (int i=0; i<inputsCount; i++)
-      internalField.Append(new SignedField<16>(generalData.calibMid[i]));
-    for (int i=0; i<inputsCount; i++)
-      internalField.Append(new SignedField<16>(generalData.calibSpanNeg[i]));
-    for (int i=0; i<inputsCount; i++)
-      internalField.Append(new SignedField<16>(generalData.calibSpanPos[i]));
+    for (int i=0; i<inputsCount; i++) {
+      if (!IS_TARANIS(board) || i!=6)
+        internalField.Append(new SignedField<16>(generalData.calibMid[i]));
+    }
+    for (int i=0; i<inputsCount; i++) {
+      if (!IS_TARANIS(board) || i!=6)
+        internalField.Append(new SignedField<16>(generalData.calibSpanNeg[i]));
+    }
+    for (int i=0; i<inputsCount; i++) {
+      if (!IS_TARANIS(board) || i!=6)
+        internalField.Append(new SignedField<16>(generalData.calibSpanPos[i]));
+    }
   }
 
   internalField.Append(new UnsignedField<16>(chkSum));
@@ -2549,8 +2635,8 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
     }
     if (IS_TARANIS(board) && version >= 216) {
       internalField.Append(new UnsignedField<8>(generalData.hw_uartMode));
-      for (int i=0; i<8; i++) {
-        internalField.Append(new UnsignedField<1>(generalData.potsType[i]));
+      for (int i=0; i<4; i++) {
+        internalField.Append(new UnsignedField<2>(potsType[i]));
       }
     }
   }
@@ -2569,6 +2655,11 @@ void OpenTxGeneralData::beforeExport()
       sum += generalData.calibSpanPos[i];
       if (++count == 12) break;
     }
+    for (int i=0; i<4; i++) {
+      potsType[i] = generalData.potsType[i];
+      if (i<2 && potsType[i] == 1)
+        potsType[i] = 0;
+    }
   }
   else {
     for (int i=0; i<inputsCount; i++)
@@ -2581,4 +2672,8 @@ void OpenTxGeneralData::beforeExport()
 
 void OpenTxGeneralData::afterImport()
 {
+  for (int i=0; i<4; i++) {
+    if (i<2 && generalData.potsType[i] == 0)
+      generalData.potsType[i] = 1;
+  }
 }

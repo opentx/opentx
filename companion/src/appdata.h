@@ -120,6 +120,7 @@ class Profile: protected CompStoreObj
     QString _haptic;
     QString _speaker;
     QString _stickPotCalib;
+    QString _timeStamp;
     QString _trainerCalib;
     int     _currentCalib;
     int     _gsStickMode;
@@ -145,6 +146,7 @@ class Profile: protected CompStoreObj
     QString haptic() const;
     QString speaker() const;
     QString stickPotCalib() const;
+    QString timeStamp() const;
     QString trainerCalib() const;
     int     currentCalib() const;
     int     gsStickMode() const;
@@ -169,6 +171,7 @@ class Profile: protected CompStoreObj
     void haptic        (const QString);
     void speaker       (const QString);
     void stickPotCalib (const QString);
+    void timeStamp     (const QString);
     void trainerCalib  (const QString);
     void currentCalib  (const int);
     void gsStickMode   (const int);
@@ -181,6 +184,7 @@ class Profile: protected CompStoreObj
     void remove();
     bool existsOnDisk();
     void init(int newIndex);
+    void initFwVariables();
     void flush();
 };
 

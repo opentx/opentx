@@ -38,14 +38,15 @@
 
 // static variables used in perOut - moved here so they don't interfere with the stack
 // It's also easier to initialize them here.
-#if !defined(PCBTARANIS)
-int16_t  rawAnas[NUM_INPUTS] = {0};
+#if defined(PCBTARANIS)
+int8_t  virtualInputsTrims[NUM_INPUTS];
+#else
+int16_t rawAnas[NUM_INPUTS] = {0};
 #endif
 int16_t  anas [NUM_INPUTS] = {0};
 int16_t  trims[NUM_STICKS] = {0};
 int32_t  chans[NUM_CHNOUT] = {0};
 BeepANACenter bpanaCenter = 0;
-struct t_inactivity inactivity = {0};
 
 int24_t act   [MAX_MIXERS] = {0};
 SwOn    swOn  [MAX_MIXERS]; // TODO better name later...
@@ -541,6 +542,7 @@ void applyDefaultTemplate()
     expo->curve.type = CURVE_REF_EXPO;
     expo->chn = i;
     expo->weight = 100;
+    expo->mode = 3; // TODO constant
     for (int c=0; c<4; c++) {
       g_model.inputNames[i][c] = char2idx(STR_VSRCRAW[1+STR_VSRCRAW[0]*stick_index+c]);
     }
@@ -1003,17 +1005,13 @@ void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
         int16_t offset = GET_GVAR(ed->offset, -100, 100, s_perout_flight_phase);
         if (offset) v += calc100toRESX(offset);
         
-        //========== TRIMS ===============
-        if (!(mode & e_perout_mode_notrims)) {
-          int8_t input_trim = ed->carryTrim;
-          if (input_trim < TRIM_ON)
-            input_trim = -input_trim - 1;
-          else if (input_trim == TRIM_ON && ed->srcRaw >= MIXSRC_Rud && ed->srcRaw <= MIXSRC_Ail)
-            input_trim = ed->srcRaw - MIXSRC_Rud;
-          else
-            input_trim = -1;
-          if (input_trim >= 0) v += trims[input_trim];
-        }        
+        //========== TRIMS ================
+        if (ed->carryTrim < TRIM_ON)
+          virtualInputsTrims[cur_chn] = -ed->carryTrim - 1;
+        else if (ed->carryTrim == TRIM_ON && ed->srcRaw >= MIXSRC_Rud && ed->srcRaw <= MIXSRC_Ail)
+          virtualInputsTrims[cur_chn] = ed->srcRaw - MIXSRC_Rud;
+        else
+          virtualInputsTrims[cur_chn] = -1;
 #endif
 
         anas[cur_chn] = v;
@@ -1248,7 +1246,7 @@ getvalue_t getValue(uint8_t i)
   else if (i==MIXSRC_SF) return (switchState(SW_SF0) ? -1024 : 1024);
   else if (i==MIXSRC_SG) return (switchState(SW_SG0) ? -1024 : (switchState(SW_SG1) ? 0 : 1024));
   else if (i==MIXSRC_SH) return (switchState(SW_SH0) ? -1024 : 1024);
-  else if (i<=MIXSRC_LAST_CSW) return getSwitch(SWSRC_FIRST_CSW+i-MIXSRC_FIRST_CSW) ? 1024 : -1024;
+  else if (i<=MIXSRC_LAST_LOGICAL_SWITCH) return getSwitch(SWSRC_FIRST_CSW+i-MIXSRC_FIRST_LOGICAL_SWITCH) ? 1024 : -1024;
 #else
   else if (i==MIXSRC_3POS) return (getSwitch(SW_ID0-SW_BASE+1) ? -1024 : (getSwitch(SW_ID1-SW_BASE+1) ? 0 : 1024));
   // don't use switchState directly to give getSwitch possibility to hack values if needed for switch warning 
@@ -1256,10 +1254,10 @@ getvalue_t getValue(uint8_t i)
   else if (i==MIXSRC_3POS2) return (getSwitch(SW_ID3-SW_BASE+1) ? -1024 : (getSwitch(SW_ID4-SW_BASE+1) ? 0 : 1024));
   // don't use switchState directly to give getSwitch possibility to hack values if needed for switch warning 
 #endif
-  else if (i<=MIXSRC_LAST_CSW) return getSwitch(SWSRC_THR+i-MIXSRC_THR) ? 1024 : -1024;
+  else if (i<=MIXSRC_LAST_LOGICAL_SWITCH) return getSwitch(SWSRC_THR+i-MIXSRC_THR) ? 1024 : -1024;
 #endif
 
-  else if (i<=MIXSRC_LAST_PPM) { int16_t x = g_ppmIns[i-MIXSRC_FIRST_PPM]; if (i<MIXSRC_FIRST_PPM+NUM_CAL_PPM) { x-= g_eeGeneral.trainer.calib[i-MIXSRC_FIRST_PPM]; } return x*2; }
+  else if (i<=MIXSRC_LAST_TRAINER) { int16_t x = g_ppmIns[i-MIXSRC_FIRST_TRAINER]; if (i<MIXSRC_FIRST_TRAINER+NUM_CAL_PPM) { x-= g_eeGeneral.trainer.calib[i-MIXSRC_FIRST_TRAINER]; } return x*2; }
   else if (i<=MIXSRC_LAST_CH) return ex_chans[i-MIXSRC_CH1];
 
 #if defined(GVARS)
@@ -1319,9 +1317,9 @@ volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_used = 0;
 volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_value = 0;
 
 #if defined(CPUARM)
-uint32_t cswDelays[NUM_CSW];
-uint32_t cswDurations[NUM_CSW];
-uint8_t  cswStates[NUM_CSW];
+uint32_t cswDelays[NUM_LOGICAL_SWITCH];
+uint32_t cswDurations[NUM_LOGICAL_SWITCH];
+uint8_t  cswStates[NUM_LOGICAL_SWITCH];
 #endif
 
 #if defined(PCBTARANIS)
@@ -1349,7 +1347,7 @@ uint32_t check2PosSwitchPosition(EnumKeys sw)
   return result;
 }
 
-#define DELAY_SWITCH_3POS    10/*100ms*/
+#define DELAY_SWITCH_3POS    15/*150ms*/
 uint32_t check3PosSwitchPosition(uint8_t idx, EnumKeys sw, bool startup)
 {
   uint32_t result;
@@ -1430,7 +1428,7 @@ void getSwitchesPosition(bool startup)
 #define SWITCH_POSITION(idx) switchState((EnumKeys)(SW_BASE+(idx)))
 #endif
 
-int16_t csLastValue[NUM_CSW];
+int16_t csLastValue[NUM_LOGICAL_SWITCH];
 #define CS_LAST_VALUE_INIT -32768
 
 /* recursive function. stack as of today (16/03/2012) grows by 8bytes at each call, which is ok! */
@@ -1921,7 +1919,7 @@ void incRotaryEncoder(uint8_t idx, int8_t inc)
   #define SET_GVAR_VALUE(idx, phase, value) \
     (GVAR_VALUE(idx, phase) = value, eeDirty(EE_MODEL))
 #else
-  #define SET_GVAR_VALUE(gvar, phase, value) \
+  #define SET_GVAR_VALUE(idx, phase, value) \
     GVAR_VALUE(idx, phase) = value; \
     eeDirty(EE_MODEL); \
     if (g_model.gvars[idx].popup) { \
@@ -1973,8 +1971,8 @@ uint8_t getGVarFlightPhase(uint8_t phase, uint8_t idx)
 
 int16_t getGVarValue(int16_t x, int16_t min, int16_t max, int8_t phase)
 {
-  if (GV_IS_GV_VALUE(x,min,max)) {
-    int8_t idx = GV_INDEX_CALCULATION(x,max);
+  if (GV_IS_GV_VALUE(x, min, max)) {
+    int8_t idx = GV_INDEX_CALCULATION(x, max);
     int8_t mul = 1;
 
     if (idx < 0) {
@@ -1984,7 +1982,6 @@ int16_t getGVarValue(int16_t x, int16_t min, int16_t max, int8_t phase)
 
     x = GVAR_VALUE(idx, getGVarFlightPhase(phase, idx)) * mul;
   }
-
   return limit(min, x, max);
 }
 
@@ -2105,6 +2102,8 @@ getvalue_t convert8bitsTelemValue(uint8_t channel, ls_telemetry_value_t value)
       break;
     case TELEM_CURRENT:
     case TELEM_POWER:
+    case TELEM_MAX_CURRENT:
+    case TELEM_MAX_POWER:
       result = value * 5;
       break;
     case TELEM_CONSUMPTION:
@@ -2626,7 +2625,10 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
 }
 
 #if defined(GVARS)
-int8_t trimGvar[NUM_STICKS] = { -1, -1, -1, -1 };
+  int8_t trimGvar[NUM_STICKS] = { -1, -1, -1, -1 };
+  #define TRIM_REUSED(idx) trimGvar[idx] >= 0
+#else
+  #define TRIM_REUSED(idx) 0
 #endif
 
 #if defined(CPUARM)
@@ -2648,8 +2650,7 @@ uint8_t checkTrim(uint8_t event)
     bool thro;
 
 #if defined(GVARS)
-#define TRIM_REUSED() trimGvar[idx] >= 0
-    if (TRIM_REUSED()) {
+    if (TRIM_REUSED(idx)) {
 #if defined(PCBSTD)
       phase = 0;
 #else
@@ -2668,7 +2669,6 @@ uint8_t checkTrim(uint8_t event)
       thro = (idx==THR_STICK && g_model.thrTrim);
     }
 #else
-#define TRIM_REUSED() 0
     phase = getTrimFlightPhase(s_perout_flight_phase, idx);
 #if defined(PCBTARANIS)
     before = getTrimValue(phase, idx);
@@ -2694,7 +2694,7 @@ uint8_t checkTrim(uint8_t event)
     }
 
     if ((before<after && after>TRIM_MAX) || (before>after && after<TRIM_MIN)) {
-      if (!g_model.extendedTrims || TRIM_REUSED()) after = before;
+      if (!g_model.extendedTrims || TRIM_REUSED(idx)) after = before;
     }
 
     if (after < TRIM_EXTENDED_MIN) {
@@ -2705,7 +2705,7 @@ uint8_t checkTrim(uint8_t event)
     }
 
 #if defined(GVARS)
-    if (TRIM_REUSED()) {
+    if (TRIM_REUSED(idx)) {
       SET_GVAR_VALUE(trimGvar[idx], phase, after);
     }
     else {
@@ -2982,6 +2982,8 @@ void resetTimer(uint8_t idx)
   timerState.val_10ms = 0 ;
 }
 
+bool s_mixer_first_run_done = false;
+
 void resetAll()
 {
   static bool firstReset = true;
@@ -2995,11 +2997,12 @@ void resetAll()
 #if defined(FRSKY)
   resetTelemetry();
 #endif
-  for (uint8_t i=0; i<NUM_CSW; i++) {
+  for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++) {
     csLastValue[i] = CS_LAST_VALUE_INIT;
   }
 
   s_last_switch_value = 0;
+  s_mixer_first_run_done = false;
 
   SKIP_AUTOMATIC_PROMPTS();
 
@@ -3082,7 +3085,7 @@ void evalInputs(uint8_t mode)
     int16_t v = anaIn(i);
 #endif
 
-#ifndef SIMU
+#if !defined(SIMU)
     if (i < NUM_STICKS+NUM_POTS) {
       if (IS_POT_MULTIPOS(i)) {
         v -= RESX;
@@ -3122,7 +3125,7 @@ void evalInputs(uint8_t mode)
 
     if (i < NUM_STICKS+NUM_POTS) {
 
-      calibratedStick[ch] = v; //for show in expo
+      calibratedStick[ch] = v; // for show in expo
 
       // filtering for center beep
       uint8_t tmp = (uint16_t)abs(v) / 16;
@@ -3145,6 +3148,12 @@ void evalInputs(uint8_t mode)
     }
 
     if (ch < NUM_STICKS) { //only do this for sticks
+#if defined(PCBTARANIS)
+      if (mode & e_perout_mode_nosticks) {
+        calibratedStick[ch] = 0;
+      }
+#endif
+
       if (mode <= e_perout_mode_inactive_phase && isFunctionActive(FUNCTION_TRAINER+ch)) {
         // trainer mode
         TrainerMix* td = &g_eeGeneral.trainer.mix[ch];
@@ -3190,7 +3199,7 @@ void evalInputs(uint8_t mode)
   }
 }
 
-#ifdef DEBUG
+#if defined(DEBUG)
 /*
  * This is a test function for debugging purpose, you may insert there your code and compile with the option DEBUG=YES
  */
@@ -3243,7 +3252,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
       {
         if (TELEMETRY_STREAMING()) {
           uint8_t att = 0;
-          int16_t converted_value = applyChannelRatio(idx, val) / 10;
+          int16_t converted_value =  div10_and_round(applyChannelRatio(idx, val));;
           if (g_model.frsky.channels[idx].type < UNIT_RAW) {
             att = PREC1;
           }
@@ -3254,7 +3263,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
 
     case MIXSRC_FIRST_TELEM+TELEM_CELL-1:
     case MIXSRC_FIRST_TELEM+TELEM_MIN_CELL-1:
-      PLAY_NUMBER(val/10, 1+UNIT_VOLTS, PREC1);
+      PLAY_NUMBER(div10_and_round(val), 1+UNIT_VOLTS, PREC1);
       break;
 
     case MIXSRC_FIRST_TELEM+TELEM_VFAS-1:
@@ -3272,12 +3281,12 @@ PLAY_FUNCTION(playValue, uint8_t idx)
     case MIXSRC_FIRST_TELEM+TELEM_ACCx-1:
     case MIXSRC_FIRST_TELEM+TELEM_ACCy-1:
     case MIXSRC_FIRST_TELEM+TELEM_ACCz-1:
-      PLAY_NUMBER(val/10, 1+UNIT_G, PREC1);
+      PLAY_NUMBER(div10_and_round(val), 1+UNIT_G, PREC1);
       break;
 
     case MIXSRC_FIRST_TELEM+TELEM_VSPD-1:
     case MIXSRC_FIRST_TELEM+TELEM_ASPD-1:
-      PLAY_NUMBER(val/10, 1+UNIT_METERS_PER_SECOND, PREC1);
+      PLAY_NUMBER(div10_and_round(val), 1+UNIT_METERS_PER_SECOND, PREC1);
       break;
 
     case MIXSRC_FIRST_TELEM+TELEM_CONSUMPTION-1:
@@ -3290,7 +3299,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
 
     case MIXSRC_FIRST_TELEM+TELEM_ALT-1:
 #if defined(PCBTARANIS)
-      PLAY_NUMBER(val/10, 1+UNIT_DIST, PREC1);
+      PLAY_NUMBER(div10_and_round(val), 1+UNIT_DIST, PREC1);
       break;
 #endif
     case MIXSRC_FIRST_TELEM+TELEM_MIN_ALT-1:
@@ -3351,12 +3360,14 @@ uint8_t fnSwitchDuration[NUM_CFN] = { 0 };
 
 inline void playCustomFunctionFile(CustomFnData *sd, uint8_t id)
 {
-  char filename[sizeof(SOUNDS_PATH)+sizeof(sd->play.name)+sizeof(SOUNDS_EXT)] = SOUNDS_PATH "/";
-  strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
-  strncpy(filename+sizeof(SOUNDS_PATH), sd->play.name, sizeof(sd->play.name));
-  filename[sizeof(SOUNDS_PATH)+sizeof(sd->play.name)] = '\0';
-  strcat(filename+sizeof(SOUNDS_PATH), SOUNDS_EXT);
-  PLAY_FILE(filename, sd->func==FUNC_BACKGND_MUSIC ? PLAY_BACKGROUND : 0, id);
+  if (sd->play.name[0] != '\0') {
+    char filename[sizeof(SOUNDS_PATH)+sizeof(sd->play.name)+sizeof(SOUNDS_EXT)] = SOUNDS_PATH "/";
+    strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
+    strncpy(filename+sizeof(SOUNDS_PATH), sd->play.name, sizeof(sd->play.name));
+    filename[sizeof(SOUNDS_PATH)+sizeof(sd->play.name)] = '\0';
+    strcat(filename+sizeof(SOUNDS_PATH), SOUNDS_EXT);
+    PLAY_FILE(filename, sd->func==FUNC_BACKGND_MUSIC ? PLAY_BACKGROUND : 0, id);
+  }
 }
 #endif
 
@@ -3414,14 +3425,19 @@ void evalFunctions()
           }
 
           case FUNC_INSTANT_TRIM:
+            newActiveFunctions |= (1 << FUNCTION_INSTANT_TRIM);
             if (!isFunctionActive(FUNCTION_INSTANT_TRIM)) {
-              newActiveFunctions |= (1 << FUNCTION_INSTANT_TRIM);
               if (g_menuStack[0] == menuMainView
 #if defined(FRSKY)
                 || g_menuStack[0] == menuTelemetryFrsky
 #endif
-              )
+#if defined(PCBTARANIS)
+                || g_menuStack[0] == menuMainViewChannelsMonitor
+                || g_menuStack[0] == menuChannelsView
+#endif
+              ) {
                 instantTrim();
+              }
             }
             break;
 
@@ -3746,12 +3762,21 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       //========== VALUE ===============
       getvalue_t v = 0;
       if (mode > e_perout_mode_inactive_phase) {
+#if defined(PCBTARANIS)
+        if (!mixEnabled) {
+          continue;
+        }
+        else {
+          v = getValue(md->srcRaw);
+        }
+#else
         if (!mixEnabled || stickIndex >= NUM_STICKS || (stickIndex == THR_STICK && g_model.thrTrim)) {
           continue;
         }
         else {
           if (!(mode & e_perout_mode_nosticks)) v = anas[stickIndex];
         }
+#endif
       }
       else {
 #if !defined(PCBTARANIS)
@@ -3814,14 +3839,27 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 #endif
       }
 
-#if !defined(PCBTARANIS) // (because trims are taken into account by INPUTS on Taranis)
       if (apply_offset_and_curve) {
+#if !defined(PCBTARANIS) // OFFSET is now applied AFTER weight on Taranis
         //========== OFFSET / SOURCE ===============
         int16_t offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, s_perout_flight_phase);
         if (offset) v += calc100toRESX_16Bits(offset);
+#endif
 
         //========== TRIMS ================
         if (!(mode & e_perout_mode_notrims)) {
+#if defined(PCBTARANIS)
+          if (!md->carryTrim) {
+            int8_t mix_trim;
+            if (stickIndex < NUM_STICKS)
+              mix_trim = stickIndex;
+            else if (md->srcRaw <= MIXSRC_LAST_INPUT)
+              mix_trim = virtualInputsTrims[md->srcRaw-1];
+            else
+              mix_trim = -1;
+            if (mix_trim >= 0) v += trims[mix_trim];
+          }
+#else
           int8_t mix_trim = md->carryTrim;
           if (mix_trim < TRIM_ON)
             mix_trim = -mix_trim - 1;
@@ -3830,9 +3868,9 @@ void perOut(uint8_t mode, uint8_t tick10ms)
           else
             mix_trim = -1;
           if (mix_trim >= 0) v += trims[mix_trim];
+#endif
         }
       }
-#endif
       
       // saves 12 bytes code if done here and not together with weight; unknown reason
       int16_t weight = GET_GVAR(MD_WEIGHT(md), GV_RANGELARGE_NEG, GV_RANGELARGE, s_perout_flight_phase);            
@@ -3852,21 +3890,21 @@ void perOut(uint8_t mode, uint8_t tick10ms)
           // the unit of the stored value is the value from md->speedUp or md->speedDown divide SLOW_STEP seconds; e.g. value 4 means 4/SLOW_STEP = 2 seconds for CPU64
           // because we get a tick each 10msec, we need 100 ticks for one second
           // the value in md->speedXXX gives the time it should take to do a full movement from -100 to 100 therefore 200%. This equals 2048 in recalculated internal range
-          if (tick10ms) {
+          if (tick10ms || !s_mixer_first_run_done) {
             // only if already time is passed add or substract a value according the speed configured
             int32_t rate = (int32_t) tick10ms << (DEL_MULT_SHIFT+11);  // = DEL_MULT*2048*tick10ms
             // rate equals a full range for one second; if less time is passed rate is accordingly smaller
             // if one second passed, rate would be 2048 (full motion)*256(recalculated weight)*100(100 ticks needed for one second)
             int32_t currentValue = ((int32_t) v<<DEL_MULT_SHIFT);
             if (diff > 0) {
-              if (md->speedUp > 0) {
+              if (s_mixer_first_run_done && md->speedUp > 0) {
                 // if a speed upwards is defined recalculate the new value according configured speed; the higher the speed the smaller the add value is
                 int32_t newValue = tact+rate/((int16_t)(100/SLOW_STEP)*md->speedUp);
                 if (newValue<currentValue) currentValue = newValue; // Endposition; prevent toggling around the destination
               }
             }
             else {  // if is <0 because ==0 is not possible
-              if (md->speedDown > 0) {
+              if (s_mixer_first_run_done && md->speedDown > 0) {
                 // see explanation in speedUp
                 int32_t newValue = tact-rate/((int16_t)(100/SLOW_STEP)*md->speedDown);
                 if (newValue>currentValue) currentValue = newValue; // Endposition; prevent toggling around the destination
@@ -4089,6 +4127,8 @@ void doMixerCalculations()
     perOut(e_perout_mode_normal, tick10ms);
   }
 
+  s_mixer_first_run_done = true;
+
   //========== FUNCTIONS ===============
   // must be done after mixing because some functions use the inputs/channels values
   // must be done before limits because of the applyLimit function: it checks for safety switches which would be not initialized otherwise
@@ -4156,8 +4196,10 @@ void doMixerCalculations()
     // usually max is 1024 min is -1024 --> max-min = 2048 full range / 128 = max 16 steps
     
     gModelMax >>= (10-2);
-    if (gModelMax != 8)
-      val = (val << 3) / (gModelMax); // rescaling only needed if Min, Max differs
+
+    if (gModelMax != 0 && gModelMax != 8) {
+      val = (val << 3) / gModelMax; // rescaling only needed if Min, Max differs
+    }
     
     // if (gModelMax!=2048) val = (int32_t) (val << 11) / (gModelMax); // recaling only needed if Min, Max differs
     // val = val * 10 / (10+(lim->max-lim->min)/20);
@@ -4284,7 +4326,7 @@ void doMixerCalculations()
     s_cnt_100ms -= 10;
     s_cnt_1s += 1;
 
-    for (uint8_t i=0; i<NUM_CSW; i++) {
+    for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++) {
       LogicalSwitchData * cs = cswAddress(i);
       if (cs->func == LS_FUNC_TIMER) {
         int16_t *lastValue = &csLastValue[i];
@@ -4553,6 +4595,44 @@ void opentxClose()
 }
 #endif
 
+
+#if defined(PCBTARANIS) && !defined(SIMU)
+extern USB_OTG_CORE_HANDLE USB_OTG_dev;
+
+/*
+  Prepare and send new USB data packet
+
+  The format of HID_Buffer is defined by
+  USB endpoint description can be found in 
+  file usb_hid_joystick.c, variable HID_JOYSTICK_ReportDesc
+*/
+void usbJoystickUpdate(void)
+{
+  static uint8_t HID_Buffer[HID_IN_PACKET];
+  
+  //buttons
+  HID_Buffer[0] = 0; //buttons
+  for (int i = 0; i < 8; ++i) {
+    if ( channelOutputs[i+8] > 0 ) {
+      HID_Buffer[0] |= (1 << i);
+    } 
+  }
+
+  //analog values
+  //uint8_t * p = HID_Buffer + 1;
+  for (int i = 0; i < 8; ++i) {
+    int16_t value = channelOutputs[i] / 8;
+    if ( value > 127 ) value = 127;
+    else if ( value < -127 ) value = -127;
+    HID_Buffer[i+1] = static_cast<int8_t>(value);  
+  }
+
+  USBD_HID_SendReport (&USB_OTG_dev, HID_Buffer, HID_IN_PACKET );
+}
+
+#endif //#if defined(PCBTARANIS) && !defined(SIMU)
+
+
 void perMain()
 {
 #if defined(SIMU)
@@ -4704,14 +4784,24 @@ void perMain()
   }
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) && !defined(SIMU)
   static bool usbStarted = false;
   if (!usbStarted && usbPlugged()) {
-    opentxClose();
     usbStart();
     usbStarted = true;
   }
-#endif
+  
+  if (usbStarted) {
+    if (!usbPlugged()) {
+      //disable USB
+      usbStop();
+      usbStarted = false;
+    }
+    else {
+      usbJoystickUpdate();
+    }
+  }
+#endif //#if defined(PCBTARANIS) && !defined(SIMU)
 
 #if defined(NAVIGATION_STICKS)
   if (StickScrollAllowed) {
@@ -4780,28 +4870,22 @@ void perMain()
   const char *warn = s_warning;
   uint8_t menu = s_menu_count;
 
-  if (usbPlugged()) {
+  if (!LCD_LOCKED()) {
     lcd_clear();
-    menuMainView(0);
-  }
-  else {
-    if (!LCD_LOCKED()) {
-      lcd_clear();
-      g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
-      if (warn) DISPLAY_WARNING(evt);
+    g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
+    if (warn) DISPLAY_WARNING(evt);
 #if defined(NAVIGATION_MENUS)
-      if (menu) {
-        const char * result = displayMenu(evt);
-        if (result) {
-          menuHandler(result);
-          putEvent(EVT_MENU_UP);
-        }
+    if (menu) {
+      const char * result = displayMenu(evt);
+      if (result) {
+        menuHandler(result);
+        putEvent(EVT_MENU_UP);
       }
+    }
 #endif
 #if defined(LUA)
-      evt = 0;
+    evt = 0;
 #endif
-    }
   }
 
 #if defined(LUA)
@@ -4883,7 +4967,7 @@ void perMain()
   }
 }
 
-int16_t g_ppmIns[NUM_PPM];
+int16_t g_ppmIns[NUM_TRAINER];
 uint8_t ppmInState = 0; // 0=unsync 1..8= wait for value i-1
 
 #if !defined(SIMU) && !defined(CPUARM)
@@ -5055,7 +5139,11 @@ void instantTrim()
     if (i!=THR_STICK) {
       // don't instant trim the throttle stick
       uint8_t trim_phase = getTrimFlightPhase(s_perout_flight_phase, i);
+#if defined(PCBTARANIS)
+      int16_t trim = limit<int16_t>(TRIM_EXTENDED_MIN, (calibratedStick[i] + trims[i]) / 2, TRIM_EXTENDED_MAX);
+#else
       int16_t trim = limit<int16_t>(TRIM_EXTENDED_MIN, (anas[i] + trims[i]) / 2, TRIM_EXTENDED_MAX);
+#endif
       setTrimValue(trim_phase, i, trim);
     }
   }
@@ -5097,14 +5185,17 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
     zeros[i] = applyLimits(i, chans[i]);
   }
 
-  perOut(e_perout_mode_nosticks+e_perout_mode_notrainer, 0); // do output loop - only trims
+  perOut(e_perout_mode_noinput-e_perout_mode_notrims, 0); // do output loop - only trims
 
   for (uint8_t i=0; i<NUM_CHNOUT; i++) {
     int16_t output = applyLimits(i, chans[i]) - zeros[i];
     int16_t v = g_model.limitData[i].offset;
     if (g_model.limitData[i].revert) output = -output;
+#if defined(CPUARM)
+    v += (output * 125) / 128;
+#else
     v += output;
-    // TODO * 125 / 128 ?
+#endif
     g_model.limitData[i].offset = limit((int16_t)-1000, (int16_t)v, (int16_t)1000); // make sure the offset doesn't go haywire
   }
 
@@ -5114,7 +5205,6 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
       int16_t original_trim = getTrimValue(s_perout_flight_phase, i);
       for (uint8_t phase=0; phase<MAX_PHASES; phase++) {
 #if defined(PCBTARANIS)
-        // TODO needs to be tested.
         trim_t trim = getRawTrimValue(phase, i);
         if (trim.mode / 2 == phase)
           setTrimValue(phase, i, trim.value - original_trim);

@@ -34,10 +34,15 @@
  *
  */
 
-#ifndef eeprom_avr_h
-#define eeprom_avr_h
+#ifndef eeprom_rlc_h
+#define eeprom_rlc_h
 
 #include <inttypes.h>
+
+// TODO duplicated
+#ifndef PACK
+#define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
+#endif
 
 #if defined(PCBTARANIS)
   #define blkid_t    uint16_t
@@ -67,7 +72,7 @@
   #define BS         16
 #endif
 
-PACK(struct DirEnt{
+PACK(struct DirEnt {
   blkid_t  startBlk;
   uint16_t size:12;
   uint16_t typ:4;
@@ -79,7 +84,7 @@ PACK(struct DirEnt{
 #define EEFS_EXTRA_FIELDS
 #endif
 
-PACK(struct EeFs{
+PACK(struct EeFs {
   uint8_t  version;
   blkid_t  mySize;
   blkid_t  freeList;
@@ -234,6 +239,12 @@ void eeDeleteModel(uint8_t idx);
 #if defined(SDCARD)
 const pm_char * eeBackupModel(uint8_t i_fileSrc);
 const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name);
+#endif
+
+// For conversions
+#if defined(CPUARM)
+void loadGeneralSettings();
+void loadModel(int index);
 #endif
 
 #endif

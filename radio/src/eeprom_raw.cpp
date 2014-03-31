@@ -317,20 +317,28 @@ uint32_t get_current_block_number( uint32_t block_no, uint16_t *p_size, uint32_t
   return block_no ;
 }
 
+// For conversions ...
+void loadGeneralSettings()
+{
+  memset(&g_eeGeneral, 0, sizeof(g_eeGeneral));
+  uint16_t size = min<int>(File_system[0].size, sizeof(g_eeGeneral));
+  if (size) {
+    read32_eeprom_data((File_system[0].block_no << 12) + sizeof(struct t_eeprom_header), (uint8_t *)&g_eeGeneral, size);
+  }
+}
+
+void loadModel(int index)
+{
+  memset(&g_model, 0, sizeof(g_model));
+  int size = min<int>(File_system[index+1].size, sizeof(g_model));
+  if (size > 256) { // if loaded a fair amount
+    read32_eeprom_data((File_system[index+1].block_no << 12) + sizeof(struct t_eeprom_header), (uint8_t *)&g_model, size) ;
+  }
+}
+
 bool eeLoadGeneral()
 {
-  uint16_t size = File_system[0].size;
-
-  memset(&g_eeGeneral, 0, sizeof(EEGeneral));
-
-  if (size > sizeof(EEGeneral)) {
-    size = sizeof(EEGeneral) ;
-  }
-
-  if (size) {
-    read32_eeprom_data( ( File_system[0].block_no << 12) + sizeof( struct t_eeprom_header), ( uint8_t *)&g_eeGeneral, size) ;
-  }
-
+  loadGeneralSettings();
   if (g_eeGeneral.version != EEPROM_VER) {
     TRACE("EEPROM version %d instead of %d", g_eeGeneral.version, EEPROM_VER);
     if (!eeConvert())
@@ -359,9 +367,10 @@ void eeLoadModel(uint8_t id)
     memset(&g_model, 0, sizeof(g_model));
 
 #if defined(SIMU)
-    if (size > 0 && size != sizeof(g_model)) {
-      printf("Model data read=%d bytes vs %d bytes\n", size, (int)sizeof(ModelData));
-    }
+    if (sizeof(struct t_eeprom_header) + sizeof(g_model) > 4096)
+      TRACE("Model data size can't exceed %d bytes (%d bytes)", int(4096-sizeof(struct t_eeprom_header)), (int)sizeof(g_model));
+    else if (size > 0 && size != sizeof(g_model))
+      TRACE("Model data read=%d bytes vs %d bytes\n", size, (int)sizeof(ModelData));
 #endif
 
     if (size > sizeof(g_model)) {

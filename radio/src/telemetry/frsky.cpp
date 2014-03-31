@@ -192,7 +192,7 @@ void parseTelemHubByte(uint8_t byte)
 
     case offsetof(FrskySerialData, current):
 #if defined(FAS_OFFSET) || !defined(CPUM64)
-      if(((int16_t)frskyData.hub.current + g_model.frsky.fasOffset)>0)
+      if ((int16_t)frskyData.hub.current > 0 && ((int16_t)frskyData.hub.current + g_model.frsky.fasOffset) > 0)
         frskyData.hub.current += g_model.frsky.fasOffset;
       else
         frskyData.hub.current = 0;
@@ -723,7 +723,7 @@ void telemetryInterrupt10ms()
       uint16_t current = 0;
 #endif
 
-      channel = g_model.frsky.currentSource - FRSKY_SOURCE_A1;
+      channel = g_model.frsky.currentSource - FRSKY_CURRENT_SOURCE_A1;
       if (channel <= 1) {
         current = applyChannelRatio(channel, frskyData.analog[channel].value) / 10;
       }

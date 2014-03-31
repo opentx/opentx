@@ -18,12 +18,13 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
   hexType(Type)
 {
   ui->setupUi(this);
+  setWindowIcon(CompanionIcon("write_flash.png"));
 
-  if(!g.profile[g.id()].splashFile().isEmpty()){
+  if (!g.profile[g.id()].splashFile().isEmpty()){
     imageSource=PROFILE;
     imageFile=g.profile[g.id()].splashFile();
   }
-  else{
+  else {
     ui->useProfileImageCB->setDisabled(true);
     imageSource=FIRMWARE;
     imageFile="";
@@ -51,7 +52,7 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
     ui->BurnFlashButton->setDisabled(true);
     ui->FWFileName->clear();
     ui->DateField->clear();
-    ui->SVNField->clear();
+    ui->versionField->clear();
     ui->ModField->clear();
     ui->FramFWInfo->hide();
     ui->SplashFrame->hide();
@@ -131,7 +132,7 @@ void burnDialog::on_FlashLoadButton_clicked()
   ui->BurnFlashButton->setDisabled(true);
   ui->FWFileName->clear();
   ui->DateField->clear();
-  ui->SVNField->clear();
+  ui->versionField->clear();
   ui->ModField->clear();
   ui->FramFWInfo->hide();
   ui->SplashFrame->hide();
@@ -145,7 +146,7 @@ void burnDialog::on_FlashLoadButton_clicked()
     checkFw(fileName);
   }
   else {
-    QString fileName = QFileDialog::getOpenFileName(this,tr("Choose file to load Models and Settings from"), g.eepromDir(), tr(EXTERNAL_EEPROM_FILES_FILTER));
+    QString fileName = QFileDialog::getOpenFileName(this,tr("Choose file to load Models and Settings from"), g.eepromDir(), tr(EEPE_FILES_FILTER));
     if (checkeEprom(fileName)) {
       if (burnraw==false) {
         ui->BurnFlashButton->setEnabled(true);
@@ -191,8 +192,8 @@ void burnDialog::checkFw(QString fileName)
   if (flash.isValid()) {
     ui->FramFWInfo->show();
     ui->DateField->setText(flash.getDate() + " " + flash.getTime());
-    ui->SVNField->setText(flash.getSvn());
-    ui->ModField->setText(flash.getBuild());
+    ui->versionField->setText(flash.getVersion().isEmpty() ? flash.getSvn() : flash.getVersion());
+    ui->ModField->setText(flash.getEEprom());
 
     ui->SplashFrame->hide();
     if (flash.hasSplash()) {
@@ -305,7 +306,7 @@ void burnDialog::displaySplash()
     FlashInterface flash(ui->FWFileName->text());
     image = flash.getSplash();
   }
-  else{
+  else {
     image.load(imageFile);
   }
   if (image.isNull()) {
@@ -425,15 +426,18 @@ void burnDialog::on_BurnFlashButton_clicked()
             hexfileName->clear();
             QMessageBox::critical(this, tr("Warning"), tr("Cannot save customized firmware"));
           }
-        } else {
+        }
+        else {
           hexfileName->clear();
           QMessageBox::critical(this, tr("Warning"), tr("Custom image not found"));
         }
-      } else {
-            hexfileName->clear();
-            hexfileName->append(fileName);
       }
-    } else {
+      else {
+        hexfileName->clear();
+        hexfileName->append(fileName);
+      }
+    }
+    else {
       QMessageBox::critical(this, tr("Warning"), tr("No firmware selected"));
       hexfileName->clear();     
     }

@@ -18,6 +18,7 @@ class Channels : public ModelPanel
     void minEdited();
     void maxEdited();
     void invEdited();
+    void curveEdited();
     void ppmcenterEdited();
 
 };

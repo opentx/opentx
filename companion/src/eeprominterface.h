@@ -170,6 +170,19 @@ enum HeliSwashTypes {
 extern const char * switches9X[];
 extern const char * switchesX9D[];
 
+enum ThrottleSource {
+  THROTTLE_SOURCE_THR,
+  THROTTLE_SOURCE_P1,
+  THROTTLE_SOURCE_P2,
+  THROTTLE_SOURCE_P3,
+  THROTTLE_SOURCE_S1 = THROTTLE_SOURCE_P1,
+  THROTTLE_SOURCE_S2,
+  THROTTLE_SOURCE_S3,
+  THROTTLE_SOURCE_LS,
+  THROTTLE_SOURCE_RS,
+  THROTTLE_SOURCE_FIRST_CHANNEL,
+};
+
 enum TelemetrySource {
   TELEMETRY_SOURCE_TX_BATT,
   TELEMETRY_SOURCE_TIMER1,
@@ -217,6 +230,7 @@ enum TelemetrySource {
   TELEMETRY_SOURCE_CELL_MIN,
   TELEMETRY_SOURCE_CELLS_MIN,
   TELEMETRY_SOURCE_VFAS_MIN,
+  TELEMETRY_SOURCE_CURRENT_MAX,
   TELEMETRY_SOURCE_POWER_MAX,
   TELEMETRY_SOURCE_ACC,
   TELEMETRY_SOURCE_GPS_TIME,
@@ -579,7 +593,6 @@ class MixData {
     MixData() { clear(); }
     unsigned int destCh;            //        1..C9X_NUM_CHNOUT
     RawSource srcRaw;
-    unsigned int srcVariant;
     int     weight;
     RawSwitch swtch;
     CurveReference     curve;             //0=symmetrisch
@@ -804,7 +817,7 @@ class FrSkyData {
     FrSkyChannelData channels[2];
     unsigned int usrProto;
     unsigned int imperial;
-    unsigned int blades;
+    int blades;
     unsigned int voltsSource;
     bool altitudeDisplayed;
     unsigned int currentSource;
@@ -820,7 +833,7 @@ class FrSkyData {
     unsigned int storedMah;
     int fasOffset;
 
-    void clear() { memset(this, 0, sizeof(FrSkyData)); rssiAlarms[0].clear(2, 45); rssiAlarms[1].clear(3, 42); varioSource = 2/*VARIO*/; }
+    void clear();
 };
 
 class MavlinkData {
@@ -975,7 +988,6 @@ class RadioData {
 
 // TODO rename FlightPhase to FlightMode
 enum Capability {
- OwnerName,
  FlightPhases,
  FlightModesName,
  FlightPhasesHaveFades,
@@ -1002,7 +1014,6 @@ enum Capability {
  ExtraChannels,
  ExtraInputs,
  ExtendedTrims,
- HasInputFilter,
  NumCurves,
  NumCurvePoints,
  OffsetWeight,
@@ -1015,11 +1026,7 @@ enum Capability {
  Haptic,
  HapticLength,
  HapticMode,
- HasBlInvert,
  HasBeeper,
- BandgapMeasure,
- PotScrolling,
- TrainerSwitch,
  ModelTrainerEnable,
  Timer2ThrTrig,
  HasExpoNames,
@@ -1034,8 +1041,6 @@ enum Capability {
  OptrexDisplay,
  PPMExtCtrl,
  PPMFrameLength,
- gsSwitchMask,
- BLonStickMove,
  DSM2Indexes,
  Telemetry,
  TelemetryUnits,
@@ -1050,8 +1055,6 @@ enum Capability {
  TelemetryCustomScreens,
  TelemetryCustomScreensFieldsPerLine,
  TelemetryRSSIModel,
- TelemetryAlarm,
- TelemetryInternalAlarm,
  TelemetryTimeshift,
  TelemetryMaxMultiplier,
  HasAltitudeSel,
@@ -1059,9 +1062,6 @@ enum Capability {
  HasVarioSink,
  HasVariants,
  HasFailsafe,
- HasPPMSim,
- HasCrossTrims,
- HasStickScroll,
  HasSoundMixer,
  NumModules,
  PPMCenter,
@@ -1084,7 +1084,6 @@ enum Capability {
  LuaInputs,
  LimitsPer1000,
  EnhancedCurves,
- TelemetryInternalAlarms,
  HasFasOffset,
  HasMahPersistent,
  MultiposPots,
@@ -1371,6 +1370,11 @@ inline EEPROMInterface * GetEepromInterface()
 inline unsigned int GetCurrentFirmwareVariant()
 {
   return current_firmware_variant.variant;
+}
+
+inline int divRoundClosest(const int n, const int d)
+{
+  return ((n < 0) ^ (d < 0)) ? ((n - d/2)/d) : ((n + d/2)/d);
 }
 
 #define CHECK_IN_ARRAY(T, index) ((unsigned int)index < (unsigned int)(sizeof(T)/sizeof(T[0])) ? T[(unsigned int)index] : "???")
