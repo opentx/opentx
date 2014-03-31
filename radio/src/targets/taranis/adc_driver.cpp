@@ -61,9 +61,9 @@
 volatile uint16_t Analog_values[NUMBER_ANALOG];
 
 #if defined(REV4a)
-  const char ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,-1,0,-1,1,  1};
+  const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,-1,0,-1,1,  1};
 #elif !defined(REV3)
-  const char ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,0,-1,1,  1};
+  const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,0,-1,1,  1};
 #endif
 
 void adcInit()
