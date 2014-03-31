@@ -3891,11 +3891,7 @@ void menuModelLimits(uint8_t event)
     int8_t limit;
 #endif
 
-#if defined(PPM_CENTER_ADJUSTABLE)
-    limit = ((g_model.extendedLimits && !limitAddress(k)->ppmCenter) ? 125 : 100);
-#else
     limit = (g_model.extendedLimits ? 125 : 100);
-#endif
 
 #if defined(PCBTARANIS)
     putsChn(0, y, k+1, (sub==k && m_posHorz < 0) ? INVERS : 0);
@@ -3994,8 +3990,7 @@ void menuModelLimits(uint8_t event)
 #if defined(PPM_CENTER_ADJUSTABLE)
         case ITEM_LIMITS_PPM_CENTER:
           lcd_outdezAtt(LIMITS_PPM_CENTER_POS, y, PPM_CENTER+ld->ppmCenter, attr);
-#pragma message("could be less restrictive!")
-          if (active && ld->max <= 0 && ld->min >= 0) {
+          if (active) {
             CHECK_INCDEC_MODELVAR(event, ld->ppmCenter, -125, +125);
           }
           break;
