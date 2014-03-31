@@ -16,7 +16,11 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, i
   setWindowTitle(tr("Edit %1").arg(getInputStr(model, ed->chn)));
   QRegExp rx(CHAR_FOR_NAMES_REGEX);
 
-  gvGroup = new GVarGroup(ui->weightGV, ui->weightSB, ui->weightCB, ed->weight, 100, 0, 100);
+  if (IS_TARANIS(GetEepromInterface()->getBoard()))
+    gvGroup = new GVarGroup(ui->weightGV, ui->weightSB, ui->weightCB, ed->weight, 100, -100, 100);
+  else
+    gvGroup = new GVarGroup(ui->weightGV, ui->weightSB, ui->weightCB, ed->weight, 100, 0, 100);
+
   curveGroup = new CurveGroup(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, ed->curve);
 
   populateSwitchCB(ui->switchesCB,ed->swtch);
