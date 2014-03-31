@@ -38,7 +38,6 @@ void appPreferencesDialog::writeValues()
 {
   g.autoCheckApp(ui->startupCheck_companion9x->isChecked());
   g.autoCheckFw(ui->startupCheck_fw->isChecked());
-  g.enableWizard(ui->wizardEnable_ChkB->isChecked());
   g.showSplash(ui->showSplash->isChecked());
   g.simuSW(ui->simuSW->isChecked());
   g.historySize(ui->historySize->value());
@@ -102,10 +101,11 @@ void appPreferencesDialog::initSettings()
   }
   ui->startupCheck_companion9x->setChecked(g.autoCheckApp());
   ui->startupCheck_fw->setChecked(g.autoCheckFw());
-  ui->wizardEnable_ChkB->setChecked(g.enableWizard());
   ui->showSplash->setChecked(g.showSplash());
   ui->historySize->setValue(g.historySize());
   ui->backLightColor->setCurrentIndex(g.backLight());
+  if (getRadioType(g.profile[g.id()].fwType())==6)  // TODO - NOT AT ALL OK. THERE SHOULD BE A COMMON RADIO DEFINITION.
+    ui->backLightColor->setEnabled(false);
   ui->simuSW->setChecked(g.simuSW());
   ui->libraryPath->setText(g.libDir());
   ui->ge_lineedit->setText(g.gePath());

@@ -52,6 +52,7 @@
 #include "burndialog.h"
 #include "helpers.h"
 #include "appdata.h"
+#include "wizarddialog.h"
 #include "taranisnotfound.h"
 #include <QFileInfo>
 
@@ -111,6 +112,7 @@ void MdiChild::copy()
   ui->modelsList->copy();
 }
 
+
 void MdiChild::paste()
 {
   ui->modelsList->paste();
@@ -147,52 +149,71 @@ void MdiChild::on_SimulateTxButton_clicked()
   startSimulation(this, radioData, -1);
 }
 
-void MdiChild::OpenEditWindow(bool wizard=false)
+void MdiChild::checkAndInitModel( int row )
+{
+  ModelData &model = radioData.models[row - 1];
+  if (model.isempty()) {
+    model.setDefaultValues(row - 1, radioData.generalSettings);
+    setModified();
+  }
+}
+
+void MdiChild::generalEdit()
+{
+  GeneralEdit *t = new GeneralEdit(radioData, this);
+  connect(t, SIGNAL(modelValuesChanged()), this, SLOT(setModified()));
+  t->show();
+}
+
+void MdiChild::modelEdit()
 {
   int row = ui->modelsList->currentRow();
 
-  if (row) {
-    //TODO error checking
-    bool isNew = false;
-    ModelData &model = radioData.models[row - 1];
-
-    if (model.isempty()) {
-      model.setDefaultValues(row - 1, radioData.generalSettings);
-      isNew = true; //modeledit - clear mixes, apply first template
-      setModified();
-    }
-    if (isNew && !wizard) {
-      int ret;
-      bool wizardEnable=g.enableWizard();
-      if (wizardEnable) {
-        ret = QMessageBox::question(this, tr("Companion"), tr("Do you want to use model wizard? "), QMessageBox::Yes | QMessageBox::No);
-        if (ret == QMessageBox::Yes) {
-          wizard=true;
-        }
-        else {
-          qSleep(500);
-          ret = QMessageBox::question(this, tr("Companion"), tr("Ask this question again ? "), QMessageBox::Yes | QMessageBox::No);
-          if (ret == QMessageBox::No) {
-            g.enableWizard( false );
-          }
-        }
-      }
-    }
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-    ModelEdit *t = new ModelEdit(radioData, (row - 1), wizard, this);
-    // TODO if (isNew && !wizard) t->applyBaseTemplate();
-    t->setWindowTitle(tr("Editing model %1: ").arg(row) + model.name);
-    connect(t, SIGNAL(modified()), this, SLOT(setModified()));
-    //t->exec();
-    t->show();
-  }
+  if (row == 0){
+    generalEdit();
+  } 
   else {
     QApplication::setOverrideCursor(Qt::WaitCursor);
-    GeneralEdit *t = new GeneralEdit(radioData, this);
-    connect(t, SIGNAL(modelValuesChanged()), this, SLOT(setModified()));
+    checkAndInitModel( row );
+    ModelData &model = radioData.models[row - 1];
+    ModelEdit *t = new ModelEdit(radioData, (row - 1), false, this);
+    t->setWindowTitle(tr("Editing model %1: ").arg(row) + model.name);
+    connect(t, SIGNAL(modified()), this, SLOT(setModified()));
     t->show();
+    QApplication::restoreOverrideCursor();
   }
-  QApplication::restoreOverrideCursor();
+}
+
+void MdiChild::wizardEdit()
+{
+return modelEdit();  // TODO FOR BERTRAND- REMOVE THIS LINE TO TURN THE WIZARD BACK ON
+  int row = ui->modelsList->currentRow();
+  if (row > 0) {
+    checkAndInitModel(row);
+    WizardDialog * wizard = new WizardDialog(radioData.generalSettings, row, this);
+    wizard->exec();
+    if (wizard->mix.complete /*TODO rather test the exec() result?*/) {
+      radioData.models[row - 1] = wizard->mix;
+      setModified();
+    }
+  }
+}
+
+void MdiChild::openEditWindow()
+{
+  int row = ui->modelsList->currentRow();
+  if (row == 0){
+    generalEdit();
+  }
+  else{
+    ModelData &model = radioData.models[row - 1];
+    if (model.isempty()) {
+      wizardEdit();
+    }
+    else {
+      modelEdit();
+    }
+  }
 }
 
 void MdiChild::newFile()

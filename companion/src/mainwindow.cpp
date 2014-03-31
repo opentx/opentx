@@ -1759,7 +1759,7 @@ QMenu *MainWindow::createRecentFileMenu()
 
 QMenu *MainWindow::createProfilesMenu()
 {
-    QMenu *profilesMenu=new QMenu(tr("Radio Settings Profile"));
+    QMenu *profilesMenu=new QMenu(tr("Radio Profile"));
     int i;
     for ( i = 0; i < MAX_PROFILES; ++i) {
       profilesMenu->addAction(profileActs[i]);
@@ -1818,8 +1818,8 @@ void MainWindow::createToolBars()
     profileButton->setFocusPolicy(Qt::NoFocus);
     profileButton->setMenu(createProfilesMenu());
     profileButton->setIcon(CompanionIcon("profiles.png"));
-    profileButton->setToolTip(tr("Radio Settings Profile"));
-    profileButton->setStatusTip(tr("Show a selection list of radio settings profiles"));
+    profileButton->setToolTip(tr("Radio Profile"));
+    profileButton->setStatusTip(tr("Show a selection list of radio profiles"));
 
     fileToolBar->addWidget(profileButton);
     fileToolBar->addAction(editSplashAct);
