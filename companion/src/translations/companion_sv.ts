@@ -484,7 +484,7 @@ Om fältet lämnas tomt så är filtret aktivt hela tiden.</translation>
     <message>
         <location line="+1"/>
         <source>Ele</source>
-        <translation>Höj</translation>
+        <translation>Hjd</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -552,7 +552,7 @@ Om fältet lämnas tomt så är filtret aktivt hela tiden.</translation>
     <message>
         <location line="+0"/>
         <source>Ele</source>
-        <translation>Höj</translation>
+        <translation>Hjd</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -3899,7 +3899,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+1"/>
         <source>Ele</source>
-        <translation>Höj</translation>
+        <translation>Hjd</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4609,7 +4609,7 @@ p, li { white-space: pre-wrap; }
         <location line="+0"/>
         <location filename="../helpers.cpp" line="+0"/>
         <source>Ele</source>
-        <translation>Höj</translation>
+        <translation>Hjd</translation>
     </message>
     <message>
         <location line="+0"/>

@@ -37,10 +37,30 @@ WizMix::WizMix(const GeneralSettings & settings, const unsigned int modelId):
   strcpy(name, "            ");
 }
 
+void WizMix::addMix(ModelData &model, Input input, int weight, int channel, int & mixerIndex)
+{
+  if (input != NOINPUT) 
+  {
+    MixData & mix = model.mixData[mixerIndex++];
+    mix.destCh = channel+1;
+    if (input >= RUDDER && input <= AILERON) 
+    {
+      if (IS_TARANIS(GetEepromInterface()->getBoard()))
+        mix.srcRaw = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, input-1, &model);
+      else
+        mix.srcRaw = RawSource(SOURCE_TYPE_STICK, input-1);
+    }
+    if (input==FLAP){
+    }
+    if (input==AIRBREAK){
+    }
+    mix.weight = weight;
+  }
+}
+
 WizMix::operator ModelData()
 {
   ModelData model;
-
   model.used = true;
   model.modelId = modelId;
   model.setDefaultInputs(settings);
@@ -49,22 +69,13 @@ WizMix::operator ModelData()
   strncpy(model.name, name, WIZ_MODEL_NAME_LENGTH);
   model.name[WIZ_MODEL_NAME_LENGTH] = 0;
 
-  for (int i=0; i<WIZ_MAX_CHANNELS; i++ ) {
+  int mixIndex = 0;
+  for (int i=0; i<WIZ_MAX_CHANNELS; i++ ) 
+  {
     Channel ch = channel[i];
-    if (ch.page != Page_None) {
-      // qDebug() << "channel" << i << "page" << ch.page << ch.input1 << ch.input2;
-      MixData & mix = model.mixData[i];
-      mix.destCh = i+1;
-      if (ch.input1 >= RUDDER && ch.input1 <= AILERON) {
-        if (IS_TARANIS(GetEepromInterface()->getBoard()))
-          mix.srcRaw = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, ch.input1-1, &model);
-        else
-          mix.srcRaw = RawSource(SOURCE_TYPE_STICK, ch.input1-1);
-      }
-      mix.weight = ch.weight1;
-    }
+    addMix(model, ch.input1, ch.weight1, i, mixIndex);
+    addMix(model, ch.input2, ch.weight2, i, mixIndex);
   }
-
   return model;
 }
 

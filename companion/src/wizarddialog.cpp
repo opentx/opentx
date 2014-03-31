@@ -15,12 +15,14 @@
 #include <QtGui>
 #include "wizarddialog.h"
 #include "wizarddata.h"
+#include "helpers.h"
 
 WizardDialog::WizardDialog(const GeneralSettings & settings, unsigned int modelId, QWidget *parent)
   : QWizard(parent),
     mix(settings, modelId),
     settings(settings)
 {
+  setWindowIcon(CompanionIcon("wizard.png"));
   setWindowTitle(tr("Model Wizard"));
 
   setPage(Page_Models, new ModelSelectionPage(this, "models",tr("Model Type"),tr("Enter model name and model type.")));

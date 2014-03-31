@@ -91,6 +91,7 @@ class WizMix
 
   private:
     WizMix();
+    void addMix(ModelData & model, Input input, int weight, int channel, int & mixerIndex);
 };
 
 #endif // WIZARDDATA_H
