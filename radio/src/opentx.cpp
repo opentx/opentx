@@ -4343,26 +4343,26 @@ void doMixerCalculations()
       }
       else if (cs->func == LS_FUNC_STICKY) {
         PACK(typedef struct {
-          bool state;
-          bool last;
+          uint8_t state;
+          uint8_t last;
         }) cs_sticky_struct;
         cs_sticky_struct & lastValue = (cs_sticky_struct &)csLastValue[i];
         bool before = lastValue.last & 0x01;
         if (lastValue.state) {
           bool now = getSwitch(cs->v2);
           if (now != before) {
-            lastValue.last ^= true;
+            lastValue.last ^= 1;
             if (!before) {
-              lastValue.state = false;
+              lastValue.state = 0;
             }
           }
         }
         else {
           bool now = getSwitch(cs->v1);
           if (before != now) {
-            lastValue.last ^= true;
+            lastValue.last ^= 1;
             if (!before) {
-              lastValue.state = true;
+              lastValue.state = 1;
             }
           }
         }
