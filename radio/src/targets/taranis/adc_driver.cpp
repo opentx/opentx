@@ -59,10 +59,11 @@
 #define SAMPTIME    2   // sample time = 15 cycles
 
 volatile uint16_t Analog_values[NUMBER_ANALOG];
+
 #if defined(REV4a)
-const char ana_direction[NUMBER_ANALOG] = {0,1,0,1,  1,1,0,1,0,  0};
+  const char ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,-1,0,-1,1,  1};
 #elif !defined(REV3)
-const char ana_direction[NUMBER_ANALOG] = {0,1,0,1,  1,0,0,1,0,  0};
+  const char ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,0,-1,1,  1};
 #endif
 
 void adcInit()
@@ -124,9 +125,10 @@ void adcRead()
 #if !defined(REV3)
   // adc direction correct
   for (i=0; i<NUMBER_ANALOG; i++) {
-    if (ana_direction[i]) {
+    if (ana_direction[i] == -1)
       Analog_values[i] = 4096-Analog_values[i];
-    }
+    else if (ana_direction[i] == 0)
+      Analog_values[i] = 0;
   }
 #endif
 }
