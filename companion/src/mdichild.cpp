@@ -186,7 +186,6 @@ void MdiChild::modelEdit()
 
 void MdiChild::wizardEdit()
 {
-return modelEdit();  // TODO FOR BERTRAND- REMOVE THIS LINE TO TURN THE WIZARD BACK ON
   int row = ui->modelsList->currentRow();
   if (row > 0) {
     checkAndInitModel(row);
