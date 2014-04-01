@@ -3502,7 +3502,7 @@ void evalFunctions()
             }
 #endif
             else {
-              SET_GVAR(CFN_GVAR_INDEX(sd), limit((getvalue_t)-1250, getValue(CFN_PARAM(sd)), (getvalue_t)1250) / 10, s_perout_flight_phase);
+              SET_GVAR(CFN_GVAR_INDEX(sd), limit((getvalue_t)-LIMIT_EXT_MAX, getValue(CFN_PARAM(sd)), (getvalue_t)LIMIT_EXT_MAX) / 10, s_perout_flight_phase);
             }
             break;
 #endif

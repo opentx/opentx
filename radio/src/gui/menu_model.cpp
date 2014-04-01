@@ -3784,12 +3784,10 @@ enum LimitsItems {
 #if defined(PCBTARANIS)
   #define LIMITS_MIN_MAX_OFFSET 1000
   #define CONVERT_US_MIN_MAX(x) (((x)*1280)/250)
-  #define MIN_MAX_LIMIT         (10*limit)
   #define MIN_MAX_ATTR          attr|PREC1
 #else
   #define LIMITS_MIN_MAX_OFFSET 100
   #define CONVERT_US_MIN_MAX(x) ((int16_t(x)*128)/25)
-  #define MIN_MAX_LIMIT         (limit)
   #define MIN_MAX_ATTR          attr
 #endif
 
@@ -3886,9 +3884,9 @@ void menuModelLimits(uint8_t event)
 #endif
 
 #if defined(PCBTARANIS)
-    int limit = (g_model.extendedLimits ? 125 : 100);
+    int limit = (g_model.extendedLimits ? LIMIT_EXT_MAX : 1000);
 #else
-    int8_t limit = (g_model.extendedLimits ? 125 : 100);
+    int8_t limit = (g_model.extendedLimits ? LIMIT_EXT_MAX : 100);
 #endif
 
 #if defined(PCBTARANIS)
@@ -3939,24 +3937,24 @@ void menuModelLimits(uint8_t event)
 
         case ITEM_LIMITS_MIN:
 #if defined(PCBTARANIS)
-          if (GV_IS_GV_VALUE(ld->min, -1250, 1250) || (attr && event == EVT_KEY_LONG(KEY_ENTER))) {
-            ld->min = GVAR_MENU_ITEM(LIMITS_MIN_POS, y, ld->min, -1250, 1250, MIN_MAX_ATTR, DBLKEYS_1000, event);
+          if (GV_IS_GV_VALUE(ld->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX) || (attr && event == EVT_KEY_LONG(KEY_ENTER))) {
+            ld->min = GVAR_MENU_ITEM(LIMITS_MIN_POS, y, ld->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, MIN_MAX_ATTR, DBLKEYS_1000, event);
             break;
           }
 #endif
           lcd_outdezAtt(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET), MIN_MAX_ATTR);
-          if (active) ld->min = LIMITS_MIN_MAX_OFFSET + checkIncDecModel(event, ld->min-LIMITS_MIN_MAX_OFFSET, -MIN_MAX_LIMIT, 0);
+          if (active) ld->min = LIMITS_MIN_MAX_OFFSET + checkIncDecModel(event, ld->min-LIMITS_MIN_MAX_OFFSET, -limit, 0);
           break;
 
         case ITEM_LIMITS_MAX:
 #if defined(PCBTARANIS)
-          if (GV_IS_GV_VALUE(ld->max, -1250, 1250) || (attr && event == EVT_KEY_LONG(KEY_ENTER))) {
-            ld->max = GVAR_MENU_ITEM(LIMITS_MAX_POS, y, ld->max, -1250, 1250, MIN_MAX_ATTR, DBLKEYS_1000, event);
+          if (GV_IS_GV_VALUE(ld->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX) || (attr && event == EVT_KEY_LONG(KEY_ENTER))) {
+            ld->max = GVAR_MENU_ITEM(LIMITS_MAX_POS, y, ld->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, MIN_MAX_ATTR, DBLKEYS_1000, event);
             break;
           }
 #endif
           lcd_outdezAtt(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET), MIN_MAX_ATTR);
-          if (active) ld->max = -LIMITS_MIN_MAX_OFFSET + checkIncDecModelZero(event, ld->max+LIMITS_MIN_MAX_OFFSET, +MIN_MAX_LIMIT);
+          if (active) ld->max = -LIMITS_MIN_MAX_OFFSET + checkIncDecModelZero(event, ld->max+LIMITS_MIN_MAX_OFFSET, +limit);
           break;
 
         case ITEM_LIMITS_DIRECTION:

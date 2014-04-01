@@ -501,14 +501,16 @@ PACK(typedef struct t_ExpoData {
 
 #if defined(PCBTARANIS)
   #define limit_min_max_t     int16_t
-  #define LIMIT_MAX(lim)      (GV_IS_GV_VALUE(lim->max, 0, 1250) ? GET_GVAR(lim->max, 0, 1250, s_perout_flight_phase)*10 : lim->max+1000)
-  #define LIMIT_MIN(lim)      (GV_IS_GV_VALUE(lim->min, -1250, 0) ? GET_GVAR(lim->min, -1250, 0, s_perout_flight_phase)*10 : lim->min-1000)
+  #define LIMIT_EXT_MAX       (150*10)
+  #define LIMIT_MAX(lim)      (GV_IS_GV_VALUE(lim->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX) ? GET_GVAR(lim->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, s_perout_flight_phase)*10 : lim->max+1000)
+  #define LIMIT_MIN(lim)      (GV_IS_GV_VALUE(lim->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX) ? GET_GVAR(lim->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, s_perout_flight_phase)*10 : lim->min-1000)
   #define LIMIT_OFS(lim)      (GV_IS_GV_VALUE(lim->offset, -1000, 1000) ? GET_GVAR(lim->offset, -1000, 1000, s_perout_flight_phase)*10 : lim->offset)
   #define LIMIT_MAX_RESX(lim) calc1000toRESX(LIMIT_MAX(lim))
   #define LIMIT_MIN_RESX(lim) calc1000toRESX(LIMIT_MIN(lim))
   #define LIMIT_OFS_RESX(lim) calc1000toRESX(LIMIT_OFS(lim))
 #else
   #define limit_min_max_t     int8_t
+  #define LIMIT_EXT_MAX       125
   #define LIMIT_MAX(lim)      (lim->max+100)
   #define LIMIT_MIN(lim)      (lim->min-100)
   #define LIMIT_OFS(lim)      (lim->offset)
