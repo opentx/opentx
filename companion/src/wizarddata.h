@@ -24,13 +24,13 @@
 #define WIZ_MODEL_NAME_LENGTH 12
 
 enum Input {
-  NOINPUT,
-  RUDDER,
-  ELEVATOR,
-  THROTTLE,
-  AILERON,
-  FLAP,
-  AIRBREAK
+  NO_INPUT,
+  RUDDER_INPUT,
+  ELEVATOR_INPUT,
+  THROTTLE_INPUT,
+  AILERONS_INPUT,
+  FLAPS_INPUT,
+  AIRBRAKES_INPUT
 };
 
 enum Vehicle {
@@ -92,6 +92,8 @@ class WizMix
   private:
     WizMix();
     void addMix(ModelData & model, Input input, int weight, int channel, int & mixerIndex);
+    void maxMixSwitch(MixData &mix, int destCh, int sw, int weight);
+
 };
 
 #endif // WIZARDDATA_H

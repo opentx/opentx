@@ -22,8 +22,8 @@ Channel::Channel()
 void Channel::clear()
 {
   page = Page_None;
-  input1 = NOINPUT;
-  input2 = NOINPUT;
+  input1 = NO_INPUT;
+  input2 = NO_INPUT;
   weight1 = 0;  
   weight2 = 0;
 }
@@ -37,24 +37,38 @@ WizMix::WizMix(const GeneralSettings & settings, const unsigned int modelId):
   strcpy(name, "            ");
 }
 
-void WizMix::addMix(ModelData &model, Input input, int weight, int channel, int & mixerIndex)
+
+void WizMix::maxMixSwitch(MixData &mix, int channel, int sw, int weight)
 {
-  if (input != NOINPUT) 
-  {
-    MixData & mix = model.mixData[mixerIndex++];
-    mix.destCh = channel+1;
-    if (input >= RUDDER && input <= AILERON) 
-    {
-      if (IS_TARANIS(GetEepromInterface()->getBoard()))
+  mix.destCh = channel;
+  mix.srcRaw = RawSource(SOURCE_TYPE_MAX);
+  mix.swtch  = RawSwitch(SWITCH_TYPE_SWITCH, sw);  
+  mix.weight = weight;
+}
+
+void WizMix::addMix(ModelData &model, Input input, int weight, int channel, int & mixIndex)
+{
+  if (input != NO_INPUT)  {
+    bool isTaranis = IS_TARANIS(GetEepromInterface()->getBoard());
+
+    if (input >= RUDDER_INPUT && input <= AILERONS_INPUT) {
+      MixData & mix = model.mixData[mixIndex++];
+      mix.destCh = channel+1;
+      if (isTaranis)
         mix.srcRaw = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, input-1, &model);
       else
         mix.srcRaw = RawSource(SOURCE_TYPE_STICK, input-1);
+      mix.weight = weight;
     }
-    if (input==FLAP){
+    else if (input==FLAPS_INPUT){
+      // There must be some kind of constants for switches somewhere...
+      maxMixSwitch( model.mixData[mixIndex++], channel+1, isTaranis ? 1 :-3 , -100); //SA-UP or ELE-UP
+      maxMixSwitch( model.mixData[mixIndex++], channel+1, isTaranis ? 3 : 3 ,  100); //SA-DOWN or ELE-DOWN
     }
-    if (input==AIRBREAK){
+    else if (input==AIRBRAKES_INPUT){ 
+      maxMixSwitch( model.mixData[mixIndex++], channel+1, isTaranis ? 13 :-2 , -100); //SE-UP or RUD-UP
+      maxMixSwitch( model.mixData[mixIndex++], channel+1, isTaranis ? 15 : 2 ,  100); //SE-DOWN or RUD-DOWN
     }
-    mix.weight = weight;
   }
 }
 

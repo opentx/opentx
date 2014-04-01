@@ -53,7 +53,7 @@ class  StandardPage: public QWizardPage
   protected:
     int getDefaultChannel(const Input input);
     void populateCB(QComboBox * cb, int preferred=-1);
-    bool bookChannel(QComboBox * cb, Input input1, int weight1, Input input2=NOINPUT, int weight2=0);
+    bool bookChannel(QComboBox * cb, Input input1, int weight1, Input input2=NO_INPUT, int weight2=0);
 
   private:
     QLabel *topLabel;
