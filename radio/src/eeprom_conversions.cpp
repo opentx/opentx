@@ -366,7 +366,9 @@ int ConvertSource_215_to_216(int source, bool insertZero=false)
 
 int ConvertSwitch_215_to_216(int swtch)
 {
-  if (swtch < 0)
+  if (swtch >= 56)
+    return swtch - 22 - 32;
+  else if (swtch < 0)
     return -ConvertSwitch_215_to_216(-swtch);
   else if (swtch <= SWSRC_LAST_SWITCH)
     return swtch;
