@@ -84,10 +84,10 @@
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Amerika\0""Japonsko""Evropa\0 ")
 
 #define LEN_TARANIS_PROTOCOLS  "\004"          
-#define TR_TARANIS_PROTOCOLS   "OFF\0""PPM\0""XJT\0""DSM2"
+#define TR_TARANIS_PROTOCOLS   "Vyp\0""PPM\0""XJT\0""DSM2"
 
 #define LEN_XJT_PROTOCOLS      "\004"
-#define TR_XJT_PROTOCOLS       "OFF\0""D16\0""D8\0 ""LR12"
+#define TR_XJT_PROTOCOLS       "Vyp\0""D16\0""D8\0 ""LR12"
 
 #define LEN_DSM_PROTOCOLS      "\004"
 #define TR_DSM_PROTOCOLS       "LP45""DSM2""DSMX"
@@ -99,7 +99,7 @@
 #define TR_VBEEPCOUNTDOWN      "Tichý\0""Zvuk\0 ""Hlas\0 "
 
 #define LEN_CURVE_TYPES        "\010"
-#define TR_CURVE_TYPES         "Standard""Custom\0"
+#define TR_CURVE_TYPES         "Rastr-X\0""Volná-XY"
 
 #define LEN_RETA123            "\001"
 
@@ -345,7 +345,7 @@
 #define TR_VSCREEN             "Hodnota ""Ukazatel"
 
 #define LEN_GPSFORMAT          "\004"
-#define TR_GPSFORMAT           "HMS NMEA"
+#define TR_GPSFORMAT           "DMS\0""NMEA"
 
 #define LEN2_VTEMPLATES        13
 #define LEN_VTEMPLATES         "\015"
@@ -421,7 +421,7 @@
 #define TR_VTRAINERMODES       "Učitel""Žák\0  "
 
 #define LEN_VFAILSAFE          "\011"
-#define TR_VFAILSAFE           "Držet\0   ""Vlastní\0 ""Bez pulzů""Receiver\0"
+#define TR_VFAILSAFE           "Držet\0   ""Vlastní\0 ""Bez pulzů""Přijímač"
 
 #if defined(MAVLINK)
   #define LEN_MAVLINK_BAUDS    "\006"
@@ -470,8 +470,8 @@
 #define TR_TTRACE              TR("TH stopek", INDENT "Stopa TH stopek")
 #define TR_TTRIM               TR("TrimPlynVol.", INDENT "Trim jen volnoběh")
 #define TR_BEEPCTR             "Středy \221\222"
-#define TR_PROTO               INDENT"Protokol"
-#define TR_PPMFRAME            "PPM frame"
+#define TR_PROTO               INDENT "Protokol"
+#define TR_PPMFRAME            INDENT "PPM frame"
 #define TR_MS                  "ms"
 #define TR_SWITCH              "Spínač"
 #define TR_TRIMS               "Trimy"
@@ -509,7 +509,7 @@
 #define TR_SLOWDOWN            TR("Zpomalení(-)", "Zpomal(\177)")
 #define TR_SLOWUP              TR("Zpomalení(+)", "Zpomal(\176)")
 #define TR_MIXER               "MIXER"
-#define TR_CV                  "k"
+#define TR_CV                  "K"
 #define TR_GV                  "GP"
 #define TR_ACHANNEL            "A\004Kanál"
 #define TR_RANGE               INDENT"Rozsah"
@@ -527,9 +527,9 @@
 #define TR_ALARMS_LABEL        "Alarmy"
 #define TR_BATTERY_RANGE       TR("Ukazatel bat.", "Ukazetel baterie")
 #define TR_BATTERYWARNING      INDENT"Vybitá baterie"
-#define TR_INACTIVITYALARM     INDENT"Nečinnost"
+#define TR_INACTIVITYALARM     TR(INDENT "Nečinnost", INDENT "Nečinnost rádia")
 #define TR_MEMORYWARNING       INDENT"Plná pamět'"
-#define TR_ALARMWARNING        INDENT"Vypnutý zvuk"
+#define TR_ALARMWARNING        TR(INDENT "Vypnutý zvuk", INDENT "Upozornit na vypnutý zvuk")
 #define TR_RENAVIG             "Navig. RotEnc"
 #define TR_THROTTLE_LABEL      "Plyn"
 #define TR_THROTTLEREVERSE     TR("ReversPlyn", INDENT"Revers plynu")
@@ -540,7 +540,7 @@
 #define TR_BLDELAY             INDENT"Zhasnout po"
 #define TR_BLONBRIGHTNESS      INDENT"Jas Zap."
 #define TR_BLOFFBRIGHTNESS     INDENT"Jas Vyp."
-#define TR_SPLASHSCREEN        "úvodníLogo"
+#define TR_SPLASHSCREEN        TR("úvodníLogo", "Zobrazit úvodní logo")
 #define TR_THROTTLEWARNING     TR("* Plyn", INDENT "Páka Plynu")
 #define TR_SWITCHWARNING       TR("* Spínače", INDENT "Polohy Spínačů")
 #define TR_POTWARNING          TR("* Potenc.", INDENT "Nastavení Pot.")
@@ -615,17 +615,17 @@
 #endif
 
 #define TR_MENUCURVES          "KŘIVKY"
-#define TR_MENUCURVE           "\002k"
+#define TR_MENUCURVE           "\002K"
 #define TR_MENULOGICALSWITCH    "LOG. SPÍNAč"
 #define TR_MENULOGICALSWITCHES  "LOGICKÉ SPÍNAčE"
 #define TR_MENUCUSTOMFUNC      "FUNKCE"
-#define TR_MENUCUSTOMSCRIPTS   "CUSTOM SCRIPTS"
-#define TR_MENUCUSTOMSCRIPT    "CUSTOM SCRIPT"
+#define TR_MENUCUSTOMSCRIPTS   "SKRIPTY LUA"
+#define TR_MENUCUSTOMSCRIPT    "SKRIPT"
 #define TR_MENUTELEMETRY       "TELEMETRIE"
 #define TR_MENUTEMPLATES       "ŠABLONY"
 #define TR_MENUSTAT            "STATISTIKA"
 #define TR_MENUDEBUG           "DIAG"
-#define TR_RXNUM               "Přijímač"
+#define TR_RXNUM               INDENT "Přijímač"
 #define TR_SYNCMENU            "Sync [MENU]"
 #define TR_LIMIT               INDENT"Limit"
 #define TR_MINRSSI             "Min Rssi"
@@ -633,11 +633,11 @@
 #define TR_LONGITUDE           "Zem. délka"
 #define TR_GPSCOORD            "GPS souřadnice"
 #define TR_VARIO               "Vario"
-#define TR_PITCH_AT_ZERO       INDENT "Pitch at Zero"
-#define TR_PITCH_AT_MAX        INDENT "Pitch at Max"
-#define TR_REPEAT_AT_ZERO      INDENT "Repeat at Zero"
+#define TR_PITCH_AT_ZERO       INDENT "Tón na nule"
+#define TR_PITCH_AT_MAX        INDENT "Tón na maximu"
+#define TR_REPEAT_AT_ZERO      INDENT "Opakování na nule"
 #define TR_SHUTDOWN            "VYPÍNÁNí.."
-#define TR_BATT_CALIB          "Kalib:Baterie"
+#define TR_BATT_CALIB          "Kalib. baterie"
 #define TR_CURRENT_CALIB       " +=\006Proud"
 #define TR_VOLTAGE             INDENT"Napětí"
 #define TR_CURRENT             INDENT"Proud"
@@ -653,7 +653,7 @@
 #define TR_INCOMPATIBLE        "Nekompatibilní"
 #define TR_WARNING             "KONTROLA"
 #define TR_EEPROMWARN          "EEPROM"
-#define TR_EEPROM_CONVERTING   "EEPROM Converting"
+#define TR_EEPROM_CONVERTING   "Aktualizuji EEPROM"
 #define TR_THROTTLEWARN        "PLYNU"
 #define TR_ALARMSWARN          "ALARMU"
 #define TR_SWITCHWARN          "POZICE"
@@ -678,7 +678,7 @@
 #define TR_NO_SOUNDS_ON_SD     "žádný zvuk na SD"
 #define TR_NO_MODELS_ON_SD     "žádný model na SD"
 #define TR_NO_BITMAPS_ON_SD    "žádné obrázky na SD"
-#define TR_NO_SCRIPTS_ON_SD    "No Scripts on SD"
+#define TR_NO_SCRIPTS_ON_SD    "žádný skript na SD"
 #define TR_PLAY_FILE           "Přehrát"
 #define TR_DELETE_FILE         "Odstranit"
 #define TR_COPY_FILE           "Kopírovat"
@@ -708,8 +708,8 @@
 #define TR_DATE                "Datum"
 #define TR_ROTARY_ENCODER      "R.Encs"
 #define TR_CHANNELS_MONITOR    "MONITOR KANÁLU"
-#define TR_PATH_TOO_LONG       "Path too long"
-#define TR_VIEW_TEXT           "View text"
+#define TR_PATH_TOO_LONG       "Cesta je moc dlouhá"
+#define TR_VIEW_TEXT           "Zobrazit text"
 #define TR_INTERNALRF          "Vnitřní RF modul"
 #define TR_EXTERNALRF          "Externí RF modul"
 #define TR_FAILSAFE            "Mód Failsafe"
@@ -747,26 +747,26 @@
 #define TR_CHANNELRANGE        INDENT "Rozsah kanálů"
 #define TR_LOWALARM            INDENT "Nízký Alarm"
 #define TR_CRITICALALARM       INDENT "Kritický Alarm"
-#define TR_ENABLE_POPUP        "Enable Popup"
-#define TR_DISABLE_POPUP       "Disable Popup"
-#define TR_CURVE_PRESET        "Preset..."
-#define TR_PRESET              "Preset"
-#define TR_MIRROR              "Mirror"
-#define TR_CLEAR               "Clear"
+#define TR_ENABLE_POPUP        "Povolit vyskakovací okno"
+#define TR_DISABLE_POPUP       "Zakázat vyskakovací okno"
+#define TR_CURVE_PRESET        "Šablona"
+#define TR_PRESET              "Šablona"
+#define TR_MIRROR              "Zrcadlit"
+#define TR_CLEAR               "Smazat"
 #define TR_RESET               "Reset"
-#define TR_COUNT               "Count"
-#define TR_PT                  "pt"
-#define TR_PTS                 "pts"
-#define TR_SMOOTH              "Smooth"
-#define TR_COPY_TRIMS_TO_OFS   "Copy Trims To Offset"
-#define TR_PERSISTENT_MAH      INDENT "Store mAh"
+#define TR_COUNT               "Velikost"
+#define TR_PT                  "č."
+#define TR_PTS                 " b."
+#define TR_SMOOTH              "Hladká"
+#define TR_COPY_TRIMS_TO_OFS   "Kopírovat trim do subtrimu"
+#define TR_PERSISTENT_MAH      TR(INDENT "Str mAh", INDENT "Ukládat mAh")
 #define TR_PREFLIGHT           "Předletová kontrola"
 #define TR_CHECKLIST           INDENT "Zobrazit poznámky"
-#define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
+#define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Ofset")
 #define TR_UART3MODE           "Seriový port"
-#define TR_SCRIPT              "Script"
-#define TR_INPUTS              "Inputs"
-#define TR_OUTPUTS             "Outputs"
+#define TR_SCRIPT              "Skript"
+#define TR_INPUTS              "Vstupy"
+#define TR_OUTPUTS             "Výstupy"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL        "Max RSSI"
@@ -852,7 +852,7 @@
 #define TR_CHR_HOUR   'h'
 #define TR_CHR_INPUT  'I'   // Values between A-I will work
 
-#define TR_BEEP_VOLUME         "Pípání"
+#define TR_BEEP_VOLUME         "Upozornění"
 #define TR_WAV_VOLUME          "Zvuky WAV"
 #define TR_VARIO_VOLUME        "Vario"
 #define TR_BG_VOLUME           "WAV na pozadí"
@@ -860,7 +860,7 @@
 #define TR_TOP_BAR             "Horní lišta"
 #define TR_ALTITUDE            INDENT "Výška"
 #define TR_SCALE               "Scale"
-#define TR_VIEW_CHANNELS       "View Channels"
-#define TR_VIEW_NOTES          "View Notes"
+#define TR_VIEW_CHANNELS       "Zobrazit kanály"
+#define TR_VIEW_NOTES          "Zobrazit poznámky"
 #define TR_MODS_FORBIDDEN      "Změny nejsou povoleny!"
 #define TR_UNLOCKED            "Odemčeno"
