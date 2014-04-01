@@ -490,6 +490,7 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model):
 
   if (IS_ARM(GetEepromInterface()->getBoard())) {
     ui->bladesCount->setMinimum(1);
+    ui->bladesCount->setMaximum(128);
   }
 
   setup();

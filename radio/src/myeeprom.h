@@ -1145,8 +1145,8 @@ PACK(typedef struct t_FrSkyData {
   uint16_t storedMah:15;
   int8_t   fasOffset;
 }) FrSkyData;
-#define MIN_BLADES -1 // 1 blade
-#define MAX_BLADES 3  // 5 blades
+#define MIN_BLADES -1   // 1 blade
+#define MAX_BLADES 126  // 128 blades
 #else
 #define MAX_FRSKY_SCREENS 2
 PACK(typedef struct t_FrSkyData {
