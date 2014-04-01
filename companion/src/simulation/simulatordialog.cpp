@@ -397,7 +397,7 @@ void SimulatorDialog::onTimerEvent()
 
   getValues();
 
-  if (!(flags & SIMULATOR_FLAGS_NOTX) && tabWidget->currentIndex()==0) {
+  if (tabWidget->currentIndex()==0) {
     bool lightEnable;
     if (simulator->lcdChanged(lightEnable)) {
       lcd->onLcdChanged(lightEnable);
