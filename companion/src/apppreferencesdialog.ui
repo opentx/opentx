@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>685</width>
+    <width>736</width>
     <height>514</height>
    </rect>
   </property>
@@ -325,13 +325,6 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </widget>
        </item>
-       <item row="14" column="1" colspan="3">
-        <widget class="QCheckBox" name="renameFirmware">
-         <property name="text">
-          <string>Append version number to FW file name</string>
-         </property>
-        </widget>
-       </item>
        <item row="3" column="0">
         <widget class="QLabel" name="sdPathLabel">
          <property name="sizePolicy">
@@ -382,13 +375,6 @@ This is used by the templated to determine which channel goes to what number out
           </size>
          </property>
         </spacer>
-       </item>
-       <item row="15" column="1" colspan="3">
-        <widget class="QCheckBox" name="burnFirmware">
-         <property name="text">
-          <string>Offer to write FW to Tx after download</string>
-         </property>
-        </widget>
        </item>
        <item row="15" column="5">
         <widget class="QPushButton" name="removeProfileButton">
@@ -553,7 +539,21 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
+       <item row="14" column="1" colspan="4">
+        <widget class="QCheckBox" name="renameFirmware">
+         <property name="text">
+          <string>Append version number to FW file name</string>
+         </property>
+        </widget>
+       </item>
+       <item row="15" column="1" colspan="4">
+        <widget class="QCheckBox" name="burnFirmware">
+         <property name="text">
+          <string>Offer to write FW to Tx after download</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1" colspan="5">
         <widget class="QLabel" name="lblGeneralSettings">
          <property name="enabled">
           <bool>true</bool>
@@ -672,16 +672,6 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </widget>
        </item>
-       <item row="5" column="1">
-        <widget class="QCheckBox" name="startupCheck_fw">
-         <property name="text">
-          <string>Automatic check for OpenTX firmware updates</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
        <item row="8" column="1">
         <widget class="QLineEdit" name="backupPath">
          <property name="minimumSize">
@@ -742,13 +732,6 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </widget>
        </item>
-       <item row="9" column="1">
-        <widget class="QCheckBox" name="backupEnable">
-         <property name="text">
-          <string>Enable automatic backup before writing firmware</string>
-         </property>
-        </widget>
-       </item>
        <item row="8" column="4">
         <widget class="QPushButton" name="backupPathButton">
          <property name="text">
@@ -776,30 +759,10 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </widget>
        </item>
-       <item row="6" column="1">
-        <widget class="QCheckBox" name="startupCheck_companion9x">
-         <property name="text">
-          <string>Automatic check for Companion updates</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
        <item row="7" column="1" colspan="4">
         <widget class="Line" name="line_2">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
-        <widget class="QCheckBox" name="showSplash">
-         <property name="text">
-          <string>Show splash screen when Companion starts</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -823,6 +786,43 @@ This is used by the templated to determine which channel goes to what number out
          </property>
          <property name="readOnly">
           <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1" colspan="4">
+        <widget class="QCheckBox" name="showSplash">
+         <property name="text">
+          <string>Show splash screen when Companion starts</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1" colspan="4">
+        <widget class="QCheckBox" name="startupCheck_fw">
+         <property name="text">
+          <string>Automatic check for OpenTX firmware updates</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1" colspan="4">
+        <widget class="QCheckBox" name="startupCheck_companion9x">
+         <property name="text">
+          <string>Automatic check for Companion updates</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="1" colspan="4">
+        <widget class="QCheckBox" name="backupEnable">
+         <property name="text">
+          <string>Enable automatic backup before writing firmware</string>
          </property>
         </widget>
        </item>
@@ -856,16 +856,6 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </widget>
        </item>
-       <item row="0" column="4">
-        <widget class="QPushButton" name="snapshotPathButton">
-         <property name="text">
-          <string>Open Folder</string>
-         </property>
-         <property name="flat">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
        <item row="0" column="3">
         <spacer name="horizontalSpacer_2">
          <property name="orientation">
@@ -878,6 +868,16 @@ This is used by the templated to determine which channel goes to what number out
           </size>
          </property>
         </spacer>
+       </item>
+       <item row="0" column="4">
+        <widget class="QPushButton" name="snapshotPathButton">
+         <property name="text">
+          <string>Open Folder</string>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+        </widget>
        </item>
        <item row="3" column="1">
         <widget class="QComboBox" name="backLightColor">
@@ -927,13 +927,6 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
-        <widget class="QCheckBox" name="snapshotClipboardCKB">
-         <property name="text">
-          <string>Only capture to clipboard</string>
-         </property>
-        </widget>
-       </item>
        <item row="5" column="1">
         <widget class="QComboBox" name="joystickCB">
          <property name="sizePolicy">
@@ -948,13 +941,6 @@ This is used by the templated to determine which channel goes to what number out
         <widget class="QPushButton" name="joystickcalButton">
          <property name="text">
           <string>Calibrate</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QCheckBox" name="simuSW">
-         <property name="text">
-          <string>Remember simulator switch values</string>
          </property>
         </widget>
        </item>
@@ -991,6 +977,20 @@ This is used by the templated to determine which channel goes to what number out
          </property>
          <property name="readOnly">
           <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" colspan="4">
+        <widget class="QCheckBox" name="snapshotClipboardCKB">
+         <property name="text">
+          <string>Only capture to clipboard</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1" colspan="4">
+        <widget class="QCheckBox" name="simuSW">
+         <property name="text">
+          <string>Remember simulator switch values</string>
          </property>
         </widget>
        </item>
