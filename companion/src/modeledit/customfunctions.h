@@ -62,8 +62,9 @@ class CustomFunctionsPanel : public ModelPanel
     void populateFuncParamArmTCB(QComboBox *b, char * value, QStringList & paramsList);
 
     GeneralSettings & generalSettings;
+    bool initialized;
     QStringList paramarmList;
-    bool phononLock;
+    int phononCurrent;
     QComboBox * fswtchSwtch[C9X_MAX_CUSTOM_FUNCTIONS];
     QComboBox * fswtchFunc[C9X_MAX_CUSTOM_FUNCTIONS];
     QCheckBox * fswtchParamGV[C9X_MAX_CUSTOM_FUNCTIONS];
