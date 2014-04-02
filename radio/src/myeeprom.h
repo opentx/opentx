@@ -339,8 +339,10 @@ enum BacklightMode {
 
 #if defined(FSPLASH)
   #define SPLASH_MODE uint8_t splashMode:3
+#elif defined(PCBTARANIS)
+  #define SPLASH_MODE int8_t splashMode:3
 #else
-  #define SPLASH_MODE uint8_t splashMode:1; uint8_t spare4:2
+  #define SPLASH_MODE uint8_t splashMode:1; uint8_t splashSpare:2
 #endif
 
 #define XPOTS_MULTIPOS_COUNT 6

@@ -226,7 +226,14 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
     ui->memwarnChkB->setChecked(!g_eeGeneral.disableMemoryWarning);   //Default is zero=checked
     ui->alarmwarnChkB->setChecked(!g_eeGeneral.disableAlarmWarning);//Default is zero=checked
 
-    ui->splashScreenChkB->setChecked(!g_eeGeneral.splashMode);
+    if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+      ui->splashScreenChkB->hide();
+      ui->splashScreenDuration->setCurrentIndex(3-g_eeGeneral.splashDuration);
+    }
+    else {
+      ui->splashScreenDuration->hide();
+      ui->splashScreenChkB->setChecked(!g_eeGeneral.splashMode);
+    }
 
     ui->trnMode_1->setCurrentIndex(g_eeGeneral.trainer.mix[0].mode);
     ui->trnChn_1->setCurrentIndex(g_eeGeneral.trainer.mix[0].src);
@@ -850,6 +857,12 @@ void GeneralEdit::on_tabWidget_currentChanged(int index)
 void GeneralEdit::on_splashScreenChkB_stateChanged(int )
 {
     g_eeGeneral.splashMode = ui->splashScreenChkB->isChecked() ? 0 : 1;
+    updateSettings();
+}
+
+void GeneralEdit::on_splashScreenDuration_currentIndexChanged(int index)
+{
+    g_eeGeneral.splashDuration = 3-index;
     updateSettings();
 }
 

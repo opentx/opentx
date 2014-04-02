@@ -451,6 +451,7 @@ class GeneralSettings {
     bool      frskyinternalalarm;
     bool      disableBG;
     unsigned int  splashMode;
+    int splashDuration;
     uint8_t   filterInput; // TODO enum
     unsigned int  backlightDelay;
     bool   blightinv;

@@ -546,8 +546,20 @@ void menuGeneralSetup(uint8_t event)
 #if defined(SPLASH) && !defined(FSPLASH)
       case ITEM_SETUP_DISABLE_SPLASH:
       {
+#if defined(PCBTARANIS)
+        lcd_putsLeft(y, STR_SPLASHSCREEN);
+        if (SPLASH_NEEDED()) {
+          lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, SPLASH_TIMEOUT/100, attr|LEFT);
+          lcd_putc(lcdLastPos, y, 's');
+        }
+        else {
+          lcd_putsiAtt(RADIO_SETUP_2ND_COLUMN, y, STR_MMMINV, 0, attr);
+        }
+        if (attr) g_eeGeneral.splashMode = -checkIncDecGen(event, -g_eeGeneral.splashMode, -3, 4);
+#else
         uint8_t b = 1-g_eeGeneral.splashMode;
         g_eeGeneral.splashMode = 1 - onoffMenuItem(b, RADIO_SETUP_2ND_COLUMN, y, STR_SPLASHSCREEN, attr, event);
+#endif
         break;
       }
 #endif

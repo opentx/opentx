@@ -2238,8 +2238,6 @@ bool readonlyUnlocked()
 
 #if defined(SPLASH)
 
-#define SPLASH_NEEDED() (!IS_DSM2_PROTOCOL(g_model.protocol) && !g_eeGeneral.splashMode)
-
 inline void Splash()
 {
   lcd_clear();

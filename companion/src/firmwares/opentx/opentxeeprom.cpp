@@ -2573,7 +2573,9 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
     internalField.Append(new BoolField<1>(generalData.minuteBeep));
     internalField.Append(new BoolField<1>(generalData.preBeep));
   }
-  if (version >= 213 || (!IS_ARM(board) && version >= 212))
+  if (version >= 216 && IS_TARANIS(board))
+    internalField.Append(new SignedField<3>(generalData.splashDuration));
+  else if (version >= 213 || (!IS_ARM(board) && version >= 212))
     internalField.Append(new UnsignedField<3>(generalData.splashMode)); // TODO
   else
     internalField.Append(new SpareBitsField<3>());

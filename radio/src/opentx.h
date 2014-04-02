@@ -523,8 +523,16 @@ enum BaseCurves {
 
 #define THRCHK_DEADBAND 16
 
+#if defined(PCBTARANIS)
+  #define SPLASH_NEEDED() (g_eeGeneral.splashMode != 3)
+#else
+  #define SPLASH_NEEDED() (!IS_DSM2_PROTOCOL(g_model.protocol) && !g_eeGeneral.splashMode)
+#endif
+
 #if defined(FSPLASH)
   #define SPLASH_TIMEOUT  (g_eeGeneral.splashMode == 0 ? 60000/*infinite=10mn*/ : ((4*100) * (g_eeGeneral.splashMode & 0x03)))
+#elif defined(PCBTARANIS)
+  #define SPLASH_TIMEOUT  (g_eeGeneral.splashMode==-4 ? 1500 : (g_eeGeneral.splashMode<=0 ? (400-g_eeGeneral.splashMode*200) : (400-g_eeGeneral.splashMode*100)))
 #else
   #define SPLASH_TIMEOUT  (4*100)  // 4 seconds
 #endif

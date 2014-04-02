@@ -43,7 +43,8 @@ private slots:
     void on_hapticmodeCB_currentIndexChanged(int index);
     void on_hapticLengthCB_currentIndexChanged(int index);
     void on_PPM_MultiplierDSB_editingFinished();
-    void on_splashScreenChkB_stateChanged(int );
+    void on_splashScreenChkB_stateChanged(int);
+    void on_splashScreenDuration_currentIndexChanged(int index);
     void on_alarmwarnChkB_stateChanged(int );
     void on_gpsFormatCB_currentIndexChanged(int index);
     void on_tabWidget_currentChanged(int index);
