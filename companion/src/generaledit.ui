@@ -113,6 +113,36 @@ These will be relevant for all models in the same EEPROM.</string>
        <string>Setup</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout" columnstretch="1,0,0,0,0">
+       <item row="26" column="3" colspan="2">
+        <layout class="QHBoxLayout" name="pxxCountry">
+         <item>
+          <widget class="QLabel" name="countrycode_label">
+           <property name="text">
+            <string>Country Code</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="countrycode_CB">
+           <item>
+            <property name="text">
+             <string>America</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Japan</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Europe</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </item>
        <item row="29" column="1">
         <widget class="QComboBox" name="stickmodeCB">
          <property name="toolTip">
@@ -314,36 +344,6 @@ Mode 4:
          </item>
         </layout>
        </item>
-       <item row="26" column="3" colspan="2">
-        <layout class="QHBoxLayout" name="pxxCountry">
-         <item>
-          <widget class="QLabel" name="countrycode_label">
-           <property name="text">
-            <string>Country Code</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="countrycode_CB">
-           <item>
-            <property name="text">
-             <string>America</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Japan</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Europe</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-        </layout>
-       </item>
        <item row="1" column="0">
         <widget class="QLabel" name="label_beeperlen">
          <property name="text">
@@ -355,13 +355,6 @@ Mode 4:
         <widget class="QLabel" name="varioP0_label">
          <property name="text">
           <string>Vario pitch at zero</string>
-         </property>
-        </widget>
-       </item>
-       <item row="9" column="3">
-        <widget class="QLabel" name="varioPMax_label">
-         <property name="text">
-          <string>Vario pitch at max</string>
          </property>
         </widget>
        </item>
@@ -1456,13 +1449,6 @@ p, li { white-space: pre-wrap; }
          </item>
         </layout>
        </item>
-       <item row="10" column="3">
-        <widget class="QLabel" name="varioR0_label">
-         <property name="text">
-          <string>Vario repeat at zero</string>
-         </property>
-        </widget>
-       </item>
        <item row="7" column="4">
         <widget class="QSpinBox" name="varioP0_SB">
          <property name="suffix">
@@ -1479,44 +1465,6 @@ p, li { white-space: pre-wrap; }
          </property>
          <property name="value">
           <number>700</number>
-         </property>
-        </widget>
-       </item>
-       <item row="9" column="4">
-        <widget class="QSpinBox" name="varioPMax_SB">
-         <property name="suffix">
-          <string> Hz</string>
-         </property>
-         <property name="minimum">
-          <number>1300</number>
-         </property>
-         <property name="maximum">
-          <number>2900</number>
-         </property>
-         <property name="singleStep">
-          <number>10</number>
-         </property>
-         <property name="value">
-          <number>1700</number>
-         </property>
-        </widget>
-       </item>
-       <item row="10" column="4">
-        <widget class="QSpinBox" name="varioR0_SB">
-         <property name="suffix">
-          <string> ms</string>
-         </property>
-         <property name="minimum">
-          <number>200</number>
-         </property>
-         <property name="maximum">
-          <number>1000</number>
-         </property>
-         <property name="singleStep">
-          <number>10</number>
-         </property>
-         <property name="value">
-          <number>500</number>
          </property>
         </widget>
        </item>
@@ -1658,58 +1606,6 @@ p, li { white-space: pre-wrap; }
          </item>
         </widget>
        </item>
-       <item row="11" column="3">
-        <widget class="QLabel" name="label_5">
-         <property name="text">
-          <string>BackLight  Auto OFF after</string>
-         </property>
-        </widget>
-       </item>
-       <item row="11" column="4">
-        <widget class="QSpinBox" name="backlightautoSB">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="statusTip">
-          <string/>
-         </property>
-         <property name="whatsThis">
-          <string>If this value is not 0, any keypress will turn on the backlight and turn it off after the specified number of seconds.</string>
-         </property>
-         <property name="suffix">
-          <string> sec</string>
-         </property>
-         <property name="maximum">
-          <number>600</number>
-         </property>
-         <property name="singleStep">
-          <number>5</number>
-         </property>
-        </widget>
-       </item>
-       <item row="13" column="3">
-        <widget class="QLabel" name="re_label">
-         <property name="text">
-          <string>RotEnc Navigation</string>
-         </property>
-        </widget>
-       </item>
-       <item row="12" column="4">
-        <widget class="QSpinBox" name="BLBright_SB">
-         <property name="maximum">
-          <number>100</number>
-         </property>
-        </widget>
-       </item>
-       <item row="13" column="4">
-        <widget class="QComboBox" name="re_CB"/>
-       </item>
        <item row="10" column="0">
         <widget class="QLabel" name="label_displayType">
          <property name="text">
@@ -1747,13 +1643,6 @@ p, li { white-space: pre-wrap; }
          </property>
          <property name="value">
           <number>25</number>
-         </property>
-        </widget>
-       </item>
-       <item row="12" column="3">
-        <widget class="QLabel" name="label_BLBright">
-         <property name="text">
-          <string>BackLight Brightness</string>
          </property>
         </widget>
        </item>
@@ -1903,6 +1792,117 @@ Acceptable values are 5v..10v</string>
           </widget>
          </item>
         </layout>
+       </item>
+       <item row="8" column="3">
+        <widget class="QLabel" name="varioPMax_label">
+         <property name="text">
+          <string>Vario pitch at max</string>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="4">
+        <widget class="QSpinBox" name="backlightautoSB">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="statusTip">
+          <string/>
+         </property>
+         <property name="whatsThis">
+          <string>If this value is not 0, any keypress will turn on the backlight and turn it off after the specified number of seconds.</string>
+         </property>
+         <property name="suffix">
+          <string> sec</string>
+         </property>
+         <property name="maximum">
+          <number>600</number>
+         </property>
+         <property name="singleStep">
+          <number>5</number>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="4">
+        <widget class="QSpinBox" name="varioPMax_SB">
+         <property name="suffix">
+          <string> Hz</string>
+         </property>
+         <property name="minimum">
+          <number>1300</number>
+         </property>
+         <property name="maximum">
+          <number>2900</number>
+         </property>
+         <property name="singleStep">
+          <number>10</number>
+         </property>
+         <property name="value">
+          <number>1700</number>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="4">
+        <widget class="QSpinBox" name="varioR0_SB">
+         <property name="suffix">
+          <string> ms</string>
+         </property>
+         <property name="minimum">
+          <number>200</number>
+         </property>
+         <property name="maximum">
+          <number>1000</number>
+         </property>
+         <property name="singleStep">
+          <number>10</number>
+         </property>
+         <property name="value">
+          <number>500</number>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="3">
+        <widget class="QLabel" name="label_BLBright">
+         <property name="text">
+          <string>BackLight Brightness</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="3">
+        <widget class="QLabel" name="varioR0_label">
+         <property name="text">
+          <string>Vario repeat at zero</string>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="3">
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>BackLight  Auto OFF after</string>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="4">
+        <widget class="QSpinBox" name="BLBright_SB">
+         <property name="maximum">
+          <number>100</number>
+         </property>
+        </widget>
+       </item>
+       <item row="12" column="4">
+        <widget class="QComboBox" name="re_CB"/>
+       </item>
+       <item row="12" column="3">
+        <widget class="QLabel" name="re_label">
+         <property name="text">
+          <string>RotEnc Navigation</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
