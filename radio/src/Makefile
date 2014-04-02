@@ -127,9 +127,8 @@ CORRECT_NEGATIVE_VALUES = YES
 ARITHMETIC_OVERFLOW_CHECK = NO
 
 # increases resolution for throttle statistics and throttle counting, in very rare cases.
-# most important effect is, it prevents throttle counting faster than actual time for 100%. 
 # this will be only true if an output channel is used for throttle calculation, and this chanenel has changed limits, e.g. -90% to +80%
-# if you use standard limits for throttle or directly the throttle stick you do not bother about this option
+# if you use standard limits for throttle or directly the throttle stick you do not need to bother about this option
 # not valid for ARM based transmitters like Taranis, They do not have this rounding issue at all
 # Values = YES, NO
 ACCURAT_THROTTLE_STATS = NO

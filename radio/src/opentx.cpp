@@ -4204,9 +4204,10 @@ void doMixerCalculations()
     // usually max is 1024 min is -1024 --> max-min = 2048 full range
 
 #ifdef ACCURAT_THROTTLE_TIMER
-    if (gModelMax!=0 && gModelMax!=2048) val = (int32_t) (val << 11) / (gModelMax); // recaling only needed if Min, Max differs
+    if (gModelMax!=0 && gModelMax!=2048) val = (int32_t) (val << 11) / (gModelMax); // rescaling only needed if Min, Max differs
 #else
     // @@@ open.20.fsguruh  optimized calculation; now *8 /8 instead of 10 base; (*16/16 already cause a overrun; unsigned calculation also not possible, because v may be negative)
+    gModelMax+=255; // force rounding up --> gModelMax is bigger --> val is smaller
     gModelMax >>= (10-2);
 
     if (gModelMax!=0 && gModelMax!=8) {
