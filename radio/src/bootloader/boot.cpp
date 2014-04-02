@@ -886,9 +886,9 @@ int main()
         firmwareWritten += 4; // 4K blocks
 
         lcd_rect( 3, 6*FH+4, 204, 7);
-        lcd_hline(5, 6*FH+6, (200*2*firmwareWritten-32)/(FlashSize), FORCE);
-        lcd_hline(5, 6*FH+7, (200*2*firmwareWritten-32)/(FlashSize), FORCE);
-        lcd_hline(5, 6*FH+8, (200*2*firmwareWritten-32)/(FlashSize), FORCE);
+        lcd_hline(5, 6*FH+6, (200*firmwareWritten*1024)/FirmwareSize, FORCE);
+        lcd_hline(5, 6*FH+7, (200*firmwareWritten*1024)/FirmwareSize, FORCE);
+        lcd_hline(5, 6*FH+8, (200*firmwareWritten*1024)/FirmwareSize, FORCE);
 
         fr = f_read(&FlashFile, (BYTE *)Block_buffer, sizeof(Block_buffer), &BlockCount);
         if (BlockCount == 0) {
