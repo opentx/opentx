@@ -337,7 +337,7 @@ enum BacklightMode {
   e_backlight_mode_on
 };
 
-#if defined(FSPLASH) || defined(XSPLASH)
+#if defined(FSPLASH)
   #define SPLASH_MODE uint8_t splashMode:3
 #else
   #define SPLASH_MODE uint8_t splashMode:1; uint8_t spare4:2

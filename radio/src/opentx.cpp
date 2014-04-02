@@ -2290,7 +2290,7 @@ void doSplash()
 
       getADC();
 
-#if defined(FSPLASH) || defined(XSPLASH)
+#if defined(FSPLASH)
       if (!(g_eeGeneral.splashMode & 0x04))
 #endif
       if (keyDown() || inputsMoved()) return;
