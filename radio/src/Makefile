@@ -126,6 +126,14 @@ CORRECT_NEGATIVE_VALUES = YES
 # Values = YES, NO
 ARITHMETIC_OVERFLOW_CHECK = NO
 
+# increases resolution for throttle statistics and throttle counting, in very rare cases.
+# most important effect is, it prevents throttle counting faster than actual time for 100%. 
+# this will be only true if an output channel is used for throttle calculation, and this chanenel has changed limits, e.g. -90% to +80%
+# if you use standard limits for throttle or directly the throttle stick you do not bother about this option
+# not valid for ARM based transmitters like Taranis, They do not have this rounding issue at all
+# Values = YES, NO
+ACCURAT_THROTTLE_STATS = NO
+
 # HAPTIC Mods
 # Values = YES, NO 
 HAPTIC = NO
@@ -857,6 +865,9 @@ ifeq ($(ARITHMETIC_OVERFLOW_CHECK), YES)
   CPPDEFS += -DPREVENT_ARITHMETIC_OVERFLOW
 endif
 
+ifeq ($(ACCURAT_THROTTLE_STATS), YES)
+  CPPDEFS += -DACCURAT_THROTTLE_TIMER
+endif
 
 # EXTENSIONS (for Telemetry protocols)
 ifneq ($(EXT), $(filter $(EXT), STD FRSKY ARDUPILOT NMEA JETI MAVLINK TELEMETREZ))
