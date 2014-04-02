@@ -67,6 +67,7 @@ class Channel
 {
   public:
     WizardPage page;     // Originating dialog, only of interest for producer
+    bool prebooked;     // Temporary lock variable 
     Input input1;
     Input input2;
     int weight1;

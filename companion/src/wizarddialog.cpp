@@ -151,35 +151,11 @@ int StandardPage::getDefaultChannel(const Input input)
   return -1;
 }
 
-int StandardPage::firstNonDefaultChannel()
+int StandardPage::nextFreeChannel(int channel)
 {
-  for(int i=4;i<8; i++)
+  for(int i=channel;i<8; i++)
     if (wizDlg->mix.channel[i].page == Page_None)
       return i;
-  for(int i=0;i<4; i++)
-    if (wizDlg->mix.channel[i].page == Page_None)
-      return i;
-  return -1;
-}
-
-int StandardPage::secondNonDefaultChannel()
-{
-  bool firstFound = false;
-  for(int i=4;i<8; i++){
-    if (wizDlg->mix.channel[i].page == Page_None){
-      if(firstFound)
-        return i;
-      else
-        firstFound=true;
-    }
-  }
-  for(int i=0;i<4; i++)
-    if (wizDlg->mix.channel[i].page == Page_None){
-      if(firstFound)
-        return i;
-      else
-        firstFound=true;
-    }
   return -1;
 }
 
@@ -187,6 +163,7 @@ void StandardPage::populateCB(QComboBox *cb, int preferred)
 {
   cb->clear();
 
+  // Add all unbooked channels and select the preferred one
   for (int i=0; i<WIZ_MAX_CHANNELS; i++) {
     if (wizDlg->mix.channel[i].page == Page_None) {
       cb->addItem(tr("Channel %1").arg(i+1), i);
@@ -195,6 +172,19 @@ void StandardPage::populateCB(QComboBox *cb, int preferred)
       }
     }
   }
+  // Avoid selecting prebooked channels
+  int channel = cb->itemData(cb->currentIndex()).toInt();
+  if(wizDlg->mix.channel[channel].prebooked){
+    for(int i=cb->count()-1; i>=0; i--){
+      if( !wizDlg->mix.channel[i].prebooked ){
+        cb->setCurrentIndex(i);
+        break;
+      }
+    }
+  }
+  // Prebook the selected channel
+  channel = cb->itemData(cb->currentIndex()).toInt();
+  wizDlg->mix.channel[channel].prebooked = true;
 }
 
 bool StandardPage::bookChannel(QComboBox * cb, Input input1, int weight1, Input input2, int weight2 )
@@ -214,7 +204,7 @@ bool StandardPage::bookChannel(QComboBox * cb, Input input1, int weight1, Input 
   return true;
 }
 
-void StandardPage::releaseChannels()
+void StandardPage::releaseBookings()
 {
   for (int i=0; i<WIZ_MAX_CHANNELS; i++)
   {
@@ -224,9 +214,22 @@ void StandardPage::releaseChannels()
   }
 }
 
+void StandardPage::releasePreBookings()
+{
+  for (int i=0; i<WIZ_MAX_CHANNELS; i++)
+  {
+    wizDlg->mix.channel[i].prebooked = false;
+  }
+}
+
+void StandardPage::initializePage()
+{
+  releasePreBookings(); // All prebookings are void after page has initialized
+}
+
 void StandardPage::cleanupPage()
 {
-  releaseChannels();
+  releaseBookings();
 }
 
 int StandardPage::nextId() const
@@ -370,11 +373,12 @@ ThrottlePage::ThrottlePage(WizardDialog *dlg, QString image, QString title, QStr
 void ThrottlePage::initializePage()
 {
   populateCB(throttleCB, getDefaultChannel(THROTTLE_INPUT));
+  StandardPage::initializePage();
 }
 
 bool ThrottlePage::validatePage()
 {
-  releaseChannels();
+  releaseBookings();
   if (motorRB->isChecked())
     return bookChannel(throttleCB, THROTTLE_INPUT, 100);
   else
@@ -408,11 +412,12 @@ AileronsPage::AileronsPage(WizardDialog *dlg, QString image, QString title, QStr
 
 void AileronsPage::initializePage(){
   populateCB(aileron1CB, getDefaultChannel(AILERONS_INPUT));
-  populateCB(aileron2CB, firstNonDefaultChannel());
+  populateCB(aileron2CB, nextFreeChannel(4));
+  StandardPage::initializePage();
 }
 
 bool AileronsPage::validatePage() {
-  releaseChannels();
+  releaseBookings();
   if (noAileronsRB->isChecked()) { 
     return true;
   }
@@ -444,12 +449,13 @@ FlapsPage::FlapsPage(WizardDialog *dlg, QString image, QString title, QString te
 }
 
 void FlapsPage::initializePage(){
-  populateCB(flap1CB, firstNonDefaultChannel());
-  populateCB(flap2CB, secondNonDefaultChannel());
+  populateCB(flap1CB, nextFreeChannel(4));
+  populateCB(flap2CB, nextFreeChannel(4));
+  StandardPage::initializePage();
 }
 
 bool FlapsPage::validatePage() {
-  releaseChannels();
+  releaseBookings();
   if (noFlapsRB->isChecked()) { 
     return true;
   }
@@ -481,12 +487,13 @@ AirbreaksPage::AirbreaksPage(WizardDialog *dlg, QString image, QString title, QS
 }
 
 void AirbreaksPage::initializePage(){
-  populateCB(airbreak1CB, firstNonDefaultChannel());
-  populateCB(airbreak2CB, secondNonDefaultChannel());
+  populateCB(airbreak1CB, nextFreeChannel(4));
+  populateCB(airbreak2CB, nextFreeChannel(4));
+  StandardPage::initializePage();
 }
 
 bool AirbreaksPage::validatePage() {
-  releaseChannels();
+  releaseBookings();
   if (noAirbreaksRB->isChecked()) { 
     return true;
   }
@@ -518,10 +525,11 @@ BankPage::BankPage(WizardDialog *dlg, QString image, QString title, QString text
 void BankPage::initializePage(){
   populateCB(elevon1CB, getDefaultChannel(ELEVATOR_INPUT));
   populateCB(elevon2CB, getDefaultChannel(AILERONS_INPUT));
+  StandardPage::initializePage();
 }
 
 bool BankPage::validatePage() {
-  releaseChannels();
+  releaseBookings();
   if (oneElevonChRB->isChecked()) { 
     return (bookChannel(elevon1CB, AILERONS_INPUT, 100, ELEVATOR_INPUT, 100 ));
   }
@@ -546,10 +554,11 @@ RudderPage::RudderPage(WizardDialog *dlg, QString image, QString title, QString 
 
 void RudderPage::initializePage(){
   populateCB(rudderCB, getDefaultChannel(RUDDER_INPUT));
+  StandardPage::initializePage();
 }
 
 bool RudderPage::validatePage() {
-  releaseChannels();
+  releaseBookings();
   if (noRudderRB->isChecked())
     return true;
 
@@ -572,10 +581,11 @@ VTailPage::VTailPage(WizardDialog *dlg, QString image, QString title, QString te
 void VTailPage::initializePage(){
   populateCB(tail1CB, getDefaultChannel(ELEVATOR_INPUT));
   populateCB(tail2CB, getDefaultChannel(AILERONS_INPUT));
+  StandardPage::initializePage();
 }
 
 bool VTailPage::validatePage() {
-  releaseChannels();
+  releaseBookings();
   return (bookChannel(tail1CB, ELEVATOR_INPUT, 100, RUDDER_INPUT, 100) &&
     bookChannel(tail2CB, ELEVATOR_INPUT, 100, RUDDER_INPUT, 100 ));
 }
@@ -596,10 +606,11 @@ TailPage::TailPage(WizardDialog *dlg, QString image, QString title, QString text
 void TailPage::initializePage(){
   populateCB(elevatorCB, getDefaultChannel(ELEVATOR_INPUT));
   populateCB(rudderCB, getDefaultChannel(RUDDER_INPUT));
+  StandardPage::initializePage();
 }
 
 bool TailPage::validatePage() {
-  releaseChannels();
+  releaseBookings();
   return( bookChannel(elevatorCB, ELEVATOR_INPUT, 100 ) &&
     bookChannel(rudderCB,   RUDDER_INPUT,   100 ));
 }
@@ -616,10 +627,11 @@ SimpleTailPage::SimpleTailPage(WizardDialog *dlg, QString image, QString title, 
 
 void SimpleTailPage::initializePage(){
   populateCB(elevatorCB, getDefaultChannel(ELEVATOR_INPUT));
+  StandardPage::initializePage();
 }
 
 bool SimpleTailPage::validatePage() {
-  releaseChannels();
+  releaseBookings();
   return( bookChannel(elevatorCB, ELEVATOR_INPUT, 100 ));
 }
 
@@ -640,10 +652,11 @@ CyclicPage::CyclicPage(WizardDialog *dlg, QString image, QString title, QString 
 }
 
 void CyclicPage::initializePage(){
+  StandardPage::initializePage();
 }
 
 bool CyclicPage::validatePage() {
-  releaseChannels();
+  releaseBookings();
   return true;
 }
 
@@ -662,10 +675,11 @@ GyroPage::GyroPage(WizardDialog *dlg, QString image, QString title, QString text
 }
 
 void GyroPage::initializePage(){
+  StandardPage::initializePage();
 }
 
 bool GyroPage::validatePage() {
-  releaseChannels();
+  releaseBookings();
   return true;
 }
 
@@ -693,10 +707,11 @@ void FblPage::initializePage(){
   populateCB(yawCB, getDefaultChannel(RUDDER_INPUT));
   populateCB(pitchCB, getDefaultChannel(ELEVATOR_INPUT));
   populateCB(rollCB, getDefaultChannel(AILERONS_INPUT));
+  StandardPage::initializePage();
 }
 
 bool FblPage::validatePage() {
-  releaseChannels();
+  releaseBookings();
   return( bookChannel(throttleCB, THROTTLE_INPUT, 100 ) &&
     bookChannel(      yawCB,      RUDDER_INPUT,   100 ) &&
     bookChannel(      pitchCB,    ELEVATOR_INPUT, 100 ) &&
@@ -727,10 +742,11 @@ void HeliPage::initializePage(){
   populateCB(yawCB, getDefaultChannel(RUDDER_INPUT));
   populateCB(pitchCB, getDefaultChannel(ELEVATOR_INPUT));
   populateCB(rollCB, getDefaultChannel(AILERONS_INPUT));
+  StandardPage::initializePage();
 }
 
 bool HeliPage::validatePage() {
-  releaseChannels();
+  releaseBookings();
   return( bookChannel(throttleCB, THROTTLE_INPUT, 100 ) &&
     bookChannel(      yawCB,      RUDDER_INPUT,   100 ) &&
     bookChannel(      pitchCB,    ELEVATOR_INPUT, 100 ) &&
@@ -761,10 +777,11 @@ void MultirotorPage::initializePage(){
   populateCB(yawCB, getDefaultChannel(RUDDER_INPUT));
   populateCB(pitchCB, getDefaultChannel(ELEVATOR_INPUT));
   populateCB(rollCB, getDefaultChannel(AILERONS_INPUT));
+  StandardPage::initializePage();
 }
 
 bool MultirotorPage::validatePage() {
-  releaseChannels();
+  releaseBookings();
   return( bookChannel(throttleCB, THROTTLE_INPUT, 100 ) &&
     bookChannel(yawCB,            RUDDER_INPUT,   100 ) &&
     bookChannel(pitchCB,          ELEVATOR_INPUT, 100 ) &&
@@ -786,6 +803,7 @@ ConclusionPage::ConclusionPage(WizardDialog *dlg, QString image, QString title, 
 void ConclusionPage::initializePage(){
   WizardPrinter p(&wizDlg->mix);
   textLabel->setText(p.print());
+  StandardPage::initializePage();
 }
 
 bool ConclusionPage::validatePage() {

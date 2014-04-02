@@ -46,14 +46,13 @@ class  StandardPage: public QWizardPage
     StandardPage(WizardPage curPage, WizardDialog *dlg, QString image, QString title, QString text, int nextPage=-1);
     WizardDialog *wizDlg;
 
-    // TODO public for these 3 ones?
-    void releaseChannels();
+  protected: 
+    void releaseBookings();
+    void releasePreBookings();
+    void initializePage();
     void cleanupPage();
-
-  protected:
     int getDefaultChannel(const Input input);
-    int firstNonDefaultChannel();
-    int secondNonDefaultChannel();
+    int nextFreeChannel(int channel = 0);
     void populateCB(QComboBox * cb, int preferred=-1);
     bool bookChannel(QComboBox * cb, Input input1, int weight1, Input input2=NO_INPUT, int weight2=0);
 

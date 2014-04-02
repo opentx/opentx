@@ -22,6 +22,7 @@ Channel::Channel()
 void Channel::clear()
 {
   page = Page_None;
+  prebooked = false;
   input1 = NO_INPUT;
   input2 = NO_INPUT;
   weight1 = 0;  
