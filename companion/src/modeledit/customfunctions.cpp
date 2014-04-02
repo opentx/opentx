@@ -179,7 +179,6 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
     fswtchEnable[i]->setText(tr("ON"));
     fswtchEnable[i]->setFixedWidth( 50 );
     repeatLayout->addWidget(fswtchEnable[i], i+1);
-    fswtchEnable[i]->setChecked(model.funcSw[i].enabled);
     connect(fswtchEnable[i], SIGNAL(stateChanged(int)), this, SLOT(customFunctionEdited()));
   }
 
@@ -461,7 +460,10 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
     fswtchParamT[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_SOURCE_PARAM);
     fswtchParamArmT[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_FILE_PARAM);
     fswtchEnable[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_ENABLE);
-    if (!(widgetsMask & CUSTOM_FUNCTION_ENABLE)) fswtchEnable[i]->setChecked(false);
+    if (widgetsMask & CUSTOM_FUNCTION_ENABLE)
+      fswtchEnable[i]->setChecked(model.funcSw[i].enabled);
+    else
+      fswtchEnable[i]->setChecked(false);
     fswtchRepeat[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_REPEAT);
     fswtchGVmode[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_GV_MODE);
 #ifdef PHONON
@@ -507,9 +509,11 @@ void CustomFunctionsPanel::fswDelete()
 {
   model.funcSw[selectedFunction].clear();
   // TODO update switch and func
+  lock = true;
   populateSwitchCB(fswtchSwtch[selectedFunction], model.funcSw[selectedFunction].swtch, POPULATE_ONOFF);
   populateFuncCB(fswtchFunc[selectedFunction], model.funcSw[selectedFunction].func);
   refreshCustomFunction(selectedFunction);
+  lock = false;
   emit modified();
 }
 
