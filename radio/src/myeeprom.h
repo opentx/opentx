@@ -503,7 +503,8 @@ PACK(typedef struct t_ExpoData {
 
 #if defined(PCBTARANIS)
   #define limit_min_max_t     int16_t
-  #define LIMIT_EXT_MAX       (125*10)
+  #define LIMIT_EXT_PERCENT   150
+  #define LIMIT_EXT_MAX       (LIMIT_EXT_PERCENT*10)
   #define LIMIT_MAX(lim)      (GV_IS_GV_VALUE(lim->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX) ? GET_GVAR(lim->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, s_perout_flight_phase)*10 : lim->max+1000)
   #define LIMIT_MIN(lim)      (GV_IS_GV_VALUE(lim->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX) ? GET_GVAR(lim->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, s_perout_flight_phase)*10 : lim->min-1000)
   #define LIMIT_OFS(lim)      (GV_IS_GV_VALUE(lim->offset, -1000, 1000) ? GET_GVAR(lim->offset, -1000, 1000, s_perout_flight_phase)*10 : lim->offset)
@@ -512,7 +513,8 @@ PACK(typedef struct t_ExpoData {
   #define LIMIT_OFS_RESX(lim) calc1000toRESX(LIMIT_OFS(lim))
 #else
   #define limit_min_max_t     int8_t
-  #define LIMIT_EXT_MAX       125
+  #define LIMIT_EXT_PERCENT   125
+  #define LIMIT_EXT_MAX       LIMIT_EXT_PERCENT
   #define LIMIT_MAX(lim)      (lim->max+100)
   #define LIMIT_MIN(lim)      (lim->min-100)
   #define LIMIT_OFS(lim)      (lim->offset)
