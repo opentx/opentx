@@ -61,7 +61,6 @@ class CustomFunctionsPanel : public ModelPanel
     void populateFuncParamCB(QComboBox *b, const ModelData & model, uint function, unsigned int value, unsigned int adjustmode=0);
     void populateFuncParamArmTCB(QComboBox *b, char * value, QStringList & paramsList);
 
-    GeneralSettings & generalSettings;
     bool initialized;
     QStringList paramarmList;
     int phononCurrent;

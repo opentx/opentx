@@ -1,9 +1,10 @@
 #include "modelpanel.h"
 #include <QLabel>
 
-ModelPanel::ModelPanel(QWidget * parent, ModelData & model):
+ModelPanel::ModelPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings):
   QWidget(parent),
   model(model),
+  generalSettings(generalSettings),
   lock(false)
 {
 }

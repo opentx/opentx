@@ -6,9 +6,8 @@
 #include <QGridLayout>
 
 FlightMode::FlightMode(QWidget * parent, ModelData & model, int phaseIdx, GeneralSettings & generalSettings):
-  ModelPanel(parent, model),
+  ModelPanel(parent, model, generalSettings),
   ui(new Ui::FlightMode),
-  generalSettings(generalSettings),
   phaseIdx(phaseIdx),
   phase(model.phaseData[phaseIdx]),
   reCount(GetEepromInterface()->getCapability(RotaryEncoders)),
@@ -32,7 +31,7 @@ FlightMode::FlightMode(QWidget * parent, ModelData & model, int phaseIdx, Genera
 
   // Phase switch
   if (phaseIdx > 0) {
-    populateSwitchCB(ui->swtch, phase.swtch);
+    populateSwitchCB(ui->swtch, phase.swtch, generalSettings);
     connect(ui->swtch, SIGNAL(currentIndexChanged(int)), this, SLOT(phaseSwitch_currentIndexChanged(int)));
   }
   else {
@@ -401,7 +400,7 @@ void FlightMode::phaseTrimSlider_valueChanged()
 /**********************************************************/
 
 FlightModes::FlightModes(QWidget * parent, ModelData & model, GeneralSettings & generalSettings):
-  ModelPanel(parent, model),
+  ModelPanel(parent, model, generalSettings),
   modesCount(GetEepromInterface()->getCapability(FlightPhases))
 {
   QGridLayout * gridLayout = new QGridLayout(this);

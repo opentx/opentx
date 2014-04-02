@@ -4,8 +4,7 @@
 #include "helpers.h"
 
 InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings):
-  ModelPanel(parent, model),
-  generalSettings(generalSettings),
+  ModelPanel(parent, model, generalSettings),
   expoInserted(false)
 {
   QGridLayout * exposLayout = new QGridLayout(this);
@@ -175,7 +174,7 @@ void InputsPanel::gm_openExpo(int index)
     if (GetEepromInterface()->getCapability(VirtualInputs))
       strcpy(inputName, model.inputNames[mixd.chn]);
 
-    ExpoDialog *g = new ExpoDialog(this, model, &mixd, generalSettings.stickMode, inputName);
+    ExpoDialog *g = new ExpoDialog(this, model, &mixd, generalSettings, inputName);
     if (g->exec())  {
       model.expoData[index] = mixd;
       if (GetEepromInterface()->getCapability(VirtualInputs))

@@ -20,7 +20,7 @@ class TimerPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    TimerPanel(QWidget *parent, ModelData & model, TimerData & timer);
+    TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings);
     virtual ~TimerPanel();
 
     virtual void update();
@@ -42,7 +42,7 @@ class ModulePanel : public ModelPanel
     Q_OBJECT
 
   public:
-    ModulePanel(QWidget *parent, ModelData & model, ModuleData & module, int moduleIdx);
+    ModulePanel(QWidget *parent, ModelData & model, ModuleData & module, GeneralSettings & generalSettings, int moduleIdx);
     virtual ~ModulePanel();
 
     virtual void update();
@@ -71,7 +71,7 @@ class Setup : public ModelPanel
     Q_OBJECT
 
   public:
-    Setup(QWidget *parent, ModelData & model);
+    Setup(QWidget *parent, ModelData & model, GeneralSettings & generalSettings);
     virtual ~Setup();
 
     virtual void update();

@@ -42,7 +42,6 @@ class FlightMode : public ModelPanel
 
   private:
     Ui::FlightMode *ui;
-    GeneralSettings & generalSettings;
     int phaseIdx;
     PhaseData & phase;
     int reCount;

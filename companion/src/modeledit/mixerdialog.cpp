@@ -3,12 +3,13 @@
 #include "eeprominterface.h"
 #include "helpers.h"
 
-MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, int stickMode) :
-    QDialog(parent),
-    ui(new Ui::MixerDialog),
-    model(model),
-    md(mixdata),
-    lock(false)
+MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, GeneralSettings & generalSettings) :
+  QDialog(parent),
+  ui(new Ui::MixerDialog),
+  model(model),
+  generalSettings(generalSettings),
+  md(mixdata),
+  lock(false)
 {
     ui->setupUi(this);
     QRegExp rx(CHAR_FOR_NAMES_REGEX);
@@ -76,7 +77,7 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, i
       }
     }
 
-    populateSwitchCB(ui->switchesCB,md->swtch);
+    populateSwitchCB(ui->switchesCB, md->swtch, generalSettings);
     ui->warningCB->setCurrentIndex(md->mixWarn);
     ui->mltpxCB->setCurrentIndex(md->mltpx);
     int scale=GetEepromInterface()->getCapability(SlowScale);  

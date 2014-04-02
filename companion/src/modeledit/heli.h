@@ -12,7 +12,7 @@ class HeliPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    HeliPanel(QWidget *parent, ModelData & model);
+    HeliPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings);
     ~HeliPanel();
     void update();
 

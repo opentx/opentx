@@ -280,8 +280,8 @@ TelemetryAnalog::~TelemetryAnalog()
 
 /******************************************************/
 
-TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model, FrSkyScreenData & screen):
-  ModelPanel(parent, model),
+TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model, FrSkyScreenData & screen, GeneralSettings & generalSettings):
+  ModelPanel(parent, model, generalSettings),
   ui(new Ui::TelemetryCustomScreen),
   screen(screen)
 {
@@ -465,8 +465,8 @@ void TelemetryCustomScreen::barMaxChanged(double value)
 
 /******************************************************/
 
-TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model):
-  ModelPanel(parent, model),
+TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings):
+  ModelPanel(parent, model, generalSettings),
   ui(new Ui::Telemetry)
 {
   ui->setupUi(this);
@@ -484,7 +484,7 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model):
   connect(analogs[1], SIGNAL(modified()), this, SLOT(onAnalogModified()));
 
   for (int i=0; i<GetEepromInterface()->getCapability(TelemetryCustomScreens); i++) {
-    TelemetryCustomScreen * tab = new TelemetryCustomScreen(this, model, model.frsky.screens[i]);
+    TelemetryCustomScreen * tab = new TelemetryCustomScreen(this, model, model.frsky.screens[i], generalSettings);
     ui->customScreens->addTab(tab, tr("Telemetry screen %1").arg(i+1));
   }
 

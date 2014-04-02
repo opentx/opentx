@@ -2,8 +2,8 @@
 #include "ui_heli.h"
 #include "helpers.h"
 
-HeliPanel::HeliPanel(QWidget *parent, ModelData & model):
-  ModelPanel(parent, model),
+HeliPanel::HeliPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings):
+  ModelPanel(parent, model, generalSettings),
   ui(new Ui::Heli)
 {
   ui->setupUi(this);

@@ -48,8 +48,7 @@ void RepeatComboBox::update()
 }
 
 CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings):
-  ModelPanel(parent, model),
-  generalSettings(generalSettings),
+  ModelPanel(parent, model, generalSettings),
   initialized(false),
   phononCurrent(-1),
   clickObject(NULL),
@@ -476,7 +475,7 @@ void CustomFunctionsPanel::update()
   lock = true;
   for (int i=0; i<GetEepromInterface()->getCapability(CustomFunctions); i++) {
     if (!initialized) {
-      populateSwitchCB(fswtchSwtch[i], model.funcSw[i].swtch, POPULATE_ONOFF);
+      populateSwitchCB(fswtchSwtch[i], model.funcSw[i].swtch, generalSettings, POPULATE_ONOFF);
       populateFuncCB(fswtchFunc[i], model.funcSw[i].func);
       populateGVmodeCB(fswtchGVmode[i], model.funcSw[i].adjustMode);
       populateFuncParamCB(fswtchParamT[i], model, model.funcSw[i].func, model.funcSw[i].param, model.funcSw[i].adjustMode);
@@ -497,7 +496,7 @@ void CustomFunctionsPanel::fswPaste()
     FuncSwData *fsw = &model.funcSw[selectedFunction];
     memcpy(fsw, fswData.mid(0, sizeof(FuncSwData)).constData(), sizeof(FuncSwData));
     lock = true;
-    populateSwitchCB(fswtchSwtch[selectedFunction], model.funcSw[selectedFunction].swtch, POPULATE_ONOFF);
+    populateSwitchCB(fswtchSwtch[selectedFunction], model.funcSw[selectedFunction].swtch, generalSettings, POPULATE_ONOFF);
     populateFuncCB(fswtchFunc[selectedFunction], model.funcSw[selectedFunction].func);
     refreshCustomFunction(selectedFunction);
     lock = false;
@@ -510,7 +509,7 @@ void CustomFunctionsPanel::fswDelete()
   model.funcSw[selectedFunction].clear();
   // TODO update switch and func
   lock = true;
-  populateSwitchCB(fswtchSwtch[selectedFunction], model.funcSw[selectedFunction].swtch, POPULATE_ONOFF);
+  populateSwitchCB(fswtchSwtch[selectedFunction], model.funcSw[selectedFunction].swtch, generalSettings, POPULATE_ONOFF);
   populateFuncCB(fswtchFunc[selectedFunction], model.funcSw[selectedFunction].func);
   refreshCustomFunction(selectedFunction);
   lock = false;

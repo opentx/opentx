@@ -25,18 +25,18 @@ ModelEdit::ModelEdit(RadioData & radioData, int modelId, bool openWizard, bool i
   setWindowIcon(CompanionIcon("edit.png"));
   restoreGeometry(g.modelEditGeo());  
   ui->pushButton->setIcon(CompanionIcon("simulate.png"));
-  addTab(new Setup(this, model), tr("Setup"));
-  addTab(new HeliPanel(this, model), tr("Heli"));
-  addTab(new FlightModes(this, model, radioData.generalSettings), tr("Flight Modes"));
-  addTab(new InputsPanel(this, model, radioData.generalSettings), tr("Inputs"));
-  addTab(new MixesPanel(this, model, radioData.generalSettings), tr("Mixes"));
-  addTab(new Channels(this, model), tr("Channels"));
-  addTab(new LogicalSwitchesPanel(this, model), tr("Logical Switches"));
+  addTab(new Setup(this, model, generalSettings), tr("Setup"));
+  addTab(new HeliPanel(this, model, generalSettings), tr("Heli"));
+  addTab(new FlightModes(this, model, generalSettings), tr("Flight Modes"));
+  addTab(new InputsPanel(this, model, generalSettings), tr("Inputs"));
+  addTab(new MixesPanel(this, model, generalSettings), tr("Mixes"));
+  addTab(new Channels(this, model, generalSettings), tr("Channels"));
+  addTab(new LogicalSwitchesPanel(this, model, generalSettings), tr("Logical Switches"));
   if (GetEepromInterface()->getCapability(CustomFunctions))
-    addTab(new CustomFunctionsPanel(this, model, radioData.generalSettings), tr("Special Functions"));
-  addTab(new Curves(this, model), tr("Curves"));
+    addTab(new CustomFunctionsPanel(this, model, generalSettings), tr("Special Functions"));
+  addTab(new Curves(this, model, generalSettings), tr("Curves"));
   if (GetEepromInterface()->getCapability(Telemetry) & TM_HASTELEMETRY)
-    addTab(new TelemetryPanel(this, model), tr("Telemetry"));
+    addTab(new TelemetryPanel(this, model, generalSettings), tr("Telemetry"));
 }
 
 ModelEdit::~ModelEdit()

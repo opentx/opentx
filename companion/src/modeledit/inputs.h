@@ -31,7 +31,6 @@ class InputsPanel : public ModelPanel
     void expoAdd();
 
   private:
-    GeneralSettings & generalSettings;
     bool expoInserted;
     MixersList *ExposlistWidget;
 

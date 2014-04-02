@@ -10,7 +10,7 @@ class ModelPanel : public QWidget
     Q_OBJECT
 
   public:
-    ModelPanel(QWidget *parent, ModelData & model);
+    ModelPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings);
     virtual ~ModelPanel();
 
   signals:
@@ -21,6 +21,7 @@ class ModelPanel : public QWidget
 
   protected:
     ModelData & model;
+    GeneralSettings & generalSettings;
     bool lock;
     void addLabel(QGridLayout * gridLayout, QString text, int col, bool mimimize=false);
     void addEmptyLabel(QGridLayout * gridLayout, int col);

@@ -6,8 +6,8 @@
 #include <QCheckBox>
 #include <QDoubleSpinBox>
 
-Channels::Channels(QWidget * parent, ModelData & model):
-  ModelPanel(parent, model)
+Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & generalSettings):
+  ModelPanel(parent, model, generalSettings)
 {
   QGridLayout * gridLayout = new QGridLayout(this);
   bool minimize = false;

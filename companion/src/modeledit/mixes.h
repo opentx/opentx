@@ -38,7 +38,6 @@ class MixesPanel : public ModelPanel
     void mixesEdited();
 
   private:
-    GeneralSettings & generalSettings;
     MixersList *MixerlistWidget;
     bool mixInserted;
 

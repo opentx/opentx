@@ -8,7 +8,7 @@ class Channels : public ModelPanel
     Q_OBJECT
 
   public:
-    Channels(QWidget *parent, ModelData & model);
+    Channels(QWidget *parent, ModelData & model, GeneralSettings & generalSettings);
     ~Channels();
 
   private slots:

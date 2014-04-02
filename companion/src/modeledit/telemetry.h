@@ -50,7 +50,7 @@ class TelemetryCustomScreen : public ModelPanel
     Q_OBJECT
 
   public:
-    TelemetryCustomScreen(QWidget *parent, ModelData & model, FrSkyScreenData & screen);
+    TelemetryCustomScreen(QWidget *parent, ModelData & model, FrSkyScreenData & screen, GeneralSettings & generalSettings);
     ~TelemetryCustomScreen();
     void update();
 
@@ -79,7 +79,7 @@ class TelemetryPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    TelemetryPanel(QWidget *parent, ModelData & model);
+    TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings);
     virtual ~TelemetryPanel();
 
   signals:

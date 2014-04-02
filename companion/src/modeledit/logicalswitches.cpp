@@ -7,8 +7,8 @@
 #include <QDoubleSpinBox>
 #include "helpers.h"
 
-LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model):
-  ModelPanel(parent, model),
+LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings):
+  ModelPanel(parent, model, generalSettings),
   selectedSwitch(0)
 {
   QGridLayout * gridLayout = new QGridLayout(this);
@@ -303,12 +303,12 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
     case LS_FAMILY_VBOOL:
     case LS_FAMILY_STICKY:
       mask |= SOURCE1_VISIBLE | SOURCE2_VISIBLE;
-      populateSwitchCB(cswitchSource1[i], RawSwitch(model.customSw[i].val1));
-      populateSwitchCB(cswitchSource2[i], RawSwitch(model.customSw[i].val2));
+      populateSwitchCB(cswitchSource1[i], RawSwitch(model.customSw[i].val1), generalSettings);
+      populateSwitchCB(cswitchSource2[i], RawSwitch(model.customSw[i].val2), generalSettings);
       break;
     case LS_FAMILY_STAY:
       mask |= SOURCE1_VISIBLE | VALUE2_VISIBLE | VALUE3_VISIBLE;
-      populateSwitchCB(cswitchSource1[i], RawSwitch(model.customSw[i].val1));
+      populateSwitchCB(cswitchSource1[i], RawSwitch(model.customSw[i].val1), generalSettings);
       updateTimerParam(cswitchOffset[i], model.customSw[i].val2, true);
       updateTimerParam(cswitchOffset2[i], model.customSw[i].val2+model.customSw[i].val3, true);
       break;

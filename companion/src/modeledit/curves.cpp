@@ -130,8 +130,8 @@ float curveSymmetricalX(float x, float coeff, float yMin, float yMid, float yMax
 #endif
 #endif
 
-Curves::Curves(QWidget * parent, ModelData & model):
-  ModelPanel(parent, model),
+Curves::Curves(QWidget * parent, ModelData & model, GeneralSettings & generalSettings):
+  ModelPanel(parent, model, generalSettings),
   ui(new Ui::Curves),
   currentCurve(0)
 {

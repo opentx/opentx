@@ -5,8 +5,8 @@
 #include "helpers.h"
 #include "appdata.h"
 
-TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer):
-  ModelPanel(parent, model),
+TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings):
+  ModelPanel(parent, model, generalSettings),
   timer(timer),
   ui(new Ui::Timer)
 {
@@ -15,7 +15,7 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer):
   lock = true;
 
   // Mode
-  populateSwitchCB(ui->mode, timer.mode, POPULATE_TIMER_MODES);
+  populateSwitchCB(ui->mode, timer.mode, generalSettings, POPULATE_TIMER_MODES);
 
   if (!GetEepromInterface()->getCapability(PermTimers)) {
     ui->persistent->hide();
@@ -94,8 +94,8 @@ void TimerPanel::on_minuteBeep_toggled(bool checked)
 
 /******************************************************************************/
 
-ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module, int moduleIdx):
-  ModelPanel(parent, model),
+ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module, GeneralSettings & generalSettings, int moduleIdx):
+  ModelPanel(parent, model, generalSettings),
   module(module),
   moduleIdx(moduleIdx),
   ui(new Ui::Module)
@@ -320,8 +320,8 @@ void ModulePanel::onFailsafeSpinChanged(double value)
 
 /******************************************************************************/
 
-Setup::Setup(QWidget *parent, ModelData & model):
-  ModelPanel(parent, model),
+Setup::Setup(QWidget *parent, ModelData & model, GeneralSettings & generalSettings):
+  ModelPanel(parent, model, generalSettings),
   ui(new Ui::Setup)
 {
   lock = true;
@@ -333,19 +333,19 @@ Setup::Setup(QWidget *parent, ModelData & model):
   ui->name->setMaxLength(IS_TARANIS(GetEepromInterface()->getBoard()) ? 12 : 10);
 
   for (int i=0; i<C9X_MAX_TIMERS; i++) {
-    timers[i] = new TimerPanel(this, model, model.timers[i]);
+    timers[i] = new TimerPanel(this, model, model.timers[i], generalSettings);
     ui->gridLayout->addWidget(timers[i], 1+i, 1);
     connect(timers[i], SIGNAL(modified()), this, SLOT(onChildModified()));
   }
 
   for (int i=0; i<GetEepromInterface()->getCapability(NumModules); i++) {
-    modules[i] = new ModulePanel(this, model, model.moduleData[i], i);
+    modules[i] = new ModulePanel(this, model, model.moduleData[i], generalSettings, i);
     ui->modulesLayout->addWidget(modules[i]);
     connect(modules[i], SIGNAL(modified()), this, SLOT(onChildModified()));
   }
 
   if (GetEepromInterface()->getCapability(ModelTrainerEnable)) {
-    modules[C9X_NUM_MODULES] = new ModulePanel(this, model, model.moduleData[C9X_NUM_MODULES], -1);
+    modules[C9X_NUM_MODULES] = new ModulePanel(this, model, model.moduleData[C9X_NUM_MODULES], generalSettings, -1);
     ui->modulesLayout->addWidget(modules[C9X_NUM_MODULES]);
   }
 

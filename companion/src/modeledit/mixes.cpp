@@ -4,8 +4,7 @@
 // #include "expodialog.h"
 
 MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings):
-  ModelPanel(parent, model),
-  generalSettings(generalSettings),
+  ModelPanel(parent, model, generalSettings),
   mixInserted(false)
 {
   QGridLayout * mixesLayout = new QGridLayout(this);
@@ -193,7 +192,7 @@ void MixesPanel::gm_openMix(int index)
     emit modified();
     update();
 
-    MixerDialog *g = new MixerDialog(this, model, &mixd, generalSettings.stickMode);
+    MixerDialog *g = new MixerDialog(this, model, &mixd, generalSettings);
     if(g->exec()) {
       model.mixData[index] = mixd;
       emit modified();

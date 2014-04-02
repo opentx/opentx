@@ -361,8 +361,10 @@ void populateBacklightCB(QComboBox *b, const uint8_t value)
 
 void populateAndSwitchCB(QComboBox *b, const RawSwitch & value)
 {
+  GeneralSettings fakeSettings;
+
   if (IS_ARM(GetEepromInterface()->getBoard())) {
-    populateSwitchCB(b, value);
+    populateSwitchCB(b, value, fakeSettings);
   }
   else {
     RawSwitch item;
@@ -387,7 +389,7 @@ void populateAndSwitchCB(QComboBox *b, const RawSwitch & value)
   }
 }
 
-void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr)
+void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettings & generalSettings, unsigned long attr)
 {
   RawSwitch item;
 
@@ -417,10 +419,14 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr)
     if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
-  for (int i=-GetEepromInterface()->getCapability(MultiposPots) * GetEepromInterface()->getCapability(MultiposPotsPositions); i<0; i++) {
-    item = RawSwitch(SWITCH_TYPE_MULTIPOS_POT, i);
-    b->addItem(item.toString(), item.toValue());
-    if (item == value) b->setCurrentIndex(b->count()-1);
+  for (int i=GetEepromInterface()->getCapability(MultiposPots)-1; i>=0; i--) {
+    if (generalSettings.potsType[i] == 2/* TODO constant*/) {
+      for (int j=-GetEepromInterface()->getCapability(MultiposPotsPositions); j<0; j++) {
+        item = RawSwitch(SWITCH_TYPE_MULTIPOS_POT, -i*GetEepromInterface()->getCapability(MultiposPotsPositions)+j);
+        b->addItem(item.toString(), item.toValue());
+        if (item == value) b->setCurrentIndex(b->count()-1);
+      }
+    }
   }
 
   for (int i=-GetEepromInterface()->getCapability(SwitchesPositions); i<0; i++) {
@@ -448,10 +454,14 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr)
     if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
-  for (int i=1; i<=GetEepromInterface()->getCapability(MultiposPots) * GetEepromInterface()->getCapability(MultiposPotsPositions); i++) {
-    item = RawSwitch(SWITCH_TYPE_MULTIPOS_POT, i);
-    b->addItem(item.toString(), item.toValue());
-    if (item == value) b->setCurrentIndex(b->count()-1);
+  for (int i=0; i<GetEepromInterface()->getCapability(MultiposPots); i++) {
+    if (generalSettings.potsType[i] == 2/* TODO constant*/) {
+      for (int j=1; j<=GetEepromInterface()->getCapability(MultiposPotsPositions); j++) {
+        item = RawSwitch(SWITCH_TYPE_MULTIPOS_POT, i*GetEepromInterface()->getCapability(MultiposPotsPositions)+j);
+        b->addItem(item.toString(), item.toValue());
+        if (item == value) b->setCurrentIndex(b->count()-1);
+      }
+    }
   }
 
   for (int i=1; i<=8; i++) {

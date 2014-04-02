@@ -2,12 +2,13 @@
 #include "ui_expodialog.h"
 #include "helpers.h"
 
-ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, int stickMode, char * inputName) :
-    QDialog(parent),
-    ui(new Ui::ExpoDialog),
-    model(model),
-    ed(expoData),
-    inputName(inputName)
+ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, GeneralSettings & generalSettings, char * inputName) :
+  QDialog(parent),
+  ui(new Ui::ExpoDialog),
+  model(model),
+  generalSettings(generalSettings),
+  ed(expoData),
+  inputName(inputName)
 {
   ui->setupUi(this);
   QLabel * lb_fp[] = {ui->lb_FP0,ui->lb_FP1,ui->lb_FP2,ui->lb_FP3,ui->lb_FP4,ui->lb_FP5,ui->lb_FP6,ui->lb_FP7,ui->lb_FP8 };
@@ -23,7 +24,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, i
 
   curveGroup = new CurveGroup(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, ed->curve);
 
-  populateSwitchCB(ui->switchesCB,ed->swtch);
+  populateSwitchCB(ui->switchesCB, ed->swtch, generalSettings);
 
   ui->sideCB->setCurrentIndex(ed->mode-1);
 
