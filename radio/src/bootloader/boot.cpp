@@ -845,7 +845,7 @@ int main()
           state = ST_FLASH_CHECK;
           Valid = 0;
         }
-        else if (event == EVT_KEY_BREAK(BOOT_KEY_EXIT)) {
+        else if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT)) {
           state = ST_START;
           vpos = 0;
         }
@@ -901,7 +901,7 @@ int main()
 
       if (state == ST_FLASH_DONE) {
         lcd_putsLeft(4*FH, "\024Loading Complete");
-        if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT) || event == EVT_KEY_FIRST(BOOT_KEY_MENU)) {
+        if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT) || event == EVT_KEY_BREAK(BOOT_KEY_MENU)) {
           state = ST_START;
           vpos = 0;
         }
