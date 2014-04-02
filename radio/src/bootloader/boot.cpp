@@ -727,7 +727,7 @@ int main()
         if (event == EVT_KEY_FIRST(BOOT_KEY_DOWN) || event == EVT_KEY_FIRST(BOOT_KEY_UP)) {
           vpos = (vpos+1) & 0x01;
         }
-        else if (event == EVT_KEY_FIRST(BOOT_KEY_MENU)) {
+        else if (event == EVT_KEY_BREAK(BOOT_KEY_MENU)) {
           if (vpos == 0)
             state = ST_FLASH_MENU;
           else
@@ -840,12 +840,12 @@ int main()
           }
         }
 #endif
-        else if (event == EVT_KEY_FIRST(BOOT_KEY_MENU)) {
+        else if (event == EVT_KEY_BREAK(BOOT_KEY_MENU)) {
           // Select file to flash
           state = ST_FLASH_CHECK;
           Valid = 0;
         }
-        else if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT)) {
+        else if (event == EVT_KEY_BREAK(BOOT_KEY_EXIT)) {
           state = ST_START;
           vpos = 0;
         }
