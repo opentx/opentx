@@ -52,6 +52,8 @@ class  StandardPage: public QWizardPage
 
   protected:
     int getDefaultChannel(const Input input);
+    int firstNonDefaultChannel();
+    int secondNonDefaultChannel();
     void populateCB(QComboBox * cb, int preferred=-1);
     bool bookChannel(QComboBox * cb, Input input1, int weight1, Input input2=NO_INPUT, int weight2=0);
 

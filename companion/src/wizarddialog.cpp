@@ -151,13 +151,44 @@ int StandardPage::getDefaultChannel(const Input input)
   return -1;
 }
 
+int StandardPage::firstNonDefaultChannel()
+{
+  for(int i=4;i<8; i++)
+    if (wizDlg->mix.channel[i].page == Page_None)
+      return i;
+  for(int i=0;i<4; i++)
+    if (wizDlg->mix.channel[i].page == Page_None)
+      return i;
+  return -1;
+}
+
+int StandardPage::secondNonDefaultChannel()
+{
+  bool firstFound = false;
+  for(int i=4;i<8; i++){
+    if (wizDlg->mix.channel[i].page == Page_None){
+      if(firstFound)
+        return i;
+      else
+        firstFound=true;
+    }
+  }
+  for(int i=0;i<4; i++)
+    if (wizDlg->mix.channel[i].page == Page_None){
+      if(firstFound)
+        return i;
+      else
+        firstFound=true;
+    }
+  return -1;
+}
+
 void StandardPage::populateCB(QComboBox *cb, int preferred)
 {
   cb->clear();
 
   for (int i=0; i<WIZ_MAX_CHANNELS; i++) {
     if (wizDlg->mix.channel[i].page == Page_None) {
-      // this channel is not already used
       cb->addItem(tr("Channel %1").arg(i+1), i);
       if (preferred == i) {
         cb->setCurrentIndex(cb->count()-1);
@@ -376,8 +407,8 @@ AileronsPage::AileronsPage(WizardDialog *dlg, QString image, QString title, QStr
 }
 
 void AileronsPage::initializePage(){
-  populateCB(aileron1CB);
-  populateCB(aileron2CB);
+  populateCB(aileron1CB, getDefaultChannel(AILERONS_INPUT));
+  populateCB(aileron2CB, firstNonDefaultChannel());
 }
 
 bool AileronsPage::validatePage() {
@@ -413,8 +444,8 @@ FlapsPage::FlapsPage(WizardDialog *dlg, QString image, QString title, QString te
 }
 
 void FlapsPage::initializePage(){
-  populateCB(flap1CB);
-  populateCB(flap2CB);
+  populateCB(flap1CB, firstNonDefaultChannel());
+  populateCB(flap2CB, secondNonDefaultChannel());
 }
 
 bool FlapsPage::validatePage() {
@@ -450,8 +481,8 @@ AirbreaksPage::AirbreaksPage(WizardDialog *dlg, QString image, QString title, QS
 }
 
 void AirbreaksPage::initializePage(){
-  populateCB(airbreak1CB);
-  populateCB(airbreak2CB);
+  populateCB(airbreak1CB, firstNonDefaultChannel());
+  populateCB(airbreak2CB, secondNonDefaultChannel());
 }
 
 bool AirbreaksPage::validatePage() {
@@ -485,8 +516,8 @@ BankPage::BankPage(WizardDialog *dlg, QString image, QString title, QString text
 }
 
 void BankPage::initializePage(){
-  populateCB(elevon1CB);
-  populateCB(elevon2CB);
+  populateCB(elevon1CB, getDefaultChannel(ELEVATOR_INPUT));
+  populateCB(elevon2CB, getDefaultChannel(AILERONS_INPUT));
 }
 
 bool BankPage::validatePage() {
@@ -514,7 +545,7 @@ RudderPage::RudderPage(WizardDialog *dlg, QString image, QString title, QString 
 }
 
 void RudderPage::initializePage(){
-  populateCB(rudderCB);
+  populateCB(rudderCB, getDefaultChannel(RUDDER_INPUT));
 }
 
 bool RudderPage::validatePage() {
@@ -539,8 +570,8 @@ VTailPage::VTailPage(WizardDialog *dlg, QString image, QString title, QString te
 }
 
 void VTailPage::initializePage(){
-  populateCB(tail1CB);
-  populateCB(tail2CB);
+  populateCB(tail1CB, getDefaultChannel(ELEVATOR_INPUT));
+  populateCB(tail2CB, getDefaultChannel(AILERONS_INPUT));
 }
 
 bool VTailPage::validatePage() {
@@ -563,8 +594,8 @@ TailPage::TailPage(WizardDialog *dlg, QString image, QString title, QString text
 }
 
 void TailPage::initializePage(){
-  populateCB(elevatorCB);
-  populateCB(rudderCB);
+  populateCB(elevatorCB, getDefaultChannel(ELEVATOR_INPUT));
+  populateCB(rudderCB, getDefaultChannel(RUDDER_INPUT));
 }
 
 bool TailPage::validatePage() {
@@ -584,7 +615,7 @@ SimpleTailPage::SimpleTailPage(WizardDialog *dlg, QString image, QString title, 
 }
 
 void SimpleTailPage::initializePage(){
-  populateCB(elevatorCB);
+  populateCB(elevatorCB, getDefaultChannel(ELEVATOR_INPUT));
 }
 
 bool SimpleTailPage::validatePage() {
@@ -658,10 +689,10 @@ FblPage::FblPage(WizardDialog *dlg, QString image, QString title, QString text, 
 }
 
 void FblPage::initializePage(){
-  populateCB(throttleCB);
-  populateCB(yawCB);
-  populateCB(pitchCB);
-  populateCB(rollCB);
+  populateCB(throttleCB, getDefaultChannel(THROTTLE_INPUT));
+  populateCB(yawCB, getDefaultChannel(RUDDER_INPUT));
+  populateCB(pitchCB, getDefaultChannel(ELEVATOR_INPUT));
+  populateCB(rollCB, getDefaultChannel(AILERONS_INPUT));
 }
 
 bool FblPage::validatePage() {
@@ -692,10 +723,10 @@ HeliPage::HeliPage(WizardDialog *dlg, QString image, QString title, QString text
 }
 
 void HeliPage::initializePage(){
-  populateCB(throttleCB);
-  populateCB(yawCB);
-  populateCB(pitchCB);
-  populateCB(rollCB);
+  populateCB(throttleCB, getDefaultChannel(THROTTLE_INPUT));
+  populateCB(yawCB, getDefaultChannel(RUDDER_INPUT));
+  populateCB(pitchCB, getDefaultChannel(ELEVATOR_INPUT));
+  populateCB(rollCB, getDefaultChannel(AILERONS_INPUT));
 }
 
 bool HeliPage::validatePage() {
@@ -726,10 +757,10 @@ MultirotorPage::MultirotorPage(WizardDialog *dlg, QString image, QString title, 
 }
 
 void MultirotorPage::initializePage(){
-  populateCB(throttleCB);
-  populateCB(yawCB);
-  populateCB(pitchCB);
-  populateCB(rollCB);
+  populateCB(throttleCB, getDefaultChannel(THROTTLE_INPUT));
+  populateCB(yawCB, getDefaultChannel(RUDDER_INPUT));
+  populateCB(pitchCB, getDefaultChannel(ELEVATOR_INPUT));
+  populateCB(rollCB, getDefaultChannel(AILERONS_INPUT));
 }
 
 bool MultirotorPage::validatePage() {
