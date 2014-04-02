@@ -102,7 +102,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
       flags &= ~BOLD;
 #endif
 #if defined(CPUARM)
-    else if ((c>= 128) && (flags & DBLSIZE))
+    if ((c>= 128) && (flags & DBLSIZE))
       c_remapped = c - 60;
 #endif
 
