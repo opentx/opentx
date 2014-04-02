@@ -1797,7 +1797,7 @@ int getTrimValue(uint8_t phase, uint8_t idx)
   int result = 0;
   for (uint8_t i=0; i<MAX_PHASES; i++) {
     trim_t v = getRawTrimValue(phase, idx);
-    if (v.mode < 0) {
+    if (v.mode == TRIM_MODE_NONE) {
       return result;
     }
     else {
@@ -1824,7 +1824,7 @@ void setTrimValue(uint8_t phase, uint8_t idx, int trim)
 #if defined(PCBTARANIS)
   for (uint8_t i=0; i<MAX_PHASES; i++) {
     trim_t & v = phaseAddress(phase)->trim[idx];
-    if (v.mode < 0)
+    if (v.mode == TRIM_MODE_NONE)
       return;
     unsigned int p = v.mode >> 1;
     if (p == phase || phase == 0) {
