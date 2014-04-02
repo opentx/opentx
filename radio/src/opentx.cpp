@@ -1467,7 +1467,9 @@ bool getSwitch(int8_t swtch)
   }
 #endif
   else if (cs_idx <= SWSRC_LAST_TRIM) {
-    result = trimDown(cs_idx-SWSRC_FIRST_TRIM);
+    uint8_t idx = cs_idx - SWSRC_FIRST_TRIM;
+    idx = (CONVERT_MODE(idx/2) << 1) + (idx & 1);
+    result = trimDown(idx);
   }
 #if ROTARY_ENCODERS > 0
   else if (cs_idx == SWSRC_REa) {
