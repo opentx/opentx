@@ -178,7 +178,6 @@ void ModulePanel::update()
       case PXX_XJT_D8:
       case PXX_XJT_LR12:
       case PXX_DJT:
-      module.channelsCount = 8;
         mask |= MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
         if ((protocol==PXX_XJT_X16) || (protocol==PXX_XJT_LR12)) mask |= MASK_FAILSAFES | MASK_RX_NUMBER;
         break;
@@ -189,7 +188,6 @@ void ModulePanel::update()
         module.channelsCount = 6;
         break;
       case PPM:
-        module.channelsCount = 8;
         mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE| MASK_CHANNELS_COUNT;
         break;
       case OFF:
@@ -198,7 +196,6 @@ void ModulePanel::update()
     }
   }
   else if (model.trainerMode != 0) {
-    module.channelsCount = 8;
     mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
   }
 
