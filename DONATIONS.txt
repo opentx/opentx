@@ -360,3 +360,4 @@ Markus Eberl
 Dietmar Drees
 Nicholas Field
 Harald Wilczak
+Michel Baily
