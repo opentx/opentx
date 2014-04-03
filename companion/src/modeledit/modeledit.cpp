@@ -31,10 +31,10 @@ ModelEdit::ModelEdit(RadioData & radioData, int modelId, bool openWizard, bool i
   addTab(new InputsPanel(this, model, generalSettings), tr("Inputs"));
   addTab(new MixesPanel(this, model, generalSettings), tr("Mixes"));
   addTab(new Channels(this, model, generalSettings), tr("Servos"));
+  addTab(new Curves(this, model, generalSettings), tr("Curves"));
   addTab(new LogicalSwitchesPanel(this, model, generalSettings), tr("Logical Switches"));
   if (GetEepromInterface()->getCapability(CustomFunctions))
     addTab(new CustomFunctionsPanel(this, model, generalSettings), tr("Special Functions"));
-  addTab(new Curves(this, model, generalSettings), tr("Curves"));
   if (GetEepromInterface()->getCapability(Telemetry) & TM_HASTELEMETRY)
     addTab(new TelemetryPanel(this, model, generalSettings), tr("Telemetry"));
 }
