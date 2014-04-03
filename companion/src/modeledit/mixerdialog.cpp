@@ -31,7 +31,8 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, G
     curveGroup = new CurveGroup(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, md->curve);
 
     ui->MixDR_CB->setChecked(md->noExpo==0);
-    if (!GetEepromInterface()->getCapability(MixesWithoutExpo)) {
+
+    if (GetEepromInterface()->getCapability(VirtualInputs) || !GetEepromInterface()->getCapability(MixesWithoutExpo)) {
       ui->MixDR_CB->hide();
       ui->label_MixDR->hide();
     }
