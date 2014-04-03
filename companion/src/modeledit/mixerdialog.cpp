@@ -146,7 +146,7 @@ void MixerDialog::valuesChanged()
     QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
     md->srcRaw  = RawSource(ui->sourceCB->itemData(ui->sourceCB->currentIndex()).toInt(), &model);
     if ((ui->sourceCB->itemData(ui->sourceCB->currentIndex()).toInt()-65536)<4) {
-      if (!GetEepromInterface()->getCapability(MixesWithoutExpo)) {
+      if (GetEepromInterface()->getCapability(VirtualInputs) || !GetEepromInterface()->getCapability(MixesWithoutExpo)) {
         ui->MixDR_CB->hide();
         ui->label_MixDR->hide();
       }
