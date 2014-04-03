@@ -153,6 +153,7 @@ PACK(typedef struct {
   int8_t  andsw;
 }) LogicalSwitchData_v215;
 
+#if defined(PCBTARANIS)
 PACK(typedef struct {
   int8_t  swtch;
   uint8_t func;
@@ -167,6 +168,22 @@ PACK(typedef struct {
   uint8_t mode:2;
   uint8_t active:6;
 }) CustomFnData_v215;
+#else
+PACK(typedef struct {
+  int8_t  swtch;
+  uint8_t func;
+  PACK(union {
+    char name[6];
+    struct {
+      int16_t val;
+      int16_t ext1;
+      int16_t ext2;
+    } composite;
+  }) param;
+  uint8_t mode:2;
+  uint8_t active:6;
+}) CustomFnData_v215;
+#endif
 
 PACK(typedef struct {
   FrSkyChannelData channels[2];
@@ -366,20 +383,27 @@ int ConvertSource_215_to_216(int source, bool insertZero=false)
 
 int ConvertSwitch_215_to_216(int swtch)
 {
-  if (swtch >= 56)
-    return swtch - 22 - 32;
-  else if (swtch < 0)
+  if (swtch < 0)
     return -ConvertSwitch_215_to_216(-swtch);
   else if (swtch <= SWSRC_LAST_SWITCH)
     return swtch;
-  else
-    return swtch + (2*4) + (3*6); // 4 trims and 2 * 6-pos added as switches
+  else {
+    swtch += (2*4) + (3*6); // 4 trims and 2 * 6-pos added as switches
+    if (swtch > SWSRC_ON)
+      swtch -= (22+32+1);
+    if (swtch > SWSRC_ON)
+      swtch = SWSRC_ON;
+    return swtch;
+  }
 }
 #else
 int ConvertSource_215_to_216(int source, bool insertZero=false)
 {
   if (insertZero)
     source += 1;
+  // PPM9-PPM16 added
+  if (source > MIXSRC_FIRST_TRAINER+7)
+    source += 8;
   // 4 GVARS added
   if (source > MIXSRC_GVAR1+4)
     source += 4;
@@ -392,10 +416,18 @@ int ConvertSource_215_to_216(int source, bool insertZero=false)
 
 int ConvertSwitch_215_to_216(int swtch)
 {
-  if (swtch <= SWSRC_LAST_SWITCH)
+  if (swtch < 0)
+    return -ConvertSwitch_215_to_216(-swtch);
+  else if (swtch <= SWSRC_LAST_SWITCH)
     return swtch;
-  else
-    return swtch + (2*4) + 1; // 4 trims and REa added
+  else {
+    swtch += (2*4) + 1; // 4 trims and REa added
+    if (swtch > SWSRC_ON)
+      swtch -= (9+32+1);
+    if (swtch > SWSRC_ON)
+      swtch = SWSRC_ON;
+    return swtch;
+  }
 }
 #endif
 
@@ -503,13 +535,13 @@ void ConvertModel_215_to_216(ModelData &model)
     mix->carryTrim = oldMix->carryTrim;
     mix->mltpx = oldMix->mltpx;
     mix->weight = oldMix->weight;
-    mix->swtch = oldMix->swtch;
+    mix->swtch = ConvertSwitch_215_to_216(oldMix->swtch);
     mix->curveParam = oldMix->curveParam;
     mix->delayUp = oldMix->delayUp;
     mix->delayDown = oldMix->delayDown;
     mix->speedUp = oldMix->speedUp;
     mix->speedDown = oldMix->speedDown;
-    mix->srcRaw = oldMix->srcRaw;
+    mix->srcRaw = ConvertSource_215_to_216(oldMix->srcRaw);
     mix->offset = oldMix->offset;
     memcpy(mix->name, oldMix->name, LEN_EXPOMIX_NAME);
 #endif
@@ -632,7 +664,6 @@ void ConvertModel_215_to_216(ModelData &model)
     sw.delay = oldModel.customSw[i].delay * 5;
     sw.duration = oldModel.customSw[i].duration * 5;
     sw.andsw = ConvertSwitch_215_to_216(oldModel.customSw[i].andsw);
-#if defined(PCBTARANIS)
     uint8_t cstate = cswFamily(sw.func);
     if (cstate == LS_FAMILY_BOOL) {
       sw.v1 = ConvertSwitch_215_to_216(sw.v1);
@@ -688,7 +719,6 @@ void ConvertModel_215_to_216(ModelData &model)
         sw.v2 = ConvertSource_215_to_216(sw.v2);
       }
     }
-#endif
   }
   for (uint8_t i=0; i<32; i++) {
     CustomFnData & fn = g_model.funcSw[i];
@@ -855,16 +885,28 @@ bool eeConvert()
 
   // General Settings conversion
   loadGeneralSettings();
-  if (g_eeGeneral.version == 215) ConvertGeneralSettings_215_to_216(g_eeGeneral);
+  int version = conversionVersionStart;
+  if (version == 215) {
+    version = 216;
+    ConvertGeneralSettings_215_to_216(g_eeGeneral);
+  }
   s_eeDirtyMsk = EE_GENERAL;
   eeCheck(true);
 
+#if LCD_W >= 212
   lcd_rect(60, 6*FH+4, 132, 3);
+#else
+  lcd_rect(10, 6*FH+4, 102, 3);
+#endif
 
   // Models conversion
   uint8_t currModel = g_eeGeneral.currModel;
   for (uint8_t id=0; id<MAX_MODELS; id++) {
+#if LCD_W >= 212
     lcd_hline(61, 6*FH+5, 10+id*2, FORCE);
+#else
+    lcd_hline(11, 6*FH+5, 10+(id*3)/2, FORCE);
+#endif
     lcdRefresh();
     if (eeModelExists(id)) {
       loadModel(id);
@@ -879,7 +921,7 @@ bool eeConvert()
     }
 
   }
-  g_eeGeneral.currModel = currModel;
 
+  g_eeGeneral.currModel = currModel;
   return true;
 }
