@@ -76,6 +76,9 @@ class Setup : public ModelPanel
 
     virtual void update();
 
+  signals: 
+    void extendedLimitsToggled();
+    
   private slots:
     void on_name_editingFinished();
     void on_throttleSource_currentIndexChanged(int index);

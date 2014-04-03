@@ -2,6 +2,7 @@
 #define CHANNELS_H
 
 #include "modelpanel.h"
+#include <QSpinBox>
 
 class Channels : public ModelPanel
 {
@@ -10,6 +11,13 @@ class Channels : public ModelPanel
   public:
     Channels(QWidget *parent, ModelData & model, GeneralSettings & generalSettings);
     ~Channels();
+    
+  private:
+    QVector<QDoubleSpinBox *> minSpins;
+    QVector<QDoubleSpinBox *> maxSpins;
+
+  public slots:
+    void refreshExtendedLimits();
 
   private slots:
     void symlimitsEdited();

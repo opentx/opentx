@@ -477,6 +477,7 @@ Setup::~Setup()
 void Setup::on_extendedLimits_toggled(bool checked)
 {
   model.extendedLimits = checked;
+  emit extendedLimitsToggled();
   emit modified();
 }
 

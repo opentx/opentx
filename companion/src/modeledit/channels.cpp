@@ -70,10 +70,12 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     minSB->setAccelerated(true);
     minSB->setDecimals(1);
     minSB->setMinimum(model.extendedLimits ? -125 : -100);
+    minSB->setSingleStep(0.1);
     minSB->setMaximum(0);
     minSB->setValue(float(model.limitData[i].min) / 10);
     connect(minSB, SIGNAL(editingFinished()), this, SLOT(minEdited()));
     gridLayout->addWidget(minSB, i+1, col++, 1, 1);
+    minSpins << minSB;
 
     // Channel max
     QDoubleSpinBox * maxSB = new QDoubleSpinBox(this);
@@ -82,10 +84,12 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     maxSB->setAccelerated(true);
     maxSB->setDecimals(1);
     maxSB->setMinimum(0);
+    maxSB->setSingleStep(0.1);
     maxSB->setMaximum(model.extendedLimits ? 125 : 100);
     maxSB->setValue(float(model.limitData[i].max) / 10);
     connect(maxSB, SIGNAL(editingFinished()), this, SLOT(maxEdited()));
     gridLayout->addWidget(maxSB, i+1, col++, 1, 1);
+    maxSpins << maxSB;
 
     // Channel inversion
     QComboBox * invCB = new QComboBox(this);
@@ -180,6 +184,18 @@ void Channels::maxEdited()
   int index = sb->property("index").toInt();
   model.limitData[index].max = round(sb->value() * 10);
   emit modified();
+}
+
+void Channels::refreshExtendedLimits()
+{
+  for (int i=0; i<GetEepromInterface()->getCapability(Outputs); i++) {
+    QDoubleSpinBox * minDSB = minSpins[i];
+    QDoubleSpinBox * maxDSB = maxSpins[i];
+    
+    minDSB->setMinimum(model.extendedLimits ? -125 : -100);
+    maxDSB->setMaximum(model.extendedLimits ? 125 : 100);
+  }
+  emit modified(); 
 }
 
 void Channels::invEdited()
