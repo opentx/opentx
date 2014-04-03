@@ -171,35 +171,41 @@ void ModulePanel::update()
   unsigned int mask = 0;
   Protocol protocol = (Protocol)module.protocol;
 
-  if (moduleIdx >= 0 || model.trainerMode != 0) {
+  if (moduleIdx >= 0) {
     mask |= MASK_PROTOCOL;
     switch (protocol) {
-      case OFF:
-        break;
       case PXX_XJT_X16:
       case PXX_XJT_D8:
       case PXX_XJT_LR12:
       case PXX_DJT:
-        mask |= MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT | MASK_RX_NUMBER;
-        if (protocol==PXX_XJT_X16) mask |= MASK_FAILSAFES;
+      module.channelsCount = 8;
+        mask |= MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
+        if ((protocol==PXX_XJT_X16) || (protocol==PXX_XJT_LR12)) mask |= MASK_FAILSAFES | MASK_RX_NUMBER;
         break;
       case LP45:
       case DSM2:
       case DSMX:
         mask |= MASK_CHANNELS_RANGE | MASK_RX_NUMBER;
-        module.channelsCount = 8;
+        module.channelsCount = 6;
         break;
-      default:
+      case PPM:
+        module.channelsCount = 8;
         mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE| MASK_CHANNELS_COUNT;
         break;
+      case OFF:
+      default:
+        break;
     }
+  }
+  else if (model.trainerMode != 0) {
+    module.channelsCount = 8;
+    mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
   }
 
   ui->label_protocol->setVisible(mask & MASK_PROTOCOL);
   ui->protocol->setVisible(mask & MASK_PROTOCOL);
-  ui->label_rxNumber->setVisible(mask & MASK_PROTOCOL);
-  ui->rxNumber->setVisible(mask & MASK_PROTOCOL);
-  ui->rxNumber->setEnabled(mask & MASK_RX_NUMBER);
+  ui->label_rxNumber->setVisible(mask & MASK_FAILSAFES);
+  ui->rxNumber->setVisible(mask & MASK_FAILSAFES);
   ui->rxNumber->setValue(model.modelId);
   ui->label_channelsStart->setVisible(mask & MASK_CHANNELS_RANGE);
   ui->channelsStart->setVisible(mask & MASK_CHANNELS_RANGE);
