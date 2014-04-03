@@ -40,6 +40,7 @@ void appPreferencesDialog::writeValues()
   g.autoCheckFw(ui->startupCheck_fw->isChecked());
   g.showSplash(ui->showSplash->isChecked());
   g.simuSW(ui->simuSW->isChecked());
+  g.useWizard(ui->modelWizard_CB->isChecked());
   g.historySize(ui->historySize->value());
   g.backLight(ui->backLightColor->currentIndex());
   g.libDir(ui->libraryPath->text());
@@ -107,6 +108,7 @@ void appPreferencesDialog::initSettings()
   if (getRadioType(g.profile[g.id()].fwType())==6)  // TODO - NOT AT ALL OK. THERE SHOULD BE A COMMON RADIO DEFINITION.
     ui->backLightColor->setEnabled(false);
   ui->simuSW->setChecked(g.simuSW());
+  ui->modelWizard_CB->setChecked(g.useWizard());
   ui->libraryPath->setText(g.libDir());
   ui->ge_lineedit->setText(g.gePath());
 

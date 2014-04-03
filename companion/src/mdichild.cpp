@@ -206,7 +206,7 @@ void MdiChild::openEditWindow()
   }
   else{
     ModelData &model = radioData.models[row - 1];
-    if (model.isempty()) {
+    if (model.isempty() && g.useWizard()) {
       wizardEdit();
     }
     else {

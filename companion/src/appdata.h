@@ -236,6 +236,7 @@ class AppData: protected CompStoreObj
     bool _autoCheckApp;
     bool _autoCheckFw;
     bool _simuSW;
+    bool _useWizard;
 
     int _backLight;
     int _embedSplashes;
@@ -290,6 +291,7 @@ class AppData: protected CompStoreObj
     bool autoCheckApp();
     bool autoCheckFw();
     bool simuSW();
+    bool useWizard();
 
     int backLight();
     int embedSplashes();
@@ -343,7 +345,7 @@ class AppData: protected CompStoreObj
     void autoCheckApp    (const bool);
     void autoCheckFw     (const bool);
     void simuSW          (const bool);
-    void enableWizard    (const bool);
+    void useWizard       (const bool);
 
     void backLight       (const int);
     void embedSplashes   (const int);

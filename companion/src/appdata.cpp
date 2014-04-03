@@ -510,6 +510,7 @@ bool AppData::snapToClpbrd()       { return _snapToClpbrd;    }
 bool AppData::autoCheckApp()       { return _autoCheckApp;    }
 bool AppData::autoCheckFw()        { return _autoCheckFw;     }
 bool AppData::simuSW()             { return _simuSW;          }
+bool AppData::useWizard()          { return _useWizard;       }
 
 int AppData::backLight()           { return _backLight;       }
 int AppData::embedSplashes()       { return _embedSplashes;   }
@@ -562,6 +563,7 @@ void AppData::snapToClpbrd    (const bool        x) { store(x, _snapToClpbrd,   
 void AppData::autoCheckApp    (const bool        x) { store(x, _autoCheckApp,    "startup_check_companion" );}
 void AppData::autoCheckFw     (const bool        x) { store(x, _autoCheckFw,     "startup_check_fw"        );}
 void AppData::simuSW          (const bool        x) { store(x, _simuSW,          "simuSW"                  );}
+void AppData::useWizard       (const bool        x) { store(x, _useWizard,       "useWizard"               );}
 
 void AppData::backLight       (const int         x) { store(x, _backLight,       "backLight"               );}
 void AppData::embedSplashes   (const int         x) { store(x, _embedSplashes,   "embedded_splashes"       );}
@@ -680,6 +682,7 @@ AppData::AppData()
     getset( _autoCheckApp,    "startup_check_companion" ,true  );
     getset( _autoCheckFw,     "startup_check_fw"        ,true  );
     getset( _simuSW,          "simuSW"                  ,false );
+    getset( _useWizard,       "useWizard"               ,true  );
 
     getset( _backLight,       "backLight"               ,0  );
     getset( _embedSplashes,   "embedded_splashes"       ,0  );
