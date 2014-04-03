@@ -65,12 +65,12 @@ void WizMix::addMix(ModelData &model, Input input, int weight, int channel, int 
     }
     else if (input==FLAPS_INPUT){
       // There must be some kind of constants for switches somewhere...
-      maxMixSwitch( model.mixData[mixIndex++], channel+1, isTaranis ? 1 :-3 , -100); //SA-UP or ELE-UP
-      maxMixSwitch( model.mixData[mixIndex++], channel+1, isTaranis ? 3 : 3 ,  100); //SA-DOWN or ELE-DOWN
+      maxMixSwitch( model.mixData[mixIndex++], channel+1, isTaranis ? 1 :-3 , -1*weight); //SA-UP or ELE-UP
+      maxMixSwitch( model.mixData[mixIndex++], channel+1, isTaranis ? 3 : 3 ,  weight);   //SA-DOWN or ELE-DOWN
     }
     else if (input==AIRBRAKES_INPUT){ 
-      maxMixSwitch( model.mixData[mixIndex++], channel+1, isTaranis ? 13 :-2 , -100); //SE-UP or RUD-UP
-      maxMixSwitch( model.mixData[mixIndex++], channel+1, isTaranis ? 15 : 2 ,  100); //SE-DOWN or RUD-DOWN
+      maxMixSwitch( model.mixData[mixIndex++], channel+1, isTaranis ? 13 :-2 , -1*weight); //SE-UP or RUD-UP
+      maxMixSwitch( model.mixData[mixIndex++], channel+1, isTaranis ? 15 : 2 ,  weight);   //SE-DOWN or RUD-DOWN
     }
   }
 }
