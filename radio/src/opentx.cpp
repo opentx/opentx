@@ -4148,7 +4148,12 @@ void doMixerCalculations()
     // interpolate value with min/max so we get smooth motion from center to stop
     // this limits based on v original values and min=-1024, max=1024  RESX=1024
     int32_t q = (s_fade_flight_phases ? (sum_chans512[i] / weight) << 4 : chans[i]);
+
+#if defined(PCBSTD)
+    ex_chans[i] = q >> 8;
+#else
     ex_chans[i] = q / 256;
+#endif
 
     int16_t value = applyLimits(i, q);  // applyLimits will remove the 256 100% basis
 
