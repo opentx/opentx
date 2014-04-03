@@ -30,7 +30,7 @@ WizardDialog::WizardDialog(const GeneralSettings & settings, unsigned int modelI
   setPage(Page_Wingtypes, new WingtypeSelectionPage(this, "wingtype",tr("Wing Type"),tr("Is your model a flying wing/deltawing or has it a standard wing configuration?")));
   setPage(Page_Ailerons, new AileronsPage(this, "ailerons",tr("Ailerons"),tr("Has your model got ailerons?"), Page_Flaps));
   setPage(Page_Flaps, new FlapsPage(this, "flaps",tr("Flaps"),tr("Has your model got flaps?"), Page_Airbrakes));
-  setPage(Page_Airbrakes, new AirbreaksPage(this, "airbrakes",tr("Airbrakes"),tr("Has your model got airbrakes?"), Page_Tails));
+  setPage(Page_Airbrakes, new AirbrakesPage(this, "airbrakes",tr("Airbrakes"),tr("Has your model got airbrakes?"), Page_Tails));
   setPage(Page_Bank, new BankPage(this, "bank",tr("Flying-wing / Delta-wing"),tr("Are the elevons controlled by servos connected to separate channels or by a single servo channel?"), Page_Rudder));
   setPage(Page_Rudder, new RudderPage(this, "rudder",tr("Rudder"),tr("Does your model have a rudder?"), Page_Conclusion));
   setPage(Page_Tails, new TailSelectionPage(this, "tails",tr("Tail Type"),tr("Select which type of tail your model is equiped with.")));
@@ -397,8 +397,11 @@ AileronsPage::AileronsPage(WizardDialog *dlg, QString image, QString title, QStr
   oneAileronRB = new QRadioButton(tr("Yes, controlled by a single channel"));
   twoAileronsRB = new QRadioButton(tr("Yes, controlled by two channels"));
   noAileronsRB->setChecked(true);
+
   aileron1CB = new QComboBox();
   aileron2CB = new QComboBox();
+  aileron1CB->setEnabled(false);
+  aileron2CB->setEnabled(false);
 
   QLayout *l = layout();
   l->addWidget(noAileronsRB);
@@ -408,6 +411,10 @@ AileronsPage::AileronsPage(WizardDialog *dlg, QString image, QString title, QStr
   l->addWidget(aileron1CB);
   l->addWidget(new QLabel(tr("Second Aileron Channel:")));
   l->addWidget(aileron2CB);
+  
+  connect(noAileronsRB, SIGNAL(toggled(bool)), this, SLOT(noAileronChannel()));
+  connect(oneAileronRB, SIGNAL(toggled(bool)), this, SLOT(oneAileronChannel()));
+  connect(twoAileronsRB, SIGNAL(toggled(bool)), this, SLOT(twoAileronChannels()));
 }
 
 void AileronsPage::initializePage(){
@@ -428,6 +435,10 @@ bool AileronsPage::validatePage() {
     bookChannel(aileron2CB, AILERONS_INPUT, 100 ));
 }
 
+void AileronsPage::noAileronChannel(){   aileron1CB->setEnabled(false);aileron2CB->setEnabled(false);}
+void AileronsPage::oneAileronChannel(){  aileron1CB->setEnabled(true); aileron2CB->setEnabled(false);}
+void AileronsPage::twoAileronChannels(){ aileron1CB->setEnabled(true); aileron2CB->setEnabled(true);}
+
 FlapsPage::FlapsPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage)
   : StandardPage(Page_Flaps, dlg, image, title, text, nextPage)
 {
@@ -435,8 +446,11 @@ FlapsPage::FlapsPage(WizardDialog *dlg, QString image, QString title, QString te
   oneFlapRB = new QRadioButton(tr("Yes, controlled by a single channel"));
   twoFlapsRB = new QRadioButton(tr("Yes, controlled by two channels"));
   noFlapsRB->setChecked(true);
+
   flap1CB = new QComboBox();
   flap2CB = new QComboBox();
+  flap1CB->setEnabled(false);
+  flap2CB->setEnabled(false);
 
   QLayout *l = layout();
   l->addWidget(noFlapsRB);
@@ -446,6 +460,10 @@ FlapsPage::FlapsPage(WizardDialog *dlg, QString image, QString title, QString te
   l->addWidget(flap1CB);
   l->addWidget(new QLabel(tr("Second Flap Channel:")));
   l->addWidget(flap2CB);
+  
+  connect(noFlapsRB, SIGNAL(toggled(bool)), this, SLOT(noFlapChannel()));
+  connect(oneFlapRB, SIGNAL(toggled(bool)), this, SLOT(oneFlapChannel()));
+  connect(twoFlapsRB, SIGNAL(toggled(bool)), this, SLOT(twoFlapChannels()));
 }
 
 void FlapsPage::initializePage(){
@@ -466,52 +484,69 @@ bool FlapsPage::validatePage() {
     bookChannel(flap2CB, FLAPS_INPUT, 100 ));
 }
 
-AirbreaksPage::AirbreaksPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage)
+void FlapsPage::noFlapChannel(){   flap1CB->setEnabled(false);flap2CB->setEnabled(false);}
+void FlapsPage::oneFlapChannel(){  flap1CB->setEnabled(true); flap2CB->setEnabled(false);}
+void FlapsPage::twoFlapChannels(){ flap1CB->setEnabled(true); flap2CB->setEnabled(true);}
+
+AirbrakesPage::AirbrakesPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage)
   : StandardPage(Page_Airbrakes, dlg, image, title, text, nextPage)
 {
-  noAirbreaksRB = new QRadioButton(tr("No"));
-  oneAirbreakRB = new QRadioButton(tr("Yes, controlled by a single channel"));
-  twoAirbreaksRB = new QRadioButton(tr("Yes, controlled by two channels"));
-  noAirbreaksRB->setChecked(true);
-  airbreak1CB = new QComboBox();
-  airbreak2CB = new QComboBox();
+  noAirbrakesRB = new QRadioButton(tr("No"));
+  oneAirbrakeRB = new QRadioButton(tr("Yes, controlled by a single channel"));
+  twoAirbrakesRB = new QRadioButton(tr("Yes, controlled by two channels"));
+  noAirbrakesRB->setChecked(true);
+
+  airbrake1CB = new QComboBox();
+  airbrake2CB = new QComboBox();
+  airbrake1CB->setEnabled(false);
+  airbrake2CB->setEnabled(false);
 
   QLayout *l = layout();
-  l->addWidget(noAirbreaksRB);
-  l->addWidget(oneAirbreakRB);
-  l->addWidget(twoAirbreaksRB);
-  l->addWidget(new QLabel(tr("<br>First Airbreak Channel:")));
-  l->addWidget(airbreak1CB);
-  l->addWidget(new QLabel(tr("Second Airbreak Channel:")));
-  l->addWidget(airbreak2CB);
+  l->addWidget(noAirbrakesRB);
+  l->addWidget(oneAirbrakeRB);
+  l->addWidget(twoAirbrakesRB);
+  l->addWidget(new QLabel(tr("<br>First Airbrake Channel:")));
+  l->addWidget(airbrake1CB);
+  l->addWidget(new QLabel(tr("Second Airbrake Channel:")));
+  l->addWidget(airbrake2CB);
+  
+  connect(noAirbrakesRB, SIGNAL(toggled(bool)), this, SLOT(noAirbrakeChannel()));
+  connect(oneAirbrakeRB, SIGNAL(toggled(bool)), this, SLOT(oneAirbrakeChannel()));
+  connect(twoAirbrakesRB, SIGNAL(toggled(bool)), this, SLOT(twoAirbrakeChannels()));
 }
 
-void AirbreaksPage::initializePage(){
-  populateCB(airbreak1CB, nextFreeChannel(4));
-  populateCB(airbreak2CB, nextFreeChannel(4));
+void AirbrakesPage::initializePage(){
+  populateCB(airbrake1CB, nextFreeChannel(4));
+  populateCB(airbrake2CB, nextFreeChannel(4));
   StandardPage::initializePage();
 }
 
-bool AirbreaksPage::validatePage() {
+bool AirbrakesPage::validatePage() {
   releaseBookings();
-  if (noAirbreaksRB->isChecked()) { 
+  if (noAirbrakesRB->isChecked()) { 
     return true;
   }
-  if (oneAirbreakRB->isChecked()) { 
-    return (bookChannel(airbreak1CB, AIRBRAKES_INPUT, 100 ));
+  if (oneAirbrakeRB->isChecked()) { 
+    return (bookChannel(airbrake1CB, AIRBRAKES_INPUT, 100 ));
   }
-  return( bookChannel(airbreak1CB, AIRBRAKES_INPUT, 100 ) &&
-    bookChannel(airbreak2CB, AIRBRAKES_INPUT, 100 ));
+  return( bookChannel(airbrake1CB, AIRBRAKES_INPUT, 100 ) &&
+    bookChannel(airbrake2CB, AIRBRAKES_INPUT, 100 ));
 }
+
+void AirbrakesPage::noAirbrakeChannel(){   airbrake1CB->setEnabled(false);airbrake2CB->setEnabled(false);}
+void AirbrakesPage::oneAirbrakeChannel(){  airbrake1CB->setEnabled(true); airbrake2CB->setEnabled(false);}
+void AirbrakesPage::twoAirbrakeChannels(){ airbrake1CB->setEnabled(true); airbrake2CB->setEnabled(true);}
 
 BankPage::BankPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage)
   : StandardPage(Page_Bank, dlg, image, title, text, nextPage)
 {
   oneElevonChRB = new QRadioButton(tr("One"));
-  oneElevonChRB->setChecked(true);
   twoElevonsChRB = new QRadioButton(tr("Two"));
+  oneElevonChRB->setChecked(true);
+  
   elevon1CB = new QComboBox();
   elevon2CB = new QComboBox();
+  elevon2CB->setEnabled(false);
 
   QLayout *l = layout();
   l->addWidget(oneElevonChRB);
@@ -520,6 +555,9 @@ BankPage::BankPage(WizardDialog *dlg, QString image, QString title, QString text
   l->addWidget(elevon1CB);
   l->addWidget(new QLabel(tr("Second Elevon Channel:")));
   l->addWidget(elevon2CB);
+  
+  connect(oneElevonChRB,  SIGNAL(toggled(bool)), this, SLOT(oneElevonChannel()));
+  connect(twoElevonsChRB, SIGNAL(toggled(bool)), this, SLOT(twoElevonChannels()));
 }
 
 void BankPage::initializePage(){
@@ -537,19 +575,26 @@ bool BankPage::validatePage() {
     bookChannel(elevon2CB, AILERONS_INPUT, 100, ELEVATOR_INPUT, 100 ));
 }
 
+void BankPage::oneElevonChannel(){  elevon2CB->setEnabled(false);}
+void BankPage::twoElevonChannels(){ elevon2CB->setEnabled(true);}
+
 RudderPage::RudderPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage)
   : StandardPage(Page_Rudder, dlg, image, title, text, nextPage)
 {
   noRudderRB = new QRadioButton(tr("No"));
-  noRudderRB->setChecked(true);
   hasRudderRB = new QRadioButton(tr("Yes"));
+  noRudderRB->setChecked(true);
+
   rudderCB = new QComboBox();
+  rudderCB->setEnabled(false);
 
   QLayout *l = layout();
   l->addWidget(noRudderRB);
   l->addWidget(hasRudderRB);
   l->addWidget(new QLabel(tr("<br>Rudder Channel:")));
   l->addWidget(rudderCB);
+  connect(noRudderRB,  SIGNAL(toggled(bool)), this, SLOT(noRudder()));
+  connect(hasRudderRB, SIGNAL(toggled(bool)), this, SLOT(hasRudder()));
 }
 
 void RudderPage::initializePage(){
@@ -564,6 +609,9 @@ bool RudderPage::validatePage() {
 
   return (bookChannel(rudderCB, RUDDER_INPUT, 100));
 }
+
+void RudderPage::noRudder(){  rudderCB->setEnabled(false);}
+void RudderPage::hasRudder(){ rudderCB->setEnabled(true);}
 
 VTailPage::VTailPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage)
   : StandardPage(Page_Tail, dlg, image, title, text, nextPage)

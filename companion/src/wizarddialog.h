@@ -136,6 +136,12 @@ public:
   AileronsPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage=-1);  
   void initializePage();
   bool validatePage();
+  
+protected slots:
+  void noAileronChannel();
+  void oneAileronChannel();
+  void twoAileronChannels();
+
 private:
   QRadioButton *oneAileronRB;
   QRadioButton *twoAileronsRB;
@@ -151,6 +157,12 @@ public:
   FlapsPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage=-1);  
   void initializePage();
   bool validatePage();
+
+protected slots:
+  void noFlapChannel();
+  void oneFlapChannel();
+  void twoFlapChannels();
+
 private:
   QRadioButton *oneFlapRB;
   QRadioButton *twoFlapsRB;
@@ -159,19 +171,25 @@ private:
   QComboBox *flap2CB;
 };
 
-class AirbreaksPage: public StandardPage
+class AirbrakesPage: public StandardPage
 {
   Q_OBJECT
 public:
-  AirbreaksPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage=-1);  
+  AirbrakesPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage=-1);  
   void initializePage();
   bool validatePage();
+
+protected slots:
+  void noAirbrakeChannel();
+  void oneAirbrakeChannel();
+  void twoAirbrakeChannels();
+
 private:
-  QRadioButton *oneAirbreakRB;
-  QRadioButton *twoAirbreaksRB;
-  QRadioButton *noAirbreaksRB;
-  QComboBox *airbreak1CB;
-  QComboBox *airbreak2CB;
+  QRadioButton *oneAirbrakeRB;
+  QRadioButton *twoAirbrakesRB;
+  QRadioButton *noAirbrakesRB;
+  QComboBox *airbrake1CB;
+  QComboBox *airbrake2CB;
 };
 
 class BankPage: public StandardPage
@@ -181,6 +199,11 @@ public:
   BankPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage=-1);  
   void initializePage();
   bool validatePage();
+
+protected slots:
+  void oneElevonChannel();
+  void twoElevonChannels();
+
 private:
   QRadioButton *oneElevonChRB;
   QRadioButton *twoElevonsChRB;
@@ -195,6 +218,11 @@ public:
   RudderPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage=-1);  
   void initializePage();
   bool validatePage();
+
+protected slots:
+  void noRudder();
+  void hasRudder();
+
 private:
   QRadioButton *noRudderRB;
   QRadioButton *hasRudderRB;
