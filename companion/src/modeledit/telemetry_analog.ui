@@ -17,16 +17,7 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -271,7 +262,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>Min Value</string>
+        <string>Offset</string>
        </property>
       </widget>
      </item>

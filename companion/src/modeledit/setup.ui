@@ -70,7 +70,7 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="text">
-          <string>Throttle Trim</string>
+          <string>Throttle Trim Idle Only</string>
          </property>
         </widget>
        </item>
@@ -187,7 +187,7 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
           </font>
          </property>
          <property name="text">
-          <string>Throttle Source</string>
+          <string>Timer Source</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -203,7 +203,7 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
           </font>
          </property>
          <property name="text">
-          <string>Trim Increment</string>
+          <string>Trim Step</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

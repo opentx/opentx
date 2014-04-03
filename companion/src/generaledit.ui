@@ -1471,14 +1471,14 @@ p, li { white-space: pre-wrap; }
        <item row="13" column="0">
         <widget class="QLabel" name="label_27">
          <property name="text">
-          <string>Alarm Warning</string>
+          <string>&quot;No Sound&quot; Warning</string>
          </property>
         </widget>
        </item>
        <item row="14" column="0">
         <widget class="QLabel" name="label_11">
          <property name="text">
-          <string>Memory Startup Warning</string>
+          <string>Low Memory Warning</string>
          </property>
         </widget>
        </item>

@@ -1321,7 +1321,7 @@ void menuModelSetup(uint8_t event)
         break;
 
       case ITEM_MODEL_EXTERNAL_MODULE_MODE:
-        lcd_putsLeft(y, STR_MODULE);
+        lcd_putsLeft(y, STR_MODE);
         lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, STR_TARANIS_PROTOCOLS, g_model.externalModule, m_posHorz==0 ? attr : 0);
         if (g_model.externalModule == MODULE_TYPE_XJT)
           lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+5*FW, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, m_posHorz==1 ? attr : 0);

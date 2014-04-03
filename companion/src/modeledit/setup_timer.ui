@@ -46,7 +46,7 @@
    <item>
     <widget class="QCheckBox" name="minuteBeep">
      <property name="text">
-      <string>MinuteBeep</string>
+      <string>Minute Call</string>
      </property>
     </widget>
    </item>

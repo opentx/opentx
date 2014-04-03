@@ -18,16 +18,16 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     minimize=true;
     addLabel(gridLayout, tr("Name"), col++);
   }
-  addLabel(gridLayout, tr("Offset"), col++, minimize);
+  addLabel(gridLayout, tr("Subtrim"), col++, minimize);
   addLabel(gridLayout, tr("Min"), col++, minimize);
   addLabel(gridLayout, tr("Max"), col++, minimize);
-  addLabel(gridLayout, tr("Invert"), col++, minimize);
+  addLabel(gridLayout, tr("Direction"), col++, minimize);
   if (IS_TARANIS(GetEepromInterface()->getBoard()))
     addLabel(gridLayout, tr("Curve"), col++, minimize);
   if (GetEepromInterface()->getCapability(PPMCenter))
-    addLabel(gridLayout, tr("Center"), col++, minimize);
+    addLabel(gridLayout, tr("PPM Center"), col++, minimize);
   if (GetEepromInterface()->getCapability(SYMLimits))
-    addLabel(gridLayout, tr("Sym"), col++, true);
+    addLabel(gridLayout, tr("Linear Subtrim"), col++, true);
 
   for (int i=0; i<GetEepromInterface()->getCapability(Outputs); i++) {
     col = 0;

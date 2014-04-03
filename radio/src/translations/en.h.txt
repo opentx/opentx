@@ -740,7 +740,7 @@
 #define TR_MODULE_RANGE        "[Range]"
 #define TR_RESET_BTN           "[Reset]"
 #define TR_SET                 "[Set]"
-#define TR_TRAINER             "Trainer"
+#define TR_TRAINER             "Trainer Port"
 #define TR_ANTENNAPROBLEM      CENTER "TX Antenna problem!"
 #define TR_MODELIDUSED         TR("ID already used","Model ID already used")
 #define TR_MODULE              INDENT "Module"
@@ -759,7 +759,7 @@
 #define TR_PTS                 "pts"
 #define TR_SMOOTH              "Smooth"
 #define TR_COPY_TRIMS_TO_OFS   "Copy Trim To Subtrim"
-#define TR_PERSISTENT_MAH      TR(INDENT "Str mAh", INDENT "Store mAh")
+#define TR_PERSISTENT_MAH      TR(INDENT "Str mAh", INDENT "Persistent mAh")
 #define TR_PREFLIGHT           "Preflight Checks"
 #define TR_CHECKLIST           INDENT "Display Checklist"
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")

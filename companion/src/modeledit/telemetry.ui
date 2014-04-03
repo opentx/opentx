@@ -975,6 +975,9 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="suffix">
+           <string> mAh</string>
+          </property>
           <property name="maximum">
            <number>32767</number>
           </property>
@@ -987,6 +990,9 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
+          </property>
+          <property name="suffix">
+           <string> A</string>
           </property>
           <property name="decimals">
            <number>1</number>

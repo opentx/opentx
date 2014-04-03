@@ -30,7 +30,7 @@ ModelEdit::ModelEdit(RadioData & radioData, int modelId, bool openWizard, bool i
   addTab(new FlightModes(this, model, generalSettings), tr("Flight Modes"));
   addTab(new InputsPanel(this, model, generalSettings), tr("Inputs"));
   addTab(new MixesPanel(this, model, generalSettings), tr("Mixes"));
-  addTab(new Channels(this, model, generalSettings), tr("Channels"));
+  addTab(new Channels(this, model, generalSettings), tr("Servos"));
   addTab(new LogicalSwitchesPanel(this, model, generalSettings), tr("Logical Switches"));
   if (GetEepromInterface()->getCapability(CustomFunctions))
     addTab(new CustomFunctionsPanel(this, model, generalSettings), tr("Special Functions"));

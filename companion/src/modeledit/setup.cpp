@@ -22,10 +22,10 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
     ui->persistentValue->hide();
   }
 
-  ui->countdownBeep->addItem(tr("None"));
+  ui->countdownBeep->addItem(tr("Silent"));
   ui->countdownBeep->addItem(tr("Beeps"));
   if (IS_ARM(GetEepromInterface()->getBoard()) || IS_2560(GetEepromInterface()->getBoard()))
-    ui->countdownBeep->addItem(tr("Countdown"));
+    ui->countdownBeep->addItem(tr("Voice"));
 
   lock = false;
 }
@@ -106,7 +106,7 @@ ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module
 
   QString label;
   if (moduleIdx < 0) {
-    label = tr("Trainer Output");
+    label = tr("Trainer Port");
     ui->trainerMode->setCurrentIndex(model.trainerMode);
   }
   else {
