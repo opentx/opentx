@@ -3927,7 +3927,7 @@ void menuModelLimits(uint8_t event)
           lcd_outdezAtt(LIMITS_OFFSET_POS, y, ld->offset, attr|PREC1);
 #endif
           if (active) {
-            ld->offset = checkIncDec(event, ld->offset, -1000, 1000, EE_MODEL|NO_INCDEC_MARKS);
+            ld->offset = checkIncDec(event, ld->offset, -1000, 1000, EE_MODEL|NO_INCDEC_MARKS|DBLKEYS_1000);
           }
           else if (attr && event==EVT_KEY_LONG(KEY_MENU)) {
             copyTrimsToOffset(k);
@@ -3943,7 +3943,7 @@ void menuModelLimits(uint8_t event)
           }
 #endif
           lcd_outdezAtt(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET), MIN_MAX_ATTR);
-          if (active) ld->min = LIMITS_MIN_MAX_OFFSET + checkIncDecModel(event, ld->min-LIMITS_MIN_MAX_OFFSET, -limit, 0);
+          if (active) ld->min = LIMITS_MIN_MAX_OFFSET + checkIncDec(event, ld->min-LIMITS_MIN_MAX_OFFSET, -limit, 0, EE_MODEL|DBLKEYS_1000);
           break;
 
         case ITEM_LIMITS_MAX:
@@ -3954,7 +3954,7 @@ void menuModelLimits(uint8_t event)
           }
 #endif
           lcd_outdezAtt(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET), MIN_MAX_ATTR);
-          if (active) ld->max = -LIMITS_MIN_MAX_OFFSET + checkIncDecModelZero(event, ld->max+LIMITS_MIN_MAX_OFFSET, +limit);
+          if (active) ld->max = -LIMITS_MIN_MAX_OFFSET + checkIncDec(event, ld->max+LIMITS_MIN_MAX_OFFSET, 0, +limit, EE_MODEL|DBLKEYS_1000);
           break;
 
         case ITEM_LIMITS_DIRECTION:
