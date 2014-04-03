@@ -561,14 +561,14 @@ void SimulatorDialog::on_trimVLeft_valueChanged(int value)
   simulator->setTrim(1, value);
 }
 
-void SimulatorDialog::on_trimHRight_valueChanged(int value)
-{
-  simulator->setTrim(3, value);
-}
-
 void SimulatorDialog::on_trimVRight_valueChanged(int value)
 {
   simulator->setTrim(2, value);
+}
+
+void SimulatorDialog::on_trimHRight_valueChanged(int value)
+{
+  simulator->setTrim(3, value);
 }
 
 void SimulatorDialog::setValues()
@@ -586,8 +586,8 @@ void SimulatorDialog::setValues()
   leftXPerc->setText(QString("X %1%").arg((qreal)nodeLeft->getX()*100+trims.values[0]/5, 2, 'f', 0));
   leftYPerc->setText(QString("Y %1%").arg((qreal)nodeLeft->getY()*-100+trims.values[1]/5, 2, 'f', 0));
 
-  rightXPerc->setText(QString("X %1%").arg((qreal)nodeRight->getX()*100+trims.values[2]/5, 2, 'f', 0));
-  rightYPerc->setText(QString("Y %1%").arg((qreal)nodeRight->getY()*-100+trims.values[3]/5, 2, 'f', 0));
+  rightXPerc->setText(QString("X %1%").arg((qreal)nodeRight->getX()*100+trims.values[3]/5, 2, 'f', 0));
+  rightYPerc->setText(QString("Y %1%").arg((qreal)nodeRight->getY()*-100+trims.values[2]/5, 2, 'f', 0));
 
   QString CSWITCH_ON = "QLabel { background-color: #4CC417 }";
   QString CSWITCH_OFF = "QLabel { }";
