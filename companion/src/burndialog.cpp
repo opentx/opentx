@@ -38,7 +38,7 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
     ui->profile_label->hide();
     ui->patchcalib_CB->hide();
     ui->patchhw_CB->hide();
-    setWindowTitle(tr("Write firmware to TX"));
+    setWindowTitle(tr("Write firmware to Radio"));
     if (IS_TARANIS(GetEepromInterface()->getBoard())) {
       ui->EEbackupCB->hide();
     }
@@ -59,10 +59,10 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
     ui->BurnFlashButton->setDisabled(true);
     ui->EEbackupCB->hide();
     if (DocName.isEmpty()) {
-      setWindowTitle(tr("Write Models and Settings to TX"));
+      setWindowTitle(tr("Write Backup to Radio"));
     }
     else {
-      setWindowTitle(tr("Write Models and Settings in %1 to TX").arg(DocName));
+      setWindowTitle(tr("Write Backup from %1 to Radio").arg(DocName));
     }
     ui->profile_label->setText(tr("Current profile")+QString(": ")+g.profile[g.id()].name());
   }
@@ -146,7 +146,7 @@ void burnDialog::on_FlashLoadButton_clicked()
     checkFw(fileName);
   }
   else {
-    QString fileName = QFileDialog::getOpenFileName(this,tr("Choose file to load Models and Settings from"), g.eepromDir(), tr(EEPE_FILES_FILTER));
+    QString fileName = QFileDialog::getOpenFileName(this,tr("Choose Radio Backup file"), g.eepromDir(), tr(EXTERNAL_EEPROM_FILES_FILTER));
     if (checkeEprom(fileName)) {
       if (burnraw==false) {
         ui->BurnFlashButton->setEnabled(true);
@@ -369,7 +369,7 @@ void burnDialog::on_useAnotherImageCB_clicked()
   for (int formatIndex = 0; formatIndex < QImageReader::supportedImageFormats().count(); formatIndex++) {
     supportedImageFormats += QLatin1String(" *.") + QImageReader::supportedImageFormats()[formatIndex];
   }
-  QString fileName = QFileDialog::getOpenFileName(this, tr("Open image file to use as Tx start screen"), g.imagesDir(), tr("Images (%1)").arg(supportedImageFormats));
+  QString fileName = QFileDialog::getOpenFileName(this, tr("Open image file to use as radio start screen"), g.imagesDir(), tr("Images (%1)").arg(supportedImageFormats));
   if (!fileName.isEmpty()){
     g.imagesDir( QFileInfo(fileName).dir().absolutePath() );
     QImage image(fileName);

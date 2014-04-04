@@ -553,7 +553,7 @@ void MdiChild::writeEeprom()  // write to Tx
           else {
             QStringList str;
             str << path << backupFile;
-            avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Backup EEPROM From Tx")); //, AVR_DIALOG_KEEP_OPEN);
+            avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Backup EEPROM From Radio")); //, AVR_DIALOG_KEEP_OPEN);
             ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
             ad->exec();
             delete ad;
@@ -562,7 +562,7 @@ void MdiChild::writeEeprom()  // write to Tx
         }
         else {
           QStringList str = ((MainWindow *)this->parent())->GetReceiveEEpromCommand(backupFile);
-          avrOutputDialog *ad = new avrOutputDialog(this, ((MainWindow *)this->parent())->GetAvrdudeLocation(), str, tr("Backup EEPROM From Tx"));
+          avrOutputDialog *ad = new avrOutputDialog(this, ((MainWindow *)this->parent())->GetAvrdudeLocation(), str, tr("Backup EEPROM From Radio"));
           ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
           ad->exec();
           delete ad;
@@ -572,7 +572,7 @@ void MdiChild::writeEeprom()  // write to Tx
       int oldrev=((MainWindow *)this->parent())->getEpromVersion(tempFile);
       QString tempFlash=tempDir + "/flash.bin";
       QStringList str = ((MainWindow *)this->parent())->GetReceiveFlashCommand(tempFlash);
-      avrOutputDialog *ad = new avrOutputDialog(this, ((MainWindow *)this->parent())->GetAvrdudeLocation(), str, "Read Flash From Tx");
+      avrOutputDialog *ad = new avrOutputDialog(this, ((MainWindow *)this->parent())->GetAvrdudeLocation(), str, "Read Flash From Radio");
       ad->setWindowIcon(CompanionIcon("read_flash.png"));
       ad->exec();
       delete ad;
@@ -613,7 +613,7 @@ void MdiChild::writeEeprom()  // write to Tx
         }
         else {
           QStringList str = ((MainWindow *)this->parent())->GetReceiveEEpromCommand(backupFile);
-          avrOutputDialog *ad = new avrOutputDialog(this, ((MainWindow *)this->parent())->GetAvrdudeLocation(), str, tr("Backup EEPROM From Tx"));
+          avrOutputDialog *ad = new avrOutputDialog(this, ((MainWindow *)this->parent())->GetAvrdudeLocation(), str, tr("Backup EEPROM From Radio"));
           ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
           ad->exec();
           delete ad;
@@ -632,7 +632,7 @@ void MdiChild::writeEeprom()  // write to Tx
       else {
         QStringList str;
         str << tempFile << path;
-        avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Write EEPROM To Tx"), AVR_DIALOG_SHOW_DONE); //, AVR_DIALOG_KEEP_OPEN);
+        avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Write EEPROM To Radio"), AVR_DIALOG_SHOW_DONE); //, AVR_DIALOG_KEEP_OPEN);
         ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
         ad->exec();
         delete ad;
@@ -641,7 +641,7 @@ void MdiChild::writeEeprom()  // write to Tx
     }
     else {
       QStringList str = ((MainWindow *)this->parent())->GetSendEEpromCommand(tempFile);
-      avrOutputDialog *ad = new avrOutputDialog(this, ((MainWindow *)this->parent())->GetAvrdudeLocation(), str, "Write EEPROM To Tx", AVR_DIALOG_SHOW_DONE);
+      avrOutputDialog *ad = new avrOutputDialog(this, ((MainWindow *)this->parent())->GetAvrdudeLocation(), str, "Write EEPROM To Radio", AVR_DIALOG_SHOW_DONE);
       ad->setWindowIcon(CompanionIcon("write_eeprom.png"));
       ad->exec();
       delete ad;

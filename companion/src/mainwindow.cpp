@@ -341,7 +341,7 @@ void MainWindow::reply1Accepted()
           int errnum=hline.mid(6).toInt();
           switch(errnum) {
             case 1:
-              errormsg=tr("Firmware does not longer fit in the Tx, due to selected firmware options");
+              errormsg=tr("Firmware does not longer fit in the radio, due to selected firmware options");
               break;
             case 2:
               errormsg=tr("Compilation server temporary failure, try later");
@@ -380,7 +380,7 @@ void MainWindow::reply1Accepted()
         int errnum=hline.mid(6).toInt();
         switch(errnum) {
           case 1:
-            errormsg=tr("Firmware does not fit in the Tx, due to selected firmware options");
+            errormsg=tr("Firmware does not fit in the radio, due to selected firmware options");
             break;
           case 2:
             errormsg=tr("Compilation server termporary failure, try later");
@@ -419,7 +419,7 @@ void MainWindow::reply1Accepted()
         }
         g.fwRev.set(downloadedFW, currentFWrev);
         if (g.profile[g.id()].burnFirmware()) {
-          int ret = QMessageBox::question(this, "Companion", tr("Do you want to write the firmware to the transmitter now ?"), QMessageBox::Yes | QMessageBox::No);
+          int ret = QMessageBox::question(this, "Companion", tr("Do you want to write the firmware to the radio now ?"), QMessageBox::Yes | QMessageBox::No);
           if (ret == QMessageBox::Yes) {
             writeFlash(g.profile[g.id()].fwName());
           }
@@ -1031,14 +1031,14 @@ void MainWindow::readEeprom()
       } else {
         QStringList str;
         str << path << tempFile;
-        avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Read Models and Settings From Tx")); //, AVR_DIALOG_KEEP_OPEN);
+        avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Read Models and Settings From Radio")); //, AVR_DIALOG_KEEP_OPEN);
         ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
         res = ad->exec();
         sleep(1);
       }
     } else {    
       QStringList str = GetReceiveEEpromCommand(tempFile);
-      avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Read Models and Settings From Tx")); //, AVR_DIALOG_KEEP_OPEN);
+      avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Read Models and Settings From Radio")); //, AVR_DIALOG_KEEP_OPEN);
       ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
       res = ad->exec();
     }
@@ -1050,7 +1050,7 @@ void MainWindow::readEeprom()
     }
 }
 
-void MainWindow::writeFileToEeprom()
+void MainWindow::writeBackup()
 {
     QString fileName;
     bool backup = false;
@@ -1058,7 +1058,7 @@ void MainWindow::writeFileToEeprom()
     cd->exec();
     if (!fileName.isEmpty()) {
       g.eepromDir(QFileInfo(fileName).dir().absolutePath());
-      int ret = QMessageBox::question(this, "Companion", tr("Write Models and settings from %1 to the Tx?").arg(QFileInfo(fileName).fileName()), QMessageBox::Yes | QMessageBox::No);
+      int ret = QMessageBox::question(this, "Companion", tr("Write Radio Backup from %1 to the radio?").arg(QFileInfo(fileName).fileName()), QMessageBox::Yes | QMessageBox::No);
       if (ret != QMessageBox::Yes) return;
       if (!isValidEEPROM(fileName))
         ret = QMessageBox::question(this, "Companion", tr("The file %1\nhas not been recognized as a valid Models and Settings file\nWrite anyway ?").arg(QFileInfo(fileName).fileName()), QMessageBox::Yes | QMessageBox::No);
@@ -1088,14 +1088,14 @@ void MainWindow::writeFileToEeprom()
             } else {
               QStringList str;
               str << path << backupFile;
-              avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Backup Models and Settings From Tx")); //, AVR_DIALOG_KEEP_OPEN);
+              avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Backup Models and Settings From Radio")); //, AVR_DIALOG_KEEP_OPEN);
               ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
               ad->exec();
               sleep(1);
             }
           } else {
             QStringList str = GetReceiveEEpromCommand(backupFile);
-            avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Backup Models and Settings From Tx"));
+            avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Backup Models and Settings From Radio"));
             ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
             ad->exec();
             sleep(1);
@@ -1105,7 +1105,7 @@ void MainWindow::writeFileToEeprom()
         QString tempDir = QDir::tempPath();
         QString tempFlash = tempDir + "/flash.bin";
         QStringList str = GetReceiveFlashCommand(tempFlash);
-        avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, "Read Firmware From Tx");
+        avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, "Read Firmware From Radio");
         ad->setWindowIcon(CompanionIcon("read_flash.png"));
         ad->exec();
         sleep(1);
@@ -1118,10 +1118,10 @@ void MainWindow::writeFileToEeprom()
         } else {
           int rev = getEpromVersion(restoreFile);
           if ((rev / 100) != (oldrev / 100)) {
-            QMessageBox::warning(this, tr("Warning"), tr("The transmitter firmware belongs to another product family, check file and preferences!"));
+            QMessageBox::warning(this, tr("Warning"), tr("The radio firmware belongs to another product family, check file and preferences!"));
           }
           else if (rev < oldrev) {
-            QMessageBox::warning(this, tr("Warning"), tr("The transmitter firmware is outdated, please upgrade!"));
+            QMessageBox::warning(this, tr("Warning"), tr("The radio firmware is outdated, please upgrade!"));
           }
           fileName = restoreFile;
         }
@@ -1140,7 +1140,7 @@ void MainWindow::writeFileToEeprom()
             } else {
               QStringList str;
               str << path << backupFile;
-              avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Backup Models and Settings From Tx")); //, AVR_DIALOG_KEEP_OPEN);
+              avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Backup Models and Settings From Radio")); //, AVR_DIALOG_KEEP_OPEN);
               ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
               ad->exec();
               delete ad;
@@ -1149,7 +1149,7 @@ void MainWindow::writeFileToEeprom()
           }
           else {
             QStringList str = ((MainWindow *)this->parent())->GetReceiveEEpromCommand(backupFile);
-            avrOutputDialog *ad = new avrOutputDialog(this, ((MainWindow *)this->parent())->GetAvrdudeLocation(), str, tr("Backup Models and Settings From Tx"));
+            avrOutputDialog *ad = new avrOutputDialog(this, ((MainWindow *)this->parent())->GetAvrdudeLocation(), str, tr("Backup Models and Settings From Radio"));
             ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
             ad->exec();
             delete ad;
@@ -1167,7 +1167,7 @@ void MainWindow::writeFileToEeprom()
         else {
           QStringList str;
           str << fileName << path;
-          avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Write Models and Settings To Tx")); //, AVR_DIALOG_KEEP_OPEN);
+          avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Write Backup To Radio")); //, AVR_DIALOG_KEEP_OPEN);
           ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
           ad->exec();
           delete ad;
@@ -1176,7 +1176,7 @@ void MainWindow::writeFileToEeprom()
       }
       else {
         QStringList str = GetSendEEpromCommand(fileName);
-        avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, "Write Models and Settings To Tx", AVR_DIALOG_SHOW_DONE);
+        avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, "Write Backup To Radio", AVR_DIALOG_SHOW_DONE);
         ad->setWindowIcon(CompanionIcon("write_eeprom.png"));
         ad->exec();
         delete ad;
@@ -1334,14 +1334,14 @@ void MainWindow::writeFlash(QString fileToFlash)
           backupFile=backupPath+"/backup-"+QDateTime().currentDateTime().toString("yyyy-MM-dd-hhmmss")+".bin";
         }
         QStringList str = GetReceiveEEpromCommand(backupFile);
-        avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Backup Models and Settings From Tx"), AVR_DIALOG_CLOSE_IF_SUCCESSFUL);
+        avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Backup Models and Settings From Radio"), AVR_DIALOG_CLOSE_IF_SUCCESSFUL);
         ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
         int res = ad->exec();
         delete ad;
         if (QFileInfo(backupFile).exists() && res) {
           sleep(1);
           QStringList str = GetSendFlashCommand(fileName);
-          avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Write Firmware To Tx"), AVR_DIALOG_CLOSE_IF_SUCCESSFUL);
+          avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Write Firmware To Radio"), AVR_DIALOG_CLOSE_IF_SUCCESSFUL);
           CompanionIcon iconw("write_eeprom.png");
           ad->setWindowIcon(iconw);
           int res = ad->exec();
@@ -1354,20 +1354,20 @@ void MainWindow::writeFlash(QString fileToFlash)
             }
             sleep(1);
             QStringList str = GetSendEEpromCommand(restoreFile);
-            avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Restore Models and Settings To Tx"), AVR_DIALOG_CLOSE_IF_SUCCESSFUL);
+            avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Restore Models and Settings To Radio"), AVR_DIALOG_CLOSE_IF_SUCCESSFUL);
             ad->setWindowIcon(iconw);
             res = ad->exec();
             delete ad;
             if (!res) {
-              QMessageBox::warning(this, tr("Restore failed"), tr("Could not restore Models and Settings to TX. The models and settings data file can be found at: %1").arg(backupFile));
+              QMessageBox::warning(this, tr("Restore failed"), tr("Could not restore Models and Settings to Radio. The models and settings data file can be found at: %1").arg(backupFile));
             }
           }
           else {
-            QMessageBox::warning(this, tr("Firmware write failed"), tr("Could not write firmware to to transmitter. The models and settings data file can be found at: %1").arg(backupFile));
+            QMessageBox::warning(this, tr("Firmware write failed"), tr("Could not write firmware to radio. The models and settings data file can be found at: %1").arg(backupFile));
           }
         }
         else {
-          QMessageBox::warning(this, tr("Backup failed"), tr("Cannot backup existing Models and Settings from TX. Firmware write process aborted"));
+          QMessageBox::warning(this, tr("Backup failed"), tr("Cannot backup existing Models and Settings from Radio. Firmware write process aborted"));
         }
       }
       else {
@@ -1383,7 +1383,7 @@ void MainWindow::writeFlash(QString fileToFlash)
           QDateTime datetime;
           QString backupFile=backupPath+"/backup-"+QDateTime().currentDateTime().toString("yyyy-MM-dd-hhmmss")+".bin";
           QStringList str = GetReceiveEEpromCommand(backupFile);
-          avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Backup Models and Settings From Tx"));
+          avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Backup Models and Settings From Radio"));
           ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
           ad->exec();
           delete ad;
@@ -1391,7 +1391,7 @@ void MainWindow::writeFlash(QString fileToFlash)
         }
 
         QStringList str = GetSendFlashCommand(fileName);
-        avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Write Firmware To Tx"), AVR_DIALOG_SHOW_DONE);
+        avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Write Firmware To Radio"), AVR_DIALOG_SHOW_DONE);
         ad->setWindowIcon(CompanionIcon("write_flash.png"));
         ad->exec();
         delete ad;
@@ -1399,9 +1399,9 @@ void MainWindow::writeFlash(QString fileToFlash)
     }
 }
 
-void MainWindow::readEepromToFile()
+void MainWindow::readBackup()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save transmitter Models and Settings to File"), g.eepromDir(), tr(EXTERNAL_EEPROM_FILES_FILTER));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save Radio Backup to File"), g.eepromDir(), tr(EXTERNAL_EEPROM_FILES_FILTER));
     if (!fileName.isEmpty()) {
       EEPROMInterface *eepromInterface = GetEepromInterface();
       if (IS_TARANIS(eepromInterface->getBoard())) {
@@ -1414,7 +1414,7 @@ void MainWindow::readEepromToFile()
         else {
           QStringList str;            
           str << path << fileName;
-          avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Read Models and Settings From Tx")); //, AVR_DIALOG_KEEP_OPEN);
+          avrOutputDialog *ad = new avrOutputDialog(this,"", str, tr("Read Radio Backup")); //, AVR_DIALOG_KEEP_OPEN);
           ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
           ad->exec();
           delete ad;
@@ -1423,7 +1423,7 @@ void MainWindow::readEepromToFile()
       else {
         g.eepromDir(QFileInfo(fileName).dir().absolutePath());
         QStringList str = GetReceiveEEpromCommand(fileName);
-        avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Read Models and Settings From Tx"));
+        avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, tr("Read Models and Settings From Radio"));
         ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
         ad->exec();
         delete ad;
@@ -1433,7 +1433,7 @@ void MainWindow::readEepromToFile()
 
 void MainWindow::readFlash()
 {
-    QString fileName = QFileDialog::getSaveFileName(this,tr("Read Tx Firmware to File"), g.flashDir(),tr(FLASH_FILES_FILTER));
+    QString fileName = QFileDialog::getSaveFileName(this,tr("Read Radio Firmware to File"), g.flashDir(),tr(FLASH_FILES_FILTER));
     if (!fileName.isEmpty()) {
         QFile file(fileName);
         if (file.exists()) {
@@ -1441,7 +1441,7 @@ void MainWindow::readFlash()
         }
         g.flashDir(QFileInfo(fileName).dir().absolutePath());
         QStringList str = GetReceiveFlashCommand(fileName);
-        avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, "Read Firmware From Tx");
+        avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, "Read Firmware From Radio");
         ad->setWindowIcon(CompanionIcon("read_flash.png"));
         ad->exec();
         delete ad;
@@ -1636,18 +1636,18 @@ void MainWindow::createActions()
     changelogAct =       addAct("changelog.png",     tr("Companion Changes..."),    tr("Show Companion change log"),          SLOT(changelog()));
     fwchangelogAct =     addAct("changelog.png",     tr("Firmware Changes..."),     tr("Show firmware change log"),           SLOT(fwchangelog()));
     compareAct =         addAct("compare.png",       tr("Compare Models..."),       tr("Compare models"),                     SLOT(compare()));
-    editSplashAct =      addAct("paintbrush.png",    tr("Edit Tx Splash Image..."), tr("Edit the splash image of your TX"),   SLOT(customizeSplash()));
+    editSplashAct =      addAct("paintbrush.png",    tr("Edit Radio Splash Image..."), tr("Edit the splash image of your Radio"),   SLOT(customizeSplash()));
     burnListAct =        addAct("list.png",          tr("List programmers..."),     tr("List available programmers"),         SLOT(burnList()));
     burnFusesAct =       addAct("fuses.png",         tr("Fuses..."),                tr("Show fuses dialog"),                  SLOT(burnFuses()));
-    readFlashAct =       addAct("read_flash.png",    tr("Read Firmware"),           tr("Read firmware from transmitter"),     SLOT(readFlash()));
-    writeFlashAct =      addAct("write_flash.png",   tr("Write Firmware"),          tr("Write firmware to transmitter"),      SLOT(writeFlash()));
-    createProfileAct =   addAct("",                  tr("Add Radio Profile"),             tr("Create a new Radio Setting Profile"), SLOT(createProfile()));
+    readFlashAct =       addAct("read_flash.png",    tr("Read Firmware from Radio"),tr("Read firmware from Radio"),           SLOT(readFlash()));
+    writeFlashAct =      addAct("write_flash.png",   tr("Write Firmware to Radio"), tr("Write firmware to Radio"),            SLOT(writeFlash()));
+    createProfileAct =   addAct("",                  tr("Add Radio Profile"),       tr("Create a new Radio Setting Profile"), SLOT(createProfile()));
     openDocURLAct =      addAct("",                  tr("Manuals and other Documents"),      tr("Open the OpenTX document page in a web browser"), SLOT(openDocURL()));
-    writeEepromAct =     addAct("write_eeprom.png",  tr("Write Models and Settings To Tx"),  tr("Write Models and Settings to transmitter"),       SLOT(writeEeprom()));
-    readEepromAct =      addAct("read_eeprom.png",   tr("Read Models and Settings From Tx"), tr("Read Models and Settings from transmitter"),      SLOT(readEeprom()));
-    burnConfigAct =      addAct("configure.png",     tr("Configure Communications..."), tr("Configure software for communicating with the transmitter"), SLOT(burnConfig()));
-    writeFileToEepromAct = addAct("write_eeprom_file.png", tr("Write Models and Settings from file to Tx"), tr("Write Models and Settings from file to transmitter"), SLOT(writeFileToEeprom()));
-    readEepromToFileAct = addAct("read_eeprom_file.png", tr("Save Tx Models and Settings to file"), tr("Save the Models and Settings from the transmitter to a file"), SLOT(readEepromToFile()));
+    writeEepromAct =     addAct("write_eeprom.png",  tr("Write Models and Settings To Radio"),  tr("Write Models and Settings to Radio"),       SLOT(writeEeprom()));
+    readEepromAct =      addAct("read_eeprom.png",   tr("Read Models and Settings From Radio"), tr("Read Models and Settings from Radio"),      SLOT(readEeprom()));
+    burnConfigAct =      addAct("configure.png",     tr("Configure Communications..."), tr("Configure software for communicating with the Radio"), SLOT(burnConfig()));
+    writeBackupToRadioAct = addAct("write_eeprom_file.png", tr("Write Backup to Radio"), tr("Write Backup from file to to Radio"), SLOT(writeBackup()));
+    readBackupToFileAct = addAct("read_eeprom_file.png", tr("Backup Radio to File"), tr("Save a complete backup file of all settings and model data in the Radio"), SLOT(readBackup()));
     contributorsAct =    addAct("contributors.png",  tr("Contributors..."), tr("A tribute to those who have contributed to OpenTX and Companion"), SLOT(contributors()));
     
     compareAct->setEnabled(false);
@@ -1723,8 +1723,8 @@ void MainWindow::createMenus()
     burnMenu->addAction(writeEepromAct);
     burnMenu->addAction(readEepromAct);
     burnMenu->addSeparator();
-    burnMenu->addAction(writeFileToEepromAct);
-    burnMenu->addAction(readEepromToFileAct);
+    burnMenu->addAction(writeBackupToRadioAct);
+    burnMenu->addAction(readBackupToFileAct);
     burnMenu->addSeparator();
     burnMenu->addAction(writeFlashAct);
     burnMenu->addAction(readFlashAct);
@@ -1842,8 +1842,8 @@ void MainWindow::createToolBars()
     burnToolBar->addAction(writeEepromAct);
     burnToolBar->addAction(readEepromAct);
     burnToolBar->addSeparator();
-    burnToolBar->addAction(writeFileToEepromAct);
-    burnToolBar->addAction(readEepromToFileAct);
+    burnToolBar->addAction(writeBackupToRadioAct);
+    burnToolBar->addAction(readBackupToFileAct);
     burnToolBar->addSeparator();
     burnToolBar->addAction(writeFlashAct);
     burnToolBar->addAction(readFlashAct);
