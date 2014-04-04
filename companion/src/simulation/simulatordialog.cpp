@@ -255,7 +255,7 @@ void SimulatorDialog::initUi(T * ui)
 
   txInterface = GetEepromInterface();
 
-  windowName = tr("Simulating Tx (%1)").arg(txInterface->getName());
+  windowName = tr("Simulating Radio (%1)").arg(txInterface->getName());
   setWindowTitle(windowName);
 
   simulator = txInterface->getSimulator();

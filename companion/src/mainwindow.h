@@ -132,8 +132,8 @@ private slots:
     void readEeprom();
     void writeFlash(QString fileToFlash="");
     void readFlash();
-    void writeFileToEeprom();
-    void readEepromToFile();
+    void writeBackup();
+    void readBackup();
     void burnConfig();
     void burnList();
     void burnFuses();
@@ -243,8 +243,8 @@ private:
     QAction *burnFusesAct;
     QAction *writeFlashAct;
     QAction *readFlashAct;
-    QAction *writeFileToEepromAct;
-    QAction *readEepromToFileAct;
+    QAction *writeBackupToRadioAct;
+    QAction *readBackupToFileAct;
     QAction *simulateAct;
     QAction *separatorAct;
     QAction *aboutAct;
