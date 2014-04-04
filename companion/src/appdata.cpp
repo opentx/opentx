@@ -601,6 +601,7 @@ AppData::AppData()
 
         // Store old values in new locations
         autoCheckApp(settings.value("startup_check_companion9x", true).toBool());
+        useWizard(settings.value("wizardEnable", true).toBool());
 
         // Convert and store the firmware type
         QString fwType  = settings.value("firmware", "").toString();

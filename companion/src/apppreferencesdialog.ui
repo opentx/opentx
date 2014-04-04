@@ -45,7 +45,7 @@
    <item row="0" column="1">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="profileTab">
       <attribute name="title">
@@ -580,7 +580,7 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </widget>
        </item>
-       <item row="6" column="1" colspan="4">
+       <item row="7" column="1" colspan="4">
         <widget class="QCheckBox" name="startupCheck_companion9x">
          <property name="text">
           <string>Automatic check for Companion updates</string>
@@ -590,7 +590,7 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </widget>
        </item>
-       <item row="9" column="1" colspan="4">
+       <item row="10" column="1" colspan="4">
         <widget class="QCheckBox" name="backupEnable">
          <property name="text">
           <string>Enable automatic backup before writing firmware</string>
@@ -604,14 +604,14 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </widget>
        </item>
-       <item row="7" column="1" colspan="4">
+       <item row="8" column="1" colspan="4">
         <widget class="Line" name="line_2">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
         </widget>
        </item>
-       <item row="5" column="1" colspan="4">
+       <item row="6" column="1" colspan="4">
         <widget class="QCheckBox" name="startupCheck_fw">
          <property name="text">
           <string>Automatic check for OpenTX firmware updates</string>
@@ -621,7 +621,7 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </widget>
        </item>
-       <item row="12" column="1">
+       <item row="13" column="1">
         <widget class="QLineEdit" name="libraryPath">
          <property name="enabled">
           <bool>true</bool>
@@ -644,7 +644,7 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </spacer>
        </item>
-       <item row="14" column="1">
+       <item row="15" column="1">
         <spacer name="verticalSpacer_2">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -657,14 +657,14 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </spacer>
        </item>
-       <item row="8" column="4">
+       <item row="9" column="4">
         <widget class="QPushButton" name="backupPathButton">
          <property name="text">
           <string>Open Folder</string>
          </property>
         </widget>
        </item>
-       <item row="11" column="0">
+       <item row="12" column="0">
         <widget class="QLabel" name="label_10">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -704,14 +704,14 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </widget>
        </item>
-       <item row="12" column="4">
+       <item row="13" column="4">
         <widget class="QPushButton" name="libraryPathButton">
          <property name="text">
           <string>Open Folder</string>
          </property>
         </widget>
        </item>
-       <item row="8" column="1">
+       <item row="9" column="1">
         <widget class="QLineEdit" name="backupPath">
          <property name="minimumSize">
           <size>
@@ -731,7 +731,7 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </widget>
        </item>
-       <item row="11" column="1">
+       <item row="12" column="1">
         <widget class="QComboBox" name="splashincludeCB">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -751,7 +751,7 @@ This is used by the templated to determine which channel goes to what number out
          </item>
         </widget>
        </item>
-       <item row="12" column="0">
+       <item row="13" column="0">
         <widget class="QLabel" name="label_9">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -786,7 +786,7 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </widget>
        </item>
-       <item row="8" column="0">
+       <item row="9" column="0">
         <widget class="QLabel" name="label_17">
          <property name="text">
           <string>Automatic Backup Folder</string>
@@ -819,17 +819,17 @@ This is used by the templated to determine which channel goes to what number out
          </property>
         </widget>
        </item>
-       <item row="13" column="1">
-        <widget class="QCheckBox" name="modelWizard_CB">
-         <property name="text">
-          <string>Use model wizard when creating a new model</string>
-         </property>
-        </widget>
-       </item>
-       <item row="10" column="1" colspan="4">
+       <item row="11" column="1" colspan="4">
         <widget class="Line" name="line_5">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1" colspan="4">
+        <widget class="QCheckBox" name="modelWizard_CB">
+         <property name="text">
+          <string>Use model wizard when creating a new model</string>
          </property>
         </widget>
        </item>
