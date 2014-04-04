@@ -19,6 +19,13 @@
 #include "splash.h"
 #include "flashinterface.h"
 
+#define VERS_MARK   "VERS"
+#define SVN_MARK    "SVN"
+#define DATE_MARK   "DATE"
+#define TIME_MARK   "TIME"
+#define BLD_MARK    "BLD"
+#define EEPR_MARK   "EEPR"
+
 int getFileType(const QString &fullFileName)
 {
   QString suffix = QFileInfo(fullFileName).suffix().toUpper();
@@ -39,26 +46,33 @@ int getFileType(const QString &fullFileName)
 FlashInterface::FlashInterface(QString fileName):
   flash(MAX_FSIZE, 0),
   flash_size(0),
+  splash_offset(0),
+  splash_size(0),
+  splash_width(0),
+  splash_height(0),
   isValidFlag(false)
 {
-  QFile file(fileName);
-  if (file.open(QIODevice::ReadOnly | QIODevice::Text)) { //reading HEX TEXT file
-    QTextStream inputStream(&file);
-    flash_size = HexInterface(inputStream).load((uint8_t *)flash.data(), MAX_FSIZE);
-    file.close();
-    if (flash_size == 0) {
-      file.open(QIODevice::ReadOnly);
-      flash_size = file.read((char *)flash.data(), MAX_FSIZE);
+  if (!fileName.isEmpty()) {
+    QFile file(fileName);
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) { // reading HEX TEXT file
+      QTextStream inputStream(&file);
+      flash_size = HexInterface(inputStream).load((uint8_t *)flash.data(), MAX_FSIZE);
+      file.close();
+      if (flash_size == 0) {
+        file.open(QIODevice::ReadOnly);
+        flash_size = file.read((char *)flash.data(), MAX_FSIZE);
+      }
     }
-    if (flash_size > 0) {
-      svn = seekLabel(SVN_MARK);
-      version = seekLabel(VERS_MARK);
-      date = seekLabel(DATE_MARK);
-      time = seekLabel(TIME_MARK);
-      eeprom = seekLabel(EEPR_MARK);
-      SeekSplash();
-      isValidFlag = true;
-    }
+  }
+
+  if (flash_size > 0) {
+    svn = seekLabel(SVN_MARK);
+    version = seekLabel(VERS_MARK);
+    date = seekLabel(DATE_MARK);
+    time = seekLabel(TIME_MARK);
+    eeprom = seekLabel(EEPR_MARK);
+    SeekSplash();
+    isValidFlag = true;
   }
 }
 
@@ -94,209 +108,140 @@ QString FlashInterface::seekLabel(const QString & label)
   return seekString(label + ":");
 }
 
-void FlashInterface::SeekSplash(void) 
+bool FlashInterface::SeekSplash(QByteArray splash)
 {
-  QByteArray splash,spe;
-  splash_offset=0;
-  splash.clear();
-  splash.append((char *)gr9x_splash, sizeof(gr9x_splash));
   int start = flash.indexOf(splash);
   if (start>0) {
-    splash_offset=start;
-    splash_type=1;
-    splash_size=sizeof(gr9x_splash);
-  } 
-  if (start==-1) {
-    splash.clear();
-    splash.append((char *)er9x_splash, sizeof(er9x_splash));
-    start = flash.indexOf(splash);
-    if (start>0) {
-      splash_offset=start;
-      splash_type=2;
-      splash_size=sizeof(er9x_splash);
-    }
+    splash_offset = start;
+    splash_size = splash.size();
+    return true;
   }
-  if (start==-1) {
-    splash.clear();
-    splash.append((char *)opentx_splash, sizeof(opentx_splash));
-    start = flash.indexOf(splash);
-    if (start>0) {
-      splash_offset=start;
-      splash_type=3;
-      splash_size=sizeof(opentx_splash);
-    }
+  else {
+    return false;
   }
-  if (start==-1) {
-    splash.clear();
-    splash.append((char *)opentxtaranis_splash, sizeof(opentxtaranis_splash));
-    start = flash.indexOf(splash);
+}
+
+bool FlashInterface::SeekSplash(QByteArray sps, QByteArray spe, int size)
+{
+  qDebug() << "Seek";
+  int start = 0;
+  while (start>=0) {
+    start = flash.indexOf(sps, start+1);
     if (start>0) {
-      splash_offset=start;
-      splash_type=5;
-      splash_size=sizeof(opentxtaranis_splash);
-    }
-  }
-  if (start==-1) {
-    splash.clear();
-    splash.append((char *)gr9xv4_splash, sizeof(gr9xv4_splash));
-    start = flash.indexOf(splash);
-    if (start>0) {
-      splash_offset=start;
-      splash_type=1;
-      splash_size=sizeof(gr9xv4_splash);
-    }
-  }
-  if (start==-1) {
-    splash.clear();
-    splash.append((char *)ersky9x_splash, sizeof(ersky9x_splash));
-    start = flash.indexOf(splash);
-    if (start>0) {
-      splash_offset=start;
-      splash_type=4;
-      splash_size=sizeof(ersky9x_splash);
-    }
-  }
-  if (start==-1) {
-    start=0;
-    splash.clear();
-    splash.append(OTX_SPS);
-    splash.append('\0');
-    spe.clear();
-    spe.append(OTX_SPE);
-    spe.append('\0');   
-    int diff=0;
-    int end=0;
-    while (start>=0) {
-      start = flash.indexOf(splash,start+1);
-      if (start>0) {
-        end=flash.indexOf(spe,start+1);
-        if (end>0) {
-          diff=end-start;
-          while (diff<1030 && end>0) {
-            end=flash.indexOf(spe,end+1);
-            diff=end-start;
-          }
-          if (end>0) {
-            diff=end-start;
-            if (diff==1030) {
-              splash_offset=start+OTX_OFFSET;
-              splash_type=2;
-              splash_size=sizeof(opentx_splash);
-              break;
-            }
-            if (diff==6790) {
-              splash_offset=start+OTX_OFFSET;
-              splash_type=5;
-              splash_size=sizeof(opentxtaranis_splash);
-              break;
-            }            
-          }
-        }
+      int end = start + sps.size() + size;
+      if (end == flash.indexOf(spe, end)) {
+        splash_offset = start + sps.size();
+        splash_size = end - start - sps.size();
+        return true;
+      }
+      else {
+        qDebug() << flash.indexOf(spe, start) << end << sps.size() << spe;
       }
     }
   }
-  if (start==-1) {
-    start=0;
-    splash.clear();
-    splash.append(ERSKY9X_SPS);
-    splash.append('\0');
-    spe.clear();
-    spe.append(ERSKY9X_SPE);
-    spe.append('\0');   
-    int diff=0;
-    int end=0;
-    while (start>=0) {
-      start = flash.indexOf(splash,start+1);
-      if (start>0) {
-        end=flash.indexOf(spe,start+1);
-        if (end>0) {
-          diff=end-start;
-          while (diff<1031 && end>0) {
-            end=flash.indexOf(spe,end+1);
-            diff=end-start;
-          }
-          if (end>0) {
-            diff=end-start;
-            if (diff==1031) {
-              splash_offset=start+ERSKY9X_OFFSET;
-              splash_type=4;
-              splash_size=sizeof(ersky9x_splash);
-              break;
-            }
-          }
-        }
-      }
-    }
+  return false;
+}
+
+#define OTX_SPS_9X      "SPS\0\200\100"
+#define OTX_SPS_TARANIS "SPS\0\324\100"
+#define OTX_SPS_SIZE    6
+#define OTX_SPE         "SPE"
+#define OTX_SPE_SIZE    4
+
+void FlashInterface::SeekSplash(void) 
+{
+  splash_size = 0;
+  splash_offset = 0;
+  splash_width = SPLASH_WIDTH;
+  splash_height = SPLASH_HEIGHT;
+  splash_format = QImage::Format_Mono;
+
+  if (SeekSplash(QByteArray((const char *)gr9x_splash, sizeof(gr9x_splash))) || SeekSplash(QByteArray((const char *)gr9xv4_splash, sizeof(gr9xv4_splash)))) {
+    return;
   }
-  if (start==-1) {
-    splash.clear();
-    splash.append(ERSPLASH_MARKER);
-    splash.append('\0');
-    start = flash.indexOf(splash);
-    if (start>0) {
-      splash_offset=start+ERSPLASH_OFFSET;
-      splash_type=2;
-      splash_size=sizeof(er9x_splash);
-    }
+
+  if (SeekSplash(QByteArray((const char *)er9x_splash, sizeof(er9x_splash)))) {
+    return;
   }
-  if (splash_offset>0) {
-    if (splash_type==5) {
-      splash_width=SPLASHX9D_WIDTH;
-      splash_height=SPLASHX9D_HEIGHT;
-      splash_colors=16;
-      splash_format=QImage::Format_Indexed8;
-    } else {
-      splash_width=SPLASH_WIDTH;
-      splash_height=SPLASH_HEIGHT;
-      splash_colors=1;
-      splash_format=QImage::Format_Mono;
-    }
+
+  if (SeekSplash(QByteArray((const char *)opentx_splash, sizeof(opentx_splash)))) {
+    return;
+  }
+
+  if (SeekSplash(QByteArray((const char *)opentxtaranis_splash, sizeof(opentxtaranis_splash)))) {
+    splash_width = SPLASHX9D_WIDTH;
+    splash_height = SPLASHX9D_HEIGHT;
+    splash_format = QImage::Format_Indexed8;
+    return;
+  }
+
+  if (SeekSplash(QByteArray((const char *)ersky9x_splash, sizeof(ersky9x_splash)))) {
+    return;
+  }
+
+  if (SeekSplash(QByteArray(OTX_SPS_9X, OTX_SPS_SIZE), QByteArray(OTX_SPE, OTX_SPE_SIZE), 1024)) {
+    return;
+  }
+
+  if (SeekSplash(QByteArray(OTX_SPS_TARANIS, sizeof(OTX_SPS_TARANIS)), QByteArray(OTX_SPE, sizeof(OTX_SPE)), 6790)) {
+    splash_width = SPLASHX9D_WIDTH;
+    splash_height = SPLASHX9D_HEIGHT;
+    splash_format = QImage::Format_Indexed8;
+    return;
+  }
+
+  if (SeekSplash(QByteArray(ERSKY9X_SPS, sizeof(ERSKY9X_SPS)), QByteArray(ERSKY9X_SPE, sizeof(ERSKY9X_SPE)), 1030)) {
+    return;
+  }
+
+  if (SeekSplash(QByteArray(ERSPLASH_MARKER, sizeof(ERSPLASH_MARKER)))) {
+    splash_offset += sizeof(ERSPLASH_MARKER);
+    splash_size = sizeof(er9x_splash);
   }
 }
 
 bool FlashInterface::setSplash(const QImage & newsplash)
 {
+  if (splash_offset == 0 || splash_size == 0) {
+    return false;
+  }
+
   char b[SPLASH_SIZE_MAX] = {0};
   QColor color;
   QByteArray splash;
-  if (splash_offset == 0) {
-    return false;
-  }
-  else {
-    if (splash_colors == 16) {
-      unsigned int idx = 0;
-      for (unsigned int y=0; y<splash_height; y+=8) {
-        for (unsigned int x=0; x<splash_width; x++) {
-          unsigned int values[] = { 255, 255, 255, 255 };
-          for (unsigned int z=0; z<8; z++) {
-            if (y+z < splash_height) {
-              QRgb gray = qGray(newsplash.pixel(x, y+z));
-              for (unsigned int i=0; i<4; i++) {
-                if (gray & (1<<(4+i)))
-                  values[i] -= 1 << z;
-              }
+  if (splash_format == QImage::Format_Indexed8) {
+    unsigned int idx = 0;
+    for (unsigned int y=0; y<splash_height; y+=8) {
+      for (unsigned int x=0; x<splash_width; x++) {
+        unsigned int values[] = { 255, 255, 255, 255 };
+        for (unsigned int z=0; z<8; z++) {
+          if (y+z < splash_height) {
+            QRgb gray = qGray(newsplash.pixel(x, y+z));
+            for (unsigned int i=0; i<4; i++) {
+              if (gray & (1<<(4+i)))
+                values[i] -= 1 << z;
             }
           }
-          for (int i=0; i<4; i++)
-            b[idx++] = values[i];
         }
+        for (int i=0; i<4; i++)
+          b[idx++] = values[i];
       }
     }
-    else {
-      QColor black = QColor(0,0,0);
-      QImage blackNwhite = newsplash.convertToFormat(QImage::Format_MonoLSB);
-      for (uint y=0; y<splash_height; y++) {
-        for (uint x=0; x<splash_width; x++) {
-          color = QColor(blackNwhite.pixel(x,y));
-          b[splash_width*(y/8) + x] |=((color==black ? 1: 0)<<(y % 8));
-        }
-      }
-    }
-    splash.clear();
-    splash.append(b, splash_size);
-    flash.replace(splash_offset, splash_size, splash);
-    return true;
   }
+  else {
+    QColor black = QColor(0,0,0);
+    QImage blackNwhite = newsplash.convertToFormat(QImage::Format_MonoLSB);
+    for (uint y=0; y<splash_height; y++) {
+      for (uint x=0; x<splash_width; x++) {
+        color = QColor(blackNwhite.pixel(x,y));
+        b[splash_width*(y/8) + x] |=((color==black ? 1: 0)<<(y % 8));
+      }
+    }
+  }
+  splash.clear();
+  splash.append(b, splash_size);
+  flash.replace(splash_offset, splash_size, splash);
+  return true;
 }
 
 int FlashInterface::getSplashWidth()
@@ -309,11 +254,6 @@ uint FlashInterface::getSplashHeight()
   return splash_height;
 }
 
-uint FlashInterface::getSplashColors()
-{
-  return splash_colors;
-}
-
 QImage::Format FlashInterface::getSplashFormat()
 {
   return splash_format;
@@ -321,7 +261,11 @@ QImage::Format FlashInterface::getSplashFormat()
 
 QImage FlashInterface::getSplash()
 {
-  if (splash_colors == 16) {
+  if (splash_offset == 0 || splash_size == 0) {
+    return QImage(); // empty image
+  }
+
+  if (splash_format == QImage::Format_Indexed8) {
     QImage image(splash_width, splash_height, QImage::Format_RGB888);
     if (splash_offset > 0) {
       for (unsigned int y=0; y<splash_height; y++) {
@@ -357,7 +301,6 @@ bool FlashInterface::isValid()
 {
   return isValidFlag;
 }
-
 
 uint FlashInterface::saveFlash(QString fileName)
 {
