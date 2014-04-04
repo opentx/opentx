@@ -165,13 +165,13 @@
 #if defined(PCBTARANIS)
   #define TR_CSWTIMER          "Takt\0" // TIM = Takt = Taktgenerator
   #define TR_CSWSTICKY         "SRFF\0" // Sticky = RS-Flip-Flop
-  #define TR_CSWRANGE          "Range"  // unklar
+  #define TR_CSWRANGE          "Range"  // Range = Bereichsabfrage von bis 
   #define TR_CSWSTAY           "Puls\0" // Edge = einstellbarer Impuls
 #else
   #define TR_CSWTIMER          "Takt\0" // TIM = Takt = Taktgenerator
   #define TR_CSWSTICKY         "SRFF\0" // Sticky = RS-Flip-Flop
   #if defined(CPUARM)
-    #define TR_CSWRANGE        "Rnge\0" // 
+    #define TR_CSWRANGE        "Rnge\0" // Range= Bereichsabfrage von bis
     #define TR_CSWSTAY         "Puls\0" // Edge = einstellbarer Impuls
   #else
     #define TR_CSWRANGE
@@ -753,7 +753,7 @@
 #define TR_PRESET              "Preset"
 #define TR_MIRROR              "Mirror"
 #define TR_CLEAR               "Clear"
-#define TR_RESET               "Reset"
+#define TR_RESET               "Reset Servowerte"
 #define TR_COUNT               "Punkte"
 #define TR_PT                  "Pt"
 #define TR_PTS                 "Pts"
