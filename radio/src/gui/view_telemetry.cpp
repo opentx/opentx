@@ -171,6 +171,7 @@ uint8_t barCoord(int16_t value, int16_t min, int16_t max)
 void menuTelemetryFrsky(uint8_t event)
 {
   if (event == EVT_KEY_FIRST(KEY_EXIT)) {
+    killEvents(event);
     chainMenu(menuMainView);
     return;
   }
