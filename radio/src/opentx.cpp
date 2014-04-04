@@ -2049,9 +2049,11 @@ getvalue_t convert16bitsTelemValue(uint8_t channel, ls_telemetry_value_t value)
 {
   getvalue_t result;
   switch (channel) {
+#if defined(FRSKY_SPORT)
     case TELEM_ALT:
       result = value * 100;
       break;
+#endif
     default:
       result = value;
       break;
