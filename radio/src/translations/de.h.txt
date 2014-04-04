@@ -165,13 +165,13 @@
 #if defined(PCBTARANIS)
   #define TR_CSWTIMER          "Takt\0" // TIM = Takt = Taktgenerator
   #define TR_CSWSTICKY         "SRFF\0" // Sticky = RS-Flip-Flop
-  #define TR_CSWRANGE          "PosS6"  // Range= Pos Schalter P11..P16, P21..P26, P31..P36
+  #define TR_CSWRANGE          "Range"  // Range = Bereichsabfrage Wert von bis 
   #define TR_CSWSTAY           "Puls\0" // Edge = einstellbarer Impuls
 #else
   #define TR_CSWTIMER          "Takt\0" // TIM = Takt = Taktgenerator
   #define TR_CSWSTICKY         "SRFF\0" // Sticky = RS-Flip-Flop
   #if defined(CPUARM)
-    #define TR_CSWRANGE        "PoS6\0" // Range= Pos Schalter P11..P16, P21..P26, P31..P36
+    #define TR_CSWRANGE        "Rnge\0" // Range= Bereichsabfrage Wert von bis
     #define TR_CSWSTAY         "Puls\0" // Edge = einstellbarer Impuls
   #else
     #define TR_CSWRANGE
