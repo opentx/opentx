@@ -195,6 +195,12 @@ uint32_t USBD_OTG_EP1IN_ISR_Handler (USB_OTG_CORE_HANDLE *pdev)
   {
     DCD_WriteEmptyTxFifo(pdev , 1);
     CLEAR_IN_EP_INTR(1, emptyintr);
+    /*
+    Notice: this probabbly needs the same fix as DCD_HandleInEP_ISR(), but
+    leaving this out, we don't use this part of code
+    fifoemptymsk = 0x1 << 1;
+    USB_OTG_MODIFY_REG32(&pdev->regs.DREGS->DIEPEMPMSK, fifoemptymsk, 0);
+    */
   }
   return 1;
 }
