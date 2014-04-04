@@ -85,7 +85,7 @@ RawSourceRange RawSource::getRange(bool singleprec)
 
   int board = GetEepromInterface()->getBoard();
 
-  if (!singleprec && !IS_TARANIS(board)) {
+  if (!singleprec && !IS_ARM(board)) {
     singleprec = true;
   }
 
