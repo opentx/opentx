@@ -153,6 +153,9 @@ void USBD_Init(USB_OTG_CORE_HANDLE *pdev,
   /* Upon Init call usr callback */
   pdev->dev.usr_cb->Init();
   
+  /* Force Device Mode*/
+  USB_OTG_SetCurrentMode(pdev, DEVICE_MODE);
+
   /* Enable Interrupts */
   USB_OTG_BSP_EnableInterrupt(pdev);
 }
