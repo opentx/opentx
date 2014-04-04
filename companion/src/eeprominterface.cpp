@@ -916,6 +916,15 @@ RawSource GeneralSettings::getDefaultSource(unsigned int channel) const
   return RawSource(SOURCE_TYPE_STICK, stick_index);
 }
 
+int GeneralSettings::translateSource(unsigned int channel) const
+{
+  for(int i=0; i<4; i++){
+    if (chout_ar[4*templateSetup + i]==(channel+1))
+      return i;
+  }
+  return -1;
+}
+
 void FrSkyData::clear()
 {
   memset(this, 0, sizeof(FrSkyData));

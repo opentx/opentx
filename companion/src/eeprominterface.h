@@ -417,6 +417,7 @@ class GeneralSettings {
     GeneralSettings();
 
     RawSource getDefaultSource(unsigned int channel) const;
+    int translateSource(unsigned int channel) const;
 
     unsigned int version;
     unsigned int variant;
