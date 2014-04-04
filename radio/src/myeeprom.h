@@ -87,8 +87,8 @@
   #define MAX_MIXERS    64
   #define MAX_EXPOS     32
   #define NUM_LOGICAL_SWITCH       32 // number of custom switches
-  #define NUM_CFN       64 // number of functions assigned to switches
-  #define NUM_TRAINER       16
+  #define NUM_CFN       64      // number of functions assigned to switches
+  #define NUM_TRAINER   16
   #define NUM_POTS      3
   #define NUM_XPOTS     0
 #elif defined(CPUM2560) || defined(CPUM2561)
@@ -862,21 +862,21 @@ PACK(typedef struct t_CustomFnData { // Function Switches data
   int8_t  swtch;
   uint8_t func;
   PACK(union {
-    struct {
+    PACK(struct {
       char name[LEN_CFN_NAME];
-    } play;
+    }) play;
 
-    struct {
+    PACK(struct {
       int16_t val;
       uint8_t mode;
       uint8_t param;
       int16_t spare2;
-    } all;
+    }) all;
 
-    struct {
+    PACK(struct {
       int32_t val1;
       int16_t val2;
-    } clear;
+    }) clear;
   });
   uint8_t active;
 }) CustomFnData;
