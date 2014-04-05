@@ -4179,6 +4179,13 @@ void doMixerCalculations()
   if (!tick10ms) return; //make sure the rest happen only every 10ms.
 #endif
 
+#if !defined(CPUM64) && !defined(ACCURAT_THROTTLE_TIMER)
+  //  code cost is about 16 bytes for higher throttle accuracy for timer 
+  //  would not be noticable anyway, because all version up to this change had only 16 steps; 
+  //  now it has already 32  steps; this define would increase to 128 steps
+  #define ACCURAT_THROTTLE_TIMER
+#endif
+
   /* Throttle trace */
   int16_t val;
 
@@ -4199,18 +4206,23 @@ void doMixerCalculations()
     if (lim->symetrical)
       val -= calc1000toRESX(lim->offset);
 #endif
-    // @@@ open.20.fsguruh  optimized calculation; now *8 /8 instead of 10 base; (*16/16 already cause a overrun; unsigned calculation also not possible, because v may be negative)
+
+
     gModelMax -= gModelMin; // we compare difference between Max and Mix for recaling needed; Max and Min are shifted to 0 by default
-    // usually max is 1024 min is -1024 --> max-min = 2048 full range / 128 = max 16 steps
-    
+    // usually max is 1024 min is -1024 --> max-min = 2048 full range
+
+#ifdef ACCURAT_THROTTLE_TIMER
+    if (gModelMax!=0 && gModelMax!=2048) val = (int32_t) (val << 11) / (gModelMax); // rescaling only needed if Min, Max differs
+#else
+    // @@@ open.20.fsguruh  optimized calculation; now *8 /8 instead of 10 base; (*16/16 already cause a overrun; unsigned calculation also not possible, because v may be negative)
+    gModelMax+=255; // force rounding up --> gModelMax is bigger --> val is smaller
     gModelMax >>= (10-2);
 
-    if (gModelMax != 0 && gModelMax != 8) {
+    if (gModelMax!=0 && gModelMax!=8) {
       val = (val << 3) / gModelMax; // rescaling only needed if Min, Max differs
     }
+#endif
     
-    // if (gModelMax!=2048) val = (int32_t) (val << 11) / (gModelMax); // recaling only needed if Min, Max differs
-    // val = val * 10 / (10+(lim->max-lim->min)/20);
     if (val<0) val=0;  // prevent val be negative, which would corrupt throttle trace and timers; could occur if safetyswitch is smaller than limits
   }
   else {
@@ -4220,13 +4232,6 @@ void doMixerCalculations()
     val = RESX + rawAnas[g_model.thrTraceSrc == 0 ? THR_STICK : g_model.thrTraceSrc+NUM_STICKS-1];
 #endif
   }
-
-#if !defined(CPUM64)
-  //  code cost is about 16 bytes for higher throttle accuracy for timer 
-  //  would not be noticable anyway, because all version up to this change had only 16 steps; 
-  //  now it has already 32  steps; this define would increase to 128 steps
-  #define ACCURAT_THROTTLE_TIMER
-#endif
 
 #if defined(ACCURAT_THROTTLE_TIMER)
   val >>= (RESX_SHIFT-6); // calibrate it (resolution increased by factor 4)
