@@ -106,13 +106,6 @@ const uint8_t modn12x3[4][4]= {
 #define DSW_SG1 19
 #define DSW_SG2 20
 
-const uint8_t chout_ar[] = { //First number is 0..23 -> template setup,  Second is relevant channel out
-  1,2,3,4 , 1,2,4,3 , 1,3,2,4 , 1,3,4,2 , 1,4,2,3 , 1,4,3,2,
-  2,1,3,4 , 2,1,4,3 , 2,3,1,4 , 2,3,4,1 , 2,4,1,3 , 2,4,3,1,
-  3,1,2,4 , 3,1,4,2 , 3,2,1,4 , 3,2,4,1 , 3,4,1,2 , 3,4,2,1,
-  4,1,2,3 , 4,1,3,2 , 4,2,1,3 , 4,2,3,1 , 4,3,1,2 , 4,3,2,1
-}; // TODO delete it?
-
 // Beep center bits
 #define BC_BIT_RUD (0x01)
 #define BC_BIT_ELE (0x02)
@@ -416,8 +409,9 @@ class GeneralSettings {
   public:
     GeneralSettings();
 
+    int getDefaultStick(unsigned int channel) const;
     RawSource getDefaultSource(unsigned int channel) const;
-    int translateSource(unsigned int channel) const;
+    int getDefaultChannel(unsigned int stick) const;
 
     unsigned int version;
     unsigned int variant;

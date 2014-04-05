@@ -15,6 +15,13 @@ QString EEPROMWarnings;
 const char * switches9X[] = { "3POS", "THR", "RUD", "ELE", "AIL", "GEA", "TRN" };
 const char * switchesX9D[] = { "SA", "SB", "SC", "SD", "SE", "SF", "SG", "SH" };
 
+const uint8_t chout_ar[] = { // First number is 0..23 -> template setup,  Second is relevant channel out
+  1,2,3,4 , 1,2,4,3 , 1,3,2,4 , 1,3,4,2 , 1,4,2,3 , 1,4,3,2,
+  2,1,3,4 , 2,1,4,3 , 2,3,1,4 , 2,3,4,1 , 2,4,1,3 , 2,4,3,1,
+  3,1,2,4 , 3,1,4,2 , 3,2,1,4 , 3,2,4,1 , 3,4,1,2 , 3,4,2,1,
+  4,1,2,3 , 4,1,3,2 , 4,2,1,3 , 4,2,3,1 , 4,3,1,2 , 4,3,2,1
+};
+
 void setEEPROMString(char *dst, const char *src, int size)
 {
   memcpy(dst, src, size);
@@ -910,16 +917,27 @@ GeneralSettings::GeneralSettings()
   }
 }
 
-RawSource GeneralSettings::getDefaultSource(unsigned int channel) const
+int GeneralSettings::getDefaultStick(unsigned int channel) const
 {
-  unsigned int stick_index = chout_ar[4*templateSetup + channel] - 1;
-  return RawSource(SOURCE_TYPE_STICK, stick_index);
+  if (channel >= NUM_STICKS)
+    return -1;
+  else
+    return chout_ar[4*templateSetup + channel] - 1;
 }
 
-int GeneralSettings::translateSource(unsigned int channel) const
+RawSource GeneralSettings::getDefaultSource(unsigned int channel) const
 {
-  for(int i=0; i<4; i++){
-    if (chout_ar[4*templateSetup + i]==(channel+1))
+  int stick = getDefaultStick(channel);
+  if (stick >= 0)
+    return RawSource(SOURCE_TYPE_STICK, stick);
+  else
+    return RawSource(SOURCE_TYPE_NONE);
+}
+
+int GeneralSettings::getDefaultChannel(unsigned int stick) const
+{
+  for (int i=0; i<4; i++){
+    if (getDefaultStick(i) == (int)stick)
       return i;
   }
   return -1;

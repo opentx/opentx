@@ -143,12 +143,7 @@ StandardPage::StandardPage(WizardPage currentPage, WizardDialog *dlg, QString im
 
 int StandardPage::getDefaultChannel(const Input input)
 {
-  for (int channel=0; channel<4; channel++) {
-    unsigned int stick_index = chout_ar[4*wizDlg->settings.templateSetup + channel];
-    if (input == stick_index)
-      return channel;
-  }
-  return -1;
+  return wizDlg->settings.getDefaultChannel(input-1);
 }
 
 int StandardPage::nextFreeChannel(int channel)

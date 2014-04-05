@@ -2,6 +2,10 @@
 #include <QListWidget>
 #include <QMessageBox>
 
+#define CHANNEL_ORDER(x) generalSettings.getDefaultStick(x)
+#define CC(x) (CHANNEL_ORDER(x)) //need to invert this to work with dest
+// TODO ICC is GeneralSettings::getDefaultChannel(unsigned int stick)
+
 void ModelEdit::setCurve(uint8_t c, int8_t ar[])
 {
   int len=sizeof(ar)/sizeof(int8_t);
