@@ -102,7 +102,7 @@ void menuStatisticsDebug(uint8_t event)
   switch(event)
   {
 #if defined(CPUARM)
-    case EVT_KEY_LONG(KEY_MENU):
+    case EVT_KEY_LONG(KEY_ENTER):
       g_eeGeneral.mAhUsed = 0;
       g_eeGeneral.globalTimer = 0;
       eeDirty(EE_GENERAL);
@@ -114,7 +114,7 @@ void menuStatisticsDebug(uint8_t event)
       AUDIO_KEYPAD_UP();
       break;
 #endif
-    case EVT_KEY_FIRST(KEY_MENU):
+    case EVT_KEY_FIRST(KEY_ENTER):
 #if !defined(CPUARM)
       g_tmr1Latency_min = 0xff;
       g_tmr1Latency_max = 0;
