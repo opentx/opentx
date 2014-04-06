@@ -25,6 +25,7 @@ struct TxInputs {
     int  switches[10]; /* TODO NUM_SWITCHES */
     bool keys[6]; /* TODO NUM_KEYS */
     bool rotenc;
+    bool trims[8];
 };
 
 class TxOutputs {

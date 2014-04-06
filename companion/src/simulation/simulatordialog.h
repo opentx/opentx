@@ -157,11 +157,15 @@ class SimulatorDialogTaranis: public SimulatorDialog
     virtual ~SimulatorDialogTaranis();
 
   protected:
+    int trimPressed;
     virtual void getValues();
 
   private:
     Ui::SimulatorDialogTaranis * ui;
 
+  private slots:
+    void onTrimPressed();
+    void onTrimReleased();
 };
 
 #endif // SIMULATORDIALOG_H

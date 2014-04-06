@@ -106,6 +106,16 @@ const uint8_t modn12x3[4][4]= {
 #define DSW_SG1 19
 #define DSW_SG2 20
 
+#define TRIM_LH_L  0
+#define TRIM_LH_R  1
+#define TRIM_LV_DN 2
+#define TRIM_LV_UP 3
+#define TRIM_RV_DN 4
+#define TRIM_RV_UP 5
+#define TRIM_RH_L  6
+#define TRIM_RH_R  7
+#define TRIM_NONE  8
+
 // Beep center bits
 #define BC_BIT_RUD (0x01)
 #define BC_BIT_ELE (0x02)
@@ -162,6 +172,10 @@ enum HeliSwashTypes {
 
 extern const char * switches9X[];
 extern const char * switchesX9D[];
+extern const char leftArrow[];
+extern const char rightArrow[];
+extern const char upArrow[];
+extern const char downArrow[];
 
 enum ThrottleSource {
   THROTTLE_SOURCE_THR,
