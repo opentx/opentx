@@ -52,7 +52,6 @@ QString MixesPanel::getChannelLabel(int curDest)
   else {
     str = QObject::tr("CH%1").arg(curDest);
     str.append(" ");
-    str = str.left(4);
     if (GetEepromInterface()->getCapability(HasChNames)) {
       QString name = model.limitData[curDest-1].name;
       if (!name.isEmpty()) {
