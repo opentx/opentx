@@ -498,6 +498,9 @@ void CustomFunctionsPanel::fswPaste()
     lock = true;
     populateSwitchCB(fswtchSwtch[selectedFunction], model.funcSw[selectedFunction].swtch, generalSettings, POPULATE_ONOFF);
     populateFuncCB(fswtchFunc[selectedFunction], model.funcSw[selectedFunction].func);
+    populateGVmodeCB(fswtchGVmode[selectedFunction], model.funcSw[selectedFunction].adjustMode);
+    populateFuncParamCB(fswtchParamT[selectedFunction], model, model.funcSw[selectedFunction].func, model.funcSw[selectedFunction].param, model.funcSw[selectedFunction].adjustMode);
+    populateFuncParamArmTCB(fswtchParamArmT[selectedFunction], model.funcSw[selectedFunction].paramarm, paramarmList);
     refreshCustomFunction(selectedFunction);
     lock = false;
     emit modified();
