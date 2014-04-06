@@ -102,6 +102,7 @@ class SimulatorDialog : public QDialog
     virtual void keyReleaseEvent(QKeyEvent *);
     static int screenshotIdx;
     int buttonPressed;
+    int trimPressed;
     bool middleButtonPressed;
 
   private slots:
@@ -119,6 +120,8 @@ class SimulatorDialog : public QDialog
     void on_trimHRight_valueChanged(int);
     void on_trimVRight_valueChanged(int);
     void onTimerEvent();
+    void onTrimPressed();
+    void onTrimReleased();
 
 #ifdef JOYSTICKS
     void onjoystickAxisValueChanged(int axis, int value);
@@ -157,15 +160,11 @@ class SimulatorDialogTaranis: public SimulatorDialog
     virtual ~SimulatorDialogTaranis();
 
   protected:
-    int trimPressed;
     virtual void getValues();
 
   private:
     Ui::SimulatorDialogTaranis * ui;
 
-  private slots:
-    void onTrimPressed();
-    void onTrimReleased();
 };
 
 #endif // SIMULATORDIALOG_H

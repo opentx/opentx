@@ -20,6 +20,7 @@ SimulatorDialog::SimulatorDialog(QWidget * parent, unsigned int flags):
   simulator(NULL),
   beepVal(0),
   buttonPressed(0),
+  trimPressed (TRIM_NONE),
   middleButtonPressed(false)
 {
 }
@@ -55,11 +56,36 @@ SimulatorDialog9X::SimulatorDialog9X(QWidget * parent, unsigned int flags):
       break;
   }
 
+  ui->trimHR_L->setText(QString::fromUtf8(leftArrow));
+  ui->trimHR_R->setText(QString::fromUtf8(rightArrow));
+  ui->trimVR_U->setText(QString::fromUtf8(upArrow));
+  ui->trimVR_D->setText(QString::fromUtf8(downArrow));
+  ui->trimHL_L->setText(QString::fromUtf8(leftArrow));
+  ui->trimHL_R->setText(QString::fromUtf8(rightArrow));
+  ui->trimVL_U->setText(QString::fromUtf8(upArrow));
+  ui->trimVL_D->setText(QString::fromUtf8(downArrow));
+
   connect(ui->dialP_1, SIGNAL(valueChanged(int)), this, SLOT(dialChanged()));
   connect(ui->dialP_2, SIGNAL(valueChanged(int)), this, SLOT(dialChanged()));
   connect(ui->dialP_3, SIGNAL(valueChanged(int)), this, SLOT(dialChanged()));
   connect(ui->cursor, SIGNAL(buttonPressed(int)), this, SLOT(onButtonPressed(int)));
   connect(ui->menu, SIGNAL(buttonPressed(int)), this, SLOT(onButtonPressed(int)));
+  connect(ui->trimHR_L, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
+  connect(ui->trimHR_R, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
+  connect(ui->trimVR_U, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
+  connect(ui->trimVR_D, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
+  connect(ui->trimHL_R, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
+  connect(ui->trimHL_L, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
+  connect(ui->trimVL_U, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
+  connect(ui->trimVL_D, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
+  connect(ui->trimHR_L, SIGNAL(released()), this, SLOT(onTrimReleased()));
+  connect(ui->trimHR_R, SIGNAL(released()), this, SLOT(onTrimReleased()));
+  connect(ui->trimVR_U, SIGNAL(released()), this, SLOT(onTrimReleased()));
+  connect(ui->trimVR_D, SIGNAL(released()), this, SLOT(onTrimReleased()));
+  connect(ui->trimHL_R, SIGNAL(released()), this, SLOT(onTrimReleased()));
+  connect(ui->trimHL_L, SIGNAL(released()), this, SLOT(onTrimReleased()));
+  connect(ui->trimVL_U, SIGNAL(released()), this, SLOT(onTrimReleased()));
+  connect(ui->trimVL_D, SIGNAL(released()), this, SLOT(onTrimReleased()));
 }
 
 SimulatorDialog9X::~SimulatorDialog9X()
@@ -69,7 +95,6 @@ SimulatorDialog9X::~SimulatorDialog9X()
 
 SimulatorDialogTaranis::SimulatorDialogTaranis(QWidget * parent, unsigned int flags):
   SimulatorDialog(parent, flags),
-  trimPressed (TRIM_NONE),
   ui(new Ui::SimulatorDialogTaranis)
 {
   lcdWidth = 212;
@@ -151,7 +176,7 @@ void SimulatorDialog::wheelEvent (QWheelEvent *event)
   simulator->wheelEvent(event->delta() > 0 ? 1 : -1);
 }
 
-void SimulatorDialogTaranis::onTrimPressed()
+void SimulatorDialog::onTrimPressed()
 {
   if (sender()->objectName() == QString("trimHL_L"))
     trimPressed = TRIM_LH_L;
@@ -171,7 +196,7 @@ void SimulatorDialogTaranis::onTrimPressed()
     trimPressed = TRIM_RH_R;
 }
 
-void SimulatorDialogTaranis::onTrimReleased()
+void SimulatorDialog::onTrimReleased()
 {
   trimPressed = TRIM_NONE;
 }
@@ -549,7 +574,18 @@ void SimulatorDialog9X::getValues()
       buttonPressed == Qt::Key_Left,
     },
 
-    middleButtonPressed
+    middleButtonPressed,
+        
+    {
+      trimPressed == TRIM_LH_L,
+      trimPressed == TRIM_LH_R,
+      trimPressed == TRIM_LV_DN,
+      trimPressed == TRIM_LV_UP,
+      trimPressed == TRIM_RV_DN,
+      trimPressed == TRIM_RV_UP,
+      trimPressed == TRIM_RH_L,
+      trimPressed == TRIM_RH_R
+    }
   };
 
   simulator->setValues(inputs);
