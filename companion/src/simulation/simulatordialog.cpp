@@ -336,8 +336,6 @@ void SimulatorDialog::initUi(T * ui)
   else {
     ui->lcd->setFocus();
   }
-
-  setupTimer();
 }
 
 void SimulatorDialog::onButtonPressed(int value)
@@ -437,11 +435,15 @@ void SimulatorDialog::centerSticks()
 void SimulatorDialog::start(QByteArray & eeprom)
 {
   simulator->start(eeprom, (flags & SIMULATOR_FLAGS_NOTX) ? false : true);
+  getValues();
+  setupTimer();
 }
 
 void SimulatorDialog::start(const char * filename)
 {
   simulator->start(filename);
+  getValues();
+  setupTimer();
 }
 
 void SimulatorDialog::setTrims()
