@@ -2,14 +2,75 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="fi_FI">
 <context>
+    <name>AileronsPage</name>
+    <message>
+        <source>No</source>
+        <translation type="unfinished">Ei</translation>
+    </message>
+    <message>
+        <source>Yes, controlled by a single channel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Yes, controlled by two channels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;First Aileron Channel:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Second Aileron Channel:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>AirbrakesPage</name>
+    <message>
+        <source>No</source>
+        <translation type="unfinished">Ei</translation>
+    </message>
+    <message>
+        <source>Yes, controlled by a single channel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Yes, controlled by two channels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;First Airbrake Channel:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Second Airbrake Channel:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>BankPage</name>
+    <message>
+        <source>One</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Two</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;First Elevon Channel:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Second Elevon Channel:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Channels</name>
     <message>
         <source>Name</source>
         <translation>Nimi</translation>
-    </message>
-    <message>
-        <source>Offset</source>
-        <translation>Tasoitus</translation>
     </message>
     <message>
         <source>Min</source>
@@ -18,18 +79,6 @@
     <message>
         <source>Max</source>
         <translation>Max</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation>Käänteinen</translation>
-    </message>
-    <message>
-        <source>Center</source>
-        <translation>Keski</translation>
-    </message>
-    <message>
-        <source>Sym</source>
-        <translation>Sym</translation>
     </message>
     <message>
         <source>Channel %1</source>
@@ -42,6 +91,33 @@
     <message>
         <source>INV</source>
         <translation>KÄÄNT</translation>
+    </message>
+    <message>
+        <source>Subtrim</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Direction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Curve</source>
+        <translation type="unfinished">Käyrä</translation>
+    </message>
+    <message>
+        <source>PPM Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Linear Subtrim</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ConclusionPage</name>
+    <message>
+        <source>OK, I understand.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -113,6 +189,62 @@
         <source>Not enough free points in EEPROM to store the curve.</source>
         <translation>Ei vapaata tilaa EEPROMissa tallentaa käyrää.</translation>
     </message>
+    <message>
+        <source>Curve Creator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y at X=0</source>
+        <translation type="unfinished">Y suhde X =0</translation>
+    </message>
+    <message>
+        <source>Y at X=100</source>
+        <translation type="unfinished">Y suhde X =100</translation>
+    </message>
+    <message>
+        <source>Both</source>
+        <translation type="unfinished">Molemmat</translation>
+    </message>
+    <message>
+        <source>x&gt;0</source>
+        <translation type="unfinished">x&gt;0</translation>
+    </message>
+    <message>
+        <source>x&lt;0</source>
+        <translation type="unfinished">x&lt;0</translation>
+    </message>
+    <message>
+        <source>Apply</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Side</source>
+        <translation type="unfinished">Sivu</translation>
+    </message>
+    <message>
+        <source>Y at X=-100</source>
+        <translation type="unfinished">Y suhde X =-100</translation>
+    </message>
+    <message>
+        <source>Coefficient</source>
+        <translation type="unfinished">Vaikutus</translation>
+    </message>
+    <message>
+        <source>Linear</source>
+        <translation type="unfinished">Suora</translation>
+    </message>
+    <message>
+        <source>Single Expo</source>
+        <translation type="unfinished">yks expo</translation>
+    </message>
+    <message>
+        <source>Symmetrical f(x)=-f(-x)</source>
+        <translation type="unfinished">Symmetrinen f(x)=-f(-x)</translation>
+    </message>
+    <message>
+        <source>Symmetrical f(x)=f(-x)</source>
+        <translation type="unfinished">Symmetrinen f(x)=f(-x)</translation>
+    </message>
 </context>
 <context>
     <name>CustomFunctionsPanel</name>
@@ -131,10 +263,6 @@
     <message>
         <source>Enable</source>
         <translation>Päälle</translation>
-    </message>
-    <message>
-        <source>CF%1</source>
-        <translation>OF%1</translation>
     </message>
     <message>
         <source>ON</source>
@@ -180,64 +308,28 @@
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
+    <message>
+        <source>SF%1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
-    <name>Dialog</name>
+    <name>CyclicPage</name>
     <message>
-        <source>Dialog</source>
-        <translation>Käyrä</translation>
+        <source>90</source>
+        <translation type="unfinished">90</translation>
     </message>
     <message>
-        <source>Curve type</source>
-        <translation>Tyyppi</translation>
+        <source>120</source>
+        <translation type="unfinished">120</translation>
     </message>
     <message>
-        <source>Coefficient</source>
-        <translation>Vaikutus</translation>
+        <source>120x</source>
+        <translation type="unfinished">120x</translation>
     </message>
     <message>
-        <source>Both</source>
-        <translation>Molemmat</translation>
-    </message>
-    <message>
-        <source>x&gt;0</source>
-        <translation>x&gt;0</translation>
-    </message>
-    <message>
-        <source>x&lt;0</source>
-        <translation>x&lt;0</translation>
-    </message>
-    <message>
-        <source>Y at X=0</source>
-        <translation>Y suhde X =0</translation>
-    </message>
-    <message>
-        <source>Side</source>
-        <translation>Sivu</translation>
-    </message>
-    <message>
-        <source>Y at X=-100</source>
-        <translation>Y suhde X =-100</translation>
-    </message>
-    <message>
-        <source>Y at X=100</source>
-        <translation>Y suhde X =100</translation>
-    </message>
-    <message>
-        <source>Linear</source>
-        <translation>Suora</translation>
-    </message>
-    <message>
-        <source>Single Expo</source>
-        <translation>yks expo</translation>
-    </message>
-    <message>
-        <source>Symmetrical f(x)=-f(-x)</source>
-        <translation>Symmetrinen f(x)=-f(-x)</translation>
-    </message>
-    <message>
-        <source>Symmetrical f(x)=f(-x)</source>
-        <translation>Symmetrinen f(x)=f(-x)</translation>
+        <source>140</source>
+        <translation type="unfinished">140</translation>
     </message>
 </context>
 <context>
@@ -405,6 +497,48 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</source
     </message>
 </context>
 <context>
+    <name>FblPage</name>
+    <message>
+        <source>Trottle Channel:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Yaw Channel:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pitch Channel:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Roll Channel:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>FlapsPage</name>
+    <message>
+        <source>No</source>
+        <translation type="unfinished">Ei</translation>
+    </message>
+    <message>
+        <source>Yes, controlled by a single channel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Yes, controlled by two channels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;First Flap Channel:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Second Flap Channel:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>FlightMode</name>
     <message>
         <source>Form</source>
@@ -483,6 +617,21 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</source
     </message>
 </context>
 <context>
+    <name>FlybarSelectionPage</name>
+    <message>
+        <source>Has Flybar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Flybarless</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Flybar:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>GeneralEdit</name>
     <message>
         <source>General Edit</source>
@@ -511,34 +660,6 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</source
     <message>
         <source>Voice Language</source>
         <translation>Äänen kieli</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Single Beep Every whole Minute&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Single Beep Every whole Minute&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Every Minute</source>
-        <translation>Joka minuutti</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Flash backlight on timer  beep&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Flash backlight on timer  beep&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>4800 Baud</source>
@@ -611,30 +732,6 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Silent mode warning - will alert you if the beeper is set to quiet (0)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>RSSI Alarm 1</source>
-        <translation>RSSI häly 1</translation>
-    </message>
-    <message>
-        <source>----</source>
-        <translation>----</translation>
-    </message>
-    <message>
-        <source>Yellow</source>
-        <translation>Kelt</translation>
-    </message>
-    <message>
-        <source>Orange</source>
-        <translation>Orans</translation>
-    </message>
-    <message>
-        <source>Red</source>
-        <translation>Pun</translation>
-    </message>
-    <message>
-        <source>RSSI Alarm 2</source>
-        <translation>RSSI häly 2</translation>
-    </message>
-    <message>
         <source>Battery</source>
         <translation>Akku</translation>
     </message>
@@ -668,18 +765,6 @@ These will be relevant for all models in the same EEPROM.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Beeps at 30, 15, 10, and down from5 seconds</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Count Down to Zero</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Flash on beep</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Beep volume</source>
         <translation type="unfinished"></translation>
     </message>
@@ -696,15 +781,7 @@ These will be relevant for all models in the same EEPROM.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>PPMSim</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Beeper Length</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Pot Scrolling Enable</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -754,10 +831,6 @@ Mode 4:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>BackLight On Stick Move</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source> sec</source>
         <translation type="unfinished"></translation>
     </message>
@@ -772,42 +845,6 @@ Mode 4:
     <message>
         <source>RotEnc Navigation</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>FrSky Internal Alarm</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>THR</source>
-        <translation>KAA</translation>
-    </message>
-    <message>
-        <source>RUD</source>
-        <translation>PER</translation>
-    </message>
-    <message>
-        <source>ELE</source>
-        <translation>KOR</translation>
-    </message>
-    <message>
-        <source>AIL</source>
-        <translation>SII</translation>
-    </message>
-    <message>
-        <source>GEA</source>
-        <translation>REN</translation>
-    </message>
-    <message>
-        <source>ID0</source>
-        <translation>ID0</translation>
-    </message>
-    <message>
-        <source>ID1</source>
-        <translation>ID1</translation>
-    </message>
-    <message>
-        <source>ID2</source>
-        <translation>ID2</translation>
     </message>
     <message>
         <source>GPS Coordinates</source>
@@ -928,10 +965,6 @@ This is used by the templated to determine which channel goes to what number out
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Show Owner Name on Splash</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Speaker Pitch (spkr only)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -953,10 +986,6 @@ This is used by the templated to determine which channel goes to what number out
     </message>
     <message>
         <source>X-Long</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>StickScroll</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1008,14 +1037,6 @@ This is used by the templated to determine which channel goes to what number out
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Owner Name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>BackLight Invert</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Standard</source>
         <translation>Vakio</translation>
     </message>
@@ -1062,10 +1083,6 @@ This is used by the templated to determine which channel goes to what number out
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Timer Beeps</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>BackLight Brightness</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1078,33 +1095,9 @@ This is used by the templated to determine which channel goes to what number out
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Single</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Oversample</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Filter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>This is the switch selectrion for turning on the backlight (if installed).
 
 </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Bandgap Measuring Enable</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Input Filter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>CrossTrim</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1116,15 +1109,6 @@ This is used by the templated to determine which channel goes to what number out
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Battery calibration:
-This value will be added to the measured battery voltage.  Use this value to calibrate the meter with an external meter.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Battery Calibration</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Battery Warning</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1133,10 +1117,6 @@ This value will be added to the measured battery voltage.  Use this value to cal
 This is the threashhold where the battery warning sounds.
 
 Acceptable values are 5v..10v</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Telemetry NO DATA Alarm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1192,14 +1172,6 @@ Acceptable values are 5v..10v</source>
         <translation>SG</translation>
     </message>
     <message>
-        <source>Alarm Warning</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Memory Startup Warning</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Trainer</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1214,10 +1186,6 @@ Acceptable values are 5v..10v</source>
     <message>
         <source>Weight</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Switch</source>
-        <translation>Kytkin</translation>
     </message>
     <message>
         <source>PPM 1</source>
@@ -1261,14 +1229,6 @@ Acceptable values are 5v..10v</source>
     </message>
     <message>
         <source>PPM 4</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Telemetry</source>
-        <translation type="unfinished">Telemetria</translation>
-    </message>
-    <message>
-        <source>NO DATA Alarm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1365,6 +1325,121 @@ Are you sure ?</source>
         <source>Calibration and HW parameters saved.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Vario pitch at zero</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> Hz</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&quot;No Sound&quot; Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Low Memory Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>---</source>
+        <translation type="unfinished">---</translation>
+    </message>
+    <message>
+        <source>2s</source>
+        <translation type="unfinished">2s</translation>
+    </message>
+    <message>
+        <source>3s</source>
+        <translation type="unfinished">3s</translation>
+    </message>
+    <message>
+        <source>4s</source>
+        <translation type="unfinished">4s</translation>
+    </message>
+    <message>
+        <source>6s</source>
+        <translation type="unfinished">6s</translation>
+    </message>
+    <message>
+        <source>8s</source>
+        <translation type="unfinished">8s</translation>
+    </message>
+    <message>
+        <source>10s</source>
+        <translation type="unfinished">10s</translation>
+    </message>
+    <message>
+        <source>15s</source>
+        <translation type="unfinished">15s</translation>
+    </message>
+    <message>
+        <source>Vario pitch at max</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> ms</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vario repeat at zero</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rud</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ele</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Thr</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ail</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation type="unfinished">Ei mitään</translation>
+    </message>
+    <message>
+        <source>S3 Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OFF</source>
+        <translation type="unfinished">Pois</translation>
+    </message>
+    <message>
+        <source>S-Port Mirror</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Debug</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Serial Port</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GyroPage</name>
+    <message>
+        <source>No</source>
+        <translation type="unfinished">Ei</translation>
+    </message>
+    <message>
+        <source>Yes, controled by a switch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Yes, controlled by a pot</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Heli</name>
@@ -1418,6 +1493,25 @@ Are you sure ?</source>
     </message>
     <message>
         <source>Swash Ring</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>HeliPage</name>
+    <message>
+        <source>Trottle Channel:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Yaw Channel:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pitch Channel:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Roll Channel:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1535,10 +1629,6 @@ Are you sure ?</source>
 <context>
     <name>LogicalSwitchesPanel</name>
     <message>
-        <source>Condition</source>
-        <translation>Tila</translation>
-    </message>
-    <message>
         <source>V1</source>
         <translation>V1</translation>
     </message>
@@ -1547,20 +1637,12 @@ Are you sure ?</source>
         <translation>V2</translation>
     </message>
     <message>
-        <source>AND</source>
-        <translation>JA</translation>
-    </message>
-    <message>
         <source>Duration</source>
         <translation>Kesto</translation>
     </message>
     <message>
         <source>Delay</source>
         <translation>Viive</translation>
-    </message>
-    <message>
-        <source>LS%1</source>
-        <translation>LS%1</translation>
     </message>
     <message>
         <source>&amp;Delete</source>
@@ -1594,6 +1676,18 @@ Are you sure ?</source>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
+    <message>
+        <source>Function</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>AND Switch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L%1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
@@ -1622,40 +1716,12 @@ Are you sure ?</source>
         <translation>Ok</translation>
     </message>
     <message>
-        <source>Open</source>
-        <translation type="obsolete">Avaa</translation>
-    </message>
-    <message>
         <source>Warning</source>
         <translation>Varoitus</translation>
     </message>
     <message>
         <source>About Companion</source>
         <translation>Tietoja Companionista</translation>
-    </message>
-    <message>
-        <source>Save...</source>
-        <translation type="obsolete">Tallenna...</translation>
-    </message>
-    <message>
-        <source>About</source>
-        <translation type="obsolete">Tietoja</translation>
-    </message>
-    <message>
-        <source>Print</source>
-        <translation type="obsolete">Tulosta</translation>
-    </message>
-    <message>
-        <source>Logs</source>
-        <translation type="obsolete">Logit</translation>
-    </message>
-    <message>
-        <source>Open log file</source>
-        <translation type="obsolete">Avaa logi tiedosto</translation>
-    </message>
-    <message>
-        <source>Setting...</source>
-        <translation type="obsolete">Asetukset...</translation>
     </message>
     <message>
         <source>File</source>
@@ -1731,10 +1797,6 @@ Are you sure ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Firmware does not longer fit in the Tx, due to selected firmware options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Compilation server temporary failure, try later</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1751,15 +1813,7 @@ Are you sure ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Firmware does not fit in the Tx, due to selected firmware options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Compilation server termporary failure, try later</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Do you want to write the firmware to the transmitter now ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1823,22 +1877,6 @@ Do you want to download it now ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Taranis radio not found</source>
-        <translation>Taranis radiota ei löydy</translation>
-    </message>
-    <message>
-        <source>Impossible to identify the radio on your system, please verify the eeprom disk is connected.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Read Models and Settings From Tx</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Write Models and settings from %1 to the Tx?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>The file %1
 has not been recognized as a valid Models and Settings file
 Write anyway ?</source>
@@ -1853,27 +1891,7 @@ Write anyway ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Backup Models and Settings From Tx</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Cannot check Models and Settings compatibility! Continue anyway?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The transmitter firmware belongs to another product family, check file and preferences!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The transmitter firmware is outdated, please upgrade!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Write Models and Settings To Tx</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Write Firmware To Tx</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1885,15 +1903,7 @@ Write anyway ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Restore Models and Settings To Tx</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Restore failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not restore Models and Settings to TX. The models and settings data file can be found at: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1901,27 +1911,7 @@ Write anyway ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not write firmware to to transmitter. The models and settings data file can be found at: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Backup failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot backup existing Models and Settings from TX. Firmware write process aborted</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save transmitter Models and Settings to File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Impossible to identify the radio on your system, please verify that the eeprom disk is connected.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Read Tx Firmware to File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2261,14 +2251,6 @@ Write anyway ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Edit Tx Splash Image...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Edit the splash image of your TX</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>List programmers...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2282,22 +2264,6 @@ Write anyway ?</source>
     </message>
     <message>
         <source>Show fuses dialog</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Read Firmware</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Read firmware from transmitter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Write Firmware</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Write firmware to transmitter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2317,35 +2283,7 @@ Write anyway ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Write Models and Settings to transmitter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Read Models and Settings from transmitter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Configure Communications...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Configure software for communicating with the transmitter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Write Models and Settings from file to Tx</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Write Models and Settings from file to transmitter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save Tx Models and Settings to file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save the Models and Settings from the transmitter to a file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2373,15 +2311,7 @@ Write anyway ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Radio Settings Profile</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Show recent Models+Settings documents</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show a selection list of radio settings profiles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2405,6 +2335,146 @@ Write anyway ?</source>
         <source>Invalid binary Models and Settings File %1</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Firmware does not longer fit in the radio, due to selected firmware options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Firmware does not fit in the radio, due to selected firmware options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you want to write the firmware to the radio now ?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Read Models and Settings From Radio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Write Radio Backup from %1 to the radio?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Backup Models and Settings From Radio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The radio firmware belongs to another product family, check file and preferences!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The radio firmware is outdated, please upgrade!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Write Backup To Radio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Write Firmware To Radio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restore Models and Settings To Radio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not restore Models and Settings to Radio. The models and settings data file can be found at: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not write firmware to radio. The models and settings data file can be found at: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot backup existing Models and Settings from Radio. Firmware write process aborted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save Radio Backup to File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Read Radio Backup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Read Radio Firmware to File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit Radio Splash Image...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit the splash image of your Radio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Read Firmware from Radio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Read firmware from Radio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Write Firmware to Radio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Write firmware to Radio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Write Models and Settings To Radio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Write Models and Settings to Radio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Read Models and Settings from Radio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Configure software for communicating with the Radio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Write Backup to Radio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Write Backup from file to to Radio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Backup Radio to File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save a complete backup file of all settings and model data in the Radio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Radio Profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show a selection list of radio profiles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dutch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use Dutch in menus</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MdiChild</name>
@@ -2425,24 +2495,8 @@ Write anyway ?</source>
         <translation>Tallenna nimellä</translation>
     </message>
     <message>
-        <source>Taranis radio not found</source>
-        <translation>Taranis radiota ei löydy</translation>
-    </message>
-    <message>
         <source>Warning</source>
         <translation>Varoitus</translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="obsolete">Avaa</translation>
-    </message>
-    <message>
-        <source>Do you want to use model wizard? </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ask this question again ? </source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Editing model %1: </source>
@@ -2498,14 +2552,6 @@ Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Impossible to identify the radio on your system, please verify the eeprom disk is connected.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Backup EEPROM From Tx</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Cannot check eeprom compatibility! Continue anyway?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2518,15 +2564,19 @@ Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Write EEPROM To Tx</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Open backup Models and Settings file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Invalid binary backup File %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Backup EEPROM From Radio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Write EEPROM To Radio</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2772,14 +2822,6 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
         <translation>Tyhjennä mikserit</translation>
     </message>
     <message>
-        <source>X%1  </source>
-        <translation>X%1</translation>
-    </message>
-    <message>
-        <source>CH%1%2</source>
-        <translation>CH%1%2</translation>
-    </message>
-    <message>
         <source>Weight(%1)</source>
         <translation>Paino(%1)</translation>
     </message>
@@ -2923,16 +2965,8 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
         <translation>Mikserit</translation>
     </message>
     <message>
-        <source>Channels</source>
-        <translation>Kanavat</translation>
-    </message>
-    <message>
         <source>Logical Switches</source>
         <translation>Loogiset kytkimet</translation>
-    </message>
-    <message>
-        <source>Switch Assignment</source>
-        <translation>Kytkimien asettelu</translation>
     </message>
     <message>
         <source>Curves</source>
@@ -2941,6 +2975,37 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <source>Telemetry</source>
         <translation>Telemetria</translation>
+    </message>
+    <message>
+        <source>Servos</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Special Functions</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ModelSelectionPage</name>
+    <message>
+        <source>Plane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Multirotor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Helicopter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Model Name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Model Type:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3034,16 +3099,16 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
         <translation>Valittua mallia ei voi leikata.</translation>
     </message>
     <message>
-        <source>Do you want to overwrite TX general settings?</source>
-        <translation>Haluatko päällekirjoittaa TX:n yleiset asetukset ?</translation>
-    </message>
-    <message>
         <source>You are pasting on an not empty model, are you sure?</source>
         <translation>Yrität liittää tietoja ei tyhjän mallin tietoihin, haluatko varmasti jatkaa ?</translation>
     </message>
     <message>
         <source>No free slot available, cannot duplicate</source>
         <translation>Ei vapaata tilaa, ei voida monistaa</translation>
+    </message>
+    <message>
+        <source>Do you want to overwrite radio general settings?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3075,10 +3140,6 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <source>Positive</source>
         <translation type="unfinished">Positiivinen</translation>
-    </message>
-    <message>
-        <source>RX Number</source>
-        <translation type="unfinished">RX numero</translation>
     </message>
     <message>
         <source>Master</source>
@@ -3136,13 +3197,17 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
         <source>Protocol</source>
         <translation type="unfinished">Protokolla</translation>
     </message>
+    <message>
+        <source>Receiver</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Receiver No.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ModulePanel</name>
-    <message>
-        <source>Trainer Output</source>
-        <translation>Opetus ulostulo</translation>
-    </message>
     <message>
         <source>Internal Radio System</source>
         <translation>Sisäinen radio systeemi</translation>
@@ -3150,6 +3215,33 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <source>External Radio Module</source>
         <translation>Ulkoinen radio systeemi</translation>
+    </message>
+    <message>
+        <source>Trainer Port</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Radio System</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>MultirotorPage</name>
+    <message>
+        <source>Trottle Channel:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Yaw Channel:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pitch Channel:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Roll Channel:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3284,11 +3376,11 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     </message>
     <message>
         <source>A3</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">A3</translation>
     </message>
     <message>
         <source>A4</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">A4</translation>
     </message>
     <message>
         <source>Alt</source>
@@ -3324,10 +3416,6 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     </message>
     <message>
         <source>Cell</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3376,19 +3464,19 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     </message>
     <message>
         <source>A1-</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">A1-</translation>
     </message>
     <message>
         <source>A2-</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">A2-</translation>
     </message>
     <message>
         <source>A3-</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">A3-</translation>
     </message>
     <message>
         <source>A4-</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">A4-</translation>
     </message>
     <message>
         <source>Alt-</source>
@@ -3411,168 +3499,12 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Spd+</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dst+</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cel-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cels-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Vfs-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cur+</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Pwr+</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>ACC</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Time</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>LS1</source>
-        <translation>LS1</translation>
-    </message>
-    <message>
-        <source>LS2</source>
-        <translation>LS2</translation>
-    </message>
-    <message>
-        <source>LS3</source>
-        <translation>LS3</translation>
-    </message>
-    <message>
-        <source>LS4</source>
-        <translation>LS4</translation>
-    </message>
-    <message>
-        <source>LS5</source>
-        <translation>LS5</translation>
-    </message>
-    <message>
-        <source>LS6</source>
-        <translation>LS6</translation>
-    </message>
-    <message>
-        <source>LS7</source>
-        <translation>LS7</translation>
-    </message>
-    <message>
-        <source>LS8</source>
-        <translation>LS8</translation>
-    </message>
-    <message>
-        <source>LS9</source>
-        <translation>LS9</translation>
-    </message>
-    <message>
-        <source>LSA</source>
-        <translation>LSA</translation>
-    </message>
-    <message>
-        <source>LSB</source>
-        <translation>LSB</translation>
-    </message>
-    <message>
-        <source>LSC</source>
-        <translation>LSC</translation>
-    </message>
-    <message>
-        <source>LSD</source>
-        <translation>LSD</translation>
-    </message>
-    <message>
-        <source>LSE</source>
-        <translation>LSE</translation>
-    </message>
-    <message>
-        <source>LSF</source>
-        <translation>LSF</translation>
-    </message>
-    <message>
-        <source>LSG</source>
-        <translation>LSG</translation>
-    </message>
-    <message>
-        <source>LSH</source>
-        <translation>LSH</translation>
-    </message>
-    <message>
-        <source>LSI</source>
-        <translation>LSI</translation>
-    </message>
-    <message>
-        <source>LSJ</source>
-        <translation>LSJ</translation>
-    </message>
-    <message>
-        <source>LSK</source>
-        <translation>LSK</translation>
-    </message>
-    <message>
-        <source>LSL</source>
-        <translation>LSL</translation>
-    </message>
-    <message>
-        <source>LSM</source>
-        <translation>LSM</translation>
-    </message>
-    <message>
-        <source>LSN</source>
-        <translation>LSN</translation>
-    </message>
-    <message>
-        <source>LSO</source>
-        <translation>LSO</translation>
-    </message>
-    <message>
-        <source>LSP</source>
-        <translation>LSP</translation>
-    </message>
-    <message>
-        <source>LSQ</source>
-        <translation>LSQ</translation>
-    </message>
-    <message>
-        <source>LSR</source>
-        <translation>LSR</translation>
-    </message>
-    <message>
-        <source>LSS</source>
-        <translation>LSS</translation>
-    </message>
-    <message>
-        <source>LST</source>
-        <translation>LST</translation>
-    </message>
-    <message>
-        <source>LSU</source>
-        <translation>LSU</translation>
-    </message>
-    <message>
-        <source>LSV</source>
-        <translation>LSV</translation>
-    </message>
-    <message>
-        <source>LSW</source>
-        <translation>LSW</translation>
     </message>
     <message>
         <source>----</source>
@@ -3588,10 +3520,6 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     </message>
     <message>
         <source>CYC%1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>PPM%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3832,10 +3760,6 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     </message>
     <message>
         <source>Sticky</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Stay</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4325,7 +4249,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     </message>
     <message>
         <source>CH%1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CH%1</translation>
     </message>
     <message>
         <source>No</source>
@@ -4531,6 +4455,193 @@ We are really appreciative for that!
 The OpenTX/Companion Team.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Cells</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Speed+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dist+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cell-</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cells-</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vfas-</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Curr+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Powr+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L8</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L9</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L10</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L11</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L12</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L13</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L14</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L15</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L16</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L17</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L18</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L19</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L20</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L21</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L22</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L23</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L24</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L25</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L26</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L27</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L28</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L29</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L30</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L31</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>L32</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>TR%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edge</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X%1  </source>
+        <translation type="unfinished">X%1</translation>
+    </message>
+</context>
+<context>
+    <name>RudderPage</name>
+    <message>
+        <source>No</source>
+        <translation type="unfinished">Ei</translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation type="unfinished">Kyllä</translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;Rudder Channel:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Setup</name>
@@ -4545,10 +4656,6 @@ Asetukset</translation>
         <translation>Mallin kuva</translation>
     </message>
     <message>
-        <source>Model Name</source>
-        <translation>Mallin nimi</translation>
-    </message>
-    <message>
         <source>Timer2</source>
         <translation>Ajastin 2</translation>
     </message>
@@ -4557,20 +4664,12 @@ Asetukset</translation>
         <translation>Ajastin 1</translation>
     </message>
     <message>
-        <source>Throttle Source</source>
-        <translation>Kaasun lähde</translation>
-    </message>
-    <message>
         <source>Switch Warnings</source>
         <translation>Kytkin varoitukset</translation>
     </message>
     <message>
         <source>Center beep</source>
         <translation>Keski piippaus</translation>
-    </message>
-    <message>
-        <source>Trim Increment</source>
-        <translation>Trimmin säätö</translation>
     </message>
     <message>
         <source>Exponential</source>
@@ -4605,10 +4704,6 @@ Asetukset</translation>
         <translation>Näytä teht.lista</translation>
     </message>
     <message>
-        <source>Throttle Trim</source>
-        <translation>Kaasu trimmi</translation>
-    </message>
-    <message>
         <source>Throttle Warning</source>
         <translation>Kaasu varoitus</translation>
     </message>
@@ -4641,6 +4736,33 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <source>Auto</source>
         <translation>Autom</translation>
     </message>
+    <message>
+        <source>Throttle Trim Idle Only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Timer Source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Trim Step</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warnings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Model</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SimpleTailPage</name>
+    <message>
+        <source>Elevator Channel:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SimulatorDialog</name>
@@ -4657,11 +4779,11 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Simulating Tx (%1)</source>
+        <source>Firmware %1 error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Firmware %1 error: %2</source>
+        <source>Simulating Radio (%1)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4848,6 +4970,43 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     </message>
 </context>
 <context>
+    <name>StandardPage</name>
+    <message>
+        <source>Channel %1</source>
+        <translation type="unfinished">Kanava %1</translation>
+    </message>
+</context>
+<context>
+    <name>TailPage</name>
+    <message>
+        <source>Rudder Channel:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Elevator Channel:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TailSelectionPage</name>
+    <message>
+        <source>Elevator and Rudder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Only Elevator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>V-tail</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tail Type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Telemetry</name>
     <message>
         <source>Form</source>
@@ -4934,28 +5093,12 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <translation>CEL</translation>
     </message>
     <message>
-        <source>2</source>
-        <translation>2</translation>
-    </message>
-    <message>
-        <source>3</source>
-        <translation>3</translation>
-    </message>
-    <message>
-        <source>4</source>
-        <translation>4</translation>
-    </message>
-    <message>
         <source>Units</source>
         <translation>Asteikko</translation>
     </message>
     <message>
         <source>Blades</source>
         <translation>Prop lavat</translation>
-    </message>
-    <message>
-        <source>Altimetry / Vario</source>
-        <translation>Korkeusm / Variometri</translation>
     </message>
     <message>
         <source>Alti</source>
@@ -5021,6 +5164,18 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <source>Persistent mAh</source>
         <translation>Yhtm. mAh</translation>
     </message>
+    <message>
+        <source>Altimetry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> mAh</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> A</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>TelemetryAnalog</name>
@@ -5069,10 +5224,6 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <translation>Hälytys 2</translation>
     </message>
     <message>
-        <source>Min Value</source>
-        <translation>Pienin arvo</translation>
-    </message>
-    <message>
         <source>Volts (V)</source>
         <translation>Voltit ( V )</translation>
     </message>
@@ -5111,6 +5262,18 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <source>Range</source>
         <translation>Matka</translation>
+    </message>
+    <message>
+        <source>Offset</source>
+        <translation type="unfinished">Tasoitus</translation>
+    </message>
+    <message>
+        <source>Low Alarm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Critical Alarm</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5162,6 +5325,29 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <source>Winged Shadow How High (not supported)</source>
         <translation>erikoistoiminto korkea (ei tuettu)</translation>
     </message>
+    <message>
+        <source>Low Alarm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Critical Alarm</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ThrottlePage</name>
+    <message>
+        <source>Yes</source>
+        <translation type="unfinished">Kyllä</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation type="unfinished">Ei</translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;Throttle Channel:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Timer</name>
@@ -5178,10 +5364,6 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <translation>Laskuri</translation>
     </message>
     <message>
-        <source>MinuteBeep</source>
-        <translation>Minutti piippaus</translation>
-    </message>
-    <message>
         <source>Persistent</source>
         <translation>Yhtämittainen</translation>
     </message>
@@ -5189,20 +5371,264 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <source> (00:00:00)</source>
         <translation>(00:00:00)</translation>
     </message>
+    <message>
+        <source>Minute Call</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>TimerPanel</name>
-    <message>
-        <source>None</source>
-        <translation>Ei mitään</translation>
-    </message>
     <message>
         <source>Beeps</source>
         <translation>Piipit</translation>
     </message>
     <message>
-        <source>Countdown</source>
-        <translation>Laskuri</translation>
+        <source>Silent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Voice</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>VTailPage</name>
+    <message>
+        <source>First Tail Channel:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Second Tail Channel:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>WingtypeSelectionPage</name>
+    <message>
+        <source>Standard Wing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Flying Wing / Deltawing</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>WizardDialog</name>
+    <message>
+        <source>Model Wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Model Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter model name and model type.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Throttle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Has your model got a motor or an engine?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wing Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Is your model a flying wing/deltawing or has it a standard wing configuration?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ailerons</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Has your model got ailerons?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Flaps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Has your model got flaps?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Airbrakes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Has your model got airbrakes?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Flying-wing / Delta-wing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are the elevons controlled by servos connected to separate channels or by a single servo channel?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rudder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Does your model have a rudder?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tail Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select which type of tail your model is equiped with.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tail</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select channels for tail control.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>V-Tail</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select elevator channel.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cyclic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Which type of swash control is installed in your helicopter?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tail Gyro</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Has your helicopter got an adjustable gyro for the tail?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotor Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Has your helicopter got a flybar?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Helicopter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the controls for your helicopter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Multirotor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the control channels for your multirotor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save Changes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Manually check the direction of each control surface and reverse any channels that make controls move in the wrong direction. Remove the propeller/propellers before you try to control your model for the first time.&lt;br&gt;Please note that continuing removes all old model settings!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter a name for your model and select model type.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the receiver channel that is connected to your ESC or throttle servo.&lt;br&gt;&lt;br&gt;Throttle - Spektrum: CH1, Futaba: CH3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Most aircraft have a main wing and a tail with control surfaces. Flying wings and delta winged aircraft only have a single wing. The main control surface on a standard wing controlls the roll of the aircraft. This surface is called an aileron.&lt;br&gt;The control surface of a delta wing controls both roll and elevation. This surface is called an elevon. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Models use one or two channels to control the ailerons.&lt;br&gt;A so called Y-cable can be used to connect single receiver channel to two separeate aileron servos. If your servos are connected by a Y-cable you should select the single-servo option.&lt;br&gt;&lt;br&gt;Aileron - Spektrum: CH2, Futaba: CH1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This wizard assumes that your flaps are controlled by a switch. If your flaps are controlled by a potentiometer you can change that manually later.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Air brakes are used to reduce the speed of advanced sail planes.&lt;br&gt;They are very uncommon on other types of planes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Models use one or two channels to control the elevons.&lt;br&gt;A so called Y-cable can be used to connect single receiver channel to two separeate elevon servos. If your servos are connected by a Y-cable you should select the single-servo option.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the receiver channel that is connected to your rudder.&lt;br&gt;&lt;br&gt;Rudder - Spektrum: CH4, Futaba: CH4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the tail type of your plane.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the Rudder and Elevator channels.&lt;br&gt;&lt;br&gt;Rudder - Spektrum: CH4, Futaba: CH4&lt;br&gt;Elevator - Spektrum: CH3, Futaba: CH2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the Elevator channel.&lt;br&gt;&lt;br&gt;Elevator - Spektrum: CH3, Futaba: CH2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>TBD.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the control channels for your multirotor.&lt;br&gt;&lt;br&gt;Throttle - Spektrum: CH1, Futaba: CH3&lt;br&gt;Yaw - Spektrum: CH4, Futaba: CH4&lt;br&gt;Pitch - Spektrum: CH3, Futaba: CH2&lt;br&gt;Roll - Spektrum: CH2, Futaba: CH1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There is no help available for the current page.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Model Wizard Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>WizardPrinter</name>
+    <message>
+        <source>Model Name: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Model Type: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Channel %1: </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5264,10 +5690,6 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Offer to use wizard for new models</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Show splash screen when Companion starts</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5321,10 +5743,6 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     </message>
     <message>
         <source>Simulator capture folder</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Radio Settings Profile</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -5513,7 +5931,7 @@ This is used by the templated to determine which channel goes to what number out
     </message>
     <message>
         <source>9X</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">9X</translation>
     </message>
     <message>
         <source>9X with m128</source>
@@ -5581,6 +5999,34 @@ This is used by the templated to determine which channel goes to what number out
     </message>
     <message>
         <source>Images (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Radio Profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>General Settings</source>
+        <translation type="unfinished">Yleiset asetukset</translation>
+    </message>
+    <message>
+        <source>General Settings Label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use model wizard when creating a new model</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>EMPTY: No radio settings stored in profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>AVAILABLE: Radio settings of unknown age</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>AVAILABLE: Radio settings stored %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5855,14 +6301,6 @@ m2560 for v4.1 boards</source>
         <translation>Peruuta</translation>
     </message>
     <message>
-        <source>SVN</source>
-        <translation>SVN</translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="obsolete">Avaa</translation>
-    </message>
-    <message>
         <source>Warning</source>
         <translation>Varoitus</translation>
     </message>
@@ -5939,27 +6377,11 @@ m2560 for v4.1 boards</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Write firmware to TX</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Write Models and Settings to TX</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Write Models and Settings in %1 to TX</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Current profile</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Open Firmware File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Choose file to load Models and Settings from</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -5994,10 +6416,6 @@ m2560 for v4.1 boards</source>
     </message>
     <message>
         <source>The profile image %1 does not contain an image.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open image file to use as Tx start screen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -6040,6 +6458,30 @@ m2560 for v4.1 boards</source>
     <message>
         <source>Error writing file %1:
 %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Write firmware to Radio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Write Backup to Radio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Write Backup from %1 to Radio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose Radio Backup file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open image file to use as radio start screen</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6274,10 +6716,6 @@ m2560 for v4.1 boards</source>
         <translation>LS</translation>
     </message>
     <message>
-        <source>Switch Assignment</source>
-        <translation>Kytkimien asettelu</translation>
-    </message>
-    <message>
         <source>Function</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6292,10 +6730,6 @@ m2560 for v4.1 boards</source>
     <message>
         <source>Enable</source>
         <translation>Päälle</translation>
-    </message>
-    <message>
-        <source>CF</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Telemetry Settings</source>
@@ -6323,7 +6757,7 @@ m2560 for v4.1 boards</source>
     </message>
     <message>
         <source>Alarm 2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Varoitus 2</translation>
     </message>
     <message>
         <source>Type</source>
@@ -6364,6 +6798,14 @@ m2560 for v4.1 boards</source>
     <message>
         <source>Select PDF output file</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Special Functions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SF</source>
+        <translation type="unfinished">SF</translation>
     </message>
 </context>
 <context>
@@ -6852,301 +7294,6 @@ Press cancel to abort joystick calibration</source>
     <message>
         <source>Simulate Tx</source>
         <translation>Simuloi Tx</translation>
-    </message>
-</context>
-<context>
-    <name>modelConfigDialog</name>
-    <message>
-        <source>Model Configuration Wizard</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Engine</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Model Type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Airplane</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Helicopter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Glider</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Wing</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Aileron controls</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No Ailerons</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>1 Servo (or Y)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>2 Servos</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Flaps controls</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No Flaps</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>1 Servo (or inverting Y)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Spoilers</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No Spoilers/Airbrakes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>1 Servo (or Y or inverting Y)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Swash Plate</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Swash plate</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message utf8="true">
-        <source>90° / Fixed / Coax</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message utf8="true">
-        <source>120°</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message utf8="true">
-        <source>120X°</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message utf8="true">
-        <source>140°</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>FlyBarLess</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tail</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tail controls</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>1 Servo Elevator / 1 Servo Rudder</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>V Tail</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>2 Servos Elevator / 1 Servo Rudder</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Gyroscope</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>NoGyro</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Switch control</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Pot control</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Channel style</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open9x Style</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Futaba Style</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>2</source>
-        <translation>2</translation>
-    </message>
-    <message>
-        <source>3</source>
-        <translation>3</translation>
-    </message>
-    <message>
-        <source>4</source>
-        <translation>4</translation>
-    </message>
-    <message>
-        <source>5</source>
-        <translation>5</translation>
-    </message>
-    <message>
-        <source>6</source>
-        <translation>6</translation>
-    </message>
-    <message>
-        <source>7</source>
-        <translation>7</translation>
-    </message>
-    <message>
-        <source>8</source>
-        <translation>8</translation>
-    </message>
-    <message>
-        <source>9</source>
-        <translation>9</translation>
-    </message>
-    <message>
-        <source>1</source>
-        <translation>1</translation>
-    </message>
-    <message>
-        <source>10</source>
-        <translation>10</translation>
-    </message>
-    <message>
-        <source>Ele2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Use advanced controls</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Spoiler2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Flap2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Flap1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rud2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>AUTO</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>CH01</source>
-        <translation>CH01</translation>
-    </message>
-    <message>
-        <source>CH02</source>
-        <translation>CH02</translation>
-    </message>
-    <message>
-        <source>CH03</source>
-        <translation>CH03</translation>
-    </message>
-    <message>
-        <source>CH04</source>
-        <translation>CH04</translation>
-    </message>
-    <message>
-        <source>CH05</source>
-        <translation>CH05</translation>
-    </message>
-    <message>
-        <source>CH06</source>
-        <translation>CH06</translation>
-    </message>
-    <message>
-        <source>CH07</source>
-        <translation>CH07</translation>
-    </message>
-    <message>
-        <source>CH08</source>
-        <translation>CH08</translation>
-    </message>
-    <message>
-        <source>CH09</source>
-        <translation>CH09</translation>
-    </message>
-    <message>
-        <source>CH10</source>
-        <translation>CH10</translation>
-    </message>
-    <message>
-        <source>Ail2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Spoiler 1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delta wing</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Not present</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Present</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rudder</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Single rudder</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dual rudder (with 2 servos)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Apply configuration ?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Apply configuration deleting existing model ?</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7716,10 +7863,6 @@ May be different from firmware language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Switch Assignments</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Function</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7741,7 +7884,7 @@ May be different from firmware language</source>
     </message>
     <message>
         <source>Alarm 2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Varoitus 2</translation>
     </message>
     <message>
         <source>Analog</source>
@@ -7784,10 +7927,6 @@ May be different from firmware language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Propeller blades</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Custom Telemetry View</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7815,324 +7954,13 @@ May be different from firmware language</source>
         <source>ODF files (*.odt);;PDF Files(*.pdf);;HTML-Files (*.htm *.html);;All Files (*)</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>simulatorDialog</name>
     <message>
-        <source>Companion Simulator</source>
-        <translation type="obsolete">Companion simulaattori</translation>
+        <source>Special Functions</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Right Double Click to Reset</source>
-        <translation type="obsolete">Tuplaklikkaa oikea resetoi</translation>
-    </message>
-    <message>
-        <source>THR</source>
-        <translation type="obsolete">KAA</translation>
-    </message>
-    <message>
-        <source>RUD</source>
-        <translation type="obsolete">PER</translation>
-    </message>
-    <message>
-        <source>ELE</source>
-        <translation type="obsolete">KOR</translation>
-    </message>
-    <message>
-        <source>AIL</source>
-        <translation type="obsolete">SII</translation>
-    </message>
-    <message>
-        <source>Hold X</source>
-        <translation type="obsolete">Pidä X</translation>
-    </message>
-    <message>
-        <source>Fix X</source>
-        <translation type="obsolete">Kesk X</translation>
-    </message>
-    <message>
-        <source>Fix Y</source>
-        <translation type="obsolete">Kesk Y</translation>
-    </message>
-    <message>
-        <source>Hold Y</source>
-        <translation type="obsolete">Pidä Y</translation>
-    </message>
-    <message>
-        <source>TextLabel</source>
-        <translation type="obsolete">Tekstilappu</translation>
-    </message>
-    <message>
-        <source>TRN</source>
-        <translation type="obsolete">TRN</translation>
-    </message>
-    <message>
-        <source>GEA</source>
-        <translation type="obsolete">REN</translation>
-    </message>
-    <message>
-        <source>ID0</source>
-        <translation type="obsolete">ID0</translation>
-    </message>
-    <message>
-        <source>ID1</source>
-        <translation type="obsolete">ID1</translation>
-    </message>
-    <message>
-        <source>ID2</source>
-        <translation type="obsolete">ID2</translation>
-    </message>
-    <message>
-        <source>BEEP</source>
-        <translation type="obsolete">PIIP</translation>
-    </message>
-    <message>
-        <source>P1</source>
-        <translation type="obsolete">P1</translation>
-    </message>
-    <message>
-        <source>0 %</source>
-        <translation type="obsolete">0 %</translation>
-    </message>
-    <message>
-        <source>P2</source>
-        <translation type="obsolete">P2</translation>
-    </message>
-    <message>
-        <source>P3</source>
-        <translation type="obsolete">P3</translation>
-    </message>
-    <message>
-        <source>9x Simulator</source>
-        <translation type="obsolete">9x simulaattori</translation>
-    </message>
-    <message>
-        <source>Outputs</source>
-        <translation type="obsolete">Ulostulot</translation>
-    </message>
-    <message>
-        <source>LS1</source>
-        <translation type="obsolete">LS1</translation>
-    </message>
-    <message>
-        <source>LS2</source>
-        <translation type="obsolete">LS2</translation>
-    </message>
-    <message>
-        <source>LS3</source>
-        <translation type="obsolete">LS3</translation>
-    </message>
-    <message>
-        <source>LS4</source>
-        <translation type="obsolete">LS4</translation>
-    </message>
-    <message>
-        <source>LS5</source>
-        <translation type="obsolete">LS5</translation>
-    </message>
-    <message>
-        <source>LS6</source>
-        <translation type="obsolete">LS6</translation>
-    </message>
-    <message>
-        <source>LS7</source>
-        <translation type="obsolete">LS7</translation>
-    </message>
-    <message>
-        <source>LS8</source>
-        <translation type="obsolete">LS8</translation>
-    </message>
-    <message>
-        <source>LS9</source>
-        <translation type="obsolete">LS9</translation>
-    </message>
-    <message>
-        <source>LSA</source>
-        <translation type="obsolete">LSA</translation>
-    </message>
-    <message>
-        <source>LSB</source>
-        <translation type="obsolete">LSB</translation>
-    </message>
-    <message>
-        <source>LSC</source>
-        <translation type="obsolete">LSC</translation>
-    </message>
-    <message>
-        <source>LSD</source>
-        <translation type="obsolete">LSD</translation>
-    </message>
-    <message>
-        <source>LSE</source>
-        <translation type="obsolete">LSE</translation>
-    </message>
-    <message>
-        <source>LSF</source>
-        <translation type="obsolete">LSF</translation>
-    </message>
-    <message>
-        <source>LSG</source>
-        <translation type="obsolete">LSG</translation>
-    </message>
-    <message>
-        <source>LSH</source>
-        <translation type="obsolete">LSH</translation>
-    </message>
-    <message>
-        <source>LSI</source>
-        <translation type="obsolete">LSI</translation>
-    </message>
-    <message>
-        <source>LSJ</source>
-        <translation type="obsolete">LSJ</translation>
-    </message>
-    <message>
-        <source>LSK</source>
-        <translation type="obsolete">LSK</translation>
-    </message>
-    <message>
-        <source>LSL</source>
-        <translation type="obsolete">LSL</translation>
-    </message>
-    <message>
-        <source>LSM</source>
-        <translation type="obsolete">LSM</translation>
-    </message>
-    <message>
-        <source>LSN</source>
-        <translation type="obsolete">LSN</translation>
-    </message>
-    <message>
-        <source>LSO</source>
-        <translation type="obsolete">LSO</translation>
-    </message>
-    <message>
-        <source>LSP</source>
-        <translation type="obsolete">LSP</translation>
-    </message>
-    <message>
-        <source>LSQ</source>
-        <translation type="obsolete">LSQ</translation>
-    </message>
-    <message>
-        <source>LSR</source>
-        <translation type="obsolete">LSR</translation>
-    </message>
-    <message>
-        <source>LSS</source>
-        <translation type="obsolete">LSS</translation>
-    </message>
-    <message>
-        <source>LST</source>
-        <translation type="obsolete">LST</translation>
-    </message>
-    <message>
-        <source>LSU</source>
-        <translation type="obsolete">LSU</translation>
-    </message>
-    <message>
-        <source>LSV</source>
-        <translation type="obsolete">LSV</translation>
-    </message>
-    <message>
-        <source>LSW</source>
-        <translation type="obsolete">LSW</translation>
-    </message>
-    <message>
-        <source>CH1</source>
-        <translation type="obsolete">CH1</translation>
-    </message>
-    <message>
-        <source>-100.1</source>
-        <translation type="obsolete">-100.1</translation>
-    </message>
-    <message>
-        <source>CH9</source>
-        <translation type="obsolete">CH9</translation>
-    </message>
-    <message>
-        <source>CH2</source>
-        <translation type="obsolete">CH2</translation>
-    </message>
-    <message>
-        <source>CH10</source>
-        <translation type="obsolete">CH10</translation>
-    </message>
-    <message>
-        <source>CH3</source>
-        <translation type="obsolete">CH3</translation>
-    </message>
-    <message>
-        <source>CH11</source>
-        <translation type="obsolete">CH11</translation>
-    </message>
-    <message>
-        <source>CH4</source>
-        <translation type="obsolete">CH4</translation>
-    </message>
-    <message>
-        <source>CH12</source>
-        <translation type="obsolete">CH12</translation>
-    </message>
-    <message>
-        <source>CH5</source>
-        <translation type="obsolete">CH5</translation>
-    </message>
-    <message>
-        <source>CH13</source>
-        <translation type="obsolete">CH13</translation>
-    </message>
-    <message>
-        <source>CH6</source>
-        <translation type="obsolete">CH6</translation>
-    </message>
-    <message>
-        <source>CH14</source>
-        <translation type="obsolete">CH14</translation>
-    </message>
-    <message>
-        <source>CH7</source>
-        <translation type="obsolete">CH7</translation>
-    </message>
-    <message>
-        <source>CH15</source>
-        <translation type="obsolete">CH15</translation>
-    </message>
-    <message>
-        <source>CH8</source>
-        <translation type="obsolete">CH8</translation>
-    </message>
-    <message>
-        <source>CH16</source>
-        <translation type="obsolete">CH16</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation type="obsolete">Varoitus</translation>
-    </message>
-    <message>
-        <source>Joystick enabled but not configured correctly</source>
-        <translation type="obsolete">Joystick päällä mutta väärin aseteltu</translation>
-    </message>
-    <message>
-        <source>Cannot open joystick, joystick disabled</source>
-        <translation type="obsolete">Joystickia ei voi avata, pois päältä</translation>
-    </message>
-    <message>
-        <source>Firmware %1 error: %2</source>
-        <translation type="obsolete">Firmware %1 virhe: %2</translation>
-    </message>
-    <message>
-        <source> - Flight mode: %1(%2)</source>
-        <translation type="obsolete">- Lentotila: %1(%2)</translation>
-    </message>
-    <message>
-        <source>Simulating Tx (%1)</source>
-        <translation type="obsolete">Simuloi TX (%1)</translation>
-    </message>
-    <message>
-        <source>Simulating </source>
-        <translation type="obsolete">Simuloi</translation>
+        <source>Blades</source>
+        <translation type="unfinished">Prop lavat</translation>
     </message>
 </context>
 <context>
@@ -8163,314 +7991,18 @@ May be different from firmware language</source>
     </message>
 </context>
 <context>
-    <name>xsimulatorDialog</name>
+    <name>taranisNotFoundDialog</name>
     <message>
-        <source>Companion Simulator</source>
-        <translation type="obsolete">Companion simulaattori</translation>
+        <source>No Taranis Radio Found</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Hold Y</source>
-        <translation type="obsolete">Pidä Y</translation>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Taranis Radio was found!&lt;/p&gt;&lt;p&gt;Make sure that you hold the lower trim buttons towards the center while you turn it on.&lt;/p&gt;&lt;p&gt;Then connect the USB wire.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Fix Y</source>
-        <translation type="obsolete">Kesk X</translation>
-    </message>
-    <message>
-        <source>Fix X</source>
-        <translation type="obsolete">Kesk Y</translation>
-    </message>
-    <message>
-        <source>Hold X</source>
-        <translation type="obsolete">Pidä X</translation>
-    </message>
-    <message>
-        <source>SD</source>
-        <translation type="obsolete">SD</translation>
-    </message>
-    <message>
-        <source>SC</source>
-        <translation type="obsolete">SC</translation>
-    </message>
-    <message>
-        <source>Right Double Click to Reset</source>
-        <translation type="obsolete">Tyhjäys, tuplaklikkaa oikeaa</translation>
-    </message>
-    <message>
-        <source>S2</source>
-        <translation type="obsolete">S2</translation>
-    </message>
-    <message>
-        <source>SG</source>
-        <translation type="obsolete">SG</translation>
-    </message>
-    <message>
-        <source>RS</source>
-        <translation type="obsolete">RS</translation>
-    </message>
-    <message>
-        <source>SH</source>
-        <translation type="obsolete">SH</translation>
-    </message>
-    <message>
-        <source>TextLabel</source>
-        <translation type="obsolete">Simulaattori</translation>
-    </message>
-    <message>
-        <source>S1</source>
-        <translation type="obsolete">S1</translation>
-    </message>
-    <message>
-        <source>SB</source>
-        <translation type="obsolete">SB</translation>
-    </message>
-    <message>
-        <source>SA</source>
-        <translation type="obsolete">SA</translation>
-    </message>
-    <message>
-        <source>SE</source>
-        <translation type="obsolete">SE</translation>
-    </message>
-    <message>
-        <source>SF</source>
-        <translation type="obsolete">SF</translation>
-    </message>
-    <message>
-        <source>LS</source>
-        <translation type="obsolete">LS</translation>
-    </message>
-    <message>
-        <source>Taranis Simulator</source>
-        <translation type="obsolete">Taranis simulaattori</translation>
-    </message>
-    <message>
-        <source>Outputs</source>
-        <translation type="obsolete">Lähdöt</translation>
-    </message>
-    <message>
-        <source>CH1</source>
-        <translation type="obsolete">CH1</translation>
-    </message>
-    <message>
-        <source>-100.1</source>
-        <translation type="obsolete">-100.1</translation>
-    </message>
-    <message>
-        <source>CH9</source>
-        <translation type="obsolete">CH9</translation>
-    </message>
-    <message>
-        <source>CH2</source>
-        <translation type="obsolete">CH2</translation>
-    </message>
-    <message>
-        <source>CH10</source>
-        <translation type="obsolete">CH10</translation>
-    </message>
-    <message>
-        <source>CH3</source>
-        <translation type="obsolete">CH3</translation>
-    </message>
-    <message>
-        <source>CH11</source>
-        <translation type="obsolete">CH11</translation>
-    </message>
-    <message>
-        <source>CH4</source>
-        <translation type="obsolete">CH4</translation>
-    </message>
-    <message>
-        <source>CH12</source>
-        <translation type="obsolete">CH12</translation>
-    </message>
-    <message>
-        <source>CH5</source>
-        <translation type="obsolete">CH5</translation>
-    </message>
-    <message>
-        <source>CH13</source>
-        <translation type="obsolete">CH13</translation>
-    </message>
-    <message>
-        <source>CH6</source>
-        <translation type="obsolete">CH6</translation>
-    </message>
-    <message>
-        <source>CH14</source>
-        <translation type="obsolete">CH14</translation>
-    </message>
-    <message>
-        <source>CH7</source>
-        <translation type="obsolete">CH7</translation>
-    </message>
-    <message>
-        <source>CH15</source>
-        <translation type="obsolete">CH15</translation>
-    </message>
-    <message>
-        <source>CH8</source>
-        <translation type="obsolete">CH8</translation>
-    </message>
-    <message>
-        <source>CH16</source>
-        <translation type="obsolete">CH16</translation>
-    </message>
-    <message>
-        <source>LSK</source>
-        <translation type="obsolete">LSK</translation>
-    </message>
-    <message>
-        <source>LSC</source>
-        <translation type="obsolete">LSC</translation>
-    </message>
-    <message>
-        <source>LSD</source>
-        <translation type="obsolete">LSD</translation>
-    </message>
-    <message>
-        <source>LS7</source>
-        <translation type="obsolete">LS7</translation>
-    </message>
-    <message>
-        <source>LSL</source>
-        <translation type="obsolete">LSL</translation>
-    </message>
-    <message>
-        <source>LSB</source>
-        <translation type="obsolete">LSB</translation>
-    </message>
-    <message>
-        <source>LS1</source>
-        <translation type="obsolete">LS1</translation>
-    </message>
-    <message>
-        <source>LSH</source>
-        <translation type="obsolete">LSH</translation>
-    </message>
-    <message>
-        <source>LSG</source>
-        <translation type="obsolete">LSG</translation>
-    </message>
-    <message>
-        <source>LSE</source>
-        <translation type="obsolete">LSE</translation>
-    </message>
-    <message>
-        <source>LSF</source>
-        <translation type="obsolete">LSF</translation>
-    </message>
-    <message>
-        <source>LS8</source>
-        <translation type="obsolete">LS8</translation>
-    </message>
-    <message>
-        <source>LS9</source>
-        <translation type="obsolete">LS9</translation>
-    </message>
-    <message>
-        <source>LSA</source>
-        <translation type="obsolete">LSA</translation>
-    </message>
-    <message>
-        <source>LSM</source>
-        <translation type="obsolete">LSM</translation>
-    </message>
-    <message>
-        <source>LSJ</source>
-        <translation type="obsolete">LSJ</translation>
-    </message>
-    <message>
-        <source>LSI</source>
-        <translation type="obsolete">LSI</translation>
-    </message>
-    <message>
-        <source>LS4</source>
-        <translation type="obsolete">LS4</translation>
-    </message>
-    <message>
-        <source>LS5</source>
-        <translation type="obsolete">LS5</translation>
-    </message>
-    <message>
-        <source>LS2</source>
-        <translation type="obsolete">LS2</translation>
-    </message>
-    <message>
-        <source>LS3</source>
-        <translation type="obsolete">LS3</translation>
-    </message>
-    <message>
-        <source>LS6</source>
-        <translation type="obsolete">LS6</translation>
-    </message>
-    <message>
-        <source>LSN</source>
-        <translation type="obsolete">LSN</translation>
-    </message>
-    <message>
-        <source>LSO</source>
-        <translation type="obsolete">LSO</translation>
-    </message>
-    <message>
-        <source>LSP</source>
-        <translation type="obsolete">LSP</translation>
-    </message>
-    <message>
-        <source>LSQ</source>
-        <translation type="obsolete">LSQ</translation>
-    </message>
-    <message>
-        <source>LSR</source>
-        <translation type="obsolete">LSR</translation>
-    </message>
-    <message>
-        <source>LSS</source>
-        <translation type="obsolete">LSS</translation>
-    </message>
-    <message>
-        <source>LST</source>
-        <translation type="obsolete">LST</translation>
-    </message>
-    <message>
-        <source>LSU</source>
-        <translation type="obsolete">LSU</translation>
-    </message>
-    <message>
-        <source>LSV</source>
-        <translation type="obsolete">LSV</translation>
-    </message>
-    <message>
-        <source>LSW</source>
-        <translation type="obsolete">LSW</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation type="obsolete">Varoitus</translation>
-    </message>
-    <message>
-        <source>Joystick enabled but not configured correctly</source>
-        <translation type="obsolete">Joystick päällä, mutta konfiguraatio ongelma</translation>
-    </message>
-    <message>
-        <source>Cannot open joystick, joystick disabled</source>
-        <translation type="obsolete">Ei voi avata joystickia, joystick pois käytöstä</translation>
-    </message>
-    <message>
-        <source>Firmware %1 error: %2</source>
-        <translation type="obsolete">Firmware %1 virhe %2</translation>
-    </message>
-    <message>
-        <source> - Flight mode: %1(%2)</source>
-        <translation type="obsolete">- Lennätystila %1(%2)</translation>
-    </message>
-    <message>
-        <source>Simulating Tx (%1)</source>
-        <translation type="obsolete">Simuloi Tx(%1)</translation>
-    </message>
-    <message>
-        <source>Simulating </source>
-        <translation type="obsolete">Simuloidaan</translation>
+        <source>OK</source>
+        <translation type="unfinished">Ok</translation>
     </message>
 </context>
 </TS>
