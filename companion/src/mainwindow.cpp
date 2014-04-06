@@ -1624,6 +1624,7 @@ void MainWindow::createActions()
     portugueseLangAct =  addAct( langAlignGroup,     tr("Portuguese"),      tr("Use Portuguese in menus"),              SLOT(setPTLanguage()));
     swedishLangAct =     addAct( langAlignGroup,     tr("Swedish"),         tr("Use Swedish in menus"),                 SLOT(setSELanguage()));
     russianLangAct =     addAct( langAlignGroup,     tr("Russian"),         tr("Use Russian in menus"),                 SLOT(setRULanguage()));
+    dutchLangAct =       addAct( langAlignGroup,     tr("Dutch"),           tr("Use Dutch in menus"),                   SLOT(setNLLanguage()));
 
     aboutAct =           addAct("information.png",   tr("About..."),                tr("Show the application's About box"),   SLOT(about()));
     printAct =           addAct("print.png",         tr("Print..."),                tr("Print current model"),                SLOT(print()));
@@ -1701,6 +1702,7 @@ void MainWindow::createMenus()
       languageMenu->addAction(portugueseLangAct);
       languageMenu->addAction(swedishLangAct);
       languageMenu->addAction(russianLangAct);
+      languageMenu->addAction(dutchLangAct);
 
     settingsMenu->addMenu(themeMenu);
       themeMenu->addAction(classicThemeAct);
@@ -1950,6 +1952,8 @@ void MainWindow::updateLanguageActions()
     russianLangAct->setChecked(true);
   else if (langId=="sv_SE") 
     swedishLangAct->setChecked(true);
+  else if (langId=="nl_NL") 
+    dutchLangAct->setChecked(true);
 }
 
 void MainWindow::updateIconThemeActions()

@@ -96,6 +96,7 @@ private slots:
     void setPTLanguage() {setLanguage("pt_PT");};
     void setRULanguage() {setLanguage("ru_RU");};
     void setSELanguage() {setLanguage("sv_SE");};
+    void setNLLanguage() {setLanguage("nl_NL");};
 
     void setTheme(int index);
     void setClassicTheme()   {setTheme(0);};
@@ -275,6 +276,7 @@ private:
     QAction *portugueseLangAct;
     QAction *swedishLangAct;
     QAction *russianLangAct;
+    QAction *dutchLangAct;
     QAction *openDocURLAct;
     QString fwToUpdate;
 };
