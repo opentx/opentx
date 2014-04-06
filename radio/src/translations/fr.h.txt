@@ -249,7 +249,7 @@
 #define TR_CFN_RESERVE         "[reserve]\0   "
 
 #if defined(CPUARM)
-  #define TR_VFSWFUNC          "Sécur.\0      ""Ecolage\0     ""Trim instant.""Remise à 0\0  ""Déf \0        " TR_ADJUST_GVAR "Volume\0      " TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_RESERVE TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Rétroécl.\0   " TR_CFN_TEST
+  #define TR_VFSWFUNC          "Sécur.\0      ""Ecolage\0     ""Trim instant.""Remise à 0\0  ""Déf.\0        " TR_ADJUST_GVAR "Volume\0      " TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_RESERVE TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Rétroécl.\0   " TR_CFN_TEST
 #elif defined(PCBGRUVIN9X)
   #define TR_VFSWFUNC          "Sécur.\0      ""Ecolage\0     ""Trim instant.""Remise à 0\0  " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC TR_SDCLOGS "Rétroécl.\0   " TR_CFN_TEST
 #else

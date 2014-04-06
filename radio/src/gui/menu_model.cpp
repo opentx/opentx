@@ -5023,6 +5023,7 @@ void menuModelCustomFunctions(uint8_t event)
           else if (func == FUNC_VOLUME) {
             val_max = MIXSRC_LAST_CH;
             putsMixerSource(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr);
+            INCDEC_SET_FLAG(INCDEC_SOURCE);
             INCDEC_ENABLE_CHECK(isSourceAvailable);
           }
 #elif defined(VOICE)
@@ -5081,6 +5082,7 @@ void menuModelCustomFunctions(uint8_t event)
               case FUNC_ADJUST_GVAR_SOURCE:
                 val_max = MIXSRC_LAST_CH;
                 putsMixerSource(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr);
+                INCDEC_SET_FLAG(INCDEC_SOURCE);
                 INCDEC_ENABLE_CHECK(isSourceAvailable);
                 break;
               case FUNC_ADJUST_GVAR_GVAR:
