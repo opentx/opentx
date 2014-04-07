@@ -72,6 +72,12 @@
 #define IF_CPUARM(x)
 #endif
 
+#if defined(VARIO) && defined(CPUARM)
+#define IF_VARIO_CPUARM(x) x,
+#else
+#define IF_VARIO_CPUARM(x)
+#endif
+
 #if defined(LUA)
 #define IF_LUA(x) x,
 #else

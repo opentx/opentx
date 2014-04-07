@@ -137,7 +137,7 @@ void getGpsDistance()
 }
 #endif
 
-#if defined(CPUARM)
+#if defined(CPUARM) && defined(VARIO)
 
 void varioWakeup()
 {
