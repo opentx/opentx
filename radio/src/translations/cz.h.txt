@@ -754,6 +754,7 @@
 #define TR_MIRROR              "Zrcadlit"
 #define TR_CLEAR               "Smazat"
 #define TR_RESET               "Reset"
+#define TR_RESET_SUBMENU       "Reset..."
 #define TR_COUNT               "Velikost"
 #define TR_PT                  "č."
 #define TR_PTS                 " b."

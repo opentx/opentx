@@ -754,6 +754,7 @@
 #define TR_MIRROR              "Mirror"
 #define TR_CLEAR               "Clear"
 #define TR_RESET               "Reset Servowerte"
+#define TR_RESET_SUBMENU       "Reset..."
 #define TR_COUNT               "Punkte"
 #define TR_PT                  "Pt"
 #define TR_PTS                 "Pts"

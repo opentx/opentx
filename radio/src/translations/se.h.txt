@@ -754,6 +754,7 @@
 #define TR_MIRROR              "Spegla"
 #define TR_CLEAR               "Töm"
 #define TR_RESET               "Nollställ"
+#define TR_RESET_SUBMENU       "Reset..."
 #define TR_COUNT               "Antal"
 #define TR_PT                  "pt"
 #define TR_PTS                 "pkt"

@@ -754,6 +754,7 @@
 #define TR_MIRROR              "Miroir"
 #define TR_CLEAR               "Effacer"
 #define TR_RESET               "Réinitialiser"
+#define TR_RESET_SUBMENU       "Reset..."
 #define TR_COUNT               "Nb points"
 #define TR_PT                  "pt"
 #define TR_PTS                 "pts"

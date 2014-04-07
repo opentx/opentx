@@ -497,6 +497,7 @@ const pm_char STR_VIEW_TEXT[] PROGMEM = TR_VIEW_TEXT;
   const pm_char STR_MIRROR[] PROGMEM = TR_MIRROR;
   const pm_char STR_CLEAR[] PROGMEM = TR_CLEAR;
   const pm_char STR_RESET[] PROGMEM = TR_RESET;
+  const pm_char STR_RESET_SUBMENU[] PROGMEM = TR_RESET_SUBMENU;
   const pm_char STR_COUNT[] PROGMEM = TR_COUNT;
   const pm_char STR_PT[] PROGMEM = TR_PT;
   const pm_char STR_PTS[] PROGMEM = TR_PTS;

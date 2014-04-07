@@ -344,16 +344,21 @@ bool modelHasNotes()
   return (f_stat(filename, &info) == FR_OK);
 }
 
+void pushModelNotes()
+{
+  char filename[sizeof(MODELS_PATH)+1+sizeof(g_model.header.name)+sizeof(TEXT_EXT)] = MODELS_PATH "/";
+  char *buf = strcat_modelname(&filename[sizeof(MODELS_PATH)], g_eeGeneral.currModel);
+  strcpy(buf, TEXT_EXT);
+  pushMenuTextView(filename);
+}
+
 void onLongMenuPress(const char *result)
 {
   if (result == STR_VIEW_CHANNELS) {
     pushMenu(menuChannelsView);
   }
   else if (result == STR_VIEW_NOTES) {
-    char filename[sizeof(MODELS_PATH)+1+sizeof(g_model.header.name)+sizeof(TEXT_EXT)] = MODELS_PATH "/";
-    char *buf = strcat_modelname(&filename[sizeof(MODELS_PATH)], g_eeGeneral.currModel);
-    strcpy(buf, TEXT_EXT);
-    pushMenuTextView(filename);
+    pushModelNotes();
   }
 }
 #endif

@@ -754,6 +754,7 @@
 #define TR_MIRROR              "Lutro"
 #define TR_CLEAR               "Wyczyść"
 #define TR_RESET               "Resetuj"
+#define TR_RESET_SUBMENU       "Reset..."
 #define TR_COUNT               "Punkty"
 #define TR_PT                  "pkt"
 #define TR_PTS                 "pkt"
