@@ -727,12 +727,23 @@ void menuMainView(uint8_t event)
     // Logical Switches
     uint8_t sw = 0;
     for (uint8_t line=0; line<4; line++) {
+      uint8_t y = LCD_H/2-7+line*8;
+      lcd_rect(LCD_W/2+7*FW-1, y-1, 6*8+1, 7);
       for (uint8_t col=0; col<8; col++) {
-        uint8_t x = LCD_W/2+7*FW+col*FW;
-        uint8_t y = LCD_H/2-7+line*8;
-        lcd_putcAtt(x, y, sw>=9 ? 'A'+sw-9 : '1'+sw, SMLSIZE);
-        if (getSwitch(SWSRC_SW1+sw))
-          lcd_filled_rect(x-1, y-1, 6, 8);
+        uint8_t x = LCD_W/2+7*FW-1+col*(FW);
+        if (col > 0)
+          lcd_vline(x, y, 5);
+        if (getSwitch(SWSRC_SW1+sw)) {
+          lcd_plot(x+1, y);
+          lcd_plot(x+2, y+1);
+          lcd_plot(x+3, y+2);
+          lcd_plot(x+4, y+3);
+          lcd_plot(x+5, y+4);
+          lcd_plot(x+1, y+4);
+          lcd_plot(x+2, y+3);
+          lcd_plot(x+4, y+1);
+          lcd_plot(x+5, y);
+        }
         sw++;
       }
     }
