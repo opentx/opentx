@@ -753,7 +753,8 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
     return SDCARD_ERROR(result);
   }
 
-  if (*(uint32_t*)&buf[0] != O9X_FOURCC || (uint8_t)buf[4] != EEPROM_VER || buf[5] != 'M') {
+  uint8_t version = (uint8_t)buf[4];
+  if (*(uint32_t*)&buf[0] != O9X_FOURCC || version < FIRST_CONV_EEPROM_VER || version > EEPROM_VER || buf[5] != 'M') {
     f_close(&restoreFile);
     return STR_INCOMPATIBLE;
   }
@@ -783,6 +784,14 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
   Eeprom32_file_index = i_fileDst + 1;                                    // This file system entry
   Eeprom32_process_state = E32_BLANKCHECK;
   eeWaitFinished();
+
+#if defined(CPUARM)
+  if (version < EEPROM_VER) {
+    eeCheck(true);
+    ConvertModel(i_fileDst, version);
+    loadModel(g_eeGeneral.currModel);
+  }
+#endif
 
   return NULL;
 }

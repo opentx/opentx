@@ -860,6 +860,22 @@ void ConvertModel_215_to_216(ModelData &model)
   memcpy(g_model.moduleData, oldModel.moduleData, sizeof(g_model.moduleData));
 }
 
+void ConvertModel(int id, int version)
+{
+  loadModel(id);
+
+  if (version == 215) {
+    version = 216;
+    ConvertModel_215_to_216(g_model);
+  }
+
+  uint8_t currModel = g_eeGeneral.currModel;
+  g_eeGeneral.currModel = id;
+  s_eeDirtyMsk = EE_MODEL;
+  eeCheck(true);
+  g_eeGeneral.currModel = currModel;
+}
+
 bool eeConvert()
 {
   const char *msg = NULL;
@@ -900,7 +916,6 @@ bool eeConvert()
 #endif
 
   // Models conversion
-  uint8_t currModel = g_eeGeneral.currModel;
   for (uint8_t id=0; id<MAX_MODELS; id++) {
 #if LCD_W >= 212
     lcd_hline(61, 6*FH+5, 10+id*2, FORCE);
@@ -909,19 +924,10 @@ bool eeConvert()
 #endif
     lcdRefresh();
     if (eeModelExists(id)) {
-      loadModel(id);
-      int version = conversionVersionStart;
-      if (version == 215) {
-        version = 216;
-        ConvertModel_215_to_216(g_model);
-      }
-      g_eeGeneral.currModel = id;
-      s_eeDirtyMsk = EE_MODEL;
-      eeCheck(true);
+      ConvertModel(id, conversionVersionStart);
     }
 
   }
 
-  g_eeGeneral.currModel = currModel;
   return true;
 }

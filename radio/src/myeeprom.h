@@ -52,15 +52,18 @@
 #define BEEP_VAL     ( (g_eeGeneral.warnOpts & WARN_BVAL_BIT) >>3 )
 
 #if defined(PCBTARANIS)
-  #define EEPROM_VER       216
+  #define EEPROM_VER             216
+  #define FIRST_CONV_EEPROM_VER  215
 #elif defined(PCBSKY9X)
-  #define EEPROM_VER       216
+  #define EEPROM_VER             216
+  #define FIRST_CONV_EEPROM_VER  215
 #elif defined(CPUM2560) || defined(CPUM2561)
-  #define EEPROM_VER       216
+  #define EEPROM_VER             216
+  #define FIRST_CONV_EEPROM_VER  EEPROM_VER
 #elif defined(CPUM128)
-  #define EEPROM_VER       216
+  #define EEPROM_VER             216
 #else
-  #define EEPROM_VER       216
+  #define EEPROM_VER             216
 #endif
 
 #ifndef PACK
