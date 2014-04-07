@@ -475,34 +475,163 @@ class SourceField: public ConversionField< UnsignedField<N> > {
     unsigned int _source;
 };
 
+
+int smallGvarToEEPROM(int gvar)
+{
+  if (gvar < -10000) {
+    gvar = 128 + gvar + 10000;
+  }
+  else if (gvar > 10000) {
+    gvar = -128 +gvar - 10001;
+  }
+  return gvar;
+}
+
+int smallGvarToC9x(int gvar)
+{
+  if (gvar>110) {
+    gvar = gvar-128 - 10000;
+  }
+  else if (gvar<-110) {
+    gvar = gvar+128 + 10001;
+  }
+  return gvar;
+}
+
+void splitGvarParam(const int gvar, int & _gvar, unsigned int & _gvarParam, const BoardEnum board, const int version)
+{
+  if (version >= 214 || (!IS_ARM(board) && version >= 213)) {
+    if (gvar < -10000) {
+      _gvarParam = 0;
+      _gvar = 256 + gvar + 10000;
+    }
+    else if (gvar > 10000) {
+      _gvarParam = 1;
+      _gvar = gvar - 10001;
+    }
+    else {
+      if (gvar < 0) _gvarParam = 1;
+      else          _gvarParam = 0;
+      _gvar = gvar;  // save routine throws away all unused bits; therefore no 2er complement compensation needed here
+    }
+  }
+  else {
+    if (gvar < -10000) {
+      _gvarParam = 1;
+      _gvar = gvar + 10000;
+    }
+    else if (gvar > 10000) {
+      _gvarParam = 1;
+      _gvar = gvar - 10001;
+    }
+    else {
+      _gvarParam = 0;
+      _gvar = gvar;
+    }
+  }
+}
+
+void concatGvarParam(int & gvar, const int _gvar, const unsigned int _gvarParam, const BoardEnum board, const int version)
+{
+  if (version >= 214 || (!IS_ARM(board) && version >= 213)) {
+        gvar = _gvar;
+    if (gvar<0) gvar+=256;  // remove 2er complement, because 8bit part is in this case unsigned
+        if (_gvarParam) {  // here is the real sign bit
+          gvar|=-256;   // set all higher bits to simulate negative value
+        }
+
+    if (gvar>245) {
+        gvar = gvar-256 - 10000;
+    } else if (gvar<-245) {
+        gvar = gvar+256 + 10001;
+    }
+  }
+  else {
+    if (_gvarParam == 0) {
+      gvar = _gvar;
+    }
+    else if (_gvar >= 0) {
+      gvar = 10001 + _gvar;
+    }
+    else {
+      gvar = -10000 + _gvar;
+    }
+  }
+}
+
+void exportGvarParam(const int gvar, int & _gvar, int version)
+{
+  int GV1 = (version >= 216 ? 4096 : 512);
+
+  if (gvar < -10000) {
+    _gvar = GV1 + gvar + 10000;
+  }
+  else if (gvar > 10000) {
+    _gvar = GV1 + gvar - 10001;
+  }
+  else {
+    _gvar = gvar;
+  }
+}
+
+void importGvarParam(int & gvar, const int _gvar, int version)
+{
+  int GV1 = (version >= 216 ? 4096 : 512);
+
+  if (_gvar >= GV1) {
+    gvar = 10001 + _gvar - GV1;
+  }
+  else if (_gvar >= GV1-9) {
+    gvar = -10000 + _gvar - GV1;
+  }
+  else if (_gvar < -GV1) {
+    gvar = -10000 + _gvar + GV1 + 1;
+  }
+  else if (_gvar < -GV1+9) {
+    gvar = 10000 + _gvar + GV1 + 1;
+  }
+  else {
+    gvar = _gvar;
+  }
+
+  // qDebug() << QString("import") << _gvar << gvar;
+}
+
 class CurveReferenceField: public TransformedField {
   public:
     CurveReferenceField(CurveReference & curve, BoardEnum board, unsigned int version):
       TransformedField(internalField),
       curve(curve),
-      _curve_type(0)
+      _curve_type(0),
+      _curve_value(0)
     {
       internalField.Append(new UnsignedField<8>(_curve_type));
-      internalField.Append(new SignedField<8>(curve.value));
+      internalField.Append(new SignedField<8>(_curve_value));
     }
 
     virtual void beforeExport()
     {
-      if (curve.value != 0)
+      if (curve.value != 0) {
         _curve_type = (unsigned int)curve.type;
-      else
+        _curve_value = smallGvarToEEPROM(curve.value);
+      }
+      else {
         _curve_type = 0;
+        _curve_value = 0;
+      }
     }
 
     virtual void afterImport()
     {
       curve.type = (CurveReference::CurveRefType)_curve_type;
+      curve.value = smallGvarToC9x(_curve_value);
     }
 
   protected:
     StructField internalField;
     CurveReference & curve;
     unsigned int _curve_type;
+    int _curve_value;
 };
 
 class HeliField: public StructField {
@@ -644,129 +773,6 @@ class PhaseField: public TransformedField {
     int trimExt[NUM_STICKS];
     unsigned int trimMode[NUM_STICKS];
 };
-
-
-int smallGvarToEEPROM(int gvar)
-{
-  if (gvar < -10000) {
-    gvar = 128 + gvar + 10000;
-  }
-  else if (gvar > 10000) {
-    gvar = -128 +gvar - 10001;
-  }
-  return gvar;
-}
-
-int smallGvarToC9x(int gvar)
-{
-  if (gvar>110) {
-    gvar = gvar-128 - 10000;
-  }
-  else if (gvar<-110) {
-    gvar = gvar+128 + 10001;
-  }
-  return gvar;
-}
-
-
-void splitGvarParam(const int gvar, int & _gvar, unsigned int & _gvarParam, const BoardEnum board, const int version)
-{
-  if (version >= 214 || (!IS_ARM(board) && version >= 213)) {
-    if (gvar < -10000) {
-      _gvarParam = 0;
-      _gvar = 256 + gvar + 10000;
-    }
-    else if (gvar > 10000) {
-      _gvarParam = 1;
-      _gvar = gvar - 10001;
-    }
-    else {
-      if (gvar < 0) _gvarParam = 1;
-      else          _gvarParam = 0;
-      _gvar = gvar;  // save routine throws away all unused bits; therefore no 2er complement compensation needed here
-    }
-  }
-  else {
-    if (gvar < -10000) {
-      _gvarParam = 1;
-      _gvar = gvar + 10000;
-    }
-    else if (gvar > 10000) {
-      _gvarParam = 1;
-      _gvar = gvar - 10001;
-    }
-    else {
-      _gvarParam = 0;
-      _gvar = gvar;
-    }
-  }
-}
-
-void concatGvarParam(int & gvar, const int _gvar, const unsigned int _gvarParam, const BoardEnum board, const int version)
-{
-  if (version >= 214 || (!IS_ARM(board) && version >= 213)) {
-	gvar = _gvar;
-    if (gvar<0) gvar+=256;  // remove 2er complement, because 8bit part is in this case unsigned
-	if (_gvarParam) {  // here is the real sign bit
-	  gvar|=-256;   // set all higher bits to simulate negative value
-	}
-
-    if (gvar>245) {
-        gvar = gvar-256 - 10000;
-    } else if (gvar<-245) {
-        gvar = gvar+256 + 10001;
-    }
-  }
-  else {
-    if (_gvarParam == 0) {
-      gvar = _gvar;
-    }
-    else if (_gvar >= 0) {
-      gvar = 10001 + _gvar;
-    }
-    else {
-      gvar = -10000 + _gvar;
-    }
-  }
-}
-
-void exportGvarParam(const int gvar, int & _gvar, int version)
-{
-  int GV1 = (version >= 216 ? 4096 : 512);
-
-  if (gvar < -10000) {
-    _gvar = GV1 + gvar + 10000;
-  }
-  else if (gvar > 10000) {
-    _gvar = GV1 + gvar - 10001;
-  }
-  else {
-    _gvar = gvar;
-  }
-}
-
-void importGvarParam(int & gvar, const int _gvar, int version)
-{
-  int GV1 = (version >= 216 ? 4096 : 512);
-
-  if (_gvar >= GV1) {
-    gvar = 10001 + _gvar - GV1;
-  }
-  else if (_gvar >= GV1-9) {
-    gvar = -10000 + _gvar - GV1;
-  }
-  else if (_gvar < -GV1) {
-    gvar = -10000 + _gvar + GV1 + 1;
-  }
-  else if (_gvar < -GV1+9) {
-    gvar = 10000 + _gvar + GV1 + 1;
-  }
-  else {
-    gvar = _gvar;
-  }
-
-  // qDebug() << QString("import") << _gvar << gvar;
-}
 
 class MixField: public TransformedField {
   public:
