@@ -13,10 +13,6 @@
   <property name="windowTitle">
    <string>Downloading: </string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="companion9x.qrc">
-    <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QProgressBar" name="progressBar">
@@ -51,7 +47,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="companion9x.qrc"/>
+  <include location="companion.qrc"/>
  </resources>
  <connections>
   <connection>

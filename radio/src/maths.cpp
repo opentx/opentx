@@ -36,6 +36,29 @@
 
 #include "opentx.h"
 
+
+/*
+  Division by 10 and rounding or fixed point arithmetic values
+
+  Examples: 
+    value -> result
+    105 ->  11
+    104 ->  10
+   -205 -> -21
+   -204 -> -20 
+*/
+getvalue_t div10_and_round(getvalue_t value)
+{
+  if (value >= 0 ) {
+    value += 5;
+  }
+  else {
+    value -= 5;
+  }
+  return value/10;
+}
+
+
 #if defined(FRSKY)
 uint16_t getChannelRatio(uint8_t channel)
 {
@@ -105,7 +128,7 @@ void getGpsDistance()
   dist = frskyData.hub.distFromEarthAxis * angle / 1000000;
   result += dist*dist;
 
-  dist = abs(frskyData.hub.baroAltitudeOffset ? TELEMETRY_ALT_BP : TELEMETRY_GPS_ALT_BP);
+  dist = abs(TELEMETRY_BARO_ALT_AVAILABLE() ? TELEMETRY_RELATIVE_BARO_ALT_BP : TELEMETRY_RELATIVE_GPS_ALT_BP);
   result += dist*dist;
 
   frskyData.hub.gpsDistance = isqrt32(result);
@@ -114,13 +137,61 @@ void getGpsDistance()
 }
 #endif
 
-#if defined(FRSKY) && defined(VARIO)
+#if defined(CPUARM)
+
+void varioWakeup()
+{
+  if (isFunctionActive(FUNCTION_VARIO)) {
+    int varioFreq, varioDuration, varioPause=0;
+    uint8_t varioFlags;
+
+    int verticalSpeed = frskyData.hub.varioSpeed;
+
+#if 0
+    if (g_model.frsky.varioSource == VARIO_SOURCE_DTE) {
+      #warning "Ele stick for vario tests"
+      verticalSpeed = getValue(MIXSRC_Ele);
+    }
+#endif
+
+    int varioCenterMin = (int)g_model.frsky.varioCenterMin * 10 - 50;
+    int varioCenterMax = (int)g_model.frsky.varioCenterMax * 10 + 50;
+    int varioMax = (10+(int)g_model.frsky.varioMax) * 100;
+    int varioMin = (-10+(int)g_model.frsky.varioMin) * 100;
+
+    if (verticalSpeed > varioMax)
+      verticalSpeed = varioMax;
+    else if (verticalSpeed < varioMin)
+      verticalSpeed = varioMin;
+
+    if (verticalSpeed > varioCenterMin) {
+      varioFreq = VARIO_FREQUENCY_ZERO + (g_eeGeneral.varioPitch*10) + (((VARIO_FREQUENCY_RANGE+(g_eeGeneral.varioRange*10)) * (verticalSpeed-varioCenterMin)) / varioMax);
+      int varioPeriod = VARIO_REPEAT_MAX + ((VARIO_REPEAT_ZERO+(g_eeGeneral.varioRepeat*10)-VARIO_REPEAT_MAX) * (varioMax-verticalSpeed) * (varioMax-verticalSpeed)) / ((varioMax-varioCenterMin) * (varioMax-varioCenterMin));
+      if (verticalSpeed >= varioCenterMax || varioCenterMin == varioCenterMax)
+        varioDuration = varioPeriod / 5;
+      else
+        varioDuration = varioPeriod * (85 - (((verticalSpeed-varioCenterMin) * 25) / (varioCenterMax-varioCenterMin))) / 100;
+      varioPause = varioPeriod - varioDuration;
+      varioFlags = PLAY_BACKGROUND;
+    }
+    else {
+      varioFreq = VARIO_FREQUENCY_ZERO + (g_eeGeneral.varioPitch*10) - (((VARIO_FREQUENCY_ZERO+(g_eeGeneral.varioPitch*10)-((VARIO_FREQUENCY_ZERO + (g_eeGeneral.varioPitch*10))/2)) * (verticalSpeed-varioCenterMin)) / varioMin);
+      varioDuration = 80; // continuous beep: we will enter again here before the tone ends
+      varioFlags = PLAY_BACKGROUND|PLAY_NOW;
+    }
+
+    AUDIO_VARIO(varioFreq, varioDuration, varioPause, varioFlags);
+  }
+}
+
+#elif defined(FRSKY) && defined(VARIO)
+
 void varioWakeup()
 {
   static tmr10ms_t s_varioTmr;
   tmr10ms_t tmr10ms = get_tmr10ms();
   
-  if (isFunctionActive(FUNC_VARIO)) {
+  if (isFunctionActive(FUNCTION_VARIO)) {
 #if defined(AUDIO)
     cli();
     int16_t verticalSpeed = frskyData.hub.varioSpeed;
@@ -135,64 +206,35 @@ void varioWakeup()
       verticalSpeed = (verticalSpeed * 10) / ((varioMax-varioCenterMax) / 100);
 
       if ((int16_t)(s_varioTmr-tmr10ms) < 0) {
-        uint8_t SoundVarioBeepTime = (1600 - verticalSpeed) / 100;
-        uint8_t SoundVarioBeepFreq = (verticalSpeed * 10 + 16000) >> 8;
-        s_varioTmr = tmr10ms + (SoundVarioBeepTime*2);
-        AUDIO_VARIO(SoundVarioBeepFreq, SoundVarioBeepTime);
+        uint8_t varioFreq = (verticalSpeed * 10 + 16000) >> 8;
+        uint8_t varioDuration = (1600 - verticalSpeed) / 100;
+        s_varioTmr = tmr10ms + (varioDuration*2);
+        AUDIO_VARIO(varioFreq, varioDuration);
       }
     }
 #else
-    int16_t varioCenterMax = (int16_t)g_model.frsky.varioCenterMax * 10 + 50;
-    if (verticalSpeed >= varioCenterMax) {
-      verticalSpeed = verticalSpeed - varioCenterMax;
-      int16_t varioMax = (10+(int16_t)g_model.frsky.varioMax) * 100;
-      if (verticalSpeed > varioMax) verticalSpeed = varioMax;
-      verticalSpeed = (verticalSpeed * 10) / ((varioMax-varioCenterMax) / 100);
-    }
-    else {
-      int16_t varioCenterMin = (int16_t)g_model.frsky.varioCenterMin * 10 - 50;
-      if (verticalSpeed <= varioCenterMin) {
-        verticalSpeed = verticalSpeed - varioCenterMin;
-        int16_t varioMin = (-10+(int16_t)g_model.frsky.varioMin) * 100;
-        if (verticalSpeed < varioMin) verticalSpeed = varioMin;
-        verticalSpeed = (verticalSpeed * 10) / ((varioCenterMin-varioMin) / 100);
-      }
-      else {
-        return;
-      }
-    }
+    int varioCenterMin = (int)g_model.frsky.varioCenterMin * 10 - 50;
+    int varioCenterMax = (int)g_model.frsky.varioCenterMax * 10 + 50;
+    int varioMax = (10+(int)g_model.frsky.varioMax) * 100;
+    int varioMin = (-10+(int)g_model.frsky.varioMin) * 100;
 
-    if (verticalSpeed < 0 || (int16_t)(s_varioTmr-tmr10ms) < 0) {
-#if defined(CPUARM)
-      uint16_t SoundVarioBeepTime;
-      uint16_t SoundVarioBeepFreq;
+    if (verticalSpeed < varioCenterMin || (verticalSpeed > varioCenterMax && (int16_t)(s_varioTmr - tmr10ms) < 0)) {
+      if (verticalSpeed > varioMax)
+        verticalSpeed = varioMax;
+      else if (verticalSpeed < varioMin)
+        verticalSpeed = varioMin;
+
+      uint8_t varioFreq, varioDuration;
       if (verticalSpeed > 0) {
-        if (verticalSpeed > 1276) {
-          SoundVarioBeepTime=5;
-        } else {
-          SoundVarioBeepTime = 320 - (verticalSpeed >> 2);
-        }
-        SoundVarioBeepFreq = 1000 + verticalSpeed;
+        varioFreq = (verticalSpeed * 4 + 8000) >> 7;
+        varioDuration = (8000 - verticalSpeed * 5) / 100;
       }
       else {
-        SoundVarioBeepTime = 80;
-        SoundVarioBeepFreq = (verticalSpeed * 3 + 8000) >> 3;
+        varioFreq = (verticalSpeed * 3 + 8000) >> 7;
+        varioDuration = 20;
       }
-      s_varioTmr = tmr10ms + (SoundVarioBeepTime/5);
-#else
-      uint8_t SoundVarioBeepTime;
-      uint8_t SoundVarioBeepFreq;
-      if (verticalSpeed > 0) {
-        SoundVarioBeepTime = (8000 - verticalSpeed * 5) / 100;
-        SoundVarioBeepFreq = (verticalSpeed * 4 + 8000) >> 7;
-      }
-      else {
-        SoundVarioBeepTime = 20;
-        SoundVarioBeepFreq = (verticalSpeed * 3 + 8000) >> 7;
-      }
-      s_varioTmr = tmr10ms + (SoundVarioBeepTime/2);
-#endif
-      AUDIO_VARIO(SoundVarioBeepFreq, SoundVarioBeepTime);
+      s_varioTmr = tmr10ms + (varioDuration/2);
+      AUDIO_VARIO(varioFreq, varioDuration);
     }
 #endif
 
@@ -224,4 +266,5 @@ void varioWakeup()
     s_varioTmr = tmr10ms;
   }
 }
+
 #endif

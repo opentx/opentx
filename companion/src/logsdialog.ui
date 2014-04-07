@@ -11,11 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Companion9x log viewer</string>
-  </property>
-  <property name="windowIcon">
-   <iconset resource="companion9x.qrc">
-    <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
+   <string>Companion Log Viewer</string>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
@@ -70,7 +66,16 @@
       <property name="spacing">
        <number>0</number>
       </property>
-      <property name="margin">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>0</number>
       </property>
       <item>
@@ -188,7 +193,7 @@
       <number>0</number>
      </property>
      <attribute name="verticalHeaderVisible">
-      <bool>true</bool>
+      <bool>false</bool>
      </attribute>
      <attribute name="verticalHeaderDefaultSectionSize">
       <number>18</number>
@@ -262,7 +267,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="companion9x.qrc">
+      <iconset resource="companion.qrc">
        <normaloff>:/images/maps.png</normaloff>:/images/maps.png</iconset>
      </property>
      <property name="iconSize">
@@ -285,7 +290,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="companion9x.qrc"/>
+  <include location="companion.qrc"/>
  </resources>
  <connections/>
 </ui>

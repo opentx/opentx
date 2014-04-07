@@ -26,16 +26,14 @@
   */ 
 
 /* Includes ------------------------------------------------------------------*/
-#include "../opentx.h"
-#include "../FatFs/diskio.h"
+#include "../../opentx.h"
+#include "../../FatFs/diskio.h"
 #include "board_taranis.h"
 
 extern "C" {
 #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/misc.h"
 #include "usbd_msc_mem.h"
 #include "usb_conf.h"
-
-void eeprom_read_block (void *pointer_ram, uint16_t pointer_eeprom, size_t size);
 
 #define STORAGE_LUN_NBR    2
 #define BLOCKSIZE          512
@@ -205,14 +203,11 @@ int8_t STORAGE_Read (uint8_t lun,
                  uint16_t blk_len)
 {
   if (lun == 1) {
-    if (fat12Read(buf, blk_addr, blk_len) != 0) {
+    if (fat12Read(buf, blk_addr, blk_len) != 0)
       return -1;
-    }
   }
   else {
-    if (SD_ReadSectors(buf,
-                       blk_addr,
-                       blk_len) != 0) {
+    if (SD_ReadSectors(buf, blk_addr, blk_len) != 0) {
       return -1;
     }
   }
@@ -240,9 +235,7 @@ int8_t STORAGE_Write (uint8_t lun,
       return -1;
   }
   else {
-    if (SD_WriteSectors(buf,
-                        blk_addr,
-                        blk_len) != 0)
+    if (SD_WriteSectors(buf, blk_addr, blk_len) != 0)
       return -1;
   }
 

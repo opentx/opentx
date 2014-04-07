@@ -26,8 +26,8 @@
    <string>Programmer Configuration</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="companion9x.qrc">
-    <normaloff>:/images/configure.png</normaloff>:/images/configure.png</iconset>
+   <iconset resource="companion.qrc">
+    <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="2" column="0">
@@ -503,6 +503,61 @@ Please only use this if you know what you are doing.  There are no error checks 
        </item>
        <item>
         <property name="text">
+         <string notr="true">com5</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">com6</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">com7</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">com8</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">com9</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">com10</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">com11</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">com12</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">com13</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">com14</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">com15</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
          <string notr="true">lpt1</string>
         </property>
        </item>
@@ -760,7 +815,7 @@ Please only use this if you know what you are doing.  There are no error checks 
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>
-  <include location="companion9x.qrc"/>
+  <include location="companion.qrc"/>
  </resources>
  <connections>
   <connection>

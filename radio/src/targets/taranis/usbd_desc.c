@@ -31,6 +31,7 @@
 #include "usbd_req.h"
 #include "usbd_conf.h"
 #include "usb_regs.h"
+#include "board_taranis.h"
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
   * @{
@@ -54,16 +55,24 @@
   * @{
   */ 
 
-#define USBD_VID                   0x0483
-#define USBD_PID                   0x5720
+#define USBD_VID                            0x0483
 
-#define USBD_LANGID_STRING         0x409
-#define USBD_MANUFACTURER_STRING   "FrSky"
+#define USBD_LANGID_STRING                  0x409
+#define USBD_MANUFACTURER_STRING            "FrSky"
+#define USBD_SERIALNUMBER_FS_STRING         "00000000001B"
 
-#define USBD_PRODUCT_FS_STRING        "FrSky Taranis Mass Storage"
-#define USBD_SERIALNUMBER_FS_STRING   "00000000001B"
-#define USBD_CONFIGURATION_FS_STRING  "MSC Config"
-#define USBD_INTERFACE_FS_STRING      "MSC Interface"
+
+#if defined(BOOT)
+  #define USBD_PID                        0x5720
+  #define USBD_PRODUCT_FS_STRING          "FrSky Taranis Bootloader"
+  #define USBD_CONFIGURATION_FS_STRING    "MSC Config"
+  #define USBD_INTERFACE_FS_STRING        "MSC Interface"
+#else
+  #define USBD_PID                        0x5710
+  #define USBD_PRODUCT_FS_STRING          "FrSky Taranis Joystick"
+  #define USBD_CONFIGURATION_FS_STRING    "HID Config"
+  #define USBD_INTERFACE_FS_STRING        "HID Interface"
+#endif
 
 USBD_DEVICE USR_desc =
 {
@@ -159,9 +168,7 @@ uint8_t *  USBD_USR_LangIDStrDescriptor( uint8_t speed , uint16_t *length)
 */
 uint8_t *  USBD_USR_ProductStrDescriptor( uint8_t speed , uint16_t *length)
 {
- 
   USBD_GetString ((uint8_t*)USBD_PRODUCT_FS_STRING, USBD_StrDesc, length);
-
   return USBD_StrDesc;
 }
 
@@ -188,7 +195,6 @@ uint8_t *  USBD_USR_ManufacturerStrDescriptor( uint8_t speed , uint16_t *length)
 uint8_t *  USBD_USR_SerialStrDescriptor( uint8_t speed , uint16_t *length)
 {
   USBD_GetString ((uint8_t*)USBD_SERIALNUMBER_FS_STRING, USBD_StrDesc, length);
-
   return USBD_StrDesc;
 }
 

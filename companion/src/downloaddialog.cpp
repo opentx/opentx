@@ -2,13 +2,15 @@
 #include "ui_downloaddialog.h"
 #include <QMessageBox>
 #include <QtGui>
+#include <QTime>
+#include "helpers.h"
 
 downloadDialog::downloadDialog(QWidget *parent, QString src, QString tgt) :
     QDialog(parent),
     ui(new Ui::downloadDialog)
 {
     ui->setupUi(this);
-
+    this->setWindowIcon(CompanionIcon("fwpreferences.png"));
     ui->progressBar->setValue(1);
     ui->progressBar->setMinimum(0);
     ui->progressBar->setMaximum(0);
@@ -21,7 +23,7 @@ downloadDialog::downloadDialog(QWidget *parent, QString src, QString tgt) :
 
     file = new QFile(tgt);
     if (!file->open(QIODevice::WriteOnly)) {
-        QMessageBox::critical(this, "companion9x",
+        QMessageBox::critical(this, "Companion",
                               tr("Unable to save the file %1: %2.")
                               .arg(tgt).arg(file->errorString()));
         QTimer::singleShot(0, this, SLOT(fileError()));
@@ -51,7 +53,7 @@ void downloadDialog::httpFinished()
     if (reply->error())
     {
         file->remove();
-        QMessageBox::information(this, tr("companion9x"),
+        QMessageBox::information(this, tr("Companion"),
                                  tr("Download failed: %1.")
                                  .arg(reply->errorString()));
         ok = false;
@@ -86,3 +88,14 @@ void downloadDialog::fileError()
     file = 0;
     reject();
 }
+
+void downloadDialog::closeEvent( QCloseEvent * event)
+{
+  // Delay closing 2 seconds to avoid unpleasant flashing download dialogs
+  QTime closeTime= QTime::currentTime().addSecs(2);
+  while( QTime::currentTime() < closeTime )
+    QCoreApplication::processEvents(QEventLoop::AllEvents, 100);   
+
+  event->accept();
+}
+

@@ -746,8 +746,7 @@ void RlcFile::nextRlcWriteStep()
 
   if (m_rlc_len==0) goto close;
 
-  for (i=1; 1; i++) // !! laeuft ein byte zu weit !!
-  {
+  for (i=1; 1; i++) { // !! laeuft ein byte zu weit !!
     bool cur0 = m_rlc_buf[i] == 0;
     if (cur0 != run0 || cnt==0x3f || (cnt0 && cnt==0x0f) || i==m_rlc_len) {
       if (run0) {
@@ -782,59 +781,57 @@ void RlcFile::nextRlcWriteStep()
 
   close:
 
-   switch(m_write_step) {
-     case WRITE_START_STEP:
-     {
-       blkid_t fri=0;
+  switch(m_write_step) {
+    case WRITE_START_STEP: {
+      blkid_t fri = 0;
 
-       if (m_currBlk && (fri=EeFsGetLink(m_currBlk))) {
-         // TODO reuse EeFsFree!!!
-         blkid_t prev_freeList = eeFs.freeList;
-         eeFs.freeList = fri;
+      if (m_currBlk && (fri = EeFsGetLink(m_currBlk))) {
+        // TODO reuse EeFsFree!!!
+        blkid_t prev_freeList = eeFs.freeList;
+        eeFs.freeList = fri;
 #if defined(PCBTARANIS)
-         freeBlocks++;
+        freeBlocks++;
 #endif
-         while( EeFsGetLink(fri)) {
-           fri = EeFsGetLink(fri);
+        while (EeFsGetLink(fri)) {
+          fri = EeFsGetLink(fri);
 #if defined(PCBTARANIS)
-           freeBlocks++;
+          freeBlocks++;
 #endif
-         }
-         m_write_step = WRITE_FREE_UNUSED_BLOCKS_STEP1;
-         EeFsSetLink(fri, prev_freeList);
-         return;
-       }
-     }
+        }
+        m_write_step = WRITE_FREE_UNUSED_BLOCKS_STEP1;
+        EeFsSetLink(fri, prev_freeList);
+        return;
+      }
+    }
 
-     case WRITE_FINAL_DIRENT_STEP:
-     {
-       m_currBlk = eeFs.files[FILE_TMP].startBlk;
-       DirEnt & f = eeFs.files[m_fileId];
-       eeFs.files[FILE_TMP].startBlk = f.startBlk;
-       eeFs.files[FILE_TMP].size = f.size;
-       f.startBlk = m_currBlk;
-       f.size = m_pos;
-       f.typ = eeFs.files[FILE_TMP].typ;
-       m_write_step = WRITE_TMP_DIRENT_STEP;
-       EeFsFlushDirEnt(m_fileId);
-       return;
-     }
+    case WRITE_FINAL_DIRENT_STEP: {
+      m_currBlk = eeFs.files[FILE_TMP].startBlk;
+      DirEnt & f = eeFs.files[m_fileId];
+      eeFs.files[FILE_TMP].startBlk = f.startBlk;
+      eeFs.files[FILE_TMP].size = f.size;
+      f.startBlk = m_currBlk;
+      f.size = m_pos;
+      f.typ = eeFs.files[FILE_TMP].typ;
+      m_write_step = WRITE_TMP_DIRENT_STEP;
+      EeFsFlushDirEnt(m_fileId);
+      return;
+    }
 
-     case WRITE_TMP_DIRENT_STEP:
-       m_write_step = 0;
-       EeFsFlushDirEnt(FILE_TMP);
-       return;
+    case WRITE_TMP_DIRENT_STEP:
+      m_write_step = 0;
+      EeFsFlushDirEnt(FILE_TMP);
+      return;
 
-     case WRITE_FREE_UNUSED_BLOCKS_STEP1:
-       m_write_step = WRITE_FREE_UNUSED_BLOCKS_STEP2;
-       EeFsSetLink(m_currBlk, 0);
-       return;
+    case WRITE_FREE_UNUSED_BLOCKS_STEP1:
+      m_write_step = WRITE_FREE_UNUSED_BLOCKS_STEP2;
+      EeFsSetLink(m_currBlk, 0);
+      return;
 
-     case WRITE_FREE_UNUSED_BLOCKS_STEP2:
-       m_write_step = WRITE_FINAL_DIRENT_STEP;
-       EeFsFlushFreelist();
-       return;
-   }
+    case WRITE_FREE_UNUSED_BLOCKS_STEP2:
+      m_write_step = WRITE_FINAL_DIRENT_STEP;
+      EeFsFlushFreelist();
+      return;
+  }
 }
 
 void RlcFile::flush()
@@ -869,6 +866,23 @@ void RlcFile::DisplayProgressBar(uint8_t x)
   #define CHECK_EEPROM_VARIANT() (g_eeGeneral.variant == EEPROM_VARIANT)
 #else
   #define CHECK_EEPROM_VARIANT() (1)
+#endif
+
+// For conversions ...
+#if defined(CPUARM)
+void loadGeneralSettings()
+{
+  memset(&g_eeGeneral, 0, sizeof(g_eeGeneral));
+  theFile.openRlc(FILE_GENERAL);
+  theFile.readRlc((uint8_t*)&g_eeGeneral, sizeof(g_eeGeneral));
+}
+
+void loadModel(int index)
+{
+  memset(&g_model, 0, sizeof(g_model));
+  theFile.openRlc(FILE_MODEL(index));
+  theFile.readRlc((uint8_t*)&g_model, sizeof(g_model));
+}
 #endif
 
 bool eeLoadGeneral()
@@ -948,7 +962,6 @@ void eeLoadModel(uint8_t id)
       resumePulses();
     }
 
-    activeSwitches = 0;
     activeFnSwitches = 0;
     activeFunctions = 0;
     memclear(lastFunctionTime, sizeof(lastFunctionTime));
@@ -979,7 +992,7 @@ void eeLoadModel(uint8_t id)
 #endif
 
 #if defined(CPUARM) && defined(SDCARD)
-    refreshModelAudioFiles();
+    referenceModelAudioFiles();
 #endif
 
     LOAD_MODEL_BITMAP();

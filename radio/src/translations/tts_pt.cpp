@@ -67,9 +67,9 @@ enum PortuguesePrompts {
   PT_PROMPT_AMPS = PT_PROMPT_UNITS_BASE+UNIT_AMPS,
   PT_PROMPT_METERS_PER_SECOND = PT_PROMPT_UNITS_BASE+UNIT_METERS_PER_SECOND,
   PT_PROMPT_SPARE1 = PT_PROMPT_UNITS_BASE+UNIT_RAW,
-  PT_PROMPT_KMH = PT_PROMPT_UNITS_BASE+UNIT_KMH,
-  PT_PROMPT_METERS = PT_PROMPT_UNITS_BASE+UNIT_METERS,
-  PT_PROMPT_DEGREES = PT_PROMPT_UNITS_BASE+UNIT_DEGREES,
+  PT_PROMPT_KMH = PT_PROMPT_UNITS_BASE+UNIT_SPEED,
+  PT_PROMPT_METERS = PT_PROMPT_UNITS_BASE+UNIT_DIST,
+  PT_PROMPT_DEGREES = PT_PROMPT_UNITS_BASE+UNIT_TEMPERATURE,
   PT_PROMPT_PERCENT = PT_PROMPT_UNITS_BASE+UNIT_PERCENT,
   PT_PROMPT_MILLIAMPS = PT_PROMPT_UNITS_BASE+UNIT_MILLIAMPS,
   PT_PROMPT_MAH = PT_PROMPT_UNITS_BASE+UNIT_MAH,
@@ -119,13 +119,16 @@ I18N_PLAY_FUNCTION(pt, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     unit--;
     convertUnit(number, unit);
     if (IS_IMPERIAL_ENABLE()) {
-      if (unit == UNIT_METERS) {
+      if (unit == UNIT_DIST) {
         unit = UNIT_FEET;
+      }
+      if (unit == UNIT_SPEED) {
+    	unit = UNIT_KTS;
       }
     }
 #if defined(CPUARM)
-    if ((att & PREC1) && (unit == UNIT_FEET || (unit == UNIT_METERS && number >= 100))) {
-      number /= 10;
+    if ((att & PREC1) && (unit == UNIT_FEET || (unit == UNIT_DIST && number >= 100))) {
+      number = div10_and_round(number);
       att -= PREC1;
     }
 #endif

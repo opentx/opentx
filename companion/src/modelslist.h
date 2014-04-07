@@ -48,7 +48,7 @@
 struct CurrentSelection
 {
   QListWidgetItem *current_item;
-  bool selected[C9XMAX_MODELS+1];
+  bool selected[C9X_MAX_MODELS+1];
 };
 
 class ModelsListWidget : public QListWidget
@@ -81,6 +81,7 @@ public slots:
     void copy();
     void paste();
     void print();
+    void EditModel();
     void OpenEditWindow();
     void LoadBackup();
     void OpenWizard();

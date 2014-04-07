@@ -51,23 +51,24 @@ int g_snapshot_idx = 0;
 class Open9xSim: public FXMainWindow
 {
   FXDECLARE(Open9xSim)
-public:
-  Open9xSim(){};
-  Open9xSim(FXApp* a);
-  long onKeypress(FXObject*,FXSelector,void*);
-  long onTimeout(FXObject*,FXSelector,void*);
-  void makeSnapshot(const FXDrawable* drawable);
-  void doEvents();
-  void refreshDiplay();
 
-private:
-  FXImage       *bmp;
-  FXImageFrame  *bmf;
-  bool           firstTime;
+  public:
+    Open9xSim(){};
+    Open9xSim(FXApp* a);
+    long onKeypress(FXObject*,FXSelector,void*);
+    long onTimeout(FXObject*,FXSelector,void*);
+    void makeSnapshot(const FXDrawable* drawable);
+    void doEvents();
+    void refreshDiplay();
 
-public:
-  FXSlider      *sliders[8];
-  FXKnob        *knobs[NUM_POTS];
+  private:
+    FXImage       *bmp;
+    FXImageFrame  *bmf;
+    bool           firstTime;
+
+  public:
+    FXSlider      *sliders[8];
+    FXKnob        *knobs[NUM_POTS];
 };
 // Message Map
 FXDEFMAP(Open9xSim) Open9xSimMap[]={
@@ -79,8 +80,8 @@ FXDEFMAP(Open9xSim) Open9xSimMap[]={
 
 FXIMPLEMENT(Open9xSim,FXMainWindow,Open9xSimMap,ARRAYNUMBER(Open9xSimMap))
 
-Open9xSim::Open9xSim(FXApp* a)
-:FXMainWindow(a,"OpenTXSimu",NULL,NULL,DECOR_ALL,20,90,0,0)
+Open9xSim::Open9xSim(FXApp* a):
+  FXMainWindow(a, "OpenTX Simu", NULL, NULL, DECOR_ALL, 20, 90, 0, 0)
 {
   firstTime=true;
   for(int i=0; i<(LCD_W*LCD_H/8); i++) displayBuf[i]=0;//rand();
@@ -406,18 +407,18 @@ uint16_t anaIn(uint8_t chan)
   else if (chan<NUM_STICKS+NUM_POTS)
     return th9xSim->knobs[chan-NUM_STICKS]->getValue();
 #if defined(PCBTARANIS)
-  else if (chan == 8)
+  else if (chan == TX_VOLTAGE)
     return 1000;
 #elif defined(PCBSKY9X)
-  else if (chan == 7)
+  else if (chan == TX_VOLTAGE)
     return 1500;
-  else if (chan == 8)
+  else if (chan == TX_CURRENT)
     return 100;
 #elif defined(PCBGRUVIN9X)
-  else if (chan == 7)
+  else if (chan == TX_VOLTAGE)
     return 150;
 #else
-  else if (chan == 7)
+  else if (chan == TX_VOLTAGE)
     return 1500;
 #endif
   else

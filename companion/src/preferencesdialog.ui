@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>685</width>
-    <height>710</height>
+    <height>838</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -25,11 +25,7 @@
   <property name="windowTitle">
    <string>Preferences</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="companion9x.qrc">
-    <normaloff>:/images/preferences.png</normaloff>:/images/preferences.png</iconset>
-  </property>
-  <layout class="QGridLayout" name="gridLayout_4" columnstretch="1,0,0,1,0">
+  <layout class="QGridLayout" name="gridLayout_4" columnstretch="1,0,0,0,0">
    <property name="sizeConstraint">
     <enum>QLayout::SetMinimumSize</enum>
    </property>
@@ -39,7 +35,116 @@
    <property name="margin">
     <number>4</number>
    </property>
-   <item row="7" column="0">
+   <item row="31" column="1" colspan="2">
+    <widget class="QComboBox" name="stickmodeCB">
+     <property name="whatsThis">
+      <string>Mode selection:
+
+Mode 1:
+  Left stick:  Elevator, Rudder
+  Right stick:  Throttle, Aileron
+
+Mode 2:
+  Left stick:  Throttle, Rudder
+  Right stick:  Elevator, Aileron
+
+Mode 3:
+  Left stick:  Elevator, Aileron
+  Right stick:  Throttle, Rudder
+
+Mode 4:
+  Left stick:  Throttle, Aileron
+  Right stick:  Elevator, Rudder
+
+</string>
+     </property>
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
+     <item>
+      <property name="text">
+       <string>Mode 1 (RUD ELE THR AIL)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Mode 2 (RUD THR ELE AIL)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Mode 3 (AIL ELE THR RUD)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Mode 4 (AIL THR ELE RUD)</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="14" column="1">
+    <widget class="QComboBox" name="backLightColor">
+     <item>
+      <property name="text">
+       <string>Blue</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Green</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Red</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Orange</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Yellow</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="2" column="1" colspan="4">
+    <layout class="QHBoxLayout" name="horizontalLayout_10">
+     <item>
+      <widget class="QLineEdit" name="backupPath">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="backupPathButton">
+       <property name="text">
+        <string>Open Folder</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="backupEnable">
+       <property name="text">
+        <string>auto backup before write</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_17">
+     <property name="text">
+      <string>Automatic Backup Folder</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
     <widget class="QLabel" name="label_4">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -48,18 +153,89 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Show Splash Screen</string>
+      <string>Show Splash At Start</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="0" colspan="5">
+   <item row="15" column="1" colspan="4">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QCheckBox" name="joystickChkB">
+       <property name="text">
+        <string>Enable</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="joystickCB">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="joystickcalButton">
+       <property name="text">
+        <string>Calibrate</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="1" colspan="4">
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <widget class="QSpinBox" name="historySize">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+         <horstretch>40</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximum">
+        <number>15</number>
+       </property>
+       <property name="value">
+        <number>10</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="wizardEnable_ChkB">
+       <property name="text">
+        <string>Ask use of wizard for new models</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="5" column="0" colspan="5">
     <widget class="Line" name="line">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
-   <item row="12" column="0">
+   <item row="14" column="0">
     <widget class="QLabel" name="label_3">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -75,41 +251,7 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="3" colspan="2">
-    <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="0,0">
-     <item>
-      <widget class="QCheckBox" name="startupCheck_companion9x">
-       <property name="text">
-        <string>Check for updates on startup</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="startupCheck_fw">
-       <property name="text">
-        <string>Check for selected Fw updates</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="2" column="2" colspan="2">
-    <widget class="QCheckBox" name="wizardEnable_ChkB">
-     <property name="text">
-      <string>Ask use of wizard for new models</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="4" rowspan="7">
+   <item row="6" column="4" rowspan="7">
     <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,0">
      <item row="0" column="0" colspan="2">
       <widget class="QLabel" name="imageLabel">
@@ -160,54 +302,18 @@
        <property name="text">
         <string>...</string>
        </property>
-       <property name="icon">
-        <iconset resource="companion9x.qrc">
-         <normaloff>:/images/clear.png</normaloff>:/images/clear.png</iconset>
-       </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item row="0" column="1" colspan="2">
-    <widget class="QComboBox" name="locale_QB"/>
-   </item>
-   <item row="12" column="2" colspan="2">
+   <item row="14" column="2" colspan="2">
     <widget class="QCheckBox" name="simuSW">
      <property name="text">
       <string>Remember switches in simulator</string>
      </property>
     </widget>
    </item>
-   <item row="12" column="1">
-    <widget class="QComboBox" name="backLightColor">
-     <item>
-      <property name="text">
-       <string>Blue</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Green</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Red</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Orange</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Yellow</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="4" column="1" colspan="3">
+   <item row="6" column="1" colspan="3">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <property name="spacing">
       <number>6</number>
@@ -227,10 +333,6 @@
        <property name="text">
         <string>...</string>
        </property>
-       <property name="icon">
-        <iconset resource="companion9x.qrc">
-         <normaloff>:/images/library.png</normaloff>:/images/library.png</iconset>
-       </property>
       </widget>
      </item>
      <item>
@@ -248,33 +350,21 @@
      </item>
     </layout>
    </item>
-   <item row="7" column="1">
-    <widget class="QCheckBox" name="showSplash">
+   <item row="16" column="0">
+    <widget class="QLabel" name="label_19">
      <property name="text">
-      <string/>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
+      <string>Simulator capture folder</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
-    <widget class="QSpinBox" name="historySize">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-       <horstretch>40</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="maximum">
-      <number>15</number>
-     </property>
-     <property name="value">
-      <number>10</number>
+   <item row="17" column="0" colspan="5">
+    <widget class="Line" name="line_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
-   <item row="28" column="4">
+   <item row="31" column="4">
     <widget class="QComboBox" name="channelorderCB">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -298,127 +388,127 @@ This is used by the templated to determine which channel goes to what number out
      </property>
      <item>
       <property name="text">
-       <string notr="true">R E T A</string>
+       <string>R E T A</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string notr="true">R E A T</string>
+       <string>R E A T</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string notr="true">R T E A</string>
+       <string>R T E A</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string notr="true">R T A E</string>
+       <string>R T A E</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string notr="true">R A E T</string>
+       <string>R A E T</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string notr="true">R A T E</string>
+       <string>R A T E</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string notr="true">E R T A</string>
+       <string>E R T A</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string notr="true">E R A T</string>
+       <string>E R A T</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string notr="true">E T R A</string>
+       <string>E T R A</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string notr="true">E T A R</string>
+       <string>E T A R</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string notr="true">E A R T</string>
+       <string>E A R T</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string notr="true">E A T R</string>
+       <string>E A T R</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string notr="true">T R E A</string>
+       <string>T R E A</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string notr="true">T R A E</string>
+       <string>T R A E</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string notr="true">T E R A</string>
+       <string>T E R A</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string notr="true">T E A R</string>
+       <string>T E A R</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string notr="true">T A R E</string>
+       <string>T A R E</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string notr="true">T A E R</string>
+       <string>T A E R</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string notr="true">A R E T</string>
+       <string>A R E T</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string notr="true">A R T E</string>
+       <string>A R T E</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string notr="true">A E R T</string>
+       <string>A E R T</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string notr="true">A E T R</string>
+       <string>A E T R</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string notr="true">A T R E</string>
+       <string>A T R E</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string notr="true">A T E R</string>
+       <string>A T E R</string>
       </property>
      </item>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="6" column="0">
     <widget class="QLabel" name="label_8">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -431,35 +521,7 @@ This is used by the templated to determine which channel goes to what number out
      </property>
     </widget>
    </item>
-   <item row="32" column="1" colspan="4">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QCheckBox" name="joystickChkB">
-       <property name="text">
-        <string>Enable</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="joystickCB">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="joystickcalButton">
-       <property name="text">
-        <string>Calibrate</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="10" column="1" colspan="3">
+   <item row="12" column="1" colspan="3">
     <layout class="QGridLayout" name="gridLayout_2">
      <property name="verticalSpacing">
       <number>1</number>
@@ -483,7 +545,7 @@ This is used by the templated to determine which channel goes to what number out
      </item>
     </layout>
    </item>
-   <item row="21" column="1" colspan="4">
+   <item row="24" column="1" colspan="4">
     <layout class="QHBoxLayout" name="horizontalLayout_5">
      <item>
       <widget class="QLabel" name="FwInfo">
@@ -507,7 +569,7 @@ This is used by the templated to determine which channel goes to what number out
      </item>
     </layout>
    </item>
-   <item row="10" column="0">
+   <item row="12" column="0">
     <widget class="QLabel" name="label_9">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -520,7 +582,7 @@ This is used by the templated to determine which channel goes to what number out
      </property>
     </widget>
    </item>
-   <item row="34" column="0" colspan="5">
+   <item row="37" column="0" colspan="5">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <spacer name="horizontalSpacer_3">
@@ -563,7 +625,7 @@ This is used by the templated to determine which channel goes to what number out
      </item>
     </layout>
    </item>
-   <item row="23" column="1" colspan="4">
+   <item row="26" column="1" colspan="4">
     <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="1,0">
      <item>
       <widget class="QLabel" name="label_12">
@@ -590,7 +652,7 @@ This is used by the templated to determine which channel goes to what number out
      </item>
     </layout>
    </item>
-   <item row="29" column="1" colspan="4">
+   <item row="32" column="1" colspan="4">
     <layout class="QGridLayout" name="gridLayout_6" columnstretch="0,0,1,0,0">
      <item row="1" column="4">
       <widget class="QPushButton" name="export_PB">
@@ -638,20 +700,7 @@ This is used by the templated to determine which channel goes to what number out
      </item>
     </layout>
    </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Language (requires restart)</string>
-     </property>
-    </widget>
-   </item>
-   <item row="13" column="1" colspan="4">
+   <item row="16" column="1" colspan="4">
     <layout class="QGridLayout" name="gridLayout_8">
      <property name="verticalSpacing">
       <number>1</number>
@@ -682,7 +731,7 @@ This is used by the templated to determine which channel goes to what number out
      </item>
     </layout>
    </item>
-   <item row="28" column="0">
+   <item row="31" column="0">
     <widget class="QLabel" name="label_14">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -695,7 +744,7 @@ This is used by the templated to determine which channel goes to what number out
      </property>
     </widget>
    </item>
-   <item row="28" column="3">
+   <item row="31" column="3">
     <widget class="QLabel" name="label_13">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
@@ -711,143 +760,14 @@ This is used by the templated to determine which channel goes to what number out
      </property>
     </widget>
    </item>
-   <item row="28" column="1" colspan="2">
-    <widget class="QComboBox" name="stickmodeCB">
-     <property name="whatsThis">
-      <string>Mode selection:
-
-Mode 1:
-  Left stick:  Elevator, Rudder
-  Right stick:  Throttle, Aileron
-
-Mode 2:
-  Left stick:  Throttle, Rudder
-  Right stick:  Elevator, Aileron
-
-Mode 3:
-  Left stick:  Elevator, Aileron
-  Right stick:  Throttle, Rudder
-
-Mode 4:
-  Left stick:  Throttle, Aileron
-  Right stick:  Elevator, Rudder
-
-</string>
-     </property>
-     <property name="currentIndex">
-      <number>1</number>
-     </property>
-     <item>
-      <property name="text">
-       <string>Mode 1 (RUD ELE THR AIL)</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Mode 2 (RUD THR ELE AIL)</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Mode 3 (AIL ELE THR RUD)</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Mode 4 (AIL THR ELE RUD)</string>
-      </property>
-     </item>
-    </widget>
-   </item>
    <item row="32" column="0">
-    <widget class="QLabel" name="label_11">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Joystick</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="3">
-    <widget class="QComboBox" name="splashincludeCB">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <item>
-      <property name="text">
-       <string>Include companion splashes</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Only user defined splashes</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="7" column="2">
-    <widget class="QLabel" name="label_10">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Splash library behaviour</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="29" column="0">
     <widget class="QLabel" name="label_15">
      <property name="text">
       <string>Profile slot</string>
      </property>
     </widget>
    </item>
-   <item row="16" column="0">
-    <widget class="QLabel" name="label_17">
-     <property name="text">
-      <string>Automatic Backup Folder</string>
-     </property>
-    </widget>
-   </item>
-   <item row="16" column="1" colspan="4">
-    <layout class="QHBoxLayout" name="horizontalLayout_10">
-     <item>
-      <widget class="QLineEdit" name="backupPath">
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="backupPathButton">
-       <property name="text">
-        <string>Open Folder</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="backupEnable">
-       <property name="text">
-        <string>auto backup before write</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="24" column="1" colspan="4">
+   <item row="27" column="1" colspan="4">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -863,7 +783,7 @@ Mode 4:
      </property>
     </spacer>
    </item>
-   <item row="22" column="1" colspan="4">
+   <item row="25" column="1" colspan="4">
     <layout class="QHBoxLayout" name="horizontalLayout_11" stretch="1,0">
      <item>
       <widget class="QLabel" name="label_18">
@@ -890,7 +810,7 @@ Mode 4:
      </item>
     </layout>
    </item>
-   <item row="18" column="1" colspan="4">
+   <item row="21" column="1" colspan="4">
     <layout class="QGridLayout" name="gridLayout_5" columnstretch="1,0,0,0,0">
      <property name="sizeConstraint">
       <enum>QLayout::SetMaximumSize</enum>
@@ -981,7 +901,7 @@ May be different from firmware language</string>
      </item>
     </layout>
    </item>
-   <item row="18" column="0">
+   <item row="21" column="0">
     <layout class="QGridLayout" name="gridLayout_7">
      <item row="0" column="0">
       <widget class="QLabel" name="label_6">
@@ -1021,14 +941,7 @@ May be different from firmware language</string>
      </item>
     </layout>
    </item>
-   <item row="13" column="0">
-    <widget class="QLabel" name="label_19">
-     <property name="text">
-      <string>Simulator capture folder</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
+   <item row="1" column="0">
     <widget class="QLabel" name="label_5">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -1041,14 +954,7 @@ May be different from firmware language</string>
      </property>
     </widget>
    </item>
-   <item row="14" column="0" colspan="5">
-    <widget class="Line" name="line_2">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="20" column="1" colspan="4">
+   <item row="23" column="1" colspan="4">
     <layout class="QGridLayout" name="gridLayout" columnstretch="0,0,0,0,0,0">
      <property name="sizeConstraint">
       <enum>QLayout::SetMaximumSize</enum>
@@ -1601,7 +1507,107 @@ May be different from firmware language</string>
      </item>
     </layout>
    </item>
-   <item row="17" column="1" colspan="4">
+   <item row="9" column="0">
+    <widget class="QLabel" name="label_10">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Splash library behaviour</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="1" colspan="3">
+    <widget class="QComboBox" name="splashincludeCB">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <item>
+      <property name="text">
+       <string>Include companion splashes</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Only user defined splashes</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="0" column="1" colspan="4">
+    <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="0,0,0,0">
+     <item>
+      <widget class="QCheckBox" name="showSplash">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_6">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="startupCheck_companion9x">
+       <property name="text">
+        <string>Check for updates on startup</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="startupCheck_fw">
+       <property name="text">
+        <string>Check for selected Fw updates</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="15" column="0">
+    <widget class="QLabel" name="label_11">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Joystick</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="ge_label">
+     <property name="text">
+      <string>Google Earth Executable</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" colspan="4">
     <layout class="QHBoxLayout" name="ge_layout">
      <item>
       <widget class="QLineEdit" name="ge_lineedit">
@@ -1619,17 +1625,9 @@ May be different from firmware language</string>
      </item>
     </layout>
    </item>
-   <item row="17" column="0">
-    <widget class="QLabel" name="ge_label">
-     <property name="text">
-      <string>Google Earth Executable</string>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <tabstops>
-  <tabstop>locale_QB</tabstop>
   <tabstop>InvertPixels</tabstop>
   <tabstop>clearImageButton</tabstop>
   <tabstop>SplashFileName</tabstop>
@@ -1649,7 +1647,7 @@ May be different from firmware language</string>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>
-  <include location="companion9x.qrc"/>
+  <include location="companion.qrc"/>
  </resources>
  <connections>
   <connection>

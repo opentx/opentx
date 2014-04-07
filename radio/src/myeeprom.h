@@ -56,11 +56,11 @@
 #elif defined(PCBSKY9X)
   #define EEPROM_VER       216
 #elif defined(CPUM2560) || defined(CPUM2561)
-  #define EEPROM_VER       215
+  #define EEPROM_VER       216
 #elif defined(CPUM128)
   #define EEPROM_VER       216
 #else
-  #define EEPROM_VER       214
+  #define EEPROM_VER       216
 #endif
 
 #ifndef PACK
@@ -68,50 +68,67 @@
 #endif
 
 #if defined(PCBTARANIS)
-  #define MAX_MODELS  60
-  #define NUM_CHNOUT  32 // number of real output channels CH1-CH32
-  #define MAX_PHASES  9
-  #define MAX_MIXERS  64
-  #define MAX_EXPOS   64
-  #define NUM_CSW     32 // number of custom switches
-  #define NUM_CFN     32 // number of functions assigned to switches
-  #define MAX_SCRIPTS 3
-  #define MAX_INPUTS  32
+  #define MAX_MODELS    60
+  #define NUM_CHNOUT    32 // number of real output channels CH1-CH32
+  #define MAX_PHASES    9
+  #define MAX_MIXERS    64
+  #define MAX_EXPOS     64
+  #define NUM_LOGICAL_SWITCH       32 // number of custom switches
+  #define NUM_CFN       64 // number of functions assigned to switches
+  #define MAX_SCRIPTS   7
+  #define MAX_INPUTS    32
+  #define NUM_TRAINER       16
+  #define NUM_POTS      5
+  #define NUM_XPOTS     3
 #elif defined(CPUARM)
-  #define MAX_MODELS  60
-  #define NUM_CHNOUT  32 // number of real output channels CH1-CH32
-  #define MAX_PHASES  9
-  #define MAX_MIXERS  64
-  #define MAX_EXPOS   32
-  #define NUM_CSW     32 // number of custom switches
-  #define NUM_CFN     32 // number of functions assigned to switches
+  #define MAX_MODELS    60
+  #define NUM_CHNOUT    32 // number of real output channels CH1-CH32
+  #define MAX_PHASES    9
+  #define MAX_MIXERS    64
+  #define MAX_EXPOS     32
+  #define NUM_LOGICAL_SWITCH       32 // number of custom switches
+  #define NUM_CFN       64      // number of functions assigned to switches
+  #define NUM_TRAINER   16
+  #define NUM_POTS      3
+  #define NUM_XPOTS     0
 #elif defined(CPUM2560) || defined(CPUM2561)
-  #define MAX_MODELS  30
-  #define NUM_CHNOUT  16 // number of real output channels CH1-CH16
-  #define MAX_PHASES  6
-  #define MAX_MIXERS  32
-  #define MAX_EXPOS   16
-  #define NUM_CSW     15 // number of custom switches
-  #define NUM_CFN     24 // number of functions assigned to switches
+  #define MAX_MODELS    30
+  #define NUM_CHNOUT    16 // number of real output channels CH1-CH16
+  #define MAX_PHASES    6
+  #define MAX_MIXERS    32
+  #define MAX_EXPOS     16
+  #define NUM_LOGICAL_SWITCH       15 // number of custom switches
+  #define NUM_CFN       24 // number of functions assigned to switches
+  #define NUM_TRAINER       8
+  #define NUM_POTS      3
+  #define NUM_XPOTS     0
 #elif defined(CPUM128)
-  #define MAX_MODELS  30
-  #define NUM_CHNOUT  16 // number of real output channels CH1-CH16
-  #define MAX_PHASES  5
-  #define MAX_MIXERS  32
-  #define MAX_EXPOS   14
-  #define NUM_CSW     15 // number of custom switches
-  #define NUM_CFN     24 // number of functions assigned to switches
+  #define MAX_MODELS    30
+  #define NUM_CHNOUT    16 // number of real output channels CH1-CH16
+  #define MAX_PHASES    5
+  #define MAX_MIXERS    32
+  #define MAX_EXPOS     14
+  #define NUM_LOGICAL_SWITCH       15 // number of custom switches
+  #define NUM_CFN       24 // number of functions assigned to switches
+  #define NUM_TRAINER       8
+  #define NUM_POTS      3
+  #define NUM_XPOTS     0
 #else
-  #define MAX_MODELS  16
-  #define NUM_CHNOUT  16 // number of real output channels CH1-CH16
-  #define MAX_PHASES  5
-  #define MAX_MIXERS  32
-  #define MAX_EXPOS   14
-  #define NUM_CSW     12 // number of custom switches
-  #define NUM_CFN     16 // number of functions assigned to switches
+  #define MAX_MODELS    16
+  #define NUM_CHNOUT    16 // number of real output channels CH1-CH16
+  #define MAX_PHASES    5
+  #define MAX_MIXERS    32
+  #define MAX_EXPOS     14
+  #define NUM_LOGICAL_SWITCH       12 // number of custom switches
+  #define NUM_CFN       16 // number of functions assigned to switches
+  #define NUM_TRAINER       8
+  #define NUM_POTS      3
+  #define NUM_XPOTS     0
 #endif
 
 #define MAX_TIMERS    2
+#define NUM_CYC       3
+#define NUM_CAL_PPM   4
 
 #if defined(PCBTARANIS)
   enum CurveType {
@@ -221,7 +238,7 @@ enum BeeperMode {
 };
 
 #if defined(CPUARM)
-  #define EXTRA_GENERAL_FIELDS \
+  #define EXTRA_GENERAL_FIELDS_ARM \
   uint8_t  backlightBright; \
   int8_t   currentCalib; \
   int8_t   temperatureWarn; \
@@ -239,7 +256,30 @@ enum BeeperMode {
   int8_t   beepVolume; \
   int8_t   wavVolume; \
   int8_t   varioVolume; \
+  int8_t   varioPitch; \
+  int8_t   varioRange; \
+  int8_t   varioRepeat; \
   int8_t   backgroundVolume;
+#endif
+
+#if defined(PCBTARANIS)
+enum uartModes {
+  UART_MODE_NONE,
+  UART_MODE_SPORT,
+//  UART_MODE_VIRTUAL_SP2UART,
+#if defined(DEBUG)
+  UART_MODE_DEBUG,
+#endif
+  UART_MODE_COUNT,
+  UART_MODE_MAX = UART_MODE_COUNT-1
+};
+
+#define EXTRA_GENERAL_FIELDS \
+  EXTRA_GENERAL_FIELDS_ARM \
+  uint8_t  uart3Mode; \
+  uint8_t  potsType;
+#elif defined(CPUARM)
+  #define EXTRA_GENERAL_FIELDS EXTRA_GENERAL_FIELDS_ARM
 #elif defined(PXX)
   #define EXTRA_GENERAL_FIELDS uint8_t  countryCode;
 #else
@@ -284,7 +324,7 @@ PACK(typedef struct t_ScriptData {
   #define swstate_t         uint8_t
 #else
   #define MODELDATA_BITMAP
-  #define MODELDATA_EXTRA
+  #define MODELDATA_EXTRA   
   #define LIMITDATA_EXTRA
   #define swstate_t         uint8_t
 #endif
@@ -297,19 +337,34 @@ enum BacklightMode {
   e_backlight_mode_on
 };
 
-#if defined(FSPLASH) || defined(XSPLASH)
+#if defined(FSPLASH)
   #define SPLASH_MODE uint8_t splashMode:3
+#elif defined(PCBTARANIS)
+  #define SPLASH_MODE int8_t splashMode:3
 #else
-  #define SPLASH_MODE uint8_t splashMode:1; uint8_t spare4:2
+  #define SPLASH_MODE uint8_t splashMode:1; uint8_t splashSpare:2
 #endif
+
+#define XPOTS_MULTIPOS_COUNT 6
+
+#if defined(PCBTARANIS)
+PACK(typedef struct {
+  uint8_t count;
+  uint8_t steps[XPOTS_MULTIPOS_COUNT-1];
+}) StepsCalibData;
+#endif
+
+PACK(typedef struct {
+  int16_t mid;
+  int16_t spanNeg;
+  int16_t spanPos;
+}) CalibData;
 
 #define ALTERNATE_VIEW 0x10
 PACK(typedef struct t_EEGeneral {
   uint8_t   version;
   uint16_t  variant;
-  int16_t   calibMid[NUM_STICKS+NUM_POTS];
-  int16_t   calibSpanNeg[NUM_STICKS+NUM_POTS];
-  int16_t   calibSpanPos[NUM_STICKS+NUM_POTS];
+  CalibData calib[NUM_STICKS+NUM_POTS];
   uint16_t  chkSum;
   int8_t    currModel;
   uint8_t   contrast;
@@ -386,36 +441,37 @@ PACK(typedef struct t_CurveRef {
 #endif
 
 #if defined(PCBTARANIS)
-PACK(typedef struct t_ExpoData {
+PACK(typedef struct {
   uint8_t  srcRaw;
   uint16_t scale;
   uint8_t  chn;
   int8_t   swtch;
   uint16_t phases;
   int8_t   weight;
-  int8_t   carryTrim;
+  int8_t   carryTrim:6;
+  uint8_t  mode:2;
   char     name[LEN_EXPOMIX_NAME];
   int8_t   offset;
   CurveRef curve;
-  uint8_t  spare[2];
+  uint8_t  spare;
 }) ExpoData;
 #define MIN_EXPO_WEIGHT         -100
-#define EXPO_VALID(ed)          ((ed)->srcRaw)
-#define EXPO_MODE_ENABLE(ed, v) (true)
+#define EXPO_VALID(ed)          ((ed)->mode)
+#define EXPO_MODE_ENABLE(ed, v) (((v)<0 && ((ed)->mode&1)) || ((v)>=0 && ((ed)->mode&2)))
 #elif defined(CPUARM)
-PACK(typedef struct t_ExpoData {
-  uint8_t  mode;         // 0=end, 1=pos, 2=neg, 3=both
-  uint8_t  chn;
+PACK(typedef struct {
+  uint8_t  mode:2;         // 0=end, 1=pos, 2=neg, 3=both
+  uint8_t  chn:4;
+  uint8_t  curveMode:2;
   int8_t   swtch;
   uint16_t phases;
   int8_t   weight;
-  uint8_t  curveMode;
   char     name[LEN_EXPOMIX_NAME];
   int8_t   curveParam;
 }) ExpoData;
 #define MIN_EXPO_WEIGHT         0
 #define EXPO_VALID(ed)          ((ed)->mode)
-#define EXPO_MODE_ENABLE(ed, v) ((v<0 && (ed->mode&1)) || (v>=0 && (ed->mode&2)))
+#define EXPO_MODE_ENABLE(ed, v) (((v)<0 && ((ed)->mode&1)) || ((v)>=0 && ((ed)->mode&2)))
 #elif defined(CPUM2560) || defined(CPUM2561)
 PACK(typedef struct t_ExpoData {
   uint8_t mode:2;         // 0=end, 1=pos, 2=neg, 3=both
@@ -429,7 +485,7 @@ PACK(typedef struct t_ExpoData {
 }) ExpoData;
 #define MIN_EXPO_WEIGHT         0
 #define EXPO_VALID(ed)          ((ed)->mode)
-#define EXPO_MODE_ENABLE(ed, v) ((v<0 && (ed->mode&1)) || (v>=0 && (ed->mode&2)))
+#define EXPO_MODE_ENABLE(ed, v) (((v)<0 && ((ed)->mode&1)) || ((v)>=0 && ((ed)->mode&2)))
 #else
 PACK(typedef struct t_ExpoData {
   uint8_t mode:2;         // 0=end, 1=pos, 2=neg, 3=both
@@ -442,19 +498,23 @@ PACK(typedef struct t_ExpoData {
 }) ExpoData;
 #define MIN_EXPO_WEIGHT         0
 #define EXPO_VALID(ed)          ((ed)->mode)
-#define EXPO_MODE_ENABLE(ed, v) ((v<0 && (ed->mode&1)) || (v>=0 && (ed->mode&2)))
+#define EXPO_MODE_ENABLE(ed, v) (((v)<0 && ((ed)->mode&1)) || ((v)>=0 && ((ed)->mode&2)))
 #endif
 
-#if defined(CPUARM)
+#if defined(PCBTARANIS)
   #define limit_min_max_t     int16_t
-  #define LIMIT_MAX(lim)      (GV_IS_GV_VALUE(lim->max+1000, 0, 1250) ? GET_GVAR(lim->max+1000, 0, 125, s_perout_flight_phase)*10 : lim->max+1000)
-  #define LIMIT_MIN(lim)      (GV_IS_GV_VALUE(lim->min-1000, -1250, 0) ? GET_GVAR(lim->min-1000, -125, 0, s_perout_flight_phase)*10 : lim->min-1000)
-  #define LIMIT_OFS(lim)      (GV_IS_GV_VALUE(lim->offset, -1000, 1000) ? GET_GVAR(lim->offset, -100, 100, s_perout_flight_phase)*10 : lim->offset)
+  #define LIMIT_EXT_PERCENT   150
+  #define LIMIT_EXT_MAX       (LIMIT_EXT_PERCENT*10)
+  #define LIMIT_MAX(lim)      (GV_IS_GV_VALUE(lim->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX) ? GET_GVAR(lim->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, s_perout_flight_phase)*10 : lim->max+1000)
+  #define LIMIT_MIN(lim)      (GV_IS_GV_VALUE(lim->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX) ? GET_GVAR(lim->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, s_perout_flight_phase)*10 : lim->min-1000)
+  #define LIMIT_OFS(lim)      (GV_IS_GV_VALUE(lim->offset, -1000, 1000) ? GET_GVAR(lim->offset, -1000, 1000, s_perout_flight_phase)*10 : lim->offset)
   #define LIMIT_MAX_RESX(lim) calc1000toRESX(LIMIT_MAX(lim))
   #define LIMIT_MIN_RESX(lim) calc1000toRESX(LIMIT_MIN(lim))
   #define LIMIT_OFS_RESX(lim) calc1000toRESX(LIMIT_OFS(lim))
 #else
   #define limit_min_max_t     int8_t
+  #define LIMIT_EXT_PERCENT   125
+  #define LIMIT_EXT_MAX       LIMIT_EXT_PERCENT
   #define LIMIT_MAX(lim)      (lim->max+100)
   #define LIMIT_MIN(lim)      (lim->min-100)
   #define LIMIT_OFS(lim)      (lim->offset)
@@ -487,20 +547,26 @@ PACK(typedef struct t_LimitData {
 #define MLTPX_REP   2
 
 #if defined(CPUARM)
-#define DELAY_STEP  10
-#define SLOW_STEP   10
-#define DELAY_MAX   (25*DELAY_STEP) /* 25 seconds */
-#define SLOW_MAX    (25*SLOW_STEP)  /* 25 seconds */
+#define GV1_SMALL       128
+#define GV1_LARGE       4096
+#define GV_RANGE_WEIGHT 500
+#define GV_RANGE_OFFSET 500
+#define DELAY_STEP      10
+#define SLOW_STEP       10
+#define DELAY_MAX       (25*DELAY_STEP) /* 25 seconds */
+#define SLOW_MAX        (25*SLOW_STEP)  /* 25 seconds */
 #if defined(PCBTARANIS)
-PACK(typedef struct t_MixData {
+PACK(typedef struct {
   uint8_t  destCh;
   uint16_t phases;
-  uint8_t  mltpx;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
+  uint8_t  mltpx:2;         // multiplex method: 0 means +=, 1 means *=, 2 means :=
+  uint8_t  carryTrim:1;
+  uint8_t  spare1:5;
   int16_t  weight;
   int8_t   swtch;
   CurveRef curve;
-  uint8_t  mixWarn:4;         // mixer warning
-  uint8_t  srcVariant:4;
+  uint8_t  mixWarn:4;       // mixer warning
+  uint8_t  spare2:4;
   uint8_t  delayUp;
   uint8_t  delayDown;
   uint8_t  speedUp;
@@ -508,11 +574,12 @@ PACK(typedef struct t_MixData {
   uint8_t  srcRaw;
   int16_t  offset;
   char     name[LEN_EXPOMIX_NAME];
-  uint8_t  spare[2];
+  uint8_t  spare3;
 }) MixData;
 #else
-PACK(typedef struct t_MixData {
-  uint8_t  destCh;
+PACK(typedef struct {
+  uint8_t  destCh:4;
+  uint8_t  mixWarn:4;         // mixer warning
   uint16_t phases;
   uint8_t  curveMode:1;
   uint8_t  noExpo:1;
@@ -522,8 +589,6 @@ PACK(typedef struct t_MixData {
   int16_t  weight;
   int8_t   swtch;
   int8_t   curveParam;
-  uint8_t  mixWarn:4;         // mixer warning
-  uint8_t  srcVariant:4;
   uint8_t  delayUp;
   uint8_t  delayDown;
   uint8_t  speedUp;
@@ -552,6 +617,12 @@ PACK( union u_int8int16_t {
 // #define MD_SETOFFSET(md, val) md->offset = val
 
 #else
+
+// highest bit used for small values in mix 128 --> 8 bit is enough
+#define GV1_SMALL  128
+// highest bit used for large values in mix 256 --> 9 bits is used (8 bits + 1 extra bit from weightMode/offsetMode)
+#define GV1_LARGE  256
+
 #define DELAY_STEP  2
 #define SLOW_STEP   2
 #define DELAY_MAX   15 /* 7.5 seconds */
@@ -636,88 +707,125 @@ PACK( union u_int8int16_t {
 
 #endif
 
+enum LogicalSwitchesFunctions {
+  LS_FUNC_NONE,
 #if defined(CPUARM)
-#define MAX_CSW_DURATION 120 /*60s*/
-#define MAX_CSW_DELAY    120 /*60s*/
-#define MAX_CSW_ANDSW    MAX_SWITCH
-typedef int16_t csw_telemetry_value_t;
-PACK(typedef struct t_CustomSwData { // Custom Switches data
-  int16_t v1;
+  LS_FUNC_VEQUAL, // v==offset
+#endif
+  LS_FUNC_VALMOSTEQUAL, // v~=offset
+  LS_FUNC_VPOS,   // v>offset
+  LS_FUNC_VNEG,   // v<offset
+#if defined(CPUARM)
+  LS_FUNC_RANGE,
+#endif
+  LS_FUNC_APOS,   // |v|>offset
+  LS_FUNC_ANEG,   // |v|<offset
+  LS_FUNC_AND,
+  LS_FUNC_OR,
+  LS_FUNC_XOR,
+#if defined(CPUARM)
+  LS_FUNC_STAY,
+#endif
+  LS_FUNC_EQUAL,
+  LS_FUNC_GREATER,
+  LS_FUNC_LESS,
+  LS_FUNC_DIFFEGREATER,
+  LS_FUNC_ADIFFEGREATER,
+  LS_FUNC_TIMER,
+  LS_FUNC_STICKY,
+  LS_FUNC_COUNT,
+  LS_FUNC_MAX = LS_FUNC_COUNT-1
+};
+
+#if defined(CPUARM)
+#define MAX_LS_DURATION 250 /*25s*/
+#define MAX_LS_DELAY    250 /*25s*/
+#define MAX_LS_ANDSW    SWSRC_LAST
+typedef int16_t ls_telemetry_value_t;
+PACK(typedef struct t_LogicalSwitchData { // Custom Switches data
+  int8_t  v1;
   int16_t v2;
+  int16_t v3;
   uint8_t func;
   uint8_t delay;
   uint8_t duration;
   int8_t  andsw;
-}) CustomSwData;
+}) LogicalSwitchData;
 #else
-typedef uint8_t csw_telemetry_value_t;
-#define MAX_CSW_ANDSW    15
-PACK(typedef struct t_CustomSwData { // Custom Switches data
+typedef uint8_t ls_telemetry_value_t;
+#define MAX_LS_ANDSW    15
+PACK(typedef struct t_LogicalSwitchData { // Custom Switches data
   int8_t  v1; //input
   int8_t  v2; //offset
   uint8_t func:4;
   uint8_t andsw:4;
-}) CustomSwData;
+}) LogicalSwitchData;
 #endif
 
 enum Functions {
-#if defined(CPUARM)
-  FUNC_SAFETY_CH1,
-  FUNC_SAFETY_CH16=FUNC_SAFETY_CH1+15,
-#else
-  FUNC_SAFETY_GROUP1,
-  FUNC_SAFETY_GROUP2,
-  FUNC_SAFETY_GROUP3,
-  FUNC_SAFETY_GROUP4,
-#endif
+  // first the functions which need a checkbox
+  FUNC_SAFETY_CHANNEL,
   FUNC_TRAINER,
-  FUNC_TRAINER_RUD,
-  FUNC_TRAINER_ELE,
-  FUNC_TRAINER_THR,
-  FUNC_TRAINER_AIL,
   FUNC_INSTANT_TRIM,
-  FUNC_PLAY_SOUND,
-#if !defined(PCBTARANIS)
-  FUNC_HAPTIC,
-#endif
   FUNC_RESET,
-  FUNC_VARIO,
+#if defined(CPUARM)
+  FUNC_SET_TIMER,
+#endif
+  FUNC_ADJUST_GVAR,
+#if defined(CPUARM)
+  FUNC_VOLUME,
+  FUNC_RESERVE1,
+  FUNC_RESERVE2,
+  FUNC_RESERVE3,
+#endif
+
+  // then the other functions
+  FUNC_FIRST_WITHOUT_ENABLE,
+  FUNC_PLAY_SOUND = FUNC_FIRST_WITHOUT_ENABLE,
   FUNC_PLAY_TRACK,
 #if !defined(CPUARM)
   FUNC_PLAY_BOTH,
 #endif
   FUNC_PLAY_VALUE,
-#if !defined(PCBSTD)
-  FUNC_LOGS,
-#endif
 #if defined(CPUARM)
-  FUNC_VOLUME,
-#endif
-  FUNC_BACKLIGHT,
-#if defined(CPUARM)
+  FUNC_PLAY_DIFF,
+  FUNC_RESERVE4,
+  FUNC_RESERVE5,
   FUNC_BACKGND_MUSIC,
   FUNC_BACKGND_MUSIC_PAUSE,
 #endif
-#if defined(GVARS)
-  FUNC_ADJUST_GV1,
-  FUNC_ADJUST_GVLAST = (FUNC_ADJUST_GV1 + (MAX_GVARS-1)),
+  FUNC_VARIO,
+  FUNC_HAPTIC,
+#if !defined(PCBSTD)
+  FUNC_LOGS,
 #endif
+  FUNC_BACKLIGHT,
 #if defined(DEBUG)
   FUNC_TEST, // should remain the last before MAX as not added in companion9x
 #endif
   FUNC_MAX
 };
 
-#if defined(GVARS)
-  #define IS_ADJUST_GV_FUNCTION(sd)  (CFN_FUNC(sd) >= FUNC_ADJUST_GV1 && CFN_FUNC(sd) <= FUNC_ADJUST_GVLAST)
+#define HAS_ENABLE_PARAM(func) (func < FUNC_FIRST_WITHOUT_ENABLE)
+
+#if defined(CPUARM)
+  #define IS_PLAY_BOTH_FUNC(func) (0)
+  #define IS_VOLUME_FUNC(func)    (func == FUNC_VOLUME)
 #else
-  #define IS_ADJUST_GV_FUNCTION(sd)  (0)
+  #define IS_PLAY_BOTH_FUNC(func) (func == FUNC_PLAY_BOTH)
+  #define IS_VOLUME_FUNC(func)    (0)
+#endif
+
+#if defined(GVARS)
+  #define IS_ADJUST_GV_FUNC(func) (func == FUNC_ADJUST_GVAR)
+#else
+  #define IS_ADJUST_GV_FUNC(func) (0)
 #endif
 
 #if defined(VOICE)
-  #define HAS_REPEAT_PARAM(sd) (CFN_FUNC(sd) == FUNC_PLAY_SOUND || (CFN_FUNC(sd) >= FUNC_PLAY_TRACK && CFN_FUNC(sd) <= FUNC_PLAY_VALUE))
+  #define HAS_REPEAT_PARAM(func) (func == FUNC_PLAY_SOUND || (func >= FUNC_PLAY_TRACK && func <= FUNC_PLAY_VALUE))
 #else
-  #define HAS_REPEAT_PARAM(sd) (CFN_FUNC(sd) == FUNC_PLAY_SOUND)
+  #define HAS_REPEAT_PARAM(func) (func == FUNC_PLAY_SOUND)
 #endif
 
 enum ResetFunctionParam {
@@ -746,64 +854,78 @@ enum AdjustGvarFunctionParam {
 
 #if defined(CPUARM)
 #if defined(PCBTARANIS)
- #define LEN_CFN_NAME 10
+  #define LEN_CFN_NAME 8
 #else
- #define LEN_CFN_NAME 6
+  #define LEN_CFN_NAME 6
 #endif
 PACK(typedef struct t_CustomFnData { // Function Switches data
   int8_t  swtch;
   uint8_t func;
   PACK(union {
-    char name[LEN_CFN_NAME];
-    struct {
+    PACK(struct {
+      char name[LEN_CFN_NAME];
+    }) play;
+
+    PACK(struct {
       int16_t val;
-      int16_t ext1;
-      int16_t ext2;
-    } composite;
-  }) param;
-  uint8_t mode:2;
-  uint8_t active:6;
+      uint8_t mode;
+      uint8_t param;
+      int16_t spare2;
+    }) all;
+
+    PACK(struct {
+      int32_t val1;
+      int16_t val2;
+    }) clear;
+  });
+  uint8_t active;
 }) CustomFnData;
 #define CFN_EMPTY(p)            (!(p)->swtch)
+#define CFN_SWITCH(p)           ((p)->swtch)
 #define CFN_FUNC(p)             ((p)->func)
 #define CFN_ACTIVE(p)           ((p)->active)
-#define CFN_CH_NUMBER(p)        (CFN_FUNC(p))
+#define CFN_CH_INDEX(p)         ((p)->all.param)
+#define CFN_GVAR_INDEX(p)       ((p)->all.param)
+#define CFN_TIMER_INDEX(p)      ((p)->all.param)
 #define CFN_PLAY_REPEAT(p)      ((p)->active)
 #define CFN_PLAY_REPEAT_MUL     1
-#define CFN_PLAY_REPEAT_NOSTART 0x3F
-#define CFN_GVAR_MODE(p)        ((p)->mode)
-#define CFN_PARAM(p)            ((p)->param.composite.val)
-#define CFN_RESET(p)            (p->active = 0, memset(&(p)->param, 0, sizeof((p)->param)))
+#define CFN_PLAY_REPEAT_NOSTART 0xFF
+#define CFN_GVAR_MODE(p)        ((p)->all.mode)
+#define CFN_PARAM(p)            ((p)->all.val)
+#define CFN_RESET(p)            ((p)->active=0, (p)->clear.val1=0, (p)->clear.val2=0)
 #else
 PACK(typedef struct t_CustomFnData {
-  int8_t  swtch; // input
-  union {
+  PACK(union {
     struct {
-      uint8_t param:3;
-      uint8_t func:5;
-    } func_param;
+      int8_t   swtch:6;
+      uint16_t func:4;
+      uint8_t  mode:2;
+      uint8_t  param:3;
+      uint8_t  active:1;
+    } gvar;
 
     struct {
-      uint8_t active:1;
-      uint8_t param:2;
-      uint8_t func:5;
-    } func_param_enable;
+      int8_t   swtch:6;
+      uint16_t func:4;
+      uint8_t  param:4;
+      uint8_t  spare:1;
+      uint8_t  active:1;
+    } all;
+  });
 
-    struct {
-      uint8_t active:1;
-      uint8_t func:7;
-    } func_safety;
-  } internal;
-  uint8_t param;
+  uint8_t value;
 }) CustomFnData;
-#define CFN_FUNC(p)         ((p)->internal.func_param.func)
-#define CFN_ACTIVE(p)       ((p)->internal.func_param_enable.active)
-#define CFN_CH_NUMBER(p)    ((p)->internal.func_safety.func)
-#define CFN_PLAY_REPEAT(p)  ((p)->internal.func_param.param)
+#define CFN_SWITCH(p)       ((p)->all.swtch)
+#define CFN_FUNC(p)         ((p)->all.func)
+#define CFN_ACTIVE(p)       ((p)->all.active)
+#define CFN_CH_INDEX(p)     ((p)->all.param)
+#define CFN_TIMER_INDEX(p)  ((p)->all.param)
+#define CFN_GVAR_INDEX(p)   ((p)->gvar.param)
+#define CFN_PLAY_REPEAT(p)  ((p)->all.param)
 #define CFN_PLAY_REPEAT_MUL 10
-#define CFN_GVAR_MODE(p)    ((p)->internal.func_param_enable.param)
-#define CFN_PARAM(p)        ((p)->param)
-#define CFN_RESET(p)        ((p)->internal.func_param_enable.active = 0, CFN_PARAM(p) = 0)
+#define CFN_GVAR_MODE(p)    ((p)->gvar.mode)
+#define CFN_PARAM(p)        ((p)->value)
+#define CFN_RESET(p)        ((p)->all.active = 0, CFN_PARAM(p) = 0)
 #endif
 
 enum TelemetryUnit {
@@ -811,9 +933,9 @@ enum TelemetryUnit {
   UNIT_AMPS,
   UNIT_METERS_PER_SECOND,
   UNIT_RAW,
-  UNIT_KMH,
-  UNIT_METERS,
-  UNIT_DEGREES,
+  UNIT_SPEED,
+  UNIT_DIST,
+  UNIT_TEMPERATURE,
   UNIT_PERCENT,
   UNIT_MILLIAMPS,
   UNIT_A1A2_MAX = UNIT_MILLIAMPS,
@@ -827,6 +949,7 @@ enum TelemetryUnit {
   UNIT_SECONDS,
   UNIT_RPMS,
   UNIT_G,
+  UNIT_HDG,
 };
 
 #if defined(CPUARM)
@@ -857,10 +980,20 @@ enum TelemetrySource {
   TELEM_TX_VOLTAGE,
   TELEM_TM1,
   TELEM_TM2,
+#if defined(CPUARM)
+  TELEM_SWR,
+#endif
   TELEM_RSSI_TX,
   TELEM_RSSI_RX,
+#if defined(CPUARM)
+  TELEM_RX_VOLTAGE,
+#endif
   TELEM_A1,
   TELEM_A2,
+#if defined(CPUARM)
+  TELEM_A3,
+  TELEM_A4,
+#endif
   TELEM_ALT,
   TELEM_RPM,
   TELEM_FUEL,
@@ -880,8 +1013,21 @@ enum TelemetrySource {
   TELEM_ACCz,
   TELEM_HDG,
   TELEM_VSPD,
+  TELEM_ASPD,
+  TELEM_DTE,
+#if defined(CPUARM)
+  TELEM_RESERVE1,
+  TELEM_RESERVE2,
+  TELEM_RESERVE3,
+  TELEM_RESERVE4,
+  TELEM_RESERVE5,
+#endif
   TELEM_MIN_A1,
   TELEM_MIN_A2,
+#if defined(CPUARM)
+  TELEM_MIN_A3,
+  TELEM_MIN_A4,
+#endif
   TELEM_MIN_ALT,
   TELEM_MAX_ALT,
   TELEM_MAX_RPM,
@@ -889,13 +1035,21 @@ enum TelemetrySource {
   TELEM_MAX_T2,
   TELEM_MAX_SPEED,
   TELEM_MAX_DIST,
-  // TODO TELEM_MIN_CELL,
-  // TODO TELEM_MIN_VFAS,
+  TELEM_MIN_CELL,
+  TELEM_MIN_CELLS_SUM,
+  TELEM_MIN_VFAS,
   TELEM_MAX_CURRENT,
   TELEM_MAX_POWER,
+#if defined(CPUARM)
+  TELEM_RESERVE6,
+  TELEM_RESERVE7,
+  TELEM_RESERVE8,
+  TELEM_RESERVE9,
+  TELEM_RESERVE10,
+#endif
   TELEM_ACC,
   TELEM_GPS_TIME,
-  TELEM_CSW_MAX = TELEM_POWER,
+  TELEM_CSW_MAX = TELEM_MAX_POWER,
   TELEM_NOUSR_MAX = TELEM_A2,
 #if defined(FRSKY)
   TELEM_DISPLAY_MAX = TELEM_MAX_POWER,
@@ -903,12 +1057,7 @@ enum TelemetrySource {
   TELEM_DISPLAY_MAX = TELEM_TM2, // because used also in PlayValue
 #endif
   TELEM_STATUS_MAX = TELEM_GPS_TIME,
-#if defined(FRSKY_SPORT)
-  TELEM_SWR = TELEM_RSSI_TX,
-  TELEM_FIRST_STREAMED_VALUE = TELEM_RSSI_RX,
-#else
   TELEM_FIRST_STREAMED_VALUE = TELEM_RSSI_TX,
-#endif
 };
 
 enum VarioSource {
@@ -919,7 +1068,11 @@ enum VarioSource {
   VARIO_SOURCE_VARIO,
   VARIO_SOURCE_A1,
   VARIO_SOURCE_A2,
-  VARIO_SOURCE_LAST = VARIO_SOURCE_A2
+#if defined(FRSKY_SPORT)
+  VARIO_SOURCE_DTE,
+#endif
+  VARIO_SOURCE_COUNT,
+  VARIO_SOURCE_LAST = VARIO_SOURCE_COUNT-1
 };
 
 #if defined(FRSKY_HUB)
@@ -961,12 +1114,18 @@ enum FrskyUsrProtocols {
   USR_PROTO_LAST = USR_PROTO_WS_HOW_HIGH,
 };
 
-enum FrskySource {
-  FRSKY_SOURCE_NONE,
-  FRSKY_SOURCE_A1,
-  FRSKY_SOURCE_A2,
-  FRSKY_SOURCE_FAS,
-  FRSKY_SOURCE_CELLS,
+enum FrskyCurrentSource {
+  FRSKY_CURRENT_SOURCE_NONE,
+  FRSKY_CURRENT_SOURCE_A1,
+  FRSKY_CURRENT_SOURCE_A2,
+  FRSKY_CURRENT_SOURCE_FAS,
+};
+
+enum FrskyVoltsSource {
+  FRSKY_VOLTS_SOURCE_A1,
+  FRSKY_VOLTS_SOURCE_A2,
+  FRSKY_VOLTS_SOURCE_FAS,
+  FRSKY_VOLTS_SOURCE_CELLS,
 };
 
 #if defined(CPUARM)
@@ -976,7 +1135,7 @@ PACK(typedef struct t_FrSkyData {
   uint8_t usrProto; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh, 3=Halcyon
   uint8_t voltsSource:7;
   uint8_t altitudeDisplayed:1;
-  uint8_t blades;   // How many blades for RPMs, 0=2 blades, 1=3 blades
+  int8_t blades;    // How many blades for RPMs, 0=2 blades
   uint8_t currentSource;
   uint8_t screensType;
   FrSkyScreenData screens[MAX_FRSKY_SCREENS];
@@ -988,15 +1147,16 @@ PACK(typedef struct t_FrSkyData {
   FrSkyRSSIAlarm rssiAlarms[2];
   uint16_t mAhPersistent:1;
   uint16_t storedMah:15;
-  int8_t  fasOffset:5;
-  uint8_t spare:3;
+  int8_t   fasOffset;
 }) FrSkyData;
+#define MIN_BLADES -1   // 1 blade
+#define MAX_BLADES 126  // 128 blades
 #else
 #define MAX_FRSKY_SCREENS 2
 PACK(typedef struct t_FrSkyData {
   FrSkyChannelData channels[2];
   uint8_t usrProto:2; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh, 3=Halcyon
-  uint8_t blades:2;   // How many blades for RPMs, 0=2 blades, 1=3 blades
+  uint8_t blades:2;   // How many blades for RPMs, 0=2 blades
   uint8_t screensType:2;
   uint8_t voltsSource:2;
   int8_t  varioMin:4;
@@ -1007,9 +1167,10 @@ PACK(typedef struct t_FrSkyData {
   int8_t  varioCenterMin:5;
   uint8_t currentSource:3;
   int8_t  varioCenterMax:5;
-  int8_t  fasOffset:5;
-  uint8_t spare:3;
+  int8_t  fasOffset;
 }) FrSkyData;
+#define MIN_BLADES 0 // 2 blades
+#define MAX_BLADES 3 // 5 blades
 #endif
 
 #if defined(MAVLINK)
@@ -1020,6 +1181,14 @@ PACK(typedef struct t_MavlinkData {
   uint8_t spare2[3];
 }) MavlinkData;
 #endif
+
+enum SwashType {
+  SWASH_TYPE_120,
+  SWASH_TYPE_120X,
+  SWASH_TYPE_140,
+  SWASH_TYPE_90,
+  SWASH_TYPE_MAX = SWASH_TYPE_90
+};
 
 PACK(typedef struct t_SwashRingData { // Swash Ring data
   uint8_t   invertELE:1;
@@ -1067,8 +1236,18 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 #if defined(PCBSTD)
   #define TRIMS_ARRAY       int8_t trim[4]; int8_t trim_ext:8
   #define TRIMS_ARRAY_SIZE  5
+  #define trim_t            int16_t
 #else
-  #define TRIMS_ARRAY       int16_t trim[4]
+  #if defined(PCBTARANIS)
+    PACK(typedef struct {
+      int16_t  value:11;
+      uint16_t mode:5;
+    }) trim_t;
+    #define TRIM_MODE_NONE  0x1F  // 0b11111
+  #else
+    #define trim_t          int16_t
+  #endif
+  #define TRIMS_ARRAY       trim_t trim[4]
   #define TRIMS_ARRAY_SIZE  8
 #endif
 
@@ -1122,6 +1301,7 @@ enum SwitchSources {
   SWSRC_SG2,
   SWSRC_SH0,
   SWSRC_SH2,
+  SWSRC_TRAINER = SWSRC_SH2,
 #else
   SWSRC_ID0 = SWSRC_FIRST_SWITCH,
   SWSRC_ID1,
@@ -1137,6 +1317,32 @@ enum SwitchSources {
   SWSRC_AIL,
   SWSRC_GEA,
   SWSRC_TRN,
+  SWSRC_TRAINER = SWSRC_TRN,
+#endif
+
+  SWSRC_LAST_SWITCH = SWSRC_TRAINER,
+
+#if defined(PCBTARANIS)
+  SWSRC_FIRST_MULTIPOS_SWITCH,
+  SWSRC_LAST_MULTIPOS_SWITCH = SWSRC_FIRST_MULTIPOS_SWITCH + (NUM_XPOTS*XPOTS_MULTIPOS_COUNT) - 1,
+#endif
+
+  SWSRC_FIRST_TRIM,
+  SWSRC_TrimRudLeft = SWSRC_FIRST_TRIM,
+  SWSRC_TrimRudRight,
+  SWSRC_TrimEleDown,
+  SWSRC_TrimEleUp,
+  SWSRC_TrimThrDown,
+  SWSRC_TrimThrUp,
+  SWSRC_TrimAilLeft,
+  SWSRC_TrimAilRight,
+  SWSRC_LAST_TRIM = SWSRC_TrimAilRight,
+
+#if defined(PCBSKY9X)
+  SWSRC_REa,
+#elif defined(PCBGRUVIN9X) || defined(PCBMEGA2560)
+  SWSRC_REa,
+  SWSRC_REb,
 #endif
 
   SWSRC_FIRST_CSW,
@@ -1152,29 +1358,13 @@ enum SwitchSources {
   SWSRC_SWA,
   SWSRC_SWB,
   SWSRC_SWC,
-  SWSRC_LAST_CSW = SWSRC_SW1+NUM_CSW-1,
+  SWSRC_LAST_CSW = SWSRC_SW1+NUM_LOGICAL_SWITCH-1,
 
   SWSRC_ON,
-
-  SWSRC_FIRST_MOMENT_SWITCH,
-  SWSRC_LAST_MOMENT_SWITCH = SWSRC_FIRST_MOMENT_SWITCH+SWSRC_ON-1,
-
-#if !defined(PCBSTD)
-  SWSRC_TRAINER_SHORT,
-  SWSRC_TRAINER_LONG,
-#endif
-
-#if ROTARY_ENCODERS > 0
-  SWSRC_FIRST_ROTENC_SWITCH,
-  SWSRC_LAST_ROTENC_SWITCH = SWSRC_FIRST_ROTENC_SWITCH+(2*ROTARY_ENCODERS)-1,
-#endif
-
-  SWSRC_COUNT,
-  SWSRC_FIRST = -SWSRC_LAST_MOMENT_SWITCH,
-  SWSRC_LAST = SWSRC_COUNT-1,
-
   SWSRC_OFF = -SWSRC_ON,
-  SWSRC_TRAINER = SWSRC_SW1-1,
+
+  SWSRC_FIRST = SWSRC_OFF,
+  SWSRC_LAST = SWSRC_ON
 };
 
 enum MixSources {
@@ -1195,11 +1385,12 @@ enum MixSources {
 
   MIXSRC_FIRST_POT,
 #if defined(PCBTARANIS)
-  MIXSRC_S1 = MIXSRC_FIRST_POT,
-  MIXSRC_S2,
-  MIXSRC_S3,
-  MIXSRC_S4,
-  MIXSRC_LAST_POT = MIXSRC_S4,
+  MIXSRC_POT1 = MIXSRC_FIRST_POT,
+  MIXSRC_POT2,
+  MIXSRC_POT3,
+  MIXSRC_SLIDER1,
+  MIXSRC_SLIDER2,
+  MIXSRC_LAST_POT = MIXSRC_SLIDER2,
 #else
   MIXSRC_P1 = MIXSRC_FIRST_POT,
   MIXSRC_P2,
@@ -1260,16 +1451,16 @@ enum MixSources {
   MIXSRC_GEA,
   MIXSRC_TRN,
 #endif
-  MIXSRC_FIRST_CSW,
-  MIXSRC_SW1 = MIXSRC_FIRST_CSW,
+  MIXSRC_FIRST_LOGICAL_SWITCH,
+  MIXSRC_SW1 = MIXSRC_FIRST_LOGICAL_SWITCH,
   MIXSRC_SW9 = MIXSRC_SW1 + 8,
   MIXSRC_SWA,
   MIXSRC_SWB,
   MIXSRC_SWC,
-  MIXSRC_LAST_CSW = MIXSRC_FIRST_CSW+NUM_CSW-1,
+  MIXSRC_LAST_LOGICAL_SWITCH = MIXSRC_FIRST_LOGICAL_SWITCH+NUM_LOGICAL_SWITCH-1,
 
-  MIXSRC_FIRST_PPM,
-  MIXSRC_LAST_PPM = MIXSRC_FIRST_PPM + 7,
+  MIXSRC_FIRST_TRAINER,
+  MIXSRC_LAST_TRAINER = MIXSRC_FIRST_TRAINER+NUM_TRAINER-1,
 
   MIXSRC_FIRST_CH,
   MIXSRC_CH1 = MIXSRC_FIRST_CH,
@@ -1305,11 +1496,14 @@ enum MixSources {
 #define MIN_POINTS 3
 #define MAX_POINTS 17
 
-#define TMRMODE_NONE     0
-#define TMRMODE_ABS      1
-#define TMRMODE_THR      2
-#define TMRMODE_THR_REL  3
-#define TMRMODE_THR_TRG  4
+enum TimerModes {
+  TMRMODE_NONE,
+  TMRMODE_ABS,
+  TMRMODE_THR,
+  TMRMODE_THR_REL,
+  TMRMODE_THR_TRG,
+  TMRMODE_FIRST_SWITCH
+};
 
 #define COUNTDOWN_SILENT 0
 #define COUNTDOWN_BEEPS  1
@@ -1388,7 +1582,8 @@ enum FailsafeModes {
   FAILSAFE_HOLD,
   FAILSAFE_CUSTOM,
   FAILSAFE_NOPULSES,
-  FAILSAFE_LAST = FAILSAFE_NOPULSES
+  FAILSAFE_RECEIVER,
+  FAILSAFE_LAST = FAILSAFE_RECEIVER
 };
 
 #if defined(FRSKY) || !defined(PCBSTD)
@@ -1405,31 +1600,51 @@ enum FailsafeModes {
   #define BeepANACenter uint8_t
 #endif
 
-PACK(typedef struct t_ModelHeader {
+PACK(typedef struct {
   char      name[LEN_MODEL_NAME]; // must be first for eeLoadModelName
   uint8_t   modelId;
   MODELDATA_BITMAP
 }) ModelHeader;
 
 #if defined (CPUARM)
-  #define ARM_OR_AVR(x, y) x
+  #define ARM_FIELD(x) x;
+  #define AVR_FIELD(x)
 #else
-  #define ARM_OR_AVR(x, y) y
+  #define ARM_FIELD(x)
+  #define AVR_FIELD(x) x;
 #endif
+
+enum ThrottleSources {
+  THROTTLE_SOURCE_THR,
+#if defined(PCBTARANIS)
+  THROTTLE_SOURCE_S1,
+  THROTTLE_SOURCE_S2,
+  THROTTLE_SOURCE_S3,
+  THROTTLE_SOURCE_LS,
+  THROTTLE_SOURCE_RS,
+#else
+  THROTTLE_SOURCE_P1,
+  THROTTLE_SOURCE_P2,
+  THROTTLE_SOURCE_P3,
+#endif
+  THROTTLE_SOURCE_CH1,
+};
 
 PACK(typedef struct t_ModelData {
   ModelHeader header;
   TimerData timers[MAX_TIMERS];
-  uint8_t   protocol:3;
+  uint8_t    protocol:3; // not used on Taranis
   uint8_t   thrTrim:1;            // Enable Throttle Trim
-  int8_t    ppmNCH:4; /* spare on ARM */
-  uint8_t   trimInc:3;            // Trim Increments
+  AVR_FIELD(int8_t    ppmNCH:4)
+  ARM_FIELD(int8_t    spare2:4)
+  int8_t    trimInc:3;            // Trim Increments
   uint8_t   disableThrottleWarning:1;
-  uint8_t   ARM_OR_AVR(displayText, pulsePol):1;
+  ARM_FIELD(uint8_t displayText:1)
+  AVR_FIELD(uint8_t pulsePol:1)
   uint8_t   extendedLimits:1;
   uint8_t   extendedTrims:1;
   uint8_t   throttleReversed:1;
-  int8_t    ppmDelay; /* spare on ARM */
+  AVR_FIELD(int8_t ppmDelay)
   BeepANACenter beepANACenter;        // 1<<0->A1.. 1<<6->A7
   MixData   mixData[MAX_MIXERS];
   LimitData limitData[NUM_CHNOUT];
@@ -1438,16 +1653,16 @@ PACK(typedef struct t_ModelData {
   CURVDATA  curves[MAX_CURVES];
   int8_t    points[NUM_POINTS];
   
-  CustomSwData customSw[NUM_CSW];
+  LogicalSwitchData customSw[NUM_LOGICAL_SWITCH];
   CustomFnData funcSw[NUM_CFN];
   SwashRingData swashR;
   PhaseData phaseData[MAX_PHASES];
 
-  int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5ms increments
+  AVR_FIELD(int8_t ppmFrameLength)     // 0=22.5ms  (10ms-30ms) 0.5ms increments
   uint8_t   thrTraceSrc;
   
   swstate_t switchWarningStates;
-  uint8_t   nSwToWarn;
+  uint8_t nSwToWarn;
 
   MODEL_GVARS_DATA
 

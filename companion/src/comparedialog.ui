@@ -26,11 +26,7 @@
    <bool>false</bool>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
-  </property>
-  <property name="windowIcon">
-   <iconset resource="companion9x.qrc">
-    <normaloff>:/images/print.png</normaloff>:/images/print.png</iconset>
+   <string>Compare Models</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
@@ -129,7 +125,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="companion9x.qrc"/>
+  <include location="companion.qrc"/>
  </resources>
  <connections>
   <connection>

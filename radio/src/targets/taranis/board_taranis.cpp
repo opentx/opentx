@@ -44,22 +44,6 @@ extern "C" {
 
 volatile uint32_t Tenms ; // TODO to remove everywhere / use a #define
 
-#define PIN_MODE_MASK           0x0003
-#define PIN_INPUT               0x0000
-#define PIN_OUTPUT              0x0001
-#define PIN_PERIPHERAL          0x0002
-#define PIN_ANALOG              0x0003
-#define PIN_PULL_MASK           0x000C
-#define PIN_PULLUP              0x0004
-#define PIN_NO_PULLUP           0x0000
-#define PIN_PULLDOWN            0x0008
-#define PIN_NO_PULLDOWN         0x0000
-#define PIN_PERI_MASK           0x00F0
-#define PIN_PUSHPULL            0x0000
-#define PIN_ODRAIN              0x8000
-#define PIN_PORT_MASK           0x0700
-#define PIN_SPEED_MASK          0x6000
-
 #if !defined(SIMU)
 void configure_pins( uint32_t pins, uint16_t config )
 {
@@ -103,32 +87,6 @@ void configure_pins( uint32_t pins, uint16_t config )
       pgpio->AFR[pos >> 3] |= ((config & PIN_PERI_MASK) >> 4) << ((pos & 7)*4) ;
     }
   }
-}
-#endif
-
-bool usbPlugged(void)
-{
-  return GPIO_ReadInputDataBit(GPIOA, PIN_FS_VBUS);
-}
-
-#if !defined(SIMU)
-extern "C" {
-USB_OTG_CORE_HANDLE USB_OTG_dev;
-
-void OTG_FS_IRQHandler(void)
-{
-  USBD_OTG_ISR_Handler (&USB_OTG_dev);
-}
-}
-
-void usbInit()
-{
-  USB_OTG_BSP_Init(&USB_OTG_dev);
-}
-
-void usbStart()
-{
-  USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID, &USR_desc, &USBD_MSC_cb, &USR_cb);
 }
 #endif
 
@@ -192,9 +150,6 @@ void boardInit()
   adcInit();
   delaysInit();
   audioInit();
-#if defined(DEBUG)
-  uartInit(DEBUG_UART_BAUDRATE);
-#endif
   init5msTimer();
   __enable_irq();
   eepromInit();

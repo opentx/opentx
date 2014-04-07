@@ -42,7 +42,10 @@
 
 void doMixerCalculations();
 
-#define MODEL_RESET() memset(&g_model, 0, sizeof(g_model))
+#define MODEL_RESET() \
+  memset(&g_model, 0, sizeof(g_model)); \
+  extern bool s_mixer_first_run_done; \
+  s_mixer_first_run_done = false;
 
 #define MIXER_RESET() \
   memset(channelOutputs, 0, sizeof(channelOutputs)); \
@@ -62,6 +65,7 @@ uint16_t anaIn(uint8_t chan)
     return 0;
 }
 
+#if !defined(PCBTARANIS)
 TEST(Trims, greaterTrimLink)
 {
   MODEL_RESET();
@@ -88,11 +92,10 @@ TEST(Trims, infiniteChainedTrims)
   setTrimValue(3, 0, TRIM_EXTENDED_MAX+3); // link to FP2 trim
   EXPECT_EQ(getRawTrimValue(getTrimFlightPhase(0, 2), 0), 32);
 }
+#endif
 
 TEST(outdezNAtt, test_unsigned)
 {
-  uint16_t altitude = 65530;
-
   uint8_t refBuf[sizeof(displayBuf)];
   memset(displayBuf, 0, sizeof(displayBuf));
   lcd_putc(0*FWNUM, 0, '6');
@@ -103,12 +106,12 @@ TEST(outdezNAtt, test_unsigned)
   memcpy(refBuf, displayBuf, sizeof(displayBuf));
 
   memset(displayBuf, 0, sizeof(displayBuf));
-  lcd_outdezNAtt(1, 0, altitude, LEFT|UNSIGN);
+  lcd_outdezNAtt(0, 0, 65530, LEFT|UNSIGN);
 
   EXPECT_EQ(memcmp(refBuf, displayBuf, sizeof(displayBuf)), 0) << "Unsigned numbers will be bad displayed";
 }
 
-TEST(EEPROM, 1000_random_writes)
+TEST(EEPROM, 100_random_writes)
 {
   eepromFile = NULL; // in memory
   RlcFile f;
@@ -117,7 +120,7 @@ TEST(EEPROM, 1000_random_writes)
 
   EeFsFormat();
 
-  for(int i=0; i<1000; i++) {
+  for(int i=0; i<100; i++) {
     int size = rand()%800;
     for(int j=0; j<size; j++) {
       buf[j] = rand() < (RAND_MAX/10000*i) ? 0 : (j&0xff);
@@ -295,8 +298,8 @@ TEST(FrSkySPORT, checkCrc)
 TEST(getSwitch, undefCSW)
 {
   MODEL_RESET();
-  EXPECT_EQ(getSwitch(MAX_PSWITCH), false);
-  EXPECT_EQ(getSwitch(-MAX_PSWITCH), true); // no good answer there!
+  EXPECT_EQ(getSwitch(NUM_PSWITCH), false);
+  EXPECT_EQ(getSwitch(-NUM_PSWITCH), true); // no good answer there!
 }
 #endif
 
@@ -304,8 +307,8 @@ TEST(getSwitch, circularCSW)
 {
   MODEL_RESET();
   MIXER_RESET();
-  g_model.customSw[0] = { SWSRC_SW1, SWSRC_SW1, CS_OR };
-  g_model.customSw[1] = { SWSRC_SW1, SWSRC_SW1, CS_AND };
+  g_model.customSw[0] = { SWSRC_SW1, SWSRC_SW1, LS_FUNC_OR };
+  g_model.customSw[1] = { SWSRC_SW1, SWSRC_SW1, LS_FUNC_AND };
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
   EXPECT_EQ(getSwitch(-SWSRC_SW1), true);
   EXPECT_EQ(getSwitch(SWSRC_SW2), false);
@@ -324,8 +327,8 @@ TEST(getSwitch, recursiveSW)
   MODEL_RESET();
   MIXER_RESET();
 
-  g_model.customSw[0] = { SWSRC_RUD, -SWSRC_SW2, CS_OR };
-  g_model.customSw[1] = { SWSRC_ELE, -SWSRC_SW1, CS_OR };
+  g_model.customSw[0] = { SWSRC_RUD, -SWSRC_SW2, LS_FUNC_OR };
+  g_model.customSw[1] = { SWSRC_ELE, -SWSRC_SW1, LS_FUNC_OR };
 
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
   EXPECT_EQ(getSwitch(SWSRC_SW2), true);
@@ -567,56 +570,95 @@ TEST(Mixer, SlowOnSwitch)
   g_model.mixData[0].srcRaw = MIXSRC_MAX;
   g_model.mixData[0].weight = 100;
   g_model.mixData[0].swtch = SWSRC_THR;
-  g_model.mixData[0].speedUp = 10;
-  g_model.mixData[0].speedDown = 10;
+  g_model.mixData[0].speedUp = SLOW_STEP*5;
+  g_model.mixData[0].speedDown = SLOW_STEP*5;
 
+  s_mixer_first_run_done = true;
+  
   perOut(e_perout_mode_normal, 0);
   EXPECT_EQ(chans[0], 0);
 
   simuSetSwitch(0, 1);
   CHECK_SLOW_MOVEMENT(0, +1, 250);
 
-  simuSetSwitch(0, 0);
+  simuSetSwitch(0, -1);
   CHECK_SLOW_MOVEMENT(0, -1, 250);
 }
 
-TEST(Mixer, SlowOnPhase)
+TEST(Mixer, SlowUpOnSwitch)
 {
   MODEL_RESET();
   MIXER_RESET();
-  g_model.phaseData[1].swtch = SWSRC_THR;
-  g_model.mixData[0].destCh = 0;
-  g_model.mixData[0].mltpx = MLTPX_ADD;
-  g_model.mixData[0].srcRaw = MIXSRC_MAX;
-  g_model.mixData[0].weight = 100;
-  g_model.mixData[0].phases = 0x2 + 0x4 + 0x8 + 0x10 /*only enabled in phase 0*/;
-  g_model.mixData[0].speedUp = 10;
-  g_model.mixData[0].speedDown = 10;
-
-  s_perout_flight_phase = 0;
-  perOut(e_perout_mode_normal, 0);
-  EXPECT_EQ(chans[0], 0);
-
-  CHECK_SLOW_MOVEMENT(0, +1, 250);
-
-  s_perout_flight_phase = 1;
-  CHECK_SLOW_MOVEMENT(0, -1, 250);
-}
-
-TEST(Mixer, SlowOnSwitchAndPhase)
-{
-  MODEL_RESET();
-  MIXER_RESET();
-  g_model.phaseData[1].swtch = SWSRC_THR;
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].mltpx = MLTPX_ADD;
   g_model.mixData[0].srcRaw = MIXSRC_MAX;
   g_model.mixData[0].weight = 100;
   g_model.mixData[0].swtch = SWSRC_THR;
-  g_model.mixData[0].phases = 0x2 + 0x4 + 0x8 + 0x10 /*only enabled in phase 0*/;
-  g_model.mixData[0].speedUp = 10;
-  g_model.mixData[0].speedDown = 10;
+  g_model.mixData[0].speedUp = SLOW_STEP*5;
+  g_model.mixData[0].speedDown = 0;
 
+  simuSetSwitch(0, 0);
+  perOut(e_perout_mode_normal, 0);
+  s_mixer_first_run_done = true;
+  EXPECT_EQ(chans[0], 0);
+
+  simuSetSwitch(0, 1);
+  CHECK_SLOW_MOVEMENT(0, +1, 250);
+
+  simuSetSwitch(0, 0);
+  perOut(e_perout_mode_normal, 1);
+  EXPECT_EQ(chans[0], 0);
+
+  lastAct = 0;
+  simuSetSwitch(0, 1);
+  CHECK_SLOW_MOVEMENT(0, +1, 100);
+}
+#endif
+
+TEST(Mixer, SlowOnPhase)
+{
+  MODEL_RESET();
+  MIXER_RESET();
+  g_model.phaseData[1].swtch = TR(SWSRC_THR, SWSRC_SA0);
+  g_model.mixData[0].destCh = 0;
+  g_model.mixData[0].mltpx = MLTPX_ADD;
+  g_model.mixData[0].srcRaw = MIXSRC_MAX;
+  g_model.mixData[0].weight = 100;
+  g_model.mixData[0].phases = 0x2 + 0x4 + 0x8 + 0x10 /*only enabled in phase 0*/;
+  g_model.mixData[0].speedUp = SLOW_STEP*5;
+  g_model.mixData[0].speedDown = SLOW_STEP*5;
+
+  s_mixer_first_run_done = true;
+  s_perout_flight_phase = 0;
+  perOut(e_perout_mode_normal, 0);
+  EXPECT_EQ(chans[0], 0);
+
+  CHECK_SLOW_MOVEMENT(0, +1, 250);
+
+  s_perout_flight_phase = 1;
+  CHECK_SLOW_MOVEMENT(0, -1, 250);
+}
+
+#if !defined(CPUARM)
+TEST(Mixer, SlowOnSwitchAndPhase)
+{
+  MODEL_RESET();
+  MIXER_RESET();
+  g_model.phaseData[1].swtch = TR(SWSRC_THR, SWSRC_SA0);
+  g_model.mixData[0].destCh = 0;
+  g_model.mixData[0].mltpx = MLTPX_ADD;
+  g_model.mixData[0].srcRaw = MIXSRC_MAX;
+  g_model.mixData[0].weight = 100;
+  g_model.mixData[0].swtch = TR(SWSRC_THR, SWSRC_SA0);
+#if defined(CPUARM)
+  g_model.mixData[0].phases = 0x2 + 0x4 + 0x8 + 0x10 + 0x20 + 0x40 + 0x80 + 0x100 /*only enabled in phase 0*/;
+#else
+  g_model.mixData[0].phases = 0x2 + 0x4 + 0x8 + 0x10 /*only enabled in phase 0*/;
+#endif
+  g_model.mixData[0].speedUp = SLOW_STEP*5;
+  g_model.mixData[0].speedDown = SLOW_STEP*5;
+
+  s_mixer_first_run_done = true;
   perOut(e_perout_mode_normal, 0);
   EXPECT_EQ(chans[0], 0);
 
@@ -624,25 +666,26 @@ TEST(Mixer, SlowOnSwitchAndPhase)
   s_perout_flight_phase = 0;
   CHECK_SLOW_MOVEMENT(0, +1, 250);
 
-  simuSetSwitch(0, 0);
+  simuSetSwitch(0, -1);
   s_perout_flight_phase = 1;
   CHECK_SLOW_MOVEMENT(0, -1, 250);
 }
 #endif
 
-#if !defined(PCBTARANIS)
 TEST(Mixer, SlowOnSwitchSource)
 {
   MODEL_RESET();
   MIXER_RESET();
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].mltpx = MLTPX_ADD;
-  g_model.mixData[0].srcRaw = MIXSRC_THR;
+  g_model.mixData[0].srcRaw = TR(MIXSRC_THR, MIXSRC_SA);
   g_model.mixData[0].weight = 100;
-  g_model.mixData[0].speedUp = 10;
-  g_model.mixData[0].speedDown = 10;
+  g_model.mixData[0].speedUp = SLOW_STEP*5;
+  g_model.mixData[0].speedDown = SLOW_STEP*5;
 
-  simuSetSwitch(0, 0);
+  s_mixer_first_run_done = true;
+
+  simuSetSwitch(0, -1);
   CHECK_SLOW_MOVEMENT(0, -1, 250);
   EXPECT_EQ(chans[0], -CHANNEL_MAX);
 
@@ -650,6 +693,22 @@ TEST(Mixer, SlowOnSwitchSource)
   CHECK_SLOW_MOVEMENT(0, +1, 500);
 }
 
+TEST(Mixer, SlowDisabledOnStartup)
+{
+  MODEL_RESET();
+  MIXER_RESET();
+  g_model.mixData[0].destCh = 0;
+  g_model.mixData[0].mltpx = MLTPX_ADD;
+  g_model.mixData[0].srcRaw = MIXSRC_MAX;
+  g_model.mixData[0].weight = 100;
+  g_model.mixData[0].speedUp = SLOW_STEP*5;
+  g_model.mixData[0].speedDown = SLOW_STEP*5;
+
+  perOut(e_perout_mode_normal, 0);
+  EXPECT_EQ(chans[0], CHANNEL_MAX);
+}
+
+#if !defined(PCBTARANIS)
 TEST(Mixer, SlowAndDelayOnReplace3POSSource)
 {
   MODEL_RESET();
@@ -659,9 +718,11 @@ TEST(Mixer, SlowAndDelayOnReplace3POSSource)
   g_model.mixData[0].srcRaw = MIXSRC_3POS;
   g_model.mixData[0].weight = 100;
   g_model.mixData[0].delayUp = 10;
-  g_model.mixData[0].speedUp = 10;
-  g_model.mixData[0].speedDown = 10;
+  g_model.mixData[0].speedUp = SLOW_STEP*5;
+  g_model.mixData[0].speedDown = SLOW_STEP*5;
 
+  s_mixer_first_run_done = true;
+  
   simuSetSwitch(3, -1);
   CHECK_SLOW_MOVEMENT(0, -1, 250);
   EXPECT_EQ(chans[0], -CHANNEL_MAX);
@@ -691,7 +752,7 @@ TEST(Mixer, SlowOnSwitchReplace)
   g_model.mixData[1].srcRaw = MIXSRC_MAX;
   g_model.mixData[1].weight = 100;
   g_model.mixData[1].swtch = SWSRC_THR;
-  g_model.mixData[1].speedDown = 10;
+  g_model.mixData[1].speedDown = SLOW_STEP*5;
 
   simuSetSwitch(0, 0);
   perOut(e_perout_mode_normal, 1);
@@ -719,16 +780,19 @@ TEST(Mixer, NoTrimOnInactiveMix)
   g_model.mixData[0].srcRaw = MIXSRC_Thr;
   g_model.mixData[0].weight = 100;
   g_model.mixData[0].swtch = SWSRC_THR;
-  g_model.mixData[0].speedUp = 10;
-  g_model.mixData[0].speedDown = 10;
+  g_model.mixData[0].speedUp = SLOW_STEP*5;
+  g_model.mixData[0].speedDown = SLOW_STEP*5;
   setTrimValue(0, 2, 256);
+
+  s_mixer_first_run_done = true;
 
   simuSetSwitch(0, 1);
   CHECK_SLOW_MOVEMENT(0, 1, 100);
 
-  simuSetSwitch(0, 0);
+  simuSetSwitch(0, -1);
   CHECK_SLOW_MOVEMENT(0, -1, 100);
 }
+#endif
 
 TEST(Mixer, SlowOnMultiply)
 {
@@ -742,20 +806,21 @@ TEST(Mixer, SlowOnMultiply)
   g_model.mixData[1].mltpx = MLTPX_MUL;
   g_model.mixData[1].srcRaw = MIXSRC_MAX;
   g_model.mixData[1].weight = 100;
-  g_model.mixData[1].swtch = SWSRC_THR;
-  g_model.mixData[1].speedUp = 10;
-  g_model.mixData[1].speedDown = 10;
+  g_model.mixData[1].swtch = TR(SWSRC_THR, SWSRC_SA0);
+  g_model.mixData[1].speedUp = SLOW_STEP*5;
+  g_model.mixData[1].speedDown = SLOW_STEP*5;
+
+  s_mixer_first_run_done = true;
 
   simuSetSwitch(0, 1);
   CHECK_SLOW_MOVEMENT(0, 1, 250);
 
-  simuSetSwitch(0, 0);
+  simuSetSwitch(0, -1);
   CHECK_NO_MOVEMENT(0, CHANNEL_MAX, 250);
 
   simuSetSwitch(0, 1);
   CHECK_NO_MOVEMENT(0, CHANNEL_MAX, 250);
 }
-#endif
 
 TEST(Curves, LinearIntpol)
 {

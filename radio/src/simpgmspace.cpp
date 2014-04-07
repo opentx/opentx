@@ -101,37 +101,37 @@ sem_t *eeprom_write_sem;
 #if defined(PCBTARANIS)
 #define SWITCH_CASE(swtch, pin, mask) \
     case swtch: \
-      if (state) pin &= ~(mask); else pin |= (mask); \
+      if ((int)state > 0) pin &= ~(mask); else pin |= (mask); \
       break;
 #else
 #define SWITCH_CASE(swtch, pin, mask) \
     case swtch: \
-      if (state) pin |= (mask); else pin &= ~(mask); \
+      if ((int)state > 0) pin |= (mask); else pin &= ~(mask); \
       break;
 #endif
 #define SWITCH_3_CASE(swtch, pin1, pin2, mask1, mask2) \
     case swtch: \
-      if (state < 0) pin1 &= ~(mask1); else pin1 |= (mask1); \
-      if (state > 0) pin2 &= ~(mask2); else pin2 |= (mask2); \
+      if ((int)state < 0) pin1 &= ~(mask1); else pin1 |= (mask1); \
+      if ((int)state > 0) pin2 &= ~(mask2); else pin2 |= (mask2); \
       break;
 #define KEY_CASE(key, pin, mask) \
     case key: \
-      if (state) pin &= ~mask; else pin |= mask;\
+      if ((int)state > 0) pin &= ~mask; else pin |= mask;\
       break;
 #define TRIM_CASE KEY_CASE
 #else
 #define SWITCH_CASE(swtch, pin, mask) \
     case swtch: \
-      if (state) pin &= ~(mask); else pin |= (mask); \
+      if ((int)state > 0) pin &= ~(mask); else pin |= (mask); \
       break;
 #define SWITCH_3_CASE(swtch, pin1, pin2, mask1, mask2) \
     case swtch: \
-      if (state >= 0) pin1 &= ~(mask1); else pin1 |= (mask1); \
-      if (state <= 0) pin2 &= ~(mask2); else pin2 |= (mask2); \
+      if ((int)state >= 0) pin1 &= ~(mask1); else pin1 |= (mask1); \
+      if ((int)state <= 0) pin2 &= ~(mask2); else pin2 |= (mask2); \
       break;
 #define KEY_CASE(key, pin, mask) \
     case key: \
-      if (state) pin |= (mask); else pin &= ~(mask);\
+      if ((int)state > 0) pin |= (mask); else pin &= ~(mask);\
       break;
 #define TRIM_CASE KEY_CASE
 #endif
@@ -300,7 +300,7 @@ void *main_thread(void *)
     eeReadAll(); // load general setup and selected model
 
 #if defined(CPUARM) && defined(SDCARD)
-    refreshSystemAudioFiles();
+    referenceSystemAudioFiles();
 #endif
 
     if (g_eeGeneral.backlightMode != e_backlight_mode_off) backlightOn(); // on Tx start turn the light on
@@ -345,6 +345,13 @@ void StartMainThread(bool tests)
     getcwd(simuSdDirectory, 1024);
 #endif
 
+#if defined(CPUARM)
+  pthread_mutex_init(&mixerMutex, NULL);
+  pthread_mutex_init(&audioMutex, NULL);
+#endif
+
+  g_tmr10ms = 0;
+
   main_thread_running = (tests ? 1 : 2);
   pthread_create(&main_thread_pid, NULL, &main_thread, NULL);
 }
@@ -360,9 +367,9 @@ void StartEepromThread(const char *filename)
 {
   eepromFile = filename;
   if (eepromFile) {
-    fp = fopen(eepromFile, "r+");
+    fp = fopen(eepromFile, "rb+");
     if (!fp)
-      fp = fopen(eepromFile, "w+");
+      fp = fopen(eepromFile, "wb+");
     if (!fp) perror("error in fopen");
   }
 #ifdef __APPLE__
@@ -468,9 +475,10 @@ char *convertSimuPath(const char *path)
 
 FRESULT f_stat (const TCHAR * name, FILINFO *)
 {
+  char *path = convertSimuPath(name);
   struct stat tmp;
-  // printf("f_stat(%s)\n", path); fflush(stdout);
-  return stat(convertSimuPath(name), &tmp) ? FR_INVALID_NAME : FR_OK;
+  TRACE("f_stat(%s)", path);
+  return stat(path, &tmp) ? FR_INVALID_NAME : FR_OK;
 }
 
 FRESULT f_mount (BYTE, FATFS*)
@@ -490,7 +498,7 @@ FRESULT f_open (FIL * fil, const TCHAR *name, BYTE flag)
       return FR_INVALID_NAME;
     fil->fsize = tmp.st_size;
   }
-  fil->fs = (FATFS*)fopen(path, (flag & FA_WRITE) ? "w+" : "r+");
+  fil->fs = (FATFS*)fopen(path, (flag & FA_WRITE) ? "wb+" : "rb+");
   return FR_OK;
 }
 
@@ -529,7 +537,9 @@ FRESULT f_chdir (const TCHAR *name)
 
 FRESULT f_opendir (DIR * rep, const TCHAR * name)
 {
-  rep->fs = (FATFS *)simu::opendir(convertSimuPath(name));
+  char *path = convertSimuPath(name);
+  TRACE("f_opendir(%s)", path);
+  rep->fs = (FATFS *)simu::opendir(path);
   return FR_OK;
 }
 
@@ -543,9 +553,11 @@ FRESULT f_readdir (DIR * rep, FILINFO * fil)
   fil->fattrib = (ent->d_type == DT_DIR ? AM_DIR : 0);
 #else
   if (ent->d_type == simu::DT_UNKNOWN) {
+    fil->fattrib = 0;
     struct stat buf;
-    lstat(ent->d_name, &buf);
-    fil->fattrib = (S_ISDIR(buf.st_mode) ? AM_DIR : 0);
+    if (stat(ent->d_name, &buf) == 0) {
+      fil->fattrib = (S_ISDIR(buf.st_mode) ? AM_DIR : 0);
+    }
   }
   else {
     fil->fattrib = (ent->d_type == simu::DT_DIR ? AM_DIR : 0);
@@ -556,6 +568,7 @@ FRESULT f_readdir (DIR * rep, FILINFO * fil)
   memset(fil->lfname, 0, SD_SCREEN_FILE_LENGTH);
   strncpy(fil->fname, ent->d_name, 13-1);
   strcpy(fil->lfname, ent->d_name);
+  // TRACE("f_readdir(): %s", fil->fname);
   return FR_OK;
 }
 
@@ -626,7 +639,12 @@ void lcdRefresh()
 }
 
 #if defined(PCBTARANIS)
+void pwrInit() { }
+uint32_t pwrCheck() { return true; }
+void pwrOff() { }
 void usbStart() { }
+int usbPlugged() { return false; }
+void USART_DeInit(USART_TypeDef* ) { }
 ErrorStatus RTC_SetTime(uint32_t RTC_Format, RTC_TimeTypeDef* RTC_TimeStruct) { return SUCCESS; }
 ErrorStatus RTC_SetDate(uint32_t RTC_Format, RTC_DateTypeDef* RTC_DateStruct) { return SUCCESS; }
 void RTC_GetTime(uint32_t RTC_Format, RTC_TimeTypeDef* RTC_TimeStruct) { }
@@ -655,3 +673,4 @@ void RCC_LSEConfig(uint8_t RCC_LSE) { }
 FlagStatus RCC_GetFlagStatus(uint8_t RCC_FLAG) { return RESET; }
 ErrorStatus RTC_WaitForSynchro(void) { return SUCCESS; }
 #endif
+

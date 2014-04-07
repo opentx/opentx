@@ -74,7 +74,10 @@ class DataField {
       QByteArray bytes = bitsToBytes(bits);
       int result = (offset+bits.count()) % 8;
       for (int i=0; i<level; i++) printf("  ");
-      printf("%s ", getName());
+      if (bits.count() % 8 == 0)
+        printf("%s (%dbytes) ", getName(), bytes.count());
+      else
+        printf("%s (%dbits) ", getName(), bits.count());
       for (int i=0; i<bytes.count(); i++) {
         unsigned char c = bytes[i];
         if ((i==0 && offset) || (i==bytes.count()-1 && result!=0))
@@ -88,6 +91,17 @@ class DataField {
 
   protected:
     const char *name;
+};
+
+class ProxyField: public DataField {
+  public:
+    ProxyField():
+      DataField("Proxy")
+    {
+    }
+
+    virtual DataField * getField() = 0;
+
 };
 
 template<int N>
@@ -270,9 +284,10 @@ class SpareBitsField: public UnsignedField<N> {
 template<int N>
 class CharField: public DataField {
   public:
-    CharField(char *field):
+    CharField(char *field, bool truncate=true):
       DataField("Char"),
-      field(field)
+      field(field),
+      truncate(truncate)
     {
     }
 
@@ -280,7 +295,7 @@ class CharField: public DataField {
     {
       output.resize(N*8);
       int b = 0;
-      int len = strlen(field);
+      int len = truncate ? strlen(field) : N;
       for (int i=0; i<N; i++) {
         int idx = (i>=len ? 0 : field[i]);
         for (int j=0; j<8; j++, b++) {
@@ -310,6 +325,7 @@ class CharField: public DataField {
 
   protected:
     char * field;
+    bool truncate;
 };
 
 int8_t char2idx(char c);
@@ -422,7 +438,7 @@ class StructField: public DataField {
     virtual int Dump(int level=0, int offset=0)
     {
       for (int i=0; i<level; i++) printf("  ");
-      printf("%s\n", getName());
+      printf("%s (%d bytes)\n", getName(), size()/8);
       foreach(DataField *field, fields) {
         offset = field->Dump(level+1, offset);
       }
@@ -547,6 +563,7 @@ class ConversionField: public TransformedField {
       _field(0),
       table(table),
       shift(0),
+      scale(1),
       min(INT_MIN),
       max(INT_MAX),
       exportFunc(NULL),
@@ -562,6 +579,7 @@ class ConversionField: public TransformedField {
       _field(0),
       table(table),
       shift(0),
+      scale(0),
       min(INT_MIN),
       max(INT_MAX),
       exportFunc(NULL),
@@ -577,6 +595,7 @@ class ConversionField: public TransformedField {
       _field(0),
       table(NULL),
       shift(0),
+      scale(0),
       min(INT_MIN),
       max(INT_MAX),
       exportFunc(exportFunc),
@@ -585,13 +604,14 @@ class ConversionField: public TransformedField {
     {
     }
 
-    ConversionField(int & field, int shift, int min=INT_MIN, int max=INT_MAX, const char *name = "Signed shifted"):
+    ConversionField(int & field, int shift, int scale=0, int min=INT_MIN, int max=INT_MAX, const char *name = "Signed shifted"):
       TransformedField(internalField),
       internalField(_field, name),
       field(field),
       _field(0),
       table(NULL),
       shift(shift),
+      scale(scale),
       min(min),
       max(max),
       exportFunc(NULL),
@@ -600,13 +620,14 @@ class ConversionField: public TransformedField {
     {
     }
 
-    ConversionField(unsigned int & field, int shift):
+    ConversionField(unsigned int & field, int shift, int scale=0):
       TransformedField(internalField),
       internalField((unsigned int &)_field),
       field((int &)field),
       _field(0),
       table(NULL),
       shift(shift),
+      scale(scale),
       min(INT_MIN),
       max(INT_MAX),
       exportFunc(NULL),
@@ -617,33 +638,49 @@ class ConversionField: public TransformedField {
 
     virtual void beforeExport()
     {
+      _field = field;
+
+      if (scale) {
+        _field /= scale;
+      }
+
       if (table) {
-        if (table->exportValue(field, _field))
+        if (table->exportValue(_field, _field))
           return;
         if (!error.isEmpty())
           EEPROMWarnings += error + "\n";
       }
-      else if (shift) {
-        if (field < min) _field = min + shift;
-        else if (field > max) _field = max + shift;
-        else _field = field + shift;
+
+      if (shift) {
+        if (_field < min) _field = min + shift;
+        else if (_field > max) _field = max + shift;
+        else _field += shift;
       }
-      else {
-        _field = exportFunc(field);
+
+      if (exportFunc) {
+        _field = exportFunc(_field);
       }
     }
 
     virtual void afterImport()
     {
+      field = _field;
+
       if (table) {
-        if (table->importValue(_field, field))
+        if (table->importValue(field, field))
           return;
       }
-      else if (shift) {
-        field = _field - shift;
+
+      if (shift) {
+        field -= shift;
       }
-      else {
-        field = importFunc(_field);
+
+      if (importFunc) {
+        field = importFunc(field);
+      }
+
+      if (scale) {
+        field *= scale;
       }
     }
 
@@ -653,6 +690,7 @@ class ConversionField: public TransformedField {
     int _field;
     ConversionTable * table;
     int shift;
+    int scale;
     int min;
     int max;
     int (*exportFunc)(int);

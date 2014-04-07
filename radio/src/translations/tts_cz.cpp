@@ -41,9 +41,9 @@ enum CzechPrompts {
   CZ_PROMPT_AMPS = CZ_PROMPT_UNITS_BASE+(UNIT_AMPS*4),
   CZ_PROMPT_METERS_PER_SECOND = CZ_PROMPT_UNITS_BASE+(UNIT_METERS_PER_SECOND*4),
   CZ_PROMPT_SPARE1 = CZ_PROMPT_UNITS_BASE+(UNIT_RAW*4),
-  CZ_PROMPT_KMH = CZ_PROMPT_UNITS_BASE+(UNIT_KMH*4),
-  CZ_PROMPT_METERS = CZ_PROMPT_UNITS_BASE+(UNIT_METERS*4),
-  CZ_PROMPT_DEGREES = CZ_PROMPT_UNITS_BASE+(UNIT_DEGREES*4),
+  CZ_PROMPT_KMH = CZ_PROMPT_UNITS_BASE+(UNIT_SPEED*4),
+  CZ_PROMPT_METERS = CZ_PROMPT_UNITS_BASE+(UNIT_DIST*4),
+  CZ_PROMPT_DEGREES = CZ_PROMPT_UNITS_BASE+(UNIT_TEMPERATURE*4),
   CZ_PROMPT_PERCENT = CZ_PROMPT_UNITS_BASE+(UNIT_PERCENT*4),
   CZ_PROMPT_MILLIAMPS = CZ_PROMPT_UNITS_BASE+(UNIT_MILLIAMPS*4),
   CZ_PROMPT_MAH = CZ_PROMPT_UNITS_BASE+(UNIT_MAH*4),
@@ -120,13 +120,16 @@ I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     unit--;
     convertUnit(number, unit);
     if (IS_IMPERIAL_ENABLE()) {
-      if (unit == UNIT_METERS) {
+      if (unit == UNIT_DIST) {
         unit = UNIT_FEET;
+      }
+      if (unit == UNIT_SPEED) {
+    	unit = UNIT_KTS;
       }
     }
 #if defined(CPUARM)
-    if ((att & PREC1) && (unit == UNIT_FEET || (unit == UNIT_METERS && number >= 100))) {
-      number /= 10;
+    if ((att & PREC1) && (unit == UNIT_FEET || (unit == UNIT_DIST && number >= 100))) {
+      number = div10_and_round(number);
       att -= PREC1;
     }
 #endif

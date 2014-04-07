@@ -38,7 +38,8 @@ avrOutputDialog::avrOutputDialog(QWidget *parent, QString prog, QStringList arg,
       if (arg.count()<2) {
         closeOpt = AVR_DIALOG_FORCE_CLOSE;
         QTimer::singleShot(0, this, SLOT(forceClose()));                
-      } else {
+      }
+      else {
         sourceFile=arg.at(0);
         destFile=arg.at(1);
         if (!displayDetails) {
@@ -50,30 +51,32 @@ avrOutputDialog::avrOutputDialog(QWidget *parent, QString prog, QStringList arg,
         ui->progressBar->setMaximum(127);
         QTimer::singleShot(500, this, SLOT(doCopy()));
       }
-    } else {
-      if(wTitle.isEmpty())
-          setWindowTitle(getProgrammer() + " " + tr("result"));
+    }
+    else {
+      if (wTitle.isEmpty())
+        setWindowTitle(getProgrammer() + " " + tr("result"));
       else
-          setWindowTitle(getProgrammer() + " - " + wTitle);
+        setWindowTitle(getProgrammer() + " - " + wTitle);
       QFile exec;
       winTitle=wTitle;
       if (!(exec.exists(prog))) {
-        QMessageBox::critical(this, "companion9x", getProgrammer() + " " + tr("executable not found"));
+        QMessageBox::critical(this, "Companion", getProgrammer() + " " + tr("executable not found"));
         closeOpt = AVR_DIALOG_FORCE_CLOSE;
         QTimer::singleShot(0, this, SLOT(forceClose()));
-      } else {
+      }
+      else {
         foreach(QString str, arg) cmdLine.append(" " + str);
         lfuse = 0;
         hfuse = 0;
         efuse = 0;
         phase=0;
         currLine.clear();
-        prevLine.clear();
         if (!displayDetails) {
-            ui->plainTextEdit->hide();
-            QTimer::singleShot(0, this, SLOT(shrink()));
-        } else {
-            ui->checkBox->setChecked(true);
+          ui->plainTextEdit->hide();
+          QTimer::singleShot(0, this, SLOT(shrink()));
+        }
+        else {
+          ui->checkBox->setChecked(true);
         }
         process = new QProcess(this);
         connect(process,SIGNAL(readyReadStandardError()), this, SLOT(doAddTextStdErr()));
@@ -132,11 +135,12 @@ void avrOutputDialog::doCopy()
   char * pointer=buf;
   QFile source(sourceFile);
   int blocks=(source.size()/BLKSIZE);
-   ui->progressBar->setMaximum(blocks-1);
+  ui->progressBar->setMaximum(blocks-1);
   if (!source.open(QIODevice::ReadOnly)) {
     QMessageBox::warning(this, tr("Error"),tr("Cannot open source file"));
     hasErrors=true;
-  } else {
+  }
+  else {
     source.read(buf,READBUF);
     source.close();
     QFile dest(destFile);
@@ -183,7 +187,6 @@ void avrOutputDialog::runAgain(QString prog, QStringList arg, int closeBehaviour
     foreach(QString str, arg) cmdLine.append(" " + str);
     closeOpt = closeBehaviour;
     currLine.clear();
-    prevLine.clear();
     process->start(prog,arg);
 }
 
@@ -194,12 +197,18 @@ void avrOutputDialog::waitForFinish()
 
 void avrOutputDialog::addText(const QString &text)
 {
-    int val = ui->plainTextEdit->verticalScrollBar()->maximum();
-    ui->plainTextEdit->insertPlainText(text);
-    if(val!=ui->plainTextEdit->verticalScrollBar()->maximum())
-      ui->plainTextEdit->verticalScrollBar()->setValue(ui->plainTextEdit->verticalScrollBar()->maximum());
-}
+  QTextCursor cursor(ui->plainTextEdit->textCursor());
 
+  // is the scrollbar at the end?
+  bool atEnd = (ui->plainTextEdit->verticalScrollBar()->value() == ui->plainTextEdit->verticalScrollBar()->maximum());
+
+  cursor.movePosition(QTextCursor::End, QTextCursor::MoveAnchor, 1);
+  cursor.insertText(text);
+
+  if (atEnd) {
+    ui->plainTextEdit->verticalScrollBar()->triggerAction(QAbstractSlider::SliderToMaximum);
+  }
+}
 
 void avrOutputDialog::doAddTextStdOut()
 {
@@ -209,37 +218,34 @@ void avrOutputDialog::doAddTextStdOut()
     int nlPos, pos, size;
 
     addText(text);
+
     currStdLine.append(text);
     if (currStdLine.contains("size = ")) {
-      pos=currStdLine.lastIndexOf("size = ");
-      temp=currStdLine.mid(pos+7);
-      pos=temp.lastIndexOf("\n");
-      size=temp.left(pos).toInt();
+      pos = currStdLine.lastIndexOf("size = ");
+      temp = currStdLine.mid(pos+7);
+      pos = temp.lastIndexOf("\n");
+      size = temp.left(pos).toInt();
       ui->progressBar->setMaximum(size/2048);
     }
     if (currStdLine.contains("\n")) {
-        nlPos=currStdLine.lastIndexOf("\n");
-        prevStdLine=currStdLine.left(nlPos).trimmed();
-        currStdLine=currStdLine.mid(nlPos+1);
+      nlPos = currStdLine.lastIndexOf("\n");
+      currStdLine = currStdLine.mid(nlPos+1);
     }
     if (!currStdLine.isEmpty()) {
-      if (currStdLine.at(0)==QChar('.')) {
-        pos=currStdLine.lastIndexOf(".");
+      if (currStdLine.at(0) == QChar('.')) {
+        pos = currStdLine.lastIndexOf(".");
+        ui->progressBar->setValue(pos);
+      }
+      else if (currStdLine.startsWith("Starting upload: [")) {
+        pos = (currStdLine.lastIndexOf("#")-19)/(MAX_FSIZE/204800.0);
         ui->progressBar->setValue(pos);
       }
     }
-    if (!currStdLine.isEmpty()) {
-      if (currStdLine.startsWith("Starting upload: [")) {
-        pos=(currStdLine.lastIndexOf("#")-19)/(MAX_FSIZE/204800.0);
-        ui->progressBar->setValue(pos);
-      }
-    }
+
     if (text.contains("Complete ")) {
 #if !__GNUC__
-      if (kill_timer) {
-        delete kill_timer;
-        kill_timer = NULL;
-      }
+      delete kill_timer;
+      kill_timer = NULL;
 #endif
       int start = text.indexOf("Complete ");
       int end = text.indexOf("%");
@@ -250,19 +256,15 @@ void avrOutputDialog::doAddTextStdOut()
       }
     }
 
-    //addText("\n=====\n" + text + "\n=====\n");
-
-    if(text.contains(":010000")) //contains fuse info
-    {
-        QStringList stl = text.split(":01000000");
-
-        foreach (QString t, stl)
-        {
-            bool ok = false;
-            if(!lfuse)        lfuse = t.left(2).toInt(&ok,16);
-            if(!hfuse && !ok) hfuse = t.left(2).toInt(&ok,16);
-            if(!efuse && !ok) efuse = t.left(2).toInt(&ok,16);
-        }
+    if (text.contains(":010000")) {
+      //contains fuse info
+      QStringList stl = text.split(":01000000");
+      foreach (QString t, stl) {
+        bool ok = false;
+        if (!lfuse)        lfuse = t.left(2).toInt(&ok,16);
+        if (!hfuse && !ok) hfuse = t.left(2).toInt(&ok,16);
+        if (!efuse && !ok) efuse = t.left(2).toInt(&ok,16);
+      }
     }
 
     if (text.contains("-E-")) {
@@ -276,9 +278,11 @@ QString avrOutputDialog::getProgrammer()
   EEPROMInterface *eepromInterface = GetEepromInterface();
   if (IS_TARANIS(eepromInterface->getBoard())) {
     return "DFU Util";
-  } else if (eepromInterface->getBoard()==BOARD_SKY9X) {
+  }
+  else if (eepromInterface->getBoard()==BOARD_SKY9X) {
     return "SAM-BA";
-  } else {
+  }
+  else {
     return "AVRDUDE";
   }
 }
@@ -298,27 +302,33 @@ void avrOutputDialog::errorWizard()
         DeviceStr="Atmega 64";
         FwStr="\n"+tr("ie: OpenTX for 9X board or OpenTX for 9XR board");
         fwexist=true;
-      } else if (DeviceId=="0x1e9702") {
+      }
+      else if (DeviceId=="0x1e9702") {
         DeviceStr="Atmega 128";
         FwStr="\n"+tr("ie: OpenTX for M128 / 9X board or OpenTX for 9XR board with M128 chip");
         fwexist=true;
-      } else if (DeviceId=="0x1e9703") {
+      }
+      else if (DeviceId=="0x1e9703") {
         DeviceStr="Atmega 1280";
-      } else if (DeviceId=="0x1e9704") {
+      }
+      else if (DeviceId=="0x1e9704") {
         DeviceStr="Atmega 1281";
-      } else if (DeviceId=="0x1e9801") {
+      }
+      else if (DeviceId=="0x1e9801") {
         DeviceStr="Atmega 2560";
         FwStr="\n"+tr("ie: OpenTX for Gruvin9X  board");
         fwexist=true;
-      } else if (DeviceId=="0x1e9802") {
+      }
+      else if (DeviceId=="0x1e9802") {
         DeviceStr="Atmega 2561";
       }
     }
     if (fwexist==false) {
-      QMessageBox::warning(this, "companion9x - Tip of the day", tr("Your radio uses a %1 CPU!!!\n\nPlease check advanced burn options to set the correct cpu type.").arg(DeviceStr));
-    } else {
+      QMessageBox::warning(this, "Companion - Tip of the day", tr("Your radio uses a %1 CPU!!!\n\nPlease check advanced burn options to set the correct cpu type.").arg(DeviceStr));
+    }
+    else {
       FirmwareInfo *firmware = GetCurrentFirmware();
-      QMessageBox::warning(this, "companion9x - Tip of the day", tr("Your radio uses a %1 CPU!!!\n\nPlease select an appropriate firmware type to program it.").arg(DeviceStr)+FwStr+tr("\nYou are currently using:\n %1").arg(firmware->name));
+      QMessageBox::warning(this, "Companion - Tip of the day", tr("Your radio uses a %1 CPU!!!\n\nPlease select an appropriate firmware type to program it.").arg(DeviceStr)+FwStr+tr("\nYou are currently using:\n %1").arg(firmware->name));
     }
   }
 }
@@ -333,7 +343,7 @@ void avrOutputDialog::doAddTextStdErr()
 
     currLine.append(text);
     if (currLine.contains("#")) {
-        avrphase=currLine.left(1).toLower();
+        avrphase = currLine.left(1).toLower();
         if (avrphase=="w") {
             ui->progressBar->setStyleSheet("QProgressBar  {text-align: center;} QProgressBar::chunk { background-color: #ff0000; text-align:center;}:");
             phase=1;
@@ -344,14 +354,15 @@ void avrOutputDialog::doAddTextStdErr()
             pbvalue=currLine.count("#")*2;
             ui->progressBar->setValue(pbvalue);
         }
-        if (avrphase=="r") {
+        else if (avrphase=="r") {
             if (phase==0) {
                 ui->progressBar->setStyleSheet("QProgressBar  {text-align: center;} QProgressBar::chunk { background-color: #00ff00; text-align:center;}:");
                 if(winTitle.isEmpty())
                     setWindowTitle(getProgrammer() + " - " + tr("Reading"));
                 else
                     setWindowTitle(getProgrammer() + " - " + winTitle + " - " + tr("Reading"));
-            } else {
+            }
+            else {
                 ui->progressBar->setStyleSheet("QProgressBar  {text-align: center;} QProgressBar::chunk { background-color: #0000ff; text-align:center;}:");
                 phase=2;
                 if(winTitle.isEmpty())
@@ -363,11 +374,12 @@ void avrOutputDialog::doAddTextStdErr()
             ui->progressBar->setValue(pbvalue);
         }
     }
+
     if (currLine.contains("\n")) {
-        nlPos=currLine.lastIndexOf("\n");
-        prevLine=currLine.left(nlPos).trimmed();
-        currLine=currLine.mid(nlPos+1);
+      nlPos = currLine.lastIndexOf("\n");
+      currLine = currLine.mid(nlPos+1);
     }
+
     if (text.contains("-E-") && !text.contains("-E- No receive file name")) {
       hasErrors = true;
     }
@@ -376,6 +388,7 @@ void avrOutputDialog::doAddTextStdErr()
 }
 
 #define HLINE_SEPARATOR "================================================================================="
+
 void avrOutputDialog::doFinished(int code=0)
 {
     addText("\n" HLINE_SEPARATOR);
@@ -385,17 +398,22 @@ void avrOutputDialog::doFinished(int code=0)
     if (code) {
       ui->checkBox->setChecked(true);
       addText("\n" + getProgrammer() + " " + tr("done - exit code %1").arg(code));
-    } else if (hasErrors) {
+    }
+    else if (hasErrors) {
       ui->checkBox->setChecked(true);
       addText("\n" + getProgrammer() + " " + tr("done with errors"));
-    } else if (!cmdLine.isEmpty()) {
+    }
+    else if (!cmdLine.isEmpty()) {
       addText("\n" + getProgrammer() + " " + tr("done - SUCCESSFUL"));
-    } else {
+    }
+    else {
       addText(tr("done - SUCCESSFUL"));
     }
     addText("\n" HLINE_SEPARATOR "\n");
 
-    if(lfuse || hfuse || efuse) addReadFuses();
+    if(lfuse || hfuse || efuse) {
+      addReadFuses();
+    }
     
     switch(closeOpt)
     {
@@ -416,24 +434,27 @@ void avrOutputDialog::doFinished(int code=0)
         if (hasErrors || code) {
           if (!cmdLine.isEmpty()) {
             if (getProgrammer()!="AVRDUDE") {
-               QMessageBox::critical(this, "companion9x", getProgrammer() + " " + tr("did not finish correctly"));
-            } else {
-              int res = QMessageBox::question(this, "companion9x",getProgrammer() + " " + tr("did not finish correctly!\nDo you want some help ?"),QMessageBox::Yes | QMessageBox::No);
+               QMessageBox::critical(this, "Companion", getProgrammer() + " " + tr("did not finish correctly"));
+            }
+            else {
+              int res = QMessageBox::question(this, "Companion",getProgrammer() + " " + tr("did not finish correctly!\nDo you want some help ?"),QMessageBox::Yes | QMessageBox::No);
               if (res != QMessageBox::No) {
                 errorWizard();
               }
             }
           } else {
-            QMessageBox::critical(this, "companion9x",  tr("Copy did not finish correctly"));
+            QMessageBox::critical(this, "Companion",  tr("Copy did not finish correctly"));
           }
             // reject();
-        } else {
+        }
+        else {
           if (!cmdLine.isEmpty()) {
-            ui->progressBar->setValue(100);
-            QMessageBox::information(this, "companion9x", getProgrammer() + " " + tr("finished correctly"));
+            ui->progressBar->setValue(ui->progressBar->maximum());
+            QMessageBox::information(this, "Companion", getProgrammer() + " " + tr("finished correctly"));
             accept();
-          } else {
-            QMessageBox::information(this, "companion9x", tr("Copy finished correctly"));
+          }
+          else {
+            QMessageBox::information(this, "Companion", tr("Copy finished correctly"));
             accept();            
           }
         }
@@ -454,8 +475,6 @@ void avrOutputDialog::doProcessStarted()
     addText("\n" HLINE_SEPARATOR "\n");
 }
 
-
-
 void avrOutputDialog::addReadFuses()
 {
     addText(HLINE_SEPARATOR "\n");
@@ -463,19 +482,23 @@ void avrOutputDialog::addReadFuses()
     addText("\n" HLINE_SEPARATOR "\n");
 }
 
-void avrOutputDialog::on_checkBox_toggled(bool checked) {
+void avrOutputDialog::on_checkBox_toggled(bool checked)
+{
     if (checked) {
-        ui->plainTextEdit->show();
-    } else {
-        ui->plainTextEdit->hide();
-        QTimer::singleShot(0, this, SLOT(shrink()));
+      ui->plainTextEdit->show();
+    }
+    else {
+      ui->plainTextEdit->hide();
+      QTimer::singleShot(0, this, SLOT(shrink()));
     }
 }
 
-void avrOutputDialog::shrink() {
+void avrOutputDialog::shrink()
+{
     resize(0,0);
 }
 
-void avrOutputDialog::forceClose() {
-    accept();;
+void avrOutputDialog::forceClose()
+{
+    accept();
 }

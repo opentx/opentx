@@ -34,10 +34,15 @@
  *
  */
 
-#ifndef eeprom_avr_h
-#define eeprom_avr_h
+#ifndef eeprom_rlc_h
+#define eeprom_rlc_h
 
 #include <inttypes.h>
+
+// TODO duplicated
+#ifndef PACK
+#define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
+#endif
 
 #if defined(PCBTARANIS)
   #define blkid_t    uint16_t
@@ -67,7 +72,7 @@
   #define BS         16
 #endif
 
-PACK(struct DirEnt{
+PACK(struct DirEnt {
   blkid_t  startBlk;
   uint16_t size:12;
   uint16_t typ:4;
@@ -79,7 +84,7 @@ PACK(struct DirEnt{
 #define EEFS_EXTRA_FIELDS
 #endif
 
-PACK(struct EeFs{
+PACK(struct EeFs {
   uint8_t  version;
   blkid_t  mySize;
   blkid_t  freeList;
@@ -161,10 +166,10 @@ inline uint8_t write_errno() { return s_write_err; }
 
 class RlcFile: public EFile
 {
-  uint8_t  m_bRlc;      // control byte for run length decoder
-  uint8_t  m_zeroes;
+    uint8_t  m_bRlc;      // control byte for run length decoder
+    uint8_t  m_zeroes;
 
-  uint8_t m_flags;
+    uint8_t m_flags;
 #define WRITE_FIRST_LINK               0x01
 #define WRITE_NEXT_LINK_1              0x02
 #define WRITE_NEXT_LINK_2              0x03
@@ -173,41 +178,41 @@ class RlcFile: public EFile
 #define WRITE_FREE_UNUSED_BLOCKS_STEP2 0x30
 #define WRITE_FINAL_DIRENT_STEP        0x40
 #define WRITE_TMP_DIRENT_STEP          0x50
-  uint8_t m_write_step;
-  uint16_t m_rlc_len;
-  uint8_t * m_rlc_buf;
-  uint8_t m_cur_rlc_len;
-  uint8_t m_write1_byte;
-  uint8_t m_write_len;
-  uint8_t * m_write_buf;
+    uint8_t m_write_step;
+    uint16_t m_rlc_len;
+    uint8_t * m_rlc_buf;
+    uint8_t m_cur_rlc_len;
+    uint8_t m_write1_byte;
+    uint8_t m_write_len;
+    uint8_t * m_write_buf;
 #if defined (EEPROM_PROGRESS_BAR)
-  uint8_t m_ratio;
+    uint8_t m_ratio;
 #endif
 
-public:
+  public:
 
-  void openRlc(uint8_t i_fileId);
+    void openRlc(uint8_t i_fileId);
 
-  void create(uint8_t i_fileId, uint8_t typ, uint8_t sync_write);
+    void create(uint8_t i_fileId, uint8_t typ, uint8_t sync_write);
 
-  /// copy contents of i_fileSrc to i_fileDst
-  bool copy(uint8_t i_fileDst, uint8_t i_fileSrc);
+    /// copy contents of i_fileSrc to i_fileDst
+    bool copy(uint8_t i_fileDst, uint8_t i_fileSrc);
 
-  inline bool isWriting() { return m_write_step != 0; }
-  void write(uint8_t *buf, uint8_t i_len);
-  void write1(uint8_t b);
-  void nextWriteStep();
-  void nextRlcWriteStep();
-  void writeRlc(uint8_t i_fileId, uint8_t typ, uint8_t *buf, uint16_t i_len, uint8_t sync_write);
+    inline bool isWriting() { return m_write_step != 0; }
+    void write(uint8_t *buf, uint8_t i_len);
+    void write1(uint8_t b);
+    void nextWriteStep();
+    void nextRlcWriteStep();
+    void writeRlc(uint8_t i_fileId, uint8_t typ, uint8_t *buf, uint16_t i_len, uint8_t sync_write);
 
-  // flush the current write operation if any
-  void flush();
+    // flush the current write operation if any
+    void flush();
 
-  // read from opened file and decode rlc-coded data
-  uint16_t readRlc(uint8_t *buf, uint16_t i_len);
+    // read from opened file and decode rlc-coded data
+    uint16_t readRlc(uint8_t *buf, uint16_t i_len);
 
 #if defined (EEPROM_PROGRESS_BAR)
-  void DisplayProgressBar(uint8_t x);
+    void DisplayProgressBar(uint8_t x);
 #endif
 };
 
@@ -234,6 +239,12 @@ void eeDeleteModel(uint8_t idx);
 #if defined(SDCARD)
 const pm_char * eeBackupModel(uint8_t i_fileSrc);
 const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name);
+#endif
+
+// For conversions
+#if defined(CPUARM)
+void loadGeneralSettings();
+void loadModel(int index);
 #endif
 
 #endif

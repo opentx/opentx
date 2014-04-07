@@ -45,9 +45,11 @@
 // TODO change all IF_xxx by CASE_xxx when used with a comma!
 
 #if defined(PCBSKY9X)
-#define IF_PCBSKY9X(x) x,
+#define IS_PCBSKY9X        true
+#define CASE_PCBSKY9X(x)   x,
 #else
-#define IF_PCBSKY9X(x)
+#define IS_PCBSKY9X        false
+#define CASE_PCBSKY9X(x)
 #endif
 
 #if defined(PCBTARANIS)
@@ -295,89 +297,10 @@ extern void boardInit();
 
 #define NUM_STICKS    4
 
-enum EnumKeys {
-  KEY_MENU,
-  KEY_EXIT,
-#if defined(PCBTARANIS)
-  KEY_ENTER,
-  KEY_PAGE,
-  KEY_PLUS,
-  KEY_MINUS,
-#else
-  KEY_DOWN,
-  KEY_UP,
-  KEY_RIGHT,
-  KEY_LEFT,
-#endif
-
-  TRM_BASE,
-  TRM_LH_DWN = TRM_BASE,
-  TRM_LH_UP,
-  TRM_LV_DWN,
-  TRM_LV_UP,
-  TRM_RV_DWN,
-  TRM_RV_UP,
-  TRM_RH_DWN,
-  TRM_RH_UP,
-
-#if ROTARY_ENCODERS > 0 || defined(ROTARY_ENCODER_NAVIGATION)
-  BTN_REa,
-#endif
-#if ROTARY_ENCODERS > 0
-  BTN_REb,
-#endif
-
-  NUM_KEYS,
-  SW_BASE=NUM_KEYS,
-
-#if defined(PCBTARANIS)
-  SW_SA0=SW_BASE,
-  SW_SA1,
-  SW_SA2,
-  SW_SB0,
-  SW_SB1,
-  SW_SB2,
-  SW_SC0,
-  SW_SC1,
-  SW_SC2,
-  SW_SD0,
-  SW_SD1,
-  SW_SD2,
-  SW_SE0,
-  SW_SE1,
-  SW_SE2,
-  SW_SF0,
-  SW_SF2,
-  SW_SG0,
-  SW_SG1,
-  SW_SG2,
-  SW_SH0,
-  SW_SH2,
-#else
-  SW_ID0=SW_BASE,
-  SW_ID1,
-  SW_ID2,
-#if defined(EXTRA_3POS)
-  SW_ID3,
-  SW_ID4,
-  SW_ID5,
-#endif
-
-  SW_THR,
-  SW_RUD,
-  SW_ELE,
-  SW_AIL,
-  SW_GEA,
-  SW_TRN,
-#endif
-
-};
 
 #if defined(PCBTARANIS)
   #define NUM_SWITCHES  8
   #define IS_3POS(sw)   ((sw) != 5 && (sw) != 7)
-  #define MAX_PSWITCH   (SW_SH2-SW_SA0+1)
-  #define NUM_POTS      4
   #define NUM_SW_SRCRAW 8
   #define SWSRC_THR     SWSRC_SF2
   #define SWSRC_GEA     SWSRC_SG2
@@ -389,26 +312,40 @@ enum EnumKeys {
   #define NUM_SWITCHES  7
   #define IS_3POS(sw)   ((sw) == 0)
   #define IS_MOMENTARY(sw) (sw == SWSRC_TRN)
-  #define MAX_PSWITCH   (SW_TRN-SW_ID0+1)  // 9 physical switches
-  #define NUM_POTS      3
   #define NUM_SW_SRCRAW 1
   #define SW_DSM2_BIND  SW_TRN
 #endif
 
-#define MAX_SWITCH    (MAX_PSWITCH+NUM_CSW)
+#define NUM_PSWITCH     (SWSRC_LAST_SWITCH-SWSRC_FIRST_SWITCH+1)
+#define NUM_POTSSW      (NUM_XPOTS*6)
 
 #if defined(PCBTARANIS)
-#define KEY_RIGHT  KEY_PLUS
-#define KEY_LEFT   KEY_MINUS
-#define KEY_UP     KEY_PLUS
-#define KEY_DOWN   KEY_MINUS
+  #define KEY_RIGHT  KEY_PLUS
+  #define KEY_LEFT   KEY_MINUS
+  #define KEY_UP     KEY_PLUS
+  #define KEY_DOWN   KEY_MINUS
 #else
-#define KEY_ENTER  KEY_MENU
-#define KEY_PLUS   KEY_RIGHT
-#define KEY_MINUS  KEY_LEFT
+  #define KEY_ENTER  KEY_MENU
+  #define KEY_PLUS   KEY_RIGHT
+  #define KEY_MINUS  KEY_LEFT
 #endif
 
 #include "myeeprom.h"
+
+enum PotType {
+  POT_TYPE_NONE,
+  POT_TYPE_POT,
+  POT_TYPE_MULTIPOS,
+  POT_TYPE_MAX=POT_TYPE_MULTIPOS
+};
+
+#if defined(PCBTARANIS)
+  #define IS_POT_AVAILABLE(x)  ((x)!=POT3 || (g_eeGeneral.potsType & (0x03 << (2*((x)-POT1))))!=POT_TYPE_NONE)
+  #define IS_POT_MULTIPOS(x)   ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsType>>(2*((x)-POT1)))&0x03)==POT_TYPE_MULTIPOS)
+#else
+  #define IS_POT_AVAILABLE(x)  (true)
+  #define IS_POT_MULTIPOS(x)   (false)
+#endif
 
 #if ROTARY_ENCODERS > 0
   #define IF_ROTARY_ENCODERS(x) x,
@@ -573,31 +510,6 @@ extern uint8_t stickMode;
 
 extern uint8_t channel_order(uint8_t x);
 
-class Key
-{
-#define FILTERBITS      4
-#ifdef SIMU
-#define FFVAL 1
-#else
-#define FFVAL          ((1<<FILTERBITS)-1)
-#endif
-#define KSTATE_OFF      0
-#define KSTATE_RPTDELAY 95 // gruvin: delay state before key repeating starts
-#define KSTATE_START    97
-#define KSTATE_PAUSE    98
-#define KSTATE_KILLED   99
-  uint8_t m_vals;   // key debounce?  4 = 40ms
-  uint8_t m_cnt;
-  uint8_t m_state;
-public:
-  void input(bool val, EnumKeys enuk);
-  bool state()       { return m_vals > 0; }
-  void pauseEvents() { m_state = KSTATE_PAUSE; m_cnt = 0; }
-  void killEvents()  { m_state = KSTATE_KILLED; }
-};
-
-extern Key keys[NUM_KEYS];
-
 enum BaseCurves {
   CURVE_NONE,
   CURVE_X_GT0,
@@ -609,117 +521,20 @@ enum BaseCurves {
   CURVE_BASE
 };
 
-#define SWASH_TYPE_120   1
-#define SWASH_TYPE_120X  2
-#define SWASH_TYPE_140   3
-#define SWASH_TYPE_90    4
-#define SWASH_TYPE_NUM   4
-
-enum CswFunctions {
-  CS_OFF,
-  CS_VEQUAL, // v==offset
-  CS_VPOS,   // v>offset
-  CS_VNEG,   // v<offset
-  CS_APOS,   // |v|>offset
-  CS_ANEG,   // |v|<offset
-  CS_AND,
-  CS_OR,
-  CS_XOR,
-  CS_EQUAL,
-  CS_GREATER,
-  CS_LESS,
-  CS_DIFFEGREATER,
-  CS_ADIFFEGREATER,
-  CS_TIMER,
-  CS_MAXF = CS_TIMER
-};
-
-#define CS_VOFS         0
-#define CS_VBOOL        1
-#define CS_VCOMP        2
-#define CS_VDIFF        3
-#define CS_VTIMER       4
-uint8_t cswFamily(uint8_t func);
-int16_t cswTimerValue(int8_t val);
-
-#define NUM_CYC         3
-#define NUM_CAL_PPM     4
-#define NUM_PPM         8
-
 #define THRCHK_DEADBAND 16
 
-#if defined(FSPLASH) || defined(XSPLASH)
-#define SPLASH_TIMEOUT  (g_eeGeneral.splashMode == 0 ? 60000/*infinite=10mn*/ : ((4*100) * (g_eeGeneral.splashMode & 0x03)))
+#if defined(PCBTARANIS)
+  #define SPLASH_NEEDED() (g_eeGeneral.splashMode != 3)
 #else
-#define SPLASH_TIMEOUT  (4*100)  // 4 seconds
+  #define SPLASH_NEEDED() (!IS_DSM2_PROTOCOL(g_model.protocol) && !g_eeGeneral.splashMode)
 #endif
 
-#define EVT_KEY_MASK(e)      ((e) & 0x1f)
-
-#define _MSK_KEY_BREAK       0x20
-#define _MSK_KEY_REPT        0x40
-#define _MSK_KEY_FIRST       0x60
-#define _MSK_KEY_LONG        0x80
-
-#define EVT_KEY_BREAK(key)   ((key)|_MSK_KEY_BREAK)
-#define EVT_KEY_FIRST(key)   ((key)|_MSK_KEY_FIRST)
-#define EVT_KEY_REPT(key)    ((key)|_MSK_KEY_REPT)
-#define EVT_KEY_LONG(key)    ((key)|_MSK_KEY_LONG)
-
-#define IS_KEY_BREAK(evt)    (((evt)&0xe0) == _MSK_KEY_BREAK)
-#define IS_KEY_FIRST(evt)    (((evt)&0xe0) == _MSK_KEY_FIRST)
-#define IS_KEY_LONG(evt)     (((evt)&0xe0) == _MSK_KEY_LONG)
-
-#define EVT_ENTRY            0xbf
-#define EVT_ENTRY_UP         0xbe
-#define EVT_MENU_UP          0xbd
-
-#if defined(PCBTARANIS)
-  #define EVT_ROTARY_BREAK   EVT_KEY_BREAK(KEY_ENTER)
-  #define EVT_ROTARY_LONG    EVT_KEY_LONG(KEY_ENTER)
+#if defined(FSPLASH)
+  #define SPLASH_TIMEOUT  (g_eeGeneral.splashMode == 0 ? 60000/*infinite=10mn*/ : ((4*100) * (g_eeGeneral.splashMode & 0x03)))
+#elif defined(PCBTARANIS)
+  #define SPLASH_TIMEOUT  (g_eeGeneral.splashMode==-4 ? 1500 : (g_eeGeneral.splashMode<=0 ? (400-g_eeGeneral.splashMode*200) : (400-g_eeGeneral.splashMode*100)))
 #else
-  #define EVT_ROTARY_BREAK   0xcf
-  #define EVT_ROTARY_LONG    0xce
-  #define EVT_ROTARY_LEFT    0xdf
-  #define EVT_ROTARY_RIGHT   0xde
-#endif
-
-#if defined(PCBTARANIS)
-  #define IS_ROTARY_LEFT(evt)   (evt==EVT_KEY_FIRST(KEY_MINUS) || evt==EVT_KEY_REPT(KEY_MINUS))
-  #define IS_ROTARY_RIGHT(evt)  (evt==EVT_KEY_FIRST(KEY_PLUS) || evt==EVT_KEY_REPT(KEY_PLUS))
-  #define IS_ROTARY_UP(evt)     (evt==EVT_KEY_FIRST(KEY_PLUS) || evt==EVT_KEY_REPT(KEY_PLUS))
-  #define IS_ROTARY_DOWN(evt)   (evt==EVT_KEY_FIRST(KEY_MINUS) || evt==EVT_KEY_REPT(KEY_MINUS))
-  #define IS_ROTARY_BREAK(evt)  (evt==EVT_KEY_BREAK(KEY_ENTER))
-  #define IS_ROTARY_LONG(evt)   (evt==EVT_KEY_LONG(KEY_ENTER))
-  #define IS_ROTARY_EVENT(evt)  (0)
-  #define CASE_EVT_ROTARY_BREAK /*case EVT_KEY_BREAK(KEY_ENTER):*/
-  #define CASE_EVT_ROTARY_LONG  /*case EVT_KEY_LONG(KEY_ENTER):*/
-  #define CASE_EVT_ROTARY_LEFT  case EVT_KEY_FIRST(KEY_MOVE_DOWN): case EVT_KEY_REPT(KEY_MOVE_DOWN):
-  #define CASE_EVT_ROTARY_RIGHT case EVT_KEY_FIRST(KEY_MOVE_UP): case EVT_KEY_REPT(KEY_MOVE_UP):
-#elif defined(ROTARY_ENCODER_NAVIGATION)
-  #define IS_ROTARY_LEFT(evt)   (evt == EVT_ROTARY_LEFT)
-  #define IS_ROTARY_RIGHT(evt)  (evt == EVT_ROTARY_RIGHT)
-  #define IS_ROTARY_UP(evt)     IS_ROTARY_LEFT(evt)
-  #define IS_ROTARY_DOWN(evt)   IS_ROTARY_RIGHT(evt)
-  #define IS_ROTARY_BREAK(evt)  (evt == EVT_ROTARY_BREAK)
-  #define IS_ROTARY_LONG(evt)   (evt == EVT_ROTARY_LONG)
-  #define IS_ROTARY_EVENT(evt)  (EVT_KEY_MASK(evt) >= 0x0e)
-  #define CASE_EVT_ROTARY_BREAK case EVT_ROTARY_BREAK:
-  #define CASE_EVT_ROTARY_LONG  case EVT_ROTARY_LONG:
-  #define CASE_EVT_ROTARY_LEFT  case EVT_ROTARY_LEFT:
-  #define CASE_EVT_ROTARY_RIGHT case EVT_ROTARY_RIGHT:
-#else
-  #define IS_ROTARY_LEFT(evt)   (0)
-  #define IS_ROTARY_RIGHT(evt)  (0)
-  #define IS_ROTARY_UP(evt)     (0)
-  #define IS_ROTARY_DOWN(evt)   (0)
-  #define IS_ROTARY_BREAK(evt)  (0)
-  #define IS_ROTARY_LONG(evt)   (0)
-  #define IS_ROTARY_EVENT(evt)  (0)
-  #define CASE_EVT_ROTARY_BREAK
-  #define CASE_EVT_ROTARY_LONG
-  #define CASE_EVT_ROTARY_LEFT
-  #define CASE_EVT_ROTARY_RIGHT
+  #define SPLASH_TIMEOUT  (4*100)  // 4 seconds
 #endif
 
 #if defined(PCBTARANIS)
@@ -753,6 +568,7 @@ struct t_inactivity
   uint16_t counter;
   uint8_t  sum;
 };
+
 extern struct t_inactivity inactivity;
 
 #if defined(PXX)
@@ -767,33 +583,17 @@ extern uint8_t pxxFlag[NUM_MODULES];
 #define ZCHAR_MAX (LEN_STD_CHARS + LEN_SPECIAL_CHARS)
 
 char idx2char(int8_t idx);
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
 int8_t char2idx(char c);
 void str2zchar(char *dest, const char *src, int size);
 void zchar2str(char *dest, const char *src, int size);
 #endif
 
-extern uint8_t s_evt;
-#define putEvent(evt) s_evt = evt
-void clearKeyEvents();
-void pauseEvents(uint8_t enuk);
-void killEvents(uint8_t enuk);
-#if defined(CPUARM)
-  uint8_t getEvent(bool trim);
-#else
-  uint8_t getEvent();
-#endif
-
-uint8_t keyDown();
-
-enum PowerState {
-  e_power_on,
-  e_power_trainer,
-  e_power_usb,
-  e_power_off
-};
+#include "keys.h"
+#include "pwr.h"
 
 bool switchState(EnumKeys enuk);
+uint8_t trimDown(uint8_t idx);
 void readKeysAndTrims();
 
 uint16_t evalChkSum();
@@ -819,6 +619,18 @@ enum PerOutMode {
   e_perout_mode_nosticks = 8,
   e_perout_mode_noinput = e_perout_mode_notrainer+e_perout_mode_notrims+e_perout_mode_nosticks
 };
+
+
+#if defined(MODULE_ALWAYS_SEND_PULSES)
+extern uint8_t startupWarningState;
+
+enum StartupWarningStates {
+  STARTUP_WARNING_THROTTLE,
+  STARTUP_WARNING_SWITCHES,
+  STARTUP_WARNING_DONE,
+};
+#endif
+
 
 // Fiddle to force compiler to use a pointer
 #if defined(CPUARM) || defined(SIMU)
@@ -867,10 +679,15 @@ int8_t  getMovedSwitch();
   #define getFlightPhase() 0
 #endif
 
-extern uint8_t getTrimFlightPhase(uint8_t phase, uint8_t idx);
-extern int16_t getRawTrimValue(uint8_t phase, uint8_t idx);
-extern int16_t getTrimValue(uint8_t phase, uint8_t idx);
-extern void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim);
+#if !defined(PCBTARANIS)
+  uint8_t getTrimFlightPhase(uint8_t phase, uint8_t idx);
+#else
+  #define getTrimFlightPhase(phase, idx) (phase)
+#endif
+
+trim_t getRawTrimValue(uint8_t phase, uint8_t idx);
+int getTrimValue(uint8_t phase, uint8_t idx);
+void setTrimValue(uint8_t phase, uint8_t idx, int trim);
 
 #if defined(ROTARY_ENCODERS)
   int16_t getRotaryEncoder(uint8_t idx);
@@ -906,18 +723,15 @@ extern void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim);
 #endif
 
 #if defined(CPUARM)
-  #define GV1_SMALL  128
-  #define GV1_LARGE  4096
   #define GV_GET_GV1_VALUE(max)        ( (max<=GV_RANGESMALL && min>=GV_RANGESMALL_NEG) ? GV1_SMALL : GV1_LARGE )
   #define GV_INDEX_CALCULATION(x,max)  ( (max<=GV_RANGESMALL && min>=GV_RANGESMALL_NEG) ? (uint8_t) x-GV1_SMALL : ((x&(GV1_LARGE*2-1))-GV1_LARGE) )
+  #define GV_IS_GV_VALUE(x,min,max)    ( (max>GV1_SMALL || min<-GV1_SMALL) ? (x>GV_RANGELARGE || x<GV_RANGELARGE_NEG) : (x>max) || (x<min) )
 #else
-  #define GV1_SMALL  128
-  #define GV1_LARGE  256
   #define GV_GET_GV1_VALUE(max)        ( (max<=GV_RANGESMALL) ? GV1_SMALL : GV1_LARGE )
   #define GV_INDEX_CALCULATION(x,max)  ( (max<=GV1_SMALL) ? (uint8_t) x-GV1_SMALL : ((x&(GV1_LARGE*2-1))-GV1_LARGE) )
+  #define GV_IS_GV_VALUE(x,min,max)    ( (x>max) || (x<min) )
 #endif
 
-#define GV_IS_GV_VALUE(x,min,max)    ( (x>max) || (x<min) )
 #define GV_INDEX_CALC_DELTA(x,delta) ((x&(delta*2-1)) - delta)
 
 #define GV_CALC_VALUE_IDX_POS(idx,delta) (-delta+idx)
@@ -927,16 +741,29 @@ extern void setTrimValue(uint8_t phase, uint8_t idx, int16_t trim);
 #define GV_RANGESMALL_NEG  (-GV1_SMALL + (RESERVE_RANGE_FOR_GVARS+1))
 #define GV_RANGELARGE      (GV1_LARGE - (RESERVE_RANGE_FOR_GVARS+1))
 #define GV_RANGELARGE_NEG  (-GV1_LARGE + (RESERVE_RANGE_FOR_GVARS+1))
+#if defined(CPUARM)
+  // the define GV1_LARGE marks the highest bit value used for this variables
+  // because this would give too big numbers for ARM, we limit it further for
+  // offset and weight
+  #define GV_RANGELARGE_WEIGHT      (GV_RANGE_WEIGHT)
+  #define GV_RANGELARGE_WEIGHT_NEG (-GV_RANGE_WEIGHT)
+  #define GV_RANGELARGE_OFFSET      (GV_RANGE_OFFSET)
+  #define GV_RANGELARGE_OFFSET_NEG (-GV_RANGE_OFFSET)
+#else
+  // for stock we just use as much as possible
+  #define GV_RANGELARGE_WEIGHT      GV_RANGELARGE
+  #define GV_RANGELARGE_WEIGHT_NEG  GV_RANGELARGE_NEG
+  #define GV_RANGELARGE_OFFSET      GV_RANGELARGE
+  #define GV_RANGELARGE_OFFSET_NEG  GV_RANGELARGE_NEG
+#endif
 
 extern uint16_t s_timeCumTot;
 extern uint16_t s_timeCumThr;
 extern uint16_t s_timeCum16ThrP;
 
 struct TimerState {
-  uint8_t  lastPos;
   uint16_t cnt;
   uint16_t sum;
-  uint8_t  toggled;
   uint8_t  state;
   int16_t  val;
   uint8_t  val_10ms;
@@ -956,7 +783,7 @@ extern uint8_t trimsCheckTimer;
 
 extern volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_used;
 extern volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_value;
-extern int16_t csLastValue[NUM_CSW];
+extern int16_t csLastValue[NUM_LOGICAL_SWITCH];
 #define CS_LAST_VALUE_INIT -32768
 
 #define TMR_OFF      0
@@ -1041,12 +868,15 @@ enum Analogs {
 #if defined(PCBTARANIS)
   POT1,
   POT2,
+  POT3,
+  POT_LAST = POT3,
   SLIDER1,
   SLIDER2,
 #else
   POT1,
   POT2,
   POT3,
+  POT_LAST = POT3,
 #endif
   TX_VOLTAGE,
 #if defined(PCBSKY9X) && !defined(REVA)
@@ -1094,12 +924,13 @@ template<class t> FORCEINLINE t min(t a, t b) { return a<b?a:b; }
 template<class t> FORCEINLINE t max(t a, t b) { return a>b?a:b; }
 template<class t> FORCEINLINE t sgn(t a) { return a>0 ? 1 : (a < 0 ? -1 : 0); }
 template<class t> FORCEINLINE t limit(t mi, t x, t ma) { return min(max(mi,x),ma); }
+template<class t> void swap(t & a, t & b) { t tmp = b; b = a; a = tmp; }
 
 #if defined(HELI) || defined(FRSKY_HUB)
 uint16_t isqrt32(uint32_t n);
 #endif
 
-#if defined(CPUARM)
+#if defined(CPUARM) && !defined(BOOT)
 #if !defined(SIMU)
 extern "C" {
 #include <CoOS.h>
@@ -1181,10 +1012,7 @@ extern int8_t  calcRESXto100(int16_t x);
 
 #define TMR_VAROFS  5
 
-extern const char stamp1[];
-extern const char stamp2[];
-extern const char stamp3[];
-extern const char eeprom_stamp[];
+extern const char vers_stamp[];
 
 extern uint8_t            g_vbat100mV;
 #define g_blinkTmr10ms (*(uint8_t*)&g_tmr10ms)
@@ -1192,7 +1020,7 @@ extern uint8_t            g_beepCnt;
 extern uint8_t            g_beepVal[5];
 
 extern uint8_t            ppmInState; //0=unsync 1..8= wait for value i-1
-extern int16_t            g_ppmIns[8];
+extern int16_t            g_ppmIns[NUM_TRAINER];
 extern int32_t            chans[NUM_CHNOUT];
 extern int16_t            ex_chans[NUM_CHNOUT]; // Outputs (before LIMITS) of the last perMain
 extern int16_t            channelOutputs[NUM_CHNOUT];
@@ -1225,8 +1053,8 @@ int applyCurve(int x, int8_t idx);
 void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS_INC);
 int16_t applyLimits(uint8_t channel, int32_t value);
 
+void evalInputs(uint8_t mode);
 uint16_t anaIn(uint8_t chan);
-int16_t thrAnaIn(uint8_t chan);
 extern int16_t calibratedStick[NUM_STICKS+NUM_POTS];
 
 #define FLASH_DURATION 20 /*200ms*/
@@ -1241,7 +1069,7 @@ ExpoData *expoAddress(uint8_t idx);
 MixData *mixAddress(uint8_t idx);
 LimitData *limitAddress(uint8_t idx);
 int8_t *curveAddress(uint8_t idx);
-CustomSwData *cswAddress(uint8_t idx);
+LogicalSwitchData *cswAddress(uint8_t idx);
 
 #if !defined(PCBTARANIS)
 struct CurveInfo {
@@ -1305,20 +1133,53 @@ extern int24_t act   [MAX_MIXERS];
   #define isMixActive(x) false
 #endif
 
+enum CswFunctionFamilies {
+  LS_FAMILY_OFS,
+  LS_FAMILY_BOOL,
+  LS_FAMILY_COMP,
+  LS_FAMILY_DIFF,
+  LS_FAMILY_TIMER,
+  LS_FAMILY_STICKY,
+  LS_FAMILY_RANGE,
+  LS_FAMILY_STAY
+};
+
+uint8_t cswFamily(uint8_t func);
+int16_t cswTimerValue(delayval_t val);
+
 #if defined(CPUARM)
-  #define MASK_CFN_TYPE uint32_t  // current max = 32 function switches
-  #define MASK_FUNC_TYPE uint32_t // current max = 32 functions
+  #define MASK_CFN_TYPE  uint32_t  // current max = 32 function switches
+  #define MASK_FUNC_TYPE uint32_t  // current max = 32 functions
+
 #elif defined(CPUM64)
-  #define MASK_CFN_TYPE uint16_t  // current max = 16 function switches
-  #define MASK_FUNC_TYPE uint16_t // current max = 16 functions
+  #define MASK_CFN_TYPE  uint16_t  // current max = 16 function switches
+  #define MASK_FUNC_TYPE uint8_t   // current max = 8  functions
 #else
-  #define MASK_CFN_TYPE uint32_t  // current max = 32 function switches
-  #define MASK_FUNC_TYPE uint16_t // current max = 16 functions
+  #define MASK_CFN_TYPE  uint32_t  // current max = 32 function switches
+  #define MASK_FUNC_TYPE uint8_t   // current max = 8 functions
 #endif
 
-extern MASK_CFN_TYPE  activeSwitches;
-extern MASK_CFN_TYPE  activeFnSwitches;
+enum FunctionsActive {
+  FUNCTION_TRAINER,
+  FUNCTION_INSTANT_TRIM = FUNCTION_TRAINER+4,
+  FUNCTION_VARIO,
+  FUNCTION_BACKLIGHT,
+#if defined(SDCARD)
+  FUNCTION_LOGS,
+#endif
+#if defined(CPUARM)
+  FUNCTION_BACKGND_MUSIC,
+  FUNCTION_BACKGND_MUSIC_PAUSE,
+#endif
+};
+
+#define VARIO_FREQUENCY_ZERO   700/*Hz*/
+#define VARIO_FREQUENCY_RANGE  1000/*Hz*/
+#define VARIO_REPEAT_ZERO      500/*ms*/
+#define VARIO_REPEAT_MAX       80/*ms*/
+
 extern MASK_FUNC_TYPE activeFunctions;
+extern MASK_CFN_TYPE  activeFnSwitches;
 extern tmr10ms_t lastFunctionTime[NUM_CFN];
 
 #if defined(CPUARM)
@@ -1327,7 +1188,7 @@ extern bool evalFunctionsFirstTime;
 
 inline bool isFunctionActive(uint8_t func)
 {
-  return activeFunctions & ((MASK_FUNC_TYPE)1 << (func-FUNC_TRAINER));
+  return activeFunctions & ((uint8_t)1 << func);
 }
 
 #if defined(ROTARY_ENCODERS)
@@ -1472,6 +1333,7 @@ enum AUDIO_SOUNDS {
 #endif
 
 #include "translations.h"
+#include "fonts.h"
 
 #if defined(HAPTIC)
 #include "haptic.h"
@@ -1564,6 +1426,14 @@ union ReusableBuffer
         int16_t loVals[NUM_STICKS+NUM_POTS];
         int16_t hiVals[NUM_STICKS+NUM_POTS];
         uint8_t state;
+#if defined(PCBTARANIS)
+        struct {
+          uint8_t stepsCount;
+          int16_t steps[XPOTS_MULTIPOS_COUNT];
+          uint8_t lastCount;
+          int16_t lastPosition;
+        } xpotsCalib[NUM_XPOTS];
+#endif
     } calib;
 
 #if defined(SDCARD)
@@ -1582,7 +1452,7 @@ extern union ReusableBuffer reusableBuffer;
 void checkFlashOnBeep();
 
 #if defined(FRSKY) || defined(CPUARM)
-FORCEINLINE void convertUnit(getvalue_t & val, uint8_t & unit);
+void convertUnit(getvalue_t & val, uint8_t & unit); // TODO check FORCEINLINE on stock
 void putsTelemetryValue(xcoord_t x, uint8_t y, lcdint_t val, uint8_t unit, uint8_t att);
 #else
 #define convertUnit(...)
@@ -1593,8 +1463,7 @@ uint8_t zlen(const char *str, uint8_t size);
 bool zexist(const char *str, uint8_t size);
 char * strcat_zchar(char * dest, char * name, uint8_t size, const char *defaultName, uint8_t defaultNameSize, uint8_t defaultIdx);
 #define strcat_modelname(dest, idx) strcat_zchar(dest, modelHeaders[idx].name, LEN_MODEL_NAME, STR_MODEL, PSIZE(TR_MODEL), idx+1)
-#define strcat_phasename(dest, idx) strcat_zchar(dest, g_model.phaseData[idx].name, LEN_FP_NAME, NULL, 0, 0)
-#define strcat_mixername(dest, idx) strcat_zchar(dest, g_model.mixData[idx].name, LEN_EXPOMIX_NAME, NULL, 0, 0)
+#define strcat_phasename(dest, idx) strcat_zchar(dest, g_model.phaseData[idx].name, LEN_FP_NAME, STR_FP, PSIZE(TR_FP), idx+1)
 #define ZLEN(s) zlen(s, sizeof(s))
 #define ZEXIST(s) zexist(s, sizeof(s))
 #endif
@@ -1625,19 +1494,37 @@ extern uint8_t barsThresholds[THLD_MAX];
 #endif
 
 #if defined(FRSKY)
-  csw_telemetry_value_t minTelemValue(uint8_t channel);
-  csw_telemetry_value_t maxTelemValue(uint8_t channel);
+  ls_telemetry_value_t minTelemValue(uint8_t channel);
+  ls_telemetry_value_t maxTelemValue(uint8_t channel);
 #else
   #define minTelemValue(channel) 255
   #define maxTelemValue(channel) 255
 #endif
 
-getvalue_t convertTelemValue(uint8_t channel, csw_telemetry_value_t value);
-getvalue_t convertCswTelemValue(CustomSwData * cs);
+#if defined(CPUARM)
+getvalue_t convert16bitsTelemValue(uint8_t channel, ls_telemetry_value_t value);
+ls_telemetry_value_t max8bitsTelemValue(uint8_t channel);
+#endif
+
+getvalue_t convert8bitsTelemValue(uint8_t channel, ls_telemetry_value_t value);
+getvalue_t convertCswTelemValue(LogicalSwitchData * cs);
+
+#if defined(CPUARM)
+  #define convertTelemValue(channel, value) convert16bitsTelemValue(channel, value)
+  #define convertBarTelemValue(channel, value) convert8bitsTelemValue(channel, value)
+  #define maxBarTelemValue(channel) max8bitsTelemValue(channel)
+#else
+  #define convertTelemValue(channel, value) convert8bitsTelemValue(channel, value)
+  #define convertBarTelemValue(channel, value) convert8bitsTelemValue(channel, value)
+  #define maxBarTelemValue(channel) maxTelemValue(channel)
+#endif
 
 #if defined(FRSKY) || defined(CPUARM)
 lcdint_t applyChannelRatio(uint8_t channel, lcdint_t val);
 #endif
+
+getvalue_t div10_and_round(getvalue_t value);
+
 
 #if defined(FRSKY)
 NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm);

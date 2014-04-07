@@ -1,6 +1,6 @@
-Copyright © 2011-2013 Bertrand Songis and Romolo Manfredini
+Copyright © 2011-2014 OpenTX team
 
-companion9x is based on code named eePe by author - Erez Raviv <erezraviv@gmail.com> 
+OpenTX Companion is based on code named eePe by author - Erez Raviv <erezraviv@gmail.com> 
 
 This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
 

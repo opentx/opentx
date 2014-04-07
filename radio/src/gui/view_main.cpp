@@ -58,7 +58,7 @@
 #define TIMER2_Y      45
 #define TIMERS_R      193
 #define REBOOT_X      (LCD_W-FW)
-#define VSWITCH_X(i)  (((i>=NUM_CSW*3/4) ? BITMAP_X+28 : ((i>=NUM_CSW/2) ? BITMAP_X+25 : ((i>=NUM_CSW/4) ? 21 : 18))) + 3*i)
+#define VSWITCH_X(i)  (((i>=NUM_LOGICAL_SWITCH*3/4) ? BITMAP_X+28 : ((i>=NUM_LOGICAL_SWITCH/2) ? BITMAP_X+25 : ((i>=NUM_LOGICAL_SWITCH/4) ? 21 : 18))) + 3*i)
 #define VSWITCH_Y     (LCD_H-9)
 #define BAR_HEIGHT    (31-9)
 #define TRIM_LH_X     (32+9)
@@ -120,10 +120,12 @@
 void drawPotsBars()
 {
   // Optimization by Mike Blandford
-  uint8_t x, y, len ;  // declare temporary variables
-  for (x=LCD_W/2-5, y=NUM_STICKS; y<NUM_STICKS+NUM_POTS; x+=5, y++) {
-    len = ((calibratedStick[y]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
-    V_BAR(x, LCD_H-8, len)
+  uint8_t x, i, len ;  // declare temporary variables
+  for (x=LCD_W/2-5, i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; x+=5, i++) {
+    if (IS_POT_AVAILABLE(i)) {
+      len = ((calibratedStick[i]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
+      V_BAR(x, LCD_H-8, len)
+    }
   }
 }
 
@@ -196,8 +198,11 @@ void displayTrims(uint8_t phase)
 void displaySliders()
 {
   for (uint8_t i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; i++) {
-    xcoord_t x = (i%2 ? LCD_W-5 : 3);
-    int8_t y = (i>NUM_STICKS+1 ? LCD_H/2+1 : 1);
+    if (i == POT3) {
+      continue;
+    }
+    xcoord_t x = ((i==POT1 || i==SLIDER1) ? 3 : LCD_W-5);
+    int8_t y = (i>=SLIDER1 ? LCD_H/2+1 : 1);
     lcd_vline(x, y, LCD_H/2-2);
     lcd_vline(x+1, y, LCD_H/2-2);
     y += LCD_H/2-4;
@@ -268,9 +273,9 @@ void displayTopBar()
     }
 
     /* Altitude */
-    if (g_model.frsky.altitudeDisplayed && frskyData.hub.baroAltitudeOffset) {
+    if (g_model.frsky.altitudeDisplayed && TELEMETRY_BARO_ALT_AVAILABLE()) {
       LCD_ICON(altitude_icon_x, BAR_Y, ICON_ALTITUDE);
-      putsTelemetryValue(altitude_icon_x+2*FW-1, BAR_Y+1, TELEMETRY_ALT_BP, UNIT_METERS, LEFT);
+      putsTelemetryValue(altitude_icon_x+2*FW-1, BAR_Y+1, TELEMETRY_RELATIVE_BARO_ALT_BP, UNIT_DIST, LEFT);
     }
   }
 
@@ -295,7 +300,7 @@ void displayTopBar()
     x -= 12;
   }
 
-  if (isFunctionActive(FUNC_LOGS)) {
+  if (isFunctionActive(FUNCTION_LOGS)) {
     LCD_NOTIF_ICON(x, ICON_LOGS);
     x -= 12;
   }
@@ -318,7 +323,9 @@ void displayTopBar()
   /* RTC time */
   struct gtm t;
   gettime(&t);
-  lcd_putcAtt(BAR_TIME_X-1, BAR_Y+1, ':', BLINK);
+  if (t.tm_sec % 2) {
+    lcd_putcAtt(BAR_TIME_X+1, BAR_Y+1, ':', 0);
+  }
   lcd_outdezNAtt(BAR_TIME_X+1, BAR_Y+1, t.tm_hour, LEADING0, 2);
   lcd_outdezNAtt(BAR_TIME_X+3*FWNUM-1, BAR_Y+1, t.tm_min, LEADING0, 2);
 
@@ -343,7 +350,7 @@ void displayTimers()
   if (g_model.timers[0].mode) {
     TimerState & timerState = timersStates[0];
     putsTime(TIMERS_X, TIMER1_Y, timerState.val, MIDSIZE|LEFT, MIDSIZE|LEFT);
-    putsTmrMode(TIMERS_X, TIMER1_Y-6, g_model.timers[0].mode, STRCONDENSED|SMLSIZE);
+    putsTimerMode(TIMERS_X, TIMER1_Y-6, g_model.timers[0].mode, SMLSIZE);
     if (g_model.timers[0].persistent) lcd_putcAtt(TIMERS_R, TIMER1_Y+1, 'P', SMLSIZE);
     if (timerState.val < 0) {
       if (BLINK_ON_PHASE) {
@@ -356,7 +363,7 @@ void displayTimers()
   if (g_model.timers[1].mode) {
     TimerState & timerState = timersStates[1];
     putsTime(TIMERS_X, TIMER2_Y, timerState.val, MIDSIZE|LEFT, MIDSIZE|LEFT);
-    putsTmrMode(TIMERS_X, TIMER2_Y-6, g_model.timers[1].mode, STRCONDENSED|SMLSIZE);
+    putsTimerMode(TIMERS_X, TIMER2_Y-6, g_model.timers[1].mode, SMLSIZE);
     if (g_model.timers[1].persistent) lcd_putcAtt(TIMERS_R, TIMER2_Y+1, 'P', SMLSIZE);
     if (timerState.val < 0) {
       if (BLINK_ON_PHASE) {
@@ -373,7 +380,7 @@ void displayTimers()
     TimerState & timerState = timersStates[0];
     uint8_t att = DBLSIZE | (timerState.val<0 ? BLINK|INVERS : 0);
     putsTime(12*FW+2+10*FWNUM-4, FH*2, timerState.val, att, att);
-    putsTmrMode(timerState.val >= 0 ? 9*FW-FW/2+3 : 9*FW-FW/2-4, FH*3, g_model.timers[0].mode, STRCONDENSED);
+    putsTimerMode(timerState.val >= 0 ? 9*FW-FW/2+3 : 9*FW-FW/2-4, FH*3, g_model.timers[0].mode);
   }
 }
 #endif
@@ -404,7 +411,7 @@ void displayBattVoltage()
 void displayVoltageOrAlarm()
 {
   if (g_vbat100mV > g_eeGeneral.vBatWarn && g_eeGeneral.temperatureWarn && getTemperature() >= g_eeGeneral.temperatureWarn) {
-    putsTelemetryValue(6*FW-1, 3*FH, getTemperature(), UNIT_DEGREES, BLINK|INVERS|DBLSIZE);
+    putsTelemetryValue(6*FW-1, 3*FH, getTemperature(), UNIT_TEMPERATURE, BLINK|INVERS|DBLSIZE);
   }
   else if (g_vbat100mV > g_eeGeneral.vBatWarn && g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.currentCalib)/8192/36) / 500 >= g_eeGeneral.mAhWarn) {
     putsTelemetryValue(7*FW-1, 3*FH, (g_eeGeneral.mAhUsed + Current_used*(488 + g_eeGeneral.currentCalib)/8192/36)/10, UNIT_MAH, BLINK|INVERS|DBLSIZE);
@@ -795,30 +802,30 @@ void menuMainView(uint8_t event)
 
       // Custom Switches
 #if defined(PCBSKY9X)
-      for (uint8_t i=0; i<NUM_CSW; i++) {
+      for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++) {
         int8_t len = getSwitch(SWSRC_SW1+i) ? BAR_HEIGHT : 1;
         uint8_t x = VSWITCH_X(i);
         lcd_vline(x-1, VSWITCH_Y-len, len);
         lcd_vline(x,   VSWITCH_Y-len, len);
       }
 #elif defined(PCBGRUVIN9X) && ROTARY_ENCODERS > 2
-      for (uint8_t i=0; i<NUM_CSW; i++)
+      for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++)
         putsSwitches(2*FW-2 + (i/3)*(4*FW-2) + (i/3>1 ? 3*FW+6 : 0), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
 #elif defined(PCBGRUVIN9X)
-      for (uint8_t i=0; i<NUM_CSW; i++)
+      for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++)
         putsSwitches(2*FW-2 + (i/3)*(4*FW-2) + (i/3>1 ? 3*FW : 0), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
 #elif !defined(PCBSTD)
-      for (uint8_t i=0; i<NUM_CSW; i++)
+      for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++)
         putsSwitches(2*FW-2 + (i/3)*(4*FW-1), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
 #else
-      for (uint8_t i=0; i<NUM_CSW; i++)
+      for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++)
         putsSwitches(2*FW-2 + (i/3)*(5*FW), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
 #endif
     }
   }
   else { // timer2
     putsTime(33+FW+2+10*FWNUM-4, FH*5, timersStates[1].val, DBLSIZE, DBLSIZE);
-    putsTmrMode(timersStates[1].val >= 0 ? 20-FW/2+5 : 20-FW/2-2, FH*6, g_model.timers[1].mode, STRCONDENSED);
+    putsTimerMode(timersStates[1].val >= 0 ? 20-FW/2+5 : 20-FW/2-2, FH*6, g_model.timers[1].mode);
     // lcd_outdezNAtt(33+11*FW, FH*6, s_timerVal_10ms[1], LEADING0, 2); // 1/100s
   }
 #endif // PCBTARANIS
