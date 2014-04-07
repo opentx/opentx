@@ -414,6 +414,7 @@ class TelemetrySourcesConversionTable: public ConversionTable {
       addConversion(1+TELEMETRY_SOURCE_SPEED_MAX, val++);
       addConversion(1+TELEMETRY_SOURCE_DIST_MAX, val++);
       if (version >= 216) {
+        addConversion(1+TELEMETRY_SOURCE_ASPEED_MAX, val++);
         addConversion(1+TELEMETRY_SOURCE_CELL_MIN, val++);
         addConversion(1+TELEMETRY_SOURCE_CELLS_MIN, val++);
         addConversion(1+TELEMETRY_SOURCE_VFAS_MIN, val++);

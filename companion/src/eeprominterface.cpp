@@ -245,9 +245,9 @@ QString RawSource::toString()
     QObject::tr("Speed"), QObject::tr("Dist"), QObject::tr("GPS Alt"),
     QObject::tr("Cell"), QObject::tr("Cells"), QObject::tr("Vfas"), QObject::tr("Curr"), QObject::tr("Cnsp"), QObject::tr("Powr"),
     QObject::tr("AccX"), QObject::tr("AccY"), QObject::tr("AccZ"),
-    QObject::tr("HDG "), QObject::tr("VSpd"), QObject::tr("ASpd"), QObject::tr("dTE"),
+    QObject::tr("HDG "), QObject::tr("VSpd"), QObject::tr("AirSpeed"), QObject::tr("dTE"),
     QObject::tr("A1-"),  QObject::tr("A2-"), QObject::tr("A3-"),  QObject::tr("A4-"),
-    QObject::tr("Alt-"), QObject::tr("Alt+"), QObject::tr("Rpm+"), QObject::tr("T1+"), QObject::tr("T2+"), QObject::tr("Speed+"), QObject::tr("Dist+"),
+    QObject::tr("Alt-"), QObject::tr("Alt+"), QObject::tr("Rpm+"), QObject::tr("T1+"), QObject::tr("T2+"), QObject::tr("Speed+"), QObject::tr("Dist+"), QObject::tr("AirSpeed+"),
     QObject::tr("Cell-"), QObject::tr("Cells-"), QObject::tr("Vfas-"), QObject::tr("Curr+"), QObject::tr("Powr+"),
     QObject::tr("ACC"), QObject::tr("Time"),
   };
