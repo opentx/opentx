@@ -648,9 +648,9 @@ class HeliField: public StructField {
     }
 };
 
-class PhaseField: public TransformedField {
+class FlightModeField: public TransformedField {
   public:
-    PhaseField(PhaseData & phase, int index, BoardEnum board, unsigned int version):
+    FlightModeField(PhaseData & phase, int index, BoardEnum board, unsigned int version):
       TransformedField(internalField),
       internalField("Phase"),
       phase(phase),
@@ -753,9 +753,12 @@ class PhaseField: public TransformedField {
             phase.trimRef[i] = trim - 501;
             if (phase.trimRef[i] >= index)
               phase.trimRef[i] += 1;
+            phase.trimMode[i] = 0;
             phase.trim[i] = 0;
           }
           else {
+            phase.trimRef[i] = index;
+            phase.trimMode[i] = 0;
             phase.trim[i] = trim;
           }
         }
@@ -2355,7 +2358,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   }
   internalField.Append(new HeliField(modelData.swashRingData, board, version, variant));
   for (int i=0; i<MAX_PHASES(board, version); i++)
-    internalField.Append(new PhaseField(modelData.phaseData[i], i, board, version));
+    internalField.Append(new FlightModeField(modelData.phaseData[i], i, board, version));
 
   if (!IS_ARM(board) || version < 216) {
     internalField.Append(new SignedField<8>(modelData.moduleData[0].ppmFrameLength));
