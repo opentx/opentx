@@ -3020,17 +3020,17 @@ uint16_t s_sum_samples_thr_10s;
 #if defined(HELI) || defined(FRSKY_HUB)
 uint16_t isqrt32(uint32_t n)
 {
-    uint16_t c = 0x8000;
-    uint16_t g = 0x8000;
+  uint16_t c = 0x8000;
+  uint16_t g = 0x8000;
 
-    for(;;) {
-        if((uint32_t)g*g > n)
-            g ^= c;
-        c >>= 1;
-        if(c == 0)
-            return g;
-        g |= c;
-    }
+  for(;;) {
+    if ((uint32_t)g*g > n)
+      g ^= c;
+    c >>= 1;
+    if(c == 0)
+      return g;
+    g |= c;
+  }
 }
 #endif
 
@@ -3099,13 +3099,14 @@ void evalInputs(uint8_t mode)
     if (v >  RESX) v =  RESX;
     	
 #if defined(PCBTARANIS)
-    if (i==POT1 || i==SLIDER1)
+    if (i==POT1 || i==SLIDER1) {
       v = -v;
+    }
 #endif
 
-    if (g_model.throttleReversed && ch==THR_STICK)
+    if (g_model.throttleReversed && ch==THR_STICK) {
       v = -v;
-      
+    }
 
 #if defined(EXTRA_3POS)
     if (i == POT1+EXTRA_3POS-1) {
@@ -3170,8 +3171,12 @@ void evalInputs(uint8_t mode)
       }
 
 #if defined(HELI)
-      if (d && (ch==ELE_STICK || ch==AIL_STICK))
+      if (d && (ch==ELE_STICK || ch==AIL_STICK)) {
         v = (int32_t(v)*calc100toRESX(g_model.swashR.value))/int32_t(d);
+#if defined(PCBTARANIS)
+        calibratedStick[ch] = v;
+#endif
+      }
 #endif
 
 #if !defined(PCBTARANIS)
@@ -3649,6 +3654,12 @@ void evalFunctions()
 #endif
 }
 
+#if defined(PCBTARANIS)
+  #define HELI_ANAS_ARRAY calibratedStick
+#else
+  #define HELI_ANAS_ARRAY anas
+#endif
+
 uint8_t s_perout_flight_phase;
 void perOut(uint8_t mode, uint8_t tick10ms)
 {
@@ -3660,14 +3671,14 @@ void perOut(uint8_t mode, uint8_t tick10ms)
   
 #if defined(HELI)
   if (g_model.swashR.value) {
-    uint32_t v = ((int32_t)anas[ELE_STICK]*anas[ELE_STICK] + (int32_t)anas[AIL_STICK]*anas[AIL_STICK]);
+    uint32_t v = ((int32_t)HELI_ANAS_ARRAY[ELE_STICK]*HELI_ANAS_ARRAY[ELE_STICK] + (int32_t)HELI_ANAS_ARRAY[AIL_STICK]*HELI_ANAS_ARRAY[AIL_STICK]);
     uint32_t q = calc100toRESX(g_model.swashR.value);
     q *= q;
     if (v>q) {
       uint16_t d = isqrt32(v);
       int16_t tmp = calc100toRESX(g_model.swashR.value);
-      anas[ELE_STICK] = (int32_t) anas[ELE_STICK]*tmp/d;
-      anas[AIL_STICK] = (int32_t) anas[AIL_STICK]*tmp/d;
+      HELI_ANAS_ARRAY[ELE_STICK] = (int32_t) HELI_ANAS_ARRAY[ELE_STICK]*tmp/d;
+      HELI_ANAS_ARRAY[AIL_STICK] = (int32_t) HELI_ANAS_ARRAY[AIL_STICK]*tmp/d;
     }
   }
 
@@ -3675,8 +3686,8 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 #define REZ_SWASH_Y(x)  ((x))   //  1024 => 1024
 
   if (g_model.swashR.type) {
-    getvalue_t vp = anas[ELE_STICK]+trims[ELE_STICK];
-    getvalue_t vr = anas[AIL_STICK]+trims[AIL_STICK];
+    getvalue_t vp = HELI_ANAS_ARRAY[ELE_STICK]+trims[ELE_STICK];
+    getvalue_t vr = HELI_ANAS_ARRAY[AIL_STICK]+trims[AIL_STICK];
     getvalue_t vc = 0;
     if (g_model.swashR.collectiveSource)
       vc = getValue(g_model.swashR.collectiveSource);
