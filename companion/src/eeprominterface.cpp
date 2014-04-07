@@ -14,6 +14,10 @@ QString EEPROMWarnings;
 
 const char * switches9X[] = { "3POS", "THR", "RUD", "ELE", "AIL", "GEA", "TRN" };
 const char * switchesX9D[] = { "SA", "SB", "SC", "SD", "SE", "SF", "SG", "SH" };
+const char leftArrow[] = {(char)0xE2, (char)0x86, (char)0x90, 0};
+const char rightArrow[] = {(char)0xE2, (char)0x86, (char)0x92, 0};
+const char upArrow[] = {(char)0xE2, (char)0x86, (char)0x91, 0};
+const char downArrow[] = {(char)0xE2, (char)0x86, (char)0x93, 0};
 
 const uint8_t chout_ar[] = { // First number is 0..23 -> template setup,  Second is relevant channel out
   1,2,3,4 , 1,2,4,3 , 1,3,2,4 , 1,3,4,2 , 1,4,2,3 , 1,4,3,2,
@@ -299,13 +303,13 @@ QString RawSource::toString()
 
 QString SwitchUp(const char sw)
 {
-  const char result[] = {'S', sw, (char)0xE2, (char)0x86, (char)0x91, 0};
+  const char result[] = {'S', sw, *upArrow};
   return QString::fromUtf8(result);
 }
 
 QString SwitchDn(const char sw)
 {
-  const char result[] = {'S', sw, (char)0xE2, (char)0x86, (char)0x93, 0};
+  const char result[] = {'S', sw, *downArrow};
   return QString::fromUtf8(result);
 }
 
