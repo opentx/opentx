@@ -171,7 +171,8 @@ void StandardPage::populateCB(QComboBox *cb, int preferred)
   int channel = cb->itemData(cb->currentIndex()).toInt();
   if(wizDlg->mix.channel[channel].prebooked){
     for(int i=cb->count()-1; i>=0; i--){
-      if( !wizDlg->mix.channel[i].prebooked ){
+      channel = cb->itemData(i).toInt();
+      if( !wizDlg->mix.channel[channel].prebooked ){
         cb->setCurrentIndex(i);
         break;
       }
@@ -427,7 +428,7 @@ bool AileronsPage::validatePage() {
     return (bookChannel(aileron1CB, AILERONS_INPUT, 100 ));
   }
   return( bookChannel(aileron1CB, AILERONS_INPUT, 100 ) &&
-    bookChannel(aileron2CB, AILERONS_INPUT, 100 ));
+    bookChannel(aileron2CB, AILERONS_INPUT, -100 ));
 }
 
 void AileronsPage::noAileronChannel(){   aileron1CB->setEnabled(false);aileron2CB->setEnabled(false);}
@@ -476,7 +477,7 @@ bool FlapsPage::validatePage() {
     return (bookChannel(flap1CB, FLAPS_INPUT, 100 ));
   }
   return( bookChannel(flap1CB, FLAPS_INPUT, 100 ) &&
-    bookChannel(flap2CB, FLAPS_INPUT, -100 ));
+    bookChannel(flap2CB, FLAPS_INPUT, 100 ));
 }
 
 void FlapsPage::noFlapChannel(){   flap1CB->setEnabled(false);flap2CB->setEnabled(false);}
@@ -525,7 +526,7 @@ bool AirbrakesPage::validatePage() {
     return (bookChannel(airbrake1CB, AIRBRAKES_INPUT, 100 ));
   }
   return( bookChannel(airbrake1CB, AIRBRAKES_INPUT, 100 ) &&
-    bookChannel(airbrake2CB, AIRBRAKES_INPUT, -100 ));
+    bookChannel(airbrake2CB, AIRBRAKES_INPUT, 100 ));
 }
 
 void AirbrakesPage::noAirbrakeChannel(){   airbrake1CB->setEnabled(false);airbrake2CB->setEnabled(false);}
