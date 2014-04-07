@@ -724,7 +724,7 @@ void menuMainView(uint8_t event)
     doMainScreenGraphics();
   }
   else {
-    // Custom Switches
+    // Logical Switches
     uint8_t sw = 0;
     for (uint8_t line=0; line<4; line++) {
       for (uint8_t col=0; col<8; col++) {
@@ -823,7 +823,7 @@ void menuMainView(uint8_t event)
       }
 #endif // PCBGRUVIN9X && ROTARY_ENCODERS
 
-      // Custom Switches
+      // Logical Switches
 #if defined(PCBSKY9X)
       for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++) {
         int8_t len = getSwitch(SWSRC_SW1+i) ? BAR_HEIGHT : 1;

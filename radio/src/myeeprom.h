@@ -745,7 +745,7 @@ enum LogicalSwitchesFunctions {
 #define MAX_LS_DELAY    250 /*25s*/
 #define MAX_LS_ANDSW    SWSRC_LAST
 typedef int16_t ls_telemetry_value_t;
-PACK(typedef struct t_LogicalSwitchData { // Custom Switches data
+PACK(typedef struct t_LogicalSwitchData { // Logical Switches data
   int8_t  v1;
   int16_t v2;
   int16_t v3;
@@ -757,7 +757,7 @@ PACK(typedef struct t_LogicalSwitchData { // Custom Switches data
 #else
 typedef uint8_t ls_telemetry_value_t;
 #define MAX_LS_ANDSW    15
-PACK(typedef struct t_LogicalSwitchData { // Custom Switches data
+PACK(typedef struct t_LogicalSwitchData { // Logical Switches data
   int8_t  v1; //input
   int8_t  v2; //offset
   uint8_t func:4;

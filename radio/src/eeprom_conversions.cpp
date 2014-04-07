@@ -449,7 +449,7 @@ void ConvertModel_215_to_216(ModelData &model)
   // Curves: structure changed, 32 curves
   // Limits: min and max with PREC1
   // Custom Functions: play repeat * 5
-  // Custom Switches: better precision for x when A comes from telemetry
+  // Logical Switches: better precision for x when A comes from telemetry
   // Main View: altitude in top bar
   // Mixes: GVARS in weight moved from 512 to 4096 and -512 to -4096, because GVARS may be used in limits [-1250:1250]
   // Switches: two 6-pos pots added, REa added to Sky9x

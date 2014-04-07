@@ -656,7 +656,7 @@ enum CSFunctionFamily {
   LS_FAMILY_STAY,
 };
 
-class LogicalSwitchData { // Custom Switches data
+class LogicalSwitchData { // Logical Switches data
   public:
     LogicalSwitchData(unsigned int func=0)
     {
