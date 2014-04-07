@@ -1652,9 +1652,6 @@ bool getSwitch(int8_t swtch)
         if (cswDurations[cs_idx] > get_tmr10ms()) {
           result = true;
         }
-        else if (s == LS_FAMILY_STICKY) {
-          csLastValue[cs_idx] &= ~(1<<0);
-        }
       }
 #endif
 
