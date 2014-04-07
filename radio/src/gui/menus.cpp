@@ -316,7 +316,7 @@ void title(const pm_char * s)
 
 #if defined(PCBTARANIS)
   #define MAXCOL_RAW(row) (horTab ? pgm_read_byte(horTab+min(row, (vertpos_t)horTabMax)) : (const uint8_t)0)
-  #define MAXCOL(row)     (MAXCOL_RAW(row) == (uint8_t)-1 ? (uint8_t)-1 : (const uint8_t)(MAXCOL_RAW(row) & (~NAVIGATION_LINE_BY_LINE)))
+  #define MAXCOL(row)     (MAXCOL_RAW(row) >= HIDDEN_ROW ? MAXCOL_RAW(row) : (const uint8_t)(MAXCOL_RAW(row) & (~NAVIGATION_LINE_BY_LINE)))
   #define COLATTR(row)    (MAXCOL_RAW(row) == (uint8_t)-1 ? (const uint8_t)0 : (const uint8_t)(MAXCOL_RAW(row) & NAVIGATION_LINE_BY_LINE))
 #else
   #define MAXCOL(row)     (horTab ? pgm_read_byte(horTab+min(row, (vertpos_t)horTabMax)) : (const uint8_t)0)
@@ -585,34 +585,37 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
   }
 
 #if defined(CPUARM)
-  if (l_posVert<1) s_pgOfs=0;
+  if (l_posVert<1) {
+    s_pgOfs=0;
+  }
   else if (menuTab && horTab) {
-    vertpos_t realPosVert = l_posVert;
-    vertpos_t realPgOfs = s_pgOfs;
-    vertpos_t realMaxrow = maxrow;
-    for (vertpos_t i=1; i<=maxrow; i++) {
-      if (MAXCOL(i) == HIDDEN_ROW) {
-        realMaxrow--;
-        if (i < l_posVert)
-          realPosVert--;
-        if (i < s_pgOfs)
-          realPgOfs--;
+    while (1) {
+      vertpos_t line = s_pgOfs+1;
+      for (int numLines=0; line<=maxrow && numLines<LCD_LINES-1; line++) {
+        if (MAXCOL(line) != HIDDEN_ROW) {
+          numLines++;
+        }
       }
-    }
-    if (realPosVert>(LCD_LINES-1)+realPgOfs) realPgOfs = realPosVert-(LCD_LINES-1);
-    else if (realPosVert<1+realPgOfs) realPgOfs = realPosVert-1;
-    s_pgOfs = realPgOfs;
-    for (vertpos_t i=1; i<=realPgOfs; i++) {
-      if (MAXCOL(i) == HIDDEN_ROW) {
+      int max = line - s_pgOfs - 1;
+      if (l_posVert > max+s_pgOfs) {
         s_pgOfs++;
       }
+      else if (l_posVert < 1+s_pgOfs) {
+        s_pgOfs--;
+      }
+      else {
+        break;
+      }
     }
-    maxrow = realMaxrow;
   }
   else {
     uint8_t max = menuTab ? LCD_LINES-1 : LCD_LINES-2;
-    if (l_posVert>max+s_pgOfs) s_pgOfs = l_posVert-max;
-    else if (l_posVert<1+s_pgOfs) s_pgOfs = l_posVert-1;
+    if (l_posVert>max+s_pgOfs) {
+      s_pgOfs = l_posVert-max;
+    }
+    else if (l_posVert<1+s_pgOfs) {
+      s_pgOfs = l_posVert-1;
+    }
   }
 
 #if LCD_W >= 212
@@ -630,8 +633,9 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
   m_posHorz = l_posHorz;
   if (s_pgOfs > 0) {
     l_posVert--;
-    if (l_posVert == s_pgOfs && CURSOR_NOT_ALLOWED_IN_ROW(l_posVert))
+    if (l_posVert == s_pgOfs && CURSOR_NOT_ALLOWED_IN_ROW(l_posVert)) {
       s_pgOfs = l_posVert-1;
+    }
   }
   return true;
 }
