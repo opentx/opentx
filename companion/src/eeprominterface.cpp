@@ -303,13 +303,13 @@ QString RawSource::toString()
 
 QString SwitchUp(const char sw)
 {
-  const char result[] = {'S', sw, upArrow[0], upArrow[1], upArrow[2], 0 };
+  const char result[] = {'S', sw, upArrow[0], upArrow[1], upArrow[2], 0};
   return QString::fromUtf8(result);
 }
 
 QString SwitchDn(const char sw)
 {
-  const char result[] = {'S', sw, downArrow[0], downArrow[1], downArrow[2], 0 };
+  const char result[] = {'S', sw, downArrow[0], downArrow[1], downArrow[2], 0};
   return QString::fromUtf8(result);
 }
 
