@@ -54,7 +54,7 @@ static SBCInquiryData inquiryData = {
     SBC_PERIPHERAL_DEVICE_CONNECTED,// Peripheral device is connected
     0x00,                           // Reserved bits
     0x01,                           // Media is removable
-    SBC_SPC_VERSION_4,              // SPC-4 supported
+    0x02, // SBC_SPC_VERSION_4,     // SPC-4 supported
     0x2,                            // Response data format, must be 0x2
     0,                              // Hierarchical addressing not supported
     0,                              // ACA not supported

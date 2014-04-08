@@ -137,6 +137,7 @@ extern uint32_t EepromBlocked;
 
 extern void init_spi(void);
 extern void writeBlock(void);
+extern void usbPluggedIn();
 
 /*----------------------------------------------------------------------------
  *         Global functions
@@ -715,8 +716,11 @@ int main()
 
       uint8_t event = getEvent();
 
-      if (usbPlugged()) {
-        state = ST_USB;
+      if (state != ST_USB) {
+        if (usbPlugged()) {
+          state = ST_USB;
+          usbPluggedIn();
+        }
       }
 
       if (state == ST_START) {
