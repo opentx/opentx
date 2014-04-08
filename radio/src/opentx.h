@@ -240,13 +240,15 @@
   #if !defined(NOINLINE)
     #define NOINLINE
   #endif
-  #define CONVERT_PTR(x) ((uint32_t)(uint64_t)(x))
+  #define CONVERT_PTR_UINT(x) ((uint32_t)(uint64_t)(x))
+  #define CONVERT_UINT_PTR(x) ((uint32_t*)(uint64_t)(x))
   char *convertSimuPath(const char *path);
 #else
   #define FORCEINLINE inline __attribute__ ((always_inline))
   #define NOINLINE __attribute__ ((noinline))
   #define SIMU_SLEEP(x)
-  #define CONVERT_PTR(x) ((uint32_t)(x))
+  #define CONVERT_PTR_UINT(x) ((uint32_t)(x))
+  #define CONVERT_UINT_PTR(x) ((uint32_t *)(x))
   #define convertSimuPath(x) (x)
 #endif
 

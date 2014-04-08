@@ -690,21 +690,27 @@ void flashBootloader(const char * filename)
 {
   FIL file;
   f_open(&file, filename, FA_READ);
-  uint8_t buffer[FLASH_PAGESIZE];
+  uint8_t buffer[1024];
   UINT count;
-  lcd_rect( 3, 6*FH+4, 204, 7);
+  lcd_rect(3, 6*FH+4, 204, 7);
   watchdogSetTimeout(1000/*10s*/);
   unlockFlash();
-  for (int i=0; i<BOOTLOADER_SIZE; i+=FLASH_PAGESIZE) {
-    if (f_read(&file, buffer, FLASH_PAGESIZE, &count) != FR_OK || count != FLASH_PAGESIZE) {
+  for (int i=0; i<BOOTLOADER_SIZE; i+=1024) {
+    if (f_read(&file, buffer, 1024, &count) != FR_OK || count != 1024) {
       // TODO popup error
       break;
     }
-    writeFlash((uint32_t*)(uint64_t)(FIRMWARE_ADDRESS+i), (uint32_t *)buffer);
-    lcd_hline(5, 6*FH+6, (200*i)/BOOTLOADER_SIZE, FORCE);
-    lcd_hline(5, 6*FH+7, (200*i)/BOOTLOADER_SIZE, FORCE);
-    lcd_hline(5, 6*FH+8, (200*i)/BOOTLOADER_SIZE, FORCE);
-    lcdRefresh();
+    if (i==0 && !isBootloaderStart((uint32_t *)buffer)) {
+      // TODO popup error
+      break;
+    }
+    for (int j=0; j<1024; j+=FLASH_PAGESIZE) {
+      writeFlash(CONVERT_UINT_PTR(FIRMWARE_ADDRESS+i+j), (uint32_t *)(buffer+j));
+      lcd_hline(5, 6*FH+6, (200*i)/BOOTLOADER_SIZE, FORCE);
+      lcd_hline(5, 6*FH+7, (200*i)/BOOTLOADER_SIZE, FORCE);
+      lcd_hline(5, 6*FH+8, (200*i)/BOOTLOADER_SIZE, FORCE);
+      lcdRefresh();
+    }
   }
   f_close(&file);
 }

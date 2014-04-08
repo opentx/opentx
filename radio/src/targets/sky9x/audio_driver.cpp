@@ -111,7 +111,7 @@ extern "C" void DAC_IRQHandler()
 {
   AudioBuffer *nextBuffer = audioQueue.getNextFilledBuffer();
   if (nextBuffer) {
-    DACC->DACC_TNPR = CONVERT_PTR(nextBuffer->data);
+    DACC->DACC_TNPR = CONVERT_PTR_UINT(nextBuffer->data);
     DACC->DACC_TNCR = nextBuffer->size/2;
   }
   else {

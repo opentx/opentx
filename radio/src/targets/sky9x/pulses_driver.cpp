@@ -167,7 +167,7 @@ extern "C" void PWM_IRQHandler(void)
         else {
           // Kick off serial output here
           sscptr = SSC;
-          sscptr->SSC_TPR = CONVERT_PTR(pxxStream[0]);
+          sscptr->SSC_TPR = CONVERT_PTR_UINT(pxxStream[0]);
           sscptr->SSC_TCR = (uint8_t *)pxxStreamPtr[0] - (uint8_t *)pxxStream[0];
           sscptr->SSC_PTCR = SSC_PTCR_TXTEN; // Start transfers
         }
@@ -191,7 +191,7 @@ extern "C" void PWM_IRQHandler(void)
         else {
           // Kick off serial output here
           sscptr = SSC;
-          sscptr->SSC_TPR = CONVERT_PTR(dsm2Stream);
+          sscptr->SSC_TPR = CONVERT_PTR_UINT(dsm2Stream);
           sscptr->SSC_TCR = (uint8_t *)dsm2StreamPtr - (uint8_t *)dsm2Stream;
           sscptr->SSC_PTCR = SSC_PTCR_TXTEN; // Start transfers
         }

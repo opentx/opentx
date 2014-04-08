@@ -114,6 +114,10 @@ uint32_t isFirmwareStart(uint32_t *block)
 
 uint32_t isBootloaderStart(uint32_t *block)
 {
-  // TODO search for "BOOT" inside the block
-  return 1;
+  for (int i=0; i<256; i++) {
+    if (block[i] == 0x544F4F42/*BOOT*/) {
+      return 1;
+    }
+  }
+  return 0;
 }
