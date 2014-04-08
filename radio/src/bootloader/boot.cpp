@@ -79,6 +79,11 @@
   #define BOOTLOADER_TITLE      "Sky9x Boot Loader - v1.0"
 #endif
 
+const uint8_t bootloaderVersion[] __attribute__ ((section(".version"), used)) =
+{
+  'B', 'O', 'O', 'T', '1', '0'
+};
+
 // states
 enum BootLoaderStates {
   ST_START,
@@ -91,10 +96,6 @@ enum BootLoaderStates {
   ST_FLASH_DONE,
   ST_USB,
   ST_REBOOT,
-
-const uint8_t bootloaderVersion[] __attribute__ ((section(".version"), used)) =
-{
-  'B', 'O', 'O', 'T', '1', '0'
 };
 
 /*----------------------------------------------------------------------------
