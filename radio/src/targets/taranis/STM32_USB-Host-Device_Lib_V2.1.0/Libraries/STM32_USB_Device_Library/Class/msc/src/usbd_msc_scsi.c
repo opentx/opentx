@@ -97,6 +97,7 @@ static int8_t SCSI_ReadFormatCapacity(uint8_t lun, uint8_t *params);
 static int8_t SCSI_ReadCapacity10(uint8_t lun, uint8_t *params);
 static int8_t SCSI_RequestSense (uint8_t lun, uint8_t *params);
 static int8_t SCSI_StartStopUnit(uint8_t lun, uint8_t *params);
+static int8_t SCSI_AllowRemoval(uint8_t lun, uint8_t *params);
 static int8_t SCSI_ModeSense6 (uint8_t lun, uint8_t *params);
 static int8_t SCSI_ModeSense10 (uint8_t lun, uint8_t *params);
 static int8_t SCSI_Write10(uint8_t lun , uint8_t *params);
@@ -146,7 +147,7 @@ int8_t SCSI_ProcessCmd(USB_OTG_CORE_HANDLE  *pdev,
     return SCSI_StartStopUnit(lun, params);
     
   case SCSI_ALLOW_MEDIUM_REMOVAL:
-    return SCSI_StartStopUnit(lun, params);
+    return SCSI_AllowRemoval( lun, params);
     
   case SCSI_MODE_SENSE6:
     return SCSI_ModeSense6 (lun, params);
@@ -450,6 +451,12 @@ static int8_t SCSI_StartStopUnit(uint8_t lun, uint8_t *params)
     }
   }
 
+  return 0;
+}
+
+static int8_t SCSI_AllowRemoval(uint8_t lun, uint8_t *params)
+{
+  MSC_BOT_DataLen = 0;
   return 0;
 }
 
