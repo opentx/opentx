@@ -4464,9 +4464,10 @@ void menuModelLogicalSwitches(uint8_t event)
         lcd_outdezAtt(CSW_3RD_COLUMN, y, cs->v2+1, LEFT);
       }
       else {
-        putsMixerSource(CSW_2ND_COLUMN, y, cs->v1, 0);
-        if (cs->v1 >= MIXSRC_FIRST_TELEM) {
-          putsTelemetryChannel(CSW_3RD_COLUMN, y, cs->v1 - MIXSRC_FIRST_TELEM, convertCswTelemValue(cs), LEFT);
+        uint8_t v1 = cs->v1;
+        putsMixerSource(CSW_2ND_COLUMN, y, v1, 0);
+        if (v1 >= MIXSRC_FIRST_TELEM) {
+          putsTelemetryChannel(CSW_3RD_COLUMN, y, v1 - MIXSRC_FIRST_TELEM, convertCswTelemValue(cs), LEFT);
         }
         else {
           lcd_outdezAtt(CSW_3RD_COLUMN, y, cs->v2, LEFT);
