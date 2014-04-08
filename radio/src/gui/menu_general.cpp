@@ -685,6 +685,31 @@ inline bool isFilenameLower(bool isfile, const char * fn, const char * line)
   return (!isfile && line[SD_SCREEN_FILE_LENGTH+1]) || (isfile==(bool)line[SD_SCREEN_FILE_LENGTH+1] && strcasecmp(fn, line) < 0);
 }
 
+#if defined(PCBTARANIS)
+void flashBootloader(const char * filename)
+{
+  FIL file;
+  f_open(&file, filename, FA_READ);
+  uint8_t buffer[FLASH_PAGESIZE];
+  UINT count;
+  lcd_rect( 3, 6*FH+4, 204, 7);
+  watchdogSetTimeout(1000/*10s*/);
+  unlockFlash();
+  for (int i=0; i<BOOTLOADER_SIZE; i+=FLASH_PAGESIZE) {
+    if (f_read(&file, buffer, FLASH_PAGESIZE, &count) != FR_OK || count != FLASH_PAGESIZE) {
+      // TODO popup error
+      break;
+    }
+    writeFlash((uint32_t*)(uint64_t)(FIRMWARE_ADDRESS+i), (uint32_t *)buffer);
+    lcd_hline(5, 6*FH+6, (200*i)/BOOTLOADER_SIZE, FORCE);
+    lcd_hline(5, 6*FH+7, (200*i)/BOOTLOADER_SIZE, FORCE);
+    lcd_hline(5, 6*FH+8, (200*i)/BOOTLOADER_SIZE, FORCE);
+    lcdRefresh();
+  }
+  f_close(&file);
+}
+#endif
+
 void onSdManagerMenu(const char *result)
 {
   TCHAR lfn[_MAX_LFN + 1];
@@ -733,19 +758,25 @@ void onSdManagerMenu(const char *result)
     memcpy(modelHeaders[g_eeGeneral.currModel].bitmap, g_model.header.bitmap, sizeof(g_model.header.bitmap));
     eeDirty(EE_MODEL);
   }
+  else if (result == STR_VIEW_TEXT) {
+    f_getcwd(lfn, _MAX_LFN);
+    strcat(lfn, "/");
+    strcat(lfn, reusableBuffer.sdmanager.lines[index]);
+    pushMenuTextView(lfn);
+  }
+  else if (result == STR_FLASH_BOOTLOADER) {
+    f_getcwd(lfn, _MAX_LFN);
+    strcat(lfn, "/");
+    strcat(lfn, reusableBuffer.sdmanager.lines[index]);
+    flashBootloader(lfn);
+  }
+#endif
 #if defined(LUA)
   else if (result == STR_EXECUTE_FILE) {
     f_getcwd(lfn, _MAX_LFN);
     strcat(lfn, "/");
     strcat(lfn, reusableBuffer.sdmanager.lines[index]);
     luaExec(lfn);
-  }
-#endif
-  else if (result == STR_VIEW_TEXT) {
-    f_getcwd(lfn, _MAX_LFN);
-    strcat(lfn, "/");
-    strcat(lfn, reusableBuffer.sdmanager.lines[index]);
-    pushMenuTextView(lfn);
   }
 #endif
 }
@@ -847,6 +878,7 @@ void menuGeneralSdManager(uint8_t _event)
         else */ if (!strcasecmp(ext, SOUNDS_EXT)) {
           MENU_ADD_ITEM(STR_PLAY_FILE);
         }
+#endif
 #if defined(PCBTARANIS)
         else if (!strcasecmp(ext, BITMAPS_EXT) && !READ_ONLY()) {
           MENU_ADD_ITEM(STR_ASSIGN_BITMAP);
@@ -854,12 +886,14 @@ void menuGeneralSdManager(uint8_t _event)
         else if (!strcasecmp(ext, TEXT_EXT)) {
           MENU_ADD_ITEM(STR_VIEW_TEXT);
         }
+        else if (!strcasecmp(ext, FIRMWARE_EXT) && !READ_ONLY()) {
+          MENU_ADD_ITEM(STR_FLASH_BOOTLOADER);
+        }
 #endif
 #if defined(LUA)
         else if (!strcasecmp(ext, SCRIPTS_EXT)) {
           MENU_ADD_ITEM(STR_EXECUTE_FILE);
         }
-#endif
 #endif
         if (!READ_ONLY()) {
           MENU_ADD_ITEM(STR_DELETE_FILE);

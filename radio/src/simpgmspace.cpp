@@ -672,5 +672,6 @@ void SPI_I2S_ITConfig(SPI_TypeDef* SPIx, uint8_t SPI_I2S_IT, FunctionalState New
 void RCC_LSEConfig(uint8_t RCC_LSE) { }
 FlagStatus RCC_GetFlagStatus(uint8_t RCC_FLAG) { return RESET; }
 ErrorStatus RTC_WaitForSynchro(void) { return SUCCESS; }
+void writeFlash(uint32_t *address, uint32_t *buffer) { SIMU_SLEEP(100); }
 #endif
 

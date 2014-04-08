@@ -146,6 +146,7 @@ void delay_01us(uint16_t nb);
 void unlockFlash();
 void writeFlash(uint32_t * address, uint32_t * buffer);
 uint32_t isFirmwareStart(uint32_t *block);
+uint32_t isBootloaderStart(uint32_t *block);
 
 // Pulses driver
 void init_no_pulses(uint32_t port);

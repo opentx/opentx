@@ -111,3 +111,9 @@ uint32_t isFirmwareStart(uint32_t *block)
   }
   return 1;
 }
+
+uint32_t isBootloaderStart(uint32_t *block)
+{
+  // TODO search for "BOOT" inside the block
+  return 1;
+}

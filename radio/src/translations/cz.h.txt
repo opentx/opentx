@@ -712,6 +712,7 @@
 #define TR_CHANNELS_MONITOR    "MONITOR KANÁLU"
 #define TR_PATH_TOO_LONG       "Cesta je moc dlouhá"
 #define TR_VIEW_TEXT           "Zobrazit text"
+#define TR_FLASH_BOOTLOADER    "Flash BootLoader"
 #define TR_INTERNALRF          "Vnitřní RF modul"
 #define TR_EXTERNALRF          "Externí RF modul"
 #define TR_FAILSAFE            "Mód Failsafe"

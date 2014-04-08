@@ -712,6 +712,7 @@
 #define TR_CHANNELS_MONITOR    "MONITOR KANAŁÓW"
 #define TR_PATH_TOO_LONG       "Ścieżka za długa"
 #define TR_VIEW_TEXT           "Pokaż tekst"
+#define TR_FLASH_BOOTLOADER    "Flash BootLoader"
 #define TR_INTERNALRF          "Wewnętrzny moduł RF"
 #define TR_EXTERNALRF          "Zewnętrzny moduł RF"
 #define TR_FAILSAFE            "Tryb Failsafe"

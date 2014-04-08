@@ -712,6 +712,7 @@
 #define TR_CHANNELS_MONITOR    "Kanalöversikt"
 #define TR_PATH_TOO_LONG       "För lång sökväg"
 #define TR_VIEW_TEXT           "Visa Text"
+#define TR_FLASH_BOOTLOADER    "Flash BootLoader"
 #define TR_INTERNALRF          "Intern Radio"
 #define TR_EXTERNALRF          "Extern Radiomodul"
 #define TR_FAILSAFE            "Failsafeläge"

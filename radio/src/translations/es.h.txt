@@ -712,6 +712,7 @@
 #define TR_CHANNELS_MONITOR    "MONITOR CANALES"
 #define TR_PATH_TOO_LONG       "Path too long"
 #define TR_VIEW_TEXT           "View text"
+#define TR_FLASH_BOOTLOADER    "Flash BootLoader"
 #define TR_INTERNALRF          "Interna RF"
 #define TR_EXTERNALRF          "Externa RF"
 #define TR_FAILSAFE            INDENT"Modo sgdad."

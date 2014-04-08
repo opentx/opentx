@@ -616,6 +616,7 @@ extern const pm_char STR_DATE[];
 extern const pm_char STR_CHANNELS_MONITOR[];
 extern const pm_char STR_PATH_TOO_LONG[];
 extern const pm_char STR_VIEW_TEXT[];
+extern const pm_char STR_FLASH_BOOTLOADER[];
 
 #if defined(VOICE) && defined(CPUARM)
   struct LanguagePack {
