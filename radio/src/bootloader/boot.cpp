@@ -725,11 +725,16 @@ int main()
 
       if (state == ST_START) {
         lcd_putsLeft(2*FH, "\010Load Firmware");
-        lcd_putsLeft(3*FH, "\010Exit");
+        lcd_putsLeft(3*FH, "\010Backup EEPROM");
+        lcd_putsLeft(4*FH, "\010Restore EEPROM");
+        lcd_putsLeft(5*FH, "\010Exit");
         lcd_invert_line(2+vpos);
-        lcd_putsLeft(6*FH, INDENT "Or plug in a USB cable for mass storage");
-        if (event == EVT_KEY_FIRST(BOOT_KEY_DOWN) || event == EVT_KEY_FIRST(BOOT_KEY_UP)) {
-          vpos = (vpos+1) & 0x01;
+        lcd_putsLeft(7*FH, INDENT "Or plug in a USB cable for mass storage");
+        if (event == EVT_KEY_FIRST(BOOT_KEY_DOWN)) {
+          vpos == 3 ? vpos = 0 : vpos = vpos+1;
+        }
+        else if (event == EVT_KEY_FIRST(BOOT_KEY_UP)) {
+          vpos == 0 ? vpos = 3 : vpos = vpos-1;
         }
         else if (event == EVT_KEY_BREAK(BOOT_KEY_MENU)) {
           if (vpos == 0)
