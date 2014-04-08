@@ -157,6 +157,10 @@ extern uint16_t sessionTimer;
 
 void setSticksGain(uint8_t gains);
 
+// Write Flash driver
+#define FLASH_PAGESIZE 256
+void writeFlash(uint32_t * address, uint32_t * buffer);
+
 // Keys driver
 extern uint32_t readKeys();
 extern uint32_t readTrims();

@@ -158,10 +158,11 @@ SRC  =	../targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/
 	../targets/taranis/aspi.c \
 	../targets/taranis/usb_bsp.c \
 	../targets/taranis/usb_driver.c \
-	../targets/taranis/pwr_driver.c	
+	../targets/taranis/pwr_driver.c
 
 CPPSRC = ../targets/taranis/lcd_driver.cpp \
 	../targets/taranis/keys_driver.cpp \
+	../targets/taranis/flash_driver.cpp \
 	../targets/taranis/diskio.cpp \
         ../targets/taranis/usbd_usr.cpp \
         ../targets/taranis/usbd_storage_msd.cpp \

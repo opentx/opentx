@@ -53,10 +53,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#if defined(PCBTARANIS)
-#include "stm32f2xx_flash.h"
-#endif
-
 #include "board_taranis.h"
 #include "../pwr.h"
 #include "../lcd.h"
@@ -120,7 +116,6 @@ uint32_t Valid;
 
 uint32_t FlashSize;
 
-uint32_t FlashBlocked = 1;
 uint32_t LockBits;
 
 uint32_t Block_buffer[1024];
@@ -171,107 +166,6 @@ void delay2ms()
   while ( TC0->TC_CHANNEL[0].TC_CV < 36000 )// 2mS, Value depends on MCK/2 (used 18MHz)
   {
     // Wait
-  }
-}
-#endif
-
-#if defined(PCBTARANIS)
-uint32_t isFirmwareStart(uint32_t *block)
-{
-  if ((block[0] & 0xFFFC0000) != 0x20000000) {
-    return 0;
-  }
-  if ((block[1] & 0xFFF00000) != 0x08000000) {
-    return 0;
-  }
-  if ((block[2] & 0xFFF00000) != 0x08000000) {
-    return 0;
-  }
-  return 1;
-}
-#elif defined(PCBSKY9X)
-uint32_t isFirmwareStart( uint32_t *block )
-{
-  if ((block[0] & 0xFFFE3000) != 0x20000000 ) {
-    return 0;
-  }
-  if ((block[1] & 0xFFF80000) != 0x00400000) {
-    return 0;
-  }
-  if ((block[2] & 0xFFF80000) != 0x00400000) {
-    return 0;
-  }
-  return 1;
-}
-#endif
-
-#if defined(PCBSKY9X)
-
-uint32_t (*IAP_Function)(uint32_t, uint32_t);
-
-void writeFlash(uint32_t *address, uint32_t *buffer)	// size is 256 bytes
-{
-  uint32_t FlashSectorNum;
-  uint32_t flash_cmd = 0;
-
-  /* Initialize the function pointer (retrieve function address from NMI vector) */
-  if ((uint32_t) address == FIRMWARE_START+BOOTLOADER_SIZE) {
-    if (isFirmwareStart(buffer))
-      FlashBlocked = 0;
-    else
-      FlashBlocked = 1;
-  }
-
-  if (FlashBlocked) {
-    return;
-  }
-
-  // Always initialise this here, setting a default doesn't seem to work
-  IAP_Function = (uint32_t (*)(uint32_t, uint32_t)) *(( uint32_t *)0x00800008);
-  FlashSectorNum = (uint32_t) address;
-  FlashSectorNum >>= 8;// page size is 256 bytes
-  FlashSectorNum &= 2047;// max page number
-
-  /* Send data to the sector here */
-  for (int i=0; i<FLASH_PAGESIZE/4; i++) {
-    *address++ = *buffer++;
-  }
-
-  /* build the command to send to EEFC */
-  flash_cmd = (0x5A << 24) | (FlashSectorNum << 8) | 0x03; //AT91C_MC_FCMD_EWP ;
-
-  __disable_irq();
-  /* Call the IAP function with appropriate command */
-  i = IAP_Function(0, flash_cmd);
-  __enable_irq();
-}
-
-uint32_t readLockBits()
-{
-  // Always initialise this here, setting a default doesn't seem to work
-  IAP_Function = (uint32_t (*)(uint32_t, uint32_t)) *(( uint32_t *)0x00800008);
-
-  uint32_t flash_cmd = (0x5A << 24) | 0x0A;//AT91C_MC_FCMD_GLB ;
-  __disable_irq();
-  (void) IAP_Function( 0, flash_cmd );
-  __enable_irq();
-  return EFC->EEFC_FRR;
-}
-
-void clearLockBits()
-{
-  uint32_t i;
-  uint32_t flash_cmd = 0;
-
-  // Always initialise this here, setting a default doesn't seem to work
-  IAP_Function = (uint32_t (*)(uint32_t, uint32_t)) *(( uint32_t *)0x00800008);
-  for ( i = 0; i < 16; i += 1 )
-  {
-    flash_cmd = (0x5A << 24) | ((128*i) << 8) | 0x09; //AT91C_MC_FCMD_CLB ;
-    __disable_irq();
-    /* Call the IAP function with appropriate command */
-    (void) IAP_Function( 0, flash_cmd );
-    __enable_irq();
   }
 }
 #endif
@@ -369,115 +263,6 @@ void hw_delay(uint16_t time)
     // wait
   }
 }
-
-//After reset, write is not allowed in the Flash control register (FLASH_CR) to protect the
-//Flash memory against possible unwanted operations due, for example, to electric
-//disturbances. The following sequence is used to unlock this register:
-//1. Write KEY1 = 0x45670123 in the Flash key register (FLASH_KEYR)
-//2. Write KEY2 = 0xCDEF89AB in the Flash key register (FLASH_KEYR)
-//Any wrong sequence will return a bus error and lock up the FLASH_CR register until the
-//next reset.
-//The FLASH_CR register can be locked again by software by setting the LOCK bit in the
-//FLASH_CR register.
-void unlockFlash()
-{
-  FLASH->KEYR = 0x45670123;
-  FLASH->KEYR = 0xCDEF89AB;
-}
-
-void waitFlashIdle()
-{
-  while (FLASH->SR & FLASH_FLAG_BSY) {
-    wdt_reset();
-  }
-}
-
-#define SECTOR_MASK               ((uint32_t)0xFFFFFF07)
-
-void eraseSector(uint32_t sector)
-{
-  waitFlashIdle();
-
-  FLASH->CR &= CR_PSIZE_MASK;
-  FLASH->CR |= FLASH_PSIZE_WORD;
-  FLASH->CR &= SECTOR_MASK;
-  FLASH->CR |= FLASH_CR_SER | (sector << 3);
-  FLASH->CR |= FLASH_CR_STRT;
-
-  /* Wait for operation to be completed */
-  waitFlashIdle();
-
-  /* if the erase operation is completed, disable the SER Bit */
-  FLASH->CR &= (~FLASH_CR_SER);
-  FLASH->CR &= SECTOR_MASK;
-}
-
-void writeFlash(uint32_t *address, uint32_t *buffer)	// size is 256 bytes
-{
-  uint32_t i;
-
-  if ((uint32_t) address == 0x08008000) {
-    if (isFirmwareStart(buffer)) {
-      FlashBlocked = 0;
-    }
-    else {
-      FlashBlocked = 1;
-    }
-  }
-
-  if (FlashBlocked) {
-    return;
-  }
-
-  if ((uint32_t) address == 0x08008000) {
-    eraseSector(2);
-  }
-  if ((uint32_t) address == 0x0800C000) {
-    eraseSector(3);
-  }
-  if ((uint32_t) address == 0x08010000) {
-    eraseSector(4);
-  }
-  if ((uint32_t) address == 0x08020000) {
-    eraseSector(5);
-  }
-  if ((uint32_t) address == 0x08040000) {
-    eraseSector(6);
-  }
-  if ((uint32_t) address == 0x08060000) {
-    eraseSector(7);
-  }
-
-  // Now program the 256 bytes
-
-  for (i = 0; i < 64; i += 1) {
-    /* Device voltage range supposed to be [2.7V to 3.6V], the operation will
-     be done by word */
-
-    // Wait for last operation to be completed
-    waitFlashIdle();
-
-    FLASH->CR &= CR_PSIZE_MASK;
-    FLASH->CR |= FLASH_PSIZE_WORD;
-    FLASH->CR |= FLASH_CR_PG;
-
-    *address = *buffer;
-
-    /* Wait for operation to be completed */
-    waitFlashIdle();
-    FLASH->CR &= (~FLASH_CR_PG);
-
-    /* Check the written value */
-    if (*address != *buffer) {
-      /* Flash content doesn't match SRAM content */
-      return;
-    }
-    /* Increment FLASH destination address */
-    address += 1;
-    buffer += 1;
-  }
-}
-
 #endif
 
 uint8_t *cpystr(uint8_t *dest, uint8_t *source)
@@ -738,10 +523,6 @@ int main()
         }
 #if defined(PCBSKY9X)
         usbMassStorage();
-        lcd_putc( 0, 6*FH, 'F' );
-        lcd_putc( 6, 6*FH, '0' + FlashBlocked );
-        lcd_putc( 0, 7*FH, 'E' );
-        lcd_putc( 6, 7*FH, '0' + EepromBlocked );
 #endif
       }
 
