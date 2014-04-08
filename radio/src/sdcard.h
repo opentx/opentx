@@ -48,6 +48,7 @@
 #define BITMAPS_PATH        ROOT_PATH "BMP"
 #define SCRIPTS_PATH        ROOT_PATH "SCRIPTS"
 #define FIRMWARES_PATH      ROOT_PATH "FIRMWARES"
+#define EEPROMS_PATH        ROOT_PATH "EEPROMS"
 
 #define MODELS_EXT          ".bin"
 #define LOGS_EXT            ".csv"

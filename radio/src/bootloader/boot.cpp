@@ -99,6 +99,14 @@ enum BootLoaderStates {
   ST_FLASH_DONE,
   ST_USB,
   ST_REBOOT,
+  ST_BACKUP_EEPROM,
+  ST_RESTORE_MENU,
+  ST_EEPROM_CHECK,
+};
+
+enum MemoryTypes {
+  MEM_FLASH,
+  MEM_EEPROM
 };
 
 /*----------------------------------------------------------------------------
@@ -572,6 +580,8 @@ int menuFlashFile(uint32_t index, uint8_t event)
 {
   FRESULT fr;
 
+  // TODO if (memoryType == MEM_EEPROM)
+
   lcd_putsLeft(4*FH, "\012Hold [ENT] to start loading" );
 
   if (Valid == 0) {
@@ -626,6 +636,7 @@ int main()
   uint32_t hpos = 0;
   uint32_t firmwareAddress = FIRMWARE_ADDRESS;
   uint32_t firmwareWritten = 0;
+  uint32_t memoryType;
 
 #if defined(PCBTARANIS)
   wdt_reset();
@@ -724,7 +735,7 @@ int main()
       }
 
       if (state == ST_START) {
-        lcd_putsLeft(2*FH, "\010Load Firmware");
+        lcd_putsLeft(2*FH, "\010Write Firmware");
         lcd_putsLeft(3*FH, "\010Backup EEPROM");
         lcd_putsLeft(4*FH, "\010Restore EEPROM");
         lcd_putsLeft(5*FH, "\010Exit");
@@ -737,10 +748,19 @@ int main()
           vpos == 0 ? vpos = 3 : vpos = vpos-1;
         }
         else if (event == EVT_KEY_BREAK(BOOT_KEY_MENU)) {
-          if (vpos == 0)
-            state = ST_FLASH_MENU;
-          else
-            state = ST_REBOOT;
+          switch (vpos) {
+            case 0:
+              state = ST_FLASH_MENU;
+              break;
+            case 1:
+              state = ST_BACKUP_EEPROM;
+              break;
+            case 2:
+              state = ST_RESTORE_MENU;
+              break;
+            default:
+              state = ST_REBOOT;
+          }
         }
       }
 
@@ -759,19 +779,23 @@ int main()
 #endif
       }
 
-      if (state == ST_FLASH_MENU) {
+      if ((state == ST_FLASH_MENU) || (state == ST_RESTORE_MENU)) {
         sdInit();
+        state == ST_RESTORE_MENU ? memoryType = MEM_EEPROM : memoryType = MEM_FLASH;
         state = ST_DIR_CHECK;
       }
 
       else if (state == ST_DIR_CHECK) {
-        fr = f_chdir(FIRMWARES_PATH);
+        if (memoryType == MEM_FLASH)
+          fr = f_chdir(FIRMWARES_PATH);
+        else
+          fr = f_chdir(EEPROMS_PATH);
         if (fr == FR_OK) {
           state = ST_OPEN_DIR;
         }
         else {
-          lcd_putsLeft(2*FH, INDENT "No firmware in " FIRMWARES_PATH " directory");
-          if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT) || event == EVT_KEY_FIRST(BOOT_KEY_MENU)) {
+          lcd_putsLeft(2*FH, INDENT "Directory is missing!");
+          if (event == EVT_KEY_BREAK(BOOT_KEY_EXIT) || event == EVT_KEY_BREAK(BOOT_KEY_MENU)) {
             vpos = 0;
             state = ST_START;
           }
@@ -787,6 +811,17 @@ int main()
           hpos = 0;
           vpos = 0;
         }
+      }
+
+      if (state == ST_BACKUP_EEPROM) {
+        // TODO Get RTC date/time, dump EEPROM to EEPROMS_PATH/EEPROM_yy-mm-dd-hh-mm-ss.BIN
+
+        lcd_putsLeft(2*FH, INDENT "Backup successful!");
+        //lcd_putsLeft(3*FH, filename);
+        if (event == EVT_KEY_BREAK(BOOT_KEY_EXIT) || event == EVT_KEY_BREAK(BOOT_KEY_MENU)) {
+            vpos = 0;
+            state = ST_START;
+          }
       }
 
       if (state == ST_FILE_LIST) {
@@ -851,7 +886,10 @@ int main()
 #endif
         else if (event == EVT_KEY_BREAK(BOOT_KEY_MENU)) {
           // Select file to flash
-          state = ST_FLASH_CHECK;
+          if (memoryType == MEM_FLASH)
+            state = ST_FLASH_CHECK;
+          else
+            state = ST_EEPROM_CHECK;
           Valid = 0;
         }
         else if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT)) {
