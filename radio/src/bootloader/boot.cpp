@@ -356,7 +356,7 @@ int menuFlashFile(uint32_t index, uint8_t event)
     fr = openFirmwareFile(index);
     fr = f_close(&FlashFile);
     Valid = 1;
-    if (isFirmwareStart(Block_buffer) == 0) {
+    if (!isFirmwareStart(Block_buffer)) {
       Valid = 2;
     }
   }
@@ -648,6 +648,13 @@ int main()
         // Commit to flashing
         uint32_t blockOffset = 0;
         lcd_putsLeft(4*FH, "\032Loading...");
+
+        if (firmwareAddress == FIRMWARE_ADDRESS + BOOTLOADER_SIZE) {
+          if (!isFirmwareStart(Block_buffer)) {
+            state = ST_FLASH_DONE;
+          }
+        }
+
         while (BlockCount) {
           writeFlash((uint32_t *)firmwareAddress, &Block_buffer[blockOffset]);
           blockOffset += FLASH_PAGESIZE/4; // 32-bit words
@@ -659,6 +666,7 @@ int main()
             BlockCount = 0;
           }
         }
+
         firmwareWritten += 4; // 4K blocks
 
         lcd_rect( 3, 6*FH+4, 204, 7);

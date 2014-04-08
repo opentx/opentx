@@ -43,47 +43,34 @@ void eraseSector(uint32_t sector)
   FLASH->CR &= SECTOR_MASK;
 }
 
-void writeFlash(uint32_t *address, uint32_t *buffer)    // size is 256 bytes
+void writeFlash(uint32_t *address, uint32_t *buffer) // page size is 256 bytes
 {
-  static uint8_t FlashBlocked = 1;
-
-  uint32_t i;
-
-  if ((uint32_t) address == 0x08008000) {
-    if (isFirmwareStart(buffer)) {
-      FlashBlocked = 0;
-    }
-    else {
-      FlashBlocked = 1;
-    }
+  if ((uint32_t) address == 0x08000000) {
+    eraseSector(0);
   }
-
-  if (FlashBlocked) {
-    return;
+  else if ((uint32_t) address == 0x08004000) {
+    eraseSector(1);
   }
-
-  if ((uint32_t) address == 0x08008000) {
+  else if ((uint32_t) address == 0x08008000) {
     eraseSector(2);
   }
-  if ((uint32_t) address == 0x0800C000) {
+  else if ((uint32_t) address == 0x0800C000) {
     eraseSector(3);
   }
-  if ((uint32_t) address == 0x08010000) {
+  else if ((uint32_t) address == 0x08010000) {
     eraseSector(4);
   }
-  if ((uint32_t) address == 0x08020000) {
+  else if ((uint32_t) address == 0x08020000) {
     eraseSector(5);
   }
-  if ((uint32_t) address == 0x08040000) {
+  else if ((uint32_t) address == 0x08040000) {
     eraseSector(6);
   }
-  if ((uint32_t) address == 0x08060000) {
+  else if ((uint32_t) address == 0x08060000) {
     eraseSector(7);
   }
 
-  // Now program the 256 bytes
-
-  for (i = 0; i < 64; i += 1) {
+  for (uint32_t i=0; i<FLASH_PAGESIZE/4; i++) {
     /* Device voltage range supposed to be [2.7V to 3.6V], the operation will
      be done by word */
 

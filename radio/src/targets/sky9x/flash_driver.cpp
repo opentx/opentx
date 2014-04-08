@@ -7,18 +7,6 @@ void writeFlash(uint32_t *address, uint32_t *buffer)    // size is 256 bytes
   uint32_t FlashSectorNum;
   uint32_t flash_cmd = 0;
 
-  /* Initialize the function pointer (retrieve function address from NMI vector) */
-  if ((uint32_t) address == FIRMWARE_START+BOOTLOADER_SIZE) {
-    if (isFirmwareStart(buffer))
-      FlashBlocked = 0;
-    else
-      FlashBlocked = 1;
-  }
-
-  if (FlashBlocked) {
-    return;
-  }
-
   // Always initialise this here, setting a default doesn't seem to work
   IAP_Function = (uint32_t (*)(uint32_t, uint32_t)) *(( uint32_t *)0x00800008);
   FlashSectorNum = (uint32_t) address;
