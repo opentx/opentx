@@ -42,8 +42,10 @@ SECTIONS
   /* The program code and other data goes into FLASH */
   .text :
   {
-	 . = ALIGN(4);
+    . = ALIGN(4);
     KEEP(*(.isr_vector)) /* Startup code */
+    *(.version)
+    . = ALIGN(4);      /* Align the start of the text part */
     *(.text)           /* .text sections (code) */
     *(.text*)          /* .text* sections (code) */
     *(.rodata)         /* .rodata sections (constants, strings, etc.) */
