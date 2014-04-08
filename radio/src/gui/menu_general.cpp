@@ -692,6 +692,8 @@ void flashBootloader(const char * filename)
   f_open(&file, filename, FA_READ);
   uint8_t buffer[1024];
   UINT count;
+  lcd_clear();
+  lcd_putsLeft(4*FH, "\032Writing...");
   lcd_rect(3, 6*FH+4, 204, 7);
   watchdogSetTimeout(1000/*10s*/);
 

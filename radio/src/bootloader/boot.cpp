@@ -63,7 +63,7 @@
 #include "../translations/en.h"
 
 #if defined(PCBTARANIS)
-  #define BOOTLOADER_TITLE      " Taranis Boot Loader - v1.0"
+  #define BOOTLOADER_TITLE      " Taranis BootLoader - v1.0"
   #define BOOT_KEY_UP		KEY_PLUS
   #define BOOT_KEY_DOWN		KEY_MINUS
   #define BOOT_KEY_LEFT		KEY_MENU
@@ -500,7 +500,7 @@ int main()
       }
 
       if (state == ST_START) {
-        lcd_putsLeft(2*FH, "\010Load Firmware");
+        lcd_putsLeft(2*FH, "\010Write Firmware");
         lcd_putsLeft(3*FH, "\010Exit");
         lcd_invert_line(2+vpos);
         lcd_putsLeft(6*FH, INDENT "Or plug in a USB cable for mass storage");
@@ -647,7 +647,7 @@ int main()
       if (state == ST_FLASHING) {
         // Commit to flashing
         uint32_t blockOffset = 0;
-        lcd_putsLeft(4*FH, "\032Loading...");
+        lcd_putsLeft(4*FH, "\032Writing...");
 
         if (firmwareAddress == FIRMWARE_ADDRESS + BOOTLOADER_SIZE) {
           if (!isFirmwareStart(Block_buffer)) {
@@ -684,7 +684,7 @@ int main()
       }
 
       if (state == ST_FLASH_DONE) {
-        lcd_putsLeft(4*FH, "\024Loading Complete");
+        lcd_putsLeft(4*FH, "\024Writing Complete");
         if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT) || event == EVT_KEY_BREAK(BOOT_KEY_MENU)) {
           state = ST_START;
           vpos = 0;
