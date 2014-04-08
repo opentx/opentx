@@ -715,8 +715,11 @@ int main()
 
       uint8_t event = getEvent();
 
-      if (usbPlugged()) {
-        state = ST_USB;
+      if (state != ST_USB) {
+        if (usbPlugged()) {
+          state = ST_USB;
+          usbPluggedIn();
+        }
       }
 
       if (state == ST_START) {

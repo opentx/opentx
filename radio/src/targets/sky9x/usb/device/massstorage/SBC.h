@@ -94,6 +94,8 @@
 #define SBC_VERIFY_10                                   0x2F
 /// Request a list of the possible capacities that can be formatted on medium
 #define SBC_READ_FORMAT_CAPACITIES                      0x23
+
+#define SBC_START_STOP                                  0x19
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -621,6 +623,21 @@ typedef struct {
 } __attribute__ ((packed)) SBCReadWriteErrorRecovery; // GCC
 
 //------------------------------------------------------------------------------
+/// \brief  start/stop command
+/// \see
+//------------------------------------------------------------------------------
+typedef struct {
+
+    unsigned char bModeDataLength;          //!< Length of mode data to follow
+    unsigned char bImmediate:1,             //!<
+                  bReserved1:7;             //!< Reserved bits
+    unsigned char pReserved[2];             //!< Reserved bytes
+    unsigned char startStop:1,              //!< DPO/FUA bits supported ?
+                  eject:1,                  //!< Reserved bits
+                  bReserved2:6;             //!< Is medium write-protected ?
+} __attribute__ ((packed)) SBCStartStop;                // GCC
+
+//------------------------------------------------------------------------------
 /// \brief  Generic structure for holding information about SBC commands
 /// \see    SBCInquiry
 /// \see    SBCRead10
@@ -642,6 +659,7 @@ typedef union {
     SBCWrite10        write10;        //!< WRITE (10) command
     SBCMediumRemoval  mediumRemoval;  //!< PREVENT/ALLOW MEDIUM REMOVAL command
     SBCModeSense6     modeSense6;     //!< MODE SENSE (6) command
+    SBCStartStop      startStopCmd;   //!< START-STOP command
 
 } SBCCommand;
 

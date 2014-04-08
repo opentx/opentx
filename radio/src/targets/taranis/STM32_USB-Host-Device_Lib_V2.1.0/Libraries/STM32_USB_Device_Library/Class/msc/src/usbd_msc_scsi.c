@@ -432,9 +432,24 @@ void SCSI_SenseCode(uint8_t lun, uint8_t sKey, uint8_t ASC)
 * @param  params: Command parameters
 * @retval status
 */
+
+extern uint8_t lunReady[] ;
+
 static int8_t SCSI_StartStopUnit(uint8_t lun, uint8_t *params)
 {
   MSC_BOT_DataLen = 0;
+  
+  if (lun < 2) {
+    if (params[4] & 1) {
+      // lun to be active
+      lunReady[lun] = 1 ;
+    }
+    else {
+      // lun to be ejected
+      lunReady[lun] = 0 ;
+    }
+  }
+
   return 0;
 }
 
