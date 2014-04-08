@@ -92,44 +92,6 @@ float curveSymmetricalX(float x, float coeff, float yMin, float yMid, float yMax
   return y;
 }
 
-#if 0
-#ifdef __APPLE__
-    ui->curveEdit_1->setStyleSheet("color: #00007f;");
-    ui->curveEdit_2->setStyleSheet("color: #007f00;");
-    ui->curveEdit_3->setStyleSheet("color: #7f0000;");
-    ui->curveEdit_4->setStyleSheet("color: #007f7f;");
-    ui->curveEdit_5->setStyleSheet("color: #7f007f;");
-    ui->curveEdit_6->setStyleSheet("color: #7f7f00;");
-    ui->curveEdit_7->setStyleSheet("color: #7f7f7f;");
-    ui->curveEdit_8->setStyleSheet("color: #0000ff;");
-    ui->curveEdit_9->setStyleSheet("color: #007fff;");
-    ui->curveEdit_10->setStyleSheet("color: #7f00ff;");
-    ui->curveEdit_11->setStyleSheet("color: #00ff00;");
-    ui->curveEdit_12->setStyleSheet("color: #00ff7f;");
-    ui->curveEdit_13->setStyleSheet("color: #7fff00;");
-    ui->curveEdit_14->setStyleSheet("color: #ff0000;");
-    ui->curveEdit_15->setStyleSheet("color: #ff007f;");
-    ui->curveEdit_16->setStyleSheet("color: #ff7f00;");
-#else
-    ui->curveEdit_1->setStyleSheet("background-color: #00007f; color: white;");
-    ui->curveEdit_2->setStyleSheet("background-color: #007f00; color: white;");
-    ui->curveEdit_3->setStyleSheet("background-color: #7f0000; color: white;");
-    ui->curveEdit_4->setStyleSheet("background-color: #007f7f; color: white;");
-    ui->curveEdit_5->setStyleSheet("background-color: #7f007f; color: white;");
-    ui->curveEdit_6->setStyleSheet("background-color: #7f7f00; color: white;");
-    ui->curveEdit_7->setStyleSheet("background-color: #7f7f7f; color: white;");
-    ui->curveEdit_8->setStyleSheet("background-color: #0000ff; color: white;");
-    ui->curveEdit_9->setStyleSheet("background-color: #007fff; color: white;");
-    ui->curveEdit_10->setStyleSheet("background-color: #7f00ff; color: white;");
-    ui->curveEdit_11->setStyleSheet("background-color: #00ff00; color: white;");
-    ui->curveEdit_12->setStyleSheet("background-color: #00ff7f; color: white;");
-    ui->curveEdit_13->setStyleSheet("background-color: #7fff00; color: white;");
-    ui->curveEdit_14->setStyleSheet("background-color: #ff0000; color: white;");
-    ui->curveEdit_15->setStyleSheet("background-color: #ff007f; color: white;");
-    ui->curveEdit_16->setStyleSheet("background-color: #ff7f00; color: white;");
-#endif
-#endif
-
 Curves::Curves(QWidget * parent, ModelData & model, GeneralSettings & generalSettings):
   ModelPanel(parent, model, generalSettings),
   ui(new Ui::Curves),
@@ -166,6 +128,11 @@ Curves::Curves(QWidget * parent, ModelData & model, GeneralSettings & generalSet
     QPalette palette;
     palette.setBrush(QPalette::Active, QPalette::Button, QBrush(colors[i]));
     palette.setBrush(QPalette::Active, QPalette::ButtonText, QBrush(Qt::white));
+#ifdef __APPLE__
+    edit->setStyleSheet(QString("color: %1;").arg(colors[i].name()));
+#else
+    edit->setStyleSheet(QString("background-color: %1; color: white;").arg(colors[i].name()));
+#endif
     edit->setPalette(palette);
     edit->setText(tr("Curve %1").arg(i+1));
     connect(edit, SIGNAL(clicked()), this, SLOT(editCurve()));
