@@ -92,7 +92,7 @@ enum BootLoaderStates {
   ST_USB,
   ST_REBOOT,
 
-const uint8_t bootloaderVersion[] __attribute__ ((section(".version"))) =
+const uint8_t bootloaderVersion[] __attribute__ ((section(".version"), used)) =
 {
   'B', 'O', 'O', 'T', '1', '0'
 };
