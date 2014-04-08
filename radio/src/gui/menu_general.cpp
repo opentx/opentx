@@ -694,7 +694,13 @@ void flashBootloader(const char * filename)
   UINT count;
   lcd_rect(3, 6*FH+4, 204, 7);
   watchdogSetTimeout(1000/*10s*/);
-  unlockFlash();
+
+  static uint8_t unlocked = 0;
+  if (!unlocked) {
+    unlocked = 1;
+    unlockFlash();
+  }
+
   for (int i=0; i<BOOTLOADER_SIZE; i+=1024) {
     if (f_read(&file, buffer, 1024, &count) != FR_OK || count != 1024) {
       // TODO popup error
