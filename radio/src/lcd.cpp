@@ -1243,7 +1243,6 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
     case TELEM_ACCy-1:
     case TELEM_ACCz-1:
     case TELEM_VSPD-1:
-    case TELEM_ASPD-1:
       putsTelemetryValue(x, y, val, UNIT_RAW, att|PREC2);
       break;
 
