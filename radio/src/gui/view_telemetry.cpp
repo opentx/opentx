@@ -392,7 +392,7 @@ void menuTelemetryFrsky(uint8_t event)
 #else
           uint8_t attr = PREC2;
 #endif
-          lcd_outdezNAtt(LCD_W-3*FW-2, y, frskyData.hub.cellVolts[k] * 2, attr, 4);
+          lcd_outdezNAtt(LCD_W-3*FW-2, y, TELEMETRY_CELL_VOLTAGE(k), attr, 4);
           y += 1*FH;
         }
         lcd_vline(LCD_W-6*FW-4, 8, 47);       

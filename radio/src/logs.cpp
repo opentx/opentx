@@ -142,7 +142,7 @@ const pm_char * openLogs()
       f_puts(TELEMETRY_GPS_SPEED_UNIT, &g_oLogFile);
       f_puts("),GPS Alt,Baro Alt(", &g_oLogFile);
       f_puts(TELEMETRY_BARO_ALT_UNIT, &g_oLogFile);
-      f_puts("),Vertical Speed,Temp1,Temp2,RPM,Fuel, TELEMETRY_CELLS_LABEL ,Current,Consumption,Vfas,AccelX,AccelY,AccelZ,", &g_oLogFile);
+      f_puts("),Vertical Speed,Temp1,Temp2,RPM,Fuel," TELEMETRY_CELLS_LABEL "Current,Consumption,Vfas,AccelX,AccelY,AccelZ,", &g_oLogFile);
     }
 #endif
 
