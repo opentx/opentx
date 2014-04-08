@@ -4,7 +4,7 @@
 <context>
     <name>AileronsPage</name>
     <message>
-        <location filename="../wizarddialog.cpp" line="+391"/>
+        <location filename="../wizarddialog.cpp" line="+392"/>
         <source>No</source>
         <translation>Nej</translation>
     </message>
@@ -34,27 +34,27 @@
     <message>
         <location line="+82"/>
         <source>No</source>
-        <translation type="unfinished">Nej</translation>
+        <translation>Nej</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Yes, controlled by a single channel</source>
-        <translation type="unfinished">Ja, styrd av en kanal</translation>
+        <translation>Ja, styrd av en kanal</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Yes, controlled by two channels</source>
-        <translation type="unfinished">Ja, styrd av två kanaler</translation>
+        <translation>Ja, styrd av två kanaler</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>&lt;br&gt;First Airbrake Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;Första luftbromskanalen:</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Second Airbrake Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Andra Luftbromskanalen:</translation>
     </message>
 </context>
 <context>
@@ -105,22 +105,22 @@
     <message>
         <location line="-5"/>
         <source>Subtrim</source>
-        <translation type="unfinished"></translation>
+        <translation>Subtrim</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Direction</source>
-        <translation type="unfinished"></translation>
+        <translation>Riktning</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>PPM Center</source>
-        <translation type="unfinished"></translation>
+        <translation>PPM-centrum</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Linear Subtrim</source>
-        <translation type="unfinished"></translation>
+        <translation>Linjärt Subtrim</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -258,7 +258,7 @@
         <translation>Kurvans namn</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.cpp" line="+170"/>
+        <location filename="../modeledit/curves.cpp" line="+137"/>
         <source>Curve %1</source>
         <translation>Kurva %1</translation>
     </message>
@@ -346,7 +346,7 @@
         <translation>Kan inte hitta ljudfilen %1!</translation>
     </message>
     <message>
-        <location line="+304"/>
+        <location line="+307"/>
         <source>&amp;Delete</source>
         <translation>&amp;Ta bort</translation>
     </message>
@@ -1248,52 +1248,52 @@ Mode 4:
     <message>
         <location line="+664"/>
         <source>&quot;No Sound&quot; Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Varna för avstängt ljud</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Low Memory Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Varna för lite minne</translation>
     </message>
     <message>
         <location line="+273"/>
         <source>---</source>
-        <translation type="unfinished">----</translation>
+        <translation>----</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>2s</source>
-        <translation type="unfinished">9X {2s?}</translation>
+        <translation>9X {2s?}</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>3s</source>
-        <translation type="unfinished">9X {3s?}</translation>
+        <translation>9X {3s?}</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>4s</source>
-        <translation type="unfinished">9X {4s?}</translation>
+        <translation>9X {4s?}</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>6s</source>
-        <translation type="unfinished">9X {6s?}</translation>
+        <translation>9X {6s?}</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>8s</source>
-        <translation type="unfinished">9X {8s?}</translation>
+        <translation>9X {8s?}</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>10s</source>
-        <translation type="unfinished">9X {10s?}</translation>
+        <translation>9X {10s?}</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>15s</source>
-        <translation type="unfinished">9X {15s?}</translation>
+        <translation>9X {15s?}</translation>
     </message>
     <message>
         <location line="+1346"/>
@@ -2106,12 +2106,12 @@ FAI-funktionen kan inte slås av i sändaren.
     <message>
         <location line="-2"/>
         <source>Function</source>
-        <translation type="unfinished">Funktion</translation>
+        <translation>Funktion</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>AND Switch</source>
-        <translation type="unfinished"></translation>
+        <translation>OCH Brytare</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2594,72 +2594,72 @@ Vill du ladda ned den nu ?</translation>
     <message>
         <location line="+516"/>
         <source>Edit Radio Splash Image...</source>
-        <translation type="unfinished"></translation>
+        <translation>Redigera radions startbild...</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Edit the splash image of your Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Redigera din radios starkärm</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Read Firmware from Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Läs firmware från radion</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Read firmware from Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Läs firmware från radion</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Write Firmware to Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Skriv firmware till radion</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Write firmware to Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Skriv firmware till radion</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Write Models and Settings To Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Skriv Modeller och Inställningar till radion</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Write Models and Settings to Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Skriv Modeller och Inställningar till radion</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Read Models and Settings from Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Läs Modeller och Inställningar från radion</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Configure software for communicating with the Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Konfigurera kommunikationsprogramvara</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Write Backup to Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Skriv Backup till radion</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Write Backup from file to to Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Skriv Backup från en fil till radion</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Backup Radio to File</source>
-        <translation type="unfinished"></translation>
+        <translation>Gör Backup av radion</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Save a complete backup file of all settings and model data in the Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Spara en komplett Backup av alla data i radion</translation>
     </message>
     <message>
         <location line="+189"/>
@@ -2809,17 +2809,17 @@ Starta skrivningen i alla fall ?</translation>
     <message>
         <location line="-1260"/>
         <source>Firmware does not longer fit in the radio, due to selected firmware options</source>
-        <translation type="unfinished"></translation>
+        <translation>Firmware får inte plats i radion eftersom alltför många funktioner är valda samtidigt</translation>
     </message>
     <message>
         <location line="+39"/>
         <source>Firmware does not fit in the radio, due to selected firmware options</source>
-        <translation type="unfinished"></translation>
+        <translation>Firmware får inte plats i radion eftersom alltför många funktioner är valda samtidigt</translation>
     </message>
     <message>
         <location line="+39"/>
         <source>Do you want to write the firmware to the radio now ?</source>
-        <translation type="unfinished"></translation>
+        <translation>Vill du skriva firmware till radion nu?</translation>
     </message>
     <message>
         <location line="+612"/>
@@ -2827,12 +2827,12 @@ Starta skrivningen i alla fall ?</translation>
         <location line="+385"/>
         <location line="+222"/>
         <source>Read Models and Settings From Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Läs Modeller och Inställningar från radion</translation>
     </message>
     <message>
         <location line="-587"/>
         <source>Write Radio Backup from %1 to the radio?</source>
-        <translation type="unfinished"></translation>
+        <translation>Skriv Backup från %1 till radion?</translation>
     </message>
     <message>
         <location line="+30"/>
@@ -2842,63 +2842,63 @@ Starta skrivningen i alla fall ?</translation>
         <location line="+185"/>
         <location line="+49"/>
         <source>Backup Models and Settings From Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Gör Backup av radiodata</translation>
     </message>
     <message>
         <location line="-265"/>
         <source>The radio firmware belongs to another product family, check file and preferences!</source>
-        <translation type="unfinished"></translation>
+        <translation>Sändarens firmware är av en annan typ än den aktuella. Kontrollera konfigurationen!</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>The radio firmware is outdated, please upgrade!</source>
-        <translation type="unfinished"></translation>
+        <translation>Firmware i radion är föråldrad. Var god uppgradera!</translation>
     </message>
     <message>
         <location line="+46"/>
         <source>Write Backup To Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Skriv Backup till radion</translation>
     </message>
     <message>
         <location line="+174"/>
         <location line="+50"/>
         <source>Write Firmware To Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Skriv firmware till radion</translation>
     </message>
     <message>
         <location line="-37"/>
         <source>Restore Models and Settings To Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Återställ Backup till radion</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Could not restore Models and Settings to Radio. The models and settings data file can be found at: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Det gick inte att återställa Backupen till radion. Filen kan hittas här: %1</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Could not write firmware to radio. The models and settings data file can be found at: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Det gick inte att skriva firmware till radion. Filen med Modeller och Inställningar finns här: %1</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Cannot backup existing Models and Settings from Radio. Firmware write process aborted</source>
-        <translation type="unfinished"></translation>
+        <translation>Skrivningen av firmware avbröts därför att det inte gick att göra en Backup av radion</translation>
     </message>
     <message>
         <location line="+34"/>
         <source>Save Radio Backup to File</source>
-        <translation type="unfinished"></translation>
+        <translation>Spara radiobackup till fil</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Read Radio Backup</source>
-        <translation type="unfinished"></translation>
+        <translation>Spara radiobackup</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Read Radio Firmware to File</source>
-        <translation type="unfinished"></translation>
+        <translation>Spara radiobackup till fil</translation>
     </message>
     <message>
         <location line="+169"/>
@@ -3063,12 +3063,12 @@ Starta skrivningen i alla fall ?</translation>
     <message>
         <location line="+1"/>
         <source>Dutch</source>
-        <translation type="unfinished"></translation>
+        <translation>Holländska</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Use Dutch in menus</source>
-        <translation type="unfinished"></translation>
+        <translation>Använd Holländska i menyerna</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3348,7 +3348,7 @@ Vill du spara förändringarna?</translation>
         <location line="+9"/>
         <location line="+51"/>
         <source>Backup EEPROM From Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Gör Backup av radions innehåll</translation>
     </message>
     <message>
         <location line="-34"/>
@@ -3374,7 +3374,7 @@ Vill du spara förändringarna?</translation>
     <message>
         <location line="+43"/>
         <source>Write EEPROM To Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Skriv EEPROM till radion</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -3674,35 +3674,35 @@ p, li { white-space: pre-wrap; }
     <name>MixesPanel</name>
     <message>
         <location filename="../modeledit/mixes.cpp" line="+16"/>
-        <location line="+396"/>
+        <location line="+395"/>
         <source>Move Up</source>
         <translation>Flytta uppåt</translation>
     </message>
     <message>
-        <location line="-394"/>
-        <location line="+394"/>
+        <location line="-393"/>
+        <location line="+393"/>
         <source>Ctrl+Up</source>
         <translation>Ctrl+Up</translation>
     </message>
     <message>
-        <location line="-393"/>
-        <location line="+394"/>
+        <location line="-392"/>
+        <location line="+393"/>
         <source>Move Down</source>
         <translation>Flytta nedåt</translation>
     </message>
     <message>
-        <location line="-392"/>
-        <location line="+392"/>
+        <location line="-391"/>
+        <location line="+391"/>
         <source>Ctrl+Down</source>
         <translation>Ctrl+Down</translation>
     </message>
     <message>
-        <location line="-391"/>
+        <location line="-390"/>
         <source>Clear Mixes</source>
         <translation>Nollställ mixarna</translation>
     </message>
     <message>
-        <location line="+86"/>
+        <location line="+85"/>
         <source>Weight(%1)</source>
         <translation>Vikt(%1)</translation>
     </message>
@@ -3852,7 +3852,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+3"/>
         <source>Servos</source>
-        <translation type="unfinished"></translation>
+        <translation>Servon</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -4028,7 +4028,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+85"/>
         <source>Do you want to overwrite radio general settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>Vill du skriva över radioinställningarna?</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -4108,7 +4108,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+103"/>
         <source>Receiver No.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mottagarnummer</translation>
     </message>
     <message>
         <location line="-276"/>
@@ -4187,7 +4187,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/setup.cpp" line="+109"/>
         <source>Trainer Port</source>
-        <translation type="unfinished"></translation>
+        <translation>Trainer-ingång</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -4231,7 +4231,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../eeprominterface.cpp" line="+215"/>
+        <location filename="../eeprominterface.cpp" line="+219"/>
         <location filename="../helpers.cpp" line="-146"/>
         <location filename="../modeledit/setup.cpp" line="+435"/>
         <source>P1</source>
@@ -5029,9 +5029,9 @@ p, li { white-space: pre-wrap; }
         <translation>Polska</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="-446"/>
+        <location filename="../modeledit/mixes.cpp" line="-445"/>
         <source>X%1  </source>
-        <translation type="unfinished">X%1  </translation>
+        <translation>X%1  </translation>
     </message>
     <message>
         <location line="+3"/>
@@ -5158,12 +5158,12 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location line="+0"/>
-        <source>ASpd</source>
+        <source>dTE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+0"/>
-        <source>dTE</source>
+        <source>AirSpeed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -5177,7 +5177,12 @@ p, li { white-space: pre-wrap; }
         <translation>A4-</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+1"/>
+        <source>AirSpeed+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
         <source>ACC</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5596,11 +5601,11 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+199"/>
         <source>Set Timer %1</source>
-        <translation>Stääll in Timer %1</translation>
+        <translation>Ställ in Timer %1</translation>
     </message>
     <message>
         <location line="+97"/>
-        <location filename="../modeledit/customfunctions.cpp" line="-616"/>
+        <location filename="../modeledit/customfunctions.cpp" line="-619"/>
         <source>No repeat</source>
         <translation>Repetera ej</translation>
     </message>
@@ -5658,7 +5663,7 @@ p, li { white-space: pre-wrap; }
         <translation>%1s</translation>
     </message>
     <message>
-        <location line="+563"/>
+        <location line="+566"/>
         <source>Value</source>
         <translation>Värde</translation>
     </message>
@@ -5975,7 +5980,7 @@ p, li { white-space: pre-wrap; }
         <translation>Flygläge %1 värde</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="+1186"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="+1196"/>
         <source>OpenTX only accepts %1 points in all curves</source>
         <translation>OpenTX accepterar bara %1 punkter i alla kurvor</translation>
     </message>
@@ -6291,17 +6296,17 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <location line="+40"/>
         <source>Throttle Trim Idle Only</source>
-        <translation type="unfinished"></translation>
+        <translation>Gastrim enbart för tomgång</translation>
     </message>
     <message>
         <location line="+117"/>
         <source>Timer Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Timer-källa</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Trim Step</source>
-        <translation type="unfinished"></translation>
+        <translation>Trimsteg</translation>
     </message>
     <message>
         <location line="+182"/>
@@ -6340,7 +6345,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
 <context>
     <name>SimulatorDialog</name>
     <message>
-        <location filename="../simulation/simulatordialog.cpp" line="+227"/>
+        <location filename="../simulation/simulatordialog.cpp" line="+303"/>
         <location line="+22"/>
         <source>Warning</source>
         <translation>Varning</translation>
@@ -6358,10 +6363,10 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <location line="+9"/>
         <source>Simulating Radio (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Simulerar Radio (%1)</translation>
     </message>
     <message>
-        <location line="+135"/>
+        <location line="+133"/>
         <source>Firmware %1 error: %2</source>
         <translation>Firmware %1 fel: %2</translation>
     </message>
@@ -6374,15 +6379,15 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <translation>Companion Simulator</translation>
     </message>
     <message>
-        <location line="+54"/>
-        <location line="+316"/>
-        <location line="+20"/>
-        <location line="+353"/>
+        <location line="+375"/>
+        <location line="+58"/>
+        <location line="+399"/>
+        <location line="+58"/>
         <source>Right Double Click to Reset</source>
         <translation>Höger dubbelklick nollställer</translation>
     </message>
     <message>
-        <location line="-629"/>
+        <location line="-792"/>
         <source>THR</source>
         <translation>GAS</translation>
     </message>
@@ -6403,32 +6408,32 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     </message>
     <message>
         <location line="+34"/>
-        <location line="+373"/>
+        <location line="+457"/>
         <source>Hold X</source>
         <translation>Håll X</translation>
     </message>
     <message>
-        <location line="-343"/>
-        <location line="+373"/>
+        <location line="-427"/>
+        <location line="+457"/>
         <source>Fix X</source>
         <translation>Fixera X</translation>
     </message>
     <message>
-        <location line="-343"/>
-        <location line="+373"/>
+        <location line="-427"/>
+        <location line="+457"/>
         <source>Fix Y</source>
         <translation>Fixera Y</translation>
     </message>
     <message>
-        <location line="-343"/>
-        <location line="+373"/>
+        <location line="-427"/>
+        <location line="+457"/>
         <source>Hold Y</source>
         <translation>Håll Y</translation>
     </message>
     <message>
-        <location line="-353"/>
+        <location line="-437"/>
         <location line="+10"/>
-        <location line="+363"/>
+        <location line="+447"/>
         <location line="+10"/>
         <source>TextLabel</source>
         <translation>Textettikett</translation>
@@ -6459,7 +6464,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <translation>ID2</translation>
     </message>
     <message>
-        <location line="+207"/>
+        <location line="+307"/>
         <source>BEEP</source>
         <translation>Summer</translation>
     </message>
@@ -6504,96 +6509,96 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <translation>Companion Simulator</translation>
     </message>
     <message>
-        <location line="+124"/>
-        <location line="+566"/>
+        <location line="+405"/>
+        <location line="+712"/>
         <source>Hold Y</source>
         <translation>Håll Y</translation>
     </message>
     <message>
-        <location line="-536"/>
-        <location line="+566"/>
+        <location line="-682"/>
+        <location line="+712"/>
         <source>Fix Y</source>
         <translation>Fixera Y</translation>
     </message>
     <message>
-        <location line="-536"/>
-        <location line="+566"/>
+        <location line="-682"/>
+        <location line="+712"/>
         <source>Fix X</source>
         <translation>Fixera X</translation>
     </message>
     <message>
-        <location line="-536"/>
-        <location line="+566"/>
+        <location line="-682"/>
+        <location line="+712"/>
         <source>Hold X</source>
         <translation>Håll X</translation>
     </message>
     <message>
-        <location line="-542"/>
-        <location line="+291"/>
+        <location line="+24"/>
+        <location line="+224"/>
         <source>SD</source>
         <translation>SD</translation>
     </message>
     <message>
-        <location line="-251"/>
-        <location line="+241"/>
+        <location line="-184"/>
+        <location line="+174"/>
         <source>SC</source>
         <translation>SC</translation>
     </message>
     <message>
-        <location line="-198"/>
-        <location line="+258"/>
-        <location line="+386"/>
-        <location line="+24"/>
+        <location line="-1156"/>
+        <location line="+592"/>
+        <location line="+83"/>
+        <location line="+588"/>
         <source>Right Double Click to Reset</source>
         <translation>Höger dubbelklick nollställer</translation>
     </message>
     <message>
-        <location line="-638"/>
-        <location line="+208"/>
+        <location line="-537"/>
+        <location line="+22"/>
         <source>S2</source>
         <translation>S2</translation>
     </message>
     <message>
-        <location line="-148"/>
+        <location line="+300"/>
         <location line="+128"/>
         <source>SG</source>
         <translation>SG</translation>
     </message>
     <message>
         <location line="-85"/>
-        <location line="+115"/>
+        <location line="+105"/>
         <source>RS</source>
         <translation>RS</translation>
     </message>
     <message>
-        <location line="-81"/>
+        <location line="-71"/>
         <location line="+61"/>
         <source>SH</source>
         <translation>SH</translation>
     </message>
     <message>
-        <location line="+54"/>
+        <location line="-913"/>
         <location line="+10"/>
-        <location line="+234"/>
+        <location line="+931"/>
         <location line="+10"/>
         <source>TextLabel</source>
         <translation>Textettikett</translation>
     </message>
     <message>
-        <location line="-40"/>
-        <location line="+376"/>
+        <location line="-981"/>
+        <location line="+318"/>
         <source>S1</source>
         <translation>S1</translation>
     </message>
     <message>
-        <location line="-312"/>
-        <location line="+282"/>
+        <location line="-254"/>
+        <location line="+224"/>
         <source>SB</source>
         <translation>SB</translation>
     </message>
     <message>
-        <location line="-226"/>
-        <location line="+216"/>
+        <location line="-168"/>
+        <location line="+158"/>
         <source>SA</source>
         <translation>SA</translation>
     </message>
@@ -6617,7 +6622,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <translation>LS</translation>
     </message>
     <message>
-        <location line="+60"/>
+        <location line="-789"/>
         <source>Taranis Simulator</source>
         <translation>Taranissimulator</translation>
     </message>
@@ -6630,7 +6635,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
 <context>
     <name>StandardPage</name>
     <message>
-        <location filename="../wizarddialog.cpp" line="-503"/>
+        <location filename="../wizarddialog.cpp" line="-504"/>
         <source>Channel %1</source>
         <translation>Kanal %1</translation>
     </message>
@@ -6638,7 +6643,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
 <context>
     <name>TailPage</name>
     <message>
-        <location line="+479"/>
+        <location line="+480"/>
         <source>Rudder Channel:</source>
         <translation>Sidoroderkanal:</translation>
     </message>
@@ -6867,12 +6872,12 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <location line="+66"/>
         <source> mAh</source>
-        <translation type="unfinished"></translation>
+        <translation> mAh</translation>
     </message>
     <message>
         <location line="+16"/>
         <source> A</source>
-        <translation type="unfinished"></translation>
+        <translation> A</translation>
     </message>
     <message>
         <location line="+64"/>
@@ -6961,7 +6966,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <location line="+142"/>
         <source>Offset</source>
-        <translation type="unfinished">Offset</translation>
+        <translation>Offset</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -7133,7 +7138,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <location line="+10"/>
         <source>Minute Call</source>
-        <translation type="unfinished"></translation>
+        <translation>Minutangivelse</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -7151,7 +7156,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <location filename="../modeledit/setup.cpp" line="-533"/>
         <source>Silent</source>
-        <translation type="unfinished"></translation>
+        <translation>Tyst</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -7161,7 +7166,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <location line="+2"/>
         <source>Voice</source>
-        <translation type="unfinished">Röst</translation>
+        <translation>Röst</translation>
     </message>
 </context>
 <context>
@@ -7193,7 +7198,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
 <context>
     <name>WizardDialog</name>
     <message>
-        <location line="-264"/>
+        <location line="-265"/>
         <source>Model Wizard</source>
         <translation>Modellguide</translation>
     </message>
@@ -7343,7 +7348,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <location line="+1"/>
         <location line="+1"/>
         <source>Helicopter</source>
-        <translation type="unfinished">Helikopter</translation>
+        <translation>Helikopter</translation>
     </message>
     <message>
         <location line="-1"/>
@@ -7369,7 +7374,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <location line="+0"/>
         <source>Manually check the direction of each control surface and reverse any channels that make controls move in the wrong direction. Remove the propeller/propellers before you try to control your model for the first time.&lt;br&gt;Please note that continuing removes all old model settings!</source>
-        <translation type="unfinished">Guiden har kopplat radiokanaler till kontroller i din modell. Nu måste du själv ställa in riktningen för kontrollerna. Testa och reversera de kanaler som gör att dina kontroller rör sig i fel riktning.&lt;br&gt;Ta bort propellern/propellrarna innan du slår på din modell första gången.&lt;br&gt;OBS. Om du slutför guiden tar du bort alla eventuella tidigare inställningar för modellplatsen!</translation>
+        <translation>Guiden har kopplat radiokanaler till kontroller i din modell. Nu måste du själv ställa in riktningen för kontrollerna. Testa och reversera de kanaler som gör att dina kontroller rör sig i fel riktning.&lt;br&gt;Ta bort propellern/propellrarna innan du slår på din modell första gången.&lt;br&gt;OBS. Om du slutför guiden tar du bort alla eventuella tidigare inställningar för modellplatsen!</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -7389,12 +7394,12 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <location line="+4"/>
         <source>Models use one or two channels to control the ailerons.&lt;br&gt;A so called Y-cable can be used to connect single receiver channel to two separeate aileron servos. If your servos are connected by a Y-cable you should select the single-servo option.&lt;br&gt;&lt;br&gt;Aileron - Spektrum: CH2, Futaba: CH1</source>
-        <translation type="unfinished"></translation>
+        <translation>Modeller använder en eller två kontrollkanaler för att styra skevrodren.&lt;br&gt;En så kallad Y-kabel kan användas för att koppla två servon till en enda kanal. Om dina skevroderservon är inkopplade via en Y-kabel, så skall du välja inställningen för en kontrollkanal.&lt;br&gt;&lt;br&gt;Skevroder - Spektrum: KN2, Futaba: KN1</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>This wizard assumes that your flaps are controlled by a switch. If your flaps are controlled by a potentiometer you can change that manually later.</source>
-        <translation type="unfinished"></translation>
+        <translation>Denna modellguide utgår ifrån att dina flaps styrs via en brytare. Om du instället vill styra via en potentiometer så får du själv ändra inställningen i Modell-editorn.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -7404,7 +7409,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <location line="+3"/>
         <source>Models use one or two channels to control the elevons.&lt;br&gt;A so called Y-cable can be used to connect single receiver channel to two separeate elevon servos. If your servos are connected by a Y-cable you should select the single-servo option.</source>
-        <translation type="unfinished"></translation>
+        <translation>Modeller använder en eller två kontrollkanaler för att styra deltavingar och flygande vingar.&lt;br&gt;En så kallad Y-kabel kan användas för att koppla två servon till en enda kanal. Om dina servon är inkopplade via en Y-kabel, så skall du välja inställningen för en kontrollkanal.</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -7456,7 +7461,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
 <context>
     <name>WizardPrinter</name>
     <message>
-        <location line="+773"/>
+        <location line="+774"/>
         <source>Model Name: </source>
         <translation>Modelnamn:</translation>
     </message>
@@ -7534,7 +7539,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <location line="+83"/>
         <source>Use model wizard when creating a new model</source>
-        <translation type="unfinished"></translation>
+        <translation>Använd modellguiden för nya modeller</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -8434,7 +8439,7 @@ m2560 för v4.1-kort</translation>
     <message>
         <location line="+81"/>
         <source>Open image file to use as radio start screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Öppna bildfil för användning som startbild i radion</translation>
     </message>
     <message>
         <location line="+55"/>
@@ -8525,17 +8530,17 @@ m2560 för v4.1-kort</translation>
     <message>
         <location filename="../burndialog.cpp" line="-6"/>
         <source>Write firmware to Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Skriv firmware till radion</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Write Backup to Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Skriv Backup till radion</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Write Backup from %1 to Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Skriv Backup från %1 till radion</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -8550,7 +8555,7 @@ m2560 för v4.1-kort</translation>
     <message>
         <location line="+6"/>
         <source>Choose Radio Backup file</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj Backup-fil</translation>
     </message>
     <message>
         <location line="+56"/>
@@ -10408,7 +10413,7 @@ Får skilja från språket för mjukvaran</translation>
     <message>
         <location line="-1359"/>
         <source>Ask use of wizard for new models</source>
-        <translation type="unfinished">Använd modellguiden för nya modeller</translation>
+        <translation>Använd modellguiden för nya modeller</translation>
     </message>
     <message>
         <location line="+90"/>
