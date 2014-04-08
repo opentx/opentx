@@ -137,6 +137,7 @@ extern uint32_t EepromBlocked;
 
 extern void init_spi(void);
 extern void writeBlock(void);
+extern void usbPluggedIn();
 
 /*----------------------------------------------------------------------------
  *         Global functions
