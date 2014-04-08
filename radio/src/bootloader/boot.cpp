@@ -79,14 +79,6 @@
   #define BOOTLOADER_TITLE      "Boot Loader - Sky9x"
 #endif
 
-#define BOOTLOADER_SIZE         0x8000
-
-#if defined(PCBTARANIS)
-  #define FIRMWARE_ADDRESS      0x08000000
-#elif defined(PCBSKY9X)
-  #define FIRMWARE_ADDRESS      0x00400000
-#endif
-
 // states
 enum BootLoaderStates {
   ST_START,
@@ -212,15 +204,12 @@ uint32_t isFirmwareStart( uint32_t *block )
 
 uint32_t (*IAP_Function)(uint32_t, uint32_t);
 
-uint32_t program( uint32_t *address, uint32_t *buffer )	// size is 256 bytes
+void writeFlash(uint32_t *address, uint32_t *buffer)	// size is 256 bytes
 {
   uint32_t FlashSectorNum;
   uint32_t flash_cmd = 0;
-  uint32_t i;
-//	uint32_t flash_status = 0;
-  //	uint32_t EFCIndex = 0; // 0:EEFC0, 1: EEFC1
-  /* Initialize the function pointer (retrieve function address from NMI vector) */
 
+  /* Initialize the function pointer (retrieve function address from NMI vector) */
   if ((uint32_t) address == FIRMWARE_START+BOOTLOADER_SIZE) {
     if (isFirmwareStart(buffer))
       FlashBlocked = 0;
@@ -229,7 +218,7 @@ uint32_t program( uint32_t *address, uint32_t *buffer )	// size is 256 bytes
   }
 
   if (FlashBlocked) {
-    return 1;
+    return;
   }
 
   // Always initialise this here, setting a default doesn't seem to work
@@ -239,8 +228,7 @@ uint32_t program( uint32_t *address, uint32_t *buffer )	// size is 256 bytes
   FlashSectorNum &= 2047;// max page number
 
   /* Send data to the sector here */
-  for ( i = 0; i < 64; i += 1 )
-  {
+  for (int i=0; i<FLASH_PAGESIZE/4; i++) {
     *address++ = *buffer++;
   }
 
@@ -249,9 +237,8 @@ uint32_t program( uint32_t *address, uint32_t *buffer )	// size is 256 bytes
 
   __disable_irq();
   /* Call the IAP function with appropriate command */
-  i = IAP_Function( 0, flash_cmd );
+  i = IAP_Function(0, flash_cmd);
   __enable_irq();
-  return i;
 }
 
 uint32_t readLockBits()
@@ -420,7 +407,7 @@ void eraseSector(uint32_t sector)
   FLASH->CR &= SECTOR_MASK;
 }
 
-uint32_t program(uint32_t *address, uint32_t *buffer)	// size is 256 bytes
+void writeFlash(uint32_t *address, uint32_t *buffer)	// size is 256 bytes
 {
   uint32_t i;
 
@@ -434,7 +421,7 @@ uint32_t program(uint32_t *address, uint32_t *buffer)	// size is 256 bytes
   }
 
   if (FlashBlocked) {
-    return 1;
+    return;
   }
 
   if ((uint32_t) address == 0x08008000) {
@@ -478,13 +465,12 @@ uint32_t program(uint32_t *address, uint32_t *buffer)	// size is 256 bytes
     /* Check the written value */
     if (*address != *buffer) {
       /* Flash content doesn't match SRAM content */
-      return 2;
+      return;
     }
     /* Increment FLASH destination address */
     address += 1;
     buffer += 1;
   }
-  return 0;
 }
 
 #endif
@@ -877,11 +863,11 @@ int main()
         uint32_t blockOffset = 0;
         lcd_putsLeft(4*FH, "\032Loading...");
         while (BlockCount) {
-          program((uint32_t *) firmwareAddress, &Block_buffer[blockOffset]); // size is 256 bytes
-          blockOffset += 64;		// 32-bit words (256 bytes)
-          firmwareAddress += 256;
-          if (BlockCount > 256) {
-            BlockCount -= 256;
+          writeFlash((uint32_t *)firmwareAddress, &Block_buffer[blockOffset]);
+          blockOffset += FLASH_PAGESIZE/4; // 32-bit words
+          firmwareAddress += FLASH_PAGESIZE;
+          if (BlockCount > FLASH_PAGESIZE) {
+            BlockCount -= FLASH_PAGESIZE;
           }
           else {
             BlockCount = 0;
