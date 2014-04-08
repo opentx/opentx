@@ -969,7 +969,7 @@ QString MainWindow::FindTaranisPath()
         QString vName=QString::fromUtf16 ( (const ushort *) szVolumeName) ;
         if (vName.contains("TARANIS")) {
           eepromfile=drive.absolutePath();
-          eepromfile.append("/TARANIS.BIN");
+          eepromfile.append("/EEPROM.BIN");
           if (QFile::exists(eepromfile)) {
             pathcount++;
             path=eepromfile;
@@ -985,7 +985,7 @@ QString MainWindow::FindTaranisPath()
         drives.append(entry->me_devname);
         eepromfile=entry->me_mountdir;
 
-        eepromfile.append("/TARANIS.BIN");
+        eepromfile.append("/EEPROM.BIN");
   #if !defined __APPLE__ && !defined WIN32
         QString fstype=entry->me_type;
         qDebug() << fstype;
