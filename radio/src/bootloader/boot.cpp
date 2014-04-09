@@ -278,7 +278,7 @@ void hw_delay(uint16_t time)
 }
 #endif
 
-uint8_t *cpystr(uint8_t *dest, uint8_t *source)
+char * cpystr(char * dest, const char * source)
 {
   while ((*dest++ = *source++))
     ;
@@ -297,7 +297,7 @@ FRESULT readBinDir(DIR *dj, FILINFO *fno)
       break;
     }
     if (*fno->lfname == 0) {
-      cpystr((uint8_t *) fno->lfname, (uint8_t *) fno->fname);	// Copy 8.3 name
+      cpystr(fno->lfname, fno->fname);	// Copy 8.3 name
     }
     int32_t len = strlen(fno->lfname) - 4;
     if (len < 0) {
@@ -360,7 +360,7 @@ const char *getBinaryPath()
 FRESULT openBinaryFile(uint32_t index)
 {
   TCHAR filename[60];
-  cpystr(cpystr(cpystr((uint8_t *)filename, (uint8_t *)getBinaryPath()), (uint8_t *)"/"), (uint8_t *)Filenames[index]);  
+  cpystr(cpystr(cpystr(filename, getBinaryPath()), "/"), Filenames[index]);  
   f_open(&FlashFile, filename, FA_READ);
   if (memoryType == MEM_FLASH)
     f_lseek(&FlashFile, BOOTLOADER_SIZE);
