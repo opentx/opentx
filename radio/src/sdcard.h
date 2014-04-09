@@ -57,6 +57,7 @@
 #define SCRIPTS_EXT         ".lua"
 #define TEXT_EXT            ".txt"
 #define FIRMWARE_EXT        ".bin"
+#define EEPROM_EXT          ".bin"
 
 extern FATFS g_FATFS_Obj;
 

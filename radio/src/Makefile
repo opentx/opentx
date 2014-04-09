@@ -949,7 +949,7 @@ endif
 
 ifeq ($(SDCARD), YES)
   CPPDEFS += -DSDCARD
-  CPPSRC += logs.cpp 
+  CPPSRC += logs.cpp strhelpers.cpp  
 endif
 
 RUN_FROM_FLASH = 1

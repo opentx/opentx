@@ -91,7 +91,6 @@ enum BootLoaderStates {
   ST_FLASH_CHECK,
   ST_FLASHING,
   ST_FLASH_DONE,
-  ST_BACKUP_EEPROM,
   ST_RESTORE_MENU,
   ST_USB,
   ST_REBOOT,
@@ -111,6 +110,8 @@ uint32_t firmwareAddress = FIRMWARE_ADDRESS;
 uint32_t firmwareWritten = 0;
 uint32_t eepromAddress = 0;
 uint32_t eepromWritten = 0;
+
+TCHAR backupFilename[60];
 
 uint32_t Master_frequency;
 volatile uint8_t Tenms;
@@ -278,13 +279,6 @@ void hw_delay(uint16_t time)
 }
 #endif
 
-char * cpystr(char * dest, const char * source)
-{
-  while ((*dest++ = *source++))
-    ;
-  return dest - 1;
-}
-
 FRESULT readBinDir(DIR *dj, FILINFO *fno)
 {
   FRESULT fr;
@@ -297,7 +291,7 @@ FRESULT readBinDir(DIR *dj, FILINFO *fno)
       break;
     }
     if (*fno->lfname == 0) {
-      cpystr(fno->lfname, fno->fname);	// Copy 8.3 name
+      strAppend(fno->lfname, fno->fname);	// Copy 8.3 name
     }
     int32_t len = strlen(fno->lfname) - 4;
     if (len < 0) {
@@ -360,7 +354,7 @@ const char *getBinaryPath()
 FRESULT openBinaryFile(uint32_t index)
 {
   TCHAR filename[60];
-  cpystr(cpystr(cpystr(filename, getBinaryPath()), "/"), Filenames[index]);  
+  strAppend(strAppend(strAppend(filename, getBinaryPath()), "/"), Filenames[index]);
   f_open(&FlashFile, filename, FA_READ);
   if (memoryType == MEM_FLASH)
     f_lseek(&FlashFile, BOOTLOADER_SIZE);
@@ -443,9 +437,6 @@ void writeEepromBlock()
 int main()
 {
   uint8_t index = 0;
-#if defined(PCBTARANIS)
-  uint8_t TenCount = 2;
-#endif			
   uint8_t maxhsize = DISPLAY_CHAR_WIDTH;
   FRESULT fr;
   uint32_t state = ST_START;
@@ -517,7 +508,6 @@ int main()
     wdt_reset();
 
     if (Tenms) {
-      wdt_reset();  // Retrigger hardware watchdog
 
       if (EE_timer) {
         if (--EE_timer == 0) {
@@ -544,16 +534,15 @@ int main()
 
       if (state == ST_START) {
         lcd_putsLeft(2*FH, "\010Write Firmware");
-        lcd_putsLeft(3*FH, "\010Backup EEPROM");
-        lcd_putsLeft(4*FH, "\010Restore EEPROM");
-        lcd_putsLeft(5*FH, "\010Exit");
+        lcd_putsLeft(3*FH, "\010Restore EEPROM");
+        lcd_putsLeft(4*FH, "\010Exit");
         lcd_invert_line(2+vpos);
         lcd_putsLeft(7*FH, INDENT "Or plug in a USB cable for mass storage");
         if (event == EVT_KEY_FIRST(BOOT_KEY_DOWN)) {
-          vpos == 3 ? vpos = 0 : vpos = vpos+1;
+          vpos == 2 ? vpos = 0 : vpos = vpos+1;
         }
         else if (event == EVT_KEY_FIRST(BOOT_KEY_UP)) {
-          vpos == 0 ? vpos = 3 : vpos = vpos-1;
+          vpos == 0 ? vpos = 2 : vpos = vpos-1;
         }
         else if (event == EVT_KEY_BREAK(BOOT_KEY_MENU)) {
           switch (vpos) {
@@ -561,9 +550,6 @@ int main()
               state = ST_FLASH_MENU;
               break;
             case 1:
-              state = ST_BACKUP_EEPROM;
-              break;
-            case 2:
               state = ST_RESTORE_MENU;
               break;
             default:
@@ -611,16 +597,6 @@ int main()
           nameCount = fillNames(0);
           hpos = 0;
           vpos = 0;
-        }
-      }
-
-      if (state == ST_BACKUP_EEPROM) {
-        // TODO Get RTC date/time, dump EEPROM to EEPROMS_PATH/EEPROM_yy-mm-dd-hh-mm-ss.BIN
-        lcd_putsLeft(2*FH, INDENT "Backup successful!");
-        // lcd_putsLeft(3*FH, filename);
-        if (event == EVT_KEY_BREAK(BOOT_KEY_EXIT) || event == EVT_KEY_BREAK(BOOT_KEY_MENU)) {
-          vpos = 0;
-          state = ST_START;
         }
       }
 
@@ -759,10 +735,7 @@ int main()
         state = ST_REBOOT;
       }
 
-      if (--TenCount == 0) {
-        TenCount = 2;
-        lcdRefresh();
-      }
+      lcdRefresh();
 
       if (PowerUpDelay < 20) {	// 200 mS
         PowerUpDelay += 1;

@@ -686,6 +686,55 @@ inline bool isFilenameLower(bool isfile, const char * fn, const char * line)
 }
 
 #if defined(PCBTARANIS)
+void backupEeprom()
+{
+  char filename[60];
+  uint8_t buffer[1024];
+  FIL file;
+
+  lcd_clear();
+  lcd_putsLeft(4*FH, STR_WRITING);
+  lcd_rect(3, 6*FH+4, 204, 7);
+  lcdRefresh();
+
+  eeCheck(true);
+
+  // create the directory if needed...
+  DIR folder;
+  FRESULT result = f_opendir(&folder, EEPROMS_PATH);
+  if (result != FR_OK) {
+    if (result == FR_NO_PATH)
+      result = f_mkdir(EEPROMS_PATH);
+    if (result != FR_OK) {
+      POPUP_WARNING(SDCARD_ERROR(result));
+      return;
+    }
+  }
+
+  // prepare the filename...
+  char * tmp = strAppend(filename, EEPROMS_PATH "/eeprom");
+  tmp = strAppendDate(tmp, true);
+  strAppend(tmp, EEPROM_EXT);
+
+  // open the file for writing...
+  f_open(&file, filename, FA_WRITE | FA_CREATE_ALWAYS);
+
+  for (int i=0; i<EESIZE; i+=1024) {
+    UINT count;
+    eeprom_read_block(buffer, i, 1024);
+    f_write(&file, buffer, 1024, &count);
+    lcd_hline(5, 6*FH+6, (200*i)/EESIZE, FORCE);
+    lcd_hline(5, 6*FH+7, (200*i)/EESIZE, FORCE);
+    lcd_hline(5, 6*FH+8, (200*i)/EESIZE, FORCE);
+    lcdRefresh();
+    SIMU_SLEEP(100/*ms*/);
+  }
+
+  f_close(&file);
+}
+#endif
+
+#if defined(PCBTARANIS)
 void flashBootloader(const char * filename)
 {
   FIL file;
@@ -696,6 +745,7 @@ void flashBootloader(const char * filename)
   lcd_clear();
   lcd_putsLeft(4*FH, STR_WRITING);
   lcd_rect(3, 6*FH+4, 204, 7);
+  lcdRefresh();
 
   static uint8_t unlocked = 0;
   if (!unlocked) {
@@ -719,8 +769,10 @@ void flashBootloader(const char * filename)
       lcd_hline(5, 6*FH+7, (200*i)/BOOTLOADER_SIZE, FORCE);
       lcd_hline(5, 6*FH+8, (200*i)/BOOTLOADER_SIZE, FORCE);
       lcdRefresh();
+      SIMU_SLEEP(30/*ms*/);
     }
   }
+
   f_close(&file);
 }
 #endif
@@ -1129,6 +1181,13 @@ void menuGeneralVersion(uint8_t event)
   }
   else {
      lcd_putsLeft(6*FH, PSTR("CoPr: ---"));
+  }
+#endif
+
+#if defined(PCBTARANIS)
+  lcd_putsLeft(7*FH, "\004[ENTER Long] to backup the EEPROM");
+  if (event == EVT_KEY_LONG(KEY_ENTER)) {
+    backupEeprom();
   }
 #endif
 }
