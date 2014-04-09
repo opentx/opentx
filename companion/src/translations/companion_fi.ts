@@ -6,27 +6,27 @@
     <message>
         <location filename="../wizarddialog.cpp" line="392"/>
         <source>No</source>
-        <translation type="unfinished">Ei</translation>
+        <translation>Ei</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="393"/>
         <source>Yes, controlled by a single channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Kyllä, ohjataan yhdellä kanavalla</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="394"/>
         <source>Yes, controlled by two channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Kyllä, ohjataan kahdella kanavalla</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="406"/>
         <source>&lt;br&gt;First Aileron Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;1. siiveke kanava:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="408"/>
         <source>Second Aileron Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>2. siiveke kanava:</translation>
     </message>
 </context>
 <context>
@@ -34,27 +34,27 @@
     <message>
         <location filename="../wizarddialog.cpp" line="490"/>
         <source>No</source>
-        <translation type="unfinished">Ei</translation>
+        <translation>Ei</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="491"/>
         <source>Yes, controlled by a single channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Kyllä, ohjataan yhdellä kanavalla</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="492"/>
         <source>Yes, controlled by two channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Kyllä, ohjataan kahdella kanavalla</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="504"/>
         <source>&lt;br&gt;First Airbrake Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;1. lentojarru kanava:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="506"/>
         <source>Second Airbrake Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>2. lentojarru kanava:</translation>
     </message>
 </context>
 <context>
@@ -62,22 +62,22 @@
     <message>
         <location filename="../wizarddialog.cpp" line="539"/>
         <source>One</source>
-        <translation type="unfinished"></translation>
+        <translation>Yksi</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="540"/>
         <source>Two</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaksi</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="550"/>
         <source>&lt;br&gt;First Elevon Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;1. korkeusper kanava:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="552"/>
         <source>Second Elevon Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>2. korkeusper kanava:</translation>
     </message>
 </context>
 <context>
@@ -116,12 +116,12 @@
     <message>
         <location filename="../modeledit/channels.cpp" line="21"/>
         <source>Subtrim</source>
-        <translation type="unfinished"></translation>
+        <translation>Alitrimmi</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="24"/>
         <source>Direction</source>
-        <translation type="unfinished"></translation>
+        <translation>Suunta</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="26"/>
@@ -131,12 +131,12 @@
     <message>
         <location filename="../modeledit/channels.cpp" line="28"/>
         <source>PPM Center</source>
-        <translation type="unfinished"></translation>
+        <translation>PPM keski</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="30"/>
         <source>Linear Subtrim</source>
-        <translation type="unfinished"></translation>
+        <translation>Lineaarinen alitrimmi</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="37"/>
@@ -159,7 +159,7 @@
     <message>
         <location filename="../wizarddialog.cpp" line="839"/>
         <source>OK, I understand.</source>
-        <translation type="unfinished"></translation>
+        <translation>OK, Ymmärrän.</translation>
     </message>
 </context>
 <context>
@@ -221,7 +221,7 @@
     <message>
         <location filename="../modeledit/curves.ui" line="173"/>
         <source>Curve Creator</source>
-        <translation type="unfinished"></translation>
+        <translation>Käyrän luonti</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="179"/>
@@ -251,7 +251,7 @@
     <message>
         <location filename="../modeledit/curves.ui" line="260"/>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
+        <translation>Käytä</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="267"/>
@@ -348,7 +348,7 @@
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="109"/>
         <source>SF%1</source>
-        <translation type="unfinished"></translation>
+        <translation>SF%1</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="178"/>
@@ -694,22 +694,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../wizarddialog.cpp" line="739"/>
         <source>Trottle Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaasu kanava:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="741"/>
         <source>Yaw Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Yaw kanava:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="743"/>
         <source>Pitch Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pitch kanava:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="745"/>
         <source>Roll Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Roll kanava:</translation>
     </message>
 </context>
 <context>
@@ -717,27 +717,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../wizarddialog.cpp" line="441"/>
         <source>No</source>
-        <translation type="unfinished">Ei</translation>
+        <translation>Ei</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="442"/>
         <source>Yes, controlled by a single channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Kyllä, ohjataan yhdellä kanavalla</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="443"/>
         <source>Yes, controlled by two channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Kyllä, ohjataan kahdella kanavalla</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="455"/>
         <source>&lt;br&gt;First Flap Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;1. laippojen kanava:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="457"/>
         <source>Second Flap Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>2. laippojen kanava:</translation>
     </message>
 </context>
 <context>
@@ -841,17 +841,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../wizarddialog.cpp" line="334"/>
         <source>Has Flybar</source>
-        <translation type="unfinished"></translation>
+        <translation>ON flybar</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="336"/>
         <source>Flybarless</source>
-        <translation type="unfinished"></translation>
+        <translation>EI flybar</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="339"/>
         <source>Flybar:</source>
-        <translation type="unfinished"></translation>
+        <translation>Flybar:</translation>
     </message>
 </context>
 <context>
@@ -1230,7 +1230,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../generaledit.ui" line="357"/>
         <source>Vario pitch at zero</source>
-        <translation type="unfinished"></translation>
+        <translation>Vario ääni kun nolla</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="686"/>
@@ -1755,17 +1755,17 @@ Hyväksytty arvo: 5v - 10v</translation>
         <location filename="../generaledit.ui" line="1455"/>
         <location filename="../generaledit.ui" line="1834"/>
         <source> Hz</source>
-        <translation type="unfinished"></translation>
+        <translation>Hz</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1474"/>
         <source>&quot;No Sound&quot; Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;Ei ääniä&quot; hälytys</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1481"/>
         <source>Low Memory Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Muisti vähissä hälytys</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1754"/>
@@ -1810,17 +1810,17 @@ Hyväksytty arvo: 5v - 10v</translation>
     <message>
         <location filename="../generaledit.ui" line="1799"/>
         <source>Vario pitch at max</source>
-        <translation type="unfinished"></translation>
+        <translation>Vario ääni kun max</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1853"/>
         <source> ms</source>
-        <translation type="unfinished"></translation>
+        <translation>ms</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1879"/>
         <source>Vario repeat at zero</source>
-        <translation type="unfinished"></translation>
+        <translation>Varion toisto nollassa</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1963"/>
@@ -1918,17 +1918,17 @@ Hyväksytty arvo: 5v - 10v</translation>
     <message>
         <location filename="../generaledit.ui" line="3182"/>
         <source>S-Port Mirror</source>
-        <translation type="unfinished"></translation>
+        <translation>S-Portti peilik</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="3187"/>
         <source>Debug</source>
-        <translation type="unfinished"></translation>
+        <translation>Korjaus</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="3195"/>
         <source>Serial Port</source>
-        <translation type="unfinished"></translation>
+        <translation>Sarja portti</translation>
     </message>
     <message>
         <source>Telemetry</source>
@@ -2117,17 +2117,17 @@ Oletko varma ?</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="710"/>
         <source>No</source>
-        <translation type="unfinished">Ei</translation>
+        <translation>Ei</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="712"/>
         <source>Yes, controled by a switch</source>
-        <translation type="unfinished"></translation>
+        <translation>Kyllä, ohjataan kytkimellä</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="713"/>
         <source>Yes, controlled by a pot</source>
-        <translation type="unfinished"></translation>
+        <translation>Kyllä, ohjataan potikalla</translation>
     </message>
 </context>
 <context>
@@ -2203,22 +2203,22 @@ Oletko varma ?</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="774"/>
         <source>Trottle Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaasu kanava:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="776"/>
         <source>Yaw Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Yaw kanava:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="778"/>
         <source>Pitch Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pitch kanava:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="780"/>
         <source>Roll Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Roll kanava:</translation>
     </message>
 </context>
 <context>
@@ -2405,12 +2405,12 @@ Oletko varma ?</translation>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="20"/>
         <source>AND Switch</source>
-        <translation type="unfinished"></translation>
+        <translation>JA kytkin</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="31"/>
         <source>L%1</source>
-        <translation type="unfinished"></translation>
+        <translation>L%1</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="405"/>
@@ -3216,7 +3216,7 @@ Kirjoita se silti lähettimeen ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1619"/>
         <source>Finnish</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Suomi</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1619"/>
@@ -3483,7 +3483,7 @@ Kirjoita se silti lähettimeen ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1977"/>
         <source>%2</source>
-        <translation type="unfinished">%1s {2?}</translation>
+        <translation>%2</translation>
     </message>
     <message>
         <source>About</source>
@@ -3600,7 +3600,7 @@ Kirjoita se silti lähettimeen ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1641"/>
         <source>List programmers...</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista ohjelmointilaitteista...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1642"/>
@@ -3931,17 +3931,17 @@ Haluatko tallentaa muutokset ?</translation>
         <location filename="../mdichild.cpp" line="565"/>
         <location filename="../mdichild.cpp" line="616"/>
         <source>Backup EEPROM From Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Varmuuskopio EEPROM lähettimestä</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="635"/>
         <source>Write EEPROM To Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Kirjoita EEPROM lähettimeen</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="685"/>
         <source>Open backup Models and Settings file</source>
-        <translation type="unfinished"></translation>
+        <translation>Avaa varmuuskopio  mallit ja asetukset </translation>
     </message>
     <message>
         <source>Taranis radio not found</source>
@@ -4492,7 +4492,7 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="35"/>
         <source>Servos</source>
-        <translation type="unfinished"></translation>
+        <translation>Servot</translation>
     </message>
     <message>
         <source>Channels</source>
@@ -4515,7 +4515,7 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="39"/>
         <source>Special Functions</source>
-        <translation type="unfinished"></translation>
+        <translation>Spesiaali toiminnot</translation>
     </message>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="41"/>
@@ -4528,27 +4528,27 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="240"/>
         <source>Plane</source>
-        <translation type="unfinished"></translation>
+        <translation>Lentokone</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="242"/>
         <source>Multirotor</source>
-        <translation type="unfinished"></translation>
+        <translation>Moniroottori / autogiro</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="243"/>
         <source>Helicopter</source>
-        <translation type="unfinished"></translation>
+        <translation>Helikopteri</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="249"/>
         <source>Model Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mallin nimi:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="252"/>
         <source>Model Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mallin tyyppi:</translation>
     </message>
 </context>
 <context>
@@ -4667,7 +4667,7 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../modelslist.cpp" line="452"/>
         <source>Do you want to overwrite radio general settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>Haluatko päällekirjoittaa radion yleiset asetukset ?</translation>
     </message>
     <message>
         <source>Do you want to overwrite TX general settings?</source>
@@ -4789,7 +4789,7 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../modeledit/setup_module.ui" line="426"/>
         <source>Receiver</source>
-        <translation type="unfinished"></translation>
+        <translation>Vastaanotin</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="440"/>
@@ -4804,7 +4804,7 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../modeledit/setup_module.ui" line="529"/>
         <source>Receiver No.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vastaanotin No.</translation>
     </message>
 </context>
 <context>
@@ -4816,7 +4816,7 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../modeledit/setup.cpp" line="109"/>
         <source>Trainer Port</source>
-        <translation type="unfinished"></translation>
+        <translation>Trainerin portti</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="117"/>
@@ -4831,7 +4831,7 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../modeledit/setup.cpp" line="122"/>
         <source>Radio System</source>
-        <translation type="unfinished"></translation>
+        <translation>Radio systeemi</translation>
     </message>
 </context>
 <context>
@@ -4839,22 +4839,22 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="809"/>
         <source>Trottle Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaasu kanava:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="811"/>
         <source>Yaw Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Yaw kanava:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="813"/>
         <source>Pitch Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pitch kanava:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="815"/>
         <source>Roll Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Roll kanava:</translation>
     </message>
 </context>
 <context>
@@ -5943,7 +5943,7 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="467"/>
         <source>a=x</source>
-        <translation type="unfinished"></translation>
+        <translation>a=x</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="469"/>
@@ -5963,7 +5963,7 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="475"/>
         <source>Edge</source>
-        <translation type="unfinished"></translation>
+        <translation>Reuna</translation>
     </message>
     <message>
         <source>Stay</source>
@@ -6187,7 +6187,7 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1196"/>
         <source>OpenTX only accepts %1 points in all curves</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTX vastaanottaa vain %1 pistettä kaikkiin käyriin</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1700"/>
@@ -6731,7 +6731,7 @@ eepromin koko on 4096, mutta vain ensimmäiset 2048 on käytössä</translation>
     <message>
         <location filename="../modeledit/mixes.cpp" line="50"/>
         <source>X%1  </source>
-        <translation type="unfinished">X%1</translation>
+        <translation>X%1  </translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="53"/>
@@ -6813,7 +6813,7 @@ eepromin koko on 4096, mutta vain ensimmäiset 2048 on käytössä</translation>
     <message>
         <location filename="../helpers.cpp" line="89"/>
         <source>Finnish</source>
-        <translation type="unfinished"></translation>
+        <translation>Suomi</translation>
     </message>
     <message>
         <location filename="../helpers.cpp" line="753"/>
@@ -7025,7 +7025,7 @@ OpenTX/Compantion tiimi.</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="590"/>
         <source>&lt;br&gt;Rudder Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;Peräsin kanava:</translation>
     </message>
 </context>
 <context>
@@ -7139,22 +7139,22 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../modeledit/setup.ui" line="73"/>
         <source>Throttle Trim Idle Only</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaasun trimmi vain tyhjäkäinnille</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="190"/>
         <source>Timer Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajastimen lähde</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="206"/>
         <source>Trim Step</source>
-        <translation type="unfinished"></translation>
+        <translation>Trimmin pykälä</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="388"/>
         <source>Warnings</source>
-        <translation type="unfinished"></translation>
+        <translation>Varoituksia</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="442"/>
@@ -7179,7 +7179,7 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../modeledit/setup.ui" line="508"/>
         <source>Model</source>
-        <translation type="unfinished"></translation>
+        <translation>Malli</translation>
     </message>
 </context>
 <context>
@@ -7187,7 +7187,7 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../wizarddialog.cpp" line="668"/>
         <source>Elevator Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Korkeusper kanava:</translation>
     </message>
 </context>
 <context>
@@ -7196,27 +7196,27 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <location filename="../simulation/simulatordialog.cpp" line="303"/>
         <location filename="../simulation/simulatordialog.cpp" line="325"/>
         <source>Warning</source>
-        <translation type="unfinished">Varoitus</translation>
+        <translation>Varoitus</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog.cpp" line="303"/>
         <source>Joystick enabled but not configured correctly</source>
-        <translation type="unfinished"></translation>
+        <translation>Joystick päällä mutta väärin aseteltu</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog.cpp" line="325"/>
         <source>Cannot open joystick, joystick disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei voi avata joystickia, joystick pois käytöstä</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog.cpp" line="334"/>
         <source>Simulating Radio (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Simuloi radio (%1)</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog.cpp" line="467"/>
         <source>Firmware %1 error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Firmware %1 virhe: %2</translation>
     </message>
 </context>
 <context>
@@ -7256,13 +7256,13 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <location filename="../simulation/simulatordialog-9x.ui" line="278"/>
         <location filename="../simulation/simulatordialog-9x.ui" line="735"/>
         <source>Fix X</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesk X</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="308"/>
         <location filename="../simulation/simulatordialog-9x.ui" line="765"/>
         <source>Fix Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesk Y</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="338"/>
@@ -7276,7 +7276,7 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <location filename="../simulation/simulatordialog-9x.ui" line="815"/>
         <location filename="../simulation/simulatordialog-9x.ui" line="825"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation>Simulaattori</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="401"/>
@@ -7284,7 +7284,7 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <location filename="../simulation/simulatordialog-9x.ui" line="858"/>
         <location filename="../simulation/simulatordialog-9x.ui" line="916"/>
         <source>Right Double Click to Reset</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuplaklikkaa oikea -&gt; resetoi</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="538"/>
@@ -7341,12 +7341,12 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="1215"/>
         <source>9x Simulator</source>
-        <translation type="unfinished">9x simulaattori</translation>
+        <translation>9x simulaattori</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="1408"/>
         <source>Outputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulot</translation>
     </message>
 </context>
 <context>
@@ -7354,7 +7354,7 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="26"/>
         <source>Companion Simulator</source>
-        <translation type="unfinished">Companion simulaattori</translation>
+        <translation>Companion simulaattori</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="77"/>
@@ -7364,7 +7364,7 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="232"/>
         <source>Outputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulot</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="315"/>
@@ -7372,7 +7372,7 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <location filename="../simulation/simulatordialog-taranis.ui" line="990"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1578"/>
         <source>Right Double Click to Reset</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuplaklikkaa oikea -&gt; resetoi</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="431"/>
@@ -7384,13 +7384,13 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <location filename="../simulation/simulatordialog-taranis.ui" line="461"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1173"/>
         <source>Fix Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesk Y</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="491"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1203"/>
         <source>Fix X</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesk X</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="521"/>
@@ -7410,7 +7410,7 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <location filename="../simulation/simulatordialog-taranis.ui" line="1529"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1539"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation>Simulaattori</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="622"/>
@@ -7493,12 +7493,12 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../wizarddialog.cpp" line="644"/>
         <source>Rudder Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Peräsin kanava:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="646"/>
         <source>Elevator Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Korkeusper kanava:</translation>
     </message>
 </context>
 <context>
@@ -7506,22 +7506,22 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../wizarddialog.cpp" line="309"/>
         <source>Elevator and Rudder</source>
-        <translation type="unfinished"></translation>
+        <translation>Korkeusper ja peräsin</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="311"/>
         <source>Only Elevator</source>
-        <translation type="unfinished"></translation>
+        <translation>Vain korkeusper</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="312"/>
         <source>V-tail</source>
-        <translation type="unfinished"></translation>
+        <translation>V-Peräsin</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="315"/>
         <source>Tail Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Perän tyyppi:</translation>
     </message>
 </context>
 <context>
@@ -7731,17 +7731,17 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../modeledit/telemetry.ui" line="913"/>
         <source>Altimetry</source>
-        <translation type="unfinished"></translation>
+        <translation>Korkeusmittaus</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="979"/>
         <source> mAh</source>
-        <translation type="unfinished"></translation>
+        <translation>mAh</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="995"/>
         <source> A</source>
-        <translation type="unfinished"></translation>
+        <translation>A</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="1059"/>
@@ -7884,12 +7884,12 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../modeledit/telemetry.cpp" line="42"/>
         <source>Low Alarm</source>
-        <translation type="unfinished"></translation>
+        <translation>Ala hälytys</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="43"/>
         <source>Critical Alarm</source>
-        <translation type="unfinished"></translation>
+        <translation>Kriittinen hälytys</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="51"/>
@@ -7950,12 +7950,12 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../modeledit/telemetry.cpp" line="523"/>
         <source>Low Alarm</source>
-        <translation type="unfinished"></translation>
+        <translation>Ala hälytys</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="524"/>
         <source>Critical Alarm</source>
-        <translation type="unfinished"></translation>
+        <translation>Kriittinen hälytys</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="608"/>
@@ -7983,7 +7983,7 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../wizarddialog.cpp" line="363"/>
         <source>&lt;br&gt;Throttle Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;Kaasu kanava:</translation>
     </message>
 </context>
 <context>
@@ -8006,7 +8006,7 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../modeledit/setup_timer.ui" line="49"/>
         <source>Minute Call</source>
-        <translation type="unfinished"></translation>
+        <translation>Minuutti kohta</translation>
     </message>
     <message>
         <source>MinuteBeep</source>
@@ -8032,7 +8032,7 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../modeledit/setup.cpp" line="25"/>
         <source>Silent</source>
-        <translation type="unfinished"></translation>
+        <translation>Äänetön</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="26"/>
@@ -8042,7 +8042,7 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../modeledit/setup.cpp" line="28"/>
         <source>Voice</source>
-        <translation type="unfinished"></translation>
+        <translation>Ääni</translation>
     </message>
     <message>
         <source>Countdown</source>
@@ -8054,12 +8054,12 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../wizarddialog.cpp" line="619"/>
         <source>First Tail Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>1. V-per kanava:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="621"/>
         <source>Second Tail Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>2. V-per kanava:</translation>
     </message>
 </context>
 <context>
@@ -8067,12 +8067,12 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../wizarddialog.cpp" line="289"/>
         <source>Standard Wing</source>
-        <translation type="unfinished"></translation>
+        <translation>Normaali siipi</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="291"/>
         <source>Flying Wing / Deltawing</source>
-        <translation type="unfinished"></translation>
+        <translation>Lentävä siipi / Delta siipi</translation>
     </message>
 </context>
 <context>
@@ -8228,7 +8228,7 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
         <location filename="../wizarddialog.cpp" line="43"/>
         <location filename="../wizarddialog.cpp" line="44"/>
         <source>Helicopter</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Helikopteri</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="43"/>
@@ -8239,7 +8239,7 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../wizarddialog.cpp" line="45"/>
         <source>Multirotor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Moniroottori / autogiro</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="45"/>
@@ -8343,17 +8343,17 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../wizarddialog.cpp" line="899"/>
         <source>Model Name: </source>
-        <translation type="unfinished"></translation>
+        <translation>Mallin nimi:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="900"/>
         <source>Model Type: </source>
-        <translation type="unfinished"></translation>
+        <translation>Mallin tyyppi: </translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="904"/>
         <source>Channel %1: </source>
-        <translation type="unfinished"></translation>
+        <translation>Kanava %1: </translation>
     </message>
 </context>
 <context>
@@ -9491,7 +9491,7 @@ m2560 for v4.1 boards</source>
     <message>
         <location filename="../burndialog.cpp" line="143"/>
         <source>Open Firmware File</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Avaa firmware tiedosto</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="149"/>
@@ -9583,7 +9583,7 @@ m2560 for v4.1 boards</source>
     <message>
         <location filename="../comparedialog.ui" line="29"/>
         <source>Compare Models</source>
-        <translation type="unfinished"></translation>
+        <translation>Vertaa malleja</translation>
     </message>
     <message>
         <location filename="../comparedialog.ui" line="49"/>
@@ -9953,7 +9953,7 @@ m2560 for v4.1 boards</source>
     <message>
         <location filename="../comparedialog.cpp" line="1072"/>
         <source>Special Functions</source>
-        <translation type="unfinished"></translation>
+        <translation>Spesiaali toiminnot</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1115"/>
@@ -10213,12 +10213,12 @@ m2560 for v4.1 boards</source>
     <message>
         <location filename="../customizesplashdialog.cpp" line="190"/>
         <source>Open Firmware File</source>
-        <translation type="unfinished"></translation>
+        <translation>Avaa firmware tiedosto</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="193"/>
         <source>Can not load embedded image from firmware file %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei voi ladata liitettyä kuvaa firmware tiedostosta %1.</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="209"/>
@@ -11286,7 +11286,7 @@ Tätä käytetään pohjana kanava määrityksille, mikä kanava menee mihinkä 
     <message>
         <location filename="../preferencesdialog.ui" line="821"/>
         <source>Voice</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ääni</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="834"/>
@@ -11705,7 +11705,7 @@ Voi olla eri kun firmwaren kieli</translation>
     <message>
         <location filename="../printdialog.cpp" line="686"/>
         <source>Special Functions</source>
-        <translation type="unfinished"></translation>
+        <translation>Spesiaali toiminnot</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="756"/>
@@ -12206,12 +12206,12 @@ Voi olla eri kun firmwaren kieli</translation>
     <message>
         <location filename="../taranisnotfound.ui" line="32"/>
         <source>No Taranis Radio Found</source>
-        <translation type="unfinished"></translation>
+        <translation>Taranis radiota ei löydy</translation>
     </message>
     <message>
         <location filename="../taranisnotfound.ui" line="40"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Taranis Radio was found!&lt;/p&gt;&lt;p&gt;Make sure that you hold the lower trim buttons towards the center while you turn it on.&lt;/p&gt;&lt;p&gt;Then connect the USB wire.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Taranis Radio was found!&lt;/p&gt;&lt;p&gt;Make sure that you hold the lower trim buttons towards the center while you turn it on.&lt;/p&gt;&lt;p&gt;Then connect the USB wire.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../taranisnotfound.ui" line="92"/>
