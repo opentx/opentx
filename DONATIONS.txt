@@ -365,3 +365,5 @@ John Grepps
 Anthony Burbidge
 Sherba Baine
 Gordon Evans
+Fred Figge
+ 
