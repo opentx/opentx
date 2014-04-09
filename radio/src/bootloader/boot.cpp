@@ -697,23 +697,6 @@ int main()
         lcd_invert_line(2 + vpos);
       }
 
-      else if (state == ST_FLASH_CHECK) {
-        int result = menuFlashFile(vpos, event);
-        FirmwareSize = FileSize[vpos] - BOOTLOADER_SIZE;
-        if (result == 0) {
-          // canceled
-          state = ST_FILE_LIST;
-        }
-        else if (result == 1) {
-          // confirmed
-          firmwareAddress = FIRMWARE_ADDRESS + BOOTLOADER_SIZE;
-          firmwareWritten = 0;
-          eepromAddress = 0;
-          eepromWritten = 0;
-          state = ST_FLASHING;
-        }
-      }
-
       if (state == ST_FLASHING) {
         // commit to flashing
         lcd_putsLeft(4*FH, "\032Writing...");
@@ -746,8 +729,25 @@ int main()
           state = ST_FLASH_DONE; // Backstop
         }
       }
-
-      if (state == ST_FLASH_DONE) {
+      
+      if (state == ST_FLASH_CHECK) {
+        int result = menuFlashFile(vpos, event);
+        FirmwareSize = FileSize[vpos] - BOOTLOADER_SIZE;
+        if (result == 0) {
+          // canceled
+          state = ST_FILE_LIST;
+        }
+        else if (result == 1) {
+          // confirmed
+          firmwareAddress = FIRMWARE_ADDRESS + BOOTLOADER_SIZE;
+          firmwareWritten = 0;
+          eepromAddress = 0;
+          eepromWritten = 0;
+          state = ST_FLASHING;
+        }
+      }
+      
+     if (state == ST_FLASH_DONE) {
         lcd_putsLeft(4*FH, "\024Writing Complete");
         if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT) || event == EVT_KEY_BREAK(BOOT_KEY_MENU)) {
           state = ST_START;
