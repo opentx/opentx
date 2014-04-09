@@ -360,7 +360,7 @@ const char *getBinaryPath()
 FRESULT openBinaryFile(uint32_t index)
 {
   TCHAR filename[60];
-  cpystr(cpystr(cpystr((uint8_t *)filename, (uint8_t *)getBinaryPath), (uint8_t *)"/"), (uint8_t *)Filenames[index]);  
+  cpystr(cpystr(cpystr((uint8_t *)filename, (uint8_t *)getBinaryPath()), (uint8_t *)"/"), (uint8_t *)Filenames[index]);  
   f_open(&FlashFile, filename, FA_READ);
   if (memoryType == MEM_FLASH)
     f_lseek(&FlashFile, BOOTLOADER_SIZE);
