@@ -165,6 +165,9 @@ class SimulatorDialogTaranis: public SimulatorDialog
   private:
     Ui::SimulatorDialogTaranis * ui;
 
+  private slots:
+    void resetSH();
+    void on_switchH_sliderReleased();
 };
 
 #endif // SIMULATORDIALOG_H

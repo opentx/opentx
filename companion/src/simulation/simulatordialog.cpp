@@ -591,6 +591,16 @@ void SimulatorDialog9X::getValues()
   simulator->setValues(inputs);
 }
 
+void SimulatorDialogTaranis::resetSH()
+{
+  ui->switchH->setValue(0);
+}
+
+void SimulatorDialogTaranis::on_switchH_sliderReleased()
+{
+  QTimer::singleShot(400, this, SLOT(resetSH()));
+}
+
 void SimulatorDialogTaranis::getValues()
 {
   TxInputs inputs = {
