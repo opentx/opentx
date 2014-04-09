@@ -39,8 +39,10 @@ WizMix::WizMix(const GeneralSettings & settings, const unsigned int modelId):
 }
 
 
-void WizMix::maxMixSwitch(MixData &mix, int channel, int sw, int weight)
+void WizMix::maxMixSwitch(char *name, MixData &mix, int channel, int sw, int weight)
 {
+  strncpy(mix.name, name, sizeof(mix.name));
+  mix.name[sizeof(mix.name)]=0;
   mix.destCh = channel;
   mix.srcRaw = RawSource(SOURCE_TYPE_MAX);
   mix.swtch  = RawSwitch(SWITCH_TYPE_SWITCH, sw);  
@@ -65,12 +67,13 @@ void WizMix::addMix(ModelData &model, Input input, int weight, int channel, int 
     }
     else if (input==FLAPS_INPUT){
       // There ought to be some kind of constants for switches somewhere...
-      maxMixSwitch( model.mixData[mixIndex++], channel+1, isTaranis ? 1 :-3 , weight); //SA-UP or ELE-UP
-      maxMixSwitch( model.mixData[mixIndex++], channel+1, isTaranis ? 3 : 3 , weight); //SA-DOWN or ELE-DOWN
+      maxMixSwitch( "Flaps Up",   model.mixData[mixIndex++], channel+1, isTaranis ? 1 :-3 ,  weight); //SA-UP or ELE-UP
+      maxMixSwitch( "Flaps Down", model.mixData[mixIndex++], channel+1, isTaranis ? 3 : 3 , -weight); //SA-DOWN or ELE-DOWN
+
     }
     else if (input==AIRBRAKES_INPUT){ 
-      maxMixSwitch( model.mixData[mixIndex++], channel+1, isTaranis ? 13 :-2 , weight); //SE-UP or RUD-UP
-      maxMixSwitch( model.mixData[mixIndex++], channel+1, isTaranis ? 15 : 2 , weight); //SE-DOWN or RUD-DOWN
+      maxMixSwitch( "Airbrk Off", model.mixData[mixIndex++], channel+1, isTaranis ? 13 :-2 ,  -weight); //SE-UP or RUD-UP
+      maxMixSwitch( "Airbrk On",  model.mixData[mixIndex++], channel+1, isTaranis ? 15 : 2 , weight); //SE-DOWN or RUD-DOWN
     }
   }
 }

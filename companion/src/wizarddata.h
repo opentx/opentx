@@ -93,7 +93,7 @@ class WizMix
   private:
     WizMix();
     void addMix(ModelData & model, Input input, int weight, int channel, int & mixerIndex);
-    void maxMixSwitch(MixData &mix, int destCh, int sw, int weight);
+    void maxMixSwitch(char *name, MixData &mix, int destCh, int sw, int weight);
 
 };
 
