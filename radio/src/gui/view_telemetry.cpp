@@ -383,6 +383,21 @@ void menuTelemetryFrsky(uint8_t event)
         lcd_outdezNAtt(LCD_W, y, TELEMETRY_CELL_VOLTAGE(k), attr, 4);
         y += 1*FH;
       }
+#if defined(PCBTARANIS)      
+      if (frskyData.hub.cellsCount > 6) {
+        y = 1*FH;
+        for (uint8_t k=6; k<frskyData.hub.cellsCount && k<12; k++) {
+#if defined(GAUGES)
+          uint8_t attr = (barsThresholds[THLD_CELL] && frskyData.hub.cellVolts[k] < barsThresholds[THLD_CELL]) ? BLINK|PREC2 : PREC2;
+#else
+          uint8_t attr = PREC2;
+#endif
+          lcd_outdezNAtt(LCD_W-3*FW-2, y, TELEMETRY_CELL_VOLTAGE(k), attr, 4);
+          y += 1*FH;
+        }
+        lcd_vline(LCD_W-6*FW-4, 8, 47);       
+      } else
+#endif
       lcd_vline(LCD_W-3*FW-2, 8, 47);
     }
 #endif
