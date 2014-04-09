@@ -437,6 +437,7 @@ void writeFlashBlock()
 void writeEepromBlock()
 {
   eeWriteBlockCmp((uint8_t *)Block_buffer, eepromAddress, BlockCount);
+  eepromAddress += BlockCount;
 }
 
 int main()
