@@ -169,6 +169,7 @@ CPPSRC = ../targets/taranis/lcd_driver.cpp \
         ../lcd.cpp \
         ../keys.cpp \
         ../fonts.cpp \
+        ../strhelpers.cpp \
         boot.cpp
 
 # List ASM source files here

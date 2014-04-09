@@ -48,6 +48,7 @@
 #define BITMAPS_PATH        ROOT_PATH "BMP"
 #define SCRIPTS_PATH        ROOT_PATH "SCRIPTS"
 #define FIRMWARES_PATH      ROOT_PATH "FIRMWARES"
+#define EEPROMS_PATH        ROOT_PATH "EEPROMS"
 
 #define MODELS_EXT          ".bin"
 #define LOGS_EXT            ".csv"
@@ -56,6 +57,7 @@
 #define SCRIPTS_EXT         ".lua"
 #define TEXT_EXT            ".txt"
 #define FIRMWARE_EXT        ".bin"
+#define EEPROM_EXT          ".bin"
 
 extern FATFS g_FATFS_Obj;
 

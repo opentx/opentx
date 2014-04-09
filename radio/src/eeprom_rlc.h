@@ -247,4 +247,13 @@ void loadGeneralSettings();
 void loadModel(int index);
 #endif
 
+// For EEPROM backup/restore
+#if defined(CPUARM)
+inline bool isEepromStart(const void * buffer)
+{
+  const EeFs * eeprom = (const EeFs *)buffer;
+  return (eeprom->version==EEFS_VERS && eeprom->mySize==sizeof(eeFs) && eeprom->bs==BS);
+}
+#endif
+
 #endif

@@ -54,6 +54,7 @@
 #include <string.h>
 
 #include "board_taranis.h"
+#include "../eeprom_rlc.h"
 #include "../pwr.h"
 #include "../lcd.h"
 #include "../keys.h"
@@ -90,8 +91,14 @@ enum BootLoaderStates {
   ST_FLASH_CHECK,
   ST_FLASHING,
   ST_FLASH_DONE,
+  ST_RESTORE_MENU,
   ST_USB,
   ST_REBOOT,
+};
+
+enum MemoryTypes {
+  MEM_FLASH,
+  MEM_EEPROM
 };
 
 /*----------------------------------------------------------------------------
@@ -99,12 +106,17 @@ enum BootLoaderStates {
  *----------------------------------------------------------------------------*/
 
 uint32_t FirmwareSize;
+uint32_t firmwareAddress = FIRMWARE_ADDRESS;
+uint32_t firmwareWritten = 0;
+uint32_t eepromAddress = 0;
+uint32_t eepromWritten = 0;
+
+TCHAR backupFilename[60];
 
 uint32_t Master_frequency;
 volatile uint8_t Tenms;
 uint8_t EE_timer;
 
-TCHAR FlashFilename[60];
 FIL FlashFile;
 DIR Dj;
 FILINFO Finfo;
@@ -120,6 +132,8 @@ uint32_t LockBits;
 
 uint32_t Block_buffer[1024];
 UINT BlockCount;
+
+uint32_t memoryType;
 
 #if defined(PCBSKY9X)
   extern int32_t EblockAddress;
@@ -265,13 +279,6 @@ void hw_delay(uint16_t time)
 }
 #endif
 
-uint8_t *cpystr(uint8_t *dest, uint8_t *source)
-{
-  while ((*dest++ = *source++))
-    ;
-  return dest - 1;
-}
-
 FRESULT readBinDir(DIR *dj, FILINFO *fno)
 {
   FRESULT fr;
@@ -284,7 +291,7 @@ FRESULT readBinDir(DIR *dj, FILINFO *fno)
       break;
     }
     if (*fno->lfname == 0) {
-      cpystr((uint8_t *) fno->lfname, (uint8_t *) fno->fname);	// Copy 8.3 name
+      strAppend(fno->lfname, fno->fname);	// Copy 8.3 name
     }
     int32_t len = strlen(fno->lfname) - 4;
     if (len < 0) {
@@ -336,46 +343,63 @@ uint32_t fillNames(uint32_t index)
   return i;
 }
 
-FRESULT openFirmwareFile(uint32_t index)
+const char *getBinaryPath()
 {
-  cpystr(cpystr((uint8_t *)FlashFilename, (uint8_t *)FIRMWARES_PATH "/"), (uint8_t *) Filenames[index]);
-  f_open(&FlashFile, FlashFilename, FA_READ);
-  f_lseek(&FlashFile, BOOTLOADER_SIZE);
-  return f_read(&FlashFile, (BYTE *) Block_buffer, 4096, &BlockCount);
+  if (memoryType == MEM_FLASH)
+    return FIRMWARES_PATH;
+  else
+    return EEPROMS_PATH;
+}
+
+FRESULT openBinaryFile(uint32_t index)
+{
+  TCHAR filename[60];
+  strAppend(strAppend(strAppend(filename, getBinaryPath()), "/"), Filenames[index]);
+  f_open(&FlashFile, filename, FA_READ);
+  if (memoryType == MEM_FLASH)
+    f_lseek(&FlashFile, BOOTLOADER_SIZE);
+  return f_read(&FlashFile, (BYTE *)Block_buffer, 4096, &BlockCount);
+}
+
+uint32_t isValidBufferStart(const uint32_t * buffer)
+{
+  if (memoryType == MEM_FLASH)
+    return isFirmwareStart(buffer);
+  else
+    return isEepromStart(buffer);
 }
 
 int menuFlashFile(uint32_t index, uint8_t event)
 {
   FRESULT fr;
 
-  lcd_putsLeft(4*FH, "\012Hold [ENT] to start loading" );
+  lcd_putsLeft(4*FH, "\012Hold [ENT] to start writing");
 
   if (Valid == 0) {
     // Validate file here
     // return 3 if invalid
-    fr = openFirmwareFile(index);
+    fr = openBinaryFile(index);
     fr = f_close(&FlashFile);
     Valid = 1;
-    if (!isFirmwareStart(Block_buffer)) {
+    if (!isValidBufferStart(Block_buffer)) {
       Valid = 2;
     }
   }
 
   if (Valid == 2) {
-    lcd_putsLeft(4*FH,  "\011No firmware found in the file!");
-    if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT) || event == EVT_KEY_FIRST(BOOT_KEY_MENU)) {
+    if (memoryType == MEM_FLASH)
+      lcd_putsLeft(4*FH,  "\011Not a valid firmware file!        ");
+    else
+      lcd_putsLeft(4*FH,  "\011Not a valid EEPROM file!          ");    
+    if (event == EVT_KEY_BREAK(BOOT_KEY_EXIT) || event == EVT_KEY_BREAK(BOOT_KEY_MENU)) {
       return 0;
     }
     return -1;
   }
 
   if (event == EVT_KEY_LONG(BOOT_KEY_MENU)) {
-    fr = openFirmwareFile(index);
-    FirmwareSize = FileSize[index];
-    if (fr != FR_OK) {
-      return 0;		// File open error
-    }
-    return 1;
+    fr = openBinaryFile(index);
+    return (fr == FR_OK && isValidBufferStart(Block_buffer));
   }
   else if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT)) {
     return 0;
@@ -388,20 +412,37 @@ extern Key keys[];
 
 static uint32_t PowerUpDelay;
 
+void writeFlashBlock()
+{
+  uint32_t blockOffset = 0;
+  while (BlockCount) {
+    writeFlash((uint32_t *)firmwareAddress, &Block_buffer[blockOffset]);
+    blockOffset += FLASH_PAGESIZE/4; // 32-bit words
+    firmwareAddress += FLASH_PAGESIZE;
+    if (BlockCount > FLASH_PAGESIZE) {
+      BlockCount -= FLASH_PAGESIZE;
+    }
+    else {
+      BlockCount = 0;
+    }
+  }
+}
+
+void writeEepromBlock()
+{
+  eeWriteBlockCmp((uint8_t *)Block_buffer, eepromAddress, BlockCount);
+  eepromAddress += BlockCount;
+}
+
 int main()
 {
   uint8_t index = 0;
-#if defined(PCBTARANIS)
-  uint8_t TenCount = 2;
-#endif			
   uint8_t maxhsize = DISPLAY_CHAR_WIDTH;
   FRESULT fr;
   uint32_t state = ST_START;
   uint32_t nameCount = 0;
   uint32_t vpos = 0;
   uint32_t hpos = 0;
-  uint32_t firmwareAddress = FIRMWARE_ADDRESS;
-  uint32_t firmwareWritten = 0;
 
 #if defined(PCBTARANIS)
   wdt_reset();
@@ -449,13 +490,6 @@ int main()
 #endif
 
 #if defined(PCBSKY9X)
-  uint32_t chip_id = CHIPID->CHIPID_CIDR;
-  FlashSize = ( (chip_id >> 8 ) & 0x000F ) == 9 ? 256 : 512;
-#elif defined(PCBTARANIS)
-  FlashSize = 512;
-#endif
-
-#if defined(PCBSKY9X)
   LockBits = readLockBits();
   if (LockBits) {
     clearLockBits();
@@ -474,7 +508,6 @@ int main()
     wdt_reset();
 
     if (Tenms) {
-      wdt_reset();  // Retrigger hardware watchdog
 
       if (EE_timer) {
         if (--EE_timer == 0) {
@@ -501,17 +534,27 @@ int main()
 
       if (state == ST_START) {
         lcd_putsLeft(2*FH, "\010Write Firmware");
-        lcd_putsLeft(3*FH, "\010Exit");
+        lcd_putsLeft(3*FH, "\010Restore EEPROM");
+        lcd_putsLeft(4*FH, "\010Exit");
         lcd_invert_line(2+vpos);
-        lcd_putsLeft(6*FH, INDENT "Or plug in a USB cable for mass storage");
-        if (event == EVT_KEY_FIRST(BOOT_KEY_DOWN) || event == EVT_KEY_FIRST(BOOT_KEY_UP)) {
-          vpos = (vpos+1) & 0x01;
+        lcd_putsLeft(7*FH, INDENT "Or plug in a USB cable for mass storage");
+        if (event == EVT_KEY_FIRST(BOOT_KEY_DOWN)) {
+          vpos == 2 ? vpos = 0 : vpos = vpos+1;
+        }
+        else if (event == EVT_KEY_FIRST(BOOT_KEY_UP)) {
+          vpos == 0 ? vpos = 2 : vpos = vpos-1;
         }
         else if (event == EVT_KEY_BREAK(BOOT_KEY_MENU)) {
-          if (vpos == 0)
-            state = ST_FLASH_MENU;
-          else
-            state = ST_REBOOT;
+          switch (vpos) {
+            case 0:
+              state = ST_FLASH_MENU;
+              break;
+            case 1:
+              state = ST_RESTORE_MENU;
+              break;
+            default:
+              state = ST_REBOOT;
+          }
         }
       }
 
@@ -526,19 +569,20 @@ int main()
 #endif
       }
 
-      if (state == ST_FLASH_MENU) {
+      if (state == ST_FLASH_MENU || state == ST_RESTORE_MENU) {
         sdInit();
+        memoryType = (state == ST_RESTORE_MENU ? MEM_EEPROM : MEM_FLASH);
         state = ST_DIR_CHECK;
       }
 
       else if (state == ST_DIR_CHECK) {
-        fr = f_chdir(FIRMWARES_PATH);
+        fr = f_chdir(getBinaryPath());
         if (fr == FR_OK) {
           state = ST_OPEN_DIR;
         }
         else {
-          lcd_putsLeft(2*FH, INDENT "No firmware in " FIRMWARES_PATH " directory");
-          if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT) || event == EVT_KEY_FIRST(BOOT_KEY_MENU)) {
+          lcd_putsLeft(2*FH, INDENT "Directory is missing!");
+          if (event == EVT_KEY_BREAK(BOOT_KEY_EXIT) || event == EVT_KEY_BREAK(BOOT_KEY_MENU)) {
             vpos = 0;
             state = ST_START;
           }
@@ -640,46 +684,42 @@ int main()
           // confirmed
           firmwareAddress = FIRMWARE_ADDRESS + BOOTLOADER_SIZE;
           firmwareWritten = 0;
+          eepromAddress = 0;
+          eepromWritten = 0;
           state = ST_FLASHING;
         }
       }
 
-      if (state == ST_FLASHING) {
-        // Commit to flashing
-        uint32_t blockOffset = 0;
+      else if (state == ST_FLASHING) {
+        // commit to flashing
         lcd_putsLeft(4*FH, "\032Writing...");
 
-        if (firmwareAddress == FIRMWARE_ADDRESS + BOOTLOADER_SIZE) {
-          if (!isFirmwareStart(Block_buffer)) {
-            state = ST_FLASH_DONE;
-          }
+        int progress;
+        if (memoryType == MEM_FLASH) {
+          writeFlashBlock();
+          firmwareWritten += sizeof(Block_buffer);
+          progress = (200*firmwareWritten) / FirmwareSize;
         }
-
-        while (BlockCount) {
-          writeFlash((uint32_t *)firmwareAddress, &Block_buffer[blockOffset]);
-          blockOffset += FLASH_PAGESIZE/4; // 32-bit words
-          firmwareAddress += FLASH_PAGESIZE;
-          if (BlockCount > FLASH_PAGESIZE) {
-            BlockCount -= FLASH_PAGESIZE;
-          }
-          else {
-            BlockCount = 0;
-          }
+        else {
+          writeEepromBlock();
+          eepromWritten += sizeof(Block_buffer);
+          progress = (200*eepromWritten) / EESIZE;
         }
-
-        firmwareWritten += 4; // 4K blocks
 
         lcd_rect( 3, 6*FH+4, 204, 7);
-        lcd_hline(5, 6*FH+6, (200*firmwareWritten*1024)/FirmwareSize, FORCE);
-        lcd_hline(5, 6*FH+7, (200*firmwareWritten*1024)/FirmwareSize, FORCE);
-        lcd_hline(5, 6*FH+8, (200*firmwareWritten*1024)/FirmwareSize, FORCE);
+        lcd_hline(5, 6*FH+6, progress, FORCE);
+        lcd_hline(5, 6*FH+7, progress, FORCE);
+        lcd_hline(5, 6*FH+8, progress, FORCE);
 
         fr = f_read(&FlashFile, (BYTE *)Block_buffer, sizeof(Block_buffer), &BlockCount);
         if (BlockCount == 0) {
-          state = ST_FLASH_DONE;
+          state = ST_FLASH_DONE; // EOF
         }
-        if (firmwareWritten >= FlashSize - 32) {
-          state = ST_FLASH_DONE;				// Backstop
+        if (firmwareWritten >= FLASHSIZE - BOOTLOADER_SIZE) {
+          state = ST_FLASH_DONE; // Backstop
+        }
+        if (eepromWritten >= EESIZE) {
+          state = ST_FLASH_DONE; // Backstop
         }
       }
 
@@ -695,10 +735,7 @@ int main()
         state = ST_REBOOT;
       }
 
-      if (--TenCount == 0) {
-        TenCount = 2;
-        lcdRefresh();
-      }
+      lcdRefresh();
 
       if (PowerUpDelay < 20) {	// 200 mS
         PowerUpDelay += 1;

@@ -697,7 +697,7 @@ int32_t fat12Read( uint8_t *buffer, uint16_t sector, uint16_t count )
       memcpy(buffer, g_DIRroot, BLOCKSIZE ) ;
     }
     else if (sector < 3 + (EESIZE/BLOCKSIZE)) {
-      eeprom_read_block (buffer, (sector-3)*BLOCKSIZE, BLOCKSIZE);
+      eeprom_read_block(buffer, (sector-3)*BLOCKSIZE, BLOCKSIZE);
     }
     else if (sector < 3 + (EESIZE/BLOCKSIZE) + (FLASHSIZE/BLOCKSIZE)) {
       uint32_t address;
@@ -724,8 +724,7 @@ int32_t fat12Write(const uint8_t *buffer, uint16_t sector, uint32_t count )
   }
   else if (sector < 3 + (EESIZE/BLOCKSIZE)) {
     while (count) {
-      const EeFs * test = (const EeFs *)buffer;
-      if (offset == 0 && test->version==EEFS_VERS && test->mySize==sizeof(eeFs) && test->bs==BS) {
+      if (offset == 0 && isEepromStart(buffer)) {
         TRACE("EEPROM start found in sector %d", sector);
         offset = sector;
       }

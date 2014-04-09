@@ -295,5 +295,7 @@ void lcdRefresh();
 #define LCD_BYTE_FILTER(p, keep, add) LCD_BYTE_FILTER_PLAN(p, keep, add)
 #endif
 
+char * strAppend(char * dest, const char * source);
+char * strAppendDate(char * str, bool time=false);
+
 #endif
-/*eof*/

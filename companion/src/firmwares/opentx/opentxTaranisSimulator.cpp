@@ -93,6 +93,7 @@ inline int geteepromsize() {
 #include "radio/src/gui/view_text.cpp"
 #include "radio/src/gui/view_about.cpp"
 #include "radio/src/lcd.cpp"
+#include "radio/src/strhelpers.cpp"
 #include "radio/src/logs.cpp"
 #include "radio/src/rtc.cpp"
 #include "radio/src/targets/taranis/keys_driver.cpp"
