@@ -1046,10 +1046,10 @@ void menuGeneralTrainer(uint8_t event)
   uint8_t y;
   bool slave = SLAVE_MODE();
 
-  MENU(STR_MENUTRAINER, menuTabDiag, e_Trainer, slave ? 1 : 7, {0, 2, 2, 2, 2, 0/*, 0*/});
+  MENU(STR_MENUTRAINER, menuTabDiag, e_Trainer, (slave ? 1 : 7), {0, 2, 2, 2, 2, 0/*, 0*/});
 
-  if (slave) { // i am the slave
-    lcd_puts(7*FW, 3*FH, STR_SLAVE);
+  if (slave) {
+    lcd_puts(7*FW, 4*FH, STR_SLAVE);
   }
   else {
     uint8_t attr;
