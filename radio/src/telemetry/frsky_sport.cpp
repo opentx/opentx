@@ -403,12 +403,13 @@ void processSportPacket(uint8_t *packet)
       }
       else if (appId >= AIR_SPEED_FIRST_ID && appId <= AIR_SPEED_LAST_ID) {
         frskyData.hub.airSpeed = SPORT_DATA_U32(packet);
+        frskyData.hub.airSpeed /= 1000;
         if (frskyData.hub.airSpeed > frskyData.hub.maxAirSpeed)
           frskyData.hub.maxAirSpeed = frskyData.hub.airSpeed;
       }
       else if (appId >= GPS_SPEED_FIRST_ID && appId <= GPS_SPEED_LAST_ID) {
         frskyData.hub.gpsSpeed_bp = SPORT_DATA_U32(packet);
-        frskyData.hub.gpsSpeed_bp = frskyData.hub.gpsSpeed_bp / 1000;
+        frskyData.hub.gpsSpeed_bp /= 1000;
         if (frskyData.hub.gpsSpeed_bp > frskyData.hub.maxGpsSpeed)
           frskyData.hub.maxGpsSpeed = frskyData.hub.gpsSpeed_bp;
       }
