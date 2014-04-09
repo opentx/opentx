@@ -1812,7 +1812,7 @@ class ArmCustomFunctionField: public TransformedField {
 
       if (fn.func >= FuncSafetyCh1 && fn.func <= FuncSafetyCh32) {
         fn.func = AssignFunc(fn.func + index);
-        fn.param = (int)value;
+        fn.param = (int8_t)value;
       }
       else if (fn.func >= FuncSetTimer1 && fn.func <= FuncSetTimer2) {
         fn.func = AssignFunc(fn.func + index);
