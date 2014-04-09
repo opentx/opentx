@@ -397,7 +397,7 @@ int menuFlashFile(uint32_t index, uint8_t event)
       lcd_putsLeft(4*FH,  "\011No firmware found in the file!");
     else
       lcd_putsLeft(4*FH,  "\011No EEPROM found in the file!");    
-    if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT) || event == EVT_KEY_FIRST(BOOT_KEY_MENU)) {
+    if (event == EVT_KEY_BREAK(BOOT_KEY_EXIT) || event == EVT_KEY_BREAK(BOOT_KEY_MENU)) {
       return 0;
     }
     return -1;
