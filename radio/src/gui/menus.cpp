@@ -1036,7 +1036,6 @@ uint8_t         s_warning_info_len;
 // uint8_t s_warning_info_att not needed now
 uint8_t         s_warning_type;
 uint8_t         s_warning_result = 0;
-const pm_char * s_global_warning = NULL;
 
 #if defined(CPUARM)
 int16_t s_warning_input_value;

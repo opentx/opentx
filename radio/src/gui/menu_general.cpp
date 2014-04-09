@@ -692,10 +692,10 @@ void flashBootloader(const char * filename)
   f_open(&file, filename, FA_READ);
   uint8_t buffer[1024];
   UINT count;
+
   lcd_clear();
-  lcd_putsLeft(4*FH, "\032Writing...");
+  lcd_putsLeft(4*FH, STR_WRITING);
   lcd_rect(3, 6*FH+4, 204, 7);
-  watchdogSetTimeout(1000/*10s*/);
 
   static uint8_t unlocked = 0;
   if (!unlocked) {
@@ -704,12 +704,13 @@ void flashBootloader(const char * filename)
   }
 
   for (int i=0; i<BOOTLOADER_SIZE; i+=1024) {
+    watchdogSetTimeout(100/*1s*/);
     if (f_read(&file, buffer, 1024, &count) != FR_OK || count != 1024) {
-      // TODO popup error
+      POPUP_WARNING(STR_SDCARD_ERROR);
       break;
     }
     if (i==0 && !isBootloaderStart((uint32_t *)buffer)) {
-      // TODO popup error
+      POPUP_WARNING(STR_INCOMPATIBLE);
       break;
     }
     for (int j=0; j<1024; j+=FLASH_PAGESIZE) {
@@ -733,7 +734,7 @@ void onSdManagerMenu(const char *result)
     pushMenu(menuGeneralSdManagerInfo);
   }
   else if (result == STR_SD_FORMAT) {
-    POPUP_CONFIRMATION(PSTR("Confirm Format?"));
+    POPUP_CONFIRMATION(STR_CONFIRM_FORMAT);
   }
   else if (result == STR_DELETE_FILE) {
     f_getcwd(lfn, _MAX_LFN);

@@ -197,7 +197,7 @@ void writeLogs()
         if (result != NULL) {
           if (result != error_displayed) {
             error_displayed = result;
-            s_global_warning = result;
+            POPUP_WARNING(result);
           }
           return;
         }
@@ -294,7 +294,7 @@ void writeLogs()
 
       if (result<0 && !error_displayed) {
         error_displayed = STR_SDCARD_ERROR;
-        s_global_warning = STR_SDCARD_ERROR;
+        POPUP_WARNING(STR_SDCARD_ERROR);
       }
     }
   }

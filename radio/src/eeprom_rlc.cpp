@@ -494,7 +494,7 @@ void RlcFile::nextWriteStep()
   }
 
   if (s_write_err == ERR_FULL) {
-    s_global_warning = STR_EEPROMOVERFLOW;
+    POPUP_WARNING(STR_EEPROMOVERFLOW);
     m_write_step = 0;
     m_write_len = 0;
     m_cur_rlc_len = 0;

@@ -677,7 +677,7 @@ void telemetryWakeup()
     if (alarmsCheckStep == 0) {
       if ((IS_MODULE_XJT(0) || IS_MODULE_XJT(1)) && frskyData.swr.value > 0x33) {
         AUDIO_SWR_RED();
-        s_global_warning = STR_ANTENNAPROBLEM;
+        POPUP_WARNING(STR_ANTENNAPROBLEM);
         alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3seconds */
       }
     }

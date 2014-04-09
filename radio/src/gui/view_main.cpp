@@ -499,13 +499,8 @@ void menuMainView(uint8_t event)
   uint8_t view_base = view & 0x0f;
 #endif
 
-  uint8_t _event = event;
-  if (s_global_warning) {
-    event = 0;
-  }
+  switch(event) {
 
-  switch(event)
-  {
     case EVT_ENTRY:
       killEvents(KEY_EXIT);
       killEvents(KEY_UP);
@@ -637,16 +632,13 @@ void menuMainView(uint8_t event)
       return;
 
     case EVT_KEY_FIRST(KEY_EXIT):
-      if (s_global_warning) {
-        s_global_warning = NULL;
-      }
 #if defined(GVARS) && !defined(PCBSTD)
-      else if (s_gvar_timer > 0) {
+      if (s_gvar_timer > 0) {
         s_gvar_timer = 0;
       }
 #endif
 #if !defined(PCBTARANIS)
-      else if (view == VIEW_TIMER2) {
+      if (view == VIEW_TIMER2) {
         resetTimer(1);
       }
 #endif
@@ -871,15 +863,8 @@ void menuMainView(uint8_t event)
   }
 #endif
 
-  if (s_global_warning) {
-    s_warning = s_global_warning;
-    displayWarning(_event);
-    if (!s_warning) s_global_warning = NULL;
-    s_warning = NULL;
-  }
-
 #if defined(GVARS) && !defined(PCBSTD)
-  else if (s_gvar_timer > 0) {
+  if (s_gvar_timer > 0) {
     s_gvar_timer--;
 #if LCD_W >= 212
     lcd_filled_rect(BITMAP_X, BITMAP_Y, 64, 32, SOLID, ERASE);
