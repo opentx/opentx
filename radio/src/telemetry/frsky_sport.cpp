@@ -119,8 +119,8 @@
 #define GPS_TIME_DATE_LAST_ID   0x085f
 
 // Temporary IDs, will be changed when FrSky will have defined them in the S.PORT protocol
-#define AIR_SPEED_FIRST_ID      0x0990
-#define AIR_SPEED_LAST_ID       0x099f
+#define AIR_SPEED_FIRST_ID      0x0a00
+#define AIR_SPEED_LAST_ID       0x0a0f
 
 // FrSky wrong IDs ?
 #define BETA_VARIO_ID           0x8030
@@ -403,7 +403,7 @@ void processSportPacket(uint8_t *packet)
       }
       else if (appId >= AIR_SPEED_FIRST_ID && appId <= AIR_SPEED_LAST_ID) {
         frskyData.hub.airSpeed = SPORT_DATA_U32(packet);
-        frskyData.hub.airSpeed /= 1000;
+        frskyData.hub.airSpeed /= 10;
         if (frskyData.hub.airSpeed > frskyData.hub.maxAirSpeed)
           frskyData.hub.maxAirSpeed = frskyData.hub.airSpeed;
       }
