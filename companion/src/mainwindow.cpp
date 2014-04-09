@@ -954,6 +954,7 @@ QString MainWindow::FindTaranisPath()
 {
     int pathcount=0;
     QString path;
+    QString temppath;
     QStringList drives;
     QString eepromfile;
     QString fsname;
@@ -968,11 +969,20 @@ QString MainWindow::FindTaranisPath()
       if(ret) {
         QString vName=QString::fromUtf16 ( (const ushort *) szVolumeName) ;
         if (vName.contains("TARANIS")) {
-          eepromfile=drive.absolutePath();
+          temppath=drive.absolutePath();
+          eepromfile=temppath;
           eepromfile.append("/EEPROM.BIN");
           if (QFile::exists(eepromfile)) {
             pathcount++;
             path=eepromfile;
+          }
+          else {
+            eepromfile=temppath;
+            eepromfile.append("/TARANIS.BIN");
+            if (QFile::exists(eepromfile)) {
+              pathcount++;
+              path=eepromfile;
+            }
           }
         }
       }
@@ -983,18 +993,28 @@ QString MainWindow::FindTaranisPath()
     while (entry != NULL) {
       if (!drives.contains(entry->me_devname)) {
         drives.append(entry->me_devname);
-        eepromfile=entry->me_mountdir;
-
+        temppath=entry->me_mountdir;
+        eepromfile=temppath;
         eepromfile.append("/EEPROM.BIN");
   #if !defined __APPLE__ && !defined WIN32
-        QString fstype=entry->me_type;
-        qDebug() << fstype;
         if (QFile::exists(eepromfile) && fstype.contains("fat") ) {
   #else
         if (QFile::exists(eepromfile)) {
   #endif 
           pathcount++;
           path=eepromfile;
+        }
+        else {
+          eepromfile=temppath;
+          eepromfile.append("/TARANIS.BIN");          
+  #if !defined __APPLE__ && !defined WIN32
+          if (QFile::exists(eepromfile) && fstype.contains("fat") ) {
+  #else
+          if (QFile::exists(eepromfile)) {
+  #endif 
+            pathcount++;
+            path=eepromfile;
+          }
         }
       }
       entry = entry->me_next; ;
