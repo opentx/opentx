@@ -367,3 +367,4 @@ Sherba Baine
 Gordon Evans
 Fred Figge
 Uwe Kuehn 
+David Beatty
