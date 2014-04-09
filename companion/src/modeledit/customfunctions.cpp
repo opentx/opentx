@@ -49,10 +49,13 @@ void RepeatComboBox::update()
 
 CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings):
   ModelPanel(parent, model, generalSettings),
-  initialized(false),
+  initialized(false)
+#if defined(PHONON)
+  ,
   phononCurrent(-1),
   clickObject(NULL),
   clickOutput(NULL)
+#endif
 {
   QGridLayout * gridLayout = new QGridLayout(this);
 

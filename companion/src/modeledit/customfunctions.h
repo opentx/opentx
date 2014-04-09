@@ -45,9 +45,9 @@ class CustomFunctionsPanel : public ModelPanel
     void customFunctionEdited();
     void fsw_customContextMenuRequested(QPoint pos);
     void refreshCustomFunction(int index, bool modified=false);
-    void playMusic();
     void onChildModified();
 #ifdef PHONON
+    void playMusic();
     void mediaPlayer_state(Phonon::State newState, Phonon::State oldState);
 #endif
     void fswDelete();
