@@ -379,7 +379,7 @@ int menuFlashFile(uint32_t index, uint8_t event)
 {
   FRESULT fr;
 
-  lcd_putsLeft(4*FH, "\012Hold [ENT] to start loading" );
+  lcd_putsLeft(4*FH, "\012Hold [ENT] to start writing");
 
   if (Valid == 0) {
     // Validate file here
@@ -394,9 +394,9 @@ int menuFlashFile(uint32_t index, uint8_t event)
 
   if (Valid == 2) {
     if (memoryType == MEM_FLASH)
-      lcd_putsLeft(4*FH,  "\011No firmware found in the file!");
+      lcd_putsLeft(4*FH,  "\011Not a valid firmware file!        ");
     else
-      lcd_putsLeft(4*FH,  "\011No EEPROM found in the file!");    
+      lcd_putsLeft(4*FH,  "\011Not a valid EEPROM file!          ");    
     if (event == EVT_KEY_BREAK(BOOT_KEY_EXIT) || event == EVT_KEY_BREAK(BOOT_KEY_MENU)) {
       return 0;
     }
@@ -697,7 +697,24 @@ int main()
         lcd_invert_line(2 + vpos);
       }
 
-      if (state == ST_FLASHING) {
+      else if (state == ST_FLASH_CHECK) {
+        int result = menuFlashFile(vpos, event);
+        FirmwareSize = FileSize[vpos] - BOOTLOADER_SIZE;
+        if (result == 0) {
+          // canceled
+          state = ST_FILE_LIST;
+        }
+        else if (result == 1) {
+          // confirmed
+          firmwareAddress = FIRMWARE_ADDRESS + BOOTLOADER_SIZE;
+          firmwareWritten = 0;
+          eepromAddress = 0;
+          eepromWritten = 0;
+          state = ST_FLASHING;
+        }
+      }
+
+      else if (state == ST_FLASHING) {
         // commit to flashing
         lcd_putsLeft(4*FH, "\032Writing...");
 
@@ -729,25 +746,8 @@ int main()
           state = ST_FLASH_DONE; // Backstop
         }
       }
-      
-      if (state == ST_FLASH_CHECK) {
-        int result = menuFlashFile(vpos, event);
-        FirmwareSize = FileSize[vpos] - BOOTLOADER_SIZE;
-        if (result == 0) {
-          // canceled
-          state = ST_FILE_LIST;
-        }
-        else if (result == 1) {
-          // confirmed
-          firmwareAddress = FIRMWARE_ADDRESS + BOOTLOADER_SIZE;
-          firmwareWritten = 0;
-          eepromAddress = 0;
-          eepromWritten = 0;
-          state = ST_FLASHING;
-        }
-      }
-      
-     if (state == ST_FLASH_DONE) {
+
+      if (state == ST_FLASH_DONE) {
         lcd_putsLeft(4*FH, "\024Writing Complete");
         if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT) || event == EVT_KEY_BREAK(BOOT_KEY_MENU)) {
           state = ST_START;
