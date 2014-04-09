@@ -342,8 +342,6 @@ extern uint8_t         s_warning_info_len;
 extern uint8_t         s_warning_result;
 extern uint8_t         s_warning_type;
 
-extern const pm_char * s_global_warning;
-
 #define WARNING_LINE_X 16
 #define WARNING_LINE_Y 3*FH
 #if LCD_W >= 212

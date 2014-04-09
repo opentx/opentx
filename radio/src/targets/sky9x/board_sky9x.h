@@ -43,6 +43,10 @@
 
 extern uint16_t ResetReason;
 
+#define BOOTLOADER_SIZE                 0x8000
+#define FIRMWARE_SIZE                   (256*1024)
+#define FIRMWARE_ADDRESS                0x00400000
+
 #if defined(REVA)
 #define GPIO_BUTTON_MENU                PIOB->PIO_PDSR
 #define GPIO_BUTTON_EXIT                PIOA->PIO_PDSR
@@ -152,6 +156,10 @@ extern uint16_t sessionTimer;
 #define JACK_PPM_IN() PIOC->PIO_PER = PIO_PC22
 
 void setSticksGain(uint8_t gains);
+
+// Write Flash driver
+#define FLASH_PAGESIZE 256
+void writeFlash(uint32_t * address, uint32_t * buffer);
 
 // Keys driver
 extern uint32_t readKeys();

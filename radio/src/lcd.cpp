@@ -1011,7 +1011,7 @@ void putsSwitches(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att)
   if (idx == SWSRC_OFF)
     return lcd_putsiAtt(x, y, STR_OFFON, 0, att);
   if (idx < 0) {
-    lcd_vlineStip(x-2, y, 8, 0x5E/*'!'*/);
+    lcd_putcAtt(x-2, y, '!', att);
     idx = -idx;
   }
   lcd_putsiAtt(x, y, STR_VSWITCHES, idx-1, att);
@@ -1021,7 +1021,7 @@ void putsSwitches(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att)
 void putsFlightPhase(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att)
 {
   if (idx==0) { lcd_putsiAtt(x, y, STR_MMMINV, 0, att); return; }
-  if (idx < 0) { lcd_vlineStip(x-2, y, 8, 0x5E/*'!'*/); idx = -idx; }
+  if (idx < 0) { lcd_putcAtt(x-2, y, '!', att); idx = -idx; }
   if (att & CONDENSED)
     lcd_outdezNAtt(x+FW*1, y, idx-1, (att & ~CONDENSED), 1);
   else
@@ -1243,7 +1243,6 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
     case TELEM_ACCy-1:
     case TELEM_ACCz-1:
     case TELEM_VSPD-1:
-    case TELEM_ASPD-1:
       putsTelemetryValue(x, y, val, UNIT_RAW, att|PREC2);
       break;
 

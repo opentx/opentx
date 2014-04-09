@@ -259,8 +259,8 @@ static void init_pa10_pxx()
   DMA2->HIFCR = DMA_HIFCR_CTCIF6 | DMA_HIFCR_CHTIF6 | DMA_HIFCR_CTEIF6 | DMA_HIFCR_CDMEIF6 | DMA_HIFCR_CFEIF6 ; // Write ones to clear bits
   DMA2_Stream6->CR = DMA_SxCR_CHSEL_1 | DMA_SxCR_CHSEL_2 | DMA_SxCR_PL_0 | DMA_SxCR_MSIZE_0
                                                          | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC | DMA_SxCR_DIR_0 | DMA_SxCR_PFCTRL ;
-  DMA2_Stream6->PAR = CONVERT_PTR(&TIM1->DMAR);
-  DMA2_Stream6->M0AR = CONVERT_PTR(&pxxStream[INTERNAL_MODULE][1]);
+  DMA2_Stream6->PAR = CONVERT_PTR_UINT(&TIM1->DMAR);
+  DMA2_Stream6->M0AR = CONVERT_PTR_UINT(&pxxStream[INTERNAL_MODULE][1]);
 //      DMA2_Stream2->FCR = 0x05 ; //DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
 //      DMA2_Stream2->NDTR = 100 ;
   DMA2_Stream6->CR |= DMA_SxCR_EN ;               // Enable DMA
@@ -344,7 +344,7 @@ extern "C" void TIM1_CC_IRQHandler()
   if (s_current_protocol[INTERNAL_MODULE] == PROTO_PXX) {
     DMA2_Stream6->CR &= ~DMA_SxCR_EN ;              // Disable DMA
     DMA2->HIFCR = DMA_HIFCR_CTCIF6 | DMA_HIFCR_CHTIF6 | DMA_HIFCR_CTEIF6 | DMA_HIFCR_CDMEIF6 | DMA_HIFCR_CFEIF6 ; // Write ones to clear bits
-    DMA2_Stream6->M0AR = CONVERT_PTR(&pxxStream[INTERNAL_MODULE][1]);
+    DMA2_Stream6->M0AR = CONVERT_PTR_UINT(&pxxStream[INTERNAL_MODULE][1]);
     DMA2_Stream6->CR |= DMA_SxCR_EN ;               // Enable DMA
     TIM1->CCR3 = pxxStream[INTERNAL_MODULE][0];
     TIM1->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
@@ -422,8 +422,8 @@ static void init_pa7_pxx()
   DMA2->LIFCR = DMA_LIFCR_CTCIF2 | DMA_LIFCR_CHTIF2 | DMA_LIFCR_CTEIF2 | DMA_LIFCR_CDMEIF2 | DMA_LIFCR_CFEIF2 ; // Write ones to clear bits
   DMA2_Stream2->CR = DMA_SxCR_CHSEL_0 | DMA_SxCR_CHSEL_1 | DMA_SxCR_CHSEL_2 | DMA_SxCR_PL_0 | DMA_SxCR_MSIZE_0
                                                          | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC | DMA_SxCR_DIR_0 | DMA_SxCR_PFCTRL ;
-  DMA2_Stream2->PAR = CONVERT_PTR(&TIM8->DMAR);
-  DMA2_Stream2->M0AR = CONVERT_PTR(&pxxStream[EXTERNAL_MODULE][1]);
+  DMA2_Stream2->PAR = CONVERT_PTR_UINT(&TIM8->DMAR);
+  DMA2_Stream2->M0AR = CONVERT_PTR_UINT(&pxxStream[EXTERNAL_MODULE][1]);
 //      DMA2_Stream2->FCR = 0x05 ; //DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
 //      DMA2_Stream2->NDTR = 100 ;
   DMA2_Stream2->CR |= DMA_SxCR_EN ;               // Enable DMA
@@ -496,8 +496,8 @@ static void init_pa7_dsm2()
   DMA2->LIFCR = DMA_LIFCR_CTCIF2 | DMA_LIFCR_CHTIF2 | DMA_LIFCR_CTEIF2 | DMA_LIFCR_CDMEIF2 | DMA_LIFCR_CFEIF2 ; // Write ones to clear bits
   DMA2_Stream2->CR = DMA_SxCR_CHSEL_0 | DMA_SxCR_CHSEL_1 | DMA_SxCR_CHSEL_2 | DMA_SxCR_PL_0 | DMA_SxCR_MSIZE_0
                                                          | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC | DMA_SxCR_DIR_0 | DMA_SxCR_PFCTRL ;
-  DMA2_Stream2->PAR = CONVERT_PTR(&TIM8->DMAR);
-  DMA2_Stream2->M0AR = CONVERT_PTR(&dsm2Stream[1]);
+  DMA2_Stream2->PAR = CONVERT_PTR_UINT(&TIM8->DMAR);
+  DMA2_Stream2->M0AR = CONVERT_PTR_UINT(&dsm2Stream[1]);
 //      DMA2_Stream2->FCR = 0x05 ; //DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
 //      DMA2_Stream2->NDTR = 100 ;
   DMA2_Stream2->CR |= DMA_SxCR_EN ;               // Enable DMA
@@ -586,7 +586,7 @@ extern "C" void TIM8_CC_IRQHandler()
   if (s_current_protocol[EXTERNAL_MODULE] == PROTO_PXX) {
     DMA2_Stream2->CR &= ~DMA_SxCR_EN ;              // Disable DMA
     DMA2->LIFCR = DMA_LIFCR_CTCIF2 | DMA_LIFCR_CHTIF2 | DMA_LIFCR_CTEIF2 | DMA_LIFCR_CDMEIF2 | DMA_LIFCR_CFEIF2 ; // Write ones to clear bits
-    DMA2_Stream2->M0AR = CONVERT_PTR(&pxxStream[EXTERNAL_MODULE][1]);
+    DMA2_Stream2->M0AR = CONVERT_PTR_UINT(&pxxStream[EXTERNAL_MODULE][1]);
     DMA2_Stream2->CR |= DMA_SxCR_EN ;               // Enable DMA
     TIM8->CCR1 = pxxStream[EXTERNAL_MODULE][0];
     TIM8->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
@@ -595,7 +595,7 @@ extern "C" void TIM8_CC_IRQHandler()
   else if (s_current_protocol[EXTERNAL_MODULE] >= PROTO_DSM2_LP45 && s_current_protocol[EXTERNAL_MODULE] <= PROTO_DSM2_DSMX) {
     DMA2_Stream2->CR &= ~DMA_SxCR_EN ;              // Disable DMA
     DMA2->LIFCR = DMA_LIFCR_CTCIF2 | DMA_LIFCR_CHTIF2 | DMA_LIFCR_CTEIF2 | DMA_LIFCR_CDMEIF2 | DMA_LIFCR_CFEIF2 ; // Write ones to clear bits
-    DMA2_Stream2->M0AR = CONVERT_PTR(&dsm2Stream[1]);
+    DMA2_Stream2->M0AR = CONVERT_PTR_UINT(&dsm2Stream[1]);
     DMA2_Stream2->CR |= DMA_SxCR_EN ;               // Enable DMA
     TIM8->CCR1 = dsm2Stream[0];
     TIM8->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt

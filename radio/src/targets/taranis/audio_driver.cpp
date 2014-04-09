@@ -78,8 +78,8 @@ void dacInit()
   DMA1->HIFCR = DMA_HIFCR_CTCIF5 | DMA_HIFCR_CHTIF5 | DMA_HIFCR_CTEIF5 | DMA_HIFCR_CDMEIF5 | DMA_HIFCR_CFEIF5 ; // Write ones to clear bits
   DMA1_Stream5->CR = DMA_SxCR_CHSEL_0 | DMA_SxCR_CHSEL_1 | DMA_SxCR_CHSEL_2 | DMA_SxCR_PL_0 |
                      DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC | DMA_SxCR_DIR_0 | DMA_SxCR_CIRC ;
-  DMA1_Stream5->PAR = CONVERT_PTR(&DAC->DHR12R1);
-  // DMA1_Stream5->M0AR = CONVERT_PTR(Sine_values);
+  DMA1_Stream5->PAR = CONVERT_PTR_UINT(&DAC->DHR12R1);
+  // DMA1_Stream5->M0AR = CONVERT_PTR_UINT(Sine_values);
   DMA1_Stream5->FCR = 0x05 ; //DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
   // DMA1_Stream5->NDTR = 100 ;
 
@@ -99,7 +99,7 @@ bool dacQueue(AudioBuffer *buffer)
     dacIdle = 0;
     DMA1_Stream5->CR &= ~DMA_SxCR_EN ;                              // Disable DMA channel
     DMA1->HIFCR = DMA_HIFCR_CTCIF5 | DMA_HIFCR_CHTIF5 | DMA_HIFCR_CTEIF5 | DMA_HIFCR_CDMEIF5 | DMA_HIFCR_CFEIF5 ; // Write ones to clear bits
-    DMA1_Stream5->M0AR = CONVERT_PTR(buffer->data);
+    DMA1_Stream5->M0AR = CONVERT_PTR_UINT(buffer->data);
     DMA1_Stream5->NDTR = buffer->size;
     DMA1_Stream5->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE ;               // Enable DMA channel and interrupt
     DAC->SR = DAC_SR_DMAUDR1 ;                      // Write 1 to clear flag
@@ -156,7 +156,7 @@ extern "C" void DMA1_Stream5_IRQHandler()
 
   AudioBuffer *nextBuffer = audioQueue.getNextFilledBuffer();
   if (nextBuffer) {
-    DMA1_Stream5->M0AR = CONVERT_PTR(nextBuffer->data);
+    DMA1_Stream5->M0AR = CONVERT_PTR_UINT(nextBuffer->data);
     DMA1_Stream5->NDTR = nextBuffer->size;
     DMA1->HIFCR = DMA_HIFCR_CTCIF5 | DMA_HIFCR_CHTIF5 | DMA_HIFCR_CTEIF5 | DMA_HIFCR_CDMEIF5 | DMA_HIFCR_CFEIF5 ; // Write ones to clear bits
     DMA1_Stream5->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE ;       // Enable DMA channel

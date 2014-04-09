@@ -635,7 +635,7 @@ ifeq ($(PCB), TARANIS)
   EXTRAINCDIRS += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Core/inc 
   EXTRAINCDIRS += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/inc targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/hid/inc 
   BOARDSRC = targets/taranis/board_taranis.cpp
-  EXTRABOARDSRC += targets/taranis/lcd_driver.cpp targets/taranis/aspi.c targets/taranis/i2c.c targets/taranis/delays.c 
+  EXTRABOARDSRC += targets/taranis/lcd_driver.cpp targets/taranis/flash_driver.cpp targets/taranis/aspi.c targets/taranis/i2c.c targets/taranis/delays.c 
   SRC += CoOS/kernel/core.c CoOS/kernel/hook.c CoOS/kernel/task.c CoOS/kernel/event.c CoOS/kernel/time.c CoOS/kernel/timer.c CoOS/kernel/flag.c CoOS/kernel/mutex.c CoOS/kernel/serviceReq.c CoOS/portable/GCC/port.c CoOS/portable/arch.c
   SRC += targets/taranis/pwr_driver.c targets/taranis/usb_driver.c
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp eeprom_conversions.cpp

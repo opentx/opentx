@@ -51,6 +51,7 @@ extern "C" {
 #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_dma.h"
 #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_usart.h"
 #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include/stm32f2xx.h"
+
 #if !defined(SIMU)
   #include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/inc/usbd_msc_core.h"
   #include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/hid/inc/usbd_hid_core.h"
@@ -72,29 +73,33 @@ extern "C" {
 #include "audio_driver.h"
 #endif
 
-#define PERI1_FREQUENCY 30000000
-#define PERI2_FREQUENCY 60000000
-#define TIMER_MULT_APB1 2
-#define TIMER_MULT_APB2 2
+#define FLASHSIZE          0x80000
+#define BOOTLOADER_SIZE    0x8000
+#define FIRMWARE_ADDRESS   0x08000000
+
+#define PERI1_FREQUENCY    30000000
+#define PERI2_FREQUENCY    60000000
+#define TIMER_MULT_APB1    2
+#define TIMER_MULT_APB2    2
 
 #define JACK_PPM_OUT()
 #define JACK_PPM_IN()
 
-#define PIN_MODE_MASK           0x0003
-#define PIN_INPUT               0x0000
-#define PIN_OUTPUT              0x0001
-#define PIN_PERIPHERAL          0x0002
-#define PIN_ANALOG              0x0003
-#define PIN_PULL_MASK           0x000C
-#define PIN_PULLUP              0x0004
-#define PIN_NO_PULLUP           0x0000
-#define PIN_PULLDOWN            0x0008
-#define PIN_NO_PULLDOWN         0x0000
-#define PIN_PERI_MASK           0x00F0
-#define PIN_PUSHPULL            0x0000
-#define PIN_ODRAIN              0x8000
-#define PIN_PORT_MASK           0x0700
-#define PIN_SPEED_MASK          0x6000
+#define PIN_MODE_MASK      0x0003
+#define PIN_INPUT          0x0000
+#define PIN_OUTPUT         0x0001
+#define PIN_PERIPHERAL     0x0002
+#define PIN_ANALOG         0x0003
+#define PIN_PULL_MASK      0x000C
+#define PIN_PULLUP         0x0004
+#define PIN_NO_PULLUP      0x0000
+#define PIN_PULLDOWN       0x0008
+#define PIN_NO_PULLDOWN    0x0000
+#define PIN_PERI_MASK      0x00F0
+#define PIN_PUSHPULL       0x0000
+#define PIN_ODRAIN         0x8000
+#define PIN_PORT_MASK      0x0700
+#define PIN_SPEED_MASK     0x6000
 
 void configure_pins( uint32_t pins, uint16_t config );
 
@@ -135,6 +140,13 @@ void delay_01us(uint16_t nb);
   uint32_t sdMounted(void);
   #define SD_CARD_PRESENT()       (~SD_PRESENT_GPIO->IDR & SD_PRESENT_GPIO_Pin)
 #endif
+
+// Flash Write driver
+#define FLASH_PAGESIZE 256
+void unlockFlash();
+void writeFlash(uint32_t * address, uint32_t * buffer);
+uint32_t isFirmwareStart(uint32_t *block);
+uint32_t isBootloaderStart(uint32_t *block);
 
 // Pulses driver
 void init_no_pulses(uint32_t port);
