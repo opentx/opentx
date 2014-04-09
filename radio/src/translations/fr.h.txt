@@ -285,7 +285,7 @@
   #define TR_RX_BATT           "RxBt"
   #define TR_A3_A4             "A3\0 ""A4\0 "
   #define TR_A3_A4_MIN         "A3-\0""A4-\0"
-  #define TR_ASPD_MAX          "ASp+" 
+  #define TR_ASPD_MAX          "ViA+"
 #else
   #define TR_TELEM_RESERVE
   #define TR_SWR
@@ -712,9 +712,9 @@
 #define TR_CHANNELS_MONITOR    "MONITEUR CANAUX"
 #define TR_PATH_TOO_LONG       "Chemin trop long"
 #define TR_VIEW_TEXT           "Voir texte"
-#define TR_FLASH_BOOTLOADER    "Flash BootLoader"
-#define TR_WRITING             "\032Writing..."
-#define TR_CONFIRM_FORMAT      "Confirm Format?"
+#define TR_FLASH_BOOTLOADER    "Flasher BootLoader"
+#define TR_WRITING             "\032Ecriture..."
+#define TR_CONFIRM_FORMAT      "Confirmer Formatage?"
 #define TR_INTERNALRF          "HF interne"
 #define TR_EXTERNALRF          "HF externe"
 #define TR_FAILSAFE            INDENT "Type failsafe"
@@ -759,7 +759,7 @@
 #define TR_MIRROR              "Miroir"
 #define TR_CLEAR               "Effacer"
 #define TR_RESET               "Réinitialiser"
-#define TR_RESET_SUBMENU       "Reset..."
+#define TR_RESET_SUBMENU       "Réinitialiser..."
 #define TR_COUNT               "Nb points"
 #define TR_PT                  "pt"
 #define TR_PTS                 "pts"
