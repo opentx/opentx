@@ -997,6 +997,7 @@ QString MainWindow::FindTaranisPath()
         eepromfile=temppath;
         eepromfile.append("/EEPROM.BIN");
   #if !defined __APPLE__ && !defined WIN32
+        QString fstype = entry->me_type;
         if (QFile::exists(eepromfile) && fstype.contains("fat") ) {
   #else
         if (QFile::exists(eepromfile)) {
@@ -1008,6 +1009,7 @@ QString MainWindow::FindTaranisPath()
           eepromfile=temppath;
           eepromfile.append("/TARANIS.BIN");          
   #if !defined __APPLE__ && !defined WIN32
+          QString fstype = entry->me_type;
           if (QFile::exists(eepromfile) && fstype.contains("fat") ) {
   #else
           if (QFile::exists(eepromfile)) {
