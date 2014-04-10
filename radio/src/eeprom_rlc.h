@@ -251,8 +251,23 @@ void loadModel(int index);
 #if defined(CPUARM)
 inline bool isEepromStart(const void * buffer)
 {
-  const EeFs * eeprom = (const EeFs *)buffer;
-  return (eeprom->version==EEFS_VERS && eeprom->mySize==sizeof(eeFs) && eeprom->bs==BS);
+  // OpenTX EEPROM
+  {
+    const EeFs * eeprom = (const EeFs *)buffer;
+    if (eeprom->version==EEFS_VERS && eeprom->mySize==sizeof(eeFs) && eeprom->bs==BS)
+      return true;
+  }
+
+  // ersky9x EEPROM
+  {
+    const uint8_t * eeprom = (const uint8_t *)buffer;
+    uint8_t size = eeprom[1] ;
+    uint8_t bs = eeprom[3] ;
+    if (size==0x80 && bs==0x80)
+      return true;
+  }
+
+  return false;
 }
 #endif
 
