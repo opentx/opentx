@@ -466,10 +466,11 @@ FATFS g_FATFS_Obj;
 char *convertSimuPath(const char *path)
 {
   static char result[1024];
-  if (path[0] == '/')
+  if (path[0] == '/' && strcmp(simuSdDirectory, "/") != 0)
     sprintf(result, "%s%s", simuSdDirectory, path);
   else
     strcpy(result, path);
+
   return result;
 }
 
