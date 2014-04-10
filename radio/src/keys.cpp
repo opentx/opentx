@@ -163,7 +163,7 @@ void clearKeyEvents()
   // loop until all keys are up
 
 #if defined(SIMU)
-  while (keyDown() && main_thread_running) sleep(1/*ms*/);
+  while (keyDown()) SIMU_SLEEP(1/*ms*/);
 #elif defined(PCBSTD) && defined(ROTARY_ENCODER_NAVIGATION) && !defined(TELEMETREZ)
   while (keyDown()) { wdt_reset(); rotencPoll(); }
 #else
