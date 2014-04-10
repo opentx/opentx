@@ -715,7 +715,8 @@ int32_t fat12Read( uint8_t *buffer, uint16_t sector, uint16_t count )
 
 int32_t fat12Write(const uint8_t *buffer, uint16_t sector, uint32_t count )
 {
-  static int offset = 0;
+  static uint8_t eepromOffset = 0;
+  static uint8_t firmwareAllowed = 0;
 
   TRACE("FAT12 Write(sector=%d, count=%d)", sector, count);
 
@@ -724,19 +725,19 @@ int32_t fat12Write(const uint8_t *buffer, uint16_t sector, uint32_t count )
   }
   else if (sector < 3 + (EESIZE/BLOCKSIZE)) {
     while (count) {
-      if (offset == 0 && isEepromStart(buffer)) {
+      if (eepromOffset == 0 && isEepromStart(buffer)) {
         TRACE("EEPROM start found in sector %d", sector);
-        offset = sector;
+        eepromOffset = sector;
       }
-      if (offset && sector >= offset && (sector-offset) < EESIZE/BLOCKSIZE) {
-        eeWriteBlockCmp((uint8_t *)buffer, (sector-offset)*BLOCKSIZE, BLOCKSIZE);
+      if (eepromOffset && sector >= eepromOffset && (sector-eepromOffset) < EESIZE/BLOCKSIZE) {
+        eeWriteBlockCmp((uint8_t *)buffer, (sector-eepromOffset)*BLOCKSIZE, BLOCKSIZE);
       }
       buffer += BLOCKSIZE;
       sector++;
       count--;
-      if (sector-offset >= EESIZE/BLOCKSIZE) {
+      if (sector-eepromOffset >= EESIZE/BLOCKSIZE) {
         TRACE("EEPROM end written at sector %d", sector-1);
-        offset = 0;
+        eepromOffset = 0;
       }
     }
   }
@@ -750,7 +751,12 @@ int32_t fat12Write(const uint8_t *buffer, uint16_t sector, uint32_t count )
     while (count) {
       for (uint32_t i=0; i<BLOCKSIZE/FLASH_PAGESIZE; i++) {
         if (address >= FIRMWARE_ADDRESS+BOOTLOADER_SIZE/*protect bootloader*/ && address <= FIRMWARE_ADDRESS+FLASHSIZE-FLASH_PAGESIZE) {
-          writeFlash((uint32_t *)address, (uint32_t *)buffer);
+          if (address == FIRMWARE_ADDRESS+BOOTLOADER_SIZE) {
+            firmwareAllowed = isFirmwareStart(buffer);
+          }
+          if (firmwareAllowed) {
+            writeFlash((uint32_t *)address, (uint32_t *)buffer);
+          }
         }
         address += FLASH_PAGESIZE;
         buffer += FLASH_PAGESIZE;
