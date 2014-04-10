@@ -98,8 +98,10 @@ void writeFlash(uint32_t *address, uint32_t *buffer) // page size is 256 bytes
   }
 }
 
-uint32_t isFirmwareStart(const uint32_t *block)
+uint32_t isFirmwareStart(const void * buffer)
 {
+  const uint32_t * block = (const uint32_t *)buffer;
+
   if ((block[0] & 0xFFFC0000) != 0x20000000) {
     return 0;
   }
@@ -112,8 +114,10 @@ uint32_t isFirmwareStart(const uint32_t *block)
   return 1;
 }
 
-uint32_t isBootloaderStart(const uint32_t *block)
+uint32_t isBootloaderStart(const void * buffer)
 {
+  const uint32_t * block = (const uint32_t *)buffer;
+
   for (int i=0; i<256; i++) {
     if (block[i] == 0x544F4F42/*BOOT*/) {
       return 1;

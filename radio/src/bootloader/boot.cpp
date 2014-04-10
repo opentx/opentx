@@ -361,7 +361,7 @@ FRESULT openBinaryFile(uint32_t index)
   return f_read(&FlashFile, (BYTE *)Block_buffer, 4096, &BlockCount);
 }
 
-uint32_t isValidBufferStart(const uint32_t * buffer)
+uint32_t isValidBufferStart(const void * buffer)
 {
   if (memoryType == MEM_FLASH)
     return isFirmwareStart(buffer);

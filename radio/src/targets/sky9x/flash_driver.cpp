@@ -56,8 +56,10 @@ void clearLockBits()
   }
 }
 
-uint32_t isFirmwareStart(uint32_t *block)
+uint32_t isFirmwareStart(const void * buffer)
 {
+  const uint32_t * block = (const uint32_t *)buffer;
+
   if ((block[0] & 0xFFFE3000) != 0x20000000 ) {
     return 0;
   }
