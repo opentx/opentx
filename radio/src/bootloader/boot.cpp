@@ -664,6 +664,7 @@ int main()
           // Select file to flash
           state = ST_FLASH_CHECK;
           Valid = 0;
+          memset(Block_buffer, 0, sizeof(Block_buffer));
         }
         else if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT)) {
           state = ST_START;
