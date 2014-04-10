@@ -102,6 +102,10 @@ int main(int argc, char *argv[])
   RegisterFirmwares();
   SimulatorDialog *dialog;
   const char * eepromFileName;
+  QString fileName;
+  QByteArray path;
+  QDir eedir;
+  QFile file;
 
   QMessageBox msgBox;
   msgBox.setWindowTitle("Radio type");
@@ -111,17 +115,27 @@ int main(int argc, char *argv[])
   msgBox.addButton("9X", QMessageBox::ActionRole);
   QPushButton *exitButton = msgBox.addButton(QMessageBox::Close);
 
+  eedir = QDir(QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation));
+  if (!eedir.exists("OpenTX")) {
+    eedir.mkdir("OpenTX");
+  }
+  eedir.cd("OpenTX");
+
   msgBox.exec();
   
   if (msgBox.clickedButton() == exitButton)
     return 0;
   else if (msgBox.clickedButton() == taranisButton) {
     current_firmware_variant = GetFirmwareVariant("opentx-taranis-en");
-    eepromFileName = "eeprom-taranis.bin";
+    fileName = eedir.filePath("eeprom-taranis.bin");
+    path = fileName.toAscii();
+    eepromFileName = path.data();
     dialog = new SimulatorDialogTaranis();
   }
   else {
-    eepromFileName = "eeprom-9x.bin";
+    fileName = eedir.filePath("eeprom-9x.bin");
+    path = fileName.toAscii();
+    eepromFileName = path.data();
     dialog = new SimulatorDialog9X();
   }
 
