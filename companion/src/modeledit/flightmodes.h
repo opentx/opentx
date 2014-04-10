@@ -7,6 +7,7 @@
 #include <QTabWidget>
 #include <QSpinBox>
 #include <QComboBox>
+#include <QCheckBox>
 
 namespace Ui {
   class FlightMode;
@@ -37,6 +38,7 @@ class FlightMode : public ModelPanel
     void GVSource_currentIndexChanged(int index);
     void phaseGVValue_editingFinished();
     void phaseGVUse_currentIndexChanged(int index);
+    void phaseGVPopupToggled(bool checked);
     void phaseREValue_editingFinished();
     void phaseREUse_currentIndexChanged(int index);
 
@@ -49,6 +51,7 @@ class FlightMode : public ModelPanel
     QVector<QLabel *> trimsLabel;
     QLineEdit * gvNames[C9X_MAX_GVARS];
     QSpinBox * gvValues[C9X_MAX_GVARS];
+    QCheckBox * gvPopups[C9X_MAX_GVARS];
     QSpinBox * reValues[C9X_MAX_ENCODERS];
     QVector<QComboBox *> trimsUse;
     QVector<QSpinBox *> trimsValue;

@@ -156,6 +156,13 @@ FlightMode::FlightMode(QWidget * parent, ModelData & model, int phaseIdx, Genera
       gvValues[i]->setMinimum(-1024);
       gvValues[i]->setMaximum(1024);
       gvLayout->addWidget(gvValues[i], i, col++, 1, 1);
+      
+      // Popups
+      gvPopups[i] = new QCheckBox(ui->gvGB);
+      gvPopups[i]->setProperty("index", i);
+      gvPopups[i]->setText(tr("Popup enabled"));
+      connect(gvPopups[i], SIGNAL(toggled(bool)), this, SLOT(phaseGVPopupToggled(bool)));
+      gvLayout->addWidget(gvPopups[i], i, col++, 1, 1);
     }
   }
   else {
@@ -203,6 +210,7 @@ void FlightMode::update()
     	gvValues[i]->setDisabled(true);
     }
     gvValues[i]->setValue(phasegvar->gvars[i]);
+    gvPopups[i]->setChecked(model.gvars_popups[i]);
   }
 
   for (int i=0; i<reCount; i++) {    
@@ -315,6 +323,13 @@ void FlightMode::phaseGVUse_currentIndexChanged(int index)
     emit modified();
     lock = false;
   }
+}
+
+void FlightMode::phaseGVPopupToggled(bool checked)
+{
+  QCheckBox *cb = qobject_cast<QCheckBox*>(sender());
+  int gvar = cb->property("index").toInt();
+  model.gvars_popups[gvar] = checked;
 }
 
 void FlightMode::phaseREValue_editingFinished()
