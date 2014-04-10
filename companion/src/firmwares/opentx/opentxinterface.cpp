@@ -278,7 +278,7 @@ template <class T>
 bool OpenTxInterface::saveModel(unsigned int index, ModelData &model, unsigned int version, unsigned int variant)
 {
   T open9xModel(model, board, version, variant);
-  // open9xModel.Dump();
+  open9xModel.Dump();
   QByteArray eeprom;
   open9xModel.Export(eeprom);
   int sz = efile->writeRlc2(FILE_MODEL(index), FILE_TYP_MODEL, (const uint8_t*)eeprom.constData(), eeprom.size());

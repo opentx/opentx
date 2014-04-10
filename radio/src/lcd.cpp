@@ -1242,8 +1242,11 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
     case TELEM_ACCx-1:
     case TELEM_ACCy-1:
     case TELEM_ACCz-1:
-    case TELEM_VSPD-1:
       putsTelemetryValue(x, y, val, UNIT_RAW, att|PREC2);
+      break;
+
+    case TELEM_VSPD-1:
+      putsTelemetryValue(x, y, div10_and_round(val), UNIT_RAW, att|PREC1);
       break;
 
 #if defined(CPUARM)
@@ -1279,7 +1282,7 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
       if (channel >= TELEM_MIN_ALT-1 && channel <= TELEM_MAX_ALT-1)
         unit = 0;
       if (channel == TELEM_HDG-1)
-        unit = UNIT_HDG;
+        unit = 3;
       putsTelemetryValue(x, y, val, pgm_read_byte(bchunit_ar+unit), att);
       break;
     }

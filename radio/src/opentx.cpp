@@ -2051,6 +2051,10 @@ getvalue_t convert16bitsTelemValue(uint8_t channel, ls_telemetry_value_t value)
       result = value * 100;
       break;
 #endif
+    case TELEM_VSPD:
+      result = value * 10;
+      break;
+
     default:
       result = value;
       break;
@@ -2109,6 +2113,9 @@ getvalue_t convert8bitsTelemValue(uint8_t channel, ls_telemetry_value_t value)
       break;
     case TELEM_CONSUMPTION:
       result = value * 20;
+      break;
+    case TELEM_VSPD:
+      result = ((getvalue_t)value - 125) * 10;
       break;
 #endif
     default:
@@ -3249,8 +3256,8 @@ PLAY_FUNCTION(playValue, uint8_t idx)
       // no break
     case MIXSRC_FIRST_TELEM+TELEM_A1-1:
     case MIXSRC_FIRST_TELEM+TELEM_A2-1:
+      // A1 and A2
       idx -= (MIXSRC_FIRST_TELEM+TELEM_A1-1);
-        // A1 and A2
       {
         if (TELEMETRY_STREAMING()) {
           uint8_t att = 0;

@@ -667,11 +667,11 @@ void populateCSWCB(QComboBox *b, int value)
   b->clear();
   for (int i=0; i<LS_FN_MAX; i++) {
     int func = order[i];
+    if (!IS_ARM(GetEepromInterface()->getBoard())) {
+      if (func == LS_FN_VEQUAL || func == LS_FN_STAY)
+        continue;
+    }
     b->addItem(LogicalSwitchData(func).funcToString(), func);
-//    if (i>GetEepromInterface()->getCapability(CSFunc)) {
-//      QModelIndex index = b->model()->index(i, 0);
-//      QVariant v(0);
-//    }
     if (value == func) {
       b->setCurrentIndex(b->count()-1);
     }

@@ -116,6 +116,7 @@ RawSourceRange RawSource::getRange(bool singleprec)
         case TELEMETRY_SOURCE_RSSI_TX:
         case TELEMETRY_SOURCE_RSSI_RX:
           result.max = 100;
+          if (singleprec) result.offset = 128;
           break;
         case TELEMETRY_SOURCE_A1:
         case TELEMETRY_SOURCE_A2:
@@ -144,6 +145,11 @@ RawSourceRange RawSource::getRange(bool singleprec)
           result.min = -30;
           result.max = 225;
           break;
+        case TELEMETRY_SOURCE_HDG:
+          result.step = singleprec ? 2 : 1;
+          result.max = 360;
+          if (singleprec) result.offset = 256;
+          break;
         case TELEMETRY_SOURCE_RPM:
         case TELEMETRY_SOURCE_RPM_MAX:
           result.step = singleprec ? 50 : 1;
@@ -155,11 +161,17 @@ RawSourceRange RawSource::getRange(bool singleprec)
         case TELEMETRY_SOURCE_SPEED:
         case TELEMETRY_SOURCE_SPEED_MAX:
           result.step = singleprec ? 4 : 1;
-          result.max = singleprec ? 944 : 2000;
+          result.max = singleprec ? (4*236) : 2000;
           if (model && !model->frsky.imperial) {
             result.step *= 1.852;
             result.max *= 1.852;
           }
+          break;
+        case TELEMETRY_SOURCE_VERTICAL_SPEED:
+          result.step = 0.1;
+          result.min = -12.5;
+          result.max = 13.0;
+          result.decimals = 1;
           break;
         case TELEMETRY_SOURCE_DIST:
         case TELEMETRY_SOURCE_DIST_MAX:
@@ -195,11 +207,18 @@ RawSourceRange RawSource::getRange(bool singleprec)
           result.step = singleprec ? 5 : 1;
           result.max = singleprec ? 1275 : 2000;
           break;
+        case TELEMETRY_SOURCE_ACCX:
+        case TELEMETRY_SOURCE_ACCY:
+        case TELEMETRY_SOURCE_ACCZ:
+          result.step = 0.01;
+          result.decimals = 2;
+          result.max = 2.55;
+          break;
         default:
           result.max = 125;
           break;
       }
-      if (singleprec) {
+      if (singleprec && !result.offset) {
         result.offset = result.max - (127*result.step);
       }
       break;
@@ -245,7 +264,7 @@ QString RawSource::toString()
     QObject::tr("Speed"), QObject::tr("Dist"), QObject::tr("GPS Alt"),
     QObject::tr("Cell"), QObject::tr("Cells"), QObject::tr("Vfas"), QObject::tr("Curr"), QObject::tr("Cnsp"), QObject::tr("Powr"),
     QObject::tr("AccX"), QObject::tr("AccY"), QObject::tr("AccZ"),
-    QObject::tr("HDG "), QObject::tr("VSpd"), QObject::tr("AirSpeed"), QObject::tr("dTE"),
+    QObject::tr("Hdg "), QObject::tr("VSpd"), QObject::tr("AirSpeed"), QObject::tr("dTE"),
     QObject::tr("A1-"),  QObject::tr("A2-"), QObject::tr("A3-"),  QObject::tr("A4-"),
     QObject::tr("Alt-"), QObject::tr("Alt+"), QObject::tr("Rpm+"), QObject::tr("T1+"), QObject::tr("T2+"), QObject::tr("Speed+"), QObject::tr("Dist+"), QObject::tr("AirSpeed+"),
     QObject::tr("Cell-"), QObject::tr("Cells-"), QObject::tr("Vfas-"), QObject::tr("Curr+"), QObject::tr("Powr+"),

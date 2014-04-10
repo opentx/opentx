@@ -130,22 +130,12 @@ void LogicalSwitchesPanel::v1Edited(int value)
     model.customSw[i].val1 = cswitchSource1[i]->itemData(value).toInt();
     if (model.customSw[i].getFunctionFamily() == LS_FAMILY_VOFS) {
       RawSource source = RawSource(model.customSw[i].val1, &model);
-      if (source.type == SOURCE_TYPE_TELEMETRY) {
-        if (model.customSw[i].func == LS_FN_DPOS || model.customSw[i].func == LS_FN_DAPOS) {
-          model.customSw[i].val2 = 0;
-        }
-        else {
-          model.customSw[i].val2 = -128;
-        }
+      RawSourceRange range = source.getRange();
+      if (model.customSw[i].func == LS_FN_DPOS || model.customSw[i].func == LS_FN_DAPOS) {
+        model.customSw[i].val2 = (cswitchOffset[i]->value() / range.step);
       }
       else {
-        RawSourceRange range = source.getRange();
-        if (model.customSw[i].func == LS_FN_DPOS || model.customSw[i].func == LS_FN_DAPOS) {
-          model.customSw[i].val2 = (cswitchOffset[i]->value() / range.step);
-        }
-        else {
-          model.customSw[i].val2 = (cswitchOffset[i]->value() - range.offset) / range.step/* TODO - source.getRawOffset(model)*/;
-        }
+        model.customSw[i].val2 = (cswitchOffset[i]->value() - range.offset) / range.step/* TODO - source.getRawOffset(model)*/;
       }
       setSwitchWidgetVisibility(i);
     }
@@ -223,8 +213,8 @@ void LogicalSwitchesPanel::edited()
           cswitchOffset[i]->setValue(model.customSw[i].val2*range.step);
         }
         else {
-          model.customSw[i].val2 = ((cswitchOffset[i]->value()-range.offset)/range.step)/* TODO - source.getRawOffset(model)*/;
-          cswitchOffset[i]->setValue((model.customSw[i].val2 /* + TODO source.getRawOffset(model)*/)*range.step+range.offset);
+          model.customSw[i].val2 = round((cswitchOffset[i]->value()-range.offset)/range.step);
+          cswitchOffset[i]->setValue(model.customSw[i].val2*range.step + range.offset);
         }
         break;
       }
