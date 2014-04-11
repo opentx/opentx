@@ -144,6 +144,7 @@ void delay_01us(uint16_t nb);
 // Flash Write driver
 #define FLASH_PAGESIZE 256
 void unlockFlash();
+void lockFlash();
 void writeFlash(uint32_t * address, uint32_t * buffer);
 uint32_t isFirmwareStart(const void * buffer);
 uint32_t isBootloaderStart(const void * buffer);

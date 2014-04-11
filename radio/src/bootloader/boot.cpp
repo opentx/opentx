@@ -137,6 +137,8 @@ UINT BlockCount;
 
 uint32_t memoryType;
 
+uint32_t unlocked = 0;
+
 #if defined(PCBSKY9X)
   extern int32_t EblockAddress;
 #endif
@@ -520,7 +522,6 @@ int main()
 #if defined(PCBTARANIS)
   // SD card detect pin
   sdInit();
-  unlockFlash();
   usbInit();
   usbStart();
 #endif
@@ -714,7 +715,12 @@ int main()
       else if (state == ST_FLASHING) {
         // commit to flashing
         lcd_putsLeft(4*FH, "\032Writing...");
-
+        
+        if (!unlocked && (memoryType == MEM_FLASH)) {
+          unlocked = 1;
+          unlockFlash();
+        }
+        
         int progress;
         if (memoryType == MEM_FLASH) {
           writeFlashBlock();
@@ -745,6 +751,10 @@ int main()
       }
 
       if (state == ST_FLASH_DONE) {
+        if (unlocked) {
+          lockFlash();
+          unlocked = 0;
+        }
         lcd_putsLeft(4*FH, "\024Writing Complete");
         if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT) || event == EVT_KEY_BREAK(BOOT_KEY_MENU)) {
           state = ST_START;

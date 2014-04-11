@@ -16,6 +16,12 @@ void unlockFlash()
   FLASH->KEYR = 0xCDEF89AB;
 }
 
+void lockFlash()
+{
+  while (!FLASH->SR & FLASH_SR_BSY);
+  FLASH->CR |= FLASH_CR_LOCK;
+}
+
 void waitFlashIdle()
 {
   while (FLASH->SR & FLASH_FLAG_BSY) {

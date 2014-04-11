@@ -773,6 +773,11 @@ void flashBootloader(const char * filename)
     }
   }
 
+  if (unlocked) {
+    lockFlash();
+    unlocked = 0;
+  }
+
   f_close(&file);
 }
 #endif

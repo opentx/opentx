@@ -674,6 +674,7 @@ void RCC_LSEConfig(uint8_t RCC_LSE) { }
 FlagStatus RCC_GetFlagStatus(uint8_t RCC_FLAG) { return RESET; }
 ErrorStatus RTC_WaitForSynchro(void) { return SUCCESS; }
 void unlockFlash() { }
+void lockFlash() { }
 void writeFlash(uint32_t *address, uint32_t *buffer) { SIMU_SLEEP(100); }
 uint32_t isBootloaderStart(const void *block) { return 1; }
 #endif
