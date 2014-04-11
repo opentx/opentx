@@ -798,7 +798,7 @@ void ConvertModel_215_to_216(ModelData &model)
   g_model.swashR.collectiveSource = ConvertSource_215_to_216(g_model.swashR.collectiveSource);
 
   for (uint8_t i=0; i<9; i++) {
-    if (oldModel.phaseData[i].swtch) {
+    if (i==0 || oldModel.phaseData[i].swtch) {
       memcpy(&g_model.phaseData[i], &oldModel.phaseData[i], sizeof(oldModel.phaseData[i])); // the last 4 gvars will remain blank
       g_model.phaseData[i].swtch = ConvertSwitch_215_to_216(oldModel.phaseData[i].swtch);
 #if defined(PCBTARANIS)
