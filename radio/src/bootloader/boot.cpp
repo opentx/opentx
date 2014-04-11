@@ -101,6 +101,8 @@ enum MemoryTypes {
   MEM_EEPROM
 };
 
+#define BLOCK_LEN 4096
+
 /*----------------------------------------------------------------------------
  *        Local variables
  *----------------------------------------------------------------------------*/
@@ -354,11 +356,23 @@ const char *getBinaryPath()
 FRESULT openBinaryFile(uint32_t index)
 {
   TCHAR filename[60];
+  FRESULT fr;
+  memset(Block_buffer, 0, sizeof(Block_buffer));
   strAppend(strAppend(strAppend(filename, getBinaryPath()), "/"), Filenames[index]);
-  f_open(&FlashFile, filename, FA_READ);
-  if (memoryType == MEM_FLASH)
-    f_lseek(&FlashFile, BOOTLOADER_SIZE);
-  return f_read(&FlashFile, (BYTE *)Block_buffer, 4096, &BlockCount);
+  if ((fr = f_open(&FlashFile, filename, FA_READ)) != FR_OK) {
+    return fr;
+  }
+  if (memoryType == MEM_FLASH) {
+    if ((fr = f_lseek(&FlashFile, BOOTLOADER_SIZE)) != FR_OK) {
+      return fr;
+    }
+  }
+  fr = f_read(&FlashFile, (BYTE *)Block_buffer, BLOCK_LEN, &BlockCount);
+  
+  if (BlockCount == BLOCK_LEN)
+    return fr;
+  else
+    return FR_INVALID_OBJECT;
 }
 
 uint32_t isValidBufferStart(const void * buffer)
@@ -377,12 +391,19 @@ int menuFlashFile(uint32_t index, uint8_t event)
 
   if (Valid == 0) {
     // Validate file here
-    // return 3 if invalid
-    fr = openBinaryFile(index);
-    fr = f_close(&FlashFile);
-    Valid = 1;
-    if (!isValidBufferStart(Block_buffer)) {
+    if (fr = openBinaryFile(index)) {
       Valid = 2;
+    }
+    else {
+      if (fr = f_close(&FlashFile)) {
+        Valid = 2;
+      }
+      else {
+        Valid = 1;
+      }
+      if (!isValidBufferStart(Block_buffer)) {
+        Valid = 2;
+      }
     }
   }
 
@@ -664,7 +685,6 @@ int main()
           // Select file to flash
           state = ST_FLASH_CHECK;
           Valid = 0;
-          memset(Block_buffer, 0, sizeof(Block_buffer));
         }
         else if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT)) {
           state = ST_START;
