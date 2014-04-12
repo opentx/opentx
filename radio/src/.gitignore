@@ -6,7 +6,6 @@
 /snapshot_*.png
 /*.sh
 /*.bat
-/*.o
 /*.bin
 /*.bin.*
 /*.hex

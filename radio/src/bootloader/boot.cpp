@@ -550,6 +550,10 @@ int main()
       if (state != ST_USB) {
         if (usbPlugged()) {
           state = ST_USB;
+          if (!unlocked) {
+            unlocked = 1;
+            unlockFlash();
+          }
           usbPluggedIn();
         }
       }
@@ -584,6 +588,10 @@ int main()
         lcd_putsLeft(4*FH, "\026USB Connected");
         if (usbPlugged() == 0) {
           vpos = 0;
+          if (unlocked) {
+            lockFlash();
+            unlocked = 0;
+          }
           state = ST_START;
         }
 #if defined(PCBSKY9X)
