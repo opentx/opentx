@@ -63,6 +63,7 @@ logsDialog::logsDialog(QWidget *parent) :
   connect(ui->customPlot, SIGNAL(plottableDoubleClick(QCPAbstractPlottable *, QMouseEvent *)), this, SLOT(plottableItemDoubleClick(QCPAbstractPlottable *, QMouseEvent *)));
   connect(ui->FieldsTW, SIGNAL(itemSelectionChanged()), this, SLOT(plotLogs()));
   connect(ui->logTable, SIGNAL(itemSelectionChanged()), this, SLOT(plotLogs()));
+  connect(ui->Reset_PB, SIGNAL(clicked()), this, SLOT(plotLogs()));
 }
 
 logsDialog::~logsDialog()
