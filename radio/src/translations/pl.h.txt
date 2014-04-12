@@ -164,15 +164,15 @@
 
 #if defined(PCBTARANIS)
   #define TR_CSWTIMER          "Timer"
-  #define TR_CSWSTICKY         "Trwały"
-  #define TR_CSWRANGE          "Zasięg"
-  #define TR_CSWSTAY           "Brzeg\0"
+  #define TR_CSWSTICKY         "Stały"
+  #define TR_CSWRANGE          "Zasi\0"
+  #define TR_CSWSTAY           "Brzeg"
 #else
   #define TR_CSWTIMER          "Tim\0 "
-  #define TR_CSWSTICKY         "Klej\0"
+  #define TR_CSWSTICKY         "Stały"
   #if defined(CPUARM)
     #define TR_CSWRANGE        "Zasi\0"
-    #define TR_CSWSTAY         "Brzeg\0"
+    #define TR_CSWSTAY         "Brzeg"
   #else
     #define TR_CSWRANGE
     #define TR_CSWSTAY
