@@ -357,7 +357,7 @@
 #define TR_VSWASHTYPE          "--- ""120 ""120X""140 ""90\0"
 
 #define LEN_VKEYS              "\005"
-#define TR_VKEYS               TR("Menu\0""Wyjdź""W dół""Wgórę""Wpraw""Wlewo", "Menu\0""Exit ""Enter ""Page ""Minus""Plus ")
+#define TR_VKEYS               TR("Menu\0""Exit ""W dół""Wgórę""Wpraw""Wlewo","Menu\0""Exit ""Enter ""Page ""Minus""Plus ")
 
 #define LEN_VRENCODERS         "\003"
 #define TR_VRENCODERS          "REa""REb"
@@ -423,7 +423,7 @@
 #define TR_VTRAINERMODES       "Trener""Uczeń\0"
 
 #define LEN_VFAILSAFE          "\011"
-#define TR_VFAILSAFE           "Utrzymuj\0""Własne\0  ""0 sygnału""Receiver\0"
+#define TR_VFAILSAFE           "Utrzymuj\0""Własne\0  ""0 sygnału""Odbiornik\0"
 
 #if defined(MAVLINK)
   #define LEN_MAVLINK_BAUDS     "\006"
