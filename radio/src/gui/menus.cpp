@@ -1478,6 +1478,10 @@ bool isSwitchAvailable(int swtch)
     return false;
   }
 
+  if (swtch < 0) {
+    swtch = -swtch;
+  }
+
   if (swtch >= SWSRC_FIRST_CSW && swtch <= SWSRC_LAST_CSW) {
     LogicalSwitchData * cs = cswAddress(swtch-SWSRC_FIRST_CSW);
     return (cs->func != LS_FUNC_NONE);
