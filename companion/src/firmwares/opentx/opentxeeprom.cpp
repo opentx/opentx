@@ -148,7 +148,7 @@ class SwitchesConversionTable: public ConversionTable {
     static void Cleanup() {
       for (std::list<Cache>::iterator it=internalCache.begin(); it!=internalCache.end(); it++) {
         Cache element = *it;
-        std::cout << "~SwitchesConversionTable(): deleting " << std::hex << reinterpret_cast<uint64_t>(element.table) << std::dec << std::endl;
+        //std::cout << "~SwitchesConversionTable(): deleting " << std::hex << reinterpret_cast<uint64_t>(element.table) << std::dec << std::endl;
         if (element.table) delete element.table;
       }
     }
