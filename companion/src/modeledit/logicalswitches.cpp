@@ -308,6 +308,7 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
       populateSourceCB(cswitchSource2[i], RawSource(model.customSw[i].val2), model, POPULATE_SOURCES | POPULATE_TRIMS | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (GetEepromInterface()->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
       break;
     case LS_FAMILY_TIMER:
+      mask |= VALUE1_VISIBLE | VALUE2_VISIBLE;
       updateTimerParam(cswitchValue[i], model.customSw[i].val1);
       updateTimerParam(cswitchOffset[i], model.customSw[i].val2);
       break;
