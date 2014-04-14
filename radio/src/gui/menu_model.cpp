@@ -4608,6 +4608,9 @@ void menuModelLogicalSwitches(uint8_t event)
     }
 #endif
     else if (cstate == LS_FAMILY_COMP) {
+#if defined(CPUARM)
+      v1_val = (uint8_t)cs->v1;
+#endif
       putsMixerSource(CSW_2ND_COLUMN, y, v1_val, attr1);
       putsMixerSource(CSW_3RD_COLUMN, y, cs->v2, attr2);
       INCDEC_SET_FLAG(INCDEC_SOURCE);
