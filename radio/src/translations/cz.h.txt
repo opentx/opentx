@@ -454,15 +454,15 @@
 #define TR_COPYINGMODEL        "Kopíruji model.."
 #define TR_MOVINGMODEL         "Přesouvám model."
 #define TR_LOADINGMODEL        "Aktivuji model.."
-#define TR_NAME                "Jméno"
+#define TR_NAME                "Název"
 #define TR_MODELNAME           "Název modelu"
-#define TR_PHASENAME           "Jméno"
-#define TR_MIXNAME             "Jméno"
-#define TR_INPUTNAME           "Jméno"
+#define TR_PHASENAME           "Název"
+#define TR_MIXNAME             "Název"
+#define TR_INPUTNAME           "Název"
 #if defined(PCBTARANIS)
-  #define TR_EXPONAME          "Poznámka"
+  #define TR_EXPONAME          "Popis"
 #else
-  #define TR_EXPONAME          "Jméno"
+  #define TR_EXPONAME          "Název"
 #endif
 #define TR_BITMAP              "Obrázek"
 #define TR_TIMER               "Stopky "
@@ -605,22 +605,22 @@
 #define TR_MENUFLIGHTPHASES    "LETOVÉ REŽIMY"
 #define TR_MENUHELISETUP       "HELI"
 
-#if defined(PCBTARANIS)
-  #define TR_MENUINPUTS        "VSTUPY"
-  #define TR_MENULIMITS        "SERVA"
-#elif defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...
-  #define TR_MENUINPUTS        "DR/EXPO"
-  #define TR_MENULIMITS        "LIMITY"
-#else
-  #define TR_MENUINPUTS        "DR/EXPO"
-  #define TR_MENULIMITS        "LIMITY"
-#endif
+
+#define TR_MENUINPUTS          "VSTUPY"
+#define TR_MENULIMITS          "SERVA"
+
+
+
+
+
+
+
 
 #define TR_MENUCURVES          "KŘIVKY"
 #define TR_MENUCURVE           "\002K"
-#define TR_MENULOGICALSWITCH    "LOG. SPÍNAč"
-#define TR_MENULOGICALSWITCHES  "LOGICKÉ SPÍNAčE"
-#define TR_MENUCUSTOMFUNC      "FUNKCE"
+#define TR_MENULOGICALSWITCH   "LOG. SPÍNAč"
+#define TR_MENULOGICALSWITCHES "LOGICKÉ SPÍNAčE"
+#define TR_MENUCUSTOMFUNC      "SPECIÁLNÍ FUNKCE"
 #define TR_MENUCUSTOMSCRIPTS   "SKRIPTY LUA"
 #define TR_MENUCUSTOMSCRIPT    "SKRIPT"
 #define TR_MENUTELEMETRY       "TELEMETRIE"
@@ -737,7 +737,7 @@
 #define TR_STATISTICS          "Statistika"
 #define TR_ABOUT_US            "O nás"
 #define TR_AND_SWITCH          "AND Spínač"
-#define TR_CF                  "FN"
+#define TR_CF                  "SF"
 #define TR_SPEAKER             INDENT"Repro"
 #define TR_BUZZER              INDENT"Pípák"
 #define TR_BYTES               "[B]"
@@ -801,8 +801,8 @@
 #endif
 
 // Taranis column headers
-#define TR_PHASES_HEADERS      { " Jméno ", " Spínač ", " Trim směrovky ", " Trim výškovky ", " Trim plynu ", " Trim křidélek ", " Přechod náběhu ", " Přechod konce " }
-#define TR_LIMITS_HEADERS      { " Jméno ", " Subtrim ", " Min ", " Max ", " Směr ", " Křivka ", " Střed PPM ", " Symetrické " }
+#define TR_PHASES_HEADERS      { " Název ", " Spínač ", " Trim směrovky ", " Trim výškovky ", " Trim plynu ", " Trim křidélek ", " Přechod náběhu ", " Přechod konce " }
+#define TR_LIMITS_HEADERS      { " Název ", " Subtrim ", " Min ", " Max ", " Invertovat ", " Křivka ", " Střed PPM ", " Symetrické " }
 #define TR_CSW_HEADERS         { " Funkce ", " Hodnota 1 ", " Hodnota 2 ", " Hodnota 2 ", " AND Spínač ", " Trvání ", " Zpoždění " }
 
 //Taranis About screen
@@ -865,7 +865,7 @@
 
 #define TR_TOP_BAR             "Horní lišta"
 #define TR_ALTITUDE            INDENT "Výška"
-#define TR_SCALE               "Scale"
+#define TR_SCALE               "Měřítko"
 #define TR_VIEW_CHANNELS       "Zobrazit kanály"
 #define TR_VIEW_NOTES          "Zobrazit poznámky"
 #define TR_MODS_FORBIDDEN      "Změny nejsou povoleny!"
