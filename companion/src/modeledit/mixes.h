@@ -27,6 +27,8 @@ class MixesPanel : public ModelPanel
     void mixerAdd();
     void moveMixUp();
     void moveMixDown();
+    void mixerHighlight();
+
 
     void mixerlistWidget_customContextMenuRequested(QPoint pos);
     void mixerlistWidget_doubleClicked(QModelIndex index);
@@ -40,6 +42,7 @@ class MixesPanel : public ModelPanel
   private:
     MixersList *MixerlistWidget;
     bool mixInserted;
+    unsigned int HighlightedSource;
 
     int getMixerIndex(unsigned int dch);
     bool gm_insertMix(int idx);
@@ -50,6 +53,9 @@ class MixesPanel : public ModelPanel
     QList<int> createMixListFromSelected();
     void setSelectedByMixList(QList<int> list);
     QString getChannelLabel(int curDest);
+    bool AddMixerLine(int dest);
+    QString getMixerText(int dest, bool * new_ch);
+    QWidget * getMixerWidget(const QString & mixer_text);
 };
 
 #endif // MIXES_H

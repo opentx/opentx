@@ -5,7 +5,7 @@
 
 MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings):
   ModelPanel(parent, model, generalSettings),
-  mixInserted(false)
+  mixInserted(false), HighlightedSource(0)
 {
   QGridLayout * mixesLayout = new QGridLayout(this);
 
@@ -47,10 +47,10 @@ QString MixesPanel::getChannelLabel(int curDest)
   QString str;
   int outputs = GetEepromInterface()->getCapability(Outputs);
   if (curDest > outputs) {
-    str = QObject::tr("X%1  ").arg(curDest-outputs);
+    str = QObject::tr("X%1  ").arg(curDest-outputs, 2, 10, QChar('0'));
   }
   else {
-    str = QObject::tr("CH%1").arg(curDest);
+    str = QObject::tr("CH%1").arg(curDest, 2, 10, QChar('0'));
     str.append(" ");
     if (GetEepromInterface()->getCapability(HasChNames)) {
       QString name = model.limitData[curDest-1].name;
@@ -75,23 +75,82 @@ void MixesPanel::update()
   unsigned int outputs = GetEepromInterface()->getCapability(Outputs);
   for (i=0; i<GetEepromInterface()->getCapability(Mixes); i++) {
     MixData *md = &model.mixData[i];
+    //std::cout << "md->destCh: " << md->destCh << std::endl;
     if ((md->destCh==0) || (md->destCh>outputs+(unsigned int)GetEepromInterface()->getCapability(ExtraChannels))) continue;
     QString str = "";
     while (curDest < md->destCh-1) {
       curDest++;
-      str = getChannelLabel(curDest);
-      qba.clear();
-      qba.append((quint8)-curDest);
-      QListWidgetItem *itm = new QListWidgetItem(str);
-      itm->setData(Qt::UserRole,qba);
-      MixerlistWidget->addItem(itm);
+      AddMixerLine(-curDest);
     }
+    if (AddMixerLine(i)) {
+      curDest++;
+    }
+  }
 
+  while(curDest<outputs+GetEepromInterface()->getCapability(ExtraChannels)) {
+    curDest++;
+    AddMixerLine(-curDest);
+  }
+}
+
+#define MIX_ROW_HEIGHT_INCREASE     8   //how much space is added above mixer row (for new channel), if 0 space adding is disabled
+
+bool MixesPanel::AddMixerLine(int dest)
+{
+  bool new_ch;
+  //std::cout << "dest: " << dest << std::endl;
+  //QWidget *w = getMixerWidget(dest, &new_ch);
+  QString str = getMixerText(dest, &new_ch);
+  QListWidgetItem *itm = new QListWidgetItem();
+  itm->setData(Qt::UserRole, QByteArray(1, (quint8)dest));  
+#if MIX_ROW_HEIGHT_INCREASE > 0
+  if ((new_ch && (dest > 0)) || (dest < 0)) {
+    //increase size of this row
+    QFontMetrics * fm = new QFontMetrics(itm->font());
+    QRect rect = fm->boundingRect("C)");
+    itm->setSizeHint(QSize(-1, (rect.height() * (14+MIX_ROW_HEIGHT_INCREASE))/10));    
+  }
+#endif
+  MixerlistWidget->addItem(itm);
+  MixerlistWidget->setItemWidget(itm, getMixerWidget(str));
+  std::cout << "MixesPanel::AddMixerLine(): " << str.toUtf8().constData() << std::endl;
+  return new_ch;
+}
+
+QWidget * MixesPanel::getMixerWidget(const QString & mixer_text) {
+  QLabel * l = new QLabel();
+  l->setFont(QFont("Courier New",12));
+  l->setTextFormat(Qt::RichText);
+  l->setAlignment(Qt::AlignBottom);
+  QString formated_str(mixer_text);
+  formated_str.replace(" ", "&nbsp;");
+  l->setText(formated_str);
+  return l;
+}
+
+QString MixesPanel::getMixerText(int dest, bool * new_ch)
+{
+  QString str;
+  *new_ch = 0;
+  if (dest < 0) {
+    str = getChannelLabel(-dest);
+    //highlight channell if needed
+    if (-dest == (int)HighlightedSource) {
+      str = "<b>" + str + "</b>";
+    }
+  }
+  else {
+    MixData *md = &model.mixData[dest];
+    //md->destCh from 1 to 32
     str = getChannelLabel(md->destCh);
 
-    if (curDest != md->destCh) {
-      curDest = md->destCh;
-    }
+    if ((dest == 0) || (model.mixData[dest-1].destCh != md->destCh)) {
+      *new_ch = 1;
+      //highlight channell if needed
+      if (md->destCh == HighlightedSource) {
+        str = "<b>" + str + "</b>";
+      }
+     }
     else {
       str.fill(' ');
     }
@@ -102,62 +161,52 @@ void MixesPanel::update()
       default:  str += "  "; break;
     };
 
-    str += " " + md->srcRaw.toString();
+    //highlight source if needed
+    if ( (md->srcRaw.type == SOURCE_TYPE_CH) && (md->srcRaw.index+1 == (int)HighlightedSource) ) {
+      str += " <b>" + Qt::escape(md->srcRaw.toString()) + "</b>"; 
+    }
+    else {
+      str += " " + Qt::escape(md->srcRaw.toString());
+    }
 
-    str += " " + tr("Weight(%1)").arg(getGVarString(md->weight, true));
+    str += " " + Qt::escape(tr("Weight(%1)").arg(getGVarString(md->weight, true)));
 
     QString phasesStr = getPhasesStr(md->phases, model);
-    if (!phasesStr.isEmpty()) str += " " + phasesStr;
+    if (!phasesStr.isEmpty()) str += " " + Qt::escape(phasesStr);
 
     if (md->swtch.type != SWITCH_TYPE_NONE) {
-      str += " " + tr("Switch(%1)").arg(md->swtch.toString());
+      str += " " + Qt::escape(tr("Switch(%1)").arg(md->swtch.toString()));
     }
 
     if (md->carryTrim>0) {
-      str += " " + tr("No Trim");
+      str += " " + Qt::escape(tr("No Trim"));
     }
     else if (md->carryTrim<0) {
-      str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString();
+      str += " " + Qt::escape(RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString());
     }
 
-    if (md->noExpo)      str += " " + tr("No DR/Expo");
-    if (md->sOffset)     str += " " + tr("Offset(%1)").arg(getGVarString(md->sOffset));
-    if (md->curve.value) str += " " + md->curve.toString();
+    if (md->noExpo)      str += " " + Qt::escape(tr("No DR/Expo"));
+    if (md->sOffset)     str += " " + Qt::escape(tr("Offset(%1)").arg(getGVarString(md->sOffset)));
+    if (md->curve.value) str += " " + Qt::escape(md->curve.toString());
 
     int scale = GetEepromInterface()->getCapability(SlowScale);
     if (scale == 0)
       scale = 1;
     if (md->delayDown || md->delayUp)
-      str += tr(" Delay(u%1:d%2)").arg((double)md->delayUp/scale).arg((double)md->delayDown/scale);
+      str += Qt::escape(tr(" Delay(u%1:d%2)").arg((double)md->delayUp/scale).arg((double)md->delayDown/scale));
     if (md->speedDown || md->speedUp)
-      str += tr(" Slow(u%1:d%2)").arg((double)md->speedUp/scale).arg((double)md->speedDown/scale);
-    if (md->mixWarn)  str += tr(" Warn(%1)").arg(md->mixWarn);
+      str += Qt::escape(tr(" Slow(u%1:d%2)").arg((double)md->speedUp/scale).arg((double)md->speedDown/scale));
+    if (md->mixWarn)  str += Qt::escape(tr(" Warn(%1)").arg(md->mixWarn));
     if (GetEepromInterface()->getCapability(HasMixerNames)) {
       QString MixerName;
       MixerName.append(md->name);
       if (!MixerName.isEmpty()) {
-        str += QString("(%1)").arg(MixerName);
+        str += Qt::escape(QString("(%1)").arg(MixerName));
       }
     }
-    qba.clear();
-    qba.append((quint8)i);
-    qba.append((const char*)md, sizeof(MixData));
-    QListWidgetItem *itm = new QListWidgetItem(str);
-    itm->setData(Qt::UserRole, qba);  // mix number
-    MixerlistWidget->addItem(itm); //(str);
   }
-
-  while(curDest<outputs+GetEepromInterface()->getCapability(ExtraChannels)) {
-    curDest++;
-    QString str = getChannelLabel(curDest);
-    qba.clear();
-    qba.append((quint8)-curDest);
-    QListWidgetItem *itm = new QListWidgetItem(str);
-    itm->setData(Qt::UserRole,qba); // add new mixer
-    MixerlistWidget->addItem(itm);
-  }
+  return str;
 }
-
 
 bool MixesPanel::gm_insertMix(int idx)
 {
@@ -367,6 +416,26 @@ void MixesPanel::mixerOpen()
     gm_openMix(idx);
 }
 
+void MixesPanel::mixerHighlight()
+{
+  int idx = MixerlistWidget->currentItem()->data(Qt::UserRole).toByteArray().at(0);
+  int dest;
+  if (idx<0) {
+    dest = -idx;
+  }
+  else {
+    dest = model.mixData[idx].destCh;
+  }
+  HighlightedSource = ( (int)HighlightedSource ==  dest) ? 0 : dest;
+  //std::cout << "MixesPanel::mixerHighlight(1): " << HighlightedSource << std::endl;
+  for(int i=0; i<MixerlistWidget->count(); i++) {
+    int t = MixerlistWidget->item(i)->data(Qt::UserRole).toByteArray().at(0);
+    bool dummy;
+    QWidget *w = getMixerWidget(getMixerText(t, &dummy));
+    MixerlistWidget->setItemWidget(MixerlistWidget->item(i), w);
+  }
+}
+
 void MixesPanel::mixerAdd()
 {
     if (!MixerlistWidget->currentItem())
@@ -401,10 +470,11 @@ void MixesPanel::mixerlistWidget_customContextMenuRequested(QPoint pos)
     QMenu contextMenu;
     contextMenu.addAction(CompanionIcon("add.png"), tr("&Add"),this,SLOT(mixerAdd()),tr("Ctrl+A"));
     contextMenu.addAction(CompanionIcon("edit.png"), tr("&Edit"),this,SLOT(mixerOpen()),tr("Enter"));
+    contextMenu.addAction(CompanionIcon("fuses.png"), tr("&Toogle &highlight"),this,SLOT(mixerHighlight()),tr("Ctrl+T"));
     contextMenu.addSeparator();
     contextMenu.addAction(CompanionIcon("clear.png"), tr("&Delete"),this,SLOT(mixersDelete()),tr("Delete"));
     contextMenu.addAction(CompanionIcon("copy.png"), tr("&Copy"),this,SLOT(mixersCopy()),tr("Ctrl+C"));
-    contextMenu.addAction(CompanionIcon("cut.png"), tr("&Cut"),this,SLOT(mixersCut()),tr("Ctrl+X"));
+    contextMenu.addAction(CompanionIcon("cut.png"), tr("C&ut"),this,SLOT(mixersCut()),tr("Ctrl+X"));
     contextMenu.addAction(CompanionIcon("paste.png"), tr("&Paste"),this,SLOT(mixersPaste()),tr("Ctrl+V"))->setEnabled(hasData);
     contextMenu.addAction(CompanionIcon("duplicate.png"), tr("Du&plicate"),this,SLOT(mixersDuplicate()),tr("Ctrl+U"));
     contextMenu.addSeparator();
@@ -433,6 +503,7 @@ void MixesPanel::mixerlistWidget_KeyPress(QKeyEvent *event)
     if(event->matches(QKeySequence::Cut))       mixersCut();
     if(event->matches(QKeySequence::Paste))     mixersPaste();
     if(event->matches(QKeySequence::Underline)) mixersDuplicate();
+    if(event->matches(QKeySequence::AddTab))    mixerHighlight();
 
     if(event->key()==Qt::Key_Return || event->key()==Qt::Key_Enter) mixerOpen();
     if(event->matches(QKeySequence::MoveToNextLine))
