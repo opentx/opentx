@@ -123,5 +123,7 @@ int main(int argc, char *argv[])
   delete splash;
   delete mainWin;
 
+  UnregisterFirmwares();
+
   return result;
 }

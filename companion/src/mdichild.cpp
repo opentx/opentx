@@ -82,6 +82,10 @@ MdiChild::MdiChild():
   }
 }
 
+MdiChild::~MdiChild() {
+  delete ui;
+}
+
 void MdiChild::qSleep(int ms)
 {
   if (ms<0)

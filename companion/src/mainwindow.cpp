@@ -1681,10 +1681,10 @@ void MainWindow::createActions()
 void MainWindow::createMenus()
 
 {
-    QMenu *recentFileMenu=new QMenu(tr("Recent Models+Settings"));
-    QMenu *languageMenu=new QMenu(tr("Set Menu Language"));
-    QMenu *themeMenu=new QMenu(tr("Set Icon Theme"));
-    QMenu *iconThemeSizeMenu=new QMenu(tr("Set Icon Size"));
+    QMenu *recentFileMenu=new QMenu(tr("Recent Models+Settings"), this);
+    QMenu *languageMenu=new QMenu(tr("Set Menu Language"), this);
+    QMenu *themeMenu=new QMenu(tr("Set Icon Theme"), this);
+    QMenu *iconThemeSizeMenu=new QMenu(tr("Set Icon Size"), this);
 
     fileMenu = menuBar()->addMenu(tr("File"));
     fileMenu->addAction(newAct);
@@ -1783,7 +1783,7 @@ QMenu *MainWindow::createRecentFileMenu()
 
 QMenu *MainWindow::createProfilesMenu()
 {
-    QMenu *profilesMenu=new QMenu(tr("Radio Profile"));
+    QMenu *profilesMenu=new QMenu(tr("Radio Profile"), this);
     int i;
     for ( i = 0; i < MAX_PROFILES; ++i) {
       profilesMenu->addAction(profileActs[i]);

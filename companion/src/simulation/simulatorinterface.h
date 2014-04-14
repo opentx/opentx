@@ -48,6 +48,8 @@ class SimulatorInterface {
 
   public:
 
+    virtual ~SimulatorInterface() {};
+
     virtual void start(QByteArray & eeprom, bool tests=true) = 0;
 
     virtual void start(const char * filename, bool tests=true) = 0;

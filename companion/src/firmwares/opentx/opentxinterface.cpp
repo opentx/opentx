@@ -1232,3 +1232,10 @@ void RegisterOpen9xFirmwares()
     firmwares.push_back(open9x);
   }
 }
+
+void UnregisterOpen9xFirmwares() {
+  foreach (FirmwareInfo * f, firmwares) {
+    //std::cout << "UnregisterOpen9xFirmwares(): deleting " << std::hex << reinterpret_cast<uint64_t>(f) << std::dec << std::endl;
+    delete f;
+  }
+}

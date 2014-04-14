@@ -5,6 +5,7 @@
 #include "firmwares/th9x/th9xinterface.h"
 #include "firmwares/gruvin9x/gruvin9xinterface.h"
 #include "firmwares/opentx/opentxinterface.h"
+#include "firmwares/opentx/opentxeeprom.h"
 #include "firmwares/ersky9x/ersky9xinterface.h"
 #include "appdata.h"
 #include "helpers.h"
@@ -1202,6 +1203,15 @@ void RegisterEepromInterfaces()
   eepromInterfaces.push_back(new Er9xInterface());
 }
 
+void UnregisterEepromInterfaces()
+{
+  foreach(EEPROMInterface * intf, eepromInterfaces) {
+    //std::cout << "UnregisterEepromInterfaces(): deleting " << std::hex << reinterpret_cast<uint64_t>(intf) << std::dec << std::endl;
+    delete intf;
+  } 
+  OpenTxEepromCleanup();
+}
+
 QList<FirmwareInfo *> firmwares;
 FirmwareVariant default_firmware_variant;
 FirmwareVariant current_firmware_variant;
@@ -1213,6 +1223,12 @@ void RegisterFirmwares()
   current_firmware_variant = default_firmware_variant;
   RegisterEepromInterfaces();
 }
+
+void UnregisterFirmwares() {
+  UnregisterEepromInterfaces();
+  UnregisterOpen9xFirmwares();
+}
+
 
 bool LoadEeprom(RadioData &radioData, const uint8_t *eeprom, const int size)
 {

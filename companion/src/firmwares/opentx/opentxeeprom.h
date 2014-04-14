@@ -144,4 +144,5 @@ class OpenTxModelData: public TransformedField {
     ChannelsConversionTable channelsConversionTable;
 };
 
+void OpenTxEepromCleanup(void);
 #endif
