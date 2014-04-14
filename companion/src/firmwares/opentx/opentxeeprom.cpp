@@ -86,8 +86,10 @@ class SwitchesConversionTable: public ConversionTable {
         addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, i), val++);
       }
 
-      addConversion(RawSwitch(SWITCH_TYPE_OFF), -val+offset);
-      addConversion(RawSwitch(SWITCH_TYPE_ON), val++);
+      if (!(flags & POPULATE_TIMER_MODES)) {
+        addConversion(RawSwitch(SWITCH_TYPE_OFF), -val+offset);
+        addConversion(RawSwitch(SWITCH_TYPE_ON), val++);
+      }
 
       if (version < 216) {
         // previous "moment" switches
