@@ -443,11 +443,14 @@ void MixesPanel::mixerlistWidget_KeyPress(QKeyEvent *event)
 
 int MixesPanel::gm_moveMix(int idx, bool dir) //true=inc=down false=dec=up
 {
-    if(idx>GetEepromInterface()->getCapability(Mixes) || (idx==0 && !dir) || (idx==GetEepromInterface()->getCapability(Mixes) && dir)) return idx;
+    if(idx>GetEepromInterface()->getCapability(Mixes) || (idx==GetEepromInterface()->getCapability(Mixes) && dir)) return idx;
 
     int tdx = dir ? idx+1 : idx-1;
     MixData &src=model.mixData[idx];
     MixData &tgt=model.mixData[tdx];
+    
+    if (src.destCh == 1 && !dir)
+      return idx;
 
     unsigned int outputs = GetEepromInterface()->getCapability(Outputs);
     if((src.destCh==0) || (src.destCh>outputs) || (tgt.destCh>outputs)) return idx;
