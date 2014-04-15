@@ -1233,7 +1233,8 @@ void RegisterOpen9xFirmwares()
   }
 }
 
-void UnregisterOpen9xFirmwares() {
+void UnregisterOpen9xFirmwares() 
+{
   foreach (FirmwareInfo * f, firmwares) {
     qDebug() << "UnregisterOpen9xFirmwares(): deleting " <<  QString::number(reinterpret_cast<uint64_t>(f), 16 );
     delete f;

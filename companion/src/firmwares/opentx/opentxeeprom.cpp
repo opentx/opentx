@@ -317,7 +317,8 @@ class SourcesConversionTable: public ConversionTable {
 
 std::list<SourcesConversionTable::Cache> SourcesConversionTable::internalCache;
 
-void OpenTxEepromCleanup(void){
+void OpenTxEepromCleanup(void)
+{
   SourcesConversionTable::Cleanup(); 
   SwitchesConversionTable::Cleanup();
 }
@@ -1458,7 +1459,8 @@ class LogicalSwitchField: public TransformedField {
       }
     }
 
-    ~LogicalSwitchField() {
+    ~LogicalSwitchField() 
+    {
       delete andswitchesConversionTable;
     }
     virtual void beforeExport()

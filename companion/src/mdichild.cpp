@@ -82,7 +82,8 @@ MdiChild::MdiChild():
   }
 }
 
-MdiChild::~MdiChild() {
+MdiChild::~MdiChild() 
+{
   delete ui;
 }
 
