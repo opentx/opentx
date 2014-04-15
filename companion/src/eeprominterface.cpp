@@ -1224,7 +1224,8 @@ void RegisterFirmwares()
   RegisterEepromInterfaces();
 }
 
-void UnregisterFirmwares() {
+void UnregisterFirmwares() 
+{
   UnregisterEepromInterfaces();
   UnregisterOpen9xFirmwares();
 }

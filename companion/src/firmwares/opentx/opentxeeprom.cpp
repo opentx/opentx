@@ -145,7 +145,8 @@ class SwitchesConversionTable: public ConversionTable {
       internalCache.push_back(element);
       return element.table;
     }
-    static void Cleanup() {
+    static void Cleanup() 
+    {
       for (std::list<Cache>::iterator it=internalCache.begin(); it!=internalCache.end(); it++) {
         Cache element = *it;
         delete element.table;
@@ -306,7 +307,8 @@ class SourcesConversionTable: public ConversionTable {
       internalCache.push_back(element);
       return element.table;
     }
-    static void Cleanup() {
+    static void Cleanup() 
+    {
       for (std::list<Cache>::iterator it=internalCache.begin(); it!=internalCache.end(); it++) {
         Cache element = *it;
         delete element.table;
