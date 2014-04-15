@@ -1371,7 +1371,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../generaledit.ui" line="686"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Channel order&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Defines the order of the default mixes created on a new model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ordre des voiesr&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Détermine l&apos;ordre des mixages par défaut sur un nouveau modèle.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ordre des voies&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Détermine l&apos;ordre des mixages par défaut sur un nouveau modèle.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="693"/>
@@ -6322,49 +6322,49 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
         <translation>Simulateur companion</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatordialog-9x.ui" line="401"/>
-        <location filename="../simulation/simulatordialog-9x.ui" line="459"/>
-        <location filename="../simulation/simulatordialog-9x.ui" line="858"/>
-        <location filename="../simulation/simulatordialog-9x.ui" line="916"/>
+        <location filename="../simulation/simulatordialog-9x.ui" line="404"/>
+        <location filename="../simulation/simulatordialog-9x.ui" line="468"/>
+        <location filename="../simulation/simulatordialog-9x.ui" line="873"/>
+        <location filename="../simulation/simulatordialog-9x.ui" line="937"/>
         <source>Right Double Click to Reset</source>
         <translation>Double-clic droit pour réinitialiser</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="248"/>
-        <location filename="../simulation/simulatordialog-9x.ui" line="705"/>
+        <location filename="../simulation/simulatordialog-9x.ui" line="717"/>
         <source>Hold X</source>
         <translation>Retenir X</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="278"/>
-        <location filename="../simulation/simulatordialog-9x.ui" line="735"/>
+        <location filename="../simulation/simulatordialog-9x.ui" line="747"/>
         <source>Fix X</source>
         <translation>Blocage X</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="308"/>
-        <location filename="../simulation/simulatordialog-9x.ui" line="765"/>
+        <location filename="../simulation/simulatordialog-9x.ui" line="777"/>
         <source>Fix Y</source>
         <translation>Blocage Y</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="338"/>
-        <location filename="../simulation/simulatordialog-9x.ui" line="795"/>
+        <location filename="../simulation/simulatordialog-9x.ui" line="807"/>
         <source>Hold Y</source>
         <translation>Retenir Y</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatordialog-9x.ui" line="975"/>
+        <location filename="../simulation/simulatordialog-9x.ui" line="999"/>
         <source>BEEP</source>
         <translation>BIP</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatordialog-9x.ui" line="1215"/>
+        <location filename="../simulation/simulatordialog-9x.ui" line="1239"/>
         <source>9x Simulator</source>
         <translation>Simulateur 9x</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatordialog-9x.ui" line="1408"/>
+        <location filename="../simulation/simulatordialog-9x.ui" line="1432"/>
         <source>Outputs</source>
         <translation>Sorties</translation>
     </message>
@@ -6377,34 +6377,34 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
         <translation>Simulateur companion</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatordialog-taranis.ui" line="431"/>
-        <location filename="../simulation/simulatordialog-taranis.ui" line="1143"/>
+        <location filename="../simulation/simulatordialog-taranis.ui" line="437"/>
+        <location filename="../simulation/simulatordialog-taranis.ui" line="1161"/>
         <source>Hold Y</source>
         <translation>Retenir Y</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatordialog-taranis.ui" line="461"/>
-        <location filename="../simulation/simulatordialog-taranis.ui" line="1173"/>
+        <location filename="../simulation/simulatordialog-taranis.ui" line="467"/>
+        <location filename="../simulation/simulatordialog-taranis.ui" line="1191"/>
         <source>Fix Y</source>
         <translation>Blocage Y</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatordialog-taranis.ui" line="491"/>
-        <location filename="../simulation/simulatordialog-taranis.ui" line="1203"/>
+        <location filename="../simulation/simulatordialog-taranis.ui" line="497"/>
+        <location filename="../simulation/simulatordialog-taranis.ui" line="1221"/>
         <source>Fix X</source>
         <translation>Blocage X</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatordialog-taranis.ui" line="521"/>
-        <location filename="../simulation/simulatordialog-taranis.ui" line="1233"/>
+        <location filename="../simulation/simulatordialog-taranis.ui" line="527"/>
+        <location filename="../simulation/simulatordialog-taranis.ui" line="1251"/>
         <source>Hold X</source>
         <translation>Retenir X</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatordialog-taranis.ui" line="315"/>
-        <location filename="../simulation/simulatordialog-taranis.ui" line="907"/>
-        <location filename="../simulation/simulatordialog-taranis.ui" line="990"/>
-        <location filename="../simulation/simulatordialog-taranis.ui" line="1578"/>
+        <location filename="../simulation/simulatordialog-taranis.ui" line="318"/>
+        <location filename="../simulation/simulatordialog-taranis.ui" line="916"/>
+        <location filename="../simulation/simulatordialog-taranis.ui" line="1005"/>
+        <location filename="../simulation/simulatordialog-taranis.ui" line="1599"/>
         <source>Right Double Click to Reset</source>
         <translation>Double-clic droit pour réinitialiser</translation>
     </message>
@@ -7121,22 +7121,22 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../wizarddialog.cpp" line="45"/>
         <source>Select the control channels for your multirotor</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner les commandes de votre multirotor</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="46"/>
         <source>Save Changes</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauvegarder les changements</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="46"/>
         <source>Manually check the direction of each control surface and reverse any channels that make controls move in the wrong direction. Remove the propeller/propellers before you try to control your model for the first time.&lt;br&gt;Please note that continuing removes all old model settings!</source>
-        <translation type="unfinished"></translation>
+        <translation>Vérifiez manuellement la direction de mouvement de chaque surface de commande, et inversez les canaux de celles qui répondent dans le faux sens.Attention à bien enlever les hélices du modèle avant de l&apos;alimenter la première fois!&lt;br&gt;Veuillez noter que continuer effacera tous les réglages existants du modèle actuel.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="65"/>
         <source>Enter a name for your model and select model type.</source>
-        <translation type="unfinished"></translation>
+        <translation>Entrer un nom pour le modèle et sélectionnez son type.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="67"/>
@@ -7236,32 +7236,32 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
 <context>
     <name>appPreferencesDialog</name>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="957"/>
+        <location filename="../apppreferencesdialog.ui" line="955"/>
         <source>Simulator capture folder</source>
-        <translation type="unfinished">Dossier de sauvegarde des captures d&apos;écran</translation>
+        <translation>Dossier de sauvegarde des captures d&apos;écran</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1000"/>
+        <location filename="../apppreferencesdialog.ui" line="998"/>
         <source>Remember simulator switch values</source>
-        <translation type="unfinished"></translation>
+        <translation>Mémoriser les positions des inters du simulateur</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="389"/>
-        <location filename="../apppreferencesdialog.ui" line="663"/>
-        <location filename="../apppreferencesdialog.ui" line="710"/>
-        <location filename="../apppreferencesdialog.ui" line="882"/>
+        <location filename="../apppreferencesdialog.ui" line="387"/>
+        <location filename="../apppreferencesdialog.ui" line="661"/>
+        <location filename="../apppreferencesdialog.ui" line="708"/>
+        <location filename="../apppreferencesdialog.ui" line="880"/>
         <source>Open Folder</source>
-        <translation type="unfinished">Ouvrir le répertoire</translation>
+        <translation>Ouvrir le répertoire</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="26"/>
         <source>Edit Settings</source>
-        <translation type="unfinished">Modifier les réglages</translation>
+        <translation>Modifier les réglages</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="52"/>
         <source>Radio Profile</source>
-        <translation type="unfinished">Profil de radio</translation>
+        <translation>Profil de radio</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="71"/>
@@ -7284,7 +7284,7 @@ Mode 4:
   Right stick:  Elevator, Rudder
 
 </source>
-        <translation type="unfinished">Choix du mode:
+        <translation>Choix du mode:
 
 Mode 1:
 Manche Gauche:  Profondeur, Direction
@@ -7307,445 +7307,442 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../apppreferencesdialog.ui" line="96"/>
         <source>Mode 1 (RUD ELE THR AIL)</source>
-        <translation type="unfinished">Mode 1 (DIR PROF GAZ AIL)</translation>
+        <translation>Mode 1 (DIR PROF GAZ AIL)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="101"/>
         <source>Mode 2 (RUD THR ELE AIL)</source>
-        <translation type="unfinished">Mode 2 (DIR GAZ PROF AIL)</translation>
+        <translation>Mode 2 (DIR GAZ PROF AIL)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="106"/>
         <source>Mode 3 (AIL ELE THR RUD)</source>
-        <translation type="unfinished">Mode 3 (AIL PROF GAZ DIR)</translation>
+        <translation>Mode 3 (AIL PROF GAZ DIR)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="111"/>
         <source>Mode 4 (AIL THR ELE RUD)</source>
-        <translation type="unfinished">Mode 4 (AIL GAZ PROF DIR)</translation>
+        <translation>Mode 4 (AIL GAZ PROF DIR)</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="144"/>
+        <source>R E T A</source>
+        <translation>D P G A</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="149"/>
+        <source>R E A T</source>
+        <translation>D P A G</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="154"/>
+        <source>R T E A</source>
+        <translation>D G P A</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="159"/>
+        <source>R T A E</source>
+        <translation>D G A P</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="164"/>
+        <source>R A E T</source>
+        <translation>D A P G</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="169"/>
+        <source>R A T E</source>
+        <translation>D A G P</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="174"/>
+        <source>E R T A</source>
+        <translation>P D G A</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="179"/>
+        <source>E R A T</source>
+        <translation>P D A G</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="184"/>
+        <source>E T R A</source>
+        <translation>P G D A</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="189"/>
+        <source>E T A R</source>
+        <translation>P G A D</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="194"/>
+        <source>E A R T</source>
+        <translation>P A D G</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="199"/>
+        <source>E A T R</source>
+        <translation>P A G D</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="204"/>
+        <source>T R E A</source>
+        <translation>G D P A</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="209"/>
+        <source>T R A E</source>
+        <translation>G D A P</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="214"/>
+        <source>T E R A</source>
+        <translation>G P D A</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="219"/>
+        <source>T E A R</source>
+        <translation>G P A D</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="224"/>
+        <source>T A R E</source>
+        <translation>G A D P</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="229"/>
+        <source>T A E R</source>
+        <translation>G A P D</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="234"/>
+        <source>A R E T</source>
+        <translation>A D P G</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="239"/>
+        <source>A R T E</source>
+        <translation>A D G P</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="244"/>
+        <source>A E R T</source>
+        <translation>A P D G</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="249"/>
+        <source>A E T R</source>
+        <translation>A P G D</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="254"/>
+        <source>A T R E</source>
+        <translation>A G D P</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="259"/>
+        <source>A T E R</source>
+        <translation>A G P D</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="273"/>
+        <source>Default Stick Mode</source>
+        <translation>Mode</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="280"/>
+        <source>Profile Name</source>
+        <translation>Nom du profil</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="306"/>
+        <source>Splash Screen</source>
+        <translation>Ecran d&apos;accueil</translation>
+    </message>
+    <message>
+        <source>Channel Order</source>
+        <translation type="obsolete">Ordre des voies par défaut</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="335"/>
+        <source>SD Structure path</source>
+        <translation>Chemin de la structure de la carte SD</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="380"/>
+        <source>Remove Profile</source>
+        <translation>Supprimer le profil</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="416"/>
+        <source>Select Image</source>
+        <translation>Sélectionner une image</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="423"/>
+        <source>Radio Type</source>
+        <translation>Type de radio</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="430"/>
+        <source>Clear Image</source>
+        <translation>Effacer l&apos;image</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="498"/>
+        <source>9X</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="503"/>
+        <source>9X with m128</source>
+        <translation>9X avec m128</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="508"/>
+        <source>9XR</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="513"/>
+        <source>9XR with m128</source>
+        <translation>9XR avec m128</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="518"/>
+        <source>Gruvin9x Board</source>
+        <translation>Carte Gruvin9x</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="523"/>
+        <source>Sky9x Board</source>
+        <translation>Carte Sky9x</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="528"/>
+        <source>Taranis</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="536"/>
+        <source>General Settings</source>
+        <translation>Paramètres généraux</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="543"/>
+        <source>Append version number to FW file name</source>
+        <translation>Ajouter le numéro de version au nom du fichier téléchargé</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="550"/>
+        <source>Offer to write FW to Tx after download</source>
+        <translation>Proposer de transférer le firmware à la radio après téléchargement</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="568"/>
+        <source>Application Settings</source>
+        <translation>Réglages de l&apos;application</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="742"/>
+        <source>Only show user splash images</source>
+        <translation>Ne montrer que les images de l&apos;utilisateur</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="747"/>
+        <source>Show user and companion splash images</source>
+        <translation>Montrer les images de companion et de l&apos;utilisateur</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="761"/>
+        <source>User Splash Screens</source>
+        <translation>Ecrans d&apos;accueil personnalisés</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="830"/>
+        <source>Use model wizard when creating a new model</source>
+        <translation>Utiliser l&apos;assistant à la création d&apos;un nouveau modèle</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="838"/>
+        <source>Simulator Settings</source>
+        <translation>Paramètres du simulateur</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="897"/>
+        <source>Blue</source>
+        <translation>Bleu</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="902"/>
+        <source>Green</source>
+        <translation>Vert</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="907"/>
+        <source>Red</source>
+        <translation>Rouge</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="912"/>
+        <source>Orange</source>
+        <translation>Orange</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="917"/>
+        <source>Yellow</source>
+        <translation>Jaune</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="674"/>
+        <source>Splash Screen Library</source>
+        <translation>Bibliothèques d&apos;écrans d&apos;accueil</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="687"/>
+        <source>Files to keep</source>
+        <translation>Fichiers à conserver</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="850"/>
+        <source>Simulator BackLight</source>
+        <translation>Rétroéclairage du simulateur</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="790"/>
+        <source>Automatic Backup Folder</source>
+        <translation>Dossier de sauvegardes automatiques</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="991"/>
+        <source>Only capture to clipboard</source>
+        <translation>Capturer dans le presse-papiers uniquement</translation>
+    </message>
+    <message>
+        <location filename="../apppreferencesdialog.ui" line="931"/>
+        <source>Joystick</source>
+        <translation>Joystick</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="137"/>
-        <source>Channel order
-
-This is used by the templated to determine which channel goes to what number output.</source>
-        <translation type="unfinished"></translation>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Channel order&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Defines the order of the default mixes created on a new model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ordre des voies&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Détermine l&apos;ordre des mixages par défaut sur un nouveau modèle.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="146"/>
-        <source>R E T A</source>
-        <translation type="unfinished">D P G A</translation>
+        <location filename="../apppreferencesdialog.ui" line="319"/>
+        <source>Default Channel Order</source>
+        <translation>Ordre des voies par défaut</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="151"/>
-        <source>R E A T</source>
-        <translation type="unfinished">D P A G</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="156"/>
-        <source>R T E A</source>
-        <translation type="unfinished">D G P A</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="161"/>
-        <source>R T A E</source>
-        <translation type="unfinished">D G A P</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="166"/>
-        <source>R A E T</source>
-        <translation type="unfinished">D A P G</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="171"/>
-        <source>R A T E</source>
-        <translation type="unfinished">D A G P</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="176"/>
-        <source>E R T A</source>
-        <translation type="unfinished">P D G A</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="181"/>
-        <source>E R A T</source>
-        <translation type="unfinished">P D A G</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="186"/>
-        <source>E T R A</source>
-        <translation type="unfinished">P G D A</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="191"/>
-        <source>E T A R</source>
-        <translation type="unfinished">P G A D</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="196"/>
-        <source>E A R T</source>
-        <translation type="unfinished">P A D G</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="201"/>
-        <source>E A T R</source>
-        <translation type="unfinished">P A G D</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="206"/>
-        <source>T R E A</source>
-        <translation type="unfinished">G D P A</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="211"/>
-        <source>T R A E</source>
-        <translation type="unfinished">G D A P</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="216"/>
-        <source>T E R A</source>
-        <translation type="unfinished">G P D A</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="221"/>
-        <source>T E A R</source>
-        <translation type="unfinished">G P A D</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="226"/>
-        <source>T A R E</source>
-        <translation type="unfinished">G A D P</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="231"/>
-        <source>T A E R</source>
-        <translation type="unfinished">G A P D</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="236"/>
-        <source>A R E T</source>
-        <translation type="unfinished">A D P G</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="241"/>
-        <source>A R T E</source>
-        <translation type="unfinished">A D G P</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="246"/>
-        <source>A E R T</source>
-        <translation type="unfinished">A P D G</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="251"/>
-        <source>A E T R</source>
-        <translation type="unfinished">A P G D</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="256"/>
-        <source>A T R E</source>
-        <translation type="unfinished">A G D P</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="261"/>
-        <source>A T E R</source>
-        <translation type="unfinished">A G P D</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="275"/>
-        <source>Default Stick Mode</source>
-        <translation type="unfinished">Mode par défaut</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="282"/>
-        <source>Profile Name</source>
-        <translation type="unfinished">Nom du profil</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="308"/>
-        <source>Splash Screen</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="321"/>
-        <source>Channel Order</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="337"/>
-        <source>SD Structure path</source>
-        <translation type="unfinished">Chemin de la structure de la carte SD</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="382"/>
-        <source>Remove Profile</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="418"/>
-        <source>Select Image</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="425"/>
-        <source>Radio Type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="432"/>
-        <source>Clear Image</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="500"/>
-        <source>9X</source>
-        <translation type="unfinished">9X</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="505"/>
-        <source>9X with m128</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="510"/>
-        <source>9XR</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="515"/>
-        <source>9XR with m128</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="520"/>
-        <source>Gruvin9x Board</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="525"/>
-        <source>Sky9x Board</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="530"/>
-        <source>Taranis</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="538"/>
-        <source>General Settings</source>
-        <translation type="unfinished">Paramètres généraux</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="545"/>
-        <source>Append version number to FW file name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="552"/>
-        <source>Offer to write FW to Tx after download</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="562"/>
-        <source>General Settings Label</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="570"/>
-        <source>Application Settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="744"/>
-        <source>Only show user splash images</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="749"/>
-        <source>Show user and companion splash images</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="763"/>
-        <source>User Splash Screens</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="832"/>
-        <source>Use model wizard when creating a new model</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="840"/>
-        <source>Simulator Settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="899"/>
-        <source>Blue</source>
-        <translation type="unfinished">Bleu</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="904"/>
-        <source>Green</source>
-        <translation type="unfinished">Vert</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="909"/>
-        <source>Red</source>
-        <translation type="unfinished">Rouge</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="914"/>
-        <source>Orange</source>
-        <translation type="unfinished">Orange</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="919"/>
-        <source>Yellow</source>
-        <translation type="unfinished">Jaune</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="676"/>
-        <source>Splash Screen Library</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="689"/>
-        <source>Files to keep</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="852"/>
-        <source>Simulator BackLight</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="792"/>
-        <source>Automatic Backup Folder</source>
-        <translation type="unfinished">Dossier de sauvegardes automatiques</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="993"/>
-        <source>Only capture to clipboard</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="933"/>
-        <source>Joystick</source>
-        <translation type="unfinished">Joystick</translation>
-    </message>
-    <message>
-        <location filename="../apppreferencesdialog.ui" line="696"/>
+        <location filename="../apppreferencesdialog.ui" line="694"/>
         <source>Find Executable</source>
-        <translation type="unfinished"></translation>
+        <translation>Parcourir...</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="730"/>
+        <location filename="../apppreferencesdialog.ui" line="728"/>
         <source>Google Earth Executable</source>
-        <translation type="unfinished"></translation>
+        <translation>Exécutable Google Earth</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="950"/>
+        <location filename="../apppreferencesdialog.ui" line="948"/>
         <source>Calibrate</source>
-        <translation type="unfinished">Calibrer</translation>
+        <translation>Calibrer</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="862"/>
+        <location filename="../apppreferencesdialog.ui" line="860"/>
         <source>Enable</source>
-        <translation type="unfinished">Actif</translation>
+        <translation>Actif</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="576"/>
+        <location filename="../apppreferencesdialog.ui" line="574"/>
         <source>Show splash screen when Companion starts</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher l&apos;écran d&apos;accueil au lancement de companion</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="617"/>
+        <location filename="../apppreferencesdialog.ui" line="615"/>
         <source>Automatic check for OpenTX firmware updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Vérifier la présence de mises à jour de firmware automatiquement</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="586"/>
+        <location filename="../apppreferencesdialog.ui" line="584"/>
         <source>Automatic check for Companion updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Vérifier la présence de mises à jour de companion automatiquement</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="596"/>
+        <location filename="../apppreferencesdialog.ui" line="594"/>
         <source>Enable automatic backup before writing firmware</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauvegarder les réglages et modèles automatiquement lors des transferts</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="68"/>
         <source>My Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Ma radio</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="84"/>
         <source>Select your snapshot folder</source>
-        <translation type="unfinished">Sélectionner le dossier où stocker les captures d&apos;écran</translation>
+        <translation>Sélectionner le dossier où stocker les captures d&apos;écran</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="132"/>
         <location filename="../apppreferencesdialog.cpp" line="226"/>
         <source>No joysticks found</source>
-        <translation type="unfinished">Aucun joystick</translation>
+        <translation>Aucun joystick trouvé</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="168"/>
         <source>EMPTY: No radio settings stored in profile</source>
-        <translation type="unfinished"></translation>
+        <translation>VIDE: Aucune donnée stockée dans le profil</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="173"/>
         <source>AVAILABLE: Radio settings of unknown age</source>
-        <translation type="unfinished"></translation>
+        <translation>DISPONIBLES: Réglages enregistrés, date d&apos;enregistrement non disponible</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="175"/>
         <source>AVAILABLE: Radio settings stored %1</source>
-        <translation type="unfinished"></translation>
+        <translation>DISPONIBLES: Réglages enregistrés le %1</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="183"/>
         <source>Select your library folder</source>
-        <translation type="unfinished">Sélectionner le dossier de bibliothèque</translation>
+        <translation>Sélectionner le dossier de bibliothèque</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="206"/>
         <source>Select your Models and Settings backup folder</source>
-        <translation type="unfinished">Sélectionner le dossier dans lequel une sauvegarde des réglages et modèles sera placée automatiquement lors de chaque opération</translation>
+        <translation>Sélectionner le dossier dans lequel une sauvegarde des réglages et modèles sera placée automatiquement lors de chaque opération</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="216"/>
         <source>Select Google Earth executable</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner l&apos;emplacement de l&apos;exécutable Google Earth</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="259"/>
         <source>Select the folder replicating your SD structure</source>
-        <translation type="unfinished">Sélectionner un dossier contenant une copie des dossiers de la carte SD</translation>
+        <translation>Sélectionner un dossier contenant une copie des dossiers de la carte SD</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="268"/>
         <source>Not possible to remove profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de supprimer le profil</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="268"/>
         <source>The default profile can not be removed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le profil par défaut ne peut être supprimé.</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="305"/>
         <source>Open Image to load</source>
-        <translation type="unfinished">Ouvrir l&apos;image à charger</translation>
+        <translation>Ouvrir l&apos;image à charger</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="305"/>
         <source>Images (%1)</source>
-        <translation type="unfinished">Images (%1)</translation>
+        <translation>Images (%1)</translation>
     </message>
 </context>
 <context>
@@ -8226,6 +8223,11 @@ m2560 for v4.1 boards</source>
         <translation>Avertissement</translation>
     </message>
     <message>
+        <location filename="../burndialog.cpp" line="356"/>
+        <source>Profile image %1 is invalid.</source>
+        <translation>L&apos;image du profil %1 est invalide.</translation>
+    </message>
+    <message>
         <location filename="../burndialog.cpp" line="372"/>
         <source>Images (%1)</source>
         <translation>Images (%1)</translation>
@@ -8260,7 +8262,7 @@ m2560 for v4.1 boards</source>
     <message>
         <location filename="../burndialog.cpp" line="65"/>
         <source>Write Backup from %1 to Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Transférer la sauvegarde %1 à la radio</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="67"/>
@@ -8298,47 +8300,42 @@ m2560 for v4.1 boards</source>
     <message>
         <location filename="../burndialog.cpp" line="143"/>
         <source>Open Firmware File</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner le firmware</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="149"/>
         <source>Choose Radio Backup file</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner le fichier de sauvegarde</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="205"/>
         <source>%1 may not be a valid firmware file</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ne semble pas être un firmware valide</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="336"/>
         <source>The firmware file is not valid.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le firmware est invalide.</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="340"/>
         <source>There is no start screen image in the firmware file.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../burndialog.cpp" line="356"/>
-        <source>The profile image %1 does not contain an image.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucun écran d&apos;accueil trouvé dans le firmware.</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="372"/>
         <source>Open image file to use as radio start screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir l&apos;image à utiliser comme écran d&apos;accueil</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="377"/>
         <source>Image could not be loaded from %1</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;image %1 n&apos;a pu être chargée</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="395"/>
         <source>The library image could not be loaded</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;image n&apos;a pu être chargée depuis la bibliothèque</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="427"/>
@@ -8386,7 +8383,7 @@ m2560 for v4.1 boards</source>
     <message>
         <location filename="../comparedialog.ui" line="29"/>
         <source>Compare Models</source>
-        <translation type="unfinished"></translation>
+        <translation>Comparer les modèles</translation>
     </message>
     <message>
         <location filename="../comparedialog.ui" line="49"/>
@@ -8447,13 +8444,13 @@ m2560 for v4.1 boards</source>
         <location filename="../comparedialog.cpp" line="257"/>
         <location filename="../comparedialog.cpp" line="280"/>
         <source>Protocol</source>
-        <translation>Codage</translation>
+        <translation>Protocole</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="259"/>
         <location filename="../comparedialog.cpp" line="282"/>
         <source>Pulse Polarity</source>
-        <translation>Modulation</translation>
+        <translation>Polarité</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="261"/>
@@ -8487,13 +8484,13 @@ m2560 for v4.1 boards</source>
         <location filename="../comparedialog.cpp" line="266"/>
         <location filename="../comparedialog.cpp" line="289"/>
         <source>Trim Increment</source>
-        <translation>Incrément trims</translation>
+        <translation>Pas des trims</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="268"/>
         <location filename="../comparedialog.cpp" line="291"/>
         <source>Center Beep</source>
-        <translation>Bip de Centrage</translation>
+        <translation>Bip de centrage</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="301"/>
@@ -8649,6 +8646,11 @@ m2560 for v4.1 boards</source>
         <translation>Ratio</translation>
     </message>
     <message>
+        <location filename="../comparedialog.cpp" line="974"/>
+        <source>5 Point Curves</source>
+        <translation>Courbes à 5 points</translation>
+    </message>
+    <message>
         <location filename="../comparedialog.cpp" line="995"/>
         <location filename="../comparedialog.cpp" line="1024"/>
         <source>Curve</source>
@@ -8669,13 +8671,13 @@ m2560 for v4.1 boards</source>
         <location filename="../comparedialog.cpp" line="827"/>
         <location filename="../comparedialog.cpp" line="906"/>
         <source> Delay(u%1:d%2)</source>
-        <translation> Délai(u%1:d%2)</translation>
+        <translation> Délai(h%1:b%2)</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="828"/>
         <location filename="../comparedialog.cpp" line="907"/>
         <source> Slow(u%1:d%2)</source>
-        <translation> Ralentissement(u%1:d%2)</translation>
+        <translation> Ralenti(h%1:b%2)</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="829"/>
@@ -8703,9 +8705,8 @@ m2560 for v4.1 boards</source>
         <translation>Courbes</translation>
     </message>
     <message>
-        <location filename="../comparedialog.cpp" line="974"/>
         <source>5 Points Curves</source>
-        <translation>Courbes à 5 points</translation>
+        <translation type="obsolete">Courbes à 5 points</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="976"/>
@@ -8716,14 +8717,13 @@ m2560 for v4.1 boards</source>
         <translation>point %1</translation>
     </message>
     <message>
-        <location filename="../comparedialog.cpp" line="1004"/>
         <source>9 Points Curves</source>
-        <translation>Courbes à 9 points</translation>
+        <translation type="obsolete">Courbes à 9 points</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1072"/>
         <source>Special Functions</source>
-        <translation type="unfinished">Fonctions spéciales</translation>
+        <translation>Fonctions spéciales</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1075"/>
@@ -8835,6 +8835,11 @@ m2560 for v4.1 boards</source>
         <translation>Phase de vol</translation>
     </message>
     <message>
+        <location filename="../comparedialog.cpp" line="1004"/>
+        <source>9 Point Curves</source>
+        <translation>Courbes à 9 points</translation>
+    </message>
+    <message>
         <location filename="../comparedialog.cpp" line="1077"/>
         <location filename="../comparedialog.cpp" line="1083"/>
         <source>Repeat</source>
@@ -8843,7 +8848,7 @@ m2560 for v4.1 boards</source>
     <message>
         <location filename="../comparedialog.cpp" line="1115"/>
         <source>SF</source>
-        <translation type="unfinished"></translation>
+        <translation>FS</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1202"/>
@@ -8878,13 +8883,13 @@ m2560 for v4.1 boards</source>
     <message>
         <location filename="../comparedialog.cpp" line="1041"/>
         <source>Logical Switches</source>
-        <translation type="unfinished">Inters logiques</translation>
+        <translation>Inters logiques</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1051"/>
         <location filename="../comparedialog.cpp" line="1053"/>
         <source>LS</source>
-        <translation type="unfinished"></translation>
+        <translation>IL</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1399"/>
@@ -8900,9 +8905,8 @@ m2560 for v4.1 boards</source>
 <context>
     <name>contributorsDialog</name>
     <message>
-        <location filename="../contributorsdialog.ui" line="14"/>
         <source>Dialog</source>
-        <translation>Dialogue</translation>
+        <translation type="obsolete">Dialogue</translation>
     </message>
     <message>
         <location filename="../contributorsdialog.cpp" line="23"/>
@@ -8917,12 +8921,12 @@ m2560 for v4.1 boards</source>
     <message>
         <location filename="../contributorsdialog.cpp" line="72"/>
         <source>Honors go to Rafal Tomczak (RadioClone), Thomas Husterer (th9x) and Erez Raviv (er9x and eePe)</source>
-        <translation type="unfinished"></translation>
+        <translation>Les honneurs vont à Rafal Tomczak (RadioClone), Thomas Husterer (th9x) and Erez Raviv (er9x and eePe)</translation>
     </message>
     <message>
         <location filename="../contributorsdialog.cpp" line="90"/>
         <source>Companion Release Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>Notes de version de companion</translation>
     </message>
     <message>
         <location filename="../contributorsdialog.cpp" line="73"/>
@@ -8945,37 +8949,37 @@ m2560 for v4.1 boards</source>
     <message>
         <location filename="../customizesplashdialog.ui" line="23"/>
         <source>Transmitter Splash Screen Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Editeur d&apos;écran d&apos;accueil</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="209"/>
         <location filename="../customizesplashdialog.ui" line="517"/>
         <source>Invert</source>
-        <translation type="unfinished">Inversion</translation>
+        <translation>Inverser</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="272"/>
         <location filename="../customizesplashdialog.ui" line="583"/>
         <source>Load FW</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir le firmware</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="282"/>
         <location filename="../customizesplashdialog.ui" line="593"/>
         <source>Load Pict</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir l&apos;image</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="262"/>
         <location filename="../customizesplashdialog.ui" line="570"/>
         <source>Load Profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Charger le profil</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="308"/>
         <location filename="../customizesplashdialog.ui" line="619"/>
         <source>Save</source>
-        <translation type="unfinished">Enregistrer</translation>
+        <translation>Sauvegarder</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="232"/>
@@ -9002,12 +9006,12 @@ m2560 for v4.1 boards</source>
     <message>
         <location filename="../customizesplashdialog.cpp" line="190"/>
         <source>Open Firmware File</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner le firmware</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="193"/>
         <source>Can not load embedded image from firmware file %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;enregistrer l&apos;image %1 dans le firmware.</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="209"/>
@@ -9022,47 +9026,47 @@ m2560 for v4.1 boards</source>
     <message>
         <location filename="../customizesplashdialog.cpp" line="213"/>
         <source>Cannot load the image file %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;ouvrir l&apos;image %1.</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="228"/>
-        <source>Cannot load the profile image %1.</source>
-        <translation type="unfinished"></translation>
+        <source>Cannot load profile image %1.</source>
+        <translation>Impossible d&apos;ouvrir l&apos;image du profil %1.</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="242"/>
         <source>Cannot load the library image %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;ouvrir l&apos;image de bibliothèque %1.</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="251"/>
         <source>File Saved</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier sauvegardé</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="251"/>
         <source>The image was saved to the file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;image a été enregistrée dans le fichier %1</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="253"/>
         <source>Image Refresh Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur de rafraîchissement de l&apos;image</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="253"/>
         <source>Failed to refresh image from file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de rafraîchir l&apos;image %1</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="257"/>
         <source>File Save Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur à la sauvegarde du fichier</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="257"/>
         <source>Failed to write image to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur à l&apos;écriture du fichier %1</translation>
     </message>
 </context>
 <context>
@@ -9224,10 +9228,16 @@ p, li { white-space: pre-wrap; }
         <translation>Téléchargements</translation>
     </message>
     <message>
+        <location filename="../fwpreferencesdialog.ui" line="556"/>
         <source>Set language of voice.
 May be different from firmware language</source>
-        <translation type="obsolete">Langue des voix.
+        <translation>Langue des voix.
 Peut être différente de la langue du firmware</translation>
+    </message>
+    <message>
+        <location filename="../fwpreferencesdialog.ui" line="564"/>
+        <source>Download Voice</source>
+        <translation>Télécharger les fichiers son</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="689"/>
@@ -9250,9 +9260,8 @@ Peut être différente de la langue du firmware</translation>
         <translation>Langue audio</translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.ui" line="564"/>
         <source>Download Voice Files</source>
-        <translation>Télécharger les fichiers son</translation>
+        <translation type="obsolete">Télécharger les fichiers son</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="201"/>
@@ -9260,10 +9269,9 @@ Peut être différente de la langue du firmware</translation>
         <translation>Type de firmware</translation>
     </message>
     <message>
-        <location filename="../fwpreferencesdialog.ui" line="556"/>
         <source>Set voice language.
 May be different from firmware language</source>
-        <translation>Choisir la langue des voix.
+        <translation type="obsolete">Choisir la langue des voix.
 Peut être différent de la langue des menus</translation>
     </message>
     <message>
@@ -9686,7 +9694,7 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../imgpreferences.ui" line="94"/>
         <source>Remember simulator switches</source>
-        <translation type="unfinished"></translation>
+        <translation>Mémoriser les positions des inters du simulateur</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="136"/>
@@ -9735,122 +9743,122 @@ Peut être différente de la langue du firmware</translation>
     <message>
         <location filename="../preferencesdialog.ui" line="391"/>
         <source>R E T A</source>
-        <translation type="unfinished">D P G A</translation>
+        <translation>D P G A</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="396"/>
         <source>R E A T</source>
-        <translation type="unfinished">D P A G</translation>
+        <translation>D P A G</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="401"/>
         <source>R T E A</source>
-        <translation type="unfinished">D G P A</translation>
+        <translation>D G P A</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="406"/>
         <source>R T A E</source>
-        <translation type="unfinished">D G A P</translation>
+        <translation>D G A P</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="411"/>
         <source>R A E T</source>
-        <translation type="unfinished">D A P G</translation>
+        <translation>D A P G</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="416"/>
         <source>R A T E</source>
-        <translation type="unfinished">D A G P</translation>
+        <translation>D A G P</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="421"/>
         <source>E R T A</source>
-        <translation type="unfinished">P D G A</translation>
+        <translation>P D G A</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="426"/>
         <source>E R A T</source>
-        <translation type="unfinished">P D A G</translation>
+        <translation>P D A G</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="431"/>
         <source>E T R A</source>
-        <translation type="unfinished">P G D A</translation>
+        <translation>P G D A</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="436"/>
         <source>E T A R</source>
-        <translation type="unfinished">P G A D</translation>
+        <translation>P G A D</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="441"/>
         <source>E A R T</source>
-        <translation type="unfinished">P A D G</translation>
+        <translation>P A D G</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="446"/>
         <source>E A T R</source>
-        <translation type="unfinished">P A G D</translation>
+        <translation>P A G D</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="451"/>
         <source>T R E A</source>
-        <translation type="unfinished">G D P A</translation>
+        <translation>G D P A</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="456"/>
         <source>T R A E</source>
-        <translation type="unfinished">G D A P</translation>
+        <translation>G D A P</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="461"/>
         <source>T E R A</source>
-        <translation type="unfinished">G P D A</translation>
+        <translation>G P D A</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="466"/>
         <source>T E A R</source>
-        <translation type="unfinished">G P A D</translation>
+        <translation>G P A D</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="471"/>
         <source>T A R E</source>
-        <translation type="unfinished">G A D P</translation>
+        <translation>G A D P</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="476"/>
         <source>T A E R</source>
-        <translation type="unfinished">G A P D</translation>
+        <translation>G A P D</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="481"/>
         <source>A R E T</source>
-        <translation type="unfinished">A D P G</translation>
+        <translation>A D P G</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="486"/>
         <source>A R T E</source>
-        <translation type="unfinished">A D G P</translation>
+        <translation>A D G P</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="491"/>
         <source>A E R T</source>
-        <translation type="unfinished">A P D G</translation>
+        <translation>A P D G</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="496"/>
         <source>A E T R</source>
-        <translation type="unfinished">A P G D</translation>
+        <translation>A P G D</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="501"/>
         <source>A T R E</source>
-        <translation type="unfinished">A G D P</translation>
+        <translation>A G D P</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="506"/>
         <source>A T E R</source>
-        <translation type="unfinished">A G P D</translation>
+        <translation>A G P D</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="797"/>
@@ -9878,52 +9886,6 @@ Peut être différente de la langue du firmware</translation>
         <location filename="../preferencesdialog.ui" line="728"/>
         <source>Use clipboard only</source>
         <translation>Utiliser le presse-papiers</translation>
-    </message>
-    <message>
-        <location filename="../preferencesdialog.ui" line="971"/>
-        <location filename="../preferencesdialog.ui" line="984"/>
-        <location filename="../preferencesdialog.ui" line="997"/>
-        <location filename="../preferencesdialog.ui" line="1010"/>
-        <location filename="../preferencesdialog.ui" line="1023"/>
-        <location filename="../preferencesdialog.ui" line="1036"/>
-        <location filename="../preferencesdialog.ui" line="1049"/>
-        <location filename="../preferencesdialog.ui" line="1062"/>
-        <location filename="../preferencesdialog.ui" line="1075"/>
-        <location filename="../preferencesdialog.ui" line="1088"/>
-        <location filename="../preferencesdialog.ui" line="1101"/>
-        <location filename="../preferencesdialog.ui" line="1114"/>
-        <location filename="../preferencesdialog.ui" line="1127"/>
-        <location filename="../preferencesdialog.ui" line="1140"/>
-        <location filename="../preferencesdialog.ui" line="1153"/>
-        <location filename="../preferencesdialog.ui" line="1166"/>
-        <location filename="../preferencesdialog.ui" line="1179"/>
-        <location filename="../preferencesdialog.ui" line="1192"/>
-        <location filename="../preferencesdialog.ui" line="1205"/>
-        <location filename="../preferencesdialog.ui" line="1218"/>
-        <location filename="../preferencesdialog.ui" line="1231"/>
-        <location filename="../preferencesdialog.ui" line="1244"/>
-        <location filename="../preferencesdialog.ui" line="1257"/>
-        <location filename="../preferencesdialog.ui" line="1270"/>
-        <location filename="../preferencesdialog.ui" line="1283"/>
-        <location filename="../preferencesdialog.ui" line="1296"/>
-        <location filename="../preferencesdialog.ui" line="1309"/>
-        <location filename="../preferencesdialog.ui" line="1322"/>
-        <location filename="../preferencesdialog.ui" line="1335"/>
-        <location filename="../preferencesdialog.ui" line="1348"/>
-        <location filename="../preferencesdialog.ui" line="1361"/>
-        <location filename="../preferencesdialog.ui" line="1374"/>
-        <location filename="../preferencesdialog.ui" line="1387"/>
-        <location filename="../preferencesdialog.ui" line="1400"/>
-        <location filename="../preferencesdialog.ui" line="1413"/>
-        <location filename="../preferencesdialog.ui" line="1426"/>
-        <location filename="../preferencesdialog.ui" line="1439"/>
-        <location filename="../preferencesdialog.ui" line="1452"/>
-        <location filename="../preferencesdialog.ui" line="1465"/>
-        <location filename="../preferencesdialog.ui" line="1478"/>
-        <location filename="../preferencesdialog.ui" line="1491"/>
-        <location filename="../preferencesdialog.ui" line="1504"/>
-        <source>CheckBox</source>
-        <translation></translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="566"/>
@@ -9977,7 +9939,7 @@ Indique l&apos;affectation voie / numéro de canal par défaut utilisée lors de
     <message>
         <location filename="../preferencesdialog.ui" line="156"/>
         <source>Show Splash At Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher l&apos;écran d&apos;accueil au démarrage</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="312"/>
@@ -10029,12 +9991,12 @@ Indique l&apos;affectation voie / numéro de canal par défaut utilisée lors de
     <message>
         <location filename="../preferencesdialog.ui" line="1622"/>
         <source>Find Executable</source>
-        <translation type="unfinished"></translation>
+        <translation>Parcourir...</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="1606"/>
         <source>Google Earth Executable</source>
-        <translation type="unfinished"></translation>
+        <translation>Exécutable Google Earth</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="134"/>
@@ -10267,7 +10229,7 @@ Indique l&apos;affectation voie / numéro de canal par défaut utilisée lors de
         <location filename="../printdialog.cpp" line="636"/>
         <location filename="../printdialog.cpp" line="638"/>
         <source>LS</source>
-        <translation></translation>
+        <translation>IL</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="689"/>
@@ -10612,17 +10574,17 @@ Indique l&apos;affectation voie / numéro de canal par défaut utilisée lors de
     <message>
         <location filename="../taranisnotfound.ui" line="32"/>
         <source>No Taranis Radio Found</source>
-        <translation type="unfinished"></translation>
+        <translation>Radio Taranis non détectée</translation>
     </message>
     <message>
         <location filename="../taranisnotfound.ui" line="40"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Taranis Radio was found!&lt;/p&gt;&lt;p&gt;Make sure that you hold the lower trim buttons towards the center while you turn it on.&lt;/p&gt;&lt;p&gt;Then connect the USB wire.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Radio Taranis non détectée!&lt;/p&gt;&lt;p&gt;Assurez-vous de maintenir les 2 trims horizontaux pendant la mise sous tension,&lt;/p&gt;&lt;p&gt;puis connectez le câble USB.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../taranisnotfound.ui" line="92"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 </TS>
