@@ -1718,13 +1718,13 @@ void MainWindow::createMenus()
       languageMenu->addAction(germanLangAct);
       languageMenu->addAction(finnishLangAct);
       languageMenu->addAction(frenchLangAct);
-      languageMenu->addAction(hebrewLangAct);
+//      languageMenu->addAction(hebrewLangAct);
       languageMenu->addAction(italianLangAct);
       languageMenu->addAction(polishLangAct);
-      languageMenu->addAction(portugueseLangAct);
+//      languageMenu->addAction(portugueseLangAct);
       languageMenu->addAction(swedishLangAct);
-      languageMenu->addAction(russianLangAct);
-      languageMenu->addAction(dutchLangAct);
+//      languageMenu->addAction(russianLangAct);
+//      languageMenu->addAction(dutchLangAct);
 
     settingsMenu->addMenu(themeMenu);
       themeMenu->addAction(classicThemeAct);
