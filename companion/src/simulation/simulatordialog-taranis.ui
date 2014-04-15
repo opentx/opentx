@@ -301,6 +301,9 @@
               <property name="text">
                <string notr="true">^</string>
               </property>
+              <property name="autoDefault">
+               <bool>false</bool>
+              </property>
              </widget>
             </item>
             <item alignment="Qt::AlignHCenter">
@@ -341,6 +344,9 @@
               </property>
               <property name="text">
                <string notr="true">v</string>
+              </property>
+              <property name="autoDefault">
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -899,6 +905,9 @@ QPushButton:checked {
             <property name="text">
              <string notr="true">&lt;-</string>
             </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
            </widget>
           </item>
           <item>
@@ -933,6 +942,9 @@ QPushButton:checked {
             </property>
             <property name="text">
              <string notr="true">-&gt;</string>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -982,6 +994,9 @@ QPushButton:checked {
               <property name="text">
                <string notr="true">^</string>
               </property>
+              <property name="autoDefault">
+               <bool>false</bool>
+              </property>
              </widget>
             </item>
             <item alignment="Qt::AlignHCenter">
@@ -1016,6 +1031,9 @@ QPushButton:checked {
               </property>
               <property name="text">
                <string notr="true">v</string>
+              </property>
+              <property name="autoDefault">
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -1564,6 +1582,9 @@ QPushButton:checked {
             <property name="text">
              <string notr="true">&lt;-</string>
             </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
            </widget>
           </item>
           <item>
@@ -1604,6 +1625,9 @@ QPushButton:checked {
             </property>
             <property name="text">
              <string notr="true">-&gt;</string>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
