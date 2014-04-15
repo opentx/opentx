@@ -771,7 +771,7 @@ HeliPage::HeliPage(WizardDialog *dlg, QString image, QString title, QString text
   rollCB = new QComboBox();
 
   QLayout *l = layout();
-  l->addWidget(new QLabel(tr("Trottle Channel:")));
+  l->addWidget(new QLabel(tr("Throttle Channel:")));
   l->addWidget(throttleCB);
   l->addWidget(new QLabel(tr("Yaw Channel:")));
   l->addWidget(yawCB);
@@ -806,7 +806,7 @@ MultirotorPage::MultirotorPage(WizardDialog *dlg, QString image, QString title, 
   rollCB = new QComboBox();
 
   QLayout *l = layout();
-  l->addWidget(new QLabel(tr("Trottle Channel:")));
+  l->addWidget(new QLabel(tr("Throttle Channel:")));
   l->addWidget(throttleCB);
   l->addWidget(new QLabel(tr("Yaw Channel:")));
   l->addWidget(yawCB);
