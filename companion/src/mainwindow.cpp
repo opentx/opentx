@@ -1611,14 +1611,14 @@ void MainWindow::createActions()
     }
     updateProfilesActions();
 
-    newAct =             addAct("new.png",    tr("New Models+Settings"),        tr("Create a new Models and Settings file"), QKeySequence::New,    SLOT(newFile()));
-    openAct =            addAct("open.png",   tr("Open Models+Settings..."),    tr("Open Models and Settings file"),         QKeySequence::Open,   SLOT(openFile()));
-    saveAct =            addAct("save.png",   tr("Save Models+Settings..."),    tr("Save Models and Settings file"),         QKeySequence::Save,   SLOT(save()));
-    saveAsAct =          addAct("saveas.png", tr("Save Models+Settings as..."), tr("Save Models and Settings file"),         QKeySequence::SaveAs, SLOT(saveAs()));
-    exitAct =            addAct("exit.png",   tr("Exit"),                       tr("Exit the application"),                  QKeySequence::Quit,   SLOT(closeAllWindows()), qApp);
-    cutAct =             addAct("cut.png",    tr("Cut Model"),                  tr("Cut current model to the clipboard"),    QKeySequence::Cut,    SLOT(cut()));
-    copyAct =            addAct("copy.png",   tr("Copy Model..."),              tr("Copy current model to the clipboard"),   QKeySequence::Copy,   SLOT(copy()));
-    pasteAct =           addAct("paste.png",  tr("Paste Model..."),             tr("Paste model from clipboard"),            QKeySequence::Paste,  SLOT(paste()));
+    newAct =             addAct("new.png",    tr("New"),                    tr("Create a new Models and Settings file"), QKeySequence::New,    SLOT(newFile()));
+    openAct =            addAct("open.png",   tr("Open..."),                tr("Open Models and Settings file"),         QKeySequence::Open,   SLOT(openFile()));
+    saveAct =            addAct("save.png",   tr("Save"),                   tr("Save Models and Settings file"),         QKeySequence::Save,   SLOT(save()));
+    saveAsAct =          addAct("saveas.png", tr("Save As..."),             tr("Save Models and Settings file"),         QKeySequence::SaveAs, SLOT(saveAs()));
+    exitAct =            addAct("exit.png",   tr("Exit"),                   tr("Exit the application"),                  QKeySequence::Quit,   SLOT(closeAllWindows()), qApp);
+    cutAct =             addAct("cut.png",    tr("Cut Model"),              tr("Cut current model to the clipboard"),    QKeySequence::Cut,    SLOT(cut()));
+    copyAct =            addAct("copy.png",   tr("Copy Model"),             tr("Copy current model to the clipboard"),   QKeySequence::Copy,   SLOT(copy()));
+    pasteAct =           addAct("paste.png",  tr("Paste Model"),            tr("Paste model from clipboard"),            QKeySequence::Paste,  SLOT(paste()));
  
     QActionGroup *themeAlignGroup = new QActionGroup(this);
     classicThemeAct =    addAct( themeAlignGroup,    tr("Classical"),       tr("The classic companion9x icon theme"),   SLOT(setClassicTheme()));
@@ -1681,7 +1681,7 @@ void MainWindow::createActions()
 void MainWindow::createMenus()
 
 {
-    QMenu *recentFileMenu=new QMenu(tr("Recent Models+Settings"));
+    QMenu *recentFileMenu=new QMenu(tr("Recent Files"));
     QMenu *languageMenu=new QMenu(tr("Set Menu Language"));
     QMenu *themeMenu=new QMenu(tr("Set Icon Theme"));
     QMenu *iconThemeSizeMenu=new QMenu(tr("Set Icon Size"));
@@ -1843,7 +1843,7 @@ void MainWindow::createToolBars()
     profileButton->setMenu(createProfilesMenu());
     profileButton->setIcon(CompanionIcon("profiles.png"));
     profileButton->setToolTip(tr("Radio Profile"));
-    profileButton->setStatusTip(tr("Show a selection list of radio profiles"));
+    profileButton->setStatusTip(tr("Show the list of radio profiles"));
 
     fileToolBar->addWidget(profileButton);
     fileToolBar->addAction(editSplashAct);
