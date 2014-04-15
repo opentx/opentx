@@ -3314,8 +3314,11 @@ PLAY_FUNCTION(playValue, uint8_t idx)
       break;
 
     case MIXSRC_FIRST_TELEM+TELEM_VSPD-1:
-    case MIXSRC_FIRST_TELEM+TELEM_ASPD-1:
       PLAY_NUMBER(div10_and_round(val), 1+UNIT_METERS_PER_SECOND, PREC1);
+      break;
+
+    case MIXSRC_FIRST_TELEM+TELEM_ASPD-1:
+      PLAY_NUMBER(val, 1+UNIT_KTS, 0);
       break;
 
     case MIXSRC_FIRST_TELEM+TELEM_CONSUMPTION-1:
