@@ -680,8 +680,9 @@ class FlightModeField: public TransformedField {
         }
       }
       else {
-        for (int i=0; i<NUM_STICKS; i++)
+        for (int i=0; i<NUM_STICKS; i++) {
           internalField.Append(new SignedField<16>(trimBase[i]));
+        }
       }
 
       internalField.Append(new SwitchField<8>(phase.swtch, board, version));
@@ -764,7 +765,7 @@ class FlightModeField: public TransformedField {
             phase.trim[i] = 0;
           }
           else {
-            phase.trimRef[i] = index;
+            phase.trimRef[i] = (trim == 0 ? 0 : index/*own trim*/);
             phase.trimMode[i] = 0;
             phase.trim[i] = trim;
           }
