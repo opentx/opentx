@@ -277,7 +277,7 @@ void MainWindow::checkForUpdateFinished(QNetworkReply * reply)
           }
         }
 #else
-        QMessageBox::warning(this, tr("New release available"), tr("A new release of Companion is available please check the OpenTX website!"));
+        QMessageBox::warning(this, tr("New release available"), tr("A new release of Companion is available, please check the OpenTX website!"));
 #endif            
       } else {
         if (showcheckForUpdatesResult && check1done && check2done)
@@ -341,7 +341,7 @@ void MainWindow::reply1Accepted()
           int errnum=hline.mid(6).toInt();
           switch(errnum) {
             case 1:
-              errormsg=tr("Firmware does not longer fit in the radio, due to selected firmware options");
+              errormsg=tr("Not enough memory for all the selected firmware options");
               break;
             case 2:
               errormsg=tr("Compilation server temporary failure, try later");
@@ -380,7 +380,7 @@ void MainWindow::reply1Accepted()
         int errnum=hline.mid(6).toInt();
         switch(errnum) {
           case 1:
-            errormsg=tr("Firmware does not fit in the radio, due to selected firmware options");
+            errormsg=tr("Not enough memory for all the selected firmware options");
             break;
           case 2:
             errormsg=tr("Compilation server termporary failure, try later");
