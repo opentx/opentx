@@ -148,9 +148,9 @@ class SwitchesConversionTable: public ConversionTable {
     static void Cleanup() {
       for (std::list<Cache>::iterator it=internalCache.begin(); it!=internalCache.end(); it++) {
         Cache element = *it;
-        //std::cout << "~SwitchesConversionTable(): deleting " << std::hex << reinterpret_cast<uint64_t>(element.table) << std::dec << std::endl;
-        if (element.table) delete element.table;
+        delete element.table;
       }
+      internalCache.clear();
     }
 };
 
@@ -309,9 +309,9 @@ class SourcesConversionTable: public ConversionTable {
     static void Cleanup() {
       for (std::list<Cache>::iterator it=internalCache.begin(); it!=internalCache.end(); it++) {
         Cache element = *it;
-        //std::cout << "~SourcesConversionTable(): deleting " << std::hex << reinterpret_cast<uint64_t>(element.table) << std::dec << std::endl;
-        if (element.table) delete element.table;
+        delete element.table;
       }
+      internalCache.clear();
     }
 };
 
@@ -1459,7 +1459,7 @@ class LogicalSwitchField: public TransformedField {
     }
 
     ~LogicalSwitchField() {
-      if (andswitchesConversionTable) delete andswitchesConversionTable;
+      delete andswitchesConversionTable;
     }
     virtual void beforeExport()
     {

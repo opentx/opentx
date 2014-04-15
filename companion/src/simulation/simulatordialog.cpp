@@ -142,7 +142,7 @@ SimulatorDialogTaranis::~SimulatorDialogTaranis()
 SimulatorDialog::~SimulatorDialog()
 {
   delete timer;
-  if (simulator) delete simulator;
+  delete simulator;
 }
 
 void SimulatorDialog::closeEvent (QCloseEvent *)

@@ -1235,7 +1235,7 @@ void RegisterOpen9xFirmwares()
 
 void UnregisterOpen9xFirmwares() {
   foreach (FirmwareInfo * f, firmwares) {
-    //std::cout << "UnregisterOpen9xFirmwares(): deleting " << std::hex << reinterpret_cast<uint64_t>(f) << std::dec << std::endl;
+    qDebug() << "UnregisterOpen9xFirmwares(): deleting " <<  QString::number(reinterpret_cast<uint64_t>(f), 16 );
     delete f;
   }
 }

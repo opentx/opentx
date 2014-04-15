@@ -1206,7 +1206,7 @@ void RegisterEepromInterfaces()
 void UnregisterEepromInterfaces()
 {
   foreach(EEPROMInterface * intf, eepromInterfaces) {
-    //std::cout << "UnregisterEepromInterfaces(): deleting " << std::hex << reinterpret_cast<uint64_t>(intf) << std::dec << std::endl;
+    qDebug() << "UnregisterEepromInterfaces(): deleting " <<  QString::number( reinterpret_cast<uint64_t>(intf), 16 );
     delete intf;
   } 
   OpenTxEepromCleanup();
