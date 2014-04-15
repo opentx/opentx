@@ -752,22 +752,29 @@ class FlightModeField: public TransformedField {
           }
         }
         else {
-          int trim;
-          if (board == BOARD_STOCK || (board == BOARD_M128 && version >= 215))
-            trim = ((trimBase[i]) << 2) + (trimExt[i] & 0x03);
-          else
-            trim = trimBase[i];
-          if (trim > 500) {
-            phase.trimRef[i] = trim - 501;
-            if (phase.trimRef[i] >= index)
-              phase.trimRef[i] += 1;
+          if (phase.swtch == RawSwitch(SWITCH_TYPE_NONE)) {
+            phase.trimRef[i] = 0;
             phase.trimMode[i] = 0;
             phase.trim[i] = 0;
           }
           else {
-            phase.trimRef[i] = (trim == 0 ? 0 : index/*own trim*/);
-            phase.trimMode[i] = 0;
-            phase.trim[i] = trim;
+            int trim;
+            if (board == BOARD_STOCK || (board == BOARD_M128 && version >= 215))
+              trim = ((trimBase[i]) << 2) + (trimExt[i] & 0x03);
+            else
+              trim = trimBase[i];
+            if (trim > 500) {
+              phase.trimRef[i] = trim - 501;
+              if (phase.trimRef[i] >= index)
+                phase.trimRef[i] += 1;
+              phase.trimMode[i] = 0;
+              phase.trim[i] = 0;
+            }
+            else {
+              phase.trimRef[i] = index/*own trim*/;
+              phase.trimMode[i] = 0;
+              phase.trim[i] = trim;
+            }
           }
         }
       }
