@@ -1,8 +1,8 @@
 #ifndef WARNINGS_H
 #define WARNINGS_H
 #define WARNING_LEVEL 0
-#define WARNING_ID 6
-#define WARNING QObject::tr("Thanks all for the donations, kind messages, nice ideas, constructive proposals etc. for the next OpenTX/Companion funding model.\n\nWe are really appreciative for that!\n\nThe OpenTX/Companion Team.")
+#define WARNING_ID 7
+#define WARNING QObject::tr("Thank you for upgrading to OpenTX 2.0. This is a major upgrade that adds and modifies a lot of things, so please make sure that you read release notes carefully to learn about the changes, and thoroughly check each of your models for proper function.\n\nThe OpenTX Team.")
 
 #endif /* WARNINGS_H */
 
