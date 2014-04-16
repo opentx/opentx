@@ -78,7 +78,7 @@
 #define TR_DATETIME            "DATE:""ZEIT:"
 
 #define LEN_VLCD               "\006"
-#define TR_VLCD                "NormalOptrex"
+#define TR_VLCD                "Normal""Optrex"
 
 #define LEN_COUNTRYCODES       TR("\002", "\007")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Amerika""Japan\0 ""Europa\0")

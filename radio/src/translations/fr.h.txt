@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Authors (alphabetical order)
  * - Andre Bernet <bernet.andre@gmail.com>
  * - Bertrand Songis <bsongis@gmail.com>
@@ -96,7 +96,7 @@
 #define TR_VTRIMINC            TR("Expo\0 ""ExFin\0""Fin\0  ""Moyen\0""Gros\0 ","Exponentiel""Extra Fin\0 ""Fin\0       ""Moyen\0     ""Grossier\0  ")
 
 #define LEN_VBEEPCOUNTDOWN     "\007"
-#define TR_VBEEPCOUNTDOWN      "Silence""Bips\0  ""Voix\0  "
+#define TR_VBEEPCOUNTDOWN      "Aucun\0 ""Bips\0  ""Voix\0  "
 
 #define LEN_CURVE_TYPES        "\010"
 #define TR_CURVE_TYPES         "Standard""Libre\0"

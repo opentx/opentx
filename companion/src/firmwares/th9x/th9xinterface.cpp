@@ -159,8 +159,6 @@ int Th9xInterface::getCapability(const Capability capability)
       return TH9X_MAX_SWITCHES;
     case Outputs:
       return 8;
-    case ExtraChannels:
-      return 4;
     case OffsetWeight:
       return 125;      
     case Simulation:

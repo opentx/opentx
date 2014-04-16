@@ -198,7 +198,9 @@ char idx2char(int8_t idx)
   if (idx < 27) return 'A' + idx - 1;
   if (idx < 37) return '0' + idx - 27;
   if (idx <= 40) return pgm_read_byte(s_charTab+idx-37);
-  // Needed if we want the special chars ... if (idx <= ZCHAR_MAX) return 'z' + 5 + idx - 40;
+#if LEN_SPECIAL_CHARS > 0
+  if (idx <= ZCHAR_MAX) return 'z' + 5 + idx - 40;
+#endif
   return ' ';
 }
 
@@ -206,6 +208,9 @@ char idx2char(int8_t idx)
 int8_t char2idx(char c)
 {
   if (c == '_') return 37;
+#if LEN_SPECIAL_CHARS > 0
+  if (c < 0 && c+128 <= LEN_SPECIAL_CHARS) return 41 + (c+128);
+#endif
   if (c >= 'a') return 'a' - c - 1;
   if (c >= 'A') return c - 'A' + 1;
   if (c >= '0') return c - '0' + 27;
@@ -3309,8 +3314,11 @@ PLAY_FUNCTION(playValue, uint8_t idx)
       break;
 
     case MIXSRC_FIRST_TELEM+TELEM_VSPD-1:
-    case MIXSRC_FIRST_TELEM+TELEM_ASPD-1:
       PLAY_NUMBER(div10_and_round(val), 1+UNIT_METERS_PER_SECOND, PREC1);
+      break;
+
+    case MIXSRC_FIRST_TELEM+TELEM_ASPD-1:
+      PLAY_NUMBER(val, 1+UNIT_KTS, 0);
       break;
 
     case MIXSRC_FIRST_TELEM+TELEM_CONSUMPTION-1:

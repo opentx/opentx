@@ -308,10 +308,7 @@ QString RawSource::toString()
     case SOURCE_TYPE_PPM:
       return QObject::tr("TR%1").arg(index+1);
     case SOURCE_TYPE_CH:
-      if (index < GetEepromInterface()->getCapability(Outputs))
-        return QObject::tr("CH%1%2").arg((index+1)/10).arg((index+1)%10);
-      else
-        return QObject::tr("X%1").arg(index-GetEepromInterface()->getCapability(Outputs)+1);
+      return QObject::tr("CH%1").arg(index+1);
     case SOURCE_TYPE_TELEMETRY:
       return CHECK_IN_ARRAY(telemetry, index);
     case SOURCE_TYPE_GVAR:

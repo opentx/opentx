@@ -241,8 +241,6 @@ int Gruvin9xInterface::getCapability(const Capability capability)
       return 13;
     case Outputs:
       return 16;
-    case ExtraChannels:
-      return 0;
     case ExtendedTrims:
       return 500;
     case Simulation:

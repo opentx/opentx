@@ -277,7 +277,7 @@ void MainWindow::checkForUpdateFinished(QNetworkReply * reply)
           }
         }
 #else
-        QMessageBox::warning(this, tr("New release available"), tr("A new release of Companion is available please check the OpenTX website!"));
+        QMessageBox::warning(this, tr("New release available"), tr("A new release of Companion is available, please check the OpenTX website!"));
 #endif            
       } else {
         if (showcheckForUpdatesResult && check1done && check2done)
@@ -341,7 +341,7 @@ void MainWindow::reply1Accepted()
           int errnum=hline.mid(6).toInt();
           switch(errnum) {
             case 1:
-              errormsg=tr("Firmware does not longer fit in the radio, due to selected firmware options");
+              errormsg=tr("Not enough memory for all the selected firmware options");
               break;
             case 2:
               errormsg=tr("Compilation server temporary failure, try later");
@@ -380,7 +380,7 @@ void MainWindow::reply1Accepted()
         int errnum=hline.mid(6).toInt();
         switch(errnum) {
           case 1:
-            errormsg=tr("Firmware does not fit in the radio, due to selected firmware options");
+            errormsg=tr("Not enough memory for all the selected firmware options");
             break;
           case 2:
             errormsg=tr("Compilation server termporary failure, try later");
@@ -1611,14 +1611,14 @@ void MainWindow::createActions()
     }
     updateProfilesActions();
 
-    newAct =             addAct("new.png",    tr("New Models+Settings"),        tr("Create a new Models and Settings file"), QKeySequence::New,    SLOT(newFile()));
-    openAct =            addAct("open.png",   tr("Open Models+Settings..."),    tr("Open Models and Settings file"),         QKeySequence::Open,   SLOT(openFile()));
-    saveAct =            addAct("save.png",   tr("Save Models+Settings..."),    tr("Save Models and Settings file"),         QKeySequence::Save,   SLOT(save()));
-    saveAsAct =          addAct("saveas.png", tr("Save Models+Settings as..."), tr("Save Models and Settings file"),         QKeySequence::SaveAs, SLOT(saveAs()));
-    exitAct =            addAct("exit.png",   tr("Exit"),                       tr("Exit the application"),                  QKeySequence::Quit,   SLOT(closeAllWindows()), qApp);
-    cutAct =             addAct("cut.png",    tr("Cut Model"),                  tr("Cut current model to the clipboard"),    QKeySequence::Cut,    SLOT(cut()));
-    copyAct =            addAct("copy.png",   tr("Copy Model..."),              tr("Copy current model to the clipboard"),   QKeySequence::Copy,   SLOT(copy()));
-    pasteAct =           addAct("paste.png",  tr("Paste Model..."),             tr("Paste model from clipboard"),            QKeySequence::Paste,  SLOT(paste()));
+    newAct =             addAct("new.png",    tr("New"),                    tr("Create a new Models and Settings file"), QKeySequence::New,    SLOT(newFile()));
+    openAct =            addAct("open.png",   tr("Open..."),                tr("Open Models and Settings file"),         QKeySequence::Open,   SLOT(openFile()));
+    saveAct =            addAct("save.png",   tr("Save"),                   tr("Save Models and Settings file"),         QKeySequence::Save,   SLOT(save()));
+    saveAsAct =          addAct("saveas.png", tr("Save As..."),             tr("Save Models and Settings file"),         QKeySequence::SaveAs, SLOT(saveAs()));
+    exitAct =            addAct("exit.png",   tr("Exit"),                   tr("Exit the application"),                  QKeySequence::Quit,   SLOT(closeAllWindows()), qApp);
+    cutAct =             addAct("cut.png",    tr("Cut Model"),              tr("Cut current model to the clipboard"),    QKeySequence::Cut,    SLOT(cut()));
+    copyAct =            addAct("copy.png",   tr("Copy Model"),             tr("Copy current model to the clipboard"),   QKeySequence::Copy,   SLOT(copy()));
+    pasteAct =           addAct("paste.png",  tr("Paste Model"),            tr("Paste model from clipboard"),            QKeySequence::Paste,  SLOT(paste()));
  
     QActionGroup *themeAlignGroup = new QActionGroup(this);
     classicThemeAct =    addAct( themeAlignGroup,    tr("Classical"),       tr("The classic companion9x icon theme"),   SLOT(setClassicTheme()));
@@ -1641,12 +1641,12 @@ void MainWindow::createActions()
     finnishLangAct =     addAct( langAlignGroup,     tr("Finnish"),         tr("Use Finnish in menus"),                 SLOT(setFILanguage()));
     frenchLangAct =      addAct( langAlignGroup,     tr("French"),          tr("Use French in menus"),                  SLOT(setFRLanguage()));
     italianLangAct =     addAct( langAlignGroup,     tr("Italian"),         tr("Use Italian in menus"),                 SLOT(setITLanguage()));
-    hebrewLangAct =      addAct( langAlignGroup,     tr("Hebrew"),          tr("Use Hebrew in menus"),                  SLOT(setHELanguage()));
+//    hebrewLangAct =      addAct( langAlignGroup,     tr("Hebrew"),          tr("Use Hebrew in menus"),                  SLOT(setHELanguage()));
     polishLangAct =      addAct( langAlignGroup,     tr("Polish"),          tr("Use Polish in menus"),                  SLOT(setPLLanguage()));
-    portugueseLangAct =  addAct( langAlignGroup,     tr("Portuguese"),      tr("Use Portuguese in menus"),              SLOT(setPTLanguage()));
+//    portugueseLangAct =  addAct( langAlignGroup,     tr("Portuguese"),      tr("Use Portuguese in menus"),              SLOT(setPTLanguage()));
     swedishLangAct =     addAct( langAlignGroup,     tr("Swedish"),         tr("Use Swedish in menus"),                 SLOT(setSELanguage()));
-    russianLangAct =     addAct( langAlignGroup,     tr("Russian"),         tr("Use Russian in menus"),                 SLOT(setRULanguage()));
-    dutchLangAct =       addAct( langAlignGroup,     tr("Dutch"),           tr("Use Dutch in menus"),                   SLOT(setNLLanguage()));
+//    russianLangAct =     addAct( langAlignGroup,     tr("Russian"),         tr("Use Russian in menus"),                 SLOT(setRULanguage()));
+//    dutchLangAct =       addAct( langAlignGroup,     tr("Dutch"),           tr("Use Dutch in menus"),                   SLOT(setNLLanguage()));
 
     aboutAct =           addAct("information.png",   tr("About..."),                tr("Show the application's About box"),   SLOT(about()));
     printAct =           addAct("print.png",         tr("Print..."),                tr("Print current model"),                SLOT(print()));
@@ -1681,7 +1681,7 @@ void MainWindow::createActions()
 void MainWindow::createMenus()
 
 {
-    QMenu *recentFileMenu=new QMenu(tr("Recent Models+Settings"), this);
+    QMenu *recentFileMenu=new QMenu(tr("Recent Files"), this);
     QMenu *languageMenu=new QMenu(tr("Set Menu Language"), this);
     QMenu *themeMenu=new QMenu(tr("Set Icon Theme"), this);
     QMenu *iconThemeSizeMenu=new QMenu(tr("Set Icon Size"), this);
@@ -1718,13 +1718,13 @@ void MainWindow::createMenus()
       languageMenu->addAction(germanLangAct);
       languageMenu->addAction(finnishLangAct);
       languageMenu->addAction(frenchLangAct);
-      languageMenu->addAction(hebrewLangAct);
+//      languageMenu->addAction(hebrewLangAct);
       languageMenu->addAction(italianLangAct);
       languageMenu->addAction(polishLangAct);
-      languageMenu->addAction(portugueseLangAct);
+//      languageMenu->addAction(portugueseLangAct);
       languageMenu->addAction(swedishLangAct);
-      languageMenu->addAction(russianLangAct);
-      languageMenu->addAction(dutchLangAct);
+//      languageMenu->addAction(russianLangAct);
+//      languageMenu->addAction(dutchLangAct);
 
     settingsMenu->addMenu(themeMenu);
       themeMenu->addAction(classicThemeAct);
@@ -1843,7 +1843,7 @@ void MainWindow::createToolBars()
     profileButton->setMenu(createProfilesMenu());
     profileButton->setIcon(CompanionIcon("profiles.png"));
     profileButton->setToolTip(tr("Radio Profile"));
-    profileButton->setStatusTip(tr("Show a selection list of radio profiles"));
+    profileButton->setStatusTip(tr("Show the list of radio profiles"));
 
     fileToolBar->addWidget(profileButton);
     fileToolBar->addAction(editSplashAct);

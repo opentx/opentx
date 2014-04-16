@@ -540,7 +540,7 @@ Mode 4:
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Channel Order (For Templates)</string>
+          <string>Default Channel Order</string>
          </property>
         </widget>
        </item>
@@ -683,9 +683,7 @@ Mode 4:
           <string/>
          </property>
          <property name="whatsThis">
-          <string>Channel order
-
-This is used by the templated to determine which channel goes to what number output.</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Channel order&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Defines the order of the default mixes created on a new model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="currentIndex">
           <number>0</number>
@@ -1628,12 +1626,7 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="whatsThis">
-          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;LCD Screen Contrast&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Values can be 20-45&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string/>
          </property>
          <property name="minimum">
           <number>10</number>
@@ -2388,7 +2381,7 @@ Acceptable values are 5v..10v</string>
        <item row="4" column="5">
         <widget class="QLabel" name="label_pot4">
          <property name="text">
-          <string>POT 4</string>
+          <string>Pot. 4</string>
          </property>
         </widget>
        </item>
@@ -2402,7 +2395,7 @@ Acceptable values are 5v..10v</string>
        <item row="3" column="5">
         <widget class="QLabel" name="label_pot3">
          <property name="text">
-          <string>POT 3</string>
+          <string>Pot. 3</string>
          </property>
         </widget>
        </item>
@@ -2422,14 +2415,14 @@ Acceptable values are 5v..10v</string>
        <item row="2" column="5">
         <widget class="QLabel" name="label_pot2">
          <property name="text">
-          <string>POT 2</string>
+          <string>Pot. 2</string>
          </property>
         </widget>
        </item>
        <item row="1" column="5">
         <widget class="QLabel" name="label_pot1">
          <property name="text">
-          <string>POT 1</string>
+          <string>Pot. 1</string>
          </property>
         </widget>
        </item>
@@ -2456,7 +2449,7 @@ Acceptable values are 5v..10v</string>
        <item row="3" column="0">
         <widget class="QLabel" name="label_17">
          <property name="text">
-          <string>STICK 3</string>
+          <string>Stick 3</string>
          </property>
         </widget>
        </item>
@@ -2493,7 +2486,7 @@ Acceptable values are 5v..10v</string>
        <item row="1" column="0">
         <widget class="QLabel" name="label_15">
          <property name="text">
-          <string>STICK 1</string>
+          <string>Stick 1</string>
          </property>
         </widget>
        </item>
@@ -2542,7 +2535,7 @@ Acceptable values are 5v..10v</string>
        <item row="2" column="0">
         <widget class="QLabel" name="label_16">
          <property name="text">
-          <string>STICK 2</string>
+          <string>Stick 2</string>
          </property>
         </widget>
        </item>
@@ -2627,7 +2620,7 @@ Acceptable values are 5v..10v</string>
        <item row="4" column="0">
         <widget class="QLabel" name="label_18">
          <property name="text">
-          <string>STICK 4</string>
+          <string>Stick 4</string>
          </property>
         </widget>
        </item>

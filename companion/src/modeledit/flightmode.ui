@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -169,7 +169,7 @@
           <item row="1" column="0">
            <widget class="QLabel" name="trim1Label">
             <property name="text">
-             <string>trim1</string>
+             <string notr="true">trim1</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -277,7 +277,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="trim2Label">
             <property name="text">
-             <string>trim2</string>
+             <string notr="true">trim2</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -303,7 +303,7 @@
           <item row="1" column="0">
            <widget class="QLabel" name="trim4Label">
             <property name="text">
-             <string>trim4</string>
+             <string notr="true">trim4</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -313,7 +313,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="trim3Label">
             <property name="text">
-             <string>trim3</string>
+             <string notr="true">trim3</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

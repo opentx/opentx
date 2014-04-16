@@ -1022,7 +1022,6 @@ enum Capability {
  RotaryEncoders,
  Outputs,
  ChannelsName,
- ExtraChannels,
  ExtraInputs,
  ExtendedTrims,
  NumCurves,

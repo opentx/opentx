@@ -791,6 +791,8 @@ void resetTelemetry()
   frskyData.hub.gpsSpeed_bp = 100;
   frskyData.hub.gpsSpeed_ap = 50;
 
+  frskyData.hub.airSpeed = 100;
+
   frskyData.hub.cellsCount = 6;
 
   frskyData.hub.baroAltitudeOffset = 500 * 100;

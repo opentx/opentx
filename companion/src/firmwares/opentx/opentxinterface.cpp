@@ -581,8 +581,6 @@ int OpenTxInterface::getCapability(const Capability capability)
       return (IS_ARM(board) ? 23 : 7);
     case HasSoundMixer:
       return (IS_ARM(board) ? 1 : 0);
-    case ExtraChannels:
-      return 0;
     case ExtraInputs:
       return 1;
     case ExtendedTrims:
