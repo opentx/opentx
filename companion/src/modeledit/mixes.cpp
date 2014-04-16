@@ -466,7 +466,7 @@ void MixesPanel::mixerlistWidget_customContextMenuRequested(QPoint pos)
     QMenu contextMenu;
     contextMenu.addAction(CompanionIcon("add.png"), tr("&Add"),this,SLOT(mixerAdd()),tr("Ctrl+A"));
     contextMenu.addAction(CompanionIcon("edit.png"), tr("&Edit"),this,SLOT(mixerOpen()),tr("Enter"));
-    contextMenu.addAction(CompanionIcon("fuses.png"), tr("&Toogle &highlight"),this,SLOT(mixerHighlight()),tr("Ctrl+T"));
+    contextMenu.addAction(CompanionIcon("fuses.png"), tr("&Toggle highlight"),this,SLOT(mixerHighlight()),tr("Ctrl+T"));
     contextMenu.addSeparator();
     contextMenu.addAction(CompanionIcon("clear.png"), tr("&Delete"),this,SLOT(mixersDelete()),tr("Delete"));
     contextMenu.addAction(CompanionIcon("copy.png"), tr("&Copy"),this,SLOT(mixersCopy()),tr("Ctrl+C"));
