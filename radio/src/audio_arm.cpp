@@ -788,7 +788,7 @@ void AudioQueue::pause(uint16_t len)
 
 bool AudioQueue::isPlaying(uint8_t id)
 {
-  if (normalContext.fragment.id == id || backgroundContext.fragment.id == id)
+  if (normalContext.fragment.id == id || (isFunctionActive(FUNCTION_BACKGND_MUSIC) && backgroundContext.fragment.id == id))
     return true;
 
   uint8_t i = ridx;
