@@ -178,14 +178,14 @@ Nicholas Crego
 Keith Hertzog
 Johan Moelich
 Timo Esser
-Dean Church (mensual)
-Brian Paddock (mensual)
+Dean Church (monthly)
+Brian Paddock (monthly)
 Jean Pierre Parisy
 Norbert Martsch
 Jean-Marie Guitard
 Eric Beier
 Mike Perkins
-Tilman Baumann (mensual)
+Tilman Baumann (monthly)
 Fred Larssen
 Ari Aalto
 Robert Sams 
@@ -197,7 +197,7 @@ Kenneth Crump
 Dave Matison
 Mike Matheny
 Pino Agostino
-Graham Boucher (mensual)
+Graham Boucher (monthly)
 Nelson Noura
 Joel Allamy
 Philip David Martin
@@ -208,7 +208,7 @@ Timothy Pelletier
 Glen Roe (ShowMaster)
 Jan Van Ooteghem
 David Ankers - Special thanks here to the OpenPilot project!
-Lawrence Christensen (mensual)
+Lawrence Christensen (monthly)
 Leo Duflou
 Bruce Wood
 Arnd Feige
@@ -372,3 +372,4 @@ Aaron Stringer
 Alan J Wasserman
 Wolfgang Rauser
 Samuel Cook
+BoltRC - www.boltrc.com
