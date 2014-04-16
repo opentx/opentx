@@ -182,12 +182,12 @@
     <message>
         <location filename="../modeledit/curves.ui" line="68"/>
         <source>Fixed X</source>
-        <translation type="unfinished"></translation>
+        <translation>Rastr-X</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="73"/>
         <source>Custom X</source>
-        <translation type="unfinished"></translation>
+        <translation>Volná-XY</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="82"/>
@@ -522,13 +522,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/expodialog.ui" line="36"/>
         <source>Source for the mixer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zdroj pro mixer.</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="269"/>
         <source>Switch used to enable the line.
 If blank then the input is considered to be &quot;ON&quot; all the time.</source>
-        <translation type="unfinished"></translation>
+        <translation>Spínač aktivující tento vstup.
+Pokud není použito, vstup je AKTIVNÍ stále.</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="285"/>
@@ -548,7 +549,7 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</source
     <message>
         <location filename="../modeledit/expodialog.ui" line="388"/>
         <source>Curve applied to the source.</source>
-        <translation type="unfinished"></translation>
+        <translation>Křivka která se aplikuje na zdroj.</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.cpp" line="17"/>
@@ -1374,12 +1375,12 @@ který kanál patří ke kterému výstupu.</translation>
     <message>
         <location filename="../generaledit.ui" line="543"/>
         <source>Default Channel Order</source>
-        <translation type="unfinished">Výchozí pořadí kanálů</translation>
+        <translation>Výchozí pořadí kanálů</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="686"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Channel order&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Defines the order of the default mixes created on a new model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Pořadí kanálů&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Definuje výchozí pořadí kanálů použité při vytvoření nového modelu.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="942"/>
@@ -1515,42 +1516,42 @@ který kanál patří ke kterému výstupu.</translation>
     <message>
         <location filename="../generaledit.ui" line="2384"/>
         <source>Pot. 4</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2398"/>
         <source>Pot. 3</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2418"/>
         <source>Pot. 2</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2425"/>
         <source>Pot. 1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2452"/>
         <source>Stick 3</source>
-        <translation type="unfinished"></translation>
+        <translation>Páka 3</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2489"/>
         <source>Stick 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Páka 1</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2538"/>
         <source>Stick 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Páka 2</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2623"/>
         <source>Stick 4</source>
-        <translation type="unfinished"></translation>
+        <translation>Páka 4</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="3128"/>
@@ -1930,7 +1931,7 @@ Opravdu to takto chcete ?</translation>
     <message>
         <location filename="../modeledit/inputs.cpp" line="23"/>
         <source>Clear All Inputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Vymazat všechny vstupy</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="92"/>
@@ -2229,13 +2230,13 @@ Opravdu to takto chcete ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="280"/>
         <source>A new release of Companion is available, please check the OpenTX website!</source>
-        <translation type="unfinished"></translation>
+        <translation>Je dostupná nová verze Companion, prosím navštivte internetové stránky OpenTX!</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="344"/>
         <location filename="../mainwindow.cpp" line="383"/>
         <source>Not enough memory for all the selected firmware options</source>
-        <translation type="unfinished"></translation>
+        <translation>Není dostatek paměti pro všechny zvolené vlastnosti firmwaru</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="347"/>
@@ -2552,32 +2553,32 @@ Chcete ho přesto zapsat ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1614"/>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>Nový</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1615"/>
         <source>Open...</source>
-        <translation type="unfinished"></translation>
+        <translation>Otevřít</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1616"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložit</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1617"/>
         <source>Save As...</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložit jako...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1620"/>
         <source>Copy Model</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopírovat model</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1621"/>
         <source>Paste Model</source>
-        <translation type="unfinished"></translation>
+        <translation>Vložit model</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1661"/>
@@ -2684,12 +2685,12 @@ Chcete ho přesto zapsat ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1619"/>
         <source>Cut Model</source>
-        <translation>Vyjmout</translation>
+        <translation>Vyjmout model</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1619"/>
         <source>Cut current model to the clipboard</source>
-        <translation>Vyjmout aktuální výběr a uložit do schránky</translation>
+        <translation>Vyjmout aktuální model a uložit do schránky</translation>
     </message>
     <message>
         <source>Copy Model...</source>
@@ -2698,7 +2699,7 @@ Chcete ho přesto zapsat ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1620"/>
         <source>Copy current model to the clipboard</source>
-        <translation>Kopírovat aktuální výběr do schránky</translation>
+        <translation>Kopírovat aktuální model do schránky</translation>
     </message>
     <message>
         <source>Paste Model...</source>
@@ -2972,7 +2973,7 @@ Chcete ho přesto zapsat ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1667"/>
         <source>Add Radio Profile</source>
-        <translation type="unfinished">Nový profil rádia</translation>
+        <translation>Nový profil rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1667"/>
@@ -3047,12 +3048,12 @@ Chcete ho přesto zapsat ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1684"/>
         <source>Recent Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Nedávné soubory</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1829"/>
         <source>Recent Models+Settings</source>
-        <translation>Nedávné soubory</translation>
+        <translation>Nedávné modely a nastavení</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1686"/>
@@ -3067,7 +3068,7 @@ Chcete ho přesto zapsat ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1846"/>
         <source>Show the list of radio profiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Výběr profilů rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1862"/>
@@ -3120,7 +3121,7 @@ Chcete ho přesto zapsat ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1713"/>
         <source>Settings</source>
-        <translation type="unfinished">Nastavení</translation>
+        <translation>Nastavení</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1746"/>
