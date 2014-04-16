@@ -983,9 +983,9 @@ void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
       if (ed->srcRaw == ovwrIdx)
         v = ovwrValue;
 #if defined(HELI)
-      else if (ed->srcRaw == MIXSRC_Ele)
+      else if (ed->srcRaw == MIXSRC_Ele && g_model.swashR.value)
         v = heliAnas[ELE_STICK];
-      else if (ed->srcRaw == MIXSRC_Ail)
+      else if (ed->srcRaw == MIXSRC_Ail && g_model.swashR.value)
         v = heliAnas[AIL_STICK];
 #endif
       else {
