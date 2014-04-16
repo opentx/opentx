@@ -164,5 +164,6 @@ class Open9xFirmware: public FirmwareInfo {
 };
 
 void RegisterOpen9xFirmwares();
+void UnregisterOpen9xFirmwares();
 
 #endif

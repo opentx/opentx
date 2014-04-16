@@ -129,12 +129,12 @@ class SwitchesConversionTable: public ConversionTable {
         SwitchesConversionTable * table;
     };
 
+    static std::list<Cache> internalCache;
+
   public:
 
     static SwitchesConversionTable * getInstance(BoardEnum board, unsigned int version, unsigned long flags=0)
     {
-      static std::list<Cache> internalCache;
-
       for (std::list<Cache>::iterator it=internalCache.begin(); it!=internalCache.end(); it++) {
         Cache element = *it;
         if (element.board == board && element.version == version && element.flags == flags)
@@ -145,7 +145,17 @@ class SwitchesConversionTable: public ConversionTable {
       internalCache.push_back(element);
       return element.table;
     }
+    static void Cleanup() 
+    {
+      for (std::list<Cache>::iterator it=internalCache.begin(); it!=internalCache.end(); it++) {
+        Cache element = *it;
+        delete element.table;
+      }
+      internalCache.clear();
+    }
 };
+
+std::list<SwitchesConversionTable::Cache> SwitchesConversionTable::internalCache;
 
 #define FLAG_NONONE       0x01
 #define FLAG_NOSWITCHES   0x02
@@ -281,13 +291,12 @@ class SourcesConversionTable: public ConversionTable {
         unsigned long flags;
         SourcesConversionTable * table;
     };
+    static std::list<Cache> internalCache;
 
   public:
 
     static SourcesConversionTable * getInstance(BoardEnum board, unsigned int version, unsigned int variant, unsigned long flags=0)
     {
-      static std::list<Cache> internalCache;
-
       for (std::list<Cache>::iterator it=internalCache.begin(); it!=internalCache.end(); it++) {
         Cache element = *it;
         if (element.board == board && element.version == version && element.variant == variant && element.flags == flags)
@@ -298,7 +307,23 @@ class SourcesConversionTable: public ConversionTable {
       internalCache.push_back(element);
       return element.table;
     }
+    static void Cleanup() 
+    {
+      for (std::list<Cache>::iterator it=internalCache.begin(); it!=internalCache.end(); it++) {
+        Cache element = *it;
+        delete element.table;
+      }
+      internalCache.clear();
+    }
 };
+
+std::list<SourcesConversionTable::Cache> SourcesConversionTable::internalCache;
+
+void OpenTxEepromCleanup(void)
+{
+  SourcesConversionTable::Cleanup(); 
+  SwitchesConversionTable::Cleanup();
+}
 
 ThrottleSourceConversionTable::ThrottleSourceConversionTable(BoardEnum board, unsigned int version)
 {
@@ -1444,6 +1469,10 @@ class LogicalSwitchField: public TransformedField {
       }
     }
 
+    ~LogicalSwitchField() 
+    {
+      delete andswitchesConversionTable;
+    }
     virtual void beforeExport()
     {
       if (csw.func == LS_FN_TIMER) {

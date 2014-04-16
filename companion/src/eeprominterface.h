@@ -1244,6 +1244,7 @@ inline void applyStickModeToModel(ModelData &model, unsigned int mode)
 }
 
 void RegisterFirmwares();
+void UnregisterFirmwares();
 
 bool LoadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index);
 bool LoadEeprom(RadioData &radioData, const uint8_t *eeprom, int size);
@@ -1268,6 +1269,7 @@ class FirmwareInfo {
 
     virtual ~FirmwareInfo()
     {
+      delete eepromInterface;
     }
 
     FirmwareInfo(const QString & id, const QString & name, EEPROMInterface * eepromInterface, const QString & url = QString(), const QString & stamp = QString(), const QString & rnurl = QString(), bool voice = false):
