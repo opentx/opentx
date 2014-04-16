@@ -283,8 +283,6 @@ int Ersky9xInterface::getCapability(const Capability capability)
       return 13;
     case Outputs:
       return ERSKY9X_NUM_CHNOUT_V11;
-    case ExtraChannels:
-      return 0;
     case Simulation:
       return 1;
     case Telemetry:

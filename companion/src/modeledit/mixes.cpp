@@ -69,10 +69,11 @@ void MixesPanel::update()
   unsigned int curDest = 0;
   int i;
   unsigned int outputs = GetEepromInterface()->getCapability(Outputs);
+
   for (i=0; i<GetEepromInterface()->getCapability(Mixes); i++) {
     MixData *md = &model.mixData[i];
-    //qDebug() << "md->destCh: " << md->destCh;
-    if ((md->destCh==0) || (md->destCh>outputs+(unsigned int)GetEepromInterface()->getCapability(ExtraChannels))) continue;
+    // qDebug() << "md->destCh: " << md->destCh;
+    if (md->destCh==0 || md->destCh>outputs) continue;
     QString str = "";
     while (curDest < md->destCh-1) {
       curDest++;
@@ -82,7 +83,8 @@ void MixesPanel::update()
       curDest++;
     }
   }
-  while(curDest<outputs+GetEepromInterface()->getCapability(ExtraChannels)) {
+
+  while (curDest < outputs) {
     curDest++;
     AddMixerLine(-curDest);
   }
@@ -106,7 +108,7 @@ bool MixesPanel::AddMixerLine(int dest)
 #endif
   MixerlistWidget->addItem(itm);
   MixerlistWidget->setItemWidget(itm, getMixerWidget(str));
-  qDebug() << "MixesPanel::AddMixerLine(): " << str;
+  // qDebug() << "MixesPanel::AddMixerLine(): " << str;
   return new_ch;
 }
 
@@ -421,7 +423,7 @@ void MixesPanel::mixerHighlight()
     dest = model.mixData[idx].destCh;
   }
   highlightedSource = ( (int)highlightedSource ==  dest) ? 0 : dest;
-  qDebug() << "MixesPanel::mixerHighlight(): " << highlightedSource ;
+  // qDebug() << "MixesPanel::mixerHighlight(): " << highlightedSource ;
   for(int i=0; i<MixerlistWidget->count(); i++) {
     int t = MixerlistWidget->item(i)->data(Qt::UserRole).toByteArray().at(0);
     bool dummy;

@@ -604,7 +604,7 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData & 
       if (item == source) b->setCurrentIndex(b->count()-1);
     }
 
-    for (int i=0; i<GetEepromInterface()->getCapability(Outputs)+GetEepromInterface()->getCapability(ExtraChannels); i++) {
+    for (int i=0; i<GetEepromInterface()->getCapability(Outputs); i++) {
       item = RawSource(SOURCE_TYPE_CH, i);
       b->addItem(item.toString(), item.toValue());
       if (item == source) b->setCurrentIndex(b->count()-1);
