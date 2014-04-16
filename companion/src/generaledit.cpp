@@ -215,7 +215,8 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
     if (renumber==0) {
       ui->re_label->hide();
       ui->re_CB->hide();
-    } else {
+    }
+    else {
       populateRotEncCB(ui->re_CB, g_eeGeneral.reNavigation, renumber);
     }
     ui->contrastSB->setValue(g_eeGeneral.contrast);

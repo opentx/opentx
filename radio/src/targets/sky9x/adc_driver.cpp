@@ -38,7 +38,7 @@
 
 volatile uint16_t Analog_values[NUMBER_ANALOG];
 
-#if defined(TARANIS_STICKS)
+#if defined(FRSKY_STICKS)
 const char ana_direction[NUMBER_ANALOG] = {1, 1, 0, 1 ,0 ,1 ,0, 0, 0};
 #endif
 
@@ -118,12 +118,12 @@ void adcRead()
   }
 
   // adc direction correct
-  #if defined(TARANIS_STICKS)
+#if defined(FRSKY_STICKS)
   uint32_t i ;
   for (i=0; i<NUMBER_ANALOG; i++) {
     if (ana_direction[i]) {
       Analog_values[i] = 4096-Analog_values[i];
     }
   }  
-  #endif
+#endif
 }

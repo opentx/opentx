@@ -470,6 +470,7 @@ class GeneralSettings {
     int    PPM_Multiplier;
     int    hapticLength;
     unsigned int   reNavigation;
+    unsigned int stickReverse;
     bool      hideNameOnSplash;
     bool      enablePpmsim;
     unsigned int   speakerPitch;

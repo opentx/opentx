@@ -97,10 +97,9 @@ NAVIGATION = NO
 # Values = YES, NO 
 AUTOSWITCH = NO
 
-# Swap Stick Inputs for AIL,ELE,RUD,THR
-# Used in some scenarios where stick/pot entries
-# cannot be changed by soldering the pots.
-
+# Stock sticks replaced by FrSky ones
+# Values = YES, NO 
+FRSKY_STICKS = NO
 
 # Sources automatic selection
 # Values = YES, NO 
@@ -791,8 +790,8 @@ ifeq ($(AUTOSOURCE), YES)
   CPPDEFS += -DAUTOSOURCE
 endif
 
-ifeq ($(TARANIS_STICKS), YES)
-  CPPDEFS += -DTARANIS_STICKS
+ifeq ($(FRSKY_STICKS), YES)
+  CPPDEFS += -DFRSKY_STICKS
 endif
 
 
