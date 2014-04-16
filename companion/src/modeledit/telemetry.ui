@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,0">
    <property name="spacing">
@@ -534,7 +534,7 @@
             </item>
             <item>
              <property name="text">
-              <string>CEL</string>
+              <string>CELS</string>
              </property>
             </item>
            </widget>

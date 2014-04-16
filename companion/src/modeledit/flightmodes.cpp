@@ -158,11 +158,13 @@ FlightMode::FlightMode(QWidget * parent, ModelData & model, int phaseIdx, Genera
       gvLayout->addWidget(gvValues[i], i, col++, 1, 1);
       
       // Popups
-      gvPopups[i] = new QCheckBox(ui->gvGB);
-      gvPopups[i]->setProperty("index", i);
-      gvPopups[i]->setText(tr("Popup enabled"));
-      connect(gvPopups[i], SIGNAL(toggled(bool)), this, SLOT(phaseGVPopupToggled(bool)));
-      gvLayout->addWidget(gvPopups[i], i, col++, 1, 1);
+      if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+        gvPopups[i] = new QCheckBox(ui->gvGB);
+        gvPopups[i]->setProperty("index", i);
+        gvPopups[i]->setText(tr("Popup enabled"));
+        connect(gvPopups[i], SIGNAL(toggled(bool)), this, SLOT(phaseGVPopupToggled(bool)));
+        gvLayout->addWidget(gvPopups[i], i, col++, 1, 1);
+      }
     }
   }
   else {
@@ -209,8 +211,10 @@ void FlightMode::update()
     	idx = phasegvar->gvars[i];
     	gvValues[i]->setDisabled(true);
     }
-    gvValues[i]->setValue(phasegvar->gvars[i]);
-    gvPopups[i]->setChecked(model.gvars_popups[i]);
+    if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+      gvValues[i]->setValue(phasegvar->gvars[i]);
+      gvPopups[i]->setChecked(model.gvars_popups[i]);
+    }
   }
 
   for (int i=0; i<reCount; i++) {    

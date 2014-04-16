@@ -86,8 +86,10 @@ class SwitchesConversionTable: public ConversionTable {
         addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, i), val++);
       }
 
-      addConversion(RawSwitch(SWITCH_TYPE_OFF), -val+offset);
-      addConversion(RawSwitch(SWITCH_TYPE_ON), val++);
+      if (!(flags & POPULATE_TIMER_MODES)) {
+        addConversion(RawSwitch(SWITCH_TYPE_OFF), -val+offset);
+        addConversion(RawSwitch(SWITCH_TYPE_ON), val++);
+      }
 
       if (version < 216) {
         // previous "moment" switches
@@ -127,12 +129,12 @@ class SwitchesConversionTable: public ConversionTable {
         SwitchesConversionTable * table;
     };
 
+    static std::list<Cache> internalCache;
+
   public:
 
     static SwitchesConversionTable * getInstance(BoardEnum board, unsigned int version, unsigned long flags=0)
     {
-      static std::list<Cache> internalCache;
-
       for (std::list<Cache>::iterator it=internalCache.begin(); it!=internalCache.end(); it++) {
         Cache element = *it;
         if (element.board == board && element.version == version && element.flags == flags)
@@ -143,7 +145,17 @@ class SwitchesConversionTable: public ConversionTable {
       internalCache.push_back(element);
       return element.table;
     }
+    static void Cleanup() 
+    {
+      for (std::list<Cache>::iterator it=internalCache.begin(); it!=internalCache.end(); it++) {
+        Cache element = *it;
+        delete element.table;
+      }
+      internalCache.clear();
+    }
 };
+
+std::list<SwitchesConversionTable::Cache> SwitchesConversionTable::internalCache;
 
 #define FLAG_NONONE       0x01
 #define FLAG_NOSWITCHES   0x02
@@ -279,13 +291,12 @@ class SourcesConversionTable: public ConversionTable {
         unsigned long flags;
         SourcesConversionTable * table;
     };
+    static std::list<Cache> internalCache;
 
   public:
 
     static SourcesConversionTable * getInstance(BoardEnum board, unsigned int version, unsigned int variant, unsigned long flags=0)
     {
-      static std::list<Cache> internalCache;
-
       for (std::list<Cache>::iterator it=internalCache.begin(); it!=internalCache.end(); it++) {
         Cache element = *it;
         if (element.board == board && element.version == version && element.variant == variant && element.flags == flags)
@@ -296,7 +307,23 @@ class SourcesConversionTable: public ConversionTable {
       internalCache.push_back(element);
       return element.table;
     }
+    static void Cleanup() 
+    {
+      for (std::list<Cache>::iterator it=internalCache.begin(); it!=internalCache.end(); it++) {
+        Cache element = *it;
+        delete element.table;
+      }
+      internalCache.clear();
+    }
 };
+
+std::list<SourcesConversionTable::Cache> SourcesConversionTable::internalCache;
+
+void OpenTxEepromCleanup(void)
+{
+  SourcesConversionTable::Cleanup(); 
+  SwitchesConversionTable::Cleanup();
+}
 
 ThrottleSourceConversionTable::ThrottleSourceConversionTable(BoardEnum board, unsigned int version)
 {
@@ -678,8 +705,9 @@ class FlightModeField: public TransformedField {
         }
       }
       else {
-        for (int i=0; i<NUM_STICKS; i++)
+        for (int i=0; i<NUM_STICKS; i++) {
           internalField.Append(new SignedField<16>(trimBase[i]));
+        }
       }
 
       internalField.Append(new SwitchField<8>(phase.swtch, board, version));
@@ -749,22 +777,29 @@ class FlightModeField: public TransformedField {
           }
         }
         else {
-          int trim;
-          if (board == BOARD_STOCK || (board == BOARD_M128 && version >= 215))
-            trim = ((trimBase[i]) << 2) + (trimExt[i] & 0x03);
-          else
-            trim = trimBase[i];
-          if (trim > 500) {
-            phase.trimRef[i] = trim - 501;
-            if (phase.trimRef[i] >= index)
-              phase.trimRef[i] += 1;
+          if (phase.swtch == RawSwitch(SWITCH_TYPE_NONE)) {
+            phase.trimRef[i] = 0;
             phase.trimMode[i] = 0;
             phase.trim[i] = 0;
           }
           else {
-            phase.trimRef[i] = index;
-            phase.trimMode[i] = 0;
-            phase.trim[i] = trim;
+            int trim;
+            if (board == BOARD_STOCK || (board == BOARD_M128 && version >= 215))
+              trim = ((trimBase[i]) << 2) + (trimExt[i] & 0x03);
+            else
+              trim = trimBase[i];
+            if (trim > 500) {
+              phase.trimRef[i] = trim - 501;
+              if (phase.trimRef[i] >= index)
+                phase.trimRef[i] += 1;
+              phase.trimMode[i] = 0;
+              phase.trim[i] = 0;
+            }
+            else {
+              phase.trimRef[i] = index/*own trim*/;
+              phase.trimMode[i] = 0;
+              phase.trim[i] = trim;
+            }
           }
         }
       }
@@ -1434,6 +1469,10 @@ class LogicalSwitchField: public TransformedField {
       }
     }
 
+    ~LogicalSwitchField() 
+    {
+      delete andswitchesConversionTable;
+    }
     virtual void beforeExport()
     {
       if (csw.func == LS_FN_TIMER) {

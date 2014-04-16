@@ -2,6 +2,7 @@
 #include "appdata.h"
 #include "helpers.h"
 #include "simulatordialog.h"
+#include "simulatorinterface.h"
 #include "flashinterface.h"
 
 const QColor colors[C9X_MAX_CURVES] = {
@@ -604,7 +605,7 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData & 
       if (item == source) b->setCurrentIndex(b->count()-1);
     }
 
-    for (int i=0; i<GetEepromInterface()->getCapability(Outputs)+GetEepromInterface()->getCapability(ExtraChannels); i++) {
+    for (int i=0; i<GetEepromInterface()->getCapability(Outputs); i++) {
       item = RawSource(SOURCE_TYPE_CH, i);
       b->addItem(item.toString(), item.toValue());
       if (item == source) b->setCurrentIndex(b->count()-1);
@@ -905,7 +906,9 @@ CompanionIcon::CompanionIcon(QString baseimage)
 
 void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
 {
-  if (GetEepromInterface()->getSimulator()) {
+  SimulatorInterface * si = GetEepromInterface()->getSimulator();
+  if (si) {
+    delete si;
     RadioData * simuData = new RadioData(radioData);
     unsigned int flags = 0;
     if (modelIdx >= 0) {

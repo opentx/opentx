@@ -198,7 +198,9 @@ char idx2char(int8_t idx)
   if (idx < 27) return 'A' + idx - 1;
   if (idx < 37) return '0' + idx - 27;
   if (idx <= 40) return pgm_read_byte(s_charTab+idx-37);
-  // Needed if we want the special chars ... if (idx <= ZCHAR_MAX) return 'z' + 5 + idx - 40;
+#if LEN_SPECIAL_CHARS > 0
+  if (idx <= ZCHAR_MAX) return 'z' + 5 + idx - 40;
+#endif
   return ' ';
 }
 
@@ -206,6 +208,9 @@ char idx2char(int8_t idx)
 int8_t char2idx(char c)
 {
   if (c == '_') return 37;
+#if LEN_SPECIAL_CHARS > 0
+  if (c < 0 && c+128 <= LEN_SPECIAL_CHARS) return 41 + (c+128);
+#endif
   if (c >= 'a') return 'a' - c - 1;
   if (c >= 'A') return c - 'A' + 1;
   if (c >= '0') return c - '0' + 27;
@@ -946,6 +951,13 @@ int expo(int x, int k)
   return neg? -y : y;
 }
 
+#if defined(HELI)
+  int16_t cyc_anas[3] = {0};
+#if defined(PCBTARANIS)
+  int16_t heliAnas[4] = {0};
+#endif
+#endif
+
 void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
 {
 #if !defined(PCBTARANIS)
@@ -967,9 +979,20 @@ void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
       continue;
     if (getSwitch(ed->swtch)) {
 #if defined(PCBTARANIS)
-      int v = (ed->srcRaw == ovwrIdx ? ovwrValue : getValue(ed->srcRaw));
-      if (ed->srcRaw != ovwrIdx && ed->srcRaw >= MIXSRC_FIRST_TELEM && ed->scale > 0) {
-        v = limit(-1024, int((v * 1024) / convertTelemValue(ed->srcRaw-MIXSRC_FIRST_TELEM+1, ed->scale)), 1024);
+      int v;
+      if (ed->srcRaw == ovwrIdx)
+        v = ovwrValue;
+#if defined(HELI)
+      else if (ed->srcRaw == MIXSRC_Ele && g_model.swashR.value)
+        v = heliAnas[ELE_STICK];
+      else if (ed->srcRaw == MIXSRC_Ail && g_model.swashR.value)
+        v = heliAnas[AIL_STICK];
+#endif
+      else {
+        v = getValue(ed->srcRaw);
+        if (ed->srcRaw >= MIXSRC_FIRST_TELEM && ed->scale > 0) {
+          v = limit(-1024, int((v * 1024) / convertTelemValue(ed->srcRaw-MIXSRC_FIRST_TELEM+1, ed->scale)), 1024);
+        }
       }
 #else
       int16_t v = anas2[ed->chn];
@@ -1193,9 +1216,6 @@ int16_t applyLimits(uint8_t channel, int32_t value)
 int16_t calibratedStick[NUM_STICKS+NUM_POTS];
 int16_t channelOutputs[NUM_CHNOUT] = {0};
 int16_t ex_chans[NUM_CHNOUT] = {0}; // Outputs (before LIMITS) of the last perMain;
-#ifdef HELI
-int16_t cyc_anas[3] = {0};
-#endif
 
 // TODO same naming convention than the putsMixerSource
 
@@ -3179,9 +3199,9 @@ void evalInputs(uint8_t mode)
 
 #if defined(HELI)
       if (d && (ch==ELE_STICK || ch==AIL_STICK)) {
-        v = (int32_t(v)*calc100toRESX(g_model.swashR.value))/int32_t(d);
+        v = (int32_t(v) * calc100toRESX(g_model.swashR.value)) / int32_t(d);
 #if defined(PCBTARANIS)
-        calibratedStick[ch] = v;
+        heliAnas[ch] = v;
 #endif
       }
 #endif
@@ -3294,8 +3314,11 @@ PLAY_FUNCTION(playValue, uint8_t idx)
       break;
 
     case MIXSRC_FIRST_TELEM+TELEM_VSPD-1:
-    case MIXSRC_FIRST_TELEM+TELEM_ASPD-1:
       PLAY_NUMBER(div10_and_round(val), 1+UNIT_METERS_PER_SECOND, PREC1);
+      break;
+
+    case MIXSRC_FIRST_TELEM+TELEM_ASPD-1:
+      PLAY_NUMBER(val, 1+UNIT_KTS, 0);
       break;
 
     case MIXSRC_FIRST_TELEM+TELEM_CONSUMPTION-1:
@@ -3662,7 +3685,7 @@ void evalFunctions()
 }
 
 #if defined(PCBTARANIS)
-  #define HELI_ANAS_ARRAY calibratedStick
+  #define HELI_ANAS_ARRAY heliAnas
 #else
   #define HELI_ANAS_ARRAY anas
 #endif

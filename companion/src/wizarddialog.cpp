@@ -68,11 +68,11 @@ void WizardDialog::showHelp()
                  "Throttle - Spektrum: CH1, Futaba: CH3"); break;
   case Page_Wingtypes:  
     message = tr("Most aircraft have a main wing and a tail with control surfaces. Flying wings and delta winged aircraft only have a single wing. "
-                 "The main control surface on a standard wing controlls the roll of the aircraft. This surface is called an aileron.<br>"
-                 "The control surface of a delta wing controls both roll and elevation. This surface is called an elevon. "); break;
+                 "The main control surface on a standard wing controls the roll of the aircraft. This surface is called an aileron.<br>"
+                 "The control surface of a delta wing controls both roll and pitch. This surface is called an elevon. "); break;
   case Page_Ailerons:   
     message = tr("Models use one or two channels to control the ailerons.<br>"
-                 "A so called Y-cable can be used to connect single receiver channel to two separeate aileron servos. "
+                 "A so called Y-cable can be used to connect a single receiver channel to two separate aileron servos. "
                  "If your servos are connected by a Y-cable you should select the single-servo option.<br><br>"
                  "Aileron - Spektrum: CH2, Futaba: CH1"); break;
   case Page_Flaps:      
@@ -83,7 +83,7 @@ void WizardDialog::showHelp()
                  "They are very uncommon on other types of planes."); break;
   case Page_Bank:       
     message = tr("Models use one or two channels to control the elevons.<br>"
-                 "A so called Y-cable can be used to connect single receiver channel to two separeate elevon servos. "
+                 "A so called Y-cable can be used to connect single a receiver channel to two separate elevon servos. "
                  "If your servos are connected by a Y-cable you should select the single-servo option."); break;
   case Page_Rudder:     
     message = tr("Select the receiver channel that is connected to your rudder.<br><br>"
@@ -736,7 +736,7 @@ FblPage::FblPage(WizardDialog *dlg, QString image, QString title, QString text, 
   rollCB = new QComboBox();
 
   QLayout *l = layout();
-  l->addWidget(new QLabel(tr("Trottle Channel:")));
+  l->addWidget(new QLabel(tr("Throttle Channel:")));
   l->addWidget(throttleCB);
   l->addWidget(new QLabel(tr("Yaw Channel:")));
   l->addWidget(yawCB);
@@ -771,7 +771,7 @@ HeliPage::HeliPage(WizardDialog *dlg, QString image, QString title, QString text
   rollCB = new QComboBox();
 
   QLayout *l = layout();
-  l->addWidget(new QLabel(tr("Trottle Channel:")));
+  l->addWidget(new QLabel(tr("Throttle Channel:")));
   l->addWidget(throttleCB);
   l->addWidget(new QLabel(tr("Yaw Channel:")));
   l->addWidget(yawCB);
@@ -806,7 +806,7 @@ MultirotorPage::MultirotorPage(WizardDialog *dlg, QString image, QString title, 
   rollCB = new QComboBox();
 
   QLayout *l = layout();
-  l->addWidget(new QLabel(tr("Trottle Channel:")));
+  l->addWidget(new QLabel(tr("Throttle Channel:")));
   l->addWidget(throttleCB);
   l->addWidget(new QLabel(tr("Yaw Channel:")));
   l->addWidget(yawCB);

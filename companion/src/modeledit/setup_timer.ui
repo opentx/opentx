@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string/>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_2">
    <property name="margin">
@@ -26,7 +26,7 @@
       <enum>QDateTimeEdit::MinuteSection</enum>
      </property>
      <property name="displayFormat">
-      <string>mm:ss</string>
+      <string notr="true">mm:ss</string>
      </property>
     </widget>
    </item>
@@ -60,7 +60,7 @@
    <item>
     <widget class="QLabel" name="persistentValue">
      <property name="text">
-      <string> (00:00:00)</string>
+      <string notr="true"> (00:00:00)</string>
      </property>
     </widget>
    </item>

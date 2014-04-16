@@ -971,7 +971,7 @@ void compareDialog::printCurves()
   QString str = "<table border=1 cellspacing=0 cellpadding=3 style=\"page-break-after:always;\" width=\"100%\"><tr><td><h2>";
   str.append(tr("Curves"));
   str.append("</h2></td></tr><tr><td>");
-  str.append("<table border=1 cellspacing=0 cellpadding=3 width=\"100%\"><tr><td colspan=11><b>"+tr("5 Points Curves")+"</b></td></tr><tr>");
+  str.append("<table border=1 cellspacing=0 cellpadding=3 width=\"100%\"><tr><td colspan=11><b>"+tr("5 Point Curves")+"</b></td></tr><tr>");
   for(i=0; i<5; i++) 
     str.append(doTC(tr("pt %1").arg(i+1), "", true));
   str.append("<td></td>");
@@ -1001,7 +1001,7 @@ void compareDialog::printCurves()
   }
   str.append("</table></td></tr><tr><td>");
 
-  str.append("<table border=1 cellspacing=0 cellpadding=3 width=\"100%\"><tr><td colspan=19><b>"+tr("9 Points Curves")+"</b></td></tr><tr>");
+  str.append("<table border=1 cellspacing=0 cellpadding=3 width=\"100%\"><tr><td colspan=19><b>"+tr("9 Point Curves")+"</b></td></tr><tr>");
   for(i=0; i<9; i++) 
     str.append(doTC(tr("pt %1").arg(i+1), "", true));
   str.append("<td></td>");

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -42,7 +42,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Label</string>
+      <string notr="true">Label</string>
      </property>
     </widget>
    </item>
@@ -85,7 +85,10 @@
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
         <property name="suffix">
-         <string>ch</string>
+         <string/>
+        </property>
+        <property name="prefix">
+         <string>CH </string>
         </property>
         <property name="minimum">
          <number>1</number>
@@ -192,7 +195,7 @@
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
         <property name="suffix">
-         <string> usec</string>
+         <string> us</string>
         </property>
         <property name="minimum">
          <number>100</number>
@@ -307,7 +310,7 @@
          </size>
         </property>
         <property name="suffix">
-         <string> mSec</string>
+         <string> ms</string>
         </property>
         <property name="decimals">
          <number>1</number>
@@ -338,7 +341,7 @@
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
         <property name="suffix">
-         <string>ch</string>
+         <string/>
         </property>
         <property name="minimum">
          <number>1</number>

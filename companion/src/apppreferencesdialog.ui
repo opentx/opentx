@@ -134,9 +134,7 @@ Mode 4:
           </size>
          </property>
          <property name="whatsThis">
-          <string>Channel order
-
-This is used by the templated to determine which channel goes to what number output.</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Channel order&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Defines the order of the default mixes created on a new model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="currentIndex">
           <number>0</number>
@@ -318,7 +316,7 @@ This is used by the templated to determine which channel goes to what number out
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Channel Order</string>
+          <string>Default Channel Order</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -559,7 +557,7 @@ This is used by the templated to determine which channel goes to what number out
           <bool>true</bool>
          </property>
          <property name="text">
-          <string>General Settings Label</string>
+          <string notr="true">General Settings Label</string>
          </property>
         </widget>
        </item>

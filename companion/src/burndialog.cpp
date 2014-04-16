@@ -353,7 +353,7 @@ void burnDialog::on_useProfileImageCB_clicked()
   if (!fileName.isEmpty()){
     QImage image(fileName);
     if (image.isNull()) {
-      QMessageBox::critical(this, tr("Error"), tr("The profile image %1 does not contain an image.").arg(fileName));
+      QMessageBox::critical(this, tr("Error"), tr("Profile image %1 is invalid.").arg(fileName));
     }
     else {
       imageSource = PROFILE;

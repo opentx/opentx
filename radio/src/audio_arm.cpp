@@ -274,7 +274,7 @@ void referenceSystemAudioFiles()
 
       for (int i=0; i<AU_FRSKY_FIRST; i++) {
         getSystemAudioFile(path, i);
-        if (!strcmp(filename, fn)) {
+        if (!strcasecmp(filename, fn)) {
           availableAudioFiles |= MASK_SYSTEM_AUDIO_FILE(i);
           break;
         }
@@ -372,7 +372,7 @@ void referenceModelAudioFiles()
       for (int i=0; i<MAX_PHASES && !found; i++) {
         for (int event=0; event<2; event++) {
           getPhaseAudioFile(path, i, event);
-          if (!strcmp(filename, fn)) {
+          if (!strcasecmp(filename, fn)) {
             sdAvailablePhaseAudioFiles |= MASK_PHASE_AUDIO_FILE(i, event);
             found = true;
             break;
@@ -383,7 +383,7 @@ void referenceModelAudioFiles()
       // Switches Audio Files <switchname>-[up|mid|down].wav
       for (int i=0; i<SWSRC_LAST_SWITCH+NUM_XPOTS*XPOTS_MULTIPOS_COUNT && !found; i++) {
         getSwitchAudioFile(path, i);
-        if (!strcmp(filename, fn)) {
+        if (!strcasecmp(filename, fn)) {
           sdAvailableSwitchAudioFiles |= MASK_SWITCH_AUDIO_FILE(i);
           found = true;
         }
@@ -393,7 +393,7 @@ void referenceModelAudioFiles()
       for (int i=0; i<NUM_LOGICAL_SWITCH && !found; i++) {
         for (int event=0; event<2; event++) {
           getLogicalSwitchAudioFile(path, i, event);
-          if (!strcmp(filename, fn)) {
+          if (!strcasecmp(filename, fn)) {
             sdAvailableLogicalSwitchAudioFiles |= MASK_LOGICAL_SWITCH_AUDIO_FILE(i, event);
             found = true;
             break;

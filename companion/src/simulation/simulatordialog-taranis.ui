@@ -301,6 +301,9 @@
               <property name="text">
                <string notr="true">^</string>
               </property>
+              <property name="autoDefault">
+               <bool>false</bool>
+              </property>
              </widget>
             </item>
             <item alignment="Qt::AlignHCenter">
@@ -341,6 +344,9 @@
               </property>
               <property name="text">
                <string notr="true">v</string>
+              </property>
+              <property name="autoDefault">
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -555,7 +561,7 @@ QPushButton:checked {
            </size>
           </property>
           <property name="toolTip">
-           <string>S1</string>
+           <string/>
           </property>
           <property name="minimum">
            <number>-1024</number>
@@ -585,7 +591,7 @@ QPushButton:checked {
           <item>
            <widget class="QLabel" name="leftXPerc">
             <property name="text">
-             <string>TextLabel</string>
+             <string notr="true">TextLabel</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -595,7 +601,7 @@ QPushButton:checked {
           <item>
            <widget class="QLabel" name="leftYPerc">
             <property name="text">
-             <string>TextLabel</string>
+             <string notr="true">TextLabel</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -619,7 +625,7 @@ QPushButton:checked {
            </size>
           </property>
           <property name="toolTip">
-           <string>SB</string>
+           <string/>
           </property>
           <property name="maximum">
            <number>2</number>
@@ -675,7 +681,7 @@ QPushButton:checked {
            </size>
           </property>
           <property name="toolTip">
-           <string>SA</string>
+           <string/>
           </property>
           <property name="maximum">
            <number>2</number>
@@ -715,7 +721,7 @@ QPushButton:checked {
            </size>
           </property>
           <property name="toolTip">
-           <string>SE</string>
+           <string/>
           </property>
           <property name="maximum">
            <number>2</number>
@@ -743,7 +749,7 @@ QPushButton:checked {
         <item row="3" column="0">
          <widget class="QLabel" name="label">
           <property name="text">
-           <string>SF</string>
+           <string notr="true">SF</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -765,10 +771,10 @@ QPushButton:checked {
            </size>
           </property>
           <property name="toolTip">
-           <string>SF</string>
+           <string/>
           </property>
           <property name="statusTip">
-           <string>SF</string>
+           <string/>
           </property>
           <property name="maximum">
            <number>1</number>
@@ -811,7 +817,7 @@ QPushButton:checked {
            </size>
           </property>
           <property name="toolTip">
-           <string>LS</string>
+           <string/>
           </property>
           <property name="minimum">
            <number>-1024</number>
@@ -833,7 +839,7 @@ QPushButton:checked {
         <item row="3" column="6">
          <widget class="QLabel" name="label_2">
           <property name="text">
-           <string>SA</string>
+           <string notr="true">SA</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -843,7 +849,7 @@ QPushButton:checked {
         <item row="3" column="8">
          <widget class="QLabel" name="label_3">
           <property name="text">
-           <string>SB</string>
+           <string notr="true">SB</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -853,7 +859,7 @@ QPushButton:checked {
         <item row="3" column="5">
          <widget class="QLabel" name="label_5">
           <property name="text">
-           <string>SE</string>
+           <string notr="true">SE</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -863,7 +869,7 @@ QPushButton:checked {
         <item row="3" column="3">
          <widget class="QLabel" name="label_9">
           <property name="text">
-           <string>LS</string>
+           <string notr="true">LS</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -873,7 +879,7 @@ QPushButton:checked {
         <item row="3" column="10">
          <widget class="QLabel" name="label_10">
           <property name="text">
-           <string>S1</string>
+           <string notr="true">S1</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -898,6 +904,9 @@ QPushButton:checked {
             </property>
             <property name="text">
              <string notr="true">&lt;-</string>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -933,6 +942,9 @@ QPushButton:checked {
             </property>
             <property name="text">
              <string notr="true">-&gt;</string>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -982,6 +994,9 @@ QPushButton:checked {
               <property name="text">
                <string notr="true">^</string>
               </property>
+              <property name="autoDefault">
+               <bool>false</bool>
+              </property>
              </widget>
             </item>
             <item alignment="Qt::AlignHCenter">
@@ -1017,6 +1032,9 @@ QPushButton:checked {
               <property name="text">
                <string notr="true">v</string>
               </property>
+              <property name="autoDefault">
+               <bool>false</bool>
+              </property>
              </widget>
             </item>
            </layout>
@@ -1038,7 +1056,7 @@ QPushButton:checked {
            </size>
           </property>
           <property name="toolTip">
-           <string>S2</string>
+           <string/>
           </property>
           <property name="minimum">
            <number>-1024</number>
@@ -1060,7 +1078,7 @@ QPushButton:checked {
         <item row="3" column="1">
          <widget class="QLabel" name="label_11">
           <property name="text">
-           <string>S2</string>
+           <string notr="true">S2</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -1254,7 +1272,7 @@ QPushButton:checked {
            </size>
           </property>
           <property name="toolTip">
-           <string>SD</string>
+           <string/>
           </property>
           <property name="maximum">
            <number>2</number>
@@ -1294,7 +1312,7 @@ QPushButton:checked {
            </size>
           </property>
           <property name="toolTip">
-           <string>SC</string>
+           <string/>
           </property>
           <property name="maximum">
            <number>2</number>
@@ -1360,7 +1378,7 @@ QPushButton:checked {
            </size>
           </property>
           <property name="toolTip">
-           <string>SG</string>
+           <string/>
           </property>
           <property name="maximum">
            <number>2</number>
@@ -1403,7 +1421,7 @@ QPushButton:checked {
            </size>
           </property>
           <property name="toolTip">
-           <string>RS</string>
+           <string/>
           </property>
           <property name="minimum">
            <number>-1024</number>
@@ -1437,7 +1455,7 @@ QPushButton:checked {
            </size>
           </property>
           <property name="toolTip">
-           <string>SH</string>
+           <string/>
           </property>
           <property name="styleSheet">
            <string notr="true"/>
@@ -1468,7 +1486,7 @@ QPushButton:checked {
         <item row="3" column="3">
          <widget class="QLabel" name="label_4">
           <property name="text">
-           <string>SC</string>
+           <string notr="true">SC</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -1478,7 +1496,7 @@ QPushButton:checked {
         <item row="3" column="5">
          <widget class="QLabel" name="label_6">
           <property name="text">
-           <string>SD</string>
+           <string notr="true">SD</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -1488,7 +1506,7 @@ QPushButton:checked {
         <item row="3" column="6">
          <widget class="QLabel" name="label_7">
           <property name="text">
-           <string>SG</string>
+           <string notr="true">SG</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -1498,7 +1516,7 @@ QPushButton:checked {
         <item row="3" column="11">
          <widget class="QLabel" name="label_8">
           <property name="text">
-           <string>SH</string>
+           <string notr="true">SH</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -1508,7 +1526,7 @@ QPushButton:checked {
         <item row="3" column="8">
          <widget class="QLabel" name="label_12">
           <property name="text">
-           <string>RS</string>
+           <string notr="true">RS</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -1526,7 +1544,7 @@ QPushButton:checked {
           <item>
            <widget class="QLabel" name="rightXPerc">
             <property name="text">
-             <string>TextLabel</string>
+             <string notr="true">TextLabel</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -1536,7 +1554,7 @@ QPushButton:checked {
           <item>
            <widget class="QLabel" name="rightYPerc">
             <property name="text">
-             <string>TextLabel</string>
+             <string notr="true">TextLabel</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -1563,6 +1581,9 @@ QPushButton:checked {
             </property>
             <property name="text">
              <string notr="true">&lt;-</string>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -1604,6 +1625,9 @@ QPushButton:checked {
             </property>
             <property name="text">
              <string notr="true">-&gt;</string>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
             </property>
            </widget>
           </item>

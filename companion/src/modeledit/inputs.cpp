@@ -20,7 +20,7 @@ InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & g
   qbDown->setText(tr("Move Down"));
   qbDown->setIcon(CompanionIcon("movedown.png"));
   qbDown->setShortcut(QKeySequence(tr("Ctrl+Down")));
-  qbClear->setText(tr("Clear All Settings"));
+  qbClear->setText(tr("Clear All Inputs"));
   qbClear->setIcon(CompanionIcon("clear.png"));
 
   exposLayout->addWidget(ExposlistWidget,1,1,1,3);

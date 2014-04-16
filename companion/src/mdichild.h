@@ -61,6 +61,7 @@ class MdiChild : public QWidget
 
 public:
     MdiChild();
+    ~MdiChild();
 
     void newFile();
     bool loadFile(const QString &fileName, bool resetCurrentFile=true);

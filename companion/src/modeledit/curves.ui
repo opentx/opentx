@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string/>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
@@ -65,12 +65,12 @@
           <widget class="QComboBox" name="curveCustom">
            <item>
             <property name="text">
-             <string>Standard</string>
+             <string>Fixed X</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>Custom</string>
+             <string>Custom X</string>
             </property>
            </item>
           </widget>

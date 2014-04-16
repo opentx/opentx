@@ -770,8 +770,10 @@ void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, uin
 
   uint8_t mode = 0;
   if (active) {
-    if (s_editMode <= 0) mode = INVERS+FIXEDWIDTH;
-    else mode = FIXEDWIDTH;
+    if (s_editMode <= 0)
+      mode = INVERS + FIXEDWIDTH;
+    else
+      mode = FIXEDWIDTH;
   }
   lcd_putsnAtt(x, y, name, size, ZCHAR | mode);
 
@@ -783,7 +785,7 @@ void editName(uint8_t x, uint8_t y, char *name, uint8_t size, uint8_t event, uin
 
       if (p1valdiff || IS_ROTARY_RIGHT(event) || IS_ROTARY_LEFT(event) || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_FIRST(KEY_UP)
           || event==EVT_KEY_REPT(KEY_DOWN) || event==EVT_KEY_REPT(KEY_UP)) {
-         v = checkIncDec(event, abs(v), 0, LEN_STD_CHARS, 0);
+         v = checkIncDec(event, abs(v), 0, ZCHAR_MAX, 0);
          if (c <= 0) v = -v;
       }
 
@@ -4608,6 +4610,9 @@ void menuModelLogicalSwitches(uint8_t event)
     }
 #endif
     else if (cstate == LS_FAMILY_COMP) {
+#if defined(CPUARM)
+      v1_val = (uint8_t)cs->v1;
+#endif
       putsMixerSource(CSW_2ND_COLUMN, y, v1_val, attr1);
       putsMixerSource(CSW_3RD_COLUMN, y, cs->v2, attr2);
       INCDEC_SET_FLAG(INCDEC_SOURCE);

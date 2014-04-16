@@ -278,7 +278,7 @@ template <class T>
 bool OpenTxInterface::saveModel(unsigned int index, ModelData &model, unsigned int version, unsigned int variant)
 {
   T open9xModel(model, board, version, variant);
-  open9xModel.Dump();
+  // open9xModel.Dump();
   QByteArray eeprom;
   open9xModel.Export(eeprom);
   int sz = efile->writeRlc2(FILE_MODEL(index), FILE_TYP_MODEL, (const uint8_t*)eeprom.constData(), eeprom.size());
@@ -581,8 +581,6 @@ int OpenTxInterface::getCapability(const Capability capability)
       return (IS_ARM(board) ? 23 : 7);
     case HasSoundMixer:
       return (IS_ARM(board) ? 1 : 0);
-    case ExtraChannels:
-      return 0;
     case ExtraInputs:
       return 1;
     case ExtendedTrims:
@@ -1037,13 +1035,13 @@ void RegisterOpen9xFirmwares()
   // NOT TESTED open9x->addOption("PXX", QObject::tr("Support of FrSky PXX protocol"));
   open9x->addOption("DSM2", QObject::tr("Support for DSM2 modules"));
   open9x->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
-  open9x->addOption("ppmus", QObject::tr("PPM values displayed in us"));
+  open9x->addOption("ppmus", QObject::tr("Channel values displayed in us"));
   open9x->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
   open9x->addOption("symlimits", QObject::tr("Symetrical Limits"));
   open9x->addOptions(nav_options);
   open9x->addOption("sp22", QObject::tr("SmartieParts 2.2 Backlight support"));
-  open9x->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving some of them"));
-  open9x->addOption("autoswitch", QObject::tr("In model setup menus automatically set switch by moving some of them"));
+  open9x->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving the control"));
+  open9x->addOption("autoswitch", QObject::tr("In model setup menus automatically set switch by moving the control"));
   open9x->addOption("dblkeys", QObject::tr("Enable resetting values by pressing up and down at the same time"));
   open9x->addOption("nographics", QObject::tr("No graphical check boxes and sliders"));
   open9x->addOption("battgraph", QObject::tr("Battery graph"));
@@ -1074,13 +1072,13 @@ void RegisterOpen9xFirmwares()
   // NOT TESTED open9x->addOption("PXX", QObject::tr("Support of FrSky PXX protocol"));
   open9x->addOption("DSM2", QObject::tr("Support for DSM2 modules"));
   open9x->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
-  open9x->addOption("ppmus", QObject::tr("PPM values displayed in us"));
+  open9x->addOption("ppmus", QObject::tr("Channel values displayed in us"));
   open9x->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
   open9x->addOption("symlimits", QObject::tr("Symetrical Limits"));
   open9x->addOptions(nav_options);
   open9x->addOption("sp22", QObject::tr("SmartieParts 2.2 Backlight support"));
-  open9x->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving some of them"));
-  open9x->addOption("autoswitch", QObject::tr("In model setup menus automatically set switch by moving some of them"));
+  open9x->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving the control"));
+  open9x->addOption("autoswitch", QObject::tr("In model setup menus automatically set switch by moving the control"));
   open9x->addOption("dblkeys", QObject::tr("Enable resetting values by pressing up and down at the same time"));
   open9x->addOption("nographics", QObject::tr("No graphical check boxes and sliders"));
   open9x->addOption("battgraph", QObject::tr("Battery graph"));
@@ -1106,12 +1104,12 @@ void RegisterOpen9xFirmwares()
   // NOT TESTED open9x->addOption("PXX", QObject::tr("Support of FrSky PXX protocol"));
   open9x->addOption("DSM2", QObject::tr("Support for DSM2 modules"));
   open9x->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
-  open9x->addOption("ppmus", QObject::tr("PPM values displayed in us"));
+  open9x->addOption("ppmus", QObject::tr("Channel values displayed in us"));
   open9x->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
   open9x->addOption("symlimits", QObject::tr("Symetrical Limits"));
   open9x->addOption("potscroll", QObject::tr("Pots use in menus navigation"));
-  open9x->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving some of them"));
-  open9x->addOption("autoswitch", QObject::tr("In model setup menus automatically set switch by moving some of them"));
+  open9x->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving the control"));
+  open9x->addOption("autoswitch", QObject::tr("In model setup menus automatically set switch by moving the control"));
   open9x->addOption("nographics", QObject::tr("No graphical check boxes and sliders"));
   open9x->addOption("battgraph", QObject::tr("Battery graph"));
   open9x->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
@@ -1140,12 +1138,12 @@ void RegisterOpen9xFirmwares()
   // NOT TESTED open9x->addOption("PXX", QObject::tr("Support of FrSky PXX protocol"));
   open9x->addOption("DSM2", QObject::tr("Support for DSM2 modules"));
   open9x->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
-  open9x->addOption("ppmus", QObject::tr("PPM values displayed in us"));
+  open9x->addOption("ppmus", QObject::tr("Channel values displayed in us"));
   open9x->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
   open9x->addOption("symlimits", QObject::tr("Symetrical Limits"));
   open9x->addOption("potscroll", QObject::tr("Pots use in menus navigation"));
-  open9x->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving some of them"));
-  open9x->addOption("autoswitch", QObject::tr("In model setup menus automatically set switch by moving some of them"));
+  open9x->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving the control"));
+  open9x->addOption("autoswitch", QObject::tr("In model setup menus automatically set switch by moving the control"));
   open9x->addOption("nographics", QObject::tr("No graphical check boxes and sliders"));
   open9x->addOption("battgraph", QObject::tr("Battery graph"));
   open9x->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
@@ -1169,12 +1167,12 @@ void RegisterOpen9xFirmwares()
   Option dsm2_options[] = { { "DSM2", QObject::tr("Support for DSM2 modules"), 0 }, { "DSM2PPM", QObject::tr("Support for DSM2 modules using ppm instead of true serial"), 0 }, { NULL } };
   open9x->addOptions(dsm2_options);
   open9x->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
-  open9x->addOption("ppmus", QObject::tr("PPM values displayed in us"));
+  open9x->addOption("ppmus", QObject::tr("Channel values displayed in us"));
   open9x->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
   open9x->addOption("symlimits", QObject::tr("Symetrical Limits"));
   open9x->addOption("potscroll", QObject::tr("Pots use in menus navigation"));
-  open9x->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving some of them"));
-  open9x->addOption("autoswitch", QObject::tr("In model setup menus automatically set switch by moving some of them"));
+  open9x->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving the control"));
+  open9x->addOption("autoswitch", QObject::tr("In model setup menus automatically set switch by moving the control"));
   open9x->addOption("dblkeys", QObject::tr("Enable resetting values by pressing up and down at the same time"));
   open9x->addOption("nographics", QObject::tr("No graphical check boxes and sliders"));
   open9x->addOption("battgraph", QObject::tr("Battery graph"));
@@ -1194,12 +1192,12 @@ void RegisterOpen9xFirmwares()
   open9x->addOption("nofp", QObject::tr("No flight modes"));
   open9x->addOption("nocurves", QObject::tr("Disable curves menus"));
   open9x->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
-  open9x->addOption("ppmus", QObject::tr("PPM values displayed in us"));
+  open9x->addOption("ppmus", QObject::tr("Channel values displayed in us"));
   open9x->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
   open9x->addOption("symlimits", QObject::tr("Symetrical Limits"));
   open9x->addOption("potscroll", QObject::tr("Pots use in menus navigation"));
-  open9x->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving some of them"));
-  open9x->addOption("autoswitch", QObject::tr("In model setup menus automatically set switch by moving some of them"));
+  open9x->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving the control"));
+  open9x->addOption("autoswitch", QObject::tr("In model setup menus automatically set switch by moving the control"));
   open9x->addOption("dblkeys", QObject::tr("Enable resetting values by pressing up and down at the same time"));
   open9x->addOption("nographics", QObject::tr("No graphical check boxes and sliders"));
   open9x->addOption("battgraph", QObject::tr("Battery graph"));
@@ -1216,7 +1214,7 @@ void RegisterOpen9xFirmwares()
   open9x->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
   open9x->addOption("notemplates", QObject::tr("Disable TEMPLATES menu"));
   open9x->addOption("nogvars", QObject::tr("Disable Global variables"));
-  open9x->addOption("ppmus", QObject::tr("PPM values displayed in us"));
+  open9x->addOption("ppmus", QObject::tr("Channel values displayed in us"));
   open9x->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   open9x->addOptions(fai_options);
   firmwares.push_back(open9x);
@@ -1226,9 +1224,17 @@ void RegisterOpen9xFirmwares()
     open9x->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
     open9x->addOption("notemplates", QObject::tr("Disable TEMPLATES menu"));
     open9x->addOption("nogvars", QObject::tr("Disable Global variables"));
-    open9x->addOption("ppmus", QObject::tr("PPM values displayed in us"));
+    open9x->addOption("ppmus", QObject::tr("Channel values displayed in us"));
     open9x->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
     open9x->addOptions(fai_options);
     firmwares.push_back(open9x);
+  }
+}
+
+void UnregisterOpen9xFirmwares() 
+{
+  foreach (FirmwareInfo * f, firmwares) {
+    qDebug() << "UnregisterOpen9xFirmwares(): deleting " <<  QString::number(reinterpret_cast<uint64_t>(f), 16 );
+    delete f;
   }
 }
