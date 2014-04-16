@@ -225,12 +225,12 @@
     <message>
         <location filename="../modeledit/curves.ui" line="68"/>
         <source>Fixed X</source>
-        <translation type="unfinished"></translation>
+        <translation>Stałe X</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="73"/>
         <source>Custom X</source>
-        <translation type="unfinished"></translation>
+        <translation>Własny X</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="82"/>
@@ -567,13 +567,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/expodialog.ui" line="36"/>
         <source>Source for the mixer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Źródło miksera.</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="269"/>
         <source>Switch used to enable the line.
 If blank then the input is considered to be &quot;ON&quot; all the time.</source>
-        <translation type="unfinished"></translation>
+        <translation>Przełącznik używany do akrywacji linii. Jeśli puste linia jest uznawana za aktywną cały czas.</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="285"/>
@@ -593,7 +593,7 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</source
     <message>
         <location filename="../modeledit/expodialog.ui" line="388"/>
         <source>Curve applied to the source.</source>
-        <translation type="unfinished"></translation>
+        <translation>Krzywa załączona do źródła.</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.cpp" line="17"/>
@@ -630,7 +630,7 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</source
     <message>
         <location filename="../wizarddialog.cpp" line="739"/>
         <source>Throttle Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanał gazu:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="741"/>
@@ -1357,12 +1357,12 @@ To ustawienie jest używane przez szablony, określa jakie wyjście przypisane j
     <message>
         <location filename="../generaledit.ui" line="543"/>
         <source>Default Channel Order</source>
-        <translation type="unfinished">Bazowa kolejność kanałów</translation>
+        <translation>Bazowa kolejność kanałów</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="686"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Channel order&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Defines the order of the default mixes created on a new model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Kolejność kanałów&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Definiuje kolejność standardowych mikserów dla nowego modelu.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="703"/>
@@ -1527,42 +1527,42 @@ To ustawienie jest używane przez szablony, określa jakie wyjście przypisane j
     <message>
         <location filename="../generaledit.ui" line="2384"/>
         <source>Pot. 4</source>
-        <translation type="unfinished"></translation>
+        <translation>Potencj. 4</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2398"/>
         <source>Pot. 3</source>
-        <translation type="unfinished"></translation>
+        <translation>Potencj. 3</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2418"/>
         <source>Pot. 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Potencj. 2</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2425"/>
         <source>Pot. 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Potencj. 1</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2452"/>
         <source>Stick 3</source>
-        <translation type="unfinished"></translation>
+        <translation>Drążek 3</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2489"/>
         <source>Stick 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Drążek 1</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2538"/>
         <source>Stick 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Drążek 2</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2623"/>
         <source>Stick 4</source>
-        <translation type="unfinished"></translation>
+        <translation>Drążek 4</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="3170"/>
@@ -1994,7 +1994,7 @@ Jesteś pewien ?</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="774"/>
         <source>Throttle Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanał gazu:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="776"/>
@@ -2045,7 +2045,7 @@ Jesteś pewien ?</translation>
     <message>
         <location filename="../modeledit/inputs.cpp" line="23"/>
         <source>Clear All Inputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyczyść wszystkie wejścia</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="92"/>
@@ -2344,13 +2344,13 @@ Jesteś pewien ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="280"/>
         <source>A new release of Companion is available, please check the OpenTX website!</source>
-        <translation type="unfinished"></translation>
+        <translation>Nowe wydanie Companion jest dostępne, proszę sprawdzić stronę OpenTX!</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="344"/>
         <location filename="../mainwindow.cpp" line="383"/>
         <source>Not enough memory for all the selected firmware options</source>
-        <translation type="unfinished"></translation>
+        <translation>Za mało pamięci dla wybranej konfiguracji firmware</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="347"/>
@@ -2492,32 +2492,32 @@ Chcesz pobrać teraz?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1614"/>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>Nowy</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1615"/>
         <source>Open...</source>
-        <translation type="unfinished"></translation>
+        <translation>Otwórz...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1616"/>
         <source>Save</source>
-        <translation type="unfinished">Zapisz</translation>
+        <translation>Zapisz</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1617"/>
         <source>Save As...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz jako...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1620"/>
         <source>Copy Model</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopiuj Model</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1621"/>
         <source>Paste Model</source>
-        <translation type="unfinished"></translation>
+        <translation>Wklej Model</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1651"/>
@@ -2972,7 +2972,7 @@ Chcesz pobrać teraz?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1684"/>
         <source>Recent Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Ostatnie Pliki</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1830"/>
@@ -3423,7 +3423,7 @@ Czy mimo wszystko zapisać?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1846"/>
         <source>Show the list of radio profiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż listę profili radia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1886"/>
@@ -3836,7 +3836,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/mixerdialog.cpp" line="19"/>
         <source>DEST -&gt; CH%1</source>
-        <translation type="unfinished">Cel -&gt; KAN%1</translation>
+        <translation>Cel -&gt; KAN%1</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.cpp" line="38"/>
@@ -3963,12 +3963,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/mixes.cpp" line="469"/>
         <source>&amp;Toggle highlight</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Przełącz podświetlenie</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="469"/>
         <source>Ctrl+T</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+T</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="471"/>
@@ -4002,7 +4002,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/mixes.cpp" line="473"/>
         <source>C&amp;ut</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Wytnij</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="474"/>
@@ -4352,17 +4352,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/setup_module.ui" line="91"/>
         <source>CH </source>
-        <translation type="unfinished"></translation>
+        <translation>Kan</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="198"/>
         <source> us</source>
-        <translation type="unfinished"></translation>
+        <translation> us</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="313"/>
         <source> ms</source>
-        <translation type="unfinished"> ms</translation>
+        <translation> ms</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="391"/>
@@ -4443,7 +4443,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../wizarddialog.cpp" line="809"/>
         <source>Throttle Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanał gazu:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="811"/>
@@ -4939,7 +4939,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1217"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1227"/>
         <source>Channel values displayed in us</source>
-        <translation type="unfinished"></translation>
+        <translation>Wartosći kanałów wyswietlone w us</translation>
     </message>
     <message>
         <source>In model setup menus automatically set source by moving some of them</source>
@@ -5223,7 +5223,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1174"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1199"/>
         <source>In model setup menus automatically set source by moving the control</source>
-        <translation type="unfinished"></translation>
+        <translation>W menu ustawień modelu automatycznie wybierz źródło poprzez poruszenie nim</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1044"/>
@@ -5233,7 +5233,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1175"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1200"/>
         <source>In model setup menus automatically set switch by moving the control</source>
-        <translation type="unfinished"></translation>
+        <translation>W menu ustawień modelu automatycznie wybierz źródło poprzez poruszenie nim</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1094"/>
@@ -6427,14 +6427,16 @@ Zespół OpenTX/Companion.</translation>
     <message>
         <location filename="../firmwares/opentx/open9xStockeeprom.cpp" line="92"/>
         <source>Simultaneous usage of expo and curves is no longer supported in OpenTX</source>
-        <translation type="unfinished"></translation>
+        <translation>Jednoczesne użycie expo i krzywych nie jest dłużej wspierane w OpenTX</translation>
     </message>
     <message>
         <location filename="../warnings.h" line="5"/>
         <source>Thank you for upgrading to OpenTX 2.0. This is a major upgrade that adds and modifies a lot of things, so please make sure that you read release notes carefully to learn about the changes, and thoroughly check each of your models for proper function.
 
 The OpenTX Team.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dziękujemy za zupgradowanie do OpenTX 2.0. Ten duży upgrade dodaje i zmienia wiele rzeczy, zatem prosimy upewnić się, że dokładnie przeczytałeś informacje o wydaniu i zapoznałeś się ze zmianami oraz sprawdziłes ustawienia wszystkich swoich modeli czy działają prawidłowo.
+
+Zespół OpenTX.</translation>
     </message>
 </context>
 <context>
@@ -6569,12 +6571,12 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
     <message>
         <location filename="../modeledit/setup.ui" line="156"/>
         <source>Timer 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Timer 2</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="172"/>
         <source>Timer 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Timer 1</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="190"/>
@@ -6970,7 +6972,7 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
     <message>
         <location filename="../modeledit/telemetry.ui" line="537"/>
         <source>CELS</source>
-        <translation type="unfinished"></translation>
+        <translation>Ogniwa</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="583"/>
@@ -7633,17 +7635,17 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
     <message>
         <location filename="../wizarddialog.cpp" line="70"/>
         <source>Most aircraft have a main wing and a tail with control surfaces. Flying wings and delta winged aircraft only have a single wing. The main control surface on a standard wing controls the roll of the aircraft. This surface is called an aileron.&lt;br&gt;The control surface of a delta wing controls both roll and pitch. This surface is called an elevon. </source>
-        <translation type="unfinished"></translation>
+        <translation>Większość samolotów posiada powierzchnie sterowe na skrzydłach i ogonie. Latające skrzydło oraz delta posada tylko sterowanie na skrzydłach. Główne powierzchnie sterowe starndardowych skrzydeł powodują obórt samolotu w osi podłużnej. Są to lotki.&lt;br&gt; Powierzchnie sterowe na skrzydle w delcie i latającym skrzydle działają jako lotki i ster wysokości. Są to sterolotki.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="74"/>
         <source>Models use one or two channels to control the ailerons.&lt;br&gt;A so called Y-cable can be used to connect a single receiver channel to two separate aileron servos. If your servos are connected by a Y-cable you should select the single-servo option.&lt;br&gt;&lt;br&gt;Aileron - Spektrum: CH2, Futaba: CH1</source>
-        <translation type="unfinished"></translation>
+        <translation>Większość modelu używa jednego lub 2ch kanałów do sterowania lotkami.&lt;br&gt;&lt;br&gt;Przez tzw. Y-kabel mogą być kontrolowane 2 serwa na jednym kanale. Jeśli używasz Y-kabla wybierz opcję z jednym serwem.&lt;br&gt;&lt;br&gt; Lotki - Spektrum: Kan2, Futaba: Kan1</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="85"/>
         <source>Models use one or two channels to control the elevons.&lt;br&gt;A so called Y-cable can be used to connect single a receiver channel to two separate elevon servos. If your servos are connected by a Y-cable you should select the single-servo option.</source>
-        <translation type="unfinished"></translation>
+        <translation>Model używa jednego lub dwóch kanałów do kontrolowania sterolotek.&lt;br&gt;Przez tzw. Y-kabel mogą być kontrolowane 2 serwa na jednym kanale. Jeśli używasz Y-kabla wybierz opcję z jednym serwem.</translation>
     </message>
     <message>
         <source>Most aircraft have a main wing and a tail with control surfaces. Flying wings and delta winged aircraft only have a single wing. The main control surface on a standard wing controlls the roll of the aircraft. This surface is called an aileron.&lt;br&gt;The control surface of a delta wing controls both roll and elevation. This surface is called an elevon. </source>
@@ -7773,12 +7775,12 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
     <message>
         <location filename="../apppreferencesdialog.ui" line="137"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Channel order&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Defines the order of the default mixes created on a new model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Kolejność kanałów&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Definiuje kolejność standardowych mikserów dla nowego modelu.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="319"/>
         <source>Default Channel Order</source>
-        <translation type="unfinished">Bazowa kolejność kanałów</translation>
+        <translation>Bazowa kolejność kanałów</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="536"/>
@@ -8853,7 +8855,7 @@ m2560 dla platformy V4</translation>
     <message>
         <location filename="../burndialog.cpp" line="356"/>
         <source>Profile image %1 is invalid.</source>
-        <translation type="unfinished"></translation>
+        <translation>Obraz profilu %1 nieprawidłowy.</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="372"/>
@@ -9171,7 +9173,7 @@ m2560 dla platformy V4</translation>
     <message>
         <location filename="../comparedialog.cpp" line="974"/>
         <source>5 Point Curves</source>
-        <translation type="unfinished"></translation>
+        <translation>5-cio punktowe Krzywe</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="995"/>
@@ -9365,7 +9367,7 @@ m2560 dla platformy V4</translation>
     <message>
         <location filename="../comparedialog.cpp" line="1004"/>
         <source>9 Point Curves</source>
-        <translation type="unfinished"></translation>
+        <translation>9-cio punktowe Krzywe</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1077"/>
@@ -9534,7 +9536,7 @@ m2560 dla platformy V4</translation>
     <message>
         <location filename="../customizesplashdialog.cpp" line="228"/>
         <source>Cannot load profile image %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie mogę załadować obrazu Profilu %1.</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="242"/>
@@ -10096,7 +10098,7 @@ Tlačítkem Zrušit přerušíte kalibraci</translation>
     <message>
         <location filename="../logsdialog.ui" line="111"/>
         <source>Reset</source>
-        <translation type="unfinished">Zresetuj</translation>
+        <translation>Zesetuj</translation>
     </message>
     <message>
         <location filename="../logsdialog.ui" line="135"/>
