@@ -3549,7 +3549,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/mixerdialog.cpp" line="19"/>
         <source>DEST -&gt; CH%1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.cpp" line="38"/>
@@ -3578,45 +3578,45 @@ p, li { white-space: pre-wrap; }
         <location filename="../modeledit/mixes.cpp" line="17"/>
         <location filename="../modeledit/mixes.cpp" line="477"/>
         <source>Move Up</source>
-        <translation type="unfinished">Posunout nahoru</translation>
+        <translation>Posunout nahoru</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="19"/>
         <location filename="../modeledit/mixes.cpp" line="477"/>
         <source>Ctrl+Up</source>
-        <translation type="unfinished">Ctrl+Up</translation>
+        <translation>Ctrl+Nahoru</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="20"/>
         <location filename="../modeledit/mixes.cpp" line="478"/>
         <source>Move Down</source>
-        <translation type="unfinished">Posunout dolů</translation>
+        <translation>Posunout dolů</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="22"/>
         <location filename="../modeledit/mixes.cpp" line="478"/>
         <source>Ctrl+Down</source>
-        <translation type="unfinished">Ctrl+Dolů</translation>
+        <translation>Ctrl+Dolů</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="23"/>
         <source>Clear Mixes</source>
-        <translation type="unfinished">Vymazat všechny mixy</translation>
+        <translation>Vymazat všechny mixy</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="168"/>
         <source>Weight(%1)</source>
-        <translation type="unfinished">Váha(%1)</translation>
+        <translation>Váha(%1)</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="174"/>
         <source>Switch(%1)</source>
-        <translation type="unfinished">Spínač(%1)</translation>
+        <translation>Spínač(%1)</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="178"/>
         <source>No Trim</source>
-        <translation type="unfinished">Žádný trim</translation>
+        <translation>Žádný trim</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="184"/>
