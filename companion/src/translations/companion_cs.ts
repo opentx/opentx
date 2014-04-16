@@ -333,7 +333,8 @@
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="181"/>
         <source>ON</source>
-        <translation type="unfinished">ZAPNUTO</translation>
+        <translatorcomment>Překlad se do formuláře nevejde.</translatorcomment>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="245"/>
@@ -1833,17 +1834,17 @@ Opravdu to takto chcete ?</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="710"/>
         <source>No</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="712"/>
         <source>Yes, controled by a switch</source>
-        <translation type="unfinished"></translation>
+        <translation>Ano, ovládané spínačem</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="713"/>
         <source>Yes, controlled by a pot</source>
-        <translation type="unfinished"></translation>
+        <translation>Ano, ovládané potenciomerem</translation>
     </message>
 </context>
 <context>
@@ -1851,67 +1852,67 @@ Opravdu to takto chcete ?</translation>
     <message>
         <location filename="../modeledit/heli.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="25"/>
         <source>Invert Elevator</source>
-        <translation type="unfinished">Invertovat výškovku</translation>
+        <translation>Invertovat výškovku</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="32"/>
         <source>Invert Aileron</source>
-        <translation type="unfinished">Invertovat křidélka</translation>
+        <translation>Invertovat křidélka</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="39"/>
         <source>Invert Collective</source>
-        <translation type="unfinished">Invertovat kolektiv</translation>
+        <translation>Invertovat kolektiv</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="48"/>
         <source>Invert</source>
-        <translation type="unfinished">Invertovat</translation>
+        <translation>Invertovat</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="56"/>
         <source>Off</source>
-        <translation type="unfinished">Vypnuto</translation>
+        <translation>Vypnuto</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="61"/>
         <source>120</source>
-        <translation type="unfinished">CH120</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="66"/>
         <source>120X</source>
-        <translation type="unfinished">CH120X</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="71"/>
         <source>140</source>
-        <translation type="unfinished">CH140</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="76"/>
         <source>90</source>
-        <translation type="unfinished">CH90</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="84"/>
         <source>Collective</source>
-        <translation type="unfinished">Kolektiv</translation>
+        <translation>Kolektiv</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="94"/>
         <source>Swash Type</source>
-        <translation type="unfinished">Typ cykliky</translation>
+        <translation>Typ cykliky</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="120"/>
         <source>Swash Ring</source>
-        <translation type="unfinished">Cyklika</translation>
+        <translation>Cyklika</translation>
     </message>
 </context>
 <context>
@@ -1943,140 +1944,141 @@ Opravdu to takto chcete ?</translation>
         <location filename="../modeledit/inputs.cpp" line="17"/>
         <location filename="../modeledit/inputs.cpp" line="371"/>
         <source>Move Up</source>
-        <translation type="unfinished">Posunout nahoru</translation>
+        <translation>Posunout nahoru</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="19"/>
         <location filename="../modeledit/inputs.cpp" line="371"/>
         <source>Ctrl+Up</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Ctrl+Nahoru</translatorcomment>
+        <translation>Ctrl+Up</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="20"/>
         <location filename="../modeledit/inputs.cpp" line="372"/>
         <source>Move Down</source>
-        <translation type="unfinished">Posunout dolů</translation>
+        <translation>Posunout dolů</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="22"/>
         <location filename="../modeledit/inputs.cpp" line="372"/>
         <source>Ctrl+Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Dolů</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="23"/>
         <source>Clear All Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Vymazat všechny vstupy</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="92"/>
         <source>Source(%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zdroj(%1)</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="94"/>
         <source>No Trim</source>
-        <translation type="unfinished">Žádný trim</translation>
+        <translation>Žádný trim</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="107"/>
         <source>Weight(%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Váha(%1)</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="114"/>
         <source>Switch(%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Spínač(%1)</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="146"/>
         <source>Not enough available inputs!</source>
-        <translation type="unfinished"></translation>
+        <translation>Již nejsou další volné vstupy!</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="230"/>
         <source>Delete Selected Inputs?</source>
-        <translation type="unfinished"></translation>
+        <translation>Vymazat vybrané vstupy?</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="362"/>
         <source>&amp;Add</source>
-        <translation type="unfinished">&amp;Přidat</translation>
+        <translation>&amp;Přidat</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="362"/>
         <source>Ctrl+A</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="363"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished">&amp;Upravit</translation>
+        <translation>&amp;Upravit</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="363"/>
         <source>Enter</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="365"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished">&amp;Odstranit</translation>
+        <translation>V&amp;ymazat</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="365"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="366"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished">&amp;Kopírovat</translation>
+        <translation>&amp;Kopírovat</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="366"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="367"/>
         <source>&amp;Cut</source>
-        <translation type="unfinished">&amp;Vyjmout</translation>
+        <translation>Vyj&amp;mout</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="367"/>
         <source>Ctrl+X</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="368"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished">&amp;Vložit</translation>
+        <translation>&amp;Vložit</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="368"/>
         <source>Ctrl+V</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="369"/>
         <source>Du&amp;plicate</source>
-        <translation type="unfinished">&amp;Duplikovat</translation>
+        <translation>&amp;Duplikovat</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="369"/>
         <source>Ctrl+U</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="468"/>
         <source>Clear Inputs?</source>
-        <translation type="unfinished"></translation>
+        <translation>Vymazat vstupy?</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="468"/>
         <source>Really clear all the inputs?</source>
-        <translation type="unfinished"></translation>
+        <translation>Opravdu chcete vymazat všechny vstupy?</translation>
     </message>
 </context>
 <context>
@@ -2084,77 +2086,77 @@ Opravdu to takto chcete ?</translation>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="18"/>
         <source>V1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="19"/>
         <source>V2</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="22"/>
         <source>Duration</source>
-        <translation type="unfinished">Trvání</translation>
+        <translation>Trvání</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="23"/>
         <source>Delay</source>
-        <translation type="unfinished">Zpoždění</translation>
+        <translation>Zpoždění</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="17"/>
         <source>Function</source>
-        <translation type="unfinished">Funkce</translation>
+        <translation>Funkce</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="20"/>
         <source>AND Switch</source>
-        <translation type="unfinished"></translation>
+        <translation>AND spínač</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="31"/>
         <source>L%1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="395"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished">&amp;Odstranit</translation>
+        <translation>Vy&amp;mazat</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="395"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="396"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished">&amp;Kopírovat</translation>
+        <translation>&amp;Kopírovat</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="396"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="397"/>
         <source>&amp;Cut</source>
-        <translation type="unfinished">&amp;Vyjmout</translation>
+        <translation>V&amp;yjmout</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="397"/>
         <source>Ctrl+X</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="398"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished">&amp;Vložit</translation>
+        <translation>&amp;Vložit</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="398"/>
         <source>Ctrl+V</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -2209,7 +2211,7 @@ Opravdu to takto chcete ?</translation>
         <location filename="../mainwindow.cpp" line="284"/>
         <location filename="../mainwindow.cpp" line="530"/>
         <source>No updates available at this time.</source>
-        <translation>žádné aktualizace nejsou nyní dostupné.</translation>
+        <translation>Žádné aktualizace nejsou nyní dostupné.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="294"/>
@@ -2247,12 +2249,12 @@ Opravdu to takto chcete ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="344"/>
         <source>Firmware does not longer fit in the radio, due to selected firmware options</source>
-        <translation type="unfinished"></translation>
+        <translation>Firmware se zvolenými vlastnostmi se již nevejde do rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="383"/>
         <source>Firmware does not fit in the radio, due to selected firmware options</source>
-        <translation type="unfinished"></translation>
+        <translation>Firmware se zvolenými vlastnostmi nevejde do rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="386"/>
@@ -2267,7 +2269,7 @@ Opravdu to takto chcete ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="347"/>
         <source>Compilation server temporary failure, try later</source>
-        <translation>Dočasná chyba kompilačního serveru, zkuste to prosím později znovu.</translation>
+        <translation>Dočasná chyba kompilačního serveru, zkuste to prosím později znovu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="350"/>
@@ -2284,7 +2286,7 @@ Opravdu to takto chcete ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="422"/>
         <source>Do you want to write the firmware to the radio now ?</source>
-        <translation type="unfinished"></translation>
+        <translation>Chcete zapsat firmware do rádia nyní?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="474"/>
@@ -2398,35 +2400,35 @@ Chcete ji stáhnout nyní ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="261"/>
         <source>A new version of Companion is available (version %1)&lt;br&gt;Would you like to download it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Je dostupná nová verze Companion (verze %1)&lt;br&gt;Chcete ji nyní stáhnout?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="353"/>
         <location filename="../mainwindow.cpp" line="392"/>
         <source>Compilation server requires registration, please check OpenTX web site</source>
-        <translation type="unfinished"></translation>
+        <translation>Kompilační server vyžaduje registraci, prosím navštivte internetové stránky OpenTX</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="603"/>
         <source>The selected language will be used the next time you start Companion.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolený jazyk bude použit při příštím spuštění Companion.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="605"/>
         <location filename="../mainwindow.cpp" line="616"/>
         <location filename="../mainwindow.cpp" line="627"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="614"/>
         <source>The new theme will be loaded the next time you start Companion.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nové téma bude použito při příštím spuštění Companion.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="625"/>
         <source>The icon size will be used the next time you start Companion.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolená velikost ikon bude použita při příštím spuštění Companion.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1086"/>
@@ -2465,13 +2467,13 @@ Chcete ho přesto zapsat ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="280"/>
         <source>A new release of Companion is available please check the OpenTX website!</source>
-        <translation type="unfinished"></translation>
+        <translation>Je dostupná nová verze Companion, prosím navštivte internetové stránky OpenTX!</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="646"/>
         <location filename="../mainwindow.cpp" line="1615"/>
         <source>Open Models and Settings file</source>
-        <translation type="unfinished"></translation>
+        <translation>Otevřít soubor modelů a nastavení</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1056"/>
@@ -2479,12 +2481,12 @@ Chcete ho přesto zapsat ?</translation>
         <location filename="../mainwindow.cpp" line="1448"/>
         <location filename="../mainwindow.cpp" line="1670"/>
         <source>Read Models and Settings From Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Načíst modely a nastavení z rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1083"/>
         <source>Write Radio Backup from %1 to the radio?</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapsat zálohu z %1 do rádia?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1113"/>
@@ -2494,88 +2496,88 @@ Chcete ho přesto zapsat ?</translation>
         <location filename="../mainwindow.cpp" line="1359"/>
         <location filename="../mainwindow.cpp" line="1408"/>
         <source>Backup Models and Settings From Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Zálohovat modely a nastavení z rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1143"/>
         <source>The radio firmware belongs to another product family, check file and preferences!</source>
-        <translation type="unfinished"></translation>
+        <translation>Firmware rádia je z jiné rodiny produktů , zkontrolujte nastavení předvoleb!</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1146"/>
         <source>The radio firmware is outdated, please upgrade!</source>
-        <translation type="unfinished"></translation>
+        <translation>Firmware rádia je zastaralý, aktualizujte ho prosím!</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1192"/>
         <source>Write Backup To Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapsat zálohu do rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1366"/>
         <location filename="../mainwindow.cpp" line="1416"/>
         <source>Write Firmware To Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapsat firmware do rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1379"/>
         <source>Restore Models and Settings To Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Obnovit modely a nastavení rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1384"/>
         <source>Could not restore Models and Settings to Radio. The models and settings data file can be found at: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze obnovit modely a nastavení rádia. Data modelů a nastavení naleznete v %1</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1388"/>
         <source>Could not write firmware to radio. The models and settings data file can be found at: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze zapsat firmware do rádia. Data modelů a nastavení naleznete v %1</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1392"/>
         <source>Cannot backup existing Models and Settings from Radio. Firmware write process aborted</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze zálohovat stávající modely a nastavení z rádia. Zápis firmware byl přerušen</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1426"/>
         <source>Save Radio Backup to File</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložit zálohu rádia do souboru</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1439"/>
         <source>Read Radio Backup</source>
-        <translation type="unfinished"></translation>
+        <translation>Načíst zálohu rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1458"/>
         <source>Read Radio Firmware to File</source>
-        <translation type="unfinished"></translation>
+        <translation>Načíst firmware rádia do souboru</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1506"/>
         <source>OpenTX Home Page: &lt;a href=&apos;%1&apos;&gt;%1&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Internetová stránka OpenTX : &lt;a href=&apos;%1&apos;&gt;%1&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1508"/>
         <source>The OpenTX Companion project was originally forked from &lt;a href=&apos;%2&apos;&gt;eePe&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekt OpenTX Companion vznikl oddělením z &lt;a href=&apos;%2&apos;&gt;eePe&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1510"/>
         <source>If you&apos;ve found this program useful, please support by &lt;a href=&apos;%1&apos;&gt;donating&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokud vám byl tento program užitečný, podpořte jej &lt;a href=&apos;%1&apos;&gt;darem&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1512"/>
         <source>Version %1, %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Verze %1, %3</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1517"/>
         <source>About Companion</source>
-        <translation type="unfinished"></translation>
+        <translation>O aplikaci Companion</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1661"/>
@@ -2585,524 +2587,524 @@ Chcete ho přesto zapsat ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1618"/>
         <source>Exit the application</source>
-        <translation>Ukončit aplikaci companion9x</translation>
+        <translation>Ukončit aplikaci</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1626"/>
         <source>A monochrome black icon theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Černé mono téma</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1627"/>
         <source>A monochrome white icon theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Bílé mono téma</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1628"/>
         <source>A monochrome blue icon theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Modré mono téma</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1631"/>
         <source>Small</source>
-        <translation type="unfinished"></translation>
+        <translation>Malá</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1631"/>
         <source>Use small toolbar icons</source>
-        <translation type="unfinished"></translation>
+        <translation>Použít malé ikony nástrojové lišty</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1632"/>
         <source>Use normal size toolbar icons</source>
-        <translation type="unfinished"></translation>
+        <translation>Použít normální velikost ikon nástrojové lišty</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1632"/>
         <source>Normal</source>
-        <translation type="unfinished">Normální</translation>
+        <translation>Normální</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1633"/>
         <source>Use big toolbar icons</source>
-        <translation type="unfinished"></translation>
+        <translation>Použít velké ikony nástrojové lišty</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1633"/>
         <source>Big</source>
-        <translation type="unfinished"></translation>
+        <translation>Velká</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1634"/>
         <source>Use huge toolbar icons</source>
-        <translation type="unfinished"></translation>
+        <translation>Použít největší ikony nástrojové lišty</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1634"/>
         <source>Huge</source>
-        <translation type="unfinished"></translation>
+        <translation>Největší</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1544"/>
         <source>OpenTX Companion - FW: %1 - Profile: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTX Companion - FW: %1 - Profil: %2</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1614"/>
         <source>New Models+Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Nový</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1614"/>
         <source>Create a new Models and Settings file</source>
-        <translation type="unfinished"></translation>
+        <translation>Vytvořit nový soubor modelů a nastavení</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1615"/>
         <source>Open Models+Settings...</source>
-        <translation type="unfinished"></translation>
+        <translation>Otevřít</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1616"/>
         <source>Save Models+Settings...</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložit</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1616"/>
         <location filename="../mainwindow.cpp" line="1617"/>
         <source>Save Models and Settings file</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložit soubor modelů a nastavení</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1617"/>
         <source>Save Models+Settings as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložit jako ...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1618"/>
         <source>Exit</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukončit</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1619"/>
         <source>Cut Model</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyjmout</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1619"/>
         <source>Cut current model to the clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyjmout aktuální výběr a uložit do schránky</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1620"/>
         <source>Copy Model...</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopírovat</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1620"/>
         <source>Copy current model to the clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopírovat aktuální výběr do schránky</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1621"/>
         <source>Paste Model...</source>
-        <translation type="unfinished"></translation>
+        <translation>Vložit</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1621"/>
         <source>Paste model from clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Vložit obsah schránky na aktuální pozici</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1624"/>
         <source>Classical</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasik9x</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1624"/>
         <source>The classic companion9x icon theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Původní téma companion9x</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1625"/>
         <source>Yerico</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1625"/>
         <source>Yellow round honey sweet icon theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Žluté medové téma</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1626"/>
         <source>Monochrome</source>
-        <translation type="unfinished"></translation>
+        <translation>Mono</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1627"/>
         <source>MonoWhite</source>
-        <translation type="unfinished"></translation>
+        <translation>Mono-bílé</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1628"/>
         <source>MonoBlue</source>
-        <translation type="unfinished"></translation>
+        <translation>Mono-modré</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1637"/>
         <source>System language</source>
-        <translation type="unfinished"></translation>
+        <translation>Výchozí jazyk prostředí</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1637"/>
         <source>Use system language in menus</source>
-        <translation type="unfinished"></translation>
+        <translation>Použít systémový jazyk</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1638"/>
         <source>Czech</source>
-        <translation type="unfinished"></translation>
+        <translation>Čeština</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1638"/>
         <source>Use Czech in menus</source>
-        <translation type="unfinished"></translation>
+        <translation>Aplikace v českém jazyce</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1639"/>
         <source>German</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1639"/>
         <source>Use German in menus</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1640"/>
         <source>English</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1640"/>
         <source>Use English in menus</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1641"/>
         <source>Finnish</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1641"/>
         <source>Use Finnish in menus</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1642"/>
         <source>French</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1642"/>
         <source>Use French in menus</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1643"/>
         <source>Italian</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1643"/>
         <source>Use Italian in menus</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1644"/>
         <source>Hebrew</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1644"/>
         <source>Use Hebrew in menus</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1645"/>
         <source>Polish</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1645"/>
         <source>Use Polish in menus</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1646"/>
         <source>Portuguese</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1646"/>
         <source>Use Portuguese in menus</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1647"/>
         <source>Swedish</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1647"/>
         <source>Use Swedish in menus</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1648"/>
         <source>Russian</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1648"/>
         <source>Use Russian in menus</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1649"/>
         <source>Dutch</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1649"/>
         <source>Use Dutch in menus</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1651"/>
         <source>About...</source>
-        <translation type="unfinished"></translation>
+        <translation>O aplikaci</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1652"/>
         <source>Print...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tisk</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1652"/>
         <source>Print current model</source>
-        <translation type="unfinished"></translation>
+        <translation>Vytisknout zvolený model</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1653"/>
         <source>Simulate...</source>
-        <translation type="unfinished"></translation>
+        <translation>Simulace</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1653"/>
         <source>Simulate current model</source>
-        <translation type="unfinished"></translation>
+        <translation>Simulace vybraného modelu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1654"/>
         <source>Load Backup...</source>
-        <translation type="unfinished"></translation>
+        <translation>Načíst zálohu...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1655"/>
         <source>View Log File...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazit Log</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1655"/>
         <source>Open and view log file</source>
-        <translation type="unfinished"></translation>
+        <translation>Otevře a zobrazí soubor logu rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1656"/>
         <source>Settings...</source>
-        <translation type="unfinished"></translation>
+        <translation>Předvolby...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1656"/>
         <source>Edit Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Upravit nastavení předvoleb</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1657"/>
         <source>Download...</source>
-        <translation type="unfinished"></translation>
+        <translation>Stáhnout</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1657"/>
         <source>Download firmware and voice files</source>
-        <translation type="unfinished"></translation>
+        <translation>Stáhnout firmware a hlasové soubory</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1658"/>
         <source>Check for Updates...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zkontrolovat aktualizace</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1658"/>
         <source>Check OpenTX and Companion updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Zkontrolovat aktualizace OpenTX a Companion</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1659"/>
         <source>Companion Changes...</source>
-        <translation type="unfinished"></translation>
+        <translation>Změny Companion</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1659"/>
         <source>Show Companion change log</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazí seznam změn jednotlivých vydání Companion</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1660"/>
         <source>Firmware Changes...</source>
-        <translation type="unfinished"></translation>
+        <translation>Změny Firmwaru</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1660"/>
         <source>Show firmware change log</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazí seznam změn jednotlivých vydání Firmware</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1661"/>
         <source>Compare Models...</source>
-        <translation type="unfinished"></translation>
+        <translation>Porovnat modely...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1662"/>
         <source>Edit Radio Splash Image...</source>
-        <translation type="unfinished"></translation>
+        <translation>Upravit úvodní logo rádia...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1662"/>
         <source>Edit the splash image of your Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Upravit úvodní grafické logo rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1663"/>
         <source>List programmers...</source>
-        <translation type="unfinished"></translation>
+        <translation>Seznam programátorů...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1664"/>
         <source>Fuses...</source>
-        <translation type="unfinished"></translation>
+        <translation>Pojistky mikrokontroléru...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1665"/>
         <source>Read Firmware from Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Načíst firmware z rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1665"/>
         <source>Read firmware from Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Načíst firmware z rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1666"/>
         <source>Write Firmware to Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapsat firmware do rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1666"/>
         <source>Write firmware to Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapsat firmware do rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1667"/>
         <source>Add Radio Profile</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nový profil rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1667"/>
         <source>Create a new Radio Setting Profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Vytvořit nový profil nastavení rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1668"/>
         <source>Manuals and other Documents</source>
-        <translation type="unfinished"></translation>
+        <translation>Manuály a jiné dokumenty</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1668"/>
         <source>Open the OpenTX document page in a web browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Otevřít stránku s dokumenty OpenTX v prohlížeči</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1669"/>
         <source>Write Models and Settings To Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapsat modely a nastavení do rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1669"/>
         <source>Write Models and Settings to Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapsat modely a nastavení do rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1670"/>
         <source>Read Models and Settings from Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Načíst modely a nastavení z rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1671"/>
         <source>Configure Communications...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavení propojení</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1671"/>
         <source>Configure software for communicating with the Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavení softwaru pro komunikaci s rádiem</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1672"/>
         <source>Write Backup to Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapsat zálohu do rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1672"/>
         <source>Write Backup from file to to Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapsat zálohu ze souboru do rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1673"/>
         <source>Backup Radio to File</source>
-        <translation type="unfinished"></translation>
+        <translation>Zálohovat rádio do souboru</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1673"/>
         <source>Save a complete backup file of all settings and model data in the Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložit kompletní zálohu modelů a nastavení rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1674"/>
         <source>Contributors...</source>
-        <translation type="unfinished"></translation>
+        <translation>Přispěvatelé</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1674"/>
         <source>A tribute to those who have contributed to OpenTX and Companion</source>
-        <translation type="unfinished"></translation>
+        <translation>Hold těm, kteří přispěli k OpenTX a Companion</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1684"/>
         <location filename="../mainwindow.cpp" line="1829"/>
         <source>Recent Models+Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Nedávné soubory</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1686"/>
         <source>Set Icon Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Téma ikon</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1687"/>
         <source>Set Icon Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Velikost ikon</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1862"/>
@@ -3133,12 +3135,12 @@ Chcete ho přesto zapsat ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1651"/>
         <source>Show the application&apos;s About box</source>
-        <translation>O aplikaci companion9x</translation>
+        <translation>O aplikaci Companion</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1685"/>
         <source>Set Menu Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavení jazyka</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1689"/>
@@ -3155,12 +3157,12 @@ Chcete ho přesto zapsat ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1713"/>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nastavení</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1746"/>
         <source>Read/Write</source>
-        <translation type="unfinished"></translation>
+        <translation>Čtení/Zápis</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1763"/>
@@ -3172,17 +3174,17 @@ Chcete ho přesto zapsat ?</translation>
         <location filename="../mainwindow.cpp" line="1786"/>
         <location filename="../mainwindow.cpp" line="1845"/>
         <source>Radio Profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Profil rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1830"/>
         <source>Show recent Models+Settings documents</source>
-        <translation type="unfinished"></translation>
+        <translation>Nedávné dokumenty modelů a nastavení rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1846"/>
         <source>Show a selection list of radio profiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Výběr profilů rádia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1886"/>
@@ -3192,7 +3194,7 @@ Chcete ho přesto zapsat ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1999"/>
         <source>%2</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2041"/>
@@ -3309,22 +3311,22 @@ Chcete ho přesto zapsat ?</translation>
         <location filename="../mdichild.cpp" line="565"/>
         <location filename="../mdichild.cpp" line="616"/>
         <source>Backup EEPROM From Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Zálohovat modely a nastavení z rádia</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="635"/>
         <source>Write EEPROM To Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapsat modely a nastavení do rádia</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="685"/>
         <source>Open backup Models and Settings file</source>
-        <translation type="unfinished"></translation>
+        <translation>Otevřít zálohu modelů a nastavení rádia</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="479"/>
         <source>Companion</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="480"/>
@@ -4245,21 +4247,21 @@ p, li { white-space: pre-wrap; }
         <location filename="../helpers.cpp" line="79"/>
         <location filename="../modeledit/setup.cpp" line="557"/>
         <source>P1</source>
-        <translation>Potenciometr 1</translation>
+        <translation>Potenciometr P1</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="238"/>
         <location filename="../helpers.cpp" line="79"/>
         <location filename="../modeledit/setup.cpp" line="557"/>
         <source>P2</source>
-        <translation>Potenciometr 2</translation>
+        <translation>Potenciometr P2</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="238"/>
         <location filename="../helpers.cpp" line="79"/>
         <location filename="../modeledit/setup.cpp" line="557"/>
         <source>P3</source>
-        <translation>Potenciometr 3</translation>
+        <translation>Potenciometr P3</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="239"/>
@@ -4310,19 +4312,19 @@ p, li { white-space: pre-wrap; }
         <location filename="../eeprominterface.cpp" line="375"/>
         <location filename="../modeledit/customfunctions.cpp" line="648"/>
         <source>REa</source>
-        <translation>Otočný enkodér :a</translation>
+        <translation>Otočný enkodér REa</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="249"/>
         <location filename="../eeprominterface.cpp" line="375"/>
         <location filename="../modeledit/customfunctions.cpp" line="649"/>
         <source>REb</source>
-        <translation>Otočný enkodér :b</translation>
+        <translation>Otočný enkodér REb</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="260"/>
         <source>Batt</source>
-        <translation>Bat</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="262"/>
@@ -4357,7 +4359,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="261"/>
         <source>SWR</source>
-        <translation>VSR</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="263"/>
@@ -4472,62 +4474,62 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="362"/>
         <source>S11</source>
-        <translation type="unfinished"></translation>
+        <translation>S11 (multipos1_poloha1)</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="362"/>
         <source>S12</source>
-        <translation type="unfinished"></translation>
+        <translation>S12 (multipos1_poloha2)</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="362"/>
         <source>S13</source>
-        <translation type="unfinished"></translation>
+        <translation>S13 (multipos1_poloha3)</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="362"/>
         <source>S14</source>
-        <translation type="unfinished"></translation>
+        <translation>S14 (multipos1_poloha4)</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="362"/>
         <source>S15</source>
-        <translation type="unfinished"></translation>
+        <translation>S15 (multipos1_poloha5)</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="362"/>
         <source>S16</source>
-        <translation type="unfinished"></translation>
+        <translation>S16 (multipos1_poloha6)</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="363"/>
         <source>S21</source>
-        <translation type="unfinished"></translation>
+        <translation>S21 (multipos2_poloha1)</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="363"/>
         <source>S22</source>
-        <translation type="unfinished"></translation>
+        <translation>S22 (multipos2_poloha2)</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="363"/>
         <source>S23</source>
-        <translation type="unfinished"></translation>
+        <translation>S23 (multipos2_poloha3)</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="363"/>
         <source>S24</source>
-        <translation type="unfinished"></translation>
+        <translation>S24 (multipos2_poloha4)</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="363"/>
         <source>S25</source>
-        <translation type="unfinished"></translation>
+        <translation>S25 (multipos2_poloha5)</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="363"/>
         <source>S26</source>
-        <translation type="unfinished"></translation>
+        <translation>S26 (multipos2_poloha6)</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="306"/>
@@ -4556,7 +4558,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../modeledit/setup.cpp" line="557"/>
         <location filename="../modeledit/setup.cpp" line="558"/>
         <source>THR</source>
-        <translation>THR</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="402"/>
@@ -4574,27 +4576,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="423"/>
         <source>Diff(%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Dif(%1)</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="425"/>
         <source>Expo(%1)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="427"/>
         <source>Function(%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Funkce(%1)</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="429"/>
         <source>Curve(%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Křivka(%1)</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="429"/>
         <source>!Curve(%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>!Křivka(%1)</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1022"/>
@@ -4745,27 +4747,27 @@ Toto se hodí pokud je potřeba ušetřit místo v paměti FLASH pro jiné funkc
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1059"/>
         <source>Allow compensating for offset errors in FrSky FAS current sensors</source>
-        <translation type="unfinished"></translation>
+        <translation>Povolit možnost kompenzace chyby ofsetu u Frsky FAS proudového senzoru, pokud je to potřeba</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1064"/>
         <source>OpenTX for M128 / 9X board</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTX pro M128 / 9X</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1096"/>
         <source>OpenTX for 9XR</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTX pro 9XR</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1130"/>
         <source>OpenTX for 9XR with M128 chip</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTX pro 9XR s M128 čipem</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1160"/>
         <source>OpenTX for Gruvin9x board / 9X</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTX pro Gruvin9x desku / 9X</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1190"/>
