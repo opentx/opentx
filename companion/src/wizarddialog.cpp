@@ -72,7 +72,7 @@ void WizardDialog::showHelp()
                  "The control surface of a delta wing controls both roll and pitch. This surface is called an elevon. "); break;
   case Page_Ailerons:   
     message = tr("Models use one or two channels to control the ailerons.<br>"
-                 "A so called Y-cable can be used to connect single receiver channel to two separeate aileron servos. "
+                 "A so called Y-cable can be used to connect a single receiver channel to two separate aileron servos. "
                  "If your servos are connected by a Y-cable you should select the single-servo option.<br><br>"
                  "Aileron - Spektrum: CH2, Futaba: CH1"); break;
   case Page_Flaps:      
@@ -83,7 +83,7 @@ void WizardDialog::showHelp()
                  "They are very uncommon on other types of planes."); break;
   case Page_Bank:       
     message = tr("Models use one or two channels to control the elevons.<br>"
-                 "A so called Y-cable can be used to connect single receiver channel to two separeate elevon servos. "
+                 "A so called Y-cable can be used to connect single a receiver channel to two separate elevon servos. "
                  "If your servos are connected by a Y-cable you should select the single-servo option."); break;
   case Page_Rudder:     
     message = tr("Select the receiver channel that is connected to your rudder.<br><br>"
