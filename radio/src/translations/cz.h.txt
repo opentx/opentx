@@ -500,7 +500,8 @@
 #define TR_DIFFERENTIAL        "Dif.výchylek"
 #define TR_OFFSET              INDENT"Ofset"
 #define TR_TRIM                "Trim"
-#define TR_DREX                "DRex"
+#define TR_DREX                "DR/Expo"
+#define DREX_CHBOX_OFFSET      45
 #define TR_CURVE               "Křivka"
 #define TR_FLMODE              "Režim"
 #define TR_MIXWARNING          "Varování"
@@ -605,13 +606,13 @@
 #define TR_MENUFLIGHTPHASES    "LETOVÉ REŽIMY"
 #define TR_MENUHELISETUP       "HELI"
 
-
-#define TR_MENUINPUTS          "VSTUPY"
 #define TR_MENULIMITS          "SERVA"
 
-
-
-
+#if defined(PCBTARANIS)
+  #define TR_MENUINPUTS        "VSTUPY"
+#else
+  #define TR_MENUINPUTS        "DR/EXPO"
+#endif
 
 
 
