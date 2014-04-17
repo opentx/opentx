@@ -5697,7 +5697,7 @@ Anzahl Sekunden fest, welche der Mischer für einen Durchgang von -100 bis +100 
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1098"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1132"/>
         <source>No splash screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein Startbild. Spart Flash speicher.</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1031"/>
@@ -5707,7 +5707,7 @@ Anzahl Sekunden fest, welche der Mischer für einen Durchgang von -100 bis +100 
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1163"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1193"/>
         <source>Disable curves menus</source>
-        <translation type="unfinished"></translation>
+        <translation>Deaktiviere das Kurven Menü</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1032"/>
@@ -5715,7 +5715,7 @@ Anzahl Sekunden fest, welche der Mischer für einen Durchgang von -100 bis +100 
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1101"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1135"/>
         <source>Support for radio modified with regular speaker</source>
-        <translation type="unfinished"></translation>
+        <translation>Unterstützt Fernsteuerungen mit modifiziertem Lautsprecher.</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1033"/>
@@ -5724,7 +5724,7 @@ Anzahl Sekunden fest, welche der Mischer für einen Durchgang von -100 bis +100 
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1136"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1165"/>
         <source>Used if you have modified your radio with voice mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Benutze diese Option, wenn der Sender mit dem Sprachmodus ausgestattet wurde.</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1034"/>
@@ -5732,7 +5732,7 @@ Anzahl Sekunden fest, welche der Mischer für einen Durchgang von -100 bis +100 
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1103"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1137"/>
         <source>Used if you have modified your radio with haptic mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Wenn der Sender mit dem Haptik Modus ausgerüstet wurde.</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1038"/>
@@ -5754,7 +5754,7 @@ Anzahl Sekunden fest, welche der Mischer für einen Durchgang von -100 bis +100 
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1174"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1199"/>
         <source>In model setup menus automatically set source by moving the control</source>
-        <translation type="unfinished"></translation>
+        <translation>Im Modell Menü wird die Quelle automatisch auf den gerade bewegten Knüppel gewählt.</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1044"/>
@@ -5764,7 +5764,7 @@ Anzahl Sekunden fest, welche der Mischer für einen Durchgang von -100 bis +100 
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1175"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1200"/>
         <source>In model setup menus automatically set switch by moving the control</source>
-        <translation type="unfinished"></translation>
+        <translation>Im Modell Menü wird der gerade bewegte Schalter gewählt. </translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1049"/>
@@ -5776,7 +5776,7 @@ Anzahl Sekunden fest, welche der Mischer für einen Durchgang von -100 bis +100 
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1218"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1228"/>
         <source>Use alternative SQT5 font</source>
-        <translation type="unfinished"></translation>
+        <translation>Andere Schriftart SQT5</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1050"/>
@@ -5784,14 +5784,73 @@ Anzahl Sekunden fest, welche der Mischer für einen Durchgang von -100 bis +100 
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1117"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1151"/>
         <source>Enable the throttle trace in Statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktiviert die Gas Aufzeichnung.</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1051"/>
-        <source>EEprom write progress bar</source>
-        <translation type="unfinished"></translation>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1055"/>
+        <source>EEPROM_PROGRESS_BAR: EEprom write progress bar visiable in upper screen part.
+This visualizes the critical EEPROM writes to increase understanding when not to switch off transmitter.</source>
+        <translation>EEPROM_PROGRESS_BAR: Macht den EEprom Schreibvorgang sichtbar.
+In dieser Phase den Sender nicht ausschalten.</translation>
     </message>
-    <message>
+  <message>
+    <location filename="../firmwares/opentx/opentxinterface.cpp" line="1104"/>
+    <source>EEprom write Progress bar</source>
+    <translation>EEPROM_PROGRESS_BAR: Macht den EEprom Schreibvorgang sichtbar.
+In dieser Phase den Sender nicht ausschalten.</translation>
+  </message>
+
+  <message>
+    <location filename="../firmwares/opentx/opentxinterface.cpp" line="1064"/>
+    <location filename="../firmwares/opentx/opentxinterface.cpp" line="1107"/>
+    <location filename="../firmwares/opentx/opentxinterface.cpp" line="1152"/>
+    <location filename="../firmwares/opentx/opentxinterface.cpp" line="1193"/>
+    <source>ARITHMETIC_OVERFLOW_CHECK: Adds additional code to prevent arithmetic overflows.
+MAX or MIN values stays. Not yet guaranteed!! Just improved</source>
+    <translation>ARITHMETIC_OVERFLOW_CHECK: Erzeugt zusätzlichen Programmcode um einen arithmetischen Überlauf zu verhindern.
+MAX oder MIN Werte bleiben. Vorsicht, dies ist noch nicht garantiert, nur verbessert!</translation>
+  </message>
+
+  <message>
+    <location filename="../firmwares/opentx/opentxinterface.cpp" line="1066"/>
+    <location filename="../firmwares/opentx/opentxinterface.cpp" line="1109"/>
+    <location filename="../firmwares/opentx/opentxinterface.cpp" line="1154"/>
+    <location filename="../firmwares/opentx/opentxinterface.cpp" line="1195"/>
+    <source>ACCURAT_THROTTLE_STATS: Increases resolution for throttle statistics and throttle counting, in very rare cases.
+This will be only true if an output channel is used for throttle calculation, and this chanenel has changed limits,
+e.g. -90% to +80%. If you use standard limits for throttle you do not need this option.</source>
+    <translation>ACCURAT_THROTTLE_STATS: Erhöht die Auflösung für die Gas Statistik in einigen Ausnahmefällen.
+Dies ist dann der Fall, wenn ein Ausgangskanal für die Statistik verwendet wird und die Begrenzung verändert wurde.
+Z.B. -90% bis +80%. Wenn Standardwerte für den Gas Kanal verwendet werden, wird diese Option nicht benötigt.</translation>
+  </message>
+
+  <message>
+    <location filename="../firmwares/opentx/opentxinterface.cpp" line="1069"/>
+    <location filename="../firmwares/opentx/opentxinterface.cpp" line="1112"/>
+    <location filename="../firmwares/opentx/opentxinterface.cpp" line="1157"/>
+    <location filename="../firmwares/opentx/opentxinterface.cpp" line="1198"/>
+    <source>PWM_BACKLIGHT: Smoothly increases or reduces backlight.
+Allows you to adjust backlight level in several steps.</source>
+    <translation>PWM_BACKLIGHT: Erhöht oder Verringert sanft das Hintergrundlicht.
+Erlaubt eine Einstellung des Hintergrundlichts in vielen Helligkeitsstufen.</translation>
+  </message>
+
+  <message>
+    <location filename="../firmwares/opentx/opentxinterface.cpp" line="1036"/>
+    <location filename="../firmwares/opentx/opentxinterface.cpp" line="1085"/>
+    <location filename="../firmwares/opentx/opentxinterface.cpp" line="1128"/>
+    <location filename="../firmwares/opentx/opentxinterface.cpp" line="1173"/>    
+    <source>TURNIGY_TRANSMITTER_FIX: Latests deliveries for Turnigy 9x transmitters (starting 2011) do not stop sending during Throttle Warning.
+This fact breaks the throttle and switch warning concept.
+If you have a 0 value (50% ) for throttle, while throttle warning is active, you should activate this switch.
+This include doesn't break older transmitters, just causes a slight code increase.</source>
+    <translation>TURNIGY_TRANSMITTER_FIX: Die letzten Lieferungen des Turnigy 9x Senders (oder deren Klone ab dem Jahr 2011) senden auch während einer Gas Warnung.
+Diese Veränderung macht das Warnungskonzept von OpenTX zunichte.
+Wenn ein 0 Wert (50%) für den Gaswert empfangen werden, während eine Gaswarnung am Display angezeigt werden, sollte diese Option gewählt werden.
+Diese Option stört bei älteren Sendern nicht, es wird nur mehr Code erzeugt.</translation>
+  </message>
+
+  <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1053"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1120"/>
         <source>No Winged Shadow How High support</source>
@@ -5954,7 +6013,7 @@ Anzahl Sekunden fest, welche der Mischer für einen Durchgang von -100 bis +100 
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1178"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1203"/>
         <source>Battery graph</source>
-        <translation type="unfinished"></translation>
+        <translation>graphisches Batteriesymbol</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1048"/>
@@ -9433,7 +9492,7 @@ May be different from firmware language</source>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="201"/>
         <source>Firmware Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Firmware Typ</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="564"/>
@@ -9462,12 +9521,12 @@ May be different from firmware language</source>
     <message>
         <location filename="../fwpreferencesdialog.cpp" line="202"/>
         <source>The selected firmware has never been downloaded by Companion.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die ausgewählte Firmware wurde noch nie mit Companion geladen.</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.cpp" line="206"/>
         <source>The selected firmware cannot be downloaded by Companion.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die ausgewählte Firmware kann nicht mit Companion geladen werden.</translation>
     </message>
 </context>
 <context>

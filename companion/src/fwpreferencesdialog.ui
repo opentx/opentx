@@ -32,7 +32,7 @@
    <property name="margin">
     <number>6</number>
    </property>
-   <item row="38" column="5">
+   <item row="40" column="5">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -244,6 +244,58 @@
      </property>
     </widget>
    </item>
+    <item row="18" column="4">
+      <widget class="QCheckBox" name="optionCheckBox_43">
+        <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+          </sizepolicy>
+        </property>
+        <property name="text">
+          <string notr="true">CheckBox</string>
+        </property>
+      </widget>
+    </item>
+    <item row="18" column="5">
+      <widget class="QCheckBox" name="optionCheckBox_44">
+        <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+          </sizepolicy>
+        </property>
+        <property name="text">
+          <string notr="true">CheckBox</string>
+        </property>
+      </widget>
+    </item>
+    <item row="19" column="2">
+      <widget class="QCheckBox" name="optionCheckBox_45">
+        <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+          </sizepolicy>
+        </property>
+        <property name="text">
+          <string notr="true">CheckBox</string>
+        </property>
+      </widget>
+    </item>
+    <item row="19" column="3">
+      <widget class="QCheckBox" name="optionCheckBox_46">
+        <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+          </sizepolicy>
+        </property>
+        <property name="text">
+          <string notr="true">CheckBox</string>
+        </property>
+      </widget>
+    </item>    
    <item row="9" column="2">
     <widget class="QCheckBox" name="optionCheckBox_5">
      <property name="sizePolicy">
@@ -591,7 +643,7 @@ May be different from firmware language</string>
      </property>
     </widget>
    </item>
-   <item row="18" column="5">
+   <item row="19" column="5">
     <widget class="QPushButton" name="fw_dnld">
      <property name="text">
       <string>Download FW</string>
@@ -792,6 +844,10 @@ May be different from firmware language</string>
   <tabstop>optionCheckBox_40</tabstop>
   <tabstop>optionCheckBox_41</tabstop>
   <tabstop>optionCheckBox_42</tabstop>
+  <tabstop>optionCheckBox_43</tabstop>
+  <tabstop>optionCheckBox_44</tabstop>
+  <tabstop>optionCheckBox_45</tabstop>
+  <tabstop>optionCheckBox_46</tabstop>
  </tabstops>
  <resources>
   <include location="companion.qrc"/>

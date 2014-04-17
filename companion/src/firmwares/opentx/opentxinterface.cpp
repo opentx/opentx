@@ -1033,6 +1033,10 @@ void RegisterOpen9xFirmwares()
   open9x->addOption("voice", QObject::tr("Used if you have modified your radio with voice mode"));
   open9x->addOption("haptic", QObject::tr("Used if you have modified your radio with haptic mode"));
   // NOT TESTED open9x->addOption("PXX", QObject::tr("Support of FrSky PXX protocol"));
+  open9x->addOption("TurFix", QObject::tr("TURNIGY_TRANSMITTER_FIX: Latests deliveries for Turnigy 9x transmitters (starting 2011) do not stop sending during Throttle Warning.\n"\
+     "This fact breaks the throttle and switch warning concept.\n"\
+     "If you have a 0 value (50% ) for throttle, while throttle warning is active, you should activate this switch.\n"\
+     "This include doesn't break older transmitters, just causes a slight code increase."));
   open9x->addOption("DSM2", QObject::tr("Support for DSM2 modules"));
   open9x->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
   open9x->addOption("ppmus", QObject::tr("Channel values displayed in us"));
@@ -1048,7 +1052,8 @@ void RegisterOpen9xFirmwares()
   open9x->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
   open9x->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   open9x->addOption("thrtrace", QObject::tr("Enable the throttle trace in Statistics"));
-  open9x->addOption("pgbar", QObject::tr("EEprom write progress bar"));
+  open9x->addOption("pgbar", QObject::tr("EEPROM_PROGRESS_BAR: EEprom write progress bar visiable in upper screen part.\n"\
+                    "This visualizes the critical EEPROM writes to increase understanding when not to switch off transmitter."));
   open9x->addOption("imperial", QObject::tr("Imperial units"));
   open9x->addOption("nowshh", QObject::tr("No Winged Shadow How High support"));
   open9x->addOption("novario", QObject::tr("No vario support"));
@@ -1056,6 +1061,13 @@ void RegisterOpen9xFirmwares()
   open9x->addOption("nogauges", QObject::tr("No gauges in the custom telemetry screen"));
   open9x->addOption("fasoffset", QObject::tr("Allow compensating for offset errors in FrSky FAS current sensors"));
   open9x->addOptions(fai_options);
+  open9x->addOption("arithOvfl", QObject::tr("ARITHMETIC_OVERFLOW_CHECK: Adds additional code to prevent arithmetic overflows.\n"\
+                    "MAX or MIN values stays. Not yet guaranteed!! Just improved"));
+  open9x->addOption("acurStats", QObject::tr("ACCURAT_THROTTLE_STATS: Increases resolution for throttle statistics and throttle counting, in very rare cases.\n"\
+                    "This will be only true if an output channel is used for throttle calculation, and this chanenel has changed limits,\n"\
+                    "e.g. -90% to +80%. If you use standard limits for throttle you do not need this option."));
+  open9x->addOption("pwmBackL", QObject::tr("PWM_BACKLIGHT: Smoothly increases or reduces backlight.\n"\
+                    "Allows you to adjust backlight level in several steps."));
   firmwares.push_back(open9x);
 
   /* 9x board with M128 chip */
@@ -1070,6 +1082,10 @@ void RegisterOpen9xFirmwares()
   open9x->addOption("voice", QObject::tr("Used if you have modified your radio with voice mode"));
   open9x->addOption("haptic", QObject::tr("Used if you have modified your radio with haptic mode"));
   // NOT TESTED open9x->addOption("PXX", QObject::tr("Support of FrSky PXX protocol"));
+  open9x->addOption("TurFix", QObject::tr("TURNIGY_TRANSMITTER_FIX: Latests deliveries for Turnigy 9x transmitters (starting 2011) do not stop sending during Throttle Warning.\n"\
+     "This fact breaks the throttle and switch warning concept.\n"\
+     "If you have a 0 value (50% ) for throttle, while throttle warning is active, you should activate this switch.\n"\
+     "This include doesn't break older transmitters, just causes a slight code increase."));
   open9x->addOption("DSM2", QObject::tr("Support for DSM2 modules"));
   open9x->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
   open9x->addOption("ppmus", QObject::tr("Channel values displayed in us"));
@@ -1088,6 +1104,13 @@ void RegisterOpen9xFirmwares()
   open9x->addOption("pgbar", QObject::tr("EEprom write Progress bar"));
   open9x->addOption("imperial", QObject::tr("Imperial units"));
   open9x->addOptions(fai_options);
+  open9x->addOption("arithOvfl", QObject::tr("ARITHMETIC_OVERFLOW_CHECK: Adds additional code to prevent arithmetic overflows.\n"\
+                    "MAX or MIN values stays. Not yet guaranteed!! Just improved"));
+  open9x->addOption("acurStats", QObject::tr("ACCURAT_THROTTLE_STATS: Increases resolution for throttle statistics and throttle counting, in very rare cases.\n"\
+                    "This will be only true if an output channel is used for throttle calculation, and this chanenel has changed limits,\n"\
+                    "e.g. -90% to +80%. If you use standard limits for throttle you do not need this option."));
+  open9x->addOption("pwmBackL", QObject::tr("PWM_BACKLIGHT: Smoothly increases or reduces backlight.\n"\
+                    "Allows you to adjust backlight level in several steps."));
   firmwares.push_back(open9x);
 
   /* 9XR board */
@@ -1102,6 +1125,10 @@ void RegisterOpen9xFirmwares()
   open9x->addOption("voice", QObject::tr("Used if you have modified your radio with voice mode"));
   open9x->addOption("haptic", QObject::tr("Used if you have modified your radio with haptic mode"));
   // NOT TESTED open9x->addOption("PXX", QObject::tr("Support of FrSky PXX protocol"));
+  open9x->addOption("TurFix", QObject::tr("TURNIGY_TRANSMITTER_FIX: Latests deliveries for Turnigy 9x transmitters (starting 2011) do not stop sending during Throttle Warning.\n"\
+     "This fact breaks the throttle and switch warning concept.\n"\
+     "If you have a 0 value (50% ) for throttle, while throttle warning is active, you should activate this switch.\n"\
+     "This include doesn't break older transmitters, just causes a slight code increase."));
   open9x->addOption("DSM2", QObject::tr("Support for DSM2 modules"));
   open9x->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
   open9x->addOption("ppmus", QObject::tr("Channel values displayed in us"));
@@ -1122,6 +1149,13 @@ void RegisterOpen9xFirmwares()
   open9x->addOption("nogps", QObject::tr("No GPS support"));
   open9x->addOption("nogauges", QObject::tr("No gauges in the custom telemetry screen"));
   open9x->addOptions(fai_options);
+  open9x->addOption("arithOvfl", QObject::tr("ARITHMETIC_OVERFLOW_CHECK: Adds additional code to prevent arithmetic overflows.\n"\
+                    "MAX or MIN values stays. Not yet guaranteed!! Just improved"));
+  open9x->addOption("acurStats", QObject::tr("ACCURAT_THROTTLE_STATS: Increases resolution for throttle statistics and throttle counting, in very rare cases.\n"\
+                    "This will be only true if an output channel is used for throttle calculation, and this chanenel has changed limits,\n"\
+                    "e.g. -90% to +80%. If you use standard limits for throttle you do not need this option."));
+  open9x->addOption("pwmBackL", QObject::tr("PWM_BACKLIGHT: Smoothly increases or reduces backlight.\n"\
+                    "Allows you to adjust backlight level in several steps."));
   firmwares.push_back(open9x);
 
   /* 9XR board with M128 chip */
@@ -1136,6 +1170,10 @@ void RegisterOpen9xFirmwares()
   open9x->addOption("voice", QObject::tr("Used if you have modified your radio with voice mode"));
   open9x->addOption("haptic", QObject::tr("Used if you have modified your radio with haptic mode"));
   // NOT TESTED open9x->addOption("PXX", QObject::tr("Support of FrSky PXX protocol"));
+  open9x->addOption("TurFix", QObject::tr("TURNIGY_TRANSMITTER_FIX: Latests deliveries for Turnigy 9x transmitters (starting 2011) do not stop sending during Throttle Warning.\n"\
+     "This fact breaks the throttle and switch warning concept.\n"\
+     "If you have a 0 value (50% ) for throttle, while throttle warning is active, you should activate this switch.\n"\
+     "This include doesn't break older transmitters, just causes a slight code increase."));
   open9x->addOption("DSM2", QObject::tr("Support for DSM2 modules"));
   open9x->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
   open9x->addOption("ppmus", QObject::tr("Channel values displayed in us"));
@@ -1152,6 +1190,13 @@ void RegisterOpen9xFirmwares()
   open9x->addOption("pgbar", QObject::tr("EEprom write Progress bar"));
   open9x->addOption("imperial", QObject::tr("Imperial units"));
   open9x->addOptions(fai_options);
+  open9x->addOption("arithOvfl", QObject::tr("ARITHMETIC_OVERFLOW_CHECK: Adds additional code to prevent arithmetic overflows.\n"\
+                    "MAX or MIN values stays. Not yet guaranteed!! Just improved"));
+  open9x->addOption("acurStats", QObject::tr("ACCURAT_THROTTLE_STATS: Increases resolution for throttle statistics and throttle counting, in very rare cases.\n"\
+                    "This will be only true if an output channel is used for throttle calculation, and this chanenel has changed limits,\n"\
+                    "e.g. -90% to +80%. If you use standard limits for throttle you do not need this option."));
+  open9x->addOption("pwmBackL", QObject::tr("PWM_BACKLIGHT: Smoothly increases or reduces backlight.\n"\
+                    "Allows you to adjust backlight level in several steps."));
   firmwares.push_back(open9x);
 
   /* Gruvin9x board */

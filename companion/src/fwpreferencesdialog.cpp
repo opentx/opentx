@@ -22,6 +22,7 @@ fwPreferencesDialog::fwPreferencesDialog(QWidget *parent) :
       ui->optionCheckBox_22, ui->optionCheckBox_23, ui->optionCheckBox_24, ui->optionCheckBox_25, ui->optionCheckBox_26, ui->optionCheckBox_27, ui->optionCheckBox_28,
       ui->optionCheckBox_29, ui->optionCheckBox_30, ui->optionCheckBox_31, ui->optionCheckBox_32, ui->optionCheckBox_33, ui->optionCheckBox_34, ui->optionCheckBox_35,
       ui->optionCheckBox_36, ui->optionCheckBox_37, ui->optionCheckBox_38, ui->optionCheckBox_39, ui->optionCheckBox_40, ui->optionCheckBox_41, ui->optionCheckBox_42,
+      ui->optionCheckBox_43, ui->optionCheckBox_44, ui->optionCheckBox_45, ui->optionCheckBox_46,
       NULL };
 
   voice=NULL;
