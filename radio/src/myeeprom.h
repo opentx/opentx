@@ -280,7 +280,8 @@ enum uartModes {
 #define EXTRA_GENERAL_FIELDS \
   EXTRA_GENERAL_FIELDS_ARM \
   uint8_t  uart3Mode; \
-  uint8_t  potsType;
+  uint8_t  potsType; \
+  uint8_t  backlightColor;
 #elif defined(CPUARM)
   #define EXTRA_GENERAL_FIELDS EXTRA_GENERAL_FIELDS_ARM
 #elif defined(PXX)
@@ -1135,7 +1136,7 @@ enum FrskyVoltsSource {
 #if defined(CPUARM)
 #define MAX_FRSKY_SCREENS 3
 PACK(typedef struct t_FrSkyData {
-  FrSkyChannelData channels[2];
+  FrSkyChannelData channels[4];
   uint8_t usrProto; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh, 3=Halcyon
   uint8_t voltsSource:7;
   uint8_t altitudeDisplayed:1;

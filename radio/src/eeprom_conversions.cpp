@@ -833,7 +833,13 @@ void ConvertModel_215_to_216(ModelData &model)
     memcpy(g_model.gvars[i].name, oldModel.gvar_names[i], LEN_GVAR_NAME);
   }
 
-  memcpy(&g_model.frsky, &oldModel.frsky, sizeof(oldModel.frsky));
+  memcpy(&g_model.frsky, &oldModel.frsky, 2*sizeof(FrSkyChannelData));
+  // Gap for A3-A4
+  uint8_t *dest = (uint8_t *)&g_model.frsky;
+  dest += 4*sizeof(FrSkyChannelData);
+  uint8_t *src = (uint8_t *)&oldModel.frsky;
+  src += 2*sizeof(FrSkyChannelData);
+  memcpy(dest, src, sizeof(oldModel.frsky) - 2*sizeof(FrSkyChannelData));
   for (int i=0; i<3; i++) {
     if (g_model.frsky.screensType & (1<<i)) {
       // gauges
