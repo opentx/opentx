@@ -504,6 +504,7 @@ class GeneralSettings {
     unsigned int switchUnlockStates;
     unsigned int hw_uartMode;
     unsigned int potsType[8];
+    unsigned int backlightColor;
 };
 
 class CurveReference {

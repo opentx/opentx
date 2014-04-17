@@ -2180,7 +2180,7 @@ class FrskyField: public StructField {
       rssiConversionTable[1] = RSSIConversionTable(1);
 
       if (IS_ARM(board)) {
-        for (int i=0; i<2; i++) {
+        for (int i=0; i < ((version >= 216) ? 4 : 2); i++) {
           Append(new UnsignedField<8>(frsky.channels[i].ratio, "Ratio"));
           Append(new SignedField<12>(frsky.channels[i].offset, "Offset"));
           Append(new UnsignedField<4>(frsky.channels[i].type, "Type"));
@@ -2693,6 +2693,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
       for (int i=0; i<4; i++) {
         internalField.Append(new UnsignedField<2>(potsType[i]));
       }
+      internalField.Append(new UnsignedField<8>(generalData.backlightColor));
     }
   }
 }
