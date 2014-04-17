@@ -1245,11 +1245,12 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
       putsTelemetryValue(x, y, val, UNIT_RAW, att|PREC2);
       break;
 
-    case TELEM_VSPD-1:
+    case TELEM_VSPEED-1:
       putsTelemetryValue(x, y, div10_and_round(val), UNIT_RAW, att|PREC1);
       break;
 
-    case TELEM_ASPD-1:
+    case TELEM_ASPEED-1:
+    case TELEM_MAX_ASPEED-1:
       putsTelemetryValue(x, y, val, UNIT_KTS, att);
       break;
 

@@ -1015,8 +1015,8 @@ enum TelemetrySource {
   TELEM_ACCy,
   TELEM_ACCz,
   TELEM_HDG,
-  TELEM_VSPD,
-  TELEM_ASPD,
+  TELEM_VSPEED,
+  TELEM_ASPEED,
   TELEM_DTE,
 #if defined(CPUARM)
   TELEM_RESERVE1,

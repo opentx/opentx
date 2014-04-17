@@ -1316,8 +1316,8 @@ getvalue_t getValue(uint8_t i)
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ACCy) return frskyData.hub.accelY;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ACCz) return frskyData.hub.accelZ;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_HDG) return frskyData.hub.gpsCourse_bp;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_VSPD) return frskyData.hub.varioSpeed;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ASPD) return frskyData.hub.airSpeed;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_VSPEED) return frskyData.hub.varioSpeed;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ASPEED) return frskyData.hub.airSpeed;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_DTE) return frskyData.hub.dTE;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_MIN_A1) return frskyData.analog[0].min;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_MIN_A2) return frskyData.analog[1].min;
@@ -2071,7 +2071,7 @@ getvalue_t convert16bitsTelemValue(uint8_t channel, ls_telemetry_value_t value)
       result = value * 100;
       break;
 #endif
-    case TELEM_VSPD:
+    case TELEM_VSPEED:
       result = value * 10;
       break;
 
@@ -2134,7 +2134,7 @@ getvalue_t convert8bitsTelemValue(uint8_t channel, ls_telemetry_value_t value)
     case TELEM_CONSUMPTION:
       result = value * 20;
       break;
-    case TELEM_VSPD:
+    case TELEM_VSPEED:
       result = ((getvalue_t)value - 125) * 10;
       break;
 #endif
@@ -3313,11 +3313,12 @@ PLAY_FUNCTION(playValue, uint8_t idx)
       PLAY_NUMBER(div10_and_round(val), 1+UNIT_G, PREC1);
       break;
 
-    case MIXSRC_FIRST_TELEM+TELEM_VSPD-1:
+    case MIXSRC_FIRST_TELEM+TELEM_VSPEED-1:
       PLAY_NUMBER(div10_and_round(val), 1+UNIT_METERS_PER_SECOND, PREC1);
       break;
 
-    case MIXSRC_FIRST_TELEM+TELEM_ASPD-1:
+    case MIXSRC_FIRST_TELEM+TELEM_ASPEED-1:
+    case MIXSRC_FIRST_TELEM+TELEM_MAX_ASPEED-1:
       PLAY_NUMBER(val, 1+UNIT_KTS, 0);
       break;
 

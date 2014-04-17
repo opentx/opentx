@@ -342,7 +342,7 @@ int ConvertTelemetrySource_215_to_216(int source)
   if (source >= TELEM_A3)
     source += 2;
   // ASpd and dTE added + 5 reserve
-  if (source >= TELEM_ASPD)
+  if (source >= TELEM_ASPEED)
     source += 7;
   // A3 and A4 MIN added
   if (source >= TELEM_MIN_A3)
