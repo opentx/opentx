@@ -18,23 +18,10 @@ AppPreferencesDialog::AppPreferencesDialog(QWidget *parent) :
   ui->setupUi(this);
   updateLock=false;
   setWindowIcon(CompanionIcon("apppreferences.png"));
-  QCheckBox * OptionCheckBox[]= {
-      ui->optionCheckBox_1, ui->optionCheckBox_2, ui->optionCheckBox_3, ui->optionCheckBox_4,  ui->optionCheckBox_5, ui->optionCheckBox_6,  ui->optionCheckBox_7,
-      ui->optionCheckBox_8, ui->optionCheckBox_9, ui->optionCheckBox_10,  ui->optionCheckBox_11, ui->optionCheckBox_12, ui->optionCheckBox_13, ui->optionCheckBox_14,
-      ui->optionCheckBox_15,ui->optionCheckBox_16, ui->optionCheckBox_17, ui->optionCheckBox_18, ui->optionCheckBox_19, ui->optionCheckBox_20, ui->optionCheckBox_21,
-      ui->optionCheckBox_22, ui->optionCheckBox_23, ui->optionCheckBox_24, ui->optionCheckBox_25, ui->optionCheckBox_26, ui->optionCheckBox_27, ui->optionCheckBox_28,
-      ui->optionCheckBox_29, ui->optionCheckBox_30, ui->optionCheckBox_31, ui->optionCheckBox_32, ui->optionCheckBox_33, ui->optionCheckBox_34, ui->optionCheckBox_35,
-      ui->optionCheckBox_36, ui->optionCheckBox_37, ui->optionCheckBox_38, ui->optionCheckBox_39, ui->optionCheckBox_40, ui->optionCheckBox_41, ui->optionCheckBox_42,
-      NULL };
 
   voice=NULL;
   connect(ui->langCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(firmwareLangChanged()));
   connect(ui->voiceCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(firmwareLangChanged()));
-
-  for (int i=0; OptionCheckBox[i]; i++) {
-    optionsCheckBoxes.push_back(OptionCheckBox[i]);
-    connect(OptionCheckBox[i], SIGNAL(toggled(bool)), this, SLOT(firmwareOptionChanged(bool)));
-  }
 
   initSettings();
   connect(ui->downloadVerCB, SIGNAL(currentIndexChanged(int)), this, SLOT(baseFirmwareChanged()));
@@ -517,20 +504,22 @@ void AppPreferencesDialog::populateFirmwareOptions(const FirmwareInterface * fir
   foreach(QList<Option> opts, parent->opts) {
     foreach(Option opt, opts) {
       if (index >= optionsCheckBoxes.size()) {
-        qDebug() << "This firmware needs more options checkboxes!";
+        QCheckBox * checkbox = new QCheckBox(ui->profileTab);
+        ui->optionsLayout->addWidget(checkbox, optionsCheckBoxes.count()/5, optionsCheckBoxes.count()%5, 1, 1);
+        optionsCheckBoxes.push_back(checkbox);
+        connect(checkbox, SIGNAL(toggled(bool)), this, SLOT(firmwareOptionChanged(bool)));
       }
-      else {
-        QCheckBox *cb = optionsCheckBoxes.at(index++);
-        if (cb) {
-          cb->show();
-          cb->setText(opt.name);
-          cb->setToolTip(opt.tooltip);
-          cb->setCheckState(current_firmware_variant.id.contains(opt.name) ? Qt::Checked : Qt::Unchecked);
+
+      QCheckBox *cb = optionsCheckBoxes.at(index++);
+      if (cb) {
+        cb->show();
+        cb->setText(opt.name);
+        cb->setToolTip(opt.tooltip);
+        cb->setCheckState(current_firmware_variant.id.contains(opt.name) ? Qt::Checked : Qt::Unchecked);
             
-          if (opt.name==QString("voice")) {
-            voice=cb;
-            showVoice(current_firmware_variant.id.contains(opt.name) ||firmware->voice);
-          }
+        if (opt.name==QString("voice")) {
+          voice=cb;
+          showVoice(current_firmware_variant.id.contains(opt.name) ||firmware->voice);
         }
       }
     }
