@@ -66,6 +66,7 @@
 MdiChild::MdiChild():
   QWidget(),
   ui(new Ui::mdiChild),
+  firmware(GetCurrentFirmware()),
   isUntitled(true),
   fileChanged(false)
 {
@@ -103,7 +104,7 @@ void MdiChild::qSleep(int ms)
 void MdiChild::eepromInterfaceChanged()
 {
   ui->modelsList->refreshList();
-  ui->SimulateTxButton->setEnabled(GetCurrentFirmware()->getCapability(Simulation));
+  ui->SimulateTxButton->setEnabled(firmware->getCapability(Simulation));
   updateTitle();
 }
 
@@ -181,7 +182,7 @@ void MdiChild::modelEdit()
     QApplication::setOverrideCursor(Qt::WaitCursor);
     checkAndInitModel( row );
     ModelData &model = radioData.models[row - 1];
-    ModelEdit *t = new ModelEdit(this, radioData, (row - 1), GetCurrentFirmware());
+    ModelEdit *t = new ModelEdit(this, radioData, (row - 1), firmware);
     t->setWindowTitle(tr("Editing model %1: ").arg(row) + model.name);
     connect(t, SIGNAL(modified()), this, SLOT(setModified()));
     t->show();
@@ -666,10 +667,10 @@ void MdiChild::print(int model, QString filename)
   PrintDialog * pd = NULL;
 
   if (model>=0 && !filename.isEmpty()) {
-    pd = new PrintDialog(this, GetCurrentFirmware(), &radioData.generalSettings, &radioData.models[model], filename);
+    pd = new PrintDialog(this, firmware, &radioData.generalSettings, &radioData.models[model], filename);
   }
   else if (ui->modelsList->currentRow() > 0) {
-    pd = new PrintDialog(this, GetCurrentFirmware(), &radioData.generalSettings, &radioData.models[ui->modelsList->currentRow()-1]);
+    pd = new PrintDialog(this, firmware, &radioData.generalSettings, &radioData.models[ui->modelsList->currentRow()-1]);
   }
 
   if (pd) {

@@ -1546,17 +1546,17 @@ void MainWindow::updateMenus()
 
 MdiChild *MainWindow::createMdiChild()
 {
-    MdiChild *child = new MdiChild;
-    mdiArea->addSubWindow(child);
-    if(!child->parentWidget()->isMaximized() && !child->parentWidget()->isMinimized())
-      child->parentWidget()->resize(400, 400);
+  MdiChild *child = new MdiChild();
+  mdiArea->addSubWindow(child);
+  if(!child->parentWidget()->isMaximized() && !child->parentWidget()->isMinimized())
+    child->parentWidget()->resize(400, 400);
 
-    connect(child, SIGNAL(copyAvailable(bool)),cutAct, SLOT(setEnabled(bool)));
-    connect(child, SIGNAL(copyAvailable(bool)),copyAct, SLOT(setEnabled(bool)));
-    connect(child, SIGNAL(copyAvailable(bool)),simulateAct, SLOT(setEnabled(bool)));
-    connect(child, SIGNAL(copyAvailable(bool)),printAct, SLOT(setEnabled(bool)));
+  connect(child, SIGNAL(copyAvailable(bool)),cutAct, SLOT(setEnabled(bool)));
+  connect(child, SIGNAL(copyAvailable(bool)),copyAct, SLOT(setEnabled(bool)));
+  connect(child, SIGNAL(copyAvailable(bool)),simulateAct, SLOT(setEnabled(bool)));
+  connect(child, SIGNAL(copyAvailable(bool)),printAct, SLOT(setEnabled(bool)));
 
-    return child;
+  return child;
 }
 
 QAction * MainWindow::addAct(QString icon, QString sName, QString lName, QKeySequence::StandardKey shortcut, const char *slot, QObject *slotObj)
