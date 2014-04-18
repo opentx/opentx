@@ -1037,8 +1037,8 @@ void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
           virtualInputsTrims[cur_chn] = -1;
 
 #if defined(HELI)
-		if (ed->srcRaw == MIXSRC_Ele)
-		  heliAnas[ELE_STICK] = v;
+        if (ed->srcRaw == MIXSRC_Ele)
+          heliAnas[ELE_STICK] = v;
         else if (ed->srcRaw == MIXSRC_Ail)
           heliAnas[AIL_STICK] = v;
 #endif
