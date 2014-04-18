@@ -47,8 +47,8 @@ void RepeatComboBox::update()
   setCurrentIndex(value);
 }
 
-CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings):
-  ModelPanel(parent, model, generalSettings),
+CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+  ModelPanel(parent, model, generalSettings, firmware),
   initialized(false)
 #if defined(PHONON)
   ,
@@ -66,9 +66,9 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
   addEmptyLabel(gridLayout, 5 );
 
   lock = true;
-  int num_fsw = GetCurrentFirmware()->getCapability(CustomFunctions);
+  int num_fsw = firmware->getCapability(CustomFunctions);
 
-  if (!GetCurrentFirmware()->getCapability(VoicesAsNumbers)) {
+  if (!firmware->getCapability(VoicesAsNumbers)) {
     for (int i=0; i<num_fsw; i++) {
       if (model.funcSw[i].func==FuncPlayPrompt || model.funcSw[i].func==FuncBackgroundMusic) {
         QString temp = model.funcSw[i].paramarm;
@@ -87,7 +87,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
       lang="en";
     path.append(lang);
     QDir qd(path);
-    int vml= GetCurrentFirmware()->getCapability(VoicesMaxLength)+4;
+    int vml= firmware->getCapability(VoicesMaxLength)+4;
     if (qd.exists()) {
       QStringList filters;
       filters << "*.wav" << "*.WAV";
@@ -227,7 +227,7 @@ void CustomFunctionsPanel::playMusic()
   QDir qd(path);
   QString track;
   if (qd.exists()) {
-    if (GetCurrentFirmware()->getCapability(VoicesAsNumbers)) {
+    if (firmware->getCapability(VoicesAsNumbers)) {
       track = path + QString("/%1.wav").arg(int(fswtchParam[index]->value()), 4, 10, (const QChar)'0');
     }
     else {
@@ -360,7 +360,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
       widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM + CUSTOM_FUNCTION_ENABLE;
     }
     else if (index==FuncPlaySound || index==FuncPlayHaptic || index==FuncPlayValue || index==FuncPlayPrompt || index==FuncPlayBoth || index==FuncBackgroundMusic) {
-      if (index != FuncBackgroundMusic && GetCurrentFirmware()->getCapability(HasFuncRepeat)) {
+      if (index != FuncBackgroundMusic && firmware->getCapability(HasFuncRepeat)) {
         widgetsMask |= CUSTOM_FUNCTION_REPEAT;
         fswtchRepeat[i]->update();
       }
@@ -370,7 +370,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
         widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM + CUSTOM_FUNCTION_REPEAT;
       }
       else if (index==FuncPlayPrompt || index==FuncPlayBoth) {
-        if (GetCurrentFirmware()->getCapability(VoicesAsNumbers)) {
+        if (firmware->getCapability(VoicesAsNumbers)) {
           fswtchParam[i]->setDecimals(0);
           fswtchParam[i]->setSingleStep(1);
           fswtchParam[i]->setMinimum(0);
@@ -407,7 +407,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
           widgetsMask |= CUSTOM_FUNCTION_FILE_PARAM;
           if (modified) {
             memset(model.funcSw[i].paramarm, 0, sizeof(model.funcSw[i].paramarm));
-            int vml = GetCurrentFirmware()->getCapability(VoicesMaxLength);
+            int vml = firmware->getCapability(VoicesMaxLength);
             if (fswtchParamArmT[i]->currentText() != "----") {
               widgetsMask |= CUSTOM_FUNCTION_PLAY;
               for (int j=0; j<std::min(fswtchParamArmT[i]->currentText().length(), vml); j++) {
@@ -427,7 +427,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
         widgetsMask |= CUSTOM_FUNCTION_FILE_PARAM;
         if (modified) {
           memset(model.funcSw[i].paramarm, 0, sizeof(model.funcSw[i].paramarm));
-          int vml=GetCurrentFirmware()->getCapability(VoicesMaxLength);
+          int vml=firmware->getCapability(VoicesMaxLength);
           if (fswtchParamArmT[i]->currentText() != "----") {
             widgetsMask |= CUSTOM_FUNCTION_PLAY;
             for (int j=0; j<std::min(fswtchParamArmT[i]->currentText().length(),vml); j++) {
@@ -476,7 +476,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
 void CustomFunctionsPanel::update()
 {
   lock = true;
-  for (int i=0; i<GetCurrentFirmware()->getCapability(CustomFunctions); i++) {
+  for (int i=0; i<firmware->getCapability(CustomFunctions); i++) {
     if (!initialized) {
       populateSwitchCB(fswtchSwtch[i], model.funcSw[i].swtch, generalSettings, POPULATE_ONOFF);
       populateFuncCB(fswtchFunc[i], model.funcSw[i].func);
@@ -562,24 +562,24 @@ void CustomFunctionsPanel::populateFuncCB(QComboBox *b, unsigned int value)
   b->clear();
   for (unsigned int i=0; i<FuncCount; i++) {
     b->addItem(FuncSwData(AssignFunc(i)).funcToString());
-    if (!GetCurrentFirmware()->getCapability(HasVolume)) {
+    if (!firmware->getCapability(HasVolume)) {
       if (i==FuncVolume || i==FuncBackgroundMusic || i==FuncBackgroundMusicPause) {
         QModelIndex index = b->model()->index(i, 0);
         QVariant v(0);
         b->model()->setData(index, v, Qt::UserRole - 1);
       }
     }
-    if ((i==FuncPlayHaptic) && !GetCurrentFirmware()->getCapability(Haptic)) {
+    if ((i==FuncPlayHaptic) && !firmware->getCapability(Haptic)) {
       QModelIndex index = b->model()->index(i, 0);
       QVariant v(0);
       b->model()->setData(index, v, Qt::UserRole - 1);
     }
-    if ((i==FuncPlayBoth) && !GetCurrentFirmware()->getCapability(HasBeeper)) {
+    if ((i==FuncPlayBoth) && !firmware->getCapability(HasBeeper)) {
       QModelIndex index = b->model()->index(i, 0);
       QVariant v(0);
       b->model()->setData(index, v, Qt::UserRole - 1);
     }
-    if ((i==FuncLogs) && !GetCurrentFirmware()->getCapability(HasSDLogs)) {
+    if ((i==FuncLogs) && !firmware->getCapability(HasSDLogs)) {
       QModelIndex index = b->model()->index(i, 0);
       QVariant v(0);
       b->model()->setData(index, v, Qt::UserRole - 1);
@@ -640,7 +640,7 @@ void CustomFunctionsPanel::populateFuncParamCB(QComboBox *b, const ModelData & m
     qs.append( QObject::tr("Timer2"));
     qs.append( QObject::tr("All"));
     qs.append( QObject::tr("Telemetry"));
-    int reCount = GetCurrentFirmware()->getCapability(RotaryEncoders);
+    int reCount = firmware->getCapability(RotaryEncoders);
     if (reCount == 1) {
       qs.append( QObject::tr("Rotary Encoder"));
     }

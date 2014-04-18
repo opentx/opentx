@@ -7,8 +7,8 @@
 #include <QDoubleSpinBox>
 #include "helpers.h"
 
-LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings):
-  ModelPanel(parent, model, generalSettings),
+LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+  ModelPanel(parent, model, generalSettings, firmware),
   selectedSwitch(0)
 {
   QGridLayout * gridLayout = new QGridLayout(this);
@@ -18,13 +18,13 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
   addLabel(gridLayout, tr("V1"), col++);
   addLabel(gridLayout, tr("V2"), col++);
   addLabel(gridLayout, tr("AND Switch"), col++);
-  if (GetCurrentFirmware()->getCapability(LogicalSwitchesExt)) {
+  if (firmware->getCapability(LogicalSwitchesExt)) {
     addLabel(gridLayout, tr("Duration"), col++);
     addLabel(gridLayout, tr("Delay"), col++);
   }
 
   lock = true;
-  for (int i=0; i<GetCurrentFirmware()->getCapability(LogicalSwitches); i++) {
+  for (int i=0; i<firmware->getCapability(LogicalSwitches); i++) {
     // The label
     QLabel * label = new QLabel(this);
     label->setProperty("index", i);
@@ -90,7 +90,7 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     connect(cswitchAnd[i], SIGNAL(currentIndexChanged(int)), this, SLOT(andEdited(int)));
     gridLayout->addWidget(cswitchAnd[i], i+1, 4);
 
-    if (GetCurrentFirmware()->getCapability(LogicalSwitchesExt)) {
+    if (firmware->getCapability(LogicalSwitchesExt)) {
       // Duration
       cswitchDuration[i] = new QDoubleSpinBox(this);
       cswitchDuration[i]->setProperty("index", i);
@@ -115,7 +115,7 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     }
   }
   // Push rows upward
-  addVSpring(gridLayout,0,GetCurrentFirmware()->getCapability(LogicalSwitches)+1);
+  addVSpring(gridLayout,0,firmware->getCapability(LogicalSwitches)+1);
   lock = false;
 }
 
@@ -276,7 +276,7 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
   {
     case LS_FAMILY_VOFS:
       mask |= SOURCE1_VISIBLE | VALUE2_VISIBLE;
-      populateSourceCB(cswitchSource1[i], source, model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (GetCurrentFirmware()->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
+      populateSourceCB(cswitchSource1[i], source, model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (firmware->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
       cswitchOffset[i]->setDecimals(range.decimals);
       cswitchOffset[i]->setSingleStep(range.step);
       if (model.customSw[i].func == LS_FN_DPOS || model.customSw[i].func == LS_FN_DAPOS) {
@@ -304,8 +304,8 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
       break;
     case LS_FAMILY_VCOMP:
       mask |= SOURCE1_VISIBLE | SOURCE2_VISIBLE;
-      populateSourceCB(cswitchSource1[i], RawSource(model.customSw[i].val1), model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (GetCurrentFirmware()->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
-      populateSourceCB(cswitchSource2[i], RawSource(model.customSw[i].val2), model, POPULATE_SOURCES | POPULATE_TRIMS | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (GetCurrentFirmware()->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
+      populateSourceCB(cswitchSource1[i], RawSource(model.customSw[i].val1), model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (firmware->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
+      populateSourceCB(cswitchSource2[i], RawSource(model.customSw[i].val2), model, POPULATE_SOURCES | POPULATE_TRIMS | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (firmware->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
       break;
     case LS_FAMILY_TIMER:
       mask |= VALUE1_VISIBLE | VALUE2_VISIBLE;
@@ -331,7 +331,7 @@ void LogicalSwitchesPanel::updateLine(int i)
   setSwitchWidgetVisibility(i);
   lock = true;
   populateAndSwitchCB(cswitchAnd[i], RawSwitch(model.customSw[i].andsw));
-  if (GetCurrentFirmware()->getCapability(LogicalSwitchesExt)) {
+  if (firmware->getCapability(LogicalSwitchesExt)) {
     cswitchDuration[i]->setValue(model.customSw[i].duration/10.0);
     cswitchDelay[i]->setValue(model.customSw[i].delay/10.0);
   }
@@ -340,7 +340,7 @@ void LogicalSwitchesPanel::updateLine(int i)
 
 void LogicalSwitchesPanel::update()
 {
-  for (int i=0; i<GetCurrentFirmware()->getCapability(LogicalSwitches); i++) {
+  for (int i=0; i<firmware->getCapability(LogicalSwitches); i++) {
     updateLine(i);
   }
 }

@@ -1,10 +1,11 @@
 #include "modelpanel.h"
 #include <QLabel>
 
-ModelPanel::ModelPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings):
+ModelPanel::ModelPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
   QWidget(parent),
   model(model),
   generalSettings(generalSettings),
+  firmware(firmware),
   lock(false)
 {
 }

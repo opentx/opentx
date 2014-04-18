@@ -3,8 +3,8 @@
 // #include <QMessageBox>
 // #include "expodialog.h"
 
-MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings):
-  ModelPanel(parent, model, generalSettings),
+MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+  ModelPanel(parent, model, generalSettings, firmware),
   mixInserted(false), 
   highlightedSource(0)
 {
@@ -49,7 +49,7 @@ QString MixesPanel::getChannelLabel(int curDest)
   str = QObject::tr("CH%1").arg(curDest);
   // TODO not nice, Qt brings a function for that, I don't remember right now
   (str.length() < 4) ? str.append("  ") : str.append(" ");
-  if (GetCurrentFirmware()->getCapability(HasChNames)) {
+  if (firmware->getCapability(HasChNames)) {
     QString name = model.limitData[curDest-1].name;
     if (!name.isEmpty()) {
       name = QString("(") + name + QString(")");
@@ -68,9 +68,9 @@ void MixesPanel::update()
   MixerlistWidget->clear();
   unsigned int curDest = 0;
   int i;
-  unsigned int outputs = GetCurrentFirmware()->getCapability(Outputs);
+  unsigned int outputs = firmware->getCapability(Outputs);
 
-  for (i=0; i<GetCurrentFirmware()->getCapability(Mixes); i++) {
+  for (i=0; i<firmware->getCapability(Mixes); i++) {
     MixData *md = &model.mixData[i];
     // qDebug() << "md->destCh: " << md->destCh;
     if (md->destCh==0 || md->destCh>outputs) continue;
@@ -185,7 +185,7 @@ QString MixesPanel::getMixerText(int dest, bool * new_ch)
     if (md->sOffset)     str += " " + Qt::escape(tr("Offset(%1)").arg(getGVarString(md->sOffset)));
     if (md->curve.value) str += " " + Qt::escape(md->curve.toString());
 
-    int scale = GetCurrentFirmware()->getCapability(SlowScale);
+    int scale = firmware->getCapability(SlowScale);
     if (scale == 0)
       scale = 1;
     if (md->delayDown || md->delayUp)
@@ -193,7 +193,7 @@ QString MixesPanel::getMixerText(int dest, bool * new_ch)
     if (md->speedDown || md->speedUp)
       str += Qt::escape(tr(" Slow(u%1:d%2)").arg((double)md->speedUp/scale).arg((double)md->speedDown/scale));
     if (md->mixWarn)  str += Qt::escape(tr(" Warn(%1)").arg(md->mixWarn));
-    if (GetCurrentFirmware()->getCapability(HasMixerNames)) {
+    if (firmware->getCapability(HasMixerNames)) {
       QString MixerName;
       MixerName.append(md->name);
       if (!MixerName.isEmpty()) {
@@ -206,14 +206,14 @@ QString MixesPanel::getMixerText(int dest, bool * new_ch)
 
 bool MixesPanel::gm_insertMix(int idx)
 {
-    if (idx<0 || idx>=GetCurrentFirmware()->getCapability(Mixes) || model.mixData[GetCurrentFirmware()->getCapability(Mixes)-1].destCh > 0) {
+    if (idx<0 || idx>=firmware->getCapability(Mixes) || model.mixData[firmware->getCapability(Mixes)-1].destCh > 0) {
       QMessageBox::information(this, "companion", tr("Not enough available mixers!"));
       return false;
     }
 
     int i = model.mixData[idx].destCh;
     memmove(&model.mixData[idx+1],&model.mixData[idx],
-        (GetCurrentFirmware()->getCapability(Mixes)-(idx+1))*sizeof(MixData) );
+        (firmware->getCapability(Mixes)-(idx+1))*sizeof(MixData) );
     memset(&model.mixData[idx],0,sizeof(MixData));
     model.mixData[idx].srcRaw = RawSource(SOURCE_TYPE_NONE);
     model.mixData[idx].destCh = i;
@@ -224,19 +224,19 @@ bool MixesPanel::gm_insertMix(int idx)
 void MixesPanel::gm_deleteMix(int index)
 {
     memmove(&model.mixData[index],&model.mixData[index+1],
-            (GetCurrentFirmware()->getCapability(Mixes)-(index+1))*sizeof(MixData));
-    memset(&model.mixData[GetCurrentFirmware()->getCapability(Mixes)-1],0,sizeof(MixData));
+            (firmware->getCapability(Mixes)-(index+1))*sizeof(MixData));
+    memset(&model.mixData[firmware->getCapability(Mixes)-1],0,sizeof(MixData));
 }
 
 void MixesPanel::gm_openMix(int index)
 {
-    if(index<0 || index>=GetCurrentFirmware()->getCapability(Mixes)) return;
+    if(index<0 || index>=firmware->getCapability(Mixes)) return;
 
     MixData mixd(model.mixData[index]);
     emit modified();
     update();
 
-    MixerDialog *g = new MixerDialog(this, model, &mixd, generalSettings);
+    MixerDialog *g = new MixerDialog(this, model, &mixd, generalSettings, firmware);
     if(g->exec()) {
       model.mixData[index] = mixd;
       emit modified();
@@ -254,8 +254,8 @@ void MixesPanel::gm_openMix(int index)
 int MixesPanel::getMixerIndex(unsigned int dch)
 {
     int i = 0;
-    while ((model.mixData[i].destCh<=dch) && (model.mixData[i].destCh) && (i<GetCurrentFirmware()->getCapability(Mixes))) i++;
-    if(i==GetCurrentFirmware()->getCapability(Mixes)) return -1;
+    while ((model.mixData[i].destCh<=dch) && (model.mixData[i].destCh) && (i<firmware->getCapability(Mixes))) i++;
+    if(i==firmware->getCapability(Mixes)) return -1;
     return i;
 }
 
@@ -291,7 +291,7 @@ QList<int> MixesPanel::createMixListFromSelected()
     QList<int> list;
     foreach(QListWidgetItem *item, MixerlistWidget->selectedItems()) {
       int idx= item->data(Qt::UserRole).toByteArray().at(0);
-      if(idx>=0 && idx<GetCurrentFirmware()->getCapability(Mixes)) list << idx;
+      if(idx>=0 && idx<firmware->getCapability(Mixes)) list << idx;
     }
     return list;
 }
@@ -364,7 +364,7 @@ void MixesPanel::pasteMixerMimeData(const QMimeData * mimeData, int destIdx)
     int i = 0;
     while(i<mxData.size()) {
       idx++;
-      if(idx==GetCurrentFirmware()->getCapability(Mixes)) break;
+      if(idx==firmware->getCapability(Mixes)) break;
 
       if (!gm_insertMix(idx))
         break;
@@ -510,7 +510,7 @@ void MixesPanel::mixerlistWidget_KeyPress(QKeyEvent *event)
 
 int MixesPanel::gm_moveMix(int idx, bool dir) //true=inc=down false=dec=up
 {
-    if(idx>GetCurrentFirmware()->getCapability(Mixes) || (idx==GetCurrentFirmware()->getCapability(Mixes) && dir)) return idx;
+    if(idx>firmware->getCapability(Mixes) || (idx==firmware->getCapability(Mixes) && dir)) return idx;
 
     int tdx = dir ? idx+1 : idx-1;
     MixData &src=model.mixData[idx];
@@ -519,7 +519,7 @@ int MixesPanel::gm_moveMix(int idx, bool dir) //true=inc=down false=dec=up
     if (src.destCh == 1 && !dir)
       return idx;
 
-    unsigned int outputs = GetCurrentFirmware()->getCapability(Outputs);
+    unsigned int outputs = firmware->getCapability(Outputs);
     if((src.destCh==0) || (src.destCh>outputs) || (tgt.destCh>outputs)) return idx;
 
     if (tgt.destCh!=src.destCh) {

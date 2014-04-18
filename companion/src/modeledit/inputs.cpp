@@ -3,8 +3,8 @@
 #include "expodialog.h"
 #include "helpers.h"
 
-InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings):
-  ModelPanel(parent, model, generalSettings),
+InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+  ModelPanel(parent, model, generalSettings, firmware),
   expoInserted(false)
 {
   QGridLayout * exposLayout = new QGridLayout(this);
@@ -47,7 +47,7 @@ void InputsPanel::update()
 {
   lock = true;
 
-  int inputsCount = GetCurrentFirmware()->getCapability(VirtualInputs);
+  int inputsCount = firmware->getCapability(VirtualInputs);
   if (inputsCount == 0)
     inputsCount = NUM_STICKS;
 
@@ -75,20 +75,20 @@ void InputsPanel::update()
     }
 
     if (curDest!=(int)md->chn) {
-      if (GetCurrentFirmware()->getCapability(VirtualInputs))
+      if (firmware->getCapability(VirtualInputs))
         str = QString("%1").arg(getInputStr(model, md->chn), -8, ' ');
       else
         str = getInputStr(model, md->chn);
       curDest = md->chn;
     }
     else {
-      if (GetCurrentFirmware()->getCapability(VirtualInputs))
+      if (firmware->getCapability(VirtualInputs))
         str = "        ";
       else
         str = "   ";
     }
 
-    if (GetCurrentFirmware()->getCapability(VirtualInputs)) {
+    if (firmware->getCapability(VirtualInputs)) {
       str += " " + tr("Source(%1)").arg(md->srcRaw.toString());
       if (md->carryTrim>0) {
         str += " " + tr("No Trim");
@@ -113,7 +113,7 @@ void InputsPanel::update()
 
     if (md->swtch.type != SWITCH_TYPE_NONE) str += " " + tr("Switch(%1)").arg(md->swtch.toString());
 
-    if (GetCurrentFirmware()->getCapability(HasExpoNames)) {
+    if (firmware->getCapability(HasExpoNames)) {
       QString expoName = md->name;
       if (!expoName.isEmpty()) str += QString(" [%1]").arg(expoName);
     }
@@ -171,13 +171,13 @@ void InputsPanel::gm_openExpo(int index)
     emit modified();
     update();
     
-    if (GetCurrentFirmware()->getCapability(VirtualInputs))
+    if (firmware->getCapability(VirtualInputs))
       strcpy(inputName, model.inputNames[mixd.chn]);
 
-    ExpoDialog *g = new ExpoDialog(this, model, &mixd, generalSettings, inputName);
+    ExpoDialog *g = new ExpoDialog(this, model, &mixd, generalSettings, firmware, inputName);
     if (g->exec())  {
       model.expoData[index] = mixd;
-      if (GetCurrentFirmware()->getCapability(VirtualInputs))
+      if (firmware->getCapability(VirtualInputs))
         strcpy(model.inputNames[mixd.chn], inputName);
       emit modified();
       update();

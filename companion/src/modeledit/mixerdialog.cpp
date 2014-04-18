@@ -3,11 +3,12 @@
 #include "eeprominterface.h"
 #include "helpers.h"
 
-MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, GeneralSettings & generalSettings) :
+MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, GeneralSettings & generalSettings, FirmwareInterface * firmware) :
   QDialog(parent),
   ui(new Ui::MixerDialog),
   model(model),
   generalSettings(generalSettings),
+  firmware(firmware),
   md(mixdata),
   lock(false)
 {
@@ -21,7 +22,7 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, G
     populateSourceCB(ui->sourceCB, md->srcRaw, model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS);
     ui->sourceCB->removeItem(0);
 
-    int limit = GetCurrentFirmware()->getCapability(OffsetWeight);
+    int limit = firmware->getCapability(OffsetWeight);
 
     gvWeightGroup = new GVarGroup(ui->weightGV, ui->weightSB, ui->weightCB, md->weight, 100, -limit, limit);
     gvOffsetGroup = new GVarGroup(ui->offsetGV, ui->offsetSB, ui->offsetCB, md->sOffset, 0, -limit, limit);
@@ -29,12 +30,12 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, G
 
     ui->MixDR_CB->setChecked(md->noExpo==0);
 
-    if (GetCurrentFirmware()->getCapability(VirtualInputs) || !GetCurrentFirmware()->getCapability(MixesWithoutExpo)) {
+    if (firmware->getCapability(VirtualInputs) || !firmware->getCapability(MixesWithoutExpo)) {
       ui->MixDR_CB->hide();
       ui->label_MixDR->hide();
     }
 
-    if (!GetCurrentFirmware()->getCapability(VirtualInputs)) {
+    if (!firmware->getCapability(VirtualInputs)) {
       ui->trimCB->addItem(tr("Rud"));
       ui->trimCB->addItem(tr("Ele"));
       ui->trimCB->addItem(tr("Thr"));
@@ -43,7 +44,7 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, G
 
     ui->trimCB->setCurrentIndex(1 - md->carryTrim);
 
-    int namelength = GetCurrentFirmware()->getCapability(HasMixerNames);
+    int namelength = firmware->getCapability(HasMixerNames);
     if (!namelength) {
       ui->label_name->hide();
       ui->mixerName->hide();
@@ -54,7 +55,7 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, G
     ui->mixerName->setValidator(new QRegExpValidator(rx, this));
     ui->mixerName->setText(md->name);
 
-    if (!GetCurrentFirmware()->getCapability(FlightPhases)) {
+    if (!firmware->getCapability(FlightPhases)) {
       ui->label_phases->hide();
       for (int i=0; i<9; i++) {
         lb_fp[i]->hide();
@@ -69,7 +70,7 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, G
         }
         mask <<= 1;
       }
-      for (int i=GetCurrentFirmware()->getCapability(FlightPhases); i<9;i++) {
+      for (int i=firmware->getCapability(FlightPhases); i<9;i++) {
         lb_fp[i]->hide();
         cb_fp[i]->hide();
       }
@@ -78,8 +79,8 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, G
     populateSwitchCB(ui->switchesCB, md->swtch, generalSettings);
     ui->warningCB->setCurrentIndex(md->mixWarn);
     ui->mltpxCB->setCurrentIndex(md->mltpx);
-    int scale=GetCurrentFirmware()->getCapability(SlowScale);  
-    float range=GetCurrentFirmware()->getCapability(SlowRange);  
+    int scale=firmware->getCapability(SlowScale);  
+    float range=firmware->getCapability(SlowRange);  
     ui->slowDownSB->setMaximum(range/scale);
     ui->slowDownSB->setSingleStep(1.0/scale);
     ui->slowDownSB->setDecimals((scale==1 ? 0 :1));
@@ -142,7 +143,7 @@ void MixerDialog::valuesChanged()
     lock = true;
     QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
     md->srcRaw  = RawSource(ui->sourceCB->itemData(ui->sourceCB->currentIndex()).toInt(), &model);
-    if (!GetCurrentFirmware()->getCapability(VirtualInputs) && GetCurrentFirmware()->getCapability(MixesWithoutExpo)) {
+    if (!firmware->getCapability(VirtualInputs) && firmware->getCapability(MixesWithoutExpo)) {
       bool drVisible = (md->srcRaw.type == SOURCE_TYPE_STICK && md->srcRaw.index < NUM_STICKS);
       ui->MixDR_CB->setEnabled(drVisible);
       ui->label_MixDR->setEnabled(drVisible);
@@ -152,7 +153,7 @@ void MixerDialog::valuesChanged()
     md->swtch     = RawSwitch(ui->switchesCB->itemData(ui->switchesCB->currentIndex()).toInt());
     md->mixWarn   = ui->warningCB->currentIndex();
     md->mltpx     = (MltpxValue)ui->mltpxCB->currentIndex();
-    int scale=GetCurrentFirmware()->getCapability(SlowScale);
+    int scale=firmware->getCapability(SlowScale);
     md->delayDown = round(ui->delayDownSB->value()*scale);
     md->delayUp   = round(ui->delayUpSB->value()*scale);
     md->speedDown = round(ui->slowDownSB->value()*scale);

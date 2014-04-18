@@ -9,7 +9,7 @@ class Channels : public ModelPanel
     Q_OBJECT
 
   public:
-    Channels(QWidget *parent, ModelData & model, GeneralSettings & generalSettings);
+    Channels(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
     ~Channels();
     
   private:
