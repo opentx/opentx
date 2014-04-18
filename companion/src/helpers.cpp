@@ -958,27 +958,3 @@ QPixmap makePixMap( QImage image, QString firmwareType )
   }
   return(QPixmap::fromImage(image));
 }
-
-int getRadioType(QString firmwareType)
-{
-  if (firmwareType.contains( "taranis" )) return 6;
-  if (firmwareType.contains( "sky9x"   )) return 5;
-  if (firmwareType.contains( "gruvin9x")) return 4;
-  if (firmwareType.contains( "9xr128"  )) return 3;
-  if (firmwareType.contains( "9xr"     )) return 2;
-  if (firmwareType.contains( "9x128"   )) return 1;
-  return 0; // 9x
-}
-
-QString getDefaultFwType( int radioType )
-{
-  switch (radioType){
-    case 6:  return "opentx-taranis-en";
-    case 5:  return "opentx-sky9x-en";
-    case 4:  return "opentx-gruvin9x-en";
-    case 3:  return "opentx-9xr128-en";
-    case 2:  return "opentx-9xr-en";
-    case 1:  return "opentx-9x128-en";
-    default: return "opentx-9x-en"; 
-  }
-}

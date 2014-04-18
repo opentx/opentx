@@ -800,7 +800,7 @@ May be different from firmware language</string>
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>fwPreferencesDialog</receiver>
+   <receiver>FirmwarePreferencesDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -816,7 +816,7 @@ May be different from firmware language</string>
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>fwPreferencesDialog</receiver>
+   <receiver>FirmwarePreferencesDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
