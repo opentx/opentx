@@ -14,16 +14,16 @@
 #define ISIZE 200 // curve image size
 #define ISIZEW 400 // curve image size
 
-printDialog::printDialog(QWidget *parent, GeneralSettings *gg, ModelData *gm, QString filename) :
-    QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint),
-    ui(new Ui::printDialog)
+PrintDialog::PrintDialog(QWidget *parent, FirmwareInterface * firmware, GeneralSettings *gg, ModelData *gm, QString filename) :
+  QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint),
+  firmware(firmware),
+  g_eeGeneral(gg),
+  g_model(gm),
+  printfilename(filename),
+  ui(new Ui::PrintDialog)
 {
     ui->setupUi(this);
     this->setWindowIcon(CompanionIcon("print.png"));
-    g_model = gm;
-    g_eeGeneral = gg;
-    printfilename=filename;
-    eepromInterface = GetEepromInterface();
     te = ui->textEdit;
 
     setWindowTitle(tr("Setup for: ") + g_model->name);
@@ -32,13 +32,14 @@ printDialog::printDialog(QWidget *parent, GeneralSettings *gg, ModelData *gm, QS
     if (modelname.isEmpty()) {
       curvefile5=QString("%1/curve5.png").arg(qd->tempPath());
       curvefile9=QString("%1/curve9.png").arg(qd->tempPath());      
-    } else {
+    }
+    else {
       curvefile5=QString("%1/%2-curve5.png").arg(qd->tempPath()).arg(modelname);
       curvefile9=QString("%1/%2-curve9.png").arg(qd->tempPath()).arg(modelname);
     }
     printSetup();
     int gvars=0;
-    if (GetCurrentFirmware()->getCapability(HasVariants)) {
+    if (firmware->getCapability(HasVariants)) {
       if ((GetCurrentFirmwareVariant() & GVARS_VARIANT)) {
         gvars=1;
       }
@@ -66,7 +67,7 @@ printDialog::printDialog(QWidget *parent, GeneralSettings *gg, ModelData *gm, QS
     }
 }
 
-void printDialog::closeEvent(QCloseEvent *event) 
+void PrintDialog::closeEvent(QCloseEvent *event) 
 {
   if (printfilename.isEmpty()) {
     QByteArray ba = curvefile5.toLatin1();
@@ -78,7 +79,7 @@ void printDialog::closeEvent(QCloseEvent *event)
   }
 }
 
-printDialog::~printDialog()
+PrintDialog::~PrintDialog()
 {
     delete ui;
 }
@@ -107,15 +108,15 @@ QString doTL(const QString s, const QString color="", bool bold=false)
     return "<td align=left>" + str + "</td>";
 }
 
-QString printDialog::fv(const QString name, const QString value)
+QString PrintDialog::fv(const QString name, const QString value)
 {
     return "<b>" + name + ": </b><font color=green>" + value + "</font><br>";
 }
 
-void printDialog::printSetup()
+void PrintDialog::printSetup()
 {
     int gvars=0;
-    if (GetCurrentFirmware()->getCapability(HasVariants)) {
+    if (firmware->getCapability(HasVariants)) {
       if ((GetCurrentFirmwareVariant() & GVARS_VARIANT)) {
         gvars=1;
       }
@@ -123,15 +124,15 @@ void printDialog::printSetup()
       gvars=1;
     }
     QString str = "<a name=1></a><table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
-    str.append(QString("<tr><td colspan=%1 ><table border=0 width=\"100%\"><tr><td><h1>").arg((GetCurrentFirmware()->getCapability(FlightPhases) && gvars==0) ? 2 : 1));
+    str.append(QString("<tr><td colspan=%1 ><table border=0 width=\"100%\"><tr><td><h1>").arg((firmware->getCapability(FlightPhases) && gvars==0) ? 2 : 1));
     str.append(g_model->name);
     str.append("&nbsp;(");
-    str.append(eepromInterface->getName());
+    str.append(firmware->getEepromInterface()->getName());
     str.append(")</h1></td><td align=right valign=top NOWRAP><font size=-1>"+tr("printed on: %1").arg(QDateTime::currentDateTime().toString(Qt::SystemLocaleShortDate))+"</font></td></tr></table></td></tr><tr><td><table border=0 cellspacing=0 cellpadding=3>");
     str.append("<tr><td><h2>"+tr("General Model Settings")+"</h2></td></tr>");
     str.append("<tr><td>");
     str.append(fv(tr("Name"), g_model->name));
-    str.append("<b>"+tr("EEprom Size")+QString(": </b><font color=green>%1</font><br>").arg(eepromInterface->getSize(*g_model)));
+    str.append("<b>"+tr("EEprom Size")+QString(": </b><font color=green>%1</font><br>").arg(firmware->getEepromInterface()->getSize(*g_model)));
     str.append(fv(tr("Timer1"), getTimerStr(g_model->timers[0])));  //value, mode, count up/down
     str.append(fv(tr("Timer2"), getTimerStr(g_model->timers[1])));  //value, mode, count up/down
     str.append(fv(tr("Protocol"), getProtocol(g_model))); //proto, numch, delay,
@@ -151,19 +152,19 @@ void printDialog::printSetup()
     te->append(str);
 }
 
-QString printDialog::printPhases()
+QString PrintDialog::printPhases()
 {      
     int gvars=0;
     int gvarnum=0;
-    if ((GetCurrentFirmwareVariant() & GVARS_VARIANT ) || (!GetCurrentFirmware()->getCapability(HasVariants) && GetCurrentFirmware()->getCapability(Gvars))) {
-      if (GetCurrentFirmware()->getCapability(GvarsFlightPhases)) {
+    if ((GetCurrentFirmwareVariant() & GVARS_VARIANT ) || (!firmware->getCapability(HasVariants) && firmware->getCapability(Gvars))) {
+      if (firmware->getCapability(GvarsFlightPhases)) {
         gvars=1;
-        gvarnum=GetCurrentFirmware()->getCapability(Gvars);
+        gvarnum=firmware->getCapability(Gvars);
       }
     }
 
     QString str="";
-    str.append(QString("<table border=1 cellspacing=0 cellpadding=3 width=\"100%\"><tr><td colspan=%1><h2>").arg(gvars==0 ? 8+GetCurrentFirmware()->getCapability(RotaryEncoders) : 8+gvarnum+GetCurrentFirmware()->getCapability(RotaryEncoders)));
+    str.append(QString("<table border=1 cellspacing=0 cellpadding=3 width=\"100%\"><tr><td colspan=%1><h2>").arg(gvars==0 ? 8+firmware->getCapability(RotaryEncoders) : 8+gvarnum+firmware->getCapability(RotaryEncoders)));
     str.append(tr("Flight modes Settings"));
     str.append("</h2></td></tr><tr><td style=\"border-style:none;\">&nbsp;</td><td colspan=2 align=center><b>");
     str.append(tr("Fades")+"</b></td>");
@@ -171,8 +172,8 @@ QString printDialog::printPhases()
     if (gvars) {
       str.append(QString("<td colspan=%1 align=center><b>").arg(gvarnum)+tr("Gvars")+"</b></td>");
     }
-    if (GetCurrentFirmware()->getCapability(RotaryEncoders)) {
-      str.append(QString("<td colspan=%1 align=center><b>").arg(GetCurrentFirmware()->getCapability(RotaryEncoders))+tr("Rot.Enc.")+"</b></td>");
+    if (firmware->getCapability(RotaryEncoders)) {
+      str.append(QString("<td colspan=%1 align=center><b>").arg(firmware->getCapability(RotaryEncoders))+tr("Rot.Enc.")+"</b></td>");
     }
     str.append("<td rowspan=2 align=\"center\" valign=\"bottom\"><b>"+tr("Switch")+"</b></td></tr><tr><td align=center width=\"90\"><b>"+tr("Flight mode name"));
     str.append("</b></td><td align=center width=\"30\"><b>"+tr("IN")+"</b></td><td align=center width=\"30\"><b>"+tr("OUT")+"</b></td>");
@@ -184,11 +185,11 @@ QString printDialog::printPhases()
         str.append(QString("<td width=\"40\" align=\"center\"><b>GV%1</b><br>%2</td>").arg(i+1).arg(g_model->gvars_names[i]));
       }      
     }
-    for (int i=0; i<GetCurrentFirmware()->getCapability(RotaryEncoders); i++) {
+    for (int i=0; i<firmware->getCapability(RotaryEncoders); i++) {
       str.append(QString("<td align=\"center\"><b>RE%1</b></td>").arg((i==0 ? 'A': 'B')));
     }
     str.append("</tr>");
-    for (int i=0; i<GetCurrentFirmware()->getCapability(FlightPhases); i++) {
+    for (int i=0; i<firmware->getCapability(FlightPhases); i++) {
       PhaseData *pd=&g_model->phaseData[i];
       str.append("<tr><td><b>"+tr("FM")+QString("%1</b> <font size=+1 face='Courier New' color=green>%2</font></td><td width=\"30\" align=\"right\"><font size=+1 face='Courier New' color=green>%3</font></td><td width=\"30\" align=\"right\"><font size=+1 face='Courier New' color=green>%4</font></td>").arg(i).arg(pd->name).arg(pd->fadeIn).arg(pd->fadeOut));
       for (int k=0; k<4; k++) {
@@ -210,7 +211,7 @@ QString printDialog::printPhases()
           }
         }
       }
-      for (int k=0; k<GetCurrentFirmware()->getCapability(RotaryEncoders); k++) {
+      for (int k=0; k<firmware->getCapability(RotaryEncoders); k++) {
         if (pd->rotaryEncoders[k]<=1024) {
           str.append(QString("<td align=\"right\"><font size=+1 face='Courier New' color=green>%1").arg(pd->rotaryEncoders[k])+"</font></td>");
         }
@@ -227,7 +228,7 @@ QString printDialog::printPhases()
     return(str);
 }
 
-void printDialog::printExpo()
+void PrintDialog::printExpo()
 {
     QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\"><tr><td><h2>";
     str.append(tr("Expo/Dr Settings"));
@@ -264,12 +265,12 @@ void printDialog::printExpo()
       str += tr("Weight") + QString("%1").arg(getGVarString(ed->weight,true)).rightJustified(6, ' ');
       str += ed->curve.toString().replace("<", "&lt;").replace(">", "&gt;");
 
-      if (GetCurrentFirmware()->getCapability(FlightPhases)) {
+      if (firmware->getCapability(FlightPhases)) {
         if(ed->phases) {
-          if (ed->phases!=(unsigned int)(1<<GetCurrentFirmware()->getCapability(FlightPhases))-1) {
+          if (ed->phases!=(unsigned int)(1<<firmware->getCapability(FlightPhases))-1) {
             int mask=1;
             int first=0;
-            for (int i=0; i<GetCurrentFirmware()->getCapability(FlightPhases);i++) {
+            for (int i=0; i<firmware->getCapability(FlightPhases);i++) {
               if (!(ed->phases & mask)) {
                 first++;
               }
@@ -282,7 +283,7 @@ void printDialog::printExpo()
             }
             mask=1;
             first=1;
-            for (int j=0; j<GetCurrentFirmware()->getCapability(FlightPhases);j++) {
+            for (int j=0; j<firmware->getCapability(FlightPhases);j++) {
               if (!(ed->phases & mask)) {
                 PhaseData *pd = &g_model->phaseData[j];
                 if (!first) {
@@ -303,7 +304,7 @@ void printDialog::printExpo()
       if (ed->swtch.type) 
         str += " " + tr("Switch") + QString("(%1)").arg(ed->swtch.toString());
       str += ed->curve.toString().replace("<", "&lt;").replace(">", "&gt;");
-      if (GetCurrentFirmware()->getCapability(HasExpoNames)) {
+      if (firmware->getCapability(HasExpoNames)) {
         QString ExpoName;
         ExpoName.append(ed->name);
         if (!ExpoName.isEmpty()) {
@@ -318,21 +319,21 @@ void printDialog::printExpo()
 }
 
 
-void printDialog::printMixes()
+void PrintDialog::printMixes()
 {
     QString str = "<table border=1 cellspacing=0 cellpadding=3 style=\"page-break-after:always;\" width=\"100%\"><tr><td><h2>";
     str.append(tr("Mixers"));
     str.append("</h2></td></tr><tr><td><table border=0 cellspacing=0 cellpadding=3>");
 
     unsigned int lastCHN = 255;
-    for(int i=0; i<GetCurrentFirmware()->getCapability(Mixes); i++) {
+    for(int i=0; i<firmware->getCapability(Mixes); i++) {
       MixData *md = &g_model->mixData[i];
-      if(!md->destCh || md->destCh>(unsigned int)GetCurrentFirmware()->getCapability(Outputs) ) break;
+      if(!md->destCh || md->destCh>(unsigned int)firmware->getCapability(Outputs) ) break;
       str.append("<tr><td><font size=+1 face='Courier New'><b>");
       if(lastCHN!=md->destCh) {
         lastCHN=md->destCh;
         QString chname=tr("CH")+QString("%1  ").arg(lastCHN,2,10,QChar('0'));
-        if (GetCurrentFirmware()->getCapability(HasChNames)) {
+        if (firmware->getCapability(HasChNames)) {
           QString name=g_model->limitData[md->destCh-1].name;
           if (!name.isEmpty()) {
             name.append("      ");
@@ -356,16 +357,16 @@ void printDialog::printMixes()
       if (md->carryTrim) str += " " + tr("noTrim");
       if (md->sOffset)  str += " "+ tr("Offset") + QString(" %1").arg(getGVarString(md->sOffset));
       str += md->curve.toString().replace("<", "&lt;").replace(">", "&gt;");
-      float scale=GetCurrentFirmware()->getCapability(SlowScale);
+      float scale=firmware->getCapability(SlowScale);
       if (md->delayDown || md->delayUp) str += tr(" Delay(u%1:d%2)").arg(md->delayUp/scale).arg(md->delayDown/scale);
       if (md->speedDown || md->speedUp) str += tr(" Slow(u%1:d%2)").arg(md->speedUp/scale).arg(md->speedDown/scale);
       if (md->mixWarn)  str += " "+tr("Warn")+QString("(%1)").arg(md->mixWarn);
-      if (GetCurrentFirmware()->getCapability(FlightPhases)) {
+      if (firmware->getCapability(FlightPhases)) {
         if(md->phases) {
-          if (md->phases!=(unsigned int)(1<<GetCurrentFirmware()->getCapability(FlightPhases))-1) {
+          if (md->phases!=(unsigned int)(1<<firmware->getCapability(FlightPhases))-1) {
             int mask=1;
             int first=0;
-            for (int i=0; i<GetCurrentFirmware()->getCapability(FlightPhases); i++) {
+            for (int i=0; i<firmware->getCapability(FlightPhases); i++) {
               if (!(md->phases & mask)) {
                 first++;
               }
@@ -378,7 +379,7 @@ void printDialog::printMixes()
             }
             mask=1;
             first=1;
-            for (int j=0; j<GetCurrentFirmware()->getCapability(FlightPhases);j++) {
+            for (int j=0; j<firmware->getCapability(FlightPhases);j++) {
               if (!(md->phases & mask)) {
                 PhaseData *pd = &g_model->phaseData[j];
                 if (!first) {
@@ -396,7 +397,7 @@ void printDialog::printMixes()
           }
         }
       }
-      if (GetCurrentFirmware()->getCapability(HasMixerNames)) {
+      if (firmware->getCapability(HasMixerNames)) {
         QString MixerName;
         MixerName.append(md->name);
         if (!MixerName.isEmpty()) {
@@ -409,41 +410,41 @@ void printDialog::printMixes()
     te->append(str);
 }
 
-void printDialog::printLimits()
+void PrintDialog::printLimits()
 {
     QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
     int numcol;
-    numcol=(GetCurrentFirmware()->getCapability(Outputs)+1)>17 ? 17:GetCurrentFirmware()->getCapability(Outputs)+1;
+    numcol=(firmware->getCapability(Outputs)+1)>17 ? 17:firmware->getCapability(Outputs)+1;
     str.append(QString("<tr><td colspan=%1><h2>").arg(numcol)+tr("Limits")+"</h2></td></tr>");
     str.append("<tr><td>&nbsp;</td>");
-    if (GetCurrentFirmware()->getCapability(Outputs)<17) {
-      for(int i=0; i<GetCurrentFirmware()->getCapability(Outputs); i++) {
+    if (firmware->getCapability(Outputs)<17) {
+      for(int i=0; i<firmware->getCapability(Outputs); i++) {
         str.append(doTC(tr("CH")+QString(" %1").arg(i+1,2,10,QChar('0')),"",true));
       }
       str.append("</tr>");
-      if (GetCurrentFirmware()->getCapability(HasChNames)) {
+      if (firmware->getCapability(HasChNames)) {
         str.append("<tr><td><b>"+tr("Name")+"</b></td>");
-        for(int i=0; i<GetCurrentFirmware()->getCapability(Outputs); i++) {
+        for(int i=0; i<firmware->getCapability(Outputs); i++) {
           str.append(doTR(g_model->limitData[i].name,"green"));
         }
       }
       str.append("<tr><td><b>"+tr("Offset")+"</b></td>");
-      for(int i=0; i<GetCurrentFirmware()->getCapability(Outputs); i++) {
+      for(int i=0; i<firmware->getCapability(Outputs); i++) {
         str.append(doTR(QString::number((qreal)g_model->limitData[i].offset/10, 'f', 1),"green"));
       }
       str.append("</tr>");
       str.append("<tr><td><b>"+tr("Min")+"</b></td>");
-      for(int i=0; i<GetCurrentFirmware()->getCapability(Outputs); i++) {
+      for(int i=0; i<firmware->getCapability(Outputs); i++) {
         str.append(doTR(QString::number(g_model->limitData[i].min),"green"));
       }
       str.append("</tr>");
       str.append("<tr><td><b>"+tr("Max")+"</b></td>");
-      for(int i=0; i<GetCurrentFirmware()->getCapability(Outputs); i++) {
+      for(int i=0; i<firmware->getCapability(Outputs); i++) {
         str.append(doTR(QString::number(g_model->limitData[i].max),"green"));
       }
       str.append("</tr>");
       str.append("<tr><td><b>"+tr("Invert")+"</b></td>");
-      for(int i=0; i<GetCurrentFirmware()->getCapability(Outputs); i++) {
+      for(int i=0; i<firmware->getCapability(Outputs); i++) {
         str.append(doTR(QString(g_model->limitData[i].revert ? tr("INV") : tr("NOR")),"green"));
       }
     } else {
@@ -451,7 +452,7 @@ void printDialog::printLimits()
         str.append(doTC(tr("CH")+QString(" %1").arg(i+1,2,10,QChar('0')),"",true));
       }
       str.append("</tr>");
-      if (GetCurrentFirmware()->getCapability(HasChNames)) {
+      if (firmware->getCapability(HasChNames)) {
         str.append("<tr><td><b>"+tr("Name")+"</b></td>");
         for(int i=0; i<16; i++) {
           str.append(doTR(g_model->limitData[i].name,"green"));
@@ -479,33 +480,33 @@ void printDialog::printLimits()
       str.append("</tr>");
       str.append(QString("<tr><td colspan=%1>&nbsp;").arg(numcol)+"</td></tr>");
       str.append("<tr><td>&nbsp;</td>");
-      for(int i=16; i<GetCurrentFirmware()->getCapability(Outputs); i++) {
+      for(int i=16; i<firmware->getCapability(Outputs); i++) {
         str.append(doTC(tr("CH")+QString(" %1").arg(i+1,2,10,QChar('0')),"",true));
       }
       str.append("</tr>");
-      if (GetCurrentFirmware()->getCapability(HasChNames)) {
+      if (firmware->getCapability(HasChNames)) {
         str.append("<tr><td><b>"+tr("Name")+"</b></td>");
-        for(int i=16; i<GetCurrentFirmware()->getCapability(Outputs); i++) {
+        for(int i=16; i<firmware->getCapability(Outputs); i++) {
           str.append(doTR(g_model->limitData[i].name,"green"));
         }
       }
       str.append("<tr><td><b>"+tr("Offset")+"</b></td>");
-      for(int i=16; i<GetCurrentFirmware()->getCapability(Outputs); i++) {
+      for(int i=16; i<firmware->getCapability(Outputs); i++) {
         str.append(doTR(QString::number((qreal)g_model->limitData[i].offset/10, 'f', 1),"green"));
       }
       str.append("</tr>");
       str.append("<tr><td><b>"+tr("Min")+"</b></td>");
-      for(int i=16; i<GetCurrentFirmware()->getCapability(Outputs); i++) {
+      for(int i=16; i<firmware->getCapability(Outputs); i++) {
         str.append(doTR(QString::number(g_model->limitData[i].min),"green"));
       }
       str.append("</tr>");
       str.append("<tr><td><b>"+tr("Max")+"</b></td>");
-      for(int i=16; i<GetCurrentFirmware()->getCapability(Outputs); i++) {
+      for(int i=16; i<firmware->getCapability(Outputs); i++) {
         str.append(doTR(QString::number(g_model->limitData[i].max),"green"));
       }
       str.append("</tr>");
       str.append("<tr><td><b>"+tr("Invert")+"</b></td>");
-      for(int i=16; i<GetCurrentFirmware()->getCapability(Outputs); i++) {
+      for(int i=16; i<firmware->getCapability(Outputs); i++) {
         str.append(doTR(QString(g_model->limitData[i].revert ? tr("INV") : tr("NOR")),"green"));
       }
     }
@@ -515,7 +516,7 @@ void printDialog::printLimits()
     te->append(str);
 }
 
-void printDialog::printCurves()
+void PrintDialog::printCurves()
 {
     int i,r,g,b,c,count;
     char buffer[16];
@@ -524,7 +525,7 @@ void printDialog::printCurves()
     QString str = "<table border=1 cellspacing=0 cellpadding=3 style=\"page-break-before:auto;\" width=\"100%\"><tr><td><h2>";
     str.append(tr("Curves"));
     str.append("</h2></td></tr><tr><td>");
-    int numcurves=GetCurrentFirmware()->getCapability(NumCurves);
+    int numcurves=firmware->getCapability(NumCurves);
     if (numcurves==0) {
       numcurves=16;
     }
@@ -622,14 +623,14 @@ void printDialog::printCurves()
     te->append(str);
 }
 
-void printDialog::printSwitches()
+void PrintDialog::printSwitches()
 {
     int sc=0;
     QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
     str.append("<tr><td><h2>"+tr("Logical Switches")+"</h2></td></tr>");
     str.append("<tr><td><table border=0 cellspacing=0 cellpadding=3>");
 
-    for (int i=0; i<GetCurrentFirmware()->getCapability(LogicalSwitches); i++) {
+    for (int i=0; i<firmware->getCapability(LogicalSwitches); i++) {
       if (g_model->customSw[i].func) {
         str.append("<tr>");
         if (i<9) {
@@ -649,15 +650,15 @@ void printDialog::printSwitches()
       te->append(str);
 }
 
-void printDialog::printGvars()
+void PrintDialog::printGvars()
 {
   int gvars=0;
   int gvarnum=0;
-  if ((GetCurrentFirmwareVariant() & GVARS_VARIANT ) || (!GetCurrentFirmware()->getCapability(HasVariants) && GetCurrentFirmware()->getCapability(Gvars))) {
+  if ((GetCurrentFirmwareVariant() & GVARS_VARIANT ) || (!firmware->getCapability(HasVariants) && firmware->getCapability(Gvars))) {
     gvars=1;
-    gvarnum=GetCurrentFirmware()->getCapability(Gvars);
+    gvarnum=firmware->getCapability(Gvars);
   }
-  if (!GetCurrentFirmware()->getCapability(GvarsFlightPhases) && (gvars==1 && GetCurrentFirmware()->getCapability(Gvars))) {
+  if (!firmware->getCapability(GvarsFlightPhases) && (gvars==1 && firmware->getCapability(Gvars))) {
     QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
     str.append("<tr><td><h2>"+tr("Global Variables")+"</h2></td></tr>");
     str.append("<tr><td><table border=1 cellspacing=0 cellpadding=3 width=100>");
@@ -679,7 +680,7 @@ void printDialog::printGvars()
   }
 }
 
-void printDialog::printFSwitches()
+void PrintDialog::printFSwitches()
 {
     int sc=0;
     QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
@@ -691,7 +692,7 @@ void printDialog::printFSwitches()
     str.append(doTL(tr("Repeat"), "", true));
     str.append(doTL(tr("Enabled"), "", true));
     str.append("</tr>");
-    for(int i=0; i<GetCurrentFirmware()->getCapability(CustomFunctions); i++) {
+    for(int i=0; i<firmware->getCapability(CustomFunctions); i++) {
       if (g_model->funcSw[i].swtch.type!=SWITCH_TYPE_NONE) {
           str.append("<tr>");
           str.append(doTC(g_model->funcSw[i].swtch.toString(),"green"));
@@ -718,7 +719,7 @@ void printDialog::printFSwitches()
       te->append(str);
 }
 
-void printDialog::printFrSky()
+void PrintDialog::printFrSky()
 {
   int tc=0;
   QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
@@ -756,10 +757,10 @@ void printDialog::printFrSky()
   str.append("<tr><td colspan=2 align=\"Left\"><b>"+tr("Blades")+"</b></td><td colspan=8 align=\"left\">"+fd->blades+"</td></tr>");
   str.append("<tr><td colspan=10 align=\"Left\" height=\"4px\"></td></tr></table>");
 #if 0
-  if (GetCurrentFirmware()->getCapability(TelemetryBars) || (GetCurrentFirmware()->getCapability(TelemetryCSFields))) {
-    int cols=GetCurrentFirmware()->getCapability(TelemetryColsCSFields);
+  if (firmware->getCapability(TelemetryBars) || (firmware->getCapability(TelemetryCSFields))) {
+    int cols=firmware->getCapability(TelemetryColsCSFields);
     if (cols==0) cols=2;
-    for (int j=0; j<GetCurrentFirmware()->getCapability(TelemetryCSFields)/(4*cols); j++ ) {
+    for (int j=0; j<firmware->getCapability(TelemetryCSFields)/(4*cols); j++ ) {
       if (fd->screens[j].type==0) {
         if (cols==2) {
           str.append("<table border=1 cellspacing=0 cellpadding=3 width=\"100%\"><tr><td colspan=3 align=\"Left\"><b>"+tr("Custom Telemetry View")+"</b></td></tr>");
@@ -804,7 +805,7 @@ void printDialog::printFrSky()
       te->append(str);    
 }
 
-void printDialog::on_printButton_clicked()
+void PrintDialog::on_printButton_clicked()
 {
     QPrinter printer;
     printer.setPageMargins(10.0,10.0,10.0,10.0,printer.Millimeter);
@@ -815,7 +816,7 @@ void printDialog::on_printButton_clicked()
     te->print(&printer);
 }
 
-void printDialog::on_printFileButton_clicked()
+void PrintDialog::on_printFileButton_clicked()
 {
     QString fn = QFileDialog::getSaveFileName(this,tr("Select PDF output file"),QString(),tr("ODF files (*.odt);;PDF Files(*.pdf);;HTML-Files (*.htm *.html);;All Files (*)")); 
     if (fn.isEmpty())
@@ -835,7 +836,7 @@ void printDialog::on_printFileButton_clicked()
     }
 }
 
-void printDialog::printToFile()
+void PrintDialog::printToFile()
 {
     if (printfilename.isEmpty())
       return;
@@ -854,7 +855,7 @@ void printDialog::printToFile()
     }
 }
 
-void printDialog::autoClose()
+void PrintDialog::autoClose()
 {
   this->close();
 }

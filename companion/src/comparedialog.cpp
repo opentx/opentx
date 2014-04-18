@@ -24,39 +24,38 @@ public:
   uint8_t models[C9X_MAX_MODELS];
 };
 
-compareDialog::compareDialog(QWidget *parent, GeneralSettings *gg) :
-    QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint),
-    ui(new Ui::compareDialog)
+CompareDialog::CompareDialog(QWidget * parent):
+  QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint),
+  model1(0),
+  model2(0),
+  ui(new Ui::CompareDialog)
 {
   ui->setupUi(this);
   this->setWindowIcon(CompanionIcon("compare.png"));
-  g_eeGeneral = gg;
-  eepromInterface = GetEepromInterface();
   te = ui->textEdit;
   this->setAcceptDrops(true);
-  model1=0;
-  model2=0;
+
+  // TODO this is really horrible  
   g_model1=(ModelData *)malloc(sizeof(ModelData));
   g_model2=(ModelData *)malloc(sizeof(ModelData));
   modeltemp=(ModelData *)malloc(sizeof(ModelData));
-    //setDragDropOverwriteMode(true);
-    //setDropIndicatorShown(true);
-/*
-    printFrSky();
-*/    
-    te->scrollToAnchor("1");
+
+  //setDragDropOverwriteMode(true);
+  //setDropIndicatorShown(true);
+  te->scrollToAnchor("1");
 }
 
-void compareDialog::dragMoveEvent(QDragMoveEvent *event)
+void CompareDialog::dragMoveEvent(QDragMoveEvent *event)
 {
   if (event->mimeData()->hasFormat("application/x-companion")) {   
     event->acceptProposedAction();
-  } else {
+  }
+  else {
     event->ignore();
   }
 }
 
-void compareDialog::dragEnterEvent(QDragEnterEvent *event)
+void CompareDialog::dragEnterEvent(QDragEnterEvent *event)
 {
   // accept just text/uri-list mime format
   if (event->mimeData()->hasFormat("application/x-companion")) {   
@@ -66,12 +65,12 @@ void compareDialog::dragEnterEvent(QDragEnterEvent *event)
   }
 }
 
-void compareDialog::dragLeaveEvent(QDragLeaveEvent *event)
+void CompareDialog::dragLeaveEvent(QDragLeaveEvent *event)
 {
   event->accept();
 }
 
-void compareDialog::printDiff()
+void CompareDialog::printDiff()
 {
   te->clear();
   printSetup();
@@ -89,7 +88,7 @@ void compareDialog::printDiff()
   te->scrollToAnchor("1");
 }
 
-void compareDialog::dropEvent(QDropEvent *event)
+void CompareDialog::dropEvent(QDropEvent *event)
 {
   QLabel *child = qobject_cast<QLabel*>(childAt(event->pos()));
   const QMimeData  *mimeData = event->mimeData();
@@ -153,7 +152,7 @@ void compareDialog::dropEvent(QDropEvent *event)
   }
 }
 
-void compareDialog::closeEvent(QCloseEvent *event) 
+void CompareDialog::closeEvent(QCloseEvent *event) 
 {
   QByteArray ba = curvefile5.toLatin1();
   char *name = ba.data(); 
@@ -163,12 +162,12 @@ void compareDialog::closeEvent(QCloseEvent *event)
   unlink(name);    
 }
 
-compareDialog::~compareDialog()
+CompareDialog::~CompareDialog()
 {
   delete ui;
 }
 
-QString compareDialog::doTC(const QString s, const QString color="", bool bold=false)
+QString CompareDialog::doTC(const QString s, const QString color="", bool bold=false)
 {
   QString str = s;
   if(bold) str = "<b>" + str + "</b>";
@@ -176,7 +175,7 @@ QString compareDialog::doTC(const QString s, const QString color="", bool bold=f
   return "<td align=center>" + str + "</td>";
 }
 
-QString compareDialog::doTR(const QString s, const QString color="", bool bold=false)
+QString CompareDialog::doTR(const QString s, const QString color="", bool bold=false)
 {
   QString str = s;
   if(bold) str = "<b>" + str + "</b>";
@@ -184,7 +183,7 @@ QString compareDialog::doTR(const QString s, const QString color="", bool bold=f
   return "<td align=right>" + str + "</td>";
 }
 
-QString compareDialog::doTL(const QString s, const QString color="", bool bold=false)
+QString CompareDialog::doTL(const QString s, const QString color="", bool bold=false)
 {
   QString str = s;
   if(bold) str = "<b>" + str + "</b>";
@@ -192,14 +191,14 @@ QString compareDialog::doTL(const QString s, const QString color="", bool bold=f
   return "<td align=left>" + str + "</td>";
 }
 
-QString compareDialog::fv(const QString name, const QString value, const QString color="green")
+QString CompareDialog::fv(const QString name, const QString value, const QString color="green")
 {
     return "<b>" + name + ": </b><font color=" +color + ">" + value + "</font><br>";
 }
 
 
 
-int compareDialog::ModelHasExpo(ExpoData * ExpoArray, ExpoData expo, bool * expoused)
+int CompareDialog::ModelHasExpo(ExpoData * ExpoArray, ExpoData expo, bool * expoused)
 {
   for (int i=0; i< C9X_MAX_EXPOS; i++) {
     if ((memcmp(&expo,&ExpoArray[i],sizeof(ExpoData))==0) && (expoused[i]==false)) {
@@ -209,7 +208,7 @@ int compareDialog::ModelHasExpo(ExpoData * ExpoArray, ExpoData expo, bool * expo
   return -1;
 }
 
-bool compareDialog::ChannelHasExpo(ExpoData * expoArray, uint8_t destCh)
+bool CompareDialog::ChannelHasExpo(ExpoData * expoArray, uint8_t destCh)
 {
   for (int i=0; i< C9X_MAX_EXPOS; i++) {
     if ((expoArray[i].chn==destCh)&&(expoArray[i].mode!=0)) {
@@ -219,7 +218,7 @@ bool compareDialog::ChannelHasExpo(ExpoData * expoArray, uint8_t destCh)
   return false;
 }
 
-int compareDialog::ModelHasMix(MixData * mixArray, MixData mix, bool * mixused)
+int CompareDialog::ModelHasMix(MixData * mixArray, MixData mix, bool * mixused)
 {
   for (int i=0; i< C9X_MAX_MIXERS; i++) {
     if ((memcmp(&mix,&mixArray[i],sizeof(MixData))==0) && (mixused[i]==false)) {
@@ -229,7 +228,7 @@ int compareDialog::ModelHasMix(MixData * mixArray, MixData mix, bool * mixused)
   return -1;
 }
 
-bool compareDialog::ChannelHasMix(MixData * mixArray, uint8_t destCh)
+bool CompareDialog::ChannelHasMix(MixData * mixArray, uint8_t destCh)
 {
   for (int i=0; i< C9X_MAX_MIXERS; i++) {
     if (mixArray[i].destCh==destCh) {
@@ -239,7 +238,7 @@ bool compareDialog::ChannelHasMix(MixData * mixArray, uint8_t destCh)
   return false;
 }
 
-void compareDialog::printSetup()
+void CompareDialog::printSetup()
 {
   QString color;
   QString str = "<a name=1></a><table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
@@ -247,8 +246,8 @@ void compareDialog::printSetup()
   str.append("<tr><td><table border=0 cellspacing=0 cellpadding=3 width=\"50%\">");
   color=getColor1(g_model1->name,g_model2->name);
   str.append(fv(tr("Name"), g_model1->name, color));
-  color=getColor1(eepromInterface->getSize(*g_model1),eepromInterface->getSize(*g_model2));
-  str.append("<b>"+tr("EEprom Size")+QString(": </b><font color=%2>%1</font><br>").arg(eepromInterface->getSize(*g_model1)).arg(color));
+  color=getColor1(GetEepromInterface()->getSize(*g_model1), GetEepromInterface()->getSize(*g_model2));
+  str.append("<b>"+tr("EEprom Size")+QString(": </b><font color=%2>%1</font><br>").arg(GetEepromInterface()->getSize(*g_model1)).arg(color));
   color=getColor1(getTimerStr(g_model1->timers[0]), getTimerStr(g_model2->timers[0]));
   str.append(fv(tr("Timer1"), getTimerStr(g_model1->timers[0]), color));  //value, mode, count up/down
   color=getColor1(getTimerStr(g_model1->timers[1]), getTimerStr(g_model2->timers[1]));
@@ -270,8 +269,8 @@ void compareDialog::printSetup()
   str.append("<td><table border=0 cellspacing=0 cellpadding=3 width=\"50%\">");
   color=getColor2(g_model1->name,g_model2->name);
   str.append(fv(tr("Name"), g_model2->name, color));
-  color=getColor2(eepromInterface->getSize(*g_model1),eepromInterface->getSize(*g_model2));
-  str.append("<b>"+tr("EEprom Size")+QString(": </b><font color=%2>%1</font><br>").arg(eepromInterface->getSize(*g_model2)).arg(color));
+  color=getColor2(GetEepromInterface()->getSize(*g_model1), GetEepromInterface()->getSize(*g_model2));
+  str.append("<b>"+tr("EEprom Size")+QString(": </b><font color=%2>%1</font><br>").arg(GetEepromInterface()->getSize(*g_model2)).arg(color));
   color=getColor2(getTimerStr(g_model1->timers[0]), getTimerStr(g_model2->timers[0]));
   str.append(fv(tr("Timer1"), getTimerStr(g_model2->timers[0]),color));  //value, mode, count up/down
   color=getColor2(getTimerStr(g_model1->timers[1]), getTimerStr(g_model2->timers[1]));
@@ -293,7 +292,7 @@ void compareDialog::printSetup()
   te->append(str);
 }
 
-void compareDialog::printPhases()
+void CompareDialog::printPhases()
 {
   QString color;
   int i,k;
@@ -491,7 +490,7 @@ void compareDialog::printPhases()
   te->append(str);
 }
 
-void compareDialog::printLimits()
+void CompareDialog::printLimits()
 {
   QString color;
   QString str = "<table border=1 cellspacing=0 cellpadding=3 style=\"page-break-after:always;\" width=\"100%\">";
@@ -557,7 +556,7 @@ void compareDialog::printLimits()
   te->append(str);
 }
 
-void compareDialog::printGvars()
+void CompareDialog::printGvars()
 {
   QString color;
   int gvars=0;
@@ -605,7 +604,7 @@ void compareDialog::printGvars()
   }
 }
 
-void compareDialog::printExpos()
+void CompareDialog::printExpos()
 {
   QString color;
   bool expoused[C9X_MAX_EXPOS]={false};
@@ -778,7 +777,7 @@ void compareDialog::printExpos()
   te->append(str);
 }
 
-void compareDialog::printMixers()
+void CompareDialog::printMixers()
 {
   QString color;
   QString str = "<table border=1 cellspacing=0 cellpadding=3 style=\"page-break-after:always;\" width=\"100%\"><tr><td><h2>";
@@ -953,7 +952,7 @@ void compareDialog::printMixers()
   te->append(str);
 }
 
-void compareDialog::printCurves()
+void CompareDialog::printCurves()
 {
 #if 0
   int i,r,g,b,c;
@@ -1033,7 +1032,7 @@ void compareDialog::printCurves()
 #endif
 }
 
-void compareDialog::printSwitches()
+void CompareDialog::printSwitches()
 {
     int sc=0;
     QString color;
@@ -1063,7 +1062,7 @@ void compareDialog::printSwitches()
         te->append(str);
 }
 
-void compareDialog::printFSwitches()
+void CompareDialog::printFSwitches()
 {
   QString color1;
   QString color2;
@@ -1142,7 +1141,7 @@ void compareDialog::printFSwitches()
       te->append(str);
 }
 
-void compareDialog::printFrSky()
+void CompareDialog::printFrSky()
 {
   QString color;
   float value1,value2;
@@ -1391,7 +1390,7 @@ void compareDialog::printFrSky()
   te->append(str);
 }
 
-void compareDialog::on_printButton_clicked()
+void CompareDialog::on_printButton_clicked()
 {
     QPrinter printer;
     printer.setPageMargins(10.0,10.0,10.0,10.0,printer.Millimeter);
@@ -1402,7 +1401,7 @@ void compareDialog::on_printButton_clicked()
     te->print(&printer);
 }
 
-void compareDialog::on_printFileButton_clicked()
+void CompareDialog::on_printFileButton_clicked()
 {
     QPrinter printer;
     QString filename = QFileDialog::getSaveFileName(this,tr("Select PDF output file"),QString(),"Pdf File(*.pdf)"); 

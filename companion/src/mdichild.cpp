@@ -663,15 +663,18 @@ void MdiChild::simulate()
 
 void MdiChild::print(int model, QString filename)
 {
+  PrintDialog * pd = NULL;
+
   if (model>=0 && !filename.isEmpty()) {
-    
-    printDialog *pd = new printDialog(this, &radioData.generalSettings, &radioData.models[model], filename);
-    pd->show();    
+    pd = new PrintDialog(this, GetCurrentFirmware(), &radioData.generalSettings, &radioData.models[model], filename);
   }
-  else {
-    if(ui->modelsList->currentRow()<1) return;
-    printDialog *pd = new printDialog(this, &radioData.generalSettings, &radioData.models[ui->modelsList->currentRow()-1]);
+  else if (ui->modelsList->currentRow() > 0) {
+    pd = new PrintDialog(this, GetCurrentFirmware(), &radioData.generalSettings, &radioData.models[ui->modelsList->currentRow()-1]);
+  }
+
+  if (pd) {
     pd->show();
+    delete pd;
   }
 }
 

@@ -1489,8 +1489,9 @@ void MainWindow::burnFuses()
 
 void MainWindow::compare()
 {
-    compareDialog *fd = new compareDialog(this);
-    fd->show();
+  CompareDialog *fd = new CompareDialog(this);
+  fd->show();
+  delete fd;
 }
 
 void MainWindow::logFile()
