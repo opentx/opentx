@@ -592,7 +592,7 @@ QString LogicalSwitchData::toString(const ModelData & model)
     result += RawSwitch(andsw).toString();
   }
 
-  if (GetEepromInterface()->getCapability(LogicalSwitchesExt)) {
+  if (GetCurrentFirmware()->getCapability(LogicalSwitchesExt)) {
     if (delay)
       result += QObject::tr(" Delay %1 sec").arg(delay/10.0);
     if (duration)
@@ -644,7 +644,7 @@ QStringList FuncSwData::toStringList()
     result << item.toString();
   }
   else if ((func==FuncPlayPrompt) || (func==FuncPlayBoth)) {
-    if ( GetEepromInterface()->getCapability(VoicesAsNumbers)) {
+    if ( GetCurrentFirmware()->getCapability(VoicesAsNumbers)) {
       result << QString("%1").arg(param);
     } else {
       result << paramarm;
@@ -774,7 +774,7 @@ QString FuncSwData::paramToString()
     return item.toString();
   }
   else if ((func==FuncPlayPrompt) || (func==FuncPlayBoth)) {
-    if ( GetEepromInterface()->getCapability(VoicesAsNumbers)) {
+    if ( GetCurrentFirmware()->getCapability(VoicesAsNumbers)) {
       return QString("%1").arg(param);
     } else {
       return paramarm;
@@ -839,7 +839,7 @@ GeneralSettings::GeneralSettings()
   stickMode = g.profile[g.id()].defaultMode();
 
   QString t_calib=g.profile[g.id()].stickPotCalib();
-  int potsnum=GetEepromInterface()->getCapability(Pots);
+  int potsnum=GetCurrentFirmware()->getCapability(Pots);
   if (t_calib.isEmpty()) {
     return;
   }
@@ -1186,13 +1186,13 @@ ModelData ModelData::removeGlobalVars()
 QList<EEPROMInterface *> eepromInterfaces;
 void RegisterEepromInterfaces()
 {
-  eepromInterfaces.push_back(new OpenTxInterface(BOARD_STOCK));
-  eepromInterfaces.push_back(new OpenTxInterface(BOARD_M128));
-  eepromInterfaces.push_back(new OpenTxInterface(BOARD_GRUVIN9X));
-  eepromInterfaces.push_back(new OpenTxInterface(BOARD_SKY9X));
-  eepromInterfaces.push_back(new OpenTxInterface(BOARD_TARANIS));
+  eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_STOCK));
+  eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_M128));
+  eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_GRUVIN9X));
+  eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_SKY9X));
+  eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_TARANIS));
   if (g.rev4aSupport())
-    eepromInterfaces.push_back(new OpenTxInterface(BOARD_TARANIS_REV4a));
+    eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_TARANIS_REV4a));
   eepromInterfaces.push_back(new Gruvin9xInterface(BOARD_STOCK));
   eepromInterfaces.push_back(new Gruvin9xInterface(BOARD_GRUVIN9X));
   eepromInterfaces.push_back(new Ersky9xInterface());
@@ -1209,24 +1209,16 @@ void UnregisterEepromInterfaces()
   OpenTxEepromCleanup();
 }
 
-QList<FirmwareInfo *> firmwares;
+QList<FirmwareInterface *> firmwares;
 FirmwareVariant default_firmware_variant;
 FirmwareVariant current_firmware_variant;
 
-void RegisterFirmwares()
-{
-  RegisterOpen9xFirmwares();
-  default_firmware_variant = GetFirmwareVariant("opentx-9x-heli-templates-en");
-  current_firmware_variant = default_firmware_variant;
-  RegisterEepromInterfaces();
-}
-
 void UnregisterFirmwares() 
 {
-  UnregisterEepromInterfaces();
-  UnregisterOpen9xFirmwares();
+  foreach (FirmwareInterface * f, firmwares) {
+    delete f;
+  }
 }
-
 
 bool LoadEeprom(RadioData &radioData, const uint8_t *eeprom, const int size)
 {
@@ -1264,7 +1256,7 @@ FirmwareVariant GetFirmwareVariant(QString id)
 {
   FirmwareVariant result;
 
-  foreach(FirmwareInfo * firmware, firmwares) {
+  foreach(FirmwareInterface * firmware, firmwares) {
     if (id.contains(firmware->id+"-") || (!id.contains("-") && id.contains(firmware->id))) {
       result.id = id;
       result.firmware = firmware;
@@ -1276,13 +1268,13 @@ FirmwareVariant GetFirmwareVariant(QString id)
   return default_firmware_variant;
 }
 
-void FirmwareInfo::addOption(const char *option, QString tooltip, uint32_t variant)
+void FirmwareInterface::addOption(const char *option, QString tooltip, uint32_t variant)
 {
   Option options[] = { { option, tooltip, variant }, { NULL } };
   addOptions(options);
 }
 
-unsigned int FirmwareInfo::getVariant(const QString & variantId)
+unsigned int FirmwareInterface::getVariant(const QString & variantId)
 {
   unsigned int variant = variantBase;
   QStringList options = variantId.mid(id.length()+1).split("-", QString::SkipEmptyParts);
@@ -1298,17 +1290,17 @@ unsigned int FirmwareInfo::getVariant(const QString & variantId)
   return variant;
 }
 
-void FirmwareInfo::addLanguage(const char *lang)
+void FirmwareInterface::addLanguage(const char *lang)
 {
   languages.push_back(lang);
 }
 
-void FirmwareInfo::addTTSLanguage(const char *lang)
+void FirmwareInterface::addTTSLanguage(const char *lang)
 {
   ttslanguages.push_back(lang);
 }
 
-void FirmwareInfo::addOptions(Option options[])
+void FirmwareInterface::addOptions(Option options[])
 {
   QList<Option> opts;
   for (int i=0; options[i].name; i++) {

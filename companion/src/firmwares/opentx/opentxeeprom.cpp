@@ -2475,7 +2475,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
 
   if (board==BOARD_SKY9X && version >= 216) {
     internalField.Append(new UnsignedField<8>(modelData.nPotsToWarn));
-    for (int i=0; i < GetEepromInterface()->getCapability(Pots); i++) {
+    for (int i=0; i < GetCurrentFirmware()->getCapability(Pots); i++) {
       internalField.Append(new SignedField<8>(modelData.potPosition[i]));
     }
   }
@@ -2499,7 +2499,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
       internalField.Append(new ZCharField<4>(modelData.inputNames[i]));
     }
     internalField.Append(new UnsignedField<8>(modelData.nPotsToWarn));
-    for (int i=0; i < GetEepromInterface()->getCapability(Pots); i++) {
+    for (int i=0; i < GetCurrentFirmware()->getCapability(Pots); i++) {
       internalField.Append(new SignedField<8>(modelData.potPosition[i]));
     }    
   }

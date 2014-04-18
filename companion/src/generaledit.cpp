@@ -83,7 +83,7 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
     switchDefPosEditLock=true;
     populateBacklightCB(ui->backlightswCB, g_eeGeneral.backlightMode);
     bool voice = current_firmware_variant.id.contains("voice");
-    if (!GetEepromInterface()->getCapability(MultiLangVoice)) {
+    if (!GetCurrentFirmware()->getCapability(MultiLangVoice)) {
       ui->VoiceLang_label->hide();
       ui->voiceLang_CB->hide();
     } else {
@@ -102,11 +102,11 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
       mavbaudEditLock=false;
     }
     
-    if (!GetEepromInterface()->getCapability(HasContrast)) {
+    if (!GetCurrentFirmware()->getCapability(HasContrast)) {
       ui->contrastSB->hide();
       ui->label_contrast->hide();
     }
-    if (!GetEepromInterface()->getCapability(HasSoundMixer)) {
+    if (!GetCurrentFirmware()->getCapability(HasSoundMixer)) {
       ui->beepVolume_SL->hide();
       ui->beepVolume_label->hide();
       ui->varioVolume_SL->hide();
@@ -131,28 +131,28 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
       ui->varioPMax_SB->setValue(700+(g_eeGeneral.varioPitch*10)+1000+(g_eeGeneral.varioRange*10));
       ui->varioR0_SB->setValue(500+(g_eeGeneral.varioRepeat*10));
     }
-    if (!GetEepromInterface()->getCapability(HasFAIMode)) {
+    if (!GetCurrentFirmware()->getCapability(HasFAIMode)) {
       ui->faimode_CB->hide();
       ui->label_faimode->hide();
     }
     else {
       ui->faimode_CB->setChecked(g_eeGeneral.fai);
     }
-    if (!GetEepromInterface()->getCapability( HasPxxCountry)) {
+    if (!GetCurrentFirmware()->getCapability( HasPxxCountry)) {
       ui->countrycode_label->hide();
       ui->countrycode_CB->hide();
       layout()->removeItem(ui->pxxCountry);
     } else {
       ui->countrycode_CB->setCurrentIndex(g_eeGeneral.countryCode);
     }
-    if (!GetEepromInterface()->getCapability( HasGeneralUnits)) {
+    if (!GetCurrentFirmware()->getCapability( HasGeneralUnits)) {
       ui->units_label->hide();
       ui->units_CB->hide();
     } else {
       ui->units_CB->setCurrentIndex(g_eeGeneral.imperial);
     }
     
-    if (!GetEepromInterface()->getCapability(TelemetryTimeshift)) {
+    if (!GetCurrentFirmware()->getCapability(TelemetryTimeshift)) {
       ui->label_timezone->hide();
       ui->timezoneSB->hide();
       ui->timezoneSB->setDisabled(true);
@@ -162,24 +162,24 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
     ui->gpsFormatCB->setCurrentIndex(g_eeGeneral.gpsFormat);
     ui->timezoneSB->setValue(g_eeGeneral.timezone);
     
-    if (!GetEepromInterface()->getCapability(OptrexDisplay)) {
+    if (!GetCurrentFirmware()->getCapability(OptrexDisplay)) {
       ui->label_displayType->hide();
       ui->displayTypeCB->setDisabled(true);
       ui->displayTypeCB->hide();
     }
-    if (!GetEepromInterface()->getCapability(HasVolume) && !voice) {
+    if (!GetCurrentFirmware()->getCapability(HasVolume) && !voice) {
       ui->volume_SB->hide();
       ui->volume_SB->setDisabled(true);
       ui->label_volume->hide();
     } else {
-      ui->volume_SB->setMaximum(GetEepromInterface()->getCapability(MaxVolume));
+      ui->volume_SB->setMaximum(GetCurrentFirmware()->getCapability(MaxVolume));
     }    
-    if (!GetEepromInterface()->getCapability(HasBrightness)) {
+    if (!GetCurrentFirmware()->getCapability(HasBrightness)) {
       ui->BLBright_SB->hide();
       ui->BLBright_SB->setDisabled(true);
       ui->label_BLBright->hide();
     }
-    if (!GetEepromInterface()->getCapability(HasCurrentCalibration)) {
+    if (!GetCurrentFirmware()->getCapability(HasCurrentCalibration)) {
       ui->CurrentCalib_SB->hide();
       ui->CurrentCalib_SB->setDisabled(true);
       ui->label_CurrentCalib->hide();
@@ -187,31 +187,31 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
     
     ui->tabWidget->setCurrentIndex(0);
 
-    if (!GetEepromInterface()->getCapability(SoundMod)) {
+    if (!GetCurrentFirmware()->getCapability(SoundMod)) {
       ui->soundModeCB->setDisabled(true);
       ui->label_soundMode->hide();
       ui->soundModeCB->hide();
     }
 
-    if (!GetEepromInterface()->getCapability(SoundPitch)) {
+    if (!GetCurrentFirmware()->getCapability(SoundPitch)) {
       ui->speakerPitchSB->setDisabled(true);
       ui->label_speakerPitch->hide();
       ui->speakerPitchSB->hide();
     }
     
-    if (!GetEepromInterface()->getCapability(Haptic)) {
+    if (!GetCurrentFirmware()->getCapability(Haptic)) {
       ui->hapticStrengthSB->setDisabled(true);
       ui->hapticStrengthSB->hide();
       ui->label_hapticStrengthSB->hide();
     } 
     
-    if (!GetEepromInterface()->getCapability(HapticMode)) {
+    if (!GetCurrentFirmware()->getCapability(HapticMode)) {
       ui->hapticmodeCB->setDisabled(true);
       ui->hapticmodeCB->hide();
       ui->label_hapticmode->hide();
     } 
 
-    int renumber=GetEepromInterface()->getCapability(RotaryEncoders);
+    int renumber=GetCurrentFirmware()->getCapability(RotaryEncoders);
     if (renumber==0) {
       ui->re_label->hide();
       ui->re_CB->hide();
@@ -247,7 +247,7 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
     ui->trnMode_4->setCurrentIndex(g_eeGeneral.trainer.mix[3].mode);
     ui->trnChn_4->setCurrentIndex(g_eeGeneral.trainer.mix[3].src);
     ui->trnWeight_4->setValue(g_eeGeneral.trainer.mix[3].weight);
-    int potsnum=GetEepromInterface()->getCapability(Pots);
+    int potsnum=GetCurrentFirmware()->getCapability(Pots);
     if (potsnum==3) {
       ui->label_pot4->hide();
       ui->ana8Neg->hide();
@@ -261,7 +261,7 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
       connect(tpmsld[i], SIGNAL(valueChanged(int)),this,SLOT(unlockSwitchEdited()));
     }
 
-    if (GetEepromInterface()->getCapability(MultiposPots)) {
+    if (GetCurrentFirmware()->getCapability(MultiposPots)) {
       ui->pot1Type->setCurrentIndex(g_eeGeneral.potsType[0]);
       ui->pot2Type->setCurrentIndex(g_eeGeneral.potsType[1]);
       ui->pot3Type->setCurrentIndex(g_eeGeneral.potsType[2]);
@@ -334,7 +334,7 @@ void GeneralEdit::setValues()
     ui->beeperCB->setCurrentIndex(g_eeGeneral.beeperMode+2);
     ui->channelorderCB->setCurrentIndex(g_eeGeneral.templateSetup);
     ui->stickmodeCB->setCurrentIndex(g_eeGeneral.stickMode);
-    if (!GetEepromInterface()->getCapability(HapticLength)) {
+    if (!GetCurrentFirmware()->getCapability(HapticLength)) {
       ui->label_HL->hide();
       ui->hapticLengthCB->hide();
     } else {
@@ -911,7 +911,7 @@ void GeneralEdit::on_calretrieve_PB_clicked()
 {
   int profile_id=ui->profile_CB->itemData(ui->profile_CB->currentIndex()).toInt();
   QString calib=g.profile[profile_id].stickPotCalib();
-  int potsnum=GetEepromInterface()->getCapability(Pots);
+  int potsnum=GetCurrentFirmware()->getCapability(Pots);
   if (calib.isEmpty()) {
     return;
   } else {
@@ -1021,7 +1021,7 @@ void GeneralEdit::on_calstore_PB_clicked()
   int profile_id=ui->profile_CB->itemData(ui->profile_CB->currentIndex()).toInt();
 
   QString name=g.profile[profile_id].name();
-  int potsnum=GetEepromInterface()->getCapability(Pots);
+  int potsnum=GetCurrentFirmware()->getCapability(Pots);
   if (name.isEmpty()) {
     ui->calstore_PB->setDisabled(true);
     return;

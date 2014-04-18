@@ -17,7 +17,7 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
   // Mode
   populateSwitchCB(ui->mode, timer.mode, generalSettings, POPULATE_TIMER_MODES);
 
-  if (!GetEepromInterface()->getCapability(PermTimers)) {
+  if (!GetCurrentFirmware()->getCapability(PermTimers)) {
     ui->persistent->hide();
     ui->persistentValue->hide();
   }
@@ -41,7 +41,7 @@ void TimerPanel::update()
   int sec = timer.val % 60;
   ui->value->setTime(QTime(0, min, sec));
 
-  if (GetEepromInterface()->getCapability(PermTimers)) {
+  if (GetCurrentFirmware()->getCapability(PermTimers)) {
     int sign = 1;
     int pvalue = timer.pvalue;
     if (pvalue < 0) {
@@ -112,7 +112,7 @@ ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module
   else {
     ui->label_trainerMode->hide();
     ui->trainerMode->hide();
-    if (GetEepromInterface()->getCapability(NumModules) > 1) {
+    if (GetCurrentFirmware()->getCapability(NumModules) > 1) {
       if (moduleIdx == 0)
         label = tr("Internal Radio System");
       else
@@ -132,7 +132,7 @@ ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module
     }
   }
 
-  if (GetEepromInterface()->getCapability(HasFailsafe)) {
+  if (GetCurrentFirmware()->getCapability(HasFailsafe)) {
     for (int i=0; i<16; i++) {
       QLabel * label = new QLabel(this);
       label->setText(QString::number(i+1));
@@ -211,7 +211,7 @@ void ModulePanel::update()
   ui->channelsCount->setVisible(mask & MASK_CHANNELS_RANGE);
   ui->channelsCount->setEnabled(mask & MASK_CHANNELS_COUNT);
   ui->channelsCount->setValue(module.channelsCount);
-  ui->channelsCount->setSingleStep(GetEepromInterface()->getCapability(HasPPMStart) ? 1 : 2);
+  ui->channelsCount->setSingleStep(GetCurrentFirmware()->getCapability(HasPPMStart) ? 1 : 2);
 
   // PPM settings fields
   ui->label_ppmPolarity->setVisible(mask & MASK_PPM_FIELDS);
@@ -223,10 +223,10 @@ void ModulePanel::update()
   ui->label_ppmFrameLength->setVisible(mask & MASK_PPM_FIELDS);
   ui->ppmFrameLength->setVisible(mask & MASK_PPM_FIELDS);
   ui->ppmFrameLength->setMinimum(module.channelsCount*(model.extendedLimits ? 2.250 :2)+3.5);
-  ui->ppmFrameLength->setMaximum(GetEepromInterface()->getCapability(PPMFrameLength));
+  ui->ppmFrameLength->setMaximum(GetCurrentFirmware()->getCapability(PPMFrameLength));
   ui->ppmFrameLength->setValue(22.5+((double)module.ppmFrameLength)*0.5);
 
-  if (GetEepromInterface()->getCapability(HasFailsafe)) {
+  if (GetCurrentFirmware()->getCapability(HasFailsafe)) {
     ui->label_failsafeMode->setVisible(mask & MASK_FAILSAFES);
     ui->failsafeMode->setVisible(mask & MASK_FAILSAFES);
     ui->failsafeMode->setCurrentIndex(module.failsafeMode);
@@ -341,18 +341,18 @@ Setup::Setup(QWidget *parent, ModelData & model, GeneralSettings & generalSettin
     connect(timers[i], SIGNAL(modified()), this, SLOT(onChildModified()));
   }
 
-  for (int i=0; i<GetEepromInterface()->getCapability(NumModules); i++) {
+  for (int i=0; i<GetCurrentFirmware()->getCapability(NumModules); i++) {
     modules[i] = new ModulePanel(this, model, model.moduleData[i], generalSettings, i);
     ui->modulesLayout->addWidget(modules[i]);
     connect(modules[i], SIGNAL(modified()), this, SLOT(onChildModified()));
   }
 
-  if (GetEepromInterface()->getCapability(ModelTrainerEnable)) {
+  if (GetCurrentFirmware()->getCapability(ModelTrainerEnable)) {
     modules[C9X_NUM_MODULES] = new ModulePanel(this, model, model.moduleData[C9X_NUM_MODULES], generalSettings, -1);
     ui->modulesLayout->addWidget(modules[C9X_NUM_MODULES]);
   }
 
-  if (GetEepromInterface()->getCapability(ModelImage)) {
+  if (GetCurrentFirmware()->getCapability(ModelImage)) {
     QStringList items;
     items.append("");
     QString path = g.profile[g.id()].sdPath();
@@ -399,13 +399,13 @@ Setup::Setup(QWidget *parent, ModelData & model, GeneralSettings & generalSettin
     ui->imagePreview->hide();
   }
   
-  if (!GetEepromInterface()->getCapability(HasDisplayText)) {
+  if (!GetCurrentFirmware()->getCapability(HasDisplayText)) {
     ui->displayText->hide();
   }
 
   // Beep Center checkboxes
-  int analogs = 4 + GetEepromInterface()->getCapability(Pots);
-  for (int i=0; i<analogs+GetEepromInterface()->getCapability(RotaryEncoders); i++) {
+  int analogs = 4 + GetCurrentFirmware()->getCapability(Pots);
+  for (int i=0; i<analogs+GetCurrentFirmware()->getCapability(RotaryEncoders); i++) {
     QCheckBox * checkbox = new QCheckBox(this);
     checkbox->setProperty("index", i);
     checkbox->setText(i<analogs ? AnalogString(i) : RotaryEncoderString(i-analogs));
@@ -415,7 +415,7 @@ Setup::Setup(QWidget *parent, ModelData & model, GeneralSettings & generalSettin
   }
 
   // Startup switches warnings
-  for (int i=0; i<GetEepromInterface()->getCapability(Switches)-1; i++) {
+  for (int i=0; i<GetCurrentFirmware()->getCapability(Switches)-1; i++) {
     QLabel * label = new QLabel(this);
     QSlider * slider = new QSlider(this);
     QCheckBox * cb = new QCheckBox(this);
@@ -449,11 +449,11 @@ Setup::Setup(QWidget *parent, ModelData & model, GeneralSettings & generalSettin
     startupSwitchesSliders << slider;
     startupSwitchesCheckboxes << cb;
   }
-  ui->switchesStartupLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum), 0, GetEepromInterface()->getCapability(Switches));
+  ui->switchesStartupLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum), 0, GetCurrentFirmware()->getCapability(Switches));
 
   // Pot warnings
   if(IS_TARANIS(GetEepromInterface()->getBoard())) {
-    for (int i=0; i<GetEepromInterface()->getCapability(Pots); i++) {
+    for (int i=0; i<GetCurrentFirmware()->getCapability(Pots); i++) {
       QCheckBox * cb = new QCheckBox(this);
       cb->setProperty("index", i+1);
       cb->setText(AnalogString(i+4));
@@ -628,7 +628,7 @@ void Setup::updateStartupSwitches()
 
   unsigned int switchStates = model.switchWarningStates;
 
-  for (int i=0; i<GetEepromInterface()->getCapability(Switches)-1; i++) {
+  for (int i=0; i<GetCurrentFirmware()->getCapability(Switches)-1; i++) {
     QSlider * slider = startupSwitchesSliders[i];
     QCheckBox * cb = startupSwitchesCheckboxes[i];
     bool enabled = !(model.nSwToWarn & (1 << i));

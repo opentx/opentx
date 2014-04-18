@@ -335,7 +335,7 @@ void SimulatorDialog::initUi(T * ui)
   windowName = tr("Simulating Radio (%1)").arg(txInterface->getName());
   setWindowTitle(windowName);
 
-  simulator = txInterface->getSimulator();
+  simulator = GetCurrentFirmware()->getSimulator();
   lcd->setData(simulator->getLcd(), lcdWidth, 64, lcdDepth);
 
   if (flags & SIMULATOR_FLAGS_STICK_MODE_LEFT) {
@@ -349,7 +349,7 @@ void SimulatorDialog::initUi(T * ui)
 
   setTrims();
 
-  int outputs = std::min(16, txInterface->getCapability(Outputs));
+  int outputs = std::min(16, GetCurrentFirmware()->getCapability(Outputs));
   for (int i=0; i<outputs; i++) {
     int column = i / (outputs/2);
     int line = i % (outputs/2);
@@ -390,7 +390,7 @@ void SimulatorDialog::initUi(T * ui)
     channelsLayout->addWidget(value, line, column == 0 ? 2 : 3, 1, 1);
   }
 
-  int switches = txInterface->getCapability(LogicalSwitches);
+  int switches = GetCurrentFirmware()->getCapability(LogicalSwitches);
   for (int i=0; i<switches; i++) {
     QFrame * swtch = new QFrame(tabWidget);
     swtch->setAutoFillBackground(true);
@@ -689,7 +689,7 @@ void SimulatorDialog::setValues()
   Trims trims;
   simulator->getTrims(trims);
 
-  for (int i=0; i<std::min(16, GetEepromInterface()->getCapability(Outputs)); i++) {
+  for (int i=0; i<std::min(16, GetCurrentFirmware()->getCapability(Outputs)); i++) {
     channelSliders[i]->setValue(chVal(outputs.chans[i]));
     channelValues[i]->setText(QString("%1").arg((qreal)outputs.chans[i]*100/1024, 0, 'f', 1));
   }
@@ -703,7 +703,7 @@ void SimulatorDialog::setValues()
   QString CSWITCH_ON = "QLabel { background-color: #4CC417 }";
   QString CSWITCH_OFF = "QLabel { }";
 
-  for (int i=0; i<GetEepromInterface()->getCapability(LogicalSwitches); i++) {
+  for (int i=0; i<GetCurrentFirmware()->getCapability(LogicalSwitches); i++) {
     logicalSwitchLabels[i]->setStyleSheet(outputs.vsw[i] ? CSWITCH_ON : CSWITCH_OFF);
   }
 

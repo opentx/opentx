@@ -103,7 +103,7 @@ void MdiChild::qSleep(int ms)
 void MdiChild::eepromInterfaceChanged()
 {
   ui->modelsList->refreshList();
-  ui->SimulateTxButton->setEnabled(GetEepromInterface()->getCapability(Simulation));
+  ui->SimulateTxButton->setEnabled(GetCurrentFirmware()->getCapability(Simulation));
   updateTitle();
 }
 

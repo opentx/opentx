@@ -28,7 +28,7 @@ private:
     void showVoice();
     void hideVoice();
     void populateLocale();
-    void populateFirmwareOptions(const FirmwareInfo *);
+    void populateFirmwareOptions(const FirmwareInterface *);
     FirmwareVariant getFirmwareVariant();
     void initSettings();
     QCheckBox * voice;

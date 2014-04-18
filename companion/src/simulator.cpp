@@ -99,7 +99,9 @@ int main(int argc, char *argv[])
 
   QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 
-  RegisterFirmwares();
+  RegisterEepromInterfaces();
+  registerOpenTxFirmwares();
+
   SimulatorDialog *dialog;
   const char * eepromFileName;
   QString fileName;

@@ -35,9 +35,9 @@ ModelEdit::ModelEdit(RadioData & radioData, int modelId, bool openWizard, bool i
   addTab(chnPanel, tr("Servos"));
   addTab(new Curves(this, model, generalSettings), tr("Curves"));
   addTab(new LogicalSwitchesPanel(this, model, generalSettings), tr("Logical Switches"));
-  if (GetEepromInterface()->getCapability(CustomFunctions))
+  if (GetCurrentFirmware()->getCapability(CustomFunctions))
     addTab(new CustomFunctionsPanel(this, model, generalSettings), tr("Special Functions"));
-  if (GetEepromInterface()->getCapability(Telemetry) & TM_HASTELEMETRY)
+  if (GetCurrentFirmware()->getCapability(Telemetry) & TM_HASTELEMETRY)
     addTab(new TelemetryPanel(this, model, generalSettings), tr("Telemetry"));
     
   connect(setupPanel, SIGNAL(extendedLimitsToggled()), chnPanel, SLOT(refreshExtendedLimits()));

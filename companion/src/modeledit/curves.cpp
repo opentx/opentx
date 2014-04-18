@@ -101,7 +101,7 @@ Curves::Curves(QWidget * parent, ModelData & model, GeneralSettings & generalSet
 
   lock = true;
 
-  if (!GetEepromInterface()->getCapability(HasCvNames)) {
+  if (!GetCurrentFirmware()->getCapability(HasCvNames)) {
     ui->curveName->hide();
     ui->curveNameLabel->hide();
   }
@@ -110,7 +110,7 @@ Curves::Curves(QWidget * parent, ModelData & model, GeneralSettings & generalSet
   scene->setItemIndexMethod(QGraphicsScene::NoIndex);
   ui->curvePreview->setScene(scene);
 
-  for (int i=0; i<GetEepromInterface()->getCapability(NumCurves); i++) {
+  for (int i=0; i<GetCurrentFirmware()->getCapability(NumCurves); i++) {
     visibleCurves[i] = false;
 
     // The reset curve button
@@ -164,7 +164,7 @@ Curves::Curves(QWidget * parent, ModelData & model, GeneralSettings & generalSet
     ui->pointsLayout->addWidget(spnx[i], i, 1, 1, 1);
 
     bool insert;
-    if (GetEepromInterface()->getCapability(EnhancedCurves)) {
+    if (GetCurrentFirmware()->getCapability(EnhancedCurves)) {
       insert = (i >= 1);
     }
     else {
@@ -220,7 +220,7 @@ void Curves::update()
 {
   lock = true;
 
-  if (GetEepromInterface()->getCapability(HasCvNames)) {
+  if (GetCurrentFirmware()->getCapability(HasCvNames)) {
     ui->curveName->setText(model.curves[currentCurve].name);
   }
 
@@ -242,7 +242,7 @@ void Curves::updateCurveType()
 
   int index = 0;
 
-  if (GetEepromInterface()->getCapability(EnhancedCurves)) {
+  if (GetCurrentFirmware()->getCapability(EnhancedCurves)) {
     index = model.curves[currentCurve].count - 2;
   }
   else {
@@ -288,7 +288,7 @@ void Curves::updateCurve()
   pen.setWidth(1);
   pen.setStyle(Qt::SolidLine);
 
-  int numcurves = GetEepromInterface()->getCapability(NumCurves);
+  int numcurves = GetCurrentFirmware()->getCapability(NumCurves);
   for (int k=0; k<numcurves; k++) {
     pen.setColor(colors[k]);
     if (currentCurve!=k && visibleCurves[k]) {
@@ -406,7 +406,7 @@ void Curves::onNodeUnfocus()
 
 bool Curves::allowCurveType(int points, CurveData::CurveType type)
 {
-  int numcurves = GetEepromInterface()->getCapability(NumCurves);
+  int numcurves = GetCurrentFirmware()->getCapability(NumCurves);
 
   int totalpoints = 0;
   for (int i=0; i<numcurves; i++) {
@@ -415,7 +415,7 @@ bool Curves::allowCurveType(int points, CurveData::CurveType type)
     totalpoints += cvPoints + (cvType==CurveData::CURVE_TYPE_CUSTOM ? cvPoints-2 : 0);
   }
 
-  int fwpoints = GetEepromInterface()->getCapability(NumCurvePoints);
+  int fwpoints = GetCurrentFirmware()->getCapability(NumCurvePoints);
   if (totalpoints > fwpoints) {
     QMessageBox::warning(this, "companion", tr("Not enough free points in EEPROM to store the curve."));
     return false;

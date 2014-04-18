@@ -176,8 +176,7 @@ void resetTrims()
 
 using namespace Open9xX9D;
 
-OpentxTaranisSimulator::OpentxTaranisSimulator(OpenTxInterface * open9xInterface):
-  open9xInterface(open9xInterface)
+OpentxTaranisSimulator::OpentxTaranisSimulator()
 {
   taranisSimulatorBoard = GetEepromInterface()->getBoard();
   QString path=g.profile[g.id()].sdPath()+"/";

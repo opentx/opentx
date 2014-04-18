@@ -200,75 +200,6 @@ int Er9xInterface::getSize(GeneralSettings &settings)
   return 0;
 }
 
-int Er9xInterface::getCapability(const Capability capability)
-{
-  switch (capability) {
-    case FlightPhases:
-        return 4;
-    case Mixes:
-      return ER9X_MAX_MIXERS;
-    case PPMExtCtrl:
-      return 1;
-    case ModelTrainerEnable:
-      return 1;
-    case Timer2ThrTrig:
-      return 1;
-    case OffsetWeight:
-      return 125;
-    case SoundMod:
-      return 1;
-    case SoundPitch:
-      return 1;
-    case Haptic:
-      return 1;
-    case Timers:
-      return 1;
-    case Pots:
-      return 3;
-    case Switches:
-      return 7;
-    case SwitchesPositions:
-      return 9;
-    case CustomFunctions:
-      return 0;
-    case LogicalSwitches:
-      return 12;
-    case CustomAndSwitches:
-        return 5;
-    case CSFunc:
-      return 13;
-    case Outputs:
-      return 16;
-    case Simulation:
-      return 1;
-    case Telemetry:
-      return TM_HASTELEMETRY|TM_HASWSHH;
-    case TelemetryUnits:
-      return 1;
-    case TelemetryMaxMultiplier:
-      return 2;
-    case MaxVolume:
-      return 7;
-    case SlowScale:
-      return 1;
-    case SlowRange:
-      return 15;
-    case LCDWidth:
-      return 128;
-    case VoicesAsNumbers:
-    case HasAltitudeSel:
-    case HasContrast:
-    case HasVolume:
-    case ModelVoice:
-    case Gvars:
-      return 7;
-    case GetThrSwitch:
-      return DSW_THR;     
-    default:
-      return 0;
-  }
-}
-
 int Er9xInterface::isAvailable(Protocol prot, int port)
 {
   switch (prot) {
@@ -281,13 +212,6 @@ int Er9xInterface::isAvailable(Protocol prot, int port)
       return 0;
   }
 }
-
-SimulatorInterface * Er9xInterface::getSimulator()
-{
-  return NULL; // new Er9xSimulator(this);
-}
-
-
 
 void Er9xInterface::appendTextElement(QDomDocument * qdoc, QDomElement * pe, QString name, QString value)
 {

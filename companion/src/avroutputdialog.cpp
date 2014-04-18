@@ -327,7 +327,7 @@ void avrOutputDialog::errorWizard()
       QMessageBox::warning(this, "Companion - Tip of the day", tr("Your radio uses a %1 CPU!!!\n\nPlease check advanced burn options to set the correct cpu type.").arg(DeviceStr));
     }
     else {
-      FirmwareInfo *firmware = GetCurrentFirmware();
+      FirmwareInterface *firmware = GetCurrentFirmware();
       QMessageBox::warning(this, "Companion - Tip of the day", tr("Your radio uses a %1 CPU!!!\n\nPlease select an appropriate firmware type to program it.").arg(DeviceStr)+FwStr+tr("\nYou are currently using:\n %1").arg(firmware->name));
     }
   }

@@ -10,19 +10,19 @@ FlightMode::FlightMode(QWidget * parent, ModelData & model, int phaseIdx, Genera
   ui(new Ui::FlightMode),
   phaseIdx(phaseIdx),
   phase(model.phaseData[phaseIdx]),
-  reCount(GetEepromInterface()->getCapability(RotaryEncoders)),
-  gvCount(((!GetEepromInterface()->getCapability(HasVariants)) || (GetCurrentFirmwareVariant() & GVARS_VARIANT)) ?
-      GetEepromInterface()->getCapability(Gvars) : 0)
+  reCount(GetCurrentFirmware()->getCapability(RotaryEncoders)),
+  gvCount(((!GetCurrentFirmware()->getCapability(HasVariants)) || (GetCurrentFirmwareVariant() & GVARS_VARIANT)) ?
+      GetCurrentFirmware()->getCapability(Gvars) : 0)
 {
   ui->setupUi(this);
 
-  int modesCount = GetEepromInterface()->getCapability(FlightPhases);
+  int modesCount = GetCurrentFirmware()->getCapability(FlightPhases);
 
   // Phase name
   QRegExp rx(CHAR_FOR_NAMES_REGEX);
   if (modesCount) {
     ui->name->setValidator(new QRegExpValidator(rx, this));
-    ui->name->setMaxLength(GetEepromInterface()->getCapability(FlightModesName));
+    ui->name->setMaxLength(GetCurrentFirmware()->getCapability(FlightModesName));
     connect(ui->name, SIGNAL(editingFinished()), this, SLOT(phaseName_editingFinished()));
   }
   else {
@@ -39,9 +39,9 @@ FlightMode::FlightMode(QWidget * parent, ModelData & model, int phaseIdx, Genera
   }
 
   // FadeIn / FadeOut
-  if (GetEepromInterface()->getCapability(FlightPhasesHaveFades)) {
-    int scale = GetEepromInterface()->getCapability(SlowScale);
-    int range = GetEepromInterface()->getCapability(SlowRange);
+  if (GetCurrentFirmware()->getCapability(FlightPhasesHaveFades)) {
+    int scale = GetCurrentFirmware()->getCapability(SlowScale);
+    int range = GetCurrentFirmware()->getCapability(SlowRange);
     ui->fadeIn->setMaximum(float(range)/scale);
     ui->fadeIn->setSingleStep(1.0/scale);
     ui->fadeIn->setDecimals((scale==1 ? 0 :1) );
@@ -130,7 +130,7 @@ FlightMode::FlightMode(QWidget * parent, ModelData & model, int phaseIdx, Genera
       label->setText(tr("GVAR%1").arg(i+1));
       gvLayout->addWidget(label, i, col++, 1, 1);
       // GVar name
-      int nameLen = GetEepromInterface()->getCapability(GvarsName);
+      int nameLen = GetCurrentFirmware()->getCapability(GvarsName);
       if (nameLen > 0) {
         gvNames[i] = new QLineEdit(ui->gvGB);
         gvNames[i]->setProperty("index", i);
@@ -183,12 +183,12 @@ void FlightMode::update()
 {
   ui->name->setText(phase.name);
 
-  int scale = GetEepromInterface()->getCapability(SlowScale);
+  int scale = GetCurrentFirmware()->getCapability(SlowScale);
   ui->fadeIn->setValue(float(phase.fadeIn)/scale);
   ui->fadeOut->setValue(float(phase.fadeOut)/scale);
 
   for (int i=0; i<4; i++) {
-    int trimsMax = GetEepromInterface()->getCapability(ExtendedTrims);
+    int trimsMax = GetCurrentFirmware()->getCapability(ExtendedTrims);
     if (trimsMax == 0 || !model.extendedTrims) {
       trimsMax = 125;
     }
@@ -249,7 +249,7 @@ void FlightMode::phaseSwitch_currentIndexChanged(int index)
 void FlightMode::phaseFadeIn_editingFinished()
 {
     QDoubleSpinBox *spinBox = qobject_cast<QDoubleSpinBox*>(sender());
-    int scale = GetEepromInterface()->getCapability(SlowScale);
+    int scale = GetCurrentFirmware()->getCapability(SlowScale);
     phase.fadeIn = round(spinBox->value()*scale);
     emit modified();
 }
@@ -257,7 +257,7 @@ void FlightMode::phaseFadeIn_editingFinished()
 void FlightMode::phaseFadeOut_editingFinished()
 {
     QDoubleSpinBox *spinBox = qobject_cast<QDoubleSpinBox*>(sender());
-    int scale = GetEepromInterface()->getCapability(SlowScale);
+    int scale = GetCurrentFirmware()->getCapability(SlowScale);
     phase.fadeOut = round(spinBox->value()*scale);
     emit modified();
 }
@@ -420,7 +420,7 @@ void FlightMode::phaseTrimSlider_valueChanged()
 
 FlightModes::FlightModes(QWidget * parent, ModelData & model, GeneralSettings & generalSettings):
   ModelPanel(parent, model, generalSettings),
-  modesCount(GetEepromInterface()->getCapability(FlightPhases))
+  modesCount(GetCurrentFirmware()->getCapability(FlightPhases))
 {
   QGridLayout * gridLayout = new QGridLayout(this);
   tabWidget = new QTabWidget(this);
@@ -449,7 +449,7 @@ QString FlightModes::getTabName(int index)
 {
   QString result = tr("Flight Mode %1").arg(index);
   const char *name = model.phaseData[index].name;
-  if (GetEepromInterface()->getCapability(FlightModesName) && strlen(name) > 0) {
+  if (GetCurrentFirmware()->getCapability(FlightModesName) && strlen(name) > 0) {
     result += tr(" (%1)").arg(name);
   }
   else if (index == 0) {

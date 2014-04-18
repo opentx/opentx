@@ -47,7 +47,7 @@ void InputsPanel::update()
 {
   lock = true;
 
-  int inputsCount = GetEepromInterface()->getCapability(VirtualInputs);
+  int inputsCount = GetCurrentFirmware()->getCapability(VirtualInputs);
   if (inputsCount == 0)
     inputsCount = NUM_STICKS;
 
@@ -75,20 +75,20 @@ void InputsPanel::update()
     }
 
     if (curDest!=(int)md->chn) {
-      if (GetEepromInterface()->getCapability(VirtualInputs))
+      if (GetCurrentFirmware()->getCapability(VirtualInputs))
         str = QString("%1").arg(getInputStr(model, md->chn), -8, ' ');
       else
         str = getInputStr(model, md->chn);
       curDest = md->chn;
     }
     else {
-      if (GetEepromInterface()->getCapability(VirtualInputs))
+      if (GetCurrentFirmware()->getCapability(VirtualInputs))
         str = "        ";
       else
         str = "   ";
     }
 
-    if (GetEepromInterface()->getCapability(VirtualInputs)) {
+    if (GetCurrentFirmware()->getCapability(VirtualInputs)) {
       str += " " + tr("Source(%1)").arg(md->srcRaw.toString());
       if (md->carryTrim>0) {
         str += " " + tr("No Trim");
@@ -113,7 +113,7 @@ void InputsPanel::update()
 
     if (md->swtch.type != SWITCH_TYPE_NONE) str += " " + tr("Switch(%1)").arg(md->swtch.toString());
 
-    if (GetEepromInterface()->getCapability(HasExpoNames)) {
+    if (GetCurrentFirmware()->getCapability(HasExpoNames)) {
       QString expoName = md->name;
       if (!expoName.isEmpty()) str += QString(" [%1]").arg(expoName);
     }
@@ -171,13 +171,13 @@ void InputsPanel::gm_openExpo(int index)
     emit modified();
     update();
     
-    if (GetEepromInterface()->getCapability(VirtualInputs))
+    if (GetCurrentFirmware()->getCapability(VirtualInputs))
       strcpy(inputName, model.inputNames[mixd.chn]);
 
     ExpoDialog *g = new ExpoDialog(this, model, &mixd, generalSettings, inputName);
     if (g->exec())  {
       model.expoData[index] = mixd;
-      if (GetEepromInterface()->getCapability(VirtualInputs))
+      if (GetCurrentFirmware()->getCapability(VirtualInputs))
         strcpy(model.inputNames[mixd.chn], inputName);
       emit modified();
       update();

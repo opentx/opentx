@@ -82,7 +82,7 @@ void fwPreferencesDialog::baseFirmwareChanged()
 {
   QVariant selected_firmware = ui->downloadVerCB->itemData(ui->downloadVerCB->currentIndex());
   voice=NULL;
-  foreach(FirmwareInfo * firmware, firmwares) {
+  foreach(FirmwareInterface * firmware, firmwares) {
     if (firmware->id == selected_firmware) {
       showVoice(firmware->voice);
       populateFirmwareOptions(firmware);
@@ -96,7 +96,7 @@ FirmwareVariant fwPreferencesDialog::getFirmwareVariant()
 {
   QVariant selected_firmware = ui->downloadVerCB->itemData(ui->downloadVerCB->currentIndex());
   bool voice=false;
-  foreach(FirmwareInfo * firmware, firmwares) {
+  foreach(FirmwareInterface * firmware, firmwares) {
     if (firmware->id == selected_firmware) {
       QString id = firmware->id;
       foreach(QCheckBox *cb, optionsCheckBoxes) {
@@ -106,7 +106,7 @@ FirmwareVariant fwPreferencesDialog::getFirmwareVariant()
           id += QString("-") + cb->text();
         }
       }
-      if (! firmware->eepromInterface->getCapability(MultiLangVoice)) {
+      if (!firmware->getCapability(MultiLangVoice)) {
         if (ui->voiceCombo->count() && (voice || firmware->voice))
           id += QString("-tts") + ui->voiceCombo->currentText();
       }
@@ -124,7 +124,7 @@ FirmwareVariant fwPreferencesDialog::getFirmwareVariant()
 void fwPreferencesDialog::firmwareOptionChanged(bool state)
 {
   QCheckBox *cb = qobject_cast<QCheckBox*>(sender());
-  FirmwareInfo * firmware=NULL;
+  FirmwareInterface * firmware=NULL;
   if (cb && state) {
     QVariant selected_firmware = ui->downloadVerCB->itemData(ui->downloadVerCB->currentIndex());
     foreach(firmware, firmwares) {
@@ -176,15 +176,15 @@ void fwPreferencesDialog::firmwareChanged()
     return;
   
   FirmwareVariant variant = getFirmwareVariant();
-  QString stamp;
-  stamp.append(variant.firmware->stamp);
-  ui->fw_dnld->setEnabled(!variant.firmware->getUrl(variant.id).isNull());
-  QString url=variant.firmware->getUrl(variant.id);
+  QString stamp = variant.firmware->getStampUrl();
+  ui->fw_dnld->setEnabled(!variant.getFirmwareUrl().isNull());
+  QString url = variant.getFirmwareUrl();
   // B-Plan 
   if (false) {
     ui->CPU_ID_LE->show();
     ui->CPU_ID_LABEL->show();
-  } else {
+  }
+  else {
     ui->CPU_ID_LE->hide();
     ui->CPU_ID_LABEL->hide();
   }
@@ -193,7 +193,8 @@ void fwPreferencesDialog::firmwareChanged()
     ui->FwInfo->setText(tr("Last downloaded release: %1").arg(fwrev));
     if (!stamp.isEmpty()) {
       ui->checkFWUpdates->show();
-    } else {
+    }
+    else {
       ui->checkFWUpdates->hide();
     }
   }
@@ -216,9 +217,9 @@ void fwPreferencesDialog::writeValues()
   g.profile[g.id()].fwType( current_firmware_variant.id );
 }
 
-void fwPreferencesDialog::populateFirmwareOptions(const FirmwareInfo * firmware)
+void fwPreferencesDialog::populateFirmwareOptions(const FirmwareInterface * firmware)
 {
-  const FirmwareInfo * parent = firmware->parent ? firmware->parent : firmware;
+  const FirmwareInterface * parent = /*firmware->parent ? firmware->parent : */firmware;
 
   updateLock = true;
 
@@ -272,9 +273,9 @@ void fwPreferencesDialog::populateFirmwareOptions(const FirmwareInfo * firmware)
 void fwPreferencesDialog::initSettings()
 {
   ui->CPU_ID_LE->setText(g.cpuId());
-  FirmwareInfo * current_firmware = GetCurrentFirmware();
+  FirmwareInterface * current_firmware = GetCurrentFirmware();
 
-  foreach(FirmwareInfo * firmware, firmwares) {
+  foreach(FirmwareInterface * firmware, firmwares) {
     ui->downloadVerCB->addItem(firmware->name, firmware->id);
     if (current_firmware == firmware) {
       ui->downloadVerCB->setCurrentIndex(ui->downloadVerCB->count() - 1);
@@ -302,12 +303,12 @@ void fwPreferencesDialog::on_fw_dnld_clicked()
   MainWindow * mw = (MainWindow *)this->parent();
   FirmwareVariant variant = getFirmwareVariant();
   writeValues();
-  if (!variant.firmware->getUrl(variant.id).isNull()) {
+  if (!variant.getFirmwareUrl().isNull()) {
     if (g.profile[g.id()].burnFirmware()) {
       current_firmware_variant = getFirmwareVariant();
       g.profile[g.id()].fwType( current_firmware_variant.id );
     }
-    mw->downloadLatestFW(current_firmware_variant.firmware, current_firmware_variant.id);
+    mw->downloadLatestFW(current_firmware_variant);
   }
   firmwareChanged();
 }

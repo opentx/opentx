@@ -13,7 +13,7 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
   bool minimize = false;
 
   int col = 1;
-  if (GetEepromInterface()->getCapability(ChannelsName))
+  if (GetCurrentFirmware()->getCapability(ChannelsName))
   {
     minimize=true;
     addLabel(gridLayout, tr("Name"), col++);
@@ -24,12 +24,12 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
   addLabel(gridLayout, tr("Direction"), col++, minimize);
   if (IS_TARANIS(GetEepromInterface()->getBoard()))
     addLabel(gridLayout, tr("Curve"), col++, minimize);
-  if (GetEepromInterface()->getCapability(PPMCenter))
+  if (GetCurrentFirmware()->getCapability(PPMCenter))
     addLabel(gridLayout, tr("PPM Center"), col++, minimize);
-  if (GetEepromInterface()->getCapability(SYMLimits))
+  if (GetCurrentFirmware()->getCapability(SYMLimits))
     addLabel(gridLayout, tr("Linear Subtrim"), col++, true);
 
-  for (int i=0; i<GetEepromInterface()->getCapability(Outputs); i++) {
+  for (int i=0; i<GetCurrentFirmware()->getCapability(Outputs); i++) {
     col = 0;
 
     // Channel label
@@ -39,7 +39,7 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     gridLayout->addWidget(label, i+1, col++, 1, 1);
 
     // Channel name
-    int nameLen = GetEepromInterface()->getCapability(ChannelsName);
+    int nameLen = GetCurrentFirmware()->getCapability(ChannelsName);
     if (nameLen > 0) {
       QLineEdit * name = new QLineEdit(this);
       name->setProperty("index", i);
@@ -103,7 +103,7 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     if (IS_TARANIS(GetEepromInterface()->getBoard())) {
       QComboBox * curveCB = new QComboBox(this);
       curveCB->setProperty("index", i);
-      int numcurves = GetEepromInterface()->getCapability(NumCurves);
+      int numcurves = GetCurrentFirmware()->getCapability(NumCurves);
       for (int j=-numcurves; j<=numcurves; j++) {
         curveCB->addItem(CurveReference(CurveReference::CURVE_REF_CUSTOM, j).toString(), j);
       }
@@ -113,7 +113,7 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     }
 
     // PPM center
-    if (GetEepromInterface()->getCapability(PPMCenter)) {
+    if (GetCurrentFirmware()->getCapability(PPMCenter)) {
       QSpinBox * center = new QSpinBox(this);
       center->setProperty("index", i);
       center->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
@@ -126,7 +126,7 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     }
 
     // Symetrical limits
-    if (GetEepromInterface()->getCapability(SYMLimits)) {
+    if (GetCurrentFirmware()->getCapability(SYMLimits)) {
       QCheckBox * symlimits = new QCheckBox(this);
       symlimits->setProperty("index", i);
       symlimits->setChecked(model.limitData[i].symetrical);
@@ -135,7 +135,7 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     }
   }
   // Push the rows up
-  addVSpring(gridLayout, 0,GetEepromInterface()->getCapability(Outputs)+1);
+  addVSpring(gridLayout, 0,GetCurrentFirmware()->getCapability(Outputs)+1);
 }
 
 Channels::~Channels()
@@ -188,7 +188,7 @@ void Channels::maxEdited()
 
 void Channels::refreshExtendedLimits()
 {
-  for (int i=0; i<GetEepromInterface()->getCapability(Outputs); i++) {
+  for (int i=0; i<GetCurrentFirmware()->getCapability(Outputs); i++) {
     QDoubleSpinBox * minDSB = minSpins[i];
     QDoubleSpinBox * maxDSB = maxSpins[i];
     
