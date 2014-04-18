@@ -983,9 +983,9 @@ void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
       if (ed->srcRaw == ovwrIdx)
         v = ovwrValue;
 #if defined(HELI)
-      else if (ed->srcRaw == MIXSRC_Ele && g_model.swashR.value)
+      else if (ed->srcRaw == MIXSRC_Ele)
         v = heliAnas[ELE_STICK];
-      else if (ed->srcRaw == MIXSRC_Ail && g_model.swashR.value)
+      else if (ed->srcRaw == MIXSRC_Ail)
         v = heliAnas[AIL_STICK];
 #endif
       else {
@@ -1035,6 +1035,13 @@ void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
           virtualInputsTrims[cur_chn] = ed->srcRaw - MIXSRC_Rud;
         else
           virtualInputsTrims[cur_chn] = -1;
+
+#if defined(HELI)
+		if (ed->srcRaw == MIXSRC_Ele)
+		  heliAnas[ELE_STICK] = v;
+        else if (ed->srcRaw == MIXSRC_Ail)
+          heliAnas[AIL_STICK] = v;
+#endif
 #endif
 
         anas[cur_chn] = v;
@@ -3200,10 +3207,10 @@ void evalInputs(uint8_t mode)
 #if defined(HELI)
       if (d && (ch==ELE_STICK || ch==AIL_STICK)) {
         v = (int32_t(v) * calc100toRESX(g_model.swashR.value)) / int32_t(d);
-#if defined(PCBTARANIS)
-        heliAnas[ch] = v;
-#endif
       }
+#if defined(PCBTARANIS)
+      heliAnas[ch] = v;
+#endif
 #endif
 
 #if !defined(PCBTARANIS)
