@@ -17,8 +17,27 @@ appPreferencesDialog::appPreferencesDialog(QWidget *parent) :
 {
   ui->setupUi(this);
   setWindowIcon(CompanionIcon("apppreferences.png"));
+
+  QCheckBox * OptionCheckBox[]= {
+      ui->optionCheckBox_1, ui->optionCheckBox_2, ui->optionCheckBox_3, ui->optionCheckBox_4,  ui->optionCheckBox_5, ui->optionCheckBox_6,  ui->optionCheckBox_7,
+      ui->optionCheckBox_8, ui->optionCheckBox_9, ui->optionCheckBox_10,  ui->optionCheckBox_11, ui->optionCheckBox_12, ui->optionCheckBox_13, ui->optionCheckBox_14,
+      ui->optionCheckBox_15,ui->optionCheckBox_16, ui->optionCheckBox_17, ui->optionCheckBox_18, ui->optionCheckBox_19, ui->optionCheckBox_20, ui->optionCheckBox_21,
+      ui->optionCheckBox_22, ui->optionCheckBox_23, ui->optionCheckBox_24, ui->optionCheckBox_25, ui->optionCheckBox_26, ui->optionCheckBox_27, ui->optionCheckBox_28,
+      ui->optionCheckBox_29, ui->optionCheckBox_30, ui->optionCheckBox_31, ui->optionCheckBox_32, ui->optionCheckBox_33, ui->optionCheckBox_34, ui->optionCheckBox_35,
+      ui->optionCheckBox_36, ui->optionCheckBox_37, ui->optionCheckBox_38, ui->optionCheckBox_39, ui->optionCheckBox_40, ui->optionCheckBox_41, ui->optionCheckBox_42,
+      NULL };
+
   initSettings();
   connect(this, SIGNAL(accepted()), this, SLOT(writeValues()));
+  connect(ui->langCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(firmwareChanged()));
+  connect(ui->radioCB, SIGNAL(currentIndexChanged(int)), this, SLOT(baseFirmwareChanged()));
+
+
+  for (int i=0; OptionCheckBox[i]; i++) {
+    optionsCheckBoxes.push_back(OptionCheckBox[i]);
+    connect(OptionCheckBox[i], SIGNAL(toggled(bool)), this, SLOT(firmwareOptionChanged(bool)));
+  }
+
 #ifndef JOYSTICKS
   ui->joystickCB->hide();
   ui->joystickCB->setDisabled(true);
@@ -77,6 +96,11 @@ void appPreferencesDialog::writeValues()
     current_firmware_variant = GetFirmwareVariant(g.profile[g.id()].fwType());
     g.profile[g.id()].initFwVariables();
   }
+
+  // TODO get the following to work with chaning radio 
+  g.cpuId( ui->CPU_ID_LE->text() );
+  current_firmware_variant = getFirmwareVariant();
+  g.profile[g.id()].fwType( current_firmware_variant.id );
 }
 
 void appPreferencesDialog::on_snapshotPathButton_clicked()
@@ -176,6 +200,9 @@ void appPreferencesDialog::initSettings()
   }
   ui->lblGeneralSettings->setText(hwSettings);
 
+  ui->CPU_ID_LE->setText(g.cpuId());  
+  baseFirmwareChanged();
+  firmwareChanged();
 }
 
 void appPreferencesDialog::on_libraryPathButton_clicked()
@@ -317,6 +344,129 @@ void appPreferencesDialog::on_clearImageButton_clicked() {
   ui->SplashFileName->clear();
 }
 
+
+
+FirmwareVariant appPreferencesDialog::getFirmwareVariant()
+{
+  QVariant selected_firmware = ui->radioCB->itemData(ui->radioCB->currentIndex());
+  foreach(FirmwareInfo * firmware, firmwares) {
+    if (firmware->id == selected_firmware) {
+      QString id = firmware->id;
+      foreach(QCheckBox *cb, optionsCheckBoxes) {
+        if (cb->isChecked()) {
+          id += QString("-") + cb->text();
+        }
+      }
+      if (ui->langCombo->count())
+        id += QString("-") + ui->langCombo->currentText();
+
+      return GetFirmwareVariant(id);
+    }
+  }
+  // Should never occur...
+  return default_firmware_variant;
+}
+
+void appPreferencesDialog::firmwareOptionChanged(bool state)
+{
+  QCheckBox *cb = qobject_cast<QCheckBox*>(sender());
+  FirmwareInfo * firmware=NULL;
+  if (cb && state) {
+    QVariant selected_firmware = ui->radioCB->itemData(ui->radioCB->currentIndex());
+    foreach(firmware, firmwares) {
+      if (firmware->id == selected_firmware) {
+        foreach(QList<Option> opts, firmware->opts) {
+          foreach(Option opt, opts) {
+            if (cb->text() == opt.name) {
+              foreach(Option other, opts) {
+                if (other.name != opt.name) {
+                  foreach(QCheckBox *ocb, optionsCheckBoxes) {
+                    if (ocb->text() == other.name)
+                      ocb->setChecked(false);
+                  }
+                }
+              }
+              return firmwareChanged();
+            }
+          }
+        }
+      }
+    }
+  }
+  return firmwareChanged();
+}
+
+void appPreferencesDialog::baseFirmwareChanged()
+{
+  QVariant selected_firmware = ui->radioCB->itemData(ui->radioCB->currentIndex());
+  foreach(FirmwareInfo * firmware, firmwares) {
+    if (firmware->id == selected_firmware) {
+      populateFirmwareOptions(firmware);
+      break;
+    }
+  }
+  firmwareChanged();
+}
+
+void appPreferencesDialog::firmwareChanged()
+{
+  if (updateLock) return;
+  
+  FirmwareVariant variant = getFirmwareVariant();
+  QString stamp;
+  stamp.append(variant.firmware->stamp);
+  QString url=variant.firmware->getUrl(variant.id);
+
+  // B-Plan 
+  if (false) {
+    ui->CPU_ID_LE->show();
+    ui->CPU_ID_LABEL->show();
+  } 
+  else {
+    ui->CPU_ID_LE->hide();
+    ui->CPU_ID_LABEL->hide();
+  }
+}
+
+void appPreferencesDialog::populateFirmwareOptions(const FirmwareInfo * firmware)
+{
+  const FirmwareInfo * parent = firmware->parent ? firmware->parent : firmware;
+  updateLock = true;
+
+  ui->langCombo->clear();
+  foreach(const char *lang, parent->languages) {
+    ui->langCombo->addItem(lang);
+    if (current_firmware_variant.id.endsWith(lang))
+      ui->langCombo->setCurrentIndex(ui->langCombo->count() - 1);
+  }
+
+  int index = 0;
+  foreach(QList<Option> opts, parent->opts) {
+    foreach(Option opt, opts) {
+      if (index >= optionsCheckBoxes.size()) {
+        qDebug() << "This firmware needs more options checkboxes!";
+      }
+      else {
+        QCheckBox *cb = optionsCheckBoxes.at(index++);
+        if (cb) {
+          cb->show();
+          cb->setText(opt.name);
+          cb->setToolTip(opt.tooltip);
+          cb->setCheckState(current_firmware_variant.id.contains(opt.name) ? Qt::Checked : Qt::Unchecked);
+            
+        }
+      }
+    }
+  }
+  for (; index<optionsCheckBoxes.size(); index++) {
+    QCheckBox *cb = optionsCheckBoxes.at(index);
+    cb->hide();
+    cb->setCheckState(Qt::Unchecked);
+  }
+
+  updateLock = false;
+  QTimer::singleShot(0, this, SLOT(shrink()));
+}
 
 
 
