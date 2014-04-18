@@ -6,21 +6,21 @@
 #include "eeprominterface.h"
 
 namespace Ui {
-    class fwPreferencesDialog;
+    class FirmwarePreferencesDialog;
 }
 
 class Joystick;
 
-class fwPreferencesDialog : public QDialog
+class FirmwarePreferencesDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit fwPreferencesDialog(QWidget *parent = 0);
-    ~fwPreferencesDialog();
+    explicit FirmwarePreferencesDialog(QWidget *parent = 0);
+    ~FirmwarePreferencesDialog();
 
 private:
-    Ui::fwPreferencesDialog *ui;
+    Ui::FirmwarePreferencesDialog *ui;
     QList<QCheckBox *> optionsCheckBoxes;
     bool updateLock;
 

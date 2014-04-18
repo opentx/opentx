@@ -7,9 +7,9 @@
 #include <QDesktopServices>
 #include <QtGui>
 
-fwPreferencesDialog::fwPreferencesDialog(QWidget *parent) :
+FirmwarePreferencesDialog::FirmwarePreferencesDialog(QWidget *parent) :
   QDialog(parent),
-  ui(new Ui::fwPreferencesDialog),
+  ui(new Ui::FirmwarePreferencesDialog),
   updateLock(false)
 {
   ui->setupUi(this);
@@ -43,12 +43,12 @@ fwPreferencesDialog::fwPreferencesDialog(QWidget *parent) :
 }
 
 
-fwPreferencesDialog::~fwPreferencesDialog()
+FirmwarePreferencesDialog::~FirmwarePreferencesDialog()
 {
   delete ui;
 }
 
-void fwPreferencesDialog::showVoice(bool show)
+void FirmwarePreferencesDialog::showVoice(bool show)
 {
   if (show)
     showVoice();
@@ -56,7 +56,7 @@ void fwPreferencesDialog::showVoice(bool show)
     hideVoice();
 }
 
-void fwPreferencesDialog::showVoice()
+void FirmwarePreferencesDialog::showVoice()
 {
   ui->voiceLine->show(); 
   ui->voiceLabel->show();
@@ -64,7 +64,7 @@ void fwPreferencesDialog::showVoice()
   ui->voice_dnld->show();
 }
 
-void fwPreferencesDialog::hideVoice()
+void FirmwarePreferencesDialog::hideVoice()
 {
   ui->voiceLine->hide(); 
   ui->voiceLabel->hide();
@@ -73,12 +73,12 @@ void fwPreferencesDialog::hideVoice()
   QTimer::singleShot(0, this, SLOT(shrink()));
 }
 
-void fwPreferencesDialog::shrink()
+void FirmwarePreferencesDialog::shrink()
 {
     resize(0,0);
 }
 
-void fwPreferencesDialog::baseFirmwareChanged()
+void FirmwarePreferencesDialog::baseFirmwareChanged()
 {
   QVariant selected_firmware = ui->downloadVerCB->itemData(ui->downloadVerCB->currentIndex());
   voice=NULL;
@@ -92,7 +92,7 @@ void fwPreferencesDialog::baseFirmwareChanged()
   firmwareChanged();
 }
 
-FirmwareVariant fwPreferencesDialog::getFirmwareVariant()
+FirmwareVariant FirmwarePreferencesDialog::getFirmwareVariant()
 {
   QVariant selected_firmware = ui->downloadVerCB->itemData(ui->downloadVerCB->currentIndex());
   bool voice=false;
@@ -121,7 +121,7 @@ FirmwareVariant fwPreferencesDialog::getFirmwareVariant()
   return default_firmware_variant;
 }
 
-void fwPreferencesDialog::firmwareOptionChanged(bool state)
+void FirmwarePreferencesDialog::firmwareOptionChanged(bool state)
 {
   QCheckBox *cb = qobject_cast<QCheckBox*>(sender());
   FirmwareInterface * firmware=NULL;
@@ -165,12 +165,12 @@ void fwPreferencesDialog::firmwareOptionChanged(bool state)
   return firmwareChanged();
 }
 
-void fwPreferencesDialog::firmwareLangChanged()
+void FirmwarePreferencesDialog::firmwareLangChanged()
 {
   firmwareChanged();
 }
 
-void fwPreferencesDialog::firmwareChanged()
+void FirmwarePreferencesDialog::firmwareChanged()
 {
   if (updateLock)
     return;
@@ -210,14 +210,14 @@ void fwPreferencesDialog::firmwareChanged()
   }
 }
 
-void fwPreferencesDialog::writeValues()
+void FirmwarePreferencesDialog::writeValues()
 {
   g.cpuId( ui->CPU_ID_LE->text() );
   current_firmware_variant = getFirmwareVariant();
   g.profile[g.id()].fwType( current_firmware_variant.id );
 }
 
-void fwPreferencesDialog::populateFirmwareOptions(const FirmwareInterface * firmware)
+void FirmwarePreferencesDialog::populateFirmwareOptions(const FirmwareInterface * firmware)
 {
   const FirmwareInterface * parent = /*firmware->parent ? firmware->parent : */firmware;
 
@@ -270,7 +270,7 @@ void fwPreferencesDialog::populateFirmwareOptions(const FirmwareInterface * firm
   QTimer::singleShot(0, this, SLOT(shrink()));
 }
 
-void fwPreferencesDialog::initSettings()
+void FirmwarePreferencesDialog::initSettings()
 {
   ui->CPU_ID_LE->setText(g.cpuId());
   FirmwareInterface * current_firmware = GetCurrentFirmware();
@@ -286,7 +286,7 @@ void fwPreferencesDialog::initSettings()
   firmwareChanged();
 }
 
-void fwPreferencesDialog::on_checkFWUpdates_clicked()
+void FirmwarePreferencesDialog::on_checkFWUpdates_clicked()
 {
     FirmwareVariant variant = getFirmwareVariant();
     if (g.profile[g.id()].burnFirmware()) {
@@ -298,7 +298,7 @@ void fwPreferencesDialog::on_checkFWUpdates_clicked()
     firmwareChanged();
 }
 
-void fwPreferencesDialog::on_fw_dnld_clicked()
+void FirmwarePreferencesDialog::on_fw_dnld_clicked()
 {
   MainWindow * mw = (MainWindow *)this->parent();
   FirmwareVariant variant = getFirmwareVariant();
@@ -313,7 +313,7 @@ void fwPreferencesDialog::on_fw_dnld_clicked()
   firmwareChanged();
 }
 
-void fwPreferencesDialog::on_voice_dnld_clicked()
+void FirmwarePreferencesDialog::on_voice_dnld_clicked()
 {
   QString url="http://fw.opentx.it/voices/";
   FirmwareVariant variant = getFirmwareVariant();

@@ -11,9 +11,9 @@
 #include <QDesktopServices>
 #include <QtGui>
 
-appPreferencesDialog::appPreferencesDialog(QWidget *parent) :
+AppPreferencesDialog::AppPreferencesDialog(QWidget *parent) :
   QDialog(parent),
-  ui(new Ui::appPreferencesDialog)
+  ui(new Ui::AppPreferencesDialog)
 {
   ui->setupUi(this);
   setWindowIcon(CompanionIcon("apppreferences.png"));
@@ -29,12 +29,12 @@ appPreferencesDialog::appPreferencesDialog(QWidget *parent) :
   resize(0,0);
 }
 
-appPreferencesDialog::~appPreferencesDialog()
+AppPreferencesDialog::~AppPreferencesDialog()
 {
   delete ui;
 }
 
-void appPreferencesDialog::writeValues()
+void AppPreferencesDialog::writeValues()
 {
   g.autoCheckApp(ui->startupCheck_companion9x->isChecked());
   g.autoCheckFw(ui->startupCheck_fw->isChecked());
@@ -79,7 +79,7 @@ void appPreferencesDialog::writeValues()
   }
 }
 
-void appPreferencesDialog::on_snapshotPathButton_clicked()
+void AppPreferencesDialog::on_snapshotPathButton_clicked()
 {
   QString fileName = QFileDialog::getExistingDirectory(this,tr("Select your snapshot folder"), g.snapshotDir());
   if (!fileName.isEmpty()) {
@@ -89,7 +89,7 @@ void appPreferencesDialog::on_snapshotPathButton_clicked()
   }
 }
 
-void appPreferencesDialog::initSettings()
+void AppPreferencesDialog::initSettings()
 {
   ui->snapshotClipboardCKB->setChecked(g.snapToClpbrd());
   ui->burnFirmware->setChecked(g.profile[g.id()].burnFirmware());
@@ -178,7 +178,7 @@ void appPreferencesDialog::initSettings()
 
 }
 
-void appPreferencesDialog::on_libraryPathButton_clicked()
+void AppPreferencesDialog::on_libraryPathButton_clicked()
 {
   QString fileName = QFileDialog::getExistingDirectory(this,tr("Select your library folder"), g.libDir());
   if (!fileName.isEmpty()) {
@@ -187,13 +187,14 @@ void appPreferencesDialog::on_libraryPathButton_clicked()
   }
 }
 
-void appPreferencesDialog::on_snapshotClipboardCKB_clicked()
+void AppPreferencesDialog::on_snapshotClipboardCKB_clicked()
 {
   if (ui->snapshotClipboardCKB->isChecked()) {
     ui->snapshotPath->setDisabled(true);
     ui->snapshotPathButton->setDisabled(true);
     g.snapToClpbrd(true);
-  } else {
+  }
+  else {
     ui->snapshotPath->setEnabled(true);
     ui->snapshotPath->setReadOnly(true);
     ui->snapshotPathButton->setEnabled(true);
@@ -201,7 +202,7 @@ void appPreferencesDialog::on_snapshotClipboardCKB_clicked()
   }
 }
 
-void appPreferencesDialog::on_backupPathButton_clicked()
+void AppPreferencesDialog::on_backupPathButton_clicked()
 {
   QString fileName = QFileDialog::getExistingDirectory(this,tr("Select your Models and Settings backup folder"), g.backupDir());
   if (!fileName.isEmpty()) {
@@ -211,7 +212,7 @@ void appPreferencesDialog::on_backupPathButton_clicked()
   ui->backupEnable->setEnabled(true);
 }
 
-void appPreferencesDialog::on_ge_pathButton_clicked()
+void AppPreferencesDialog::on_ge_pathButton_clicked()
 {
   QString fileName = QFileDialog::getOpenFileName(this, tr("Select Google Earth executable"),ui->ge_lineedit->text());
   if (!fileName.isEmpty()) {
@@ -220,7 +221,7 @@ void appPreferencesDialog::on_ge_pathButton_clicked()
 }
  
 #ifdef JOYSTICKS
-void appPreferencesDialog::on_joystickChkB_clicked() {
+void AppPreferencesDialog::on_joystickChkB_clicked() {
   if (ui->joystickChkB->isChecked()) {
     QStringList joystickNames;
     joystickNames << tr("No joysticks found");
@@ -246,7 +247,7 @@ void appPreferencesDialog::on_joystickChkB_clicked() {
   }
 }
 
-void appPreferencesDialog::on_joystickcalButton_clicked() {
+void AppPreferencesDialog::on_joystickcalButton_clicked() {
    joystickDialog * jd=new joystickDialog(this, ui->joystickCB->currentIndex());
    jd->exec();
 }
@@ -254,7 +255,7 @@ void appPreferencesDialog::on_joystickcalButton_clicked() {
 
 // ******** Profile tab functions
 
-void appPreferencesDialog::on_sdPathButton_clicked()
+void AppPreferencesDialog::on_sdPathButton_clicked()
 {
   QString fileName = QFileDialog::getExistingDirectory(this,tr("Select the folder replicating your SD structure"), g.profile[g.id()].sdPath());
   if (!fileName.isEmpty()) {
@@ -262,12 +263,12 @@ void appPreferencesDialog::on_sdPathButton_clicked()
   }
 }
 
-void appPreferencesDialog::on_removeProfileButton_clicked()
+void AppPreferencesDialog::on_removeProfileButton_clicked()
 {
-  if ( g.id() == 0 )
+  if ( g.id() == 0 ) {
      QMessageBox::information(this, tr("Not possible to remove profile"), tr("The default profile can not be removed."));
-  else
-  {
+  }
+  else {
     g.profile[g.id()].remove();
     g.id( 0 );
     initSettings();
@@ -275,7 +276,7 @@ void appPreferencesDialog::on_removeProfileButton_clicked()
 }
 
 
-bool appPreferencesDialog::displayImage( QString fileName )
+bool AppPreferencesDialog::displayImage( QString fileName )
 {
   // Start by clearing the pixmap
   ui->imageLabel->setPixmap(QPixmap());
@@ -294,7 +295,7 @@ bool appPreferencesDialog::displayImage( QString fileName )
   return true;
 }
 
-void appPreferencesDialog::on_SplashSelect_clicked()
+void AppPreferencesDialog::on_SplashSelect_clicked()
 {
   QString supportedImageFormats;
   for (int formatIndex = 0; formatIndex < QImageReader::supportedImageFormats().count(); formatIndex++) {
@@ -312,7 +313,7 @@ void appPreferencesDialog::on_SplashSelect_clicked()
   }
 }
 
-void appPreferencesDialog::on_clearImageButton_clicked() {
+void AppPreferencesDialog::on_clearImageButton_clicked() {
   ui->imageLabel->clear();
   ui->SplashFileName->clear();
 }

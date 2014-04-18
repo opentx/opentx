@@ -6,23 +6,23 @@
 #include "eeprominterface.h"
 
 namespace Ui {
-    class appPreferencesDialog;
+    class AppPreferencesDialog;
 }
 
 class Joystick;
 
-class appPreferencesDialog : public QDialog
+class AppPreferencesDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit appPreferencesDialog(QWidget *parent = 0);
-    ~appPreferencesDialog();
+    explicit AppPreferencesDialog(QWidget *parent = 0);
+    ~AppPreferencesDialog();
     Joystick *joystick;
 
 private:
     int initialRadioType;
-    Ui::appPreferencesDialog *ui;
+    Ui::AppPreferencesDialog *ui;
     void initSettings();
     bool displayImage( QString fileName );
     void loadProfileString(QString profile, QString label);

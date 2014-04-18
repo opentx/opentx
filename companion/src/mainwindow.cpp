@@ -717,14 +717,14 @@ void MainWindow::loadProfile()  //TODO Load all variables - Also HW!
 
 void MainWindow::appPrefs()
 {
-    appPreferencesDialog *pd = new appPreferencesDialog(this);
+    AppPreferencesDialog *pd = new AppPreferencesDialog(this);
     pd->exec();
     updateMenus();
 }
 
 void MainWindow::fwPrefs()
 {
-    fwPreferencesDialog *pd = new fwPreferencesDialog(this);
+    FirmwarePreferencesDialog *pd = new FirmwarePreferencesDialog(this);
     pd->exec();
     foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
       MdiChild *mdiChild = qobject_cast<MdiChild *>(window->widget());
