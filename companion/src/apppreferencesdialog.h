@@ -21,7 +21,16 @@ public:
     Joystick *joystick;
 
 private:
-    int initialRadioType;
+    QList<QCheckBox *> optionsCheckBoxes;
+    bool updateLock;
+    void showVoice(bool);
+    void showVoice();
+    void hideVoice();
+    void populateLocale();
+    void populateFirmwareOptions(const FirmwareInfo *);
+    FirmwareVariant getFirmwareVariant();
+    QCheckBox * voice;
+
     Ui::appPreferencesDialog *ui;
     void initSettings();
     bool displayImage( QString fileName );
@@ -29,6 +38,13 @@ private:
     void loadFromProfile();
 
 private slots:
+    void shrink();  
+    void firmwareLangChanged();
+    void baseFirmwareChanged();
+    void firmwareOptionChanged(bool state);
+    void firmwareChanged();
+
+
     void writeValues();
     void on_libraryPathButton_clicked();
     void on_snapshotPathButton_clicked();
