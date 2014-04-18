@@ -1208,6 +1208,10 @@ void RegisterOpen9xFirmwares()
   open9x->addOption("nocurves", QObject::tr("Disable curves menus"));
   open9x->addOption("sdcard", QObject::tr("Support for SD memory card"));
   open9x->addOption("voice", QObject::tr("Used if you have modified your radio with voice mode"));
+  open9x->addOption("TurFix", QObject::tr("TURNIGY_TRANSMITTER_FIX: Latests deliveries for Turnigy 9x transmitters (starting 2011) do not stop sending during Throttle Warning.\n"\
+     "This fact breaks the throttle and switch warning concept.\n"\
+     "If you have a 0 value (50% ) for throttle, while throttle warning is active, you should activate this switch.\n"\
+     "This include doesn't break older transmitters, just causes a slight code increase."));
   open9x->addOption("PXX", QObject::tr("Support of FrSky PXX protocol"));
   Option dsm2_options[] = { { "DSM2", QObject::tr("Support for DSM2 modules"), 0 }, { "DSM2PPM", QObject::tr("Support for DSM2 modules using ppm instead of true serial"), 0 }, { NULL } };
   open9x->addOptions(dsm2_options);
@@ -1226,6 +1230,13 @@ void RegisterOpen9xFirmwares()
   open9x->addOption("pgbar", QObject::tr("EEprom write Progress bar"));
   open9x->addOption("imperial", QObject::tr("Imperial units"));
   open9x->addOptions(fai_options);
+  open9x->addOption("arithOvfl", QObject::tr("ARITHMETIC_OVERFLOW_CHECK: Adds additional code to prevent arithmetic overflows.\n"\
+                    "MAX or MIN values stays. Not yet guaranteed!! Just improved"));
+  open9x->addOption("acurStats", QObject::tr("ACCURAT_THROTTLE_STATS: Increases resolution for throttle statistics and throttle counting, in very rare cases.\n"\
+                    "This will be only true if an output channel is used for throttle calculation, and this chanenel has changed limits,\n"\
+                    "e.g. -90% to +80%. If you use standard limits for throttle you do not need this option."));
+  open9x->addOption("pwmBackL", QObject::tr("PWM_BACKLIGHT: Smoothly increases or reduces backlight.\n"\
+                    "Allows you to adjust backlight level in several steps."));
   firmwares.push_back(open9x);
 
 #ifndef __APPLE__
@@ -1236,6 +1247,10 @@ void RegisterOpen9xFirmwares()
   open9x->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
   open9x->addOption("nofp", QObject::tr("No flight modes"));
   open9x->addOption("nocurves", QObject::tr("Disable curves menus"));
+  open9x->addOption("TurFix", QObject::tr("TURNIGY_TRANSMITTER_FIX: Latests deliveries for Turnigy 9x transmitters (starting 2011) do not stop sending during Throttle Warning.\n"\
+     "This fact breaks the throttle and switch warning concept.\n"\
+     "If you have a 0 value (50% ) for throttle, while throttle warning is active, you should activate this switch.\n"\
+     "This include doesn't break older transmitters, just causes a slight code increase."));
   open9x->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
   open9x->addOption("ppmus", QObject::tr("Channel values displayed in us"));
   open9x->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
@@ -1250,10 +1265,12 @@ void RegisterOpen9xFirmwares()
   open9x->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   open9x->addOption("tsticks", QObject::tr("Use FrSky Taranis sticks in a 9X/9XR"));
   open9x->addOption("bluetooth", QObject::tr("Bluetooth interface"));
+  open9x->addOption("arithOvfl", QObject::tr("ARITHMETIC_OVERFLOW_CHECK: Adds additional code to prevent arithmetic overflows.\n"\
+                    "MAX or MIN values stays. Not yet guaranteed!! Just improved"));
   open9x->addOptions(fai_options);
   firmwares.push_back(open9x);
 #endif
-  
+    
   /* Taranis board */
   open9x = new Open9xFirmware("opentx-taranis", QObject::tr("OpenTX for FrSky Taranis"), new OpenTxInterface(BOARD_TARANIS), geturl(BOARD_TARANIS), getstamp(BOARD_TARANIS),getrnurl(BOARD_TARANIS), true);
   open9x->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
@@ -1262,6 +1279,8 @@ void RegisterOpen9xFirmwares()
   open9x->addOption("ppmus", QObject::tr("Channel values displayed in us"));
   open9x->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   open9x->addOptions(fai_options);
+  open9x->addOption("arithOvfl", QObject::tr("ARITHMETIC_OVERFLOW_CHECK: Adds additional code to prevent arithmetic overflows.\n"\
+                    "MAX or MIN values stays. Not yet guaranteed!! Just improved"));
   firmwares.push_back(open9x);
 
   if (g.rev4aSupport()) {

@@ -5626,51 +5626,51 @@ Anzahl Sekunden fest, welche der Mischer für einen Durchgang von -100 bis +100 
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1020"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1022"/>
         <source>Support for frsky telemetry mod</source>
-        <translation type="unfinished"></translation>
+        <translation>Unterstützung für die FRSKY Telemetrie Modifikation</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1020"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1022"/>
         <source>Support for jeti telemetry mod</source>
-        <translation type="unfinished"></translation>
+        <translation>Unterstützung für die JETI Telemetrie Modifikation</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1020"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1022"/>
         <source>Support for receiving ardupilot data</source>
-        <translation type="unfinished"></translation>
+        <translation>Für das Empfangen von ARDUPILOT Daten</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1020"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1022"/>
         <source>Support for receiving NMEA data</source>
-        <translation type="unfinished"></translation>
+        <translation>Für das Empfangen von NMEA Daten</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1020"/>
         <source>Support for telemetry easy board</source>
-        <translation type="unfinished"></translation>
+        <translation>Unterstützung für das Telemetrie EASY BOARD</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1020"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1022"/>
         <source>Support for MAVLINK devices</source>
-        <translation type="unfinished"></translation>
+        <translation>Unterstützung für MAVLINK Geräte</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1021"/>
         <source>Rotary Encoder use in menus navigation</source>
-        <translation type="unfinished"></translation>
+        <translation>Wenn ein Rotary Drehknopf eingebaut wurde und dieser in den Menüs verwendet werden soll.</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1023"/>
         <source>Possibility to enable FAI MODE at field</source>
-        <translation type="unfinished"></translation>
+        <translation>Erlaubt das Einschalten des FAI Modus am Flugfeld</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1023"/>
         <source>FAI MODE always enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktiviert den FAI Modus immer.</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1027"/>
@@ -5679,7 +5679,7 @@ Anzahl Sekunden fest, welche der Mischer für einen Durchgang von -100 bis +100 
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1130"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1160"/>
         <source>Enable heli menu and cyclic mix support</source>
-        <translation type="unfinished"></translation>
+        <translation>Fügt das Hubschrauber Menü und den Zyklus MIX hinzu</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1028"/>
@@ -5689,7 +5689,7 @@ Anzahl Sekunden fest, welche der Mischer für einen Durchgang von -100 bis +100 
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1161"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1191"/>
         <source>Enable TEMPLATES menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktiviert Flugmodell Vorlagen, damit neue Modelle schneller konfiguriert werden können.</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1029"/>
@@ -5744,7 +5744,7 @@ Anzahl Sekunden fest, welche der Mischer für einen Durchgang von -100 bis +100 
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1217"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1227"/>
         <source>Channel values displayed in us</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanalwerte werden in usec angezeigt</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1043"/>
@@ -5805,6 +5805,9 @@ In dieser Phase den Sender nicht ausschalten.</translation>
     <location filename="../firmwares/opentx/opentxinterface.cpp" line="1107"/>
     <location filename="../firmwares/opentx/opentxinterface.cpp" line="1152"/>
     <location filename="../firmwares/opentx/opentxinterface.cpp" line="1193"/>
+    <location filename="../firmwares/opentx/opentxinterface.cpp" line="1233"/>
+    <location filename="../firmwares/opentx/opentxinterface.cpp" line="1268"/>
+    <location filename="../firmwares/opentx/opentxinterface.cpp" line="1282"/>
     <source>ARITHMETIC_OVERFLOW_CHECK: Adds additional code to prevent arithmetic overflows.
 MAX or MIN values stays. Not yet guaranteed!! Just improved</source>
     <translation>ARITHMETIC_OVERFLOW_CHECK: Erzeugt zusätzlichen Programmcode um einen arithmetischen Überlauf zu verhindern.
@@ -5816,6 +5819,7 @@ MAX oder MIN Werte bleiben. Vorsicht, dies ist noch nicht garantiert, nur verbes
     <location filename="../firmwares/opentx/opentxinterface.cpp" line="1109"/>
     <location filename="../firmwares/opentx/opentxinterface.cpp" line="1154"/>
     <location filename="../firmwares/opentx/opentxinterface.cpp" line="1195"/>
+    <location filename="../firmwares/opentx/opentxinterface.cpp" line="1235"/>
     <source>ACCURAT_THROTTLE_STATS: Increases resolution for throttle statistics and throttle counting, in very rare cases.
 This will be only true if an output channel is used for throttle calculation, and this chanenel has changed limits,
 e.g. -90% to +80%. If you use standard limits for throttle you do not need this option.</source>
@@ -5829,6 +5833,7 @@ Z.B. -90% bis +80%. Wenn Standardwerte für den Gas Kanal verwendet werden, wird
     <location filename="../firmwares/opentx/opentxinterface.cpp" line="1112"/>
     <location filename="../firmwares/opentx/opentxinterface.cpp" line="1157"/>
     <location filename="../firmwares/opentx/opentxinterface.cpp" line="1198"/>
+    <location filename="../firmwares/opentx/opentxinterface.cpp" line="1238"/>
     <source>PWM_BACKLIGHT: Smoothly increases or reduces backlight.
 Allows you to adjust backlight level in several steps.</source>
     <translation>PWM_BACKLIGHT: Erhöht oder Verringert sanft das Hintergrundlicht.
@@ -5839,7 +5844,9 @@ Erlaubt eine Einstellung des Hintergrundlichts in vielen Helligkeitsstufen.</tra
     <location filename="../firmwares/opentx/opentxinterface.cpp" line="1036"/>
     <location filename="../firmwares/opentx/opentxinterface.cpp" line="1085"/>
     <location filename="../firmwares/opentx/opentxinterface.cpp" line="1128"/>
-    <location filename="../firmwares/opentx/opentxinterface.cpp" line="1173"/>    
+    <location filename="../firmwares/opentx/opentxinterface.cpp" line="1173"/>
+    <location filename="../firmwares/opentx/opentxinterface.cpp" line="1211"/>
+    <location filename="../firmwares/opentx/opentxinterface.cpp" line="1250"/>
     <source>TURNIGY_TRANSMITTER_FIX: Latests deliveries for Turnigy 9x transmitters (starting 2011) do not stop sending during Throttle Warning.
 This fact breaks the throttle and switch warning concept.
 If you have a 0 value (50% ) for throttle, while throttle warning is active, you should activate this switch.
@@ -5854,73 +5861,73 @@ Diese Option stört bei älteren Sendern nicht, es wird nur mehr Code erzeugt.</
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1053"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1120"/>
         <source>No Winged Shadow How High support</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Unterstützung für Winged Shadow How High</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1054"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1121"/>
         <source>No vario support</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Unterstützung für ein Telemetrie VARIO</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1055"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1122"/>
         <source>No GPS support</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Unterstützung für ein Telemetrie GPS Modul</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1056"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1123"/>
         <source>No gauges in the custom telemetry screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Unterstützung für Messintrumentanzeigen im Telemetrie Bildschirm</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1057"/>
         <source>Allow compensating for offset errors in FrSky FAS current sensors</source>
-        <translation type="unfinished"></translation>
+        <translation>Erlaubt die Kompensation eines Offset Fehlers im FAS Strom Sensor</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1213"/>
         <source>OpenTX for FrSky Taranis</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTX für FrSky Taranis</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1223"/>
         <source>OpenTX for FrSky Taranis Rev4a</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTX für FrSky Taranis Rev4a</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1166"/>
         <source>Support of FrSky PXX protocol</source>
-        <translation type="unfinished"></translation>
+        <translation>Unterstützung für FrSky PXX Sendemodule</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1188"/>
         <source>OpenTX for Sky9x board / 9X</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTX für Sky9x board / 9X</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1206"/>
         <source>Use FrSky Taranis sticks in a 9X/9XR</source>
-        <translation type="unfinished"></translation>
+        <translation>Wenn FrSky Taranis Knüppel in einer 9X/9XR eingebaut wurden.</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1214"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1224"/>
         <source>Disable HELI menu and cyclic mix support</source>
-        <translation type="unfinished"></translation>
+        <translation>Entferne Hubschrauber Menü und den zugehörigen Zyklus Mix</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1215"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1225"/>
         <source>Disable TEMPLATES menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Entferne Templates um Speicher zu sparen</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1216"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1226"/>
         <source>Disable Global variables</source>
-        <translation type="unfinished"></translation>
+        <translation>Entferne die Unterstützung für globale Variablen</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1036"/>
@@ -5929,7 +5936,7 @@ Diese Option stört bei älteren Sendern nicht, es wird nur mehr Code erzeugt.</
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1139"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1167"/>
         <source>Support for DSM2 modules</source>
-        <translation type="unfinished"></translation>
+        <translation>Unterstützung für DSM2 Sendemodule</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1037"/>
@@ -5939,7 +5946,7 @@ Diese Option stört bei älteren Sendern nicht, es wird nur mehr Code erzeugt.</
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1169"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1194"/>
         <source>PPM center adjustment in limits</source>
-        <translation type="unfinished"></translation>
+        <translation>Erlaubt den PPM Mitte Wert im Begrenzungs Menü anzupassen</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1040"/>
@@ -5949,7 +5956,7 @@ Diese Option stört bei älteren Sendern nicht, es wird nur mehr Code erzeugt.</
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1172"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1197"/>
         <source>Symetrical Limits</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzwingt symmetrische Begrenzungen</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1021"/>
@@ -5958,18 +5965,19 @@ Diese Option stört bei älteren Sendern nicht, es wird nur mehr Code erzeugt.</
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1173"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1198"/>
         <source>Pots use in menus navigation</source>
-        <translation type="unfinished"></translation>
+        <translation>Benutze die Poties in Menüs zur schnelleren Navigation</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="310"/>
         <source>Your radio probably uses a wrong firmware,
  eeprom size is 4096 but only the first 2048 are used</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Sender hat möglicherweise die falsche Firmware,
+ EEPROM Größe ist 4096, es werden jedoch nur 2048 Bytes benutzt.</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1025"/>
         <source>OpenTX for 9X board</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTX für 9X Sender</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1030"/>
@@ -5979,13 +5987,13 @@ Diese Option stört bei älteren Sendern nicht, es wird nur mehr Code erzeugt.</
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1162"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1192"/>
         <source>No flight modes</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Flugmodus Unterstützung</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1042"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1079"/>
         <source>SmartieParts 2.2 Backlight support</source>
-        <translation type="unfinished"></translation>
+        <translation>Wenn das SmartieParts 2.2 Backlight Modul verbaut wurde.</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1045"/>
@@ -5993,7 +6001,7 @@ Diese Option stört bei älteren Sendern nicht, es wird nur mehr Code erzeugt.</
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1176"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1201"/>
         <source>Enable resetting values by pressing up and down at the same time</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktiviert das Zurücksetzen der Werte, wenn Oben und Unten gleichzeitig gedrückt werden</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1046"/>
@@ -6003,7 +6011,7 @@ Diese Option stört bei älteren Sendern nicht, es wird nur mehr Code erzeugt.</
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1177"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1202"/>
         <source>No graphical check boxes and sliders</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine grafischen Auswahlkasten und Schieber</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1047"/>
@@ -6023,12 +6031,12 @@ Diese Option stört bei älteren Sendern nicht, es wird nur mehr Code erzeugt.</
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1179"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1204"/>
         <source>Don&apos;t use bold font for highlighting active items</source>
-        <translation type="unfinished"></translation>
+        <translation>Benutze keine fette Schrift um aktive Elemente hervorzuheben.</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1062"/>
         <source>OpenTX for M128 / 9X board</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTX für M128 / 9X Sender</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1088"/>
@@ -6065,22 +6073,22 @@ Diese Option stört bei älteren Sendern nicht, es wird nur mehr Code erzeugt.</
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1094"/>
         <source>OpenTX for 9XR</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTX für 9XR</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1128"/>
         <source>OpenTX for 9XR with M128 chip</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTX für 9XR mit M128 Chip</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1158"/>
         <source>OpenTX for Gruvin9x board / 9X</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTX für Gruvin9x Sender / 9X</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1164"/>
         <source>Support for SD memory card</source>
-        <translation type="unfinished"></translation>
+        <translation>Unterstützung für SD Card Leser</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1167"/>
@@ -6335,12 +6343,12 @@ The OpenTX Team.</source>
     <message>
         <location filename="../modeledit/setup.ui" line="156"/>
         <source>Timer 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Schaltuhr 2</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="172"/>
         <source>Timer 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Schaltuhr 1</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="190"/>
@@ -6380,7 +6388,7 @@ The OpenTX Team.</source>
     <message>
         <location filename="../modeledit/setup.ui" line="508"/>
         <source>Model</source>
-        <translation>Model</translation>
+        <translation>Modell</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="43"/>
