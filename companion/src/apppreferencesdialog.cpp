@@ -45,8 +45,6 @@ AppPreferencesDialog::~AppPreferencesDialog()
 
 void AppPreferencesDialog::writeValues()
 {
-qDebug() << "writeValues";
-
   g.autoCheckApp(ui->startupCheck_companion9x->isChecked());
   g.autoCheckFw(ui->startupCheck_fw->isChecked());
   g.showSplash(ui->showSplash->isChecked());

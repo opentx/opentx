@@ -1188,6 +1188,7 @@ PACK(typedef struct t_MavlinkData {
 #endif
 
 enum SwashType {
+  SWASH_TYPE_NONE,
   SWASH_TYPE_120,
   SWASH_TYPE_120X,
   SWASH_TYPE_140,
