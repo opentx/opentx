@@ -130,6 +130,7 @@ enum EnumKeys {
 #define IS_KEY_BREAK(evt)    (((evt)&0xe0) == _MSK_KEY_BREAK)
 #define IS_KEY_FIRST(evt)    (((evt)&0xe0) == _MSK_KEY_FIRST)
 #define IS_KEY_LONG(evt)     (((evt)&0xe0) == _MSK_KEY_LONG)
+#define IS_KEY_REPT(evt)     (((evt)&0xe0) == _MSK_KEY_REPT)
 
 #define EVT_ENTRY            0xbf
 #define EVT_ENTRY_UP         0xbe
