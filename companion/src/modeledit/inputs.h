@@ -9,7 +9,7 @@ class InputsPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings);
+    InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
     virtual ~InputsPanel();
 
     virtual void update();

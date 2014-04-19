@@ -342,7 +342,7 @@ int ConvertTelemetrySource_215_to_216(int source)
   if (source >= TELEM_A3)
     source += 2;
   // ASpd and dTE added + 5 reserve
-  if (source >= TELEM_ASPD)
+  if (source >= TELEM_ASPEED)
     source += 7;
   // A3 and A4 MIN added
   if (source >= TELEM_MIN_A3)
@@ -833,7 +833,9 @@ void ConvertModel_215_to_216(ModelData &model)
     memcpy(g_model.gvars[i].name, oldModel.gvar_names[i], LEN_GVAR_NAME);
   }
 
-  memcpy(&g_model.frsky, &oldModel.frsky, sizeof(oldModel.frsky));
+  memcpy(&g_model.frsky, &oldModel.frsky, 2*sizeof(FrSkyChannelData));
+  // gap for A3-A4
+  memcpy(((uint8_t *)&g_model.frsky) + 4*sizeof(FrSkyChannelData), ((uint8_t *)&oldModel.frsky) + 2*sizeof(FrSkyChannelData), sizeof(oldModel.frsky) - 2*sizeof(FrSkyChannelData));
   for (int i=0; i<3; i++) {
     if (g_model.frsky.screensType & (1<<i)) {
       // gauges

@@ -63,24 +63,24 @@ QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {
-    friend class fwPreferencesDialog;
+    friend class FirmwarePreferencesDialog;
     friend class MdiChild; // TODO GetAvrdudeArgs could be external to this class
 
     Q_OBJECT
 
-public:
+  public:
     MainWindow();
 
-protected:
+  protected:
     void closeEvent(QCloseEvent *event);
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
 
 
-public slots:
-    void downloadLatestFW(FirmwareInfo *firmware, const QString & firmwareId);
+  public slots:
+    void downloadLatestFW(FirmwareVariant & firmware);
     
-private slots:
+  private slots:
     void openDocURL();
 
     void setLanguage(QString langString);
@@ -157,7 +157,7 @@ private slots:
     QMenu * createProfilesMenu();
     void autoClose();
   
-private:
+  private:
     void createActions();
     QAction * addAct(QString, QString, QString, QKeySequence::StandardKey, const char *, QObject *slotObj=NULL);
     QAction * addAct(QActionGroup *, QString, QString, const char *);

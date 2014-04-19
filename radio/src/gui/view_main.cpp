@@ -305,11 +305,6 @@ void displayTopBar()
     x -= 12;
   }
 
-  /* SD ICON, not really needed
-  if (sdMounted()) {
-    LCD_NOTIF_ICON(x, ICON_SD);
-  } */
-
   /* Audio volume */
   if (requiredSpeakerVolume == 0)
     LCD_ICON(BAR_VOLUME_X, BAR_Y, ICON_SPEAKER0);
@@ -717,26 +712,21 @@ void menuMainView(uint8_t event)
   }
   else {
     // Logical Switches
-    uint8_t sw = 0;
-    for (uint8_t line=0; line<4; line++) {
-      uint8_t y = LCD_H/2-7+line*8;
-      lcd_rect(LCD_W/2+7*FW-1, y-1, 6*8+1, 7);
-      for (uint8_t col=0; col<8; col++) {
-        uint8_t x = LCD_W/2+7*FW-1+col*(FW);
-        if (col > 0)
-          lcd_vline(x, y, 5);
-        if (getSwitch(SWSRC_SW1+sw)) {
-          lcd_plot(x+1, y);
-          lcd_plot(x+2, y+1);
-          lcd_plot(x+3, y+2);
-          lcd_plot(x+4, y+3);
-          lcd_plot(x+5, y+4);
-          lcd_plot(x+1, y+4);
-          lcd_plot(x+2, y+3);
-          lcd_plot(x+4, y+1);
-          lcd_plot(x+5, y);
-        }
-        sw++;
+    lcd_puts(TRIM_RH_X - TRIM_LEN/2 + 5, 6*FH-1, "LS 1-32");
+    for (uint8_t sw=0; sw<NUM_LOGICAL_SWITCH; sw++) {
+      div_t qr = div(sw, 10);
+      uint8_t y = 13 + 11 * qr.quot;
+      uint8_t x = TRIM_RH_X - TRIM_LEN + qr.rem*5 + (qr.rem >= 5 ? 3 : 0);
+      LogicalSwitchData * cs = cswAddress(sw);
+      if (cs->func == LS_FUNC_NONE) {
+        lcd_hline(x, y+6, 4);
+        lcd_hline(x, y+7, 4);
+      }
+      else if (getSwitch(SWSRC_SW1+sw)) {
+        lcd_filled_rect(x, y, 4, 8);
+      }
+      else {
+        lcd_rect(x, y, 4, 8);
       }
     }
   }

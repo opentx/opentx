@@ -8726,7 +8726,7 @@ m2560 for v4.1 boards</source>
     <message>
         <location filename="../contributorsdialog.cpp" line="23"/>
         <source>People who have contributed to this project</source>
-        <translation>Personnes qui ont contribué au projet</translation>
+        <translation>Donateurs supportant le projet</translation>
     </message>
     <message>
         <location filename="../contributorsdialog.cpp" line="52"/>

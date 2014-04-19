@@ -5,3 +5,4 @@ radio/src/bootloader/.dep/
 radio/src/bootloader/bootloader_ramBoot*
 *.lbm
 *.o
+/doc

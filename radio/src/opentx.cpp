@@ -983,9 +983,9 @@ void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
       if (ed->srcRaw == ovwrIdx)
         v = ovwrValue;
 #if defined(HELI)
-      else if (ed->srcRaw == MIXSRC_Ele && g_model.swashR.value)
+      else if (ed->srcRaw == MIXSRC_Ele)
         v = heliAnas[ELE_STICK];
-      else if (ed->srcRaw == MIXSRC_Ail && g_model.swashR.value)
+      else if (ed->srcRaw == MIXSRC_Ail)
         v = heliAnas[AIL_STICK];
 #endif
       else {
@@ -1035,6 +1035,13 @@ void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
           virtualInputsTrims[cur_chn] = ed->srcRaw - MIXSRC_Rud;
         else
           virtualInputsTrims[cur_chn] = -1;
+
+#if defined(HELI)
+        if (ed->srcRaw == MIXSRC_Ele)
+          heliAnas[ELE_STICK] = v;
+        else if (ed->srcRaw == MIXSRC_Ail)
+          heliAnas[AIL_STICK] = v;
+#endif
 #endif
 
         anas[cur_chn] = v;
@@ -1316,8 +1323,8 @@ getvalue_t getValue(uint8_t i)
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ACCy) return frskyData.hub.accelY;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ACCz) return frskyData.hub.accelZ;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_HDG) return frskyData.hub.gpsCourse_bp;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_VSPD) return frskyData.hub.varioSpeed;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ASPD) return frskyData.hub.airSpeed;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_VSPEED) return frskyData.hub.varioSpeed;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ASPEED) return frskyData.hub.airSpeed;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_DTE) return frskyData.hub.dTE;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_MIN_A1) return frskyData.analog[0].min;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_MIN_A2) return frskyData.analog[1].min;
@@ -2071,7 +2078,7 @@ getvalue_t convert16bitsTelemValue(uint8_t channel, ls_telemetry_value_t value)
       result = value * 100;
       break;
 #endif
-    case TELEM_VSPD:
+    case TELEM_VSPEED:
       result = value * 10;
       break;
 
@@ -2134,7 +2141,7 @@ getvalue_t convert8bitsTelemValue(uint8_t channel, ls_telemetry_value_t value)
     case TELEM_CONSUMPTION:
       result = value * 20;
       break;
-    case TELEM_VSPD:
+    case TELEM_VSPEED:
       result = ((getvalue_t)value - 125) * 10;
       break;
 #endif
@@ -3200,10 +3207,10 @@ void evalInputs(uint8_t mode)
 #if defined(HELI)
       if (d && (ch==ELE_STICK || ch==AIL_STICK)) {
         v = (int32_t(v) * calc100toRESX(g_model.swashR.value)) / int32_t(d);
-#if defined(PCBTARANIS)
-        heliAnas[ch] = v;
-#endif
       }
+#if defined(PCBTARANIS)
+      heliAnas[ch] = v;
+#endif
 #endif
 
 #if !defined(PCBTARANIS)
@@ -3313,11 +3320,12 @@ PLAY_FUNCTION(playValue, uint8_t idx)
       PLAY_NUMBER(div10_and_round(val), 1+UNIT_G, PREC1);
       break;
 
-    case MIXSRC_FIRST_TELEM+TELEM_VSPD-1:
+    case MIXSRC_FIRST_TELEM+TELEM_VSPEED-1:
       PLAY_NUMBER(div10_and_round(val), 1+UNIT_METERS_PER_SECOND, PREC1);
       break;
 
-    case MIXSRC_FIRST_TELEM+TELEM_ASPD-1:
+    case MIXSRC_FIRST_TELEM+TELEM_ASPEED-1:
+    case MIXSRC_FIRST_TELEM+TELEM_MAX_ASPEED-1:
       PLAY_NUMBER(val, 1+UNIT_KTS, 0);
       break;
 

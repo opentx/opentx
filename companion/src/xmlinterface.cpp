@@ -116,14 +116,16 @@ void saveGeneralSettings(GeneralSettings & settings, global_settings & gs)
 
 void saveModel(ModelData & m, model & xm)
 {
+  /* TODO
   model::timer_sequence & timer_sequence (xm.timer());
   for (int i=0; i<2; i++) {
-    TimerData & t = m.timers[i];
-    /* TODO if (t.mode) {
+     TimerData & t = m.timers[i];
+     if (t.mode) {
       timer xt(TimerSwitch::value(t.mode+TMR_NUM_OPTION), direction::value(t.dir), timer::value_type(t.val/3600, (t.val%3600)/60, t.val%60));
       timer_sequence.push_back(xt);
-    } */
+    } 
   }
+  */
   if (m.moduleData[0].protocol != PPM || m.moduleData[0].channelsCount != 8 || m.moduleData[0].ppmDelay != 300 || m.moduleData[0].ppmPulsePol != 0) {
     modulation mod;
     mod.type(modulation::type_type::value(m.moduleData[0].protocol));

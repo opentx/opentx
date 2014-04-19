@@ -18,7 +18,7 @@ class FlightMode : public ModelPanel
     Q_OBJECT
 
   public:
-    FlightMode(QWidget *parent, ModelData &model, int modeIdx, GeneralSettings & generalSettings);
+    FlightMode(QWidget *parent, ModelData &model, int modeIdx, GeneralSettings & generalSettings, FirmwareInterface * firmware);
     virtual ~FlightMode();
 
     virtual void update();
@@ -66,7 +66,7 @@ class FlightModes : public ModelPanel
     Q_OBJECT
 
   public:
-    FlightModes(QWidget *parent, ModelData & model, GeneralSettings & generalSettings);
+    FlightModes(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
     virtual ~FlightModes();
 
     virtual void update();

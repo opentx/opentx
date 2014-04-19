@@ -198,7 +198,7 @@ void MainWindow::checkForUpdates(bool ignoreSettings, QString & fwId)
     check1done = true;
     check2done = true;
     fwToUpdate = fwId;
-    QString stamp = GetFirmware(fwToUpdate)->stamp;
+    QString stamp = GetFirmware(fwToUpdate)->getStampUrl();
 
     if (!stamp.isEmpty()) {
       if (g.autoCheckFw() || ignoreSettings) {
@@ -299,15 +299,15 @@ void MainWindow::updateDownloaded()
     }
 }
 
-void MainWindow::downloadLatestFW(FirmwareInfo * firmware, const QString & firmwareId)
+void MainWindow::downloadLatestFW(FirmwareVariant & firmware)
 {
     QString url, ext, cpuid;
-    url = firmware->getUrl(firmwareId);
+    url = firmware.getFirmwareUrl();
     cpuid=g.cpuId();
     ext = url.mid(url.lastIndexOf("."));
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.flashDir() + "/" + firmwareId + ext);
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.flashDir() + "/" + firmware.id + ext);
     if (!fileName.isEmpty()) {
-      downloadedFW = firmwareId;
+      downloadedFW = firmware.id;
       needRename=true;
       g.profile[g.id()].fwName( fileName );
       if (!cpuid.isEmpty()) {
@@ -468,7 +468,7 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
         layout->addItem(horizontalSpacer, layout->rowCount(), 0, 1, layout->columnCount());            
         if (OldFwRev == 0) {
           showcheckForUpdatesResult = false; // update is available - do not show dialog
-          QString rn = GetFirmware(fwToUpdate)->rnurl;
+          QString rn = GetFirmware(fwToUpdate)->getReleaseNotesUrl();
           QAbstractButton *rnButton = NULL;
           msgBox.setWindowTitle("Companion");
           msgBox.setInformativeText(tr("Firmware %1 does not seem to have ever been downloaded.\nVersion %2 is available.\nDo you want to download it now ?").arg(fwToUpdate).arg(NewFwRev));
@@ -495,9 +495,10 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
           } else {
             ignore = true;
           }
-        } else if (NewFwRev > OldFwRev) {
+        }
+        else if (NewFwRev > OldFwRev) {
           showcheckForUpdatesResult = false; // update is available - do not show dialog
-          QString rn = GetFirmware(fwToUpdate)->rnurl;
+          QString rn = GetFirmware(fwToUpdate)->getReleaseNotesUrl();
           QAbstractButton *rnButton;
           msgBox.setText("Companion");
           msgBox.setInformativeText(tr("A new version of %1 firmware is available (current %2 - newer %3).\nDo you want to download it now ?").arg(fwToUpdate).arg(OldFwRev).arg(NewFwRev));
@@ -536,7 +537,7 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
           }
         } else if (download == true) {
           if (warning>0) {
-            QString rn = GetFirmware(fwToUpdate)->rnurl;
+            QString rn = GetFirmware(fwToUpdate)->getReleaseNotesUrl();
             if (!rn.isEmpty()) {
               int ret2 = QMessageBox::warning(this, "Companion", tr("Release notes contain very important informations. Do you want to see them now ?"), QMessageBox::Yes | QMessageBox::No);
               if (ret2 == QMessageBox::Yes) {
@@ -546,7 +547,7 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
             }
           }
           downloadedFW = fwToUpdate;
-          QString url = GetFirmware(fwToUpdate)->getUrl(fwToUpdate);
+          QString url = GetFirmwareVariant(fwToUpdate).getFirmwareUrl();
           QString ext = url.mid(url.lastIndexOf("."));
           needRename=false;
           bool addversion=g.profile[g.id()].renameFwFiles();
@@ -716,14 +717,14 @@ void MainWindow::loadProfile()  //TODO Load all variables - Also HW!
 
 void MainWindow::appPrefs()
 {
-    appPreferencesDialog *pd = new appPreferencesDialog(this);
+    AppPreferencesDialog *pd = new AppPreferencesDialog(this);
     pd->exec();
     updateMenus();
 }
 
 void MainWindow::fwPrefs()
 {
-    fwPreferencesDialog *pd = new fwPreferencesDialog(this);
+    FirmwarePreferencesDialog *pd = new FirmwarePreferencesDialog(this);
     pd->exec();
     foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
       MdiChild *mdiChild = qobject_cast<MdiChild *>(window->widget());
@@ -746,11 +747,12 @@ void MainWindow::changelog()
 
 void MainWindow::fwchangelog()
 {
-    FirmwareInfo *currfirm = GetCurrentFirmware();
-    QString rn=currfirm->rnurl;
+    FirmwareInterface *currfirm = GetCurrentFirmware();
+    QString rn=currfirm->getReleaseNotesUrl();
     if (rn.isEmpty()) {
       QMessageBox::information(this, tr("Firmware updates"), tr("Current firmware does not provide release notes informations."));
-    } else {
+    }
+    else {
       contributorsDialog *cd = new contributorsDialog(this,2, rn);
       cd->exec();
     }
@@ -1257,7 +1259,7 @@ bool MainWindow::isValidEEPROM(QString eepromfile)
 
 bool MainWindow::convertEEPROM(QString backupFile, QString restoreFile, QString flashFile)
 {
-    FirmwareInfo *firmware = GetCurrentFirmware();
+    FirmwareInterface *firmware = GetCurrentFirmware();
     FlashInterface flash(flashFile);
     if (!flash.isValid())
       return false;
@@ -1289,9 +1291,6 @@ bool MainWindow::convertEEPROM(QString backupFile, QString restoreFile, QString 
         else {
           version = fwEEprom.toInt();
         }
-      }
-      else {
-        version = ((Open9xFirmware *)firmware)->getEepromVersion(revision);
       }
     }
 
@@ -1490,8 +1489,9 @@ void MainWindow::burnFuses()
 
 void MainWindow::compare()
 {
-    compareDialog *fd = new compareDialog(this);
-    fd->show();
+  CompareDialog *fd = new CompareDialog(this);
+  fd->show();
+  delete fd;
 }
 
 void MainWindow::logFile()
@@ -1546,17 +1546,17 @@ void MainWindow::updateMenus()
 
 MdiChild *MainWindow::createMdiChild()
 {
-    MdiChild *child = new MdiChild;
-    mdiArea->addSubWindow(child);
-    if(!child->parentWidget()->isMaximized() && !child->parentWidget()->isMinimized())
-      child->parentWidget()->resize(400, 400);
+  MdiChild *child = new MdiChild();
+  mdiArea->addSubWindow(child);
+  if(!child->parentWidget()->isMaximized() && !child->parentWidget()->isMinimized())
+    child->parentWidget()->resize(400, 400);
 
-    connect(child, SIGNAL(copyAvailable(bool)),cutAct, SLOT(setEnabled(bool)));
-    connect(child, SIGNAL(copyAvailable(bool)),copyAct, SLOT(setEnabled(bool)));
-    connect(child, SIGNAL(copyAvailable(bool)),simulateAct, SLOT(setEnabled(bool)));
-    connect(child, SIGNAL(copyAvailable(bool)),printAct, SLOT(setEnabled(bool)));
+  connect(child, SIGNAL(copyAvailable(bool)),cutAct, SLOT(setEnabled(bool)));
+  connect(child, SIGNAL(copyAvailable(bool)),copyAct, SLOT(setEnabled(bool)));
+  connect(child, SIGNAL(copyAvailable(bool)),simulateAct, SLOT(setEnabled(bool)));
+  connect(child, SIGNAL(copyAvailable(bool)),printAct, SLOT(setEnabled(bool)));
 
-    return child;
+  return child;
 }
 
 QAction * MainWindow::addAct(QString icon, QString sName, QString lName, QKeySequence::StandardKey shortcut, const char *slot, QObject *slotObj)

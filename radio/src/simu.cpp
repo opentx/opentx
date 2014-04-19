@@ -179,7 +179,7 @@ long Open9xSim::onKeypress(FXObject*,FXSelector,void*v)
   return 0;
 }
 
-long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
+long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
 {
   if(hasFocus()) {
     static int keys1[]={
@@ -284,7 +284,7 @@ long Open9xSim::onTimeout(FXObject*,FXSelector,void*)
 
   per10ms();
   refreshDiplay();
-  getApp()->addTimeout(this,2,5);
+  getApp()->addTimeout(this, 2, 10);
   return 0;
 }
 

@@ -104,8 +104,7 @@ uint8_t getStickMode()
 
 using namespace Open9xM128;
 
-Open9xM128Simulator::Open9xM128Simulator(OpenTxInterface * open9xInterface):
-  open9xInterface(open9xInterface)
+Open9xM128Simulator::Open9xM128Simulator()
 {
 }
 

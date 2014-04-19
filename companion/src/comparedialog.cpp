@@ -24,39 +24,38 @@ public:
   uint8_t models[C9X_MAX_MODELS];
 };
 
-compareDialog::compareDialog(QWidget *parent, GeneralSettings *gg) :
-    QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint),
-    ui(new Ui::compareDialog)
+CompareDialog::CompareDialog(QWidget * parent):
+  QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint),
+  model1(0),
+  model2(0),
+  ui(new Ui::CompareDialog)
 {
   ui->setupUi(this);
   this->setWindowIcon(CompanionIcon("compare.png"));
-  g_eeGeneral = gg;
-  eepromInterface = GetEepromInterface();
   te = ui->textEdit;
   this->setAcceptDrops(true);
-  model1=0;
-  model2=0;
+
+  // TODO this is really horrible  
   g_model1=(ModelData *)malloc(sizeof(ModelData));
   g_model2=(ModelData *)malloc(sizeof(ModelData));
   modeltemp=(ModelData *)malloc(sizeof(ModelData));
-    //setDragDropOverwriteMode(true);
-    //setDropIndicatorShown(true);
-/*
-    printFrSky();
-*/    
-    te->scrollToAnchor("1");
+
+  //setDragDropOverwriteMode(true);
+  //setDropIndicatorShown(true);
+  te->scrollToAnchor("1");
 }
 
-void compareDialog::dragMoveEvent(QDragMoveEvent *event)
+void CompareDialog::dragMoveEvent(QDragMoveEvent *event)
 {
   if (event->mimeData()->hasFormat("application/x-companion")) {   
     event->acceptProposedAction();
-  } else {
+  }
+  else {
     event->ignore();
   }
 }
 
-void compareDialog::dragEnterEvent(QDragEnterEvent *event)
+void CompareDialog::dragEnterEvent(QDragEnterEvent *event)
 {
   // accept just text/uri-list mime format
   if (event->mimeData()->hasFormat("application/x-companion")) {   
@@ -66,16 +65,16 @@ void compareDialog::dragEnterEvent(QDragEnterEvent *event)
   }
 }
 
-void compareDialog::dragLeaveEvent(QDragLeaveEvent *event)
+void CompareDialog::dragLeaveEvent(QDragLeaveEvent *event)
 {
   event->accept();
 }
 
-void compareDialog::printDiff()
+void CompareDialog::printDiff()
 {
   te->clear();
   printSetup();
-  if (GetEepromInterface()->getCapability(FlightPhases)) {
+  if (GetCurrentFirmware()->getCapability(FlightPhases)) {
     printPhases();
   }
   printExpos();
@@ -89,7 +88,7 @@ void compareDialog::printDiff()
   te->scrollToAnchor("1");
 }
 
-void compareDialog::dropEvent(QDropEvent *event)
+void CompareDialog::dropEvent(QDropEvent *event)
 {
   QLabel *child = qobject_cast<QLabel*>(childAt(event->pos()));
   const QMimeData  *mimeData = event->mimeData();
@@ -153,7 +152,7 @@ void compareDialog::dropEvent(QDropEvent *event)
   }
 }
 
-void compareDialog::closeEvent(QCloseEvent *event) 
+void CompareDialog::closeEvent(QCloseEvent *event) 
 {
   QByteArray ba = curvefile5.toLatin1();
   char *name = ba.data(); 
@@ -163,12 +162,12 @@ void compareDialog::closeEvent(QCloseEvent *event)
   unlink(name);    
 }
 
-compareDialog::~compareDialog()
+CompareDialog::~CompareDialog()
 {
   delete ui;
 }
 
-QString compareDialog::doTC(const QString s, const QString color="", bool bold=false)
+QString CompareDialog::doTC(const QString s, const QString color="", bool bold=false)
 {
   QString str = s;
   if(bold) str = "<b>" + str + "</b>";
@@ -176,7 +175,7 @@ QString compareDialog::doTC(const QString s, const QString color="", bool bold=f
   return "<td align=center>" + str + "</td>";
 }
 
-QString compareDialog::doTR(const QString s, const QString color="", bool bold=false)
+QString CompareDialog::doTR(const QString s, const QString color="", bool bold=false)
 {
   QString str = s;
   if(bold) str = "<b>" + str + "</b>";
@@ -184,7 +183,7 @@ QString compareDialog::doTR(const QString s, const QString color="", bool bold=f
   return "<td align=right>" + str + "</td>";
 }
 
-QString compareDialog::doTL(const QString s, const QString color="", bool bold=false)
+QString CompareDialog::doTL(const QString s, const QString color="", bool bold=false)
 {
   QString str = s;
   if(bold) str = "<b>" + str + "</b>";
@@ -192,14 +191,14 @@ QString compareDialog::doTL(const QString s, const QString color="", bool bold=f
   return "<td align=left>" + str + "</td>";
 }
 
-QString compareDialog::fv(const QString name, const QString value, const QString color="green")
+QString CompareDialog::fv(const QString name, const QString value, const QString color="green")
 {
     return "<b>" + name + ": </b><font color=" +color + ">" + value + "</font><br>";
 }
 
 
 
-int compareDialog::ModelHasExpo(ExpoData * ExpoArray, ExpoData expo, bool * expoused)
+int CompareDialog::ModelHasExpo(ExpoData * ExpoArray, ExpoData expo, bool * expoused)
 {
   for (int i=0; i< C9X_MAX_EXPOS; i++) {
     if ((memcmp(&expo,&ExpoArray[i],sizeof(ExpoData))==0) && (expoused[i]==false)) {
@@ -209,7 +208,7 @@ int compareDialog::ModelHasExpo(ExpoData * ExpoArray, ExpoData expo, bool * expo
   return -1;
 }
 
-bool compareDialog::ChannelHasExpo(ExpoData * expoArray, uint8_t destCh)
+bool CompareDialog::ChannelHasExpo(ExpoData * expoArray, uint8_t destCh)
 {
   for (int i=0; i< C9X_MAX_EXPOS; i++) {
     if ((expoArray[i].chn==destCh)&&(expoArray[i].mode!=0)) {
@@ -219,7 +218,7 @@ bool compareDialog::ChannelHasExpo(ExpoData * expoArray, uint8_t destCh)
   return false;
 }
 
-int compareDialog::ModelHasMix(MixData * mixArray, MixData mix, bool * mixused)
+int CompareDialog::ModelHasMix(MixData * mixArray, MixData mix, bool * mixused)
 {
   for (int i=0; i< C9X_MAX_MIXERS; i++) {
     if ((memcmp(&mix,&mixArray[i],sizeof(MixData))==0) && (mixused[i]==false)) {
@@ -229,7 +228,7 @@ int compareDialog::ModelHasMix(MixData * mixArray, MixData mix, bool * mixused)
   return -1;
 }
 
-bool compareDialog::ChannelHasMix(MixData * mixArray, uint8_t destCh)
+bool CompareDialog::ChannelHasMix(MixData * mixArray, uint8_t destCh)
 {
   for (int i=0; i< C9X_MAX_MIXERS; i++) {
     if (mixArray[i].destCh==destCh) {
@@ -239,7 +238,7 @@ bool compareDialog::ChannelHasMix(MixData * mixArray, uint8_t destCh)
   return false;
 }
 
-void compareDialog::printSetup()
+void CompareDialog::printSetup()
 {
   QString color;
   QString str = "<a name=1></a><table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
@@ -247,8 +246,8 @@ void compareDialog::printSetup()
   str.append("<tr><td><table border=0 cellspacing=0 cellpadding=3 width=\"50%\">");
   color=getColor1(g_model1->name,g_model2->name);
   str.append(fv(tr("Name"), g_model1->name, color));
-  color=getColor1(eepromInterface->getSize(*g_model1),eepromInterface->getSize(*g_model2));
-  str.append("<b>"+tr("EEprom Size")+QString(": </b><font color=%2>%1</font><br>").arg(eepromInterface->getSize(*g_model1)).arg(color));
+  color=getColor1(GetEepromInterface()->getSize(*g_model1), GetEepromInterface()->getSize(*g_model2));
+  str.append("<b>"+tr("EEprom Size")+QString(": </b><font color=%2>%1</font><br>").arg(GetEepromInterface()->getSize(*g_model1)).arg(color));
   color=getColor1(getTimerStr(g_model1->timers[0]), getTimerStr(g_model2->timers[0]));
   str.append(fv(tr("Timer1"), getTimerStr(g_model1->timers[0]), color));  //value, mode, count up/down
   color=getColor1(getTimerStr(g_model1->timers[1]), getTimerStr(g_model2->timers[1]));
@@ -270,8 +269,8 @@ void compareDialog::printSetup()
   str.append("<td><table border=0 cellspacing=0 cellpadding=3 width=\"50%\">");
   color=getColor2(g_model1->name,g_model2->name);
   str.append(fv(tr("Name"), g_model2->name, color));
-  color=getColor2(eepromInterface->getSize(*g_model1),eepromInterface->getSize(*g_model2));
-  str.append("<b>"+tr("EEprom Size")+QString(": </b><font color=%2>%1</font><br>").arg(eepromInterface->getSize(*g_model2)).arg(color));
+  color=getColor2(GetEepromInterface()->getSize(*g_model1), GetEepromInterface()->getSize(*g_model2));
+  str.append("<b>"+tr("EEprom Size")+QString(": </b><font color=%2>%1</font><br>").arg(GetEepromInterface()->getSize(*g_model2)).arg(color));
   color=getColor2(getTimerStr(g_model1->timers[0]), getTimerStr(g_model2->timers[0]));
   str.append(fv(tr("Timer1"), getTimerStr(g_model2->timers[0]),color));  //value, mode, count up/down
   color=getColor2(getTimerStr(g_model1->timers[1]), getTimerStr(g_model2->timers[1]));
@@ -293,7 +292,7 @@ void compareDialog::printSetup()
   te->append(str);
 }
 
-void compareDialog::printPhases()
+void CompareDialog::printPhases()
 {
   QString color;
   int i,k;
@@ -308,7 +307,7 @@ void compareDialog::printPhases()
     str.append(QString("<td width=\"40\" align=\"center\"><b>%1</b></td>").arg(getInputStr(*g_model1, i)));
   }
   str.append("</tr>");
-  for (i=0; i<GetEepromInterface()->getCapability(FlightPhases); i++) {
+  for (i=0; i<GetCurrentFirmware()->getCapability(FlightPhases); i++) {
     PhaseData *pd1=&g_model1->phaseData[i];
     PhaseData *pd2=&g_model2->phaseData[i];
     str.append("<tr><td><b>"+tr("FM")+QString("%1</b> ").arg(i));
@@ -334,7 +333,7 @@ void compareDialog::printPhases()
   str.append("</table>");
   int gvars=0;
   int gvarnum=0;
-  if (GetEepromInterface()->getCapability(HasVariants)) {
+  if (GetCurrentFirmware()->getCapability(HasVariants)) {
     if ((GetCurrentFirmwareVariant() & GVARS_VARIANT)) {
       gvars=1;
     }
@@ -342,35 +341,35 @@ void compareDialog::printPhases()
     gvars=1;
   }
   if (gvars==1) {
-    gvarnum=GetEepromInterface()->getCapability(Gvars);
+    gvarnum=GetCurrentFirmware()->getCapability(Gvars);
   }
-  if ((gvars==1 && GetEepromInterface()->getCapability(GvarsFlightPhases)) || GetEepromInterface()->getCapability(RotaryEncoders)) {
+  if ((gvars==1 && GetCurrentFirmware()->getCapability(GvarsFlightPhases)) || GetCurrentFirmware()->getCapability(RotaryEncoders)) {
     str.append("<br><table border=1 cellspacing=0 cellpadding=1 width=\"100%\">");
     str.append("<tr><td style=\"border-style:none;\">&nbsp;</td>");
-    if (GetEepromInterface()->getCapability(GvarsFlightPhases)) {
+    if (GetCurrentFirmware()->getCapability(GvarsFlightPhases)) {
       
       str.append(QString("<td colspan=%1 align=center><b>").arg(gvarnum)+tr("Gvars")+"</td>");
     }
-    if (GetEepromInterface()->getCapability(RotaryEncoders)) {
-      str.append(QString("<td colspan=%1 align=center><b>").arg(GetEepromInterface()->getCapability(RotaryEncoders))+tr("Rot. Enc.")+"</td>");
+    if (GetCurrentFirmware()->getCapability(RotaryEncoders)) {
+      str.append(QString("<td colspan=%1 align=center><b>").arg(GetCurrentFirmware()->getCapability(RotaryEncoders))+tr("Rot. Enc.")+"</td>");
     }
     str.append("</tr><tr><td align=center><b>"+tr("Flight mode name")+"</b></td>");
-    if (GetEepromInterface()->getCapability(GvarsFlightPhases)) {
+    if (GetCurrentFirmware()->getCapability(GvarsFlightPhases)) {
       for (i=0; i<gvarnum; i++) {
         str.append(QString("<td width=\"40\" align=\"center\"><b>GV%1</b><br>%2</td>").arg(i+1).arg(g_model1->gvars_names[i]));
       }
     }
-    for (i=0; i<GetEepromInterface()->getCapability(RotaryEncoders); i++) {
+    for (i=0; i<GetCurrentFirmware()->getCapability(RotaryEncoders); i++) {
       str.append(QString("<td align=\"center\"><b>RE%1</b></td>").arg((i==0 ? 'A': 'B')));
     }
     str.append("</tr>");
-    for (i=0; i<GetEepromInterface()->getCapability(FlightPhases); i++) {
+    for (i=0; i<GetCurrentFirmware()->getCapability(FlightPhases); i++) {
       PhaseData *pd1=&g_model1->phaseData[i];
       PhaseData *pd2=&g_model2->phaseData[i];
       str.append("<tr><td><b>"+tr("FM")+QString("%1</b> ").arg(i));
       color=getColor1(pd1->name,pd2->name);
       str.append(QString("<font size=+1 face='Courier New' color=%2>%1</font></td>").arg(pd1->name).arg(color));
-      if (GetEepromInterface()->getCapability(GvarsFlightPhases)) {
+      if (GetCurrentFirmware()->getCapability(GvarsFlightPhases)) {
         for (k=0; k<gvarnum; k++) {
           color=getColor1(pd1->gvars[k],pd2->gvars[k]);
           if (pd1->gvars[k]<=1024) {
@@ -383,7 +382,7 @@ void compareDialog::printPhases()
           }
         }
       }
-      for (k=0; k<GetEepromInterface()->getCapability(RotaryEncoders); k++) {
+      for (k=0; k<GetCurrentFirmware()->getCapability(RotaryEncoders); k++) {
         color=getColor1(pd1->rotaryEncoders[k],pd2->rotaryEncoders[k]);
         if (pd1->rotaryEncoders[k]<=1024) {
           str.append(QString("<td align=\"right\"><font size=+1 face='Courier New' color=%2>%1").arg(pd1->rotaryEncoders[k]).arg(color)+"</font></td>");
@@ -409,7 +408,7 @@ void compareDialog::printPhases()
     str.append(QString("<td width=\"40\" align=\"center\"><b>%1</b></td>").arg(getInputStr(*g_model1, i)));
   }
   str.append("</tr>");
-  for (i=0; i<GetEepromInterface()->getCapability(FlightPhases); i++) {
+  for (i=0; i<GetCurrentFirmware()->getCapability(FlightPhases); i++) {
     PhaseData *pd1=&g_model1->phaseData[i];
     PhaseData *pd2=&g_model2->phaseData[i];
     str.append("<tr><td><b>"+tr("FM")+QString("%1</b> ").arg(i));
@@ -434,32 +433,32 @@ void compareDialog::printPhases()
   }
   str.append("</table>");
   
-  if ((gvars==1 && GetEepromInterface()->getCapability(GvarsFlightPhases)) || GetEepromInterface()->getCapability(RotaryEncoders)) {
+  if ((gvars==1 && GetCurrentFirmware()->getCapability(GvarsFlightPhases)) || GetCurrentFirmware()->getCapability(RotaryEncoders)) {
     str.append("<br><table border=1 cellspacing=0 cellpadding=1 width=\"100%\">");
     str.append("<tr><td style=\"border-style:none;\">&nbsp;</td>");
-    if (GetEepromInterface()->getCapability(GvarsFlightPhases)) {
+    if (GetCurrentFirmware()->getCapability(GvarsFlightPhases)) {
       str.append(QString("<td colspan=%1 align=center><b>").arg(gvarnum)+tr("Gvars")+"</td>");
     }
-    if (GetEepromInterface()->getCapability(RotaryEncoders)) {
-      str.append(QString("<td colspan=%1 align=center><b>").arg(GetEepromInterface()->getCapability(RotaryEncoders))+tr("Rot. Enc.")+"</td>");
+    if (GetCurrentFirmware()->getCapability(RotaryEncoders)) {
+      str.append(QString("<td colspan=%1 align=center><b>").arg(GetCurrentFirmware()->getCapability(RotaryEncoders))+tr("Rot. Enc.")+"</td>");
     }
     str.append("</tr><tr><td align=center ><b>"+tr("Flight mode name")+"</b></td>");
-    if (GetEepromInterface()->getCapability(GvarsFlightPhases)) {
+    if (GetCurrentFirmware()->getCapability(GvarsFlightPhases)) {
       for (i=0; i<gvarnum; i++) {
         str.append(QString("<td width=\"40\" align=\"center\"><b>GV%1</b><br>%2</td>").arg(i+1).arg(g_model2->gvars_names[i]));
       }
     }
-    for (i=0; i<GetEepromInterface()->getCapability(RotaryEncoders); i++) {
+    for (i=0; i<GetCurrentFirmware()->getCapability(RotaryEncoders); i++) {
       str.append(QString("<td align=\"center\"><b>RE%1</b></td>").arg((i==0 ? 'A': 'B')));
     }
     str.append("</tr>");
-    for (i=0; i<GetEepromInterface()->getCapability(FlightPhases); i++) {
+    for (i=0; i<GetCurrentFirmware()->getCapability(FlightPhases); i++) {
       PhaseData *pd1=&g_model1->phaseData[i];
       PhaseData *pd2=&g_model2->phaseData[i];
       str.append("<tr><td><b>"+tr("FM")+QString("%1</b> ").arg(i));
       color=getColor1(pd1->name,pd2->name);
       str.append(QString("<font size=+1 face='Courier New' color=%2>%1</font></td>").arg(pd2->name).arg(color));
-      if (GetEepromInterface()->getCapability(GvarsFlightPhases)) {
+      if (GetCurrentFirmware()->getCapability(GvarsFlightPhases)) {
         for (k=0; k<gvarnum; k++) {
           color=getColor1(pd1->gvars[k],pd2->gvars[k]);
           if (pd2->gvars[k]<=1024) {
@@ -472,7 +471,7 @@ void compareDialog::printPhases()
           }
         }
       }
-      for (k=0; k<GetEepromInterface()->getCapability(RotaryEncoders); k++) {
+      for (k=0; k<GetCurrentFirmware()->getCapability(RotaryEncoders); k++) {
         color=getColor1(pd1->rotaryEncoders[k],pd2->rotaryEncoders[k]);
         if (pd2->rotaryEncoders[k]<=1024) {
           str.append(QString("<td align=\"right\"><font size=+1 face='Courier New' color=%2>%1").arg(pd2->rotaryEncoders[k]).arg(color)+"</font></td>");
@@ -491,20 +490,20 @@ void compareDialog::printPhases()
   te->append(str);
 }
 
-void compareDialog::printLimits()
+void CompareDialog::printLimits()
 {
   QString color;
   QString str = "<table border=1 cellspacing=0 cellpadding=3 style=\"page-break-after:always;\" width=\"100%\">";
   str.append("<tr><td colspan=2><h2>"+tr("Limits")+"</h2></td></tr>");
   str.append("<tr><td><table border=1 cellspacing=0 cellpadding=1 width=\"50%\">");
-  if (GetEepromInterface()->getCapability(HasChNames)) {
+  if (GetCurrentFirmware()->getCapability(HasChNames)) {
     str.append("<tr><td>"+tr("Name")+"</td><td align=center><b>"+tr("Offset")+"</b></td><td align=center><b>"+tr("Min")+"</b></td><td align=center><b>"+tr("Max")+"</b></td><td align=center><b>"+tr("Invert")+"</b></td></tr>");
   } else {
     str.append("<tr><td></td><td align=center><b>"+tr("Offset")+"</b></td><td align=center><b>"+tr("Min")+"</b></td><td align=center><b>"+tr("Max")+"</b></td><td align=center><b>"+tr("Invert")+"</b></td></tr>");    
   }
-  for(int i=0; i<GetEepromInterface()->getCapability(Outputs); i++) {
+  for(int i=0; i<GetCurrentFirmware()->getCapability(Outputs); i++) {
     str.append("<tr>");
-    if (GetEepromInterface()->getCapability(HasChNames)) {
+    if (GetCurrentFirmware()->getCapability(HasChNames)) {
       QString name1=g_model1->limitData[i].name;
       QString name2=g_model2->limitData[i].name;
       color=getColor1(name1,name2);
@@ -529,9 +528,9 @@ void compareDialog::printLimits()
   str.append("</table></td>");
   str.append("<td><table border=1 cellspacing=0 cellpadding=1 width=\"50%\">");
   str.append("<tr><td></td><td align=center><b>"+tr("Offset")+"</b></td><td align=center><b>"+tr("Min")+"</b></td><td align=center><b>"+tr("Max")+"</b></td><td align=center><b>"+tr("Invert")+"</b></td></tr>");
-  for(int i=0; i<GetEepromInterface()->getCapability(Outputs); i++) {
+  for(int i=0; i<GetCurrentFirmware()->getCapability(Outputs); i++) {
     str.append("<tr>");
-    if (GetEepromInterface()->getCapability(HasChNames)) {
+    if (GetCurrentFirmware()->getCapability(HasChNames)) {
       QString name1=g_model1->limitData[i].name;
       QString name2=g_model2->limitData[i].name;
       color=getColor2(name1,name2);
@@ -557,17 +556,17 @@ void compareDialog::printLimits()
   te->append(str);
 }
 
-void compareDialog::printGvars()
+void CompareDialog::printGvars()
 {
   QString color;
   int gvars=0;
   int gvarnum=0;
-  if ((GetCurrentFirmwareVariant() & GVARS_VARIANT ) || (!GetEepromInterface()->getCapability(HasVariants) && GetEepromInterface()->getCapability(Gvars))) {
+  if ((GetCurrentFirmwareVariant() & GVARS_VARIANT ) || (!GetCurrentFirmware()->getCapability(HasVariants) && GetCurrentFirmware()->getCapability(Gvars))) {
     gvars=1;
-    gvarnum=GetEepromInterface()->getCapability(Gvars);
+    gvarnum=GetCurrentFirmware()->getCapability(Gvars);
   }
 
-  if (!GetEepromInterface()->getCapability(GvarsFlightPhases) && (gvars==1 && GetEepromInterface()->getCapability(Gvars))) {
+  if (!GetCurrentFirmware()->getCapability(GvarsFlightPhases) && (gvars==1 && GetCurrentFirmware()->getCapability(Gvars))) {
     QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
     str.append("<tr><td colspan=2><h2>"+tr("Global Variables")+"</h2></td></tr>");
     str.append("<tr><td width=50%>");
@@ -605,7 +604,7 @@ void compareDialog::printGvars()
   }
 }
 
-void compareDialog::printExpos()
+void CompareDialog::printExpos()
 {
   QString color;
   bool expoused[C9X_MAX_EXPOS]={false};
@@ -614,7 +613,7 @@ void compareDialog::printExpos()
   QString str = "<table border=1 cellspacing=0 cellpadding=3 style=\"page-break-after:always;\" width=\"100%\"><tr><td><h2>";
   str.append(tr("Expo/Dr Settings"));
   str.append("</h2></td></tr><tr><td><table border=1 cellspacing=0 cellpadding=3>");
-  for(uint8_t i=0; i<GetEepromInterface()->getCapability(Outputs); i++) {
+  for(uint8_t i=0; i<GetCurrentFirmware()->getCapability(Outputs); i++) {
     if (ChannelHasExpo(g_model1->expoData, i) || ChannelHasExpo(g_model2->expoData, i)) {
       str.append("<tr>");
       str.append("<td width=\"45%\">");
@@ -651,12 +650,12 @@ void compareDialog::printExpos()
           str += tr("Weight") + QString("%1").arg(getGVarString(ed->weight)).rightJustified(6, ' ');
           str += ed->curve.toString().replace("<", "&lt;").replace(">", "&gt;");
 
-          if (GetEepromInterface()->getCapability(FlightPhases)) {
+          if (GetCurrentFirmware()->getCapability(FlightPhases)) {
             if(ed->phases) {
-              if (ed->phases!=(unsigned int)(1<<GetEepromInterface()->getCapability(FlightPhases))-1) {
+              if (ed->phases!=(unsigned int)(1<<GetCurrentFirmware()->getCapability(FlightPhases))-1) {
                 int mask=1;
                 int first=0;
-                for (int i=0; i<GetEepromInterface()->getCapability(FlightPhases);i++) {
+                for (int i=0; i<GetCurrentFirmware()->getCapability(FlightPhases);i++) {
                   if (!(ed->phases & mask)) {
                     first++;
                   }
@@ -669,7 +668,7 @@ void compareDialog::printExpos()
                 }
                 mask=1;
                 first=1;
-                for (int j=0; j<GetEepromInterface()->getCapability(FlightPhases);j++) {
+                for (int j=0; j<GetCurrentFirmware()->getCapability(FlightPhases);j++) {
                   if (!(ed->phases & mask)) {
                     PhaseData *pd = &g_model1->phaseData[j];
                     if (!first) {
@@ -729,12 +728,12 @@ void compareDialog::printExpos()
           str += tr("Weight") + QString("%1").arg(getGVarString(ed->weight)).rightJustified(6, ' ');
           str += ed->curve.toString().replace("<", "&lt;").replace(">", "&gt;");
 
-          if (GetEepromInterface()->getCapability(FlightPhases)) {
+          if (GetCurrentFirmware()->getCapability(FlightPhases)) {
             if(ed->phases) {
-              if (ed->phases!=(unsigned int)(1<<GetEepromInterface()->getCapability(FlightPhases))-1) {
+              if (ed->phases!=(unsigned int)(1<<GetCurrentFirmware()->getCapability(FlightPhases))-1) {
                 int mask=1;
                 int first=0;
-                for (int i=0; i<GetEepromInterface()->getCapability(FlightPhases);i++) {
+                for (int i=0; i<GetCurrentFirmware()->getCapability(FlightPhases);i++) {
                   if (!(ed->phases & mask)) {
                     first++;
                   }
@@ -747,7 +746,7 @@ void compareDialog::printExpos()
                 }
                 mask=1;
                 first=1;
-                for (int j=0; j<GetEepromInterface()->getCapability(FlightPhases);j++) {
+                for (int j=0; j<GetCurrentFirmware()->getCapability(FlightPhases);j++) {
                   if (!(ed->phases & mask)) {
                     PhaseData *pd = &g_model2->phaseData[j];
                     if (!first) {
@@ -778,21 +777,21 @@ void compareDialog::printExpos()
   te->append(str);
 }
 
-void compareDialog::printMixers()
+void CompareDialog::printMixers()
 {
   QString color;
   QString str = "<table border=1 cellspacing=0 cellpadding=3 style=\"page-break-after:always;\" width=\"100%\"><tr><td><h2>";
   str.append(tr("Mixers"));
   str.append("</h2></td></tr><tr><td><table border=1 cellspacing=0 cellpadding=3>");
-  float scale=GetEepromInterface()->getCapability(SlowScale);
+  float scale=GetCurrentFirmware()->getCapability(SlowScale);
   bool mixused[64]={false};
   bool mixused2[64]={false};
-  for(uint8_t i=1; i<=GetEepromInterface()->getCapability(Outputs); i++) {
+  for(uint8_t i=1; i<=GetCurrentFirmware()->getCapability(Outputs); i++) {
     if (ChannelHasMix(g_model1->mixData, i) || ChannelHasMix(g_model2->mixData, i)) {
       str.append("<tr>");
       str.append("<td width=\"45%\">");
       str.append("<table border=0 cellspacing=0 cellpadding=0>");
-      for (int j=0; j<GetEepromInterface()->getCapability(Mixes); j++) {
+      for (int j=0; j<GetCurrentFirmware()->getCapability(Mixes); j++) {
         if (g_model1->mixData[j].destCh==i) {
           int mix=ModelHasMix(g_model2->mixData, g_model1->mixData[j], mixused);
           if (mix>-1) {
@@ -827,12 +826,12 @@ void compareDialog::printMixers()
           if (md->delayDown || md->delayUp) str += tr(" Delay(u%1:d%2)").arg(md->delayUp/scale).arg(md->delayDown/scale);
           if (md->speedDown || md->speedUp) str += tr(" Slow(u%1:d%2)").arg(md->speedUp/scale).arg(md->speedDown/scale);
           if (md->mixWarn)  str += " "+tr("Warn")+QString("(%1)").arg(md->mixWarn);
-          if (GetEepromInterface()->getCapability(FlightPhases)) {
+          if (GetCurrentFirmware()->getCapability(FlightPhases)) {
             if(md->phases) {
-              if (md->phases!=(unsigned int)(1<<GetEepromInterface()->getCapability(FlightPhases))-1) {
+              if (md->phases!=(unsigned int)(1<<GetCurrentFirmware()->getCapability(FlightPhases))-1) {
                 int mask=1;
                 int first=0;
-                for (int i=0; i<GetEepromInterface()->getCapability(FlightPhases);i++) {
+                for (int i=0; i<GetCurrentFirmware()->getCapability(FlightPhases);i++) {
                   if (!(md->phases & mask)) {
                     first++;
                   }
@@ -845,7 +844,7 @@ void compareDialog::printMixers()
                 }
                 mask=1;
                 first=1;
-                for (int j=0; j<GetEepromInterface()->getCapability(FlightPhases);j++) {
+                for (int j=0; j<GetCurrentFirmware()->getCapability(FlightPhases);j++) {
                   if (!(md->phases & mask)) {
                     PhaseData *pd = &g_model1->phaseData[j];
                     if (!first) {
@@ -870,7 +869,7 @@ void compareDialog::printMixers()
       str.append("<td width=\"10%\" align=\"center\" valign=\"middle\"><b>"+tr("CH")+QString("%1</b></td>").arg(i,2,10,QChar('0')));
       str.append("<td width=\"45%\">");
       str.append("<table border=0 cellspacing=0 cellpadding=0>");
-      for (int j=0; j<GetEepromInterface()->getCapability(Mixes); j++) {
+      for (int j=0; j<GetCurrentFirmware()->getCapability(Mixes); j++) {
         if (g_model2->mixData[j].destCh==i) {
           int mix=ModelHasMix(g_model1->mixData, g_model2->mixData[j],mixused2);
           if (mix>-1) {
@@ -906,12 +905,12 @@ void compareDialog::printMixers()
           if (md->delayDown || md->delayUp) str += tr(" Delay(u%1:d%2)").arg(md->delayUp/scale).arg(md->delayDown/scale);
           if (md->speedDown || md->speedUp) str += tr(" Slow(u%1:d%2)").arg(md->speedUp/scale).arg(md->speedDown/scale);
           if (md->mixWarn)  str += " "+tr("Warn")+QString("(%1)").arg(md->mixWarn);
-          if (GetEepromInterface()->getCapability(FlightPhases)) {
+          if (GetCurrentFirmware()->getCapability(FlightPhases)) {
             if(md->phases) {
-              if (md->phases!=(unsigned int)(1<<GetEepromInterface()->getCapability(FlightPhases))-1) {
+              if (md->phases!=(unsigned int)(1<<GetCurrentFirmware()->getCapability(FlightPhases))-1) {
                 int mask=1;
                 int first=0;
-                for (int i=0; i<GetEepromInterface()->getCapability(FlightPhases);i++) {
+                for (int i=0; i<GetCurrentFirmware()->getCapability(FlightPhases);i++) {
                   if (!(md->phases & mask)) {
                     first++;
                   }
@@ -924,7 +923,7 @@ void compareDialog::printMixers()
                 }
                 mask=1;
                 first=1;
-                for (int j=0; j<GetEepromInterface()->getCapability(FlightPhases);j++) {
+                for (int j=0; j<GetCurrentFirmware()->getCapability(FlightPhases);j++) {
                   if (!(md->phases & mask)) {
                     PhaseData *pd = &g_model2->phaseData[j];
                     if (!first) {
@@ -953,7 +952,7 @@ void compareDialog::printMixers()
   te->append(str);
 }
 
-void compareDialog::printCurves()
+void CompareDialog::printCurves()
 {
 #if 0
   int i,r,g,b,c;
@@ -1033,14 +1032,14 @@ void compareDialog::printCurves()
 #endif
 }
 
-void compareDialog::printSwitches()
+void CompareDialog::printSwitches()
 {
     int sc=0;
     QString color;
     QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
     str.append("<tr><td><h2>"+tr("Logical Switches")+"</h2></td></tr>");
     str.append("<tr><td><table border=1 cellspacing=0 cellpadding=1 width=\"100%\">");
-    for (int i=0; i<GetEepromInterface()->getCapability(LogicalSwitches); i++) {
+    for (int i=0; i<GetCurrentFirmware()->getCapability(LogicalSwitches); i++) {
       QString sw1 = g_model1->customSw[i].toString(*g_model1);
       QString sw2 = g_model2->customSw[i].toString(*g_model2);
       if (!(sw1.isEmpty() && sw2.isEmpty())) {
@@ -1063,7 +1062,7 @@ void compareDialog::printSwitches()
         te->append(str);
 }
 
-void compareDialog::printFSwitches()
+void CompareDialog::printFSwitches()
 {
   QString color1;
   QString color2;
@@ -1083,7 +1082,7 @@ void compareDialog::printFSwitches()
   str.append("<td width=\"7%\" align=\"center\"><b>"+tr("Repeat")+"</b></td>");
   str.append("<td width=\"7%\" align=\"center\"><b>"+tr("Enable")+"</b></td>");
   str.append("</tr>");
-  for(int i=0; i<GetEepromInterface()->getCapability(CustomFunctions); i++)
+  for(int i=0; i<GetCurrentFirmware()->getCapability(CustomFunctions); i++)
   {
     if (g_model1->funcSw[i].swtch.type || g_model2->funcSw[i].swtch.type) {
       if ((g_model1->funcSw[i].swtch != g_model2->funcSw[i].swtch) || (g_model1->funcSw[i].func!=g_model2->funcSw[i].func) || (g_model1->funcSw[i].adjustMode!=g_model2->funcSw[i].adjustMode) || (g_model1->funcSw[i].param!=g_model2->funcSw[i].param)) {
@@ -1142,7 +1141,7 @@ void compareDialog::printFSwitches()
       te->append(str);
 }
 
-void compareDialog::printFrSky()
+void CompareDialog::printFrSky()
 {
   QString color;
   float value1,value2;
@@ -1212,10 +1211,10 @@ void compareDialog::printFrSky()
   str.append("<td align=\"center\"><font color="+color+">"+QString::number(fd1->rssiAlarms[1].value,10)+"</td>");
   str.append("</table>");
 #if 0
-  if (GetEepromInterface()->getCapability(TelemetryBars) || GetEepromInterface()->getCapability(TelemetryCSFields)) {
-    int cols=GetEepromInterface()->getCapability(TelemetryColsCSFields);
+  if (GetCurrentFirmware()->getCapability(TelemetryBars) || GetCurrentFirmware()->getCapability(TelemetryCSFields)) {
+    int cols=GetCurrentFirmware()->getCapability(TelemetryColsCSFields);
     if (cols==0) cols=2;
-    for (int j=0; j<GetEepromInterface()->getCapability(TelemetryCSFields)/(4*cols); j++) {
+    for (int j=0; j<GetCurrentFirmware()->getCapability(TelemetryCSFields)/(4*cols); j++) {
       QString tcols;
       QString cwidth;
       QString swidth;
@@ -1331,10 +1330,10 @@ void compareDialog::printFrSky()
   str.append("<td align=\"center\"><font color="+color+">"+QString::number(fd2->rssiAlarms[1].value,10)+"</td>");
   str.append("</table></br>");
 #if 0
-  if (GetEepromInterface()->getCapability(TelemetryBars) || GetEepromInterface()->getCapability(TelemetryCSFields)) {
-    int cols=GetEepromInterface()->getCapability(TelemetryColsCSFields);
+  if (GetCurrentFirmware()->getCapability(TelemetryBars) || GetCurrentFirmware()->getCapability(TelemetryCSFields)) {
+    int cols=GetCurrentFirmware()->getCapability(TelemetryColsCSFields);
     if (cols==0) cols=2;
-    for (int j=0; j<GetEepromInterface()->getCapability(TelemetryCSFields)/(4*cols); j++) {
+    for (int j=0; j<GetCurrentFirmware()->getCapability(TelemetryCSFields)/(4*cols); j++) {
       QString tcols;
       QString cwidth;
       QString swidth;
@@ -1391,7 +1390,7 @@ void compareDialog::printFrSky()
   te->append(str);
 }
 
-void compareDialog::on_printButton_clicked()
+void CompareDialog::on_printButton_clicked()
 {
     QPrinter printer;
     printer.setPageMargins(10.0,10.0,10.0,10.0,printer.Millimeter);
@@ -1402,7 +1401,7 @@ void compareDialog::on_printButton_clicked()
     te->print(&printer);
 }
 
-void compareDialog::on_printFileButton_clicked()
+void CompareDialog::on_printFileButton_clicked()
 {
     QPrinter printer;
     QString filename = QFileDialog::getSaveFileName(this,tr("Select PDF output file"),QString(),"Pdf File(*.pdf)"); 

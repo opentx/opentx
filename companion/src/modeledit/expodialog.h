@@ -14,7 +14,7 @@ namespace Ui {
 class ExpoDialog : public QDialog {
     Q_OBJECT
   public:
-    ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expodata, GeneralSettings & generalSettings, char * inputName);
+    ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expodata, GeneralSettings & generalSettings, FirmwareInterface * firmware, char * inputName);
     ~ExpoDialog();
 
   protected:
@@ -28,6 +28,7 @@ class ExpoDialog : public QDialog {
     Ui::ExpoDialog * ui;
     ModelData & model;
     GeneralSettings & generalSettings;
+    FirmwareInterface * firmware;
     ExpoData * ed;
     char * inputName;
     GVarGroup * gvGroup;

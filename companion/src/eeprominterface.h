@@ -504,6 +504,7 @@ class GeneralSettings {
     unsigned int switchUnlockStates;
     unsigned int hw_uartMode;
     unsigned int potsType[8];
+    unsigned int backlightColor;
 };
 
 class CurveReference {
@@ -1129,11 +1130,7 @@ class EEPROMInterface
     
     virtual int getSize(GeneralSettings &) = 0;
     
-    virtual int getCapability(const Capability) = 0;
-    
     virtual int isAvailable(Protocol proto, int port=0) = 0;
-
-    virtual SimulatorInterface * getSimulator() { return NULL; }
 
     virtual const int getEEpromSize() = 0;
 
@@ -1243,8 +1240,9 @@ inline void applyStickModeToModel(ModelData &model, unsigned int mode)
     model.swashRingData.collectiveSource.index = applyStickMode(model.swashRingData.collectiveSource.index + 1, mode) - 1;
 }
 
-void RegisterFirmwares();
+void RegisterEepromInterfaces();
 void UnregisterFirmwares();
+void registerOpenTxFirmwares();
 
 bool LoadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index);
 bool LoadEeprom(RadioData &radioData, const uint8_t *eeprom, int size);
@@ -1256,50 +1254,27 @@ struct Option {
   uint32_t variant;
 };
 
-class FirmwareInfo {
-  public:
-    FirmwareInfo():
-      parent(NULL),
-      id(QString::null),
-      eepromInterface(NULL),
-      voice(false),
-      variantBase(0)
-    {
-    }
+class FirmwareInterface {
 
-    virtual ~FirmwareInfo()
+  public:
+    virtual ~FirmwareInterface()
     {
       delete eepromInterface;
     }
 
-    FirmwareInfo(const QString & id, const QString & name, EEPROMInterface * eepromInterface, const QString & url = QString(), const QString & stamp = QString(), const QString & rnurl = QString(), bool voice = false):
-      parent(NULL),
+    FirmwareInterface(const QString & id, const QString & name, const BoardEnum board, EEPROMInterface * eepromInterface, bool voice = false):
       id(id),
       name(name),
+      board(board),
       eepromInterface(eepromInterface),
-      url(url),
-      stamp(stamp),
-      rnurl(rnurl),
       voice(voice),
       variantBase(0)
     {
     }
 
-    FirmwareInfo(const QString & id, EEPROMInterface * eepromInterface, const QString & url, const QString & stamp = QString(), const QString & rnurl = QString(), bool voice=false):
-      parent(NULL),
-      id(id),
-      name(QString::null),
-      eepromInterface(eepromInterface),
-      url(url),
-      stamp(stamp),
-      rnurl(rnurl),
-      voice(voice),
-      variantBase(0)
+    inline void setVariantBase(unsigned int variant)
     {
-    }
-
-    void setVariantBase(unsigned int variant) {
-      this->variantBase = variant;
+      variantBase = variant;
     }
 
     unsigned int getVariant(const QString & id);
@@ -1312,77 +1287,112 @@ class FirmwareInfo {
 
     virtual void addOptions(Option options[]);
 
-    QStringList get_options() {
-      if (parent)
-        return id.mid(parent->id.length()+1).split("-", QString::SkipEmptyParts);
-      else
-        return QStringList();
-    }
-
-    int saveEEPROM(uint8_t *eeprom, RadioData &radioData, uint32_t variant=0, unsigned int version=0) {
+    inline int saveEEPROM(uint8_t *eeprom, RadioData &radioData, uint32_t variant=0, unsigned int version=0)
+    {
       return eepromInterface->save(eeprom, radioData, variant, version);
     }
 
-    virtual QString getUrl(const QString &fwId) {
-      if (url.contains("%1"))
-        return url.arg(fwId);
-      else
-        return url;
+    virtual QString getStampUrl() = 0;
+
+    virtual QString getReleaseNotesUrl() = 0;
+
+    virtual QString getFirmwareUrl(QString & id) = 0;
+
+    inline BoardEnum getBoard()
+    {
+      return board;
     }
 
-    virtual QString getRnUrl(const QString &fwId) {
-      if (rnurl.contains("%1"))
-        return rnurl.arg(fwId);
-      else
-        return rnurl;
+    inline EEPROMInterface * getEepromInterface()
+    {
+      return eepromInterface;
     }
 
-    
+    virtual int getCapability(const Capability) = 0;
+
+    virtual SimulatorInterface * getSimulator()
+    {
+      return NULL;
+    }
+
+  public:
     QList<const char *> languages;
     QList<const char *> ttslanguages;
     QList< QList<Option> > opts;
-    FirmwareInfo *parent;
     QString id;
     QString name;
+
+  protected:
+    BoardEnum board;
     EEPROMInterface * eepromInterface;
-    QString url;
-    QString stamp;
-    QString rnurl;
+
+  public:
     bool voice;
+
+  protected:
     unsigned int variantBase;
+
+  private:
+    FirmwareInterface();
+
 };
 
-struct FirmwareVariant {
-  QString id;
-  FirmwareInfo *firmware;
-  unsigned int variant;
+class FirmwareVariant
+{
+  public:
+    FirmwareVariant():
+      firmware(NULL),
+      variant(0)
+    {
+    }
+
+    FirmwareVariant(QString & id, FirmwareInterface * firmware, unsigned int variant):
+      id(id),
+      firmware(firmware),
+      variant(variant)
+    {
+    }
+
+    QString getFirmwareUrl()
+    {
+      if (firmware)
+        return firmware->getFirmwareUrl(id);
+      else
+        return "";
+    }
+
+    QString id;
+    FirmwareInterface * firmware;
+    unsigned int variant;
 };
 
-extern QList<FirmwareInfo *> firmwares;
+extern QList<FirmwareInterface *> firmwares;
 extern FirmwareVariant default_firmware_variant;
 extern FirmwareVariant current_firmware_variant;
 
 FirmwareVariant GetFirmwareVariant(QString id);
 
-inline FirmwareInfo * GetFirmware(QString id)
+inline FirmwareInterface * GetFirmware(QString id)
 {
   return GetFirmwareVariant(id).firmware;
 }
 
-inline FirmwareInfo * GetCurrentFirmware()
+inline FirmwareInterface * GetCurrentFirmware()
 {
   return current_firmware_variant.firmware;
 }
 
 inline EEPROMInterface * GetEepromInterface()
 {
-  return GetCurrentFirmware()->eepromInterface;
+  return GetCurrentFirmware()->getEepromInterface();
 }
 
 inline unsigned int GetCurrentFirmwareVariant()
 {
   return current_firmware_variant.variant;
 }
+
+void UnregisterEepromInterfaces();
 
 inline int divRoundClosest(const int n, const int d)
 {

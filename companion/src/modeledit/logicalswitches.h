@@ -10,7 +10,7 @@ class LogicalSwitchesPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    LogicalSwitchesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings);
+    LogicalSwitchesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
     virtual ~LogicalSwitchesPanel();
 
     virtual void update();

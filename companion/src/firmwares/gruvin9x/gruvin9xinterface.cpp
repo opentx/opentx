@@ -216,59 +216,6 @@ int Gruvin9xInterface::getSize(GeneralSettings &settings)
   return 0;
 }
 
-int Gruvin9xInterface::getCapability(const Capability capability)
-{
-  switch (capability) {
-    case Mixes:
-      return G9X_MAX_MIXERS;
-    case FlightPhases:
-      return G9X_MAX_PHASES;
-    case FlightPhasesHaveFades:
-      return 1;
-    case Timers:
-      return 2;
-    case Pots:
-      return 3;
-    case Switches:
-      return 7;
-    case SwitchesPositions:
-      return 9;
-    case CustomFunctions:
-      return 12;
-    case LogicalSwitches:
-      return 12;
-    case CSFunc:
-      return 13;
-    case Outputs:
-      return 16;
-    case ExtendedTrims:
-      return 500;
-    case Simulation:
-      return true;
-    case OffsetWeight:
-      return 125;
-    case HasContrast:
-      return true;           
-    case Telemetry:
-      return TM_HASTELEMETRY|TM_HASWSHH;
-    case TelemetryMaxMultiplier:
-      return 1;
-    case SlowScale:
-      return 2;
-    case SlowRange:
-      return 15;
-    case LCDWidth:
-      return 128;      
-    case HasSDLogs:
-    case Haptic:
-      return 1;
-    case GetThrSwitch:
-      return DSW_THR; 
-    default:
-      return false;
-  }
-}
-
 int Gruvin9xInterface::isAvailable(Protocol proto, int port)
 {
   switch (proto) {
@@ -282,9 +229,4 @@ int Gruvin9xInterface::isAvailable(Protocol proto, int port)
     default:
       return 0;
   }
-}
-
-SimulatorInterface * Gruvin9xInterface::getSimulator()
-{
-  return NULL;
 }

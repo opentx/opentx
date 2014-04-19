@@ -140,45 +140,6 @@ int Th9xInterface::getSize(GeneralSettings &settings)
   return 0;
 }
 
-int Th9xInterface::getCapability(const Capability capability)
-{
-  switch (capability) {
-    case Mixes:
-      return TH9X_MAX_MIXERS;
-    case Timers:
-      return 1;
-    case Pots:
-      return 3;
-    case Switches:
-      return 7;
-    case SwitchesPositions:
-      return 9;
-    case CustomFunctions:
-      return 0;
-    case LogicalSwitches:
-      return TH9X_MAX_SWITCHES;
-    case Outputs:
-      return 8;
-    case OffsetWeight:
-      return 125;      
-    case Simulation:
-      return 1;
-    case HasContrast:  
-    case CSFunc:
-      return 13;
-    case SlowScale:
-      return 1;
-    case SlowRange:
-      return 10;
-    case LCDWidth:
-      return 128;
-    case GetThrSwitch:
-      return DSW_THR;
-    default:
-      return 0;
-  }
-}
-
 int Th9xInterface::isAvailable(Protocol proto, int port)
 {
   switch (proto) {
@@ -191,10 +152,4 @@ int Th9xInterface::isAvailable(Protocol proto, int port)
     default:
       return 0;
   }
-}
-
-
-SimulatorInterface * Th9xInterface::getSimulator()
-{
-  return NULL; // new Th9xSimulator(this);
 }

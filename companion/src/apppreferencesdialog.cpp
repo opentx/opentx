@@ -11,14 +11,22 @@
 #include <QDesktopServices>
 #include <QtGui>
 
-appPreferencesDialog::appPreferencesDialog(QWidget *parent) :
+AppPreferencesDialog::AppPreferencesDialog(QWidget *parent) :
   QDialog(parent),
-  ui(new Ui::appPreferencesDialog)
+  ui(new Ui::AppPreferencesDialog)
 {
   ui->setupUi(this);
+  updateLock=false;
   setWindowIcon(CompanionIcon("apppreferences.png"));
+
+  voice=NULL;
+  connect(ui->langCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(firmwareLangChanged()));
+  connect(ui->voiceCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(firmwareLangChanged()));
+
   initSettings();
+  connect(ui->downloadVerCB, SIGNAL(currentIndexChanged(int)), this, SLOT(baseFirmwareChanged()));
   connect(this, SIGNAL(accepted()), this, SLOT(writeValues()));
+
 #ifndef JOYSTICKS
   ui->joystickCB->hide();
   ui->joystickCB->setDisabled(true);
@@ -26,15 +34,16 @@ appPreferencesDialog::appPreferencesDialog(QWidget *parent) :
   ui->joystickChkB->hide();
   ui->label_11->hide();
 #endif
-  resize(0,0);
+
+  shrink();
 }
 
-appPreferencesDialog::~appPreferencesDialog()
+AppPreferencesDialog::~AppPreferencesDialog()
 {
   delete ui;
 }
 
-void appPreferencesDialog::writeValues()
+void AppPreferencesDialog::writeValues()
 {
   g.autoCheckApp(ui->startupCheck_companion9x->isChecked());
   g.autoCheckFw(ui->startupCheck_fw->isChecked());
@@ -69,17 +78,17 @@ void appPreferencesDialog::writeValues()
   else
     g.profile[g.id()].name(ui->profileNameLE->text());
 
-  // If a new radio type has been choosen, several things need to reset
-  if ( initialRadioType != ui->radioCB->currentIndex())
-  {
+  // If a new fw type has been choosen, several things need to reset
+  g.cpuId( ui->CPU_ID_LE->text() );
+  current_firmware_variant = getFirmwareVariant();
+  if (g.profile[g.id()].fwType() != current_firmware_variant.id) {
     g.profile[g.id()].fwName("");
-    g.profile[g.id()].fwType(getDefaultFwType(ui->radioCB->currentIndex()));
-    current_firmware_variant = GetFirmwareVariant(g.profile[g.id()].fwType());
     g.profile[g.id()].initFwVariables();
+    g.profile[g.id()].fwType( current_firmware_variant.id );
   }
 }
 
-void appPreferencesDialog::on_snapshotPathButton_clicked()
+void AppPreferencesDialog::on_snapshotPathButton_clicked()
 {
   QString fileName = QFileDialog::getExistingDirectory(this,tr("Select your snapshot folder"), g.snapshotDir());
   if (!fileName.isEmpty()) {
@@ -89,7 +98,7 @@ void appPreferencesDialog::on_snapshotPathButton_clicked()
   }
 }
 
-void appPreferencesDialog::initSettings()
+void AppPreferencesDialog::initSettings()
 {
   ui->snapshotClipboardCKB->setChecked(g.snapToClpbrd());
   ui->burnFirmware->setChecked(g.profile[g.id()].burnFirmware());
@@ -105,8 +114,10 @@ void appPreferencesDialog::initSettings()
   ui->showSplash->setChecked(g.showSplash());
   ui->historySize->setValue(g.historySize());
   ui->backLightColor->setCurrentIndex(g.backLight());
-  if (getRadioType(g.profile[g.id()].fwType())==6)  // TODO - NOT AT ALL OK. THERE SHOULD BE A COMMON RADIO DEFINITION.
+
+  if (IS_TARANIS(GetCurrentFirmware()->getBoard()))
     ui->backLightColor->setEnabled(false);
+
   ui->simuSW->setChecked(g.simuSW());
   ui->modelWizard_CB->setChecked(g.useWizard());
   ui->libraryPath->setText(g.libDir());
@@ -159,8 +170,7 @@ void appPreferencesDialog::initSettings()
   ui->sdPath->setText(g.profile[g.id()].sdPath());
   ui->profileNameLE->setText(g.profile[g.id()].name());
   ui->SplashFileName->setText(g.profile[g.id()].splashFile());
-  initialRadioType = getRadioType(g.profile[g.id()].fwType());
-  ui->radioCB->setCurrentIndex(initialRadioType);
+
   displayImage( g.profile[g.id()].splashFile() );
 
   QString hwSettings;
@@ -176,9 +186,22 @@ void appPreferencesDialog::initSettings()
   }
   ui->lblGeneralSettings->setText(hwSettings);
 
+
+  ui->CPU_ID_LE->setText(g.cpuId());
+  FirmwareInterface * current_firmware = GetCurrentFirmware();
+
+  foreach(FirmwareInterface * firmware, firmwares) {
+    ui->downloadVerCB->addItem(firmware->name, firmware->id);
+    if (current_firmware == firmware) {
+      ui->downloadVerCB->setCurrentIndex(ui->downloadVerCB->count() - 1);
+    }
+  }
+  
+  baseFirmwareChanged();
+  firmwareChanged();
 }
 
-void appPreferencesDialog::on_libraryPathButton_clicked()
+void AppPreferencesDialog::on_libraryPathButton_clicked()
 {
   QString fileName = QFileDialog::getExistingDirectory(this,tr("Select your library folder"), g.libDir());
   if (!fileName.isEmpty()) {
@@ -187,13 +210,14 @@ void appPreferencesDialog::on_libraryPathButton_clicked()
   }
 }
 
-void appPreferencesDialog::on_snapshotClipboardCKB_clicked()
+void AppPreferencesDialog::on_snapshotClipboardCKB_clicked()
 {
   if (ui->snapshotClipboardCKB->isChecked()) {
     ui->snapshotPath->setDisabled(true);
     ui->snapshotPathButton->setDisabled(true);
     g.snapToClpbrd(true);
-  } else {
+  }
+  else {
     ui->snapshotPath->setEnabled(true);
     ui->snapshotPath->setReadOnly(true);
     ui->snapshotPathButton->setEnabled(true);
@@ -201,7 +225,7 @@ void appPreferencesDialog::on_snapshotClipboardCKB_clicked()
   }
 }
 
-void appPreferencesDialog::on_backupPathButton_clicked()
+void AppPreferencesDialog::on_backupPathButton_clicked()
 {
   QString fileName = QFileDialog::getExistingDirectory(this,tr("Select your Models and Settings backup folder"), g.backupDir());
   if (!fileName.isEmpty()) {
@@ -211,7 +235,7 @@ void appPreferencesDialog::on_backupPathButton_clicked()
   ui->backupEnable->setEnabled(true);
 }
 
-void appPreferencesDialog::on_ge_pathButton_clicked()
+void AppPreferencesDialog::on_ge_pathButton_clicked()
 {
   QString fileName = QFileDialog::getOpenFileName(this, tr("Select Google Earth executable"),ui->ge_lineedit->text());
   if (!fileName.isEmpty()) {
@@ -220,7 +244,7 @@ void appPreferencesDialog::on_ge_pathButton_clicked()
 }
  
 #ifdef JOYSTICKS
-void appPreferencesDialog::on_joystickChkB_clicked() {
+void AppPreferencesDialog::on_joystickChkB_clicked() {
   if (ui->joystickChkB->isChecked()) {
     QStringList joystickNames;
     joystickNames << tr("No joysticks found");
@@ -246,7 +270,7 @@ void appPreferencesDialog::on_joystickChkB_clicked() {
   }
 }
 
-void appPreferencesDialog::on_joystickcalButton_clicked() {
+void AppPreferencesDialog::on_joystickcalButton_clicked() {
    joystickDialog * jd=new joystickDialog(this, ui->joystickCB->currentIndex());
    jd->exec();
 }
@@ -254,7 +278,7 @@ void appPreferencesDialog::on_joystickcalButton_clicked() {
 
 // ******** Profile tab functions
 
-void appPreferencesDialog::on_sdPathButton_clicked()
+void AppPreferencesDialog::on_sdPathButton_clicked()
 {
   QString fileName = QFileDialog::getExistingDirectory(this,tr("Select the folder replicating your SD structure"), g.profile[g.id()].sdPath());
   if (!fileName.isEmpty()) {
@@ -262,12 +286,12 @@ void appPreferencesDialog::on_sdPathButton_clicked()
   }
 }
 
-void appPreferencesDialog::on_removeProfileButton_clicked()
+void AppPreferencesDialog::on_removeProfileButton_clicked()
 {
-  if ( g.id() == 0 )
+  if ( g.id() == 0 ) {
      QMessageBox::information(this, tr("Not possible to remove profile"), tr("The default profile can not be removed."));
-  else
-  {
+  }
+  else {
     g.profile[g.id()].remove();
     g.id( 0 );
     initSettings();
@@ -275,7 +299,7 @@ void appPreferencesDialog::on_removeProfileButton_clicked()
 }
 
 
-bool appPreferencesDialog::displayImage( QString fileName )
+bool AppPreferencesDialog::displayImage( QString fileName )
 {
   // Start by clearing the pixmap
   ui->imageLabel->setPixmap(QPixmap());
@@ -294,7 +318,7 @@ bool appPreferencesDialog::displayImage( QString fileName )
   return true;
 }
 
-void appPreferencesDialog::on_SplashSelect_clicked()
+void AppPreferencesDialog::on_SplashSelect_clicked()
 {
   QString supportedImageFormats;
   for (int formatIndex = 0; formatIndex < QImageReader::supportedImageFormats().count(); formatIndex++) {
@@ -312,11 +336,204 @@ void appPreferencesDialog::on_SplashSelect_clicked()
   }
 }
 
-void appPreferencesDialog::on_clearImageButton_clicked() {
+void AppPreferencesDialog::on_clearImageButton_clicked() {
   ui->imageLabel->clear();
   ui->SplashFileName->clear();
 }
 
 
+void AppPreferencesDialog::showVoice(bool show)
+{
+  if (show)
+    showVoice();
+  else
+    hideVoice();
+}
 
+void AppPreferencesDialog::showVoice()
+{
+  ui->voiceLabel->show();
+  ui->voiceCombo->show();
+}
+
+void AppPreferencesDialog::hideVoice()
+{
+  ui->voiceLabel->hide();
+  ui->voiceCombo->hide();
+  QTimer::singleShot(0, this, SLOT(shrink()));
+}
+
+
+void AppPreferencesDialog::baseFirmwareChanged()
+{
+  QVariant selected_firmware = ui->downloadVerCB->itemData(ui->downloadVerCB->currentIndex());
+  voice=NULL;
+  foreach(FirmwareInterface * firmware, firmwares) {
+    if (firmware->id == selected_firmware) {
+      showVoice(firmware->voice);
+      populateFirmwareOptions(firmware);
+      break;
+    }
+  }
+  firmwareChanged();
+}
+
+FirmwareVariant AppPreferencesDialog::getFirmwareVariant()
+{
+  QVariant selected_firmware = ui->downloadVerCB->itemData(ui->downloadVerCB->currentIndex());
+  bool voice=false;
+  foreach(FirmwareInterface * firmware, firmwares) {
+    if (firmware->id == selected_firmware) {
+      QString id = firmware->id;
+      foreach(QCheckBox *cb, optionsCheckBoxes) {
+        if (cb->isChecked()) {
+          if (cb->text()=="voice" && cb->isChecked())
+            voice=true;
+          id += QString("-") + cb->text();
+        }
+      }
+      if (! firmware->getCapability(MultiLangVoice)) {
+        if (ui->voiceCombo->count() && (voice || firmware->voice))
+          id += QString("-tts") + ui->voiceCombo->currentText();
+      }
+      if (ui->langCombo->count())
+        id += QString("-") + ui->langCombo->currentText();
+
+      return GetFirmwareVariant(id);
+    }
+  }
+
+  // Should never occur...
+  return default_firmware_variant;
+}
+
+void AppPreferencesDialog::firmwareOptionChanged(bool state)
+{
+  QCheckBox *cb = qobject_cast<QCheckBox*>(sender());
+  FirmwareInterface * firmware=NULL;
+  if (cb && state) {
+    QVariant selected_firmware = ui->downloadVerCB->itemData(ui->downloadVerCB->currentIndex());
+    foreach(firmware, firmwares) {
+      if (firmware->id == selected_firmware) {
+        foreach(QList<Option> opts, firmware->opts) {
+          foreach(Option opt, opts) {
+            if (cb->text() == opt.name) {
+              foreach(Option other, opts) {
+                if (other.name != opt.name) {
+                  foreach(QCheckBox *ocb, optionsCheckBoxes) {
+                    if (ocb->text() == other.name)
+                      ocb->setChecked(false);
+                  }
+                }
+              }
+              if (voice) {
+                showVoice(voice->isChecked());
+              }
+              
+              return firmwareChanged();
+            }
+          }
+        }
+      }
+    }
+  } 
+  else if (cb && !state) {
+    if (cb->text()=="voice") {
+      hideVoice();
+    }
+  }
+  if (voice) {
+    showVoice(voice->isChecked());
+  }
+  else if (firmware) {
+    if (firmware->voice) {
+      showVoice();    
+    }
+  }
+  return firmwareChanged();
+}
+
+void AppPreferencesDialog::firmwareLangChanged()
+{
+  firmwareChanged();
+}
+
+void AppPreferencesDialog::firmwareChanged()
+{
+  if (updateLock)
+    return;
+  
+  FirmwareVariant variant = getFirmwareVariant();
+  QString stamp;
+  stamp.append(variant.firmware->getStampUrl());
+  QString url = variant.getFirmwareUrl();
+  // B-Plan 
+  if (false) {
+    ui->CPU_ID_LE->show();
+    ui->CPU_ID_LABEL->show();
+  } else {
+    ui->CPU_ID_LE->hide();
+    ui->CPU_ID_LABEL->hide();
+  }
+}
+
+void AppPreferencesDialog::populateFirmwareOptions(const FirmwareInterface * firmware)
+{
+  const FirmwareInterface * parent = /*firmware->parent ? firmware->parent : */ firmware;
+
+  updateLock = true;
+
+  ui->langCombo->clear();
+  foreach(const char *lang, parent->languages) {
+    ui->langCombo->addItem(lang);
+    if (current_firmware_variant.id.endsWith(lang))
+      ui->langCombo->setCurrentIndex(ui->langCombo->count() - 1);
+  }
+  ui->voiceCombo->clear();
+  foreach(const char *lang, parent->ttslanguages) {
+    ui->voiceCombo->addItem(lang);
+    if (current_firmware_variant.id.contains(QString("-tts%1").arg(lang)))
+      ui->voiceCombo->setCurrentIndex(ui->voiceCombo->count() - 1);
+  }
+
+  showVoice(ui->langCombo->count()!=0);
+
+  int index = 0;
+  foreach(QList<Option> opts, parent->opts) {
+    foreach(Option opt, opts) {
+      if (index >= optionsCheckBoxes.size()) {
+        QCheckBox * checkbox = new QCheckBox(ui->profileTab);
+        ui->optionsLayout->addWidget(checkbox, optionsCheckBoxes.count()/5, optionsCheckBoxes.count()%5, 1, 1);
+        optionsCheckBoxes.push_back(checkbox);
+        connect(checkbox, SIGNAL(toggled(bool)), this, SLOT(firmwareOptionChanged(bool)));
+      }
+
+      QCheckBox *cb = optionsCheckBoxes.at(index++);
+      if (cb) {
+        cb->show();
+        cb->setText(opt.name);
+        cb->setToolTip(opt.tooltip);
+        cb->setCheckState(current_firmware_variant.id.contains(opt.name) ? Qt::Checked : Qt::Unchecked);
+            
+        if (opt.name==QString("voice")) {
+          voice=cb;
+          showVoice(current_firmware_variant.id.contains(opt.name) ||firmware->voice);
+        }
+      }
+    }
+  }
+  for (; index<optionsCheckBoxes.size(); index++) {
+    QCheckBox *cb = optionsCheckBoxes.at(index);
+    cb->hide();
+    cb->setCheckState(Qt::Unchecked);
+  }
+
+  updateLock = false;
+  QTimer::singleShot(0, this, SLOT(shrink()));
+}
+
+void AppPreferencesDialog::shrink()
+{
+  resize(0,0);
+}
 

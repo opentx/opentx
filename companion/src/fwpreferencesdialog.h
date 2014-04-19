@@ -6,40 +6,24 @@
 #include "eeprominterface.h"
 
 namespace Ui {
-    class fwPreferencesDialog;
+  class FirmwarePreferencesDialog;
 }
 
 class Joystick;
 
-class fwPreferencesDialog : public QDialog
+class FirmwarePreferencesDialog : public QDialog
 {
     Q_OBJECT
 
-public:
-    explicit fwPreferencesDialog(QWidget *parent = 0);
-    ~fwPreferencesDialog();
+  public:
+    explicit FirmwarePreferencesDialog(QWidget *parent = 0);
+    ~FirmwarePreferencesDialog();
 
-private:
-    Ui::fwPreferencesDialog *ui;
-    QList<QCheckBox *> optionsCheckBoxes;
-    bool updateLock;
-
-    void showVoice(bool);
-    void showVoice();
-    void hideVoice();
-    void populateLocale();
-    void populateFirmwareOptions(const FirmwareInfo *);
-    FirmwareVariant getFirmwareVariant();
+  private:
+    Ui::FirmwarePreferencesDialog *ui;
     void initSettings();
-    QCheckBox * voice;
 
-private slots:
-    void shrink();
-    void writeValues();
-    void firmwareLangChanged();
-    void baseFirmwareChanged();
-    void firmwareOptionChanged(bool state);
-    void firmwareChanged();
+  private slots:
     void on_fw_dnld_clicked();
     void on_voice_dnld_clicked();
     void on_checkFWUpdates_clicked();

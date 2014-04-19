@@ -20,7 +20,7 @@ class TimerPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings);
+    TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, FirmwareInterface * firmware);
     virtual ~TimerPanel();
 
     virtual void update();
@@ -42,7 +42,7 @@ class ModulePanel : public ModelPanel
     Q_OBJECT
 
   public:
-    ModulePanel(QWidget *parent, ModelData & model, ModuleData & module, GeneralSettings & generalSettings, int moduleIdx);
+    ModulePanel(QWidget *parent, ModelData & model, ModuleData & module, GeneralSettings & generalSettings, FirmwareInterface * firmware, int moduleIdx);
     virtual ~ModulePanel();
 
     virtual void update();
@@ -66,13 +66,13 @@ class ModulePanel : public ModelPanel
     QVector<QDoubleSpinBox *> failsafeSpins;
 };
 
-class Setup : public ModelPanel
+class SetupPanel : public ModelPanel
 {
     Q_OBJECT
 
   public:
-    Setup(QWidget *parent, ModelData & model, GeneralSettings & generalSettings);
-    virtual ~Setup();
+    SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
+    virtual ~SetupPanel();
 
     virtual void update();
 

@@ -13,7 +13,7 @@ class ModelEdit : public QDialog
     Q_OBJECT
 
   public:
-    explicit ModelEdit(RadioData & radioData, int modelId , bool openWizard =false, bool inNew =false, QWidget *parent = 0);
+    ModelEdit(QWidget * parent, RadioData & radioData, int modelId, FirmwareInterface * firmware);
     ~ModelEdit();
   
   protected:
@@ -32,6 +32,7 @@ class ModelEdit : public QDialog
     int modelId;
     ModelData & model;
     GeneralSettings & generalSettings;
+    FirmwareInterface * firmware;
     QVector<ModelPanel *> panels;
 
     void addTab(ModelPanel *panel, QString text);

@@ -12,14 +12,14 @@ namespace Ui {
   class Telemetry;
 }
 
-class TelemetryAnalog : public QWidget
+class TelemetryAnalog: public ModelPanel
 {
     Q_OBJECT
 
     friend class TelemetryPanel;
 
   public:
-    TelemetryAnalog(QWidget *parent, FrSkyChannelData & analog);
+    TelemetryAnalog(QWidget *parent, FrSkyChannelData & analog, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
     virtual ~TelemetryAnalog();
 
   signals:
@@ -45,12 +45,12 @@ class TelemetryAnalog : public QWidget
     void update();
 };
 
-class TelemetryCustomScreen : public ModelPanel
+class TelemetryCustomScreen: public ModelPanel
 {
     Q_OBJECT
 
   public:
-    TelemetryCustomScreen(QWidget *parent, ModelData & model, FrSkyScreenData & screen, GeneralSettings & generalSettings);
+    TelemetryCustomScreen(QWidget *parent, ModelData & model, FrSkyScreenData & screen, GeneralSettings & generalSettings, FirmwareInterface * firmware);
     ~TelemetryCustomScreen();
     void update();
 
@@ -79,7 +79,7 @@ class TelemetryPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings);
+    TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
     virtual ~TelemetryPanel();
 
   signals:
