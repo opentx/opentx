@@ -20,13 +20,13 @@
 #include "simulatorinterface.h"
 
 class RadioData;
-class OpenTxInterface;
+class OpenTxEepromInterface;
 
 class Open9xGruvin9xSimulator : public SimulatorInterface {
 
   public:
 
-    Open9xGruvin9xSimulator(OpenTxInterface *);
+    Open9xGruvin9xSimulator();
 
     virtual void start(QByteArray & eeprom, bool tests=true);
 
@@ -54,9 +54,6 @@ class Open9xGruvin9xSimulator : public SimulatorInterface {
 
     virtual const char * getError();
 
-  protected:
-
-    OpenTxInterface * open9xInterface;
 };
 
 #endif

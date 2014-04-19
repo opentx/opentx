@@ -7,21 +7,21 @@
 #include <QDesktopServices>
 #include <QtGui>
 
-fwPreferencesDialog::fwPreferencesDialog(QWidget *parent) :
+FirmwarePreferencesDialog::FirmwarePreferencesDialog(QWidget *parent) :
   QDialog(parent),
-  ui(new Ui::fwPreferencesDialog)
+  ui(new Ui::FirmwarePreferencesDialog)
 {
   ui->setupUi(this);
   setWindowIcon(CompanionIcon("fwpreferences.png"));
   initSettings();
 }
 
-fwPreferencesDialog::~fwPreferencesDialog()
+FirmwarePreferencesDialog::~FirmwarePreferencesDialog()
 {
   delete ui;
 }
 
-void fwPreferencesDialog::initSettings()
+void FirmwarePreferencesDialog::initSettings()
 {
   ui->fwTypeLbl->setText(g.profile[g.id()].fwType());
   int revision = g.fwRev.get(g.profile[g.id()].fwType());
@@ -29,7 +29,7 @@ void fwPreferencesDialog::initSettings()
     ui->lastRevisionLbl->setText(QString("%1").arg(revision));
 }
 
-void fwPreferencesDialog::on_checkFWUpdates_clicked()
+void FirmwarePreferencesDialog::on_checkFWUpdates_clicked()
 {
   MainWindow * mw = (MainWindow *)this->parent();
   QString fwType = g.profile[g.id()].fwType();
@@ -37,14 +37,14 @@ void fwPreferencesDialog::on_checkFWUpdates_clicked()
   initSettings();
 }
 
-void fwPreferencesDialog::on_fw_dnld_clicked()
+void FirmwarePreferencesDialog::on_fw_dnld_clicked()
 {
   MainWindow * mw = (MainWindow *)this->parent();
-  mw->downloadLatestFW(current_firmware_variant.firmware, g.profile[g.id()].fwType());
+  mw->downloadLatestFW(current_firmware_variant);
   initSettings();
 }
 
-void fwPreferencesDialog::on_voice_dnld_clicked()
+void FirmwarePreferencesDialog::on_voice_dnld_clicked()
 {
   QString url="http://fw.opentx.it/voices/";
   QString fwType = g.profile[g.id()].fwType();

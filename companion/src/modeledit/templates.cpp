@@ -10,7 +10,7 @@ void ModelEdit::setCurve(uint8_t c, int8_t ar[])
 {
   int len=sizeof(ar)/sizeof(int8_t);
 
-  if (GetEepromInterface()->getCapability(NumCurves)>c) {
+  if (firmware->getCapability(NumCurves)>c) {
     if (len<9) {
       model.curves[c].count=5;
       model.curves[c].custom=false;
@@ -100,7 +100,7 @@ void Templates::applyNumericTemplate(uint64_t tpl)
     for (int i=0; i<10 ; i++) {
       rx[i]=false;
     }
-    int thrsw=GetEepromInterface()->getCapability(GetThrSwitch);
+    int thrsw=firmware->getCapability(GetThrSwitch);
     MixData *md = &model.mixData[0];
     uint8_t spo2ch=(tpl & 0x0F);
     tpl>>=4;
@@ -554,7 +554,7 @@ void Templates::applyTemplate(uint8_t idx)
     int8_t heli_ar4[] = {-30,  -15, 0, 50, 100};
     int8_t heli_ar5[] = {-100, -50, 0, 50, 100};
 
-    int thrsw=GetEepromInterface()->getCapability(GetThrSwitch);
+    int thrsw=firmware->getCapability(GetThrSwitch);
     MixData *md = &model.mixData[0];
 
     //CC(STK)   -> vSTK
@@ -715,7 +715,7 @@ void Templates::applyTemplate(uint8_t idx)
       bool found=true;
       while (found) {
         found=false;
-        for (int i=0; i< GetEepromInterface()->getCapability(Mixes); i++) {
+        for (int i=0; i< firmware->getCapability(Mixes); i++) {
           if (model.mixData[i].destCh==6) {
             gm_deleteMix(i);
             found=true;
@@ -827,7 +827,7 @@ void Templates::applyTemplate(uint8_t idx)
       bool found=true;
       while (found) {
         found=false;
-        for (int i=0; i< GetEepromInterface()->getCapability(Mixes); i++) {
+        for (int i=0; i< firmware->getCapability(Mixes); i++) {
           if (model.mixData[i].destCh==5) {
             gm_deleteMix(i);
             found=true;
@@ -867,11 +867,11 @@ void Templates::applyTemplate(uint8_t idx)
 MixData* Templates::setDest(uint8_t dch)
 {
     uint8_t i = 0;
-    while ((g_model.mixData[i].destCh<=dch) && (g_model.mixData[i].destCh) && (i<GetEepromInterface()->getCapability(Mixes))) i++;
-    if(i==GetEepromInterface()->getCapability(Mixes)) return &g_model.mixData[0];
+    while ((g_model.mixData[i].destCh<=dch) && (g_model.mixData[i].destCh) && (i<firmware->getCapability(Mixes))) i++;
+    if(i==firmware->getCapability(Mixes)) return &g_model.mixData[0];
 
     memmove(&g_model.mixData[i+1],&g_model.mixData[i],
-            (GetEepromInterface()->getCapability(Mixes)-(i+1))*sizeof(MixData) );
+            (firmware->getCapability(Mixes)-(i+1))*sizeof(MixData) );
     memset(&g_model.mixData[i],0,sizeof(MixData));
     g_model.mixData[i].destCh = dch;
     return &g_model.mixData[i];

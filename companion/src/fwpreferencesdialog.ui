@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>fwPreferencesDialog</class>
- <widget class="QDialog" name="fwPreferencesDialog">
+ <class>FirmwarePreferencesDialog</class>
+ <widget class="QDialog" name="FirmwarePreferencesDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -231,7 +231,7 @@ May be different from firmware language</string>
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>fwPreferencesDialog</receiver>
+   <receiver>FirmwarePreferencesDialog</receiver>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">

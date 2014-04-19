@@ -6,7 +6,7 @@
 
 extern const QColor colors[C9X_MAX_CURVES];
 
-#define TMR_NUM_OPTION  (TMR_VAROFS+2*9+2*GetEepromInterface()->getCapability(LogicalSwitches)-1)
+#define TMR_NUM_OPTION  (TMR_VAROFS+2*9+2*GetCurrentFirmware()->getCapability(LogicalSwitches)-1)
 
 //convert from mode 1 to mode generalSettings.stickMode
 //NOTICE!  =>  1..4 -> 1..4
@@ -127,11 +127,5 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx);
 
 // Format a pixmap to fit on the radio using a specific firmware
 QPixmap makePixMap( QImage image, QString firmwareType );
-
-// Return a radio type derived from a firmware type string 
-int getRadioType(QString firmwareType);
-
-// Return the default firmware string for a specified radio
-QString getDefaultFwType( int radioType );
 
 #endif // HELPERS_H

@@ -7,26 +7,27 @@
 #include "eeprominterface.h"
 
 namespace Ui {
-    class printDialog;
+  class PrintDialog;
 }
 
-class printDialog : public QDialog
+class PrintDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit printDialog(QWidget *parent = 0, GeneralSettings *gg = 0, ModelData *gm = 0, QString filename="");
+    explicit PrintDialog(QWidget *parent, FirmwareInterface * firmware, GeneralSettings *gg, ModelData *gm, QString filename="");
     
-    ~printDialog();
+    ~PrintDialog();
     void  closeEvent(QCloseEvent *event);
     
-    ModelData *g_model;
-    GeneralSettings *g_eeGeneral;
-    EEPROMInterface *eepromInterface;
+    FirmwareInterface * firmware;
+    GeneralSettings * g_eeGeneral;
+    ModelData * g_model;
+
     QString printfilename;
 
 private:
-    Ui::printDialog *ui;
+    Ui::PrintDialog *ui;
 
     void printSetup();
     QString printPhases();

@@ -135,8 +135,7 @@ uint8_t getStickMode()
 
 using namespace Open9xSky9x;
 
-Open9xSky9xSimulator::Open9xSky9xSimulator(OpenTxInterface * open9xInterface):
-  open9xInterface(open9xInterface)
+Open9xSky9xSimulator::Open9xSky9xSimulator()
 {
     QString path=g.profile[g.id()].sdPath()+"/";
     int i=0;

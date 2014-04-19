@@ -106,8 +106,7 @@ uint8_t getStickMode()
 
 using namespace Open9xGruvin9x;
 
-Open9xGruvin9xSimulator::Open9xGruvin9xSimulator(OpenTxInterface * open9xInterface):
-  open9xInterface(open9xInterface)
+Open9xGruvin9xSimulator::Open9xGruvin9xSimulator()
 {
 }
 

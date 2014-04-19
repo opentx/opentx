@@ -14,7 +14,7 @@ namespace Ui {
 class MixerDialog : public QDialog {
     Q_OBJECT
   public:
-    MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, GeneralSettings & generalSettings);
+    MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, GeneralSettings & generalSettings, FirmwareInterface * firmware);
     ~MixerDialog();
 
   protected:
@@ -28,6 +28,7 @@ class MixerDialog : public QDialog {
     Ui::MixerDialog *ui;
     ModelData & model;
     GeneralSettings & generalSettings;
+    FirmwareInterface * firmware;
     MixData *md;
     bool lock;
     GVarGroup * gvWeightGroup;

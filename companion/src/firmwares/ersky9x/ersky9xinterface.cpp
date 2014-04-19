@@ -244,74 +244,6 @@ int Ersky9xInterface::getSize(GeneralSettings &settings)
   return 0;
 }
 
-int Ersky9xInterface::getCapability(const Capability capability)
-{
-  switch (capability) {
-    case Mixes:
-      return ERSKY9X_MAX_MIXERS_V11;
-    case PPMExtCtrl:
-      return 1;
-    case ModelTrainerEnable:
-      return 1;
-    case Timer2ThrTrig:
-      return 1;
-    case SoundMod:
-      return 1;
-    case SoundPitch:
-      return 1;
-    case Haptic:
-      return 1;
-    case ModelVoice:
-      return 1;
-    case Timers:
-      return 2;
-    case Pots:
-      return 3;
-    case Gvars:
-      return 7;
-    case Switches:
-      return 7;
-    case SwitchesPositions:
-      return 9;
-    case CustomFunctions:
-      return 0;
-    case LogicalSwitches:
-      return ERSKY9X_NUM_CSW_V11;
-    case CustomAndSwitches:
-      return 1;
-    case CSFunc:
-      return 13;
-    case Outputs:
-      return ERSKY9X_NUM_CHNOUT_V11;
-    case Simulation:
-      return 1;
-    case Telemetry:
-      return TM_HASTELEMETRY|TM_HASWSHH;
-    case TelemetryUnits:
-      return 1;
-    case OptrexDisplay:
-      return 1;
-    case HasAltitudeSel:
-    case HasCurrentCalibration:
-    case HasVolume:
-    case HasBrightness:
-    case HasContrast:
-      return 1;
-    case OffsetWeight:
-      return 125;
-    case MaxVolume:
-      return 23;
-    case TelemetryMaxMultiplier:
-      return 2;
-    case LCDWidth:
-      return 128;
-    case GetThrSwitch:
-      return DSW_THR;      
-    default:
-      return 0;
-  }
-}
-
 int Ersky9xInterface::isAvailable(Protocol prot, int port)
 {
   switch (prot) {
@@ -324,13 +256,6 @@ int Ersky9xInterface::isAvailable(Protocol prot, int port)
       return 0;
   }
 }
-
-SimulatorInterface * Ersky9xInterface::getSimulator()
-{
-  return NULL; // new Ersky9xSimulator(this);
-}
-
-
 
 void Ersky9xInterface::appendTextElement(QDomDocument * qdoc, QDomElement * pe, QString name, QString value)
 {

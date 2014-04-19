@@ -59,7 +59,7 @@ class MdiChild : public QWidget
 
     Q_OBJECT
 
-public:
+  public:
     MdiChild();
     ~MdiChild();
 
@@ -78,18 +78,18 @@ public:
     void eepromInterfaceChanged();
     void setEEpromAvail(int eavail);
 
-signals:
+  signals:
     void copyAvailable(bool val);
 
-protected:
+  protected:
     void closeEvent(QCloseEvent *event);
 
-private slots:
+  private slots:
     void documentWasModified();
     void on_SimulateTxButton_clicked();
     void qSleep(int ms);
 
-public slots:
+  public slots:
     void checkAndInitModel(int row);
     void generalEdit();
     void modelEdit();
@@ -105,7 +105,7 @@ public slots:
     void setModified();
     void updateTitle();
 
-private:
+  private:
     bool maybeSave();
     void setCurrentFile(const QString &fileName);
     QString strippedName(const QString &fullFileName);
@@ -115,6 +115,8 @@ private:
     Ui::mdiChild *ui;
 
     QString curFile;
+
+    FirmwareInterface * firmware;
     RadioData radioData;
 
     bool isUntitled;

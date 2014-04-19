@@ -104,7 +104,8 @@ int main(int argc, char *argv[])
   QPixmap pixmap = QPixmap(g.profile[g.id()].fwType().contains("taranis") ? ":/images/splasht.png" : ":/images/splash.png");
   QSplashScreen *splash = new QSplashScreen(pixmap);
 
-  RegisterFirmwares();
+  RegisterEepromInterfaces();
+  registerOpenTxFirmwares();
 
   current_firmware_variant = GetFirmwareVariant(g.profile[g.id()].fwType());
 
@@ -124,6 +125,7 @@ int main(int argc, char *argv[])
   delete mainWin;
 
   UnregisterFirmwares();
+  UnregisterEepromInterfaces();
 
   return result;
 }

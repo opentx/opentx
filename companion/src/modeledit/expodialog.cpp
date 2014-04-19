@@ -2,11 +2,12 @@
 #include "ui_expodialog.h"
 #include "helpers.h"
 
-ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, GeneralSettings & generalSettings, char * inputName) :
+ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, GeneralSettings & generalSettings, FirmwareInterface * firmware, char * inputName) :
   QDialog(parent),
   ui(new Ui::ExpoDialog),
   model(model),
   generalSettings(generalSettings),
+  firmware(firmware),
   ed(expoData),
   inputName(inputName)
 {
@@ -28,7 +29,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
 
   ui->sideCB->setCurrentIndex(ed->mode-1);
 
-  if (!GetEepromInterface()->getCapability(FlightPhases)) {
+  if (!firmware->getCapability(FlightPhases)) {
     ui->label_phases->hide();
     for (int i=0; i<9; i++) {
       lb_fp[i]->hide();
@@ -43,13 +44,13 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
       }
       mask <<= 1;
     }
-    for (int i=GetEepromInterface()->getCapability(FlightPhases); i<9;i++) {
+    for (int i=firmware->getCapability(FlightPhases); i<9;i++) {
       lb_fp[i]->hide();
       cb_fp[i]->hide();
     }
   }
 
-  if (GetEepromInterface()->getCapability(VirtualInputs)) {
+  if (firmware->getCapability(VirtualInputs)) {
     ui->inputName->setMaxLength(4);
     populateSourceCB(ui->sourceCB, ed->srcRaw, model, POPULATE_SOURCES | POPULATE_SWITCHES | POPULATE_TRIMS | POPULATE_TELEMETRY);
     ui->sourceCB->removeItem(0);
@@ -69,7 +70,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
   ui->trimCB->addItem(tr("Ail"), 4);
   ui->trimCB->setCurrentIndex(1 - ed->carryTrim);
 
-  int expolength = GetEepromInterface()->getCapability(HasExpoNames);
+  int expolength = firmware->getCapability(HasExpoNames);
   if (!expolength) {
     ui->lineNameLabel->hide();
     ui->lineName->hide();
@@ -96,7 +97,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
   for (int i=0; i<9; i++) {
     connect(cb_fp[i], SIGNAL(toggled(bool)), this, SLOT(valuesChanged()));
   }
-  if (GetEepromInterface()->getCapability(VirtualInputs))
+  if (firmware->getCapability(VirtualInputs))
     connect(ui->inputName, SIGNAL(editingFinished()), this, SLOT(valuesChanged()));
 
   QTimer::singleShot(0, this, SLOT(shrink()));
@@ -111,7 +112,7 @@ ExpoDialog::~ExpoDialog()
 
 void ExpoDialog::updateScale()
 {
-  if (GetEepromInterface()->getCapability(VirtualInputs) && ed->srcRaw.type == SOURCE_TYPE_TELEMETRY) {
+  if (firmware->getCapability(VirtualInputs) && ed->srcRaw.type == SOURCE_TYPE_TELEMETRY) {
     RawSourceRange range = ed->srcRaw.getRange();
     ui->scaleLabel->show();
     ui->scale->show();
@@ -153,11 +154,11 @@ void ExpoDialog::valuesChanged()
       ed->phases<<=1;
     }
     ed->phases>>=1;
-    if (GetEepromInterface()->getCapability(FlightPhases)) {
+    if (firmware->getCapability(FlightPhases)) {
       int zeros=0;
       int ones=0;
       int phtemp=ed->phases;
-      for (int i=0; i<GetEepromInterface()->getCapability(FlightPhases); i++) {
+      for (int i=0; i<firmware->getCapability(FlightPhases); i++) {
         if (phtemp & 1) {
           ones++;
         }
@@ -168,7 +169,7 @@ void ExpoDialog::valuesChanged()
       }
       if (zeros==1) {
         phtemp=ed->phases;
-        for (int i=0; i<GetEepromInterface()->getCapability(FlightPhases); i++) {
+        for (int i=0; i<firmware->getCapability(FlightPhases); i++) {
           if ((phtemp & 1)==0) {
             break;
           }
@@ -177,7 +178,7 @@ void ExpoDialog::valuesChanged()
       }
       else if (ones==1) {
         phtemp=ed->phases;
-        for (int i=0; i<GetEepromInterface()->getCapability(FlightPhases); i++) {
+        for (int i=0; i<firmware->getCapability(FlightPhases); i++) {
           if (phtemp & 1) {
             break;
           }

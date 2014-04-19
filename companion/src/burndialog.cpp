@@ -445,7 +445,7 @@ void burnDialog::on_BurnFlashButton_clicked()
   if (hexType==EEPROM_FILE_TYPE) {
     QString calib = g.profile[g.id()].stickPotCalib();
     QString trainercalib = g.profile[g.id()].trainerCalib();
-    int potsnum=GetEepromInterface()->getCapability(Pots);
+    int potsnum=GetCurrentFirmware()->getCapability(Pots);
     int8_t vBatCalib=(int8_t) g.profile[g.id()].vBatCalib();
     int8_t currentCalib=(int8_t) g.profile[g.id()].currentCalib();
     int8_t PPM_Multiplier=(int8_t) g.profile[g.id()].ppmMultiplier();
