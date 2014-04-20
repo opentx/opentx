@@ -55,6 +55,7 @@ void InputsPanel::update()
   // i -> mixer number
   QByteArray qba;
   ExposlistWidget->clear();
+  firstLine = true;
   int curDest = -1;
 
   for (int i=0; i<C9X_MAX_EXPOS; i++) {
@@ -66,20 +67,61 @@ void InputsPanel::update()
 
     while (curDest<(int)md->chn-1) {
       curDest++;
-      str = getInputStr(model, curDest);
-      qba.clear();
-      qba.append((quint8)-curDest-1);
-      QListWidgetItem *itm = new QListWidgetItem(str);
-      itm->setData(Qt::UserRole,qba);
-      ExposlistWidget->addItem(itm);
+      AddInputLine(-curDest-1);
+    }
+    if (AddInputLine(i, md)) {
+      curDest++;
     }
 
-    if (curDest!=(int)md->chn) {
+  }
+
+  while (curDest<inputsCount-1) {
+    curDest++;
+    AddInputLine(-curDest-1);
+  }
+
+  lock = false;
+}
+
+
+bool InputsPanel::AddInputLine(int dest, const ExpoData * md) 
+{
+  bool new_ch;
+  QString str = getInputText(dest, &new_ch);
+  QListWidgetItem *itm = new QListWidgetItem(str);
+  QByteArray qba(1, (quint8)dest);
+  if (md) qba.append((const char*)md, sizeof(ExpoData));
+  itm->setData(Qt::UserRole, qba);  
+#if MIX_ROW_HEIGHT_INCREASE > 0
+  if (new_ch && !firstLine) {
+    //increase size of this row
+    itm->setData(GroupHeaderRole, 1);  
+  }
+#endif
+  ExposlistWidget->addItem(itm);
+  firstLine = false;
+  //qDebug() << "InputsPanel::AddInputLine(): dest" << dest << "text" << str;
+  return new_ch;
+}
+
+
+QString InputsPanel::getInputText(int dest, bool * new_ch)
+{
+  QString str;
+  if (new_ch) *new_ch = 0;
+  if (dest < 0) {
+    str = getInputStr(model, -dest-1);
+    if (new_ch) *new_ch = 1;
+  }
+  else {
+    ExpoData *md = &model.expoData[dest];
+
+    if ((dest == 0) || (model.expoData[dest-1].chn != md->chn)) {
+      if (new_ch) *new_ch = 1;
       if (firmware->getCapability(VirtualInputs))
         str = QString("%1").arg(getInputStr(model, md->chn), -8, ' ');
       else
         str = getInputStr(model, md->chn);
-      curDest = md->chn;
     }
     else {
       if (firmware->getCapability(VirtualInputs))
@@ -117,28 +159,9 @@ void InputsPanel::update()
       QString expoName = md->name;
       if (!expoName.isEmpty()) str += QString(" [%1]").arg(expoName);
     }
-
-    qba.clear();
-    qba.append((quint8)i);
-    qba.append((const char*)md, sizeof(ExpoData));
-    QListWidgetItem *itm = new QListWidgetItem(str);
-    itm->setData(Qt::UserRole,qba);  // expo number
-    ExposlistWidget->addItem(itm);   //(str);
   }
-
-  while (curDest<inputsCount-1) {
-    curDest++;
-    QString str = getInputStr(model, curDest);
-    qba.clear();
-    qba.append((quint8)-curDest-1);
-    QListWidgetItem *itm = new QListWidgetItem(str);
-    itm->setData(Qt::UserRole,qba); // add new expo
-    ExposlistWidget->addItem(itm);
-  }
-
-  lock = false;
+  return Qt::escape(str).replace(" ", "&nbsp;");
 }
-
 
 bool InputsPanel::gm_insertExpo(int idx)
 {

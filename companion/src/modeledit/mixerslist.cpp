@@ -102,7 +102,7 @@ QSize MixersDelegate::sizeHint ( const QStyleOptionViewItem & option, const QMod
         height = doc.size().height() + MIX_ROW_HEIGHT_INCREASE;
     }
     //qDebug() << "MixersDelegate::sizeHint() options.rect " << options.rect;
-    //qDebug() << "MixersDelegate::sizeHint() result " << QSize(doc.idealWidth(), height);
+    //qDebug() << "MixersDelegate::sizeHint() result " << QSize(doc.idealWidth(), height) << options.rect.width();
     return QSize(doc.idealWidth(), height);
 }
 
@@ -111,7 +111,6 @@ void MixersDelegate::SetupDocument(QTextDocument & doc, const QStyleOptionViewIt
     //setup html document
     doc.setHtml(options.text);
     doc.setDefaultFont(options.font);
-    doc.setTextWidth(options.rect.width());
 
     //minimize margins (default margins look ugly)
     QTextFrame *tf = doc.rootFrame();

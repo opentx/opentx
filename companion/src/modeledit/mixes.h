@@ -43,6 +43,7 @@ class MixesPanel : public ModelPanel
     MixersList *MixerlistWidget;
     bool mixInserted;
     unsigned int highlightedSource;
+    bool firstLine;
 
     int getMixerIndex(unsigned int dch);
     bool gm_insertMix(int idx);
