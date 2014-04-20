@@ -637,9 +637,9 @@ static int luaModelGetOutput(lua_State *L)
     lua_pushtableboolean(L, "symetrical", limit->symetrical);
     lua_pushtableboolean(L, "revert", limit->revert);
     if (limit->curve)
-      lua_pushtablenil(L, "curve");
-    else
       lua_pushtablenumber(L, "curve", limit->curve-1);
+    else
+      lua_pushtablenil(L, "curve");
   }
   else {
     lua_pushnil(L);
