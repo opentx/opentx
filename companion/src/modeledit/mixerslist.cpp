@@ -8,8 +8,8 @@ MixersList::MixersList(QWidget *parent, bool expo) :
     setContextMenuPolicy(Qt::CustomContextMenu);
     setSelectionMode(QAbstractItemView::SingleSelection);
     setDragEnabled(true);
+    setAcceptDrops(true);
     setDropIndicatorShown(true);
-    viewport()->setAcceptDrops(true);
     setItemDelegate(new MixersDelegate(parent));
 }
 
