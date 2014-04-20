@@ -34,11 +34,12 @@ bool MixersList::dropMimeData( int index, const QMimeData * data, Qt::DropAction
         QList<QVariant> lsVars;
         lsVars = v.values();
         QString itemString = lsVars.at(0).toString();
-        qba.append(lsVars.last().toByteArray().mid(1));
-        qDebug() << "MixersList::dropMimeData() added data " << lsVars;
+        qba.append(lsVars.at(1).toByteArray().mid(1));
+        qDebug() << "MixersList::dropMimeData() added data " << lsVars.count() << lsVars;
         if(itemString.isEmpty()) {};
     }
 
+    qDebug() << "MixersList::dropMimeData() qba.length() " << qba.length();
     if(qba.length()>0)
     {
         QMimeData *mimeData = new QMimeData;
@@ -47,6 +48,7 @@ bool MixersList::dropMimeData( int index, const QMimeData * data, Qt::DropAction
         else
           mimeData->setData("application/x-companion-mix", qba);
 
+        qDebug() << "MixersList::dropMimeData() emit mimeDropped " << index << mimeData << action;
         emit mimeDropped(index, mimeData, action);
     }
 
@@ -70,115 +72,63 @@ void MixersList::mousePressEvent(QMouseEvent *event)
  
 }
 
-#define QFIXED_MAX (INT_MAX/256)
 
-QRect __textLayoutBounds(const QStyleOptionViewItemV2 &option)
-{
-    QRect rect = option.rect;
-    const bool wrapText = option.features & QStyleOptionViewItemV2::WrapText;
-    switch (option.decorationPosition) {
-    case QStyleOptionViewItem::Left:
-    case QStyleOptionViewItem::Right:
-        rect.setWidth(wrapText && rect.isValid() ? rect.width() : (QFIXED_MAX));
-        break;
-    case QStyleOptionViewItem::Top:
-    case QStyleOptionViewItem::Bottom:
-        rect.setWidth(wrapText ? option.decorationSize.width() : (QFIXED_MAX));
-        break;
-    }
-
-    return rect;
-}
+#define     ADDED_SPACE     20
 
 void MixersDelegate::paint(QPainter *painter,
                           const QStyleOptionViewItem &option,
                           const QModelIndex &index) const
 {
-    //Q_D(const QItemDelegate);
-    Q_ASSERT(index.isValid());
-
-    QStyleOptionViewItemV4 opt = setOptions(index, option);
-    //qDebug() << "MixersDelegate::paint" << opt.rect;
-
-    const QStyleOptionViewItemV2 *v2 = qstyleoption_cast<const QStyleOptionViewItemV2 *>(&option);
-    opt.features = v2 ? v2->features
-                    : QStyleOptionViewItemV2::ViewItemFeatures(QStyleOptionViewItemV2::None);
-    const QStyleOptionViewItemV3 *v3 = qstyleoption_cast<const QStyleOptionViewItemV3 *>(&option);
-    opt.locale = v3 ? v3->locale : QLocale();
-    opt.widget = v3 ? v3->widget : 0;
-
-    // prepare
-    painter->save();
-    if (false /*d->clipPainting*/)
-        painter->setClipRect(opt.rect);
-
-    // get the data and the rectangles
-
-    QVariant value;
-
-
-    QString text;
-    QRect displayRect;
-    value = index.data(Qt::DisplayRole);
-    if (value.isValid() && !value.isNull()) {
-        text = value.toString();
-        displayRect = textRectangle(painter, __textLayoutBounds(opt), opt.font, text);
-    }
-
-    QRect checkRect;
-    Qt::CheckState checkState = Qt::Unchecked;
-    value = index.data(Qt::CheckStateRole);
-    if (value.isValid()) {
-        checkState = static_cast<Qt::CheckState>(value.toInt());
-        checkRect = check(opt, opt.rect, value);
-    }
-
-    // do the layout
-    QRect dummy;
-    
-
-
-    doLayout(opt, &checkRect, &dummy, &displayRect, false);
-
-    // draw the item
-
-    drawBackground(painter, opt, index);
-    drawCheck(painter, opt, checkRect, checkState);
-    //drawDecoration(painter, opt, decorationRect, pixmap);
-    drawDisplay(painter, opt, displayRect, text);
-    drawFocus(painter, opt, displayRect);
-
-    // done
-    painter->restore();
-}
-
-void MixersDelegate::drawDisplay(QPainter *painter, const QStyleOptionViewItem &option,
-                                const QRect &rect, const QString &text) const
-{
+    QStyleOptionViewItemV4 options = option;
+    initStyleOption(&options, index);
 
     painter->save();
 
     QTextDocument doc;
-    doc.setHtml(text);
+    doc.setHtml(options.text);
     doc.setDefaultFont(option.font);
 
-    painter->translate(rect.left(), rect.top());
-    QRect clip(0, 0, rect.width(), rect.height());
-    doc.drawContents(painter, clip);
+    options.text = "";
+    options.widget->style()->drawControl(QStyle::CE_ItemViewItem, &options, painter);
+
+    if ( index.model()->data(index, Qt::UserRole + 2).toInt() > 0 ) {
+        //qDebug() << "MixersDelegate::sizeHint() detected channel head"; 
+        painter->translate(options.rect.left(), options.rect.top() + ADDED_SPACE);
+        QRect clip(0, 0, options.rect.width(), options.rect.height() - ADDED_SPACE);
+        doc.drawContents(painter, clip);
+    }
+    else {
+        painter->translate(options.rect.left(), options.rect.top());
+        QRect clip(0, 0, options.rect.width(), options.rect.height());
+        doc.drawContents(painter, clip);
+    }
 
     painter->restore();
+
 }
 
 
 
-// QSize MixersDelegate::sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const
-// {
-//     QStyleOptionViewItemV4 options = option;
-//     initStyleOption(&options, index);
+QSize MixersDelegate::sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const
+{
+    QStyleOptionViewItemV4 options = option;
+    initStyleOption(&options, index);
 
-//     QTextDocument doc;
-//     doc.setHtml(options.text);
-//     doc.setDefaultFont(option.font);
-//     doc.setTextWidth(options.rect.width());
-//     return QSize(doc.idealWidth(), doc.size().height());
-// }
+    QTextDocument doc;
+    doc.setHtml(options.text);
+    doc.setDefaultFont(option.font);
+    doc.setTextWidth(options.rect.width());
+
+    //qDebug() << "MixersDelegate::sizeHint() UserRole-> " << index.model()->data(index, Qt::UserRole + 2);
+
+    int height = doc.size().height();
+    if ( index.model()->data(index, Qt::UserRole + 2).toInt() > 0 ) {
+        //qDebug() << "MixersDelegate::sizeHint() detected channel head"; 
+        height = doc.size().height() + ADDED_SPACE;
+    }
+
+    //qDebug() << "MixersDelegate::sizeHint() options.rect " << options.rect;
+    //qDebug() << "MixersDelegate::sizeHint() result " << QSize(doc.idealWidth(), height);
+
+    return QSize(doc.idealWidth(), height);
+}

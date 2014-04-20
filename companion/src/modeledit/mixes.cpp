@@ -106,9 +106,10 @@ bool MixesPanel::AddMixerLine(int dest, const MixData * md)
 #if MIX_ROW_HEIGHT_INCREASE > 0
   if ((new_ch && (dest > 0)) || (dest < 0)) {
     //increase size of this row
-    QFontMetrics * fm = new QFontMetrics(itm->font());
-    QRect rect = fm->boundingRect("C)");
-    itm->setSizeHint(QSize(-1, (rect.height() * (14+MIX_ROW_HEIGHT_INCREASE))/10));    
+    //QFontMetrics * fm = new QFontMetrics(itm->font());
+    //QRect rect = fm->boundingRect("C)");
+    //itm->setSizeHint(QSize(-1, (rect.height() * (14+MIX_ROW_HEIGHT_INCREASE))/10));    
+    itm->setData(Qt::UserRole+2, 1);  
   }
 #endif
   MixerlistWidget->addItem(itm);
@@ -211,7 +212,7 @@ QString MixesPanel::getMixerText(int dest, bool * new_ch)
       }
     }
   }
-  return str;
+  return str.replace(" ", "&nbsp;");
 }
 
 bool MixesPanel::gm_insertMix(int idx)

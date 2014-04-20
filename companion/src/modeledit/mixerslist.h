@@ -27,16 +27,14 @@ class MixersList : public QListWidget
 
 };
 
-class MixersDelegate : public QItemDelegate
+class MixersDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
   public:
-    inline MixersDelegate(QObject *parent) : QItemDelegate(parent) {}
+    inline MixersDelegate(QObject *parent) : QStyledItemDelegate(parent) {}
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-    void drawDisplay(QPainter *painter, const QStyleOptionViewItem &option,
-                                const QRect &rect, const QString &text) const ;
-    //QSize sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+    QSize sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 
 };
 
