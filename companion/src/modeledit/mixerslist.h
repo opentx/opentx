@@ -22,6 +22,9 @@ class MixersList : public QListWidget
   public slots:
     bool dropMimeData(int index, const QMimeData *data, Qt::DropAction action);
 
+  protected:
+    virtual QStringList mimeTypes() const;
+
   private:
     QPoint dragStartPosition;
     bool expo;

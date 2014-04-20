@@ -18,10 +18,23 @@ void MixersList::keyPressEvent(QKeyEvent *event)
     emit keyWasPressed(event);
 }
 
+
+/**
+    @brief Override to give us different mime type for mixers and inputs
+*/
+QStringList MixersList::mimeTypes () const
+{
+    QStringList types;
+    if (expo) types << "application/x-companion-expo-item";
+    else types << "application/x-companion-mix-item"; 
+    return types;
+}
+
 bool MixersList::dropMimeData( int index, const QMimeData * data, Qt::DropAction action )
 {    
     // qDebug() << "MixersList::dropMimeData() index:" << index << "formats" << data->formats();
-    QByteArray dropData = data->data("application/x-qabstractitemmodeldatalist");
+    QByteArray dropData = data->data(expo ? "application/x-companion-expo-item" : "application/x-companion-mix-item");
+    if (dropData.isNull() ) return false;
     QDataStream stream(&dropData, QIODevice::ReadOnly);
     QByteArray qba;
 
@@ -31,23 +44,16 @@ bool MixersList::dropMimeData( int index, const QMimeData * data, Qt::DropAction
         stream >> r >> c >> v;
         QList<QVariant> lsVars;
         lsVars = v.values();
-        //QString itemString = lsVars.at(0).toString();
         qba.append(lsVars.at(1).toByteArray().mid(1));
         // qDebug() << "MixersList::dropMimeData() added" << lsVars.count() << "items, data:" << lsVars;
-
-        //if(itemString.isEmpty()) {};
     }
 
     if(qba.length()>0) {
         QMimeData *mimeData = new QMimeData;
-        if (expo)
-          mimeData->setData("application/x-companion-expo", qba);
-        else
-          mimeData->setData("application/x-companion-mix", qba);
-
+        mimeData->setData(expo ? "application/x-companion-expo" : "application/x-companion-mix", qba);
         emit mimeDropped(index, mimeData, action);
+        delete mimeData;      //is this correct? is mimeData freed elswere?? 
     }
-
 
     return true;
 }
