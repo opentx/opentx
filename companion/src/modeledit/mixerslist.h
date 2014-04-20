@@ -3,6 +3,10 @@
 
 #include <QtGui>
 
+
+#define MIX_ROW_HEIGHT_INCREASE     8              //how much space is added above mixer row (for new channel), if 0 space adding is disabled
+const int  GroupHeaderRole = (Qt::UserRole+2);      //defines new user role for list items. If value is > 0, then space is added before that item
+
 class MixersList : public QListWidget
 {
     Q_OBJECT
@@ -22,21 +26,20 @@ class MixersList : public QListWidget
     QPoint dragStartPosition;
     bool expo;
 
-  protected:
-    void mousePressEvent(QMouseEvent *event);
-
 };
 
 class MixersDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
   public:
-    inline MixersDelegate(QObject *parent) : QStyledItemDelegate(parent) {}
+    inline MixersDelegate(QObject *parent) : QStyledItemDelegate(parent) {};
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
     QSize sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 
-};
+  private:
+    void SetupDocument(QTextDocument & doc, const QStyleOptionViewItemV4 & options) const;
 
+};
 
 #endif // MIXERSLIST_H

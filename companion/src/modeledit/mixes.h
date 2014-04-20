@@ -55,7 +55,6 @@ class MixesPanel : public ModelPanel
     QString getChannelLabel(int curDest);
     bool AddMixerLine(int dest, const MixData * md = 0);
     QString getMixerText(int dest, bool * new_ch);
-    QWidget * getMixerWidget(const QString & mixer_text);
 };
 
 #endif // MIXES_H
