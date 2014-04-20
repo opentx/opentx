@@ -619,6 +619,7 @@ extern const pm_char STR_VIEW_TEXT[];
 extern const pm_char STR_FLASH_BOOTLOADER[];
 extern const pm_char STR_WRITING[];
 extern const pm_char STR_CONFIRM_FORMAT[];
+extern const pm_char STR_EEBACKUP[];
 
 #if defined(VOICE) && defined(CPUARM)
   struct LanguagePack {

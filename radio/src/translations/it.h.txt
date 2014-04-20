@@ -773,6 +773,7 @@
 #define TR_SCRIPT              "Script"
 #define TR_INPUTS              "Inputs"
 #define TR_OUTPUTS             "Outputs"
+#define TR_EEBACKUP            "\004[ENTER Long] to backup the EEPROM"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL  "Max RSSI"
