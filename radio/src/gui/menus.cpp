@@ -165,7 +165,12 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
 #endif
 #if defined(CPUARM)
     do {
-      newval++;
+      if (IS_KEY_REPT(event) && (i_flags & INCDEC_REP10)) {
+        newval+=10;
+      }
+      else {
+        newval++;
+      }
     } while (isValueAvailable && !isValueAvailable(newval) && newval<=i_max);
     if (newval > i_max) {
       newval = val;
@@ -185,7 +190,12 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
 #endif
 #if defined(CPUARM)
     do {
-      newval--;
+      if (IS_KEY_REPT(event) && (i_flags & INCDEC_REP10)) {
+        newval-=10;
+      }
+      else {
+        newval--;
+      }
     } while (isValueAvailable && !isValueAvailable(newval) && newval>=i_min);
     if (newval < i_min) {
       newval = val;

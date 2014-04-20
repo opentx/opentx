@@ -1190,7 +1190,7 @@ void menuGeneralVersion(uint8_t event)
 #endif
 
 #if defined(PCBTARANIS)
-  lcd_putsLeft(7*FH, "\004[ENTER Long] to backup the EEPROM");
+  lcd_putsLeft(7*FH, STR_EEBACKUP);
   if (event == EVT_KEY_LONG(KEY_ENTER)) {
     backupEeprom();
   }

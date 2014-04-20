@@ -4361,6 +4361,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
             putsTelemetryChannel(CSWONE_2ND_COLUMN, y, v1_val - MIXSRC_FIRST_TELEM, convertCswTelemValue(cs), attr|LEFT);
             v2_max = maxTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
             v2_min = minTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
+            INCDEC_SET_FLAG(INCDEC_REP10 | NO_INCDEC_MARKS);
             if (cs->v2 < v2_min || cs->v2 > v2_max) {
               cs->v2 = 0;
               eeDirty(EE_MODEL);
@@ -4645,6 +4646,7 @@ void menuModelLogicalSwitches(uint8_t event)
         v2_max = maxTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
 #if defined(CPUARM)
         v2_min = minTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
+        INCDEC_SET_FLAG(INCDEC_REP10 | NO_INCDEC_MARKS);
         if (cs->v2 < v2_min || cs->v2 > v2_max) {
           cs->v2 = 0;
           eeDirty(EE_MODEL);

@@ -170,6 +170,7 @@ extern int8_t s_editMode;       // global editmode
 #define INCDEC_SWITCH   0x08
 #define INCDEC_SOURCE   0x10
 #define DBLKEYS_1000    0x20
+#define INCDEC_REP10    0x40
 
 // mawrow special values
 #define TITLE_ROW      ((uint8_t)-1)

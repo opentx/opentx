@@ -102,6 +102,7 @@ MainWindow::MainWindow():
     updateMenus();
 
     restoreState(g.mainWinState());
+    restoreGeometry(g.mainWinGeo());
 
     setUnifiedTitleAndToolBarOnMac(true);
     this->setWindowIcon(QIcon(":/icon.png"));
