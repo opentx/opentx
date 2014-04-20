@@ -79,7 +79,7 @@ void MixesPanel::update()
       curDest++;
       AddMixerLine(-curDest);
     }
-    if (AddMixerLine(i)) {
+    if (AddMixerLine(i, md)) {
       curDest++;
     }
   }
@@ -92,12 +92,17 @@ void MixesPanel::update()
 
 #define MIX_ROW_HEIGHT_INCREASE     8   //how much space is added above mixer row (for new channel), if 0 space adding is disabled
 
-bool MixesPanel::AddMixerLine(int dest)
+bool MixesPanel::AddMixerLine(int dest, const MixData * md)
 {
   bool new_ch;
   QString str = getMixerText(dest, &new_ch);
   QListWidgetItem *itm = new QListWidgetItem();
-  itm->setData(Qt::UserRole, QByteArray(1, (quint8)dest));  
+  QByteArray qba(1, (quint8)dest);
+  if (md) {
+    qba.append((const char*)md, sizeof(MixData));
+    //qDebug() << "appended mixdata for dest: " << dest;
+  }
+  itm->setData(Qt::UserRole, qba);  
 #if MIX_ROW_HEIGHT_INCREASE > 0
   if ((new_ch && (dest > 0)) || (dest < 0)) {
     //increase size of this row
@@ -107,8 +112,11 @@ bool MixesPanel::AddMixerLine(int dest)
   }
 #endif
   MixerlistWidget->addItem(itm);
-  MixerlistWidget->setItemWidget(itm, getMixerWidget(str));
-  // qDebug() << "MixesPanel::AddMixerLine(): " << str;
+  itm->setText(str);
+  // if ((new_ch && (dest > 0)) || (dest < 0)) {
+  //   MixerlistWidget->setItemWidget(itm, getMixerWidget(str));
+  // }
+  //qDebug() << "MixesPanel::AddMixerLine(): " << str;
   return new_ch;
 }
 
@@ -121,6 +129,8 @@ QWidget * MixesPanel::getMixerWidget(const QString & mixer_text)
   QString formated_str(mixer_text);
   formated_str.replace(" ", "&nbsp;");
   l->setText(formated_str);
+  l->setAcceptDrops(true);
+  //l->setAutoFillBackground(true);
   return l;
 }
 
@@ -347,6 +357,7 @@ void MixesPanel::mixersCopy()
 
 void MixesPanel::pasteMixerMimeData(const QMimeData * mimeData, int destIdx)
 {
+  qDebug() << "void MixesPanel::pasteMixerMimeData" << mimeData->formats();
   if(mimeData->hasFormat("application/x-companion-mix")) {
     int idx; // mixer index
     int dch;
@@ -427,8 +438,8 @@ void MixesPanel::mixerHighlight()
   for(int i=0; i<MixerlistWidget->count(); i++) {
     int t = MixerlistWidget->item(i)->data(Qt::UserRole).toByteArray().at(0);
     bool dummy;
-    QWidget *w = getMixerWidget(getMixerText(t, &dummy));
-    MixerlistWidget->setItemWidget(MixerlistWidget->item(i), w);
+    //QWidget *w = getMixerWidget();
+    MixerlistWidget->item(i)->setText(getMixerText(t, &dummy));
   }
 }
 
@@ -483,6 +494,7 @@ void MixesPanel::mixerlistWidget_customContextMenuRequested(QPoint pos)
 void MixesPanel::mimeMixerDropped(int index, const QMimeData *data, Qt::DropAction /*action*/)
 {
     int idx= MixerlistWidget->item(index > 0 ? index-1 : 0)->data(Qt::UserRole).toByteArray().at(0);
+    qDebug() << "MixesPanel::mimeMixerDropped()" << index << data;
     pasteMixerMimeData(data, idx);
 }
 
