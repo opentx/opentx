@@ -116,8 +116,7 @@ bool MixesPanel::AddMixerLine(int dest)
   }
   itm->setData(Qt::UserRole, qba);  
 #if MIX_ROW_HEIGHT_INCREASE > 0
-  //if ((new_ch && (dest > 0)) || (dest < -1)) {
-  if (new_ch && ! firstLine ) {
+  if (new_ch && !firstLine) {
     //increase size of this row
     itm->setData(GroupHeaderRole, 1);  
   }
