@@ -10,7 +10,7 @@ MixersList::MixersList(QWidget *parent, bool expo) :
     setDragEnabled(true);
     setAcceptDrops(true);
     setDropIndicatorShown(true);
-    setItemDelegate(new MixersDelegate(parent));
+    setItemDelegate(new MixersDelegate(parent));     //set custom paint handler
 }
 
 void MixersList::keyPressEvent(QKeyEvent *event)
@@ -52,10 +52,11 @@ bool MixersList::dropMimeData( int index, const QMimeData * data, Qt::DropAction
     return true;
 }
 
+/**
+    @brief Paints our HTML formated list item text
+*/
 void MixersDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    //Custom paint handler
-    //we paint HTML formated text inside list item
     QStyleOptionViewItemV4 options = option;
     initStyleOption(&options, index);
 
@@ -83,11 +84,11 @@ void MixersDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
 }
 
 
-
+/**
+    @brief Returns needed size for our HTML formated list item text
+*/
 QSize MixersDelegate::sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {
-    //custom size handler
-    //returns needed size for each HTML formated list item
     QStyleOptionViewItemV4 options = option;
     initStyleOption(&options, index);
 

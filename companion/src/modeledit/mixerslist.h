@@ -4,7 +4,7 @@
 #include <QtGui>
 
 
-#define MIX_ROW_HEIGHT_INCREASE     8              //how much space is added above mixer row (for new channel), if 0 space adding is disabled
+#define MIX_ROW_HEIGHT_INCREASE     8               //how much space is added above mixer row (for new channel), if 0 space adding is disabled
 const int  GroupHeaderRole = (Qt::UserRole+2);      //defines new user role for list items. If value is > 0, then space is added before that item
 
 class MixersList : public QListWidget
@@ -28,6 +28,11 @@ class MixersList : public QListWidget
 
 };
 
+/**
+  @brief Provides sizing and painting of items for our mixes and inputs lists
+
+  This class draws HTML formated strings into QListWidget class
+*/
 class MixersDelegate : public QStyledItemDelegate
 {
     Q_OBJECT

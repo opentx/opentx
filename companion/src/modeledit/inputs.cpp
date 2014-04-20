@@ -69,7 +69,7 @@ void InputsPanel::update()
       curDest++;
       AddInputLine(-curDest-1);
     }
-    if (AddInputLine(i, md)) {
+    if (AddInputLine(i)) {
       curDest++;
     }
 
@@ -84,13 +84,29 @@ void InputsPanel::update()
 }
 
 
-bool InputsPanel::AddInputLine(int dest, const ExpoData * md) 
+/**
+  @brief Creates new input line (list item) and adds it to the list widget
+
+  @note Input lines are now HTML formated because they use same widget as mixers.
+
+  @param[in] dest   defines which input line to create. 
+                    If dest < 0 then create empty input slot for input -dest ( dest=-6 -> Input05)
+                    if dest >=0 then create used input based on model input data from slot dest (dest=4 -> model expoData[4])
+
+  @retval true      created input number is different from the previous list item
+          false     created input number is the same as previous list item
+*/
+bool InputsPanel::AddInputLine(int dest) 
 {
   bool new_ch;
   QString str = getInputText(dest, &new_ch);
   QListWidgetItem *itm = new QListWidgetItem(str);
   QByteArray qba(1, (quint8)dest);
-  if (md) qba.append((const char*)md, sizeof(ExpoData));
+  if (dest >= 0) {
+    //add input data
+    ExpoData *md = &model.expoData[dest];
+    qba.append((const char*)md, sizeof(ExpoData));
+  }
   itm->setData(Qt::UserRole, qba);  
 #if MIX_ROW_HEIGHT_INCREASE > 0
   if (new_ch && !firstLine) {
@@ -105,6 +121,15 @@ bool InputsPanel::AddInputLine(int dest, const ExpoData * md)
 }
 
 
+/**
+  @brief Returns HTML formated input representation
+
+ @param[in] dest   defines which input line to create. 
+                    If dest < 0 then create empty input slot for input -dest ( dest=-6 -> Input05)
+                    if dest >=0 then create used input based on model input data from slot dest (dest=4 -> model expoData[4])
+
+  @retval string    input line in HTML  
+*/
 QString InputsPanel::getInputText(int dest, bool * new_ch)
 {
   QString str;

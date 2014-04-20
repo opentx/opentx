@@ -44,7 +44,7 @@ class InputsPanel : public ModelPanel
     QList<int> createExpoListFromSelected();
     void setSelectedByExpoList(QList<int> list);
     void pasteExpoMimeData(const QMimeData * mimeData, int destIdx);
-    bool AddInputLine(int dest, const ExpoData * md = 0);
+    bool AddInputLine(int dest);
     QString getInputText(int dest, bool * new_ch);
 
 };

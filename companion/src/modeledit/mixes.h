@@ -54,7 +54,7 @@ class MixesPanel : public ModelPanel
     QList<int> createMixListFromSelected();
     void setSelectedByMixList(QList<int> list);
     QString getChannelLabel(int curDest);
-    bool AddMixerLine(int dest, const MixData * md = 0);
+    bool AddMixerLine(int dest);
     QString getMixerText(int dest, bool * new_ch);
 };
 

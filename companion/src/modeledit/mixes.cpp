@@ -62,7 +62,7 @@ QString MixesPanel::getChannelLabel(int curDest)
 
 void MixesPanel::update()
 {
-  // curDest -> destination channel4
+  // curDest -> destination channel
   // i -> mixer number
   QByteArray qba;
   MixerlistWidget->clear();
@@ -74,16 +74,13 @@ void MixesPanel::update()
   for (i=0; i<firmware->getCapability(Mixes); i++) {
     MixData *md = &model.mixData[i];
     // qDebug() << "md->destCh: " << md->destCh;
-    if (md->destCh==0 || md->destCh>outputs) {
-      qDebug() << "WARNING: possible mixer corrupiton at i" << i << "destCh" << md->destCh;
-      continue;
-    }
+    if (md->destCh==0 || md->destCh>outputs) continue;
     QString str = "";
     while (curDest < md->destCh-1) {
       curDest++;
       AddMixerLine(-curDest);
     }
-    if (AddMixerLine(i, md)) {
+    if (AddMixerLine(i)) {
       curDest++;
     }
   }
@@ -94,13 +91,29 @@ void MixesPanel::update()
   }
 }
 
-bool MixesPanel::AddMixerLine(int dest, const MixData * md)
+/**
+  @brief Creates new mixer line (list item) and adds it to the list widget
+
+  @note Mixer lines are now HTML formated in order to support bold text.
+
+  @param[in] dest   defines which mixer line to create. 
+                    If dest < 0 then create empty channel slotr fo channel -dest ( dest=-2 -> CH2)
+                    if dest >=0 then create used channel based on model mix data from slot dest (dest=4 -> model mix[4])
+
+  @retval true      destination channel is different from the previous list item
+          false     destination channle is the same as previous list item
+*/
+bool MixesPanel::AddMixerLine(int dest)
 {
   bool new_ch;
   QString str = getMixerText(dest, &new_ch);
   QListWidgetItem *itm = new QListWidgetItem(str);
   QByteArray qba(1, (quint8)dest);
-  if (md) qba.append((const char*)md, sizeof(MixData));
+  if (dest >= 0) {
+    //add mix data
+    MixData *md = &model.mixData[dest];
+    qba.append((const char*)md, sizeof(MixData));
+  }
   itm->setData(Qt::UserRole, qba);  
 #if MIX_ROW_HEIGHT_INCREASE > 0
   //if ((new_ch && (dest > 0)) || (dest < -1)) {
@@ -115,6 +128,15 @@ bool MixesPanel::AddMixerLine(int dest, const MixData * md)
   return new_ch;
 }
 
+/**
+  @brief Returns HTML formated mixer representation
+
+  @param[in] dest   defines which mixer line to create. 
+                    If dest < 0 then create empty channel slot for channel -dest ( dest=-2 -> CH2)
+                    if dest >=0 then create used channel based on model mix data from slot dest (dest=4 -> model mix[4])
+
+  @retval string    mixer line in HTML  
+*/
 QString MixesPanel::getMixerText(int dest, bool * new_ch)
 {
   QString str;
@@ -339,7 +361,6 @@ void MixesPanel::mixersCopy()
 
 void MixesPanel::pasteMixerMimeData(const QMimeData * mimeData, int destIdx)
 {
-  qDebug() << "void MixesPanel::pasteMixerMimeData" << destIdx;
   if(mimeData->hasFormat("application/x-companion-mix")) {
     int idx; // mixer index
     int dch;
@@ -352,7 +373,6 @@ void MixesPanel::pasteMixerMimeData(const QMimeData * mimeData, int destIdx)
       dch = model.mixData[idx].destCh;
     }
 
-    qDebug() << "void MixesPanel::pasteMixerMimeData() dch" << dch;
     QByteArray mxData = mimeData->data("application/x-companion-mix");
 
     int i = 0;
@@ -365,7 +385,6 @@ void MixesPanel::pasteMixerMimeData(const QMimeData * mimeData, int destIdx)
       MixData *md = &model.mixData[idx];
       memcpy(md,mxData.mid(i,sizeof(MixData)).constData(),sizeof(MixData));
       md->destCh = dch;
-    qDebug() << "void MixesPanel::pasteMixerMimeData() dch1" << dch;
       i += sizeof(MixData);
     }
 
@@ -476,7 +495,7 @@ void MixesPanel::mixerlistWidget_customContextMenuRequested(QPoint pos)
 void MixesPanel::mimeMixerDropped(int index, const QMimeData *data, Qt::DropAction /*action*/)
 {
     int idx= MixerlistWidget->item(index > 0 ? index-1 : 0)->data(Qt::UserRole).toByteArray().at(0);
-    qDebug() << "MixesPanel::mimeMixerDropped()" << index << data;
+    //qDebug() << "MixesPanel::mimeMixerDropped()" << index << data;
     pasteMixerMimeData(data, idx);
 }
 
