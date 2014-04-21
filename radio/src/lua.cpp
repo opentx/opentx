@@ -102,36 +102,25 @@ static int luaGetValue(lua_State *L)
       lua_pushnumber(L, double(frskyData.hub.baroAltitude)/100);
       return 1;
     }
-    else if (!strcmp(what, "latitude")) {
-      if (frskyData.hub.gpsFix)
+    else if (frskyData.hub.gpsFix) {
+      if (!strcmp(what, "latitude")) {
         lua_pushnumber(L, gpsToDouble(frskyData.hub.gpsLatitudeNS=='S', frskyData.hub.gpsLatitude_bp, frskyData.hub.gpsLatitude_ap));
-      else
-        lua_pushnil(L);
-      return 1;
-    }
-    else if (!strcmp(what, "longitude")) {
-      if (frskyData.hub.gpsFix)
+        return 1;
+      }
+      else if (!strcmp(what, "longitude")) {
         lua_pushnumber(L, gpsToDouble(frskyData.hub.gpsLongitudeEW=='W', frskyData.hub.gpsLongitude_bp, frskyData.hub.gpsLongitude_ap));
-      else
-        lua_pushnil(L);
-      return 1;
-    }
-    else if (!strcmp(what, "pilot latitude")) {
-      if (frskyData.hub.gpsFix)
+        return 1;
+      }
+      else if (!strcmp(what, "pilot latitude")) {
         lua_pushnumber(L, pilotLatitude);
-      else
-        lua_pushnil(L);
-      return 1;
-    }
-    else if (!strcmp(what, "pilot longitude")) {
-      if (frskyData.hub.gpsFix)
+        return 1;
+      }
+      else if (!strcmp(what, "pilot longitude")) {
         lua_pushnumber(L, pilotLongitude);
-      else
-        lua_pushnil(L);
-      return 1;
+        return 1;
+      }
     }
   }
-
   return 0;
 }
 
@@ -1064,7 +1053,7 @@ void luaTask(uint8_t evt)
         lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
         for (int j=0; j<sid.inputsCount; j++) {
           if (sid.inputs[j].type == 1)
-            lua_pushinteger(L, (uint8_t)sd.inputs[j]);
+            lua_pushinteger(L, getValue((uint8_t)sd.inputs[j]));
           else
             lua_pushinteger(L, sd.inputs[j]);
         }
