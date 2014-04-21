@@ -1064,7 +1064,7 @@ void luaTask(uint8_t evt)
         lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
         for (int j=0; j<sid.inputsCount; j++) {
           if (sid.inputs[j].type == 1)
-            lua_pushinteger(L, (uint8_t)sd.inputs[j]);
+            lua_pushinteger(L, getValue((uint8_t)sd.inputs[j]));
           else
             lua_pushinteger(L, sd.inputs[j]);
         }
