@@ -719,7 +719,7 @@
 #define TR_EXTERNALRF          "HF externe"
 #define TR_FAILSAFE            INDENT "Type failsafe"
 #define TR_FAILSAFESET         "REGLAGES FAILSAFE"
-#define TR_COUNTRYCODE         "Zone géo."
+#define TR_COUNTRYCODE         TR("Zone géo.","Zone géographique")
 #define TR_VOICELANG           TR("Langue voix", "Langue annonces vocales")
 #define TR_UNITSSYSTEM         "Unités"
 #define TR_EDIT                "Editer"
