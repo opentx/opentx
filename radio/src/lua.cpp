@@ -131,7 +131,7 @@ static int luaGetValue(lua_State *L)
       return 1;
     }
   }
-
+ lua_pushnil(L);  
   return 0;
 }
 
