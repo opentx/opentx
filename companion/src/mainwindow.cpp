@@ -1472,33 +1472,36 @@ void MainWindow::readFlash()
 
 void MainWindow::burnConfig()
 {
-    burnConfigDialog *bcd = new burnConfigDialog(this);
-    bcd->exec();
+  burnConfigDialog *bcd = new burnConfigDialog(this);
+  bcd->exec();
+  delete bcd;
 }
 
 void MainWindow::burnList()
 {
-    burnConfigDialog *bcd = new burnConfigDialog(this);
-    bcd->listProgrammers();
+  burnConfigDialog *bcd = new burnConfigDialog(this);
+  bcd->listProgrammers();
 }
 
 void MainWindow::burnFuses()
 {
-    fusesDialog *fd = new fusesDialog(this);
-    fd->exec();
+  fusesDialog *fd = new fusesDialog(this);
+  fd->exec();
+  delete fd;
 }
 
 void MainWindow::compare()
 {
   CompareDialog *fd = new CompareDialog(this);
+  fd->setAttribute(Qt::WA_DeleteOnClose, true);
   fd->show();
-  delete fd;
 }
 
 void MainWindow::logFile()
 {
-    logsDialog *fd = new logsDialog(this);
-    fd->show();
+  logsDialog *fd = new logsDialog(this);
+  fd->setAttribute(Qt::WA_DeleteOnClose, true);
+  fd->show();
 }
 
 void MainWindow::about()

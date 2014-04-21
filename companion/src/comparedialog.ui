@@ -131,7 +131,7 @@
   <connection>
    <sender>closeButton</sender>
    <signal>clicked()</signal>
-   <receiver>compareDialog</receiver>
+   <receiver>CompareDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

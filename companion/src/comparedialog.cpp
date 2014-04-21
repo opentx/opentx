@@ -31,6 +31,7 @@ CompareDialog::CompareDialog(QWidget * parent):
   ui(new Ui::CompareDialog)
 {
   ui->setupUi(this);
+
   this->setWindowIcon(CompanionIcon("compare.png"));
   te = ui->textEdit;
   this->setAcceptDrops(true);
@@ -60,7 +61,8 @@ void CompareDialog::dragEnterEvent(QDragEnterEvent *event)
   // accept just text/uri-list mime format
   if (event->mimeData()->hasFormat("application/x-companion")) {   
     event->acceptProposedAction();
-  } else {
+  }
+  else {
     event->ignore();
   }
 }
@@ -119,7 +121,7 @@ void CompareDialog::dropEvent(QDropEvent *event)
       }          
     }
     else if (child->objectName().contains("label_2")) {
-      if(mimeData->hasFormat("application/x-companion")) {
+      if (mimeData->hasFormat("application/x-companion")) {
         QByteArray gmData = mimeData->data("application/x-companion");
         DragDropHeader *header = (DragDropHeader *)gmData.data();
         if (!header->general_settings) {
@@ -337,7 +339,8 @@ void CompareDialog::printPhases()
     if ((GetCurrentFirmwareVariant() & GVARS_VARIANT)) {
       gvars=1;
     }
-  } else {
+  }
+  else {
     gvars=1;
   }
   if (gvars==1) {
