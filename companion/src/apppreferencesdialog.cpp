@@ -392,9 +392,12 @@ FirmwareVariant AppPreferencesDialog::getFirmwareVariant()
           id += QString("-") + cb->text();
         }
       }
-      if (! firmware->getCapability(MultiLangVoice)) {
+      if (voice) {
         if (ui->voiceCombo->count() && (voice || firmware->voice))
           id += QString("-tts") + ui->voiceCombo->currentText();
+      }
+      else {
+        hideVoice();
       }
       if (ui->langCombo->count())
         id += QString("-") + ui->langCombo->currentText();
