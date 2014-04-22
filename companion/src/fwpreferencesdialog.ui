@@ -78,7 +78,7 @@
       </size>
      </property>
      <property name="toolTip">
-      <string>Set language of voice.
+      <string>Set voice language.
 May be different from firmware language</string>
      </property>
      <item>
@@ -208,7 +208,7 @@ May be different from firmware language</string>
    <item row="3" column="2" colspan="2">
     <widget class="QLabel" name="lastRevisionLbl">
      <property name="text">
-      <string>-</string>
+      <string notr="true">-</string>
      </property>
     </widget>
    </item>

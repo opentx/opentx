@@ -547,7 +547,7 @@ Mode 4:
           </font>
          </property>
          <property name="text">
-          <string>Radio Firmware</string>
+          <string>Radio Type</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -635,7 +635,7 @@ Mode 4:
           </size>
          </property>
          <property name="toolTip">
-          <string>Set language of voice.
+          <string>Set voice language.
 May be different from firmware language</string>
          </property>
         </widget>
@@ -1161,6 +1161,6 @@ May be different from firmware language</string>
      <y>274</y>
     </hint>
    </hints>
-  </connection>  
+  </connection>
  </connections>
 </ui>
