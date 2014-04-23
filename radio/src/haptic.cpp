@@ -54,7 +54,7 @@ void hapticQueue::heartbeat()
 #else
   if (buzzTimeLeft > 0) {
     buzzTimeLeft--; // time gets counted down
-#if defined(PCBSXY9X) || (defined(PCBTARANIS) && defined(REVPLUS))
+#if defined(PCBSKY9X) || (defined(PCBTARANIS) && defined(REVPLUS))
     hapticOn(g_eeGeneral.hapticStrength * 20);
 #else
     if (hapticTick-- > 0) {
