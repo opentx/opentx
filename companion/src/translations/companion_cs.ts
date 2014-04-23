@@ -1601,22 +1601,22 @@ Pokud není použito, vstup je AKTIVNÍ stále.</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="739"/>
         <source>Throttle Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanál plynu:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="741"/>
         <source>Yaw Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanál bočení:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="743"/>
         <source>Pitch Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanál klopení:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="745"/>
         <source>Roll Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanál klonění:</translation>
     </message>
 </context>
 <context>
@@ -2993,22 +2993,22 @@ Opravdu to takto chcete ?</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="774"/>
         <source>Throttle Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanál plynu:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="776"/>
         <source>Yaw Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanál bočení:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="778"/>
         <source>Pitch Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanál klopení:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="780"/>
         <source>Roll Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanál klonění:</translation>
     </message>
 </context>
 <context>
@@ -5236,22 +5236,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../wizarddialog.cpp" line="809"/>
         <source>Throttle Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanál plynu:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="811"/>
         <source>Yaw Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanál bočení:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="813"/>
         <source>Pitch Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanál klopení:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="815"/>
         <source>Roll Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanál klonění:</translation>
     </message>
 </context>
 <context>
@@ -7709,117 +7709,117 @@ Tým OpenTX.</translation>
     <message>
         <location filename="../modeledit/setup.ui" line="258"/>
         <source>Center beep</source>
-        <translation type="unfinished">Zvuk ve středové poloze</translation>
+        <translation>Zvuk ve středové poloze</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="452"/>
         <source>OFF</source>
-        <translation type="unfinished"></translation>
+        <translation>Vypnuto</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="308"/>
         <source>Model Image</source>
-        <translation type="unfinished">Obrázek modelu</translation>
+        <translation>Obrázek modelu</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="110"/>
         <source>Exponential</source>
-        <translation type="unfinished">Exponenciální</translation>
+        <translation>Exponenciální</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="73"/>
         <source>Throttle Trim Idle Only</source>
-        <translation type="unfinished"></translation>
+        <translation>Trim volnoběhu plynu</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="115"/>
         <source>Extra Fine</source>
-        <translation type="unfinished">Extra jemný</translation>
+        <translation>Extra jemný</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="120"/>
         <source>Fine</source>
-        <translation type="unfinished">Jemný</translation>
+        <translation>Jemný</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="125"/>
         <source>Medium</source>
-        <translation type="unfinished">Střední</translation>
+        <translation>Střední</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="130"/>
         <source>Coarse</source>
-        <translation type="unfinished">Hrubý</translation>
+        <translation>Hrubý</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="141"/>
         <source>Display Checklist</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazit poznámky</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="156"/>
         <source>Timer 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Stopky2</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="172"/>
         <source>Timer 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Stopky1</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="190"/>
         <source>Timer Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Stopa (TH) stopek</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="206"/>
         <source>Trim Step</source>
-        <translation type="unfinished"></translation>
+        <translation>Krok trimu</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="388"/>
         <source>Warnings</source>
-        <translation type="unfinished"></translation>
+        <translation>Předletová kontrola</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="402"/>
         <source>Switch Warnings</source>
-        <translation type="unfinished"></translation>
+        <translation>Polohy spínačů</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="442"/>
         <source>Pot Warnings</source>
-        <translation type="unfinished"></translation>
+        <translation>Hodnoty potenciometrů</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="457"/>
         <source>Manual</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="462"/>
         <source>Auto</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="508"/>
         <source>Model</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="43"/>
         <source>Extended Limits</source>
-        <translation type="unfinished">Rozšířené limity (125%)</translation>
+        <translation>Rozšířené limity (125%)</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="63"/>
         <source>Extended Trims</source>
-        <translation type="unfinished">Rozšířený rozsah trimů</translation>
+        <translation>Rozšířený rozsah trimů</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="83"/>
         <source>Throttle Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Alarm plynu</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="24"/>
@@ -7827,7 +7827,7 @@ Tým OpenTX.</translation>
 If this is checked the throttle will be reversed.  Idle will be forward, trim will also be reversed and the throttle warning will be reversed as well.
 
 </source>
-        <translation type="unfinished">Obrácení funkce plynu.
+        <translation>Obrácení funkce plynu.
 Pokud je zaškrtnuto,funkce plynu bude opačná. Poloha vypnuto bude nahoře.
 Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
 
@@ -7836,7 +7836,7 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../modeledit/setup.ui" line="33"/>
         <source>Reverse Throttle</source>
-        <translation type="unfinished"></translation>
+        <translation>Revers plynu</translation>
     </message>
 </context>
 <context>
@@ -7844,7 +7844,7 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../wizarddialog.cpp" line="668"/>
         <source>Elevator Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanál výškovky:</translation>
     </message>
 </context>
 <context>
@@ -7853,27 +7853,27 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <location filename="../simulation/simulatordialog.cpp" line="304"/>
         <location filename="../simulation/simulatordialog.cpp" line="326"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Varování</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog.cpp" line="304"/>
         <source>Joystick enabled but not configured correctly</source>
-        <translation type="unfinished">Joystick je povolen, ale není nakonfigurován</translation>
+        <translation>Joystick je povolen, ale není nakonfigurován</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog.cpp" line="326"/>
         <source>Cannot open joystick, joystick disabled</source>
-        <translation type="unfinished">Nelze otevřít joystick, není povolený</translation>
+        <translation>Nelze otevřít joystick, není povolený</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog.cpp" line="335"/>
         <source>Simulating Radio (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Simulace rádia (%1)</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog.cpp" line="468"/>
         <source>Firmware %1 error: %2</source>
-        <translation type="unfinished">Firmware %1 chyba: %2</translation>
+        <translation>Firmware %1 chyba: %2</translation>
     </message>
 </context>
 <context>
@@ -7881,7 +7881,7 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="26"/>
         <source>Companion Simulator</source>
-        <translation type="unfinished"></translation>
+        <translation>Companion Simulátor</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="404"/>
@@ -7889,7 +7889,7 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <location filename="../simulation/simulatordialog-9x.ui" line="873"/>
         <location filename="../simulation/simulatordialog-9x.ui" line="937"/>
         <source>Right Double Click to Reset</source>
-        <translation type="unfinished">Dvojité kliknutí pravým tlačítkem myši nastaví na střed</translation>
+        <translation>Dvojité kliknutí pravým tlačítkem myši nastaví na střed</translation>
     </message>
     <message>
         <source>THR</source>
@@ -7899,30 +7899,30 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <location filename="../simulation/simulatordialog-9x.ui" line="248"/>
         <location filename="../simulation/simulatordialog-9x.ui" line="717"/>
         <source>Hold X</source>
-        <translation type="unfinished">Držet X</translation>
+        <translation>Držet X</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="278"/>
         <location filename="../simulation/simulatordialog-9x.ui" line="747"/>
         <source>Fix X</source>
-        <translation type="unfinished">Fixovat X</translation>
+        <translation>Fixovat X</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="308"/>
         <location filename="../simulation/simulatordialog-9x.ui" line="777"/>
         <source>Fix Y</source>
-        <translation type="unfinished">Fixovat Y</translation>
+        <translation>Fixovat Y</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="338"/>
         <location filename="../simulation/simulatordialog-9x.ui" line="807"/>
         <source>Hold Y</source>
-        <translation type="unfinished">Držet Y</translation>
+        <translation>Držet Y</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="999"/>
         <source>BEEP</source>
-        <translation type="unfinished">Zvuk</translation>
+        <translation>Zvuk</translation>
     </message>
     <message>
         <source>P1</source>
@@ -7939,12 +7939,12 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="1239"/>
         <source>9x Simulator</source>
-        <translation type="unfinished">9x Simulátor</translation>
+        <translation>9x Simulátor</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="1432"/>
         <source>Outputs</source>
-        <translation type="unfinished">Výstupy</translation>
+        <translation>Výstupy</translation>
     </message>
 </context>
 <context>
@@ -7952,31 +7952,31 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="26"/>
         <source>Companion Simulator</source>
-        <translation type="unfinished"></translation>
+        <translation>Companion Simulátor</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="437"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1161"/>
         <source>Hold Y</source>
-        <translation type="unfinished">Držet Y</translation>
+        <translation>Držet Y</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="467"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1191"/>
         <source>Fix Y</source>
-        <translation type="unfinished">Fixovat Y</translation>
+        <translation>Fixovat Y</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="497"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1221"/>
         <source>Fix X</source>
-        <translation type="unfinished">Fixovat X</translation>
+        <translation>Fixovat X</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="527"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1251"/>
         <source>Hold X</source>
-        <translation type="unfinished">Držet X</translation>
+        <translation>Držet X</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="318"/>
@@ -7984,17 +7984,17 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <location filename="../simulation/simulatordialog-taranis.ui" line="1005"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1599"/>
         <source>Right Double Click to Reset</source>
-        <translation type="unfinished">Dvojité kliknutí pravým tlačítkem myši nastaví na střed</translation>
+        <translation>Dvojité kliknutí pravým tlačítkem myši nastaví na střed</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="77"/>
         <source>Taranis Simulator</source>
-        <translation type="unfinished">Taranis Simulátor</translation>
+        <translation>Taranis Simulátor</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="232"/>
         <source>Outputs</source>
-        <translation type="unfinished">Výstupy</translation>
+        <translation>Výstupy</translation>
     </message>
 </context>
 <context>
@@ -8002,7 +8002,7 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../wizarddialog.cpp" line="164"/>
         <source>Channel %1</source>
-        <translation type="unfinished">Kanál %1</translation>
+        <translation>Kanál %1</translation>
     </message>
 </context>
 <context>
@@ -8010,12 +8010,12 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../wizarddialog.cpp" line="644"/>
         <source>Rudder Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanál směrovky:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="646"/>
         <source>Elevator Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanál výškovky:</translation>
     </message>
 </context>
 <context>
@@ -8023,22 +8023,22 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../wizarddialog.cpp" line="309"/>
         <source>Elevator and Rudder</source>
-        <translation type="unfinished"></translation>
+        <translation>Výškovka a směrovka</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="311"/>
         <source>Only Elevator</source>
-        <translation type="unfinished"></translation>
+        <translation>Jen výškovka</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="312"/>
         <source>V-tail</source>
-        <translation type="unfinished"></translation>
+        <translation>Ocas - V</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="315"/>
         <source>Tail Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ ocasu:</translation>
     </message>
 </context>
 <context>
@@ -8049,7 +8049,7 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <location filename="../modeledit/telemetry.ui" line="522"/>
         <location filename="../modeledit/telemetry.ui" line="675"/>
         <source>A1</source>
-        <translation type="unfinished">Telem. vstup A1</translation>
+        <translation>Telem. vstup A1</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="105"/>
@@ -8057,46 +8057,46 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <location filename="../modeledit/telemetry.ui" line="527"/>
         <location filename="../modeledit/telemetry.ui" line="680"/>
         <source>A2</source>
-        <translation type="unfinished">Telem. vstup A2</translation>
+        <translation>Telem. vstup A2</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="335"/>
         <source>RSSI</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="187"/>
         <source>Alarm 1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="201"/>
         <location filename="../modeledit/telemetry.ui" line="278"/>
         <source>----</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="206"/>
         <location filename="../modeledit/telemetry.ui" line="283"/>
         <source>Yellow</source>
-        <translation type="unfinished">Žlutá</translation>
+        <translation>Žlutá</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="211"/>
         <location filename="../modeledit/telemetry.ui" line="288"/>
         <source>Orange</source>
-        <translation type="unfinished">Oranžová</translation>
+        <translation>Oranžová</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="216"/>
         <location filename="../modeledit/telemetry.ui" line="293"/>
         <source>Red</source>
-        <translation type="unfinished">Červená</translation>
+        <translation>Červená</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="264"/>
         <source>Alarm 2</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="537"/>
@@ -8106,53 +8106,53 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../modeledit/telemetry.ui" line="583"/>
         <source>Serial Protocol</source>
-        <translation type="unfinished">Sériový protokol</translation>
+        <translation>Sériový protokol</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="400"/>
         <source>Volt source</source>
-        <translation type="unfinished">Snímač napětí</translation>
+        <translation>Snímač napětí</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="414"/>
         <source>Metric</source>
-        <translation type="unfinished">Metrické</translation>
+        <translation>Metrické</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="419"/>
         <source>Imperial</source>
-        <translation type="unfinished">Imperiální</translation>
+        <translation>Imperiální</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="439"/>
         <source>Current source</source>
-        <translation type="unfinished">Snímač proudu</translation>
+        <translation>Snímač proudu</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="458"/>
         <source>Protocol</source>
-        <translation type="unfinished">Protokol</translation>
+        <translation>Protokol</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="472"/>
         <source>NONE</source>
-        <translation type="unfinished">Žádný</translation>
+        <translation>Žádný</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="487"/>
         <location filename="../modeledit/telemetry.ui" line="532"/>
         <source>FAS</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="502"/>
         <source>None</source>
-        <translation type="unfinished">Žádný</translation>
+        <translation>Žádný</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="507"/>
         <source>FrSky Sensor Hub</source>
-        <translation type="unfinished">FrSky Senzor Hub</translation>
+        <translation>FrSky Senzor Hub</translation>
     </message>
     <message>
         <source>CEL</source>
@@ -8161,12 +8161,12 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../modeledit/telemetry.ui" line="557"/>
         <source>Units</source>
-        <translation type="unfinished">Jednotky</translation>
+        <translation>Jednotky</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="570"/>
         <source>Blades</source>
-        <translation type="unfinished">Počet listů vrtule</translation>
+        <translation>Počet listů vrtule</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="660"/>
@@ -8181,52 +8181,52 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../modeledit/telemetry.ui" line="670"/>
         <source>Vario</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="696"/>
         <source>Sink Max</source>
-        <translation type="unfinished">Klesání Max</translation>
+        <translation>Klesání Max</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="806"/>
         <source>Off</source>
-        <translation type="unfinished">Vypnuto</translation>
+        <translation>Vypnuto</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="819"/>
         <source>Climb Max</source>
-        <translation type="unfinished">Stoupání Max</translation>
+        <translation>Stoupání Max</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="835"/>
         <source>Sink Min</source>
-        <translation type="unfinished">Klesání Min</translation>
+        <translation>Klesání Min</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="851"/>
         <source>Climb Min</source>
-        <translation type="unfinished">Stoupání Min</translation>
+        <translation>Stoupání Min</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="863"/>
         <source>Vario source</source>
-        <translation type="unfinished">Vario senzor</translation>
+        <translation>Vario senzor</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="870"/>
         <source>Vario limits</source>
-        <translation type="unfinished">Rozsah varia</translation>
+        <translation>Rozsah varia</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="885"/>
         <source>Use GPS as altitude source</source>
-        <translation type="unfinished">Použít GPS jako senzor výšky</translation>
+        <translation>Použít GPS jako senzor výšky</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="898"/>
         <source>Display altitude in toolbar</source>
-        <translation type="unfinished">Zobrazit výšku v nástrojové liště</translation>
+        <translation>Zobrazit výšku v nástrojové liště</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="913"/>
@@ -8236,32 +8236,32 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../modeledit/telemetry.ui" line="979"/>
         <source> mAh</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="995"/>
         <source> A</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="1059"/>
         <source>Various</source>
-        <translation type="unfinished"></translation>
+        <translation>Různé</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="966"/>
         <source>mAh count</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet mAh</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="1020"/>
         <source>FAS Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Ofset FAS</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="1027"/>
         <source>Persistent mAh</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukládat hodnoty</translation>
     </message>
 </context>
 <context>
@@ -8269,123 +8269,123 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="34"/>
         <source>Unit</source>
-        <translation type="unfinished">Jednotky</translation>
+        <translation>Jednotky</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="47"/>
         <source>Max Value</source>
-        <translation type="unfinished">Maximim</translation>
+        <translation>Maximim</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="60"/>
         <source>Alarm 1    </source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="74"/>
         <location filename="../modeledit/telemetry_analog.ui" line="137"/>
         <source>----</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="79"/>
         <location filename="../modeledit/telemetry_analog.ui" line="142"/>
         <source>Yellow</source>
-        <translation type="unfinished">Žlutá</translation>
+        <translation>Žlutá</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="84"/>
         <location filename="../modeledit/telemetry_analog.ui" line="147"/>
         <source>Orange</source>
-        <translation type="unfinished">Oranžová</translation>
+        <translation>Oranžová</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="89"/>
         <location filename="../modeledit/telemetry_analog.ui" line="152"/>
         <source>Red</source>
-        <translation type="unfinished">Červená</translation>
+        <translation>Červená</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="104"/>
         <location filename="../modeledit/telemetry_analog.ui" line="167"/>
         <source>&lt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="109"/>
         <location filename="../modeledit/telemetry_analog.ui" line="172"/>
         <source>&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="123"/>
         <source>Alarm 2</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="265"/>
         <source>Offset</source>
-        <translation type="unfinished">Ofset</translation>
+        <translation>Ofset</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="279"/>
         <source>Volts (V)</source>
-        <translation type="unfinished">Volty (V)</translation>
+        <translation>Volty (V)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="284"/>
         <source>Amps (A)</source>
-        <translation type="unfinished">Ampéry (A)</translation>
+        <translation>Ampéry (A)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="289"/>
         <source>Speed (m/s or ft/s)</source>
-        <translation type="unfinished">Rychlost (m/s nebo ft/s)</translation>
+        <translation>Rychlost (m/s nebo ft/s)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="294"/>
         <source>Raw (-)</source>
-        <translation type="unfinished">Jednotky (-)</translation>
+        <translation>Jednotky (-)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="299"/>
         <source>Speed (km/h or miles/h)</source>
-        <translation type="unfinished">Rychlost (km/h nebo míle/h)</translation>
+        <translation>Rychlost (km/h nebo míle/h)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="304"/>
         <source>Meters (m or ft)</source>
-        <translation type="unfinished">Vzdálenost (m nebo ft)</translation>
+        <translation>Vzdálenost (m nebo ft)</translation>
     </message>
     <message utf8="true">
         <location filename="../modeledit/telemetry_analog.ui" line="309"/>
         <source>Temp (°)</source>
-        <translation type="unfinished">Teplota (°)</translation>
+        <translation>Teplota (°)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="314"/>
         <source>Fuel (%)</source>
-        <translation type="unfinished">Palivo (%)</translation>
+        <translation>Palivo (%)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="319"/>
         <source>mAmps (mA)</source>
-        <translation type="unfinished">MiliAmpéry (mA)</translation>
+        <translation>MiliAmpéry (mA)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="42"/>
         <source>Low Alarm</source>
-        <translation type="unfinished"></translation>
+        <translation>Nízký alarm</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="43"/>
         <source>Critical Alarm</source>
-        <translation type="unfinished"></translation>
+        <translation>Kriticky alarm</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="51"/>
         <source>Range</source>
-        <translation type="unfinished">Rozsah</translation>
+        <translation>Rozsah</translation>
     </message>
 </context>
 <context>
@@ -8393,37 +8393,37 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../modeledit/telemetry_customscreen.ui" line="34"/>
         <source>Custom Screen Type</source>
-        <translation type="unfinished">Typ panelu</translation>
+        <translation>Typ panelu</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_customscreen.ui" line="54"/>
         <source>Nums</source>
-        <translation type="unfinished">Hodnoty</translation>
+        <translation>Hodnoty</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_customscreen.ui" line="59"/>
         <source>Bars</source>
-        <translation type="unfinished">Ukazatele</translation>
+        <translation>Ukazatele</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_customscreen.ui" line="92"/>
         <source>Min</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_customscreen.ui" line="102"/>
         <source>Source</source>
-        <translation type="unfinished">Zdroj</translation>
+        <translation>Zdroj</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_customscreen.ui" line="112"/>
         <source>Gauge</source>
-        <translation type="unfinished">Ukazatel</translation>
+        <translation>Ukazatel</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_customscreen.ui" line="122"/>
         <source>Max</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -8431,27 +8431,27 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../modeledit/telemetry.cpp" line="488"/>
         <source>Telemetry screen %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Stránka telemetrie %1</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="523"/>
         <source>Low Alarm</source>
-        <translation type="unfinished"></translation>
+        <translation>Nízký alarm</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="524"/>
         <source>Critical Alarm</source>
-        <translation type="unfinished"></translation>
+        <translation>Kriticky alarm</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="608"/>
         <source>Winged Shadow How High</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="611"/>
         <source>Winged Shadow How High (not supported)</source>
-        <translation type="unfinished">Winged Shadow How High (nepodporován)</translation>
+        <translation>Winged Shadow How High (nepodporován)</translation>
     </message>
 </context>
 <context>
@@ -8459,17 +8459,17 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../wizarddialog.cpp" line="355"/>
         <source>Yes</source>
-        <translation type="unfinished">Ano</translation>
+        <translation>Ano</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="356"/>
         <source>No</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="363"/>
         <source>&lt;br&gt;Throttle Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;Kanál plynu:</translation>
     </message>
 </context>
 <context>
@@ -8477,17 +8477,17 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../modeledit/setup_timer.ui" line="39"/>
         <source>Countdown</source>
-        <translation type="unfinished"></translation>
+        <translation>Odečítat</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_timer.ui" line="49"/>
         <source>Minute Call</source>
-        <translation type="unfinished"></translation>
+        <translation>Oznamovat minuty</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_timer.ui" line="56"/>
         <source>Persistent</source>
-        <translation type="unfinished">Ukládání</translation>
+        <translation>Ukládat hodnoty</translation>
     </message>
 </context>
 <context>
@@ -8495,17 +8495,17 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../modeledit/setup.cpp" line="25"/>
         <source>Silent</source>
-        <translation type="unfinished"></translation>
+        <translation>Tichý</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="26"/>
         <source>Beeps</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvuk</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="28"/>
         <source>Voice</source>
-        <translation type="unfinished">Hlas tts</translation>
+        <translation>Hlas</translation>
     </message>
 </context>
 <context>
@@ -8513,12 +8513,12 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../wizarddialog.cpp" line="619"/>
         <source>First Tail Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>První kanál:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="621"/>
         <source>Second Tail Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Druhý kanál:</translation>
     </message>
 </context>
 <context>
@@ -8526,12 +8526,12 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../wizarddialog.cpp" line="289"/>
         <source>Standard Wing</source>
-        <translation type="unfinished"></translation>
+        <translation>Běžné křídlo</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="291"/>
         <source>Flying Wing / Deltawing</source>
-        <translation type="unfinished"></translation>
+        <translation>Samokřídlo / Delta</translation>
     </message>
 </context>
 <context>
@@ -8539,119 +8539,119 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../wizarddialog.cpp" line="26"/>
         <source>Model Wizard</source>
-        <translation type="unfinished"></translation>
+        <translation>Průvodce nastavením modelu</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="28"/>
         <source>Model Type</source>
-        <translation type="unfinished">Typ modelu</translation>
+        <translation>Typ modelu</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="28"/>
         <source>Enter model name and model type.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte název a typ modelu.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="29"/>
         <source>Throttle</source>
-        <translation type="unfinished">Plyn</translation>
+        <translation>Plyn</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="29"/>
         <source>Has your model got a motor or an engine?</source>
-        <translation type="unfinished"></translation>
+        <translation>Má váš model motorový pohon?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="30"/>
         <source>Wing Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ křídla</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="30"/>
         <source>Is your model a flying wing/deltawing or has it a standard wing configuration?</source>
-        <translation type="unfinished"></translation>
+        <translation>Je váš model samokřídlo/delta, nebo má běžnou konfiguraci křídla?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="31"/>
         <source>Ailerons</source>
-        <translation type="unfinished"></translation>
+        <translation>Křidélka</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="31"/>
         <source>Has your model got ailerons?</source>
-        <translation type="unfinished"></translation>
+        <translation>Má váš model křidélka?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="32"/>
         <source>Flaps</source>
-        <translation type="unfinished"></translation>
+        <translation>Klapky</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="32"/>
         <source>Has your model got flaps?</source>
-        <translation type="unfinished"></translation>
+        <translation>Má váš model vztlakové klapky?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="33"/>
         <source>Airbrakes</source>
-        <translation type="unfinished"></translation>
+        <translation>Brzdy</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="33"/>
         <source>Has your model got airbrakes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Má váš model brzdící klapky?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="34"/>
         <source>Flying-wing / Delta-wing</source>
-        <translation type="unfinished"></translation>
+        <translation>Samokřídlo / Delta křídlo</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="34"/>
         <source>Are the elevons controlled by servos connected to separate channels or by a single servo channel?</source>
-        <translation type="unfinished"></translation>
+        <translation>Jsou elevony ovládány dvěma servy, každým na jednoum kanále, nebo jen jedním servem/kanálem ?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="35"/>
         <source>Rudder</source>
-        <translation type="unfinished">Směrovka</translation>
+        <translation>Směrovka</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="35"/>
         <source>Does your model have a rudder?</source>
-        <translation type="unfinished"></translation>
+        <translation>Má váš model ovládanou směrovku?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="36"/>
         <source>Tail Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ ocasu</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="36"/>
         <source>Select which type of tail your model is equiped with.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyberte jaký typ ocasu má váš model.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="37"/>
         <location filename="../wizarddialog.cpp" line="39"/>
         <source>Tail</source>
-        <translation type="unfinished">Ocas</translation>
+        <translation>Ocas</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="37"/>
         <location filename="../wizarddialog.cpp" line="38"/>
         <source>Select channels for tail control.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte kanály pro ovládání ocasních ploch.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="38"/>
         <source>V-Tail</source>
-        <translation type="unfinished"></translation>
+        <translation>Ocas typu V</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="39"/>
         <source>Select elevator channel.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte kanál výškovky.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="40"/>
@@ -8687,7 +8687,7 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
         <location filename="../wizarddialog.cpp" line="43"/>
         <location filename="../wizarddialog.cpp" line="44"/>
         <source>Helicopter</source>
-        <translation type="unfinished">Heli</translation>
+        <translation>Helikoptéra</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="43"/>
@@ -8698,78 +8698,78 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../wizarddialog.cpp" line="45"/>
         <source>Multirotor</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="45"/>
         <source>Select the control channels for your multirotor</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte ovládací kanály vaší multikoptéry</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="46"/>
         <source>Save Changes</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložit změny</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="46"/>
         <source>Manually check the direction of each control surface and reverse any channels that make controls move in the wrong direction. Remove the propeller/propellers before you try to control your model for the first time.&lt;br&gt;Please note that continuing removes all old model settings!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ručně zkontrolujte směr každé řídicí plochy a nastavte revers těch co se pohybují v opačném směru. Raději odstraňte vrtuli / vrtule, než se poprvé pokusíte ovládat svůj model.&lt;br&gt;Vezměte prosím na vědomí, že pokud budete pokračovat, dojde k odstranění všech starých nastavení tohoto modelu!</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="65"/>
         <source>Enter a name for your model and select model type.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte název a typ modelu.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="67"/>
         <source>Select the receiver channel that is connected to your ESC or throttle servo.&lt;br&gt;&lt;br&gt;Throttle - Spektrum: CH1, Futaba: CH3</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte kanál přijímače, který je připojen k ESC, nebo servu plynu.&lt;br&gt;&lt;br&gt;Spektrum: CH1, Futaba: CH3</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="70"/>
         <source>Most aircraft have a main wing and a tail with control surfaces. Flying wings and delta winged aircraft only have a single wing. The main control surface on a standard wing controls the roll of the aircraft. This surface is called an aileron.&lt;br&gt;The control surface of a delta wing controls both roll and pitch. This surface is called an elevon. </source>
-        <translation type="unfinished"></translation>
+        <translation>Většina letadel má hlavní křídlo a ocas s ovládacími plochami. Samokřídla a delty mají jen jedno křídlo. Hlavní řídicí plochy na standardním křídle ovládájí klonění letadla. Tyto plochy se nazývají křidélka. &lt;br&gt; Ovládací plochy delta křídla řídí podélný i příčný náklon. Tyto plochy se nazývají elevony.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="74"/>
         <source>Models use one or two channels to control the ailerons.&lt;br&gt;A so called Y-cable can be used to connect a single receiver channel to two separate aileron servos. If your servos are connected by a Y-cable you should select the single-servo option.&lt;br&gt;&lt;br&gt;Aileron - Spektrum: CH2, Futaba: CH1</source>
-        <translation type="unfinished"></translation>
+        <translation>Modely používají jeden, nebo dva kanály pro ovládání křidélek.&lt;br&gt;Tzv. Y-kabel lze použít pro připojení dvou samostatných serv křidélek do jednoho kanálu přijímače. Pokud jsou vaše serva spojeny Y-kabelem, měli byste zvolit možnost &quot;jeden kanál&quot;&lt;br&gt;&lt;br&gt;Spektrum: CH2, Futaba: CH1</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="85"/>
         <source>Models use one or two channels to control the elevons.&lt;br&gt;A so called Y-cable can be used to connect single a receiver channel to two separate elevon servos. If your servos are connected by a Y-cable you should select the single-servo option.</source>
-        <translation type="unfinished"></translation>
+        <translation>Modely používají jeden, nebo dva kanály pro ovládání elevonů.&lt;br&gt;Tzv. Y-kabel lze použít pro připojení dvou samostatných serv elevonů do jednoho kanálu přijímače. Pokud jsou vaše serva spojeny Y-kabelem, měli byste zvolit možnost &quot;jeden kanál&quot;.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="79"/>
         <source>This wizard assumes that your flaps are controlled by a switch. If your flaps are controlled by a potentiometer you can change that manually later.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tento průvodce předpokládá, že vaše klapky jsou ovládány spínačem. Pokud jsou vaše klapky řízeny potenciometrem můžete toto změnit později ručně.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="82"/>
         <source>Air brakes are used to reduce the speed of advanced sail planes.&lt;br&gt;They are very uncommon on other types of planes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vzduchové brzdy se používají ke snížení rychlosti moderních kluzáků.&lt;br&gt;Na jiných typech letadel nejsou příliš obvyklé.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="89"/>
         <source>Select the receiver channel that is connected to your rudder.&lt;br&gt;&lt;br&gt;Rudder - Spektrum: CH4, Futaba: CH4</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte kanál přijímače, který je připojen k vaší směrovce.&lt;br&gt;Spektrum:. CH4, Futaba: CH4</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="92"/>
         <source>Select the tail type of your plane.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte typ ocasu vašeho modelu.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="94"/>
         <location filename="../wizarddialog.cpp" line="98"/>
         <source>Select the Rudder and Elevator channels.&lt;br&gt;&lt;br&gt;Rudder - Spektrum: CH4, Futaba: CH4&lt;br&gt;Elevator - Spektrum: CH3, Futaba: CH2</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte kanály směrovky a výškovky.&lt;br&gt;&lt;br&gt;Směrovka - Spektrum: CH4, Futaba: CH4&lt;br&gt;Výškovka - Spektrum: CH3, Futaba: CH2</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="102"/>
         <source>Select the Elevator channel.&lt;br&gt;&lt;br&gt;Elevator - Spektrum: CH3, Futaba: CH2</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte kanál výškovky.&lt;br&gt;&lt;br&gt;Spektrum: CH3, Futaba: CH2</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="105"/>
@@ -8784,17 +8784,17 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../wizarddialog.cpp" line="115"/>
         <source>Select the control channels for your multirotor.&lt;br&gt;&lt;br&gt;Throttle - Spektrum: CH1, Futaba: CH3&lt;br&gt;Yaw - Spektrum: CH4, Futaba: CH4&lt;br&gt;Pitch - Spektrum: CH3, Futaba: CH2&lt;br&gt;Roll - Spektrum: CH2, Futaba: CH1</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte ovládací kanály vaší multikoptéry.&lt;br&gt;&lt;br&gt;Plyn - Spektrum: CH1, Futaba: CH3&lt;br&gt;Bočení - Spektrum: CH4, Futaba: CH4&lt;br&gt;Klopení - Spektrum: CH3, Futaba: CH2&lt;br&gt;Klonění - Spektrum: CH2, Futaba: CH1</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="123"/>
         <source>There is no help available for the current page.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pro tuto stránku není dostupná žádná nápověda.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="125"/>
         <source>Model Wizard Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Nápověda průvodce nastavením modelu</translation>
     </message>
 </context>
 <context>
@@ -8802,17 +8802,17 @@ Funkce trimu bude opačná, stejně tak i varování polohy páky plynu.
     <message>
         <location filename="../wizarddialog.cpp" line="899"/>
         <source>Model Name: </source>
-        <translation type="unfinished"></translation>
+        <translation>Název modelu:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="900"/>
         <source>Model Type: </source>
-        <translation type="unfinished"></translation>
+        <translation>Typ modelu:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="904"/>
         <source>Channel %1: </source>
-        <translation type="unfinished"></translation>
+        <translation>Kanál %1: </translation>
     </message>
 </context>
 <context>
@@ -9417,7 +9417,7 @@ m2560 pro V4 desky</translation>
         <location filename="../burnconfigdialog.cpp" line="341"/>
         <location filename="../burnconfigdialog.cpp" line="418"/>
         <source>Companion</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../burnconfigdialog.cpp" line="342"/>
@@ -9470,27 +9470,27 @@ m2560 pro V4 desky</translation>
     <message>
         <location filename="../burndialog.ui" line="147"/>
         <source>Version</source>
-        <translation type="unfinished"></translation>
+        <translation>Verze</translation>
     </message>
     <message>
         <location filename="../burndialog.ui" line="306"/>
         <source>Use firmware start screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Použít logo z firmwaru</translation>
     </message>
     <message>
         <location filename="../burndialog.ui" line="313"/>
         <source>Use another start screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Použít jiné logo</translation>
     </message>
     <message>
         <location filename="../burndialog.ui" line="326"/>
         <source>Use profile start screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Použít logo z nastavení profilu</translation>
     </message>
     <message>
         <location filename="../burndialog.ui" line="333"/>
         <source>Use library start screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Použít logo z knihovny</translation>
     </message>
     <message>
         <location filename="../burndialog.ui" line="133"/>
@@ -9506,7 +9506,7 @@ m2560 pro V4 desky</translation>
     <message>
         <location filename="../burndialog.ui" line="209"/>
         <source>Allows Companion to write to older version of the firmware</source>
-        <translation type="unfinished"></translation>
+        <translation>Umožní Companion zapisovat do starší verze firmware</translation>
     </message>
     <message>
         <location filename="../burndialog.ui" line="222"/>
@@ -9591,7 +9591,7 @@ m2560 pro V4 desky</translation>
     <message>
         <location filename="../burndialog.cpp" line="356"/>
         <source>Profile image %1 is invalid.</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrázek profilu %1 není platný.</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="372"/>
@@ -9601,57 +9601,57 @@ m2560 pro V4 desky</translation>
     <message>
         <location filename="../burndialog.cpp" line="41"/>
         <source>Write firmware to Radio</source>
-        <translation type="unfinished">Zapsat firmware do rádia</translation>
+        <translation>Zapsat firmware do rádia</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="62"/>
         <source>Write Backup to Radio</source>
-        <translation type="unfinished">Zapsat zálohu do rádia</translation>
+        <translation>Zapsat zálohu do rádia</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="65"/>
         <source>Write Backup from %1 to Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapsat zálohu ze souboru %1 do rádia</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="143"/>
         <source>Open Firmware File</source>
-        <translation type="unfinished"></translation>
+        <translation>Otevřít soubor firmwaru</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="149"/>
         <source>Choose Radio Backup file</source>
-        <translation type="unfinished"></translation>
+        <translation>vyberte soubor zálohy rádia</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="205"/>
         <source>%1 may not be a valid firmware file</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 nemusí být platný soubor firmwaru</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="336"/>
         <source>The firmware file is not valid.</source>
-        <translation type="unfinished"></translation>
+        <translation>Soubor firmwaru není platný.</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="340"/>
         <source>There is no start screen image in the firmware file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Soubor firmware neobsahuje žádné logo.</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="372"/>
         <source>Open image file to use as radio start screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Otevřít soubor obrázku pro použití jako úvodní logo</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="377"/>
         <source>Image could not be loaded from %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze načíst obrázek z %1</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="395"/>
         <source>The library image could not be loaded</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze načíst obrázek z knihovny</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="427"/>
@@ -9966,12 +9966,13 @@ m2560 pro V4 desky</translation>
     <message>
         <location filename="../contributorsdialog.cpp" line="72"/>
         <source>Honors go to Rafal Tomczak (RadioClone), Thomas Husterer (th9x) and Erez Raviv (er9x and eePe)</source>
-        <translation type="unfinished"></translation>
+        <translation>Speciální poděkování patří Rafalu Tomczakovi (RadioClone),
+Thomasi Hustererovi (th9x) a také Erazovi Ravivovi(er9x a eePe)</translation>
     </message>
     <message>
         <location filename="../contributorsdialog.cpp" line="90"/>
         <source>Companion Release Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>Poznámky k vydání Companion</translation>
     </message>
     <message>
         <location filename="../contributorsdialog.cpp" line="73"/>
@@ -10545,13 +10546,13 @@ Tlačítkem Zrušit přerušíte kalibraci</translation>
     <message>
         <location filename="../logsdialog.cpp" line="254"/>
         <source>Error</source>
-        <translation type="unfinished">Chyba</translation>
+        <translation>Chyba</translation>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="255"/>
         <source>Cannot write file %1:
 %2.</source>
-        <translation type="unfinished">Nelze zapsat soubor %1:
+        <translation>Nelze zapsat soubor %1:
 %2.</translation>
     </message>
     <message>
@@ -10684,122 +10685,122 @@ Může být jiná než verze firmwaru</translation>
     <message>
         <location filename="../preferencesdialog.ui" line="391"/>
         <source>R E T A</source>
-        <translation type="unfinished">S V P K</translation>
+        <translation>S V P K</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="396"/>
         <source>R E A T</source>
-        <translation type="unfinished">S V K P</translation>
+        <translation>S V K P</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="401"/>
         <source>R T E A</source>
-        <translation type="unfinished">S P V K</translation>
+        <translation>S P V K</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="406"/>
         <source>R T A E</source>
-        <translation type="unfinished">S P K V</translation>
+        <translation>S P K V</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="411"/>
         <source>R A E T</source>
-        <translation type="unfinished">S K V P</translation>
+        <translation>S K V P</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="416"/>
         <source>R A T E</source>
-        <translation type="unfinished">S K P V</translation>
+        <translation>S K P V</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="421"/>
         <source>E R T A</source>
-        <translation type="unfinished">V S P K</translation>
+        <translation>V S P K</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="426"/>
         <source>E R A T</source>
-        <translation type="unfinished">V S K P</translation>
+        <translation>V S K P</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="431"/>
         <source>E T R A</source>
-        <translation type="unfinished">V P S K</translation>
+        <translation>V P S K</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="436"/>
         <source>E T A R</source>
-        <translation type="unfinished">V P K S</translation>
+        <translation>V P K S</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="441"/>
         <source>E A R T</source>
-        <translation type="unfinished">V K S P</translation>
+        <translation>V K S P</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="446"/>
         <source>E A T R</source>
-        <translation type="unfinished">V K P S</translation>
+        <translation>V K P S</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="451"/>
         <source>T R E A</source>
-        <translation type="unfinished">P S V K</translation>
+        <translation>P S V K</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="456"/>
         <source>T R A E</source>
-        <translation type="unfinished">P S K V</translation>
+        <translation>P S K V</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="461"/>
         <source>T E R A</source>
-        <translation type="unfinished">P V S K</translation>
+        <translation>P V S K</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="466"/>
         <source>T E A R</source>
-        <translation type="unfinished">P V K S</translation>
+        <translation>P V K S</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="471"/>
         <source>T A R E</source>
-        <translation type="unfinished">P K S V</translation>
+        <translation>P K S V</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="476"/>
         <source>T A E R</source>
-        <translation type="unfinished">P K V S</translation>
+        <translation>P K V S</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="481"/>
         <source>A R E T</source>
-        <translation type="unfinished">K S V P</translation>
+        <translation>K S V P</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="486"/>
         <source>A R T E</source>
-        <translation type="unfinished">K S P V</translation>
+        <translation>K S P V</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="491"/>
         <source>A E R T</source>
-        <translation type="unfinished">K V S P</translation>
+        <translation>K V S P</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="496"/>
         <source>A E T R</source>
-        <translation type="unfinished">K V P S</translation>
+        <translation>K V P S</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="501"/>
         <source>A T R E</source>
-        <translation type="unfinished">K P S V</translation>
+        <translation>K P S V</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="506"/>
         <source>A T E R</source>
-        <translation type="unfinished">K P V S</translation>
+        <translation>K P V S</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="660"/>
@@ -10829,7 +10830,7 @@ Může být jiná než verze firmwaru</translation>
     <message>
         <location filename="../preferencesdialog.ui" line="156"/>
         <source>Show Splash At Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazit úvodní logo Companion</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="64"/>
@@ -10841,7 +10842,7 @@ Může být jiná než verze firmwaru</translation>
     <message>
         <location filename="../imgpreferences.ui" line="94"/>
         <source>Remember simulator switches</source>
-        <translation type="unfinished"></translation>
+        <translation>Pamatovat si přepínače v simulátoru</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="146"/>
@@ -11023,12 +11024,12 @@ Mode 4:
     <message>
         <location filename="../preferencesdialog.ui" line="1622"/>
         <source>Find Executable</source>
-        <translation type="unfinished"></translation>
+        <translation>Najít</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="1606"/>
         <source>Google Earth Executable</source>
-        <translation type="unfinished"></translation>
+        <translation>Spustitelný soubor Google Earth</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="766"/>
@@ -11349,17 +11350,17 @@ Mode 4:
     <message>
         <location filename="../taranisnotfound.ui" line="32"/>
         <source>No Taranis Radio Found</source>
-        <translation type="unfinished"></translation>
+        <translation>Rádio Taranis nebylo nalezeno</translation>
     </message>
     <message>
         <location filename="../taranisnotfound.ui" line="40"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Taranis Radio was found!&lt;/p&gt;&lt;p&gt;Make sure that you hold the lower trim buttons towards the center while you turn it on.&lt;/p&gt;&lt;p&gt;Then connect the USB wire.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Rádio taranis nebylo nalezeno!&lt;/p&gt;&lt;p&gt;Ujistěte se, že během zapínání rádia, držíte spodní trimy proti sobě.&lt;/p&gt;&lt;p&gt;Až poté připojte USB kabel.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../taranisnotfound.ui" line="92"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 </TS>
