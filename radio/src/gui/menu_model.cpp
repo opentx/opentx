@@ -5075,6 +5075,14 @@ void menuModelCustomFunctions(uint8_t event)
             }
           }
 #endif
+#if defined(PCBTARANIS) && defined(REVPLUS)
+          else if (func == FUNC_BACKLIGHT) {
+            displaySlider(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, CFN_PARAM(sd), 100, attr);
+            INCDEC_SET_FLAG(NO_INCDEC_MARKS);
+            val_min = 0;
+            val_max = 100;
+          }
+#endif
           else if (func == FUNC_RESET) {
             val_max = FUNC_RESET_PARAM_LAST;
             lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_VFSWRESET, CFN_PARAM(sd), attr);

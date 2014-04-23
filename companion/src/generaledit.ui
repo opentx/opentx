@@ -307,7 +307,7 @@ These will be relevant for all models in the same EEPROM.</string>
          <item>
           <widget class="QSlider" name="backlightColor_SL">
            <property name="maximum">
-            <number>255</number>
+            <number>100</number>
            </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>

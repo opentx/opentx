@@ -519,8 +519,8 @@ void menuGeneralSetup(uint8_t event)
 #if defined(PCBTARANIS) && defined(REVPLUS)
       case ITEM_SETUP_BACKLIGHT_COLOR:
         lcd_putsLeft(y, STR_BLCOLOR);
-        displaySlider(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.backlightColor, 255, attr);
-        if (attr) g_eeGeneral.backlightColor = checkIncDec(event, g_eeGeneral.backlightColor, 0, 255, EE_GENERAL | NO_INCDEC_MARKS);
+        displaySlider(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.backlightColor, 100, attr);
+        if (attr) g_eeGeneral.backlightColor = checkIncDec(event, g_eeGeneral.backlightColor, 0, 100, EE_GENERAL | NO_INCDEC_MARKS);
         break;
 #endif
 
