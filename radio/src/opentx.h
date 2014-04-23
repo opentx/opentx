@@ -210,6 +210,12 @@
 #define IF_GVARS(x)
 #endif
 
+#if defined(PCBTARANIS) && defined(REVPLUS)
+#define IF_REVPLUS(x) x,
+#else
+#define IF_REVPLUS(x)
+#endif
+
 #if ROTARY_ENCODERS > 0
   #define ROTARY_ENCODER_NAVIGATION
 #endif

@@ -542,6 +542,7 @@
 #define TR_BLDELAY             INDENT"Duration"
 #define TR_BLONBRIGHTNESS      INDENT"ON Brightness"
 #define TR_BLOFFBRIGHTNESS     INDENT"OFF Brightness"
+#define TR_BLCOLOR             INDENT "Color"
 #define TR_SPLASHSCREEN        "Splash screen"
 #define TR_THROTTLEWARNING     TR("T-Warning", INDENT "Throttle Warning")
 #define TR_SWITCHWARNING       TR("S-Warning", INDENT "Switch Warning")

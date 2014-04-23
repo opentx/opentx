@@ -542,6 +542,7 @@
 #define TR_BLDELAY             INDENT"Zhasnout po"
 #define TR_BLONBRIGHTNESS      INDENT"Jas Zap."
 #define TR_BLOFFBRIGHTNESS     INDENT"Jas Vyp."
+#define TR_BLCOLOR             INDENT "Color"
 #define TR_SPLASHSCREEN        TR("úvodníLogo", "Zobrazit úvodní logo")
 #define TR_THROTTLEWARNING     TR("* Plyn", INDENT "Páka Plynu")
 #define TR_SWITCHWARNING       TR("* Spínače", INDENT "Polohy Spínačů")

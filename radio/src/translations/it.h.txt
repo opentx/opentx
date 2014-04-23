@@ -542,6 +542,7 @@
 #define TR_BLDELAY             INDENT"Durata"
 #define TR_BLONBRIGHTNESS      TR(INDENT"Lumin. ON",INDENT"Luminosità ON")
 #define TR_BLOFFBRIGHTNESS     TR(INDENT"Lumin. OFF",INDENT"Luminosità OFF")
+#define TR_BLCOLOR             INDENT "Color"
 #define TR_SPLASHSCREEN        TR("Schermo avvio", "Schermata di avvio")
 #define TR_THROTTLEWARNING     TR("All. Thr", INDENT "Allarme Throttle")
 #define TR_SWITCHWARNING       TR("Avv. Int.", INDENT "Avviso Interr.")

@@ -546,6 +546,7 @@
 #define TR_BLDELAY             INDENT"Dauer"
 #define TR_BLONBRIGHTNESS      INDENT"An Helligkeit"
 #define TR_BLOFFBRIGHTNESS     INDENT"Aus Helligkeit"
+#define TR_BLCOLOR             INDENT "Color"
 #define TR_SPLASHSCREEN        "Startbild Ein für"
 #define TR_THROTTLEWARNING     TR("Gas Alarm", INDENT "Gas Alarm")
 #define TR_SWITCHWARNING       TR("Sch. Alarm", INDENT "Schalter Alarm")

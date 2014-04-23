@@ -542,6 +542,7 @@
 #define TR_BLDELAY             INDENT"Duracion"
 #define TR_BLONBRIGHTNESS      INDENT"MAS Brillo"
 #define TR_BLOFFBRIGHTNESS     INDENT"MENOS Brillo"
+#define TR_BLCOLOR             INDENT "Color"
 #define TR_SPLASHSCREEN        "Ptalla.inicio"
 #define TR_THROTTLEWARNING     TR("Aviso-A", INDENT "Aviso Acelerador")
 #define TR_SWITCHWARNING       TR("Aviso-I", INDENT "Aviso Intrptor")

@@ -542,6 +542,7 @@
 #define TR_BLDELAY             INDENT "Durée"
 #define TR_BLONBRIGHTNESS      INDENT "Luminosité ON"
 #define TR_BLOFFBRIGHTNESS     INDENT "Luminosité OFF"
+#define TR_BLCOLOR             INDENT "Couleur"
 #define TR_SPLASHSCREEN        "Logo d'accueil"
 #define TR_THROTTLEWARNING     TR("Alerte gaz", INDENT "Alerte gaz")
 #define TR_SWITCHWARNING       TR("Alerte int", INDENT "Pos. interrupteurs")
