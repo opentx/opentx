@@ -48,14 +48,15 @@ enum BoardEnum {
   BOARD_GRUVIN9X,
   BOARD_SKY9X,
   BOARD_TARANIS,
+  BOARD_TARANIS_PLUS,
   BOARD_TARANIS_REV4a
 };
 
 #define IS_9X(board)          (board==BOARD_STOCK || board==BOARD_M128)
 #define IS_STOCK(board)       (board==BOARD_STOCK)
 #define IS_2560(board)        (board==BOARD_GRUVIN9X || board==BOARD_MEGA2560)
-#define IS_ARM(board)         (board==BOARD_SKY9X || board==BOARD_TARANIS  || board==BOARD_TARANIS_REV4a)
-#define IS_TARANIS(board)     (board==BOARD_TARANIS  || board==BOARD_TARANIS_REV4a)
+#define IS_ARM(board)         (board==BOARD_SKY9X || board==BOARD_TARANIS  || board==BOARD_TARANIS_REV4a || board==BOARD_TARANIS_PLUS)
+#define IS_TARANIS(board)     (board==BOARD_TARANIS  || board==BOARD_TARANIS_REV4a || board==BOARD_TARANIS_PLUS)
 
 const uint8_t modn12x3[4][4]= {
   {1, 2, 3, 4},
