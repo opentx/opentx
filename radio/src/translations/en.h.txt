@@ -645,8 +645,8 @@
 #define TR_SHUTDOWN            "SHUTTING DOWN"
 #define TR_BATT_CALIB          "Battery Calib"
 #define TR_CURRENT_CALIB       "Current Calib"
-#define TR_VOLTAGE             INDENT "Voltage"
-#define TR_CURRENT             INDENT "Current"
+#define TR_VOLTAGE             TR(INDENT "Voltage",INDENT "Voltage Source")
+#define TR_CURRENT             TR(INDENT "Current",INDENT "Current Source")
 #define TR_SELECT_MODEL        "Select Model"
 #define TR_CREATE_MODEL        "Create Model"
 #define TR_COPY_MODEL          "Copy Model"
