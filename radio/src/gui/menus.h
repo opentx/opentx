@@ -138,6 +138,15 @@ void menuStatisticsView(uint8_t event);
 void menuStatisticsDebug(uint8_t event);
 void menuAboutView(uint8_t event);
 
+#if !defined(CPUM64)
+  void displaySlider(uint8_t x, uint8_t y, uint8_t value, uint8_t max, uint8_t attr);
+#elif defined(GRAPHICS)
+  void display5posSlider(uint8_t x, uint8_t y, uint8_t value, uint8_t attr);
+  #define displaySlider(x, y, value, max, attr) lcd_outdezAtt(x, y, value, attr|LEFT)
+#else
+  #define displaySlider(x, y, value, max, attr) lcd_outdezAtt(x, y, value, attr|LEFT)
+#endif
+
 #if defined(PCBTARANIS)
 void menuMainViewChannelsMonitor(uint8_t event);
 void menuChannelsView(uint8_t event);

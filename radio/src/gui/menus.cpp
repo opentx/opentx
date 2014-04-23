@@ -1136,6 +1136,22 @@ int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, LcdFlags attr, uint8_t
   return value;
 }
 
+#if !defined(CPUM64)
+  void displaySlider(uint8_t x, uint8_t y, uint8_t value, uint8_t max, uint8_t attr)
+  {
+    lcd_putc(x+(value*4*FW)/max, y, '$');
+    lcd_hline(x, y+3, 5*FW-1, SOLID);
+    if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcd_filled_rect(x, y, 5*FW-1, FH-1);
+  }
+#elif defined(GRAPHICS)
+  void display5posSlider(uint8_t x, uint8_t y, uint8_t value, uint8_t attr)
+  {
+    lcd_putc(x+2*FW+(value*FW), y, '$');
+    lcd_hline(x, y+3, 5*FW-1, SOLID);
+    if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcd_filled_rect(x, y, 5*FW-1, FH-1);
+  }
+#endif
+
 #if defined(GVARS)
 #if defined(CPUARM)
 int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, uint8_t event) 

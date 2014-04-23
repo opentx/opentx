@@ -110,33 +110,19 @@ const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
 #endif
 
 #if !defined(CPUM64)
-  void displaySlider(uint8_t x, uint8_t y, uint8_t value, uint8_t max, uint8_t attr)
-  {
-    lcd_putc(RADIO_SETUP_2ND_COLUMN+(value*4*FW)/max, y, '$');
-    lcd_hline(RADIO_SETUP_2ND_COLUMN, y+3, 5*FW-1, SOLID);
-    if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcd_filled_rect(RADIO_SETUP_2ND_COLUMN, y, 5*FW-1, FH-1);
-  }
   #define SLIDER_5POS(y, value, label, event, attr) { \
     int8_t tmp = value; \
     displaySlider(RADIO_SETUP_2ND_COLUMN, y, 2+tmp, 4, attr); \
     value = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, label, NULL, tmp, -2, +2, attr, event); \
   }
 #elif defined(GRAPHICS)
-  void display5posSlider(uint8_t x, uint8_t y, uint8_t value, uint8_t attr)
-  {
-    lcd_putc(RADIO_SETUP_2ND_COLUMN+2*FW+(value*FW), y, '$');
-    lcd_hline(RADIO_SETUP_2ND_COLUMN, y+3, 5*FW-1, SOLID);
-    if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcd_filled_rect(RADIO_SETUP_2ND_COLUMN, y, 5*FW-1, FH-1);
-  }
   #define SLIDER_5POS(y, value, label, event, attr) { \
     int8_t tmp = value; \
     display5posSlider(RADIO_SETUP_2ND_COLUMN, y, tmp, attr); \
     value = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, label, NULL, tmp, -2, +2, attr, event); \
   }
-  #define displaySlider(x, y, value, max, attr) lcd_outdezAtt(x, y, value, attr|LEFT)
 #else
   #define SLIDER_5POS(y, value, label, event, attr) value = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, label, STR_VBEEPLEN, value, -2, +2, attr, event)
-  #define displaySlider(x, y, value, max, attr) lcd_outdezAtt(x, y, value, attr|LEFT)
 #endif
 
 #if defined(SPLASH) && !defined(FSPLASH)
