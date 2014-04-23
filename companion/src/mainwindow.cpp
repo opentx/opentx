@@ -2023,7 +2023,7 @@ for (i=0; i<MAX_PROFILES && g.profile[i].existsOnDisk(); i++)
  
   // Copy current profile to new and give it a new name
   g.profile[i] = g.profile[g.id()];
-  g.profile[i].name( QString("New Radio"));
+  g.profile[i].name( QString(tr("New Radio")));
 
   g.id(i);
   updateMenus();
