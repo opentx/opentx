@@ -271,7 +271,7 @@ LUA = NO
 
 # Menu Lock modes
 # Values = NO, READONLY, NOMENUS 
-MENUS_LOCK == NO
+MENUS_LOCK = NO
 
 #------- END BUILD OPTIONS ---------------------------
 
