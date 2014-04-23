@@ -709,6 +709,12 @@ ifeq ($(PCB), TARANIS)
     CPPSRC += targets/taranis/a7105_driver.cpp
   endif
   
+  ifeq ($(HAPTIC), YES)
+    CPPDEFS += -DHAPTIC
+    CPPSRC += haptic.cpp
+    CPPSRC += targets/taranis/haptic_driver.cpp
+  endif
+  
 endif
 
 CC      = $(TRGT)gcc

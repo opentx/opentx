@@ -230,6 +230,10 @@ extern uint8_t RotEncoder ;
 void rotencPoll();
 #endif
 
+// Haptic
+#define HAPTIC_ON     PORTG |=  (1 << OUT_G_HAPTIC)
+#define HAPTIC_OFF    PORTG &= ~(1 << OUT_G_HAPTIC)
+
 // USB fake driver
 #define usbPlugged()    false
 

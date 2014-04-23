@@ -333,4 +333,15 @@
 #define I2C_EEPROM_ADDRESS              0xA2
 #define I2C_CAT5137_ADDRESS             0x5C //0101110
 
+// Haptic
+#if defined(REVPLUS)
+  #define RCC_AHB1Periph_GPIOHAPTIC     RCC_AHB1Periph_GPIOB
+  #define GPIO_HAPTIC                   GPIOB
+  #define PIN_HAPTIC                    GPIO_Pin_8
+#else
+  #define RCC_AHB1Periph_GPIOHAPTIC     RCC_AHB1Periph_GPIOC
+  #define GPIO_HAPTIC                   GPIOC
+  #define PIN_HAPTIC                    GPIO_Pin_12
+#endif
+
 #endif
