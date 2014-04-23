@@ -284,7 +284,7 @@
   #define TR_SWR               TR("SWR\0", "SWR\0 ")
   #define TR_RX_BATT           TR("RxBt", "RxBat")
   #define TR_A3_A4             TR("A3\0 ""A4\0 ", "A3\0  ""A4\0  ") 
-  #define TR_A3_A4_MIN         TR("A3\0 ""A4\0 ", "A3\0  ""A4\0  ") 
+  #define TR_A3_A4_MIN         TR("A3-\0""A4-\0", "A3-\0 ""A4-\0 ") 
 #else
   #define TR_TELEM_RESERVE
   #define TR_SWR
