@@ -618,6 +618,9 @@ ifeq ($(PCB), TARANIS)
     CPPDEFS = -DREV3
   else ifeq ($(PCBREV), REV4a)
     CPPDEFS = -DREV4a
+  else ifeq ($(PCBREV), REVPLUS)
+    CPPDEFS = -DREVPLUS
+    HAPTIC = YES
   else
     CPPDEFS = -DREV4
   endif
