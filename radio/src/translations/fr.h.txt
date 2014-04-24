@@ -334,7 +334,7 @@
 #define TR_VTELPROTO           "Aucun  ""Hub\0   ""WSHHigh"
 
 #define LEN_VOLTSRC            "\003"
-#define TR_VOLTSRC             "---""A1\0""A2\0""FAS""Cel"
+#define TR_VOLTSRC             "---""A1\0""A2\0""FAS""Elm"
 
 #define LEN_VARIOSRC           "\005"
 #if defined(FRSKY_SPORT)
