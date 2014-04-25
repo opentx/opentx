@@ -674,8 +674,8 @@ void MdiChild::print(int model, QString filename)
   }
 
   if (pd) {
+    pd->setAttribute(Qt::WA_DeleteOnClose, true);
     pd->show();
-    delete pd;
   }
 }
 
