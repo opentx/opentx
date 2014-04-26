@@ -1071,7 +1071,7 @@ void luaTask(uint8_t evt)
             lua_pushinteger(L, sd.inputs[j]);
         }
         if (lua_pcall(L, sid.inputsCount, sid.outputsCount, 0) == 0) {
-          for (int j=0; j<sid.outputsCount; j++) {
+          for (int j=sid.outputsCount-1; j>=0; j--) {
             if (!lua_isnumber(L, -1)) {
               sid.state = (instructionsPercent > 100 ? SCRIPT_KILLED : SCRIPT_SYNTAX_ERROR);
               TRACE("Script %10s disabled", sd.file);
