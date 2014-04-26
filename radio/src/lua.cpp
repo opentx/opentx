@@ -837,7 +837,6 @@ void luaInit()
   lua_register(L, "popupInput", luaPopupInput);
 
   // Push OpenTX constants
-  lua_registernumber(L, "OPENTX_VERSION", VERS_NUM);
   lua_registerint(L, "DBLSIZE", DBLSIZE);
   lua_registerint(L, "MIDSIZE", MIDSIZE);
   lua_registerint(L, "SMLSIZE", SMLSIZE);
