@@ -47,6 +47,7 @@ extern "C" {
 }
 #endif
 
+#define lua_registernumber(L, n, i)    (lua_pushnumber(L, (i)), lua_setglobal(L, (n)))
 #define lua_registerint(L, n, i)       (lua_pushinteger(L, (i)), lua_setglobal(L, (n)))
 #define lua_pushtablenil(L, k)         (lua_pushstring(L, (k)), lua_pushnil(L), lua_settable(L, -3))
 #define lua_pushtableboolean(L, k, v)  (lua_pushstring(L, (k)), lua_pushboolean(L, (v)), lua_settable(L, -3))
@@ -130,6 +131,16 @@ static int luaPlayFile(lua_State *L)
   PLAY_FILE(filename, 0, 0);
   return 0;
 }
+
+static int luaPlayNumber(lua_State *L)
+{
+  int number = luaL_checkinteger(L, 1);
+  int unit = luaL_checkinteger(L, 2);
+  int att = luaL_checkinteger(L, 3);
+  playNumber(number, unit, att, 0);
+  return 0;
+}
+
 
 static int luaLcdLock(lua_State *L)
 {
@@ -822,9 +833,11 @@ void luaInit()
   lua_register(L, "getVersion", luaGetVersion);
   lua_register(L, "getValue", luaGetValue);
   lua_register(L, "playFile", luaPlayFile);
+  lua_register(L, "playNumber", luaPlayNumber);
   lua_register(L, "popupInput", luaPopupInput);
 
   // Push OpenTX constants
+  lua_registernumber(L, "OPENTX_VERSION", VERS_NUM);
   lua_registerint(L, "DBLSIZE", DBLSIZE);
   lua_registerint(L, "MIDSIZE", MIDSIZE);
   lua_registerint(L, "SMLSIZE", SMLSIZE);
