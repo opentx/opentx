@@ -11,6 +11,8 @@
 #include <limits.h>
 #include <stddef.h>
 
+#include "debug.h"
+
 #define USE_FATFS
 
 /*
@@ -223,9 +225,9 @@
 #define luai_writestringerror(s,p) \
         (fprintf(stderr, (s), (p)), fflush(stderr))
 #else
-#define luai_writestring(s,l)
-#define luai_writeline()
-#define luai_writestringerror(s,p)
+#define luai_writestring(s,l)       TRACE_DEBUG_WP("%s", s);
+#define luai_writeline()            TRACE_DEBUG_WP("\n");
+#define luai_writestringerror(s,p)  TRACE_DEBUG_WP(s, p);
 #endif
 
 
