@@ -118,29 +118,40 @@ static void __luaGetValue(int src)
   else if (i<=MIXSRC_FIRST_TELEM-1+TELEM_CSW_MAX) return *(((int16_t*)(&frskyData.hub.minAltitude))+i-(MIXSRC_FIRST_TELEM-1+TELEM_MIN_ALT));
 
   */
+  if (!TELEMETRY_STREAMING() && src>=MIXSRC_FIRST_TELEM && src<=MIXSRC_LAST_TELEM) {
+    //telemetry not working, return zero
+    lua_pushinteger(L, (int)0);
+    return;
+  }
   switch (src) {
     case MIXSRC_FIRST_TELEM-1+TELEM_TX_VOLTAGE:
     case MIXSRC_FIRST_TELEM-1+TELEM_VFAS:
     case MIXSRC_FIRST_TELEM-1+TELEM_CELLS_SUM:
     case MIXSRC_FIRST_TELEM-1+TELEM_CURRENT:
     case MIXSRC_FIRST_TELEM-1+TELEM_VSPEED:
+      //theese need to be divided by 10
       lua_pushnumber(L, getValue(src)/10.0);
       break;
 
     case MIXSRC_FIRST_TELEM-1+TELEM_A1:
     case MIXSRC_FIRST_TELEM-1+TELEM_A2:
+      //convert raw A1/2 values to calibrated values
       lua_pushnumber(L, applyChannelRatio(src-(MIXSRC_FIRST_TELEM-1+TELEM_A1), getValue(src))/100.0);
       break;
 
     case MIXSRC_FIRST_TELEM-1+TELEM_MIN_A1:
     case MIXSRC_FIRST_TELEM-1+TELEM_MIN_A2:
+      //convert raw A1/2 values to calibrated values
       lua_pushnumber(L, applyChannelRatio(src-(MIXSRC_FIRST_TELEM-1+TELEM_MIN_A1), getValue(src))/100.0);
       break;
 
     case MIXSRC_FIRST_TELEM-1+TELEM_CELL:
     case MIXSRC_FIRST_TELEM-1+TELEM_ALT:
+      //theese need to be divided by 100
       lua_pushnumber(L, getValue(src)/100.0);
       break;
+
+    //TODO other values that neeed special treatment like maxAlititude,...
 
     default:
       lua_pushinteger(L, getValue(src));
