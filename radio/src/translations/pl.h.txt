@@ -501,6 +501,7 @@
 #define TR_OFFSET              INDENT"Ofset"
 #define TR_TRIM                "Trymer"
 #define TR_DREX                "DRex"
+#define DREX_CHBOX_OFFSET      30
 #define TR_CURVE               "Krzywa"
 #define TR_FLMODE              "Tryb"
 #define TR_MIXWARNING          "UWAGA"

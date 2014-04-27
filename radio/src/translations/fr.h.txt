@@ -501,6 +501,7 @@
 #define TR_OFFSET              INDENT "Décalage"
 #define TR_TRIM                "Trim"
 #define TR_DREX                "DRex"
+#define DREX_CHBOX_OFFSET      30
 #define TR_CURVE               "Courbe"
 #define TR_FLMODE              TR("Phase", "Phases")
 #define TR_MIXWARNING          "Alerte"
