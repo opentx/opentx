@@ -1125,7 +1125,7 @@ void luaTask(uint8_t evt)
             __luaGetValue((uint8_t)sd.inputs[j]);
             //lua_pushinteger(L, (uint8_t)sd.inputs[j]);
           else
-            lua_pushinteger(L, sd.inputs[j]);
+            lua_pushinteger(L, sd.inputs[j] + sid.inputs[j].def);
         }
         if (lua_pcall(L, sid.inputsCount, sid.outputsCount, 0) == 0) {
           for (int j=sid.outputsCount-1; j>=0; j--) {
