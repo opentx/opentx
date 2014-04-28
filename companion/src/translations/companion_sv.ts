@@ -4,7 +4,7 @@
 <context>
     <name>AileronsPage</name>
     <message>
-        <location filename="../wizarddialog.cpp" line="+392"/>
+        <location filename="../wizarddialog.cpp" line="+395"/>
         <source>No</source>
         <translation>Nej</translation>
     </message>
@@ -325,11 +325,22 @@ Mode 4:
     </message>
     <message>
         <location line="+36"/>
-        <source>Radio Firmware</source>
-        <translation>Firmware-typ</translation>
+        <source>Radio Type</source>
+        <translation>Radiotyp</translation>
     </message>
     <message>
-        <location line="+52"/>
+        <location line="+88"/>
+        <source>Set voice language.
+May be different from firmware language</source>
+        <translation>Välj röstspråk.
+Behöver inte vara samma som menyspråk</translation>
+    </message>
+    <message>
+        <source>Radio Firmware</source>
+        <translation type="obsolete">Firmware-typ</translation>
+    </message>
+    <message>
+        <location line="-36"/>
         <source>Other Settings</source>
         <translation>Andra Inställningar</translation>
     </message>
@@ -344,14 +355,13 @@ Mode 4:
         <translation>Sökväg till SD-struktur</translation>
     </message>
     <message>
-        <location line="+16"/>
         <source>Set language of voice.
 May be different from firmware language</source>
-        <translation>Välj språk för röstfunktioner.
+        <translation type="obsolete">Välj språk för röstfunktioner.
 Behöver inte vara samma som menyspråket</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+31"/>
         <source>Voice Language</source>
         <translation>Röstspråk</translation>
     </message>
@@ -1160,7 +1170,7 @@ Behöver inte vara samma som menyspråket</translation>
 <context>
     <name>ConclusionPage</name>
     <message>
-        <location filename="../wizarddialog.cpp" line="+287"/>
+        <location filename="../wizarddialog.cpp" line="+308"/>
         <source>OK, I understand.</source>
         <translation>OK, jag förstår.</translation>
     </message>
@@ -1415,7 +1425,7 @@ Behöver inte vara samma som menyspråket</translation>
 <context>
     <name>CyclicPage</name>
     <message>
-        <location filename="../wizarddialog.cpp" line="-154"/>
+        <location filename="../wizarddialog.cpp" line="-175"/>
         <source>90</source>
         <translation>90</translation>
     </message>
@@ -1684,11 +1694,17 @@ Om fältet lämnas tomt så är filtret aktivt hela tiden.</translation>
         <translation>Röst</translation>
     </message>
     <message>
-        <location line="+13"/>
         <source>Set language of voice.
 May be different from firmware language</source>
-        <translation>Välj språk för röstfunktioner.
+        <translation type="obsolete">Välj språk för röstfunktioner.
 Får skilja från språket för firmware</translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Set voice language.
+May be different from firmware language</source>
+        <translation>Välj röstspråk.
+Behöver inte vara samma som menyspråk</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1751,12 +1767,7 @@ Får skilja från språket för firmware</translation>
         <translation>Firmware</translation>
     </message>
     <message>
-        <location line="+23"/>
-        <source>-</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location line="+7"/>
+        <location line="+30"/>
         <source>Latest Download</source>
         <translation>Senast nedladdad</translation>
     </message>
@@ -3861,7 +3872,12 @@ Vill du ladda ned den nu ?</translation>
 </translation>
     </message>
     <message>
-        <location line="+42"/>
+        <location line="+23"/>
+        <source>New Radio</source>
+        <translation>Ny Radio</translation>
+    </message>
+    <message>
+        <location line="+19"/>
         <source>Unable to find file %1!</source>
         <translation>Kan inte hitta filen %1 !</translation>
     </message>
@@ -5456,6 +5472,19 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>OptionsPage</name>
+    <message>
+        <location line="+23"/>
+        <source>Throttle Cut</source>
+        <translation>Gassäkring</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Throttle Timer</source>
+        <translation>Gastimer</translation>
+    </message>
+</context>
+<context>
     <name>PrintDialog</name>
     <message>
         <location filename="../printdialog.ui" line="+54"/>
@@ -5852,8 +5881,12 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location line="+1"/>
-        <source>System of units</source>
+        <source>Units system</source>
         <translation>Måttsystem</translation>
+    </message>
+    <message>
+        <source>System of units</source>
+        <translation type="obsolete">Måttsystem</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6498,7 +6531,7 @@ p, li { white-space: pre-wrap; }
         <location line="+29"/>
         <location line="+25"/>
         <source>In model setup menus automatically set source by moving the control</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj automatisk kontroller i menyn för modelinställningar genom att använda dem</translation>
     </message>
     <message>
         <location line="-155"/>
@@ -6508,7 +6541,7 @@ p, li { white-space: pre-wrap; }
         <location line="+29"/>
         <location line="+25"/>
         <source>In model setup menus automatically set switch by moving the control</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj automatisk brytare i menyn för modelinställningar genom att använda dem</translation>
     </message>
     <message>
         <location line="-138"/>
@@ -7860,20 +7893,22 @@ Gruppen bakom OpenTX/Companion.</translation>
     <message>
         <location filename="../firmwares/opentx/open9xStockeeprom.cpp" line="+92"/>
         <source>Simultaneous usage of expo and curves is no longer supported in OpenTX</source>
-        <translation type="unfinished"></translation>
+        <translation>Det går inte att använda Expo på en specialkurva i OpenTX</translation>
     </message>
     <message>
         <location filename="../warnings.h" line="+5"/>
         <source>Thank you for upgrading to OpenTX 2.0. This is a major upgrade that adds and modifies a lot of things, so please make sure that you read release notes carefully to learn about the changes, and thoroughly check each of your models for proper function.
 
 The OpenTX Team.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tack för att du uppgraderat till OpenTX 2.0. Denna version innehåller många förbättringar och förändringar jämfört med tidiagare versioner. Läs gärna om förändringarna i dokumentet Release Notes. Kontrollera noggrant funktionen hos samtliga modeller som uppgraderas.
+
+OpenTX-gruppen.</translation>
     </message>
 </context>
 <context>
     <name>RudderPage</name>
     <message>
-        <location filename="../wizarddialog.cpp" line="-235"/>
+        <location filename="../wizarddialog.cpp" line="-259"/>
         <source>No</source>
         <translation>Nej</translation>
     </message>
@@ -8848,7 +8883,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
 <context>
     <name>WizardDialog</name>
     <message>
-        <location line="-265"/>
+        <location line="-268"/>
         <source>Model Wizard</source>
         <translation>Modellguide</translation>
     </message>
@@ -9018,6 +9053,16 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     </message>
     <message>
         <location line="+1"/>
+        <source>Model Options</source>
+        <translation>Modell-funktioner</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Select additional options</source>
+        <translation>Välj ytterligare funktioner</translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>Save Changes</source>
         <translation>Spara Modellen</translation>
     </message>
@@ -9101,16 +9146,17 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <location line="+2"/>
         <location line="+2"/>
         <location line="+8"/>
+        <location line="+2"/>
         <source>TBD.</source>
         <translation>Information saknas för denna dialog.</translation>
     </message>
     <message>
-        <location line="-6"/>
+        <location line="-8"/>
         <source>Select the control channels for your multirotor.&lt;br&gt;&lt;br&gt;Throttle - Spektrum: CH1, Futaba: CH3&lt;br&gt;Yaw - Spektrum: CH4, Futaba: CH4&lt;br&gt;Pitch - Spektrum: CH3, Futaba: CH2&lt;br&gt;Roll - Spektrum: CH2, Futaba: CH1</source>
         <translation>Välj vilka kanaler som skall användas för att kontrollera din Multirotot-modell.&lt;br&gt;&lt;br&gt;Gas - Spektrum: CH1, Futaba: CH3&lt;br&gt;Yaw - Spektrum: CH4, Futaba: CH4&lt;br&gt;Pitch - Spektrum: CH3, Futaba: CH2&lt;br&gt;Roll - Spektrum: CH2, Futaba: CH1</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+10"/>
         <source>There is no help available for the current page.</source>
         <translation>Det finns ingen hjälp tillgänglig för denna sida.</translation>
     </message>
@@ -9123,7 +9169,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
 <context>
     <name>WizardPrinter</name>
     <message>
-        <location line="+774"/>
+        <location line="+795"/>
         <source>Model Name: </source>
         <translation>Modelnamn:</translation>
     </message>
@@ -9133,7 +9179,20 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <translation>Modeltyp:</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+2"/>
+        <source>Options: </source>
+        <translation>Funktioner: </translation>
+    </message>
+    <message>
+        <source>Options: [</source>
+        <translation type="obsolete">Funktioner: [</translation>
+    </message>
+    <message>
+        <source>]</source>
+        <translation type="obsolete">]</translation>
+    </message>
+    <message>
+        <location line="+12"/>
         <source>Channel %1: </source>
         <translation>Kanal %1: </translation>
     </message>
@@ -10007,7 +10066,7 @@ m2560 för v4.1-kort</translation>
     <message>
         <location line="+65"/>
         <source>Profile image %1 is invalid.</source>
-        <translation>Profilbilden %1 är ogiltig</translation>
+        <translation>Profilbilden %1 är ogiltig.</translation>
     </message>
     <message>
         <location line="+16"/>
