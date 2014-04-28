@@ -423,7 +423,7 @@
 #define TR_VTRAINERMODES       "Lärare""Elev\0."
 
 #define LEN_VFAILSAFE          "\011"
-#define TR_VFAILSAFE           "Lås Servo""Anpassat\0""Pulsfritt""Receiver\0"
+#define TR_VFAILSAFE           "Lås Servo""Anpassat\0""Pulsfritt""Mottagare"
 
 #if defined(MAVLINK)
   #define LEN_MAVLINK_BAUDS    "\006"
@@ -438,6 +438,7 @@
 #define INDENT                 "\001"
 #define LEN_INDENT             1
 #define INDENT_WIDTH           (FW/2)
+
 
 #if defined(PCBTARANIS)
   #define TR_ENTER             "[ENTER]"
@@ -639,7 +640,7 @@
 #define TR_PITCH_AT_ZERO       INDENT "Ton vid Noll"
 #define TR_PITCH_AT_MAX        INDENT "Ton vid Max"
 #define TR_REPEAT_AT_ZERO      INDENT "Repetera vid Noll"
-#define TR_SHUTDOWN            "STäNGER AV"
+#define TR_SHUTDOWN            "STÄNGER AV"
 #define TR_BATT_CALIB          "Kalib. Batteri"
 #define TR_CURRENT_CALIB       "Kalib. Ström"
 #define TR_VOLTAGE             INDENT"Volt"
@@ -713,9 +714,9 @@
 #define TR_CHANNELS_MONITOR    "Kanalöversikt"
 #define TR_PATH_TOO_LONG       "För lång sökväg"
 #define TR_VIEW_TEXT           "Visa Text"
-#define TR_FLASH_BOOTLOADER    "Flash BootLoader"
-#define TR_WRITING             "\032Writing..."
-#define TR_CONFIRM_FORMAT      "Confirm Format?"
+#define TR_FLASH_BOOTLOADER    "Skriv BootLoader"
+#define TR_WRITING             "\032Skriver..."
+#define TR_CONFIRM_FORMAT      "Formatera Minnet?"
 #define TR_INTERNALRF          "Intern Radio"
 #define TR_EXTERNALRF          "Extern Radiomodul"
 #define TR_FAILSAFE            "Failsafeläge"
@@ -760,7 +761,7 @@
 #define TR_MIRROR              "Spegla"
 #define TR_CLEAR               "Töm"
 #define TR_RESET               "Nollställ"
-#define TR_RESET_SUBMENU       "Reset..."
+#define TR_RESET_SUBMENU       "Nollställ..."
 #define TR_COUNT               "Antal"
 #define TR_PT                  "pt"
 #define TR_PTS                 "pkt"
@@ -774,7 +775,7 @@
 #define TR_SCRIPT              "Programkod"
 #define TR_INPUTS              "Input"
 #define TR_OUTPUTS             "Outputs"
-#define TR_EEBACKUP            "\004[ENTER Long] to backup the EEPROM"
+#define TR_EEBACKUP            "\004[ENTER Lång] säkerhetskopiera EEPROM"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL  "Max RSSI"
