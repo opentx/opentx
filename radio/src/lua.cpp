@@ -90,7 +90,7 @@ static int luaGetTime(lua_State *L)
   return 1;
 }
 
-static void __luaGetValue(int src)
+static void luaGetValueAndPush(int src)
 {
   /*
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RPM) return frskyData.hub.rpm;
@@ -162,7 +162,7 @@ static int luaGetValue(lua_State *L)
 {
   if (lua_isnumber(L, 1)) {
     int src = luaL_checkinteger(L, 1);
-    __luaGetValue(src);
+    luaGetValueAndPush(src);
     return 1;
   }
   else {
@@ -1133,8 +1133,7 @@ void luaTask(uint8_t evt)
         lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
         for (int j=0; j<sid.inputsCount; j++) {
           if (sid.inputs[j].type == 1)
-            __luaGetValue((uint8_t)sd.inputs[j]);
-            //lua_pushinteger(L, (uint8_t)sd.inputs[j]);
+            luaGetValueAndPush((uint8_t)sd.inputs[j]);
           else
             lua_pushinteger(L, sd.inputs[j] + sid.inputs[j].def);
         }
