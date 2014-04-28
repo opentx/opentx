@@ -113,6 +113,7 @@ WizMix::operator ModelData()
     model.funcSw[switchIndex].swtch.index = isTaranis ? 16 : 1; // Taranis SF-UP, 9X THR-UP
     model.funcSw[switchIndex].enabled = 1;
     model.funcSw[switchIndex].func = (AssignFunc)throttleChannel;
+    model.funcSw[switchIndex].param = -100;
   }
 
   // Add the Throttle Timer option
