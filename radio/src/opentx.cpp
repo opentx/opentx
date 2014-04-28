@@ -3564,6 +3564,9 @@ void evalFunctions()
           case FUNC_PLAY_SOUND:
           case FUNC_PLAY_TRACK:
           case FUNC_PLAY_VALUE:
+#if defined(HAPTIC)
+          case FUNC_HAPTIC:
+#endif
           {
             tmr10ms_t tmr10ms = get_tmr10ms();
             uint8_t repeatParam = CFN_PLAY_REPEAT(sd);
@@ -3578,6 +3581,11 @@ void evalFunctions()
                 else if (CFN_FUNC(sd) == FUNC_PLAY_VALUE) {
                   PLAY_VALUE(CFN_PARAM(sd), i+1);
                 }
+#if defined(HAPTIC)
+                else if (CFN_FUNC(sd) == FUNC_HAPTIC) {
+                  haptic.event(AU_FRSKY_LAST+CFN_PARAM(sd));
+                }
+#endif
                 else {
                   playCustomFunctionFile(sd, i+1);
                 }
@@ -3643,7 +3651,7 @@ void evalFunctions()
             break;
 #endif
 
-#if defined(HAPTIC)
+#if defined(HAPTIC) && !defined(CPUARM)
           case FUNC_HAPTIC:
             haptic.event(AU_FRSKY_LAST+CFN_PARAM(sd));
             break;
