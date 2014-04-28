@@ -47,6 +47,7 @@ extern "C" {
 }
 #endif
 
+#define lua_registernumber(L, n, i)    (lua_pushnumber(L, (i)), lua_setglobal(L, (n)))
 #define lua_registerint(L, n, i)       (lua_pushinteger(L, (i)), lua_setglobal(L, (n)))
 #define lua_pushtablenil(L, k)         (lua_pushstring(L, (k)), lua_pushnil(L), lua_settable(L, -3))
 #define lua_pushtableboolean(L, k, v)  (lua_pushstring(L, (k)), lua_pushboolean(L, (v)), lua_settable(L, -3))
@@ -89,11 +90,79 @@ static int luaGetTime(lua_State *L)
   return 1;
 }
 
+static void __luaGetValue(int src)
+{
+  /*
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RPM) return frskyData.hub.rpm;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_FUEL) return frskyData.hub.fuelLevel;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_T1) return frskyData.hub.temperature1;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_T2) return frskyData.hub.temperature2;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_SPEED) return TELEMETRY_GPS_SPEED_BP;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_DIST) return frskyData.hub.gpsDistance;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_GPSALT) return TELEMETRY_RELATIVE_GPS_ALT_BP;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_CELL) return (int16_t)TELEMETRY_MIN_CELL_VOLTAGE;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_CELLS_SUM) return (int16_t)frskyData.hub.cellsSum;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_VFAS) return (int16_t)frskyData.hub.vfas;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_CURRENT) return (int16_t)frskyData.hub.current;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_CONSUMPTION) return frskyData.hub.currentConsumption;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_POWER) return frskyData.hub.power;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ACCx) return frskyData.hub.accelX;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ACCy) return frskyData.hub.accelY;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ACCz) return frskyData.hub.accelZ;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_HDG) return frskyData.hub.gpsCourse_bp;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_VSPEED) return frskyData.hub.varioSpeed;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ASPEED) return frskyData.hub.airSpeed;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_DTE) return frskyData.hub.dTE;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_MIN_A1) return frskyData.analog[0].min;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_MIN_A2) return frskyData.analog[1].min;
+  else if (i<=MIXSRC_FIRST_TELEM-1+TELEM_CSW_MAX) return *(((int16_t*)(&frskyData.hub.minAltitude))+i-(MIXSRC_FIRST_TELEM-1+TELEM_MIN_ALT));
+
+  */
+  if (!TELEMETRY_STREAMING() && src>=MIXSRC_FIRST_TELEM && src<=MIXSRC_LAST_TELEM) {
+    //telemetry not working, return zero
+    lua_pushinteger(L, (int)0);
+    return;
+  }
+  switch (src) {
+    case MIXSRC_FIRST_TELEM-1+TELEM_TX_VOLTAGE:
+    case MIXSRC_FIRST_TELEM-1+TELEM_VFAS:
+    case MIXSRC_FIRST_TELEM-1+TELEM_CELLS_SUM:
+    case MIXSRC_FIRST_TELEM-1+TELEM_CURRENT:
+    case MIXSRC_FIRST_TELEM-1+TELEM_VSPEED:
+      //theese need to be divided by 10
+      lua_pushnumber(L, getValue(src)/10.0);
+      break;
+
+    case MIXSRC_FIRST_TELEM-1+TELEM_A1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_A2:
+      //convert raw A1/2 values to calibrated values
+      lua_pushnumber(L, applyChannelRatio(src-(MIXSRC_FIRST_TELEM-1+TELEM_A1), getValue(src))/100.0);
+      break;
+
+    case MIXSRC_FIRST_TELEM-1+TELEM_MIN_A1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_MIN_A2:
+      //convert raw A1/2 values to calibrated values
+      lua_pushnumber(L, applyChannelRatio(src-(MIXSRC_FIRST_TELEM-1+TELEM_MIN_A1), getValue(src))/100.0);
+      break;
+
+    case MIXSRC_FIRST_TELEM-1+TELEM_CELL:
+    case MIXSRC_FIRST_TELEM-1+TELEM_ALT:
+      //theese need to be divided by 100
+      lua_pushnumber(L, getValue(src)/100.0);
+      break;
+
+    //TODO other values that neeed special treatment like maxAlititude,...
+
+    default:
+      lua_pushinteger(L, getValue(src));
+  }
+}
+
 static int luaGetValue(lua_State *L)
 {
   if (lua_isnumber(L, 1)) {
     int src = luaL_checkinteger(L, 1);
-    lua_pushinteger(L, getValue(src));
+    __luaGetValue(src);
     return 1;
   }
   else {
@@ -130,6 +199,16 @@ static int luaPlayFile(lua_State *L)
   PLAY_FILE(filename, 0, 0);
   return 0;
 }
+
+static int luaPlayNumber(lua_State *L)
+{
+  int number = luaL_checkinteger(L, 1);
+  int unit = luaL_checkinteger(L, 2);
+  int att = luaL_checkinteger(L, 3);
+  playNumber(number, unit, att, 0);
+  return 0;
+}
+
 
 static int luaLcdLock(lua_State *L)
 {
@@ -822,6 +901,7 @@ void luaInit()
   lua_register(L, "getVersion", luaGetVersion);
   lua_register(L, "getValue", luaGetValue);
   lua_register(L, "playFile", luaPlayFile);
+  lua_register(L, "playNumber", luaPlayNumber);
   lua_register(L, "popupInput", luaPopupInput);
 
   // Push OpenTX constants
@@ -1053,12 +1133,13 @@ void luaTask(uint8_t evt)
         lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
         for (int j=0; j<sid.inputsCount; j++) {
           if (sid.inputs[j].type == 1)
-            lua_pushinteger(L, getValue((uint8_t)sd.inputs[j]));
+            __luaGetValue((uint8_t)sd.inputs[j]);
+            //lua_pushinteger(L, (uint8_t)sd.inputs[j]);
           else
-            lua_pushinteger(L, sd.inputs[j]);
+            lua_pushinteger(L, sd.inputs[j] + sid.inputs[j].def);
         }
         if (lua_pcall(L, sid.inputsCount, sid.outputsCount, 0) == 0) {
-          for (int j=0; j<sid.outputsCount; j++) {
+          for (int j=sid.outputsCount-1; j>=0; j--) {
             if (!lua_isnumber(L, -1)) {
               sid.state = (instructionsPercent > 100 ? SCRIPT_KILLED : SCRIPT_SYNTAX_ERROR);
               TRACE("Script %10s disabled", sd.file);
