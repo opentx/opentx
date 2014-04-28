@@ -923,14 +923,14 @@ QString WizardPrinter::print()
   str = QString(tr("Model Name: ")) + mix->name + "\n";
   str += QString(tr("Model Type: ")) + vehicleName(mix->vehicle) + "\n";
 
-  str += QString(tr("Options: ["));
+  str += QString(tr("Options: ")) + "[";
   for (int i=0; i<WIZ_MAX_OPTIONS; i++){
       if (mix->options[i])
         str += "X";
       else
         str += "-";
     }
-  str += QString(tr("]")) + "\n";
+  str += QString("]") + "\n";
 
   for (int i=0; i<WIZ_MAX_CHANNELS; i++){
     if (mix->channel[i].page != Page_None) {
