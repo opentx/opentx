@@ -32,17 +32,18 @@ WizardDialog::WizardDialog(const GeneralSettings & settings, unsigned int modelI
   setPage(Page_Flaps, new FlapsPage(this, "flaps",tr("Flaps"),tr("Has your model got flaps?"), Page_Airbrakes));
   setPage(Page_Airbrakes, new AirbrakesPage(this, "airbrakes",tr("Airbrakes"),tr("Has your model got airbrakes?"), Page_Tails));
   setPage(Page_Bank, new BankPage(this, "bank",tr("Flying-wing / Delta-wing"),tr("Are the elevons controlled by servos connected to separate channels or by a single servo channel?"), Page_Rudder));
-  setPage(Page_Rudder, new RudderPage(this, "rudder",tr("Rudder"),tr("Does your model have a rudder?"), Page_Conclusion));
+  setPage(Page_Rudder, new RudderPage(this, "rudder",tr("Rudder"),tr("Does your model have a rudder?"), Page_Options));
   setPage(Page_Tails, new TailSelectionPage(this, "tails",tr("Tail Type"),tr("Select which type of tail your model is equiped with.")));
-  setPage(Page_Tail, new TailPage(this, "tail",tr("Tail"),tr("Select channels for tail control."), Page_Conclusion));
-  setPage(Page_Vtail, new VTailPage(this, "vtail",tr("V-Tail"),tr("Select channels for tail control."), Page_Conclusion));
-  setPage(Page_Simpletail, new SimpleTailPage(this, "simpletail",tr("Tail"),tr("Select elevator channel."), Page_Conclusion));
+  setPage(Page_Tail, new TailPage(this, "tail",tr("Tail"),tr("Select channels for tail control."), Page_Options));
+  setPage(Page_Vtail, new VTailPage(this, "vtail",tr("V-Tail"),tr("Select channels for tail control."), Page_Options));
+  setPage(Page_Simpletail, new SimpleTailPage(this, "simpletail",tr("Tail"),tr("Select elevator channel."), Page_Options));
   setPage(Page_Cyclic, new CyclicPage(this, "cyclic",tr("Cyclic"),tr("Which type of swash control is installed in your helicopter?"), Page_Gyro));
   setPage(Page_Gyro, new GyroPage(this, "gyro",tr("Tail Gyro"),tr("Has your helicopter got an adjustable gyro for the tail?"), Page_Flybar));
   setPage(Page_Flybar, new FlybarSelectionPage(this, "flybar",tr("Rotor Type"),tr("Has your helicopter got a flybar?")));
-  setPage(Page_Fblheli, new FblPage(this, "fblheli",tr("Helicopter"),tr("Select the controls for your helicopter"), Page_Conclusion));
-  setPage(Page_Helictrl, new HeliPage(this, "helictrl",tr("Helicopter"),tr("Select the controls for your helicopter"), Page_Conclusion));
-  setPage(Page_Multirotor, new MultirotorPage(this, "multirotor",tr("Multirotor"),tr("Select the control channels for your multirotor"), Page_Conclusion));
+  setPage(Page_Fblheli, new FblPage(this, "fblheli",tr("Helicopter"),tr("Select the controls for your helicopter"), Page_Options));
+  setPage(Page_Helictrl, new HeliPage(this, "helictrl",tr("Helicopter"),tr("Select the controls for your helicopter"), Page_Options));
+  setPage(Page_Multirotor, new MultirotorPage(this, "multirotor",tr("Multirotor"),tr("Select the control channels for your multirotor"), Page_Options));
+  setPage(Page_Options, new OptionsPage(this, "options",tr("Model Options"),tr("Select additional options"), Page_Conclusion));
   setPage(Page_Conclusion, new ConclusionPage(this, "conclusion",tr("Save Changes"),tr(
     "Manually check the direction of each control surface and reverse any channels that make controls move in the wrong direction. "
     "Remove the propeller/propellers before you try to control your model for the first time.<br>"
@@ -117,6 +118,8 @@ void WizardDialog::showHelp()
                  "Yaw - Spektrum: CH4, Futaba: CH4<br>"
                  "Pitch - Spektrum: CH3, Futaba: CH2<br>"
                  "Roll - Spektrum: CH2, Futaba: CH1"); break;
+  case Page_Options: 
+    message = tr("TBD."); break;
   case Page_Conclusion: 
     message = tr("TBD."); break;
   default:              
@@ -832,6 +835,27 @@ bool MultirotorPage::validatePage() {
     bookChannel(rollCB,           AILERONS_INPUT,  100 ));
 }
 
+OptionsPage::OptionsPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage)
+  : StandardPage(Page_Options, dlg, image, title, text, nextPage)
+{
+  throttleCutRB = new QCheckBox(tr("Throttle Cut"));
+  throttleTimerRB = new QCheckBox(tr("Throttle Timer"));
+
+  QLayout *l = layout();
+  l->addWidget(throttleCutRB);
+  l->addWidget(throttleTimerRB);
+}
+
+void OptionsPage::initializePage(){
+  StandardPage::initializePage();
+}
+
+bool OptionsPage::validatePage(){
+  wizDlg->mix.options[THROTTLE_CUT_OPTION] = throttleCutRB->isChecked();
+  wizDlg->mix.options[THROTTLE_TIMER_OPTION] = throttleTimerRB->isChecked();
+  return true;
+}
+
 ConclusionPage::ConclusionPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage)
   : StandardPage(Page_Conclusion, dlg, image, title, text, nextPage)
 {
@@ -840,8 +864,8 @@ ConclusionPage::ConclusionPage(WizardDialog *dlg, QString image, QString title, 
   registerField("evaluate.proceed*", proceedCB);
 
   QLayout *l = layout();
-  l->addWidget(proceedCB);
   l->addWidget(textLabel);
+  l->addWidget(proceedCB);
 }
 
 void ConclusionPage::initializePage(){
@@ -898,6 +922,16 @@ QString WizardPrinter::print()
   QString str;
   str = QString(tr("Model Name: ")) + mix->name + "\n";
   str += QString(tr("Model Type: ")) + vehicleName(mix->vehicle) + "\n";
+
+  str += QString(tr("Options: ["));
+  for (int i=0; i<WIZ_MAX_OPTIONS; i++){
+      if (mix->options[i])
+        str += "X";
+      else
+        str += "-";
+    }
+  str += QString(tr("]")) + "\n";
+
   for (int i=0; i<WIZ_MAX_CHANNELS; i++){
     if (mix->channel[i].page != Page_None) {
       Channel ch = mix->channel[i];

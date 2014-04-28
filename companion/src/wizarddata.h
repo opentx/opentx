@@ -18,7 +18,7 @@
 #include "eeprominterface.h"
 
 #define WIZ_MAX_CHANNELS 8
-
+#define WIZ_MAX_OPTIONS 2
 // TODO use a constant common to the whole companion
 // TODO when in the wizard use the getCapacity(...) to know how long the name can be
 #define WIZ_MODEL_NAME_LENGTH 12
@@ -38,6 +38,11 @@ enum Vehicle {
   PLANE,
   MULTICOPTER,
   HELICOPTER
+};
+
+enum Options {
+  THROTTLE_CUT_OPTION,
+  THROTTLE_TIMER_OPTION
 };
 
 enum WizardPage {
@@ -60,6 +65,7 @@ enum WizardPage {
   Page_Fblheli,
   Page_Helictrl,
   Page_Multirotor,
+  Page_Options,
   Page_Conclusion
 };
 
@@ -86,6 +92,7 @@ class WizMix
     const GeneralSettings & settings;
     Vehicle vehicle;
     Channel channel[WIZ_MAX_CHANNELS];
+    bool options[WIZ_MAX_OPTIONS];
 
     WizMix(const GeneralSettings & settings, const unsigned int modelId);
     operator ModelData();
