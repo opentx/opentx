@@ -243,8 +243,8 @@ void debugPutc(const char c);
 void hapticOff(void);
 void hapticOn(uint32_t pwmPercent);
 void hapticInit(void);
-#define HAPTIC_OFF    hapticOff()
-#define HAPTIC_ON     hapticOn(100)
+#define HAPTIC_OFF()    hapticOff()
+#define HAPTIC_ON()     hapticOn(100)
 
 extern uint8_t currentTrainerMode;
 

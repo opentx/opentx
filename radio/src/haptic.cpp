@@ -58,16 +58,16 @@ void hapticQueue::heartbeat()
     hapticOn(g_eeGeneral.hapticStrength * 20);
 #else
     if (hapticTick-- > 0) {
-      HAPTIC_ON;
+      HAPTIC_ON();
     }
     else {
-      HAPTIC_OFF;
+      HAPTIC_OFF();
       hapticTick = g_eeGeneral.hapticStrength;
     }
 #endif
   }
   else {
-    HAPTIC_OFF;
+    HAPTIC_OFF();
     if (buzzPause > 0) {
       buzzPause--;
     }
