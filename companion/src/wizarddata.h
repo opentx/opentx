@@ -41,8 +41,8 @@ enum Vehicle {
 };
 
 enum Options {
-  THROTTLE_CUT,
-  THROTTLE_TIMER
+  THROTTLE_CUT_OPTION,
+  THROTTLE_TIMER_OPTION
 };
 
 enum WizardPage {

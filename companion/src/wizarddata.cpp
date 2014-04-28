@@ -67,34 +67,59 @@ void WizMix::addMix(ModelData &model, Input input, int weight, int channel, int 
     }
     else if (input==FLAPS_INPUT){
       // There ought to be some kind of constants for switches somewhere...
-      maxMixSwitch((char *)"Flaps Up",   model.mixData[mixIndex++], channel+1, isTaranis ? 1 :-3 ,  weight); //SA-UP or ELE-UP
-      maxMixSwitch((char *)"Flaps Down", model.mixData[mixIndex++], channel+1, isTaranis ? 3 : 3 , -weight); //SA-DOWN or ELE-DOWN
+      maxMixSwitch((char *)"Flaps Up",   model.mixData[mixIndex++], channel+1, isTaranis ? 1 :-3 ,  weight); //Taranis SA-UP, 9X ELE-UP
+      maxMixSwitch((char *)"Flaps Down", model.mixData[mixIndex++], channel+1, isTaranis ? 3 : 3 , -weight); //Taranis SA-DOWN, 9X ELE-DOWN
 
     }
     else if (input==AIRBRAKES_INPUT){ 
-      maxMixSwitch((char *)"Airbrk Off", model.mixData[mixIndex++], channel+1, isTaranis ? 13 :-2 ,  -weight); //SE-UP or RUD-UP
-      maxMixSwitch((char *)"Airbrk On",  model.mixData[mixIndex++], channel+1, isTaranis ? 15 : 2 , weight); //SE-DOWN or RUD-DOWN
+      maxMixSwitch((char *)"Airbrk Off", model.mixData[mixIndex++], channel+1, isTaranis ? 13 :-2 ,  -weight); //Taranis SE-UP, 9X RUD-UP
+      maxMixSwitch((char *)"Airbrk On",  model.mixData[mixIndex++], channel+1, isTaranis ? 15 : 2 , weight); //Tatanis SE-DOWN, 9X RUD-DOWN
     }
   }
 }
 
 WizMix::operator ModelData()
 {
+  int throttleChannel = -1;
+  bool isTaranis = IS_TARANIS(GetEepromInterface()->getBoard());
+
   ModelData model;
   model.used = true;
   model.modelId = modelId;
   model.setDefaultInputs(settings);
 
+  int mixIndex = 0;
+  int switchIndex = 0;
+  int timerIndex = 0;
+
   // Safe copy model name
   strncpy(model.name, name, WIZ_MODEL_NAME_LENGTH);
   model.name[WIZ_MODEL_NAME_LENGTH] = 0;
 
-  int mixIndex = 0;
+  // Add the channel mixes
   for (int i=0; i<WIZ_MAX_CHANNELS; i++ ) 
   {
     Channel ch = channel[i];
+    if (ch.input1 == THROTTLE_INPUT || ch.input2 == THROTTLE_INPUT)
+      throttleChannel = i;
+
     addMix(model, ch.input1, ch.weight1, i, mixIndex);
     addMix(model, ch.input2, ch.weight2, i, mixIndex);
+  }
+
+  // Add the Throttle Cut option
+  if( options[THROTTLE_CUT_OPTION] && throttleChannel >=0 ){
+    model.funcSw[switchIndex].swtch.type = SWITCH_TYPE_SWITCH;
+    model.funcSw[switchIndex].swtch.index = isTaranis ? 16 : 1; // Taranis SF-UP, 9X THR-UP
+    model.funcSw[switchIndex].enabled = 1;
+    model.funcSw[switchIndex].func = (AssignFunc)throttleChannel;
+  }
+
+  // Add the Throttle Timer option
+  if (options[THROTTLE_TIMER_OPTION] && throttleChannel >=0  ){
+    model.timers[timerIndex].mode.type = SWITCH_TYPE_SWITCH;
+    model.timers[timerIndex].mode.index = isTaranis ? -16 : -1; // Taranis !SF-UP, 9X THR-DOWN
+    timerIndex++;
   }
   return model;
 }
