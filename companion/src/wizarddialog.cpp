@@ -851,8 +851,8 @@ void OptionsPage::initializePage(){
 }
 
 bool OptionsPage::validatePage(){
-  wizDlg->mix.options[THROTTLE_CUT] = throttleCutRB->isChecked();
-  wizDlg->mix.options[THROTTLE_TIMER] = throttleTimerRB->isChecked();
+  wizDlg->mix.options[THROTTLE_CUT_OPTION] = throttleCutRB->isChecked();
+  wizDlg->mix.options[THROTTLE_TIMER_OPTION] = throttleTimerRB->isChecked();
   return true;
 }
 
