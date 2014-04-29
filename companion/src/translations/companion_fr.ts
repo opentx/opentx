@@ -6331,7 +6331,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="19"/>
         <source>Played once, not during startup</source>
-        <translation>Lu une fois, mais pas à la mose en route</translation>
+        <translation>Lu une fois, mais pas à la mise en route</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="26"/>

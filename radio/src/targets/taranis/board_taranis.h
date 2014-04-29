@@ -239,12 +239,16 @@ void eeWriteBlockCmp(const void *pointer_ram, uint16_t pointer_eeprom, size_t si
 // Debug driver
 void debugPutc(const char c);
 
-// Haptic
-void hapticOff(void);
-void hapticOn(uint32_t pwmPercent);
+// Haptic driver
 void hapticInit(void);
-#define HAPTIC_OFF    hapticOff()
-#define HAPTIC_ON     hapticOn(100)
+void hapticOff(void);
+#define HAPTIC_OFF()    hapticOff()
+#if defined(REVPLUS)
+  void hapticOn(uint32_t pwmPercent);
+#else
+  void hapticOn();
+  #define HAPTIC_ON()   hapticOn()
+#endif
 
 extern uint8_t currentTrainerMode;
 

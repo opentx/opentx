@@ -826,10 +826,16 @@ enum Functions {
   #define IS_ADJUST_GV_FUNC(func) (0)
 #endif
 
-#if defined(VOICE)
-  #define HAS_REPEAT_PARAM(func) (func == FUNC_PLAY_SOUND || (func >= FUNC_PLAY_TRACK && func <= FUNC_PLAY_VALUE))
+#if defined(HAPTIC)
+  #define IS_HAPTIC_FUNC(func)    (func == FUNC_HAPTIC)
 #else
-  #define HAS_REPEAT_PARAM(func) (func == FUNC_PLAY_SOUND)
+  #define IS_HAPTIC_FUNC(func)    (0)
+#endif
+
+#if defined(VOICE)
+  #define HAS_REPEAT_PARAM(func) (func == FUNC_PLAY_SOUND || (func >= FUNC_PLAY_TRACK && func <= FUNC_PLAY_VALUE) || IS_HAPTIC_FUNC(func))
+#else
+  #define HAS_REPEAT_PARAM(func) (func == FUNC_PLAY_SOUND || IS_HAPTIC_FUNC(func))
 #endif
 
 enum ResetFunctionParam {

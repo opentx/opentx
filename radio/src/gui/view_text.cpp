@@ -127,7 +127,7 @@ void menuTextView(uint8_t event)
   }
 
   for (int i=0; i<LCD_LINES-1; i++) {
-    lcd_puts(0, i*FH+FH+1, s_text_screen[i]);
+    lcd_putsAtt(0, i*FH+FH+1, s_text_screen[i], FIXEDWIDTH);
   }
 
   char *title = s_text_file;

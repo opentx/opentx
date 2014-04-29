@@ -333,6 +333,18 @@ private:
   QComboBox *rollCB;
 };
 
+class OptionsPage: public StandardPage
+{
+  Q_OBJECT
+public:
+  OptionsPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage=-1);  
+  void initializePage();
+  bool validatePage();
+private:
+  QCheckBox *throttleCutRB;
+  QCheckBox *throttleTimerRB;
+};
+
 class ConclusionPage: public StandardPage
 {
   Q_OBJECT

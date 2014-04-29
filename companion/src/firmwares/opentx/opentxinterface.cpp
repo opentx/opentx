@@ -494,8 +494,9 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case Gvars:
       return IS_ARM(board) ? 9 : 5;
     case FlightModesName:
-    case GvarsName:
       return (IS_TARANIS(board) ? 10 : 6);
+    case GvarsName:
+      return 6;
     case HasChNames:
       return (IS_TARANIS(board) ? 1 : 0);
     case GvarsInCS:
@@ -571,9 +572,6 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case HasFuncRepeat:
     case HasContrast:
       return 1;      
-    case HapticLength:
-    case HapticMode:
-      return 1;
     case Beeperlen:
       return 1;
     case MaxVolume:
@@ -662,7 +660,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case LCDWidth:
       return (IS_TARANIS(board) ? 212 : 128) ;
     case GetThrSwitch:
-      return (IS_TARANIS(board) ? DSW_SF1 : DSW_THR) ;
+      return (IS_TARANIS(board) ? SWITCH_SF1 : SWITCH_THR) ;
     case HasDisplayText:
     case VirtualInputs:
       return IS_TARANIS(board) ? 32 : 0;

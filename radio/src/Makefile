@@ -271,7 +271,7 @@ LUA = NO
 
 # Menu Lock modes
 # Values = NO, READONLY, NOMENUS 
-MENUS_LOCK == NO
+MENUS_LOCK = NO
 
 #------- END BUILD OPTIONS ---------------------------
 
@@ -632,6 +632,12 @@ ifeq ($(PCB), TARANIS)
   SDCARD = YES
   THR_TRACE = YES
   EXT = FRSKY
+  AUTOSWITCH = YES
+  AUTOSOURCE = YES
+  DBLKEYS = YES
+  PPM_LIMITS_SYMETRICAL = YES
+  PPM_CENTER_ADJUSTABLE = YES
+  DSM2 = PPM
   CPPDEFS += -DPCBTARANIS -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DPXX
   INCDIRS += targets/taranis CoOS/kernel CoOS/portable
   EXTRAINCDIRS += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/include

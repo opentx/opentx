@@ -52,6 +52,7 @@
 #define LUA
 #define LUA_MODEL_SCRIPTS
 #define EEPROM_VARIANT 3
+#define HAPTIC
 
 #define NUM_POTS  5
 
@@ -99,6 +100,8 @@ inline int geteepromsize() {
 #include "radio/src/targets/taranis/keys_driver.cpp"
 #include "radio/src/keys.cpp"
 #include "radio/src/bmp.cpp"
+#include "radio/src/haptic.cpp"
+#include "radio/src/targets/taranis/haptic_driver.cpp"
 // TODO Because FatFS in not C++ there cannot be namespaces there and the functions are defined several times!
 #undef SDCARD
 #include "radio/src/simpgmspace.cpp"

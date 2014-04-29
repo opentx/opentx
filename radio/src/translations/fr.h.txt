@@ -31,10 +31,11 @@
  * !!!!! DO NOT EDIT fr.h - EDIT fr.h.txt INSTEAD !!!!!!!   
  */
  /* Formatting octal codes available in TR_ strings:
- *  \037\x       -sets LCD x-coord (x value in octal)
- *  \036         -newline
- *  \001 to \035 -extended spacing (value * FW/2)
- *  \0           -ends actual string
+ *  \037\x           -sets LCD x-coord (x value in octal)
+ *  \n               -newline
+ *  \t               -horizontal tab (ARM only)
+ *  \001 to \034     -extended spacing (value * FW/2)
+ *  \0               -ends actual string
  */
 
 
@@ -187,9 +188,9 @@
 
 #define LEN_VCSWFUNC           "\005"
 #if defined(CPUARM)
-#define TR_VCSWFUNC            "---\0 " TR_CSWEQUAL "a{x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""ET\0  ""OU\0  ""OUX\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""Δ}x\0 ""|Δ|}x" TR_CSWTIMER TR_CSWSTICKY
+#define TR_VCSWFUNC            "---\0 " TR_CSWEQUAL "a~x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""ET\0  ""OU\0  ""OUX\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""Δ}x\0 ""|Δ|}x" TR_CSWTIMER TR_CSWSTICKY
 #else
-#define TR_VCSWFUNC            "---\0 " TR_CSWEQUAL "a{x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""ET\0  ""OU\0  ""OUX\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""^}x\0 ""|^|}x" TR_CSWTIMER TR_CSWSTICKY
+#define TR_VCSWFUNC            "---\0 " TR_CSWEQUAL "a~x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""ET\0  ""OU\0  ""OUX\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""^}x\0 ""|^|}x" TR_CSWTIMER TR_CSWSTICKY
 #endif
 
 #define LEN_VFSWFUNC           "\015"
@@ -334,7 +335,7 @@
 #define TR_VTELPROTO           "Aucun  ""Hub\0   ""WSHHigh"
 
 #define LEN_VOLTSRC            "\003"
-#define TR_VOLTSRC             "---""A1\0""A2\0""FAS""Cel"
+#define TR_VOLTSRC             "---""A1\0""A2\0""FAS""Elm"
 
 #define LEN_VARIOSRC           "\005"
 #if defined(FRSKY_SPORT)
@@ -501,6 +502,7 @@
 #define TR_OFFSET              INDENT "Décalage"
 #define TR_TRIM                "Trim"
 #define TR_DREX                "DRex"
+#define DREX_CHBOX_OFFSET      30
 #define TR_CURVE               "Courbe"
 #define TR_FLMODE              TR("Phase", "Phases")
 #define TR_MIXWARNING          "Alerte"
@@ -642,8 +644,8 @@
 #define TR_SHUTDOWN            "ARRET EN COURS"
 #define TR_BATT_CALIB          "Calib. Batterie"
 #define TR_CURRENT_CALIB       "Calib. Courant"
-#define TR_VOLTAGE             INDENT "Tension"
-#define TR_CURRENT             INDENT "Courant"
+#define TR_VOLTAGE             TR(INDENT "Tension",INDENT "Source Tension")
+#define TR_CURRENT             TR(INDENT "Courant",INDENT "Source Courant")
 #define TR_SELECT_MODEL        "Sélect. Modèle"
 #define TR_CREATE_MODEL        "Créer Modèle"
 #define TR_COPY_MODEL          "Copier Modèle"

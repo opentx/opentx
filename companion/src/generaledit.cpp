@@ -201,23 +201,18 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
     
     if (!GetCurrentFirmware()->getCapability(Haptic)) {
       ui->hapticStrengthSB->setDisabled(true);
-      ui->hapticStrengthSB->hide();
-      ui->label_hapticStrengthSB->hide();
-    } 
-    
-    if (!GetCurrentFirmware()->getCapability(HapticMode)) {
       ui->hapticmodeCB->setDisabled(true);
-      ui->hapticmodeCB->hide();
-      ui->label_hapticmode->hide();
     } 
 
     int renumber=GetCurrentFirmware()->getCapability(RotaryEncoders);
     if (renumber==0) {
       ui->re_label->hide();
       ui->re_CB->hide();
-    } else {
+    }
+    else {
       populateRotEncCB(ui->re_CB, g_eeGeneral.reNavigation, renumber);
     }
+
     ui->contrastSB->setValue(g_eeGeneral.contrast);
     ui->battwarningDSB->setValue((double)g_eeGeneral.vBatWarn/10);
     ui->backlightautoSB->setValue(g_eeGeneral.backlightDelay*5);
@@ -344,11 +339,12 @@ void GeneralEdit::setValues()
     ui->beeperCB->setCurrentIndex(g_eeGeneral.beeperMode+2);
     ui->channelorderCB->setCurrentIndex(g_eeGeneral.templateSetup);
     ui->stickmodeCB->setCurrentIndex(g_eeGeneral.stickMode);
-    if (!GetCurrentFirmware()->getCapability(HapticLength)) {
+    if (GetCurrentFirmware()->getCapability(Haptic)) {
+      ui->hapticLengthCB->setCurrentIndex(g_eeGeneral.hapticLength+2);
+    }
+    else {
       ui->label_HL->hide();
       ui->hapticLengthCB->hide();
-    } else {
-      ui->hapticLengthCB->setCurrentIndex(g_eeGeneral.hapticLength+2);
     }
     ui->BLBright_SB->setValue(100-g_eeGeneral.backlightBright);
     ui->soundModeCB->setCurrentIndex(g_eeGeneral.speakerMode);

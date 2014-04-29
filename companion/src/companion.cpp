@@ -81,6 +81,7 @@ int main(int argc, char *argv[])
   app.setApplicationName("OpenTX Companion");
   app.setOrganizationName("OpenTX");
   app.setOrganizationDomain("open-tx.org");
+  app.setAttribute(Qt::AA_DontShowIconsInMenus, false);
 
 #ifdef __APPLE__
   app.setStyle(new MyProxyStyle);
