@@ -39,22 +39,25 @@
 void hapticOff(void)
 {
 #if defined(REVPLUS)
-  return; //TODO PWM support
+  return; // TODO PWM support
 #else
   GPIO_ResetBits(GPIO_HAPTIC, PIN_HAPTIC);
 #endif
 }
 
+#if defined(REVPLUS)
 void hapticOn(uint32_t pwmPercent)
 {
-#if defined(REVPLUS)
   // pwmPercent 0-100
-  return; //TODO PWM support
+  return; // TODO PWM support
+}
 #else
+void hapticOn()
+{
   // No PWM before REVPLUS
   GPIO_SetBits(GPIO_HAPTIC, PIN_HAPTIC);
-#endif
 }
+#endif
 
 void hapticInit(void)
 {

@@ -242,8 +242,13 @@ void debugPutc(const char c);
 // Haptic driver
 void hapticInit(void);
 void hapticOff(void);
-void hapticOn(uint32_t pwmPercent);
 #define HAPTIC_OFF()    hapticOff()
+#if defined(REVPLUS)
+  void hapticOn(uint32_t pwmPercent);
+#else
+  void hapticOn();
+  #define HAPTIC_ON()   hapticOn()
+#endif
 
 extern uint8_t currentTrainerMode;
 
