@@ -158,7 +158,7 @@ FlightMode::FlightMode(QWidget * parent, ModelData & model, int phaseIdx, Genera
       gvLayout->addWidget(gvValues[i], i, col++, 1, 1);
       
       // Popups
-      if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+      if (IS_TARANIS(GetEepromInterface()->getBoard()) && (phaseIdx == 0)) {
         gvPopups[i] = new QCheckBox(ui->gvGB);
         gvPopups[i]->setProperty("index", i);
         gvPopups[i]->setText(tr("Popup enabled"));
@@ -205,7 +205,7 @@ void FlightMode::update()
     gvValues[i]->setDisabled(false);
     int idx = phase.gvars[i];
     PhaseData *phasegvar = &phase;
-    while (idx >= 1024) {
+    while (idx > 1024) {
       idx -= 1025;
       phasegvar = &model.phaseData[idx];
     	idx = phasegvar->gvars[i];
@@ -213,7 +213,8 @@ void FlightMode::update()
     }
     if (IS_TARANIS(GetEepromInterface()->getBoard())) {
       gvValues[i]->setValue(phasegvar->gvars[i]);
-      gvPopups[i]->setChecked(model.gvars_popups[i]);
+      if (phaseIdx == 0) 
+        gvPopups[i]->setChecked(model.gvars_popups[i]);
     }
   }
 
@@ -221,7 +222,7 @@ void FlightMode::update()
     reValues[i]->setDisabled(false);
     int idx = phase.rotaryEncoders[i];
     PhaseData *phasere = &phase;
-    while (idx >= 1024) {
+    while (idx > 1024) {
       idx -= 1025;
       phasere = &model.phaseData[idx];
       idx = phasere->rotaryEncoders[i];
@@ -321,7 +322,7 @@ void FlightMode::phaseGVUse_currentIndexChanged(int index)
       phase.gvars[gvar]=0;
     }
     else {
-      phase.gvars[gvar] = 1024+index;
+      phase.gvars[gvar] = 1024+index+(index>phaseIdx?1:0);
     }
     update();
     emit modified();
