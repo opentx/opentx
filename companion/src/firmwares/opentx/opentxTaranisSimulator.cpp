@@ -53,6 +53,7 @@
 #define LUA_MODEL_SCRIPTS
 #define EEPROM_VARIANT 3
 #define HAPTIC
+#define REVPLUS
 
 #define NUM_POTS  5
 
