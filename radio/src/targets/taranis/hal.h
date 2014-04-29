@@ -241,13 +241,16 @@
 #if defined (REVPLUS)
   #define RCC_AHB1Periph_GPIOBL           RCC_AHB1Periph_GPIOD
   #define GPIO_Pin_BL                     GPIO_Pin_15  //PD.15
+  #define Pin_BL_AF                       GPIO_AF_TIM4
   #define GPIOBL                          GPIOD
   #define GPIO_PinSource_BL               GPIO_PinSource15
   #define GPIO_Pin_BLW                    GPIO_Pin_13  //PD.13
+  #define Pin_BLW_AF                      GPIO_AF_TIM4
   #define GPIO_PinSource_BLW              GPIO_PinSource13
 #else
   #define RCC_AHB1Periph_GPIOBL           RCC_AHB1Periph_GPIOB
   #define GPIO_Pin_BL                     GPIO_Pin_8  //PB.08
+  #define Pin_BL_AF                       GPIO_AF_TIM10
   #define GPIOBL                          GPIOB
   #define GPIO_PinSource_BL               GPIO_PinSource8
 #endif
