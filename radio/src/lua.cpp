@@ -47,6 +47,7 @@ extern "C" {
 }
 #endif
 
+#define lua_registernumber(L, n, i)    (lua_pushnumber(L, (i)), lua_setglobal(L, (n)))
 #define lua_registerint(L, n, i)       (lua_pushinteger(L, (i)), lua_setglobal(L, (n)))
 #define lua_pushtablenil(L, k)         (lua_pushstring(L, (k)), lua_pushnil(L), lua_settable(L, -3))
 #define lua_pushtableboolean(L, k, v)  (lua_pushstring(L, (k)), lua_pushboolean(L, (v)), lua_settable(L, -3))
@@ -89,11 +90,63 @@ static int luaGetTime(lua_State *L)
   return 1;
 }
 
+static void luaGetValueAndPush(int src)
+{
+  /*
+    Hint about dividers are taken from putsTelemetryChannel()
+  */
+  if (!TELEMETRY_STREAMING() && src>=MIXSRC_FIRST_TELEM && src<=MIXSRC_LAST_TELEM) {
+    //telemetry not working, return zero for telemetry sources
+    lua_pushinteger(L, (int)0);
+    return;
+  }
+  switch (src) {
+    case MIXSRC_FIRST_TELEM-1+TELEM_TX_VOLTAGE:
+    case MIXSRC_FIRST_TELEM-1+TELEM_VFAS:
+    case MIXSRC_FIRST_TELEM-1+TELEM_MIN_VFAS:
+    case MIXSRC_FIRST_TELEM-1+TELEM_CELLS_SUM:
+    case MIXSRC_FIRST_TELEM-1+TELEM_MIN_CELLS_SUM:
+    case MIXSRC_FIRST_TELEM-1+TELEM_CURRENT:
+    case MIXSRC_FIRST_TELEM-1+TELEM_MAX_CURRENT:
+    case MIXSRC_FIRST_TELEM-1+TELEM_VSPEED:
+      //theese need to be divided by 10
+      lua_pushnumber(L, getValue(src)/10.0);
+      break;
+
+    case MIXSRC_FIRST_TELEM-1+TELEM_A1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_A2:
+      //convert raw A1/2 values to calibrated values
+      lua_pushnumber(L, applyChannelRatio(src-(MIXSRC_FIRST_TELEM-1+TELEM_A1), getValue(src))/100.0);
+      break;
+
+    case MIXSRC_FIRST_TELEM-1+TELEM_MIN_A1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_MIN_A2:
+      //convert raw A1/2 values to calibrated values
+      lua_pushnumber(L, applyChannelRatio(src-(MIXSRC_FIRST_TELEM-1+TELEM_MIN_A1), getValue(src))/100.0);
+      break;
+
+    case MIXSRC_FIRST_TELEM-1+TELEM_CELL:
+    case MIXSRC_FIRST_TELEM-1+TELEM_MIN_CELL:
+    case MIXSRC_FIRST_TELEM-1+TELEM_ALT:
+    case MIXSRC_FIRST_TELEM-1+TELEM_ACCx:
+    case MIXSRC_FIRST_TELEM-1+TELEM_ACCy:
+    case MIXSRC_FIRST_TELEM-1+TELEM_ACCz:
+      //theese need to be divided by 100
+      lua_pushnumber(L, getValue(src)/100.0);
+      break;
+
+    //TODO: add other values that need special treatment
+
+    default:
+      lua_pushinteger(L, getValue(src));
+  }
+}
+
 static int luaGetValue(lua_State *L)
 {
   if (lua_isnumber(L, 1)) {
     int src = luaL_checkinteger(L, 1);
-    lua_pushinteger(L, getValue(src));
+    luaGetValueAndPush(src);
     return 1;
   }
   else {
@@ -130,6 +183,16 @@ static int luaPlayFile(lua_State *L)
   PLAY_FILE(filename, 0, 0);
   return 0;
 }
+
+static int luaPlayNumber(lua_State *L)
+{
+  int number = luaL_checkinteger(L, 1);
+  int unit = luaL_checkinteger(L, 2);
+  int att = luaL_checkinteger(L, 3);
+  playNumber(number, unit, att, 0);
+  return 0;
+}
+
 
 static int luaLcdLock(lua_State *L)
 {
@@ -822,6 +885,7 @@ void luaInit()
   lua_register(L, "getVersion", luaGetVersion);
   lua_register(L, "getValue", luaGetValue);
   lua_register(L, "playFile", luaPlayFile);
+  lua_register(L, "playNumber", luaPlayNumber);
   lua_register(L, "popupInput", luaPopupInput);
 
   // Push OpenTX constants
@@ -1053,12 +1117,12 @@ void luaTask(uint8_t evt)
         lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
         for (int j=0; j<sid.inputsCount; j++) {
           if (sid.inputs[j].type == 1)
-            lua_pushinteger(L, getValue((uint8_t)sd.inputs[j]));
+            luaGetValueAndPush((uint8_t)sd.inputs[j]);
           else
-            lua_pushinteger(L, sd.inputs[j]);
+            lua_pushinteger(L, sd.inputs[j] + sid.inputs[j].def);
         }
         if (lua_pcall(L, sid.inputsCount, sid.outputsCount, 0) == 0) {
-          for (int j=0; j<sid.outputsCount; j++) {
+          for (int j=sid.outputsCount-1; j>=0; j--) {
             if (!lua_isnumber(L, -1)) {
               sid.state = (instructionsPercent > 100 ? SCRIPT_KILLED : SCRIPT_SYNTAX_ERROR);
               TRACE("Script %10s disabled", sd.file);
