@@ -171,16 +171,23 @@ static void LCD_Hardware_Init()
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(GPIO_LCD, &GPIO_InitStructure);
+  GPIO_Init(GPIO_LCD_SPI, &GPIO_InitStructure);
   LCD_NCS_HIGH();
   /*!< Configure lcd NCS pin in output pushpull mode ,PULLUP *************/
-  GPIO_InitStructure.GPIO_Pin = PIN_LCD_NCS |PIN_LCD_RST; 
+  GPIO_InitStructure.GPIO_Pin = PIN_LCD_NCS; 
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(GPIO_LCD_NCS, &GPIO_InitStructure);
   
-  GPIO_Init(GPIO_LCD, &GPIO_InitStructure);
+  /*!< Configure lcd RST pin in output pushpull mode ,PULLUP *************/
+  GPIO_InitStructure.GPIO_Pin = PIN_LCD_RST; 
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(GPIO_LCD_RST, &GPIO_InitStructure);
 }
 
 //275us

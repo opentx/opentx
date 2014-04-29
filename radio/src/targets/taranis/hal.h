@@ -225,14 +225,28 @@
 #define GPIOBL                          GPIOB
 #define GPIO_PinSource_BL               GPIO_PinSource8
 
-// LCD GPIOD 10-14
-#define RCC_AHB1Periph_LCD              RCC_AHB1Periph_GPIOD
-#define GPIO_LCD                        GPIOD
-#define PIN_LCD_MOSI                    GPIO_Pin_10 //PD.10
-#define PIN_LCD_CLK                     GPIO_Pin_11 //PD.11
-#define PIN_LCD_NCS                     GPIO_Pin_14 //PD.14
-#define PIN_LCD_A0                      GPIO_Pin_13 //PD.13
-#define PIN_LCD_RST                     GPIO_Pin_12  //pd12 test //RESET occurs when powered up,but should delay before initialize
+// LCD
+#if defined(REVPLUS)
+  #define RCC_AHB1Periph_LCD              RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD
+  #define GPIO_LCD_SPI                    GPIOC
+  #define GPIO_LCD_NCS                    GPIOA
+  #define GPIO_LCD_RST                    GPIOD
+  #define PIN_LCD_MOSI                    GPIO_Pin_12 //PC.12
+  #define PIN_LCD_CLK                     GPIO_Pin_10 //PC.10
+  #define PIN_LCD_NCS                     GPIO_Pin_15 //PA.15
+  #define PIN_LCD_A0                      GPIO_Pin_11 //PC.11
+  #define PIN_LCD_RST                     GPIO_Pin_12 //PD.12
+#else
+  #define RCC_AHB1Periph_LCD              RCC_AHB1Periph_GPIOD
+  #define GPIO_LCD_SPI                    GPIOD
+  #define GPIO_LCD_NCS                    GPIOD
+  #define GPIO_LCD_RST                    GPIOD
+  #define PIN_LCD_MOSI                    GPIO_Pin_10 //PD.10
+  #define PIN_LCD_CLK                     GPIO_Pin_11 //PD.11
+  #define PIN_LCD_NCS                     GPIO_Pin_14 //PD.14
+  #define PIN_LCD_A0                      GPIO_Pin_13 //PD.13
+  #define PIN_LCD_RST                     GPIO_Pin_12 //PD.12
+#endif 
 
 // Audio - I2S3
 #define CODEC_I2S                       SPI3
