@@ -161,6 +161,15 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
 
     connect(fswtchParamArmT[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
     connect(fswtchParamArmT[i], SIGNAL(editTextChanged ( const QString)), this, SLOT(customFunctionEdited()));
+    
+    fswtchBLcolor[i] = new QSlider(this);
+    fswtchBLcolor[i]->setProperty("index", i);
+    fswtchBLcolor[i]->setMinimum(0);
+    fswtchBLcolor[i]->setMaximum(100);
+    fswtchBLcolor[i]->setSingleStep(1);
+    fswtchBLcolor[i]->setOrientation(Qt::Horizontal);
+    paramLayout->addWidget(fswtchBLcolor[i]);
+    connect(fswtchBLcolor[i], SIGNAL(sliderReleased()), this, SLOT(customFunctionEdited()));
 
 #ifdef PHONON
     playBT[i] = new QPushButton(this);
@@ -271,6 +280,7 @@ void CustomFunctionsPanel::playMusic()
 #define CUSTOM_FUNCTION_ENABLE         (1<<5)
 #define CUSTOM_FUNCTION_REPEAT         (1<<6)
 #define CUSTOM_FUNCTION_PLAY           (1<<7)
+#define CUSTOM_FUNCTION_BL_COLOR       (1<<8)
 
 void CustomFunctionsPanel::customFunctionEdited()
 {
@@ -447,6 +457,11 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
         widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM;
       }
     }
+    else if (index==FuncBacklight && IS_TARANIS_PLUS(GetEepromInterface()->getBoard())) {
+      if (modified) model.funcSw[i].param = (uint8_t)fswtchBLcolor[i]->value();
+      fswtchBLcolor[i]->setValue(model.funcSw[i].param);
+      widgetsMask |= CUSTOM_FUNCTION_BL_COLOR;
+    }
     else {
       if (modified) model.funcSw[i].param = fswtchParam[i]->value();
       fswtchParam[i]->setDecimals(0);
@@ -468,6 +483,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
       fswtchEnable[i]->setChecked(false);
     fswtchRepeat[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_REPEAT);
     fswtchGVmode[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_GV_MODE);
+    fswtchBLcolor[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_BL_COLOR);
 #ifdef PHONON
     playBT[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_PLAY);
 #endif

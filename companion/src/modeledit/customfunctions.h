@@ -74,6 +74,7 @@ class CustomFunctionsPanel : public ModelPanel
     QCheckBox * fswtchEnable[C9X_MAX_CUSTOM_FUNCTIONS];
     RepeatComboBox * fswtchRepeat[C9X_MAX_CUSTOM_FUNCTIONS];
     QComboBox * fswtchGVmode[C9X_MAX_CUSTOM_FUNCTIONS];
+    QSlider * fswtchBLcolor[C9X_MAX_CUSTOM_FUNCTIONS];
 #ifdef PHONON
     Phonon::MediaObject *clickObject;
     Phonon::AudioOutput *clickOutput;
