@@ -698,7 +698,7 @@ class FlightModeField: public TransformedField {
         for (int i=0; i<NUM_STICKS; i++)
           internalField.Append(new SignedField<2>(trimExt[i]));
       }
-      else if (board == BOARD_TARANIS && version >= 216) {
+      else if (IS_TARANIS(board) && version >= 216) {
         for (int i=0; i<NUM_STICKS; i++) {
           internalField.Append(new SignedField<11>(phase.trim[i]));
           internalField.Append(new UnsignedField<5>(trimMode[i]));
@@ -739,7 +739,7 @@ class FlightModeField: public TransformedField {
     virtual void beforeExport()
     {
       for (int i=0; i<NUM_STICKS; i++) {
-        if (board == BOARD_TARANIS && version >= 216) {
+        if (IS_TARANIS(board) && version >= 216) {
           if (phase.trimMode[i] < 0)
             trimMode[i] = TRIM_MODE_NONE;
           else
@@ -767,7 +767,7 @@ class FlightModeField: public TransformedField {
     virtual void afterImport()
     {
       for (int i=0; i<NUM_STICKS; i++) {
-        if (board == BOARD_TARANIS && version >= 216) {
+        if (IS_TARANIS(board) && version >= 216) {
           if (trimMode[i] == TRIM_MODE_NONE) {
             phase.trimMode[i] = -1;
           }
