@@ -1035,8 +1035,6 @@ enum Capability {
  Beeperlen,
  EepromBackup,
  Haptic,
- HapticLength,
- HapticMode,
  HasBeeper,
  ModelTrainerEnable,
  Timer2ThrTrig,

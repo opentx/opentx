@@ -568,9 +568,6 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case HasFuncRepeat:
     case HasContrast:
       return 1;      
-    case HapticLength:
-    case HapticMode:
-      return 1;
     case Beeperlen:
       return 1;
     case MaxVolume:
