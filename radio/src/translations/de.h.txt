@@ -31,15 +31,16 @@
  * !!!!! DO NOT EDIT de.h - EDIT de.h.txt INSTEAD !!!!!!!   
  */
  /* Formatting octal codes available in TR_ strings:
- *  \037\x       -sets LCD x-coord (x value in octal)
- *  \036         -newline
- *  \001 to \035 -extended spacing (value * FW/2)
- *  \0           -ends actual string
+ *  \037\x           -sets LCD x-coord (x value in octal)
+ *  \n               -newline
+ *  \t               -horizontal tab (ARM only)
+ *  \001 to \034     -extended spacing (value * FW/2)
+ *  \0               -ends actual string
  */
- 
- 
- 
- 
+
+
+
+
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON              "\003"
 #define TR_OFFON               "AUS""EIN"
@@ -187,9 +188,9 @@
 
 #define LEN_VCSWFUNC           "\005"
 #if defined(CPUARM)
-#define TR_VCSWFUNC            "---\0 " TR_CSWEQUAL "a{x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""Δ}x\0 ""|Δ|}x" TR_CSWTIMER TR_CSWSTICKY
+#define TR_VCSWFUNC            "---\0 " TR_CSWEQUAL "a~x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""Δ}x\0 ""|Δ|}x" TR_CSWTIMER TR_CSWSTICKY
 #else
-#define TR_VCSWFUNC            "---\0 " TR_CSWEQUAL "a{x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""^}x\0 ""|^|}x" TR_CSWTIMER TR_CSWSTICKY
+#define TR_VCSWFUNC            "---\0 " TR_CSWEQUAL "a~x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""^}x\0 ""|^|}x" TR_CSWTIMER TR_CSWSTICKY
 #endif
 
 #define LEN_VFSWFUNC           "\012"
