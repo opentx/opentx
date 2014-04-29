@@ -656,7 +656,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case LCDWidth:
       return (IS_TARANIS(board) ? 212 : 128) ;
     case GetThrSwitch:
-      return (IS_TARANIS(board) ? DSW_SF1 : DSW_THR) ;
+      return (IS_TARANIS(board) ? SWITCH_SF1 : SWITCH_THR) ;
     case HasDisplayText:
     case VirtualInputs:
       return IS_TARANIS(board) ? 32 : 0;

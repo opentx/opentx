@@ -85,26 +85,42 @@ const uint8_t modn12x3[4][4]= {
 #define STK_P2   6
 #define STK_P3   7
 
-#define DSW_THR   1 //DSW_SA ^
-#define DSW_RUD   2 //DSW_SA -
-#define DSW_ELE   3 //DSW_SA _
-#define DSW_ID0   4  //DSW_SB ^
-#define DSW_ID1   5  //DSW_SB -
-#define DSW_ID2   6 //DSW_SB _
-#define DSW_AIL   7 //DSW_SC ^
-#define DSW_GEA   8  //DSW_SC -
-#define DSW_TRN   9 //DSW_SC _
-#define DSW_SD0 10
-#define DSW_SD1 11
-#define DSW_SD2 12
-#define DSW_SE0 13
-#define DSW_SE1 14
-#define DSW_SE2 15
-#define DSW_SF0 16
-#define DSW_SF1 17
-#define DSW_SG0 18
-#define DSW_SG1 19
-#define DSW_SG2 20
+enum Switches {
+  SWITCH_NONE,
+
+  SWITCH_THR = SWITCH_NONE+1,
+  SWITCH_RUD,
+  SWITCH_ELE,
+  SWITCH_ID0,
+  SWITCH_ID1,
+  SWITCH_ID2,
+  SWITCH_AIL,
+  SWITCH_GEA,
+  SWITCH_TRN,
+
+  SWITCH_SA0 = SWITCH_NONE+1,
+  SWITCH_SA1,
+  SWITCH_SA2,
+  SWITCH_SB0,
+  SWITCH_SB1,
+  SWITCH_SB2,
+  SWITCH_SC0,
+  SWITCH_SC1,
+  SWITCH_SC2,
+  SWITCH_SD0,
+  SWITCH_SD1,
+  SWITCH_SD2,
+  SWITCH_SE0,
+  SWITCH_SE1,
+  SWITCH_SE2,
+  SWITCH_SF0,
+  SWITCH_SF1,
+  SWITCH_SG0,
+  SWITCH_SG1,
+  SWITCH_SG2,
+  SWITCH_SH0,
+  SWITCH_SH1
+};
 
 #define TRIM_LH_L  0
 #define TRIM_LH_R  1
