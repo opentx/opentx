@@ -205,7 +205,7 @@ void FlightMode::update()
     gvValues[i]->setDisabled(false);
     int idx = phase.gvars[i];
     PhaseData *phasegvar = &phase;
-    while (idx >= 1024) {
+    while (idx > 1024) {
       idx -= 1025;
       phasegvar = &model.phaseData[idx];
     	idx = phasegvar->gvars[i];
@@ -221,7 +221,7 @@ void FlightMode::update()
     reValues[i]->setDisabled(false);
     int idx = phase.rotaryEncoders[i];
     PhaseData *phasere = &phase;
-    while (idx >= 1024) {
+    while (idx > 1024) {
       idx -= 1025;
       phasere = &model.phaseData[idx];
       idx = phasere->rotaryEncoders[i];
@@ -321,7 +321,7 @@ void FlightMode::phaseGVUse_currentIndexChanged(int index)
       phase.gvars[gvar]=0;
     }
     else {
-      phase.gvars[gvar] = 1024+index;
+      phase.gvars[gvar] = 1024+index+(index>phaseIdx?1:0);
     }
     update();
     emit modified();
