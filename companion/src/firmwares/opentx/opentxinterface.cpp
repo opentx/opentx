@@ -559,10 +559,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case SoundPitch:
       return 1;
     case Haptic:
-      if (IS_TARANIS(board))
-        return 0;
-      else
-        return 1;
+      return 1;
     case ModelTrainerEnable:
       if (IS_TARANIS(board))
         return 1;
@@ -573,10 +570,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
       return 1;      
     case HapticLength:
     case HapticMode:
-      if (IS_TARANIS(board))
-        return 0;
-      else
-        return 1;
+      return 1;
     case Beeperlen:
       return 1;
     case MaxVolume:
@@ -1219,6 +1213,7 @@ void registerOpenTxFirmwares()
   openTx->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
   openTx->addOption("notemplates", QObject::tr("Disable TEMPLATES menu"));
   openTx->addOption("nogvars", QObject::tr("Disable Global variables"));
+  openTx->addOption("haptic", QObject::tr("Haptic module installed"));
   openTx->addOption("ppmus", QObject::tr("Channel values displayed in us"));
   openTx->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   openTx->addOptions(fai_options);
@@ -1229,6 +1224,7 @@ void registerOpenTxFirmwares()
     openTx->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
     openTx->addOption("notemplates", QObject::tr("Disable TEMPLATES menu"));
     openTx->addOption("nogvars", QObject::tr("Disable Global variables"));
+    openTx->addOption("haptic", QObject::tr("Haptic module installed"));
     openTx->addOption("ppmus", QObject::tr("Channel values displayed in us"));
     openTx->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
     openTx->addOptions(fai_options);

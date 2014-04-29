@@ -904,21 +904,6 @@ enum Analogs {
 #define BUZZER_ON     PORTE |=  (1 << OUT_E_BUZZER)
 #define BUZZER_OFF    PORTE &= ~(1 << OUT_E_BUZZER)
 
-#if defined(HAPTIC)
-  #if defined(PCBSKY9X)
-    #define HAPTIC_OFF    hapticOff()
-  #elif defined(PCBGRUVIN9X)
-    #define HAPTIC_ON     PORTD &= ~(1 << OUT_D_HAPTIC)
-    #define HAPTIC_OFF    PORTD |=  (1 << OUT_D_HAPTIC)
-  #else
-    #define HAPTIC_ON     PORTG |=  (1 << OUT_G_HAPTIC)
-    #define HAPTIC_OFF    PORTG &= ~(1 << OUT_G_HAPTIC)
-  #endif
-#else
-  #define HAPTIC_ON
-  #define HAPTIC_OFF
-#endif
-
 #define BITMASK(bit) (1<<(bit))
 
 /// liefert Dimension eines Arrays
