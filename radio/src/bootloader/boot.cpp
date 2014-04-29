@@ -393,11 +393,11 @@ int menuFlashFile(uint32_t index, uint8_t event)
 
   if (Valid == 0) {
     // Validate file here
-    if (fr = openBinaryFile(index)) {
+    if ((fr = openBinaryFile(index))) {
       Valid = 2;
     }
     else {
-      if (fr = f_close(&FlashFile)) {
+      if ((fr = f_close(&FlashFile))) {
         Valid = 2;
       }
       else {
