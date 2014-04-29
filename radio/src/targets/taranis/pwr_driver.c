@@ -66,13 +66,21 @@ void pwrInit()
   GPIO_Init(GPIOPWRLED, &GPIO_InitStructure);
 
 #if !defined(REV3)  
-  GPIO_ResetBits(GPIOPWR, PIN_INT_RF_PWR | PIN_EXT_RF_PWR);
-  GPIO_InitStructure.GPIO_Pin = PIN_INT_RF_PWR | PIN_EXT_RF_PWR;
+  GPIO_ResetBits(GPIO_INT_RF_PWR, PIN_INT_RF_PWR;
+  GPIO_InitStructure.GPIO_Pin = PIN_INT_RF_PWR;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(GPIOPWR, &GPIO_InitStructure);
+  GPIO_Init(GPIO_INT_RF_PWR, &GPIO_InitStructure);
+  
+  GPIO_ResetBits(GPIO_EXT_RF_PWR, PIN_EXT_RF_PWR);
+  GPIO_InitStructure.GPIO_Pin = PIN_EXT_RF_PWR;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(GPIO_EXT_RF_PWR, &GPIO_InitStructure);
   
   GPIO_InitStructure.GPIO_Pin = PIN_TRNDET;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
