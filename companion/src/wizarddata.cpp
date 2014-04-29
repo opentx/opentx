@@ -12,6 +12,7 @@
  *
  */
 #include <string.h>
+#include "eeprominterface.h"
 #include "wizarddata.h"
 
 Channel::Channel()
@@ -67,13 +68,13 @@ void WizMix::addMix(ModelData &model, Input input, int weight, int channel, int 
     }
     else if (input==FLAPS_INPUT){
       // There ought to be some kind of constants for switches somewhere...
-      maxMixSwitch((char *)"Flaps Up",   model.mixData[mixIndex++], channel+1, isTaranis ? 1 :-3 ,  weight); //Taranis SA-UP, 9X ELE-UP
-      maxMixSwitch((char *)"Flaps Down", model.mixData[mixIndex++], channel+1, isTaranis ? 3 : 3 , -weight); //Taranis SA-DOWN, 9X ELE-DOWN
+      maxMixSwitch((char *)"Flaps Up",   model.mixData[mixIndex++], channel+1, isTaranis ? SWITCH_SA0 :-SWITCH_ELE ,  weight); //Taranis SA-UP, 9X ELE-UP
+      maxMixSwitch((char *)"Flaps Down", model.mixData[mixIndex++], channel+1, isTaranis ? SWITCH_SA2 : SWITCH_ELE , -weight); //Taranis SA-DOWN, 9X ELE-DOWN
 
     }
     else if (input==AIRBRAKES_INPUT){ 
-      maxMixSwitch((char *)"Airbrk Off", model.mixData[mixIndex++], channel+1, isTaranis ? 13 :-2 ,  -weight); //Taranis SE-UP, 9X RUD-UP
-      maxMixSwitch((char *)"Airbrk On",  model.mixData[mixIndex++], channel+1, isTaranis ? 15 : 2 , weight); //Tatanis SE-DOWN, 9X RUD-DOWN
+      maxMixSwitch((char *)"Airbrk Off", model.mixData[mixIndex++], channel+1, isTaranis ? SWITCH_SE0 :-SWITCH_RUD , -weight); //Taranis SE-UP, 9X RUD-UP
+      maxMixSwitch((char *)"Airbrk On",  model.mixData[mixIndex++], channel+1, isTaranis ? SWITCH_SE2 : SWITCH_RUD , weight); //Tatanis SE-DOWN, 9X RUD-DOWN
     }
   }
 }
@@ -110,7 +111,7 @@ WizMix::operator ModelData()
   // Add the Throttle Cut option
   if( options[THROTTLE_CUT_OPTION] && throttleChannel >=0 ){
     model.funcSw[switchIndex].swtch.type = SWITCH_TYPE_SWITCH;
-    model.funcSw[switchIndex].swtch.index = isTaranis ? 16 : 1; // Taranis SF-UP, 9X THR-UP
+    model.funcSw[switchIndex].swtch.index = isTaranis ? SWITCH_SF0 : SWITCH_THR;
     model.funcSw[switchIndex].enabled = 1;
     model.funcSw[switchIndex].func = (AssignFunc)throttleChannel;
     model.funcSw[switchIndex].param = -100;
@@ -119,7 +120,7 @@ WizMix::operator ModelData()
   // Add the Throttle Timer option
   if (options[THROTTLE_TIMER_OPTION] && throttleChannel >=0  ){
     model.timers[timerIndex].mode.type = SWITCH_TYPE_SWITCH;
-    model.timers[timerIndex].mode.index = isTaranis ? -16 : -1; // Taranis !SF-UP, 9X THR-DOWN
+    model.timers[timerIndex].mode.index = isTaranis ? -SWITCH_SF0 : -SWITCH_THR; // Taranis !SF-UP, 9X THR-DOWN
     timerIndex++;
   }
   return model;
