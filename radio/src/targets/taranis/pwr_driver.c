@@ -66,7 +66,7 @@ void pwrInit()
   GPIO_Init(GPIOPWRLED, &GPIO_InitStructure);
 
 #if !defined(REV3)  
-  GPIO_ResetBits(GPIO_INT_RF_PWR, PIN_INT_RF_PWR;
+  GPIO_ResetBits(GPIO_INT_RF_PWR, PIN_INT_RF_PWR);
   GPIO_InitStructure.GPIO_Pin = PIN_INT_RF_PWR;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
