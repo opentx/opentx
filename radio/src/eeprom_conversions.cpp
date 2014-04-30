@@ -387,8 +387,8 @@ int ConvertSwitch_215_to_216(int swtch)
     return -ConvertSwitch_215_to_216(-swtch);
   else if (swtch <= SWSRC_LAST_SWITCH)
     return swtch;
-  else if (swtch > SWSRC_LAST_SWITCH + 32) {
-    swtch -= (22+32);
+  else if (swtch > SWSRC_LAST_SWITCH + 32 + 1) {
+    swtch -= (SWSRC_LAST_SWITCH + 32 + 1);
     if (swtch > SWSRC_ON)
       swtch = 0;
     return swtch;
