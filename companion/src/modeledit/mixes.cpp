@@ -170,6 +170,10 @@ QString MixesPanel::getMixerText(int dest, bool * new_ch)
       default:  str += "  "; break;
     };
 
+    //set mixer src model if it is unset (srcRaw needs this to generate proper toString() for input source type)
+    if (md->srcRaw.model == 0) 
+      md->srcRaw.model = &model;  
+    
     //highlight source if needed
     if ( (md->srcRaw.type == SOURCE_TYPE_CH) && (md->srcRaw.index+1 == (int)highlightedSource) ) {
       str += " <b>" + Qt::escape(md->srcRaw.toString()) + "</b>"; 
