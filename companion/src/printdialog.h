@@ -50,6 +50,7 @@ private:
     QDir *qd;
     
 private slots:
+    void on_closeButton_clicked();
     void on_printButton_clicked();
     void on_printFileButton_clicked();
     void autoClose();

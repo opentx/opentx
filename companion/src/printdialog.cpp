@@ -805,6 +805,11 @@ void PrintDialog::printFrSky()
       te->append(str);    
 }
 
+void PrintDialog::on_closeButton_clicked()
+{
+    this->close();
+}
+
 void PrintDialog::on_printButton_clicked()
 {
     QPrinter printer;

@@ -76,22 +76,5 @@
  <resources>
   <include location="companion.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>closeButton</sender>
-   <signal>clicked()</signal>
-   <receiver>printDialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>739</x>
-     <y>636</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>565</x>
-     <y>623</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
