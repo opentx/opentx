@@ -777,7 +777,7 @@ class FlightModeField: public TransformedField {
           }
         }
         else {
-          if (phase.swtch == RawSwitch(SWITCH_TYPE_NONE)) {
+          if (phase.swtch == RawSwitch(SWITCH_TYPE_NONE) && index > 0) {
             phase.trimRef[i] = 0;
             phase.trimMode[i] = 0;
             phase.trim[i] = 0;
