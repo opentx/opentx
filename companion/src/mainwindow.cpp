@@ -1683,12 +1683,11 @@ void MainWindow::createActions()
 }
 
 void MainWindow::createMenus()
-
 {
-    QMenu *recentFileMenu=new QMenu(tr("Recent Files"), this);
-    QMenu *languageMenu=new QMenu(tr("Set Menu Language"), this);
-    QMenu *themeMenu=new QMenu(tr("Set Icon Theme"), this);
-    QMenu *iconThemeSizeMenu=new QMenu(tr("Set Icon Size"), this);
+    QMenu *recentFileMenu = new QMenu(tr("Recent Files"), this);
+    QMenu *languageMenu = new QMenu(tr("Set Menu Language"), this);
+    QMenu *themeMenu = new QMenu(tr("Set Icon Theme"), this);
+    QMenu *iconThemeSizeMenu = new QMenu(tr("Set Icon Size"), this);
 
     fileMenu = menuBar()->addMenu(tr("File"));
     fileMenu->addAction(newAct);

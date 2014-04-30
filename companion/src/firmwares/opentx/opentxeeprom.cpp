@@ -1590,7 +1590,7 @@ class CustomFunctionsConversionTable: public ConversionTable {
       int val=0;
 
       if (version >= 216) {
-        for (int i=0; i<32; i++) {
+        for (int i=0; i<MAX_CHANNELS(board, version); i++) {
           addConversion(i, val);
         }
         val++;
