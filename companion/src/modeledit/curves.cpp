@@ -386,6 +386,10 @@ void Curves::onNodeMoved(int x, int y)
     model.curves[currentCurve].points[index].y = y;
     spnx[index]->setValue(x);
     spny[index]->setValue(y);
+    if (index > 0)
+      spnx[index-1]->setMaximum(x);
+    if (index < model.curves[currentCurve].count-1)
+      spnx[index+1]->setMinimum(x);
     emit modified();
     lock = false;
   }
