@@ -63,8 +63,11 @@ QString getInputStr(ModelData & model, int index)
   QString result;
 
   if (GetCurrentFirmware()->getCapability(VirtualInputs)) {
-    result = model.inputNames[index];
-    if (result.isEmpty()) {
+    if (strlen(model.inputNames[index]) > 0) {
+      result = QObject::tr("[I%1]").arg(index+1);
+      result += QString(model.inputNames[index]);
+    }
+    else {
       result = QObject::tr("Input%1").arg(index+1, 2, 10, QChar('0'));
     }
   }

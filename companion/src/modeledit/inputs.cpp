@@ -144,13 +144,13 @@ QString InputsPanel::getInputText(int dest, bool * new_ch)
     if ((dest == 0) || (model.expoData[dest-1].chn != md->chn)) {
       if (new_ch) *new_ch = 1;
       if (firmware->getCapability(VirtualInputs))
-        str = QString("%1").arg(getInputStr(model, md->chn), -8, ' ');
+        str = QString("%1").arg(getInputStr(model, md->chn), -10, ' ');
       else
         str = getInputStr(model, md->chn);
     }
     else {
       if (firmware->getCapability(VirtualInputs))
-        str = "        ";
+        str = "          ";
       else
         str = "   ";
     }
