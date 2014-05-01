@@ -121,6 +121,8 @@ else
     CPPDEFS += -DREV3
   else ifeq ($(PCBREV), REV4a)
     CPPDEFS += -DREV4a
+  else ifeq ($(PCBREV), REVPLUS)
+    CPPDEFS += -DREVPLUS
   else
     CPPDEFS += -DREV4
   endif
