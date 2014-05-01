@@ -449,7 +449,7 @@
 #define TR_POPUPS              TR_ENTER"\010[EXIT]"
 #define OFS_EXIT               sizeof(TR_ENTER)
 
-#define TR_MENUWHENDONE        CENTER "\007"TR_ENTER" > DALŠÍ"
+#define TR_MENUWHENDONE        CENTER "\011"TR_ENTER" > DALŠÍ"
 #define TR_FREE                TR("volné:", "volných")
 #define TR_DELETEMODEL         "SMAZAT MODEL"
 #define TR_COPYINGMODEL        "Kopíruji model.."
@@ -481,7 +481,7 @@
 #define TR_FADEIN              "Přechod Zap"
 #define TR_FADEOUT             "Přechod Vyp"
 #define TR_DEFAULT             "(výchozí)"
-#define TR_CHECKTRIMS          "\006Kont.\012Trimy"
+#define TR_CHECKTRIMS          "\011Kont.\010Trimy"
 #define OFS_CHECKTRIMS         (9*FW)
 #define TR_SWASHTYPE           "Typ cykliky"
 #define TR_COLLECTIVE          "Kolektiv"
@@ -556,9 +556,9 @@
 #define TR_CAL                 "Kal."
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
-#define TR_MENUTOSTART         CENTER "\010" TR_ENTER " = START"
-#define TR_SETMIDPOINT         TR(CENTER "\003Nastav páky na střed", CENTER "\004Nastav páky na střed")
-#define TR_MOVESTICKSPOTS      TR(CENTER "\005Hýbej pákami/poty", "\010Hýbej pákami i potenciometry")
+#define TR_MENUTOSTART         CENTER "\011" TR_ENTER " = START"
+#define TR_SETMIDPOINT         CENTER "\004Nastav páky na střed"
+#define TR_MOVESTICKSPOTS      TR(CENTER "\006Hýbej pákami/poty", "\014Hýbej pákami i potenciometry")
 #define TR_RXBATT              "Rx Bat.:"
 #define TR_TXnRX               "Tx:\0Rx:"
 #define OFS_RX                 4
@@ -586,12 +586,12 @@
 #define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "Dochází EEPROM"
 #define TR_ALERT               "\006   POZOR"
-#define TR_PRESSANYKEYTOSKIP   "Klávesa >>> přeskočit"
-#define TR_THROTTLENOTIDLE     TR("Páka plynu je pohnutá", "Páka plynu není na nule")
+#define TR_PRESSANYKEYTOSKIP   TR("\003Klávesa >>> přeskočit", "Klávesa >>> přeskočit")
+#define TR_THROTTLENOTIDLE     TR("\003Páka plynu je pohnutá", "Páka plynu není na nule")
 #define TR_ALARMSDISABLED      "Alarmy jsou zakázány"
-#define TR_PRESSANYKEY         "\006Stiskni klávesu"
-#define TR_BADEEPROMDATA       "\006Chyba dat EEPROM"
-#define TR_EEPROMFORMATTING    "\004Formatování EEPROM"
+#define TR_PRESSANYKEY         TR("\006Stiskni klávesu", "Stiskni klávesu")
+#define TR_BADEEPROMDATA       TR("\006Chyba dat EEPROM", "Chyba dat EEPROM")
+#define TR_EEPROMFORMATTING    TR("\004Formatování EEPROM", "Formatování EEPROM")
 #define TR_EEPROMOVERFLOW      "Přetekla EEPROM"
 #define TR_MENURADIOSETUP      "NASTAVENÍ RÁDIA"
 #define TR_MENUDATEANDTIME     "DATUM A čAS"
@@ -600,7 +600,7 @@
 #define TR_MENUDIAG            "DIAG"
 #define TR_MENUANA             "ANALOGY"
 #define TR_MENUCALIBRATION     "KALIBRACE"
-#define TR_TRIMS2OFFSETS       "\004Trimy => Subtrimy"
+#define TR_TRIMS2OFFSETS       "\006Trimy => Subtrimy"
 #define TR_MENUMODELSEL        "MODEL"
 #define TR_MENUSETUP           "NASTAVENÍ"
 #define TR_MENUFLIGHTPHASE     "LETOVÝ REŽIM"
@@ -775,7 +775,7 @@
 #define TR_SCRIPT              "Skript"
 #define TR_INPUTS              "Vstupy"
 #define TR_OUTPUTS             "Výstupy"
-#define TR_EEBACKUP            "\004[ENTER Long] to backup the EEPROM"
+#define TR_EEBACKUP            "\010[dlouze ENTER] zálohuje EEPROM"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL        "Max RSSI"
