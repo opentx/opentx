@@ -109,18 +109,18 @@
 #if defined(REV3)
   #define GPIO_PIN_SW_D_H               (~GPIOE->IDR)
   #define GPIO_PIN_SW_D_L               (~GPIOE->IDR)
-  #define PIN_SW_D_H                    GPIO_Pin_9  //PE.09
-  #define PIN_SW_D_L                    GPIO_Pin_8  //PE.08
+  #define PIN_SW_D_H                    GPIO_Pin_9      //PE.09
+  #define PIN_SW_D_L                    GPIO_Pin_8      //PE.08
 #elif defined(REVPLUS)
   #define GPIO_PIN_SW_D_H               (GPIOE->IDR)
   #define GPIO_PIN_SW_D_L               (GPIOE->IDR)
-  #define PIN_SW_D_H                    GPIO_Pin_7  //PE.07
-  #define PIN_SW_D_L                    GPIO_Pin_13 //PE.13
+  #define PIN_SW_D_H                    GPIO_Pin_7      //PE.07
+  #define PIN_SW_D_L                    GPIO_Pin_13     //PE.13
 #else
   #define GPIO_PIN_SW_D_H               GPIOE->IDR
   #define GPIO_PIN_SW_D_L               GPIOB->IDR
-  #define PIN_SW_D_H                    GPIO_Pin_7  //PE.07
-  #define PIN_SW_D_L                    GPIO_Pin_1  //PB.01
+  #define PIN_SW_D_H                    GPIO_Pin_7      //PE.07
+  #define PIN_SW_D_L                    GPIO_Pin_1      //PB.01
 #endif
 
 #if defined(REV3)
