@@ -37,8 +37,7 @@ SimulatorDialog9X::SimulatorDialog9X(QWidget * parent, unsigned int flags):
 
   initUi<Ui::SimulatorDialog9X>(ui);
 
-  QSettings settings;
-  backLight = settings.value("backLight", 0).toInt();
+  backLight = g.backLight();
   if (backLight > 4) backLight = 0;
   switch (backLight) {
     case 1:
@@ -59,7 +58,7 @@ SimulatorDialog9X::SimulatorDialog9X(QWidget * parent, unsigned int flags):
   }
 
   //restore switches
-  if (settings.value("simuSW",false).toBool())
+  if (g.simuSW())
     restoreSwitches();
 
   ui->trimHR_L->setText(QString::fromUtf8(leftArrow));
@@ -115,8 +114,7 @@ SimulatorDialogTaranis::SimulatorDialogTaranis(QWidget * parent, unsigned int fl
   ui->lcd->setBackgroundColor(47, 123, 227);
 
   //restore switches
-  QSettings settings;
-  if (settings.value("simuSW",false).toBool())
+  if (g.simuSW())
     restoreSwitches();
 
   ui->trimHR_L->setText(QString::fromUtf8(leftArrow));
@@ -297,31 +295,26 @@ void SimulatorDialog::initUi(T * ui)
   setFixedSize(width(), height());
 
 #ifdef JOYSTICKS
-    QSettings settings;
-    bool js_enable = settings.value("js_support",false).toBool();
-    int js_ctrl=settings.value("js_ctrl",-1).toInt();
-    if (js_enable) {
-      settings.beginGroup("JsCalibration");
+    if (g.jsSupport()) {
       int count=0;
-      for (int j=0; j<8;j++){
-        int axe=settings.value(QString("stick%1_axe").arg(j),-1).toInt();
+      for (int j=0; j<8; j++){
+        int axe = g.joystick[j].stick_axe();
         if (axe>=0 && axe<8) {
           jsmap[axe]=j;
-          jscal[axe][0]=settings.value(QString("stick%1_min").arg(j),-32767).toInt();
-          jscal[axe][1]=settings.value(QString("stick%1_med").arg(j),0).toInt();
-          jscal[axe][2]=settings.value(QString("stick%1_max").arg(j),0).toInt();
-          jscal[axe][3]=settings.value(QString("stick%1_inv").arg(j),0).toInt();
+          jscal[axe][0] = g.joystick[j].stick_min();
+          jscal[axe][1] = g.joystick[j].stick_med();
+          jscal[axe][2] = g.joystick[j].stick_max();
+          jscal[axe][3] = g.joystick[j].stick_inv();
           count++;
         }
       }
-      settings.endGroup();
       if (count<3) {
         QMessageBox::critical(this, tr("Warning"), tr("Joystick enabled but not configured correctly"));
       }
-      if (js_ctrl!=-1) {
+      if (g.jsCtrl()!=-1) {
         joystick = new Joystick(this);
         if (joystick) {
-          if (joystick->open(js_ctrl)) {
+          if (joystick->open(g.jsCtrl())) {
             int numAxes=std::min(joystick->numAxes,8);
             for (int j=0; j<numAxes; j++) {
               joystick->sensitivities[j] = 0;
@@ -433,10 +426,8 @@ void SimulatorDialog::initUi(T * ui)
 void SimulatorDialog::onButtonPressed(int value)
 {
   if (value == Qt::Key_Print) {
-    QSettings settings;
-    bool toclipboard = settings.value("snapshot_to_clipboard", false).toBool();
     QString fileName = "";
-    if (!toclipboard) {
+    if (!g.snapToClpbrd()) {
       fileName = QString("screenshot-%1.png").arg(++screenshotIdx);
     }
     lcd->makeScreenshot(fileName);
