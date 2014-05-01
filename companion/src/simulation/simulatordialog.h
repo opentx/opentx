@@ -141,12 +141,15 @@ class SimulatorDialog9X: public SimulatorDialog
     virtual void getValues();
     virtual void setLightOn(bool enable);
     virtual void updateBeepButton();
+    void saveSwitches(void);
+    void restoreSwitches(void);
 
   private slots:
     void dialChanged();
 
   private:
     Ui::SimulatorDialog9X * ui;
+    static uint32_t switchstatus;
     int beepShow;
 
 };
@@ -161,9 +164,12 @@ class SimulatorDialogTaranis: public SimulatorDialog
 
   protected:
     virtual void getValues();
+    void saveSwitches(void);
+    void restoreSwitches(void);
 
   private:
     Ui::SimulatorDialogTaranis * ui;
+    static uint32_t switchstatus;
 
   private slots:
     void resetSH();

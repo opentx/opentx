@@ -25,6 +25,8 @@ SimulatorDialog::SimulatorDialog(QWidget * parent, unsigned int flags):
 {
 }
 
+uint32_t SimulatorDialog9X::switchstatus = 0;
+
 SimulatorDialog9X::SimulatorDialog9X(QWidget * parent, unsigned int flags):
   SimulatorDialog(parent, flags),
   ui(new Ui::SimulatorDialog9X),
@@ -55,6 +57,10 @@ SimulatorDialog9X::SimulatorDialog9X(QWidget * parent, unsigned int flags):
       ui->lcd->setBackgroundColor(159,165,247);
       break;
   }
+
+  //restore switches
+  if (settings.value("simuSW",false).toBool())
+    restoreSwitches();
 
   ui->trimHR_L->setText(QString::fromUtf8(leftArrow));
   ui->trimHR_R->setText(QString::fromUtf8(rightArrow));
@@ -90,8 +96,11 @@ SimulatorDialog9X::SimulatorDialog9X(QWidget * parent, unsigned int flags):
 
 SimulatorDialog9X::~SimulatorDialog9X()
 {
+  saveSwitches();
   delete ui;
 }
+
+uint32_t SimulatorDialogTaranis::switchstatus = 0;
 
 SimulatorDialogTaranis::SimulatorDialogTaranis(QWidget * parent, unsigned int flags):
   SimulatorDialog(parent, flags),
@@ -104,6 +113,11 @@ SimulatorDialogTaranis::SimulatorDialogTaranis(QWidget * parent, unsigned int fl
   dialP_4 = ui->dialP_4;
 
   ui->lcd->setBackgroundColor(47, 123, 227);
+
+  //restore switches
+  QSettings settings;
+  if (settings.value("simuSW",false).toBool())
+    restoreSwitches();
 
   ui->trimHR_L->setText(QString::fromUtf8(leftArrow));
   ui->trimHR_R->setText(QString::fromUtf8(rightArrow));
@@ -136,6 +150,7 @@ SimulatorDialogTaranis::SimulatorDialogTaranis(QWidget * parent, unsigned int fl
 
 SimulatorDialogTaranis::~SimulatorDialogTaranis()
 {
+  saveSwitches();
   delete ui;
 }
 
@@ -592,6 +607,46 @@ void SimulatorDialog9X::getValues()
   simulator->setValues(inputs);
 }
 
+void SimulatorDialog9X::saveSwitches(void)
+{
+  qDebug() << "SimulatorDialog9X::saveSwitches()";
+  switchstatus=ui->switchTHR->isChecked();
+  switchstatus<<=1;
+  switchstatus+=(ui->switchRUD->isChecked()&0x1);
+  switchstatus<<=1;
+  switchstatus+=(ui->switchID2->isChecked()&0x1);
+  switchstatus<<=1;
+  switchstatus+=(ui->switchID1->isChecked()&0x1);
+  switchstatus<<=1;
+  switchstatus+=(ui->switchID0->isChecked()&0x1);
+  switchstatus<<=1;
+  switchstatus+=(ui->switchGEA->isChecked()&0x1);
+  switchstatus<<=1;
+  switchstatus+=(ui->switchELE->isChecked()&0x1);
+  switchstatus<<=1;
+  switchstatus+=(ui->switchAIL->isChecked()&0x1);
+}
+
+void SimulatorDialog9X::restoreSwitches(void)
+{
+  qDebug() << "SimulatorDialog9X::restoreSwitches()";
+  ui->switchAIL->setChecked(switchstatus & 0x1);
+  switchstatus >>=1;
+  ui->switchELE->setChecked(switchstatus & 0x1);
+  switchstatus >>=1;
+  ui->switchGEA->setChecked(switchstatus & 0x1);
+  switchstatus >>=1;
+  ui->switchID0->setChecked(switchstatus & 0x1);
+  switchstatus >>=1;
+  ui->switchID1->setChecked(switchstatus & 0x1);
+  switchstatus >>=1;
+  ui->switchID2->setChecked(switchstatus & 0x1);
+  switchstatus >>=1;
+  ui->switchRUD->setChecked(switchstatus & 0x1);
+  switchstatus >>=1;
+  ui->switchTHR->setChecked(switchstatus & 0x1);
+}
+
 void SimulatorDialogTaranis::resetSH()
 {
   ui->switchH->setValue(0);
@@ -655,6 +710,46 @@ void SimulatorDialogTaranis::getValues()
   };
 
   simulator->setValues(inputs);
+}
+
+void SimulatorDialogTaranis::saveSwitches(void)
+{
+  qDebug() << "SimulatorDialogTaranis::saveSwitches()";
+  switchstatus=ui->switchA->value();
+  switchstatus<<=2;
+  switchstatus+=ui->switchB->value();
+  switchstatus<<=2;
+  switchstatus+=ui->switchC->value();
+  switchstatus<<=2;
+  switchstatus+=ui->switchD->value();
+  switchstatus<<=2;
+  switchstatus+=ui->switchE->value();
+  switchstatus<<=2;
+  switchstatus+=ui->switchF->value();
+  switchstatus<<=2;
+  switchstatus+=ui->switchG->value();
+  switchstatus<<=2;
+  switchstatus+=ui->switchH->value();
+}
+
+void SimulatorDialogTaranis::restoreSwitches(void)
+{
+  qDebug() << "SimulatorDialogTaranis::restoreSwitches()";
+  ui->switchH->setValue(switchstatus & 0x3);
+  switchstatus>>=2;
+  ui->switchG->setValue(switchstatus & 0x3);
+  switchstatus>>=2;
+  ui->switchF->setValue(switchstatus & 0x3);
+  switchstatus>>=2;
+  ui->switchE->setValue(switchstatus & 0x3);
+  switchstatus>>=2;
+  ui->switchD->setValue(switchstatus & 0x3);
+  switchstatus>>=2;
+  ui->switchC->setValue(switchstatus & 0x3);
+  switchstatus>>=2;
+  ui->switchB->setValue(switchstatus & 0x3);
+  switchstatus>>=2;
+  ui->switchA->setValue(switchstatus & 0x3);
 }
 
 inline int chVal(int val)
