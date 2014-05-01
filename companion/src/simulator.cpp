@@ -45,7 +45,6 @@
 #include <QString>
 #include <QDir>
 #include <QFileInfo>
-#include <QSettings>
 #include <QSplashScreen>
 #include <QThread>
 #include <iostream>
