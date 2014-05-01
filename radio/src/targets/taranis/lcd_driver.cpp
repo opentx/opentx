@@ -98,12 +98,12 @@ const uint8_t lcdPalette[4] = { 0, 0x03, 0x06, 0x0F };
 
 #define LCD_WRITE_BIT(bit) \
   if (bit) \
-    GPIOD->BSRRL = PIN_LCD_MOSI; \
+    LCD_MOSI_HIGH(); \
   else \
-    GPIOD->BSRRH = PIN_LCD_MOSI; \
-  GPIOD->BSRRH = PIN_LCD_CLK; /* Clock low */ \
+    LCD_MOSI_LOW(); \
+  LCD_CLK_LOW(); \
   __no_operation(); \
-  GPIOD->BSRRL = PIN_LCD_CLK; /* Clock high */
+  LCD_CLK_HIGH();
 
 void lcdRefresh()
 {  
@@ -183,13 +183,15 @@ static void LCD_Hardware_Init()
   GPIO_InitTypeDef GPIO_InitStructure;
   
   /*!< Configure lcd CLK\ MOSI\ A0pin in output pushpull mode *************/
-  GPIO_InitStructure.GPIO_Pin =PIN_LCD_MOSI | PIN_LCD_CLK | PIN_LCD_A0;
+  GPIO_InitStructure.GPIO_Pin = PIN_LCD_MOSI | PIN_LCD_CLK | PIN_LCD_A0;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_Init(GPIO_LCD_SPI, &GPIO_InitStructure);
+  
   LCD_NCS_HIGH();
+  
   /*!< Configure lcd NCS pin in output pushpull mode ,PULLUP *************/
   GPIO_InitStructure.GPIO_Pin = PIN_LCD_NCS; 
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
@@ -200,10 +202,6 @@ static void LCD_Hardware_Init()
   
   /*!< Configure lcd RST pin in output pushpull mode ,PULLUP *************/
   GPIO_InitStructure.GPIO_Pin = PIN_LCD_RST; 
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(GPIO_LCD_RST, &GPIO_InitStructure);
 }
 
