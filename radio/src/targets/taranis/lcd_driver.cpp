@@ -157,11 +157,15 @@ static void LCD_BL_Config()
   RCC->APB1ENR |= RCC_APB1ENR_TIM4EN ;        // Enable clock
   TIM4->ARR = 100 ;
   TIM4->PSC = (PERI2_FREQUENCY * TIMER_MULT_APB2) / 10000 - 1;
-  TIM4->CCMR1 = 0x60 ;    // PWM
-  TIM4->CCER = 1 ;
-  TIM4->CCR1 = 80;
+  TIM4->CCMR1 = TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2 ; // PWM
+  TIM4->CCMR2 = TIM_CCMR2_OC4M_1 | TIM_CCMR2_OC4M_2 ; // PWM
+  TIM4->CCER = TIM_CCER_CC4E | TIM_CCER_CC2E ;
+
+  int BacklightBrightness = 40 ;
+  TIM4->CCR2 = BacklightBrightness ;
+  TIM4->CCR4 = BacklightBrightness ;
   TIM4->EGR = 0 ;
-  TIM4->CR1 = 1 ;
+  TIM4->CR1 = TIM_CR1_CEN ;            // Counter enable
 #else
   RCC->APB2ENR |= RCC_APB2ENR_TIM10EN ;        // Enable clock
   TIM10->ARR = 100 ;
