@@ -52,7 +52,7 @@
 #define TR_NCHANNELS           "\0014CH\0016CH\0018CH10CH12CH14CH16CH"
 
 #define LEN_VBEEPMODE          "\005"
-#define TR_VBEEPMODE           "Quiet""Alarm""NoKey""All  "
+#define TR_VBEEPMODE           "Quiet""Alarm""NoKey""All\0 "
 
 #define LEN_VBEEPLEN           "\005"
 #define TR_VBEEPLEN            "0====""=0===""==0==""===0=""====0"
