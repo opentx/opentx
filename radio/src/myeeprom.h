@@ -906,23 +906,22 @@ PACK(typedef struct t_CustomFnData { // Function Switches data
 #else
 PACK(typedef struct t_CustomFnData {
   PACK(union {
-    struct {
-      int8_t   swtch:6;
-      uint16_t func:4;
-      uint8_t  mode:2;
-      uint8_t  param:3;
-      uint8_t  active:1;
-    } gvar;
+    PACK(struct {
+      int16_t   swtch:6;
+      uint16_t  func:4;
+      uint16_t  mode:2;
+      uint16_t  param:3;
+      uint16_t  active:1;
+    }) gvar;
 
-    struct {
-      int8_t   swtch:6;
-      uint16_t func:4;
-      uint8_t  param:4;
-      uint8_t  spare:1;
-      uint8_t  active:1;
-    } all;
+    PACK(struct {
+      int16_t   swtch:6;
+      uint16_t  func:4;
+      uint16_t  param:4;
+      uint16_t  spare:1;
+      uint16_t  active:1;
+    }) all;
   });
-
   uint8_t value;
 }) CustomFnData;
 #define CFN_SWITCH(p)       ((p)->all.swtch)
