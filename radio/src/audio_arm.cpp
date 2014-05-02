@@ -879,16 +879,6 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
     strcpy(fragment.file, filename);
     fragment.id = id;
   }
-  else if (flags & PLAY_NOW) {
-    AudioFragment & fragment = priorityContext.fragment;
-    if (fragment.type == FRAGMENT_EMPTY) {
-      priorityContext.clear();
-      fragment.type = FRAGMENT_FILE;
-      strcpy(fragment.file, filename);
-      fragment.repeat = flags & 0x0f;
-      fragment.id = id;
-    }
-  }
   else {
     uint8_t next_widx = (widx + 1) % AUDIO_QUEUE_LENGTH;
     if (next_widx != ridx) {
