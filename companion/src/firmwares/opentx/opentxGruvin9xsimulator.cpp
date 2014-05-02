@@ -47,6 +47,7 @@
 #define GAUGES
 #define GPS
 #define FAI_CHOICE
+#define FRSKY_STICKS
 
 #define EEPROM_VARIANT 3
 

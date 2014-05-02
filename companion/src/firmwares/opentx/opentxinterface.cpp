@@ -1051,6 +1051,7 @@ void registerOpenTxFirmwares()
   openTx->addOption("nogps", QObject::tr("No GPS support"));
   openTx->addOption("nogauges", QObject::tr("No gauges in the custom telemetry screen"));
   openTx->addOption("fasoffset", QObject::tr("Allow compensating for offset errors in FrSky FAS current sensors"));
+  openTx->addOption("stickrev", QObject::tr("Add support for reversing stick inputs (e.g. needed for FrSky gimbals)"));
   openTx->addOptions(fai_options);
   firmwares.push_back(openTx);
 
@@ -1117,6 +1118,7 @@ void registerOpenTxFirmwares()
   openTx->addOption("novario", QObject::tr("No vario support"));
   openTx->addOption("nogps", QObject::tr("No GPS support"));
   openTx->addOption("nogauges", QObject::tr("No gauges in the custom telemetry screen"));
+  openTx->addOption("stickrev", QObject::tr("Add support for reversing stick inputs (e.g. needed for FrSky gimbals)"));
   openTx->addOptions(fai_options);
   firmwares.push_back(openTx);
 

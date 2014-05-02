@@ -278,11 +278,35 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
       ui->serialPortMode->hide();
       ui->serialPortLabel->hide();
     }
+    
+    if (!IS_TARANIS(eepromInterface->getBoard())) {
+      ui->stickReverse1->setChecked(g_eeGeneral.stickReverse & (1 << 0));
+      ui->stickReverse2->setChecked(g_eeGeneral.stickReverse & (1 << 1));
+      ui->stickReverse3->setChecked(g_eeGeneral.stickReverse & (1 << 2));
+      ui->stickReverse4->setChecked(g_eeGeneral.stickReverse & (1 << 3));    
+      connect(ui->stickReverse1, SIGNAL(toggled(bool)), this, SLOT(stickReverseEdited()));
+      connect(ui->stickReverse2, SIGNAL(toggled(bool)), this, SLOT(stickReverseEdited()));
+      connect(ui->stickReverse3, SIGNAL(toggled(bool)), this, SLOT(stickReverseEdited()));
+      connect(ui->stickReverse4, SIGNAL(toggled(bool)), this, SLOT(stickReverseEdited()));
+    }
+    else {
+      ui->stickReverseLB->hide();
+      ui->stickReverse1->hide();
+      ui->stickReverse2->hide();
+      ui->stickReverse3->hide();
+      ui->stickReverse4->hide();
+    }
 }
 
 GeneralEdit::~GeneralEdit()
 {
     delete ui;
+}
+
+void GeneralEdit::stickReverseEdited()
+{
+  g_eeGeneral.stickReverse = ((int)ui->stickReverse1->isChecked()) | ((int)ui->stickReverse2->isChecked()<<1) | ((int)ui->stickReverse3->isChecked()<<2) | ((int)ui->stickReverse4->isChecked()<<3);
+  updateSettings();
 }
 
 void GeneralEdit::on_pot1Type_currentIndexChanged(int index)

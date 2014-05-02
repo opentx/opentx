@@ -2639,7 +2639,15 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
   internalField.Append(new UnsignedField<8>(generalData.templateSetup));
   internalField.Append(new SignedField<8>(generalData.PPM_Multiplier));
   internalField.Append(new SignedField<8>(generalData.hapticLength));
-  internalField.Append(new UnsignedField<8>(generalData.reNavigation));
+
+  if (version < 216 || !IS_9X(board)) {
+    internalField.Append(new UnsignedField<8>(generalData.reNavigation));
+  }
+
+  if (version >= 216 && !IS_TARANIS(board)) {
+    internalField.Append(new UnsignedField<4>(generalData.stickReverse));
+    internalField.Append(new SpareBitsField<4>());
+  }
 
   internalField.Append(new SignedField<3>(generalData.beeperLength));
   internalField.Append(new UnsignedField<3>(generalData.hapticStrength));

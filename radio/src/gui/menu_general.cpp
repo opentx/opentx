@@ -197,6 +197,12 @@ enum menuGeneralSetupItems {
   ITEM_SETUP_MAX
 };
 
+#if defined(FRSKY_STICKS)
+  #define COL_TX_MODE 0
+#else
+  #define COL_TX_MODE LABEL(TX_MODE)
+#endif
+
 void menuGeneralSetup(uint8_t event)
 {
 #if defined(RTCLOCK)
@@ -219,7 +225,7 @@ void menuGeneralSetup(uint8_t event)
   }
 #endif
 
-  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) IF_BATTGRAPH(1) LABEL(SOUND), IF_AUDIO(0) IF_BUZZER(0) IF_VOICE(0) IF_CPUARM(0) IF_CPUARM(0) IF_CPUARM(0) 0, IF_AUDIO(0) IF_VARIO_CPUARM(LABEL(VARIO)) IF_VARIO_CPUARM(0) IF_VARIO_CPUARM(0) IF_VARIO_CPUARM(0) IF_VARIO_CPUARM(0) IF_HAPTIC(LABEL(HAPTIC)) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) 0, LABEL(ALARMS), 0, CASE_PCBSKY9X(0) CASE_PCBSKY9X(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) LABEL(BACKLIGHT), 0, 0, IF_CPUARM(0) CASE_PWM_BACKLIGHT(0) CASE_PWM_BACKLIGHT(0) 0, IF_SPLASH_PARAM(0) IF_GPS(0) IF_GPS(0) IF_PXX(0) IF_CPUARM(0) IF_CPUARM(0) IF_FAI_CHOICE(0) 0, LABEL(TX_MODE), CASE_PCBTARANIS(0) 1/*to force edit mode*/});
+  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) IF_BATTGRAPH(1) LABEL(SOUND), IF_AUDIO(0) IF_BUZZER(0) IF_VOICE(0) IF_CPUARM(0) IF_CPUARM(0) IF_CPUARM(0) 0, IF_AUDIO(0) IF_VARIO_CPUARM(LABEL(VARIO)) IF_VARIO_CPUARM(0) IF_VARIO_CPUARM(0) IF_VARIO_CPUARM(0) IF_VARIO_CPUARM(0) IF_HAPTIC(LABEL(HAPTIC)) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) 0, LABEL(ALARMS), 0, CASE_PCBSKY9X(0) CASE_PCBSKY9X(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) LABEL(BACKLIGHT), 0, 0, IF_CPUARM(0) CASE_PWM_BACKLIGHT(0) CASE_PWM_BACKLIGHT(0) 0, IF_SPLASH_PARAM(0) IF_GPS(0) IF_GPS(0) IF_PXX(0) IF_CPUARM(0) IF_CPUARM(0) IF_FAI_CHOICE(0) 0, COL_TX_MODE, CASE_PCBTARANIS(0) 1/*to force edit mode*/});
 
   uint8_t sub = m_posVert - 1;
 
@@ -628,7 +634,21 @@ void menuGeneralSetup(uint8_t event)
 
       case ITEM_SETUP_STICK_MODE_LABELS:
         lcd_putsLeft(y, NO_INDENT(STR_MODE));
-        for (uint8_t i=0; i<4; i++) lcd_img((6+4*i)*FW, y, sticks, i, 0);
+        for (uint8_t i=0; i<4; i++) {
+          lcd_img((6+4*i)*FW, y, sticks, i, 0);
+#if defined(FRSKY_STICKS)
+          if (g_eeGeneral.stickReverse & (1<<i)) {
+            lcd_filled_rect((6+4*i)*FW, y, 3*FW, FH-1);
+          }
+#endif
+        }
+#if defined(FRSKY_STICKS)
+	if (attr) {
+	  s_editMode = 0;
+          CHECK_INCDEC_GENVAR(event, g_eeGeneral.stickReverse, 0, 15);
+          lcd_rect(6*FW-1, y-1, 15*FW+2, 9);
+        }
+#endif
         break;
 
       case ITEM_SETUP_STICK_MODE:
