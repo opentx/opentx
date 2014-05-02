@@ -2808,7 +2808,7 @@ bool swapExpoMix(uint8_t expo, uint8_t &idx, uint8_t up)
     }
 
     if (tgt_idx == MAX_EXPOS) {
-      if (((ExpoData *)x)->chn == NUM_STICKS-1)
+      if (((ExpoData *)x)->chn == NUM_INPUTS-1)
         return false;
       ((ExpoData *)x)->chn++;
       return true;
@@ -2821,7 +2821,7 @@ bool swapExpoMix(uint8_t expo, uint8_t &idx, uint8_t up)
         else return false;
       }
       else {
-        if (((ExpoData *)x)->chn<NUM_STICKS-1) ((ExpoData *)x)->chn++;
+        if (((ExpoData *)x)->chn<NUM_INPUTS-1) ((ExpoData *)x)->chn++;
         else return false;
       }
       return true;
