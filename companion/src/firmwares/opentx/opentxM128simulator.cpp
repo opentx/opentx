@@ -45,6 +45,7 @@
 #define GAUGES
 #define GPS
 #define FAI_CHOICE
+#define FRSKY_STICKS
 
 #define EEPROM_VARIANT SIMU_M128_VARIANTS
 #define GAUGES
