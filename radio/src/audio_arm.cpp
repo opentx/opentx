@@ -912,13 +912,13 @@ void AudioQueue::stopPlay(uint8_t id)
 void AudioQueue::stopSD()
 {
   sdAvailableSystemAudioFiles = 0;
-  reset();
+  stopAll();
   playTone(0, 0, 100, PLAY_NOW);        // insert a 100ms pause
 }
 
 #endif
 
-void AudioQueue::reset()
+void AudioQueue::stopAll()
 {
   CoEnterMutexSection(audioMutex);
   widx = ridx;                      // clean the queue

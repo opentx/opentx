@@ -161,6 +161,8 @@ class AudioQueue {
 
     void stopPlay(uint8_t id);
 
+    void stopAll();
+
     void pause(uint16_t tLen);
 
     void stopSD();
@@ -176,8 +178,6 @@ class AudioQueue {
     {
       return ridx == widx;
     }
-
-    void reset();
 
     inline AudioBuffer * getNextFilledBuffer()
     {
@@ -322,7 +322,7 @@ void pushPrompt(uint16_t prompt, uint8_t id=0);
 #define PLAY_VALUE(v, id)        playValue((v), (id))
 #define PLAY_FILE(f, flags, id)  audioQueue.playFile((f), (flags), (id))
 #define STOP_PLAY(id)            audioQueue.stopPlay((id))
-#define AUDIO_RESET()            audioQueue.reset()
+#define AUDIO_RESET()            audioQueue.stopAll()
 
 #if defined(SDCARD)
   extern tmr10ms_t timeAutomaticPromptsSilence;
