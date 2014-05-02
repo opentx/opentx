@@ -364,6 +364,18 @@ PACK(typedef struct {
   int16_t spanPos;
 }) CalibData;
 
+#if defined(PCBSTD)
+  #define N_PCBSTD_FIELD(x)
+#else
+  #define N_PCBSTD_FIELD(x) x;
+#endif
+
+#if defined(PCBTARANIS)
+  #define N_TARANIS_FIELD(x)
+#else
+  #define N_TARANIS_FIELD(x) x;
+#endif
+
 #define ALTERNATE_VIEW 0x10
 PACK(typedef struct t_EEGeneral {
   uint8_t   version;
@@ -396,7 +408,8 @@ PACK(typedef struct t_EEGeneral {
   uint8_t   templateSetup;   // RETA order for receiver channels
   int8_t    PPM_Multiplier;
   int8_t    hapticLength;
-  uint8_t   reNavigation;    // not used on STOCK board
+  N_PCBSTD_FIELD( uint8_t   reNavigation)
+  N_TARANIS_FIELD(uint8_t   stickReverse)
   int8_t    beepLength:3;
   uint8_t   hapticStrength:3;
   uint8_t   gpsFormat:1;
