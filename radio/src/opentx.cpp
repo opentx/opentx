@@ -765,7 +765,7 @@ int intpol(int x, uint8_t idx) // -100, -75, -50, -25, 0 ,25 ,50, 75, 100
 #if defined(PCBTARANIS)
 int applyCurve(int x, CurveRef & curve)
 {
-  switch(curve.type) {
+  switch (curve.type) {
     case CURVE_REF_DIFF:
     {
       int curveParam = calc100to256(GET_GVAR(curve.value, -100, 100, s_perout_flight_phase));
@@ -780,7 +780,7 @@ int applyCurve(int x, CurveRef & curve)
       return expo(x, GET_GVAR(curve.value, -100, 100, s_perout_flight_phase));
 
     case CURVE_REF_FUNC:
-      switch(curve.value) {
+      switch (curve.value) {
         case CURVE_X_GT0:
           if (x < 0) x = 0; //x|x>0
           return x;
@@ -3057,7 +3057,7 @@ uint16_t isqrt32(uint32_t n)
   uint16_t c = 0x8000;
   uint16_t g = 0x8000;
 
-  for(;;) {
+  for (;;) {
     if ((uint32_t)g*g > n)
       g ^= c;
     c >>= 1;
@@ -3973,8 +3973,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
 
       //========== CURVES ===============
 #if defined(PCBTARANIS)
-      // TODO something cleaner ...
-      if (apply_offset_and_curve && md->curve.value) {
+      if (apply_offset_and_curve && md->curve.type != CURVE_REF_DIFF && md->curve.value) {
         v = applyCurve(v, md->curve);
       }
 #else
@@ -3994,8 +3993,12 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       }
 #endif
 
-#if !defined(PCBTARANIS)       // TODO move before WEIGHT for readability
       //========== DIFFERENTIAL =========
+#if defined(PCBTARANIS)
+      if (md->curve.type == CURVE_REF_DIFF && md->curve.value) {
+        dv = applyCurve(dv, md->curve);
+      }
+#else
       if (md->curveMode == MODE_DIFFERENTIAL) {
 	// @@@2 also recalculate curveParam to a 256 basis which ease the calculation later a lot
         int16_t curveParam = calc100to256(GET_GVAR(md->curveParam, -100, 100, s_perout_flight_phase));
