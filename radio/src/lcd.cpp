@@ -368,13 +368,13 @@ void lcd_putsnAtt(xcoord_t x, uint8_t y, const pm_char * s, uint8_t len, LcdFlag
       if (y >= LCD_H) break;
     }
 #if defined(CPUARM)      
-    else if (c == 0x1D) {  //TAB
+    else if (c == 0x1D) {  // TAB
       x |= 0x3F;
       x += 1;
     }
 #endif
     else {
-      x += (c*FW/2); //EXTENDED SPACE
+      x += (c*FW/2); // EXTENDED SPACE
     }
     s++;
   }
