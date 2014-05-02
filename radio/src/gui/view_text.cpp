@@ -78,10 +78,6 @@ void readTextFile(int & lines_count)
             c = '\301';
             escape = 0;
           }
-          else if (escape == 1 && escape_chars[0] == 't') {
-            c = 0x09; // tab
-            escape = 0;
-          }
           else {
             escape++;
             continue;
@@ -89,6 +85,9 @@ void readTextFile(int & lines_count)
         }
         else if (c=='~') {
           c = 'z'+1;
+        }
+        else if (c=='\t') {
+          c = 0x1D; //tab
         }
         escape = 0;
         s_text_screen[current_line-s_pgOfs][line_length++] = c;
