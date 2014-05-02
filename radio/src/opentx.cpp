@@ -960,7 +960,10 @@ int expo(int x, int k)
 
 void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
 {
-#if !defined(PCBTARANIS)
+#if defined(PCBTARANIS)
+  int16_t heliAnasCopy[4];
+  memcpy(heliAnasCopy, heliAnas, sizeof(heliAnasCopy));
+#else
   int16_t anas2[NUM_INPUTS]; // values before expo, to ensure same expo base when multiple expo lines are used
   memcpy(anas2, anas, sizeof(anas2));
 #endif
@@ -984,9 +987,9 @@ void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
         v = ovwrValue;
 #if defined(HELI)
       else if (ed->srcRaw == MIXSRC_Ele)
-        v = heliAnas[ELE_STICK];
+        v = heliAnasCopy[ELE_STICK];
       else if (ed->srcRaw == MIXSRC_Ail)
-        v = heliAnas[AIL_STICK];
+        v = heliAnasCopy[AIL_STICK];
 #endif
       else {
         v = getValue(ed->srcRaw);
