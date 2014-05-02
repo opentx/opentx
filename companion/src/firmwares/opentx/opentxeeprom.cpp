@@ -1750,11 +1750,11 @@ class ArmCustomFunctionField: public TransformedField {
         internalField.Append(new CharField<6>(_param, false));
 
       if (version >= 216) {
-        internalField.Append(new UnsignedField<8>(_active));
+        internalField.Append(new SignedField<8>(_active));
       }
       else if (version >= 214) {
         internalField.Append(new UnsignedField<2>(_mode));
-        internalField.Append(new UnsignedField<6>(_active));
+        internalField.Append(new UnsignedField<6>((unsigned int &)_active));
       }
       else {
         internalField.Append(new UnsignedField<8>((unsigned int &)_active));
@@ -1915,7 +1915,7 @@ class ArmCustomFunctionField: public TransformedField {
     CustomFunctionsConversionTable functionsConversionTable;
     SourcesConversionTable * sourcesConversionTable;
     char _param[10];
-    unsigned int _active;
+    int _active;
     unsigned int _mode;
 };
 
