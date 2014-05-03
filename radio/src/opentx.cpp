@@ -961,8 +961,10 @@ int expo(int x, int k)
 void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
 {
 #if defined(PCBTARANIS)
+#if defined(HELI)
   int16_t heliAnasCopy[4];
   memcpy(heliAnasCopy, heliAnas, sizeof(heliAnasCopy));
+#endif
 #else
   int16_t anas2[NUM_INPUTS]; // values before expo, to ensure same expo base when multiple expo lines are used
   memcpy(anas2, anas, sizeof(anas2));
