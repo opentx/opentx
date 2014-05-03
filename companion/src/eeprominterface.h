@@ -939,6 +939,8 @@ class ModelData {
     ExpoData * insertInput(const int idx);
     void removeInput(const int idx);
 
+    bool isInputValid(const unsigned int idx) const;
+
     bool      used;
     char      name[12+1];
     uint8_t   modelVoice;

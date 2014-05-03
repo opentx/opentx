@@ -1003,6 +1003,17 @@ ExpoData * ModelData::insertInput(const int idx)
   return &expoData[idx];
 }
 
+bool ModelData::isInputValid(const unsigned int idx) const
+{
+  for (int i=0; i<C9X_MAX_EXPOS; i++) {
+    const ExpoData * expo = &expoData[i];
+    if (expo->mode == 0) break;
+    if (expo->chn == idx)
+      return true;
+  }
+  return false;
+}
+
 void ModelData::removeInput(const int idx)
 {
   memmove(&expoData[idx], &expoData[idx+1], (C9X_MAX_EXPOS-(idx+1))*sizeof(ExpoData));

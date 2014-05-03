@@ -548,9 +548,11 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData & 
   if (flags & POPULATE_VIRTUAL_INPUTS) {
     int virtualInputs = GetCurrentFirmware()->getCapability(VirtualInputs);
     for (int i=0; i<virtualInputs; i++) {
-      item = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, i, &model);
-      b->addItem(item.toString(), item.toValue());
-      if (item == source) b->setCurrentIndex(b->count()-1);
+      if (model.isInputValid(i)) {
+        item = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, i, &model);
+        b->addItem(item.toString(), item.toValue());
+        if (item == source) b->setCurrentIndex(b->count()-1);
+      }
     }
   }
 
