@@ -1360,7 +1360,15 @@ bool isSourceAvailable(int source)
 {
 #if defined(PCBTARANIS)
   if (source>=MIXSRC_FIRST_INPUT && source<=MIXSRC_LAST_INPUT) {
-    return ZEXIST(g_model.inputNames[source-MIXSRC_FIRST_INPUT]);
+    int input = source - MIXSRC_FIRST_INPUT;
+    for (int i=0; i<MAX_EXPOS; i++) {
+      ExpoData * expo = expoAddress(i);
+      if (!EXPO_VALID(expo))
+        break;
+      if (expo->chn == input)
+        return true;
+    }
+    return false;
   }
 #endif
 
