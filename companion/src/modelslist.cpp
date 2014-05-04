@@ -97,7 +97,7 @@ void ModelsListWidget::ShowContextMenu(const QPoint& pos)
     contextMenu.addSeparator();
     contextMenu.addAction(CompanionIcon("currentmodel.png"), tr("&Use as default"),this,SLOT(setdefault()));
     contextMenu.addSeparator();
-    contextMenu.addAction(CompanionIcon("print.png"), tr("P&rint model"),this, SLOT(print()),tr("Alt+R"));
+    contextMenu.addAction(CompanionIcon("print.png"), tr("P&rint model"),this, SLOT(print()),QKeySequence(tr("Ctrl+P")));
     contextMenu.addSeparator();
     contextMenu.addAction(CompanionIcon("simulate.png"), tr("&Simulate model"),this, SLOT(simulate()),tr("Alt+S"));
     contextMenu.exec(globalPos);

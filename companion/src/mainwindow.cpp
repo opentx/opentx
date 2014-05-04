@@ -1573,7 +1573,7 @@ QAction * MainWindow::addAct(QString icon, QString sName, QString lName, QKeySeq
   if (!lName.isEmpty())
     newAction->setStatusTip(lName);
   if (shortcut != 0)
-    newAction->setShortcuts(shortcut);
+    newAction->setShortcut(QKeySequence(shortcut));
   if (slotObj == NULL)
     slotObj = this;
   connect(newAction, SIGNAL(triggered()), slotObj, slot);
@@ -1653,7 +1653,7 @@ void MainWindow::createActions()
 //    dutchLangAct =       addAct( langAlignGroup,     tr("Dutch"),           tr("Use Dutch in menus"),                   SLOT(setNLLanguage()));
 
     aboutAct =           addAct("information.png",   tr("About..."),                tr("Show the application's About box"),   SLOT(about()));
-    printAct =           addAct("print.png",         tr("Print..."),                tr("Print current model"),                SLOT(print()));
+    printAct =           addAct("print.png",         tr("Print..."),                tr("Print current model"),                QKeySequence::Print, SLOT(print()));
     simulateAct =        addAct("simulate.png",      tr("Simulate..."),             tr("Simulate current model"),             SLOT(simulate()));
     loadbackupAct =      addAct("open.png",          tr("Load Backup..."),          tr("Load backup from file"),              SLOT(loadBackup()));
     logsAct =            addAct("logs.png",          tr("View Log File..."),        tr("Open and view log file"),             SLOT(logFile()));
