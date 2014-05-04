@@ -656,7 +656,8 @@ void PrintDialog::printFSwitches()
     QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
     str.append("<tr><td><h2>"+tr("Special Functions")+"</h2></td></tr>");
     str.append("<tr><td><table border=0 cellspacing=0 cellpadding=3><tr>");
-    str.append(doTC(tr("Switch"), "", true));
+    str.append("<td width=\"60\"><b>#</b></td>");
+    str.append(doTL(tr("Switch"), "", true));
     str.append(doTL(tr("Function"), "", true));
     str.append(doTL(tr("Parameter"), "", true));
     str.append(doTL(tr("Repeat"), "", true));
@@ -665,19 +666,21 @@ void PrintDialog::printFSwitches()
     for(int i=0; i<firmware->getCapability(CustomFunctions); i++) {
       if (g_model->funcSw[i].swtch.type!=SWITCH_TYPE_NONE) {
           str.append("<tr>");
-          str.append(doTC(g_model->funcSw[i].swtch.toString(),"green"));
-          str.append(doTC(g_model->funcSw[i].funcToString(),"green"));
-          str.append(doTC(g_model->funcSw[i].paramToString(),"green"));
+          str.append(doTL(tr("SF%1").arg(i+1),"", true));
+          str.append(doTL(g_model->funcSw[i].swtch.toString(),"green"));
+          str.append(doTL(g_model->funcSw[i].funcToString(),"green"));
+          str.append(doTL(g_model->funcSw[i].paramToString(),"green"));
           int index=g_model->funcSw[i].func;
-          if (index==FuncPlaySound || index==FuncPlayHaptic || index==FuncPlayValue || index==FuncPlayPrompt || index==FuncPlayBoth || index==FuncBackgroundMusic) {
-            str.append(doTC(QString("%1").arg(g_model->funcSw[i].repeatParam),"green"));
+          if ((g_model->funcSw[i].repeatParam>0) && 
+              (index==FuncPlaySound || index==FuncPlayHaptic || index==FuncPlayValue || index==FuncPlayPrompt || index==FuncPlayBoth || index==FuncBackgroundMusic)) {
+            str.append(doTL(QString("%1").arg(g_model->funcSw[i].repeatParam),"green"));
           } else {
-            str.append(doTC( "&nbsp;","green"));
+            str.append(doTL( "&nbsp;","green"));
           }
           if ((index<=FuncInstantTrim) || (index>FuncBackgroundMusicPause)) {
-            str.append(doTC((g_model->funcSw[i].enabled ? "ON" : "OFF"),"green"));
+            str.append(doTL((g_model->funcSw[i].enabled ? "ON" : "OFF"),"green"));
           } else {
-            str.append(doTC( "---","green"));
+            str.append(doTL( "---","green"));
           }
           str.append("</tr>");
           sc++;
