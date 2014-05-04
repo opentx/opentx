@@ -28,6 +28,8 @@ public:
 
 private:
     Ui::PrintDialog *ui;
+    bool gvars;
+    unsigned int gvarnum;
 
     void printSetup();
     QString printPhases();
