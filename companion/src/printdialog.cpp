@@ -696,39 +696,94 @@ void PrintDialog::printFrSky()
 {
   int tc=0;
   QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
-  str.append("<tr><td colspan=10><h2>"+tr("Telemetry Settings")+"</h2></td></tr>");
-  str.append("<tr><td colspan=4 align=\"center\">&nbsp;</td><td colspan=3 align=\"center\"><b>"+tr("Alarm 1")+"</b></td><td colspan=3 align=\"center\"><b>"+tr("Alarm 2")+"</b></td></tr>");
-  str.append("<tr><td align=\"center\"><b>"+tr("Analog")+"</b></td><td align=\"center\"><b>"+tr("Unit")+"</b></td><td align=\"center\"><b>"+tr("Scale")+"</b></td><td align=\"center\"><b>"+tr("Offset")+"</b></td>");
-  str.append("<td width=\"40\" align=\"center\"><b>"+tr("Type")+"</b></td><td width=\"40\" align=\"center\"><b>"+tr("Condition")+"</b></td><td width=\"40\" align=\"center\"><b>"+tr("Value")+"</b></td>");
-  str.append("<td width=\"40\" align=\"center\"><b>"+tr("Type")+"</b></td><td width=\"40\" align=\"center\"><b>"+tr("Condition")+"</b></td><td width=\"40\" align=\"center\"><b>"+tr("Value")+"</b></td></tr>");
-  FrSkyData *fd=&g_model->frsky;
-  for (int i=0; i<2; i++) {
-    if (fd->channels[i].ratio!=0) {
-      tc++;
-      float ratio=(fd->channels[i].ratio/(fd->channels[i].type==0 ?10.0:1));
-      str.append("<tr><td align=\"center\"><b>"+tr("A%1").arg(i+1)+"</b></td><td align=\"center\"><font color=green>"+getFrSkyUnits(fd->channels[i].type)+"</font></td><td align=\"center\"><font color=green>"+QString::number(ratio,10,(fd->channels[i].type==0 ? 1:0))+"</font></td><td align=\"center\"><font color=green>"+QString::number((fd->channels[i].offset*ratio)/255,10,(fd->channels[i].type==0 ? 1:0))+"</font></td>");
-      str.append("<td width=\"40\" align=\"center\"><font color=green>"+getFrSkyAlarmType(fd->channels[i].alarms[0].level)+"</font></td>");
-      str.append("<td width=\"40\" align=\"center\"><font color=green>");
-      str.append((fd->channels[i].alarms[0].greater==1) ? "&gt;" : "&lt;");
-      str.append("</font></td><td width=\"40\" align=\"center\"><font color=green>"+QString::number(ratio*(fd->channels[i].alarms[0].value/255.0+fd->channels[i].offset/255.0),10,(fd->channels[i].type==0 ? 1:0))+"</font></td>");
-      str.append("<td width=\"40\" align=\"center\"><font color=green>"+getFrSkyAlarmType(fd->channels[i].alarms[1].level)+"</font></td>");
-      str.append("<td width=\"40\" align=\"center\"><font color=green>");
-      str.append((fd->channels[i].alarms[1].greater==1) ? "&gt;" : "&lt;");
-      str.append("</font></td><td width=\"40\" align=\"center\"><font color=green>"+QString::number(ratio*(fd->channels[i].alarms[1].value/255.0+fd->channels[i].offset/255.0),10,(fd->channels[i].type==0 ? 1:0))+"</font></td></tr>");
+
+  if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+    str.append("<tr><td colspan=3><h2>"+tr("Telemetry Settings")+"</h2></td></tr>");
+    str.append("<tr>");
+    str.append(doTC(tr("Analog"),"", true));
+    str.append(doTC(tr("Range"),"", true));
+    str.append(doTC(tr("Offset"),"", true));
+    str.append("</tr>");
+
+    FrSkyData *fd=&g_model->frsky;
+    for (int i=0; i<2; i++) {
+      if (fd->channels[i].ratio!=0) {
+        tc++;
+        float ratio=(fd->channels[i].ratio/(fd->channels[i].type==0 ?10.0:1));
+        QString unit = " " + getFrSkyUnits(fd->channels[i].type);
+        str.append("<tr>");
+        str.append(doTL(tr("A%1").arg(i+1), "", true));
+        str.append(doTC(QString::number(ratio,10,(fd->channels[i].type==0 ? 1:0))+unit, "green"));
+        str.append(doTC(QString::number((fd->channels[i].offset*ratio)/255,10,(fd->channels[i].type==0 ? 1:0))+unit, "green"));
+        str.append("</tr>");
+      }
     }
+
+    str.append("<tr><td colspan=3 align=\"Left\" height=\"4px\"></td></tr>");
+    str.append("<tr>");
+    str.append(doTC(tr("Alarms"),"", true));
+    str.append(doTC(tr("Low Alarm"),"", true));
+    str.append(doTC(tr("Critical Alarm"),"", true));
+    str.append("</tr>");
+    str.append("<tr>");
+    str.append(doTL(tr("RSSI"),"", true));
+    str.append(doTC(QString::number(fd->rssiAlarms[0].value,10),"green"));
+    str.append(doTC(QString::number(fd->rssiAlarms[1].value,10),"green"));
+    str.append("</tr>");
+    for (int i=0; i<2; i++) {
+      if (fd->channels[i].ratio!=0) {
+        float ratio=(fd->channels[i].ratio/(fd->channels[i].type==0 ?10.0:1));
+        QString unit = " " + getFrSkyUnits(fd->channels[i].type);
+        str.append("<tr>");
+        str.append(doTL(tr("A%1").arg(i+1), "", true));
+        str.append(doTC(QString::number(ratio*(fd->channels[i].alarms[0].value/255.0+fd->channels[i].offset/255.0),10,(fd->channels[i].type==0 ? 1:0))+unit, "green"));
+        str.append(doTC(QString::number(ratio*(fd->channels[i].alarms[1].value/255.0+fd->channels[i].offset/255.0),10,(fd->channels[i].type==0 ? 1:0))+unit, "green"));
+        str.append("</tr>");
+      }
+    }
+
+    //TODO preferrably in new tables
+    str.append("<tr><td colspan=3 align=\"Left\" height=\"4px\"></td></tr>");
+    //str.append("<tr><td align=\"Left\"><b>"+tr("Frsky serial protocol")+"</b></td><td colspan=2 align=\"left\">"+getFrSkyProtocol(fd->usrProto)+"</td></tr>");
+    //str.append("<tr><td align=\"Left\"><b>"+tr("Units system")+"</b></td><td colspan=2 align=\"left\">"+getFrSkyMeasure(fd->imperial)+"</td></tr>");
+    str.append("<tr><td align=\"Left\"><b>"+tr("Blades")+"</b></td><td colspan=2 align=\"left\">"+QString("%1").arg(fd->blades)+"</td></tr>");
+    str.append("<tr><td align=\"Left\" height=\"4px\"></td></tr></table>");
   }
-  str.append("<tr><td colspan=10 align=\"Left\" height=\"4px\"></td></tr>");
-  str.append("<tr><td colspan=4 align=\"center\" rowspan=2>&nbsp;</td><td colspan=3 align=\"center\"><b>"+tr("Alarm 1")+"</b></td><td colspan=3 align=\"center\"><b>"+tr("Alarm 2")+"</b></td></tr>");
-  str.append("<tr><td width=\"40\" align=\"center\"><b>"+tr("Type")+"</b></td><td width=\"40\" align=\"center\"><b>"+tr("Condition")+"</b></td><td width=\"40\" align=\"center\"><b>"+tr("Value")+"</b></td>");
-  str.append("<td width=\"40\" align=\"center\"><b>"+tr("Type")+"</b></td><td width=\"40\" align=\"center\"><b>"+tr("Condition")+"</b></td><td width=\"40\" align=\"center\"><b>"+tr("Value")+"</b></td></tr>");
-  str.append("<tr><td align=\"Left\" colspan=4><b>"+tr("RSSI Alarm")+"</b></td>");
-  str.append("<td width=\"40\" align=\"center\"><b>"+getFrSkyAlarmType(fd->rssiAlarms[0].level)+"</b></td><td width=\"40\" align=\"center\"><b>&lt;</b></td><td width=\"40\" align=\"center\"><b>"+QString::number(fd->rssiAlarms[0].value,10)+"</b></td>");
-  str.append("<td width=\"40\" align=\"center\"><b>"+getFrSkyAlarmType(fd->rssiAlarms[1].level)+"</b></td><td width=\"40\" align=\"center\"><b>&lt;</b></td><td width=\"40\" align=\"center\"><b>"+QString::number(fd->rssiAlarms[1].value,10)+"</b></td></tr>");
-  str.append("<tr><td colspan=10 align=\"Left\" height=\"4px\"></td></tr>");
-  str.append("<tr><td colspan=2 align=\"Left\"><b>"+tr("Frsky serial protocol")+"</b></td><td colspan=8 align=\"left\">"+getFrSkyProtocol(fd->usrProto)+"</td></tr>");
-  str.append("<tr><td colspan=2 align=\"Left\"><b>"+tr("Units system")+"</b></td><td colspan=8 align=\"left\">"+getFrSkyMeasure(fd->imperial)+"</td></tr>");
-  str.append("<tr><td colspan=2 align=\"Left\"><b>"+tr("Blades")+"</b></td><td colspan=8 align=\"left\">"+fd->blades+"</td></tr>");
-  str.append("<tr><td colspan=10 align=\"Left\" height=\"4px\"></td></tr></table>");
+  else {  //other boards
+    str.append("<tr><td colspan=10><h2>"+tr("Telemetry Settings")+"</h2></td></tr>");
+    str.append("<tr><td colspan=4 align=\"center\">&nbsp;</td><td colspan=3 align=\"center\"><b>"+tr("Alarm 1")+"</b></td><td colspan=3 align=\"center\"><b>"+tr("Alarm 2")+"</b></td></tr>");
+    str.append("<tr><td align=\"center\"><b>"+tr("Analog")+"</b></td><td align=\"center\"><b>"+tr("Unit")+"</b></td><td align=\"center\"><b>"+tr("Scale")+"</b></td><td align=\"center\"><b>"+tr("Offset")+"</b></td>");
+    str.append("<td width=\"40\" align=\"center\"><b>"+tr("Type")+"</b></td><td width=\"40\" align=\"center\"><b>"+tr("Condition")+"</b></td><td width=\"40\" align=\"center\"><b>"+tr("Value")+"</b></td>");
+    str.append("<td width=\"40\" align=\"center\"><b>"+tr("Type")+"</b></td><td width=\"40\" align=\"center\"><b>"+tr("Condition")+"</b></td><td width=\"40\" align=\"center\"><b>"+tr("Value")+"</b></td></tr>");
+    FrSkyData *fd=&g_model->frsky;
+    for (int i=0; i<2; i++) {
+      if (fd->channels[i].ratio!=0) {
+        tc++;
+        float ratio=(fd->channels[i].ratio/(fd->channels[i].type==0 ?10.0:1));
+        str.append("<tr><td align=\"center\"><b>"+tr("A%1").arg(i+1)+"</b></td><td align=\"center\"><font color=green>"+getFrSkyUnits(fd->channels[i].type)+"</font></td><td align=\"center\"><font color=green>"+QString::number(ratio,10,(fd->channels[i].type==0 ? 1:0))+"</font></td><td align=\"center\"><font color=green>"+QString::number((fd->channels[i].offset*ratio)/255,10,(fd->channels[i].type==0 ? 1:0))+"</font></td>");
+        str.append("<td width=\"40\" align=\"center\"><font color=green>"+getFrSkyAlarmType(fd->channels[i].alarms[0].level)+"</font></td>");
+        str.append("<td width=\"40\" align=\"center\"><font color=green>");
+        str.append((fd->channels[i].alarms[0].greater==1) ? "&gt;" : "&lt;");
+        str.append("</font></td><td width=\"40\" align=\"center\"><font color=green>"+QString::number(ratio*(fd->channels[i].alarms[0].value/255.0+fd->channels[i].offset/255.0),10,(fd->channels[i].type==0 ? 1:0))+"</font></td>");
+        str.append("<td width=\"40\" align=\"center\"><font color=green>"+getFrSkyAlarmType(fd->channels[i].alarms[1].level)+"</font></td>");
+        str.append("<td width=\"40\" align=\"center\"><font color=green>");
+        str.append((fd->channels[i].alarms[1].greater==1) ? "&gt;" : "&lt;");
+        str.append("</font></td><td width=\"40\" align=\"center\"><font color=green>"+QString::number(ratio*(fd->channels[i].alarms[1].value/255.0+fd->channels[i].offset/255.0),10,(fd->channels[i].type==0 ? 1:0))+"</font></td></tr>");
+      }
+    }
+    str.append("<tr><td colspan=10 align=\"Left\" height=\"4px\"></td></tr>");
+    str.append("<tr><td colspan=4 align=\"center\" rowspan=2>&nbsp;</td><td colspan=3 align=\"center\"><b>"+tr("Alarm 1")+"</b></td><td colspan=3 align=\"center\"><b>"+tr("Alarm 2")+"</b></td></tr>");
+    str.append("<tr><td width=\"40\" align=\"center\"><b>"+tr("Type")+"</b></td><td width=\"40\" align=\"center\"><b>"+tr("Condition")+"</b></td><td width=\"40\" align=\"center\"><b>"+tr("Value")+"</b></td>");
+    str.append("<td width=\"40\" align=\"center\"><b>"+tr("Type")+"</b></td><td width=\"40\" align=\"center\"><b>"+tr("Condition")+"</b></td><td width=\"40\" align=\"center\"><b>"+tr("Value")+"</b></td></tr>");
+    str.append("<tr><td align=\"Left\" colspan=4><b>"+tr("RSSI Alarm")+"</b></td>");
+    str.append("<td width=\"40\" align=\"center\"><b>"+getFrSkyAlarmType(fd->rssiAlarms[0].level)+"</b></td><td width=\"40\" align=\"center\"><b>&lt;</b></td><td width=\"40\" align=\"center\"><b>"+QString::number(fd->rssiAlarms[0].value,10)+"</b></td>");
+    str.append("<td width=\"40\" align=\"center\"><b>"+getFrSkyAlarmType(fd->rssiAlarms[1].level)+"</b></td><td width=\"40\" align=\"center\"><b>&lt;</b></td><td width=\"40\" align=\"center\"><b>"+QString::number(fd->rssiAlarms[1].value,10)+"</b></td></tr>");
+    str.append("<tr><td colspan=10 align=\"Left\" height=\"4px\"></td></tr>");
+    str.append("<tr><td colspan=2 align=\"Left\"><b>"+tr("Frsky serial protocol")+"</b></td><td colspan=8 align=\"left\">"+getFrSkyProtocol(fd->usrProto)+"</td></tr>");
+    str.append("<tr><td colspan=2 align=\"Left\"><b>"+tr("Units system")+"</b></td><td colspan=8 align=\"left\">"+getFrSkyMeasure(fd->imperial)+"</td></tr>");
+    str.append("<tr><td colspan=2 align=\"Left\"><b>"+tr("Blades")+"</b></td><td colspan=8 align=\"left\">"+fd->blades+"</td></tr>");
+    str.append("<tr><td colspan=10 align=\"Left\" height=\"4px\"></td></tr></table>");
+  }
 #if 0
   if (firmware->getCapability(TelemetryBars) || (firmware->getCapability(TelemetryCSFields))) {
     int cols=firmware->getCapability(TelemetryColsCSFields);
