@@ -613,10 +613,9 @@ void PrintDialog::printSwitches()
     for (int i=0; i<firmware->getCapability(LogicalSwitches); i++) {
       if (g_model->customSw[i].func) {
         str.append("<tr>");
-        str.append("<td width=\"60\" align=\"center\"><b>"+tr("L")+QString("%1</b></td>").arg(i+1));
-        if (i < 9) str += " ";
+        str.append("<td width=\"60\"><b>"+tr("L")+QString("%1</b></td>").arg(i+1));
         QString tstr = g_model->customSw[i].toString(*g_model);
-        str.append(doTC(tstr,"green"));
+        str.append(doTL(tstr,"green"));
         str.append("</tr>");
         sc++;
       }

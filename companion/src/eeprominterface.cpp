@@ -507,13 +507,13 @@ QString LogicalSwitchData::toString(const ModelData & model)
   }
   switch (getFunctionFamily()) {
     case LS_FAMILY_STAY:
-      result = QObject::tr("STAY( %1, [%2:%3])").arg(RawSwitch(val1).toString()).arg(ValToTim(val2)).arg(ValToTim(val2+val3));
+      result += QObject::tr("Edge(%1, [%2:%3])").arg(RawSwitch(val1).toString()).arg(ValToTim(val2)).arg(ValToTim(val2+val3));
       break;
     case LS_FAMILY_STICKY:
-      result = QObject::tr("STICKY( %1, %2)").arg(RawSwitch(val1).toString()).arg(RawSwitch(val2).toString());
+      result += QObject::tr("Sticky(%1, %2)").arg(RawSwitch(val1).toString()).arg(RawSwitch(val2).toString());
       break;
     case LS_FAMILY_TIMER:
-      result = QObject::tr("TIMER( %1, %2)").arg(ValToTim(val1)).arg(ValToTim(val2));
+      result += QObject::tr("Timer(%1, %2)").arg(ValToTim(val1)).arg(ValToTim(val2));
       break;
     case LS_FAMILY_VOFS: {
       RawSource source = RawSource(val1, &model);
@@ -603,10 +603,10 @@ QString LogicalSwitchData::toString(const ModelData & model)
   }
 
   if (GetCurrentFirmware()->getCapability(LogicalSwitchesExt)) {
-    if (delay)
-      result += QObject::tr(" Delay %1 sec").arg(delay/10.0);
     if (duration)
-      result += QObject::tr(" Duration %1 sec").arg(duration/10.0);
+      result += QObject::tr(" Duration (%1s)").arg(duration/10.0);
+    if (delay)
+      result += QObject::tr(" Delay (%1s)").arg(delay/10.0);
   }
 
   return result;
