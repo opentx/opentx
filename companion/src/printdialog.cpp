@@ -156,8 +156,10 @@ QString PrintDialog::printPhases()
     }
     str.append("<td rowspan=2 align=\"center\" valign=\"bottom\"><b>"+tr("Switch")+"</b></td></tr><tr><td align=center nowrap><b>"+tr("Flight mode name"));
     str.append("</b></td><td align=center ><b>"+tr("IN")+"</b></td><td align=center ><b>"+tr("OUT")+"</b></td>");
+    QString labels[] = { tr("Rud"), tr("Ele"), tr("Thr"), tr("Ail") }; // TODO is elsewhere for sure
     for (int i=0; i<4; i++) {
-      str.append(QString("<td  align=\"center\" nowrap><b>%1</b></td>").arg(getInputStr(*g_model, i)));
+      GeneralSettings generalSettings = *g_eeGeneral;
+      str.append(QString("<td  align=\"center\" nowrap><b>%1</b></td>").arg(labels[CONVERT_MODE(i+1)-1]));
     }
     if (gvars) {
       for (unsigned int i=0; i<gvarnum; i++) {
@@ -168,9 +170,12 @@ QString PrintDialog::printPhases()
       str.append(QString("<td align=\"center\"><b>RE%1</b></td>").arg((i==0 ? 'A': 'B')));
     }
     str.append("</tr>");
+
     for (int i=0; i<firmware->getCapability(FlightPhases); i++) {
       PhaseData *pd=&g_model->phaseData[i];
-      str.append("<tr><td><b>"+tr("FM")+QString("%1</b> <font size=+1 face='Courier New' color=green>%2</font></td><td  align=\"right\"><font size=+1 face='Courier New' color=green>%3</font></td><td width=\"30\" align=\"right\"><font size=+1 face='Courier New' color=green>%4</font></td>").arg(i).arg(pd->name).arg(pd->fadeIn).arg(pd->fadeOut));
+      str.append("<tr><td><b>"+tr("FM")+QString("%1</b> <font size=+1 face='Courier New' color=green>%2</font></td>").arg(i).arg(pd->name));
+      str.append(QString("<td  align=\"right\"><font size=+1 face='Courier New' color=green>%1</font></td>").arg((qreal)pd->fadeIn/firmware->getCapability(SlowScale)));
+      str.append(QString("<td width=\"30\" align=\"right\"><font size=+1 face='Courier New' color=green>%1</font></td>").arg((qreal)pd->fadeOut/firmware->getCapability(SlowScale)));
       for (int k=0; k<4; k++) {
         //TODO trim values
         if (pd->trimRef[k]==-1) {
