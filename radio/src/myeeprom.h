@@ -692,7 +692,7 @@ PACK(typedef struct t_MixData {
 PACK( union u_gvarint_t {
   struct {
     int8_t lo;
-	uint8_t hi;
+    uint8_t hi;
   } bytes_t;
   int16_t word;
 	

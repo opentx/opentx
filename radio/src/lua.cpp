@@ -741,6 +741,29 @@ static int luaModelSetOutput(lua_State *L)
 
   return 0;
 }
+
+static int luaModelGetGlobalVariable(lua_State *L)
+{
+  int idx = luaL_checkunsigned(L, 1);
+  int phase = luaL_checkunsigned(L, 2);
+  if (phase < MAX_PHASES && idx < MAX_GVARS)
+    lua_pushinteger(L, g_model.phaseData[phase].gvars[idx]);
+  else
+    lua_pushnil(L);
+  return 1;
+}
+
+static int luaModelSetGlobalVariable(lua_State *L)
+{
+  int idx = luaL_checkunsigned(L, 1);
+  int phase = luaL_checkunsigned(L, 2);
+  int value = luaL_checkinteger(L, 3);
+  if (phase < MAX_PHASES && idx < MAX_GVARS && value <= 500) {
+    g_model.phaseData[phase].gvars[idx] = value;
+  }
+  return 0;
+}
+
 static int luaPopupInput(lua_State *L)
 {
   uint8_t event = luaL_checkinteger(L, 2);
@@ -849,6 +872,8 @@ static const luaL_Reg modelLib[] = {
   { "setCustomFunction", luaModelSetCustomFunction },
   { "getOutput", luaModelGetOutput },
   { "setOutput", luaModelSetOutput },
+  { "getGlobalVariable", luaModelGetGlobalVariable },
+  { "setGlobalVariable", luaModelSetGlobalVariable },
   { NULL, NULL }  /* sentinel */
 };
 
