@@ -600,7 +600,7 @@ void SimulatorDialog9X::getValues()
 
 void SimulatorDialog9X::saveSwitches(void)
 {
-  qDebug() << "SimulatorDialog9X::saveSwitches()";
+  // qDebug() << "SimulatorDialog9X::saveSwitches()";
   switchstatus=ui->switchTHR->isChecked();
   switchstatus<<=1;
   switchstatus+=(ui->switchRUD->isChecked()&0x1);
@@ -620,7 +620,7 @@ void SimulatorDialog9X::saveSwitches(void)
 
 void SimulatorDialog9X::restoreSwitches(void)
 {
-  qDebug() << "SimulatorDialog9X::restoreSwitches()";
+  // qDebug() << "SimulatorDialog9X::restoreSwitches()";
   ui->switchAIL->setChecked(switchstatus & 0x1);
   switchstatus >>=1;
   ui->switchELE->setChecked(switchstatus & 0x1);
@@ -705,7 +705,7 @@ void SimulatorDialogTaranis::getValues()
 
 void SimulatorDialogTaranis::saveSwitches(void)
 {
-  qDebug() << "SimulatorDialogTaranis::saveSwitches()";
+  // qDebug() << "SimulatorDialogTaranis::saveSwitches()";
   switchstatus=ui->switchA->value();
   switchstatus<<=2;
   switchstatus+=ui->switchB->value();
@@ -725,7 +725,7 @@ void SimulatorDialogTaranis::saveSwitches(void)
 
 void SimulatorDialogTaranis::restoreSwitches(void)
 {
-  qDebug() << "SimulatorDialogTaranis::restoreSwitches()";
+  // qDebug() << "SimulatorDialogTaranis::restoreSwitches()";
   ui->switchH->setValue(switchstatus & 0x3);
   switchstatus>>=2;
   ui->switchG->setValue(switchstatus & 0x3);
