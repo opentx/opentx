@@ -3918,7 +3918,7 @@ void perOut(uint8_t mode, uint8_t tick10ms)
         //========== TRIMS ================
         if (!(mode & e_perout_mode_notrims)) {
 #if defined(PCBTARANIS)
-          if (!md->carryTrim) {
+          if (md->carryTrim == 0) {
             int8_t mix_trim;
             if (stickIndex < NUM_STICKS)
               mix_trim = stickIndex;
@@ -3926,7 +3926,13 @@ void perOut(uint8_t mode, uint8_t tick10ms)
               mix_trim = virtualInputsTrims[md->srcRaw-1];
             else
               mix_trim = -1;
-            if (mix_trim >= 0) v += trims[mix_trim];
+            if (mix_trim >= 0) {
+              int16_t trim = trims[mix_trim];
+              if (mix_trim == THR_STICK && g_model.throttleReversed)
+                v -= trim;
+              else
+                v += trim;
+            }
           }
 #else
           int8_t mix_trim = md->carryTrim;
@@ -3936,7 +3942,13 @@ void perOut(uint8_t mode, uint8_t tick10ms)
             mix_trim = stickIndex;
           else
             mix_trim = -1;
-          if (mix_trim >= 0) v += trims[mix_trim];
+          if (mix_trim >= 0) {
+            int16_t trim = trims[mix_trim];
+            if (mix_trim == THR_STICK && g_model.throttleReversed)
+              v -= trim;
+            else
+              v += trim;
+          }
 #endif
         }
       }
