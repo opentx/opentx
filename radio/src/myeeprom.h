@@ -916,6 +916,7 @@ PACK(typedef struct t_CustomFnData { // Function Switches data
 #define CFN_GVAR_MODE(p)        ((p)->all.mode)
 #define CFN_PARAM(p)            ((p)->all.val)
 #define CFN_RESET(p)            ((p)->active=0, (p)->clear.val1=0, (p)->clear.val2=0)
+#define CFN_GVAR_CST_MAX        500
 #else
 PACK(typedef struct t_CustomFnData {
   PACK(union {
@@ -948,6 +949,7 @@ PACK(typedef struct t_CustomFnData {
 #define CFN_GVAR_MODE(p)    ((p)->gvar.mode)
 #define CFN_PARAM(p)        ((p)->value)
 #define CFN_RESET(p)        ((p)->all.active = 0, CFN_PARAM(p) = 0)
+#define CFN_GVAR_CST_MAX    125
 #endif
 
 enum TelemetryUnit {

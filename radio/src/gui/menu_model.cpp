@@ -4967,10 +4967,11 @@ void menuModelCustomFunctions(uint8_t event)
         {
           INCDEC_DECLARE_VARS();
           int16_t val_displayed = CFN_PARAM(sd);
-          int8_t val_min = 0;
 #if defined(CPUARM)
+          int16_t val_min = 0;
           int16_t val_max = 255;
 #else
+          int8_t val_min = 0;
           uint8_t val_max = 255;
 #endif
           if (func == FUNC_SAFETY_CHANNEL) {
@@ -5084,7 +5085,7 @@ void menuModelCustomFunctions(uint8_t event)
             switch (CFN_GVAR_MODE(sd)) {
               case FUNC_ADJUST_GVAR_CONSTANT:
                 val_displayed = (int8_t)CFN_PARAM(sd);
-                val_min = -125; val_max = 125;
+                val_min = -CFN_GVAR_CST_MAX; val_max = +CFN_GVAR_CST_MAX;
                 lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
                 break;
               case FUNC_ADJUST_GVAR_SOURCE:

@@ -329,8 +329,14 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
         if (modified) model.funcSw[i].param = fswtchParam[i]->value();
         fswtchParam[i]->setDecimals(0);
         fswtchParam[i]->setSingleStep(1);
-        fswtchParam[i]->setMinimum(-125);
-        fswtchParam[i]->setMaximum(125);
+        if (IS_ARM(GetEepromInterface()->getBoard())) {
+          fswtchParam[i]->setMinimum(-500);
+          fswtchParam[i]->setMaximum(500);
+        }
+        else {
+          fswtchParam[i]->setMinimum(-125);
+          fswtchParam[i]->setMaximum(125);
+        }
         fswtchParam[i]->setValue(model.funcSw[i].param);
         widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM;
       }
