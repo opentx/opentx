@@ -127,7 +127,7 @@ void PrintDialog::printSetup()
     str.append(fv(tr("Pulse Polarity"), g_model->moduleData[0].ppmPulsePol ? "NEG" : "POS"));
     str.append(fv(tr("Throttle Trim"), g_model->thrTrim ? tr("Enabled") : tr("Disabled")));
     str.append(fv(tr("Throttle Expo"), g_model->thrExpo ? tr("Enabled") : tr("Disabled")));
-    // TODO     str.append(fv(tr("Trim Switch"), getSWName(g_model->trimSw)));
+    // TODO   str.append(fv(tr("Trim Switch"), getSWName(g_model->trimSw)));
     str.append(fv(tr("Trim Increment"), getTrimInc(g_model)));
     str.append(fv(tr("Center Beep"), getCenterBeep(g_model))); // specify which channels beep
     str.append("</td></tr></table></td>");
