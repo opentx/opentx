@@ -916,7 +916,7 @@ PACK(typedef struct t_CustomFnData { // Function Switches data
 #define CFN_GVAR_MODE(p)        ((p)->all.mode)
 #define CFN_PARAM(p)            ((p)->all.val)
 #define CFN_RESET(p)            ((p)->active=0, (p)->clear.val1=0, (p)->clear.val2=0)
-#define CFN_GVAR_CST_MAX        500
+#define CFN_GVAR_CST_MAX        GVAR_LIMIT
 #else
 PACK(typedef struct t_CustomFnData {
   PACK(union {

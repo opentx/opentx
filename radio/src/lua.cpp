@@ -758,7 +758,7 @@ static int luaModelSetGlobalVariable(lua_State *L)
   int idx = luaL_checkunsigned(L, 1);
   int phase = luaL_checkunsigned(L, 2);
   int value = luaL_checkinteger(L, 3);
-  if (phase < MAX_PHASES && idx < MAX_GVARS && value <= 500) {
+  if (phase < MAX_PHASES && idx < MAX_GVARS && value >= -GVAR_LIMIT && value <= GVAR_LIMIT) {
     g_model.phaseData[phase].gvars[idx] = value;
   }
   return 0;
