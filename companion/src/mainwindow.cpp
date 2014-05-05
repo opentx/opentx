@@ -1563,7 +1563,12 @@ MdiChild *MainWindow::createMdiChild()
   return child;
 }
 
-QAction * MainWindow::addAct(QString icon, QString sName, QString lName, QKeySequence::StandardKey shortcut, const char *slot, QObject *slotObj)
+QAction * MainWindow::addAct(const QString & icon, const QString & sName, const QString & lName, enum QKeySequence::StandardKey shortcut, const char *slot, QObject *slotObj)
+{
+  return addAct(icon, sName, lName, QKeySequence(shortcut), slot, slotObj);
+}
+
+QAction * MainWindow::addAct(const QString & icon, const QString & sName, const QString & lName, const QKeySequence & shortcut, const char *slot, QObject *slotObj)
 {
   QAction * newAction = new QAction( this );
   if (!icon.isEmpty())
@@ -1572,20 +1577,20 @@ QAction * MainWindow::addAct(QString icon, QString sName, QString lName, QKeySeq
     newAction->setText(sName);
   if (!lName.isEmpty())
     newAction->setStatusTip(lName);
-  if (shortcut != 0)
-    newAction->setShortcut(QKeySequence(shortcut));
+  newAction->setShortcut(shortcut);
   if (slotObj == NULL)
     slotObj = this;
   connect(newAction, SIGNAL(triggered()), slotObj, slot);
   return newAction;
 }
 
-QAction * MainWindow::addAct(QString icon, QString sName, QString lName, const char *slot)
+
+QAction * MainWindow::addAct(const QString & icon, const QString & sName, const QString & lName, const char *slot)
 {
   return addAct(icon, sName, lName, QKeySequence::UnknownKey, slot);
 }
 
-QAction * MainWindow::addAct(QActionGroup *aGroup, QString sName, QString lName, const char *slot)
+QAction * MainWindow::addAct(QActionGroup *aGroup, const QString & sName, const QString & lName, const char *slot)
 {
   QAction *action = addAct("", sName, lName, QKeySequence::UnknownKey, slot);
   action->setCheckable(true);
@@ -1653,8 +1658,8 @@ void MainWindow::createActions()
 //    dutchLangAct =       addAct( langAlignGroup,     tr("Dutch"),           tr("Use Dutch in menus"),                   SLOT(setNLLanguage()));
 
     aboutAct =           addAct("information.png",   tr("About..."),                tr("Show the application's About box"),   SLOT(about()));
-    printAct =           addAct("print.png",         tr("Print..."),                tr("Print current model"),                QKeySequence::Print, SLOT(print()));
-    simulateAct =        addAct("simulate.png",      tr("Simulate..."),             tr("Simulate current model"),             SLOT(simulate()));
+    printAct =           addAct("print.png",         tr("Print..."),                tr("Print current model"),                QKeySequence::Print,       SLOT(print()));
+    simulateAct =        addAct("simulate.png",      tr("Simulate..."),             tr("Simulate current model"),             QKeySequence(tr("Alt+S")), SLOT(simulate()));
     loadbackupAct =      addAct("open.png",          tr("Load Backup..."),          tr("Load backup from file"),              SLOT(loadBackup()));
     logsAct =            addAct("logs.png",          tr("View Log File..."),        tr("Open and view log file"),             SLOT(logFile()));
     appPrefsAct =        addAct("apppreferences.png",tr("Settings..."),             tr("Edit Settings"),                      SLOT(appPrefs()));
