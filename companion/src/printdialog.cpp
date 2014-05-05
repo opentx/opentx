@@ -244,31 +244,27 @@ void PrintDialog::printInputs()
   
       if (firmware->getCapability(VirtualInputs)) {
         str += " " + tr("Source") + QString("(%1)").arg(ed->srcRaw.toString());
-        if (ed->carryTrim>0) {
-          str += " " + tr("NoTrim");
-        }
-        else if (ed->carryTrim<0) {
-          str += " " + RawSource(SOURCE_TYPE_TRIM, (-(ed->carryTrim)-1)).toString();
-        }
+        if (ed->carryTrim>0) str += " " + tr("NoTrim");
+        else if (ed->carryTrim<0) str += " " + RawSource(SOURCE_TYPE_TRIM, (-(ed->carryTrim)-1)).toString();
       }
       if (ed->curve.value) str += " " + Qt::escape(ed->curve.toString());
 
       if (firmware->getCapability(FlightPhases)) {
         if(ed->phases) {
           if (ed->phases!=(unsigned int)(1<<firmware->getCapability(FlightPhases))-1) {
-            int mask=1;
+            unsigned int mask=1;
             bool first = true;
-            QString strPhases;
             bool multiple = false;
+            QString strPhases;
             for (int j=0; j<firmware->getCapability(FlightPhases);j++) {
               if (!(ed->phases & mask)) {
                 //PhaseData *pd = &g_model->phaseData[j];
                 const char * pdName = g_model->phaseData[j].name;
                 if (first) {
-                  strPhases += QString("%1").arg(getPhaseName(j+1,pdName));
+                  strPhases += Qt::escape(QString("%1").arg(getPhaseName(j+1,pdName)));
                   first = false;
                 } else {
-                  strPhases += QString(", %1").arg(getPhaseName(j+1, pdName));
+                  strPhases += Qt::escape(QString(", %1").arg(getPhaseName(j+1, pdName)));
                   multiple = true;
                 }
               }
@@ -282,14 +278,8 @@ void PrintDialog::printInputs()
           }
         }
       } 
-      if (ed->swtch.type) 
-        str += " " + tr("Switch") + QString("(%1)").arg(ed->swtch.toString());
-      if (firmware->getCapability(HasExpoNames)) {
-        QString ExpoName(ed->name);
-        if (ed->name[0]) {
-          str += QString(" [%1]").arg(ed->name);
-        }
-      }
+      if (ed->swtch.type) str += " " + tr("Switch") + QString("(%1)").arg(ed->swtch.toString());
+      if (firmware->getCapability(HasExpoNames) && ed->name[0]) str += Qt::escape(QString(" [%1]").arg(ed->name));
       str += "</font></td></tr>";
     }
     str += "</table></td></tr></table><br>";
