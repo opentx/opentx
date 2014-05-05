@@ -1132,7 +1132,7 @@ int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, LcdFlags attr, uint8_t
 {
   lcd_putsColumnLeft(x, y, STR_SWITCH);
   putsSwitches(x,  y, value, attr);
-  if (attr) CHECK_INCDEC_MODELSWITCH(event, value, SWSRC_FIRST, SWSRC_LAST);
+  if (attr) CHECK_INCDEC_MODELSWITCH(event, value, SWSRC_FIRST_SHORT_LIST, SWSRC_LAST_SHORT_LIST);
   return value;
 }
 
@@ -1152,11 +1152,11 @@ int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t m
     s_editMode = !s_editMode;
 #if defined(CPUARM)
     if (attr & PREC1)
-      value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, s_perout_flight_phase)*10 : delta);
+      value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, s_perout_flight_mode)*10 : delta);
     else
-      value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, s_perout_flight_phase) : delta);
+      value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, s_perout_flight_mode) : delta);
 #else
-    value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, s_perout_flight_phase) : delta);
+    value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, s_perout_flight_mode) : delta);
 #endif
     eeDirty(EE_MODEL);
   }
@@ -1500,8 +1500,8 @@ bool isSwitchAvailable(int swtch)
     swtch = -swtch;
   }
 
-  if (swtch >= SWSRC_FIRST_CSW && swtch <= SWSRC_LAST_CSW) {
-    LogicalSwitchData * cs = cswAddress(swtch-SWSRC_FIRST_CSW);
+  if (swtch >= SWSRC_FIRST_LOGICAL_SWITCH && swtch <= SWSRC_LAST_LOGICAL_SWITCH) {
+    LogicalSwitchData * cs = cswAddress(swtch-SWSRC_FIRST_LOGICAL_SWITCH);
     return (cs->func != LS_FUNC_NONE);
   }
   

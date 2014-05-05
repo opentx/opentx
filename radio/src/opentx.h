@@ -647,7 +647,7 @@ enum StartupWarningStates {
   #define FORCE_INDIRECT(ptr) __asm__ __volatile__ ("" : "=e" (ptr) : "0" (ptr))
 #endif
 
-extern uint8_t s_perout_flight_phase;
+extern uint8_t s_perout_flight_mode;
 
 #if defined(CPUARM)
   #define bitfield_channels_t uint32_t

@@ -746,7 +746,7 @@ static int luaModelGetGlobalVariable(lua_State *L)
 {
   int idx = luaL_checkunsigned(L, 1);
   int phase = luaL_checkunsigned(L, 2);
-  if (phase < MAX_PHASES && idx < MAX_GVARS)
+  if (phase < MAX_FLIGHT_MODES && idx < MAX_GVARS)
     lua_pushinteger(L, g_model.phaseData[phase].gvars[idx]);
   else
     lua_pushnil(L);
@@ -758,7 +758,7 @@ static int luaModelSetGlobalVariable(lua_State *L)
   int idx = luaL_checkunsigned(L, 1);
   int phase = luaL_checkunsigned(L, 2);
   int value = luaL_checkinteger(L, 3);
-  if (phase < MAX_PHASES && idx < MAX_GVARS && value >= -GVAR_LIMIT && value <= GVAR_LIMIT) {
+  if (phase < MAX_FLIGHT_MODES && idx < MAX_GVARS && value >= -GVAR_LIMIT && value <= GVAR_LIMIT) {
     g_model.phaseData[phase].gvars[idx] = value;
   }
   return 0;
@@ -926,7 +926,7 @@ void luaInit()
   lua_registerint(L, "STICK_ELEVATOR", MIXSRC_Ele);
   lua_registerint(L, "STICK_THROTTLE", MIXSRC_Thr);
   lua_registerint(L, "STICK_AILERON", MIXSRC_Ail);
-  lua_registerint(L, "SWITCH_LAST", SWSRC_LAST_CSW);
+  lua_registerint(L, "SWITCH_LAST", SWSRC_LAST_LOGICAL_SWITCH);
   lua_registerint(L, "EVT_MENU_BREAK", EVT_KEY_BREAK(KEY_MENU));
   lua_registerint(L, "EVT_PAGE_BREAK", EVT_KEY_BREAK(KEY_PAGE));
   lua_registerint(L, "EVT_ENTER_BREAK", EVT_KEY_BREAK(KEY_ENTER));

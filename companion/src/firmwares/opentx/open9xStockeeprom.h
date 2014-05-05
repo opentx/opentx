@@ -482,7 +482,7 @@ PACK(typedef struct t_Open9xTimerDataExtra {
 }) Open9xTimerDataExtra;
 
 #define O9X_MAX_TIMERS     2
-#define O9X_MAX_PHASES 5
+#define O9X_MAX_FLIGHT_MODES 5
 #define O9X_MAX_MIXERS 32
 #define O9X_MAX_EXPOS  14
 #define O9X_NUM_CHNOUT 16 // number of real output channels CH1-CH16
@@ -520,7 +520,7 @@ PACK(typedef struct t_Open9xModelData_v201 {
   Open9xSafetySwData  safetySw[O9X_NUM_CHNOUT];
   Open9xFuncSwData_v201 funcSw[12];
   Open9xSwashRingData_v208 swashR;
-  Open9xPhaseData_v201 phaseData[O9X_MAX_PHASES];
+  Open9xPhaseData_v201 phaseData[O9X_MAX_FLIGHT_MODES];
   Open9xFrSkyData_v201 frsky;
 
   operator ModelData();
@@ -551,7 +551,7 @@ PACK(typedef struct t_Open9xModelData_v202 {
   Open9xSafetySwData  safetySw[O9X_NUM_CHNOUT];
   Open9xFuncSwData_v201 funcSw[12];
   Open9xSwashRingData_v208 swashR;
-  Open9xPhaseData_v201 phaseData[O9X_MAX_PHASES];
+  Open9xPhaseData_v201 phaseData[O9X_MAX_FLIGHT_MODES];
   Open9xFrSkyData_v202 frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
@@ -584,7 +584,7 @@ PACK(typedef struct t_Open9xModelData_v203 {
   Open9xLogicalSwitchData_v208 customSw[O9X_NUM_CSW];
   Open9xFuncSwData_v203 funcSw[O9X_NUM_FSW];
   Open9xSwashRingData_v208 swashR;
-  Open9xPhaseData_v201 phaseData[O9X_MAX_PHASES];
+  Open9xPhaseData_v201 phaseData[O9X_MAX_FLIGHT_MODES];
   Open9xFrSkyData_v202 frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
@@ -617,7 +617,7 @@ PACK(typedef struct t_Open9xModelData_v204 {
   Open9xLogicalSwitchData_v208  customSw[O9X_NUM_CSW];
   Open9xFuncSwData_v203 funcSw[O9X_NUM_FSW];
   Open9xSwashRingData_v208 swashR;
-  Open9xPhaseData_v201 phaseData[O9X_MAX_PHASES];
+  Open9xPhaseData_v201 phaseData[O9X_MAX_FLIGHT_MODES];
   Open9xFrSkyData_v204 frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
@@ -650,7 +650,7 @@ PACK(typedef struct t_Open9xModelData_v205 {
   Open9xLogicalSwitchData_v208  customSw[O9X_NUM_CSW];
   Open9xFuncSwData_v203 funcSw[O9X_NUM_FSW];
   Open9xSwashRingData_v208 swashR;
-  Open9xPhaseData_v201 phaseData[O9X_MAX_PHASES];
+  Open9xPhaseData_v201 phaseData[O9X_MAX_FLIGHT_MODES];
   Open9xFrSkyData_v205 frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
@@ -685,7 +685,7 @@ PACK(typedef struct t_Open9xModelData_v208 {
   Open9xLogicalSwitchData_v208  customSw[O9X_NUM_CSW];
   Open9xFuncSwData_v203 funcSw[O9X_NUM_FSW];
   Open9xSwashRingData_v208 swashR;
-  Open9xPhaseData_v201 phaseData[O9X_MAX_PHASES];
+  Open9xPhaseData_v201 phaseData[O9X_MAX_FLIGHT_MODES];
   Open9xFrSkyData_v208 frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
@@ -724,7 +724,7 @@ PACK(typedef struct t_Open9xModelData_v209 {
   Open9xLogicalSwitchData_v209  customSw[O9X_NUM_CSW];
   Open9xFuncSwData_v203 funcSw[O9X_NUM_FSW];
   Open9xSwashRingData_v209 swashR;
-  Open9xPhaseData_v201 phaseData[O9X_MAX_PHASES];
+  Open9xPhaseData_v201 phaseData[O9X_MAX_FLIGHT_MODES];
   Open9xFrSkyData_v208 frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
@@ -764,7 +764,7 @@ PACK(typedef struct t_Open9xModelData_v210 {
   Open9xLogicalSwitchData_v209  customSw[O9X_NUM_CSW];
   Open9xFuncSwData_v210 funcSw[O9X_NUM_FSW];
   Open9xSwashRingData_v209 swashR;
-  Open9xPhaseData_v201 phaseData[O9X_MAX_PHASES];
+  Open9xPhaseData_v201 phaseData[O9X_MAX_FLIGHT_MODES];
 
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
@@ -802,7 +802,7 @@ PACK(typedef struct t_Open9xModelData_v211 {
   Open9xLogicalSwitchData_v209  customSw[O9X_NUM_CSW];
   Open9xFuncSwData_v210 funcSw[O9X_NUM_FSW];
   Open9xSwashRingData_v209 swashR;
-  Open9xPhaseData_v201 phaseData[O9X_MAX_PHASES];
+  Open9xPhaseData_v201 phaseData[O9X_MAX_FLIGHT_MODES];
 
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;

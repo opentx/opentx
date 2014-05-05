@@ -1020,11 +1020,16 @@ void putsSwitches(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att)
     lcd_putcAtt(x-2, y, '!', att);
     idx = -idx;
   }
+#if defined(CPUARM) && defined(FLIGHT_MODES)
+  if (idx >= SWSRC_FIRST_FLIGHT_MODE)
+    putsStrIdx(x, y, STR_FP, idx-SWSRC_FIRST_FLIGHT_MODE, att);
+  else
+#endif
   lcd_putsiAtt(x, y, STR_VSWITCHES, idx-1, att);
 }
 
 #if defined(FLIGHT_MODES)
-void putsFlightPhase(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att)
+void putsFlightMode(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att)
 {
   if (idx==0) { lcd_putsiAtt(x, y, STR_MMMINV, 0, att); return; }
   if (idx < 0) { lcd_putcAtt(x-2, y, '!', att); idx = -idx; }

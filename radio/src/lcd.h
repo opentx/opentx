@@ -178,7 +178,7 @@ void putsStrIdx(xcoord_t x, uint8_t y, const pm_char *str, uint8_t idx, LcdFlags
 void putsModelName(xcoord_t x, uint8_t y, char *name, uint8_t id, LcdFlags att);
 void putsSwitches(xcoord_t x, uint8_t y, int8_t swtch, LcdFlags att=0);
 void putsMixerSource(xcoord_t x, uint8_t y, uint8_t idx, LcdFlags att=0);
-void putsFlightPhase(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att=0);
+void putsFlightMode(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att=0);
 #if defined(PCBTARANIS) && !defined(BOOT)
 void putsCurveRef(xcoord_t x, uint8_t y, CurveRef &curve, LcdFlags att);
 #endif

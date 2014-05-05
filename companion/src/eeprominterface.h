@@ -64,7 +64,7 @@ const uint8_t modn12x3[4][4]= {
   {4, 3, 2, 1} };
 
 #define C9X_MAX_MODELS            60
-#define C9X_MAX_PHASES            9
+#define C9X_MAX_FLIGHT_MODES            9
 #define C9X_MAX_MIXERS            64
 #define C9X_MAX_INPUTS            32
 #define C9X_MAX_EXPOS             64
@@ -369,6 +369,7 @@ enum RawSwitchType {
   SWITCH_TYPE_ROTARY_ENCODER,
   SWITCH_TYPE_ON,
   SWITCH_TYPE_OFF,
+  SWITCH_TYPE_FLIGHT_MODE,
   SWITCH_TYPE_TIMER_MODE
 };
 
@@ -955,7 +956,7 @@ class ModelData {
     bool      extendedLimits; // TODO xml
     bool      extendedTrims;
     bool      throttleReversed;
-    PhaseData phaseData[C9X_MAX_PHASES];
+    PhaseData phaseData[C9X_MAX_FLIGHT_MODES];
     MixData   mixData[C9X_MAX_MIXERS];
     LimitData limitData[C9X_NUM_CHNOUT];
 
@@ -1019,9 +1020,9 @@ class RadioData {
 
 // TODO rename FlightPhase to FlightMode
 enum Capability {
- FlightPhases,
+ FlightModes,
  FlightModesName,
- FlightPhasesHaveFades,
+ FlightModesHaveFades,
  Mixes,
  MixesWithoutExpo,
  Timers,
@@ -1077,7 +1078,7 @@ enum Capability {
  Gvars,
  GvarsInCS,
  GvarsAreNamed,
- GvarsFlightPhases,
+ GvarsFlightModes,
  GvarsName,
  NoTelemetryProtocol,
  TelemetryCustomScreens,
@@ -1199,7 +1200,7 @@ inline void applyStickModeToModel(ModelData &model, unsigned int mode)
   ModelData model_copy = model;
 
   // trims
-  for (int p=0; p<C9X_MAX_PHASES; p++) {
+  for (int p=0; p<C9X_MAX_FLIGHT_MODES; p++) {
     for (int i=0; i<NUM_STICKS/2; i++) {
       int converted_stick = applyStickMode(i+1, mode) - 1;
       int tmp = model.phaseData[p].trim[i];

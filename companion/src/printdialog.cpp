@@ -124,7 +124,7 @@ void PrintDialog::printSetup()
       gvars=1;
     }
     QString str = "<a name=1></a><table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
-    str.append(QString("<tr><td colspan=%1 ><table border=0 width=\"100%\"><tr><td><h1>").arg((firmware->getCapability(FlightPhases) && gvars==0) ? 2 : 1));
+    str.append(QString("<tr><td colspan=%1 ><table border=0 width=\"100%\"><tr><td><h1>").arg((firmware->getCapability(FlightModes) && gvars==0) ? 2 : 1));
     str.append(g_model->name);
     str.append("&nbsp;(");
     str.append(firmware->getEepromInterface()->getName());
@@ -157,7 +157,7 @@ QString PrintDialog::printPhases()
     int gvars=0;
     int gvarnum=0;
     if ((GetCurrentFirmwareVariant() & GVARS_VARIANT ) || (!firmware->getCapability(HasVariants) && firmware->getCapability(Gvars))) {
-      if (firmware->getCapability(GvarsFlightPhases)) {
+      if (firmware->getCapability(GvarsFlightModes)) {
         gvars=1;
         gvarnum=firmware->getCapability(Gvars);
       }
@@ -189,7 +189,7 @@ QString PrintDialog::printPhases()
       str.append(QString("<td align=\"center\"><b>RE%1</b></td>").arg((i==0 ? 'A': 'B')));
     }
     str.append("</tr>");
-    for (int i=0; i<firmware->getCapability(FlightPhases); i++) {
+    for (int i=0; i<firmware->getCapability(FlightModes); i++) {
       PhaseData *pd=&g_model->phaseData[i];
       str.append("<tr><td><b>"+tr("FM")+QString("%1</b> <font size=+1 face='Courier New' color=green>%2</font></td><td width=\"30\" align=\"right\"><font size=+1 face='Courier New' color=green>%3</font></td><td width=\"30\" align=\"right\"><font size=+1 face='Courier New' color=green>%4</font></td>").arg(i).arg(pd->name).arg(pd->fadeIn).arg(pd->fadeOut));
       for (int k=0; k<4; k++) {
@@ -265,12 +265,12 @@ void PrintDialog::printExpo()
       str += tr("Weight") + QString("%1").arg(getGVarString(ed->weight,true)).rightJustified(6, ' ');
       str += ed->curve.toString().replace("<", "&lt;").replace(">", "&gt;");
 
-      if (firmware->getCapability(FlightPhases)) {
+      if (firmware->getCapability(FlightModes)) {
         if(ed->phases) {
-          if (ed->phases!=(unsigned int)(1<<firmware->getCapability(FlightPhases))-1) {
+          if (ed->phases!=(unsigned int)(1<<firmware->getCapability(FlightModes))-1) {
             int mask=1;
             int first=0;
-            for (int i=0; i<firmware->getCapability(FlightPhases);i++) {
+            for (int i=0; i<firmware->getCapability(FlightModes);i++) {
               if (!(ed->phases & mask)) {
                 first++;
               }
@@ -283,7 +283,7 @@ void PrintDialog::printExpo()
             }
             mask=1;
             first=1;
-            for (int j=0; j<firmware->getCapability(FlightPhases);j++) {
+            for (int j=0; j<firmware->getCapability(FlightModes);j++) {
               if (!(ed->phases & mask)) {
                 PhaseData *pd = &g_model->phaseData[j];
                 if (!first) {
@@ -361,12 +361,12 @@ void PrintDialog::printMixes()
       if (md->delayDown || md->delayUp) str += tr(" Delay(u%1:d%2)").arg(md->delayUp/scale).arg(md->delayDown/scale);
       if (md->speedDown || md->speedUp) str += tr(" Slow(u%1:d%2)").arg(md->speedUp/scale).arg(md->speedDown/scale);
       if (md->mixWarn)  str += " "+tr("Warn")+QString("(%1)").arg(md->mixWarn);
-      if (firmware->getCapability(FlightPhases)) {
+      if (firmware->getCapability(FlightModes)) {
         if(md->phases) {
-          if (md->phases!=(unsigned int)(1<<firmware->getCapability(FlightPhases))-1) {
+          if (md->phases!=(unsigned int)(1<<firmware->getCapability(FlightModes))-1) {
             int mask=1;
             int first=0;
-            for (int i=0; i<firmware->getCapability(FlightPhases); i++) {
+            for (int i=0; i<firmware->getCapability(FlightModes); i++) {
               if (!(md->phases & mask)) {
                 first++;
               }
@@ -379,7 +379,7 @@ void PrintDialog::printMixes()
             }
             mask=1;
             first=1;
-            for (int j=0; j<firmware->getCapability(FlightPhases);j++) {
+            for (int j=0; j<firmware->getCapability(FlightModes);j++) {
               if (!(md->phases & mask)) {
                 PhaseData *pd = &g_model->phaseData[j];
                 if (!first) {
@@ -658,7 +658,7 @@ void PrintDialog::printGvars()
     gvars=1;
     gvarnum=firmware->getCapability(Gvars);
   }
-  if (!firmware->getCapability(GvarsFlightPhases) && (gvars==1 && firmware->getCapability(Gvars))) {
+  if (!firmware->getCapability(GvarsFlightModes) && (gvars==1 && firmware->getCapability(Gvars))) {
     QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
     str.append("<tr><td><h2>"+tr("Global Variables")+"</h2></td></tr>");
     str.append("<tr><td><table border=1 cellspacing=0 cellpadding=3 width=100>");

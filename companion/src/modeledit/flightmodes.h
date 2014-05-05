@@ -13,13 +13,13 @@ namespace Ui {
   class FlightMode;
 }
 
-class FlightMode : public ModelPanel
+class FlightModePanel : public ModelPanel
 {
     Q_OBJECT
 
   public:
-    FlightMode(QWidget *parent, ModelData &model, int modeIdx, GeneralSettings & generalSettings, FirmwareInterface * firmware);
-    virtual ~FlightMode();
+    FlightModePanel(QWidget *parent, ModelData &model, int modeIdx, GeneralSettings & generalSettings, FirmwareInterface * firmware);
+    virtual ~FlightModePanel();
 
     virtual void update();
 
@@ -61,13 +61,13 @@ class FlightMode : public ModelPanel
 
 };
 
-class FlightModes : public ModelPanel
+class FlightModesPanel : public ModelPanel
 {
     Q_OBJECT
 
   public:
-    FlightModes(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
-    virtual ~FlightModes();
+    FlightModesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
+    virtual ~FlightModesPanel();
 
     virtual void update();
 
@@ -80,7 +80,7 @@ class FlightModes : public ModelPanel
     int modesCount;
     QTabWidget *tabWidget;
     QString getTabName(int index);
-    QVector<FlightMode *> panels;
+    QVector<FlightModePanel *> panels;
 
 };
 
