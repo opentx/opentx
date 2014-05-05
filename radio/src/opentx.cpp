@@ -319,7 +319,8 @@ void per10ms()
   if (lightOffCounter) lightOffCounter--;
   if (flashCounter) flashCounter--;
   if (s_noHi) s_noHi--;
-  if (trimsCheckTimer) trimsCheckTimer --;
+  if (trimsCheckTimer) trimsCheckTimer--;
+  if (ppmInValid) ppmInValid--;
 
 #if defined(RTCLOCK)
   /* Update global Date/Time every 100 per10ms cycles */
@@ -3196,7 +3197,7 @@ void evalInputs(uint8_t mode)
       }
 #endif
 
-      if (mode <= e_perout_mode_inactive_phase && isFunctionActive(FUNCTION_TRAINER+ch)) {
+      if (mode <= e_perout_mode_inactive_phase && isFunctionActive(FUNCTION_TRAINER+ch) && ppmInValid) {
         // trainer mode
         TrainerMix* td = &g_eeGeneral.trainer.mix[ch];
         if (td->mode) {
@@ -3822,6 +3823,10 @@ void perOut(uint8_t mode, uint8_t tick10ms)
       //========== PHASE && SWITCH =====
       bool mixCondition = (md->phases != 0 || md->swtch);
       delayval_t mixEnabled = !(md->phases & (1 << s_perout_flight_phase)) && getSwitch(md->swtch);
+
+      if (mixEnabled && md->srcRaw >= MIXSRC_FIRST_TRAINER && md->srcRaw <= MIXSRC_LAST_TRAINER && !ppmInValid) {
+        mixEnabled = 0;
+      }
 
       //========== VALUE ===============
       getvalue_t v = 0;
@@ -5046,6 +5051,7 @@ void perMain()
 
 int16_t g_ppmIns[NUM_TRAINER];
 uint8_t ppmInState = 0; // 0=unsync 1..8= wait for value i-1
+uint8_t ppmInValid = 0;
 
 #if !defined(SIMU) && !defined(CPUARM)
 
@@ -5132,19 +5138,18 @@ ISR(TIMER3_CAPT_vect) // G: High frequency noise can cause stack overflo with IS
 
   // G: We process g_ppmIns immediately here, to make servo movement as smooth as possible
   //    while under trainee control
-  if (val>4000 && val < 16000) // G: Prioritize reset pulse. (Needed when less than 8 incoming pulses)
+  if (val>4000 && val < 16000) { // G: Prioritize reset pulse. (Needed when less than 8 incoming pulses)
     ppmInState = 1; // triggered
-  else
-  {
-    if (ppmInState && ppmInState<=8)
-    {
-      if (val>800 && val<2200) // if valid pulse-width range
-      {
-        g_ppmIns[ppmInState++ - 1] =
-          (int16_t)(val - 1500)*(g_eeGeneral.PPM_Multiplier+10)/10; //+-500 != 512, but close enough.
+  }
+  else {
+    if (ppmInState>0 && ppmInState<=8) {
+      if (val>800 && val<2200) { // if valid pulse-width range
+        ppmInValid = 100;
+        g_ppmIns[ppmInState++ - 1] = (int16_t)(val - 1500) * (uint8_t)(g_eeGeneral.PPM_Multiplier+10)/10; //+-500 != 512, but close enough.
       }
-      else
+      else {
         ppmInState = 0; // not triggered
+      }
     }
   }
 

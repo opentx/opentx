@@ -1013,6 +1013,7 @@ extern uint8_t            g_beepCnt;
 extern uint8_t            g_beepVal[5];
 
 extern uint8_t            ppmInState; //0=unsync 1..8= wait for value i-1
+extern uint8_t            ppmInValid;
 extern int16_t            g_ppmIns[NUM_TRAINER];
 extern int32_t            chans[NUM_CHNOUT];
 extern int16_t            ex_chans[NUM_CHNOUT]; // Outputs (before LIMITS) of the last perMain
