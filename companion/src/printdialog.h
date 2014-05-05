@@ -33,7 +33,7 @@ private:
 
     void printSetup();
     QString printPhases();
-    void printExpo();
+    void printInputs();
     void printMixes();
     void printLimits();
     void printCurves();

@@ -47,7 +47,7 @@ PrintDialog::PrintDialog(QWidget *parent, FirmwareInterface * firmware, GeneralS
   if (gvars) {
     te->append(printPhases()+"<br>");
   }
-  printExpo();
+  printInputs();
   printMixes();
   printLimits();
   printCurves();
@@ -208,7 +208,7 @@ QString PrintDialog::printPhases()
     return(str);
 }
 
-void PrintDialog::printExpo()
+void PrintDialog::printInputs()
 {
     QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\"><tr><td><h2>";
     str.append(tr("Inputs"));
@@ -225,27 +225,25 @@ void PrintDialog::printExpo()
         lastCHN=ed->chn;
         str.append("<b>"+getInputStr(*g_model, ed->chn)+"</b>");
       }
-      else
-        str.append("<b>&nbsp;</b>");
       str.append("</font></td>");
       str.append("<td><font size=+1 face='Courier New' color=green>");
 
       switch(ed->mode) {
         case (1): 
-          str += "&lt;-&nbsp;";
+          str += "&lt;-";
           break;
         case (2): 
-          str += "-&gt;&nbsp;";
+          str += "-&gt;";
           break;
         default:
-          str += "&nbsp;&nbsp;&nbsp;";
+          str += "&nbsp;&nbsp;";
           break;
       };
 
-      str += tr("Weight(") + QString("%1").arg(getGVarString(ed->weight,true)) + ")";
+      str += "&nbsp;" + tr("Weight") + QString("(%1)").arg(getGVarString(ed->weight,true));
   
       if (firmware->getCapability(VirtualInputs)) {
-        str += " " + tr("Source(%1)").arg(ed->srcRaw.toString());
+        str += " " + tr("Source") + QString("(%1)").arg(ed->srcRaw.toString());
         if (ed->carryTrim>0) {
           str += " " + tr("NoTrim");
         }
@@ -259,33 +257,26 @@ void PrintDialog::printExpo()
         if(ed->phases) {
           if (ed->phases!=(unsigned int)(1<<firmware->getCapability(FlightPhases))-1) {
             int mask=1;
-            int first=0;
-            for (int i=0; i<firmware->getCapability(FlightPhases);i++) {
-              if (!(ed->phases & mask)) {
-                first++;
-              }
-              mask <<=1;
-            }
-            if (first>1) {
-              str += " " + tr("Flight modes") + QString("(");
-            } else {
-              str += " " + tr("Flight mode") + QString("(");
-            }
-            mask=1;
-            first=1;
+            bool first = true;
+            QString strPhases;
+            bool multiple = false;
             for (int j=0; j<firmware->getCapability(FlightPhases);j++) {
               if (!(ed->phases & mask)) {
-                PhaseData *pd = &g_model->phaseData[j];
-                if (!first) {
-                  str += QString(", ")+ QString("%1").arg(getPhaseName(j+1, pd->name));
+                //PhaseData *pd = &g_model->phaseData[j];
+                const char * pdName = g_model->phaseData[j].name;
+                if (first) {
+                  strPhases += QString("%1").arg(getPhaseName(j+1,pdName));
+                  first = false;
                 } else {
-                  str += QString("%1").arg(getPhaseName(j+1,pd->name));
-                  first=0;
+                  strPhases += QString(", %1").arg(getPhaseName(j+1, pdName));
+                  multiple = true;
                 }
               }
-              mask <<=1;
+              mask <<= 1;
             }
-            str += QString(")");
+            if (!strPhases.isEmpty()) {
+              str += " " + tr(multiple?"Flight modes":"Flight mode") + "(" + strPhases + ")";
+            }
           } else {
             str += tr("DISABLED")+QString(" !!!");
           }
@@ -294,10 +285,9 @@ void PrintDialog::printExpo()
       if (ed->swtch.type) 
         str += " " + tr("Switch") + QString("(%1)").arg(ed->swtch.toString());
       if (firmware->getCapability(HasExpoNames)) {
-        QString ExpoName;
-        ExpoName.append(ed->name);
-        if (!ExpoName.isEmpty()) {
-          str+= " " + QString(" [%1]").arg(ExpoName);
+        QString ExpoName(ed->name);
+        if (ed->name[0]) {
+          str += QString(" [%1]").arg(ed->name);
         }
       }
       str += "</font></td></tr>";

@@ -107,7 +107,7 @@ QString getPhasesStr(unsigned int phases, ModelData & model);
 void populateGVCB(QComboBox *b, int value);
 void populateSourceCB(QComboBox *b, const RawSource &source, const ModelData & model, unsigned int flags);
 void populateCSWCB(QComboBox *b, int value);
-QString getPhaseName(int val, char * phasename=NULL);
+QString getPhaseName(int val, const char * phasename=NULL);
 QString getInputStr(ModelData & model, int index);
 QString image2qstring(QImage image);
 QImage qstring2image(QString imagestr);
