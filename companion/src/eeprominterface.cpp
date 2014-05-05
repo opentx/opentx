@@ -200,8 +200,8 @@ RawSourceRange RawSource::getRange(bool singleprec)
           result.decimals = 1;
           break;
         case TELEMETRY_SOURCE_CONSUMPTION:
-          result.step = singleprec ? 20 : 1;
-          result.max = singleprec ? 5100 : 10000;
+          result.step = singleprec ? 40 : 1;
+          result.max = singleprec ? 10200 : 10000;
           break;
         case TELEMETRY_SOURCE_POWER:
         case TELEMETRY_SOURCE_POWER_MAX:

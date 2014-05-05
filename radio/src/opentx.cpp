@@ -2145,7 +2145,7 @@ getvalue_t convert8bitsTelemValue(uint8_t channel, ls_telemetry_value_t value)
       result = value * 5;
       break;
     case TELEM_CONSUMPTION:
-      result = value * 20;
+      result = value * 40;
       break;
     case TELEM_VSPEED:
       result = ((getvalue_t)value - 125) * 10;
