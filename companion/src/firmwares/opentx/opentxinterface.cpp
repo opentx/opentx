@@ -478,14 +478,14 @@ int OpenTxFirmware::getCapability(const Capability capability)
       return 1;
     case PPMFrameLength:
       return 40;
-    case FlightPhases:
+    case FlightModes:
       if (IS_ARM(board))
         return 9;
       else if (board==BOARD_GRUVIN9X)
         return 6;
       else
         return 5;
-    case FlightPhasesHaveFades:
+    case FlightModesHaveFades:
       return 1;
     case Gvars:
       return IS_ARM(board) ? 9 : 5;
@@ -499,7 +499,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case HasFAIMode:
       return 1;
     case GvarsAreNamed:
-    case GvarsFlightPhases:
+    case GvarsFlightModes:
       return ((IS_ARM(board)||(board==BOARD_GRUVIN9X)) ? 1 : 0);
     case Mixes:
       return (IS_ARM(board) ? O9X_ARM_MAX_MIXERS : O9X_MAX_MIXERS);
@@ -802,7 +802,7 @@ bool OpenTxEepromInterface::checkVersion(unsigned int version)
       break;
     // case 206:
     case 207:
-      // V4: Rotary Encoders position in FlightPhases
+      // V4: Rotary Encoders position in FlightModes
       break;
     case 208:
       // Trim value in 16bits

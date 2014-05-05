@@ -15,7 +15,7 @@
 #define MAX_SWITCHES(board)                  (IS_TARANIS(board) ? 8 : 7)
 #define MAX_SWITCHES_POSITION(board)         (IS_TARANIS(board) ? 22 : 9)
 #define MAX_ROTARY_ENCODERS(board)           (board==BOARD_GRUVIN9X ? 2 : (board==BOARD_SKY9X ? 1 : 0))
-#define MAX_PHASES(board, version)           (IS_ARM(board) ? 9 :  (IS_DBLRAM(board, version) ? 6 :  5))
+#define MAX_FLIGHT_MODES(board, version)     (IS_ARM(board) ? 9 :  (IS_DBLRAM(board, version) ? 6 :  5))
 #define MAX_MIXERS(board, version)           (IS_ARM(board) ? 64 : 32)
 #define MAX_CHANNELS(board, version)         (IS_ARM(board) ? 32 : 16)
 #define MAX_EXPOS(board, version)            (IS_ARM(board) ? ((IS_TARANIS(board) && version >= 216) ? 64 : 32) : (IS_DBLRAM(board, version) ? 16 : 14))
@@ -89,6 +89,13 @@ class SwitchesConversionTable: public ConversionTable {
       if (!(flags & POPULATE_TIMER_MODES)) {
         addConversion(RawSwitch(SWITCH_TYPE_OFF), -val+offset);
         addConversion(RawSwitch(SWITCH_TYPE_ON), val++);
+      }
+
+      if (IS_ARM(board)) {
+        for (int i=1; i<=MAX_FLIGHT_MODES(board, version); i++) {
+          addConversion(RawSwitch(SWITCH_TYPE_FLIGHT_MODE, -i), -val+offset);
+          addConversion(RawSwitch(SWITCH_TYPE_FLIGHT_MODE, i), val++);
+        }
       }
 
       if (version < 216) {
@@ -2401,7 +2408,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
       internalField.Append(new AvrCustomFunctionField(modelData.funcSw[i], board, version, variant));
   }
   internalField.Append(new HeliField(modelData.swashRingData, board, version, variant));
-  for (int i=0; i<MAX_PHASES(board, version); i++)
+  for (int i=0; i<MAX_FLIGHT_MODES(board, version); i++)
     internalField.Append(new FlightModeField(modelData.phaseData[i], i, board, version));
 
   if (!IS_ARM(board) || version < 216) {

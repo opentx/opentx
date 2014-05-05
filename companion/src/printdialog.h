@@ -32,7 +32,7 @@ private:
     unsigned int gvarnum;
 
     void printSetup();
-    QString printPhases();
+    QString printFlightModes();
     void printInputs();
     void printMixes();
     void printLimits();

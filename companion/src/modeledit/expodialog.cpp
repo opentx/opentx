@@ -29,7 +29,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
 
   ui->sideCB->setCurrentIndex(ed->mode-1);
 
-  if (!firmware->getCapability(FlightPhases)) {
+  if (!firmware->getCapability(FlightModes)) {
     ui->label_phases->hide();
     for (int i=0; i<9; i++) {
       lb_fp[i]->hide();
@@ -44,7 +44,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
       }
       mask <<= 1;
     }
-    for (int i=firmware->getCapability(FlightPhases); i<9;i++) {
+    for (int i=firmware->getCapability(FlightModes); i<9;i++) {
       lb_fp[i]->hide();
       cb_fp[i]->hide();
     }
@@ -154,11 +154,11 @@ void ExpoDialog::valuesChanged()
       ed->phases<<=1;
     }
     ed->phases>>=1;
-    if (firmware->getCapability(FlightPhases)) {
+    if (firmware->getCapability(FlightModes)) {
       int zeros=0;
       int ones=0;
       int phtemp=ed->phases;
-      for (int i=0; i<firmware->getCapability(FlightPhases); i++) {
+      for (int i=0; i<firmware->getCapability(FlightModes); i++) {
         if (phtemp & 1) {
           ones++;
         }
@@ -169,7 +169,7 @@ void ExpoDialog::valuesChanged()
       }
       if (zeros==1) {
         phtemp=ed->phases;
-        for (int i=0; i<firmware->getCapability(FlightPhases); i++) {
+        for (int i=0; i<firmware->getCapability(FlightModes); i++) {
           if ((phtemp & 1)==0) {
             break;
           }
@@ -178,7 +178,7 @@ void ExpoDialog::valuesChanged()
       }
       else if (ones==1) {
         phtemp=ed->phases;
-        for (int i=0; i<firmware->getCapability(FlightPhases); i++) {
+        for (int i=0; i<firmware->getCapability(FlightModes); i++) {
           if (phtemp & 1) {
             break;
           }

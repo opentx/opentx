@@ -32,7 +32,7 @@
 #define SIMU_M128_VARIANTS     (M128_VARIANT|SIMU_STOCK_VARIANTS)
 
 #define O9X_MAX_TIMERS         2
-#define O9X_MAX_PHASES         5
+#define O9X_MAX_FLIGHT_MODES         5
 #define O9X_MAX_MIXERS         32
 #define O9X_MAX_EXPOS          14
 #define O9X_NUM_CHNOUT         16 // number of real output channels CH1-CH16
@@ -41,7 +41,7 @@
 #define O9X_MAX_CURVES         8
 #define O9X_NUM_POINTS         (112-O9X_MAX_CURVES)
 
-#define O9X_ARM_MAX_PHASES     9
+#define O9X_ARM_MAX_FLIGHT_MODES     9
 #define O9X_ARM_MAX_MIXERS     64
 #define O9X_ARM_MAX_EXPOS      32
 #define O9X_ARM_NUM_CHNOUT     32 // number of real output channels CH1-CH16

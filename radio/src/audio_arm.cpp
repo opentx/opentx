@@ -333,7 +333,7 @@ void getLogicalSwitchAudioFile(char * filename, int index, unsigned int event)
 {
   char * str = getModelPath(filename);
   int len = STR_VSWITCHES[0];
-  strncpy(str, &STR_VSWITCHES[1+len*(index+SWSRC_FIRST_CSW-1)], len);
+  strncpy(str, &STR_VSWITCHES[1+len*(index+SWSRC_FIRST_LOGICAL_SWITCH-1)], len);
   str += len;
   strcpy(str, suffixes[event]);
   strcat(str, SOUNDS_EXT);
@@ -369,7 +369,7 @@ void referenceModelAudioFiles()
       if (len < 5 || strcasecmp(fn+len-4, SOUNDS_EXT) || (fno.fattrib & AM_DIR)) continue;
 
       // Phases Audio Files <phasename>-[on|off].wav
-      for (int i=0; i<MAX_PHASES && !found; i++) {
+      for (int i=0; i<MAX_FLIGHT_MODES && !found; i++) {
         for (int event=0; event<2; event++) {
           getPhaseAudioFile(path, i, event);
           if (!strcasecmp(filename, fn)) {

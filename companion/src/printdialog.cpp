@@ -45,7 +45,7 @@ PrintDialog::PrintDialog(QWidget *parent, FirmwareInterface * firmware, GeneralS
   }
   printSetup(); 
   if (gvars) {
-    te->append(printPhases()+"<br>");
+    te->append(printFlightModes()+"<br>");
   }
   printInputs();
   printMixes();
@@ -112,7 +112,7 @@ QString PrintDialog::fv(const QString name, const QString value)
 void PrintDialog::printSetup()
 {
     QString str = "<a name=1></a><table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
-    str.append(QString("<tr><td colspan=%1 ><table border=0 width=\"100%\"><tr><td><h1>").arg((firmware->getCapability(FlightPhases) && !gvars) ? 2 : 1));
+    str.append(QString("<tr><td colspan=%1 ><table border=0 width=\"100%\"><tr><td><h1>").arg((firmware->getCapability(FlightModes) && !gvars) ? 2 : 1));
     str.append(g_model->name);
     str.append("&nbsp;(");
     str.append(firmware->getEepromInterface()->getName());
@@ -133,18 +133,18 @@ void PrintDialog::printSetup()
     str.append("</td></tr></table></td>");
     if (!gvars) {
       str.append("<td width=\"380\">");
-      str.append(printPhases());
+      str.append(printFlightModes());
       str.append("</td>");
     }
     str.append("</tr></table><br>");
     te->append(str);
 }
 
-QString PrintDialog::printPhases()
+QString PrintDialog::printFlightModes()
 {      
     QString str="";
     str.append(QString("<table border=1 cellspacing=0 cellpadding=3 width=\"100%\"><tr><td colspan=%1><h2>").arg(!gvars ? 8+firmware->getCapability(RotaryEncoders) : 8+gvarnum+firmware->getCapability(RotaryEncoders)));
-    str.append(tr("Flight modes Settings"));
+    str.append(tr("Flight modes"));
     str.append("</h2></td></tr><tr><td style=\"border-style:none;\">&nbsp;</td><td colspan=2 align=center><b>");
     str.append(tr("Fades")+"</b></td>");
     str.append("<td colspan=4 align=center><b>"+tr("Trims")+"</b></td>");
@@ -170,8 +170,7 @@ QString PrintDialog::printPhases()
       str.append(QString("<td align=\"center\"><b>RE%1</b></td>").arg((i==0 ? 'A': 'B')));
     }
     str.append("</tr>");
-
-    for (int i=0; i<firmware->getCapability(FlightPhases); i++) {
+    for (int i=0; i<firmware->getCapability(FlightModes); i++) {
       PhaseData *pd=&g_model->phaseData[i];
       str.append("<tr><td><b>"+tr("FM")+QString("%1</b> <font size=+1 face='Courier New' color=green>%2</font></td>").arg(i).arg(pd->name));
       str.append(QString("<td  align=\"right\"><font size=+1 face='Courier New' color=green>%1</font></td>").arg((qreal)pd->fadeIn/firmware->getCapability(SlowScale)));
@@ -254,29 +253,29 @@ void PrintDialog::printInputs()
       }
       if (ed->curve.value) str += " " + Qt::escape(ed->curve.toString());
 
-      if (firmware->getCapability(FlightPhases)) {
+      if (firmware->getCapability(FlightModes)) {
         if(ed->phases) {
-          if (ed->phases!=(unsigned int)(1<<firmware->getCapability(FlightPhases))-1) {
+          if (ed->phases!=(unsigned int)(1<<firmware->getCapability(FlightModes))-1) {
             unsigned int mask=1;
             bool first = true;
             bool multiple = false;
-            QString strPhases;
-            for (int j=0; j<firmware->getCapability(FlightPhases);j++) {
+            QString strModes;
+            for (int j=0; j<firmware->getCapability(FlightModes);j++) {
               if (!(ed->phases & mask)) {
                 //PhaseData *pd = &g_model->phaseData[j];
                 const char * pdName = g_model->phaseData[j].name;
                 if (first) {
-                  strPhases += Qt::escape(QString("%1").arg(getPhaseName(j+1,pdName)));
+                  strModes += Qt::escape(QString("%1").arg(getPhaseName(j+1,pdName)));
                   first = false;
                 } else {
-                  strPhases += Qt::escape(QString(", %1").arg(getPhaseName(j+1, pdName)));
+                  strModes += Qt::escape(QString(", %1").arg(getPhaseName(j+1, pdName)));
                   multiple = true;
                 }
               }
               mask <<= 1;
             }
-            if (!strPhases.isEmpty()) {
-              str += " " + tr(multiple?"Flight modes":"Flight mode") + "(" + strPhases + ")";
+            if (!strModes.isEmpty()) {
+              str += " " + tr(multiple?"Flight modes":"Flight mode") + "(" + strModes + ")";
             }
           } else {
             str += tr("DISABLED")+QString(" !!!");
@@ -613,7 +612,7 @@ void PrintDialog::printSwitches()
 
 void PrintDialog::printGvars()
 {
-  if (!firmware->getCapability(GvarsFlightPhases) && (gvars && firmware->getCapability(Gvars))) {
+  if (!firmware->getCapability(GvarsFlightModes) && (gvars && firmware->getCapability(Gvars))) {
     QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
     str.append("<tr><td><h2>"+tr("Global Variables")+"</h2></td></tr>");
     str.append("<tr><td><table border=1 cellspacing=0 cellpadding=3 width=100>");

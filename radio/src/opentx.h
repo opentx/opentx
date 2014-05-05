@@ -647,7 +647,7 @@ enum StartupWarningStates {
   #define FORCE_INDIRECT(ptr) __asm__ __volatile__ ("" : "=e" (ptr) : "0" (ptr))
 #endif
 
-extern uint8_t s_perout_flight_phase;
+extern uint8_t s_perout_flight_mode;
 
 #if defined(CPUARM)
   #define bitfield_channels_t uint32_t
@@ -1013,6 +1013,7 @@ extern uint8_t            g_beepCnt;
 extern uint8_t            g_beepVal[5];
 
 extern uint8_t            ppmInState; //0=unsync 1..8= wait for value i-1
+extern uint8_t            ppmInValid;
 extern int16_t            g_ppmIns[NUM_TRAINER];
 extern int32_t            chans[NUM_CHNOUT];
 extern int16_t            ex_chans[NUM_CHNOUT]; // Outputs (before LIMITS) of the last perMain

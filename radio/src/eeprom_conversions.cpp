@@ -225,7 +225,7 @@ PACK(typedef struct {
   LogicalSwitchData_v215 customSw[NUM_LOGICAL_SWITCH];
   CustomFnData_v215 funcSw[32];
   SwashRingData swashR;
-  PhaseData_v215 phaseData[MAX_PHASES];
+  PhaseData_v215 phaseData[MAX_FLIGHT_MODES];
 
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5ms increments
   uint8_t   thrTraceSrc;

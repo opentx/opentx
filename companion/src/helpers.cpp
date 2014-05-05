@@ -129,7 +129,7 @@ QString getProtocolStr(const int proto)
 
 void populatePhasesCB(QComboBox *b, int value)
 {
-  for (int i=-GetCurrentFirmware()->getCapability(FlightPhases); i<=GetCurrentFirmware()->getCapability(FlightPhases); i++) {
+  for (int i=-GetCurrentFirmware()->getCapability(FlightModes); i<=GetCurrentFirmware()->getCapability(FlightModes); i++) {
     if (i < 0)
       b->addItem(QObject::tr("!Flight mode %1").arg(-i-1), i);
     else if (i > 0)
@@ -137,7 +137,7 @@ void populatePhasesCB(QComboBox *b, int value)
     else
       b->addItem(QObject::tr("----"), 0);
   }
-  b->setCurrentIndex(value + GetCurrentFirmware()->getCapability(FlightPhases));
+  b->setCurrentIndex(value + GetCurrentFirmware()->getCapability(FlightModes));
 }
 
 bool gvarsEnabled()
@@ -344,7 +344,7 @@ void CurveGroup::valuesChanged()
 void populateGvarUseCB(QComboBox *b, unsigned int phase)
 {
   b->addItem(QObject::tr("Own value"));
-  for (int i=0; i<GetCurrentFirmware()->getCapability(FlightPhases); i++) {
+  for (int i=0; i<GetCurrentFirmware()->getCapability(FlightModes); i++) {
     if (i != (int)phase) {
       b->addItem(QObject::tr("Flight mode %1 value").arg(i));
     }
@@ -400,6 +400,13 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
   b->clear();
 
   if (attr & POPULATE_ONOFF) {
+    if (IS_ARM(GetCurrentFirmware()->getBoard())) {
+      for (int i=-GetCurrentFirmware()->getCapability(FlightModes); i<0; i++) {
+        item = RawSwitch(SWITCH_TYPE_FLIGHT_MODE, i);
+        b->addItem(item.toString(), item.toValue());
+        if (item == value) b->setCurrentIndex(b->count()-1);
+      }
+    }
     item = RawSwitch(SWITCH_TYPE_OFF);
     b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);
@@ -490,6 +497,13 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
     item = RawSwitch(SWITCH_TYPE_ON);
     b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);
+    if (IS_ARM(GetCurrentFirmware()->getBoard())) {
+      for (int i=1; i<=GetCurrentFirmware()->getCapability(FlightModes); i++) {
+        item = RawSwitch(SWITCH_TYPE_FLIGHT_MODE, i);
+        b->addItem(item.toString(), item.toValue());
+        if (item == value) b->setCurrentIndex(b->count()-1);
+      }
+    }
   }
 
   b->setMaxVisibleItems(10);
@@ -835,7 +849,7 @@ QString getProtocol(ModelData * g_model)
 
 QString getPhasesStr(unsigned int phases, ModelData & model)
 {
-  int numphases = GetCurrentFirmware()->getCapability(FlightPhases);
+  int numphases = GetCurrentFirmware()->getCapability(FlightModes);
 
   if (numphases && phases) {
     QString str;

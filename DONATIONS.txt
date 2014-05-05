@@ -133,7 +133,7 @@ Eric Burdis
 Nigel Chippindale
 Michael Deasy
 Stephen Stough
-Kenneth Lilja 
+Kenneth Lilja (monthly)
 Robert Jero
 Gary Bancroft
 Robert Cotsford
@@ -386,3 +386,6 @@ Wilco Hijink
 Roy Nixon
 Lexington S Morley
 Daryl Dacko
+Beat Zurflueh
+Piotr Kundu
+Kevin Berkefeld
