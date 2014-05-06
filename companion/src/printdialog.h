@@ -28,10 +28,12 @@ public:
 
 private:
     Ui::PrintDialog *ui;
+    bool gvars;
+    unsigned int gvarnum;
 
     void printSetup();
-    QString printPhases();
-    void printExpo();
+    QString printFlightModes();
+    void printInputs();
     void printMixes();
     void printLimits();
     void printCurves();

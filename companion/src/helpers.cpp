@@ -40,7 +40,7 @@ const QColor colors[C9X_MAX_CURVES] = {
   QColor(255,127,0),
 };
 
-QString getPhaseName(int val, char * phasename)
+QString getPhaseName(int val, const char * phasename)
 {
   if (!val) return "---";
   if (!phasename) {

@@ -155,16 +155,6 @@ QString InputsPanel::getInputText(int dest, bool * new_ch)
         str = "   ";
     }
 
-    if (firmware->getCapability(VirtualInputs)) {
-      str += " " + tr("Source(%1)").arg(md->srcRaw.toString());
-      if (md->carryTrim>0) {
-        str += " " + tr("No Trim");
-      }
-      else if (md->carryTrim<0) {
-        str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString();
-      }
-    }
-
     switch (md->mode) {
       case (1): str += " <-"; break;
       case (2): str += " ->"; break;
@@ -173,7 +163,17 @@ QString InputsPanel::getInputText(int dest, bool * new_ch)
 
     str += " " + tr("Weight(%1)").arg(getGVarString(md->weight));
 
-    if (md->curve.value) str += " " + md->curve.toString();
+    if (firmware->getCapability(VirtualInputs)) {
+      str += " " + tr("Source(%1)").arg(md->srcRaw.toString());
+      if (md->carryTrim>0) {
+        str += " " + tr("NoTrim");
+      }
+      else if (md->carryTrim<0) {
+        str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString();
+      }
+    }
+
+    if (md->curve.value) str += " " +  Qt::escape(md->curve.toString());
 
     QString phasesStr = getPhasesStr(md->phases, model);
     if (!phasesStr.isEmpty()) str += " " + phasesStr;
