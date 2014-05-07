@@ -113,7 +113,9 @@ int main(int argc, char *argv[])
   msgBox.setText("Which radio type do you want to simulate?");
   msgBox.setIcon(QMessageBox::Question);
   QAbstractButton *taranisButton = msgBox.addButton("Taranis", QMessageBox::ActionRole);
-  msgBox.addButton("9X", QMessageBox::ActionRole);
+  QAbstractButton *sky9xButton = msgBox.addButton("9X-Sky9X", QMessageBox::ActionRole);
+  QAbstractButton *gruvinButton = msgBox.addButton("9X-Gruvin9X", QMessageBox::ActionRole);
+  msgBox.addButton("9X-M128", QMessageBox::ActionRole);
   QPushButton *exitButton = msgBox.addButton(QMessageBox::Close);
 
   eedir = QDir(QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation));
@@ -127,14 +129,29 @@ int main(int argc, char *argv[])
   if (msgBox.clickedButton() == exitButton)
     return 0;
   else if (msgBox.clickedButton() == taranisButton) {
-    current_firmware_variant = GetFirmwareVariant("opentx-taranis-en");
+    current_firmware_variant = GetFirmwareVariant("opentx-taranis-haptic-en");
     fileName = eedir.filePath("eeprom-taranis.bin");
     path = fileName.toAscii();
     eepromFileName = path.data();
     dialog = new SimulatorDialogTaranis();
   }
+  else if (msgBox.clickedButton() == sky9xButton) {
+    current_firmware_variant = GetFirmwareVariant("opentx-sky9x-heli-templates-ppmca-gvars-symlimits-autosource-autoswitch-battgraph-bluetooth-en");
+    fileName = eedir.filePath("eeprom-sky9x.bin");
+    path = fileName.toAscii();
+    eepromFileName = path.data();
+    dialog = new SimulatorDialog9X();
+  }
+  else if (msgBox.clickedButton() == gruvinButton) {
+    current_firmware_variant = GetFirmwareVariant("opentx-gruvin9x-heli-templates-sdcard-voice-DSM2PPM-ppmca-gvars-symlimits-autosource-autoswitch-battgraph-ttsen-en");
+    fileName = eedir.filePath("eeprom-gruvin9x.bin");
+    path = fileName.toAscii();
+    eepromFileName = path.data();
+    dialog = new SimulatorDialog9X();
+  }
   else {
-    fileName = eedir.filePath("eeprom-9x.bin");
+    current_firmware_variant = GetFirmwareVariant("opentx-9x128-frsky-heli-templates-audio-voice-haptic-DSM2-ppmca-gvars-symlimits-autosource-autoswitch-battgraph-thrtrace-en");
+    fileName = eedir.filePath("eeprom-9x128.bin");
     path = fileName.toAscii();
     eepromFileName = path.data();
     dialog = new SimulatorDialog9X();
