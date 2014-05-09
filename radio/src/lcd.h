@@ -202,7 +202,8 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
   #define putstime_t int16_t
 #endif
 
-void putsTime(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFlags att2);
+void putsTime(xcoord_t x, uint8_t y, struct gtm t, bool blink=false);
+void putsTimer(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFlags att2);
 
 #define SOLID  0xff
 #define DOTTED 0x55

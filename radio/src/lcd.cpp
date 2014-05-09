@@ -842,12 +842,12 @@ void lcdDrawTelemetryTopBar()
   putsVBat(16*FW+1,0,att);
   if (g_model.timers[0].mode) {
     att = (timersStates[0].val<0 ? BLINK : 0);
-    putsTime(22*FW+5*FWNUM+3, 0, timersStates[0].val, att, att);
+    putsTimer(22*FW+5*FWNUM+3, 0, timersStates[0].val, att, att);
     lcd_putsiAtt(18*FW+2, 1, STR_VTELEMCHNS, TELEM_TM1, SMLSIZE);
   }
   if (g_model.timers[1].mode) {
     att = (timersStates[1].val<0 ? BLINK : 0);
-    putsTime(31*FW+5*FWNUM+3, 0, timersStates[1].val, att, att);
+    putsTimer(31*FW+5*FWNUM+3, 0, timersStates[1].val, att, att);
     lcd_putsiAtt(27*FW+2, 1, STR_VTELEMCHNS, TELEM_TM2, SMLSIZE);
   }
   lcd_invert_line(0);
@@ -860,13 +860,24 @@ void lcdDrawTelemetryTopBar()
   putsVBat(14*FW,0,att);
   if (g_model.timers[0].mode) {
     att = (timersStates[0].val<0 ? BLINK : 0);
-    putsTime(17*FW+5*FWNUM+1, 0, timersStates[0].val, att, att);
+    putsTimer(17*FW+5*FWNUM+1, 0, timersStates[0].val, att, att);
   }
   lcd_invert_line(0);
 }
 #endif
 
-void putsTime(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFlags att2)
+#if defined(PCBTARANIS)
+void putsTime(xcoord_t x, uint8_t y, struct gtm t, bool blink)
+{
+  if (blink && (t.tm_sec%2)) {
+    lcd_putcAtt(x, y, ':', 0);
+  }
+  lcd_outdezNAtt(x, y, t.tm_hour, LEADING0, 2);
+  lcd_outdezNAtt(x+3*FWNUM-2, y, t.tm_min, LEADING0, 2);
+}
+#endif
+
+void putsTimer(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFlags att2)
 {
   div_t qr;
 
@@ -1189,7 +1200,7 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
     case TELEM_TM1-1:
     case TELEM_TM2-1:
       att &= ~NO_UNIT;
-      putsTime(x, y, val, att, att);
+      putsTimer(x, y, val, att, att);
       break;
 #if defined(FRSKY)
     case TELEM_MIN_A1-1:
@@ -1311,7 +1322,7 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
     case TELEM_TM1-1:
     case TELEM_TM2-1:
       att &= ~NO_UNIT;
-      putsTime(x, y, val, att, att);
+      putsTimer(x, y, val, att, att);
       break;
 
     case TELEM_TX_VOLTAGE-1:
