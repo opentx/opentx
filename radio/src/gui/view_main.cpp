@@ -318,7 +318,7 @@ void displayTopBar()
   /* RTC time */
   struct gtm t;
   gettime(&t);
-  putsTime(BAR_TIME_X+1, BAR_Y+1, t, true);
+  putsTime(BAR_TIME_X+1, BAR_Y+1, t, TIMEBLINK);
 
   /* The background */
   lcd_filled_rect(BAR_X, BAR_Y, BAR_W, BAR_H, SOLID, FILL_WHITE|GREY_DEFAULT|ROUND);

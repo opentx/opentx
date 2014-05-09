@@ -242,7 +242,7 @@ def ttsFr():
         systemSounds.append((str(100*(i+1)), filename(PROMPT_SYSTEM_BASE+100+i)))
     for i, s in enumerate(["une", "onze", "vingt et une", "trente et une", "quarante et une", "cinquante et une", "soixante et une", "soixante et onze", "quatre vingt une"]): 
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+110+i)))
-    for i, s in enumerate(["virgule", "et", "moins"]): 
+    for i, s in enumerate(["virgule", "et", "moins", "minuit", "midi"]): 
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+119+i)))
     for i, s in enumerate(["volts", u"ampères", u"mètres seconde", "", "kilomètre heure", u"mètres", u"degrés", "pourcents", u"milli ampères", u"milli ampères / heure", "watt", "db", "pieds", "miles par heure", "heure", "minute", "seconde", "tours par minute", "g"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+125+i)))

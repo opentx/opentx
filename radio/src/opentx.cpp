@@ -1298,6 +1298,13 @@ getvalue_t getValue(uint8_t i)
 #endif
 
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_TX_VOLTAGE) return g_vbat100mV;
+#if defined(CPUARM)
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_TX_TIME) {
+    struct gtm t;
+    gettime(&t);
+    return t.tm_hour*60 + t.tm_min;
+  }
+#endif
   else if (i<=MIXSRC_FIRST_TELEM-1+TELEM_TM2) return timersStates[i-MIXSRC_FIRST_TELEM+1-TELEM_TM1].val;
 #if defined(FRSKY)
 #if defined(CPUARM)
@@ -2040,6 +2047,7 @@ ls_telemetry_value_t minTelemValue(uint8_t channel)
   switch (channel) {
     case TELEM_FUEL:
 #if defined(CPUARM)
+    case TELEM_TX_TIME:
     case TELEM_SWR:
 #endif
     case TELEM_RSSI_TX:
@@ -2060,6 +2068,10 @@ ls_telemetry_value_t minTelemValue(uint8_t channel)
 ls_telemetry_value_t maxTelemValue(uint8_t channel)
 {
   switch (channel) {
+#if defined(CPUARM)
+    case TELEM_TX_TIME:
+      return 24*60-1;
+#endif
     case TELEM_FUEL:
 #if defined(CPUARM)
     case TELEM_SWR:
@@ -3277,12 +3289,17 @@ PLAY_FUNCTION(playValue, uint8_t idx)
   getvalue_t val = getValue(idx);
 
   switch (idx) {
+#if defined(CPUARM)
+    case MIXSRC_FIRST_TELEM+TELEM_TX_TIME-1:
+      PLAY_DURATION(val*60, PLAY_TIME);
+      break;
+#endif
     case MIXSRC_FIRST_TELEM+TELEM_TX_VOLTAGE-1:
       PLAY_NUMBER(val, 1+UNIT_VOLTS, PREC1);
       break;
     case MIXSRC_FIRST_TELEM+TELEM_TM1-1:
     case MIXSRC_FIRST_TELEM+TELEM_TM2-1:
-      PLAY_DURATION(val);
+      PLAY_DURATION(val, 0);
       break;
 #if defined(CPUARM)
     case MIXSRC_FIRST_TELEM+TELEM_SWR-1:

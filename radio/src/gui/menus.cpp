@@ -123,13 +123,13 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
     else if (DBLKEYS_PRESSED_RGT_UP(in)) {
       newval = (i_max > 100 ? 100 : i_max);
 #if defined(CPUARM)
-      if(i_flags & DBLKEYS_1000) newval *= 10;
+      if (i_flags & DBLKEYS_1000) newval *= 10;
 #endif
     }
     else if (DBLKEYS_PRESSED_LFT_DWN(in)) {
       newval = (i_min < -100 ? -100 : i_min);
 #if defined(CPUARM)
-      if(i_flags & DBLKEYS_1000) newval *= 10;
+      if (i_flags & DBLKEYS_1000) newval *= 10;
 #endif
     }
     else if (DBLKEYS_PRESSED_UP_DWN(in))
@@ -140,7 +140,6 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
 #if defined(CPUARM)
 
 #endif
-
 
     if (dblkey) {
       killEvents(KEY_UP);
@@ -1434,7 +1433,10 @@ bool isTelemetrySourceAvailable(int source)
 
   if (source >= TELEM_RESERVE6 && source <= TELEM_RESERVE10)
     return false;
-    
+
+  if (source >= TELEM_RESERVE11 && source <= TELEM_RESERVE15)
+    return false;
+
   if (source == TELEM_DTE)
     return false;
 

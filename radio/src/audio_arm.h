@@ -251,7 +251,7 @@ void audioStart();
 
 #if defined(VOICE)
   #define AUDIO_ERROR_MESSAGE(e) audioEvent(e)
-  #define AUDIO_TIMER_MINUTE(t)  playDuration(t, 0)
+  #define AUDIO_TIMER_MINUTE(t)  playDuration(t, 0, 0)
 #else
   #define AUDIO_ERROR_MESSAGE(e) audioEvent(AU_ERROR)
   #define AUDIO_TIMER_MINUTE(t)  audioDefevent(AU_WARNING1)
@@ -317,7 +317,10 @@ void pushPrompt(uint16_t prompt, uint8_t id=0);
 #define PLAY_FUNCTION(x, ...)    void x(__VA_ARGS__, uint8_t id)
 #define PUSH_NUMBER_PROMPT(p)    pushPrompt((p), id)
 #define PLAY_NUMBER(n, u, a)     playNumber((n), (u), (a), id)
-#define PLAY_DURATION(d)         playDuration((d), id)
+#define PLAY_DURATION(d, att)    playDuration((d), (att), id)
+#define PLAY_DURATION_ATT        , uint8_t flags
+#define PLAY_TIME                1
+#define IS_PLAY_TIME()           (flags&PLAY_TIME)
 #define IS_PLAYING(id)           audioQueue.isPlaying((id))
 #define PLAY_VALUE(v, id)        playValue((v), (id))
 #define PLAY_FILE(f, flags, id)  audioQueue.playFile((f), (flags), (id))

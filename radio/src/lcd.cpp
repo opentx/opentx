@@ -867,13 +867,14 @@ void lcdDrawTelemetryTopBar()
 #endif
 
 #if defined(PCBTARANIS)
-void putsTime(xcoord_t x, uint8_t y, struct gtm t, bool blink)
+void putsTime(xcoord_t x, uint8_t y, struct gtm t, LcdFlags att)
 {
-  if (blink && (t.tm_sec%2)) {
-    lcd_putcAtt(x, y, ':', 0);
+  LcdFlags att2 = (att & (INVERS|BLINK)) | LEADING0;
+  lcd_outdezNAtt(x, y, t.tm_hour, att2, 2);
+  if (!(att&TIMEBLINK) || (t.tm_sec%2)) {
+    lcd_putcAtt(x, y, ':', att);
   }
-  lcd_outdezNAtt(x, y, t.tm_hour, LEADING0, 2);
-  lcd_outdezNAtt(x+3*FWNUM-2, y, t.tm_min, LEADING0, 2);
+  lcd_outdezNAtt(x+3*FWNUM-2, y, t.tm_min, att2, 2);
 }
 #endif
 
@@ -1197,6 +1198,16 @@ const pm_uint8_t bchunit_ar[] PROGMEM = {
 void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, uint8_t att)
 {
   switch (channel) {
+#if defined(CPUARM)
+    case TELEM_TX_TIME-1:
+    {
+      gtm t;
+      t.tm_hour = val / 60;
+      t.tm_min = val % 60;
+      putsTime(x+2*FWNUM, y, t, att);
+      break;
+    }
+#endif
     case TELEM_TM1-1:
     case TELEM_TM2-1:
       att &= ~NO_UNIT;

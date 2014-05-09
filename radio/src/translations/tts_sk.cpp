@@ -235,7 +235,7 @@ I18N_PLAY_FUNCTION(sk, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 }
 
-I18N_PLAY_FUNCTION(sk, playDuration, int16_t seconds)
+I18N_PLAY_FUNCTION(sk, playDuration, int16_t seconds PLAY_DURATION_ATT)
 {
   if (seconds < 0) {
     PUSH_NUMBER_PROMPT(SK_PROMPT_MINUS);
@@ -244,7 +244,7 @@ I18N_PLAY_FUNCTION(sk, playDuration, int16_t seconds)
 
   uint8_t tmp = seconds / 3600;
   seconds %= 3600;
-  if (tmp > 0) {
+  if (tmp > 0 || IS_PLAY_TIME()) {
     PLAY_NUMBER(tmp, UNIT_HOURS+1, ZENSKY);
   }
 

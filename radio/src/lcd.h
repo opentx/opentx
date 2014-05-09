@@ -113,6 +113,7 @@
   #define SMLSIZE       0x0200
   #define TINSIZE       0x0400
   #define STREXPANDED   0x0800
+  #define TIMEBLINK     0x1000
 #else
   #define MIDSIZE       DBLSIZE
   #define SMLSIZE       0x00
@@ -202,7 +203,7 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
   #define putstime_t int16_t
 #endif
 
-void putsTime(xcoord_t x, uint8_t y, struct gtm t, bool blink=false);
+void putsTime(xcoord_t x, uint8_t y, struct gtm t, LcdFlags att);
 void putsTimer(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFlags att2);
 
 #define SOLID  0xff

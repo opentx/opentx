@@ -4348,7 +4348,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
             CHECK_INCDEC_MODELVAR(event, cs->v3, 0, 222 - cs->v2);
             break;
           }
-          v2_min=-129; v2_max = 122;
+          v2_min = -129; v2_max = 122;
         }
         else if (cstate == LS_FAMILY_COMP) {
           putsMixerSource(CSWONE_2ND_COLUMN, y, cs->v2, attr);
@@ -4646,7 +4646,8 @@ void menuModelLogicalSwitches(uint8_t event)
         v2_max = maxTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
 #if defined(CPUARM)
         v2_min = minTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
-        INCDEC_SET_FLAG(INCDEC_REP10 | NO_INCDEC_MARKS);
+        if (horz == 2 && v2_max-v2_min > 1000)
+          INCDEC_SET_FLAG(INCDEC_REP10 | NO_INCDEC_MARKS);
         if (cs->v2 < v2_min || cs->v2 > v2_max) {
           cs->v2 = 0;
           eeDirty(EE_MODEL);

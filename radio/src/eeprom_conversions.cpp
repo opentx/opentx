@@ -332,6 +332,9 @@ void ConvertGeneralSettings_215_to_216(EEGeneral &settings)
 
 int ConvertTelemetrySource_215_to_216(int source)
 {
+  // TELEM_TX_TIME and 5 spare added
+  if (source >= TELEM_TX_TIME)
+    source += 6;
   // TELEM_RSSI_TX added
   if (source >= TELEM_RSSI_TX)
     source += 1;
