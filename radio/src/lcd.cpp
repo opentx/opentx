@@ -866,7 +866,7 @@ void lcdDrawTelemetryTopBar()
 }
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(CPUARM) && defined(RTCLOCK)
 void putsTime(xcoord_t x, uint8_t y, struct gtm t, LcdFlags att)
 {
   LcdFlags att2 = (att & (INVERS|BLINK)) | LEADING0;
