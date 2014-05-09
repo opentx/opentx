@@ -666,7 +666,13 @@ void perMain();
 NOINLINE void per10ms();
 
 getvalue_t getValue(uint8_t i);
-bool       getSwitch(int8_t swtch);
+bool getSwitch(int8_t swtch);
+
+#if defined(PCBTARANIS)
+  void getSwitchesPosition(bool startup);
+#else
+  #define getSwitchesPosition(...)
+#endif
 
 extern swstate_t switches_states;
 int8_t  getMovedSwitch();

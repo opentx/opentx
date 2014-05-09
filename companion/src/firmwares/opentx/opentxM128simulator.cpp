@@ -60,6 +60,7 @@ namespace Open9xM128 {
 #include "radio/src/eeprom_common.cpp"
 #include "radio/src/eeprom_rlc.cpp"
 #include "radio/src/opentx.cpp"
+#include "radio/src/switches.cpp"
 #include "radio/src/protocols/pulses_avr.cpp"
 #include "radio/src/stamp.cpp"
 #include "radio/src/maths.cpp"
