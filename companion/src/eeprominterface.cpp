@@ -109,6 +109,10 @@ RawSourceRange RawSource::getRange(bool singleprec)
           result.decimals = 1;
           result.max = 25.5;
           break;
+        case TELEMETRY_SOURCE_TX_TIME:
+          result.step = 1;
+          result.max = 24*60 - 1;
+          break;
         case TELEMETRY_SOURCE_TIMER1:
         case TELEMETRY_SOURCE_TIMER2:
           result.step = singleprec ? 5 : 1;
@@ -258,7 +262,7 @@ QString RawSource::toString()
   };
 
   static const QString telemetry[] = {
-    QObject::tr("Batt"), QObject::tr("Timer1"), QObject::tr("Timer2"),
+    QObject::tr("Batt"), QObject::tr("Time"), QObject::tr("Timer1"), QObject::tr("Timer2"),
     QObject::tr("SWR"), QObject::tr("RSSI Tx"), QObject::tr("RSSI Rx"), QObject::tr("Rx Batt"),
     QObject::tr("A1"), QObject::tr("A2"), QObject::tr("A3"), QObject::tr("A4"),
     QObject::tr("Alt"), QObject::tr("Rpm"), QObject::tr("Fuel"), QObject::tr("T1"), QObject::tr("T2"),
@@ -269,7 +273,7 @@ QString RawSource::toString()
     QObject::tr("A1-"),  QObject::tr("A2-"), QObject::tr("A3-"),  QObject::tr("A4-"),
     QObject::tr("Alt-"), QObject::tr("Alt+"), QObject::tr("Rpm+"), QObject::tr("T1+"), QObject::tr("T2+"), QObject::tr("Speed+"), QObject::tr("Dist+"), QObject::tr("AirSpeed+"),
     QObject::tr("Cell-"), QObject::tr("Cells-"), QObject::tr("Vfas-"), QObject::tr("Curr+"), QObject::tr("Powr+"),
-    QObject::tr("ACC"), QObject::tr("Time"),
+    QObject::tr("ACC"), QObject::tr("GPS Time"),
   };
 
   static const QString logicalSwitches[] = {
