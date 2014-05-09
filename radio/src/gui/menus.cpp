@@ -1428,6 +1428,11 @@ bool isTelemetrySourceAvailable(int source)
     return false;
 #endif
 
+#if !defined(RTCLOCK)
+  if (source == TELEM_TX_TIME)
+    return false;
+#endif
+
   if (source >= TELEM_RESERVE1 && source <= TELEM_RESERVE5)
     return false;
 

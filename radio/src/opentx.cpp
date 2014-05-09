@@ -1298,7 +1298,7 @@ getvalue_t getValue(uint8_t i)
 #endif
 
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_TX_VOLTAGE) return g_vbat100mV;
-#if defined(CPUARM)
+#if defined(CPUARM) && defined(RTCLOCK)
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_TX_TIME) {
     struct gtm t;
     gettime(&t);

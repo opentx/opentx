@@ -1198,7 +1198,7 @@ const pm_uint8_t bchunit_ar[] PROGMEM = {
 void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, uint8_t att)
 {
   switch (channel) {
-#if defined(CPUARM)
+#if defined(CPUARM) && defined(RTCLOCK)
     case TELEM_TX_TIME-1:
     {
       gtm t;
