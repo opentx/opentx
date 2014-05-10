@@ -176,7 +176,7 @@ I18N_PLAY_FUNCTION(fr, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 }
 
-I18N_PLAY_FUNCTION(fr, playDuration, int16_t seconds PLAY_DURATION_ATT)
+I18N_PLAY_FUNCTION(fr, playDuration, int seconds PLAY_DURATION_ATT)
 {
   if (seconds < 0) {
     PUSH_NUMBER_PROMPT(FR_PROMPT_MOINS);
@@ -210,7 +210,7 @@ I18N_PLAY_FUNCTION(fr, playDuration, int16_t seconds PLAY_DURATION_ATT)
     }
   }
 
-  if (seconds > 0) {
+  if (!IS_PLAY_TIME() && seconds > 0) {
     PLAY_NUMBER(seconds, 0, FEMININ);
     PUSH_NUMBER_PROMPT(FR_PROMPT_SECONDE);
   }

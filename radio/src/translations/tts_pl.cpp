@@ -239,7 +239,7 @@ I18N_PLAY_FUNCTION(pl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 
 
 // The whole funtion has to be changed
-I18N_PLAY_FUNCTION(pl, playDuration, int16_t seconds PLAY_DURATION_ATT)
+I18N_PLAY_FUNCTION(pl, playDuration, int seconds PLAY_DURATION_ATT)
 {
   if (seconds < 0) {
     PUSH_NUMBER_PROMPT(PL_PROMPT_MINUS);

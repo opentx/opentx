@@ -164,7 +164,7 @@ I18N_PLAY_FUNCTION(it, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 }
 
-I18N_PLAY_FUNCTION(it, playDuration, int16_t seconds PLAY_DURATION_ATT)
+I18N_PLAY_FUNCTION(it, playDuration, int seconds PLAY_DURATION_ATT)
 {
   if (seconds < 0) {
     PUSH_NUMBER_PROMPT(IT_PROMPT_MENO);

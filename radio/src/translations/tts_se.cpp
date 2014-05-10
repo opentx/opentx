@@ -141,7 +141,7 @@ I18N_PLAY_FUNCTION(se, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 }
 
-I18N_PLAY_FUNCTION(se, playDuration, int16_t seconds PLAY_DURATION_ATT)
+I18N_PLAY_FUNCTION(se, playDuration, int seconds PLAY_DURATION_ATT)
 {
   if (seconds < 0) {
     PUSH_NUMBER_PROMPT(SE_PROMPT_MINUS);
