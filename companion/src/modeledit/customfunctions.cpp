@@ -666,7 +666,7 @@ void CustomFunctionsPanel::populateFuncParamCB(QComboBox *b, const ModelData & m
   else if (function>=FuncAdjustGV1 && function<=FuncAdjustGVLast) {
     switch (adjustmode) {
       case 1:
-        populateSourceCB(b, RawSource(value), model, POPULATE_SOURCES|POPULATE_TRIMS|POPULATE_SWITCHES);
+        populateSourceCB(b, RawSource(value), model, POPULATE_SOURCES|POPULATE_VIRTUAL_INPUTS|POPULATE_TRIMS|POPULATE_SWITCHES);
         break;
       case 2:
         populateSourceCB(b, RawSource(value), model, POPULATE_GVARS);
