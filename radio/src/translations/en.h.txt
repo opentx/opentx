@@ -52,7 +52,7 @@
 #define TR_NCHANNELS           "\0014CH\0016CH\0018CH10CH12CH14CH16CH"
 
 #define LEN_VBEEPMODE          "\005"
-#define TR_VBEEPMODE           "Quiet""Alarm""NoKey""All  "
+#define TR_VBEEPMODE           "Quiet""Alarm""NoKey""All\0 "
 
 #define LEN_VBEEPLEN           "\005"
 #define TR_VBEEPLEN            "0====""=0===""==0==""===0=""====0"
@@ -550,6 +550,7 @@
 #define TR_BLDELAY             INDENT "Duration"
 #define TR_BLONBRIGHTNESS      INDENT "ON Brightness"
 #define TR_BLOFFBRIGHTNESS     INDENT "OFF Brightness"
+#define TR_BLCOLOR             INDENT "Color"
 #define TR_SPLASHSCREEN        "Splash screen"
 #define TR_THROTTLEWARNING     TR("T-Warning", INDENT "Throttle State")
 #define TR_SWITCHWARNING       TR("S-Warning", INDENT "Switch Positions")

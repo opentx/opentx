@@ -50,6 +50,7 @@ private slots:
     void on_tabWidget_currentChanged(int index);
     void on_displayTypeCB_currentIndexChanged(int index);
     void on_BLBright_SB_editingFinished();
+    void on_backlightColor_SL_valueChanged();
     void on_re_CB_currentIndexChanged(int index);
     void on_countrycode_CB_currentIndexChanged(int index);
     void on_units_CB_currentIndexChanged(int index);

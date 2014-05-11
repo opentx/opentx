@@ -143,8 +143,8 @@ void delay_01us(uint16_t nb);
 
 // Flash Write driver
 #define FLASH_PAGESIZE 256
-void unlockFlash();
-void lockFlash();
+void unlockFlash(void);
+void lockFlash(void);
 void writeFlash(uint32_t * address, uint32_t * buffer);
 uint32_t isFirmwareStart(const void * buffer);
 uint32_t isBootloaderStart(const void * buffer);
@@ -203,16 +203,25 @@ void pwrInit(void);
 uint32_t pwrCheck(void);
 void pwrOff(void);
 #define UNEXPECTED_SHUTDOWN() (g_eeGeneral.unexpectedShutdown)
-#define INTERNAL_RF_ON()      GPIO_SetBits(GPIOPWR, PIN_INT_RF_PWR)
-#define INTERNAL_RF_OFF()     GPIO_ResetBits(GPIOPWR, PIN_INT_RF_PWR)
-#define EXTERNAL_RF_ON()      GPIO_SetBits(GPIOPWR, PIN_EXT_RF_PWR)
-#define EXTERNAL_RF_OFF()     GPIO_ResetBits(GPIOPWR, PIN_EXT_RF_PWR)
+#define INTERNAL_RF_ON()      GPIO_SetBits(GPIO_INT_RF_PWR, PIN_INT_RF_PWR)
+#define INTERNAL_RF_OFF()     GPIO_ResetBits(GPIO_INT_RF_PWR, PIN_INT_RF_PWR)
+#define EXTERNAL_RF_ON()      GPIO_SetBits(GPIO_EXT_RF_PWR, PIN_EXT_RF_PWR)
+#define EXTERNAL_RF_OFF()     GPIO_ResetBits(GPIO_EXT_RF_PWR, PIN_EXT_RF_PWR)
 
 // Backlight driver
-#define setBacklight(xx)      TIM10->CCR1 = 100-xx
-#define __BACKLIGHT_ON        TIM10->CCR1 = 100-g_eeGeneral.backlightBright
-#define __BACKLIGHT_OFF       TIM10->CCR1 = 0
-#define IS_BACKLIGHT_ON()     (TIM10->CCR1 != 0)
+#if defined(REVPLUS)
+void turnBacklightOn(uint8_t level, uint8_t color);
+void turnBacklightOff(void);
+  #define setBacklight(xx)      turnBacklightOn(xx, g_eeGeneral.backlightColor)
+  #define __BACKLIGHT_ON        turnBacklightOn(g_eeGeneral.backlightBright, g_eeGeneral.backlightColor)
+  #define __BACKLIGHT_OFF       turnBacklightOff()
+  #define IS_BACKLIGHT_ON()     (TIM4->CCR4 != 0) || (TIM4->CCR2 != 0)
+#else
+  #define setBacklight(xx)      TIM10->CCR1 = 100-xx
+  #define __BACKLIGHT_ON        TIM10->CCR1 = 100-g_eeGeneral.backlightBright
+  #define __BACKLIGHT_OFF       TIM10->CCR1 = 0
+  #define IS_BACKLIGHT_ON()     (TIM10->CCR1 != 0)
+#endif
 
 // USB driver
 #define BOOTLOADER_REQUEST()  (0)

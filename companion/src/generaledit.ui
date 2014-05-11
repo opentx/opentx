@@ -113,31 +113,7 @@ These will be relevant for all models in the same EEPROM.</string>
        <string>Setup</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout" columnstretch="1,0,0,0,0">
-       <item row="2" column="3">
-        <widget class="QLabel" name="label_HL">
-         <property name="text">
-          <string>Haptic Length</string>
-         </property>
-        </widget>
-       </item>
-       <item row="26" column="1">
-        <widget class="QCheckBox" name="faimode_CB">
-         <property name="toolTip">
-          <string>If you enable FAI, you loose the vario, the play functions, the telemetry screen. This function cannot be disabled by the radio.</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="3">
-        <widget class="QLabel" name="label_speakerPitch">
-         <property name="text">
-          <string>Speaker Pitch (spkr only)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="4">
+       <item row="3" column="1">
         <widget class="QComboBox" name="hapticLengthCB">
          <item>
           <property name="text">
@@ -166,103 +142,188 @@ These will be relevant for all models in the same EEPROM.</string>
          </item>
         </widget>
        </item>
-       <item row="3" column="3" rowspan="2" colspan="2">
-        <layout class="QGridLayout" name="gridLayout_9" columnstretch="1,0,1,0">
-         <item row="0" column="0">
-          <widget class="QLabel" name="beepVolume_label">
+       <item row="1" column="3">
+        <widget class="QLabel" name="label_speakerPitch">
+         <property name="text">
+          <string>Speaker Pitch (spkr only)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="32" column="4">
+        <widget class="QComboBox" name="channelorderCB">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="statusTip">
+          <string/>
+         </property>
+         <property name="whatsThis">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Channel order&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Defines the order of the default mixes created on a new model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>R E T A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>R E A T</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>R T E A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>R T A E</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>R A E T</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>R A T E</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>E R T A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>E R A T</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>E T R A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>E T A R</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>E A R T</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>E A T R</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>T R E A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>T R A E</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>T E R A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>T E A R</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>T A R E</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>T A E R</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A R E T</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A R T E</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A E R T</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A E T R</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A T R E</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A T E R</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="29" column="1">
+        <widget class="QCheckBox" name="faimode_CB">
+         <property name="toolTip">
+          <string>If you enable FAI, you loose the vario, the play functions, the telemetry screen. This function cannot be disabled by the radio.</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="14" column="4">
+        <layout class="QHBoxLayout" name="backlightColor_Layout">
+         <item>
+          <widget class="QLabel" name="backlightColor1_label">
            <property name="text">
-            <string>Beep volume</string>
+            <string>Color 1</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="1">
-          <widget class="QSlider" name="beepVolume_SL">
-           <property name="minimum">
-            <number>-2</number>
-           </property>
+         <item>
+          <widget class="QSlider" name="backlightColor_SL">
            <property name="maximum">
-            <number>2</number>
-           </property>
-           <property name="pageStep">
-            <number>1</number>
+            <number>100</number>
            </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
           </widget>
          </item>
-         <item row="0" column="2">
-          <widget class="QLabel" name="wavVolume_label">
+         <item>
+          <widget class="QLabel" name="backlightColor2_label">
            <property name="text">
-            <string>Wav volume</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="3">
-          <widget class="QSlider" name="wavVolume_SL">
-           <property name="minimum">
-            <number>-2</number>
-           </property>
-           <property name="maximum">
-            <number>2</number>
-           </property>
-           <property name="pageStep">
-            <number>1</number>
-           </property>
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="varioVolume_label">
-           <property name="text">
-            <string>Vario volume</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QSlider" name="varioVolume_SL">
-           <property name="minimum">
-            <number>-2</number>
-           </property>
-           <property name="maximum">
-            <number>2</number>
-           </property>
-           <property name="pageStep">
-            <number>1</number>
-           </property>
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
-          <widget class="QLabel" name="bgVolume_label">
-           <property name="text">
-            <string>Background volume</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="3">
-          <widget class="QSlider" name="bgVolume_SL">
-           <property name="minimum">
-            <number>-2</number>
-           </property>
-           <property name="maximum">
-            <number>2</number>
-           </property>
-           <property name="pageStep">
-            <number>1</number>
-           </property>
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <string>Color 2</string>
            </property>
           </widget>
          </item>
         </layout>
        </item>
-       <item row="26" column="3" colspan="2">
+       <item row="29" column="3" colspan="2">
         <layout class="QHBoxLayout" name="pxxCountry">
          <item>
           <widget class="QLabel" name="countrycode_label">
@@ -292,46 +353,56 @@ These will be relevant for all models in the same EEPROM.</string>
          </item>
         </layout>
        </item>
-       <item row="23" column="1">
-        <widget class="QComboBox" name="mavbaud_CB">
+       <item row="32" column="1">
+        <widget class="QComboBox" name="stickmodeCB">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="statusTip">
+          <string/>
+         </property>
+         <property name="whatsThis">
+          <string>Mode selection:
+
+Mode 1:
+  Left stick:  Elevator, Rudder
+  Right stick:  Throttle, Aileron
+
+Mode 2:
+  Left stick:  Throttle, Rudder
+  Right stick:  Elevator, Aileron
+
+Mode 3:
+  Left stick:  Elevator, Aileron
+  Right stick:  Throttle, Rudder
+
+Mode 4:
+  Left stick:  Throttle, Aileron
+  Right stick:  Elevator, Rudder
+
+</string>
+         </property>
+         <property name="currentIndex">
+          <number>1</number>
+         </property>
          <item>
           <property name="text">
-           <string>4800 Baud</string>
+           <string>Mode 1 (RUD ELE THR AIL)</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>9600 Baud</string>
+           <string>Mode 2 (RUD THR ELE AIL)</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>14400 Baud</string>
+           <string>Mode 3 (AIL ELE THR RUD)</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>19200 Baud</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>38400 Baud</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>57600 Baud</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>76800 Baud</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>115200 Baud</string>
+           <string>Mode 4 (AIL THR ELE RUD)</string>
           </property>
          </item>
         </widget>
@@ -343,21 +414,14 @@ These will be relevant for all models in the same EEPROM.</string>
          </property>
         </widget>
        </item>
-       <item row="7" column="3">
+       <item row="8" column="3">
         <widget class="QLabel" name="varioP0_label">
          <property name="text">
           <string>Vario pitch at zero</string>
          </property>
         </widget>
        </item>
-       <item row="23" column="0">
-        <widget class="QLabel" name="mavbaud_label">
-         <property name="text">
-          <string>MAVLink Baud Rate</string>
-         </property>
-        </widget>
-       </item>
-       <item row="27" column="3" colspan="2">
+       <item row="30" column="3" colspan="2">
         <layout class="QHBoxLayout" name="horizontalLayout_4">
          <item>
           <widget class="QLabel" name="VoiceLang_label">
@@ -371,14 +435,7 @@ These will be relevant for all models in the same EEPROM.</string>
          </item>
         </layout>
        </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="label_volume">
-         <property name="text">
-          <string>Speaker Volume</string>
-         </property>
-        </widget>
-       </item>
-       <item row="24" column="0">
+       <item row="27" column="0">
         <widget class="QLabel" name="ro_label">
          <property name="text">
           <string>Readonly Unlock</string>
@@ -388,7 +445,7 @@ These will be relevant for all models in the same EEPROM.</string>
          </property>
         </widget>
        </item>
-       <item row="32" column="0" colspan="2">
+       <item row="33" column="0" colspan="2">
         <spacer name="verticalSpacer_5">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -405,31 +462,6 @@ These will be relevant for all models in the same EEPROM.</string>
         <widget class="QLabel" name="label_soundMode">
          <property name="text">
           <string>Sound Mode</string>
-         </property>
-        </widget>
-       </item>
-       <item row="11" column="1">
-        <widget class="QSpinBox" name="inactimerSB">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="statusTip">
-          <string/>
-         </property>
-         <property name="whatsThis">
-          <string>If not zero will sound beeps if the transmitter has been left without inputs for the specified number of minutes.</string>
-         </property>
-         <property name="suffix">
-          <string> min</string>
-         </property>
-         <property name="maximum">
-          <number>120</number>
          </property>
         </widget>
        </item>
@@ -496,7 +528,7 @@ These will be relevant for all models in the same EEPROM.</string>
          </item>
         </widget>
        </item>
-       <item row="11" column="2">
+       <item row="13" column="2">
         <spacer name="horizontalSpacer">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -516,7 +548,27 @@ These will be relevant for all models in the same EEPROM.</string>
          </property>
         </widget>
        </item>
-       <item row="27" column="1">
+       <item row="32" column="0">
+        <widget class="QLabel" name="label_14">
+         <property name="text">
+          <string>Stick Mode</string>
+         </property>
+        </widget>
+       </item>
+       <item row="32" column="3">
+        <widget class="QLabel" name="label_13">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Default Channel Order</string>
+         </property>
+        </widget>
+       </item>
+       <item row="30" column="1">
         <widget class="QComboBox" name="units_CB">
          <item>
           <property name="text">
@@ -530,7 +582,7 @@ These will be relevant for all models in the same EEPROM.</string>
          </item>
         </widget>
        </item>
-       <item row="28" column="1">
+       <item row="31" column="1">
         <widget class="QSpinBox" name="timezoneSB">
          <property name="minimum">
           <number>-14</number>
@@ -596,21 +648,14 @@ These will be relevant for all models in the same EEPROM.</string>
          </item>
         </widget>
        </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="label_hapticStrengthSB">
-         <property name="text">
-          <string>Haptic Strength</string>
-         </property>
-        </widget>
-       </item>
-       <item row="26" column="0">
+       <item row="29" column="0">
         <widget class="QLabel" name="label_faimode">
          <property name="text">
           <string>FAI Mode</string>
          </property>
         </widget>
        </item>
-       <item row="28" column="3" colspan="2">
+       <item row="31" column="3" colspan="2">
         <layout class="QHBoxLayout" name="gpsFormatLayout">
          <item>
           <widget class="QLabel" name="gpsFormatLabel">
@@ -635,36 +680,10 @@ These will be relevant for all models in the same EEPROM.</string>
          </item>
         </layout>
        </item>
-       <item row="3" column="1">
-        <widget class="QSpinBox" name="volume_SB">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximum">
-          <number>23</number>
-         </property>
-        </widget>
-       </item>
-       <item row="27" column="0">
+       <item row="30" column="0">
         <widget class="QLabel" name="units_label">
          <property name="text">
           <string>Measurement Units</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
-        <widget class="QSpinBox" name="hapticStrengthSB">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximum">
-          <number>5</number>
          </property>
         </widget>
        </item>
@@ -702,14 +721,14 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </item>
-       <item row="28" column="0">
+       <item row="31" column="0">
         <widget class="QLabel" name="label_timezone">
          <property name="text">
           <string>Timeshift from UTC</string>
          </property>
         </widget>
        </item>
-       <item row="24" column="1" colspan="3">
+       <item row="27" column="1" colspan="3">
         <layout class="QGridLayout" name="TaranisReadOnlyUnlock" rowstretch="0,0" columnstretch="0,0,0,0,0,0,0,0,0">
          <property name="sizeConstraint">
           <enum>QLayout::SetMinimumSize</enum>
@@ -1237,7 +1256,7 @@ p, li { white-space: pre-wrap; }
          </item>
         </layout>
        </item>
-       <item row="7" column="4">
+       <item row="8" column="4">
         <widget class="QSpinBox" name="varioP0_SB">
          <property name="suffix">
           <string> Hz</string>
@@ -1256,69 +1275,7 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </item>
-       <item row="13" column="0">
-        <widget class="QLabel" name="label_27">
-         <property name="text">
-          <string>&quot;No Sound&quot; Warning</string>
-         </property>
-        </widget>
-       </item>
-       <item row="14" column="0">
-        <widget class="QLabel" name="label_11">
-         <property name="text">
-          <string>Low Memory Warning</string>
-         </property>
-        </widget>
-       </item>
-       <item row="13" column="1">
-        <widget class="QCheckBox" name="alarmwarnChkB">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="whatsThis">
-          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;Warnings&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;These will define startup warnings.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Throttle warning - will alert if the throttle is not at idle during startup&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Switch warning - will alert if switches are not in their defaul position&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Memory warning - will alert if there's not a lot of memory left&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Silent mode warning - will alert you if the beeper is set to quiet (0)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="12" column="0">
-        <widget class="QLabel" name="label_29">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Show Splash Screen on Startup</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="0">
+       <item row="8" column="0">
         <widget class="QLabel" name="label_2">
          <property name="toolTip">
           <string extracomment="Low Battery Voltage warning [5v-10v]"/>
@@ -1328,108 +1285,7 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </item>
-       <item row="9" column="0">
-        <widget class="QLabel" name="label_contrast">
-         <property name="toolTip">
-          <string extracomment="Screen Contrast [20-45]"/>
-         </property>
-         <property name="text">
-          <string>Contrast</string>
-         </property>
-        </widget>
-       </item>
-       <item row="14" column="1">
-        <widget class="QCheckBox" name="memwarnChkB">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="whatsThis">
-          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;Warnings&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;These will define startup warnings.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Throttle warning - will alert if the throttle is not at idle during startup&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Switch warning - will alert if switches are not in their defaul position&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Memory warning - will alert if there's not a lot of memory left&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Silent mode warning - will alert you if the beeper is set to quiet (0)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="11" column="0">
-        <widget class="QLabel" name="label_6">
-         <property name="text">
-          <string>Inactivity Timer</string>
-         </property>
-        </widget>
-       </item>
-       <item row="10" column="1">
-        <widget class="QComboBox" name="displayTypeCB">
-         <item>
-          <property name="text">
-           <string>Standard</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Optrex</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="10" column="0">
-        <widget class="QLabel" name="label_displayType">
-         <property name="text">
-          <string>LCD Display Type</string>
-         </property>
-        </widget>
-       </item>
-       <item row="9" column="1">
-        <widget class="QSpinBox" name="contrastSB">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="statusTip">
-          <string/>
-         </property>
-         <property name="whatsThis">
-          <string/>
-         </property>
-         <property name="minimum">
-          <number>10</number>
-         </property>
-         <property name="maximum">
-          <number>45</number>
-         </property>
-         <property name="value">
-          <number>25</number>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="1">
+       <item row="8" column="1">
         <widget class="QDoubleSpinBox" name="battwarningDSB">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -1472,14 +1328,251 @@ Acceptable values are 5v..10v</string>
          </property>
         </widget>
        </item>
-       <item row="8" column="0">
-        <widget class="QLabel" name="label_4">
+       <item row="9" column="3">
+        <widget class="QLabel" name="varioPMax_label">
          <property name="text">
-          <string>BackLight Switch</string>
+          <string>Vario pitch at max</string>
          </property>
         </widget>
        </item>
-       <item row="8" column="1">
+       <item row="12" column="4">
+        <widget class="QSpinBox" name="backlightautoSB">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="statusTip">
+          <string/>
+         </property>
+         <property name="whatsThis">
+          <string>If this value is not 0, any keypress will turn on the backlight and turn it off after the specified number of seconds.</string>
+         </property>
+         <property name="suffix">
+          <string> sec</string>
+         </property>
+         <property name="maximum">
+          <number>600</number>
+         </property>
+         <property name="singleStep">
+          <number>5</number>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="4">
+        <widget class="QSpinBox" name="varioPMax_SB">
+         <property name="suffix">
+          <string> Hz</string>
+         </property>
+         <property name="minimum">
+          <number>1300</number>
+         </property>
+         <property name="maximum">
+          <number>2900</number>
+         </property>
+         <property name="singleStep">
+          <number>10</number>
+         </property>
+         <property name="value">
+          <number>1700</number>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="4">
+        <widget class="QSpinBox" name="varioR0_SB">
+         <property name="suffix">
+          <string> ms</string>
+         </property>
+         <property name="minimum">
+          <number>200</number>
+         </property>
+         <property name="maximum">
+          <number>1000</number>
+         </property>
+         <property name="singleStep">
+          <number>10</number>
+         </property>
+         <property name="value">
+          <number>500</number>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="3">
+        <widget class="QLabel" name="label_BLBright">
+         <property name="text">
+          <string>Backlight Brightness</string>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="3">
+        <widget class="QLabel" name="varioR0_label">
+         <property name="text">
+          <string>Vario repeat at zero</string>
+         </property>
+        </widget>
+       </item>
+       <item row="12" column="3">
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>Backlight  Auto OFF after</string>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="4">
+        <widget class="QSpinBox" name="BLBright_SB">
+         <property name="maximum">
+          <number>100</number>
+         </property>
+        </widget>
+       </item>
+       <item row="15" column="4">
+        <widget class="QComboBox" name="re_CB"/>
+       </item>
+       <item row="15" column="3">
+        <widget class="QLabel" name="re_label">
+         <property name="text">
+          <string>RotEnc Navigation</string>
+         </property>
+        </widget>
+       </item>
+       <item row="14" column="3">
+        <widget class="QLabel" name="backlightColor_label">
+         <property name="text">
+          <string>Backlight color</string>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="1">
+        <widget class="QComboBox" name="displayTypeCB">
+         <item>
+          <property name="text">
+           <string>Standard</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Optrex</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="9" column="0">
+        <widget class="QLabel" name="label_contrast">
+         <property name="toolTip">
+          <string extracomment="Screen Contrast [20-45]"/>
+         </property>
+         <property name="text">
+          <string>Contrast</string>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="1">
+        <widget class="QSpinBox" name="inactimerSB">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="statusTip">
+          <string/>
+         </property>
+         <property name="whatsThis">
+          <string>If not zero will sound beeps if the transmitter has been left without inputs for the specified number of minutes.</string>
+         </property>
+         <property name="suffix">
+          <string> min</string>
+         </property>
+         <property name="maximum">
+          <number>120</number>
+         </property>
+        </widget>
+       </item>
+       <item row="15" column="1">
+        <widget class="QComboBox" name="mavbaud_CB">
+         <item>
+          <property name="text">
+           <string>4800 Baud</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>9600 Baud</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>14400 Baud</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>19200 Baud</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>38400 Baud</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>57600 Baud</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>76800 Baud</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>115200 Baud</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="11" column="3">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>Backlight Switch</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="4">
+        <widget class="QSpinBox" name="volume_SB">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximum">
+          <number>23</number>
+         </property>
+        </widget>
+       </item>
+       <item row="12" column="0">
+        <widget class="QLabel" name="label_29">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Show Splash Screen on Startup</string>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="4">
         <widget class="QComboBox" name="backlightswCB">
          <property name="toolTip">
           <string/>
@@ -1494,6 +1587,152 @@ Acceptable values are 5v..10v</string>
          </property>
          <property name="currentIndex">
           <number>-1</number>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="0">
+        <widget class="QLabel" name="label_displayType">
+         <property name="text">
+          <string>LCD Display Type</string>
+         </property>
+        </widget>
+       </item>
+       <item row="14" column="1">
+        <widget class="QCheckBox" name="memwarnChkB">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="whatsThis">
+          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;Warnings&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;These will define startup warnings.&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Throttle warning - will alert if the throttle is not at idle during startup&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Switch warning - will alert if switches are not in their defaul position&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Memory warning - will alert if there's not a lot of memory left&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Silent mode warning - will alert you if the beeper is set to quiet (0)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="15" column="0">
+        <widget class="QLabel" name="mavbaud_label">
+         <property name="text">
+          <string>MAVLink Baud Rate</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="1">
+        <widget class="QSpinBox" name="contrastSB">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="statusTip">
+          <string/>
+         </property>
+         <property name="whatsThis">
+          <string/>
+         </property>
+         <property name="minimum">
+          <number>10</number>
+         </property>
+         <property name="maximum">
+          <number>45</number>
+         </property>
+         <property name="value">
+          <number>25</number>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="3">
+        <widget class="QLabel" name="label_volume">
+         <property name="text">
+          <string>Speaker Volume</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_HL">
+         <property name="text">
+          <string>Haptic Length</string>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="0">
+        <widget class="QLabel" name="label_6">
+         <property name="text">
+          <string>Inactivity Timer</string>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="1">
+        <widget class="QCheckBox" name="alarmwarnChkB">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="whatsThis">
+          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;Warnings&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;These will define startup warnings.&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Throttle warning - will alert if the throttle is not at idle during startup&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Switch warning - will alert if switches are not in their defaul position&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Memory warning - will alert if there's not a lot of memory left&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Silent mode warning - will alert you if the beeper is set to quiet (0)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QSpinBox" name="hapticStrengthSB">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximum">
+          <number>5</number>
          </property>
         </widget>
        </item>
@@ -1576,326 +1815,122 @@ Acceptable values are 5v..10v</string>
          </item>
         </layout>
        </item>
-       <item row="8" column="3">
-        <widget class="QLabel" name="varioPMax_label">
+       <item row="13" column="0">
+        <widget class="QLabel" name="label_27">
          <property name="text">
-          <string>Vario pitch at max</string>
+          <string>&quot;No Sound&quot; Warning</string>
          </property>
         </widget>
        </item>
-       <item row="10" column="4">
-        <widget class="QSpinBox" name="backlightautoSB">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="statusTip">
-          <string/>
-         </property>
-         <property name="whatsThis">
-          <string>If this value is not 0, any keypress will turn on the backlight and turn it off after the specified number of seconds.</string>
-         </property>
-         <property name="suffix">
-          <string> sec</string>
-         </property>
-         <property name="maximum">
-          <number>600</number>
-         </property>
-         <property name="singleStep">
-          <number>5</number>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="4">
-        <widget class="QSpinBox" name="varioPMax_SB">
-         <property name="suffix">
-          <string> Hz</string>
-         </property>
-         <property name="minimum">
-          <number>1300</number>
-         </property>
-         <property name="maximum">
-          <number>2900</number>
-         </property>
-         <property name="singleStep">
-          <number>10</number>
-         </property>
-         <property name="value">
-          <number>1700</number>
-         </property>
-        </widget>
-       </item>
-       <item row="9" column="4">
-        <widget class="QSpinBox" name="varioR0_SB">
-         <property name="suffix">
-          <string> ms</string>
-         </property>
-         <property name="minimum">
-          <number>200</number>
-         </property>
-         <property name="maximum">
-          <number>1000</number>
-         </property>
-         <property name="singleStep">
-          <number>10</number>
-         </property>
-         <property name="value">
-          <number>500</number>
-         </property>
-        </widget>
-       </item>
-       <item row="11" column="3">
-        <widget class="QLabel" name="label_BLBright">
+       <item row="14" column="0">
+        <widget class="QLabel" name="label_11">
          <property name="text">
-          <string>BackLight Brightness</string>
+          <string>Low Memory Warning</string>
          </property>
         </widget>
        </item>
-       <item row="9" column="3">
-        <widget class="QLabel" name="varioR0_label">
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_hapticStrengthSB">
          <property name="text">
-          <string>Vario repeat at zero</string>
+          <string>Haptic Strength</string>
          </property>
         </widget>
        </item>
-       <item row="10" column="3">
-        <widget class="QLabel" name="label_5">
-         <property name="text">
-          <string>BackLight  Auto OFF after</string>
-         </property>
-        </widget>
-       </item>
-       <item row="11" column="4">
-        <widget class="QSpinBox" name="BLBright_SB">
-         <property name="maximum">
-          <number>100</number>
-         </property>
-        </widget>
-       </item>
-       <item row="12" column="4">
-        <widget class="QComboBox" name="re_CB"/>
-       </item>
-       <item row="12" column="3">
-        <widget class="QLabel" name="re_label">
-         <property name="text">
-          <string>RotEnc Navigation</string>
-         </property>
-        </widget>
-       </item>
-       <item row="29" column="3">
-        <widget class="QLabel" name="label_19">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>Default Channel Order</string>
-         </property>
-        </widget>
-       </item>
-       <item row="29" column="4">
-        <widget class="QComboBox" name="channelorderCB">
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="statusTip">
-          <string/>
-         </property>
-         <property name="whatsThis">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Channel order&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Defines the order of the default mixes created on a new model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="currentIndex">
-          <number>0</number>
-         </property>
-         <item>
-          <property name="text">
-           <string>R E T A</string>
-          </property>
+       <item row="4" column="3" rowspan="2" colspan="2">
+        <layout class="QGridLayout" name="gridLayout_9" columnstretch="1,0,1,0">
+         <item row="0" column="0">
+          <widget class="QLabel" name="beepVolume_label">
+           <property name="text">
+            <string>Beep volume</string>
+           </property>
+          </widget>
          </item>
-         <item>
-          <property name="text">
-           <string>R E A T</string>
-          </property>
+         <item row="0" column="1">
+          <widget class="QSlider" name="beepVolume_SL">
+           <property name="minimum">
+            <number>-2</number>
+           </property>
+           <property name="maximum">
+            <number>2</number>
+           </property>
+           <property name="pageStep">
+            <number>1</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
          </item>
-         <item>
-          <property name="text">
-           <string>R T E A</string>
-          </property>
+         <item row="0" column="2">
+          <widget class="QLabel" name="wavVolume_label">
+           <property name="text">
+            <string>Wav volume</string>
+           </property>
+          </widget>
          </item>
-         <item>
-          <property name="text">
-           <string>R T A E</string>
-          </property>
+         <item row="0" column="3">
+          <widget class="QSlider" name="wavVolume_SL">
+           <property name="minimum">
+            <number>-2</number>
+           </property>
+           <property name="maximum">
+            <number>2</number>
+           </property>
+           <property name="pageStep">
+            <number>1</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
          </item>
-         <item>
-          <property name="text">
-           <string>R A E T</string>
-          </property>
+         <item row="1" column="0">
+          <widget class="QLabel" name="varioVolume_label">
+           <property name="text">
+            <string>Vario volume</string>
+           </property>
+          </widget>
          </item>
-         <item>
-          <property name="text">
-           <string>R A T E</string>
-          </property>
+         <item row="1" column="1">
+          <widget class="QSlider" name="varioVolume_SL">
+           <property name="minimum">
+            <number>-2</number>
+           </property>
+           <property name="maximum">
+            <number>2</number>
+           </property>
+           <property name="pageStep">
+            <number>1</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
          </item>
-         <item>
-          <property name="text">
-           <string>E R T A</string>
-          </property>
+         <item row="1" column="2">
+          <widget class="QLabel" name="bgVolume_label">
+           <property name="text">
+            <string>Background volume</string>
+           </property>
+          </widget>
          </item>
-         <item>
-          <property name="text">
-           <string>E R A T</string>
-          </property>
+         <item row="1" column="3">
+          <widget class="QSlider" name="bgVolume_SL">
+           <property name="minimum">
+            <number>-2</number>
+           </property>
+           <property name="maximum">
+            <number>2</number>
+           </property>
+           <property name="pageStep">
+            <number>1</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
          </item>
-         <item>
-          <property name="text">
-           <string>E T R A</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>E T A R</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>E A R T</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>E A T R</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>T R E A</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>T R A E</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>T E R A</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>T E A R</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>T A R E</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>T A E R</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>A R E T</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>A R T E</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>A E R T</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>A E T R</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>A T R E</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>A T E R</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="29" column="1">
-        <widget class="QComboBox" name="stickmodeCB">
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="statusTip">
-          <string/>
-         </property>
-         <property name="whatsThis">
-          <string>Mode selection:
-
-Mode 1:
-  Left stick:  Elevator, Rudder
-  Right stick:  Throttle, Aileron
-
-Mode 2:
-  Left stick:  Throttle, Rudder
-  Right stick:  Elevator, Aileron
-
-Mode 3:
-  Left stick:  Elevator, Aileron
-  Right stick:  Throttle, Rudder
-
-Mode 4:
-  Left stick:  Throttle, Aileron
-  Right stick:  Elevator, Rudder
-
-</string>
-         </property>
-         <property name="currentIndex">
-          <number>1</number>
-         </property>
-         <item>
-          <property name="text">
-           <string>Mode 1 (RUD ELE THR AIL)</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Mode 2 (RUD THR ELE AIL)</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Mode 3 (AIL ELE THR RUD)</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Mode 4 (AIL THR ELE RUD)</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="29" column="0">
-        <widget class="QLabel" name="label_14">
-         <property name="text">
-          <string>Stick Mode</string>
-         </property>
-        </widget>
+        </layout>
        </item>
        <item row="31" column="0">
         <widget class="QLabel" name="stickReverseLB">
@@ -3244,6 +3279,7 @@ Mode 4:
   </layout>
  </widget>
  <tabstops>
+  <tabstop>channelorderCB</tabstop>
   <tabstop>trnMode_1</tabstop>
   <tabstop>trnChn_1</tabstop>
   <tabstop>trnWeight_1</tabstop>
