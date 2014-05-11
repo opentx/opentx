@@ -380,6 +380,7 @@
 // Haptic
 #if defined(REVPLUS)
   #define RCC_AHB1Periph_GPIOHAPTIC     RCC_AHB1Periph_GPIOB
+  #define GPIO_PinSource_HAPTIC         GPIO_PinSource8
   #define GPIO_HAPTIC                   GPIOB
   #define PIN_HAPTIC                    GPIO_Pin_8
 #else
