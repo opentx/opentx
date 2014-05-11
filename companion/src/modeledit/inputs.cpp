@@ -3,9 +3,8 @@
 #include "expodialog.h"
 #include "helpers.h"
 
-InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings):
-  ModelPanel(parent, model),
-  generalSettings(generalSettings),
+InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+  ModelPanel(parent, model, generalSettings, firmware),
   expoInserted(false)
 {
   QGridLayout * exposLayout = new QGridLayout(this);
@@ -21,7 +20,7 @@ InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & g
   qbDown->setText(tr("Move Down"));
   qbDown->setIcon(CompanionIcon("movedown.png"));
   qbDown->setShortcut(QKeySequence(tr("Ctrl+Down")));
-  qbClear->setText(tr("Clear All Settings"));
+  qbClear->setText(tr("Clear All Inputs"));
   qbClear->setIcon(CompanionIcon("clear.png"));
 
   exposLayout->addWidget(ExposlistWidget,1,1,1,3);
@@ -48,7 +47,7 @@ void InputsPanel::update()
 {
   lock = true;
 
-  int inputsCount = GetEepromInterface()->getCapability(VirtualInputs);
+  int inputsCount = firmware->getCapability(VirtualInputs);
   if (inputsCount == 0)
     inputsCount = NUM_STICKS;
 
@@ -56,6 +55,7 @@ void InputsPanel::update()
   // i -> mixer number
   QByteArray qba;
   ExposlistWidget->clear();
+  firstLine = true;
   int curDest = -1;
 
   for (int i=0; i<C9X_MAX_EXPOS; i++) {
@@ -67,80 +67,126 @@ void InputsPanel::update()
 
     while (curDest<(int)md->chn-1) {
       curDest++;
-      str = getInputStr(model, curDest);
-      qba.clear();
-      qba.append((quint8)-curDest-1);
-      QListWidgetItem *itm = new QListWidgetItem(str);
-      itm->setData(Qt::UserRole,qba);
-      ExposlistWidget->addItem(itm);
+      AddInputLine(-curDest-1);
+    }
+    if (AddInputLine(i)) {
+      curDest++;
     }
 
-    if (curDest!=(int)md->chn) {
-      if (GetEepromInterface()->getCapability(VirtualInputs))
-        str = QString("%1").arg(getInputStr(model, md->chn), -8, ' ');
+  }
+
+  while (curDest<inputsCount-1) {
+    curDest++;
+    AddInputLine(-curDest-1);
+  }
+
+  lock = false;
+}
+
+
+/**
+  @brief Creates new input line (list item) and adds it to the list widget
+
+  @note Input lines are now HTML formated because they use same widget as mixers.
+
+  @param[in] dest   defines which input line to create. 
+                    If dest < 0 then create empty input slot for input -dest ( dest=-6 -> Input05)
+                    if dest >=0 then create used input based on model input data from slot dest (dest=4 -> model expoData[4])
+
+  @retval true      created input number is different from the previous list item
+          false     created input number is the same as previous list item
+*/
+bool InputsPanel::AddInputLine(int dest) 
+{
+  bool new_ch;
+  QString str = getInputText(dest, &new_ch);
+  QListWidgetItem *itm = new QListWidgetItem(str);
+  QByteArray qba(1, (quint8)dest);
+  if (dest >= 0) {
+    //add input data
+    ExpoData *md = &model.expoData[dest];
+    qba.append((const char*)md, sizeof(ExpoData));
+  }
+  itm->setData(Qt::UserRole, qba);  
+#if MIX_ROW_HEIGHT_INCREASE > 0
+  if (new_ch && !firstLine) {
+    //increase size of this row
+    itm->setData(GroupHeaderRole, 1);  
+  }
+#endif
+  ExposlistWidget->addItem(itm);
+  firstLine = false;
+  //qDebug() << "InputsPanel::AddInputLine(): dest" << dest << "text" << str;
+  return new_ch;
+}
+
+
+/**
+  @brief Returns HTML formated input representation
+
+ @param[in] dest   defines which input line to create. 
+                    If dest < 0 then create empty input slot for input -dest ( dest=-6 -> Input05)
+                    if dest >=0 then create used input based on model input data from slot dest (dest=4 -> model expoData[4])
+
+  @retval string    input line in HTML  
+*/
+QString InputsPanel::getInputText(int dest, bool * new_ch)
+{
+  QString str;
+  if (new_ch) *new_ch = 0;
+  if (dest < 0) {
+    str = getInputStr(model, -dest-1);
+    if (new_ch) *new_ch = 1;
+  }
+  else {
+    ExpoData *md = &model.expoData[dest];
+
+    if ((dest == 0) || (model.expoData[dest-1].chn != md->chn)) {
+      if (new_ch) *new_ch = 1;
+      if (firmware->getCapability(VirtualInputs))
+        str = QString("%1").arg(getInputStr(model, md->chn), -10, ' ');
       else
         str = getInputStr(model, md->chn);
-      curDest = md->chn;
     }
     else {
-      if (GetEepromInterface()->getCapability(VirtualInputs))
-        str = "        ";
+      if (firmware->getCapability(VirtualInputs))
+        str = "          ";
       else
         str = "   ";
     }
 
-    if (GetEepromInterface()->getCapability(VirtualInputs)) {
+    switch (md->mode) {
+      case (1): str += " <-"; break;
+      case (2): str += " ->"; break;
+      default:  str += "   "; break;
+    }
+
+    str += " " + tr("Weight(%1)").arg(getGVarString(md->weight));
+
+    if (firmware->getCapability(VirtualInputs)) {
       str += " " + tr("Source(%1)").arg(md->srcRaw.toString());
       if (md->carryTrim>0) {
-        str += " " + tr("No Trim");
+        str += " " + tr("NoTrim");
       }
       else if (md->carryTrim<0) {
         str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString();
       }
     }
-    else {
-      switch (md->mode) {
-        case (1): str += " <-"; break;
-        case (2): str += " ->"; break;
-        default:  str += "   "; break;
-      };
-    }
 
-    str += " " + tr("Weight(%1)").arg(getGVarString(md->weight));
-
-    if (md->curve.value) str += " " + md->curve.toString();
+    if (md->curve.value) str += " " +  Qt::escape(md->curve.toString());
 
     QString phasesStr = getPhasesStr(md->phases, model);
     if (!phasesStr.isEmpty()) str += " " + phasesStr;
 
     if (md->swtch.type != SWITCH_TYPE_NONE) str += " " + tr("Switch(%1)").arg(md->swtch.toString());
 
-    if (GetEepromInterface()->getCapability(HasExpoNames)) {
+    if (firmware->getCapability(HasExpoNames)) {
       QString expoName = md->name;
       if (!expoName.isEmpty()) str += QString(" [%1]").arg(expoName);
     }
-
-    qba.clear();
-    qba.append((quint8)i);
-    qba.append((const char*)md, sizeof(ExpoData));
-    QListWidgetItem *itm = new QListWidgetItem(str);
-    itm->setData(Qt::UserRole,qba);  // expo number
-    ExposlistWidget->addItem(itm);   //(str);
   }
-
-  while (curDest<inputsCount-1) {
-    curDest++;
-    QString str = getInputStr(model, curDest);
-    qba.clear();
-    qba.append((quint8)-curDest-1);
-    QListWidgetItem *itm = new QListWidgetItem(str);
-    itm->setData(Qt::UserRole,qba); // add new expo
-    ExposlistWidget->addItem(itm);
-  }
-
-  lock = false;
+  return Qt::escape(str).replace(" ", "&nbsp;");
 }
-
 
 bool InputsPanel::gm_insertExpo(int idx)
 {
@@ -169,12 +215,18 @@ void InputsPanel::gm_openExpo(int index)
     if(index<0 || index>=C9X_MAX_EXPOS) return;
 
     ExpoData mixd(model.expoData[index]);
+    char inputName[4+1];
     emit modified();
     update();
+    
+    if (firmware->getCapability(VirtualInputs))
+      strcpy(inputName, model.inputNames[mixd.chn]);
 
-    ExpoDialog *g = new ExpoDialog(this, model, &mixd, generalSettings.stickMode);
+    ExpoDialog *g = new ExpoDialog(this, model, &mixd, generalSettings, firmware, inputName);
     if (g->exec())  {
       model.expoData[index] = mixd;
+      if (firmware->getCapability(VirtualInputs))
+        strcpy(model.inputNames[mixd.chn], inputName);
       emit modified();
       update();
     }

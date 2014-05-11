@@ -35,9 +35,10 @@
  */
 
 #include <string.h>
-#include "../FatFs/diskio.h"
-#include "../FatFs/ff.h"
-#include "../CoOS/kernel/CoOS.h"
+#include "board_taranis.h"
+#include "../../FatFs/diskio.h"
+#include "../../FatFs/ff.h"
+#include "../../CoOS/kernel/CoOS.h"
 #include "hal.h"
 
 /* Definitions for MMC/SDC command */
@@ -93,6 +94,7 @@ uint32_t transSpeed; */
 /*-----------------------------------------------------------------------*/
 /* Lock / unlock functions                                               */
 /*-----------------------------------------------------------------------*/
+#if !defined(BOOT)
 int ff_cre_syncobj (BYTE vol, _SYNC_t *mutex)
 {
   *mutex = CoCreateMutex();
@@ -114,6 +116,7 @@ int ff_del_syncobj (_SYNC_t mutex)
 {
   return 1;
 }
+#endif
 
 static const DWORD socket_state_mask_cp = (1 << 0);
 static const DWORD socket_state_mask_wp = (1 << 1);
@@ -124,7 +127,6 @@ DSTATUS Stat = STA_NOINIT;      /* Disk status */
 static volatile
 DWORD Timer1, Timer2;   /* 100Hz decrement timers */
 
-static
 BYTE CardType;                  /* Card type flags */
 
 enum speed_setting { INTERFACE_SLOW, INTERFACE_FAST };
@@ -178,12 +180,10 @@ static void card_power(BYTE on)
         on=on;
 }
 
-#if (STM32_SD_DISK_IOCTRL == 1)
 static int chk_power(void)
 {
         return 1; /* fake powered */
 }
-#endif
 
 /*-----------------------------------------------------------------------*/
 /* Transmit/Receive a byte to MMC via SPI  (Platform dependent)          */
@@ -433,30 +433,29 @@ void power_on (void)
 static
 void power_off (void)
 {
-  
   GPIO_InitTypeDef GPIO_InitStructure;
 
-	if (!(Stat & STA_NOINIT)) {
-		SELECT();
-		wait_ready();
-		release_spi();
-	}
+  if (!(Stat & STA_NOINIT)) {
+    SELECT();
+    wait_ready();
+    release_spi();
+  }
 
-	SPI_I2S_DeInit(SPI_SD);
-	SPI_Cmd(SPI_SD, DISABLE);
-	RCC_APBPeriphClockCmd_SPI_SD(RCC_APBPeriph_SPI_SD, DISABLE);
-    
-	//All SPI-Pins to input with weak internal pull-downs
-	GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_SPI_SD_SCK | GPIO_Pin_SPI_SD_MISO | GPIO_Pin_SPI_SD_MOSI;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  SPI_I2S_DeInit(SPI_SD);
+  SPI_Cmd(SPI_SD, DISABLE);
+  RCC_APBPeriphClockCmd_SPI_SD(RCC_APBPeriph_SPI_SD, DISABLE);
+
+  //All SPI-Pins to input with weak internal pull-downs
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_SPI_SD_SCK | GPIO_Pin_SPI_SD_MISO
+      | GPIO_Pin_SPI_SD_MOSI;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
-	GPIO_Init(GPIO_SPI_SD, &GPIO_InitStructure);
+  GPIO_Init(GPIO_SPI_SD, &GPIO_InitStructure);
 
-	card_power(0);
+  card_power(0);
 
-	Stat |= STA_NOINIT;		/* Set STA_NOINIT */
-	
+  Stat |= STA_NOINIT; /* Set STA_NOINIT */
 }
 
 /*-----------------------------------------------------------------------*/
@@ -501,7 +500,6 @@ BOOL rcvr_datablock (
 /* Send a data packet to MMC                                             */
 /*-----------------------------------------------------------------------*/
 
-#if _FS_READONLY == 0
 static
 BOOL xmit_datablock (
         const BYTE *buff,       /* 512 byte data block to be transmitted */
@@ -537,8 +535,6 @@ BOOL xmit_datablock (
 
         return TRUE;
 }
-#endif /* _READONLY */
-
 
 
 /*-----------------------------------------------------------------------*/
@@ -655,7 +651,6 @@ DSTATUS disk_initialize (
 /*-----------------------------------------------------------------------*/
 /* Get Disk Status                                                       */
 /*-----------------------------------------------------------------------*/
-
 DSTATUS disk_status (
         BYTE drv                /* Physical drive number (0) */
 )
@@ -663,7 +658,6 @@ DSTATUS disk_status (
         if (drv) return STA_NOINIT;             /* Supports only single drive */
         return Stat;
 }
-
 
 
 /*-----------------------------------------------------------------------*/
@@ -675,14 +669,23 @@ int8_t SD_ReadSectors(uint8_t *buff, uint32_t sector, uint32_t count)
 {
   if (!(CardType & CT_BLOCK)) sector *= 512;      /* Convert to byte address if needed */
 
-  if (send_cmd(CMD18, sector) == 0) {     /* READ_MULTIPLE_BLOCK */
-    do {
-      if (!rcvr_datablock(buff, 512)) {
-        break;
+  if (count == 1) {       /* Single block read */
+    if (send_cmd(CMD17, sector) == 0)       { /* READ_SINGLE_BLOCK */
+      if (rcvr_datablock(buff, 512)) {
+        count = 0;
       }
-      buff += 512;
-    } while (--count);
-    send_cmd(CMD12, 0);                             /* STOP_TRANSMISSION */
+    }
+  }
+  else {                          /* Multiple block read */
+    if (send_cmd(CMD18, sector) == 0) {     /* READ_MULTIPLE_BLOCK */
+      do {
+        if (!rcvr_datablock(buff, 512)) {
+          break;
+        }
+        buff += 512;
+      } while (--count);
+      send_cmd(CMD12, 0);                             /* STOP_TRANSMISSION */
+    }
   }
 
   release_spi();
@@ -700,29 +703,9 @@ DRESULT disk_read (
         if (drv || !count) return RES_PARERR;
         if (Stat & STA_NOINIT) return RES_NOTRDY;
 
-        if (!(CardType & CT_BLOCK)) sector *= 512;      /* Convert to byte address if needed */
+        SD_ReadSectors(buff, sector, count);
 
-        if (count == 1) {       /* Single block read */
-                if (send_cmd(CMD17, sector) == 0)       { /* READ_SINGLE_BLOCK */
-                        if (rcvr_datablock(buff, 512)) {
-                                count = 0;
-                        }
-                }
-        }
-        else {                          /* Multiple block read */
-                if (send_cmd(CMD18, sector) == 0) {     /* READ_MULTIPLE_BLOCK */
-                        do {
-                                if (!rcvr_datablock(buff, 512)) {
-                                        break;
-                                }
-                                buff += 512;
-                        } while (--count);
-                        send_cmd(CMD12, 0);                             /* STOP_TRANSMISSION */
-                }
-        }
-        release_spi();
-
-        return count ? RES_ERROR : RES_OK;
+        return RES_OK;
 }
 
 
@@ -730,8 +713,6 @@ DRESULT disk_read (
 /*-----------------------------------------------------------------------*/
 /* Write Sector(s)                                                       */
 /*-----------------------------------------------------------------------*/
-
-#if _FS_READONLY == 0
 
 // TODO quick & dirty
 int8_t SD_WriteSectors(uint8_t *buff, uint32_t sector, uint32_t count)
@@ -751,6 +732,8 @@ int8_t SD_WriteSectors(uint8_t *buff, uint32_t sector, uint32_t count)
 
   return 0;
 }
+
+#if _FS_READONLY == 0
 
 DRESULT disk_write (
         BYTE drv,                       /* Physical drive number (0) */
@@ -793,7 +776,6 @@ DRESULT disk_write (
 /* Miscellaneous Functions                                               */
 /*-----------------------------------------------------------------------*/
 
-#if (STM32_SD_DISK_IOCTRL == 1)
 DRESULT disk_ioctl (
         BYTE drv,               /* Physical drive number (0) */
         BYTE ctrl,              /* Control code */
@@ -919,7 +901,6 @@ DRESULT disk_ioctl (
 
         return res;
 }
-#endif /* _USE_IOCTL != 0 */
 
 
 /*-----------------------------------------------------------------------*/
@@ -966,7 +947,16 @@ FATFS g_FATFS_Obj;
 FIL g_telemetryFile = {0};
 #endif
 
-void sdInit()
+#if defined(BOOT)
+void sdInit(void)
+{
+  if (f_mount(0, &g_FATFS_Obj) == FR_OK) {
+    f_chdir("/");
+  }
+}
+#else
+// TODO shouldn't be there!
+void sdInit(void)
 {
   if (f_mount(0, &g_FATFS_Obj) == FR_OK) {
     referenceSystemAudioFiles();
@@ -989,6 +979,7 @@ void sdDone()
     f_mount(0, 0); // unmount SD
   }
 }
+#endif
 
 uint32_t sdMounted()
 {

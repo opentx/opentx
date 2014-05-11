@@ -2,14 +2,22 @@
 #define CHANNELS_H
 
 #include "modelpanel.h"
+#include <QSpinBox>
 
 class Channels : public ModelPanel
 {
     Q_OBJECT
 
   public:
-    Channels(QWidget *parent, ModelData & model);
+    Channels(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
     ~Channels();
+    
+  private:
+    QVector<QDoubleSpinBox *> minSpins;
+    QVector<QDoubleSpinBox *> maxSpins;
+
+  public slots:
+    void refreshExtendedLimits();
 
   private slots:
     void symlimitsEdited();
@@ -18,6 +26,7 @@ class Channels : public ModelPanel
     void minEdited();
     void maxEdited();
     void invEdited();
+    void curveEdited();
     void ppmcenterEdited();
 
 };

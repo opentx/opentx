@@ -638,41 +638,45 @@ class ConversionField: public TransformedField {
 
     virtual void beforeExport()
     {
-      int val = field;
+      _field = field;
 
       if (scale) {
-        val /= scale;
+        _field /= scale;
       }
 
       if (table) {
-        if (table->exportValue(val, _field))
+        if (table->exportValue(_field, _field))
           return;
         if (!error.isEmpty())
           EEPROMWarnings += error + "\n";
       }
 
       if (shift) {
-        if (val < min) _field = min + shift;
-        else if (val > max) _field = max + shift;
-        else _field = val + shift;
+        if (_field < min) _field = min + shift;
+        else if (_field > max) _field = max + shift;
+        else _field += shift;
       }
 
       if (exportFunc) {
-        _field = exportFunc(val);
+        _field = exportFunc(_field);
       }
     }
 
     virtual void afterImport()
     {
+      field = _field;
+
       if (table) {
-        if (table->importValue(_field, field))
+        if (table->importValue(field, field))
           return;
       }
 
-      field = _field - shift;
+      if (shift) {
+        field -= shift;
+      }
 
       if (importFunc) {
-        field = importFunc(_field);
+        field = importFunc(field);
       }
 
       if (scale) {

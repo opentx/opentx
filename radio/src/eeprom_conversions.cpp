@@ -36,6 +36,7 @@
 
 #include "opentx.h"
 
+#if defined(PCBTARANIS)
 PACK(typedef struct {
   uint8_t  mode;         // 0=end, 1=pos, 2=neg, 3=both
   uint8_t  chn;
@@ -47,6 +48,18 @@ PACK(typedef struct {
   uint8_t  spare[2];
   int8_t   curveParam;
 }) ExpoData_v215;
+#else
+PACK(typedef struct {
+  uint8_t  mode;         // 0=end, 1=pos, 2=neg, 3=both
+  uint8_t  chn;
+  int8_t   swtch;
+  uint16_t phases;
+  int8_t   weight;
+  uint8_t  curveMode;
+  char     name[LEN_EXPOMIX_NAME];
+  int8_t   curveParam;
+}) ExpoData_v215;
+#endif
 
 #if defined(PCBTARANIS)
   #define LIMITDATA_V215_EXTRA  char name[LEN_CHANNEL_NAME];
@@ -140,6 +153,7 @@ PACK(typedef struct {
   int8_t  andsw;
 }) LogicalSwitchData_v215;
 
+#if defined(PCBTARANIS)
 PACK(typedef struct {
   int8_t  swtch;
   uint8_t func;
@@ -154,6 +168,22 @@ PACK(typedef struct {
   uint8_t mode:2;
   uint8_t active:6;
 }) CustomFnData_v215;
+#else
+PACK(typedef struct {
+  int8_t  swtch;
+  uint8_t func;
+  PACK(union {
+    char name[6];
+    struct {
+      int16_t val;
+      int16_t ext1;
+      int16_t ext2;
+    } composite;
+  }) param;
+  uint8_t mode:2;
+  uint8_t active:6;
+}) CustomFnData_v215;
+#endif
 
 PACK(typedef struct {
   FrSkyChannelData channels[2];
@@ -192,10 +222,10 @@ PACK(typedef struct {
   int16_t   curves[16];
   int8_t    points[NUM_POINTS];
 
-  LogicalSwitchData_v215 customSw[NUM_CSW];
+  LogicalSwitchData_v215 customSw[NUM_LOGICAL_SWITCH];
   CustomFnData_v215 funcSw[32];
   SwashRingData swashR;
-  PhaseData_v215 phaseData[MAX_PHASES];
+  PhaseData_v215 phaseData[MAX_FLIGHT_MODES];
 
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5ms increments
   uint8_t   thrTraceSrc;
@@ -302,6 +332,9 @@ void ConvertGeneralSettings_215_to_216(EEGeneral &settings)
 
 int ConvertTelemetrySource_215_to_216(int source)
 {
+  // TELEM_TX_TIME and 5 spare added
+  if (source >= TELEM_TX_TIME)
+    source += 6;
   // TELEM_RSSI_TX added
   if (source >= TELEM_RSSI_TX)
     source += 1;
@@ -312,14 +345,14 @@ int ConvertTelemetrySource_215_to_216(int source)
   if (source >= TELEM_A3)
     source += 2;
   // ASpd and dTE added + 5 reserve
-  if (source >= TELEM_ASPD)
+  if (source >= TELEM_ASPEED)
     source += 7;
   // A3 and A4 MIN added
   if (source >= TELEM_MIN_A3)
     source += 2;
-  // Cel- Cels- and Vfas- added
-  if (source >= TELEM_MIN_CELL)
-    source += 3;
+  // ASpd+ Cel- Cels- and Vfas- added
+  if (source >= TELEM_MAX_ASPEED)
+    source += 4;
   // 5 reserve added
   if (source >= TELEM_RESERVE6)
     source += 5;
@@ -339,7 +372,7 @@ int ConvertSource_215_to_216(int source, bool insertZero=false)
   if (source > MIXSRC_POT2)
     source += 1;
   // PPM9-PPM16 added
-  if (source > MIXSRC_FIRST_PPM+7)
+  if (source > MIXSRC_FIRST_TRAINER+7)
     source += 8;
   // 4 GVARS added
   if (source > MIXSRC_GVAR1+4)
@@ -357,14 +390,25 @@ int ConvertSwitch_215_to_216(int swtch)
     return -ConvertSwitch_215_to_216(-swtch);
   else if (swtch <= SWSRC_LAST_SWITCH)
     return swtch;
-  else
-    return swtch + (2*4) + (3*6); // 4 trims and 2 * 6-pos added as switches
+  else if (swtch > SWSRC_LAST_SWITCH + 32 + 1) {
+    swtch -= (SWSRC_LAST_SWITCH + 32 + 1);
+    if (swtch > SWSRC_ON)
+      swtch = 0;
+    return swtch;
+  }
+  else {
+    swtch += (2*4) + (3*6); // 4 trims and 2 * 6-pos added as switches
+    return swtch;
+  }
 }
 #else
 int ConvertSource_215_to_216(int source, bool insertZero=false)
 {
   if (insertZero)
     source += 1;
+  // PPM9-PPM16 added
+  if (source > MIXSRC_FIRST_TRAINER+7)
+    source += 8;
   // 4 GVARS added
   if (source > MIXSRC_GVAR1+4)
     source += 4;
@@ -377,12 +421,30 @@ int ConvertSource_215_to_216(int source, bool insertZero=false)
 
 int ConvertSwitch_215_to_216(int swtch)
 {
-  if (swtch <= SWSRC_LAST_SWITCH)
+  if (swtch < 0)
+    return -ConvertSwitch_215_to_216(-swtch);
+  else if (swtch <= SWSRC_LAST_SWITCH)
     return swtch;
-  else
-    return swtch + (2*4) + 1; // 4 trims and REa added
+  else {
+    swtch += (2*4) + 1; // 4 trims and REa added
+    if (swtch > SWSRC_ON)
+      swtch -= (9+32+1);
+    if (swtch > SWSRC_ON)
+      swtch = SWSRC_ON;
+    return swtch;
+  }
 }
 #endif
+
+int16_t ConvertGVAR_215_to_216(int16_t var)
+{
+  if (var <= -508)
+    return var + 512 - 4096;
+  else if (var >= 507)
+    return var - 512 + 4096;
+  else
+    return var;
+}
 
 void ConvertModel_215_to_216(ModelData &model)
 {
@@ -392,7 +454,7 @@ void ConvertModel_215_to_216(ModelData &model)
   // Curves: structure changed, 32 curves
   // Limits: min and max with PREC1
   // Custom Functions: play repeat * 5
-  // Custom Switches: better precision for x when A comes from telemetry
+  // Logical Switches: better precision for x when A comes from telemetry
   // Main View: altitude in top bar
   // Mixes: GVARS in weight moved from 512 to 4096 and -512 to -4096, because GVARS may be used in limits [-1250:1250]
   // Switches: two 6-pos pots added, REa added to Sky9x
@@ -427,65 +489,94 @@ void ConvertModel_215_to_216(ModelData &model)
   g_model.extendedLimits = oldModel.extendedLimits;
   g_model.extendedTrims = oldModel.extendedTrims;
   g_model.throttleReversed = oldModel.throttleReversed;
+
+#if defined(PCBTARANIS)
+  g_model.beepANACenter = (oldModel.beepANACenter & 0x3f) | ((oldModel.beepANACenter & 0xc0) << 1);
+#else
   g_model.beepANACenter = oldModel.beepANACenter;
+#endif
 
   for (uint8_t i=0; i<64; i++) {
-    MixData & mix = g_model.mixData[i];
+    MixData * mix = &g_model.mixData[i];
+    MixData_v215 * oldMix = &oldModel.mixData[i];
 #if defined(PCBTARANIS)
-    mix.destCh = oldModel.mixData[i].destCh;
-    mix.phases = oldModel.mixData[i].phases;
-    mix.mltpx = oldModel.mixData[i].mltpx;
-    mix.weight = oldModel.mixData[i].weight;
-    mix.swtch = ConvertSwitch_215_to_216(oldModel.mixData[i].swtch);
-    if (oldModel.mixData[i].curveMode==0/*differential*/) {
-      mix.curve.type = CURVE_REF_DIFF;
-      mix.curve.value = oldModel.mixData[i].curveParam;
+    mix->destCh = oldMix->destCh;
+    mix->phases = oldMix->phases;
+    mix->mltpx = oldMix->mltpx;
+    if (oldMix->carryTrim == TRIM_OFF) mix->carryTrim = TRIM_OFF;
+    mix->weight = ConvertGVAR_215_to_216(oldMix->weight);
+    mix->swtch = ConvertSwitch_215_to_216(oldMix->swtch);
+    if (oldMix->curveMode==0/*differential*/) {
+      mix->curve.type = CURVE_REF_DIFF;
+      mix->curve.value = oldMix->curveParam;
     }
-    else if (oldModel.mixData[i].curveParam <= 6) {
-      mix.curve.type = CURVE_REF_FUNC;
-      mix.curve.value = oldModel.mixData[i].curveParam;
+    else if (oldMix->curveParam <= 6) {
+      mix->curve.type = CURVE_REF_FUNC;
+      mix->curve.value = oldMix->curveParam;
     }
     else {
-      mix.curve.type = CURVE_REF_CUSTOM;
-      mix.curve.value = oldModel.mixData[i].curveParam - 6;
+      mix->curve.type = CURVE_REF_CUSTOM;
+      mix->curve.value = oldMix->curveParam - 6;
     }
-    mix.mixWarn = oldModel.mixData[i].mixWarn;
-    mix.delayUp = oldModel.mixData[i].delayUp;
-    mix.delayDown = oldModel.mixData[i].delayDown;
-    mix.speedUp = oldModel.mixData[i].speedUp;
-    mix.speedDown = oldModel.mixData[i].speedDown;
-    mix.srcRaw = oldModel.mixData[i].srcRaw;
-    if (mix.srcRaw > 4 || oldModel.mixData[i].noExpo)
-      mix.srcRaw = ConvertSource_215_to_216(mix.srcRaw);
-    mix.offset = oldModel.mixData[i].offset;
-    memcpy(mix.name, oldModel.mixData[i].name, LEN_EXPOMIX_NAME);
+    mix->mixWarn = oldMix->mixWarn;
+    mix->delayUp = oldMix->delayUp;
+    mix->delayDown = oldMix->delayDown;
+    mix->speedUp = oldMix->speedUp;
+    mix->speedDown = oldMix->speedDown;
+    mix->srcRaw = oldMix->srcRaw;
+    if (mix->srcRaw > 4 || oldMix->noExpo)
+      mix->srcRaw = ConvertSource_215_to_216(mix->srcRaw);
+    mix->offset = ConvertGVAR_215_to_216(oldMix->offset);
+    memcpy(mix->name, oldMix->name, LEN_EXPOMIX_NAME);
+    if (!GV_IS_GV_VALUE(mix->weight, 500, 500) && !GV_IS_GV_VALUE(mix->offset, 500, 500)) {
+      mix->offset = divRoundClosest(mix->offset * mix->weight, 100);
+    }
 #else
-    memcpy(&mix, &oldModel.mixData[i], sizeof(mix));
+    mix->destCh = oldMix->destCh;
+    mix->mixWarn = oldMix->mixWarn;
+    mix->phases = oldMix->phases;
+    mix->curveMode = oldMix->curveMode;
+    mix->noExpo = oldMix->noExpo;
+    mix->carryTrim = oldMix->carryTrim;
+    mix->mltpx = oldMix->mltpx;
+    mix->weight = oldMix->weight;
+    mix->swtch = ConvertSwitch_215_to_216(oldMix->swtch);
+    mix->curveParam = oldMix->curveParam;
+    mix->delayUp = oldMix->delayUp;
+    mix->delayDown = oldMix->delayDown;
+    mix->speedUp = oldMix->speedUp;
+    mix->speedDown = oldMix->speedDown;
+    mix->srcRaw = ConvertSource_215_to_216(oldMix->srcRaw);
+    mix->offset = oldMix->offset;
+    memcpy(mix->name, oldMix->name, LEN_EXPOMIX_NAME);
 #endif
-    if (mix.weight <= -508)
-      mix.weight = mix.weight + 512 - 4096;
-    else if (mix.weight >= 507)
-      mix.weight = mix.weight - 512 + 4096;
-    else
-      mix.offset = mix.offset * mix.weight / 100;
   }
   for (uint8_t i=0; i<32; i++) {
+#if defined(PCBTARANIS)
     g_model.limitData[i].min = 10 * oldModel.limitData[i].min;
     g_model.limitData[i].max = 10 * oldModel.limitData[i].max;
+#else
+    g_model.limitData[i].min = oldModel.limitData[i].min;
+    g_model.limitData[i].max = oldModel.limitData[i].max;
+#endif
     g_model.limitData[i].ppmCenter = oldModel.limitData[i].ppmCenter;
     g_model.limitData[i].offset = oldModel.limitData[i].offset;
     g_model.limitData[i].symetrical = oldModel.limitData[i].symetrical;
     g_model.limitData[i].revert = oldModel.limitData[i].revert;
 #if defined(PCBTARANIS)
-    memcpy(&g_model.limitData[i].name, &oldModel.limitData[i].name, LEN_CHANNEL_NAME);
+    memcpy(g_model.limitData[i].name, oldModel.limitData[i].name, LEN_CHANNEL_NAME);
 #endif
   }
-  int indexes[NUM_STICKS] = { 0, 0, 0, 0 };
-  for (uint8_t i=0; i<32; i++) {
-    if (oldModel.expoData[i].mode) {
 #if defined(PCBTARANIS)
-      uint8_t chn = oldModel.expoData[i].chn;
-      if (!oldModel.expoData[i].swtch && !oldModel.expoData[i].phases) {
+  int indexes[NUM_STICKS] = { 0, 0, 0, 0 };
+#endif
+  for (uint8_t i=0; i<32; i++) {
+    ExpoData * expo = &g_model.expoData[i];
+    ExpoData_v215 * oldExpo = &oldModel.expoData[i];
+    if (oldExpo->mode) {
+#if defined(PCBTARANIS)
+      uint8_t chn = oldExpo->chn;
+      if (!oldExpo->swtch && !oldExpo->phases) {
         indexes[chn] = -1;
       }
       else if (indexes[chn] != -1) {
@@ -494,26 +585,36 @@ void ConvertModel_215_to_216(ModelData &model)
       for (uint8_t j=chn+1; j<NUM_STICKS; j++) {
         indexes[j] = i+1;
       }
-      g_model.expoData[i].srcRaw = MIXSRC_Rud+chn;
-      g_model.expoData[i].chn = chn;
-      g_model.expoData[i].swtch = ConvertSwitch_215_to_216(oldModel.expoData[i].swtch);
-      g_model.expoData[i].phases = oldModel.expoData[i].phases;
-      g_model.expoData[i].weight = oldModel.expoData[i].weight;
-      memcpy(&g_model.expoData[i].name, &oldModel.expoData[i].name, LEN_EXPOMIX_NAME);
-      if (oldModel.expoData[i].curveMode==0/*expo*/) {
-        g_model.expoData[i].curve.type = CURVE_REF_EXPO;
-        g_model.expoData[i].curve.value = oldModel.expoData[i].curveParam;
+      expo->srcRaw = MIXSRC_Rud+chn;
+      expo->chn = chn;
+      expo->mode = oldExpo->mode;
+      expo->swtch = ConvertSwitch_215_to_216(oldExpo->swtch);
+      expo->phases = oldExpo->phases;
+      expo->weight = oldExpo->weight;
+      memcpy(expo->name, oldExpo->name, LEN_EXPOMIX_NAME);
+      if (oldExpo->curveMode==0/*expo*/) {
+        if (oldExpo->curveParam) {
+          expo->curve.type = CURVE_REF_EXPO;
+          expo->curve.value = oldExpo->curveParam;
+        }
       }
-      else if (oldModel.expoData[i].curveParam <= 6) {
-        g_model.expoData[i].curve.type = CURVE_REF_FUNC;
-        g_model.expoData[i].curve.value = oldModel.expoData[i].curveParam;
+      else if (oldExpo->curveParam <= 6) {
+        expo->curve.type = CURVE_REF_FUNC;
+        expo->curve.value = oldExpo->curveParam;
       }
       else {
-        g_model.expoData[i].curve.type = CURVE_REF_CUSTOM;
-        g_model.expoData[i].curve.value = oldModel.expoData[i].curveParam - 7;
+        expo->curve.type = CURVE_REF_CUSTOM;
+        expo->curve.value = oldExpo->curveParam - 7;
       }
 #else
-      memcpy(&g_model.expoData[i], &oldModel.expoData[i], sizeof(g_model.expoData[i]));
+      expo->mode = oldExpo->mode;
+      expo->chn = oldExpo->chn;
+      expo->curveMode = oldExpo->curveMode;
+      expo->swtch = oldExpo->swtch;
+      expo->phases = oldExpo->phases;
+      expo->weight = oldExpo->weight;
+      memcpy(expo->name, oldExpo->name, LEN_EXPOMIX_NAME);
+      expo->curveParam = oldExpo->curveParam;
 #endif
     }
     else {
@@ -524,13 +625,14 @@ void ConvertModel_215_to_216(ModelData &model)
   for (int i=NUM_STICKS-1; i>=0; i--) {
     int idx = indexes[i];
     if (idx >= 0) {
-      ExpoData *expo = expoAddress(idx);
+      ExpoData * expo = expoAddress(idx);
       memmove(expo+1, expo, (MAX_EXPOS-(idx+1))*sizeof(ExpoData));
       memclear(expo, sizeof(ExpoData));
       expo->srcRaw = MIXSRC_Rud + i;
       expo->chn = i;
       expo->weight = 100;
       expo->curve.type = CURVE_REF_EXPO;
+      expo->mode = 3;
     }
     for (int c=0; c<4; c++) {
       g_model.inputNames[i][c] = char2idx(STR_VSRCRAW[1+STR_VSRCRAW[0]*(i+1)+c]);
@@ -567,7 +669,6 @@ void ConvertModel_215_to_216(ModelData &model)
     sw.delay = oldModel.customSw[i].delay * 5;
     sw.duration = oldModel.customSw[i].duration * 5;
     sw.andsw = ConvertSwitch_215_to_216(oldModel.customSw[i].andsw);
-#if defined(PCBTARANIS)
     uint8_t cstate = cswFamily(sw.func);
     if (cstate == LS_FAMILY_BOOL) {
       sw.v1 = ConvertSwitch_215_to_216(sw.v1);
@@ -623,7 +724,6 @@ void ConvertModel_215_to_216(ModelData &model)
         sw.v2 = ConvertSource_215_to_216(sw.v2);
       }
     }
-#endif
   }
   for (uint8_t i=0; i<32; i++) {
     CustomFnData & fn = g_model.funcSw[i];
@@ -703,33 +803,42 @@ void ConvertModel_215_to_216(ModelData &model)
   g_model.swashR.collectiveSource = ConvertSource_215_to_216(g_model.swashR.collectiveSource);
 
   for (uint8_t i=0; i<9; i++) {
-    memcpy(&g_model.phaseData[i], &oldModel.phaseData[i], sizeof(oldModel.phaseData[i])); // the last 4 gvars will remain blank
-    g_model.phaseData[i].swtch = ConvertSwitch_215_to_216(oldModel.phaseData[i].swtch);
+    if (i==0 || oldModel.phaseData[i].swtch) {
+      memcpy(&g_model.phaseData[i], &oldModel.phaseData[i], sizeof(oldModel.phaseData[i])); // the last 4 gvars will remain blank
+      g_model.phaseData[i].swtch = ConvertSwitch_215_to_216(oldModel.phaseData[i].swtch);
 #if defined(PCBTARANIS)
-    for (uint8_t t=0; t<4; t++) {
-      int trim = oldModel.phaseData[i].trim[t];
-      if (trim > 500) {
-        trim -= 501;
-        if (trim >= i)
-          trim += 1;
-        g_model.phaseData[i].trim[t].mode = 2*trim;
-        g_model.phaseData[i].trim[t].value = 0;
+      for (uint8_t t=0; t<4; t++) {
+        int trim = oldModel.phaseData[i].trim[t];
+        if (trim > 500) {
+          trim -= 501;
+          if (trim >= i)
+            trim += 1;
+          g_model.phaseData[i].trim[t].mode = 2*trim;
+          g_model.phaseData[i].trim[t].value = 0;
+        }
+        else {
+          g_model.phaseData[i].trim[t].mode = 2*i;
+          g_model.phaseData[i].trim[t].value = trim;
+        }
       }
-      else {
-        g_model.phaseData[i].trim[t].mode = 2*i;
-        g_model.phaseData[i].trim[t].value = trim;
-      }
-    }
 #endif
+    }
   }
   g_model.thrTraceSrc = oldModel.thrTraceSrc;
+#if defined(PCBTARANIS)
+  // S3 added
+  if (g_model.thrTraceSrc >= THROTTLE_SOURCE_S3)
+    g_model.thrTraceSrc += 1;
+#endif
   g_model.switchWarningStates = oldModel.switchWarningStates >> 1;
   g_model.nSwToWarn = (oldModel.switchWarningStates & 0x01) ? 0xFF : 0;
   for (uint8_t i=0; i<5; i++) {
     memcpy(g_model.gvars[i].name, oldModel.gvar_names[i], LEN_GVAR_NAME);
   }
 
-  memcpy(&g_model.frsky, &oldModel.frsky, sizeof(oldModel.frsky));
+  memcpy(&g_model.frsky, &oldModel.frsky, 2*sizeof(FrSkyChannelData));
+  // gap for A3-A4
+  memcpy(((uint8_t *)&g_model.frsky) + 4*sizeof(FrSkyChannelData), ((uint8_t *)&oldModel.frsky) + 2*sizeof(FrSkyChannelData), sizeof(oldModel.frsky) - 2*sizeof(FrSkyChannelData));
   for (int i=0; i<3; i++) {
     if (g_model.frsky.screensType & (1<<i)) {
       // gauges
@@ -758,6 +867,22 @@ void ConvertModel_215_to_216(ModelData &model)
   memcpy(g_model.moduleData, oldModel.moduleData, sizeof(g_model.moduleData));
 }
 
+void ConvertModel(int id, int version)
+{
+  loadModel(id);
+
+  if (version == 215) {
+    version = 216;
+    ConvertModel_215_to_216(g_model);
+  }
+
+  uint8_t currModel = g_eeGeneral.currModel;
+  g_eeGeneral.currModel = id;
+  s_eeDirtyMsk = EE_MODEL;
+  eeCheck(true);
+  g_eeGeneral.currModel = currModel;
+}
+
 bool eeConvert()
 {
   const char *msg = NULL;
@@ -779,47 +904,37 @@ bool eeConvert()
   ALERT(STR_EEPROMWARN, msg, AU_BAD_EEPROM);
 
   // Message
-  MESSAGE(STR_EEPROMWARN, PSTR("EEPROM Converting"), NULL, AU_EEPROM_FORMATTING); // TODO translations
+  MESSAGE(STR_EEPROMWARN, STR_EEPROM_CONVERTING, NULL, AU_EEPROM_FORMATTING); // TODO translations
 
   // General Settings conversion
-#if defined(PCBTARANIS)
-  theFile.openRlc(0);
-  theFile.readRlc((uint8_t*)&g_eeGeneral, sizeof(g_eeGeneral));
-#else
-  #pragma message("TODO openRlc for sky9x")
-#endif
-  if (g_eeGeneral.version == 215) ConvertGeneralSettings_215_to_216(g_eeGeneral);
+  loadGeneralSettings();
+  int version = conversionVersionStart;
+  if (version == 215) {
+    version = 216;
+    ConvertGeneralSettings_215_to_216(g_eeGeneral);
+  }
   s_eeDirtyMsk = EE_GENERAL;
   eeCheck(true);
 
+#if LCD_W >= 212
   lcd_rect(60, 6*FH+4, 132, 3);
+#else
+  lcd_rect(10, 6*FH+4, 102, 3);
+#endif
 
   // Models conversion
-  uint8_t currModel = g_eeGeneral.currModel;
   for (uint8_t id=0; id<MAX_MODELS; id++) {
+#if LCD_W >= 212
     lcd_hline(61, 6*FH+5, 10+id*2, FORCE);
-    // lcd_putsnAtt(61, 7*FH)
+#else
+    lcd_hline(11, 6*FH+5, 10+(id*3)/2, FORCE);
+#endif
     lcdRefresh();
     if (eeModelExists(id)) {
-      // TODO loadModel without anything else
-#if defined(PCBTARANIS)
-      theFile.openRlc(FILE_MODEL(id));
-      theFile.readRlc((uint8_t*)&g_model, sizeof(g_model));
-#else
-      #pragma message("TODO openRlc for sky9x")
-#endif
-      int version = conversionVersionStart;
-      if (version == 215) {
-        version = 216;
-        ConvertModel_215_to_216(g_model);
-      }
-      g_eeGeneral.currModel = id;
-      s_eeDirtyMsk = EE_MODEL;
-      eeCheck(true);
+      ConvertModel(id, conversionVersionStart);
     }
 
   }
-  g_eeGeneral.currModel = currModel;
 
   return true;
 }

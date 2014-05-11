@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>printDialog</class>
- <widget class="QDialog" name="printDialog">
+ <class>PrintDialog</class>
+ <widget class="QDialog" name="PrintDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -80,7 +80,7 @@
   <connection>
    <sender>closeButton</sender>
    <signal>clicked()</signal>
-   <receiver>printDialog</receiver>
+   <receiver>PrintDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

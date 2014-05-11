@@ -14,28 +14,34 @@
 #include "appdata.h"
 #include <QScrollArea>
 
-ModelEdit::ModelEdit(RadioData & radioData, int modelId, bool openWizard, bool isNew, QWidget *parent) :
+ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, FirmwareInterface * firmware) :
   QDialog(parent),
   ui(new Ui::ModelEdit),
   modelId(modelId),
   model(radioData.models[modelId]),
-  generalSettings(radioData.generalSettings)
+  generalSettings(radioData.generalSettings),
+  firmware(firmware)
 {
   ui->setupUi(this);
+  setWindowIcon(CompanionIcon("edit.png"));
   restoreGeometry(g.modelEditGeo());  
   ui->pushButton->setIcon(CompanionIcon("simulate.png"));
-  addTab(new Setup(this, model), tr("Setup"));
-  addTab(new HeliPanel(this, model), tr("Heli"));
-  addTab(new FlightModes(this, model, radioData.generalSettings), tr("Flight Modes"));
-  addTab(new InputsPanel(this, model, radioData.generalSettings), tr("Inputs"));
-  addTab(new MixesPanel(this, model, radioData.generalSettings), tr("Mixes"));
-  addTab(new Channels(this, model), tr("Channels"));
-  addTab(new LogicalSwitchesPanel(this, model), tr("Logical Switches"));
-  if (GetEepromInterface()->getCapability(CustomFunctions))
-    addTab(new CustomFunctionsPanel(this, model, radioData.generalSettings), tr("Switch Assignment"));
-  addTab(new Curves(this, model), tr("Curves"));
-  if (GetEepromInterface()->getCapability(Telemetry) & TM_HASTELEMETRY)
-    addTab(new TelemetryPanel(this, model), tr("Telemetry"));
+  SetupPanel * setupPanel = new SetupPanel(this, model, generalSettings, firmware);
+  addTab(setupPanel, tr("Setup"));
+  addTab(new HeliPanel(this, model, generalSettings, firmware), tr("Heli"));
+  addTab(new FlightModesPanel(this, model, generalSettings, firmware), tr("Flight Modes"));
+  addTab(new InputsPanel(this, model, generalSettings, firmware), tr("Inputs"));
+  addTab(new MixesPanel(this, model, generalSettings, firmware), tr("Mixes"));
+  Channels * chnPanel = new Channels(this, model, generalSettings, firmware);
+  addTab(chnPanel, tr("Servos"));
+  addTab(new Curves(this, model, generalSettings, firmware), tr("Curves"));
+  addTab(new LogicalSwitchesPanel(this, model, generalSettings, firmware), tr("Logical Switches"));
+  if (firmware->getCapability(CustomFunctions))
+    addTab(new CustomFunctionsPanel(this, model, generalSettings, firmware), tr("Special Functions"));
+  if (firmware->getCapability(Telemetry) & TM_HASTELEMETRY)
+    addTab(new TelemetryPanel(this, model, generalSettings, firmware), tr("Telemetry"));
+    
+  connect(setupPanel, SIGNAL(extendedLimitsToggled()), chnPanel, SLOT(refreshExtendedLimits()));
 }
 
 ModelEdit::~ModelEdit()

@@ -1,7 +1,7 @@
 PROJECT( companion )
 
 SET( C9X_VERSION_MAJOR "1" )
-SET( C9X_VERSION_MINOR "52" )
+SET( C9X_VERSION_MINOR "99" )
 SET( C9X_VERSION ${C9X_VERSION_MAJOR}.${C9X_VERSION_MINOR} )
 
 CMAKE_MINIMUM_REQUIRED( VERSION 2.8 )
@@ -36,7 +36,7 @@ ELSE()
     MESSAGE( "SDL not found! Joysticks support will be disabled" )
 ENDIF()
 
-FIND_PACKAGE( Qt4 REQUIRED )
+FIND_PACKAGE(Qt4 4.8.4 REQUIRED)
 SET( QT_USE_QTNETWORK True )
 SET( QT_USE_QTXML True )
 INCLUDE( ${QT_USE_FILE} )
@@ -90,6 +90,13 @@ add_custom_command(
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )
 
+add_custom_command(
+  OUTPUT ${RADIO_SRC_DIRECTORY}/stamp-opentx.h
+  COMMAND make stamp_header
+  DEPENDS ${RADIO_SRC_DIRECTORY}/Makefile
+  WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
+)
+
 include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${PROJECT_SOURCE_DIR}/../..
@@ -128,6 +135,7 @@ set(companion_SRCS
   firmwares/opentx/opentxsimulator.cpp  
   firmwares/ersky9x/ersky9xeeprom.cpp
   firmwares/ersky9x/ersky9xinterface.cpp
+  ${RADIO_SRC_DIRECTORY}/stamp-opentx.h
   ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
   ${RADIO_SRC_DIRECTORY}/translations/en.h
   appdata.cpp
@@ -151,8 +159,10 @@ set(companion_SRCS
   splashlibrary.cpp
   mainwindow.cpp
   companion.cpp
-  modelconfigdialog.cpp
+  taranisnotfound.cpp
   qcustomplot.cpp
+  wizarddata.cpp
+  wizarddialog.cpp
 )
 
 set(companion_MOC_HDRS
@@ -174,9 +184,10 @@ set(companion_MOC_HDRS
   modelslist.h
   mdichild.h
   mainwindow.h
-  modelconfigdialog.h
+  taranisnotfound.h
   qcustomplot.h
   helpers.h
+  wizarddialog.h
 )
      
 set(companion_UIS
@@ -195,7 +206,7 @@ set(companion_UIS
   customizesplashdialog.ui
   splashlibrary.ui
   burndialog.ui
-  modelconfigdialog.ui
+  taranisnotfound.ui
 )
 
 set(companion_RCS
@@ -248,7 +259,7 @@ ENDIF( )
 INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} )
 INCLUDE_DIRECTORIES( ${CMAKE_SOURCE_DIR} )
 
-SET( LANGUAGES he pl pt ru de fr it sv cs fi)
+SET( LANGUAGES he pl pt ru de fr it sv cs fi nl)
 FOREACH( language ${LANGUAGES} )
   SET( companion_TS ${companion_TS} translations/companion_${language}.ts )
 ENDFOREACH( language )
@@ -387,7 +398,7 @@ IF( WIN32 )
   
   ADD_CUSTOM_COMMAND(OUTPUT ${PROJECT_BINARY_DIR}/companionInstall.exe
                      COMMAND "${NSIS_EXE}" ARGS companion.nsi
-                     DEPENDS ${PROJECT_NAME} ${PROJECT_BINARY_DIR}/companion.nsi
+                     DEPENDS ${PROJECT_NAME} simulator ${PROJECT_BINARY_DIR}/companion.nsi
                      COMMENT "Windows NSIS Installer")
 
   ADD_CUSTOM_TARGET( installer

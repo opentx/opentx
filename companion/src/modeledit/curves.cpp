@@ -10,65 +10,90 @@
 
 #define GFX_MARGIN 16
 
-static const QColor colors[C9X_MAX_CURVES] = {
-  QColor(0,0,127),
-  QColor(0,127,0),
-  QColor(127,0,0),
-  QColor(0,127,127),
-  QColor(127,0,127),
-  QColor(127,127,0),
-  QColor(127,127,127),
-  QColor(0,0,255),
-  QColor(0,127,255),
-  QColor(127,0,255),
-  QColor(0,255,0),
-  QColor(0,255,127),
-  QColor(127,255,0),
-  QColor(255,0,0),
-  QColor(255,0,127),
-  QColor(255,127,0),
-};
+#define CURVE_COEFF_ENABLE   1
+#define CURVE_YMID_ENABLE    2
+#define CURVE_YMIN_ENABLE    4
 
-#if 0
-#ifdef __APPLE__
-    ui->curveEdit_1->setStyleSheet("color: #00007f;");
-    ui->curveEdit_2->setStyleSheet("color: #007f00;");
-    ui->curveEdit_3->setStyleSheet("color: #7f0000;");
-    ui->curveEdit_4->setStyleSheet("color: #007f7f;");
-    ui->curveEdit_5->setStyleSheet("color: #7f007f;");
-    ui->curveEdit_6->setStyleSheet("color: #7f7f00;");
-    ui->curveEdit_7->setStyleSheet("color: #7f7f7f;");
-    ui->curveEdit_8->setStyleSheet("color: #0000ff;");
-    ui->curveEdit_9->setStyleSheet("color: #007fff;");
-    ui->curveEdit_10->setStyleSheet("color: #7f00ff;");
-    ui->curveEdit_11->setStyleSheet("color: #00ff00;");
-    ui->curveEdit_12->setStyleSheet("color: #00ff7f;");
-    ui->curveEdit_13->setStyleSheet("color: #7fff00;");
-    ui->curveEdit_14->setStyleSheet("color: #ff0000;");
-    ui->curveEdit_15->setStyleSheet("color: #ff007f;");
-    ui->curveEdit_16->setStyleSheet("color: #ff7f00;");
-#else
-    ui->curveEdit_1->setStyleSheet("background-color: #00007f; color: white;");
-    ui->curveEdit_2->setStyleSheet("background-color: #007f00; color: white;");
-    ui->curveEdit_3->setStyleSheet("background-color: #7f0000; color: white;");
-    ui->curveEdit_4->setStyleSheet("background-color: #007f7f; color: white;");
-    ui->curveEdit_5->setStyleSheet("background-color: #7f007f; color: white;");
-    ui->curveEdit_6->setStyleSheet("background-color: #7f7f00; color: white;");
-    ui->curveEdit_7->setStyleSheet("background-color: #7f7f7f; color: white;");
-    ui->curveEdit_8->setStyleSheet("background-color: #0000ff; color: white;");
-    ui->curveEdit_9->setStyleSheet("background-color: #007fff; color: white;");
-    ui->curveEdit_10->setStyleSheet("background-color: #7f00ff; color: white;");
-    ui->curveEdit_11->setStyleSheet("background-color: #00ff00; color: white;");
-    ui->curveEdit_12->setStyleSheet("background-color: #00ff7f; color: white;");
-    ui->curveEdit_13->setStyleSheet("background-color: #7fff00; color: white;");
-    ui->curveEdit_14->setStyleSheet("background-color: #ff0000; color: white;");
-    ui->curveEdit_15->setStyleSheet("background-color: #ff007f; color: white;");
-    ui->curveEdit_16->setStyleSheet("background-color: #ff7f00; color: white;");
-#endif
-#endif
+float curveLinear(float x, float coeff, float yMin, float yMid, float yMax)
+{
+  float a = (yMax-yMin) / 200.0;
+  return yMin + a * (x+100.0);
+}
 
-Curves::Curves(QWidget * parent, ModelData & model):
-  ModelPanel(parent, model),
+float c9xexpou(float point, float coeff)
+{
+  float x = point*1024.0/100.0;
+  float k = coeff*256.0/100.0;
+  return ((k*x*x*x/(1024*1024) + x*(256-k) + 128) / 256) / 1024.0 * 100;
+}
+
+float curveExpo(float x, float coeff, float yMin, float yMid, float yMax)
+{
+  float a = (yMax-yMin) / 100.0;
+
+  x += 100.0;
+  x /= 2.0;
+
+  if (coeff >= 0) {
+    return round(c9xexpou(x, coeff)*a + yMin);
+  }
+  else {
+    coeff = -coeff;
+    x = 100 - x;
+    return round((100.0 - c9xexpou(x, coeff))*a + yMin);
+  }
+}
+
+float curveSymmetricalY(float x, float coeff, float yMin, float yMid, float yMax)
+{
+  bool invert;
+  if (x<0) {
+    x = -x;
+    invert = 1;
+  }
+  else {
+    invert = 0;
+  }
+
+  float y;
+  if (coeff >= 0) {
+    y = round(c9xexpou(x, coeff) * (yMax/100.0));
+  }
+  else {
+    coeff = -coeff;
+    x = 100.0 - x;
+    y = round((100.0-c9xexpou(x, coeff)) * (yMax/100.0));
+  }
+
+  if (invert) {
+    y = -y;
+  }
+
+  return y;
+}
+
+float curveSymmetricalX(float x, float coeff, float yMin, float yMid, float yMax)
+{
+  float a = (yMax-yMid) / 100.0;
+
+  if (x<0)
+    x = -x;
+
+  float y;
+  if (coeff >= 0) {
+    y = round(c9xexpou(x, coeff) * a + yMid);
+  }
+  else {
+    coeff = -coeff;
+    x = 100-x;
+    y = round((100.0-c9xexpou(x, coeff)) * a + yMid);
+  }
+
+  return y;
+}
+
+Curves::Curves(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+  ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::Curves),
   currentCurve(0)
 {
@@ -76,7 +101,7 @@ Curves::Curves(QWidget * parent, ModelData & model):
 
   lock = true;
 
-  if (!GetEepromInterface()->getCapability(HasCvNames)) {
+  if (!firmware->getCapability(HasCvNames)) {
     ui->curveName->hide();
     ui->curveNameLabel->hide();
   }
@@ -85,7 +110,7 @@ Curves::Curves(QWidget * parent, ModelData & model):
   scene->setItemIndexMethod(QGraphicsScene::NoIndex);
   ui->curvePreview->setScene(scene);
 
-  for (int i=0; i<GetEepromInterface()->getCapability(NumCurves); i++) {
+  for (int i=0; i<firmware->getCapability(NumCurves); i++) {
     visibleCurves[i] = false;
 
     // The reset curve button
@@ -103,6 +128,11 @@ Curves::Curves(QWidget * parent, ModelData & model):
     QPalette palette;
     palette.setBrush(QPalette::Active, QPalette::Button, QBrush(colors[i]));
     palette.setBrush(QPalette::Active, QPalette::ButtonText, QBrush(Qt::white));
+#ifdef __APPLE__
+    edit->setStyleSheet(QString("color: %1;").arg(colors[i].name()));
+#else
+    edit->setStyleSheet(QString("background-color: %1; color: white;").arg(colors[i].name()));
+#endif
     edit->setPalette(palette);
     edit->setText(tr("Curve %1").arg(i+1));
     connect(edit, SIGNAL(clicked()), this, SLOT(editCurve()));
@@ -134,7 +164,7 @@ Curves::Curves(QWidget * parent, ModelData & model):
     ui->pointsLayout->addWidget(spnx[i], i, 1, 1, 1);
 
     bool insert;
-    if (GetEepromInterface()->getCapability(EnhancedCurves)) {
+    if (firmware->getCapability(EnhancedCurves)) {
       insert = (i >= 1);
     }
     else {
@@ -144,6 +174,11 @@ Curves::Curves(QWidget * parent, ModelData & model):
       ui->curvePoints->addItem(tr("%1 points").arg(i+1), i+1);
     }
   }
+
+  addTemplate(tr("Linear"), CURVE_YMIN_ENABLE, curveLinear);
+  addTemplate(tr("Single Expo"), CURVE_COEFF_ENABLE | CURVE_YMIN_ENABLE, curveExpo);
+  addTemplate(tr("Symmetrical f(x)=-f(-x)"), CURVE_COEFF_ENABLE, curveSymmetricalY);
+  addTemplate(tr("Symmetrical f(x)=f(-x)"), CURVE_COEFF_ENABLE | CURVE_YMID_ENABLE, curveSymmetricalX);
 
   lock = false;
 }
@@ -185,45 +220,20 @@ void Curves::update()
 {
   lock = true;
 
-  if (GetEepromInterface()->getCapability(HasCvNames)) {
+  if (firmware->getCapability(HasCvNames)) {
     ui->curveName->setText(model.curves[currentCurve].name);
-  }
-
-  int count = model.curves[currentCurve].count;
-  for (int i=0; i<count; i++) {
-    spny[i]->show();
-    spny[i]->setValue(model.curves[currentCurve].points[i].y);
-    if (model.curves[currentCurve].type == CurveData::CURVE_TYPE_CUSTOM) {
-      spnx[i]->show();
-      if (i==0 || i==model.curves[currentCurve].count-1) {
-        spnx[i]->setDisabled(true);
-        spnx[i]->setMaximum(+100);
-        spnx[i]->setMinimum(-100);
-      }
-      else {
-        spnx[i]->setMaximum(model.curves[currentCurve].points[i+1].x);
-        spnx[i]->setMinimum(model.curves[currentCurve].points[i-1].x);
-      }
-      spnx[i]->setValue(model.curves[currentCurve].points[i].x);
-    }
-    else {
-      spnx[i]->hide();
-    }
-  }
-  for (int i=count; i<C9X_MAX_POINTS; i++) {
-    spny[i]->hide();
-    spnx[i]->hide();
   }
 
   updateCurveType();
   updateCurve();
+  updateCurvePoints();
 
   lock = false;
 }
 
 void Curves::setCurrentCurve(int index)
 {
-    currentCurve = index;
+  currentCurve = index;
 }
 
 void Curves::updateCurveType()
@@ -232,7 +242,7 @@ void Curves::updateCurveType()
 
   int index = 0;
 
-  if (GetEepromInterface()->getCapability(EnhancedCurves)) {
+  if (firmware->getCapability(EnhancedCurves)) {
     index = model.curves[currentCurve].count - 2;
   }
   else {
@@ -253,6 +263,8 @@ void Curves::updateCurveType()
 
 void Curves::updateCurve()
 {
+  lock = true;
+
   Node * nodel = 0;
   Node * nodex = 0;
   QColor color;
@@ -276,7 +288,7 @@ void Curves::updateCurve()
   pen.setWidth(1);
   pen.setStyle(Qt::SolidLine);
 
-  int numcurves = GetEepromInterface()->getCapability(NumCurves);
+  int numcurves = firmware->getCapability(NumCurves);
   for (int k=0; k<numcurves; k++) {
     pen.setColor(colors[k]);
     if (currentCurve!=k && visibleCurves[k]) {
@@ -317,18 +329,51 @@ void Curves::updateCurve()
     scene->addItem(nodex);
     if (i>0) scene->addItem(new Edge(nodel, nodex));
   }
+
+  lock = false;
+}
+
+void Curves::updateCurvePoints()
+{
+  lock = true;
+
+  int count = model.curves[currentCurve].count;
+  for (int i=0; i<count; i++) {
+    spny[i]->show();
+    spny[i]->setValue(model.curves[currentCurve].points[i].y);
+    if (model.curves[currentCurve].type == CurveData::CURVE_TYPE_CUSTOM) {
+      spnx[i]->show();
+      if (i==0 || i==model.curves[currentCurve].count-1) {
+        spnx[i]->setDisabled(true);
+        spnx[i]->setMaximum(+100);
+        spnx[i]->setMinimum(-100);
+      }
+      else {
+        spnx[i]->setMaximum(model.curves[currentCurve].points[i+1].x);
+        spnx[i]->setMinimum(model.curves[currentCurve].points[i-1].x);
+      }
+      spnx[i]->setValue(model.curves[currentCurve].points[i].x);
+    }
+    else {
+      spnx[i]->hide();
+    }
+  }
+  for (int i=count; i<C9X_MAX_POINTS; i++) {
+    spny[i]->hide();
+    spnx[i]->hide();
+  }
+
+  lock = false;
 }
 
 void Curves::onPointEdited()
 {
   if (!lock) {
-    lock = true;
     int index = sender()->property("index").toInt();
     model.curves[currentCurve].points[index].x = spnx[index]->value();
     model.curves[currentCurve].points[index].y = spny[index]->value();
     updateCurve();
     emit modified();
-    lock = false;
   }
 }
 
@@ -341,6 +386,10 @@ void Curves::onNodeMoved(int x, int y)
     model.curves[currentCurve].points[index].y = y;
     spnx[index]->setValue(x);
     spny[index]->setValue(y);
+    if (index > 0)
+      spnx[index-1]->setMaximum(x);
+    if (index < model.curves[currentCurve].count-1)
+      spnx[index+1]->setMinimum(x);
     emit modified();
     lock = false;
   }
@@ -361,7 +410,7 @@ void Curves::onNodeUnfocus()
 
 bool Curves::allowCurveType(int points, CurveData::CurveType type)
 {
-  int numcurves = GetEepromInterface()->getCapability(NumCurves);
+  int numcurves = firmware->getCapability(NumCurves);
 
   int totalpoints = 0;
   for (int i=0; i<numcurves; i++) {
@@ -370,7 +419,7 @@ bool Curves::allowCurveType(int points, CurveData::CurveType type)
     totalpoints += cvPoints + (cvType==CurveData::CURVE_TYPE_CUSTOM ? cvPoints-2 : 0);
   }
 
-  int fwpoints = GetEepromInterface()->getCapability(NumCurvePoints);
+  int fwpoints = firmware->getCapability(NumCurvePoints);
   if (totalpoints > fwpoints) {
     QMessageBox::warning(this, "companion", tr("Not enough free points in EEPROM to store the curve."));
     return false;
@@ -390,7 +439,7 @@ void Curves::on_curvePoints_currentIndexChanged(int index)
 
       // TODO something better + reuse!
       for (int i=0; i<C9X_MAX_POINTS; i++) {
-        model.curves[currentCurve].points[i].x = (i >= model.curves[currentCurve].count-1 ? +100 : -100 + (200*i)/(numpoints-1));
+        model.curves[currentCurve].points[i].x = (i >= numpoints-1 ? +100 : -100 + (200*i)/(numpoints-1));
         model.curves[currentCurve].points[i].y = 0;
       }
 
@@ -413,7 +462,7 @@ void Curves::on_curveCustom_currentIndexChanged(int index)
 
       // TODO something better + reuse!
       for (int i=0; i<C9X_MAX_POINTS; i++) {
-        model.curves[currentCurve].points[i].x = (i >= model.curves[currentCurve].count-1 ? +100 : -100 + (200*i)/(numpoints-1));
+        model.curves[currentCurve].points[i].x = (i >= numpoints-1 ? +100 : -100 + (200*i)/(numpoints-1));
         model.curves[currentCurve].points[i].y = 0;
       }
 
@@ -444,213 +493,72 @@ void Curves::resizeEvent(QResizeEvent *event)
   QRect qr = ui->curvePreview->contentsRect();
   ui->curvePreview->scene()->setSceneRect(GFX_MARGIN, GFX_MARGIN, qr.width()-GFX_MARGIN*2, qr.height()-GFX_MARGIN*2);
   updateCurve();
-
   ModelPanel::resizeEvent(event);
 }
 
-#if 0
-void ModelEdit::on_ca_ctype_CB_currentIndexChanged()
+void Curves::on_curveType_currentIndexChanged()
 {
-    int index=ui->ca_ctype_CB->currentIndex();
-    switch (index) {
+  int index = ui->curveType->currentIndex();
+  unsigned int flags = templates[index].flags;
+  ui->curveCoeffLabel->setVisible(flags & CURVE_COEFF_ENABLE);
+  ui->curveCoeff->setVisible(flags & CURVE_COEFF_ENABLE);
+  ui->yMax->setValue(100);
+  ui->yMidLabel->setVisible(flags & CURVE_YMID_ENABLE);
+  ui->yMid->setVisible(flags & CURVE_YMID_ENABLE);
+  ui->yMid->setValue(0);
+  ui->yMinLabel->setVisible(flags & CURVE_YMIN_ENABLE);
+  ui->yMin->setVisible(flags & CURVE_YMIN_ENABLE);
+  ui->yMin->setValue(-100);
+}
+
+void Curves::addTemplate(QString name, unsigned int flags, curveFunction function)
+{
+  CurveCreatorTemplate tmpl;
+  tmpl.name = name;
+  tmpl.flags = flags;
+  tmpl.function = function;
+  templates.append(tmpl);
+  ui->curveType->addItem(name);
+}
+
+void Curves::on_curveApply_clicked()
+{
+  int index = ui->curveType->currentIndex();
+  int numpoints = model.curves[currentCurve].count;
+
+  for (int i=0; i<numpoints; i++) {
+    float x;
+    if (model.curves[currentCurve].type == CurveData::CURVE_TYPE_CUSTOM)
+      x = model.curves[currentCurve].points[i].x;
+    else
+      x = -100.0 + (200.0/(numpoints-1))*i;
+
+    bool apply = false;
+    switch (ui->curveSide->currentIndex()) {
       case 0:
-        ui->ca_coeff_SB->hide();
-        ui->ca_coeff_label->hide();
-        ui->ca_ymid_SB->hide();
-        ui->ca_ymid_label->hide();
-        ui->ca_ymin_SB->show();
-        ui->ca_ymin_label->show();
-        ui->ca_ymin_SB->setValue(-100);
-        ui->ca_ymax_SB->setValue(100);
+        apply = true;
         break;
       case 1:
-        ui->ca_coeff_SB->show();
-        ui->ca_coeff_label->show();
-        ui->ca_ymid_SB->hide();
-        ui->ca_ymid_label->hide();
-        ui->ca_ymin_SB->show();
-        ui->ca_ymin_label->show();
-        ui->ca_ymin_SB->setValue(-100);
-        ui->ca_ymax_SB->setValue(100);
+        if (x>=0)
+          apply = true;
         break;
       case 2:
-        ui->ca_coeff_SB->show();
-        ui->ca_coeff_label->show();
-        ui->ca_ymid_SB->hide();
-        ui->ca_ymid_label->hide();
-        ui->ca_ymin_SB->hide();
-        ui->ca_ymin_label->hide();
-        ui->ca_ymax_SB->setValue(100);
-        break;
-      case 3:
-        ui->ca_coeff_SB->show();
-        ui->ca_coeff_label->show();
-        ui->ca_ymid_SB->show();
-        ui->ca_ymid_label->show();
-        ui->ca_ymin_SB->hide();
-        ui->ca_ymin_label->hide();
-        ui->ca_ymid_SB->setValue(0);
-        ui->ca_ymax_SB->setValue(100);
+        if (x<0)
+          apply = true;
         break;
     }
-}
 
-float c9xexpou(float point, float coeff)
-{
-  float x=point*1024.0/100.0;
-  float k=coeff*256.0/100.0;
-  return ((k*x*x*x/(1024*1024) + x*(256-k) + 128) / 256)/1024.0*100;
-}
-
-void ModelEdit::on_ca_apply_PB_clicked()
-{
-    int index=ui->ca_ctype_CB->currentIndex();
-    float x;
-    int y;
-    int invert=0;
-    float a;
-    if (index==0) {
-      a=(ui->ca_ymax_SB->value()-ui->ca_ymin_SB->value())/200.0;
-      int numpoints=model.curves[currentCurve].count;
-      for (int i=0; i<numpoints; i++) {
-        if (model.curves[currentCurve].type == CurveData::CURVE_TYPE_CUSTOM) {
-          x=(model.curves[currentCurve].points[i].x+100);
-        } else {
-          x=(200.0/(numpoints-1))*i;
-        }
-        y=ui->ca_ymin_SB->value()+a*x;
-        switch (ui->ca_side_CB->currentIndex()) {
-          case 0:
-            model.curves[currentCurve].points[i].y=y;
-            break;
-          case 1:
-            if (x>=100) {
-              model.curves[currentCurve].points[i].y=y;
-            }
-            break;
-          case 2:
-            if (x<100) {
-              model.curves[currentCurve].points[i].y=y;
-            }
-            break;
-        }
-      }
-    } else if (index==1) {
-      int numpoints=model.curves[currentCurve].count;
-      for (int i=0; i<numpoints; i++) {
-        if (model.curves[currentCurve].type == CurveData::CURVE_TYPE_CUSTOM) {
-          x=((model.curves[currentCurve].points[i].x)+100)/2.0;
-        } else {
-          x=(100.0/(numpoints-1))*i;
-        }
-        a=ui->ca_coeff_SB->value();
-        if (a>=0) {
-          y=round(c9xexpou(x,a)*(ui->ca_ymax_SB->value()-ui->ca_ymin_SB->value())/100.0+ui->ca_ymin_SB->value());
-        } else {
-          a=-a;
-          x=100-x;
-          y=round((100.0-c9xexpou(x,a))*(ui->ca_ymax_SB->value()-ui->ca_ymin_SB->value())/100.0+ui->ca_ymin_SB->value());
-        }
-        switch (ui->ca_side_CB->currentIndex()) {
-          case 0:
-            model.curves[currentCurve].points[i].y=y;
-            break;
-          case 1:
-            if (x>=50) {
-              model.curves[currentCurve].points[i].y=y;
-            }
-            break;
-          case 2:
-            if (x<50) {
-              model.curves[currentCurve].points[i].y=y;
-            }
-            break;
-        }
-      }
-    } else if (index==2) {
-      int numpoints=model.curves[currentCurve].count;
-      for (int i=0; i<numpoints; i++) {
-        if (model.curves[currentCurve].type == CurveData::CURVE_TYPE_CUSTOM) {
-          x=(model.curves[currentCurve].points[i].x);
-        } else {
-          x=-100.0+(200.0/(numpoints-1))*i;
-        }
-        a=ui->ca_coeff_SB->value();
-        if (x<0) {
-          x=-x;
-          invert=1;
-        } else {
-          invert=0;
-        }
-        if (a>=0) {
-          y=round(c9xexpou(x,a)*(ui->ca_ymax_SB->value()/100.0));
-        } else {
-          a=-a;
-          x=100-x;
-          y=round((100.0-c9xexpou(x,a))*(ui->ca_ymax_SB->value()/100.0));
-        }
-        switch (ui->ca_side_CB->currentIndex()) {
-          case 0:
-            if (invert==1) {
-              model.curves[currentCurve].points[i].y=-y;
-            } else {
-              model.curves[currentCurve].points[i].y=y;
-            }
-            break;
-          case 1:
-            if (invert==0) {
-              model.curves[currentCurve].points[i].y=y;
-            }
-            break;
-          case 2:
-            if (invert==1) {
-              model.curves[currentCurve].points[i].y=-y;
-            }
-            break;
-        }
-      }
-    } else if (index==3) {
-      int numpoints=model.curves[currentCurve].count;
-      for (int i=0; i<numpoints; i++) {
-        if (model.curves[currentCurve].type == CurveData::CURVE_TYPE_CUSTOM) {
-          x=(model.curves[currentCurve].points[i].x);
-        } else {
-          x=-100.0+(200.0/(numpoints-1))*i;
-        }
-        int pos=(x>=0);
-        a=ui->ca_coeff_SB->value();
-        if (x<0) {
-          x=-x;
-        }
-        if (a>=0) {
-          y=round(c9xexpou(x,a)*((ui->ca_ymax_SB->value()-ui->ca_ymid_SB->value())/100.0)+ui->ca_ymid_SB->value());
-        } else {
-          a=-a;
-          x=100-x;
-          y=round((100.0-c9xexpou(x,a))*((ui->ca_ymax_SB->value()-ui->ca_ymid_SB->value())/100.0)+ui->ca_ymid_SB->value());
-        }
-        switch (ui->ca_side_CB->currentIndex()) {
-          case 0:
-            model.curves[currentCurve].points[i].y=y;
-            break;
-          case 1:
-            if (pos) {
-              model.curves[currentCurve].points[i].y=y;
-            }
-            break;
-          case 2:
-            if (!pos) {
-              model.curves[currentCurve].points[i].y=y;
-            }
-            break;
-        }
-      }
+    if (apply) {
+      model.curves[currentCurve].points[i].y = templates[index].function(x, ui->curveCoeff->value(), ui->yMin->value(), ui->yMid->value(), ui->yMax->value());
     }
-    updateSettings();
-    setCurrentCurve(currentCurve);
-    drawCurve();
+  }
+
+  updateCurve();
+  updateCurvePoints();
+  emit modified();
 }
 
+#if 0
 void ModelEdit::clearCurves(bool ask)
 {
     if (ask) {

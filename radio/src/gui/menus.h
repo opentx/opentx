@@ -138,6 +138,20 @@ void menuStatisticsView(uint8_t event);
 void menuStatisticsDebug(uint8_t event);
 void menuAboutView(uint8_t event);
 
+#if !defined(CPUM64)
+  void displaySlider(uint8_t x, uint8_t y, uint8_t value, uint8_t max, uint8_t attr);
+#elif defined(GRAPHICS)
+  void display5posSlider(uint8_t x, uint8_t y, uint8_t value, uint8_t attr);
+  #define displaySlider(x, y, value, max, attr) lcd_outdezAtt(x, y, value, attr|LEFT)
+#else
+  #define displaySlider(x, y, value, max, attr) lcd_outdezAtt(x, y, value, attr|LEFT)
+#endif
+
+#if defined(PCBTARANIS)
+void menuMainViewChannelsMonitor(uint8_t event);
+void menuChannelsView(uint8_t event);
+#endif
+
 #if defined(NAVIGATION_POT1)
   extern int16_t p1valdiff;
 #else
@@ -165,6 +179,7 @@ extern int8_t s_editMode;       // global editmode
 #define INCDEC_SWITCH   0x08
 #define INCDEC_SOURCE   0x10
 #define DBLKEYS_1000    0x20
+#define INCDEC_REP10    0x40
 
 // mawrow special values
 #define TITLE_ROW      ((uint8_t)-1)
@@ -202,6 +217,7 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 #endif
 
 #if defined(CPUARM)
+  bool isThrottleSourceAvailable(int source);
   bool isLogicalSwitchFunctionAvailable(int function);
   bool isAssignableFunctionAvailable(int function);
   bool isSwitchAvailable(int swtch);
@@ -336,8 +352,6 @@ extern uint8_t         s_warning_info_len;
 extern uint8_t         s_warning_result;
 extern uint8_t         s_warning_type;
 
-extern const pm_char * s_global_warning;
-
 #define WARNING_LINE_X 16
 #define WARNING_LINE_Y 3*FH
 #if LCD_W >= 212
@@ -401,6 +415,7 @@ void displayWarning(uint8_t event);
 void menuChannelsView(uint8_t event);
 void pushMenuTextView(const char *filename);
 bool modelHasNotes();
+void pushModelNotes();
 #endif
 
 #define LABEL(...) (uint8_t)-1
@@ -429,7 +444,8 @@ bool modelHasNotes();
   #define REPEAT_LAST_CURSOR_MOVE() { if (CURSOR_MOVED_LEFT(event) || CURSOR_MOVED_RIGHT(event)) putEvent(event); else m_posHorz = 0; }
   #define MOVE_CURSOR_FROM_HERE()   if (m_posHorz > 0) REPEAT_LAST_CURSOR_MOVE()
 #elif defined(ROTARY_ENCODER_NAVIGATION)
-  #define REPEAT_LAST_CURSOR_MOVE() { if (EVT_KEY_MASK(event) >= 0x0e) putEvent(event); else m_posHorz = 0; }
+  void repeatLastCursorMove(uint8_t event);
+  #define REPEAT_LAST_CURSOR_MOVE() { if (EVT_KEY_MASK(event) >= 0x0e) putEvent(event); else repeatLastCursorMove(event); }
   #define MOVE_CURSOR_FROM_HERE()   if (m_posHorz > 0) REPEAT_LAST_CURSOR_MOVE()
 #else
   void repeatLastCursorMove(uint8_t event);

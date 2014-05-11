@@ -2,11 +2,7 @@
 
 import sys, glob
 
-string = sys.argv[1]
-translation = sys.argv[2]
-after = sys.argv[3]
-
-def addLine(filename, newline):
+def addLine(filename, newline, after):
   print filename, newline
   lines = file(filename, 'r').readlines()
   for i, line in enumerate(lines):
@@ -15,22 +11,27 @@ def addLine(filename, newline):
       break
   file(filename, 'w').writelines(lines)
 
-def modifyTranslations():
-  for filename in ['translations/en.h'] + glob.glob('translations/*.h.txt'):
-    newline = "#define " + string + " "*(23-len(string)) + '"' + translation + '"'
-    addLine(filename, newline) 
+def modifyTranslations(constant, translation, after):
+  for filename in glob.glob('translations/*.h.txt'):
+    newline = "#define " + constant + " "*(23-len(constant)) + '"' + translation + '"'
+    addLine(filename, newline, after+" ") 
 
-def modifyDeclaration():
-  newline = "extern const pm_char S" + string + "[];"
+def modifyDeclaration(constant, after):
+  newline = "extern const pm_char S" + constant + "[];"
   filename = "translations.h"
-  addLine(filename, newline)
+  addLine(filename, newline, after+"[];")
 
-def modifyDefinition():
-  newline = "const pm_char S" + string + "[] PROGMEM = " + string + ";"
+def modifyDefinition(constant, after):
+  newline = "const pm_char S" + constant + "[] PROGMEM = " + constant + ";"
   filename = "translations.cpp"
-  addLine(filename, newline)
+  addLine(filename, newline, after+"[] ")
 
-modifyTranslations()
-modifyDeclaration()
-modifyDefinition()
+
+after = sys.argv[-1]
+for arg in sys.argv[1:-1]:
+  constant, translation = arg.split("=")
+  modifyTranslations(constant, translation, after)
+  modifyDeclaration(constant, after)
+  modifyDefinition(constant, after)
+  after = constant
 

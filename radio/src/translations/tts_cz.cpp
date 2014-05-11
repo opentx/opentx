@@ -82,7 +82,7 @@ enum CzechPrompts {
   CZ_PROMPT_ACCELy = CZ_PROMPT_LABELS_BASE+TELEM_ACCy,
   CZ_PROMPT_ACCELz = CZ_PROMPT_LABELS_BASE+TELEM_ACCz,
   CZ_PROMPT_HDG = CZ_PROMPT_LABELS_BASE+TELEM_HDG,
-  CZ_PROMPT_VARIO = CZ_PROMPT_LABELS_BASE+TELEM_VSPD,
+  CZ_PROMPT_VARIO = CZ_PROMPT_LABELS_BASE+TELEM_VSPEED,
  
 };
 
@@ -129,7 +129,7 @@ I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     }
 #if defined(CPUARM)
     if ((att & PREC1) && (unit == UNIT_FEET || (unit == UNIT_DIST && number >= 100))) {
-      number /= 10;
+      number = div10_and_round(number);
       att -= PREC1;
     }
 #endif
@@ -219,7 +219,7 @@ I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 }
 
-I18N_PLAY_FUNCTION(cz, playDuration, int16_t seconds)
+I18N_PLAY_FUNCTION(cz, playDuration, int seconds PLAY_DURATION_ATT)
 {
   if (seconds < 0) {
     PUSH_NUMBER_PROMPT(CZ_PROMPT_MINUS);
@@ -228,7 +228,7 @@ I18N_PLAY_FUNCTION(cz, playDuration, int16_t seconds)
 
   uint8_t tmp = seconds / 3600;
   seconds %= 3600;
-  if (tmp > 0) {
+  if (tmp > 0 || IS_PLAY_TIME()) {
     PLAY_NUMBER(tmp, UNIT_HOURS+1, ZENSKY);
   }
 

@@ -21,10 +21,11 @@
 
 struct TxInputs {
     int  sticks[NUM_STICKS]; /* lh lv rv rh */
-    int  pots[4]; /* TODO NUM_POTS */
+    int  pots[5]; /* TODO NUM_POTS */
     int  switches[10]; /* TODO NUM_SWITCHES */
     bool keys[6]; /* TODO NUM_KEYS */
     bool rotenc;
+    bool trims[8];
 };
 
 class TxOutputs {
@@ -35,6 +36,7 @@ class TxOutputs {
 
     int16_t chans[C9X_NUM_CHNOUT];
     bool vsw[32]; /* TODO NUM_VIRTUAL_SWITCHES */
+    int16_t gvars[9][9];  /*TODO MAX_FLIGHT_MODES, NUM_GVARS */
     unsigned int beep;
 };
 
@@ -46,6 +48,8 @@ struct Trims {
 class SimulatorInterface {
 
   public:
+
+    virtual ~SimulatorInterface() {};
 
     virtual void start(QByteArray & eeprom, bool tests=true) = 0;
 
@@ -68,6 +72,8 @@ class SimulatorInterface {
     virtual void getTrims(Trims & trims) = 0;
 
     virtual unsigned int getPhase() = 0;
+    
+    virtual const char * getPhaseName(unsigned int phase) = 0;
 
     virtual void wheelEvent(uint8_t steps) = 0;
 

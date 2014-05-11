@@ -47,23 +47,28 @@ void RepeatComboBox::update()
   setCurrentIndex(value);
 }
 
-CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings):
-  ModelPanel(parent, model),
-  generalSettings(generalSettings),
-  phononLock(false)
+CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+  ModelPanel(parent, model, generalSettings, firmware),
+  initialized(false)
+#if defined(PHONON)
+  ,
+  phononCurrent(-1),
+  clickObject(NULL),
+  clickOutput(NULL)
+#endif
 {
   QGridLayout * gridLayout = new QGridLayout(this);
 
-  int col = 1;
-  addLabel(gridLayout, tr("Switch"), col++);
-  addLabel(gridLayout, tr("Action"), col++);
-  addLabel(gridLayout, tr("Parameters"), col++);
-  addLabel(gridLayout, tr("Enable"), col++);
+  addLabel(gridLayout, tr("Switch"), 1);
+  addLabel(gridLayout, tr("Action"), 2);
+  addLabel(gridLayout, tr("Parameters"), 3);
+  addLabel(gridLayout, tr("Enable"), 4, true );
+  addEmptyLabel(gridLayout, 5 );
 
   lock = true;
-  int num_fsw = GetEepromInterface()->getCapability(CustomFunctions);
+  int num_fsw = firmware->getCapability(CustomFunctions);
 
-  if (!GetEepromInterface()->getCapability(VoicesAsNumbers)) {
+  if (!firmware->getCapability(VoicesAsNumbers)) {
     for (int i=0; i<num_fsw; i++) {
       if (model.funcSw[i].func==FuncPlayPrompt || model.funcSw[i].func==FuncBackgroundMusic) {
         QString temp = model.funcSw[i].paramarm;
@@ -82,7 +87,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
       lang="en";
     path.append(lang);
     QDir qd(path);
-    int vml= GetEepromInterface()->getCapability(VoicesMaxLength)+4;
+    int vml= firmware->getCapability(VoicesMaxLength)+4;
     if (qd.exists()) {
       QStringList filters;
       filters << "*.wav" << "*.WAV";
@@ -96,31 +101,31 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
     }
   }
 
-  for (int i=0; i<num_fsw; i++) {
-    AssignFunc func = model.funcSw[i].func;
+  CompanionIcon playIcon("play.png");
 
+  for (int i=0; i<num_fsw; i++) {
     // The label
     QLabel * label = new QLabel(this);
     label->setContextMenuPolicy(Qt::CustomContextMenu);
     label->setMouseTracking(true);
     label->setProperty("index", i);
-    label->setText(tr("CF%1").arg(i+1));
-    gridLayout->addWidget(label, i+1, 0);
+    label->setText(tr("SF%1").arg(i+1));
+    label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
     connect(label, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(fsw_customContextMenuRequested(QPoint)));
+    gridLayout->addWidget(label, i+1, 0);
 
     // The switch
     fswtchSwtch[i] = new QComboBox(this);
     fswtchSwtch[i]->setProperty("index", i);
+    fswtchSwtch[i]->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
     connect(fswtchSwtch[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
     gridLayout->addWidget(fswtchSwtch[i], i+1, 1);
-    populateSwitchCB(fswtchSwtch[i], model.funcSw[i].swtch, POPULATE_ONOFF);
 
     // The function
     fswtchFunc[i] = new QComboBox(this);
     fswtchFunc[i]->setProperty("index", i);
     connect(fswtchFunc[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
     gridLayout->addWidget(fswtchFunc[i], i+1, 2);
-    populateFuncCB(fswtchFunc[i], model.funcSw[i].func);
 
     QHBoxLayout *paramLayout = new QHBoxLayout();
     gridLayout->addLayout(paramLayout, i+1, 3);
@@ -129,7 +134,6 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
     fswtchGVmode[i]->setProperty("index", i);
     connect(fswtchGVmode[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
     paramLayout->addWidget(fswtchGVmode[i]);
-    populateGVmodeCB(fswtchGVmode[i], model.funcSw[i].adjustMode);
 
     fswtchParamGV[i] = new QCheckBox(this);
     fswtchParamGV[i]->setProperty("index", i);
@@ -148,23 +152,29 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
     fswtchParamT[i] = new QComboBox(this);
     fswtchParamT[i]->setProperty("index", i);
     paramLayout->addWidget(fswtchParamT[i]);
-    populateFuncParamCB(fswtchParamT[i], model, func, model.funcSw[i].param, model.funcSw[i].adjustMode);
     connect(fswtchParamT[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
 
     fswtchParamArmT[i] = new QComboBox(this);
     fswtchParamArmT[i]->setProperty("index", i);
-    populateFuncParamArmTCB(fswtchParamArmT[i], model.funcSw[i].paramarm, paramarmList);
     fswtchParamArmT[i]->setEditable(true);
     paramLayout->addWidget(fswtchParamArmT[i]);
 
     connect(fswtchParamArmT[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
     connect(fswtchParamArmT[i], SIGNAL(editTextChanged ( const QString)), this, SLOT(customFunctionEdited()));
+    
+    fswtchBLcolor[i] = new QSlider(this);
+    fswtchBLcolor[i]->setProperty("index", i);
+    fswtchBLcolor[i]->setMinimum(0);
+    fswtchBLcolor[i]->setMaximum(100);
+    fswtchBLcolor[i]->setSingleStep(1);
+    fswtchBLcolor[i]->setOrientation(Qt::Horizontal);
+    paramLayout->addWidget(fswtchBLcolor[i]);
+    connect(fswtchBLcolor[i], SIGNAL(sliderReleased()), this, SLOT(customFunctionEdited()));
 
 #ifdef PHONON
     playBT[i] = new QPushButton(this);
     playBT[i]->setProperty("index", i);
-    playBT[i]->setProperty("state", "play");
-    playBT[i]->setIcon(CompanionIcon("play.png"));
+    playBT[i]->setIcon(playIcon);
     paramLayout->addWidget(playBT[i]);
     connect(playBT[i], SIGNAL(pressed()), this, SLOT(playMusic()));
 #endif
@@ -178,10 +188,13 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
     fswtchEnable[i] = new QCheckBox(this);
     fswtchEnable[i]->setProperty("index", i);
     fswtchEnable[i]->setText(tr("ON"));
+    fswtchEnable[i]->setFixedWidth( 50 );
     repeatLayout->addWidget(fswtchEnable[i], i+1);
-    fswtchEnable[i]->setChecked(model.funcSw[i].enabled);
     connect(fswtchEnable[i], SIGNAL(stateChanged(int)), this, SLOT(customFunctionEdited()));
   }
+
+  // Push rows upward
+  addDoubleSpring(gridLayout, 5, num_fsw+1);
 
   lock = false;
 }
@@ -191,80 +204,73 @@ CustomFunctionsPanel::~CustomFunctionsPanel()
 }
 
 #ifdef PHONON
-
 void CustomFunctionsPanel::mediaPlayer_state(Phonon::State newState, Phonon::State oldState)
 {
-    if (phononLock)
-      return;
-    
-    phononLock=true;
-    if ((newState==Phonon::StoppedState || newState==Phonon::PausedState)  && oldState==Phonon::PlayingState) {
+  if (!lock) {
+    lock = true;
+    if ((newState==Phonon::ErrorState || newState==Phonon::StoppedState || newState==Phonon::PausedState) && oldState==Phonon::PlayingState) {
       clickObject->stop();
       clickObject->clearQueue();
       clickObject->clear();
-      for (int i=0; i<GetEepromInterface()->getCapability(CustomFunctions); i++) {
-        playBT[i]->setObjectName(QString("play_%1").arg(i));
-        playBT[i]->setIcon(CompanionIcon("play.png"));
+      if (phononCurrent >= 0) {
+        playBT[phononCurrent]->setIcon(CompanionIcon("play.png"));
+        phononCurrent = -1;
       }
     }
-    if (newState==Phonon::ErrorState) {
-      clickObject->stop();
-      clickObject->clearQueue();
-      clickObject->clear();
-      for (int i=0; i<GetEepromInterface()->getCapability(CustomFunctions); i++) {
-        playBT[i]->setObjectName(QString("play_%1").arg(i));
-        playBT[i]->setIcon(CompanionIcon("play.png"));
-      }
-    }
-
-    phononLock=false;
+    lock = false;
+  }
 }
-#endif
 
 void CustomFunctionsPanel::playMusic()
 {
-    QPushButton * button = qobject_cast<QPushButton*>(sender());
-    int index = button->property("index").toInt();
-    QString function = button->property("state").toString();
-    QString path = g.profile[g.id()].sdPath();
-    QDir qd(path);
-    QString track;
-    if (qd.exists()) {
-      if (GetEepromInterface()->getCapability(VoicesAsNumbers)) {
-        track = path + QString("/%1.wav").arg(int(fswtchParam[index]->value()), 4, 10, (const QChar)'0');
-      }
-      else {
-        path.append("/SOUNDS/");
-        QString lang = generalSettings.ttsLanguage;
-        if (lang.isEmpty())
-          lang = "en";
-        path.append(lang);
-        if (fswtchParamArmT[index]->currentText() != "----") {
-          track = path + "/" + fswtchParamArmT[index]->currentText() + ".wav";
-        }
-      }
-      QFile file(track);
-      if (!file.exists()) {
-        QMessageBox::critical(this, tr("Error"), tr("Unable to find sound file %1!").arg(track));
-        return;
-      }
-#ifdef PHONON
-      if (function=="play") {
-        clickObject->clear();
-        clickObject->setCurrentSource(Phonon::MediaSource(track));
-        clickObject->play();
-        playBT[index]->setProperty("state", "stop");
-        playBT[index]->setIcon(CompanionIcon("stop.png"));
-      }
-      else {
-        clickObject->stop();
-        clickObject->clear();
-        playBT[index]->setProperty("state", "play");
-        playBT[index]->setIcon(CompanionIcon("play.png"));
-      }
-#endif
+  if (!clickObject) {
+    clickObject = new Phonon::MediaObject(this);
+    clickOutput = new Phonon::AudioOutput(Phonon::NoCategory, this);
+    Phonon::createPath(clickObject, clickOutput);
+    connect(clickObject, SIGNAL(stateChanged(Phonon::State, Phonon::State)), this, SLOT(mediaPlayer_state(Phonon::State, Phonon::State)));
+  }
+
+  QPushButton * button = qobject_cast<QPushButton*>(sender());
+  int index = button->property("index").toInt();
+  QString path = g.profile[g.id()].sdPath();
+  QDir qd(path);
+  QString track;
+  if (qd.exists()) {
+    if (firmware->getCapability(VoicesAsNumbers)) {
+      track = path + QString("/%1.wav").arg(int(fswtchParam[index]->value()), 4, 10, (const QChar)'0');
     }
+    else {
+      path.append("/SOUNDS/");
+      QString lang = generalSettings.ttsLanguage;
+      if (lang.isEmpty())
+        lang = "en";
+      path.append(lang);
+      if (fswtchParamArmT[index]->currentText() != "----") {
+        track = path + "/" + fswtchParamArmT[index]->currentText() + ".wav";
+      }
+    }
+    QFile file(track);
+    if (!file.exists()) {
+      QMessageBox::critical(this, tr("Error"), tr("Unable to find sound file %1!").arg(track));
+      return;
+    }
+
+    if (phononCurrent == index) {
+      clickObject->stop();
+      clickObject->clear();
+      playBT[index]->setIcon(CompanionIcon("play.png"));
+      phononCurrent = -1;
+    }
+    else {
+      phononCurrent = index;
+      clickObject->clear();
+      clickObject->setCurrentSource(QUrl(track));
+      clickObject->play();
+      playBT[index]->setIcon(CompanionIcon("stop.png"));
+    }
+  }
 }
+#endif
 
 #define CUSTOM_FUNCTION_NUMERIC_PARAM  (1<<0)
 #define CUSTOM_FUNCTION_SOURCE_PARAM   (1<<1)
@@ -274,6 +280,7 @@ void CustomFunctionsPanel::playMusic()
 #define CUSTOM_FUNCTION_ENABLE         (1<<5)
 #define CUSTOM_FUNCTION_REPEAT         (1<<6)
 #define CUSTOM_FUNCTION_PLAY           (1<<7)
+#define CUSTOM_FUNCTION_BL_COLOR       (1<<8)
 
 void CustomFunctionsPanel::customFunctionEdited()
 {
@@ -332,8 +339,14 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
         if (modified) model.funcSw[i].param = fswtchParam[i]->value();
         fswtchParam[i]->setDecimals(0);
         fswtchParam[i]->setSingleStep(1);
-        fswtchParam[i]->setMinimum(-125);
-        fswtchParam[i]->setMaximum(125);
+        if (IS_ARM(GetEepromInterface()->getBoard())) {
+          fswtchParam[i]->setMinimum(-500);
+          fswtchParam[i]->setMaximum(500);
+        }
+        else {
+          fswtchParam[i]->setMinimum(-125);
+          fswtchParam[i]->setMaximum(125);
+        }
         fswtchParam[i]->setValue(model.funcSw[i].param);
         widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM;
       }
@@ -363,7 +376,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
       widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM + CUSTOM_FUNCTION_ENABLE;
     }
     else if (index==FuncPlaySound || index==FuncPlayHaptic || index==FuncPlayValue || index==FuncPlayPrompt || index==FuncPlayBoth || index==FuncBackgroundMusic) {
-      if (index != FuncBackgroundMusic && GetEepromInterface()->getCapability(HasFuncRepeat)) {
+      if (index != FuncBackgroundMusic && firmware->getCapability(HasFuncRepeat)) {
         widgetsMask |= CUSTOM_FUNCTION_REPEAT;
         fswtchRepeat[i]->update();
       }
@@ -373,7 +386,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
         widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM + CUSTOM_FUNCTION_REPEAT;
       }
       else if (index==FuncPlayPrompt || index==FuncPlayBoth) {
-        if (GetEepromInterface()->getCapability(VoicesAsNumbers)) {
+        if (firmware->getCapability(VoicesAsNumbers)) {
           fswtchParam[i]->setDecimals(0);
           fswtchParam[i]->setSingleStep(1);
           fswtchParam[i]->setMinimum(0);
@@ -410,7 +423,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
           widgetsMask |= CUSTOM_FUNCTION_FILE_PARAM;
           if (modified) {
             memset(model.funcSw[i].paramarm, 0, sizeof(model.funcSw[i].paramarm));
-            int vml = GetEepromInterface()->getCapability(VoicesMaxLength);
+            int vml = firmware->getCapability(VoicesMaxLength);
             if (fswtchParamArmT[i]->currentText() != "----") {
               widgetsMask |= CUSTOM_FUNCTION_PLAY;
               for (int j=0; j<std::min(fswtchParamArmT[i]->currentText().length(), vml); j++) {
@@ -430,7 +443,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
         widgetsMask |= CUSTOM_FUNCTION_FILE_PARAM;
         if (modified) {
           memset(model.funcSw[i].paramarm, 0, sizeof(model.funcSw[i].paramarm));
-          int vml=GetEepromInterface()->getCapability(VoicesMaxLength);
+          int vml=firmware->getCapability(VoicesMaxLength);
           if (fswtchParamArmT[i]->currentText() != "----") {
             widgetsMask |= CUSTOM_FUNCTION_PLAY;
             for (int j=0; j<std::min(fswtchParamArmT[i]->currentText().length(),vml); j++) {
@@ -450,6 +463,11 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
         widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM;
       }
     }
+    else if (index==FuncBacklight && IS_TARANIS_PLUS(GetEepromInterface()->getBoard())) {
+      if (modified) model.funcSw[i].param = (uint8_t)fswtchBLcolor[i]->value();
+      fswtchBLcolor[i]->setValue(model.funcSw[i].param);
+      widgetsMask |= CUSTOM_FUNCTION_BL_COLOR;
+    }
     else {
       if (modified) model.funcSw[i].param = fswtchParam[i]->value();
       fswtchParam[i]->setDecimals(0);
@@ -465,9 +483,13 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
     fswtchParamT[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_SOURCE_PARAM);
     fswtchParamArmT[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_FILE_PARAM);
     fswtchEnable[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_ENABLE);
-    if (!(widgetsMask & CUSTOM_FUNCTION_ENABLE)) fswtchEnable[i]->setChecked(false);
+    if (widgetsMask & CUSTOM_FUNCTION_ENABLE)
+      fswtchEnable[i]->setChecked(model.funcSw[i].enabled);
+    else
+      fswtchEnable[i]->setChecked(false);
     fswtchRepeat[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_REPEAT);
     fswtchGVmode[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_GV_MODE);
+    fswtchBLcolor[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_BL_COLOR);
 #ifdef PHONON
     playBT[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_PLAY);
 #endif
@@ -476,9 +498,17 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
 void CustomFunctionsPanel::update()
 {
   lock = true;
-  for (int i=0; i<GetEepromInterface()->getCapability(CustomFunctions); i++) {
+  for (int i=0; i<firmware->getCapability(CustomFunctions); i++) {
+    if (!initialized) {
+      populateSwitchCB(fswtchSwtch[i], model.funcSw[i].swtch, generalSettings, POPULATE_ONOFF);
+      populateFuncCB(fswtchFunc[i], model.funcSw[i].func);
+      populateGVmodeCB(fswtchGVmode[i], model.funcSw[i].adjustMode);
+      populateFuncParamCB(fswtchParamT[i], model, model.funcSw[i].func, model.funcSw[i].param, model.funcSw[i].adjustMode);
+      populateFuncParamArmTCB(fswtchParamArmT[i], model.funcSw[i].paramarm, paramarmList);
+    }
     refreshCustomFunction(i);
   }
+  initialized = true;
   lock = false;
 }
 
@@ -491,8 +521,11 @@ void CustomFunctionsPanel::fswPaste()
     FuncSwData *fsw = &model.funcSw[selectedFunction];
     memcpy(fsw, fswData.mid(0, sizeof(FuncSwData)).constData(), sizeof(FuncSwData));
     lock = true;
-    populateSwitchCB(fswtchSwtch[selectedFunction], model.funcSw[selectedFunction].swtch, POPULATE_ONOFF);
+    populateSwitchCB(fswtchSwtch[selectedFunction], model.funcSw[selectedFunction].swtch, generalSettings, POPULATE_ONOFF);
     populateFuncCB(fswtchFunc[selectedFunction], model.funcSw[selectedFunction].func);
+    populateGVmodeCB(fswtchGVmode[selectedFunction], model.funcSw[selectedFunction].adjustMode);
+    populateFuncParamCB(fswtchParamT[selectedFunction], model, model.funcSw[selectedFunction].func, model.funcSw[selectedFunction].param, model.funcSw[selectedFunction].adjustMode);
+    populateFuncParamArmTCB(fswtchParamArmT[selectedFunction], model.funcSw[selectedFunction].paramarm, paramarmList);
     refreshCustomFunction(selectedFunction);
     lock = false;
     emit modified();
@@ -503,9 +536,11 @@ void CustomFunctionsPanel::fswDelete()
 {
   model.funcSw[selectedFunction].clear();
   // TODO update switch and func
-  populateSwitchCB(fswtchSwtch[selectedFunction], model.funcSw[selectedFunction].swtch, POPULATE_ONOFF);
+  lock = true;
+  populateSwitchCB(fswtchSwtch[selectedFunction], model.funcSw[selectedFunction].swtch, generalSettings, POPULATE_ONOFF);
   populateFuncCB(fswtchFunc[selectedFunction], model.funcSw[selectedFunction].func);
   refreshCustomFunction(selectedFunction);
+  lock = false;
   emit modified();
 }
 
@@ -549,24 +584,24 @@ void CustomFunctionsPanel::populateFuncCB(QComboBox *b, unsigned int value)
   b->clear();
   for (unsigned int i=0; i<FuncCount; i++) {
     b->addItem(FuncSwData(AssignFunc(i)).funcToString());
-    if (!GetEepromInterface()->getCapability(HasVolume)) {
+    if (!firmware->getCapability(HasVolume)) {
       if (i==FuncVolume || i==FuncBackgroundMusic || i==FuncBackgroundMusicPause) {
         QModelIndex index = b->model()->index(i, 0);
         QVariant v(0);
         b->model()->setData(index, v, Qt::UserRole - 1);
       }
     }
-    if ((i==FuncPlayHaptic) && !GetEepromInterface()->getCapability(Haptic)) {
+    if ((i==FuncPlayHaptic) && !firmware->getCapability(Haptic)) {
       QModelIndex index = b->model()->index(i, 0);
       QVariant v(0);
       b->model()->setData(index, v, Qt::UserRole - 1);
     }
-    if ((i==FuncPlayBoth) && !GetEepromInterface()->getCapability(HasBeeper)) {
+    if ((i==FuncPlayBoth) && !firmware->getCapability(HasBeeper)) {
       QModelIndex index = b->model()->index(i, 0);
       QVariant v(0);
       b->model()->setData(index, v, Qt::UserRole - 1);
     }
-    if ((i==FuncLogs) && !GetEepromInterface()->getCapability(HasSDLogs)) {
+    if ((i==FuncLogs) && !firmware->getCapability(HasSDLogs)) {
       QModelIndex index = b->model()->index(i, 0);
       QVariant v(0);
       b->model()->setData(index, v, Qt::UserRole - 1);
@@ -627,7 +662,7 @@ void CustomFunctionsPanel::populateFuncParamCB(QComboBox *b, const ModelData & m
     qs.append( QObject::tr("Timer2"));
     qs.append( QObject::tr("All"));
     qs.append( QObject::tr("Telemetry"));
-    int reCount = GetEepromInterface()->getCapability(RotaryEncoders);
+    int reCount = firmware->getCapability(RotaryEncoders);
     if (reCount == 1) {
       qs.append( QObject::tr("Rotary Encoder"));
     }
@@ -647,7 +682,7 @@ void CustomFunctionsPanel::populateFuncParamCB(QComboBox *b, const ModelData & m
   else if (function>=FuncAdjustGV1 && function<=FuncAdjustGVLast) {
     switch (adjustmode) {
       case 1:
-        populateSourceCB(b, RawSource(value), model, POPULATE_SOURCES|POPULATE_TRIMS|POPULATE_SWITCHES);
+        populateSourceCB(b, RawSource(value), model, POPULATE_SOURCES|POPULATE_VIRTUAL_INPUTS|POPULATE_TRIMS|POPULATE_SWITCHES);
         break;
       case 2:
         populateSourceCB(b, RawSource(value), model, POPULATE_GVARS);

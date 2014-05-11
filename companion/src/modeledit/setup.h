@@ -6,6 +6,7 @@
 #include <QCheckBox>
 #include <QSlider>
 #include <QSpinBox>
+#include <QComboBox>
 #include <QLabel>
 
 namespace Ui {
@@ -19,7 +20,7 @@ class TimerPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    TimerPanel(QWidget *parent, ModelData & model, TimerData & timer);
+    TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, FirmwareInterface * firmware);
     virtual ~TimerPanel();
 
     virtual void update();
@@ -41,7 +42,7 @@ class ModulePanel : public ModelPanel
     Q_OBJECT
 
   public:
-    ModulePanel(QWidget *parent, ModelData & model, ModuleData & module, int moduleIdx);
+    ModulePanel(QWidget *parent, ModelData & model, ModuleData & module, GeneralSettings & generalSettings, FirmwareInterface * firmware, int moduleIdx);
     virtual ~ModulePanel();
 
     virtual void update();
@@ -65,16 +66,19 @@ class ModulePanel : public ModelPanel
     QVector<QDoubleSpinBox *> failsafeSpins;
 };
 
-class Setup : public ModelPanel
+class SetupPanel : public ModelPanel
 {
     Q_OBJECT
 
   public:
-    Setup(QWidget *parent, ModelData & model);
-    virtual ~Setup();
+    SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
+    virtual ~SetupPanel();
 
     virtual void update();
 
+  signals: 
+    void extendedLimitsToggled();
+    
   private slots:
     void on_name_editingFinished();
     void on_throttleSource_currentIndexChanged(int index);
@@ -104,6 +108,7 @@ class Setup : public ModelPanel
     void updateStartupSwitches();
     void updatePotWarnings();
     void updateBeepCenter();
+    void populateThrottleSourceCB();
 };
 
 #endif // SETUP_H

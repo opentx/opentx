@@ -20,13 +20,13 @@
 #include "simulatorinterface.h"
 
 class RadioData;
-class OpenTxInterface;
+class OpenTxEepromInterface;
 
 class Open9xM128Simulator : public SimulatorInterface {
 
   public:
 
-    Open9xM128Simulator(OpenTxInterface *);
+    Open9xM128Simulator();
 
     virtual void start(QByteArray & eeprom, bool tests=true);
 
@@ -50,13 +50,12 @@ class Open9xM128Simulator : public SimulatorInterface {
 
     virtual unsigned int getPhase();
 
+    virtual const char * getPhaseName(unsigned int phase);
+
     virtual void wheelEvent(uint8_t steps);
 
     virtual const char * getError();
 
-  protected:
-
-    OpenTxInterface * open9xInterface;
 };
 
 #endif

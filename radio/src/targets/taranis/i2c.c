@@ -10,7 +10,7 @@
   ******************************************************************************
 */
 
-#include "../opentx.h"
+#include "board_taranis.h"
 
 #define	I2C_delay()   delay_01us(100);
 
@@ -44,7 +44,7 @@ static void I2C_GPIO_Configuration(void)
   SCL_H;
 }
 
-short I2C_START()
+short I2C_START(void)
 {
   SDA_H;
   I2C_delay();
@@ -59,7 +59,7 @@ short I2C_START()
   return 1;
 }
 
-void I2C_STOP()
+void I2C_STOP(void)
 {
   SCL_L;
   I2C_delay();
@@ -71,7 +71,7 @@ void I2C_STOP()
   I2C_delay();
 }
 
-void I2C_ACK()
+void I2C_ACK(void)
 {
   SCL_L;
   I2C_delay();
@@ -82,7 +82,8 @@ void I2C_ACK()
   SCL_L;
   I2C_delay();
 }
-void I2C_NO_ACK()
+
+void I2C_NO_ACK(void)
 {
   SCL_L;
   I2C_delay();
@@ -94,7 +95,7 @@ void I2C_NO_ACK()
   I2C_delay();
 }
 
-short I2C_WAIT_ACK()
+short I2C_WAIT_ACK(void)
 {
   short i=50;
   SCL_L;
@@ -103,7 +104,7 @@ short I2C_WAIT_ACK()
   I2C_delay();
   SCL_H;
   I2C_delay();
-  while(i) {
+  while (i) {
     if(SDA_read) {
       I2C_delay();
       i--;
@@ -138,7 +139,7 @@ void I2C_SEND_DATA(char SendByte)
   I2C_delay();
 }
 
-char I2C_READ()
+char I2C_READ(void)
 { 
   short i=8;
   char ReceiveByte=0;
@@ -158,7 +159,7 @@ char I2C_READ()
   return ReceiveByte;
 } 
 
-void I2C_EE_Init()
+void I2C_EE_Init(void)
 {
   /* GPIO Periph clock enable */
   RCC_AHB1PeriphClockCmd(I2C_EE_GPIO_CLK, ENABLE);

@@ -5,8 +5,8 @@
 #include "helpers.h"
 #include "appdata.h"
 
-TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer):
-  ModelPanel(parent, model),
+TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+  ModelPanel(parent, model, generalSettings, firmware),
   timer(timer),
   ui(new Ui::Timer)
 {
@@ -15,17 +15,17 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer):
   lock = true;
 
   // Mode
-  populateSwitchCB(ui->mode, timer.mode, POPULATE_TIMER_MODES);
+  populateSwitchCB(ui->mode, timer.mode, generalSettings, POPULATE_TIMER_MODES);
 
-  if (!GetEepromInterface()->getCapability(PermTimers)) {
+  if (!firmware->getCapability(PermTimers)) {
     ui->persistent->hide();
     ui->persistentValue->hide();
   }
 
-  ui->countdownBeep->addItem(tr("None"));
+  ui->countdownBeep->addItem(tr("Silent"));
   ui->countdownBeep->addItem(tr("Beeps"));
   if (IS_ARM(GetEepromInterface()->getBoard()) || IS_2560(GetEepromInterface()->getBoard()))
-    ui->countdownBeep->addItem(tr("Countdown"));
+    ui->countdownBeep->addItem(tr("Voice"));
 
   lock = false;
 }
@@ -41,7 +41,7 @@ void TimerPanel::update()
   int sec = timer.val % 60;
   ui->value->setTime(QTime(0, min, sec));
 
-  if (GetEepromInterface()->getCapability(PermTimers)) {
+  if (firmware->getCapability(PermTimers)) {
     int sign = 1;
     int pvalue = timer.pvalue;
     if (pvalue < 0) {
@@ -94,8 +94,8 @@ void TimerPanel::on_minuteBeep_toggled(bool checked)
 
 /******************************************************************************/
 
-ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module, int moduleIdx):
-  ModelPanel(parent, model),
+ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module, GeneralSettings & generalSettings, FirmwareInterface * firmware, int moduleIdx):
+  ModelPanel(parent, model, generalSettings, firmware),
   module(module),
   moduleIdx(moduleIdx),
   ui(new Ui::Module)
@@ -106,17 +106,21 @@ ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module
 
   QString label;
   if (moduleIdx < 0) {
-    label = tr("Trainer Output");
+    label = tr("Trainer Port");
     ui->trainerMode->setCurrentIndex(model.trainerMode);
   }
   else {
     ui->label_trainerMode->hide();
     ui->trainerMode->hide();
-    if (moduleIdx == 0)
-      label = tr("Internal Radio System");
-    else
-      label = tr("External Radio Module");
-
+    if (firmware->getCapability(NumModules) > 1) {
+      if (moduleIdx == 0)
+        label = tr("Internal Radio System");
+      else
+        label = tr("External Radio Module");
+    }
+    else {
+      label = tr("Radio System");
+    }
   }
   ui->label_module->setText(label);
 
@@ -128,7 +132,7 @@ ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module
     }
   }
 
-  if (GetEepromInterface()->getCapability(HasFailsafe)) {
+  if (firmware->getCapability(HasFailsafe)) {
     for (int i=0; i<16; i++) {
       QLabel * label = new QLabel(this);
       label->setText(QString::number(i+1));
@@ -167,35 +171,38 @@ void ModulePanel::update()
   unsigned int mask = 0;
   Protocol protocol = (Protocol)module.protocol;
 
-  if (moduleIdx >= 0 || model.trainerMode != 0) {
+  if (moduleIdx >= 0) {
     mask |= MASK_PROTOCOL;
     switch (protocol) {
-      case OFF:
-        break;
       case PXX_XJT_X16:
       case PXX_XJT_D8:
       case PXX_XJT_LR12:
       case PXX_DJT:
-        mask |= MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT | MASK_RX_NUMBER;
-        if (protocol==PXX_XJT_X16) mask |= MASK_FAILSAFES;
+        mask |= MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
+        if ((protocol==PXX_XJT_X16) || (protocol==PXX_XJT_LR12)) mask |= MASK_FAILSAFES | MASK_RX_NUMBER;
         break;
       case LP45:
       case DSM2:
       case DSMX:
         mask |= MASK_CHANNELS_RANGE | MASK_RX_NUMBER;
-        module.channelsCount = 8;
+        module.channelsCount = 6;
         break;
-      default:
+      case PPM:
         mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE| MASK_CHANNELS_COUNT;
         break;
+      case OFF:
+      default:
+        break;
     }
+  }
+  else if (model.trainerMode != 0) {
+    mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
   }
 
   ui->label_protocol->setVisible(mask & MASK_PROTOCOL);
   ui->protocol->setVisible(mask & MASK_PROTOCOL);
-  ui->label_rxNumber->setVisible(mask & MASK_PROTOCOL);
-  ui->rxNumber->setVisible(mask & MASK_PROTOCOL);
-  ui->rxNumber->setEnabled(mask & MASK_RX_NUMBER);
+  ui->label_rxNumber->setVisible(mask & MASK_FAILSAFES);
+  ui->rxNumber->setVisible(mask & MASK_FAILSAFES);
   ui->rxNumber->setValue(model.modelId);
   ui->label_channelsStart->setVisible(mask & MASK_CHANNELS_RANGE);
   ui->channelsStart->setVisible(mask & MASK_CHANNELS_RANGE);
@@ -204,7 +211,7 @@ void ModulePanel::update()
   ui->channelsCount->setVisible(mask & MASK_CHANNELS_RANGE);
   ui->channelsCount->setEnabled(mask & MASK_CHANNELS_COUNT);
   ui->channelsCount->setValue(module.channelsCount);
-  ui->channelsCount->setSingleStep(GetEepromInterface()->getCapability(HasPPMStart) ? 1 : 2);
+  ui->channelsCount->setSingleStep(firmware->getCapability(HasPPMStart) ? 1 : 2);
 
   // PPM settings fields
   ui->label_ppmPolarity->setVisible(mask & MASK_PPM_FIELDS);
@@ -216,10 +223,10 @@ void ModulePanel::update()
   ui->label_ppmFrameLength->setVisible(mask & MASK_PPM_FIELDS);
   ui->ppmFrameLength->setVisible(mask & MASK_PPM_FIELDS);
   ui->ppmFrameLength->setMinimum(module.channelsCount*(model.extendedLimits ? 2.250 :2)+3.5);
-  ui->ppmFrameLength->setMaximum(GetEepromInterface()->getCapability(PPMFrameLength));
+  ui->ppmFrameLength->setMaximum(firmware->getCapability(PPMFrameLength));
   ui->ppmFrameLength->setValue(22.5+((double)module.ppmFrameLength)*0.5);
 
-  if (GetEepromInterface()->getCapability(HasFailsafe)) {
+  if (firmware->getCapability(HasFailsafe)) {
     ui->label_failsafeMode->setVisible(mask & MASK_FAILSAFES);
     ui->failsafeMode->setVisible(mask & MASK_FAILSAFES);
     ui->failsafeMode->setCurrentIndex(module.failsafeMode);
@@ -316,8 +323,8 @@ void ModulePanel::onFailsafeSpinChanged(double value)
 
 /******************************************************************************/
 
-Setup::Setup(QWidget *parent, ModelData & model):
-  ModelPanel(parent, model),
+SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+  ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::Setup)
 {
   lock = true;
@@ -329,36 +336,35 @@ Setup::Setup(QWidget *parent, ModelData & model):
   ui->name->setMaxLength(IS_TARANIS(GetEepromInterface()->getBoard()) ? 12 : 10);
 
   for (int i=0; i<C9X_MAX_TIMERS; i++) {
-    timers[i] = new TimerPanel(this, model, model.timers[i]);
+    timers[i] = new TimerPanel(this, model, model.timers[i], generalSettings, firmware);
     ui->gridLayout->addWidget(timers[i], 1+i, 1);
     connect(timers[i], SIGNAL(modified()), this, SLOT(onChildModified()));
   }
 
-  for (int i=0; i<GetEepromInterface()->getCapability(NumModules); i++) {
-    modules[i] = new ModulePanel(this, model, model.moduleData[i], i);
+  for (int i=0; i<firmware->getCapability(NumModules); i++) {
+    modules[i] = new ModulePanel(this, model, model.moduleData[i], generalSettings, firmware, i);
     ui->modulesLayout->addWidget(modules[i]);
     connect(modules[i], SIGNAL(modified()), this, SLOT(onChildModified()));
   }
 
-  if (GetEepromInterface()->getCapability(ModelTrainerEnable)) {
-    modules[C9X_NUM_MODULES] = new ModulePanel(this, model, model.moduleData[C9X_NUM_MODULES], -1);
+  if (firmware->getCapability(ModelTrainerEnable)) {
+    modules[C9X_NUM_MODULES] = new ModulePanel(this, model, model.moduleData[C9X_NUM_MODULES], generalSettings, firmware, -1);
     ui->modulesLayout->addWidget(modules[C9X_NUM_MODULES]);
   }
 
-  if (GetEepromInterface()->getCapability(ModelImage)) {
+  if (firmware->getCapability(ModelImage)) {
     QStringList items;
     items.append("");
     QString path = g.profile[g.id()].sdPath();
     path.append("/BMP/");
     QDir qd(path);
-    int vml = GetEepromInterface()->getCapability(VoicesMaxLength)+4;
     if (qd.exists()) {
       QStringList filters;
       filters << "*.bmp" << "*.bmp";
       foreach ( QString file, qd.entryList(filters, QDir::Files) ) {
         QFileInfo fi(file);
         QString temp = fi.completeBaseName();
-        if (!items.contains(temp) && temp.length() <= vml) {
+        if (!items.contains(temp) && temp.length() <= 10+4) {
           items.append(temp);
         }
       }
@@ -393,13 +399,13 @@ Setup::Setup(QWidget *parent, ModelData & model):
     ui->imagePreview->hide();
   }
   
-  if (!GetEepromInterface()->getCapability(HasDisplayText)) {
+  if (!firmware->getCapability(HasDisplayText)) {
     ui->displayText->hide();
   }
 
   // Beep Center checkboxes
-  int analogs = 4 + GetEepromInterface()->getCapability(Pots);
-  for (int i=0; i<analogs+GetEepromInterface()->getCapability(RotaryEncoders); i++) {
+  int analogs = 4 + firmware->getCapability(Pots);
+  for (int i=0; i<analogs+firmware->getCapability(RotaryEncoders); i++) {
     QCheckBox * checkbox = new QCheckBox(this);
     checkbox->setProperty("index", i);
     checkbox->setText(i<analogs ? AnalogString(i) : RotaryEncoderString(i-analogs));
@@ -409,7 +415,7 @@ Setup::Setup(QWidget *parent, ModelData & model):
   }
 
   // Startup switches warnings
-  for (int i=0; i<GetEepromInterface()->getCapability(Switches)-1; i++) {
+  for (int i=0; i<firmware->getCapability(Switches)-1; i++) {
     QLabel * label = new QLabel(this);
     QSlider * slider = new QSlider(this);
     QCheckBox * cb = new QCheckBox(this);
@@ -443,11 +449,11 @@ Setup::Setup(QWidget *parent, ModelData & model):
     startupSwitchesSliders << slider;
     startupSwitchesCheckboxes << cb;
   }
-  ui->switchesStartupLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum), 0, GetEepromInterface()->getCapability(Switches));
+  ui->switchesStartupLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum), 0, firmware->getCapability(Switches));
 
   // Pot warnings
   if(IS_TARANIS(GetEepromInterface()->getBoard())) {
-    for (int i=0; i<GetEepromInterface()->getCapability(Pots); i++) {
+    for (int i=0; i<firmware->getCapability(Pots); i++) {
       QCheckBox * cb = new QCheckBox(this);
       cb->setProperty("index", i+1);
       cb->setText(AnalogString(i+4));
@@ -463,59 +469,62 @@ Setup::Setup(QWidget *parent, ModelData & model):
   lock = false;
 }
 
-Setup::~Setup()
+SetupPanel::~SetupPanel()
 {
   delete ui;
 }
 
-void Setup::on_extendedLimits_toggled(bool checked)
+void SetupPanel::on_extendedLimits_toggled(bool checked)
 {
   model.extendedLimits = checked;
+  emit extendedLimitsToggled();
   emit modified();
 }
 
-void Setup::on_throttleWarning_toggled(bool checked)
+void SetupPanel::on_throttleWarning_toggled(bool checked)
 {
   model.disableThrottleWarning = !checked;
   emit modified();
 }
 
-void Setup::on_throttleReverse_toggled(bool checked)
+void SetupPanel::on_throttleReverse_toggled(bool checked)
 {
   model.throttleReversed = checked;
   emit modified();
 }
 
-void Setup::on_extendedTrims_toggled(bool checked)
+void SetupPanel::on_extendedTrims_toggled(bool checked)
 {
   model.extendedTrims = checked;
   emit modified();
 }
 
-void Setup::on_trimIncrement_currentIndexChanged(int index)
+void SetupPanel::on_trimIncrement_currentIndexChanged(int index)
 {
   model.trimInc = index-2;
   emit modified();
 }
 
-void Setup::on_throttleSource_currentIndexChanged(int index)
+void SetupPanel::on_throttleSource_currentIndexChanged(int index)
 {
-  model.thrTraceSrc = index;
-  emit modified();
+  if (!lock) {
+    model.thrTraceSrc = ui->throttleSource->itemData(index).toInt();
+    emit modified();
+  }
 }
 
-void Setup::on_name_editingFinished()
+void SetupPanel::on_name_editingFinished()
 {
   int length = ui->name->maxLength();
   strncpy(model.name, ui->name->text().toAscii(), length);
   emit modified();
 }
 
-void Setup::on_image_currentIndexChanged(int index)
+void SetupPanel::on_image_currentIndexChanged(int index)
 {
   if (!lock) {
-    strncpy(model.bitmap, ui->image->currentText().toAscii(), GetEepromInterface()->getCapability(VoicesMaxLength));
-    QString path=g.profile[g.id()].sdPath();
+    strncpy(model.bitmap, ui->image->currentText().toAscii(), 10);
+    QString path = g.profile[g.id()].sdPath();
     path.append("/BMP/");
     QDir qd(path);
     if (qd.exists()) {
@@ -530,7 +539,7 @@ void Setup::on_image_currentIndexChanged(int index)
         image.load(fileName);
       }
       if (!image.isNull()) {
-        ui->imagePreview->setPixmap(QPixmap::fromImage(image.scaled( 64,32)));;
+        ui->imagePreview->setPixmap(QPixmap::fromImage(image.scaled(64, 32)));;
       }
       else {
         ui->imagePreview->clear();
@@ -543,12 +552,45 @@ void Setup::on_image_currentIndexChanged(int index)
   }
 }
 
-void Setup::update()
+void SetupPanel::populateThrottleSourceCB()
+{
+  const QString sources9x[] = { QObject::tr("THR"), QObject::tr("P1"), QObject::tr("P2"), QObject::tr("P3")};
+  const QString sourcesTaranis[] = { QObject::tr("THR"), QObject::tr("S1"), QObject::tr("S2"), QObject::tr("S3"), QObject::tr("LS"), QObject::tr("RS")};
+
+  unsigned int i;
+
+  lock = true;
+
+  if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+    for (i=0; i<6; i++) {
+      ui->throttleSource->addItem(sourcesTaranis[i], i);
+    }
+  }
+  else {
+    for (i=0; i<4; i++) {
+      ui->throttleSource->addItem(sources9x[i], i);
+    }
+  }
+
+  if (model.thrTraceSrc < i)
+    ui->throttleSource->setCurrentIndex(model.thrTraceSrc);
+
+  int channels = (IS_ARM(GetEepromInterface()->getBoard()) ? 32 : 16);
+  for (int i=0; i<channels; i++) {
+    ui->throttleSource->addItem(QObject::tr("CH%1").arg(i+1, 2, 10, QChar('0')), THROTTLE_SOURCE_FIRST_CHANNEL+i);
+    if (model.thrTraceSrc == unsigned(THROTTLE_SOURCE_FIRST_CHANNEL+i))
+      ui->throttleSource->setCurrentIndex(ui->throttleSource->count()-1);
+  }
+
+  lock = false;
+}
+
+void SetupPanel::update()
 {
   ui->name->setText(model.name);
 
   ui->throttleReverse->setChecked(model.throttleReversed);
-  populateTTraceCB(ui->throttleSource, model.thrTraceSrc);
+  populateThrottleSourceCB();
   ui->throttleWarning->setChecked(!model.disableThrottleWarning);
 
   //trim inc, thro trim, thro expo, instatrim
@@ -573,20 +615,20 @@ void Setup::update()
       modules[i]->update();
 }
 
-void Setup::updateBeepCenter()
+void SetupPanel::updateBeepCenter()
 {
   for (int i=0; i<centerBeepCheckboxes.size(); i++) {
     centerBeepCheckboxes[i]->setChecked(model.beepANACenter & (0x01 << i));
   }
 }
 
-void Setup::updateStartupSwitches()
+void SetupPanel::updateStartupSwitches()
 {
   lock = true;
 
   unsigned int switchStates = model.switchWarningStates;
 
-  for (int i=0; i<GetEepromInterface()->getCapability(Switches)-1; i++) {
+  for (int i=0; i<firmware->getCapability(Switches)-1; i++) {
     QSlider * slider = startupSwitchesSliders[i];
     QCheckBox * cb = startupSwitchesCheckboxes[i];
     bool enabled = !(model.nSwToWarn & (1 << i));
@@ -605,7 +647,7 @@ void Setup::updateStartupSwitches()
   lock = false;
 }
 
-void Setup::startupSwitchEdited(int value)
+void SetupPanel::startupSwitchEdited(int value)
 {
   if (!lock) {
     int shift = 0;
@@ -644,7 +686,7 @@ void Setup::startupSwitchEdited(int value)
   }
 }
 
-void Setup::startupSwitchToggled(bool checked)
+void SetupPanel::startupSwitchToggled(bool checked)
 {
   if (!lock) {
     int index = sender()->property("index").toInt()-1;
@@ -659,7 +701,7 @@ void Setup::startupSwitchToggled(bool checked)
   }
 }
 
-void Setup::updatePotWarnings()
+void SetupPanel::updatePotWarnings()
 {
   lock = true;
   int mode = model.nPotsToWarn >> 6;
@@ -677,7 +719,7 @@ void Setup::updatePotWarnings()
   lock = false;
 }
 
-void Setup::potWarningToggled(bool checked)
+void SetupPanel::potWarningToggled(bool checked)
 {
   if (!lock) {
     int index = sender()->property("index").toInt()-1;
@@ -692,7 +734,7 @@ void Setup::potWarningToggled(bool checked)
   }
 }
 
-void Setup::on_potWarningMode_currentIndexChanged(int index)
+void SetupPanel::on_potWarningMode_currentIndexChanged(int index)
 {
   if (!lock) {
     int mask = 0xC0;
@@ -704,19 +746,19 @@ void Setup::on_potWarningMode_currentIndexChanged(int index)
   }
 }
 
-void Setup::on_displayText_toggled(bool checked)
+void SetupPanel::on_displayText_toggled(bool checked)
 {
   model.displayText = checked;
   emit modified();
 }
 
-void Setup::on_throttleTrim_toggled(bool checked)
+void SetupPanel::on_throttleTrim_toggled(bool checked)
 {
   model.thrTrim = checked;
   emit modified();
 }
 
-void Setup::onBeepCenterToggled(bool checked)
+void SetupPanel::onBeepCenterToggled(bool checked)
 {
   if (!lock) {
     int index = sender()->property("index").toInt();
@@ -729,7 +771,7 @@ void Setup::onBeepCenterToggled(bool checked)
   }
 }
 
-void Setup::onChildModified()
+void SetupPanel::onChildModified()
 {
   emit modified();
 }

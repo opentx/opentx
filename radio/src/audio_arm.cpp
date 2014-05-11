@@ -274,7 +274,7 @@ void referenceSystemAudioFiles()
 
       for (int i=0; i<AU_FRSKY_FIRST; i++) {
         getSystemAudioFile(path, i);
-        if (!strcmp(filename, fn)) {
+        if (!strcasecmp(filename, fn)) {
           availableAudioFiles |= MASK_SYSTEM_AUDIO_FILE(i);
           break;
         }
@@ -324,7 +324,7 @@ void getSwitchAudioFile(char * filename, int index)
     str += 5;
   }
   else {
-    str += 1;
+    *(str+1) = 0;
   }
   strcat(str, SOUNDS_EXT);
 }
@@ -333,7 +333,7 @@ void getLogicalSwitchAudioFile(char * filename, int index, unsigned int event)
 {
   char * str = getModelPath(filename);
   int len = STR_VSWITCHES[0];
-  strncpy(str, &STR_VSWITCHES[1+len*(index+SWSRC_FIRST_CSW-1)], len);
+  strncpy(str, &STR_VSWITCHES[1+len*(index+SWSRC_FIRST_LOGICAL_SWITCH-1)], len);
   str += len;
   strcpy(str, suffixes[event]);
   strcat(str, SOUNDS_EXT);
@@ -369,10 +369,10 @@ void referenceModelAudioFiles()
       if (len < 5 || strcasecmp(fn+len-4, SOUNDS_EXT) || (fno.fattrib & AM_DIR)) continue;
 
       // Phases Audio Files <phasename>-[on|off].wav
-      for (int i=0; i<MAX_PHASES && !found; i++) {
+      for (int i=0; i<MAX_FLIGHT_MODES && !found; i++) {
         for (int event=0; event<2; event++) {
           getPhaseAudioFile(path, i, event);
-          if (!strcmp(filename, fn)) {
+          if (!strcasecmp(filename, fn)) {
             sdAvailablePhaseAudioFiles |= MASK_PHASE_AUDIO_FILE(i, event);
             found = true;
             break;
@@ -383,17 +383,17 @@ void referenceModelAudioFiles()
       // Switches Audio Files <switchname>-[up|mid|down].wav
       for (int i=0; i<SWSRC_LAST_SWITCH+NUM_XPOTS*XPOTS_MULTIPOS_COUNT && !found; i++) {
         getSwitchAudioFile(path, i);
-        if (!strcmp(filename, fn)) {
+        if (!strcasecmp(filename, fn)) {
           sdAvailableSwitchAudioFiles |= MASK_SWITCH_AUDIO_FILE(i);
           found = true;
         }
       }
 
       // Logical Switches Audio Files <switchname>-[on|off].wav
-      for (int i=0; i<NUM_CSW && !found; i++) {
+      for (int i=0; i<NUM_LOGICAL_SWITCH && !found; i++) {
         for (int event=0; event<2; event++) {
           getLogicalSwitchAudioFile(path, i, event);
-          if (!strcmp(filename, fn)) {
+          if (!strcasecmp(filename, fn)) {
             sdAvailableLogicalSwitchAudioFiles |= MASK_LOGICAL_SWITCH_AUDIO_FILE(i, event);
             found = true;
             break;
@@ -788,7 +788,7 @@ void AudioQueue::pause(uint16_t len)
 
 bool AudioQueue::isPlaying(uint8_t id)
 {
-  if (normalContext.fragment.id == id || backgroundContext.fragment.id == id)
+  if (normalContext.fragment.id == id || (isFunctionActive(FUNCTION_BACKGND_MUSIC) && backgroundContext.fragment.id == id))
     return true;
 
   uint8_t i = ridx;
@@ -879,16 +879,6 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
     strcpy(fragment.file, filename);
     fragment.id = id;
   }
-  else if (flags & PLAY_NOW) {
-    AudioFragment & fragment = priorityContext.fragment;
-    if (fragment.type == FRAGMENT_EMPTY) {
-      priorityContext.clear();
-      fragment.type = FRAGMENT_FILE;
-      strcpy(fragment.file, filename);
-      fragment.repeat = flags & 0x0f;
-      fragment.id = id;
-    }
-  }
   else {
     uint8_t next_widx = (widx + 1) % AUDIO_QUEUE_LENGTH;
     if (next_widx != ridx) {
@@ -922,13 +912,13 @@ void AudioQueue::stopPlay(uint8_t id)
 void AudioQueue::stopSD()
 {
   sdAvailableSystemAudioFiles = 0;
-  reset();
+  stopAll();
   playTone(0, 0, 100, PLAY_NOW);        // insert a 100ms pause
 }
 
 #endif
 
-void AudioQueue::reset()
+void AudioQueue::stopAll()
 {
   CoEnterMutexSection(audioMutex);
   widx = ridx;                      // clean the queue

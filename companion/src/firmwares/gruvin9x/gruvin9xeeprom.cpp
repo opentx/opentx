@@ -455,7 +455,7 @@ t_Gruvin9xModelData_v102::operator ModelData ()
   c9x.beepANACenter = beepANACenter;
   c9x.moduleData[0].ppmPulsePol = pulsePol;
   c9x.extendedLimits = extendedLimits;
-  for (int i=0; i<G9X_MAX_PHASES; i++)
+  for (int i=0; i<G9X_MAX_FLIGHT_MODES; i++)
     c9x.phaseData[i] = phaseData[i];
   for (int i=0; i<G9X_MAX_MIXERS; i++)
     c9x.mixData[i] = mixData[i];
@@ -526,7 +526,7 @@ t_Gruvin9xModelData_v103::operator ModelData ()
   c9x.beepANACenter = beepANACenter;
   c9x.moduleData[0].ppmPulsePol = pulsePol;
   c9x.extendedLimits = extendedLimits;
-  for (int i=0; i<G9X_MAX_PHASES; i++)
+  for (int i=0; i<G9X_MAX_FLIGHT_MODES; i++)
     c9x.phaseData[i] = phaseData[i];
   for (int i=0; i<G9X_MAX_MIXERS; i++)
     c9x.mixData[i] = mixData[i];
@@ -598,7 +598,7 @@ t_Gruvin9xModelData_v105::operator ModelData ()
   c9x.moduleData[0].ppmPulsePol = pulsePol;
   c9x.extendedLimits = extendedLimits;
   c9x.extendedTrims = extendedTrims;
-  for (int i=0; i<G9X_MAX_PHASES; i++) {
+  for (int i=0; i<G9X_MAX_FLIGHT_MODES; i++) {
     c9x.phaseData[i] = phaseData[i];
     for (int j=0; j<NUM_STICKS; j++) {
       if (phaseData[i].trim[j] > 125) {
@@ -689,7 +689,7 @@ t_Gruvin9xModelData_v106::operator ModelData ()
   c9x.moduleData[0].ppmPulsePol = pulsePol;
   c9x.extendedLimits = extendedLimits;
   c9x.extendedTrims = extendedTrims;
-  for (int i=0; i<G9X_MAX_PHASES; i++) {
+  for (int i=0; i<G9X_MAX_FLIGHT_MODES; i++) {
     c9x.phaseData[i] = phaseData[i];
     for (int j=0; j<NUM_STICKS; j++) {
       if (c9x.phaseData[i].trim[j] > 500) {

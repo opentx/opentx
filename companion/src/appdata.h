@@ -1,5 +1,16 @@
-// Companion Application Data Class Declaration.
-// Author Kjell Kernen
+/*
+ * Author - Kjell Kernen
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ */
 
 // All temporary and permanent global variables are defined here to make 
 // initialization and storage safe and visible.
@@ -109,6 +120,7 @@ class Profile: protected CompStoreObj
     QString _haptic;
     QString _speaker;
     QString _stickPotCalib;
+    QString _timeStamp;
     QString _trainerCalib;
     int     _currentCalib;
     int     _gsStickMode;
@@ -134,6 +146,7 @@ class Profile: protected CompStoreObj
     QString haptic() const;
     QString speaker() const;
     QString stickPotCalib() const;
+    QString timeStamp() const;
     QString trainerCalib() const;
     int     currentCalib() const;
     int     gsStickMode() const;
@@ -158,6 +171,7 @@ class Profile: protected CompStoreObj
     void haptic        (const QString);
     void speaker       (const QString);
     void stickPotCalib (const QString);
+    void timeStamp     (const QString);
     void trainerCalib  (const QString);
     void currentCalib  (const int);
     void gsStickMode   (const int);
@@ -170,6 +184,7 @@ class Profile: protected CompStoreObj
     void remove();
     bool existsOnDisk();
     void init(int newIndex);
+    void initFwVariables();
     void flush();
 };
 
@@ -221,7 +236,7 @@ class AppData: protected CompStoreObj
     bool _autoCheckApp;
     bool _autoCheckFw;
     bool _simuSW;
-    bool _enableWizard;
+    bool _useWizard;
 
     int _backLight;
     int _embedSplashes;
@@ -230,7 +245,6 @@ class AppData: protected CompStoreObj
     int _iconSize;
     int _jsCtrl;
     int _historySize;
-    int _modelEditTab;
     int _id;
     int _theme;
     int _warningId;
@@ -277,7 +291,7 @@ class AppData: protected CompStoreObj
     bool autoCheckApp();
     bool autoCheckFw();
     bool simuSW();
-    bool enableWizard();
+    bool useWizard();
 
     int backLight();
     int embedSplashes();
@@ -286,7 +300,6 @@ class AppData: protected CompStoreObj
     int iconSize();
     int historySize();
     int jsCtrl();
-    int modelEditTab();  // This variable is unused an can be removed
     int id();
     int theme();
     int warningId();
@@ -332,7 +345,7 @@ class AppData: protected CompStoreObj
     void autoCheckApp    (const bool);
     void autoCheckFw     (const bool);
     void simuSW          (const bool);
-    void enableWizard    (const bool);
+    void useWizard       (const bool);
 
     void backLight       (const int);
     void embedSplashes   (const int);

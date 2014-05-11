@@ -36,7 +36,7 @@ class CustomFunctionsPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    CustomFunctionsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings);
+    CustomFunctionsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
     ~CustomFunctionsPanel();
 
     virtual void update();
@@ -45,9 +45,9 @@ class CustomFunctionsPanel : public ModelPanel
     void customFunctionEdited();
     void fsw_customContextMenuRequested(QPoint pos);
     void refreshCustomFunction(int index, bool modified=false);
-    void playMusic();
     void onChildModified();
 #ifdef PHONON
+    void playMusic();
     void mediaPlayer_state(Phonon::State newState, Phonon::State oldState);
 #endif
     void fswDelete();
@@ -61,9 +61,9 @@ class CustomFunctionsPanel : public ModelPanel
     void populateFuncParamCB(QComboBox *b, const ModelData & model, uint function, unsigned int value, unsigned int adjustmode=0);
     void populateFuncParamArmTCB(QComboBox *b, char * value, QStringList & paramsList);
 
-    GeneralSettings & generalSettings;
+    bool initialized;
     QStringList paramarmList;
-    bool phononLock;
+    int phononCurrent;
     QComboBox * fswtchSwtch[C9X_MAX_CUSTOM_FUNCTIONS];
     QComboBox * fswtchFunc[C9X_MAX_CUSTOM_FUNCTIONS];
     QCheckBox * fswtchParamGV[C9X_MAX_CUSTOM_FUNCTIONS];
@@ -74,6 +74,7 @@ class CustomFunctionsPanel : public ModelPanel
     QCheckBox * fswtchEnable[C9X_MAX_CUSTOM_FUNCTIONS];
     RepeatComboBox * fswtchRepeat[C9X_MAX_CUSTOM_FUNCTIONS];
     QComboBox * fswtchGVmode[C9X_MAX_CUSTOM_FUNCTIONS];
+    QSlider * fswtchBLcolor[C9X_MAX_CUSTOM_FUNCTIONS];
 #ifdef PHONON
     Phonon::MediaObject *clickObject;
     Phonon::AudioOutput *clickOutput;

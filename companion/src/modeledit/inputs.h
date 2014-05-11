@@ -9,7 +9,7 @@ class InputsPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings);
+    InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
     virtual ~InputsPanel();
 
     virtual void update();
@@ -31,9 +31,9 @@ class InputsPanel : public ModelPanel
     void expoAdd();
 
   private:
-    GeneralSettings & generalSettings;
     bool expoInserted;
     MixersList *ExposlistWidget;
+    bool firstLine;
 
     int getExpoIndex(unsigned int dch);
     bool gm_insertExpo(int idx);
@@ -44,6 +44,8 @@ class InputsPanel : public ModelPanel
     QList<int> createExpoListFromSelected();
     void setSelectedByExpoList(QList<int> list);
     void pasteExpoMimeData(const QMimeData * mimeData, int destIdx);
+    bool AddInputLine(int dest);
+    QString getInputText(int dest, bool * new_ch);
 
 };
 

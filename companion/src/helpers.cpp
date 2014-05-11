@@ -2,9 +2,45 @@
 #include "appdata.h"
 #include "helpers.h"
 #include "simulatordialog.h"
+#include "simulatorinterface.h"
 #include "flashinterface.h"
 
-QString getPhaseName(int val, char * phasename)
+const QColor colors[C9X_MAX_CURVES] = {
+  QColor(0,0,127),
+  QColor(0,127,0),
+  QColor(127,0,0),
+  QColor(0,127,127),
+  QColor(127,0,127),
+  QColor(127,127,0),
+  QColor(127,127,127),
+  QColor(0,0,255),
+  QColor(0,127,255),
+  QColor(127,0,255),
+  QColor(0,255,0),
+  QColor(0,255,127),
+  QColor(127,255,0),
+  QColor(255,0,0),
+  QColor(255,0,127),
+  QColor(255,127,0),
+  QColor(0,0,127),
+  QColor(0,127,0),
+  QColor(127,0,0),
+  QColor(0,127,127),
+  QColor(127,0,127),
+  QColor(127,127,0),
+  QColor(127,127,127),
+  QColor(0,0,255),
+  QColor(0,127,255),
+  QColor(127,0,255),
+  QColor(0,255,0),
+  QColor(0,255,127),
+  QColor(127,255,0),
+  QColor(255,0,0),
+  QColor(255,0,127),
+  QColor(255,127,0),
+};
+
+QString getPhaseName(int val, const char * phasename)
 {
   if (!val) return "---";
   if (!phasename) {
@@ -26,9 +62,12 @@ QString getInputStr(ModelData & model, int index)
 {
   QString result;
 
-  if (GetEepromInterface()->getCapability(VirtualInputs)) {
-    result = model.inputNames[index];
-    if (result.isEmpty()) {
+  if (GetCurrentFirmware()->getCapability(VirtualInputs)) {
+    if (strlen(model.inputNames[index]) > 0) {
+      result = QObject::tr("[I%1]").arg(index+1);
+      result += QString(model.inputNames[index]);
+    }
+    else {
       result = QObject::tr("Input%1").arg(index+1, 2, 10, QChar('0'));
     }
   }
@@ -63,27 +102,6 @@ void populateVoiceLangCB(QComboBox *b, QString language)
   }
 }
 
-void populateTTraceCB(QComboBox *b, int value)
-{
-  const QString strings9x[] = { QObject::tr("THR"), QObject::tr("P1"), QObject::tr("P2"), QObject::tr("P3")};
-  const QString stringstaranis[] = { QObject::tr("THR"), QObject::tr("S1"), QObject::tr("S2"), QObject::tr("LS"), QObject::tr("RS")};
-  b->clear();
-  if (IS_TARANIS(GetEepromInterface()->getBoard())) {
-    for (int i=0; i< 5; i++) {
-      b->addItem(stringstaranis[i]);
-    }
-  } else {
-    for (int i=0; i< 4; i++) {
-      b->addItem(strings9x[i]);
-    }
-  }
-  int channels=(IS_ARM(GetEepromInterface()->getBoard()) ? 32 : 16);
-  for (int i=1; i<= channels; i++) {
-    b->addItem(QObject::tr("CH%1").arg(i, 2, 10, QChar('0')));
-  }
-  b->setCurrentIndex(value);
-}
-
 void populateRotEncCB(QComboBox *b, int value, int renumber)
 {
   QString strings[] = { QObject::tr("No"), QObject::tr("RotEnc A"), QObject::tr("Rot Enc B"), QObject::tr("Rot Enc C"), QObject::tr("Rot Enc D"), QObject::tr("Rot Enc E")};
@@ -93,31 +111,6 @@ void populateRotEncCB(QComboBox *b, int value, int renumber)
     b->addItem(strings[i]);
   }
   b->setCurrentIndex(value);
-}
-
-void populateCustomScreenFieldCB(QComboBox *b, unsigned int value, bool last=false, int hubproto=0)
-{
-  int telem_hub[] = {0,0,0,0,0,0,0,0,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,0,0,2,2,1,1,1,1,1,1};
-  b->clear();
-
-  b->addItem(RawSource(SOURCE_TYPE_NONE, 0).toString());
-
-  for (unsigned int i = 0; i <= (last ? TELEMETRY_SOURCES_DISPLAY_COUNT : TELEMETRY_SOURCES_STATUS_COUNT); i++) {
-    b->addItem(RawSource(SOURCE_TYPE_TELEMETRY, i).toString());
-    if (!(i>=sizeof(telem_hub)/sizeof(int) || telem_hub[i]==0 || ((telem_hub[i]>=hubproto) && hubproto!=0))) {
-      QModelIndex index = b->model()->index(i, 0);
-      QVariant v(0);
-      b->model()->setData(index, v, Qt::UserRole - 1);
-    }
-  }
-
-  if (value>=sizeof(telem_hub)/sizeof(int))
-    b->setCurrentIndex(0);
-  else if (telem_hub[value]==0 || ((telem_hub[value]>=hubproto) && hubproto!=0)) {
-    b->setCurrentIndex(value);
-  }
-
-  b->setMaxVisibleItems(10);
 }
 
 QString getProtocolStr(const int proto)
@@ -136,7 +129,7 @@ QString getProtocolStr(const int proto)
 
 void populatePhasesCB(QComboBox *b, int value)
 {
-  for (int i=-GetEepromInterface()->getCapability(FlightPhases); i<=GetEepromInterface()->getCapability(FlightPhases); i++) {
+  for (int i=-GetCurrentFirmware()->getCapability(FlightModes); i<=GetCurrentFirmware()->getCapability(FlightModes); i++) {
     if (i < 0)
       b->addItem(QObject::tr("!Flight mode %1").arg(-i-1), i);
     else if (i > 0)
@@ -144,13 +137,13 @@ void populatePhasesCB(QComboBox *b, int value)
     else
       b->addItem(QObject::tr("----"), 0);
   }
-  b->setCurrentIndex(value + GetEepromInterface()->getCapability(FlightPhases));
+  b->setCurrentIndex(value + GetCurrentFirmware()->getCapability(FlightModes));
 }
 
 bool gvarsEnabled()
 {
   int gvars=0;
-  if (GetEepromInterface()->getCapability(HasVariants)) {
+  if (GetCurrentFirmware()->getCapability(HasVariants)) {
     if ((GetCurrentFirmwareVariant() & GVARS_VARIANT)) {
       gvars=1;
     }
@@ -288,11 +281,11 @@ void CurveGroup::update()
         break;
       case CurveReference::CURVE_REF_CUSTOM:
       {
-        int numcurves = GetEepromInterface()->getCapability(NumCurves);
+        int numcurves = GetCurrentFirmware()->getCapability(NumCurves);
         if (lastType != curve.type) {
           lastType = curve.type;
           curveValueCB->clear();
-          for (int i=-numcurves; i<numcurves; i++) {
+          for (int i=-numcurves; i<=numcurves; i++) {
             curveValueCB->addItem(CurveReference(CurveReference::CURVE_REF_CUSTOM, i).toString());
           }
         }
@@ -340,7 +333,7 @@ void CurveGroup::valuesChanged()
         curve = CurveReference(CurveReference::CURVE_REF_FUNC, curveValueCB->currentIndex());
         break;
       case 3:
-        curve = CurveReference(CurveReference::CURVE_REF_CUSTOM, curveValueCB->currentIndex() - GetEepromInterface()->getCapability(NumCurves));
+        curve = CurveReference(CurveReference::CURVE_REF_CUSTOM, curveValueCB->currentIndex() - GetCurrentFirmware()->getCapability(NumCurves));
         break;
     }
 
@@ -351,7 +344,7 @@ void CurveGroup::valuesChanged()
 void populateGvarUseCB(QComboBox *b, unsigned int phase)
 {
   b->addItem(QObject::tr("Own value"));
-  for (int i=0; i<GetEepromInterface()->getCapability(FlightPhases); i++) {
+  for (int i=0; i<GetCurrentFirmware()->getCapability(FlightModes); i++) {
     if (i != (int)phase) {
       b->addItem(QObject::tr("Flight mode %1 value").arg(i));
     }
@@ -372,8 +365,10 @@ void populateBacklightCB(QComboBox *b, const uint8_t value)
 
 void populateAndSwitchCB(QComboBox *b, const RawSwitch & value)
 {
+  GeneralSettings fakeSettings;
+
   if (IS_ARM(GetEepromInterface()->getBoard())) {
-    populateSwitchCB(b, value);
+    populateSwitchCB(b, value, fakeSettings);
   }
   else {
     RawSwitch item;
@@ -384,7 +379,7 @@ void populateAndSwitchCB(QComboBox *b, const RawSwitch & value)
     b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);
 
-    for (int i=1; i<=GetEepromInterface()->getCapability(SwitchesPositions); i++) {
+    for (int i=1; i<=GetCurrentFirmware()->getCapability(SwitchesPositions); i++) {
       item = RawSwitch(SWITCH_TYPE_SWITCH, i);
       b->addItem(item.toString(), item.toValue());
       if (item == value) b->setCurrentIndex(b->count()-1);
@@ -398,25 +393,32 @@ void populateAndSwitchCB(QComboBox *b, const RawSwitch & value)
   }
 }
 
-void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr)
+void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettings & generalSettings, unsigned long attr)
 {
   RawSwitch item;
 
   b->clear();
 
   if (attr & POPULATE_ONOFF) {
+    if (IS_ARM(GetCurrentFirmware()->getBoard())) {
+      for (int i=-GetCurrentFirmware()->getCapability(FlightModes); i<0; i++) {
+        item = RawSwitch(SWITCH_TYPE_FLIGHT_MODE, i);
+        b->addItem(item.toString(), item.toValue());
+        if (item == value) b->setCurrentIndex(b->count()-1);
+      }
+    }
     item = RawSwitch(SWITCH_TYPE_OFF);
     b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
-  for (int i=-GetEepromInterface()->getCapability(LogicalSwitches); i<0; i++) {
+  for (int i=-GetCurrentFirmware()->getCapability(LogicalSwitches); i<0; i++) {
     item = RawSwitch(SWITCH_TYPE_VIRTUAL, i);
     b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
-  for (int i=-GetEepromInterface()->getCapability(RotaryEncoders); i<0; i++) {
+  for (int i=-GetCurrentFirmware()->getCapability(RotaryEncoders); i<0; i++) {
     item = RawSwitch(SWITCH_TYPE_ROTARY_ENCODER, i);
     b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);
@@ -428,13 +430,17 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr)
     if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
-  for (int i=-GetEepromInterface()->getCapability(MultiposPots) * GetEepromInterface()->getCapability(MultiposPotsPositions); i<0; i++) {
-    item = RawSwitch(SWITCH_TYPE_MULTIPOS_POT, i);
-    b->addItem(item.toString(), item.toValue());
-    if (item == value) b->setCurrentIndex(b->count()-1);
+  for (int i=GetCurrentFirmware()->getCapability(MultiposPots)-1; i>=0; i--) {
+    if (generalSettings.potsType[i] == 2/* TODO constant*/) {
+      for (int j=-GetCurrentFirmware()->getCapability(MultiposPotsPositions); j<0; j++) {
+        item = RawSwitch(SWITCH_TYPE_MULTIPOS_POT, -i*GetCurrentFirmware()->getCapability(MultiposPotsPositions)+j);
+        b->addItem(item.toString(), item.toValue());
+        if (item == value) b->setCurrentIndex(b->count()-1);
+      }
+    }
   }
 
-  for (int i=-GetEepromInterface()->getCapability(SwitchesPositions); i<0; i++) {
+  for (int i=-GetCurrentFirmware()->getCapability(SwitchesPositions); i<0; i++) {
     item = RawSwitch(SWITCH_TYPE_SWITCH, i);
     b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);
@@ -453,16 +459,20 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr)
     if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
-  for (int i=1; i<=GetEepromInterface()->getCapability(SwitchesPositions); i++) {
+  for (int i=1; i<=GetCurrentFirmware()->getCapability(SwitchesPositions); i++) {
     item = RawSwitch(SWITCH_TYPE_SWITCH, i);
     b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
-  for (int i=1; i<=GetEepromInterface()->getCapability(MultiposPots) * GetEepromInterface()->getCapability(MultiposPotsPositions); i++) {
-    item = RawSwitch(SWITCH_TYPE_MULTIPOS_POT, i);
-    b->addItem(item.toString(), item.toValue());
-    if (item == value) b->setCurrentIndex(b->count()-1);
+  for (int i=0; i<GetCurrentFirmware()->getCapability(MultiposPots); i++) {
+    if (generalSettings.potsType[i] == 2/* TODO constant*/) {
+      for (int j=1; j<=GetCurrentFirmware()->getCapability(MultiposPotsPositions); j++) {
+        item = RawSwitch(SWITCH_TYPE_MULTIPOS_POT, i*GetCurrentFirmware()->getCapability(MultiposPotsPositions)+j);
+        b->addItem(item.toString(), item.toValue());
+        if (item == value) b->setCurrentIndex(b->count()-1);
+      }
+    }
   }
 
   for (int i=1; i<=8; i++) {
@@ -471,13 +481,13 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr)
     if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
-  for (int i=1; i<=GetEepromInterface()->getCapability(RotaryEncoders); i++) {
+  for (int i=1; i<=GetCurrentFirmware()->getCapability(RotaryEncoders); i++) {
     item = RawSwitch(SWITCH_TYPE_ROTARY_ENCODER, i);
     b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
-  for (int i=1; i<=GetEepromInterface()->getCapability(LogicalSwitches); i++) {
+  for (int i=1; i<=GetCurrentFirmware()->getCapability(LogicalSwitches); i++) {
     item = RawSwitch(SWITCH_TYPE_VIRTUAL, i);
     b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);
@@ -487,6 +497,13 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr)
     item = RawSwitch(SWITCH_TYPE_ON);
     b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);
+    if (IS_ARM(GetCurrentFirmware()->getBoard())) {
+      for (int i=1; i<=GetCurrentFirmware()->getCapability(FlightModes); i++) {
+        item = RawSwitch(SWITCH_TYPE_FLIGHT_MODE, i);
+        b->addItem(item.toString(), item.toValue());
+        if (item == value) b->setCurrentIndex(b->count()-1);
+      }
+    }
   }
 
   b->setMaxVisibleItems(10);
@@ -499,7 +516,7 @@ void populateGVCB(QComboBox *b, int value)
 
   b->clear();
 
-  int pgvars = GetEepromInterface()->getCapability(Gvars);
+  int pgvars = GetCurrentFirmware()->getCapability(Gvars);
   for (int i=-pgvars; i<=-1; i++) {
     int16_t gval = (int16_t)(-10000+i);
     b->addItem(QObject::tr("-GV%1").arg(-i), gval);
@@ -543,21 +560,23 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData & 
   }
 
   if (flags & POPULATE_VIRTUAL_INPUTS) {
-    int virtualInputs = GetEepromInterface()->getCapability(VirtualInputs);
+    int virtualInputs = GetCurrentFirmware()->getCapability(VirtualInputs);
     for (int i=0; i<virtualInputs; i++) {
-      item = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, i, &model);
-      b->addItem(item.toString(), item.toValue());
-      if (item == source) b->setCurrentIndex(b->count()-1);
+      if (model.isInputValid(i)) {
+        item = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, i, &model);
+        b->addItem(item.toString(), item.toValue());
+        if (item == source) b->setCurrentIndex(b->count()-1);
+      }
     }
   }
 
   if (flags & POPULATE_SOURCES) {
-    for (int i=0; i<4+GetEepromInterface()->getCapability(Pots); i++) {
+    for (int i=0; i<4+GetCurrentFirmware()->getCapability(Pots); i++) {
       item = RawSource(SOURCE_TYPE_STICK, i);
       b->addItem(item.toString(), item.toValue());
       if (item == source) b->setCurrentIndex(b->count()-1);
     }
-    for (int i=0; i<GetEepromInterface()->getCapability(RotaryEncoders); i++) {
+    for (int i=0; i<GetCurrentFirmware()->getCapability(RotaryEncoders); i++) {
       item = RawSource(SOURCE_TYPE_ROTARY_ENCODER, i);
       b->addItem(item.toString(), item.toValue());
       if (item == source) b->setCurrentIndex(b->count()-1);
@@ -579,13 +598,13 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData & 
   }
   
   if (flags & POPULATE_SWITCHES) {
-    for (int i=0; i<GetEepromInterface()->getCapability(Switches); i++) {
+    for (int i=0; i<GetCurrentFirmware()->getCapability(Switches); i++) {
       item = RawSource(SOURCE_TYPE_SWITCH, i);
       b->addItem(item.toString(), item.toValue());
       if (item == source) b->setCurrentIndex(b->count()-1);
     }
 
-    for (int i=0; i<GetEepromInterface()->getCapability(LogicalSwitches); i++) {
+    for (int i=0; i<GetCurrentFirmware()->getCapability(LogicalSwitches); i++) {
       item = RawSource(SOURCE_TYPE_CUSTOM_SWITCH, i);
       b->addItem(item.toString(), item.toValue());
       if (item == source) b->setCurrentIndex(b->count()-1);
@@ -599,13 +618,13 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData & 
       if (item == source) b->setCurrentIndex(b->count()-1);
     }
 
-    for (int i=0; i<GetEepromInterface()->getCapability(TrainerInputs); i++) {
+    for (int i=0; i<GetCurrentFirmware()->getCapability(TrainerInputs); i++) {
       item = RawSource(SOURCE_TYPE_PPM, i);
       b->addItem(item.toString(), item.toValue());
       if (item == source) b->setCurrentIndex(b->count()-1);
     }
 
-    for (int i=0; i<GetEepromInterface()->getCapability(Outputs)+GetEepromInterface()->getCapability(ExtraChannels); i++) {
+    for (int i=0; i<GetCurrentFirmware()->getCapability(Outputs); i++) {
       item = RawSource(SOURCE_TYPE_CH, i);
       b->addItem(item.toString(), item.toValue());
       if (item == source) b->setCurrentIndex(b->count()-1);
@@ -628,7 +647,7 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData & 
   }
 
   if (flags & POPULATE_GVARS) {
-    for (int i=0; i<GetEepromInterface()->getCapability(Gvars); i++) {
+    for (int i=0; i<GetCurrentFirmware()->getCapability(Gvars); i++) {
       item = RawSource(SOURCE_TYPE_GVAR, i);
       b->addItem(item.toString(), item.toValue());
       if (item == source) b->setCurrentIndex(b->count()-1);
@@ -668,11 +687,11 @@ void populateCSWCB(QComboBox *b, int value)
   b->clear();
   for (int i=0; i<LS_FN_MAX; i++) {
     int func = order[i];
+    if (!IS_ARM(GetEepromInterface()->getBoard())) {
+      if (func == LS_FN_VEQUAL || func == LS_FN_STAY)
+        continue;
+    }
     b->addItem(LogicalSwitchData(func).funcToString(), func);
-//    if (i>GetEepromInterface()->getCapability(CSFunc)) {
-//      QModelIndex index = b->model()->index(i, 0);
-//      QVariant v(0);
-//    }
     if (value == func) {
       b->setCurrentIndex(b->count()-1);
     }
@@ -761,19 +780,6 @@ QString getFrSkyAlarmType(int alarm)
   }
 }
 
-QString getFrSkyBlades(int blades)
-{
-  switch (blades) {
-    case 1:
-      return "3";
-    case 2:
-      return "4";
-    default:
-      return "2";
-  }
-}
-
-
 QString getFrSkyUnits(int units)
 {
   switch(units) {
@@ -788,7 +794,7 @@ QString getFrSkyProtocol(int protocol)
 {
   switch(protocol) {
     case 2:
-      if ((GetEepromInterface()->getCapability(Telemetry) & TM_HASWSHH))
+      if ((GetCurrentFirmware()->getCapability(Telemetry) & TM_HASWSHH))
         return QObject::tr("Winged Shadow How High");
       else
         return QObject::tr("Winged Shadow How High (not supported)");
@@ -843,7 +849,7 @@ QString getProtocol(ModelData * g_model)
 
 QString getPhasesStr(unsigned int phases, ModelData & model)
 {
-  int numphases = GetEepromInterface()->getCapability(FlightPhases);
+  int numphases = GetCurrentFirmware()->getCapability(FlightModes);
 
   if (numphases && phases) {
     QString str;
@@ -919,7 +925,9 @@ CompanionIcon::CompanionIcon(QString baseimage)
 
 void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
 {
-  if (GetEepromInterface()->getSimulator()) {
+  SimulatorInterface * si = GetCurrentFirmware()->getSimulator();
+  if (si) {
+    delete si;
     RadioData * simuData = new RadioData(radioData);
     unsigned int flags = 0;
     if (modelIdx >= 0) {
@@ -929,14 +937,14 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
     if (radioData.generalSettings.stickMode & 1) {
       flags |= SIMULATOR_FLAGS_STICK_MODE_LEFT;
     }
-    BoardEnum board = GetEepromInterface()->getBoard();
+    BoardEnum board = GetCurrentFirmware()->getBoard();
     SimulatorDialog * sd;
     if (IS_TARANIS(board))
       sd = new SimulatorDialogTaranis(parent, flags);
     else
       sd = new SimulatorDialog9X(parent, flags);
     QByteArray eeprom(GetEepromInterface()->getEEpromSize(), 0);
-    GetEepromInterface()->save((uint8_t *)eeprom.data(), *simuData, GetEepromInterface()->getCapability(SimulatorVariant));
+    GetEepromInterface()->save((uint8_t *)eeprom.data(), *simuData, GetCurrentFirmware()->getCapability(SimulatorVariant));
     delete simuData;
     sd->start(eeprom);
     sd->exec();
@@ -968,28 +976,4 @@ QPixmap makePixMap( QImage image, QString firmwareType )
     image = image.scaled(SPLASH_WIDTH, SPLASH_HEIGHT).convertToFormat(QImage::Format_Mono);
   }
   return(QPixmap::fromImage(image));
-}
-
-int getRadioType(QString firmwareType)
-{
-  if (firmwareType.contains( "taranis" )) return 6;
-  if (firmwareType.contains( "sky9x"   )) return 5;
-  if (firmwareType.contains( "gruvin9x")) return 4;
-  if (firmwareType.contains( "9xr128"  )) return 3;
-  if (firmwareType.contains( "9xr"     )) return 2;
-  if (firmwareType.contains( "9x128"   )) return 1;
-  return 0; // 9x
-}
-
-QString getDefaultFwType( int radioType )
-{
-  switch (radioType){
-    case 6:  return "opentx-taranis-en";
-    case 5:  return "opentx-sky9x-en";
-    case 4:  return "opentx-gruvin9x-en";
-    case 3:  return "opentx-9xr128-en";
-    case 2:  return "opentx-9xr-en";
-    case 1:  return "opentx-9x128-en";
-    default: return "opentx-9x-en"; 
-  }
 }

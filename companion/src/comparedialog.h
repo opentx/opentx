@@ -7,29 +7,27 @@
 #include "eeprominterface.h"
 
 namespace Ui {
-    class compareDialog;
+  class CompareDialog;
 }
 
-class compareDialog : public QDialog
+class CompareDialog : public QDialog
 {
     Q_OBJECT
 
-public:
-    explicit compareDialog(QWidget *parent = 0, GeneralSettings *gg = 0);
-    
-    ~compareDialog();
-    void  closeEvent(QCloseEvent *event);
-    
+  public:
+    CompareDialog(QWidget *parent);
+    ~CompareDialog();
+
+  protected:
     ModelData * g_model1;
     ModelData * g_model2;
     ModelData * modeltemp;
     int model1;
     int model2;
-    GeneralSettings *g_eeGeneral;
-    EEPROMInterface *eepromInterface;
   
-private:
-    Ui::compareDialog *ui;
+  private:
+    void  closeEvent(QCloseEvent *event);
+    Ui::CompareDialog *ui;
     QString doTC(const QString s, const QString color, bool bold);
     QString doTR(const QString s, const QString color, bool bold);
     QString doTL(const QString s, const QString color, bool bold);

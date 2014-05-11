@@ -105,8 +105,8 @@ I18N_PLAY_FUNCTION(en, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
       }
     }
 #if defined(CPUARM)
-    if ((att & PREC1) && (unit == UNIT_FEET || (unit == UNIT_SPEED && number >= 100))) {
-      number /= 10;
+    if ((att & PREC1) && (unit == UNIT_FEET || (unit == UNIT_DIST && number >= 100))) {
+      number = div10_and_round(number);
       att -= PREC1;
     }
 #endif
@@ -151,7 +151,7 @@ I18N_PLAY_FUNCTION(en, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 }
 
-I18N_PLAY_FUNCTION(en, playDuration, int16_t seconds)
+I18N_PLAY_FUNCTION(en, playDuration, int seconds PLAY_DURATION_ATT)
 {
   if (seconds < 0) {
     PUSH_NUMBER_PROMPT(EN_PROMPT_MINUS);
@@ -160,7 +160,7 @@ I18N_PLAY_FUNCTION(en, playDuration, int16_t seconds)
 
   uint8_t tmp = seconds / 3600;
   seconds %= 3600;
-  if (tmp > 0) {
+  if (tmp > 0 || IS_PLAY_TIME()) {
     PLAY_NUMBER(tmp, UNIT_HOURS+1 , 0);
   }
 

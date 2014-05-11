@@ -85,7 +85,7 @@ void ModelsListWidget::ShowContextMenu(const QPoint& pos)
     bool hasData = mimeData->hasFormat("application/x-companion");
 
     QMenu contextMenu;
-    contextMenu.addAction(CompanionIcon("edit.png"), tr("&Edit"),this,SLOT(OpenEditWindow()));
+    contextMenu.addAction(CompanionIcon("edit.png"), tr("&Edit"),this,SLOT(EditModel()));
     contextMenu.addAction(CompanionIcon("open.png"), tr("&Restore from backup"),this,SLOT(LoadBackup()));
     contextMenu.addAction(CompanionIcon("wizard.png"), tr("&Model Wizard"),this,SLOT(OpenWizard()));
     contextMenu.addSeparator();
@@ -97,20 +97,25 @@ void ModelsListWidget::ShowContextMenu(const QPoint& pos)
     contextMenu.addSeparator();
     contextMenu.addAction(CompanionIcon("currentmodel.png"), tr("&Use as default"),this,SLOT(setdefault()));
     contextMenu.addSeparator();
-    contextMenu.addAction(CompanionIcon("print.png"), tr("P&rint model"),this, SLOT(print()),tr("Alt+R"));
+    contextMenu.addAction(CompanionIcon("print.png"), tr("P&rint model"),this, SLOT(print()),QKeySequence(tr("Ctrl+P")));
     contextMenu.addSeparator();
     contextMenu.addAction(CompanionIcon("simulate.png"), tr("&Simulate model"),this, SLOT(simulate()),tr("Alt+S"));
     contextMenu.exec(globalPos);
 }
 
+void ModelsListWidget::EditModel()
+{
+  ((MdiChild *)parent())->modelEdit();
+}
+
 void ModelsListWidget::OpenEditWindow()
 {
-  ((MdiChild *)parent())->OpenEditWindow(false);
+  ((MdiChild *)parent())->openEditWindow();
 }
 
 void ModelsListWidget::OpenWizard()
 {
-  ((MdiChild *)parent())->OpenEditWindow(true);
+  ((MdiChild *)parent())->wizardEdit();
 }
 
 void ModelsListWidget::LoadBackup()
@@ -229,6 +234,7 @@ void ModelsListWidget::dropEvent(QDropEvent *event)
 
     // QMessageBox::warning(this, tr("Companion"),tr("Index :%1").arg(row));
     const QMimeData  *mimeData = event->mimeData();
+
     if(mimeData->hasFormat("application/x-companion"))
     {
         QByteArray gmData = mimeData->data("application/x-companion");
@@ -271,10 +277,7 @@ void ModelsListWidget::refreshList()
     clear();
     int msize;
     div_t divresult;
-    QString name = radioData->generalSettings.ownerName;
-    if(!name.isEmpty())
-        name.prepend(" - ");
-    addItem(tr("General Settings") + name);
+    addItem(tr("General Settings"));
 
     EEPROMInterface *eepromInterface = GetEepromInterface();
     int availableEEpromSize = eepromInterface->getEEpromSize()-64; //let's consider fat
@@ -446,7 +449,7 @@ void ModelsListWidget::doPaste(QByteArray *gmData, int index)
     i++;
     gData++;
     if(c=='G') { //General settings
-      ret = QMessageBox::question(this, "Companion", tr("Do you want to overwrite TX general settings?"),
+      ret = QMessageBox::question(this, "Companion", tr("Do you want to overwrite radio general settings?"),
               QMessageBox::Yes | QMessageBox::No);
       if (ret == QMessageBox::Yes) {
         radioData->generalSettings = *((GeneralSettings *)gData);

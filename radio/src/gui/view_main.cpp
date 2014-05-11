@@ -58,7 +58,7 @@
 #define TIMER2_Y      45
 #define TIMERS_R      193
 #define REBOOT_X      (LCD_W-FW)
-#define VSWITCH_X(i)  (((i>=NUM_CSW*3/4) ? BITMAP_X+28 : ((i>=NUM_CSW/2) ? BITMAP_X+25 : ((i>=NUM_CSW/4) ? 21 : 18))) + 3*i)
+#define VSWITCH_X(i)  (((i>=NUM_LOGICAL_SWITCH*3/4) ? BITMAP_X+28 : ((i>=NUM_LOGICAL_SWITCH/2) ? BITMAP_X+25 : ((i>=NUM_LOGICAL_SWITCH/4) ? 21 : 18))) + 3*i)
 #define VSWITCH_Y     (LCD_H-9)
 #define BAR_HEIGHT    (31-9)
 #define TRIM_LH_X     (32+9)
@@ -275,7 +275,7 @@ void displayTopBar()
     /* Altitude */
     if (g_model.frsky.altitudeDisplayed && TELEMETRY_BARO_ALT_AVAILABLE()) {
       LCD_ICON(altitude_icon_x, BAR_Y, ICON_ALTITUDE);
-      putsTelemetryValue(altitude_icon_x+2*FW-1, BAR_Y+1, TELEMETRY_RELATIVE_BARO_ALT_BP, UNIT_SPEED, LEFT);
+      putsTelemetryValue(altitude_icon_x+2*FW-1, BAR_Y+1, TELEMETRY_RELATIVE_BARO_ALT_BP, UNIT_DIST, LEFT);
     }
   }
 
@@ -305,11 +305,6 @@ void displayTopBar()
     x -= 12;
   }
 
-  /* SD ICON, not really needed
-  if (sdMounted()) {
-    LCD_NOTIF_ICON(x, ICON_SD);
-  } */
-
   /* Audio volume */
   if (requiredSpeakerVolume == 0)
     LCD_ICON(BAR_VOLUME_X, BAR_Y, ICON_SPEAKER0);
@@ -323,11 +318,7 @@ void displayTopBar()
   /* RTC time */
   struct gtm t;
   gettime(&t);
-  if (t.tm_sec % 2) {
-    lcd_putcAtt(BAR_TIME_X+1, BAR_Y+1, ':', 0);
-  }
-  lcd_outdezNAtt(BAR_TIME_X+1, BAR_Y+1, t.tm_hour, LEADING0, 2);
-  lcd_outdezNAtt(BAR_TIME_X+3*FWNUM-1, BAR_Y+1, t.tm_min, LEADING0, 2);
+  putsTime(BAR_TIME_X+1, BAR_Y+1, t, TIMEBLINK);
 
   /* The background */
   lcd_filled_rect(BAR_X, BAR_Y, BAR_W, BAR_H, SOLID, FILL_WHITE|GREY_DEFAULT|ROUND);
@@ -349,7 +340,7 @@ void displayTimers()
   // Main timer
   if (g_model.timers[0].mode) {
     TimerState & timerState = timersStates[0];
-    putsTime(TIMERS_X, TIMER1_Y, timerState.val, MIDSIZE|LEFT, MIDSIZE|LEFT);
+    putsTimer(TIMERS_X, TIMER1_Y, timerState.val, MIDSIZE|LEFT, MIDSIZE|LEFT);
     putsTimerMode(TIMERS_X, TIMER1_Y-6, g_model.timers[0].mode, SMLSIZE);
     if (g_model.timers[0].persistent) lcd_putcAtt(TIMERS_R, TIMER1_Y+1, 'P', SMLSIZE);
     if (timerState.val < 0) {
@@ -362,7 +353,7 @@ void displayTimers()
   // Second timer
   if (g_model.timers[1].mode) {
     TimerState & timerState = timersStates[1];
-    putsTime(TIMERS_X, TIMER2_Y, timerState.val, MIDSIZE|LEFT, MIDSIZE|LEFT);
+    putsTimer(TIMERS_X, TIMER2_Y, timerState.val, MIDSIZE|LEFT, MIDSIZE|LEFT);
     putsTimerMode(TIMERS_X, TIMER2_Y-6, g_model.timers[1].mode, SMLSIZE);
     if (g_model.timers[1].persistent) lcd_putcAtt(TIMERS_R, TIMER2_Y+1, 'P', SMLSIZE);
     if (timerState.val < 0) {
@@ -379,7 +370,7 @@ void displayTimers()
   if (g_model.timers[0].mode) {
     TimerState & timerState = timersStates[0];
     uint8_t att = DBLSIZE | (timerState.val<0 ? BLINK|INVERS : 0);
-    putsTime(12*FW+2+10*FWNUM-4, FH*2, timerState.val, att, att);
+    putsTimer(12*FW+2+10*FWNUM-4, FH*2, timerState.val, att, att);
     putsTimerMode(timerState.val >= 0 ? 9*FW-FW/2+3 : 9*FW-FW/2-4, FH*3, g_model.timers[0].mode);
   }
 }
@@ -460,6 +451,17 @@ void onMainViewMenu(const char *result)
   else if (result == STR_RESET_TIMER2) {
     resetTimer(1);
   }
+#if defined(PCBTARANIS)
+  else if (result == STR_VIEW_NOTES) {
+    pushModelNotes();
+  }
+  else if (result == STR_RESET_SUBMENU) {
+    MENU_ADD_ITEM(STR_RESET_FLIGHT);
+    MENU_ADD_ITEM(STR_RESET_TIMER1);
+    MENU_ADD_ITEM(STR_RESET_TIMER2);
+    MENU_ADD_ITEM(STR_RESET_TELEMETRY);
+  }
+#endif
 #if defined(FRSKY)
   else if (result == STR_RESET_TELEMETRY) {
     resetTelemetry();
@@ -488,13 +490,8 @@ void menuMainView(uint8_t event)
   uint8_t view_base = view & 0x0f;
 #endif
 
-  uint8_t _event = event;
-  if (s_global_warning) {
-    event = 0;
-  }
+  switch(event) {
 
-  switch(event)
-  {
     case EVT_ENTRY:
       killEvents(KEY_EXIT);
       killEvents(KEY_UP);
@@ -531,12 +528,24 @@ void menuMainView(uint8_t event)
 #if defined(NAVIGATION_MENUS)
     case EVT_KEY_CONTEXT_MENU:
       killEvents(event);
+
+#if defined(PCBTARANIS)
+      if (modelHasNotes()) {
+        MENU_ADD_ITEM(STR_VIEW_NOTES);
+      }
+#endif
+
+#if defined(PCBTARANIS)
+      MENU_ADD_ITEM(STR_RESET_SUBMENU);
+#else
       MENU_ADD_ITEM(STR_RESET_TIMER1);
       MENU_ADD_ITEM(STR_RESET_TIMER2);
 #if defined(FRSKY)
       MENU_ADD_ITEM(STR_RESET_TELEMETRY);
 #endif
       MENU_ADD_ITEM(STR_RESET_FLIGHT);
+#endif
+
       MENU_ADD_ITEM(STR_STATISTICS);
 #if defined(CPUARM)
       MENU_ADD_ITEM(STR_ABOUT_US);
@@ -614,16 +623,13 @@ void menuMainView(uint8_t event)
       return;
 
     case EVT_KEY_FIRST(KEY_EXIT):
-      if (s_global_warning) {
-        s_global_warning = NULL;
-      }
 #if defined(GVARS) && !defined(PCBSTD)
-      else if (s_gvar_timer > 0) {
+      if (s_gvar_timer > 0) {
         s_gvar_timer = 0;
       }
 #endif
 #if !defined(PCBTARANIS)
-      else if (view == VIEW_TIMER2) {
+      if (view == VIEW_TIMER2) {
         resetTimer(1);
       }
 #endif
@@ -640,7 +646,7 @@ void menuMainView(uint8_t event)
 
   {
     // Flight Phase Name
-    uint8_t phase = s_perout_flight_phase;
+    uint8_t phase = s_perout_flight_mode;
     lcd_putsnAtt(PHASE_X, PHASE_Y, g_model.phaseData[phase].name, sizeof(g_model.phaseData[phase].name), ZCHAR|PHASE_FLAGS);
 
     // Model Name
@@ -701,16 +707,22 @@ void menuMainView(uint8_t event)
     doMainScreenGraphics();
   }
   else {
-    // Custom Switches
-    uint8_t sw = 0;
-    for (uint8_t line=0; line<4; line++) {
-      for (uint8_t col=0; col<8; col++) {
-        uint8_t x = LCD_W/2+7*FW+col*FW;
-        uint8_t y = LCD_H/2-7+line*8;
-        lcd_putcAtt(x, y, sw>=9 ? 'A'+sw-9 : '1'+sw, SMLSIZE);
-        if (getSwitch(SWSRC_SW1+sw))
-          lcd_filled_rect(x-1, y-1, 6, 8);
-        sw++;
+    // Logical Switches
+    lcd_puts(TRIM_RH_X - TRIM_LEN/2 + 5, 6*FH-1, "LS 1-32");
+    for (uint8_t sw=0; sw<NUM_LOGICAL_SWITCH; sw++) {
+      div_t qr = div(sw, 10);
+      uint8_t y = 13 + 11 * qr.quot;
+      uint8_t x = TRIM_RH_X - TRIM_LEN + qr.rem*5 + (qr.rem >= 5 ? 3 : 0);
+      LogicalSwitchData * cs = cswAddress(sw);
+      if (cs->func == LS_FUNC_NONE) {
+        lcd_hline(x, y+6, 4);
+        lcd_hline(x, y+7, 4);
+      }
+      else if (getSwitch(SWSRC_SW1+sw)) {
+        lcd_filled_rect(x, y, 4, 8);
+      }
+      else {
+        lcd_rect(x, y, 4, 8);
       }
     }
   }
@@ -800,31 +812,31 @@ void menuMainView(uint8_t event)
       }
 #endif // PCBGRUVIN9X && ROTARY_ENCODERS
 
-      // Custom Switches
+      // Logical Switches
 #if defined(PCBSKY9X)
-      for (uint8_t i=0; i<NUM_CSW; i++) {
+      for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++) {
         int8_t len = getSwitch(SWSRC_SW1+i) ? BAR_HEIGHT : 1;
         uint8_t x = VSWITCH_X(i);
         lcd_vline(x-1, VSWITCH_Y-len, len);
         lcd_vline(x,   VSWITCH_Y-len, len);
       }
 #elif defined(PCBGRUVIN9X) && ROTARY_ENCODERS > 2
-      for (uint8_t i=0; i<NUM_CSW; i++)
+      for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++)
         putsSwitches(2*FW-2 + (i/3)*(4*FW-2) + (i/3>1 ? 3*FW+6 : 0), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
 #elif defined(PCBGRUVIN9X)
-      for (uint8_t i=0; i<NUM_CSW; i++)
+      for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++)
         putsSwitches(2*FW-2 + (i/3)*(4*FW-2) + (i/3>1 ? 3*FW : 0), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
 #elif !defined(PCBSTD)
-      for (uint8_t i=0; i<NUM_CSW; i++)
+      for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++)
         putsSwitches(2*FW-2 + (i/3)*(4*FW-1), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
 #else
-      for (uint8_t i=0; i<NUM_CSW; i++)
+      for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++)
         putsSwitches(2*FW-2 + (i/3)*(5*FW), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
 #endif
     }
   }
   else { // timer2
-    putsTime(33+FW+2+10*FWNUM-4, FH*5, timersStates[1].val, DBLSIZE, DBLSIZE);
+    putsTimer(33+FW+2+10*FWNUM-4, FH*5, timersStates[1].val, DBLSIZE, DBLSIZE);
     putsTimerMode(timersStates[1].val >= 0 ? 20-FW/2+5 : 20-FW/2-2, FH*6, g_model.timers[1].mode);
     // lcd_outdezNAtt(33+11*FW, FH*6, s_timerVal_10ms[1], LEADING0, 2); // 1/100s
   }
@@ -837,15 +849,8 @@ void menuMainView(uint8_t event)
   }
 #endif
 
-  if (s_global_warning) {
-    s_warning = s_global_warning;
-    displayWarning(_event);
-    if (!s_warning) s_global_warning = NULL;
-    s_warning = NULL;
-  }
-
 #if defined(GVARS) && !defined(PCBSTD)
-  else if (s_gvar_timer > 0) {
+  if (s_gvar_timer > 0) {
     s_gvar_timer--;
 #if LCD_W >= 212
     lcd_filled_rect(BITMAP_X, BITMAP_Y, 64, 32, SOLID, ERASE);
@@ -853,13 +858,13 @@ void menuMainView(uint8_t event)
     putsStrIdx(BITMAP_X+FW, BITMAP_Y+FH-1, STR_GV, s_gvar_last+1);
     lcd_putsnAtt(BITMAP_X+4*FW+FW/2, BITMAP_Y+FH-1, g_model.gvars[s_gvar_last].name, LEN_GVAR_NAME, ZCHAR);
     lcd_putsAtt(BITMAP_X+FW, BITMAP_Y+2*FH+3, PSTR("[\010]"), BOLD);
-    lcd_outdezAtt(BITMAP_X+5*FW+FW/2, BITMAP_Y+2*FH+3, GVAR_VALUE(s_gvar_last, s_perout_flight_phase), BOLD);
+    lcd_outdezAtt(BITMAP_X+5*FW+FW/2, BITMAP_Y+2*FH+3, GVAR_VALUE(s_gvar_last, s_perout_flight_mode), BOLD);
 #else
     s_warning = STR_GLOBAL_VAR;
     displayBox();
     lcd_putsnAtt(16, 5*FH, g_model.gvars[s_gvar_last].name, LEN_GVAR_NAME, ZCHAR);
     lcd_putsAtt(16+7*FW, 5*FH, PSTR("[\010]"), BOLD);
-    lcd_outdezAtt(16+7*FW+4*FW+FW/2, 5*FH, GVAR_VALUE(s_gvar_last, s_perout_flight_phase), BOLD);
+    lcd_outdezAtt(16+7*FW+4*FW+FW/2, 5*FH, GVAR_VALUE(s_gvar_last, s_perout_flight_mode), BOLD);
     s_warning = NULL;
 #endif
   }

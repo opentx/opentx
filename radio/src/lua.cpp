@@ -47,6 +47,7 @@ extern "C" {
 }
 #endif
 
+#define lua_registernumber(L, n, i)    (lua_pushnumber(L, (i)), lua_setglobal(L, (n)))
 #define lua_registerint(L, n, i)       (lua_pushinteger(L, (i)), lua_setglobal(L, (n)))
 #define lua_pushtablenil(L, k)         (lua_pushstring(L, (k)), lua_pushnil(L), lua_settable(L, -3))
 #define lua_pushtableboolean(L, k, v)  (lua_pushstring(L, (k)), lua_pushboolean(L, (v)), lua_settable(L, -3))
@@ -89,11 +90,63 @@ static int luaGetTime(lua_State *L)
   return 1;
 }
 
+static void luaGetValueAndPush(int src)
+{
+  /*
+    Hint about dividers are taken from putsTelemetryChannel()
+  */
+  if (!TELEMETRY_STREAMING() && src>=MIXSRC_FIRST_TELEM && src<=MIXSRC_LAST_TELEM) {
+    //telemetry not working, return zero for telemetry sources
+    lua_pushinteger(L, (int)0);
+    return;
+  }
+  switch (src) {
+    case MIXSRC_FIRST_TELEM-1+TELEM_TX_VOLTAGE:
+    case MIXSRC_FIRST_TELEM-1+TELEM_VFAS:
+    case MIXSRC_FIRST_TELEM-1+TELEM_MIN_VFAS:
+    case MIXSRC_FIRST_TELEM-1+TELEM_CELLS_SUM:
+    case MIXSRC_FIRST_TELEM-1+TELEM_MIN_CELLS_SUM:
+    case MIXSRC_FIRST_TELEM-1+TELEM_CURRENT:
+    case MIXSRC_FIRST_TELEM-1+TELEM_MAX_CURRENT:
+    case MIXSRC_FIRST_TELEM-1+TELEM_VSPEED:
+      //theese need to be divided by 10
+      lua_pushnumber(L, getValue(src)/10.0);
+      break;
+
+    case MIXSRC_FIRST_TELEM-1+TELEM_A1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_A2:
+      //convert raw A1/2 values to calibrated values
+      lua_pushnumber(L, applyChannelRatio(src-(MIXSRC_FIRST_TELEM-1+TELEM_A1), getValue(src))/100.0);
+      break;
+
+    case MIXSRC_FIRST_TELEM-1+TELEM_MIN_A1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_MIN_A2:
+      //convert raw A1/2 values to calibrated values
+      lua_pushnumber(L, applyChannelRatio(src-(MIXSRC_FIRST_TELEM-1+TELEM_MIN_A1), getValue(src))/100.0);
+      break;
+
+    case MIXSRC_FIRST_TELEM-1+TELEM_CELL:
+    case MIXSRC_FIRST_TELEM-1+TELEM_MIN_CELL:
+    case MIXSRC_FIRST_TELEM-1+TELEM_ALT:
+    case MIXSRC_FIRST_TELEM-1+TELEM_ACCx:
+    case MIXSRC_FIRST_TELEM-1+TELEM_ACCy:
+    case MIXSRC_FIRST_TELEM-1+TELEM_ACCz:
+      //theese need to be divided by 100
+      lua_pushnumber(L, getValue(src)/100.0);
+      break;
+
+    //TODO: add other values that need special treatment
+
+    default:
+      lua_pushinteger(L, getValue(src));
+  }
+}
+
 static int luaGetValue(lua_State *L)
 {
   if (lua_isnumber(L, 1)) {
     int src = luaL_checkinteger(L, 1);
-    lua_pushinteger(L, getValue(src));
+    luaGetValueAndPush(src);
     return 1;
   }
   else {
@@ -102,36 +155,25 @@ static int luaGetValue(lua_State *L)
       lua_pushnumber(L, double(frskyData.hub.baroAltitude)/100);
       return 1;
     }
-    else if (!strcmp(what, "latitude")) {
-      if (frskyData.hub.gpsFix)
+    else if (frskyData.hub.gpsFix) {
+      if (!strcmp(what, "latitude")) {
         lua_pushnumber(L, gpsToDouble(frskyData.hub.gpsLatitudeNS=='S', frskyData.hub.gpsLatitude_bp, frskyData.hub.gpsLatitude_ap));
-      else
-        lua_pushnil(L);
-      return 1;
-    }
-    else if (!strcmp(what, "longitude")) {
-      if (frskyData.hub.gpsFix)
+        return 1;
+      }
+      else if (!strcmp(what, "longitude")) {
         lua_pushnumber(L, gpsToDouble(frskyData.hub.gpsLongitudeEW=='W', frskyData.hub.gpsLongitude_bp, frskyData.hub.gpsLongitude_ap));
-      else
-        lua_pushnil(L);
-      return 1;
-    }
-    else if (!strcmp(what, "pilot latitude")) {
-      if (frskyData.hub.gpsFix)
+        return 1;
+      }
+      else if (!strcmp(what, "pilot latitude")) {
         lua_pushnumber(L, pilotLatitude);
-      else
-        lua_pushnil(L);
-      return 1;
-    }
-    else if (!strcmp(what, "pilot longitude")) {
-      if (frskyData.hub.gpsFix)
+        return 1;
+      }
+      else if (!strcmp(what, "pilot longitude")) {
         lua_pushnumber(L, pilotLongitude);
-      else
-        lua_pushnil(L);
-      return 1;
+        return 1;
+      }
     }
   }
-
   return 0;
 }
 
@@ -141,6 +183,16 @@ static int luaPlayFile(lua_State *L)
   PLAY_FILE(filename, 0, 0);
   return 0;
 }
+
+static int luaPlayNumber(lua_State *L)
+{
+  int number = luaL_checkinteger(L, 1);
+  int unit = luaL_checkinteger(L, 2);
+  int att = luaL_checkinteger(L, 3);
+  playNumber(number, unit, att, 0);
+  return 0;
+}
+
 
 static int luaLcdLock(lua_State *L)
 {
@@ -517,7 +569,7 @@ static int luaModelDeleteMix(lua_State *L)
 static int luaModelGetLogicalSwitch(lua_State *L)
 {
   int idx = luaL_checkunsigned(L, 1);
-  if (idx < NUM_CSW) {
+  if (idx < NUM_LOGICAL_SWITCH) {
     LogicalSwitchData * sw = cswAddress(idx);
     lua_newtable(L);
     lua_pushtablenumber(L, "function", sw->func);
@@ -537,7 +589,7 @@ static int luaModelGetLogicalSwitch(lua_State *L)
 static int luaModelSetLogicalSwitch(lua_State *L)
 {
   int idx = luaL_checkunsigned(L, 1);
-  if (idx < NUM_CSW) {
+  if (idx < NUM_LOGICAL_SWITCH) {
     LogicalSwitchData * sw = cswAddress(idx);
     luaL_checktype(L, -1, LUA_TTABLE);
     for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
@@ -637,9 +689,9 @@ static int luaModelGetOutput(lua_State *L)
     lua_pushtableboolean(L, "symetrical", limit->symetrical);
     lua_pushtableboolean(L, "revert", limit->revert);
     if (limit->curve)
-      lua_pushtablenil(L, "curve");
-    else
       lua_pushtablenumber(L, "curve", limit->curve-1);
+    else
+      lua_pushtablenil(L, "curve");
   }
   else {
     lua_pushnil(L);
@@ -689,6 +741,29 @@ static int luaModelSetOutput(lua_State *L)
 
   return 0;
 }
+
+static int luaModelGetGlobalVariable(lua_State *L)
+{
+  int idx = luaL_checkunsigned(L, 1);
+  int phase = luaL_checkunsigned(L, 2);
+  if (phase < MAX_FLIGHT_MODES && idx < MAX_GVARS)
+    lua_pushinteger(L, g_model.phaseData[phase].gvars[idx]);
+  else
+    lua_pushnil(L);
+  return 1;
+}
+
+static int luaModelSetGlobalVariable(lua_State *L)
+{
+  int idx = luaL_checkunsigned(L, 1);
+  int phase = luaL_checkunsigned(L, 2);
+  int value = luaL_checkinteger(L, 3);
+  if (phase < MAX_FLIGHT_MODES && idx < MAX_GVARS && value >= -GVAR_LIMIT && value <= GVAR_LIMIT) {
+    g_model.phaseData[phase].gvars[idx] = value;
+  }
+  return 0;
+}
+
 static int luaPopupInput(lua_State *L)
 {
   uint8_t event = luaL_checkinteger(L, 2);
@@ -797,6 +872,8 @@ static const luaL_Reg modelLib[] = {
   { "setCustomFunction", luaModelSetCustomFunction },
   { "getOutput", luaModelGetOutput },
   { "setOutput", luaModelSetOutput },
+  { "getGlobalVariable", luaModelGetGlobalVariable },
+  { "setGlobalVariable", luaModelSetGlobalVariable },
   { NULL, NULL }  /* sentinel */
 };
 
@@ -824,18 +901,19 @@ void luaInit()
   // Init lua
   luaL_openlibs(L);
 
-  // Push openTX libs
+  // Push OpenTX libs
   lua_registerlib(L, "model", modelLib);
   lua_registerlib(L, "lcd", lcdLib);
 
-  // Push openTX functions
+  // Push OpenTX functions
   lua_register(L, "getTime", luaGetTime);
   lua_register(L, "getVersion", luaGetVersion);
   lua_register(L, "getValue", luaGetValue);
   lua_register(L, "playFile", luaPlayFile);
+  lua_register(L, "playNumber", luaPlayNumber);
   lua_register(L, "popupInput", luaPopupInput);
 
-  // Push openTX constants
+  // Push OpenTX constants
   lua_registerint(L, "DBLSIZE", DBLSIZE);
   lua_registerint(L, "MIDSIZE", MIDSIZE);
   lua_registerint(L, "SMLSIZE", SMLSIZE);
@@ -844,11 +922,11 @@ void luaInit()
   lua_registerint(L, "VALUE", 0);
   lua_registerint(L, "SOURCE", 1);
   lua_registerint(L, "REPLACE", MLTPX_REP);
-  lua_registerint(L, "MIX_Rud", MIXSRC_Rud);
-  lua_registerint(L, "MIX_Ele", MIXSRC_Ele);
-  lua_registerint(L, "MIX_Thr", MIXSRC_Thr);
-  lua_registerint(L, "MIX_Ail", MIXSRC_Ail);
-  lua_registerint(L, "SW_Last", SWSRC_LAST_CSW);
+  lua_registerint(L, "STICK_RUDDER", MIXSRC_Rud);
+  lua_registerint(L, "STICK_ELEVATOR", MIXSRC_Ele);
+  lua_registerint(L, "STICK_THROTTLE", MIXSRC_Thr);
+  lua_registerint(L, "STICK_AILERON", MIXSRC_Ail);
+  lua_registerint(L, "SWITCH_LAST", SWSRC_LAST_LOGICAL_SWITCH);
   lua_registerint(L, "EVT_MENU_BREAK", EVT_KEY_BREAK(KEY_MENU));
   lua_registerint(L, "EVT_PAGE_BREAK", EVT_KEY_BREAK(KEY_PAGE));
   lua_registerint(L, "EVT_ENTER_BREAK", EVT_KEY_BREAK(KEY_ENTER));
@@ -1064,12 +1142,12 @@ void luaTask(uint8_t evt)
         lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
         for (int j=0; j<sid.inputsCount; j++) {
           if (sid.inputs[j].type == 1)
-            lua_pushinteger(L, (uint8_t)sd.inputs[j]);
+            luaGetValueAndPush((uint8_t)sd.inputs[j]);
           else
-            lua_pushinteger(L, sd.inputs[j]);
+            lua_pushinteger(L, sd.inputs[j] + sid.inputs[j].def);
         }
         if (lua_pcall(L, sid.inputsCount, sid.outputsCount, 0) == 0) {
-          for (int j=0; j<sid.outputsCount; j++) {
+          for (int j=sid.outputsCount-1; j>=0; j--) {
             if (!lua_isnumber(L, -1)) {
               sid.state = (instructionsPercent > 100 ? SCRIPT_KILLED : SCRIPT_SYNTAX_ERROR);
               TRACE("Script %10s disabled", sd.file);

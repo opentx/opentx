@@ -109,11 +109,18 @@ Section "OpenTX companion" SecDummy
   ${registerExtension} "$INSTDIR\companion.exe" ".hex" "HEX_File"
   ${registerExtension} "$INSTDIR\companion.exe" ".companion" "EEPE_File"
   ${registerExtension} "$INSTDIR\companion.exe" ".eepm" "EEPM_File"
-
   
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\Uninstall.exe"
-  
+
+  ;Registry information for add/remove programs
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX" "DisplayName" "OpenTX Companion"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX" "UninstallString" "$\"$INSTDIR\Uninstall.exe$\""
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX" "DisplayIcon" "$\"$INSTDIR\companion.exe$\""
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX" "Publisher" "OpenTX"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX" "URLInfoAbout" "http://www.open-tx.org"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ImageMaker" "QuietUninstallString" "$\"$INSTDIR\Uninstall.exe$\" /S"
+
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
     
   ;Create shortcuts
@@ -178,6 +185,7 @@ Section "Uninstall"
   RMDir "$SMPROGRAMS\$StartMenuFolder"
   
   DeleteRegKey /ifempty HKCU "Software\companion9x"
+  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX"
 
 SectionEnd
 

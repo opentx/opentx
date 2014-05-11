@@ -49,9 +49,12 @@
 #define GAUGES
 #define GPS
 #define FAI_CHOICE
+#define FRSKY_STICKS
 
 #define EEPROM_VARIANT SIMU_STOCK_VARIANTS
 #define GAUGES
+
+#define NUM_POTS  3
 
 #undef min
 #undef max
@@ -78,6 +81,7 @@ namespace Open9x {
 #include "radio/src/telemetry/frsky.cpp"
 #include "radio/src/templates.cpp"
 #include "radio/src/translations.cpp"
+#include "radio/src/fonts.cpp"
 #include "radio/src/targets/stock/voice.cpp"
 #include "radio/src/buzzer.cpp"
 #include "radio/src/translations/tts_en.cpp"
@@ -107,8 +111,7 @@ uint8_t getStickMode()
 
 using namespace Open9x;
 
-Open9xSimulator::Open9xSimulator(OpenTxInterface * open9xInterface):
-    open9xInterface(open9xInterface)
+Open9xSimulator::Open9xSimulator()
 {
 #define INIT_IMPORT
 #include "simulatorimport.h"
@@ -141,7 +144,6 @@ void Open9xSimulator::start(QByteArray & eeprom, bool tests)
 
 void Open9xSimulator::start(const char * filename, bool tests)
 {
-  // open9xInterface->save(&Open9x::eeprom[0], radioData, SIMU_STOCK_VARIANTS);
   StartEepromThread(filename);
   StartMainThread(tests);
 }
@@ -193,6 +195,13 @@ void Open9xSimulator::getTrims(Trims & trims)
 unsigned int Open9xSimulator::getPhase()
 {
   return getFlightPhase();
+}
+
+const char * Open9xSimulator::getPhaseName(unsigned int phase)
+{
+  static char buff[sizeof(g_model.phaseData[0].name)+1];
+  zchar2str(buff, g_model.phaseData[phase].name, sizeof(g_model.phaseData[0].name));
+  return buff;
 }
 
 const char * Open9xSimulator::getError()

@@ -197,7 +197,7 @@ PACK(typedef struct t_Open9xGruvin9xModelData_v207 {
   Open9xGruvin9xLogicalSwitchData_v207  customSw[O9X_NUM_CSW];
   Open9xFuncSwData_v203 funcSw[O9X_NUM_FSW];
   Open9xGruvin9xSwashRingData_v208 swashR;
-  Open9xGruvin9xPhaseData_v207 phaseData[O9X_MAX_PHASES];
+  Open9xGruvin9xPhaseData_v207 phaseData[O9X_MAX_FLIGHT_MODES];
   Open9xFrSkyData_v205 frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
@@ -231,7 +231,7 @@ PACK(typedef struct t_Open9xGruvin9xModelData_v208 {
   Open9xGruvin9xLogicalSwitchData_v207  customSw[O9X_NUM_CSW];
   Open9xGruvin9xFuncSwData_v203 funcSw[O9X_NUM_FSW];
   Open9xGruvin9xSwashRingData_v208 swashR;
-  Open9xGruvin9xPhaseData_v208 phaseData[O9X_MAX_PHASES];
+  Open9xGruvin9xPhaseData_v208 phaseData[O9X_MAX_FLIGHT_MODES];
   Open9xFrSkyData_v208 frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
@@ -270,7 +270,7 @@ PACK(typedef struct t_Open9xGruvin9xModelData_v209 {
   Open9xGruvin9xLogicalSwitchData_v209  customSw[O9X_NUM_CSW];
   Open9xGruvin9xFuncSwData_v203 funcSw[O9X_NUM_FSW];
   Open9xGruvin9xSwashRingData_v209 swashR;
-  Open9xGruvin9xPhaseData_v208 phaseData[O9X_MAX_PHASES];
+  Open9xGruvin9xPhaseData_v208 phaseData[O9X_MAX_FLIGHT_MODES];
   Open9xFrSkyData_v208 frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
@@ -310,7 +310,7 @@ PACK(typedef struct t_Open9xGruvin9xModelData_v210 {
   Open9xGruvin9xLogicalSwitchData_v209  customSw[O9X_NUM_CSW];
   Open9xGruvin9xFuncSwData_v210 funcSw[O9X_NUM_FSW];
   Open9xGruvin9xSwashRingData_v209 swashR;
-  Open9xGruvin9xPhaseData_v208 phaseData[O9X_MAX_PHASES];
+  Open9xGruvin9xPhaseData_v208 phaseData[O9X_MAX_FLIGHT_MODES];
 
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
@@ -348,7 +348,7 @@ PACK(typedef struct t_Open9xGruvin9xModelData_v211 {
   Open9xGruvin9xLogicalSwitchData_v209  customSw[O9X_NUM_CSW];
   Open9xGruvin9xFuncSwData_v210 funcSw[O9X_NUM_FSW];
   Open9xGruvin9xSwashRingData_v209 swashR;
-  Open9xGruvin9xPhaseData_v208 phaseData[O9X_MAX_PHASES];
+  Open9xGruvin9xPhaseData_v208 phaseData[O9X_MAX_FLIGHT_MODES];
 
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;

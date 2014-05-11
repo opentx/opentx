@@ -2,6 +2,7 @@
 #include "ui_downloaddialog.h"
 #include <QMessageBox>
 #include <QtGui>
+#include <QTime>
 #include "helpers.h"
 
 downloadDialog::downloadDialog(QWidget *parent, QString src, QString tgt) :
@@ -87,3 +88,14 @@ void downloadDialog::fileError()
     file = 0;
     reject();
 }
+
+void downloadDialog::closeEvent( QCloseEvent * event)
+{
+  // Delay closing 2 seconds to avoid unpleasant flashing download dialogs
+  QTime closeTime= QTime::currentTime().addSecs(2);
+  while( QTime::currentTime() < closeTime )
+    QCoreApplication::processEvents(QEventLoop::AllEvents, 100);   
+
+  event->accept();
+}
+

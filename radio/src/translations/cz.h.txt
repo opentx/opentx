@@ -33,11 +33,12 @@
  *
  * !!!!! DO NOT EDIT cz.h - EDIT cz.h.txt INSTEAD !!!!!!!   
  */
- /* Formatting octal codes available in TR_ strings:
- *  \037\x       -sets LCD x-coord (x value in octal)
- *  \036         -newline
- *  \001 to \035 -extended spacing (value * FW/2)
- *  \0           -ends actual string
+/* Formatting octal codes available in TR_ strings:
+ *  \037\x           -sets LCD x-coord (x value in octal)
+ *  \n               -newline
+ *  \t               -horizontal tab (ARM only)
+ *  \001 to \034     -extended spacing (value * FW/2)
+ *  \0               -ends actual string
  */
 
 // NON ZERO TERMINATED STRINGS
@@ -69,10 +70,10 @@
 #define TR_TRNCHN              "CH1CH2CH3CH4"
 
 #define LEN_UART3MODES         "\017"
-#define TR_UART3MODES          "OFF\0           ""S-Port Mirror\0 ""Debug\0         "
+#define TR_UART3MODES          "VYP\0           ""S-Port Mirror\0 ""Debug\0         "
 
 #define LEN_POTTYPES           "\017"
-#define TR_POTTYPES            "Pot\0           ""Multipos Switch"
+#define TR_POTTYPES            "Není\0          ""Potenciometr\0  ""Vícepol. přep.\0"
 
 #define LEN_DATETIME           "\006"
 #define TR_DATETIME            "DATUM:""ČAS:  "
@@ -83,11 +84,23 @@
 #define LEN_COUNTRYCODES       TR("\002", "\010")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Amerika\0""Japonsko""Evropa\0 ")
 
+#define LEN_TARANIS_PROTOCOLS  "\004"          
+#define TR_TARANIS_PROTOCOLS   "Vyp\0""PPM\0""XJT\0""DSM2"
+
+#define LEN_XJT_PROTOCOLS      "\004"
+#define TR_XJT_PROTOCOLS       "Vyp\0""D16\0""D8\0 ""LR12"
+
+#define LEN_DSM_PROTOCOLS      "\004"
+#define TR_DSM_PROTOCOLS       "LP45""DSM2""DSMX"
+
 #define LEN_VTRIMINC           "\007"
 #define TR_VTRIMINC            "Expo\0  ""ExJemný""Jemný\0 ""Střední""Hrubý\0 "
 
 #define LEN_VBEEPCOUNTDOWN     "\006"
-#define TR_VBEEPCOUNTDOWN      "Tichý\0Zvuk\0 Hlas\0 "
+#define TR_VBEEPCOUNTDOWN      "Tichý\0""Zvuk\0 ""Hlas\0 "
+
+#define LEN_CURVE_TYPES        "\010"
+#define TR_CURVE_TYPES         "Rastr-X\0""Volná-XY"
 
 #define LEN_RETA123            "\001"
 
@@ -98,7 +111,7 @@
     #define TR_RETA123         "SVPK123ab"
   #endif
 #elif defined(PCBTARANIS)
-  #define TR_RETA123           "SVPK12LR"
+  #define TR_RETA123           "SVPK123LR"
 #else
   #define TR_RETA123           "SVPK123"
 #endif
@@ -141,8 +154,8 @@
 #define LEN_VCURVEFUNC         "\003"
 #define TR_VCURVEFUNC          "---""x>0""x<0""|x|""f>0""f<0""|f|"
 
-#define LEN_VMLTPX             "\010"
-#define TR_VMLTPX              "Sečíst  ""Násobit ""Zaměnit  "
+#define LEN_VMLTPX             "\007"
+#define TR_VMLTPX              "Sečíst\0""Násobit""Zaměnit"
 
 #define LEN_VMLTPX2            "\002"
 #define TR_VMLTPX2             "+=""*="":="
@@ -175,9 +188,9 @@
 
 #define LEN_VCSWFUNC           "\005"
 #if defined(CPUARM)
-#define TR_VCSWFUNC            "---\0 " TR_CSWEQUAL "a{x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""Δ}x\0 ""|Δ|}x" TR_CSWTIMER TR_CSWSTICKY
+#define TR_VCSWFUNC            "---\0 " TR_CSWEQUAL "a~x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""Δ}x\0 ""|Δ|}x" TR_CSWTIMER TR_CSWSTICKY
 #else
-#define TR_VCSWFUNC            "---\0 " TR_CSWEQUAL "a{x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""^}x\0 ""|^|}x" TR_CSWTIMER TR_CSWSTICKY
+#define TR_VCSWFUNC            "---\0 " TR_CSWEQUAL "a~x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""^}x\0 ""|^|}x" TR_CSWTIMER TR_CSWSTICKY
 #endif
 
 #define LEN_VFSWFUNC           "\013"
@@ -234,44 +247,58 @@
   #define TR_CFN_TEST
 #endif
 
+#define TR_CFN_RESERVE         "[rezerva]\0 "
+
 #if defined(CPUARM)
-  #define TR_VFSWFUNC          "Zámek \0    ""Trenér \0   ""Insta-Trim\0""Reset\0     ""Set \0      " TR_ADJUST_GVAR "Hlasitost\0 " TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podsvětlení" TR_CFN_TEST
+  #define TR_VFSWFUNC          "Zámek \0    ""Trenér \0   ""Insta-Trim\0""Reset\0     ""Set \0      " TR_ADJUST_GVAR "Hlasitost\0 " TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_RESERVE TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podsvětlení" TR_CFN_TEST
 #elif defined(PCBGRUVIN9X)
   #define TR_VFSWFUNC          "Zámek \0    ""Trenér \0   ""Insta-Trim\0""Reset\0     " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podsvětlení" TR_CFN_TEST
 #else
   #define TR_VFSWFUNC          "Zámek \0    ""Trenér \0   ""Insta-Trim\0""Reset\0     " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC "Podsvětlení" TR_CFN_TEST
 #endif
 
-#define LEN_VFSWRESET          TR("\004", "\011")
+#define LEN_VFSWRESET          TR("\004", "\012")
 
 #if defined(FRSKY)
-  #define TR_FSW_RESET_TELEM   TR("Telm", "Telemetry")
+  #define TR_FSW_RESET_TELEM   TR("Telm", "Telemetrie")
 #else
   #define TR_FSW_RESET_TELEM
 #endif
 
 #if ROTARY_ENCODERS == 2
-  #define TR_FSW_RESET_ROTENC  TR("REa\0""REb\0", "RotEnc A\0""RotEnc B\0")
+  #define TR_FSW_RESET_ROTENC  TR("REa\0""REb\0", "RotEnc A\0 ""RotEnc B\0 ")
 #elif ROTARY_ENCODERS == 1
-  #define TR_FSW_RESET_ROTENC  TR("R.E.", "RotEnc\0  ")
+  #define TR_FSW_RESET_ROTENC  TR("RoEn", "RotEnc\0   ")
 #else
   #define TR_FSW_RESET_ROTENC
 #endif
 
-#define TR_VFSWRESET           TR("Tmr1""Tmr2""All\0" TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC, "Timer 1\0 ""Timer 2\0 ""All\0     " TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC)
+#define TR_VFSWRESET           TR("Tmr1""Tmr2""Vše\0" TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC, "Timer 1\0  ""Timer 2\0  ""Vše\0      " TR_FSW_RESET_TELEM TR_FSW_RESET_ROTENC)
 
 #define LEN_FUNCSOUNDS         TR("\004", "\006")
 #define TR_FUNCSOUNDS          TR("Bp1\0""Bp2\0""Bp3\0""Wrn1""Wrn2""Chee""Rata""Tick""Sirn""Ring""SciF""Robt""Chrp""Tada""Crck""Alrm", "Beep1 ""Beep2 ""Beep3 ""Warn1 ""Warn2 ""Cheep ""Ratata""Tick  ""Siren ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""AlmClk")
 
 #define LEN_VTELEMCHNS         "\004"
-#if defined(PCBTARANIS)
-  #define TR_RSSI_0            "SWR\0"
-  #define TR_RSSI_1            "RSSI"
+
+#if defined(CPUARM)
+  #define TR_TELEM_RESERVE     "[--]"
+  #define TR_TELEM_TIME        "Time"
+  #define TR_SWR               "SWR\0"
+  #define TR_RX_BATT           "RxBt"
+  #define TR_A3_A4             "A3\0 ""A4\0 "
+  #define TR_A3_A4_MIN         "A3-\0""A4-\0"
 #else
-  #define TR_RSSI_0            "Tx\0 "
-  #define TR_RSSI_1            "Rx\0 "
+  #define TR_TELEM_RESERVE
+  #define TR_TELEM_TIME
+  #define TR_SWR
+  #define TR_RX_BATT
+  #define TR_A3_A4
+  #define TR_A3_A4_MIN
 #endif
-#define TR_VTELEMCHNS          "---\0""Bat\0""Tmr1""Tmr2" TR_RSSI_0 TR_RSSI_1 "A1\0 ""A2\0 ""Alt\0""Rpm\0""Fuel""T1\0 ""T2\0 ""Spd\0""Dist""GAlt""Cell""Cels""Vfas""Curr""Cnsp""Powr""AccX""AccY""AccZ""Hdg\0""VSpd""ASpd""dTE\0""A1-\0""A2-\0""Alt-""Alt+""Rpm+""T1+\0""T2+\0""Spd+""Dst+""Cel-""Cls-""Vfs-""Cur+""Pwr+""Acc\0""Time"
+
+#define TR_ASPD_MAX            "ASp+" 
+
+#define TR_VTELEMCHNS          "---\0""Bat\0" TR_TELEM_TIME TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE "Tmr1""Tmr2" TR_SWR "Tx\0 ""Rx\0 " TR_RX_BATT "A1\0 ""A2\0 " TR_A3_A4 "Alt\0""Rpm\0""Fuel""T1\0 ""T2\0 ""Spd\0""Dist""GAlt""Cell""Cels""Vfas""Curr""Cnsp""Powr""AccX""AccY""AccZ""Hdg\0""VSpd""ASpd""dTE\0" TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE "A1-\0""A2-\0" TR_A3_A4_MIN "Alt-""Alt+""Rpm+""T1+\0""T2+\0""Spd+""Dst+" TR_ASPD_MAX "Cel-""Cls-""Vfs-""Cur+""Pwr+" TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE "Acc\0""Time"
 
 #define LENGTH_UNIT_IMP        "ft\0"
 #define SPEED_UNIT_IMP         "mph"
@@ -307,7 +334,7 @@
 #define TR_VALARMFN            "<>"
 
 #define LEN_VTELPROTO          "\007"
-#define TR_VTELPROTO           "---\0   ""Hub\0   ""WSHHigh""Halcyon"
+#define TR_VTELPROTO           "---\0   ""Hub\0   ""WSHHigh"
 
 #define LEN_VOLTSRC            "\003"
 #define TR_VOLTSRC             "---""A1\0""A2\0""FAS""Cel"
@@ -323,14 +350,14 @@
 #define TR_VSCREEN             "Hodnota ""Ukazatel"
 
 #define LEN_GPSFORMAT          "\004"
-#define TR_GPSFORMAT           "HMS NMEA"
+#define TR_GPSFORMAT           "DMS\0""NMEA"
 
 #define LEN2_VTEMPLATES        13
 #define LEN_VTEMPLATES         "\015"
 #define TR_VTEMPLATES          "Smazat mixy\0\0""Zákl. 4kanál\0""Sticky-T-Cut\0""V-Tail      \0""Elevon\\Delta\0""eCCPM       \0""Heli Setup  \0""Servo Test  \0"
 
 #define LEN_VSWASHTYPE         "\004"
-#define TR_VSWASHTYPE          "--- ""120 ""120X""140 ""90\0"
+#define TR_VSWASHTYPE          "---\0""120\0""120X""140\0""90\0"
 
 #define LEN_VKEYS              "\005"
 #define TR_VKEYS               TR("Menu\0""Exit\0""Dolů\0""Nhoru""Vprvo""Vlevo", "Menu\0""Exit\0""Enter""Page\0""Plus\0""Mínus")
@@ -355,14 +382,14 @@
 #endif
 
 #if defined(CPUARM)
-  #define TR_LOGICALSW          "VS1""VS2""VS3""VS4""VS5""VS6""VS7""VS8""VS9""VSA""VSB""VSC""VSD""VSE""VSF""VSG""VSH""VSI""VSJ""VSK""VSL""VSM""VSN""VSO""VSP""VSQ""VSR""VSS""VST""VSU""VSV""VSW"
+  #define TR_LOGICALSW          "L1\0""L2\0""L3\0""L4\0""L5\0""L6\0""L7\0""L8\0""L9\0""L10""L11""L12""L13""L14""L15""L16""L17""L18""L19""L20""L21""L22""L23""L24""L25""L26""L27""L28""L29""L30""L31""L32"
 #elif defined(PCBGRUVIN9X) || defined(CPUM2561) || defined(CPUM128)
-  #define TR_LOGICALSW          "VS1""VS2""VS3""VS4""VS5""VS6""VS7""VS8""VS9""VSA""VSB""VSC""VSD""VSE""VSF"
+  #define TR_LOGICALSW          "L1\0""L2\0""L3\0""L4\0""L5\0""L6\0""L7\0""L8\0""L9\0""L10""L11""L12""L13""L14""L15"
 #else
-  #define TR_LOGICALSW          "VS1""VS2""VS3""VS4""VS5""VS6""VS7""VS8""VS9""VSA""VSB""VSC"
+  #define TR_LOGICALSW          "L1\0""L2\0""L3\0""L4\0""L5\0""L6\0""L7\0""L8\0""L9\0""L10""L11""L12"
 #endif
 
-#define TR_TRIMS_SWITCHES      "tRl""tRr""tEd""tEu""tTd""tTu""tAl""tAr"
+#define TR_TRIMS_SWITCHES      "tSl""tSp""tVd""tVn""tPd""tPn""tKl""tKp"
 
 #if defined(PCBSKY9X)
   #define TR_ROTARY_ENCODERS   "REa\0"
@@ -376,7 +403,7 @@
 #endif
 
 #if defined(PCBTARANIS)
-  #define TR_6POS_POTS         "P11""P12""P13""P14""P15""P16""P21""P22""P23""P24""P25""P26""P31""P32""P33""P34""P35""P36"
+  #define TR_6POS_POTS         "S11""S12""S13""S14""S15""S16""S21""S22""S23""S24""S25""S26""S31""S32""S33""S34""S35""S36"
   #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_6POS_POTS TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW
 #elif defined(CPUARM)
   #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW
@@ -393,13 +420,13 @@
 #define TR_VSRCRAW             "---\0""Směr""Výšk""Plyn""Křid" TR_POTS_VSRCRAW TR_ROTARY_ENCODERS "MAX\0" TR_CYC_VSRCRAW "TrmS" "TrmV" "TrmP" "TrmK" TR_SW_VSRCRAW
 
 #define LEN_VTMRMODES          "\003"
-#define TR_VTMRMODES           "VYP""ABS""THs""TH%""THt"
+#define TR_VTMRMODES           "VYP""ABS""PL>""PL%""PL*"
 
 #define LEN_VTRAINERMODES      "\006"
 #define TR_VTRAINERMODES       "Učitel""Žák\0  "
 
 #define LEN_VFAILSAFE          "\011"
-#define TR_VFAILSAFE           "Držet\0   ""Vlastní\0 ""Bez pulzů"
+#define TR_VFAILSAFE           "Držet\0   ""Vlastní\0 ""Bez pulzů""Přijímač"
 
 #if defined(MAVLINK)
   #define LEN_MAVLINK_BAUDS    "\006"
@@ -424,39 +451,39 @@
 #define TR_POPUPS              TR_ENTER"\010[EXIT]"
 #define OFS_EXIT               sizeof(TR_ENTER)
 
-#define TR_MENUWHENDONE        CENTER "\007"TR_ENTER" > DALŠÍ"
+#define TR_MENUWHENDONE        CENTER "\011"TR_ENTER" > DALŠÍ"
 #define TR_FREE                TR("volné:", "volných")
 #define TR_DELETEMODEL         "SMAZAT MODEL"
 #define TR_COPYINGMODEL        "Kopíruji model.."
 #define TR_MOVINGMODEL         "Přesouvám model."
 #define TR_LOADINGMODEL        "Aktivuji model.."
-#define TR_NAME                "Jméno"
+#define TR_NAME                "Název"
 #define TR_MODELNAME           "Název modelu"
-#define TR_PHASENAME           "Jméno"
-#define TR_MIXNAME             "Jméno"
-#define TR_INPUTNAME           "Input Name"
+#define TR_PHASENAME           "Název"
+#define TR_MIXNAME             "Název"
+#define TR_INPUTNAME           "Název"
 #if defined(PCBTARANIS)
-  #define TR_EXPONAME          "Line Name"
+  #define TR_EXPONAME          "Popis"
 #else
-  #define TR_EXPONAME          "Jméno"
+  #define TR_EXPONAME          "Název"
 #endif
 #define TR_BITMAP              "Obrázek"
 #define TR_TIMER               "Stopky "
-#define TR_ELIMITS             TR("Limit+25%", "Kanál +/- 125%")
-#define TR_ETRIMS              TR("širšíTrim", "Široký trim")
-#define TR_TRIMINC             TR("KrokTrimu", "Krok trimu")
-#define TR_TTRACE              TR("StopaPlyn", "Stopař plynu")
-#define TR_TTRIM               TR("TrimPlynu", "TrimPlyn-volnoběh")
-#define TR_BEEPCTR             "(\043)Středy"
-#define TR_PROTO               INDENT"Protokol"
-#define TR_PPMFRAME            "PPM frame"
+#define TR_ELIMITS             TR("Limit +25%", "Kanál +/- 125%")
+#define TR_ETRIMS              TR("širší Trim", "Široký trim")
+#define TR_TRIMINC             TR("Krok Trimu", "Krok trimu")
+#define TR_TTRACE              TR("PL stopek", INDENT "Stopa PL stopek")
+#define TR_TTRIM               TR("TrimPlynVol.", INDENT "Trim jen volnoběh")
+#define TR_BEEPCTR             "Středy \221\222"
+#define TR_PROTO               INDENT "Protokol"
+#define TR_PPMFRAME            INDENT "PPM frame"
 #define TR_MS                  "ms"
 #define TR_SWITCH              "Spínač"
 #define TR_TRIMS               "Trimy"
 #define TR_FADEIN              "Přechod Zap"
 #define TR_FADEOUT             "Přechod Vyp"
 #define TR_DEFAULT             "(výchozí)"
-#define TR_CHECKTRIMS          "\006Kont.\012Trimy"
+#define TR_CHECKTRIMS          "\011Kont.\010Trimy"
 #define OFS_CHECKTRIMS         (9*FW)
 #define TR_SWASHTYPE           "Typ cykliky"
 #define TR_COLLECTIVE          "Kolektiv"
@@ -476,18 +503,19 @@
 #define TR_DIFFERENTIAL        "Dif.výchylek"
 #define TR_OFFSET              INDENT"Ofset"
 #define TR_TRIM                "Trim"
-#define TR_DREX                "DRex"
+#define TR_DREX                "DR/Expo"
+#define DREX_CHBOX_OFFSET      45
 #define TR_CURVE               "Křivka"
 #define TR_FLMODE              "Režim"
 #define TR_MIXWARNING          "Varování"
 #define TR_OFF                 "VYP"
 #define TR_MULTPX              TR("Mat.operace", "Operace")
-#define TR_DELAYDOWN           TR("Zpoždění Vyp", "Zdržet(-)")
+#define TR_DELAYDOWN           TR("Zpoždění Vyp", "Zdržet(x)")
 #define TR_DELAYUP             TR("Zpoždění Zap", "Zdržet(\43)")
 #define TR_SLOWDOWN            TR("Zpomalení(-)", "Zpomal(\177)")
 #define TR_SLOWUP              TR("Zpomalení(+)", "Zpomal(\176)")
 #define TR_MIXER               "MIXER"
-#define TR_CV                  "k"
+#define TR_CV                  "K"
 #define TR_GV                  "GP"
 #define TR_ACHANNEL            "A\004Kanál"
 #define TR_RANGE               INDENT"Rozsah"
@@ -505,11 +533,12 @@
 #define TR_ALARMS_LABEL        "Alarmy"
 #define TR_BATTERY_RANGE       TR("Ukazatel bat.", "Ukazetel baterie")
 #define TR_BATTERYWARNING      INDENT"Vybitá baterie"
-#define TR_INACTIVITYALARM     INDENT"Nečinnost"
+#define TR_INACTIVITYALARM     TR(INDENT "Nečinnost", INDENT "Nečinnost rádia")
 #define TR_MEMORYWARNING       INDENT"Plná pamět'"
-#define TR_ALARMWARNING        INDENT"Vypnutý zvuk"
+#define TR_ALARMWARNING        TR(INDENT "Vypnutý zvuk", INDENT "Upozornit na vypnutý zvuk")
 #define TR_RENAVIG             "Navig. RotEnc"
-#define TR_THROTTLEREVERSE     TR("ReversPlyn", "Revers plynu")
+#define TR_THROTTLE_LABEL      "Plyn"
+#define TR_THROTTLEREVERSE     TR("ReversPlyn", INDENT"Revers plynu")
 #define TR_MINUTEBEEP          TR(INDENT"Minuta", INDENT"Oznamovat minuty")
 #define TR_BEEPCOUNTDOWN       INDENT"Odpočet"
 #define TR_PERSISTENT          INDENT"Trvalé"
@@ -517,10 +546,11 @@
 #define TR_BLDELAY             INDENT"Zhasnout po"
 #define TR_BLONBRIGHTNESS      INDENT"Jas Zap."
 #define TR_BLOFFBRIGHTNESS     INDENT"Jas Vyp."
-#define TR_SPLASHSCREEN        "úvodníLogo"
-#define TR_THROTTLEWARNING     "(\043)Plyn"
-#define TR_SWITCHWARNING       "(\043)Spínače"
-#define TR_POTWARNING          TR("Pot Warn.","Pot Warning")
+#define TR_BLCOLOR             INDENT "Color"
+#define TR_SPLASHSCREEN        TR("úvodníLogo", "Zobrazit úvodní logo")
+#define TR_THROTTLEWARNING     TR("* Plyn", INDENT "Páka Plynu")
+#define TR_SWITCHWARNING       TR("* Spínače", INDENT "Polohy Spínačů")
+#define TR_POTWARNING          TR("* Potenc.", INDENT "Nastavení Pot.")
 #define TR_TIMEZONE            "časové pásmo"
 #define TR_RXCHANNELORD        TR("Pořadí kanálů", "Výchozí pořadí kanálů")
 #define TR_SLAVE               "Podřízený"
@@ -529,9 +559,9 @@
 #define TR_CAL                 "Kal."
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
-#define TR_MENUTOSTART         CENTER "\010" TR_ENTER " = START"
-#define TR_SETMIDPOINT         TR(CENTER "\003Nastav páky na střed", CENTER "\004Nastav páky na střed")
-#define TR_MOVESTICKSPOTS      TR(CENTER "\005Hýbej pákami/poty", "\010Hýbej pákami i potenciometry")
+#define TR_MENUTOSTART         CENTER "\011" TR_ENTER " = START"
+#define TR_SETMIDPOINT         CENTER "\004Nastav páky na střed"
+#define TR_MOVESTICKSPOTS      TR(CENTER "\006Hýbej pákami/poty", "\014Hýbej pákami i potenciometry")
 #define TR_RXBATT              "Rx Bat.:"
 #define TR_TXnRX               "Tx:\0Rx:"
 #define OFS_RX                 4
@@ -552,19 +582,19 @@
 #endif
 
 #define TR_MENUTORESET         CENTER TR_ENTER" >> Reset"
-#define TR_PPM                 "PPM"
+#define TR_PPM_TRAINER         "TR"
 #define TR_CH                  "CH"
 #define TR_MODEL               "MODEL"
 #define TR_FP                  "LR"
 #define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "Dochází EEPROM"
 #define TR_ALERT               "\006   POZOR"
-#define TR_PRESSANYKEYTOSKIP   "Klávesa >>> přeskočit"
-#define TR_THROTTLENOTIDLE     TR("Páka plynu je pohnutá", "Páka plynu není na nule")
+#define TR_PRESSANYKEYTOSKIP   TR("\003Klávesa >>> přeskočit", "Klávesa >>> přeskočit")
+#define TR_THROTTLENOTIDLE     TR("\003Páka plynu je pohnutá", "Páka plynu není na nule")
 #define TR_ALARMSDISABLED      "Alarmy jsou zakázány"
-#define TR_PRESSANYKEY         "\006Stiskni klávesu"
-#define TR_BADEEPROMDATA       "\006Chyba dat EEPROM"
-#define TR_EEPROMFORMATTING    "\004Formatování EEPROM"
+#define TR_PRESSANYKEY         TR("\006Stiskni klávesu", "Stiskni klávesu")
+#define TR_BADEEPROMDATA       TR("\006Chyba dat EEPROM", "Chyba dat EEPROM")
+#define TR_EEPROMFORMATTING    TR("\004Formatování EEPROM", "Formatování EEPROM")
 #define TR_EEPROMOVERFLOW      "Přetekla EEPROM"
 #define TR_MENURADIOSETUP      "NASTAVENÍ RÁDIA"
 #define TR_MENUDATEANDTIME     "DATUM A čAS"
@@ -573,34 +603,36 @@
 #define TR_MENUDIAG            "DIAG"
 #define TR_MENUANA             "ANALOGY"
 #define TR_MENUCALIBRATION     "KALIBRACE"
-#define TR_TRIMS2OFFSETS       "\004Trimy => Subtrimy"
+#define TR_TRIMS2OFFSETS       "\006Trimy => Subtrimy"
 #define TR_MENUMODELSEL        "MODEL"
 #define TR_MENUSETUP           "NASTAVENÍ"
 #define TR_MENUFLIGHTPHASE     "LETOVÝ REŽIM"
 #define TR_MENUFLIGHTPHASES    "LETOVÉ REŽIMY"
 #define TR_MENUHELISETUP       "HELI"
 
+#define TR_MENULIMITS          "SERVA"
+
 #if defined(PCBTARANIS)
-  #define TR_MENUINPUTS        "INPUTS"
-  #define TR_MENULIMITS        "SERVOS"
-#elif defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...
-  #define TR_MENUINPUTS        "STICKS"
-  #define TR_MENULIMITS        "SERVOS"
+  #define TR_MENUINPUTS        "VSTUPY"
 #else
   #define TR_MENUINPUTS        "DR/EXPO"
-  #define TR_MENULIMITS        "LIMITY"
 #endif
 
+
+
+
 #define TR_MENUCURVES          "KŘIVKY"
-#define TR_MENUCURVE           "\002k"
-#define TR_MENULOGICALSWITCH    "VIRT. SPÍNAč"
-#define TR_MENULOGICALSWITCHES  "VIRTUÁLNÍ SPÍNAčE"
-#define TR_MENUCUSTOMFUNC      "FUNKCE"
+#define TR_MENUCURVE           "\002K"
+#define TR_MENULOGICALSWITCH   "LOG. SPÍNAč"
+#define TR_MENULOGICALSWITCHES "LOGICKÉ SPÍNAčE"
+#define TR_MENUCUSTOMFUNC      "SPECIÁLNÍ FUNKCE"
+#define TR_MENUCUSTOMSCRIPTS   "SKRIPTY LUA"
+#define TR_MENUCUSTOMSCRIPT    "SKRIPT"
 #define TR_MENUTELEMETRY       "TELEMETRIE"
 #define TR_MENUTEMPLATES       "ŠABLONY"
 #define TR_MENUSTAT            "STATISTIKA"
 #define TR_MENUDEBUG           "DIAG"
-#define TR_RXNUM               "Přijímač"
+#define TR_RXNUM               INDENT "Přijímač"
 #define TR_SYNCMENU            "Sync [MENU]"
 #define TR_LIMIT               INDENT"Limit"
 #define TR_MINRSSI             "Min Rssi"
@@ -608,8 +640,11 @@
 #define TR_LONGITUDE           "Zem. délka"
 #define TR_GPSCOORD            "GPS souřadnice"
 #define TR_VARIO               "Vario"
+#define TR_PITCH_AT_ZERO       INDENT "Tón na nule"
+#define TR_PITCH_AT_MAX        INDENT "Tón na maximu"
+#define TR_REPEAT_AT_ZERO      INDENT "Opakování na nule"
 #define TR_SHUTDOWN            "VYPÍNÁNí.."
-#define TR_BATT_CALIB          "Kalib:Baterie"
+#define TR_BATT_CALIB          "Kalib. baterie"
 #define TR_CURRENT_CALIB       " +=\006Proud"
 #define TR_VOLTAGE             INDENT"Napětí"
 #define TR_CURRENT             INDENT"Proud"
@@ -617,14 +652,15 @@
 #define TR_CREATE_MODEL        "Nový model"
 #define TR_COPY_MODEL          "Kopírovat"
 #define TR_MOVE_MODEL          "Přesunout"
-#define TR_BACKUP_MODEL        "Zálohovat"
+#define TR_BACKUP_MODEL        "Zálohovat na SD"
 #define TR_DELETE_MODEL        "Smaž model"
-#define TR_RESTORE_MODEL       "Obnov model"
+#define TR_RESTORE_MODEL       "Obnov model z SD"
 #define TR_SDCARD_ERROR        "Chyba SD karty"
 #define TR_NO_SDCARD           "Není SD karta"
 #define TR_INCOMPATIBLE        "Nekompatibilní"
 #define TR_WARNING             "KONTROLA"
 #define TR_EEPROMWARN          "EEPROM"
+#define TR_EEPROM_CONVERTING   "Aktualizuji EEPROM"
 #define TR_THROTTLEWARN        "PLYNU"
 #define TR_ALARMSWARN          "ALARMU"
 #define TR_SWITCHWARN          "POZICE"
@@ -649,11 +685,13 @@
 #define TR_NO_SOUNDS_ON_SD     "žádný zvuk na SD"
 #define TR_NO_MODELS_ON_SD     "žádný model na SD"
 #define TR_NO_BITMAPS_ON_SD    "žádné obrázky na SD"
+#define TR_NO_SCRIPTS_ON_SD    "žádný skript na SD"
 #define TR_PLAY_FILE           "Přehrát"
 #define TR_DELETE_FILE         "Odstranit"
 #define TR_COPY_FILE           "Kopírovat"
 #define TR_RENAME_FILE         "Přejmenovat"
 #define TR_ASSIGN_BITMAP       "Zvolit obrázek"
+#define TR_EXECUTE_FILE        "Execute"
 #define TR_REMOVED             " odstraněn"
 #define TR_SD_INFO             "Informace"
 #define TR_SD_FORMAT           "Formát"
@@ -670,13 +708,18 @@
 #define TR_SD_SIZE             "Velikost:"
 #define TR_TYPE                TR_SD_TYPE
 #define TR_GLOBAL_VARS         "Globální proměnné"
-#define TR_GLOBAL_V            "GLOBAL V."
-#define TR_GLOBAL_VAR          "Global Variable"
+#define TR_GLOBAL_V            "GLOB.PROM."
+#define TR_GLOBAL_VAR          "Globální proměnná"
 #define TR_MENUGLOBALVARS      "GLOBÁLNÍ PROMěNNÉ"
 #define TR_OWN                 " \043 "
 #define TR_DATE                "Datum"
 #define TR_ROTARY_ENCODER      "R.Encs"
 #define TR_CHANNELS_MONITOR    "MONITOR KANÁLU"
+#define TR_PATH_TOO_LONG       "Cesta je moc dlouhá"
+#define TR_VIEW_TEXT           "Zobrazit text"
+#define TR_FLASH_BOOTLOADER    "Flash BootLoader"
+#define TR_WRITING             "\032Writing..."
+#define TR_CONFIRM_FORMAT      "Confirm Format?"
 #define TR_INTERNALRF          "Vnitřní RF modul"
 #define TR_EXTERNALRF          "Externí RF modul"
 #define TR_FAILSAFE            "Mód Failsafe"
@@ -699,7 +742,7 @@
 #define TR_STATISTICS          "Statistika"
 #define TR_ABOUT_US            "O nás"
 #define TR_AND_SWITCH          "AND Spínač"
-#define TR_CF                  "FN"
+#define TR_CF                  "SF"
 #define TR_SPEAKER             INDENT"Repro"
 #define TR_BUZZER              INDENT"Pípák"
 #define TR_BYTES               "[B]"
@@ -714,10 +757,28 @@
 #define TR_CHANNELRANGE        INDENT "Rozsah kanálů"
 #define TR_LOWALARM            INDENT "Nízký Alarm"
 #define TR_CRITICALALARM       INDENT "Kritický Alarm"
-#define TR_PERSISTENT_MAH      INDENT "Store mAh"
-#define TR_CHECKLIST           "Display Checklist"
-#define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
-#define TR_UART3MODE           "Serial port"
+#define TR_ENABLE_POPUP        "Povolit vyskakovací okno"
+#define TR_DISABLE_POPUP       "Zakázat vyskakovací okno"
+#define TR_CURVE_PRESET        "Šablona"
+#define TR_PRESET              "Šablona"
+#define TR_MIRROR              "Zrcadlit"
+#define TR_CLEAR               "Smazat"
+#define TR_RESET               "Reset"
+#define TR_RESET_SUBMENU       "Reset..."
+#define TR_COUNT               "Velikost"
+#define TR_PT                  "č."
+#define TR_PTS                 " b."
+#define TR_SMOOTH              "Hladká"
+#define TR_COPY_TRIMS_TO_OFS   "Kopírovat trim do subtrimu"
+#define TR_PERSISTENT_MAH      TR(INDENT "Str mAh", INDENT "Ukládat mAh")
+#define TR_PREFLIGHT           "Předletová kontrola"
+#define TR_CHECKLIST           INDENT "Zobrazit poznámky"
+#define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Ofset")
+#define TR_UART3MODE           "Seriový port"
+#define TR_SCRIPT              "Skript"
+#define TR_INPUTS              "Vstupy"
+#define TR_OUTPUTS             "Výstupy"
+#define TR_EEBACKUP            "\010[dlouze ENTER] zálohuje EEPROM"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL        "Max RSSI"
@@ -746,8 +807,8 @@
 #endif
 
 // Taranis column headers
-#define TR_PHASES_HEADERS      { " Jméno ", " Spínač ", " Trimy ", " Přechod Zap ", " Přechod Vyp " }
-#define TR_LIMITS_HEADERS      { " Jméno ", " Subtrim ", " Min ", " Max ", " Směr ", " Křivka ", " Střed PPM ", " Symetrické " }
+#define TR_PHASES_HEADERS      { " Název ", " Spínač ", " Trim směrovky ", " Trim výškovky ", " Trim plynu ", " Trim křidélek ", " Přechod náběhu ", " Přechod konce " }
+#define TR_LIMITS_HEADERS      { " Název ", " Subtrim ", " Min ", " Max ", " Invertovat ", " Křivka ", " Střed PPM ", " Symetrické " }
 #define TR_CSW_HEADERS         { " Funkce ", " Hodnota 1 ", " Hodnota 2 ", " Hodnota 2 ", " AND Spínač ", " Trvání ", " Zpoždění " }
 
 //Taranis About screen
@@ -803,12 +864,15 @@
 #define TR_CHR_HOUR   'h'
 #define TR_CHR_INPUT  'I'   // Values between A-I will work
 
-#define TR_BEEP_VOLUME         "Pípání"
+#define TR_BEEP_VOLUME         "Upozornění"
 #define TR_WAV_VOLUME          "Zvuky WAV"
 #define TR_VARIO_VOLUME        "Vario"
 #define TR_BG_VOLUME           "WAV na pozadí"
 
-#define TR_TOP_BAR             "Top Bar"
-#define TR_ALTITUDE            INDENT "Altitude"
-#define TR_MODS_FORBIDDEN      "Modifications forbidden!"
-#define TR_UNLOCKED            "Unlocked"
+#define TR_TOP_BAR             "Horní lišta"
+#define TR_ALTITUDE            INDENT "Výška"
+#define TR_SCALE               "Měřítko"
+#define TR_VIEW_CHANNELS       "Zobrazit kanály"
+#define TR_VIEW_NOTES          "Zobrazit poznámky"
+#define TR_MODS_FORBIDDEN      "Změny nejsou povoleny!"
+#define TR_UNLOCKED            "Odemčeno"

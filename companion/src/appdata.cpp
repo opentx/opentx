@@ -1,5 +1,16 @@
-// Companion Application Data Class Definition.
-// Author Kjell Kernen
+/*
+ * Author - Kjell Kernen
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ */
 
 #include "appdata.h"
 
@@ -296,6 +307,7 @@ QString Profile::display()       const { return _display;       }
 QString Profile::haptic()        const { return _haptic;        }
 QString Profile::speaker()       const { return _speaker;       }
 QString Profile::stickPotCalib() const { return _stickPotCalib; }
+QString Profile::timeStamp()     const { return _timeStamp;     }
 QString Profile::trainerCalib()  const { return _trainerCalib;  }
 int     Profile::currentCalib()  const { return _currentCalib;  }
 int     Profile::gsStickMode()   const { return _gsStickMode;   }
@@ -320,6 +332,7 @@ void Profile::display       (const QString x) { store(x, _display,       "Displa
 void Profile::haptic        (const QString x) { store(x, _haptic,        "Haptic"                ,"Profiles", QString("profile%1").arg(index));}
 void Profile::speaker       (const QString x) { store(x, _speaker,       "Speaker"               ,"Profiles", QString("profile%1").arg(index));}
 void Profile::stickPotCalib (const QString x) { store(x, _stickPotCalib, "StickPotCalib"         ,"Profiles", QString("profile%1").arg(index));}
+void Profile::timeStamp     (const QString x) { store(x, _timeStamp,     "TimeStamp"             ,"Profiles", QString("profile%1").arg(index));}
 void Profile::trainerCalib  (const QString x) { store(x, _trainerCalib,  "TrainerCalib"          ,"Profiles", QString("profile%1").arg(index));}
 void Profile::currentCalib  (const int     x) { store(x, _currentCalib,  "currentCalib"          ,"Profiles", QString("profile%1").arg(index));}
 void Profile::gsStickMode   (const int     x) { store(x, _gsStickMode,   "GSStickMode"           ,"Profiles", QString("profile%1").arg(index));}
@@ -385,6 +398,24 @@ bool Profile::existsOnDisk()
     return (keyList.length() > 0);
 }
 
+void Profile::initFwVariables()
+{
+    _beeper =        "";
+    _countryCode =   "";
+    _display =       "";
+    _haptic =        "";
+    _speaker =       "";
+    _stickPotCalib = "";
+    _timeStamp =     "";
+    _trainerCalib =  "";
+
+    _currentCalib =  0;
+    _gsStickMode =   0;
+    _ppmMultiplier = 0;
+    _vBatCalib =     0;
+    _vBatWarn =      0;
+}
+
 void Profile::init(int newIndex)
 {
     index = newIndex;
@@ -399,19 +430,7 @@ void Profile::init(int newIndex)
     _channelOrder =  0;
     _defaultMode =   1;
 
-    _beeper =        "";
-    _countryCode =   "";
-    _display =       "";
-    _haptic =        "";
-    _speaker =       "";
-    _stickPotCalib = "";
-    _trainerCalib =  "";
-
-    _currentCalib =  0;
-    _gsStickMode =   0;
-    _ppmMultiplier = 0;
-    _vBatCalib =     0;
-    _vBatWarn =      0;
+    initFwVariables();
 
     // Do not write empty profiles to disk except the default (0) profile.
     if ( index > 0 && !existsOnDisk())
@@ -439,6 +458,7 @@ void Profile::flush()
     getset( _haptic,        "Haptic"                ,""     ,"Profiles", QString("profile%1").arg(index));
     getset( _speaker,       "Speaker"               ,""     ,"Profiles", QString("profile%1").arg(index));
     getset( _stickPotCalib, "StickPotCalib"         ,""     ,"Profiles", QString("profile%1").arg(index));
+    getset( _timeStamp,     "TimeStamp"             ,""     ,"Profiles", QString("profile%1").arg(index));
     getset( _trainerCalib,  "TrainerCalib"          ,""     ,"Profiles", QString("profile%1").arg(index));
     getset( _currentCalib,  "currentCalib"          ,0      ,"Profiles", QString("profile%1").arg(index));
     getset( _gsStickMode,   "GSStickMode"           ,0      ,"Profiles", QString("profile%1").arg(index));
@@ -490,7 +510,7 @@ bool AppData::snapToClpbrd()       { return _snapToClpbrd;    }
 bool AppData::autoCheckApp()       { return _autoCheckApp;    }
 bool AppData::autoCheckFw()        { return _autoCheckFw;     }
 bool AppData::simuSW()             { return _simuSW;          }
-bool AppData::enableWizard()       { return _enableWizard;    }
+bool AppData::useWizard()          { return _useWizard;       }
 
 int AppData::backLight()           { return _backLight;       }
 int AppData::embedSplashes()       { return _embedSplashes;   }
@@ -499,7 +519,6 @@ int AppData::generalEditTab()      { return _generalEditTab;  }
 int AppData::iconSize()            { return _iconSize;        }
 int AppData::historySize()         { return _historySize;     }
 int AppData::jsCtrl()              { return _jsCtrl;          }
-int AppData::modelEditTab()        { return _modelEditTab;    }
 int AppData::id()                  { return _id;              }
 int AppData::theme()               { return _theme;           }
 int AppData::warningId()           { return _warningId;       }
@@ -544,7 +563,7 @@ void AppData::snapToClpbrd    (const bool        x) { store(x, _snapToClpbrd,   
 void AppData::autoCheckApp    (const bool        x) { store(x, _autoCheckApp,    "startup_check_companion" );}
 void AppData::autoCheckFw     (const bool        x) { store(x, _autoCheckFw,     "startup_check_fw"        );}
 void AppData::simuSW          (const bool        x) { store(x, _simuSW,          "simuSW"                  );}
-void AppData::enableWizard    (const bool        x) { store(x, _enableWizard,    "wizardEnable"            );}
+void AppData::useWizard       (const bool        x) { store(x, _useWizard,       "useWizard"               );}
 
 void AppData::backLight       (const int         x) { store(x, _backLight,       "backLight"               );}
 void AppData::embedSplashes   (const int         x) { store(x, _embedSplashes,   "embedded_splashes"       );}
@@ -553,7 +572,6 @@ void AppData::generalEditTab  (const int         x) { store(x, _generalEditTab, 
 void AppData::iconSize        (const int         x) { store(x, _iconSize,        "icon_size"               );}
 void AppData::historySize     (const int         x) { store(x, _historySize,     "history_size"            );}
 void AppData::jsCtrl          (const int         x) { store(x, _jsCtrl,          "js_ctrl"                 );}
-void AppData::modelEditTab    (const int         x) { store(x, _modelEditTab,    "modelEditTab"            );}
 void AppData::id              (const int         x) { store(x, _id,              "profileId"               );}
 void AppData::theme           (const int         x) { store(x, _theme,           "theme"                   );}
 void AppData::warningId       (const int         x) { store(x, _warningId,       "warningId"               );}
@@ -583,6 +601,7 @@ AppData::AppData()
 
         // Store old values in new locations
         autoCheckApp(settings.value("startup_check_companion9x", true).toBool());
+        useWizard(settings.value("wizardEnable", true).toBool());
 
         // Convert and store the firmware type
         QString fwType  = settings.value("firmware", "").toString();
@@ -611,12 +630,14 @@ AppData::AppData()
         settings.remove("default_mode");
         settings.remove("firmware");
         settings.remove("lastFw");
+        settings.remove("modelEditTab");
         settings.remove("Name");
         settings.remove("patchImage");
         settings.remove("rename_firmware_files");
         settings.remove("sdPath");
         settings.remove("SplashFileName");
         settings.remove("startup_check_companion9x");
+        settings.remove("wizardEnable");
 
         // Select the new default profile as current profile
         id( 0 );
@@ -662,7 +683,7 @@ AppData::AppData()
     getset( _autoCheckApp,    "startup_check_companion" ,true  );
     getset( _autoCheckFw,     "startup_check_fw"        ,true  );
     getset( _simuSW,          "simuSW"                  ,false );
-    getset( _enableWizard,    "wizardEnable"            ,true  );
+    getset( _useWizard,       "useWizard"               ,true  );
 
     getset( _backLight,       "backLight"               ,0  );
     getset( _embedSplashes,   "embedded_splashes"       ,0  );
@@ -671,7 +692,6 @@ AppData::AppData()
     getset( _iconSize,        "icon_size"               ,2  );
     getset( _jsCtrl,          "js_ctrl"                 ,0  );
     getset( _historySize,     "history_size"            ,10 );
-    getset( _modelEditTab,    "modelEditTab"            ,0  );
     getset( _id,              "profileId"               ,0  );
     getset( _theme,           "theme"                   ,1  );
     getset( _warningId,       "warningId"               ,0  );

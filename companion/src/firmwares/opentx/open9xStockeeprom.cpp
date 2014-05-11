@@ -89,7 +89,7 @@ t_Open9xExpoData_v201::operator ExpoData ()
   c9x.mode = mode;
   c9x.chn = chn;
   if (expo!=0 && curve!=0) {
-    EEPROMWarnings += ::QObject::tr("Simultaneous usage of expo and curves is no longer supported in open9x") + "\n";
+    EEPROMWarnings += ::QObject::tr("Simultaneous usage of expo and curves is no longer supported in OpenTX") + "\n";
   }
   else {
     if (curve == 0) {
@@ -843,7 +843,7 @@ t_Open9xFrSkyData_v204::operator FrSkyData ()
   c9x.channels[1] = channels[1];
   c9x.usrProto = usrProto;
   c9x.imperial = imperial;
-  c9x.blades = blades;
+  c9x.blades = blades+2;
   c9x.screens[0].type = 1;
   for (int i=0; i<4; i++)
     c9x.screens[0].body.bars[i] = bars[i];
@@ -857,7 +857,7 @@ t_Open9xFrSkyData_v205::operator FrSkyData ()
   c9x.channels[1] = channels[1];
   c9x.usrProto = usrProto;
   c9x.imperial = imperial;
-  c9x.blades = blades;
+  c9x.blades = blades+2;
   c9x.screens[0].type = 1;
   for (int i=0; i<4; i++)
     c9x.screens[0].body.bars[i] = bars[i];
@@ -873,7 +873,7 @@ t_Open9xFrSkyData_v208::operator FrSkyData ()
   c9x.channels[1] = channels[1];
   c9x.usrProto = usrProto;
   c9x.voltsSource = voltsSource;
-  c9x.blades = blades;
+  c9x.blades = blades+2;
   c9x.currentSource=currentSource;
   c9x.screens[0].type = 1;
   for (int i=0; i<4; i++)
@@ -890,7 +890,7 @@ t_Open9xFrSkyData_v210::operator FrSkyData ()
   c9x.channels[1] = channels[1];
   c9x.usrProto = usrProto;
   c9x.voltsSource = voltsSource;
-  c9x.blades = blades;
+  c9x.blades = blades+2;
   c9x.currentSource=currentSource;
 
   int lines_screen_index = 0;
@@ -948,7 +948,7 @@ t_Open9xModelData_v201::operator ModelData ()
   c9x.moduleData[0].ppmPulsePol = pulsePol;
   c9x.extendedLimits = extendedLimits;
   c9x.extendedTrims = extendedTrims;
-  for (int i=0; i<O9X_MAX_PHASES; i++) {
+  for (int i=0; i<O9X_MAX_FLIGHT_MODES; i++) {
     c9x.phaseData[i] = phaseData[i];
     for (int j=0; j<NUM_STICKS; j++) {
       if (c9x.phaseData[i].trim[j] > 500) {
@@ -1022,7 +1022,7 @@ t_Open9xModelData_v202::operator ModelData ()
   c9x.moduleData[0].ppmPulsePol = pulsePol;
   c9x.extendedLimits = extendedLimits;
   c9x.extendedTrims = extendedTrims;
-  for (int i=0; i<O9X_MAX_PHASES; i++) {
+  for (int i=0; i<O9X_MAX_FLIGHT_MODES; i++) {
     c9x.phaseData[i] = phaseData[i];
     for (int j=0; j<NUM_STICKS; j++) {
       if (c9x.phaseData[i].trim[j] > 500) {
@@ -1098,7 +1098,7 @@ t_Open9xModelData_v203::operator ModelData ()
   c9x.moduleData[0].ppmPulsePol = pulsePol;
   c9x.extendedLimits = extendedLimits;
   c9x.extendedTrims = extendedTrims;
-  for (int i=0; i<O9X_MAX_PHASES; i++) {
+  for (int i=0; i<O9X_MAX_FLIGHT_MODES; i++) {
     c9x.phaseData[i] = phaseData[i];
     for (int j=0; j<NUM_STICKS; j++) {
       if (c9x.phaseData[i].trim[j] > 500) {
@@ -1172,7 +1172,7 @@ t_Open9xModelData_v204::operator ModelData ()
   c9x.moduleData[0].ppmPulsePol = pulsePol;
   c9x.extendedLimits = extendedLimits;
   c9x.extendedTrims = extendedTrims;
-  for (int i=0; i<O9X_MAX_PHASES; i++) {
+  for (int i=0; i<O9X_MAX_FLIGHT_MODES; i++) {
     c9x.phaseData[i] = phaseData[i];
     for (int j=0; j<NUM_STICKS; j++) {
       if (c9x.phaseData[i].trim[j] > 500) {
@@ -1251,7 +1251,7 @@ t_Open9xModelData_v205::operator ModelData ()
   c9x.moduleData[0].ppmPulsePol = pulsePol;
   c9x.extendedLimits = extendedLimits;
   c9x.extendedTrims = extendedTrims;
-  for (int i=0; i<O9X_MAX_PHASES; i++) {
+  for (int i=0; i<O9X_MAX_FLIGHT_MODES; i++) {
     c9x.phaseData[i] = phaseData[i];
     for (int j=0; j<NUM_STICKS; j++) {
       if (c9x.phaseData[i].trim[j] > 500) {
@@ -1337,7 +1337,7 @@ t_Open9xModelData_v208::operator ModelData ()
   c9x.moduleData[0].ppmPulsePol = pulsePol;
   c9x.extendedLimits = extendedLimits;
   c9x.extendedTrims = extendedTrims;
-  for (int i=0; i<O9X_MAX_PHASES; i++) {
+  for (int i=0; i<O9X_MAX_FLIGHT_MODES; i++) {
     c9x.phaseData[i] = phaseData[i];
     for (int j=0; j<NUM_STICKS; j++) {
       if (c9x.phaseData[i].trim[j] > 500) {
@@ -1430,7 +1430,7 @@ t_Open9xModelData_v209::operator ModelData ()
   c9x.moduleData[0].ppmPulsePol = pulsePol;
   c9x.extendedLimits = extendedLimits;
   c9x.extendedTrims = extendedTrims;
-  for (int i=0; i<O9X_MAX_PHASES; i++) {
+  for (int i=0; i<O9X_MAX_FLIGHT_MODES; i++) {
     c9x.phaseData[i] = phaseData[i];
     for (int j=0; j<NUM_STICKS; j++) {
       if (c9x.phaseData[i].trim[j] > 500) {
@@ -1524,7 +1524,7 @@ t_Open9xModelData_v210::operator ModelData ()
   c9x.moduleData[0].ppmPulsePol = pulsePol;
   c9x.extendedLimits = extendedLimits;
   c9x.extendedTrims = extendedTrims;
-  for (int i=0; i<O9X_MAX_PHASES; i++) {
+  for (int i=0; i<O9X_MAX_FLIGHT_MODES; i++) {
     c9x.phaseData[i] = phaseData[i];
     for (int j=0; j<NUM_STICKS; j++) {
       if (c9x.phaseData[i].trim[j] > 500) {
@@ -1612,7 +1612,7 @@ t_Open9xModelData_v211::operator ModelData ()
   c9x.moduleData[0].ppmPulsePol = pulsePol;
   c9x.extendedLimits = extendedLimits;
   c9x.extendedTrims = extendedTrims;
-  for (int i=0; i<O9X_MAX_PHASES; i++) {
+  for (int i=0; i<O9X_MAX_FLIGHT_MODES; i++) {
     c9x.phaseData[i] = phaseData[i];
     for (int j=0; j<NUM_STICKS; j++) {
       if (c9x.phaseData[i].trim[j] > 500) {

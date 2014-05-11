@@ -2,11 +2,15 @@
 #include <QListWidget>
 #include <QMessageBox>
 
+#define CHANNEL_ORDER(x) generalSettings.getDefaultStick(x)
+#define CC(x) (CHANNEL_ORDER(x)) //need to invert this to work with dest
+// TODO ICC is GeneralSettings::getDefaultChannel(unsigned int stick)
+
 void ModelEdit::setCurve(uint8_t c, int8_t ar[])
 {
   int len=sizeof(ar)/sizeof(int8_t);
 
-  if (GetEepromInterface()->getCapability(NumCurves)>c) {
+  if (firmware->getCapability(NumCurves)>c) {
     if (len<9) {
       model.curves[c].count=5;
       model.curves[c].custom=false;
@@ -96,7 +100,7 @@ void Templates::applyNumericTemplate(uint64_t tpl)
     for (int i=0; i<10 ; i++) {
       rx[i]=false;
     }
-    int thrsw=GetEepromInterface()->getCapability(GetThrSwitch);
+    int thrsw=firmware->getCapability(GetThrSwitch);
     MixData *md = &model.mixData[0];
     uint8_t spo2ch=(tpl & 0x0F);
     tpl>>=4;
@@ -220,8 +224,8 @@ void Templates::applyNumericTemplate(uint64_t tpl)
           }
         }
         if (flaps>0) {
-              md=setDest(11);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=-100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,-DSW_AIL);strncpy(md->name, tr("FLAPS").toAscii().data(),6); md->speedUp=4; md->speedDown=4;
-              md=setDest(11);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_AIL);strncpy(md->name, tr("FLAPS").toAscii().data(),6); md->speedUp=4; md->speedDown=4;
+              md=setDest(11);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=-100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,-SWITCH_AIL);strncpy(md->name, tr("FLAPS").toAscii().data(),6); md->speedUp=4; md->speedDown=4;
+              md=setDest(11);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_AIL);strncpy(md->name, tr("FLAPS").toAscii().data(),6); md->speedUp=4; md->speedDown=4;
         }
         sign=-1;
         for (uint8_t i=0; i< flaps; i++) {
@@ -282,18 +286,18 @@ void Templates::applyNumericTemplate(uint64_t tpl)
             md=setDest(3);  md->srcRaw=RawSource(SOURCE_TYPE_CH, 10);  md->weight= 100; md->swtch=RawSwitch();strncpy(md->name, tr("PITCH").toAscii().data(),6);
           }
           md=setDest(4);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 0); md->weight=100; md->swtch=RawSwitch();strncpy(md->name, tr("RUD").toAscii().data(),6);
-          md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID0); md->curve=CV(1); md->carryTrim=TRIM_OFF;
-          md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID1); md->curve=CV(2); md->carryTrim=TRIM_OFF;
-          md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID2); md->curve=CV(3); md->carryTrim=TRIM_OFF;
+          md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID0); md->curve=CV(1); md->carryTrim=TRIM_OFF;
+          md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID1); md->curve=CV(2); md->carryTrim=TRIM_OFF;
+          md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID2); md->curve=CV(3); md->carryTrim=TRIM_OFF;
           md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=-100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,thrsw); md->mltpx=MLTPX_REP;
           switch (gyro) {
             case 1:
-              md=setDest(6);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=30; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,-DSW_GEA);strncpy(md->name, tr("GYRO").toAscii().data(),6);
-              md=setDest(6);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=-30; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_GEA);strncpy(md->name, tr("GYRO").toAscii().data(),6);
+              md=setDest(6);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=30; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,-SWITCH_GEA);strncpy(md->name, tr("GYRO").toAscii().data(),6);
+              md=setDest(6);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=-30; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_GEA);strncpy(md->name, tr("GYRO").toAscii().data(),6);
               break;
             case 2:
-              md=setDest(6);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight= 50; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,-DSW_GEA); md->sOffset=100;strncpy(md->name, tr("GYRO").toAscii().data(),6);
-              md=setDest(6);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight=-50; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_GEA); md->sOffset=100;strncpy(md->name, tr("GYRO").toAscii().data(),6);
+              md=setDest(6);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight= 50; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,-SWITCH_GEA); md->sOffset=100;strncpy(md->name, tr("GYRO").toAscii().data(),6);
+              md=setDest(6);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight=-50; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_GEA); md->sOffset=100;strncpy(md->name, tr("GYRO").toAscii().data(),6);
               break;
           }
         } else {
@@ -307,25 +311,25 @@ void Templates::applyNumericTemplate(uint64_t tpl)
             md=setDest(6);  md->srcRaw=RawSource(SOURCE_TYPE_CH, 10);  md->weight= 100; md->swtch=RawSwitch();strncpy(md->name, tr("PITCH").toAscii().data(),6);
           }
           md=setDest(4);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 0); md->weight=100; md->swtch=RawSwitch();strncpy(md->name, tr("RUD").toAscii().data(),6);
-          md=setDest(3);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID0); md->curve=CV(1); md->carryTrim=TRIM_OFF;
-          md=setDest(3);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID1); md->curve=CV(2); md->carryTrim=TRIM_OFF;
-          md=setDest(3);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID2); md->curve=CV(3); md->carryTrim=TRIM_OFF;
+          md=setDest(3);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID0); md->curve=CV(1); md->carryTrim=TRIM_OFF;
+          md=setDest(3);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID1); md->curve=CV(2); md->carryTrim=TRIM_OFF;
+          md=setDest(3);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID2); md->curve=CV(3); md->carryTrim=TRIM_OFF;
           md=setDest(3);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=-100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,thrsw); md->mltpx=MLTPX_REP;
           switch (gyro) {
             case 1:
-              md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=30; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,-DSW_GEA);strncpy(md->name, tr("GYRO").toAscii().data(),6);
-              md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=-30; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_GEA);strncpy(md->name, tr("GYRO").toAscii().data(),6);
+              md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=30; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,-SWITCH_GEA);strncpy(md->name, tr("GYRO").toAscii().data(),6);
+              md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=-30; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_GEA);strncpy(md->name, tr("GYRO").toAscii().data(),6);
               break;
             case 2:
-              md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight= 50; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,-DSW_GEA); md->sOffset=100;strncpy(md->name, tr("GYRO").toAscii().data(),6);
-              md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight=-50; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_GEA); md->sOffset=100;strncpy(md->name, tr("GYRO").toAscii().data(),6);
+              md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight= 50; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,-SWITCH_GEA); md->sOffset=100;strncpy(md->name, tr("GYRO").toAscii().data(),6);
+              md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight=-50; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_GEA); md->sOffset=100;strncpy(md->name, tr("GYRO").toAscii().data(),6);
               break;
           }
         }
         // collective
-        md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID0); md->curve=CV(4); md->carryTrim=TRIM_OFF;
-        md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID1); md->curve=CV(5); md->carryTrim=TRIM_OFF;
-        md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID2); md->curve=CV(6); md->carryTrim=TRIM_OFF;
+        md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID0); md->curve=CV(4); md->carryTrim=TRIM_OFF;
+        md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID1); md->curve=CV(5); md->carryTrim=TRIM_OFF;
+        md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID2); md->curve=CV(6); md->carryTrim=TRIM_OFF;
         break;
       case 2:
         ailerons=ailerontype;
@@ -411,8 +415,8 @@ void Templates::applyNumericTemplate(uint64_t tpl)
           }
         }
         if (flaps>0) {
-              md=setDest(11);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=-100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,-DSW_AIL);strncpy(md->name, tr("FLAPS").toAscii().data(),6);md->speedUp=4; md->speedDown=4;
-              md=setDest(11);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_AIL);strncpy(md->name, tr("FLAPS").toAscii().data(),6);md->speedUp=4; md->speedDown=4;
+              md=setDest(11);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=-100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,-SWITCH_AIL);strncpy(md->name, tr("FLAPS").toAscii().data(),6);md->speedUp=4; md->speedDown=4;
+              md=setDest(11);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_AIL);strncpy(md->name, tr("FLAPS").toAscii().data(),6);md->speedUp=4; md->speedDown=4;
         }
         sign=-1;
         for (uint8_t i=0; i< flaps; i++) {
@@ -436,8 +440,8 @@ void Templates::applyNumericTemplate(uint64_t tpl)
           }
         }
         if (spoilers>0) {
-              md=setDest(12);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=-100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,-DSW_GEA);strncpy(md->name, tr("SPOIL").toAscii().data(),6); md->speedUp=4;;md->speedDown=4;
-              md=setDest(12);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_GEA);strncpy(md->name, tr("SPOIL").toAscii().data(),6);md->speedUp=4;md->speedDown=4;
+              md=setDest(12);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=-100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,-SWITCH_GEA);strncpy(md->name, tr("SPOIL").toAscii().data(),6); md->speedUp=4;;md->speedDown=4;
+              md=setDest(12);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_GEA);strncpy(md->name, tr("SPOIL").toAscii().data(),6);md->speedUp=4;md->speedDown=4;
         }
         sign=-1;
         for (uint8_t i=0; i< spoilers; i++) {
@@ -506,8 +510,8 @@ void Templates::applyNumericTemplate(uint64_t tpl)
           }
         }
         if (flaps>0) {
-              md=setDest(11);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=-100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,-DSW_AIL);strncpy(md->name, tr("FLAPS").toAscii().data(),6); md->sOffset=0; md->speedUp=4;
-              md=setDest(11);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_AIL);strncpy(md->name, tr("FLAPS").toAscii().data(),6); md->sOffset=0; md->speedUp=4;
+              md=setDest(11);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=-100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,-SWITCH_AIL);strncpy(md->name, tr("FLAPS").toAscii().data(),6); md->sOffset=0; md->speedUp=4;
+              md=setDest(11);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_AIL);strncpy(md->name, tr("FLAPS").toAscii().data(),6); md->sOffset=0; md->speedUp=4;
         }
         sign=-1;
         for (uint8_t i=0; i< flaps; i++) {
@@ -550,7 +554,7 @@ void Templates::applyTemplate(uint8_t idx)
     int8_t heli_ar4[] = {-30,  -15, 0, 50, 100};
     int8_t heli_ar5[] = {-100, -50, 0, 50, 100};
 
-    int thrsw=GetEepromInterface()->getCapability(GetThrSwitch);
+    int thrsw=firmware->getCapability(GetThrSwitch);
     MixData *md = &model.mixData[0];
 
     //CC(STK)   -> vSTK
@@ -626,19 +630,19 @@ void Templates::applyTemplate(uint8_t idx)
       md=setDest(4);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 0); md->weight=100; md->swtch=RawSwitch();
 
       // throttle
-      md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID0); md->curve=CV(1); md->carryTrim=TRIM_OFF;
-      md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID1); md->curve=CV(2); md->carryTrim=TRIM_OFF;
-      md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID2); md->curve=CV(3); md->carryTrim=TRIM_OFF;
+      md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID0); md->curve=CV(1); md->carryTrim=TRIM_OFF;
+      md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID1); md->curve=CV(2); md->carryTrim=TRIM_OFF;
+      md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID2); md->curve=CV(3); md->carryTrim=TRIM_OFF;
       md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=-100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,thrsw); md->mltpx=MLTPX_REP;
 
       // gyro gain
-      md=setDest(6);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=30; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,-DSW_GEA);
-      md=setDest(6);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=-30; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_GEA);
+      md=setDest(6);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=30; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,-SWITCH_GEA);
+      md=setDest(6);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=-30; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_GEA);
 
       // collective
-      md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID0); md->curve=CV(4); md->carryTrim=TRIM_OFF;
-      md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID1); md->curve=CV(5); md->carryTrim=TRIM_OFF;
-      md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID2); md->curve=CV(6); md->carryTrim=TRIM_OFF;
+      md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID0); md->curve=CV(4); md->carryTrim=TRIM_OFF;
+      md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID1); md->curve=CV(5); md->carryTrim=TRIM_OFF;
+      md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID2); md->curve=CV(6); md->carryTrim=TRIM_OFF;
 
       model.swashRingData.type = HELI_SWASH_TYPE_120;
       model.swashRingData.collectiveSource = RawSource(SOURCE_TYPE_CH, 10);
@@ -672,19 +676,19 @@ void Templates::applyTemplate(uint8_t idx)
       md=setDest(4);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 0); md->weight=100; md->swtch=RawSwitch();
 
       // throttle
-      md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID0); md->curve=CV(1); md->carryTrim=TRIM_OFF;
-      md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID1); md->curve=CV(2); md->carryTrim=TRIM_OFF;
-      md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID2); md->curve=CV(3); md->carryTrim=TRIM_OFF;
+      md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID0); md->curve=CV(1); md->carryTrim=TRIM_OFF;
+      md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID1); md->curve=CV(2); md->carryTrim=TRIM_OFF;
+      md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID2); md->curve=CV(3); md->carryTrim=TRIM_OFF;
       md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=-100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,thrsw); md->mltpx=MLTPX_REP;
 
       // gyro gain
-      md=setDest(6);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight= 50; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,-DSW_GEA); md->sOffset=100;
-      md=setDest(6);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight=-50; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_GEA); md->sOffset=100;
+      md=setDest(6);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight= 50; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,-SWITCH_GEA); md->sOffset=100;
+      md=setDest(6);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight=-50; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_GEA); md->sOffset=100;
 
       // collective
-      md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID0); md->curve=CV(4); md->carryTrim=TRIM_OFF;
-      md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID1); md->curve=CV(5); md->carryTrim=TRIM_OFF;
-      md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID2); md->curve=CV(6); md->carryTrim=TRIM_OFF;
+      md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID0); md->curve=CV(4); md->carryTrim=TRIM_OFF;
+      md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID1); md->curve=CV(5); md->carryTrim=TRIM_OFF;
+      md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID2); md->curve=CV(6); md->carryTrim=TRIM_OFF;
 
       model.swashRingData.type = HELI_SWASH_TYPE_120;
       model.swashRingData.collectiveSource = RawSource(SOURCE_TYPE_CH, 10);
@@ -711,7 +715,7 @@ void Templates::applyTemplate(uint8_t idx)
       bool found=true;
       while (found) {
         found=false;
-        for (int i=0; i< GetEepromInterface()->getCapability(Mixes); i++) {
+        for (int i=0; i< firmware->getCapability(Mixes); i++) {
           if (model.mixData[i].destCh==6) {
             gm_deleteMix(i);
             found=true;
@@ -719,8 +723,8 @@ void Templates::applyTemplate(uint8_t idx)
           }
         }
       }
-      md=setDest(6);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight= 50; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,-DSW_GEA); md->sOffset=100;
-      md=setDest(6);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight=-50; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_GEA); md->sOffset=100;
+      md=setDest(6);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight= 50; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,-SWITCH_GEA); md->sOffset=100;
+      md=setDest(6);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight=-50; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_GEA); md->sOffset=100;
     }
 
     //Heli Setup  futaba style
@@ -738,19 +742,19 @@ void Templates::applyTemplate(uint8_t idx)
       md=setDest(4);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 0); md->weight=100; md->swtch=RawSwitch();
 
       // throttle
-      md=setDest(3);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID0); md->curve=CV(1); md->carryTrim=TRIM_OFF;
-      md=setDest(3);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID1); md->curve=CV(2); md->carryTrim=TRIM_OFF;
-      md=setDest(3);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID2); md->curve=CV(3); md->carryTrim=TRIM_OFF;
+      md=setDest(3);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID0); md->curve=CV(1); md->carryTrim=TRIM_OFF;
+      md=setDest(3);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID1); md->curve=CV(2); md->carryTrim=TRIM_OFF;
+      md=setDest(3);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID2); md->curve=CV(3); md->carryTrim=TRIM_OFF;
       md=setDest(3);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=-100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,thrsw); md->mltpx=MLTPX_REP;
 
       // gyro gain
-      md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=30; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,-DSW_GEA);
-      md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=-30; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_GEA);
+      md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=30; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,-SWITCH_GEA);
+      md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=-30; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_GEA);
 
       // collective
-      md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID0); md->curve=CV(4); md->carryTrim=TRIM_OFF;
-      md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID1); md->curve=CV(5); md->carryTrim=TRIM_OFF;
-      md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID2); md->curve=CV(6); md->carryTrim=TRIM_OFF;
+      md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID0); md->curve=CV(4); md->carryTrim=TRIM_OFF;
+      md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID1); md->curve=CV(5); md->carryTrim=TRIM_OFF;
+      md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID2); md->curve=CV(6); md->carryTrim=TRIM_OFF;
 
       model.swashRingData.type = HELI_SWASH_TYPE_120;
       model.swashRingData.collectiveSource = RawSource(SOURCE_TYPE_CH, 10);
@@ -784,19 +788,19 @@ void Templates::applyTemplate(uint8_t idx)
       md=setDest(4);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 0); md->weight=100; md->swtch=RawSwitch();
 
       // throttle
-      md=setDest(3);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID0); md->curve=CV(1); md->carryTrim=TRIM_OFF;
-      md=setDest(3);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID1); md->curve=CV(2); md->carryTrim=TRIM_OFF;
-      md=setDest(3);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID2); md->curve=CV(3); md->carryTrim=TRIM_OFF;
+      md=setDest(3);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID0); md->curve=CV(1); md->carryTrim=TRIM_OFF;
+      md=setDest(3);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID1); md->curve=CV(2); md->carryTrim=TRIM_OFF;
+      md=setDest(3);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight= 100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID2); md->curve=CV(3); md->carryTrim=TRIM_OFF;
       md=setDest(3);  md->srcRaw=RawSource(SOURCE_TYPE_MAX);  md->weight=-100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,thrsw); md->mltpx=MLTPX_REP;
 
       // gyro gain
-      md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight= 50; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,-DSW_GEA); md->sOffset=100;
-      md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight=-50; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_GEA); md->sOffset=100;
+      md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight= 50; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,-SWITCH_GEA); md->sOffset=100;
+      md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight=-50; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_GEA); md->sOffset=100;
 
       // collective
-      md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID0); md->curve=CV(4); md->carryTrim=TRIM_OFF;
-      md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID1); md->curve=CV(5); md->carryTrim=TRIM_OFF;
-      md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_ID2); md->curve=CV(6); md->carryTrim=TRIM_OFF;
+      md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID0); md->curve=CV(4); md->carryTrim=TRIM_OFF;
+      md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID1); md->curve=CV(5); md->carryTrim=TRIM_OFF;
+      md=setDest(11); md->srcRaw=RawSource(SOURCE_TYPE_STICK, 2);  md->weight=100; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_ID2); md->curve=CV(6); md->carryTrim=TRIM_OFF;
 
       model.swashRingData.type = HELI_SWASH_TYPE_120;
       model.swashRingData.collectiveSource = RawSource(SOURCE_TYPE_CH, 10);
@@ -823,7 +827,7 @@ void Templates::applyTemplate(uint8_t idx)
       bool found=true;
       while (found) {
         found=false;
-        for (int i=0; i< GetEepromInterface()->getCapability(Mixes); i++) {
+        for (int i=0; i< firmware->getCapability(Mixes); i++) {
           if (model.mixData[i].destCh==5) {
             gm_deleteMix(i);
             found=true;
@@ -831,8 +835,8 @@ void Templates::applyTemplate(uint8_t idx)
           }
         }
       }
-      md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight= 50; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,-DSW_GEA); md->sOffset=100;
-      md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight=-50; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,DSW_GEA); md->sOffset=100;
+      md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight= 50; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,-SWITCH_GEA); md->sOffset=100;
+      md=setDest(5);  md->srcRaw=RawSource(SOURCE_TYPE_STICK, 5); md->weight=-50; md->swtch=RawSwitch(SWITCH_TYPE_SWITCH,SWITCH_GEA); md->sOffset=100;
     }
 
     //Servo Test
@@ -863,11 +867,11 @@ void Templates::applyTemplate(uint8_t idx)
 MixData* Templates::setDest(uint8_t dch)
 {
     uint8_t i = 0;
-    while ((g_model.mixData[i].destCh<=dch) && (g_model.mixData[i].destCh) && (i<GetEepromInterface()->getCapability(Mixes))) i++;
-    if(i==GetEepromInterface()->getCapability(Mixes)) return &g_model.mixData[0];
+    while ((g_model.mixData[i].destCh<=dch) && (g_model.mixData[i].destCh) && (i<firmware->getCapability(Mixes))) i++;
+    if(i==firmware->getCapability(Mixes)) return &g_model.mixData[0];
 
     memmove(&g_model.mixData[i+1],&g_model.mixData[i],
-            (GetEepromInterface()->getCapability(Mixes)-(i+1))*sizeof(MixData) );
+            (firmware->getCapability(Mixes)-(i+1))*sizeof(MixData) );
     memset(&g_model.mixData[i],0,sizeof(MixData));
     g_model.mixData[i].destCh = dch;
     return &g_model.mixData[i];

@@ -59,10 +59,11 @@
 #define SAMPTIME    2   // sample time = 15 cycles
 
 volatile uint16_t Analog_values[NUMBER_ANALOG];
+
 #if defined(REV4a)
-const char ana_direction[NUMBER_ANALOG] = {0,1,0,1,  1,1,0,1,0,  0};
+  const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,-1,0,-1,1,  1};
 #elif !defined(REV3)
-const char ana_direction[NUMBER_ANALOG] = {0,1,0,1,  1,0,0,1,0,  0};
+  const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,0,-1,1,  1};
 #endif
 
 void adcInit()
@@ -98,8 +99,8 @@ void adcInit()
   ADC->CCR = 0 ; //ADC_CCR_ADCPRE_0 ;             // Clock div 2
 
   DMA2_Stream0->CR = DMA_SxCR_PL | DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC ;
-  DMA2_Stream0->PAR = CONVERT_PTR(&ADC1->DR);
-  DMA2_Stream0->M0AR = CONVERT_PTR(Analog_values);
+  DMA2_Stream0->PAR = CONVERT_PTR_UINT(&ADC1->DR);
+  DMA2_Stream0->M0AR = CONVERT_PTR_UINT(Analog_values);
   DMA2_Stream0->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
 }
 
@@ -110,7 +111,7 @@ void adcRead()
   DMA2_Stream0->CR &= ~DMA_SxCR_EN ;              // Disable DMA
   ADC1->SR &= ~(uint32_t) ( ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR ) ;
   DMA2->LIFCR = DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 |DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 | DMA_LIFCR_CFEIF0 ; // Write ones to clear bits
-  DMA2_Stream0->M0AR = CONVERT_PTR(Analog_values);
+  DMA2_Stream0->M0AR = CONVERT_PTR_UINT(Analog_values);
   DMA2_Stream0->NDTR = NUMBER_ANALOG ;
   DMA2_Stream0->CR |= DMA_SxCR_EN ;               // Enable DMA
   ADC1->CR2 |= (uint32_t)ADC_CR2_SWSTART ;
@@ -124,9 +125,10 @@ void adcRead()
 #if !defined(REV3)
   // adc direction correct
   for (i=0; i<NUMBER_ANALOG; i++) {
-    if (ana_direction[i]) {
+    if (ana_direction[i] == -1)
       Analog_values[i] = 4096-Analog_values[i];
-    }
+    else if (ana_direction[i] == 0)
+      Analog_values[i] = 0;
   }
 #endif
 }

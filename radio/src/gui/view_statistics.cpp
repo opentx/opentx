@@ -58,16 +58,16 @@ void menuStatisticsView(uint8_t event)
   }
 
   lcd_puts(  1*FW, FH*0, STR_TOTTM1TM2THRTHP);
-  putsTime(    5*FW+5*FWNUM+1, FH*1, timersStates[0].val, 0, 0);
-  putsTime(   12*FW+5*FWNUM+1, FH*1, timersStates[1].val, 0, 0);
+  putsTimer(    5*FW+5*FWNUM+1, FH*1, timersStates[0].val, 0, 0);
+  putsTimer(   12*FW+5*FWNUM+1, FH*1, timersStates[1].val, 0, 0);
 
-  putsTime(    5*FW+5*FWNUM+1, FH*2, s_timeCumThr, 0, 0);
-  putsTime(   12*FW+5*FWNUM+1, FH*2, s_timeCum16ThrP/16, 0, 0);
+  putsTimer(    5*FW+5*FWNUM+1, FH*2, s_timeCumThr, 0, 0);
+  putsTimer(   12*FW+5*FWNUM+1, FH*2, s_timeCum16ThrP/16, 0, 0);
 
-  putsTime(   12*FW+5*FWNUM+1, FH*0, s_timeCumTot, 0, 0);
+  putsTimer(   12*FW+5*FWNUM+1, FH*0, s_timeCumTot, 0, 0);
   
 #if defined(PCBTARANIS)
-  putsTime(21*FW+5*FWNUM+1, 0*FH, g_eeGeneral.globalTimer + sessionTimer, 0, 0);
+  putsTimer(21*FW+5*FWNUM+1, 0*FH, g_eeGeneral.globalTimer + sessionTimer, 0, 0);
 #endif
 
 #if defined(THRTRACE)
@@ -102,7 +102,7 @@ void menuStatisticsDebug(uint8_t event)
   switch(event)
   {
 #if defined(CPUARM)
-    case EVT_KEY_LONG(KEY_MENU):
+    case EVT_KEY_LONG(KEY_ENTER):
       g_eeGeneral.mAhUsed = 0;
       g_eeGeneral.globalTimer = 0;
       eeDirty(EE_GENERAL);
@@ -114,7 +114,7 @@ void menuStatisticsDebug(uint8_t event)
       AUDIO_KEYPAD_UP();
       break;
 #endif
-    case EVT_KEY_FIRST(KEY_MENU):
+    case EVT_KEY_FIRST(KEY_ENTER):
 #if !defined(CPUARM)
       g_tmr1Latency_min = 0xff;
       g_tmr1Latency_max = 0;
@@ -147,7 +147,7 @@ void menuStatisticsDebug(uint8_t event)
 
   lcd_putsLeft(2*FH, STR_CPU_MAH);
   putsTelemetryValue(MENU_DEBUG_COL_OFS, 2*FH, g_eeGeneral.mAhUsed + Current_used*current_scale/8192/36, UNIT_MAH, PREC1);
-  putsTime(17*FW+5*FWNUM+1, 2*FH, g_eeGeneral.globalTimer + sessionTimer, 0, 0);
+  putsTimer(17*FW+5*FWNUM+1, 2*FH, g_eeGeneral.globalTimer + sessionTimer, 0, 0);
 #endif
 
 #if defined(PCBSKY9X)

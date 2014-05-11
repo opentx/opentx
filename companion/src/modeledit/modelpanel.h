@@ -10,7 +10,7 @@ class ModelPanel : public QWidget
     Q_OBJECT
 
   public:
-    ModelPanel(QWidget *parent, ModelData & model);
+    ModelPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
     virtual ~ModelPanel();
 
   signals:
@@ -21,9 +21,14 @@ class ModelPanel : public QWidget
 
   protected:
     ModelData & model;
+    GeneralSettings & generalSettings;
+    FirmwareInterface * firmware;
     bool lock;
-    void addLabel(QGridLayout * gridLayout, QString text, int col);
-
+    void addLabel(QGridLayout * gridLayout, QString text, int col, bool mimimize=false);
+    void addEmptyLabel(QGridLayout * gridLayout, int col);
+    void addHSpring(QGridLayout *, int col, int row);
+    void addVSpring(QGridLayout *, int col, int row);
+    void addDoubleSpring(QGridLayout *, int col, int row);
 };
 
 #endif // CHANNELS_H

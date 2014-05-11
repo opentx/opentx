@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>653</width>
+    <width>739</width>
     <height>613</height>
    </rect>
   </property>
@@ -74,22 +74,6 @@
       </property>
       <item row="0" column="0">
        <layout class="QGridLayout" name="gridLayout" columnstretch="0,0,0">
-        <item row="1" column="2">
-         <widget class="mySlider" name="trimVLeft">
-          <property name="toolTip">
-           <string>Right Double Click to Reset</string>
-          </property>
-          <property name="minimum">
-           <number>-125</number>
-          </property>
-          <property name="maximum">
-           <number>125</number>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-         </widget>
-        </item>
         <item row="1" column="1">
          <widget class="QGraphicsView" name="leftStick">
           <property name="minimumSize">
@@ -137,7 +121,7 @@ QPushButton:checked {
  }</string>
             </property>
             <property name="text">
-             <string>THR</string>
+             <string notr="true">THR</string>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -167,7 +151,7 @@ QPushButton:checked {
  }</string>
             </property>
             <property name="text">
-             <string>RUD</string>
+             <string notr="true">RUD</string>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -197,7 +181,7 @@ QPushButton:checked {
  }</string>
             </property>
             <property name="text">
-             <string>ELE</string>
+             <string notr="true">ELE</string>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -227,7 +211,7 @@ QPushButton:checked {
  }</string>
             </property>
             <property name="text">
-             <string>AIL</string>
+             <string notr="true">AIL</string>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -360,7 +344,7 @@ QPushButton:checked {
           </item>
          </layout>
         </item>
-        <item row="7" column="1">
+        <item row="8" column="1">
          <layout class="QHBoxLayout" name="horizontalLayout_6">
           <property name="leftMargin">
            <number>20</number>
@@ -371,7 +355,7 @@ QPushButton:checked {
           <item>
            <widget class="QLabel" name="leftXPerc">
             <property name="text">
-             <string>TextLabel</string>
+             <string notr="true">TextLabel</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -381,7 +365,7 @@ QPushButton:checked {
           <item>
            <widget class="QLabel" name="leftYPerc">
             <property name="text">
-             <string>TextLabel</string>
+             <string notr="true">TextLabel</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -391,42 +375,138 @@ QPushButton:checked {
          </layout>
         </item>
         <item row="2" column="1">
-         <widget class="mySlider" name="trimHLeft">
-          <property name="toolTip">
-           <string>Right Double Click to Reset</string>
-          </property>
-          <property name="minimum">
-           <number>-125</number>
-          </property>
-          <property name="maximum">
-           <number>125</number>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QPushButton" name="trimHL_L">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>23</width>
+              <height>23</height>
+             </size>
+            </property>
+            <property name="text">
+             <string notr="true">&lt;-</string>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="mySlider" name="trimHLeft">
+            <property name="toolTip">
+             <string>Right Double Click to Reset</string>
+            </property>
+            <property name="minimum">
+             <number>-125</number>
+            </property>
+            <property name="maximum">
+             <number>125</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="trimHL_R">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>23</width>
+              <height>23</height>
+             </size>
+            </property>
+            <property name="text">
+             <string notr="true">-&gt;</string>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="1" column="2">
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QPushButton" name="trimVL_U">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>23</width>
+              <height>23</height>
+             </size>
+            </property>
+            <property name="text">
+             <string notr="true">^</string>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="mySlider" name="trimVLeft">
+            <property name="toolTip">
+             <string>Right Double Click to Reset</string>
+            </property>
+            <property name="minimum">
+             <number>-125</number>
+            </property>
+            <property name="maximum">
+             <number>125</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="trimVL_D">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>23</width>
+              <height>23</height>
+             </size>
+            </property>
+            <property name="text">
+             <string notr="true">v</string>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </item>
       <item row="0" column="2">
-       <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0,0">
-        <item row="1" column="0">
-         <widget class="mySlider" name="trimVRight">
-          <property name="toolTip">
-           <string>Right Double Click to Reset</string>
-          </property>
-          <property name="minimum">
-           <number>-125</number>
-          </property>
-          <property name="maximum">
-           <number>125</number>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
+       <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0,0,0">
+        <item row="1" column="2">
          <widget class="QGraphicsView" name="rightStick">
           <property name="minimumSize">
            <size>
@@ -442,7 +522,7 @@ QPushButton:checked {
           </property>
          </widget>
         </item>
-        <item row="1" column="2">
+        <item row="1" column="3">
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
            <widget class="QPushButton" name="switchTRN">
@@ -467,7 +547,7 @@ QPushButton:pressed {
  }</string>
             </property>
             <property name="text">
-             <string>TRN</string>
+             <string notr="true">TRN</string>
             </property>
            </widget>
           </item>
@@ -494,7 +574,7 @@ QPushButton:checked {
  }</string>
             </property>
             <property name="text">
-             <string>GEA</string>
+             <string notr="true">GEA</string>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -527,7 +607,7 @@ QPushButton:checked {
  }</string>
             </property>
             <property name="text">
-             <string>ID0</string>
+             <string notr="true">ID0</string>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -564,7 +644,7 @@ QPushButton:checked {
  }</string>
             </property>
             <property name="text">
-             <string>ID1</string>
+             <string notr="true">ID1</string>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -597,7 +677,7 @@ QPushButton:checked {
  }</string>
             </property>
             <property name="text">
-             <string>ID2</string>
+             <string notr="true">ID2</string>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -609,7 +689,7 @@ QPushButton:checked {
           </item>
          </layout>
         </item>
-        <item row="0" column="1">
+        <item row="0" column="2">
          <layout class="QHBoxLayout" name="horizontalLayout_4">
           <item>
            <widget class="QPushButton" name="holdRightX">
@@ -733,7 +813,7 @@ QPushButton:checked {
           </item>
          </layout>
         </item>
-        <item row="3" column="1">
+        <item row="4" column="2">
          <layout class="QHBoxLayout" name="horizontalLayout_7">
           <property name="leftMargin">
            <number>20</number>
@@ -744,7 +824,7 @@ QPushButton:checked {
           <item>
            <widget class="QLabel" name="rightXPerc">
             <property name="text">
-             <string>TextLabel</string>
+             <string notr="true">TextLabel</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -754,7 +834,7 @@ QPushButton:checked {
           <item>
            <widget class="QLabel" name="rightYPerc">
             <property name="text">
-             <string>TextLabel</string>
+             <string notr="true">TextLabel</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -763,21 +843,133 @@ QPushButton:checked {
           </item>
          </layout>
         </item>
-        <item row="2" column="1">
-         <widget class="mySlider" name="trimHRight">
-          <property name="toolTip">
-           <string>Right Double Click to Reset</string>
-          </property>
-          <property name="minimum">
-           <number>-125</number>
-          </property>
-          <property name="maximum">
-           <number>125</number>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
+        <item row="2" column="2">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QPushButton" name="trimHR_L">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>23</width>
+              <height>23</height>
+             </size>
+            </property>
+            <property name="text">
+             <string notr="true">&lt;-</string>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="mySlider" name="trimHRight">
+            <property name="toolTip">
+             <string>Right Double Click to Reset</string>
+            </property>
+            <property name="minimum">
+             <number>-125</number>
+            </property>
+            <property name="maximum">
+             <number>125</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="trimHR_R">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>23</width>
+              <height>23</height>
+             </size>
+            </property>
+            <property name="text">
+             <string notr="true">-&gt;</string>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="1" column="1">
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="QPushButton" name="trimVR_U">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>23</width>
+              <height>23</height>
+             </size>
+            </property>
+            <property name="text">
+             <string notr="true">^</string>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="mySlider" name="trimVRight">
+            <property name="toolTip">
+             <string>Right Double Click to Reset</string>
+            </property>
+            <property name="minimum">
+             <number>-125</number>
+            </property>
+            <property name="maximum">
+             <number>125</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="trimVR_D">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>23</width>
+              <height>23</height>
+             </size>
+            </property>
+            <property name="text">
+             <string notr="true">v</string>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </item>
@@ -842,7 +1034,7 @@ QPushButton:checked {
            </size>
           </property>
           <property name="toolTip">
-           <string>P1</string>
+           <string notr="true">P1</string>
           </property>
           <property name="minimum">
            <number>-1024</number>
@@ -864,7 +1056,7 @@ QPushButton:checked {
         <item>
          <widget class="QLabel" name="dialP_1value">
           <property name="text">
-           <string>0 %</string>
+           <string notr="true">0 %</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -899,7 +1091,7 @@ QPushButton:checked {
            </size>
           </property>
           <property name="toolTip">
-           <string>P2</string>
+           <string notr="true">P2</string>
           </property>
           <property name="minimum">
            <number>-1024</number>
@@ -924,7 +1116,7 @@ QPushButton:checked {
         <item>
          <widget class="QLabel" name="dialP_2value">
           <property name="text">
-           <string>0 %</string>
+           <string notr="true">0 %</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -959,7 +1151,7 @@ QPushButton:checked {
            </size>
           </property>
           <property name="toolTip">
-           <string>P3</string>
+           <string notr="true">P3</string>
           </property>
           <property name="minimum">
            <number>-1024</number>
@@ -981,7 +1173,7 @@ QPushButton:checked {
         <item>
          <widget class="QLabel" name="dialP_3value">
           <property name="text">
-           <string>0 %</string>
+           <string notr="true">0 %</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -1248,6 +1440,22 @@ QPushButton:checked {
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>Gvars</string>
+      </attribute>
+      <widget class="QWidget" name="gridLayoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>711</width>
+         <height>211</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="gvarsLayout"/>
+      </widget>
+     </widget>
     </widget>
    </item>
   </layout>
@@ -1260,6 +1468,11 @@ QPushButton:checked {
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>mySlider</class>
+   <extends>QSlider</extends>
+   <header location="global">myslider.h</header>
+  </customwidget>
+  <customwidget>
    <class>cursorWidget</class>
    <extends>QWidget</extends>
    <header>cursorwidget.h</header>
@@ -1270,11 +1483,6 @@ QPushButton:checked {
    <extends>QWidget</extends>
    <header>menuwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>mySlider</class>
-   <extends>QSlider</extends>
-   <header location="global">myslider.h</header>
   </customwidget>
  </customwidgets>
  <resources>

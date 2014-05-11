@@ -81,6 +81,7 @@ int main(int argc, char *argv[])
   app.setApplicationName("OpenTX Companion");
   app.setOrganizationName("OpenTX");
   app.setOrganizationDomain("open-tx.org");
+  app.setAttribute(Qt::AA_DontShowIconsInMenus, false);
 
 #ifdef __APPLE__
   app.setStyle(new MyProxyStyle);
@@ -104,7 +105,8 @@ int main(int argc, char *argv[])
   QPixmap pixmap = QPixmap(g.profile[g.id()].fwType().contains("taranis") ? ":/images/splasht.png" : ":/images/splash.png");
   QSplashScreen *splash = new QSplashScreen(pixmap);
 
-  RegisterFirmwares();
+  RegisterEepromInterfaces();
+  registerOpenTxFirmwares();
 
   current_firmware_variant = GetFirmwareVariant(g.profile[g.id()].fwType());
 
@@ -122,6 +124,9 @@ int main(int argc, char *argv[])
 
   delete splash;
   delete mainWin;
+
+  UnregisterFirmwares();
+  UnregisterEepromInterfaces();
 
   return result;
 }

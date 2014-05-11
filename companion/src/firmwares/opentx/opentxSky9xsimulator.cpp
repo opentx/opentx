@@ -53,7 +53,9 @@
 #define GAUGES
 #define GPS
 #define FAI_CHOICE
+#define FRSKY_STICKS
 
+#define NUM_POTS  3
 #define EEPROM_VARIANT 3
 
 #undef min
@@ -90,6 +92,7 @@ namespace Open9xSky9x {
 #include "radio/src/simpgmspace.cpp"
 #include "radio/src/templates.cpp"
 #include "radio/src/translations.cpp"
+#include "radio/src/fonts.cpp"
 #include "radio/src/telemetry/frsky.cpp"
 #include "radio/src/targets/sky9x/audio_driver.cpp"
 #include "radio/src/audio_arm.cpp"
@@ -133,8 +136,7 @@ uint8_t getStickMode()
 
 using namespace Open9xSky9x;
 
-Open9xSky9xSimulator::Open9xSky9xSimulator(OpenTxInterface * open9xInterface):
-  open9xInterface(open9xInterface)
+Open9xSky9xSimulator::Open9xSky9xSimulator()
 {
     QString path=g.profile[g.id()].sdPath()+"/";
     int i=0;
@@ -229,6 +231,13 @@ void Open9xSky9xSimulator::wheelEvent(uint8_t steps)
 unsigned int Open9xSky9xSimulator::getPhase()
 {
   return getFlightPhase();
+}
+
+const char * Open9xSky9xSimulator::getPhaseName(unsigned int phase)
+{
+  static char buff[sizeof(g_model.phaseData[0].name)+1];
+  zchar2str(buff, g_model.phaseData[phase].name, sizeof(g_model.phaseData[0].name));
+  return buff;
 }
 
 const char * Open9xSky9xSimulator::getError()

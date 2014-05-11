@@ -60,6 +60,7 @@ GPIO_TypeDef gpiod;
 GPIO_TypeDef gpioe;
 TIM_TypeDef tim1;
 TIM_TypeDef tim3;
+TIM_TypeDef tim4;
 TIM_TypeDef tim8;
 TIM_TypeDef tim10;
 RCC_TypeDef rcc;
@@ -101,37 +102,37 @@ sem_t *eeprom_write_sem;
 #if defined(PCBTARANIS)
 #define SWITCH_CASE(swtch, pin, mask) \
     case swtch: \
-      if (state) pin &= ~(mask); else pin |= (mask); \
+      if ((int)state > 0) pin &= ~(mask); else pin |= (mask); \
       break;
 #else
 #define SWITCH_CASE(swtch, pin, mask) \
     case swtch: \
-      if (state) pin |= (mask); else pin &= ~(mask); \
+      if ((int)state > 0) pin |= (mask); else pin &= ~(mask); \
       break;
 #endif
 #define SWITCH_3_CASE(swtch, pin1, pin2, mask1, mask2) \
     case swtch: \
-      if (state < 0) pin1 &= ~(mask1); else pin1 |= (mask1); \
-      if (state > 0) pin2 &= ~(mask2); else pin2 |= (mask2); \
+      if ((int)state < 0) pin1 &= ~(mask1); else pin1 |= (mask1); \
+      if ((int)state > 0) pin2 &= ~(mask2); else pin2 |= (mask2); \
       break;
 #define KEY_CASE(key, pin, mask) \
     case key: \
-      if (state) pin &= ~mask; else pin |= mask;\
+      if ((int)state > 0) pin &= ~mask; else pin |= mask;\
       break;
 #define TRIM_CASE KEY_CASE
 #else
 #define SWITCH_CASE(swtch, pin, mask) \
     case swtch: \
-      if (state) pin &= ~(mask); else pin |= (mask); \
+      if ((int)state > 0) pin &= ~(mask); else pin |= (mask); \
       break;
 #define SWITCH_3_CASE(swtch, pin1, pin2, mask1, mask2) \
     case swtch: \
-      if (state >= 0) pin1 &= ~(mask1); else pin1 |= (mask1); \
-      if (state <= 0) pin2 &= ~(mask2); else pin2 |= (mask2); \
+      if ((int)state >= 0) pin1 &= ~(mask1); else pin1 |= (mask1); \
+      if ((int)state <= 0) pin2 &= ~(mask2); else pin2 |= (mask2); \
       break;
 #define KEY_CASE(key, pin, mask) \
     case key: \
-      if (state) pin |= (mask); else pin &= ~(mask);\
+      if ((int)state > 0) pin |= (mask); else pin &= ~(mask);\
       break;
 #define TRIM_CASE KEY_CASE
 #endif
@@ -350,6 +351,8 @@ void StartMainThread(bool tests)
   pthread_mutex_init(&audioMutex, NULL);
 #endif
 
+  g_tmr10ms = 0;
+
   main_thread_running = (tests ? 1 : 2);
   pthread_create(&main_thread_pid, NULL, &main_thread, NULL);
 }
@@ -464,10 +467,11 @@ FATFS g_FATFS_Obj;
 char *convertSimuPath(const char *path)
 {
   static char result[1024];
-  if (path[0] == '/')
+  if (path[0] == '/' && strcmp(simuSdDirectory, "/") != 0)
     sprintf(result, "%s%s", simuSdDirectory, path);
   else
     strcpy(result, path);
+
   return result;
 }
 
@@ -637,7 +641,11 @@ void lcdRefresh()
 }
 
 #if defined(PCBTARANIS)
+void pwrInit() { }
+uint32_t pwrCheck() { return true; }
+void pwrOff() { }
 void usbStart() { }
+int usbPlugged() { return false; }
 void USART_DeInit(USART_TypeDef* ) { }
 ErrorStatus RTC_SetTime(uint32_t RTC_Format, RTC_TimeTypeDef* RTC_TimeStruct) { return SUCCESS; }
 ErrorStatus RTC_SetDate(uint32_t RTC_Format, RTC_DateTypeDef* RTC_DateStruct) { return SUCCESS; }
@@ -666,4 +674,9 @@ void SPI_I2S_ITConfig(SPI_TypeDef* SPIx, uint8_t SPI_I2S_IT, FunctionalState New
 void RCC_LSEConfig(uint8_t RCC_LSE) { }
 FlagStatus RCC_GetFlagStatus(uint8_t RCC_FLAG) { return RESET; }
 ErrorStatus RTC_WaitForSynchro(void) { return SUCCESS; }
+void unlockFlash() { }
+void lockFlash() { }
+void writeFlash(uint32_t *address, uint32_t *buffer) { SIMU_SLEEP(100); }
+uint32_t isBootloaderStart(const void *block) { return 1; }
 #endif
+

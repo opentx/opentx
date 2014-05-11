@@ -5,8 +5,8 @@
 #include "helpers.h"
 #include "appdata.h"
 
-TelemetryAnalog::TelemetryAnalog(QWidget *parent, FrSkyChannelData & analog):
-  QWidget(parent),
+TelemetryAnalog::TelemetryAnalog(QWidget *parent, FrSkyChannelData & analog, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+  ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::TelemetryAnalog),
   analog(analog),
   lock(false)
@@ -17,23 +17,33 @@ TelemetryAnalog::TelemetryAnalog(QWidget *parent, FrSkyChannelData & analog):
 
   if (analog.type==0 || analog.type==1 || analog.type==2) {
     ui->RatioSB->setDecimals(1);
-    ui->RatioSB->setMaximum(25.5*GetEepromInterface()->getCapability(TelemetryMaxMultiplier));
+    ui->RatioSB->setMaximum(25.5*firmware->getCapability(TelemetryMaxMultiplier));
   }
   else {
     ui->RatioSB->setDecimals(0);
-    ui->RatioSB->setMaximum(255*GetEepromInterface()->getCapability(TelemetryMaxMultiplier));
+    ui->RatioSB->setMaximum(255*firmware->getCapability(TelemetryMaxMultiplier));
   }
   ui->RatioSB->setValue(ratio);
 
   update();
 
   ui->UnitCB->setCurrentIndex(analog.type);
-  ui->alarm1LevelCB->setCurrentIndex(analog.alarms[0].level);
-  ui->alarm1GreaterCB->setCurrentIndex(analog.alarms[0].greater);
-  ui->alarm2LevelCB->setCurrentIndex(analog.alarms[1].level);
-  ui->alarm2GreaterCB->setCurrentIndex(analog.alarms[1].greater);
+  if (!IS_TARANIS(GetEepromInterface()->getBoard())) {
+    ui->alarm1LevelCB->setCurrentIndex(analog.alarms[0].level);
+    ui->alarm1GreaterCB->setCurrentIndex(analog.alarms[0].greater);
+    ui->alarm2LevelCB->setCurrentIndex(analog.alarms[1].level);
+    ui->alarm2GreaterCB->setCurrentIndex(analog.alarms[1].greater);
+  }
+  else {
+    ui->alarm1LevelCB->hide();
+    ui->alarm2LevelCB->hide();
+    ui->alarm1GreaterCB->hide();
+    ui->alarm2GreaterCB->hide();
+    ui->alarm1Label->setText(tr("Low Alarm"));
+    ui->alarm2Label->setText(tr("Critical Alarm"));
+  }
 
-  if (!(GetEepromInterface()->getCapability(Telemetry) & TM_HASOFFSET)) {
+  if (!(firmware->getCapability(Telemetry) & TM_HASOFFSET)) {
     ui->CalibSB->hide();
     ui->CalibLabel->hide();
   }
@@ -77,11 +87,11 @@ void TelemetryAnalog::on_UnitCB_currentIndexChanged(int index)
       case 1:
       case 2:
         ui->RatioSB->setDecimals(1);
-        ui->RatioSB->setMaximum(25.5*GetEepromInterface()->getCapability(TelemetryMaxMultiplier));
+        ui->RatioSB->setMaximum(25.5*firmware->getCapability(TelemetryMaxMultiplier));
         break;
       default:
         ui->RatioSB->setDecimals(0);
-        ui->RatioSB->setMaximum(255*GetEepromInterface()->getCapability(TelemetryMaxMultiplier));
+        ui->RatioSB->setMaximum(255*firmware->getCapability(TelemetryMaxMultiplier));
         break;
     }
     ui->RatioSB->setValue(ratio);
@@ -270,18 +280,18 @@ TelemetryAnalog::~TelemetryAnalog()
 
 /******************************************************/
 
-TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model, FrSkyScreenData & screen):
-  ModelPanel(parent, model),
+TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model, FrSkyScreenData & screen, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+  ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::TelemetryCustomScreen),
   screen(screen)
 {
   ui->setupUi(this);
 
   for (int l=0; l<4; l++) {
-    for (int c=0; c<GetEepromInterface()->getCapability(TelemetryCustomScreensFieldsPerLine); c++) {
+    for (int c=0; c<firmware->getCapability(TelemetryCustomScreensFieldsPerLine); c++) {
       fieldsCB[l][c] = new QComboBox(this);
       fieldsCB[l][c]->setProperty("index", c + (l<<8));
-      populateCustomScreenFieldCB(fieldsCB[l][c], screen.body.lines[l].source[c], (l<4), model.frsky.usrProto);
+      populateTelemetrySourceCB(fieldsCB[l][c], screen.body.lines[l].source[c], l==3, model.frsky.usrProto);
       ui->screenNumsLayout->addWidget(fieldsCB[l][c], l, c, 1, 1);
       connect(fieldsCB[l][c], SIGNAL(currentIndexChanged(int)), this, SLOT(customFieldChanged(int)));
     }
@@ -290,7 +300,7 @@ TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model,
   for (int l=0; l<4; l++) {
     barsCB[l] = new QComboBox(this);
     barsCB[l]->setProperty("index", l);
-    populateCustomScreenFieldCB(barsCB[l], screen.body.bars[l].source, false, model.frsky.usrProto);
+    populateTelemetrySourceCB(barsCB[l], screen.body.bars[l].source, false, model.frsky.usrProto);
     connect(barsCB[l], SIGNAL(currentIndexChanged(int)), this, SLOT(barSourceChanged(int)));
     ui->screenBarsLayout->addWidget(barsCB[l], l, 0, 1, 1);
 
@@ -316,6 +326,31 @@ TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model,
   update();
 }
 
+void TelemetryCustomScreen::populateTelemetrySourceCB(QComboBox *b, unsigned int value, bool last, int hubproto)
+{
+  int telem_hub[] = {0,0,0,0,0,0,0,0,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,0,0,2,2,1,1,1,1,1,1};
+  b->clear();
+
+  b->addItem(RawSource(SOURCE_TYPE_NONE, 0).toString());
+
+  for (unsigned int i = 0; i < (last ? TELEMETRY_SOURCES_STATUS_COUNT : TELEMETRY_SOURCES_DISPLAY_COUNT); i++) {
+    b->addItem(RawSource(SOURCE_TYPE_TELEMETRY, i).toString());
+    if (!(i>=sizeof(telem_hub)/sizeof(int) || telem_hub[i]==0 || ((telem_hub[i]>=hubproto) && hubproto!=0))) {
+      QModelIndex index = b->model()->index(i, 0);
+      QVariant v(0);
+      b->model()->setData(index, v, Qt::UserRole - 1);
+    }
+  }
+
+  if (value>=sizeof(telem_hub)/sizeof(int))
+    b->setCurrentIndex(0);
+  else if (telem_hub[value]==0 || ((telem_hub[value]>=hubproto) && hubproto!=0)) {
+    b->setCurrentIndex(value);
+  }
+
+  b->setMaxVisibleItems(10);
+}
+
 TelemetryCustomScreen::~TelemetryCustomScreen()
 {
   delete ui;
@@ -331,7 +366,7 @@ void TelemetryCustomScreen::update()
 
   if (screen.type == 0) {
     for (int l=0; l<4; l++) {
-      for (int c=0; c<GetEepromInterface()->getCapability(TelemetryCustomScreensFieldsPerLine); c++) {
+      for (int c=0; c<firmware->getCapability(TelemetryCustomScreensFieldsPerLine); c++) {
         fieldsCB[l][c]->setCurrentIndex(screen.body.lines[l].source[c]);
       }
     }
@@ -347,6 +382,8 @@ void TelemetryCustomScreen::update()
 
 void TelemetryCustomScreen::updateBar(int line)
 {
+  lock = true;
+
   int index = screen.body.bars[line].source;
   barsCB[line]->setCurrentIndex(index);
   if (index) {
@@ -372,6 +409,8 @@ void TelemetryCustomScreen::updateBar(int line)
     minSB[line]->setDisabled(true);
     maxSB[line]->setDisabled(true);
   }
+
+  lock = false;
 }
 
 void TelemetryCustomScreen::on_screenType_currentIndexChanged(int index)
@@ -393,13 +432,15 @@ void TelemetryCustomScreen::customFieldChanged(int value)
 
 void TelemetryCustomScreen::barSourceChanged(int index)
 {
-  QComboBox * cb = qobject_cast<QComboBox*>(sender());
-  int line = cb->property("index").toInt();
-  screen.body.bars[line].source = index;
-  screen.body.bars[line].barMin = 0;
-  screen.body.bars[line].barMax = 0;
-  updateBar(line);
-  emit modified();
+  if (!lock) {
+    QComboBox * cb = qobject_cast<QComboBox*>(sender());
+    int line = cb->property("index").toInt();
+    screen.body.bars[line].source = index;
+    screen.body.bars[line].barMin = 0;
+    screen.body.bars[line].barMax = 0;
+    updateBar(line);
+    emit modified();
+  }
 }
 
 void TelemetryCustomScreen::barMinChanged(double value)
@@ -424,27 +465,32 @@ void TelemetryCustomScreen::barMaxChanged(double value)
 
 /******************************************************/
 
-TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model):
-  ModelPanel(parent, model),
+TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+  ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::Telemetry)
 {
   ui->setupUi(this);
 
-  if (GetEepromInterface()->getCapability(NoTelemetryProtocol)) {
+  if (firmware->getCapability(NoTelemetryProtocol)) {
     model.frsky.usrProto = 1;
   }
 
-  analogs[0] = new TelemetryAnalog(this, model.frsky.channels[0]);
+  analogs[0] = new TelemetryAnalog(this, model.frsky.channels[0], model, generalSettings, firmware);
   ui->A1Layout->addWidget(analogs[0]);
   connect(analogs[0], SIGNAL(modified()), this, SLOT(onAnalogModified()));
 
-  analogs[1] = new TelemetryAnalog(this, model.frsky.channels[1]);
+  analogs[1] = new TelemetryAnalog(this, model.frsky.channels[1], model, generalSettings, firmware);
   ui->A2Layout->addWidget(analogs[1]);
   connect(analogs[1], SIGNAL(modified()), this, SLOT(onAnalogModified()));
 
-  for (int i=0; i<GetEepromInterface()->getCapability(TelemetryCustomScreens); i++) {
-    TelemetryCustomScreen * tab = new TelemetryCustomScreen(this, model, model.frsky.screens[i]);
+  for (int i=0; i<firmware->getCapability(TelemetryCustomScreens); i++) {
+    TelemetryCustomScreen * tab = new TelemetryCustomScreen(this, model, model.frsky.screens[i], generalSettings, firmware);
     ui->customScreens->addTab(tab, tr("Telemetry screen %1").arg(i+1));
+  }
+
+  if (IS_ARM(GetEepromInterface()->getBoard())) {
+    ui->bladesCount->setMinimum(1);
+    ui->bladesCount->setMaximum(128);
   }
 
   setup();
@@ -462,15 +508,23 @@ void TelemetryPanel::setup()
     lock=true;
 
     //frsky Settings
-    if (!GetEepromInterface()->getCapability(TelemetryRSSIModel) ) {
+    if (!firmware->getCapability(TelemetryRSSIModel) ) {
       ui->RSSIGB->hide();
     }
     ui->rssiAlarm1SB->setValue(model.frsky.rssiAlarms[0].value);
     ui->rssiAlarm2SB->setValue(model.frsky.rssiAlarms[1].value);
-    ui->rssiAlarm1CB->setCurrentIndex(model.frsky.rssiAlarms[0].level);
-    ui->rssiAlarm2CB->setCurrentIndex(model.frsky.rssiAlarms[1].level);
+    if (!IS_TARANIS(GetEepromInterface()->getBoard())) {
+      ui->rssiAlarm1CB->setCurrentIndex(model.frsky.rssiAlarms[0].level);
+      ui->rssiAlarm2CB->setCurrentIndex(model.frsky.rssiAlarms[1].level);
+    }
+    else {
+      ui->rssiAlarm1CB->hide();
+      ui->rssiAlarm2CB->hide();
+      ui->rssiAlarm1Label->setText(tr("Low Alarm"));
+      ui->rssiAlarm2Label->setText(tr("Critical Alarm"));
+    }
 
-    if (!GetEepromInterface()->getCapability(HasAltitudeSel)) {
+    if (!firmware->getCapability(HasAltitudeSel)) {
       ui->AltitudeGPS_ChkB->hide();
     }
     else {
@@ -484,7 +538,7 @@ void TelemetryPanel::setup()
       ui->AltitudeToolbar_ChkB->hide();
     }
 
-    int varioCap = GetEepromInterface()->getCapability(HasVario);
+    int varioCap = firmware->getCapability(HasVario);
     if (!varioCap) {
       ui->varioLimitMax_DSB->hide();
       ui->varioLimitMinOff_ChkB->hide();
@@ -500,7 +554,7 @@ void TelemetryPanel::setup()
       ui->varioSource_label->hide();
     }
     else {
-      if (!GetEepromInterface()->getCapability(HasVarioSink)) {
+      if (!firmware->getCapability(HasVarioSink)) {
         ui->varioLimitMinOff_ChkB->hide();
         ui->varioLimitMin_DSB->hide();
         ui->varioLimitCenterMin_DSB->hide();
@@ -530,18 +584,18 @@ void TelemetryPanel::setup()
       }
     }
 
-    if (!(GetEepromInterface()->getCapability(HasAltitudeSel)||GetEepromInterface()->getCapability(HasVario))) {
+    if (!(firmware->getCapability(HasAltitudeSel)||firmware->getCapability(HasVario))) {
       ui->altimetryGB->hide();
     }
 
-    if (GetEepromInterface()->getCapability(NoTelemetryProtocol)) {
+    if (firmware->getCapability(NoTelemetryProtocol)) {
       ui->frskyProtoCB->setDisabled(true);
     }
     else {
       ui->frskyProtoCB->setEnabled(true);
     }
 
-    if (!GetEepromInterface()->getCapability(TelemetryUnits)) {
+    if (!firmware->getCapability(TelemetryUnits)) {
       ui->frskyUnitsCB->setDisabled(true);
       int index=0;
       if (firmware_id.contains("imperial")) {
@@ -550,7 +604,7 @@ void TelemetryPanel::setup()
       ui->frskyUnitsCB->setCurrentIndex(index);
     }
 
-    if ((GetEepromInterface()->getCapability(Telemetry)&TM_HASWSHH)) {
+    if ((firmware->getCapability(Telemetry)&TM_HASWSHH)) {
       ui->frskyProtoCB->addItem(tr("Winged Shadow How High"));
     }
     else {
@@ -558,7 +612,7 @@ void TelemetryPanel::setup()
     }
     
     ui->variousGB->hide();
-    if (!(GetEepromInterface()->getCapability(HasFasOffset)) && !(firmware_id.contains("fasoffset"))) {
+    if (!(firmware->getCapability(HasFasOffset)) && !(firmware_id.contains("fasoffset"))) {
       ui->fasOffset_label->hide();
       ui->fasOffset_DSB->hide();
     }
@@ -567,7 +621,7 @@ void TelemetryPanel::setup()
       ui->variousGB->show();
     }
 
-    if (!(GetEepromInterface()->getCapability(HasMahPersistent))) {
+    if (!(firmware->getCapability(HasMahPersistent))) {
       ui->mahCount_label->hide();
       ui->mahCount_SB->hide();
       ui->mahCount_ChkB->hide();
@@ -585,7 +639,7 @@ void TelemetryPanel::setup()
 
     ui->frskyProtoCB->setCurrentIndex(model.frsky.usrProto);
     ui->frskyUnitsCB->setCurrentIndex(model.frsky.imperial);
-    ui->frskyBladesCB->setCurrentIndex(model.frsky.blades);
+    ui->bladesCount->setValue(model.frsky.blades);
     ui->frskyCurrentCB->setCurrentIndex(model.frsky.currentSource);
     ui->frskyVoltCB->setCurrentIndex(model.frsky.voltsSource);
 
@@ -599,13 +653,13 @@ void TelemetryPanel::onAnalogModified()
 
 void TelemetryPanel::on_frskyUnitsCB_currentIndexChanged(int index)
 {
-    model.frsky.imperial=index;
+    model.frsky.imperial = index;
     emit modified();
 }
 
-void TelemetryPanel::on_frskyBladesCB_currentIndexChanged(int index)
+void TelemetryPanel::on_bladesCount_editingFinished()
 {
-    model.frsky.blades=index;
+    model.frsky.blades = ui->bladesCount->value();
     emit modified();
 }
 

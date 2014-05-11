@@ -14,6 +14,10 @@
  *
  */
 
+#if !defined(NUM_LOGICAL_SWITCH) && defined(NUM_CSW)
+#define NUM_LOGICAL_SWITCH NUM_CSW
+#endif
+
 #ifdef INIT_IMPORT
 #undef INIT_IMPORT
 #ifdef FRSKY
@@ -32,7 +36,7 @@ for (int i=0; i<C9X_NUM_SWITCHES; i++)
 for (int i=0; i<C9X_NUM_KEYS; i++)
   simuSetKey(i, inputs.keys[i]);
 for (int i=0; i<NUM_STICKS*2; i++)
-  simuSetTrim(i, 0);
+  simuSetTrim(i, inputs.trims[i]);
 
 #ifdef PCBGRUVIN9X
 // rotary encoders
@@ -49,13 +53,19 @@ if (inputs.rotenc) PIOB->PIO_PDSR &= ~0x40; else PIOB->PIO_PDSR |= 0x40;
 #undef GETVALUES_IMPORT
 memset(outputs.chans, 0, sizeof(outputs.chans));
 memcpy(outputs.chans, g_chans512, sizeof(g_chans512));
-for (int i=0; i<NUM_CSW; i++)
+for (int i=0; i<NUM_LOGICAL_SWITCH; i++)
 #if defined(BOLD_FONT)
   outputs.vsw[i] = getSwitch(SWSRC_SW1+i);
 #else
   outputs.vsw[i] = getSwitch(SWSRC_SW1+i, 0);
 #endif
+#ifdef GVAR_VALUE // defined(GVARS)
+uint8_t phase = getFlightPhase();
+for (int fm=0; fm<MAX_FLIGHT_MODES; fm++)
+  for (int gv=0; gv<MAX_GVARS; gv++)
+    outputs.gvars[fm][gv] = GVAR_VALUE(gv, fm);
 #endif
+#endif   //GETVALUES_IMPORT
 
 #ifdef LCDCHANGED_IMPORT
 #undef LCDCHANGED_IMPORT

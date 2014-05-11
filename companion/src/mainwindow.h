@@ -49,7 +49,7 @@
 #include "eeprominterface.h"
 
 #define SPLASH_TIME 5
-#define MAX_RECENT 10
+#define MAX_RECENT 15
 #define MAX_PROFILES 15
 
 class MdiChild;
@@ -63,24 +63,24 @@ QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {
-    friend class fwPreferencesDialog;
+    friend class FirmwarePreferencesDialog;
     friend class MdiChild; // TODO GetAvrdudeArgs could be external to this class
 
     Q_OBJECT
 
-public:
+  public:
     MainWindow();
 
-protected:
+  protected:
     void closeEvent(QCloseEvent *event);
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
 
 
-public slots:
-    void downloadLatestFW(FirmwareInfo *firmware, const QString & firmwareId);
+  public slots:
+    void downloadLatestFW(FirmwareVariant & firmware);
     
-private slots:
+  private slots:
     void openDocURL();
 
     void setLanguage(QString langString);
@@ -96,6 +96,7 @@ private slots:
     void setPTLanguage() {setLanguage("pt_PT");};
     void setRULanguage() {setLanguage("ru_RU");};
     void setSELanguage() {setLanguage("sv_SE");};
+    void setNLLanguage() {setLanguage("nl_NL");};
 
     void setTheme(int index);
     void setClassicTheme()   {setTheme(0);};
@@ -132,8 +133,8 @@ private slots:
     void readEeprom();
     void writeFlash(QString fileToFlash="");
     void readFlash();
-    void writeFileToEeprom();
-    void readEepromToFile();
+    void writeBackup();
+    void readBackup();
     void burnConfig();
     void burnList();
     void burnFuses();
@@ -156,11 +157,12 @@ private slots:
     QMenu * createProfilesMenu();
     void autoClose();
   
-private:
+  private:
     void createActions();
-    QAction * addAct(QString, QString, QString, QKeySequence::StandardKey, const char *);
-    QAction * addAct(QActionGroup *, QString, QString, const char *);
-    QAction * addAct(QString, QString, QString, const char *);
+    QAction * addAct(const QString &, const QString &, const QString &, enum QKeySequence::StandardKey, const char *, QObject *slotObj=NULL);
+    QAction * addAct(const QString &, const QString &, const QString &, const QKeySequence &, const char *, QObject *slotObj=NULL);
+    QAction * addAct(QActionGroup *, const QString &, const QString &, const char *);
+    QAction * addAct(const QString &, const QString &, const QString &, const char *);
 
     void createMenus();
     void createToolBars();
@@ -243,8 +245,8 @@ private:
     QAction *burnFusesAct;
     QAction *writeFlashAct;
     QAction *readFlashAct;
-    QAction *writeFileToEepromAct;
-    QAction *readEepromToFileAct;
+    QAction *writeBackupToRadioAct;
+    QAction *readBackupToFileAct;
     QAction *simulateAct;
     QAction *separatorAct;
     QAction *aboutAct;
@@ -275,6 +277,7 @@ private:
     QAction *portugueseLangAct;
     QAction *swedishLangAct;
     QAction *russianLangAct;
+    QAction *dutchLangAct;
     QAction *openDocURLAct;
     QString fwToUpdate;
 };

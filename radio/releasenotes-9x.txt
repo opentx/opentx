@@ -1,5 +1,26 @@
 <SVN CURRENT>
 
+<h2>2940 / 2014-02-02</h2>
+[Arm Boards]
+<ul>
+<li>Wav files played even in silent mode
+<li>GPS support had broken VFAS
+</ul>
+
+[all]
+<ul>
+<li>Custom function triggered by a CSW based on analog triggering erroneously at powerup
+<li>Problem with mixer weight field when !GVARS
+<li>PPM5 was broken
+</ul>
+
+<h2>2923 / 2014-01-08</h2>
+[Arm Boards]
+<ul>
+<li>Audio freeze bug fixed
+<li>Aurora gimbals support
+</ul>
+
 <h2>2834 / 2013-10-29</h2>
 [Arm Boards]
 <ul>
@@ -10,7 +31,7 @@
 [all]
 <ul>
 <li>Mixer bug when a MULTIPLY mix used with a slow
-<li>I GVAR popup removed
+<li>GVAR popup removed
 <li>Sticky virtual switches are reset when ResetFlight function is called 
 </ul>
 

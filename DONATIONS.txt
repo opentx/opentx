@@ -133,7 +133,7 @@ Eric Burdis
 Nigel Chippindale
 Michael Deasy
 Stephen Stough
-Kenneth Lilja 
+Kenneth Lilja (monthly)
 Robert Jero
 Gary Bancroft
 Robert Cotsford
@@ -178,14 +178,14 @@ Nicholas Crego
 Keith Hertzog
 Johan Moelich
 Timo Esser
-Dean Church (mensual)
-Brian Paddock (mensual)
+Dean Church (monthly)
+Brian Paddock (monthly)
 Jean Pierre Parisy
 Norbert Martsch
 Jean-Marie Guitard
 Eric Beier
 Mike Perkins
-Tilman Baumann (mensual)
+Tilman Baumann (monthly)
 Fred Larssen
 Ari Aalto
 Robert Sams 
@@ -197,7 +197,7 @@ Kenneth Crump
 Dave Matison
 Mike Matheny
 Pino Agostino
-Graham Boucher (mensual)
+Graham Boucher (monthly)
 Nelson Noura
 Joel Allamy
 Philip David Martin
@@ -208,7 +208,7 @@ Timothy Pelletier
 Glen Roe (ShowMaster)
 Jan Van Ooteghem
 David Ankers - Special thanks here to the OpenPilot project!
-Lawrence Christensen (mensual)
+Lawrence Christensen (monthly)
 Leo Duflou
 Bruce Wood
 Arnd Feige
@@ -331,3 +331,69 @@ Francisco Gutierrez Muñoz
 Steve Coley
 Sean Cull
 Roberto Orsello
+David Finger
+FrSky - www.frsky-rc.com (monthly)
+Jean-Marie Oddo
+Mike Matheny
+Glen Roe (Showmaster)
+Arron Bates
+Tim Spurr
+Daniel Morgan
+Trent Ready
+Mark Maskiell
+Robert Crockford
+Mark Illum
+David McGuire
+Martyn Coles
+Jose Sobral
+Heung Jin Choi
+Tomasz Janiak
+Fabien Gagné
+Joe Street
+Micha Ronen
+Albert Blondin
+Klaus Schuebel
+Evening Shade Pottery
+Thomas Kilduff
+Sven Assmus
+Markus Eberl
+Dietmar Drees
+Nicholas Field
+Harald Wilczak
+Michel Baily
+John Grepps
+Anthony Burbidge
+Sherba Baine
+Gordon Evans
+Fred Figge
+Uwe Kuehn 
+David Beatty
+Aaron Stringer
+Alan J Wasserman
+Wolfgang Rauser
+Samuel Cook
+BoltRC - www.boltrc.com
+Friedrich Ipolt
+Barrington Cole 
+Charles Lakins
+Thos. O'Meara Photography
+Adam Chevalier
+Mike Mulligan
+Gordon Stahl
+Serge Michaux 
+Robert Young
+Wilco Hijink
+Roy Nixon
+Lexington S Morley
+Daryl Dacko
+Beat Zurflueh
+Piotr Kundu
+Kevin Berkefeld
+Tomasz Klys
+Mirco Didone'
+Christoph Schroeter
+Zdenek Trojanek
+Bryan Anderson
+Kamco Enterprises 
+Robert Bates
+Robert Brown  

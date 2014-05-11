@@ -211,13 +211,14 @@ void setupPulsesPXX(unsigned int port)
   }
   else {
     flag1 = (g_model.moduleData[port].rfProtocol << 6) | pxxFlag[port];
-
-    if (failsafeCounter[port]-- == 0) {
-      failsafeCounter[port] = 1000;
-      flag1 |= PXX_SEND_FAILSAFE;
-    }
-    if (failsafeCounter[port] == 0 && g_model.moduleData[port].channelsCount > 0) {
-      flag1 |= PXX_SEND_FAILSAFE;
+    if (g_model.moduleData[port].failsafeMode != FAILSAFE_RECEIVER) {
+      if (failsafeCounter[port]-- == 0) {
+        failsafeCounter[port] = 1000;
+        flag1 |= PXX_SEND_FAILSAFE;
+      }
+      if (failsafeCounter[port] == 0 && g_model.moduleData[port].channelsCount > 0) {
+        flag1 |= PXX_SEND_FAILSAFE;
+      }
     }
   }
 

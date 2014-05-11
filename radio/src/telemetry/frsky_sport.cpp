@@ -118,6 +118,10 @@
 #define GPS_TIME_DATE_FIRST_ID  0x0850
 #define GPS_TIME_DATE_LAST_ID   0x085f
 
+// Temporary IDs, will be changed when FrSky will have defined them in the S.PORT protocol
+#define AIR_SPEED_FIRST_ID      0x0a00
+#define AIR_SPEED_LAST_ID       0x0a0f
+
 // FrSky wrong IDs ?
 #define BETA_VARIO_ID           0x8030
 #define BETA_BARO_ALT_ID        0x8010
@@ -249,7 +253,7 @@ void processHubPacket(uint8_t id, uint16_t value)
 
     case GPS_SPEED_BP_ID:
       // Speed => Max speed
-      frskyData.hub.gpsSpeed_bp = (frskyData.hub.gpsSpeed_bp * 46) / 25;
+      frskyData.hub.gpsSpeed_bp = frskyData.hub.gpsSpeed_bp;
       if (frskyData.hub.gpsSpeed_bp > frskyData.hub.maxGpsSpeed)
         frskyData.hub.maxGpsSpeed = frskyData.hub.gpsSpeed_bp;
       break;
@@ -397,9 +401,15 @@ void processSportPacket(uint8_t *packet)
       else if (appId >= VFAS_FIRST_ID && appId <= VFAS_LAST_ID) {
         frskyData.hub.vfas = SPORT_DATA_U32(packet)/10;   //TODO: remove /10 and display with PREC2 when using SPORT
       }
+      else if (appId >= AIR_SPEED_FIRST_ID && appId <= AIR_SPEED_LAST_ID) {
+        frskyData.hub.airSpeed = SPORT_DATA_U32(packet);
+        frskyData.hub.airSpeed /= 10;
+        if (frskyData.hub.airSpeed > frskyData.hub.maxAirSpeed)
+          frskyData.hub.maxAirSpeed = frskyData.hub.airSpeed;
+      }
       else if (appId >= GPS_SPEED_FIRST_ID && appId <= GPS_SPEED_LAST_ID) {
         frskyData.hub.gpsSpeed_bp = SPORT_DATA_U32(packet);
-        frskyData.hub.gpsSpeed_bp = (frskyData.hub.gpsSpeed_bp * 46) / 25 / 1000;
+        frskyData.hub.gpsSpeed_bp /= 1000;
         if (frskyData.hub.gpsSpeed_bp > frskyData.hub.maxGpsSpeed)
           frskyData.hub.maxGpsSpeed = frskyData.hub.gpsSpeed_bp;
       }
@@ -595,7 +605,7 @@ void telemetryInterrupt10ms()
     uint16_t current = 0;
 #endif
 
-    channel = g_model.frsky.currentSource - FRSKY_SOURCE_A1;
+    channel = g_model.frsky.currentSource - FRSKY_CURRENT_SOURCE_A1;
     if (channel <= 1) {
       current = applyChannelRatio(channel, frskyData.analog[channel].value) / 10;
     }
@@ -668,7 +678,7 @@ void telemetryWakeup()
     if (alarmsCheckStep == 0) {
       if ((IS_MODULE_XJT(0) || IS_MODULE_XJT(1)) && frskyData.swr.value > 0x33) {
         AUDIO_SWR_RED();
-        s_global_warning = STR_ANTENNAPROBLEM;
+        POPUP_WARNING(STR_ANTENNAPROBLEM);
         alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3seconds */
       }
     }
@@ -780,6 +790,8 @@ void resetTelemetry()
 
   frskyData.hub.gpsSpeed_bp = 100;
   frskyData.hub.gpsSpeed_ap = 50;
+
+  frskyData.hub.airSpeed = 100;
 
   frskyData.hub.cellsCount = 6;
 

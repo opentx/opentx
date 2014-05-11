@@ -12,14 +12,14 @@ namespace Ui {
   class Telemetry;
 }
 
-class TelemetryAnalog : public QWidget
+class TelemetryAnalog: public ModelPanel
 {
     Q_OBJECT
 
     friend class TelemetryPanel;
 
   public:
-    TelemetryAnalog(QWidget *parent, FrSkyChannelData & analog);
+    TelemetryAnalog(QWidget *parent, FrSkyChannelData & analog, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
     virtual ~TelemetryAnalog();
 
   signals:
@@ -45,12 +45,12 @@ class TelemetryAnalog : public QWidget
     void update();
 };
 
-class TelemetryCustomScreen : public ModelPanel
+class TelemetryCustomScreen: public ModelPanel
 {
     Q_OBJECT
 
   public:
-    TelemetryCustomScreen(QWidget *parent, ModelData & model, FrSkyScreenData & screen);
+    TelemetryCustomScreen(QWidget *parent, ModelData & model, FrSkyScreenData & screen, GeneralSettings & generalSettings, FirmwareInterface * firmware);
     ~TelemetryCustomScreen();
     void update();
 
@@ -60,6 +60,9 @@ class TelemetryCustomScreen : public ModelPanel
     void barSourceChanged(int index);
     void barMinChanged(double value);
     void barMaxChanged(double value);
+
+  protected:
+    void populateTelemetrySourceCB(QComboBox *b, unsigned int value, bool last, int hubproto);
 
   private:
     void updateBar(int line);
@@ -76,7 +79,7 @@ class TelemetryPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    TelemetryPanel(QWidget *parent, ModelData & model);
+    TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
     virtual ~TelemetryPanel();
 
   signals:
@@ -86,7 +89,7 @@ class TelemetryPanel : public ModelPanel
     void onAnalogModified();
     void on_frskyProtoCB_currentIndexChanged(int index);
     void on_frskyUnitsCB_currentIndexChanged(int index);
-    void on_frskyBladesCB_currentIndexChanged(int index);
+    void on_bladesCount_editingFinished();
     void on_frskyCurrentCB_currentIndexChanged(int index);
     void on_frskyVoltCB_currentIndexChanged(int index);
     void on_AltitudeToolbar_ChkB_toggled(bool checked);

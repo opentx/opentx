@@ -79,7 +79,7 @@ enum ItalianPrompts {
   IT_PROMPT_ACCELy = IT_PROMPT_LABELS_BASE+TELEM_ACCy,
   IT_PROMPT_ACCELz = IT_PROMPT_LABELS_BASE+TELEM_ACCz,
   IT_PROMPT_HDG = IT_PROMPT_LABELS_BASE+TELEM_HDG,
-  IT_PROMPT_VARIO = IT_PROMPT_LABELS_BASE+TELEM_VSPD,
+  IT_PROMPT_VARIO = IT_PROMPT_LABELS_BASE+TELEM_VSPEED,
 
 };
 
@@ -115,7 +115,7 @@ I18N_PLAY_FUNCTION(it, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     }
 #if defined(CPUARM)
     if ((att & PREC1) && (unit == UNIT_FEET || (unit == UNIT_DIST && number >= 100))) {
-      number /= 10;
+      number = div10_and_round(number);
       att -= PREC1;
     }
 #endif
@@ -164,7 +164,7 @@ I18N_PLAY_FUNCTION(it, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 }
 
-I18N_PLAY_FUNCTION(it, playDuration, int16_t seconds)
+I18N_PLAY_FUNCTION(it, playDuration, int seconds PLAY_DURATION_ATT)
 {
   if (seconds < 0) {
     PUSH_NUMBER_PROMPT(IT_PROMPT_MENO);
@@ -176,7 +176,7 @@ I18N_PLAY_FUNCTION(it, playDuration, int16_t seconds)
   seconds %= 3600;
   if (tmp > 0) {
     ore=tmp;
-    if (tmp > 1) {
+    if (tmp > 1 || IS_PLAY_TIME()) {
       PLAY_NUMBER(tmp, 0, 0);
       PUSH_NUMBER_PROMPT(IT_PROMPT_ORE);
     } else {

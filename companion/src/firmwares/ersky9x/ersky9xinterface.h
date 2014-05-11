@@ -46,12 +46,8 @@ class Ersky9xInterface : public EEPROMInterface
     
     virtual int getSize(GeneralSettings &settings);
 
-    virtual int getCapability(const Capability);
-    
     virtual int isAvailable(Protocol proto, int port=0);
 
-    virtual SimulatorInterface * getSimulator();
-    
   protected:
 
     EFile *efile;

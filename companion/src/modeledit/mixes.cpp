@@ -3,10 +3,10 @@
 // #include <QMessageBox>
 // #include "expodialog.h"
 
-MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings):
-  ModelPanel(parent, model),
-  generalSettings(generalSettings),
-  mixInserted(false)
+MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+  ModelPanel(parent, model, generalSettings, firmware),
+  mixInserted(false), 
+  highlightedSource(0)
 {
   QGridLayout * mixesLayout = new QGridLayout(this);
 
@@ -43,59 +43,124 @@ MixesPanel::~MixesPanel()
 {
 }
 
+QString MixesPanel::getChannelLabel(int curDest)
+{
+  QString str;
+  str = QObject::tr("CH%1").arg(curDest);
+  // TODO not nice, Qt brings a function for that, I don't remember right now
+  (str.length() < 4) ? str.append("  ") : str.append(" ");
+  if (firmware->getCapability(HasChNames)) {
+    QString name = model.limitData[curDest-1].name;
+    if (!name.isEmpty()) {
+      name = QString("(") + name + QString(")");
+    }
+    name.append("        ");
+    str += name.left(8);
+  }
+  return Qt::escape(str);
+}
+
 void MixesPanel::update()
 {
-  // curDest -> destination channel4
+  // curDest -> destination channel
   // i -> mixer number
   QByteArray qba;
   MixerlistWidget->clear();
+  firstLine = true;
   unsigned int curDest = 0;
   int i;
-  unsigned int outputs = GetEepromInterface()->getCapability(Outputs);
-  int showNames = false; // TODO in a menu ui->showNames_Ckb->isChecked();
-  for (i=0; i<GetEepromInterface()->getCapability(Mixes); i++) {
-    MixData *md = &model.mixData[i];
-    if ((md->destCh==0) || (md->destCh>outputs+(unsigned int)GetEepromInterface()->getCapability(ExtraChannels))) continue;
-    QString str = "";
-    while (curDest<(md->destCh-1)) {
-      curDest++;
-      if (curDest > outputs) {
-        str = tr("X%1  ").arg(curDest-outputs);
-      }
-      else {
-        str = tr("CH%1%2").arg(curDest/10).arg(curDest%10);
-        if (GetEepromInterface()->getCapability(HasChNames) && showNames) {
-          QString name=model.limitData[curDest-1].name;
-          if (!name.isEmpty()) {
-            name.append("     ");
-            str=name.left(6);
-          }
-        }
-      }
-      qba.clear();
-      qba.append((quint8)-curDest);
-      QListWidgetItem *itm = new QListWidgetItem(str);
-      itm->setData(Qt::UserRole,qba);
-      MixerlistWidget->addItem(itm);
-    }
+  unsigned int outputs = firmware->getCapability(Outputs);
 
-    if (md->destCh > outputs) {
-      str = tr("X%1  ").arg(md->destCh-outputs);
+  for (i=0; i<firmware->getCapability(Mixes); i++) {
+    MixData *md = &model.mixData[i];
+    // qDebug() << "md->destCh: " << md->destCh;
+    if (md->destCh==0 || md->destCh>outputs) continue;
+    QString str = "";
+    while (curDest < md->destCh-1) {
+      curDest++;
+      AddMixerLine(-curDest);
+    }
+    if (AddMixerLine(i)) {
+      curDest++;
+    }
+  }
+
+  while (curDest < outputs) {
+    curDest++;
+    AddMixerLine(-curDest);
+  }
+}
+
+/**
+  @brief Creates new mixer line (list item) and adds it to the list widget
+
+  @note Mixer lines are now HTML formated in order to support bold text.
+
+  @param[in] dest   defines which mixer line to create. 
+                    If dest < 0 then create empty channel slotr fo channel -dest ( dest=-2 -> CH2)
+                    if dest >=0 then create used channel based on model mix data from slot dest (dest=4 -> model mix[4])
+
+  @retval true      destination channel is different from the previous list item
+          false     destination channle is the same as previous list item
+*/
+bool MixesPanel::AddMixerLine(int dest)
+{
+  bool new_ch;
+  QString str = getMixerText(dest, &new_ch);
+  QListWidgetItem *itm = new QListWidgetItem(str);
+  QByteArray qba(1, (quint8)dest);
+  if (dest >= 0) {
+    //add mix data
+    MixData *md = &model.mixData[dest];
+    qba.append((const char*)md, sizeof(MixData));
+  }
+  itm->setData(Qt::UserRole, qba);  
+#if MIX_ROW_HEIGHT_INCREASE > 0
+  if (new_ch && !firstLine) {
+    //increase size of this row
+    itm->setData(GroupHeaderRole, 1);  
+  }
+#endif
+  MixerlistWidget->addItem(itm);
+  firstLine = false;
+  // qDebug() << "MixesPanel::AddMixerLine(): dest" << dest << "text" << str;
+  return new_ch;
+}
+
+/**
+  @brief Returns HTML formated mixer representation
+
+  @param[in] dest   defines which mixer line to create. 
+                    If dest < 0 then create empty channel slot for channel -dest ( dest=-2 -> CH2)
+                    if dest >=0 then create used channel based on model mix data from slot dest (dest=4 -> model mix[4])
+
+  @retval string    mixer line in HTML  
+*/
+QString MixesPanel::getMixerText(int dest, bool * new_ch)
+{
+  QString str;
+  if (new_ch) *new_ch = 0;
+  if (dest < 0) {
+    str = getChannelLabel(-dest);
+    //highlight channell if needed
+    if (-dest == (int)highlightedSource) {
+      str = "<b>" + str + "</b>";
+    }
+    if (new_ch) *new_ch = 1;
+  }
+  else {
+    MixData *md = &model.mixData[dest];
+    //md->destCh from 1 to 32
+    str = getChannelLabel(md->destCh);
+
+    if ((dest == 0) || (model.mixData[dest-1].destCh != md->destCh)) {
+      if (new_ch) *new_ch = 1;
+      //highlight channell if needed
+      if (md->destCh == highlightedSource) {
+        str = "<b>" + str + "</b>";
+      }
     }
     else {
-      str = tr("CH%1%2").arg(md->destCh/10).arg(md->destCh%10);
-      str.append("  ");
-      if (GetEepromInterface()->getCapability(HasChNames) && showNames) {
-        QString name=model.limitData[md->destCh-1].name;
-        if (!name.isEmpty()) {
-          name.append("     ");
-          str=name.left(6);
-        }
-      }
-    }
-    if (curDest != md->destCh) {
-      curDest = md->destCh;
-    } else {
       str.fill(' ');
     }
 
@@ -105,89 +170,64 @@ void MixesPanel::update()
       default:  str += "  "; break;
     };
 
-    str += " " + md->srcRaw.toString();
+    //set mixer src model if it is unset (srcRaw needs this to generate proper toString() for input source type)
+    if (md->srcRaw.model == 0) 
+      md->srcRaw.model = &model;  
+    
+    //highlight source if needed
+    if ( (md->srcRaw.type == SOURCE_TYPE_CH) && (md->srcRaw.index+1 == (int)highlightedSource) ) {
+      str += " <b>" + Qt::escape(md->srcRaw.toString()) + "</b>"; 
+    }
+    else {
+      str += " " + Qt::escape(md->srcRaw.toString());
+    }
 
-    str += " " + tr("Weight(%1)").arg(getGVarString(md->weight, true));
+    str += " " + Qt::escape(tr("Weight(%1)").arg(getGVarString(md->weight, true)));
 
     QString phasesStr = getPhasesStr(md->phases, model);
-    if (!phasesStr.isEmpty()) str += " " + phasesStr;
+    if (!phasesStr.isEmpty()) str += " " + Qt::escape(phasesStr);
 
     if (md->swtch.type != SWITCH_TYPE_NONE) {
-      str += " " + tr("Switch(%1)").arg(md->swtch.toString());
+      str += " " + Qt::escape(tr("Switch(%1)").arg(md->swtch.toString()));
     }
 
-    if (!GetEepromInterface()->getCapability(VirtualInputs)) {
-      if (md->carryTrim>0) {
-        str += " " + tr("No Trim");
-      }
-      else if (md->carryTrim<0) {
-        str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString();
-      }
+    if (md->carryTrim) {
+      str += " " + Qt::escape(tr("NoTrim"));
     }
 
-    if (md->noExpo)      str += " " + tr("No DR/Expo");
-    if (md->sOffset)     str += " " + tr("Offset(%1)").arg(getGVarString(md->sOffset));
-    if (md->curve.value) str += " " + md->curve.toString();
+    if (md->noExpo)      str += " " + Qt::escape(tr("No DR/Expo"));
+    if (md->sOffset)     str += " " + Qt::escape(tr("Offset(%1)").arg(getGVarString(md->sOffset)));
+    if (md->curve.value) str += " " + Qt::escape(md->curve.toString());
 
-    int scale = GetEepromInterface()->getCapability(SlowScale);
+    int scale = firmware->getCapability(SlowScale);
     if (scale == 0)
       scale = 1;
     if (md->delayDown || md->delayUp)
-      str += tr(" Delay(u%1:d%2)").arg((double)md->delayUp/scale).arg((double)md->delayDown/scale);
+      str += Qt::escape(tr(" Delay(u%1:d%2)").arg((double)md->delayUp/scale).arg((double)md->delayDown/scale));
     if (md->speedDown || md->speedUp)
-      str += tr(" Slow(u%1:d%2)").arg((double)md->speedUp/scale).arg((double)md->speedDown/scale);
-    if (md->mixWarn)  str += tr(" Warn(%1)").arg(md->mixWarn);
-    if (GetEepromInterface()->getCapability(HasMixerNames)) {
+      str += Qt::escape(tr(" Slow(u%1:d%2)").arg((double)md->speedUp/scale).arg((double)md->speedDown/scale));
+    if (md->mixWarn)  str += Qt::escape(tr(" Warn(%1)").arg(md->mixWarn));
+    if (firmware->getCapability(HasMixerNames)) {
       QString MixerName;
       MixerName.append(md->name);
       if (!MixerName.isEmpty()) {
-        str += QString("(%1)").arg(MixerName);
+        str += " " + Qt::escape(QString("(%1)").arg(MixerName));
       }
     }
-    qba.clear();
-    qba.append((quint8)i);
-    qba.append((const char*)md, sizeof(MixData));
-    QListWidgetItem *itm = new QListWidgetItem(str);
-    itm->setData(Qt::UserRole, qba);  // mix number
-    MixerlistWidget->addItem(itm); //(str);
   }
-
-  while(curDest<outputs+GetEepromInterface()->getCapability(ExtraChannels)) {
-    curDest++;
-    QString str;
-
-    if (curDest > outputs) {
-      str = tr("X%1  ").arg(curDest-outputs);
-    }
-    else {
-      str = tr("CH%1%2").arg(curDest/10).arg(curDest%10);
-      if (GetEepromInterface()->getCapability(HasChNames) && showNames) {
-        QString name=model.limitData[curDest-1].name;
-        if (!name.isEmpty()) {
-          name.append("     ");
-          str=name.left(6);
-        }
-      }
-    }
-    qba.clear();
-    qba.append((quint8)-curDest);
-    QListWidgetItem *itm = new QListWidgetItem(str);
-    itm->setData(Qt::UserRole,qba); // add new mixer
-    MixerlistWidget->addItem(itm);
-  }
+  return str.replace(" ", "&nbsp;");
 }
-
 
 bool MixesPanel::gm_insertMix(int idx)
 {
-    if (idx<0 || idx>=GetEepromInterface()->getCapability(Mixes) || model.mixData[GetEepromInterface()->getCapability(Mixes)-1].destCh > 0) {
+    if (idx<0 || idx>=firmware->getCapability(Mixes) || model.mixData[firmware->getCapability(Mixes)-1].destCh > 0) {
       QMessageBox::information(this, "companion", tr("Not enough available mixers!"));
       return false;
     }
 
     int i = model.mixData[idx].destCh;
     memmove(&model.mixData[idx+1],&model.mixData[idx],
-        (GetEepromInterface()->getCapability(Mixes)-(idx+1))*sizeof(MixData) );
+        (firmware->getCapability(Mixes)-(idx+1))*sizeof(MixData) );
     memset(&model.mixData[idx],0,sizeof(MixData));
     model.mixData[idx].srcRaw = RawSource(SOURCE_TYPE_NONE);
     model.mixData[idx].destCh = i;
@@ -198,19 +238,19 @@ bool MixesPanel::gm_insertMix(int idx)
 void MixesPanel::gm_deleteMix(int index)
 {
     memmove(&model.mixData[index],&model.mixData[index+1],
-            (GetEepromInterface()->getCapability(Mixes)-(index+1))*sizeof(MixData));
-    memset(&model.mixData[GetEepromInterface()->getCapability(Mixes)-1],0,sizeof(MixData));
+            (firmware->getCapability(Mixes)-(index+1))*sizeof(MixData));
+    memset(&model.mixData[firmware->getCapability(Mixes)-1],0,sizeof(MixData));
 }
 
 void MixesPanel::gm_openMix(int index)
 {
-    if(index<0 || index>=GetEepromInterface()->getCapability(Mixes)) return;
+    if(index<0 || index>=firmware->getCapability(Mixes)) return;
 
     MixData mixd(model.mixData[index]);
     emit modified();
     update();
 
-    MixerDialog *g = new MixerDialog(this, model, &mixd, generalSettings.stickMode);
+    MixerDialog *g = new MixerDialog(this, model, &mixd, generalSettings, firmware);
     if(g->exec()) {
       model.mixData[index] = mixd;
       emit modified();
@@ -228,8 +268,8 @@ void MixesPanel::gm_openMix(int index)
 int MixesPanel::getMixerIndex(unsigned int dch)
 {
     int i = 0;
-    while ((model.mixData[i].destCh<=dch) && (model.mixData[i].destCh) && (i<GetEepromInterface()->getCapability(Mixes))) i++;
-    if(i==GetEepromInterface()->getCapability(Mixes)) return -1;
+    while ((model.mixData[i].destCh<=dch) && (model.mixData[i].destCh) && (i<firmware->getCapability(Mixes))) i++;
+    if(i==firmware->getCapability(Mixes)) return -1;
     return i;
 }
 
@@ -265,7 +305,7 @@ QList<int> MixesPanel::createMixListFromSelected()
     QList<int> list;
     foreach(QListWidgetItem *item, MixerlistWidget->selectedItems()) {
       int idx= item->data(Qt::UserRole).toByteArray().at(0);
-      if(idx>=0 && idx<GetEepromInterface()->getCapability(Mixes)) list << idx;
+      if(idx>=0 && idx<firmware->getCapability(Mixes)) list << idx;
     }
     return list;
 }
@@ -338,7 +378,7 @@ void MixesPanel::pasteMixerMimeData(const QMimeData * mimeData, int destIdx)
     int i = 0;
     while(i<mxData.size()) {
       idx++;
-      if(idx==GetEepromInterface()->getCapability(Mixes)) break;
+      if(idx==firmware->getCapability(Mixes)) break;
 
       if (!gm_insertMix(idx))
         break;
@@ -386,6 +426,24 @@ void MixesPanel::mixerOpen()
     gm_openMix(idx);
 }
 
+void MixesPanel::mixerHighlight()
+{
+  int idx = MixerlistWidget->currentItem()->data(Qt::UserRole).toByteArray().at(0);
+  int dest;
+  if (idx<0) {
+    dest = -idx;
+  }
+  else {
+    dest = model.mixData[idx].destCh;
+  }
+  highlightedSource = ( (int)highlightedSource ==  dest) ? 0 : dest;
+  // qDebug() << "MixesPanel::mixerHighlight(): " << highlightedSource ;
+  for(int i=0; i<MixerlistWidget->count(); i++) {
+    int t = MixerlistWidget->item(i)->data(Qt::UserRole).toByteArray().at(0);
+    MixerlistWidget->item(i)->setText(getMixerText(t, 0));
+  }
+}
+
 void MixesPanel::mixerAdd()
 {
     if (!MixerlistWidget->currentItem())
@@ -420,10 +478,11 @@ void MixesPanel::mixerlistWidget_customContextMenuRequested(QPoint pos)
     QMenu contextMenu;
     contextMenu.addAction(CompanionIcon("add.png"), tr("&Add"),this,SLOT(mixerAdd()),tr("Ctrl+A"));
     contextMenu.addAction(CompanionIcon("edit.png"), tr("&Edit"),this,SLOT(mixerOpen()),tr("Enter"));
+    contextMenu.addAction(CompanionIcon("fuses.png"), tr("&Toggle highlight"),this,SLOT(mixerHighlight()),tr("Ctrl+T"));
     contextMenu.addSeparator();
     contextMenu.addAction(CompanionIcon("clear.png"), tr("&Delete"),this,SLOT(mixersDelete()),tr("Delete"));
     contextMenu.addAction(CompanionIcon("copy.png"), tr("&Copy"),this,SLOT(mixersCopy()),tr("Ctrl+C"));
-    contextMenu.addAction(CompanionIcon("cut.png"), tr("&Cut"),this,SLOT(mixersCut()),tr("Ctrl+X"));
+    contextMenu.addAction(CompanionIcon("cut.png"), tr("C&ut"),this,SLOT(mixersCut()),tr("Ctrl+X"));
     contextMenu.addAction(CompanionIcon("paste.png"), tr("&Paste"),this,SLOT(mixersPaste()),tr("Ctrl+V"))->setEnabled(hasData);
     contextMenu.addAction(CompanionIcon("duplicate.png"), tr("Du&plicate"),this,SLOT(mixersDuplicate()),tr("Ctrl+U"));
     contextMenu.addSeparator();
@@ -436,6 +495,7 @@ void MixesPanel::mixerlistWidget_customContextMenuRequested(QPoint pos)
 void MixesPanel::mimeMixerDropped(int index, const QMimeData *data, Qt::DropAction /*action*/)
 {
     int idx= MixerlistWidget->item(index > 0 ? index-1 : 0)->data(Qt::UserRole).toByteArray().at(0);
+    //qDebug() << "MixesPanel::mimeMixerDropped()" << index << data;
     pasteMixerMimeData(data, idx);
 }
 
@@ -452,6 +512,7 @@ void MixesPanel::mixerlistWidget_KeyPress(QKeyEvent *event)
     if(event->matches(QKeySequence::Cut))       mixersCut();
     if(event->matches(QKeySequence::Paste))     mixersPaste();
     if(event->matches(QKeySequence::Underline)) mixersDuplicate();
+    if(event->matches(QKeySequence::AddTab))    mixerHighlight();
 
     if(event->key()==Qt::Key_Return || event->key()==Qt::Key_Enter) mixerOpen();
     if(event->matches(QKeySequence::MoveToNextLine))
@@ -462,13 +523,13 @@ void MixesPanel::mixerlistWidget_KeyPress(QKeyEvent *event)
 
 int MixesPanel::gm_moveMix(int idx, bool dir) //true=inc=down false=dec=up
 {
-    if(idx>GetEepromInterface()->getCapability(Mixes) || (idx==0 && !dir) || (idx==GetEepromInterface()->getCapability(Mixes) && dir)) return idx;
+    if(idx>firmware->getCapability(Mixes) || (idx==0 && !dir) || (idx==firmware->getCapability(Mixes) && dir)) return idx;
 
     int tdx = dir ? idx+1 : idx-1;
     MixData &src=model.mixData[idx];
     MixData &tgt=model.mixData[tdx];
 
-    unsigned int outputs = GetEepromInterface()->getCapability(Outputs);
+    unsigned int outputs = firmware->getCapability(Outputs);
     if((src.destCh==0) || (src.destCh>outputs) || (tgt.destCh>outputs)) return idx;
 
     if (tgt.destCh!=src.destCh) {

@@ -45,6 +45,7 @@
 #define GAUGES
 #define GPS
 #define FAI_CHOICE
+#define FRSKY_STICKS
 
 #define EEPROM_VARIANT SIMU_M128_VARIANTS
 #define GAUGES
@@ -73,6 +74,7 @@ namespace Open9xM128 {
 #include "radio/src/simpgmspace.cpp"
 #include "radio/src/templates.cpp"
 #include "radio/src/translations.cpp"
+#include "radio/src/fonts.cpp"
 #include "radio/src/audio_avr.cpp"
 #include "radio/src/targets/stock/voice.cpp"
 #include "radio/src/telemetry/frsky.cpp"
@@ -103,8 +105,7 @@ uint8_t getStickMode()
 
 using namespace Open9xM128;
 
-Open9xM128Simulator::Open9xM128Simulator(OpenTxInterface * open9xInterface):
-  open9xInterface(open9xInterface)
+Open9xM128Simulator::Open9xM128Simulator()
 {
 }
 
@@ -188,6 +189,13 @@ void Open9xM128Simulator::wheelEvent(uint8_t steps)
 unsigned int Open9xM128Simulator::getPhase()
 {
   return getFlightPhase();
+}
+
+const char * Open9xM128Simulator::getPhaseName(unsigned int phase)
+{
+  static char buff[sizeof(g_model.phaseData[0].name)+1];
+  zchar2str(buff, g_model.phaseData[phase].name, sizeof(g_model.phaseData[0].name));
+  return buff;
 }
 
 const char * Open9xM128Simulator::getError()

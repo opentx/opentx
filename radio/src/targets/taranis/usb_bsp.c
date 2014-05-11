@@ -82,9 +82,15 @@ void USB_OTG_BSP_Init(USB_OTG_CORE_HANDLE *pdev)
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
   RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_OTG_FS, ENABLE) ; 
 }
+
+void USB_OTG_BSP_Deinit(USB_OTG_CORE_HANDLE *pdev)
+{
+  //nothing to do  
+}
+
 /**
 * @brief  USB_OTG_BSP_EnableInterrupt
-*         Enabele USB Global interrupt
+*         Enable USB Global interrupt
 * @param  None
 * @retval None
 */
@@ -99,6 +105,26 @@ void USB_OTG_BSP_EnableInterrupt(USB_OTG_CORE_HANDLE *pdev)
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);  
 }
+
+/**
+* @brief  USB_OTG_BSP_DisableInterrupt
+*         Disable USB Global interrupt
+* @param  None
+* @retval None
+*/
+void USB_OTG_BSP_DisableInterrupt(USB_OTG_CORE_HANDLE *pdev)
+{
+  NVIC_InitTypeDef NVIC_InitStructure; 
+  
+  NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+  NVIC_InitStructure.NVIC_IRQChannel = OTG_FS_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = DISABLE;
+  NVIC_Init(&NVIC_InitStructure);  
+}
+
+
 /**
 * @brief  USB_OTG_BSP_uDelay
 *         This function provides delay time in micro sec

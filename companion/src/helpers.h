@@ -4,17 +4,17 @@
 #include <QtGui>
 #include "eeprominterface.h"
 
-#define TMR_NUM_OPTION  (TMR_VAROFS+2*9+2*GetEepromInterface()->getCapability(LogicalSwitches)-1)
+extern const QColor colors[C9X_MAX_CURVES];
+
+#define TMR_NUM_OPTION  (TMR_VAROFS+2*9+2*GetCurrentFirmware()->getCapability(LogicalSwitches)-1)
 
 //convert from mode 1 to mode generalSettings.stickMode
 //NOTICE!  =>  1..4 -> 1..4
-#define CONVERT_MODE(x) (((x)<=4) ? modn12x3[generalSettings.stickMode][((x)-1)] : (x))
-#define CHANNEL_ORDER(x) (chout_ar[generalSettings.templateSetup*4 + (x)-1])
+#define CONVERT_MODE(x)  (((x)<=4) ? modn12x3[generalSettings.stickMode][((x)-1)] : (x))
 
 #define CURVE_BASE   7
 #define CH(x) (SRC_CH1+(x)-1-(SRC_SWC-SRC_3POS))
 #define CV(x) (CURVE_BASE+(x)-1)
-#define CC(x) (CHANNEL_ORDER(x)) //need to invert this to work with dest
 
 #define CURVE5(x) ((x)-1)
 #define CURVE9(x) (MAX_CURVE5+(x)-1)
@@ -27,7 +27,6 @@
 
 void populateGvSourceCB(QComboBox *b, int value);
 void populateVoiceLangCB(QComboBox *b, QString language);
-void populateTTraceCB(QComboBox *b, int value);
 void populateRotEncCB(QComboBox *b, int value, int renumber);
 void populateBacklightCB(QComboBox *b, const uint8_t value);
 
@@ -37,6 +36,8 @@ class CompanionIcon: public QIcon {
   public:
     CompanionIcon(QString baseimage);
 };
+
+bool gvarsEnabled();
 
 class GVarGroup : public QObject {
 
@@ -84,11 +85,10 @@ class CurveGroup : public QObject {
 #define POPULATE_ONOFF        0x01
 #define POPULATE_TIMER_MODES  0x02
 void populateAndSwitchCB(QComboBox *b, const RawSwitch & value);
-void populateSwitchCB(QComboBox *b, const RawSwitch & value, unsigned long attr=0);
+void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettings & generalSettings, unsigned long attr=0);
 
 void populatePhasesCB(QComboBox *b, int value);
 void populateGvarUseCB(QComboBox *b, unsigned int phase);
-void populateCustomScreenFieldCB(QComboBox *b, unsigned int value, bool last, int hubproto);
 QString getProtocolStr(const int proto);
 QString getPhasesStr(unsigned int phases, ModelData & model);
 
@@ -107,7 +107,7 @@ QString getPhasesStr(unsigned int phases, ModelData & model);
 void populateGVCB(QComboBox *b, int value);
 void populateSourceCB(QComboBox *b, const RawSource &source, const ModelData & model, unsigned int flags);
 void populateCSWCB(QComboBox *b, int value);
-QString getPhaseName(int val, char * phasename=NULL);
+QString getPhaseName(int val, const char * phasename=NULL);
 QString getInputStr(ModelData & model, int index);
 QString image2qstring(QImage image);
 QImage qstring2image(QString imagestr);
@@ -120,7 +120,6 @@ QString getCenterBeep(ModelData * g_model);
 
 /* FrSky helpers */
 QString getFrSkyAlarmType(int alarm);
-QString getFrSkyBlades(int blades);
 QString getFrSkyUnits(int units);
 QString getFrSkyProtocol(int protocol);
 QString getFrSkyMeasure(int units);
@@ -130,11 +129,5 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx);
 
 // Format a pixmap to fit on the radio using a specific firmware
 QPixmap makePixMap( QImage image, QString firmwareType );
-
-// Return a radio type derived from a firmware type string 
-int getRadioType(QString firmwareType);
-
-// Return the default firmware string for a specified radio
-QString getDefaultFwType( int radioType );
 
 #endif // HELPERS_H

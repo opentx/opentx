@@ -47,6 +47,8 @@
 #define SYSTEM_SUBDIR       "SYSTEM" // no trailing slash = important
 #define BITMAPS_PATH        ROOT_PATH "BMP"
 #define SCRIPTS_PATH        ROOT_PATH "SCRIPTS"
+#define FIRMWARES_PATH      ROOT_PATH "FIRMWARES"
+#define EEPROMS_PATH        ROOT_PATH "EEPROMS"
 
 #define MODELS_EXT          ".bin"
 #define LOGS_EXT            ".csv"
@@ -54,6 +56,8 @@
 #define BITMAPS_EXT         ".bmp"
 #define SCRIPTS_EXT         ".lua"
 #define TEXT_EXT            ".txt"
+#define FIRMWARE_EXT        ".bin"
+#define EEPROM_EXT          ".bin"
 
 extern FATFS g_FATFS_Obj;
 
@@ -62,6 +66,7 @@ extern const pm_char * openLogs();
 extern void closeLogs();
 extern void writeLogs();
 
+#if !defined(BOOT)
 inline const pm_char *SDCARD_ERROR(FRESULT result)
 {
   if (result == FR_NOT_READY)
@@ -69,6 +74,7 @@ inline const pm_char *SDCARD_ERROR(FRESULT result)
   else
     return STR_SDCARD_ERROR;
 }
+#endif
 
 #if defined(PCBTARANIS)
   #define O9X_FOURCC 0x3378396F // o9x for Taranis

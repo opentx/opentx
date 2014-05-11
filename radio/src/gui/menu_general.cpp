@@ -110,33 +110,25 @@ const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
 #endif
 
 #if !defined(CPUM64)
-  void displaySlider(uint8_t x, uint8_t y, uint8_t value, uint8_t max, uint8_t attr)
-  {
-    lcd_putc(RADIO_SETUP_2ND_COLUMN+(value*4*FW)/max, y, '$');
-    lcd_hline(RADIO_SETUP_2ND_COLUMN, y+3, 5*FW-1, SOLID);
-    if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcd_filled_rect(RADIO_SETUP_2ND_COLUMN, y, 5*FW-1, FH-1);
-  }
   #define SLIDER_5POS(y, value, label, event, attr) { \
     int8_t tmp = value; \
     displaySlider(RADIO_SETUP_2ND_COLUMN, y, 2+tmp, 4, attr); \
     value = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, label, NULL, tmp, -2, +2, attr, event); \
   }
 #elif defined(GRAPHICS)
-  void display5posSlider(uint8_t x, uint8_t y, uint8_t value, uint8_t attr)
-  {
-    lcd_putc(RADIO_SETUP_2ND_COLUMN+2*FW+(value*FW), y, '$');
-    lcd_hline(RADIO_SETUP_2ND_COLUMN, y+3, 5*FW-1, SOLID);
-    if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcd_filled_rect(RADIO_SETUP_2ND_COLUMN, y, 5*FW-1, FH-1);
-  }
   #define SLIDER_5POS(y, value, label, event, attr) { \
     int8_t tmp = value; \
     display5posSlider(RADIO_SETUP_2ND_COLUMN, y, tmp, attr); \
     value = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, label, NULL, tmp, -2, +2, attr, event); \
   }
-  #define displaySlider(x, y, value, max, attr) lcd_outdezAtt(x, y, value, attr|LEFT)
 #else
   #define SLIDER_5POS(y, value, label, event, attr) value = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, label, STR_VBEEPLEN, value, -2, +2, attr, event)
-  #define displaySlider(x, y, value, max, attr) lcd_outdezAtt(x, y, value, attr|LEFT)
+#endif
+
+#if defined(SPLASH) && !defined(FSPLASH)
+  #define IF_SPLASH_PARAM(x) x,
+#else
+  #define IF_SPLASH_PARAM(x)
 #endif
 
 enum menuGeneralSetupItems {
@@ -152,11 +144,11 @@ enum menuGeneralSetupItems {
   IF_CPUARM(ITEM_SETUP_BACKGROUND_VOLUME)
   ITEM_SETUP_BEEP_LENGTH,
   IF_AUDIO(ITEM_SETUP_SPEAKER_PITCH)
-  IF_CPUARM(ITEM_SETUP_VARIO_LABEL)
-  IF_CPUARM(ITEM_SETUP_VARIO_VOLUME)
-  IF_CPUARM(ITEM_SETUP_VARIO_PITCH)
-  IF_CPUARM(ITEM_SETUP_VARIO_RANGE)
-  IF_CPUARM(ITEM_SETUP_VARIO_REPEAT)
+  IF_VARIO_CPUARM(ITEM_SETUP_VARIO_LABEL)
+  IF_VARIO_CPUARM(ITEM_SETUP_VARIO_VOLUME)
+  IF_VARIO_CPUARM(ITEM_SETUP_VARIO_PITCH)
+  IF_VARIO_CPUARM(ITEM_SETUP_VARIO_RANGE)
+  IF_VARIO_CPUARM(ITEM_SETUP_VARIO_REPEAT)
   IF_HAPTIC(ITEM_SETUP_HAPTIC_LABEL)
   IF_HAPTIC(ITEM_SETUP_HAPTIC_MODE)
   IF_HAPTIC(ITEM_SETUP_HAPTIC_LENGTH)
@@ -174,12 +166,11 @@ enum menuGeneralSetupItems {
   ITEM_SETUP_BACKLIGHT_MODE,
   ITEM_SETUP_BACKLIGHT_DELAY,
   IF_CPUARM(ITEM_SETUP_BRIGHTNESS)
+  IF_REVPLUS(ITEM_SETUP_BACKLIGHT_COLOR)
   CASE_PWM_BACKLIGHT(ITEM_SETUP_BACKLIGHT_BRIGHTNESS_OFF)
   CASE_PWM_BACKLIGHT(ITEM_SETUP_BACKLIGHT_BRIGHTNESS_ON)
   ITEM_SETUP_FLASH_BEEP,
-#if defined(SPLASH) && !defined(FSPLASH)
-  ITEM_SETUP_DISABLE_SPLASH,
-#endif
+  IF_SPLASH_PARAM(ITEM_SETUP_DISABLE_SPLASH)
   IF_GPS(ITEM_SETUP_TIMEZONE)
   IF_GPS(ITEM_SETUP_GPSFORMAT)
   IF_PXX(ITEM_SETUP_COUNTRYCODE)
@@ -192,6 +183,12 @@ enum menuGeneralSetupItems {
   ITEM_SETUP_STICK_MODE,
   ITEM_SETUP_MAX
 };
+
+#if defined(FRSKY_STICKS)
+  #define COL_TX_MODE 0
+#else
+  #define COL_TX_MODE LABEL(TX_MODE)
+#endif
 
 void menuGeneralSetup(uint8_t event)
 {
@@ -215,7 +212,7 @@ void menuGeneralSetup(uint8_t event)
   }
 #endif
 
-  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) IF_BATTGRAPH(1) LABEL(SOUND), IF_AUDIO(0) IF_BUZZER(0) IF_VOICE(0) IF_CPUARM(0) IF_CPUARM(0) IF_CPUARM(0) 0, IF_AUDIO(0) IF_CPUARM(LABEL(VARIO)) IF_CPUARM(0) IF_CPUARM(0) IF_CPUARM(0) IF_CPUARM(0) IF_HAPTIC(LABEL(HAPTIC)) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) 0, LABEL(ALARMS), 0, CASE_PCBSKY9X(0) CASE_PCBSKY9X(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) LABEL(BACKLIGHT), 0, 0, IF_CPUARM(0) CASE_PWM_BACKLIGHT(0) CASE_PWM_BACKLIGHT(0) 0, IF_SPLASH(0) IF_GPS(0) IF_GPS(0) IF_PXX(0) IF_CPUARM(0) IF_CPUARM(0) IF_FAI_CHOICE(0) 0, LABEL(TX_MODE), CASE_PCBTARANIS(0) 1/*to force edit mode*/});
+  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) IF_BATTGRAPH(1) LABEL(SOUND), IF_AUDIO(0) IF_BUZZER(0) IF_VOICE(0) IF_CPUARM(0) IF_CPUARM(0) IF_CPUARM(0) 0, IF_AUDIO(0) IF_VARIO_CPUARM(LABEL(VARIO)) IF_VARIO_CPUARM(0) IF_VARIO_CPUARM(0) IF_VARIO_CPUARM(0) IF_VARIO_CPUARM(0) IF_HAPTIC(LABEL(HAPTIC)) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) 0, LABEL(ALARMS), 0, CASE_PCBSKY9X(0) CASE_PCBSKY9X(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) LABEL(BACKLIGHT), 0, 0, IF_CPUARM(0) IF_REVPLUS(0) CASE_PWM_BACKLIGHT(0) CASE_PWM_BACKLIGHT(0) 0, IF_SPLASH_PARAM(0) IF_GPS(0) IF_GPS(0) IF_PXX(0) IF_CPUARM(0) IF_CPUARM(0) IF_FAI_CHOICE(0) 0, COL_TX_MODE, CASE_PCBTARANIS(0) 1/*to force edit mode*/});
 
   uint8_t sub = m_posVert - 1;
 
@@ -380,7 +377,7 @@ void menuGeneralSetup(uint8_t event)
         break;
 #endif
 
-#if defined(CPUARM)
+#if defined(CPUARM) && defined(VARIO)
       case ITEM_SETUP_VARIO_LABEL:
         lcd_putsLeft(y, STR_VARIO);
         break;
@@ -388,19 +385,19 @@ void menuGeneralSetup(uint8_t event)
         SLIDER_5POS(y, g_eeGeneral.varioVolume, TR_SPEAKER_VOLUME, event, attr);
         break;
       case ITEM_SETUP_VARIO_PITCH:
-        lcd_putsLeft(y, "\001Pitch at Zero");
+        lcd_putsLeft(y, STR_PITCH_AT_ZERO);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, VARIO_FREQUENCY_ZERO+(g_eeGeneral.varioPitch*10), attr|LEFT);
         lcd_putsAtt(lcdLastPos, y, "Hz", attr);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.varioPitch, -40, 40);
         break;
       case ITEM_SETUP_VARIO_RANGE:
-        lcd_putsLeft(y, "\001Pitch at Max");
+        lcd_putsLeft(y, STR_PITCH_AT_MAX);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, VARIO_FREQUENCY_ZERO+(g_eeGeneral.varioPitch*10)+VARIO_FREQUENCY_RANGE+(g_eeGeneral.varioRange*10), attr|LEFT);
         lcd_putsAtt(lcdLastPos, y, "Hz", attr);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.varioRange, -80, 80);
         break;
       case ITEM_SETUP_VARIO_REPEAT:
-        lcd_putsLeft(y, "\001Repeat at Zero");
+        lcd_putsLeft(y, STR_REPEAT_AT_ZERO);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, VARIO_REPEAT_ZERO+(g_eeGeneral.varioRepeat*10), attr|LEFT);
         lcd_putsAtt(lcdLastPos, y, "ms", attr);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.varioRepeat, -30, 50);
@@ -432,12 +429,8 @@ void menuGeneralSetup(uint8_t event)
       case ITEM_SETUP_CONTRAST:
         lcd_putsLeft(y, STR_CONTRAST);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.contrast, attr|LEFT);
-        if(attr) {
-#if defined(PCBTARANIS)
-          CHECK_INCDEC_GENVAR(event, g_eeGeneral.contrast, 0, 45);
-#else
-          CHECK_INCDEC_GENVAR(event, g_eeGeneral.contrast, 10, 45);
-#endif          
+        if (attr) {
+          CHECK_INCDEC_GENVAR(event, g_eeGeneral.contrast, CONTRAST_MIN, CONTRAST_MAX);
           lcdSetContrast();
         }
         break;
@@ -529,6 +522,14 @@ void menuGeneralSetup(uint8_t event)
         break;
 #endif
 
+#if defined(PCBTARANIS) && defined(REVPLUS)
+      case ITEM_SETUP_BACKLIGHT_COLOR:
+        lcd_putsLeft(y, STR_BLCOLOR);
+        displaySlider(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.backlightColor, 100, attr);
+        if (attr) g_eeGeneral.backlightColor = checkIncDec(event, g_eeGeneral.backlightColor, 0, 100, EE_GENERAL | NO_INCDEC_MARKS);
+        break;
+#endif
+
 #if defined(PWM_BACKLIGHT)
       case ITEM_SETUP_BACKLIGHT_BRIGHTNESS_OFF:
         lcd_putsLeft(y, STR_BLOFFBRIGHTNESS);
@@ -546,8 +547,20 @@ void menuGeneralSetup(uint8_t event)
 #if defined(SPLASH) && !defined(FSPLASH)
       case ITEM_SETUP_DISABLE_SPLASH:
       {
+#if defined(PCBTARANIS)
+        lcd_putsLeft(y, STR_SPLASHSCREEN);
+        if (SPLASH_NEEDED()) {
+          lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, SPLASH_TIMEOUT/100, attr|LEFT);
+          lcd_putc(lcdLastPos, y, 's');
+        }
+        else {
+          lcd_putsiAtt(RADIO_SETUP_2ND_COLUMN, y, STR_MMMINV, 0, attr);
+        }
+        if (attr) g_eeGeneral.splashMode = -checkIncDecGen(event, -g_eeGeneral.splashMode, -3, 4);
+#else
         uint8_t b = 1-g_eeGeneral.splashMode;
         g_eeGeneral.splashMode = 1 - onoffMenuItem(b, RADIO_SETUP_2ND_COLUMN, y, STR_SPLASHSCREEN, attr, event);
+#endif
         break;
       }
 #endif
@@ -601,24 +614,16 @@ void menuGeneralSetup(uint8_t event)
 #endif
 
 #if defined(MAVLINK)
-		case ITEM_MAVLINK_BAUD:
-			g_eeGeneral.mavbaud = selectMenuItem(RADIO_SETUP_2ND_COLUMN,  //Y
-				y, 					// Y
-				STR_MAVLINK_BAUD_LABEL, 			// pm_char *label
-				STR_MAVLINK_BAUDS, 		// pm_char *values
-//				PSTR("4800""9600""14400""19200""38400""57600""76800""115200"),
-				g_eeGeneral.mavbaud, 	// value
-				0, 	// min
-				7, 	// max
-				attr,  // attr
-				event);	// event
-			break;
+      case ITEM_MAVLINK_BAUD:
+        g_eeGeneral.mavbaud = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_MAVLINK_BAUD_LABEL, STR_MAVLINK_BAUDS, PSTR("4800""9600""14400""19200""38400""57600""76800""115200"), g_eeGeneral.mavbaud, 0, 7, attr, event);
+        break;
 #endif
 
       case ITEM_SETUP_RX_CHANNEL_ORD:
         lcd_putsLeft(y, STR_RXCHANNELORD); // RAET->AETR
-        for (uint8_t i=1; i<=4; i++)
+        for (uint8_t i=1; i<=4; i++) {
           putsChnLetter(RADIO_SETUP_2ND_COLUMN - FW + i*FW, y, channel_order(i), attr);
+        }
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.templateSetup, 0, 23);
         break;
 
@@ -629,7 +634,9 @@ void menuGeneralSetup(uint8_t event)
 
       case ITEM_SETUP_STICK_MODE:
         lcd_putcAtt(2*FW, y, '1'+g_eeGeneral.stickMode, attr);
-        for (uint8_t i=0; i<4; i++) putsMixerSource((6+4*i)*FW, y, MIXSRC_Rud + pgm_read_byte(modn12x3 + 4*g_eeGeneral.stickMode + i), 0);
+        for (uint8_t i=0; i<4; i++) {
+          putsMixerSource((6+4*i)*FW, y, MIXSRC_Rud + pgm_read_byte(modn12x3 + 4*g_eeGeneral.stickMode + i), 0);
+        }
         if (attr && s_editMode>0) {
           CHECK_INCDEC_GENVAR(event, g_eeGeneral.stickMode, 0, 3);
         }
@@ -679,6 +686,103 @@ inline bool isFilenameLower(bool isfile, const char * fn, const char * line)
   return (!isfile && line[SD_SCREEN_FILE_LENGTH+1]) || (isfile==(bool)line[SD_SCREEN_FILE_LENGTH+1] && strcasecmp(fn, line) < 0);
 }
 
+#if defined(PCBTARANIS)
+void backupEeprom()
+{
+  char filename[60];
+  uint8_t buffer[1024];
+  FIL file;
+
+  lcd_clear();
+  lcd_putsLeft(4*FH, STR_WRITING);
+  lcd_rect(3, 6*FH+4, 204, 7);
+  lcdRefresh();
+
+  eeCheck(true);
+
+  // create the directory if needed...
+  DIR folder;
+  FRESULT result = f_opendir(&folder, EEPROMS_PATH);
+  if (result != FR_OK) {
+    if (result == FR_NO_PATH)
+      result = f_mkdir(EEPROMS_PATH);
+    if (result != FR_OK) {
+      POPUP_WARNING(SDCARD_ERROR(result));
+      return;
+    }
+  }
+
+  // prepare the filename...
+  char * tmp = strAppend(filename, EEPROMS_PATH "/eeprom");
+  tmp = strAppendDate(tmp, true);
+  strAppend(tmp, EEPROM_EXT);
+
+  // open the file for writing...
+  f_open(&file, filename, FA_WRITE | FA_CREATE_ALWAYS);
+
+  for (int i=0; i<EESIZE; i+=1024) {
+    UINT count;
+    eeprom_read_block(buffer, i, 1024);
+    f_write(&file, buffer, 1024, &count);
+    lcd_hline(5, 6*FH+6, (200*i)/EESIZE, FORCE);
+    lcd_hline(5, 6*FH+7, (200*i)/EESIZE, FORCE);
+    lcd_hline(5, 6*FH+8, (200*i)/EESIZE, FORCE);
+    lcdRefresh();
+    SIMU_SLEEP(100/*ms*/);
+  }
+
+  f_close(&file);
+}
+#endif
+
+#if defined(PCBTARANIS)
+void flashBootloader(const char * filename)
+{
+  FIL file;
+  f_open(&file, filename, FA_READ);
+  uint8_t buffer[1024];
+  UINT count;
+
+  lcd_clear();
+  lcd_putsLeft(4*FH, STR_WRITING);
+  lcd_rect(3, 6*FH+4, 204, 7);
+  lcdRefresh();
+
+  static uint8_t unlocked = 0;
+  if (!unlocked) {
+    unlocked = 1;
+    unlockFlash();
+  }
+
+  for (int i=0; i<BOOTLOADER_SIZE; i+=1024) {
+    watchdogSetTimeout(100/*1s*/);
+    if (f_read(&file, buffer, 1024, &count) != FR_OK || count != 1024) {
+      POPUP_WARNING(STR_SDCARD_ERROR);
+      break;
+    }
+    if (i==0 && !isBootloaderStart((uint32_t *)buffer)) {
+      POPUP_WARNING(STR_INCOMPATIBLE);
+      break;
+    }
+    for (int j=0; j<1024; j+=FLASH_PAGESIZE) {
+      writeFlash(CONVERT_UINT_PTR(FIRMWARE_ADDRESS+i+j), (uint32_t *)(buffer+j));
+      lcd_hline(5, 6*FH+6, (200*i)/BOOTLOADER_SIZE, FORCE);
+      lcd_hline(5, 6*FH+7, (200*i)/BOOTLOADER_SIZE, FORCE);
+      lcd_hline(5, 6*FH+8, (200*i)/BOOTLOADER_SIZE, FORCE);
+      lcdRefresh();
+      SIMU_SLEEP(30/*ms*/);
+    }
+  }
+
+  if (unlocked) {
+    lockFlash();
+    unlocked = 0;
+  }
+
+  f_close(&file);
+}
+#endif
+
 void onSdManagerMenu(const char *result)
 {
   TCHAR lfn[_MAX_LFN + 1];
@@ -688,7 +792,7 @@ void onSdManagerMenu(const char *result)
     pushMenu(menuGeneralSdManagerInfo);
   }
   else if (result == STR_SD_FORMAT) {
-    POPUP_CONFIRMATION(PSTR("Confirm Format?"));
+    POPUP_CONFIRMATION(STR_CONFIRM_FORMAT);
   }
   else if (result == STR_DELETE_FILE) {
     f_getcwd(lfn, _MAX_LFN);
@@ -727,19 +831,25 @@ void onSdManagerMenu(const char *result)
     memcpy(modelHeaders[g_eeGeneral.currModel].bitmap, g_model.header.bitmap, sizeof(g_model.header.bitmap));
     eeDirty(EE_MODEL);
   }
+  else if (result == STR_VIEW_TEXT) {
+    f_getcwd(lfn, _MAX_LFN);
+    strcat(lfn, "/");
+    strcat(lfn, reusableBuffer.sdmanager.lines[index]);
+    pushMenuTextView(lfn);
+  }
+  else if (result == STR_FLASH_BOOTLOADER) {
+    f_getcwd(lfn, _MAX_LFN);
+    strcat(lfn, "/");
+    strcat(lfn, reusableBuffer.sdmanager.lines[index]);
+    flashBootloader(lfn);
+  }
+#endif
 #if defined(LUA)
   else if (result == STR_EXECUTE_FILE) {
     f_getcwd(lfn, _MAX_LFN);
     strcat(lfn, "/");
     strcat(lfn, reusableBuffer.sdmanager.lines[index]);
     luaExec(lfn);
-  }
-#endif
-  else if (result == STR_VIEW_TEXT) {
-    f_getcwd(lfn, _MAX_LFN);
-    strcat(lfn, "/");
-    strcat(lfn, reusableBuffer.sdmanager.lines[index]);
-    pushMenuTextView(lfn);
   }
 #endif
 }
@@ -841,6 +951,7 @@ void menuGeneralSdManager(uint8_t _event)
         else */ if (!strcasecmp(ext, SOUNDS_EXT)) {
           MENU_ADD_ITEM(STR_PLAY_FILE);
         }
+#endif
 #if defined(PCBTARANIS)
         else if (!strcasecmp(ext, BITMAPS_EXT) && !READ_ONLY()) {
           MENU_ADD_ITEM(STR_ASSIGN_BITMAP);
@@ -848,12 +959,14 @@ void menuGeneralSdManager(uint8_t _event)
         else if (!strcasecmp(ext, TEXT_EXT)) {
           MENU_ADD_ITEM(STR_VIEW_TEXT);
         }
+        else if (!strcasecmp(ext, FIRMWARE_EXT) && !READ_ONLY()) {
+          MENU_ADD_ITEM(STR_FLASH_BOOTLOADER);
+        }
 #endif
 #if defined(LUA)
         else if (!strcasecmp(ext, SCRIPTS_EXT)) {
           MENU_ADD_ITEM(STR_EXECUTE_FILE);
         }
-#endif
 #endif
         if (!READ_ONLY()) {
           MENU_ADD_ITEM(STR_DELETE_FILE);
@@ -991,10 +1104,10 @@ void menuGeneralTrainer(uint8_t event)
   uint8_t y;
   bool slave = SLAVE_MODE();
 
-  MENU(STR_MENUTRAINER, menuTabDiag, e_Trainer, slave ? 1 : 7, {0, 2, 2, 2, 2, 0/*, 0*/});
+  MENU(STR_MENUTRAINER, menuTabDiag, e_Trainer, (slave ? 1 : 7), {0, 2, 2, 2, 2, 0/*, 0*/});
 
-  if (slave) { // i am the slave
-    lcd_puts(7*FW, 3*FH, STR_SLAVE);
+  if (slave) {
+    lcd_puts(7*FW, 4*FH, STR_SLAVE);
   }
   else {
     uint8_t attr;
@@ -1039,7 +1152,8 @@ void menuGeneralTrainer(uint8_t event)
     lcd_outdezAtt(LEN_MULTIPLIER*FW+3*FW, 6*FH+1, g_eeGeneral.PPM_Multiplier+10, attr|PREC1);
     if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.PPM_Multiplier, -10, 40);
 
-    attr = (m_posVert==6) ? blink : 0;
+    attr = (m_posVert==6) ? INVERS : 0;
+    if (attr) s_editMode = 0;
     lcd_putsAtt(0*FW, 1+7*FH, STR_CAL, attr);
     for (uint8_t i=0; i<4; i++) {
       uint8_t x = (i*TRAINER_CALIB_POS+16)*FW/2;
@@ -1051,11 +1165,10 @@ void menuGeneralTrainer(uint8_t event)
     }
 
     if (attr) {
-      if (event==EVT_KEY_FIRST(KEY_MENU)){
-        s_editMode = -1;
+      if (event==EVT_KEY_LONG(KEY_ENTER)){
         memcpy(g_eeGeneral.trainer.calib, g_ppmIns, sizeof(g_eeGeneral.trainer.calib));
         eeDirty(EE_GENERAL);
-        AUDIO_KEYPAD_UP();
+        AUDIO_WARNING1();
       }
     }
   }
@@ -1074,6 +1187,13 @@ void menuGeneralVersion(uint8_t event)
   }
   else {
      lcd_putsLeft(6*FH, PSTR("CoPr: ---"));
+  }
+#endif
+
+#if defined(PCBTARANIS)
+  lcd_putsLeft(7*FH, STR_EEBACKUP);
+  if (event == EVT_KEY_LONG(KEY_ENTER)) {
+    backupEeprom();
   }
 #endif
 }
@@ -1223,10 +1343,10 @@ void menuGeneralHardware(uint8_t event)
         putsMixerSource(sizeof(TR_TYPE)*FW, y, MIXSRC_FIRST_POT+idx);
         uint8_t potType = (g_eeGeneral.potsType & mask) >> shift;
         if (potType == POT_TYPE_NONE && i < 2)
-          potType = 1;
+          potType = POT_TYPE_POT;
         potType = selectMenuItem(HW_SETTINGS_COLUMN, y, STR_TYPE, STR_POTTYPES, potType, 0, POT_TYPE_MAX, attr, event);
         if (potType == POT_TYPE_POT && i < 2)
-          potType = 0;
+          potType = POT_TYPE_NONE;
         g_eeGeneral.potsType &= ~mask;
         g_eeGeneral.potsType |= (potType << shift);
         break;

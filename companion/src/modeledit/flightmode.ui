@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -165,11 +165,11 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <layout class="QGridLayout" name="leftTrims_3" columnstretch="0,1" columnminimumwidth="80,0">
+         <layout class="QGridLayout" name="leftTrims_3" columnstretch="0,1">
           <item row="1" column="0">
            <widget class="QLabel" name="trim1Label">
             <property name="text">
-             <string>trim1</string>
+             <string notr="true">trim1</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -277,7 +277,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="trim2Label">
             <property name="text">
-             <string>trim2</string>
+             <string notr="true">trim2</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -299,11 +299,11 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
-         <layout class="QGridLayout" name="righTrims_2" columnstretch="0,1" columnminimumwidth="80,0">
+         <layout class="QGridLayout" name="righTrims_2" columnstretch="0,1">
           <item row="1" column="0">
            <widget class="QLabel" name="trim4Label">
             <property name="text">
-             <string>trim4</string>
+             <string notr="true">trim4</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -313,7 +313,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="trim3Label">
             <property name="text">
-             <string>trim3</string>
+             <string notr="true">trim3</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -422,6 +422,19 @@
         </item>
        </layout>
       </widget>
+     </item>
+     <item row="0" column="4">
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
     </layout>
    </item>

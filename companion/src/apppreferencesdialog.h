@@ -6,29 +6,44 @@
 #include "eeprominterface.h"
 
 namespace Ui {
-    class appPreferencesDialog;
+  class AppPreferencesDialog;
 }
 
 class Joystick;
 
-class appPreferencesDialog : public QDialog
+class AppPreferencesDialog : public QDialog
 {
     Q_OBJECT
 
-public:
-    explicit appPreferencesDialog(QWidget *parent = 0);
-    ~appPreferencesDialog();
+  public:
+    explicit AppPreferencesDialog(QWidget *parent = 0);
+    ~AppPreferencesDialog();
     Joystick *joystick;
 
-private:
-    int initialRadioType;
-    Ui::appPreferencesDialog *ui;
+  private:
+    QList<QCheckBox *> optionsCheckBoxes;
+    bool updateLock;
+    void showVoice(bool);
+    void showVoice();
+    void hideVoice();
+    void populateLocale();
+    void populateFirmwareOptions(const FirmwareInterface *);
+    FirmwareVariant getFirmwareVariant();
+    QCheckBox * voice;
+
+    Ui::AppPreferencesDialog *ui;
     void initSettings();
     bool displayImage( QString fileName );
     void loadProfileString(QString profile, QString label);
     void loadFromProfile();
 
-private slots:
+  protected slots:
+    void shrink();  
+    void firmwareLangChanged();
+    void baseFirmwareChanged();
+    void firmwareOptionChanged(bool state);
+    void firmwareChanged();
+
     void writeValues();
     void on_libraryPathButton_clicked();
     void on_snapshotPathButton_clicked();

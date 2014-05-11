@@ -186,6 +186,8 @@ void pwrOff();
 
 // Haptic driver
 #define hapticOff() // TODO hapticOn() cleaner ...
+#define HAPTIC_ON()     PORTD &= ~(1 << OUT_D_HAPTIC)
+#define HAPTIC_OFF()    PORTD |=  (1 << OUT_D_HAPTIC)
 
 // Rotary encoder driver
 #if ROTARY_ENCODERS <= 2

@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>1087</width>
-    <height>285</height>
+    <height>298</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -164,6 +164,9 @@
            </property>
            <property name="frameShadow">
             <enum>QFrame::Plain</enum>
+           </property>
+           <property name="lineWidth">
+            <number>0</number>
            </property>
            <property name="text">
             <string/>
@@ -469,6 +472,9 @@
            </property>
            <property name="frameShadow">
             <enum>QFrame::Plain</enum>
+           </property>
+           <property name="lineWidth">
+            <number>0</number>
            </property>
            <property name="text">
             <string/>

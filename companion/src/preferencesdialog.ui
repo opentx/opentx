@@ -968,7 +968,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -981,7 +981,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -994,7 +994,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1007,7 +1007,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1020,7 +1020,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1033,7 +1033,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1046,7 +1046,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1059,7 +1059,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1072,7 +1072,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1085,7 +1085,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1098,7 +1098,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1111,7 +1111,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1124,7 +1124,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1137,7 +1137,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1150,7 +1150,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1163,7 +1163,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1176,7 +1176,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1189,7 +1189,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1202,7 +1202,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1215,7 +1215,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1228,7 +1228,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1241,7 +1241,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1254,7 +1254,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1267,7 +1267,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1280,7 +1280,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1293,7 +1293,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1306,7 +1306,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1319,7 +1319,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1332,7 +1332,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1345,7 +1345,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1358,7 +1358,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1371,7 +1371,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1384,7 +1384,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1397,7 +1397,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1410,7 +1410,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1423,7 +1423,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1436,7 +1436,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1449,7 +1449,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1462,7 +1462,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1475,7 +1475,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1488,7 +1488,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>
@@ -1501,7 +1501,7 @@ May be different from firmware language</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>CheckBox</string>
+        <string notr="true">CheckBox</string>
        </property>
       </widget>
      </item>

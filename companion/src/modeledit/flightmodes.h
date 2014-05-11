@@ -7,18 +7,19 @@
 #include <QTabWidget>
 #include <QSpinBox>
 #include <QComboBox>
+#include <QCheckBox>
 
 namespace Ui {
   class FlightMode;
 }
 
-class FlightMode : public ModelPanel
+class FlightModePanel : public ModelPanel
 {
     Q_OBJECT
 
   public:
-    FlightMode(QWidget *parent, ModelData &model, int modeIdx, GeneralSettings & generalSettings);
-    virtual ~FlightMode();
+    FlightModePanel(QWidget *parent, ModelData &model, int modeIdx, GeneralSettings & generalSettings, FirmwareInterface * firmware);
+    virtual ~FlightModePanel();
 
     virtual void update();
 
@@ -37,12 +38,12 @@ class FlightMode : public ModelPanel
     void GVSource_currentIndexChanged(int index);
     void phaseGVValue_editingFinished();
     void phaseGVUse_currentIndexChanged(int index);
+    void phaseGVPopupToggled(bool checked);
     void phaseREValue_editingFinished();
     void phaseREUse_currentIndexChanged(int index);
 
   private:
     Ui::FlightMode *ui;
-    GeneralSettings & generalSettings;
     int phaseIdx;
     PhaseData & phase;
     int reCount;
@@ -50,6 +51,7 @@ class FlightMode : public ModelPanel
     QVector<QLabel *> trimsLabel;
     QLineEdit * gvNames[C9X_MAX_GVARS];
     QSpinBox * gvValues[C9X_MAX_GVARS];
+    QCheckBox * gvPopups[C9X_MAX_GVARS];
     QSpinBox * reValues[C9X_MAX_ENCODERS];
     QVector<QComboBox *> trimsUse;
     QVector<QSpinBox *> trimsValue;
@@ -59,13 +61,13 @@ class FlightMode : public ModelPanel
 
 };
 
-class FlightModes : public ModelPanel
+class FlightModesPanel : public ModelPanel
 {
     Q_OBJECT
 
   public:
-    FlightModes(QWidget *parent, ModelData & model, GeneralSettings & generalSettings);
-    virtual ~FlightModes();
+    FlightModesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
+    virtual ~FlightModesPanel();
 
     virtual void update();
 
@@ -78,7 +80,7 @@ class FlightModes : public ModelPanel
     int modesCount;
     QTabWidget *tabWidget;
     QString getTabName(int index);
-    QVector<FlightMode *> panels;
+    QVector<FlightModePanel *> panels;
 
 };
 

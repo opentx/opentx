@@ -56,6 +56,7 @@ bool eeModelExists(uint8_t id);
 void eeLoadModelName(uint8_t id, char *name);
 void eeLoadModel(uint8_t id);
 bool eeConvert();
+void ConvertModel(int id, int version);
 
 #if defined(CPUARM)
   extern ModelHeader modelHeaders[MAX_MODELS];

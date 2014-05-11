@@ -18,11 +18,15 @@ SimulatorDialog::SimulatorDialog(QWidget * parent, unsigned int flags):
   lightOn(false),
   txInterface(NULL),
   simulator(NULL),
+  lastPhase(-1),
   beepVal(0),
   buttonPressed(0),
+  trimPressed (TRIM_NONE),
   middleButtonPressed(false)
 {
 }
+
+uint32_t SimulatorDialog9X::switchstatus = 0;
 
 SimulatorDialog9X::SimulatorDialog9X(QWidget * parent, unsigned int flags):
   SimulatorDialog(parent, flags),
@@ -34,8 +38,7 @@ SimulatorDialog9X::SimulatorDialog9X(QWidget * parent, unsigned int flags):
 
   initUi<Ui::SimulatorDialog9X>(ui);
 
-  QSettings settings;
-  backLight = settings.value("backLight", 0).toInt();
+  backLight = g.backLight();
   if (backLight > 4) backLight = 0;
   switch (backLight) {
     case 1:
@@ -55,17 +58,49 @@ SimulatorDialog9X::SimulatorDialog9X(QWidget * parent, unsigned int flags):
       break;
   }
 
+  //restore switches
+  if (g.simuSW())
+    restoreSwitches();
+
+  ui->trimHR_L->setText(QString::fromUtf8(leftArrow));
+  ui->trimHR_R->setText(QString::fromUtf8(rightArrow));
+  ui->trimVR_U->setText(QString::fromUtf8(upArrow));
+  ui->trimVR_D->setText(QString::fromUtf8(downArrow));
+  ui->trimHL_L->setText(QString::fromUtf8(leftArrow));
+  ui->trimHL_R->setText(QString::fromUtf8(rightArrow));
+  ui->trimVL_U->setText(QString::fromUtf8(upArrow));
+  ui->trimVL_D->setText(QString::fromUtf8(downArrow));
+
   connect(ui->dialP_1, SIGNAL(valueChanged(int)), this, SLOT(dialChanged()));
   connect(ui->dialP_2, SIGNAL(valueChanged(int)), this, SLOT(dialChanged()));
   connect(ui->dialP_3, SIGNAL(valueChanged(int)), this, SLOT(dialChanged()));
   connect(ui->cursor, SIGNAL(buttonPressed(int)), this, SLOT(onButtonPressed(int)));
   connect(ui->menu, SIGNAL(buttonPressed(int)), this, SLOT(onButtonPressed(int)));
+  connect(ui->trimHR_L, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
+  connect(ui->trimHR_R, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
+  connect(ui->trimVR_U, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
+  connect(ui->trimVR_D, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
+  connect(ui->trimHL_R, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
+  connect(ui->trimHL_L, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
+  connect(ui->trimVL_U, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
+  connect(ui->trimVL_D, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
+  connect(ui->trimHR_L, SIGNAL(released()), this, SLOT(onTrimReleased()));
+  connect(ui->trimHR_R, SIGNAL(released()), this, SLOT(onTrimReleased()));
+  connect(ui->trimVR_U, SIGNAL(released()), this, SLOT(onTrimReleased()));
+  connect(ui->trimVR_D, SIGNAL(released()), this, SLOT(onTrimReleased()));
+  connect(ui->trimHL_R, SIGNAL(released()), this, SLOT(onTrimReleased()));
+  connect(ui->trimHL_L, SIGNAL(released()), this, SLOT(onTrimReleased()));
+  connect(ui->trimVL_U, SIGNAL(released()), this, SLOT(onTrimReleased()));
+  connect(ui->trimVL_D, SIGNAL(released()), this, SLOT(onTrimReleased()));
 }
 
 SimulatorDialog9X::~SimulatorDialog9X()
 {
+  saveSwitches();
   delete ui;
 }
+
+uint32_t SimulatorDialogTaranis::switchstatus = 0;
 
 SimulatorDialogTaranis::SimulatorDialogTaranis(QWidget * parent, unsigned int flags):
   SimulatorDialog(parent, flags),
@@ -79,18 +114,49 @@ SimulatorDialogTaranis::SimulatorDialogTaranis(QWidget * parent, unsigned int fl
 
   ui->lcd->setBackgroundColor(47, 123, 227);
 
+  //restore switches
+  if (g.simuSW())
+    restoreSwitches();
+
+  ui->trimHR_L->setText(QString::fromUtf8(leftArrow));
+  ui->trimHR_R->setText(QString::fromUtf8(rightArrow));
+  ui->trimVR_U->setText(QString::fromUtf8(upArrow));
+  ui->trimVR_D->setText(QString::fromUtf8(downArrow));
+  ui->trimHL_L->setText(QString::fromUtf8(leftArrow));
+  ui->trimHL_R->setText(QString::fromUtf8(rightArrow));
+  ui->trimVL_U->setText(QString::fromUtf8(upArrow));
+  ui->trimVL_D->setText(QString::fromUtf8(downArrow));
+
   connect(ui->cursor, SIGNAL(buttonPressed(int)), this, SLOT(onButtonPressed(int)));
   connect(ui->menu, SIGNAL(buttonPressed(int)), this, SLOT(onButtonPressed(int)));
+  connect(ui->trimHR_L, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
+  connect(ui->trimHR_R, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
+  connect(ui->trimVR_U, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
+  connect(ui->trimVR_D, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
+  connect(ui->trimHL_R, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
+  connect(ui->trimHL_L, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
+  connect(ui->trimVL_U, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
+  connect(ui->trimVL_D, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
+  connect(ui->trimHR_L, SIGNAL(released()), this, SLOT(onTrimReleased()));
+  connect(ui->trimHR_R, SIGNAL(released()), this, SLOT(onTrimReleased()));
+  connect(ui->trimVR_U, SIGNAL(released()), this, SLOT(onTrimReleased()));
+  connect(ui->trimVR_D, SIGNAL(released()), this, SLOT(onTrimReleased()));
+  connect(ui->trimHL_R, SIGNAL(released()), this, SLOT(onTrimReleased()));
+  connect(ui->trimHL_L, SIGNAL(released()), this, SLOT(onTrimReleased()));
+  connect(ui->trimVL_U, SIGNAL(released()), this, SLOT(onTrimReleased()));
+  connect(ui->trimVL_D, SIGNAL(released()), this, SLOT(onTrimReleased()));
 }
 
 SimulatorDialogTaranis::~SimulatorDialogTaranis()
 {
+  saveSwitches();
   delete ui;
 }
 
 SimulatorDialog::~SimulatorDialog()
 {
   delete timer;
+  delete simulator;
 }
 
 void SimulatorDialog::closeEvent (QCloseEvent *)
@@ -123,6 +189,31 @@ void SimulatorDialog9X::dialChanged()
 void SimulatorDialog::wheelEvent (QWheelEvent *event)
 {
   simulator->wheelEvent(event->delta() > 0 ? 1 : -1);
+}
+
+void SimulatorDialog::onTrimPressed()
+{
+  if (sender()->objectName() == QString("trimHL_L"))
+    trimPressed = TRIM_LH_L;
+  else if (sender()->objectName() == QString("trimHL_R"))
+    trimPressed = TRIM_LH_R;
+  else if (sender()->objectName() == QString("trimVL_D"))      
+    trimPressed = TRIM_LV_DN;
+  else if (sender()->objectName() == QString("trimVL_U"))     
+    trimPressed = TRIM_LV_UP;
+  else if (sender()->objectName() == QString("trimVR_D"))
+    trimPressed = TRIM_RV_DN;
+  else if (sender()->objectName() == QString("trimVR_U"))
+    trimPressed = TRIM_RV_UP;
+  else if (sender()->objectName() == QString("trimHR_L")) 
+    trimPressed = TRIM_RH_L;
+  else if (sender()->objectName() == QString("trimHR_R"))
+    trimPressed = TRIM_RH_R;
+}
+
+void SimulatorDialog::onTrimReleased()
+{
+  trimPressed = TRIM_NONE;
 }
 
 void SimulatorDialog::keyPressEvent (QKeyEvent *event)
@@ -194,6 +285,7 @@ void SimulatorDialog::initUi(T * ui)
   tabWidget = ui->tabWidget;
   logicalSwitchesLayout = ui->logicalSwitchesLayout;
   channelsLayout = ui->channelsLayout;
+  gvarsLayout = ui->gvarsLayout;
   leftXPerc = ui->leftXPerc;
   leftYPerc = ui->leftYPerc;
   rightXPerc = ui->rightXPerc;
@@ -205,31 +297,26 @@ void SimulatorDialog::initUi(T * ui)
   setFixedSize(width(), height());
 
 #ifdef JOYSTICKS
-    QSettings settings;
-    bool js_enable = settings.value("js_support",false).toBool();
-    int js_ctrl=settings.value("js_ctrl",-1).toInt();
-    if (js_enable) {
-      settings.beginGroup("JsCalibration");
+    if (g.jsSupport()) {
       int count=0;
-      for (int j=0; j<8;j++){
-        int axe=settings.value(QString("stick%1_axe").arg(j),-1).toInt();
+      for (int j=0; j<8; j++){
+        int axe = g.joystick[j].stick_axe();
         if (axe>=0 && axe<8) {
           jsmap[axe]=j;
-          jscal[axe][0]=settings.value(QString("stick%1_min").arg(j),-32767).toInt();
-          jscal[axe][1]=settings.value(QString("stick%1_med").arg(j),0).toInt();
-          jscal[axe][2]=settings.value(QString("stick%1_max").arg(j),0).toInt();
-          jscal[axe][3]=settings.value(QString("stick%1_inv").arg(j),0).toInt();
+          jscal[axe][0] = g.joystick[j].stick_min();
+          jscal[axe][1] = g.joystick[j].stick_med();
+          jscal[axe][2] = g.joystick[j].stick_max();
+          jscal[axe][3] = g.joystick[j].stick_inv();
           count++;
         }
       }
-      settings.endGroup();
       if (count<3) {
         QMessageBox::critical(this, tr("Warning"), tr("Joystick enabled but not configured correctly"));
       }
-      if (js_ctrl!=-1) {
+      if (g.jsCtrl()!=-1) {
         joystick = new Joystick(this);
         if (joystick) {
-          if (joystick->open(js_ctrl)) {
+          if (joystick->open(g.jsCtrl())) {
             int numAxes=std::min(joystick->numAxes,8);
             for (int j=0; j<numAxes; j++) {
               joystick->sensitivities[j] = 0;
@@ -255,10 +342,10 @@ void SimulatorDialog::initUi(T * ui)
 
   txInterface = GetEepromInterface();
 
-  windowName = tr("Simulating Tx (%1)").arg(txInterface->getName());
+  windowName = tr("Simulating Radio (%1)").arg(txInterface->getName());
   setWindowTitle(windowName);
 
-  simulator = txInterface->getSimulator();
+  simulator = GetCurrentFirmware()->getSimulator();
   lcd->setData(simulator->getLcd(), lcdWidth, 64, lcdDepth);
 
   if (flags & SIMULATOR_FLAGS_STICK_MODE_LEFT) {
@@ -272,7 +359,7 @@ void SimulatorDialog::initUi(T * ui)
 
   setTrims();
 
-  int outputs = std::min(16, txInterface->getCapability(Outputs));
+  int outputs = std::min(16, GetCurrentFirmware()->getCapability(Outputs));
   for (int i=0; i<outputs; i++) {
     int column = i / (outputs/2);
     int line = i % (outputs/2);
@@ -313,7 +400,7 @@ void SimulatorDialog::initUi(T * ui)
     channelsLayout->addWidget(value, line, column == 0 ? 2 : 3, 1, 1);
   }
 
-  int switches = txInterface->getCapability(LogicalSwitches);
+  int switches = GetCurrentFirmware()->getCapability(LogicalSwitches);
   for (int i=0; i<switches; i++) {
     QFrame * swtch = new QFrame(tabWidget);
     swtch->setAutoFillBackground(true);
@@ -330,23 +417,39 @@ void SimulatorDialog::initUi(T * ui)
     logicalSwitchesLayout->addWidget(swtch, i / (switches/2), i % (switches/2), 1, 1);
   }
 
-  if (flags & SIMULATOR_FLAGS_NOTX) {
-    ui->tabWidget->setCurrentIndex(1);
-  }
-  else {
-    ui->lcd->setFocus();
+  int fmodes = GetCurrentFirmware()->getCapability(FlightModes);
+  int gvars = GetCurrentFirmware()->getCapability(Gvars);
+  if (gvars>0) {
+    for (int fm=0; fm<fmodes; fm++) {
+      QLabel * label = new QLabel(tabWidget);
+      label->setText(QString("FM%1").arg(fm+1));
+      gvarsLayout->addWidget(label, 0, fm+1);
+    }
+    for (int i=0; i<gvars; i++) {
+      QLabel * label = new QLabel(tabWidget);
+      label->setText(QString("GV%1").arg(i+1));
+      gvarsLayout->addWidget(label, i+1, 0);
+      for (int fm=0; fm<fmodes; fm++) {
+        QLabel * value = new QLabel(tabWidget);
+        gvarValues << value;
+        gvarsLayout->addWidget(value, i+1, fm+1);
+      }
+    }
   }
 
-  setupTimer();
+  if (flags & SIMULATOR_FLAGS_NOTX) {
+    ui->tabWidget->setCurrentWidget(ui->outputs);
+  }
+  else {
+    ui->tabWidget->setCurrentWidget(ui->simu);
+  }
 }
 
 void SimulatorDialog::onButtonPressed(int value)
 {
   if (value == Qt::Key_Print) {
-    QSettings settings;
-    bool toclipboard = settings.value("snapshot_to_clipboard", false).toBool();
     QString fileName = "";
-    if (!toclipboard) {
+    if (!g.snapToClpbrd()) {
       fileName = QString("screenshot-%1.png").arg(++screenshotIdx);
     }
     lcd->makeScreenshot(fileName);
@@ -364,7 +467,7 @@ void SimulatorDialog9X::setLightOn(bool enable)
     list << "bl" << "gr" << "rd" << "or" << "yl";
     bg = QString("-") + list[backLight];
   }
-  ui->top->setStyleSheet(QString("background:url(:/images/9xdt.png%1);").arg(bg));
+  ui->top->setStyleSheet(QString("background:url(:/images/9xdt%1.png);").arg(bg));
   ui->bottom->setStyleSheet(QString("background:url(:/images/9xdb%1.png);").arg(bg));
   ui->left->setStyleSheet(QString("background:url(:/images/9xdl%1.png);").arg(bg));
   ui->right->setStyleSheet(QString("background:url(:/images/9xdr%1.png);").arg(bg));
@@ -397,7 +500,7 @@ void SimulatorDialog::onTimerEvent()
 
   getValues();
 
-  if (!(flags & SIMULATOR_FLAGS_NOTX) && tabWidget->currentIndex()==0) {
+  if (tabWidget->currentIndex()==0) {
     bool lightEnable;
     if (simulator->lcdChanged(lightEnable)) {
       lcd->onLcdChanged(lightEnable);
@@ -405,6 +508,19 @@ void SimulatorDialog::onTimerEvent()
         setLightOn(lightEnable);
         lightOn = lightEnable;
       }
+    }
+  }
+
+  //display current flight mode in window title
+  unsigned int currentPhase = simulator->getPhase();
+  if (currentPhase != lastPhase) {
+    lastPhase = currentPhase;
+    const char * phase_name = simulator->getPhaseName(currentPhase);
+    if ( phase_name &&  phase_name[0] ) {
+      setWindowTitle(windowName + QString(" [fm: %1]").arg(QString(phase_name)));  
+    }
+    else {
+      setWindowTitle(windowName + QString(" [fm: %1]").arg(simulator->getPhase()));
     }
   }
 
@@ -436,12 +552,22 @@ void SimulatorDialog::centerSticks()
 
 void SimulatorDialog::start(QByteArray & eeprom)
 {
+  lastPhase = -1;
+  numGvars = GetCurrentFirmware()->getCapability(Gvars);
+  numFlightModes = GetCurrentFirmware()->getCapability(FlightModes);
   simulator->start(eeprom, (flags & SIMULATOR_FLAGS_NOTX) ? false : true);
+  getValues();
+  setupTimer();
 }
 
 void SimulatorDialog::start(const char * filename)
 {
+  lastPhase = -1;
+  numGvars = GetCurrentFirmware()->getCapability(Gvars);
+  numFlightModes = GetCurrentFirmware()->getCapability(FlightModes);
   simulator->start(filename);
+  getValues();
+  setupTimer();
 }
 
 void SimulatorDialog::setTrims()
@@ -496,10 +622,71 @@ void SimulatorDialog9X::getValues()
       buttonPressed == Qt::Key_Left,
     },
 
-    middleButtonPressed
+    middleButtonPressed,
+        
+    {
+      trimPressed == TRIM_LH_L,
+      trimPressed == TRIM_LH_R,
+      trimPressed == TRIM_LV_DN,
+      trimPressed == TRIM_LV_UP,
+      trimPressed == TRIM_RV_DN,
+      trimPressed == TRIM_RV_UP,
+      trimPressed == TRIM_RH_L,
+      trimPressed == TRIM_RH_R
+    }
   };
 
   simulator->setValues(inputs);
+}
+
+void SimulatorDialog9X::saveSwitches(void)
+{
+  // qDebug() << "SimulatorDialog9X::saveSwitches()";
+  switchstatus=ui->switchTHR->isChecked();
+  switchstatus<<=1;
+  switchstatus+=(ui->switchRUD->isChecked()&0x1);
+  switchstatus<<=1;
+  switchstatus+=(ui->switchID2->isChecked()&0x1);
+  switchstatus<<=1;
+  switchstatus+=(ui->switchID1->isChecked()&0x1);
+  switchstatus<<=1;
+  switchstatus+=(ui->switchID0->isChecked()&0x1);
+  switchstatus<<=1;
+  switchstatus+=(ui->switchGEA->isChecked()&0x1);
+  switchstatus<<=1;
+  switchstatus+=(ui->switchELE->isChecked()&0x1);
+  switchstatus<<=1;
+  switchstatus+=(ui->switchAIL->isChecked()&0x1);
+}
+
+void SimulatorDialog9X::restoreSwitches(void)
+{
+  // qDebug() << "SimulatorDialog9X::restoreSwitches()";
+  ui->switchAIL->setChecked(switchstatus & 0x1);
+  switchstatus >>=1;
+  ui->switchELE->setChecked(switchstatus & 0x1);
+  switchstatus >>=1;
+  ui->switchGEA->setChecked(switchstatus & 0x1);
+  switchstatus >>=1;
+  ui->switchID0->setChecked(switchstatus & 0x1);
+  switchstatus >>=1;
+  ui->switchID1->setChecked(switchstatus & 0x1);
+  switchstatus >>=1;
+  ui->switchID2->setChecked(switchstatus & 0x1);
+  switchstatus >>=1;
+  ui->switchRUD->setChecked(switchstatus & 0x1);
+  switchstatus >>=1;
+  ui->switchTHR->setChecked(switchstatus & 0x1);
+}
+
+void SimulatorDialogTaranis::resetSH()
+{
+  ui->switchH->setValue(0);
+}
+
+void SimulatorDialogTaranis::on_switchH_sliderReleased()
+{
+  QTimer::singleShot(400, this, SLOT(resetSH()));
 }
 
 void SimulatorDialogTaranis::getValues()
@@ -515,6 +702,7 @@ void SimulatorDialogTaranis::getValues()
     {
       -ui->dialP_1->value(),
       ui->dialP_2->value(),
+      0,
       -ui->dialP_3->value(),
       ui->dialP_4->value()
     },
@@ -539,10 +727,61 @@ void SimulatorDialogTaranis::getValues()
       buttonPressed == Qt::Key_Minus
     },
 
-    middleButtonPressed
+    middleButtonPressed,
+    
+    {
+      trimPressed == TRIM_LH_L,
+      trimPressed == TRIM_LH_R,
+      trimPressed == TRIM_LV_DN,
+      trimPressed == TRIM_LV_UP,
+      trimPressed == TRIM_RV_DN,
+      trimPressed == TRIM_RV_UP,
+      trimPressed == TRIM_RH_L,
+      trimPressed == TRIM_RH_R
+    }
   };
 
   simulator->setValues(inputs);
+}
+
+void SimulatorDialogTaranis::saveSwitches(void)
+{
+  // qDebug() << "SimulatorDialogTaranis::saveSwitches()";
+  switchstatus=ui->switchA->value();
+  switchstatus<<=2;
+  switchstatus+=ui->switchB->value();
+  switchstatus<<=2;
+  switchstatus+=ui->switchC->value();
+  switchstatus<<=2;
+  switchstatus+=ui->switchD->value();
+  switchstatus<<=2;
+  switchstatus+=ui->switchE->value();
+  switchstatus<<=2;
+  switchstatus+=ui->switchF->value();
+  switchstatus<<=2;
+  switchstatus+=ui->switchG->value();
+  switchstatus<<=2;
+  switchstatus+=ui->switchH->value();
+}
+
+void SimulatorDialogTaranis::restoreSwitches(void)
+{
+  // qDebug() << "SimulatorDialogTaranis::restoreSwitches()";
+  ui->switchH->setValue(switchstatus & 0x3);
+  switchstatus>>=2;
+  ui->switchG->setValue(switchstatus & 0x3);
+  switchstatus>>=2;
+  ui->switchF->setValue(switchstatus & 0x3);
+  switchstatus>>=2;
+  ui->switchE->setValue(switchstatus & 0x3);
+  switchstatus>>=2;
+  ui->switchD->setValue(switchstatus & 0x3);
+  switchstatus>>=2;
+  ui->switchC->setValue(switchstatus & 0x3);
+  switchstatus>>=2;
+  ui->switchB->setValue(switchstatus & 0x3);
+  switchstatus>>=2;
+  ui->switchA->setValue(switchstatus & 0x3);
 }
 
 inline int chVal(int val)
@@ -560,14 +799,14 @@ void SimulatorDialog::on_trimVLeft_valueChanged(int value)
   simulator->setTrim(1, value);
 }
 
-void SimulatorDialog::on_trimHRight_valueChanged(int value)
-{
-  simulator->setTrim(3, value);
-}
-
 void SimulatorDialog::on_trimVRight_valueChanged(int value)
 {
   simulator->setTrim(2, value);
+}
+
+void SimulatorDialog::on_trimHRight_valueChanged(int value)
+{
+  simulator->setTrim(3, value);
 }
 
 void SimulatorDialog::setValues()
@@ -577,7 +816,7 @@ void SimulatorDialog::setValues()
   Trims trims;
   simulator->getTrims(trims);
 
-  for (int i=0; i<std::min(16, GetEepromInterface()->getCapability(Outputs)); i++) {
+  for (int i=0; i<std::min(16, GetCurrentFirmware()->getCapability(Outputs)); i++) {
     channelSliders[i]->setValue(chVal(outputs.chans[i]));
     channelValues[i]->setText(QString("%1").arg((qreal)outputs.chans[i]*100/1024, 0, 'f', 1));
   }
@@ -585,14 +824,20 @@ void SimulatorDialog::setValues()
   leftXPerc->setText(QString("X %1%").arg((qreal)nodeLeft->getX()*100+trims.values[0]/5, 2, 'f', 0));
   leftYPerc->setText(QString("Y %1%").arg((qreal)nodeLeft->getY()*-100+trims.values[1]/5, 2, 'f', 0));
 
-  rightXPerc->setText(QString("X %1%").arg((qreal)nodeRight->getX()*100+trims.values[2]/5, 2, 'f', 0));
-  rightYPerc->setText(QString("Y %1%").arg((qreal)nodeRight->getY()*-100+trims.values[3]/5, 2, 'f', 0));
+  rightXPerc->setText(QString("X %1%").arg((qreal)nodeRight->getX()*100+trims.values[3]/5, 2, 'f', 0));
+  rightYPerc->setText(QString("Y %1%").arg((qreal)nodeRight->getY()*-100+trims.values[2]/5, 2, 'f', 0));
 
   QString CSWITCH_ON = "QLabel { background-color: #4CC417 }";
   QString CSWITCH_OFF = "QLabel { }";
 
-  for (int i=0; i<GetEepromInterface()->getCapability(LogicalSwitches); i++) {
+  for (int i=0; i<GetCurrentFirmware()->getCapability(LogicalSwitches); i++) {
     logicalSwitchLabels[i]->setStyleSheet(outputs.vsw[i] ? CSWITCH_ON : CSWITCH_OFF);
+  }
+
+  for (unsigned int fm=0; fm<numFlightModes; fm++) {
+    for (unsigned int gv=0; gv<numGvars; gv++) {
+      gvarValues[fm*numGvars+gv]->setText(QString("%1").arg(outputs.gvars[fm][gv]));
+    }
   }
 
   if (outputs.beep) {

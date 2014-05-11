@@ -50,15 +50,17 @@ enum BoardEnum {
   BOARD_SKY9X,
   BOARD_9XRPRO,
   BOARD_TARANIS,
+  BOARD_TARANIS_PLUS,
   BOARD_TARANIS_REV4a
 };
 
-#define IS_9X(board)          (board==BOARD_STOCK || board==BOARD_M128)
-#define IS_STOCK(board)       (board==BOARD_STOCK)
-#define IS_2560(board)        (board==BOARD_GRUVIN9X || board==BOARD_MEGA2560)
-#define IS_ARM(board)         (board==BOARD_SKY9X || board==BOARD_9XRPRO || board==BOARD_TARANIS  || board==BOARD_TARANIS_REV4a)
-#define IS_SKY9X(board)       (board==BOARD_SKY9X || board==BOARD_9XRPRO)
-#define IS_TARANIS(board)     (board==BOARD_TARANIS  || board==BOARD_TARANIS_REV4a)
+#define IS_9X(board)           (board==BOARD_STOCK || board==BOARD_M128)
+#define IS_STOCK(board)        (board==BOARD_STOCK)
+#define IS_2560(board)         (board==BOARD_GRUVIN9X || board==BOARD_MEGA2560)
+#define IS_SKY9X(board)        (board==BOARD_SKY9X || board==BOARD_9XRPRO)
+#define IS_TARANIS(board)      (board==BOARD_TARANIS  || board==BOARD_TARANIS_REV4a || board==BOARD_TARANIS_PLUS)
+#define IS_TARANIS_PLUS(board) (board==BOARD_TARANIS_PLUS)
+#define IS_ARM(board)          (IS_TARANIS(board) || IS_SKY9X(board))
 
 const uint8_t modn12x3[4][4]= {
   {1, 2, 3, 4},
@@ -67,7 +69,7 @@ const uint8_t modn12x3[4][4]= {
   {4, 3, 2, 1} };
 
 #define C9X_MAX_MODELS            60
-#define C9X_MAX_PHASES            9
+#define C9X_MAX_FLIGHT_MODES            9
 #define C9X_MAX_MIXERS            64
 #define C9X_MAX_INPUTS            32
 #define C9X_MAX_EXPOS             64
@@ -88,33 +90,52 @@ const uint8_t modn12x3[4][4]= {
 #define STK_P2   6
 #define STK_P3   7
 
-#define DSW_THR   1 //DSW_SA ^
-#define DSW_RUD   2 //DSW_SA -
-#define DSW_ELE   3 //DSW_SA _
-#define DSW_ID0   4  //DSW_SB ^
-#define DSW_ID1   5  //DSW_SB -
-#define DSW_ID2   6 //DSW_SB _
-#define DSW_AIL   7 //DSW_SC ^
-#define DSW_GEA   8  //DSW_SC -
-#define DSW_TRN   9 //DSW_SC _
-#define DSW_SD0 10
-#define DSW_SD1 11
-#define DSW_SD2 12
-#define DSW_SE0 13
-#define DSW_SE1 14
-#define DSW_SE2 15
-#define DSW_SF0 16
-#define DSW_SF1 17
-#define DSW_SG0 18
-#define DSW_SG1 19
-#define DSW_SG2 20
+enum Switches {
+  SWITCH_NONE,
 
-const uint8_t chout_ar[] = { //First number is 0..23 -> template setup,  Second is relevant channel out
-  1,2,3,4 , 1,2,4,3 , 1,3,2,4 , 1,3,4,2 , 1,4,2,3 , 1,4,3,2,
-  2,1,3,4 , 2,1,4,3 , 2,3,1,4 , 2,3,4,1 , 2,4,1,3 , 2,4,3,1,
-  3,1,2,4 , 3,1,4,2 , 3,2,1,4 , 3,2,4,1 , 3,4,1,2 , 3,4,2,1,
-  4,1,2,3 , 4,1,3,2 , 4,2,1,3 , 4,2,3,1 , 4,3,1,2 , 4,3,2,1
-}; // TODO delete it?
+  SWITCH_THR = SWITCH_NONE+1,
+  SWITCH_RUD,
+  SWITCH_ELE,
+  SWITCH_ID0,
+  SWITCH_ID1,
+  SWITCH_ID2,
+  SWITCH_AIL,
+  SWITCH_GEA,
+  SWITCH_TRN,
+
+  SWITCH_SA0 = SWITCH_NONE+1,
+  SWITCH_SA1,
+  SWITCH_SA2,
+  SWITCH_SB0,
+  SWITCH_SB1,
+  SWITCH_SB2,
+  SWITCH_SC0,
+  SWITCH_SC1,
+  SWITCH_SC2,
+  SWITCH_SD0,
+  SWITCH_SD1,
+  SWITCH_SD2,
+  SWITCH_SE0,
+  SWITCH_SE1,
+  SWITCH_SE2,
+  SWITCH_SF0,
+  SWITCH_SF1,
+  SWITCH_SG0,
+  SWITCH_SG1,
+  SWITCH_SG2,
+  SWITCH_SH0,
+  SWITCH_SH1
+};
+
+#define TRIM_LH_L  0
+#define TRIM_LH_R  1
+#define TRIM_LV_DN 2
+#define TRIM_LV_UP 3
+#define TRIM_RV_DN 4
+#define TRIM_RV_UP 5
+#define TRIM_RH_L  6
+#define TRIM_RH_R  7
+#define TRIM_NONE  8
 
 // Beep center bits
 #define BC_BIT_RUD (0x01)
@@ -172,9 +193,27 @@ enum HeliSwashTypes {
 
 extern const char * switches9X[];
 extern const char * switchesX9D[];
+extern const char leftArrow[];
+extern const char rightArrow[];
+extern const char upArrow[];
+extern const char downArrow[];
+
+enum ThrottleSource {
+  THROTTLE_SOURCE_THR,
+  THROTTLE_SOURCE_P1,
+  THROTTLE_SOURCE_P2,
+  THROTTLE_SOURCE_P3,
+  THROTTLE_SOURCE_S1 = THROTTLE_SOURCE_P1,
+  THROTTLE_SOURCE_S2,
+  THROTTLE_SOURCE_S3,
+  THROTTLE_SOURCE_LS,
+  THROTTLE_SOURCE_RS,
+  THROTTLE_SOURCE_FIRST_CHANNEL,
+};
 
 enum TelemetrySource {
   TELEMETRY_SOURCE_TX_BATT,
+  TELEMETRY_SOURCE_TX_TIME,
   TELEMETRY_SOURCE_TIMER1,
   TELEMETRY_SOURCE_TIMER2,
   TELEMETRY_SOURCE_SWR,
@@ -217,15 +256,17 @@ enum TelemetrySource {
   TELEMETRY_SOURCE_T2_MAX,
   TELEMETRY_SOURCE_SPEED_MAX,
   TELEMETRY_SOURCE_DIST_MAX,
+  TELEMETRY_SOURCE_ASPEED_MAX,
   TELEMETRY_SOURCE_CELL_MIN,
   TELEMETRY_SOURCE_CELLS_MIN,
   TELEMETRY_SOURCE_VFAS_MIN,
+  TELEMETRY_SOURCE_CURRENT_MAX,
   TELEMETRY_SOURCE_POWER_MAX,
   TELEMETRY_SOURCE_ACC,
   TELEMETRY_SOURCE_GPS_TIME,
   TELEMETRY_SOURCES_STATUS_COUNT = TELEMETRY_SOURCE_GPS_TIME+1,
   TELEMETRY_SOURCES_DISPLAY_COUNT = TELEMETRY_SOURCE_POWER_MAX+1,
-  TELEMETRY_SOURCES_COUNT = TELEMETRY_SOURCE_DTE+1,
+  TELEMETRY_SOURCES_COUNT = TELEMETRY_SOURCE_POWER_MAX+1,
   TELEMETRY_SOURCE_RESERVE = -1
 };
 
@@ -334,6 +375,7 @@ enum RawSwitchType {
   SWITCH_TYPE_ROTARY_ENCODER,
   SWITCH_TYPE_ON,
   SWITCH_TYPE_OFF,
+  SWITCH_TYPE_FLIGHT_MODE,
   SWITCH_TYPE_TIMER_MODE
 };
 
@@ -405,7 +447,9 @@ class GeneralSettings {
   public:
     GeneralSettings();
 
-    RawSource getDefaultSource(unsigned int channel);
+    int getDefaultStick(unsigned int channel) const;
+    RawSource getDefaultSource(unsigned int channel) const;
+    int getDefaultChannel(unsigned int stick) const;
 
     unsigned int version;
     unsigned int variant;
@@ -440,6 +484,7 @@ class GeneralSettings {
     bool      frskyinternalalarm;
     bool      disableBG;
     unsigned int  splashMode;
+    int splashDuration;
     uint8_t   filterInput; // TODO enum
     unsigned int  backlightDelay;
     bool   blightinv;
@@ -448,6 +493,7 @@ class GeneralSettings {
     int    PPM_Multiplier;
     int    hapticLength;
     unsigned int   reNavigation;
+    unsigned int stickReverse;
     bool      hideNameOnSplash;
     bool      enablePpmsim;
     unsigned int   speakerPitch;
@@ -482,6 +528,7 @@ class GeneralSettings {
     unsigned int switchUnlockStates;
     unsigned int hw_uartMode;
     unsigned int potsType[8];
+    unsigned int backlightColor;
 };
 
 class CurveReference {
@@ -582,7 +629,6 @@ class MixData {
     MixData() { clear(); }
     unsigned int destCh;            //        1..C9X_NUM_CHNOUT
     RawSource srcRaw;
-    unsigned int srcVariant;
     int     weight;
     RawSwitch swtch;
     CurveReference     curve;             //0=symmetrisch
@@ -636,7 +682,7 @@ enum CSFunctionFamily {
   LS_FAMILY_STAY,
 };
 
-class LogicalSwitchData { // Custom Switches data
+class LogicalSwitchData { // Logical Switches data
   public:
     LogicalSwitchData(unsigned int func=0)
     {
@@ -807,7 +853,7 @@ class FrSkyData {
     FrSkyChannelData channels[2];
     unsigned int usrProto;
     unsigned int imperial;
-    unsigned int blades;
+    int blades;
     unsigned int voltsSource;
     bool altitudeDisplayed;
     unsigned int currentSource;
@@ -823,7 +869,7 @@ class FrSkyData {
     unsigned int storedMah;
     int fasOffset;
 
-    void clear() { memset(this, 0, sizeof(FrSkyData)); rssiAlarms[0].clear(2, 45); rssiAlarms[1].clear(3, 42); varioSource = 2/*VARIO*/; }
+    void clear();
 };
 
 class MavlinkData {
@@ -894,9 +940,13 @@ class ScriptData {
 class ModelData {
   public:
     ModelData();
+    ModelData(const ModelData & src);
+    ModelData & operator = (const ModelData & src);
 
     ExpoData * insertInput(const int idx);
     void removeInput(const int idx);
+
+    bool isInputValid(const unsigned int idx) const;
 
     bool      used;
     char      name[12+1];
@@ -912,7 +962,7 @@ class ModelData {
     bool      extendedLimits; // TODO xml
     bool      extendedTrims;
     bool      throttleReversed;
-    PhaseData phaseData[C9X_MAX_PHASES];
+    PhaseData phaseData[C9X_MAX_FLIGHT_MODES];
     MixData   mixData[C9X_MAX_MIXERS];
     LimitData limitData[C9X_NUM_CHNOUT];
 
@@ -953,8 +1003,9 @@ class ModelData {
 
     void clear();
     bool isempty();
-    void setDefaultMixes(GeneralSettings & settings);
-    void setDefaultValues(unsigned int id, GeneralSettings & settings);
+    void setDefaultInputs(const GeneralSettings & settings);
+    void setDefaultMixes(const GeneralSettings & settings);
+    void setDefaultValues(unsigned int id, const GeneralSettings & settings);
 
     int getTrimValue(int phaseIdx, int trimIdx);
     void setTrimValue(int phaseIdx, int trimIdx, int value);
@@ -975,10 +1026,9 @@ class RadioData {
 
 // TODO rename FlightPhase to FlightMode
 enum Capability {
- OwnerName,
- FlightPhases,
+ FlightModes,
  FlightModesName,
- FlightPhasesHaveFades,
+ FlightModesHaveFades,
  Mixes,
  MixesWithoutExpo,
  Timers,
@@ -999,10 +1049,8 @@ enum Capability {
  RotaryEncoders,
  Outputs,
  ChannelsName,
- ExtraChannels,
  ExtraInputs,
  ExtendedTrims,
- HasInputFilter,
  NumCurves,
  NumCurvePoints,
  OffsetWeight,
@@ -1013,13 +1061,7 @@ enum Capability {
  Beeperlen,
  EepromBackup,
  Haptic,
- HapticLength,
- HapticMode,
- HasBlInvert,
  HasBeeper,
- BandgapMeasure,
- PotScrolling,
- TrainerSwitch,
  ModelTrainerEnable,
  Timer2ThrTrig,
  HasExpoNames,
@@ -1034,8 +1076,6 @@ enum Capability {
  OptrexDisplay,
  PPMExtCtrl,
  PPMFrameLength,
- gsSwitchMask,
- BLonStickMove,
  DSM2Indexes,
  Telemetry,
  TelemetryUnits,
@@ -1044,14 +1084,12 @@ enum Capability {
  Gvars,
  GvarsInCS,
  GvarsAreNamed,
- GvarsFlightPhases,
+ GvarsFlightModes,
  GvarsName,
  NoTelemetryProtocol,
  TelemetryCustomScreens,
  TelemetryCustomScreensFieldsPerLine,
  TelemetryRSSIModel,
- TelemetryAlarm,
- TelemetryInternalAlarm,
  TelemetryTimeshift,
  TelemetryMaxMultiplier,
  HasAltitudeSel,
@@ -1059,9 +1097,6 @@ enum Capability {
  HasVarioSink,
  HasVariants,
  HasFailsafe,
- HasPPMSim,
- HasCrossTrims,
- HasStickScroll,
  HasSoundMixer,
  NumModules,
  PPMCenter,
@@ -1084,7 +1119,6 @@ enum Capability {
  LuaInputs,
  LimitsPer1000,
  EnhancedCurves,
- TelemetryInternalAlarms,
  HasFasOffset,
  HasMahPersistent,
  MultiposPots,
@@ -1120,11 +1154,7 @@ class EEPROMInterface
     
     virtual int getSize(GeneralSettings &) = 0;
     
-    virtual int getCapability(const Capability) = 0;
-    
     virtual int isAvailable(Protocol proto, int port=0) = 0;
-
-    virtual SimulatorInterface * getSimulator() { return NULL; }
 
     virtual const int getEEpromSize() = 0;
 
@@ -1176,7 +1206,7 @@ inline void applyStickModeToModel(ModelData &model, unsigned int mode)
   ModelData model_copy = model;
 
   // trims
-  for (int p=0; p<C9X_MAX_PHASES; p++) {
+  for (int p=0; p<C9X_MAX_FLIGHT_MODES; p++) {
     for (int i=0; i<NUM_STICKS/2; i++) {
       int converted_stick = applyStickMode(i+1, mode) - 1;
       int tmp = model.phaseData[p].trim[i];
@@ -1234,7 +1264,9 @@ inline void applyStickModeToModel(ModelData &model, unsigned int mode)
     model.swashRingData.collectiveSource.index = applyStickMode(model.swashRingData.collectiveSource.index + 1, mode) - 1;
 }
 
-void RegisterFirmwares();
+void RegisterEepromInterfaces();
+void UnregisterFirmwares();
+void registerOpenTxFirmwares();
 
 bool LoadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index);
 bool LoadEeprom(RadioData &radioData, const uint8_t *eeprom, int size);
@@ -1246,49 +1278,27 @@ struct Option {
   uint32_t variant;
 };
 
-class FirmwareInfo {
+class FirmwareInterface {
+
   public:
-    FirmwareInfo():
-      parent(NULL),
-      id(QString::null),
-      eepromInterface(NULL),
-      voice(false),
-      variantBase(0)
+    virtual ~FirmwareInterface()
     {
+      delete eepromInterface;
     }
 
-    virtual ~FirmwareInfo()
-    {
-    }
-
-    FirmwareInfo(const QString & id, const QString & name, EEPROMInterface * eepromInterface, const QString & url = QString(), const QString & stamp = QString(), const QString & rnurl = QString(), bool voice = false):
-      parent(NULL),
+    FirmwareInterface(const QString & id, const QString & name, const BoardEnum board, EEPROMInterface * eepromInterface, bool voice = false):
       id(id),
       name(name),
+      board(board),
       eepromInterface(eepromInterface),
-      url(url),
-      stamp(stamp),
-      rnurl(rnurl),
       voice(voice),
       variantBase(0)
     {
     }
 
-    FirmwareInfo(const QString & id, EEPROMInterface * eepromInterface, const QString & url, const QString & stamp = QString(), const QString & rnurl = QString(), bool voice=false):
-      parent(NULL),
-      id(id),
-      name(QString::null),
-      eepromInterface(eepromInterface),
-      url(url),
-      stamp(stamp),
-      rnurl(rnurl),
-      voice(voice),
-      variantBase(0)
+    inline void setVariantBase(unsigned int variant)
     {
-    }
-
-    void setVariantBase(unsigned int variant) {
-      this->variantBase = variant;
+      variantBase = variant;
     }
 
     unsigned int getVariant(const QString & id);
@@ -1301,76 +1311,116 @@ class FirmwareInfo {
 
     virtual void addOptions(Option options[]);
 
-    QStringList get_options() {
-      if (parent)
-        return id.mid(parent->id.length()+1).split("-", QString::SkipEmptyParts);
-      else
-        return QStringList();
-    }
-
-    int saveEEPROM(uint8_t *eeprom, RadioData &radioData, uint32_t variant=0, unsigned int version=0) {
+    inline int saveEEPROM(uint8_t *eeprom, RadioData &radioData, uint32_t variant=0, unsigned int version=0)
+    {
       return eepromInterface->save(eeprom, radioData, variant, version);
     }
 
-    virtual QString getUrl(const QString &fwId) {
-      if (url.contains("%1"))
-        return url.arg(fwId);
-      else
-        return url;
+    virtual QString getStampUrl() = 0;
+
+    virtual QString getReleaseNotesUrl() = 0;
+
+    virtual QString getFirmwareUrl(QString & id) = 0;
+
+    inline BoardEnum getBoard()
+    {
+      return board;
     }
 
-    virtual QString getRnUrl(const QString &fwId) {
-      if (rnurl.contains("%1"))
-        return rnurl.arg(fwId);
-      else
-        return rnurl;
+    inline EEPROMInterface * getEepromInterface()
+    {
+      return eepromInterface;
     }
 
-    
+    virtual int getCapability(const Capability) = 0;
+
+    virtual SimulatorInterface * getSimulator()
+    {
+      return NULL;
+    }
+
+  public:
     QList<const char *> languages;
     QList<const char *> ttslanguages;
     QList< QList<Option> > opts;
-    FirmwareInfo *parent;
     QString id;
     QString name;
+
+  protected:
+    BoardEnum board;
     EEPROMInterface * eepromInterface;
-    QString url;
-    QString stamp;
-    QString rnurl;
+
+  public:
     bool voice;
+
+  protected:
     unsigned int variantBase;
+
+  private:
+    FirmwareInterface();
+
 };
 
-struct FirmwareVariant {
-  QString id;
-  FirmwareInfo *firmware;
-  unsigned int variant;
+class FirmwareVariant
+{
+  public:
+    FirmwareVariant():
+      firmware(NULL),
+      variant(0)
+    {
+    }
+
+    FirmwareVariant(QString & id, FirmwareInterface * firmware, unsigned int variant):
+      id(id),
+      firmware(firmware),
+      variant(variant)
+    {
+    }
+
+    QString getFirmwareUrl()
+    {
+      if (firmware)
+        return firmware->getFirmwareUrl(id);
+      else
+        return "";
+    }
+
+    QString id;
+    FirmwareInterface * firmware;
+    unsigned int variant;
 };
 
-extern QList<FirmwareInfo *> firmwares;
+extern QList<FirmwareInterface *> firmwares;
 extern FirmwareVariant default_firmware_variant;
 extern FirmwareVariant current_firmware_variant;
 
 FirmwareVariant GetFirmwareVariant(QString id);
 
-inline FirmwareInfo * GetFirmware(QString id)
+inline FirmwareInterface * GetFirmware(QString id)
 {
   return GetFirmwareVariant(id).firmware;
 }
 
-inline FirmwareInfo * GetCurrentFirmware()
+inline FirmwareInterface * GetCurrentFirmware()
 {
   return current_firmware_variant.firmware;
 }
 
 inline EEPROMInterface * GetEepromInterface()
 {
-  return GetCurrentFirmware()->eepromInterface;
+  return GetCurrentFirmware()->getEepromInterface();
 }
 
 inline unsigned int GetCurrentFirmwareVariant()
 {
   return current_firmware_variant.variant;
+}
+
+void UnregisterEepromInterfaces();
+
+inline int divRoundClosest(const int n, const int d)
+{
+  return ((n < 0) ^ (d < 0)) ? ((n - d/2)/d) : ((n + d/2)/d);
 }
 
 #define CHECK_IN_ARRAY(T, index) ((unsigned int)index < (unsigned int)(sizeof(T)/sizeof(T[0])) ? T[(unsigned int)index] : "???")

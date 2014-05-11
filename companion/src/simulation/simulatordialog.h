@@ -53,9 +53,11 @@ class SimulatorDialog : public QDialog
     QTabWidget * tabWidget;
     QGridLayout * logicalSwitchesLayout;
     QGridLayout * channelsLayout;
+    QGridLayout * gvarsLayout;
     QVector<QLabel *> logicalSwitchLabels;
     QVector<QSlider *> channelSliders;
     QVector<QLabel *> channelValues;
+    QVector<QLabel *> gvarValues;
 
     void init();
     Node *nodeLeft;
@@ -65,6 +67,8 @@ class SimulatorDialog : public QDialog
     unsigned int backLight;
     bool lightOn;
     int switches;
+    unsigned int numGvars;
+    unsigned int numFlightModes;
 #ifdef JOYSTICKS
     Joystick *joystick;
     int jscal[8][4];
@@ -73,6 +77,7 @@ class SimulatorDialog : public QDialog
 
     EEPROMInterface *txInterface;
     SimulatorInterface *simulator;
+    unsigned int lastPhase;
 
     void setupSticks();
     void setupTimer();
@@ -102,6 +107,7 @@ class SimulatorDialog : public QDialog
     virtual void keyReleaseEvent(QKeyEvent *);
     static int screenshotIdx;
     int buttonPressed;
+    int trimPressed;
     bool middleButtonPressed;
 
   private slots:
@@ -119,6 +125,8 @@ class SimulatorDialog : public QDialog
     void on_trimHRight_valueChanged(int);
     void on_trimVRight_valueChanged(int);
     void onTimerEvent();
+    void onTrimPressed();
+    void onTrimReleased();
 
 #ifdef JOYSTICKS
     void onjoystickAxisValueChanged(int axis, int value);
@@ -138,12 +146,15 @@ class SimulatorDialog9X: public SimulatorDialog
     virtual void getValues();
     virtual void setLightOn(bool enable);
     virtual void updateBeepButton();
+    void saveSwitches(void);
+    void restoreSwitches(void);
 
   private slots:
     void dialChanged();
 
   private:
     Ui::SimulatorDialog9X * ui;
+    static uint32_t switchstatus;
     int beepShow;
 
 };
@@ -158,10 +169,16 @@ class SimulatorDialogTaranis: public SimulatorDialog
 
   protected:
     virtual void getValues();
+    void saveSwitches(void);
+    void restoreSwitches(void);
 
   private:
     Ui::SimulatorDialogTaranis * ui;
+    static uint32_t switchstatus;
 
+  private slots:
+    void resetSH();
+    void on_switchH_sliderReleased();
 };
 
 #endif // SIMULATORDIALOG_H

@@ -123,13 +123,13 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
     else if (DBLKEYS_PRESSED_RGT_UP(in)) {
       newval = (i_max > 100 ? 100 : i_max);
 #if defined(CPUARM)
-      if(i_flags & DBLKEYS_1000) newval *= 10;
+      if (i_flags & DBLKEYS_1000) newval *= 10;
 #endif
     }
     else if (DBLKEYS_PRESSED_LFT_DWN(in)) {
       newval = (i_min < -100 ? -100 : i_min);
 #if defined(CPUARM)
-      if(i_flags & DBLKEYS_1000) newval *= 10;
+      if (i_flags & DBLKEYS_1000) newval *= 10;
 #endif
     }
     else if (DBLKEYS_PRESSED_UP_DWN(in))
@@ -140,7 +140,6 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
 #if defined(CPUARM)
 
 #endif
-
 
     if (dblkey) {
       killEvents(KEY_UP);
@@ -165,7 +164,12 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
 #endif
 #if defined(CPUARM)
     do {
-      newval++;
+      if (IS_KEY_REPT(event) && (i_flags & INCDEC_REP10)) {
+        newval+=10;
+      }
+      else {
+        newval++;
+      }
     } while (isValueAvailable && !isValueAvailable(newval) && newval<=i_max);
     if (newval > i_max) {
       newval = val;
@@ -185,7 +189,12 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
 #endif
 #if defined(CPUARM)
     do {
-      newval--;
+      if (IS_KEY_REPT(event) && (i_flags & INCDEC_REP10)) {
+        newval-=10;
+      }
+      else {
+        newval--;
+      }
     } while (isValueAvailable && !isValueAvailable(newval) && newval>=i_min);
     if (newval < i_min) {
       newval = val;
@@ -316,7 +325,7 @@ void title(const pm_char * s)
 
 #if defined(PCBTARANIS)
   #define MAXCOL_RAW(row) (horTab ? pgm_read_byte(horTab+min(row, (vertpos_t)horTabMax)) : (const uint8_t)0)
-  #define MAXCOL(row)     (MAXCOL_RAW(row) == (uint8_t)-1 ? (uint8_t)-1 : (const uint8_t)(MAXCOL_RAW(row) & (~NAVIGATION_LINE_BY_LINE)))
+  #define MAXCOL(row)     (MAXCOL_RAW(row) >= HIDDEN_ROW ? MAXCOL_RAW(row) : (const uint8_t)(MAXCOL_RAW(row) & (~NAVIGATION_LINE_BY_LINE)))
   #define COLATTR(row)    (MAXCOL_RAW(row) == (uint8_t)-1 ? (const uint8_t)0 : (const uint8_t)(MAXCOL_RAW(row) & NAVIGATION_LINE_BY_LINE))
 #else
   #define MAXCOL(row)     (horTab ? pgm_read_byte(horTab+min(row, (vertpos_t)horTabMax)) : (const uint8_t)0)
@@ -344,16 +353,21 @@ bool modelHasNotes()
   return (f_stat(filename, &info) == FR_OK);
 }
 
+void pushModelNotes()
+{
+  char filename[sizeof(MODELS_PATH)+1+sizeof(g_model.header.name)+sizeof(TEXT_EXT)] = MODELS_PATH "/";
+  char *buf = strcat_modelname(&filename[sizeof(MODELS_PATH)], g_eeGeneral.currModel);
+  strcpy(buf, TEXT_EXT);
+  pushMenuTextView(filename);
+}
+
 void onLongMenuPress(const char *result)
 {
   if (result == STR_VIEW_CHANNELS) {
     pushMenu(menuChannelsView);
   }
   else if (result == STR_VIEW_NOTES) {
-    char filename[sizeof(MODELS_PATH)+1+sizeof(g_model.header.name)+sizeof(TEXT_EXT)] = MODELS_PATH "/";
-    char *buf = strcat_modelname(&filename[sizeof(MODELS_PATH)], g_eeGeneral.currModel);
-    strcpy(buf, TEXT_EXT);
-    pushMenuTextView(filename);
+    pushModelNotes();
   }
 }
 #endif
@@ -585,34 +599,39 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
   }
 
 #if defined(CPUARM)
-  if (l_posVert<1) s_pgOfs=0;
+  if (l_posVert<1) {
+    s_pgOfs=0;
+  }
   else if (menuTab && horTab) {
-    vertpos_t realPosVert = l_posVert;
-    vertpos_t realPgOfs = s_pgOfs;
-    vertpos_t realMaxrow = maxrow;
-    for (vertpos_t i=1; i<=maxrow; i++) {
-      if (MAXCOL(i) == HIDDEN_ROW) {
-        realMaxrow--;
-        if (i < l_posVert)
-          realPosVert--;
-        if (i < s_pgOfs)
-          realPgOfs--;
+    if (maxrow > LCD_LINES-1) {
+      while (1) {
+        vertpos_t line = s_pgOfs+1;
+        for (int numLines=0; line<=maxrow && numLines<LCD_LINES-1; line++) {
+          if (MAXCOL(line) != HIDDEN_ROW) {
+            numLines++;
+          }
+        }
+        int max = line - s_pgOfs - 1;
+        if (l_posVert > max+s_pgOfs) {
+          s_pgOfs++;
+        }
+        else if (l_posVert < 1+s_pgOfs) {
+          s_pgOfs--;
+        }
+        else {
+          break;
+        }
       }
     }
-    if (realPosVert>(LCD_LINES-1)+realPgOfs) realPgOfs = realPosVert-(LCD_LINES-1);
-    else if (realPosVert<1+realPgOfs) realPgOfs = realPosVert-1;
-    s_pgOfs = realPgOfs;
-    for (vertpos_t i=1; i<=realPgOfs; i++) {
-      if (MAXCOL(i) == HIDDEN_ROW) {
-        s_pgOfs++;
-      }
-    }
-    maxrow = realMaxrow;
   }
   else {
     uint8_t max = menuTab ? LCD_LINES-1 : LCD_LINES-2;
-    if (l_posVert>max+s_pgOfs) s_pgOfs = l_posVert-max;
-    else if (l_posVert<1+s_pgOfs) s_pgOfs = l_posVert-1;
+    if (l_posVert>max+s_pgOfs) {
+      s_pgOfs = l_posVert-max;
+    }
+    else if (l_posVert<1+s_pgOfs) {
+      s_pgOfs = l_posVert-1;
+    }
   }
 
 #if LCD_W >= 212
@@ -630,8 +649,9 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
   m_posHorz = l_posHorz;
   if (s_pgOfs > 0) {
     l_posVert--;
-    if (l_posVert == s_pgOfs && CURSOR_NOT_ALLOWED_IN_ROW(l_posVert))
+    if (l_posVert == s_pgOfs && CURSOR_NOT_ALLOWED_IN_ROW(l_posVert)) {
       s_pgOfs = l_posVert-1;
+    }
   }
   return true;
 }
@@ -1027,7 +1047,6 @@ uint8_t         s_warning_info_len;
 // uint8_t s_warning_info_att not needed now
 uint8_t         s_warning_type;
 uint8_t         s_warning_result = 0;
-const pm_char * s_global_warning = NULL;
 
 #if defined(CPUARM)
 int16_t s_warning_input_value;
@@ -1112,9 +1131,25 @@ int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, LcdFlags attr, uint8_t
 {
   lcd_putsColumnLeft(x, y, STR_SWITCH);
   putsSwitches(x,  y, value, attr);
-  if (attr) CHECK_INCDEC_MODELSWITCH(event, value, SWSRC_FIRST, SWSRC_LAST);
+  if (attr) CHECK_INCDEC_MODELSWITCH(event, value, SWSRC_FIRST_SHORT_LIST, SWSRC_LAST_SHORT_LIST);
   return value;
 }
+
+#if !defined(CPUM64)
+  void displaySlider(uint8_t x, uint8_t y, uint8_t value, uint8_t max, uint8_t attr)
+  {
+    lcd_putc(x+(value*4*FW)/max, y, '$');
+    lcd_hline(x, y+3, 5*FW-1, SOLID);
+    if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcd_filled_rect(x, y, 5*FW-1, FH-1);
+  }
+#elif defined(GRAPHICS)
+  void display5posSlider(uint8_t x, uint8_t y, uint8_t value, uint8_t attr)
+  {
+    lcd_putc(x+2*FW+(value*FW), y, '$');
+    lcd_hline(x, y+3, 5*FW-1, SOLID);
+    if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcd_filled_rect(x, y, 5*FW-1, FH-1);
+  }
+#endif
 
 #if defined(GVARS)
 #if defined(CPUARM)
@@ -1124,16 +1159,19 @@ int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t m
 #endif
 {
   uint16_t delta = GV_GET_GV1_VALUE(max);
-  bool invers = (attr & INVERS);  
+  bool invers = (attr & INVERS);
+
+  // TRACE("gvarMenuItem(val=%d min=%d max=%d)", value, min, max);
+
   if (invers && event == EVT_KEY_LONG(KEY_ENTER)) {
     s_editMode = !s_editMode;
 #if defined(CPUARM)
     if (attr & PREC1)
-      value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, s_perout_flight_phase)*10 : delta);
+      value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, s_perout_flight_mode)*10 : delta);
     else
-      value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, s_perout_flight_phase) : delta);
+      value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, s_perout_flight_mode) : delta);
 #else
-    value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, s_perout_flight_phase) : delta);
+    value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, s_perout_flight_mode) : delta);
 #endif
     eeDirty(EE_MODEL);
   }
@@ -1337,7 +1375,15 @@ bool isSourceAvailable(int source)
 {
 #if defined(PCBTARANIS)
   if (source>=MIXSRC_FIRST_INPUT && source<=MIXSRC_LAST_INPUT) {
-    return ZEXIST(g_model.inputNames[source-MIXSRC_FIRST_INPUT]);
+    int input = source - MIXSRC_FIRST_INPUT;
+    for (int i=0; i<MAX_EXPOS; i++) {
+      ExpoData * expo = expoAddress(i);
+      if (!EXPO_VALID(expo))
+        break;
+      if (expo->chn == input)
+        return true;
+    }
+    return false;
   }
 #endif
 
@@ -1372,7 +1418,7 @@ bool isSourceAvailable(int source)
     return false;
   }
 
-  if (source>=MIXSRC_SW1 && source<=MIXSRC_LAST_CSW) {
+  if (source>=MIXSRC_SW1 && source<=MIXSRC_LAST_LOGICAL_SWITCH) {
     LogicalSwitchData * cs = cswAddress(source-MIXSRC_SW1);
     return (cs->func != LS_FUNC_NONE);
   }
@@ -1398,12 +1444,20 @@ bool isTelemetrySourceAvailable(int source)
     return false;
 #endif
 
+#if !defined(RTCLOCK)
+  if (source == TELEM_TX_TIME)
+    return false;
+#endif
+
   if (source >= TELEM_RESERVE1 && source <= TELEM_RESERVE5)
     return false;
 
   if (source >= TELEM_RESERVE6 && source <= TELEM_RESERVE10)
     return false;
-    
+
+  if (source >= TELEM_RESERVE11 && source <= TELEM_RESERVE15)
+    return false;
+
   if (source == TELEM_DTE)
     return false;
 
@@ -1421,7 +1475,7 @@ bool isInputSourceAvailable(int source)
   if (source>=MIXSRC_FIRST_CH && source<=MIXSRC_LAST_CH)
     return true;
 
-  if (source>=MIXSRC_FIRST_PPM && source<=MIXSRC_LAST_PPM)
+  if (source>=MIXSRC_FIRST_TRAINER && source<=MIXSRC_LAST_TRAINER)
     return true;
 
   if (source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM)
@@ -1465,11 +1519,24 @@ bool isSwitchAvailable(int swtch)
     return false;
   }
 
-  if (swtch >= SWSRC_FIRST_CSW && swtch <= SWSRC_LAST_CSW) {
-    LogicalSwitchData * cs = cswAddress(swtch-SWSRC_FIRST_CSW);
+  if (swtch < 0) {
+    swtch = -swtch;
+  }
+
+  if (swtch >= SWSRC_FIRST_LOGICAL_SWITCH && swtch <= SWSRC_LAST_LOGICAL_SWITCH) {
+    LogicalSwitchData * cs = cswAddress(swtch-SWSRC_FIRST_LOGICAL_SWITCH);
     return (cs->func != LS_FUNC_NONE);
   }
   
+  return true;
+}
+
+bool isThrottleSourceAvailable(int source)
+{
+#if defined(PCBTARANIS)
+  if (source == THROTTLE_SOURCE_S3 && !IS_POT_AVAILABLE(POT3))
+    return false;
+#endif
   return true;
 }
 

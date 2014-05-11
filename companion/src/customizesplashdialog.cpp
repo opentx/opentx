@@ -142,7 +142,7 @@ customizeSplashDialog::customizeSplashDialog(QWidget *parent) :
   ui(new Ui::customizeSplashDialog)
 {
   ui->setupUi(this);
-  this->setWindowIcon(CompanionIcon("paint.png"));
+  setWindowIcon(CompanionIcon("paintbrush.png"));
   ui->leftLibraryButton->setIcon(CompanionIcon("library.png"));
   ui->rightLibraryButton->setIcon(CompanionIcon("library.png"));
   
@@ -225,7 +225,7 @@ void customizeSplashDialog::loadProfile(Side side)
 
   if (!fileName.isEmpty()) {
     if (!side.displayImage( fileName, PROFILE ))
-      QMessageBox::critical(this, tr("Error"), tr("Cannot load the profile image %1.").arg(fileName));
+      QMessageBox::critical(this, tr("Error"), tr("Cannot load profile image %1.").arg(fileName));
   }
   side.markSourceButton();
 }

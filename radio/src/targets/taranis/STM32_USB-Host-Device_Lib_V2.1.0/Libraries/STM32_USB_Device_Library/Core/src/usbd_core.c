@@ -153,20 +153,25 @@ void USBD_Init(USB_OTG_CORE_HANDLE *pdev,
   /* Upon Init call usr callback */
   pdev->dev.usr_cb->Init();
   
+  /* Force Device Mode*/
+  USB_OTG_SetCurrentMode(pdev, DEVICE_MODE);
+
   /* Enable Interrupts */
   USB_OTG_BSP_EnableInterrupt(pdev);
 }
 
 /**
 * @brief  USBD_DeInit 
-*         Re-Initialize th device library
+*         Deinitialize USB device library
 * @param  pdev: device instance
 * @retval status: status
 */
 USBD_Status USBD_DeInit(USB_OTG_CORE_HANDLE *pdev)
 {
-  /* Software Init */
-  
+  /*Disable Interrupts*/
+  USB_OTG_BSP_DisableInterrupt(pdev);
+  USB_OTG_DisableGlobalInt(pdev);
+  USB_OTG_BSP_Deinit(pdev); 
   return USBD_OK;
 }
 

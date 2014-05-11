@@ -18,12 +18,13 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
   hexType(Type)
 {
   ui->setupUi(this);
+  setWindowIcon(CompanionIcon("write_flash.png"));
 
-  if(!g.profile[g.id()].splashFile().isEmpty()){
+  if (!g.profile[g.id()].splashFile().isEmpty()){
     imageSource=PROFILE;
     imageFile=g.profile[g.id()].splashFile();
   }
-  else{
+  else {
     ui->useProfileImageCB->setDisabled(true);
     imageSource=FIRMWARE;
     imageFile="";
@@ -37,7 +38,7 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
     ui->profile_label->hide();
     ui->patchcalib_CB->hide();
     ui->patchhw_CB->hide();
-    setWindowTitle(tr("Write firmware to TX"));
+    setWindowTitle(tr("Write firmware to Radio"));
     if (IS_TARANIS(GetEepromInterface()->getBoard())) {
       ui->EEbackupCB->hide();
     }
@@ -51,17 +52,17 @@ burnDialog::burnDialog(QWidget *parent, int Type, QString * fileName, bool * bac
     ui->BurnFlashButton->setDisabled(true);
     ui->FWFileName->clear();
     ui->DateField->clear();
-    ui->SVNField->clear();
+    ui->versionField->clear();
     ui->ModField->clear();
     ui->FramFWInfo->hide();
     ui->SplashFrame->hide();
     ui->BurnFlashButton->setDisabled(true);
     ui->EEbackupCB->hide();
     if (DocName.isEmpty()) {
-      setWindowTitle(tr("Write Models and Settings to TX"));
+      setWindowTitle(tr("Write Backup to Radio"));
     }
     else {
-      setWindowTitle(tr("Write Models and Settings in %1 to TX").arg(DocName));
+      setWindowTitle(tr("Write Backup from %1 to Radio").arg(DocName));
     }
     ui->profile_label->setText(tr("Current profile")+QString(": ")+g.profile[g.id()].name());
   }
@@ -131,7 +132,7 @@ void burnDialog::on_FlashLoadButton_clicked()
   ui->BurnFlashButton->setDisabled(true);
   ui->FWFileName->clear();
   ui->DateField->clear();
-  ui->SVNField->clear();
+  ui->versionField->clear();
   ui->ModField->clear();
   ui->FramFWInfo->hide();
   ui->SplashFrame->hide();
@@ -145,7 +146,7 @@ void burnDialog::on_FlashLoadButton_clicked()
     checkFw(fileName);
   }
   else {
-    QString fileName = QFileDialog::getOpenFileName(this,tr("Choose file to load Models and Settings from"), g.eepromDir(), tr(EXTERNAL_EEPROM_FILES_FILTER));
+    QString fileName = QFileDialog::getOpenFileName(this,tr("Choose Radio Backup file"), g.eepromDir(), tr(EXTERNAL_EEPROM_FILES_FILTER));
     if (checkeEprom(fileName)) {
       if (burnraw==false) {
         ui->BurnFlashButton->setEnabled(true);
@@ -191,8 +192,8 @@ void burnDialog::checkFw(QString fileName)
   if (flash.isValid()) {
     ui->FramFWInfo->show();
     ui->DateField->setText(flash.getDate() + " " + flash.getTime());
-    ui->SVNField->setText(flash.getSvn());
-    ui->ModField->setText(flash.getBuild());
+    ui->versionField->setText(flash.getVersion().isEmpty() ? flash.getSvn() : flash.getVersion());
+    ui->ModField->setText(flash.getEEprom());
 
     ui->SplashFrame->hide();
     if (flash.hasSplash()) {
@@ -305,7 +306,7 @@ void burnDialog::displaySplash()
     FlashInterface flash(ui->FWFileName->text());
     image = flash.getSplash();
   }
-  else{
+  else {
     image.load(imageFile);
   }
   if (image.isNull()) {
@@ -352,7 +353,7 @@ void burnDialog::on_useProfileImageCB_clicked()
   if (!fileName.isEmpty()){
     QImage image(fileName);
     if (image.isNull()) {
-      QMessageBox::critical(this, tr("Error"), tr("The profile image %1 does not contain an image.").arg(fileName));
+      QMessageBox::critical(this, tr("Error"), tr("Profile image %1 is invalid.").arg(fileName));
     }
     else {
       imageSource = PROFILE;
@@ -368,7 +369,7 @@ void burnDialog::on_useAnotherImageCB_clicked()
   for (int formatIndex = 0; formatIndex < QImageReader::supportedImageFormats().count(); formatIndex++) {
     supportedImageFormats += QLatin1String(" *.") + QImageReader::supportedImageFormats()[formatIndex];
   }
-  QString fileName = QFileDialog::getOpenFileName(this, tr("Open image file to use as Tx start screen"), g.imagesDir(), tr("Images (%1)").arg(supportedImageFormats));
+  QString fileName = QFileDialog::getOpenFileName(this, tr("Open image file to use as radio start screen"), g.imagesDir(), tr("Images (%1)").arg(supportedImageFormats));
   if (!fileName.isEmpty()){
     g.imagesDir( QFileInfo(fileName).dir().absolutePath() );
     QImage image(fileName);
@@ -425,15 +426,18 @@ void burnDialog::on_BurnFlashButton_clicked()
             hexfileName->clear();
             QMessageBox::critical(this, tr("Warning"), tr("Cannot save customized firmware"));
           }
-        } else {
+        }
+        else {
           hexfileName->clear();
           QMessageBox::critical(this, tr("Warning"), tr("Custom image not found"));
         }
-      } else {
-            hexfileName->clear();
-            hexfileName->append(fileName);
       }
-    } else {
+      else {
+        hexfileName->clear();
+        hexfileName->append(fileName);
+      }
+    }
+    else {
       QMessageBox::critical(this, tr("Warning"), tr("No firmware selected"));
       hexfileName->clear();     
     }
@@ -441,7 +445,7 @@ void burnDialog::on_BurnFlashButton_clicked()
   if (hexType==EEPROM_FILE_TYPE) {
     QString calib = g.profile[g.id()].stickPotCalib();
     QString trainercalib = g.profile[g.id()].trainerCalib();
-    int potsnum=GetEepromInterface()->getCapability(Pots);
+    int potsnum=GetCurrentFirmware()->getCapability(Pots);
     int8_t vBatCalib=(int8_t) g.profile[g.id()].vBatCalib();
     int8_t currentCalib=(int8_t) g.profile[g.id()].currentCalib();
     int8_t PPM_Multiplier=(int8_t) g.profile[g.id()].ppmMultiplier();

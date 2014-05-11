@@ -1,13 +1,15 @@
 #include "expodialog.h"
 #include "ui_expodialog.h"
-#include "eeprominterface.h"
 #include "helpers.h"
 
-ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, int stickMode) :
-    QDialog(parent),
-    ui(new Ui::ExpoDialog),
-    model(model),
-    ed(expoData)
+ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, GeneralSettings & generalSettings, FirmwareInterface * firmware, char * inputName) :
+  QDialog(parent),
+  ui(new Ui::ExpoDialog),
+  model(model),
+  generalSettings(generalSettings),
+  firmware(firmware),
+  ed(expoData),
+  inputName(inputName)
 {
   ui->setupUi(this);
   QLabel * lb_fp[] = {ui->lb_FP0,ui->lb_FP1,ui->lb_FP2,ui->lb_FP3,ui->lb_FP4,ui->lb_FP5,ui->lb_FP6,ui->lb_FP7,ui->lb_FP8 };
@@ -16,14 +18,18 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, i
   setWindowTitle(tr("Edit %1").arg(getInputStr(model, ed->chn)));
   QRegExp rx(CHAR_FOR_NAMES_REGEX);
 
-  gvGroup = new GVarGroup(ui->weightGV, ui->weightSB, ui->weightCB, ed->weight, 100, 0, 100);
+  if (IS_TARANIS(GetEepromInterface()->getBoard()))
+    gvGroup = new GVarGroup(ui->weightGV, ui->weightSB, ui->weightCB, ed->weight, 100, -100, 100);
+  else
+    gvGroup = new GVarGroup(ui->weightGV, ui->weightSB, ui->weightCB, ed->weight, 100, 0, 100);
+
   curveGroup = new CurveGroup(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, ed->curve);
 
-  populateSwitchCB(ui->switchesCB,ed->swtch);
+  populateSwitchCB(ui->switchesCB, ed->swtch, generalSettings);
 
   ui->sideCB->setCurrentIndex(ed->mode-1);
 
-  if (!GetEepromInterface()->getCapability(FlightPhases)) {
+  if (!firmware->getCapability(FlightModes)) {
     ui->label_phases->hide();
     for (int i=0; i<9; i++) {
       lb_fp[i]->hide();
@@ -38,15 +44,13 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, i
       }
       mask <<= 1;
     }
-    for (int i=GetEepromInterface()->getCapability(FlightPhases); i<9;i++) {
+    for (int i=firmware->getCapability(FlightModes); i<9;i++) {
       lb_fp[i]->hide();
       cb_fp[i]->hide();
     }
   }
 
-  if (GetEepromInterface()->getCapability(VirtualInputs)) {
-    ui->sideLabel->hide();
-    ui->sideCB->hide();
+  if (firmware->getCapability(VirtualInputs)) {
     ui->inputName->setMaxLength(4);
     populateSourceCB(ui->sourceCB, ed->srcRaw, model, POPULATE_SOURCES | POPULATE_SWITCHES | POPULATE_TRIMS | POPULATE_TELEMETRY);
     ui->sourceCB->removeItem(0);
@@ -66,7 +70,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, i
   ui->trimCB->addItem(tr("Ail"), 4);
   ui->trimCB->setCurrentIndex(1 - ed->carryTrim);
 
-  int expolength = GetEepromInterface()->getCapability(HasExpoNames);
+  int expolength = firmware->getCapability(HasExpoNames);
   if (!expolength) {
     ui->lineNameLabel->hide();
     ui->lineName->hide();
@@ -76,7 +80,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, i
   }
 
   ui->inputName->setValidator(new QRegExpValidator(rx, this));
-  ui->inputName->setText(model.inputNames[ed->chn]);
+  ui->inputName->setText(inputName);
 
   ui->lineName->setValidator(new QRegExpValidator(rx, this));
   ui->lineName->setText(ed->name);
@@ -93,6 +97,9 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, i
   for (int i=0; i<9; i++) {
     connect(cb_fp[i], SIGNAL(toggled(bool)), this, SLOT(valuesChanged()));
   }
+  if (firmware->getCapability(VirtualInputs))
+    connect(ui->inputName, SIGNAL(editingFinished()), this, SLOT(valuesChanged()));
+
   QTimer::singleShot(0, this, SLOT(shrink()));
 }
 
@@ -105,7 +112,7 @@ ExpoDialog::~ExpoDialog()
 
 void ExpoDialog::updateScale()
 {
-  if (GetEepromInterface()->getCapability(VirtualInputs) && ed->srcRaw.type == SOURCE_TYPE_TELEMETRY) {
+  if (firmware->getCapability(VirtualInputs) && ed->srcRaw.type == SOURCE_TYPE_TELEMETRY) {
     RawSourceRange range = ed->srcRaw.getRange();
     ui->scaleLabel->show();
     ui->scale->show();
@@ -137,7 +144,7 @@ void ExpoDialog::valuesChanged()
     ed->mode   = ui->sideCB->currentIndex() + 1;
 
     strcpy(ed->name, ui->lineName->text().toAscii().data());
-    strcpy(model.inputNames[ed->chn], ui->inputName->text().toAscii().data());
+    strcpy(inputName, ui->inputName->text().toAscii().data());
 
     ed->phases=0;
     for (int i=8; i>=0 ; i--) {
@@ -147,11 +154,11 @@ void ExpoDialog::valuesChanged()
       ed->phases<<=1;
     }
     ed->phases>>=1;
-    if (GetEepromInterface()->getCapability(FlightPhases)) {
+    if (firmware->getCapability(FlightModes)) {
       int zeros=0;
       int ones=0;
       int phtemp=ed->phases;
-      for (int i=0; i<GetEepromInterface()->getCapability(FlightPhases); i++) {
+      for (int i=0; i<firmware->getCapability(FlightModes); i++) {
         if (phtemp & 1) {
           ones++;
         }
@@ -162,7 +169,7 @@ void ExpoDialog::valuesChanged()
       }
       if (zeros==1) {
         phtemp=ed->phases;
-        for (int i=0; i<GetEepromInterface()->getCapability(FlightPhases); i++) {
+        for (int i=0; i<firmware->getCapability(FlightModes); i++) {
           if ((phtemp & 1)==0) {
             break;
           }
@@ -171,14 +178,15 @@ void ExpoDialog::valuesChanged()
       }
       else if (ones==1) {
         phtemp=ed->phases;
-        for (int i=0; i<GetEepromInterface()->getCapability(FlightPhases); i++) {
+        for (int i=0; i<firmware->getCapability(FlightModes); i++) {
           if (phtemp & 1) {
             break;
           }
           phtemp >>=1;
         }
       }
-    } else {
+    }
+    else {
       ed->phases=0;
     }  
 }
