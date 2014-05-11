@@ -318,11 +318,7 @@ void displayTopBar()
   /* RTC time */
   struct gtm t;
   gettime(&t);
-  if (t.tm_sec % 2) {
-    lcd_putcAtt(BAR_TIME_X+1, BAR_Y+1, ':', 0);
-  }
-  lcd_outdezNAtt(BAR_TIME_X+1, BAR_Y+1, t.tm_hour, LEADING0, 2);
-  lcd_outdezNAtt(BAR_TIME_X+3*FWNUM-1, BAR_Y+1, t.tm_min, LEADING0, 2);
+  putsTime(BAR_TIME_X+1, BAR_Y+1, t, TIMEBLINK);
 
   /* The background */
   lcd_filled_rect(BAR_X, BAR_Y, BAR_W, BAR_H, SOLID, FILL_WHITE|GREY_DEFAULT|ROUND);
@@ -344,7 +340,7 @@ void displayTimers()
   // Main timer
   if (g_model.timers[0].mode) {
     TimerState & timerState = timersStates[0];
-    putsTime(TIMERS_X, TIMER1_Y, timerState.val, MIDSIZE|LEFT, MIDSIZE|LEFT);
+    putsTimer(TIMERS_X, TIMER1_Y, timerState.val, MIDSIZE|LEFT, MIDSIZE|LEFT);
     putsTimerMode(TIMERS_X, TIMER1_Y-6, g_model.timers[0].mode, SMLSIZE);
     if (g_model.timers[0].persistent) lcd_putcAtt(TIMERS_R, TIMER1_Y+1, 'P', SMLSIZE);
     if (timerState.val < 0) {
@@ -357,7 +353,7 @@ void displayTimers()
   // Second timer
   if (g_model.timers[1].mode) {
     TimerState & timerState = timersStates[1];
-    putsTime(TIMERS_X, TIMER2_Y, timerState.val, MIDSIZE|LEFT, MIDSIZE|LEFT);
+    putsTimer(TIMERS_X, TIMER2_Y, timerState.val, MIDSIZE|LEFT, MIDSIZE|LEFT);
     putsTimerMode(TIMERS_X, TIMER2_Y-6, g_model.timers[1].mode, SMLSIZE);
     if (g_model.timers[1].persistent) lcd_putcAtt(TIMERS_R, TIMER2_Y+1, 'P', SMLSIZE);
     if (timerState.val < 0) {
@@ -374,7 +370,7 @@ void displayTimers()
   if (g_model.timers[0].mode) {
     TimerState & timerState = timersStates[0];
     uint8_t att = DBLSIZE | (timerState.val<0 ? BLINK|INVERS : 0);
-    putsTime(12*FW+2+10*FWNUM-4, FH*2, timerState.val, att, att);
+    putsTimer(12*FW+2+10*FWNUM-4, FH*2, timerState.val, att, att);
     putsTimerMode(timerState.val >= 0 ? 9*FW-FW/2+3 : 9*FW-FW/2-4, FH*3, g_model.timers[0].mode);
   }
 }
@@ -650,7 +646,7 @@ void menuMainView(uint8_t event)
 
   {
     // Flight Phase Name
-    uint8_t phase = s_perout_flight_phase;
+    uint8_t phase = s_perout_flight_mode;
     lcd_putsnAtt(PHASE_X, PHASE_Y, g_model.phaseData[phase].name, sizeof(g_model.phaseData[phase].name), ZCHAR|PHASE_FLAGS);
 
     // Model Name
@@ -840,7 +836,7 @@ void menuMainView(uint8_t event)
     }
   }
   else { // timer2
-    putsTime(33+FW+2+10*FWNUM-4, FH*5, timersStates[1].val, DBLSIZE, DBLSIZE);
+    putsTimer(33+FW+2+10*FWNUM-4, FH*5, timersStates[1].val, DBLSIZE, DBLSIZE);
     putsTimerMode(timersStates[1].val >= 0 ? 20-FW/2+5 : 20-FW/2-2, FH*6, g_model.timers[1].mode);
     // lcd_outdezNAtt(33+11*FW, FH*6, s_timerVal_10ms[1], LEADING0, 2); // 1/100s
   }
@@ -862,13 +858,13 @@ void menuMainView(uint8_t event)
     putsStrIdx(BITMAP_X+FW, BITMAP_Y+FH-1, STR_GV, s_gvar_last+1);
     lcd_putsnAtt(BITMAP_X+4*FW+FW/2, BITMAP_Y+FH-1, g_model.gvars[s_gvar_last].name, LEN_GVAR_NAME, ZCHAR);
     lcd_putsAtt(BITMAP_X+FW, BITMAP_Y+2*FH+3, PSTR("[\010]"), BOLD);
-    lcd_outdezAtt(BITMAP_X+5*FW+FW/2, BITMAP_Y+2*FH+3, GVAR_VALUE(s_gvar_last, s_perout_flight_phase), BOLD);
+    lcd_outdezAtt(BITMAP_X+5*FW+FW/2, BITMAP_Y+2*FH+3, GVAR_VALUE(s_gvar_last, s_perout_flight_mode), BOLD);
 #else
     s_warning = STR_GLOBAL_VAR;
     displayBox();
     lcd_putsnAtt(16, 5*FH, g_model.gvars[s_gvar_last].name, LEN_GVAR_NAME, ZCHAR);
     lcd_putsAtt(16+7*FW, 5*FH, PSTR("[\010]"), BOLD);
-    lcd_outdezAtt(16+7*FW+4*FW+FW/2, 5*FH, GVAR_VALUE(s_gvar_last, s_perout_flight_phase), BOLD);
+    lcd_outdezAtt(16+7*FW+4*FW+FW/2, 5*FH, GVAR_VALUE(s_gvar_last, s_perout_flight_mode), BOLD);
     s_warning = NULL;
 #endif
   }

@@ -629,13 +629,13 @@ TEST(Mixer, SlowOnPhase)
   g_model.mixData[0].speedDown = SLOW_STEP*5;
 
   s_mixer_first_run_done = true;
-  s_perout_flight_phase = 0;
+  s_perout_flight_mode = 0;
   perOut(e_perout_mode_normal, 0);
   EXPECT_EQ(chans[0], 0);
 
   CHECK_SLOW_MOVEMENT(0, +1, 250);
 
-  s_perout_flight_phase = 1;
+  s_perout_flight_mode = 1;
   CHECK_SLOW_MOVEMENT(0, -1, 250);
 }
 
@@ -663,11 +663,11 @@ TEST(Mixer, SlowOnSwitchAndPhase)
   EXPECT_EQ(chans[0], 0);
 
   simuSetSwitch(0, 1);
-  s_perout_flight_phase = 0;
+  s_perout_flight_mode = 0;
   CHECK_SLOW_MOVEMENT(0, +1, 250);
 
   simuSetSwitch(0, -1);
-  s_perout_flight_phase = 1;
+  s_perout_flight_mode = 1;
   CHECK_SLOW_MOVEMENT(0, -1, 250);
 }
 #endif

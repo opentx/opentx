@@ -225,7 +225,7 @@ PACK(typedef struct {
   LogicalSwitchData_v215 customSw[NUM_LOGICAL_SWITCH];
   CustomFnData_v215 funcSw[32];
   SwashRingData swashR;
-  PhaseData_v215 phaseData[MAX_PHASES];
+  PhaseData_v215 phaseData[MAX_FLIGHT_MODES];
 
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5ms increments
   uint8_t   thrTraceSrc;
@@ -332,6 +332,9 @@ void ConvertGeneralSettings_215_to_216(EEGeneral &settings)
 
 int ConvertTelemetrySource_215_to_216(int source)
 {
+  // TELEM_TX_TIME and 5 spare added
+  if (source >= TELEM_TX_TIME)
+    source += 6;
   // TELEM_RSSI_TX added
   if (source >= TELEM_RSSI_TX)
     source += 1;
@@ -387,8 +390,8 @@ int ConvertSwitch_215_to_216(int swtch)
     return -ConvertSwitch_215_to_216(-swtch);
   else if (swtch <= SWSRC_LAST_SWITCH)
     return swtch;
-  else if (swtch > SWSRC_LAST_SWITCH + 32) {
-    swtch -= (22+32);
+  else if (swtch > SWSRC_LAST_SWITCH + 32 + 1) {
+    swtch -= (SWSRC_LAST_SWITCH + 32 + 1);
     if (swtch > SWSRC_ON)
       swtch = 0;
     return swtch;

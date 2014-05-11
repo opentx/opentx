@@ -159,9 +159,10 @@ class MainWindow : public QMainWindow
   
   private:
     void createActions();
-    QAction * addAct(QString, QString, QString, QKeySequence::StandardKey, const char *, QObject *slotObj=NULL);
-    QAction * addAct(QActionGroup *, QString, QString, const char *);
-    QAction * addAct(QString, QString, QString, const char *);
+    QAction * addAct(const QString &, const QString &, const QString &, enum QKeySequence::StandardKey, const char *, QObject *slotObj=NULL);
+    QAction * addAct(const QString &, const QString &, const QString &, const QKeySequence &, const char *, QObject *slotObj=NULL);
+    QAction * addAct(QActionGroup *, const QString &, const QString &, const char *);
+    QAction * addAct(const QString &, const QString &, const QString &, const char *);
 
     void createMenus();
     void createToolBars();

@@ -73,7 +73,7 @@
 #if defined(PCBTARANIS)
   #define MAX_MODELS    60
   #define NUM_CHNOUT    32 // number of real output channels CH1-CH32
-  #define MAX_PHASES    9
+  #define MAX_FLIGHT_MODES    9
   #define MAX_MIXERS    64
   #define MAX_EXPOS     64
   #define NUM_LOGICAL_SWITCH       32 // number of custom switches
@@ -86,7 +86,7 @@
 #elif defined(CPUARM)
   #define MAX_MODELS    60
   #define NUM_CHNOUT    32 // number of real output channels CH1-CH32
-  #define MAX_PHASES    9
+  #define MAX_FLIGHT_MODES    9
   #define MAX_MIXERS    64
   #define MAX_EXPOS     32
   #define NUM_LOGICAL_SWITCH       32 // number of custom switches
@@ -97,7 +97,7 @@
 #elif defined(CPUM2560) || defined(CPUM2561)
   #define MAX_MODELS    30
   #define NUM_CHNOUT    16 // number of real output channels CH1-CH16
-  #define MAX_PHASES    6
+  #define MAX_FLIGHT_MODES    6
   #define MAX_MIXERS    32
   #define MAX_EXPOS     16
   #define NUM_LOGICAL_SWITCH       15 // number of custom switches
@@ -108,7 +108,7 @@
 #elif defined(CPUM128)
   #define MAX_MODELS    30
   #define NUM_CHNOUT    16 // number of real output channels CH1-CH16
-  #define MAX_PHASES    5
+  #define MAX_FLIGHT_MODES    5
   #define MAX_MIXERS    32
   #define MAX_EXPOS     14
   #define NUM_LOGICAL_SWITCH       15 // number of custom switches
@@ -119,7 +119,7 @@
 #else
   #define MAX_MODELS    16
   #define NUM_CHNOUT    16 // number of real output channels CH1-CH16
-  #define MAX_PHASES    5
+  #define MAX_FLIGHT_MODES    5
   #define MAX_MIXERS    32
   #define MAX_EXPOS     14
   #define NUM_LOGICAL_SWITCH       12 // number of custom switches
@@ -364,6 +364,18 @@ PACK(typedef struct {
   int16_t spanPos;
 }) CalibData;
 
+#if defined(PCBSTD)
+  #define N_PCBSTD_FIELD(x)
+#else
+  #define N_PCBSTD_FIELD(x) x;
+#endif
+
+#if defined(PCBTARANIS)
+  #define N_TARANIS_FIELD(x)
+#else
+  #define N_TARANIS_FIELD(x) x;
+#endif
+
 #define ALTERNATE_VIEW 0x10
 PACK(typedef struct t_EEGeneral {
   uint8_t   version;
@@ -396,7 +408,8 @@ PACK(typedef struct t_EEGeneral {
   uint8_t   templateSetup;   // RETA order for receiver channels
   int8_t    PPM_Multiplier;
   int8_t    hapticLength;
-  uint8_t   reNavigation;    // not used on STOCK board
+  N_PCBSTD_FIELD( uint8_t   reNavigation)
+  N_TARANIS_FIELD(uint8_t   stickReverse)
   int8_t    beepLength:3;
   uint8_t   hapticStrength:3;
   uint8_t   gpsFormat:1;
@@ -509,9 +522,9 @@ PACK(typedef struct t_ExpoData {
   #define limit_min_max_t     int16_t
   #define LIMIT_EXT_PERCENT   150
   #define LIMIT_EXT_MAX       (LIMIT_EXT_PERCENT*10)
-  #define LIMIT_MAX(lim)      (GV_IS_GV_VALUE(lim->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX) ? GET_GVAR(lim->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, s_perout_flight_phase)*10 : lim->max+1000)
-  #define LIMIT_MIN(lim)      (GV_IS_GV_VALUE(lim->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX) ? GET_GVAR(lim->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, s_perout_flight_phase)*10 : lim->min-1000)
-  #define LIMIT_OFS(lim)      (GV_IS_GV_VALUE(lim->offset, -1000, 1000) ? GET_GVAR(lim->offset, -1000, 1000, s_perout_flight_phase)*10 : lim->offset)
+  #define LIMIT_MAX(lim)      (GV_IS_GV_VALUE(lim->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX) ? GET_GVAR(lim->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, s_perout_flight_mode)*10 : lim->max+1000)
+  #define LIMIT_MIN(lim)      (GV_IS_GV_VALUE(lim->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX) ? GET_GVAR(lim->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, s_perout_flight_mode)*10 : lim->min-1000)
+  #define LIMIT_OFS(lim)      (GV_IS_GV_VALUE(lim->offset, -1000, 1000) ? GET_GVAR(lim->offset, -1000, 1000, s_perout_flight_mode)*10 : lim->offset)
   #define LIMIT_MAX_RESX(lim) calc1000toRESX(LIMIT_MAX(lim))
   #define LIMIT_MIN_RESX(lim) calc1000toRESX(LIMIT_MIN(lim))
   #define LIMIT_OFS_RESX(lim) calc1000toRESX(LIMIT_OFS(lim))
@@ -679,7 +692,7 @@ PACK(typedef struct t_MixData {
 PACK( union u_gvarint_t {
   struct {
     int8_t lo;
-	uint8_t hi;
+    uint8_t hi;
   } bytes_t;
   int16_t word;
 	
@@ -903,26 +916,26 @@ PACK(typedef struct t_CustomFnData { // Function Switches data
 #define CFN_GVAR_MODE(p)        ((p)->all.mode)
 #define CFN_PARAM(p)            ((p)->all.val)
 #define CFN_RESET(p)            ((p)->active=0, (p)->clear.val1=0, (p)->clear.val2=0)
+#define CFN_GVAR_CST_MAX        GVAR_LIMIT
 #else
 PACK(typedef struct t_CustomFnData {
   PACK(union {
-    struct {
-      int8_t   swtch:6;
-      uint16_t func:4;
-      uint8_t  mode:2;
-      uint8_t  param:3;
-      uint8_t  active:1;
-    } gvar;
+    PACK(struct {
+      int16_t   swtch:6;
+      uint16_t  func:4;
+      uint16_t  mode:2;
+      uint16_t  param:3;
+      uint16_t  active:1;
+    }) gvar;
 
-    struct {
-      int8_t   swtch:6;
-      uint16_t func:4;
-      uint8_t  param:4;
-      uint8_t  spare:1;
-      uint8_t  active:1;
-    } all;
+    PACK(struct {
+      int16_t   swtch:6;
+      uint16_t  func:4;
+      uint16_t  param:4;
+      uint16_t  spare:1;
+      uint16_t  active:1;
+    }) all;
   });
-
   uint8_t value;
 }) CustomFnData;
 #define CFN_SWITCH(p)       ((p)->all.swtch)
@@ -936,6 +949,7 @@ PACK(typedef struct t_CustomFnData {
 #define CFN_GVAR_MODE(p)    ((p)->gvar.mode)
 #define CFN_PARAM(p)        ((p)->value)
 #define CFN_RESET(p)        ((p)->all.active = 0, CFN_PARAM(p) = 0)
+#define CFN_GVAR_CST_MAX    125
 #endif
 
 enum TelemetryUnit {
@@ -988,6 +1002,14 @@ PACK(typedef struct t_FrSkyChannelData {
 enum TelemetrySource {
   TELEM_NONE,
   TELEM_TX_VOLTAGE,
+#if defined(CPUARM)
+  TELEM_TX_TIME,
+  TELEM_RESERVE1,
+  TELEM_RESERVE2,
+  TELEM_RESERVE3,
+  TELEM_RESERVE4,
+  TELEM_RESERVE5,
+#endif
   TELEM_TM1,
   TELEM_TM2,
 #if defined(CPUARM)
@@ -1026,11 +1048,11 @@ enum TelemetrySource {
   TELEM_ASPEED,
   TELEM_DTE,
 #if defined(CPUARM)
-  TELEM_RESERVE1,
-  TELEM_RESERVE2,
-  TELEM_RESERVE3,
-  TELEM_RESERVE4,
-  TELEM_RESERVE5,
+  TELEM_RESERVE6,
+  TELEM_RESERVE7,
+  TELEM_RESERVE8,
+  TELEM_RESERVE9,
+  TELEM_RESERVE10,
 #endif
   TELEM_MIN_A1,
   TELEM_MIN_A2,
@@ -1052,11 +1074,11 @@ enum TelemetrySource {
   TELEM_MAX_CURRENT,
   TELEM_MAX_POWER,
 #if defined(CPUARM)
-  TELEM_RESERVE6,
-  TELEM_RESERVE7,
-  TELEM_RESERVE8,
-  TELEM_RESERVE9,
-  TELEM_RESERVE10,
+  TELEM_RESERVE11,
+  TELEM_RESERVE12,
+  TELEM_RESERVE13,
+  TELEM_RESERVE14,
+  TELEM_RESERVE15,
 #endif
   TELEM_ACC,
   TELEM_GPS_TIME,
@@ -1232,7 +1254,7 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 #define NUM_ROTARY_ENCODERS_EXTRA 2
 #define NUM_ROTARY_ENCODERS (2+NUM_ROTARY_ENCODERS_EXTRA)
 #define ROTARY_ENCODER_ARRAY int16_t rotaryEncoders[2];
-#define ROTARY_ENCODER_ARRAY_EXTRA int16_t rotaryEncodersExtra[MAX_PHASES][NUM_ROTARY_ENCODERS_EXTRA];
+#define ROTARY_ENCODER_ARRAY_EXTRA int16_t rotaryEncodersExtra[MAX_FLIGHT_MODES][NUM_ROTARY_ENCODERS_EXTRA];
 #elif defined(CPUM2560) && ROTARY_ENCODERS <= 2
 #define NUM_ROTARY_ENCODERS_EXTRA 0
 #define NUM_ROTARY_ENCODERS 2
@@ -1357,8 +1379,8 @@ enum SwitchSources {
   SWSRC_REb,
 #endif
 
-  SWSRC_FIRST_CSW,
-  SWSRC_SW1 = SWSRC_FIRST_CSW,
+  SWSRC_FIRST_LOGICAL_SWITCH,
+  SWSRC_SW1 = SWSRC_FIRST_LOGICAL_SWITCH,
   SWSRC_SW2,
   SWSRC_SW3,
   SWSRC_SW4,
@@ -1370,13 +1392,24 @@ enum SwitchSources {
   SWSRC_SWA,
   SWSRC_SWB,
   SWSRC_SWC,
-  SWSRC_LAST_CSW = SWSRC_SW1+NUM_LOGICAL_SWITCH-1,
+  SWSRC_LAST_LOGICAL_SWITCH = SWSRC_FIRST_LOGICAL_SWITCH+NUM_LOGICAL_SWITCH-1,
 
   SWSRC_ON,
+
+#if defined(CPUARM)
+  SWSRC_FIRST_FLIGHT_MODE,
+  SWSRC_LAST_FLIGHT_MODE = SWSRC_FIRST_FLIGHT_MODE+MAX_FLIGHT_MODES-1,
+#endif
+
+  SWSRC_COUNT,
+
   SWSRC_OFF = -SWSRC_ON,
 
-  SWSRC_FIRST = SWSRC_OFF,
-  SWSRC_LAST = SWSRC_ON
+  SWSRC_LAST = SWSRC_COUNT-1,
+  SWSRC_FIRST = -SWSRC_LAST,
+
+  SWSRC_LAST_SHORT_LIST = SWSRC_LAST_LOGICAL_SWITCH,
+  SWSRC_FIRST_SHORT_LIST = -SWSRC_LAST_SHORT_LIST,
 };
 
 enum MixSources {
@@ -1668,7 +1701,7 @@ PACK(typedef struct t_ModelData {
   LogicalSwitchData customSw[NUM_LOGICAL_SWITCH];
   CustomFnData funcSw[NUM_CFN];
   SwashRingData swashR;
-  PhaseData phaseData[MAX_PHASES];
+  PhaseData phaseData[MAX_FLIGHT_MODES];
 
   AVR_FIELD(int8_t ppmFrameLength)     // 0=22.5ms  (10ms-30ms) 0.5ms increments
   uint8_t   thrTraceSrc;

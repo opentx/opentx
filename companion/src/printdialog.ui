@@ -80,7 +80,7 @@
   <connection>
    <sender>closeButton</sender>
    <signal>clicked()</signal>
-   <receiver>printDialog</receiver>
+   <receiver>PrintDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

@@ -109,6 +109,10 @@ RawSourceRange RawSource::getRange(bool singleprec)
           result.decimals = 1;
           result.max = 25.5;
           break;
+        case TELEMETRY_SOURCE_TX_TIME:
+          result.step = 1;
+          result.max = 24*60 - 1;
+          break;
         case TELEMETRY_SOURCE_TIMER1:
         case TELEMETRY_SOURCE_TIMER2:
           result.step = singleprec ? 5 : 1;
@@ -200,8 +204,8 @@ RawSourceRange RawSource::getRange(bool singleprec)
           result.decimals = 1;
           break;
         case TELEMETRY_SOURCE_CONSUMPTION:
-          result.step = singleprec ? 20 : 1;
-          result.max = singleprec ? 5100 : 10000;
+          result.step = singleprec ? 100 : 1;
+          result.max = singleprec ? 25500 : 10000;
           break;
         case TELEMETRY_SOURCE_POWER:
         case TELEMETRY_SOURCE_POWER_MAX:
@@ -258,7 +262,7 @@ QString RawSource::toString()
   };
 
   static const QString telemetry[] = {
-    QObject::tr("Batt"), QObject::tr("Timer1"), QObject::tr("Timer2"),
+    QObject::tr("Batt"), QObject::tr("Time"), QObject::tr("Timer1"), QObject::tr("Timer2"),
     QObject::tr("SWR"), QObject::tr("RSSI Tx"), QObject::tr("RSSI Rx"), QObject::tr("Rx Batt"),
     QObject::tr("A1"), QObject::tr("A2"), QObject::tr("A3"), QObject::tr("A4"),
     QObject::tr("Alt"), QObject::tr("Rpm"), QObject::tr("Fuel"), QObject::tr("T1"), QObject::tr("T2"),
@@ -269,10 +273,10 @@ QString RawSource::toString()
     QObject::tr("A1-"),  QObject::tr("A2-"), QObject::tr("A3-"),  QObject::tr("A4-"),
     QObject::tr("Alt-"), QObject::tr("Alt+"), QObject::tr("Rpm+"), QObject::tr("T1+"), QObject::tr("T2+"), QObject::tr("Speed+"), QObject::tr("Dist+"), QObject::tr("AirSpeed+"),
     QObject::tr("Cell-"), QObject::tr("Cells-"), QObject::tr("Vfas-"), QObject::tr("Curr+"), QObject::tr("Powr+"),
-    QObject::tr("ACC"), QObject::tr("Time"),
+    QObject::tr("ACC"), QObject::tr("GPS Time"),
   };
 
-  static const QString virtualSwitches[] = {
+  static const QString logicalSwitches[] = {
     QObject::tr("L1"), QObject::tr("L2"), QObject::tr("L3"), QObject::tr("L4"), QObject::tr("L5"), QObject::tr("L6"), QObject::tr("L7"), QObject::tr("L8"), QObject::tr("L9"), QObject::tr("L10"),
     QObject::tr("L11"), QObject::tr("L12"), QObject::tr("L13"), QObject::tr("L14"), QObject::tr("L15"), QObject::tr("L16"), QObject::tr("L17"), QObject::tr("L18"), QObject::tr("L19"), QObject::tr("L20"),
     QObject::tr("L21"), QObject::tr("L22"), QObject::tr("L23"), QObject::tr("L24"), QObject::tr("L25"), QObject::tr("L26"), QObject::tr("L27"), QObject::tr("L28"), QObject::tr("L29"), QObject::tr("L30"),
@@ -302,7 +306,7 @@ QString RawSource::toString()
     case SOURCE_TYPE_SWITCH:
       return (IS_TARANIS(GetEepromInterface()->getBoard()) ? CHECK_IN_ARRAY(switchesX9D, index) : CHECK_IN_ARRAY(switches9X, index));
     case SOURCE_TYPE_CUSTOM_SWITCH:
-      return virtualSwitches[index];
+      return logicalSwitches[index];
     case SOURCE_TYPE_CYC:
       return QObject::tr("CYC%1").arg(index+1);
     case SOURCE_TYPE_PPM:
@@ -349,11 +353,15 @@ QString RawSwitch::toString()
     SwitchUp('H'), SwitchDn('H'),
   };
 
-  static const QString virtualSwitches[] = {
+  static const QString logicalSwitches[] = {
     QObject::tr("L1"), QObject::tr("L2"), QObject::tr("L3"), QObject::tr("L4"), QObject::tr("L5"), QObject::tr("L6"), QObject::tr("L7"), QObject::tr("L8"), QObject::tr("L9"), QObject::tr("L10"),
     QObject::tr("L11"), QObject::tr("L12"), QObject::tr("L13"), QObject::tr("L14"), QObject::tr("L15"), QObject::tr("L16"), QObject::tr("L17"), QObject::tr("L18"), QObject::tr("L19"), QObject::tr("L20"),
     QObject::tr("L21"), QObject::tr("L22"), QObject::tr("L23"), QObject::tr("L24"), QObject::tr("L25"), QObject::tr("L26"), QObject::tr("L27"), QObject::tr("L28"), QObject::tr("L29"), QObject::tr("L30"),
     QObject::tr("L31"), QObject::tr("L32")
+  };
+
+  static const QString flightModes[] = {
+    QObject::tr("FM0"), QObject::tr("FM1"), QObject::tr("FM2"), QObject::tr("FM3"), QObject::tr("FM4"), QObject::tr("FM5"), QObject::tr("FM6"), QObject::tr("FM7"), QObject::tr("FM8")
   };
 
   static const QString multiposPots[] = {
@@ -389,7 +397,7 @@ QString RawSwitch::toString()
         else
           return CHECK_IN_ARRAY(switches9X, index-1);
       case SWITCH_TYPE_VIRTUAL:
-        return CHECK_IN_ARRAY(virtualSwitches, index-1);
+        return CHECK_IN_ARRAY(logicalSwitches, index-1);
       case SWITCH_TYPE_MULTIPOS_POT:
         return CHECK_IN_ARRAY(multiposPots, index-1);
       case SWITCH_TYPE_TRIM:
@@ -400,6 +408,8 @@ QString RawSwitch::toString()
         return QObject::tr("ON");
       case SWITCH_TYPE_OFF:
         return QObject::tr("OFF");
+      case SWITCH_TYPE_FLIGHT_MODE:
+        return CHECK_IN_ARRAY(flightModes, index-1);
       case SWITCH_TYPE_NONE:
         return QObject::tr("----");
       case SWITCH_TYPE_TIMER_MODE:
@@ -507,36 +517,43 @@ QString LogicalSwitchData::toString(const ModelData & model)
   }
   switch (getFunctionFamily()) {
     case LS_FAMILY_STAY:
-      result = QObject::tr("STAY(%1, [%2:%3])").arg(RawSwitch(val1).toString()).arg(ValToTim(val2)).arg(ValToTim(val2+val3));
+      result += QObject::tr("Edge(%1, [%2:%3])").arg(RawSwitch(val1).toString()).arg(ValToTim(val2)).arg(ValToTim(val2+val3));
       break;
     case LS_FAMILY_STICKY:
-      result = QObject::tr("STICKY(%1, %2)").arg(RawSwitch(val1).toString()).arg(RawSwitch(val2).toString());
+      result += QObject::tr("Sticky(%1, %2)").arg(RawSwitch(val1).toString()).arg(RawSwitch(val2).toString());
       break;
     case LS_FAMILY_TIMER:
-      result = QObject::tr("TIMER(%1, %2)").arg(ValToTim(val1)).arg(ValToTim(val2));
+      result += QObject::tr("Timer(%1, %2)").arg(ValToTim(val1)).arg(ValToTim(val2));
       break;
     case LS_FAMILY_VOFS: {
       RawSource source = RawSource(val1, &model);
       RawSourceRange range = source.getRange();
+      QString res;
       if (val1)
-        result += source.toString();
+        res += source.toString();
       else
-        result += "0";
-      result.remove(" ");
+        res += "0";
+      res.remove(" ");
       if (func == LS_FN_APOS || func == LS_FN_ANEG)
-        result = "|" + result + "|";
+        res = "|" + res + "|";
       else if (func == LS_FN_DAPOS)
-        result = "|d(" + result + ")|";
-      else if (func == LS_FN_DPOS) result = "d(" + result + ")";
+        res = "|d(" + res + ")|";
+      else if (func == LS_FN_DPOS) result = "d(" + res + ")";
+      result += res;
+
       if (func == LS_FN_APOS || func == LS_FN_VPOS || func == LS_FN_DAPOS || func == LS_FN_DPOS)
         result += " &gt; ";
       else if (func == LS_FN_ANEG || func == LS_FN_VNEG)
         result += " &lt; ";
+      else if (func == LS_FN_VALMOSTEQUAL)
+        result += " ~ ";
+      else
+        result += " missing";
       result += QString::number(range.step * (val2 /*TODO+ source.getRawOffset(model)*/) + range.offset);
       break;
     }
     case LS_FAMILY_VBOOL:
-      result = RawSwitch(val1).toString();
+      result += RawSwitch(val1).toString();
       switch (func) {
         case LS_FN_AND:
           result += " AND ";
@@ -547,7 +564,8 @@ QString LogicalSwitchData::toString(const ModelData & model)
         case LS_FN_XOR:
           result += " XOR ";
           break;
-        default:
+       default:
+          result += " bar ";
           break;
       }
       result += RawSwitch(val2).toString();
@@ -560,6 +578,7 @@ QString LogicalSwitchData::toString(const ModelData & model)
         result += "0";
       switch (func) {
         case LS_FN_EQUAL:
+        case LS_FN_VEQUAL:
           result += " = ";
           break;
         case LS_FN_NEQUAL:
@@ -578,6 +597,7 @@ QString LogicalSwitchData::toString(const ModelData & model)
           result += " &lt;= ";
           break;
         default:
+          result += " foo ";
           break;
       }
       if (val2)
@@ -593,10 +613,10 @@ QString LogicalSwitchData::toString(const ModelData & model)
   }
 
   if (GetCurrentFirmware()->getCapability(LogicalSwitchesExt)) {
-    if (delay)
-      result += QObject::tr(" Delay %1 sec").arg(delay/10.0);
     if (duration)
-      result += QObject::tr(" Duration %1 sec").arg(duration/10.0);
+      result += QObject::tr(" Duration (%1s)").arg(duration/10.0);
+    if (delay)
+      result += QObject::tr(" Delay (%1s)").arg(delay/10.0);
   }
 
   return result;
@@ -1003,6 +1023,17 @@ ExpoData * ModelData::insertInput(const int idx)
   return &expoData[idx];
 }
 
+bool ModelData::isInputValid(const unsigned int idx) const
+{
+  for (int i=0; i<C9X_MAX_EXPOS; i++) {
+    const ExpoData * expo = &expoData[i];
+    if (expo->mode == 0) break;
+    if (expo->chn == idx)
+      return true;
+  }
+  return false;
+}
+
 void ModelData::removeInput(const int idx)
 {
   memmove(&expoData[idx], &expoData[idx+1], (C9X_MAX_EXPOS-(idx+1))*sizeof(ExpoData));
@@ -1039,7 +1070,7 @@ void ModelData::clear()
     moduleData[0].protocol=PPM;
     moduleData[1].protocol=OFF;      
   }
-  for (int i=0; i<C9X_MAX_PHASES; i++)
+  for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++)
     phaseData[i].clear();
   clearInputs();
   clearMixes();
@@ -1109,7 +1140,7 @@ void ModelData::setDefaultValues(unsigned int id, const GeneralSettings & settin
 int ModelData::getTrimValue(int phaseIdx, int trimIdx)
 {
   int result = 0;
-  for (int i=0; i<C9X_MAX_PHASES; i++) {
+  for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
     PhaseData & phase = phaseData[phaseIdx];
     if (phase.trimMode[trimIdx] < 0) {
       return result;
@@ -1132,7 +1163,7 @@ int ModelData::getTrimValue(int phaseIdx, int trimIdx)
 
 void ModelData::setTrimValue(int phaseIdx, int trimIdx, int value)
 {
-  for (uint8_t i=0; i<C9X_MAX_PHASES; i++) {
+  for (uint8_t i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
     PhaseData & phase = phaseData[phaseIdx];
     int mode = phase.trimMode[trimIdx];
     int p = phase.trimRef[trimIdx];

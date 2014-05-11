@@ -133,7 +133,7 @@ Eric Burdis
 Nigel Chippindale
 Michael Deasy
 Stephen Stough
-Kenneth Lilja 
+Kenneth Lilja (monthly)
 Robert Jero
 Gary Bancroft
 Robert Cotsford
@@ -332,7 +332,7 @@ Steve Coley
 Sean Cull
 Roberto Orsello
 David Finger
-FrSky - www.frsky-rc.com
+FrSky - www.frsky-rc.com (monthly)
 Jean-Marie Oddo
 Mike Matheny
 Glen Roe (Showmaster)
@@ -383,3 +383,17 @@ Gordon Stahl
 Serge Michaux 
 Robert Young
 Wilco Hijink
+Roy Nixon
+Lexington S Morley
+Daryl Dacko
+Beat Zurflueh
+Piotr Kundu
+Kevin Berkefeld
+Tomasz Klys
+Mirco Didone'
+Christoph Schroeter
+Zdenek Trojanek
+Bryan Anderson
+Kamco Enterprises 
+Robert Bates
+Robert Brown  

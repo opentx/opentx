@@ -37,7 +37,7 @@
 #include "../opentx.h"
 
 #define TEXT_FILENAME_MAXLEN  40
-#define TEXT_FILE_MAXSIZE     1000
+#define TEXT_FILE_MAXSIZE     2048
 
 char s_text_file[TEXT_FILENAME_MAXLEN];
 char s_text_screen[LCD_LINES-1][LCD_COLS+1];
@@ -72,14 +72,22 @@ void readTextFile(int & lines_count)
           escape_chars[escape-1] = c;
           if (escape == 2 && !strncmp(escape_chars, "up", 2)) {
             c = '\300';
+            escape = 0;
           }
           else if (escape == 2 && !strncmp(escape_chars, "dn", 2)) {
             c = '\301';
+            escape = 0;
           }
           else {
             escape++;
             continue;
           }
+        }
+        else if (c=='~') {
+          c = 'z'+1;
+        }
+        else if (c=='\t') {
+          c = 0x1D; //tab
         }
         escape = 0;
         s_text_screen[current_line-s_pgOfs][line_length++] = c;

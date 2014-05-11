@@ -131,6 +131,7 @@ private slots:
     void unlockSwitchEdited();
     void setValues();
     void shrink();
+    void stickReverseEdited();
 };
 
 #endif // GENERALEDIT_H

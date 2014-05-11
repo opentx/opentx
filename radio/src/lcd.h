@@ -113,6 +113,7 @@
   #define SMLSIZE       0x0200
   #define TINSIZE       0x0400
   #define STREXPANDED   0x0800
+  #define TIMEBLINK     0x1000
 #else
   #define MIDSIZE       DBLSIZE
   #define SMLSIZE       0x00
@@ -178,7 +179,7 @@ void putsStrIdx(xcoord_t x, uint8_t y, const pm_char *str, uint8_t idx, LcdFlags
 void putsModelName(xcoord_t x, uint8_t y, char *name, uint8_t id, LcdFlags att);
 void putsSwitches(xcoord_t x, uint8_t y, int8_t swtch, LcdFlags att=0);
 void putsMixerSource(xcoord_t x, uint8_t y, uint8_t idx, LcdFlags att=0);
-void putsFlightPhase(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att=0);
+void putsFlightMode(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att=0);
 #if defined(PCBTARANIS) && !defined(BOOT)
 void putsCurveRef(xcoord_t x, uint8_t y, CurveRef &curve, LcdFlags att);
 #endif
@@ -202,7 +203,8 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
   #define putstime_t int16_t
 #endif
 
-void putsTime(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFlags att2);
+void putsTime(xcoord_t x, uint8_t y, struct gtm t, LcdFlags att);
+void putsTimer(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFlags att2);
 
 #define SOLID  0xff
 #define DOTTED 0x55

@@ -1932,6 +1932,51 @@ p, li { white-space: pre-wrap; }
          </item>
         </layout>
        </item>
+       <item row="31" column="0">
+        <widget class="QLabel" name="stickReverseLB">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Stick reverse (order as above)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="31" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QCheckBox" name="stickReverse1">
+           <property name="text">
+            <string notr="true">1</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="stickReverse2">
+           <property name="text">
+            <string notr="true">2</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="stickReverse3">
+           <property name="text">
+            <string notr="true">3</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="stickReverse4">
+           <property name="text">
+            <string notr="true">4</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="tabTrainer">

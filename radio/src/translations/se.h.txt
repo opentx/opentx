@@ -282,21 +282,27 @@
 
 #if defined(CPUARM)
   #define TR_TELEM_RESERVE     "[--]"
+  #define TR_TELEM_TIME        "Time"
   #define TR_SWR               "SWR\0"
   #define TR_RX_BATT           "RxBt"
   #define TR_A3_A4             "A3\0 ""A4\0 "
   #define TR_A3_A4_MIN         "A3-\0""A4-\0"
 #else
   #define TR_TELEM_RESERVE
+  #define TR_TELEM_TIME
   #define TR_SWR
   #define TR_RX_BATT
   #define TR_A3_A4
   #define TR_A3_A4_MIN
 #endif
 
-#define TR_ASPD_MAX            "ASp+" 
+#define TR_ASPD_MAX            TR("ASp+", "ASpd+")  
 
-#define TR_VTELEMCHNS          "---\0""Batt""Tmr1""Tmr2" TR_SWR "Tx\0 ""Rx\0 " TR_RX_BATT "A1\0 ""A2\0 " TR_A3_A4 "Höjd""Varv""Tank""T1\0 ""T2\0 ""Fart""Avst""GHjd""Batt""Cels""Vfas""Curr""Cnsp""Powr""AccX""AccY""AccZ""Hdg\0""VFrt""ASpd""dTE\0" TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE "A1-\0""A2-\0" TR_A3_A4_MIN "Hjd-""Hjd+""Rpm+""T1+\0""T2+\0""Frt+""Avs+" TR_ASPD_MAX "Cel-""Cls-""Vfs-""Cur+""Pwr+" TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE "Acc\0""Tid\0"
+#if LCD_W >= 212
+  #define TR_VTELEMCHNS        "---\0 ""Batt\0" TR_TELEM_TIME TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE "Tmr1\0""Tmr2\0" TR_SWR "Tx\0  ""Rx\0  " TR_RX_BATT "A1\0  ""A2\0  " TR_A3_A4 "Alt\0 ""Rpm\0 ""Fuel\0""T1\0  ""T2\0  ""Spd\0 ""Dist\0""GAlt\0""Cell\0""Cells""Vfas\0""Curr\0""Cnsp\0""Powr\0""AccX\0""AccY\0""AccZ\0""Hdg\0 ""VSpd\0""ASpd\0""dTE\0 " TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE "A1-\0 ""A2-\0 " TR_A3_A4_MIN "Alt-\0""Alt+\0""Rpm+\0""T1+\0 ""T2+\0 ""Spd+\0""Dst+\0" TR_ASPD_MAX "Cell-""Cels-""Vfas-""Curr+""Powr+" TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE "Acc\0 ""Time\0"
+#else
+  #define TR_VTELEMCHNS        "---\0""Batt" TR_TELEM_TIME TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE "Tmr1""Tmr2" TR_SWR "Tx\0 ""Rx\0 " TR_RX_BATT "A1\0 ""A2\0 " TR_A3_A4 "Alt\0""Rpm\0""Fuel""T1\0 ""T2\0 ""Spd\0""Dist""GAlt""Cell""Cels""Vfas""Curr""Cnsp""Powr""AccX""AccY""AccZ""Hdg\0""VSpd""ASpd""dTE\0" TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE "A1-\0""A2-\0" TR_A3_A4_MIN "Alt-""Alt+""Rpm+""T1+\0""T2+\0""Spd+""Dst+" TR_ASPD_MAX "Cel-""Cls-""Vfs-""Cur+""Pwr+" TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE "Acc\0""Time"
+#endif
 
 #define LENGTH_UNIT_IMP        "ft\0"
 #define SPEED_UNIT_IMP         "mph"
@@ -401,7 +407,7 @@
 #endif
 
 #if defined(PCBTARANIS)
-  #define TR_6POS_POTS         "P11""P12""P13""P14""P15""P16""P21""P22""P23""P24""P25""P26""P31""P32""P33""P34""P35""P36"
+  #define TR_6POS_POTS         "S11""S12""S13""S14""S15""S16""S21""S22""S23""S24""S25""S26""S31""S32""S33""S34""S35""S36"
   #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_6POS_POTS TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW
 #elif defined(CPUARM)
   #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW
@@ -415,7 +421,7 @@
   #define TR_CYC_VSRCRAW       "[C1]""[C2]""[C3]"
 #endif
 
-#define TR_VSRCRAW             "---\0""Rod\0""Hjd\0""Gas\0""Ske\0" TR_POTS_VSRCRAW TR_ROTARY_ENCODER "MAX " TR_CYC_VSRCRAW "TrmR" "TrmH" "TrmG" "TrmS" TR_SW_VSRCRAW
+#define TR_VSRCRAW             "---\0""Rod\0""Hjd\0""Gas\0""Ske\0" TR_POTS_VSRCRAW TR_ROTARY_ENCODERS "MAX\0" TR_CYC_VSRCRAW "TrmR" "TrmH" "TrmG" "TrmS" TR_SW_VSRCRAW
 
 #define LEN_VTMRMODES          "\003"
 #define TR_VTMRMODES           "Av\0""ABS""GAs""GA%""GAt"
@@ -439,7 +445,6 @@
 #define INDENT                 "\001"
 #define LEN_INDENT             1
 #define INDENT_WIDTH           (FW/2)
-
 
 #if defined(PCBTARANIS)
   #define TR_ENTER             "[ENTER]"
@@ -475,7 +480,7 @@
 #define TR_TTRIM               TR("Gastrim", INDENT "Gastrim")
 #define TR_BEEPCTR             TR("Cent.pip", "Centerpip")
 #define TR_PROTO               TR(INDENT "Proto", INDENT "Protokoll")
-#define TR_PPMFRAME            "PPM-paket"
+#define TR_PPMFRAME            TR(INDENT "PPM-paket", INDENT "PPM-paket")
 #define TR_MS                  "ms"
 #define TR_SWITCH              "Brytare"
 #define TR_TRIMS               "Trimmar"
@@ -851,7 +856,6 @@
   #define TR_ABOUT_HARDWARE_2  "Sky9x design/producent"
   #define TR_ABOUT_HARDWARE_3  ""
 #endif
-
 
 #define TR_ABOUT_PARENTS_1     "Ursprungsprojekt"
 #define TR_ABOUT_PARENTS_2     "ersky9x (Mike Blandford)"

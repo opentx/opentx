@@ -626,19 +626,19 @@ extern const pm_char STR_BLCOLOR[];
   struct LanguagePack {
     const char *id;
     const char *name;
-    void (*playNumber)(getvalue_t number, uint8_t unit, uint8_t att, uint8_t id);
-    void (*playDuration)(int16_t seconds, uint8_t id);
+    void (*playNumber)(getvalue_t number, uint8_t unit, uint8_t flags, uint8_t id);
+    void (*playDuration)(int seconds, uint8_t flags, uint8_t id);
   };
   extern LanguagePack * languagePacks[];
   extern LanguagePack * currentLanguagePack;
   extern uint8_t currentLanguagePackIdx;
   #define LANGUAGE_PACK_DECLARE(lng, name) LanguagePack lng ## LanguagePack = { #lng, name, lng ## _ ## playNumber, lng ## _ ## playDuration }
   #define LANGUAGE_PACK_DECLARE_DEFAULT(lng, name) LANGUAGE_PACK_DECLARE(lng, name); LanguagePack * currentLanguagePack = & lng ## LanguagePack; uint8_t currentLanguagePackIdx
-  inline PLAY_FUNCTION(playNumber, getvalue_t number, uint8_t unit, uint8_t att) { currentLanguagePack->playNumber(number, unit, att, id); }
-  inline PLAY_FUNCTION(playDuration, int16_t seconds) { currentLanguagePack->playDuration(seconds, id); }
+  inline PLAY_FUNCTION(playNumber, getvalue_t number, uint8_t unit, uint8_t flags) { currentLanguagePack->playNumber(number, unit, flags, id); }
+  inline PLAY_FUNCTION(playDuration, int seconds, uint8_t flags) { currentLanguagePack->playDuration(seconds, flags, id); }
 #elif defined(VOICE)
   PLAY_FUNCTION(playNumber, getvalue_t number, uint8_t unit, uint8_t att);
-  PLAY_FUNCTION(playDuration, int16_t seconds);
+  PLAY_FUNCTION(playDuration, int seconds);
   #define LANGUAGE_PACK_DECLARE(lng, name)
   #define LANGUAGE_PACK_DECLARE_DEFAULT(lng, name)
 #else

@@ -19,7 +19,7 @@
 
 #include "open9xStockeeprom.h"
 
-#define O9X_ARM_MAX_PHASES  9
+#define O9X_ARM_MAX_FLIGHT_MODES  9
 #define O9X_ARM_MAX_MIXERS  64
 #define O9X_ARM_MAX_EXPOS   32
 #define O9X_ARM_NUM_CHNOUT  32 // number of real output channels CH1-CH16
@@ -346,7 +346,7 @@ PACK(typedef struct t_Open9xArmModelData_v208 {
   Open9xArmLogicalSwitchData_v208 customSw[O9X_ARM_NUM_CSW];
   Open9xArmFuncSwData_v208 funcSw[O9X_ARM_NUM_FSW];
   Open9xArmSwashRingData_v208 swashR;
-  Open9xArmPhaseData_v208 phaseData[O9X_ARM_MAX_PHASES];
+  Open9xArmPhaseData_v208 phaseData[O9X_ARM_MAX_FLIGHT_MODES];
   Open9xFrSkyData_v208 frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
@@ -385,7 +385,7 @@ PACK(typedef struct t_Open9xArmModelData_v209 {
   Open9xArmLogicalSwitchData_v209 customSw[O9X_ARM_NUM_CSW];
   Open9xArmFuncSwData_v208 funcSw[O9X_ARM_NUM_FSW];
   Open9xArmSwashRingData_v209 swashR;
-  Open9xArmPhaseData_v208 phaseData[O9X_ARM_MAX_PHASES];
+  Open9xArmPhaseData_v208 phaseData[O9X_ARM_MAX_FLIGHT_MODES];
   Open9xFrSkyData_v208 frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
@@ -425,7 +425,7 @@ PACK(typedef struct t_Open9xArmModelData_v210 {
   Open9xArmLogicalSwitchData_v210 customSw[O9X_ARM_NUM_CSW];
   Open9xArmFuncSwData_v210 funcSw[O9X_ARM_NUM_FSW];
   Open9xArmSwashRingData_v209 swashR;
-  Open9xArmPhaseData_v208 phaseData[O9X_ARM_MAX_PHASES];
+  Open9xArmPhaseData_v208 phaseData[O9X_ARM_MAX_FLIGHT_MODES];
   Open9xArmFrSkyData_v210 frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
@@ -464,7 +464,7 @@ PACK(typedef struct t_Open9xArmModelData_v211 {
   Open9xArmLogicalSwitchData_v210 customSw[O9X_ARM_NUM_CSW];
   Open9xArmFuncSwData_v211 funcSw[O9X_ARM_NUM_FSW];
   Open9xArmSwashRingData_v209 swashR;
-  Open9xArmPhaseData_v208 phaseData[O9X_ARM_MAX_PHASES];
+  Open9xArmPhaseData_v208 phaseData[O9X_ARM_MAX_FLIGHT_MODES];
 
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
@@ -502,7 +502,7 @@ PACK(typedef struct t_Open9xArmModelData_v212 {
   Open9xArmLogicalSwitchData_v210 customSw[O9X_ARM_NUM_CSW];
   Open9xArmFuncSwData_v211 funcSw[O9X_ARM_NUM_FSW];
   Open9xArmSwashRingData_v210 swashR;
-  Open9xArmPhaseData_v212 phaseData[O9X_ARM_MAX_PHASES];
+  Open9xArmPhaseData_v212 phaseData[O9X_ARM_MAX_FLIGHT_MODES];
 
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;

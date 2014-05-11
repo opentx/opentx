@@ -554,12 +554,12 @@ void menuTelemetryNMEA2(uint8_t event)
 		    ignore_break=0;
                 break;}
 
-        if (!home_alt)				// umschalten zwischen absoluter und relativer Höhe
+        if (!home_alt)				// umschalten zwischen absoluter und relativer Hï¿½he
             home_alt = save_alt;
         else
             home_alt=0;	
 
-	  if (save_alt==0)			// wenn noch keine Home Höhe gesetzt war, wird sie es jetzt, weil sonst
+	  if (save_alt==0)			// wenn noch keine Home Hï¿½he gesetzt war, wird sie es jetzt, weil sonst
 							// das Umschalten keine Wirkung zeigt
 	      save_alt = home_alt = abs_alt;			// absolute altitude
         AUDIO_MENUS();				// short blip for non negative lift
@@ -567,11 +567,11 @@ void menuTelemetryNMEA2(uint8_t event)
 
     case EVT_KEY_LONG(KEY_MENU):
 	ignore_break = 1;
-        save_alt = home_alt = abs_alt;	// Home altitude auf aktuelle absolute Höhe setzen
+        save_alt = home_alt = abs_alt;	// Home altitude auf aktuelle absolute Hï¿½he setzen
         AUDIO_MENUS(); 	// short blip for non negative lift
         break;
 
-    case EVT_KEY_LONG(KEY_EXIT):		// Max Altitude auf 0 zurücksetzen
+    case EVT_KEY_LONG(KEY_EXIT):		// Max Altitude auf 0 zurï¿½cksetzen
 	max_alt=0;
         AUDIO_MENUS(); 						// short blip for non negative lift
         break;

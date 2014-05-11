@@ -25,6 +25,8 @@ SimulatorDialog::SimulatorDialog(QWidget * parent, unsigned int flags):
 {
 }
 
+uint32_t SimulatorDialog9X::switchstatus = 0;
+
 SimulatorDialog9X::SimulatorDialog9X(QWidget * parent, unsigned int flags):
   SimulatorDialog(parent, flags),
   ui(new Ui::SimulatorDialog9X),
@@ -35,8 +37,7 @@ SimulatorDialog9X::SimulatorDialog9X(QWidget * parent, unsigned int flags):
 
   initUi<Ui::SimulatorDialog9X>(ui);
 
-  QSettings settings;
-  backLight = settings.value("backLight", 0).toInt();
+  backLight = g.backLight();
   if (backLight > 4) backLight = 0;
   switch (backLight) {
     case 1:
@@ -55,6 +56,10 @@ SimulatorDialog9X::SimulatorDialog9X(QWidget * parent, unsigned int flags):
       ui->lcd->setBackgroundColor(159,165,247);
       break;
   }
+
+  //restore switches
+  if (g.simuSW())
+    restoreSwitches();
 
   ui->trimHR_L->setText(QString::fromUtf8(leftArrow));
   ui->trimHR_R->setText(QString::fromUtf8(rightArrow));
@@ -90,8 +95,11 @@ SimulatorDialog9X::SimulatorDialog9X(QWidget * parent, unsigned int flags):
 
 SimulatorDialog9X::~SimulatorDialog9X()
 {
+  saveSwitches();
   delete ui;
 }
+
+uint32_t SimulatorDialogTaranis::switchstatus = 0;
 
 SimulatorDialogTaranis::SimulatorDialogTaranis(QWidget * parent, unsigned int flags):
   SimulatorDialog(parent, flags),
@@ -104,6 +112,10 @@ SimulatorDialogTaranis::SimulatorDialogTaranis(QWidget * parent, unsigned int fl
   dialP_4 = ui->dialP_4;
 
   ui->lcd->setBackgroundColor(47, 123, 227);
+
+  //restore switches
+  if (g.simuSW())
+    restoreSwitches();
 
   ui->trimHR_L->setText(QString::fromUtf8(leftArrow));
   ui->trimHR_R->setText(QString::fromUtf8(rightArrow));
@@ -136,6 +148,7 @@ SimulatorDialogTaranis::SimulatorDialogTaranis(QWidget * parent, unsigned int fl
 
 SimulatorDialogTaranis::~SimulatorDialogTaranis()
 {
+  saveSwitches();
   delete ui;
 }
 
@@ -282,31 +295,26 @@ void SimulatorDialog::initUi(T * ui)
   setFixedSize(width(), height());
 
 #ifdef JOYSTICKS
-    QSettings settings;
-    bool js_enable = settings.value("js_support",false).toBool();
-    int js_ctrl=settings.value("js_ctrl",-1).toInt();
-    if (js_enable) {
-      settings.beginGroup("JsCalibration");
+    if (g.jsSupport()) {
       int count=0;
-      for (int j=0; j<8;j++){
-        int axe=settings.value(QString("stick%1_axe").arg(j),-1).toInt();
+      for (int j=0; j<8; j++){
+        int axe = g.joystick[j].stick_axe();
         if (axe>=0 && axe<8) {
           jsmap[axe]=j;
-          jscal[axe][0]=settings.value(QString("stick%1_min").arg(j),-32767).toInt();
-          jscal[axe][1]=settings.value(QString("stick%1_med").arg(j),0).toInt();
-          jscal[axe][2]=settings.value(QString("stick%1_max").arg(j),0).toInt();
-          jscal[axe][3]=settings.value(QString("stick%1_inv").arg(j),0).toInt();
+          jscal[axe][0] = g.joystick[j].stick_min();
+          jscal[axe][1] = g.joystick[j].stick_med();
+          jscal[axe][2] = g.joystick[j].stick_max();
+          jscal[axe][3] = g.joystick[j].stick_inv();
           count++;
         }
       }
-      settings.endGroup();
       if (count<3) {
         QMessageBox::critical(this, tr("Warning"), tr("Joystick enabled but not configured correctly"));
       }
-      if (js_ctrl!=-1) {
+      if (g.jsCtrl()!=-1) {
         joystick = new Joystick(this);
         if (joystick) {
-          if (joystick->open(js_ctrl)) {
+          if (joystick->open(g.jsCtrl())) {
             int numAxes=std::min(joystick->numAxes,8);
             for (int j=0; j<numAxes; j++) {
               joystick->sensitivities[j] = 0;
@@ -418,10 +426,8 @@ void SimulatorDialog::initUi(T * ui)
 void SimulatorDialog::onButtonPressed(int value)
 {
   if (value == Qt::Key_Print) {
-    QSettings settings;
-    bool toclipboard = settings.value("snapshot_to_clipboard", false).toBool();
     QString fileName = "";
-    if (!toclipboard) {
+    if (!g.snapToClpbrd()) {
       fileName = QString("screenshot-%1.png").arg(++screenshotIdx);
     }
     lcd->makeScreenshot(fileName);
@@ -592,6 +598,46 @@ void SimulatorDialog9X::getValues()
   simulator->setValues(inputs);
 }
 
+void SimulatorDialog9X::saveSwitches(void)
+{
+  // qDebug() << "SimulatorDialog9X::saveSwitches()";
+  switchstatus=ui->switchTHR->isChecked();
+  switchstatus<<=1;
+  switchstatus+=(ui->switchRUD->isChecked()&0x1);
+  switchstatus<<=1;
+  switchstatus+=(ui->switchID2->isChecked()&0x1);
+  switchstatus<<=1;
+  switchstatus+=(ui->switchID1->isChecked()&0x1);
+  switchstatus<<=1;
+  switchstatus+=(ui->switchID0->isChecked()&0x1);
+  switchstatus<<=1;
+  switchstatus+=(ui->switchGEA->isChecked()&0x1);
+  switchstatus<<=1;
+  switchstatus+=(ui->switchELE->isChecked()&0x1);
+  switchstatus<<=1;
+  switchstatus+=(ui->switchAIL->isChecked()&0x1);
+}
+
+void SimulatorDialog9X::restoreSwitches(void)
+{
+  // qDebug() << "SimulatorDialog9X::restoreSwitches()";
+  ui->switchAIL->setChecked(switchstatus & 0x1);
+  switchstatus >>=1;
+  ui->switchELE->setChecked(switchstatus & 0x1);
+  switchstatus >>=1;
+  ui->switchGEA->setChecked(switchstatus & 0x1);
+  switchstatus >>=1;
+  ui->switchID0->setChecked(switchstatus & 0x1);
+  switchstatus >>=1;
+  ui->switchID1->setChecked(switchstatus & 0x1);
+  switchstatus >>=1;
+  ui->switchID2->setChecked(switchstatus & 0x1);
+  switchstatus >>=1;
+  ui->switchRUD->setChecked(switchstatus & 0x1);
+  switchstatus >>=1;
+  ui->switchTHR->setChecked(switchstatus & 0x1);
+}
+
 void SimulatorDialogTaranis::resetSH()
 {
   ui->switchH->setValue(0);
@@ -655,6 +701,46 @@ void SimulatorDialogTaranis::getValues()
   };
 
   simulator->setValues(inputs);
+}
+
+void SimulatorDialogTaranis::saveSwitches(void)
+{
+  // qDebug() << "SimulatorDialogTaranis::saveSwitches()";
+  switchstatus=ui->switchA->value();
+  switchstatus<<=2;
+  switchstatus+=ui->switchB->value();
+  switchstatus<<=2;
+  switchstatus+=ui->switchC->value();
+  switchstatus<<=2;
+  switchstatus+=ui->switchD->value();
+  switchstatus<<=2;
+  switchstatus+=ui->switchE->value();
+  switchstatus<<=2;
+  switchstatus+=ui->switchF->value();
+  switchstatus<<=2;
+  switchstatus+=ui->switchG->value();
+  switchstatus<<=2;
+  switchstatus+=ui->switchH->value();
+}
+
+void SimulatorDialogTaranis::restoreSwitches(void)
+{
+  // qDebug() << "SimulatorDialogTaranis::restoreSwitches()";
+  ui->switchH->setValue(switchstatus & 0x3);
+  switchstatus>>=2;
+  ui->switchG->setValue(switchstatus & 0x3);
+  switchstatus>>=2;
+  ui->switchF->setValue(switchstatus & 0x3);
+  switchstatus>>=2;
+  ui->switchE->setValue(switchstatus & 0x3);
+  switchstatus>>=2;
+  ui->switchD->setValue(switchstatus & 0x3);
+  switchstatus>>=2;
+  ui->switchC->setValue(switchstatus & 0x3);
+  switchstatus>>=2;
+  ui->switchB->setValue(switchstatus & 0x3);
+  switchstatus>>=2;
+  ui->switchA->setValue(switchstatus & 0x3);
 }
 
 inline int chVal(int val)

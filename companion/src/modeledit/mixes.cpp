@@ -170,6 +170,10 @@ QString MixesPanel::getMixerText(int dest, bool * new_ch)
       default:  str += "  "; break;
     };
 
+    //set mixer src model if it is unset (srcRaw needs this to generate proper toString() for input source type)
+    if (md->srcRaw.model == 0) 
+      md->srcRaw.model = &model;  
+    
     //highlight source if needed
     if ( (md->srcRaw.type == SOURCE_TYPE_CH) && (md->srcRaw.index+1 == (int)highlightedSource) ) {
       str += " <b>" + Qt::escape(md->srcRaw.toString()) + "</b>"; 
@@ -187,11 +191,8 @@ QString MixesPanel::getMixerText(int dest, bool * new_ch)
       str += " " + Qt::escape(tr("Switch(%1)").arg(md->swtch.toString()));
     }
 
-    if (md->carryTrim>0) {
-      str += " " + Qt::escape(tr("No Trim"));
-    }
-    else if (md->carryTrim<0) {
-      str += " " + Qt::escape(RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString());
+    if (md->carryTrim) {
+      str += " " + Qt::escape(tr("NoTrim"));
     }
 
     if (md->noExpo)      str += " " + Qt::escape(tr("No DR/Expo"));
@@ -210,7 +211,7 @@ QString MixesPanel::getMixerText(int dest, bool * new_ch)
       QString MixerName;
       MixerName.append(md->name);
       if (!MixerName.isEmpty()) {
-        str += Qt::escape(QString("(%1)").arg(MixerName));
+        str += " " + Qt::escape(QString("(%1)").arg(MixerName));
       }
     }
   }

@@ -42,6 +42,8 @@ enum FrenchPrompts {
   FR_PROMPT_VIRGULE = 119,
   FR_PROMPT_ET = 120,
   FR_PROMPT_MOINS = 121,
+  FR_PROMPT_MINUIT = 122,
+  FR_PROMPT_MIDI = 123,
 
   FR_PROMPT_UNITS_BASE = 125,
   FR_PROMPT_VOLTS = FR_PROMPT_UNITS_BASE+UNIT_VOLTS,
@@ -174,7 +176,7 @@ I18N_PLAY_FUNCTION(fr, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 }
 
-I18N_PLAY_FUNCTION(fr, playDuration, int16_t seconds)
+I18N_PLAY_FUNCTION(fr, playDuration, int seconds PLAY_DURATION_ATT)
 {
   if (seconds < 0) {
     PUSH_NUMBER_PROMPT(FR_PROMPT_MOINS);
@@ -183,7 +185,13 @@ I18N_PLAY_FUNCTION(fr, playDuration, int16_t seconds)
 
   uint8_t tmp = seconds / 3600;
   seconds %= 3600;
-  if (tmp > 0) {
+  if (IS_PLAY_TIME() && tmp==0) {
+    PUSH_NUMBER_PROMPT(FR_PROMPT_MINUIT);
+  }
+  else if (IS_PLAY_TIME() && tmp==12) {
+    PUSH_NUMBER_PROMPT(FR_PROMPT_MIDI);
+  }
+  else if (tmp > 0) {
     PLAY_NUMBER(tmp, 0, FEMININ);
     PUSH_NUMBER_PROMPT(FR_PROMPT_HEURE);
   }
@@ -191,13 +199,18 @@ I18N_PLAY_FUNCTION(fr, playDuration, int16_t seconds)
   tmp = seconds / 60;
   seconds %= 60;
   if (tmp > 0) {
-    PLAY_NUMBER(tmp, 0, FEMININ);
-    PUSH_NUMBER_PROMPT(FR_PROMPT_MINUTE);
-    if (seconds > 0)
-      PUSH_NUMBER_PROMPT(FR_PROMPT_ET);
+    if (IS_PLAY_TIME()) {
+      PLAY_NUMBER(tmp, 0, tmp==1 ? FEMININ : 0);
+    }
+    else {
+      PLAY_NUMBER(tmp, 0, FEMININ);
+      PUSH_NUMBER_PROMPT(FR_PROMPT_MINUTE);
+      if (seconds > 0)
+        PUSH_NUMBER_PROMPT(FR_PROMPT_ET);
+    }
   }
 
-  if (seconds > 0) {
+  if (!IS_PLAY_TIME() && seconds > 0) {
     PLAY_NUMBER(seconds, 0, FEMININ);
     PUSH_NUMBER_PROMPT(FR_PROMPT_SECONDE);
   }

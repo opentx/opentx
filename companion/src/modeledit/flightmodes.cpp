@@ -5,7 +5,7 @@
 #include <QComboBox>
 #include <QGridLayout>
 
-FlightMode::FlightMode(QWidget * parent, ModelData & model, int phaseIdx, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseIdx, GeneralSettings & generalSettings, FirmwareInterface * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::FlightMode),
   phaseIdx(phaseIdx),
@@ -16,7 +16,7 @@ FlightMode::FlightMode(QWidget * parent, ModelData & model, int phaseIdx, Genera
 {
   ui->setupUi(this);
 
-  int modesCount = firmware->getCapability(FlightPhases);
+  int modesCount = firmware->getCapability(FlightModes);
 
   // Phase name
   QRegExp rx(CHAR_FOR_NAMES_REGEX);
@@ -39,7 +39,7 @@ FlightMode::FlightMode(QWidget * parent, ModelData & model, int phaseIdx, Genera
   }
 
   // FadeIn / FadeOut
-  if (firmware->getCapability(FlightPhasesHaveFades)) {
+  if (firmware->getCapability(FlightModesHaveFades)) {
     int scale = firmware->getCapability(SlowScale);
     int range = firmware->getCapability(SlowRange);
     ui->fadeIn->setMaximum(float(range)/scale);
@@ -158,7 +158,7 @@ FlightMode::FlightMode(QWidget * parent, ModelData & model, int phaseIdx, Genera
       gvLayout->addWidget(gvValues[i], i, col++, 1, 1);
       
       // Popups
-      if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+      if (IS_TARANIS(GetEepromInterface()->getBoard()) && (phaseIdx == 0)) {
         gvPopups[i] = new QCheckBox(ui->gvGB);
         gvPopups[i]->setProperty("index", i);
         gvPopups[i]->setText(tr("Popup enabled"));
@@ -174,12 +174,12 @@ FlightMode::FlightMode(QWidget * parent, ModelData & model, int phaseIdx, Genera
   update();
 }
 
-FlightMode::~FlightMode()
+FlightModePanel::~FlightModePanel()
 {
   delete ui;
 }
 
-void FlightMode::update()
+void FlightModePanel::update()
 {
   ui->name->setText(phase.name);
 
@@ -205,7 +205,7 @@ void FlightMode::update()
     gvValues[i]->setDisabled(false);
     int idx = phase.gvars[i];
     PhaseData *phasegvar = &phase;
-    while (idx >= 1024) {
+    while (idx > 1024) {
       idx -= 1025;
       phasegvar = &model.phaseData[idx];
     	idx = phasegvar->gvars[i];
@@ -213,7 +213,8 @@ void FlightMode::update()
     }
     if (IS_TARANIS(GetEepromInterface()->getBoard())) {
       gvValues[i]->setValue(phasegvar->gvars[i]);
-      gvPopups[i]->setChecked(model.gvars_popups[i]);
+      if (phaseIdx == 0) 
+        gvPopups[i]->setChecked(model.gvars_popups[i]);
     }
   }
 
@@ -221,7 +222,7 @@ void FlightMode::update()
     reValues[i]->setDisabled(false);
     int idx = phase.rotaryEncoders[i];
     PhaseData *phasere = &phase;
-    while (idx >= 1024) {
+    while (idx > 1024) {
       idx -= 1025;
       phasere = &model.phaseData[idx];
       idx = phasere->rotaryEncoders[i];
@@ -231,7 +232,7 @@ void FlightMode::update()
   }
 }
 
-void FlightMode::phaseName_editingFinished()
+void FlightModePanel::phaseName_editingFinished()
 {
     QLineEdit *lineEdit = qobject_cast<QLineEdit*>(sender());
     strcpy(phase.name, lineEdit->text().toAscii());
@@ -239,14 +240,14 @@ void FlightMode::phaseName_editingFinished()
     emit nameModified();
 }
 
-void FlightMode::phaseSwitch_currentIndexChanged(int index)
+void FlightModePanel::phaseSwitch_currentIndexChanged(int index)
 {
     QComboBox *comboBox = qobject_cast<QComboBox*>(sender());
     phase.swtch = RawSwitch(comboBox->itemData(index).toInt());
     emit modified();
 }
 
-void FlightMode::phaseFadeIn_editingFinished()
+void FlightModePanel::phaseFadeIn_editingFinished()
 {
     QDoubleSpinBox *spinBox = qobject_cast<QDoubleSpinBox*>(sender());
     int scale = firmware->getCapability(SlowScale);
@@ -254,7 +255,7 @@ void FlightMode::phaseFadeIn_editingFinished()
     emit modified();
 }
 
-void FlightMode::phaseFadeOut_editingFinished()
+void FlightModePanel::phaseFadeOut_editingFinished()
 {
     QDoubleSpinBox *spinBox = qobject_cast<QDoubleSpinBox*>(sender());
     int scale = firmware->getCapability(SlowScale);
@@ -262,7 +263,7 @@ void FlightMode::phaseFadeOut_editingFinished()
     emit modified();
 }
 
-void FlightMode::trimUpdate(unsigned int trim)
+void FlightModePanel::trimUpdate(unsigned int trim)
 {
   lock = true;
   int chn = CONVERT_MODE(trim+1)-1;
@@ -282,7 +283,7 @@ void FlightMode::trimUpdate(unsigned int trim)
   lock = false;
 }
 
-void FlightMode::phaseGVValue_editingFinished()
+void FlightModePanel::phaseGVValue_editingFinished()
 {
   if (!lock) {
     QSpinBox *spinBox = qobject_cast<QSpinBox*>(sender());
@@ -292,7 +293,7 @@ void FlightMode::phaseGVValue_editingFinished()
   }
 }
 
-void FlightMode::GVName_editingFinished()
+void FlightModePanel::GVName_editingFinished()
 {
   if (!lock) {
     QLineEdit *lineedit = qobject_cast<QLineEdit*>(sender());
@@ -303,7 +304,7 @@ void FlightMode::GVName_editingFinished()
   }
 }
 
-void FlightMode::GVSource_currentIndexChanged(int index)
+void FlightModePanel::GVSource_currentIndexChanged(int index)
 {
   QComboBox *comboBox = qobject_cast<QComboBox*>(sender());
   int gvar = comboBox->property("index").toInt();
@@ -311,7 +312,7 @@ void FlightMode::GVSource_currentIndexChanged(int index)
   emit modified();
 }
 
-void FlightMode::phaseGVUse_currentIndexChanged(int index)
+void FlightModePanel::phaseGVUse_currentIndexChanged(int index)
 {
   if (!lock) {
     lock = true;
@@ -321,7 +322,7 @@ void FlightMode::phaseGVUse_currentIndexChanged(int index)
       phase.gvars[gvar]=0;
     }
     else {
-      phase.gvars[gvar] = 1024+index;
+      phase.gvars[gvar] = 1024+index+(index>phaseIdx?1:0);
     }
     update();
     emit modified();
@@ -329,14 +330,14 @@ void FlightMode::phaseGVUse_currentIndexChanged(int index)
   }
 }
 
-void FlightMode::phaseGVPopupToggled(bool checked)
+void FlightModePanel::phaseGVPopupToggled(bool checked)
 {
   QCheckBox *cb = qobject_cast<QCheckBox*>(sender());
   int gvar = cb->property("index").toInt();
   model.gvars_popups[gvar] = checked;
 }
 
-void FlightMode::phaseREValue_editingFinished()
+void FlightModePanel::phaseREValue_editingFinished()
 {
   if (!lock) {
     QSpinBox *spinBox = qobject_cast<QSpinBox*>(sender());
@@ -346,7 +347,7 @@ void FlightMode::phaseREValue_editingFinished()
   }
 }
 
-void FlightMode::phaseREUse_currentIndexChanged(int index)
+void FlightModePanel::phaseREUse_currentIndexChanged(int index)
 {
   if (!lock) {
     lock = true;
@@ -364,7 +365,7 @@ void FlightMode::phaseREUse_currentIndexChanged(int index)
   }
 }
 
-void FlightMode::phaseTrimUse_currentIndexChanged(int index)
+void FlightModePanel::phaseTrimUse_currentIndexChanged(int index)
 {
   if (!lock) {
     QComboBox *comboBox = qobject_cast<QComboBox*>(sender());
@@ -386,7 +387,7 @@ void FlightMode::phaseTrimUse_currentIndexChanged(int index)
   }
 }
 
-void FlightMode::phaseTrim_valueChanged()
+void FlightModePanel::phaseTrim_valueChanged()
 {
   if (!lock) {
     QSpinBox *spinBox = qobject_cast<QSpinBox*>(sender());
@@ -401,7 +402,7 @@ void FlightMode::phaseTrim_valueChanged()
   }
 }
 
-void FlightMode::phaseTrimSlider_valueChanged()
+void FlightModePanel::phaseTrimSlider_valueChanged()
 {
   if (!lock) {
     QSlider *slider = qobject_cast<QSlider*>(sender());
@@ -418,14 +419,14 @@ void FlightMode::phaseTrimSlider_valueChanged()
 
 /**********************************************************/
 
-FlightModes::FlightModes(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
+FlightModesPanel::FlightModesPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
-  modesCount(firmware->getCapability(FlightPhases))
+  modesCount(firmware->getCapability(FlightModes))
 {
   QGridLayout * gridLayout = new QGridLayout(this);
   tabWidget = new QTabWidget(this);
   for (int i=0; i<modesCount; i++) {
-    FlightMode *tab = new FlightMode(tabWidget, model, i, generalSettings, firmware);
+    FlightModePanel *tab = new FlightModePanel(tabWidget, model, i, generalSettings, firmware);
     tab->setProperty("index", i);
     panels << tab;
     connect(tab, SIGNAL(modified()), this, SLOT(onPhaseModified()));
@@ -436,16 +437,16 @@ FlightModes::FlightModes(QWidget * parent, ModelData & model, GeneralSettings & 
   connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(on_tabWidget_currentChanged(int)));
 }
 
-FlightModes::~FlightModes()
+FlightModesPanel::~FlightModesPanel()
 {
 }
 
-void FlightModes::onPhaseModified()
+void FlightModesPanel::onPhaseModified()
 {
   emit modified();
 }
 
-QString FlightModes::getTabName(int index)
+QString FlightModesPanel::getTabName(int index)
 {
   QString result = tr("Flight Mode %1").arg(index);
   const char *name = model.phaseData[index].name;
@@ -459,18 +460,18 @@ QString FlightModes::getTabName(int index)
   return result;
 }
 
-void FlightModes::onPhaseNameChanged()
+void FlightModesPanel::onPhaseNameChanged()
 {
   int index = sender()->property("index").toInt();
   tabWidget->setTabText(index, getTabName(index));
 }
 
-void FlightModes::update()
+void FlightModesPanel::update()
 {
   on_tabWidget_currentChanged(tabWidget->currentIndex());
 }
 
-void FlightModes::on_tabWidget_currentChanged(int index)
+void FlightModesPanel::on_tabWidget_currentChanged(int index)
 {
   panels[index]->update();
 }

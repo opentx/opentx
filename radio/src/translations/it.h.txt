@@ -282,12 +282,14 @@
 
 #if defined(CPUARM)
   #define TR_TELEM_RESERVE     "[--]"
+  #define TR_TELEM_TIME        "Time"
   #define TR_SWR               "SWR\0"
   #define TR_RX_BATT           "RxBt"
   #define TR_A3_A4             "A3\0 ""A4\0 "
   #define TR_A3_A4_MIN         "A3-\0""A4-\0"
 #else
   #define TR_TELEM_RESERVE
+  #define TR_TELEM_TIME
   #define TR_SWR
   #define TR_RX_BATT
   #define TR_A3_A4
@@ -296,7 +298,7 @@
 
 #define TR_ASPD_MAX            "ASp+" 
 
-#define TR_VTELEMCHNS          "---\0""Batt""Tmr1""Tmr2" TR_SWR "Tx\0 ""Rx\0 " TR_RX_BATT "A1\0 ""A2\0 " TR_A3_A4 "Alt\0""Rpm\0""Carb""T1\0 ""T2\0 ""Vel\0""Dist""GAlt""Cell""Cels""Vfas""Curr""Cnsm""Powr""AccX""AccY""AccZ""Dir\0""VelV""ASpd""dTE\0" TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE "A1-\0""A2-\0" TR_A3_A4_MIN "Alt-""Alt+""Rpm+""T1+\0""T2+\0""Vel+""Dst+" TR_ASPD_MAX "Cel-""Cls-""Vfs-""Cur+""Pwr+" TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE "Acc\0""Time"
+#define TR_VTELEMCHNS          "---\0""Batt" TR_TELEM_TIME TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE "Tmr1""Tmr2" TR_SWR "Tx\0 ""Rx\0 " TR_RX_BATT "A1\0 ""A2\0 " TR_A3_A4 "Alt\0""Rpm\0""Carb""T1\0 ""T2\0 ""Vel\0""Dist""GAlt""Cell""Cels""Vfas""Curr""Cnsm""Powr""AccX""AccY""AccZ""Dir\0""VelV""ASpd""dTE\0" TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE "A1-\0""A2-\0" TR_A3_A4_MIN "Alt-""Alt+""Rpm+""T1+\0""T2+\0""Vel+""Dst+" TR_ASPD_MAX "Cel-""Cls-""Vfs-""Cur+""Pwr+" TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE "Acc\0""Time"
 
 #define LENGTH_UNIT_IMP        "ft\0"
 #define SPEED_UNIT_IMP         "mph"
@@ -401,7 +403,7 @@
 #endif
 
 #if defined(PCBTARANIS)
-  #define TR_6POS_POTS         "P11""P12""P13""P14""P15""P16""P21""P22""P23""P24""P25""P26""P31""P32""P33""P34""P35""P36"
+  #define TR_6POS_POTS         "S11""S12""S13""S14""S15""S16""S21""S22""S23""S24""S25""S26""S31""S32""S33""S34""S35""S36"
   #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_6POS_POTS TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW
 #elif defined(CPUARM)
   #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW

@@ -168,7 +168,7 @@ I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 }
 
-I18N_PLAY_FUNCTION(de, playDuration, int16_t seconds)
+I18N_PLAY_FUNCTION(de, playDuration, int seconds PLAY_DURATION_ATT)
 {
   if (seconds < 0) {
     PUSH_NUMBER_PROMPT(DE_PROMPT_MINUS);
@@ -178,7 +178,7 @@ I18N_PLAY_FUNCTION(de, playDuration, int16_t seconds)
   uint8_t ore = 0;
   uint8_t tmp = seconds / 3600;
   seconds %= 3600;
-  if (tmp > 0) {
+  if (tmp > 0 || IS_PLAY_TIME()) {
     PLAY_NUMBER(tmp, 0, 0);
     PUSH_NUMBER_PROMPT(DE_PROMPT_UHR);
   }

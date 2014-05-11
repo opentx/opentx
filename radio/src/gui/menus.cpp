@@ -123,13 +123,13 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
     else if (DBLKEYS_PRESSED_RGT_UP(in)) {
       newval = (i_max > 100 ? 100 : i_max);
 #if defined(CPUARM)
-      if(i_flags & DBLKEYS_1000) newval *= 10;
+      if (i_flags & DBLKEYS_1000) newval *= 10;
 #endif
     }
     else if (DBLKEYS_PRESSED_LFT_DWN(in)) {
       newval = (i_min < -100 ? -100 : i_min);
 #if defined(CPUARM)
-      if(i_flags & DBLKEYS_1000) newval *= 10;
+      if (i_flags & DBLKEYS_1000) newval *= 10;
 #endif
     }
     else if (DBLKEYS_PRESSED_UP_DWN(in))
@@ -140,7 +140,6 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
 #if defined(CPUARM)
 
 #endif
-
 
     if (dblkey) {
       killEvents(KEY_UP);
@@ -1132,7 +1131,7 @@ int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, LcdFlags attr, uint8_t
 {
   lcd_putsColumnLeft(x, y, STR_SWITCH);
   putsSwitches(x,  y, value, attr);
-  if (attr) CHECK_INCDEC_MODELSWITCH(event, value, SWSRC_FIRST, SWSRC_LAST);
+  if (attr) CHECK_INCDEC_MODELSWITCH(event, value, SWSRC_FIRST_SHORT_LIST, SWSRC_LAST_SHORT_LIST);
   return value;
 }
 
@@ -1168,11 +1167,11 @@ int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t m
     s_editMode = !s_editMode;
 #if defined(CPUARM)
     if (attr & PREC1)
-      value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, s_perout_flight_phase)*10 : delta);
+      value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, s_perout_flight_mode)*10 : delta);
     else
-      value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, s_perout_flight_phase) : delta);
+      value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, s_perout_flight_mode) : delta);
 #else
-    value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, s_perout_flight_phase) : delta);
+    value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, s_perout_flight_mode) : delta);
 #endif
     eeDirty(EE_MODEL);
   }
@@ -1376,7 +1375,15 @@ bool isSourceAvailable(int source)
 {
 #if defined(PCBTARANIS)
   if (source>=MIXSRC_FIRST_INPUT && source<=MIXSRC_LAST_INPUT) {
-    return ZEXIST(g_model.inputNames[source-MIXSRC_FIRST_INPUT]);
+    int input = source - MIXSRC_FIRST_INPUT;
+    for (int i=0; i<MAX_EXPOS; i++) {
+      ExpoData * expo = expoAddress(i);
+      if (!EXPO_VALID(expo))
+        break;
+      if (expo->chn == input)
+        return true;
+    }
+    return false;
   }
 #endif
 
@@ -1437,12 +1444,20 @@ bool isTelemetrySourceAvailable(int source)
     return false;
 #endif
 
+#if !defined(RTCLOCK)
+  if (source == TELEM_TX_TIME)
+    return false;
+#endif
+
   if (source >= TELEM_RESERVE1 && source <= TELEM_RESERVE5)
     return false;
 
   if (source >= TELEM_RESERVE6 && source <= TELEM_RESERVE10)
     return false;
-    
+
+  if (source >= TELEM_RESERVE11 && source <= TELEM_RESERVE15)
+    return false;
+
   if (source == TELEM_DTE)
     return false;
 
@@ -1508,8 +1523,8 @@ bool isSwitchAvailable(int swtch)
     swtch = -swtch;
   }
 
-  if (swtch >= SWSRC_FIRST_CSW && swtch <= SWSRC_LAST_CSW) {
-    LogicalSwitchData * cs = cswAddress(swtch-SWSRC_FIRST_CSW);
+  if (swtch >= SWSRC_FIRST_LOGICAL_SWITCH && swtch <= SWSRC_LAST_LOGICAL_SWITCH) {
+    LogicalSwitchData * cs = cswAddress(swtch-SWSRC_FIRST_LOGICAL_SWITCH);
     return (cs->func != LS_FUNC_NONE);
   }
   

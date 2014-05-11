@@ -55,7 +55,7 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, G
     ui->mixerName->setValidator(new QRegExpValidator(rx, this));
     ui->mixerName->setText(md->name);
 
-    if (!firmware->getCapability(FlightPhases)) {
+    if (!firmware->getCapability(FlightModes)) {
       ui->label_phases->hide();
       for (int i=0; i<9; i++) {
         lb_fp[i]->hide();
@@ -70,7 +70,7 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, G
         }
         mask <<= 1;
       }
-      for (int i=firmware->getCapability(FlightPhases); i<9;i++) {
+      for (int i=firmware->getCapability(FlightModes); i<9;i++) {
         lb_fp[i]->hide();
         cb_fp[i]->hide();
       }

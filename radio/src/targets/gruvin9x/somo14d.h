@@ -47,7 +47,10 @@ extern bool isPlaying();
 #define PUSH_NUMBER_PROMPT(p) pushPrompt(PROMPT_I18N_BASE+(p))
 #define PUSH_SYSTEM_PROMPT(p) pushPrompt(PROMPT_SYSTEM_BASE+(p))
 #define PLAY_NUMBER(n, u, a) playNumber((n), (u), (a))
-#define PLAY_DURATION(d) playDuration((d))
+#define PLAY_DURATION(d, att) playDuration((d))
+#define PLAY_DURATION_ATT
+#define PLAY_TIME
+#define IS_PLAY_TIME() (0)
 #define IS_PLAYING(id) isPlaying()
 #define PLAY_VALUE(v, id) playValue((v))
 
