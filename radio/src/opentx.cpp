@@ -298,9 +298,23 @@ volatile tmr10ms_t g_tmr10ms;
 #if defined(CPUARM)
 volatile uint8_t rtc_count = 0;
 uint32_t watchdogTimeout = 0;
+
 void watchdogSetTimeout(uint32_t timeout)
 {
   watchdogTimeout = timeout;
+}
+
+void opentxBootloader()
+{
+  BACKLIGHT_ON();
+
+  lcd_clear();
+  lcd_putcAtt( 48, 24, 'U', DBLSIZE ) ;
+  lcd_putcAtt( 60, 24, 'S', DBLSIZE ) ;
+  lcd_putcAtt( 72, 24, 'B', DBLSIZE ) ;
+  lcdRefresh() ;
+
+  usbBootloader();
 }
 #endif
 
@@ -326,7 +340,7 @@ void per10ms()
   /* Update global Date/Time every 100 per10ms cycles */
   if (++g_ms100 == 100) {
     g_rtcTime++;   // inc global unix timestamp one second
-#if defined(PCBSKY9X)
+#if defined(COPROCESSOR)
     if (g_rtcTime < 60 || rtc_count<5) {
       rtcInit();
       rtc_count++;
@@ -5682,15 +5696,7 @@ int main(void)
     g_eeGeneral.backlightBright = 0;
     g_eeGeneral.contrast = 25;
 
-    BACKLIGHT_ON();
-
-    lcd_clear();
-    lcd_putcAtt( 48, 24, 'U', DBLSIZE ) ;
-    lcd_putcAtt( 60, 24, 'S', DBLSIZE ) ;
-    lcd_putcAtt( 72, 24, 'B', DBLSIZE ) ;
-    lcdRefresh() ;
-
-    usbBootloader();
+    opentxBootloader();
   }
 
   CoInitOS();

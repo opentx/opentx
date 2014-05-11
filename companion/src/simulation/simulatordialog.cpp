@@ -834,8 +834,8 @@ void SimulatorDialog::setValues()
     logicalSwitchLabels[i]->setStyleSheet(outputs.vsw[i] ? CSWITCH_ON : CSWITCH_OFF);
   }
 
-  for (int fm=0; fm<numFlightModes; fm++) {
-    for (int gv=0; gv<numGvars; gv++) {
+  for (unsigned int fm=0; fm<numFlightModes; fm++) {
+    for (unsigned int gv=0; gv<numGvars; gv++) {
       gvarValues[fm*numGvars+gv]->setText(QString("%1").arg(outputs.gvars[fm][gv]));
     }
   }

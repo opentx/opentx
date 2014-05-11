@@ -279,7 +279,7 @@ QString avrOutputDialog::getProgrammer()
   if (IS_TARANIS(eepromInterface->getBoard())) {
     return "DFU Util";
   }
-  else if (eepromInterface->getBoard()==BOARD_SKY9X) {
+  else if IS_SKY9X(eepromInterface->getBoard()) {
     return "SAM-BA";
   }
   else {

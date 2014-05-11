@@ -1179,8 +1179,8 @@ void menuGeneralVersion(uint8_t event)
   SIMPLE_MENU(STR_MENUVERSION, menuTabDiag, e_Vers, 1);
 
   lcd_putsLeft(2*FH, vers_stamp);
-
-#if defined(PCBSKY9X) && !defined(REVA)
+  
+#if defined(COPROCESSOR)
   if (Coproc_valid == 1) {
      lcd_putsLeft(6*FH, PSTR("CoPr:"));
      lcd_outdez8(10*FW, 6*FH, Coproc_read);

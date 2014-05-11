@@ -38,57 +38,39 @@
 
 uint32_t pwrCheck()
 {
-#ifdef SIMU
+#if defined(SIMU)
   return e_power_on;
-#endif
-
-#if defined(REVC)
-  if ( PIOC->PIO_PDSR & PIO_PC17 )  // Power on
-  {
-    return e_power_on ;
-  }
-
-  if ( PIOA->PIO_PDSR & PIO_PA8 )   // Trainer plugged in
-  {
-    return e_power_trainer ;
-  }
+#elif defined(REVA)
+  if (PIOC->PIO_PDSR & PIO_PC25)
+    return e_power_usb;
+  else if (PIOA->PIO_PDSR & PIO_PA8)
+    return e_power_trainer;
+  else
+    return e_power_on;
 #elif defined(REVB)
-  if ( PIOC->PIO_PDSR & PIO_PC17 )  // Power on
-  {
-    return e_power_on ;
-  }
-
-  if (usbPlugged())
-  {
-    return e_power_usb ;            // Detected USB
-  }
-
-  if ( PIOA->PIO_PDSR & PIO_PA8 )   // Trainer plugged in
-  {
-    return e_power_trainer ;
-  }
+  if (PIOC->PIO_PDSR & PIO_PC17)
+    return e_power_on;
+  else if (usbPlugged())
+    return e_power_usb;
+  else if ( PIOA->PIO_PDSR & PIO_PA8 )
+    return e_power_trainer;
+  else
+    return e_power_off;
 #else
-  if ( PIOC->PIO_PDSR & PIO_PC25 )
-  {
-    return e_power_usb ;            // Detected USB
-  }
-
-  if ( PIOA->PIO_PDSR & PIO_PA8 )   // Trainer plugged in
-  {
-    return e_power_trainer ;
-  }
-
-  return e_power_on;
+  if (PIOC->PIO_PDSR & PIO_PC17)
+    return e_power_on;
+  else if (PIOA->PIO_PDSR & PIO_PA8)
+    return e_power_trainer;
+  else
+    return e_power_off;
 #endif
-
-  return e_power_off;
 }
 
 // turn off soft power
 void pwrOff()
 {
 #if !defined(REVA)
-  configure_pins( PIO_PA8, PIN_ENABLE | PIN_OUTPUT | PIN_LOW | PIN_PORTA | PIN_NO_PULLUP ) ;
+  configure_pins(PIO_PA8, PIN_ENABLE | PIN_OUTPUT | PIN_LOW | PIN_PORTA | PIN_NO_PULLUP);
 #endif
 }
 
@@ -96,7 +78,7 @@ void pwrOff()
 void pwrInit()
 {
   // Configure RF_power (PC17)
-  configure_pins( PIO_PC17, PIN_ENABLE | PIN_INPUT | PIN_PORTC | PIN_NO_PULLUP | PIN_PULLDOWN ) ;
-  configure_pins( PIO_PA8, PIN_ENABLE | PIN_INPUT | PIN_PORTA | PIN_PULLUP ) ; // Enable bit A8 (Soft Power)
+  configure_pins(PIO_PC17, PIN_ENABLE | PIN_INPUT | PIN_PORTC | PIN_NO_PULLUP | PIN_PULLDOWN);
+  configure_pins(PIO_PA8, PIN_ENABLE | PIN_INPUT | PIN_PORTA | PIN_PULLUP); // Enable bit A8 (Soft Power)
 }
 #endif

@@ -37,6 +37,7 @@
 #define EESIZE_TARANIS        (32*1024)
 #define EESIZE_TARANIS_REV4a  (64*1024)
 #define EESIZE_SKY9X          (128*4096)
+#define EESIZE_9XRPRO         (128*4096)
 #define EESIZE_RLC_MAX        EESIZE_TARANIS_REV4a
 
 template<class t> t LIMIT(t mi, t x, t ma) { return std::min(std::max(mi, x), ma); }
@@ -47,6 +48,7 @@ enum BoardEnum {
   BOARD_MEGA2560,
   BOARD_GRUVIN9X,
   BOARD_SKY9X,
+  BOARD_9XRPRO,
   BOARD_TARANIS,
   BOARD_TARANIS_PLUS,
   BOARD_TARANIS_REV4a
@@ -55,9 +57,10 @@ enum BoardEnum {
 #define IS_9X(board)           (board==BOARD_STOCK || board==BOARD_M128)
 #define IS_STOCK(board)        (board==BOARD_STOCK)
 #define IS_2560(board)         (board==BOARD_GRUVIN9X || board==BOARD_MEGA2560)
-#define IS_ARM(board)          (board==BOARD_SKY9X || board==BOARD_TARANIS  || board==BOARD_TARANIS_REV4a || board==BOARD_TARANIS_PLUS)
+#define IS_SKY9X(board)        (board==BOARD_SKY9X || board==BOARD_9XRPRO)
 #define IS_TARANIS(board)      (board==BOARD_TARANIS  || board==BOARD_TARANIS_REV4a || board==BOARD_TARANIS_PLUS)
 #define IS_TARANIS_PLUS(board) (board==BOARD_TARANIS_PLUS)
+#define IS_ARM(board)          (IS_TARANIS(board) || IS_SKY9X(board))
 
 const uint8_t modn12x3[4][4]= {
   {1, 2, 3, 4},

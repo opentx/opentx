@@ -528,6 +528,34 @@ void configure_pins( uint32_t pins, uint16_t config )
         }
 }
 
+void opentxBootloader();
+
+// Set up for volume control (TWI0)
+// Need PA3 and PA4 set to peripheral A
+void i2cInit()
+{
+  register Pio *pioptr ;
+  register uint32_t timing ;
+
+  PMC->PMC_PCER0 |= 0x00080000L ;               // Enable peripheral clock to TWI0
+
+  /* Configure PIO */
+  pioptr = PIOA ;
+  pioptr->PIO_ABCDSR[0] &= ~0x00000018 ;        // Peripheral A
+  pioptr->PIO_ABCDSR[1] &= ~0x00000018 ;        // Peripheral A
+  pioptr->PIO_PDR = 0x00000018 ;                                        // Assign to peripheral
+
+  timing = Master_frequency * 5 / 1000000 ;             // 5uS high and low
+  timing += 15 - 4 ;
+  timing /= 16 ;
+  timing |= timing << 8 ;
+
+  TWI0->TWI_CWGR = 0x00040000 | timing ;                        // TWI clock set
+  TWI0->TWI_CR = TWI_CR_MSEN | TWI_CR_SVDIS ;           // Master mode enable
+  TWI0->TWI_MMR = 0x002F0000 ;          // Device 5E (>>1) and master is writing
+  NVIC_EnableIRQ(TWI0_IRQn) ;
+}
+
 void boardInit()
 {
   register Pio *pioptr ;
@@ -538,33 +566,35 @@ void boardInit()
 
   PMC->PMC_PCER0 = (1<<ID_PIOC)|(1<<ID_PIOB)|(1<<ID_PIOA)|(1<<ID_UART0) ;                               // Enable clocks to PIOB and PIOA and PIOC and UART0
 
+  PIOC->PIO_PER = PIO_PC25 ;            // Enable bit C25 (USB-detect)
+
+#if defined(REVX)
+  if (usbPlugged()) {
+    lcdInit() ;
+    opentxBootloader();
+  }
+#endif
+
 #if defined(REVA)
   // On REVB, PA21 is used as AD8, and measures current consumption.
   pioptr = PIOA ;
   pioptr->PIO_PER = PIO_PA21 ;            // Enable bit A21 (EXT3)
   pioptr->PIO_OER = PIO_PA21 ;            // Set bit A21 as output
   pioptr->PIO_SODR = PIO_PA21 ;   // Set bit A21 ON
-#else
-  pwrInit() ;
-#endif
 
-  // pioptr->PIO_PUER = 0x80000000 ;         // Enable pullup on bit A31 (EXIT)
-  // pioptr->PIO_PER = 0x80000000 ;          // Enable bit A31
-
-  pioptr = PIOC ;
-  pioptr->PIO_PER = PIO_PC25 ;            // Enable bit C25 (USB-detect)
-  // pioptr->PIO_OER = 0x80000000L ;         // Set bit C31 as output
-  // pioptr->PIO_SODR = 0x80000000L ;        // Set bit C31
-
-#if defined(REVA)
   // Configure RF_power (PC17) and PPM-jack-in (PC19), neither need pullups
   pioptr->PIO_PER = 0x000A0000L ;         // Enable bit C19, C17
   pioptr->PIO_ODR = 0x000A0000L ;         // Set bits C19 and C17 as input
 #endif
 
+#if !defined(REVA)
+  pwrInit() ;
+#endif
+
   config_free_pins() ;
 
   // Next section configures the key inputs on the LCD data
+  pioptr = PIOC;
 #if defined(REVA)
   pioptr->PIO_PER = 0x0000003DL ;         // Enable bits 2,3,4,5, 0
   pioptr->PIO_OER = PIO_PC0 ;             // Set bit 0 output
@@ -605,11 +635,11 @@ void boardInit()
   adcInit() ;
   init_pwm() ;
 
-  __enable_irq() ;
+  __enable_irq();
 
-  audioInit() ;
+  audioInit();
 
-  coprocInit() ;
+  i2cInit();
 
   eepromInit();
 

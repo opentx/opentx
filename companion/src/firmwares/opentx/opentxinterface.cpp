@@ -71,6 +71,8 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for FrSky Taranis Rev4a";
     case BOARD_SKY9X:
       return "OpenTX for Sky9x board / 9X";
+    case BOARD_9XRPRO:
+      return "OpenTX for 9XR-PRO";
     default:
       return "OpenTX for an unknown board";
   }
@@ -87,6 +89,8 @@ const int OpenTxEepromInterface::getEEpromSize()
       return EESIZE_GRUVIN9X;
     case BOARD_SKY9X:
       return EESIZE_SKY9X;
+    case BOARD_9XRPRO:
+      return EESIZE_9XRPRO;
     case BOARD_TARANIS:
     case BOARD_TARANIS_PLUS:
       return EESIZE_TARANIS;
@@ -194,7 +198,7 @@ bool OpenTxEepromInterface::loadModel(uint8_t version, ModelData &model, uint8_t
     if (board == BOARD_GRUVIN9X) {
       return loadModel<Open9xGruvin9xModelData_v208>(model, data, index, 0 /*no more stick mode messed*/);
     }
-    else if (board == BOARD_SKY9X) {
+    else if (IS_SKY9X(board)) {
       return loadModel<Open9xArmModelData_v208>(model, data, index, 0 /*no more stick mode messed*/);
     }
     else {
@@ -205,7 +209,7 @@ bool OpenTxEepromInterface::loadModel(uint8_t version, ModelData &model, uint8_t
     if (board == BOARD_GRUVIN9X) {
       return loadModel<Open9xGruvin9xModelData_v209>(model, data, index, 0 /*no more stick mode messed*/);
     }
-    else if (board == BOARD_SKY9X) {
+    else if (IS_SKY9X(board)) {
       return loadModel<Open9xArmModelData_v209>(model, data, index, 0 /*no more stick mode messed*/);
     }
     else {
@@ -216,7 +220,7 @@ bool OpenTxEepromInterface::loadModel(uint8_t version, ModelData &model, uint8_t
     if (board == BOARD_GRUVIN9X) {
       return loadModel<Open9xGruvin9xModelData_v210>(model, data, index, 0 /*no more stick mode messed*/);
     }
-    else if (board == BOARD_SKY9X) {
+    else if (IS_SKY9X(board)) {
       return loadModel<Open9xArmModelData_v210>(model, data, index, 0 /*no more stick mode messed*/);
     }
     else {
@@ -227,7 +231,7 @@ bool OpenTxEepromInterface::loadModel(uint8_t version, ModelData &model, uint8_t
     if (board == BOARD_GRUVIN9X) {
       return loadModel<Open9xGruvin9xModelData_v211>(model, data, index, 0 /*no more stick mode messed*/);
     }
-    else if (board == BOARD_SKY9X) {
+    else if (IS_SKY9X(board)) {
       return loadModel<Open9xArmModelData_v211>(model, data, index, 0 /*no more stick mode messed*/);
     }
     else {
@@ -235,7 +239,7 @@ bool OpenTxEepromInterface::loadModel(uint8_t version, ModelData &model, uint8_t
     }
   }
   else if (version == 212) {
-    if (board == BOARD_SKY9X) {
+    if (IS_SKY9X(board)) {
       return loadModel<Open9xArmModelData_v212>(model, data, index);
     }
     else {
@@ -365,6 +369,7 @@ int OpenTxEepromInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t 
       case BOARD_TARANIS_PLUS:
       case BOARD_TARANIS_REV4a:
       case BOARD_SKY9X:
+      case BOARD_9XRPRO:
         version = 216;
         break;
       case BOARD_GRUVIN9X:
@@ -412,7 +417,7 @@ int OpenTxEepromInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t 
 
 int OpenTxEepromInterface::getSize(ModelData &model)
 {
-  if (board == BOARD_SKY9X)
+  if (IS_SKY9X(board))
     return 0;
 
   if (model.isempty())
@@ -435,7 +440,7 @@ int OpenTxEepromInterface::getSize(ModelData &model)
 
 int OpenTxEepromInterface::getSize(GeneralSettings &settings)
 {
-  if (board == BOARD_SKY9X)
+  if (IS_SKY9X(board))
     return 0;
 
   uint8_t tmp[EESIZE_RLC_MAX];
@@ -512,7 +517,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case Timers:
       return 2;
     case PermTimers:
-      if (board == BOARD_GRUVIN9X || board == BOARD_SKY9X || IS_TARANIS(board) )
+      if (board == BOARD_GRUVIN9X || IS_ARM(board))
         return 1;
       else
         return 0;
@@ -546,7 +551,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case RotaryEncoders:
       if (board == BOARD_GRUVIN9X)
         return 2;
-      else if (board == BOARD_SKY9X)
+      else if (IS_SKY9X(board))
         return 1;
       else
         return 0;
@@ -636,13 +641,13 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case HasFailsafe:
       if (IS_TARANIS(board)) 
         return 32; // 
-      return (board==BOARD_SKY9X ? 16 : 0);
+      return (IS_SKY9X(board) ? 16 : 0);
     case NumModules:
       return (IS_ARM(board) ? 2 : 1);
     case HasPPMStart:
       return (IS_ARM(board) ? true : false);
     case HasCurrentCalibration:
-      return (board==BOARD_SKY9X ? true : false);
+      return (IS_SKY9X(board) ? true : false);
     case HasVolume:
       return (IS_ARM(board) ? true : false);
     case HasBrightness:
@@ -732,7 +737,7 @@ int OpenTxEepromInterface::isAvailable(Protocol proto, int port)
         return 0;
     }
   }
-  else if (board==BOARD_SKY9X) {
+  else if (IS_SKY9X(board)) {
     switch (port) {
       case 0:
         switch (proto) {
@@ -773,8 +778,6 @@ int OpenTxEepromInterface::isAvailable(Protocol proto, int port)
     }
   }
 }
-
-
 
 template<typename T, size_t SIZE>
 size_t getSizeA(T (&)[SIZE]) {
@@ -949,6 +952,7 @@ QString OpenTxFirmware::getReleaseNotesUrl()
     case BOARD_M128:
     case BOARD_GRUVIN9X:
     case BOARD_SKY9X:
+    case BOARD_9XRPRO:
       url.append("9x.txt");
       break;
     case BOARD_TARANIS:
@@ -965,35 +969,36 @@ QString OpenTxFirmware::getReleaseNotesUrl()
 
 QString OpenTxFirmware::getStampUrl()
 {
-  QString url = g.compileServer();
-  if (url.isEmpty()){
-    url= OPENTX_FIRMWARE_DOWNLOADS;
-    g.compileServer(url);
-  }
-  url.append("/stamp-opentx-");
-  switch(board) {
-    case BOARD_STOCK:
-      url.append("9x.txt");
-      break;
-    case BOARD_M128:
-      url.append("9x128.txt");
-      break;
-    case BOARD_GRUVIN9X:
-      url.append("gruvin9x.txt");
-      break;
-    case BOARD_SKY9X:
-      url.append("sky9x.txt");
-      break;
-    case BOARD_TARANIS:
-    case BOARD_TARANIS_PLUS:
-    case BOARD_TARANIS_REV4a:
-      url.append("taranis.txt");
-      break;
-    default:
-      url.clear();
-      break;
-  }
-  return url;
+   QString url = g.compileServer();
+   if (url.isEmpty()){
+      url= OPENTX_FIRMWARE_DOWNLOADS;
+      g.compileServer(url);
+   }
+    url.append("/stamp-opentx-");
+    switch(board) {
+      case BOARD_STOCK:
+        url.append("9x.txt");
+        break;
+      case BOARD_M128:
+        url.append("9x128.txt");
+        break;
+      case BOARD_GRUVIN9X:
+        url.append("gruvin9x.txt");
+        break;
+      case BOARD_SKY9X:
+      case BOARD_9XRPRO:
+        url.append("sky9x.txt");
+        break;
+      case BOARD_TARANIS:
+      case BOARD_TARANIS_PLUS:    
+      case BOARD_TARANIS_REV4a:
+        url.append("taranis.txt");
+        break;
+      default:
+        url.clear();
+        break;
+    }
+    return url;
 }
 
 SimulatorInterface * OpenTxFirmware::getSimulator()
@@ -1006,6 +1011,7 @@ SimulatorInterface * OpenTxFirmware::getSimulator()
     case BOARD_GRUVIN9X:
       return new Open9xGruvin9xSimulator();
     case BOARD_SKY9X:
+    case BOARD_9XRPRO:
       return new Open9xSky9xSimulator();
     case BOARD_TARANIS:
     case BOARD_TARANIS_PLUS:
@@ -1213,6 +1219,53 @@ void registerOpenTxFirmwares()
   openTx->addOption("bluetooth", QObject::tr("Bluetooth interface"));
   openTx->addOptions(fai_options);
   firmwares.push_back(openTx);
+  
+  /* SKY9X board */
+  openTx = new OpenTxFirmware("opentx-9xrpro", QObject::tr("OpenTX for 9XR-PRO"), BOARD_9XRPRO, true);
+  openTx->setVariantBase(FRSKY_VARIANT);
+  openTx->addOption("heli", QObject::tr("Enable HELI menu and cyclic mix support"));
+  openTx->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
+  openTx->addOption("nofp", QObject::tr("No flight modes"));
+  openTx->addOption("nocurves", QObject::tr("Disable curves menus"));
+  openTx->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
+  openTx->addOption("ppmus", QObject::tr("PPM values displayed in us"));
+  openTx->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
+  openTx->addOption("symlimits", QObject::tr("Symetrical Limits"));
+  openTx->addOption("potscroll", QObject::tr("Pots use in menus navigation"));
+  openTx->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving some of them"));
+  openTx->addOption("autoswitch", QObject::tr("In model setup menus automatically set switch by moving some of them"));
+  openTx->addOption("dblkeys", QObject::tr("Enable resetting values by pressing up and down at the same time"));
+  openTx->addOption("nographics", QObject::tr("No graphical check boxes and sliders"));
+  openTx->addOption("battgraph", QObject::tr("Battery graph"));
+  openTx->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
+  openTx->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
+  openTx->addOption("tsticks", QObject::tr("Use FrSky Taranis sticks in a 9X/9XR"));
+  openTx->addOption("bluetooth", QObject::tr("Bluetooth interface"));
+  openTx->addOptions(fai_options);
+  firmwares.push_back(openTx);
+  openTx = new OpenTxFirmware("opentx-sky9x", QObject::tr("OpenTX for Sky9x board / 9X"), BOARD_SKY9X, true);
+  openTx->setVariantBase(FRSKY_VARIANT);
+  openTx->addOption("heli", QObject::tr("Enable HELI menu and cyclic mix support"));
+  openTx->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
+  openTx->addOption("nofp", QObject::tr("No flight modes"));
+  openTx->addOption("nocurves", QObject::tr("Disable curves menus"));
+  openTx->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
+  openTx->addOption("ppmus", QObject::tr("Channel values displayed in us"));
+  openTx->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
+  openTx->addOption("symlimits", QObject::tr("Symetrical Limits"));
+  openTx->addOption("potscroll", QObject::tr("Pots use in menus navigation"));
+  openTx->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving the control"));
+  openTx->addOption("autoswitch", QObject::tr("In model setup menus automatically set switch by moving the control"));
+  openTx->addOption("dblkeys", QObject::tr("Enable resetting values by pressing up and down at the same time"));
+  openTx->addOption("nographics", QObject::tr("No graphical check boxes and sliders"));
+  openTx->addOption("battgraph", QObject::tr("Battery graph"));
+  openTx->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
+  openTx->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
+  openTx->addOption("tsticks", QObject::tr("Use FrSky Taranis sticks in a 9X/9XR"));
+  openTx->addOption("bluetooth", QObject::tr("Bluetooth interface"));
+  openTx->addOptions(fai_options);
+  firmwares.push_back(openTx);
+  
 #endif
   
   /* Taranis board */

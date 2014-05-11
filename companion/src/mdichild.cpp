@@ -71,7 +71,6 @@ MdiChild::MdiChild():
   fileChanged(false)
 {
   ui->setupUi(this);
-
   this->setWindowIcon(CompanionIcon("open.png"));
   ui->SimulateTxButton->setIcon(CompanionIcon("simulate.png"));
   setAttribute(Qt::WA_DeleteOnClose);
@@ -118,7 +117,6 @@ void MdiChild::copy()
   ui->modelsList->copy();
 }
 
-
 void MdiChild::paste()
 {
   ui->modelsList->paste();
@@ -137,7 +135,7 @@ bool MdiChild::hasSelection()
 void MdiChild::updateTitle()
 {
   QString title = userFriendlyCurrentFile() + "[*]"+" ("+GetEepromInterface()->getName()+QString(")");
-  if (GetEepromInterface()->getBoard() != BOARD_SKY9X)
+  if (!IS_SKY9X(GetEepromInterface()->getBoard()))
     title += QString(" - %1 ").arg(EEPromAvail) + tr("free bytes");
   setWindowTitle(title);
 }
@@ -155,7 +153,7 @@ void MdiChild::on_SimulateTxButton_clicked()
   startSimulation(this, radioData, -1);
 }
 
-void MdiChild::checkAndInitModel( int row )
+void MdiChild::checkAndInitModel(int row)
 {
   ModelData &model = radioData.models[row - 1];
   if (model.isempty()) {
@@ -360,7 +358,7 @@ bool MdiChild::save()
 bool MdiChild::saveAs(bool isNew)
 {
     QString fileName;
-    if (GetEepromInterface()->getBoard() == BOARD_SKY9X) {
+    if (IS_SKY9X(GetEepromInterface()->getBoard())) {
       curFile.replace(".eepe", ".bin");
       QFileInfo fi(curFile);
 #ifdef __APPLE__
@@ -396,7 +394,7 @@ bool MdiChild::saveFile(const QString &fileName, bool setCurrent)
 {
     QString myFile;
     myFile = fileName;
-    if (GetEepromInterface()->getBoard() == BOARD_SKY9X) {
+    if (IS_SKY9X(GetEepromInterface()->getBoard())) {
       myFile.replace(".eepe", ".bin");
     }
     QFile file(myFile);
@@ -672,7 +670,7 @@ void MdiChild::print(int model, QString filename)
   else if (ui->modelsList->currentRow() > 0) {
     pd = new PrintDialog(this, GetCurrentFirmware()/*firmware*/, &radioData.generalSettings, &radioData.models[ui->modelsList->currentRow()-1]);
   }
-
+    
   if (pd) {
     pd->setAttribute(Qt::WA_DeleteOnClose, true);
     pd->show();

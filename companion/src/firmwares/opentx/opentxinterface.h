@@ -114,8 +114,8 @@ class OpenTxFirmware: public FirmwareInterface {
     virtual int getCapability(const Capability);
 
     virtual SimulatorInterface * getSimulator();
-
-
+    
+    
 };
 
 void registerOpenTxFirmwares();
