@@ -1440,6 +1440,22 @@ QPushButton:checked {
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>Gvars</string>
+      </attribute>
+      <widget class="QWidget" name="gridLayoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>711</width>
+         <height>211</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="gvarsLayout"/>
+      </widget>
+     </widget>
     </widget>
    </item>
   </layout>
@@ -1452,6 +1468,11 @@ QPushButton:checked {
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>mySlider</class>
+   <extends>QSlider</extends>
+   <header location="global">myslider.h</header>
+  </customwidget>
+  <customwidget>
    <class>cursorWidget</class>
    <extends>QWidget</extends>
    <header>cursorwidget.h</header>
@@ -1462,11 +1483,6 @@ QPushButton:checked {
    <extends>QWidget</extends>
    <header>menuwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>mySlider</class>
-   <extends>QSlider</extends>
-   <header location="global">myslider.h</header>
   </customwidget>
  </customwidgets>
  <resources>

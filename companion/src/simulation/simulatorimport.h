@@ -59,7 +59,13 @@ for (int i=0; i<NUM_LOGICAL_SWITCH; i++)
 #else
   outputs.vsw[i] = getSwitch(SWSRC_SW1+i, 0);
 #endif
+#ifdef GVAR_VALUE // defined(GVARS)
+uint8_t phase = getFlightPhase();
+for (int fm=0; fm<MAX_FLIGHT_MODES; fm++)
+  for (int gv=0; gv<MAX_GVARS; gv++)
+    outputs.gvars[fm][gv] = GVAR_VALUE(gv, fm);
 #endif
+#endif   //GETVALUES_IMPORT
 
 #ifdef LCDCHANGED_IMPORT
 #undef LCDCHANGED_IMPORT

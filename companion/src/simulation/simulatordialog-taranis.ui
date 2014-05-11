@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>712</width>
+    <width>726</width>
     <height>688</height>
    </rect>
   </property>
@@ -239,6 +239,22 @@
         <layout class="QGridLayout" name="channelsLayout"/>
        </item>
       </layout>
+     </widget>
+     <widget class="QWidget" name="misc">
+      <attribute name="title">
+       <string>Gvars</string>
+      </attribute>
+      <widget class="QWidget" name="gridLayoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>691</width>
+         <height>231</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="gvarsLayout"/>
+      </widget>
      </widget>
     </widget>
    </item>

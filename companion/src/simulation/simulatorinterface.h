@@ -36,6 +36,7 @@ class TxOutputs {
 
     int16_t chans[C9X_NUM_CHNOUT];
     bool vsw[32]; /* TODO NUM_VIRTUAL_SWITCHES */
+    int16_t gvars[9][9];  /*TODO MAX_FLIGHT_MODES, NUM_GVARS */
     unsigned int beep;
 };
 
