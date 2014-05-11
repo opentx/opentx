@@ -230,14 +230,17 @@ bool switchState(EnumKeys enuk)
 void keysInit()
 {
     GPIO_InitTypeDef GPIO_InitStructure;
-    /* GPIOC GPIOD clock enable */
+
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOBUTTON, ENABLE);
 
-    /* GPIO  Configuration*/
 #if defined(REV3)
     GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_PLUS | PIN_BUTTON_ENTER | PIN_BUTTON_MINUS | PIN_TRIM_LH_R | PIN_TRIM_LH_L
                                   | PIN_TRIM_LV_DN | PIN_TRIM_LV_UP
                                   | PIN_SW_A_L | PIN_SW_D_L | PIN_SW_F | PIN_SW_C_L | PIN_SW_D_H | PIN_SW_H;
+#elif defined(REVPLUS)
+    GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_PLUS | PIN_BUTTON_ENTER | PIN_BUTTON_MINUS | PIN_TRIM_LH_R | PIN_TRIM_LH_L
+                                  | PIN_TRIM_LV_DN | PIN_TRIM_LV_UP
+                                  | PIN_SW_F | PIN_SW_A_L | PIN_SW_B_H | PIN_SW_B_L | PIN_SW_C_H | PIN_SW_D_H | PIN_SW_D_L | PIN_SW_G_H | PIN_SW_G_L;
 #else
     GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_PLUS | PIN_BUTTON_ENTER | PIN_BUTTON_MINUS | PIN_TRIM_LH_R | PIN_TRIM_LH_L
                                   | PIN_TRIM_LV_DN | PIN_TRIM_LV_UP
@@ -249,29 +252,23 @@ void keysInit()
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
     GPIO_Init(GPIOE, &GPIO_InitStructure);
 
+#if defined(REVPLUS)
+    GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_MENU | PIN_BUTTON_EXIT | PIN_BUTTON_PAGE | PIN_SW_H;
+#else
     GPIO_InitStructure.GPIO_Pin = PIN_BUTTON_MENU | PIN_BUTTON_EXIT | PIN_BUTTON_PAGE;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
+#endif
     GPIO_Init(GPIOD, &GPIO_InitStructure);
 
     GPIO_InitStructure.GPIO_Pin = PIN_TRIM_RV_DN | PIN_TRIM_RV_UP | PIN_TRIM_RH_L | PIN_TRIM_RH_R;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
     GPIO_Init(GPIOC, &GPIO_InitStructure);
 
 #if defined(REV3)
     GPIO_InitStructure.GPIO_Pin = PIN_SW_B_H | PIN_SW_B_L | PIN_SW_C_H | PIN_SW_E_L | PIN_SW_E_H | PIN_SW_A_H | PIN_SW_G_L;
+#elif defined(REVPLUS)
+    GPIO_InitStructure.GPIO_Pin =  PIN_SW_E_L | PIN_SW_E_H | PIN_SW_A_H;
 #else
     GPIO_InitStructure.GPIO_Pin =  PIN_SW_E_L | PIN_SW_E_H | PIN_SW_A_H | PIN_SW_D_L;
 #endif
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
     GPIO_Init(GPIOB, &GPIO_InitStructure);
 
 #if defined(REV3)
@@ -279,10 +276,6 @@ void keysInit()
 #else
     GPIO_InitStructure.GPIO_Pin = PIN_SW_C_L;
 #endif
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 }
 #endif

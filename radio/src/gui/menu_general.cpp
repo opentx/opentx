@@ -110,33 +110,19 @@ const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
 #endif
 
 #if !defined(CPUM64)
-  void displaySlider(uint8_t x, uint8_t y, uint8_t value, uint8_t max, uint8_t attr)
-  {
-    lcd_putc(RADIO_SETUP_2ND_COLUMN+(value*4*FW)/max, y, '$');
-    lcd_hline(RADIO_SETUP_2ND_COLUMN, y+3, 5*FW-1, SOLID);
-    if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcd_filled_rect(RADIO_SETUP_2ND_COLUMN, y, 5*FW-1, FH-1);
-  }
   #define SLIDER_5POS(y, value, label, event, attr) { \
     int8_t tmp = value; \
     displaySlider(RADIO_SETUP_2ND_COLUMN, y, 2+tmp, 4, attr); \
     value = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, label, NULL, tmp, -2, +2, attr, event); \
   }
 #elif defined(GRAPHICS)
-  void display5posSlider(uint8_t x, uint8_t y, uint8_t value, uint8_t attr)
-  {
-    lcd_putc(RADIO_SETUP_2ND_COLUMN+2*FW+(value*FW), y, '$');
-    lcd_hline(RADIO_SETUP_2ND_COLUMN, y+3, 5*FW-1, SOLID);
-    if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcd_filled_rect(RADIO_SETUP_2ND_COLUMN, y, 5*FW-1, FH-1);
-  }
   #define SLIDER_5POS(y, value, label, event, attr) { \
     int8_t tmp = value; \
     display5posSlider(RADIO_SETUP_2ND_COLUMN, y, tmp, attr); \
     value = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, label, NULL, tmp, -2, +2, attr, event); \
   }
-  #define displaySlider(x, y, value, max, attr) lcd_outdezAtt(x, y, value, attr|LEFT)
 #else
   #define SLIDER_5POS(y, value, label, event, attr) value = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, label, STR_VBEEPLEN, value, -2, +2, attr, event)
-  #define displaySlider(x, y, value, max, attr) lcd_outdezAtt(x, y, value, attr|LEFT)
 #endif
 
 #if defined(SPLASH) && !defined(FSPLASH)
@@ -180,6 +166,7 @@ enum menuGeneralSetupItems {
   ITEM_SETUP_BACKLIGHT_MODE,
   ITEM_SETUP_BACKLIGHT_DELAY,
   IF_CPUARM(ITEM_SETUP_BRIGHTNESS)
+  IF_REVPLUS(ITEM_SETUP_BACKLIGHT_COLOR)
   CASE_PWM_BACKLIGHT(ITEM_SETUP_BACKLIGHT_BRIGHTNESS_OFF)
   CASE_PWM_BACKLIGHT(ITEM_SETUP_BACKLIGHT_BRIGHTNESS_ON)
   ITEM_SETUP_FLASH_BEEP,
@@ -225,7 +212,7 @@ void menuGeneralSetup(uint8_t event)
   }
 #endif
 
-  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) IF_BATTGRAPH(1) LABEL(SOUND), IF_AUDIO(0) IF_BUZZER(0) IF_VOICE(0) IF_CPUARM(0) IF_CPUARM(0) IF_CPUARM(0) 0, IF_AUDIO(0) IF_VARIO_CPUARM(LABEL(VARIO)) IF_VARIO_CPUARM(0) IF_VARIO_CPUARM(0) IF_VARIO_CPUARM(0) IF_VARIO_CPUARM(0) IF_HAPTIC(LABEL(HAPTIC)) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) 0, LABEL(ALARMS), 0, CASE_PCBSKY9X(0) CASE_PCBSKY9X(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) LABEL(BACKLIGHT), 0, 0, IF_CPUARM(0) CASE_PWM_BACKLIGHT(0) CASE_PWM_BACKLIGHT(0) 0, IF_SPLASH_PARAM(0) IF_GPS(0) IF_GPS(0) IF_PXX(0) IF_CPUARM(0) IF_CPUARM(0) IF_FAI_CHOICE(0) 0, COL_TX_MODE, CASE_PCBTARANIS(0) 1/*to force edit mode*/});
+  MENU(STR_MENURADIOSETUP, menuTabDiag, e_Setup, ITEM_SETUP_MAX+1, {0, IF_RTCLOCK(2) IF_RTCLOCK(2) IF_BATTGRAPH(1) LABEL(SOUND), IF_AUDIO(0) IF_BUZZER(0) IF_VOICE(0) IF_CPUARM(0) IF_CPUARM(0) IF_CPUARM(0) 0, IF_AUDIO(0) IF_VARIO_CPUARM(LABEL(VARIO)) IF_VARIO_CPUARM(0) IF_VARIO_CPUARM(0) IF_VARIO_CPUARM(0) IF_VARIO_CPUARM(0) IF_HAPTIC(LABEL(HAPTIC)) IF_HAPTIC(0) IF_HAPTIC(0) IF_HAPTIC(0) 0, LABEL(ALARMS), 0, CASE_PCBSKY9X(0) CASE_PCBSKY9X(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) LABEL(BACKLIGHT), 0, 0, IF_CPUARM(0) IF_REVPLUS(0) CASE_PWM_BACKLIGHT(0) CASE_PWM_BACKLIGHT(0) 0, IF_SPLASH_PARAM(0) IF_GPS(0) IF_GPS(0) IF_PXX(0) IF_CPUARM(0) IF_CPUARM(0) IF_FAI_CHOICE(0) 0, COL_TX_MODE, CASE_PCBTARANIS(0) 1/*to force edit mode*/});
 
   uint8_t sub = m_posVert - 1;
 
@@ -535,6 +522,14 @@ void menuGeneralSetup(uint8_t event)
         break;
 #endif
 
+#if defined(PCBTARANIS) && defined(REVPLUS)
+      case ITEM_SETUP_BACKLIGHT_COLOR:
+        lcd_putsLeft(y, STR_BLCOLOR);
+        displaySlider(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.backlightColor, 100, attr);
+        if (attr) g_eeGeneral.backlightColor = checkIncDec(event, g_eeGeneral.backlightColor, 0, 100, EE_GENERAL | NO_INCDEC_MARKS);
+        break;
+#endif
+
 #if defined(PWM_BACKLIGHT)
       case ITEM_SETUP_BACKLIGHT_BRIGHTNESS_OFF:
         lcd_putsLeft(y, STR_BLOFFBRIGHTNESS);
@@ -634,21 +629,7 @@ void menuGeneralSetup(uint8_t event)
 
       case ITEM_SETUP_STICK_MODE_LABELS:
         lcd_putsLeft(y, NO_INDENT(STR_MODE));
-        for (uint8_t i=0; i<4; i++) {
-          lcd_img((6+4*i)*FW, y, sticks, i, 0);
-#if defined(FRSKY_STICKS)
-          if (g_eeGeneral.stickReverse & (1<<i)) {
-            lcd_filled_rect((6+4*i)*FW, y, 3*FW, FH-1);
-          }
-#endif
-        }
-#if defined(FRSKY_STICKS)
-	if (attr) {
-	  s_editMode = 0;
-          CHECK_INCDEC_GENVAR(event, g_eeGeneral.stickReverse, 0, 15);
-          lcd_rect(6*FW-1, y-1, 15*FW+2, 9);
-        }
-#endif
+        for (uint8_t i=0; i<4; i++) lcd_img((6+4*i)*FW, y, sticks, i, 0);
         break;
 
       case ITEM_SETUP_STICK_MODE:
@@ -835,8 +816,7 @@ void onSdManagerMenu(const char *result)
     f_getcwd(lfn, _MAX_LFN);
     strcat(lfn, "/");
     strcat(lfn, reusableBuffer.sdmanager.lines[index]);
-    audioQueue.stopAll();
-    audioQueue.playFile(lfn, 0, 255);
+    audioQueue.playFile(lfn, PLAY_BACKGROUND, 255);
   }
 #endif
 #if defined(PCBTARANIS)

@@ -98,12 +98,12 @@ const uint8_t lcdPalette[4] = { 0, 0x03, 0x06, 0x0F };
 
 #define LCD_WRITE_BIT(bit) \
   if (bit) \
-    GPIOD->BSRRL = PIN_LCD_MOSI; \
+    LCD_MOSI_HIGH(); \
   else \
-    GPIOD->BSRRH = PIN_LCD_MOSI; \
-  GPIOD->BSRRH = PIN_LCD_CLK; /* Clock low */ \
+    LCD_MOSI_LOW(); \
+  LCD_CLK_LOW(); \
   __no_operation(); \
-  GPIOD->BSRRL = PIN_LCD_CLK; /* Clock high */
+  LCD_CLK_HIGH();
 
 void lcdRefresh()
 {  
@@ -137,24 +137,45 @@ static void LCD_BL_Config()
 {
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOBL, ENABLE);
   GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin =GPIO_Pin_BL;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_BL;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
   GPIO_Init(GPIOBL, &GPIO_InitStructure);
+  GPIO_PinAFConfig(GPIOBL, GPIO_PinSource_BL, Pin_BL_AF);
 
-  GPIO_PinAFConfig(GPIOBL, GPIO_PinSource_BL, GPIO_AF_TIM10);
+#if defined(REVPLUS)
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_BLW;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+  GPIO_Init(GPIOBL, &GPIO_InitStructure);
+  GPIO_PinAFConfig(GPIOBL, GPIO_PinSource_BLW, Pin_BLW_AF);
+  
+  RCC->APB1ENR |= RCC_APB1ENR_TIM4EN ;        // Enable clock
+  TIM4->ARR = 100 ;
+  TIM4->PSC = (PERI2_FREQUENCY * TIMER_MULT_APB2) / 10000 - 1;
+  TIM4->CCMR1 = TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2 ; // PWM
+  TIM4->CCMR2 = TIM_CCMR2_OC4M_1 | TIM_CCMR2_OC4M_2 ; // PWM
+  TIM4->CCER = TIM_CCER_CC4E | TIM_CCER_CC2E ;
 
+  int BacklightBrightness = 40 ;
+  TIM4->CCR2 = BacklightBrightness ;
+  TIM4->CCR4 = BacklightBrightness ;
+  TIM4->EGR = 0 ;
+  TIM4->CR1 = TIM_CR1_CEN ;            // Counter enable
+#else
   RCC->APB2ENR |= RCC_APB2ENR_TIM10EN ;        // Enable clock
   TIM10->ARR = 100 ;
   TIM10->PSC = (PERI2_FREQUENCY * TIMER_MULT_APB2) / 10000 - 1;
   TIM10->CCMR1 = 0x60 ;    // PWM
   TIM10->CCER = 1 ;
-
   TIM10->CCR1 = 80;
   TIM10->EGR = 0 ;
   TIM10->CR1 = 1 ;
+#endif
 }
 
 /** Init the anolog spi gpio
@@ -166,21 +187,26 @@ static void LCD_Hardware_Init()
   GPIO_InitTypeDef GPIO_InitStructure;
   
   /*!< Configure lcd CLK\ MOSI\ A0pin in output pushpull mode *************/
-  GPIO_InitStructure.GPIO_Pin =PIN_LCD_MOSI | PIN_LCD_CLK | PIN_LCD_A0;
+  GPIO_InitStructure.GPIO_Pin = PIN_LCD_MOSI | PIN_LCD_CLK | PIN_LCD_A0;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(GPIO_LCD, &GPIO_InitStructure);
+  GPIO_Init(GPIO_LCD_SPI, &GPIO_InitStructure);
+  
   LCD_NCS_HIGH();
+  
   /*!< Configure lcd NCS pin in output pushpull mode ,PULLUP *************/
-  GPIO_InitStructure.GPIO_Pin = PIN_LCD_NCS |PIN_LCD_RST; 
+  GPIO_InitStructure.GPIO_Pin = PIN_LCD_NCS; 
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(GPIO_LCD_NCS, &GPIO_InitStructure);
   
-  GPIO_Init(GPIO_LCD, &GPIO_InitStructure);
+  /*!< Configure lcd RST pin in output pushpull mode ,PULLUP *************/
+  GPIO_InitStructure.GPIO_Pin = PIN_LCD_RST; 
+  GPIO_Init(GPIO_LCD_RST, &GPIO_InitStructure);
 }
 
 //275us

@@ -278,7 +278,7 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
       ui->serialPortMode->hide();
       ui->serialPortLabel->hide();
     }
-    
+
     if (!IS_TARANIS(eepromInterface->getBoard())) {
       ui->stickReverse1->setChecked(g_eeGeneral.stickReverse & (1 << 0));
       ui->stickReverse2->setChecked(g_eeGeneral.stickReverse & (1 << 1));
@@ -295,6 +295,16 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
       ui->stickReverse2->hide();
       ui->stickReverse3->hide();
       ui->stickReverse4->hide();
+    }
+    
+    if (IS_TARANIS_PLUS(eepromInterface->getBoard())) {
+      ui->backlightColor_SL->setValue(g_eeGeneral.backlightColor);
+    }
+    else {
+      ui->backlightColor_label->hide();
+      ui->backlightColor_SL->hide();
+      ui->backlightColor1_label->hide();
+      ui->backlightColor2_label->hide();
     }
 }
 
@@ -504,6 +514,12 @@ void GeneralEdit::on_backlightautoSB_editingFinished()
     g_eeGeneral.backlightDelay = i;
     updateSettings();
   }
+}
+
+void GeneralEdit::on_backlightColor_SL_valueChanged()
+{
+  g_eeGeneral.backlightColor = ui->backlightColor_SL->value();
+  updateSettings();
 }
 
 void GeneralEdit::on_timezoneSB_editingFinished()
