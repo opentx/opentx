@@ -191,6 +191,13 @@ unsigned int Open9xM128Simulator::getPhase()
   return getFlightPhase();
 }
 
+const char * Open9xM128Simulator::getPhaseName(unsigned int phase)
+{
+  static char buff[sizeof(g_model.phaseData[0].name)+1];
+  zchar2str(buff, g_model.phaseData[phase].name, sizeof(g_model.phaseData[0].name));
+  return buff;
+}
+
 const char * Open9xM128Simulator::getError()
 {
 #define GETERROR_IMPORT

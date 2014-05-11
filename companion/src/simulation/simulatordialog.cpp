@@ -18,6 +18,7 @@ SimulatorDialog::SimulatorDialog(QWidget * parent, unsigned int flags):
   lightOn(false),
   txInterface(NULL),
   simulator(NULL),
+  lastPhase(-1),
   beepVal(0),
   buttonPressed(0),
   trimPressed (TRIM_NONE),
@@ -489,6 +490,19 @@ void SimulatorDialog::onTimerEvent()
     }
   }
 
+  //display current flight mode in window title
+  unsigned int currentPhase = simulator->getPhase();
+  if (currentPhase != lastPhase) {
+    lastPhase = currentPhase;
+    const char * phase_name = simulator->getPhaseName(currentPhase);
+    if ( phase_name &&  phase_name[0] ) {
+      setWindowTitle(windowName + QString(" [fm: %1]").arg(QString(phase_name)));  
+    }
+    else {
+      setWindowTitle(windowName + QString(" [fm: %1]").arg(simulator->getPhase()));
+    }
+  }
+
   if (!(lcd_counter++ % 5)) {
 
     setValues();
@@ -517,6 +531,7 @@ void SimulatorDialog::centerSticks()
 
 void SimulatorDialog::start(QByteArray & eeprom)
 {
+  lastPhase = -1;
   simulator->start(eeprom, (flags & SIMULATOR_FLAGS_NOTX) ? false : true);
   getValues();
   setupTimer();
@@ -524,6 +539,7 @@ void SimulatorDialog::start(QByteArray & eeprom)
 
 void SimulatorDialog::start(const char * filename)
 {
+  lastPhase = -1;
   simulator->start(filename);
   getValues();
   setupTimer();

@@ -49,6 +49,8 @@ class Open9xSimulator : public SimulatorInterface {
 
     virtual unsigned int getPhase();
 
+    virtual const char * getPhaseName(unsigned int phase);
+
     virtual void wheelEvent(uint8_t steps) { }
 
     virtual const char * getError();
