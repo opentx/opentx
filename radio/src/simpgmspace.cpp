@@ -60,6 +60,7 @@ GPIO_TypeDef gpiod;
 GPIO_TypeDef gpioe;
 TIM_TypeDef tim1;
 TIM_TypeDef tim3;
+TIM_TypeDef tim4;
 TIM_TypeDef tim8;
 TIM_TypeDef tim10;
 RCC_TypeDef rcc;
