@@ -233,6 +233,13 @@ unsigned int Open9xSky9xSimulator::getPhase()
   return getFlightPhase();
 }
 
+const char * Open9xSky9xSimulator::getPhaseName(unsigned int phase)
+{
+  static char buff[sizeof(g_model.phaseData[0].name)+1];
+  zchar2str(buff, g_model.phaseData[phase].name, sizeof(g_model.phaseData[0].name));
+  return buff;
+}
+
 const char * Open9xSky9xSimulator::getError()
 {
 #define GETERROR_IMPORT

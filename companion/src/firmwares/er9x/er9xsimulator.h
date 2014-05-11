@@ -48,6 +48,8 @@ class Er9xSimulator : public SimulatorInterface {
 
     virtual unsigned int getPhase() { return 0; }
 
+    virtual const char * getPhaseName(unsigned int phase) { return 0; }
+
     virtual void wheelEvent(uint8_t steps) { }
 
     virtual const char * getError();

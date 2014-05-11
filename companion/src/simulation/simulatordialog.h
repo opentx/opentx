@@ -73,6 +73,7 @@ class SimulatorDialog : public QDialog
 
     EEPROMInterface *txInterface;
     SimulatorInterface *simulator;
+    unsigned int lastPhase;
 
     void setupSticks();
     void setupTimer();
