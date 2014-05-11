@@ -285,6 +285,7 @@ void SimulatorDialog::initUi(T * ui)
   tabWidget = ui->tabWidget;
   logicalSwitchesLayout = ui->logicalSwitchesLayout;
   channelsLayout = ui->channelsLayout;
+  gvarsLayout = ui->gvarsLayout;
   leftXPerc = ui->leftXPerc;
   leftYPerc = ui->leftYPerc;
   rightXPerc = ui->rightXPerc;
@@ -416,11 +417,31 @@ void SimulatorDialog::initUi(T * ui)
     logicalSwitchesLayout->addWidget(swtch, i / (switches/2), i % (switches/2), 1, 1);
   }
 
+  int fmodes = GetCurrentFirmware()->getCapability(FlightModes);
+  int gvars = GetCurrentFirmware()->getCapability(Gvars);
+  if (gvars>0) {
+    for (int fm=0; fm<fmodes; fm++) {
+      QLabel * label = new QLabel(tabWidget);
+      label->setText(QString("FM%1").arg(fm+1));
+      gvarsLayout->addWidget(label, 0, fm+1);
+    }
+    for (int i=0; i<gvars; i++) {
+      QLabel * label = new QLabel(tabWidget);
+      label->setText(QString("GV%1").arg(i+1));
+      gvarsLayout->addWidget(label, i+1, 0);
+      for (int fm=0; fm<fmodes; fm++) {
+        QLabel * value = new QLabel(tabWidget);
+        gvarValues << value;
+        gvarsLayout->addWidget(value, i+1, fm+1);
+      }
+    }
+  }
+
   if (flags & SIMULATOR_FLAGS_NOTX) {
-    ui->tabWidget->setCurrentIndex(1);
+    ui->tabWidget->setCurrentWidget(ui->outputs);
   }
   else {
-    ui->lcd->setFocus();
+    ui->tabWidget->setCurrentWidget(ui->simu);
   }
 }
 
@@ -532,6 +553,8 @@ void SimulatorDialog::centerSticks()
 void SimulatorDialog::start(QByteArray & eeprom)
 {
   lastPhase = -1;
+  numGvars = GetCurrentFirmware()->getCapability(Gvars);
+  numFlightModes = GetCurrentFirmware()->getCapability(FlightModes);
   simulator->start(eeprom, (flags & SIMULATOR_FLAGS_NOTX) ? false : true);
   getValues();
   setupTimer();
@@ -540,6 +563,8 @@ void SimulatorDialog::start(QByteArray & eeprom)
 void SimulatorDialog::start(const char * filename)
 {
   lastPhase = -1;
+  numGvars = GetCurrentFirmware()->getCapability(Gvars);
+  numFlightModes = GetCurrentFirmware()->getCapability(FlightModes);
   simulator->start(filename);
   getValues();
   setupTimer();
@@ -807,6 +832,12 @@ void SimulatorDialog::setValues()
 
   for (int i=0; i<GetCurrentFirmware()->getCapability(LogicalSwitches); i++) {
     logicalSwitchLabels[i]->setStyleSheet(outputs.vsw[i] ? CSWITCH_ON : CSWITCH_OFF);
+  }
+
+  for (int fm=0; fm<numFlightModes; fm++) {
+    for (int gv=0; gv<numGvars; gv++) {
+      gvarValues[fm*numGvars+gv]->setText(QString("%1").arg(outputs.gvars[fm][gv]));
+    }
   }
 
   if (outputs.beep) {

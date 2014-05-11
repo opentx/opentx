@@ -53,9 +53,11 @@ class SimulatorDialog : public QDialog
     QTabWidget * tabWidget;
     QGridLayout * logicalSwitchesLayout;
     QGridLayout * channelsLayout;
+    QGridLayout * gvarsLayout;
     QVector<QLabel *> logicalSwitchLabels;
     QVector<QSlider *> channelSliders;
     QVector<QLabel *> channelValues;
+    QVector<QLabel *> gvarValues;
 
     void init();
     Node *nodeLeft;
@@ -65,6 +67,8 @@ class SimulatorDialog : public QDialog
     unsigned int backLight;
     bool lightOn;
     int switches;
+    unsigned int numGvars;
+    unsigned int numFlightModes;
 #ifdef JOYSTICKS
     Joystick *joystick;
     int jscal[8][4];
