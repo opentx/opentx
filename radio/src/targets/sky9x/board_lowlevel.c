@@ -177,36 +177,65 @@ static uint32_t BOARD_ConfigurePmc(void)
 //    timeout = 0;
 //    while (!(PMC->PMC_SR & PMC_SR_MCKRDY) && (timeout++ < CLOCK_TIMEOUT));
 
-		// Switch to PLLA as main clock 36MHz
+  // Switch to PLLA as main clock 36MHz
   PMC->PMC_MCKR = BOARD_MCKR;
   timeout = 0;
   while (!(PMC->PMC_SR & PMC_SR_MCKRDY) && (timeout++ < CLOCK_TIMEOUT));
 
 #endif
-	return 36000000L ;		// Master_frequency
+  return 36000000L; // Master_frequency
 }
 
 void revert_osc()
 {
-  register uint32_t timeout = 0 ;
-	register Pmc *pmcptr ;
+  register uint32_t timeout = 0;
+  register Pmc *pmcptr;
 
-	pmcptr = PMC ;
+  pmcptr = PMC;
 
-
-	// Switch back to the internal oscillator
-  pmcptr->CKGR_MOR = (0x37 << 16) | BOARD_OSCOUNT | CKGR_MOR_MOSCRCEN | CKGR_MOR_MOSCXTEN ;
+  // Switch back to the internal oscillator
+  pmcptr->CKGR_MOR = (0x37 << 16) | BOARD_OSCOUNT | CKGR_MOR_MOSCRCEN | CKGR_MOR_MOSCXTEN;
   timeout = 0;
   while (!(pmcptr->PMC_SR & PMC_SR_MOSCSELS) && (++timeout < CLOCK_TIMEOUT));
 
   pmcptr->PMC_MCKR = (PMC->PMC_MCKR & ~(uint32_t)PMC_MCKR_CSS) | PMC_MCKR_CSS_SLOW_CLK;
   timeout = 0;
   while (!(pmcptr->PMC_SR & PMC_SR_MCKRDY) && (++timeout < CLOCK_TIMEOUT));
-
     
-	pmcptr->CKGR_PLLAR = 1 << 29 ;		// Stop PLLA
-
+  pmcptr->CKGR_PLLAR = 1 << 29; // Stop PLLA
 }
+
+#if defined(BOOT)
+// extern void sam_bootx( void ) ;
+// extern void dispUSB( void ) ;
+// extern uint32_t init
+// ReadTrims( void ) ;
+// extern void run_application( void ) ;
+
+static void lowLevelUsbCheck( void )
+{
+  PMC->PMC_PCER0 = (1<<ID_PIOC) ;       // Enable clock to PIOC
+  PIOC->PIO_PER = PIO_PC25 ;              // Enable bit C25 (USB-detect)
+
+  uint32_t i ;
+  for ( i = 0 ; i < 50 ; i += 1 ) {
+    __asm("nop") ;
+  }
+
+  for ( i = 0 ; i < 10 ; i += 1 ) {
+    if ( PIOC->PIO_PDSR & 0x02000000 ) {
+      PMC->PMC_PCDR0 = (1<<ID_PIOC)   ;       // Disable clock to PIOC
+      dispUSB() ;
+      sam_bootx() ;
+    }
+  }
+
+  uint32_t x = initReadTrims() ;
+  if ((x & 0x42) != 0x42) {
+    run_application();
+  }
+}
+#endif
 
 /*----------------------------------------------------------------------------
  *        Exported functions
@@ -220,10 +249,14 @@ void revert_osc()
 /*----------------------------------------------------------------------------*/
 uint32_t SystemInit (void)
 {
-    /** Set 2 cycle (1 WS) for Embedded Flash Access */
-		// Max clock is 38 MHz (1.8V VVDCORE)
-   EFC->EEFC_FMR = (1 << 8) ;
+#if defined(BOOT)
+  lowLevelUsbCheck() ;
+#endif
 
-   /** Configure PMC */
+  // Set 2 cycle (1 WS) for Embedded Flash Access
+  // Max clock is 38 MHz (1.8V VVDCORE)
+  EFC->EEFC_FMR = (1 << 8) ;
+
+  // Configure PMC
   return BOARD_ConfigurePmc();
 }

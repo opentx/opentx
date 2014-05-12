@@ -68,6 +68,8 @@ uint32_t __REV(uint32_t value) ;
 
 void revert_osc( void ) ;
 void sam_boot( void ) ;
+void sam_bootx( void ) ;
+void run_application( void ) ;
 
 
 /* ###################  Compiler specific Intrinsics  ########################### */
@@ -459,6 +461,7 @@ uint32_t __STREXW(uint32_t value, uint32_t *addr)
 #elif (defined (__GNUC__)) /*------------------ GNU Compiler ---------------------*/
 /* GNU gcc specific functions */
 
+#if !defined(BOOT)
 /**
  * @brief  Return the Process Stack Pointer
  *
@@ -633,7 +636,7 @@ void __set_CONTROL(uint32_t control)
 {
   __ASM volatile ("MSR control, %0" : : "r" (control) );
 }
-
+#endif
 
 /**
  * @brief  Reverse byte order in integer value
@@ -651,6 +654,7 @@ uint32_t __REV(uint32_t value)
   return(result);
 }
 
+#if !defined(BOOT)
 /**
  * @brief  Reverse byte order in unsigned short value
  *
@@ -797,10 +801,28 @@ uint32_t __STREXW(uint32_t value, uint32_t *addr)
    __ASM volatile ("strex %0, %2, [%1]" : "=r" (result) : "r" (addr), "r" (value) );
    return(result);
 }
+#endif
 
+#if defined(BOOT)
+void run_application()
+{
+  __ASM(" mov.w	r1, #4227072");		// 0x408000
+  __ASM(" movw	r0, #60680");			// 0xED08
+  __ASM(" movt	r0, #57344");			// 0xE000
+  __ASM(" str	r1, [r0, #0]");			// Set the VTOR
+  __ASM("ldr	r0, [r1, #0]");			// Stack pointer value
+  __ASM("msr msp, r0");						// Set it
+  __ASM("ldr	r0, [r1, #4]");			// Reset address
+  __ASM("mov.w	r1, #1");
+  __ASM("orr		r0, r1");					// Set lsbit
+  __ASM("bx r0");									// Execute application
+}
+#endif
+
+#if !defined(BOOT)
 void sam_boot()
 {
-	revert_osc() ;
+  revert_osc() ;
 	
   __ASM(" mov.w	r1, #8388608");
   __ASM(" movw	r0, #60680");
@@ -816,8 +838,26 @@ void sam_boot()
   __ASM("orr		r0, r3");
   __ASM("bx r0");
 }
+#endif
 
-
+#if defined(BOOT)
+void sam_bootx()
+{
+  __ASM(" mov.w	r1, #8388608");
+  __ASM(" movw	r0, #60680");
+  __ASM(" movt	r0, #57344");
+  __ASM(" str	r1, [r0, #0]");		// Set the VTOR
+	 
+  __ASM("mov.w	r3, #0");
+  __ASM("movt		r3, #128");
+  __ASM("ldr	r0, [r3, #0]");
+  __ASM("msr msp, r0");
+  __ASM("ldr	r0, [r3, #4]");
+  __ASM("mov.w	r3, #1");
+  __ASM("orr		r0, r3");
+  __ASM("bx r0");
+}
+#endif
 
 #elif (defined (__TASKING__)) /*------------------ TASKING Compiler ---------------------*/
 /* TASKING carm specific functions */

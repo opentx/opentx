@@ -71,9 +71,15 @@ SECTIONS
     */
    .text :
    {
-	  _stext = .;          /* Provide the name for the start of this section */
+	  FILL(0xFFFF)
       
       CREATE_OBJECT_SYMBOLS
+
+      *(.bootrodata)
+      *(.bootrodata.*)
+      
+      . = ALIGN(32768);    /* Align the start of the exidx part */
+	  _stext = .;          /* Provide the name for the start of this section */      
       KEEP(*(.vectors))
       
       *(.text)

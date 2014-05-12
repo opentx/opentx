@@ -61,16 +61,22 @@ void bwdt_reset()
 {
   IWDG->KR = 0xAAAA;		// reload
 }
+#endif
 
+#if defined(PCBTARANIS)
+// TODO needed?
 __attribute__ ((section(".bootrodata"), used))
 void _bootStart(void);
+#endif
 
+#if defined(PCBTARANIS)
 __attribute__ ((section(".isr_boot_vector"), used))
 const uint32_t BootVectors[] = { (uint32_t) &_estack,
     (uint32_t) (void (*)(void)) ((unsigned long) &_bootStart) };
+#endif
 
+#if defined(PCBTARANIS)
 __attribute__ ((section(".bootrodata.*"), used))
-
 #elif defined(PCBSKY9X)
 __attribute__ ((section(".bootrodata"), used))
 #endif
@@ -80,9 +86,7 @@ const uint8_t BootCode[] = {
 };
 
 #if defined(PCBTARANIS)
-
 __attribute__ ((section(".bootrodata"), used))
-
 void _bootStart()
 {
   RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN; 		// Enable portC clock
@@ -121,7 +125,8 @@ void _bootStart()
 
     }
   }
-//	run_application() ;	
+
+// run_application() ;
   asm(" mov.w	r1, #134217728");
   // 0x8000000
   asm(" add.w	r1, #32768");

@@ -587,7 +587,8 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   PULSESSRC = protocols/pulses_arm.cpp protocols/ppm_arm.cpp protocols/pxx_arm.cpp protocols/dsm2_arm.cpp
   CPPSRC += audio_arm.cpp haptic.cpp gui/view_about.cpp
   CPPSRC += targets/sky9x/pwr_driver.cpp targets/sky9x/adc_driver.cpp targets/sky9x/rotenc_driver.cpp targets/sky9x/eeprom_driver.cpp targets/sky9x/pulses_driver.cpp targets/sky9x/keys_driver.cpp targets/sky9x/audio_driver.cpp targets/sky9x/buzzer_driver.cpp targets/sky9x/haptic_driver.cpp targets/sky9x/sdcard_driver.cpp targets/sky9x/massstorage.cpp
-  
+  CPPSRC += loadboot.cpp
+    
   ifeq ($(SDCARD), YES)
     CPPDEFS += -DVOICE
     INCDIRS += FatFs FatFs/option
@@ -1113,20 +1114,32 @@ all: begin gccversion sizebefore build sizeafter end
 # Change the build target to build a HEX file or a library.
 ifeq ($(ARCH), AVR)
   build: stamp_header tra lbm allsrc.cpp elf remallsrc hex
-else ifeq ($(PCB), TARANIS)
+else ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO TARANIS))
   build: stamp_header tra lbm bootloader.lbm allsrc.cpp elf remallsrc bin
 else
   build: stamp_header tra lbm allsrc.cpp elf remallsrc bin
 endif
 
 # build bootloader
+ifeq ($(PCB), TARANIS)
 bootloader.lbm: bootloader/bootloader_ramBoot.bin
 	test -z "$$(find $^ -size +32k)"
-	$(BIN2LBM) $^ $@ 
+	$(BIN2LBM) $^ $@
 
 .PHONY bootloader/bootloader_ramBoot.bin:
 	@echo "Building bootloader..."
 	$(MAKE) -C bootloader PCB=$(PCB) PCBREV=$(PCBREV)
+else ifeq ($(PCB), 9XRPRO)
+bootloader.lbm:
+	@echo "Fetching Mike's bootloader..."
+	wget https://ersky9x.googlecode.com/svn/trunk/src/bootloader/bootflash8.lbm
+	mv bootflash8.lbm $@
+else ifeq ($(PCB), SKY9X)
+bootloader.lbm:
+	@echo "Fetching Mike's bootloader..."
+	wget https://ersky9x.googlecode.com/svn/trunk/src/bootloader/bootflash4.lbm
+	mv bootflash4.lbm $@
+endif
 
 tra: translations/en.h translations/cz.h translations/de.h translations/es.h translations/fi.h translations/fr.h translations/it.h translations/pl.h translations/pt.h translations/se.h
 lbm: fonts bitmaps/sticks.lbm
