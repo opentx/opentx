@@ -121,6 +121,7 @@ extern TIM_TypeDef tim8;
 extern TIM_TypeDef tim10;
 #undef TIM1
 #undef TIM3
+#undef TIM4
 #undef TIM8
 #undef TIM10
 #define TIM1 (&tim1)
