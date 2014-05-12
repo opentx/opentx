@@ -248,7 +248,7 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 #endif
 
 #define CHECK_INCDEC_GENVAR(event, var, min, max) \
-  var = checkIncDecGen(event,var,min,max)
+  var = checkIncDecGen(event, var, min, max)
 
 #if defined(PCBTARANIS)
   #define NAVIGATION_LINE_BY_LINE  0x40
