@@ -1170,7 +1170,7 @@ Behöver inte vara samma som menyspråket</translation>
 <context>
     <name>ConclusionPage</name>
     <message>
-        <location filename="../wizarddialog.cpp" line="+308"/>
+        <location filename="../wizarddialog.cpp" line="+311"/>
         <source>OK, I understand.</source>
         <translation>OK, jag förstår.</translation>
     </message>
@@ -1178,7 +1178,7 @@ Behöver inte vara samma som menyspråket</translation>
 <context>
     <name>CurveGroup</name>
     <message>
-        <location filename="../helpers.cpp" line="+223"/>
+        <location filename="../helpers.cpp" line="+226"/>
         <source>Diff</source>
         <translation>Diff</translation>
     </message>
@@ -1334,7 +1334,7 @@ Behöver inte vara samma som menyspråket</translation>
         <translation>Redigera kurvan %1</translation>
     </message>
     <message>
-        <location line="+139"/>
+        <location line="+143"/>
         <source>Not enough free points in EEPROM to store the curve.</source>
         <translation>Kurvan får inte plats i minnet.</translation>
     </message>
@@ -1382,7 +1382,7 @@ Behöver inte vara samma som menyspråket</translation>
         <translation>Kan inte hitta ljudfilen %1!</translation>
     </message>
     <message>
-        <location line="+307"/>
+        <location line="+313"/>
         <source>&amp;Delete</source>
         <translation>&amp;Ta bort</translation>
     </message>
@@ -1425,7 +1425,7 @@ Behöver inte vara samma som menyspråket</translation>
 <context>
     <name>CyclicPage</name>
     <message>
-        <location filename="../wizarddialog.cpp" line="-175"/>
+        <location filename="../wizarddialog.cpp" line="-178"/>
         <source>90</source>
         <translation>90</translation>
     </message>
@@ -1843,6 +1843,37 @@ Behöver inte vara samma som menyspråk</translation>
         <translation type="obsolete">trim3</translation>
     </message>
     <message>
+        <source>Rud</source>
+        <translation type="obsolete">Rod</translation>
+    </message>
+    <message>
+        <source>Ele</source>
+        <translation type="obsolete">Hjd</translation>
+    </message>
+    <message>
+        <source>Thr</source>
+        <translation type="obsolete">Gas</translation>
+    </message>
+    <message>
+        <source>Ail</source>
+        <translation type="obsolete">Ske</translation>
+    </message>
+    <message>
+        <source>Rotary Encoder %1</source>
+        <translation type="obsolete">Inmatningshjul %1</translation>
+    </message>
+    <message>
+        <source>GVAR%1</source>
+        <translation type="obsolete">GVAR%1</translation>
+    </message>
+    <message>
+        <source>Popup enabled</source>
+        <translation type="obsolete">Popup aktiv</translation>
+    </message>
+</context>
+<context>
+    <name>FlightModePanel</name>
+    <message>
         <location filename="../modeledit/flightmodes.cpp" line="+60"/>
         <source>Rud</source>
         <translation>Rod</translation>
@@ -1881,7 +1912,22 @@ Behöver inte vara samma som menyspråk</translation>
 <context>
     <name>FlightModes</name>
     <message>
-        <location line="+286"/>
+        <source>Flight Mode %1</source>
+        <translation type="obsolete">Flygläge %1</translation>
+    </message>
+    <message>
+        <source> (%1)</source>
+        <translation type="obsolete"> (%1)</translation>
+    </message>
+    <message>
+        <source> (default)</source>
+        <translation type="obsolete"> (default)</translation>
+    </message>
+</context>
+<context>
+    <name>FlightModesPanel</name>
+    <message>
+        <location line="+287"/>
         <source>Flight Mode %1</source>
         <translation>Flygläge %1</translation>
     </message>
@@ -1934,7 +1980,7 @@ Dessa inställningar gäller för alla modeller.</translation>
         <translation>Välj Sändarens Startbild</translation>
     </message>
     <message>
-        <location line="+1434"/>
+        <location line="+1224"/>
         <source>Contrast</source>
         <translation>LCD-kontrast</translation>
     </message>
@@ -1954,22 +2000,22 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Värden mellan 20 och 45&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location line="-475"/>
+        <location line="-273"/>
         <source>Sound Mode</source>
         <translation>Ljudläge</translation>
     </message>
     <message>
-        <location line="+192"/>
+        <location line="+172"/>
         <source>Beeper</source>
         <translation>Summer</translation>
     </message>
     <message>
-        <location line="+66"/>
+        <location line="-443"/>
         <source>Speaker Pitch (spkr only)</source>
         <translation>Högtalarton (endast högtalare)</translation>
     </message>
     <message>
-        <location line="+864"/>
+        <location line="+1191"/>
         <source>Battery Warning</source>
         <translation>Batterivarning</translation>
     </message>
@@ -2009,7 +2055,7 @@ Värden mellan mellan 5 och 10 volt accepteras</translation>
         <translation>Inaktivitetstimer</translation>
     </message>
     <message>
-        <location line="-1155"/>
+        <location line="-953"/>
         <source>If not zero will sound beeps if the transmitter has been left without inputs for the specified number of minutes.</source>
         <translation>Efter det angivna antalet minuter av inaktivitet ljuder en varningssignal. 0 förhindrar larm.</translation>
     </message>
@@ -2019,7 +2065,7 @@ Värden mellan mellan 5 och 10 volt accepteras</translation>
         <translation> min</translation>
     </message>
     <message>
-        <location line="+1090"/>
+        <location line="+888"/>
         <source>Show Splash Screen on Startup</source>
         <translation>Visa Startbild</translation>
     </message>
@@ -2068,12 +2114,12 @@ This is used by the templated to determine which channel goes to what number out
 Används av mallarna för att koppla ihop kanaler med numrerade utgångar.</translation>
     </message>
     <message>
-        <location line="-1036"/>
+        <location line="+540"/>
         <source>Stick Mode</source>
         <translation>Spak-tilldelning</translation>
     </message>
     <message>
-        <location line="-375"/>
+        <location line="-48"/>
         <source>Mode selection:
 
 Mode 1:
@@ -2134,13 +2180,13 @@ Mode 4:
         <translation>Mode 4 (SKE GAS HÖJ ROD)</translation>
     </message>
     <message>
-        <location line="+716"/>
+        <location line="-1187"/>
         <source>Beeper Mode</source>
         <translation>Summerläge</translation>
     </message>
     <message>
-        <location line="-458"/>
-        <location line="+1516"/>
+        <location line="-256"/>
+        <location line="+1569"/>
         <location line="+34"/>
         <location line="+71"/>
         <location line="+34"/>
@@ -2167,7 +2213,7 @@ Mode 4:
 4 - Extra högt.</translation>
     </message>
     <message>
-        <location line="-2678"/>
+        <location line="-2731"/>
         <location line="+24"/>
         <source>Quiet</source>
         <translation>Tyst</translation>
@@ -2179,19 +2225,19 @@ Mode 4:
         <translation>Ej vid knapptryck</translation>
     </message>
     <message>
-        <location line="+91"/>
-        <location line="+67"/>
+        <location line="-335"/>
+        <location line="+406"/>
         <source>Normal</source>
         <translation>Normal</translation>
     </message>
     <message>
-        <location line="-62"/>
-        <location line="+67"/>
+        <location line="-401"/>
+        <location line="+406"/>
         <source>Long</source>
         <translation>Lång</translation>
     </message>
     <message>
-        <location line="+1319"/>
+        <location line="+1459"/>
         <location line="+105"/>
         <location line="+144"/>
         <location line="+47"/>
@@ -2236,7 +2282,7 @@ Mode 4:
         <translation>Läge</translation>
     </message>
     <message>
-        <location line="-1437"/>
+        <location line="-1490"/>
         <source>Only Alarms</source>
         <translation>Endast vid alarm</translation>
     </message>
@@ -2257,22 +2303,22 @@ Mode 4:
         <translation>Varioton vid nollpunkten</translation>
     </message>
     <message>
-        <location line="+1435"/>
+        <location line="+1233"/>
         <source>Vario pitch at max</source>
         <translation>Varioton vid maxhöjd</translation>
     </message>
     <message>
-        <location line="-1099"/>
+        <location line="+137"/>
         <source>R E T A</source>
         <translation>R H G S</translation>
     </message>
     <message>
-        <location line="-150"/>
+        <location line="-20"/>
         <source>Default Channel Order</source>
         <translation>Kanalordning</translation>
     </message>
     <message>
-        <location line="+143"/>
+        <location line="+13"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Channel order&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Defines the order of the default mixes created on a new model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Kanalordning&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Den ordning på kanaler som används för en ny modell.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -2392,7 +2438,7 @@ Mode 4:
         <translation>S G H R</translation>
     </message>
     <message>
-        <location line="+664"/>
+        <location line="-572"/>
         <source>&quot;No Sound&quot; Warning</source>
         <translation>Varna för avstängt ljud</translation>
     </message>
@@ -2442,7 +2488,12 @@ Mode 4:
         <translation>9X {15s?}</translation>
     </message>
     <message>
-        <location line="+602"/>
+        <location line="+337"/>
+        <source>Stick reverse (order as above)</source>
+        <translation>Invertera Spakar</translation>
+    </message>
+    <message>
+        <location line="+520"/>
         <source>Pot. 4</source>
         <translation>Pot. 4</translation>
     </message>
@@ -2507,25 +2558,25 @@ Mode 4:
         <translation>Serieport</translation>
     </message>
     <message>
-        <location line="-2610"/>
-        <location line="+67"/>
+        <location line="-3089"/>
+        <location line="+406"/>
         <source>X-Short</source>
         <translation>Extra Kort</translation>
     </message>
     <message>
-        <location line="-62"/>
-        <location line="+67"/>
+        <location line="-401"/>
+        <location line="+406"/>
         <source>Short</source>
         <translation>Kort</translation>
     </message>
     <message>
-        <location line="-52"/>
-        <location line="+67"/>
+        <location line="-391"/>
+        <location line="+406"/>
         <source>X-Long</source>
         <translation>Extra Lång</translation>
     </message>
     <message>
-        <location line="-142"/>
+        <location line="-55"/>
         <source>Haptic Mode</source>
         <translation>Vibrationsläge</translation>
     </message>
@@ -2535,7 +2586,7 @@ Mode 4:
         <translation>Upphäv Skrivskyddet</translation>
     </message>
     <message>
-        <location line="+550"/>
+        <location line="+348"/>
         <source>SC</source>
         <translation>SC</translation>
     </message>
@@ -2591,7 +2642,7 @@ Mode 4:
         <translation> ms</translation>
     </message>
     <message>
-        <location line="+97"/>
+        <location line="+352"/>
         <source>Weight</source>
         <translation>Vikt</translation>
     </message>
@@ -2673,12 +2724,12 @@ Mode 4:
         <translation>PPM Multiplikator</translation>
     </message>
     <message>
-        <location line="-2246"/>
+        <location line="-2299"/>
         <source>Alarms Only</source>
         <translation>Endast för alarm</translation>
     </message>
     <message>
-        <location line="+1436"/>
+        <location line="+1489"/>
         <source>Trainer</source>
         <translation>Elev</translation>
     </message>
@@ -2710,7 +2761,7 @@ Mode 4:
         <translation type="obsolete">POT 3</translation>
     </message>
     <message>
-        <location line="-1904"/>
+        <location line="-2159"/>
         <source>Timeshift from UTC</source>
         <translation>Tidsdifferens till UTC</translation>
     </message>
@@ -2730,12 +2781,12 @@ Mode 4:
         <translation>NMEA</translation>
     </message>
     <message>
-        <location line="-594"/>
+        <location line="-512"/>
         <source>Haptic Length</source>
         <translation>Vibrationstid</translation>
     </message>
     <message>
-        <location line="+1363"/>
+        <location line="+1281"/>
         <source>LCD Display Type</source>
         <translation>LCD-typ</translation>
     </message>
@@ -2750,7 +2801,7 @@ Mode 4:
         <translation>Optrex</translation>
     </message>
     <message>
-        <location line="-1518"/>
+        <location line="-1308"/>
         <source>Store calib. and hw settings in selected profile</source>
         <translation>Spara kalibrering och hårdvaruinställningar i vald profil</translation>
     </message>
@@ -2760,22 +2811,22 @@ Mode 4:
         <translation>Hämta kalibrering och hårdvaruinställningar från vald profil</translation>
     </message>
     <message>
-        <location line="+330"/>
+        <location line="+322"/>
         <source>Speaker Volume</source>
         <translation>Högtalarvolym</translation>
     </message>
     <message>
-        <location line="+245"/>
+        <location line="+225"/>
         <source>Haptic Strength</source>
         <translation>Vibrationsstyrka</translation>
     </message>
     <message>
-        <location line="+1235"/>
+        <location line="+1053"/>
         <source>BackLight Brightness</source>
         <translation>Belysningens ljusstyrka</translation>
     </message>
     <message>
-        <location line="+594"/>
+        <location line="+849"/>
         <location line="+544"/>
         <source>Negative span</source>
         <translation>Negativa värden</translation>
@@ -2798,7 +2849,7 @@ Mode 4:
         <translation>Spänning</translation>
     </message>
     <message>
-        <location filename="../generaledit.cpp" line="+959"/>
+        <location filename="../generaledit.cpp" line="+979"/>
         <location line="+53"/>
         <source>Warning</source>
         <translation>Varning</translation>
@@ -2824,7 +2875,7 @@ Mode 4:
         <translation>Kalibrering ojch hårdvaruinställningar sparades.</translation>
     </message>
     <message>
-        <location filename="../generaledit.ui" line="-2254"/>
+        <location filename="../generaledit.ui" line="-2327"/>
         <source>Speaker</source>
         <translation>Högtalare</translation>
     </message>
@@ -2839,7 +2890,7 @@ Mode 4:
         <translation>Högtalarton</translation>
     </message>
     <message>
-        <location line="+1274"/>
+        <location line="+1092"/>
         <source>RotEnc Navigation</source>
         <translation>RotEnc Navigering</translation>
     </message>
@@ -2854,17 +2905,17 @@ Mode 4:
         <translation>Belysningsbrytare</translation>
     </message>
     <message>
-        <location line="-872"/>
+        <location line="-1352"/>
         <source>If you enable FAI, you loose the vario, the play functions, the telemetry screen. This function cannot be disabled by the radio.</source>
         <translation>Om du väljer FAI-läget så stängs varion, uppspelningsfunktionerna och telemetri-skärmen av permanent. FAI-funktionen kan inte slås av i sändaren.</translation>
     </message>
     <message>
-        <location line="-179"/>
+        <location line="+483"/>
         <source>FAI Mode</source>
         <translation>FAI-läge</translation>
     </message>
     <message>
-        <location line="-516"/>
+        <location line="-339"/>
         <source>Country Code</source>
         <translation>Landskod</translation>
     </message>
@@ -2884,7 +2935,7 @@ Mode 4:
         <translation>Amerika</translation>
     </message>
     <message>
-        <location line="+422"/>
+        <location line="+245"/>
         <source>Metric</source>
         <translation>Meter, Centimeter, Millimeter</translation>
     </message>
@@ -2894,12 +2945,12 @@ Mode 4:
         <translation>Yard, Fot, Tum</translation>
     </message>
     <message>
-        <location line="+308"/>
+        <location line="+126"/>
         <source>Measurement Units</source>
         <translation>Måttenheter</translation>
     </message>
     <message>
-        <location line="-491"/>
+        <location line="-289"/>
         <source>Voice Language</source>
         <translation>Språk för Röst</translation>
     </message>
@@ -2913,7 +2964,7 @@ FAI-funktionen kan inte slås av i sändaren.
 Är du säker ?</translation>
     </message>
     <message>
-        <location filename="../generaledit.ui" line="-117"/>
+        <location filename="../generaledit.ui" line="-191"/>
         <source>Beep volume</source>
         <translation>Ljudstyrka Varningston</translation>
     </message>
@@ -2933,12 +2984,12 @@ FAI-funktionen kan inte slås av i sändaren.
         <translation>Ljudstyrka Bakgrund</translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+113"/>
         <source>MAVLink Baud Rate</source>
         <translation>MAVLink Baud Rate</translation>
     </message>
     <message>
-        <location line="-160"/>
+        <location line="-57"/>
         <source>4800 Baud</source>
         <translation>4800 Baud</translation>
     </message>
@@ -2978,7 +3029,7 @@ FAI-funktionen kan inte slås av i sändaren.
         <translation>115200 Baud</translation>
     </message>
     <message>
-        <location line="+1717"/>
+        <location line="+1667"/>
         <source>Rud</source>
         <translation>Rod</translation>
     </message>
@@ -3162,22 +3213,26 @@ FAI-funktionen kan inte slås av i sändaren.
         <translation>Nollställ alla inputs</translation>
     </message>
     <message>
-        <location line="+136"/>
+        <location line="+144"/>
         <source>Source(%1)</source>
         <translation>Källa(%1)</translation>
     </message>
     <message>
-        <location line="+2"/>
         <source>No Trim</source>
-        <translation>Ingen Trim</translation>
+        <translation type="obsolete">Ingen Trim</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="-3"/>
         <source>Weight(%1)</source>
         <translation>Vikt(%1)</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+5"/>
+        <source>NoTrim</source>
+        <translation>EjTrim</translation>
+    </message>
+    <message>
+        <location line="+12"/>
         <source>Switch(%1)</source>
         <translation>Brytare(%1)</translation>
     </message>
@@ -3360,12 +3415,12 @@ FAI-funktionen kan inte slås av i sändaren.
         <location filename="../mainwindow.cpp" line="+151"/>
         <location line="+509"/>
         <location line="+31"/>
-        <location line="+1447"/>
+        <location line="+1451"/>
         <source>File loaded</source>
         <translation>Filen har laddats</translation>
     </message>
     <message>
-        <location line="-1870"/>
+        <location line="-1874"/>
         <location line="+2"/>
         <location line="+39"/>
         <location line="+248"/>
@@ -3417,7 +3472,7 @@ Vill du ladda ned den nya versionen nu ?</translation>
         <translation>Copyright</translation>
     </message>
     <message>
-        <location line="+104"/>
+        <location line="+109"/>
         <source>Exit</source>
         <translation>Avsluta</translation>
     </message>
@@ -3467,7 +3522,7 @@ Vill du ladda ned den nya versionen nu ?</translation>
         <translation>Ett tack till alla de som bidragit till OpenTX och Companion</translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+38"/>
         <source>Settings</source>
         <translation>Inställningar</translation>
     </message>
@@ -3477,7 +3532,7 @@ Vill du ladda ned den nya versionen nu ?</translation>
         <translation>Läs/Skriv</translation>
     </message>
     <message>
-        <location line="-1574"/>
+        <location line="-1578"/>
         <source>Display previous message again at startup ?</source>
         <translation>Skall föregående varning visas igen vid uppstart ?</translation>
     </message>
@@ -3516,7 +3571,7 @@ Vill du ladda ned den nu ?</translation>
         <translation>OpenTX Companion - FW: %1 - Profil: %2</translation>
     </message>
     <message>
-        <location line="+112"/>
+        <location line="+117"/>
         <source>Edit Settings</source>
         <translation>Redigera Inställningar</translation>
     </message>
@@ -3546,7 +3601,7 @@ Vill du ladda ned den nu ?</translation>
         <translation>Visa information om programmet</translation>
     </message>
     <message>
-        <location line="-1429"/>
+        <location line="-1434"/>
         <source>Checking for updates</source>
         <translation>Letar efter uppdateringar</translation>
     </message>
@@ -3584,7 +3639,7 @@ Vill du ladda ned den nu ?</translation>
         <translation type="obsolete">Ny Modeller+Inställningar</translation>
     </message>
     <message>
-        <location line="+102"/>
+        <location line="+107"/>
         <source>Create a new Models and Settings file</source>
         <translation>Skapa en ny Modeller och Inställningar-fil</translation>
     </message>
@@ -3650,7 +3705,7 @@ Vill du ladda ned den nu ?</translation>
         <translation>Yellow round honey sweet icon theme</translation>
     </message>
     <message>
-        <location line="+60"/>
+        <location line="+59"/>
         <source>Set Menu Language</source>
         <translation>Ställ in Menyspråk</translation>
     </message>
@@ -3683,7 +3738,7 @@ Vill du ladda ned den nu ?</translation>
         <translation>Redo</translation>
     </message>
     <message>
-        <location line="-1717"/>
+        <location line="-1721"/>
         <source>Display previous warning again at startup ?</source>
         <translation>SKall föregående varning visas igen vid uppstart ?</translation>
     </message>
@@ -3693,7 +3748,7 @@ Vill du ladda ned den nu ?</translation>
         <location line="+10"/>
         <location line="+29"/>
         <location line="+486"/>
-        <location line="+1159"/>
+        <location line="+1163"/>
         <location line="+6"/>
         <location line="+8"/>
         <location line="+23"/>
@@ -3705,7 +3760,7 @@ Vill du ladda ned den nu ?</translation>
         <translation>Fel</translation>
     </message>
     <message>
-        <location line="-1219"/>
+        <location line="-1223"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation>Filen %1 kunde inte skrivas:
@@ -3719,7 +3774,7 @@ Vill du ladda ned den nu ?</translation>
     <message>
         <location line="+52"/>
         <location line="+39"/>
-        <location line="+1679"/>
+        <location line="+1683"/>
         <location line="+8"/>
         <location line="+36"/>
         <source>Error opening file %1:
@@ -3728,7 +3783,7 @@ Vill du ladda ned den nu ?</translation>
 %2.</translation>
     </message>
     <message>
-        <location line="-1708"/>
+        <location line="-1712"/>
         <source>Compilation server termporary failure, try later</source>
         <translation>Tillfälligt fel i byggservern. Försök igen senare</translation>
     </message>
@@ -3745,12 +3800,12 @@ Vill du ladda ned den nu ?</translation>
         <translation>Okänt server-fel. Försök igen senare</translation>
     </message>
     <message>
-        <location line="+1269"/>
+        <location line="+1274"/>
         <source>Compare models</source>
         <translation>Jämför modeller</translation>
     </message>
     <message>
-        <location line="-569"/>
+        <location line="-574"/>
         <location line="+250"/>
         <location line="+54"/>
         <source>Backup is impossible</source>
@@ -3781,7 +3836,12 @@ Vill du ladda ned den nu ?</translation>
         <translation>Varning</translation>
     </message>
     <message>
-        <location line="+517"/>
+        <location line="+513"/>
+        <source>Alt+S</source>
+        <translation>Alt+S</translation>
+    </message>
+    <message>
+        <location line="+9"/>
         <source>Edit Radio Splash Image...</source>
         <translation>Redigera radions startbild...</translation>
     </message>
@@ -3851,7 +3911,7 @@ Vill du ladda ned den nu ?</translation>
         <translation>Spara en komplett Backup av alla data i radion</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+10"/>
         <source>Recent Files</source>
         <translation>Tidigare filer</translation>
     </message>
@@ -3889,12 +3949,12 @@ Vill du ladda ned den nu ?</translation>
 %2.</translation>
     </message>
     <message>
-        <location line="-444"/>
+        <location line="-443"/>
         <source>Load backup from file</source>
         <translation>Ladda backup från fil</translation>
     </message>
     <message>
-        <location line="-1182"/>
+        <location line="-1187"/>
         <location line="+30"/>
         <source>Yes</source>
         <translation>Ja</translation>
@@ -3957,12 +4017,12 @@ Vill du ladda ned den nu ?</translation>
     </message>
     <message>
         <location line="+21"/>
-        <location line="+971"/>
+        <location line="+976"/>
         <source>Open Models and Settings file</source>
         <translation>Öppna Modeller och Inställningar-fil</translation>
     </message>
     <message>
-        <location line="-865"/>
+        <location line="-870"/>
         <source>Firmware updates</source>
         <translation>Firmware-uppdatering</translation>
     </message>
@@ -4001,7 +4061,7 @@ Starta skrivningen i alla fall ?</translation>
         <translation>Om Companion</translation>
     </message>
     <message>
-        <location line="+150"/>
+        <location line="+155"/>
         <source>Create a new Radio Setting Profile</source>
         <translation>Lägg till en ny profil med radio-inställningar</translation>
     </message>
@@ -4019,7 +4079,7 @@ Starta skrivningen i alla fall ?</translation>
         <translation type="obsolete">Firmware får inte plats i radion eftersom alltför många funktioner är valda samtidigt</translation>
     </message>
     <message>
-        <location line="-1207"/>
+        <location line="-1212"/>
         <source>Do you want to write the firmware to the radio now ?</source>
         <translation>Vill du skriva firmware till radion nu?</translation>
     </message>
@@ -4027,12 +4087,12 @@ Starta skrivningen i alla fall ?</translation>
         <location line="+636"/>
         <location line="+7"/>
         <location line="+382"/>
-        <location line="+226"/>
+        <location line="+231"/>
         <source>Read Models and Settings From Radio</source>
         <translation>Läs Modeller och Inställningar från radion</translation>
     </message>
     <message>
-        <location line="-588"/>
+        <location line="-593"/>
         <source>Write Radio Backup from %1 to the radio?</source>
         <translation>Skriv Backup från %1 till radion?</translation>
     </message>
@@ -4103,7 +4163,7 @@ Starta skrivningen i alla fall ?</translation>
         <translation>Spara radiobackup till fil</translation>
     </message>
     <message>
-        <location line="+160"/>
+        <location line="+165"/>
         <source>New</source>
         <translation>Ny</translation>
     </message>
@@ -4405,7 +4465,7 @@ Starta skrivningen i alla fall ?</translation>
         <translation>Bidragande...</translation>
     </message>
     <message>
-        <location line="+155"/>
+        <location line="+154"/>
         <source>Recent Models+Settings</source>
         <translation>Senaste Modell+Inställnings-filer</translation>
     </message>
@@ -4890,35 +4950,35 @@ p, li { white-space: pre-wrap; }
     <name>MixesPanel</name>
     <message>
         <location filename="../modeledit/mixes.cpp" line="+17"/>
-        <location line="+471"/>
+        <location line="+472"/>
         <source>Move Up</source>
         <translation>Flytta uppåt</translation>
     </message>
     <message>
-        <location line="-469"/>
-        <location line="+469"/>
+        <location line="-470"/>
+        <location line="+470"/>
         <source>Ctrl+Up</source>
         <translation>Ctrl+Up</translation>
     </message>
     <message>
-        <location line="-468"/>
-        <location line="+469"/>
+        <location line="-469"/>
+        <location line="+470"/>
         <source>Move Down</source>
         <translation>Flytta nedåt</translation>
     </message>
     <message>
-        <location line="-467"/>
-        <location line="+467"/>
+        <location line="-468"/>
+        <location line="+468"/>
         <source>Ctrl+Down</source>
         <translation>Ctrl+Down</translation>
     </message>
     <message>
-        <location line="-466"/>
+        <location line="-467"/>
         <source>Clear Mixes</source>
         <translation>Nollställ mixarna</translation>
     </message>
     <message>
-        <location line="+158"/>
+        <location line="+162"/>
         <source>Weight(%1)</source>
         <translation>Vikt(%1)</translation>
     </message>
@@ -4928,12 +4988,16 @@ p, li { white-space: pre-wrap; }
         <translation>Brytare(%1)</translation>
     </message>
     <message>
-        <location line="+4"/>
         <source>No Trim</source>
-        <translation>Ingen Trim</translation>
+        <translation type="obsolete">Ingen Trim</translation>
     </message>
     <message>
-        <location line="+6"/>
+        <location line="+4"/>
+        <source>NoTrim</source>
+        <translation>EjTrim</translation>
+    </message>
+    <message>
+        <location line="+3"/>
         <source>No DR/Expo</source>
         <translation>Ingen DR/Expo</translation>
     </message>
@@ -5231,9 +5295,8 @@ p, li { white-space: pre-wrap; }
         <translation>Skriv &amp;ut modell</translation>
     </message>
     <message>
-        <location line="+0"/>
         <source>Alt+R</source>
-        <translation>Alt+R</translation>
+        <translation type="obsolete">Alt+R</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -5282,7 +5345,12 @@ p, li { white-space: pre-wrap; }
         <translation>Modellguide</translation>
     </message>
     <message>
-        <location line="+279"/>
+        <location line="+10"/>
+        <source>Ctrl+P</source>
+        <translation>Ctrl+P</translation>
+    </message>
+    <message>
+        <location line="+269"/>
         <location line="+11"/>
         <source>Cannot delete default model.</source>
         <translation>Det går inte att ta bort standard-modellen.</translation>
@@ -5483,6 +5551,11 @@ p, li { white-space: pre-wrap; }
         <source>Throttle Timer</source>
         <translation>Gastimer</translation>
     </message>
+    <message>
+        <location line="+1"/>
+        <source>Flight Timer</source>
+        <translation>Timer för Flygtid</translation>
+    </message>
 </context>
 <context>
     <name>PrintDialog</name>
@@ -5502,12 +5575,12 @@ p, li { white-space: pre-wrap; }
         <translation>Skriv till fil</translation>
     </message>
     <message>
-        <location filename="../printdialog.cpp" line="+29"/>
+        <location filename="../printdialog.cpp" line="+35"/>
         <source>Setup for: </source>
         <translation>Inställningar för: </translation>
     </message>
     <message>
-        <location line="+102"/>
+        <location line="+84"/>
         <source>printed on: %1</source>
         <translation>Utskriven: %1</translation>
     </message>
@@ -5518,14 +5591,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location line="+2"/>
-        <location line="+292"/>
+        <location line="+268"/>
         <location line="+30"/>
         <location line="+32"/>
         <source>Name</source>
         <translation>Namn</translation>
     </message>
     <message>
-        <location line="-353"/>
+        <location line="-329"/>
         <source>EEprom Size</source>
         <translation>Storlek på modelldata</translation>
     </message>
@@ -5557,12 +5630,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+0"/>
         <location line="+1"/>
-        <location line="+552"/>
+        <location line="+519"/>
         <source>Enabled</source>
         <translation>Aktiv</translation>
     </message>
     <message>
-        <location line="-553"/>
+        <location line="-520"/>
         <location line="+1"/>
         <source>Disabled</source>
         <translation>Inaktiv</translation>
@@ -5583,12 +5656,11 @@ p, li { white-space: pre-wrap; }
         <translation>Centrumpip</translation>
     </message>
     <message>
-        <location line="+24"/>
         <source>Flight modes Settings</source>
-        <translation>Inställningar för flyglägen</translation>
+        <translation type="obsolete">Inställningar för flyglägen</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+17"/>
         <source>Fades</source>
         <translation>Toningar</translation>
     </message>
@@ -5609,14 +5681,13 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location line="+2"/>
-        <location line="+127"/>
-        <location line="+51"/>
-        <location line="+333"/>
+        <location line="+128"/>
+        <location line="+359"/>
         <source>Switch</source>
         <translation>Brytare</translation>
     </message>
     <message>
-        <location line="-511"/>
+        <location line="-487"/>
         <source>Flight mode name</source>
         <translation>Namn för flygläget</translation>
     </message>
@@ -5631,85 +5702,97 @@ p, li { white-space: pre-wrap; }
         <translation>UT</translation>
     </message>
     <message>
-        <location line="+15"/>
-        <location line="+5"/>
+        <location line="+1"/>
+        <source>Rud</source>
+        <translation>Rod</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Ele</source>
+        <translation>Hjd</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Thr</source>
+        <translation>Gas</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Ail</source>
+        <translation>Ske</translation>
+    </message>
+    <message>
+        <location line="+16"/>
+        <location line="+8"/>
         <location line="+11"/>
         <location line="+11"/>
         <source>FM</source>
         <translation>FM</translation>
     </message>
     <message>
-        <location line="+13"/>
         <source>Expo/Dr Settings</source>
-        <translation>Inställningar förExpo/DR</translation>
+        <translation type="obsolete">Inställningar förExpo/DR</translation>
     </message>
     <message>
-        <location line="+31"/>
+        <location line="+42"/>
         <source>Weight</source>
         <translation>Vikt</translation>
     </message>
     <message>
-        <location line="+15"/>
-        <location line="+96"/>
+        <location line="-100"/>
         <source>Flight modes</source>
         <translation>Flyglägen</translation>
     </message>
     <message>
-        <location line="-94"/>
-        <location line="+96"/>
         <source>Flight mode</source>
-        <translation>Flygläge</translation>
+        <translation type="obsolete">Flygläge</translation>
     </message>
     <message>
-        <location line="-78"/>
-        <location line="+96"/>
+        <location line="+134"/>
         <source>DISABLED</source>
         <translation>INAKTIV</translation>
     </message>
     <message>
-        <location line="-71"/>
+        <location line="+17"/>
         <source>Mixers</source>
         <translation>Mixar</translation>
     </message>
     <message>
-        <location line="+10"/>
-        <location line="+87"/>
+        <location line="+88"/>
         <location line="+30"/>
         <location line="+32"/>
         <source>CH</source>
         <translation>KN</translation>
     </message>
     <message>
-        <location line="-127"/>
         <source>noTrim</source>
-        <translation>ingenTrim</translation>
+        <translation type="obsolete">ingenTrim</translation>
     </message>
     <message>
-        <location line="+1"/>
-        <location line="+73"/>
+        <location line="-53"/>
         <location line="+30"/>
         <location line="+32"/>
-        <location line="+235"/>
+        <location line="+232"/>
+        <location line="+50"/>
         <source>Offset</source>
         <translation>Offset</translation>
     </message>
     <message>
-        <location line="-367"/>
+        <location line="-379"/>
         <source> Delay(u%1:d%2)</source>
         <translation> Fördröjning(u%1:d%2)</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source> Slow(u%1:d%2)</source>
         <translation> Tröghet(u%1:d%2)</translation>
     </message>
     <message>
-        <location line="+1"/>
         <source>Warn</source>
-        <translation>Varn</translation>
+        <translation type="obsolete">Varn</translation>
     </message>
     <message>
-        <location line="+55"/>
+        <location line="+20"/>
         <source>Limits</source>
         <translation>Gränser</translation>
     </message>
@@ -5717,20 +5800,20 @@ p, li { white-space: pre-wrap; }
         <location line="+18"/>
         <location line="+30"/>
         <location line="+32"/>
-        <location line="+295"/>
+        <location line="+343"/>
         <source>Min</source>
         <translation>Min</translation>
     </message>
     <message>
-        <location line="-352"/>
+        <location line="-400"/>
         <location line="+30"/>
         <location line="+32"/>
-        <location line="+290"/>
+        <location line="+338"/>
         <source>Max</source>
         <translation>Max</translation>
     </message>
     <message>
-        <location line="-347"/>
+        <location line="-395"/>
         <location line="+30"/>
         <location line="+32"/>
         <source>Invert</source>
@@ -5773,13 +5856,11 @@ p, li { white-space: pre-wrap; }
         <translation>Logiska Brytare</translation>
     </message>
     <message>
-        <location line="+7"/>
-        <location line="+2"/>
         <source>LS</source>
-        <translation>LB</translation>
+        <translation type="obsolete">LB</translation>
     </message>
     <message>
-        <location line="+24"/>
+        <location line="+23"/>
         <source>Global Variables</source>
         <translation>Globala Variabler</translation>
     </message>
@@ -5794,7 +5875,7 @@ p, li { white-space: pre-wrap; }
         <translation>Specialfunktioner</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+4"/>
         <source>Function</source>
         <translation>Funktion</translation>
     </message>
@@ -5809,7 +5890,8 @@ p, li { white-space: pre-wrap; }
         <translation>Upprepa</translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="+38"/>
+        <location line="+52"/>
         <source>Telemetry Settings</source>
         <translation>Inställningar för Telemetri</translation>
     </message>
@@ -5826,12 +5908,84 @@ p, li { white-space: pre-wrap; }
         <translation>Alarm 2</translation>
     </message>
     <message>
-        <location line="-20"/>
+        <location line="-72"/>
+        <location line="+52"/>
         <source>Analog</source>
         <translation>Analog</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="-521"/>
+        <source>Inputs</source>
+        <translation>Inputs</translation>
+    </message>
+    <message>
+        <location line="+33"/>
+        <location line="+97"/>
+        <source>NoTrim</source>
+        <translation>EjTrim</translation>
+    </message>
+    <message>
+        <location line="-10"/>
+        <source>Weight(%1)</source>
+        <translation>Vikt(%1)</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Switch(%1)</source>
+        <translation>Brytare(%1)</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>No DR/Expo</source>
+        <translation>Ingen DR/Expo</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Offset(%1)</source>
+        <translation>Offset(%1)</translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source> Warn(%1)</source>
+        <translation> Varn(%1)</translation>
+    </message>
+    <message>
+        <location line="+237"/>
+        <source>L</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+53"/>
+        <source>SF%1</source>
+        <translation>SF%1</translation>
+    </message>
+    <message>
+        <location line="+35"/>
+        <source>Range</source>
+        <translation>Räckvidd</translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>Alarms</source>
+        <translation>Alarm</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Low Alarm</source>
+        <translation>Låg Alarmnivå</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Critical Alarm</source>
+        <translation>Kritisk Alarmnivå</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>RSSI</source>
+        <translation>RSSI</translation>
+    </message>
+    <message>
+        <location line="+26"/>
         <source>Unit</source>
         <translation>Enhet</translation>
     </message>
@@ -5865,7 +6019,9 @@ p, li { white-space: pre-wrap; }
         <translation>Värde</translation>
     </message>
     <message>
-        <location line="-14"/>
+        <location line="-62"/>
+        <location line="+23"/>
+        <location line="+25"/>
         <source>A%1</source>
         <translation>A%1</translation>
     </message>
@@ -5889,12 +6045,13 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Måttsystem</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-34"/>
+        <location line="+35"/>
         <source>Blades</source>
         <translation>Blad</translation>
     </message>
     <message>
-        <location line="+9"/>
+        <location line="+10"/>
         <location line="+2"/>
         <source>Custom Telemetry View</source>
         <translation>Egna inställning av telemetriskärmen</translation>
@@ -5910,7 +6067,8 @@ p, li { white-space: pre-wrap; }
         <translation>Stapelnummer</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="-555"/>
+        <location line="+555"/>
         <source>Source</source>
         <translation>Källa</translation>
     </message>
@@ -5933,7 +6091,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../eeprominterface.cpp" line="+239"/>
+        <location filename="../eeprominterface.cpp" line="+243"/>
         <location filename="../helpers.cpp" line="-146"/>
         <location filename="../modeledit/setup.cpp" line="+435"/>
         <source>P1</source>
@@ -5979,7 +6137,7 @@ p, li { white-space: pre-wrap; }
         <translation>T2</translation>
     </message>
     <message>
-        <location line="+433"/>
+        <location line="+449"/>
         <source>Trainer</source>
         <translation>Trainer</translation>
     </message>
@@ -6019,15 +6177,15 @@ p, li { white-space: pre-wrap; }
         <translation>Starta loggning</translation>
     </message>
     <message>
-        <location line="-442"/>
+        <location line="-458"/>
         <location line="+34"/>
-        <location line="+87"/>
+        <location line="+93"/>
         <location filename="../helpers.cpp" line="+55"/>
         <source>----</source>
         <translation>----</translation>
     </message>
     <message>
-        <location line="-166"/>
+        <location line="-172"/>
         <location filename="../helpers.cpp" line="-55"/>
         <source>Rud</source>
         <translation>Rod</translation>
@@ -6052,15 +6210,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location line="+23"/>
-        <location line="+372"/>
+        <location line="+388"/>
         <location line="+130"/>
         <location filename="../modeledit/customfunctions.cpp" line="+84"/>
         <source>Timer1</source>
         <translation>Timer1</translation>
     </message>
     <message>
-        <location line="-502"/>
-        <location line="+373"/>
+        <location line="-518"/>
+        <location line="+389"/>
         <location line="+130"/>
         <location filename="../modeledit/customfunctions.cpp" line="+1"/>
         <source>Timer2</source>
@@ -6068,7 +6226,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="+403"/>
-        <location filename="../helpers.cpp" line="+856"/>
+        <location filename="../helpers.cpp" line="+872"/>
         <source>Warning</source>
         <translation>Varning</translation>
     </message>
@@ -6083,21 +6241,21 @@ p, li { white-space: pre-wrap; }
         <translation>Det finns ännu ingen simulator för denna typ av firmware</translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="-514"/>
-        <location line="+123"/>
+        <location filename="../eeprominterface.cpp" line="-530"/>
+        <location line="+127"/>
         <location filename="../modeledit/customfunctions.cpp" line="+8"/>
         <source>REa</source>
         <translation>REa</translation>
     </message>
     <message>
-        <location line="-123"/>
-        <location line="+123"/>
+        <location line="-127"/>
+        <location line="+127"/>
         <location filename="../modeledit/customfunctions.cpp" line="+1"/>
         <source>REb</source>
         <translation>REb</translation>
     </message>
     <message>
-        <location line="-111"/>
+        <location line="-115"/>
         <source>RSSI Tx</source>
         <translation>RSSI Tx</translation>
     </message>
@@ -6168,8 +6326,8 @@ p, li { white-space: pre-wrap; }
         <translation>GAS</translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="+93"/>
-        <location filename="../helpers.cpp" line="-584"/>
+        <location filename="../eeprominterface.cpp" line="+97"/>
+        <location filename="../helpers.cpp" line="-600"/>
         <source>ON</source>
         <translation>På</translation>
     </message>
@@ -6181,7 +6339,7 @@ p, li { white-space: pre-wrap; }
         <translation>Av</translation>
     </message>
     <message>
-        <location line="+293"/>
+        <location line="+305"/>
         <source>Safety %1</source>
         <translation>Säkring %1</translation>
     </message>
@@ -6191,7 +6349,7 @@ p, li { white-space: pre-wrap; }
         <translation>th9x stödjer inte inställningshjul för detta sändarkort</translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="-438"/>
+        <location filename="../eeprominterface.cpp" line="-454"/>
         <source>TrmR</source>
         <translation>TrmR</translation>
     </message>
@@ -6246,12 +6404,37 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+221"/>
+        <location line="+227"/>
         <source>Edge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+219"/>
+        <location line="+18"/>
+        <source>Edge(%1, [%2:%3])</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Sticky(%1, %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Timer(%1, %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+91"/>
+        <source> Duration (%1s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source> Delay (%1s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+112"/>
         <source>Play Haptic</source>
         <translation>Spela Vibration</translation>
     </message>
@@ -6285,7 +6468,7 @@ p, li { white-space: pre-wrap; }
         <translation>Spela Värde</translation>
     </message>
     <message>
-        <location line="-483"/>
+        <location line="-499"/>
         <location filename="../modeledit/setup.cpp" line="+0"/>
         <source>S3</source>
         <translation>S3</translation>
@@ -6346,7 +6529,7 @@ p, li { white-space: pre-wrap; }
         <translation>T2+</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="-9"/>
         <source>Time</source>
         <translation>Tid</translation>
     </message>
@@ -6381,7 +6564,7 @@ p, li { white-space: pre-wrap; }
         <translation>Inm.Hjul E</translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="+447"/>
+        <location filename="../eeprominterface.cpp" line="+474"/>
         <source>Play Track</source>
         <translation>Spela Spår</translation>
     </message>
@@ -6421,7 +6604,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Det går inte att använda Expo på en specialkurva i open9x</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="+619"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="+611"/>
         <location line="+2"/>
         <source>Support for frsky telemetry mod</source>
         <translation>Stöd för  FrSky telemeri</translation>
@@ -6451,100 +6634,106 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location line="+2"/>
-        <location line="+37"/>
+        <location line="+38"/>
         <location line="+32"/>
-        <location line="+34"/>
+        <location line="+35"/>
         <location line="+30"/>
         <source>Enable heli menu and cyclic mix support</source>
         <translation>Slå på helikoptermenyn och stöd för cyklisk mix</translation>
     </message>
     <message>
-        <location line="-132"/>
-        <location line="+37"/>
+        <location line="-134"/>
+        <location line="+38"/>
         <location line="+32"/>
-        <location line="+34"/>
+        <location line="+35"/>
         <location line="+30"/>
         <location line="+30"/>
         <source>Enable TEMPLATES menu</source>
         <translation>Slå på menyn Mallar</translation>
     </message>
     <message>
-        <location line="-162"/>
-        <location line="+37"/>
+        <location line="-164"/>
+        <location line="+38"/>
         <location line="+32"/>
-        <location line="+34"/>
+        <location line="+35"/>
         <source>No splash screen</source>
         <translation>Ingen startbild</translation>
     </message>
     <message>
-        <location line="-101"/>
-        <location line="+37"/>
+        <location line="-103"/>
+        <location line="+38"/>
         <location line="+32"/>
-        <location line="+34"/>
+        <location line="+35"/>
         <location line="+29"/>
         <location line="+30"/>
         <source>Disable curves menus</source>
         <translation>Slå av menyn för kurvor</translation>
     </message>
     <message>
-        <location line="-161"/>
-        <location line="+37"/>
+        <location line="-163"/>
+        <location line="+38"/>
         <location line="+32"/>
-        <location line="+34"/>
+        <location line="+35"/>
         <source>Support for radio modified with regular speaker</source>
         <translation>Stöd för sändare modifierad med en vanlig högtalare</translation>
     </message>
     <message>
-        <location line="-102"/>
-        <location line="+37"/>
+        <location line="-104"/>
+        <location line="+38"/>
         <location line="+32"/>
-        <location line="+34"/>
+        <location line="+35"/>
         <location line="+29"/>
         <source>Used if you have modified your radio with voice mode</source>
         <translation>Används om en röstmodul monterats i sändaren</translation>
     </message>
     <message>
-        <location line="-131"/>
-        <location line="+37"/>
+        <location line="-133"/>
+        <location line="+38"/>
         <location line="+32"/>
-        <location line="+34"/>
+        <location line="+35"/>
         <source>Used if you have modified your radio with haptic mode</source>
         <translation>Används om vibrator monterats i sändaren</translation>
     </message>
     <message>
-        <location line="-99"/>
-        <location line="+37"/>
+        <location line="-101"/>
+        <location line="+38"/>
         <location line="+32"/>
-        <location line="+34"/>
+        <location line="+35"/>
         <location line="+29"/>
         <location line="+25"/>
-        <location line="+22"/>
-        <location line="+10"/>
+        <location line="+23"/>
+        <location line="+11"/>
         <source>Channel values displayed in us</source>
         <translation>Kanal-värden visade i us</translation>
     </message>
     <message>
-        <location line="-184"/>
-        <location line="+37"/>
+        <location line="-188"/>
+        <location line="+38"/>
         <location line="+31"/>
-        <location line="+34"/>
+        <location line="+35"/>
         <location line="+29"/>
         <location line="+25"/>
         <source>In model setup menus automatically set source by moving the control</source>
         <translation>Välj automatisk kontroller i menyn för modelinställningar genom att använda dem</translation>
     </message>
     <message>
-        <location line="-155"/>
-        <location line="+37"/>
+        <location line="-157"/>
+        <location line="+38"/>
         <location line="+31"/>
-        <location line="+34"/>
+        <location line="+35"/>
         <location line="+29"/>
         <location line="+25"/>
         <source>In model setup menus automatically set switch by moving the control</source>
         <translation>Välj automatisk brytare i menyn för modelinställningar genom att använda dem</translation>
     </message>
     <message>
-        <location line="-138"/>
+        <location line="-144"/>
+        <location line="+67"/>
+        <source>Add support for reversing stick inputs (e.g. needed for FrSky gimbals)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-62"/>
         <source>OpenTX for M128 / 9X board</source>
         <translation>OpenTX för 9X med m128-processor</translation>
     </message>
@@ -6554,7 +6743,7 @@ p, li { white-space: pre-wrap; }
         <translation>OpenTX för 9XR</translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="+35"/>
         <source>OpenTX for 9XR with M128 chip</source>
         <translation>OpenTX för 9XR med m128-processor</translation>
     </message>
@@ -6569,51 +6758,57 @@ p, li { white-space: pre-wrap; }
         <translation>Stöd för FrSky PXX-protokoll</translation>
     </message>
     <message>
-        <location line="+57"/>
+        <location line="+51"/>
+        <location line="+11"/>
+        <source>Haptic module installed</source>
+        <translation>Vibratormodul är installerad</translation>
+    </message>
+    <message>
+        <location line="-4"/>
         <source>OpenTX for FrSky Taranis Rev4a</source>
         <translation>OpenTX för FrSky Taranis Rev4a</translation>
     </message>
     <message>
-        <location line="-187"/>
-        <location line="+37"/>
+        <location line="-190"/>
+        <location line="+38"/>
         <location line="+32"/>
-        <location line="+34"/>
+        <location line="+35"/>
         <location line="+28"/>
         <source>Support for DSM2 modules</source>
         <translation>Stöd för DSM2-moduler</translation>
     </message>
     <message>
-        <location line="-130"/>
-        <location line="+37"/>
+        <location line="-132"/>
+        <location line="+38"/>
         <location line="+32"/>
-        <location line="+34"/>
+        <location line="+35"/>
         <location line="+29"/>
         <location line="+25"/>
         <source>PPM center adjustment in limits</source>
         <translation>Justering av PPM-centrum i menyn för Gränser</translation>
     </message>
     <message>
-        <location line="-154"/>
-        <location line="+37"/>
+        <location line="-156"/>
+        <location line="+38"/>
         <location line="+32"/>
-        <location line="+34"/>
+        <location line="+35"/>
         <location line="+29"/>
         <location line="+25"/>
         <source>Symetrical Limits</source>
         <translation>Symetriska Gränser</translation>
     </message>
     <message>
-        <location line="-177"/>
-        <location line="+90"/>
-        <location line="+34"/>
+        <location line="-179"/>
+        <location line="+91"/>
+        <location line="+35"/>
         <location line="+29"/>
         <location line="+25"/>
         <source>Pots use in menus navigation</source>
         <translation>Använd potentiometrar förr menyskrollning</translation>
     </message>
     <message>
-        <location line="-156"/>
-        <location line="+37"/>
+        <location line="-158"/>
+        <location line="+38"/>
         <source>SmartieParts 2.2 Backlight support</source>
         <translation>Stöd för belysning mha. SmartieParts v2.2</translation>
     </message>
@@ -6622,55 +6817,55 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Använd brytarna för att ställa brytarvärden i menyer</translation>
     </message>
     <message>
-        <location line="-34"/>
-        <location line="+37"/>
-        <location line="+94"/>
+        <location line="-35"/>
+        <location line="+38"/>
+        <location line="+95"/>
         <location line="+25"/>
         <source>Enable resetting values by pressing up and down at the same time</source>
         <translation>Slå på nollställning av värden genom att hålla ned upp- och ned-knappen samtidigt</translation>
     </message>
     <message>
-        <location line="-155"/>
-        <location line="+37"/>
+        <location line="-157"/>
+        <location line="+38"/>
         <location line="+30"/>
-        <location line="+34"/>
+        <location line="+35"/>
         <location line="+30"/>
         <location line="+25"/>
         <source>No graphical check boxes and sliders</source>
         <translation>Använd inte grafiska kontroller</translation>
     </message>
     <message>
-        <location line="-154"/>
-        <location line="+37"/>
+        <location line="-156"/>
+        <location line="+38"/>
         <location line="+30"/>
-        <location line="+34"/>
+        <location line="+35"/>
         <location line="+30"/>
         <location line="+25"/>
         <source>Don&apos;t use bold font for highlighting active items</source>
         <translation>Använd inte feta typsnitt för att markera aktiva objekt</translation>
     </message>
     <message>
-        <location line="-116"/>
+        <location line="-117"/>
         <location line="+30"/>
-        <location line="+34"/>
+        <location line="+35"/>
         <location line="+29"/>
         <source>EEprom write Progress bar</source>
         <translation>Visa skrivning av modelldata </translation>
     </message>
     <message>
-        <location line="-129"/>
-        <location line="+37"/>
+        <location line="-131"/>
+        <location line="+38"/>
         <location line="+30"/>
-        <location line="+34"/>
+        <location line="+35"/>
         <location line="+29"/>
         <source>Imperial units</source>
         <translation>British Imperial Units</translation>
     </message>
     <message>
-        <location line="-143"/>
-        <location line="+37"/>
+        <location line="-145"/>
+        <location line="+38"/>
         <location line="+32"/>
-        <location line="+34"/>
+        <location line="+35"/>
         <location line="+29"/>
         <location line="+25"/>
         <source>Global variables</source>
@@ -6705,21 +6900,21 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">X%1</translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="-639"/>
-        <location line="+225"/>
-        <location filename="../helpers.cpp" line="+169"/>
+        <location filename="../eeprominterface.cpp" line="-659"/>
+        <location line="+229"/>
+        <location filename="../helpers.cpp" line="+183"/>
         <source>GV%1</source>
         <translation>GV%1</translation>
     </message>
     <message>
-        <location line="+137"/>
-        <location filename="../helpers.cpp" line="-442"/>
-        <location line="+688"/>
+        <location line="+143"/>
+        <location filename="../helpers.cpp" line="-456"/>
+        <location line="+704"/>
         <source>---</source>
         <translation>----</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="-688"/>
+        <location filename="../helpers.cpp" line="-704"/>
         <source>Rud Trim</source>
         <translation>Rod.Trim</translation>
     </message>
@@ -6758,14 +6953,15 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">X%1  </translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="-141"/>
-        <location filename="../modeledit/mixes.cpp" line="-525"/>
+        <location filename="../eeprominterface.cpp" line="-147"/>
+        <location filename="../modeledit/mixes.cpp" line="-526"/>
         <location filename="../modeledit/setup.cpp" line="+22"/>
+        <location filename="../printdialog.cpp" line="-524"/>
         <source>CH%1</source>
         <translation>KN%1</translation>
     </message>
     <message>
-        <location line="+420"/>
+        <location line="+436"/>
         <source>Background Music</source>
         <translation>Bakgrundsmusik</translation>
     </message>
@@ -6775,14 +6971,12 @@ p, li { white-space: pre-wrap; }
         <translation>Paus i bakgrundsmusiken</translation>
     </message>
     <message>
-        <location line="-136"/>
         <source> Delay %1 sec</source>
-        <translation> Fördröjning %1 s</translation>
+        <translation type="obsolete"> Fördröjning %1 s</translation>
     </message>
     <message>
-        <location line="+2"/>
         <source> Duration %1 sec</source>
-        <translation>Varaktighet %1 s</translation>
+        <translation type="obsolete">Varaktighet %1 s</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="+3"/>
@@ -6795,13 +6989,13 @@ p, li { white-space: pre-wrap; }
         <translation>Eget värde</translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="-511"/>
-        <location filename="../helpers.cpp" line="+162"/>
+        <location filename="../eeprominterface.cpp" line="-665"/>
+        <location filename="../helpers.cpp" line="+176"/>
         <source>-GV%1</source>
         <translation>-GV%1</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="-171"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="-173"/>
         <source>Support for telemetry easy board</source>
         <translation>Stöd för TelemetryEZ-kort</translation>
     </message>
@@ -6810,12 +7004,12 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">PPM-värden visade i ms</translation>
     </message>
     <message>
-        <location line="+188"/>
+        <location line="+190"/>
         <source>Bluetooth interface</source>
         <translation>Blåtandsinterface</translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="+152"/>
+        <location filename="../eeprominterface.cpp" line="+156"/>
         <location filename="../modeledit/setup.cpp" line="-22"/>
         <source>S1</source>
         <translation>S1</translation>
@@ -6906,6 +7100,11 @@ p, li { white-space: pre-wrap; }
         <location line="+2"/>
         <source>ACC</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>GPS Time</source>
+        <translation>GPS-tid</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -7101,6 +7300,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location line="-68"/>
+        <location filename="../helpers.cpp" line="-455"/>
         <source>[I%1]</source>
         <translation>[I%1]</translation>
     </message>
@@ -7110,7 +7310,52 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+53"/>
+        <location line="+51"/>
+        <source>FM0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>FM1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>FM2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>FM3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>FM4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>FM5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>FM6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>FM7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>FM8</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
         <source>S31</source>
         <translation>S31</translation>
     </message>
@@ -7200,7 +7445,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+30"/>
+        <location line="+32"/>
         <source>???</source>
         <translation>???</translation>
     </message>
@@ -7305,28 +7550,25 @@ p, li { white-space: pre-wrap; }
         <translation>Okänd</translation>
     </message>
     <message>
-        <location line="+16"/>
         <source>STAY(%1, [%2:%3])</source>
-        <translation>HÅLL(%1, [%2:%3])</translation>
+        <translation type="obsolete">HÅLL(%1, [%2:%3])</translation>
     </message>
     <message>
-        <location line="+3"/>
         <source>STICKY(%1, %2)</source>
-        <translation>KLISTRIG(%1, %2)</translation>
+        <translation type="obsolete">KLISTRIG(%1, %2)</translation>
     </message>
     <message>
-        <location line="+3"/>
         <source>TIMER(%1, %2)</source>
-        <translation>TIMER(%1, %2)</translation>
+        <translation type="obsolete">TIMER(%1, %2)</translation>
     </message>
     <message>
-        <location line="+199"/>
+        <location line="+231"/>
         <source>Set Timer %1</source>
         <translation>Ställ in Timer %1</translation>
     </message>
     <message>
         <location line="+97"/>
-        <location filename="../modeledit/customfunctions.cpp" line="-622"/>
+        <location filename="../modeledit/customfunctions.cpp" line="-628"/>
         <source>No repeat</source>
         <translation>Repetera ej</translation>
     </message>
@@ -7384,7 +7626,7 @@ p, li { white-space: pre-wrap; }
         <translation>%1s</translation>
     </message>
     <message>
-        <location line="+569"/>
+        <location line="+575"/>
         <source>Value</source>
         <translation>Värde</translation>
     </message>
@@ -7404,7 +7646,7 @@ p, li { white-space: pre-wrap; }
         <translation>Ökning</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="+249"/>
+        <location filename="../helpers.cpp" line="+706"/>
         <source>Yellow</source>
         <translation>Gul</translation>
     </message>
@@ -7525,27 +7767,27 @@ p, li { white-space: pre-wrap; }
         <translation>Skevroder</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="-187"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="-189"/>
         <source>Rotary Encoder use in menus navigation</source>
         <translation>Använd inmatningshjul för att navigera i menyer</translation>
     </message>
     <message>
         <location line="+27"/>
-        <location line="+37"/>
+        <location line="+38"/>
         <location line="+30"/>
-        <location line="+34"/>
+        <location line="+35"/>
         <location line="+30"/>
         <location line="+25"/>
         <source>Battery graph</source>
         <translation>Batteriikon</translation>
     </message>
     <message>
-        <location filename="../eeprominterface.cpp" line="-537"/>
+        <location filename="../eeprominterface.cpp" line="-553"/>
         <source>SWR</source>
         <translation>SWR</translation>
     </message>
     <message>
-        <location line="+98"/>
+        <location line="+102"/>
         <source>S11</source>
         <translation>S11</translation>
     </message>
@@ -7605,7 +7847,7 @@ p, li { white-space: pre-wrap; }
         <translation>S26</translation>
     </message>
     <message>
-        <location line="+60"/>
+        <location line="+62"/>
         <source>Diff(%1)</source>
         <translation>Diff(%1)</translation>
     </message>
@@ -7630,13 +7872,13 @@ p, li { white-space: pre-wrap; }
         <translation>!Kurva(%1)</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="-819"/>
+        <location filename="../helpers.cpp" line="-838"/>
         <location line="+6"/>
         <source>FM%1</source>
         <translation>FM%1</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+18"/>
         <source>Input%1</source>
         <translation>Input%1</translation>
     </message>
@@ -7701,7 +7943,7 @@ p, li { white-space: pre-wrap; }
         <translation>Flygläge %1 värde</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="+1235"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="+1244"/>
         <source>OpenTX only accepts %1 points in all curves</source>
         <translation>OpenTX accepterar bara %1 punkter i alla kurvor</translation>
     </message>
@@ -7725,23 +7967,23 @@ p, li { white-space: pre-wrap; }
         <translation>OpenTX accepterar inte detta antal kanaler</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="-897"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="-891"/>
         <source>Your radio probably uses a wrong firmware,
  eeprom size is 4096 but only the first 2048 are used</source>
         <translation>Din sändare har antagligen laddats med felaktig programvara.
 eeprom-storleken är 4096, men enbart den första hälften används</translation>
     </message>
     <message>
-        <location line="+713"/>
+        <location line="+705"/>
         <location line="+2"/>
         <source>Support for MAVLINK devices</source>
         <translation>Stöd för MAVLINK-enheter</translation>
     </message>
     <message>
         <location line="+9"/>
-        <location line="+37"/>
+        <location line="+38"/>
         <location line="+32"/>
-        <location line="+34"/>
+        <location line="+35"/>
         <location line="+29"/>
         <location line="+30"/>
         <source>No flight modes</source>
@@ -7752,61 +7994,61 @@ eeprom-storleken är 4096, men enbart den första hälften används</translation
         <translation type="obsolete">Välj automatisk kontroller i menyn för modelinställningar genom att använda dem</translation>
     </message>
     <message>
-        <location line="-143"/>
-        <location line="+37"/>
+        <location line="-145"/>
+        <location line="+38"/>
         <location line="+30"/>
-        <location line="+34"/>
+        <location line="+35"/>
         <location line="+30"/>
         <location line="+25"/>
-        <location line="+13"/>
-        <location line="+10"/>
+        <location line="+14"/>
+        <location line="+11"/>
         <source>Use alternative SQT5 font</source>
         <translation>Använd SQT5-typsnittet</translation>
     </message>
     <message>
-        <location line="-178"/>
-        <location line="+37"/>
+        <location line="-182"/>
+        <location line="+38"/>
         <location line="+30"/>
-        <location line="+34"/>
+        <location line="+35"/>
         <source>Enable the throttle trace in Statistics</source>
         <translation>Slå på gasspårning i statistiken</translation>
     </message>
     <message>
-        <location line="-100"/>
+        <location line="-102"/>
         <source>EEprom write progress bar</source>
         <translation>Grafisk visning av skrivning till eeprom</translation>
     </message>
     <message>
         <location line="+2"/>
-        <location line="+67"/>
+        <location line="+68"/>
         <source>No Winged Shadow How High support</source>
         <translation>Inget stöd för Winged Shadow How High</translation>
     </message>
     <message>
-        <location line="-66"/>
-        <location line="+67"/>
+        <location line="-67"/>
+        <location line="+68"/>
         <source>No vario support</source>
         <translation>Vario stöds ej</translation>
     </message>
     <message>
-        <location line="-66"/>
-        <location line="+67"/>
+        <location line="-67"/>
+        <location line="+68"/>
         <source>No GPS support</source>
         <translation>GPS-stöd saknas</translation>
     </message>
     <message>
-        <location line="-66"/>
-        <location line="+67"/>
+        <location line="-67"/>
+        <location line="+68"/>
         <source>No gauges in the custom telemetry screen</source>
         <translation>Inga mätare i på telemetri-skärmen</translation>
     </message>
     <message>
-        <location line="-66"/>
+        <location line="-67"/>
         <source>Allow compensating for offset errors in FrSky FAS current sensors</source>
         <translation>Tillåt justering av offsett-fel i FrSkys FAS ström-sensorer</translation>
     </message>
     <message>
-        <location line="+149"/>
+        <location line="+151"/>
         <source>Use FrSky Taranis sticks in a 9X/9XR</source>
         <translation>Använd spakar från FrSky Taranis i 9X/9XR</translation>
     </message>
@@ -7817,24 +8059,24 @@ eeprom-storleken är 4096, men enbart den första hälften används</translation
     </message>
     <message>
         <location line="+1"/>
-        <location line="+10"/>
+        <location line="+11"/>
         <source>Disable HELI menu and cyclic mix support</source>
         <translation>Slå av HELI-menyn och stöd för cykliska mixar</translation>
     </message>
     <message>
-        <location line="-9"/>
-        <location line="+10"/>
+        <location line="-10"/>
+        <location line="+11"/>
         <source>Disable TEMPLATES menu</source>
         <translation>Slå av menyn för Mallar</translation>
     </message>
     <message>
-        <location line="-9"/>
-        <location line="+10"/>
+        <location line="-10"/>
+        <location line="+11"/>
         <source>Disable Global variables</source>
         <translation>Slå av Globala Variabler</translation>
     </message>
     <message>
-        <location line="-204"/>
+        <location line="-207"/>
         <source>Possibility to enable FAI MODE at field</source>
         <translation>Möjlighet att slå på FAI-LÄGE före pflygning</translation>
     </message>
@@ -7856,7 +8098,7 @@ Vi uppskattar ert stöd!
 Gruppen bakom OpenTX/Companion.</translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="-384"/>
+        <location filename="../modeledit/flightmodes.cpp" line="-385"/>
         <source>Trim disabled</source>
         <translation>Trim inaktiv</translation>
     </message>
@@ -7908,7 +8150,7 @@ OpenTX-gruppen.</translation>
 <context>
     <name>RudderPage</name>
     <message>
-        <location filename="../wizarddialog.cpp" line="-259"/>
+        <location filename="../wizarddialog.cpp" line="-260"/>
         <source>No</source>
         <translation>Nej</translation>
     </message>
@@ -8080,7 +8322,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
 <context>
     <name>SimulatorDialog</name>
     <message>
-        <location filename="../simulation/simulatordialog.cpp" line="+304"/>
+        <location filename="../simulation/simulatordialog.cpp" line="+312"/>
         <location line="+22"/>
         <source>Warning</source>
         <translation>Varning</translation>
@@ -8101,7 +8343,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <translation>Simulerar Radio (%1)</translation>
     </message>
     <message>
-        <location line="+133"/>
+        <location line="+131"/>
         <source>Firmware %1 error: %2</source>
         <translation>Firmware %1 fel: %2</translation>
     </message>
@@ -9169,7 +9411,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
 <context>
     <name>WizardPrinter</name>
     <message>
-        <location line="+795"/>
+        <location line="+798"/>
         <source>Model Name: </source>
         <translation>Modelnamn:</translation>
     </message>

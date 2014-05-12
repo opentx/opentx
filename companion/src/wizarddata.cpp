@@ -117,12 +117,20 @@ WizMix::operator ModelData()
     model.funcSw[switchIndex].param = -100;
   }
 
-  // Add the Throttle Timer option
-  if (options[THROTTLE_TIMER_OPTION] && throttleChannel >=0  ){
-    model.timers[timerIndex].mode.type = SWITCH_TYPE_SWITCH;
-    model.timers[timerIndex].mode.index = isTaranis ? -SWITCH_SF0 : -SWITCH_THR; // Taranis !SF-UP, 9X THR-DOWN
+  // Add the Flight Timer option
+  if (options[FLIGHT_TIMER_OPTION] ){
+    model.timers[timerIndex].mode.type = SWITCH_TYPE_TIMER_MODE;
+    model.timers[timerIndex].mode.index = TMRMODE_THR_TRG;
     timerIndex++;
   }
+
+  // Add the Throttle Timer option
+  if (options[THROTTLE_TIMER_OPTION] && throttleChannel >=0){
+    model.timers[timerIndex].mode.type = SWITCH_TYPE_TIMER_MODE;
+    model.timers[timerIndex].mode.index = TMRMODE_THR;
+    timerIndex++;
+  }
+
   return model;
 }
 

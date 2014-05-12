@@ -282,7 +282,7 @@
 
 #if defined(CPUARM)
   #define TR_TELEM_RESERVE     "[--]"
-  #define TR_TELEM_TIME        "Time"
+  #define TR_TELEM_TIME        "Tid"
   #define TR_SWR               "SWR\0"
   #define TR_RX_BATT           "RxBt"
   #define TR_A3_A4             "A3\0 ""A4\0 "

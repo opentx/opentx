@@ -840,10 +840,12 @@ OptionsPage::OptionsPage(WizardDialog *dlg, QString image, QString title, QStrin
 {
   throttleCutRB = new QCheckBox(tr("Throttle Cut"));
   throttleTimerRB = new QCheckBox(tr("Throttle Timer"));
+  flightTimerRB = new QCheckBox(tr("Flight Timer"));
 
   QLayout *l = layout();
   l->addWidget(throttleCutRB);
   l->addWidget(throttleTimerRB);
+  l->addWidget(flightTimerRB);
 }
 
 void OptionsPage::initializePage(){
@@ -853,6 +855,7 @@ void OptionsPage::initializePage(){
 bool OptionsPage::validatePage(){
   wizDlg->mix.options[THROTTLE_CUT_OPTION] = throttleCutRB->isChecked();
   wizDlg->mix.options[THROTTLE_TIMER_OPTION] = throttleTimerRB->isChecked();
+  wizDlg->mix.options[FLIGHT_TIMER_OPTION] = flightTimerRB->isChecked();
   return true;
 }
 

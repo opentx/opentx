@@ -127,6 +127,15 @@ enum Switches {
   SWITCH_SH1
 };
 
+enum TimerModes {
+  TMRMODE_NONE,
+  TMRMODE_ABS,
+  TMRMODE_THR,
+  TMRMODE_THR_REL,
+  TMRMODE_THR_TRG,
+  TMRMODE_FIRST_SWITCH
+};
+
 #define TRIM_LH_L  0
 #define TRIM_LH_R  1
 #define TRIM_LV_DN 2

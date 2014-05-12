@@ -342,6 +342,7 @@ public:
   bool validatePage();
 private:
   QCheckBox *throttleCutRB;
+  QCheckBox *flightTimerRB;
   QCheckBox *throttleTimerRB;
 };
 
