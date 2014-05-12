@@ -1269,7 +1269,7 @@ getvalue_t getValue(uint8_t i)
 
   else if (i<=MIXSRC_LAST_POT) return calibratedStick[i-MIXSRC_Rud];
 
-#if defined(PCBGRUVIN9X) || defined(PCBMEGA2560) || defined(PCBSKY9X)
+#if defined(PCBGRUVIN9X) || defined(PCBMEGA2560) || defined(ROTARY_ENCODERS)
   else if (i<=MIXSRC_LAST_ROTARY_ENCODER) return getRotaryEncoder(i-MIXSRC_REa);
 #endif
 
@@ -5585,14 +5585,8 @@ void menusTask(void * pdata)
 
   while (pwrCheck() != e_power_off) {
     perMain();
-#if defined(PCBSKY9X)
-    for (uint8_t i=0; i<5; i++) {
-      usbMassStorage();
-      CoTickDelay(1);  // 5*2ms for now
-    }
-#else
+    // TODO remove completely massstorage from sky9x firmware
     CoTickDelay(5);  // 5*2ms for now
-#endif
   }
 
   lcd_clear();

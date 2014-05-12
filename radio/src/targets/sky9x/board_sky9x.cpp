@@ -654,7 +654,9 @@ void boardInit()
 
   eepromInit();
 
+#if defined(ROTARY_ENCODERS)
   rotencInit();
+#endif
 
   init_SDcard();
 }
@@ -781,7 +783,9 @@ void usbBootloader()
   // This might be replaced by a software reset
   // Any interrupts that have been enabled must be disabled here
   // BEFORE calling sam_boot()
+#if defined(ROTARY_ENCODERS)
   rotencEnd();
+#endif
   endPdcUsartReceive() ;          // Terminate any serial reception
   end_bt_tx_interrupt() ;
   stop_trainer_capture() ;
