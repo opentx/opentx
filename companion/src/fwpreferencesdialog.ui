@@ -103,6 +103,11 @@ May be different from firmware language</string>
      </item>
      <item>
       <property name="text">
+       <string>fi</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
        <string>fr</string>
       </property>
      </item>
