@@ -896,7 +896,7 @@ enum menuModelSetupItems {
   ITEM_MODEL_TRAINER_MODE,
   ITEM_MODEL_TRAINER_CHANNELS,
   ITEM_MODEL_TRAINER_SETTINGS,
-#elif defined(PCBSKY9X)
+#elif defined(PCBSKY9X) && !defined(REVX)
   ITEM_MODEL_PPM1_PROTOCOL,
   ITEM_MODEL_PPM1_PARAMS,
   ITEM_MODEL_PPM2_PROTOCOL,
@@ -1509,7 +1509,7 @@ void menuModelSetup(uint8_t event)
 #else
 
       case ITEM_MODEL_PPM1_PROTOCOL:
-#if defined(PCBSKY9X)
+#if defined(PCBSKY9X) && !defined(REVX)
         lcd_putsLeft(y, PSTR("Port1"));
 #else
         lcd_putsLeft(y, NO_INDENT(STR_PROTO));
@@ -1564,7 +1564,7 @@ void menuModelSetup(uint8_t event)
         }
         break;
 
-#if defined(PCBSKY9X)
+#if defined(PCBSKY9X) && !defined(REVX)
       case ITEM_MODEL_PPM2_PROTOCOL:
         lcd_putsLeft(y, PSTR("Port2"));
         lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, STR_VPROTOS, 0, 0);
@@ -1679,10 +1679,13 @@ void menuModelSetup(uint8_t event)
 #endif
 
             lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+4*FW, y, STR_SYNCMENU, m_posHorz!=0 ? attr : 0);
+
+            uint8_t newFlag = 0;
             if (attr && m_posHorz>0 && editMode>0) {
               // send reset code
-              pxxFlag[0] = PXX_SEND_RXNUM;
+              newFlag = PXX_SEND_RXNUM;
             }
+            pxxFlag[0] = newFlag;
           }
 #endif
 
