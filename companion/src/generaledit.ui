@@ -1996,10 +1996,10 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="minimum">
-          <number>-9999</number>
+          <number>-125</number>
          </property>
          <property name="maximum">
-          <number>9999</number>
+          <number>125</number>
          </property>
         </widget>
        </item>
@@ -2122,10 +2122,10 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="minimum">
-          <number>-100</number>
+          <number>-125</number>
          </property>
          <property name="maximum">
-          <number>100</number>
+          <number>125</number>
          </property>
         </widget>
        </item>
@@ -2266,10 +2266,10 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="minimum">
-          <number>-9999</number>
+          <number>-125</number>
          </property>
          <property name="maximum">
-          <number>9999</number>
+          <number>125</number>
          </property>
         </widget>
        </item>
@@ -2418,10 +2418,10 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="minimum">
-          <number>-9999</number>
+          <number>-125</number>
          </property>
          <property name="maximum">
-          <number>9999</number>
+          <number>125</number>
          </property>
         </widget>
        </item>

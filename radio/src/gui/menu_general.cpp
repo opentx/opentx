@@ -1136,7 +1136,7 @@ void menuGeneralTrainer(uint8_t event)
 
           case 1:
             lcd_outdezAtt(11*FW, y, td->studWeight, attr);
-            if (attr&BLINK) CHECK_INCDEC_GENVAR(event, td->studWeight, -100, 100);
+            if (attr&BLINK) CHECK_INCDEC_GENVAR(event, td->studWeight, -125, 125);
             break;
 
           case 2:
