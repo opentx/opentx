@@ -422,7 +422,7 @@ void SimulatorDialog::initUi(T * ui)
   if (gvars>0) {
     for (int fm=0; fm<fmodes; fm++) {
       QLabel * label = new QLabel(tabWidget);
-      label->setText(QString("FM%1").arg(fm+1));
+      label->setText(QString("FM%1").arg(fm));
       gvarsLayout->addWidget(label, 0, fm+1);
     }
     for (int i=0; i<gvars; i++) {
@@ -836,7 +836,7 @@ void SimulatorDialog::setValues()
 
   for (unsigned int gv=0; gv<numGvars; gv++) {
     for (unsigned int fm=0; fm<numFlightModes; fm++) {
-      gvarValues[gv*numFlightModes+fm]->setText(QString("%1").arg(outputs.gvars[fm][gv]));
+      gvarValues[gv*numFlightModes+fm]->setText(QString((fm==lastPhase)?"<b>%1</b>":"%1").arg(outputs.gvars[fm][gv]));
     }
   }
 
