@@ -178,7 +178,7 @@ def ttsEn():
                     (u"radio antenna defective", "swr_red", NO_ALTERNATE),
                     (u"telemetry lost", "telemko", NO_ALTERNATE),
                     (u"telemetry recovered", "telemok", NO_ALTERNATE),
-					]:
+                   ]:
         systemSounds.append((s, filename(f, a)))
     for i, (s, f) in enumerate([
                  (u"gear!, up!", "gearup"),
@@ -253,6 +253,26 @@ def ttsFr():
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+146+i)))            
     for i, s in enumerate(["virgule 0", "virgule 1", "virgule 2", "virgule 3", "virgule 4", "virgule 5", "virgule 6", "virgule 7", "virgule 8", "virgule 9"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+180+i)))
+    for s, f, a in [(u"Batterie radio faible !", "lowbatt", 485),
+                    (u"Radio inactive !", "inactiv", 486),
+                    (u"Alerte manche des gaz", "thralert", 481),
+                    (u"Alerte inters", "swalert", 482),
+                    (u"EEPROM corrompue", "eebad", 483),
+                    (u"Bienvenue sur Open TI IX!", "tada", 480),
+                    (u"vingt secondes", "timer20", 500),
+                    (u"trente secondes", "timer30", 501),
+                    (u"dix secondes", "timer10", NO_ALTERNATE),
+                    (u"A1,faible", "a1_org", NO_ALTERNATE),
+                    (u"A1,critique", "a1_red", NO_ALTERNATE),
+                    (u"A2,faible", "a2_org", NO_ALTERNATE),
+                    (u"A2,critique", "a2_red", NO_ALTERNATE),
+                    (u"Signal RF, faible", "rssi_org", NO_ALTERNATE),
+                    (u"Signal RF, critique", "rssi_red", NO_ALTERNATE),
+                    (u"Antenne défectueuse", "swr_red", NO_ALTERNATE),
+                    (u"Plus de télémétrie", "telemko", NO_ALTERNATE),
+                    (u"Télémétrie retrouvée", "telemok", NO_ALTERNATE),
+                   ]:
+        systemSounds.append((s, filename(f, a)))
     for i, (s, f) in enumerate([
                  (u"train rentré", "gearup"),
                  (u"train sorti", "geardn"),
