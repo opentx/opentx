@@ -153,7 +153,7 @@ void simuSetKey(uint8_t key, bool state)
     KEY_CASE(KEY_UP, GPIO_BUTTON_UP, PIN_BUTTON_UP)
     KEY_CASE(KEY_DOWN, GPIO_BUTTON_DOWN, PIN_BUTTON_DOWN)
 #endif
-#if defined(PCBSKY9X)
+#if defined(PCBSKY9X) && !defined(REVX)
     KEY_CASE(BTN_REa, PIOB->PIO_PDSR, 0x40)
 #elif defined(PCBGRUVIN9X)
     KEY_CASE(BTN_REa, pind, 0x20)

@@ -48,60 +48,80 @@ extern uint16_t ResetReason;
 #define FIRMWARE_ADDRESS                0x00400000
 
 #if defined(REVA)
-#define GPIO_BUTTON_MENU                PIOB->PIO_PDSR
-#define GPIO_BUTTON_EXIT                PIOA->PIO_PDSR
-#define GPIO_BUTTON_UP                  PIOC->PIO_PDSR
-#define GPIO_BUTTON_DOWN                PIOC->PIO_PDSR
-#define GPIO_BUTTON_RIGHT               PIOC->PIO_PDSR
-#define GPIO_BUTTON_LEFT                PIOC->PIO_PDSR
-#define PIN_BUTTON_MENU                 0x00000040
-#define PIN_BUTTON_EXIT                 0x80000000
-#define PIN_BUTTON_UP                   0x00000004
-#define PIN_BUTTON_DOWN                 0x00000008
-#define PIN_BUTTON_RIGHT                0x00000010
-#define PIN_BUTTON_LEFT                 0x00000020
+  #define GPIO_BUTTON_MENU                PIOB->PIO_PDSR
+  #define GPIO_BUTTON_EXIT                PIOA->PIO_PDSR
+  #define GPIO_BUTTON_UP                  PIOC->PIO_PDSR
+  #define GPIO_BUTTON_DOWN                PIOC->PIO_PDSR
+  #define GPIO_BUTTON_RIGHT               PIOC->PIO_PDSR
+  #define GPIO_BUTTON_LEFT                PIOC->PIO_PDSR
+  #define PIN_BUTTON_MENU                 0x00000040
+  #define PIN_BUTTON_EXIT                 0x80000000
+  #define PIN_BUTTON_UP                   0x00000004
+  #define PIN_BUTTON_DOWN                 0x00000008
+  #define PIN_BUTTON_RIGHT                0x00000010
+  #define PIN_BUTTON_LEFT                 0x00000020
 #else
-#define GPIO_BUTTON_MENU                PIOB->PIO_PDSR
-#define GPIO_BUTTON_EXIT                PIOC->PIO_PDSR
-#define GPIO_BUTTON_UP                  PIOC->PIO_PDSR
-#define GPIO_BUTTON_DOWN                PIOC->PIO_PDSR
-#define GPIO_BUTTON_RIGHT               PIOC->PIO_PDSR
-#define GPIO_BUTTON_LEFT                PIOC->PIO_PDSR
-#define PIN_BUTTON_MENU                 0x00000020
-#define PIN_BUTTON_EXIT                 0x01000000
-#define PIN_BUTTON_UP                   0x00000002
-#define PIN_BUTTON_DOWN                 0x00000020
-#define PIN_BUTTON_RIGHT                0x00000010
-#define PIN_BUTTON_LEFT                 0x00000008
+  #define GPIO_BUTTON_MENU                PIOB->PIO_PDSR
+  #define GPIO_BUTTON_EXIT                PIOC->PIO_PDSR
+  #define GPIO_BUTTON_UP                  PIOC->PIO_PDSR
+  #define GPIO_BUTTON_DOWN                PIOC->PIO_PDSR
+  #define GPIO_BUTTON_RIGHT               PIOC->PIO_PDSR
+  #define GPIO_BUTTON_LEFT                PIOC->PIO_PDSR
+  #define PIN_BUTTON_MENU                 0x00000020
+  #define PIN_BUTTON_EXIT                 0x01000000
+  #define PIN_BUTTON_UP                   0x00000002
+  #define PIN_BUTTON_DOWN                 0x00000020
+  #define PIN_BUTTON_RIGHT                0x00000010
+  #define PIN_BUTTON_LEFT                 0x00000008
 #endif
 
-#define GPIO_TRIM_LH_L                  PIOA->PIO_PDSR
-#define GPIO_TRIM_LV_DN                 PIOA->PIO_PDSR
-#define GPIO_TRIM_RV_UP                 PIOA->PIO_PDSR
-#define GPIO_TRIM_RH_L                  PIOA->PIO_PDSR
-#define GPIO_TRIM_LH_R                  PIOB->PIO_PDSR
-#define GPIO_TRIM_LV_UP                 PIOC->PIO_PDSR
-#define GPIO_TRIM_RV_DN                 PIOC->PIO_PDSR
-#define GPIO_TRIM_RH_R                  PIOC->PIO_PDSR
-
-#if defined(REVA)
-#define PIN_TRIM_LH_L                   0x00000080
-#define PIN_TRIM_LV_DN                  0x08000000
-#define PIN_TRIM_RV_UP                  0x40000000
-#define PIN_TRIM_RH_L                   0x20000000
-#define PIN_TRIM_LH_R                   0x00000010
-#define PIN_TRIM_LV_UP                  0x10000000
-#define PIN_TRIM_RV_DN                  0x00000400
-#define PIN_TRIM_RH_R                   0x00000200
+#if defined(REVX)
+  #define GPIO_TRIM_LH_L                  PIOB->PIO_PDSR
+  #define GPIO_TRIM_LV_DN                 PIOA->PIO_PDSR
+  #define GPIO_TRIM_RV_UP                 PIOC->PIO_PDSR
+  #define GPIO_TRIM_RH_L                  PIOA->PIO_PDSR
+  #define GPIO_TRIM_LH_R                  PIOA->PIO_PDSR
+  #define GPIO_TRIM_LV_UP                 PIOC->PIO_PDSR
+  #define GPIO_TRIM_RV_DN                 PIOA->PIO_PDSR
+  #define GPIO_TRIM_RH_R                  PIOC->PIO_PDSR
 #else
-#define PIN_TRIM_LH_L                   0x00800000
-#define PIN_TRIM_LV_DN                  0x01000000
-#define PIN_TRIM_RV_UP                  0x00000002
-#define PIN_TRIM_RH_L                   0x00000001
-#define PIN_TRIM_LH_R                   0x00000010
-#define PIN_TRIM_LV_UP                  0x10000000
-#define PIN_TRIM_RV_DN                  0x00000400
-#define PIN_TRIM_RH_R                   0x00000200
+  #define GPIO_TRIM_LH_L                  PIOA->PIO_PDSR
+  #define GPIO_TRIM_LV_DN                 PIOA->PIO_PDSR
+  #define GPIO_TRIM_RV_UP                 PIOA->PIO_PDSR
+  #define GPIO_TRIM_RH_L                  PIOA->PIO_PDSR
+  #define GPIO_TRIM_LH_R                  PIOB->PIO_PDSR
+  #define GPIO_TRIM_LV_UP                 PIOC->PIO_PDSR
+  #define GPIO_TRIM_RV_DN                 PIOC->PIO_PDSR
+  #define GPIO_TRIM_RH_R                  PIOC->PIO_PDSR
+#endif
+
+#if defined(REVX)
+  #define PIN_TRIM_LH_L                   0x00000010
+  #define PIN_TRIM_LV_DN                  0x01000000
+  #define PIN_TRIM_RV_UP                  0x00000400
+  #define PIN_TRIM_RH_L                   0x00000001
+  #define PIN_TRIM_LH_R                   0x00800000
+  #define PIN_TRIM_LV_UP                  0x10000000
+  #define PIN_TRIM_RV_DN                  0x00000002
+  #define PIN_TRIM_RH_R                   0x00000200
+#elif defined(REVA)
+  #define PIN_TRIM_LH_L                   0x00000080
+  #define PIN_TRIM_LV_DN                  0x08000000
+  #define PIN_TRIM_RV_UP                  0x40000000
+  #define PIN_TRIM_RH_L                   0x20000000
+  #define PIN_TRIM_LH_R                   0x00000010
+  #define PIN_TRIM_LV_UP                  0x10000000
+  #define PIN_TRIM_RV_DN                  0x00000400
+  #define PIN_TRIM_RH_R                   0x00000200
+#else
+  #define PIN_TRIM_LH_L                   0x00800000
+  #define PIN_TRIM_LV_DN                  0x01000000
+  #define PIN_TRIM_RV_UP                  0x00000002
+  #define PIN_TRIM_RH_L                   0x00000001
+  #define PIN_TRIM_LH_R                   0x00000010
+  #define PIN_TRIM_LV_UP                  0x10000000
+  #define PIN_TRIM_RV_DN                  0x00000400
+  #define PIN_TRIM_RH_R                   0x00000200
 #endif
 
 void usbMassStorage();

@@ -579,13 +579,6 @@ void boardInit()
 
   PIOC->PIO_PER = PIO_PC25 ;            // Enable bit C25 (USB-detect)
 
-#if defined(REVX)
-  if (usbPlugged()) {
-    lcdInit() ;
-    opentxBootloader();
-  }
-#endif
-
 #if defined(REVA)
   // On REVB, PA21 is used as AD8, and measures current consumption.
   pioptr = PIOA ;

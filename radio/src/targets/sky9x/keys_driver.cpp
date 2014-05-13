@@ -88,26 +88,23 @@ uint32_t readKeys()
 
 uint32_t readTrims()
 {
-  register uint32_t a = PIOA->PIO_PDSR;
-  register uint32_t b = PIOB->PIO_PDSR;
-  register uint32_t c = PIOC->PIO_PDSR;
   register uint32_t result = 0;
 
-  if (~a & PIN_TRIM_LH_L)
+  if (~GPIO_TRIM_LH_L & PIN_TRIM_LH_L)
     result |= 0x01;
-  if (~a & PIN_TRIM_LV_DN)
+  if (~GPIO_TRIM_LV_DN & PIN_TRIM_LV_DN)
     result |= 0x04;
-  if (~a & PIN_TRIM_RV_UP)
+  if (~GPIO_TRIM_RV_UP & PIN_TRIM_RV_UP)
     result |= 0x20;
-  if (~a & PIN_TRIM_RH_L)
+  if (~GPIO_TRIM_RH_L & PIN_TRIM_RH_L)
     result |= 0x40;
-  if (~b & PIN_TRIM_LH_R)
+  if (~GPIO_TRIM_LH_R & PIN_TRIM_LH_R)
     result |= 0x02;
-  if (~c & PIN_TRIM_LV_UP)
+  if (~GPIO_TRIM_LV_UP & PIN_TRIM_LV_UP)
     result |= 0x08;
-  if (~c & PIN_TRIM_RV_DN)
+  if (~GPIO_TRIM_RV_DN & PIN_TRIM_RV_DN)
     result |= 0x10;
-  if (~c & PIN_TRIM_RH_R)
+  if (~GPIO_TRIM_RH_R & PIN_TRIM_RH_R)
     result |= 0x80;
 
   return result;

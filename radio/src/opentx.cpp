@@ -304,6 +304,8 @@ void watchdogSetTimeout(uint32_t timeout)
   watchdogTimeout = timeout;
 }
 
+#if 0
+// TODO remove definitely?
 void opentxBootloader()
 {
   BACKLIGHT_ON();
@@ -316,6 +318,8 @@ void opentxBootloader()
 
   usbBootloader();
 }
+#endif
+
 #endif
 
 void per10ms()
@@ -5674,7 +5678,8 @@ int main(void)
   opentxInit(mcusr);
 #endif
 
-#if defined(CPUARM)
+#if 0
+  // TODO remove definitely?
   if (BOOTLOADER_REQUEST()) {
     pwrOff(); // Only turn power off if necessary
 
@@ -5692,7 +5697,9 @@ int main(void)
 
     opentxBootloader();
   }
+#endif
 
+#if defined(CPUARM)
   CoInitOS();
 
 #if defined(CPUARM) && defined(DEBUG)

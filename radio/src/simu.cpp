@@ -203,7 +203,7 @@ long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
 #endif
     };
 
-#if defined(PCBSKY9X)
+#if defined(PCBSKY9X) && !defined(REVX)
     Coproc_temp = 23;
     Coproc_maxtemp = 28;
 #endif

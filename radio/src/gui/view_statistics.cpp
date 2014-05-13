@@ -182,12 +182,23 @@ void menuStatisticsDebug(uint8_t event)
   lcd_outdezAtt(MENU_DEBUG_COL_OFS, 5*FH, (maxMixerDuration)/20, PREC2|LEFT);
   lcd_puts(lcdLastPos, 5*FH, "ms");
   lcd_putsLeft(6*FH, STR_FREESTACKMINB);
+
+#if LCD_W >= 212
   lcd_putsAtt(MENU_DEBUG_COL_OFS-1, 6*FH+1, "[Main]", SMLSIZE);
   lcd_outdezAtt(lcdLastPos, 6*FH, stack_free(0), UNSIGN|LEFT);
   lcd_putsAtt(lcdLastPos+2, 6*FH+1, "[Mix]", SMLSIZE);
   lcd_outdezAtt(lcdLastPos, 6*FH, stack_free(1), UNSIGN|LEFT);
   lcd_putsAtt(lcdLastPos+2, 6*FH+1, "[Audio]", SMLSIZE);
   lcd_outdezAtt(lcdLastPos, 6*FH, stack_free(2), UNSIGN|LEFT);
+#else
+  lcdLastPos = MENU_DEBUG_COL_OFS;
+  lcd_outdezAtt(lcdLastPos, 6*FH, stack_free(0), UNSIGN|LEFT);
+  lcdLastPos += FW/2;
+  lcd_outdezAtt(lcdLastPos, 6*FH, stack_free(1), UNSIGN|LEFT);
+  lcdLastPos += FW/2;
+  lcd_outdezAtt(lcdLastPos, 6*FH, stack_free(2), UNSIGN|LEFT);
+#endif
+
 #else
   lcd_putsLeft(1*FH, STR_TMR1LATMAXUS);
   lcd_outdez8(MENU_DEBUG_COL_OFS , 1*FH, g_tmr1Latency_max/2 );

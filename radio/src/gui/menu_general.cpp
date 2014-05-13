@@ -922,6 +922,7 @@ void menuGeneralSdManager(uint8_t _event)
           s_pgOfs = 0;
           m_posVert = 1;
           reusableBuffer.sdmanager.offset = 65535;
+          killEvents(_event);
           break;
         }
       }
@@ -1211,14 +1212,8 @@ void menuGeneralDiagKeys(uint8_t event)
   lcd_puts(14*FW, 3*FH, STR_VTRIM);
 
   for(uint8_t i=0; i<9; i++) {
-#if !defined(PCBTARANIS)
-    uint8_t y = i*FH-FH;
-    if(i==(SW_ID0-SW_BASE)) continue; //ignore ID0
-    putsSwitches(8*FW, y, i+1, 0); //ohne off,on
-    displayKeyState(11*FW+2, y, (EnumKeys)(SW_BASE+i));
-#else
-    uint8_t y = i*FH;
-#endif    
+    uint8_t y;
+
     if (i<8) {
       y = i/2*FH+FH*4;
       lcd_img(14*FW, y, sticks, i/2, 0);
@@ -1230,6 +1225,14 @@ void menuGeneralDiagKeys(uint8_t event)
       lcd_putsiAtt(0, y, STR_VKEYS, i, 0);
       displayKeyState(5*FW+2, y, (EnumKeys)(KEY_MENU+i));
     }
+
+#if !defined(PCBTARANIS)
+    if (i != SW_ID0-SW_BASE) {
+      y = i*FH-FH;
+      putsSwitches(8*FW, y, i+1, 0); //ohne off,on
+      displayKeyState(11*FW+2, y, (EnumKeys)(SW_BASE+i));
+    }
+#endif
   }
 
 #if defined(ROTARY_ENCODERS) || defined(ROTARY_ENCODER_NAVIGATION)
@@ -1364,6 +1367,7 @@ void menuGeneralHardware(uint8_t event)
 }
 
 #elif defined(PCBSKY9X)
+
 enum menuGeneralHwItems {
   ITEM_SETUP_HW_OPTREX_DISPLAY,
   ITEM_SETUP_HW_STICKS_GAINS_LABELS,
@@ -1371,7 +1375,7 @@ enum menuGeneralHwItems {
   ITEM_SETUP_HW_STICK_LH_GAIN,
   ITEM_SETUP_HW_STICK_RV_GAIN,
   ITEM_SETUP_HW_STICK_RH_GAIN,
-  ITEM_SETUP_HW_ROTARY_ENCODER,
+  IF_ROTARY_ENCODERS(ITEM_SETUP_HW_ROTARY_ENCODER)
   IF_BLUETOOTH(ITEM_SETUP_HW_BT_BAUDRATE)
   ITEM_SETUP_HW_MAX
 };
@@ -1379,7 +1383,7 @@ enum menuGeneralHwItems {
 #define GENERAL_HW_PARAM_OFS (2+(15*FW))
 void menuGeneralHardware(uint8_t event)
 {
-  MENU(STR_HARDWARE, menuTabDiag, e_Hardware, ITEM_SETUP_HW_MAX+1, {0, 0, (uint8_t)-1, 0, 0, 0, 0, IF_BLUETOOTH(0)});
+  MENU(STR_HARDWARE, menuTabDiag, e_Hardware, ITEM_SETUP_HW_MAX+1, {0, 0, (uint8_t)-1, 0, 0, 0, IF_ROTARY_ENCODERS(0) IF_BLUETOOTH(0)});
 
   uint8_t sub = m_posVert - 1;
 
@@ -1418,9 +1422,11 @@ void menuGeneralHardware(uint8_t event)
         break;
       }
 
+#if defined(ROTARY_ENCODERS)
       case ITEM_SETUP_HW_ROTARY_ENCODER:
         g_eeGeneral.rotarySteps = selectMenuItem(GENERAL_HW_PARAM_OFS, y, PSTR("Rotary Encoder"), PSTR("\0062steps4steps"), g_eeGeneral.rotarySteps, 0, 1, attr, event);
         break;
+#endif
 
 #if defined(BLUETOOTH)
       case ITEM_SETUP_HW_BT_BAUDRATE:

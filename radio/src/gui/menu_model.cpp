@@ -1929,6 +1929,12 @@ enum menuModelPhaseItems {
   ITEM_MODEL_PHASE_GV3,
   ITEM_MODEL_PHASE_GV4,
   ITEM_MODEL_PHASE_GV5,
+#if defined(CPUARM)
+  ITEM_MODEL_PHASE_GV6,
+  ITEM_MODEL_PHASE_GV7,
+  ITEM_MODEL_PHASE_GV8,
+  ITEM_MODEL_PHASE_GV9,
+#endif
 #endif
   ITEM_MODEL_PHASE_MAX
 };
@@ -4291,7 +4297,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
           uint8_t new_cstate = cswFamily(cs->func);
           if (cstate != new_cstate) {
             if (new_cstate == LS_FAMILY_TIMER) {
-              cs->v1 = cs->v2 = -119;
+              cs->v1 = cs->v2 = 0;
             }
             else if (new_cstate == LS_FAMILY_STAY) {
               cs->v1 = 0; cs->v2 = -129; cs->v3 = 0;
