@@ -604,7 +604,7 @@ void ConvertModel_215_to_216(ModelData &model)
       }
       else {
         expo->curve.type = CURVE_REF_CUSTOM;
-        expo->curve.value = oldExpo->curveParam - 7;
+        expo->curve.value = oldExpo->curveParam - 6;
       }
 #else
       expo->mode = oldExpo->mode;
