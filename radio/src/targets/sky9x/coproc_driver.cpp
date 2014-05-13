@@ -46,7 +46,9 @@ int8_t Coproc_temp ;
 int8_t Coproc_maxtemp=-127 ;
 int8_t Coproc_valid ;
 bool get_onlytemp;
+#if !defined(SIMU)
 static uint8_t *Twi_read_address ;
+#endif
 static uint8_t TwiOperation ;
 
 #define TWI_NONE          0
