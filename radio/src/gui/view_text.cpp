@@ -93,6 +93,9 @@ void readTextFile(int & lines_count)
         s_text_screen[current_line-s_pgOfs][line_length++] = c;
       }
     }
+    if (c != '\n') {
+      current_line += 1;
+    }
     f_close(&file);
   }
 
