@@ -68,6 +68,7 @@ namespace Open9xSky9x {
 #include "radio/src/protocols/ppm_arm.cpp"
 #include "radio/src/protocols/pxx_arm.cpp"
 #include "radio/src/protocols/dsm2_arm.cpp"
+#include "radio/src/targets/sky9x/telemetry_driver.cpp"
 #include "radio/src/targets/sky9x/pwr_driver.cpp"
 #include "radio/src/targets/sky9x/eeprom_driver.cpp"
 #include "radio/src/eeprom_common.cpp"
