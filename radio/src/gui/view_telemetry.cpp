@@ -79,11 +79,11 @@ void displayRssiLine()
   if (TELEMETRY_STREAMING()) {
     lcd_hline(0, 55, 128, 0); // separator
     uint8_t rssi = min((uint8_t)99, frskyData.rssi[1].value);
-    lcd_putsLeft(STATUS_BAR_Y, STR_TX); lcd_outdezNAtt(4*FW, STATUS_BAR_Y, rssi, LEADING0, 2);
+    lcd_putsLeft(STATUS_BAR_Y, STR_TX); lcd_outdezNAtt(4*FW+1, STATUS_BAR_Y, rssi, LEADING0, 2);
     lcd_rect(25, 57, 38, 7);
     lcd_filled_rect(26, 58, 4*rssi/11, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
     rssi = min((uint8_t)99, frskyData.rssi[0].value);
-    lcd_puts(105, STATUS_BAR_Y, STR_RX); lcd_outdezNAtt(105+4*FW-1, STATUS_BAR_Y, rssi, LEADING0, 2);
+    lcd_puts(104, STATUS_BAR_Y, STR_RX); lcd_outdezNAtt(105+4*FW, STATUS_BAR_Y, rssi, LEADING0, 2);
     lcd_rect(65, 57, 38, 7);
     uint8_t v = 4*rssi/11;
     lcd_filled_rect(66+36-v, 58, v, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
