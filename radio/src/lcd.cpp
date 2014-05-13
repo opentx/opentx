@@ -65,13 +65,23 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
   lcdNextPos = x-1;
   p--;
 
+#if defined(CPUARM)
+  bool blink = false;
+  #define BLINKING_CHAR        (blink)
+  #define SET_BLINKING_CHAR()  blink = true
+#else
+  #define BLINKING_CHAR        (0)
+  #define SET_BLINKING_CHAR()  return
+#endif
+
   bool inv = false;
   if (flags & BLINK) {
     if (BLINK_ON_PHASE) {
       if (flags & INVERS)
         inv = true;
-      else
-        return;
+      else {
+        SET_BLINKING_CHAR();
+      }
     }
   }
   else if (flags & INVERS) {
@@ -255,7 +265,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
     for (int8_t i=0; i<=6; i++) {
       uint8_t b = 0;
       if (i==0) {
-        if ( !x || !inv ) {
+        if (!x || !inv) {
           lcdNextPos++;
           p++;
           continue;
@@ -288,7 +298,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
       }
 #endif
 
-      if (p<DISPLAY_END) {
+      if (p<DISPLAY_END && !BLINKING_CHAR) {
         ASSERT_IN_DISPLAY(p);
         uint8_t mask = ~(0xff << ym8);
         LCD_BYTE_FILTER(p, mask, b << ym8);
@@ -869,12 +879,7 @@ void lcdDrawTelemetryTopBar()
 #if defined(CPUARM) && defined(RTCLOCK)
 void putsTime(xcoord_t x, uint8_t y, struct gtm t, LcdFlags att)
 {
-  LcdFlags att2 = (att & (INVERS|BLINK)) | LEADING0;
-  lcd_outdezNAtt(x, y, t.tm_hour, att2, 2);
-  if (!(att&TIMEBLINK) || (t.tm_sec%2)) {
-    lcd_putcAtt(x, y, ':', att);
-  }
-  lcd_outdezNAtt(x+3*FWNUM-2, y, t.tm_min, att2, 2);
+  putsTimer(x, y, t.tm_hour*60+t.tm_min, att, att);
 }
 #endif
 
@@ -917,6 +922,11 @@ void putsTimer(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFlags att
 #define separator ':'
 #endif
   lcd_outdezNAtt(x, y, qr.quot, att|LEADING0|LEFT, 2);
+#if defined(CPUARM) && defined(RTCLOCK)
+  if (att&TIMEBLINK)
+    lcd_putcAtt(lcdLastPos, y, separator, BLINK);
+  else
+#endif
   lcd_putcAtt(lcdLastPos, y, separator, att&att2);
   lcd_outdezNAtt(lcdNextPos, y, qr.rem, att2|LEADING0|LEFT, 2);
 }
@@ -1204,7 +1214,7 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
       gtm t;
       t.tm_hour = val / 60;
       t.tm_min = val % 60;
-      putsTime(x+2*FWNUM, y, t, att);
+      putsTime(x, y, t, att);
       break;
     }
 #endif

@@ -218,7 +218,7 @@ void displaySliders()
 #define BAR_H        9
 #define BAR_NOTIFS_X BAR_X+133
 #define BAR_VOLUME_X BAR_X+147
-#define BAR_TIME_X   BAR_X+168
+#define BAR_TIME_X   BAR_X+159
 
 void displayTopBarGauge(xcoord_t x, int count, bool blinking=false)
 {
@@ -318,7 +318,7 @@ void displayTopBar()
   /* RTC time */
   struct gtm t;
   gettime(&t);
-  putsTime(BAR_TIME_X+1, BAR_Y+1, t, TIMEBLINK);
+  putsTime(BAR_TIME_X, BAR_Y+1, t, LEFT|TIMEBLINK);
 
   /* The background */
   lcd_filled_rect(BAR_X, BAR_Y, BAR_W, BAR_H, SOLID, FILL_WHITE|GREY_DEFAULT|ROUND);
