@@ -4505,7 +4505,7 @@ void doMixerCalculations()
 #if defined(CPUARM)
       else if (cs->func == LS_FUNC_STAY) {
         PACK(typedef struct {
-          uint8_t  state:1;
+          uint16_t state:1;
           uint16_t duration:15;
         }) cs_stay_struct;
 
