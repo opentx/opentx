@@ -399,6 +399,11 @@ class TelemetrySourcesConversionTable: public ConversionTable {
       }
 
       addConversion(1+TELEMETRY_SOURCE_TX_BATT, val++);
+      if (IS_ARM(board) && version >= 216) {
+        addConversion(1+TELEMETRY_SOURCE_TX_TIME, val++);
+        for (int i=0; i<5; i++)
+          addConversion(1+TELEMETRY_SOURCE_RESERVE, val++);
+      }
       addConversion(1+TELEMETRY_SOURCE_TIMER1, val++);
       addConversion(1+TELEMETRY_SOURCE_TIMER2, val++);
       if (IS_ARM(board) && version >= 216)
