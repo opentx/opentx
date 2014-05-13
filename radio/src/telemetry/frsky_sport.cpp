@@ -541,9 +541,11 @@ void processSerialData(uint8_t data)
   btPushByte(data);
 #endif
 
+#if defined(PCBTARANIS)
   if (g_eeGeneral.uart3Mode == UART_MODE_SPORT) {
     uart3Putc(data);
   }
+#endif
 
   if (data == START_STOP) {
     dataState = STATE_DATA_IN_FRAME;
@@ -676,11 +678,14 @@ void telemetryWakeup()
     alarmsCheckTime = get_tmr10ms() + 100; /* next check in 1second */
 
     if (alarmsCheckStep == 0) {
+#if defined(PCBTARANIS)
+      // TODO not only Taranis!
       if ((IS_MODULE_XJT(0) || IS_MODULE_XJT(1)) && frskyData.swr.value > 0x33) {
         AUDIO_SWR_RED();
         POPUP_WARNING(STR_ANTENNAPROBLEM);
         alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3seconds */
       }
+#endif
     }
     else if (TELEMETRY_STREAMING()) {
       if (alarmsCheckStep == 1) {

@@ -590,7 +590,7 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   EEPROMSRC = eeprom_common.cpp eeprom_raw.cpp eeprom_conversions.cpp
   PULSESSRC = protocols/pulses_arm.cpp protocols/ppm_arm.cpp protocols/pxx_arm.cpp protocols/dsm2_arm.cpp
   CPPSRC += audio_arm.cpp haptic.cpp gui/view_about.cpp
-  CPPSRC += targets/sky9x/pwr_driver.cpp targets/sky9x/adc_driver.cpp targets/sky9x/eeprom_driver.cpp targets/sky9x/pulses_driver.cpp targets/sky9x/keys_driver.cpp targets/sky9x/audio_driver.cpp targets/sky9x/buzzer_driver.cpp targets/sky9x/haptic_driver.cpp targets/sky9x/sdcard_driver.cpp targets/sky9x/massstorage.cpp
+  CPPSRC += targets/sky9x/telemetry_driver.cpp targets/sky9x/pwr_driver.cpp targets/sky9x/adc_driver.cpp targets/sky9x/eeprom_driver.cpp targets/sky9x/pulses_driver.cpp targets/sky9x/keys_driver.cpp targets/sky9x/audio_driver.cpp targets/sky9x/buzzer_driver.cpp targets/sky9x/haptic_driver.cpp targets/sky9x/sdcard_driver.cpp targets/sky9x/massstorage.cpp
   CPPSRC += loadboot.cpp
     
   ifeq ($(SDCARD), YES)
@@ -820,7 +820,6 @@ ifeq ($(FRSKY_STICKS), YES)
   CPPDEFS += -DFRSKY_STICKS
 endif
 
-
 ifeq ($(DBLKEYS), YES)
   ifeq ($(PCB), $(filter $(PCB), 9XR 9XR128 9XR2561))
     $(warning Sorry, DBLKEYS doesnt work on 9XR)
@@ -930,13 +929,8 @@ endif
 ifeq ($(EXT), $(filter $(EXT), FRSKY TELEMETREZ))
   CPPDEFS += -DFRSKY
   ifeq ($(PCB), TARANIS)
-    TELEMETRY_PROTO = $(shell sh -c "if test -f telemetry/frsky_sport.cpp; then echo SPORT; else echo FRSKY; fi")
-    ifeq ($(TELEMETRY_PROTO), SPORT)
-      CPPSRC += telemetry/frsky_sport.cpp
-      CPPDEFS += -DFRSKY_SPORT
-    else
-      CPPSRC += telemetry/frsky.cpp
-    endif
+	CPPSRC += telemetry/frsky_sport.cpp
+    CPPDEFS += -DFRSKY_SPORT
   else
     CPPSRC += telemetry/frsky.cpp
   endif

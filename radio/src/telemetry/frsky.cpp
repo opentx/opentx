@@ -820,11 +820,7 @@ void FRSKY_Init(void)
   // clear frsky variables
   resetTelemetry();
 
-#if defined(PCBTARANIS)
-  // TODO
-#elif defined(PCBSKY9X)
-  startPdcUsartReceive() ;
-#elif !defined(SIMU)
+#if !defined(CPUARM) && !defined(SIMU)
 
   DDRE &= ~(1 << DDE0);    // set RXD0 pin as input
   PORTE &= ~(1 << PORTE0); // disable pullup on RXD0 pin

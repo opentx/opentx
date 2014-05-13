@@ -171,38 +171,6 @@ void UART3_Stop()
   NVIC_DisableIRQ(UART1_IRQn) ;
 }
 
-// USART0 configuration
-// Work in Progress, UNTESTED
-// Uses PA5 and PA6 (RXD and TXD)
-inline void UART2_Configure( uint32_t baudrate, uint32_t masterClock)
-{
-////    const Pin pPins[] = CONSOLE_PINS;
-  register Usart *pUsart = SECOND_USART;
-
-  /* Configure PIO */
-  configure_pins( (PIO_PA5 | PIO_PA6), PIN_PERIPHERAL | PIN_INPUT | PIN_PER_A | PIN_PORTA | PIN_NO_PULLUP ) ;
-
-//  /* Configure PMC */
-  PMC->PMC_PCER0 = 1 << SECOND_ID;
-
-//  /* Reset and disable receiver & transmitter */
-  pUsart->US_CR = US_CR_RSTRX | US_CR_RSTTX
-                         | US_CR_RXDIS | US_CR_TXDIS;
-
-//  /* Configure mode */
-  pUsart->US_MR =  0x000008C0 ;  // NORMAL, No Parity, 8 bit
-
-//  /* Configure baudrate */
-//  /* Asynchronous, no oversampling */
-  pUsart->US_BRGR = (masterClock / baudrate) / 16;
-
-//  /* Disable PDC channel */
-  pUsart->US_PTCR = US_PTCR_RXTDIS | US_PTCR_TXTDIS;
-
-//  /* Enable receiver and transmitter */
-  pUsart->US_CR = US_CR_RXEN | US_CR_TXEN;
-}
-
 // Starts TIMER0 at full speed (MCK/2) for delay timing
 // @ 36MHz this is 18MHz
 // This was 6 MHz, we may need to slow it to TIMER_CLOCK2 (MCK/8=4.5 MHz)
@@ -631,7 +599,6 @@ void boardInit()
   PMC->PMC_PCK[2] = 2 ;                   // PCK2 is PLLA
 
   DEBUG_UART_Configure( 9600, Master_frequency ) ;
-  UART2_Configure( 9600, Master_frequency ) ;             // Testing
   UART3_Configure( 9600, Master_frequency ) ;             // TODO not needed, done after ...
 
   start_timer2() ;
@@ -652,162 +619,20 @@ void boardInit()
 #endif
 
   init_SDcard();
+
+  UART2_Configure(9600, Master_frequency);
+  startPdcUsartReceive();
 }
 #endif
 
 uint8_t temperature = 0;          // Raw temp reading
 uint8_t maxTemperature = 0 ;       // Raw temp reading
 
-#define RX_UART_BUFFER_SIZE     32
-
-struct t_rxUartBuffer
-{
-    uint8_t fifo[RX_UART_BUFFER_SIZE] ;
-    uint8_t *outPtr ;
-} ;
-
-struct t_rxUartBuffer TelemetryInBuffer[2] ;
-uint32_t TelemetryActiveBuffer ;
-
-void startPdcUsartReceive()
-{
-  register Usart *pUsart = SECOND_USART;
-
-  TelemetryInBuffer[0].outPtr = TelemetryInBuffer[0].fifo ;
-  TelemetryInBuffer[1].outPtr = TelemetryInBuffer[1].fifo ;
-#ifndef SIMU
-  // TODO because of the 64bits cast ...
-  pUsart->US_RPR = (uint32_t)TelemetryInBuffer[0].fifo ;
-  pUsart->US_RNPR = (uint32_t)TelemetryInBuffer[1].fifo ;
-#endif
-  pUsart->US_RCR = RX_UART_BUFFER_SIZE ;
-  pUsart->US_RNCR = RX_UART_BUFFER_SIZE ;
-  pUsart->US_PTCR = US_PTCR_RXTEN ;
-  TelemetryActiveBuffer = 0 ;
-}
-
-void endPdcUsartReceive()
-{
-  register Usart *pUsart = SECOND_USART;
-
-  pUsart->US_PTCR = US_PTCR_RXTDIS ;
-}
-
-void rxPdcUsart( void (*pChProcess)(uint8_t x) )
-{
-#if !defined(SIMU)
-  register Usart *pUsart = SECOND_USART;
-  uint8_t *ptr ;
-  uint8_t *endPtr ;
-//      uint32_t bufIndex ;
-//      uint32_t i ;
-  uint32_t j ;
-
- //Find out where the DMA has got to
-  __disable_irq() ;
-  pUsart->US_PTCR = US_PTCR_RXTDIS ;              // Freeze DMA
-  ptr = (uint8_t *)pUsart->US_RPR ;
-  j = pUsart->US_RNCR ;
-  pUsart->US_PTCR = US_PTCR_RXTEN ;                       // DMA active again
-  __enable_irq() ;
-
-  endPtr = ptr - 1 ;
-  ptr = TelemetryInBuffer[TelemetryActiveBuffer].outPtr ;
-  if ( j == 0 )           // First buf is full
-  {
-    endPtr = &TelemetryInBuffer[TelemetryActiveBuffer].fifo[RX_UART_BUFFER_SIZE-1] ;                // last byte
-  }
-  while ( ptr <= endPtr )
-  {
-    (*pChProcess)(*ptr++) ;
-  }
-  TelemetryInBuffer[TelemetryActiveBuffer].outPtr = ptr ;
-  if ( j == 0 )           // First buf is full
-  {
-    TelemetryInBuffer[TelemetryActiveBuffer].outPtr = TelemetryInBuffer[TelemetryActiveBuffer].fifo ;
-    pUsart->US_RNPR = (uint32_t)TelemetryInBuffer[TelemetryActiveBuffer].fifo ;
-    pUsart->US_RNCR = RX_UART_BUFFER_SIZE ;
-    TelemetryActiveBuffer ^= 1 ;            // Other buffer is active
-    rxPdcUsart( pChProcess ) ;                      // Get any chars from second buffer
-  }
-#endif
-}
-
-uint32_t txPdcUsart( uint8_t *buffer, uint32_t size )
-{
-  register Usart *pUsart = SECOND_USART;
-
-  if ( pUsart->US_TNCR == 0 )
-  {
-#ifndef SIMU
-    pUsart->US_TNPR = (uint32_t)buffer ;
-#endif
-    pUsart->US_TNCR = size ;
-    pUsart->US_PTCR = US_PTCR_TXTEN ;
-    return 1 ;
-  }
-  return 0 ;
-}
-
-uint32_t txPdcPending()
-{
-  register Usart *pUsart = SECOND_USART;
-  uint32_t x ;
-
-  __disable_irq() ;
-  pUsart->US_PTCR = US_PTCR_TXTDIS ;              // Freeze DMA
-  x = pUsart->US_TNCR ;                           // Total
-  x += pUsart->US_TCR ;                           // Still to send
-  pUsart->US_PTCR = US_PTCR_TXTEN ;               // DMA active again
-  __enable_irq() ;
-
-  return x ;
-}
-
 void end_bt_tx_interrupt()
 {
   Uart *pUart = BT_USART ;
   pUart->UART_IDR = UART_IDR_TXBUFE ;
   NVIC_DisableIRQ(UART1_IRQn) ;
-}
-
-void usbBootloader()
-{
-  // This might be replaced by a software reset
-  // Any interrupts that have been enabled must be disabled here
-  // BEFORE calling sam_boot()
-#if defined(ROTARY_ENCODERS)
-  rotencEnd();
-#endif
-  endPdcUsartReceive() ;          // Terminate any serial reception
-  end_bt_tx_interrupt() ;
-  stop_trainer_capture() ;
-  end_spi() ;
-  audioEnd() ;
-
-  TC0->TC_CHANNEL[2].TC_IDR = TC_IDR0_CPCS ;
-  TC0->TC_CHANNEL[0].TC_CCR = TC_CCR0_CLKDIS ;
-  TC0->TC_CHANNEL[1].TC_CCR = TC_CCR0_CLKDIS ;
-  TC0->TC_CHANNEL[2].TC_CCR = TC_CCR0_CLKDIS ;
-  TC1->TC_CHANNEL[0].TC_CCR = TC_CCR0_CLKDIS ;
-  TC1->TC_CHANNEL[1].TC_CCR = TC_CCR0_CLKDIS ;
-  TC1->TC_CHANNEL[2].TC_CCR = TC_CCR0_CLKDIS ;
-  PWM->PWM_DIS = PWM_DIS_CHID0 | PWM_DIS_CHID1 | PWM_DIS_CHID2 | PWM_DIS_CHID3 ;  // Disable all
-  NVIC_DisableIRQ(TC2_IRQn) ;
-
-  disable_ppm(0);
-  disable_ppm(1);
-
-  //      PWM->PWM_IDR1 = PWM_IDR1_CHID3 ;
-  //      NVIC_DisableIRQ(PWM_IRQn) ;
-  disable_ssc() ;
-
-#if !defined(SIMU)
-  DEBUG_UART_Stop();
-  UART3_Stop();
-#endif
-
-  sam_boot() ;
 }
 
 #if !defined(REVA)
