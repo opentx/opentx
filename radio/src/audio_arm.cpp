@@ -190,7 +190,6 @@ const char * audioFilenames[] = {
   "timer10",
   "timer20",
   "timer30",
-#if defined(PCBTARANIS)
   "a1_org",
   "a1_red",
   "a2_org",
@@ -198,7 +197,6 @@ const char * audioFilenames[] = {
   "rssi_org",
   "rssi_red",
   "swr_red",
-#endif
   "telemko",
   "telemok"
 };
@@ -1058,7 +1056,6 @@ void audioEvent(uint8_t e, uint16_t f)
         case AU_TIMER_30:
           audioQueue.playTone(BEEP_DEFAULT_FREQ+150, 120, 20, PLAY_REPEAT(2)|PLAY_NOW);
           break;
-#if defined(PCBTARANIS)
         case AU_A1_ORANGE:
           audioQueue.playTone(BEEP_DEFAULT_FREQ+600, 200, 20, PLAY_NOW);
           break;
@@ -1080,7 +1077,6 @@ void audioEvent(uint8_t e, uint16_t f)
         case AU_SWR_RED:
           audioQueue.playTone(450, 160, 40, PLAY_REPEAT(2), 1);
           break;
-#endif
         case AU_FRSKY_BEEP1:
           audioQueue.playTone(BEEP_DEFAULT_FREQ, 60, 20);
           break;

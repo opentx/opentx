@@ -281,8 +281,6 @@ void audioStart();
 #define AUDIO_TRIM(event, f)     AUDIO_BUZZER(audioEvent(AU_TRIM_MOVE, f), { if (!IS_KEY_FIRST(event)) warble = true; beep(1); })
 #define AUDIO_PLAY(p)            audioEvent(p)
 #define AUDIO_VARIO(fq, t, p, f) audioQueue.playTone(fq, t, p, f)
-
-#if defined(PCBTARANIS)
 #define AUDIO_A1_ORANGE()        audioEvent(AU_A1_ORANGE)
 #define AUDIO_A1_RED()           audioEvent(AU_A1_RED)
 #define AUDIO_A2_ORANGE()        audioEvent(AU_A2_ORANGE)
@@ -290,8 +288,6 @@ void audioStart();
 #define AUDIO_RSSI_ORANGE()      audioEvent(AU_RSSI_ORANGE)
 #define AUDIO_RSSI_RED()         audioEvent(AU_RSSI_RED)
 #define AUDIO_SWR_RED()          audioEvent(AU_SWR_RED)
-#endif
-
 #define AUDIO_TELEMETRY_LOST()   audioEvent(AU_TELEMETRY_LOST)
 #define AUDIO_TELEMETRY_BACK()   audioEvent(AU_TELEMETRY_BACK)
 

@@ -1277,7 +1277,7 @@ enum AUDIO_SOUNDS {
     AU_TIMER_LT10,
     AU_TIMER_20,
     AU_TIMER_30,
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
     AU_A1_ORANGE,
     AU_A1_RED,
     AU_A2_ORANGE,
@@ -1285,8 +1285,6 @@ enum AUDIO_SOUNDS {
     AU_RSSI_ORANGE,
     AU_RSSI_RED,
     AU_SWR_RED,
-#endif
-#if defined(CPUARM)
     AU_TELEMETRY_LOST,
     AU_TELEMETRY_BACK,
 #endif
