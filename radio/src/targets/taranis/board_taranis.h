@@ -224,8 +224,6 @@ void turnBacklightOff(void);
 #endif
 
 // USB driver
-#define BOOTLOADER_REQUEST()  (0)
-#define usbBootloader()
 int usbPlugged(void);
 void usbInit(void);
 void usbStart(void);

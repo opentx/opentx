@@ -165,12 +165,6 @@ extern uint32_t Current_used;
 extern uint16_t sessionTimer;
 #endif
 
-#if defined(REVC)
-#define BOOTLOADER_REQUEST() (usbPlugged())
-#else
-#define BOOTLOADER_REQUEST() (pwrCheck() == e_power_usb)
-#endif
-
 #define SLAVE_MODE() (pwrCheck() == e_power_trainer)
 #define JACK_PPM_OUT() PIOC->PIO_PDR = PIO_PC22
 #define JACK_PPM_IN() PIOC->PIO_PER = PIO_PC22
@@ -203,7 +197,6 @@ void disable_ssc();
 #define disable_pxx(port) disable_ssc()
 #define init_dsm2(port) init_main_ppm(5000, 0); init_ssc()
 #define disable_dsm2(port) disable_ssc()
-
 
 // SD driver
 #if defined(SIMU)
@@ -290,5 +283,9 @@ void rotencEnd();
 
 // Debug driver
 void debugPutc(const char c);
+
+// Telemetry driver
+void UART2_Configure(uint32_t baudrate, uint32_t masterClock);
+void startPdcUsartReceive();
 
 #endif

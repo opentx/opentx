@@ -303,23 +303,6 @@ void watchdogSetTimeout(uint32_t timeout)
 {
   watchdogTimeout = timeout;
 }
-
-#if 0
-// TODO remove definitely?
-void opentxBootloader()
-{
-  BACKLIGHT_ON();
-
-  lcd_clear();
-  lcd_putcAtt( 48, 24, 'U', DBLSIZE ) ;
-  lcd_putcAtt( 60, 24, 'S', DBLSIZE ) ;
-  lcd_putcAtt( 72, 24, 'B', DBLSIZE ) ;
-  lcdRefresh() ;
-
-  usbBootloader();
-}
-#endif
-
 #endif
 
 void per10ms()
@@ -5676,27 +5659,6 @@ int main(void)
 
 #if !defined(CPUARM)
   opentxInit(mcusr);
-#endif
-
-#if 0
-  // TODO remove definitely?
-  if (BOOTLOADER_REQUEST()) {
-    pwrOff(); // Only turn power off if necessary
-
-#if defined(HAPTIC)
-    hapticOff();
-#endif
-
-    g_eeGeneral.optrexDisplay = 1;
-    lcd_clear();
-    lcdRefresh();
-
-    g_eeGeneral.optrexDisplay = 0;
-    g_eeGeneral.backlightBright = 0;
-    g_eeGeneral.contrast = 25;
-
-    opentxBootloader();
-  }
 #endif
 
 #if defined(CPUARM)
