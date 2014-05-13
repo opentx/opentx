@@ -38,6 +38,7 @@ class TxOutputs {
     bool vsw[32]; /* TODO NUM_VIRTUAL_SWITCHES */
     int16_t gvars[9][9];  /*TODO MAX_FLIGHT_MODES, NUM_GVARS */
     unsigned int beep;
+    // uint8_t phase;
 };
 
 struct Trims {

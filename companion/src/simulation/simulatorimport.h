@@ -60,7 +60,7 @@ for (int i=0; i<NUM_LOGICAL_SWITCH; i++)
   outputs.vsw[i] = getSwitch(SWSRC_SW1+i, 0);
 #endif
 #ifdef GVAR_VALUE // defined(GVARS)
-uint8_t phase = getFlightPhase();
+/* TODO it could be a good idea instead of getPhase() / getPhaseName() outputs.phase = getFlightPhase(); */
 for (int fm=0; fm<MAX_FLIGHT_MODES; fm++)
   for (int gv=0; gv<MAX_GVARS; gv++)
     outputs.gvars[fm][gv] = GVAR_VALUE(gv, fm);

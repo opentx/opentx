@@ -511,16 +511,16 @@ void SimulatorDialog::onTimerEvent()
     }
   }
 
-  //display current flight mode in window title
+  // display current flight mode in window title
   unsigned int currentPhase = simulator->getPhase();
   if (currentPhase != lastPhase) {
     lastPhase = currentPhase;
     const char * phase_name = simulator->getPhaseName(currentPhase);
-    if ( phase_name &&  phase_name[0] ) {
-      setWindowTitle(windowName + QString(" [fm: %1]").arg(QString(phase_name)));  
+    if (phase_name && phase_name[0]) {
+      setWindowTitle(windowName + QString(" - Flight Mode %1").arg(QString(phase_name)));
     }
     else {
-      setWindowTitle(windowName + QString(" [fm: %1]").arg(simulator->getPhase()));
+      setWindowTitle(windowName + QString(" - Flight Mode %1").arg(simulator->getPhase()));
     }
   }
 
@@ -834,9 +834,9 @@ void SimulatorDialog::setValues()
     logicalSwitchLabels[i]->setStyleSheet(outputs.vsw[i] ? CSWITCH_ON : CSWITCH_OFF);
   }
 
-  for (unsigned int fm=0; fm<numFlightModes; fm++) {
-    for (unsigned int gv=0; gv<numGvars; gv++) {
-      gvarValues[fm*numGvars+gv]->setText(QString("%1").arg(outputs.gvars[fm][gv]));
+  for (unsigned int gv=0; gv<numGvars; gv++) {
+    for (unsigned int fm=0; fm<numFlightModes; fm++) {
+      gvarValues[gv*numFlightModes+fm]->setText(QString("%1").arg(outputs.gvars[fm][gv]));
     }
   }
 
