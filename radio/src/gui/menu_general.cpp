@@ -418,11 +418,7 @@ void menuGeneralSetup(uint8_t event)
         break;
 
       case ITEM_SETUP_HAPTIC_STRENGTH:
-        lcd_putsLeft( y, STR_HAPTICSTRENGTH);
-        lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.hapticStrength, attr|LEFT);
-        if (attr) {
-          CHECK_INCDEC_GENVAR(event, g_eeGeneral.hapticStrength, 0, 5);
-        }
+        SLIDER_5POS(y, g_eeGeneral.hapticStrength, STR_HAPTICSTRENGTH, event, attr);
         break;
 #endif
 

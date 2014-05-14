@@ -131,7 +131,7 @@ Ersky9xGeneral::operator GeneralSettings ()
   getEEPROMString(result.ownerName, ownerName, sizeof(ownerName));
   result.optrexDisplay = optrexDisplay;
   result.speakerPitch = speakerPitch;
-  result.hapticStrength = hapticStrength;
+  result.hapticStrength = hapticStrength - 3;
   result.speakerMode = speakerMode;
   result.switchWarningStates = switchWarningStates;
   result.speakerVolume = volume;

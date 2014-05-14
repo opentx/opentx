@@ -113,6 +113,22 @@ These will be relevant for all models in the same EEPROM.</string>
        <string>Setup</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout" columnstretch="1,0,0,0,0">
+       <item row="4" column="1">
+        <widget class="QSlider" name="hapticStrength">
+         <property name="minimum">
+          <number>-2</number>
+         </property>
+         <property name="maximum">
+          <number>2</number>
+         </property>
+         <property name="pageStep">
+          <number>1</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
        <item row="3" column="1">
         <widget class="QComboBox" name="hapticLengthCB">
          <item>
@@ -419,6 +435,20 @@ Mode 4:
          <property name="text">
           <string>Vario pitch at zero</string>
          </property>
+        </widget>
+       </item>
+       <item row="10" column="1">
+        <widget class="QComboBox" name="displayTypeCB">
+         <item>
+          <property name="text">
+           <string>Standard</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Optrex</string>
+          </property>
+         </item>
         </widget>
        </item>
        <item row="30" column="3" colspan="2">
@@ -1446,20 +1476,6 @@ Acceptable values are 5v..10v</string>
          </property>
         </widget>
        </item>
-       <item row="10" column="1">
-        <widget class="QComboBox" name="displayTypeCB">
-         <item>
-          <property name="text">
-           <string>Standard</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Optrex</string>
-          </property>
-         </item>
-        </widget>
-       </item>
        <item row="9" column="0">
         <widget class="QLabel" name="label_contrast">
          <property name="toolTip">
@@ -1723,19 +1739,6 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </item>
-       <item row="4" column="1">
-        <widget class="QSpinBox" name="hapticStrengthSB">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximum">
-          <number>5</number>
-         </property>
-        </widget>
-       </item>
        <item row="12" column="1">
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
@@ -1836,6 +1839,51 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </item>
+       <item row="31" column="0">
+        <widget class="QLabel" name="stickReverseLB">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Stick reverse (order as above)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="31" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QCheckBox" name="stickReverse1">
+           <property name="text">
+            <string notr="true">1</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="stickReverse2">
+           <property name="text">
+            <string notr="true">2</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="stickReverse3">
+           <property name="text">
+            <string notr="true">3</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="stickReverse4">
+           <property name="text">
+            <string notr="true">4</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
        <item row="4" column="3" rowspan="2" colspan="2">
         <layout class="QGridLayout" name="gridLayout_9" columnstretch="1,0,1,0">
          <item row="0" column="0">
@@ -1927,51 +1975,6 @@ p, li { white-space: pre-wrap; }
            </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="31" column="0">
-        <widget class="QLabel" name="stickReverseLB">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>Stick reverse (order as above)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="31" column="1">
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <item>
-          <widget class="QCheckBox" name="stickReverse1">
-           <property name="text">
-            <string notr="true">1</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="stickReverse2">
-           <property name="text">
-            <string notr="true">2</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="stickReverse3">
-           <property name="text">
-            <string notr="true">3</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="stickReverse4">
-           <property name="text">
-            <string notr="true">4</string>
            </property>
           </widget>
          </item>

@@ -200,7 +200,7 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
     }
     
     if (!GetCurrentFirmware()->getCapability(Haptic)) {
-      ui->hapticStrengthSB->setDisabled(true);
+      ui->hapticStrength->setDisabled(true);
       ui->hapticmodeCB->setDisabled(true);
     } 
 
@@ -375,7 +375,7 @@ void GeneralEdit::setValues()
     ui->volume_SB->setValue(g_eeGeneral.speakerVolume);
     ui->beeperlenCB->setCurrentIndex(g_eeGeneral.beeperLength+2);
     ui->speakerPitchSB->setValue(g_eeGeneral.speakerPitch);
-    ui->hapticStrengthSB->setValue(g_eeGeneral.hapticStrength);
+    ui->hapticStrength->setValue(g_eeGeneral.hapticStrength);
     ui->hapticmodeCB->setCurrentIndex(g_eeGeneral.hapticMode+2);
     ui->battCalibDSB->setValue((double)g_eeGeneral.vBatCalib/10);
     ui->CurrentCalib_SB->setValue((double)g_eeGeneral.currentCalib);
@@ -914,9 +914,9 @@ void GeneralEdit::on_speakerPitchSB_editingFinished()
     updateSettings();
 }
 
-void GeneralEdit::on_hapticStrengthSB_editingFinished()
+void GeneralEdit::on_hapticStrength_valueChanged()
 {
-    g_eeGeneral.hapticStrength = ui->hapticStrengthSB->value();
+    g_eeGeneral.hapticStrength = ui->hapticStrength->value();
     updateSettings();
 }
 
@@ -1018,9 +1018,9 @@ void GeneralEdit::on_calretrieve_PB_clicked()
       byte8=(int8_t)HapticSet.mid(0,2).toUInt(&ok,16);
       if (ok)
         g_eeGeneral.hapticMode=(BeeperMode)byte8;
-      byte8u=(uint8_t)HapticSet.mid(2,2).toUInt(&ok,16);
+      byte8=(int8_t)HapticSet.mid(2,2).toInt(&ok,16);
       if (ok)
-        g_eeGeneral.hapticStrength=byte8u;
+        g_eeGeneral.hapticStrength=byte8;
       byte8=(int8_t)HapticSet.mid(4,2).toInt(&ok,16);
       if (ok)
         g_eeGeneral.hapticLength=byte8;
@@ -1090,7 +1090,7 @@ void GeneralEdit::on_calstore_PB_clicked()
     g.profile[profile_id].gsStickMode( g_eeGeneral.stickMode );
     g.profile[profile_id].display( QString("%1%2%3").arg((g_eeGeneral.optrexDisplay ? 1:0), 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.contrast, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.backlightBright, 2, 16, QChar('0')) );
     g.profile[profile_id].beeper( QString("%1%2").arg(((uint8_t)g_eeGeneral.beeperMode), 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.beeperLength, 2, 16, QChar('0')));
-    g.profile[profile_id].haptic( QString("%1%2%3").arg(((uint8_t)g_eeGeneral.hapticMode), 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.hapticStrength, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.hapticLength, 2, 16, QChar('0')));
+    g.profile[profile_id].haptic( QString("%1%2%3").arg(((uint8_t)g_eeGeneral.hapticMode), 2, 16, QChar('0')).arg((int8_t)g_eeGeneral.hapticStrength, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.hapticLength, 2, 16, QChar('0')));
     g.profile[profile_id].speaker( QString("%1%2%3").arg((uint8_t)g_eeGeneral.speakerMode, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.speakerPitch, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.speakerVolume, 2, 16, QChar('0')));
     g.profile[profile_id].countryCode( QString("%1%2%3").arg((uint8_t)g_eeGeneral.countryCode, 2, 16, QChar('0')).arg((uint8_t)g_eeGeneral.imperial, 2, 16, QChar('0')).arg(g_eeGeneral.ttsLanguage));
 

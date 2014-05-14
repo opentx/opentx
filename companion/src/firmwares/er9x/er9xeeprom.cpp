@@ -124,7 +124,7 @@ Er9xGeneral::operator GeneralSettings ()
   result.PPM_Multiplier = PPM_Multiplier;
   getEEPROMString(result.ownerName, ownerName, sizeof(ownerName));
   result.speakerPitch = speakerPitch;
-  result.hapticStrength = hapticStrength;
+  result.hapticStrength = hapticStrength - 3;
   result.speakerMode = speakerMode;
   result.switchWarningStates =switchWarningStates;
   return result;

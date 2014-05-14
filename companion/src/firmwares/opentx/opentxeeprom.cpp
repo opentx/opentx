@@ -2664,7 +2664,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
   }
 
   internalField.Append(new SignedField<3>(generalData.beeperLength));
-  internalField.Append(new UnsignedField<3>(generalData.hapticStrength));
+  internalField.Append(new SignedField<3>(generalData.hapticStrength));
   internalField.Append(new UnsignedField<1>(generalData.gpsFormat));
   internalField.Append(new SpareBitsField<1>()); // unexpectedShutdown
 

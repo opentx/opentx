@@ -411,7 +411,7 @@ PACK(typedef struct t_EEGeneral {
   N_PCBSTD_FIELD( uint8_t   reNavigation)
   N_TARANIS_FIELD(uint8_t   stickReverse)
   int8_t    beepLength:3;
-  uint8_t   hapticStrength:3;
+  int8_t    hapticStrength:3;
   uint8_t   gpsFormat:1;
   uint8_t   unexpectedShutdown:1;
   uint8_t   speakerPitch;
@@ -424,6 +424,8 @@ PACK(typedef struct t_EEGeneral {
   swstate_t switchUnlockStates;
 
 }) EEGeneral;
+
+#define HAPTIC_STRENGTH()    (3+g_eeGeneral.hapticStrength)
 
 #if defined(PCBTARANIS)
   #define LEN_MODEL_NAME     12

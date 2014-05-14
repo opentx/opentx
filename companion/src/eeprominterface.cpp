@@ -928,9 +928,9 @@ GeneralSettings::GeneralSettings()
       byte8=(int8_t)t_HapticSet.mid(0,2).toUInt(&ok,16);
       if (ok)
         hapticMode=(BeeperMode)byte8;
-      byte8u=(uint8_t)t_HapticSet.mid(2,2).toUInt(&ok,16);
+      byte8=(int8_t)t_HapticSet.mid(2,2).toInt(&ok,16);
       if (ok)
-        hapticStrength=byte8u;
+        hapticStrength=byte8;
       byte8=(int8_t)t_HapticSet.mid(4,2).toInt(&ok,16);
       if (ok)
         hapticLength=byte8;

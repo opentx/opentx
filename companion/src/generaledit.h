@@ -36,7 +36,7 @@ private slots:
     void on_faimode_CB_stateChanged(int );
     void on_speakerPitchSB_editingFinished();
     void on_timezoneSB_editingFinished();
-    void on_hapticStrengthSB_editingFinished();
+    void on_hapticStrength_valueChanged();
     void on_soundModeCB_currentIndexChanged(int index);
     void on_beeperlenCB_currentIndexChanged(int index);
     void on_volume_SB_editingFinished();

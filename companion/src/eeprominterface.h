@@ -506,7 +506,7 @@ class GeneralSettings {
     bool      hideNameOnSplash;
     bool      enablePpmsim;
     unsigned int   speakerPitch;
-    unsigned int   hapticStrength;
+    int   hapticStrength;
     unsigned int   speakerMode;
     unsigned int   lightOnStickMove; /* er9x / ersky9x only */
     char      ownerName[10+1];

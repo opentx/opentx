@@ -328,6 +328,8 @@ void ConvertGeneralSettings_215_to_216(EEGeneral &settings)
   settings.chkSum = evalChkSum();
 
   memcpy(&settings.currModel, &oldSettings.currModel, sizeof(GeneralSettings_v215)-offsetof(GeneralSettings_v215, currModel));
+
+  settings.hapticStrength = 0; // Haptic strength reset
 }
 
 int ConvertTelemetrySource_215_to_216(int source)
