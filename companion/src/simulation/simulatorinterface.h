@@ -21,9 +21,9 @@
 
 struct TxInputs {
     int  sticks[NUM_STICKS]; /* lh lv rv rh */
-    int  pots[5]; /* TODO NUM_POTS */
-    int  switches[10]; /* TODO NUM_SWITCHES */
-    bool keys[6]; /* TODO NUM_KEYS */
+    int  pots[C9X_NUM_POTS];
+    int  switches[C9X_NUM_SWITCHES];
+    bool keys[C9X_NUM_KEYS];
     bool rotenc;
     bool trims[8];
 };
@@ -35,8 +35,8 @@ class TxOutputs {
     }
 
     int16_t chans[C9X_NUM_CHNOUT];
-    bool vsw[32]; /* TODO NUM_VIRTUAL_SWITCHES */
-    int16_t gvars[9][9];  /*TODO MAX_FLIGHT_MODES, NUM_GVARS */
+    bool vsw[C9X_NUM_CSW];
+    int16_t gvars[C9X_MAX_FLIGHT_MODES][C9X_MAX_GVARS];
     unsigned int beep;
     // uint8_t phase;
 };
