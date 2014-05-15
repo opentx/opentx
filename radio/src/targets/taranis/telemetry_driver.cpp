@@ -38,7 +38,7 @@
 
 extern Fifo<512> telemetryFifo;
 
-void sportInit(void)
+void telemetryPortInit(uint32_t baudrate)
 {
   USART_InitTypeDef USART_InitStructure;
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -66,7 +66,7 @@ void sportInit(void)
   
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPORT, ENABLE);
   
-  USART_InitStructure.USART_BaudRate = SPORT_BAUDRATE;
+  USART_InitStructure.USART_BaudRate = baudrate;
   USART_InitStructure.USART_WordLength = USART_WordLength_8b;
   USART_InitStructure.USART_StopBits = USART_StopBits_1;
   USART_InitStructure.USART_Parity = USART_Parity_No;
@@ -81,7 +81,7 @@ void sportInit(void)
   NVIC_SetPriority(USART2_IRQn, 6);
 }
 
-void sportPutc(const char c)
+void telemetryPutc(const char c)
 {
   GPIO_SetBits(GPIO_PIN_SPORT_ON, PIN_SPORT_ON);
   USART_SendData(SPORT, c);

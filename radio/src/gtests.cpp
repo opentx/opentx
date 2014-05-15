@@ -237,7 +237,7 @@ TEST(EEPROM, rm)
 }
 
 #if defined(FRSKY) && !defined(FRSKY_SPORT)
-extern void processFrskyPacket(uint8_t *packet);
+extern void frskyDProcessPacket(uint8_t *packet);
 TEST(FrSky, gpsNfuel)
 {
   g_model.frsky.usrProto = 1;
@@ -250,13 +250,13 @@ TEST(FrSky, gpsNfuel)
   uint8_t pkt5[] = { 0xfd, 0x07, 0x00, 0x5e, 0x22, 0x45, 0x00, 0x5e, 0x11, 0x02 };
   uint8_t pkt6[] = { 0xfd, 0x07, 0x00, 0x00, 0x5e, 0x19, 0x93, 0x00, 0x5e, 0x04 };
   uint8_t pkt7[] = { 0xfd, 0x03, 0x00, 0x64, 0x00, 0x5e };
-  processFrskyPacket(pkt1);
-  processFrskyPacket(pkt2);
-  processFrskyPacket(pkt3);
-  processFrskyPacket(pkt4);
-  processFrskyPacket(pkt5);
-  processFrskyPacket(pkt6);
-  processFrskyPacket(pkt7);
+  frskyDProcessPacket(pkt1);
+  frskyDProcessPacket(pkt2);
+  frskyDProcessPacket(pkt3);
+  frskyDProcessPacket(pkt4);
+  frskyDProcessPacket(pkt5);
+  frskyDProcessPacket(pkt6);
+  frskyDProcessPacket(pkt7);
   EXPECT_EQ(frskyData.hub.gpsCourse_bp, 44);
   EXPECT_EQ(frskyData.hub.gpsCourse_ap, 03);
   EXPECT_EQ(frskyData.hub.gpsLongitude_bp / 100, 120);
@@ -272,9 +272,9 @@ TEST(FrSky, dateNtime)
   uint8_t pkt1[] = { 0xfd, 0x07, 0x00, 0x5e, 0x15, 0x0f, 0x07, 0x5e, 0x16, 0x0b };
   uint8_t pkt2[] = { 0xfd, 0x07, 0x00, 0x00, 0x5e, 0x17, 0x06, 0x12, 0x5e, 0x18 };
   uint8_t pkt3[] = { 0xfd, 0x03, 0x00, 0x32, 0x00, 0x5e };
-  processFrskyPacket(pkt1);
-  processFrskyPacket(pkt2);
-  processFrskyPacket(pkt3);
+  frskyDProcessPacket(pkt1);
+  frskyDProcessPacket(pkt2);
+  frskyDProcessPacket(pkt3);
   EXPECT_EQ(frskyData.hub.day, 15);
   EXPECT_EQ(frskyData.hub.month, 07);
   EXPECT_EQ(frskyData.hub.year, 11);

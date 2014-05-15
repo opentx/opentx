@@ -310,7 +310,7 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   INCDIRS += targets/stock
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM64 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
   BOARDSRC = targets/stock/board_stock.cpp
-  EXTRABOARDSRC = targets/stock/lcd_driver.cpp
+  EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   PULSESSRC = protocols/pulses_avr.cpp
 
@@ -373,7 +373,7 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM128 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
   INCDIRS += targets/stock
   BOARDSRC = targets/stock/board_stock.cpp
-  EXTRABOARDSRC = targets/stock/lcd_driver.cpp
+  EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   PULSESSRC = protocols/pulses_avr.cpp
   
@@ -432,7 +432,7 @@ ifeq ($(PCB), $(filter $(PCB), 9X2561))
   CPPDEFS = -DF_CPU=$(F_CPU)UL -DPCBSTD -DCPUM2561 -DEEPROM_VARIANT=$(shell echo ${EEPROM_VARIANT} | bc)
   INCDIRS += targets/stock
   BOARDSRC = targets/stock/board_stock.cpp
-  EXTRABOARDSRC = targets/stock/lcd_driver.cpp
+  EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   PULSESSRC = protocols/pulses_avr.cpp
 
@@ -492,7 +492,7 @@ ifeq ($(PCB), GRUVIN9X)
   THR_TRACE = YES
   INCDIRS += targets/gruvin9x targets/stock FatFs FatFs/option
   BOARDSRC = targets/gruvin9x/board_gruvin9x.cpp
-  EXTRABOARDSRC = targets/stock/lcd_driver.cpp
+  EXTRABOARDSRC = targets/stock/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   PULSESSRC = protocols/pulses_avr.cpp  
   CPPSRC += audio_avr.cpp haptic.cpp
@@ -530,7 +530,7 @@ ifeq ($(PCB), MEGA2560)
   THR_TRACE = YES
   INCDIRS += targets/mega2560 targets/stock FatFs FatFs/option
   BOARDSRC = targets/mega2560/board_mega2560.cpp
-  EXTRABOARDSRC = targets/mega2560/lcd_driver_ST7565R.cpp
+  EXTRABOARDSRC = targets/mega2560/lcd_driver_ST7565R.cpp targets/common_avr/telemetry_driver.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   PULSESSRC = protocols/pulses_avr.cpp  
   CPPSRC += audio_avr.cpp
@@ -660,7 +660,7 @@ ifeq ($(PCB), TARANIS)
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp eeprom_conversions.cpp
   PULSESSRC = protocols/pulses_arm.cpp protocols/ppm_arm.cpp protocols/pxx_arm.cpp
   CPPSRC += audio_arm.cpp
-  CPPSRC += targets/taranis/pulses_driver.cpp targets/taranis/keys_driver.cpp targets/taranis/adc_driver.cpp targets/taranis/trainer_driver.cpp targets/taranis/audio_driver.cpp targets/taranis/uart3_driver.cpp targets/taranis/sport_driver.cpp
+  CPPSRC += targets/taranis/pulses_driver.cpp targets/taranis/keys_driver.cpp targets/taranis/adc_driver.cpp targets/taranis/trainer_driver.cpp targets/taranis/audio_driver.cpp targets/taranis/uart3_driver.cpp targets/taranis/telemetry_driver.cpp
   CPPSRC += bmp.cpp gui/view_channels.cpp gui/view_about.cpp gui/view_text.cpp loadboot.cpp
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/system_stm32f2xx.c
   SRC += targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/src/misc.c
@@ -928,11 +928,11 @@ endif
 
 ifeq ($(EXT), $(filter $(EXT), FRSKY TELEMETREZ))
   CPPDEFS += -DFRSKY
-  ifeq ($(PCB), TARANIS)
-	CPPSRC += telemetry/frsky_sport.cpp
+  ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO TARANIS))
+	CPPSRC += telemetry/frsky.cpp telemetry/frsky_sport.cpp telemetry/frsky_d.cpp
     CPPDEFS += -DFRSKY_SPORT
   else
-    CPPSRC += telemetry/frsky.cpp
+    CPPSRC += telemetry/frsky.cpp telemetry/frsky_d.cpp
   endif
   CPPSRC += gui/view_telemetry.cpp
   

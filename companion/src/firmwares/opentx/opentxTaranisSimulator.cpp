@@ -112,8 +112,11 @@ inline int geteepromsize() {
 #define SDCARD
 #include "radio/src/translations.cpp"
 #include "radio/src/fonts.cpp"
+#include "radio/src/telemetry/frsky.cpp"
 #include "radio/src/telemetry/frsky_sport.cpp"
+#include "radio/src/telemetry/frsky_d.cpp"
 #include "radio/src/targets/taranis/audio_driver.cpp"
+#include "radio/src/targets/taranis/telemetry_driver.cpp"
 #include "radio/src/audio_arm.cpp"
 #include "radio/src/translations/tts_cz.cpp"
 #include "radio/src/translations/tts_de.cpp"

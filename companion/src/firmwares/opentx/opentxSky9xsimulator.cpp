@@ -99,6 +99,8 @@ namespace Open9xSky9x {
 #include "radio/src/translations.cpp"
 #include "radio/src/fonts.cpp"
 #include "radio/src/telemetry/frsky.cpp"
+#include "radio/src/telemetry/frsky_sport.cpp"
+#include "radio/src/telemetry/frsky_d.cpp"
 #include "radio/src/targets/sky9x/audio_driver.cpp"
 #include "radio/src/audio_arm.cpp"
 #include "radio/src/buzzer.cpp"

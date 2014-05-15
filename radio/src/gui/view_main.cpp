@@ -446,10 +446,10 @@ void menuMainViewChannelsMonitor(uint8_t event)
 void onMainViewMenu(const char *result)
 {
   if (result == STR_RESET_TIMER1) {
-    resetTimer(0);
+    timerReset(0);
   }
   else if (result == STR_RESET_TIMER2) {
-    resetTimer(1);
+    timerReset(1);
   }
 #if defined(PCBTARANIS)
   else if (result == STR_VIEW_NOTES) {
@@ -464,11 +464,11 @@ void onMainViewMenu(const char *result)
 #endif
 #if defined(FRSKY)
   else if (result == STR_RESET_TELEMETRY) {
-    resetTelemetry();
+    telemetryReset();
   }
 #endif
   else if (result == STR_RESET_FLIGHT) {
-    resetAll();
+    flightReset();
   }
   else if (result == STR_STATISTICS) {
     chainMenu(menuStatisticsView);
@@ -630,7 +630,7 @@ void menuMainView(uint8_t event)
 #endif
 #if !defined(PCBTARANIS)
       if (view == VIEW_TIMER2) {
-        resetTimer(1);
+        timerReset(1);
       }
 #endif
       AUDIO_KEYPAD_UP();
@@ -638,7 +638,7 @@ void menuMainView(uint8_t event)
 
 #if !defined(NAVIGATION_MENUS)
     case EVT_KEY_LONG(KEY_EXIT):
-      resetAll();
+      flightReset();
       AUDIO_KEYPAD_UP();
       break;
 #endif

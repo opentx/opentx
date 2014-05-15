@@ -856,7 +856,7 @@ enum Functions {
 enum ResetFunctionParam {
   FUNC_RESET_TIMER1,
   FUNC_RESET_TIMER2,
-  FUNC_RESET_ALL,
+  FUNC_RESET_FLIGHT,
 #if defined(FRSKY)
   FUNC_RESET_TELEMETRY,
 #endif

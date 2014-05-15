@@ -964,7 +964,7 @@ void eeLoadModel(uint8_t id)
       eeCheck(true);
     }
 
-    resetAll();
+    flightReset();
 
     if (pulsesStarted()) {
       checkAll();

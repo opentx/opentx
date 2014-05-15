@@ -157,7 +157,6 @@ void boardInit()
   init5msTimer();
   __enable_irq();
   eepromInit();
-  sportInit();
   usbInit();
   
 #if defined(HAPTIC)  

@@ -59,15 +59,6 @@ volatile uint32_t lcdInputs;
 /** Pins description corresponding to Rxd,Txd, (UART pins) */
 #define CONSOLE_PINS        {PINS_UART}
 
-/** Second serial baudrate 9600. */
-#define SECOND_BAUDRATE    9600
-/** Usart Hw interface used by the console (UART0). */
-#define SECOND_USART       USART0
-/** Usart Hw ID used by the console (UART0). */
-#define SECOND_ID          ID_USART0
-/** Pins description corresponding to Rxd,Txd, (UART pins) */
-#define SECOND_PINS        {PINS_USART0}
-
 extern "C" void sam_boot( void ) ;
 
 // Prototype
@@ -619,9 +610,6 @@ void boardInit()
 #endif
 
   init_SDcard();
-
-  UART2_Configure(9600, Master_frequency);
-  startPdcUsartReceive();
 }
 #endif
 

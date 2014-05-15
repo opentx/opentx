@@ -36,10 +36,6 @@
 
 #include "../opentx.h"
 
-#define START_STOP              0x7e
-#define BYTESTUFF               0x7d
-#define STUFF_MASK              0x20
-
 // FrSky PRIM IDs (1 byte)
 #define DATA_FRAME              0x10
 
@@ -125,22 +121,6 @@
 // FrSky wrong IDs ?
 #define BETA_VARIO_ID           0x8030
 #define BETA_BARO_ALT_ID        0x8010
-
-uint8_t telemetryState = TELEMETRY_INIT;
-
-uint8_t frskyRxBuffer[FRSKY_RX_PACKET_SIZE];   // Receive buffer. 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1)
-uint8_t frskyTxBuffer[FRSKY_TX_PACKET_SIZE];   // Ditto for transmit buffer
-#if !defined(CPUARM)
-uint8_t frskyTxBufferCount = 0;
-#endif
-uint8_t link_counter = 0;
-FrskyData frskyData;
-
-#if defined(DEBUG) && !defined(SIMU)
-extern FIL g_telemetryFile;
-#endif
-
-Fifo<512> telemetryFifo;
 
 void setBaroAltitude(int32_t baroAltitude)
 {
@@ -294,7 +274,7 @@ void processHubPacket(uint8_t id, uint16_t value)
 bool checkSportPacket(uint8_t *packet)
 {
   short crc = 0;
-  for (int i=1; i<FRSKY_RX_PACKET_SIZE; i++) {
+  for (int i=1; i<FRSKY_SPORT_PACKET_SIZE; i++) {
     crc += packet[i]; //0-1FF
     crc += crc >> 8; //0-100
     crc &= 0x00ff;
@@ -309,7 +289,7 @@ bool checkSportPacket(uint8_t *packet)
 #define SPORT_DATA_U32(packet)  (*((uint32_t *)(packet+4)))
 #define HUB_DATA_U16(packet)    (*((uint16_t *)(packet+4)))
 
-void processSportPacket(uint8_t *packet)
+void frskySportProcessPacket(uint8_t *packet)
 {
   /* uint8_t  dataId = packet[0]; */
   uint8_t  prim   = packet[1];
@@ -324,6 +304,7 @@ void processSportPacket(uint8_t *packet)
     case DATA_FRAME:
 
       if (appId == RSSI_ID) {
+        link_counter += 32;
         frskyData.rssi[0].set(SPORT_DATA_U8(packet));
       }
       if (appId == SWR_ID) {
@@ -331,7 +312,8 @@ void processSportPacket(uint8_t *packet)
       }
       else if (appId == ADC1_ID || appId == ADC2_ID) {
         // A1/A2 of DxR receivers
-        frskyData.analog[appId-ADC1_ID].set(SPORT_DATA_U8(packet));
+        uint8_t idx = appId - ADC1_ID;
+        frskyData.analog[idx].set(SPORT_DATA_U8(packet), g_model.frsky.channels[idx].type);
 #if defined(VARIO)
         uint8_t varioSource = g_model.frsky.varioSource - VARIO_SOURCE_A1;
         if (varioSource == appId-ADC1_ID) {
@@ -340,7 +322,7 @@ void processSportPacket(uint8_t *packet)
 #endif
       }
       else if (appId == BATT_ID) {
-        frskyData.analog[0].set(SPORT_DATA_U8(packet));
+        frskyData.analog[0].set(SPORT_DATA_U8(packet), g_model.frsky.channels[0].type);
       }
       else if ((appId >> 8) == 0) {
         // The old FrSky IDs
@@ -522,296 +504,4 @@ void processSportPacket(uint8_t *packet)
       break;
 
   }
-}
-
-// Receive buffer state machine state enum
-enum FrSkyDataState {
-  STATE_DATA_IDLE,
-  STATE_DATA_IN_FRAME,
-  STATE_DATA_XOR,
-};
-
-void processSerialData(uint8_t data)
-{
-  static uint8_t numPktBytes = 0;
-  static uint8_t dataState = STATE_DATA_IDLE;
-
-#if defined(BLUETOOTH)
-  // TODO if (g_model.bt_telemetry)
-  btPushByte(data);
-#endif
-
-#if defined(PCBTARANIS)
-  if (g_eeGeneral.uart3Mode == UART_MODE_SPORT) {
-    uart3Putc(data);
-  }
-#endif
-
-  if (data == START_STOP) {
-    dataState = STATE_DATA_IN_FRAME;
-    numPktBytes = 0;
-  }
-  else {
-    switch (dataState) {
-      case STATE_DATA_XOR:
-        frskyRxBuffer[numPktBytes++] = data ^ STUFF_MASK;
-        dataState = STATE_DATA_IN_FRAME;
-        break;
-
-      case STATE_DATA_IN_FRAME:
-        if (data == BYTESTUFF)
-          dataState = STATE_DATA_XOR; // XOR next byte
-        else
-          frskyRxBuffer[numPktBytes++] = data;
-        break;
-    }
-  }
-
-  if (numPktBytes == FRSKY_RX_PACKET_SIZE) {
-    processSportPacket(frskyRxBuffer);
-    dataState = STATE_DATA_IDLE;
-  }
-}
-
-uint8_t frskyAlarmsSendState = 0 ;
-
-
-void telemetryInterrupt10ms()
-{
-  uint16_t voltage = 0; /* unit: 1/10 volts */
-
-#if defined(FRSKY_HUB)
-  for (uint8_t i=0; i<frskyData.hub.cellsCount; i++)
-    voltage += frskyData.hub.cellVolts[i];
-  voltage /= 10;
-  frskyData.hub.cellsSum = voltage;
-  if (frskyData.hub.cellsSum < frskyData.hub.minCells) {
-    frskyData.hub.minCells = frskyData.hub.cellsSum;
-  }
-#endif
-
-  if (TELEMETRY_STREAMING()) {
-    uint8_t channel = g_model.frsky.voltsSource;
-    if (channel <= 1) {
-      voltage = applyChannelRatio(channel, frskyData.analog[channel].value) / 10;
-    }
-#if defined(FRSKY_HUB)
-    else if (channel == 2) {
-      voltage = frskyData.hub.vfas;
-    }
-#endif
-
-#if defined(FRSKY_HUB)
-    uint16_t current = frskyData.hub.current; /* unit: 1/10 amps */
-#else
-    uint16_t current = 0;
-#endif
-
-    channel = g_model.frsky.currentSource - FRSKY_CURRENT_SOURCE_A1;
-    if (channel <= 1) {
-      current = applyChannelRatio(channel, frskyData.analog[channel].value) / 10;
-    }
-
-    frskyData.hub.power = (current * voltage) / 100;
-    if (frskyData.hub.power > frskyData.hub.maxPower)
-      frskyData.hub.maxPower = frskyData.hub.power;
-
-    frskyData.hub.currentPrescale += current;
-    if (frskyData.hub.currentPrescale >= 3600) {
-      frskyData.hub.currentConsumption += 1;
-      frskyData.hub.currentPrescale -= 3600;
-    }
-  }
-}
-
-inline bool alarmRaised(uint8_t channel, uint8_t idx)
-{
-  return g_model.frsky.channels[channel].ratio > 0 && g_model.frsky.channels[channel].alarms_value[idx] > 0 && frskyData.analog[channel].value < g_model.frsky.channels[channel].alarms_value[idx];
-}
-
-void telemetryWakeup()
-{
-#if defined(PCBTARANIS)
-  uint8_t data;
-#if defined(DEBUG) && !defined(SIMU)
-  static tmr10ms_t lastTime = 0;
-  tmr10ms_t newTime = get_tmr10ms();
-  struct gtm utm;
-  gettime(&utm);
-#endif
-  while (telemetryFifo.pop(data)) {
-    processSerialData(data);
-#if defined(DEBUG) && !defined(SIMU)
-    if (lastTime != newTime) {
-      f_printf(&g_telemetryFile, "\r\n%4d-%02d-%02d,%02d:%02d:%02d.%02d0: %02X", utm.tm_year+1900, utm.tm_mon+1, utm.tm_mday, utm.tm_hour, utm.tm_min, utm.tm_sec, g_ms100, data);
-      lastTime = newTime;
-    }
-    else {
-      f_printf(&g_telemetryFile, " %02X", data);
-    }
-#endif
-  }
-#elif defined(PCBSKY9X)
-  rxPdcUsart(processSerialData);              // Receive serial data here
-#endif
-
-#if 0
-  // Attempt to transmit any waiting Fr-Sky alarm set packets every 50ms (subject to packet buffer availability)
-  static uint8_t frskyTxDelay = 5;
-  if (frskyAlarmsSendState && (--frskyTxDelay == 0)) {
-    frskyTxDelay = 5; // 50ms
-    // frskySendNextAlarm();
-  }
-#endif
-
-#if defined(VARIO)
-  if (TELEMETRY_STREAMING() && !IS_FAI_ENABLED()) {
-    varioWakeup();
-  }
-#endif
-
-  static tmr10ms_t alarmsCheckTime = 0;
-  static uint8_t alarmsCheckStep = 0;
-
-  if (int32_t(get_tmr10ms() - alarmsCheckTime) > 0) {
-
-    alarmsCheckTime = get_tmr10ms() + 100; /* next check in 1second */
-
-    if (alarmsCheckStep == 0) {
-#if defined(PCBTARANIS)
-      // TODO not only Taranis!
-      if ((IS_MODULE_XJT(0) || IS_MODULE_XJT(1)) && frskyData.swr.value > 0x33) {
-        AUDIO_SWR_RED();
-        POPUP_WARNING(STR_ANTENNAPROBLEM);
-        alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3seconds */
-      }
-#endif
-    }
-    else if (TELEMETRY_STREAMING()) {
-      if (alarmsCheckStep == 1) {
-        if (getRssiAlarmValue(1) && frskyData.rssi[0].value < getRssiAlarmValue(1)) {
-          AUDIO_RSSI_RED();
-          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3seconds */
-        }
-        else if (getRssiAlarmValue(0) && frskyData.rssi[0].value < getRssiAlarmValue(0)) {
-          AUDIO_RSSI_ORANGE();
-          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3seconds */
-        }
-      }
-      else if (alarmsCheckStep == 2) {
-        if (alarmRaised(1, 1)) {
-          AUDIO_A2_RED();
-          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3seconds */
-        }
-        else if (alarmRaised(1, 0)) {
-          AUDIO_A2_ORANGE();
-          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3seconds */
-        }
-      }
-      else if (alarmsCheckStep == 3) {
-        if (alarmRaised(0, 1)) {
-          AUDIO_A1_RED();
-          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3seconds */
-        }
-        else if (alarmRaised(0, 0)) {
-          AUDIO_A1_ORANGE();
-          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3seconds */
-        }
-      }
-    }
-
-    if (++alarmsCheckStep == 4) {
-      alarmsCheckStep = 0;
-    }
-  }
-
-  if (TELEMETRY_STREAMING()) {
-    if (telemetryState == TELEMETRY_KO) {
-      AUDIO_TELEMETRY_BACK();
-    }
-    telemetryState = TELEMETRY_OK;
-  }
-  else if (telemetryState == TELEMETRY_OK) {
-    telemetryState = TELEMETRY_KO;
-    AUDIO_TELEMETRY_LOST();
-  }
-}
-
-void FRSKY_Init(void)
-{
-  // clear frsky variables
-  resetTelemetry();
-}
-
-void FRSKY_End(void)
-{
-}
-
-void FrskyValueWithMinMax::set(uint8_t value)
-{
-  this->value = value;
-
-  if (value) {
-    if (!max || value > max)
-      max = value;
-    if (!min || value < min)
-      min = value;
-  }
-}
-
-void resetTelemetry()
-{
-  memclear(&frskyData, sizeof(frskyData));
-  telemetryState = TELEMETRY_INIT;
-
-#if defined(FRSKY_HUB)
-  frskyData.hub.gpsLatitude_bp = 2;
-  frskyData.hub.gpsLongitude_bp = 2;
-  frskyData.hub.gpsFix = -1;
-#endif
-
-#if defined(SIMU)
-  frskyData.analog[0].set(120);
-  frskyData.analog[1].set(240);
-  frskyData.rssi[0].value = 75;
-  frskyData.swr.value = 30;
-  frskyData.hub.fuelLevel = 75;
-  frskyData.hub.rpm = 12000;
-  frskyData.hub.vfas = 100;
-  frskyData.hub.minVfas = 90;
-
-  frskyData.hub.gpsFix = 1;
-  frskyData.hub.gpsLatitude_bp = 4401;
-  frskyData.hub.gpsLatitude_ap = 7710;
-  frskyData.hub.gpsLongitude_bp = 1006;
-  frskyData.hub.gpsLongitude_ap = 8872;
-  getGpsPilotPosition();
-
-  frskyData.hub.gpsLatitude_bp = 4401;
-  frskyData.hub.gpsLatitude_ap = 7455;
-  frskyData.hub.gpsLongitude_bp = 1006;
-  frskyData.hub.gpsLongitude_ap = 9533;
-  getGpsDistance();
-
-  frskyData.hub.gpsSpeed_bp = 100;
-  frskyData.hub.gpsSpeed_ap = 50;
-
-  frskyData.hub.airSpeed = 100;
-
-  frskyData.hub.cellsCount = 6;
-
-  frskyData.hub.baroAltitudeOffset = 500 * 100;
-  frskyData.hub.baroAltitude = 50 * 100;
-  frskyData.hub.gpsAltitude_bp = 50;
-
-  frskyData.hub.minAltitude = 10;
-  frskyData.hub.maxAltitude = 500;
-
-  frskyData.hub.accelY = 100;
-  frskyData.hub.temperature1 = -30;
-  frskyData.hub.maxTemperature1 = 100;
-  
-  frskyData.hub.current = 5;
-  frskyData.hub.maxCurrent = 56;
-#endif
 }

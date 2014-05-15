@@ -490,6 +490,7 @@ enum PotType {
   #define MAX_TRAINER_CHANNELS()    (8)
   #define MAX_CHANNELS(idx)         (idx==0 ? MAX_PORT1_CHANNELS() : (idx==1 ? MAX_PORT2_CHANNELS() : MAX_TRAINER_CHANNELS()))
 #elif defined(PCBSKY9X)
+  #define IS_MODULE_XJT()           (IS_PXX_PROTOCOL(g_model.protocol))
   #define NUM_PORT1_CHANNELS()      (IS_PXX_PROTOCOL(g_model.protocol) ? 8 : (IS_DSM2_PROTOCOL(g_model.protocol) ? 6 : (8+g_model.moduleData[0].channelsCount)))
   #define NUM_PORT2_CHANNELS()      (8+g_model.moduleData[1].channelsCount)
   #define NUM_CHANNELS(idx)         (idx==0 ? NUM_PORT1_CHANNELS() : (8+g_model.moduleData[idx].channelsCount))
@@ -813,8 +814,8 @@ extern int16_t csLastValue[NUM_LOGICAL_SWITCH];
 #define TMR_RUNNING  1
 #define TMR_NEGATIVE 2
 #define TMR_STOPPED  3
-void resetTimer(uint8_t idx);
-void resetAll();
+void timerReset(uint8_t idx);
+void flightReset();
 
 extern uint8_t unexpectedShutdown;
 extern uint8_t g_tmr1Latency_max;
@@ -1231,10 +1232,7 @@ inline bool isFunctionActive(uint8_t func)
   extern volatile rotenc_t g_rotenc[1];
 #endif
 
-#if defined(FRSKY_SPORT)
-  // FrSky SPORT Telemetry
-  #include "telemetry/frsky_sport.h"
-#elif defined (FRSKY)
+#if defined (FRSKY)
   // FrSky Telemetry
   #include "telemetry/frsky.h"
 #elif defined(JETI)

@@ -37,6 +37,8 @@
 #ifndef board_stock_h
 #define board_stock_h
 
+#include "../common_avr/board_avr.h"
+
 #define GPIO_BUTTON_MENU       pinb
 #define GPIO_BUTTON_EXIT       pinb
 #define GPIO_BUTTON_RIGHT      pinb
