@@ -61,9 +61,11 @@ for (int i=0; i<NUM_LOGICAL_SWITCH; i++)
 #endif
 #ifdef GVAR_VALUE // defined(GVARS)
 /* TODO it could be a good idea instead of getPhase() / getPhaseName() outputs.phase = getFlightPhase(); */
-for (int fm=0; fm<MAX_FLIGHT_MODES; fm++)
-  for (int gv=0; gv<MAX_GVARS; gv++)
-    outputs.gvars[fm][gv] = GVAR_VALUE(gv, fm);
+for (int fm=0; fm<MAX_FLIGHT_MODES; fm++) {
+  for (int gv=0; gv<MAX_GVARS; gv++) {
+    outputs.gvars[fm][gv] = GVAR_VALUE(gv, getGVarFlightPhase(fm, gv));
+  }
+}
 #endif
 #endif   //GETVALUES_IMPORT
 
