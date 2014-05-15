@@ -76,6 +76,7 @@ namespace Open9xSky9x {
 #include "radio/src/eeprom_conversions.cpp"
 #include "radio/src/opentx.cpp"
 #include "radio/src/switches.cpp"
+#include "radio/src/curves.cpp"
 #include "radio/src/targets/sky9x/pulses_driver.cpp"
 #include "radio/src/protocols/pulses_arm.cpp"
 #include "radio/src/stamp.cpp"

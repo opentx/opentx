@@ -1040,7 +1040,16 @@ extern uint16_t           BandGap;
 
 int intpol(int x, uint8_t idx);
 int expo(int x, int k);
-int applyCurve(int x, int8_t idx);
+
+#if defined(CURVES)
+  #if defined(PCBTARANIS)
+    int applyCurve(int x, CurveRef & curve);
+  #else
+    int applyCurve(int x, int8_t idx);
+  #endif
+#else
+  #define applyCurve(x, idx) (x)
+#endif
 
 #if defined(PCBTARANIS)
   int applyCustomCurve(int x, uint8_t idx);
