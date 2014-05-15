@@ -39,13 +39,16 @@
 
 #include <inttypes.h>
 
-#define FRSKY_SPORT_BAUDRATE   57600
-#define FRSKY_D_BAUDRATE       9600
+#define FRSKY_SPORT_BAUDRATE      57600
+#define FRSKY_D_BAUDRATE          9600
 
-#define FRSKY_SPORT_PACKET_SIZE  9
+#define FRSKY_SPORT_PACKET_SIZE   9
 
-// 20 seconds
-#define FRSKY_TIMEOUT10ms      20
+#define FRSKY_TIMEOUT10ms         100 // 1 second
+#define WSHH_TIMEOUT10ms          60  // 600ms
+
+#define FRSKY_SPORT_AVERAGING     4
+#define FRSKY_D_AVERAGING         8
 
 // Global Fr-Sky telemetry data variables
 extern uint8_t frskyStreaming; // >0 (true) == data is streaming in. 0 = nodata detected for some time

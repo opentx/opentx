@@ -304,7 +304,8 @@ void frskySportProcessPacket(uint8_t *packet)
     case DATA_FRAME:
 
       if (appId == RSSI_ID) {
-        link_counter += 32;
+        frskyStreaming = FRSKY_TIMEOUT10ms; // reset counter only if valid frsky packets are being detected
+        link_counter += 256 / FRSKY_SPORT_AVERAGING;
         frskyData.rssi[0].set(SPORT_DATA_U8(packet));
       }
       if (appId == SWR_ID) {
@@ -502,6 +503,5 @@ void frskySportProcessPacket(uint8_t *packet)
         }
       }
       break;
-
   }
 }

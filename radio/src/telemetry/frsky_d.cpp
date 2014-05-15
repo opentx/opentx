@@ -276,7 +276,7 @@ void parseTelemHubByte(uint8_t byte)
 #if defined(WS_HOW_HIGH)
 void parseTelemWSHowHighByte(uint8_t byte)
 {
-  if (frskyUsrStreaming < (FRSKY_TIMEOUT10ms*3 - 10)) {
+  if (frskyUsrStreaming < (WSHH_TIMEOUT10ms - 10)) {
     ((uint8_t*)&frskyData.hub)[offsetof(FrskySerialData, baroAltitude_bp)] = byte;
     checkMinMaxAltitude();
   }
@@ -285,7 +285,7 @@ void parseTelemWSHowHighByte(uint8_t byte)
     ((uint8_t*)&frskyData.hub)[offsetof(FrskySerialData, baroAltitude_bp)+1] = byte;
   }
   // baroAltitude_bp unit here is feet!
-  frskyUsrStreaming = FRSKY_TIMEOUT10ms*3; // reset counter
+  frskyUsrStreaming = WSHH_TIMEOUT10ms; // reset counter
 }
 #endif  
 
@@ -296,12 +296,12 @@ void frskyDProcessPacket(uint8_t *packet)
   {
     case LINKPKT: // A1/A2/RSSI values
     {
-      link_counter += 32;
       frskyData.analog[0].set(packet[1], g_model.frsky.channels[0].type);
       frskyData.analog[1].set(packet[2], g_model.frsky.channels[1].type);
       frskyData.rssi[0].set(packet[3]);
       frskyData.rssi[1].set(packet[4] / 2);
       frskyStreaming = FRSKY_TIMEOUT10ms; // reset counter only if valid frsky packets are being detected
+      link_counter += 256 / FRSKY_D_AVERAGING;
 #if defined(VARIO)
       uint8_t varioSource = g_model.frsky.varioSource - VARIO_SOURCE_A1;
       if (varioSource < 2)

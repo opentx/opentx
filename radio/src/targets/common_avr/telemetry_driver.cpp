@@ -50,7 +50,7 @@ void telemetryEnableRx(void)
 }
 
 void processSerialData(uint8_t data);
-extern uint8_t numPktBytes; // TODO not driver, change name
+extern uint8_t frskyRxBufferCount; // TODO not driver, change name
 
 ISR(USART0_RX_vect)
 {
@@ -95,7 +95,7 @@ ISR(USART0_RX_vect)
 
   if (stat & ((1 << FE0) | (1 << DOR0) | (1 << UPE0))) {
     // discard buffer and start fresh on any comms error
-    numPktBytes = 0;
+    frskyRxBufferCount = 0;
   }
   else {
     processSerialData(data);

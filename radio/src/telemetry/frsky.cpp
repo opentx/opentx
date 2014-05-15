@@ -63,9 +63,38 @@ uint8_t telemetryState = TELEMETRY_INIT;
 Fifo<512> telemetryFifo; // TODO should be in the driver
 #endif
 
-uint8_t numPktBytes = 0; // TODO rename
+uint8_t frskyRxBufferCount = 0;
 
 FrskyData frskyData;
+
+#if defined(CPUARM)
+enum TelemetryProtocol
+{
+  PROTOCOL_NONE,
+  PROTOCOL_FRSKY_D,
+  PROTOCOL_FRSKY_SPORT,
+};
+
+#define IS_FRSKY_D_PROTOCOL()      (telemetryProtocol == PROTOCOL_FRSKY_D)
+#define IS_FRSKY_SPORT_PROTOCOL()  (telemetryProtocol == PROTOCOL_FRSKY_SPORT)
+
+TelemetryProtocol telemetryProtocol = PROTOCOL_NONE;
+
+TelemetryProtocol getTelemetryProtocol()
+{
+#if defined(PCBTARANIS)
+  if (IS_MODULE_XJT(0) || IS_MODULE_XJT(1))
+    return PROTOCOL_FRSKY_SPORT;
+#elif defined(PCBSKY9X)
+ if (IS_MODULE_XJT())
+   return PROTOCOL_FRSKY_SPORT;
+#endif
+  return PROTOCOL_FRSKY_D;
+}
+#else
+#define IS_FRSKY_D_PROTOCOL()     (true)
+#define IS_FRSKY_SPORT_PROTOCOL() (false)
+#endif
 
 void FrskyValueWithMin::set(uint8_t value)
 {
@@ -75,7 +104,7 @@ void FrskyValueWithMin::set(uint8_t value)
   else {
     sum += value;
     if (link_counter == 0) {
-      this->value = sum / 8;
+      this->value = sum / (IS_FRSKY_D_PROTOCOL() ? FRSKY_D_AVERAGING : FRSKY_SPORT_AVERAGING);
       sum = 0;
     }
   }
@@ -95,29 +124,6 @@ void FrskyValueWithMinMax::set(uint8_t value, uint8_t unit)
     max = value;
   }
 }
-
-#if defined(CPUARM)
-enum TelemetryProtocol
-{
-  PROTOCOL_NONE,
-  PROTOCOL_FRSKY_D,
-  PROTOCOL_FRSKY_SPORT,
-};
-
-TelemetryProtocol telemetryProtocol = PROTOCOL_NONE;
-
-TelemetryProtocol getTelemetryProtocol()
-{
-#if defined(PCBTARANIS)
-  if (IS_MODULE_XJT(0) || IS_MODULE_XJT(1))
-    return PROTOCOL_FRSKY_SPORT;
-#elif defined(PCBSKY9X)
- if (IS_MODULE_XJT())
-   return PROTOCOL_FRSKY_SPORT;
-#endif
-  return PROTOCOL_FRSKY_D;
-}
-#endif
 
 #if defined(CPUARM)
 inline bool alarmRaised(uint8_t channel, uint8_t idx)
@@ -150,16 +156,14 @@ NOINLINE void processSerialData(uint8_t data)
   {
     case STATE_DATA_START:
       if (data == START_STOP) {
-#if defined(FRSKY_SPORT)
-        if (telemetryProtocol == PROTOCOL_FRSKY_SPORT) {
+        if (IS_FRSKY_SPORT_PROTOCOL()) {
           dataState = STATE_DATA_IN_FRAME ;
-          numPktBytes = 0;
+          frskyRxBufferCount = 0;
         }
-#endif
       }
       else {
-        if (numPktBytes < FRSKY_RX_PACKET_SIZE) {
-          frskyRxBuffer[numPktBytes++] = data;
+        if (frskyRxBufferCount < FRSKY_RX_PACKET_SIZE) {
+          frskyRxBuffer[frskyRxBufferCount++] = data;
         }
         dataState = STATE_DATA_IN_FRAME;
       }
@@ -170,38 +174,32 @@ NOINLINE void processSerialData(uint8_t data)
         dataState = STATE_DATA_XOR; // XOR next byte
       }
       else if (data == START_STOP) {
-#if defined(FRSKY_SPORT)
-        if (telemetryProtocol == PROTOCOL_FRSKY_SPORT) {
+        if (IS_FRSKY_SPORT_PROTOCOL()) {
           dataState = STATE_DATA_IN_FRAME ;
-          numPktBytes = 0;
+          frskyRxBufferCount = 0;
         }
         else {
           // end of frame detected
           frskyDProcessPacket(frskyRxBuffer);
           dataState = STATE_DATA_IDLE;
         }
-#else
-        // end of frame detected
-        frskyDProcessPacket(frskyRxBuffer);
-        dataState = STATE_DATA_IDLE;
-#endif
         break;
       }
-      else if (numPktBytes < FRSKY_RX_PACKET_SIZE) {
-        frskyRxBuffer[numPktBytes++] = data;
+      else if (frskyRxBufferCount < FRSKY_RX_PACKET_SIZE) {
+        frskyRxBuffer[frskyRxBufferCount++] = data;
       }
       break;
 
     case STATE_DATA_XOR:
-      if (numPktBytes < FRSKY_RX_PACKET_SIZE) {
-        frskyRxBuffer[numPktBytes++] = data ^ STUFF_MASK;
+      if (frskyRxBufferCount < FRSKY_RX_PACKET_SIZE) {
+        frskyRxBuffer[frskyRxBufferCount++] = data ^ STUFF_MASK;
       }
       dataState = STATE_DATA_IN_FRAME;
       break;
 
     case STATE_DATA_IDLE:
       if (data == START_STOP) {
-        numPktBytes = 0;
+        frskyRxBufferCount = 0;
         dataState = STATE_DATA_START;
       }
 #if defined(TELEMETREZ)
@@ -242,18 +240,18 @@ NOINLINE void processSerialData(uint8_t data)
 #endif
   } // switch
 
-#if defined(FRSKY_SPORT)
-  if (telemetryProtocol == PROTOCOL_FRSKY_SPORT && numPktBytes >= FRSKY_SPORT_PACKET_SIZE) {
+  if (IS_FRSKY_SPORT_PROTOCOL() && frskyRxBufferCount >= FRSKY_SPORT_PACKET_SIZE) {
     frskySportProcessPacket(frskyRxBuffer);
     dataState = STATE_DATA_IDLE;
   }
-#endif
 }
 
 void telemetryWakeup()
 {
 #if defined(CPUARM)
-  if (telemetryProtocol != getTelemetryProtocol()) {
+  TelemetryProtocol currentProtocol = getTelemetryProtocol();
+  if (telemetryProtocol != currentProtocol) {
+    telemetryProtocol = currentProtocol;
     telemetryInit();
   }
 #endif
@@ -284,29 +282,16 @@ void telemetryWakeup()
 #endif
 
 #if !defined(PCBTARANIS)
-  // Attempt to transmit any waiting Fr-Sky alarm set packets every 50ms (subject to packet buffer availability)
-  static uint8_t frskyTxDelay = 5;
-  if (frskyAlarmsSendState && (--frskyTxDelay == 0)) {
-    frskyTxDelay = 5; // 50ms
-    frskyDSendNextAlarm();
+  if (IS_FRSKY_D_PROTOCOL()) {
+    // Attempt to transmit any waiting Fr-Sky alarm set packets every 50ms (subject to packet buffer availability)
+    static uint8_t frskyTxDelay = 5;
+    if (frskyAlarmsSendState && (--frskyTxDelay == 0)) {
+      frskyTxDelay = 5; // 50ms
+      frskyDSendNextAlarm();
+    }
   }
 #endif
 
-#if !defined(SIMU)
-#if defined(WS_HOW_HIGH)
-  if (frskyUsrStreaming > 0) {
-    frskyUsrStreaming--;
-  }
-#endif
-
-  if (frskyStreaming > 0) {
-    frskyStreaming--;
-  }
-  else {
-    frskyData.rssi[0].set(0);
-    frskyData.rssi[1].set(0);
-  }
-#endif
 
 #if defined(VARIO)
   if (TELEMETRY_STREAMING() && !IS_FAI_ENABLED()) {
@@ -320,15 +305,14 @@ void telemetryWakeup()
 
   if (int32_t(get_tmr10ms() - alarmsCheckTime) > 0) {
 
-    alarmsCheckTime = get_tmr10ms() + 100; /* next check in 1second */
+    alarmsCheckTime = get_tmr10ms() + 100; /* next check in 1 second */
 
     if (alarmsCheckStep == 0) {
 #if defined(PCBTARANIS)
-      // TODO not only Taranis!
-      if ((IS_MODULE_XJT(0) || IS_MODULE_XJT(1)) && frskyData.swr.value > 0x33) {
+      if (IS_FRSKY_SPORT_PROTOCOL() && frskyData.swr.value > 0x33) {
         AUDIO_SWR_RED();
         POPUP_WARNING(STR_ANTENNAPROBLEM);
-        alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3seconds */
+        alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
       }
 #endif
     }
@@ -336,31 +320,31 @@ void telemetryWakeup()
       if (alarmsCheckStep == 1) {
         if (getRssiAlarmValue(1) && frskyData.rssi[0].value < getRssiAlarmValue(1)) {
           AUDIO_RSSI_RED();
-          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3seconds */
+          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
         }
         else if (getRssiAlarmValue(0) && frskyData.rssi[0].value < getRssiAlarmValue(0)) {
           AUDIO_RSSI_ORANGE();
-          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3seconds */
+          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
         }
       }
       else if (alarmsCheckStep == 2) {
         if (alarmRaised(1, 1)) {
           AUDIO_A2_RED();
-          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3seconds */
+          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
         }
         else if (alarmRaised(1, 0)) {
           AUDIO_A2_ORANGE();
-          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3seconds */
+          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
         }
       }
       else if (alarmsCheckStep == 3) {
         if (alarmRaised(0, 1)) {
           AUDIO_A1_RED();
-          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3seconds */
+          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
         }
         else if (alarmRaised(0, 0)) {
           AUDIO_A1_ORANGE();
-          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3seconds */
+          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
         }
       }
     }
@@ -438,11 +422,28 @@ void telemetryInterrupt10ms()
       frskyData.hub.maxPower = frskyData.hub.power;
     }
   }
+
+#if defined(WS_HOW_HIGH)
+  if (frskyUsrStreaming > 0) {
+    frskyUsrStreaming--;
+  }
+#endif
+
+  if (frskyStreaming > 0) {
+    frskyStreaming--;
+  }
+  else {
+    frskyData.rssi[0].set(0);
+    frskyData.rssi[1].set(0);
+  }
 }
 
 void telemetryReset()
 {
   memclear(&frskyData, sizeof(frskyData));
+
+  frskyStreaming = 0; // reset counter only if valid frsky packets are being detected
+  link_counter = 0;
 
 #if defined(CPUARM)
   telemetryState = TELEMETRY_INIT;
