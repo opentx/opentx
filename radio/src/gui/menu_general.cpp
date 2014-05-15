@@ -625,7 +625,21 @@ void menuGeneralSetup(uint8_t event)
 
       case ITEM_SETUP_STICK_MODE_LABELS:
         lcd_putsLeft(y, NO_INDENT(STR_MODE));
-        for (uint8_t i=0; i<4; i++) lcd_img((6+4*i)*FW, y, sticks, i, 0);
+        for (uint8_t i=0; i<4; i++) {
+          lcd_img((6+4*i)*FW, y, sticks, i, 0);
+#if defined(FRSKY_STICKS)
+          if (g_eeGeneral.stickReverse & (1<<i)) {
+            lcd_filled_rect((6+4*i)*FW, y, 3*FW, FH-1);
+          }
+#endif
+        }
+#if defined(FRSKY_STICKS)
+	if (attr) {
+	  s_editMode = 0;
+          CHECK_INCDEC_GENVAR(event, g_eeGeneral.stickReverse, 0, 15);
+          lcd_rect(6*FW-1, y-1, 15*FW+2, 9);
+        }
+#endif
         break;
 
       case ITEM_SETUP_STICK_MODE:
@@ -812,7 +826,8 @@ void onSdManagerMenu(const char *result)
     f_getcwd(lfn, _MAX_LFN);
     strcat(lfn, "/");
     strcat(lfn, reusableBuffer.sdmanager.lines[index]);
-    audioQueue.playFile(lfn, PLAY_BACKGROUND, 255);
+    audioQueue.stopAll();
+    audioQueue.playFile(lfn, 0, 255);
   }
 #endif
 #if defined(PCBTARANIS)
