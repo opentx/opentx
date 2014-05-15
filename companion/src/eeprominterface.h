@@ -69,7 +69,7 @@ const uint8_t modn12x3[4][4]= {
   {4, 3, 2, 1} };
 
 #define C9X_MAX_MODELS            60
-#define C9X_MAX_FLIGHT_MODES            9
+#define C9X_MAX_FLIGHT_MODES      9
 #define C9X_MAX_MIXERS            64
 #define C9X_MAX_INPUTS            32
 #define C9X_MAX_EXPOS             64

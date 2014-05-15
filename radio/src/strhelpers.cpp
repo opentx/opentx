@@ -1,5 +1,149 @@
-#include <stdlib.h>
+/*
+ * Authors (alphabetical order)
+ * - Andre Bernet <bernet.andre@gmail.com>
+ * - Andreas Weitl
+ * - Bertrand Songis <bsongis@gmail.com>
+ * - Bryan J. Rentoul (Gruvin) <gruvin@gmail.com>
+ * - Cameron Weeks <th9xer@gmail.com>
+ * - Erez Raviv
+ * - Gabriel Birkus
+ * - Jean-Pierre Parisy
+ * - Karl Szmutny
+ * - Michael Blandford
+ * - Michal Hlavinka
+ * - Pat Mackenzie
+ * - Philip Moss
+ * - Rob Thomson
+ * - Romolo Manfredini <romolo.manfredini@gmail.com>
+ * - Thomas Husterer
+ *
+ * opentx is based on code named
+ * gruvin9x by Bryan J. Rentoul: http://code.google.com/p/gruvin9x/,
+ * er9x by Erez Raviv: http://code.google.com/p/er9x/,
+ * and the original (and ongoing) project by
+ * Thomas Husterer, th9x: http://code.google.com/p/th9x/
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ */
 
+#include "opentx.h"
+
+const pm_char s_charTab[] PROGMEM = "_-.,";
+
+char idx2char(int8_t idx)
+{
+  if (idx == 0) return ' ';
+  if (idx < 0) {
+    if (idx > -27) return 'a' - idx - 1;
+    idx = -idx;
+  }
+  if (idx < 27) return 'A' + idx - 1;
+  if (idx < 37) return '0' + idx - 27;
+  if (idx <= 40) return pgm_read_byte(s_charTab+idx-37);
+#if LEN_SPECIAL_CHARS > 0
+  if (idx <= ZCHAR_MAX) return 'z' + 5 + idx - 40;
+#endif
+  return ' ';
+}
+
+#if defined(CPUARM) || defined(SIMU)
+int8_t char2idx(char c)
+{
+  if (c == '_') return 37;
+#if LEN_SPECIAL_CHARS > 0
+  if (c < 0 && c+128 <= LEN_SPECIAL_CHARS) return 41 + (c+128);
+#endif
+  if (c >= 'a') return 'a' - c - 1;
+  if (c >= 'A') return c - 'A' + 1;
+  if (c >= '0') return c - '0' + 27;
+  if (c == '-') return 38;
+  if (c == '.') return 39;
+  if (c == ',') return 40;
+  return 0;
+}
+
+void str2zchar(char *dest, const char *src, int size)
+{
+  memset(dest, 0, size);
+  for (int c=0; c<size && src[c]; c++) {
+    dest[c] = char2idx(src[c]);
+  }
+}
+
+void zchar2str(char *dest, const char *src, int size)
+{
+  for (int c=0; c<size; c++) {
+    dest[c] = idx2char(src[c]);
+  }
+  do {
+    dest[size--] = '\0';
+  } while (size >= 0 && dest[size] == ' ');
+}
+#endif
+
+#if defined(CPUARM)
+bool zexist(const char *str, uint8_t size)
+{
+  for (int i=0; i<size; i++) {
+    if (str[i] != 0)
+      return true;
+  }
+  return false;
+}
+
+uint8_t zlen(const char *str, uint8_t size)
+{
+  while (size > 0) {
+    if (str[size-1] != 0)
+      return size;
+    size--;
+  }
+  return size;
+}
+
+char * strcat_zchar(char * dest, char * name, uint8_t size, const char *defaultName, uint8_t defaultNameSize, uint8_t defaultIdx)
+{
+  int8_t len = 0;
+
+  if (name) {
+    memcpy(dest, name, size);
+    dest[size] = '\0';
+
+    int8_t i = size-1;
+
+    while (i>=0) {
+      if (!len && dest[i])
+        len = i+1;
+      if (len) {
+        if (dest[i])
+          dest[i] = idx2char(dest[i]);
+        else
+          dest[i] = '_';
+      }
+      i--;
+    }
+  }
+
+  if (len == 0 && defaultName) {
+    strcpy(dest, defaultName);
+    dest[defaultNameSize] = (char)((defaultIdx / 10) + '0');
+    dest[defaultNameSize + 1] = (char)((defaultIdx % 10) + '0');
+    len = defaultNameSize + 2;
+  }
+
+  return &dest[len];
+}
+#endif
+
+#if defined(CPUARM) || defined(SDCARD)
 char * strAppend(char * dest, const char * source)
 {
   while ((*dest++ = *source++))
@@ -52,5 +196,5 @@ char * strAppendDate(char * str, bool time)
     return &str[11];
   }
 }
-
+#endif
 #endif

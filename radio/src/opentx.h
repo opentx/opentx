@@ -668,6 +668,15 @@ extern uint8_t s_perout_flight_mode;
 #endif
 
 void perOut(uint8_t mode, uint8_t tick10ms);
+
+#if defined(CPUARM)
+  #define MIX_FUNCTION_RESULT bool
+#else
+  #define MIX_FUNCTION_RESULT void
+#endif
+
+MIX_FUNCTION_RESULT doMixerCalculations();
+
 void perMain();
 NOINLINE void per10ms();
 
@@ -905,6 +914,8 @@ enum Analogs {
   NUMBER_ANALOG
 };
 
+void checkBacklight();
+
 #if defined(PCBSTD) && defined(VOICE) && !defined(SIMU)
   #define BACKLIGHT_ON()    (Voice.Backlight = 1)
   #define BACKLIGHT_OFF()   (Voice.Backlight = 0)
@@ -1095,6 +1106,20 @@ struct CurveInfo {
 extern CurveInfo curveInfo(uint8_t idx);
 #endif
 
+// static variables used in perOut - moved here so they don't interfere with the stack
+// It's also easier to initialize them here.
+#if defined(PCBTARANIS)
+  extern int8_t  virtualInputsTrims[NUM_INPUTS];
+#else
+  extern int16_t rawAnas[NUM_INPUTS];
+#endif
+
+extern int16_t  anas [NUM_INPUTS];
+extern int16_t  trims[NUM_STICKS];
+extern BeepANACenter bpanaCenter;
+
+extern bool s_mixer_first_run_done;
+
 extern int8_t s_currCh;
 uint8_t getExpoMixCount(uint8_t expo);
 void deleteExpoMix(uint8_t expo, uint8_t idx);
@@ -1103,8 +1128,11 @@ void applyDefaultTemplate();
 
 void incSubtrim(uint8_t idx, int16_t inc);
 void instantTrim();
+FORCEINLINE void evalTrims();
 void copyTrimsToOffset(uint8_t ch);
 void moveTrimsToOffsets();
+
+void evalFunctions();
 
 #if defined(CPUARM)
 #define ACTIVE_PHASES_TYPE uint16_t
