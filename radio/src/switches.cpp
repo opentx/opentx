@@ -212,7 +212,7 @@ bool getSwitch(int8_t swtch)
 #if defined(CPUARM) && defined(FLIGHT_MODES)
   else if (cs_idx >= SWSRC_FIRST_FLIGHT_MODE) {
     uint8_t idx = cs_idx - SWSRC_FIRST_FLIGHT_MODE;
-    result = (idx == s_perout_flight_mode);
+    result = (idx == s_current_mixer_flight_mode);
   }
 #endif
   else {
@@ -489,7 +489,7 @@ void checkSwitches()
     }
     uint8_t potMode = g_model.nPotsToWarn >> 6;
     if (potMode) {
-      perOut(e_perout_mode_normal, 0);
+      evalFlightModeMixes(e_perout_mode_normal, 0);
       bad_pots = 0;
       for (uint8_t i=0; i<NUM_POTS; i++) {
         if (!(g_model.nPotsToWarn & (1 << i)) && (abs(g_model.potPosition[i] - (getValue(MIXSRC_FIRST_POT+i) >> 4)) > 1)) {

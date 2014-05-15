@@ -1167,11 +1167,11 @@ int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t m
     s_editMode = !s_editMode;
 #if defined(CPUARM)
     if (attr & PREC1)
-      value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, s_perout_flight_mode)*10 : delta);
+      value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, s_current_mixer_flight_mode)*10 : delta);
     else
-      value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, s_perout_flight_mode) : delta);
+      value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, s_current_mixer_flight_mode) : delta);
 #else
-    value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, s_perout_flight_mode) : delta);
+    value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, s_current_mixer_flight_mode) : delta);
 #endif
     eeDirty(EE_MODEL);
   }

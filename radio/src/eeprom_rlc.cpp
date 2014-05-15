@@ -974,9 +974,6 @@ void eeLoadModel(uint8_t id)
     activeFnSwitches = 0;
     activeFunctions = 0;
     memclear(lastFunctionTime, sizeof(lastFunctionTime));
-#if defined(CPUARM)
-    evalFunctionsFirstTime = true;
-#endif
 
 #if !defined(PCBSTD)
     for (uint8_t i=0; i<MAX_TIMERS; i++) {

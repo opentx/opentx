@@ -1856,7 +1856,7 @@ void menuModelFlightModesAll(uint8_t event)
     if (k==MAX_FLIGHT_MODES) {
       // last line available - add the "check trims" line
       lcd_putsLeft((LCD_LINES-1)*FH+1, STR_CHECKTRIMS);
-      putsFlightMode(OFS_CHECKTRIMS, (LCD_LINES-1)*FH+1, s_perout_flight_mode+1);
+      putsFlightMode(OFS_CHECKTRIMS, (LCD_LINES-1)*FH+1, s_current_mixer_flight_mode+1);
       if (sub==MAX_FLIGHT_MODES && !trimsCheckTimer) {
         lcd_status_line();
       }
@@ -2166,7 +2166,7 @@ void menuModelFlightModesAll(uint8_t event)
 #endif
 
   lcd_putsLeft((LCD_LINES-1)*FH+1, STR_CHECKTRIMS);
-  putsFlightMode(OFS_CHECKTRIMS, (LCD_LINES-1)*FH+1, s_perout_flight_mode+1);
+  putsFlightMode(OFS_CHECKTRIMS, (LCD_LINES-1)*FH+1, s_current_mixer_flight_mode+1);
   if (sub==MAX_FLIGHT_MODES && !trimsCheckTimer) {
     lcd_status_line();
   }

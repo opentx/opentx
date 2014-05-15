@@ -241,7 +241,7 @@ void per10ms()
     telemetryInterrupt10ms();
 #endif
 
-  // These moved here from perOut() to improve beep trigger reliability.
+  // These moved here from evalFlightModeMixes() to improve beep trigger reliability.
 #if defined(PWM_BACKLIGHT)
   if ((g_tmr10ms&0x03) == 0x00)
     backlightFade(); // increment or decrement brightness until target brightness is reached
@@ -574,7 +574,7 @@ uint8_t getTrimFlightPhase(uint8_t phase, uint8_t idx)
 #if defined(ROTARY_ENCODERS)
 uint8_t getRotaryEncoderFlightPhase(uint8_t idx)
 {
-  uint8_t phase = s_perout_flight_mode;
+  uint8_t phase = s_current_mixer_flight_mode;
   for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
     if (phase == 0) return 0;
 #if ROTARY_ENCODERS > 2
@@ -1054,7 +1054,7 @@ void checkAll()
 
   clearKeyEvents();
 
-  SKIP_AUTOMATIC_PROMPTS();
+  START_SILENCE_PERIOD();
 }
 
 #if defined(MODULE_ALWAYS_SEND_PULSES)
@@ -1232,13 +1232,13 @@ uint8_t checkTrim(uint8_t event)
 #if defined(PCBSTD)
       phase = 0;
 #else
-      phase = getGVarFlightPhase(s_perout_flight_mode, trimGvar[idx]);
+      phase = getGVarFlightPhase(s_current_mixer_flight_mode, trimGvar[idx]);
 #endif
       before = GVAR_VALUE(trimGvar[idx], phase);
       thro = false;
     }
     else {
-      phase = getTrimFlightPhase(s_perout_flight_mode, idx);
+      phase = getTrimFlightPhase(s_current_mixer_flight_mode, idx);
 #if defined(PCBTARANIS)
       before = getTrimValue(phase, idx);
 #else
@@ -1247,7 +1247,7 @@ uint8_t checkTrim(uint8_t event)
       thro = (idx==THR_STICK && g_model.thrTrim);
     }
 #else
-    phase = getTrimFlightPhase(s_perout_flight_mode, idx);
+    phase = getTrimFlightPhase(s_current_mixer_flight_mode, idx);
 #if defined(PCBTARANIS)
     before = getTrimValue(phase, idx);
 #else
@@ -1585,7 +1585,7 @@ void resetAll()
   s_last_switch_value = 0;
   s_mixer_first_run_done = false;
 
-  SKIP_AUTOMATIC_PROMPTS();
+  START_SILENCE_PERIOD();
 
   RESET_THR_TRACE();
 }
@@ -1603,7 +1603,7 @@ uint16_t s_sum_samples_thr_10s;
 
 FORCEINLINE void evalTrims()
 {
-  uint8_t phase = s_perout_flight_mode;
+  uint8_t phase = s_current_mixer_flight_mode;
   for (uint8_t i=0; i<NUM_STICKS; i++) {
     // do trim -> throttle trim if applicable
     int16_t trim = getTrimValue(phase, i);
@@ -1803,10 +1803,6 @@ inline void playCustomFunctionFile(CustomFnData *sd, uint8_t id)
 }
 #endif
 
-#if defined(CPUARM)
-bool evalFunctionsFirstTime = true;
-#endif
-
 void evalFunctions()
 {
   MASK_FUNC_TYPE newActiveFunctions  = 0;
@@ -1912,14 +1908,14 @@ void evalFunctions()
 #if defined(GVARS)
           case FUNC_ADJUST_GVAR:
             if (CFN_GVAR_MODE(sd) == 0) {
-              SET_GVAR(CFN_GVAR_INDEX(sd), CFN_PARAM(sd), s_perout_flight_mode);
+              SET_GVAR(CFN_GVAR_INDEX(sd), CFN_PARAM(sd), s_current_mixer_flight_mode);
             }
             else if (CFN_GVAR_MODE(sd) == 2) {
-              SET_GVAR(CFN_GVAR_INDEX(sd), GVAR_VALUE(CFN_PARAM(sd), s_perout_flight_mode), s_perout_flight_mode);
+              SET_GVAR(CFN_GVAR_INDEX(sd), GVAR_VALUE(CFN_PARAM(sd), s_current_mixer_flight_mode), s_current_mixer_flight_mode);
             }
             else if (CFN_GVAR_MODE(sd) == 3) {
               if (!(activeFnSwitches & switch_mask)) {
-                SET_GVAR(CFN_GVAR_INDEX(sd), GVAR_VALUE(CFN_GVAR_INDEX(sd), getGVarFlightPhase(s_perout_flight_mode, CFN_GVAR_INDEX(sd))) + (CFN_PARAM(sd) ? +1 : -1), s_perout_flight_mode);
+                SET_GVAR(CFN_GVAR_INDEX(sd), GVAR_VALUE(CFN_GVAR_INDEX(sd), getGVarFlightPhase(s_current_mixer_flight_mode, CFN_GVAR_INDEX(sd))) + (CFN_PARAM(sd) ? +1 : -1), s_current_mixer_flight_mode);
               }
             }
             else if (CFN_PARAM(sd) >= MIXSRC_TrimRud && CFN_PARAM(sd) <= MIXSRC_TrimAil) {
@@ -1929,12 +1925,12 @@ void evalFunctions()
             else if (CFN_PARAM(sd) >= MIXSRC_REa && CFN_PARAM(sd) < MIXSRC_TrimRud) {
               int8_t scroll = rePreviousValues[CFN_PARAM(sd)-MIXSRC_REa] - (g_rotenc[CFN_PARAM(sd)-MIXSRC_REa] / ROTARY_ENCODER_GRANULARITY);
               if (scroll) {
-                SET_GVAR(CFN_GVAR_INDEX(sd), GVAR_VALUE(CFN_GVAR_INDEX(sd), getGVarFlightPhase(s_perout_flight_mode, CFN_GVAR_INDEX(sd))) + scroll, s_perout_flight_mode);
+                SET_GVAR(CFN_GVAR_INDEX(sd), GVAR_VALUE(CFN_GVAR_INDEX(sd), getGVarFlightPhase(s_current_mixer_flight_mode, CFN_GVAR_INDEX(sd))) + scroll, s_current_mixer_flight_mode);
               }
             }
 #endif
             else {
-              SET_GVAR(CFN_GVAR_INDEX(sd), limit((getvalue_t)-LIMIT_EXT_MAX, getValue(CFN_PARAM(sd)), (getvalue_t)LIMIT_EXT_MAX) / 10, s_perout_flight_mode);
+              SET_GVAR(CFN_GVAR_INDEX(sd), limit((getvalue_t)-LIMIT_EXT_MAX, getValue(CFN_PARAM(sd)), (getvalue_t)LIMIT_EXT_MAX) / 10, s_current_mixer_flight_mode);
             }
             break;
 #endif
@@ -1962,7 +1958,7 @@ void evalFunctions()
           {
             tmr10ms_t tmr10ms = get_tmr10ms();
             uint8_t repeatParam = CFN_PLAY_REPEAT(sd);
-            if (evalFunctionsFirstTime && repeatParam == CFN_PLAY_REPEAT_NOSTART)
+            if (!IS_SILENCE_PERIOD_ELAPSED() && repeatParam == CFN_PLAY_REPEAT_NOSTART)
               lastFunctionTime[i] = tmr10ms;
             if (!lastFunctionTime[i] || (repeatParam && repeatParam!=CFN_PLAY_REPEAT_NOSTART && (signed)(tmr10ms-lastFunctionTime[i])>=100*repeatParam)) {
               if (!IS_PLAYING(i+1)) {
@@ -2017,7 +2013,7 @@ void evalFunctions()
               else {
 #if defined(GVARS)
                 if (CFN_FUNC(sd) == FUNC_PLAY_TRACK && param > 250)
-                  param = GVAR_VALUE(param-251, getGVarFlightPhase(s_perout_flight_mode, param-251));
+                  param = GVAR_VALUE(param-251, getGVarFlightPhase(s_current_mixer_flight_mode, param-251));
 #endif
                 PUSH_CUSTOM_PROMPT(active ? param : param+1, i+1);
               }
@@ -2086,12 +2082,351 @@ void evalFunctions()
     rePreviousValues[i] = (g_rotenc[i] / ROTARY_ENCODER_GRANULARITY);
   }
 #endif
-
-#if defined(CPUARM)
-  evalFunctionsFirstTime = false;
-#endif
 }
 
+uint8_t s_mixer_first_run_done = false;
+
+void doMixerCalculations()
+{
+  static tmr10ms_t lastTMR = 0;
+
+  tmr10ms_t tmr10ms = get_tmr10ms();
+  uint8_t tick10ms = (tmr10ms >= lastTMR ? tmr10ms - lastTMR : 1);
+  // handle tick10ms overrun
+  // correct overflow handling costs a lot of code; happens only each 11 min;
+  // therefore forget the exact calculation and use only 1 instead; good compromise
+
+#if !defined(CPUARM)
+  lastTMR = tmr10ms;
+#endif
+
+  getADC();
+
+  getSwitchesPosition(!s_mixer_first_run_done);
+
+#if defined(CPUARM)
+  lastTMR = tmr10ms;
+#endif
+
+#if defined(PCBSKY9X) && !defined(REVA) && !defined(SIMU)
+  Current_analogue = (Current_analogue*31 + s_anaFilt[8] ) >> 5 ;
+  if (Current_analogue > Current_max)
+    Current_max = Current_analogue ;
+#elif defined(CPUM2560) && !defined(SIMU)
+  // For PCB V4, use our own 1.2V, external reference (connected to ADC3)
+  ADCSRB &= ~(1<<MUX5);
+  ADMUX = 0x03|ADC_VREF_TYPE; // Switch MUX to internal reference
+#elif defined(PCBSTD) && !defined(SIMU)
+  ADMUX = 0x1E|ADC_VREF_TYPE; // Switch MUX to internal reference
+#endif
+
+  evalMixes(tick10ms);
+
+#if !defined(CPUARM)
+  // Bandgap has had plenty of time to settle...
+  getADC_bandgap();
+#endif
+
+  if (tick10ms) {
+    /* Throttle trace */
+    int16_t val;
+
+    if (g_model.thrTraceSrc > NUM_POTS) {
+      uint8_t ch = g_model.thrTraceSrc-NUM_POTS-1;
+      val = channelOutputs[ch];
+
+      LimitData *lim = limitAddress(ch);
+      int16_t gModelMax = LIMIT_MAX_RESX(lim);
+      int16_t gModelMin = LIMIT_MIN_RESX(lim);
+
+      if (lim->revert)
+        val = -val + gModelMax;
+      else
+        val = val - gModelMin;
+
+#if defined(PPM_LIMITS_SYMETRICAL)
+      if (lim->symetrical)
+        val -= calc1000toRESX(lim->offset);
+#endif
+
+
+      gModelMax -= gModelMin; // we compare difference between Max and Mix for recaling needed; Max and Min are shifted to 0 by default
+      // usually max is 1024 min is -1024 --> max-min = 2048 full range
+
+#ifdef ACCURAT_THROTTLE_TIMER
+      if (gModelMax!=0 && gModelMax!=2048) val = (int32_t) (val << 11) / (gModelMax); // rescaling only needed if Min, Max differs
+#else
+      // @@@ open.20.fsguruh  optimized calculation; now *8 /8 instead of 10 base; (*16/16 already cause a overrun; unsigned calculation also not possible, because v may be negative)
+      gModelMax+=255; // force rounding up --> gModelMax is bigger --> val is smaller
+      gModelMax >>= (10-2);
+
+      if (gModelMax!=0 && gModelMax!=8) {
+        val = (val << 3) / gModelMax; // rescaling only needed if Min, Max differs
+      }
+#endif
+
+      if (val<0) val=0;  // prevent val be negative, which would corrupt throttle trace and timers; could occur if safetyswitch is smaller than limits
+    }
+    else {
+#ifdef PCBTARANIS
+      val = RESX + calibratedStick[g_model.thrTraceSrc == 0 ? THR_STICK : g_model.thrTraceSrc+NUM_STICKS-1];
+#else
+      val = RESX + rawAnas[g_model.thrTraceSrc == 0 ? THR_STICK : g_model.thrTraceSrc+NUM_STICKS-1];
+#endif
+    }
+
+#if defined(ACCURAT_THROTTLE_TIMER)
+    val >>= (RESX_SHIFT-6); // calibrate it (resolution increased by factor 4)
+#else
+    val >>= (RESX_SHIFT-4); // calibrate it
+#endif
+
+    // Timers start
+    for (uint8_t i=0; i<MAX_TIMERS; i++) {
+      int8_t tm = g_model.timers[i].mode;
+      uint16_t tv = g_model.timers[i].start;
+      TimerState * timerState = &timersStates[i];
+
+      if (tm) {
+        if (timerState->state == TMR_OFF) {
+          timerState->state = TMR_RUNNING;
+          timerState->cnt = 0;
+          timerState->sum = 0;
+        }
+
+        // value for time described in timer->mode
+        // OFFABSTHsTH%THt
+        if (tm == TMRMODE_THR_REL) {
+          timerState->cnt++;
+          timerState->sum+=val;
+        }
+
+        if ((timerState->val_10ms += tick10ms) >= 100) {
+          timerState->val_10ms -= 100 ;
+          int16_t newTimerVal = timerState->val;
+          if (tv) newTimerVal = tv - newTimerVal;
+
+          if (tm == TMRMODE_ABS) {
+            newTimerVal++;
+          }
+          else if (tm == TMRMODE_THR) {
+            if (val) newTimerVal++;
+          }
+          else if (tm == TMRMODE_THR_REL) {
+            // @@@ open.20.fsguruh: why so complicated? we have already a s_sum field; use it for the half seconds (not showable) as well
+            // check for s_cnt[i]==0 is not needed because we are shure it is at least 1
+#if defined(ACCURAT_THROTTLE_TIMER)
+            if ((timerState->sum/timerState->cnt)>=128) {  // throttle was normalized to 0 to 128 value (throttle/64*2 (because - range is added as well)
+              newTimerVal++;  // add second used of throttle
+              timerState->sum-=128*timerState->cnt;
+            }
+#else
+            if ((timerState->sum/timerState->cnt)>=32) {  // throttle was normalized to 0 to 32 value (throttle/16*2 (because - range is added as well)
+              newTimerVal++;  // add second used of throttle
+              timerState->sum-=32*timerState->cnt;
+            }
+#endif
+            timerState->cnt=0;
+          }
+          else if (tm == TMRMODE_THR_TRG) {
+            if (val || newTimerVal > 0)
+              newTimerVal++;
+          }
+          else {
+            if (tm > 0) tm -= (TMR_VAROFS-1);
+            if (getSwitch(tm))
+              newTimerVal++;
+          }
+
+          switch (timerState->state) {
+            case TMR_RUNNING:
+              if (tv && newTimerVal>=(int16_t)tv) {
+                AUDIO_TIMER_00(g_model.timers[i].countdownBeep);
+                timerState->state = TMR_NEGATIVE;
+              }
+              break;
+            case TMR_NEGATIVE:
+              if (newTimerVal >= (int16_t)tv + MAX_ALERT_TIME) timerState->state = TMR_STOPPED;
+              break;
+          }
+
+          if (tv) newTimerVal = tv - newTimerVal; // if counting backwards - display backwards
+
+          if (newTimerVal != timerState->val) {
+            timerState->val = newTimerVal;
+            if (timerState->state == TMR_RUNNING) {
+              if (g_model.timers[i].countdownBeep && g_model.timers[i].start) {
+                if (newTimerVal==30) AUDIO_TIMER_30();
+                if (newTimerVal==20) AUDIO_TIMER_20();
+                if (newTimerVal<=10) AUDIO_TIMER_LT10(g_model.timers[i].countdownBeep, newTimerVal);
+              }
+              if (g_model.timers[i].minuteBeep && (newTimerVal % 60)==0) {
+                AUDIO_TIMER_MINUTE(newTimerVal);
+              }
+            }
+          }
+        }
+      }
+    } //endfor timer loop (only two)
+
+    static uint8_t  s_cnt_100ms;
+    static uint8_t  s_cnt_1s;
+    static uint8_t  s_cnt_samples_thr_1s;
+    static uint16_t s_sum_samples_thr_1s;
+
+    s_cnt_samples_thr_1s++;
+    s_sum_samples_thr_1s+=val;
+
+    if ((s_cnt_100ms += tick10ms) >= 10) { // 0.1sec
+      s_cnt_100ms -= 10;
+      s_cnt_1s += 1;
+
+      for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++) {
+        LogicalSwitchData * cs = cswAddress(i);
+        if (cs->func == LS_FUNC_TIMER) {
+          int16_t *lastValue = &csLastValue[i];
+          if (*lastValue == 0 || *lastValue == CS_LAST_VALUE_INIT) {
+            *lastValue = -cswTimerValue(cs->v1);
+          }
+          else if (*lastValue < 0) {
+            if (++(*lastValue) == 0)
+              *lastValue = cswTimerValue(cs->v2);
+          }
+          else { // if (*lastValue > 0)
+            *lastValue -= 1;
+          }
+        }
+        else if (cs->func == LS_FUNC_STICKY) {
+          PACK(typedef struct {
+            uint8_t state;
+            uint8_t last;
+          }) cs_sticky_struct;
+          cs_sticky_struct & lastValue = (cs_sticky_struct &)csLastValue[i];
+          bool before = lastValue.last & 0x01;
+          if (lastValue.state) {
+            bool now = getSwitch(cs->v2);
+            if (now != before) {
+              lastValue.last ^= 1;
+              if (!before) {
+                lastValue.state = 0;
+              }
+            }
+          }
+          else {
+            bool now = getSwitch(cs->v1);
+            if (before != now) {
+              lastValue.last ^= 1;
+              if (!before) {
+                lastValue.state = 1;
+              }
+            }
+          }
+        }
+#if defined(CPUARM)
+        else if (cs->func == LS_FUNC_STAY) {
+          PACK(typedef struct {
+            uint16_t state:1;
+            uint16_t duration:15;
+          }) cs_stay_struct;
+
+          cs_stay_struct & lastValue = (cs_stay_struct &)csLastValue[i];
+          lastValue.state = false;
+          bool state = getSwitch(cs->v1);
+          if (state) {
+            if (cs->v3 == 0 && lastValue.duration == cswTimerValue(cs->v2))
+              lastValue.state = true;
+            if (lastValue.duration < 1000)
+              lastValue.duration++;
+          }
+          else {
+            if (lastValue.duration > cswTimerValue(cs->v2) && lastValue.duration <= cswTimerValue(cs->v2+cs->v3))
+              lastValue.state = true;
+            lastValue.duration = 0;
+          }
+        }
+#endif
+      }
+
+      if (s_cnt_1s >= 10) { // 1sec
+        s_cnt_1s -= 10;
+        s_timeCumTot += 1;
+
+        struct t_inactivity *ptrInactivity = &inactivity;
+        FORCE_INDIRECT(ptrInactivity) ;
+        ptrInactivity->counter++;
+        if ((((uint8_t)ptrInactivity->counter)&0x07)==0x01 && g_eeGeneral.inactivityTimer && g_vbat100mV>50 && ptrInactivity->counter > ((uint16_t)g_eeGeneral.inactivityTimer*60))
+          AUDIO_INACTIVITY();
+
+#if defined(AUDIO)
+        if (mixWarning & 1) if ((s_timeCumTot&0x03)==0) AUDIO_MIX_WARNING(1);
+        if (mixWarning & 2) if ((s_timeCumTot&0x03)==1) AUDIO_MIX_WARNING(2);
+        if (mixWarning & 4) if ((s_timeCumTot&0x03)==2) AUDIO_MIX_WARNING(3);
+#endif
+
+#if defined(ACCURAT_THROTTLE_TIMER)
+        val = s_sum_samples_thr_1s / s_cnt_samples_thr_1s;
+        s_timeCum16ThrP += (val>>3);  // s_timeCum16ThrP would overrun if we would store throttle value with higher accuracy; therefore stay with 16 steps
+        if (val) s_timeCumThr += 1;
+        s_sum_samples_thr_1s>>=2;  // correct better accuracy now, because trace graph can show this information; in case thrtrace is not active, the compile should remove this
+#else
+        val = s_sum_samples_thr_1s / s_cnt_samples_thr_1s;
+        s_timeCum16ThrP += (val>>1);
+        if (val) s_timeCumThr += 1;
+#endif
+
+#if defined(THRTRACE)
+        // throttle trace is done every 10 seconds; Tracebuffer is adjusted to screen size.
+        // in case buffer runs out, it wraps around
+        // resolution for y axis is only 32, therefore no higher value makes sense
+        s_cnt_samples_thr_10s += s_cnt_samples_thr_1s;
+        s_sum_samples_thr_10s += s_sum_samples_thr_1s;
+
+        if (++s_cnt_10s >= 10) { // 10s
+          s_cnt_10s -= 10;
+          val = s_sum_samples_thr_10s / s_cnt_samples_thr_10s;
+          s_sum_samples_thr_10s = 0;
+          s_cnt_samples_thr_10s = 0;
+
+          s_traceBuf[s_traceWr++] = val;
+          if (s_traceWr >= MAXTRACE) s_traceWr = 0;
+          if (s_traceCnt >= 0) s_traceCnt++;
+        }
+#endif
+
+        s_cnt_samples_thr_1s = 0;
+        s_sum_samples_thr_1s = 0;
+      }
+    }
+
+#if defined(DSM2)
+    static uint8_t count_dsm_range = 0;
+    if (dsm2Flag & (DSM2_BIND_FLAG | DSM2_RANGECHECK_FLAG)) {
+      if (++count_dsm_range >= 200) {
+        AUDIO_PLAY(AU_FRSKY_CHEEP);
+        count_dsm_range = 0;
+      }
+    }
+#endif
+
+#if defined(PXX)
+    static uint8_t count_pxx = 0;
+    for (uint8_t i = 0; i < NUM_MODULES; i++) {
+      if (pxxFlag[i] & (PXX_SEND_RANGECHECK | PXX_SEND_RXNUM)) {
+        if (++count_pxx >= 250) {
+          AUDIO_PLAY(AU_FRSKY_CHEEP);
+          count_pxx = 0;
+        }
+      }
+    }
+#endif
+
+#if defined(CPUARM)
+    checkTrims();
+#endif
+  }
+
+  s_mixer_first_run_done = true;
+}
 
 #define TIME_TO_WRITE() (s_eeDirtyMsk && (tmr10ms_t)(get_tmr10ms() - s_eeDirtyTime10ms) >= (tmr10ms_t)WRITE_DELAY_10MS)
 
@@ -2739,7 +3074,7 @@ void instantTrim()
   for (uint8_t i=0; i<NUM_STICKS; i++) {
     if (i!=THR_STICK) {
       // don't instant trim the throttle stick
-      uint8_t trim_phase = getTrimFlightPhase(s_perout_flight_mode, i);
+      uint8_t trim_phase = getTrimFlightPhase(s_current_mixer_flight_mode, i);
 #if defined(PCBTARANIS)
       int16_t trim = limit<int16_t>(TRIM_EXTENDED_MIN, (calibratedStick[i] + trims[i]) / 2, TRIM_EXTENDED_MAX);
 #else
@@ -2757,7 +3092,7 @@ void copyTrimsToOffset(uint8_t ch)
 {
   pauseMixerCalculations();
   int32_t zero = (int32_t)channelOutputs[ch];
-  perOut(e_perout_mode_nosticks+e_perout_mode_notrainer, 0);
+  evalFlightModeMixes(e_perout_mode_nosticks+e_perout_mode_notrainer, 0);
   int32_t val = chans[ch];
   LimitData *ld = limitAddress(ch);
   limit_min_max_t lim = LIMIT_MAX(ld);
@@ -2781,12 +3116,12 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
 
   pauseMixerCalculations();
 
-  perOut(e_perout_mode_noinput, 0); // do output loop - zero input sticks and trims
+  evalFlightModeMixes(e_perout_mode_noinput, 0); // do output loop - zero input sticks and trims
   for (uint8_t i=0; i<NUM_CHNOUT; i++) {
     zeros[i] = applyLimits(i, chans[i]);
   }
 
-  perOut(e_perout_mode_noinput-e_perout_mode_notrims, 0); // do output loop - only trims
+  evalFlightModeMixes(e_perout_mode_noinput-e_perout_mode_notrims, 0); // do output loop - only trims
 
   for (uint8_t i=0; i<NUM_CHNOUT; i++) {
     int16_t output = applyLimits(i, chans[i]) - zeros[i];
@@ -2803,7 +3138,7 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
   // reset all trims, except throttle (if throttle trim)
   for (uint8_t i=0; i<NUM_STICKS; i++) {
     if (i!=THR_STICK || !g_model.thrTrim) {
-      int16_t original_trim = getTrimValue(s_perout_flight_mode, i);
+      int16_t original_trim = getTrimValue(s_current_mixer_flight_mode, i);
       for (uint8_t phase=0; phase<MAX_FLIGHT_MODES; phase++) {
 #if defined(PCBTARANIS)
         trim_t trim = getRawTrimValue(phase, i);
@@ -3028,9 +3363,8 @@ void mixerTask(void * pdata)
       uint16_t t0 = getTmr2MHz();
 
       CoEnterMutexSection(mixerMutex);
-      bool tick10ms = doMixerCalculations();
+      doMixerCalculations();
       CoLeaveMutexSection(mixerMutex);
-      if (tick10ms) checkTrims();
 
 #if defined(FRSKY) || defined(MAVLINK)
       telemetryWakeup();

@@ -653,7 +653,7 @@ enum StartupWarningStates {
   #define FORCE_INDIRECT(ptr) __asm__ __volatile__ ("" : "=e" (ptr) : "0" (ptr))
 #endif
 
-extern uint8_t s_perout_flight_mode;
+extern uint8_t s_current_mixer_flight_mode;
 
 #if defined(CPUARM)
   #define bitfield_channels_t uint32_t
@@ -667,15 +667,9 @@ extern uint8_t s_perout_flight_mode;
   extern unsigned char *_estack;
 #endif
 
-void perOut(uint8_t mode, uint8_t tick10ms);
-
-#if defined(CPUARM)
-  #define MIX_FUNCTION_RESULT bool
-#else
-  #define MIX_FUNCTION_RESULT void
-#endif
-
-MIX_FUNCTION_RESULT doMixerCalculations();
+void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms);
+void evalMixes(uint8_t tick10ms);
+void doMixerCalculations();
 
 void perMain();
 NOINLINE void per10ms();
@@ -1106,7 +1100,7 @@ struct CurveInfo {
 extern CurveInfo curveInfo(uint8_t idx);
 #endif
 
-// static variables used in perOut - moved here so they don't interfere with the stack
+// static variables used in evalFlightModeMixes - moved here so they don't interfere with the stack
 // It's also easier to initialize them here.
 #if defined(PCBTARANIS)
   extern int8_t  virtualInputsTrims[NUM_INPUTS];
@@ -1118,7 +1112,7 @@ extern int16_t  anas [NUM_INPUTS];
 extern int16_t  trims[NUM_STICKS];
 extern BeepANACenter bpanaCenter;
 
-extern bool s_mixer_first_run_done;
+extern uint8_t s_mixer_first_run_done;
 
 extern int8_t s_currCh;
 uint8_t getExpoMixCount(uint8_t expo);
@@ -1224,10 +1218,6 @@ enum FunctionsActive {
 extern MASK_FUNC_TYPE activeFunctions;
 extern MASK_CFN_TYPE  activeFnSwitches;
 extern tmr10ms_t lastFunctionTime[NUM_CFN];
-
-#if defined(CPUARM)
-extern bool evalFunctionsFirstTime;
-#endif
 
 inline bool isFunctionActive(uint8_t func)
 {

@@ -331,14 +331,15 @@ void pushPrompt(uint16_t prompt, uint8_t id=0);
   #define PLAY_SWITCH_MOVED(sw)         playModelEvent(SWITCH_AUDIO_CATEGORY, sw)
   #define PLAY_LOGICAL_SWITCH_OFF(sw)   playModelEvent(LOGICAL_SWITCH_AUDIO_CATEGORY, sw, AUDIO_EVENT_OFF)
   #define PLAY_LOGICAL_SWITCH_ON(sw)    playModelEvent(LOGICAL_SWITCH_AUDIO_CATEGORY, sw, AUDIO_EVENT_ON)
-  #define SKIP_AUTOMATIC_PROMPTS()      timeAutomaticPromptsSilence = get_tmr10ms()
+  #define START_SILENCE_PERIOD()        timeAutomaticPromptsSilence = get_tmr10ms()
+  #define IS_SILENCE_PERIOD_ELAPSED()   (get_tmr10ms()-timeAutomaticPromptsSilence > 50)
 #else
   #define PLAY_PHASE_OFF(phase)
   #define PLAY_PHASE_ON(phase)
   #define PLAY_SWITCH_MOVED(sw)
   #define PLAY_LOGICAL_SWITCH_OFF(sw)
   #define PLAY_LOGICAL_SWITCH_ON(sw)
-  #define SKIP_AUTOMATIC_PROMPTS()
+  #define START_SILENCE_PERIOD()
 #endif
 
 void referenceSystemAudioFiles();
