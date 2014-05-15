@@ -78,6 +78,7 @@ inline int geteepromsize() {
 #include "radio/src/eeprom_conversions.cpp"
 #include "radio/src/eeprom_rlc.cpp"
 #include "radio/src/opentx.cpp"
+#include "radio/src/switches.cpp"
 #include "radio/src/targets/taranis/pulses_driver.cpp"
 #include "radio/src/targets/taranis/rtc_driver.cpp"
 #include "radio/src/targets/taranis/trainer_driver.cpp"
