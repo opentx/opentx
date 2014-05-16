@@ -60,7 +60,7 @@ PCBREV =
 # Enable JETI-Telemetry or FrSky Telemetry reception on UART0
 # For this option you need to modify your hardware!
 # More information at [insertURLhere]
-# Values = STD, FRSKY, JETI, NMEA, ARDUPILOT, MAVLINK, TELEMETREZ
+# Values = STD, FRSKY, FRSKY_SPORT, JETI, NMEA, ARDUPILOT, MAVLINK, TELEMETREZ
 EXT = STD
 
 # FAI mode
@@ -893,7 +893,7 @@ ifeq ($(ACCURAT_THROTTLE_STATS), YES)
 endif
 
 # EXTENSIONS (for Telemetry protocols)
-ifneq ($(EXT), $(filter $(EXT), STD FRSKY ARDUPILOT NMEA JETI MAVLINK TELEMETREZ))
+ifneq ($(EXT), $(filter $(EXT), STD FRSKY FRSKY_SPORT ARDUPILOT NMEA JETI MAVLINK TELEMETREZ))
   $(error Sorry, the EXT $(EXT) is not supported yet in openTx)
 endif
 
@@ -926,9 +926,9 @@ ifeq ($(EXT), TELEMETREZ)
   CPPDEFS += -DTELEMETREZ
 endif
 
-ifeq ($(EXT), $(filter $(EXT), FRSKY TELEMETREZ))
+ifeq ($(EXT), $(filter $(EXT), FRSKY FRSKY_SPORT TELEMETREZ))
   CPPDEFS += -DFRSKY
-  ifeq ($(PCB), $(filter $(PCB), TARANIS))
+  ifeq ($(EXT), FRSKY_SPORT)
 	CPPSRC += telemetry/frsky.cpp telemetry/frsky_sport.cpp telemetry/frsky_d.cpp
     CPPDEFS += -DFRSKY_SPORT
   else

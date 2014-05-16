@@ -1397,13 +1397,13 @@ void menuModelSetup(uint8_t event)
         if (attr && (editMode>0 || p1valdiff)) {
           switch (m_posHorz) {
             case 0:
-              CHECK_INCDEC_MODELVAR(event, g_model.externalModule, MODULE_TYPE_NONE, MODULE_TYPE_COUNT-1);
+              g_model.externalModule = checkIncDec(event, g_model.externalModule, MODULE_TYPE_NONE, MODULE_TYPE_COUNT-1, EE_MODEL, isModuleAvailable);
               if (checkIncDec_Ret) {
                 g_model.moduleData[EXTERNAL_MODULE].channelsStart = 0;
                 if (g_model.externalModule == MODULE_TYPE_PPM)
                   g_model.moduleData[EXTERNAL_MODULE].channelsCount = 0;
                 else
-                  g_model.moduleData[EXTERNAL_MODULE].channelsCount = MAX_PORT2_CHANNELS();
+                  g_model.moduleData[EXTERNAL_MODULE].channelsCount = MAX_EXTERNAL_MODULE_CHANNELS();
               }
               break;
             case 1:
@@ -1413,7 +1413,7 @@ void menuModelSetup(uint8_t event)
                 CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, RF_PROTO_X16, RF_PROTO_LAST);
               if (checkIncDec_Ret) {
                 g_model.moduleData[EXTERNAL_MODULE].channelsStart = 0;
-                g_model.moduleData[EXTERNAL_MODULE].channelsCount = MAX_PORT2_CHANNELS();
+                g_model.moduleData[EXTERNAL_MODULE].channelsCount = MAX_EXTERNAL_MODULE_CHANNELS();
               }
           }
         }

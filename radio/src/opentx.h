@@ -475,11 +475,10 @@ enum PotType {
 #endif
 
 #if defined(CPUARM)
-  static const int8_t maxChannelsModules[] = { 0, 8, 8, 0, -2 }; // relative to 8!
+  static const int8_t maxChannelsModules[] = { 0, 8, 8, -2 }; // relative to 8!
   static const int8_t maxChannelsXJT[] = { 0, 8, 0, 4 }; // relative to 8!
   #define NUM_CHANNELS(idx)                 (8+g_model.moduleData[idx].channelsCount)
   #define MAX_TRAINER_CHANNELS()            (8)
-  #define MAX_CHANNELS(idx)                 (idx==0 ? MAX_PORT1_CHANNELS() : (idx==1 ? MAX_PORT2_CHANNELS() : MAX_TRAINER_CHANNELS()))
 #endif
 
 #if defined(PCBTARANIS)
@@ -490,22 +489,24 @@ enum PotType {
   #else
     #define IS_MODULE_DSM2(idx)             (false)
   #endif
-  #define MAX_PORT1_CHANNELS()              (maxChannelsXJT[1+g_model.moduleData[INTERNAL_MODULE].rfProtocol])
-  #define MAX_PORT2_CHANNELS()              ((g_model.externalModule == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[1].rfProtocol] : maxChannelsModules[g_model.externalModule])
+  #define MAX_INTERNAL_MODULE_CHANNELS()    (maxChannelsXJT[1+g_model.moduleData[INTERNAL_MODULE].rfProtocol])
+  #define MAX_EXTERNAL_MODULE_CHANNELS()    ((g_model.externalModule == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[1].rfProtocol] : maxChannelsModules[g_model.externalModule])
+  #define MAX_CHANNELS(idx)                 (idx==INTERNAL_MODULE ? MAX_INTERNAL_MODULE_CHANNELS() : (idx==EXTERNAL_MODULE ? MAX_EXTERNAL_MODULE_CHANNELS() : MAX_TRAINER_CHANNELS()))
   #define IS_PXX_RANGE_CHECK_ENABLE()       (pxxFlag[INTERNAL_MODULE] == PXX_SEND_RANGECHECK || pxxFlag[EXTERNAL_MODULE] == PXX_SEND_RANGECHECK)
 #elif defined(PCBSKY9X) && defined(REVX)
   #define IS_MODULE_PPM(idx)                (idx==TRAINER_MODULE || (idx==EXTERNAL_MODULE && g_model.externalModule==MODULE_TYPE_PPM))
   #define IS_MODULE_XJT(idx)                (idx==EXTERNAL_MODULE && g_model.externalModule==MODULE_TYPE_XJT)
   #define IS_MODULE_DSM2(idx)               (idx==EXTERNAL_MODULE && g_model.externalModule==MODULE_TYPE_DSM2)
-  #define MAX_PORT1_CHANNELS()              ((g_model.externalModule == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol] : maxChannelsModules[g_model.externalModule])
-  #define MAX_PORT2_CHANNELS()              (8) // Only PPM
+  #define MAX_EXTERNAL_MODULE_CHANNELS()    ((g_model.externalModule == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol] : maxChannelsModules[g_model.externalModule])
+  #define MAX_CHANNELS(idx)                 (idx==EXTERNAL_MODULE ? MAX_EXTERNAL_MODULE_CHANNELS() : MAX_TRAINER_CHANNELS())
   #define IS_PXX_RANGE_CHECK_ENABLE()       (pxxFlag[EXTERNAL_MODULE] == PXX_SEND_RANGECHECK)
 #elif defined(PCBSKY9X)
   #define IS_MODULE_PPM(idx)                (idx==TRAINER_MODULE || idx==EXTRA_MODULE || (idx==EXTERNAL_MODULE && g_model.externalModule==MODULE_TYPE_PPM))
   #define IS_MODULE_XJT(idx)                (idx==EXTERNAL_MODULE && g_model.externalModule==MODULE_TYPE_XJT)
   #define IS_MODULE_DSM2(idx)               (idx==EXTERNAL_MODULE && g_model.externalModule==MODULE_TYPE_DSM2)
-  #define MAX_PORT1_CHANNELS()              ((g_model.externalModule == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[0].rfProtocol] : maxChannelsModules[g_model.externalModule])
-  #define MAX_PORT2_CHANNELS()              (0) // Only PPM
+  #define MAX_EXTERNAL_MODULE_CHANNELS()    ((g_model.externalModule == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[0].rfProtocol] : maxChannelsModules[g_model.externalModule])
+  #define MAX_EXTRA_MODULE_CHANNELS()       (0) // Only PPM
+  #define MAX_CHANNELS(idx)                 (idx==EXTERNAL_MODULE ? MAX_EXTERNAL_MODULE_CHANNELS() : (idx==EXTRA_MODULE ? MAX_EXTRA_MODULE_CHANNELS() : MAX_TRAINER_CHANNELS()))
   #define IS_PXX_RANGE_CHECK_ENABLE()       (pxxFlag[EXTERNAL_MODULE] == PXX_SEND_RANGECHECK)
 #endif
 

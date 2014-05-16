@@ -222,6 +222,7 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
   bool isAssignableFunctionAvailable(int function);
   bool isSwitchAvailable(int swtch);
   bool isSwitchAvailableInLogicalSwitches(int swtch);
+  bool isModuleAvailable(int module);
   #define AUTOSWITCH_ENTER_LONG() (attr && event==EVT_KEY_LONG(KEY_ENTER))
   #define CHECK_INCDEC_MODELSWITCH(event, var, min, max) \
     var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SWITCH|NO_INCDEC_MARKS, isSwitchAvailable)

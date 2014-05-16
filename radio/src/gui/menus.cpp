@@ -1573,4 +1573,14 @@ bool isAssignableFunctionAvailable(int function)
       return true;
   }
 }
+
+bool isModuleAvailable(int module)
+{
+#if !defined(PXX)
+  if (module == MODULE_TYPE_XJT)
+    return false;
+#endif
+  return true;
+}
+
 #endif
