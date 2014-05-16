@@ -458,13 +458,18 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
   bool midsize = flags & MIDSIZE;
   bool tinsize = flags & TINSIZE;
 #else
-#define midsize 0
-#define tinsize 0
+  #define midsize 0
+  #define tinsize 0
 #endif
 
   bool neg = false;
-  if (flags & UNSIGN) { flags -= UNSIGN; }
-  else if (val < 0) { neg=true; val=-val; }
+  if (flags & UNSIGN) {
+    flags -= UNSIGN;
+  }
+  else if (val < 0) {
+    neg = true;
+    val = -val;
+  }
 
   xcoord_t xn = 0;
   uint8_t ln = 2;
@@ -480,8 +485,9 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
       len++;
       tmp /= 10;
     }
-    if (len <= mode)
+    if (len <= mode) {
       len = mode + 1;
+    }
   }
 
 
@@ -525,7 +531,7 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
     }
 #endif
     lcd_putcAtt(x, y, c, f);
-    if (mode==i) {
+    if (mode == i) {
       flags &= ~PREC2; // TODO not needed but removes 20bytes, could be improved for sure, check asm
       if (dblsize) {
         xn = x - 2;
@@ -550,7 +556,6 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
         lcd_plot(x-1, y+4);
         if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
           lcd_vline(x-1, y, 6);
-          lcd_vline(x, y, 6);
         }
         x--;
       }
