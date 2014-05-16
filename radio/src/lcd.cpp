@@ -335,7 +335,7 @@ void lcd_putsnAtt(xcoord_t x, uint8_t y, const pm_char * s, uint8_t len, LcdFlag
 {
   xcoord_t orig_x = x;
   bool setx = false;
-  while(len--) {
+  while (len--) {
     unsigned char c;
     switch (mode & (BSS+ZCHAR)) {
       case BSS:
@@ -355,7 +355,9 @@ void lcd_putsnAtt(xcoord_t x, uint8_t y, const pm_char * s, uint8_t len, LcdFlag
       x = c;
       setx = false;
     }
-    else if (!c || x>LCD_W-6) break;
+    else if (!c) {
+      break;
+    }
     else if (c >= 0x20) {
       lcd_putcAtt(x, y, c, mode);
       x = lcdNextPos;
@@ -421,19 +423,18 @@ void lcd_putsiAtt(xcoord_t x, uint8_t y,const pm_char * s,uint8_t idx, LcdFlags 
 {
   uint8_t length;
   length = pgm_read_byte(s++);
-  lcd_putsnAtt(x,y,s+length*idx,length,flags & ~(BSS|ZCHAR));
+  lcd_putsnAtt(x, y, s+length*idx, length, flags & ~(BSS|ZCHAR));
 }
 
 void lcd_outhex4(xcoord_t x, uint8_t y, uint16_t val)
 {
-  x+=FWNUM*4+1;
-  for(int i=0; i<4; i++)
-  {
-    x-=FWNUM;
+  x += FWNUM*4+1;
+  for(int i=0; i<4; i++) {
+    x -= FWNUM;
     char c = val & 0xf;
     c = c>9 ? c+'A'-10 : c+'0';
-    lcd_putcAtt(x,y,c,c>='A'?CONDENSED:0);
-    val>>=4;
+    lcd_putcAtt(x, y, c, c>='A' ? CONDENSED : 0);
+    val >>= 4;
   }
 }
 
@@ -1163,15 +1164,7 @@ void putsTrimMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, LcdFlags at
 #if ROTARY_ENCODERS > 0
 void putsRotaryEncoderMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, LcdFlags att)
 {
-#if ROTARY_ENCODERS > 2
-  int16_t v;
-  if(idx < (NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA))
-    v = phaseAddress(phase)->rotaryEncoders[idx];
-  else
-    v = g_model.rotaryEncodersExtra[phase][idx - (NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA)];
-#else
   int16_t v = phaseAddress(phase)->rotaryEncoders[idx];
-#endif
 
   if (v > ROTARY_ENCODER_MAX) {
     uint8_t p = v - ROTARY_ENCODER_MAX - 1;
