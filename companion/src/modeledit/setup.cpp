@@ -108,15 +108,27 @@ ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module
   if (moduleIdx < 0) {
     label = tr("Trainer Port");
     ui->trainerMode->setCurrentIndex(model.trainerMode);
+    if (!IS_TARANIS(firmware->getBoard())) {
+      ui->label_trainerMode->hide();
+      ui->trainerMode->hide();
+    }
   }
   else {
     ui->label_trainerMode->hide();
     ui->trainerMode->hide();
     if (firmware->getCapability(NumModules) > 1) {
-      if (moduleIdx == 0)
-        label = tr("Internal Radio System");
-      else
-        label = tr("External Radio Module");
+      if (IS_TARANIS(firmware->getBoard())) {
+        if (moduleIdx == 0)
+          label = tr("Internal Radio System");
+        else
+          label = tr("External Radio Module");
+      }
+      else {
+        if (moduleIdx == 0)
+          label = tr("Radio System");
+        else
+          label = tr("Extra Radio System");
+      }
     }
     else {
       label = tr("Radio System");
@@ -195,7 +207,7 @@ void ModulePanel::update()
         break;
     }
   }
-  else if (model.trainerMode != 0) {
+  else if (!IS_TARANIS(firmware->getBoard()) || model.trainerMode != 0) {
     mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
   }
 
@@ -333,7 +345,7 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
 
   ui->setupUi(this);
 
-  ui->name->setMaxLength(IS_TARANIS(GetEepromInterface()->getBoard()) ? 12 : 10);
+  ui->name->setMaxLength(IS_TARANIS(firmware->getBoard()) ? 12 : 10);
 
   for (int i=0; i<C9X_MAX_TIMERS; i++) {
     timers[i] = new TimerPanel(this, model, model.timers[i], generalSettings, firmware);

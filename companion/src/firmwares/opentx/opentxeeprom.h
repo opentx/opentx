@@ -74,7 +74,7 @@ class ProtocolsConversionTable: public ConversionTable
     ProtocolsConversionTable(BoardEnum board)
     {
       int val = 0;
-      if (IS_TARANIS(board)) {
+      if (IS_ARM(board)) {
         addConversion(OFF, val++);
       }
       addConversion(PPM, val++);
@@ -82,7 +82,7 @@ class ProtocolsConversionTable: public ConversionTable
         addConversion(PPM16, val++);
         addConversion(PPMSIM, val++);
       }
-      if (IS_TARANIS(board)) {
+      if (IS_ARM(board)) {
         addConversion(PXX_XJT_X16, val);
         addConversion(PXX_XJT_D8, val);
         addConversion(PXX_XJT_LR12, val++);
@@ -90,7 +90,7 @@ class ProtocolsConversionTable: public ConversionTable
       else {
         addConversion(PXX_DJT, val++);
       }
-      if (IS_TARANIS(board)) {
+      if (IS_ARM(board)) {
         addConversion(LP45, val);
         addConversion(DSM2, val);
         addConversion(DSMX, val++);

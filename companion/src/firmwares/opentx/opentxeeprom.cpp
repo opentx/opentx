@@ -2473,6 +2473,11 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
     internalField.Append(new UnsignedField<8>(modelData.trainerMode));
   }
 
+  if (IS_ARM(board) && version >= 216) {
+    modulesCount = 3;
+    internalField.Append(new ConversionField< SignedField<8> >(modelData.moduleData[0].protocol, &protocolsConversionTable, "Protocol", ::QObject::tr("OpenTX doesn't accept this protocol")));
+  }
+
   if (IS_ARM(board) && version >= 215) {
     for (int module=0; module<modulesCount; module++) {
       internalField.Append(new SignedField<8>(subprotocols[module]));

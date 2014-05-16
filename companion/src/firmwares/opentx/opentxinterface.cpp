@@ -570,7 +570,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case Haptic:
       return 1;
     case ModelTrainerEnable:
-      if (IS_TARANIS(board))
+      if (IS_ARM(board))
         return 1;
       else
         return 0;
@@ -639,11 +639,9 @@ int OpenTxFirmware::getCapability(const Capability capability)
       else
         return 1;
     case HasFailsafe:
-      if (IS_TARANIS(board)) 
-        return 32; // 
-      return (IS_SKY9X(board) ? 16 : 0);
+      return (IS_ARM(board) ? 32 : 0);
     case NumModules:
-      return (IS_ARM(board) ? 2 : 1);
+      return (IS_ARM(board) && !IS_9XRPRO(board)) ? 2 : 1;
     case HasPPMStart:
       return (IS_ARM(board) ? true : false);
     case HasCurrentCalibration:
@@ -743,7 +741,9 @@ int OpenTxEepromInterface::isAvailable(Protocol proto, int port)
       case 0:
         switch (proto) {
           case PPM:
-          case PXX_DJT:
+          case PXX_XJT_X16:
+          case PXX_XJT_D8:
+          case PXX_XJT_LR12:
           case LP45:
           case DSM2:
           case DSMX:
