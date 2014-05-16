@@ -37,6 +37,8 @@
 #ifndef board_gruvin9x_h
 #define board_gruvin9x_h
 
+#include "../common_avr/board_avr.h"
+
 #define GPIO_BUTTON_MENU         pinl
 #define GPIO_BUTTON_EXIT         pinl
 #define GPIO_BUTTON_RIGHT        pinl

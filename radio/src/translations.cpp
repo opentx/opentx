@@ -110,7 +110,7 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(COUNTRYCODES)
     ISTR(VFAILSAFE)
 #endif
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
     ISTR(VTRAINERMODES)
     ISTR(TARANIS_PROTOCOLS)
     ISTR(XJT_PROTOCOLS)
@@ -485,14 +485,17 @@ const pm_char STR_BLCOLOR[]  PROGMEM = TR_BLCOLOR;
   const char * STR_CSW_HEADERS[] =    TR_CSW_HEADERS;
 #endif
 
+#if defined(CPUARM)
+  const pm_char STR_TRAINER[] PROGMEM = TR_TRAINER;
+  const pm_char STR_MODULE_BIND[] PROGMEM  = TR_MODULE_BIND;
+  const pm_char STR_CHANNELRANGE[] PROGMEM = TR_CHANNELRANGE;
+  const pm_char STR_SET[] PROGMEM = TR_SET;
+#endif
+
 #if defined(PCBTARANIS)
   const pm_char STR_BYTES[] PROGMEM = TR_BYTES;
-  const pm_char STR_MODULE_BIND[] PROGMEM  = TR_MODULE_BIND;
-  const pm_char STR_SET[] PROGMEM = TR_SET;
-  const pm_char STR_TRAINER[] PROGMEM = TR_TRAINER;
   const pm_char STR_ANTENNAPROBLEM[] PROGMEM = TR_ANTENNAPROBLEM;
   const pm_char STR_MODULE[] PROGMEM = TR_MODULE;
-  const pm_char STR_CHANNELRANGE[] PROGMEM = TR_CHANNELRANGE;
   const pm_char STR_LOWALARM[] PROGMEM = TR_LOWALARM;
   const pm_char STR_CRITICALALARM[] PROGMEM = TR_CRITICALALARM;
   const pm_char STR_ENABLE_POPUP[] PROGMEM = TR_ENABLE_POPUP;

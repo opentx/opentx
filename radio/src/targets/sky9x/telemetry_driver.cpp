@@ -117,7 +117,7 @@ void startPdcUsartReceive()
   pUsart->US_RCR = RX_UART_BUFFER_SIZE ;
   pUsart->US_RNCR = RX_UART_BUFFER_SIZE ;
   pUsart->US_PTCR = US_PTCR_RXTEN ;
-  TelemetryActiveBuffer = 0 ;
+  TelemetryActiveBuffer = 0;
 }
 
 void rxPdcUsart( void (*pChProcess)(uint8_t x) )
@@ -158,7 +158,7 @@ void rxPdcUsart( void (*pChProcess)(uint8_t x) )
 #endif
 }
 
-uint32_t txPdcUsart( uint8_t *buffer, uint32_t size )
+uint32_t txPdcUsart(uint8_t *buffer, uint32_t size)
 {
   register Usart *pUsart = SECOND_USART;
 
@@ -174,7 +174,7 @@ uint32_t txPdcUsart( uint8_t *buffer, uint32_t size )
   return 0 ;
 }
 
-uint32_t txPdcPending()
+uint32_t telemetryTransmitPending()
 {
   register Usart *pUsart = SECOND_USART;
   uint32_t x ;
@@ -187,4 +187,15 @@ uint32_t txPdcPending()
   __enable_irq() ;
 
   return x ;
+}
+
+void telemetryPortInit(uint32_t baudrate)
+{
+  UART2_Configure(baudrate, Master_frequency);
+  startPdcUsartReceive();
+}
+
+void telemetryTransmitBuffer(uint8_t * buffer, uint32_t size)
+{
+  txPdcUsart(buffer, size);
 }

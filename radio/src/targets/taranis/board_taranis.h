@@ -114,12 +114,9 @@ extern uint16_t sessionTimer;
 void delaysInit(void);
 
 #define DEBUG_BAUDRATE      115200
-#define SPORT_BAUDRATE      57600
 
 void uart3Init(unsigned int mode);
 void uart3Putc(const char c);
-
-void sportInit(void);
 
 void delaysInit(void);
 void delay_01us(uint16_t nb);
@@ -245,6 +242,9 @@ void eeWriteBlockCmp(const void *pointer_ram, uint16_t pointer_eeprom, size_t si
 
 // Debug driver
 void debugPutc(const char c);
+
+// Telemetry driver
+void telemetryPortInit(uint32_t baudrate);
 
 // Haptic driver
 void hapticInit(void);

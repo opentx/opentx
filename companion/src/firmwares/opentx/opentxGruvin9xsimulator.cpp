@@ -58,6 +58,7 @@
 
 namespace Open9xGruvin9x {
 #include "radio/src/targets/gruvin9x/board_gruvin9x.cpp"
+#include "radio/src/targets/common_avr/telemetry_driver.cpp"
 #include "radio/src/eeprom_common.cpp"
 #include "radio/src/eeprom_rlc.cpp"
 #include "radio/src/opentx.cpp"
@@ -65,7 +66,7 @@ namespace Open9xGruvin9x {
 #include "radio/src/switches.cpp"
 #include "radio/src/curves.cpp"
 #include "radio/src/mixer.cpp"
-#include "radio/src/protocols/pulses_avr.cpp"
+#include "radio/src/pulses/pulses_avr.cpp"
 #include "radio/src/stamp.cpp"
 #include "radio/src/maths.cpp"
 #include "radio/src/gui/menus.cpp"
@@ -84,6 +85,7 @@ namespace Open9xGruvin9x {
 #include "radio/src/buzzer.cpp"
 #include "radio/src/targets/gruvin9x/somo14d.cpp"
 #include "radio/src/telemetry/frsky.cpp"
+#include "radio/src/telemetry/frsky_d.cpp"
 #include "radio/src/translations/tts_en.cpp"
 #include "radio/src/haptic.cpp"
 

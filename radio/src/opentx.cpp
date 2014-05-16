@@ -577,15 +577,7 @@ uint8_t getRotaryEncoderFlightPhase(uint8_t idx)
   uint8_t phase = s_current_mixer_flight_mode;
   for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
     if (phase == 0) return 0;
-#if ROTARY_ENCODERS > 2
-    int16_t value;
-    if(idx<(NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA))
-      value = phaseAddress(phase)->rotaryEncoders[idx];
-    else
-      value = g_model.rotaryEncodersExtra[phase][idx-(NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA)];
-#else
     int16_t value = phaseAddress(phase)->rotaryEncoders[idx];
-#endif
     if (value <= ROTARY_ENCODER_MAX) return phase;
     uint8_t result = value-ROTARY_ENCODER_MAX-1;
     if (result >= phase) result++;
@@ -596,25 +588,13 @@ uint8_t getRotaryEncoderFlightPhase(uint8_t idx)
 
 int16_t getRotaryEncoder(uint8_t idx)
 {
-#if ROTARY_ENCODERS > 2
-  if(idx >= (NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA))
-    return g_model.rotaryEncodersExtra[getRotaryEncoderFlightPhase(idx)][idx-(NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA)];
-#endif
   return phaseAddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx];
 }
 
 void incRotaryEncoder(uint8_t idx, int8_t inc)
 {
   g_rotenc[idx] += inc;
-#if ROTARY_ENCODERS > 2
-  int16_t *value;
-  if (idx < (NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA))
-    value = &(phaseAddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx]);
-  else
-    value = &(g_model.rotaryEncodersExtra[getRotaryEncoderFlightPhase(idx)][idx-(NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA)]);
-#else
   int16_t *value = &(phaseAddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx]);
-#endif
   *value = limit((int16_t)-1024, (int16_t)(*value + (inc * 8)), (int16_t)+1024);
   eeDirty(EE_MODEL);
 }
@@ -1557,7 +1537,7 @@ uint16_t s_timeCum16ThrP; // THR% in 1/16 sec
 
 uint8_t  trimsCheckTimer = 0;
 
-void resetTimer(uint8_t idx)
+void timerReset(uint8_t idx)
 {
   TimerState & timerState = timersStates[idx];
   timerState.state = TMR_OFF; // is changed to RUNNING dep from mode
@@ -1565,7 +1545,7 @@ void resetTimer(uint8_t idx)
   timerState.val_10ms = 0 ;
 }
 
-void resetAll()
+void flightReset()
 {
   static bool firstReset = true;
   if (firstReset)
@@ -1573,10 +1553,10 @@ void resetAll()
   else
     AUDIO_RESET();
 
-  resetTimer(0);
-  resetTimer(1);
+  timerReset(0);
+  timerReset(1);
 #if defined(FRSKY)
-  resetTelemetry();
+  telemetryReset();
 #endif
   for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++) {
     csLastValue[i] = CS_LAST_VALUE_INIT;
@@ -1873,14 +1853,14 @@ void evalFunctions()
             switch (CFN_PARAM(sd)) {
               case FUNC_RESET_TIMER1:
               case FUNC_RESET_TIMER2:
-                resetTimer(CFN_PARAM(sd));
+                timerReset(CFN_PARAM(sd));
                 break;
-              case FUNC_RESET_ALL:
-                resetAll();
+              case FUNC_RESET_FLIGHT:
+                flightReset();
                 break;
 #if defined(FRSKY)
               case FUNC_RESET_TELEMETRY:
-                resetTelemetry();
+                telemetryReset();
                 break;
 #endif
 #if ROTARY_ENCODERS > 0
@@ -2483,7 +2463,7 @@ void opentxStart()
 void opentxClose()
 {
 #if defined(FRSKY)
-  FRSKY_End();
+  // TODO needed? telemetryEnd();
 #endif
 
 #if defined(SDCARD)
@@ -3014,26 +2994,6 @@ ISR(TIMER3_CAPT_vect) // G: High frequency noise can cause stack overflo with IS
 }
 #endif
 
-/*
-   USART0 Transmit Data Register Emtpy ISR
-   Used to transmit FrSky data packets and DSM2 protocol
-*/
-
-// TODO serial_arm and serial_avr
-
-#if defined(FRSKY) && !defined(CPUARM)
-// TODO in frsky.cpp?
-FORCEINLINE void FRSKY_USART0_vect()
-{
-  if (frskyTxBufferCount > 0) {
-    UDR0 = frskyTxBuffer[--frskyTxBufferCount];
-  }
-  else {
-    UCSR0B &= ~(1 << UDRIE0); // disable UDRE0 interrupt
-  }
-}
-#endif
-
 #if defined(DSM2_SERIAL) && !defined(CPUARM)
 FORCEINLINE void DSM2_USART0_vect()
 {
@@ -3048,7 +3008,20 @@ FORCEINLINE void DSM2_USART0_vect()
 #endif
 
 #if !defined(SIMU) && !defined(CPUARM)
+
 #if defined (FRSKY) || defined(DSM2_SERIAL)
+
+// USART0 Transmit Data Register Emtpy ISR
+FORCEINLINE void FRSKY_USART0_vect()
+{
+  if (frskyTxBufferCount > 0) {
+    UDR0 = frskyTxBuffer[--frskyTxBufferCount];
+  }
+  else {
+    UCSR0B &= ~(1 << UDRIE0); // disable UDRE0 interrupt
+  }
+}
+
 ISR(USART0_UDRE_vect)
 {
 #if defined(FRSKY) && defined(DSM2_SERIAL)
@@ -3444,10 +3417,10 @@ int main(void)
 
   lcdSetRefVolt(25);
 
-  sei(); // interrupts needed for FRSKY_Init and eeReadAll.
+  sei(); // interrupts needed for telemetryInit and eeReadAll.
 
 #if defined(FRSKY) && !defined(DSM2_SERIAL)
-  FRSKY_Init();
+  telemetryInit();
 #endif
 
 #if defined(DSM2_SERIAL) && !defined(FRSKY)

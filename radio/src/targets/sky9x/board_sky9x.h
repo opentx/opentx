@@ -147,6 +147,11 @@ void usbMassStorage();
 #define PIN_LOW                         0x000
 #define PIN_HIGH                        0x100
 
+// Telemetry port
+#define SECOND_USART       USART0
+#define SECOND_ID          ID_USART0
+#define SECOND_PINS        {PINS_USART0}
+
 void configure_pins( uint32_t pins, uint16_t config );
 uint16_t getCurrent();
 
@@ -285,7 +290,8 @@ void rotencEnd();
 void debugPutc(const char c);
 
 // Telemetry driver
-void UART2_Configure(uint32_t baudrate, uint32_t masterClock);
-void startPdcUsartReceive();
+void telemetryPortInit(uint32_t baudrate);
+uint32_t telemetryTransmitPending();
+void telemetryTransmitBuffer(uint8_t * buffer, uint32_t size);
 
 #endif

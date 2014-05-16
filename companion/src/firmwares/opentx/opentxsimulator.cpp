@@ -63,6 +63,7 @@
 
 namespace Open9x {
 #include "radio/src/targets/stock/board_stock.cpp"
+#include "radio/src/targets/common_avr/telemetry_driver.cpp"
 #include "radio/src/eeprom_common.cpp"
 #include "radio/src/eeprom_rlc.cpp"
 #include "radio/src/opentx.cpp"
@@ -70,7 +71,7 @@ namespace Open9x {
 #include "radio/src/switches.cpp"
 #include "radio/src/curves.cpp"
 #include "radio/src/mixer.cpp"
-#include "radio/src/protocols/pulses_avr.cpp"
+#include "radio/src/pulses/pulses_avr.cpp"
 #include "radio/src/stamp.cpp"
 #include "radio/src/maths.cpp"
 #include "radio/src/gui/menus.cpp"
@@ -83,6 +84,7 @@ namespace Open9x {
 #include "radio/src/keys.cpp"
 #include "radio/src/simpgmspace.cpp"
 #include "radio/src/telemetry/frsky.cpp"
+#include "radio/src/telemetry/frsky_d.cpp"
 #include "radio/src/templates.cpp"
 #include "radio/src/translations.cpp"
 #include "radio/src/fonts.cpp"

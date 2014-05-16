@@ -335,7 +335,7 @@ void lcd_putsnAtt(xcoord_t x, uint8_t y, const pm_char * s, uint8_t len, LcdFlag
 {
   xcoord_t orig_x = x;
   bool setx = false;
-  while(len--) {
+  while (len--) {
     unsigned char c;
     switch (mode & (BSS+ZCHAR)) {
       case BSS:
@@ -355,7 +355,9 @@ void lcd_putsnAtt(xcoord_t x, uint8_t y, const pm_char * s, uint8_t len, LcdFlag
       x = c;
       setx = false;
     }
-    else if (!c || x>LCD_W-6) break;
+    else if (!c) {
+      break;
+    }
     else if (c >= 0x20) {
       lcd_putcAtt(x, y, c, mode);
       x = lcdNextPos;
@@ -421,19 +423,18 @@ void lcd_putsiAtt(xcoord_t x, uint8_t y,const pm_char * s,uint8_t idx, LcdFlags 
 {
   uint8_t length;
   length = pgm_read_byte(s++);
-  lcd_putsnAtt(x,y,s+length*idx,length,flags & ~(BSS|ZCHAR));
+  lcd_putsnAtt(x, y, s+length*idx, length, flags & ~(BSS|ZCHAR));
 }
 
 void lcd_outhex4(xcoord_t x, uint8_t y, uint16_t val)
 {
-  x+=FWNUM*4+1;
-  for(int i=0; i<4; i++)
-  {
-    x-=FWNUM;
+  x += FWNUM*4+1;
+  for(int i=0; i<4; i++) {
+    x -= FWNUM;
     char c = val & 0xf;
     c = c>9 ? c+'A'-10 : c+'0';
-    lcd_putcAtt(x,y,c,c>='A'?CONDENSED:0);
-    val>>=4;
+    lcd_putcAtt(x, y, c, c>='A' ? CONDENSED : 0);
+    val >>= 4;
   }
 }
 
@@ -457,13 +458,18 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
   bool midsize = flags & MIDSIZE;
   bool tinsize = flags & TINSIZE;
 #else
-#define midsize 0
-#define tinsize 0
+  #define midsize 0
+  #define tinsize 0
 #endif
 
   bool neg = false;
-  if (flags & UNSIGN) { flags -= UNSIGN; }
-  else if (val < 0) { neg=true; val=-val; }
+  if (flags & UNSIGN) {
+    flags -= UNSIGN;
+  }
+  else if (val < 0) {
+    neg = true;
+    val = -val;
+  }
 
   xcoord_t xn = 0;
   uint8_t ln = 2;
@@ -479,8 +485,9 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
       len++;
       tmp /= 10;
     }
-    if (len <= mode)
+    if (len <= mode) {
       len = mode + 1;
+    }
   }
 
 
@@ -524,15 +531,20 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
     }
 #endif
     lcd_putcAtt(x, y, c, f);
-    if (mode==i) {
+    if (mode == i) {
       flags &= ~PREC2; // TODO not needed but removes 20bytes, could be improved for sure, check asm
       if (dblsize) {
         xn = x - 2;
-        if (c>='1' && c<='3') ln++;
-        uint8_t tn = (qr.quot) % 10;
+        if (c>='2' && c<='3') ln++;
+        uint8_t tn = (qr.quot % 10);
         if (tn==2 || tn==4) {
-          if (c=='4') { xn++; }
-          else { xn--; ln++; }
+          if (c=='4') {
+            xn++;
+          }
+          else {
+            xn--;
+            ln++;
+          }
         }
       }
       else if (midsize) {
@@ -544,7 +556,6 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
         lcd_plot(x-1, y+4);
         if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
           lcd_vline(x-1, y, 6);
-          lcd_vline(x, y, 6);
         }
         x--;
       }
@@ -557,7 +568,7 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
     if (dblsize && (uint16_t)val >= 1000 && (uint16_t)val < 10000) x-=2;
 #endif
     val = qr.quot;
-    x-=fw;
+    x -= fw;
 #if defined(BOLD_FONT) && !defined(CPUM64) || defined(EXTSTD)
     if (i==len && (flags & BOLD)) x += 1;
 #endif
@@ -574,8 +585,7 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
     }
     else {
       y &= ~0x07;
-      lcd_hline(xn, (y & ~0x07)+2*FH-3, ln);
-      lcd_hline(xn, y+2*FH-2, ln);
+      lcd_filled_rect(xn, y+2*FH-3, ln, 2);
     }
   }
   if (neg) lcd_putcAtt(x, y, '-', flags);
@@ -1163,15 +1173,7 @@ void putsTrimMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, LcdFlags at
 #if ROTARY_ENCODERS > 0
 void putsRotaryEncoderMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, LcdFlags att)
 {
-#if ROTARY_ENCODERS > 2
-  int16_t v;
-  if(idx < (NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA))
-    v = phaseAddress(phase)->rotaryEncoders[idx];
-  else
-    v = g_model.rotaryEncodersExtra[phase][idx - (NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA)];
-#else
   int16_t v = phaseAddress(phase)->rotaryEncoders[idx];
-#endif
 
   if (v > ROTARY_ENCODER_MAX) {
     uint8_t p = v - ROTARY_ENCODER_MAX - 1;

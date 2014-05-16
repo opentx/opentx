@@ -199,7 +199,7 @@ void menuTelemetryFrsky(uint8_t event)
       break;
 #else
     case EVT_KEY_FIRST(KEY_ENTER):
-      resetTelemetry();
+      telemetryReset();
       break;
 #endif
   }

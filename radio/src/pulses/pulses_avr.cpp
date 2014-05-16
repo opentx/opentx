@@ -743,7 +743,7 @@ void setupPulses()
 
 #if defined(DSM2_SERIAL) && defined(FRSKY)
     if (s_current_protocol[0] == 255 || IS_DSM2_PROTOCOL(s_current_protocol[0])) {
-      FRSKY_Init();
+      telemetryInit();
     }
 #endif
 

@@ -71,9 +71,9 @@ inline int geteepromsize() {
 #define EESIZE geteepromsize()
 
 #include "radio/src/targets/taranis/board_taranis.cpp"
-#include "radio/src/protocols/ppm_arm.cpp"
-#include "radio/src/protocols/pxx_arm.cpp"
-#include "radio/src/protocols/dsm2_arm.cpp"
+#include "radio/src/pulses/ppm_arm.cpp"
+#include "radio/src/pulses/pxx_arm.cpp"
+#include "radio/src/pulses/dsm2_arm.cpp"
 #include "radio/src/eeprom_common.cpp"
 #include "radio/src/eeprom_conversions.cpp"
 #include "radio/src/eeprom_rlc.cpp"
@@ -86,7 +86,7 @@ inline int geteepromsize() {
 #include "radio/src/targets/taranis/rtc_driver.cpp"
 #include "radio/src/targets/taranis/trainer_driver.cpp"
 #include "radio/src/targets/taranis/uart3_driver.cpp"
-#include "radio/src/protocols/pulses_arm.cpp"
+#include "radio/src/pulses/pulses_arm.cpp"
 #include "radio/src/stamp.cpp"
 #include "radio/src/maths.cpp"
 #include "radio/src/gui/menus.cpp"
@@ -112,8 +112,11 @@ inline int geteepromsize() {
 #define SDCARD
 #include "radio/src/translations.cpp"
 #include "radio/src/fonts.cpp"
+#include "radio/src/telemetry/frsky.cpp"
 #include "radio/src/telemetry/frsky_sport.cpp"
+#include "radio/src/telemetry/frsky_d.cpp"
 #include "radio/src/targets/taranis/audio_driver.cpp"
+#include "radio/src/targets/taranis/telemetry_driver.cpp"
 #include "radio/src/audio_arm.cpp"
 #include "radio/src/translations/tts_cz.cpp"
 #include "radio/src/translations/tts_de.cpp"

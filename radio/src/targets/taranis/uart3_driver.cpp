@@ -78,7 +78,7 @@ void uart3Init(unsigned int mode)
 
   switch(mode) {
     case UART_MODE_SPORT:
-      uart3Setup(SPORT_BAUDRATE);
+      uart3Setup(FRSKY_SPORT_BAUDRATE);
       break;
 #if defined(DEBUG)
     case UART_MODE_DEBUG:

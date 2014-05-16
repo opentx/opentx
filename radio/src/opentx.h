@@ -417,9 +417,9 @@ enum PotType {
 #endif
 
 #if defined(CPUARM)
-  #include "protocols/pulses_arm.h"
+  #include "pulses/pulses_arm.h"
 #else
-  #include "protocols/pulses_avr.h"
+  #include "pulses/pulses_avr.h"
 #endif
 
 #if defined(PCBTARANIS)
@@ -474,25 +474,39 @@ enum PotType {
   #define IS_DSM2_SERIAL_PROTOCOL(protocol)  (0)
 #endif
 
+#if defined(CPUARM)
+  static const int8_t maxChannelsModules[] = { 0, 8, 8, 0, -2 }; // relative to 8!
+  static const int8_t maxChannelsXJT[] = { 0, 8, 0, 4 }; // relative to 8!
+  #define NUM_CHANNELS(idx)                 (8+g_model.moduleData[idx].channelsCount)
+  #define MAX_TRAINER_CHANNELS()            (8)
+  #define MAX_CHANNELS(idx)                 (idx==0 ? MAX_PORT1_CHANNELS() : (idx==1 ? MAX_PORT2_CHANNELS() : MAX_TRAINER_CHANNELS()))
+#endif
+
 #if defined(PCBTARANIS)
-  static const int8_t maxChannelsModules[] = { 0, 8, 8, 0, -2 };
-  static const int8_t maxChannelsXJT[] = { 0, 8, 0, 4 };
-  #define IS_MODULE_XJT(idx)        ((idx==0 || g_model.externalModule == MODULE_TYPE_XJT) && (g_model.moduleData[idx].rfProtocol != RF_PROTO_OFF))
-  #define IS_MODULE_PPM(idx)        (idx==2 || (idx==1 && g_model.externalModule == MODULE_TYPE_PPM))
+  #define IS_MODULE_PPM(idx)                (idx==TRAINER_MODULE || (idx==EXTERNAL_MODULE && g_model.externalModule==MODULE_TYPE_PPM))
+  #define IS_MODULE_XJT(idx)                ((idx==INTERNAL_MODULE || g_model.externalModule==MODULE_TYPE_XJT) && (g_model.moduleData[idx].rfProtocol != RF_PROTO_OFF))
   #if defined(DSM2)
-    #define IS_MODULE_DSM2(idx)     (idx==1 && g_model.externalModule == MODULE_TYPE_DSM2)
+    #define IS_MODULE_DSM2(idx)             (idx==EXTERNAL_MODULE && g_model.externalModule==MODULE_TYPE_DSM2)
   #else
-    #define IS_MODULE_DSM2(idx)     false
+    #define IS_MODULE_DSM2(idx)             (false)
   #endif
-  #define NUM_CHANNELS(idx)         (8+g_model.moduleData[idx].channelsCount)
-  #define MAX_PORT1_CHANNELS()      (maxChannelsXJT[1+g_model.moduleData[0].rfProtocol])
-  #define MAX_PORT2_CHANNELS()      ((g_model.externalModule == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[1].rfProtocol] : maxChannelsModules[g_model.externalModule])
-  #define MAX_TRAINER_CHANNELS()    (8)
-  #define MAX_CHANNELS(idx)         (idx==0 ? MAX_PORT1_CHANNELS() : (idx==1 ? MAX_PORT2_CHANNELS() : MAX_TRAINER_CHANNELS()))
+  #define MAX_PORT1_CHANNELS()              (maxChannelsXJT[1+g_model.moduleData[INTERNAL_MODULE].rfProtocol])
+  #define MAX_PORT2_CHANNELS()              ((g_model.externalModule == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[1].rfProtocol] : maxChannelsModules[g_model.externalModule])
+  #define IS_PXX_RANGE_CHECK_ENABLE()       (pxxFlag[INTERNAL_MODULE] == PXX_SEND_RANGECHECK || pxxFlag[EXTERNAL_MODULE] == PXX_SEND_RANGECHECK)
+#elif defined(PCBSKY9X) && defined(REVX)
+  #define IS_MODULE_PPM(idx)                (idx==TRAINER_MODULE || (idx==EXTERNAL_MODULE && g_model.externalModule==MODULE_TYPE_PPM))
+  #define IS_MODULE_XJT(idx)                (idx==EXTERNAL_MODULE && g_model.externalModule==MODULE_TYPE_XJT)
+  #define IS_MODULE_DSM2(idx)               (idx==EXTERNAL_MODULE && g_model.externalModule==MODULE_TYPE_DSM2)
+  #define MAX_PORT1_CHANNELS()              ((g_model.externalModule == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol] : maxChannelsModules[g_model.externalModule])
+  #define MAX_PORT2_CHANNELS()              (8) // Only PPM
+  #define IS_PXX_RANGE_CHECK_ENABLE()       (pxxFlag[EXTERNAL_MODULE] == PXX_SEND_RANGECHECK)
 #elif defined(PCBSKY9X)
-  #define NUM_PORT1_CHANNELS()      (IS_PXX_PROTOCOL(g_model.protocol) ? 8 : (IS_DSM2_PROTOCOL(g_model.protocol) ? 6 : (8+g_model.moduleData[0].channelsCount)))
-  #define NUM_PORT2_CHANNELS()      (8+g_model.moduleData[1].channelsCount)
-  #define NUM_CHANNELS(idx)         (idx==0 ? NUM_PORT1_CHANNELS() : (8+g_model.moduleData[idx].channelsCount))
+  #define IS_MODULE_PPM(idx)                (idx==TRAINER_MODULE || idx==EXTRA_MODULE || (idx==EXTERNAL_MODULE && g_model.externalModule==MODULE_TYPE_PPM))
+  #define IS_MODULE_XJT(idx)                (idx==EXTERNAL_MODULE && g_model.externalModule==MODULE_TYPE_XJT)
+  #define IS_MODULE_DSM2(idx)               (idx==EXTERNAL_MODULE && g_model.externalModule==MODULE_TYPE_DSM2)
+  #define MAX_PORT1_CHANNELS()              ((g_model.externalModule == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[0].rfProtocol] : maxChannelsModules[g_model.externalModule])
+  #define MAX_PORT2_CHANNELS()              (0) // Only PPM
+  #define IS_PXX_RANGE_CHECK_ENABLE()       (pxxFlag[EXTERNAL_MODULE] == PXX_SEND_RANGECHECK)
 #endif
 
 #include "lcd.h"
@@ -539,6 +553,8 @@ enum BaseCurves {
 
 #if defined(PCBTARANIS)
   #define SPLASH_NEEDED() (g_eeGeneral.splashMode != 3)
+#elif defined(CPUARM)
+  #define SPLASH_NEEDED() (g_model.externalModule != MODULE_TYPE_DSM2 && !g_eeGeneral.splashMode)
 #else
   #define SPLASH_NEEDED() (!IS_DSM2_PROTOCOL(g_model.protocol) && !g_eeGeneral.splashMode)
 #endif
@@ -813,8 +829,8 @@ extern int16_t csLastValue[NUM_LOGICAL_SWITCH];
 #define TMR_RUNNING  1
 #define TMR_NEGATIVE 2
 #define TMR_STOPPED  3
-void resetTimer(uint8_t idx);
-void resetAll();
+void timerReset(uint8_t idx);
+void flightReset();
 
 extern uint8_t unexpectedShutdown;
 extern uint8_t g_tmr1Latency_max;
@@ -1231,10 +1247,7 @@ inline bool isFunctionActive(uint8_t func)
   extern volatile rotenc_t g_rotenc[1];
 #endif
 
-#if defined(FRSKY_SPORT)
-  // FrSky SPORT Telemetry
-  #include "telemetry/frsky_sport.h"
-#elif defined (FRSKY)
+#if defined (FRSKY)
   // FrSky Telemetry
   #include "telemetry/frsky.h"
 #elif defined(JETI)

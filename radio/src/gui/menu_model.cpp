@@ -660,13 +660,13 @@ void menuModelSelect(uint8_t event)
 #endif
 }
 
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
 uint8_t g_moduleIdx;
 void menuModelFailsafe(uint8_t event)
 {
   static bool longNames = false;
   bool newLongNames = false;
-  uint8_t ch;
+  uint8_t ch = 0;
 
   if (event == EVT_KEY_LONG(KEY_ENTER) && s_editMode) {
     s_noHi = NO_HI_LEN;
@@ -676,24 +676,35 @@ void menuModelFailsafe(uint8_t event)
     SEND_FAILSAFE_NOW(g_moduleIdx);
   }
 
-  SIMPLE_SUBMENU_NOTITLE(32);
+  SIMPLE_SUBMENU_NOTITLE(NUM_CHNOUT);
 
   SET_SCROLLBAR_X(0);
 
-  if (m_posVert >= 16)
+#if LCD_W >= 212
+  #define COL_W   (LCD_W/2)
+  #define BAR_W   64
+  // Column separator
+  lcd_vline(LCD_W/2, FH, LCD_H-FH);
+
+  if (m_posVert >= 16) {
     ch = 16;
-  else
-    ch = 0;
+  }
+#else
+  #define COL_W   (LCD_W)
+  #define BAR_W   90
+  ch = 8 * (m_posVert / 8);
+#endif
 
   lcd_putsCenter(0*FH, FAILSAFESET);
   lcd_invert_line(0);
 
-  // Column separator
-  lcd_vline(LCD_W/2, FH, LCD_H-FH);
-
-  for (uint8_t col=0; col<2; col++) {
-
-    uint8_t x = col*LCD_W/2+1;
+#if LCD_W >= 212
+  for (uint8_t col=0; col<2; col++)
+#else
+  uint8_t col = 0;
+#endif
+  {
+    uint8_t x = col*COL_W+1;
 
     // Channels
     for (uint8_t line=0; line<8; line++) {
@@ -708,6 +719,7 @@ void menuModelFailsafe(uint8_t event)
       else
         val = g_model.moduleData[g_moduleIdx].failsafeChannels[8*col+line];
 
+#if defined(PCBTARANIS)
       // Channel name if present, number if not
       uint8_t lenLabel = ZLEN(g_model.limitData[ch].name);
       if (lenLabel > 4) {
@@ -718,6 +730,9 @@ void menuModelFailsafe(uint8_t event)
         lcd_putsnAtt(x+1-ofs, y, g_model.limitData[ch].name, sizeof(g_model.limitData[ch].name), ZCHAR | SMLSIZE);
       else
         putsChn(x+1-ofs, y, ch+1, SMLSIZE);
+#else
+      putsChn(x+1-ofs, y, ch+1, SMLSIZE);
+#endif
 
       // Value
       LcdFlags flags = TINSIZE;
@@ -727,21 +742,21 @@ void menuModelFailsafe(uint8_t event)
           flags |= BLINK;
       }
 #if defined(PPM_UNIT_US)
-      uint8_t wbar = (longNames ? 54 : 64);
-      lcd_outdezAtt(x+LCD_W/2-4-wbar-ofs, y, PPM_CH_CENTER(ch)+val/2, flags);
+      uint8_t wbar = (longNames ? BAR_W-10 : BAR_W);
+      lcd_outdezAtt(x+COL_W-4-wbar-ofs, y, PPM_CH_CENTER(ch)+val/2, flags);
 #elif defined(PPM_UNIT_PERCENT_PREC1)
-      uint8_t wbar = (longNames ? 48 : 58);
-      lcd_outdezAtt(x+LCD_W/2-4-wbar-ofs, y, calcRESXto1000(val), PREC1|flags);
+      uint8_t wbar = (longNames ? BAR_W-16 : BAR_W-6);
+      lcd_outdezAtt(x+COL_W-4-wbar-ofs, y, calcRESXto1000(val), PREC1|flags);
 #else
-      uint8_t wbar = (longNames ? 54 : 64);
-      lcd_outdezAtt(x+LCD_W/2-4-wbar-ofs, y, calcRESXto1000(val)/10, flags);
+      uint8_t wbar = (longNames ? BAR_W-10 : BAR_W);
+      lcd_outdezAtt(x+COL_W-4-wbar-ofs, y, calcRESXto1000(val)/10, flags);
 #endif
 
       // Gauge
-      lcd_rect(x+LCD_W/2-3-wbar-ofs, y, wbar+1, 6);
+      lcd_rect(x+COL_W-3-wbar-ofs, y, wbar+1, 6);
       uint16_t lim = g_model.extendedLimits ? 640*2 : 512*2;
       uint8_t len = limit((uint8_t)1, uint8_t((abs(val) * wbar/2 + lim/2) / lim), uint8_t(wbar/2));
-      uint8_t x0 = (val>0) ? x+LCD_W/2-ofs-3-wbar/2 : x+LCD_W/2-ofs-2-wbar/2-len;
+      uint8_t x0 = (val>0) ? x+COL_W-ofs-3-wbar/2 : x+COL_W-ofs-2-wbar/2-len;
       lcd_hline(x0, y+1, len);
       lcd_hline(x0, y+2, len);
       lcd_hline(x0, y+3, len);
@@ -896,11 +911,20 @@ enum menuModelSetupItems {
   ITEM_MODEL_TRAINER_MODE,
   ITEM_MODEL_TRAINER_CHANNELS,
   ITEM_MODEL_TRAINER_SETTINGS,
-#elif defined(PCBSKY9X) && !defined(REVX)
-  ITEM_MODEL_PPM1_PROTOCOL,
-  ITEM_MODEL_PPM1_PARAMS,
-  ITEM_MODEL_PPM2_PROTOCOL,
-  ITEM_MODEL_PPM2_PARAMS,
+#elif defined(CPUARM)
+  ITEM_MODEL_EXTERNAL_MODULE_LABEL,
+  ITEM_MODEL_EXTERNAL_MODULE_MODE,
+  ITEM_MODEL_EXTERNAL_MODULE_CHANNELS,
+  ITEM_MODEL_EXTERNAL_MODULE_BIND,
+  ITEM_MODEL_EXTERNAL_MODULE_FAILSAFE,
+#if defined(PCBSKY9X) && !defined(REVX)
+  ITEM_MODEL_EXTRA_MODULE_LABEL,
+  ITEM_MODEL_EXTRA_MODULE_CHANNELS,
+  ITEM_MODEL_EXTRA_MODULE_BIND,
+#endif
+  ITEM_MODEL_TRAINER_LABEL,
+  ITEM_MODEL_TRAINER_CHANNELS,
+  ITEM_MODEL_TRAINER_SETTINGS,
 #else
   ITEM_MODEL_PPM1_PROTOCOL,
   ITEM_MODEL_PPM1_PARAMS,
@@ -915,9 +939,15 @@ enum menuModelSetupItems {
 #endif
 
 #if LCD_W >= 212
-#define MODEL_SETUP_2ND_COLUMN (LCD_W-17*FW-MENUS_SCROLLBAR_WIDTH)
+  #define MODEL_SETUP_2ND_COLUMN        (LCD_W-17*FW-MENUS_SCROLLBAR_WIDTH)
+  #define MODEL_SETUP_BIND_OFS          3*FW
+  #define MODEL_SETUP_RANGE_OFS         7*FW
+  #define MODEL_SETUP_SET_FAILSAFE_OFS  10*FW
 #else
-#define MODEL_SETUP_2ND_COLUMN (LCD_W-11*FW-MENUS_SCROLLBAR_WIDTH)
+  #define MODEL_SETUP_2ND_COLUMN        (LCD_W-11*FW-MENUS_SCROLLBAR_WIDTH)
+  #define MODEL_SETUP_BIND_OFS          2*FW+1
+  #define MODEL_SETUP_RANGE_OFS         4*FW+3
+  #define MODEL_SETUP_SET_FAILSAFE_OFS  7*FW-2
 #endif
 
 #if defined(PCBTARANIS) && defined(SDCARD)
@@ -947,35 +977,56 @@ void onModelSetupBitmapMenu(const char *result)
 }
 #endif
 
+#if defined(PCBTARANIS)
+  #define CURRENT_MODULE_EDITED(k)         (k>=ITEM_MODEL_TRAINER_LABEL ? TRAINER_MODULE : (k>=ITEM_MODEL_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE))
+#elif defined(PCBSKY9X) && defined(REVX)
+  #define CURRENT_MODULE_EDITED(k)         (k>=ITEM_MODEL_TRAINER_LABEL ? TRAINER_MODULE : EXTERNAL_MODULE)
+#else
+  #define CURRENT_MODULE_EDITED(k)         (k>=ITEM_MODEL_TRAINER_LABEL ? TRAINER_MODULE : (k>=ITEM_MODEL_EXTRA_MODULE_LABEL ? EXTRA_MODULE : EXTERNAL_MODULE))
+#endif
+
 void menuModelSetup(uint8_t event)
 {
 #if defined(PCBTARANIS)
-  #define IF_PORT1_ON(x)             (g_model.moduleData[0].rfProtocol == RF_PROTO_OFF ? HIDDEN_ROW : (uint8_t)(x))
-  #define IF_PORT2_ON(x)             (g_model.externalModule == MODULE_TYPE_NONE ? HIDDEN_ROW : (uint8_t)(x))
-  #define IF_TRAINER_ON(x)           (g_model.trainerMode ? (uint8_t)(x) : HIDDEN_ROW)
-  #define IF_PORT_ON(idx, x)         (idx==0 ? IS_PORT1_ON(x) : (idx==1 ? IS_PORT2_ON(x) : IS_TRAINER_ON()))
-  #define IF_PORT2_XJT(x)            (IS_MODULE_XJT(1) ? (uint8_t)x : HIDDEN_ROW)
-  #define IS_D8_RX(x)                (g_model.moduleData[x].rfProtocol == RF_PROTO_D8)
-  #define PORT1_CHANNELS_ROWS()      IF_PORT1_ON(1)
-  #define PORT2_CHANNELS_ROWS()      IF_PORT2_ON(IS_MODULE_DSM2(1) ? (uint8_t)0 : (uint8_t)1)
-  #define TRAINER_CHANNELS_ROWS()    IF_TRAINER_ON(1)
-  #define PORT_CHANNELS_ROWS(x)      (x==0 ? PORT1_CHANNELS_ROWS() : (x==1 ? PORT2_CHANNELS_ROWS() : TRAINER_CHANNELS_ROWS()))
-  #define FAILSAFE_ROWS(x)           ((g_model.moduleData[x].rfProtocol==RF_PROTO_X16 || g_model.moduleData[x].rfProtocol==RF_PROTO_LR12) ? (g_model.moduleData[x].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : HIDDEN_ROW)
-  #define MODEL_SETUP_MAX_LINES      (1+ITEM_MODEL_SETUP_MAX)
-  #define POT_WARN_ITEMS()           ((g_model.nPotsToWarn >> 6) ? (uint8_t)NUM_POTS : (uint8_t)0)
-
+  #define IF_INTERNAL_MODULE_ON(x)          (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF ? HIDDEN_ROW : (uint8_t)(x))
+  #define IF_EXTERNAL_MODULE_ON(x)          (g_model.externalModule == MODULE_TYPE_NONE ? HIDDEN_ROW : (uint8_t)(x))
+  #define IF_TRAINER_ON(x)                  (g_model.trainerMode ? (uint8_t)(x) : HIDDEN_ROW)
+  #define IF_EXTERNAL_MODULE_XJT(x)         (IS_MODULE_XJT(EXTERNAL_MODULE) ? (uint8_t)x : HIDDEN_ROW)
+  #define IS_D8_RX(x)                       (g_model.moduleData[x].rfProtocol == RF_PROTO_D8)
+  #define INTERNAL_MODULE_CHANNELS_ROWS()   IF_INTERNAL_MODULE_ON(1)
+  #define EXTERNAL_MODULE_CHANNELS_ROWS()   IF_EXTERNAL_MODULE_ON(IS_MODULE_DSM2(EXTERNAL_MODULE) ? (uint8_t)0 : (uint8_t)1)
+  #define TRAINER_CHANNELS_ROWS()           IF_TRAINER_ON(1)
+  #define PORT_CHANNELS_ROWS(x)             (x==INTERNAL_MODULE ? INTERNAL_MODULE_CHANNELS_ROWS() : (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS() : TRAINER_CHANNELS_ROWS()))
+  #define FAILSAFE_ROWS(x)                  ((g_model.moduleData[x].rfProtocol==RF_PROTO_X16 || g_model.moduleData[x].rfProtocol==RF_PROTO_LR12) ? (g_model.moduleData[x].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : HIDDEN_ROW)
+  #define MODEL_SETUP_MAX_LINES             (1+ITEM_MODEL_SETUP_MAX)
+  #define POT_WARN_ITEMS()                  ((g_model.nPotsToWarn >> 6) ? (uint8_t)NUM_POTS : (uint8_t)0)
   bool CURSOR_ON_CELL = (m_posHorz >= 0);
-  MENU_TAB({ 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 1, 0,CASE_PCBTARANIS(LABEL(Throttle)) 0, 0, 0,CASE_PCBTARANIS(LABEL(PreflightCheck)) CASE_PCBTARANIS(0) 0, 7, POT_WARN_ITEMS(), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), LABEL(InternalModule), 0, IF_PORT1_ON(1), IF_PORT1_ON(IS_D8_RX(0) ? (uint8_t)1 : (uint8_t)2), IF_PORT1_ON(FAILSAFE_ROWS(0)), LABEL(ExternalModule), (g_model.externalModule==MODULE_TYPE_XJT || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0, PORT2_CHANNELS_ROWS(), (IS_MODULE_XJT(1) && IS_D8_RX(1)) ? (uint8_t)1 : (IS_MODULE_PPM(1) || IS_MODULE_XJT(1) || IS_MODULE_DSM2(1)) ? (uint8_t)2 : HIDDEN_ROW, IF_PORT2_XJT(FAILSAFE_ROWS(1)), LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)});
+  MENU_TAB({ 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 1, 0,CASE_PCBTARANIS(LABEL(Throttle)) 0, 0, 0,CASE_PCBTARANIS(LABEL(PreflightCheck)) CASE_PCBTARANIS(0) 0, 7, POT_WARN_ITEMS(), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), LABEL(InternalModule), 0, IF_INTERNAL_MODULE_ON(1), IF_INTERNAL_MODULE_ON(IS_D8_RX(0) ? (uint8_t)1 : (uint8_t)2), IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)), LABEL(ExternalModule), (IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0, EXTERNAL_MODULE_CHANNELS_ROWS(), (IS_MODULE_XJT(EXTERNAL_MODULE) && IS_D8_RX(EXTERNAL_MODULE)) ? (uint8_t)1 : (IS_MODULE_PPM(EXTERNAL_MODULE) || IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)2 : HIDDEN_ROW, IF_EXTERNAL_MODULE_XJT(FAILSAFE_ROWS(EXTERNAL_MODULE)), LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)});
+#elif defined(CPUARM)
+  #define IF_EXTERNAL_MODULE_XJT(x)         (IS_MODULE_XJT(EXTERNAL_MODULE) ? (uint8_t)x : HIDDEN_ROW)
+  #define IF_EXTERNAL_MODULE_ON(x)          (g_model.externalModule == MODULE_TYPE_NONE ? HIDDEN_ROW : (uint8_t)(x))
+  #define IS_D8_RX(x)                       (g_model.moduleData[x].rfProtocol == RF_PROTO_D8)
+  #define EXTERNAL_MODULE_CHANNELS_ROWS()   IF_EXTERNAL_MODULE_ON(IS_MODULE_DSM2(EXTERNAL_MODULE) ? (uint8_t)0 : (uint8_t)1)
+  #define TRAINER_CHANNELS_ROWS()           (1)
+  #define PORT_CHANNELS_ROWS(x)             (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS() : TRAINER_CHANNELS_ROWS())
+  #define FAILSAFE_ROWS(x)                  ((g_model.moduleData[x].rfProtocol==RF_PROTO_X16 || g_model.moduleData[x].rfProtocol==RF_PROTO_LR12) ? (g_model.moduleData[x].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : HIDDEN_ROW)
+  #define CURSOR_ON_CELL                    (true)
+  #define MODEL_SETUP_MAX_LINES             (1+ITEM_MODEL_SETUP_MAX)
+  #define POT_WARN_ITEMS()                  ((g_model.nPotsToWarn >> 6) ? (uint8_t)NUM_POTS : (uint8_t)0)
+#if defined(REVX)
+  #define EXTRA_MODULE_ROWS
+#else
+  #define EXTRA_MODULE_ROWS                 LABEL(ExtraModule), 1, 2,
+#endif
+  MENU_TAB({ 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 1, 0,CASE_PCBTARANIS(LABEL(Throttle)) 0, 0, 0,CASE_PCBTARANIS(LABEL(PreflightCheck)) CASE_PCBTARANIS(0) 0, 6, NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1, LABEL(ExternalModule), (IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0, EXTERNAL_MODULE_CHANNELS_ROWS(), (IS_MODULE_XJT(EXTERNAL_MODULE) && IS_D8_RX(EXTERNAL_MODULE)) ? (uint8_t)1 : (IS_MODULE_PPM(EXTERNAL_MODULE) || IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)2 : HIDDEN_ROW, IF_EXTERNAL_MODULE_XJT(FAILSAFE_ROWS(EXTERNAL_MODULE)), EXTRA_MODULE_ROWS LABEL(Trainer), TRAINER_CHANNELS_ROWS(), 2});
 #elif defined(CPUM64)
-  #define CURSOR_ON_CELL             (true)
-  #define MODEL_SETUP_MAX_LINES      ((IS_PPM_PROTOCOL(protocol)||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 1+ITEM_MODEL_SETUP_MAX : ITEM_MODEL_SETUP_MAX)
-
+  #define CURSOR_ON_CELL                    (true)
+  #define MODEL_SETUP_MAX_LINES             ((IS_PPM_PROTOCOL(protocol)||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 1+ITEM_MODEL_SETUP_MAX : ITEM_MODEL_SETUP_MAX)
   uint8_t protocol = g_model.protocol;
   MENU_TAB({ 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1, FIELD_PROTOCOL_MAX, 2 });
 #else
-  #define CURSOR_ON_CELL             (true)
-  #define MODEL_SETUP_MAX_LINES      ((IS_PPM_PROTOCOL(protocol)||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 1+ITEM_MODEL_SETUP_MAX : ITEM_MODEL_SETUP_MAX)
-
+  #define CURSOR_ON_CELL                    (true)
+  #define MODEL_SETUP_MAX_LINES             ((IS_PPM_PROTOCOL(protocol)||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? 1+ITEM_MODEL_SETUP_MAX : ITEM_MODEL_SETUP_MAX)
   uint8_t protocol = g_model.protocol;
   MENU_TAB({ 0, 0, CASE_PCBTARANIS(0) 2, IF_PERSISTENT_TIMERS(0) 0, 0, 2, IF_PERSISTENT_TIMERS(0) 0, 0, 0, 1, 0, 0, 0, 0, 0, 6, NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1, FIELD_PROTOCOL_MAX, 2, CASE_PCBSKY9X(1) CASE_PCBSKY9X(2) });
 #endif
@@ -986,6 +1037,8 @@ void menuModelSetup(uint8_t event)
 #endif
 #if defined(PCBTARANIS)
     pxxFlag[INTERNAL_MODULE] = 0;
+#endif
+#if defined(CPUARM)
     pxxFlag[EXTERNAL_MODULE] = 0;
 #endif
     return;
@@ -1301,13 +1354,15 @@ void menuModelSetup(uint8_t event)
         }
         break;
 
+#if defined(PCBSKY9X) && !defined(REVX)
+      case ITEM_MODEL_EXTRA_MODULE_LABEL:
+        lcd_putsLeft(y, "RF Port 2 (PPM)");
+        break;
+#endif
+
 #if defined(PCBTARANIS)
       case ITEM_MODEL_INTERNAL_MODULE_LABEL:
         lcd_putsLeft(y, TR_INTERNALRF);
-        break;
-
-      case ITEM_MODEL_EXTERNAL_MODULE_LABEL:
-        lcd_putsLeft(y, TR_EXTERNALRF);
         break;
 
       case ITEM_MODEL_INTERNAL_MODULE_MODE:
@@ -1320,6 +1375,16 @@ void menuModelSetup(uint8_t event)
             g_model.moduleData[0].channelsCount = 0;
           }
         }
+        break;
+
+      case ITEM_MODEL_TRAINER_MODE:
+        g_model.trainerMode = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_MODE, STR_VTRAINERMODES, g_model.trainerMode, 0, 1, attr, event);
+        break;
+#endif
+
+#if defined(CPUARM)
+      case ITEM_MODEL_EXTERNAL_MODULE_LABEL:
+        lcd_putsLeft(y, TR_EXTERNALRF);
         break;
 
       case ITEM_MODEL_EXTERNAL_MODULE_MODE:
@@ -1354,11 +1419,22 @@ void menuModelSetup(uint8_t event)
         }
         break;
 
+      case ITEM_MODEL_TRAINER_LABEL:
+        lcd_putsLeft(y, STR_TRAINER);
+        break;
+
+#endif
+
+#if defined(PCBTARANIS)
       case ITEM_MODEL_INTERNAL_MODULE_CHANNELS:
+#elif defined(PCBSKY9X) && !defined(REVX)
+      case ITEM_MODEL_EXTRA_MODULE_CHANNELS:
+#endif
+#if defined(CPUARM)
       case ITEM_MODEL_EXTERNAL_MODULE_CHANNELS:
       case ITEM_MODEL_TRAINER_CHANNELS:
       {
-        uint8_t moduleIdx = (k>=ITEM_MODEL_TRAINER_LABEL ? 2 : (k>=ITEM_MODEL_EXTERNAL_MODULE_LABEL ? 1 : 0));
+        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
         lcd_putsLeft(y, STR_CHANNELRANGE);
         if ((int8_t)PORT_CHANNELS_ROWS(moduleIdx) >= 0) {
@@ -1381,12 +1457,18 @@ void menuModelSetup(uint8_t event)
         }
         break;
       }
+#endif
 
+#if defined(PCBTARANIS)
       case ITEM_MODEL_INTERNAL_MODULE_BIND:
+#elif defined(PCBSKY9X) && !defined(REVX)
+      case ITEM_MODEL_EXTRA_MODULE_BIND:
+#endif
+#if defined(CPUARM)
       case ITEM_MODEL_EXTERNAL_MODULE_BIND:
       case ITEM_MODEL_TRAINER_SETTINGS:
       {
-        uint8_t moduleIdx = (k>=ITEM_MODEL_TRAINER_LABEL ? 2 : (k>=ITEM_MODEL_EXTERNAL_MODULE_LABEL ? 1 : 0));
+        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
         if (IS_MODULE_PPM(moduleIdx)) {
           lcd_putsLeft(y, STR_PPMFRAME);
@@ -1412,7 +1494,7 @@ void menuModelSetup(uint8_t event)
         }
         else {
           horzpos_t l_posHorz = m_posHorz;
-          uint8_t xOffsetBind = 3*FW;
+          uint8_t xOffsetBind = MODEL_SETUP_BIND_OFS;
           if (IS_MODULE_XJT(moduleIdx) && IS_D8_RX(moduleIdx)) {
             xOffsetBind = 0;
             lcd_putsLeft(y, INDENT "Receiver");
@@ -1435,7 +1517,7 @@ void menuModelSetup(uint8_t event)
               }
             }
             lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+xOffsetBind, y, STR_MODULE_BIND, l_posHorz==1 ? attr : 0);
-            lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+7*FW+xOffsetBind, y, STR_MODULE_RANGE, l_posHorz==2 ? attr : 0);
+            lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS+xOffsetBind, y, STR_MODULE_RANGE, l_posHorz==2 ? attr : 0);
             if (IS_MODULE_XJT(moduleIdx)) {
               uint8_t newFlag = 0;
               if (attr && l_posHorz>0 && s_editMode>0) {
@@ -1464,16 +1546,20 @@ void menuModelSetup(uint8_t event)
         }
         break;
       }
+#endif
 
+#if defined(PCBTARANIS)
       case ITEM_MODEL_INTERNAL_MODULE_FAILSAFE:
+#endif
+#if defined(CPUARM)
       case ITEM_MODEL_EXTERNAL_MODULE_FAILSAFE:
       {
-        uint8_t moduleIdx = (k>=ITEM_MODEL_EXTERNAL_MODULE_LABEL ? 1 : 0);
+        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
         lcd_putsLeft(y, TR_FAILSAFE);
         if (IS_MODULE_XJT(moduleIdx)) {
           lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, STR_VFAILSAFE, moduleData.failsafeMode, m_posHorz==0 ? attr : 0);
-          if (moduleData.failsafeMode == FAILSAFE_CUSTOM) lcd_putsAtt(MODEL_SETUP_2ND_COLUMN + 10*FW, y, STR_SET, m_posHorz==1 ? attr : 0);
+          if (moduleData.failsafeMode == FAILSAFE_CUSTOM) lcd_putsAtt(MODEL_SETUP_2ND_COLUMN + MODEL_SETUP_SET_FAILSAFE_OFS, y, STR_SET, m_posHorz==1 ? attr : 0);
           if (attr) {
             if (moduleData.failsafeMode != FAILSAFE_CUSTOM)
               m_posHorz = 0;
@@ -1497,74 +1583,33 @@ void menuModelSetup(uint8_t event)
         }
         break;
       }
-
-      case ITEM_MODEL_TRAINER_LABEL:
-        lcd_putsLeft(y, STR_TRAINER);
-        break;
-
-      case ITEM_MODEL_TRAINER_MODE:
-        g_model.trainerMode = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_MODE, STR_VTRAINERMODES, g_model.trainerMode, 0, 1, attr, event);
-        break;
-
-#else
-
-      case ITEM_MODEL_PPM1_PROTOCOL:
-#if defined(PCBSKY9X) && !defined(REVX)
-        lcd_putsLeft(y, PSTR("Port1"));
-#else
-        lcd_putsLeft(y, NO_INDENT(STR_PROTO));
 #endif
 
+#if !defined(CPUARM)
+      case ITEM_MODEL_PPM1_PROTOCOL:
+        lcd_putsLeft(y, NO_INDENT(STR_PROTO));
         lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, STR_VPROTOS, protocol, m_posHorz<=0 ? attr : 0);
-
-#if defined(PCBSKY9X)
-        lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+4*FW+3, y, STR_CH, m_posHorz==1 ? attr : 0);
-        lcd_outdezAtt(lcdLastPos, y, g_model.moduleData[0].channelsStart+1, LEFT | (m_posHorz==1 ? attr : 0));
-        lcd_putc(lcdLastPos, y, '-');
-        lcd_outdezAtt(lcdLastPos + FW+1, y, g_model.moduleData[0].channelsStart+NUM_PORT1_CHANNELS(), LEFT | (m_posHorz==2 ? attr : 0));
-#else
         if (IS_PPM_PROTOCOL(protocol)) {
           lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+7*FW, y, STR_NCHANNELS, g_model.ppmNCH+2, m_posHorz!=0 ? attr : 0);
         }
         else if (attr) {
           MOVE_CURSOR_FROM_HERE();
         }
-#endif
-
-        if (attr && (editMode>0 || p1valdiff
-#if !defined(PCBSKY9X)
-            || (!IS_PPM_PROTOCOL(protocol) && !IS_DSM2_PROTOCOL(protocol))
-#endif
-        )) {
+        if (attr && (editMode>0 || p1valdiff || (!IS_PPM_PROTOCOL(protocol) && !IS_DSM2_PROTOCOL(protocol)))) {
           switch (m_posHorz) {
             case 0:
               CHECK_INCDEC_MODELVAR_ZERO(event, g_model.protocol, PROTO_MAX-1);
               break;
             case 1:
-#if defined(PCBSKY9X)
-              CHECK_INCDEC_MODELVAR_ZERO(event, g_model.moduleData[0].channelsStart, 32-8-g_model.moduleData[0].channelsCount);
-              g_model.moduleData[0].ppmFrameLength = max((int8_t)0, g_model.moduleData[0].channelsCount) * 4;
-              SET_DEFAULT_PPM_FRAME_LENGTH(0);
-#else
               CHECK_INCDEC_MODELVAR(event, g_model.ppmNCH, -2, 4);
               g_model.ppmFrameLength = g_model.ppmNCH * 8;
-#endif
               break;
-#if defined(PCBSKY9X)
-            case 2:
-              if (IS_PPM_PROTOCOL(protocol)) {
-                CHECK_INCDEC_MODELVAR(event, g_model.moduleData[0].channelsCount, -4, min<int8_t>(8, 32-8-g_model.moduleData[0].channelsStart));
-                SET_DEFAULT_PPM_FRAME_LENGTH(0);
-              }
-              else
-                REPEAT_LAST_CURSOR_MOVE();
-              break;
-#endif
           }
         }
         break;
+#endif
 
-#if defined(PCBSKY9X) && !defined(REVX)
+#if 0
       case ITEM_MODEL_PPM2_PROTOCOL:
         lcd_putsLeft(y, PSTR("Port2"));
         lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, STR_VPROTOS, 0, 0);
@@ -1609,30 +1654,8 @@ void menuModelSetup(uint8_t event)
         break;
 #endif
 
+#if !defined(CPUARM)
       case ITEM_MODEL_PPM1_PARAMS:
-#if defined(PCBSKY9X)
-        if (IS_PPM_PROTOCOL(protocol)) {
-          lcd_putsLeft(y, STR_PPMFRAME);
-          lcd_puts(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_MS);
-          lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN, y, (int16_t)g_model.moduleData[0].ppmFrameLength*5 + 225, (m_posHorz<=0 ? attr : 0) | PREC1|LEFT);
-          lcd_putc(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, 'u');
-          lcd_outdezAtt(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, (g_model.moduleData[0].ppmDelay*50)+300, (m_posHorz < 0 || m_posHorz==1) ? attr : 0);
-          lcd_putcAtt(MODEL_SETUP_2ND_COLUMN+10*FW, y, g_model.moduleData[0].ppmPulsePol ? '+' : '-', (m_posHorz < 0 || m_posHorz==2) ? attr : 0);
-          if (attr && (editMode>0 || p1valdiff)) {
-            switch (m_posHorz) {
-              case 0:
-                CHECK_INCDEC_MODELVAR(event, g_model.moduleData[0].ppmFrameLength, -20, 35);
-                break;
-              case 1:
-                CHECK_INCDEC_MODELVAR(event, g_model.moduleData[0].ppmDelay, -4, 10);
-                break;
-              case 2:
-                CHECK_INCDEC_MODELVAR_ZERO(event, g_model.moduleData[0].ppmPulsePol, 1);
-                break;
-            }
-          }
-        }
-#else
         if (IS_PPM_PROTOCOL(protocol)) {
           lcd_putsLeft(y, STR_PPMFRAME);
           lcd_puts(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_MS);
@@ -1654,7 +1677,6 @@ void menuModelSetup(uint8_t event)
             }
           }
         }
-#endif
 #if defined(DSM2) || defined(PXX)
         else if (IS_DSM2_PROTOCOL(protocol) || IS_PXX_PROTOCOL(protocol)) {
           if (attr && m_posHorz > 1) {
@@ -1665,21 +1687,10 @@ void menuModelSetup(uint8_t event)
           lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId, (m_posHorz<=0 ? attr : 0) | LEADING0|LEFT, 2);
           if (attr && (m_posHorz==0 && (editMode>0 || p1valdiff))) {
             CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId, 99);
-#if defined(CPUARM)
-            if (checkIncDec_Ret)
-              modelHeaders[g_eeGeneral.currModel].modelId = g_model.header.modelId;
-#endif
           }
-
 #if defined(PXX)
           if (protocol == PROTO_PXX) {
-#if defined(CPUARM)
-            if (attr && m_posHorz==0 && editMode==0 && event==EVT_KEY_BREAK(KEY_ENTER))
-              checkModelIdUnique(g_eeGeneral.currModel);
-#endif
-
             lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+4*FW, y, STR_SYNCMENU, m_posHorz!=0 ? attr : 0);
-
             uint8_t newFlag = 0;
             if (attr && m_posHorz>0 && editMode>0) {
               // send reset code
@@ -1688,7 +1699,6 @@ void menuModelSetup(uint8_t event)
             pxxFlag[0] = newFlag;
           }
 #endif
-
 #if defined(DSM2)
           if (IS_DSM2_PROTOCOL(protocol)) {
             lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+4*FW, y, STR_MODULE_RANGE, m_posHorz!=0 ? attr : 0);
@@ -1698,12 +1708,12 @@ void menuModelSetup(uint8_t event)
         }
 #endif
         break;
-#endif // defined(PCBTARANIS)
+#endif
     }
   }
 
-#if defined(PCBTARANIS)
-  if (pxxFlag[INTERNAL_MODULE] == PXX_SEND_RANGECHECK || pxxFlag[EXTERNAL_MODULE] == PXX_SEND_RANGECHECK) {
+#if defined(CPUARM) && defined(FRSKY)
+  if (IS_PXX_RANGE_CHECK_ENABLE()) {
     displayPopup("RSSI: ");
     lcd_outdezAtt(16+4*FW, 5*FH, frskyData.rssi[0].value, BOLD);
   }
@@ -2003,27 +2013,12 @@ void menuModelPhaseOne(uint8_t event)
         for (uint8_t t=0; t<NUM_ROTARY_ENCODERS; t++) {
           putsRotaryEncoderMode(MIXES_2ND_COLUMN+(t*FW), y, s_currIdx, t, m_posHorz==t ? attr : 0);
           if (attr && m_posHorz==t && ((editMode>0) || p1valdiff)) {
-#if ROTARY_ENCODERS > 2
-            int16_t v;
-            if(t < (NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA))
-              v = phaseAddress(s_currIdx)->rotaryEncoders[t];
-            else
-              v = g_model.rotaryEncodersExtra[s_currIdx][t-(NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA)];
-#else
             int16_t v = phaseAddress(s_currIdx)->rotaryEncoders[t];
-#endif
             if (v < ROTARY_ENCODER_MAX) v = ROTARY_ENCODER_MAX;
             v = checkIncDec(event, v, ROTARY_ENCODER_MAX, ROTARY_ENCODER_MAX+MAX_FLIGHT_MODES-1, EE_MODEL);
             if (checkIncDec_Ret) {
               if (v == ROTARY_ENCODER_MAX) v = 0;
-#if ROTARY_ENCODERS > 2
-              if (t < (NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA))
-                phaseAddress(s_currIdx)->rotaryEncoders[t] = v;
-              else
-                g_model.rotaryEncodersExtra[s_currIdx][t-(NUM_ROTARY_ENCODERS - NUM_ROTARY_ENCODERS_EXTRA)] = v;
-#else
               phaseAddress(s_currIdx)->rotaryEncoders[t] = v;
-#endif
             }
           }
         }
