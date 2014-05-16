@@ -322,8 +322,13 @@ PACK(typedef struct t_ScriptData {
   #define LIMITDATA_EXTRA   char name[LEN_CHANNEL_NAME]; int8_t curve;
   #define swstate_t         uint16_t
 #elif defined(PCBSKY9X)
+  enum ModuleIndex {
+    EXTERNAL_MODULE,
+    EXTRA_MODULE,
+    TRAINER_MODULE
+  };
   #define MODELDATA_BITMAP
-  #define MODELDATA_EXTRA   ModuleData moduleData[NUM_MODULES]; uint8_t nPotsToWarn; int8_t potPosition[NUM_POTS];
+  #define MODELDATA_EXTRA   uint8_t externalModule; uint8_t trainerMode; ModuleData moduleData[NUM_MODULES+1]; uint8_t nPotsToWarn; int8_t potPosition[NUM_POTS];
   #define LIMITDATA_EXTRA
   #define swstate_t         uint8_t
 #else
@@ -1242,31 +1247,18 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 
 #define ROTARY_ENCODER_MAX  1024
 
-#if defined(PCBTARANIS)
-#define NUM_ROTARY_ENCODERS 0
-#define NUM_ROTARY_ENCODERS_EXTRA 0
-#define ROTARY_ENCODER_ARRAY_EXTRA
-#define ROTARY_ENCODER_ARRAY int16_t rotaryEncoders[1];
+#if defined(PCBTARANIS) || defined(REVX)
+  #define NUM_ROTARY_ENCODERS 0
+  #define ROTARY_ENCODER_ARRAY int16_t rotaryEncoders[1];
 #elif defined(PCBSKY9X)
-#define NUM_ROTARY_ENCODERS_EXTRA 0
-#define NUM_ROTARY_ENCODERS 1
-#define ROTARY_ENCODER_ARRAY int16_t rotaryEncoders[1];
-#define ROTARY_ENCODER_ARRAY_EXTRA
-#elif defined(PCBGRUVIN9X) && ROTARY_ENCODERS > 2
-#define NUM_ROTARY_ENCODERS_EXTRA 2
-#define NUM_ROTARY_ENCODERS (2+NUM_ROTARY_ENCODERS_EXTRA)
-#define ROTARY_ENCODER_ARRAY int16_t rotaryEncoders[2];
-#define ROTARY_ENCODER_ARRAY_EXTRA int16_t rotaryEncodersExtra[MAX_FLIGHT_MODES][NUM_ROTARY_ENCODERS_EXTRA];
-#elif defined(CPUM2560) && ROTARY_ENCODERS <= 2
-#define NUM_ROTARY_ENCODERS_EXTRA 0
-#define NUM_ROTARY_ENCODERS 2
-#define ROTARY_ENCODER_ARRAY int16_t rotaryEncoders[2];
-#define ROTARY_ENCODER_ARRAY_EXTRA
+  #define NUM_ROTARY_ENCODERS 1
+  #define ROTARY_ENCODER_ARRAY int16_t rotaryEncoders[1];
+#elif defined(CPUM2560)
+  #define NUM_ROTARY_ENCODERS 2
+  #define ROTARY_ENCODER_ARRAY int16_t rotaryEncoders[2];
 #else
-#define NUM_ROTARY_ENCODERS_EXTRA 0
-#define NUM_ROTARY_ENCODERS 0
-#define ROTARY_ENCODER_ARRAY
-#define ROTARY_ENCODER_ARRAY_EXTRA
+  #define NUM_ROTARY_ENCODERS 0
+  #define ROTARY_ENCODER_ARRAY
 #endif
 
 #if defined(PCBSTD)
@@ -1680,7 +1672,8 @@ enum ThrottleSources {
 PACK(typedef struct t_ModelData {
   ModelHeader header;
   TimerData timers[MAX_TIMERS];
-  uint8_t    protocol:3; // not used on Taranis
+  AVR_FIELD(uint8_t   protocol:3);
+  ARM_FIELD(uint8_t   spare:3);
   uint8_t   thrTrim:1;            // Enable Throttle Trim
   AVR_FIELD(int8_t    ppmNCH:4)
   ARM_FIELD(int8_t    spare2:4)
@@ -1714,8 +1707,6 @@ PACK(typedef struct t_ModelData {
   MODEL_GVARS_DATA
 
   TELEMETRY_DATA
-
-  ROTARY_ENCODER_ARRAY_EXTRA
 
   MODELDATA_EXTRA
 

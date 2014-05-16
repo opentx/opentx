@@ -42,53 +42,55 @@ uint32_t failsafeCounter[NUM_MODULES] = { MODULES_INIT(100) };
 
 void setupPulses(unsigned int port)
 {
+  uint8_t required_protocol;
+
   heartbeat |= (HEART_TIMER_PULSES << port);
 
+  switch (port) {
 #if defined(PCBTARANIS)
-  uint8_t required_protocol;
-  
-  if (port == INTERNAL_MODULE) {
-    required_protocol = g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF ? PROTO_NONE : PROTO_PXX;
-  }
-  else {
-    port = EXTERNAL_MODULE; // ensure it's external module only
-    switch (g_model.externalModule) {
-      case MODULE_TYPE_PPM:
-        required_protocol = PROTO_PPM;
-        break;
-      case MODULE_TYPE_XJT:
-      	required_protocol = PROTO_PXX;
-        break;
-#if defined(DSM2)
-      case MODULE_TYPE_DSM2:
-        required_protocol = limit<uint8_t>(PROTO_DSM2_LP45, PROTO_DSM2_LP45+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, PROTO_DSM2_DSMX);
-        // The module is set to OFF during one second before BIND start
-        {
-          static tmr10ms_t bindStartTime = 0;
-          if (dsm2Flag == DSM2_BIND_FLAG) {
-            if (bindStartTime == 0) bindStartTime = get_tmr10ms();
-            if ((tmr10ms_t)(get_tmr10ms() - bindStartTime) < 100) {
-              required_protocol = PROTO_NONE;
-              break;
-            }
-          }
-          else {
-            bindStartTime = 0;
-          }
-        }
-        break;
-#endif
-      default:
-        required_protocol = PROTO_NONE;
-        break;
-    }
-  }
-#else
-  uint8_t required_protocol = g_model.protocol;
+    case INTERNAL_MODULE:
+      required_protocol = g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF ? PROTO_NONE : PROTO_PXX;
+      break;
 #endif
 
-  if (s_pulses_paused)
+    default:
+      port = EXTERNAL_MODULE; // ensure it's external module only
+      switch (g_model.externalModule) {
+        case MODULE_TYPE_PPM:
+          required_protocol = PROTO_PPM;
+          break;
+        case MODULE_TYPE_XJT:
+          required_protocol = PROTO_PXX;
+          break;
+#if defined(DSM2)
+        case MODULE_TYPE_DSM2:
+          required_protocol = limit<uint8_t>(PROTO_DSM2_LP45, PROTO_DSM2_LP45+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, PROTO_DSM2_DSMX);
+          // The module is set to OFF during one second before BIND start
+          {
+            static tmr10ms_t bindStartTime = 0;
+            if (dsm2Flag == DSM2_BIND_FLAG) {
+              if (bindStartTime == 0) bindStartTime = get_tmr10ms();
+              if ((tmr10ms_t)(get_tmr10ms() - bindStartTime) < 100) {
+                required_protocol = PROTO_NONE;
+                break;
+              }
+            }
+            else {
+              bindStartTime = 0;
+            }
+          }
+          break;
+#endif
+        default:
+          required_protocol = PROTO_NONE;
+          break;
+      }
+      break;
+  }
+
+  if (s_pulses_paused) {
     required_protocol = PROTO_NONE;
+  }
 
   if (s_current_protocol[port] != required_protocol) {
 

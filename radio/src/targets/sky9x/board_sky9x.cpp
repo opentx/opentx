@@ -122,7 +122,7 @@ inline void setup_switches()
 #define sam_boot()
 #else
 
-inline void UART3_Configure( uint32_t baudrate, uint32_t masterClock)
+inline void UART3_Configure(uint32_t baudrate, uint32_t masterClock)
 {
 //    const Pin pPins[] = CONSOLE_PINS;
   register Uart *pUart = BT_USART;

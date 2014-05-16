@@ -82,13 +82,14 @@ TelemetryProtocol telemetryProtocol = PROTOCOL_NONE;
 
 TelemetryProtocol getTelemetryProtocol()
 {
+  if (IS_MODULE_XJT(EXTERNAL_MODULE))
+     return PROTOCOL_FRSKY_SPORT;
+
 #if defined(PCBTARANIS)
-  if (IS_MODULE_XJT(0) || IS_MODULE_XJT(1))
+  if (IS_MODULE_XJT(INTERNAL_MODULE))
     return PROTOCOL_FRSKY_SPORT;
-#elif defined(PCBSKY9X)
- if (IS_MODULE_XJT())
-   return PROTOCOL_FRSKY_SPORT;
 #endif
+
   return PROTOCOL_FRSKY_D;
 }
 #else
@@ -509,12 +510,12 @@ void telemetryReset()
 void telemetryInit(void)
 {
 #if defined(PCBTARANIS)
-  if (IS_MODULE_XJT(0) || IS_MODULE_XJT(1))
+  if (IS_MODULE_XJT(INTERNAL_MODULE) || IS_MODULE_XJT(EXTERNAL_MODULE))
     telemetryPortInit(FRSKY_SPORT_BAUDRATE);
   else
     telemetryPortInit(FRSKY_D_BAUDRATE);
 #elif defined(PCBSKY9X)
-  if (IS_MODULE_XJT())
+  if (IS_MODULE_XJT(EXTERNAL_MODULE))
     telemetryPortInit(FRSKY_SPORT_BAUDRATE);
   else
     telemetryPortInit(FRSKY_D_BAUDRATE);

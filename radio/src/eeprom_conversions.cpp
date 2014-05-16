@@ -236,8 +236,6 @@ PACK(typedef struct {
 
   FrSkyData_v215 frsky;
 
-  ROTARY_ENCODER_ARRAY_EXTRA
-
   MODELDATA_EXTRA
 
 }) ModelData_v215;
@@ -484,7 +482,6 @@ void ConvertModel_215_to_216(ModelData &model)
     timer.countdownBeep = oldModel.timers[i].countdownBeep;
     timer.value = oldModel.timers[i].value;
   }
-  g_model.protocol = oldModel.protocol;
   g_model.thrTrim = oldModel.thrTrim;
   g_model.trimInc = oldModel.trimInc - 2;
   g_model.disableThrottleWarning = oldModel.disableThrottleWarning;

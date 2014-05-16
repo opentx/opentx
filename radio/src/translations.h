@@ -177,7 +177,7 @@ extern const pm_char STR_OPEN9X[];
 #else
   #define OFS_VTRAINERMODES     (OFS_VFAILSAFE)
 #endif
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
   #define OFS_TARANIS_PROTOCOLS (OFS_VTRAINERMODES + sizeof(TR_VTRAINERMODES))
   #define OFS_XJT_PROTOCOLS     (OFS_TARANIS_PROTOCOLS + sizeof(TR_TARANIS_PROTOCOLS))
   #define OFS_DSM_PROTOCOLS     (OFS_XJT_PROTOCOLS + sizeof(TR_XJT_PROTOCOLS))
@@ -274,7 +274,7 @@ extern const pm_char STR_OPEN9X[];
   #define STR_VFAILSAFE        (STR_OPEN9X + OFS_VFAILSAFE)
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
   #define STR_VTRAINERMODES     (STR_OPEN9X + OFS_VTRAINERMODES)
   #define STR_TARANIS_PROTOCOLS (STR_OPEN9X + OFS_TARANIS_PROTOCOLS)
   #define STR_XJT_PROTOCOLS     (STR_OPEN9X + OFS_XJT_PROTOCOLS)
@@ -665,14 +665,17 @@ extern const pm_char STR_BLCOLOR[];
   extern const char * STR_CSW_HEADERS[];
 #endif
 
+#if defined(CPUARM)
+  extern const pm_char STR_TRAINER[];
+  extern const pm_char STR_MODULE_BIND[];
+  extern const pm_char STR_CHANNELRANGE[];
+  extern const pm_char STR_SET[];
+#endif
+
 #if defined(PCBTARANIS)
   extern const pm_char STR_BYTES[];
-  extern const pm_char STR_MODULE_BIND[];
-  extern const pm_char STR_SET[];
-  extern const pm_char STR_TRAINER[];
   extern const pm_char STR_ANTENNAPROBLEM[];
   extern const pm_char STR_MODULE[];
-  extern const pm_char STR_CHANNELRANGE[];
   extern const pm_char STR_LOWALARM[];
   extern const pm_char STR_CRITICALALARM[];
   extern const pm_char STR_ENABLE_POPUP[];
