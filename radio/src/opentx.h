@@ -987,7 +987,7 @@ void saveTimers();
 void generalDefault();
 void modelDefault(uint8_t id);
 
-#if defined(PXX) && defined(CPUARM)
+#if defined(CPUARM)
 void checkModelIdUnique(uint8_t id);
 #endif
 

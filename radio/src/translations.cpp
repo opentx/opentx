@@ -106,7 +106,7 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(VUNITSSYSTEM)
     ISTR(VBEEPCOUNTDOWN)
 #endif
-#if defined(PXX)
+#if defined(PXX) || defined(CPUARM)
     ISTR(COUNTRYCODES)
     ISTR(VFAILSAFE)
 #endif
@@ -329,7 +329,7 @@ const pm_char STR_MENUGLOBALVARS[] PROGMEM = TR_MENUGLOBALVARS;
 const pm_char STR_RXNUM[] PROGMEM = TR_RXNUM;
 #endif
 
-#if defined(PXX)
+#if defined(PXX) || defined(CPUARM)
 const pm_char STR_SYNCMENU[] PROGMEM = TR_SYNCMENU;
 const pm_char STR_INTERNALRF[] PROGMEM = TR_INTERNALRF;
 const pm_char STR_EXTERNALRF[] PROGMEM = TR_EXTERNALRF;

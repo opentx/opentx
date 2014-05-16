@@ -167,14 +167,11 @@ extern const pm_char STR_OPEN9X[];
 #else
   #define OFS_COUNTRYCODES      (OFS_VLCD)
 #endif
-#if defined(PXX)
+#if defined(PXX) || defined(CPUARM)
   #define OFS_VFAILSAFE         (OFS_COUNTRYCODES + sizeof(TR_COUNTRYCODES))
-#else
-  #define OFS_VFAILSAFE         (OFS_COUNTRYCODES)
-#endif
-#if defined(PXX)
   #define OFS_VTRAINERMODES     (OFS_VFAILSAFE + sizeof(TR_VFAILSAFE))
 #else
+  #define OFS_VFAILSAFE         (OFS_COUNTRYCODES)
   #define OFS_VTRAINERMODES     (OFS_VFAILSAFE)
 #endif
 #if defined(CPUARM)
@@ -269,7 +266,7 @@ extern const pm_char STR_OPEN9X[];
   #define STR_VBEEPCOUNTDOWN   (STR_OPEN9X + OFS_VBEEPCOUNTDOWN)
 #endif
 
-#if defined(PXX)
+#if defined(PXX) || defined(CPUARM)
   #define STR_COUNTRYCODES     (STR_OPEN9X + OFS_COUNTRYCODES)
   #define STR_VFAILSAFE        (STR_OPEN9X + OFS_VFAILSAFE)
 #endif
@@ -476,7 +473,7 @@ extern const pm_char STR_FAS_OFFSET[];
 extern const pm_char STR_RXNUM[];
 #endif
 
-#if defined(PXX)
+#if defined(PXX) || defined(CPUARM)
 extern const pm_char STR_SYNCMENU[];
 extern const pm_char STR_INTERNALRF[];
 extern const pm_char STR_EXTERNALRF[];

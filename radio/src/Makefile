@@ -573,7 +573,7 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   SDCARD = YES
   BUZZER = NO
   THR_TRACE = YES
-  CPPDEFS += -DPCBSKY9X -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DPXX -DDSM2 -DDSM2_PPM
+  CPPDEFS += -DPCBSKY9X -DCPUARM -DEEPROM_VARIANT=0 -DAUDIO -DHAPTIC -DDSM2 -DDSM2_PPM
   ifeq ($(PCB), SKY9X)
     CPPDEFS += -DROTARY_ENCODERS=1
     CPPSRC += targets/sky9x/rotenc_driver.cpp 
@@ -928,7 +928,7 @@ endif
 
 ifeq ($(EXT), $(filter $(EXT), FRSKY TELEMETREZ))
   CPPDEFS += -DFRSKY
-  ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO TARANIS))
+  ifeq ($(PCB), $(filter $(PCB), TARANIS))
 	CPPSRC += telemetry/frsky.cpp telemetry/frsky_sport.cpp telemetry/frsky_d.cpp
     CPPDEFS += -DFRSKY_SPORT
   else

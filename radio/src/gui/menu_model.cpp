@@ -1038,7 +1038,7 @@ void menuModelSetup(uint8_t event)
 #if defined(PCBTARANIS)
     pxxFlag[INTERNAL_MODULE] = 0;
 #endif
-#if defined(CPUARM)
+#if defined(CPUARM) && defined(PXX)
     pxxFlag[EXTERNAL_MODULE] = 0;
 #endif
     return;
@@ -1519,6 +1519,7 @@ void menuModelSetup(uint8_t event)
             lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+xOffsetBind, y, STR_MODULE_BIND, l_posHorz==1 ? attr : 0);
             lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS+xOffsetBind, y, STR_MODULE_RANGE, l_posHorz==2 ? attr : 0);
             if (IS_MODULE_XJT(moduleIdx)) {
+#if defined(PXX)
               uint8_t newFlag = 0;
               if (attr && l_posHorz>0 && s_editMode>0) {
                 if (l_posHorz == 1)
@@ -1528,6 +1529,7 @@ void menuModelSetup(uint8_t event)
                 }
               }
               pxxFlag[moduleIdx] = newFlag;
+#endif
             }
 #if defined(DSM2)
             else {
@@ -1712,7 +1714,7 @@ void menuModelSetup(uint8_t event)
     }
   }
 
-#if defined(CPUARM) && defined(FRSKY)
+#if defined(CPUARM) && defined(PXX)
   if (IS_PXX_RANGE_CHECK_ENABLE()) {
     displayPopup("RSSI: ");
     lcd_outdezAtt(16+4*FW, 5*FH, frskyData.rssi[0].value, BOLD);

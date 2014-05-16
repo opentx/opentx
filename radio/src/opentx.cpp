@@ -397,7 +397,7 @@ void applyDefaultTemplate()
 }
 #endif
 
-#if defined(PXX) && defined(CPUARM)
+#if defined(CPUARM)
 void checkModelIdUnique(uint8_t id)
 {
   for (uint8_t i=0; i<MAX_MODELS; i++) {

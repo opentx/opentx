@@ -241,10 +241,12 @@ NOINLINE void processSerialData(uint8_t data)
 #endif
   } // switch
 
+#if defined(FRSKY_SPORT)
   if (IS_FRSKY_SPORT_PROTOCOL() && frskyRxBufferCount >= FRSKY_SPORT_PACKET_SIZE) {
     frskySportProcessPacket(frskyRxBuffer);
     dataState = STATE_DATA_IDLE;
   }
+#endif
 }
 
 void telemetryWakeup()
