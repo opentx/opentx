@@ -667,6 +667,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case GetThrSwitch:
       return (IS_TARANIS(board) ? SWITCH_SF1 : SWITCH_THR) ;
     case HasDisplayText:
+      return IS_ARM(board) ? 1 : 0;
     case VirtualInputs:
       return IS_TARANIS(board) ? 32 : 0;
     case TrainerInputs:
