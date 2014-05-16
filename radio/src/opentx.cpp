@@ -1354,13 +1354,16 @@ uint16_t anaIn(uint8_t chan)
   return *p;
 #else
   static const pm_char crossAna[] PROGMEM = {3,1,2,0,4,5,6,7};
-  uint16_t temp = s_anaFilt[pgm_read_byte(crossAna+chan)];
 #if defined(FRSKY_STICKS)
+  volatile uint16_t temp = s_anaFilt[pgm_read_byte(crossAna+chan)];  // volatile saves here 40 bytes; maybe removed for newer AVR when available
   if (chan < NUM_STICKS && (g_eeGeneral.stickReverse & (1 << chan))) {
     temp = 2048 - temp;
   }
-#endif
   return temp;
+#else
+  volatile uint16_t *p = &s_anaFilt[pgm_read_byte(crossAna+chan)];
+  return *p;  
+#endif
 #endif
 }
 
