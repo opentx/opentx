@@ -589,7 +589,7 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   SRC += targets/sky9x/MEDSdcard.c
   EEPROMSRC = eeprom_common.cpp eeprom_raw.cpp eeprom_conversions.cpp
   PULSESSRC = pulses/pulses_arm.cpp pulses/ppm_arm.cpp pulses/pxx_arm.cpp pulses/dsm2_arm.cpp
-  CPPSRC += audio_arm.cpp haptic.cpp gui/view_about.cpp
+  CPPSRC += audio_arm.cpp haptic.cpp gui/view_about.cpp gui/view_text.cpp
   CPPSRC += targets/sky9x/telemetry_driver.cpp targets/sky9x/pwr_driver.cpp targets/sky9x/adc_driver.cpp targets/sky9x/eeprom_driver.cpp targets/sky9x/pulses_driver.cpp targets/sky9x/keys_driver.cpp targets/sky9x/audio_driver.cpp targets/sky9x/buzzer_driver.cpp targets/sky9x/haptic_driver.cpp targets/sky9x/sdcard_driver.cpp targets/sky9x/massstorage.cpp
   CPPSRC += loadboot.cpp
     

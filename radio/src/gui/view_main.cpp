@@ -451,7 +451,7 @@ void onMainViewMenu(const char *result)
   else if (result == STR_RESET_TIMER2) {
     timerReset(1);
   }
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
   else if (result == STR_VIEW_NOTES) {
     pushModelNotes();
   }
@@ -459,7 +459,9 @@ void onMainViewMenu(const char *result)
     MENU_ADD_ITEM(STR_RESET_FLIGHT);
     MENU_ADD_ITEM(STR_RESET_TIMER1);
     MENU_ADD_ITEM(STR_RESET_TIMER2);
+#if defined(FRSKY)
     MENU_ADD_ITEM(STR_RESET_TELEMETRY);
+#endif
   }
 #endif
 #if defined(FRSKY)
@@ -529,13 +531,13 @@ void menuMainView(uint8_t event)
     case EVT_KEY_CONTEXT_MENU:
       killEvents(event);
 
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
       if (modelHasNotes()) {
         MENU_ADD_ITEM(STR_VIEW_NOTES);
       }
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
       MENU_ADD_ITEM(STR_RESET_SUBMENU);
 #else
       MENU_ADD_ITEM(STR_RESET_TIMER1);

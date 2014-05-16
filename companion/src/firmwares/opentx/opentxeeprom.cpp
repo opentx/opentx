@@ -2382,7 +2382,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   internalField.Append(new BoolField<1>(modelData.disableThrottleWarning));
 
   if (IS_TARANIS(board) || (IS_ARM(board) && version >= 216))
-    internalField.Append(new BoolField<1>(modelData.displayText));
+    internalField.Append(new BoolField<1>(modelData.displayChecklist));
   else
     internalField.Append(new BoolField<1>(modelData.moduleData[0].ppmPulsePol));
 

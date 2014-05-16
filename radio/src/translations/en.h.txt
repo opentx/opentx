@@ -556,11 +556,11 @@
 #define TR_BLOFFBRIGHTNESS     INDENT "OFF Brightness"
 #define TR_BLCOLOR             INDENT "Color"
 #define TR_SPLASHSCREEN        "Splash screen"
-#define TR_THROTTLEWARNING     TR("T-Warning", INDENT "Throttle State")
-#define TR_SWITCHWARNING       TR("S-Warning", INDENT "Switch Positions")
-#define TR_POTWARNING          TR("Pot Warn.", INDENT "Pot Positions")
-#define TR_TIMEZONE            TR("Time Zone","GPS Time zone")
-#define TR_RXCHANNELORD        TR("Rx Channel Ord","Default channel order")
+#define TR_THROTTLEWARNING     TR(IF_CPUARM(INDENT) "T-Warning", INDENT "Throttle State")
+#define TR_SWITCHWARNING       TR(IF_CPUARM(INDENT) "S-Warning", INDENT "Switch Positions")
+#define TR_POTWARNING          TR(IF_CPUARM(INDENT) "Pot Warn.", INDENT "Pot Positions")
+#define TR_TIMEZONE            TR("Time Zone", "GPS Time zone")
+#define TR_RXCHANNELORD        TR("Rx Channel Ord", "Default channel order")
 #define TR_SLAVE               CENTER "Slave"
 #define TR_MODESRC             "Mode\006% Source"
 #define TR_MULTIPLIER          "Multiplier"
@@ -780,7 +780,7 @@
 #define TR_COPY_TRIMS_TO_OFS   "Copy Trim To Subtrim"
 #define TR_PERSISTENT_MAH      TR(INDENT "Str mAh", INDENT "Persistent mAh")
 #define TR_PREFLIGHT           "Preflight Checks"
-#define TR_CHECKLIST           INDENT "Display Checklist"
+#define TR_CHECKLIST           TR(INDENT "Checklist", INDENT "Display Checklist")
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 #define TR_UART3MODE           "Serial port"
 #define TR_SCRIPT              "Script"

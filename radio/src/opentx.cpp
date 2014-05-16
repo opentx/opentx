@@ -1026,8 +1026,8 @@ void checkAll()
   checkSwitches();
 #endif
 
-#if defined(PCBTARANIS)
-  if (g_model.displayText && modelHasNotes()) {
+#if defined(CPUARM)
+  if (g_model.displayChecklist && modelHasNotes()) {
     pushModelNotes();
   }
 #endif

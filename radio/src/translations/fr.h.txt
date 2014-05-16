@@ -550,9 +550,9 @@
 #define TR_BLOFFBRIGHTNESS     INDENT "Luminosité OFF"
 #define TR_BLCOLOR             INDENT "Couleur"
 #define TR_SPLASHSCREEN        "Logo d'accueil"
-#define TR_THROTTLEWARNING     TR("Alerte gaz", INDENT "Alerte gaz")
-#define TR_SWITCHWARNING       TR("Alerte int", INDENT "Pos. interrupteurs")
-#define TR_POTWARNING          TR("Alerte pot", INDENT "Pos. potentiom.")
+#define TR_THROTTLEWARNING     TR(IF_CPUARM(INDENT) "Alerte gaz", INDENT "Alerte gaz")
+#define TR_SWITCHWARNING       TR(IF_CPUARM(INDENT) "Alerte int", INDENT "Pos. interrupteurs")
+#define TR_POTWARNING          TR(IF_CPUARM(INDENT) "Alerte pot", INDENT "Pos. potentiom.")
 #define TR_TIMEZONE            "Fuseau horaire"
 #define TR_RXCHANNELORD        TR("Ordre voies RX","Ordre des voies préféré")
 #define TR_SLAVE               "Elève"
@@ -774,7 +774,7 @@
 #define TR_COPY_TRIMS_TO_OFS   "Trim vers subtrim"
 #define TR_PERSISTENT_MAH      TR(INDENT "Enr. mAh", INDENT "Enregistrer mAh")
 #define TR_PREFLIGHT           "Vérifications avant vol"
-#define TR_CHECKLIST           INDENT "Afficher notes"
+#define TR_CHECKLIST           TR(INDENT "Notes", INDENT "Afficher notes")
 #define TR_FAS_OFFSET          TR(INDENT "Corr FAS", INDENT "Correction FAS")
 #define TR_UART3MODE           "Port série"
 #define TR_SCRIPT              "Script"

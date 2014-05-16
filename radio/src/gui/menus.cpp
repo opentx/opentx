@@ -338,7 +338,7 @@ void title(const pm_char * s)
 uint8_t scrollbar_X = LCD_W-1;
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
 bool modelHasNotes()
 {
   FILINFO info;
@@ -360,7 +360,9 @@ void pushModelNotes()
   strcpy(buf, TEXT_EXT);
   pushMenuTextView(filename);
 }
+#endif
 
+#if defined(PCBTARANIS)
 void onLongMenuPress(const char *result)
 {
   if (result == STR_VIEW_CHANNELS) {

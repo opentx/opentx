@@ -989,7 +989,7 @@ class ModelData {
     unsigned int nSwToWarn;
     unsigned int nPotsToWarn;
     int          potPosition[C9X_NUM_POTS];
-    bool         displayText;
+    bool         displayChecklist;
     // TODO structure
     char     gvars_names[C9X_MAX_GVARS][6+1];
     bool     gvars_popups[C9X_MAX_GVARS];

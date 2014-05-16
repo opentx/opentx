@@ -65,9 +65,11 @@
 #endif
 
 #if defined(CPUARM)
-  #define CASE_CPUARM(x) x,
+  #define CASE_CPUARM(x)     x,
+  #define IF_CPUARM(x)       x
 #else
   #define CASE_CPUARM(x)
+  #define IF_CPUARM(x)
 #endif
 
 #if defined(VARIO) && defined(CPUARM)
@@ -89,9 +91,9 @@
 #endif
 
 #if defined(CPUARM) || defined(CPUM2560)
-#define IF_PERSISTENT_TIMERS(x) x,
+  #define CASE_PERSISTENT_TIMERS(x) x,
 #else
-#define IF_PERSISTENT_TIMERS(x)
+  #define CASE_PERSISTENT_TIMERS(x)
 #endif
 
 #if defined(RTCLOCK)

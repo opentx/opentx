@@ -490,6 +490,10 @@ const pm_char STR_BLCOLOR[]  PROGMEM = TR_BLCOLOR;
   const pm_char STR_MODULE_BIND[] PROGMEM  = TR_MODULE_BIND;
   const pm_char STR_CHANNELRANGE[] PROGMEM = TR_CHANNELRANGE;
   const pm_char STR_SET[] PROGMEM = TR_SET;
+  const pm_char STR_PREFLIGHT[] PROGMEM = TR_PREFLIGHT;
+  const pm_char STR_CHECKLIST[] PROGMEM = TR_CHECKLIST;
+  const pm_char STR_VIEW_NOTES[] PROGMEM = TR_VIEW_NOTES;
+  const pm_char STR_RESET_SUBMENU[] PROGMEM = TR_RESET_SUBMENU;
 #endif
 
 #if defined(PCBTARANIS)
@@ -505,7 +509,6 @@ const pm_char STR_BLCOLOR[]  PROGMEM = TR_BLCOLOR;
   const pm_char STR_MIRROR[] PROGMEM = TR_MIRROR;
   const pm_char STR_CLEAR[] PROGMEM = TR_CLEAR;
   const pm_char STR_RESET[] PROGMEM = TR_RESET;
-  const pm_char STR_RESET_SUBMENU[] PROGMEM = TR_RESET_SUBMENU;
   const pm_char STR_COUNT[] PROGMEM = TR_COUNT;
   const pm_char STR_PT[] PROGMEM = TR_PT;
   const pm_char STR_PTS[] PROGMEM = TR_PTS;
@@ -515,10 +518,7 @@ const pm_char STR_BLCOLOR[]  PROGMEM = TR_BLCOLOR;
   const pm_char STR_ALTITUDE[] PROGMEM = TR_ALTITUDE;
   const pm_char STR_SCALE[] PROGMEM = TR_SCALE;
   const pm_char STR_VIEW_CHANNELS[] PROGMEM = TR_VIEW_CHANNELS;
-  const pm_char STR_VIEW_NOTES[] PROGMEM = TR_VIEW_NOTES;
   const pm_char STR_POTWARNING[] PROGMEM = TR_POTWARNING;
-  const pm_char STR_PREFLIGHT[] PROGMEM = TR_PREFLIGHT;
-  const pm_char STR_CHECKLIST[] PROGMEM = TR_CHECKLIST;
   const pm_char STR_UART3MODE[] PROGMEM = TR_UART3MODE;
   const pm_char STR_THROTTLE_LABEL[] PROGMEM = TR_THROTTLE_LABEL;
   const pm_char STR_SCRIPT[] PROGMEM = TR_SCRIPT;

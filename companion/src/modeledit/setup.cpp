@@ -598,7 +598,7 @@ void SetupPanel::update()
   ui->throttleTrim->setChecked(model.thrTrim);
   ui->extendedLimits->setChecked(model.extendedLimits);
   ui->extendedTrims->setChecked(model.extendedTrims);
-  ui->displayText->setChecked(model.displayText);
+  ui->displayText->setChecked(model.displayChecklist);
 
   updateBeepCenter();
   updateStartupSwitches();
@@ -748,7 +748,7 @@ void SetupPanel::on_potWarningMode_currentIndexChanged(int index)
 
 void SetupPanel::on_displayText_toggled(bool checked)
 {
-  model.displayText = checked;
+  model.displayChecklist = checked;
   emit modified();
 }
 

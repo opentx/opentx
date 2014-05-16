@@ -670,6 +670,10 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_MODULE_BIND[];
   extern const pm_char STR_CHANNELRANGE[];
   extern const pm_char STR_SET[];
+  extern const pm_char STR_PREFLIGHT[];
+  extern const pm_char STR_CHECKLIST[];
+  extern const pm_char STR_VIEW_NOTES[];
+  extern const pm_char STR_RESET_SUBMENU[];
 #endif
 
 #if defined(PCBTARANIS)
@@ -685,7 +689,6 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_MIRROR[];
   extern const pm_char STR_CLEAR[];
   extern const pm_char STR_RESET[];
-  extern const pm_char STR_RESET_SUBMENU[];
   extern const pm_char STR_COUNT[];
   extern const pm_char STR_PT[];
   extern const pm_char STR_PTS[];
@@ -695,10 +698,7 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_ALTITUDE[];
   extern const pm_char STR_SCALE[];
   extern const pm_char STR_VIEW_CHANNELS[];
-  extern const pm_char STR_VIEW_NOTES[];
   extern const pm_char STR_POTWARNING[];
-  extern const pm_char STR_PREFLIGHT[];
-  extern const pm_char STR_CHECKLIST[];
   extern const pm_char STR_UART3MODE[];
   extern const pm_char STR_THROTTLE_LABEL[];
   extern const pm_char STR_SCRIPT[];

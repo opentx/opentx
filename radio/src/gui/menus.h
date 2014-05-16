@@ -411,11 +411,14 @@ void displayWarning(uint8_t event);
   #define drawStatusLine()
 #endif
 
+#if defined(CPUARM)
+  void pushMenuTextView(const char *filename);
+  bool modelHasNotes();
+  void pushModelNotes();
+#endif
+
 #if defined(PCBTARANIS)
-void menuChannelsView(uint8_t event);
-void pushMenuTextView(const char *filename);
-bool modelHasNotes();
-void pushModelNotes();
+  void menuChannelsView(uint8_t event);
 #endif
 
 #define LABEL(...) (uint8_t)-1
