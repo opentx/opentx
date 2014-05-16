@@ -741,9 +741,9 @@ int OpenTxEepromInterface::isAvailable(Protocol proto, int port)
       case 0:
         switch (proto) {
           case PPM:
-          case PXX_XJT_X16:
-          case PXX_XJT_D8:
-          case PXX_XJT_LR12:
+          // case PXX_XJT_X16:
+          // case PXX_XJT_D8:
+          // case PXX_XJT_LR12:
           case LP45:
           case DSM2:
           case DSMX:

@@ -37,7 +37,7 @@
 #define AUDIO
 #define VOICE
 #define HAPTIC
-#define PXX
+// #define PXX
 #define DSM2
 #define DSM2_PPM
 #define DBLKEYS

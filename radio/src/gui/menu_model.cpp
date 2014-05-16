@@ -1390,7 +1390,7 @@ void menuModelSetup(uint8_t event)
       case ITEM_MODEL_EXTERNAL_MODULE_MODE:
         lcd_putsLeft(y, STR_MODE);
         lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, STR_TARANIS_PROTOCOLS, g_model.externalModule, m_posHorz==0 ? attr : 0);
-        if (g_model.externalModule == MODULE_TYPE_XJT)
+        if (IS_MODULE_XJT(EXTERNAL_MODULE))
           lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+5*FW, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, m_posHorz==1 ? attr : 0);
         else if (IS_MODULE_DSM2(EXTERNAL_MODULE))
           lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+5*FW, y, STR_DSM_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, m_posHorz==1 ? attr : 0);
@@ -1399,6 +1399,7 @@ void menuModelSetup(uint8_t event)
             case 0:
               g_model.externalModule = checkIncDec(event, g_model.externalModule, MODULE_TYPE_NONE, MODULE_TYPE_COUNT-1, EE_MODEL, isModuleAvailable);
               if (checkIncDec_Ret) {
+                g_model.moduleData[EXTERNAL_MODULE].rfProtocol = 0;
                 g_model.moduleData[EXTERNAL_MODULE].channelsStart = 0;
                 if (g_model.externalModule == MODULE_TYPE_PPM)
                   g_model.moduleData[EXTERNAL_MODULE].channelsCount = 0;
