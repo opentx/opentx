@@ -328,7 +328,7 @@ PACK(typedef struct t_ScriptData {
     TRAINER_MODULE
   };
   #define MODELDATA_BITMAP
-  #define MODELDATA_EXTRA   uint8_t externalModule; uint8_t trainerMode; ModuleData moduleData[NUM_MODULES+1]; uint8_t nPotsToWarn; int8_t potPosition[NUM_POTS];
+  #define MODELDATA_EXTRA   uint8_t externalModule; ModuleData moduleData[NUM_MODULES+1]; uint8_t nPotsToWarn; int8_t potPosition[NUM_POTS];
   #define LIMITDATA_EXTRA
   #define swstate_t         uint8_t
 #else
