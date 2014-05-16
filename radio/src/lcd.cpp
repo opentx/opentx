@@ -529,11 +529,16 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
       flags &= ~PREC2; // TODO not needed but removes 20bytes, could be improved for sure, check asm
       if (dblsize) {
         xn = x - 2;
-        if (c>='1' && c<='3') ln++;
-        uint8_t tn = (qr.quot) % 10;
+        if (c>='2' && c<='3') ln++;
+        uint8_t tn = (qr.quot % 10);
         if (tn==2 || tn==4) {
-          if (c=='4') { xn++; }
-          else { xn--; ln++; }
+          if (c=='4') {
+            xn++;
+          }
+          else {
+            xn--;
+            ln++;
+          }
         }
       }
       else if (midsize) {
@@ -558,7 +563,7 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
     if (dblsize && (uint16_t)val >= 1000 && (uint16_t)val < 10000) x-=2;
 #endif
     val = qr.quot;
-    x-=fw;
+    x -= fw;
 #if defined(BOLD_FONT) && !defined(CPUM64) || defined(EXTSTD)
     if (i==len && (flags & BOLD)) x += 1;
 #endif
@@ -575,8 +580,7 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
     }
     else {
       y &= ~0x07;
-      lcd_hline(xn, (y & ~0x07)+2*FH-3, ln);
-      lcd_hline(xn, y+2*FH-2, ln);
+      lcd_filled_rect(xn, y+2*FH-3, ln, 2);
     }
   }
   if (neg) lcd_putcAtt(x, y, '-', flags);
