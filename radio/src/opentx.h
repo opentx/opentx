@@ -42,52 +42,50 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-// TODO change all IF_xxx by CASE_xxx when used with a comma!
-
 #if defined(PCBSKY9X)
-#define IS_PCBSKY9X        true
-#define CASE_PCBSKY9X(x)   x,
+  #define IS_PCBSKY9X        true
+  #define CASE_PCBSKY9X(x)   x,
 #else
-#define IS_PCBSKY9X        false
-#define CASE_PCBSKY9X(x)
+  #define IS_PCBSKY9X        false
+  #define CASE_PCBSKY9X(x)
 #endif
 
 #if defined(PCBTARANIS)
-#define IS_PCBTARANIS()    true
-#define IF_PCBTARANIS(x)   (x)
-#define CASE_PCBTARANIS(x) x,
-#define IF_9X(x)           (0)
-#define CASE_9X(x)
+  #define IS_PCBTARANIS()    true
+  #define IF_PCBTARANIS(x)   (x)
+  #define CASE_PCBTARANIS(x) x,
+  #define IF_9X(x)           (0)
+  #define CASE_9X(x)
 #else
-#define IS_PCBTARANIS()    false
-#define IF_PCBTARANIS(x)   (0)
-#define CASE_PCBTARANIS(x)
-#define IF_9X(x)           (x)
-#define CASE_9X(x)         x,
+  #define IS_PCBTARANIS()    false
+  #define IF_PCBTARANIS(x)   (0)
+  #define CASE_PCBTARANIS(x)
+  #define IF_9X(x)           (x)
+  #define CASE_9X(x)         x,
 #endif
 
 #if defined(CPUARM)
-#define IF_CPUARM(x) x,
+  #define CASE_CPUARM(x) x,
 #else
-#define IF_CPUARM(x)
+  #define CASE_CPUARM(x)
 #endif
 
 #if defined(VARIO) && defined(CPUARM)
-#define IF_VARIO_CPUARM(x) x,
+  #define CASE_VARIO_CPUARM(x) x,
 #else
-#define IF_VARIO_CPUARM(x)
+  #define CASE_VARIO_CPUARM(x)
 #endif
 
 #if defined(LUA)
-#define IF_LUA(x) x,
+  #define CASE_LUA(x) x,
 #else
-#define IF_LUA(x)
+  #define CASE_LUA(x)
 #endif
 
 #if defined(BATTGRAPH) || defined(PCBTARANIS)
-#define IF_BATTGRAPH(x) x,
+  #define CASE_BATTGRAPH(x) x,
 #else
-#define IF_BATTGRAPH(x)
+  #define CASE_BATTGRAPH(x)
 #endif
 
 #if defined(CPUARM) || defined(CPUM2560)
@@ -97,123 +95,123 @@
 #endif
 
 #if defined(RTCLOCK)
-#define IF_RTCLOCK(x) x,
+  #define CASE_RTCLOCK(x) x,
 #else
-#define IF_RTCLOCK(x)
+  #define CASE_RTCLOCK(x)
 #endif
 
 #if defined(BUZZER)
-#define IF_BUZZER(x) x,
+  #define CASE_BUZZER(x) x,
 #else
-#define IF_BUZZER(x)
+  #define CASE_BUZZER(x)
 #endif
 
 #if defined(AUDIO)
-#define IF_AUDIO(x) x,
+  #define CASE_AUDIO(x) x,
 #else
-#define IF_AUDIO(x)
+  #define CASE_AUDIO(x)
 #endif
 
 #if defined(VOICE)
-#define IF_VOICE(x) x,
+  #define CASE_VOICE(x) x,
 #else
-#define IF_VOICE(x)
+  #define CASE_VOICE(x)
 #endif
 
 #if defined(PWM_BACKLIGHT)
-#define CASE_PWM_BACKLIGHT(x) x,
+  #define CASE_PWM_BACKLIGHT(x) x,
 #else
-#define CASE_PWM_BACKLIGHT(x)
+  #define CASE_PWM_BACKLIGHT(x)
 #endif
 
 #if defined(FRSKY) && defined(FRSKY_HUB) && defined(GPS)
-#define IF_GPS(x) x,
+  #define CASE_GPS(x) x,
 #else
-#define IF_GPS(x)
+  #define CASE_GPS(x)
 #endif
 
 #if defined(VARIO)
-#define IF_VARIO(x) x,
+  #define CASE_VARIO(x) x,
 #else
-#define IF_VARIO(x)
+  #define CASE_VARIO(x)
 #endif
 
 #if defined(HAPTIC)
-#define IF_HAPTIC(x) x,
+  #define CASE_HAPTIC(x) x,
 #else
-#define IF_HAPTIC(x)
+  #define CASE_HAPTIC(x)
 #endif
 
 #if defined(SPLASH)
-#define IF_SPLASH(x) x,
+  #define CASE_SPLASH(x) x,
 #else
-#define IF_SPLASH(x)
+  #define CASE_SPLASH(x)
 #endif
 
 #if defined(FRSKY)
-#define IF_FRSKY(x) x,
+  #define CASE_FRSKY(x) x,
 #else
-#define IF_FRSKY(x)
+  #define CASE_FRSKY(x)
 #endif
 
 #if defined(MAVLINK)
-#define IF_MAVLINK(x) x,
+  #define CASE_MAVLINK(x) x,
 #else
-#define IF_MAVLINK(x)
+  #define CASE_MAVLINK(x)
 #endif
 
 #if defined(PXX)
-#define IF_PXX(x) x,
+  #define CASE_PXX(x) x,
 #else
-#define IF_PXX(x)
+  #define CASE_PXX(x)
 #endif
 
 #if defined(SDCARD)
-#define IF_SDCARD(x) x,
+  #define CASE_SDCARD(x) x,
 #else
-#define IF_SDCARD(x)
+  #define CASE_SDCARD(x)
 #endif
 
 #if defined(BLUETOOTH)
-#define IF_BLUETOOTH(x) x,
+  #define CASE_BLUETOOTH(x) x,
 #else
-#define IF_BLUETOOTH(x)
+  #define CASE_BLUETOOTH(x)
 #endif
 
 #if defined(HELI)
-#define IF_HELI(x) x,
+  #define CASE_HELI(x) x,
 #else
-#define IF_HELI(x)
+  #define CASE_HELI(x)
 #endif
 
 #if defined(TEMPLATES)
-#define IF_TEMPLATES(x) x,
+  #define CASE_TEMPLATES(x) x,
 #else
-#define IF_TEMPLATES(x)
+  #define CASE_TEMPLATES(x)
 #endif
 
 #if defined(FLIGHT_MODES)
-#define IF_FLIGHT_MODES(x) x,
+  #define CASE_FLIGHT_MODES(x) x,
 #else
-#define IF_FLIGHT_MODES(x)
+  #define CASE_FLIGHT_MODES(x)
 #endif
 
 #if defined(CURVES)
-#define IF_CURVES(x) x,
+  #define CASE_CURVES(x) x,
 #else
-#define IF_CURVES(x)
+  #define CASE_CURVES(x)
 #endif
 
 #if defined(GVARS)
-#define IF_GVARS(x) x,
+  #define CASE_GVARS(x) x,
 #else
-#define IF_GVARS(x)
+  #define CASE_GVARS(x)
 #endif
 
 #if defined(PCBTARANIS) && defined(REVPLUS)
-#define IF_REVPLUS(x) x,
+  #define CASE_REVPLUS(x) x,
 #else
-#define IF_REVPLUS(x)
+  #define CASE_REVPLUS(x)
 #endif
 
 #if ROTARY_ENCODERS > 0

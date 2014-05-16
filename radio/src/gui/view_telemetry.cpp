@@ -50,7 +50,7 @@ uint8_t barsThresholds[THLD_MAX];
 enum FrskyViews {
   e_frsky_custom_screen_1,
   e_frsky_custom_screen_2,
-  IF_CPUARM(e_frsky_custom_screen_3)
+  CASE_CPUARM(e_frsky_custom_screen_3)
   e_frsky_voltages,
   e_frsky_after_flight,
   FRSKY_VIEW_MAX = e_frsky_after_flight
