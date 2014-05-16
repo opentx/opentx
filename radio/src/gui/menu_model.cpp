@@ -682,7 +682,7 @@ void menuModelFailsafe(uint8_t event)
 
 #if LCD_W >= 212
   #define COL_W   (LCD_W/2)
-  #define BAR_W   64
+  const uint8_t SLIDER_W = 64;
   // Column separator
   lcd_vline(LCD_W/2, FH, LCD_H-FH);
 
@@ -691,7 +691,7 @@ void menuModelFailsafe(uint8_t event)
   }
 #else
   #define COL_W   (LCD_W)
-  #define BAR_W   90
+  const uint8_t SLIDER_W = 90;
   ch = 8 * (m_posVert / 8);
 #endif
 
@@ -742,13 +742,13 @@ void menuModelFailsafe(uint8_t event)
           flags |= BLINK;
       }
 #if defined(PPM_UNIT_US)
-      uint8_t wbar = (longNames ? BAR_W-10 : BAR_W);
+      uint8_t wbar = (longNames ? SLIDER_W-10 : SLIDER_W);
       lcd_outdezAtt(x+COL_W-4-wbar-ofs, y, PPM_CH_CENTER(ch)+val/2, flags);
 #elif defined(PPM_UNIT_PERCENT_PREC1)
-      uint8_t wbar = (longNames ? BAR_W-16 : BAR_W-6);
+      uint8_t wbar = (longNames ? SLIDER_W-16 : SLIDER_W-6);
       lcd_outdezAtt(x+COL_W-4-wbar-ofs, y, calcRESXto1000(val), PREC1|flags);
 #else
-      uint8_t wbar = (longNames ? BAR_W-10 : BAR_W);
+      uint8_t wbar = (longNames ? SLIDER_W-10 : SLIDER_W);
       lcd_outdezAtt(x+COL_W-4-wbar-ofs, y, calcRESXto1000(val)/10, flags);
 #endif
 
