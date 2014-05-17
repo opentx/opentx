@@ -307,7 +307,7 @@ void getSwitchAudioFile(char * filename, int index)
 {
   char * str = getModelPath(filename);
   int len = STR_VSWITCHES[0];
-  strncpy(str, &STR_VSWITCHES[1+len*index], len);
+  strncpy(str, &STR_VSWITCHES[1+len*(index+1)], len);
   str += len-1;
   if (*str == '\300') {
     strcpy(str, "-up");
@@ -331,7 +331,7 @@ void getLogicalSwitchAudioFile(char * filename, int index, unsigned int event)
 {
   char * str = getModelPath(filename);
   int len = STR_VSWITCHES[0];
-  strncpy(str, &STR_VSWITCHES[1+len*(index+SWSRC_FIRST_LOGICAL_SWITCH-1)], len);
+  strncpy(str, &STR_VSWITCHES[1+len*(index+SWSRC_FIRST_LOGICAL_SWITCH)], len);
   str += len;
   strcpy(str, suffixes[event]);
   strcat(str, SOUNDS_EXT);

@@ -89,12 +89,15 @@ class SwitchesConversionTable: public ConversionTable {
       if (!(flags & POPULATE_TIMER_MODES)) {
         addConversion(RawSwitch(SWITCH_TYPE_OFF), -val+offset);
         addConversion(RawSwitch(SWITCH_TYPE_ON), val++);
-      }
-
-      if (IS_ARM(board)) {
-        for (int i=1; i<=MAX_FLIGHT_MODES(board, version); i++) {
-          addConversion(RawSwitch(SWITCH_TYPE_FLIGHT_MODE, -i), -val+offset);
-          addConversion(RawSwitch(SWITCH_TYPE_FLIGHT_MODE, i), val++);
+        if (version >= 216) {
+          addConversion(RawSwitch(SWITCH_TYPE_ONE, -1), -val+offset);
+          addConversion(RawSwitch(SWITCH_TYPE_ONE, 1), val++);
+          if (IS_ARM(board)) {
+            for (int i=1; i<=MAX_FLIGHT_MODES(board, version); i++) {
+              addConversion(RawSwitch(SWITCH_TYPE_FLIGHT_MODE, -i), -val+offset);
+              addConversion(RawSwitch(SWITCH_TYPE_FLIGHT_MODE, i), val++);
+            }
+          }
         }
       }
 

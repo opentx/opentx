@@ -1279,7 +1279,7 @@ void menuModelSetup(uint8_t event)
           else {
             if ((states & 0x01) && swactive)
               attr = INVERS;
-            c = pgm_read_byte(STR_VSWITCHES - 2 + 9 + (3*i));
+            c = pgm_read_byte(STR_VSWITCHES - 2 + 9 + (3*(i+1)));
             states >>= 1;
           }
           if (line && (m_posHorz == i)) {

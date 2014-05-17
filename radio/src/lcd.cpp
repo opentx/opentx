@@ -1042,22 +1042,18 @@ void putsModelName(xcoord_t x, uint8_t y, char *name, uint8_t id, LcdFlags att)
 
 void putsSwitches(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att)
 {
-  if (idx == SWSRC_NONE)
-    return lcd_putsiAtt(x, y, STR_MMMINV, 0, att);
-  if (idx == SWSRC_ON)
-    return lcd_putsiAtt(x, y, STR_OFFON, 1, att);
   if (idx == SWSRC_OFF)
     return lcd_putsiAtt(x, y, STR_OFFON, 0, att);
   if (idx < 0) {
     lcd_putcAtt(x-2, y, '!', att);
-    idx = -idx;
+    idx = 1-idx;
   }
 #if defined(CPUARM) && defined(FLIGHT_MODES)
   if (idx >= SWSRC_FIRST_FLIGHT_MODE)
     putsStrIdx(x, y, STR_FP, idx-SWSRC_FIRST_FLIGHT_MODE, att);
   else
 #endif
-  lcd_putsiAtt(x, y, STR_VSWITCHES, idx-1, att);
+  lcd_putsiAtt(x, y, STR_VSWITCHES, idx, att);
 }
 
 #if defined(FLIGHT_MODES)

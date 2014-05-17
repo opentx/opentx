@@ -400,6 +400,7 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
   b->clear();
 
   if (attr & POPULATE_ONOFF) {
+    // !FMx
     if (IS_ARM(GetCurrentFirmware()->getBoard())) {
       for (int i=-GetCurrentFirmware()->getCapability(FlightModes); i<0; i++) {
         item = RawSwitch(SWITCH_TYPE_FLIGHT_MODE, i);
@@ -407,6 +408,11 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
         if (item == value) b->setCurrentIndex(b->count()-1);
       }
     }
+    // !One
+    item = RawSwitch(SWITCH_TYPE_ONE, 1);
+    b->addItem(item.toString(), item.toValue());
+    if (item == value) b->setCurrentIndex(b->count()-1);
+    // OFF
     item = RawSwitch(SWITCH_TYPE_OFF);
     b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);
@@ -494,9 +500,15 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
   }
 
   if (attr & POPULATE_ONOFF) {
+    // ON
     item = RawSwitch(SWITCH_TYPE_ON);
     b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);
+    // One
+    item = RawSwitch(SWITCH_TYPE_ONE, 1);
+    b->addItem(item.toString(), item.toValue());
+    if (item == value) b->setCurrentIndex(b->count()-1);
+    // FMx
     if (IS_ARM(GetCurrentFirmware()->getBoard())) {
       for (int i=1; i<=GetCurrentFirmware()->getCapability(FlightModes); i++) {
         item = RawSwitch(SWITCH_TYPE_FLIGHT_MODE, i);

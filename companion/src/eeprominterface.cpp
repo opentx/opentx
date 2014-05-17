@@ -408,6 +408,8 @@ QString RawSwitch::toString()
         return QObject::tr("ON");
       case SWITCH_TYPE_OFF:
         return QObject::tr("OFF");
+      case SWITCH_TYPE_ONE:
+        return QObject::tr("One");
       case SWITCH_TYPE_FLIGHT_MODE:
         return CHECK_IN_ARRAY(flightModes, index-1);
       case SWITCH_TYPE_NONE:
