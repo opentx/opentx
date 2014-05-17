@@ -280,34 +280,6 @@ LimitData *limitAddress(uint8_t idx)
   return &g_model.limitData[idx];
 }
 
-LogicalSwitchData *cswAddress(uint8_t idx)
-{
-  return &g_model.customSw[idx];
-}
-
-uint8_t cswFamily(uint8_t func)
-{
-  if (func <= LS_FUNC_ANEG)
-    return LS_FAMILY_OFS;
-  else if (func <= LS_FUNC_XOR)
-    return LS_FAMILY_BOOL;
-#if defined(CPUARM)
-  else if (func == LS_FUNC_STAY)
-    return LS_FAMILY_STAY;
-#endif
-  else if (func <= LS_FUNC_LESS)
-    return LS_FAMILY_COMP;
-  else if (func <= LS_FUNC_ADIFFEGREATER)
-    return LS_FAMILY_DIFF;
-  else
-    return LS_FAMILY_TIMER+func-LS_FUNC_TIMER;
-}
-
-int16_t cswTimerValue(delayval_t val)
-{
-  return (val < -109 ? 129+val : (val < 7 ? (113+val)*5 : (53+val)*10));
-}
-
 #if defined(CPUM64)
 void memclear(void *ptr, uint8_t size)
 {
@@ -816,20 +788,6 @@ getvalue_t convert8bitsTelemValue(uint8_t channel, ls_telemetry_value_t value)
       break;
   }
   return result;
-}
-
-getvalue_t convertCswTelemValue(LogicalSwitchData * cs)
-{
-  getvalue_t val;
-#if defined(CPUARM)
-  val = convert16bitsTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, cs->v2);
-#else
-  if (cswFamily(cs->func)==LS_FAMILY_OFS)
-    val = convert8bitsTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128+cs->v2);
-  else
-    val = convert8bitsTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128+cs->v2) - convert8bitsTelemValue(cs->v1 - MIXSRC_FIRST_TELEM + 1, 128);
-#endif
-  return val;
 }
 
 #if defined(FRSKY) || defined(CPUARM)
@@ -1561,9 +1519,7 @@ void flightReset()
 #if defined(FRSKY)
   telemetryReset();
 #endif
-  for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++) {
-    csLastValue[i] = CS_LAST_VALUE_INIT;
-  }
+  logicalSwitchesReset();
 
   s_last_switch_value = 0;
   s_mixer_first_run_done = false;
@@ -2264,71 +2220,7 @@ void doMixerCalculations()
       s_cnt_100ms -= 10;
       s_cnt_1s += 1;
 
-      for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++) {
-        LogicalSwitchData * cs = cswAddress(i);
-        if (cs->func == LS_FUNC_TIMER) {
-          int16_t *lastValue = &csLastValue[i];
-          if (*lastValue == 0 || *lastValue == CS_LAST_VALUE_INIT) {
-            *lastValue = -cswTimerValue(cs->v1);
-          }
-          else if (*lastValue < 0) {
-            if (++(*lastValue) == 0)
-              *lastValue = cswTimerValue(cs->v2);
-          }
-          else { // if (*lastValue > 0)
-            *lastValue -= 1;
-          }
-        }
-        else if (cs->func == LS_FUNC_STICKY) {
-          PACK(typedef struct {
-            uint8_t state;
-            uint8_t last;
-          }) cs_sticky_struct;
-          cs_sticky_struct & lastValue = (cs_sticky_struct &)csLastValue[i];
-          bool before = lastValue.last & 0x01;
-          if (lastValue.state) {
-            bool now = getSwitch(cs->v2);
-            if (now != before) {
-              lastValue.last ^= 1;
-              if (!before) {
-                lastValue.state = 0;
-              }
-            }
-          }
-          else {
-            bool now = getSwitch(cs->v1);
-            if (before != now) {
-              lastValue.last ^= 1;
-              if (!before) {
-                lastValue.state = 1;
-              }
-            }
-          }
-        }
-#if defined(CPUARM)
-        else if (cs->func == LS_FUNC_STAY) {
-          PACK(typedef struct {
-            uint16_t state:1;
-            uint16_t duration:15;
-          }) cs_stay_struct;
-
-          cs_stay_struct & lastValue = (cs_stay_struct &)csLastValue[i];
-          lastValue.state = false;
-          bool state = getSwitch(cs->v1);
-          if (state) {
-            if (cs->v3 == 0 && lastValue.duration == cswTimerValue(cs->v2))
-              lastValue.state = true;
-            if (lastValue.duration < 1000)
-              lastValue.duration++;
-          }
-          else {
-            if (lastValue.duration > cswTimerValue(cs->v2) && lastValue.duration <= cswTimerValue(cs->v2+cs->v3))
-              lastValue.state = true;
-            lastValue.duration = 0;
-          }
-        }
-#endif
-      }
+      evalLogicalSwitchTimers();
 
       if (s_cnt_1s >= 10) { // 1sec
         s_cnt_1s -= 10;

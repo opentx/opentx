@@ -693,6 +693,8 @@ NOINLINE void per10ms();
 
 getvalue_t getValue(uint8_t i);
 bool getSwitch(int8_t swtch);
+void evalLogicalSwitchTimers();
+void logicalSwitchesReset();
 
 #if defined(PCBTARANIS)
   void getSwitchesPosition(bool startup);
@@ -823,8 +825,6 @@ extern uint8_t trimsCheckTimer;
 
 extern volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_used;
 extern volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_value;
-extern int16_t csLastValue[NUM_LOGICAL_SWITCH];
-#define CS_LAST_VALUE_INIT -32768
 
 #define TMR_OFF      0
 #define TMR_RUNNING  1
