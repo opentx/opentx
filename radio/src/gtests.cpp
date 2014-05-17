@@ -330,17 +330,17 @@ TEST(getSwitch, recursiveSW)
   g_model.logicalSw[1] = { SWSRC_ELE, -SWSRC_SW1, LS_FUNC_OR };
 
   evalLogicalSwitches(e_perout_mode_normal);
-  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
-  EXPECT_EQ(getSwitch(SWSRC_SW2), true);
+  EXPECT_EQ(getSwitch(SWSRC_SW1), true);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
 
   evalLogicalSwitches(e_perout_mode_normal);
-  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
-  EXPECT_EQ(getSwitch(SWSRC_SW2), true);
+  EXPECT_EQ(getSwitch(SWSRC_SW1), true);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
 
   simuSetSwitch(1, 1);
   evalLogicalSwitches(e_perout_mode_normal);
   EXPECT_EQ(getSwitch(SWSRC_SW1), true);
-  EXPECT_EQ(getSwitch(SWSRC_SW2), true);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
 
   evalLogicalSwitches(e_perout_mode_normal);
   EXPECT_EQ(getSwitch(SWSRC_SW1), true);
