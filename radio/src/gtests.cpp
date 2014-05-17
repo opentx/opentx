@@ -53,7 +53,7 @@ void doMixerCalculations();
   memset(act, 0, sizeof(act)); \
   memset(swOn, 0, sizeof(swOn)); \
   int32_t lastAct = 0; lastAct = lastAct; /* to avoid a warning */ \
-  lswReset();
+  logicalSwitchesReset();
 
 uint16_t anaInValues[NUM_STICKS+NUM_POTS] = { 0 };
 uint16_t anaIn(uint8_t chan)

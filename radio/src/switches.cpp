@@ -38,7 +38,7 @@
 
 #define CS_LAST_VALUE_INIT -32768
 
-typedef struct {
+PACK(typedef struct {
   uint8_t state:1;
 #if defined(CPUARM)
   uint8_t internalState:1;
@@ -46,11 +46,11 @@ typedef struct {
   uint32_t duration;
 #endif
   int16_t lastValue;
-} lsw_struct;
+}) lsw_struct;
 
-typedef struct {
+PACK(typedef struct {
   lsw_struct ls[NUM_LOGICAL_SWITCH];
-} lsw_array;
+}) lsw_array;
 
 lsw_array lswFm[MAX_FLIGHT_MODES];
 
@@ -702,7 +702,7 @@ int16_t lswTimerValue(delayval_t val)
   return (val < -109 ? 129+val : (val < 7 ? (113+val)*5 : (53+val)*10));
 }
 
-void lswReset() {
+void logicalSwitchesReset() {
   for (uint8_t fm=0; fm<MAX_FLIGHT_MODES; fm++) {
     lsw_array * lsa = &lswFm[fm];
     for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++) {

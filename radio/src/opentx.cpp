@@ -1519,7 +1519,7 @@ void flightReset()
 #if defined(FRSKY)
   telemetryReset();
 #endif
-  lswReset();
+  logicalSwitchesReset();
 
   s_mixer_first_run_done = false;
 
