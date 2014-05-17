@@ -693,10 +693,10 @@ NOINLINE void per10ms();
 
 getvalue_t getValue(uint8_t i);
 bool getSwitch(int8_t swtch);
-void lswTimerTick();
+void logicalSwitchesTimerTick();
 void logicalSwitchesReset();
 void evalLogicalSwitches(uint8_t mode);
-void copyLswState(uint8_t oldPhase, uint8_t newPhase);
+void logicalSwitchesCopyState(uint8_t oldPhase, uint8_t newPhase);
 
 #if defined(PCBTARANIS)
   void getSwitchesPosition(bool startup);

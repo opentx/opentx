@@ -603,7 +603,7 @@ void checkSwitches()
 #endif    
 }
 
-void lswTimerTick() {
+void logicalSwitchesTimerTick() {
   for (uint8_t fm=0; fm<MAX_FLIGHT_MODES; fm++) {
     for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++) {
       LogicalSwitchData * ls = lswAddress(i);
@@ -727,7 +727,7 @@ getvalue_t convertLswTelemValue(LogicalSwitchData * ls)
   return val;
 }
 
-void copyLswState(uint8_t oldPhase, uint8_t newPhase) {
+void logicalSwitchesCopyState(uint8_t oldPhase, uint8_t newPhase) {
   for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++) {
     lswFm[newPhase].ls[i].state = lswFm[oldPhase].ls[i].state;
   }

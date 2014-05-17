@@ -2219,7 +2219,7 @@ void doMixerCalculations()
       s_cnt_100ms -= 10;
       s_cnt_1s += 1;
 
-      lswTimerTick();
+      logicalSwitchesTimerTick();
 
       if (s_cnt_1s >= 10) { // 1sec
         s_cnt_1s -= 10;
