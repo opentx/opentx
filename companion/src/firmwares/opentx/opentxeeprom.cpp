@@ -2475,8 +2475,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
     internalField.Append(new ConversionField< SignedField<8> >(modelData.moduleData[1].protocol, &protocolsConversionTable, "Protocol", ::QObject::tr("OpenTX doesn't accept this protocol")));
     internalField.Append(new UnsignedField<8>(modelData.trainerMode));
   }
-
-  if (IS_ARM(board) && version >= 216) {
+  else if (IS_ARM(board) && version >= 216) {
     modulesCount = 3;
     internalField.Append(new ConversionField< SignedField<8> >(modelData.moduleData[0].protocol, &protocolsConversionTable, "Protocol", ::QObject::tr("OpenTX doesn't accept this protocol")));
   }
@@ -2492,13 +2491,6 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
       internalField.Append(new ConversionField< SignedField<8> >(modelData.moduleData[module].ppmDelay, exportPpmDelay, importPpmDelay));
       internalField.Append(new SignedField<8>(modelData.moduleData[module].ppmFrameLength));
       internalField.Append(new BoolField<8>(modelData.moduleData[module].ppmPulsePol));
-    }
-  }
-
-  if (board==BOARD_SKY9X && version >= 216) {
-    internalField.Append(new UnsignedField<8>(modelData.nPotsToWarn));
-    for (int i=0; i < GetCurrentFirmware()->getCapability(Pots); i++) {
-      internalField.Append(new SignedField<8>(modelData.potPosition[i]));
     }
   }
 
@@ -2520,6 +2512,9 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
     for (int i=0; i<32; i++) {
       internalField.Append(new ZCharField<4>(modelData.inputNames[i]));
     }
+  }
+
+  if (IS_ARM(board) && version >= 216) {
     internalField.Append(new UnsignedField<8>(modelData.nPotsToWarn));
     for (int i=0; i < GetCurrentFirmware()->getCapability(Pots); i++) {
       internalField.Append(new SignedField<8>(modelData.potPosition[i]));
