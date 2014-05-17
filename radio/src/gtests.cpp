@@ -44,7 +44,7 @@ void doMixerCalculations();
 
 #define MODEL_RESET() \
   memset(&g_model, 0, sizeof(g_model)); \
-  extern bool s_mixer_first_run_done; \
+  extern uint8_t s_mixer_first_run_done; \
   s_mixer_first_run_done = false;
 
 #define MIXER_RESET() \
