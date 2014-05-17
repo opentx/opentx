@@ -951,8 +951,8 @@ void evalMixes(uint8_t tick10ms)
         fp_act[s_last_phase] = 0;
         fp_act[phase] = MAX_ACT;
       }
+      copyLswState(s_last_phase, phase); //push last logical switches state from old to new phase
     }
-    copyLswState(s_last_phase, phase); //push last logical switches state from old to new phase
     s_last_phase = phase;
   }
 
