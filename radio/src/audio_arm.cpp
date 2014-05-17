@@ -420,7 +420,7 @@ bool isAudioFileReferenced(uint32_t i, char * filename)
   }
   else if (category == PHASE_AUDIO_CATEGORY) {
     if (sdAvailablePhaseAudioFiles & MASK_PHASE_AUDIO_FILE(index, event)) {
-      getPhaseAudioFile(filename, index, event);
+        getPhaseAudioFile(filename, index, event);
         return true;
       }
     }
@@ -432,7 +432,7 @@ bool isAudioFileReferenced(uint32_t i, char * filename)
   }
   else if (category == LOGICAL_SWITCH_AUDIO_CATEGORY) {
     if (sdAvailableLogicalSwitchAudioFiles & MASK_LOGICAL_SWITCH_AUDIO_FILE(index, event)) {
-      getLogicalSwitchAudioFile(filename, index, event);
+        getLogicalSwitchAudioFile(filename, index, event);
         return true;
       }
     }
