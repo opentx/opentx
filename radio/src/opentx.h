@@ -1198,7 +1198,7 @@ enum CswFunctionFamilies {
   LS_FAMILY_STAY
 };
 
-uint8_t cswFamily(uint8_t func);
+uint8_t lswFamily(uint8_t func);
 int16_t lswTimerValue(delayval_t val);
 
 #if defined(CPUARM)

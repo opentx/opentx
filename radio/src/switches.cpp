@@ -242,7 +242,7 @@ bool getSwitch(int8_t swtch)
         lsLastValue[cs_idx] = CS_LAST_VALUE_INIT;
         result = false;
       }
-      else if ((s=cswFamily(ls->func)) == LS_FAMILY_BOOL) {
+      else if ((s=lswFamily(ls->func)) == LS_FAMILY_BOOL) {
         bool res1 = getSwitch(ls->v1);
         bool res2 = getSwitch(ls->v2);
         switch (ls->func) {
@@ -672,7 +672,7 @@ LogicalSwitchData *lswAddress(uint8_t idx)
   return &g_model.logicalSw[idx];
 }
 
-uint8_t cswFamily(uint8_t func)
+uint8_t lswFamily(uint8_t func)
 {
   if (func <= LS_FUNC_ANEG)
     return LS_FAMILY_OFS;
@@ -707,7 +707,7 @@ getvalue_t convertLswTelemValue(LogicalSwitchData * ls)
 #if defined(CPUARM)
   val = convert16bitsTelemValue(ls->v1 - MIXSRC_FIRST_TELEM + 1, ls->v2);
 #else
-  if (cswFamily(ls->func)==LS_FAMILY_OFS)
+  if (lswFamily(ls->func)==LS_FAMILY_OFS)
     val = convert8bitsTelemValue(ls->v1 - MIXSRC_FIRST_TELEM + 1, 128+ls->v2);
   else
     val = convert8bitsTelemValue(ls->v1 - MIXSRC_FIRST_TELEM + 1, 128+ls->v2) - convert8bitsTelemValue(ls->v1 - MIXSRC_FIRST_TELEM + 1, 128);

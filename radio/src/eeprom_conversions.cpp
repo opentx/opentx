@@ -668,7 +668,7 @@ void ConvertModel_215_to_216(ModelData &model)
     sw.delay = oldModel.logicalSw[i].delay * 5;
     sw.duration = oldModel.logicalSw[i].duration * 5;
     sw.andsw = ConvertSwitch_215_to_216(oldModel.logicalSw[i].andsw);
-    uint8_t cstate = cswFamily(sw.func);
+    uint8_t cstate = lswFamily(sw.func);
     if (cstate == LS_FAMILY_BOOL) {
       sw.v1 = ConvertSwitch_215_to_216(sw.v1);
       sw.v2 = ConvertSwitch_215_to_216(sw.v2);

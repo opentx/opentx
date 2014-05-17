@@ -4285,14 +4285,14 @@ void menuModelLogicalSwitchOne(uint8_t event)
     uint8_t y = 1 + (k+1)*FH;
     uint8_t i = k + s_pgOfs;
     uint8_t attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
-    uint8_t cstate = cswFamily(cs->func);
+    uint8_t cstate = lswFamily(cs->func);
     switch(i) {
       case LS_FIELD_FUNCTION:
         lcd_putsLeft(y, STR_FUNC);
         lcd_putsiAtt(CSWONE_2ND_COLUMN, y, STR_VCSWFUNC, cs->func, attr);
         if (attr) {
           cs->func = checkIncDec(event, cs->func, 0, LS_FUNC_MAX, EE_MODEL, isLogicalSwitchFunctionAvailable);
-          uint8_t new_cstate = cswFamily(cs->func);
+          uint8_t new_cstate = lswFamily(cs->func);
           if (cstate != new_cstate) {
             if (new_cstate == LS_FAMILY_TIMER) {
               cs->v1 = cs->v2 = 0;
@@ -4448,7 +4448,7 @@ void menuModelLogicalSwitches(uint8_t event)
       lcd_putsiAtt(CSW_1ST_COLUMN, y, STR_VCSWFUNC, cs->func, 0);
 
       // CSW params
-      uint8_t cstate = cswFamily(cs->func);
+      uint8_t cstate = lswFamily(cs->func);
 
       if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY) {
         putsSwitches(CSW_2ND_COLUMN, y, cs->v1, 0);
@@ -4576,7 +4576,7 @@ void menuModelLogicalSwitches(uint8_t event)
     lcd_putsiAtt(CSW_1ST_COLUMN, y, STR_VCSWFUNC, cs->func, horz==0 ? attr : 0);
 
     // CSW params
-    uint8_t cstate = cswFamily(cs->func);
+    uint8_t cstate = lswFamily(cs->func);
 #if defined(CPUARM)
     int16_t v1_val=cs->v1, v1_min=0, v1_max=MIXSRC_LAST_TELEM, v2_min=0, v2_max=MIXSRC_LAST_TELEM;
     int16_t v3_min=0, v3_max=100;
@@ -4736,7 +4736,7 @@ void menuModelLogicalSwitches(uint8_t event)
 #else
           CHECK_INCDEC_MODELVAR_ZERO(event, cs->func, LS_FUNC_MAX);
 #endif
-          uint8_t new_cstate = cswFamily(cs->func);
+          uint8_t new_cstate = lswFamily(cs->func);
           if (cstate != new_cstate) {
 #if defined(CPUARM)
             if (new_cstate == LS_FAMILY_TIMER) {
