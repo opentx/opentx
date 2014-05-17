@@ -1521,7 +1521,6 @@ void flightReset()
 #endif
   lswReset();
 
-  s_last_switch_value = 0;
   s_mixer_first_run_done = false;
 
   START_SILENCE_PERIOD();

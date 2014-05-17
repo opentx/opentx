@@ -695,6 +695,8 @@ getvalue_t getValue(uint8_t i);
 bool getSwitch(int8_t swtch);
 void lswTimerTick();
 void lswReset();
+void evalLogicalSwitches(uint8_t mode);
+void copyLswState(uint8_t oldPhase, uint8_t newPhase);
 
 #if defined(PCBTARANIS)
   void getSwitchesPosition(bool startup);
@@ -816,15 +818,6 @@ extern TimerState timersStates[MAX_TIMERS];
 extern int8_t safetyCh[NUM_CHNOUT];
 
 extern uint8_t trimsCheckTimer;
-
-#if defined(CPUARM)
-  #define GETSWITCH_RECURSIVE_TYPE uint32_t
-#else
-  #define GETSWITCH_RECURSIVE_TYPE uint16_t
-#endif
-
-extern volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_used;
-extern volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_value;
 
 #define TMR_OFF      0
 #define TMR_RUNNING  1

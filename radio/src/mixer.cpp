@@ -524,6 +524,7 @@ uint8_t s_current_mixer_flight_mode;
 void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 {
   evalInputs(mode);
+  evalLogicalSwitches(mode);
 
 #if defined(MODULE_ALWAYS_SEND_PULSES)
   checkStartupWarnings();
@@ -929,8 +930,6 @@ void evalMixes(uint8_t tick10ms)
   static ACTIVE_PHASES_TYPE s_fade_flight_phases = 0;
   static uint8_t s_last_phase = 255; // TODO reinit everything here when the model changes, no???
 
-  s_last_switch_used = 0;
-
   uint8_t phase = getFlightPhase();
 
   if (s_last_phase != phase) {
@@ -953,6 +952,7 @@ void evalMixes(uint8_t tick10ms)
         fp_act[phase] = MAX_ACT;
       }
     }
+    copyLswState(s_last_phase, phase); //push last logical switches state from old to new phase
     s_last_phase = phase;
   }
 
@@ -960,7 +960,6 @@ void evalMixes(uint8_t tick10ms)
   if (s_fade_flight_phases) {
     memclear(sum_chans512, sizeof(sum_chans512));
     for (uint8_t p=0; p<MAX_FLIGHT_MODES; p++) {
-      s_last_switch_used = 0;
       if (s_fade_flight_phases & ((ACTIVE_PHASES_TYPE)1 << p)) {
         s_current_mixer_flight_mode = p;
         evalFlightModeMixes(p==phase ? e_perout_mode_normal : e_perout_mode_inactive_phase, p==phase ? tick10ms : 0);
@@ -968,7 +967,6 @@ void evalMixes(uint8_t tick10ms)
           sum_chans512[i] += (chans[i] >> 4) * fp_act[p];
         weight += fp_act[p];
       }
-      s_last_switch_used = 0;
     }
     assert(weight);
     s_current_mixer_flight_mode = phase;
