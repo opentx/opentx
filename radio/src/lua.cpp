@@ -570,7 +570,7 @@ static int luaModelGetLogicalSwitch(lua_State *L)
 {
   int idx = luaL_checkunsigned(L, 1);
   if (idx < NUM_LOGICAL_SWITCH) {
-    LogicalSwitchData * sw = cswAddress(idx);
+    LogicalSwitchData * sw = lswAddress(idx);
     lua_newtable(L);
     lua_pushtablenumber(L, "function", sw->func);
     lua_pushtablenumber(L, "v1", sw->v1);
@@ -590,7 +590,7 @@ static int luaModelSetLogicalSwitch(lua_State *L)
 {
   int idx = luaL_checkunsigned(L, 1);
   if (idx < NUM_LOGICAL_SWITCH) {
-    LogicalSwitchData * sw = cswAddress(idx);
+    LogicalSwitchData * sw = lswAddress(idx);
     luaL_checktype(L, -1, LUA_TTABLE);
     for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
       luaL_checktype(L, -2, LUA_TSTRING); // key is string

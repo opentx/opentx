@@ -1421,7 +1421,7 @@ bool isSourceAvailable(int source)
   }
 
   if (source>=MIXSRC_SW1 && source<=MIXSRC_LAST_LOGICAL_SWITCH) {
-    LogicalSwitchData * cs = cswAddress(source-MIXSRC_SW1);
+    LogicalSwitchData * cs = lswAddress(source-MIXSRC_SW1);
     return (cs->func != LS_FUNC_NONE);
   }
 
@@ -1526,7 +1526,7 @@ bool isSwitchAvailable(int swtch)
   }
 
   if (swtch >= SWSRC_FIRST_LOGICAL_SWITCH && swtch <= SWSRC_LAST_LOGICAL_SWITCH) {
-    LogicalSwitchData * cs = cswAddress(swtch-SWSRC_FIRST_LOGICAL_SWITCH);
+    LogicalSwitchData * cs = lswAddress(swtch-SWSRC_FIRST_LOGICAL_SWITCH);
     return (cs->func != LS_FUNC_NONE);
   }
   

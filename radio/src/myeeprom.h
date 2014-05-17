@@ -1694,7 +1694,7 @@ PACK(typedef struct t_ModelData {
   CURVDATA  curves[MAX_CURVES];
   int8_t    points[NUM_POINTS];
   
-  LogicalSwitchData customSw[NUM_LOGICAL_SWITCH];
+  LogicalSwitchData logicalSw[NUM_LOGICAL_SWITCH];
   CustomFnData funcSw[NUM_CFN];
   SwashRingData swashR;
   PhaseData phaseData[MAX_FLIGHT_MODES];

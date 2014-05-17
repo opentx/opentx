@@ -222,7 +222,7 @@ PACK(typedef struct {
   int16_t   curves[16];
   int8_t    points[NUM_POINTS];
 
-  LogicalSwitchData_v215 customSw[NUM_LOGICAL_SWITCH];
+  LogicalSwitchData_v215 logicalSw[NUM_LOGICAL_SWITCH];
   CustomFnData_v215 funcSw[32];
   SwashRingData swashR;
   PhaseData_v215 phaseData[MAX_FLIGHT_MODES];
@@ -658,16 +658,16 @@ void ConvertModel_215_to_216(ModelData &model)
     g_model.points[i] = oldModel.points[i];
   }
   for (uint8_t i=0; i<32; i++) {
-    LogicalSwitchData & sw = g_model.customSw[i];
-    sw.func = oldModel.customSw[i].func;
+    LogicalSwitchData & sw = g_model.logicalSw[i];
+    sw.func = oldModel.logicalSw[i].func;
     if (sw.func >= LS_FUNC_VEQUAL) sw.func += 1;
     if (sw.func >= LS_FUNC_RANGE) sw.func += 1;
     if (sw.func >= LS_FUNC_STAY) sw.func += 1;
-    sw.v1 = oldModel.customSw[i].v1;
-    sw.v2 = oldModel.customSw[i].v2;
-    sw.delay = oldModel.customSw[i].delay * 5;
-    sw.duration = oldModel.customSw[i].duration * 5;
-    sw.andsw = ConvertSwitch_215_to_216(oldModel.customSw[i].andsw);
+    sw.v1 = oldModel.logicalSw[i].v1;
+    sw.v2 = oldModel.logicalSw[i].v2;
+    sw.delay = oldModel.logicalSw[i].delay * 5;
+    sw.duration = oldModel.logicalSw[i].duration * 5;
+    sw.andsw = ConvertSwitch_215_to_216(oldModel.logicalSw[i].andsw);
     uint8_t cstate = cswFamily(sw.func);
     if (cstate == LS_FAMILY_BOOL) {
       sw.v1 = ConvertSwitch_215_to_216(sw.v1);

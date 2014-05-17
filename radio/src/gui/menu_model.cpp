@@ -4269,7 +4269,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
 {
   TITLE(STR_MENULOGICALSWITCH);
 
-  LogicalSwitchData * cs = cswAddress(s_currIdx);
+  LogicalSwitchData * cs = lswAddress(s_currIdx);
   uint8_t sw = SWSRC_SW1+s_currIdx;
   putsSwitches(14*FW, 0, sw, (getSwitch(sw) ? BOLD : 0));
 
@@ -4343,12 +4343,12 @@ void menuModelLogicalSwitchOne(uint8_t event)
         }
         else if (cstate == LS_FAMILY_STAY) {
           lcd_putc(CSWONE_2ND_COLUMN-4, y, '[');
-          lcd_outdezAtt(CSWONE_2ND_COLUMN, y, cswTimerValue(cs->v2), LEFT|PREC1|(m_posHorz==0 ? attr : 0));
+          lcd_outdezAtt(CSWONE_2ND_COLUMN, y, lswTimerValue(cs->v2), LEFT|PREC1|(m_posHorz==0 ? attr : 0));
           lcd_putc(lcdLastPos, y, ':');
           if (cs->v3 == 0)
             lcd_putsAtt(lcdLastPos+3, y, "--", (m_posHorz==1 ? attr : 0));
           else
-            lcd_outdezAtt(lcdLastPos+3, y, cswTimerValue(cs->v2+cs->v3), LEFT|PREC1|(m_posHorz==1 ? attr : 0));
+            lcd_outdezAtt(lcdLastPos+3, y, lswTimerValue(cs->v2+cs->v3), LEFT|PREC1|(m_posHorz==1 ? attr : 0));
           lcd_putc(lcdLastPos, y, ']');
           if (s_editMode <= 0) continue;
           if (attr && m_posHorz==1) {
@@ -4365,7 +4365,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
         else {
 #if defined(FRSKY)
           if (v1_val >= MIXSRC_FIRST_TELEM) {
-            putsTelemetryChannel(CSWONE_2ND_COLUMN, y, v1_val - MIXSRC_FIRST_TELEM, convertCswTelemValue(cs), attr|LEFT);
+            putsTelemetryChannel(CSWONE_2ND_COLUMN, y, v1_val - MIXSRC_FIRST_TELEM, convertLswTelemValue(cs), attr|LEFT);
             v2_max = maxTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
             v2_min = minTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
             INCDEC_SET_FLAG(INCDEC_REP10 | NO_INCDEC_MARKS);
@@ -4436,7 +4436,7 @@ void menuModelLogicalSwitches(uint8_t event)
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     y = 1 + (i+1)*FH;
     k = i+s_pgOfs;
-    LogicalSwitchData * cs = cswAddress(k);
+    LogicalSwitchData * cs = lswAddress(k);
 
     // CSW name
     uint8_t sw = SWSRC_SW1+k;
@@ -4461,12 +4461,12 @@ void menuModelLogicalSwitches(uint8_t event)
       else if (cstate == LS_FAMILY_STAY) {
         putsSwitches(CSW_2ND_COLUMN, y, cs->v1, 0);
         lcd_putc(CSW_3RD_COLUMN-4, y, '[');
-        lcd_outdezAtt(CSW_3RD_COLUMN, y, cswTimerValue(cs->v2), LEFT|PREC1);
+        lcd_outdezAtt(CSW_3RD_COLUMN, y, lswTimerValue(cs->v2), LEFT|PREC1);
         lcd_putc(lcdLastPos, y, ':');
         if (cs->v3 == 0)
           lcd_puts(lcdLastPos+3, y, "--");
         else
-          lcd_outdezAtt(lcdLastPos+3, y, cswTimerValue(cs->v2+cs->v3), LEFT|PREC1);
+          lcd_outdezAtt(lcdLastPos+3, y, lswTimerValue(cs->v2+cs->v3), LEFT|PREC1);
         lcd_putc(lcdLastPos-1, y, ']');
       }
       else if (cstate == LS_FAMILY_TIMER) {
@@ -4477,7 +4477,7 @@ void menuModelLogicalSwitches(uint8_t event)
         uint8_t v1 = cs->v1;
         putsMixerSource(CSW_2ND_COLUMN, y, v1, 0);
         if (v1 >= MIXSRC_FIRST_TELEM) {
-          putsTelemetryChannel(CSW_3RD_COLUMN, y, v1 - MIXSRC_FIRST_TELEM, convertCswTelemValue(cs), LEFT);
+          putsTelemetryChannel(CSW_3RD_COLUMN, y, v1 - MIXSRC_FIRST_TELEM, convertLswTelemValue(cs), LEFT);
         }
         else {
           lcd_outdezAtt(CSW_3RD_COLUMN, y, cs->v2, LEFT);
@@ -4512,7 +4512,7 @@ Clipboard clipboard;
 void onLogicalSwitchesMenu(const char *result)
 {
   int8_t sub = m_posVert-1;
-  LogicalSwitchData * cs = cswAddress(sub);
+  LogicalSwitchData * cs = lswAddress(sub);
 
   if (result == STR_COPY) {
     clipboard.type = CLIPBOARD_TYPE_CUSTOM_SWITCH;
@@ -4549,7 +4549,7 @@ void menuModelLogicalSwitches(uint8_t event)
 #if defined(PCBTARANIS)
   if (sub>=0 && horz<0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
     killEvents(event);
-    LogicalSwitchData * cs = cswAddress(sub);
+    LogicalSwitchData * cs = lswAddress(sub);
     if (cs->func)
       MENU_ADD_ITEM(STR_COPY);
     if (clipboard.type == CLIPBOARD_TYPE_CUSTOM_SWITCH)
@@ -4566,7 +4566,7 @@ void menuModelLogicalSwitches(uint8_t event)
     uint8_t attr = (sub==k ? ((s_editMode>0) ? BLINK|INVERS : INVERS)  : 0);
     uint8_t attr1 = (horz==1 ? attr : 0);
     uint8_t attr2 = (horz==2 ? attr : 0);
-    LogicalSwitchData * cs = cswAddress(k);
+    LogicalSwitchData * cs = lswAddress(k);
 
     // CSW name
     uint8_t sw = SWSRC_SW1+k;
@@ -4597,12 +4597,12 @@ void menuModelLogicalSwitches(uint8_t event)
     else if (cstate == LS_FAMILY_STAY) {
       putsSwitches(CSW_2ND_COLUMN, y, cs->v1, attr1);
       lcd_putc(CSW_3RD_COLUMN-4, y, '[');
-      lcd_outdezAtt(CSW_3RD_COLUMN, y, cswTimerValue(cs->v2), LEFT|PREC1|attr2);
+      lcd_outdezAtt(CSW_3RD_COLUMN, y, lswTimerValue(cs->v2), LEFT|PREC1|attr2);
       lcd_putc(lcdLastPos, y, ':');
       if (cs->v3 == 0)
         lcd_putsAtt(lcdLastPos+3, y, "--", (horz==LS_FIELD_V3 ? attr : 0));
       else
-        lcd_outdezAtt(lcdLastPos+3, y, cswTimerValue(cs->v2+cs->v3), LEFT|PREC1|(horz==LS_FIELD_V3 ? attr : 0));
+        lcd_outdezAtt(lcdLastPos+3, y, lswTimerValue(cs->v2+cs->v3), LEFT|PREC1|(horz==LS_FIELD_V3 ? attr : 0));
       lcd_putc(lcdLastPos, y, ']');
       v1_min = SWSRC_OFF+1; v1_max = SWSRC_ON-1;
       v2_min=-129; v2_max = 122;
@@ -4627,8 +4627,8 @@ void menuModelLogicalSwitches(uint8_t event)
       INCDEC_ENABLE_CHECK(isSourceAvailable);
     }
     else if (cstate == LS_FAMILY_TIMER) {
-      lcd_outdezAtt(CSW_2ND_COLUMN, y, cswTimerValue(cs->v1), LEFT|PREC1|attr1);
-      lcd_outdezAtt(CSW_3RD_COLUMN, y, cswTimerValue(cs->v2), LEFT|PREC1|attr2);
+      lcd_outdezAtt(CSW_2ND_COLUMN, y, lswTimerValue(cs->v1), LEFT|PREC1|attr1);
+      lcd_outdezAtt(CSW_3RD_COLUMN, y, lswTimerValue(cs->v2), LEFT|PREC1|attr2);
       v1_min = v2_min = -128;
       v1_max = v2_max = 122;
       INCDEC_SET_FLAG(0);
@@ -4649,7 +4649,7 @@ void menuModelLogicalSwitches(uint8_t event)
       }
 #if defined(FRSKY)
       if (v1_val >= MIXSRC_FIRST_TELEM) {
-        putsTelemetryChannel(CSW_3RD_COLUMN, y, v1_val - MIXSRC_FIRST_TELEM, convertCswTelemValue(cs), LEFT|attr2);
+        putsTelemetryChannel(CSW_3RD_COLUMN, y, v1_val - MIXSRC_FIRST_TELEM, convertLswTelemValue(cs), LEFT|attr2);
         v2_max = maxTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
 #if defined(CPUARM)
         v2_min = minTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
@@ -4680,7 +4680,7 @@ void menuModelLogicalSwitches(uint8_t event)
       }
 #else
       if (v1_val >= MIXSRC_FIRST_TELEM) {
-        putsTelemetryChannel(CSW_3RD_COLUMN, y, v1_val - MIXSRC_FIRST_TELEM, convertCswTelemValue(cs), LEFT|attr2);
+        putsTelemetryChannel(CSW_3RD_COLUMN, y, v1_val - MIXSRC_FIRST_TELEM, convertLswTelemValue(cs), LEFT|attr2);
         v2_min = -128; v2_max = 127;
       }
       else {

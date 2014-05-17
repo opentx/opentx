@@ -715,7 +715,7 @@ void menuMainView(uint8_t event)
       div_t qr = div(sw, 10);
       uint8_t y = 13 + 11 * qr.quot;
       uint8_t x = TRIM_RH_X - TRIM_LEN + qr.rem*5 + (qr.rem >= 5 ? 3 : 0);
-      LogicalSwitchData * cs = cswAddress(sw);
+      LogicalSwitchData * cs = lswAddress(sw);
       if (cs->func == LS_FUNC_NONE) {
         lcd_hline(x, y+6, 4);
         lcd_hline(x, y+7, 4);

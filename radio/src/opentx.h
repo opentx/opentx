@@ -693,8 +693,8 @@ NOINLINE void per10ms();
 
 getvalue_t getValue(uint8_t i);
 bool getSwitch(int8_t swtch);
-void evalLogicalSwitchTimers();
-void logicalSwitchesReset();
+void lswTimerTick();
+void lswReset();
 
 #if defined(PCBTARANIS)
   void getSwitchesPosition(bool startup);
@@ -1106,7 +1106,7 @@ ExpoData *expoAddress(uint8_t idx);
 MixData *mixAddress(uint8_t idx);
 LimitData *limitAddress(uint8_t idx);
 int8_t *curveAddress(uint8_t idx);
-LogicalSwitchData *cswAddress(uint8_t idx);
+LogicalSwitchData *lswAddress(uint8_t idx);
 
 #if !defined(PCBTARANIS)
 struct CurveInfo {
@@ -1199,7 +1199,7 @@ enum CswFunctionFamilies {
 };
 
 uint8_t cswFamily(uint8_t func);
-int16_t cswTimerValue(delayval_t val);
+int16_t lswTimerValue(delayval_t val);
 
 #if defined(CPUARM)
   #define MASK_CFN_TYPE  uint32_t  // current max = 32 function switches
@@ -1552,7 +1552,7 @@ ls_telemetry_value_t max8bitsTelemValue(uint8_t channel);
 #endif
 
 getvalue_t convert8bitsTelemValue(uint8_t channel, ls_telemetry_value_t value);
-getvalue_t convertCswTelemValue(LogicalSwitchData * cs);
+getvalue_t convertLswTelemValue(LogicalSwitchData * cs);
 
 #if defined(CPUARM)
   #define convertTelemValue(channel, value) convert16bitsTelemValue(channel, value)
