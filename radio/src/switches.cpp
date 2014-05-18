@@ -41,9 +41,8 @@
 PACK(typedef struct {
   uint8_t state:1;
 #if defined(CPUARM)
-  uint8_t internalState:1;
-  uint32_t delay;
-  uint32_t duration;
+  uint8_t ddState:2;
+  uint8_t ddTimer;
 #endif
   int16_t lastValue;
 }) lsw_struct;
@@ -379,26 +378,29 @@ void evalLogicalSwitches(uint8_t mode)
     }
 
 #if defined(CPUARM)
-    if (ls->delay) {
+    if (ls->delay || ls->duration) {
       if (result) {
-        if (lsd->delay > get_tmr10ms())
-          result = false;
+        if (lsd->ddState==0) {
+          //set delay timer
+          lsd->ddTimer = ls->delay;
+          lsd->ddState++;
+        }
+        if (lsd->ddState==1) {
+          if (lsd->ddTimer) {
+            result = false;   //return false while delay timer running
+          }
+          else if (ls->duration) {
+            //set duration timer 
+            lsd->ddTimer = ls->duration;
+            lsd->ddState++;
+          }
+        }
+        else if (lsd->ddState==2) {
+          result = (lsd->ddTimer>0);  //return false after duration timer runs out
+        }
       }
       else {
-        lsd->delay = get_tmr10ms() + (ls->delay*10);
-      }
-    }
-
-    if (ls->duration) {
-      if (result && !lsd->internalState) {
-        lsd->duration = get_tmr10ms() + (ls->duration*10);
-      }
-
-      lsd->internalState = result;
-      result = false;
-
-      if (lsd->duration > get_tmr10ms()) {
-        result = true;
+        lsd->ddState = 0;
       }
     }
 #endif
@@ -669,6 +671,9 @@ void logicalSwitchesTimerTick() {
           lastValue.duration = 0;
         }
       }
+      //decrement delay/duration timer
+      if (lsd->ddTimer)
+        lsd->ddTimer--;
   #endif
     }
   }
