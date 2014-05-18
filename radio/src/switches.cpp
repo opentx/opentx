@@ -649,7 +649,7 @@ void logicalSwitchesTimerTick() {
           }
         }
       }
-  #if defined(CPUARM)
+#if defined(CPUARM)
       else if (ls->func == LS_FUNC_STAY) {
         PACK(typedef struct {
           uint16_t state:1;
@@ -674,7 +674,7 @@ void logicalSwitchesTimerTick() {
       //decrement delay/duration timer
       if (lsd->ddTimer)
         lsd->ddTimer--;
-  #endif
+#endif
     }
   }
 }
