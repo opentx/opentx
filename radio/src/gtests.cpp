@@ -53,6 +53,7 @@ void doMixerCalculations();
   memset(act, 0, sizeof(act)); \
   memset(swOn, 0, sizeof(swOn)); \
   int32_t lastAct = 0; lastAct = lastAct; /* to avoid a warning */ \
+  s_current_mixer_flight_mode = s_last_phase = 0; \
   logicalSwitchesReset();
 
 uint16_t anaInValues[NUM_STICKS+NUM_POTS] = { 0 };
@@ -308,6 +309,8 @@ TEST(getSwitch, circularCSW)
   MIXER_RESET();
   g_model.logicalSw[0] = { SWSRC_SW1, SWSRC_SW1, LS_FUNC_OR };
   g_model.logicalSw[1] = { SWSRC_SW1, SWSRC_SW1, LS_FUNC_AND };
+
+  evalLogicalSwitches();
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
   EXPECT_EQ(getSwitch(-SWSRC_SW1), true);
   EXPECT_EQ(getSwitch(SWSRC_SW2), false);
@@ -329,20 +332,20 @@ TEST(getSwitch, recursiveSW)
   g_model.logicalSw[0] = { SWSRC_RUD, -SWSRC_SW2, LS_FUNC_OR };
   g_model.logicalSw[1] = { SWSRC_ELE, -SWSRC_SW1, LS_FUNC_OR };
 
-  evalLogicalSwitches(e_perout_mode_normal);
+  evalLogicalSwitches();
   EXPECT_EQ(getSwitch(SWSRC_SW1), true);
   EXPECT_EQ(getSwitch(SWSRC_SW2), false);
 
-  evalLogicalSwitches(e_perout_mode_normal);
+  evalLogicalSwitches();
   EXPECT_EQ(getSwitch(SWSRC_SW1), true);
   EXPECT_EQ(getSwitch(SWSRC_SW2), false);
 
   simuSetSwitch(1, 1);
-  evalLogicalSwitches(e_perout_mode_normal);
+  evalLogicalSwitches();
   EXPECT_EQ(getSwitch(SWSRC_SW1), true);
   EXPECT_EQ(getSwitch(SWSRC_SW2), false);
 
-  evalLogicalSwitches(e_perout_mode_normal);
+  evalLogicalSwitches();
   EXPECT_EQ(getSwitch(SWSRC_SW1), true);
   EXPECT_EQ(getSwitch(SWSRC_SW2), false);
 }
