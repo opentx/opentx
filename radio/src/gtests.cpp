@@ -45,7 +45,8 @@ void doMixerCalculations();
 #define MODEL_RESET() \
   memset(&g_model, 0, sizeof(g_model)); \
   extern uint8_t s_mixer_first_run_done; \
-  s_mixer_first_run_done = false;
+  s_mixer_first_run_done = false; \
+  s_last_phase = 255;
 
 #define MIXER_RESET() \
   memset(channelOutputs, 0, sizeof(channelOutputs)); \
