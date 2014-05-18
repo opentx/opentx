@@ -930,7 +930,10 @@ void AudioQueue::stopAll()
 void audioEvent(uint8_t e, uint16_t f)
 {
 #if defined(HAPTIC)
-  haptic.event(e); //do this before audio to help sync timings
+  if (e != AU_TADA) {
+    // TODO could be done better, with TADA not part of errors
+    haptic.event(e); //do this before audio to help sync timings
+  }
 #endif
 
   if (e <= AU_ERROR || (e >= AU_WARNING1 && e < AU_FRSKY_FIRST)) {
