@@ -51,7 +51,7 @@ PACK(typedef struct {
   lsw_struct ls[NUM_LOGICAL_SWITCH];
 }) lsw_array;
 
-lsw_array lswFm[MAX_FLIGHT_MODES];
+lsw_array lswFm[2];
 
 #if defined(PCBTARANIS)
 tmr10ms_t switchesMidposStart[6] = { 0 };
@@ -218,7 +218,7 @@ bool getSwitch(int8_t swtch)
 #endif
   else {
     cs_idx -= SWSRC_FIRST_LOGICAL_SWITCH;
-    result = lswFm[s_current_mixer_flight_mode].ls[cs_idx].state;
+    result = lswFm[(s_last_phase == s_current_mixer_flight_mode)?0:1].ls[cs_idx].state;
   }
 
   return swtch > 0 ? result : !result;
@@ -227,14 +227,14 @@ bool getSwitch(int8_t swtch)
 /**
   @brief Calculates new state of logical switches for s_current_mixer_flight_mode
 */
-void evalLogicalSwitches(uint8_t mode)
+void evalLogicalSwitches()
 {
   for(unsigned int cs_idx=0; cs_idx<NUM_LOGICAL_SWITCH; cs_idx++) {
 
     bool result = false;
 
     LogicalSwitchData * ls = lswAddress(cs_idx);
-    lsw_struct * lsd = &lswFm[s_current_mixer_flight_mode].ls[cs_idx];
+    lsw_struct * lsd = &lswFm[(s_last_phase == s_current_mixer_flight_mode)?0:1].ls[cs_idx];
 
 #if defined(CPUARM)
     int8_t s = ls->andsw;
@@ -406,10 +406,10 @@ void evalLogicalSwitches(uint8_t mode)
 #endif
 
     if (result) {
-      if (!lsd->state && mode == e_perout_mode_normal) PLAY_LOGICAL_SWITCH_ON(cs_idx);
+      if (!lsd->state && s_last_phase == s_current_mixer_flight_mode) PLAY_LOGICAL_SWITCH_ON(cs_idx);
     }
     else {
-      if (lsd->state && mode == e_perout_mode_normal) PLAY_LOGICAL_SWITCH_OFF(cs_idx);
+      if (lsd->state && s_last_phase == s_current_mixer_flight_mode) PLAY_LOGICAL_SWITCH_OFF(cs_idx);
     }
     lsd->state = result;
   }
@@ -606,7 +606,7 @@ void checkSwitches()
 }
 
 void logicalSwitchesTimerTick() {
-  for (uint8_t fm=0; fm<MAX_FLIGHT_MODES; fm++) {
+  for (uint8_t fm=0; fm<2; fm++) {
     for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++) {
       LogicalSwitchData * ls = lswAddress(i);
       lsw_struct * lsd = &lswFm[fm].ls[i];
@@ -708,12 +708,10 @@ int16_t lswTimerValue(delayval_t val)
 }
 
 void logicalSwitchesReset() {
-  for (uint8_t fm=0; fm<MAX_FLIGHT_MODES; fm++) {
+  for (uint8_t fm=0; fm<2; fm++) {
     lsw_array * lsa = &lswFm[fm];
     for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++) {
       lsa->ls[i].lastValue = CS_LAST_VALUE_INIT;
-      //todo other values
-      lsa->ls[i].state = false;
     }
   }
 }
@@ -732,8 +730,6 @@ getvalue_t convertLswTelemValue(LogicalSwitchData * ls)
   return val;
 }
 
-void logicalSwitchesCopyState(uint8_t oldPhase, uint8_t newPhase) {
-  for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++) {
-    lswFm[newPhase].ls[i].state = lswFm[oldPhase].ls[i].state;
-  }
+void logicalSwitchesCopyState() {
+  lswFm[1] = lswFm[0];
 }

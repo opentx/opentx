@@ -671,6 +671,7 @@ enum StartupWarningStates {
 #endif
 
 extern uint8_t s_current_mixer_flight_mode;
+extern uint8_t s_last_phase;
 
 #if defined(CPUARM)
   #define bitfield_channels_t uint32_t
@@ -695,8 +696,8 @@ getvalue_t getValue(uint8_t i);
 bool getSwitch(int8_t swtch);
 void logicalSwitchesTimerTick();
 void logicalSwitchesReset();
-void evalLogicalSwitches(uint8_t mode);
-void logicalSwitchesCopyState(uint8_t oldPhase, uint8_t newPhase);
+void evalLogicalSwitches();
+void logicalSwitchesCopyState();
 
 #if defined(PCBTARANIS)
   void getSwitchesPosition(bool startup);
