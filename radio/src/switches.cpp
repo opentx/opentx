@@ -380,12 +380,12 @@ void evalLogicalSwitches()
 #if defined(CPUARM)
     if (ls->delay || ls->duration) {
       if (result) {
-        if (lsd->ddState==0) {
+        if (lsd->ddState == 0) {
           //set delay timer
           lsd->ddTimer = ls->delay;
           lsd->ddState++;
         }
-        if (lsd->ddState==1) {
+        if (lsd->ddState == 1) {
           if (lsd->ddTimer) {
             result = false;   //return false while delay timer running
           }
@@ -395,8 +395,8 @@ void evalLogicalSwitches()
             lsd->ddState++;
           }
         }
-        else if (lsd->ddState==2) {
-          result = (lsd->ddTimer>0);  //return false after duration timer runs out
+        else if (lsd->ddState == 2) {
+          result = (lsd->ddTimer > 0);  //return false after duration timer runs out
         }
       }
       else {
