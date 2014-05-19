@@ -1046,7 +1046,7 @@ void putsSwitches(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att)
     return lcd_putsiAtt(x, y, STR_OFFON, 0, att);
   if (idx < 0) {
     lcd_putcAtt(x-2, y, '!', att);
-    idx = 1-idx;
+    idx = -idx;
   }
 #if defined(CPUARM) && defined(FLIGHT_MODES)
   if (idx >= SWSRC_FIRST_FLIGHT_MODE)
