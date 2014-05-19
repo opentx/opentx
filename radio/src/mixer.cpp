@@ -525,9 +525,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 {
   evalInputs(mode);
 
-#if defined(CPUARM)
   evalLogicalSwitches(mode==e_perout_mode_normal);
-#endif
 
 #if defined(MODULE_ALWAYS_SEND_PULSES)
   checkStartupWarnings();

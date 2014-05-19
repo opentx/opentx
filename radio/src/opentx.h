@@ -671,6 +671,7 @@ enum StartupWarningStates {
 #endif
 
 extern uint8_t s_current_mixer_flight_mode;
+extern uint8_t s_last_phase;
 
 #if defined(CPUARM)
   #define bitfield_channels_t uint32_t
@@ -698,9 +699,13 @@ void logicalSwitchesReset();
 
 #if defined(CPUARM)
 void evalLogicalSwitches(bool isCurrentPhase=true);
-void logicalSwitchesCopyState();
+void logicalSwitchesCopyState(uint8_t src, uint8_t dst);
 #define LS_RECURSIVE_EVALUATION_RESET()
 #else
+#define evalLogicalSwitches(xxx)
+#define GETSWITCH_RECURSIVE_TYPE uint16_t
+extern volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_used;
+extern volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_value;
 #define LS_RECURSIVE_EVALUATION_RESET() s_last_switch_used = 0
 #endif
 

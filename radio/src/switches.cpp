@@ -66,7 +66,6 @@ LogicalSwitchesFlightModeContext lswFm[MAX_FLIGHT_MODES];
 int16_t lsLastValue[NUM_LOGICAL_SWITCH];
 #define LS_LAST_VALUE(fm, idx) lsLastValue[idx]
 
-#define GETSWITCH_RECURSIVE_TYPE uint16_t
 volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_used = 0;
 volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_value = 0;
 

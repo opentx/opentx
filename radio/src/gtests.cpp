@@ -48,14 +48,22 @@ void doMixerCalculations();
   s_mixer_first_run_done = false; \
   s_last_phase = 255;
 
-#define MIXER_RESET() \
-  memset(channelOutputs, 0, sizeof(channelOutputs)); \
-  memset(ex_chans, 0, sizeof(ex_chans)); \
-  memset(act, 0, sizeof(act)); \
-  memset(swOn, 0, sizeof(swOn)); \
-  int32_t lastAct = 0; lastAct = lastAct; /* to avoid a warning */ \
-  s_current_mixer_flight_mode = s_last_phase = 0; \
+int32_t lastAct = 0;
+void MIXER_RESET()
+{
+  memset(channelOutputs, 0, sizeof(channelOutputs));
+  memset(ex_chans, 0, sizeof(ex_chans));
+  memset(act, 0, sizeof(act));
+  memset(swOn, 0, sizeof(swOn));
+#if !defined(CPUARM)
+  s_last_switch_used = 0;
+  s_last_switch_value = 0;
+#endif
+  s_current_mixer_flight_mode = s_last_phase = 0;
+  lastAct = 0;
   logicalSwitchesReset();
+}
+
 
 uint16_t anaInValues[NUM_STICKS+NUM_POTS] = { 0 };
 uint16_t anaIn(uint8_t chan)
@@ -334,18 +342,21 @@ TEST(getSwitch, recursiveSW)
   g_model.logicalSw[1] = { SWSRC_ELE, -SWSRC_SW1, LS_FUNC_OR };
 
   evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), true);
-  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), true);
 
+  LS_RECURSIVE_EVALUATION_RESET();
   evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), true);
-  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), true);
 
   simuSetSwitch(1, 1);
+  LS_RECURSIVE_EVALUATION_RESET();
   evalLogicalSwitches();
   EXPECT_EQ(getSwitch(SWSRC_SW1), true);
-  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), true);
 
+  LS_RECURSIVE_EVALUATION_RESET();
   evalLogicalSwitches();
   EXPECT_EQ(getSwitch(SWSRC_SW1), true);
   EXPECT_EQ(getSwitch(SWSRC_SW2), false);
