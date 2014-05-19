@@ -1,4 +1,50 @@
-<SVN CURRENT>
+<h2>OpenTX 2.0 / Coming soon!</h2>
+[Taranis]
+<ul>
+<li>Inputs layer with support for all physical inputs and telemetry
+<li>Lua interpreter for runtime scripts and one-time configuration assistants
+<li>GVARs useable for offsets and limits
+<li>GVAR modification popup on home screen can be enabled/disabled for each GVAR
+<li>Output curve assignable to each servo on the SERVOS page
+<li>32 curves instead of 16, with smoothing, and any number of points between 2 and 17
+<li>Pot position memory for the 4 pots, with startup warning
+<li>Copy/paste/insert/delete of custom function lines
+<li>Altitude can be displayed in the top bar
+<li>FrSky Taranis will run at 120MHz instead of 60MHz
+<li>New trim system (a mode's trims can be relative to that of another mode's)
+<li>SPORT data form internal module available on the UART connector in the battery compartment in the Taranis
+<li>Support for 6-position pots, with individual positions available in the switch selection list
+<li>Taranis will be useable as a standard PC joystick through USB, 8 analogs and 8 buttons mapped to CH1-8 and 9-16 respectively
+</ul>
+
+[Arm Boards]
+<ul>
+<li>Measured consumption (mAh) can be stored on power off
+<li>0.1% resolution for limits
+<li>Sound repeat time settable in multiples of 1sec, call at model load can be disabled
+<li>3 options for timer countdown voice output
+<li>9 GVARS instead of 5 (ARM boards only)
+<li>64 custom functions instead of 32
+<li>Ability to read text files from the SD card. A file with the name of a model will be linked to it and easily accessible as "model notes". Can be displayed automatically at model load for use as a checklist
+<li>Bootloader added, removes the need to install computer drivers to flash new firmware
+<li>Radio can handle EEPROM conversion by itself (no need for companion)
+<li>Improved vario sounds
+<li>Default audio files can be placed on the SD card for each model for all switch positions (both for physical and logical switches).
+<li>Support for up to 16 channels on trainer input
+</ul>
+
+[all]
+<ul>
+<li>Proportional fonts
+<li>Switch warnings can be disabled for switches you don't use on a given model
+<li>Compensation for offset error of FrSky FAS-xx current sensors (option on m64)
+<li>Companion merged into OpenTX
+<li>Companion major code / graphics refactoring
+<li>Sticky Logical Switches
+<li>ASpd, dTE, Cel-, Vfas- added to Telemetry values
+<li>Workaround for newer bogus FlySky modules that send out servo centers on powerup (9x only)
+<li>Finnish language support
+</ul>
 
 <h2>2940 / 2014-02-02</h2>
 [Arm Boards]
