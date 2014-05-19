@@ -1157,41 +1157,11 @@ stamp_header:
 	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx.h
 	@echo "#define VERS_NUM $(VERSION)" >> stamp-opentx.h
 
-9x-stamp:
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-9x.txt
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-9x.txt
-	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx-9x.txt
-	@cat stamp-opentx-9x.txt
-
-9x128-stamp:
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-9x128.txt
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-9x128.txt
-	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx-9x128.txt
-	@cat stamp-opentx-9x128.txt
-
-9x2561-stamp:
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-9x2561.txt
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-9x2561.txt
-	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx-9x2561.txt
-	@cat stamp-opentx-9x2561.txt
-	
-gruvin9x-stamp:
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-gruvin9x.txt
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-gruvin9x.txt
-	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx-gruvin9x.txt
-	@cat stamp-opentx-9x.txt
-
-sky9x-stamp:
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-sky9x.txt
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-sky9x.txt
-	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx-sky9x.txt
-	@cat stamp-opentx-sky9x.txt
-
-taranis-stamp:
-	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx-taranis.txt
-	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx-taranis.txt
-	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx-taranis.txt
-	@cat stamp-opentx-taranis.txt
+opentx-stamp:
+	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx.txt
+	@echo "#define TIME_STR \"`date +%H:%M:%S`\"" >> stamp-opentx.txt
+	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx.txt
+	@cat stamp-opentx.txt
 
 translations/en.h: translations/en.h.txt
 	@echo
