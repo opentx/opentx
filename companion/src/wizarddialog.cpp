@@ -571,7 +571,7 @@ bool BankPage::validatePage() {
     return (bookChannel(elevon1CB, AILERONS_INPUT, 100, ELEVATOR_INPUT, 100 ));
   }
   return( bookChannel(elevon1CB, AILERONS_INPUT, 100, ELEVATOR_INPUT, 100 ) &&
-    bookChannel(elevon2CB, AILERONS_INPUT, 100, ELEVATOR_INPUT, 100 ));
+    bookChannel(elevon2CB, AILERONS_INPUT, -100, ELEVATOR_INPUT, 100 ));
 }
 
 void BankPage::oneElevonChannel(){  elevon2CB->setEnabled(false);}
@@ -633,8 +633,8 @@ void VTailPage::initializePage(){
 
 bool VTailPage::validatePage() {
   releaseBookings();
-  return (bookChannel(tail1CB, ELEVATOR_INPUT, 100, RUDDER_INPUT, 100) &&
-    bookChannel(tail2CB, ELEVATOR_INPUT, 100, RUDDER_INPUT, 100 ));
+  return (bookChannel(tail1CB, ELEVATOR_INPUT, 50, RUDDER_INPUT, 50) &&
+    bookChannel(tail2CB, ELEVATOR_INPUT, 50, RUDDER_INPUT, -50 ));
 }
 
 TailPage::TailPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage)
