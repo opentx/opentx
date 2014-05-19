@@ -525,6 +525,8 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 {
   evalInputs(mode);
 
+  evalLogicalSwitches(mode==e_perout_mode_normal);
+
 #if defined(MODULE_ALWAYS_SEND_PULSES)
   checkStartupWarnings();
 #endif
@@ -910,6 +912,7 @@ int32_t sum_chans512[NUM_CHNOUT] = {0};
 
 
 #define MAX_ACT 0xffff
+uint8_t s_last_phase = 255; // TODO reinit everything here when the model changes, no???
 
 void evalMixes(uint8_t tick10ms)
 {
@@ -920,10 +923,9 @@ void evalMixes(uint8_t tick10ms)
   static uint16_t fp_act[MAX_FLIGHT_MODES] = {0};
   static uint16_t delta = 0;
   static ACTIVE_PHASES_TYPE s_fade_flight_phases = 0;
-  static uint8_t s_last_phase = 255; // TODO reinit everything here when the model changes, no???
 
-  s_last_switch_used = 0;
-
+  LS_RECURSIVE_EVALUATION_RESET();
+  
   uint8_t phase = getFlightPhase();
 
   if (s_last_phase != phase) {
@@ -945,6 +947,9 @@ void evalMixes(uint8_t tick10ms)
         fp_act[s_last_phase] = 0;
         fp_act[phase] = MAX_ACT;
       }
+#if defined(CPUARM)
+      logicalSwitchesCopyState(s_last_phase, phase); // push last logical switches state from old to new phase
+#endif
     }
     s_last_phase = phase;
   }
@@ -953,7 +958,7 @@ void evalMixes(uint8_t tick10ms)
   if (s_fade_flight_phases) {
     memclear(sum_chans512, sizeof(sum_chans512));
     for (uint8_t p=0; p<MAX_FLIGHT_MODES; p++) {
-      s_last_switch_used = 0;
+      LS_RECURSIVE_EVALUATION_RESET();
       if (s_fade_flight_phases & ((ACTIVE_PHASES_TYPE)1 << p)) {
         s_current_mixer_flight_mode = p;
         evalFlightModeMixes(p==phase ? e_perout_mode_normal : e_perout_mode_inactive_phase, p==phase ? tick10ms : 0);
@@ -961,7 +966,7 @@ void evalMixes(uint8_t tick10ms)
           sum_chans512[i] += (chans[i] >> 4) * fp_act[p];
         weight += fp_act[p];
       }
-      s_last_switch_used = 0;
+      LS_RECURSIVE_EVALUATION_RESET();
     }
     assert(weight);
     s_current_mixer_flight_mode = phase;

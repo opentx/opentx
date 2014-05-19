@@ -671,6 +671,7 @@ enum StartupWarningStates {
 #endif
 
 extern uint8_t s_current_mixer_flight_mode;
+extern uint8_t s_last_phase;
 
 #if defined(CPUARM)
   #define bitfield_channels_t uint32_t
@@ -693,8 +694,20 @@ NOINLINE void per10ms();
 
 getvalue_t getValue(uint8_t i);
 bool getSwitch(int8_t swtch);
-void lswTimerTick();
-void lswReset();
+void logicalSwitchesTimerTick();
+void logicalSwitchesReset();
+
+#if defined(CPUARM)
+void evalLogicalSwitches(bool isCurrentPhase=true);
+void logicalSwitchesCopyState(uint8_t src, uint8_t dst);
+#define LS_RECURSIVE_EVALUATION_RESET()
+#else
+#define evalLogicalSwitches(xxx)
+#define GETSWITCH_RECURSIVE_TYPE uint16_t
+extern volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_used;
+extern volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_value;
+#define LS_RECURSIVE_EVALUATION_RESET() s_last_switch_used = 0
+#endif
 
 #if defined(PCBTARANIS)
   void getSwitchesPosition(bool startup);
@@ -816,15 +829,6 @@ extern TimerState timersStates[MAX_TIMERS];
 extern int8_t safetyCh[NUM_CHNOUT];
 
 extern uint8_t trimsCheckTimer;
-
-#if defined(CPUARM)
-  #define GETSWITCH_RECURSIVE_TYPE uint32_t
-#else
-  #define GETSWITCH_RECURSIVE_TYPE uint16_t
-#endif
-
-extern volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_used;
-extern volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_value;
 
 #define TMR_OFF      0
 #define TMR_RUNNING  1

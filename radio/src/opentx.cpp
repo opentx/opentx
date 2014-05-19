@@ -1520,9 +1520,12 @@ void flightReset()
 #if defined(FRSKY)
   telemetryReset();
 #endif
-  lswReset();
 
+  logicalSwitchesReset();
+#if !defined(CPUARM)
   s_last_switch_value = 0;
+#endif
+
   s_mixer_first_run_done = false;
 
   START_SILENCE_PERIOD();
@@ -2221,7 +2224,7 @@ void doMixerCalculations()
       s_cnt_100ms -= 10;
       s_cnt_1s += 1;
 
-      lswTimerTick();
+      logicalSwitchesTimerTick();
 
       if (s_cnt_1s >= 10) { // 1sec
         s_cnt_1s -= 10;

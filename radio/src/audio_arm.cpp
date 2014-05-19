@@ -421,9 +421,9 @@ bool isAudioFileReferenced(uint32_t i, char * filename)
   else if (category == PHASE_AUDIO_CATEGORY) {
     if (sdAvailablePhaseAudioFiles & MASK_PHASE_AUDIO_FILE(index, event)) {
       getPhaseAudioFile(filename, index, event);
-        return true;
-      }
+      return true;
     }
+  }
   else if (category == SWITCH_AUDIO_CATEGORY) {
     if (sdAvailableSwitchAudioFiles & MASK_SWITCH_AUDIO_FILE(index)) {
       getSwitchAudioFile(filename, index);
@@ -433,9 +433,9 @@ bool isAudioFileReferenced(uint32_t i, char * filename)
   else if (category == LOGICAL_SWITCH_AUDIO_CATEGORY) {
     if (sdAvailableLogicalSwitchAudioFiles & MASK_LOGICAL_SWITCH_AUDIO_FILE(index, event)) {
       getLogicalSwitchAudioFile(filename, index, event);
-        return true;
-      }
+      return true;
     }
+  }
 
   return false;
 }
@@ -445,6 +445,7 @@ tmr10ms_t timeAutomaticPromptsSilence = 0;
 void playModelEvent(uint8_t category, uint8_t index, uint8_t event)
 {
   char filename[AUDIO_FILENAME_MAXLEN+1];
+  TRACE("playModelEvent(): cat: %u, idx: %u, evt:%u", (uint32_t)category, (uint32_t)index, (uint32_t)event);
   if (IS_SILENCE_PERIOD_ELAPSED() && isAudioFileReferenced((category << 24) + (index << 16) + event, filename)) {
     audioQueue.playFile(filename);
   }
