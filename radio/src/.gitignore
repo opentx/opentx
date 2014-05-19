@@ -20,3 +20,6 @@
 /MODELS
 /FIRMWARES
 /EEPROMS
+/gtests
+/gtest_main.a
+/gtests.d
