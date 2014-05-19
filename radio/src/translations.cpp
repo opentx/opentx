@@ -196,6 +196,9 @@ const pm_char STR_BLADES[] PROGMEM = TR_BLADES;
 const pm_char STR_SCREEN[] PROGMEM = TR_SCREEN;
 const pm_char STR_SOUND_LABEL[] PROGMEM = TR_SOUND_LABEL;
 const pm_char STR_LENGTH[] PROGMEM = TR_LENGTH;
+#if defined(CPUARM)
+const pm_char STR_BEEP_LENGTH[] PROGMEM = TR_BEEP_LENGTH;
+#endif
 #if defined(AUDIO)
 const pm_char STR_SPKRPITCH[] PROGMEM = TR_SPKRPITCH;
 #endif

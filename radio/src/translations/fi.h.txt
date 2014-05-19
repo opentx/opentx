@@ -526,6 +526,7 @@
 #define TR_SCREEN              "Screen "
 #define TR_SOUND_LABEL         "Sound"
 #define TR_LENGTH              INDENT"Length"
+#define TR_BEEP_LENGTH         INDENT "Beep Length"
 #define TR_SPKRPITCH           INDENT"Pitch"
 #define TR_HAPTIC_LABEL        "Haptic"
 #define TR_HAPTICSTRENGTH      INDENT"Strength"

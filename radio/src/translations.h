@@ -362,6 +362,12 @@ extern const pm_char STR_BLADES[];
 extern const pm_char STR_SCREEN[];
 extern const pm_char STR_SOUND_LABEL[];
 extern const pm_char STR_LENGTH[];
+extern const pm_char STR_BEEP_LENGTH[];
+#if defined(CPUARM)
+extern const pm_char STR_BEEP_LENGTH[];
+#else
+#define STR_BEEP_LENGTH STR_LENGTH
+#endif
 extern const pm_char STR_SPKRPITCH[];
 extern const pm_char STR_HAPTIC_LABEL[];
 extern const pm_char STR_HAPTICSTRENGTH[];

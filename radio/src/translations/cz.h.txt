@@ -526,6 +526,7 @@
 #define TR_SCREEN              "Panel "
 #define TR_SOUND_LABEL         "Zvuk"
 #define TR_LENGTH              INDENT"Délka"
+#define TR_BEEP_LENGTH         INDENT "Beep Length"
 #define TR_SPKRPITCH           INDENT"Tón"
 #define TR_HAPTIC_LABEL        "Vibrace"
 #define TR_HAPTICSTRENGTH      INDENT"Síla"

@@ -140,10 +140,10 @@ enum menuGeneralSetupItems {
   CASE_BUZZER(ITEM_SETUP_BUZZER_MODE)
   CASE_VOICE(ITEM_SETUP_SPEAKER_VOLUME)
   CASE_CPUARM(ITEM_SETUP_BEEP_VOLUME)
-  CASE_CPUARM(ITEM_SETUP_WAV_VOLUME)
-  CASE_CPUARM(ITEM_SETUP_BACKGROUND_VOLUME)
   ITEM_SETUP_BEEP_LENGTH,
   CASE_AUDIO(ITEM_SETUP_SPEAKER_PITCH)
+  CASE_CPUARM(ITEM_SETUP_WAV_VOLUME)
+  CASE_CPUARM(ITEM_SETUP_BACKGROUND_VOLUME)
   CASE_VARIO_CPUARM(ITEM_SETUP_VARIO_LABEL)
   CASE_VARIO_CPUARM(ITEM_SETUP_VARIO_VOLUME)
   CASE_VARIO_CPUARM(ITEM_SETUP_VARIO_PITCH)
@@ -364,13 +364,19 @@ void menuGeneralSetup(uint8_t event)
 #endif
 
       case ITEM_SETUP_BEEP_LENGTH:
-        SLIDER_5POS(y, g_eeGeneral.beepLength, STR_LENGTH, event, attr);
+        SLIDER_5POS(y, g_eeGeneral.beepLength, STR_BEEP_LENGTH, event, attr);
         break;
 
 #if defined(AUDIO)
       case ITEM_SETUP_SPEAKER_PITCH:
         lcd_putsLeft( y, STR_SPKRPITCH);
+#if defined(CPUARM)
+        lcd_putcAtt(RADIO_SETUP_2ND_COLUMN, y, '+', attr);
+        lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN+FW, y, g_eeGeneral.speakerPitch*15, attr|LEFT);
+        lcd_putsAtt(lcdLastPos, y, "Hz", attr);
+#else
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.speakerPitch, attr|LEFT);
+#endif
         if (attr) {
           CHECK_INCDEC_GENVAR(event, g_eeGeneral.speakerPitch, 0, 20);
         }

@@ -530,6 +530,7 @@
 #define TR_SCREEN              "Telm-Bild "
 #define TR_SOUND_LABEL         "----Töne---------"
 #define TR_LENGTH              INDENT"Dauer"
+#define TR_BEEP_LENGTH         INDENT "Beep Length"
 #define TR_SPKRPITCH           INDENT"Tonhöhe"
 #define TR_HAPTIC_LABEL        "Vibration"
 #define TR_HAPTICSTRENGTH      INDENT"Stärke"

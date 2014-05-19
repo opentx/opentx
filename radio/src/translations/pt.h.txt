@@ -526,6 +526,7 @@
 #define TR_SCREEN              "Tela"
 #define TR_SOUND_LABEL         "Som"
 #define TR_LENGTH              INDENT"Comprimento"
+#define TR_BEEP_LENGTH         INDENT "Beep Length"
 #define TR_SPKRPITCH           INDENT"Pitch"
 #define TR_HAPTIC_LABEL        "Vibrar"
 #define TR_HAPTICSTRENGTH      INDENT"Forca"
