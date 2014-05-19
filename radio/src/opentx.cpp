@@ -826,14 +826,15 @@ FORCEINLINE void convertUnit(getvalue_t & val, uint8_t & unit)
 }
 #endif
 
-#define INAC_DEV_SHIFT 6   // shift right value for stick movement
+#define INAC_STICKS_SHIFT   6
+#define INAC_SWITCHES_SHIFT 8
 bool inputsMoved()
 {
   uint8_t sum = 0;
   for (uint8_t i=0; i<NUM_STICKS; i++)
-    sum += anaIn(i) >> INAC_DEV_SHIFT;
+    sum += anaIn(i) >> INAC_STICKS_SHIFT;
   for (uint8_t i=0; i<NUM_SWITCHES; i++)
-    sum += getValue(MIXSRC_FIRST_SWITCH+i) >> 10;
+    sum += getValue(MIXSRC_FIRST_SWITCH+i) >> INAC_SWITCHES_SHIFT;
 
   if (abs((int8_t)(sum-inactivity.sum)) > 1) {
     inactivity.sum = sum;
