@@ -42,7 +42,10 @@ PACK(typedef struct {
   uint8_t state:1;
 #if defined(CPUARM)
   uint8_t ddState:2;
+  uint8_t spare:5;
   uint8_t ddTimer;
+#else
+  uint8_t spare:7;
 #endif
   int16_t lastValue;
 }) lsw_struct;
