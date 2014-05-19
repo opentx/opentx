@@ -712,11 +712,6 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       }
 
       if (apply_offset_and_curve) {
-#if !defined(PCBTARANIS) // OFFSET is now applied AFTER weight on Taranis
-        //========== OFFSET / SOURCE ===============
-        int16_t offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, s_current_mixer_flight_mode);
-        if (offset) v += calc100toRESX_16Bits(offset);
-#endif
 
         //========== TRIMS ================
         if (!(mode & e_perout_mode_notrims)) {
@@ -816,12 +811,10 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       int32_t dv = (int32_t) v * weight;
 
       //========== OFFSET / AFTER ===============
-#if defined(PCBTARANIS)
       if (apply_offset_and_curve) {
         int16_t offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, s_current_mixer_flight_mode);
         if (offset) dv += calc100toRESX_16Bits(offset) << 8;
       }
-#endif
 
       //========== DIFFERENTIAL =========
 #if defined(PCBTARANIS)
