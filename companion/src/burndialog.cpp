@@ -192,7 +192,7 @@ void burnDialog::checkFw(QString fileName)
   if (flash.isValid()) {
     ui->FramFWInfo->show();
     ui->DateField->setText(flash.getDate() + " " + flash.getTime());
-    ui->versionField->setText(flash.getVersion().isEmpty() ? flash.getSvn() : flash.getVersion());
+    ui->versionField->setText(flash.getVersion());
     ui->ModField->setText(flash.getEEprom());
 
     ui->SplashFrame->hide();

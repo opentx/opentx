@@ -46,7 +46,7 @@ class FlashInterface
     FlashInterface(QString filename);
     inline QString getDate() { return date; }
     inline QString getTime() { return time; }
-    inline QString getSvn() { return svn; }
+    inline QString getStamp() { return QString("%1%2").arg(version.replace(".", "")).arg(date.replace("-", "")); }
     int getSize() { return flash_size; }
     inline QString getVersion() { return version; }
     inline QString getEEprom() { return eeprom; }
@@ -70,7 +70,6 @@ class FlashInterface
     QString filename;
     QString date;
     QString time;
-    QString svn;
     QString version;
     QString eeprom;
     QByteArray splash;

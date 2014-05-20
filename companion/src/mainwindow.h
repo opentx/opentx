@@ -203,9 +203,9 @@ class MainWindow : public QMainWindow
 
     bool needRename;
     bool showcheckForUpdatesResult;
-    int currentFWrev;
-    int currentFWrev_temp;
-    int NewFwRev;
+    long currentFWrev;
+    long currentFWrev_temp;
+    long NewFwRev;
     bool check1done;
     bool check2done;
     

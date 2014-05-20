@@ -199,16 +199,35 @@ void CompStoreObj::getset( int &number, const QString tag, const int def, const 
 }
 
 // ** FwRevision class********************
-int FwRevision::get( const QString fwType )
+long FwRevision::get( const QString fwType )
 {
     QString result;
     retrieve( result, fwType, "", "FwRevisions" );
-    return result.toInt();
+    return result.toLong();
 }
 
-void FwRevision::set( const QString fwType, const int fwRevision )
+QString FwRevision::getString( const QString fwType )
 {
-    QString tempString= QString("%1").arg(fwRevision);
+  long revision = get(fwType);
+  if (revision > 19920140101) {
+    int day = revision % 100;
+    revision /= 100;
+    int month = revision % 100;
+    revision /= 100;
+    int year = revision % 10000;
+    revision /= 10000;
+    int minor = revision % 100;
+    revision /= 100;
+    return QString("%1.%2 (%3-%4-%5)").arg(revision).arg(minor, 2, 10, (const QChar)'0').arg(year, 4, 10, (const QChar)'0').arg(month, 2, 10, (const QChar)'0').arg(day, 2, 10, (const QChar)'0');
+  }
+  else {
+    return QString();
+  }
+}
+
+void FwRevision::set( const QString fwType, const long fwRevision )
+{
+    QString tempString = QString("%1").arg(fwRevision);
     store( tempString, tempString, fwType, "FwRevisions" );
 }
 
@@ -480,7 +499,6 @@ QString AppData::armMcu()          { return _armMcu;          }
 QString AppData::avrArguments()    { return _avrArguments;    }
 QString AppData::avrPort()         { return _avrPort;         }
 QString AppData::avrdudeLocation() { return _avrdudeLocation; }
-QString AppData::compileServer()   { return _compileServer;   }
 QString AppData::cpuId()           { return _cpuId;           }
 QString AppData::dfuArguments()    { return _dfuArguments;    }
 QString AppData::dfuLocation()     { return _dfuLocation;     }
@@ -532,7 +550,6 @@ void AppData::armMcu          (const QString     x) { store(x, _armMcu,         
 void AppData::avrArguments    (const QString     x) { store(x, _avrArguments,    "avr_arguments"           );}
 void AppData::avrPort         (const QString     x) { store(x, _avrPort,         "avr_port"                );}
 void AppData::avrdudeLocation (const QString     x) { store(x, _avrdudeLocation, "avrdudeLocation"         );}
-void AppData::compileServer   (const QString     x) { store(x, _compileServer,   "compilation-server"      );}
 void AppData::cpuId           (const QString     x) { store(x, _cpuId,           "cpu_id"                  );}
 void AppData::dfuArguments    (const QString     x) { store(x, _dfuArguments,    "dfu_arguments"           );}
 void AppData::dfuLocation     (const QString     x) { store(x, _dfuLocation,     "dfu_location"            );}
@@ -651,7 +668,6 @@ AppData::AppData()
     getset( _avrArguments,    "avr_arguments"           ,"" );
     getset( _avrPort,         "avr_port"                ,"" );
     getset( _avrdudeLocation, "avrdudeLocation"        ,"" );
-    getset( _compileServer,   "compilation-server"      ,"" );
     getset( _cpuId,           "cpu_id"                  ,"" );
     getset( _dfuArguments,    "dfu_arguments"           ,"-a 0" );
     getset( _dfuLocation,     "dfu_location"            ,"" );

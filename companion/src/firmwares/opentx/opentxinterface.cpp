@@ -911,12 +911,8 @@ bool OpenTxEepromInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, in
 
 QString OpenTxFirmware::getFirmwareUrl(QString & id)
 {
-  QString url = g.compileServer();
-  if (url.isEmpty()){
-    url = OPENTX_FIRMWARE_DOWNLOADS;
-    g.compileServer(url);
-  }
-  switch(board) {
+  QString url = OPENTX_FIRMWARE_DOWNLOADS;
+  switch (board) {
     case BOARD_STOCK:
     case BOARD_M128:
     case BOARD_GRUVIN9X:
@@ -936,22 +932,14 @@ QString OpenTxFirmware::getFirmwareUrl(QString & id)
 
 QString OpenTxFirmware::getReleaseNotesUrl()
 {
-  QString url = g.compileServer();
-  if (url.isEmpty()){
-    url = OPENTX_FIRMWARE_DOWNLOADS;
-    g.compileServer(url);
-  }
+  QString url = OPENTX_FIRMWARE_DOWNLOADS;
   url.append("/releasenotes.txt");
   return url;
 }
 
 QString OpenTxFirmware::getStampUrl()
 {
-   QString url = g.compileServer();
-   if (url.isEmpty()){
-      url= OPENTX_FIRMWARE_DOWNLOADS;
-      g.compileServer(url);
-   }
+   QString url = OPENTX_FIRMWARE_DOWNLOADS;
    url.append("/stamp-opentx.txt");
    return url;
 }

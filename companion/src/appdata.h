@@ -58,8 +58,9 @@ class CompStoreObj
 class FwRevision: protected CompStoreObj
 {
   public:
-    int get( const QString);
-    void set( const QString, const int );
+    long get( const QString);
+    QString getString( const QString);
+    void set( const QString, const long );
     void remove( const QString );
 };
 
@@ -206,7 +207,6 @@ class AppData: protected CompStoreObj
     QString _avrArguments;
     QString _avrPort;
     QString _avrdudeLocation;
-    QString _compileServer;
     QString _cpuId;
     QString _dfuArguments;
     QString _dfuLocation;
@@ -259,7 +259,6 @@ class AppData: protected CompStoreObj
     QString avrArguments();
     QString avrPort();
     QString avrdudeLocation();
-    QString compileServer();
     QString cpuId();
     QString dfuArguments();
     QString dfuLocation();
@@ -312,7 +311,6 @@ class AppData: protected CompStoreObj
     void avrArguments    (const QString);
     void avrPort         (const QString);
     void avrdudeLocation (const QString);
-    void compileServer   (const QString);
     void cpuId           (const QString);
     void dfuArguments    (const QString);
     void dfuLocation     (const QString);

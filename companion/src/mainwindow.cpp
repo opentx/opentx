@@ -165,20 +165,19 @@ MainWindow::MainWindow():
 
 void MainWindow::displayWarnings()
 {
-  int warnId=g.warningId();
+  int warnId = g.warningId();
   if (warnId<WARNING_ID && warnId!=0) {
     int res=0;
-    if (WARNING_LEVEL>0) {
+    if (WARNING_LEVEL>0)
       QMessageBox::warning(this, "Companion", WARNING);
-      res = QMessageBox::question(this, "Companion",tr("Display previous warning again at startup ?"),QMessageBox::Yes | QMessageBox::No);
-    } else {
+    else
       QMessageBox::about(this, "Companion", WARNING);
-      res = QMessageBox::question(this, "Companion",tr("Display previous message again at startup ?"),QMessageBox::Yes | QMessageBox::No);
-    }
+    res = QMessageBox::question(this, "Companion", tr("Display previous warning again at startup ?"), QMessageBox::Yes | QMessageBox::No);
     if (res == QMessageBox::No) {
       g.warningId(WARNING_ID);
     }
-  } else if (warnId==0) {
+  }
+  else if (warnId==0) {
     g.warningId(WARNING_ID);    
   }
 }
@@ -304,13 +303,13 @@ void MainWindow::downloadLatestFW(FirmwareVariant & firmware)
 {
     QString url, ext, cpuid;
     url = firmware.getFirmwareUrl();
-    cpuid=g.cpuId();
+    cpuid = g.cpuId();
     ext = url.mid(url.lastIndexOf("."));
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.flashDir() + "/" + firmware.id + ext);
     if (!fileName.isEmpty()) {
       downloadedFW = firmware.id;
-      needRename=true;
-      g.profile[g.id()].fwName( fileName );
+      needRename = true;
+      g.profile[g.id()].fwName(fileName);
       if (!cpuid.isEmpty()) {
         url.append("&cpuid=");
         url.append(cpuid);
@@ -329,10 +328,10 @@ void MainWindow::reply1Accepted()
       if (!(downloadedFW.isEmpty())) {
         QFile file(downloadedFW);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {  //reading HEX TEXT file
-        QMessageBox::critical(this, tr("Error"),
-                                tr("Error opening file %1:\n%2.")
-                                .arg(downloadedFW)
-                                .arg(file.errorString()));
+          QMessageBox::critical(this, tr("Error"),
+              tr("Error opening file %1:\n%2.")
+              .arg(downloadedFW)
+              .arg(file.errorString()));
           return;
         }
         file.reset();
@@ -363,15 +362,17 @@ void MainWindow::reply1Accepted()
         }
         file.close();
         currentFWrev = currentFWrev_temp;
+        qDebug() << currentFWrev;
         g.fwRev.set(downloadedFW, currentFWrev);
       }
-    } else {
+    }
+    else {
       QFile file(g.profile[g.id()].fwName());
       if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {  //reading HEX TEXT file
-      QMessageBox::critical(this, tr("Error"),
-                              tr("Error opening file %1:\n%2.")
-                              .arg(g.profile[g.id()].fwName())
-                              .arg(file.errorString()));
+        QMessageBox::critical(this, tr("Error"),
+            tr("Error opening file %1:\n%2.")
+            .arg(g.profile[g.id()].fwName())
+            .arg(file.errorString()));
         return;
       }
       file.reset();
@@ -381,19 +382,19 @@ void MainWindow::reply1Accepted()
         int errnum=hline.mid(6).toInt();
         switch(errnum) {
           case 1:
-            errormsg=tr("Not enough memory for all the selected firmware options");
+            errormsg = tr("Not enough memory for all the selected firmware options");
             break;
           case 2:
-            errormsg=tr("Compilation server termporary failure, try later");
+            errormsg = tr("Compilation server termporary failure, try later");
             break;
           case 3:
-            errormsg=tr("Compilation server too busy, try later");
+            errormsg = tr("Compilation server too busy, try later");
             break;
           case 4:
-            errormsg=tr("Compilation server requires registration, please check OpenTX web site");
+            errormsg = tr("Compilation server requires registration, please check OpenTX web site");
             break;
           default:
-            errormsg=tr("Unknown server failure, try later");
+            errormsg = tr("Unknown server failure, try later");
             break;          
         }
         file.close();
@@ -402,10 +403,11 @@ void MainWindow::reply1Accepted()
       }
       file.close();
       FlashInterface flash(g.profile[g.id()].fwName());
-      QString rev=flash.getSvn();
-      int pos=rev.lastIndexOf("-r");
-      if (pos>0) {
-        currentFWrev=rev.mid(pos+2).toInt();
+      long stamp = flash.getStamp().toLong();
+      if (stamp > 0) {
+        currentFWrev = stamp;
+#if 0
+        // TODO what's that?
         if (g.profile[g.id()].renameFwFiles() && needRename) {
           QFileInfo fi(g.profile[g.id()].fwName());
           QString path=fi.path()+QDir::separator ();
@@ -418,6 +420,7 @@ void MainWindow::reply1Accepted()
           qd.rename(g.profile[g.id()].fwName(),path);
           g.profile[g.id()].fwName(path);
         }
+#endif
         g.fwRev.set(downloadedFW, currentFWrev);
         if (g.profile[g.id()].burnFirmware()) {
           int ret = QMessageBox::question(this, "Companion", tr("Do you want to write the firmware to the radio now ?"), QMessageBox::Yes | QMessageBox::No);
@@ -442,15 +445,17 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
       // TODO delete downloadDialog_forWait?
     }
     
-    cpuid=g.cpuId();
+    cpuid = g.cpuId();
     QByteArray qba = reply->readAll();
     int i = qba.indexOf("SVN_VERS");
     int warning = qba.indexOf("WARNING");
 
-    if(i>0) {
+
+    if (i>0) {
       bool cres;
       int k = qba.indexOf("-r", i);
       int l = qba.indexOf('"', k);
+      qDebug() << qba;
       int rev = QString::fromAscii(qba.mid(k+2, l-k-2)).toInt(&cres);
       QString newrev=qba.mid(k).replace('"', "").trimmed();
 
@@ -461,7 +466,7 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
       }
 
       if(rev>0) {
-        NewFwRev=rev;
+        NewFwRev = rev;
         OldFwRev = g.fwRev.get(fwToUpdate);
         QMessageBox msgBox;
         QSpacerItem* horizontalSpacer = new QSpacerItem(500, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -536,7 +541,8 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
           if (res==QMessageBox::Yes)   {
             g.fwRev.set(fwToUpdate, NewFwRev);
           }
-        } else if (download == true) {
+        }
+        else if (download == true) {
           if (warning>0) {
             QString rn = GetFirmware(fwToUpdate)->getReleaseNotesUrl();
             if (!rn.isEmpty()) {
@@ -555,7 +561,8 @@ void MainWindow::reply1Finished(QNetworkReply * reply)
           QString fileName;
           if (addversion) {
             fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.flashDir() + "/" + fwToUpdate + newrev + ext);
-          } else {
+          }
+          else {
             fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.flashDir() + "/" + fwToUpdate + ext);
           }
           if (!fileName.isEmpty()) {
@@ -1269,35 +1276,11 @@ bool MainWindow::convertEEPROM(QString backupFile, QString restoreFile, QString 
     if (!flash.isValid())
       return false;
 
-    QString fwSvn = flash.getSvn();
-    if (fwSvn.isEmpty() || !fwSvn.contains("-r"))
-      return false;
-    QStringList svnTags = fwSvn.split("-r", QString::SkipEmptyParts);
-    fwSvn = svnTags.back();
-    if (fwSvn.endsWith('M'))
-      fwSvn = fwSvn.mid(0, fwSvn.size()-1);
-    int revision = fwSvn.toInt();
-    if (!revision)
-      return false;
-
     unsigned int version = 0;
     unsigned int variant = 0;
 
-    if ((svnTags.at(0) == "open9x")||(svnTags.at(0) == "opentx")) {
-      if (revision > 1464) {
-        QString fwEEprom = flash.getEEprom();
-        if (fwEEprom.contains("-")) {
-          QStringList buildTags = fwEEprom.split("-", QString::SkipEmptyParts);
-          if (buildTags.size() >= 1)
-            version = buildTags.at(0).toInt();
-          if (buildTags.size() >= 2)
-            variant = buildTags.at(1).toInt();
-        }
-        else {
-          version = fwEEprom.toInt();
-        }
-      }
-    }
+    QString fwEEprom = flash.getEEprom();
+    version = fwEEprom.toInt();
 
     QFile file(backupFile);
     int eeprom_size = file.size();

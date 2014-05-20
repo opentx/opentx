@@ -24,9 +24,10 @@ FirmwarePreferencesDialog::~FirmwarePreferencesDialog()
 void FirmwarePreferencesDialog::initSettings()
 {
   ui->fwTypeLbl->setText(g.profile[g.id()].fwType());
-  int revision = g.fwRev.get(g.profile[g.id()].fwType());
-  if (revision > 0)
-    ui->lastRevisionLbl->setText(QString("%1").arg(revision));
+  QString revision = g.fwRev.getString(g.profile[g.id()].fwType());
+  if (!revision.isEmpty()) {
+    ui->lastRevisionLbl->setText(revision);
+  }
 }
 
 void FirmwarePreferencesDialog::on_checkFWUpdates_clicked()
@@ -46,7 +47,7 @@ void FirmwarePreferencesDialog::on_fw_dnld_clicked()
 
 void FirmwarePreferencesDialog::on_voice_dnld_clicked()
 {
-  QString url="http://voice.open-tx.org/";
+  QString url = "http://voices-20.open-tx.org/";
   QString fwType = g.profile[g.id()].fwType();
   QStringList list = fwType.split("-");
   QString firmware = QString("%1-%2").arg(list[0]).arg(list[1]);

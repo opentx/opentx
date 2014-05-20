@@ -20,7 +20,6 @@
 #include "flashinterface.h"
 
 #define VERS_MARK   "VERS"
-#define SVN_MARK    "SVN"
 #define DATE_MARK   "DATE"
 #define TIME_MARK   "TIME"
 #define BLD_MARK    "BLD"
@@ -66,7 +65,6 @@ FlashInterface::FlashInterface(QString fileName):
   }
 
   if (flash_size > 0) {
-    svn = seekLabel(SVN_MARK);
     version = seekLabel(VERS_MARK);
     date = seekLabel(DATE_MARK);
     time = seekLabel(TIME_MARK);
@@ -123,7 +121,6 @@ bool FlashInterface::SeekSplash(QByteArray splash)
 
 bool FlashInterface::SeekSplash(QByteArray sps, QByteArray spe, int size)
 {
-  qDebug() << "Seek";
   int start = 0;
   while (start>=0) {
     start = flash.indexOf(sps, start+1);

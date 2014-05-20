@@ -18,8 +18,8 @@
 
 #include "eeprominterface.h"
 
-#define OPENTX_COMPANION_DOWNLOADS   "http://downloads.open-tx.org/companion"
-#define OPENTX_FIRMWARE_DOWNLOADS    "http://next.open-tx.org/firmware"
+#define OPENTX_COMPANION_DOWNLOADS   "http://downloads-20.open-tx.org/companion"
+#define OPENTX_FIRMWARE_DOWNLOADS    "http://downloads-20.open-tx.org/firmware"
 
 class EFile;
 
