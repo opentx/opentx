@@ -230,7 +230,6 @@ class AppData: protected CompStoreObj
     bool _backupOnFlash;
     bool _maximized;
     bool _jsSupport;
-    bool _rev4aSupport;
     bool _showSplash;
     bool _snapToClpbrd;
     bool _autoCheckApp;
@@ -284,7 +283,6 @@ class AppData: protected CompStoreObj
     bool enableBackup();
     bool backupOnFlash();
     bool jsSupport();
-    bool rev4aSupport();
     bool maximized();
     bool showSplash();
     bool snapToClpbrd();
@@ -339,7 +337,6 @@ class AppData: protected CompStoreObj
     void backupOnFlash   (const bool);
     void maximized       (const bool);
     void jsSupport       (const bool);
-    void rev4aSupport    (const bool);
     void showSplash      (const bool);
     void snapToClpbrd    (const bool);
     void autoCheckApp    (const bool);

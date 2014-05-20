@@ -503,7 +503,6 @@ QString AppData::updatesDir()      { return _updatesDir;      }
 bool AppData::enableBackup()       { return _enableBackup;    }
 bool AppData::backupOnFlash()      { return _backupOnFlash;   }
 bool AppData::jsSupport()          { return _jsSupport;       }
-bool AppData::rev4aSupport()       { return _rev4aSupport;    }
 bool AppData::maximized()          { return _maximized;       }
 bool AppData::showSplash()         { return _showSplash;      }
 bool AppData::snapToClpbrd()       { return _snapToClpbrd;    }
@@ -557,7 +556,6 @@ void AppData::enableBackup    (const bool        x) { store(x, _enableBackup,   
 void AppData::backupOnFlash   (const bool        x) { store(x, _backupOnFlash,   "backupOnFlash"           );}
 void AppData::maximized       (const bool        x) { store(x, _maximized,       "maximized"               );}
 void AppData::jsSupport       (const bool        x) { store(x, _jsSupport,       "js_support"              );}
-void AppData::rev4aSupport    (const bool        x) { store(x, _rev4aSupport,    "rev4asupport"            );}
 void AppData::showSplash      (const bool        x) { store(x, _showSplash,      "show_splash"             );}
 void AppData::snapToClpbrd    (const bool        x) { store(x, _snapToClpbrd,    "snapshot_to_clipboard"   );}
 void AppData::autoCheckApp    (const bool        x) { store(x, _autoCheckApp,    "startup_check_companion" );}
@@ -676,7 +674,6 @@ AppData::AppData()
     getset( _enableBackup,    "backupEnable"            ,false );
     getset( _backupOnFlash,   "backupOnFlash"           ,true  );
     getset( _jsSupport,       "js_support"              ,false );
-    getset( _rev4aSupport,    "rev4asupport"            ,false );
     getset( _maximized,       "maximized"               ,false );
     getset( _showSplash,      "show_splash"             ,true  );
     getset( _snapToClpbrd,    "snapshot_to_clipboard"   ,false );

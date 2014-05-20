@@ -1226,8 +1226,6 @@ void RegisterEepromInterfaces()
   eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_9XRPRO));
   eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_TARANIS));
   eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_TARANIS_PLUS));  
-  if (g.rev4aSupport())
-    eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_TARANIS_REV4a));
   eepromInterfaces.push_back(new Gruvin9xInterface(BOARD_STOCK));
   eepromInterfaces.push_back(new Gruvin9xInterface(BOARD_GRUVIN9X));
   eepromInterfaces.push_back(new Ersky9xInterface());

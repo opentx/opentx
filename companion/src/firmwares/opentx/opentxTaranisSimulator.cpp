@@ -66,7 +66,7 @@ namespace Open9xX9D {
 
 int taranisSimulatorBoard = 0;
 inline int geteepromsize() {
-  return taranisSimulatorBoard==BOARD_TARANIS_REV4a ? 64*1024 : 32*1024;
+  return 32*1024;
 }
 #define EESIZE geteepromsize()
 

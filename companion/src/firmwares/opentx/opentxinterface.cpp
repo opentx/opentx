@@ -67,8 +67,6 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for FrSky Taranis";
     case BOARD_TARANIS_PLUS:
       return "OpenTX for FrSky Taranis Plus";
-    case BOARD_TARANIS_REV4a:
-      return "OpenTX for FrSky Taranis Rev4a";
     case BOARD_SKY9X:
       return "OpenTX for Sky9x board / 9X";
     case BOARD_9XRPRO:
@@ -94,8 +92,6 @@ const int OpenTxEepromInterface::getEEpromSize()
     case BOARD_TARANIS:
     case BOARD_TARANIS_PLUS:
       return EESIZE_TARANIS;
-    case BOARD_TARANIS_REV4a:
-      return EESIZE_TARANIS_REV4a;
     default:
       return 0;
   }
@@ -367,7 +363,6 @@ int OpenTxEepromInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t 
     switch(board) {
       case BOARD_TARANIS:
       case BOARD_TARANIS_PLUS:
-      case BOARD_TARANIS_REV4a:
       case BOARD_SKY9X:
       case BOARD_9XRPRO:
         version = 216;
@@ -930,7 +925,6 @@ QString OpenTxFirmware::getFirmwareUrl(QString & id)
     case BOARD_SKY9X:
     case BOARD_TARANIS:
     case BOARD_TARANIS_PLUS:
-    case BOARD_TARANIS_REV4a:
       url.append(QString("/getfw.php?fw=%1.bin").arg(id));
       break;
     default:
@@ -947,24 +941,7 @@ QString OpenTxFirmware::getReleaseNotesUrl()
     url = OPENTX_FIRMWARE_DOWNLOADS;
     g.compileServer(url);
   }
-  url.append("/releasenotes-");
-  switch(board) {
-    case BOARD_STOCK:
-    case BOARD_M128:
-    case BOARD_GRUVIN9X:
-    case BOARD_SKY9X:
-    case BOARD_9XRPRO:
-      url.append("9x.txt");
-      break;
-    case BOARD_TARANIS:
-    case BOARD_TARANIS_PLUS:
-    case BOARD_TARANIS_REV4a:
-      url.append("taranis.txt");
-      break;
-    default:
-      url.clear();
-      break;
-  }
+  url.append("/releasenotes.txt");
   return url;
 }
 
@@ -975,31 +952,8 @@ QString OpenTxFirmware::getStampUrl()
       url= OPENTX_FIRMWARE_DOWNLOADS;
       g.compileServer(url);
    }
-    url.append("/stamp-opentx-");
-    switch(board) {
-      case BOARD_STOCK:
-        url.append("9x.txt");
-        break;
-      case BOARD_M128:
-        url.append("9x128.txt");
-        break;
-      case BOARD_GRUVIN9X:
-        url.append("gruvin9x.txt");
-        break;
-      case BOARD_SKY9X:
-      case BOARD_9XRPRO:
-        url.append("sky9x.txt");
-        break;
-      case BOARD_TARANIS:
-      case BOARD_TARANIS_PLUS:    
-      case BOARD_TARANIS_REV4a:
-        url.append("taranis.txt");
-        break;
-      default:
-        url.clear();
-        break;
-    }
-    return url;
+   url.append("/stamp-opentx.txt");
+   return url;
 }
 
 SimulatorInterface * OpenTxFirmware::getSimulator()
@@ -1016,7 +970,6 @@ SimulatorInterface * OpenTxFirmware::getSimulator()
       return new Open9xSky9xSimulator();
     case BOARD_TARANIS:
     case BOARD_TARANIS_PLUS:
-    case BOARD_TARANIS_REV4a:
       return new OpentxTaranisSimulator();
     default:
       return NULL;
@@ -1289,18 +1242,6 @@ void registerOpenTxFirmwares()
   openTx->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   openTx->addOptions(fai_options);
   firmwares.push_back(openTx);
-
-  if (g.rev4aSupport()) {
-    openTx = new OpenTxFirmware("opentx-taranisrev4a", QObject::tr("OpenTX for FrSky Taranis Rev4a"), BOARD_TARANIS_REV4a, true);
-    openTx->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
-    openTx->addOption("notemplates", QObject::tr("Disable TEMPLATES menu"));
-    openTx->addOption("nogvars", QObject::tr("Disable Global variables"));
-    openTx->addOption("haptic", QObject::tr("Haptic module installed"));
-    openTx->addOption("ppmus", QObject::tr("Channel values displayed in us"));
-    openTx->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
-    openTx->addOptions(fai_options);
-    firmwares.push_back(openTx);
-  }
 
   default_firmware_variant = GetFirmwareVariant("opentx-9x-heli-templates-en");
   current_firmware_variant = default_firmware_variant;

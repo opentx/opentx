@@ -377,12 +377,6 @@ bool MdiChild::saveAs(bool isNew)
     }
     if (fileName.isEmpty())
       return false;
-    if (fileName.contains("rev4a")) {
-      g.rev4aSupport( true );
-    }
-    if (fileName.contains("norev4a")) {
-      g.rev4aSupport( false );
-    }
     g.eepromDir( QFileInfo(fileName).dir().absolutePath() );
     if (isNew)
       return saveFile(fileName);
