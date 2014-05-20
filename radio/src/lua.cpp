@@ -80,7 +80,7 @@ void hook(lua_State* L, lua_Debug *ar)
 
 static int luaGetVersion(lua_State *L)
 {
-  lua_pushnumber(L, VERS_NUM);
+  lua_pushstring(L, VERS_STR);
   return 1;
 }
 

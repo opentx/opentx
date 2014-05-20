@@ -279,7 +279,7 @@ SHELL = sh
 IMG2LBM = -python ../util/img2lbm.py
 BIN2LBM = -python ../util/bin2lbm.py
 TRANSLATE = -python ../util/translate.py
-VERSION = 1.99
+VERSION = 1.99.1
 
 SRC =
 CPPSRC =
@@ -1155,7 +1155,6 @@ stamp_header:
 	@echo "#define DATE_STR \"`date +%Y-%m-%d | tr -d '\r\n'`\"" >> stamp-opentx.h
 	@echo "#define TIME_STR \"`date +%H:%M:%S | tr -d '\r\n'`\"" >> stamp-opentx.h
 	@echo "#define VERS_STR \"$(VERSION)\"" >> stamp-opentx.h
-	@echo "#define VERS_NUM $(VERSION)" >> stamp-opentx.h
 
 opentx-stamp:
 	@echo "#define DATE_STR \"`date +%Y-%m-%d`\"" > stamp-opentx.txt
