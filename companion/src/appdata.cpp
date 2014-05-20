@@ -637,7 +637,7 @@ AppData::AppData()
         if ( profile[0].name().isEmpty() )
             profile[0].name("My Radio");
 
-        // Delete obsolete settings fields
+        // Delete obsolete settings fields from companion9x
         settings.remove("ActiveProfile");
         settings.remove("burnFirmware");
         settings.remove("custom_id");
@@ -650,7 +650,7 @@ AppData::AppData()
         settings.remove("patchImage");
         settings.remove("rename_firmware_files");
         settings.remove("sdPath");
-        settings.remove("SplashFileName");
+        settings.remove("SplashFileName"); 
         settings.remove("startup_check_companion9x");
         settings.remove("wizardEnable");
 
@@ -658,7 +658,13 @@ AppData::AppData()
         id( 0 );
     }
 
+    // Remove settings that have been made obsolete during companion2.0 development
+    settings.remove("compilation-server");
+
     // Load and store all variables. Use default values if setting values are missing
+    QString _tempString;                                         // Do not touch. Do not change the settings version before a new verson update!
+    getset( _tempString,      "settings_version"        ,"20" ); // This is a version marker. Will be used to upgrade the settings later on.
+
     getset( _recentFiles,     "recentFileList"          ,"" );
     getset( _mainWinGeo,      "mainWindowGeometry"      ,"" );
     getset( _mainWinState,    "mainWindowState"         ,"" );
