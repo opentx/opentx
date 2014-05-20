@@ -329,22 +329,28 @@ bool getLogicalSwitch(uint8_t idx)
           context.timerState = SWITCH_DELAY;
           context.timer = ls->delay;
         }
+        
         if (context.timerState == SWITCH_DELAY) {
           if (context.timer) {
-            result = false;   //return false while delay timer running
+            result = false;   // return false while delay timer running
           }
-          else if (ls->duration) {
+          else {
             // set duration timer
             context.timerState = SWITCH_ENABLE;
             context.timer = ls->duration;
           }
         }
-        else if (context.timerState == SWITCH_ENABLE) {
-          result = (context.timer > 0);  //return false after duration timer runs out
+        
+        if (context.timerState == SWITCH_ENABLE) {
+          result = (ls->duration==0 || context.timer>0); // return false after duration timer runs out
         }
       }
-      else {
+      else if (context.timerState == SWITCH_ENABLE && ls->duration > 0 && context.timer > 0) {
+        result = true;
+      }
+      else {        
         context.timerState = SWITCH_START;
+        context.timer = 0;
       }
     }
 #endif
