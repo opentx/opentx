@@ -61,6 +61,10 @@ class QMdiSubWindow;
 class QSignalMapper;
 QT_END_NAMESPACE
 
+#define CHECK_COMPANION  1
+#define CHECK_FIRMWARE   2
+#define SHOW_DIALOG_WAIT 4
+
 class MainWindow : public QMainWindow
 {
     friend class FirmwarePreferencesDialog;
@@ -111,14 +115,17 @@ class MainWindow : public QMainWindow
     void setBigIconThemeSize()    {setIconThemeSize(2);};
     void setHugeIconThemeSize()   {setIconThemeSize(3);};
 
-    void checkForUpdates(bool ignoreSettings, QString & fwId);
-    void checkForUpdateFinished(QNetworkReply * reply);
+    void checkForUpdates();
+    void checkForFirmwareUpdate();
+
+    void checkForCompanionUpdateFinished(QNetworkReply * reply);
+    void checkForFirmwareUpdateFinished(QNetworkReply * reply);
+
     void displayWarnings();
     void doAutoUpdates();
     void doUpdates();
     void updateDownloaded();
-    void reply1Finished(QNetworkReply * reply);
-    void reply1Accepted();
+    void firmwareDownloadAccepted();
     void newFile();
     void openFile();
     void save();
@@ -158,6 +165,9 @@ class MainWindow : public QMainWindow
     void autoClose();
   
   private:
+    void closeUpdatesWaitDialog();
+    void onUpdatesError();
+
     void createActions();
     QAction * addAct(const QString &, const QString &, const QString &, enum QKeySequence::StandardKey, const char *, QObject *slotObj=NULL);
     QAction * addAct(const QString &, const QString &, const QString &, const QKeySequence &, const char *, QObject *slotObj=NULL);
@@ -198,19 +208,11 @@ class MainWindow : public QMainWindow
     QSignalMapper *windowMapper;
 
     QString installer_fileName;
-    QString downloadedFW;
     downloadDialog * downloadDialog_forWait;
-
     bool needRename;
-    bool showcheckForUpdatesResult;
-    long currentFWrev;
-    long currentFWrev_temp;
-    long NewFwRev;
-    bool check1done;
-    bool check2done;
+    unsigned int checkForUpdatesState;
     
-    QNetworkAccessManager *manager1;
-    QNetworkAccessManager *manager2;
+    QNetworkAccessManager *networkManager;
 
     QMenu *fileMenu;
     QMenu *editMenu;
@@ -279,7 +281,6 @@ class MainWindow : public QMainWindow
     QAction *russianLangAct;
     QAction *dutchLangAct;
     QAction *openDocURLAct;
-    QString fwToUpdate;
 };
 
 #endif

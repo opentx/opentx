@@ -24,17 +24,16 @@ FirmwarePreferencesDialog::~FirmwarePreferencesDialog()
 void FirmwarePreferencesDialog::initSettings()
 {
   ui->fwTypeLbl->setText(g.profile[g.id()].fwType());
-  QString revision = g.fwRev.getString(g.profile[g.id()].fwType());
-  if (!revision.isEmpty()) {
-    ui->lastRevisionLbl->setText(revision);
+  int version = g.fwRev.get(g.profile[g.id()].fwType());
+  if (version > 0) {
+    ui->lastRevisionLbl->setText(index2version(version));
   }
 }
 
 void FirmwarePreferencesDialog::on_checkFWUpdates_clicked()
 {
   MainWindow * mw = (MainWindow *)this->parent();
-  QString fwType = g.profile[g.id()].fwType();
-  mw->checkForUpdates(true, fwType);
+  mw->checkForFirmwareUpdate();
   initSettings();
 }
 

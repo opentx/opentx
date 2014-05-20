@@ -130,4 +130,7 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx);
 // Format a pixmap to fit on the radio using a specific firmware
 QPixmap makePixMap( QImage image, QString firmwareType );
 
+int version2index(QString version);
+QString index2version(int index);
+
 #endif // HELPERS_H

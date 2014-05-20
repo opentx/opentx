@@ -989,3 +989,30 @@ QPixmap makePixMap( QImage image, QString firmwareType )
   }
   return(QPixmap::fromImage(image));
 }
+
+int version2index(QString version)
+{
+  QStringList parts = version.split('.');
+  int result = 0;
+  if (parts.size() > 2)
+    result = parts[2].toInt();
+  if (parts.size() > 1)
+    result += 100 * parts[1].toInt();
+  if (parts.size() > 0)
+    result += 10000 * parts[0].toInt();
+  return result;
+}
+
+QString index2version(int index)
+{
+  if (index >= 19900) {
+    int revision = index % 100;
+    index /= 100;
+    int minor = index % 100;
+    int major = index / 100;
+    return QString("%1.%2.%3").arg(major).arg(minor).arg(revision);
+  }
+  else {
+    return QString();
+  }
+}

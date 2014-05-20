@@ -85,7 +85,8 @@
 #endif
 
 MainWindow::MainWindow():
-  downloadDialog_forWait(NULL)
+  downloadDialog_forWait(NULL),
+  checkForUpdatesState(0)
 {
     mdiArea = new QMdiArea(this);
     mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
@@ -184,78 +185,92 @@ void MainWindow::displayWarnings()
 
 void MainWindow::doAutoUpdates()
 {
-    checkForUpdates(false, current_firmware_variant.id);
+  if (g.autoCheckApp())
+    checkForUpdatesState |= CHECK_COMPANION;
+  if (g.autoCheckFw())
+    checkForUpdatesState |= CHECK_FIRMWARE;
+  checkForUpdates();
 }
 
 void MainWindow::doUpdates()
 {
-    checkForUpdates(true, current_firmware_variant.id);
+  checkForUpdatesState = CHECK_COMPANION | CHECK_FIRMWARE | SHOW_DIALOG_WAIT;
+  checkForUpdates();
 }
 
-void MainWindow::checkForUpdates(bool ignoreSettings, QString & fwId)
+void MainWindow::checkForFirmwareUpdate()
 {
-    showcheckForUpdatesResult = ignoreSettings;
-    check1done = true;
-    check2done = true;
-    fwToUpdate = fwId;
-    QString stamp = GetFirmware(fwToUpdate)->getStampUrl();
+  checkForUpdatesState = CHECK_FIRMWARE | SHOW_DIALOG_WAIT;
+  checkForUpdates();
+}
 
+void MainWindow::checkForUpdates()
+{
+  if (checkForUpdatesState & SHOW_DIALOG_WAIT) {
+    checkForUpdatesState -= SHOW_DIALOG_WAIT;
+    downloadDialog_forWait = new downloadDialog(this, tr("Checking for updates"));
+    downloadDialog_forWait->show();
+  }
+
+  if (checkForUpdatesState & CHECK_COMPANION) {
+    checkForUpdatesState -= CHECK_COMPANION;
+    // TODO why create each time a network manager?
+    networkManager = new QNetworkAccessManager(this);
+    connect(networkManager, SIGNAL(finished(QNetworkReply*)),this, SLOT(checkForCompanionUpdateFinished(QNetworkReply*)));
+    QNetworkRequest request(QUrl(C9X_STAMP));
+    request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
+    networkManager->get(request);
+  }
+  else if (checkForUpdatesState & CHECK_FIRMWARE) {
+    checkForUpdatesState -= CHECK_FIRMWARE;
+    QString stamp = GetFirmware(current_firmware_variant.id)->getStampUrl();
     if (!stamp.isEmpty()) {
-      if (g.autoCheckFw() || ignoreSettings) {
-        check1done=false;
-        manager1 = new QNetworkAccessManager(this);
-        connect(manager1, SIGNAL(finished(QNetworkReply*)), this, SLOT(reply1Finished(QNetworkReply*)));
-        QUrl url(stamp);
-        QNetworkRequest request(url);
-        request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
-        manager1->get(request);
-      }
-    }
-    
-    if (g.autoCheckApp() || ignoreSettings) {
-      check2done = false;
-      manager2 = new QNetworkAccessManager(this);
-      connect(manager2, SIGNAL(finished(QNetworkReply*)),this, SLOT(checkForUpdateFinished(QNetworkReply*)));
-      QNetworkRequest request(QUrl(C9X_STAMP));
+      networkManager = new QNetworkAccessManager(this);
+      connect(networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(checkForFirmwareUpdateFinished(QNetworkReply*)));
+      QUrl url(stamp);
+      QNetworkRequest request(url);
       request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
-      manager2->get(request);
+      networkManager->get(request);
     }
-
-    if(ignoreSettings) {
-      downloadDialog_forWait = new downloadDialog(this, tr("Checking for updates"));
-      downloadDialog_forWait->exec();
-    } else {
-      downloadDialog_forWait = NULL; // TODO needed?
-    }
+  }
+  else if (checkForUpdatesState==0) {
+    closeUpdatesWaitDialog();
+  }
 }
 
-void MainWindow::checkForUpdateFinished(QNetworkReply * reply)
+void MainWindow::onUpdatesError()
 {
-    check2done = true;
-    if(check1done && check2done && downloadDialog_forWait) {
-      downloadDialog_forWait->close();
-      // TODO delete downloadDialog_forWait?
-    }
+  checkForUpdatesState = 0;
+  closeUpdatesWaitDialog();
+  QMessageBox::warning(this, "Companion", tr("Unable to check for updates."));
+}
 
+void MainWindow::closeUpdatesWaitDialog()
+{
+  if (downloadDialog_forWait) {
+    downloadDialog_forWait->close();
+    delete downloadDialog_forWait;
+    downloadDialog_forWait = NULL;
+  }
+}
+
+void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
+{
     QByteArray qba = reply->readAll();
     int i = qba.indexOf("C9X_VERSION");
-
     if (i>0) {
-      QString version = qba.mid(i+14, 4);
+      QString version = qba.mid(i+14, qba.indexOf("\"", i+14)-i-14);
 
       if (version.isNull()) {
-          QMessageBox::warning(this, "Companion", tr("Unable to check for updates."));
-          return;
+        return onUpdatesError();
       }
-      double vnum=version.toDouble();
-      QString c9xversion=QString(C9X_VERSION);
-      int i;
-      for (i=0; i<c9xversion.length();i++) {
-        if (!(c9xversion.at(i).isDigit() || c9xversion.at(i).isPunct()))
-          break;
-      }
-      double c9xver=(c9xversion.left(i).toDouble());
-      if (c9xver< vnum) {
+
+      int vnum = version2index(version);
+
+      QString c9xversion = QString(C9X_VERSION);
+      int c9xver = version2index(c9xversion);
+
+      if (c9xver < vnum) {
 #if defined WIN32 || !defined __GNUC__ // || defined __APPLE__  // OSX should only notify of updates since no update packages are available. 
         showcheckForUpdatesResult = false; // update is available - do not show dialog
         int ret = QMessageBox::question(this, "Companion", tr("A new version of Companion is available (version %1)<br>"
@@ -279,14 +294,18 @@ void MainWindow::checkForUpdateFinished(QNetworkReply * reply)
 #else
         QMessageBox::warning(this, tr("New release available"), tr("A new release of Companion is available, please check the OpenTX website!"));
 #endif            
-      } else {
-        if (showcheckForUpdatesResult && check1done && check2done)
-          QMessageBox::information(this, "Companion", tr("No updates available at this time."));
       }
-    } else {
-      if(check1done && check2done)
-        QMessageBox::warning(this, "Companion", tr("Unable to check for updates."));
+      else {
+        if (downloadDialog_forWait && checkForUpdatesState==0) {
+          QMessageBox::information(this, "Companion", tr("No updates available at this time."));
+        }
+      }
     }
+    else {
+      return onUpdatesError();
+    }
+
+    checkForUpdates();
 }
 
 void MainWindow::updateDownloaded()
@@ -294,7 +313,7 @@ void MainWindow::updateDownloaded()
     int ret = QMessageBox::question(this, "Companion", tr("Would you like to launch the installer?") ,
                                      QMessageBox::Yes | QMessageBox::No);
     if (ret == QMessageBox::Yes) {
-      if(QDesktopServices::openUrl(QUrl::fromLocalFile(installer_fileName)))
+      if (QDesktopServices::openUrl(QUrl::fromLocalFile(installer_fileName)))
         QApplication::exit();
     }
 }
@@ -307,7 +326,6 @@ void MainWindow::downloadLatestFW(FirmwareVariant & firmware)
     ext = url.mid(url.lastIndexOf("."));
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.flashDir() + "/" + firmware.id + ext);
     if (!fileName.isEmpty()) {
-      downloadedFW = firmware.id;
       needRename = true;
       g.profile[g.id()].fwName(fileName);
       if (!cpuid.isEmpty()) {
@@ -316,279 +334,205 @@ void MainWindow::downloadLatestFW(FirmwareVariant & firmware)
       }
       g.flashDir(QFileInfo(fileName).dir().absolutePath());
       downloadDialog * dd = new downloadDialog(this, url, fileName);
-      connect(dd, SIGNAL(accepted()), this, SLOT(reply1Accepted()));
+      connect(dd, SIGNAL(accepted()), this, SLOT(firmwareDownloadAccepted()));
       dd->exec();
     }
 }
 
-void MainWindow::reply1Accepted()
+void MainWindow::firmwareDownloadAccepted()
 {
     QString errormsg;
-    if (g.profile[g.id()].fwName().isEmpty()) {
-      if (!(downloadedFW.isEmpty())) {
-        QFile file(downloadedFW);
-        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {  //reading HEX TEXT file
-          QMessageBox::critical(this, tr("Error"),
-              tr("Error opening file %1:\n%2.")
-              .arg(downloadedFW)
-              .arg(file.errorString()));
-          return;
-        }
-        file.reset();
-        QTextStream inputStream(&file);
-        QString hline = inputStream.readLine();
-        if (hline.startsWith("ERROR:")) {
-          int errnum=hline.mid(6).toInt();
-          switch(errnum) {
-            case 1:
-              errormsg=tr("Not enough memory for all the selected firmware options");
-              break;
-            case 2:
-              errormsg=tr("Compilation server temporary failure, try later");
-              break;
-            case 3:
-              errormsg=tr("Compilation server too busy, try later");
-              break;
-            case 4:
-              errormsg=tr("Compilation server requires registration, please check OpenTX web site");
-              break;
-            default:
-              errormsg=tr("Unknown server failure, try later");
-              break;          
-          }
-          file.close();
-          QMessageBox::critical(this, tr("Error"), errormsg);
-          return;
-        }
-        file.close();
-        currentFWrev = currentFWrev_temp;
-        qDebug() << currentFWrev;
-        g.fwRev.set(downloadedFW, currentFWrev);
-      }
+    QFile file(g.profile[g.id()].fwName());
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {  //reading HEX TEXT file
+      QMessageBox::critical(this, tr("Error"),
+          tr("Error opening file %1:\n%2.")
+          .arg(g.profile[g.id()].fwName())
+          .arg(file.errorString()));
+      return;
     }
-    else {
-      QFile file(g.profile[g.id()].fwName());
-      if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {  //reading HEX TEXT file
-        QMessageBox::critical(this, tr("Error"),
-            tr("Error opening file %1:\n%2.")
-            .arg(g.profile[g.id()].fwName())
-            .arg(file.errorString()));
-        return;
-      }
-      file.reset();
-      QTextStream inputStream(&file);
-      QString hline = inputStream.readLine();
-      if (hline.startsWith("ERROR:")) {
-        int errnum=hline.mid(6).toInt();
-        switch(errnum) {
-          case 1:
-            errormsg = tr("Not enough memory for all the selected firmware options");
-            break;
-          case 2:
-            errormsg = tr("Compilation server termporary failure, try later");
-            break;
-          case 3:
-            errormsg = tr("Compilation server too busy, try later");
-            break;
-          case 4:
-            errormsg = tr("Compilation server requires registration, please check OpenTX web site");
-            break;
-          default:
-            errormsg = tr("Unknown server failure, try later");
-            break;          
-        }
-        file.close();
-        QMessageBox::critical(this, tr("Error"), errormsg);
-        return;
+    file.reset();
+    QTextStream inputStream(&file);
+    QString hline = inputStream.readLine();
+    if (hline.startsWith("ERROR:")) {
+      int errnum=hline.mid(6).toInt();
+      switch(errnum) {
+        case 1:
+          errormsg = tr("Not enough memory for all the selected firmware options");
+          break;
+        case 2:
+          errormsg = tr("Compilation server termporary failure, try later");
+          break;
+        case 3:
+          errormsg = tr("Compilation server too busy, try later");
+          break;
+        case 4:
+          errormsg = tr("Compilation server requires registration, please check OpenTX web site");
+          break;
+        default:
+          errormsg = tr("Unknown server failure, try later");
+          break;
       }
       file.close();
-      FlashInterface flash(g.profile[g.id()].fwName());
-      long stamp = flash.getStamp().toLong();
-      if (stamp > 0) {
-        currentFWrev = stamp;
+      QMessageBox::critical(this, tr("Error"), errormsg);
+      return;
+    }
+    file.close();
+    FlashInterface flash(g.profile[g.id()].fwName());
+    int stamp = flash.getVersionId();
+    if (stamp > 0) {
 #if 0
-        // TODO what's that?
-        if (g.profile[g.id()].renameFwFiles() && needRename) {
-          QFileInfo fi(g.profile[g.id()].fwName());
-          QString path=fi.path()+QDir::separator ();
-          path.append(fi.completeBaseName());
-          path.append(rev.mid(pos));
-          path.append(".");
-          path.append(fi.suffix());
-          QDir qd;
-          qd.remove(path);
-          qd.rename(g.profile[g.id()].fwName(),path);
-          g.profile[g.id()].fwName(path);
-        }
+      if (g.profile[g.id()].renameFwFiles() && needRename) {
+        QFileInfo fi(g.profile[g.id()].fwName());
+        QString path=fi.path()+QDir::separator ();
+        path.append(fi.completeBaseName());
+        path.append(rev.mid(pos));
+        path.append(".");
+        path.append(fi.suffix());
+        QDir qd;
+        qd.remove(path);
+        qd.rename(g.profile[g.id()].fwName(),path);
+        g.profile[g.id()].fwName(path);
+      }
 #endif
-        g.fwRev.set(downloadedFW, currentFWrev);
-        if (g.profile[g.id()].burnFirmware()) {
-          int ret = QMessageBox::question(this, "Companion", tr("Do you want to write the firmware to the radio now ?"), QMessageBox::Yes | QMessageBox::No);
-          if (ret == QMessageBox::Yes) {
-            writeFlash(g.profile[g.id()].fwName());
-          }
+      g.fwRev.set(current_firmware_variant.id, stamp);
+      if (g.profile[g.id()].burnFirmware()) {
+        int ret = QMessageBox::question(this, "Companion", tr("Do you want to write the firmware to the radio now ?"), QMessageBox::Yes | QMessageBox::No);
+        if (ret == QMessageBox::Yes) {
+          writeFlash(g.profile[g.id()].fwName());
         }
       }
     }
 }
 
-void MainWindow::reply1Finished(QNetworkReply * reply)
+void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
 {
-    int OldFwRev;
-    check1done = true;
     bool download = false;
     bool ignore = false;
     QString cpuid;
-    
-    if(check1done && check2done && downloadDialog_forWait) {
-      downloadDialog_forWait->close();
-      // TODO delete downloadDialog_forWait?
-    }
-    
+
     cpuid = g.cpuId();
     QByteArray qba = reply->readAll();
-    int i = qba.indexOf("SVN_VERS");
-    int warning = qba.indexOf("WARNING");
 
+    long version = 0;
 
-    if (i>0) {
-      bool cres;
-      int k = qba.indexOf("-r", i);
-      int l = qba.indexOf('"', k);
-      qDebug() << qba;
-      int rev = QString::fromAscii(qba.mid(k+2, l-k-2)).toInt(&cres);
-      QString newrev=qba.mid(k).replace('"', "").trimmed();
+    int versionIndex = qba.indexOf("VERS_STR");
+    int dateIndex = qba.indexOf("DATE_STR");
 
-      if(!cres) {
-        QMessageBox::warning(this, "Companion", tr("Unable to check for updates."));
-        g.fwServerFails(g.fwServerFails()+1);
-        return;
+    QString versionString;
+    if (versionIndex > 0 && dateIndex > 0) {
+      versionString = qba.mid(versionIndex+10, qba.indexOf("\"", versionIndex+10)-versionIndex-10);
+      QString dateString = qba.mid(dateIndex+10, 10);
+      version = version2index(versionString);
+      versionString = QString("%1 (%2)").arg(versionString).arg(dateString);
+    }
+
+    if (version > 0) {
+      int currentVersion = g.fwRev.get(current_firmware_variant.id);
+      QString currentVersionString = index2version(currentVersion);
+
+      QMessageBox msgBox;
+      QSpacerItem * horizontalSpacer = new QSpacerItem(500, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+      QGridLayout * layout = (QGridLayout*)msgBox.layout();
+      layout->addItem(horizontalSpacer, layout->rowCount(), 0, 1, layout->columnCount());
+
+      if (currentVersion == 0) {
+        QString rn = GetFirmware(current_firmware_variant.id)->getReleaseNotesUrl();
+        QAbstractButton *rnButton = NULL;
+        msgBox.setWindowTitle("Companion");
+        msgBox.setInformativeText(tr("Firmware %1 does not seem to have ever been downloaded.\nRelease %2 is available.\nDo you want to download it now?").arg(current_firmware_variant.id).arg(versionString));
+        QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
+        msgBox.addButton(trUtf8("No"), QMessageBox::NoRole);
+        if (!rn.isEmpty()) {
+          rnButton = msgBox.addButton(trUtf8("Release Notes"), QMessageBox::ActionRole);
+        }
+        msgBox.setIcon(QMessageBox::Question);
+        msgBox.resize(0, 0);
+        msgBox.exec();
+        if (msgBox.clickedButton() == rnButton) {
+          contributorsDialog *cd = new contributorsDialog(this,2,rn);
+          cd->exec();
+          int ret2 = QMessageBox::question(this, "Companion", tr("Do you want to download release %1 %2 now ?").arg(versionString), QMessageBox::Yes | QMessageBox::No);
+          if (ret2 == QMessageBox::Yes)
+            download = true;
+          else
+            ignore = true;
+        }
+        else if (msgBox.clickedButton() == YesButton ) {
+          download = true;
+        }
+        else {
+          ignore = true;
+        }
       }
-
-      if(rev>0) {
-        NewFwRev = rev;
-        OldFwRev = g.fwRev.get(fwToUpdate);
-        QMessageBox msgBox;
-        QSpacerItem* horizontalSpacer = new QSpacerItem(500, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-        QGridLayout* layout = (QGridLayout*)msgBox.layout();
-        layout->addItem(horizontalSpacer, layout->rowCount(), 0, 1, layout->columnCount());            
-        if (OldFwRev == 0) {
-          showcheckForUpdatesResult = false; // update is available - do not show dialog
-          QString rn = GetFirmware(fwToUpdate)->getReleaseNotesUrl();
-          QAbstractButton *rnButton = NULL;
-          msgBox.setWindowTitle("Companion");
-          msgBox.setInformativeText(tr("Firmware %1 does not seem to have ever been downloaded.\nVersion %2 is available.\nDo you want to download it now ?").arg(fwToUpdate).arg(NewFwRev));
-          QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
-          msgBox.addButton(trUtf8("No"), QMessageBox::NoRole);
-          if (!rn.isEmpty()) {
-            rnButton = msgBox.addButton(trUtf8("Release Notes"), QMessageBox::ActionRole);
-          }
-          msgBox.setIcon(QMessageBox::Question);
-          msgBox.resize(0,0);
-          msgBox.exec();
-          if( msgBox.clickedButton() == rnButton ) {
-            contributorsDialog *cd = new contributorsDialog(this,2,rn);
-            cd->exec();
-            int ret2 = QMessageBox::question(this, "Companion", tr("Do you want to download release %1 now ?").arg(NewFwRev),
-                  QMessageBox::Yes | QMessageBox::No);
-            if (ret2 == QMessageBox::Yes) {
-              download = true;
-            } else {
-              ignore = true;
-            }                                    
-          } else if (msgBox.clickedButton() == YesButton ) {
+      else if (version > currentVersion) {
+        QString rn = GetFirmware(current_firmware_variant.id)->getReleaseNotesUrl();
+        QAbstractButton *rnButton;
+        msgBox.setText("Companion");
+        msgBox.setInformativeText(tr("A new version of %1 firmware is available:\n  - current is %2\n  - newer is %3\n\nDo you want to download it now ?").arg(current_firmware_variant.id).arg(currentVersionString).arg(versionString));
+        QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
+        msgBox.addButton(trUtf8("No"), QMessageBox::NoRole);
+        if (!rn.isEmpty()) {
+          rnButton = msgBox.addButton(trUtf8("Release Notes"), QMessageBox::ActionRole);
+        }
+        msgBox.setIcon(QMessageBox::Question);
+        msgBox.resize(0,0);
+        msgBox.exec();
+        if( msgBox.clickedButton() == rnButton ) {
+          contributorsDialog *cd = new contributorsDialog(this, 2, rn);
+          cd->exec();
+          int ret2 = QMessageBox::question(this, "Companion", tr("Do you want to download release %1 now ?").arg(versionString),
+                QMessageBox::Yes | QMessageBox::No);
+          if (ret2 == QMessageBox::Yes) {
             download = true;
-          } else {
-            ignore = true;
-          }
-        }
-        else if (NewFwRev > OldFwRev) {
-          showcheckForUpdatesResult = false; // update is available - do not show dialog
-          QString rn = GetFirmware(fwToUpdate)->getReleaseNotesUrl();
-          QAbstractButton *rnButton;
-          msgBox.setText("Companion");
-          msgBox.setInformativeText(tr("A new version of %1 firmware is available (current %2 - newer %3).\nDo you want to download it now ?").arg(fwToUpdate).arg(OldFwRev).arg(NewFwRev));
-          QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
-          msgBox.addButton(trUtf8("No"), QMessageBox::NoRole);
-          if (!rn.isEmpty()) {
-            rnButton = msgBox.addButton(trUtf8("Release Notes"), QMessageBox::ActionRole);
-          }
-          msgBox.setIcon(QMessageBox::Question);
-          msgBox.resize(0,0);
-          msgBox.exec(); 
-          if( msgBox.clickedButton() == rnButton ) {
-            warning=0;
-            contributorsDialog *cd = new contributorsDialog(this,2,rn);
-            cd->exec();
-            int ret2 = QMessageBox::question(this, "Companion", tr("Do you want to download release %1 now ?").arg(NewFwRev),
-                  QMessageBox::Yes | QMessageBox::No);
-            if (ret2 == QMessageBox::Yes) {
-              download = true;
-            } else {
-              ignore = true;
-            }                                    
-          } else if (msgBox.clickedButton() == YesButton ) {
-            download = true;
-          } else {
-            ignore = true;
-          }
-        } else {
-          if(showcheckForUpdatesResult && check1done && check2done)
-            QMessageBox::information(this, "Companion", tr("No updates available at this time."));
-        }
-        if (ignore) {
-          int res = QMessageBox::question(this, "Companion",tr("Ignore this version (r%1)?").arg(rev), QMessageBox::Yes | QMessageBox::No);
-          if (res==QMessageBox::Yes)   {
-            g.fwRev.set(fwToUpdate, NewFwRev);
-          }
-        }
-        else if (download == true) {
-          if (warning>0) {
-            QString rn = GetFirmware(fwToUpdate)->getReleaseNotesUrl();
-            if (!rn.isEmpty()) {
-              int ret2 = QMessageBox::warning(this, "Companion", tr("Release notes contain very important informations. Do you want to see them now ?"), QMessageBox::Yes | QMessageBox::No);
-              if (ret2 == QMessageBox::Yes) {
-                contributorsDialog *cd = new contributorsDialog(this,2,rn);
-                cd->exec();
-              }
-            }
-          }
-          downloadedFW = fwToUpdate;
-          QString url = GetFirmwareVariant(fwToUpdate).getFirmwareUrl();
-          QString ext = url.mid(url.lastIndexOf("."));
-          needRename=false;
-          bool addversion=g.profile[g.id()].renameFwFiles();
-          QString fileName;
-          if (addversion) {
-            fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.flashDir() + "/" + fwToUpdate + newrev + ext);
           }
           else {
-            fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.flashDir() + "/" + fwToUpdate + ext);
-          }
-          if (!fileName.isEmpty()) {
-            if (!cpuid.isEmpty()) {
-              url.append("&cpuid=");
-              url.append(cpuid);
-            }              
-            g.profile[g.id()].fwName( fileName );
-            g.flashDir(QFileInfo(fileName).dir().absolutePath());
-            downloadDialog * dd = new downloadDialog(this, url, fileName);
-            currentFWrev_temp = NewFwRev;
-            connect(dd, SIGNAL(accepted()), this, SLOT(reply1Accepted()));
-            dd->exec();
-            downloadedFW = fwToUpdate;
+            ignore = true;
           }
         }
-      } else {
-        QMessageBox::warning(this, "Companion", tr("Unable to check for updates."));
+        else if (msgBox.clickedButton() == YesButton ) {
+          download = true;
+        }
+        else {
+          ignore = true;
+        }
       }
-    } else {
-      if(check1done && check2done) {
-        QMessageBox::warning(this, "Companion", tr("Unable to check for updates."));
-        g.fwServerFails(g.fwServerFails()+1);
-        return;
+      else {
+        if (downloadDialog_forWait && checkForUpdatesState==0) {
+          QMessageBox::information(this, "Companion", tr("No updates available at this time."));
+        }
       }
-    }    
+
+      if (ignore) {
+        int res = QMessageBox::question(this, "Companion", tr("Ignore this release %1?").arg(versionString), QMessageBox::Yes | QMessageBox::No);
+        if (res==QMessageBox::Yes)   {
+          g.fwRev.set(current_firmware_variant.id, version);
+        }
+      }
+      else if (download == true) {
+        QString url = GetFirmwareVariant(current_firmware_variant.id).getFirmwareUrl();
+        QString ext = url.mid(url.lastIndexOf("."));
+        needRename=false;
+        QString fileName;
+        fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.flashDir() + "/" + current_firmware_variant.id + ext);
+        if (!fileName.isEmpty()) {
+          if (!cpuid.isEmpty()) {
+            url.append("&cpuid=");
+            url.append(cpuid);
+          }
+          g.profile[g.id()].fwName(fileName);
+          g.flashDir(QFileInfo(fileName).dir().absolutePath());
+          downloadDialog * dd = new downloadDialog(this, url, fileName);
+          connect(dd, SIGNAL(accepted()), this, SLOT(firmwareDownloadAccepted()));
+          dd->exec();
+        }
+      }
+    }
+    else {
+      // TODO remove serverFails config?
+      return onUpdatesError();
+    }
+
+    checkForUpdates();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -604,7 +548,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     }
 }
 
-void  MainWindow::setLanguage(QString langString)
+void MainWindow::setLanguage(QString langString)
 {    
     g.locale( langString );
     

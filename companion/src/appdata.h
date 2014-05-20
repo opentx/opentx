@@ -58,9 +58,8 @@ class CompStoreObj
 class FwRevision: protected CompStoreObj
 {
   public:
-    long get( const QString);
-    QString getString( const QString);
-    void set( const QString, const long );
+    int get( const QString);
+    void set( const QString, const int );
     void remove( const QString );
 };
 

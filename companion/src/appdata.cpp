@@ -199,33 +199,14 @@ void CompStoreObj::getset( int &number, const QString tag, const int def, const 
 }
 
 // ** FwRevision class********************
-long FwRevision::get( const QString fwType )
+int FwRevision::get( const QString fwType )
 {
     QString result;
     retrieve( result, fwType, "", "FwRevisions" );
-    return result.toLong();
+    return result.toInt();
 }
 
-QString FwRevision::getString( const QString fwType )
-{
-  long revision = get(fwType);
-  if (revision > 19920140101) {
-    int day = revision % 100;
-    revision /= 100;
-    int month = revision % 100;
-    revision /= 100;
-    int year = revision % 10000;
-    revision /= 10000;
-    int minor = revision % 100;
-    revision /= 100;
-    return QString("%1.%2 (%3-%4-%5)").arg(revision).arg(minor, 2, 10, (const QChar)'0').arg(year, 4, 10, (const QChar)'0').arg(month, 2, 10, (const QChar)'0').arg(day, 2, 10, (const QChar)'0');
-  }
-  else {
-    return QString();
-  }
-}
-
-void FwRevision::set( const QString fwType, const long fwRevision )
+void FwRevision::set( const QString fwType, const int fwRevision )
 {
     QString tempString = QString("%1").arg(fwRevision);
     store( tempString, tempString, fwType, "FwRevisions" );

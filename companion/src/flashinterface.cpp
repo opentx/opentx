@@ -18,11 +18,11 @@
 #include "hexinterface.h"
 #include "splash.h"
 #include "flashinterface.h"
+#include "helpers.h"
 
 #define VERS_MARK   "VERS"
 #define DATE_MARK   "DATE"
 #define TIME_MARK   "TIME"
-#define BLD_MARK    "BLD"
 #define EEPR_MARK   "EEPR"
 
 int getFileType(const QString &fullFileName)
@@ -45,6 +45,7 @@ int getFileType(const QString &fullFileName)
 FlashInterface::FlashInterface(QString fileName):
   flash(MAX_FSIZE, 0),
   flash_size(0),
+  versionId(0),
   splash_offset(0),
   splash_size(0),
   splash_width(0),
@@ -69,6 +70,7 @@ FlashInterface::FlashInterface(QString fileName):
     date = seekLabel(DATE_MARK);
     time = seekLabel(TIME_MARK);
     eeprom = seekLabel(EEPR_MARK);
+    versionId = version2index(version);
     SeekSplash();
     isValidFlag = true;
   }

@@ -46,9 +46,9 @@ class FlashInterface
     FlashInterface(QString filename);
     inline QString getDate() { return date; }
     inline QString getTime() { return time; }
-    inline QString getStamp() { return QString("%1%2").arg(version.replace(".", "")).arg(date.replace("-", "")); }
     int getSize() { return flash_size; }
     inline QString getVersion() { return version; }
+    unsigned int getVersionId() { return versionId; }
     inline QString getEEprom() { return eeprom; }
     QImage getSplash();
     bool setSplash(const QImage & newsplash);
@@ -71,6 +71,7 @@ class FlashInterface
     QString date;
     QString time;
     QString version;
+    int versionId;
     QString eeprom;
     QByteArray splash;
     uint splash_offset;
