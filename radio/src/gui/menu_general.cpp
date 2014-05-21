@@ -1336,7 +1336,7 @@ void menuGeneralDiagAna(uint8_t event)
 enum menuGeneralHwItems {
   ITEM_SETUP_HW_POT1,
   ITEM_SETUP_HW_POT2,
-  ITEM_SETUP_HW_POT3,
+  CASE_REVPLUS(ITEM_SETUP_HW_POT3)
   ITEM_SETUP_HW_UART3_MODE,
   ITEM_SETUP_HW_MAX
 };
@@ -1355,7 +1355,9 @@ void menuGeneralHardware(uint8_t event)
     switch(i) {
       case ITEM_SETUP_HW_POT1:
       case ITEM_SETUP_HW_POT2:
+#if defined(REVPLUS)
       case ITEM_SETUP_HW_POT3:
+#endif
       {
         int idx = i - ITEM_SETUP_HW_POT1;
         uint8_t shift = (2*idx);
@@ -1371,14 +1373,12 @@ void menuGeneralHardware(uint8_t event)
         g_eeGeneral.potsType |= (potType << shift);
         break;
       }
-
       case ITEM_SETUP_HW_UART3_MODE:
       	g_eeGeneral.uart3Mode = selectMenuItem(HW_SETTINGS_COLUMN, y, STR_UART3MODE, STR_UART3MODES, g_eeGeneral.uart3Mode, 0, UART_MODE_MAX, attr, event);
         if (checkIncDec_Ret) {
       	  uart3Init(g_eeGeneral.uart3Mode);
       	}
         break;
-
     }
   }
 }
