@@ -264,7 +264,7 @@ static int luaLcdDrawPixmap(lua_State *L)
   const pm_char * error = bmpLoad(bitmap, filename, LCD_W, LCD_H);
   if (bitmap && !error) {
     lcd_bmp(x, y, bitmap);
-    // free(bitmap);
+    free(bitmap);
   }
   return 0;
 }
@@ -275,7 +275,7 @@ static int luaLcdDrawScreenTitle(lua_State *L)
   int idx = luaL_checkinteger(L, 2);
   int cnt = luaL_checkinteger(L, 3);
 
-  displayScreenIndex(idx-1, cnt, 0);
+  if (cnt) displayScreenIndex(idx-1, cnt, 0);
   lcd_filled_rect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
   title(str);
 
