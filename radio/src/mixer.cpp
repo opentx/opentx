@@ -62,18 +62,11 @@ int16_t ex_chans[NUM_CHNOUT] = {0}; // Outputs (before LIMITS) of the last perMa
 
 #if defined(HELI)
   int16_t cyc_anas[3] = {0};
-  #if defined(PCBTARANIS)
-    int16_t heliAnas[4] = {0};
-  #endif
 #endif
 
 void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
 {
 #if defined(PCBTARANIS)
-#if defined(HELI)
-  int16_t heliAnasCopy[4];
-  memcpy(heliAnasCopy, heliAnas, sizeof(heliAnasCopy));
-#endif
 #else
   int16_t anas2[NUM_INPUTS]; // values before expo, to ensure same expo base when multiple expo lines are used
   memcpy(anas2, anas, sizeof(anas2));
@@ -96,12 +89,6 @@ void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
       int v;
       if (ed->srcRaw == ovwrIdx)
         v = ovwrValue;
-#if defined(HELI)
-      else if (ed->srcRaw == MIXSRC_Ele)
-        v = heliAnasCopy[ELE_STICK];
-      else if (ed->srcRaw == MIXSRC_Ail)
-        v = heliAnasCopy[AIL_STICK];
-#endif
       else {
         v = getValue(ed->srcRaw);
         if (ed->srcRaw >= MIXSRC_FIRST_TELEM && ed->scale > 0) {
@@ -149,13 +136,6 @@ void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
           virtualInputsTrims[cur_chn] = ed->srcRaw - MIXSRC_Rud;
         else
           virtualInputsTrims[cur_chn] = -1;
-
-#if defined(HELI)
-        if (ed->srcRaw == MIXSRC_Ele)
-          heliAnas[ELE_STICK] = v;
-        else if (ed->srcRaw == MIXSRC_Ail)
-          heliAnas[AIL_STICK] = v;
-#endif
 #endif
 
         anas[cur_chn] = v;
@@ -487,9 +467,6 @@ void evalInputs(uint8_t mode)
       if (d && (ch==ELE_STICK || ch==AIL_STICK)) {
         v = (int32_t(v) * calc100toRESX(g_model.swashR.value)) / int32_t(d);
       }
-#if defined(PCBTARANIS)
-      heliAnas[ch] = v;
-#endif
 #endif
 
 #if !defined(PCBTARANIS)
@@ -514,11 +491,7 @@ void evalInputs(uint8_t mode)
   }
 }
 
-#if defined(PCBTARANIS)
-  #define HELI_ANAS_ARRAY heliAnas
-#else
-  #define HELI_ANAS_ARRAY anas
-#endif
+#define HELI_ANAS_ARRAY anas
 
 uint8_t s_current_mixer_flight_mode;
 void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
