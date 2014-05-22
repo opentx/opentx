@@ -122,8 +122,8 @@ local function drawAileronsMenu()
     lcd.drawPixmap(112, 8, "/TEMPLATES/ailerons-2.bmp")
     lcd.drawText(20, LCD_H-16, "Assign channels", 0);
     lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
-    lcd.drawText(116, LCD_H-8, "CH" .. (aileronsCH1+1), getFieldFlags(1))
-    lcd.drawText(175, LCD_H-8, "CH" .. (aileronsCH2+1), getFieldFlags(2))
+    lcd.drawSource(116, LCD_H-8, SOURCE_FIRST_CH+aileronsCH1, getFieldFlags(1))
+    lcd.drawSource(175, LCD_H-8, SOURCE_FIRST_CH+aileronsCH2, getFieldFlags(2))
     fieldsMax = 2
   elseif aileronsMode == 1 then
     -- No ailerons
@@ -134,7 +134,7 @@ local function drawAileronsMenu()
     lcd.drawPixmap(112, 8, "/TEMPLATES/ailerons-1.bmp")
     lcd.drawText(25, LCD_H-16, "Assign channel", 0);
     lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
-    lcd.drawText(151, LCD_H-8, "CH" .. (aileronsCH1+1), getFieldFlags(1))
+    lcd.drawSource(151, LCD_H-8, SOURCE_FIRST_CH+aileronsCH1, getFieldFlags(1))
     fieldsMax = 1
   end
 end

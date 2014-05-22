@@ -256,6 +256,16 @@ static int luaLcdDrawSwitch(lua_State *L)
   return 0;
 }
 
+static int luaLcdDrawSource(lua_State *L)
+{
+  int x = luaL_checkinteger(L, 1);
+  int y = luaL_checkinteger(L, 2);
+  int s = luaL_checkinteger(L, 3);
+  int att = luaL_checkinteger(L, 4);
+  putsMixerSource(x, y, s, att);
+  return 0;
+}
+
 static int luaLcdDrawPixmap(lua_State *L)
 {
   int x = luaL_checkinteger(L, 1);
@@ -952,6 +962,7 @@ static const luaL_Reg lcdLib[] = {
   { "drawRectangle", luaLcdDrawRectangle },
   { "drawText", luaLcdDrawText },
   { "drawSwitch", luaLcdDrawSwitch },
+  { "drawSource", luaLcdDrawSource },
   { "drawRect", luaLcdDrawRect },
   { "drawPixmap", luaLcdDrawPixmap },
   { "drawScreenTitle", luaLcdDrawScreenTitle },
@@ -998,6 +1009,7 @@ void luaInit()
   lua_registerint(L, "STICK_THROTTLE", MIXSRC_Thr);
   lua_registerint(L, "STICK_AILERON", MIXSRC_Ail);
   lua_registerint(L, "SWITCH_LAST", SWSRC_LAST_LOGICAL_SWITCH);
+  lua_registerint(L, "SOURCE_FIRST_CH", MIXSRC_FIRST_CH);
   lua_registerint(L, "EVT_MENU_BREAK", EVT_KEY_BREAK(KEY_MENU));
   lua_registerint(L, "EVT_PAGE_BREAK", EVT_KEY_BREAK(KEY_PAGE));
   lua_registerint(L, "EVT_ENTER_BREAK", EVT_KEY_BREAK(KEY_ENTER));
