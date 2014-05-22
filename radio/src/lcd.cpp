@@ -686,49 +686,43 @@ void lcd_hline(xcoord_t x, uint8_t y, xcoord_t w, LcdFlags att)
 }
 
 #if defined(CPUARM)
-void lcd_line(int x1, int y1, int x2, int y2, LcdFlags att)
+void lcd_line(xcoord_t x1, int8_t y1, xcoord_t x2, int8_t y2, uint8_t pat, LcdFlags att)
 {
-  int i,dx,dy,sdx,sdy,dxabs,dyabs,x,y,px,py;
+  int dx = x2-x1;      /* the horizontal distance of the line */
+  int dy = y2-y1;      /* the vertical distance of the line */
+  int dxabs = abs(dx);
+  int dyabs = abs(dy);
+  int sdx = sgn(dx);
+  int sdy = sgn(dy);
+  int x = dyabs>>1;
+  int y = dxabs>>1;
+  int px = x1;
+  int py = y1;
 
-  dx=x2-x1;      /* the horizontal distance of the line */
-  dy=y2-y1;      /* the vertical distance of the line */
-  dxabs=abs(dx);
-  dyabs=abs(dy);
-  sdx=sgn(dx);
-  sdy=sgn(dy);
-  x=dyabs>>1;
-  y=dxabs>>1;
-  px=x1;
-  py=y1;
-
-  // VGA[(py<<8)+(py<<6)+px]=color;
-
-  if (dxabs>=dyabs) /* the line is more horizontal than vertical */
-  {
-    for(i=0;i<dxabs;i++)
-    {
-      y+=dyabs;
-      if (y>=dxabs)
-      {
-        y-=dxabs;
-        py+=sdy;
+  if (dxabs >= dyabs) {
+    /* the line is more horizontal than vertical */
+    for (int i=0; i<dxabs; i++) {
+      y += dyabs;
+      if (y>=dxabs) {
+        y -= dxabs;
+        py += sdy;
       }
-      px+=sdx;
-      lcd_plot(px,py,att);
+      px += sdx;
+      if ((1<<(px%8)) & pat)
+        lcd_plot(px, py, att);
     }
   }
-  else /* the line is more vertical than horizontal */
-  {
-    for(i=0;i<dyabs;i++)
-    {
-      x+=dxabs;
-      if (x>=dyabs)
-      {
-        x-=dyabs;
-        px+=sdx;
+  else {
+    /* the line is more vertical than horizontal */
+    for (int i=0; i<dyabs; i++) {
+      x += dxabs;
+      if (x >= dyabs) {
+        x -= dyabs;
+        px += sdx;
       }
-      py+=sdy;
-      lcd_plot(px,py,att);
+      py += sdy;
+      if ((1<<(py%8)) & pat)
+        lcd_plot(px, py, att);
     }
   }
 }

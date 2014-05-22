@@ -220,7 +220,7 @@ void lcd_vline(xcoord_t x, int8_t y, int8_t h);
   void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat, LcdFlags att=0);
 #endif
 #if defined(CPUARM)
-  void lcd_line(int x1, int y1, int x2, int y2, LcdFlags att=0);
+  void lcd_line(xcoord_t x1, int8_t y1, xcoord_t x2, int8_t y2, uint8_t pat=SOLID, LcdFlags att=0);
 #endif
 
 void lcd_rect(xcoord_t x, uint8_t y, xcoord_t w, uint8_t h, uint8_t pat=SOLID, LcdFlags att=0);
