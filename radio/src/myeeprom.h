@@ -1006,6 +1006,12 @@ PACK(typedef struct t_FrSkyChannelData {
 }) FrSkyChannelData;
 #endif
 
+#if defined(CPUARM)
+  #define TELEM_A_COUNT 4
+#else
+  #define TELEM_A_COUNT 2
+#endif
+
 enum TelemetrySource {
   TELEM_NONE,
   TELEM_TX_VOLTAGE,
@@ -1027,12 +1033,14 @@ enum TelemetrySource {
 #if defined(CPUARM)
   TELEM_RX_VOLTAGE,
 #endif
-  TELEM_A1,
+  TELEM_A_FIRST,
+  TELEM_A1=TELEM_A_FIRST,
   TELEM_A2,
 #if defined(CPUARM)
   TELEM_A3,
   TELEM_A4,
 #endif
+  TELEM_A_LAST=TELEM_A_FIRST+TELEM_A_COUNT-1,
   TELEM_ALT,
   TELEM_RPM,
   TELEM_FUEL,

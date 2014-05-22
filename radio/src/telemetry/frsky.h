@@ -282,7 +282,7 @@ PACK(struct FrskySerialData {
 #endif
 
 struct FrskyData {
-  FrskyValueWithMinMax analog[2];
+  FrskyValueWithMinMax analog[TELEM_A_COUNT];
   FrskyValueWithMin    rssi[2];
 #if defined(CPUARM)
   FrskyValueWithMin    swr;
