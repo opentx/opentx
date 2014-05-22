@@ -220,7 +220,9 @@ static int luaLcdDrawLine(lua_State *L)
   int y1 = luaL_checkinteger(L, 2);
   int x2 = luaL_checkinteger(L, 3);
   int y2 = luaL_checkinteger(L, 4);
-  lcd_line(x1, y1, x2, y2);
+  int pat = luaL_checkinteger(L, 5);
+  int flags = luaL_checkinteger(L, 6);
+  lcd_line(x1, y1, x2, y2, pat, flags);
   return 0;
 }
 
@@ -269,6 +271,17 @@ static int luaLcdDrawPixmap(lua_State *L)
   return 0;
 }
 
+static int luaLcdDrawRect(lua_State *L)
+{
+  int x = luaL_checkinteger(L, 1);
+  int y = luaL_checkinteger(L, 2);
+  int w = luaL_checkinteger(L, 3);
+  int h = luaL_checkinteger(L, 4);
+  int flags = luaL_checkinteger(L, 5);
+  lcd_filled_rect(x, y, w, h, SOLID, flags);
+  return 0;
+}
+
 static int luaLcdDrawScreenTitle(lua_State *L)
 {
   const char * str = luaL_checkstring(L, 1);
@@ -278,6 +291,53 @@ static int luaLcdDrawScreenTitle(lua_State *L)
   if (cnt) displayScreenIndex(idx-1, cnt, 0);
   lcd_filled_rect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
   title(str);
+
+  return 0;
+}
+
+static int luaLcdDrawCombobox(lua_State *L)
+{
+  int x = luaL_checkinteger(L, 1);
+  int y = luaL_checkinteger(L, 2);
+  int w = luaL_checkinteger(L, 3);
+  luaL_checktype(L, 4, LUA_TTABLE);
+  int count = luaL_len(L, 4);  /* get size of table */
+  int idx = luaL_checkinteger(L, 5);
+  int flags = luaL_checkinteger(L, 6);
+  if (idx >= count) {
+    // TODO error
+  }
+  if (flags & BLINK) {
+    lcd_filled_rect(x, y, w-9, count*9+2, SOLID, ERASE);
+    lcd_rect(x, y, w-9, count*9+2);
+    for (int i=0; i<count; i++) {
+      lua_rawgeti(L, 4, i+1);
+      const char * item = luaL_checkstring(L, -1);
+      lcd_putsAtt(x+2, y+2+9*i, item, 0);
+    }
+    lcd_filled_rect(x+1, y+1+9*idx, w-11, 9);
+    lcd_filled_rect(x+w-10, y, 10, 11, SOLID, ERASE);
+    lcd_rect(x+w-10, y, 10, 11);
+  }
+  else if (flags & INVERS) {
+    lcd_filled_rect(x, y, w, 11);
+    lcd_filled_rect(x+w-9, y+1, 8, 9, SOLID, ERASE);
+    lua_rawgeti(L, 4, idx+1);
+    const char * item = luaL_checkstring(L, -1);
+    lcd_putsAtt(x+2, y+2, item, INVERS);
+  }
+  else {
+    lcd_filled_rect(x, y, w, 11, SOLID, ERASE);
+    lcd_rect(x, y, w, 11);
+    lcd_filled_rect(x+w-10, y+1, 9, 9, SOLID);
+    lua_rawgeti(L, 4, idx+1);
+    const char * item = luaL_checkstring(L, -1);
+    lcd_putsAtt(x+2, y+2, item, 0);
+  }
+
+  lcd_hline(x+w-8, y+3, 6);
+  lcd_hline(x+w-8, y+5, 6);
+  lcd_hline(x+w-8, y+7, 6);
 
   return 0;
 }
@@ -787,6 +847,13 @@ static int luaPopupInput(lua_State *L)
   return 1;
 }
 
+static int luaChannelOrder(lua_State *L)
+{
+  uint8_t stick = luaL_checkinteger(L, 1);
+  lua_pushinteger(L, channel_order(stick+1)-1);
+  return 1;
+}
+
 int luaGetInputs(ScriptInternalData & sid)
 {
   if (!lua_istable(L, -1))
@@ -885,8 +952,10 @@ static const luaL_Reg lcdLib[] = {
   { "drawRectangle", luaLcdDrawRectangle },
   { "drawText", luaLcdDrawText },
   { "drawSwitch", luaLcdDrawSwitch },
+  { "drawRect", luaLcdDrawRect },
   { "drawPixmap", luaLcdDrawPixmap },
   { "drawScreenTitle", luaLcdDrawScreenTitle },
+  { "drawCombobox", luaLcdDrawCombobox },
   { NULL, NULL }  /* sentinel */
 };
 
@@ -912,6 +981,7 @@ void luaInit()
   lua_register(L, "playFile", luaPlayFile);
   lua_register(L, "playNumber", luaPlayNumber);
   lua_register(L, "popupInput", luaPopupInput);
+  lua_register(L, "channelOrder", luaChannelOrder);
 
   // Push OpenTX constants
   lua_registerint(L, "FULLSCALE", RESX);
@@ -934,6 +1004,12 @@ void luaInit()
   lua_registerint(L, "EVT_EXIT_BREAK", EVT_KEY_BREAK(KEY_EXIT));
   lua_registerint(L, "EVT_PLUS_BREAK", EVT_KEY_BREAK(KEY_PLUS));
   lua_registerint(L, "EVT_MINUS_BREAK", EVT_KEY_BREAK(KEY_MINUS));
+  lua_registerint(L, "FILL_WHITE", FILL_WHITE);
+  lua_registerint(L, "GREY_DEFAULT", GREY_DEFAULT);
+  lua_registerint(L, "SOLID", SOLID);
+  lua_registerint(L, "DOTTED", DOTTED);
+  lua_registerint(L, "LCD_W", LCD_W);
+  lua_registerint(L, "LCD_H", LCD_H);
 }
 
 void luaFree(ScriptInternalData & sid)
