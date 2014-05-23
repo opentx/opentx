@@ -1215,6 +1215,7 @@ void registerOpenTxFirmwares()
   openTx->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
   openTx->addOption("nogvars", QObject::tr("Disable Global variables"));
   openTx->addOption("haptic", QObject::tr("Haptic module installed"));
+  openTx->addOption("lua", QObject::tr("Support for Lua model scripts"));
   openTx->addOption("ppmus", QObject::tr("Channel values displayed in us"));
   openTx->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   openTx->addOptions(fai_options);
@@ -1224,6 +1225,7 @@ void registerOpenTxFirmwares()
   openTx = new OpenTxFirmware("opentx-taranisplus", QObject::tr("OpenTX for FrSky Taranis Plus"), BOARD_TARANIS_PLUS, true);
   openTx->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
   openTx->addOption("nogvars", QObject::tr("Disable Global variables"));
+  openTx->addOption("lua", QObject::tr("Support for Lua model scripts"));
   openTx->addOption("ppmus", QObject::tr("Channel values displayed in us"));
   openTx->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   openTx->addOptions(fai_options);
