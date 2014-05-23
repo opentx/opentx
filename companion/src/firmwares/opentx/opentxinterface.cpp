@@ -1213,7 +1213,6 @@ void registerOpenTxFirmwares()
   /* Taranis board */
   openTx = new OpenTxFirmware("opentx-taranis", QObject::tr("OpenTX for FrSky Taranis"), BOARD_TARANIS, true);
   openTx->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
-  openTx->addOption("notemplates", QObject::tr("Disable TEMPLATES menu"));
   openTx->addOption("nogvars", QObject::tr("Disable Global variables"));
   openTx->addOption("haptic", QObject::tr("Haptic module installed"));
   openTx->addOption("ppmus", QObject::tr("Channel values displayed in us"));
@@ -1224,7 +1223,6 @@ void registerOpenTxFirmwares()
   /* Taranis Plus board */
   openTx = new OpenTxFirmware("opentx-taranisplus", QObject::tr("OpenTX for FrSky Taranis Plus"), BOARD_TARANIS_PLUS, true);
   openTx->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
-  openTx->addOption("notemplates", QObject::tr("Disable TEMPLATES menu"));
   openTx->addOption("nogvars", QObject::tr("Disable Global variables"));
   openTx->addOption("ppmus", QObject::tr("Channel values displayed in us"));
   openTx->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
