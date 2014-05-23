@@ -129,7 +129,7 @@ void FrskyValueWithMinMax::set(uint8_t value, uint8_t unit)
 #if defined(CPUARM)
 inline bool rxBattAlarmRaised(uint8_t alarm)
 {
-  return g_model.rxBattAlarms[alarm] > 0 && frskyData.analog[TELEM_ANA_RxBatt].value < 5*g_model.rxBattAlarms[alarm];
+  return g_model.rxBattAlarms[alarm] > 0 && frskyData.analog[TELEM_ANA_RxBatt].value < g_model.rxBattAlarms[alarm];
 }
 inline bool alarmRaised(uint8_t channel, uint8_t idx)
 {

@@ -5522,14 +5522,14 @@ void menuModelTelemetry(uint8_t event)
 #if defined(CPUARM)
       case ITEM_TELEMETRY_RXBATT_LABEL:
         lcd_putsLeft(y, "RxBatt");
-        putsTelemetryChannel(TELEM_COL2+6*FW, y, dest, frskyData.analog[TELEM_ANA_RxBatt].value, LEFT);
+        putsTelemetryChannel(TELEM_COL2+6*FW, y, TELEM_RX_VOLTAGE-1, frskyData.analog[TELEM_ANA_RxBatt].value, LEFT);
         break;
       case ITEM_TELEMETRY_RXBATT_ALARM1:
       case ITEM_TELEMETRY_RXBATT_ALARM2:
       {
         uint8_t alarm = (k==ITEM_TELEMETRY_RXBATT_ALARM1 ? 0 : 1);
         lcd_putsLeft(y, (alarm==0 ? STR_LOWALARM : STR_CRITICALALARM));
-        putsTelemetryChannel(TELEM_COL2, y, TELEM_RX_VOLTAGE-1, 5*g_model.rxBattAlarms[alarm], LEFT|attr);
+        putsTelemetryChannel(TELEM_COL2, y, TELEM_RX_VOLTAGE-1, g_model.rxBattAlarms[alarm], LEFT|attr);
         if (attr && (s_editMode>0 || p1valdiff)) {
           g_model.rxBattAlarms[alarm] = checkIncDec(event, g_model.rxBattAlarms[alarm], 0, 255, EE_MODEL);
         }

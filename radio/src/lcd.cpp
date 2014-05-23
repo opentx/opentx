@@ -1217,6 +1217,7 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
       break;
 #if defined(CPUARM)
     case TELEM_RX_VOLTAGE-1:
+      val *= 5;
 #if LCD_W >= 212
       att |= PREC2;
 #else
