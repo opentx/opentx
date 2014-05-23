@@ -677,14 +677,14 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_CHECKLIST[];
   extern const pm_char STR_VIEW_NOTES[];
   extern const pm_char STR_RESET_SUBMENU[];
+  extern const pm_char STR_LOWALARM[];
+  extern const pm_char STR_CRITICALALARM[];
 #endif
 
 #if defined(PCBTARANIS)
   extern const pm_char STR_BYTES[];
   extern const pm_char STR_ANTENNAPROBLEM[];
   extern const pm_char STR_MODULE[];
-  extern const pm_char STR_LOWALARM[];
-  extern const pm_char STR_CRITICALALARM[];
   extern const pm_char STR_ENABLE_POPUP[];
   extern const pm_char STR_DISABLE_POPUP[];
   extern const pm_char STR_CURVE_PRESET[];
