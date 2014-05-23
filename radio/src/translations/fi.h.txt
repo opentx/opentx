@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bernet Andre <bernet.andre@gmail.com>
@@ -26,8 +26,8 @@
  *
  * !!!!! DO NOT EDIT fi.h - EDIT fi.h.txt INSTEAD !!!!!!!
  *
- * In order to make translations easier se.h.txt is parsed and national
- * characters are replaced by bitmap codes. The result is se.h.
+ * In order to make translations easier fi.h.txt is parsed and national
+ * characters are replaced by bitmap codes. The result is fi.h.
  * 
  * See translate.py in the util folder for the list of character codes  
  *
