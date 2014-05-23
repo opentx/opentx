@@ -1215,6 +1215,22 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
       att &= ~NO_UNIT;
       putsTimer(x, y, val, att, att);
       break;
+#if defined(CPUARM)
+    case TELEM_RX_VOLTAGE-1:
+#if LCD_W >= 212
+      att |= PREC2;
+#else
+      if (abs(val) < 1000) {
+        att |= PREC2;
+      }
+      else {
+        val = div10_and_round(val);
+        att |= PREC1;
+      }
+#endif
+      putsTelemetryValue(x, y, val, UNIT_VOLTS, att);
+      break;
+#endif
 #if defined(FRSKY)
     case TELEM_MIN_A1-1:
     case TELEM_MIN_A2-1:

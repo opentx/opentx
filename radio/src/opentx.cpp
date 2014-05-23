@@ -1606,6 +1606,11 @@ PLAY_FUNCTION(playValue, uint8_t idx)
     case MIXSRC_FIRST_TELEM+TELEM_SWR-1:
       PLAY_NUMBER(val, 0, 0);
       break;
+    case MIXSRC_FIRST_TELEM+TELEM_RX_VOLTAGE-1:
+      if (TELEMETRY_STREAMING()) {
+        PLAY_NUMBER(div10_and_round(val), 1+UNIT_VOLTS, PREC1);
+      }
+      break;
 #endif
 #if defined(FRSKY)
     case MIXSRC_FIRST_TELEM+TELEM_RSSI_TX-1:
@@ -1626,20 +1631,16 @@ PLAY_FUNCTION(playValue, uint8_t idx)
     case MIXSRC_FIRST_TELEM+TELEM_A3-1:
     case MIXSRC_FIRST_TELEM+TELEM_A4-1:
 #endif
-      // A1 and A2
-      idx -= (MIXSRC_FIRST_TELEM+TELEM_A1-1);
-      {
-        if (TELEMETRY_STREAMING()) {
-          uint8_t att = 0;
-          int16_t converted_value =  div10_and_round(applyChannelRatio(idx, val));;
-          if (ANA_CHANNEL_UNIT(idx) < UNIT_RAW) {
-            att = PREC1;
-          }
-          PLAY_NUMBER(converted_value, 1+ANA_CHANNEL_UNIT(idx), att);
+      if (TELEMETRY_STREAMING()) {
+        idx -= (MIXSRC_FIRST_TELEM+TELEM_A1-1);
+        uint8_t att = 0;
+        int16_t converted_value =  div10_and_round(applyChannelRatio(idx, val));;
+        if (ANA_CHANNEL_UNIT(idx) < UNIT_RAW) {
+          att = PREC1;
         }
-        break;
+        PLAY_NUMBER(converted_value, 1+ANA_CHANNEL_UNIT(idx), att);
       }
-
+      break;
     case MIXSRC_FIRST_TELEM+TELEM_CELL-1:
     case MIXSRC_FIRST_TELEM+TELEM_MIN_CELL-1:
       PLAY_NUMBER(div10_and_round(val), 1+UNIT_VOLTS, PREC1);
