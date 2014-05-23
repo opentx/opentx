@@ -26,7 +26,7 @@
  * In order to make translations easier de.h.txt is parsed and national
  * characters are replaced by bitmap codes. The result is de.h.
  * 
- * See translate.py in the util catalog for the list of character codes  
+ * See translate.py in the util folder for the list of character codes  
  *
  * !!!!! DO NOT EDIT de.h - EDIT de.h.txt INSTEAD !!!!!!!   
  */
@@ -35,8 +35,18 @@
  *  \n               -newline
  *  \t               -horizontal tab (ARM only)
  *  \001 to \034     -extended spacing (value * FW/2)
- *  \0               -ends actual string
+ *  \0               -ends current string
  */
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -104,14 +114,12 @@
 
 #define LEN_RETA123            "\001"
 
-#if defined(PCBGRUVIN9X)
-  #if ROTARY_ENCODERS > 2
-    #define TR_RETA123         "SHGQ123abcd"
-  #else
-    #define TR_RETA123         "SHGQ123ab"
-  #endif
-#elif defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(REVX)
   #define TR_RETA123           "SHGQ123LR"
+#elif defined(PCBSKY9X)
+  #define TR_RETA123           "SHGQ123a"
+#elif defined(CPUM2560)
+  #define TR_RETA123           "SHGQ123ab"
 #else
   #define TR_RETA123           "SHGQ123"
 #endif
@@ -298,6 +306,12 @@
 
 #define TR_ASPD_MAX            TR("ASp+", "ASpd+") 
 
+#if defined(PCBTARANIS)
+  #define TR_TELEM_RSSI_RX     "RSSI\0"
+#else
+  #define TR_TELEM_RSSI_RX     TR("Rx\0  ", "Rx\0 ")
+#endif
+
 #if LCD_W >= 212
   #define TR_VTELEMCHNS        "---\0 ""Batt\0" TR_TELEM_TIME TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE "Tmr1\0""Tmr2\0" TR_SWR "Tx\0  ""Rx\0  " TR_RX_BATT "A1\0  ""A2\0  " TR_A3_A4 "Alt\0 ""Rpm\0 ""Fuel\0""T1\0  ""T2\0  ""Spd\0 ""Dist\0""GAlt\0""Cell\0""Cells""Vfas\0""Curr\0""Cnsp\0""Powr\0""AccX\0""AccY\0""AccZ\0""Hdg\0 ""VSpd\0""ASpd\0""dTE\0 " TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE "A1-\0 ""A2-\0 " TR_A3_A4_MIN "Alt-\0""Alt+\0""Rpm+\0""T1+\0 ""T2+\0 ""Spd+\0""Dst+\0" TR_ASPD_MAX "Cell-""Cels-""Vfas-""Curr+""Powr+" TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE TR_TELEM_RESERVE "Acc\0 ""Time\0"
 #else
@@ -386,11 +400,11 @@
 #endif
 
 #if defined(CPUARM)
-  #define TR_LOGICALSW         "L1\0""L2\0""L3\0""L4\0""L5\0""L6\0""L7\0""L8\0""L9\0""L10""L11""L12""L13""L14""L15""L16""L17""L18""L19""L20""L21""L22""L23""L24""L25""L26""L27""L28""L29""L30""L31""L32"
+  #define TR_LOGICALSW          "L1\0""L2\0""L3\0""L4\0""L5\0""L6\0""L7\0""L8\0""L9\0""L10""L11""L12""L13""L14""L15""L16""L17""L18""L19""L20""L21""L22""L23""L24""L25""L26""L27""L28""L29""L30""L31""L32"
 #elif defined(PCBGRUVIN9X) || defined(CPUM2561) || defined(CPUM128)
-  #define TR_LOGICALSW         "L1\0""L2\0""L3\0""L4\0""L5\0""L6\0""L7\0""L8\0""L9\0""L10""L11""L12""L13""L14""L15"
+  #define TR_LOGICALSW          "L1\0""L2\0""L3\0""L4\0""L5\0""L6\0""L7\0""L8\0""L9\0""L10""L11""L12""L13""L14""L15"
 #else
-  #define TR_LOGICALSW         "L1\0""L2\0""L3\0""L4\0""L5\0""L6\0""L7\0""L8\0""L9\0""L10""L11""L12"
+  #define TR_LOGICALSW          "L1\0""L2\0""L3\0""L4\0""L5\0""L6\0""L7\0""L8\0""L9\0""L10""L11""L12"
 #endif
 
 #define TR_TRIMS_SWITCHES      "tSl""tSr""tHd""tHu""tGd""tGu""tQl""tQr"
@@ -408,11 +422,11 @@
 
 #if defined(PCBTARANIS)
   #define TR_6POS_POTS         "S11""S12""S13""S14""S15""S16""S21""S22""S23""S24""S25""S26""S31""S32""S33""S34""S35""S36"
-  #define TR_VSWITCHES         "SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_6POS_POTS TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW
+  #define TR_VSWITCHES         "---""SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_6POS_POTS TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW
 #elif defined(CPUARM)
-  #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW 
+  #define TR_VSWITCHES         "---" TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW 
 #else
-  #define TR_VSWITCHES         TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW
+  #define TR_VSWITCHES         "---" TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW
 #endif
 
 #if defined(HELI)

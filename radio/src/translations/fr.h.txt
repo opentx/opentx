@@ -26,7 +26,7 @@
  * In order to make translations easier fr.h.txt is parsed and national
  * characters are replaced by bitmap codes. The result is fr.h.
  * 
- * See translate.py in the util catalog for the list of character codes  
+ * See translate.py in the util folder for the list of character codes  
  *
  * !!!!! DO NOT EDIT fr.h - EDIT fr.h.txt INSTEAD !!!!!!!   
  */
@@ -35,8 +35,18 @@
  *  \n               -newline
  *  \t               -horizontal tab (ARM only)
  *  \001 to \034     -extended spacing (value * FW/2)
- *  \0               -ends actual string
+ *  \0               -ends current string
  */
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -133,7 +143,7 @@
 #endif
 
 #if defined(IRPROTOS)
-  #define TR_IRPROTOS          "SILV  TRAC09PICZ  SWIFT\0"
+  #define TR_IRPROTOS          "SLV  TRAC09PICZ  SWIFT\0"
 #else
   #define TR_IRPROTOS
 #endif
@@ -159,7 +169,7 @@
 #define TR_VMLTPX2             "+=""*="":="
 
 #define LEN_VMIXTRIMS          "\003"
-#define TR_VMIXTRIMS           "OFF""ON\0""Dir""Prf""Gaz""Ail"
+#define TR_VMIXTRIMS           "OFF""ON\0""Dir""Prf""Gaz""AL"
 
 #if defined(PCBTARANIS)
   #define TR_CSWTIMER          "Tempo"
@@ -390,11 +400,11 @@
 #endif
 
 #if defined(CPUARM)
-  #define TR_LOGICALSW         "IL1""IL2""IL3""IL4""IL5""IL6""IL7""IL8""IL9""ILA""ILB""ILC""ILD""ILE""ILF""ILG""ILH""ILI""ILJ""ILK""ILL""ILM""ILN""ILO""ILP""ILQ""ILR""ILS""ILT""ILU""ILV""ILW"
+  #define TR_LOGICALSW          "L1\0""L2\0""L3\0""L4\0""L5\0""L6\0""L7\0""L8\0""L9\0""L10""L11""L12""L13""L14""L15""L16""L17""L18""L19""L20""L21""L22""L23""L24""L25""L26""L27""L28""L29""L30""L31""L32"
 #elif defined(PCBGRUVIN9X) || defined(CPUM2561) || defined(CPUM128)
-  #define TR_LOGICALSW         "IL1""IL2""IL3""IL4""IL5""IL6""IL7""IL8""IL9""ILA""ILB""ILC""ILD""ILE""ILF"
+  #define TR_LOGICALSW          "L1\0""L2\0""L3\0""L4\0""L5\0""L6\0""L7\0""L8\0""L9\0""L10""L11""L12""L13""L14""L15"
 #else
-  #define TR_LOGICALSW         "IL1""IL2""IL3""IL4""IL5""IL6""IL7""IL8""IL9""ILA""ILB""ILC"
+  #define TR_LOGICALSW          "L1\0""L2\0""L3\0""L4\0""L5\0""L6\0""L7\0""L8\0""L9\0""L10""L11""L12"
 #endif
 
 #define TR_TRIMS_SWITCHES      "tDg""tDd""tPb""tPh""tGb""tGh""tAg""tAd"

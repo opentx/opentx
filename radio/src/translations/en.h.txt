@@ -32,13 +32,23 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
+ * !!!!! DO NOT EDIT en.h - EDIT en.h.txt INSTEAD !!!!!!!
+ *
+ * In order to make translations easier en.h.txt is parsed and national
+ * characters are replaced by bitmap codes. The result is en.h.
+ * See translate.py in the util folder for the list of character codes  
+ *
+ * !!!!! DO NOT EDIT en.h - EDIT en.h.txt INSTEAD !!!!!!!   
  */
+ 
+ 
+ 
 /* Formatting octal codes available in TR_ strings:
  *  \037\x           -sets LCD x-coord (x value in octal)
  *  \n               -newline
  *  \t               -horizontal tab (ARM only)
  *  \001 to \034     -extended spacing (value * FW/2)
- *  \0               -ends actual string
+ *  \0               -ends current string
  */
 
 // NON ZERO TERMINATED STRINGS
@@ -294,7 +304,7 @@
   #define TR_A3_A4_MIN
 #endif
 
-#define TR_ASPD_MAX            TR("ASp+", "ASpd+") 
+#define TR_ASPD_MAX            TR("ASp+", "ASpd+")
 
 #if defined(PCBTARANIS)
   #define TR_TELEM_RSSI_RX     "RSSI\0"
