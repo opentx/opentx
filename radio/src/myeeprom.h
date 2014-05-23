@@ -318,7 +318,7 @@ PACK(typedef struct t_ScriptData {
     TRAINER_MODULE
   };
   #define MODELDATA_BITMAP  char bitmap[LEN_BITMAP_NAME];
-  #define MODELDATA_EXTRA   uint8_t externalModule; uint8_t trainerMode; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][4]; uint8_t nPotsToWarn; int8_t potPosition[NUM_POTS];
+  #define MODELDATA_EXTRA   uint8_t externalModule; uint8_t trainerMode; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][4]; uint8_t nPotsToWarn; int8_t potPosition[NUM_POTS]; uint8_t rxBattAlarms[2];
   #define LIMITDATA_EXTRA   char name[LEN_CHANNEL_NAME]; int8_t curve;
   #define swstate_t         uint16_t
 #elif defined(PCBSKY9X)
@@ -328,7 +328,7 @@ PACK(typedef struct t_ScriptData {
     TRAINER_MODULE
   };
   #define MODELDATA_BITMAP
-  #define MODELDATA_EXTRA   uint8_t externalModule; ModuleData moduleData[NUM_MODULES+1]; uint8_t nPotsToWarn; int8_t potPosition[NUM_POTS];
+  #define MODELDATA_EXTRA   uint8_t externalModule; ModuleData moduleData[NUM_MODULES+1]; uint8_t nPotsToWarn; int8_t potPosition[NUM_POTS]; uint8_t rxBattAlarms[2];
   #define LIMITDATA_EXTRA
   #define swstate_t         uint8_t
 #else

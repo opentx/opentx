@@ -127,6 +127,10 @@ void FrskyValueWithMinMax::set(uint8_t value, uint8_t unit)
 }
 
 #if defined(CPUARM)
+inline bool rxBattAlarmRaised(uint8_t alarm)
+{
+  return g_model.rxBattAlarms[alarm] > 0 && frskyData.analog[TELEM_ANA_RxBatt].value < 5*g_model.rxBattAlarms[alarm];
+}
 inline bool alarmRaised(uint8_t channel, uint8_t idx)
 {
   return g_model.frsky.channels[channel].ratio > 0 && g_model.frsky.channels[channel].alarms_value[idx] > 0 && frskyData.analog[channel].value < g_model.frsky.channels[channel].alarms_value[idx];
@@ -252,6 +256,7 @@ NOINLINE void processSerialData(uint8_t data)
 enum AlarmsCheckSteps {
   ALARM_SWR_STEP,
   ALARM_RSSI_STEP,
+  ALARM_RXBATT_STEP,
   ALARM_A1_STEP,
   ALARM_A2_STEP,
   ALARM_A3_STEP,
@@ -337,6 +342,16 @@ void telemetryWakeup()
         }
         else if (getRssiAlarmValue(0) && frskyData.rssi[0].value < getRssiAlarmValue(0)) {
           AUDIO_RSSI_ORANGE();
+          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
+        }
+      }
+      else if (alarmsCheckStep == ALARM_RXBATT_STEP) {
+        if (rxBattAlarmRaised(1)) {
+          AUDIO_RXBATT_RED();
+          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
+        }
+        else if (rxBattAlarmRaised(0)) {
+          AUDIO_RXBATT_ORANGE();
           alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
         }
       }
