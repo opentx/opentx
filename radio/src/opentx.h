@@ -1333,6 +1333,10 @@ enum AUDIO_SOUNDS {
     AU_A1_RED,
     AU_A2_ORANGE,
     AU_A2_RED,
+    AU_A3_ORANGE,
+    AU_A3_RED,
+    AU_A4_ORANGE,
+    AU_A4_RED,
     AU_RSSI_ORANGE,
     AU_RSSI_RED,
     AU_SWR_RED,
@@ -1570,12 +1574,7 @@ getvalue_t convertLswTelemValue(LogicalSwitchData * cs);
 
 #if defined(FRSKY) || defined(CPUARM)
 lcdint_t applyChannelRatio(uint8_t channel, lcdint_t val);
-#endif
-
-#if defined(CPUARM)
-  #define ANA_CHANNEL_UNIT(channel) (channel > 1 ? UNIT_VOLTS : g_model.frsky.channels[channel].type)
-#else
-  #define ANA_CHANNEL_UNIT(channel) g_model.frsky.channels[channel].type
+#define ANA_CHANNEL_UNIT(channel) g_model.frsky.channels[channel].type
 #endif
 
 getvalue_t div10_and_round(getvalue_t value);

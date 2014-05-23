@@ -984,7 +984,7 @@ enum TelemetryUnit {
 };
 
 #if defined(CPUARM)
-PACK(typedef struct t_FrSkyChannelData {
+PACK(typedef struct {
   uint8_t   ratio;              // 0.0 means not used, 0.1V steps EG. 6.6 Volts = 66. 25.1V = 251, etc.
   int16_t   offset:12;
   uint16_t  type:4;             // channel unit (0=volts, ...)
@@ -995,7 +995,7 @@ PACK(typedef struct t_FrSkyChannelData {
   uint8_t   multiplier;         // 0=no multiplier, 1=*2 multiplier
 }) FrSkyChannelData;
 #else
-PACK(typedef struct t_FrSkyChannelData {
+PACK(typedef struct {
   uint8_t   ratio;              // 0.0 means not used, 0.1V steps EG. 6.6 Volts = 66. 25.1V = 251, etc.
   int16_t   offset:12;
   uint16_t  type:4;             // channel unit (0=volts, ...)
@@ -1004,12 +1004,6 @@ PACK(typedef struct t_FrSkyChannelData {
   uint8_t   alarms_greater:2;   // 0=LT(<), 1=GT(>)
   uint8_t   multiplier:2;       // 0=no multiplier, 1=*2 multiplier
 }) FrSkyChannelData;
-#endif
-
-#if defined(CPUARM)
-  #define TELEM_A_COUNT 4
-#else
-  #define TELEM_A_COUNT 2
 #endif
 
 enum TelemetrySource {
@@ -1036,11 +1030,13 @@ enum TelemetrySource {
   TELEM_A_FIRST,
   TELEM_A1=TELEM_A_FIRST,
   TELEM_A2,
-#if defined(CPUARM)
+#if !defined(CPUARM)
+  TELEM_A_LAST=TELEM_A2,
+#else
   TELEM_A3,
   TELEM_A4,
+  TELEM_A_LAST=TELEM_A4,
 #endif
-  TELEM_A_LAST=TELEM_A_FIRST+TELEM_A_COUNT-1,
   TELEM_ALT,
   TELEM_RPM,
   TELEM_FUEL,
@@ -1069,11 +1065,15 @@ enum TelemetrySource {
   TELEM_RESERVE9,
   TELEM_RESERVE10,
 #endif
-  TELEM_MIN_A1,
+  TELEM_MIN_A_FIRST,
+  TELEM_MIN_A1=TELEM_MIN_A_FIRST,
   TELEM_MIN_A2,
-#if defined(CPUARM)
+#if !defined(CPUARM)
+  TELEM_MIN_A_LAST=TELEM_MIN_A2,
+#else
   TELEM_MIN_A3,
   TELEM_MIN_A4,
+  TELEM_MIN_A_LAST=TELEM_MIN_A4,
 #endif
   TELEM_MIN_ALT,
   TELEM_MAX_ALT,

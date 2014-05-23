@@ -5358,6 +5358,18 @@ enum menuModelTelemetryItems {
   ITEM_TELEMETRY_A2_OFFSET,
   ITEM_TELEMETRY_A2_ALARM1,
   ITEM_TELEMETRY_A2_ALARM2,
+#if defined(CPUARM)
+  ITEM_TELEMETRY_A3_LABEL,
+  ITEM_TELEMETRY_A3_RANGE,
+  ITEM_TELEMETRY_A3_OFFSET,
+  ITEM_TELEMETRY_A3_ALARM1,
+  ITEM_TELEMETRY_A3_ALARM2,
+  ITEM_TELEMETRY_A4_LABEL,
+  ITEM_TELEMETRY_A4_RANGE,
+  ITEM_TELEMETRY_A4_OFFSET,
+  ITEM_TELEMETRY_A4_ALARM1,
+  ITEM_TELEMETRY_A4_ALARM2,
+#endif
   ITEM_TELEMETRY_RSSI_LABEL,
   ITEM_TELEMETRY_RSSI_ALARM1,
   ITEM_TELEMETRY_RSSI_ALARM2,
@@ -5434,11 +5446,11 @@ enum menuModelTelemetryItems {
 #endif
 
 #if defined(PCBTARANIS)
- #define CHANNEL_ROWS (uint8_t)-1, 1, 0, 0, 0,
- #define RSSI_ROWS    (uint8_t)-1, 0, 0,
+ #define CHANNEL_ROWS (uint8_t)-1, 1, 0, 0, 0
+ #define RSSI_ROWS    (uint8_t)-1, 0, 0
 #else
- #define CHANNEL_ROWS (uint8_t)-1, 1, 0, 2, 2,
- #define RSSI_ROWS    (uint8_t)-1, 1, 1,
+ #define CHANNEL_ROWS (uint8_t)-1, 1, 0, 2, 2
+ #define RSSI_ROWS    (uint8_t)-1, 1, 1
 #endif
 
 #if defined(GAUGES)
@@ -5461,7 +5473,7 @@ enum menuModelTelemetryItems {
 
 void menuModelTelemetry(uint8_t event)
 {
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX+1, {0, CHANNEL_ROWS CHANNEL_ROWS RSSI_ROWS USRDATA_LINES 0, 0, IF_FAS_OFFSET(0) CASE_CPUARM(0) CASE_VARIO(LABEL(Vario)) CASE_VARIO(0) CASE_VARIO(VARIO_RANGE_ROWS) CASE_PCBTARANIS(LABEL(TopBar)) CASE_PCBTARANIS(0) SCREEN_TYPE_ROWS, 2, 2, 2, 2, SCREEN_TYPE_ROWS, 2, 2, 2, 2, CASE_CPUARM(SCREEN_TYPE_ROWS) CASE_CPUARM(2) CASE_CPUARM(2) CASE_CPUARM(2) CASE_CPUARM(2) });
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX+1, {0, CHANNEL_ROWS, CHANNEL_ROWS, CASE_CPUARM(CHANNEL_ROWS) CASE_CPUARM(CHANNEL_ROWS) RSSI_ROWS, USRDATA_LINES 0, 0, IF_FAS_OFFSET(0) CASE_CPUARM(0) CASE_VARIO(LABEL(Vario)) CASE_VARIO(0) CASE_VARIO(VARIO_RANGE_ROWS) CASE_PCBTARANIS(LABEL(TopBar)) CASE_PCBTARANIS(0) SCREEN_TYPE_ROWS, 2, 2, 2, 2, SCREEN_TYPE_ROWS, 2, 2, 2, 2, CASE_CPUARM(SCREEN_TYPE_ROWS) CASE_CPUARM(2) CASE_CPUARM(2) CASE_CPUARM(2) CASE_CPUARM(2) });
 
   uint8_t sub = m_posVert - 1;
 
@@ -5482,12 +5494,26 @@ void menuModelTelemetry(uint8_t event)
     uint8_t k = i + s_pgOfs;
     uint8_t blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
     uint8_t attr = (sub == k ? blink : 0);
-    uint8_t ch = (k >= ITEM_TELEMETRY_A2_LABEL) ? 1 : 0;
+#if defined(CPUARM)
+    uint8_t ch = TELEM_ANA_A1;
+    if (k >= ITEM_TELEMETRY_A4_LABEL)
+      ch = TELEM_ANA_A4;
+    else if (k >= ITEM_TELEMETRY_A3_LABEL)
+      ch = TELEM_ANA_A3;
+    else if (k >= ITEM_TELEMETRY_A2_LABEL)
+      ch = TELEM_ANA_A2;
+#else
+    uint8_t ch = (k >= ITEM_TELEMETRY_A2_LABEL) ? TELEM_ANA_A2 : TELEM_ANA_A1;
+#endif
     FrSkyChannelData & channel = g_model.frsky.channels[ch];
-    uint8_t dest=TELEM_A1-1+ch;
-    switch(k) {
+    uint8_t dest = TELEM_A1-1+ch;
+    switch (k) {
       case ITEM_TELEMETRY_A1_LABEL:
       case ITEM_TELEMETRY_A2_LABEL:
+#if defined(CPUARM)
+      case ITEM_TELEMETRY_A3_LABEL:
+      case ITEM_TELEMETRY_A4_LABEL:
+#endif
         lcd_putsLeft(y, STR_ACHANNEL);
         lcd_outdezAtt(2*FW, y, ch+1, 0);
         putsTelemetryChannel(TELEM_COL2+6*FW, y, dest, frskyData.analog[ch].value, LEFT);
@@ -5495,6 +5521,10 @@ void menuModelTelemetry(uint8_t event)
 
       case ITEM_TELEMETRY_A1_RANGE:
       case ITEM_TELEMETRY_A2_RANGE:
+#if defined(CPUARM)
+      case ITEM_TELEMETRY_A3_RANGE:
+      case ITEM_TELEMETRY_A4_RANGE:
+#endif
         lcd_putsLeft(y, STR_RANGE);
         putsTelemetryChannel(TELEM_COL2, y, dest, 255-channel.offset, (m_posHorz<=0 ? attr : 0)|NO_UNIT|LEFT);
         lcd_putsiAtt(lcdLastPos, y, STR_VTELEMUNIT, channel.type, m_posHorz!=0 ? attr : 0);
@@ -5521,6 +5551,10 @@ void menuModelTelemetry(uint8_t event)
 
       case ITEM_TELEMETRY_A1_OFFSET:
       case ITEM_TELEMETRY_A2_OFFSET:
+#if defined(CPUARM)
+      case ITEM_TELEMETRY_A3_OFFSET:
+      case ITEM_TELEMETRY_A4_OFFSET:
+#endif
         lcd_putsLeft(y, STR_OFFSET);
         putsTelemetryChannel(TELEM_COL2, y, dest, 0, LEFT|attr);
         if (attr) channel.offset = checkIncDec(event, channel.offset, -256, 256, EE_MODEL);
@@ -5530,36 +5564,46 @@ void menuModelTelemetry(uint8_t event)
       case ITEM_TELEMETRY_A1_ALARM2:
       case ITEM_TELEMETRY_A2_ALARM1:
       case ITEM_TELEMETRY_A2_ALARM2:
+#if defined(CPUARM)
+      case ITEM_TELEMETRY_A3_ALARM1:
+      case ITEM_TELEMETRY_A3_ALARM2:
+      case ITEM_TELEMETRY_A4_ALARM1:
+      case ITEM_TELEMETRY_A4_ALARM2:
+#endif
       {
-        uint8_t j = ((k==ITEM_TELEMETRY_A1_ALARM1 || k==ITEM_TELEMETRY_A2_ALARM1) ? 0 : 1);
+#if defined(CPUARM)
+        uint8_t alarm = ((k==ITEM_TELEMETRY_A1_ALARM1 || k==ITEM_TELEMETRY_A2_ALARM1 || k==ITEM_TELEMETRY_A3_ALARM1 || k==ITEM_TELEMETRY_A4_ALARM1) ? 0 : 1);
+#else
+        uint8_t alarm = ((k==ITEM_TELEMETRY_A1_ALARM1 || k==ITEM_TELEMETRY_A2_ALARM1) ? 0 : 1);
+#endif
 #if defined(PCBTARANIS)
-        lcd_putsLeft(y, (j==0 ? STR_LOWALARM : STR_CRITICALALARM));
-        putsTelemetryChannel(TELEM_COL2, y, dest, channel.alarms_value[j], LEFT|attr);
+        lcd_putsLeft(y, (alarm==0 ? STR_LOWALARM : STR_CRITICALALARM));
+        putsTelemetryChannel(TELEM_COL2, y, dest, channel.alarms_value[alarm], LEFT|attr);
         if (attr && (s_editMode>0 || p1valdiff)) {
-          channel.alarms_value[j] = checkIncDec(event, channel.alarms_value[j], 0, 255, EE_MODEL);
+          channel.alarms_value[alarm] = checkIncDec(event, channel.alarms_value[alarm], 0, 255, EE_MODEL);
         }
 #else
         lcd_putsLeft(y, STR_ALARM);
-        lcd_putsiAtt(TELEM_COL2, y, STR_VALARM, ALARM_LEVEL(ch, j), m_posHorz<=0 ? attr : 0);
-        lcd_putsiAtt(TELEM_COL2+4*FW, y, STR_VALARMFN, ALARM_GREATER(ch, j), (m_posHorz<0 || m_posHorz==1) ? attr : 0);
-        putsTelemetryChannel(TELEM_COL2+6*FW, y, dest, channel.alarms_value[j], ((m_posHorz<0 || m_posHorz==2) ? attr : 0) | LEFT);
+        lcd_putsiAtt(TELEM_COL2, y, STR_VALARM, ALARM_LEVEL(ch, alarm), m_posHorz<=0 ? attr : 0);
+        lcd_putsiAtt(TELEM_COL2+4*FW, y, STR_VALARMFN, ALARM_GREATER(ch, alarm), (m_posHorz<0 || m_posHorz==1) ? attr : 0);
+        putsTelemetryChannel(TELEM_COL2+6*FW, y, dest, channel.alarms_value[alarm], ((m_posHorz<0 || m_posHorz==2) ? attr : 0) | LEFT);
 
         if (attr && (s_editMode>0 || p1valdiff)) {
           uint8_t t;
           switch (m_posHorz) {
            case 0:
-             t = ALARM_LEVEL(ch, j);
-             channel.alarms_level = (channel.alarms_level & ~(3<<(2*j))) + (checkIncDecModel(event, t, 0, 3) << (2*j));
+             t = ALARM_LEVEL(ch, alarm);
+             channel.alarms_level = (channel.alarms_level & ~(3<<(2*alarm))) + (checkIncDecModel(event, t, 0, 3) << (2*alarm));
              break;
            case 1:
-             t = ALARM_GREATER(ch, j);
+             t = ALARM_GREATER(ch, alarm);
              if (t != checkIncDecModel(event, t, 0, 1)) {
-               channel.alarms_greater ^= (1 << j);
+               channel.alarms_greater ^= (1 << alarm);
                frskySendAlarms();
              }
              break;
            case 2:
-             channel.alarms_value[j] = checkIncDec(event, channel.alarms_value[j], 0, 255, EE_MODEL);
+             channel.alarms_value[alarm] = checkIncDec(event, channel.alarms_value[alarm], 0, 255, EE_MODEL);
              break;
           }
         }
@@ -5573,26 +5617,26 @@ void menuModelTelemetry(uint8_t event)
 
       case ITEM_TELEMETRY_RSSI_ALARM1:
       case ITEM_TELEMETRY_RSSI_ALARM2: {
-        uint8_t j = k-ITEM_TELEMETRY_RSSI_ALARM1;
+        uint8_t alarm = k-ITEM_TELEMETRY_RSSI_ALARM1;
 #if defined(PCBTARANIS)
-        lcd_putsLeft(y, (j==0 ? STR_LOWALARM : STR_CRITICALALARM));
-        lcd_outdezNAtt(TELEM_COL2, y, getRssiAlarmValue(j), LEFT|attr, 3);
+        lcd_putsLeft(y, (alarm==0 ? STR_LOWALARM : STR_CRITICALALARM));
+        lcd_outdezNAtt(TELEM_COL2, y, getRssiAlarmValue(alarm), LEFT|attr, 3);
         if (attr && (s_editMode>0 || p1valdiff)) {
-          CHECK_INCDEC_MODELVAR(event, g_model.frsky.rssiAlarms[j].value, -30, 30);
+          CHECK_INCDEC_MODELVAR(event, g_model.frsky.rssiAlarms[alarm].value, -30, 30);
         }
 #else
         lcd_putsLeft(y, STR_ALARM);
-        lcd_putsiAtt(TELEM_COL2, y, STR_VALARM, ((2+j+g_model.frsky.rssiAlarms[j].level)%4), m_posHorz<=0 ? attr : 0);
+        lcd_putsiAtt(TELEM_COL2, y, STR_VALARM, ((2+alarm+g_model.frsky.rssiAlarms[alarm].level)%4), m_posHorz<=0 ? attr : 0);
         lcd_putc(TELEM_COL2+4*FW, y, '<');
-        lcd_outdezNAtt(TELEM_COL2+6*FW, y, getRssiAlarmValue(j), LEFT|(m_posHorz!=0 ? attr : 0), 3);
+        lcd_outdezNAtt(TELEM_COL2+6*FW, y, getRssiAlarmValue(alarm), LEFT|(m_posHorz!=0 ? attr : 0), 3);
 
         if (attr && (s_editMode>0 || p1valdiff)) {
           switch (m_posHorz) {
             case 0:
-              CHECK_INCDEC_MODELVAR(event, g_model.frsky.rssiAlarms[j].level, -3, 2); // circular (saves flash)
+              CHECK_INCDEC_MODELVAR(event, g_model.frsky.rssiAlarms[alarm].level, -3, 2); // circular (saves flash)
               break;
             case 1:
-              CHECK_INCDEC_MODELVAR(event, g_model.frsky.rssiAlarms[j].value, -30, 30);
+              CHECK_INCDEC_MODELVAR(event, g_model.frsky.rssiAlarms[alarm].value, -30, 30);
               break;
           }
         }

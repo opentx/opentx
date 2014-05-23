@@ -281,8 +281,19 @@ PACK(struct FrskySerialData {
 });
 #endif
 
+enum TelemAnas {
+  TELEM_ANA_A1,
+  TELEM_ANA_A2,
+#if defined(CPUARM)
+  TELEM_ANA_A3,
+  TELEM_ANA_A4,
+  TELEM_ANA_RxBatt,
+#endif
+  TELEM_ANA_COUNT
+};
+
 struct FrskyData {
-  FrskyValueWithMinMax analog[TELEM_A_COUNT];
+  FrskyValueWithMinMax analog[TELEM_ANA_COUNT];
   FrskyValueWithMin    rssi[2];
 #if defined(CPUARM)
   FrskyValueWithMin    swr;

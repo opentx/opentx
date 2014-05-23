@@ -330,10 +330,16 @@ getvalue_t getValue(uint8_t i)
 #if defined(FRSKY)
 #if defined(CPUARM)
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_SWR) return frskyData.swr.value;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RX_VOLTAGE) return frskyData.analog[TELEM_ANA_RxBatt].value;
 #endif
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RSSI_TX) return frskyData.rssi[1].value;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RSSI_RX) return frskyData.rssi[0].value;
-  else if (i<=MIXSRC_FIRST_TELEM-1+TELEM_A_LAST) return frskyData.analog[i-MIXSRC_FIRST_TELEM+1-TELEM_A1].value;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_A1) return frskyData.analog[TELEM_ANA_A1].value;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_A2) return frskyData.analog[TELEM_ANA_A2].value;
+#if defined(CPUARM)
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_A3) return frskyData.analog[TELEM_ANA_A3].value;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_A4) return frskyData.analog[TELEM_ANA_A4].value;
+#endif
 #if defined(FRSKY_SPORT)
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ALT) return frskyData.hub.baroAltitude;
 #elif defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
@@ -360,8 +366,12 @@ getvalue_t getValue(uint8_t i)
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_VSPEED) return frskyData.hub.varioSpeed;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ASPEED) return frskyData.hub.airSpeed;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_DTE) return frskyData.hub.dTE;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_MIN_A1) return frskyData.analog[0].min;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_MIN_A2) return frskyData.analog[1].min;
+  else if (i<=MIXSRC_FIRST_TELEM-1+TELEM_MIN_A1) return frskyData.analog[TELEM_ANA_A1].min;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_MIN_A2) return frskyData.analog[TELEM_ANA_A2].min;
+#if defined(CPUARM)
+  else if (i<=MIXSRC_FIRST_TELEM-1+TELEM_MIN_A3) return frskyData.analog[TELEM_ANA_A3].min;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_MIN_A4) return frskyData.analog[TELEM_ANA_A4].min;
+#endif
   else if (i<=MIXSRC_FIRST_TELEM-1+TELEM_CSW_MAX) return *(((int16_t*)(&frskyData.hub.minAltitude))+i-(MIXSRC_FIRST_TELEM-1+TELEM_MIN_ALT));
 #endif
 #endif

@@ -194,6 +194,10 @@ const char * audioFilenames[] = {
   "a1_red",
   "a2_org",
   "a2_red",
+  "a3_org",
+  "a3_red",
+  "a4_org",
+  "a4_red",
   "rssi_org",
   "rssi_red",
   "swr_red",
@@ -1061,16 +1065,16 @@ void audioEvent(uint8_t e, uint16_t f)
           audioQueue.playTone(BEEP_DEFAULT_FREQ+150, 120, 20, PLAY_REPEAT(2)|PLAY_NOW);
           break;
         case AU_A1_ORANGE:
+        case AU_A2_ORANGE:
+        case AU_A3_ORANGE:
+        case AU_A4_ORANGE:
           audioQueue.playTone(BEEP_DEFAULT_FREQ+600, 200, 20, PLAY_NOW);
           break;
         case AU_A1_RED:
-          audioQueue.playTone(BEEP_DEFAULT_FREQ+600, 200, 20, PLAY_REPEAT(1)|PLAY_NOW);
-          break;
-        case AU_A2_ORANGE:
-          audioQueue.playTone(BEEP_DEFAULT_FREQ+1500, 200, 20, PLAY_NOW);
-          break;
         case AU_A2_RED:
-          audioQueue.playTone(BEEP_DEFAULT_FREQ+1500, 200, 20, PLAY_REPEAT(1)|PLAY_NOW);
+        case AU_A3_RED:
+        case AU_A4_RED:
+          audioQueue.playTone(BEEP_DEFAULT_FREQ+600, 200, 20, PLAY_REPEAT(1)|PLAY_NOW);
           break;
         case AU_RSSI_ORANGE:
           audioQueue.playTone(BEEP_DEFAULT_FREQ+1500, 800, 20, PLAY_NOW);

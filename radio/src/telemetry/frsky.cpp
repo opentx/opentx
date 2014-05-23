@@ -249,6 +249,16 @@ NOINLINE void processSerialData(uint8_t data)
 #endif
 }
 
+enum AlarmsCheckSteps {
+  ALARM_SWR_STEP,
+  ALARM_RSSI_STEP,
+  ALARM_A1_STEP,
+  ALARM_A2_STEP,
+  ALARM_A3_STEP,
+  ALARM_A4_STEP,
+  ALARM_STEPS_COUNT
+};
+
 void telemetryWakeup()
 {
 #if defined(CPUARM)
@@ -310,7 +320,7 @@ void telemetryWakeup()
 
     alarmsCheckTime = get_tmr10ms() + 100; /* next check in 1 second */
 
-    if (alarmsCheckStep == 0) {
+    if (alarmsCheckStep == ALARM_SWR_STEP) {
 #if defined(PCBTARANIS)
       if (IS_FRSKY_SPORT_PROTOCOL() && frskyData.swr.value > 0x33) {
         AUDIO_SWR_RED();
@@ -320,7 +330,7 @@ void telemetryWakeup()
 #endif
     }
     else if (TELEMETRY_STREAMING()) {
-      if (alarmsCheckStep == 1) {
+      if (alarmsCheckStep == ALARM_RSSI_STEP) {
         if (getRssiAlarmValue(1) && frskyData.rssi[0].value < getRssiAlarmValue(1)) {
           AUDIO_RSSI_RED();
           alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
@@ -330,29 +340,49 @@ void telemetryWakeup()
           alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
         }
       }
-      else if (alarmsCheckStep == 2) {
-        if (alarmRaised(1, 1)) {
+      else if (alarmsCheckStep == ALARM_A1_STEP) {
+        if (alarmRaised(TELEM_ANA_A1, 1)) {
+          AUDIO_A1_RED();
+          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
+        }
+        else if (alarmRaised(TELEM_ANA_A1, 0)) {
+          AUDIO_A1_ORANGE();
+          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
+        }
+      }
+      else if (alarmsCheckStep == ALARM_A2_STEP) {
+        if (alarmRaised(TELEM_ANA_A2, 1)) {
           AUDIO_A2_RED();
           alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
         }
-        else if (alarmRaised(1, 0)) {
+        else if (alarmRaised(TELEM_ANA_A2, 0)) {
           AUDIO_A2_ORANGE();
           alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
         }
       }
-      else if (alarmsCheckStep == 3) {
-        if (alarmRaised(0, 1)) {
-          AUDIO_A1_RED();
+      else if (alarmsCheckStep == ALARM_A3_STEP) {
+        if (alarmRaised(TELEM_ANA_A3, 1)) {
+          AUDIO_A3_RED();
           alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
         }
-        else if (alarmRaised(0, 0)) {
-          AUDIO_A1_ORANGE();
+        else if (alarmRaised(TELEM_ANA_A3, 0)) {
+          AUDIO_A3_ORANGE();
+          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
+        }
+      }
+      else if (alarmsCheckStep == ALARM_A4_STEP) {
+        if (alarmRaised(TELEM_ANA_A4, 1)) {
+          AUDIO_A4_RED();
+          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
+        }
+        else if (alarmRaised(TELEM_ANA_A4, 0)) {
+          AUDIO_A4_ORANGE();
           alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
         }
       }
     }
 
-    if (++alarmsCheckStep == 4) {
+    if (++alarmsCheckStep == ALARM_STEPS_COUNT) {
       alarmsCheckStep = 0;
     }
   }
@@ -465,8 +495,8 @@ void telemetryReset()
 #endif
   frskyData.rssi[0].value = 75;
   frskyData.rssi[1].value = 75;
-  frskyData.analog[0].set(120, UNIT_VOLTS);
-  frskyData.analog[1].set(240, UNIT_VOLTS);
+  frskyData.analog[TELEM_ANA_A1].set(120, UNIT_VOLTS);
+  frskyData.analog[TELEM_ANA_A2].set(240, UNIT_VOLTS);
   frskyData.hub.fuelLevel = 75;
   frskyData.hub.rpm = 12000;
   frskyData.hub.vfas = 100;
