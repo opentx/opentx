@@ -1572,6 +1572,12 @@ getvalue_t convertLswTelemValue(LogicalSwitchData * cs);
 lcdint_t applyChannelRatio(uint8_t channel, lcdint_t val);
 #endif
 
+#if defined(CPUARM)
+  #define ANA_CHANNEL_UNIT(channel) (channel > 1 ? UNIT_VOLTS : g_model.frsky.channels[channel].type)
+#else
+  #define ANA_CHANNEL_UNIT(channel) g_model.frsky.channels[channel].type
+#endif
+
 getvalue_t div10_and_round(getvalue_t value);
 
 

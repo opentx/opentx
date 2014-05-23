@@ -1614,20 +1614,28 @@ PLAY_FUNCTION(playValue, uint8_t idx)
       break;
     case MIXSRC_FIRST_TELEM+TELEM_MIN_A1-1:
     case MIXSRC_FIRST_TELEM+TELEM_MIN_A2-1:
+#if defined(CPUARM)
+    case MIXSRC_FIRST_TELEM+TELEM_MIN_A3-1:
+    case MIXSRC_FIRST_TELEM+TELEM_MIN_A4-1:
+#endif
       idx -= TELEM_MIN_A1-TELEM_A1;
       // no break
     case MIXSRC_FIRST_TELEM+TELEM_A1-1:
     case MIXSRC_FIRST_TELEM+TELEM_A2-1:
+#if defined(CPUARM)
+    case MIXSRC_FIRST_TELEM+TELEM_A3-1:
+    case MIXSRC_FIRST_TELEM+TELEM_A4-1:
+#endif
       // A1 and A2
       idx -= (MIXSRC_FIRST_TELEM+TELEM_A1-1);
       {
         if (TELEMETRY_STREAMING()) {
           uint8_t att = 0;
           int16_t converted_value =  div10_and_round(applyChannelRatio(idx, val));;
-          if (g_model.frsky.channels[idx].type < UNIT_RAW) {
+          if (ANA_CHANNEL_UNIT(idx) < UNIT_RAW) {
             att = PREC1;
           }
-          PLAY_NUMBER(converted_value, 1+g_model.frsky.channels[idx].type, att);
+          PLAY_NUMBER(converted_value, 1+ANA_CHANNEL_UNIT(idx), att);
         }
         break;
       }

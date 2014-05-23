@@ -163,6 +163,11 @@ uint16_t getChannelRatio(uint8_t channel)
 
 lcdint_t applyChannelRatio(uint8_t channel, lcdint_t val)
 {
+#if defined(CPUARM)
+  // A3 and A4 don't have ratio settings
+  if (channel > 1)
+    return val;
+#endif
   return ((int32_t)val+g_model.frsky.channels[channel].offset) * getChannelRatio(channel) * 2 / 51;
 }
 #endif

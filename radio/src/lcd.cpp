@@ -1218,19 +1218,29 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
 #if defined(FRSKY)
     case TELEM_MIN_A1-1:
     case TELEM_MIN_A2-1:
+#if defined(CPUARM)
+    case TELEM_MIN_A3-1:
+    case TELEM_MIN_A4-1:
+#endif
       channel -= TELEM_MIN_A1-TELEM_A1;
       // no break
     case TELEM_A1-1:
     case TELEM_A2-1:
+#if defined(CPUARM)
+    case TELEM_A3-1:
+    case TELEM_A4-1:
+#endif
       channel -= TELEM_A1-1;
       // A1 and A2
     {
       lcdint_t converted_value = applyChannelRatio(channel, val);
-      if (g_model.frsky.channels[channel].type >= UNIT_RAW) {
+      if (ANA_CHANNEL_UNIT(channel) >= UNIT_RAW) {
         converted_value = div10_and_round(converted_value);
       }
       else {
-#if !defined(PCBTARANIS)
+#if LCD_W >= 212
+        att |= PREC2;
+#else
         if (abs(converted_value) < 1000) {
           att |= PREC2;
         }
@@ -1238,8 +1248,6 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
           converted_value = div10_and_round(converted_value);
           att |= PREC1;
         }
-#else
-        att |= PREC2;
 #endif
       }
       putsTelemetryValue(x, y, converted_value, g_model.frsky.channels[channel].type, att);

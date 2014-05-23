@@ -463,6 +463,12 @@ void frskySportProcessPacket(uint8_t *packet)
           frskyData.hub.gpsFix = 0;
         }
       }
+      else if (appId >= A3_FIRST_ID && appId <= A3_LAST_ID) {
+        frskyData.analog[2].set(SPORT_DATA_U32(packet), 0);
+      }
+      else if (appId >= A4_FIRST_ID && appId <= A4_LAST_ID) {
+        frskyData.analog[3].set(SPORT_DATA_U32(packet), 0);
+      }
       else if (appId >= CELLS_FIRST_ID && appId <= CELLS_LAST_ID) {
         uint32_t cells = SPORT_DATA_U32(packet);
         uint8_t battnumber = cells & 0xF;
