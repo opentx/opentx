@@ -859,7 +859,7 @@ class FrSkyScreenData {
 class FrSkyData {
   public:
     FrSkyData() { clear(); }
-    FrSkyChannelData channels[2];
+    FrSkyChannelData channels[4];
     unsigned int usrProto;
     unsigned int imperial;
     int blades;

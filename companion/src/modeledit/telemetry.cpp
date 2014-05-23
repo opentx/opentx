@@ -266,7 +266,8 @@ void TelemetryAnalog::on_alarm2ValueSB_editingFinished()
     }
     else if (alarm2value>(ratio+(calib*ratio)/255)) {
       analog.alarms[1].value=255;
-    } else {
+    }
+    else {
       analog.alarms[1].value = round((alarm2value-((calib*ratio)/255))/ratio*255);
     }
     update();
@@ -482,6 +483,20 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
   analogs[1] = new TelemetryAnalog(this, model.frsky.channels[1], model, generalSettings, firmware);
   ui->A2Layout->addWidget(analogs[1]);
   connect(analogs[1], SIGNAL(modified()), this, SLOT(onAnalogModified()));
+
+  if (IS_ARM(GetEepromInterface()->getBoard())) {
+    analogs[2] = new TelemetryAnalog(this, model.frsky.channels[2], model, generalSettings, firmware);
+    ui->A3Layout->addWidget(analogs[2]);
+    connect(analogs[2], SIGNAL(modified()), this, SLOT(onAnalogModified()));
+
+    analogs[3] = new TelemetryAnalog(this, model.frsky.channels[3], model, generalSettings, firmware);
+    ui->A4Layout->addWidget(analogs[3]);
+    connect(analogs[3], SIGNAL(modified()), this, SLOT(onAnalogModified()));
+  }
+  else {
+    ui->A3GB->hide();
+    ui->A4GB->hide();
+  }
 
   for (int i=0; i<firmware->getCapability(TelemetryCustomScreens); i++) {
     TelemetryCustomScreen * tab = new TelemetryCustomScreen(this, model, model.frsky.screens[i], generalSettings, firmware);
