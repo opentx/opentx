@@ -331,7 +331,7 @@ void menuTelemetryFrsky(uint8_t event)
   else if (s_frsky_view == e_frsky_voltages) {
     // Volts / Amps / Watts / mAh
     uint8_t analog = 0;
-    lcd_putsiAtt(0, 2*FH, STR_VOLTSRC, g_model.frsky.voltsSource+1, 0);
+    lcd_putsiAtt(0, 2*FH, STR_AMPSRC, g_model.frsky.voltsSource+1, 0);
     switch(g_model.frsky.voltsSource) {
       case 0:
       case 1:
@@ -349,7 +349,7 @@ void menuTelemetryFrsky(uint8_t event)
     }
 
     if (g_model.frsky.currentSource) {
-      lcd_putsiAtt(0, 4*FH, STR_VOLTSRC, g_model.frsky.currentSource, 0);
+      lcd_putsiAtt(0, 4*FH, STR_AMPSRC, g_model.frsky.currentSource, 0);
       switch(g_model.frsky.currentSource) {
         case 1:
         case 2:
