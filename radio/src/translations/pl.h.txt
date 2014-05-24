@@ -544,7 +544,7 @@
 #define TR_SCREEN              "Ekran "
 #define TR_SOUND_LABEL         "Dźwięk"
 #define TR_LENGTH              INDENT"Długość"
-#define TR_BEEP_LENGTH         INDENT "Beep Length"
+#define TR_BEEP_LENGTH         INDENT "Dług. Beepa"
 #define TR_SPKRPITCH           INDENT"Dźwięk"
 #define TR_HAPTIC_LABEL        "Wibracja"
 #define TR_HAPTICSTRENGTH      INDENT"Siła"
