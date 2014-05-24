@@ -252,15 +252,19 @@ void displayTopBar()
     /* Rx voltage */
     lcdint_t voltage = 0;
     uint8_t channel = 0;
-    if (g_model.frsky.voltsSource <= 1) {
+    if (g_model.frsky.voltsSource == FRSKY_VOLTS_SOURCE_RXBATT) {
+      channel = TELEM_RXBATT-1;
+      voltage = frskyData.analog[TELEM_ANA_RXBATT].value;
+    }
+    else if (g_model.frsky.voltsSource <= FRSKY_VOLTS_SOURCE_A4) {
       channel = TELEM_A1+g_model.frsky.voltsSource-1;
       voltage = frskyData.analog[g_model.frsky.voltsSource].value;
     }
-    else if (g_model.frsky.voltsSource == 2) {
+    else if (g_model.frsky.voltsSource == FRSKY_VOLTS_SOURCE_FAS) {
       channel = TELEM_VFAS-1;
       voltage = frskyData.hub.vfas;
     }
-    else if (g_model.frsky.voltsSource == 3) {
+    else if (g_model.frsky.voltsSource == FRSKY_VOLTS_SOURCE_CELLS) {
       channel = TELEM_CELLS_SUM-1;
       voltage = frskyData.hub.cellsSum;
     }

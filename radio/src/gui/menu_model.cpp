@@ -5522,14 +5522,14 @@ void menuModelTelemetry(uint8_t event)
 #if defined(CPUARM)
       case ITEM_TELEMETRY_RXBATT_LABEL:
         lcd_putsLeft(y, "RxBatt");
-        putsTelemetryChannel(TELEM_COL2+6*FW, y, TELEM_RX_VOLTAGE-1, frskyData.analog[TELEM_ANA_RxBatt].value, LEFT);
+        putsTelemetryChannel(TELEM_COL2+6*FW, y, TELEM_RXBATT-1, frskyData.analog[TELEM_ANA_RXBATT].value, LEFT);
         break;
       case ITEM_TELEMETRY_RXBATT_ALARM1:
       case ITEM_TELEMETRY_RXBATT_ALARM2:
       {
         uint8_t alarm = (k==ITEM_TELEMETRY_RXBATT_ALARM1 ? 0 : 1);
         lcd_putsLeft(y, (alarm==0 ? STR_LOWALARM : STR_CRITICALALARM));
-        putsTelemetryChannel(TELEM_COL2, y, TELEM_RX_VOLTAGE-1, g_model.rxBattAlarms[alarm], LEFT|attr);
+        putsTelemetryChannel(TELEM_COL2, y, TELEM_RXBATT-1, g_model.rxBattAlarms[alarm], LEFT|attr);
         if (attr && (s_editMode>0 || p1valdiff)) {
           g_model.rxBattAlarms[alarm] = checkIncDec(event, g_model.rxBattAlarms[alarm], 0, 255, EE_MODEL);
         }
@@ -5699,14 +5699,18 @@ void menuModelTelemetry(uint8_t event)
 
       case ITEM_TELEMETRY_USR_VOLTAGE_SOURCE:
         lcd_putsLeft(y, STR_VOLTAGE);
+#if defined(CPUARM)
+        lcd_putsiAtt(TELEM_COL2, y, STR_VOLTSRC, g_model.frsky.voltsSource, attr);
+#else
         lcd_putsiAtt(TELEM_COL2, y, STR_AMPSRC, g_model.frsky.voltsSource+1, attr);
-        if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, g_model.frsky.voltsSource, 3);
+#endif
+        if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, g_model.frsky.voltsSource, FRSKY_VOLTS_SOURCE_LAST);
         break;
 
       case ITEM_TELEMETRY_USR_CURRENT_SOURCE:
         lcd_putsLeft(y, STR_CURRENT);
         lcd_putsiAtt(TELEM_COL2, y, STR_AMPSRC, g_model.frsky.currentSource, attr);
-        if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, g_model.frsky.currentSource, 3);
+        if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, g_model.frsky.currentSource, FRSKY_CURRENT_SOURCE_LAST);
         break;
         
 #if defined(FAS_OFFSET) || !defined(CPUM64)

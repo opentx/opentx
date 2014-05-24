@@ -339,7 +339,7 @@ int ConvertTelemetrySource_215_to_216(int source)
   if (source >= TELEM_RSSI_TX)
     source += 1;
   // RxBatt added
-  if (source >= TELEM_RX_VOLTAGE)
+  if (source >= TELEM_RXBATT)
     source += 1;
   // A3 and A4 added
   if (source >= TELEM_A3)

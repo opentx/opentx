@@ -134,7 +134,7 @@ extern const pm_char STR_OPEN9X[];
   #define OFS_VALARMFN          (OFS_VALARM + sizeof(TR_VALARM))
   #define OFS_VTELPROTO         (OFS_VALARMFN + sizeof(TR_VALARMFN))
   #define OFS_GPSFORMAT         (OFS_VTELPROTO + sizeof(TR_VTELPROTO))
-  #define OFS_AMPSRC           (OFS_GPSFORMAT + sizeof(TR_GPSFORMAT))
+  #define OFS_AMPSRC            (OFS_GPSFORMAT + sizeof(TR_GPSFORMAT))
   #define OFS_VARIOSRC          (OFS_AMPSRC + sizeof(TR_AMPSRC))
   #define OFS_VSCREEN           (OFS_VARIOSRC + sizeof(TR_VARIOSRC))
   #define OFS_VTEMPLATES        (OFS_VSCREEN + sizeof(TR_VSCREEN))
@@ -178,7 +178,8 @@ extern const pm_char STR_OPEN9X[];
   #define OFS_TARANIS_PROTOCOLS (OFS_VTRAINERMODES + sizeof(TR_VTRAINERMODES))
   #define OFS_XJT_PROTOCOLS     (OFS_TARANIS_PROTOCOLS + sizeof(TR_TARANIS_PROTOCOLS))
   #define OFS_DSM_PROTOCOLS     (OFS_XJT_PROTOCOLS + sizeof(TR_XJT_PROTOCOLS))
-  #define OFS_CURVE_TYPES       (OFS_DSM_PROTOCOLS + sizeof(TR_DSM_PROTOCOLS))
+  #define OFS_VOLTSRC           (OFS_DSM_PROTOCOLS + sizeof(TR_DSM_PROTOCOLS))
+  #define OFS_CURVE_TYPES       (OFS_VOLTSRC + sizeof(TR_VOLTSRC))
   #define OFS_MAVLINK_BAUDS     (OFS_CURVE_TYPES + sizeof(TR_CURVE_TYPES))
 #else
   #define OFS_MAVLINK_BAUDS	(OFS_VTRAINERMODES)
@@ -222,6 +223,7 @@ extern const pm_char STR_OPEN9X[];
 #if defined(FRSKY) || defined(CPUARM)
   #if defined(CPUARM)
     #define STR_VTELEMUNIT     (STR_OPEN9X + (g_eeGeneral.imperial ? OFS_VTELEMUNIT_IMP : OFS_VTELEMUNIT_METR))
+    #define STR_VOLTSRC        (STR_OPEN9X + OFS_VOLTSRC)
   #else
     #define STR_VTELEMUNIT     (STR_OPEN9X + OFS_VTELEMUNIT)
   #endif
@@ -229,18 +231,18 @@ extern const pm_char STR_OPEN9X[];
 #define STR_VALARMFN           (STR_OPEN9X + OFS_VALARMFN)
 #define STR_VTELPROTO          (STR_OPEN9X + OFS_VTELPROTO)
 #define STR_GPSFORMAT          (STR_OPEN9X + OFS_GPSFORMAT)
-#define STR_AMPSRC            (STR_OPEN9X + OFS_AMPSRC)
+#define STR_AMPSRC             (STR_OPEN9X + OFS_AMPSRC)
 #define STR_VARIOSRC           (STR_OPEN9X + OFS_VARIOSRC)
 #define STR_VSCREEN            (STR_OPEN9X + OFS_VSCREEN)
 #define STR_TELEMCHNS          (STR_OPEN9X + OFS_TELEMCHNS)
 #endif
 
-#ifdef TEMPLATES
-#define STR_VTEMPLATES         (STR_OPEN9X + OFS_VTEMPLATES)
+#if defined(TEMPLATES)
+  #define STR_VTEMPLATES       (STR_OPEN9X + OFS_VTEMPLATES)
 #endif
 
-#ifdef HELI
-#define STR_VSWASHTYPE         (STR_OPEN9X + OFS_VSWASHTYPE)
+#if defined(HELI)
+  #define STR_VSWASHTYPE       (STR_OPEN9X + OFS_VSWASHTYPE)
 #endif
 
 #define STR_VKEYS              (STR_OPEN9X + OFS_VKEYS)

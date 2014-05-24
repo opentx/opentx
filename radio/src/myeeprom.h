@@ -1025,7 +1025,7 @@ enum TelemetrySource {
   TELEM_RSSI_TX,
   TELEM_RSSI_RX,
 #if defined(CPUARM)
-  TELEM_RX_VOLTAGE,
+  TELEM_RXBATT,
 #endif
   TELEM_A_FIRST,
   TELEM_A1=TELEM_A_FIRST,
@@ -1166,20 +1166,34 @@ enum FrskyCurrentSource {
   FRSKY_CURRENT_SOURCE_NONE,
   FRSKY_CURRENT_SOURCE_A1,
   FRSKY_CURRENT_SOURCE_A2,
+#if defined(CPUARM)
+  FRSKY_CURRENT_SOURCE_A3,
+  FRSKY_CURRENT_SOURCE_A4,
+#endif
   FRSKY_CURRENT_SOURCE_FAS,
+  FRSKY_CURRENT_SOURCE_LAST=FRSKY_CURRENT_SOURCE_FAS
 };
 
 enum FrskyVoltsSource {
+#if defined(CPUARM)
+  FRSKY_VOLTS_SOURCE_RXBATT,
+#endif
   FRSKY_VOLTS_SOURCE_A1,
   FRSKY_VOLTS_SOURCE_A2,
+#if defined(CPUARM)
+  FRSKY_VOLTS_SOURCE_A3,
+  FRSKY_VOLTS_SOURCE_A4,
+#endif
   FRSKY_VOLTS_SOURCE_FAS,
   FRSKY_VOLTS_SOURCE_CELLS,
+  FRSKY_VOLTS_SOURCE_LAST=FRSKY_VOLTS_SOURCE_CELLS
 };
 
 #if defined(CPUARM)
+#define MAX_FRSKY_A_CHANNELS 4
 #define MAX_FRSKY_SCREENS 3
 PACK(typedef struct t_FrSkyData {
-  FrSkyChannelData channels[4];
+  FrSkyChannelData channels[MAX_FRSKY_A_CHANNELS];
   uint8_t usrProto; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh, 3=Halcyon
   uint8_t voltsSource:7;
   uint8_t altitudeDisplayed:1;
@@ -1200,9 +1214,10 @@ PACK(typedef struct t_FrSkyData {
 #define MIN_BLADES -1   // 1 blade
 #define MAX_BLADES 126  // 128 blades
 #else
+#define MAX_FRSKY_A_CHANNELS 2
 #define MAX_FRSKY_SCREENS 2
 PACK(typedef struct t_FrSkyData {
-  FrSkyChannelData channels[2];
+  FrSkyChannelData channels[MAX_FRSKY_A_CHANNELS];
   uint8_t usrProto:2; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh, 3=Halcyon
   uint8_t blades:2;   // How many blades for RPMs, 0=2 blades
   uint8_t screensType:2;

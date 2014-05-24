@@ -330,7 +330,7 @@ getvalue_t getValue(uint8_t i)
 #if defined(FRSKY)
 #if defined(CPUARM)
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_SWR) return frskyData.swr.value;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RX_VOLTAGE) return frskyData.analog[TELEM_ANA_RxBatt].value;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RXBATT) return frskyData.analog[TELEM_ANA_RXBATT].value;
 #endif
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RSSI_TX) return frskyData.rssi[1].value;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RSSI_RX) return frskyData.rssi[0].value;

@@ -287,7 +287,7 @@ enum TelemAnas {
 #if defined(CPUARM)
   TELEM_ANA_A3,
   TELEM_ANA_A4,
-  TELEM_ANA_RxBatt,
+  TELEM_ANA_RXBATT,
 #endif
   TELEM_ANA_COUNT
 };

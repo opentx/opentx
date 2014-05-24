@@ -1608,7 +1608,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
     case MIXSRC_FIRST_TELEM+TELEM_SWR-1:
       PLAY_NUMBER(val, 0, 0);
       break;
-    case MIXSRC_FIRST_TELEM+TELEM_RX_VOLTAGE-1:
+    case MIXSRC_FIRST_TELEM+TELEM_RXBATT-1:
       if (TELEMETRY_STREAMING()) {
         PLAY_NUMBER(val/2, 1+UNIT_VOLTS, PREC1);
       }

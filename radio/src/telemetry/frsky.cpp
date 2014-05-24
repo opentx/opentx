@@ -129,7 +129,7 @@ void FrskyValueWithMinMax::set(uint8_t value, uint8_t unit)
 #if defined(CPUARM)
 inline bool rxBattAlarmRaised(uint8_t alarm)
 {
-  return g_model.rxBattAlarms[alarm] > 0 && frskyData.analog[TELEM_ANA_RxBatt].value < g_model.rxBattAlarms[alarm];
+  return g_model.rxBattAlarms[alarm] > 0 && frskyData.analog[TELEM_ANA_RXBATT].value < g_model.rxBattAlarms[alarm];
 }
 inline bool alarmRaised(uint8_t channel, uint8_t idx)
 {
@@ -433,11 +433,21 @@ void telemetryInterrupt10ms()
     if (!TELEMETRY_OPENXSENSOR()) {
       // power calculation
       uint8_t channel = g_model.frsky.voltsSource;
-      if (channel <= 1) {
+#if defined(CPUARM)
+      if (channel == FRSKY_VOLTS_SOURCE_RXBATT) {
+        voltage = frskyData.analog[TELEM_ANA_RXBATT].value / 2;
+      }
+      else if (channel <= FRSKY_VOLTS_SOURCE_A4) {
         voltage = applyChannelRatio(channel, frskyData.analog[channel].value) / 10;
       }
+#else
+      if (channel <= FRSKY_VOLTS_SOURCE_A2) {
+        voltage = applyChannelRatio(channel, frskyData.analog[channel].value) / 10;
+      }
+#endif
+
 #if defined(FRSKY_HUB)
-      else if (channel == 2) {
+      else if (channel == FRSKY_VOLTS_SOURCE_FAS) {
         voltage = frskyData.hub.vfas;
       }
 #endif
@@ -449,7 +459,7 @@ void telemetryInterrupt10ms()
 #endif
 
       channel = g_model.frsky.currentSource - FRSKY_CURRENT_SOURCE_A1;
-      if (channel <= 1) {
+      if (channel <= MAX_FRSKY_A_CHANNELS) {
         current = applyChannelRatio(channel, frskyData.analog[channel].value) / 10;
       }
 
