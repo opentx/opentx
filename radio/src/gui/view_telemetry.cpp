@@ -331,7 +331,11 @@ void menuTelemetryFrsky(uint8_t event)
   else if (s_frsky_view == e_frsky_voltages) {
     // Volts / Amps / Watts / mAh
     uint8_t analog = 0;
-    lcd_putsiAtt(0, 2*FH, STR_VOLTSRC, g_model.frsky.voltsSource+1, 0);
+#if defined(CPUARM)
+    lcd_putsiAtt(0, 2*FH, STR_VOLTSRC, g_model.frsky.voltsSource, 0);
+#else
+    lcd_putsiAtt(0, 2*FH, STR_AMPSRC, g_model.frsky.voltsSource+1, 0);
+#endif
     switch (g_model.frsky.voltsSource) {
 #if defined(CPUARM)
       case FRSKY_VOLTS_SOURCE_RXBATT:
