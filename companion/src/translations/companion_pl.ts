@@ -1747,7 +1747,7 @@ Moze być inny od języka firmware</translation>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="146"/>
         <source>Download FW</source>
-        <translation>Pobiesz Firmware</translation>
+        <translation type="unfinished">Pobierz Firmware</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="193"/>
@@ -11423,7 +11423,7 @@ Moze być inny od języka firmware</translation>
     </message>
     <message>
         <source>Download FW</source>
-        <translation type="obsolete">Pobiesz Firmware</translation>
+        <translation type="obsolete">Pobierz Firmware</translation>
     </message>
     <message>
         <source>Check for updates</source>
