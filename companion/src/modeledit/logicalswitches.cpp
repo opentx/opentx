@@ -323,6 +323,50 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
   lock = false;
 }
 
+void LogicalSwitchesPanel::populateCSWCB(QComboBox *b, int value)
+{
+  int order[] = {
+    LS_FN_OFF,
+    LS_FN_VEQUAL, // added at the end to avoid everything renumbered
+    LS_FN_VALMOSTEQUAL, // added at the end to avoid everything renumbered
+    LS_FN_VPOS,
+    LS_FN_VNEG,
+    // LS_FN_RANGE,
+    LS_FN_APOS,
+    LS_FN_ANEG,
+    LS_FN_AND,
+    LS_FN_OR,
+    LS_FN_XOR,
+    LS_FN_STAY,
+    LS_FN_EQUAL,
+    LS_FN_NEQUAL,
+    LS_FN_GREATER,
+    LS_FN_LESS,
+    LS_FN_EGREATER,
+    LS_FN_ELESS,
+    LS_FN_DPOS,
+    LS_FN_DAPOS,
+    LS_FN_TIMER,
+    LS_FN_STICKY
+  };
+
+  b->clear();
+  for (int i=0; i<LS_FN_MAX; i++) {
+    int func = order[i];
+    if (func == LS_FN_NEQUAL || func == LS_FN_EGREATER || func == LS_FN_ELESS)
+      continue;
+    if (!IS_ARM(firmware->getBoard())) {
+      if (func == LS_FN_VEQUAL || func == LS_FN_STAY)
+        continue;
+    }
+    b->addItem(LogicalSwitchData(func).funcToString(), func);
+    if (value == func) {
+      b->setCurrentIndex(b->count()-1);
+    }
+  }
+  b->setMaxVisibleItems(10);
+}
+
 void LogicalSwitchesPanel::updateLine(int i)
 {
   lock = true;

@@ -41,6 +41,7 @@ class LogicalSwitchesPanel : public ModelPanel
     void setSwitchWidgetVisibility(int i);
     int selectedSwitch;
 
+    void populateCSWCB(QComboBox *b, int value);
     void updateLine(int index);
     void updateTimerParam(QDoubleSpinBox *sb, int timer, bool allowZero=false);
 
