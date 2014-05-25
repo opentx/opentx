@@ -92,6 +92,8 @@ class TelemetryPanel : public ModelPanel
     void on_rssiAlarm2CB_currentIndexChanged(int index);
     void on_rssiAlarm1SB_editingFinished();
     void on_rssiAlarm2SB_editingFinished();
+    void on_rxbattAlarm1DSB_editingFinished();
+    void on_rxbattAlarm2DSB_editingFinished();
     void on_AltitudeGPS_ChkB_toggled(bool checked);
     void on_varioSourceCB_currentIndexChanged(int index);
     void on_varioLimitMin_DSB_editingFinished();

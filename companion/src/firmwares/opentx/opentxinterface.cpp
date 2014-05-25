@@ -610,10 +610,6 @@ int OpenTxFirmware::getCapability(const Capability capability)
       return IS_TARANIS(board) ? 1 : 0;
     case TelemetryUnits:
       return 0;
-    case TelemetryBlades:
-      return 1;
-    case TelemetryRSSIModel:
-      return 1;
     case TelemetryTimeshift:
       return 1;
     case TelemetryMaxMultiplier:

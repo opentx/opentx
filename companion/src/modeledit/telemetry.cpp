@@ -520,12 +520,22 @@ void TelemetryPanel::setup()
 {
     QString firmware_id = g.profile[g.id()].fwType();
 
-    lock=true;
+    lock = true;
 
-    //frsky Settings
-    if (!firmware->getCapability(TelemetryRSSIModel) ) {
-      ui->RSSIGB->hide();
+    if (IS_ARM(firmware->getBoard())) {
+      ui->rxbattAlarm1DSB->setValue(0.05*model.frsky.rxBattAlarms[0]);
+      ui->rxbattAlarm2DSB->setValue(0.05*model.frsky.rxBattAlarms[1]);
     }
+    else {
+      ui->rxbattLabel->hide();
+      ui->rxbattAlarm1Label->hide();
+      ui->rxbattAlarm2Label->hide();
+      ui->rxbattAlarm1CB->hide();
+      ui->rxbattAlarm2CB->hide();
+      ui->rxbattAlarm1DSB->hide();
+      ui->rxbattAlarm2DSB->hide();
+    }
+
     ui->rssiAlarm1SB->setValue(model.frsky.rssiAlarms[0].value);
     ui->rssiAlarm2SB->setValue(model.frsky.rssiAlarms[1].value);
     if (!IS_TARANIS(GetEepromInterface()->getBoard())) {
@@ -546,7 +556,7 @@ void TelemetryPanel::setup()
       ui->AltitudeGPS_ChkB->setChecked(model.frsky.FrSkyGpsAlt);
     }
     
-    if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+    if (IS_TARANIS(firmware->getBoard())) {
       ui->AltitudeToolbar_ChkB->setChecked(model.frsky.altitudeDisplayed);
     }
     else {
@@ -761,6 +771,18 @@ void TelemetryPanel::on_varioSourceCB_currentIndexChanged(int index)
 void TelemetryPanel::on_varioLimitMin_DSB_editingFinished()
 {
   model.frsky.varioMin = round(ui->varioLimitMin_DSB->value()+10);
+  emit modified();
+}
+
+void TelemetryPanel::on_rxbattAlarm1DSB_editingFinished()
+{
+  model.frsky.rxBattAlarms[0] = round(ui->rxbattAlarm1DSB->value()/0.05);
+  emit modified();
+}
+
+void TelemetryPanel::on_rxbattAlarm2DSB_editingFinished()
+{
+  model.frsky.rxBattAlarms[1] = round(ui->rxbattAlarm2DSB->value()/0.05);
   emit modified();
 }
 
