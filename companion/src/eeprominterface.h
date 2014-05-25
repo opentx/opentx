@@ -896,6 +896,7 @@ class FrSkyData {
     bool mAhPersistent;
     unsigned int storedMah;
     int fasOffset;
+    unsigned int rxBattAlarms[2];
 
     void clear();
 };
@@ -1016,10 +1017,7 @@ class ModelData {
     uint8_t  bt_telemetry;
     uint8_t  numVoice;
     MavlinkData mavlink;
-    /* FrSky */
     FrSkyData frsky;
-    FrSkyErAlarmData frskyalarms[8];
-    uint8_t customdisplay[6];
 
     char bitmap[10+1];
 

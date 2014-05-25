@@ -722,14 +722,14 @@ t_Ersky9xModelData_v11::operator ModelData ()
   c9x.frsky.usrProto=FrSkyUsrProto;
   c9x.frsky.imperial=FrSkyImperial;
   c9x.frsky.FrSkyGpsAlt=FrSkyGpsAlt;
-  for (int i=0; i<8; i++) {
-    c9x.frskyalarms[i].frskyAlarmLimit=frskyAlarms.alarmData[i].frskyAlarmLimit;
-    c9x.frskyalarms[i].frskyAlarmSound=frskyAlarms.alarmData[i].frskyAlarmSound;
-    c9x.frskyalarms[i].frskyAlarmType=frskyAlarms.alarmData[i].frskyAlarmType;
-  }
-  for (int i=0; i<8; i++) {
-    c9x.customdisplay[i]=customDisplayIndex[i];
-  }
+  // for (int i=0; i<8; i++) {
+  //   c9x.frskyalarms[i].frskyAlarmLimit=frskyAlarms.alarmData[i].frskyAlarmLimit;
+  //   c9x.frskyalarms[i].frskyAlarmSound=frskyAlarms.alarmData[i].frskyAlarmSound;
+  //   c9x.frskyalarms[i].frskyAlarmType=frskyAlarms.alarmData[i].frskyAlarmType;
+  // }
+  // for (int i=0; i<8; i++) {
+  //   c9x.customdisplay[i]=customDisplayIndex[i];
+  // }
   for (int i=0; i<5;i++) {
     c9x.phaseData[0].gvars[i]=gvars[i].gvar;
     c9x.gvsource[i]=gvars[i].gvsource;

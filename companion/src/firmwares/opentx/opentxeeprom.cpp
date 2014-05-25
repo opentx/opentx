@@ -2560,6 +2560,11 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
       internalField.Append(new SignedField<8>(modelData.potPosition[i]));
     }    
   }
+
+  if (IS_ARM(board) && version >= 216) {
+    internalField.Append(new UnsignedField<8>(modelData.frsky.rxBattAlarms[0]));
+    internalField.Append(new UnsignedField<8>(modelData.frsky.rxBattAlarms[1]));
+  }
 }
 
 void OpenTxModelData::beforeExport()
