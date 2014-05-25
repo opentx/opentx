@@ -187,6 +187,7 @@ set(companion_MOC_HDRS
   mainwindow.h
   taranisnotfound.h
   qcustomplot.h
+  qautocombobox.h
   helpers.h
   wizarddialog.h
 )

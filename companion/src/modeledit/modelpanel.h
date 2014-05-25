@@ -9,6 +9,8 @@ class ModelPanel : public QWidget
 {
     Q_OBJECT
 
+  friend class QUnsignedAutoComboBox;
+
   public:
     ModelPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
     virtual ~ModelPanel();

@@ -655,10 +655,42 @@ void TelemetryPanel::setup()
     ui->frskyProtoCB->setCurrentIndex(model.frsky.usrProto);
     ui->frskyUnitsCB->setCurrentIndex(model.frsky.imperial);
     ui->bladesCount->setValue(model.frsky.blades);
-    ui->frskyCurrentCB->setCurrentIndex(model.frsky.currentSource);
-    ui->frskyVoltCB->setCurrentIndex(model.frsky.voltsSource);
 
-    lock=false;
+    populateVoltsSource();
+    populateCurrentSource();
+
+    lock = false;
+}
+
+void TelemetryPanel::populateVoltsSource()
+{
+  QUnsignedAutoComboBox * cb = ui->frskyVoltCB;
+  cb->setField(&model.frsky.voltsSource, this);
+  if (IS_ARM(firmware->getBoard())) {
+    cb->addItem(tr("RxBatt"), TELEMETRY_VOLTS_SOURCE_RXBATT);
+  }
+  cb->addItem(tr("A1"), TELEMETRY_VOLTS_SOURCE_A1);
+  cb->addItem(tr("A2"), TELEMETRY_VOLTS_SOURCE_A2);
+  if (IS_ARM(firmware->getBoard())) {
+    cb->addItem(tr("A3"), TELEMETRY_VOLTS_SOURCE_A3);
+    cb->addItem(tr("A4"), TELEMETRY_VOLTS_SOURCE_A4);
+  }
+  cb->addItem(tr("FAS"), TELEMETRY_VOLTS_SOURCE_FAS);
+  cb->addItem(tr("Cells"), TELEMETRY_VOLTS_SOURCE_CELLS);
+}
+
+void TelemetryPanel::populateCurrentSource()
+{
+  QUnsignedAutoComboBox * cb = ui->frskyCurrentCB;
+  cb->setField(&model.frsky.currentSource, this);
+  cb->addItem(tr("---"), TELEMETRY_CURRENT_SOURCE_NONE);
+  cb->addItem(tr("A1"), TELEMETRY_CURRENT_SOURCE_A1);
+  cb->addItem(tr("A2"), TELEMETRY_CURRENT_SOURCE_A2);
+  if (IS_ARM(firmware->getBoard())) {
+    cb->addItem(tr("A3"), TELEMETRY_CURRENT_SOURCE_A3);
+    cb->addItem(tr("A4"), TELEMETRY_CURRENT_SOURCE_A4);
+  }
+  cb->addItem(tr("FAS"), TELEMETRY_CURRENT_SOURCE_FAS);
 }
 
 void TelemetryPanel::onAnalogModified()
@@ -675,18 +707,6 @@ void TelemetryPanel::on_frskyUnitsCB_currentIndexChanged(int index)
 void TelemetryPanel::on_bladesCount_editingFinished()
 {
     model.frsky.blades = ui->bladesCount->value();
-    emit modified();
-}
-
-void TelemetryPanel::on_frskyCurrentCB_currentIndexChanged(int index)
-{
-    model.frsky.currentSource=index;
-    emit modified();
-}
-
-void TelemetryPanel::on_frskyVoltCB_currentIndexChanged(int index)
-{
-    model.frsky.voltsSource=index;
     emit modified();
 }
 

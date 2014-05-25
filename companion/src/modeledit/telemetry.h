@@ -82,16 +82,11 @@ class TelemetryPanel : public ModelPanel
     TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
     virtual ~TelemetryPanel();
 
-  signals:
-    void modified();
-
   private slots:
     void onAnalogModified();
     void on_frskyProtoCB_currentIndexChanged(int index);
     void on_frskyUnitsCB_currentIndexChanged(int index);
     void on_bladesCount_editingFinished();
-    void on_frskyCurrentCB_currentIndexChanged(int index);
-    void on_frskyVoltCB_currentIndexChanged(int index);
     void on_AltitudeToolbar_ChkB_toggled(bool checked);
     void on_rssiAlarm1CB_currentIndexChanged(int index);
     void on_rssiAlarm2CB_currentIndexChanged(int index);
@@ -114,6 +109,8 @@ class TelemetryPanel : public ModelPanel
 
     void setup();
     void telBarUpdate();
+    void populateVoltsSource();
+    void populateCurrentSource();
 };
 
 #endif // TELEMETRY_H

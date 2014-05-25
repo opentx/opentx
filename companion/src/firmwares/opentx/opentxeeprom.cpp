@@ -2177,6 +2177,42 @@ class RSSIConversionTable: public ConversionTable
     }
 };
 
+class TelemetryVoltsSourceConversionTable: public ConversionTable
+{
+  public:
+    TelemetryVoltsSourceConversionTable(BoardEnum board, unsigned int version)
+    {
+      int val = 0;
+      if (IS_ARM(board) && version >= 216)
+        addConversion(TELEMETRY_VOLTS_SOURCE_RXBATT, val++);
+      addConversion(TELEMETRY_VOLTS_SOURCE_A1, val++);
+      addConversion(TELEMETRY_VOLTS_SOURCE_A2, val++);
+      if (IS_ARM(board) && version >= 216) {
+        addConversion(TELEMETRY_VOLTS_SOURCE_A3, val++);
+        addConversion(TELEMETRY_VOLTS_SOURCE_A4, val++);
+      }
+      addConversion(TELEMETRY_VOLTS_SOURCE_FAS, val++);
+      addConversion(TELEMETRY_VOLTS_SOURCE_CELLS, val++);
+    }
+};
+
+class TelemetryCurrentSourceConversionTable: public ConversionTable
+{
+  public:
+    TelemetryCurrentSourceConversionTable(BoardEnum board, unsigned int version)
+    {
+      int val = 0;
+      addConversion(TELEMETRY_CURRENT_SOURCE_NONE, val++);
+      addConversion(TELEMETRY_CURRENT_SOURCE_A1, val++);
+      addConversion(TELEMETRY_CURRENT_SOURCE_A2, val++);
+      if (IS_ARM(board) && version >= 216) {
+        addConversion(TELEMETRY_CURRENT_SOURCE_A3, val++);
+        addConversion(TELEMETRY_CURRENT_SOURCE_A4, val++);
+      }
+      addConversion(TELEMETRY_CURRENT_SOURCE_FAS, val++);
+    }
+};
+
 class VarioConversionTable: public ConversionTable
 {
   public:
@@ -2191,7 +2227,9 @@ class VarioConversionTable: public ConversionTable
 class FrskyField: public StructField {
   public:
     FrskyField(FrSkyData & frsky, BoardEnum board, unsigned int version):
-      StructField("FrSky")
+      StructField("FrSky"),
+      telemetryVoltsSourceConversionTable(board, version),
+      telemetryCurrentSourceConversionTable(board, version)
     {
       rssiConversionTable[0] = RSSIConversionTable(0);
       rssiConversionTable[1] = RSSIConversionTable(1);
@@ -2212,14 +2250,14 @@ class FrskyField: public StructField {
         }
         Append(new UnsignedField<8>(frsky.usrProto));
         if (version >= 216) {
-          Append(new UnsignedField<7>(frsky.voltsSource));
+          Append(new ConversionField< UnsignedField<7> >(frsky.voltsSource, &telemetryVoltsSourceConversionTable, "Volts Source"));
           Append(new BoolField<1>(frsky.altitudeDisplayed));
         }
         else {
-          Append(new UnsignedField<8>(frsky.voltsSource));
+          Append(new ConversionField< UnsignedField<8> >(frsky.voltsSource, &telemetryVoltsSourceConversionTable, "Volts Source"));
         }
         Append(new ConversionField< SignedField<8> >(frsky.blades, -2));
-        Append(new UnsignedField<8>(frsky.currentSource));
+        Append(new ConversionField< UnsignedField<8> >(frsky.currentSource, &telemetryCurrentSourceConversionTable, "Current Source"));
 
         Append(new UnsignedField<1>(frsky.screens[0].type));
         Append(new UnsignedField<1>(frsky.screens[1].type));
@@ -2264,7 +2302,7 @@ class FrskyField: public StructField {
         Append(new ConversionField< UnsignedField<2> >((unsigned int &)frsky.blades, -2));
         Append(new UnsignedField<1>(frsky.screens[0].type));
         Append(new UnsignedField<1>(frsky.screens[1].type));
-        Append(new UnsignedField<2>(frsky.voltsSource, "Volts Source"));
+        Append(new ConversionField< UnsignedField<2> >(frsky.voltsSource, &telemetryVoltsSourceConversionTable, "Volts Source"));
         Append(new SignedField<4>(frsky.varioMin, "Vario Min"));
         Append(new SignedField<4>(frsky.varioMax));
         for (int i=0; i<2; i++) {
@@ -2276,7 +2314,7 @@ class FrskyField: public StructField {
         }
         Append(new UnsignedField<3>(frsky.varioSource));
         Append(new SignedField<5>(frsky.varioCenterMin));
-        Append(new UnsignedField<3>(frsky.currentSource));
+        Append(new ConversionField< UnsignedField<3> >(frsky.currentSource, &telemetryCurrentSourceConversionTable, "Current Source"));
         Append(new SignedField<8>(frsky.varioCenterMax));
         if (version >= 216) {
           // TODO int8_t   fasOffset;
@@ -2288,6 +2326,8 @@ class FrskyField: public StructField {
   protected:
     RSSIConversionTable rssiConversionTable[2];
     VarioConversionTable varioConversionTable;
+    TelemetryVoltsSourceConversionTable telemetryVoltsSourceConversionTable;
+    TelemetryCurrentSourceConversionTable telemetryCurrentSourceConversionTable;
 };
 
 class MavlinkField: public StructField {
