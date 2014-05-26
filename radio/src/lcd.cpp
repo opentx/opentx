@@ -1217,7 +1217,7 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
       break;
 #if defined(CPUARM)
     case TELEM_RXBATT-1:
-      val *= 5;
+      val = ((val*1320) + 127) / 255;
 #if LCD_W >= 212
       att |= PREC2;
 #else

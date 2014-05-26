@@ -420,7 +420,7 @@ void modelDefault(uint8_t id)
 #if defined(PCBTARANIS)
   g_model.frsky.channels[0].ratio = 132;
   g_model.rxBattAlarms[0] = 0;
-  g_model.rxBattAlarms[1] = 86;
+  g_model.rxBattAlarms[1] = 43;
 #endif
 
 #if defined(MAVLINK)
@@ -1636,7 +1636,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
       break;
     case MIXSRC_FIRST_TELEM+TELEM_RXBATT-1:
       if (TELEMETRY_STREAMING()) {
-        PLAY_NUMBER(val/2, 1+UNIT_VOLTS, PREC1);
+        PLAY_NUMBER((val*132+127)/255, 1+UNIT_VOLTS, PREC1);
       }
       break;
 #endif

@@ -435,7 +435,7 @@ void telemetryInterrupt10ms()
       uint8_t channel = g_model.frsky.voltsSource;
 #if defined(CPUARM)
       if (channel == FRSKY_VOLTS_SOURCE_RXBATT) {
-        voltage = frskyData.analog[TELEM_ANA_RXBATT].value / 2;
+        voltage = ((frskyData.analog[TELEM_ANA_RXBATT].value * 132) + 127) / 255;
       }
       else if (channel <= FRSKY_VOLTS_SOURCE_A4) {
         voltage = applyChannelRatio(channel, frskyData.analog[channel].value) / 10;
