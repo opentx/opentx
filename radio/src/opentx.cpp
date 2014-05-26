@@ -420,7 +420,7 @@ void modelDefault(uint8_t id)
 #if defined(PCBTARANIS)
   g_model.frsky.channels[0].ratio = 132;
   g_model.rxBattAlarms[0] = 0;
-  g_model.rxBattAlarms[1] = 43;
+  g_model.rxBattAlarms[1] = 83; // 4.3V
 #endif
 
 #if defined(MAVLINK)

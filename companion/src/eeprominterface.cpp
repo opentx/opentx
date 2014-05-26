@@ -991,7 +991,7 @@ void FrSkyData::clear()
   memset(this, 0, sizeof(FrSkyData));
   rssiAlarms[0].clear(2, 45);
   rssiAlarms[1].clear(3, 42);
-  rxBattAlarms[1] = round(4.3/0.05);
+  rxBattAlarms[1] = round(43.0*255/132);
   varioSource = 2/*VARIO*/;
   blades = 2;
 }

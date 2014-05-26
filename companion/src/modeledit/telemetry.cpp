@@ -523,8 +523,8 @@ void TelemetryPanel::setup()
     lock = true;
 
     if (IS_ARM(firmware->getBoard())) {
-      ui->rxbattAlarm1DSB->setValue(0.05*model.frsky.rxBattAlarms[0]);
-      ui->rxbattAlarm2DSB->setValue(0.05*model.frsky.rxBattAlarms[1]);
+      ui->rxbattAlarm1DSB->setValue((13.2*model.frsky.rxBattAlarms[0])/255);
+      ui->rxbattAlarm2DSB->setValue((13.2*model.frsky.rxBattAlarms[1])/255);
     }
     else {
       ui->rxbattLabel->hide();
@@ -776,13 +776,13 @@ void TelemetryPanel::on_varioLimitMin_DSB_editingFinished()
 
 void TelemetryPanel::on_rxbattAlarm1DSB_editingFinished()
 {
-  model.frsky.rxBattAlarms[0] = round(ui->rxbattAlarm1DSB->value()/0.05);
+  model.frsky.rxBattAlarms[0] = round(ui->rxbattAlarm1DSB->value()/(13.2/255));
   emit modified();
 }
 
 void TelemetryPanel::on_rxbattAlarm2DSB_editingFinished()
 {
-  model.frsky.rxBattAlarms[1] = round(ui->rxbattAlarm2DSB->value()/0.05);
+  model.frsky.rxBattAlarms[1] = round(ui->rxbattAlarm2DSB->value()/(13.2/255));
   emit modified();
 }
 
