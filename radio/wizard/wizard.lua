@@ -34,6 +34,7 @@ local tailMode = 0
 local eleCH1 = 0
 local eleCH2 = 7
 local rudCH1 = 0
+local servoPage = null
 
 -- Common functions
 
@@ -49,20 +50,8 @@ local function blinkChanged()
   end
 end
 
-local function keyIncDec(event, value, max, isvalue)
-  if isvalue then
-    if event == EVT_PLUS_BREAK then
-      if value < max then
-        value = (value + 1)
-        dirty = true
-      end
-    elseif event == EVT_MINUS_BREAK then
-      if value > 0 then
-        value = (value - 1)
-        dirty = true
-      end
-    end
-  else
+local function fieldIncDec(event, value, max, force)
+  if edit or force==true then
     if event == EVT_PLUS_BREAK then
       value = (value + max)
       dirty = true
@@ -75,13 +64,32 @@ local function keyIncDec(event, value, max, isvalue)
   return value
 end
 
+local function valueIncDec(event, value, min, max)
+  if edit then
+    if event == EVT_PLUS_FIRST or event == EVT_PLUS_REPT then
+      if value < max then
+        value = (value + 1)
+        dirty = true
+      end
+    elseif event == EVT_MINUS_FIRST or event == EVT_MINUS_REPT then
+      if value > min then
+        value = (value - 1)
+        dirty = true
+      end
+    end
+  end
+  return value
+end
+
 local function navigate(event, fieldMax, prevPage, nextPage)
   if event == EVT_ENTER_BREAK then
     edit = not edit
     dirty = true
-  end
-  if edit then
-    if not dirty then
+  elseif edit then
+    if event == EVT_EXIT_BREAK then
+      edit = false
+      dirty = true  
+    elseif not dirty then
       dirty = blinkChanged()
     end
   else
@@ -93,7 +101,7 @@ local function navigate(event, fieldMax, prevPage, nextPage)
       killEvents(event);
       dirty = true
     else
-      field = keyIncDec(event, field, fieldMax)
+      field = fieldIncDec(event, field, fieldMax, true)
 	end
   end
 end
@@ -107,6 +115,16 @@ local function getFieldFlags(position)
     end
   end
   return flags
+end
+
+local function channelIncDec(event, value)
+  if not edit and event==EVT_MENU_BREAK then
+    servoPage = value
+    dirty = true
+  else
+    value = valueIncDec(event, value, 0, 15)
+  end
+  return value
 end
 
 -- Init function
@@ -153,7 +171,7 @@ local function modelTypeMenu(event)
     page = PLANE_MENU+(10*choice)
     dirty = true
   else
-    choice = keyIncDec(event, choice, 3)
+    choice = fieldIncDec(event, choice, 3)
   end
 end
 
@@ -189,13 +207,11 @@ local function engineMenu(event)
 
   navigate(event, fieldsMax, MODELTYPE_MENU, page+1)
 
-  if edit then
-    if field==0 then
-      engineMode = keyIncDec(event, engineMode, 1)
-    elseif field==1 then
-      engineCH1 = keyIncDec(event, engineCH1, 7, true)
-    end
-  end    
+  if field==0 then
+    engineMode = fieldIncDec(event, engineMode, 1)
+  elseif field==1 then
+    engineCH1 = channelIncDec(event, engineCH1)
+  end
 end
 
 -- Ailerons Menu
@@ -238,15 +254,13 @@ local function aileronsMenu(event)
 
   navigate(event, fieldsMax, page-1, page+1)
 
-  if edit then
-    if field==0 then
-      aileronsMode = keyIncDec(event, aileronsMode, 2)
-    elseif field==1 then
-      aileronsCH1 = keyIncDec(event, aileronsCH1, 7, true)
-    elseif field==2 then
-      aileronsCH2 = keyIncDec(event, aileronsCH2, 7, true)
-    end
-  end    
+  if field==0 then
+    aileronsMode = fieldIncDec(event, aileronsMode, 2)
+  elseif field==1 then
+    aileronsCH1 = channelIncDec(event, aileronsCH1)
+  elseif field==2 then
+    aileronsCH2 = channelIncDec(event, aileronsCH2)
+  end
 end
 
 -- Flaperons Menu
@@ -289,15 +303,13 @@ local function flaperonsMenu(event)
 
   navigate(event, fieldsMax, page-1, page+1)
 
-  if edit then
-    if field==0 then
-      flaperonsMode = keyIncDec(event, flaperonsMode, 2)
-    elseif field==1 then
-      flaperonsCH1 = keyIncDec(event, flaperonsCH1, 7, true)
-    elseif field==2 then
-      flaperonsCH2 = keyIncDec(event, flaperonsCH2, 7, true)
-    end
-  end    
+  if field==0 then
+    flaperonsMode = fieldIncDec(event, flaperonsMode, 2)
+  elseif field==1 then
+    flaperonsCH1 = channelIncDec(event, flaperonsCH1)
+  elseif field==2 then
+    flaperonsCH2 = channelIncDec(event, flaperonsCH2)
+  end
 end
 
 -- Airbrakes Menu
@@ -340,14 +352,12 @@ local function brakesMenu(event)
 
   navigate(event, fieldsMax, page-1, page+1)
 
-  if edit then
-    if field==0 then
-      brakesMode = keyIncDec(event, brakesMode, 2)
-    elseif field==1 then
-      brakesCH1 = keyIncDec(event, brakesCH1, 7, true)
-    elseif field==2 then
-      brakesCH2 = keyIncDec(event, brakesCH2, 7, true)
-    end
+  if field==0 then
+    brakesMode = fieldIncDec(event, brakesMode, 2)
+  elseif field==1 then
+    brakesCH1 = channelIncDec(event, brakesCH1)
+  elseif field==2 then
+    brakesCH2 = channelIncDec(event, brakesCH2)
   end    
 end
 
@@ -401,28 +411,73 @@ local function tailMenu(event)
 
   navigate(event, fieldsMax, page-1, page+1)
 
+  if field==0 then
+    tailMode = fieldIncDec(event, tailMode, 3)
+  elseif field==1 then
+    eleCH1 = channelIncDec(event, eleCH1)
+  elseif (field==2 and tailMode==1) or field==3 then
+    rudCH1 = channelIncDec(event, rudCH1)
+  elseif field==2 then
+    eleCH2 = channelIncDec(event, eleCH2)
+  end    
+end
+
+-- Servo (limits) Menu
+
+local function drawServoMenu(limits)
+  lcd.clear()
+  lcd.drawSource(1, 0, SOURCE_FIRST_CH+servoPage, 0)
+  lcd.drawText(25, 0, "servo min/max/center/direction?", 0)
+  lcd.drawRect(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
+  lcd.drawLine(LCD_W/2-1, 8, LCD_W/2-1, LCD_H, DOTTED, 0)
+  lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
+  lcd.drawPixmap(122, 8, "/TEMPLATES/servo.bmp")
+  lcd.drawNumber(140, 35, limits.min, PREC1+getFieldFlags(0));
+  lcd.drawNumber(205, 35, limits.max, PREC1+getFieldFlags(1));
+  lcd.drawNumber(170, 9, limits.offset, PREC1+getFieldFlags(2));
+  if limits.revert == 0 then
+    lcd.drawText(129, 50, "\126", getFieldFlags(3));
+  else
+    lcd.drawText(129, 50, "\127", getFieldFlags(3));
+  end
+  fieldsMax = 3    
+end
+
+local function servoMenu(event)
+  local limits = model.getOutput(servoPage)
+
+  if dirty then
+    dirty = false
+    drawServoMenu(limits)
+  end
+
+  navigate(event, fieldsMax, page, page)
+
   if edit then
     if field==0 then
-      tailMode = keyIncDec(event, tailMode, 3)
+      limits.min = valueIncDec(event, limits.min, -1000, 0)
     elseif field==1 then
-      eleCH1 = keyIncDec(event, eleCH1, 7, true)
-    elseif (field==2 and tailMode==1) or field==3 then
-      rudCH1 = keyIncDec(event, rudCH1, 7, true)
+      limits.max = valueIncDec(event, limits.max, 0, 1000)
     elseif field==2 then
-      eleCH2 = keyIncDec(event, eleCH2, 7, true)
+      limits.offset = valueIncDec(event, limits.offset, -1000, 1000)
+    elseif field==3 then
+      limits.revert = fieldIncDec(event, limits.revert, 1)
     end
-  end    
+    model.setOutput(servoPage, limits)
+  elseif event == EVT_EXIT_BREAK then
+    servoPage = null
+    dirty = true
+  end
 end
 
 -- Main
 
 local function run(event)
-  if event == EVT_EXIT_BREAK then
-    return 2
-  end
   lcd.lock()
   if page == MODELTYPE_MENU then
     modelTypeMenu(event)
+  elseif servoPage ~= null then
+    servoMenu(event) 
   elseif page == ENGINE_MENU then
     engineMenu(event)
   elseif page == AILERONS_MENU then
