@@ -63,7 +63,7 @@ ScriptInternalData standaloneScript = { SCRIPT_NOFILE, 0 };
 
 #define PERMANENT_SCRIPTS_MAX_INSTRUCTIONS (1000/100)
 #define MANUAL_SCRIPTS_MAX_INSTRUCTIONS    (10000/100)
-#define SCRIPTS_MAX_HEAP                   50
+#define SCRIPTS_MAX_HEAP                   100
 #define SET_LUA_INSTRUCTIONS_COUNT(x)      (instructionsPercent=0, lua_sethook(L, hook, LUA_MASKCOUNT, x))
 
 static int instructionsPercent = 0;
@@ -193,6 +193,12 @@ static int luaPlayNumber(lua_State *L)
   return 0;
 }
 
+static int luaKillEvents(lua_State *L)
+{
+  int event = luaL_checkinteger(L, 1);
+  killEvents(event);
+  return 0;
+}
 
 static int luaLcdLock(lua_State *L)
 {
@@ -993,6 +999,7 @@ void luaInit()
   lua_register(L, "playNumber", luaPlayNumber);
   lua_register(L, "popupInput", luaPopupInput);
   lua_register(L, "channelOrder", luaChannelOrder);
+  lua_register(L, "killEvents", luaKillEvents);
 
   // Push OpenTX constants
   lua_registerint(L, "FULLSCALE", RESX);
@@ -1012,6 +1019,7 @@ void luaInit()
   lua_registerint(L, "SOURCE_FIRST_CH", MIXSRC_FIRST_CH);
   lua_registerint(L, "EVT_MENU_BREAK", EVT_KEY_BREAK(KEY_MENU));
   lua_registerint(L, "EVT_PAGE_BREAK", EVT_KEY_BREAK(KEY_PAGE));
+  lua_registerint(L, "EVT_PAGE_LONG", EVT_KEY_LONG(KEY_PAGE));
   lua_registerint(L, "EVT_ENTER_BREAK", EVT_KEY_BREAK(KEY_ENTER));
   lua_registerint(L, "EVT_EXIT_BREAK", EVT_KEY_BREAK(KEY_EXIT));
   lua_registerint(L, "EVT_PLUS_BREAK", EVT_KEY_BREAK(KEY_PLUS));
