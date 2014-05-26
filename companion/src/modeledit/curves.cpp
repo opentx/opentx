@@ -349,6 +349,7 @@ void Curves::updateCurvePoints()
         spnx[i]->setMinimum(-100);
       }
       else {
+        spnx[i]->setDisabled(false);
         spnx[i]->setMaximum(model.curves[currentCurve].points[i+1].x);
         spnx[i]->setMinimum(model.curves[currentCurve].points[i-1].x);
       }
