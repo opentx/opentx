@@ -8,6 +8,7 @@ local QUADRI_MENU   = DELTA_MENU+10
 
 local ENGINE_MENU = PLANE_MENU
 local AILERONS_MENU = PLANE_MENU+1
+local FLAPERONS_MENU = PLANE_MENU+2
 
 local page = MODELTYPE_MENU
 local dirty = true
@@ -21,6 +22,9 @@ local engineCH1 = 0
 local aileronsMode = 0
 local aileronsCH1 = 0
 local aileronsCH2 = 4
+local flaperonsMode = 0
+local flaperonsCH1 = 5
+local flaperonsCH2 = 6
 
 -- Common functions
 
@@ -234,6 +238,57 @@ local function aileronsMenu(event)
   end    
 end
 
+-- Flaperons Menu
+
+local flaperonsModeItems = {"No", "Yes...", "Yes, 2 channels..."}
+
+local function drawFlaperonsMenu()
+  lcd.clear()
+  lcd.drawText(1, 0, "Has your model got flaperons?", 0)
+  lcd.drawRect(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
+  lcd.drawCombobox(0, 8, LCD_W/2, flaperonsModeItems, flaperonsMode, getFieldFlags(0)) 
+  lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H, DOTTED, 0)
+  if flaperonsMode == 0 then
+    -- no flaperons
+    -- lcd.drawPixmap(112, 8, "/TEMPLATES/ailerons-0.bmp")
+    fieldsMax = 0
+  elseif flaperonsMode == 1 then
+    -- 1 channel
+    lcd.drawPixmap(112, 8, "/TEMPLATES/flaps-1.bmp")
+    lcd.drawText(25, LCD_H-16, "Assign channel", 0);
+    lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
+    lcd.drawSource(151, LCD_H-8, SOURCE_FIRST_CH+flaperonsCH1, getFieldFlags(1))
+    fieldsMax = 1
+  elseif flaperonsMode == 2 then
+    -- 2 channels
+    lcd.drawPixmap(112, 8, "/TEMPLATES/flaps-2.bmp")
+    lcd.drawText(20, LCD_H-16, "Assign channels", 0);
+    lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
+    lcd.drawSource(116, LCD_H-8, SOURCE_FIRST_CH+flaperonsCH1, getFieldFlags(1))
+    lcd.drawSource(175, LCD_H-8, SOURCE_FIRST_CH+flaperonsCH2, getFieldFlags(2))
+    fieldsMax = 2
+  end
+end
+
+local function flaperonsMenu(event)
+  if dirty then
+    dirty = false
+    drawFlaperonsMenu()
+  end
+
+  navigate(event, fieldsMax, page-1, page+1)
+
+  if edit then
+    if field==0 then
+      flaperonsMode = keyIncDec(event, flaperonsMode, 2)
+    elseif field==1 then
+      flaperonsCH1 = keyIncDec(event, flaperonsCH1, 7, true)
+    elseif field==2 then
+      flaperonsCH2 = keyIncDec(event, flaperonsCH2, 7, true)
+    end
+  end    
+end
+
 -- Main
 
 local function run(event)
@@ -247,6 +302,8 @@ local function run(event)
     engineMenu(event)
   elseif page == AILERONS_MENU then
     aileronsMenu(event)
+  elseif page == FLAPERONS_MENU then
+    flaperonsMenu(event)
   end
   return 0
 end
