@@ -252,6 +252,16 @@ static int luaLcdDrawText(lua_State *L)
   return 0;
 }
 
+static int luaLcdDrawNumber(lua_State *L)
+{
+  int x = luaL_checkinteger(L, 1);
+  int y = luaL_checkinteger(L, 2);
+  int n = luaL_checkinteger(L, 3);
+  int att = luaL_checkinteger(L, 4);
+  lcd_outdezAtt(x, y, n, att);
+  return 0;
+}
+
 static int luaLcdDrawSwitch(lua_State *L)
 {
   int x = luaL_checkinteger(L, 1);
@@ -758,12 +768,12 @@ static int luaModelGetOutput(lua_State *L)
     LimitData * limit = limitAddress(idx);
     lua_newtable(L);
     lua_pushtablezstring(L, "name", limit->name);
-    lua_pushtablenumber(L, "min", limit->min);
-    lua_pushtablenumber(L, "max", limit->min);
+    lua_pushtablenumber(L, "min", limit->min-1000);
+    lua_pushtablenumber(L, "max", limit->max+1000);
     lua_pushtablenumber(L, "offset", limit->offset);
     lua_pushtablenumber(L, "ppmCenter", limit->ppmCenter);
-    lua_pushtableboolean(L, "symetrical", limit->symetrical);
-    lua_pushtableboolean(L, "revert", limit->revert);
+    lua_pushtablenumber(L, "symetrical", limit->symetrical);
+    lua_pushtablenumber(L, "revert", limit->revert);
     if (limit->curve)
       lua_pushtablenumber(L, "curve", limit->curve-1);
     else
@@ -789,10 +799,10 @@ static int luaModelSetOutput(lua_State *L)
         str2zchar(limit->name, name, sizeof(limit->name));
       }
       else if (!strcmp(key, "min")) {
-        limit->min = luaL_checkinteger(L, -1);
+        limit->min = luaL_checkinteger(L, -1)+1000;
       }
       else if (!strcmp(key, "max")) {
-        limit->max = luaL_checkinteger(L, -1);
+        limit->max = luaL_checkinteger(L, -1)-1000;
       }
       else if (!strcmp(key, "offset")) {
         limit->offset = luaL_checkinteger(L, -1);
@@ -967,6 +977,7 @@ static const luaL_Reg lcdLib[] = {
   { "drawLine", luaLcdDrawLine },
   { "drawRectangle", luaLcdDrawRectangle },
   { "drawText", luaLcdDrawText },
+  { "drawNumber", luaLcdDrawNumber },
   { "drawSwitch", luaLcdDrawSwitch },
   { "drawSource", luaLcdDrawSource },
   { "drawRect", luaLcdDrawRect },
@@ -1007,6 +1018,7 @@ void luaInit()
   lua_registerint(L, "MIDSIZE", MIDSIZE);
   lua_registerint(L, "SMLSIZE", SMLSIZE);
   lua_registerint(L, "INVERS", INVERS);
+  lua_registerint(L, "PREC1", PREC1);
   lua_registerint(L, "BLINK", BLINK);
   lua_registerint(L, "VALUE", 0);
   lua_registerint(L, "SOURCE", 1);
@@ -1024,6 +1036,10 @@ void luaInit()
   lua_registerint(L, "EVT_EXIT_BREAK", EVT_KEY_BREAK(KEY_EXIT));
   lua_registerint(L, "EVT_PLUS_BREAK", EVT_KEY_BREAK(KEY_PLUS));
   lua_registerint(L, "EVT_MINUS_BREAK", EVT_KEY_BREAK(KEY_MINUS));
+  lua_registerint(L, "EVT_PLUS_FIRST", EVT_KEY_FIRST(KEY_PLUS));
+  lua_registerint(L, "EVT_MINUS_FIRST", EVT_KEY_FIRST(KEY_MINUS));
+  lua_registerint(L, "EVT_PLUS_REPT", EVT_KEY_REPT(KEY_PLUS));
+  lua_registerint(L, "EVT_MINUS_REPT", EVT_KEY_REPT(KEY_MINUS));
   lua_registerint(L, "FILL_WHITE", FILL_WHITE);
   lua_registerint(L, "GREY_DEFAULT", GREY_DEFAULT);
   lua_registerint(L, "SOLID", SOLID);
@@ -1220,6 +1236,12 @@ void luaTask(uint8_t evt)
         luaError(standaloneScript.state);
       }
 
+      if (evt == EVT_KEY_LONG(KEY_EXIT)) {
+        TRACE("Script force exit");
+        killEvents(evt);
+        standaloneScript.state = SCRIPT_NOFILE;
+        luaState = LUASTATE_RELOAD_MODEL_SCRIPTS;
+      }
     }
   }
   else {
@@ -1277,8 +1299,6 @@ void luaTask(uint8_t evt)
       }
     }
 
-    // TRACE("gc=%d", lua_gc(L, LUA_GCCOUNT, 0));
-
     if (lua_gc(L, LUA_GCCOUNT, 0) > SCRIPTS_MAX_HEAP) {
       uint8_t max_memory = 0;
       int8_t max_idx = -1;
@@ -1296,4 +1316,8 @@ void luaTask(uint8_t evt)
       }
     }
   }
+
+  // TRACE("Before GC COLLECT gc=%d", lua_gc(L, LUA_GCCOUNT, 0));
+  lua_gc(L, LUA_GCCOLLECT, 0);
+  // TRACE("After GC COLLECT gc=%d", lua_gc(L, LUA_GCCOUNT, 0));
 }
