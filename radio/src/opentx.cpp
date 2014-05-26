@@ -1700,8 +1700,15 @@ PLAY_FUNCTION(playValue, uint8_t idx)
 
     case MIXSRC_FIRST_TELEM+TELEM_RPM-1:
     case MIXSRC_FIRST_TELEM+TELEM_MAX_RPM-1:
-      PLAY_NUMBER(val, 1+UNIT_RPMS, 0);
+    {
+      getvalue_t rpm = val;
+      if (rpm > 100)
+        rpm = 10 * div10_and_round(rpm);
+      if (rpm > 1000)
+        rpm = 10 * div10_and_round(rpm);
+      PLAY_NUMBER(rpm, 1+UNIT_RPMS, 0);
       break;
+    }
 
     case MIXSRC_FIRST_TELEM+TELEM_HDG-1:
       PLAY_NUMBER(val, 1+UNIT_HDG, 0);
