@@ -9,6 +9,7 @@ local QUADRI_MENU   = DELTA_MENU+10
 local ENGINE_MENU = PLANE_MENU
 local AILERONS_MENU = PLANE_MENU+1
 local FLAPERONS_MENU = PLANE_MENU+2
+local BRAKES_MENU = PLANE_MENU+3
 
 local page = MODELTYPE_MENU
 local dirty = true
@@ -25,6 +26,9 @@ local aileronsCH2 = 4
 local flaperonsMode = 0
 local flaperonsCH1 = 5
 local flaperonsCH2 = 6
+local brakesMode = 0
+local brakesCH1 = 7
+local brakesCH2 = 8
 
 -- Common functions
 
@@ -289,6 +293,57 @@ local function flaperonsMenu(event)
   end    
 end
 
+-- Airbrakes Menu
+
+local brakesModeItems = {"No", "Yes...", "Yes, 2 channels..."}
+
+local function drawBrakesMenu()
+  lcd.clear()
+  lcd.drawText(1, 0, "Has your model got air brakes?", 0)
+  lcd.drawRect(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
+  lcd.drawCombobox(0, 8, LCD_W/2, brakesModeItems, brakesMode, getFieldFlags(0)) 
+  lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H, DOTTED, 0)
+  if brakesMode == 0 then
+    -- no brakes
+    -- lcd.drawPixmap(112, 8, "/TEMPLATES/ailerons-0.bmp")
+    fieldsMax = 0
+  elseif brakesMode == 1 then
+    -- 1 channel
+    lcd.drawPixmap(112, 8, "/TEMPLATES/brakes-1.bmp")
+    lcd.drawText(25, LCD_H-16, "Assign channel", 0);
+    lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
+    lcd.drawSource(151, LCD_H-8, SOURCE_FIRST_CH+brakesCH1, getFieldFlags(1))
+    fieldsMax = 1
+  elseif brakesMode == 2 then
+    -- 2 channels
+    lcd.drawPixmap(112, 8, "/TEMPLATES/brakes-2.bmp")
+    lcd.drawText(20, LCD_H-16, "Assign channels", 0);
+    lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
+    lcd.drawSource(116, LCD_H-8, SOURCE_FIRST_CH+brakesCH1, getFieldFlags(1))
+    lcd.drawSource(175, LCD_H-8, SOURCE_FIRST_CH+brakesCH2, getFieldFlags(2))
+    fieldsMax = 2
+  end
+end
+
+local function brakesMenu(event)
+  if dirty then
+    dirty = false
+    drawBrakesMenu()
+  end
+
+  navigate(event, fieldsMax, page-1, page+1)
+
+  if edit then
+    if field==0 then
+      brakesMode = keyIncDec(event, brakesMode, 2)
+    elseif field==1 then
+      brakesCH1 = keyIncDec(event, brakesCH1, 7, true)
+    elseif field==2 then
+      brakesCH2 = keyIncDec(event, brakesCH2, 7, true)
+    end
+  end    
+end
+
 -- Main
 
 local function run(event)
@@ -304,6 +359,8 @@ local function run(event)
     aileronsMenu(event)
   elseif page == FLAPERONS_MENU then
     flaperonsMenu(event)
+  elseif page == BRAKES_MENU then
+    brakesMenu(event)
   end
   return 0
 end
