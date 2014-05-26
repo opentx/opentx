@@ -534,6 +534,18 @@ static int luaModelDeleteInput(lua_State *L)
   return 0;
 }
 
+static int luaModelDeleteInputs(lua_State *L)
+{
+  clearInputs();
+  return 0;
+}
+
+static int luaModelDefaultInputs(lua_State *L)
+{
+  defaultInputs();
+  return 0;
+}
+
 static int getFirstMix(int chn)
 {
   for (int i=0; i<MAX_MIXERS; i++) {
@@ -562,6 +574,9 @@ static int getMixesCountFromFirst(int chn, int first)
 static int getMixesCount(int chn)
 {
   int first = getFirstMix(chn);
+  if (first < 0) {
+    return 0;
+  }
   return getMixesCountFromFirst(chn, first);
 }
 
@@ -604,7 +619,8 @@ static int luaModelInsertMix(lua_State *L)
   int count = getMixesCountFromFirst(chn, first);
 
   if (chn<NUM_CHNOUT && getExpoMixCount(0)<MAX_MIXERS && idx<=count) {
-    idx = first+idx;
+    if (first > 0)
+      idx += first;
     s_currCh = chn+1;
     insertExpoMix(0, idx);
     MixData *mix = mixAddress(idx);
@@ -649,6 +665,12 @@ static int luaModelDeleteMix(lua_State *L)
     deleteExpoMix(0, first+idx);
   }
 
+  return 0;
+}
+
+static int luaModelDeleteMixes(lua_State *L)
+{
+  memset(g_model.mixData, 0, sizeof(g_model.mixData));
   return 0;
 }
 
@@ -955,10 +977,13 @@ static const luaL_Reg modelLib[] = {
   { "getInput", luaModelGetInput },
   { "insertInput", luaModelInsertInput },
   { "deleteInput", luaModelDeleteInput },
+  { "deleteInputs", luaModelDeleteInputs },
+  { "defaultInputs", luaModelDefaultInputs },
   { "getMixesCount", luaModelGetMixesCount },
   { "getMix", luaModelGetMix },
   { "insertMix", luaModelInsertMix },
   { "deleteMix", luaModelDeleteMix },
+  { "deleteMixes", luaModelDeleteMixes },
   { "getLogicalSwitch", luaModelGetLogicalSwitch },
   { "setLogicalSwitch", luaModelSetLogicalSwitch },
   { "getCustomFunction", luaModelGetCustomFunction },
@@ -1033,6 +1058,7 @@ void luaInit()
   lua_registerint(L, "EVT_PAGE_BREAK", EVT_KEY_BREAK(KEY_PAGE));
   lua_registerint(L, "EVT_PAGE_LONG", EVT_KEY_LONG(KEY_PAGE));
   lua_registerint(L, "EVT_ENTER_BREAK", EVT_KEY_BREAK(KEY_ENTER));
+  lua_registerint(L, "EVT_ENTER_LONG", EVT_KEY_LONG(KEY_ENTER));
   lua_registerint(L, "EVT_EXIT_BREAK", EVT_KEY_BREAK(KEY_EXIT));
   lua_registerint(L, "EVT_PLUS_BREAK", EVT_KEY_BREAK(KEY_PLUS));
   lua_registerint(L, "EVT_MINUS_BREAK", EVT_KEY_BREAK(KEY_MINUS));

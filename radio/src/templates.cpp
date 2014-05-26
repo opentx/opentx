@@ -101,34 +101,11 @@ void mixSetWeight(MixData* md, int8_t weight)
 }
 
 #if defined(PCBTARANIS)
-void clearInputs()
-{
-  memset(g_model.expoData, 0, sizeof(g_model.expoData)); // clear all expos
-}
-
-void defaultInputs()
-{
-  clearInputs();
-
-  for (int i=0; i<NUM_STICKS; i++) {
-    uint8_t stick_index = channel_order(i+1);
-    ExpoData *expo = expoAddress(i);
-    expo->srcRaw = MIXSRC_Rud - 1 + stick_index;
-    expo->curve.type = CURVE_REF_EXPO;
-    expo->chn = i;
-    expo->weight = 100;
-    expo->mode = 3; // TODO constant
-    for (int c=0; c<4; c++) {
-      g_model.inputNames[i][c] = char2idx(STR_VSRCRAW[1+STR_VSRCRAW[0]*stick_index+c]);
-    }
-  }
-  eeDirty(EE_MODEL);
-}
-#define TMPL_INPUT(x) (MIXSRC_FIRST_INPUT+channel_order(x)-1)
+  #define TMPL_INPUT(x) (MIXSRC_FIRST_INPUT+channel_order(x)-1)
 #else
-#define clearInputs()
-#define defaultInputs()
-#define TMPL_INPUT(x) (MIXSRC_Rud+x-1)
+  #define clearInputs()
+  #define defaultInputs()
+  #define TMPL_INPUT(x) (MIXSRC_Rud+x-1)
 #endif
 
 void clearMixes()

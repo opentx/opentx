@@ -1091,6 +1091,11 @@ int expo(int x, int k);
   #define APPLY_EXPOS_EXTRA_PARAMS
 #endif
 
+#if defined(PCBTARANIS)
+void clearInputs();
+void defaultInputs();
+#endif
+
 void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS_INC);
 int16_t applyLimits(uint8_t channel, int32_t value);
 

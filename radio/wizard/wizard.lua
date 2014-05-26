@@ -1,10 +1,10 @@
-
 -- Wizard pages
 local MODELTYPE_MENU = 0
 local PLANE_MENU    = MODELTYPE_MENU+1
 local HELI_MENU     = PLANE_MENU+10
 local DELTA_MENU    = HELI_MENU+10
 local QUADRI_MENU   = DELTA_MENU+10
+local CONFIRMATION_MENU = 100
 
 local ENGINE_MENU = PLANE_MENU
 local AILERONS_MENU = PLANE_MENU+1
@@ -12,21 +12,23 @@ local FLAPERONS_MENU = PLANE_MENU+2
 local BRAKES_MENU = PLANE_MENU+3
 local TAIL_MENU = PLANE_MENU+4
 
+-- Navigation variables
 local page = MODELTYPE_MENU
 local dirty = true
-local choice = 0
-
 local edit = false
 local field = 0
 local fieldsMax = 0
+
+-- Model settings
+local modelType = 0
 local engineMode = 0
 local engineCH1 = 0
 local aileronsMode = 0
 local aileronsCH1 = 0
 local aileronsCH2 = 4
-local flaperonsMode = 0
-local flaperonsCH1 = 5
-local flaperonsCH2 = 6
+local flapsMode = 0
+local flapsCH1 = 5
+local flapsCH2 = 6
 local brakesMode = 0
 local brakesCH1 = 8
 local brakesCH2 = 9
@@ -146,7 +148,7 @@ end
 
 -- Model Type Menu
 
-local function choiceSurround(index)
+local function modelTypeSurround(index)
   lcd.drawRectangle(12+47*index, 13, 48, 48)
   lcd.drawPixmap(17+47*index, 8, "/TEMPLATES/mark.bmp")
 end
@@ -159,7 +161,7 @@ local function drawModelChoiceMenu()
   lcd.drawPixmap( 63, 17, "/TEMPLATES/heli.bmp")
   lcd.drawPixmap(110, 17, "/TEMPLATES/delta.bmp")
   lcd.drawPixmap(157, 17, "/TEMPLATES/quadri.bmp")
-  choiceSurround(choice)
+  modelTypeSurround(modelType)
 end
 
 local function modelTypeMenu(event)
@@ -168,10 +170,10 @@ local function modelTypeMenu(event)
     dirty = false
   end
   if event == EVT_ENTER_BREAK then
-    page = PLANE_MENU+(10*choice)
+    page = PLANE_MENU+(10*modelType)
     dirty = true
   else
-    choice = fieldIncDec(event, choice, 3)
+    modelType = fieldIncDec(event, modelType, 3)
   end
 end
 
@@ -211,6 +213,13 @@ local function engineMenu(event)
     engineMode = fieldIncDec(event, engineMode, 1)
   elseif field==1 then
     engineCH1 = channelIncDec(event, engineCH1)
+  end
+end
+
+local function applyEngineSettings()
+  if engineMode == 0 then
+    mix = {source=channelOrder(2)}
+    model.insertMix(engineCH1, 0, mix)
   end
 end
 
@@ -263,52 +272,52 @@ local function aileronsMenu(event)
   end
 end
 
--- Flaperons Menu
+-- Flaps Menu
 
-local flaperonsModeItems = {"No", "Yes...", "Yes, 2 channels..."}
+local flapsModeItems = {"No", "Yes...", "Yes, 2 channels..."}
 
-local function drawFlaperonsMenu()
+local function drawFlapsMenu()
   lcd.clear()
-  lcd.drawText(1, 0, "Has your model got flaperons?", 0)
+  lcd.drawText(1, 0, "Has your model got flaps?", 0)
   lcd.drawRect(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W/2, flaperonsModeItems, flaperonsMode, getFieldFlags(0)) 
+  lcd.drawCombobox(0, 8, LCD_W/2, flapsModeItems, flapsMode, getFieldFlags(0)) 
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H, DOTTED, 0)
-  if flaperonsMode == 0 then
-    -- no flaperons
+  if flapsMode == 0 then
+    -- no flaps
     -- lcd.drawPixmap(112, 8, "/TEMPLATES/ailerons-0.bmp")
     fieldsMax = 0
-  elseif flaperonsMode == 1 then
+  elseif flapsMode == 1 then
     -- 1 channel
     lcd.drawPixmap(112, 8, "/TEMPLATES/flaps-1.bmp")
     lcd.drawText(25, LCD_H-16, "Assign channel", 0);
     lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
-    lcd.drawSource(151, LCD_H-8, SOURCE_FIRST_CH+flaperonsCH1, getFieldFlags(1))
+    lcd.drawSource(151, LCD_H-8, SOURCE_FIRST_CH+flapsCH1, getFieldFlags(1))
     fieldsMax = 1
-  elseif flaperonsMode == 2 then
+  elseif flapsMode == 2 then
     -- 2 channels
     lcd.drawPixmap(112, 8, "/TEMPLATES/flaps-2.bmp")
     lcd.drawText(20, LCD_H-16, "Assign channels", 0);
     lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
-    lcd.drawSource(116, LCD_H-8, SOURCE_FIRST_CH+flaperonsCH1, getFieldFlags(1))
-    lcd.drawSource(175, LCD_H-8, SOURCE_FIRST_CH+flaperonsCH2, getFieldFlags(2))
+    lcd.drawSource(116, LCD_H-8, SOURCE_FIRST_CH+flapsCH1, getFieldFlags(1))
+    lcd.drawSource(175, LCD_H-8, SOURCE_FIRST_CH+flapsCH2, getFieldFlags(2))
     fieldsMax = 2
   end
 end
 
-local function flaperonsMenu(event)
+local function flapsMenu(event)
   if dirty then
     dirty = false
-    drawFlaperonsMenu()
+    drawFlapsMenu()
   end
 
   navigate(event, fieldsMax, page-1, page+1)
 
   if field==0 then
-    flaperonsMode = fieldIncDec(event, flaperonsMode, 2)
+    flapsMode = fieldIncDec(event, flapsMode, 2)
   elseif field==1 then
-    flaperonsCH1 = channelIncDec(event, flaperonsCH1)
+    flapsCH1 = channelIncDec(event, flapsCH1)
   elseif field==2 then
-    flaperonsCH2 = channelIncDec(event, flaperonsCH2)
+    flapsCH2 = channelIncDec(event, flapsCH2)
   end
 end
 
@@ -409,7 +418,7 @@ local function tailMenu(event)
     drawTailMenu()
   end
 
-  navigate(event, fieldsMax, page-1, page+1)
+  navigate(event, fieldsMax, page-1, CONFIRMATION_MENU)
 
   if field==0 then
     tailMode = fieldIncDec(event, tailMode, 3)
@@ -470,6 +479,41 @@ local function servoMenu(event)
   end
 end
 
+-- Confirmation Menu
+
+local function applySettings()
+  model.defaultInputs()
+  model.deleteMixes()      
+  applyEngineSettings()
+end
+
+local function drawConfirmationMenu()
+  lcd.clear()
+  lcd.drawText(2, 10, "Throttle:", 0);
+  lcd.drawSource(52, 10, SOURCE_FIRST_CH+engineCH1, 0)
+  lcd.drawText(50, LCD_H-10, "[Enter Long] to confirm", INVERS);
+  fieldsMax = 0
+end
+
+local function confirmationMenu(event)
+  if dirty then
+    dirty = false
+    drawConfirmationMenu()
+  end
+
+  navigate(event, fieldsMax, TAIL_MENU, page)
+
+  if event == EVT_EXIT_BREAK then
+    return 2
+  elseif event == EVT_ENTER_LONG then
+    killEvents(event)
+    applySettings()
+    return 2
+  else
+    return 0
+  end
+end
+
 -- Main
 
 local function run(event)
@@ -483,11 +527,13 @@ local function run(event)
   elseif page == AILERONS_MENU then
     aileronsMenu(event)
   elseif page == FLAPERONS_MENU then
-    flaperonsMenu(event)
+    flapsMenu(event)
   elseif page == BRAKES_MENU then
     brakesMenu(event)
   elseif page == TAIL_MENU then
     tailMenu(event)
+  elseif page == CONFIRMATION_MENU then
+    return confirmationMenu(event)
   end
   return 0
 end
