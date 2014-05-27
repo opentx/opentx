@@ -588,7 +588,7 @@ end
 
 local function run(event)
   if event == nil then
-    raise("Cannot be run as a model script!")
+    error("Cannot be run as a model script!")
   end
   lcd.lock()
   if page == MODELTYPE_MENU then
