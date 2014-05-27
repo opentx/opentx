@@ -24,7 +24,7 @@ local field = 0
 local fieldsMax = 0
 
 -- Model settings
-local modelType = 2
+local modelType = 0
 local engineMode = 0
 local engineCH1 = 0
 local aileronsMode = 0
@@ -180,7 +180,7 @@ local function modelTypeMenu(event)
     page = PLANE_MENU+(10*modelType)
     dirty = true
   else
-    modelType = fieldIncDec(event, modelType, 3)
+    modelType = fieldIncDec(event, modelType, 3, true)
   end
 end
 
