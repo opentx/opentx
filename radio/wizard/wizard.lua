@@ -284,7 +284,7 @@ local function drawFlapsMenu()
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H, DOTTED, 0)
   if flapsMode == 0 then
     -- no flaps
-    -- lcd.drawPixmap(112, 8, "/TEMPLATES/ailerons-0.bmp")
+    lcd.drawPixmap(112, 8, "/TEMPLATES/ailerons-0.bmp")
     fieldsMax = 0
   elseif flapsMode == 1 then
     -- 1 channel
@@ -333,7 +333,7 @@ local function drawBrakesMenu()
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H, DOTTED, 0)
   if brakesMode == 0 then
     -- no brakes
-    -- lcd.drawPixmap(112, 8, "/TEMPLATES/ailerons-0.bmp")
+    lcd.drawPixmap(112, 8, "/TEMPLATES/ailerons-0.bmp")
     fieldsMax = 0
   elseif brakesMode == 1 then
     -- 1 channel
