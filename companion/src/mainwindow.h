@@ -76,10 +76,10 @@ class MainWindow : public QMainWindow
     MainWindow();
 
   protected:
+    void startFirmwareDownload(QString url, QString filename);
     void closeEvent(QCloseEvent *event);
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
-
 
   public slots:
     void downloadLatestFW(FirmwareVariant & firmware);

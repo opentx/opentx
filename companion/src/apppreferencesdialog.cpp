@@ -79,7 +79,6 @@ void AppPreferencesDialog::writeValues()
     g.profile[g.id()].name(ui->profileNameLE->text());
 
   // If a new fw type has been choosen, several things need to reset
-  g.cpuId( ui->CPU_ID_LE->text() );
   current_firmware_variant = getFirmwareVariant();
   if (g.profile[g.id()].fwType() != current_firmware_variant.id) {
     g.profile[g.id()].fwName("");
@@ -186,8 +185,6 @@ void AppPreferencesDialog::initSettings()
   }
   ui->lblGeneralSettings->setText(hwSettings);
 
-
-  ui->CPU_ID_LE->setText(g.cpuId());
   FirmwareInterface * current_firmware = GetCurrentFirmware();
 
   foreach(FirmwareInterface * firmware, firmwares) {
@@ -470,14 +467,6 @@ void AppPreferencesDialog::firmwareChanged()
   QString stamp;
   stamp.append(variant.firmware->getStampUrl());
   QString url = variant.getFirmwareUrl();
-  // B-Plan 
-  if (false) {
-    ui->CPU_ID_LE->show();
-    ui->CPU_ID_LABEL->show();
-  } else {
-    ui->CPU_ID_LE->hide();
-    ui->CPU_ID_LABEL->hide();
-  }
 }
 
 void AppPreferencesDialog::populateFirmwareOptions(const FirmwareInterface * firmware)

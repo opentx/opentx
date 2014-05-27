@@ -480,7 +480,6 @@ QString AppData::armMcu()          { return _armMcu;          }
 QString AppData::avrArguments()    { return _avrArguments;    }
 QString AppData::avrPort()         { return _avrPort;         }
 QString AppData::avrdudeLocation() { return _avrdudeLocation; }
-QString AppData::cpuId()           { return _cpuId;           }
 QString AppData::dfuArguments()    { return _dfuArguments;    }
 QString AppData::dfuLocation()     { return _dfuLocation;     }
 QString AppData::locale()          { return _locale;          }
@@ -531,7 +530,6 @@ void AppData::armMcu          (const QString     x) { store(x, _armMcu,         
 void AppData::avrArguments    (const QString     x) { store(x, _avrArguments,    "avr_arguments"           );}
 void AppData::avrPort         (const QString     x) { store(x, _avrPort,         "avr_port"                );}
 void AppData::avrdudeLocation (const QString     x) { store(x, _avrdudeLocation, "avrdudeLocation"         );}
-void AppData::cpuId           (const QString     x) { store(x, _cpuId,           "cpu_id"                  );}
 void AppData::dfuArguments    (const QString     x) { store(x, _dfuArguments,    "dfu_arguments"           );}
 void AppData::dfuLocation     (const QString     x) { store(x, _dfuLocation,     "dfu_location"            );}
 void AppData::locale          (const QString     x) { store(x, _locale,          "locale"                  );}
@@ -655,7 +653,6 @@ AppData::AppData()
     getset( _avrArguments,    "avr_arguments"           ,"" );
     getset( _avrPort,         "avr_port"                ,"" );
     getset( _avrdudeLocation, "avrdudeLocation"        ,"" );
-    getset( _cpuId,           "cpu_id"                  ,"" );
     getset( _dfuArguments,    "dfu_arguments"           ,"-a 0" );
     getset( _dfuLocation,     "dfu_location"            ,"" );
     getset( _locale,          "locale"                  ,"" );

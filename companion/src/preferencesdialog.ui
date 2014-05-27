@@ -896,9 +896,6 @@ May be different from firmware language</string>
      <item row="0" column="0" colspan="2">
       <widget class="QComboBox" name="downloadVerCB"/>
      </item>
-     <item row="1" column="0" colspan="2">
-      <widget class="QLineEdit" name="CPU_ID_LE"/>
-     </item>
     </layout>
    </item>
    <item row="21" column="0">

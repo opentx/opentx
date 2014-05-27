@@ -164,6 +164,7 @@ set(companion_SRCS
   qcustomplot.cpp
   wizarddata.cpp
   wizarddialog.cpp
+  googleanalytics.cpp
 )
 
 set(companion_MOC_HDRS
@@ -190,6 +191,7 @@ set(companion_MOC_HDRS
   qautocombobox.h
   helpers.h
   wizarddialog.h
+  googleanalytics.h
 )
      
 set(companion_UIS

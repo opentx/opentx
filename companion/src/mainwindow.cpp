@@ -64,6 +64,7 @@
 #include "helpers.h"
 #include "appdata.h"
 #include "taranisnotfound.h"
+#include "googleanalytics.h"
 #include "firmwares/opentx/opentxinterface.h" // TODO get rid of this include
 
 #define DONATE_STR      "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QUZ48K4SEXDP2"
@@ -162,6 +163,8 @@ MainWindow::MainWindow():
     if (printing) {
       QTimer::singleShot(0, this, SLOT(autoClose()));
     }
+
+    ga.sendPageView("Companion");
 }
 
 void MainWindow::displayWarnings()
@@ -319,22 +322,13 @@ void MainWindow::updateDownloaded()
 
 void MainWindow::downloadLatestFW(FirmwareVariant & firmware)
 {
-    QString url, ext, cpuid;
+    QString url, ext;
     url = firmware.getFirmwareUrl();
-    cpuid = g.cpuId();
     ext = url.mid(url.lastIndexOf("."));
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.flashDir() + "/" + firmware.id + ext);
-    if (!fileName.isEmpty()) {
+    QString filename = QFileDialog::getSaveFileName(this, tr("Save As"), g.flashDir() + "/" + firmware.id + ext);
+    if (!filename.isEmpty()) {
       needRename = true;
-      g.profile[g.id()].fwName(fileName);
-      if (!cpuid.isEmpty()) {
-        url.append("&cpuid=");
-        url.append(cpuid);
-      }
-      g.flashDir(QFileInfo(fileName).dir().absolutePath());
-      downloadDialog * dd = new downloadDialog(this, url, fileName);
-      connect(dd, SIGNAL(accepted()), this, SLOT(firmwareDownloadAccepted()));
-      dd->exec();
+      startFirmwareDownload(url, filename);
     }
 }
 
@@ -407,9 +401,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
 {
     bool download = false;
     bool ignore = false;
-    QString cpuid;
 
-    cpuid = g.cpuId();
     QByteArray qba = reply->readAll();
 
     long version = 0;
@@ -510,20 +502,9 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
       else if (download == true) {
         QString url = GetFirmwareVariant(current_firmware_variant.id).getFirmwareUrl();
         QString ext = url.mid(url.lastIndexOf("."));
-        needRename=false;
-        QString fileName;
-        fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.flashDir() + "/" + current_firmware_variant.id + ext);
-        if (!fileName.isEmpty()) {
-          if (!cpuid.isEmpty()) {
-            url.append("&cpuid=");
-            url.append(cpuid);
-          }
-          g.profile[g.id()].fwName(fileName);
-          g.flashDir(QFileInfo(fileName).dir().absolutePath());
-          downloadDialog * dd = new downloadDialog(this, url, fileName);
-          connect(dd, SIGNAL(accepted()), this, SLOT(firmwareDownloadAccepted()));
-          dd->exec();
-        }
+        needRename = false;
+        QString filename = QFileDialog::getSaveFileName(this, tr("Save As"), g.flashDir() + "/" + current_firmware_variant.id + ext);
+        startFirmwareDownload(url, filename);
       }
     }
     else {
@@ -532,6 +513,18 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
     }
 
     checkForUpdates();
+}
+
+void MainWindow::startFirmwareDownload(QString url, QString filename)
+{
+  if (!filename.isEmpty()) {
+    g.profile[g.id()].fwName(filename);
+    g.flashDir(QFileInfo(filename).dir().absolutePath());
+    downloadDialog * dd = new downloadDialog(this, url, filename);
+    connect(dd, SIGNAL(accepted()), this, SLOT(firmwareDownloadAccepted()));
+    dd->exec();
+    ga.sendEvent("Firmwares", "Download", url);
+  }
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

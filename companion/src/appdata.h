@@ -206,7 +206,6 @@ class AppData: protected CompStoreObj
     QString _avrArguments;
     QString _avrPort;
     QString _avrdudeLocation;
-    QString _cpuId;
     QString _dfuArguments;
     QString _dfuLocation;
     QString _locale;
@@ -258,7 +257,6 @@ class AppData: protected CompStoreObj
     QString avrArguments();
     QString avrPort();
     QString avrdudeLocation();
-    QString cpuId();
     QString dfuArguments();
     QString dfuLocation();
     QString lastFw();  
@@ -310,7 +308,6 @@ class AppData: protected CompStoreObj
     void avrArguments    (const QString);
     void avrPort         (const QString);
     void avrdudeLocation (const QString);
-    void cpuId           (const QString);
     void dfuArguments    (const QString);
     void dfuLocation     (const QString);
     void lastFw          (const QString);
