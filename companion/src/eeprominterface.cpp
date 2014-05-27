@@ -1304,6 +1304,8 @@ QString getBoardName(BoardEnum board)
       return "Sky9x";
     case BOARD_9XRPRO:
       return "9XR-PRO";
+    default:
+      return "Unknown";
   }
 }
 
