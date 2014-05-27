@@ -1285,13 +1285,34 @@ bool LoadEepromXml(RadioData &radioData, QDomDocument &doc)
   return false;
 }
 
+QString getBoardName(BoardEnum board)
+{
+  switch (board) {
+    case BOARD_STOCK:
+      return "9X";
+    case BOARD_M128:
+      return "9X128";
+    case BOARD_GRUVIN9X:
+      return "Gruvin9x";
+    case BOARD_MEGA2560:
+      return "MEGA2560";
+    case BOARD_TARANIS:
+      return "Taranis";
+    case BOARD_TARANIS_PLUS:
+      return "Taranis Plus";
+    case BOARD_SKY9X:
+      return "Sky9x";
+    case BOARD_9XRPRO:
+      return "9XR-PRO";
+  }
+}
 
 FirmwareVariant GetFirmwareVariant(QString id)
 {
   FirmwareVariant result;
 
   foreach(FirmwareInterface * firmware, firmwares) {
-    if (id.contains(firmware->id+"-") || (!id.contains("-") && id.contains(firmware->id))) {
+    if (id.contains(firmware->getId()+"-") || (!id.contains("-") && id.contains(firmware->getId()))) {
       result.id = id;
       result.firmware = firmware;
       result.variant = firmware->getVariant(id);

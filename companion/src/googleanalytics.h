@@ -8,7 +8,7 @@ class GoogleAnalytics: public QObject
     GoogleAnalytics();
     ~GoogleAnalytics();
     void sendPageView(QString page);
-    void sendEvent(QString category, QString action, QString label);
+    void sendEvent(QString category, QString action, QString label="");
 
   protected slots:
     void slot_receive(QNetworkReply * reply);

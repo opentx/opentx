@@ -52,6 +52,8 @@ enum BoardEnum {
   BOARD_TARANIS_PLUS
 };
 
+QString getBoardName(BoardEnum board);
+
 #define IS_9X(board)           (board==BOARD_STOCK || board==BOARD_M128)
 #define IS_STOCK(board)        (board==BOARD_STOCK)
 #define IS_2560(board)         (board==BOARD_GRUVIN9X || board==BOARD_MEGA2560)
@@ -1162,8 +1164,6 @@ class EEPROMInterface
 
     virtual ~EEPROMInterface() {}
 
-    virtual const char * getName() = 0;
-
     inline BoardEnum getBoard() { return board; }
 
     virtual bool load(RadioData &radioData, const uint8_t *eeprom, int size) = 0;
@@ -1351,6 +1351,16 @@ class FirmwareInterface {
       return board;
     }
 
+    inline QString getName()
+    {
+      return name;
+    }
+
+    inline QString getId()
+    {
+      return id;
+    }
+
     inline EEPROMInterface * getEepromInterface()
     {
       return eepromInterface;
@@ -1367,10 +1377,10 @@ class FirmwareInterface {
     QList<const char *> languages;
     QList<const char *> ttslanguages;
     QList< QList<Option> > opts;
-    QString id;
-    QString name;
 
   protected:
+    QString id;
+    QString name;
     BoardEnum board;
     EEPROMInterface * eepromInterface;
 

@@ -115,7 +115,7 @@ void PrintDialog::printSetup()
     str.append(QString("<tr><td colspan=%1 ><table border=0 width=\"100%\"><tr><td><h1>").arg((firmware->getCapability(FlightModes) && !gvars) ? 2 : 1));
     str.append(g_model->name);
     str.append("&nbsp;(");
-    str.append(firmware->getEepromInterface()->getName());
+    str.append(firmware->getName());
     str.append(")</h1></td><td align=right valign=top NOWRAP><font size=-1>"+tr("printed on: %1").arg(QDateTime::currentDateTime().toString(Qt::SystemLocaleShortDate))+"</font></td></tr></table></td></tr><tr><td><table border=0 cellspacing=0 cellpadding=3>");
     str.append("<tr><td><h2>"+tr("General Model Settings")+"</h2></td></tr>");
     str.append("<tr><td>");

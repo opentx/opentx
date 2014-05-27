@@ -188,7 +188,7 @@ void AppPreferencesDialog::initSettings()
   FirmwareInterface * current_firmware = GetCurrentFirmware();
 
   foreach(FirmwareInterface * firmware, firmwares) {
-    ui->downloadVerCB->addItem(firmware->name, firmware->id);
+    ui->downloadVerCB->addItem(firmware->getName(), firmware->getId());
     if (current_firmware == firmware) {
       ui->downloadVerCB->setCurrentIndex(ui->downloadVerCB->count() - 1);
     }
@@ -366,7 +366,7 @@ void AppPreferencesDialog::baseFirmwareChanged()
   QVariant selected_firmware = ui->downloadVerCB->itemData(ui->downloadVerCB->currentIndex());
   voice=NULL;
   foreach(FirmwareInterface * firmware, firmwares) {
-    if (firmware->id == selected_firmware) {
+    if (firmware->getId() == selected_firmware) {
       showVoice(firmware->voice);
       populateFirmwareOptions(firmware);
       break;
@@ -380,8 +380,8 @@ FirmwareVariant AppPreferencesDialog::getFirmwareVariant()
   QVariant selected_firmware = ui->downloadVerCB->itemData(ui->downloadVerCB->currentIndex());
   bool voice=false;
   foreach(FirmwareInterface * firmware, firmwares) {
-    if (firmware->id == selected_firmware) {
-      QString id = firmware->id;
+    QString id = firmware->getId();
+    if (id == selected_firmware) {
       foreach(QCheckBox *cb, optionsCheckBoxes) {
         if (cb->isChecked()) {
           if (cb->text()=="voice" && cb->isChecked())
@@ -414,7 +414,7 @@ void AppPreferencesDialog::firmwareOptionChanged(bool state)
   if (cb && state) {
     QVariant selected_firmware = ui->downloadVerCB->itemData(ui->downloadVerCB->currentIndex());
     foreach(firmware, firmwares) {
-      if (firmware->id == selected_firmware) {
+      if (firmware->getId() == selected_firmware) {
         foreach(QList<Option> opts, firmware->opts) {
           foreach(Option opt, opts) {
             if (cb->text() == opt.name) {

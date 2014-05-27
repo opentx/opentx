@@ -75,7 +75,6 @@ class SimulatorDialog : public QDialog
     int jsmap[8];
 #endif
 
-    EEPROMInterface *txInterface;
     SimulatorInterface *simulator;
     unsigned int lastPhase;
 

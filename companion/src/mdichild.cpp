@@ -134,8 +134,8 @@ bool MdiChild::hasSelection()
 
 void MdiChild::updateTitle()
 {
-  QString title = userFriendlyCurrentFile() + "[*]"+" ("+GetEepromInterface()->getName()+QString(")");
-  if (!IS_SKY9X(GetEepromInterface()->getBoard()))
+  QString title = userFriendlyCurrentFile() + "[*]" + " (" + GetCurrentFirmware()->getName() + QString(")");
+  if (!IS_SKY9X(GetCurrentFirmware()->getBoard()))
     title += QString(" - %1 ").arg(EEPromAvail) + tr("free bytes");
   setWindowTitle(title);
 }

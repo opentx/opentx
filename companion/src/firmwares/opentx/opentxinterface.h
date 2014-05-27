@@ -31,8 +31,6 @@ class OpenTxEepromInterface : public EEPROMInterface
 
     virtual ~OpenTxEepromInterface();
 
-    virtual const char * getName();
-
     virtual const int getEEpromSize();
 
     virtual const int getMaxModels();
@@ -52,6 +50,8 @@ class OpenTxEepromInterface : public EEPROMInterface
     virtual int isAvailable(Protocol proto, int port=0);
     
   protected:
+
+    const char * getName();
 
     bool checkVersion(unsigned int version);
 

@@ -164,7 +164,7 @@ MainWindow::MainWindow():
       QTimer::singleShot(0, this, SLOT(autoClose()));
     }
 
-    ga.sendPageView("Companion");
+    ga.sendEvent(getBoardName(GetCurrentFirmware()->getBoard()), "Start Companion");
 }
 
 void MainWindow::displayWarnings()
@@ -523,7 +523,7 @@ void MainWindow::startFirmwareDownload(QString url, QString filename)
     downloadDialog * dd = new downloadDialog(this, url, filename);
     connect(dd, SIGNAL(accepted()), this, SLOT(firmwareDownloadAccepted()));
     dd->exec();
-    ga.sendEvent("Firmwares", "Download", url);
+    ga.sendEvent(getBoardName(GetCurrentFirmware()->getBoard()), "Download", url);
   }
 }
 
@@ -1468,7 +1468,7 @@ void MainWindow::updateMenus()
     updateIconSizeActions();
     updateIconThemeActions();
 
-    setWindowTitle(tr("OpenTX Companion - FW: %1 - Profile: %2").arg(GetCurrentFirmware()->name).arg( g.profile[g.id()].name() ));
+    setWindowTitle(tr("OpenTX Companion - FW: %1 - Profile: %2").arg(GetCurrentFirmware()->getName()).arg( g.profile[g.id()].name() ));
 }
 
 MdiChild *MainWindow::createMdiChild()

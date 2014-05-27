@@ -16,7 +16,6 @@ SimulatorDialog::SimulatorDialog(QWidget * parent, unsigned int flags):
   dialP_4(NULL),
   timer(NULL),
   lightOn(false),
-  txInterface(NULL),
   simulator(NULL),
   lastPhase(-1),
   beepVal(0),
@@ -340,9 +339,7 @@ void SimulatorDialog::initUi(T * ui)
     }
 #endif
 
-  txInterface = GetEepromInterface();
-
-  windowName = tr("Simulating Radio (%1)").arg(txInterface->getName());
+  windowName = tr("Simulating Radio (%1)").arg(GetCurrentFirmware()->getName());
   setWindowTitle(windowName);
 
   simulator = GetCurrentFirmware()->getSimulator();
@@ -493,7 +490,7 @@ void SimulatorDialog::onTimerEvent()
 {
   static unsigned int lcd_counter = 0;
   if (!simulator->timer10ms()) {
-    QMessageBox::critical(this, "Companion", tr("Firmware %1 error: %2").arg(txInterface->getName()).arg(simulator->getError()));
+    QMessageBox::critical(this, "Companion", tr("Firmware %1 error: %2").arg(GetCurrentFirmware()->getName()).arg(simulator->getError()));
     timer->stop();
     return;
   }
