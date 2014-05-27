@@ -342,10 +342,12 @@ set(simu_SRCS
   modeledit/edge.cpp # TODO not needed
   appdata.cpp
   simulator.cpp
+  googleanalytics.cpp
 )
 
 set(simu_HDRS
-  modeledit/node.h  
+  modeledit/node.h
+  googleanalytics.h
 )
 
 qt4_wrap_cpp(simu_SRCS ${simu_HDRS} )

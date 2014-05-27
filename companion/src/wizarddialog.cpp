@@ -16,6 +16,7 @@
 #include "wizarddialog.h"
 #include "wizarddata.h"
 #include "helpers.h"
+#include "googleanalytics.h"
 
 WizardDialog::WizardDialog(const GeneralSettings & settings, unsigned int modelId, QWidget *parent)
   : QWizard(parent),
@@ -55,6 +56,8 @@ WizardDialog::WizardDialog(const GeneralSettings & settings, unsigned int modelI
 #endif
   setOption(HaveHelpButton, true);
   connect(this, SIGNAL(helpRequested()), this, SLOT(showHelp()));
+
+  ga.sendPageView("Wizard");
 }
 
 void WizardDialog::showHelp()

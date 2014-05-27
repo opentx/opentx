@@ -13,6 +13,7 @@
 #include "telemetry.h"
 #include "appdata.h"
 #include <QScrollArea>
+#include "googleanalytics.h"
 
 ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, FirmwareInterface * firmware) :
   QDialog(parent),
@@ -42,6 +43,8 @@ ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, Firmw
     addTab(new TelemetryPanel(this, model, generalSettings, firmware), tr("Telemetry"));
     
   connect(setupPanel, SIGNAL(extendedLimitsToggled()), chnPanel, SLOT(refreshExtendedLimits()));
+
+  ga.sendPageView(getBoardName(firmware->getBoard()) + " ModelEdit");
 }
 
 ModelEdit::~ModelEdit()

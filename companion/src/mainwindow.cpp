@@ -164,7 +164,7 @@ MainWindow::MainWindow():
       QTimer::singleShot(0, this, SLOT(autoClose()));
     }
 
-    ga.sendEvent(getBoardName(GetCurrentFirmware()->getBoard()), "Start Companion");
+    ga.sendPageView("Home");
 }
 
 void MainWindow::displayWarnings()

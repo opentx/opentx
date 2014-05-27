@@ -16,7 +16,7 @@ GoogleAnalytics::~GoogleAnalytics()
   delete networkManager;
 }
 
-void GoogleAnalytics::sendPageView(QString page)
+void GoogleAnalytics::sendPageView(QString title)
 {
   // create request and set URL of receiver
   QNetworkRequest request;
@@ -30,7 +30,8 @@ void GoogleAnalytics::sendPageView(QString page)
   requestParams += "&t=pageview"; // type of request
   requestParams += "&tid=" TRACKING_ID; // Google Analytics account
   requestParams += "&cid=" + QString::number(userId); // unique user identifier
-  requestParams += "&dp=" + page; // name of page (or app name)
+  requestParams += "&dp=companion-" + title.toLower().replace(" ", "-"); // name of page
+  requestParams += "&dt=" + title; // title of page
   requestParams += "&ul=" + QLocale::system().name(); // language
 
   // send request via post method

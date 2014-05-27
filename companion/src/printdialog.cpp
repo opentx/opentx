@@ -6,6 +6,7 @@
 #include <QImage>
 #include <QColor>
 #include <QPainter>
+#include "googleanalytics.h"
 
 #if !defined WIN32 && defined __GNUC__
 #include <unistd.h>
@@ -61,6 +62,8 @@ PrintDialog::PrintDialog(QWidget *parent, FirmwareInterface * firmware, GeneralS
     printToFile();
     QTimer::singleShot(0, this, SLOT(autoClose()));
   }
+
+  ga.sendPageView(getBoardName(GetCurrentFirmware()->getBoard()) + " ModelsPrint");
 }
 
 void PrintDialog::closeEvent(QCloseEvent *event) 
