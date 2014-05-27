@@ -200,6 +200,13 @@ static int luaKillEvents(lua_State *L)
   return 0;
 }
 
+static int luaRaise(lua_State *L)
+{
+  const char * message = luaL_checkstring(L, 1);
+  throw message;
+  return 0;
+}
+
 static int luaLcdLock(lua_State *L)
 {
   lcd_locked = true;
@@ -1036,6 +1043,7 @@ void luaInit()
   lua_register(L, "popupInput", luaPopupInput);
   lua_register(L, "channelOrder", luaChannelOrder);
   lua_register(L, "killEvents", luaKillEvents);
+  lua_register(L, "raise", luaRaise);
 
   // Push OpenTX constants
   lua_registerint(L, "FULLSCALE", RESX);
