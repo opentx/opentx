@@ -113,6 +113,104 @@ These will be relevant for all models in the same EEPROM.</string>
        <string>Setup</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout" columnstretch="1,0,0,0,0">
+       <item row="34" column="4">
+        <widget class="QComboBox" name="voiceLang_CB"/>
+       </item>
+       <item row="31" column="3">
+        <widget class="QLabel" name="units_label">
+         <property name="text">
+          <string>Measurement Units</string>
+         </property>
+        </widget>
+       </item>
+       <item row="32" column="4">
+        <widget class="QComboBox" name="gpsFormatCB">
+         <item>
+          <property name="text">
+           <string>hh° (N/S) mm' ss''.dd</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>NMEA</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="33" column="4">
+        <widget class="QSpinBox" name="timezoneSB">
+         <property name="minimum">
+          <number>-14</number>
+         </property>
+         <property name="maximum">
+          <number>12</number>
+         </property>
+         <property name="value">
+          <number>0</number>
+         </property>
+        </widget>
+       </item>
+       <item row="34" column="3">
+        <widget class="QLabel" name="VoiceLang_label">
+         <property name="text">
+          <string>Voice Language</string>
+         </property>
+        </widget>
+       </item>
+       <item row="32" column="3">
+        <widget class="QLabel" name="gpsFormatLabel">
+         <property name="text">
+          <string>GPS Coordinates</string>
+         </property>
+        </widget>
+       </item>
+       <item row="33" column="3">
+        <widget class="QLabel" name="label_timezone">
+         <property name="text">
+          <string>Timeshift from UTC</string>
+         </property>
+        </widget>
+       </item>
+       <item row="31" column="4">
+        <widget class="QComboBox" name="units_CB">
+         <item>
+          <property name="text">
+           <string>Metric</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Imperial</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="29" column="3">
+        <widget class="QLabel" name="countrycode_label">
+         <property name="text">
+          <string>Country Code</string>
+         </property>
+        </widget>
+       </item>
+       <item row="29" column="4">
+        <widget class="QComboBox" name="countrycode_CB">
+         <item>
+          <property name="text">
+           <string>America</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Japan</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Europe</string>
+          </property>
+         </item>
+        </widget>
+       </item>
        <item row="4" column="1">
         <widget class="QSlider" name="hapticStrength">
          <property name="minimum">
@@ -165,152 +263,6 @@ These will be relevant for all models in the same EEPROM.</string>
          </property>
         </widget>
        </item>
-       <item row="32" column="4">
-        <widget class="QComboBox" name="channelorderCB">
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="statusTip">
-          <string/>
-         </property>
-         <property name="whatsThis">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Channel order&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Defines the order of the default mixes created on a new model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="currentIndex">
-          <number>0</number>
-         </property>
-         <item>
-          <property name="text">
-           <string>R E T A</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>R E A T</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>R T E A</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>R T A E</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>R A E T</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>R A T E</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>E R T A</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>E R A T</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>E T R A</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>E T A R</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>E A R T</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>E A T R</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>T R E A</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>T R A E</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>T E R A</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>T E A R</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>T A R E</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>T A E R</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>A R E T</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>A R T E</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>A E R T</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>A E T R</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>A T R E</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>A T E R</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="29" column="1">
-        <widget class="QCheckBox" name="faimode_CB">
-         <property name="toolTip">
-          <string>If you enable FAI, you loose the vario, the play functions, the telemetry screen. This function cannot be disabled by the radio.</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
        <item row="14" column="4">
         <layout class="QHBoxLayout" name="backlightColor_Layout">
          <item>
@@ -339,94 +291,24 @@ These will be relevant for all models in the same EEPROM.</string>
          </item>
         </layout>
        </item>
-       <item row="29" column="3" colspan="2">
-        <layout class="QHBoxLayout" name="pxxCountry">
-         <item>
-          <widget class="QLabel" name="countrycode_label">
-           <property name="text">
-            <string>Country Code</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="countrycode_CB">
-           <item>
-            <property name="text">
-             <string>America</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Japan</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Europe</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="32" column="1">
-        <widget class="QComboBox" name="stickmodeCB">
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="statusTip">
-          <string/>
-         </property>
-         <property name="whatsThis">
-          <string>Mode selection:
-
-Mode 1:
-  Left stick:  Elevator, Rudder
-  Right stick:  Throttle, Aileron
-
-Mode 2:
-  Left stick:  Throttle, Rudder
-  Right stick:  Elevator, Aileron
-
-Mode 3:
-  Left stick:  Elevator, Aileron
-  Right stick:  Throttle, Rudder
-
-Mode 4:
-  Left stick:  Throttle, Aileron
-  Right stick:  Elevator, Rudder
-
-</string>
-         </property>
-         <property name="currentIndex">
-          <number>1</number>
-         </property>
-         <item>
-          <property name="text">
-           <string>Mode 1 (RUD ELE THR AIL)</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Mode 2 (RUD THR ELE AIL)</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Mode 3 (AIL ELE THR RUD)</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Mode 4 (AIL THR ELE RUD)</string>
-          </property>
-         </item>
-        </widget>
-       </item>
        <item row="1" column="0">
         <widget class="QLabel" name="label_beeperlen">
          <property name="text">
           <string>Beeper Length</string>
+         </property>
+        </widget>
+       </item>
+       <item row="15" column="3">
+        <widget class="QLabel" name="re_label">
+         <property name="text">
+          <string>RotEnc Navigation</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_12">
+         <property name="text">
+          <string>Beeper Mode</string>
          </property>
         </widget>
        </item>
@@ -451,20 +333,6 @@ Mode 4:
          </item>
         </widget>
        </item>
-       <item row="30" column="3" colspan="2">
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
-         <item>
-          <widget class="QLabel" name="VoiceLang_label">
-           <property name="text">
-            <string>Voice Language</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="voiceLang_CB"/>
-         </item>
-        </layout>
-       </item>
        <item row="27" column="0">
         <widget class="QLabel" name="ro_label">
          <property name="text">
@@ -475,7 +343,7 @@ Mode 4:
          </property>
         </widget>
        </item>
-       <item row="33" column="0" colspan="2">
+       <item row="36" column="0" colspan="2">
         <spacer name="verticalSpacer_5">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -578,53 +446,6 @@ Mode 4:
          </property>
         </widget>
        </item>
-       <item row="32" column="0">
-        <widget class="QLabel" name="label_14">
-         <property name="text">
-          <string>Stick Mode</string>
-         </property>
-        </widget>
-       </item>
-       <item row="32" column="3">
-        <widget class="QLabel" name="label_13">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>Default Channel Order</string>
-         </property>
-        </widget>
-       </item>
-       <item row="30" column="1">
-        <widget class="QComboBox" name="units_CB">
-         <item>
-          <property name="text">
-           <string>Metric</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Imperial</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="31" column="1">
-        <widget class="QSpinBox" name="timezoneSB">
-         <property name="minimum">
-          <number>-14</number>
-         </property>
-         <property name="maximum">
-          <number>12</number>
-         </property>
-         <property name="value">
-          <number>0</number>
-         </property>
-        </widget>
-       </item>
        <item row="1" column="1">
         <widget class="QComboBox" name="beeperlenCB">
          <item>
@@ -678,45 +499,6 @@ Mode 4:
          </item>
         </widget>
        </item>
-       <item row="29" column="0">
-        <widget class="QLabel" name="label_faimode">
-         <property name="text">
-          <string>FAI Mode</string>
-         </property>
-        </widget>
-       </item>
-       <item row="31" column="3" colspan="2">
-        <layout class="QHBoxLayout" name="gpsFormatLayout">
-         <item>
-          <widget class="QLabel" name="gpsFormatLabel">
-           <property name="text">
-            <string>GPS Coordinates</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="gpsFormatCB">
-           <item>
-            <property name="text">
-             <string>hh° (N/S) mm' ss''.dd</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>NMEA</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="30" column="0">
-        <widget class="QLabel" name="units_label">
-         <property name="text">
-          <string>Measurement Units</string>
-         </property>
-        </widget>
-       </item>
        <item row="1" column="4">
         <widget class="QSpinBox" name="speakerPitchSB">
          <property name="toolTip">
@@ -741,20 +523,6 @@ p, li { white-space: pre-wrap; }
          </property>
          <property name="value">
           <number>1</number>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_12">
-         <property name="text">
-          <string>Beeper Mode</string>
-         </property>
-        </widget>
-       </item>
-       <item row="31" column="0">
-        <widget class="QLabel" name="label_timezone">
-         <property name="text">
-          <string>Timeshift from UTC</string>
          </property>
         </widget>
        </item>
@@ -1462,13 +1230,6 @@ Acceptable values are 5v..10v</string>
        <item row="15" column="4">
         <widget class="QComboBox" name="re_CB"/>
        </item>
-       <item row="15" column="3">
-        <widget class="QLabel" name="re_label">
-         <property name="text">
-          <string>RotEnc Navigation</string>
-         </property>
-        </widget>
-       </item>
        <item row="14" column="3">
         <widget class="QLabel" name="backlightColor_label">
          <property name="text">
@@ -1839,51 +1600,6 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </item>
-       <item row="31" column="0">
-        <widget class="QLabel" name="stickReverseLB">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>Stick reverse (order as above)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="31" column="1">
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <item>
-          <widget class="QCheckBox" name="stickReverse1">
-           <property name="text">
-            <string notr="true">1</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="stickReverse2">
-           <property name="text">
-            <string notr="true">2</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="stickReverse3">
-           <property name="text">
-            <string notr="true">3</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="stickReverse4">
-           <property name="text">
-            <string notr="true">4</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
        <item row="4" column="3" rowspan="2" colspan="2">
         <layout class="QGridLayout" name="gridLayout_9" columnstretch="1,0,1,0">
          <item row="0" column="0">
@@ -1979,6 +1695,278 @@ p, li { white-space: pre-wrap; }
           </widget>
          </item>
         </layout>
+       </item>
+       <item row="29" column="0">
+        <widget class="QLabel" name="label_14">
+         <property name="text">
+          <string>Stick Mode</string>
+         </property>
+        </widget>
+       </item>
+       <item row="31" column="0">
+        <widget class="QLabel" name="stickReverseLB">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Stick reverse (order as above)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="32" column="0">
+        <widget class="QLabel" name="label_13">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Default Channel Order</string>
+         </property>
+        </widget>
+       </item>
+       <item row="33" column="0">
+        <widget class="QLabel" name="label_faimode">
+         <property name="text">
+          <string>FAI Mode</string>
+         </property>
+        </widget>
+       </item>
+       <item row="29" column="1">
+        <widget class="QComboBox" name="stickmodeCB">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="statusTip">
+          <string/>
+         </property>
+         <property name="whatsThis">
+          <string>Mode selection:
+
+Mode 1:
+  Left stick:  Elevator, Rudder
+  Right stick:  Throttle, Aileron
+
+Mode 2:
+  Left stick:  Throttle, Rudder
+  Right stick:  Elevator, Aileron
+
+Mode 3:
+  Left stick:  Elevator, Aileron
+  Right stick:  Throttle, Rudder
+
+Mode 4:
+  Left stick:  Throttle, Aileron
+  Right stick:  Elevator, Rudder
+
+</string>
+         </property>
+         <property name="currentIndex">
+          <number>1</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>Mode 1 (RUD ELE THR AIL)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Mode 2 (RUD THR ELE AIL)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Mode 3 (AIL ELE THR RUD)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Mode 4 (AIL THR ELE RUD)</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="31" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QCheckBox" name="stickReverse1">
+           <property name="text">
+            <string notr="true">1</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="stickReverse2">
+           <property name="text">
+            <string notr="true">2</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="stickReverse3">
+           <property name="text">
+            <string notr="true">3</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="stickReverse4">
+           <property name="text">
+            <string notr="true">4</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="32" column="1">
+        <widget class="QComboBox" name="channelorderCB">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="statusTip">
+          <string/>
+         </property>
+         <property name="whatsThis">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Channel order&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Defines the order of the default mixes created on a new model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>R E T A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>R E A T</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>R T E A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>R T A E</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>R A E T</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>R A T E</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>E R T A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>E R A T</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>E T R A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>E T A R</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>E A R T</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>E A T R</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>T R E A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>T R A E</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>T E R A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>T E A R</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>T A R E</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>T A E R</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A R E T</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A R T E</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A E R T</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A E T R</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A T R E</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A T E R</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="33" column="1">
+        <widget class="QCheckBox" name="faimode_CB">
+         <property name="toolTip">
+          <string>If you enable FAI, you loose the vario, the play functions, the telemetry screen. This function cannot be disabled by the radio.</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -3282,7 +3270,6 @@ p, li { white-space: pre-wrap; }
   </layout>
  </widget>
  <tabstops>
-  <tabstop>channelorderCB</tabstop>
   <tabstop>trnMode_1</tabstop>
   <tabstop>trnChn_1</tabstop>
   <tabstop>trnWeight_1</tabstop>

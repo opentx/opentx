@@ -141,14 +141,15 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
     if (!GetCurrentFirmware()->getCapability( HasPxxCountry)) {
       ui->countrycode_label->hide();
       ui->countrycode_CB->hide();
-      layout()->removeItem(ui->pxxCountry);
-    } else {
+    }
+    else {
       ui->countrycode_CB->setCurrentIndex(g_eeGeneral.countryCode);
     }
     if (!GetCurrentFirmware()->getCapability( HasGeneralUnits)) {
       ui->units_label->hide();
       ui->units_CB->hide();
-    } else {
+    }
+    else {
       ui->units_CB->setCurrentIndex(g_eeGeneral.imperial);
     }
     
