@@ -12,15 +12,19 @@ local FLAPERONS_MENU = PLANE_MENU+2
 local BRAKES_MENU = PLANE_MENU+3
 local TAIL_MENU = PLANE_MENU+4
 
+local ELEVONS_MENU = DELTA_MENU+1
+local DRUDDER_MENU = DELTA_MENU+2
+
 -- Navigation variables
 local page = MODELTYPE_MENU
+local lastPage = TAIL_MENU
 local dirty = true
 local edit = false
 local field = 0
 local fieldsMax = 0
 
 -- Model settings
-local modelType = 0
+local modelType = 2
 local engineMode = 0
 local engineCH1 = 0
 local aileronsMode = 0
@@ -36,6 +40,9 @@ local tailMode = 0
 local eleCH1 = 0
 local eleCH2 = 7
 local rudCH1 = 0
+local elevonsCH1 = 0
+local elevonsCH2 = 4
+local dRudderMode = 0
 local servoPage = nil
 
 -- Common functions
@@ -418,6 +425,7 @@ local function tailMenu(event)
     drawTailMenu()
   end
 
+  lastPage = TAIL_MENU
   navigate(event, fieldsMax, page-1, CONFIRMATION_MENU)
 
   if field==0 then
@@ -429,6 +437,93 @@ local function tailMenu(event)
   elseif field==2 then
     eleCH2 = channelIncDec(event, eleCH2)
   end    
+end
+
+-- Delta Engine Menu
+
+local function dEngineMenu(event)
+  if dirty then
+    dirty = false
+    drawEngineMenu()
+  end
+
+  navigate(event, fieldsMax, MODELTYPE_MENU, page+1)
+
+  if field==0 then
+    engineMode = fieldIncDec(event, engineMode, 1)
+  elseif field==1 then
+    engineCH1 = channelIncDec(event, engineCH1)
+  end
+end
+
+-- Elevons Menu
+
+local function drawElevonsMenu()
+  lcd.clear()
+  lcd.drawText(1, 0, "Select elevon channnels", 0)
+  lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
+  lcd.drawLine(LCD_W/2-1, 7, LCD_W/2-1, LCD_H, DOTTED, 0)
+  lcd.drawPixmap(110, 9, "/TEMPLATES/elevons.bmp")
+  lcd.drawText(20, LCD_H-16, "Assign channels", 0);
+  lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
+  lcd.drawSource(116, LCD_H-8, SOURCE_FIRST_CH+elevonsCH1, getFieldFlags(1))
+  lcd.drawSource(175, LCD_H-8, SOURCE_FIRST_CH+elevonsCH2, getFieldFlags(2))
+  fieldsMax = 2
+end
+
+local function elevonsMenu(event)
+  if dirty then
+    dirty = false
+    drawElevonsMenu()
+  end
+
+  navigate(event, fieldsMax, page-1, page+1)
+
+  if field==1 then
+    elevonsCH1 = channelIncDec(event, elevonsCH1)
+  elseif field==2 then
+    elevonsCH2 = channelIncDec(event, elevonsCH2)
+  end
+end
+
+-- Delta Rudder menu
+
+local dRudderModeItems = {"Yes...", "No"}
+
+local function drawDRudderMenu()
+  lcd.clear()
+  lcd.drawText(1, 0, "Has your model got a rudder?", 0)
+  lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
+  lcd.drawCombobox(0, 8, LCD_W/2, dRudderModeItems, dRudderMode, getFieldFlags(0)) 
+  lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H, DOTTED, 0)
+  if dRudderMode == 1 then
+    -- No rudder
+    lcd.drawPixmap(109, 14, "/TEMPLATES/drudder-0.bmp")
+    fieldsMax = 0
+  else
+    -- 1 channel
+    lcd.drawPixmap(109, 14, "/TEMPLATES/drudder-1.bmp")
+    lcd.drawText(25, LCD_H-16, "Assign channel", 0);
+    lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
+    lcd.drawSource(190, LCD_H-55, SOURCE_FIRST_CH+rudCH1, getFieldFlags(1))
+    fieldsMax = 1
+  end
+end
+
+local function dRudderMenu(event)
+  if dirty then
+    dirty = false
+    drawDRudderMenu()
+  end
+  
+  lastPage = DRUDDER_MENU
+  navigate(event, fieldsMax, page-1, CONFIRMATION_MENU)
+
+  if field==0 then
+    dRudderMode = fieldIncDec(event, dRudderMode, 1)
+  elseif field==1 then
+    rudCH1 = channelIncDec(event, rudCH1)
+  end
 end
 
 -- Servo (limits) Menu
@@ -507,56 +602,70 @@ local function drawConfirmationMenu()
     lcd.drawSource(x+52, y, SOURCE_FIRST_CH+engineCH1, 0)
     x, y = nextLine(x, y)
   end
-  if aileronsMode ~= 1 then
-    lcd.drawText(x, y, "Ailerons:", 0)
-    lcd.drawSource(x+52, y, SOURCE_FIRST_CH+aileronsCH1, 0)
+  if lastPage == DRUDDER_MENU then
+    lcd.drawText(x, y, "Elevons:", 0)
+    lcd.drawSource(x+52, y, SOURCE_FIRST_CH+elevonsCH1, 0)
     x, y = nextLine(x, y)
-    if aileronsMode == 2 then
-      lcd.drawText(x, y, "Ailerons:", 0)
-      lcd.drawSource(x+52, y, SOURCE_FIRST_CH+aileronsCH2, 0)
+    lcd.drawText(x, y, "Elevons:", 0)
+    lcd.drawSource(x+52, y, SOURCE_FIRST_CH+elevonsCH2, 0)
+    x, y = nextLine(x, y)
+    if dRudderMode ~= 0 then
       x, y = nextLine(x, y)
-    end
-  end
-  if flapsMode ~= 0 then
-    lcd.drawText(x, y, "Flaps:", 0)
-    lcd.drawSource(x+52, y, SOURCE_FIRST_CH+flapsCH1, 0)
-    x, y = nextLine(x, y)
-    if flapsMode == 2 then
-      lcd.drawText(x, y, "Flaps:", 0)
-      lcd.drawSource(x+52, y, SOURCE_FIRST_CH+flapsCH2, 0)
-      x, y = nextLine(x, y)
-    end
-  end
-  if brakesMode == 1 then
-    lcd.drawText(x, y, "Brakes:", 0)
-    lcd.drawSource(x+52, y, SOURCE_FIRST_CH+brakesCH1, 0)
-    x, y = nextLine(x, y)
-    if brakesMode == 2 then
-      lcd.drawText(x, y, "Brakes:", 0)
-      lcd.drawSource(x+52, y, SOURCE_FIRST_CH+brakesCH2, 0)
-      x, y = nextLine(x, y)
-    end
-  end
-  if tailMode == 3 then
-    lcd.drawText(x, y, "V-Tail:", 0)
-    lcd.drawSource(x+52, y, SOURCE_FIRST_CH+eleCH1, 0)
-    x, y = nextLine(x, y)
-    lcd.drawText(x, y, "V-Tail:", 0)
-    lcd.drawSource(x+52, y, SOURCE_FIRST_CH+eleCH2, 0)
-  else
-    lcd.drawText(x, y, "Elevator:", 0)
-    lcd.drawSource(x+52, y, SOURCE_FIRST_CH+eleCH1, 0)
-    x, y = nextLine(x, y)
-    if tailMode == 1 then
       lcd.drawText(x, y, "Rudder:", 0)
-      lcd.drawSource(x+52, y, SOURCE_FIRST_CH+rudCH1, 0)
+      lcd.drawSource(x+52, y, SOURCE_FIRST_CH+rudCH1, 0)      
+    end
+  else
+    if aileronsMode ~= 1 then
+      lcd.drawText(x, y, "Ailerons:", 0)
+      lcd.drawSource(x+52, y, SOURCE_FIRST_CH+aileronsCH1, 0)
+      x, y = nextLine(x, y)
+      if aileronsMode == 2 then
+        lcd.drawText(x, y, "Ailerons:", 0)
+        lcd.drawSource(x+52, y, SOURCE_FIRST_CH+aileronsCH2, 0)
+        x, y = nextLine(x, y)
+      end
+    end
+    if flapsMode ~= 0 then
+      lcd.drawText(x, y, "Flaps:", 0)
+      lcd.drawSource(x+52, y, SOURCE_FIRST_CH+flapsCH1, 0)
+      x, y = nextLine(x, y)
+      if flapsMode == 2 then
+        lcd.drawText(x, y, "Flaps:", 0)
+        lcd.drawSource(x+52, y, SOURCE_FIRST_CH+flapsCH2, 0)
+        x, y = nextLine(x, y)
+      end
+    end
+    if brakesMode == 1  then
+      lcd.drawText(x, y, "Brakes:", 0)
+      lcd.drawSource(x+52, y, SOURCE_FIRST_CH+brakesCH1, 0)
+      x, y = nextLine(x, y)
+      if brakesMode == 2 then
+        lcd.drawText(x, y, "Brakes:", 0)
+        lcd.drawSource(x+52, y, SOURCE_FIRST_CH+brakesCH2, 0)
+        x, y = nextLine(x, y)
+      end
+    end
+    if tailMode == 3 then
+      lcd.drawText(x, y, "V-Tail:", 0)
+      lcd.drawSource(x+52, y, SOURCE_FIRST_CH+eleCH1, 0)
+      x, y = nextLine(x, y)
+      lcd.drawText(x, y, "V-Tail:", 0)
+      lcd.drawSource(x+52, y, SOURCE_FIRST_CH+eleCH2, 0)
     else
       lcd.drawText(x, y, "Elevator:", 0)
-      lcd.drawSource(x+52, y, SOURCE_FIRST_CH+eleCH2, 0)
+      lcd.drawSource(x+52, y, SOURCE_FIRST_CH+eleCH1, 0)
       x, y = nextLine(x, y)
-      lcd.drawText(x, y, "Rudder:", 0)
-      lcd.drawSource(x+52, y, SOURCE_FIRST_CH+rudCH1, 0)
-    end        
+      if tailMode == 1 then
+        lcd.drawText(x, y, "Rudder:", 0)
+        lcd.drawSource(x+52, y, SOURCE_FIRST_CH+rudCH1, 0)
+      else
+        lcd.drawText(x, y, "Elevator:", 0)
+        lcd.drawSource(x+52, y, SOURCE_FIRST_CH+eleCH2, 0)
+        x, y = nextLine(x, y)
+        lcd.drawText(x, y, "Rudder:", 0)
+        lcd.drawSource(x+52, y, SOURCE_FIRST_CH+rudCH1, 0)
+      end        
+    end
   end
   lcd.drawText(48, LCD_H-8, "[Enter Long] to confirm", 0);
   lcd.drawFilledRectangle(0, LCD_H-9, LCD_W, 9, 0)
@@ -571,7 +680,7 @@ local function confirmationMenu(event)
     drawConfirmationMenu()
   end
 
-  navigate(event, fieldsMax, TAIL_MENU, page)
+  navigate(event, fieldsMax, lastPage, page)
 
   if event == EVT_EXIT_BREAK then
     return 2
@@ -605,6 +714,12 @@ local function run(event)
     brakesMenu(event)
   elseif page == TAIL_MENU then
     tailMenu(event)
+  elseif page == DELTA_MENU then
+    dEngineMenu(event)
+  elseif page == ELEVONS_MENU then
+    elevonsMenu(event)
+  elseif page == DRUDDER_MENU then
+    dRudderMenu(event)
   elseif page == CONFIRMATION_MENU then
     return confirmationMenu(event)
   end
