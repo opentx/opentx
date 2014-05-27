@@ -111,19 +111,16 @@ include_directories(
 add_subdirectory(modeledit)
 add_subdirectory(simulation)
 
-set(companion_SRCS
+set(common_SRCS
   eeprominterface.cpp
-  hexinterface.cpp
-  flashinterface.cpp
-  file.cpp
-  xmlinterface.cpp
-  ${PROJECT_BINARY_DIR}/radio.cxx
-  firmwares/th9x/th9xeeprom.cpp
+  firmwares/th9x/th9xeeprom.cpp # TODO not needed
   firmwares/th9x/th9xinterface.cpp
   firmwares/er9x/er9xeeprom.cpp
   firmwares/er9x/er9xinterface.cpp
   firmwares/gruvin9x/gruvin9xeeprom.cpp
   firmwares/gruvin9x/gruvin9xinterface.cpp  
+  firmwares/ersky9x/ersky9xeeprom.cpp
+  firmwares/ersky9x/ersky9xinterface.cpp
   firmwares/opentx/opentxeeprom.cpp
   firmwares/opentx/open9xStockeeprom.cpp
   firmwares/opentx/open9xGruvin9xeeprom.cpp
@@ -133,13 +130,24 @@ set(companion_SRCS
   firmwares/opentx/opentxSky9xsimulator.cpp
   firmwares/opentx/opentxGruvin9xsimulator.cpp
   firmwares/opentx/opentxM128simulator.cpp
-  firmwares/opentx/opentxsimulator.cpp  
-  firmwares/ersky9x/ersky9xeeprom.cpp
-  firmwares/ersky9x/ersky9xinterface.cpp
+  firmwares/opentx/opentxsimulator.cpp
+  file.cpp
+  googleanalytics.cpp
+  appdata.cpp
+)
+
+set(common_MOC_HDRS
+  googleanalytics.h
+)
+
+set(companion_SRCS
+  hexinterface.cpp
+  flashinterface.cpp
+  xmlinterface.cpp
+  ${PROJECT_BINARY_DIR}/radio.cxx
   ${RADIO_SRC_DIRECTORY}/stamp-opentx.h
   ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
   ${RADIO_SRC_DIRECTORY}/translations/en.h
-  appdata.cpp
   helpers.cpp
   mdichild.cpp
   generaledit.cpp
@@ -164,7 +172,6 @@ set(companion_SRCS
   qcustomplot.cpp
   wizarddata.cpp
   wizarddialog.cpp
-  googleanalytics.cpp
 )
 
 set(companion_MOC_HDRS
@@ -191,7 +198,6 @@ set(companion_MOC_HDRS
   qautocombobox.h
   helpers.h
   wizarddialog.h
-  googleanalytics.h
 )
      
 set(companion_UIS
@@ -268,8 +274,9 @@ FOREACH( language ${LANGUAGES} )
   SET( companion_TS ${companion_TS} translations/companion_${language}.ts )
 ENDFOREACH( language )
 
+set( companion_SRCS ${common_SRCS} ${companion_SRCS}  )
 QT4_WRAP_UI( companion_SRCS ${companion_UIS} )
-QT4_WRAP_CPP( companion_SRCS ${companion_MOC_HDRS} )
+QT4_WRAP_CPP( companion_SRCS ${companion_MOC_HDRS} ${common_MOC_HDRS} )
 QT4_ADD_TRANSLATION( companion_QM ${companion_TS}  )
 QT4_ADD_RESOURCES( companion_SRCS ${companion_RCS} )
 
@@ -313,44 +320,22 @@ add_custom_command(
 )
 
 set(simu_SRCS
-  eeprominterface.cpp
-  firmwares/th9x/th9xeeprom.cpp # TODO not needed
-  firmwares/th9x/th9xinterface.cpp
   ${TH9X_CHECKOUT_DIRECTORY}/th9xsimulator.cpp
-  firmwares/er9x/er9xeeprom.cpp # TODO not needed
-  firmwares/er9x/er9xinterface.cpp
   ${ER9X_CHECKOUT_DIRECTORY}/er9xsimulator.cpp
-  firmwares/gruvin9x/gruvin9xeeprom.cpp # TODO not needed
-  firmwares/gruvin9x/gruvin9xinterface.cpp  
-  firmwares/opentx/opentxeeprom.cpp # TODO not needed
-  firmwares/opentx/open9xStockeeprom.cpp # TODO not needed
-  firmwares/opentx/open9xGruvin9xeeprom.cpp # TODO not needed
-  firmwares/opentx/open9xSky9xeeprom.cpp # TODO not needed
-  firmwares/opentx/opentxinterface.cpp
-  firmwares/opentx/opentxTaranisSimulator.cpp
-  firmwares/opentx/opentxSky9xsimulator.cpp
-  firmwares/opentx/opentxGruvin9xsimulator.cpp
-  firmwares/opentx/opentxM128simulator.cpp
-  firmwares/opentx/opentxsimulator.cpp  
-  firmwares/ersky9x/ersky9xeeprom.cpp # TODO not needed
-  firmwares/ersky9x/ersky9xinterface.cpp
   ${ERSKY9X_CHECKOUT_DIRECTORY}/ersky9xsimulator.cpp
   ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
   ${RADIO_SRC_DIRECTORY}/translations/en.h
-  file.cpp # TODO not needed
   modeledit/node.cpp
   modeledit/edge.cpp # TODO not needed
-  appdata.cpp
   simulator.cpp
-  googleanalytics.cpp
 )
 
-set(simu_HDRS
+set(simu_MOC_HDRS
   modeledit/node.h
-  googleanalytics.h
 )
 
-qt4_wrap_cpp(simu_SRCS ${simu_HDRS} )
+set( simu_SRCS ${simu_SRCS} ${common_SRCS} )
+qt4_wrap_cpp(simu_SRCS ${simu_MOC_HDRS} ${common_MOC_HDRS} )
 qt4_add_resources(simu_SRCS companion.qrc) # TODO not needed
 
 if(WIN32)
