@@ -203,7 +203,7 @@ static int luaKillEvents(lua_State *L)
 static int luaRaise(lua_State *L)
 {
   const char * message = luaL_checkstring(L, 1);
-  throw message;
+  // throw message;
   return 0;
 }
 
