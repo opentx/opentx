@@ -500,7 +500,7 @@ local function drawConfirmationMenu()
   local x = 22
   local y = 12
   lcd.clear()
-  lcd.drawText(48, 1, "Please...", 0);
+  lcd.drawText(48, 1, "Ready to go?", 0);
   lcd.drawFilledRectangle(0, 0, LCD_W, 9, 0)
   if engineMode == 0 then
     lcd.drawText(x, y, "Throttle:", 0);
