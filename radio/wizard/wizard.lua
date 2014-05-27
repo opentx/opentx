@@ -609,8 +609,7 @@ local function drawConfirmationMenu()
     lcd.drawText(x, y, "Elevons:", 0)
     lcd.drawSource(x+52, y, SOURCE_FIRST_CH+elevonsCH2, 0)
     x, y = nextLine(x, y)
-    if dRudderMode ~= 0 then
-      x, y = nextLine(x, y)
+    if dRudderMode == 0 then
       lcd.drawText(x, y, "Rudder:", 0)
       lcd.drawSource(x+52, y, SOURCE_FIRST_CH+rudCH1, 0)      
     end
