@@ -317,13 +317,12 @@ void onModelSelectMenu(const char *result)
   else if (result == STR_DELETE_MODEL) {
     POPUP_CONFIRMATION(STR_DELETEMODEL);
 #if defined(CPUARM)
-    s_warning_info = modelHeaders[sub].name;
+    SET_WARNING_INFO(modelHeaders[sub].name, sizeof(g_model.header.name), ZCHAR);
 #else
     char * name = reusableBuffer.modelsel.mainname;
     eeLoadModelName(sub, name);
-    s_warning_info = name;
+    SET_WARNING_INFO(name, sizeof(g_model.header.name), ZCHAR);
 #endif
-    s_warning_info_len = sizeof(g_model.header.name);
   }
 #if defined(SDCARD)
   else {
@@ -391,13 +390,12 @@ void menuModelSelect(uint8_t event)
         if (s_copyMode && s_copyTgtOfs == 0 && g_eeGeneral.currModel != sub && eeModelExists(sub)) {
           POPUP_CONFIRMATION(STR_DELETEMODEL);
 #if defined(CPUARM)
-          s_warning_info = modelHeaders[sub].name;
+          SET_WARNING_INFO(modelHeaders[sub].name, sizeof(g_model.header.name), ZCHAR);
 #else
           char * name = reusableBuffer.modelsel.mainname;
           eeLoadModelName(sub, name);
-          s_warning_info = name;
+          SET_WARNING_INFO(name, sizeof(g_model.header.name), ZCHAR);
 #endif
-          s_warning_info_len = sizeof(g_model.header.name);
           killEvents(event);
           break;
         }

@@ -356,7 +356,7 @@ extern uint8_t         s_warning_type;
 #define WARNING_LINE_X 16
 #define WARNING_LINE_Y 3*FH
 #if LCD_W >= 212
-  #define WARNING_LINE_LEN 30
+  #define WARNING_LINE_LEN 32
 #else
   #define WARNING_LINE_LEN 20
 #endif
@@ -370,17 +370,22 @@ void displayWarning(uint8_t event);
   extern int16_t s_warning_input_value;
   extern int16_t s_warning_input_min;
   extern int16_t s_warning_input_max;
+  extern uint8_t s_warning_info_flags;
 #endif
 
 #if defined(CPUARM)
   #define DISPLAY_WARNING       (*popupFunc)
-  #define POPUP_WARNING(s)      (s_warning = s, popupFunc = displayWarning)
-  #define POPUP_CONFIRMATION(s) (s_warning = s, s_warning_type = WARNING_TYPE_CONFIRM, popupFunc = displayWarning)
+  #define POPUP_WARNING(s)      (s_warning = s, s_warning_info = 0, popupFunc = displayWarning)
+  #define POPUP_CONFIRMATION(s) (s_warning = s, s_warning_type = WARNING_TYPE_CONFIRM, s_warning_info = 0, popupFunc = displayWarning)
   #define POPUP_INPUT(s, func, start, min, max) (s_warning = s, s_warning_type = WARNING_TYPE_INPUT, popupFunc = func, s_warning_input_value = start, s_warning_input_min = min, s_warning_input_max = max)
+  #define WARNING_INFO_FLAGS    s_warning_info_flags
+  #define SET_WARNING_INFO(info, len, flags) (s_warning_info = info, s_warning_info_len = len, s_warning_info_flags = flags)
 #else
   #define DISPLAY_WARNING       displayWarning
   #define POPUP_WARNING(s)      s_warning = s
   #define POPUP_CONFIRMATION(s) (s_warning = s, s_warning_type = WARNING_TYPE_CONFIRM)
+  #define WARNING_INFO_FLAGS    ZCHAR
+  #define SET_WARNING_INFO(info, len, flags) (s_warning_info = info, s_warning_info_len = len)
 #endif
 
 #if defined(SDCARD) || (defined(ROTARY_ENCODER_NAVIGATION) && !defined(CPUM64))

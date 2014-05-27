@@ -200,13 +200,6 @@ static int luaKillEvents(lua_State *L)
   return 0;
 }
 
-static int luaRaise(lua_State *L)
-{
-  const char * message = luaL_checkstring(L, 1);
-  // throw message;
-  return 0;
-}
-
 static int luaLcdLock(lua_State *L)
 {
   lcd_locked = true;
@@ -1043,7 +1036,6 @@ void luaInit()
   lua_register(L, "popupInput", luaPopupInput);
   lua_register(L, "channelOrder", luaChannelOrder);
   lua_register(L, "killEvents", luaKillEvents);
-  lua_register(L, "raise", luaRaise);
 
   // Push OpenTX constants
   lua_registerint(L, "FULLSCALE", RESX);
@@ -1177,6 +1169,7 @@ void luaLoadModelScripts()
 }
 
 char lua_warning_str[WARNING_LINE_LEN+1];
+char lua_warning_info[WARNING_LINE_LEN+1];
 
 void luaError(uint8_t error)
 {
@@ -1189,7 +1182,15 @@ void luaError(uint8_t error)
 #endif
     strncpy(lua_warning_str, msg, WARNING_LINE_LEN);
     lua_warning_str[WARNING_LINE_LEN] = '\0';
-    msg = lua_warning_str;
+    POPUP_WARNING(lua_warning_str);
+    for (int i=0; i<WARNING_LINE_LEN; i++) {
+      if (msg[i] == ':' && msg[i+1] == ' ') {
+        lua_warning_str[i] = '\0';
+        strncpy(lua_warning_info, &msg[i+2], WARNING_LINE_LEN);
+        lua_warning_info[WARNING_LINE_LEN] = '\0';
+        SET_WARNING_INFO(lua_warning_info, WARNING_LINE_LEN, 0);
+      }
+    }
   }
   else {
     switch (error) {
@@ -1203,8 +1204,8 @@ void luaError(uint8_t error)
         msg = "Script memory leak";
         break;
     }
+    POPUP_WARNING(msg);
   }
-  POPUP_WARNING(msg);
 }
 
 void luaExec(const char *filename)
