@@ -36,7 +36,7 @@ local tailMode = 0
 local eleCH1 = 0
 local eleCH2 = 7
 local rudCH1 = 0
-local servoPage = null
+local servoPage = nil
 
 -- Common functions
 
@@ -474,7 +474,7 @@ local function servoMenu(event)
     end
     model.setOutput(servoPage, limits)
   elseif event == EVT_EXIT_BREAK then
-    servoPage = null
+    servoPage = nil
     dirty = true
   end
 end
@@ -587,10 +587,13 @@ end
 -- Main
 
 local function run(event)
+  if event == nil then
+    raise("Cannot be run as a model script!")
+  end
   lcd.lock()
   if page == MODELTYPE_MENU then
     modelTypeMenu(event)
-  elseif servoPage ~= null then
+  elseif servoPage ~= nil then
     servoMenu(event) 
   elseif page == ENGINE_MENU then
     engineMenu(event)
