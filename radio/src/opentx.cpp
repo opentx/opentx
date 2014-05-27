@@ -1917,7 +1917,7 @@ void evalFunctions()
             }
 #endif
             else {
-              SET_GVAR(CFN_GVAR_INDEX(sd), limit((getvalue_t)-LIMIT_EXT_MAX, getValue(CFN_PARAM(sd)), (getvalue_t)LIMIT_EXT_MAX) / 10, s_current_mixer_flight_mode);
+              SET_GVAR(CFN_GVAR_INDEX(sd), calcRESXto100(getValue(CFN_PARAM(sd))), s_current_mixer_flight_mode);
             }
             break;
 #endif
