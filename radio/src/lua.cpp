@@ -232,16 +232,6 @@ static int luaLcdDrawLine(lua_State *L)
   return 0;
 }
 
-static int luaLcdDrawRectangle(lua_State *L)
-{
-  int x = luaL_checkinteger(L, 1);
-  int y = luaL_checkinteger(L, 2);
-  int w = luaL_checkinteger(L, 3);
-  int h = luaL_checkinteger(L, 4);
-  lcd_rect(x, y, w, h, 0xff, 0);
-  return 0;
-}
-
 static int luaLcdDrawText(lua_State *L)
 {
   int x = luaL_checkinteger(L, 1);
@@ -297,7 +287,17 @@ static int luaLcdDrawPixmap(lua_State *L)
   return 0;
 }
 
-static int luaLcdDrawRect(lua_State *L)
+static int luaLcdDrawRectangle(lua_State *L)
+{
+  int x = luaL_checkinteger(L, 1);
+  int y = luaL_checkinteger(L, 2);
+  int w = luaL_checkinteger(L, 3);
+  int h = luaL_checkinteger(L, 4);
+  lcd_rect(x, y, w, h, 0xff, 0);
+  return 0;
+}
+
+static int luaLcdDrawFilledRectangle(lua_State *L)
 {
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
@@ -1001,11 +1001,11 @@ static const luaL_Reg lcdLib[] = {
   { "drawPoint", luaLcdDrawPoint },
   { "drawLine", luaLcdDrawLine },
   { "drawRectangle", luaLcdDrawRectangle },
+  { "drawFilledRectangle", luaLcdDrawFilledRectangle },
   { "drawText", luaLcdDrawText },
   { "drawNumber", luaLcdDrawNumber },
   { "drawSwitch", luaLcdDrawSwitch },
   { "drawSource", luaLcdDrawSource },
-  { "drawRect", luaLcdDrawRect },
   { "drawPixmap", luaLcdDrawPixmap },
   { "drawScreenTitle", luaLcdDrawScreenTitle },
   { "drawCombobox", luaLcdDrawCombobox },

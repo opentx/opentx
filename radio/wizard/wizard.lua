@@ -184,7 +184,7 @@ local engineModeItems = {"Yes...", "No"}
 local function drawEngineMenu()
   lcd.clear()
   lcd.drawText(1, 0, "Has your model got an engine?", 0)
-  lcd.drawRect(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
+  lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
   lcd.drawCombobox(0, 8, LCD_W/2, engineModeItems, engineMode, getFieldFlags(0)) 
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H, DOTTED, 0)
   if engineMode == 1 then
@@ -230,7 +230,7 @@ local aileronsModeItems = {"Yes...", "No", "Yes, 2 channels..."}
 local function drawAileronsMenu()
   lcd.clear()
   lcd.drawText(1, 0, "Has your model got ailerons?", 0)
-  lcd.drawRect(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
+  lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
   lcd.drawCombobox(0, 8, LCD_W/2, aileronsModeItems, aileronsMode, getFieldFlags(0)) 
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H, DOTTED, 0)
   if aileronsMode == 2 then
@@ -279,7 +279,7 @@ local flapsModeItems = {"No", "Yes...", "Yes, 2 channels..."}
 local function drawFlapsMenu()
   lcd.clear()
   lcd.drawText(1, 0, "Has your model got flaps?", 0)
-  lcd.drawRect(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
+  lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
   lcd.drawCombobox(0, 8, LCD_W/2, flapsModeItems, flapsMode, getFieldFlags(0)) 
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H, DOTTED, 0)
   if flapsMode == 0 then
@@ -328,7 +328,7 @@ local brakesModeItems = {"No", "Yes...", "Yes, 2 channels..."}
 local function drawBrakesMenu()
   lcd.clear()
   lcd.drawText(1, 0, "Has your model got air brakes?", 0)
-  lcd.drawRect(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
+  lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
   lcd.drawCombobox(0, 8, LCD_W/2, brakesModeItems, brakesMode, getFieldFlags(0)) 
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H, DOTTED, 0)
   if brakesMode == 0 then
@@ -377,7 +377,7 @@ local tailModeItems = {"Ele(1ch), no Rud...", "Ele(1ch) + Rud...", "Ele(2ch) + R
 local function drawTailMenu()
   lcd.clear()
   lcd.drawText(1, 0, "Which is the tail config on your model?", 0)
-  lcd.drawRect(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
+  lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
   lcd.drawCombobox(0, 8, LCD_W/2, tailModeItems, tailMode, getFieldFlags(0)) 
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H, DOTTED, 0)
   lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
@@ -437,7 +437,7 @@ local function drawServoMenu(limits)
   lcd.clear()
   lcd.drawSource(1, 0, SOURCE_FIRST_CH+servoPage, 0)
   lcd.drawText(25, 0, "servo min/max/center/direction?", 0)
-  lcd.drawRect(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
+  lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
   lcd.drawLine(LCD_W/2-1, 8, LCD_W/2-1, LCD_H, DOTTED, 0)
   lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
   lcd.drawPixmap(122, 8, "/TEMPLATES/servo.bmp")
@@ -487,11 +487,81 @@ local function applySettings()
   applyEngineSettings()
 end
 
+local function nextLine(x, y)
+  y = y + 8
+  if y > 50 then
+    y = 12
+    x = 120
+  end
+  return x, y
+end
+
 local function drawConfirmationMenu()
+  local x = 22
+  local y = 12
   lcd.clear()
-  lcd.drawText(2, 10, "Throttle:", 0);
-  lcd.drawSource(52, 10, SOURCE_FIRST_CH+engineCH1, 0)
-  lcd.drawText(50, LCD_H-10, "[Enter Long] to confirm", INVERS);
+  lcd.drawText(48, 1, "Please...", 0);
+  lcd.drawFilledRectangle(0, 0, LCD_W, 9, 0)
+  if engineMode == 0 then
+    lcd.drawText(x, y, "Throttle:", 0);
+    lcd.drawSource(x+52, y, SOURCE_FIRST_CH+engineCH1, 0)
+    x, y = nextLine(x, y)
+  end
+  if aileronsMode ~= 1 then
+    lcd.drawText(x, y, "Ailerons:", 0)
+    lcd.drawSource(x+52, y, SOURCE_FIRST_CH+aileronsCH1, 0)
+    x, y = nextLine(x, y)
+    if aileronsMode == 2 then
+      lcd.drawText(x, y, "Ailerons:", 0)
+      lcd.drawSource(x+52, y, SOURCE_FIRST_CH+aileronsCH2, 0)
+      x, y = nextLine(x, y)
+    end
+  end
+  if flapsMode ~= 0 then
+    lcd.drawText(x, y, "Flaps:", 0)
+    lcd.drawSource(x+52, y, SOURCE_FIRST_CH+flapsCH1, 0)
+    x, y = nextLine(x, y)
+    if flapsMode == 2 then
+      lcd.drawText(x, y, "Flaps:", 0)
+      lcd.drawSource(x+52, y, SOURCE_FIRST_CH+flapsCH2, 0)
+      x, y = nextLine(x, y)
+    end
+  end
+  if brakesMode == 1 then
+    lcd.drawText(x, y, "Brakes:", 0)
+    lcd.drawSource(x+52, y, SOURCE_FIRST_CH+brakesCH1, 0)
+    x, y = nextLine(x, y)
+    if brakesMode == 2 then
+      lcd.drawText(x, y, "Brakes:", 0)
+      lcd.drawSource(x+52, y, SOURCE_FIRST_CH+brakesCH2, 0)
+      x, y = nextLine(x, y)
+    end
+  end
+  if tailMode == 3 then
+    lcd.drawText(x, y, "V-Tail:", 0)
+    lcd.drawSource(x+52, y, SOURCE_FIRST_CH+eleCH1, 0)
+    x, y = nextLine(x, y)
+    lcd.drawText(x, y, "V-Tail:", 0)
+    lcd.drawSource(x+52, y, SOURCE_FIRST_CH+eleCH2, 0)
+  else
+    lcd.drawText(x, y, "Elevator:", 0)
+    lcd.drawSource(x+52, y, SOURCE_FIRST_CH+eleCH1, 0)
+    x, y = nextLine(x, y)
+    if tailMode == 1 then
+      lcd.drawText(x, y, "Rudder:", 0)
+      lcd.drawSource(x+52, y, SOURCE_FIRST_CH+rudCH1, 0)
+    else
+      lcd.drawText(x, y, "Elevator:", 0)
+      lcd.drawSource(x+52, y, SOURCE_FIRST_CH+eleCH2, 0)
+      x, y = nextLine(x, y)
+      lcd.drawText(x, y, "Rudder:", 0)
+      lcd.drawSource(x+52, y, SOURCE_FIRST_CH+rudCH1, 0)
+    end        
+  end
+  lcd.drawText(48, LCD_H-8, "[Enter Long] to confirm", 0);
+  lcd.drawFilledRectangle(0, LCD_H-9, LCD_W, 9, 0)
+  lcd.drawPixmap(LCD_W-18, 0, "/TEMPLATES/confirm-tick.bmp")
+  lcd.drawPixmap(0, LCD_H-17, "/TEMPLATES/confirm-plane.bmp")
   fieldsMax = 0
 end
 
