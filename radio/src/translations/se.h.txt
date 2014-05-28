@@ -429,11 +429,11 @@
 
 #if defined(PCBTARANIS)
   #define TR_6POS_POTS         "S11""S12""S13""S14""S15""S16""S21""S22""S23""S24""S25""S26""S31""S32""S33""S34""S35""S36"
-  #define TR_VSWITCHES         "---""SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_6POS_POTS TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW "ON\0""One"
+  #define TR_VSWITCHES         "---""SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_6POS_POTS TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW "PÅ\0""En\0"
 #elif defined(CPUARM)
-  #define TR_VSWITCHES         "---" TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW "ON\0""One"
+  #define TR_VSWITCHES         "---" TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW "PÅ\0""En\0"
 #else
-  #define TR_VSWITCHES         "---" TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW "ON\0""One"
+  #define TR_VSWITCHES         "---" TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW "PÅ\0""En\0"
 #endif
 
 #if defined(HELI)
@@ -551,8 +551,8 @@
 #define TR_SCREEN              "Skärm"
 #define TR_SOUND_LABEL         "Ljud "
 #define TR_LENGTH              INDENT"Tid"
-#define TR_BEEP_LENGTH         INDENT "Beep Length"
-#define TR_SPKRPITCH           INDENT"Ton"
+#define TR_BEEP_LENGTH         INDENT "Pip-längd"
+#define TR_SPKRPITCH           INDENT "Pip-ton"
 #define TR_HAPTIC_LABEL        "Vibrator"
 #define TR_HAPTICSTRENGTH      INDENT"Styrka"
 #define TR_CONTRAST            "Kontrast"
@@ -748,7 +748,7 @@
 #define TR_CONFIRM_FORMAT      "Formatera Minnet?"
 #define TR_INTERNALRF          "Intern Radio"
 #define TR_EXTERNALRF          "Extern Radiomodul"
-#define TR_FAILSAFE            "Failsafeläge"
+#define TR_FAILSAFE            TR(INDENT "Failsafe", INDENT "Failsafeläge")
 #define TR_FAILSAFESET         "FailsafeInställning"
 #define TR_COUNTRYCODE         "Landskod"
 #define TR_VOICELANG           "Röstspråk"
@@ -772,8 +772,8 @@
 #define TR_SPEAKER             INDENT"Högtalare"
 #define TR_BUZZER              INDENT"Summer"
 #define TR_BYTES               "byte"
-#define TR_MODULE_BIND         "[Bind]"
-#define TR_MODULE_RANGE        "[Testa]"
+#define TR_MODULE_BIND         TR("[Bnd]", "[Bind]")
+#define TR_MODULE_RANGE        TR("[Tst]", "[Testa]")
 #define TR_RESET_BTN           "[Nollställ]"
 #define TR_SET                 "[Spara]"
 #define TR_TRAINER             "Trainer"
@@ -798,7 +798,7 @@
 #define TR_COPY_TRIMS_TO_OFS   "Spara trimmar som offset"
 #define TR_PERSISTENT_MAH      INDENT "Lagra mAh"
 #define TR_PREFLIGHT           "Startkontroller"
-#define TR_CHECKLIST           INDENT "Visa checklisa"
+#define TR_CHECKLIST           TR(INDENT "Checklista", INDENT "Visa Checklista")
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 #define TR_UART3MODE           "Serieporten"
 #define TR_SCRIPT              "Programkod"
