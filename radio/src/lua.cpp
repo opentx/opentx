@@ -1234,15 +1234,22 @@ void luaTask(uint8_t evt)
       lua_pushinteger(L, evt);
       if (lua_pcall(L, 1, 1, 0) == 0) {
         if (!lua_isnumber(L, -1)) {
-          if (instructionsPercent>100) {
+          if (instructionsPercent > 100) {
             TRACE("Script killed");
             standaloneScript.state = SCRIPT_KILLED;
+            luaState = LUASTATE_RELOAD_MODEL_SCRIPTS;
+          }
+          else if (lua_isstring(L, -1)) {
+            char nextScript[_MAX_LFN+1];
+            strncpy(nextScript, lua_tostring(L, -1), _MAX_LFN);
+            nextScript[_MAX_LFN] = '\0';
+            luaExec(nextScript);
           }
           else {
             TRACE("Script error");
             standaloneScript.state = SCRIPT_SYNTAX_ERROR;
+            luaState = LUASTATE_RELOAD_MODEL_SCRIPTS;
           }
-          luaState = LUASTATE_RELOAD_MODEL_SCRIPTS;
         }
         else {
           int scriptResult = lua_tointeger(L, -1);
