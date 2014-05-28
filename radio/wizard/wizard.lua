@@ -42,7 +42,8 @@ local eleCH2 = 7
 local rudCH1 = 0
 local elevonsCH1 = 0
 local elevonsCH2 = 4
-local dRudderMode = 0
+local elevonsMode = 0
+local dRudderMode = 1
 local servoPage = nil
 
 -- Common functions
@@ -457,12 +458,14 @@ local function dEngineMenu(event)
 end
 
 -- Elevons Menu
+local elevonsModeItems = {"2 Channels..."}
 
 local function drawElevonsMenu()
   lcd.clear()
   lcd.drawText(1, 0, "Select elevon channnels", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
-  lcd.drawLine(LCD_W/2-1, 7, LCD_W/2-1, LCD_H, DOTTED, 0)
+  lcd.drawCombobox(0, 8, LCD_W/2, elevonsModeItems, elevonsMode, getFieldFlags(0)) 
+  lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H, DOTTED, 0)  
   lcd.drawPixmap(110, 9, "/TEMPLATES/elevons.bmp")
   lcd.drawText(20, LCD_H-16, "Assign channels", 0);
   lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
