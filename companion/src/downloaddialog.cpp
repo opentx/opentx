@@ -87,6 +87,7 @@ void downloadDialog::fileError()
   reject();
 }
 
+#if 0
 void downloadDialog::closeEvent( QCloseEvent * event)
 {
   // Delay closing 2 seconds to avoid unpleasant flashing download dialogs
@@ -96,4 +97,4 @@ void downloadDialog::closeEvent( QCloseEvent * event)
 
   event->accept();
 }
-
+#endif

@@ -138,15 +138,15 @@ MainWindow::MainWindow():
         printfilename=strl[count];
       }
     }
-    if(strl.count()>1) str = strl[1];
-    if(!str.isEmpty()) {
+    if (strl.count()>1) str = strl[1];
+    if (!str.isEmpty()) {
       int fileType = getFileType(str);
 
-      if(fileType==FILE_TYPE_HEX) {
+      if (fileType==FILE_TYPE_HEX) {
         writeFlash(str);
       }
 
-      if(fileType==FILE_TYPE_EEPE || fileType==FILE_TYPE_EEPM || fileType==FILE_TYPE_BIN) {
+      if (fileType==FILE_TYPE_EEPE || fileType==FILE_TYPE_EEPM || fileType==FILE_TYPE_BIN) {
         MdiChild *child = createMdiChild();
         if (child->loadFile(str)) {
           if (!(printing && (model >=0 && model<GetEepromInterface()->getMaxModels()) && !printfilename.isEmpty()  )) {
@@ -207,11 +207,17 @@ void MainWindow::checkForFirmwareUpdate()
   checkForUpdates();
 }
 
+void MainWindow::dowloadLastFirmwareUpdate()
+{
+  checkForUpdatesState = CHECK_FIRMWARE | AUTOMATIC_DOWNLOAD | SHOW_DIALOG_WAIT;
+  checkForUpdates();
+}
+
 void MainWindow::checkForUpdates()
 {
   if (checkForUpdatesState & SHOW_DIALOG_WAIT) {
     checkForUpdatesState -= SHOW_DIALOG_WAIT;
-    downloadDialog_forWait = new downloadDialog(this, tr("Checking for updates"));
+    downloadDialog_forWait = new downloadDialog(NULL, tr("Checking for updates"));
     downloadDialog_forWait->show();
   }
 
@@ -320,18 +326,6 @@ void MainWindow::updateDownloaded()
     }
 }
 
-void MainWindow::downloadLatestFW(FirmwareVariant & firmware)
-{
-    QString url, ext;
-    url = firmware.getFirmwareUrl();
-    ext = url.mid(url.lastIndexOf("."));
-    QString filename = QFileDialog::getSaveFileName(this, tr("Save As"), g.flashDir() + "/" + firmware.id + ext);
-    if (!filename.isEmpty()) {
-      needRename = true;
-      startFirmwareDownload(url, filename);
-    }
-}
-
 void MainWindow::firmwareDownloadAccepted()
 {
     QString errormsg;
@@ -370,29 +364,11 @@ void MainWindow::firmwareDownloadAccepted()
       return;
     }
     file.close();
-    FlashInterface flash(g.profile[g.id()].fwName());
-    int stamp = flash.getVersionId();
-    if (stamp > 0) {
-#if 0
-      if (g.profile[g.id()].renameFwFiles() && needRename) {
-        QFileInfo fi(g.profile[g.id()].fwName());
-        QString path=fi.path()+QDir::separator ();
-        path.append(fi.completeBaseName());
-        path.append(rev.mid(pos));
-        path.append(".");
-        path.append(fi.suffix());
-        QDir qd;
-        qd.remove(path);
-        qd.rename(g.profile[g.id()].fwName(),path);
-        g.profile[g.id()].fwName(path);
-      }
-#endif
-      g.fwRev.set(current_firmware_variant.id, stamp);
-      if (g.profile[g.id()].burnFirmware()) {
-        int ret = QMessageBox::question(this, "Companion", tr("Do you want to write the firmware to the radio now ?"), QMessageBox::Yes | QMessageBox::No);
-        if (ret == QMessageBox::Yes) {
-          writeFlash(g.profile[g.id()].fwName());
-        }
+    g.fwRev.set(current_firmware_variant.id, version2index(firmwareVersionString));
+    if (g.profile[g.id()].burnFirmware()) {
+      int ret = QMessageBox::question(this, "Companion", tr("Do you want to write the firmware to the radio now ?"), QMessageBox::Yes | QMessageBox::No);
+      if (ret == QMessageBox::Yes) {
+        writeFlash(g.profile[g.id()].fwName());
       }
     }
 }
@@ -411,85 +387,91 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
 
     QString versionString;
     if (versionIndex > 0 && dateIndex > 0) {
-      versionString = qba.mid(versionIndex+10, qba.indexOf("\"", versionIndex+10)-versionIndex-10);
+      firmwareVersionString = qba.mid(versionIndex+10, qba.indexOf("\"", versionIndex+10)-versionIndex-10);
       QString dateString = qba.mid(dateIndex+10, 10);
-      version = version2index(versionString);
-      versionString = QString("%1 (%2)").arg(versionString).arg(dateString);
+      version = version2index(firmwareVersionString);
+      versionString = QString("%1 (%2)").arg(firmwareVersionString).arg(dateString);
     }
 
     if (version > 0) {
-      int currentVersion = g.fwRev.get(current_firmware_variant.id);
-      QString currentVersionString = index2version(currentVersion);
-
-      QMessageBox msgBox;
-      QSpacerItem * horizontalSpacer = new QSpacerItem(500, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-      QGridLayout * layout = (QGridLayout*)msgBox.layout();
-      layout->addItem(horizontalSpacer, layout->rowCount(), 0, 1, layout->columnCount());
-
-      if (currentVersion == 0) {
-        QString rn = GetFirmware(current_firmware_variant.id)->getReleaseNotesUrl();
-        QAbstractButton *rnButton = NULL;
-        msgBox.setWindowTitle("Companion");
-        msgBox.setInformativeText(tr("Firmware %1 does not seem to have ever been downloaded.\nRelease %2 is available.\nDo you want to download it now?").arg(current_firmware_variant.id).arg(versionString));
-        QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
-        msgBox.addButton(trUtf8("No"), QMessageBox::NoRole);
-        if (!rn.isEmpty()) {
-          rnButton = msgBox.addButton(trUtf8("Release Notes"), QMessageBox::ActionRole);
-        }
-        msgBox.setIcon(QMessageBox::Question);
-        msgBox.resize(0, 0);
-        msgBox.exec();
-        if (msgBox.clickedButton() == rnButton) {
-          contributorsDialog *cd = new contributorsDialog(this,2,rn);
-          cd->exec();
-          int ret2 = QMessageBox::question(this, "Companion", tr("Do you want to download release %1 %2 now ?").arg(versionString), QMessageBox::Yes | QMessageBox::No);
-          if (ret2 == QMessageBox::Yes)
-            download = true;
-          else
-            ignore = true;
-        }
-        else if (msgBox.clickedButton() == YesButton ) {
-          download = true;
-        }
-        else {
-          ignore = true;
-        }
+      if (checkForUpdatesState & AUTOMATIC_DOWNLOAD) {
+        checkForUpdatesState -= AUTOMATIC_DOWNLOAD;
+        download = true;
       }
-      else if (version > currentVersion) {
-        QString rn = GetFirmware(current_firmware_variant.id)->getReleaseNotesUrl();
-        QAbstractButton *rnButton;
-        msgBox.setText("Companion");
-        msgBox.setInformativeText(tr("A new version of %1 firmware is available:\n  - current is %2\n  - newer is %3\n\nDo you want to download it now ?").arg(current_firmware_variant.id).arg(currentVersionString).arg(versionString));
-        QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
-        msgBox.addButton(trUtf8("No"), QMessageBox::NoRole);
-        if (!rn.isEmpty()) {
-          rnButton = msgBox.addButton(trUtf8("Release Notes"), QMessageBox::ActionRole);
-        }
-        msgBox.setIcon(QMessageBox::Question);
-        msgBox.resize(0,0);
-        msgBox.exec();
-        if( msgBox.clickedButton() == rnButton ) {
-          contributorsDialog *cd = new contributorsDialog(this, 2, rn);
-          cd->exec();
-          int ret2 = QMessageBox::question(this, "Companion", tr("Do you want to download release %1 now ?").arg(versionString),
-                QMessageBox::Yes | QMessageBox::No);
-          if (ret2 == QMessageBox::Yes) {
+      else {
+        int currentVersion = g.fwRev.get(current_firmware_variant.id);
+        QString currentVersionString = index2version(currentVersion);
+
+        QMessageBox msgBox;
+        QSpacerItem * horizontalSpacer = new QSpacerItem(500, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+        QGridLayout * layout = (QGridLayout*)msgBox.layout();
+        layout->addItem(horizontalSpacer, layout->rowCount(), 0, 1, layout->columnCount());
+
+        if (currentVersion == 0) {
+          QString rn = GetFirmware(current_firmware_variant.id)->getReleaseNotesUrl();
+          QAbstractButton *rnButton = NULL;
+          msgBox.setWindowTitle("Companion");
+          msgBox.setInformativeText(tr("Firmware %1 does not seem to have ever been downloaded.\nRelease %2 is available.\nDo you want to download it now?").arg(current_firmware_variant.id).arg(versionString));
+          QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
+          msgBox.addButton(trUtf8("No"), QMessageBox::NoRole);
+          if (!rn.isEmpty()) {
+            rnButton = msgBox.addButton(trUtf8("Release Notes"), QMessageBox::ActionRole);
+          }
+          msgBox.setIcon(QMessageBox::Question);
+          msgBox.resize(0, 0);
+          msgBox.exec();
+          if (msgBox.clickedButton() == rnButton) {
+            contributorsDialog *cd = new contributorsDialog(this,2,rn);
+            cd->exec();
+            int ret2 = QMessageBox::question(this, "Companion", tr("Do you want to download release %1 %2 now ?").arg(versionString), QMessageBox::Yes | QMessageBox::No);
+            if (ret2 == QMessageBox::Yes)
+              download = true;
+            else
+              ignore = true;
+          }
+          else if (msgBox.clickedButton() == YesButton ) {
             download = true;
           }
           else {
             ignore = true;
           }
         }
-        else if (msgBox.clickedButton() == YesButton ) {
-          download = true;
+        else if (version > currentVersion) {
+          QString rn = GetFirmware(current_firmware_variant.id)->getReleaseNotesUrl();
+          QAbstractButton *rnButton;
+          msgBox.setText("Companion");
+          msgBox.setInformativeText(tr("A new version of %1 firmware is available:\n  - current is %2\n  - newer is %3\n\nDo you want to download it now ?").arg(current_firmware_variant.id).arg(currentVersionString).arg(versionString));
+          QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
+          msgBox.addButton(trUtf8("No"), QMessageBox::NoRole);
+          if (!rn.isEmpty()) {
+            rnButton = msgBox.addButton(trUtf8("Release Notes"), QMessageBox::ActionRole);
+          }
+          msgBox.setIcon(QMessageBox::Question);
+          msgBox.resize(0,0);
+          msgBox.exec();
+          if( msgBox.clickedButton() == rnButton ) {
+            contributorsDialog *cd = new contributorsDialog(this, 2, rn);
+            cd->exec();
+            int ret2 = QMessageBox::question(this, "Companion", tr("Do you want to download release %1 now ?").arg(versionString),
+                  QMessageBox::Yes | QMessageBox::No);
+            if (ret2 == QMessageBox::Yes) {
+              download = true;
+            }
+            else {
+              ignore = true;
+            }
+          }
+          else if (msgBox.clickedButton() == YesButton ) {
+            download = true;
+          }
+          else {
+            ignore = true;
+          }
         }
         else {
-          ignore = true;
-        }
-      }
-      else {
-        if (downloadDialog_forWait && checkForUpdatesState==0) {
-          QMessageBox::information(this, "Companion", tr("No updates available at this time."));
+          if (downloadDialog_forWait && checkForUpdatesState==0) {
+            QMessageBox::information(this, "Companion", tr("No updates available at this time."));
+          }
         }
       }
 
@@ -500,11 +482,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
         }
       }
       else if (download == true) {
-        QString url = GetFirmwareVariant(current_firmware_variant.id).getFirmwareUrl();
-        QString ext = url.mid(url.lastIndexOf("."));
-        needRename = false;
-        QString filename = QFileDialog::getSaveFileName(this, tr("Save As"), g.flashDir() + "/" + current_firmware_variant.id + ext);
-        startFirmwareDownload(url, filename);
+        startFirmwareDownload();
       }
     }
     else {
@@ -515,8 +493,17 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
     checkForUpdates();
 }
 
-void MainWindow::startFirmwareDownload(QString url, QString filename)
+void MainWindow::startFirmwareDownload()
 {
+  QString url = current_firmware_variant.getFirmwareUrl();
+  QString ext = url.mid(url.lastIndexOf("."));
+  QString defaultFilename = g.flashDir() + "/" + current_firmware_variant.id;
+  if (g.profile[g.id()].renameFwFiles()) {
+    defaultFilename += "-" + firmwareVersionString;
+  }
+  defaultFilename += ext;
+
+  QString filename = QFileDialog::getSaveFileName(this, tr("Save As"), defaultFilename);
   if (!filename.isEmpty()) {
     g.profile[g.id()].fwName(filename);
     g.flashDir(QFileInfo(filename).dir().absolutePath());

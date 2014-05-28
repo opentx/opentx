@@ -61,9 +61,10 @@ class QMdiSubWindow;
 class QSignalMapper;
 QT_END_NAMESPACE
 
-#define CHECK_COMPANION  1
-#define CHECK_FIRMWARE   2
-#define SHOW_DIALOG_WAIT 4
+#define CHECK_COMPANION    1
+#define CHECK_FIRMWARE     2
+#define SHOW_DIALOG_WAIT   4
+#define AUTOMATIC_DOWNLOAD 8
 
 class MainWindow : public QMainWindow
 {
@@ -76,14 +77,12 @@ class MainWindow : public QMainWindow
     MainWindow();
 
   protected:
-    void startFirmwareDownload(QString url, QString filename);
+    void dowloadLastFirmwareUpdate();
+    void startFirmwareDownload();
     void closeEvent(QCloseEvent *event);
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
 
-  public slots:
-    void downloadLatestFW(FirmwareVariant & firmware);
-    
   private slots:
     void openDocURL();
 
@@ -209,8 +208,8 @@ class MainWindow : public QMainWindow
 
     QString installer_fileName;
     downloadDialog * downloadDialog_forWait;
-    bool needRename;
     unsigned int checkForUpdatesState;
+    QString firmwareVersionString;
     
     QNetworkAccessManager *networkManager;
 

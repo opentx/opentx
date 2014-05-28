@@ -40,7 +40,7 @@ void FirmwarePreferencesDialog::on_checkFWUpdates_clicked()
 void FirmwarePreferencesDialog::on_fw_dnld_clicked()
 {
   MainWindow * mw = (MainWindow *)this->parent();
-  mw->downloadLatestFW(current_firmware_variant);
+  mw->dowloadLastFirmwareUpdate();
   initSettings();
 }
 

@@ -27,7 +27,9 @@ private slots:
     void updateDataReadProgress(qint64 bytesRead, qint64 totalBytes);
 
 private:
+#if 0
     void closeEvent( QCloseEvent * event);
+#endif
     Ui::downloadDialog *ui;
 
     QNetworkAccessManager qnam;
