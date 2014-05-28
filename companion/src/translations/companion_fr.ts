@@ -8395,7 +8395,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../wizarddialog.cpp" line="29"/>
         <source>Has your model got a motor or an engine?</source>
-        <translation>Le modèle a-t-il un moteur?</translation>
+        <translation>Le modèle a-t-il un moteur ?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="30"/>
@@ -8405,7 +8405,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../wizarddialog.cpp" line="30"/>
         <source>Is your model a flying wing/deltawing or has it a standard wing configuration?</source>
-        <translation>Le modèle a-t-il une aile standard ou une aile delta?</translation>
+        <translation>Le modèle a-t-il une aile standard ou une aile delta ?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="31"/>
@@ -8415,7 +8415,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../wizarddialog.cpp" line="31"/>
         <source>Has your model got ailerons?</source>
-        <translation>Le modèle a-t-il des ailerons?</translation>
+        <translation>Le modèle a-t-il des ailerons ?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="32"/>
@@ -8425,7 +8425,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../wizarddialog.cpp" line="32"/>
         <source>Has your model got flaps?</source>
-        <translation>Le modèle a-t-il des volets?</translation>
+        <translation>Le modèle a-t-il des volets ?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="33"/>
@@ -8435,7 +8435,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../wizarddialog.cpp" line="33"/>
         <source>Has your model got airbrakes?</source>
-        <translation>Le modèle a-t-il des aérofreins?</translation>
+        <translation>Le modèle a-t-il des aérofreins ?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="34"/>
@@ -8445,7 +8445,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../wizarddialog.cpp" line="34"/>
         <source>Are the elevons controlled by servos connected to separate channels or by a single servo channel?</source>
-        <translation>Les élevons sont-ils commandés par des servos connectés à des canaux différents, ou par un seul canal?</translation>
+        <translation>Les élevons sont-ils commandés par des servos connectés à des canaux différents, ou à un seul canal ?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="35"/>
@@ -8455,7 +8455,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../wizarddialog.cpp" line="35"/>
         <source>Does your model have a rudder?</source>
-        <translation>Le modèle a-t-il une dérive?</translation>
+        <translation>Le modèle a-t-il une dérive ?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="36"/>
@@ -8507,7 +8507,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../wizarddialog.cpp" line="41"/>
         <source>Has your helicopter got an adjustable gyro for the tail?</source>
-        <translation>L&apos;hélico a-t-il un gyro à gain ajsutable par la radio?</translation>
+        <translation>L&apos;hélico a-t-il un gyro à gain ajustable par la radio ?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="42"/>
@@ -8517,7 +8517,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../wizarddialog.cpp" line="42"/>
         <source>Has your helicopter got a flybar?</source>
-        <translation>L&apos;hélicoptère a-t-il une barre de Bell?</translation>
+        <translation>L&apos;hélicoptère a-t-il une barre de Bell ?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="43"/>
@@ -8559,7 +8559,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../wizarddialog.cpp" line="47"/>
         <source>Manually check the direction of each control surface and reverse any channels that make controls move in the wrong direction. Remove the propeller/propellers before you try to control your model for the first time.&lt;br&gt;Please note that continuing removes all old model settings!</source>
-        <translation>Vérifiez manuellement la direction de mouvement de chaque surface de commande, et inversez les canaux de celles qui répondent dans le faux sens.Attention à bien enlever les hélices du modèle avant de l&apos;alimenter la première fois!&lt;br&gt;Veuillez noter que continuer effacera tous les réglages existants du modèle actuel.</translation>
+        <translation>Vérifiez manuellement le sens de chaque commande, et inversez les canaux de celles qui répondent dans le mauvais sens. Attention à bien enlever les hélices du modèle avant de l&apos;alimenter la première fois !&lt;br&gt;Veuillez noter que tous les réglages existants du modèle courant seront écrasés.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="66"/>
@@ -8569,17 +8569,17 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../wizarddialog.cpp" line="68"/>
         <source>Select the receiver channel that is connected to your ESC or throttle servo.&lt;br&gt;&lt;br&gt;Throttle - Spektrum: CH1, Futaba: CH3</source>
-        <translation>Sélectionnez le canal du récepteur auquel le contrôleur/servo de gaz est connecté.&lt;br&gt;&lt;br&gt;Gaz - Spektrum: CH1, Futaba: CH3</translation>
+        <translation>Sélectionnez le canal du récepteur auquel le contrôleur/servo de gaz est connecté.&lt;br&gt;&lt;br&gt;Gaz - Spektrum : CH1, Futaba : CH3</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="71"/>
         <source>Most aircraft have a main wing and a tail with control surfaces. Flying wings and delta winged aircraft only have a single wing. The main control surface on a standard wing controls the roll of the aircraft. This surface is called an aileron.&lt;br&gt;The control surface of a delta wing controls both roll and pitch. This surface is called an elevon. </source>
-        <translation>La plupart des aéronefs possèdent une aile principale et un empennage avec des surfaces de contrôle. Les ailes volantes et delat ne possèdent qu&apos;une aile. Les surfaces de contrôle sur une aile standard qui contrôlent le roulis de l&apos;aéronef sont appelées ailerons.&lt;br&gt;Les surfaces de contrôle d&apos;une aile delta contrôlent le roulis ET le tangage, et sont appelées élevons.</translation>
+        <translation>La plupart des aéronefs possèdent une aile principale et un empennage avec des surfaces de contrôle. Les ailes volantes et delta ne possèdent qu&apos;une aile. Les surfaces de contrôle sur une aile standard qui contrôlent le roulis de l&apos;aéronef sont appelées ailerons.&lt;br&gt;Les surfaces de contrôle d&apos;une aile delta contrôlent le roulis ET le tangage, et sont appelées élevons.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="75"/>
         <source>Models use one or two channels to control the ailerons.&lt;br&gt;A so called Y-cable can be used to connect a single receiver channel to two separate aileron servos. If your servos are connected by a Y-cable you should select the single-servo option.&lt;br&gt;&lt;br&gt;Aileron - Spektrum: CH2, Futaba: CH1</source>
-        <translation>On utilise en général soit un, soit 2 canaux pour contrôler les ailerons. Un câble en Y peut être utilisé pour connecter 2 servos à un seul canal, auquel cas il convient de choisir l&apos;option &quot;un seul canal&quot;.&lt;br&gt;&lt;br&gt;Ailerons - Spektrum: CH2, Futaba: CH1</translation>
+        <translation>On utilise en général soit 1, soit 2 canaux pour contrôler les ailerons. Un câble en Y peut être utilisé pour connecter 2 servos à un seul canal, auquel cas il convient de choisir l&apos;option  &quot;un seul canal&quot;.&lt;br&gt;&lt;br&gt;Ailerons - Spektrum : CH2, Futaba : CH1</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="86"/>
@@ -8589,7 +8589,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../wizarddialog.cpp" line="80"/>
         <source>This wizard assumes that your flaps are controlled by a switch. If your flaps are controlled by a potentiometer you can change that manually later.</source>
-        <translation>Cet assistant suppose que les volets sont commandés par un interrupteur. Si vous souhaitez les commander par un potentiomètre il est possible de le changer manuellement plus tard.</translation>
+        <translation>Cet assistant considère que les volets sont commandés par un interrupteur. Si vous souhaitez les commander par un potentiomètre il est possible de le paramétrer manuellement plus tard.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="83"/>
@@ -8599,7 +8599,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../wizarddialog.cpp" line="90"/>
         <source>Select the receiver channel that is connected to your rudder.&lt;br&gt;&lt;br&gt;Rudder - Spektrum: CH4, Futaba: CH4</source>
-        <translation>Sélectionnez le canal du récepteur auquel le servo de dérive est connecté.&lt;br&gt;&lt;br&gt;Dérive - Spektrum: CH4, Futaba: CH4</translation>
+        <translation>Sélectionnez le canal du récepteur auquel le servo de dérive est connecté.&lt;br&gt;&lt;br&gt;Dérive - Spektrum : CH4, Futaba : CH4</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="93"/>
@@ -8610,12 +8610,12 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
         <location filename="../wizarddialog.cpp" line="95"/>
         <location filename="../wizarddialog.cpp" line="99"/>
         <source>Select the Rudder and Elevator channels.&lt;br&gt;&lt;br&gt;Rudder - Spektrum: CH4, Futaba: CH4&lt;br&gt;Elevator - Spektrum: CH3, Futaba: CH2</source>
-        <translation>Sélectionnez les canaux du récepteur auquel les servos de profondeur et dérive sont connectés.&lt;br&gt;&lt;br&gt;Dérive - Spektrum: CH4, Futaba: CH4&lt;br&gt;Profondeur - Spektrum: CH3, Futaba: CH2</translation>
+        <translation>Sélectionnez les canaux du récepteur auquel les servos de profondeur et dérive sont connectés.&lt;br&gt;&lt;br&gt;Dérive - Spektrum : CH4, Futaba : CH4&lt;br&gt;Profondeur - Spektrum : CH3, Futaba : CH2</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="103"/>
         <source>Select the Elevator channel.&lt;br&gt;&lt;br&gt;Elevator - Spektrum: CH3, Futaba: CH2</source>
-        <translation>Sélectionnez le canal du récepteur auquel le servo de profondeur est connecté.&lt;br&gt;&lt;br&gt;Profondeur - Spektrum: CH3, Futaba: CH2</translation>
+        <translation>Sélectionnez le canal du récepteur auquel le servo de profondeur est connecté.&lt;br&gt;&lt;br&gt;Profondeur - Spektrum : CH3, Futaba : CH2</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="106"/>
@@ -8626,17 +8626,17 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
         <location filename="../wizarddialog.cpp" line="122"/>
         <location filename="../wizarddialog.cpp" line="124"/>
         <source>TBD.</source>
-        <translation></translation>
+        <translation type="unfinished">Souvent pour s&apos;amuser les hommes d&apos;équipage prennent des albatros, vastes oiseaux des mers qui suivent, indolents companions de voyage, le navire glissant sur les gouffres amers. Charles Baudelaire</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="116"/>
         <source>Select the control channels for your multirotor.&lt;br&gt;&lt;br&gt;Throttle - Spektrum: CH1, Futaba: CH3&lt;br&gt;Yaw - Spektrum: CH4, Futaba: CH4&lt;br&gt;Pitch - Spektrum: CH3, Futaba: CH2&lt;br&gt;Roll - Spektrum: CH2, Futaba: CH1</source>
-        <translation>Sélectionnez les canaux de votre multirotor.&lt;br&gt;&lt;br&gt;Gaz - Spektrum: CH1, Futaba: CH3&lt;br&gt;Lacet - Spektrum: CH4, Futaba: CH4&lt;br&gt;Tangage - Spektrum: CH3, Futaba: CH2&lt;br&gt;Roulis - Spektrum: CH2, Futaba: CH1</translation>
+        <translation>Sélectionnez les canaux de votre multirotor.&lt;br&gt;&lt;br&gt;Gaz - Spektrum: CH1, Futaba: CH3&lt;br&gt;Lacet - Spektrum: CH4, Futaba : CH4&lt;br&gt;Tangage - Spektrum : CH3, Futaba: CH2&lt;br&gt;Roulis - Spektrum : CH2, Futaba: CH1</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="126"/>
         <source>There is no help available for the current page.</source>
-        <translation>Aucune aide disponible pour cette page.</translation>
+        <translation>Souvent pour s&apos;amuser les hommes d&apos;équipage prennent des albatros, vastes oiseaux des mers qui suivent, indolents companions de voyage, le navire glissant sur les gouffres amers. Charles Baudelaire</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="128"/>
