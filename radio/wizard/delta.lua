@@ -15,7 +15,7 @@ local fieldsMax = 0
 local engineMode = 0
 local engineCH1 = 0
 local elevonsCH1 = 0
-local elevonsCH2 = 4
+local elevonsCH2 = 0
 local elevonsMode = 0
 local rudderMode = 1
 local rudderCH1 = 0
@@ -113,14 +113,10 @@ end
 
 -- Init function
 local function init()
-  for stick = 0, 3, 1 do
-    local index = channelOrder(stick);
-    if index == 0 then
-      rudderCH1 = stick
-    elseif index == 2 then
-      engineCH1 = stick
-    end
-  end
+  rudderCH1 = defaultChannel(0)
+  engineCH1 = defaultChannel(2)
+  elevonsCH1 = defaultChannel(1)
+  elevonsCH2 = defaultChannel(3)
 end
 
 -- Engine Menu

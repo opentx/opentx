@@ -123,18 +123,10 @@ end
 
 -- Init function
 local function init()
-  for stick = 0, 3, 1 do
-    local index = channelOrder(stick);
-    if index == 0 then
-      rudCH1 = stick
-    elseif index == 1 then
-      eleCH1 = stick
-    elseif index == 2 then
-      engineCH1 = stick
-    else
-      aileronsCH1 = stick
-    end
-  end
+  rudCH1 = defaultChannel(0)
+  eleCH1 = defaultChannel(1)
+  engineCH1 = defaultChannel(2)
+  aileronsCH1 = defaultChannel(3)
 end
 
 -- Engine Menu
@@ -176,7 +168,7 @@ end
 
 local function applyEngineSettings()
   if engineMode == 0 then
-    mix = {source=channelOrder(2)}
+    local mix = { source=1+defaultChannel(2) }
     model.insertMix(engineCH1, 0, mix)
   end
 end
@@ -225,6 +217,17 @@ local function aileronsMenu(event)
     aileronsCH1 = channelIncDec(event, aileronsCH1)
   elseif field==2 then
     aileronsCH2 = channelIncDec(event, aileronsCH2)
+  end
+end
+
+local function applyAileronsSettings()
+  if aileronsMode ~= 1 then
+    local mix = { source=1+defaultChannel(3) }
+    model.insertMix(aileronsCH1, 0, mix)
+    if aileronsMode == 2 then
+      mix = { source=1+defaultChannel(3), weight=-100 }
+      model.insertMix(aileronsCH2, 0, mix)
+    end
   end
 end
 
@@ -429,12 +432,6 @@ local function servoMenu(event)
 end
 
 -- Confirmation Menu
-local function applySettings()
-  model.defaultInputs()
-  model.deleteMixes()      
-  applyEngineSettings()
-end
-
 local function nextLine(x, y)
   y = y + 8
   if y > 50 then
@@ -511,6 +508,13 @@ local function drawConfirmationMenu()
   lcd.drawPixmap(LCD_W-18, 0, "confirm-tick.bmp")
   lcd.drawPixmap(0, LCD_H-17, "confirm-plane.bmp")
   fieldsMax = 0
+end
+
+local function applySettings()
+  model.defaultInputs()
+  model.deleteMixes()      
+  applyEngineSettings()
+  applyAileronsSettings()
 end
 
 local function confirmationMenu(event)

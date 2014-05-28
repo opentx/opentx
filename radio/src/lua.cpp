@@ -550,12 +550,11 @@ static int getFirstMix(int chn)
 {
   for (int i=0; i<MAX_MIXERS; i++) {
     MixData * mix = mixAddress(i);
-    if (!mix->srcRaw || mix->destCh>chn) break;
-    if (mix->destCh == chn) {
+    if (!mix->srcRaw || mix->destCh>=chn) {
       return i;
     }
   }
-  return -1;
+  return 0;
 }
 
 static int getMixesCountFromFirst(int chn, int first)
@@ -574,9 +573,6 @@ static int getMixesCountFromFirst(int chn, int first)
 static int getMixesCount(int chn)
 {
   int first = getFirstMix(chn);
-  if (first < 0) {
-    return 0;
-  }
   return getMixesCountFromFirst(chn, first);
 }
 
@@ -594,7 +590,7 @@ static int luaModelGetMix(lua_State *L)
   int idx = luaL_checkunsigned(L, 2);
   int first = getFirstMix(chn);
   int count = getMixesCountFromFirst(chn, first);
-  if (first>=0 && idx<count) {
+  if (idx<count) {
     MixData * mix = mixAddress(first+idx);
     lua_newtable(L);
     lua_pushtablezstring(L, "name", mix->name);
@@ -619,8 +615,7 @@ static int luaModelInsertMix(lua_State *L)
   int count = getMixesCountFromFirst(chn, first);
 
   if (chn<NUM_CHNOUT && getExpoMixCount(0)<MAX_MIXERS && idx<=count) {
-    if (first > 0)
-      idx += first;
+    idx += first;
     s_currCh = chn+1;
     insertExpoMix(0, idx);
     MixData *mix = mixAddress(idx);
@@ -661,7 +656,7 @@ static int luaModelDeleteMix(lua_State *L)
   int first = getFirstMix(chn);
   int count = getMixesCountFromFirst(chn, first);
 
-  if (first>=0 && idx<count) {
+  if (idx<count) {
     deleteExpoMix(0, first+idx);
   }
 
@@ -895,10 +890,24 @@ static int luaPopupInput(lua_State *L)
   return 1;
 }
 
-static int luaChannelOrder(lua_State *L)
+static int luaDefaultStick(lua_State *L)
+{
+  uint8_t channel = luaL_checkinteger(L, 1);
+  lua_pushinteger(L, channel_order(channel+1)-1);
+  return 1;
+}
+
+static int luaDefaultChannel(lua_State *L)
 {
   uint8_t stick = luaL_checkinteger(L, 1);
-  lua_pushinteger(L, channel_order(stick+1)-1);
+  for (int i=1; i<=4; i++) {
+    int tmp = channel_order(i) - 1;
+    if (tmp == stick) {
+      lua_pushinteger(L, i-1);
+      return 1;
+    }
+  }
+  lua_pushnil(L);
   return 1;
 }
 
@@ -1034,7 +1043,8 @@ void luaInit()
   lua_register(L, "playFile", luaPlayFile);
   lua_register(L, "playNumber", luaPlayNumber);
   lua_register(L, "popupInput", luaPopupInput);
-  lua_register(L, "channelOrder", luaChannelOrder);
+  lua_register(L, "defaultStick", luaDefaultStick);
+  lua_register(L, "defaultChannel", luaDefaultChannel);
   lua_register(L, "killEvents", luaKillEvents);
 
   // Push OpenTX constants
