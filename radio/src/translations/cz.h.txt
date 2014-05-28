@@ -429,11 +429,11 @@
 
 #if defined(PCBTARANIS)
   #define TR_6POS_POTS         "S11""S12""S13""S14""S15""S16""S21""S22""S23""S24""S25""S26""S31""S32""S33""S34""S35""S36"
-  #define TR_VSWITCHES         "---""SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_6POS_POTS TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW
+  #define TR_VSWITCHES         "---""SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_6POS_POTS TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW "ZAP""One"
 #elif defined(CPUARM)
-  #define TR_VSWITCHES         "---" TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW
+  #define TR_VSWITCHES         "---" TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW "ON\0""One"
 #else
-  #define TR_VSWITCHES         "---" TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW
+  #define TR_VSWITCHES         "---" TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW "ON\0""One"
 #endif
 
 #if defined(HELI)
@@ -717,7 +717,7 @@
 #define TR_COPY_FILE           "Kopírovat"
 #define TR_RENAME_FILE         "Přejmenovat"
 #define TR_ASSIGN_BITMAP       "Zvolit obrázek"
-#define TR_EXECUTE_FILE        "Execute"
+#define TR_EXECUTE_FILE        "Spustit"
 #define TR_REMOVED             " odstraněn"
 #define TR_SD_INFO             "Informace"
 #define TR_SD_FORMAT           "Formát"
@@ -761,10 +761,10 @@
 #define TR_PASTE               "Vložit"
 #define TR_DELETE              "Odstranit"
 #define TR_INSERT              "Přidat"
-#define TR_RESET_FLIGHT        "Vynulovat let"
-#define TR_RESET_TIMER1        "Vynulovat Timer1"
-#define TR_RESET_TIMER2        "Vynulovat Timer2"
-#define TR_RESET_TELEMETRY     "Vynulovat telemetrii"
+#define TR_RESET_FLIGHT        "Let"
+#define TR_RESET_TIMER1        "Stopky 1"
+#define TR_RESET_TIMER2        "Stopky 2"
+#define TR_RESET_TELEMETRY     "Telemetrii"
 #define TR_STATISTICS          "Statistika"
 #define TR_ABOUT_US            "O nás"
 #define TR_AND_SWITCH          "AND Spínač"
@@ -790,7 +790,7 @@
 #define TR_MIRROR              "Zrcadlit"
 #define TR_CLEAR               "Smazat"
 #define TR_RESET               "Reset"
-#define TR_RESET_SUBMENU       "Reset..."
+#define TR_RESET_SUBMENU       "Inicializovat ..."
 #define TR_COUNT               "Velikost"
 #define TR_PT                  "č."
 #define TR_PTS                 " b."
