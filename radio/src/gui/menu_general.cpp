@@ -1080,12 +1080,12 @@ void menuGeneralSdManager(uint8_t _event)
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     uint8_t y = 1 + FH + i*FH;
-    uint8_t x = 0;
+    lcdNextPos = 0;
     uint8_t attr = (m_posVert-1-s_pgOfs == i ? BSS|INVERS : BSS);
     if (reusableBuffer.sdmanager.lines[i][0]) {
-      if (!reusableBuffer.sdmanager.lines[i][SD_SCREEN_FILE_LENGTH+1]) { lcd_putcAtt(0, y, '[', attr); x += FW-1; }
-      lcd_putsAtt(x, y, reusableBuffer.sdmanager.lines[i], attr);
-      if (!reusableBuffer.sdmanager.lines[i][SD_SCREEN_FILE_LENGTH+1]) { lcd_putcAtt(lcdLastPos, y, ']', attr); }
+      if (!reusableBuffer.sdmanager.lines[i][SD_SCREEN_FILE_LENGTH+1]) { lcd_putcAtt(0, y, '[', attr); }
+      lcd_putsAtt(lcdNextPos, y, reusableBuffer.sdmanager.lines[i], attr);
+      if (!reusableBuffer.sdmanager.lines[i][SD_SCREEN_FILE_LENGTH+1]) { lcd_putcAtt(lcdNextPos, y, ']', attr); }
     }
   }
 
