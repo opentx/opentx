@@ -459,7 +459,7 @@ void telemetryInterrupt10ms()
 #endif
 
       channel = g_model.frsky.currentSource - FRSKY_CURRENT_SOURCE_A1;
-      if (channel <= MAX_FRSKY_A_CHANNELS) {
+      if (channel < MAX_FRSKY_A_CHANNELS) {
         current = applyChannelRatio(channel, frskyData.analog[channel].value) / 10;
       }
 
