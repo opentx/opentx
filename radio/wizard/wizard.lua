@@ -729,6 +729,10 @@ local function run(event)
     elevonsMenu(event)
   elseif page == DRUDDER_MENU then
     dRudderMenu(event)
+  elseif page == QUADRI_MENU then
+    modelTypeMenu(event)
+  elseif page == HELI_MENU then
+    modelTypeMenu(event)
   elseif page == CONFIRMATION_MENU then
     return confirmationMenu(event)
   end
