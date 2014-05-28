@@ -801,7 +801,7 @@ void flashBootloader(const char * filename)
 
 void onSdManagerMenu(const char *result)
 {
-  TCHAR lfn[_MAX_LFN + 1];
+  TCHAR lfn[_MAX_LFN+1];
 
   uint8_t index = m_posVert-1-s_pgOfs;
   if (result == STR_SD_INFO) {
