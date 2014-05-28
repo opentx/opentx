@@ -15,9 +15,14 @@ local TAIL_MENU = PLANE_MENU+4
 local ELEVONS_MENU = DELTA_MENU+1
 local DRUDDER_MENU = DELTA_MENU+2
 
+-- Model types
+MODELTYPE_PLANE = 0
+MODELTYPE_HELI = 1
+MODELTYPE_DELTA = 2
+MODELTYPE_QUAD = 3
+
 -- Navigation variables
 local page = MODELTYPE_MENU
-local lastPage = TAIL_MENU
 local dirty = true
 local edit = false
 local field = 0
@@ -426,7 +431,6 @@ local function tailMenu(event)
     drawTailMenu()
   end
 
-  lastPage = TAIL_MENU
   navigate(event, fieldsMax, page-1, CONFIRMATION_MENU)
 
   if field==0 then
@@ -519,7 +523,6 @@ local function dRudderMenu(event)
     drawDRudderMenu()
   end
   
-  lastPage = DRUDDER_MENU
   navigate(event, fieldsMax, page-1, CONFIRMATION_MENU)
 
   if field==0 then
@@ -605,7 +608,7 @@ local function drawConfirmationMenu()
     lcd.drawSource(x+52, y, SOURCE_FIRST_CH+engineCH1, 0)
     x, y = nextLine(x, y)
   end
-  if lastPage == DRUDDER_MENU then
+  if modelType == MODELTYPE_DELTA then
     lcd.drawText(x, y, "Elevons:", 0)
     lcd.drawSource(x+52, y, SOURCE_FIRST_CH+elevonsCH1, 0)
     x, y = nextLine(x, y)
@@ -616,7 +619,7 @@ local function drawConfirmationMenu()
       lcd.drawText(x, y, "Rudder:", 0)
       lcd.drawSource(x+52, y, SOURCE_FIRST_CH+rudCH1, 0)      
     end
-  else
+  elseif modelType == MODELTYPE_PLANE then
     if aileronsMode ~= 1 then
       lcd.drawText(x, y, "Ailerons:", 0)
       lcd.drawSource(x+52, y, SOURCE_FIRST_CH+aileronsCH1, 0)
@@ -682,7 +685,11 @@ local function confirmationMenu(event)
     drawConfirmationMenu()
   end
 
-  navigate(event, fieldsMax, lastPage, page)
+  if modelType == MODELTYPE_DELTA then
+    navigate(event, fieldsMax, DRUDDER_MENU, page)
+  elseif modelType == MODELTYPE_PLANE then
+    navigate(event, fieldsMax, TAIL_MENU, page)
+  end
 
   if event == EVT_EXIT_BREAK then
     return 2
