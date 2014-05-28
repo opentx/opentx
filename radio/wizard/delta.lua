@@ -136,7 +136,7 @@ local function drawEngineMenu()
     lcd.drawPixmap(132, 8, "engine-1.bmp")
     lcd.drawText(25, LCD_H-16, "Assign channel", 0);
     lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
-    lcd.drawSource(151, LCD_H-8, SOURCE_FIRST_CH+engineCH1, getFieldFlags(1))
+    lcd.drawSource(151, LCD_H-8, MIXSRC_CH1+engineCH1, getFieldFlags(1))
     fieldsMax = 1
   end
 end
@@ -174,8 +174,8 @@ local function drawElevonsMenu()
   lcd.drawPixmap(110, 9, "elevons.bmp")
   lcd.drawText(20, LCD_H-16, "Assign channels", 0);
   lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
-  lcd.drawSource(116, LCD_H-8, SOURCE_FIRST_CH+elevonsCH1, getFieldFlags(1))
-  lcd.drawSource(175, LCD_H-8, SOURCE_FIRST_CH+elevonsCH2, getFieldFlags(2))
+  lcd.drawSource(116, LCD_H-8, MIXSRC_CH1+elevonsCH1, getFieldFlags(1))
+  lcd.drawSource(175, LCD_H-8, MIXSRC_CH1+elevonsCH2, getFieldFlags(2))
   fieldsMax = 2
 end
 
@@ -212,7 +212,7 @@ local function drawRudderMenu()
     lcd.drawPixmap(109, 14, "drudder-1.bmp")
     lcd.drawText(25, LCD_H-16, "Assign channel", 0);
     lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
-    lcd.drawSource(190, LCD_H-55, SOURCE_FIRST_CH+rudderCH1, getFieldFlags(1))
+    lcd.drawSource(190, LCD_H-55, MIXSRC_CH1+rudderCH1, getFieldFlags(1))
     fieldsMax = 1
   end
 end
@@ -235,7 +235,7 @@ end
 -- Servo (limits) Menu
 local function drawServoMenu(limits)
   lcd.clear()
-  lcd.drawSource(1, 0, SOURCE_FIRST_CH+servoPage, 0)
+  lcd.drawSource(1, 0, MIXSRC_CH1+servoPage, 0)
   lcd.drawText(25, 0, "servo min/max/center/direction?", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
   lcd.drawLine(LCD_W/2-1, 8, LCD_W/2-1, LCD_H, DOTTED, 0)
@@ -303,18 +303,18 @@ local function drawConfirmationMenu()
   lcd.drawFilledRectangle(0, 0, LCD_W, 9, 0)
   if engineMode == 0 then
     lcd.drawText(x, y, "Throttle:", 0);
-    lcd.drawSource(x+52, y, SOURCE_FIRST_CH+engineCH1, 0)
+    lcd.drawSource(x+52, y, MIXSRC_CH1+engineCH1, 0)
     x, y = nextLine(x, y)
   end
   lcd.drawText(x, y, "Elevons:", 0)
-  lcd.drawSource(x+52, y, SOURCE_FIRST_CH+elevonsCH1, 0)
+  lcd.drawSource(x+52, y, MIXSRC_CH1+elevonsCH1, 0)
   x, y = nextLine(x, y)
   lcd.drawText(x, y, "Elevons:", 0)
-  lcd.drawSource(x+52, y, SOURCE_FIRST_CH+elevonsCH2, 0)
+  lcd.drawSource(x+52, y, MIXSRC_CH1+elevonsCH2, 0)
   x, y = nextLine(x, y)
   if rudderMode == 0 then
     lcd.drawText(x, y, "Rudder:", 0)
-    lcd.drawSource(x+52, y, SOURCE_FIRST_CH+rudderCH1, 0)      
+    lcd.drawSource(x+52, y, MIXSRC_CH1+rudderCH1, 0)      
   end
   lcd.drawText(48, LCD_H-8, "[Enter Long] to confirm", 0);
   lcd.drawFilledRectangle(0, LCD_H-9, LCD_W, 9, 0)
