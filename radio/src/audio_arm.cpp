@@ -442,7 +442,7 @@ tmr10ms_t timeAutomaticPromptsSilence = 0;
 void playModelEvent(uint8_t category, uint8_t index, uint8_t event)
 {
   char filename[AUDIO_FILENAME_MAXLEN+1];
-  TRACE("playModelEvent(): cat: %u, idx: %u, evt:%u", (uint32_t)category, (uint32_t)index, (uint32_t)event);
+  // TRACE("playModelEvent(): cat: %u, idx: %u, evt:%u", (uint32_t)category, (uint32_t)index, (uint32_t)event);
   if (IS_SILENCE_PERIOD_ELAPSED() && isAudioFileReferenced((category << 24) + (index << 16) + event, filename)) {
     audioQueue.playFile(filename);
   }
