@@ -49,6 +49,9 @@
 #define SCRIPTS_PATH        ROOT_PATH "SCRIPTS"
 #define FIRMWARES_PATH      ROOT_PATH "FIRMWARES"
 #define EEPROMS_PATH        ROOT_PATH "EEPROMS"
+#define TEMPLATES_PATH      ROOT_PATH "TEMPLATES"
+
+#define WIZARD_NAME         "wizard.lua"
 
 #define MODELS_EXT          ".bin"
 #define LOGS_EXT            ".csv"

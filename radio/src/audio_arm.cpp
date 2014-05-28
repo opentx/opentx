@@ -217,15 +217,6 @@ uint64_t sdAvailableLogicalSwitchAudioFiles = 0;
 #define MASK_SWITCH_AUDIO_FILE(index)                 ((uint64_t)1 << index)
 #define MASK_LOGICAL_SWITCH_AUDIO_FILE(index, event)  ((uint64_t)1 << (2*index+event))
 
-bool isFileAvailable(const char * filename)
-{
-  FILINFO info;
-  TCHAR lfn[_MAX_LFN + 1];
-  info.lfname = lfn;
-  info.lfsize = sizeof(lfn);
-  return f_stat(filename, &info) == FR_OK;
-}
-
 char * getAudioPath(char * path)
 {
   strcpy(path, SOUNDS_PATH "/");

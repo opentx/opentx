@@ -407,10 +407,29 @@ void checkModelIdUnique(uint8_t id)
 }
 #endif
 
+#if defined(SDCARD)
+bool isFileAvailable(const char * filename)
+{
+  FILINFO info;
+  TCHAR lfn[_MAX_LFN + 1];
+  info.lfname = lfn;
+  info.lfsize = sizeof(lfn);
+  return f_stat(filename, &info) == FR_OK;
+}
+#endif
+
 void modelDefault(uint8_t id)
 {
   memset(&g_model, 0, sizeof(g_model));
+
   applyDefaultTemplate();
+
+#if defined(LUA)
+  if (isFileAvailable(TEMPLATES_PATH "/" WIZARD_NAME)) {
+    f_chdir(TEMPLATES_PATH);
+    luaExec(WIZARD_NAME);
+  }
+#endif
 
 #if defined(PXX) && defined(CPUARM)
   modelHeaders[id].modelId = g_model.header.modelId = id+1;
