@@ -1,4 +1,4 @@
-/*   German checked 12.04.2014 Test 012 kleine Änderungen 
+/*   German checked 25.05.2014 Test 015 kleine Änderungen 
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bernet Andre <bernet.andre@gmail.com>
@@ -358,7 +358,7 @@
   #define LEN_AMPSRC           TR("\003", "\007")
   #define TR_AMPSRC            TR("---""A1\0""A2\0""A3\0""A4\0""FAS""Cel", "---\0   ""A1\0    ""A2\0    ""A3\0    ""A4\0    ""FAS\0   ""Cells\0 ")
   #define LEN_VOLTSRC          TR("\003", "\007")
-  #define TR_VOLTSRC           TR("RxV""A1\0""A2\0""A3\0""A4\0""FAS""Cel", "RxBatt\0""A1\0    ""A2\0    ""A3\0    ""A4\0    ""FAS\0   ""Cells\0 ")
+  #define TR_VOLTSRC           TR("RxV""A1\0""A2\0""A3\0""A4\0""FAS""Cel", "RxAkku\0""A1\0    ""A2\0    ""A3\0    ""A4\0    ""FAS\0   ""Cells\0 ")
 #else
   #define LEN_AMPSRC           TR("\003", "\007")
   #define TR_AMPSRC            TR("---""A1\0""A2\0""FAS""Cel", "---\0   ""A1\0    ""A2\0    ""FAS\0   ""Cells\0 ")
@@ -429,11 +429,11 @@
 
 #if defined(PCBTARANIS)
   #define TR_6POS_POTS         "S11""S12""S13""S14""S15""S16""S21""S22""S23""S24""S25""S26""S31""S32""S33""S34""S35""S36"
-  #define TR_VSWITCHES         "---""SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_6POS_POTS TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW
+  #define TR_VSWITCHES         "---""SA\300""SA-""SA\301""SB\300""SB-""SB\301""SC\300""SC-""SC\301""SD\300""SD-""SD\301""SE\300""SE-""SE\301""SF\300""SF\301""SG\300""SG-""SG\301""SH\300""SH\301" TR_6POS_POTS TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW "EIN" "One"
 #elif defined(CPUARM)
-  #define TR_VSWITCHES         "---" TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW 
+  #define TR_VSWITCHES         "---" TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW "EIN" "One"
 #else
-  #define TR_VSWITCHES         "---" TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW
+  #define TR_VSWITCHES         "---" TR_9X_3POS_SWITCHES "THR""RUD""ELE""AIL""GEA""TRN" TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW "EIN" "One"
 #endif
 
 #if defined(HELI)
@@ -512,9 +512,9 @@
 #define OFS_CHECKTRIMS         CENTER_OFS+(9*FW)
 #define TR_SWASHTYPE           TR("Typ Taumelsch","Typ Taumelscheibe")
 #define TR_COLLECTIVE          TR("Kollekt.Pitch","Kollekt. Pitch Kanal")
-#define TR_SWASHRING           TR("Ring. Begrenz","Ring Taumelscheibe")
-#define TR_ELEDIRECTION        TR("Nick Richtung","Nick Servo Richtung")
-#define TR_AILDIRECTION        TR("Roll Richtung","Roll Servo Richtung") 
+#define TR_SWASHRING           TR("Ring. Begrenz","Ring   Taumelscheibe")
+#define TR_ELEDIRECTION        TR("Nick Richtung","Nick   Servo Richtung")
+#define TR_AILDIRECTION        TR("Roll Richtung","Roll   Servo Richtung") 
 #define TR_COLDIRECTION        TR("Pit. Richtung","Pitch Servo Richtung") 
 #define TR_MODE                INDENT"Modus"
 #define TR_NOFREEEXPO          "Expos voll!"
@@ -551,9 +551,9 @@
 #define TR_SCREEN              "Telm-Bild "
 #define TR_SOUND_LABEL         "----Töne---------"
 #define TR_LENGTH              INDENT"Dauer"
-#define TR_BEEP_LENGTH         INDENT "Beep Length"
-#define TR_SPKRPITCH           INDENT"Tonhöhe"
-#define TR_HAPTIC_LABEL        "Vibration"
+#define TR_BEEP_LENGTH         INDENT "Beep Länge"
+#define TR_SPKRPITCH           INDENT"Beep Freq. +/-"
+#define TR_HAPTIC_LABEL        TR("Haptik","----Haptik-------")
 #define TR_HAPTICSTRENGTH      INDENT"Stärke"
 #define TR_CONTRAST            "LCD Kontrast"
 #define TR_ALARMS_LABEL        "----Alarm wenn---"
@@ -588,7 +588,7 @@
 #define TR_MENUTOSTART         CENTER"\007"TR_ENTER" zum Start"
 #define TR_SETMIDPOINT         CENTER"\002Sticks+Potis auf Mitte"
 #define TR_MOVESTICKSPOTS      CENTER"\003Sticks+Potis bewegen"
-#define TR_RXBATT              "Rx Batt:"
+#define TR_RXBATT              "Rx Akku:"
 #define TR_TXnRX               "Tx:\0Rx:"
 #define OFS_RX                 4
 #define TR_ACCEL               "Acc:"
@@ -670,7 +670,7 @@
 #define TR_PITCH_AT_MAX        INDENT "Höchster Ton"
 #define TR_REPEAT_AT_ZERO      INDENT "Wiederholrate"
 #define TR_SHUTDOWN            "Herunterfahren"
-#define TR_BATT_CALIB          "Akku. Kalib."
+#define TR_BATT_CALIB          "Akku abgleichen"
 #define TR_CURRENT_CALIB       "Stromkalib."
 #define TR_VOLTAGE             TR(INDENT "Spannung",INDENT "Spannung Quelle")
 #define TR_CURRENT             TR(INDENT "Strom",INDENT "Strom Quelle")
@@ -890,10 +890,10 @@
 #define TR_CHR_HOUR   'h' // Stunden
 #define TR_CHR_INPUT  'I' // Values between A-I will work
 
-#define TR_BEEP_VOLUME         "Beep  Lautst"
-#define TR_WAV_VOLUME          "Wav    Lautst"
+#define TR_BEEP_VOLUME         "Beep Lautst"
+#define TR_WAV_VOLUME          "Wave Lautst"
 #define TR_VARIO_VOLUME        "Vario Lautst"
-#define TR_BG_VOLUME           "Bg      Lautst"
+#define TR_BG_VOLUME           "Backgrd Lautst"
 
 #define TR_TOP_BAR             "----Info Zeile----"
 #define TR_ALTITUDE            INDENT "Höhe"
