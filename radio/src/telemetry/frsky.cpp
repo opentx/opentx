@@ -146,6 +146,12 @@ NOINLINE void processSerialData(uint8_t data)
   btPushByte(data);
 #endif
 
+#if defined(PCBTARANIS)
+    if (g_eeGeneral.uart3Mode == UART_MODE_SPORT) {
+      uart3Putc(data);
+    }
+#endif
+
   switch (dataState)
   {
     case STATE_DATA_START:
