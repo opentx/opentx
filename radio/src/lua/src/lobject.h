@@ -8,6 +8,9 @@
 #ifndef lobject_h
 #define lobject_h
 
+#ifndef PACK
+#define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
+#endif
 
 #include <stdarg.h>
 
@@ -101,9 +104,9 @@ typedef union Value Value;
 ** an actual value plus a tag with its type.
 */
 
-#define TValuefields	Value value_; int tt_
+#define TValuefields	Value value_; int8_t tt_
 
-typedef struct lua_TValue TValue;
+#define TValue lua_TValue
 
 
 /* macro defining a nil value */
@@ -394,9 +397,9 @@ union Value {
 };
 
 
-struct lua_TValue {
+PACK(typedef struct {
   TValuefields;
-};
+}) lua_TValue;
 
 
 typedef TValue *StkId;  /* index to stack elements */
@@ -543,10 +546,10 @@ typedef union Closure {
 */
 
 typedef union TKey {
-  struct {
+  PACK(struct {
     TValuefields;
     struct Node *next;  /* for chaining */
-  } nk;
+  }) nk;
   TValue tvk;
 } TKey;
 
@@ -560,7 +563,7 @@ typedef struct Node {
 typedef struct Table {
   CommonHeader;
   lu_byte flags;  /* 1<<p means tagmethod(p) is not present */
-  lu_byte lsizenode;  /* log2 of size of `node' array */
+  lu_byte lsizenode;  /* size of `node' array */
   struct Table *metatable;
   TValue *array;  /* array part */
   Node *node;
@@ -579,7 +582,7 @@ typedef struct Table {
 
 
 #define twoto(x)	(1<<(x))
-#define sizenode(t)	(twoto((t)->lsizenode))
+#define sizenode(t)	((t)->lsizenode)
 
 
 /*

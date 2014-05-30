@@ -40,7 +40,7 @@
 
 
 
-#define MINSIZEARRAY	4
+#define MINSIZEARRAY	2
 
 void *luaM_growaux_ (lua_State *L, void *block, int *size, size_t size_elems,
                      int limit, const char *what) {
@@ -80,6 +80,7 @@ void *luaM_realloc_ (lua_State *L, void *block, size_t osize, size_t nsize) {
   if (nsize > realosize && g->gcrunning)
     luaC_fullgc(L, 1);  /* force a GC whenever possible */
 #endif
+  // TRACE("ALLOC %d %d", (int)osize, (int)nsize);
   newblock = (*g->frealloc)(g->ud, block, osize, nsize);
   if (newblock == NULL && nsize > 0) {
     api_check(L, nsize > realosize,
