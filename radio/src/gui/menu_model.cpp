@@ -5529,7 +5529,7 @@ void menuModelTelemetry(uint8_t event)
         lcd_putsLeft(y, (alarm==0 ? STR_LOWALARM : STR_CRITICALALARM));
         putsTelemetryChannel(TELEM_COL2, y, TELEM_RXBATT-1, g_model.rxBattAlarms[alarm], LEFT|attr);
         if (attr && (s_editMode>0 || p1valdiff)) {
-          g_model.rxBattAlarms[alarm] = checkIncDec(event, g_model.rxBattAlarms[alarm], 0, 132, EE_MODEL);
+          g_model.rxBattAlarms[alarm] = checkIncDec(event, g_model.rxBattAlarms[alarm], 0, 255, EE_MODEL);
         }
         break;
       }
