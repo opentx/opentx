@@ -121,6 +121,10 @@ void menuStatisticsDebug(uint8_t event)
       g_tmr1Latency_min = 0xff;
       g_tmr1Latency_max = 0;
 #endif
+#if defined(LUA)
+      maxLuaInterval = 0;
+      maxLuaDuration = 0;
+#endif
       maxMixerDuration  = 0;
       AUDIO_KEYPAD_UP();
       break;
@@ -177,14 +181,24 @@ void menuStatisticsDebug(uint8_t event)
     putsTelemetryValue(MENU_DEBUG_COL1_OFS, 4*FH, Coproc_temp, UNIT_TEMPERATURE, LEFT);
     putsTelemetryValue(MENU_DEBUG_COL2_OFS, 4*FH, Coproc_maxtemp, UNIT_TEMPERATURE, LEFT);
   }
-#elif defined(PCBTARANIS) && !defined(SIMU)
-  lcd_putsLeft(4*FH, "Free Mem");
-  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, 4*FH, 0x20020000 - (unsigned int)heap, LEFT);
+#endif
+
+#if defined(PCBTARANIS) && !defined(SIMU)
+  lcd_putsLeft(3*FH, "Free Mem");
+  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, 3*FH, 0x20020000 - (unsigned int)heap, LEFT);
+#endif
+
+#if defined(LUA)
+  lcd_putsLeft(4*FH, "Lua scripts");
+  lcd_putsAtt(MENU_DEBUG_COL1_OFS-1, 4*FH+1, "[Duration]", SMLSIZE);
+  lcd_outdezAtt(lcdLastPos, 4*FH, 10*maxLuaDuration, LEFT);
+  lcd_putsAtt(lcdLastPos+2, 4*FH+1, "[Interval]", SMLSIZE);
+  lcd_outdezAtt(lcdLastPos, 4*FH, 10*maxLuaInterval, LEFT);
 #endif
 
 #if defined(CPUARM)
   lcd_putsLeft(5*FH, STR_TMIXMAXMS);
-  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, 5*FH, (maxMixerDuration)/20, PREC2|LEFT);
+  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, 5*FH, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT);
   lcd_puts(lcdLastPos, 5*FH, "ms");
   lcd_putsLeft(6*FH, STR_FREESTACKMINB);
 
@@ -211,7 +225,7 @@ void menuStatisticsDebug(uint8_t event)
   lcd_putsLeft(3*FH, STR_TMR1JITTERUS);
   lcd_outdez8(MENU_DEBUG_COL1_OFS , 3*FH, (g_tmr1Latency_max - g_tmr1Latency_min) /2 );
   lcd_putsLeft(4*FH, STR_TMIXMAXMS);
-  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, 4*FH, (maxMixerDuration*100)/16, PREC2);
+  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, 4*FH, DURATION_MS_PREC2(maxMixerDuration), PREC2);
   lcd_putsLeft(5*FH, STR_FREESTACKMINB);
   lcd_outdezAtt(14*FW, 5*FH, stack_free(), UNSIGN) ;
 #endif

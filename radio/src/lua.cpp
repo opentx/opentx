@@ -60,10 +60,12 @@ lua_State *L = NULL;
 uint8_t luaState = 0;
 ScriptInternalData scriptInternalData[MAX_SCRIPTS] = { { SCRIPT_NOFILE, 0 } };
 ScriptInternalData standaloneScript = { SCRIPT_NOFILE, 0 };
+uint16_t maxLuaInterval = 0;
+uint16_t maxLuaDuration = 0;
 
 #define PERMANENT_SCRIPTS_MAX_INSTRUCTIONS (1000/100)
 #define MANUAL_SCRIPTS_MAX_INSTRUCTIONS    (10000/100)
-#define SCRIPTS_MAX_HEAP                   100
+#define SCRIPTS_MAX_HEAP                   50
 #define SET_LUA_INSTRUCTIONS_COUNT(x)      (instructionsPercent=0, lua_sethook(L, hook, LUA_MASKCOUNT, x))
 
 static int instructionsPercent = 0;
@@ -1242,6 +1244,14 @@ void luaTask(uint8_t evt)
   lcd_locked = false;
   static uint8_t luaDisplayStatistics = false;
 
+  uint32_t t0 = get_tmr10ms();
+  static uint32_t lastLuaTime = 0;
+  uint16_t interval = (lastLuaTime == 0 ? 0 : (t0 - lastLuaTime));
+  lastLuaTime = t0;
+  if (interval > maxLuaInterval) {
+    maxLuaInterval = interval;
+  }
+
   if (luaState & LUASTATE_STANDALONE_SCRIPT_RUNNING) {
     // standalone script
     if (standaloneScript.state == SCRIPT_OK && standaloneScript.run) {
@@ -1391,4 +1401,9 @@ void luaTask(uint8_t evt)
     TRACE("GC Use: %dbytes", gc);
   }
 #endif
+
+  t0 = get_tmr10ms() - t0;
+  if (t0 > maxLuaDuration) {
+    maxLuaDuration = t0;
+  }
 }

@@ -115,13 +115,14 @@ void loadModelBitmap(char *name, uint8_t *bitmap)
 #if !defined(CPUARM)
 uint8_t g_tmr1Latency_max;
 uint8_t g_tmr1Latency_min;
+uint16_t lastMixerDuration;
 #endif
 
 uint8_t unexpectedShutdown = 0;
 
-/* mixer duration in 1/16ms */
+/* AVR: mixer duration in 1/16ms */
+/* ARM: mixer duration in 0.5us */
 uint16_t maxMixerDuration;
-uint16_t lastMixerDuration;
 
 #if defined(AUDIO) && !defined(CPUARM)
 audioQueue  audio;

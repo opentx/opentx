@@ -838,10 +838,25 @@ void timerReset(uint8_t idx);
 void flightReset();
 
 extern uint8_t unexpectedShutdown;
+
+extern uint16_t maxMixerDuration;
+
+#if !defined(CPUARM)
 extern uint8_t g_tmr1Latency_max;
 extern uint8_t g_tmr1Latency_min;
-extern uint16_t maxMixerDuration;
 extern uint16_t lastMixerDuration;
+#endif
+
+#if defined(LUA)
+extern uint16_t maxLuaInterval;
+extern uint16_t maxLuaDuration;
+#endif
+
+#if defined(CPUARM)
+  #define DURATION_MS_PREC2(x) ((x)/20)
+#else
+  #define DURATION_MS_PREC2(x) ((x)*100)/16
+#endif
 
 #if defined(THRTRACE)
   #define MAXTRACE (LCD_W - 8)
