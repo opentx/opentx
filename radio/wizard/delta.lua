@@ -12,13 +12,13 @@ local field = 0
 local fieldsMax = 0
 
 -- Model settings
-local engineMode = 0
-local engineCH1 = 0
-local elevonsCH1 = 0
-local elevonsCH2 = 0
+local engineMode = 1
+local thrCH1 = 0
+local elevCH1 = 0
+local elevCH2 = 0
 local elevonsMode = 0
-local rudderMode = 1
-local rudderCH1 = 0
+local rudderMode = 0
+local rudCH1 = 0
 local servoPage = nil
 
 -- Common functions
@@ -79,9 +79,11 @@ local function navigate(event, fieldMax, prevPage, nextPage)
   else
     if event == EVT_PAGE_BREAK then     
       page = nextPage
+      field = 0
       dirty = true
     elseif event == EVT_PAGE_LONG then
       page = prevPage
+      field = 0
       killEvents(event);
       dirty = true
     else
@@ -113,21 +115,21 @@ end
 
 -- Init function
 local function init()
-  rudderCH1 = defaultChannel(0)
-  engineCH1 = defaultChannel(2)
-  elevonsCH1 = defaultChannel(1)
-  elevonsCH2 = defaultChannel(3)
+  rudCH1 = defaultChannel(0)
+  thrCH1 = defaultChannel(2)
+  elevCH1 = defaultChannel(1)
+  elevCH2 = defaultChannel(3)
 end
 
 -- Engine Menu
-local engineModeItems = {"Yes...", "No"}
+local engineModeItems = {"No", "Yes..."}
 local function drawEngineMenu()
   lcd.clear()
   lcd.drawText(1, 0, "Has your model got an engine?", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
   lcd.drawCombobox(0, 8, LCD_W/2, engineModeItems, engineMode, getFieldFlags(0)) 
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H, DOTTED, 0)
-  if engineMode == 1 then
+  if engineMode == 0 then
     -- No engine
     lcd.drawPixmap(132, 8, "engine-0.bmp")
     fieldsMax = 0
@@ -136,7 +138,7 @@ local function drawEngineMenu()
     lcd.drawPixmap(132, 8, "engine-1.bmp")
     lcd.drawText(25, LCD_H-16, "Assign channel", 0);
     lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
-    lcd.drawSource(151, LCD_H-8, MIXSRC_CH1+engineCH1, getFieldFlags(1))
+    lcd.drawSource(151, LCD_H-8, MIXSRC_CH1+thrCH1, getFieldFlags(1))
     fieldsMax = 1
   end
 end
@@ -147,19 +149,12 @@ local function engineMenu(event)
     drawEngineMenu()
   end
 
-  navigate(event, fieldsMax, MODELTYPE_PAGE, page+1)
+  navigate(event, fieldsMax, page, page+1)
 
   if field==0 then
     engineMode = fieldIncDec(event, engineMode, 1)
   elseif field==1 then
-    engineCH1 = channelIncDec(event, engineCH1)
-  end
-end
-
-local function applyEngineSettings()
-  if engineMode == 0 then
-    mix = {source=channelOrder(2)}
-    model.insertMix(engineCH1, 0, mix)
+    thrCH1 = channelIncDec(event, thrCH1)
   end
 end
 
@@ -169,14 +164,14 @@ local function drawElevonsMenu()
   lcd.clear()
   lcd.drawText(1, 0, "Select elevon channnels", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W/2, elevonsModeItems, elevonsMode, getFieldFlags(0)) 
+  lcd.drawCombobox(0, 8, LCD_W/2, elevonsModeItems, elevonsMode, 0) 
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H, DOTTED, 0)  
   lcd.drawPixmap(110, 9, "elevons.bmp")
   lcd.drawText(20, LCD_H-16, "Assign channels", 0);
   lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
-  lcd.drawSource(116, LCD_H-8, MIXSRC_CH1+elevonsCH1, getFieldFlags(1))
-  lcd.drawSource(175, LCD_H-8, MIXSRC_CH1+elevonsCH2, getFieldFlags(2))
-  fieldsMax = 2
+  lcd.drawSource(116, LCD_H-8, MIXSRC_CH1+elevCH1, getFieldFlags(0))
+  lcd.drawSource(175, LCD_H-8, MIXSRC_CH1+elevCH2, getFieldFlags(1))
+  fieldsMax = 1
 end
 
 local function elevonsMenu(event)
@@ -187,15 +182,15 @@ local function elevonsMenu(event)
 
   navigate(event, fieldsMax, page-1, page+1)
 
-  if field==1 then
-    elevonsCH1 = channelIncDec(event, elevonsCH1)
-  elseif field==2 then
-    elevonsCH2 = channelIncDec(event, elevonsCH2)
+  if field==0 then
+    elevCH1 = channelIncDec(event, elevCH1)
+  elseif field==1 then
+    elevCH2 = channelIncDec(event, elevCH2)
   end
 end
 
 -- Rudder menu
-local rudderModeItems = {"Yes...", "No"}
+local rudderModeItems = {"No", "Yes..."}
 
 local function drawRudderMenu()
   lcd.clear()
@@ -203,7 +198,7 @@ local function drawRudderMenu()
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
   lcd.drawCombobox(0, 8, LCD_W/2, rudderModeItems, rudderMode, getFieldFlags(0)) 
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H, DOTTED, 0)
-  if rudderMode == 1 then
+  if rudderMode == 0 then
     -- No rudder
     lcd.drawPixmap(109, 14, "drudder-0.bmp")
     fieldsMax = 0
@@ -212,7 +207,7 @@ local function drawRudderMenu()
     lcd.drawPixmap(109, 14, "drudder-1.bmp")
     lcd.drawText(25, LCD_H-16, "Assign channel", 0);
     lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
-    lcd.drawSource(190, LCD_H-55, MIXSRC_CH1+rudderCH1, getFieldFlags(1))
+    lcd.drawSource(190, LCD_H-55, MIXSRC_CH1+rudCH1, getFieldFlags(1))
     fieldsMax = 1
   end
 end
@@ -228,7 +223,7 @@ local function rudderMenu(event)
   if field==0 then
     rudderMode = fieldIncDec(event, rudderMode, 1)
   elseif field==1 then
-    rudderCH1 = channelIncDec(event, rudderCH1)
+    rudCH1 = channelIncDec(event, rudCH1)
   end
 end
 
@@ -280,13 +275,35 @@ local function servoMenu(event)
 end
 
 -- Confirmation Menu
+local function addMix(channel, input, name, weight, index)
+  local mix = { source=input, name=name }
+  if weight ~= nil then
+    mix.weight = weight
+  end
+  if index == nil then 
+    index = 0
+  end
+  model.insertMix(channel, index, mix)
+end
+
 local function applySettings()
   model.defaultInputs()
   model.deleteMixes()      
-  applyEngineSettings()
+  if engineMode == 1 then
+    addMix(thrCH1, MIXSRC_FIRST_INPUT+defaultChannel(2), "Engine")
+  end
+  addMix(elevCH1, MIXSRC_FIRST_INPUT+defaultChannel(1), "Elev1-E", 50)
+  addMix(elevCH1, MIXSRC_FIRST_INPUT+defaultChannel(3), "Elev1-A", 50, 1)
+  addMix(elevCH2, MIXSRC_FIRST_INPUT+defaultChannel(1), "Elev2-E", 50)
+  addMix(elevCH2, MIXSRC_FIRST_INPUT+defaultChannel(3), "Elev2-A", -50, 1)
+  if rudderMode == 1 then
+    addMix(rudCH1, MIXSRC_FIRST_INPUT+defaultChannel(0), "Rudder")
+  end
 end
 
-local function nextLine(x, y)
+local function drawNextLine(x, y, label, channel)
+  lcd.drawText(x, y, label, 0);
+  lcd.drawSource(x+52, y, MIXSRC_CH1+channel, 0)
   y = y + 8
   if y > 50 then
     y = 12
@@ -301,20 +318,13 @@ local function drawConfirmationMenu()
   lcd.clear()
   lcd.drawText(48, 1, "Ready to go?", 0);
   lcd.drawFilledRectangle(0, 0, LCD_W, 9, 0)
-  if engineMode == 0 then
-    lcd.drawText(x, y, "Throttle:", 0);
-    lcd.drawSource(x+52, y, MIXSRC_CH1+engineCH1, 0)
-    x, y = nextLine(x, y)
+  if engineMode == 1 then
+    x, y = drawNextLine(x, y, "Throttle:", thrCH1)
   end
-  lcd.drawText(x, y, "Elevons:", 0)
-  lcd.drawSource(x+52, y, MIXSRC_CH1+elevonsCH1, 0)
-  x, y = nextLine(x, y)
-  lcd.drawText(x, y, "Elevons:", 0)
-  lcd.drawSource(x+52, y, MIXSRC_CH1+elevonsCH2, 0)
-  x, y = nextLine(x, y)
-  if rudderMode == 0 then
-    lcd.drawText(x, y, "Rudder:", 0)
-    lcd.drawSource(x+52, y, MIXSRC_CH1+rudderCH1, 0)      
+  x, y = drawNextLine(x, y, "Elevons:", elevCH1)
+  x, y = drawNextLine(x, y, "Elevons:", elevCH2)
+  if rudderMode == 1 then
+    drawNextLine(x, y, "Rudder:", rudCH1)
   end
   lcd.drawText(48, LCD_H-8, "[Enter Long] to confirm", 0);
   lcd.drawFilledRectangle(0, LCD_H-9, LCD_W, 9, 0)
