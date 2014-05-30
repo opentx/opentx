@@ -83,7 +83,7 @@
 #define TR_UART3MODES    "OFF\0           ""S-Port Mirror\0 ""Debug\0         "
 
 #define LEN_POTTYPES     "\017"
-#define TR_POTTYPES      "None\0          ""Pot\0           ""Switch Multipos"
+#define TR_POTTYPES      "None\0          ""Pot\0           ""Multipos Switch"
 
 #define LEN_DATETIME     "\005"
 #define TR_DATETIME      "DATA:""ORA :"
@@ -255,7 +255,7 @@
   #define TR_CFN_TEST
 #endif
 
-#define TR_CFN_RESERVE     "[reserve]\0"
+#define TR_CFN_RESERVE     "[riserva]\0"
 
 #if defined(CPUARM)
   #define TR_VFSWFUNC      "Blocco\0      ""Maestro \0    ""Trim Instant ""Azzera\0      ""Set \0        " TR_ADJUST_GVAR "Volume\0      " TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_RESERVE TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Retroillum.\0 " TR_CFN_TEST
@@ -497,8 +497,8 @@
 #define TR_ELIMITS             TR("Limiti.E","Limiti Estesi")
 #define TR_ETRIMS              TR("Trim Ext","Trim Estesi")
 #define TR_TRIMINC             "Trim Step"
-#define TR_TTRACE              TR("T-Source", INDENT "Throttle Source")
-#define TR_TTRIM               TR("T-Trim", INDENT "Throttle Trim")
+#define TR_TTRACE              TR("T-Source", INDENT "Sorgente Throttle")
+#define TR_TTRIM               TR("T-Trim", INDENT "Trim Throttle")
 #define TR_BEEPCTR             TR("Ctr Beep","Center Beep")
 #define TR_PROTO               TR(INDENT "Proto", INDENT "Protocollo")
 #define TR_PPMFRAME            TR("PPM frame", INDENT "PPM frame")
@@ -710,8 +710,8 @@
 #define TR_SDHC_CARD           "SD-HC Card"
 #define TR_NO_SOUNDS_ON_SD     "No Suoni su SD"
 #define TR_NO_MODELS_ON_SD     "No Model. su SD"
-#define TR_NO_BITMAPS_ON_SD    "no Immag. su SD"
-#define TR_NO_SCRIPTS_ON_SD    "No Scripts on SD"
+#define TR_NO_BITMAPS_ON_SD    "No Immag. su SD"
+#define TR_NO_SCRIPTS_ON_SD    "No Scripts su SD"
 #define TR_PLAY_FILE           "Suona"
 #define TR_DELETE_FILE         "Cancella"
 #define TR_COPY_FILE           "Copia"
@@ -741,8 +741,8 @@
 #define TR_DATE                "Data"
 #define TR_ROTARY_ENCODER      "R.Encs"
 #define TR_CHANNELS_MONITOR    "CHANNELS MONITOR"
-#define TR_PATH_TOO_LONG       "Path too long"
-#define TR_VIEW_TEXT           "Vedi text"
+#define TR_PATH_TOO_LONG       "Path troppo lungo"
+#define TR_VIEW_TEXT           "Vedi testo"
 #define TR_FLASH_BOOTLOADER    "Flash BootLoader"
 #define TR_WRITING             "\032Scrivendo..."
 #define TR_CONFIRM_FORMAT      "Confermi Format?"
@@ -783,7 +783,7 @@
 #define TR_CHANNELRANGE        INDENT "Numero Canali"
 #define TR_LOWALARM            INDENT "Allarme Basso"
 #define TR_CRITICALALARM       INDENT "Allarme Critico"
-#define TR_ENABLE_POPUP        "Abilitas Popup"
+#define TR_ENABLE_POPUP        "Abilita Popup"
 #define TR_DISABLE_POPUP       "Disabilita Popup"
 #define TR_CURVE_PRESET        "Preimpostate..."
 #define TR_PRESET              "Preimpostate"
