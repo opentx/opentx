@@ -257,8 +257,7 @@ void lcdSetContrast();
 void lcdRefresh();
 
 #if defined(PCBTARANIS)
-  typedef uint8_t * bmp_ptr_t;
-  const pm_char * bmpLoad(bmp_ptr_t &dest, const char *filename, const xcoord_t width, const uint8_t height);
+  const pm_char * bmpLoad(uint8_t *dest, const char *filename, const xcoord_t width, const uint8_t height);
 #endif
 
 #if defined(BOOT)

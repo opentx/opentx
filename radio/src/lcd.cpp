@@ -803,7 +803,7 @@ void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat, LcdFlags att)
 
 void lcd_vline(xcoord_t x, int8_t y, int8_t h)
 {
-  lcd_vlineStip(x, y, h, 0xff);
+  lcd_vlineStip(x, y, h, SOLID);
 }
 
 void lcd_invert_line(int8_t y)

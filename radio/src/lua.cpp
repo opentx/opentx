@@ -277,12 +277,10 @@ static int luaLcdDrawPixmap(lua_State *L)
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   const char * filename = luaL_checkstring(L, 3);
-  // TODO int att = luaL_checkinteger(L, 4);
-  bmp_ptr_t bitmap = 0;
-  const pm_char * error = bmpLoad(bitmap, filename, LCD_W, LCD_H);
-  if (bitmap && !error) {
+  uint8_t bitmap[2+LCD_W/2*LCD_H/2]; // width max is LCD_W/2 pixels for saving stack and avoid a malloc here
+  const pm_char * error = bmpLoad(bitmap, filename, LCD_W/2, LCD_H);
+  if (!error) {
     lcd_bmp(x, y, bitmap);
-    free(bitmap);
   }
   return 0;
 }
@@ -1242,6 +1240,7 @@ void luaExec(const char *filename)
 void luaTask(uint8_t evt)
 {
   lcd_locked = false;
+  static uint8_t luaDisplayStatistics = false;
 
   if (luaState & LUASTATE_STANDALONE_SCRIPT_RUNNING) {
     // standalone script
@@ -1271,17 +1270,19 @@ void luaTask(uint8_t evt)
         else {
           int scriptResult = lua_tointeger(L, -1);
           lua_pop(L, 1);  /* pop returned value */
-          if (scriptResult == 0) {
-            if (lua_gc(L, LUA_GCCOUNT, 0) > SCRIPTS_MAX_HEAP) {
-              TRACE("Script memory leak");
-              standaloneScript.state = SCRIPT_LEAK;
-              luaState = LUASTATE_RELOAD_MODEL_SCRIPTS;
-            }
-          }
-          else {
+          if (scriptResult != 0) {
             TRACE("Script finished with status %d", scriptResult);
             standaloneScript.state = SCRIPT_NOFILE;
             luaState = LUASTATE_RELOAD_MODEL_SCRIPTS;
+          }
+          else if (luaDisplayStatistics) {
+            int gc = 1000*lua_gc(L, LUA_GCCOUNT, 0) + lua_gc(L, LUA_GCCOUNTB, 0);
+            lcd_hline(0, 7*FH-1, lcdLastPos+FW, ERASE);
+            lcd_puts(0, 7*FH, "GV Use: ");
+            lcd_outdezAtt(lcdLastPos, 7*FH, gc, LEFT);
+            lcd_putc(lcdLastPos, 7*FH, 'b');
+            lcd_hline(0, 7*FH-2, lcdLastPos+FW, FORCE);
+            lcd_vlineStip(lcdLastPos+FW, 7*FH-2, FH+2, SOLID, FORCE);
           }
         }
       }
@@ -1300,6 +1301,10 @@ void luaTask(uint8_t evt)
         killEvents(evt);
         standaloneScript.state = SCRIPT_NOFILE;
         luaState = LUASTATE_RELOAD_MODEL_SCRIPTS;
+      }
+      else if (evt == EVT_KEY_LONG(KEY_MENU)) {
+        killEvents(evt);
+        luaDisplayStatistics = !luaDisplayStatistics;
       }
     }
   }
@@ -1376,7 +1381,14 @@ void luaTask(uint8_t evt)
     }
   }
 
-  // TRACE("Before GC COLLECT gc=%d", lua_gc(L, LUA_GCCOUNT, 0));
   lua_gc(L, LUA_GCCOLLECT, 0);
-  // TRACE("After GC COLLECT gc=%d", lua_gc(L, LUA_GCCOUNT, 0));
+
+#if defined(SIMU) || defined(DEBUG)
+  static int lastgc = 0;
+  int gc = 1000*lua_gc(L, LUA_GCCOUNT, 0) + lua_gc(L, LUA_GCCOUNTB, 0);
+  if (gc != lastgc) {
+    lastgc = gc;
+    TRACE("GC Use: %dbytes", gc);
+  }
+#endif
 }
