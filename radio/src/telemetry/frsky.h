@@ -69,6 +69,16 @@ enum TelemetryStates {
 extern uint8_t telemetryState;
 #endif
 
+#if defined(CPUARM)
+#define TELEMETRY_AVERAGE_COUNT 4
+class FrskyValueWithMin {
+  public:
+    uint8_t value;
+    uint8_t min;
+    uint8_t values[TELEMETRY_AVERAGE_COUNT];
+    void set(uint8_t value);
+};
+#else
 class FrskyValueWithMin {
   public:
     uint8_t value;
@@ -76,6 +86,7 @@ class FrskyValueWithMin {
     uint16_t sum;
     void set(uint8_t value);
 };
+#endif
 
 class FrskyValueWithMinMax: public FrskyValueWithMin {
   public:

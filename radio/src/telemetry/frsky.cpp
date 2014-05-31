@@ -99,6 +99,23 @@ TelemetryProtocol getTelemetryProtocol()
 
 void FrskyValueWithMin::set(uint8_t value)
 {
+#if defined(CPUARM)
+  if (this->value == 0) {
+    memset(values, value, TELEMETRY_AVERAGE_COUNT);
+    this->value = value;
+  }
+  else {
+    unsigned int sum = 0;
+    for (int i=0; i<TELEMETRY_AVERAGE_COUNT-1; i++) {
+      uint8_t tmp = values[i+1];
+      values[i] = tmp;
+      sum += tmp;
+    }
+    values[TELEMETRY_AVERAGE_COUNT-1] = value;
+    sum += value;
+    this->value = sum/TELEMETRY_AVERAGE_COUNT;
+  }
+#else
   if (this->value == 0) {
     this->value = value;
   }
@@ -109,6 +126,7 @@ void FrskyValueWithMin::set(uint8_t value)
       sum = 0;
     }
   }
+#endif
 
   if (!min || value < min) {
     min = value;
