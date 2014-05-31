@@ -56,7 +56,7 @@ def generate(str, filename):
     print filename, str
 
     if not str:
-		str = " !"	#this is so blank wav files never exist!
+        str = " !"	#this is so blank wav files never exist!
 		
     if "speak" in sys.argv:
         if "sapi" in sys.argv:
