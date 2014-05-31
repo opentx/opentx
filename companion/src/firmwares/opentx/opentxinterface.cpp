@@ -621,7 +621,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case OptrexDisplay:
       return (board==BOARD_SKY9X ? true : false);
     case HasVario:
-      return (IS_TARANIS(board) ? 28 : 31);
+      return 1;
     case HasVarioSink:
       return ((board == BOARD_GRUVIN9X || IS_ARM(board)) ? true : false);
     case HasVariants:

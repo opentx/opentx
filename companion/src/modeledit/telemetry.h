@@ -95,7 +95,6 @@ class TelemetryPanel : public ModelPanel
     void on_rxbattAlarm1DSB_editingFinished();
     void on_rxbattAlarm2DSB_editingFinished();
     void on_AltitudeGPS_ChkB_toggled(bool checked);
-    void on_varioSourceCB_currentIndexChanged(int index);
     void on_varioLimitMin_DSB_editingFinished();
     void on_varioLimitMax_DSB_editingFinished();
     void on_varioLimitCenterMin_DSB_editingFinished();
@@ -113,6 +112,7 @@ class TelemetryPanel : public ModelPanel
     void telBarUpdate();
     void populateVoltsSource();
     void populateCurrentSource();
+    void populateVarioSource();
 };
 
 #endif // TELEMETRY_H

@@ -774,38 +774,13 @@
            <number>9</number>
           </property>
           <item row="1" column="1">
-           <widget class="QComboBox" name="varioSourceCB">
+           <widget class="QUnsignedAutoComboBox" name="varioSourceCB">
             <property name="sizePolicy">
              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <item>
-             <property name="text">
-              <string>Alti</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Alti+</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Vario</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>A1</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>A2</string>
-             </property>
-            </item>
            </widget>
           </item>
           <item row="2" column="1">

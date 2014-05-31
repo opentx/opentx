@@ -589,23 +589,14 @@ void TelemetryPanel::setup()
       ui->varioLimitMin_DSB->setValue(model.frsky.varioMin-10);
       ui->varioLimitMax_DSB->setValue(model.frsky.varioMax+10);
       ui->varioLimitCenterMax_DSB->setValue((model.frsky.varioCenterMax/10.0)+0.5);
-      ui->varioSourceCB->setCurrentIndex(model.frsky.varioSource);
       if (model.frsky.varioCenterMin==-16) {
         ui->varioLimitMinOff_ChkB->setChecked(true);
         ui->varioLimitCenterMin_DSB->setValue(-2.0);
         ui->varioLimitCenterMin_DSB->setDisabled(true);
-      } else {
+      }
+      else {
         ui->varioLimitMinOff_ChkB->setChecked(false);
         ui->varioLimitCenterMin_DSB->setValue((model.frsky.varioCenterMin/10.0)-0.5);
-      }
-      int mask=1;
-      for (int i=0; i< ui->varioSourceCB->count(); i++) {
-        if (!(varioCap&mask)) {
-          QModelIndex index = ui->varioSourceCB->model()->index(i, 0);
-          QVariant v(0);
-          ui->varioSourceCB->model()->setData(index, v, Qt::UserRole - 1);
-        }
-        mask <<=1;
       }
     }
 
@@ -668,8 +659,25 @@ void TelemetryPanel::setup()
 
     populateVoltsSource();
     populateCurrentSource();
+    populateVarioSource();
 
     lock = false;
+}
+
+void TelemetryPanel::populateVarioSource()
+{
+  QUnsignedAutoComboBox * cb = ui->varioSourceCB;
+  cb->setField(&model.frsky.varioSource, this);
+  if (!IS_TARANIS(firmware->getBoard())) {
+    cb->addItem(tr("Alti"), TELEMETRY_VARIO_SOURCE_ALTI);
+    cb->addItem(tr("Alti+"), TELEMETRY_VARIO_SOURCE_ALTI_PLUS);
+  }
+  cb->addItem(tr("VSpeed"), TELEMETRY_VARIO_SOURCE_VSPEED);
+  cb->addItem(tr("A1"), TELEMETRY_VARIO_SOURCE_A1);
+  cb->addItem(tr("A2"), TELEMETRY_VARIO_SOURCE_A2);
+  if (IS_TARANIS(firmware->getBoard())) {
+    cb->addItem(tr("dTE"), TELEMETRY_VARIO_SOURCE_DTE);
+  }
 }
 
 void TelemetryPanel::populateVoltsSource()
@@ -759,12 +767,6 @@ void TelemetryPanel::on_AltitudeGPS_ChkB_toggled(bool checked)
 void TelemetryPanel::on_AltitudeToolbar_ChkB_toggled(bool checked)
 {
   model.frsky.altitudeDisplayed = checked;
-  emit modified();
-}
-
-void TelemetryPanel::on_varioSourceCB_currentIndexChanged(int index)
-{
-  model.frsky.varioSource = index;
   emit modified();
 }
 

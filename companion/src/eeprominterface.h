@@ -858,6 +858,15 @@ class FrSkyScreenData {
     void clear() { memset(this, 0, sizeof(FrSkyScreenData)); }
 };
 
+enum TelemetryVarioSources {
+  TELEMETRY_VARIO_SOURCE_ALTI,
+  TELEMETRY_VARIO_SOURCE_ALTI_PLUS,
+  TELEMETRY_VARIO_SOURCE_VSPEED,
+  TELEMETRY_VARIO_SOURCE_A1,
+  TELEMETRY_VARIO_SOURCE_A2,
+  TELEMETRY_VARIO_SOURCE_DTE,
+};
+
 enum TelemetryVoltsSources {
   TELEMETRY_VOLTS_SOURCE_RXBATT,
   TELEMETRY_VOLTS_SOURCE_A1,

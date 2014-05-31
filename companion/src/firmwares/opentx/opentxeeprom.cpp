@@ -2177,6 +2177,25 @@ class RSSIConversionTable: public ConversionTable
     }
 };
 
+class TelemetryVarioSourceConversionTable: public ConversionTable
+{
+  public:
+    TelemetryVarioSourceConversionTable(BoardEnum board, unsigned int version)
+    {
+      int val = 0;
+      if (!IS_TARANIS(board)) {
+        addConversion(TELEMETRY_VARIO_SOURCE_ALTI, val++);
+        addConversion(TELEMETRY_VARIO_SOURCE_ALTI_PLUS, val++);
+      }
+      addConversion(TELEMETRY_VARIO_SOURCE_VSPEED, val++);
+      addConversion(TELEMETRY_VARIO_SOURCE_A1, val++);
+      addConversion(TELEMETRY_VARIO_SOURCE_A2, val++);
+      if (IS_TARANIS(board)) {
+        addConversion(TELEMETRY_VARIO_SOURCE_DTE, val++);
+      }
+    }
+};
+
 class TelemetryVoltsSourceConversionTable: public ConversionTable
 {
   public:
@@ -2213,21 +2232,11 @@ class TelemetryCurrentSourceConversionTable: public ConversionTable
     }
 };
 
-class VarioConversionTable: public ConversionTable
-{
-  public:
-    VarioConversionTable()
-    {
-      addConversion(2, 0); // Vario
-      addConversion(3, 1); // A1
-      addConversion(4, 2); // A2
-    }
-};
-
 class FrskyField: public StructField {
   public:
     FrskyField(FrSkyData & frsky, BoardEnum board, unsigned int version):
       StructField("FrSky"),
+      telemetryVarioSourceConversionTable(board, version),
       telemetryVoltsSourceConversionTable(board, version),
       telemetryCurrentSourceConversionTable(board, version)
     {
@@ -2267,10 +2276,8 @@ class FrskyField: public StructField {
         for (int i=0; i<3; i++) {
           Append(new FrskyScreenField(frsky.screens[i], board, version));
         }
-        if (IS_TARANIS(board))
-          Append(new ConversionField< UnsignedField<8> >(frsky.varioSource, &varioConversionTable, "Vario Source"));
-        else
-          Append(new UnsignedField<8>(frsky.varioSource));
+
+        Append(new ConversionField< UnsignedField<8> >(frsky.varioSource, &telemetryVarioSourceConversionTable, "Vario Source"));
         Append(new SignedField<8>(frsky.varioCenterMax));
         Append(new SignedField<8>(frsky.varioCenterMin));
         Append(new SignedField<8>(frsky.varioMin));
@@ -2325,7 +2332,7 @@ class FrskyField: public StructField {
 
   protected:
     RSSIConversionTable rssiConversionTable[2];
-    VarioConversionTable varioConversionTable;
+    TelemetryVarioSourceConversionTable telemetryVarioSourceConversionTable;
     TelemetryVoltsSourceConversionTable telemetryVoltsSourceConversionTable;
     TelemetryCurrentSourceConversionTable telemetryCurrentSourceConversionTable;
 };
