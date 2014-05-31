@@ -235,7 +235,7 @@
   #define TR_PLAY_VALUE    "[LeggiValore]\0"
 #endif
 
-#define TR_CFN_BG_MUSIC    "BgMusic\0     ""BgMusic ||"
+#define TR_CFN_BG_MUSIC    "BgMusic\0     ""BgMusic ||\0  "
 
 #if defined(SDCARD)
   #define TR_SDCLOGS       "SDCARD Logs\0 "
@@ -244,18 +244,18 @@
 #endif
 
 #ifdef GVARS
-  #define TR_ADJUST_GVAR  "Regola \0     "
+  #define TR_ADJUST_GVAR   "Regola \0     "
 #else
-  #define TR_ADJUST_GVAR  "[RegolaGV]\0  "
+  #define TR_ADJUST_GVAR   "[RegolaGV]\0  "
 #endif
 
 #ifdef DEBUG
-  #define TR_CFN_TEST     "Test\0        "
+  #define TR_CFN_TEST      "Test\0        "
 #else
   #define TR_CFN_TEST
 #endif
 
-#define TR_CFN_RESERVE    "[riserva]\0"
+#define TR_CFN_RESERVE     "[riserva]\0"
 
 #if defined(CPUARM)
   #define TR_VFSWFUNC      "Blocco\0      ""Maestro \0    ""Trim Instant ""Azzera\0      ""Set \0        " TR_ADJUST_GVAR "Volume\0      " TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_RESERVE TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Retroillum.\0 " TR_CFN_TEST
