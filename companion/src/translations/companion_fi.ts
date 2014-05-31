@@ -85,7 +85,7 @@
     <message>
         <location filename="../apppreferencesdialog.ui" line="88"/>
         <source>Build Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Valinnat</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="98"/>
@@ -179,7 +179,7 @@ Tila 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="259"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Channel order&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Defines the order of the default mixes created on a new model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Kanava järjestys&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Määrittelee perus järjestyksen miksereille, uudelle mallille.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="266"/>
@@ -334,7 +334,7 @@ Tila 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="599"/>
         <source>Other Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Muut asetukset</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="606"/>
@@ -1224,12 +1224,12 @@ Voi olla eri kun firmwaren kieli</translation>
     <message>
         <location filename="../modeledit/curves.ui" line="68"/>
         <source>Fixed X</source>
-        <translation type="unfinished"></translation>
+        <translation>Korj X</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="73"/>
         <source>Custom X</source>
-        <translation type="unfinished"></translation>
+        <translation>Oma X</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="82"/>
@@ -1679,7 +1679,7 @@ Jos tyhjä tulon katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../modeledit/expodialog.ui" line="388"/>
         <source>Curve applied to the source.</source>
-        <translation type="unfinished"></translation>
+        <translation>Käyrä liitetty lähteeseen.</translation>
     </message>
     <message>
         <source>The curve used by the input</source>
@@ -1840,7 +1840,7 @@ Voi olla eri kun firmwaren kieli</translation>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="223"/>
         <source>Latest Download</source>
-        <translation type="unfinished"></translation>
+        <translation>Viimeisin lataus</translation>
     </message>
 </context>
 <context>
@@ -1973,7 +1973,7 @@ Voi olla eri kun firmwaren kieli</translation>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="164"/>
         <source>Popup enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Popupit sallittu</translation>
     </message>
 </context>
 <context>
@@ -3012,17 +3012,17 @@ Hyväksytty arvo: 5v - 10v</translation>
     <message>
         <location filename="../generaledit.ui" line="1236"/>
         <source>Backlight color</source>
-        <translation type="unfinished"></translation>
+        <translation>Taustavalon väri</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1322"/>
         <source>Backlight Switch</source>
-        <translation type="unfinished"></translation>
+        <translation>Taustavalon kytkin</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1715"/>
         <source>Stick reverse (order as above)</source>
-        <translation type="unfinished"></translation>
+        <translation>Käänteiset tikut (Järj yllä)</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1728"/>
@@ -3032,7 +3032,7 @@ Hyväksytty arvo: 5v - 10v</translation>
     <message>
         <location filename="../generaledit.ui" line="1834"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Channel order&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Defines the order of the default mixes created on a new model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Kanava järjestys&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Määrittelee perus järjestyksen miksereille, uudelle mallille.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2027"/>
@@ -4518,7 +4518,7 @@ Haluatko ladata sen nyt ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1940"/>
         <source>New Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Uusi radio</translation>
     </message>
     <message>
         <source>Hebrew</source>
@@ -5675,7 +5675,7 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../modeledit/mixes.cpp" line="481"/>
         <source>&amp;Toggle highlight</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nappula määritys</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="481"/>
@@ -6190,17 +6190,17 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="844"/>
         <source>Throttle Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaasun katkaisu</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="845"/>
         <source>Throttle Timer</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaasun ajastin</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="846"/>
         <source>Flight Timer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lennon ajastin</translation>
     </message>
 </context>
 <context>
@@ -6590,7 +6590,7 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../printdialog.cpp" line="711"/>
         <source>Alarms</source>
-        <translation type="unfinished"></translation>
+        <translation>Varoitukset</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="712"/>
@@ -7317,7 +7317,7 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="276"/>
         <source>GPS Time</source>
-        <translation type="unfinished"></translation>
+        <translation>GPS aika</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="280"/>
@@ -7875,12 +7875,12 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="522"/>
         <source>Edge(%1, [%2:%3])</source>
-        <translation type="unfinished"></translation>
+        <translation>Reuna(%1, [%2:%3])</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="525"/>
         <source>Sticky(%1, %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Jähmeä(%1, %2)</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="528"/>
@@ -8513,7 +8513,7 @@ eepromin koko on 4096, mutta vain ensimmäiset 2048 on käytössä</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1006"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1073"/>
         <source>Add support for reversing stick inputs (e.g. needed for FrSky gimbals)</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää &quot;apu&quot; käänteisiin tikkujen tuloon (tarve esim. frsky tikut)</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1011"/>
@@ -8604,13 +8604,13 @@ eepromin koko on 4096, mutta vain ensimmäiset 2048 on käytössä</translation>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1213"/>
         <source>Haptic module installed</source>
-        <translation type="unfinished"></translation>
+        <translation>Haptik moduuli asennettu</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1214"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1224"/>
         <source>Support for Lua model scripts</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuki LUA mallien skripteille</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1221"/>
@@ -9019,7 +9019,9 @@ OpenTX/Compantion tiimi.</translation>
         <source>Thank you for upgrading to OpenTX 2.0. This is a major upgrade that adds and modifies a lot of things, so please make sure that you read release notes carefully to learn about the changes, and thoroughly check each of your models for proper function.
 
 The OpenTX Team.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiitos että päivitit OpenTX 2.0:llaan. Tämä on suuri päivitys jolla saadaan radioon paljon ominaisuuksia, joten lueppa ohjeet tarkaan läpi ja sisäistä muutokset, sekä muista tarkistaa että omat mallit toimii varmasti oikein.
+
+OpenTX tiiimi.</translation>
     </message>
 </context>
 <context>
@@ -10280,12 +10282,12 @@ Jos tämä valittuna, kaasu toimii käänteisesti. Tyhjäkäynti on ylhäällä,
     <message>
         <location filename="../wizarddialog.cpp" line="47"/>
         <source>Model Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Malli valinnat</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="47"/>
         <source>Select additional options</source>
-        <translation type="unfinished"></translation>
+        <translation>Valitse valinnaiset valinnat</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="48"/>
@@ -11500,7 +11502,7 @@ m2560 joka on v4.1 lähettimessä</translation>
     <message>
         <location filename="../burndialog.cpp" line="356"/>
         <source>Profile image %1 is invalid.</source>
-        <translation type="unfinished"></translation>
+        <translation>Profiili kuva %1 on väärä.</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="372"/>
