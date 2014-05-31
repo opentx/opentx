@@ -133,39 +133,40 @@ BOOL KillProcessByName(char *szProcessToKill){
 
 void avrOutputDialog::doCopy() 
 {
-  hasErrors=false;
-  char buf[READBUF];
-  char * pointer=buf;
+  char buf[BLKSIZE];
+
   QFile source(sourceFile);
-  int blocks=(source.size()/BLKSIZE);
+  int blocks = (source.size() + BLKSIZE - 1) / BLKSIZE;
   ui->progressBar->setMaximum(blocks-1);
-  if (!source.open(QIODevice::ReadOnly)) {
-    QMessageBox::warning(this, tr("Error"),tr("Cannot open source file"));
-    hasErrors=true;
-  }
-  else {
-    source.read(buf,READBUF);
-    source.close();
+
+  if (source.open(QIODevice::ReadOnly)) {
     QFile dest(destFile);
-    if (!dest.open(QIODevice::WriteOnly)) {
-      QMessageBox::warning(this, tr("Error"),tr("Cannot write destination"));
-      hasErrors=true;
-    } else {
-      addText(tr("Writing file: "));
-      for (int i=0;i<blocks;i++) {
-        if (dest.write(pointer,BLKSIZE)!=BLKSIZE) {
-          hasErrors=true;
+    if (dest.open(QIODevice::WriteOnly)) {
+      for (int i=0; i<blocks; i++) {
+        addText(tr("Writing file: "));
+        int read = source.read(buf, BLKSIZE);
+        if (dest.write(buf, read) == read) {
+          dest.flush();
+          ui->progressBar->setValue(i);
+          if ((i%2) != 0)
+            addText("#");
+        }
+        else {
+          QMessageBox::warning(this, tr("Error"), tr("Write error"));
           break;
-        };
-        dest.flush();
-        pointer+=BLKSIZE;
-        ui->progressBar->setValue(i);
-        if ((i%2)!=0)
-          addText("#");
+        }
       }
       dest.close();
     }
+    else {
+      QMessageBox::warning(this, tr("Error"),tr("Cannot write destination"));
+    }
   }
+  else {
+    QMessageBox::warning(this, tr("Error"),tr("Cannot open source file"));
+  }
+
+  source.close();
   doFinished(0);
 }
 

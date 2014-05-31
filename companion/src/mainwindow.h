@@ -183,7 +183,7 @@ class MainWindow : public QMainWindow
     void updateIconThemeActions();
 
     int getFileType(const QString &fullFileName);
-    QString FindTaranisPath();
+    QString FindMassstoragePath(QString filename);
     QString Theme;
     QString ISize;
     QString strippedName(const QString &fullFileName);
@@ -202,6 +202,11 @@ class MainWindow : public QMainWindow
 
     bool convertEEPROM(QString backupFile, QString restoreFile, QString flashFile);
     bool isValidEEPROM(QString eepromfile);
+
+    bool readEepromFromRadio(const QString filename, const QString message);
+    bool writeEepromToRadio(const QString filename, const QString message);
+    bool readFirmwareFromRadio(const QString filename);
+    bool writeFirmwareToRadio(const QString filename);
 
     QMdiArea *mdiArea;
     QSignalMapper *windowMapper;
