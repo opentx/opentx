@@ -1,4 +1,4 @@
-/*   German checked 25.05.2014 Test 015 kleine Änderungen 
+/*   German checked 30.05.2014 Test 016 kleine Änderungen 
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bernet Andre <bernet.andre@gmail.com>
@@ -511,11 +511,11 @@
 #define TR_CHECKTRIMS          CENTER"\006Trims\012Prüfen"
 #define OFS_CHECKTRIMS         CENTER_OFS+(9*FW)
 #define TR_SWASHTYPE           TR("Typ Taumelsch","Typ Taumelscheibe")
-#define TR_COLLECTIVE          TR("Kollekt.Pitch","Kollekt. Pitch Kanal")
-#define TR_SWASHRING           TR("Ring. Begrenz","Ring   Taumelscheibe")
-#define TR_ELEDIRECTION        TR("Nick Richtung","Nick   Servo Richtung")
-#define TR_AILDIRECTION        TR("Roll Richtung","Roll   Servo Richtung") 
-#define TR_COLDIRECTION        TR("Pit. Richtung","Pitch Servo Richtung") 
+#define TR_COLLECTIVE          TR("Kollekt. Pitch","Kollekt. Pitch Kanal")
+#define TR_SWASHRING           TR("Ring   Begrenz","Ring   Taumelscheibe")
+#define TR_ELEDIRECTION        TR("Nick   Richtung","Nick   Servo Richtung")
+#define TR_AILDIRECTION        TR("Roll   Richtung","Roll   Servo Richtung") 
+#define TR_COLDIRECTION        TR("Pitch Richtung","Pitch Servo Richtung") 
 #define TR_MODE                INDENT"Modus"
 #define TR_NOFREEEXPO          "Expos voll!"
 #define TR_NOFREEMIXER         "Mischer voll!"
@@ -559,7 +559,7 @@
 #define TR_ALARMS_LABEL        "----Alarm wenn---"
 #define TR_BATTERY_RANGE       TR("Akku Bereich","Akku Spg-Bereich") // Symbol Akku Ladezustand
 #define TR_BATTERYWARNING      INDENT"Akku Spg kleiner"
-#define TR_INACTIVITYALARM     INDENT"Inaktivität nach"
+#define TR_INACTIVITYALARM     TR(INDENT"Inaktiv warnen",INDENT"Inaktivität nach")
 #define TR_MEMORYWARNING       INDENT"Speicher voll"
 #define TR_ALARMWARNING        INDENT"Töne ganz aus ?"
 #define TR_RENAVIG             "Drehgeb. Navig."
@@ -573,7 +573,7 @@
 #define TR_BLONBRIGHTNESS      INDENT"An Helligkeit"
 #define TR_BLOFFBRIGHTNESS     INDENT"Aus Helligkeit"
 #define TR_BLCOLOR             INDENT "Farbe"
-#define TR_SPLASHSCREEN        "Startbild Ein für"
+#define TR_SPLASHSCREEN        TR("Startbild Ein","Startbild Ein für")
 #define TR_THROTTLEWARNING     TR("Gas Alarm", INDENT "Gas Alarm")
 #define TR_SWITCHWARNING       TR("Sch. Alarm", INDENT "Schalter Alarm")
 #define TR_POTWARNING          TR("Pot Warn.", INDENT "Poti Warnung")
