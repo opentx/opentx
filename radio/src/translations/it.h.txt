@@ -83,7 +83,7 @@
 #define TR_UART3MODES    "OFF\0           ""S-Port Mirror\0 ""Debug\0         "
 
 #define LEN_POTTYPES     "\017"
-#define TR_POTTYPES      "None\0          ""Pot\0           ""Switch Multipos"
+#define TR_POTTYPES      "None\0          ""Pot\0           ""Inter. Multipos"
 
 #define LEN_DATETIME     "\005"
 #define TR_DATETIME      "DATA:""ORA :"
@@ -175,13 +175,13 @@
   #define TR_CSWTIMER          "Timer"
   #define TR_CSWSTICKY         "Stcky"
   #define TR_CSWRANGE          "Campo"
-  #define TR_CSWSTAY           "Front\0"
+  #define TR_CSWSTAY           "Edge\0"
 #else
   #define TR_CSWTIMER          "Tim\0 "
   #define TR_CSWSTICKY         "Glue\0"
   #if defined(CPUARM)
     #define TR_CSWRANGE        "Rnge\0"
-    #define TR_CSWSTAY         "Frnt\0"
+    #define TR_CSWSTAY         "Edge\0"
   #else
     #define TR_CSWRANGE
     #define TR_CSWSTAY
@@ -330,7 +330,7 @@
   #define TR_VTELEMUNIT_METR   "v\0 ""A\0 ""m/s""-\0 ""kmh""m\0 ""@\0 ""%\0 ""mA\0""mAh""W\0 "
   #define LEN_VTELEMUNIT_IMP   "\003"
   #define TR_VTELEMUNIT_IMP    "v\0 ""A\0 ""m/s""-\0 ""kts""ft\0""@\0 ""%\0 ""mA\0""mAh""W\0 "
-#else
+#elseà
   #if defined(IMPERIAL_UNITS)
     #define LENGTH_UNIT        LENGTH_UNIT_IMP
     #define SPEED_UNIT         SPEED_UNIT_IMP
@@ -451,7 +451,7 @@
 #define TR_VTRAINERMODES       "Maestro""Allievo"
 
 #define LEN_VFAILSAFE          "\012"
-#define TR_VFAILSAFE           "Mantieni\0 ""Personali\0""No impulsi""Receiver\0 "
+#define TR_VFAILSAFE           "Mantieni\0 ""Personali\0""No impulsi""Ricevente\0 "
 
 #if defined(MAVLINK)
   #define LEN_MAVLINK_BAUDS    "\006"
@@ -503,7 +503,7 @@
 #define TR_PROTO               TR(INDENT "Proto", INDENT "Protocollo")
 #define TR_PPMFRAME            TR("PPM frame", INDENT "PPM frame")
 #define TR_MS                  "ms"
-#define TR_SWITCH              "Switch"
+#define TR_SWITCH              "Inter."
 #define TR_TRIMS               "Trims"
 #define TR_FADEIN              "Diss.In"
 #define TR_FADEOUT             "Diss.Out"
@@ -649,8 +649,8 @@
 
 #define TR_MENUCURVES          "CURVE"
 #define TR_MENUCURVE           "CURVA"
-#define TR_MENULOGICALSWITCH    "SWITCH PERSON."
-#define TR_MENULOGICALSWITCHES  TR("SWITCH PERSON.","SWITCH PERSONALI")
+#define TR_MENULOGICALSWITCH    "INTER. PERSON."
+#define TR_MENULOGICALSWITCHES  TR("INTER. PERSON.","INTER. PERSONALI")
 #define TR_MENUCUSTOMFUNC      TR("FUNZ. PERSON.","FUNZIONI PERSONALI")
 #define TR_MENUCUSTOMSCRIPTS   "SCRIPTS PERSONALI"
 #define TR_MENUCUSTOMSCRIPT    "SCRIPT PERSONALE"
@@ -689,7 +689,7 @@
 #define TR_EEPROM_CONVERTING   "Conversione EEPROM"
 #define TR_THROTTLEWARN        "MOTORE"
 #define TR_ALARMSWARN          "ALLARMI"
-#define TR_SWITCHWARN          "SWITCH"
+#define TR_SWITCHWARN          "INTER."
 #define TR_INVERT_THR          "Inverti Thr?"
 #define TR_SPEAKER_VOLUME      "Volume Audio"
 #define TR_LCD                 "LCD"
@@ -767,7 +767,7 @@
 #define TR_RESET_TELEMETRY     "Azzera Telemetria"
 #define TR_STATISTICS          "Statistiche"
 #define TR_ABOUT_US            "Info su"
-#define TR_AND_SWITCH          "AND Switch"
+#define TR_AND_SWITCH          "Inter. AND"
 #define TR_CF                  "CF"
 #define TR_SPEAKER             INDENT"Speaker"
 #define TR_BUZZER              INDENT"Buzzer"
@@ -791,7 +791,7 @@
 #define TR_CLEAR               "Cancella"
 #define TR_RESET               "Azzera"
 #define TR_RESET_SUBMENU       "Azzera..."
-#define TR_COUNT               "Count"
+#define TR_COUNT               "Tipo"
 #define TR_PT                  "pt"
 #define TR_PTS                 "pti"
 #define TR_SMOOTH              "Smorza"
@@ -833,9 +833,9 @@
 #endif
 
 // Taranis column headers
-#define TR_PHASES_HEADERS      { " Nome ", " Switch ", " Trim Deriva ", " Trim Elevator ", " Trim Motore ", " Trim Alettoni ", " Ritardo In ", " Ritardo Out " }
+#define TR_PHASES_HEADERS      { " Nome ", " Inter. ", " Trim Deriva ", " Trim Elevator ", " Trim Motore ", " Trim Alettoni ", " Disolv. In ", " Dissolv. Out " }
 #define TR_LIMITS_HEADERS      { " Nome ", " Offset ", " Min ", " Max ", " Direzione ", " Curve ", " Centro PPM ", " Simmetria " }
-#define TR_CSW_HEADERS         { " Funzione ", " V1 ", " V2 ", " V2 ", " AND Switch ", " Durata ", " Ritardo " }
+#define TR_CSW_HEADERS         { " Funzione ", " V1 ", " V2 ", " V2 ", " Switch AND ", " Durata ", " Ritardo " }
 
 //Taranis About screen
 #define TR_ABOUTUS             "Info su"
