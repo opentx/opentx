@@ -157,6 +157,10 @@ static int luaGetValue(lua_State *L)
       lua_pushnumber(L, double(frskyData.hub.baroAltitude)/100);
       return 1;
     }
+    else if (!strcmp(what, "vario")) {
+      lua_pushnumber(L, double(frskyData.hub.varioSpeed)/100);
+      return 1;
+    }
     else if (frskyData.hub.gpsFix) {
       if (!strcmp(what, "latitude")) {
         lua_pushnumber(L, gpsToDouble(frskyData.hub.gpsLatitudeNS=='S', frskyData.hub.gpsLatitude_bp, frskyData.hub.gpsLatitude_ap));
