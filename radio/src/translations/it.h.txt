@@ -62,7 +62,7 @@
 #define TR_NCHANNELS     "\0014CH\0016CH\0018CH10CH12CH14CH16CH"
 
 #define LEN_VBEEPMODE    TR("\005", "\010")
-#define TR_VBEEPMODE     TR("Silen""Avvis""Notst""Tutti","Silenti ""Avvisi\0 ""No Tasti""Tutti\0  ")
+#define TR_VBEEPMODE     TR("Silen""Avvis""Notst""Tutti","Silente ""Avvisi\0 ""No Tasti""Tutti\0  ")
 
 #define LEN_VBEEPLEN     "\005"
 #define TR_VBEEPLEN      "+Cort""Corta""Media""Lunga""+Lung"
@@ -223,16 +223,16 @@
 
 #if defined(VOICE)
   #if defined(PCBSKY9X)
-    #define TR_PLAY_TRACK  "Brano\0       "
+    #define TR_PLAY_TRACK  "Suona\0       "
   #else
-    #define TR_PLAY_TRACK  "Brano\0       "
+    #define TR_PLAY_TRACK  "SuonaTraccia\0"
   #endif
   #define TR_PLAY_BOTH     "Play Both\0   "
   #define TR_PLAY_VALUE    "LeggiValore\0 "
 #else
   #define TR_PLAY_TRACK    "[Brano]\0     "
   #define TR_PLAY_BOTH     "[Play Both]\0 "
-  #define TR_PLAY_VALUE    "[LeggiValore]\0"
+  #define TR_PLAY_VALUE    "[LeggiValore]"
 #endif
 
 #define TR_CFN_BG_MUSIC    "BgMusic\0     ""BgMusic ||\0  "
@@ -255,7 +255,7 @@
   #define TR_CFN_TEST
 #endif
 
-#define TR_CFN_RESERVE     "[riserva]\0"
+#define TR_CFN_RESERVE     "[riserva]   \0"
 
 #if defined(CPUARM)
   #define TR_VFSWFUNC      "Blocco\0      ""Maestro \0    ""Trim Instant ""Azzera\0      ""Set \0        " TR_ADJUST_GVAR "Volume\0      " TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_RESERVE TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Retroillum.\0 " TR_CFN_TEST
@@ -330,7 +330,7 @@
   #define TR_VTELEMUNIT_METR   "v\0 ""A\0 ""m/s""-\0 ""kmh""m\0 ""@\0 ""%\0 ""mA\0""mAh""W\0 "
   #define LEN_VTELEMUNIT_IMP   "\003"
   #define TR_VTELEMUNIT_IMP    "v\0 ""A\0 ""m/s""-\0 ""kts""ft\0""@\0 ""%\0 ""mA\0""mAh""W\0 "
-#elseà
+#else
   #if defined(IMPERIAL_UNITS)
     #define LENGTH_UNIT        LENGTH_UNIT_IMP
     #define SPEED_UNIT         SPEED_UNIT_IMP
@@ -379,7 +379,7 @@
 
 #define LEN2_VTEMPLATES  13
 #define LEN_VTEMPLATES   "\015"
-#define TR_VTEMPLATES    "Canc. Mixes\0\0""Simple 4-CH \0""Sticky-T-Cut\0""V-Tail      \0""Elevon\\Delta\0""eCCPM       \0""Heli Setup  \0""Servo Test  \0"
+#define TR_VTEMPLATES    "Canc. Mixes\0\0""Semplice 4CH\0""Sticky-T-Cut\0""V-Tail      \0""Elevoni\Delta\0""eCCPM       \0""Heli Setup  \0""Test Servo  \0"
 
 #define LEN_VSWASHTYPE   "\004"
 #define TR_VSWASHTYPE    "--- ""120 ""120X""140 ""90\0"
@@ -451,7 +451,7 @@
 #define TR_VTRAINERMODES       "Maestro""Allievo"
 
 #define LEN_VFAILSAFE          "\012"
-#define TR_VFAILSAFE           "Mantieni\0 ""Personali\0""No impulsi\0""Ricevente\0"
+#define TR_VFAILSAFE           "Mantieni\0  ""Personali\0 ""No impulsi\0""Ricevente\0 "
 
 #if defined(MAVLINK)
   #define LEN_MAVLINK_BAUDS    "\006"
@@ -496,10 +496,10 @@
 #define TR_TIMER               TR("Timer","Timer ")
 #define TR_ELIMITS             TR("Limiti.E","Limiti Estesi")
 #define TR_ETRIMS              TR("Trim Ext","Trim Estesi")
-#define TR_TRIMINC             "Trim Step"
+#define TR_TRIMINC             "Passo Trim"
 #define TR_TTRACE              TR("T-Source", INDENT "Sorgente Motore")
 #define TR_TTRIM               TR("T-Trim", INDENT "Trim Motore")
-#define TR_BEEPCTR             TR("Ctr Beep","Center Beep")
+#define TR_BEEPCTR             TR("Ctr Beep","Beep al centro")
 #define TR_PROTO               TR(INDENT "Proto", INDENT "Protocollo")
 #define TR_PPMFRAME            TR("PPM frame", INDENT "PPM frame")
 #define TR_MS                  "ms"
@@ -507,7 +507,7 @@
 #define TR_TRIMS               "Trims"
 #define TR_FADEIN              "Diss.In"
 #define TR_FADEOUT             "Diss.Out"
-#define TR_DEFAULT             "(default)"
+#define TR_DEFAULT             "(Predefinita)"
 #define TR_CHECKTRIMS          "\003Contr.\004Trim"
 #define OFS_CHECKTRIMS         (9*FW)
 #define TR_SWASHTYPE           "Tipo Ciclico"
@@ -543,7 +543,7 @@
 #define TR_CV                  "CV"
 #define TR_GV                  "GV"
 #define TR_ACHANNEL            "A\002ingresso"
-#define TR_RANGE               INDENT"Interv."
+#define TR_RANGE               INDENT"Intervallo"
 #define TR_BAR                 "Barra"
 #define TR_ALARM               INDENT"Allarme"
 #define TR_USRDATA             "Dati"
@@ -561,7 +561,7 @@
 #define TR_BATTERYWARNING      INDENT"Avviso batteria"
 #define TR_INACTIVITYALARM     INDENT"Inattivita'"
 #define TR_MEMORYWARNING       INDENT"Avviso memoria"
-#define TR_ALARMWARNING        INDENT"Spento"
+#define TR_ALARMWARNING        INDENT"Spegni suono"
 #define TR_RENAVIG             "Navig RotEnc "
 #define TR_THROTTLE_LABEL      "Motore"
 #define TR_THROTTLEREVERSE     TR("Thr inv.", INDENT "Motore Inverso")
@@ -572,7 +572,7 @@
 #define TR_BLDELAY             INDENT"Durata"
 #define TR_BLONBRIGHTNESS      TR(INDENT"Lumin. ON",INDENT"Luminosità ON")
 #define TR_BLOFFBRIGHTNESS     TR(INDENT"Lumin. OFF",INDENT"Luminosità OFF")
-#define TR_BLCOLOR             INDENT "Color"
+#define TR_BLCOLOR             INDENT "Colore"
 #define TR_SPLASHSCREEN        TR("Schermo avvio", "Schermata di avvio")
 #define TR_THROTTLEWARNING     TR("All. Thr", INDENT "Allarme Motore")
 #define TR_SWITCHWARNING       TR("Avv. Int.", INDENT "Avviso Interr.")
@@ -631,10 +631,10 @@
 #define TR_MENUCALIBRATION     "CALIBRAZIONE"
 #define TR_TRIMS2OFFSETS       "\006Trim  => Offset "
 #define TR_MENUMODELSEL        "MODELLI"
-#define TR_MENUSETUP           "SETUP"
+#define TR_MENUSETUP           "CONFIGURA"
 #define TR_MENUFLIGHTPHASE     "FASE DI VOLO"
 #define TR_MENUFLIGHTPHASES    "FASI DI VOLO"
-#define TR_MENUHELISETUP       "SETUP  ELI"
+#define TR_MENUHELISETUP       "CONFIGURA ELI"
 
 // Alignment
 
@@ -666,8 +666,8 @@
 #define TR_LONGITUDE           "Longitud."
 #define TR_GPSCOORD            "Coord. GPS"
 #define TR_VARIO               "Vario"
-#define TR_PITCH_AT_ZERO       INDENT "Pitch a Zero"
-#define TR_PITCH_AT_MAX        INDENT "Pitch al Max"
+#define TR_PITCH_AT_ZERO       INDENT "Tono a Zero"
+#define TR_PITCH_AT_MAX        INDENT "Tono al Max"
 #define TR_REPEAT_AT_ZERO      INDENT "Ripeti a Zero"
 #define TR_SHUTDOWN            "ARRESTO.."
 #define TR_BATT_CALIB          "Calibra batt."
@@ -679,7 +679,7 @@
 #define TR_COPY_MODEL          "Copia Modello"
 #define TR_MOVE_MODEL          "Sposta Modello"
 #define TR_BACKUP_MODEL        "Salva Modello"
-#define TR_DELETE_MODEL        TR("Canc. Modello","Cancella Modello") // TODO merged into DELETEMODEL?
+#define TR_DELETE_MODEL        TR("Elim. Modello","Elimina Modello") // TODO merged into DELETEMODEL?
 #define TR_RESTORE_MODEL       TR("Ripr. Modello","Ripristina Modello")
 #define TR_SDCARD_ERROR        "Errore SD"
 #define TR_NO_SDCARD           "No SDCARD"
@@ -689,7 +689,7 @@
 #define TR_EEPROM_CONVERTING   "Conversione EEPROM"
 #define TR_THROTTLEWARN        "MOTORE"
 #define TR_ALARMSWARN          "ALLARMI"
-#define TR_SWITCHWARN          "INTER."
+#define TR_SWITCHWARN          "INTERRUTTORI"
 #define TR_INVERT_THR          "Inverti Thr?"
 #define TR_SPEAKER_VOLUME      "Volume Audio"
 #define TR_LCD                 "LCD"
@@ -713,7 +713,7 @@
 #define TR_NO_BITMAPS_ON_SD    "No Immag. su SD"
 #define TR_NO_SCRIPTS_ON_SD    "No Scripts su SD"
 #define TR_PLAY_FILE           "Suona"
-#define TR_DELETE_FILE         "Cancella"
+#define TR_DELETE_FILE         "Elimina"
 #define TR_COPY_FILE           "Copia"
 #define TR_RENAME_FILE         "Rinomomina"
 #define TR_ASSIGN_BITMAP       "Assegna Immagine"
@@ -734,7 +734,7 @@
 #define TR_SD_SIZE             "Dimens:"
 #define TR_TYPE                "Tipo"
 #define TR_GLOBAL_VARS         "Variabili Globali"
-#define TR_GLOBAL_V            "GLOBAL V."
+#define TR_GLOBAL_V            "V.GLOBALI"
 #define TR_GLOBAL_VAR          "Variabile globale"
 #define TR_MENUGLOBALVARS      "VARIABILI GLOBALI"
 #define TR_OWN                 "Fase"
@@ -757,9 +757,9 @@
 #define TR_INSERT_BEFORE       "Inserisci prima"
 #define TR_INSERT_AFTER        "Inserisci dopo"
 #define TR_COPY                "Copia"
-#define TR_MOVE                "Muovi"
+#define TR_MOVE                "Sposta"
 #define TR_PASTE               "Incolla"
-#define TR_DELETE              "Cancella"
+#define TR_DELETE              "Elimina"
 #define TR_INSERT              TR("Inser.","Inserisci")
 #define TR_RESET_FLIGHT        "Azzera volo"
 #define TR_RESET_TIMER1        "Azzera Timer1"
@@ -791,7 +791,7 @@
 #define TR_CLEAR               "Cancella"
 #define TR_RESET               "Azzera"
 #define TR_RESET_SUBMENU       "Azzera..."
-#define TR_COUNT               "Tipo"
+#define TR_COUNT               "Punti"
 #define TR_PT                  "pt"
 #define TR_PTS                 "pti"
 #define TR_SMOOTH              "Smorza"
@@ -835,7 +835,7 @@
 // Taranis column headers
 #define TR_PHASES_HEADERS      { " Nome ", " Inter. ", " Trim Deriva ", " Trim Elevator ", " Trim Motore ", " Trim Alettoni ", " Disolv. In ", " Dissolv. Out " }
 #define TR_LIMITS_HEADERS      { " Nome ", " Offset ", " Min ", " Max ", " Direzione ", " Curve ", " Centro PPM ", " Simmetria " }
-#define TR_CSW_HEADERS         { " Funzione ", " V1 ", " V2 ", " V2 ", " Switch AND ", " Durata ", " Ritardo " }
+#define TR_CSW_HEADERS         { "   Funzione ", "   V1 ", "   V2 ", "   V2 ", "   Inter. AND ", "   Durata ", "   Ritardo " }
 
 //Taranis About screen
 #define TR_ABOUTUS             "Info su"
