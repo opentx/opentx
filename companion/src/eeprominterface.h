@@ -1102,6 +1102,7 @@ enum Capability {
  ModelTrainerEnable,
  Timer2ThrTrig,
  HasExpoNames,
+ HasNoExpo,
  HasMixerNames,
  HasChNames,
  HasCvNames,

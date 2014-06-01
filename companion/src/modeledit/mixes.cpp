@@ -195,7 +195,7 @@ QString MixesPanel::getMixerText(int dest, bool * new_ch)
       str += " " + Qt::escape(tr("NoTrim"));
     }
 
-    if (md->noExpo)      str += " " + Qt::escape(tr("No DR/Expo"));
+    if (firmware->getCapability(HasNoExpo) && md->noExpo) str += " " + Qt::escape(tr("No DR/Expo"));
     if (md->sOffset)     str += " " + Qt::escape(tr("Offset(%1)").arg(getGVarString(md->sOffset)));
     if (md->curve.value) str += " " + Qt::escape(md->curve.toString());
 

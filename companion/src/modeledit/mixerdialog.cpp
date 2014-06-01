@@ -30,7 +30,7 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, G
 
     ui->MixDR_CB->setChecked(md->noExpo==0);
 
-    if (firmware->getCapability(VirtualInputs) || !firmware->getCapability(MixesWithoutExpo)) {
+    if (!firmware->getCapability(HasNoExpo)) {
       ui->MixDR_CB->hide();
       ui->label_MixDR->hide();
     }
