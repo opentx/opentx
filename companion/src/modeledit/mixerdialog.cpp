@@ -30,7 +30,7 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, G
 
     ui->MixDR_CB->setChecked(md->noExpo==0);
 
-    if (firmware->getCapability(VirtualInputs) || !firmware->getCapability(MixesWithoutExpo)) {
+    if (!firmware->getCapability(HasNoExpo)) {
       ui->MixDR_CB->hide();
       ui->label_MixDR->hide();
     }
@@ -143,7 +143,7 @@ void MixerDialog::valuesChanged()
     lock = true;
     QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
     md->srcRaw  = RawSource(ui->sourceCB->itemData(ui->sourceCB->currentIndex()).toInt(), &model);
-    if (!firmware->getCapability(VirtualInputs) && firmware->getCapability(MixesWithoutExpo)) {
+    if (firmware->getCapability(HasNoExpo)) {
       bool drVisible = (md->srcRaw.type == SOURCE_TYPE_STICK && md->srcRaw.index < NUM_STICKS);
       ui->MixDR_CB->setEnabled(drVisible);
       ui->label_MixDR->setEnabled(drVisible);
