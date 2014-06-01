@@ -62,7 +62,7 @@
 #define TR_NCHANNELS     "\0014CH\0016CH\0018CH10CH12CH14CH16CH"
 
 #define LEN_VBEEPMODE    TR("\005", "\010")
-#define TR_VBEEPMODE     TR("Silen""Avvis""Notst""Tutti","Silenti ""Avvisi\0 ""No Tasti""Tutti\0  ")
+#define TR_VBEEPMODE     TR("Silen""Avvis""Notst""Tutti","Silente ""Avvisi\0 ""No Tasti""Tutti\0  ")
 
 #define LEN_VBEEPLEN     "\005"
 #define TR_VBEEPLEN      "+Cort""Corta""Media""Lunga""+Lung"
@@ -379,7 +379,7 @@
 
 #define LEN2_VTEMPLATES  13
 #define LEN_VTEMPLATES   "\015"
-#define TR_VTEMPLATES    "Canc. Mixes\0\0""Semplice 4CH\0""Sticky-T-Cut\0""V-Tail      \0""Elevoni\Delta\0""eCCPM       \0""Setup Heli  \0""Test Servo  \0"
+#define TR_VTEMPLATES    "Canc. Mixes\0\0""Semplice 4CH\0""Sticky-T-Cut\0""V-Tail      \0""Elevoni\Delta\0""eCCPM       \0""Heli Setup  \0""Test Servo  \0"
 
 #define LEN_VSWASHTYPE   "\004"
 #define TR_VSWASHTYPE    "--- ""120 ""120X""140 ""90\0"
@@ -507,7 +507,7 @@
 #define TR_TRIMS               "Trims"
 #define TR_FADEIN              "Diss.In"
 #define TR_FADEOUT             "Diss.Out"
-#define TR_DEFAULT             "(default)"
+#define TR_DEFAULT             "(Predefinita)"
 #define TR_CHECKTRIMS          "\003Contr.\004Trim"
 #define OFS_CHECKTRIMS         (9*FW)
 #define TR_SWASHTYPE           "Tipo Ciclico"
@@ -543,7 +543,7 @@
 #define TR_CV                  "CV"
 #define TR_GV                  "GV"
 #define TR_ACHANNEL            "A\002ingresso"
-#define TR_RANGE               INDENT"Interv."
+#define TR_RANGE               INDENT"Intervallo"
 #define TR_BAR                 "Barra"
 #define TR_ALARM               INDENT"Allarme"
 #define TR_USRDATA             "Dati"
@@ -631,10 +631,10 @@
 #define TR_MENUCALIBRATION     "CALIBRAZIONE"
 #define TR_TRIMS2OFFSETS       "\006Trim  => Offset "
 #define TR_MENUMODELSEL        "MODELLI"
-#define TR_MENUSETUP           "SETUP"
+#define TR_MENUSETUP           "CONFIGURA"
 #define TR_MENUFLIGHTPHASE     "FASE DI VOLO"
 #define TR_MENUFLIGHTPHASES    "FASI DI VOLO"
-#define TR_MENUHELISETUP       "SETUP  ELI"
+#define TR_MENUHELISETUP       "CONFIGURA ELI"
 
 // Alignment
 
@@ -679,7 +679,7 @@
 #define TR_COPY_MODEL          "Copia Modello"
 #define TR_MOVE_MODEL          "Sposta Modello"
 #define TR_BACKUP_MODEL        "Salva Modello"
-#define TR_DELETE_MODEL        TR("Canc. Modello","Cancella Modello") // TODO merged into DELETEMODEL?
+#define TR_DELETE_MODEL        TR("Elim. Modello","Elimina Modello") // TODO merged into DELETEMODEL?
 #define TR_RESTORE_MODEL       TR("Ripr. Modello","Ripristina Modello")
 #define TR_SDCARD_ERROR        "Errore SD"
 #define TR_NO_SDCARD           "No SDCARD"
@@ -713,7 +713,7 @@
 #define TR_NO_BITMAPS_ON_SD    "No Immag. su SD"
 #define TR_NO_SCRIPTS_ON_SD    "No Scripts su SD"
 #define TR_PLAY_FILE           "Suona"
-#define TR_DELETE_FILE         "Cancella"
+#define TR_DELETE_FILE         "Elimina"
 #define TR_COPY_FILE           "Copia"
 #define TR_RENAME_FILE         "Rinomomina"
 #define TR_ASSIGN_BITMAP       "Assegna Immagine"
@@ -759,7 +759,7 @@
 #define TR_COPY                "Copia"
 #define TR_MOVE                "Sposta"
 #define TR_PASTE               "Incolla"
-#define TR_DELETE              "Cancella"
+#define TR_DELETE              "Elimina"
 #define TR_INSERT              TR("Inser.","Inserisci")
 #define TR_RESET_FLIGHT        "Azzera volo"
 #define TR_RESET_TIMER1        "Azzera Timer1"
@@ -791,7 +791,7 @@
 #define TR_CLEAR               "Cancella"
 #define TR_RESET               "Azzera"
 #define TR_RESET_SUBMENU       "Azzera..."
-#define TR_COUNT               "Tipo"
+#define TR_COUNT               "Punti"
 #define TR_PT                  "pt"
 #define TR_PTS                 "pti"
 #define TR_SMOOTH              "Smorza"
@@ -835,7 +835,7 @@
 // Taranis column headers
 #define TR_PHASES_HEADERS      { " Nome ", " Inter. ", " Trim Deriva ", " Trim Elevator ", " Trim Motore ", " Trim Alettoni ", " Disolv. In ", " Dissolv. Out " }
 #define TR_LIMITS_HEADERS      { " Nome ", " Offset ", " Min ", " Max ", " Direzione ", " Curve ", " Centro PPM ", " Simmetria " }
-#define TR_CSW_HEADERS         { " Funzione ", "   V1 ", "   V2 ", "   V2 ", "   Inter. AND ", "   Durata ", "   Ritardo " }
+#define TR_CSW_HEADERS         { "   Funzione ", "   V1 ", "   V2 ", "   V2 ", "   Inter. AND ", "   Durata ", "   Ritardo " }
 
 //Taranis About screen
 #define TR_ABOUTUS             "Info su"
