@@ -1067,7 +1067,6 @@ enum Capability {
  FlightModesName,
  FlightModesHaveFades,
  Mixes,
- MixesWithoutExpo,
  Timers,
  TimeDivisions,
  CustomFunctions,
