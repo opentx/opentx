@@ -137,7 +137,6 @@ Kenneth Lilja (monthly)
 Robert Jero
 Gary Bancroft
 Robert Cotsford
-Rafael Eric Suarez Nordlow
 Gordon Stahl
 NorthSide
 George Constandinides
@@ -324,7 +323,6 @@ Leonard MacKey
 Reginald H Millsom
 Emanuel Stassar
 Pierluigi Sommaruga
-Rafael Eric Suarez Nordlow
 A Harris
 Stefan Grunenberg 
 Francisco Gutierrez Muñoz
