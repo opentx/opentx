@@ -1298,13 +1298,13 @@ void menuModelSetup(uint8_t event)
       {
         lcd_putsLeft(y, STR_POTWARNING);
         uint8_t potMode = g_model.nPotsToWarn >> 6;
-        if(attr) {
+        if (attr) {
           if (m_posHorz) s_editMode = 0;
           if (!READ_ONLY() && m_posHorz) {
-            switch(event) {
+            switch (event) {
               case EVT_KEY_LONG(KEY_ENTER):
                 killEvents(event);
-                if(potMode == 1) {
+                if (potMode == 1) {
                   g_model.potPosition[m_posHorz-1] = getValue(MIXSRC_FIRST_POT+m_posHorz-1) >> 4;
                   AUDIO_WARNING1();
                   eeDirty(EE_MODEL);
@@ -1319,12 +1319,21 @@ void menuModelSetup(uint8_t event)
          }
 
         lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\004""Off\0""Man\0""Auto"), potMode, attr & ((m_posHorz == 0) ? attr : !INVERS));
-        if (potMode)
+        if (potMode) {
+          uint8_t x = MODEL_SETUP_2ND_COLUMN+5*FW;
           for (uint8_t i=0; i<NUM_POTS ; i++) {
+#if !defined(REVPLUS)
+            if (i == POT3-POT1) {
+              if (m_posHorz==i+1) REPEAT_LAST_CURSOR_MOVE();
+              continue;
+            }
+#endif
             LcdFlags flags = ((m_posHorz==i+1) && attr) ? BLINK : 0;
             flags |= (!(g_model.nPotsToWarn & (1 << i))) ? INVERS : 0;
-            lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+5*FW+i*(2*FW+3), y, STR_VSRCRAW, NUM_STICKS+1+i, flags);
+            lcd_putsiAtt(x, y, STR_VSRCRAW, NUM_STICKS+1+i, flags);
+            x += (2*FW+3);
           }
+        }
        
         if (attr && (m_posHorz == 0)) {
           CHECK_INCDEC_MODELVAR(event, potMode, 0, 2);
