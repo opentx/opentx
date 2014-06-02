@@ -552,9 +552,9 @@ void checkSwitches()
       evalFlightModeMixes(e_perout_mode_normal, 0);
       bad_pots = 0;
       for (uint8_t i=0; i<NUM_POTS; i++) {
-        if (!(g_model.nPotsToWarn & (1 << i)) && (abs(g_model.potPosition[i] - (getValue(MIXSRC_FIRST_POT+i) >> 4)) > 1)) {
+        if (!(g_model.nPotsToWarn & (1 << i)) && (abs(g_model.potPosition[i] - GET_LOWRES_POT_POSITION(i)) > 1)) {
           warn = true;
-          bad_pots  |= (1<<i);
+          bad_pots |= (1<<i);
         }
       }
     }
@@ -598,16 +598,16 @@ void checkSwitches()
         for (uint8_t i=0; i<NUM_POTS; i++) {
           if (!(g_model.nPotsToWarn & (1 << i))) {
             uint8_t flags = 0;
-            if (abs(g_model.potPosition[i] - (getValue(MIXSRC_FIRST_POT+i) >> 4)) > 1) {
+            if (abs(g_model.potPosition[i] - GET_LOWRES_POT_POSITION(i)) > 1) {
             	switch (i) {
                 case 0:
                 case 1:
                 case 2: 
-                  lcd_putc(60+i*(5*FW)+2*FW+2, 6*FH-2, g_model.potPosition[i] > (getValue(MIXSRC_FIRST_POT+i) >> 4) ? 126 : 127);
+                  lcd_putc(60+i*(5*FW)+2*FW+2, 6*FH-2, g_model.potPosition[i] > GET_LOWRES_POT_POSITION(i) ? 126 : 127);
                   break;
                 case 3:
                 case 4:
-                  lcd_putc(60+i*(5*FW)+2*FW+2, 6*FH-2, g_model.potPosition[i] > (getValue(MIXSRC_FIRST_POT+i) >> 4) ? '\300' : '\301');
+                  lcd_putc(60+i*(5*FW)+2*FW+2, 6*FH-2, g_model.potPosition[i] > GET_LOWRES_POT_POSITION(i) ? '\300' : '\301');
                   break;
               }
               flags = INVERS;

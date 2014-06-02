@@ -1305,7 +1305,7 @@ void menuModelSetup(uint8_t event)
               case EVT_KEY_LONG(KEY_ENTER):
                 killEvents(event);
                 if (potMode == 1) {
-                  g_model.potPosition[m_posHorz-1] = getValue(MIXSRC_FIRST_POT+m_posHorz-1) >> 4;
+                  SAVE_POT_POSITION(m_posHorz-1);
                   AUDIO_WARNING1();
                   eeDirty(EE_MODEL);
                 }

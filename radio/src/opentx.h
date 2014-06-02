@@ -361,6 +361,9 @@ enum PotType {
   #define IS_POT_MULTIPOS(x)   (false)
 #endif
 
+#define GET_LOWRES_POT_POSITION(i)  (getValue(MIXSRC_FIRST_POT+(i)) >> 4)
+#define SAVE_POT_POSITION(i)        g_model.potPosition[i] = GET_LOWRES_POT_POSITION(i)
+
 #if ROTARY_ENCODERS > 0
   #define IF_ROTARY_ENCODERS(x) x,
 #else
