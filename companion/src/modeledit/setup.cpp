@@ -464,7 +464,7 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
   ui->switchesStartupLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum), 0, firmware->getCapability(Switches));
 
   // Pot warnings
-  if(IS_TARANIS(GetEepromInterface()->getBoard())) {
+  if (IS_TARANIS(firmware->getBoard())) {
     for (int i=0; i<firmware->getCapability(Pots); i++) {
       QCheckBox * cb = new QCheckBox(this);
       cb->setProperty("index", i+1);
@@ -472,6 +472,9 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
       ui->potWarningLayout->addWidget(cb, 0, i+1);
       connect(cb, SIGNAL(toggled(bool)), this, SLOT(potWarningToggled(bool)));
       potWarningCheckboxes << cb;
+      if (!IS_TARANIS_PLUS(firmware->getBoard())) {
+        cb->hide();
+      }
     }
   }
   else {
