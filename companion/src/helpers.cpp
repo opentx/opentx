@@ -645,6 +645,8 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData & 
 
   if (flags & POPULATE_TELEMETRYEXT) {
     for (int i=0; i<TELEMETRY_SOURCE_ACC; i++) {
+      if (i==TELEMETRY_SOURCE_RSSI_TX && IS_TARANIS(GetCurrentFirmware()->getBoard()))
+        continue;
       item = RawSource(SOURCE_TYPE_TELEMETRY, i);
       b->addItem(item.toString(), item.toValue());
       if (item == source) b->setCurrentIndex(b->count()-1);
@@ -652,6 +654,8 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData & 
   }
   else if (flags & POPULATE_TELEMETRY) {
     for (int i=0; i<TELEMETRY_SOURCES_COUNT; i++) {
+      if (i==TELEMETRY_SOURCE_RSSI_TX && IS_TARANIS(GetCurrentFirmware()->getBoard()))
+        continue;
       item = RawSource(SOURCE_TYPE_TELEMETRY, i);
       b->addItem(item.toString(), item.toValue());
       if (item == source) b->setCurrentIndex(b->count()-1);
