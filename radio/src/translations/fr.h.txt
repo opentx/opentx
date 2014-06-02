@@ -551,7 +551,7 @@
 #define TR_SCREEN              "Ecran "
 #define TR_SOUND_LABEL         "Son"
 #define TR_LENGTH              INDENT "Durée"
-#define TR_BEEP_LENGTH         INDENT "Beep Length"
+#define TR_BEEP_LENGTH         INDENT "Durée bips"
 #define TR_SPKRPITCH           INDENT "Tonalité"
 #define TR_HAPTIC_LABEL        "Vibreur"
 #define TR_HAPTICSTRENGTH      INDENT "Force"
