@@ -1166,12 +1166,12 @@ void registerOpenTxFirmwares()
   openTx->addOption("nofp", QObject::tr("No flight modes"));
   openTx->addOption("nocurves", QObject::tr("Disable curves menus"));
   openTx->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
-  openTx->addOption("ppmus", QObject::tr("PPM values displayed in us"));
+  openTx->addOption("ppmus", QObject::tr("Channel values displayed in us"));
   openTx->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
   openTx->addOption("symlimits", QObject::tr("Symetrical Limits"));
   openTx->addOption("potscroll", QObject::tr("Pots use in menus navigation"));
-  openTx->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving some of them"));
-  openTx->addOption("autoswitch", QObject::tr("In model setup menus automatically set switch by moving some of them"));
+  openTx->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving the control"));
+  openTx->addOption("autoswitch", QObject::tr("In model setup menus automatically set switch by moving the control"));
   openTx->addOption("dblkeys", QObject::tr("Enable resetting values by pressing up and down at the same time"));
   openTx->addOption("nographics", QObject::tr("No graphical check boxes and sliders"));
   openTx->addOption("battgraph", QObject::tr("Battery graph"));
