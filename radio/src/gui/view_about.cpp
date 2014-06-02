@@ -49,11 +49,12 @@
 enum AboutScreens {
   ABOUT_OPENTX,
   ABOUT_BERTRAND,
-  ABOUT_MIKE,
-  ABOUT_ROMOLO,
   ABOUT_ANDRE,
-  ABOUT_ROB,
+  ABOUT_MIKE,
+  ABOUT_KJELL,
   ABOUT_MARTIN,
+  ABOUT_ROMOLO,
+  ABOUT_ROB,
   ABOUT_HARDWARE,
   ABOUT_PARENTS,
   ABOUT_END,
@@ -124,11 +125,29 @@ void menuAboutView(uint8_t event)
       lcd_putsAtt(ABOUT_X+ABOUT_INDENT, 44, STR_ABOUT_BERTRAND_3, att|SMLSIZE);
       break;
 
+    case ABOUT_ANDRE:
+      lcd_putsAtt(ABOUT_X, 24, STR_ABOUT_ANDRE_1, att);
+      lcd_putsAtt(ABOUT_X+ABOUT_INDENT, 36, STR_ABOUT_ANDRE_2, att|SMLSIZE);
+      lcd_putsAtt(ABOUT_X+ABOUT_INDENT, 44, STR_ABOUT_ANDRE_3, att|SMLSIZE);
+      break;
+
     case ABOUT_MIKE:
       lcd_putsAtt(ABOUT_X, 24, STR_ABOUT_MIKE_1, att);
       lcd_putsAtt(ABOUT_X+ABOUT_INDENT, 36, STR_ABOUT_MIKE_2, att|SMLSIZE);
       lcd_putsAtt(ABOUT_X+ABOUT_INDENT, 44, STR_ABOUT_MIKE_3, att|SMLSIZE);
-      lcd_putsAtt(ABOUT_X+ABOUT_INDENT-1, 52, STR_ABOUT_MIKE_4, att|SMLSIZE);
+      lcd_putsAtt(ABOUT_X+ABOUT_INDENT, 52, STR_ABOUT_MIKE_4, att|SMLSIZE);
+      break;
+
+    case ABOUT_KJELL:
+      lcd_putsAtt(ABOUT_X, 24, STR_ABOUT_KJELL_1, att);
+      lcd_putsAtt(ABOUT_X+ABOUT_INDENT, 36, STR_ABOUT_KJELL_2, att|SMLSIZE);
+      lcd_putsAtt(ABOUT_X+ABOUT_INDENT, 44, STR_ABOUT_KJELL_3, att|SMLSIZE);
+      lcd_putsAtt(ABOUT_X+ABOUT_INDENT, 52, STR_ABOUT_KJELL_4, att|SMLSIZE);
+      break;
+
+    case ABOUT_MARTIN:
+      lcd_putsAtt(ABOUT_X, 24, STR_ABOUT_MARTIN_1, att);
+      lcd_putsAtt(ABOUT_X+ABOUT_INDENT, 36, STR_ABOUT_MARTIN_2, att|SMLSIZE);
       break;
 
     case ABOUT_ROMOLO:
@@ -137,20 +156,9 @@ void menuAboutView(uint8_t event)
       lcd_putsAtt(ABOUT_X+ABOUT_INDENT, 44, STR_ABOUT_ROMOLO_3, att|SMLSIZE);
       break;
 
-    case ABOUT_ANDRE:
-      lcd_putsAtt(ABOUT_X, 24, STR_ABOUT_ANDRE_1, att);
-      lcd_putsAtt(ABOUT_X+ABOUT_INDENT, 36, STR_ABOUT_ANDRE_2, att|SMLSIZE);
-      lcd_putsAtt(ABOUT_X+ABOUT_INDENT, 44, STR_ABOUT_ANDRE_3, att|SMLSIZE);
-      break;
-
     case ABOUT_ROB:
       lcd_putsAtt(ABOUT_X, 24, STR_ABOUT_ROB_1, att);
       lcd_putsAtt(ABOUT_X+ABOUT_INDENT, 36, STR_ABOUT_ROB_2, att|SMLSIZE);
-      break;
-
-    case ABOUT_MARTIN:
-      lcd_putsAtt(ABOUT_X, 24, STR_ABOUT_MARTIN_1, att);
-      lcd_putsAtt(ABOUT_X+ABOUT_INDENT, 36, STR_ABOUT_MARTIN_2, att|SMLSIZE);
       break;
 
     case ABOUT_HARDWARE:
@@ -163,7 +171,7 @@ void menuAboutView(uint8_t event)
       lcd_putsAtt(ABOUT_X, 24, STR_ABOUT_PARENTS_1, att);
       lcd_putsAtt(ABOUT_X+ABOUT_INDENT, 36, STR_ABOUT_PARENTS_2, att|SMLSIZE);
       lcd_putsAtt(ABOUT_X+ABOUT_INDENT, 44, STR_ABOUT_PARENTS_3, att|SMLSIZE);
-      lcd_putsAtt(ABOUT_X+ABOUT_INDENT-1, 52, STR_ABOUT_PARENTS_4, att|SMLSIZE);
+      lcd_putsAtt(ABOUT_X+ABOUT_INDENT, 52, STR_ABOUT_PARENTS_4, att|SMLSIZE);
       screenDuration = 255;
       break;
   }

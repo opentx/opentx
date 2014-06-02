@@ -777,6 +777,11 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_ABOUT_MARTIN_1[];
   extern const pm_char STR_ABOUT_MARTIN_2[];
   
+  extern const pm_char STR_ABOUT_KJELL_1[];
+  extern const pm_char STR_ABOUT_KJELL_2[];
+  extern const pm_char STR_ABOUT_KJELL_3[];
+  extern const pm_char STR_ABOUT_KJELL_4[];
+
   extern const pm_char STR_ABOUT_HARDWARE_1[];
   extern const pm_char STR_ABOUT_HARDWARE_2[];
   extern const pm_char STR_ABOUT_HARDWARE_3[];

@@ -866,6 +866,11 @@
 #define TR_ABOUT_ROB_1         "Rob Thomson"
 #define TR_ABOUT_ROB_2         "openrcforums webmaster"
 
+#define TR_ABOUT_KJELL_1       "Kjell Kernen"
+#define TR_ABOUT_KJELL_2       "www.open-tx.org main author"
+#define TR_ABOUT_KJELL_3       "OpenTX Recorder author"
+#define TR_ABOUT_KJELL_4       "Companion contributor"
+
 #define TR_ABOUT_MARTIN_1      "Martin Hotař"
 #define TR_ABOUT_MARTIN_2      "Grafický design, Čeština"
 
