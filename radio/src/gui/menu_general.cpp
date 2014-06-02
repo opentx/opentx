@@ -1459,7 +1459,8 @@ void menuGeneralHardware(uint8_t event)
 }
 #endif
 
-#define XPOT_DELTA 5
+#define XPOT_DELTA 7
+#define XPOT_DELAY 15 /* cycles */
 
 void menuCommonCalib(uint8_t event)
 {
@@ -1480,7 +1481,7 @@ void menuCommonCalib(uint8_t event)
         else {
           if (reusableBuffer.calib.xpotsCalib[idx].lastCount < 255) reusableBuffer.calib.xpotsCalib[idx].lastCount++;
         }
-        if (reusableBuffer.calib.xpotsCalib[idx].lastCount == 10/*100ms*/) {
+        if (reusableBuffer.calib.xpotsCalib[idx].lastCount == XPOT_DELAY) {
           int16_t position = reusableBuffer.calib.xpotsCalib[idx].lastPosition;
           bool found = false;
           for (int j=0; j<count; j++) {
