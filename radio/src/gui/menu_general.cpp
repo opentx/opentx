@@ -1459,7 +1459,7 @@ void menuGeneralHardware(uint8_t event)
 }
 #endif
 
-#define XPOT_DELTA 5
+#define XPOT_DELTA 10
 #define XPOT_DELAY 10 /* cycles */
 
 void menuCommonCalib(uint8_t event)
@@ -1474,7 +1474,7 @@ void menuCommonCalib(uint8_t event)
       uint8_t idx = i - POT1;
       int count = reusableBuffer.calib.xpotsCalib[idx].stepsCount;
       if (IS_POT_MULTIPOS(i) && count <= XPOTS_MULTIPOS_COUNT) {
-        if (reusableBuffer.calib.xpotsCalib[idx].lastCount == 0 || vt < reusableBuffer.calib.xpotsCalib[idx].lastPosition - XPOT_DELTA/2 || vt > reusableBuffer.calib.xpotsCalib[idx].lastPosition + XPOT_DELTA/2) {
+        if (reusableBuffer.calib.xpotsCalib[idx].lastCount == 0 || vt < reusableBuffer.calib.xpotsCalib[idx].lastPosition - XPOT_DELTA || vt > reusableBuffer.calib.xpotsCalib[idx].lastPosition + XPOT_DELTA) {
           reusableBuffer.calib.xpotsCalib[idx].lastPosition = vt;
           reusableBuffer.calib.xpotsCalib[idx].lastCount = 1;
         }
