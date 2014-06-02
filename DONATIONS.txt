@@ -417,3 +417,4 @@ TechFixPros
 Rafael Eric Suarez Nordlow
 Colin Rycroft
 Charles Lakins
+Emanuel Stassar
