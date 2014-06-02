@@ -848,7 +848,7 @@
 
 #define TR_ABOUT_BERTRAND_1    "Bertrand Songis"
 #define TR_ABOUT_BERTRAND_2    TR("Auteur\001principal\001d'OpenTX", "Auteur principal d'OpenTX")
-#define TR_ABOUT_BERTRAND_3    TR("Codéveloppeur\001de\001C9X", "Codéveloppeur de Companion9x")
+#define TR_ABOUT_BERTRAND_3    TR("Codéveloppeur\001de\001C9X", "Codéveloppeur de Companion")
 
 #define TR_ABOUT_MIKE_1        "Mike Blandford"
 #define TR_ABOUT_MIKE_2        "Maître du code et des"
