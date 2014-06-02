@@ -3888,6 +3888,11 @@ Voulez vous la télécharger maintenant ?</translation>
         <translation>Sauvegarder le firmware de la radio</translation>
     </message>
     <message>
+        <location filename="../mainwindow.cpp" line="1420"/>
+        <source>Copyright OpenTX Team</source>
+        <translation></translation>
+    </message>
+    <message>
         <location filename="../mainwindow.cpp" line="1450"/>
         <source>OpenTX Companion - FW: %1 - Profile: %2</source>
         <translation>OpenTX Companion - FW: %1 - Profil: %2</translation>
@@ -4151,11 +4156,6 @@ Voulez vous la télécharger maintenant ?</translation>
 Do you want to download it now ?</source>
         <translation type="obsolete">Une nouvelle version du firmware %1 est disponible (courante %2 - nouvelle %3).
 Voulez vous la télécharger maintenant ?</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1420"/>
-        <source>Copyright</source>
-        <translation></translation>
     </message>
     <message>
         <source>Ignore this version (r%1)?</source>
@@ -5813,7 +5813,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="315"/>
         <location filename="../modeledit/mixes.cpp" line="49"/>
-        <location filename="../modeledit/setup.cpp" line="592"/>
+        <location filename="../modeledit/setup.cpp" line="595"/>
         <location filename="../printdialog.cpp" line="312"/>
         <source>CH%1</source>
         <translation>VOIE%1</translation>
@@ -5900,7 +5900,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="244"/>
-        <location filename="../modeledit/setup.cpp" line="570"/>
+        <location filename="../modeledit/setup.cpp" line="573"/>
         <source>S3</source>
         <translation></translation>
     </message>
@@ -6846,8 +6846,8 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="569"/>
-        <location filename="../modeledit/setup.cpp" line="570"/>
+        <location filename="../modeledit/setup.cpp" line="572"/>
+        <location filename="../modeledit/setup.cpp" line="573"/>
         <source>THR</source>
         <translation></translation>
     </message>
@@ -6864,21 +6864,21 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="243"/>
         <location filename="../helpers.cpp" line="83"/>
-        <location filename="../modeledit/setup.cpp" line="569"/>
+        <location filename="../modeledit/setup.cpp" line="572"/>
         <source>P1</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="243"/>
         <location filename="../helpers.cpp" line="83"/>
-        <location filename="../modeledit/setup.cpp" line="569"/>
+        <location filename="../modeledit/setup.cpp" line="572"/>
         <source>P2</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="243"/>
         <location filename="../helpers.cpp" line="83"/>
-        <location filename="../modeledit/setup.cpp" line="569"/>
+        <location filename="../modeledit/setup.cpp" line="572"/>
         <source>P3</source>
         <translation></translation>
     </message>
@@ -7083,25 +7083,25 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="244"/>
-        <location filename="../modeledit/setup.cpp" line="570"/>
+        <location filename="../modeledit/setup.cpp" line="573"/>
         <source>S1</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="244"/>
-        <location filename="../modeledit/setup.cpp" line="570"/>
+        <location filename="../modeledit/setup.cpp" line="573"/>
         <source>S2</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="244"/>
-        <location filename="../modeledit/setup.cpp" line="570"/>
+        <location filename="../modeledit/setup.cpp" line="573"/>
         <source>LS</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="244"/>
-        <location filename="../modeledit/setup.cpp" line="570"/>
+        <location filename="../modeledit/setup.cpp" line="573"/>
         <source>RS</source>
         <translation></translation>
     </message>
@@ -8248,6 +8248,11 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
         <translation>Batt. Rx</translation>
     </message>
     <message>
+        <location filename="../modeledit/telemetry.ui" line="488"/>
+        <source>Critical Alarm</source>
+        <translation>Alarme critique</translation>
+    </message>
+    <message>
         <location filename="../modeledit/telemetry.ui" line="525"/>
         <location filename="../modeledit/telemetry.ui" line="602"/>
         <source>----</source>
@@ -8262,12 +8267,10 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../modeledit/telemetry.ui" line="535"/>
         <location filename="../modeledit/telemetry.ui" line="612"/>
-        <location filename="../modeledit/telemetry.ui" line="676"/>
         <source>Orange</source>
         <translation>Orange</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="488"/>
         <location filename="../modeledit/telemetry.ui" line="540"/>
         <location filename="../modeledit/telemetry.ui" line="617"/>
         <source>Red</source>
@@ -8432,6 +8435,11 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
         <location filename="../modeledit/telemetry.ui" line="1058"/>
         <source>mAh count</source>
         <translation>Valeur enregistrée</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/telemetry.ui" line="676"/>
+        <source>Low Alarm</source>
+        <translation>Alarme basse</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="1112"/>
