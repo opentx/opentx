@@ -96,7 +96,7 @@ extern vertpos_t m_posVert;
 extern horzpos_t m_posHorz;
 extern vertpos_t s_pgOfs;
 extern uint8_t s_noHi;
-extern uint8_t s_noScroll;
+extern uint8_t calibrationState;
 
 void menu_lcd_onoff(uint8_t x, uint8_t y, uint8_t value, LcdFlags attr);
 

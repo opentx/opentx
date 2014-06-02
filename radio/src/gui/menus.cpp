@@ -39,7 +39,7 @@
 vertpos_t s_pgOfs;
 int8_t s_editMode;
 uint8_t s_noHi;
-uint8_t s_noScroll;
+uint8_t calibrationState;
 
 void menu_lcd_onoff(uint8_t x, uint8_t y, uint8_t value, LcdFlags attr)
 {
@@ -394,7 +394,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
     uint8_t attr = 0;
 
     int8_t cc = curr;
-    switch(event) {
+    switch (event) {
       case EVT_KEY_LONG(KEY_MENU):
         if (menuTab == menuTabModel) {
           killEvents(event);
@@ -430,7 +430,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       return false;
     }
 
-    s_noScroll = 0;
+    calibrationState = 0;
 
     if (!(flags&CHECK_FLAG_NO_SCREEN_INDEX)) {
       displayScreenIndex(curr, menuTabSize, attr);
@@ -701,7 +701,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
     uint8_t attr = 0;
 
 
-    if (l_posVert==0 && !s_noScroll) {
+    if (l_posVert==0 && !calibrationState) {
       attr = INVERS;
 
       int8_t cc = curr;
@@ -761,7 +761,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 #endif
     }
 
-    s_noScroll = 0;
+    calibrationState = 0;
     displayScreenIndex(curr, menuTabSize, attr);
 
   }

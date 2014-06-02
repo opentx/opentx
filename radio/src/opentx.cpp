@@ -1385,16 +1385,16 @@ void getADC()
       temp[x] += Analog_values[x];
     }
 #if defined(PCBTARANIS)
-    if (s_noScroll) break;
+    if (calibrationState) break;
 #endif
   }
 
   for (uint32_t x=0; x<NUMBER_ANALOG; x++) {
     uint16_t v = temp[x] >> 3;
 #if defined(PCBTARANIS)
-    if (s_noScroll) v = temp[x] >> 1;
+    if (calibrationState) v = temp[x] >> 1;
     StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[x];
-    if (!s_noScroll && IS_POT_MULTIPOS(x) && calib->count>0 && calib->count<XPOTS_MULTIPOS_COUNT) {
+    if (!calibrationState && IS_POT_MULTIPOS(x) && calib->count>0 && calib->count<XPOTS_MULTIPOS_COUNT) {
       uint8_t vShifted = (v >> 4);
       s_anaFilt[x] = 2*RESX;
       for (int i=0; i<calib->count; i++) {

@@ -1501,9 +1501,9 @@ void menuCommonCalib(uint8_t event)
     }
   }
 
-  s_noScroll = reusableBuffer.calib.state; // make sure we don't scroll while calibrating
+  calibrationState = reusableBuffer.calib.state; // make sure we don't scroll while calibrating
 
-  switch(event)
+  switch (event)
   {
     case EVT_ENTRY:
       reusableBuffer.calib.state = 0;
@@ -1524,7 +1524,7 @@ void menuCommonCalib(uint8_t event)
 
     case 1:
       // SET MIDPOINT
-      lcd_putsAtt(0*FW, 2*FH, STR_SETMIDPOINT, s_noScroll ? INVERS : 0);
+      lcd_putsAtt(0*FW, 2*FH, STR_SETMIDPOINT, INVERS);
       lcd_putsLeft(3*FH, STR_MENUWHENDONE);
 
       for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
@@ -1543,7 +1543,7 @@ void menuCommonCalib(uint8_t event)
     case 2:
       // MOVE STICKS/POTS
       STICK_SCROLL_DISABLE();
-      lcd_putsAtt(0*FW, 2*FH, STR_MOVESTICKSPOTS, s_noScroll ? INVERS : 0);
+      lcd_putsAtt(0*FW, 2*FH, STR_MOVESTICKSPOTS, INVERS);
       lcd_putsLeft(3*FH, STR_MENUWHENDONE);
 
       for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {

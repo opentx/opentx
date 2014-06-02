@@ -434,7 +434,7 @@ void evalInputs(uint8_t mode)
       if (mode == e_perout_mode_normal) {
         if (tmp==0 || (tmp==1 && (bpanaCenter & mask))) {
           anaCenter |= mask;
-          if ((g_model.beepANACenter & mask) && !(bpanaCenter & mask)) {
+          if ((g_model.beepANACenter & mask) && !(bpanaCenter & mask) && !calibrationState) {
             AUDIO_POT_MIDDLE(i);
           }
         }
