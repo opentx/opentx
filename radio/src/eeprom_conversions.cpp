@@ -838,6 +838,15 @@ void ConvertModel_215_to_216(ModelData &model)
   memcpy(&g_model.frsky, &oldModel.frsky, 2*sizeof(FrSkyChannelData));
   // gap for A3-A4
   memcpy(((uint8_t *)&g_model.frsky) + 4*sizeof(FrSkyChannelData), ((uint8_t *)&oldModel.frsky) + 2*sizeof(FrSkyChannelData), sizeof(oldModel.frsky) - 2*sizeof(FrSkyChannelData));
+  // RxBatt introduced
+  if (g_model.frsky.voltsSource >= FRSKY_VOLTS_SOURCE_A1)
+    g_model.frsky.voltsSource += 1;
+  // A3 and A4 introduced
+  if (g_model.frsky.voltsSource >= FRSKY_VOLTS_SOURCE_A3)
+    g_model.frsky.voltsSource += 2;
+  if (g_model.frsky.currentSource >= FRSKY_CURRENT_SOURCE_A3)
+    g_model.frsky.currentSource += 2;
+
   for (int i=0; i<3; i++) {
     if (g_model.frsky.screensType & (1<<i)) {
       // gauges
