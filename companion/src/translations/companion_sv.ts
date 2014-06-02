@@ -2340,7 +2340,7 @@ Mode 4:
     <message>
         <location line="+14"/>
         <source>Backlight  Auto OFF after</source>
-        <translation type="unfinished">Ljuset stängs av efter</translation>
+        <translation>Ljuset stängs av efter</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -3445,28 +3445,27 @@ FAI-funktionen kan inte slås av i sändaren.
     <name>MainWindow</name>
     <message>
         <location filename="../mainwindow.cpp" line="+153"/>
-        <location line="+450"/>
+        <location line="+437"/>
         <location line="+31"/>
-        <location line="+1431"/>
+        <location line="+1423"/>
         <source>File loaded</source>
         <translation>Filen har laddats</translation>
     </message>
     <message>
-        <location line="-1781"/>
+        <location line="-1754"/>
         <location line="+2"/>
-        <location line="+42"/>
-        <location line="+178"/>
+        <location line="+214"/>
         <source>Save As</source>
         <translation>Spara Som</translation>
     </message>
     <message>
-        <location line="-204"/>
-        <location line="+190"/>
+        <location line="-198"/>
+        <location line="+165"/>
         <source>No updates available at this time.</source>
         <translation>Inga updateringar finns tillgängliga.</translation>
     </message>
     <message>
-        <location line="-244"/>
+        <location line="-219"/>
         <source>Unable to check for updates.</source>
         <translation>Det gick inte att söka efter uppdateringar.</translation>
     </message>
@@ -3487,13 +3486,13 @@ Do you want to download it now ?</source>
 Vill du ladda ned den nya versionen nu ?</translation>
     </message>
     <message>
-        <location line="+297"/>
+        <location line="+278"/>
         <location line="+6"/>
         <source>File saved</source>
         <translation>Filen sparades</translation>
     </message>
     <message>
-        <location line="+823"/>
+        <location line="+815"/>
         <source>Copyright</source>
         <translation>Copyright</translation>
     </message>
@@ -3574,12 +3573,12 @@ Version %2 finns tillgänglig.
 Vill du ladda ned den nu ?</translation>
     </message>
     <message>
-        <location line="-380"/>
+        <location line="-334"/>
         <source>Conversion failed</source>
         <translation>Konverteringen misslyckades</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+5"/>
         <source>Restore failed</source>
         <translation>Återställningen misslyckade</translation>
     </message>
@@ -3589,7 +3588,7 @@ Vill du ladda ned den nu ?</translation>
         <translation>Säkerhetskopieringen misslyckades</translation>
     </message>
     <message>
-        <location line="+156"/>
+        <location line="+115"/>
         <source>OpenTX Companion - FW: %1 - Profile: %2</source>
         <translation>OpenTX Companion - FW: %1 - Profil: %2</translation>
     </message>
@@ -3624,7 +3623,7 @@ Vill du ladda ned den nu ?</translation>
         <translation>Visa information om programmet</translation>
     </message>
     <message>
-        <location line="-1369"/>
+        <location line="-1342"/>
         <source>Checking for updates</source>
         <translation>Letar efter uppdateringar</translation>
     </message>
@@ -3637,7 +3636,7 @@ Vill du ladda ned den nu ?</translation>
         <translation type="obsolete">Ladda inte ned versionen (r%1)?</translation>
     </message>
     <message>
-        <location line="+1219"/>
+        <location line="+1192"/>
         <source>OpenTX Home Page: &lt;a href=&apos;%1&apos;&gt;%1&lt;/a&gt;</source>
         <translation>OpenTX Hemsida: &lt;a href=&apos;%1&apos;&gt;%1&lt;/a&gt;</translation>
     </message>
@@ -3760,15 +3759,15 @@ Vill du ladda ned den nu ?</translation>
         <translation>Redo</translation>
     </message>
     <message>
-        <location line="-1638"/>
+        <location line="-1617"/>
         <source>Display previous warning again at startup ?</source>
         <translation>SKall föregående varning visas igen vid uppstart ?</translation>
     </message>
     <message>
-        <location line="+161"/>
+        <location line="+155"/>
         <location line="+29"/>
-        <location line="+460"/>
-        <location line="+1143"/>
+        <location line="+453"/>
+        <location line="+1135"/>
         <location line="+6"/>
         <location line="+8"/>
         <location line="+23"/>
@@ -3780,20 +3779,20 @@ Vill du ladda ned den nu ?</translation>
         <translation>Fel</translation>
     </message>
     <message>
-        <location line="-1203"/>
+        <location line="-1195"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation>Filen %1 kunde inte skrivas:
 %2.</translation>
     </message>
     <message>
-        <location line="-533"/>
+        <location line="-514"/>
         <source>New release available</source>
         <translation>En ny version finns tillgänglig</translation>
     </message>
     <message>
-        <location line="+44"/>
-        <location line="+1637"/>
+        <location line="+32"/>
+        <location line="+1622"/>
         <location line="+8"/>
         <location line="+36"/>
         <source>Error opening file %1:
@@ -3802,7 +3801,7 @@ Vill du ladda ned den nu ?</translation>
 %2.</translation>
     </message>
     <message>
-        <location line="-1666"/>
+        <location line="-1651"/>
         <source>Compilation server termporary failure, try later</source>
         <translation>Tillfälligt fel i byggservern. Försök igen senare</translation>
     </message>
@@ -3817,42 +3816,42 @@ Vill du ladda ned den nu ?</translation>
         <translation>Okänt server-fel. Försök igen senare</translation>
     </message>
     <message>
-        <location line="+1228"/>
+        <location line="+1213"/>
         <source>Compare models</source>
         <translation>Jämför modeller</translation>
     </message>
     <message>
-        <location line="-550"/>
-        <location line="+226"/>
-        <location line="+54"/>
+        <location line="-436"/>
+        <location line="+165"/>
+        <location line="+42"/>
         <source>Backup is impossible</source>
         <translation>Säkerhetskopiering kan inte utföras</translation>
     </message>
     <message>
-        <location line="-1026"/>
+        <location line="-1040"/>
         <source>A new release of Companion is available, please check the OpenTX website!</source>
         <translation>En ny version av Companion finns tillgänglig. Var god kontrollera OpenTX webbsida!</translation>
     </message>
     <message>
-        <location line="+56"/>
+        <location line="+44"/>
         <source>Not enough memory for all the selected firmware options</source>
         <translation>Firmware får inte plats i radion eftersom alltför många funktioner är valda samtidigt</translation>
     </message>
     <message>
-        <location line="+690"/>
-        <location line="+226"/>
-        <location line="+54"/>
+        <location line="+789"/>
+        <location line="+165"/>
+        <location line="+42"/>
         <source>The backup dir set in preferences does not exist</source>
         <translation>Foldern för säkerhetskopior existerar inte</translation>
     </message>
     <message>
-        <location line="-230"/>
+        <location line="-175"/>
         <location line="+3"/>
         <source>Warning</source>
         <translation>Varning</translation>
     </message>
     <message>
-        <location line="+489"/>
+        <location line="+393"/>
         <source>Alt+S</source>
         <translation>Alt+S</translation>
     </message>
@@ -3970,23 +3969,23 @@ Vill du ladda ned den nu ?</translation>
         <translation>Ladda backup från fil</translation>
     </message>
     <message>
-        <location line="-1152"/>
+        <location line="-1150"/>
         <location line="+29"/>
         <source>Yes</source>
         <translation>Ja</translation>
     </message>
     <message>
-        <location line="-185"/>
+        <location line="-160"/>
         <source>A new version of Companion is available (version %1)&lt;br&gt;Would you like to download it?</source>
         <translation>An ny version av Companion finns tillgänglig (version %1)&lt;br&gt;Vill du ladda ned den?</translation>
     </message>
     <message>
-        <location line="+84"/>
+        <location line="+72"/>
         <source>Compilation server requires registration, please check OpenTX web site</source>
         <translation>Byggservern kräver registrering. Var god kontrollera OpenTX webbsida</translation>
     </message>
     <message>
-        <location line="+73"/>
+        <location line="+60"/>
         <location line="+29"/>
         <source>No</source>
         <translation>Nej</translation>
@@ -4007,7 +4006,7 @@ Vill du ladda ned den nu ?</translation>
         <translation type="obsolete">Release notes innehåller väldigt viktig information. Vill du läsa dem nu?</translation>
     </message>
     <message>
-        <location line="+74"/>
+        <location line="+80"/>
         <source>The selected language will be used the next time you start Companion.</source>
         <translation>Språket som valts kommer att användas nästa gång Companion startas.</translation>
     </message>
@@ -4030,12 +4029,12 @@ Vill du ladda ned den nu ?</translation>
     </message>
     <message>
         <location line="+21"/>
-        <location line="+956"/>
+        <location line="+948"/>
         <source>Open Models and Settings file</source>
         <translation>Öppna Modeller och Inställningar-fil</translation>
     </message>
     <message>
-        <location line="-850"/>
+        <location line="-842"/>
         <source>Firmware updates</source>
         <translation>Firmware-uppdatering</translation>
     </message>
@@ -4045,7 +4044,7 @@ Vill du ladda ned den nu ?</translation>
         <translation>Den firmware som valts har inga release notes.</translation>
     </message>
     <message>
-        <location line="+339"/>
+        <location line="+445"/>
         <source>The file %1
 has not been recognized as a valid Models and Settings file
 Write anyway ?</source>
@@ -4054,22 +4053,22 @@ kunde inte verifieras som giltiga data för Modeller och Inställningar
 Starta skrivningen i alla fall ?</translation>
     </message>
     <message>
-        <location line="+50"/>
+        <location line="+31"/>
         <source>Cannot check Models and Settings compatibility! Continue anyway?</source>
         <translation>Det går inte att verifiera att Modeller och Inställningar är kompatibla. Fortsätt i alla fall?</translation>
     </message>
     <message>
-        <location line="+211"/>
+        <location line="+162"/>
         <source>Cannot convert Models and Settings for use with this firmware, original data will be used</source>
         <translation>Modeller och Inställningar kan inte översättas till denna firmware. Ingen information uppdateras</translation>
     </message>
     <message>
-        <location line="+14"/>
+        <location line="+9"/>
         <source>Firmware write failed</source>
         <translation>Skrivningen av firware misslyckades</translation>
     </message>
     <message>
-        <location line="+133"/>
+        <location line="+92"/>
         <source>About Companion</source>
         <translation>Om Companion</translation>
     </message>
@@ -4092,12 +4091,12 @@ Starta skrivningen i alla fall ?</translation>
         <translation type="obsolete">Firmware får inte plats i radion eftersom alltför många funktioner är valda samtidigt</translation>
     </message>
     <message>
-        <location line="-1166"/>
+        <location line="-1168"/>
         <source>Do you want to write the firmware to the radio now ?</source>
         <translation>Vill du skriva firmware till radion nu?</translation>
     </message>
     <message>
-        <location line="+41"/>
+        <location line="+45"/>
         <source>Firmware %1 does not seem to have ever been downloaded.
 Release %2 is available.
 Do you want to download it now?</source>
@@ -4124,35 +4123,31 @@ Do you want to download it now ?</source>
 Vill du ladda ned den nya versionen nu ?</translation>
     </message>
     <message>
-        <location line="+35"/>
+        <location line="+36"/>
         <source>Ignore this release %1?</source>
         <translation>Hoppa över den här versionen (%1) ?</translation>
     </message>
     <message>
-        <location line="+509"/>
-        <location line="+7"/>
-        <location line="+358"/>
-        <location line="+231"/>
+        <location line="+485"/>
+        <location line="+617"/>
         <source>Read Models and Settings From Radio</source>
         <translation>Läs Modeller och Inställningar från radion</translation>
     </message>
     <message>
-        <location line="-569"/>
+        <location line="-455"/>
         <source>Write Radio Backup from %1 to the radio?</source>
         <translation>Skriv Backup från %1 till radion?</translation>
     </message>
     <message>
-        <location line="+30"/>
-        <location line="+7"/>
-        <location line="+45"/>
-        <location line="+9"/>
-        <location line="+158"/>
-        <location line="+49"/>
+        <location line="+22"/>
+        <location line="+34"/>
+        <location line="+134"/>
+        <location line="+34"/>
         <source>Backup Models and Settings From Radio</source>
         <translation>Gör Backup av radiodata</translation>
     </message>
     <message>
-        <location line="-238"/>
+        <location line="-182"/>
         <source>The radio firmware belongs to another product family, check file and preferences!</source>
         <translation>Sändarens firmware är av en annan typ än den aktuella. Kontrollera konfigurationen!</translation>
     </message>
@@ -4162,23 +4157,27 @@ Vill du ladda ned den nya versionen nu ?</translation>
         <translation>Firmware i radion är föråldrad. Var god uppgradera!</translation>
     </message>
     <message>
-        <location line="+46"/>
+        <location line="+15"/>
         <source>Write Backup To Radio</source>
         <translation>Skriv Backup till radion</translation>
     </message>
     <message>
-        <location line="+147"/>
-        <location line="+50"/>
+        <location line="-168"/>
         <source>Write Firmware To Radio</source>
         <translation>Skriv firmware till radion</translation>
     </message>
     <message>
-        <location line="-37"/>
+        <location line="-42"/>
+        <source>Read Firmware From Radio</source>
+        <translation>Läs firmware från radion</translation>
+    </message>
+    <message>
+        <location line="+350"/>
         <source>Restore Models and Settings To Radio</source>
         <translation>Återställ Backup till radion</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+1"/>
         <source>Could not restore Models and Settings to Radio. The models and settings data file can be found at: %1</source>
         <translation>Det gick inte att återställa Backupen till radion. Filen kan hittas här: %1</translation>
     </message>
@@ -4193,22 +4192,22 @@ Vill du ladda ned den nya versionen nu ?</translation>
         <translation>Skrivningen av firmware avbröts därför att det inte gick att göra en Backup av radion</translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="+25"/>
         <source>Save Radio Backup to File</source>
         <translation>Spara radiobackup till fil</translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+2"/>
         <source>Read Radio Backup</source>
         <translation>Spara radiobackup</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="+7"/>
         <source>Read Radio Firmware to File</source>
         <translation>Spara radiobackup till fil</translation>
     </message>
     <message>
-        <location line="+165"/>
+        <location line="+156"/>
         <source>New</source>
         <translation>Ny</translation>
     </message>
@@ -4564,8 +4563,8 @@ Vill du ladda ned den nya versionen nu ?</translation>
         <location line="+9"/>
         <location line="+5"/>
         <location line="+91"/>
-        <location line="+47"/>
-        <location line="+112"/>
+        <location line="+22"/>
+        <location line="+73"/>
         <location line="+8"/>
         <location line="+11"/>
         <location line="+9"/>
@@ -4573,36 +4572,36 @@ Vill du ladda ned den nya versionen nu ?</translation>
         <translation>Fel</translation>
     </message>
     <message>
-        <location line="-536"/>
+        <location line="-472"/>
         <source>Editing model %1: </source>
         <translation>Redigera modell %1: </translation>
     </message>
     <message>
         <location line="+52"/>
-        <location line="+456"/>
+        <location line="+392"/>
         <source>Unable to find file %1!</source>
         <translation>Kan inte hitta filen %1 !</translation>
     </message>
     <message>
-        <location line="-368"/>
-        <location line="+388"/>
+        <location line="-304"/>
+        <location line="+324"/>
         <source>Error reading file %1:
 %2.</source>
         <translation>Fel vid inläsning från filen %1:
 %2.</translation>
     </message>
     <message>
-        <location line="-467"/>
+        <location line="-403"/>
         <location line="+11"/>
         <location line="+56"/>
-        <location line="+389"/>
+        <location line="+325"/>
         <source>Error opening file %1:
 %2.</source>
         <translation>Fel vid öppning av filen %1:
 %2.</translation>
     </message>
     <message>
-        <location line="-336"/>
+        <location line="-272"/>
         <location line="+2"/>
         <location line="+6"/>
         <location line="+2"/>
@@ -4671,14 +4670,13 @@ Vill du spara förändringarna?</translation>
         <translation>Den katalog som konfigurerats för säkerhetskopiering existerar inte</translation>
     </message>
     <message>
-        <location line="+35"/>
-        <location line="+9"/>
-        <location line="+51"/>
+        <location line="+25"/>
+        <location line="+32"/>
         <source>Backup EEPROM From Radio</source>
         <translation>Gör Backup av radions innehåll</translation>
     </message>
     <message>
-        <location line="-34"/>
+        <location line="-21"/>
         <source>Cannot check eeprom compatibility! Continue anyway?</source>
         <translation>Det går inte att veriifiera att modelldata är kompatibla. Fortsätt i alla fall?</translation>
     </message>
@@ -4699,12 +4697,12 @@ Vill du spara förändringarna?</translation>
         <translation>Firmware i flashminnet är föråldrat. Var god uppgradera!</translation>
     </message>
     <message>
-        <location line="+43"/>
+        <location line="+16"/>
         <source>Write EEPROM To Radio</source>
         <translation>Skriv EEPROM till radion</translation>
     </message>
     <message>
-        <location line="+53"/>
+        <location line="+41"/>
         <source>Open backup Models and Settings file</source>
         <translation>Öppna Modeller och Inställningar-fil</translation>
     </message>
@@ -7405,47 +7403,47 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+51"/>
         <source>FM0</source>
-        <translation type="unfinished"></translation>
+        <translation>FM0</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>FM1</source>
-        <translation type="unfinished"></translation>
+        <translation>FM1</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>FM2</source>
-        <translation type="unfinished"></translation>
+        <translation>FM2</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>FM3</source>
-        <translation type="unfinished"></translation>
+        <translation>FM3</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>FM4</source>
-        <translation type="unfinished"></translation>
+        <translation>FM4</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>FM5</source>
-        <translation type="unfinished"></translation>
+        <translation>FM5</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>FM6</source>
-        <translation type="unfinished"></translation>
+        <translation>FM6</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>FM7</source>
-        <translation type="unfinished"></translation>
+        <translation>FM7</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>FM8</source>
-        <translation type="unfinished"></translation>
+        <translation>FM8</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -8056,7 +8054,7 @@ p, li { white-space: pre-wrap; }
         <translation>OpenTX stödjer inte funktionen för den aktuella hårdvaran</translation>
     </message>
     <message>
-        <location line="+444"/>
+        <location line="+451"/>
         <location line="+104"/>
         <location line="+5"/>
         <source>OpenTX doesn&apos;t accept this protocol</source>
@@ -8733,18 +8731,16 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="+61"/>
-        <location line="+740"/>
         <source>A1</source>
         <translation>A1</translation>
     </message>
     <message>
-        <location line="-411"/>
-        <location line="+416"/>
+        <location line="+329"/>
         <source>A2</source>
         <translation>A2</translation>
     </message>
     <message>
-        <location line="-147"/>
+        <location line="+269"/>
         <source>RSSI</source>
         <translation>RSSI</translation>
     </message>
@@ -8864,22 +8860,19 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <translation>Mottagar-batteri</translation>
     </message>
     <message>
-        <location line="+315"/>
         <source>Alti</source>
-        <translation>Höjd</translation>
+        <translation type="obsolete">Höjd</translation>
     </message>
     <message>
-        <location line="+5"/>
         <source>Alti+</source>
-        <translation>Höjd+</translation>
+        <translation type="obsolete">Höjd+</translation>
     </message>
     <message>
-        <location line="+5"/>
         <source>Vario</source>
-        <translation>Vario</translation>
+        <translation type="obsolete">Vario</translation>
     </message>
     <message>
-        <location line="+26"/>
+        <location line="+326"/>
         <source>Sink Max</source>
         <translation>Sjunk Max</translation>
     </message>
@@ -9147,7 +9140,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <translation>Kritisk Alarmnivå</translation>
     </message>
     <message>
-        <location line="+84"/>
+        <location line="+75"/>
         <source>Winged Shadow How High</source>
         <translation>Winged Shadow How High</translation>
     </message>
@@ -9157,24 +9150,46 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <translation>Winged Shadow How High (stöds ej)</translation>
     </message>
     <message>
-        <location line="+44"/>
+        <location line="+61"/>
         <source>RxBatt</source>
         <translation>RxBatt</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="-12"/>
+        <location line="+14"/>
         <location line="+15"/>
         <source>A1</source>
         <translation>A1</translation>
     </message>
     <message>
-        <location line="-14"/>
+        <location line="-33"/>
+        <source>Alti</source>
+        <translation type="unfinished">Höjd</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Alti+</source>
+        <translation type="unfinished">Höjd+</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>VSpeed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <location line="+14"/>
         <location line="+15"/>
         <source>A2</source>
         <translation>A2</translation>
     </message>
     <message>
-        <location line="-13"/>
+        <location line="-27"/>
+        <source>dTE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+14"/>
         <location line="+15"/>
         <source>A3</source>
         <translation>A3</translation>
@@ -10047,7 +10062,7 @@ Detta används av mallen för att koppla kanal till output-nummer.</translation>
         <translation>Visa Detaljer</translation>
     </message>
     <message>
-        <location filename="../avroutputdialog.cpp" line="+354"/>
+        <location filename="../avroutputdialog.cpp" line="+355"/>
         <location line="+2"/>
         <source>Writing</source>
         <translation>Skriver</translation>
@@ -10071,7 +10086,7 @@ Detta används av mallen för att koppla kanal till output-nummer.</translation>
         <translation>SÄKRINGAR: Låg=%1 Hög=%2 Ext=%3</translation>
     </message>
     <message>
-        <location line="-426"/>
+        <location line="-427"/>
         <source>result</source>
         <oldsource> result</oldsource>
         <translation>resultat</translation>
@@ -10083,7 +10098,7 @@ Detta används av mallen för att koppla kanal till output-nummer.</translation>
         <translation>program hittades ej</translation>
     </message>
     <message>
-        <location line="+339"/>
+        <location line="+340"/>
         <source>done - exit code %1</source>
         <oldsource> done - exit code %1</oldsource>
         <translation>klar - returkod %1</translation>
@@ -10120,25 +10135,31 @@ Detta används av mallen för att koppla kanal till output-nummer.</translation>
         <translation>Startade</translation>
     </message>
     <message>
-        <location line="-333"/>
-        <location line="+8"/>
+        <location line="-322"/>
+        <location line="+7"/>
+        <location line="+4"/>
         <source>Error</source>
         <translation>Fel</translation>
     </message>
     <message>
-        <location line="-8"/>
+        <location line="+0"/>
         <source>Cannot open source file</source>
         <translation>Kan inte öppna ursprungsfilen</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="-4"/>
         <source>Cannot write destination</source>
         <translation>Det gick inte att skriva till målet</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="-16"/>
         <source>Writing file: </source>
         <translation>Skriver till fi: </translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Write error</source>
+        <translation>Skrivfel</translation>
     </message>
     <message>
         <location line="+152"/>
