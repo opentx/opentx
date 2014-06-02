@@ -1459,8 +1459,8 @@ void menuGeneralHardware(uint8_t event)
 }
 #endif
 
-#define XPOT_DELTA 7
-#define XPOT_DELAY 15 /* cycles */
+#define XPOT_DELTA 5
+#define XPOT_DELAY 10 /* cycles */
 
 void menuCommonCalib(uint8_t event)
 {
@@ -1474,7 +1474,7 @@ void menuCommonCalib(uint8_t event)
       uint8_t idx = i - POT1;
       int count = reusableBuffer.calib.xpotsCalib[idx].stepsCount;
       if (IS_POT_MULTIPOS(i) && count <= XPOTS_MULTIPOS_COUNT) {
-        if (reusableBuffer.calib.xpotsCalib[idx].lastCount == 0 || vt < reusableBuffer.calib.xpotsCalib[idx].lastPosition - XPOT_DELTA || vt > reusableBuffer.calib.xpotsCalib[idx].lastPosition + XPOT_DELTA) {
+        if (reusableBuffer.calib.xpotsCalib[idx].lastCount == 0 || vt < reusableBuffer.calib.xpotsCalib[idx].lastPosition - XPOT_DELTA/2 || vt > reusableBuffer.calib.xpotsCalib[idx].lastPosition + XPOT_DELTA/2) {
           reusableBuffer.calib.xpotsCalib[idx].lastPosition = vt;
           reusableBuffer.calib.xpotsCalib[idx].lastCount = 1;
         }
@@ -1485,7 +1485,8 @@ void menuCommonCalib(uint8_t event)
           int16_t position = reusableBuffer.calib.xpotsCalib[idx].lastPosition;
           bool found = false;
           for (int j=0; j<count; j++) {
-            if (position >= reusableBuffer.calib.xpotsCalib[idx].steps[j]-XPOT_DELTA && position <= reusableBuffer.calib.xpotsCalib[idx].steps[j]+XPOT_DELTA) {
+            int16_t step = reusableBuffer.calib.xpotsCalib[idx].steps[j];
+            if (position >= step-XPOT_DELTA && position <= step+XPOT_DELTA) {
               found = true;
               break;
             }
@@ -1614,14 +1615,18 @@ void menuCommonCalib(uint8_t event)
 
 void menuGeneralCalib(uint8_t event)
 {
-  SIMPLE_MENU(STR_MENUCALIBRATION, menuTabDiag, e_Calib, 1);
-
+  if (!check_simple(event, e_Calib, menuTabDiag, DIM(menuTabDiag), 0)) {
+    calibrationState = 0;
+    return;
+  }
+  TITLE(STR_MENUCALIBRATION);
   menuCommonCalib(READ_ONLY() ? 0 : event);
 }
 
 void menuFirstCalib(uint8_t event)
 {
   if (event == EVT_KEY_BREAK(KEY_EXIT) || reusableBuffer.calib.state == 4) {
+    calibrationState = 0;
     chainMenu(menuMainView);
   }
   else {

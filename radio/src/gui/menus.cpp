@@ -425,12 +425,11 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
           cc = 0;
         break;
     }
-    if (cc != curr) {
+
+    if (!calibrationState && cc != curr) {
       chainMenu((MenuFuncP)pgm_read_adr(&menuTab[cc]));
       return false;
     }
-
-    calibrationState = 0;
 
     if (!(flags&CHECK_FLAG_NO_SCREEN_INDEX)) {
       displayScreenIndex(curr, menuTabSize, attr);
