@@ -498,7 +498,7 @@
 #define TR_ETRIMS              TR("širší Trim", "Široký trim")
 #define TR_TRIMINC             TR("Krok Trimu", "Krok trimu")
 #define TR_TTRACE              TR("PL stopek", INDENT "Stopa PL stopek")
-#define TR_TTRIM               TR("TrimPlynVol.", INDENT "Trim jen volnoběh")
+#define TR_TTRIM               TR("TrimVolnob.", INDENT "Trim jen volnoběh")
 #define TR_BEEPCTR             "Středy \221\222"
 #define TR_PROTO               INDENT "Protokol"
 #define TR_PPMFRAME            INDENT "PPM frame"
