@@ -485,7 +485,7 @@
           </property>
           <item>
            <property name="text">
-            <string>Red</string>
+            <string>Critical Alarm</string>
            </property>
           </item>
          </widget>
@@ -673,7 +673,7 @@
           </property>
           <item>
            <property name="text">
-            <string>Orange</string>
+            <string>Low Alarm</string>
            </property>
           </item>
          </widget>
