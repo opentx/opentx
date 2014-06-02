@@ -56,7 +56,6 @@ Chewytm
 Espen Solbu
 Mike Frizell
 Bruce Jones
-Kenneth Crump
 Stefano Airaghi
 Dan Eeckhout
 Alex Calderhead
@@ -86,7 +85,6 @@ Bernard Lukaschek
 Nigel Chippindale
 Mike Perkins
 Ted Hammond 
-Kenneth Crump
 David Beanland
 Bernd Koehler
 Frédéric Duflos 
@@ -120,9 +118,7 @@ Arnaldo Gabella
 Fiorenzo Agnelli
 Michele Villa
 Christophe Rodriguez
-Harald Klein
 Larisa Filocamo
-Alex Calderhead
 Hartmut Sahm
 Åke Brodin
 Aloft Hobbies - www.alofthobbies.com
@@ -137,7 +133,6 @@ Kenneth Lilja (monthly)
 Robert Jero
 Gary Bancroft
 Robert Cotsford
-Gordon Stahl
 NorthSide
 George Constandinides
 Robert Schonk Jr
@@ -182,7 +177,6 @@ Brian Paddock (monthly)
 Jean Pierre Parisy
 Norbert Martsch
 Jean-Marie Guitard
-Eric Beier
 Mike Perkins
 Tilman Baumann (monthly)
 Fred Larssen
@@ -192,7 +186,6 @@ Kirk Robertson
 John Koontz
 Jeffery Golias
 Paul Robinson
-Kenneth Crump
 Dave Matison
 Mike Matheny
 Pino Agostino
@@ -281,7 +274,6 @@ Terry McKinley
 Walter Bell
 wsTech - http://wstech.de
 Clinton Linck
-Gordon Stahl
 Josep Clodas Sola 
 Thierry Martin
 Peter Mauro 
@@ -319,9 +311,7 @@ Mark Gaskievicz
 Roland Müller
 Frank Gewalt
 Remi Viard
-Leonard MacKey
 Reginald H Millsom
-Emanuel Stassar
 Pierluigi Sommaruga
 A Harris
 Stefan Grunenberg 
@@ -355,7 +345,6 @@ Evening Shade Pottery
 Thomas Kilduff
 Sven Assmus
 Markus Eberl
-Dietmar Drees
 Nicholas Field
 Harald Wilczak
 Michel Baily
@@ -377,7 +366,6 @@ Charles Lakins
 Thos. O'Meara Photography
 Adam Chevalier
 Mike Mulligan
-Gordon Stahl
 Serge Michaux 
 Robert Young
 Wilco Hijink
@@ -397,15 +385,14 @@ Robert Bates
 Robert Brown  
 Dennis Marinus
 Ronald Van Putte
-Dietmar Drees
 Thomas Kvitle Jenssen
 Patrick Tuxbury 
 Istvan Magi
-Sasaki Satoru 
+Sasaki Satoru
 David Laburthe
 Vit Jelinek
 Pablo Gomez Martinez
-Alan Thoren 
+Alan Thoren
 Jack Clodfelter
 William Simon
 James Houck
@@ -414,7 +401,6 @@ Thomas Svedman
 TechFixPros
 Rafael Eric Suarez Nordlow
 Colin Rycroft
-Charles Lakins
 Emanuel Stassar
 Michael Gregory
 Robert Russell
