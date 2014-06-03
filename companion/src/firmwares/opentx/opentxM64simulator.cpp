@@ -14,7 +14,7 @@
  *
  */
 
-#include "opentxsimulator.h"
+#include "opentxM64simulator.h"
 #include "opentxinterface.h"
 #include "opentxeeprom.h"
 
@@ -61,7 +61,7 @@
 
 #include <exception>
 
-namespace Open9x {
+namespace OpenTxM64 {
 #include "radio/src/targets/stock/board_stock.cpp"
 #include "radio/src/targets/common_avr/telemetry_driver.cpp"
 #include "radio/src/eeprom_common.cpp"
@@ -74,6 +74,7 @@ namespace Open9x {
 #include "radio/src/pulses/pulses_avr.cpp"
 #include "radio/src/stamp.cpp"
 #include "radio/src/maths.cpp"
+#include "radio/src/vario.cpp"
 #include "radio/src/gui/menus.cpp"
 #include "radio/src/gui/menu_model.cpp"
 #include "radio/src/gui/menu_general.cpp"
@@ -115,52 +116,52 @@ uint8_t getStickMode()
 
 }
 
-using namespace Open9x;
+using namespace OpenTxM64;
 
-Open9xSimulator::Open9xSimulator()
+OpenTxM64Simulator::OpenTxM64Simulator()
 {
 #define INIT_IMPORT
 #include "simulatorimport.h"
 }
 
-bool Open9xSimulator::timer10ms()
+bool OpenTxM64Simulator::timer10ms()
 {
 #define TIMER10MS_IMPORT
 #include "simulatorimport.h"
 }
 
-uint8_t * Open9xSimulator::getLcd()
+uint8_t * OpenTxM64Simulator::getLcd()
 {
 #define GETLCD_IMPORT
 #include "simulatorimport.h"
 }
 
-bool Open9xSimulator::lcdChanged(bool & lightEnable)
+bool OpenTxM64Simulator::lcdChanged(bool & lightEnable)
 {
 #define LCDCHANGED_IMPORT
 #include "simulatorimport.h"
 }
 
-void Open9xSimulator::start(QByteArray & eeprom, bool tests)
+void OpenTxM64Simulator::start(QByteArray & eeprom, bool tests)
 {
-  memcpy(&Open9x::eeprom[0], eeprom.data(), 2048);
+  memcpy(&OpenTxM64::eeprom[0], eeprom.data(), 2048);
   StartEepromThread(NULL);
   StartMainThread(tests);
 }
 
-void Open9xSimulator::start(const char * filename, bool tests)
+void OpenTxM64Simulator::start(const char * filename, bool tests)
 {
   StartEepromThread(filename);
   StartMainThread(tests);
 }
 
-void Open9xSimulator::stop()
+void OpenTxM64Simulator::stop()
 {
   StopMainThread();
   StopEepromThread();
 }
 
-void Open9xSimulator::getValues(TxOutputs &outputs)
+void OpenTxM64Simulator::getValues(TxOutputs &outputs)
 {
 #define GETVALUES_IMPORT
 #define g_chans512 channelOutputs
@@ -169,20 +170,20 @@ void Open9xSimulator::getValues(TxOutputs &outputs)
   g_beepCnt = 0;
 }
 
-void Open9xSimulator::setValues(TxInputs &inputs)
+void OpenTxM64Simulator::setValues(TxInputs &inputs)
 {
 #define SETVALUES_IMPORT
 #include "simulatorimport.h"
 }
 
-void Open9xSimulator::setTrim(unsigned int idx, int value)
+void OpenTxM64Simulator::setTrim(unsigned int idx, int value)
 {
-  idx = Open9x::modn12x3[4*getStickMode() + idx];
+  idx = OpenTxM64::modn12x3[4*getStickMode() + idx];
   uint8_t phase = getTrimFlightPhase(getFlightPhase(), idx);
   setTrimValue(phase, idx, value);
 }
 
-void Open9xSimulator::getTrims(Trims & trims)
+void OpenTxM64Simulator::getTrims(Trims & trims)
 {
   uint8_t phase = getFlightPhase();
   trims.extended = hasExtendedTrims();
@@ -191,26 +192,26 @@ void Open9xSimulator::getTrims(Trims & trims)
   }
 
   for (int i=0; i<2; i++) {
-    uint8_t idx = Open9x::modn12x3[4*getStickMode() + i];
+    uint8_t idx = OpenTxM64::modn12x3[4*getStickMode() + i];
     int16_t tmp = trims.values[i];
     trims.values[i] = trims.values[idx];
     trims.values[idx] = tmp;
   }
 }
 
-unsigned int Open9xSimulator::getPhase()
+unsigned int OpenTxM64Simulator::getPhase()
 {
   return getFlightPhase();
 }
 
-const char * Open9xSimulator::getPhaseName(unsigned int phase)
+const char * OpenTxM64Simulator::getPhaseName(unsigned int phase)
 {
   static char buff[sizeof(g_model.phaseData[0].name)+1];
   zchar2str(buff, g_model.phaseData[phase].name, sizeof(g_model.phaseData[0].name));
   return buff;
 }
 
-const char * Open9xSimulator::getError()
+const char * OpenTxM64Simulator::getError()
 {
 #define GETERROR_IMPORT
 #include "simulatorimport.h"

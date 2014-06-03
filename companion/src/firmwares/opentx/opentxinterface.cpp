@@ -20,7 +20,7 @@
 #include "opentxeeprom.h"
 #include "open9xGruvin9xeeprom.h"
 #include "open9xSky9xeeprom.h"
-#include "opentxsimulator.h"
+#include "opentxM64simulator.h"
 #include "opentxM128simulator.h"
 #include "opentxGruvin9xsimulator.h"
 #include "opentxSky9xsimulator.h"
@@ -944,9 +944,9 @@ SimulatorInterface * OpenTxFirmware::getSimulator()
 {
   switch (board) {
     case BOARD_STOCK:
-      return new Open9xSimulator();
+      return new OpenTxM64Simulator();
     case BOARD_M128:
-      return new Open9xM128Simulator();
+      return new OpenTxM128Simulator();
     case BOARD_GRUVIN9X:
       return new Open9xGruvin9xSimulator();
     case BOARD_SKY9X:

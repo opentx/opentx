@@ -953,6 +953,7 @@ ifeq ($(EXT), $(filter $(EXT), FRSKY FRSKY_SPORT TELEMETREZ))
   endif
 
   ifeq ($(VARIO), YES)
+    CPPSRC += vario.cpp
     CPPDEFS += -DVARIO
   endif
   EEPROM_VARIANT += ${FRSKY_VARIANT}

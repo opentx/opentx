@@ -14,19 +14,19 @@
  *
  */
 
-#ifndef open9xM128_simulator_h
-#define open9xM128_simulator_h
+#ifndef OpenTxM128_simulator_h
+#define OpenTxM128_simulator_h
 
 #include "simulatorinterface.h"
 
 class RadioData;
 class OpenTxEepromInterface;
 
-class Open9xM128Simulator : public SimulatorInterface {
+class OpenTxM128Simulator : public SimulatorInterface {
 
   public:
 
-    Open9xM128Simulator();
+    OpenTxM128Simulator();
 
     virtual void start(QByteArray & eeprom, bool tests=true);
 

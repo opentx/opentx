@@ -89,6 +89,7 @@ inline int geteepromsize() {
 #include "radio/src/pulses/pulses_arm.cpp"
 #include "radio/src/stamp.cpp"
 #include "radio/src/maths.cpp"
+#include "radio/src/vario.cpp"
 #include "radio/src/gui/menus.cpp"
 #include "radio/src/gui/menu_model.cpp"
 #include "radio/src/gui/menu_general.cpp"

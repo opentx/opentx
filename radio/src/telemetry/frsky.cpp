@@ -144,6 +144,16 @@ void FrskyValueWithMinMax::set(uint8_t value, uint8_t unit)
   }
 }
 
+uint16_t getChannelRatio(uint8_t channel)
+{
+  return (uint16_t)g_model.frsky.channels[channel].ratio << g_model.frsky.channels[channel].multiplier;
+}
+
+lcdint_t applyChannelRatio(uint8_t channel, lcdint_t val)
+{
+  return ((int32_t)val+g_model.frsky.channels[channel].offset) * getChannelRatio(channel) * 2 / 51;
+}
+
 #if defined(CPUARM)
 inline bool rxBattAlarmRaised(uint8_t alarm)
 {

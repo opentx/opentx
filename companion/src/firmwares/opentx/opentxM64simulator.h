@@ -21,11 +21,11 @@
 
 class OpenTxEepromInterface;
 
-class Open9xSimulator : public SimulatorInterface {
+class OpenTxM64Simulator : public SimulatorInterface {
 
   public:
 
-    Open9xSimulator();
+    OpenTxM64Simulator();
 
     virtual void start(QByteArray & eeprom, bool tests=true);
 

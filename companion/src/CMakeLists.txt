@@ -130,7 +130,7 @@ set(common_SRCS
   firmwares/opentx/opentxSky9xsimulator.cpp
   firmwares/opentx/opentxGruvin9xsimulator.cpp
   firmwares/opentx/opentxM128simulator.cpp
-  firmwares/opentx/opentxsimulator.cpp
+  firmwares/opentx/opentxM64simulator.cpp
   file.cpp
   googleanalytics.cpp
   appdata.cpp

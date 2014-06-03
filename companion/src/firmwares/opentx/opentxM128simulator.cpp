@@ -55,7 +55,7 @@
 
 #include <exception>
 
-namespace Open9xM128 {
+namespace OpenTxM128 {
 #include "radio/src/targets/stock/board_stock.cpp"
 #include "radio/src/targets/common_avr/telemetry_driver.cpp"
 #include "radio/src/eeprom_common.cpp"
@@ -68,6 +68,7 @@ namespace Open9xM128 {
 #include "radio/src/pulses/pulses_avr.cpp"
 #include "radio/src/stamp.cpp"
 #include "radio/src/maths.cpp"
+#include "radio/src/vario.cpp"
 #include "radio/src/gui/menus.cpp"
 #include "radio/src/gui/menu_model.cpp"
 #include "radio/src/gui/menu_general.cpp"
@@ -109,70 +110,70 @@ uint8_t getStickMode()
 
 }
 
-using namespace Open9xM128;
+using namespace OpenTxM128;
 
-Open9xM128Simulator::Open9xM128Simulator()
+OpenTxM128Simulator::OpenTxM128Simulator()
 {
 }
 
-bool Open9xM128Simulator::timer10ms()
+bool OpenTxM128Simulator::timer10ms()
 {
 #define TIMER10MS_IMPORT
 #include "simulatorimport.h"
 }
 
-uint8_t * Open9xM128Simulator::getLcd()
+uint8_t * OpenTxM128Simulator::getLcd()
 {
 #define GETLCD_IMPORT
 #include "simulatorimport.h"
 }
 
-bool Open9xM128Simulator::lcdChanged(bool & lightEnable)
+bool OpenTxM128Simulator::lcdChanged(bool & lightEnable)
 {
 #define LCDCHANGED_IMPORT
 #include "simulatorimport.h"
 }
 
-void Open9xM128Simulator::start(QByteArray & eeprom, bool tests)
+void OpenTxM128Simulator::start(QByteArray & eeprom, bool tests)
 {
-  memcpy(Open9xM128::eeprom, eeprom.data(), std::min<int>(sizeof(Open9xM128::eeprom), eeprom.size()));
+  memcpy(OpenTxM128::eeprom, eeprom.data(), std::min<int>(sizeof(OpenTxM128::eeprom), eeprom.size()));
   StartEepromThread(NULL);
   StartMainThread(tests);
 }
 
-void Open9xM128Simulator::start(const char * filename, bool tests)
+void OpenTxM128Simulator::start(const char * filename, bool tests)
 {
   StartEepromThread(filename);
   StartMainThread(tests);
 }
 
-void Open9xM128Simulator::stop()
+void OpenTxM128Simulator::stop()
 {
   StopMainThread();
   StopEepromThread();
 }
 
-void Open9xM128Simulator::getValues(TxOutputs &outputs)
+void OpenTxM128Simulator::getValues(TxOutputs &outputs)
 {
 #define GETVALUES_IMPORT
 #define g_chans512 channelOutputs
 #include "simulatorimport.h"
 }
 
-void Open9xM128Simulator::setValues(TxInputs &inputs)
+void OpenTxM128Simulator::setValues(TxInputs &inputs)
 {
 #define SETVALUES_IMPORT
 #include "simulatorimport.h"
 }
 
-void Open9xM128Simulator::setTrim(unsigned int idx, int value)
+void OpenTxM128Simulator::setTrim(unsigned int idx, int value)
 {
-  idx = Open9xM128::modn12x3[4*getStickMode() + idx];
+  idx = OpenTxM128::modn12x3[4*getStickMode() + idx];
   uint8_t phase = getTrimFlightPhase(getFlightPhase(), idx);
   setTrimValue(phase, idx, value);
 }
 
-void Open9xM128Simulator::getTrims(Trims & trims)
+void OpenTxM128Simulator::getTrims(Trims & trims)
 {
   uint8_t phase = getFlightPhase();
   trims.extended = hasExtendedTrims();
@@ -181,30 +182,30 @@ void Open9xM128Simulator::getTrims(Trims & trims)
   }
 
   for (int i=0; i<2; i++) {
-    uint8_t idx = Open9xM128::modn12x3[4*getStickMode() + i];
+    uint8_t idx = OpenTxM128::modn12x3[4*getStickMode() + i];
     int16_t tmp = trims.values[i];
     trims.values[i] = trims.values[idx];
     trims.values[idx] = tmp;
   }
 }
 
-void Open9xM128Simulator::wheelEvent(uint8_t steps)
+void OpenTxM128Simulator::wheelEvent(uint8_t steps)
 {
 }
 
-unsigned int Open9xM128Simulator::getPhase()
+unsigned int OpenTxM128Simulator::getPhase()
 {
   return getFlightPhase();
 }
 
-const char * Open9xM128Simulator::getPhaseName(unsigned int phase)
+const char * OpenTxM128Simulator::getPhaseName(unsigned int phase)
 {
   static char buff[sizeof(g_model.phaseData[0].name)+1];
   zchar2str(buff, g_model.phaseData[phase].name, sizeof(g_model.phaseData[0].name));
   return buff;
 }
 
-const char * Open9xM128Simulator::getError()
+const char * OpenTxM128Simulator::getError()
 {
 #define GETERROR_IMPORT
 #include "simulatorimport.h"
