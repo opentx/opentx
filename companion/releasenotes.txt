@@ -1,3 +1,9 @@
+<h2>Version 2.0.0</h2>
+<ul>
+<li>Companion now merged into OpenTX</li>
+<li>Too many changes to list them all!</li>
+</ul>
+
 <h2>Version 1.52</h2>
 <ul>
 <li>Fix crash when writing certain EEPROMS</li>
