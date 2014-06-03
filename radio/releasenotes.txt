@@ -1,4 +1,4 @@
-<h2>OpenTX 2.0 / Coming soon!</h2>
+<h2>OpenTX 2.0.0</h2>
 [Taranis]
 <ul>
 <li>Inputs layer with support for all physical inputs and telemetry
