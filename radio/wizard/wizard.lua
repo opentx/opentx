@@ -50,6 +50,7 @@ local function modelTypeMenu(event)
     elseif modelType == MODELTYPE_DELTA then
       return "delta.lua"
     elseif modelType == MODELTYPE_QUAD then
+      return "multi.lua"
     end
     dirty = true
   else
