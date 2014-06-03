@@ -85,7 +85,7 @@
     <message>
         <location filename="../apppreferencesdialog.ui" line="88"/>
         <source>Build Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opzioni per compilazione</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="98"/>
@@ -100,7 +100,7 @@
     <message>
         <location filename="../apppreferencesdialog.ui" line="121"/>
         <source>Select Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleziona immagine</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="161"/>
@@ -128,7 +128,7 @@ Mode 4:
   Right stick:  Elevator, Rudder
 
 </source>
-        <translation type="unfinished">Modalità stick:
+        <translation>Modalità stick:
 
 Modo 1:
   Stick sinistro:  Elevatore, Direzionale
@@ -156,22 +156,22 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="204"/>
         <source>Mode 2 (RUD THR ELE AIL)</source>
-        <translation type="unfinished">Modo 2 (DIR MOTO ELE ALE)</translation>
+        <translation>Modo 2 (DIR MOTO ELE ALE)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="209"/>
         <source>Mode 3 (AIL ELE THR RUD)</source>
-        <translation type="unfinished">Modo 3 (ALE ELE MOT DIR)</translation>
+        <translation>Modo 3 (ALE ELE MOT DIR)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="214"/>
         <source>Mode 4 (AIL THR ELE RUD)</source>
-        <translation type="unfinished">Modo 4 (ALE MOT ELE DIR)</translation>
+        <translation>Modo 4 (ALE MOT ELE DIR)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="234"/>
         <source>Splash Screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Schermata di avvio</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="259"/>
@@ -181,122 +181,122 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="266"/>
         <source>R E T A</source>
-        <translation type="unfinished">R E T A  </translation>
+        <translation>D E M A  </translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="271"/>
         <source>R E A T</source>
-        <translation type="unfinished">R E A T</translation>
+        <translation>D E A M</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="276"/>
         <source>R T E A</source>
-        <translation type="unfinished">R T E A</translation>
+        <translation>D M E A</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="281"/>
         <source>R T A E</source>
-        <translation type="unfinished">R T A E</translation>
+        <translation>D M A E</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="286"/>
         <source>R A E T</source>
-        <translation type="unfinished">R A E T</translation>
+        <translation>D A E M</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="291"/>
         <source>R A T E</source>
-        <translation type="unfinished">R A T E</translation>
+        <translation>D A M E</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="296"/>
         <source>E R T A</source>
-        <translation type="unfinished">E R T A</translation>
+        <translation>E D M A</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="301"/>
         <source>E R A T</source>
-        <translation type="unfinished">E R A T</translation>
+        <translation>E D A M</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="306"/>
         <source>E T R A</source>
-        <translation type="unfinished">E T R A</translation>
+        <translation>E M D A</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="311"/>
         <source>E T A R</source>
-        <translation type="unfinished">E T A R</translation>
+        <translation>E M A D</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="316"/>
         <source>E A R T</source>
-        <translation type="unfinished">E A R T</translation>
+        <translation>E A D M</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="321"/>
         <source>E A T R</source>
-        <translation type="unfinished">E A T R</translation>
+        <translation>E A M D</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="326"/>
         <source>T R E A</source>
-        <translation type="unfinished">T R E A</translation>
+        <translation>M D E A</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="331"/>
         <source>T R A E</source>
-        <translation type="unfinished">T R A E</translation>
+        <translation>M D A E</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="336"/>
         <source>T E R A</source>
-        <translation type="unfinished">T E R A</translation>
+        <translation>M E D A</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="341"/>
         <source>T E A R</source>
-        <translation type="unfinished">T E A R</translation>
+        <translation>M E A D</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="346"/>
         <source>T A R E</source>
-        <translation type="unfinished">T A R E</translation>
+        <translation>M A D E</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="351"/>
         <source>T A E R</source>
-        <translation type="unfinished">T A E R</translation>
+        <translation>M A E D</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="356"/>
         <source>A R E T</source>
-        <translation type="unfinished"></translation>
+        <translation>A D E M</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="361"/>
         <source>A R T E</source>
-        <translation type="unfinished"></translation>
+        <translation>A D M E</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="366"/>
         <source>A E R T</source>
-        <translation type="unfinished"></translation>
+        <translation>A E D M</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="371"/>
         <source>A E T R</source>
-        <translation type="unfinished"></translation>
+        <translation>A E M D</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="376"/>
         <source>A T R E</source>
-        <translation type="unfinished"></translation>
+        <translation>A M D E</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="381"/>
         <source>A T E R</source>
-        <translation type="unfinished"></translation>
+        <translation>A M E D</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="395"/>
@@ -306,32 +306,32 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="415"/>
         <source>Remove Profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Rimuovi Profilo</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="444"/>
         <source>Clear Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Cancella immagine</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="504"/>
         <source>Append version number to FW file name</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi il numero di versione al nome del file</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="511"/>
         <source>Offer to write FW to Tx after download</source>
-        <translation type="unfinished"></translation>
+        <translation>Scrivere dopo aggiornamento </translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="547"/>
         <source>Radio Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo di radio</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="599"/>
         <source>Other Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Altre impostazioni</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="606"/>
@@ -347,7 +347,8 @@ Mode 4:
         <location filename="../apppreferencesdialog.ui" line="635"/>
         <source>Set voice language.
 May be different from firmware language</source>
-        <translation type="unfinished"></translation>
+        <translation>Impostazione del linguaggio della voce.
+Può essere differente dalla lingua del firmware</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="650"/>
@@ -357,37 +358,37 @@ May be different from firmware language</source>
     <message>
         <location filename="../apppreferencesdialog.ui" line="658"/>
         <source>Application Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Impostazioni applicazione</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="664"/>
         <source>Show splash screen when Companion starts</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra schermata all&apos;avvio</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="674"/>
         <source>Automatic check for Companion updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Verifica automaticamente aggiornamenti di Companion</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="684"/>
         <source>Enable automatic backup before writing firmware</source>
-        <translation type="unfinished"></translation>
+        <translation>Abilita il backup automatico prima degli aggiornamenti</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="705"/>
         <source>Automatic check for OpenTX firmware updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Verifica automaticamente aggiornamenti di OpenTX</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="764"/>
         <source>Splash Screen Library</source>
-        <translation type="unfinished"></translation>
+        <translation>Libreria sfondi</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="777"/>
         <source>Files to keep</source>
-        <translation type="unfinished"></translation>
+        <translation>Numero di file recenti</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="784"/>
@@ -402,17 +403,17 @@ May be different from firmware language</source>
     <message>
         <location filename="../apppreferencesdialog.ui" line="832"/>
         <source>Only show user splash images</source>
-        <translation type="unfinished"></translation>
+        <translation>Solamente sfondi utente</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="837"/>
         <source>Show user and companion splash images</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra anche sfondi di Companion</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="851"/>
         <source>User Splash Screens</source>
-        <translation type="unfinished"></translation>
+        <translation>Cartella sfondi utente</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="880"/>
@@ -422,17 +423,17 @@ May be different from firmware language</source>
     <message>
         <location filename="../apppreferencesdialog.ui" line="920"/>
         <source>Use model wizard when creating a new model</source>
-        <translation type="unfinished"></translation>
+        <translation>Utilizza l&apos;assistente per i nuovi modelli</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="928"/>
         <source>Simulator Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Impostazioni simulatore</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="940"/>
         <source>Simulator BackLight</source>
-        <translation type="unfinished"></translation>
+        <translation>Colore Retroilluminazione</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="950"/>
@@ -482,17 +483,17 @@ May be different from firmware language</source>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1081"/>
         <source>Only capture to clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Usa solo gli appunti per la cattura degli schermi</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1088"/>
         <source>Remember simulator switch values</source>
-        <translation type="unfinished"></translation>
+        <translation>Ricorda la posizione degli switches nel simulatore</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="77"/>
         <source>My Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>La mia radio</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="92"/>
@@ -508,17 +509,17 @@ May be different from firmware language</source>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="177"/>
         <source>EMPTY: No radio settings stored in profile</source>
-        <translation type="unfinished"></translation>
+        <translation>VUOTO: Nessuna impostazione radio nel profilo</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="182"/>
         <source>AVAILABLE: Radio settings of unknown age</source>
-        <translation type="unfinished"></translation>
+        <translation>DISPONIBILE: Impostazioni di data sconosciuta</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="184"/>
         <source>AVAILABLE: Radio settings stored %1</source>
-        <translation type="unfinished"></translation>
+        <translation>DISPONIBILE: Impostazioni memorizzate %1</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="203"/>
@@ -533,7 +534,7 @@ May be different from firmware language</source>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="237"/>
         <source>Select Google Earth executable</source>
-        <translation type="unfinished"></translation>
+        <translation>Trova l&apos;eseguibile di Google Earth</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="280"/>
@@ -543,12 +544,12 @@ May be different from firmware language</source>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="289"/>
         <source>Not possible to remove profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Non è possibile rimuover il profilo</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="289"/>
         <source>The default profile can not be removed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Il profilo predefinito non può essere rimosso.</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="326"/>
@@ -1449,7 +1450,7 @@ May be different from firmware language</source>
     <message>
         <location filename="../modeledit/expodialog.ui" line="43"/>
         <source>Input name</source>
-        <translation type="unfinished">Nome Ingresso</translation>
+        <translation>Nome Ingresso</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="66"/>
@@ -1497,12 +1498,12 @@ May be different from firmware language</source>
     <message>
         <location filename="../modeledit/expodialog.ui" line="414"/>
         <source>Source</source>
-        <translation type="unfinished">Sorgente</translation>
+        <translation>Sorgente</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="421"/>
         <source>Line name</source>
-        <translation type="unfinished">Nome linea</translation>
+        <translation>Nome linea</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="277"/>
@@ -1536,33 +1537,34 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/expodialog.ui" line="36"/>
         <source>Source for the mixer.</source>
-        <translation type="unfinished">Sorgente per il Mixer</translation>
+        <translation>Sorgente per la miscelazione.</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="269"/>
         <source>Switch used to enable the line.
 If blank then the input is considered to be &quot;ON&quot; all the time.</source>
-        <translation type="unfinished">Interruttore usato per abilitare la linea. Se vuoto verrà sempre considerato &quot;ON&quot;</translation>
+        <translation>Interruttore usato per abilitare la linea.
+Se vuoto verrà sempre considerata &quot;Attiva&quot;.</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="348"/>
         <source>Scale</source>
-        <translation type="unfinished">Campo di misura</translation>
+        <translation>Campo di misura</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="355"/>
         <source>Include Trim</source>
-        <translation type="unfinished">Include i Trim</translation>
+        <translation>Include i Trim</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="363"/>
         <source>No</source>
-        <translation type="unfinished">No</translation>
+        <translation>No</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="368"/>
         <source>Yes</source>
-        <translation type="unfinished">Si</translation>
+        <translation>Si</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="376"/>
@@ -1572,7 +1574,7 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</source
     <message>
         <location filename="../modeledit/expodialog.ui" line="388"/>
         <source>Curve applied to the source.</source>
-        <translation type="unfinished">Curva applicata alla sorgente</translation>
+        <translation>Curva applicata alla sorgente.</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="285"/>
@@ -1592,27 +1594,27 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</source
     <message>
         <location filename="../modeledit/expodialog.cpp" line="18"/>
         <source>Edit %1</source>
-        <translation type="unfinished">Edita %1</translation>
+        <translation>Modifica %1</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.cpp" line="67"/>
         <source>Rud</source>
-        <translation type="unfinished">Direzionale</translation>
+        <translation>Dir</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.cpp" line="68"/>
         <source>Ele</source>
-        <translation type="unfinished">Elevatore</translation>
+        <translation>Ele</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.cpp" line="69"/>
         <source>Thr</source>
-        <translation type="unfinished">Motore</translation>
+        <translation>Mot</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.cpp" line="70"/>
         <source>Ail</source>
-        <translation type="unfinished">Alettoni</translation>
+        <translation>Ale</translation>
     </message>
 </context>
 <context>
@@ -1836,22 +1838,22 @@ Può essere differente dalla lingua del firmware</translation>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="60"/>
         <source>Rud</source>
-        <translation type="unfinished"></translation>
+        <translation>Dir</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="60"/>
         <source>Ele</source>
-        <translation type="unfinished"></translation>
+        <translation>Ele</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="60"/>
         <source>Thr</source>
-        <translation type="unfinished"></translation>
+        <translation>Mot</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="60"/>
         <source>Ail</source>
-        <translation type="unfinished"></translation>
+        <translation>Ale</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="97"/>
@@ -2306,12 +2308,12 @@ Mode 4:
     <message utf8="true">
         <location filename="../generaledit.ui" line="130"/>
         <source>hh° (N/S) mm&apos; ss&apos;&apos;.dd</source>
-        <translation type="unfinished">hh° (N/S) mm&apos; ss&quot; .dd</translation>
+        <translation>hh° (N/S) mm&apos; ss&quot; .dd</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="135"/>
         <source>NMEA</source>
-        <translation type="unfinished">NMEA</translation>
+        <translation>NMEA</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1457"/>
@@ -2351,12 +2353,12 @@ Mode 4:
     <message>
         <location filename="../generaledit.ui" line="326"/>
         <source>Standard</source>
-        <translation type="unfinished">Standard</translation>
+        <translation>Standard</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="331"/>
         <source>Optrex</source>
-        <translation type="unfinished">Optrex</translation>
+        <translation>Optrex</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1450"/>
@@ -2393,17 +2395,17 @@ Mode 4:
     <message>
         <location filename="../generaledit.ui" line="209"/>
         <source>Europe</source>
-        <translation type="unfinished">Europa</translation>
+        <translation>Europa</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="204"/>
         <source>Japan</source>
-        <translation type="unfinished">Japan</translation>
+        <translation>Giappone</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="199"/>
         <source>America</source>
-        <translation type="unfinished">America</translation>
+        <translation>America</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="178"/>
@@ -2453,47 +2455,47 @@ Mode 4:
     <message>
         <location filename="../generaledit.ui" line="1415"/>
         <source>MAVLink Baud Rate</source>
-        <translation type="unfinished">Baud rate MAVLink</translation>
+        <translation>Baud rate MAVLink</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1279"/>
         <source>4800 Baud</source>
-        <translation type="unfinished">4800 Baud</translation>
+        <translation>4800 Baud</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1284"/>
         <source>9600 Baud</source>
-        <translation type="unfinished">9600 Baud</translation>
+        <translation>9600 Baud</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1289"/>
         <source>14400 Baud</source>
-        <translation type="unfinished">14400 Baud</translation>
+        <translation>14400 Baud</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1294"/>
         <source>19200 Baud</source>
-        <translation type="unfinished">19200 Baud</translation>
+        <translation>19200 Baud</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1299"/>
         <source>38400 Baud</source>
-        <translation type="unfinished">38400 Baud</translation>
+        <translation>38400 Baud</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1304"/>
         <source>57600 Baud</source>
-        <translation type="unfinished">57600 Baud</translation>
+        <translation>57600 Baud</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1309"/>
         <source>76800 Baud</source>
-        <translation type="unfinished">76800 Baud</translation>
+        <translation>76800 Baud</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1314"/>
         <source>115200 Baud</source>
-        <translation type="unfinished">115200 Baud</translation>
+        <translation>115200 Baud</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1964"/>
@@ -2503,238 +2505,239 @@ Mode 4:
     <message>
         <location filename="../generaledit.ui" line="1841"/>
         <source>R E T A</source>
-        <translation type="unfinished">R E T A  </translation>
+        <translation>D E M A  </translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="271"/>
         <source>Color 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Colore 1</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="288"/>
         <source>Color 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Colore 2</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="318"/>
         <source>Vario pitch at zero</source>
-        <translation type="unfinished">Picth Vario a zero</translation>
+        <translation>Tono del vario a zero</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1205"/>
         <source>Backlight Brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Luminosità retroilluminazione</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1219"/>
         <source>Backlight  Auto OFF after</source>
-        <translation type="unfinished"></translation>
+        <translation>Auto spegnimento luce dopo</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1236"/>
         <source>Backlight color</source>
-        <translation type="unfinished"></translation>
+        <translation>Colore retroilluminazione</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1322"/>
         <source>Backlight Switch</source>
-        <translation type="unfinished"></translation>
+        <translation>Interruttore retroilluminazione</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1715"/>
         <source>Stick reverse (order as above)</source>
-        <translation type="unfinished"></translation>
+        <translation>Inversione stick
+(vedi ordine precedente)</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1728"/>
         <source>Default Channel Order</source>
-        <translation type="unfinished">Ordine canali predefinito</translation>
+        <translation>Ordine canali predefinito</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1834"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Channel order&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Defines the order of the default mixes created on a new model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ordine dei canali&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Definisce l&apos;ordine delle miscelazioni predefinite durante la creazione di un modello.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1846"/>
         <source>R E A T</source>
-        <translation type="unfinished">R E A T</translation>
+        <translation>D E A M</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1851"/>
         <source>R T E A</source>
-        <translation type="unfinished">R T E A</translation>
+        <translation>D M E A</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1856"/>
         <source>R T A E</source>
-        <translation type="unfinished">R T A E</translation>
+        <translation>D M A E</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1861"/>
         <source>R A E T</source>
-        <translation type="unfinished">R A E T</translation>
+        <translation>D A E M</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1866"/>
         <source>R A T E</source>
-        <translation type="unfinished">R A T E</translation>
+        <translation>D A M E</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1871"/>
         <source>E R T A</source>
-        <translation type="unfinished">E R T A</translation>
+        <translation>E D M A</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1876"/>
         <source>E R A T</source>
-        <translation type="unfinished">E R A T</translation>
+        <translation>E D A M</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1881"/>
         <source>E T R A</source>
-        <translation type="unfinished">E T R A</translation>
+        <translation>E M D A</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1886"/>
         <source>E T A R</source>
-        <translation type="unfinished">E T A R</translation>
+        <translation>E M A D</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1891"/>
         <source>E A R T</source>
-        <translation type="unfinished">E A R T</translation>
+        <translation>E A D M</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1896"/>
         <source>E A T R</source>
-        <translation type="unfinished">E A T R</translation>
+        <translation>E A M D</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1901"/>
         <source>T R E A</source>
-        <translation type="unfinished">T R E A</translation>
+        <translation>M D E A</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1906"/>
         <source>T R A E</source>
-        <translation type="unfinished">T R A E</translation>
+        <translation>M D A E</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1911"/>
         <source>T E R A</source>
-        <translation type="unfinished">T E R A</translation>
+        <translation>M E D A</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1916"/>
         <source>T E A R</source>
-        <translation type="unfinished">T E A R</translation>
+        <translation>M E A D</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1921"/>
         <source>T A R E</source>
-        <translation type="unfinished">T A R E</translation>
+        <translation>M A D E</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1926"/>
         <source>T A E R</source>
-        <translation type="unfinished">T A E R</translation>
+        <translation>M A E D</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1931"/>
         <source>A R E T</source>
-        <translation type="unfinished">A R E T</translation>
+        <translation>A D E M</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1936"/>
         <source>A R T E</source>
-        <translation type="unfinished">A R T E</translation>
+        <translation>A D M E</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1941"/>
         <source>A E R T</source>
-        <translation type="unfinished">A E R T</translation>
+        <translation>A E D M</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1946"/>
         <source>A E T R</source>
-        <translation type="unfinished">A E T R</translation>
+        <translation>A E M D</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1951"/>
         <source>A T R E</source>
-        <translation type="unfinished">A T R E</translation>
+        <translation>A M D E</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1956"/>
         <source>A T E R</source>
-        <translation type="unfinished">A T E R</translation>
+        <translation>A M E D</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2455"/>
         <source>Pot. 4</source>
-        <translation type="unfinished">Pot. 4</translation>
+        <translation>Pot. 4</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2469"/>
         <source>Pot. 3</source>
-        <translation type="unfinished">Pot.3</translation>
+        <translation>Pot.3</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2489"/>
         <source>Pot. 2</source>
-        <translation type="unfinished">Pot. 2</translation>
+        <translation>Pot. 2</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2496"/>
         <source>Pot. 1</source>
-        <translation type="unfinished">Pot. 1</translation>
+        <translation>Pot. 1</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2523"/>
         <source>Stick 3</source>
-        <translation type="unfinished">Sick 3</translation>
+        <translation>Sick 3</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2560"/>
         <source>Stick 1</source>
-        <translation type="unfinished">Stick 1</translation>
+        <translation>Stick 1</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2609"/>
         <source>Stick 2</source>
-        <translation type="unfinished">Stick 2</translation>
+        <translation>Stick 2</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2694"/>
         <source>Stick 4</source>
-        <translation type="unfinished">Stick 4</translation>
+        <translation>Stick 4</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="3199"/>
         <source>S3 Type</source>
-        <translation type="unfinished">Tipo S3</translation>
+        <translation>Tipo S3</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="3241"/>
         <source>OFF</source>
-        <translation type="unfinished">Spento</translation>
+        <translation>Spento</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="3246"/>
         <source>S-Port Mirror</source>
         <translatorcomment>TODO</translatorcomment>
-        <translation type="unfinished">Specchio porta seriale</translation>
+        <translation>Replica dati S-Port</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="3251"/>
         <source>Debug</source>
-        <translation type="unfinished">Debug</translation>
+        <translation>Debug</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="3259"/>
         <source>Serial Port</source>
-        <translation type="unfinished">Porta Seriale</translation>
+        <translation>Porta Seriale</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="339"/>
@@ -2744,114 +2747,114 @@ Mode 4:
     <message>
         <location filename="../generaledit.ui" line="549"/>
         <source>SC</source>
-        <translation type="unfinished">SC</translation>
+        <translation>SC</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="611"/>
         <source>SE</source>
-        <translation type="unfinished">SE</translation>
+        <translation>SE</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="906"/>
         <source>SA</source>
-        <translation type="unfinished">SA</translation>
+        <translation>SA</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="922"/>
         <source>SF</source>
-        <translation type="unfinished">SF</translation>
+        <translation>SF</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="938"/>
         <source>SH</source>
-        <translation type="unfinished">SH</translation>
+        <translation>SH</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="954"/>
         <source>SD</source>
-        <translation type="unfinished">SD</translation>
+        <translation>SD</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="970"/>
         <source>SB</source>
-        <translation type="unfinished">SB</translation>
+        <translation>SB</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1035"/>
         <source>SG</source>
-        <translation type="unfinished">SG</translation>
+        <translation>SG</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1060"/>
         <location filename="../generaledit.ui" line="1167"/>
         <source> Hz</source>
-        <translation type="unfinished">Hz</translation>
+        <translation>Hz</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1585"/>
         <source>&quot;No Sound&quot; Warning</source>
-        <translation type="unfinished">Avviso &quot;nessun suono&quot;</translation>
+        <translation>Avviso &quot;nessun suono&quot;</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1592"/>
         <source>Low Memory Warning</source>
-        <translation type="unfinished">Avviso memoria in esaurimento</translation>
+        <translation>Avviso memoria in esaurimento</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1540"/>
         <source>---</source>
-        <translation type="unfinished">---</translation>
+        <translation>---</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1545"/>
         <source>2s</source>
-        <translation type="unfinished">2s</translation>
+        <translation>2s</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1550"/>
         <source>3s</source>
-        <translation type="unfinished">3s</translation>
+        <translation>3s</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1555"/>
         <source>4s</source>
-        <translation type="unfinished">4s</translation>
+        <translation>4s</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1560"/>
         <source>6s</source>
-        <translation type="unfinished">6s</translation>
+        <translation>6s</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1565"/>
         <source>8s</source>
-        <translation type="unfinished">8s</translation>
+        <translation>8s</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1570"/>
         <source>10s</source>
-        <translation type="unfinished">10s</translation>
+        <translation>10s</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1575"/>
         <source>15s</source>
-        <translation type="unfinished">15s</translation>
+        <translation>15s</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1132"/>
         <source>Vario pitch at max</source>
         <translatorcomment>To do</translatorcomment>
-        <translation type="unfinished">Tono variometro al massimo</translation>
+        <translation>Tono del vario al massimo</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1186"/>
         <source> ms</source>
-        <translation type="unfinished">ms</translation>
+        <translation>ms</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1212"/>
         <source>Vario repeat at zero</source>
-        <translation type="unfinished">Ripetizione variometro a zero</translation>
+        <translation>Ripetizione vario a zero</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2007"/>
@@ -2912,31 +2915,31 @@ Mode 4:
         <location filename="../generaledit.ui" line="3174"/>
         <location filename="../generaledit.ui" line="3222"/>
         <source>None</source>
-        <translation type="unfinished">Nessuno</translation>
+        <translation>Nessuno</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="3138"/>
         <location filename="../generaledit.ui" line="3179"/>
         <location filename="../generaledit.ui" line="3227"/>
         <source>Pot (normal)</source>
-        <translation type="unfinished">Pot(normale)</translation>
+        <translation>Pot (normale)</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="3143"/>
         <location filename="../generaledit.ui" line="3184"/>
         <location filename="../generaledit.ui" line="3232"/>
         <source>Multipos Switch</source>
-        <translation type="unfinished">Interruttore multiposizione</translation>
+        <translation>Interruttore multiposizione</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="3151"/>
         <source>S1 Type</source>
-        <translation type="unfinished">Tipo S1</translation>
+        <translation>Tipo S1</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="3192"/>
         <source>S2 Type</source>
-        <translation type="unfinished">Tipo S2</translation>
+        <translation>Tipo S2</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2540"/>
@@ -2947,22 +2950,22 @@ Mode 4:
     <message>
         <location filename="../generaledit.ui" line="2027"/>
         <source>Rud</source>
-        <translation type="unfinished">Direzionale</translation>
+        <translation>Dir</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2132"/>
         <source>Ele</source>
-        <translation type="unfinished">Elevatore</translation>
+        <translation>Ele</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2276"/>
         <source>Thr</source>
-        <translation type="unfinished">Motore</translation>
+        <translation>Mot</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2323"/>
         <source>Ail</source>
-        <translation type="unfinished">Alettoni</translation>
+        <translation>Ale</translation>
     </message>
     <message>
         <source>POT 4</source>
@@ -4835,22 +4838,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/mixerdialog.cpp" line="39"/>
         <source>Rud</source>
-        <translation type="unfinished">Rud</translation>
+        <translation>Dir</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.cpp" line="40"/>
         <source>Ele</source>
-        <translation type="unfinished">Ele</translation>
+        <translation>Ele</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.cpp" line="41"/>
         <source>Thr</source>
-        <translation type="unfinished">Trh</translation>
+        <translation>Mot</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.cpp" line="42"/>
         <source>Ail</source>
-        <translation type="unfinished">Ail</translation>
+        <translation>Ale</translation>
     </message>
 </context>
 <context>
@@ -5421,22 +5424,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../wizarddialog.cpp" line="815"/>
         <source>Throttle Channel:</source>
-        <translation type="unfinished">Canale Motore</translation>
+        <translation>Canale Motore:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="817"/>
         <source>Yaw Channel:</source>
-        <translation type="unfinished">canale Imbardata</translation>
+        <translation>Canale Imbardata:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="819"/>
         <source>Pitch Channel:</source>
-        <translation type="unfinished">Canale Beccheggio</translation>
+        <translation>Canale Beccheggio:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="821"/>
         <source>Roll Channel:</source>
-        <translation type="unfinished">Canale Rollio</translation>
+        <translation>Canale Rollio:</translation>
     </message>
 </context>
 <context>
@@ -5444,17 +5447,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../wizarddialog.cpp" line="844"/>
         <source>Throttle Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Blocco motore</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="845"/>
         <source>Throttle Timer</source>
-        <translation type="unfinished"></translation>
+        <translation>Temporizzatore motore</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="846"/>
         <source>Flight Timer</source>
-        <translation type="unfinished"></translation>
+        <translation>Temporizzatore volo</translation>
     </message>
 </context>
 <context>
@@ -11358,122 +11361,122 @@ Può essere differente dalla lingua del firmware</translation>
     <message>
         <location filename="../preferencesdialog.ui" line="391"/>
         <source>R E T A</source>
-        <translation type="unfinished">R E T A  </translation>
+        <translation>D E M A  </translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="396"/>
         <source>R E A T</source>
-        <translation type="unfinished">R E A T</translation>
+        <translation>D E A M</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="401"/>
         <source>R T E A</source>
-        <translation type="unfinished">R T E A</translation>
+        <translation>D M E A</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="406"/>
         <source>R T A E</source>
-        <translation type="unfinished">R T A E</translation>
+        <translation>D M A E</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="411"/>
         <source>R A E T</source>
-        <translation type="unfinished">R A E T</translation>
+        <translation>D A E M</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="416"/>
         <source>R A T E</source>
-        <translation type="unfinished">R A T E</translation>
+        <translation>D A M E</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="421"/>
         <source>E R T A</source>
-        <translation type="unfinished">E R T A</translation>
+        <translation>E D M A</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="426"/>
         <source>E R A T</source>
-        <translation type="unfinished">E R A T</translation>
+        <translation>E D A M</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="431"/>
         <source>E T R A</source>
-        <translation type="unfinished">E T R A</translation>
+        <translation>E M D A</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="436"/>
         <source>E T A R</source>
-        <translation type="unfinished">E T A R</translation>
+        <translation>E M A D</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="441"/>
         <source>E A R T</source>
-        <translation type="unfinished">E A R T</translation>
+        <translation>E A D M</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="446"/>
         <source>E A T R</source>
-        <translation type="unfinished">E A T R</translation>
+        <translation>E A M D</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="451"/>
         <source>T R E A</source>
-        <translation type="unfinished">T R E A</translation>
+        <translation>M D E A</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="456"/>
         <source>T R A E</source>
-        <translation type="unfinished">T R A E</translation>
+        <translation>M D A E</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="461"/>
         <source>T E R A</source>
-        <translation type="unfinished">T E R A</translation>
+        <translation>M E D A</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="466"/>
         <source>T E A R</source>
-        <translation type="unfinished">T E A R</translation>
+        <translation>M E A D</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="471"/>
         <source>T A R E</source>
-        <translation type="unfinished">T A R E</translation>
+        <translation>M A D E</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="476"/>
         <source>T A E R</source>
-        <translation type="unfinished">T A E R</translation>
+        <translation>M A E D</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="481"/>
         <source>A R E T</source>
-        <translation type="unfinished">A R E T</translation>
+        <translation>A D E M</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="486"/>
         <source>A R T E</source>
-        <translation type="unfinished">A R T E</translation>
+        <translation>A D M E</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="491"/>
         <source>A E R T</source>
-        <translation type="unfinished">A E R T</translation>
+        <translation>A E D M</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="496"/>
         <source>A E T R</source>
-        <translation type="unfinished">A E T R</translation>
+        <translation>A E M D</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="501"/>
         <source>A T R E</source>
-        <translation type="unfinished">A T R E</translation>
+        <translation>A M D E</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="506"/>
         <source>A T E R</source>
-        <translation type="unfinished">A T E R</translation>
+        <translation>A M E D</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="766"/>
