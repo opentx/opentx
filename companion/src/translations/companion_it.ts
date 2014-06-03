@@ -6,27 +6,27 @@
     <message>
         <location filename="../wizarddialog.cpp" line="398"/>
         <source>No</source>
-        <translation type="unfinished">No</translation>
+        <translation>No</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="399"/>
         <source>Yes, controlled by a single channel</source>
-        <translation type="unfinished">Si, controllato da un singolo canale</translation>
+        <translation>Si, controllato da un singolo canale</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="400"/>
         <source>Yes, controlled by two channels</source>
-        <translation type="unfinished">Si, controllati da due canali</translation>
+        <translation>Si, controllati da due canali</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="412"/>
         <source>&lt;br&gt;First Aileron Channel:</source>
-        <translation type="unfinished">Primo canale Alettoni</translation>
+        <translation>&lt;br&gt;Canale del primo alettone:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="414"/>
         <source>Second Aileron Channel:</source>
-        <translation type="unfinished">Secondo canale Alettoni</translation>
+        <translation>Canale del secondo alettone:</translation>
     </message>
 </context>
 <context>
@@ -34,27 +34,27 @@
     <message>
         <location filename="../wizarddialog.cpp" line="496"/>
         <source>No</source>
-        <translation type="unfinished">No</translation>
+        <translation>No</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="497"/>
         <source>Yes, controlled by a single channel</source>
-        <translation type="unfinished">Si, controllato da un singolo canale</translation>
+        <translation>Si, controllato da un singolo canale</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="498"/>
         <source>Yes, controlled by two channels</source>
-        <translation type="unfinished">Si, controllati da due canali</translation>
+        <translation>Si, controllati da due canali</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="510"/>
         <source>&lt;br&gt;First Airbrake Channel:</source>
-        <translation type="unfinished">Primo canale Diruttori</translation>
+        <translation>Canale del primo diruttore:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="512"/>
         <source>Second Airbrake Channel:</source>
-        <translation type="unfinished">Secondo canale Diruttori</translation>
+        <translation>Canale del secondo diruttore:</translation>
     </message>
 </context>
 <context>
@@ -62,12 +62,12 @@
     <message>
         <location filename="../apppreferencesdialog.ui" line="26"/>
         <source>Edit Settings</source>
-        <translation type="unfinished">Edita Impostazioni</translation>
+        <translation>Modifica Impostazioni</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="52"/>
         <source>Radio Profile</source>
-        <translation type="unfinished">Profilo Radio</translation>
+        <translation>Profilo Radio</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="58"/>
@@ -75,12 +75,12 @@
         <location filename="../apppreferencesdialog.ui" line="798"/>
         <location filename="../apppreferencesdialog.ui" line="970"/>
         <source>Open Folder</source>
-        <translation type="unfinished">Apri Cartella</translation>
+        <translation>Apri Cartella</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="78"/>
         <source>Default Channel Order</source>
-        <translation type="unfinished">Ordine canali predefinito</translation>
+        <translation>Ordine canali predefinito</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="88"/>
@@ -90,12 +90,12 @@
     <message>
         <location filename="../apppreferencesdialog.ui" line="98"/>
         <source>Menu Language</source>
-        <translation type="unfinished">Lingua per i menu</translation>
+        <translation>Lingua per i menu</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="114"/>
         <source>Default Stick Mode</source>
-        <translation type="unfinished">Modalità Stick</translation>
+        <translation>Modalità Stick</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="121"/>
@@ -105,7 +105,7 @@
     <message>
         <location filename="../apppreferencesdialog.ui" line="161"/>
         <source>Processor ID</source>
-        <translation type="unfinished">ID del processore</translation>
+        <translation>ID del processore</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="174"/>
@@ -151,7 +151,7 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="199"/>
         <source>Mode 1 (RUD ELE THR AIL)</source>
-        <translation type="unfinished">Modo 1 (DIR ELE MOT ALE)</translation>
+        <translation>Modo 1 (DIR ELE MOT ALE)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="204"/>
@@ -176,7 +176,7 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="259"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Channel order&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Defines the order of the default mixes created on a new model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ordine dei canali&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Definisce l&apos;ordine delle miscelazioni predefinite durante la creazione di un modello.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="266"/>
@@ -271,37 +271,37 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="356"/>
         <source>A R E T</source>
-        <translation type="unfinished">A R E T</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="361"/>
         <source>A R T E</source>
-        <translation type="unfinished">A R T E</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="366"/>
         <source>A E R T</source>
-        <translation type="unfinished">A E R T</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="371"/>
         <source>A E T R</source>
-        <translation type="unfinished">A E T R</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="376"/>
         <source>A T R E</source>
-        <translation type="unfinished">A T R E</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="381"/>
         <source>A T E R</source>
-        <translation type="unfinished">A T E R</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="395"/>
         <source>Profile Name</source>
-        <translation type="unfinished">Descrizione</translation>
+        <translation>Descrizione</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="415"/>
@@ -336,12 +336,12 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="606"/>
         <source>General Settings</source>
-        <translation type="unfinished">Impostazioni generali radio</translation>
+        <translation>Impostazioni generali radio</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="619"/>
         <source>SD Structure path</source>
-        <translation type="unfinished">Cartella Struttura Scheda SD </translation>
+        <translation>Cartella Struttura Scheda SD </translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="635"/>
@@ -352,7 +352,7 @@ May be different from firmware language</source>
     <message>
         <location filename="../apppreferencesdialog.ui" line="650"/>
         <source>Voice Language</source>
-        <translation type="unfinished">Lingua per le voci</translation>
+        <translation>Lingua per le voci</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="658"/>
@@ -392,12 +392,12 @@ May be different from firmware language</source>
     <message>
         <location filename="../apppreferencesdialog.ui" line="784"/>
         <source>Find Executable</source>
-        <translation type="unfinished">Cerca eseguibile</translation>
+        <translation>Cerca eseguibile</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="818"/>
         <source>Google Earth Executable</source>
-        <translation type="unfinished">Eseguibile Google Eart</translation>
+        <translation>Eseguibile Google Earth</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="832"/>
@@ -417,7 +417,7 @@ May be different from firmware language</source>
     <message>
         <location filename="../apppreferencesdialog.ui" line="880"/>
         <source>Automatic Backup Folder</source>
-        <translation type="unfinished">Cartella per backup</translation>
+        <translation>Cartella per backup</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="920"/>
@@ -437,47 +437,47 @@ May be different from firmware language</source>
     <message>
         <location filename="../apppreferencesdialog.ui" line="950"/>
         <source>Enable</source>
-        <translation type="unfinished">Abilita</translation>
+        <translation>Abilita</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="987"/>
         <source>Blue</source>
-        <translation type="unfinished">Blu</translation>
+        <translation>Blu</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="992"/>
         <source>Green</source>
-        <translation type="unfinished">Verde</translation>
+        <translation>Verde</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="997"/>
         <source>Red</source>
-        <translation type="unfinished">Rosso</translation>
+        <translation>Rosso</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1002"/>
         <source>Orange</source>
-        <translation type="unfinished">Arancione</translation>
+        <translation>Arancione</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1007"/>
         <source>Yellow</source>
-        <translation type="unfinished">Giallo</translation>
+        <translation>Giallo</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1021"/>
         <source>Joystick</source>
-        <translation type="unfinished">Joystick</translation>
+        <translation>Joystick</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1038"/>
         <source>Calibrate</source>
-        <translation type="unfinished">Calibrazione</translation>
+        <translation>Calibrazione</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1045"/>
         <source>Simulator capture folder</source>
-        <translation type="unfinished">Cartella per cattura schermate </translation>
+        <translation>Cartella per cattura schermate </translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1081"/>
@@ -497,13 +497,13 @@ May be different from firmware language</source>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="92"/>
         <source>Select your snapshot folder</source>
-        <translation type="unfinished">Selezionare la cartella per le schermate del simulatore</translation>
+        <translation>Selezionare la cartella per le schermate del simulatore</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="142"/>
         <location filename="../apppreferencesdialog.cpp" line="247"/>
         <source>No joysticks found</source>
-        <translation type="unfinished">Nessun joystick trovato</translation>
+        <translation>Nessun joystick trovato</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="177"/>
@@ -523,12 +523,12 @@ May be different from firmware language</source>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="203"/>
         <source>Select your library folder</source>
-        <translation type="unfinished">Selezionare la cartella degli sfondi</translation>
+        <translation>Selezionare la cartella degli sfondi</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="227"/>
         <source>Select your Models and Settings backup folder</source>
-        <translation type="unfinished">Selezionare la cartella per i backup</translation>
+        <translation>Selezionare la cartella per i backup</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="237"/>
@@ -538,7 +538,7 @@ May be different from firmware language</source>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="280"/>
         <source>Select the folder replicating your SD structure</source>
-        <translation type="unfinished">Selezionare la cartella contenente la struttura della scheda SD</translation>
+        <translation>Selezionare la cartella contenente la struttura della scheda SD</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="289"/>
@@ -553,12 +553,12 @@ May be different from firmware language</source>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="326"/>
         <source>Open Image to load</source>
-        <translation type="unfinished">Apri l&apos;immagine da caricare</translation>
+        <translation>Apri l&apos;immagine da caricare</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="326"/>
         <source>Images (%1)</source>
-        <translation type="unfinished">Immagini (%1)</translation>
+        <translation>Immagini (%1)</translation>
     </message>
 </context>
 <context>
@@ -566,22 +566,22 @@ May be different from firmware language</source>
     <message>
         <location filename="../wizarddialog.cpp" line="545"/>
         <source>One</source>
-        <translation type="unfinished">Uno</translation>
+        <translation>Uno</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="546"/>
         <source>Two</source>
-        <translation type="unfinished">Due</translation>
+        <translation>Due</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="556"/>
         <source>&lt;br&gt;First Elevon Channel:</source>
-        <translation type="unfinished">Primo canale Elevoni</translation>
+        <translation>&lt;br&gt;Canale primo Elevone:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="558"/>
         <source>Second Elevon Channel:</source>
-        <translation type="unfinished">Secondo canale Elevoni</translation>
+        <translation>Canale secondo Elevone:</translation>
     </message>
 </context>
 <context>
@@ -589,57 +589,57 @@ May be different from firmware language</source>
     <message>
         <location filename="../modeledit/channels.cpp" line="19"/>
         <source>Name</source>
-        <translation type="unfinished">Nome</translation>
+        <translation>Nome</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="22"/>
         <source>Min</source>
-        <translation type="unfinished">Min</translation>
+        <translation>Min</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="23"/>
         <source>Max</source>
-        <translation type="unfinished">Max</translation>
+        <translation>Max</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="21"/>
         <source>Subtrim</source>
-        <translation type="unfinished">Subtrim</translation>
+        <translation>Subtrim</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="24"/>
         <source>Direction</source>
-        <translation type="unfinished">Direzione</translation>
+        <translation>Direzione</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="26"/>
         <source>Curve</source>
-        <translation type="unfinished">Curva</translation>
+        <translation>Curva</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="28"/>
         <source>PPM Center</source>
-        <translation type="unfinished">Centro PPM</translation>
+        <translation>Centro PPM</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="30"/>
         <source>Linear Subtrim</source>
-        <translation type="unfinished">Subtrim lineare</translation>
+        <translation>Subtrim lineare</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="37"/>
         <source>Channel %1</source>
-        <translation type="unfinished">Canale %1</translation>
+        <translation>Canale %1</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="96"/>
         <source>---</source>
-        <translation type="unfinished">---</translation>
+        <translation>---</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="96"/>
         <source>INV</source>
-        <translation type="unfinished">INV</translation>
+        <translation>INV</translation>
     </message>
 </context>
 <context>
@@ -647,86 +647,86 @@ May be different from firmware language</source>
     <message>
         <location filename="../comparedialog.ui" line="29"/>
         <source>Compare Models</source>
-        <translation type="unfinished"></translation>
+        <translation>Confronta modelli</translation>
     </message>
     <message>
         <location filename="../comparedialog.ui" line="49"/>
         <source>Drag first model here</source>
-        <translation type="unfinished">Trascinare qui il primo modello</translation>
+        <translation>Trascinare qui il primo modello</translation>
     </message>
     <message>
         <location filename="../comparedialog.ui" line="71"/>
         <source>Drag second model here</source>
-        <translation type="unfinished">Trascinare qui il secondo modello</translation>
+        <translation>Trascinare qui il secondo modello</translation>
     </message>
     <message>
         <location filename="../comparedialog.ui" line="105"/>
         <source>Close</source>
-        <translation type="unfinished">Chiudi</translation>
+        <translation>Chiudi</translation>
     </message>
     <message>
         <location filename="../comparedialog.ui" line="112"/>
         <source>Print</source>
-        <translation type="unfinished">Stampa</translation>
+        <translation>Stampa</translation>
     </message>
     <message>
         <location filename="../comparedialog.ui" line="119"/>
         <source>Print to file</source>
-        <translation type="unfinished">Stampa su file</translation>
+        <translation>Stampa su file</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="115"/>
         <location filename="../comparedialog.cpp" line="140"/>
         <source>No name</source>
-        <translation type="unfinished">Modello senza nome</translation>
+        <translation>Modello senza nome</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="247"/>
         <source>General Model Settings</source>
-        <translation type="unfinished">Impostazioni generali del modello</translation>
+        <translation>Impostazioni generali del modello</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="250"/>
         <location filename="../comparedialog.cpp" line="273"/>
         <location filename="../comparedialog.cpp" line="503"/>
         <source>Name</source>
-        <translation type="unfinished">Nome</translation>
+        <translation>Nome</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="252"/>
         <location filename="../comparedialog.cpp" line="275"/>
         <source>EEprom Size</source>
-        <translation type="unfinished">Dimensione in EEprom</translation>
+        <translation>Dimensione in EEprom</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="254"/>
         <location filename="../comparedialog.cpp" line="277"/>
         <source>Timer1</source>
-        <translation type="unfinished">Tempo1</translation>
+        <translation>Temporizzatore 1</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="256"/>
         <location filename="../comparedialog.cpp" line="279"/>
         <source>Timer2</source>
-        <translation type="unfinished">Tempo2</translation>
+        <translation>Temporizzatore 2</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="258"/>
         <location filename="../comparedialog.cpp" line="281"/>
         <source>Protocol</source>
-        <translation type="unfinished">Protocollo</translation>
+        <translation>Protocollo</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="260"/>
         <location filename="../comparedialog.cpp" line="283"/>
         <source>Pulse Polarity</source>
-        <translation type="unfinished">Polarità impulso</translation>
+        <translation>Polarità impulso</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="262"/>
         <location filename="../comparedialog.cpp" line="285"/>
         <source>Throttle Trim</source>
-        <translation type="unfinished">Trim Motore</translation>
+        <translation>Trim Motore</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="262"/>
@@ -734,7 +734,7 @@ May be different from firmware language</source>
         <location filename="../comparedialog.cpp" line="285"/>
         <location filename="../comparedialog.cpp" line="287"/>
         <source>Enabled</source>
-        <translation type="unfinished">Abilitato</translation>
+        <translation>Abilitato</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="262"/>
@@ -742,42 +742,42 @@ May be different from firmware language</source>
         <location filename="../comparedialog.cpp" line="285"/>
         <location filename="../comparedialog.cpp" line="287"/>
         <source>Disabled</source>
-        <translation type="unfinished">Disabilitato</translation>
+        <translation>Disabilitato</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="264"/>
         <location filename="../comparedialog.cpp" line="287"/>
         <source>Throttle Expo</source>
-        <translation type="unfinished">Esponenziale Motore</translation>
+        <translation>Esponenziale Motore</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="267"/>
         <location filename="../comparedialog.cpp" line="290"/>
         <source>Trim Increment</source>
-        <translation type="unfinished">Incremento del Trim</translation>
+        <translation>Incremento del Trim</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="269"/>
         <location filename="../comparedialog.cpp" line="292"/>
         <source>Center Beep</source>
-        <translation type="unfinished">Avviso centraggio</translation>
+        <translation>Avviso centraggio</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="302"/>
         <source>Flight modes Settings</source>
-        <translation type="unfinished">Impostazioni Fasi di Volo</translation>
+        <translation>Impostazioni Fasi di Volo</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="305"/>
         <location filename="../comparedialog.cpp" line="407"/>
         <source>Fades</source>
-        <translation type="unfinished">Transizioni</translation>
+        <translation>Transizioni</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="305"/>
         <location filename="../comparedialog.cpp" line="407"/>
         <source>Trims</source>
-        <translation type="unfinished">Trims</translation>
+        <translation>Trims</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="306"/>
@@ -789,7 +789,7 @@ May be different from firmware language</source>
         <location filename="../comparedialog.cpp" line="1076"/>
         <location filename="../comparedialog.cpp" line="1082"/>
         <source>Switch</source>
-        <translation type="unfinished"></translation>
+        <translation>Interruttore</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="306"/>
@@ -797,19 +797,19 @@ May be different from firmware language</source>
         <location filename="../comparedialog.cpp" line="408"/>
         <location filename="../comparedialog.cpp" line="448"/>
         <source>Flight mode name</source>
-        <translation type="unfinished">Nome fase di volo</translation>
+        <translation>Nome fase di volo</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="307"/>
         <location filename="../comparedialog.cpp" line="409"/>
         <source>IN</source>
-        <translation type="unfinished">Ingr.</translation>
+        <translation>Ingr.</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="307"/>
         <location filename="../comparedialog.cpp" line="409"/>
         <source>OUT</source>
-        <translation type="unfinished">Usc.</translation>
+        <translation>Usc.</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="315"/>
@@ -823,24 +823,24 @@ May be different from firmware language</source>
         <location filename="../comparedialog.cpp" line="473"/>
         <location filename="../comparedialog.cpp" line="485"/>
         <source>FM</source>
-        <translation type="unfinished">FV</translation>
+        <translation>FV</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="354"/>
         <location filename="../comparedialog.cpp" line="443"/>
         <source>Gvars</source>
-        <translation type="unfinished">Var Glob</translation>
+        <translation>Var Glob</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="357"/>
         <location filename="../comparedialog.cpp" line="446"/>
         <source>Rot. Enc.</source>
-        <translation type="unfinished">Enc. Rot.</translation>
+        <translation>Enc. Rot.</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="500"/>
         <source>Limits</source>
-        <translation type="unfinished">Limiti</translation>
+        <translation>Limiti</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="503"/>
@@ -851,7 +851,7 @@ May be different from firmware language</source>
         <location filename="../comparedialog.cpp" line="1157"/>
         <location filename="../comparedialog.cpp" line="1276"/>
         <source>Offset</source>
-        <translation type="unfinished">Spostamento</translation>
+        <translation>Spostamento</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="503"/>
@@ -860,7 +860,7 @@ May be different from firmware language</source>
         <location filename="../comparedialog.cpp" line="1251"/>
         <location filename="../comparedialog.cpp" line="1370"/>
         <source>Min</source>
-        <translation type="unfinished">Min</translation>
+        <translation>Min</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="503"/>
@@ -869,14 +869,14 @@ May be different from firmware language</source>
         <location filename="../comparedialog.cpp" line="1251"/>
         <location filename="../comparedialog.cpp" line="1370"/>
         <source>Max</source>
-        <translation type="unfinished">Max</translation>
+        <translation>Max</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="503"/>
         <location filename="../comparedialog.cpp" line="505"/>
         <location filename="../comparedialog.cpp" line="533"/>
         <source>Invert</source>
-        <translation type="unfinished"></translation>
+        <translation>Inversione</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="514"/>
@@ -885,41 +885,41 @@ May be different from firmware language</source>
         <location filename="../comparedialog.cpp" line="546"/>
         <location filename="../comparedialog.cpp" line="872"/>
         <source>CH</source>
-        <translation type="unfinished">CH</translation>
+        <translation>CH</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="528"/>
         <location filename="../comparedialog.cpp" line="555"/>
         <source>INV</source>
-        <translation type="unfinished">INV</translation>
+        <translation>INV</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="528"/>
         <location filename="../comparedialog.cpp" line="555"/>
         <source>NOR</source>
-        <translation type="unfinished">NOR</translation>
+        <translation>NOR</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="574"/>
         <source>Global Variables</source>
-        <translation type="unfinished">Variabili Globali</translation>
+        <translation>Variabili Globali</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="582"/>
         <location filename="../comparedialog.cpp" line="595"/>
         <source>GV</source>
-        <translation type="unfinished">VG</translation>
+        <translation>VG</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="617"/>
         <source>Expo/Dr Settings</source>
-        <translation type="unfinished">Impostazioni Corsa/Esponenziali</translation>
+        <translation>Impostazioni Corsa/Esponenziali</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="653"/>
         <location filename="../comparedialog.cpp" line="731"/>
         <source>Weight</source>
-        <translation type="unfinished">Peso</translation>
+        <translation>Peso</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="668"/>
@@ -927,7 +927,7 @@ May be different from firmware language</source>
         <location filename="../comparedialog.cpp" line="844"/>
         <location filename="../comparedialog.cpp" line="923"/>
         <source>Flight modes</source>
-        <translation type="unfinished">Fasi di volo</translation>
+        <translation>Fasi di volo</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="670"/>
@@ -935,7 +935,7 @@ May be different from firmware language</source>
         <location filename="../comparedialog.cpp" line="846"/>
         <location filename="../comparedialog.cpp" line="925"/>
         <source>Flight mode</source>
-        <translation type="unfinished">Fase di volo</translation>
+        <translation>Fase di volo</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="689"/>
@@ -943,46 +943,46 @@ May be different from firmware language</source>
         <location filename="../comparedialog.cpp" line="864"/>
         <location filename="../comparedialog.cpp" line="943"/>
         <source>DISABLED</source>
-        <translation type="unfinished">DISABILITATO</translation>
+        <translation>DISABILITATO</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="787"/>
         <source>Mixers</source>
-        <translation type="unfinished">Miscelazioni</translation>
+        <translation>Miscelazioni</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="826"/>
         <location filename="../comparedialog.cpp" line="904"/>
         <source>noTrim</source>
-        <translation type="unfinished">noTrim</translation>
+        <translation>noTrim</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="829"/>
         <location filename="../comparedialog.cpp" line="908"/>
         <source> Delay(u%1:d%2)</source>
-        <translation type="unfinished"> Ritarda(s%1:g%2)</translation>
+        <translation> Ritarda(s%1:g%2)</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="830"/>
         <location filename="../comparedialog.cpp" line="909"/>
         <source> Slow(u%1:d%2)</source>
-        <translation type="unfinished"> Rallenta(s%1:g%2)</translation>
+        <translation> Rallenta(s%1:g%2)</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="831"/>
         <location filename="../comparedialog.cpp" line="910"/>
         <source>Warn</source>
-        <translation type="unfinished">Avviso</translation>
+        <translation>Avviso</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="974"/>
         <source>Curves</source>
-        <translation type="unfinished">Curve</translation>
+        <translation>Curve</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="976"/>
         <source>5 Point Curves</source>
-        <translation type="unfinished"></translation>
+        <translation>Curve a 5 Punti</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="978"/>
@@ -990,86 +990,86 @@ May be different from firmware language</source>
         <location filename="../comparedialog.cpp" line="1008"/>
         <location filename="../comparedialog.cpp" line="1011"/>
         <source>pt %1</source>
-        <translation type="unfinished">pt %1</translation>
+        <translation>pt %1</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="997"/>
         <location filename="../comparedialog.cpp" line="1026"/>
         <source>Curve</source>
-        <translation type="unfinished">Curva</translation>
+        <translation>Curva</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1006"/>
         <source>9 Point Curves</source>
-        <translation type="unfinished"></translation>
+        <translation>Curve a 9 Punti</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1043"/>
         <source>Logical Switches</source>
-        <translation type="unfinished">Interruttori logici</translation>
+        <translation>Interruttori logici</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1053"/>
         <location filename="../comparedialog.cpp" line="1055"/>
         <source>LS</source>
-        <translation type="unfinished"></translation>
+        <translation>LS</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1074"/>
         <source>Special Functions</source>
-        <translation type="unfinished">Funzioni speciali</translation>
+        <translation>Funzioni speciali</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1077"/>
         <location filename="../comparedialog.cpp" line="1083"/>
         <source>Function</source>
-        <translation type="unfinished">Funzione</translation>
+        <translation>Funzione</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1078"/>
         <location filename="../comparedialog.cpp" line="1084"/>
         <source>Param</source>
-        <translation type="unfinished">Parametro</translation>
+        <translation>Parametro</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1079"/>
         <location filename="../comparedialog.cpp" line="1085"/>
         <source>Repeat</source>
-        <translation type="unfinished">Ripeti</translation>
+        <translation>Ripeti</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1080"/>
         <location filename="../comparedialog.cpp" line="1086"/>
         <source>Enable</source>
-        <translation type="unfinished">Abilita</translation>
+        <translation>Abilita</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1117"/>
         <source>SF</source>
-        <translation type="unfinished">SF</translation>
+        <translation>SF</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1152"/>
         <source>Telemetry Settings</source>
-        <translation type="unfinished">Impostazioni telemetria</translation>
+        <translation>Impostazioni telemetria</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1157"/>
         <location filename="../comparedialog.cpp" line="1276"/>
         <source>Analog</source>
-        <translation type="unfinished">Analogico</translation>
+        <translation>Analogico</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1157"/>
         <location filename="../comparedialog.cpp" line="1276"/>
         <source>Unit</source>
-        <translation type="unfinished">Unità</translation>
+        <translation>Unità</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1157"/>
         <location filename="../comparedialog.cpp" line="1276"/>
         <source>Scale</source>
-        <translation type="unfinished">Campo di misura</translation>
+        <translation>Campo di misura</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1161"/>
@@ -1077,19 +1077,19 @@ May be different from firmware language</source>
         <location filename="../comparedialog.cpp" line="1280"/>
         <location filename="../comparedialog.cpp" line="1303"/>
         <source>A%1</source>
-        <translation type="unfinished">A%1</translation>
+        <translation>A%1</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1172"/>
         <location filename="../comparedialog.cpp" line="1291"/>
         <source>Alarm 1</source>
-        <translation type="unfinished">Allarme 1</translation>
+        <translation>Allarme 1</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1172"/>
         <location filename="../comparedialog.cpp" line="1291"/>
         <source>Alarm 2</source>
-        <translation type="unfinished">Allarme 2</translation>
+        <translation>Allarme 2</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1174"/>
@@ -1097,7 +1097,7 @@ May be different from firmware language</source>
         <location filename="../comparedialog.cpp" line="1293"/>
         <location filename="../comparedialog.cpp" line="1296"/>
         <source>Type</source>
-        <translation type="unfinished">Tipo</translation>
+        <translation>Tipo</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1175"/>
@@ -1105,7 +1105,7 @@ May be different from firmware language</source>
         <location filename="../comparedialog.cpp" line="1294"/>
         <location filename="../comparedialog.cpp" line="1297"/>
         <source>Condition</source>
-        <translation type="unfinished">Condizione</translation>
+        <translation>Condizione</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1176"/>
@@ -1113,47 +1113,47 @@ May be different from firmware language</source>
         <location filename="../comparedialog.cpp" line="1295"/>
         <location filename="../comparedialog.cpp" line="1298"/>
         <source>Value</source>
-        <translation type="unfinished">Valore</translation>
+        <translation>Valore</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1204"/>
         <location filename="../comparedialog.cpp" line="1323"/>
         <source>RSSI Alarm</source>
-        <translation type="unfinished">Allarmi RSSI</translation>
+        <translation>Allarmi RSSI</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1235"/>
         <location filename="../comparedialog.cpp" line="1354"/>
         <source>Custom Telemetry View</source>
-        <translation type="unfinished">Schermata personalizzata dati telemetrici</translation>
+        <translation>Schermata personalizzata dati telemetrici</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1250"/>
         <location filename="../comparedialog.cpp" line="1369"/>
         <source>Telemetry Bars</source>
-        <translation type="unfinished">Barre Telemetria</translation>
+        <translation>Barre Telemetria</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1251"/>
         <location filename="../comparedialog.cpp" line="1370"/>
         <source>Bar Number</source>
-        <translation type="unfinished">Numero Barra</translation>
+        <translation>Numero Barra</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1251"/>
         <location filename="../comparedialog.cpp" line="1370"/>
         <source>Source</source>
-        <translation type="unfinished">Sorgente</translation>
+        <translation>Sorgente</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1401"/>
         <source>Print Document</source>
-        <translation type="unfinished">Stampa documento</translation>
+        <translation>Stampa documento</translation>
     </message>
     <message>
         <location filename="../comparedialog.cpp" line="1410"/>
         <source>Select PDF output file</source>
-        <translation type="unfinished">Scegliere il nome del file PDF</translation>
+        <translation>Scegliere il nome del file PDF</translation>
     </message>
 </context>
 <context>
@@ -1161,7 +1161,7 @@ May be different from firmware language</source>
     <message>
         <location filename="../wizarddialog.cpp" line="869"/>
         <source>OK, I understand.</source>
-        <translation type="unfinished">VA BENE, ho capito</translation>
+        <translation>Va bene, ho capito.</translation>
     </message>
 </context>
 <context>
@@ -1169,22 +1169,22 @@ May be different from firmware language</source>
     <message>
         <location filename="../helpers.cpp" line="226"/>
         <source>Diff</source>
-        <translation type="unfinished">Diff</translation>
+        <translation>Diff</translation>
     </message>
     <message>
         <location filename="../helpers.cpp" line="227"/>
         <source>Expo</source>
-        <translation type="unfinished">Expo</translation>
+        <translation>Expo</translation>
     </message>
     <message>
         <location filename="../helpers.cpp" line="228"/>
         <source>Func</source>
-        <translation type="unfinished">Funz</translation>
+        <translation>Funz</translation>
     </message>
     <message>
         <location filename="../helpers.cpp" line="229"/>
         <source>Curve</source>
-        <translation type="unfinished">Curva</translation>
+        <translation>Curva</translation>
     </message>
 </context>
 <context>
@@ -1196,128 +1196,128 @@ May be different from firmware language</source>
     <message>
         <location filename="../modeledit/curves.ui" line="68"/>
         <source>Fixed X</source>
-        <translation type="unfinished">X fisso</translation>
+        <translation>X fisso</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="73"/>
         <source>Custom X</source>
-        <translation type="unfinished">X modificabile</translation>
+        <translation>X modificabile</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="82"/>
         <source>Lines</source>
-        <translation type="unfinished">Linee</translation>
+        <translation>Linee</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="87"/>
         <source>Smooth</source>
-        <translation type="unfinished">Smorzata</translation>
+        <translation>Arrotondata</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="104"/>
         <location filename="../modeledit/curves.ui" line="293"/>
         <source>Curve type</source>
-        <translation type="unfinished">Tipo curva</translation>
+        <translation>Tipo curva</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="173"/>
         <source>Curve Creator</source>
-        <translation type="unfinished">Generatore di curve</translation>
+        <translation>Generatore di curve</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="179"/>
         <source>Y at X=0</source>
-        <translation type="unfinished">Y a X=0</translation>
+        <translation>Y a X=0</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="202"/>
         <source>Y at X=100</source>
-        <translation type="unfinished">Y a X=100</translation>
+        <translation>Y a X=100</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="226"/>
         <source>Both</source>
-        <translation type="unfinished">Entrambi</translation>
+        <translation>Entrambi</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="231"/>
         <source>x&gt;0</source>
-        <translation type="unfinished">x&gt;0</translation>
+        <translation>x&gt;0</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="236"/>
         <source>x&lt;0</source>
-        <translation type="unfinished">x&lt;0</translation>
+        <translation>x&lt;0</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="260"/>
         <source>Apply</source>
-        <translation type="unfinished">Applica</translation>
+        <translation>Applica</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="267"/>
         <source>Side</source>
-        <translation type="unfinished">Lato</translation>
+        <translation>Lato</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="300"/>
         <source>Y at X=-100</source>
-        <translation type="unfinished">Y a X=-100</translation>
+        <translation>Y a X=-100</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="307"/>
         <source>Coefficient</source>
-        <translation type="unfinished">Coefficiente</translation>
+        <translation>Coefficiente</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="49"/>
         <source>Curve name</source>
-        <translation type="unfinished">Nome curva</translation>
+        <translation>Nome curva</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="137"/>
         <source>Curve %1</source>
-        <translation type="unfinished">Curva %1</translation>
+        <translation>Curva %1</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="174"/>
         <source>%1 points</source>
-        <translation type="unfinished">punti %1</translation>
+        <translation>punti %1</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="178"/>
         <source>Linear</source>
-        <translation type="unfinished">Lineare</translation>
+        <translation>Lineare</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="179"/>
         <source>Single Expo</source>
-        <translation type="unfinished">Esponenziale singola </translation>
+        <translation>Esponenziale singola </translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="180"/>
         <source>Symmetrical f(x)=-f(-x)</source>
-        <translation type="unfinished">Expo simmetrica f(x)=-f(-x)</translation>
+        <translation>Expo simmetrica f(x)=-f(-x)</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="181"/>
         <source>Symmetrical f(x)=f(-x)</source>
-        <translation type="unfinished">Expo simmetrica f(x)=f(-x)</translation>
+        <translation>Expo simmetrica f(x)=f(-x)</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="203"/>
         <source>Are you sure you want to reset curve %1 ?</source>
-        <translation type="unfinished">Confermi la cancellazione della curva %1 ?</translation>
+        <translation>Confermi la cancellazione della curva %1 ?</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="281"/>
         <source>Editing curve %1</source>
-        <translation type="unfinished">Modifica curva %1</translation>
+        <translation>Modifica curva %1</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="425"/>
         <source>Not enough free points in EEPROM to store the curve.</source>
-        <translation type="unfinished">Non ci sono abbastanza punti liberi in EEPROM per salvare la curva</translation>
+        <translation>Non ci sono abbastanza punti liberi in memoria per salvare la curva.</translation>
     </message>
 </context>
 <context>
@@ -1325,82 +1325,82 @@ May be different from firmware language</source>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="62"/>
         <source>Switch</source>
-        <translation type="unfinished">Interruttore</translation>
+        <translation>Interruttore</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="63"/>
         <source>Action</source>
-        <translation type="unfinished">Azione</translation>
+        <translation>Azione</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="64"/>
         <source>Parameters</source>
-        <translation type="unfinished">Parametri</translation>
+        <translation>Parametri</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="65"/>
         <source>Enable</source>
-        <translation type="unfinished">Abilita</translation>
+        <translation>Abilita</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="112"/>
         <source>SF%1</source>
-        <translation type="unfinished">SF%1</translation>
+        <translation>FS%1</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="190"/>
         <source>ON</source>
-        <translation type="unfinished">Acceso</translation>
+        <translation>Acceso</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="254"/>
         <source>Error</source>
-        <translation type="unfinished">Errore</translation>
+        <translation>Errore</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="254"/>
         <source>Unable to find sound file %1!</source>
-        <translation type="unfinished">Impossibile trovare il file sonoro %1!</translation>
+        <translation>Impossibile trovare il file sonoro %1!</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="574"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished">&amp;Elimina</translation>
+        <translation>&amp;Elimina</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="574"/>
         <source>Delete</source>
-        <translation type="unfinished">Elimina</translation>
+        <translation>Elimina</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="575"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished">&amp;Copia</translation>
+        <translation>&amp;Copia</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="575"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished">Ctrl+C</translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="576"/>
         <source>&amp;Cut</source>
-        <translation type="unfinished">&amp;Taglia</translation>
+        <translation>&amp;Taglia</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="576"/>
         <source>Ctrl+X</source>
-        <translation type="unfinished">Ctrl+X</translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="577"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished">&amp;Incolla</translation>
+        <translation>&amp;Incolla</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="577"/>
         <source>Ctrl+V</source>
-        <translation type="unfinished">Ctrl+V</translation>
+        <translation>Ctrl+V</translation>
     </message>
 </context>
 <context>
@@ -1408,22 +1408,22 @@ May be different from firmware language</source>
     <message>
         <location filename="../wizarddialog.cpp" line="691"/>
         <source>90</source>
-        <translation type="unfinished">90</translation>
+        <translation>90</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="693"/>
         <source>120</source>
-        <translation type="unfinished">120</translation>
+        <translation>120</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="694"/>
         <source>120x</source>
-        <translation type="unfinished">120x</translation>
+        <translation>120x</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="695"/>
         <source>140</source>
-        <translation type="unfinished">140</translation>
+        <translation>140</translation>
     </message>
 </context>
 <context>
@@ -1620,25 +1620,25 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</source
     <message>
         <location filename="../wizarddialog.cpp" line="745"/>
         <source>Throttle Channel:</source>
-        <translation type="unfinished">Canale Motore</translation>
+        <translation>Canale motore:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="747"/>
         <source>Yaw Channel:</source>
         <translatorcomment>TODO</translatorcomment>
-        <translation type="unfinished"></translation>
+        <translation>Canale imbardata:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="749"/>
         <source>Pitch Channel:</source>
         <translatorcomment>TODO</translatorcomment>
-        <translation type="unfinished">Canale Beccheggio</translation>
+        <translation>Canale Beccheggio:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="751"/>
         <source>Roll Channel:</source>
         <translatorcomment>TODO</translatorcomment>
-        <translation type="unfinished">Canale Rollio</translation>
+        <translation>Canale Rollio:</translation>
     </message>
 </context>
 <context>
@@ -1646,93 +1646,94 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</source
     <message>
         <location filename="../fwpreferencesdialog.ui" line="26"/>
         <source>Downloads</source>
-        <translation type="unfinished">Scarica</translation>
+        <translation>File scaricabili</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="54"/>
         <source>Check for updates</source>
-        <translation type="unfinished">Verifica aggiornamenti</translation>
+        <translation>Verifica aggiornamenti</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="68"/>
         <source>Voice</source>
-        <translation type="unfinished">Voce</translation>
+        <translation>Voce</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="81"/>
         <source>Set voice language.
 May be different from firmware language</source>
-        <translation type="unfinished"></translation>
+        <translation>Impostazione del linguaggio della voce.
+Può essere differente dalla lingua del firmware</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="86"/>
         <source>en</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="91"/>
         <source>cz</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="96"/>
         <source>de</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="101"/>
         <source>es</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="106"/>
         <source>fi</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="111"/>
         <source>fr</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="116"/>
         <source>it</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="121"/>
         <source>pl</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="126"/>
         <source>pt</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="131"/>
         <source>se</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="139"/>
         <source>Download Voice</source>
-        <translation type="unfinished">Scarica voci</translation>
+        <translation>Scarica voci</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="146"/>
         <source>Download FW</source>
-        <translation type="unfinished">Scarica FW</translation>
+        <translation>Scarica FW</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="193"/>
         <source>Firmware</source>
-        <translation type="unfinished">Firmware</translation>
+        <translation>Firmware</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="223"/>
         <source>Latest Download</source>
-        <translation type="unfinished"></translation>
+        <translation>Ultimi download</translation>
     </message>
 </context>
 <context>
@@ -1740,27 +1741,27 @@ May be different from firmware language</source>
     <message>
         <location filename="../wizarddialog.cpp" line="447"/>
         <source>No</source>
-        <translation type="unfinished">No</translation>
+        <translation>No</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="448"/>
         <source>Yes, controlled by a single channel</source>
-        <translation type="unfinished">Si, controllato da un singolo canale</translation>
+        <translation>Si, controllato da un singolo canale</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="449"/>
         <source>Yes, controlled by two channels</source>
-        <translation type="unfinished">Si, controllati da due canali</translation>
+        <translation>Si, controllati da due canali</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="461"/>
         <source>&lt;br&gt;First Flap Channel:</source>
-        <translation type="unfinished">Primo canale Flap</translation>
+        <translation>&lt;br&gt;Canale primo Flap:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="463"/>
         <source>Second Flap Channel:</source>
-        <translation type="unfinished">Secondo canale Flap</translation>
+        <translation>Canale secondo Flap:</translation>
     </message>
 </context>
 <context>
@@ -1768,22 +1769,22 @@ May be different from firmware language</source>
     <message>
         <location filename="../modeledit/flightmode.ui" line="22"/>
         <source>Fade In</source>
-        <translation type="unfinished">Tempo transizione in ingresso</translation>
+        <translation>Tempo transizione in ingresso</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmode.ui" line="43"/>
         <source>Fade Out</source>
-        <translation type="unfinished">Tempo transizione in uscita</translation>
+        <translation>Tempo transizione in uscita</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmode.ui" line="57"/>
         <source>Name</source>
-        <translation type="unfinished">Nome</translation>
+        <translation>Nome</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmode.ui" line="77"/>
         <source>Switch</source>
-        <translation type="unfinished">Interruttore</translation>
+        <translation>Interruttore</translation>
     </message>
     <message>
         <source>trim1</source>
@@ -1855,17 +1856,17 @@ May be different from firmware language</source>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="97"/>
         <source>Rotary Encoder %1</source>
-        <translation type="unfinished">Encoder rotativo %1</translation>
+        <translation>Encoder rotativo %1</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="130"/>
         <source>GVAR%1</source>
-        <translation type="unfinished">GVAR%1</translation>
+        <translation>VAR.GLOB%1</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="164"/>
         <source>Popup enabled</source>
-        <translation type="unfinished">Popup abilitato</translation>
+        <translation>Popup abilitato</translation>
     </message>
 </context>
 <context>
@@ -1888,17 +1889,17 @@ May be different from firmware language</source>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="451"/>
         <source>Flight Mode %1</source>
-        <translation type="unfinished">Fase di volo %1</translation>
+        <translation>Fase di volo %1</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="454"/>
         <source> (%1)</source>
-        <translation type="unfinished">(%1)</translation>
+        <translation> (%1)</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="457"/>
         <source> (default)</source>
-        <translation type="unfinished">Predefinita</translation>
+        <translation> (Predefinita)</translation>
     </message>
 </context>
 <context>
@@ -1906,20 +1907,17 @@ May be different from firmware language</source>
     <message>
         <location filename="../wizarddialog.cpp" line="340"/>
         <source>Has Flybar</source>
-        <translatorcomment>TODO</translatorcomment>
-        <translation type="unfinished">Con Flybar</translation>
+        <translation>Con Flybar</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="342"/>
         <source>Flybarless</source>
-        <translatorcomment>TODO</translatorcomment>
-        <translation type="unfinished">Senza Flybar</translation>
+        <translation>Senza Flybar</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="345"/>
         <source>Flybar:</source>
-        <translatorcomment>TODO</translatorcomment>
-        <translation type="unfinished">Flybar</translation>
+        <translation>Flybar:</translation>
     </message>
 </context>
 <context>
@@ -3064,17 +3062,17 @@ Siete sicuri ?</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="716"/>
         <source>No</source>
-        <translation type="unfinished">No</translation>
+        <translation>No</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="718"/>
         <source>Yes, controled by a switch</source>
-        <translation type="unfinished">Si, controllato da un interruttore</translation>
+        <translation>Si, controllato da un interruttore</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="719"/>
         <source>Yes, controlled by a pot</source>
-        <translation type="unfinished">Si, controllato da un potenziometro</translation>
+        <translation>Si, controllato da un potenziometro</translation>
     </message>
 </context>
 <context>
@@ -3082,62 +3080,62 @@ Siete sicuri ?</translation>
     <message>
         <location filename="../modeledit/heli.ui" line="25"/>
         <source>Invert Elevator</source>
-        <translation type="unfinished">Elevatore invertito</translation>
+        <translation>Elevatore</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="32"/>
         <source>Invert Aileron</source>
-        <translation type="unfinished">Alettoni invertiti</translation>
+        <translation>Alettoni</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="39"/>
         <source>Invert Collective</source>
-        <translation type="unfinished">Collettivo invertito</translation>
+        <translation>Collettivo</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="48"/>
         <source>Invert</source>
-        <translation type="unfinished">Invertito</translation>
+        <translation>Inversioni</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="56"/>
         <source>Off</source>
-        <translation type="unfinished">NO</translation>
+        <translation>NO</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="61"/>
         <source>120</source>
-        <translation type="unfinished">120</translation>
+        <translation>120</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="66"/>
         <source>120X</source>
-        <translation type="unfinished">120X</translation>
+        <translation>120X</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="71"/>
         <source>140</source>
-        <translation type="unfinished">140</translation>
+        <translation>140</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="76"/>
         <source>90</source>
-        <translation type="unfinished">90</translation>
+        <translation>90</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="84"/>
         <source>Collective</source>
-        <translation type="unfinished">Collettivo</translation>
+        <translation>Collettivo</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="94"/>
         <source>Swash Type</source>
-        <translation type="unfinished">Tipo ciclico</translation>
+        <translation>Tipo ciclico</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="120"/>
         <source>Swash Ring</source>
-        <translation type="unfinished">Anello del ciclico</translation>
+        <translation>Anello del ciclico</translation>
     </message>
 </context>
 <context>
@@ -3145,22 +3143,22 @@ Siete sicuri ?</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="780"/>
         <source>Throttle Channel:</source>
-        <translation type="unfinished">Canale motore</translation>
+        <translation>Canale motore:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="782"/>
         <source>Yaw Channel:</source>
-        <translation type="unfinished">Canale imbardata</translation>
+        <translation>Canale imbardata:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="784"/>
         <source>Pitch Channel:</source>
-        <translation type="unfinished">Canale Beccheggio</translation>
+        <translation>Canale Beccheggio:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="786"/>
         <source>Roll Channel:</source>
-        <translation type="unfinished">Canale Rollio</translation>
+        <translation>Canale Rollio:</translation>
     </message>
 </context>
 <context>
@@ -3314,77 +3312,77 @@ Siete sicuri ?</translation>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="18"/>
         <source>V1</source>
-        <translation type="unfinished">V1</translation>
+        <translation>V1</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="19"/>
         <source>V2</source>
-        <translation type="unfinished">V2</translation>
+        <translation>V2</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="22"/>
         <source>Duration</source>
-        <translation type="unfinished">Durata</translation>
+        <translation>Durata</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="23"/>
         <source>Delay</source>
-        <translation type="unfinished">Ritardo</translation>
+        <translation>Ritardo</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="17"/>
         <source>Function</source>
-        <translation type="unfinished">Funzione</translation>
+        <translation>Funzione</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="20"/>
         <source>AND Switch</source>
-        <translation type="unfinished">Interruttore AND</translation>
+        <translation>Interruttore AND</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="31"/>
         <source>L%1</source>
-        <translation type="unfinished">L%1</translation>
+        <translation>L%1</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="440"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished">&amp;Elimina</translation>
+        <translation>&amp;Elimina</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="440"/>
         <source>Delete</source>
-        <translation type="unfinished">Elimina</translation>
+        <translation>Elimina</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="441"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished">&amp;Copia</translation>
+        <translation>&amp;Copia</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="441"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished">Ctrl+C</translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="442"/>
         <source>&amp;Cut</source>
-        <translation type="unfinished">&amp;Taglia</translation>
+        <translation>&amp;Taglia</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="442"/>
         <source>Ctrl+X</source>
-        <translation type="unfinished">Ctrl+X</translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="443"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished">&amp;Incolla</translation>
+        <translation>&amp;Incolla</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="443"/>
         <source>Ctrl+V</source>
-        <translation type="unfinished">Ctrl+V</translation>
+        <translation>Ctrl+V</translation>
     </message>
 </context>
 <context>
@@ -4426,7 +4424,7 @@ Do you want to download it now ?</source>
     <message>
         <location filename="../mdichild.cpp" line="480"/>
         <source>Companion</source>
-        <translation type="unfinished"></translation>
+        <translation>Companion</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="187"/>
@@ -4532,22 +4530,22 @@ Do you want to download it now ?</source>
         <location filename="../mdichild.cpp" line="547"/>
         <location filename="../mdichild.cpp" line="579"/>
         <source>Backup EEPROM From Radio</source>
-        <translation type="unfinished">Effettua salvataggio EEPROM dalla Radio</translation>
+        <translation>Effettua salvataggio impostazioni dalla Radio</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="584"/>
         <source>Write EEPROM To Radio</source>
-        <translation type="unfinished">Scrivi EEPROM sulla Radio</translation>
+        <translation>Scrivi impostazioni sulla Radio</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="625"/>
         <source>Open backup Models and Settings file</source>
-        <translation type="unfinished">Apri salvataggio modelli e impostazioni</translation>
+        <translation>Apri salvataggio modelli e impostazioni</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="558"/>
         <source>Cannot check eeprom compatibility! Continue anyway?</source>
-        <translation type="unfinished">Non posso controllare la compatibilità della EEPROM! Continuare ugualmente ?</translation>
+        <translation>Non posso controllare la compatibilità delle impostazioni! Continuare ugualmente ?</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="565"/>
@@ -4832,7 +4830,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/mixerdialog.cpp" line="20"/>
         <source>DEST -&gt; CH%1</source>
-        <translation type="unfinished">DEST -&gt; CH%1</translation>
+        <translation>DEST -&gt; CH%1</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.cpp" line="39"/>
@@ -5055,22 +5053,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/modeledit.cpp" line="32"/>
         <source>Heli</source>
-        <translation type="unfinished">Heli</translation>
+        <translation>Heli</translation>
     </message>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="34"/>
         <source>Inputs</source>
-        <translation type="unfinished">Ingressi</translation>
+        <translation>Ingressi</translation>
     </message>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="37"/>
         <source>Servos</source>
-        <translation type="unfinished">Servi</translation>
+        <translation>Servi</translation>
     </message>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="39"/>
         <source>Logical Switches</source>
-        <translation type="unfinished">Interruttori logici</translation>
+        <translation>Interruttori logici</translation>
     </message>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="35"/>
@@ -5090,7 +5088,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/modeledit.cpp" line="41"/>
         <source>Special Functions</source>
-        <translation type="unfinished">Funzioni speciali</translation>
+        <translation>Funzioni speciali</translation>
     </message>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="43"/>
@@ -5216,7 +5214,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modelslist.cpp" line="100"/>
         <source>Ctrl+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
         <source>Alt+R</source>
@@ -5256,7 +5254,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modelslist.cpp" line="452"/>
         <source>Do you want to overwrite radio general settings?</source>
-        <translation type="unfinished">Vuoi sovrascrivere le impostazioni generali della radio?</translation>
+        <translation>Vuoi sovrascrivere le impostazioni generali della radio?</translation>
     </message>
     <message>
         <location filename="../modelslist.cpp" line="463"/>
@@ -5274,17 +5272,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/setup_module.ui" line="137"/>
         <source>Failsafe Mode</source>
-        <translation type="unfinished">Modalità FailSafe</translation>
+        <translation>Modalità FailSafe</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="153"/>
         <source>Start</source>
-        <translation type="unfinished">Inizio</translation>
+        <translation>Inizio</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="179"/>
         <source>PPM delay</source>
-        <translation type="unfinished">Ritardo PPM</translation>
+        <translation>Pausa PPM</translation>
     </message>
     <message>
         <source> usec</source>
@@ -5293,32 +5291,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/setup_module.ui" line="230"/>
         <source>Negative</source>
-        <translation type="unfinished">Negativo</translation>
+        <translation>Negativo</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="235"/>
         <source>Positive</source>
-        <translation type="unfinished">positivo</translation>
+        <translation>Positivo</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="256"/>
         <source>Master</source>
-        <translation type="unfinished">Maestro</translation>
+        <translation>Maestro</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="261"/>
         <source>Slave</source>
-        <translation type="unfinished">Allievo</translation>
+        <translation>Allievo</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="275"/>
         <source>Polarity</source>
-        <translation type="unfinished">Polarità</translation>
+        <translation>Polarità</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="291"/>
         <source>Trainer Mode</source>
-        <translation type="unfinished">Modalità maestro allievo</translation>
+        <translation>Modalità maestro allievo</translation>
     </message>
     <message>
         <source> mSec</source>
@@ -5327,7 +5325,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/setup_module.ui" line="369"/>
         <source>PPM Frame Length</source>
-        <translation type="unfinished">Lunghezza segnale PPM</translation>
+        <translation>Durata segnale PPM</translation>
     </message>
     <message>
         <source>ch</source>
@@ -5336,57 +5334,57 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/setup_module.ui" line="91"/>
         <source>CH </source>
-        <translation type="unfinished">CH</translation>
+        <translation>CH</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="198"/>
         <source> us</source>
-        <translation type="unfinished"> us</translation>
+        <translation> us</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="313"/>
         <source> ms</source>
-        <translation type="unfinished"> ms</translation>
+        <translation> ms</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="391"/>
         <source>Channels</source>
-        <translation type="unfinished">Canali</translation>
+        <translation>Canali</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="414"/>
         <source>Hold</source>
-        <translation type="unfinished">Mantieni</translation>
+        <translation>Mantieni</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="419"/>
         <source>Custom</source>
-        <translation type="unfinished">Personalizzato</translation>
+        <translation>Personalizzato</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="424"/>
         <source>No Pulses</source>
-        <translation type="unfinished">No impulsi</translation>
+        <translation>No impulsi</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="429"/>
         <source>Receiver</source>
-        <translation type="unfinished">Ricevitore</translation>
+        <translation>Ricevitore</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="443"/>
         <source>Failsafe Positions</source>
-        <translation type="unfinished">Posizioni Failsafe</translation>
+        <translation>Posizioni Failsafe</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="459"/>
         <source>Protocol</source>
-        <translation type="unfinished">Protocollo</translation>
+        <translation>Protocollo</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="532"/>
         <source>Receiver No.</source>
-        <translation type="unfinished">Ricevitore No.</translation>
+        <translation>Numero Ricev.</translation>
     </message>
 </context>
 <context>
@@ -5394,28 +5392,28 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/setup.cpp" line="109"/>
         <source>Trainer Port</source>
-        <translation type="unfinished">Porta Allievo</translation>
+        <translation>Porta Allievo</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="122"/>
         <source>Internal Radio System</source>
-        <translation type="unfinished">Sistema Radio interno</translation>
+        <translation>Sistema Radio interno</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="124"/>
         <source>External Radio Module</source>
-        <translation type="unfinished">Modulo radio Esterno</translation>
+        <translation>Modulo radio Esterno</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="128"/>
         <location filename="../modeledit/setup.cpp" line="134"/>
         <source>Radio System</source>
-        <translation type="unfinished">Sistema Radio</translation>
+        <translation>Sistema Radio</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="130"/>
         <source>Extra Radio System</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistema radio esteso</translation>
     </message>
 </context>
 <context>
@@ -8046,17 +8044,17 @@ Il Team di OpenTX.</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="586"/>
         <source>No</source>
-        <translation type="unfinished">No</translation>
+        <translation>No</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="587"/>
         <source>Yes</source>
-        <translation type="unfinished">Si</translation>
+        <translation>Si</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="596"/>
         <source>&lt;br&gt;Rudder Channel:</source>
-        <translation type="unfinished">&lt;br&gt;Canale Deriva:</translation>
+        <translation>&lt;br&gt;Canale Direzionale:</translation>
     </message>
 </context>
 <context>
@@ -8418,7 +8416,7 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../wizarddialog.cpp" line="170"/>
         <source>Channel %1</source>
-        <translation type="unfinished">Canale %1</translation>
+        <translation>Canale %1</translation>
     </message>
 </context>
 <context>
@@ -8426,12 +8424,12 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../wizarddialog.cpp" line="650"/>
         <source>Rudder Channel:</source>
-        <translation type="unfinished">Canale Deriva</translation>
+        <translation>Canale Direzionale:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="652"/>
         <source>Elevator Channel:</source>
-        <translation type="unfinished">Canale Elevatore</translation>
+        <translation>Canale Elevatore:</translation>
     </message>
 </context>
 <context>
@@ -8439,22 +8437,22 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../wizarddialog.cpp" line="315"/>
         <source>Elevator and Rudder</source>
-        <translation type="unfinished">Elevatore e Deriva</translation>
+        <translation>Elevatore e Deriva</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="317"/>
         <source>Only Elevator</source>
-        <translation type="unfinished">Solo Elevatore</translation>
+        <translation>Solo Elevatore</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="318"/>
         <source>V-tail</source>
-        <translation type="unfinished">Coda a V</translation>
+        <translation>Coda a V</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="321"/>
         <source>Tail Type:</source>
-        <translation type="unfinished">Tipo di coda:</translation>
+        <translation>Tipo di coda:</translation>
     </message>
 </context>
 <context>
@@ -8803,37 +8801,37 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../modeledit/telemetry_customscreen.ui" line="34"/>
         <source>Custom Screen Type</source>
-        <translation type="unfinished">Tipo schermo personalizzato</translation>
+        <translation>Tipo schermo personalizzato</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_customscreen.ui" line="54"/>
         <source>Nums</source>
-        <translation type="unfinished">Valori</translation>
+        <translation>Valori</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_customscreen.ui" line="59"/>
         <source>Bars</source>
-        <translation type="unfinished">Barre</translation>
+        <translation>Barre</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_customscreen.ui" line="92"/>
         <source>Min</source>
-        <translation type="unfinished">Min</translation>
+        <translation>Min</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_customscreen.ui" line="102"/>
         <source>Source</source>
-        <translation type="unfinished">Sorgente</translation>
+        <translation>Sorgente</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_customscreen.ui" line="112"/>
         <source>Gauge</source>
-        <translation type="unfinished">Barra</translation>
+        <translation>Barra</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_customscreen.ui" line="122"/>
         <source>Max</source>
-        <translation type="unfinished">Max</translation>
+        <translation>Max</translation>
     </message>
 </context>
 <context>
@@ -8936,17 +8934,17 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../wizarddialog.cpp" line="361"/>
         <source>Yes</source>
-        <translation type="unfinished">Si</translation>
+        <translation>Si</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="362"/>
         <source>No</source>
-        <translation type="unfinished">No</translation>
+        <translation>No</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="369"/>
         <source>&lt;br&gt;Throttle Channel:</source>
-        <translation type="unfinished">&lt;br&gt; Canale Motore</translation>
+        <translation>&lt;br&gt;Canale Motore:</translation>
     </message>
 </context>
 <context>
@@ -8976,17 +8974,17 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../modeledit/setup.cpp" line="25"/>
         <source>Silent</source>
-        <translation type="unfinished">Silente</translation>
+        <translation>Silenzioso</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="26"/>
         <source>Beeps</source>
-        <translation type="unfinished">Beep</translation>
+        <translation>Suoni</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="28"/>
         <source>Voice</source>
-        <translation type="unfinished">Voce</translation>
+        <translation>Voce</translation>
     </message>
 </context>
 <context>
@@ -8994,12 +8992,12 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../wizarddialog.cpp" line="625"/>
         <source>First Tail Channel:</source>
-        <translation type="unfinished">Primo canale Coda</translation>
+        <translation>Canale primo servo di coda:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="627"/>
         <source>Second Tail Channel:</source>
-        <translation type="unfinished">Secondo canale Coda</translation>
+        <translation>Canale secondo servo di coda:</translation>
     </message>
 </context>
 <context>
@@ -9007,12 +9005,12 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../wizarddialog.cpp" line="295"/>
         <source>Standard Wing</source>
-        <translation type="unfinished">Ali standard</translation>
+        <translation>Ali normali</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="297"/>
         <source>Flying Wing / Deltawing</source>
-        <translation type="unfinished">Tuttala / Ala a Delta</translation>
+        <translation>Tuttala / Ala a Delta</translation>
     </message>
 </context>
 <context>
@@ -9294,22 +9292,22 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../wizarddialog.cpp" line="929"/>
         <source>Model Name: </source>
-        <translation type="unfinished"></translation>
+        <translation>Nome Modello: </translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="930"/>
         <source>Model Type: </source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo Modello: </translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="932"/>
         <source>Options: </source>
-        <translation type="unfinished"></translation>
+        <translation>Opzioni: </translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="944"/>
         <source>Channel %1: </source>
-        <translation type="unfinished"></translation>
+        <translation>Canale %1: </translation>
     </message>
 </context>
 <context>
@@ -9524,7 +9522,7 @@ Utilizzato dai Modelli per stabilire quale uscita viene assegnata ai canali.</tr
     <message>
         <location filename="../avroutputdialog.cpp" line="155"/>
         <source>Write error</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore di scrittura</translation>
     </message>
     <message>
         <location filename="../avroutputdialog.cpp" line="307"/>
@@ -9757,7 +9755,7 @@ utilizzatelo solo se sapete cosa state facendo.  Non viene fatto alcun controllo
     <message>
         <location filename="../burnconfigdialog.ui" line="676"/>
         <source>at91sam3s8-9xr</source>
-        <translation type="unfinished"></translation>
+        <translation>at91sam3s8-9xr</translation>
     </message>
     <message>
         <location filename="../burnconfigdialog.ui" line="740"/>
@@ -9830,7 +9828,7 @@ utilizzatelo solo se sapete cosa state facendo.  Non viene fatto alcun controllo
         <location filename="../burnconfigdialog.cpp" line="342"/>
         <location filename="../burnconfigdialog.cpp" line="419"/>
         <source>Companion</source>
-        <translation type="unfinished"></translation>
+        <translation>Companion</translation>
     </message>
     <message>
         <location filename="../burnconfigdialog.cpp" line="343"/>
@@ -9894,22 +9892,22 @@ m2560 per le schede v4.1</translation>
     <message>
         <location filename="../burndialog.ui" line="306"/>
         <source>Use firmware start screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Usa scremata di avvio del firmware</translation>
     </message>
     <message>
         <location filename="../burndialog.ui" line="313"/>
         <source>Use another start screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Usa scremata di avvio alternativa</translation>
     </message>
     <message>
         <location filename="../burndialog.ui" line="326"/>
         <source>Use profile start screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Usa scremata di avvio del profilo</translation>
     </message>
     <message>
         <location filename="../burndialog.ui" line="333"/>
         <source>Use library start screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Usa scremata di avvio della libreria</translation>
     </message>
     <message>
         <location filename="../burndialog.ui" line="194"/>
@@ -9920,7 +9918,7 @@ m2560 per le schede v4.1</translation>
     <message>
         <location filename="../burndialog.ui" line="209"/>
         <source>Allows Companion to write to older version of the firmware</source>
-        <translation type="unfinished"></translation>
+        <translation>Consenti a Companion di scrivere a versioni precedenti del firmware</translation>
     </message>
     <message>
         <location filename="../burndialog.ui" line="222"/>
@@ -9940,7 +9938,7 @@ m2560 per le schede v4.1</translation>
     <message>
         <location filename="../burndialog.ui" line="147"/>
         <source>Version</source>
-        <translation type="unfinished"></translation>
+        <translation>Versione</translation>
     </message>
     <message>
         <location filename="../burndialog.ui" line="212"/>
@@ -9970,7 +9968,7 @@ m2560 per le schede v4.1</translation>
     <message>
         <location filename="../burndialog.cpp" line="356"/>
         <source>Profile image %1 is invalid.</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;immagine del profilo %1 non è valida.</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="372"/>
@@ -9997,17 +9995,17 @@ m2560 per le schede v4.1</translation>
     <message>
         <location filename="../burndialog.cpp" line="41"/>
         <source>Write firmware to Radio</source>
-        <translation type="unfinished">Scrivi firmware sulla Radio</translation>
+        <translation>Scrivi il firmware sulla Radio</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="62"/>
         <source>Write Backup to Radio</source>
-        <translation type="unfinished">Scrivi salvataggio sulla Radio</translation>
+        <translation>Scrivi salvataggio sulla Radio</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="65"/>
         <source>Write Backup from %1 to Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Scrivi il salvataggio da %1 sulla radio</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="67"/>
@@ -10045,42 +10043,42 @@ m2560 per le schede v4.1</translation>
     <message>
         <location filename="../burndialog.cpp" line="143"/>
         <source>Open Firmware File</source>
-        <translation type="unfinished">Apri file Firmware</translation>
+        <translation>Apri file del Firmware</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="149"/>
         <source>Choose Radio Backup file</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli il file di salvataggio della radio</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="205"/>
         <source>%1 may not be a valid firmware file</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 potrebbe non essere un file di firmware valido </translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="336"/>
         <source>The firmware file is not valid.</source>
-        <translation type="unfinished"></translation>
+        <translation>Il file del firmware non è valido.</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="340"/>
         <source>There is no start screen image in the firmware file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Non c&apos;è nessuna immagine di avvio nel firmware selezionato.</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="372"/>
         <source>Open image file to use as radio start screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Apri immagine da utilizzare come sfondo di avvio della radio</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="377"/>
         <source>Image could not be loaded from %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile caricare l&apos;immagine da %1</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="395"/>
         <source>The library image could not be loaded</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;iimagine della libreria non può essere caricata</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="427"/>
@@ -10442,7 +10440,7 @@ m2560 per le schede v4.1</translation>
     <message>
         <location filename="../contributorsdialog.cpp" line="90"/>
         <source>Companion Release Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>Note di aggiornamento di Companion</translation>
     </message>
     <message>
         <location filename="../contributorsdialog.cpp" line="73"/>
@@ -10465,37 +10463,37 @@ m2560 per le schede v4.1</translation>
     <message>
         <location filename="../customizesplashdialog.ui" line="23"/>
         <source>Transmitter Splash Screen Editor</source>
-        <translation type="unfinished">Editor per schermata splash della Radio</translation>
+        <translation>Editor per schermata di avvio della Radio</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="209"/>
         <location filename="../customizesplashdialog.ui" line="517"/>
         <source>Invert</source>
-        <translation type="unfinished">Inverti</translation>
+        <translation>Inverti</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="272"/>
         <location filename="../customizesplashdialog.ui" line="583"/>
         <source>Load FW</source>
-        <translation type="unfinished">Carica FW</translation>
+        <translation>Carica FW</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="282"/>
         <location filename="../customizesplashdialog.ui" line="593"/>
         <source>Load Pict</source>
-        <translation type="unfinished">Carica Imm.</translation>
+        <translation>Carica Imm.</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="262"/>
         <location filename="../customizesplashdialog.ui" line="570"/>
         <source>Load Profile</source>
-        <translation type="unfinished">Carica profilo</translation>
+        <translation>Carica profilo</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="308"/>
         <location filename="../customizesplashdialog.ui" line="619"/>
         <source>Save</source>
-        <translation type="unfinished">salva</translation>
+        <translation>Salva</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="232"/>
@@ -10509,7 +10507,7 @@ m2560 per le schede v4.1</translation>
         <location filename="../customizesplashdialog.ui" line="345"/>
         <location filename="../customizesplashdialog.ui" line="543"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="193"/>
@@ -10522,12 +10520,12 @@ m2560 per le schede v4.1</translation>
     <message>
         <location filename="../customizesplashdialog.cpp" line="190"/>
         <source>Open Firmware File</source>
-        <translation type="unfinished">Apri file Firmware</translation>
+        <translation>Apri file Firmware</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="193"/>
         <source>Can not load embedded image from firmware file %1.</source>
-        <translation type="unfinished">Impossibile caricare immagine %1 dal Firmware</translation>
+        <translation>Impossibile caricare immagine dal file di Firmware %1.</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="209"/>
@@ -10542,47 +10540,47 @@ m2560 per le schede v4.1</translation>
     <message>
         <location filename="../customizesplashdialog.cpp" line="213"/>
         <source>Cannot load the image file %1.</source>
-        <translation type="unfinished">Impossibile caricare file immagine %1</translation>
+        <translation>Impossibile caricare il file immagine %1.</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="228"/>
         <source>Cannot load profile image %1.</source>
-        <translation type="unfinished">Impossibile caricare profilo immagine %1</translation>
+        <translation>Impossibile caricarel&apos;immagine dal profilo %1.</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="242"/>
         <source>Cannot load the library image %1.</source>
-        <translation type="unfinished">Impossibile caricare libreria immagine %1</translation>
+        <translation>Impossibile caricare l&apos;immagine di libreria %1.</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="251"/>
         <source>File Saved</source>
-        <translation type="unfinished">File salvato</translation>
+        <translation>File salvato</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="251"/>
         <source>The image was saved to the file %1</source>
-        <translation type="unfinished">L&apos;immagine è stata salvata nel file %1</translation>
+        <translation>L&apos;immagine è stata salvata nel file %1</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="253"/>
         <source>Image Refresh Error</source>
-        <translation type="unfinished">Errore aggiornamento immagine </translation>
+        <translation>Errore aggiornamento immagine </translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="253"/>
         <source>Failed to refresh image from file %1</source>
-        <translation type="unfinished">Aggiornamento immagine da file %1 fallito</translation>
+        <translation>Errore durante l&apos;aggiornamento dell&apos;immagine dal file %1</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="257"/>
         <source>File Save Error</source>
-        <translation type="unfinished">Errore salvataggio file</translation>
+        <translation>Errore salvataggio file</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="257"/>
         <source>Failed to write image to %1</source>
-        <translation type="unfinished">Scrittura immagine da File %1 fallita</translation>
+        <translation>Errore di scittura dell&apos;mmagine nel file %1</translation>
     </message>
 </context>
 <context>
@@ -10600,7 +10598,7 @@ m2560 per le schede v4.1</translation>
     <message>
         <location filename="../downloaddialog.cpp" line="53"/>
         <source>Companion</source>
-        <translation type="unfinished"></translation>
+        <translation>Companion</translation>
     </message>
     <message>
         <location filename="../downloaddialog.cpp" line="54"/>
@@ -10808,7 +10806,7 @@ Può essere differente dalla lingua del firmware</translation>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="43"/>
         <source>Ch2</source>
-        <translation type="unfinished">Ch2</translation>
+        <translation>Ch2</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="82"/>
@@ -10916,42 +10914,42 @@ Può essere differente dalla lingua del firmware</translation>
         <location filename="../simulation/joystickdialog.ui" line="619"/>
         <location filename="../simulation/joystickdialog.ui" line="706"/>
         <source>RS</source>
-        <translation type="unfinished">RS</translation>
+        <translation>RS</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="130"/>
         <source>Ch1</source>
-        <translation type="unfinished">Ch1</translation>
+        <translation>Ch1</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="272"/>
         <source>Ch4</source>
-        <translation type="unfinished">Ch4</translation>
+        <translation>Ch4</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="304"/>
         <source>Ch6</source>
-        <translation type="unfinished">Ch6</translation>
+        <translation>Ch6</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="311"/>
         <source>Ch3</source>
-        <translation type="unfinished">Ch3</translation>
+        <translation>Ch3</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="533"/>
         <source>Ch5</source>
-        <translation type="unfinished">Ch5</translation>
+        <translation>Ch5</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="540"/>
         <source>Ch7</source>
-        <translation type="unfinished">Ch7</translation>
+        <translation>Ch7</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="627"/>
         <source>Ch8</source>
-        <translation type="unfinished">Ch8</translation>
+        <translation>Ch8</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="818"/>
@@ -10971,7 +10969,7 @@ Può essere differente dalla lingua del firmware</translation>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="875"/>
         <source>Ok</source>
-        <translation type="unfinished">Ok</translation>
+        <translation>Ok</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="22"/>
@@ -11031,7 +11029,7 @@ Premere annulla per cancellare l&apos;operazione</translation>
     <message>
         <location filename="../logsdialog.ui" line="14"/>
         <source>Companion Log Viewer</source>
-        <translation type="unfinished">Companion visualizzatore di Log</translation>
+        <translation>Visualizzatore di Log di Companion</translation>
     </message>
     <message>
         <location filename="../logsdialog.ui" line="25"/>
@@ -11051,17 +11049,17 @@ Premere annulla per cancellare l&apos;operazione</translation>
     <message>
         <location filename="../logsdialog.ui" line="97"/>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <location filename="../logsdialog.ui" line="104"/>
         <source>Y</source>
-        <translation type="unfinished">Y</translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location filename="../logsdialog.ui" line="111"/>
         <source>Reset</source>
-        <translation type="unfinished">Ripristina</translation>
+        <translation>Ripristina</translation>
     </message>
     <message>
         <location filename="../logsdialog.ui" line="135"/>
@@ -11081,13 +11079,13 @@ Premere annulla per cancellare l&apos;operazione</translation>
     <message>
         <location filename="../logsdialog.cpp" line="254"/>
         <source>Error</source>
-        <translation type="unfinished">Errore</translation>
+        <translation>Errore</translation>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="255"/>
         <source>Cannot write file %1:
 %2.</source>
-        <translation type="unfinished">Non posso scrivere il file %1:
+        <translation>Non posso scrivere il file %1:
 %2.</translation>
     </message>
     <message>
@@ -11135,7 +11133,7 @@ Premere annulla per cancellare l&apos;operazione</translation>
     <message>
         <location filename="../preferencesdialog.ui" line="559"/>
         <source>FwInfo</source>
-        <translation type="unfinished">Info FW</translation>
+        <translation>Info FW</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="950"/>
@@ -11214,7 +11212,7 @@ Mode 4:
         <location filename="../preferencesdialog.ui" line="303"/>
         <location filename="../preferencesdialog.ui" line="334"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="120"/>
@@ -11225,7 +11223,7 @@ Mode 4:
     <message>
         <location filename="../imgpreferences.ui" line="94"/>
         <source>Remember simulator switches</source>
-        <translation type="unfinished">Ricorda posizione interruttori nel simulatore</translation>
+        <translation>Ricorda posizione interruttori nel simulatore</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="136"/>
@@ -11485,12 +11483,12 @@ Può essere differente dalla lingua del firmware</translation>
     <message>
         <location filename="../preferencesdialog.ui" line="1619"/>
         <source>Find Executable</source>
-        <translation type="unfinished">Cerca eseguibile</translation>
+        <translation>Cerca eseguibile</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="1603"/>
         <source>Google Earth Executable</source>
-        <translation type="unfinished">Eseguibile Google Eart</translation>
+        <translation>Eseguibile Google Eart</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="694"/>
@@ -11522,7 +11520,7 @@ Può essere differente dalla lingua del firmware</translation>
     <message>
         <location filename="../preferencesdialog.ui" line="156"/>
         <source>Show Splash At Start</source>
-        <translation type="unfinished">Mostra Splash all&apos;avvio</translation>
+        <translation>Mostra immagine all&apos;avvio</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="156"/>
@@ -11937,17 +11935,17 @@ Può essere differente dalla lingua del firmware</translation>
     <message>
         <location filename="../taranisnotfound.ui" line="32"/>
         <source>No Taranis Radio Found</source>
-        <translation type="unfinished">Radio taranis non trovata</translation>
+        <translation>Radio taranis non trovata</translation>
     </message>
     <message>
         <location filename="../taranisnotfound.ui" line="40"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Taranis Radio was found!&lt;/p&gt;&lt;p&gt;Make sure that you hold the lower trim buttons towards the center while you turn it on.&lt;/p&gt;&lt;p&gt;Then connect the USB wire.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Nessuna radio Taranis è stata trovata!&lt;/p&gt;&lt;p&gt;Siate sicuri di tenere entrambi i trim inferiori verso il centro durante l&apos;accensione della radio..&lt;/p&gt;&lt;p&gt;Solo dopo connettete il cavo USB.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../taranisnotfound.ui" line="92"/>
         <source>OK</source>
-        <translation type="unfinished">Ok</translation>
+        <translation>Ok</translation>
     </message>
 </context>
 </TS>
