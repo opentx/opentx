@@ -871,7 +871,7 @@
 #define TR_ABOUT_KJELL_3       "OpenTX Recorder author"
 #define TR_ABOUT_KJELL_4       "Companion contributor"
 
-#define TR_ABOUT_MARTIN_1      "Kjell Martin Hotar"
+#define TR_ABOUT_MARTIN_1      "Martin Hotar"
 #define TR_ABOUT_MARTIN_2      "Graphics designer"
 
 #if defined(PCBTARANIS)
