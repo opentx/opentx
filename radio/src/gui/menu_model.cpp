@@ -4897,7 +4897,12 @@ void menuModelCustomFunctions(uint8_t event)
        MENU_ADD_ITEM(STR_INSERT);
      if (!CFN_EMPTY(sd))
        MENU_ADD_ITEM(STR_CLEAR);
-     MENU_ADD_ITEM(STR_DELETE);
+     for (int i=sub+1; i<NUM_CFN; i++) {
+       if (!CFN_EMPTY(&g_model.funcSw[i])) {
+         MENU_ADD_ITEM(STR_DELETE);
+         break;
+       }
+     }
      menuHandler = onCustomFunctionsMenu;
    }
 #endif
