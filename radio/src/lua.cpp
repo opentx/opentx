@@ -921,7 +921,7 @@ int luaGetInputs(ScriptInternalData & sid)
     return -1;
 
   sid.inputsCount = 0;
-  for (lua_pushnil(L); lua_next(L, -2) && sid.inputsCount<MAX_SCRIPT_OUTPUTS; lua_pop(L, 1)) {
+  for (lua_pushnil(L); lua_next(L, -2) && sid.inputsCount<MAX_SCRIPT_INPUTS; lua_pop(L, 1)) {
     luaL_checktype(L, -2, LUA_TNUMBER); // key is number
     luaL_checktype(L, -1, LUA_TTABLE); // value is table
     uint8_t field = 0;
