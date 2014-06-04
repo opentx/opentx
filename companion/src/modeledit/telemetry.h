@@ -83,6 +83,7 @@ class TelemetryPanel : public ModelPanel
     virtual ~TelemetryPanel();
 
   private slots:
+    void on_telemetryProtocol_currentIndexChanged(int index);
     void onAnalogModified();
     void on_frskyProtoCB_currentIndexChanged(int index);
     void on_frskyUnitsCB_currentIndexChanged(int index);

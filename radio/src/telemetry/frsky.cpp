@@ -68,30 +68,9 @@ uint8_t frskyRxBufferCount = 0;
 FrskyData frskyData;
 
 #if defined(CPUARM)
-enum TelemetryProtocol
-{
-  PROTOCOL_NONE,
-  PROTOCOL_FRSKY_D,
-  PROTOCOL_FRSKY_SPORT,
-};
-
+uint8_t telemetryProtocol = 255;
 #define IS_FRSKY_D_PROTOCOL()      (telemetryProtocol == PROTOCOL_FRSKY_D)
 #define IS_FRSKY_SPORT_PROTOCOL()  (telemetryProtocol == PROTOCOL_FRSKY_SPORT)
-
-TelemetryProtocol telemetryProtocol = PROTOCOL_NONE;
-
-TelemetryProtocol getTelemetryProtocol()
-{
-  if (IS_MODULE_XJT(EXTERNAL_MODULE))
-     return PROTOCOL_FRSKY_SPORT;
-
-#if defined(PCBTARANIS)
-  if (IS_MODULE_XJT(INTERNAL_MODULE))
-    return PROTOCOL_FRSKY_SPORT;
-#endif
-
-  return PROTOCOL_FRSKY_D;
-}
 #else
 #define IS_FRSKY_D_PROTOCOL()     (true)
 #define IS_FRSKY_SPORT_PROTOCOL() (false)
@@ -301,9 +280,8 @@ enum AlarmsCheckSteps {
 void telemetryWakeup()
 {
 #if defined(CPUARM)
-  TelemetryProtocol currentProtocol = getTelemetryProtocol();
-  if (telemetryProtocol != currentProtocol) {
-    telemetryProtocol = currentProtocol;
+  if (telemetryProtocol != g_model.telemetryProtocol) {
+    telemetryProtocol = g_model.telemetryProtocol;
     telemetryInit();
   }
 #endif
@@ -600,13 +578,8 @@ void telemetryReset()
 
 void telemetryInit(void)
 {
-#if defined(PCBTARANIS)
-  if (IS_MODULE_XJT(INTERNAL_MODULE) || IS_MODULE_XJT(EXTERNAL_MODULE))
-    telemetryPortInit(FRSKY_SPORT_BAUDRATE);
-  else
-    telemetryPortInit(FRSKY_D_BAUDRATE);
-#elif defined(PCBSKY9X)
-  if (IS_MODULE_XJT(EXTERNAL_MODULE))
+#if defined(CPUARM)
+  if (telemetryProtocol == PROTOCOL_FRSKY_SPORT)
     telemetryPortInit(FRSKY_SPORT_BAUDRATE);
   else
     telemetryPortInit(FRSKY_D_BAUDRATE);

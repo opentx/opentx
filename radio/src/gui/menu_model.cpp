@@ -5360,6 +5360,7 @@ void menuModelCustomScripts(uint8_t event)
 #endif
 
 enum menuModelTelemetryItems {
+  CASE_CPUARM(ITEM_TELEMETRY_PROTOCOL_TYPE)
 #if defined(CPUARM)
   ITEM_TELEMETRY_RXBATT_LABEL,
   ITEM_TELEMETRY_RXBATT_ALARM1,
@@ -5496,7 +5497,7 @@ enum menuModelTelemetryItems {
 
 void menuModelTelemetry(uint8_t event)
 {
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX+1, {0, RXBATT_ROWS CHANNEL_ROWS, CHANNEL_ROWS, CASE_CPUARM(CHANNEL_ROWS) CASE_CPUARM(CHANNEL_ROWS) RSSI_ROWS, USRDATA_LINES 0, 0, IF_FAS_OFFSET(0) CASE_CPUARM(0) CASE_VARIO(LABEL(Vario)) CASE_VARIO(0) CASE_VARIO(VARIO_RANGE_ROWS) CASE_PCBTARANIS(LABEL(TopBar)) CASE_PCBTARANIS(0) SCREEN_TYPE_ROWS, 2, 2, 2, 2, SCREEN_TYPE_ROWS, 2, 2, 2, 2, CASE_CPUARM(SCREEN_TYPE_ROWS) CASE_CPUARM(2) CASE_CPUARM(2) CASE_CPUARM(2) CASE_CPUARM(2) });
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX+1, {0, CASE_CPUARM(0) RXBATT_ROWS CHANNEL_ROWS, CHANNEL_ROWS, CASE_CPUARM(CHANNEL_ROWS) CASE_CPUARM(CHANNEL_ROWS) RSSI_ROWS, USRDATA_LINES 0, 0, IF_FAS_OFFSET(0) CASE_CPUARM(0) CASE_VARIO(LABEL(Vario)) CASE_VARIO(0) CASE_VARIO(VARIO_RANGE_ROWS) CASE_PCBTARANIS(LABEL(TopBar)) CASE_PCBTARANIS(0) SCREEN_TYPE_ROWS, 2, 2, 2, 2, SCREEN_TYPE_ROWS, 2, 2, 2, 2, CASE_CPUARM(SCREEN_TYPE_ROWS) CASE_CPUARM(2) CASE_CPUARM(2) CASE_CPUARM(2) CASE_CPUARM(2)});
 
   uint8_t sub = m_posVert - 1;
 
@@ -5530,7 +5531,15 @@ void menuModelTelemetry(uint8_t event)
 #endif
     FrSkyChannelData & channel = g_model.frsky.channels[ch];
     uint8_t dest = TELEM_A1-1+ch;
+
     switch (k) {
+
+#if defined(CPUARM)
+      case ITEM_TELEMETRY_PROTOCOL_TYPE:
+        g_model.telemetryProtocol = selectMenuItem(TELEM_COL2, y, "Telemetry Type", "\006S.PORTD\0    ", g_model.telemetryProtocol, PROTOCOL_FRSKY_SPORT, PROTOCOL_FRSKY_D, attr, event);
+        break;
+#endif
+
 #if defined(CPUARM)
       case ITEM_TELEMETRY_RXBATT_LABEL:
         lcd_putsLeft(y, "RxBatt");

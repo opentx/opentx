@@ -1028,6 +1028,7 @@ class ModelData {
     uint8_t  bt_telemetry;
     uint8_t  numVoice;
     MavlinkData mavlink;
+    unsigned int telemetryProtocol;
     FrSkyData frsky;
 
     char bitmap[10+1];

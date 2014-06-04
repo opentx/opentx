@@ -476,6 +476,14 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
     model.frsky.usrProto = 1;
   }
 
+  if (IS_ARM(firmware->getBoard())) {
+    ui->telemetryProtocol->setCurrentIndex(model.telemetryProtocol);
+  }
+  else {
+    ui->telemetryProtocolLabel->hide();
+    ui->telemetryProtocol->hide();
+  }
+
   analogs[0] = new TelemetryAnalog(this, model.frsky.channels[0], model, generalSettings, firmware);
   ui->A1Layout->addWidget(analogs[0]);
   connect(analogs[0], SIGNAL(modified()), this, SLOT(onAnalogModified()));
@@ -711,6 +719,12 @@ void TelemetryPanel::populateCurrentSource()
   cb->addItem(tr("FAS"), TELEMETRY_CURRENT_SOURCE_FAS);
 }
 
+void TelemetryPanel::on_telemetryProtocol_currentIndexChanged(int index)
+{
+  model.telemetryProtocol = index;
+  emit modified();
+}
+
 void TelemetryPanel::onAnalogModified()
 {
   emit modified();
@@ -718,14 +732,14 @@ void TelemetryPanel::onAnalogModified()
 
 void TelemetryPanel::on_frskyUnitsCB_currentIndexChanged(int index)
 {
-    model.frsky.imperial = index;
-    emit modified();
+  model.frsky.imperial = index;
+  emit modified();
 }
 
 void TelemetryPanel::on_bladesCount_editingFinished()
 {
-    model.frsky.blades = ui->bladesCount->value();
-    emit modified();
+  model.frsky.blades = ui->bladesCount->value();
+  emit modified();
 }
 
 void TelemetryPanel::on_frskyProtoCB_currentIndexChanged(int index)

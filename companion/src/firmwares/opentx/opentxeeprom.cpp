@@ -2412,8 +2412,8 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
     }
   }
 
-  if (IS_TARANIS(board))
-    internalField.Append(new SpareBitsField<3>());
+  if (IS_ARM(board))
+    internalField.Append(new UnsignedField<3>(modelData.telemetryProtocol));
   else
     internalField.Append(new ConversionField< SignedField<3> >(modelData.moduleData[0].protocol, &protocolsConversionTable, "Protocol", ::QObject::tr("OpenTX doesn't accept this protocol")));
 

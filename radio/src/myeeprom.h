@@ -1693,11 +1693,17 @@ enum ThrottleSources {
   THROTTLE_SOURCE_CH1,
 };
 
+enum TelemetryProtocol
+{
+  PROTOCOL_FRSKY_SPORT,
+  PROTOCOL_FRSKY_D,
+};
+
 PACK(typedef struct t_ModelData {
   ModelHeader header;
   TimerData timers[MAX_TIMERS];
   AVR_FIELD(uint8_t   protocol:3);
-  ARM_FIELD(uint8_t   spare:3);
+  ARM_FIELD(uint8_t   telemetryProtocol:3);
   uint8_t   thrTrim:1;            // Enable Throttle Trim
   AVR_FIELD(int8_t    ppmNCH:4)
   ARM_FIELD(int8_t    spare2:4)
