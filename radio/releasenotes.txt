@@ -1,4 +1,16 @@
-<h2>OpenTX 2.0.0</h2>
+<h2>OpenTX 2.0.1 / 2014-02-05</h2>
+[Taranis]
+<ul>
+<li>Heli mixer fix (stick modes 2/3/4)
+<li>Multipos switch fix
+<li>Italian translations updated
+<li>French translations fixes
+<li>Multis Wizard added
+<li>Bootloader now needs only one trim pressed
+<li>S3 warning hidden (no S3 on Taranis)
+</ul>
+
+<h2>OpenTX 2.0.0 / 2014-06-02</h2>
 [Taranis]
 <ul>
 <li>Inputs layer with support for all physical inputs and telemetry
