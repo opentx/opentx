@@ -1424,12 +1424,12 @@ Peut être différente de la langue du firmware</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="614"/>
         <source>&lt;br&gt;First Elevon Channel:</source>
-        <translation type="unfinished">&lt;br&gt;Premier canal d&apos;élevons:</translation>
+        <translation>&lt;br&gt;Premier canal d&apos;élevons:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="616"/>
         <source>Second Elevon Channel:</source>
-        <translation type="unfinished">Deuxième canal d&apos;élevons:</translation>
+        <translation>Deuxième canal d&apos;élevons:</translation>
     </message>
 </context>
 <context>
@@ -3893,7 +3893,7 @@ Voulez vous la télécharger maintenant ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1432"/>
         <source>The OpenTX Companion project was originally forked from &lt;a href=&apos;%1&apos;&gt;eePe&lt;/a&gt;</source>
-        <translation type="unfinished">Le projet OpenTX Companion a été créé à partir d&apos;&lt;a href=&apos;%2&apos;&gt;eePe&lt;/a&gt; {1&apos;?}</translation>
+        <translation>Le projet OpenTX Companion a été créé à partir d&apos;&lt;a href=&apos;%1&apos;&gt;eePe&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1438"/>
@@ -7861,17 +7861,17 @@ L&apos;équipe OpenTX.</translation>
     <message>
         <location filename="../radionotfound.ui" line="32"/>
         <source>No Radio Found</source>
-        <translation type="unfinished"></translation>
+        <translation>Radio non détectée</translation>
     </message>
     <message>
         <location filename="../radionotfound.ui" line="40"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Radio was found!&lt;/p&gt;&lt;p&gt;Make sure that you hold the lower trim buttons towards the center while you turn it on.&lt;/p&gt;&lt;p&gt;Then connect the USB wire.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Radio non détectée!&lt;/p&gt;&lt;p&gt;Assurez-vous de maintenir les 2 trims horizontaux pendant la mise sous tension,&lt;/p&gt;&lt;p&gt;puis connectez le câble USB.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../radionotfound.ui" line="92"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -8252,12 +8252,12 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../modeledit/telemetry.ui" line="51"/>
         <source>FrSky S.PORT</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="56"/>
         <source>FrSky D</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="514"/>
@@ -8886,7 +8886,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../wizarddialog.cpp" line="35"/>
         <source>Select the elevons channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner les canaux d&apos;élevons</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="36"/>
@@ -9039,7 +9039,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../wizarddialog.cpp" line="95"/>
         <source>Models use two channels to control the elevons.&lt;br&gt;Select these two channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Un modéle utilise 2 canaux pour commanderles élevons.&lt;br&gt;Sélectionnez-les ici:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="99"/>
@@ -9094,17 +9094,17 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../wizarddialog.cpp" line="989"/>
         <source>Plane</source>
-        <translation type="unfinished">Avion</translation>
+        <translation>Avion</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="991"/>
         <source>Multicopter</source>
-        <translation type="unfinished"></translation>
+        <translation>Multicoptère</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="993"/>
         <source>Helicopter</source>
-        <translation type="unfinished">Hélicoptère</translation>
+        <translation>Hélicoptère</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="1015"/>
