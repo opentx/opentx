@@ -192,41 +192,37 @@ private:
   QComboBox *airbrake2CB;
 };
 
-class BankPage: public StandardPage
+class ElevonsPage: public StandardPage
 {
   Q_OBJECT
-public:
-  BankPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage=-1);  
-  void initializePage();
-  bool validatePage();
 
-protected slots:
-  void oneElevonChannel();
-  void twoElevonChannels();
+  public:
+    ElevonsPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage=-1);
+    void initializePage();
+    bool validatePage();
 
-private:
-  QRadioButton *oneElevonChRB;
-  QRadioButton *twoElevonsChRB;
-  QComboBox *elevon1CB;
-  QComboBox *elevon2CB;
+  private:
+    QComboBox *elevon1CB;
+    QComboBox *elevon2CB;
 };
 
 class RudderPage: public StandardPage
 {
   Q_OBJECT
-public:
-  RudderPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage=-1);  
-  void initializePage();
-  bool validatePage();
 
-protected slots:
-  void noRudder();
-  void hasRudder();
+  public:
+    RudderPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage=-1);
+    void initializePage();
+    bool validatePage();
 
-private:
-  QRadioButton *noRudderRB;
-  QRadioButton *hasRudderRB;
-  QComboBox *rudderCB;
+    protected slots:
+    void noRudder();
+    void hasRudder();
+
+  private:
+    QRadioButton *noRudderRB;
+    QRadioButton *hasRudderRB;
+    QComboBox *rudderCB;
 };
 
 class TailPage: public StandardPage

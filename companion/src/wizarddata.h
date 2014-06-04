@@ -54,7 +54,7 @@ enum WizardPage {
   Page_Ailerons,
   Page_Flaps,
   Page_Airbrakes,
-  Page_Bank,
+  Page_Elevons,
   Page_Rudder,
   Page_Tails,
   Page_Tail,
