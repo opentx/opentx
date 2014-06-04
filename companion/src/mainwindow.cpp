@@ -911,15 +911,13 @@ QString MainWindow::FindMassstoragePath(QString filename)
       DWORD dwMaxFileNameLength=256;
       DWORD dwFileSystemFlags=0;
       bool ret = GetVolumeInformationW( (WCHAR *) drive.absolutePath().utf16(),szVolumeName,256,&dwSerialNumber,&dwMaxFileNameLength,&dwFileSystemFlags,szFileSystemName,256);
-      if(ret) {
+      if (ret) {
         QString vName = QString::fromUtf16 ( (const ushort *) szVolumeName) ;
-        if (vName.contains("TARANIS")) {
-          temppath = drive.absolutePath();
-          eepromfile = temppath;
-          eepromfile.append("/" + filename);
-          if (QFile::exists(eepromfile)) {
-            return eepromfile;
-          }
+        temppath = drive.absolutePath();
+        eepromfile = temppath;
+        eepromfile.append("/" + filename);
+        if (QFile::exists(eepromfile)) {
+          return eepromfile;
         }
       }
     }
@@ -1054,6 +1052,10 @@ bool MainWindow::readEepromFromRadio(const QString filename, const QString messa
 
   if (IS_ARM(GetCurrentFirmware()->getBoard())) {
     QString path = FindMassstoragePath("EEPROM.BIN");
+    if (path.isEmpty()) {
+      // Mike's bootloader calls the EEPROM file "ERSKY9X.BIN" :(
+      path = FindMassstoragePath("ERSKY9X.BIN");
+    }
     if (path.isEmpty()) {
       taranisNotFoundDialog *tnfd = new taranisNotFoundDialog(this);
       tnfd->exec();
