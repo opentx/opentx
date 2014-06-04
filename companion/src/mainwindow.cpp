@@ -63,7 +63,7 @@
 #include "warnings.h"
 #include "helpers.h"
 #include "appdata.h"
-#include "taranisnotfound.h"
+#include "radionotfound.h"
 #include "googleanalytics.h"
 #include "firmwares/opentx/opentxinterface.h" // TODO get rid of this include
 
@@ -1056,11 +1056,7 @@ bool MainWindow::readEepromFromRadio(const QString filename, const QString messa
       // Mike's bootloader calls the EEPROM file "ERSKY9X.BIN" :(
       path = FindMassstoragePath("ERSKY9X.BIN");
     }
-    if (path.isEmpty()) {
-      taranisNotFoundDialog *tnfd = new taranisNotFoundDialog(this);
-      tnfd->exec();
-    }
-    else {
+    if (!path.isEmpty()) {
       QStringList str;
       str << path << filename;
       avrOutputDialog *ad = new avrOutputDialog(this, "", str, message);
@@ -1071,7 +1067,8 @@ bool MainWindow::readEepromFromRadio(const QString filename, const QString messa
       result = true;
     }
   }
-  else {
+
+  if (result == false && !IS_TARANIS(GetCurrentFirmware()->getBoard())) {
     QStringList str = GetReceiveEEpromCommand(filename);
     avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, message);
     ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
@@ -1081,22 +1078,30 @@ bool MainWindow::readEepromFromRadio(const QString filename, const QString messa
     result = true;
   }
 
-  if (!QFileInfo(filename).exists())
+  if (result == false && IS_ARM(GetCurrentFirmware()->getBoard())) {
+    RadioNotFoundDialog *dialog = new RadioNotFoundDialog(this);
+    dialog->exec();
+    delete dialog;
+  }
+
+  if (!QFileInfo(filename).exists()) {
     result = false;
+  }
 
   return result;
 }
 
 bool MainWindow::writeEepromToRadio(const QString filename, const QString message)
 {
+  bool result = false;
+
   if (IS_ARM(GetCurrentFirmware()->getBoard())) {
     QString path = FindMassstoragePath("EEPROM.BIN");
     if (path.isEmpty()) {
-      taranisNotFoundDialog *tnfd = new taranisNotFoundDialog(this);
-      tnfd->exec();
-      return false;
+      // Mike's bootloader calls the EEPROM file "ERSKY9X.BIN" :(
+      path = FindMassstoragePath("ERSKY9X.BIN");
     }
-    else {
+    if (!path.isEmpty()) {
       QStringList str;
       str << filename << path;
       avrOutputDialog *ad = new avrOutputDialog(this, "", str, message);
@@ -1104,17 +1109,27 @@ bool MainWindow::writeEepromToRadio(const QString filename, const QString messag
       ad->exec();
       delete ad;
       sleep(1);
-      return true;
+      result = true;
     }
   }
-  else {
+
+  if (result == false && !IS_TARANIS(GetCurrentFirmware()->getBoard())) {
     QStringList str = GetSendEEpromCommand(filename);
     avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, "Write Backup To Radio", AVR_DIALOG_SHOW_DONE);
     ad->setWindowIcon(CompanionIcon("write_eeprom.png"));
     ad->exec();
     delete ad;
-    return true;
+    sleep(1);
+    result = true;
   }
+
+  if (result == false && IS_ARM(GetCurrentFirmware()->getBoard())) {
+    RadioNotFoundDialog *dialog = new RadioNotFoundDialog(this);
+    dialog->exec();
+    delete dialog;
+  }
+
+  return result;
 }
 
 void MainWindow::writeBackup()

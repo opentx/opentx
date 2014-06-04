@@ -53,7 +53,6 @@
 #include "helpers.h"
 #include "appdata.h"
 #include "wizarddialog.h"
-#include "taranisnotfound.h"
 #include <QFileInfo>
 #include "googleanalytics.h"
 

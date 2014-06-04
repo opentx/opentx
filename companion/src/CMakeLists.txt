@@ -168,7 +168,7 @@ set(companion_SRCS
   splashlibrary.cpp
   mainwindow.cpp
   companion.cpp
-  taranisnotfound.cpp
+  radionotfound.cpp
   qcustomplot.cpp
   wizarddata.cpp
   wizarddialog.cpp
@@ -193,7 +193,7 @@ set(companion_MOC_HDRS
   modelslist.h
   mdichild.h
   mainwindow.h
-  taranisnotfound.h
+  radionotfound.h
   qcustomplot.h
   qautocombobox.h
   helpers.h
@@ -216,7 +216,7 @@ set(companion_UIS
   customizesplashdialog.ui
   splashlibrary.ui
   burndialog.ui
-  taranisnotfound.ui
+  radionotfound.ui
 )
 
 set(companion_RCS
