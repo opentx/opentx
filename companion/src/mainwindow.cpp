@@ -1429,11 +1429,11 @@ void MainWindow::about()
     QString aboutStr = "<center><img src=\":/images/companion-title.png\"></center><br/>";
     aboutStr.append(tr("OpenTX Home Page: <a href='%1'>%1</a>").arg("http://www.open-tx.org"));
     aboutStr.append("<br/><br/>");
-    aboutStr.append(tr("The OpenTX Companion project was originally forked from <a href='%2'>eePe</a>").arg("http://code.google.com/p/eepe"));
+    aboutStr.append(tr("The OpenTX Companion project was originally forked from <a href='%1'>eePe</a>").arg("http://code.google.com/p/eepe"));
     aboutStr.append("<br/><br/>");
     aboutStr.append(tr("If you've found this program useful, please support by <a href='%1'>donating</a>").arg(DONATE_STR));
     aboutStr.append("<br/><br/>");
-    aboutStr.append(tr("Version %1, %3").arg(C9X_VERSION).arg(__DATE__));
+    aboutStr.append(QString("Version %1, %2").arg(C9X_VERSION).arg(__DATE__));
     aboutStr.append("<br/><br/>");
     aboutStr.append(tr("Copyright OpenTX Team") + "<br/>&copy; 2011-2014<br/>");
     QMessageBox msgBox(this);
