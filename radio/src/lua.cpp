@@ -921,48 +921,49 @@ int luaGetInputs(ScriptInternalData & sid)
     return -1;
 
   sid.inputsCount = 0;
-  for (lua_pushnil(L); lua_next(L, -2) && sid.inputsCount<MAX_SCRIPT_INPUTS; lua_pop(L, 1)) {
+  for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
     luaL_checktype(L, -2, LUA_TNUMBER); // key is number
     luaL_checktype(L, -1, LUA_TTABLE); // value is table
-    uint8_t field = 0;
-    for (lua_pushnil(L); lua_next(L, -2) && field<5; lua_pop(L, 1), field++) {
-      switch (field) {
-        case 0:
-          luaL_checktype(L, -2, LUA_TNUMBER); // key is number
-          luaL_checktype(L, -1, LUA_TSTRING); // value is string
-          sid.inputs[sid.inputsCount].name = lua_tostring(L, -1);
-          break;
-        case 1:
-          luaL_checktype(L, -2, LUA_TNUMBER); // key is number
-          luaL_checktype(L, -1, LUA_TNUMBER); // value is number
-          sid.inputs[sid.inputsCount].type = lua_tointeger(L, -1);
-          if (sid.inputs[sid.inputsCount].type == 0) {
-            sid.inputs[sid.inputsCount].min = -100;
-            sid.inputs[sid.inputsCount].max = 100;
-          }
-          else {
-            sid.inputs[sid.inputsCount].max = MIXSRC_LAST_TELEM;
-          }
-          break;
-        case 2:
-          luaL_checktype(L, -2, LUA_TNUMBER); // key is number
-          luaL_checktype(L, -1, LUA_TNUMBER); // value is number
-          sid.inputs[sid.inputsCount].min = lua_tointeger(L, -1);
-          break;
-        case 3:
-          luaL_checktype(L, -2, LUA_TNUMBER); // key is number
-          luaL_checktype(L, -1, LUA_TNUMBER); // value is number
-          sid.inputs[sid.inputsCount].max = lua_tointeger(L, -1);
-          break;
-        case 4:
-          luaL_checktype(L, -2, LUA_TNUMBER); // key is number
-          luaL_checktype(L, -1, LUA_TNUMBER); // value is number
-          sid.inputs[sid.inputsCount].def = lua_tointeger(L, -1);
-          break;
+    if (sid.inputsCount<MAX_SCRIPT_INPUTS) {
+      uint8_t field = 0;
+      for (lua_pushnil(L); lua_next(L, -2) && field<5; lua_pop(L, 1), field++) {
+        switch (field) {
+          case 0:
+            luaL_checktype(L, -2, LUA_TNUMBER); // key is number
+            luaL_checktype(L, -1, LUA_TSTRING); // value is string
+            sid.inputs[sid.inputsCount].name = lua_tostring(L, -1);
+            break;
+          case 1:
+            luaL_checktype(L, -2, LUA_TNUMBER); // key is number
+            luaL_checktype(L, -1, LUA_TNUMBER); // value is number
+            sid.inputs[sid.inputsCount].type = lua_tointeger(L, -1);
+            if (sid.inputs[sid.inputsCount].type == 0) {
+              sid.inputs[sid.inputsCount].min = -100;
+              sid.inputs[sid.inputsCount].max = 100;
+            }
+            else {
+              sid.inputs[sid.inputsCount].max = MIXSRC_LAST_TELEM;
+            }
+            break;
+          case 2:
+            luaL_checktype(L, -2, LUA_TNUMBER); // key is number
+            luaL_checktype(L, -1, LUA_TNUMBER); // value is number
+            sid.inputs[sid.inputsCount].min = lua_tointeger(L, -1);
+            break;
+          case 3:
+            luaL_checktype(L, -2, LUA_TNUMBER); // key is number
+            luaL_checktype(L, -1, LUA_TNUMBER); // value is number
+            sid.inputs[sid.inputsCount].max = lua_tointeger(L, -1);
+            break;
+          case 4:
+            luaL_checktype(L, -2, LUA_TNUMBER); // key is number
+            luaL_checktype(L, -1, LUA_TNUMBER); // value is number
+            sid.inputs[sid.inputsCount].def = lua_tointeger(L, -1);
+            break;
+        }
       }
+      sid.inputsCount++;
     }
-
-    sid.inputsCount++;
   }
 
   return 0;
@@ -974,10 +975,12 @@ int luaGetOutputs(ScriptInternalData & sid)
     return -1;
 
   sid.outputsCount = 0;
-  for (lua_pushnil(L); lua_next(L, -2) && sid.outputsCount<MAX_SCRIPT_OUTPUTS; lua_pop(L, 1)) {
+  for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
     luaL_checktype(L, -2, LUA_TNUMBER); // key is number
     luaL_checktype(L, -1, LUA_TSTRING); // value is string
-    sid.outputs[sid.outputsCount++].name = lua_tostring(L, -1);
+    if (sid.outputsCount<MAX_SCRIPT_OUTPUTS) {
+      sid.outputs[sid.outputsCount++].name = lua_tostring(L, -1);
+    }
   }
 
   return 0;
