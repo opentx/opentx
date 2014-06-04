@@ -1158,7 +1158,7 @@ void registerOpenTxFirmwares()
   openTx->addOptions(fai_options);
   firmwares.push_back(openTx);
   
-  /* SKY9X board */
+  /* 9XR-Pro */
   openTx = new OpenTxFirmware("opentx-9xrpro", QObject::tr("OpenTX for 9XR-PRO"), BOARD_9XRPRO, true);
   openTx->setVariantBase(FRSKY_VARIANT);
   openTx->addOption("heli", QObject::tr("Enable HELI menu and cyclic mix support"));
@@ -1181,29 +1181,6 @@ void registerOpenTxFirmwares()
   openTx->addOption("bluetooth", QObject::tr("Bluetooth interface"));
   openTx->addOptions(fai_options);
   firmwares.push_back(openTx);
-  openTx = new OpenTxFirmware("opentx-sky9x", QObject::tr("OpenTX for Sky9x board / 9X"), BOARD_SKY9X, true);
-  openTx->setVariantBase(FRSKY_VARIANT);
-  openTx->addOption("heli", QObject::tr("Enable HELI menu and cyclic mix support"));
-  openTx->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
-  openTx->addOption("nofp", QObject::tr("No flight modes"));
-  openTx->addOption("nocurves", QObject::tr("Disable curves menus"));
-  openTx->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
-  openTx->addOption("ppmus", QObject::tr("Channel values displayed in us"));
-  openTx->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
-  openTx->addOption("symlimits", QObject::tr("Symetrical Limits"));
-  openTx->addOption("potscroll", QObject::tr("Pots use in menus navigation"));
-  openTx->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving the control"));
-  openTx->addOption("autoswitch", QObject::tr("In model setup menus automatically set switch by moving the control"));
-  openTx->addOption("dblkeys", QObject::tr("Enable resetting values by pressing up and down at the same time"));
-  openTx->addOption("nographics", QObject::tr("No graphical check boxes and sliders"));
-  openTx->addOption("battgraph", QObject::tr("Battery graph"));
-  openTx->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
-  openTx->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
-  openTx->addOption("tsticks", QObject::tr("Use FrSky Taranis sticks in a 9X/9XR"));
-  openTx->addOption("bluetooth", QObject::tr("Bluetooth interface"));
-  openTx->addOptions(fai_options);
-  firmwares.push_back(openTx);
-  
 #endif
   
   /* Taranis board */
