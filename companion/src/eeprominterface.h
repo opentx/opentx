@@ -1046,6 +1046,10 @@ class ModelData {
 
     int getTrimValue(int phaseIdx, int trimIdx);
     void setTrimValue(int phaseIdx, int trimIdx, int value);
+
+    bool isGVarLinked(int phaseIdx, int gvarIdx);
+    int getGVarValue(int phaseIdx, int gvarIdx);
+
     ModelData removeGlobalVars();
 
     void clearMixes();

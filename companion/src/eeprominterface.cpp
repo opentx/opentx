@@ -1164,6 +1164,23 @@ int ModelData::getTrimValue(int phaseIdx, int trimIdx)
   return 0;
 }
 
+bool ModelData::isGVarLinked(int phaseIdx, int gvarIdx)
+{
+  return phaseData[phaseIdx].gvars[gvarIdx] > 1024;
+}
+
+int ModelData::getGVarValue(int phaseIdx, int gvarIdx)
+{
+  int idx = phaseData[phaseIdx].gvars[gvarIdx];
+  for (int i=0; idx>1024 && i<C9X_MAX_FLIGHT_MODES; i++) {
+    int nextPhase = idx - 1025;
+    if (nextPhase >= phaseIdx) nextPhase += 1;
+    phaseIdx = nextPhase;
+    idx = phaseData[phaseIdx].gvars[gvarIdx];
+  }
+  return idx;
+}
+
 void ModelData::setTrimValue(int phaseIdx, int trimIdx, int value)
 {
   for (uint8_t i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
