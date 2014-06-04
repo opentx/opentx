@@ -601,6 +601,11 @@ void checkSwitches()
       }
       if (potMode) {
         for (uint8_t i=0; i<NUM_POTS; i++) {
+#if !defined(REVPLUS)
+          if (i == POT3-POT1) {
+            continue;
+          }
+#endif
           if (!(g_model.nPotsToWarn & (1 << i))) {
             uint8_t flags = 0;
             if (abs(g_model.potPosition[i] - GET_LOWRES_POT_POSITION(i)) > 1) {
