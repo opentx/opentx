@@ -3170,35 +3170,35 @@ Siete sicuri ?</translation>
         <location filename="../modeledit/inputs.cpp" line="17"/>
         <location filename="../modeledit/inputs.cpp" line="419"/>
         <source>Move Up</source>
-        <translation type="unfinished">Muovi in Su</translation>
+        <translation>Muovi Su</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="19"/>
         <location filename="../modeledit/inputs.cpp" line="419"/>
         <source>Ctrl+Up</source>
-        <translation type="unfinished">Ctrl+Up</translation>
+        <translation>Ctrl+Up</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="20"/>
         <location filename="../modeledit/inputs.cpp" line="420"/>
         <source>Move Down</source>
-        <translation type="unfinished">Muovi in Giù</translation>
+        <translation>Muovi Giù</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="22"/>
         <location filename="../modeledit/inputs.cpp" line="420"/>
         <source>Ctrl+Down</source>
-        <translation type="unfinished">Ctrl+Down</translation>
+        <translation>Ctrl+Down</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="23"/>
         <source>Clear All Inputs</source>
-        <translation type="unfinished">Cancella tutti gli ingressi</translation>
+        <translation>Cancella tutti gli ingressi</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="167"/>
         <source>Source(%1)</source>
-        <translation type="unfinished">Sorgente(%1)</translation>
+        <translation>Sorgente(%1)</translation>
     </message>
     <message>
         <source>No Trim</source>
@@ -3207,107 +3207,107 @@ Siete sicuri ?</translation>
     <message>
         <location filename="../modeledit/inputs.cpp" line="164"/>
         <source>Weight(%1)</source>
-        <translation type="unfinished">Peso(%1)</translation>
+        <translation>Peso(%1)</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="169"/>
         <source>NoTrim</source>
-        <translation type="unfinished"></translation>
+        <translation>NoTrim</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="181"/>
         <source>Switch(%1)</source>
-        <translation type="unfinished">Interruttore(%1)</translation>
+        <translation>Interruttore(%1)</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="194"/>
         <source>Not enough available inputs!</source>
-        <translation type="unfinished">Nessun ulteriore ingresso disponibile</translation>
+        <translation>Nessun ulteriore ingresso disponibile!</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="278"/>
         <source>Delete Selected Inputs?</source>
-        <translation type="unfinished">Cancella ingressi selezionati?</translation>
+        <translation>Cancellare gli ingressi selezionati?</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="410"/>
         <source>&amp;Add</source>
-        <translation type="unfinished">&amp;Aggiungi</translation>
+        <translation>&amp;Aggiungi</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="410"/>
         <source>Ctrl+A</source>
-        <translation type="unfinished">Ctrl+A</translation>
+        <translation>Ctrl+A</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="411"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished">&amp;Modifica</translation>
+        <translation>&amp;Modifica</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="411"/>
         <source>Enter</source>
-        <translation type="unfinished">Invio</translation>
+        <translation>Invio</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="413"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished">&amp;Elimina</translation>
+        <translation>&amp;Elimina</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="413"/>
         <source>Delete</source>
-        <translation type="unfinished">Elimina</translation>
+        <translation>Elimina</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="414"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished">&amp;Copia</translation>
+        <translation>&amp;Copia</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="414"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished">Ctrl+C</translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="415"/>
         <source>&amp;Cut</source>
-        <translation type="unfinished">&amp;Taglia</translation>
+        <translation>&amp;Taglia</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="415"/>
         <source>Ctrl+X</source>
-        <translation type="unfinished">Ctrl+X</translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="416"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished">&amp;Incolla</translation>
+        <translation>&amp;Incolla</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="416"/>
         <source>Ctrl+V</source>
-        <translation type="unfinished">Ctrl+V</translation>
+        <translation>Ctrl+V</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="417"/>
         <source>Du&amp;plicate</source>
-        <translation type="unfinished">Dup&amp;lica</translation>
+        <translation>Dup&amp;lica</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="417"/>
         <source>Ctrl+U</source>
-        <translation type="unfinished">Ctrl+U</translation>
+        <translation>Ctrl+U</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="516"/>
         <source>Clear Inputs?</source>
-        <translation type="unfinished">Cancella ingressi?</translation>
+        <translation>Cancellare gli ingressi?</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="516"/>
         <source>Really clear all the inputs?</source>
-        <translation type="unfinished">Vuoi veramente cancellare gli ingressi?</translation>
+        <translation>Volete veramente cancellare gli ingressi?</translation>
     </message>
 </context>
 <context>
@@ -3406,7 +3406,7 @@ Siete sicuri ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="220"/>
         <source>Checking for updates</source>
-        <translation type="unfinished">Controlla aggiornamenti</translation>
+        <translation>Controllo aggiornamenti in corso</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="254"/>
@@ -3469,7 +3469,7 @@ Siete sicuri ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="369"/>
         <source>Do you want to write the firmware to the radio now ?</source>
-        <translation type="unfinished">Vuoi scrivere il firmware sulla radio?</translation>
+        <translation>Volete scrivere il firmware sulla radio?</translation>
     </message>
     <message>
         <source>Firmware %1 does not seem to have ever been downloaded.
@@ -3549,7 +3549,7 @@ Volete scaricarla ora ?</translation>
         <location filename="../mainwindow.cpp" line="578"/>
         <location filename="../mainwindow.cpp" line="1526"/>
         <source>Open Models and Settings file</source>
-        <translation type="unfinished">Apri modelli e file impostazioni</translation>
+        <translation>Apri modelli e file impostazioni</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="684"/>
@@ -3606,34 +3606,34 @@ Volete scaricarla ora ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="535"/>
         <source>The selected language will be used the next time you start Companion.</source>
-        <translation type="unfinished">Il linguaggio selezionato sarà usato al prossimo riavvio di Companion</translation>
+        <translation>Il linguaggio selezionato sarà usato al prossimo riavvio di Companion.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="303"/>
         <source>A new release of Companion is available, please check the OpenTX website!</source>
-        <translation type="unfinished">Una nuova versione di Companion è disponibile, visitate il sito Web di OpenTx</translation>
+        <translation>Una nuova versione di Companion è disponibile, visitate il sito Web di OpenTx!</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="347"/>
         <source>Not enough memory for all the selected firmware options</source>
-        <translation type="unfinished">Memoria insufficente per tutte le opzioni firmware selezionate</translation>
+        <translation>Memoria insufficente per tutte le opzioni firmware selezionate</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="537"/>
         <location filename="../mainwindow.cpp" line="548"/>
         <location filename="../mainwindow.cpp" line="559"/>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="546"/>
         <source>The new theme will be loaded the next time you start Companion.</source>
-        <translation type="unfinished">Il nuovo tema sarà caricato al prossimo riavvio di Companion</translation>
+        <translation>Il nuovo tema sarà caricato al prossimo riavvio di Companion.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="557"/>
         <source>The icon size will be used the next time you start Companion.</source>
-        <translation type="unfinished">La dimensione delle icone sarà usata al prossimo riavvio di Companion</translation>
+        <translation>La dimensione delle icone sarà usata al prossimo riavvio di Companion.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1129"/>
@@ -3667,104 +3667,106 @@ Scriverlo ugualmente ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1525"/>
         <source>New</source>
-        <translation type="unfinished">Nuovo</translation>
+        <translation>Nuovo</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1526"/>
         <source>Open...</source>
-        <translation type="unfinished">Apri</translation>
+        <translation>Apri...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1527"/>
         <source>Save</source>
-        <translation type="unfinished">Salva</translation>
+        <translation>Salva</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1528"/>
         <source>Save As...</source>
-        <translation type="unfinished">Salva Come</translation>
+        <translation>Salva come...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1531"/>
         <source>Copy Model</source>
-        <translation type="unfinished">Copia Modello</translation>
+        <translation>Copia Modello</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1532"/>
         <source>Paste Model</source>
-        <translation type="unfinished">Incolla Modello</translation>
+        <translation>Incolla Modello</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1537"/>
         <source>A monochrome black icon theme</source>
-        <translation type="unfinished">Tema icone monocromatico nero</translation>
+        <translation>Tema icone monocromatico nero</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1538"/>
         <source>A monochrome white icon theme</source>
-        <translation type="unfinished">Tema icone monocromatico bianco</translation>
+        <translation>Tema icone monocromatico bianco</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1539"/>
         <source>A monochrome blue icon theme</source>
-        <translation type="unfinished">tema icone monocromatico blu</translation>
+        <translation>tema icone monocromatico blu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1542"/>
         <source>Small</source>
-        <translation type="unfinished">Piccole</translation>
+        <translation>Piccole</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1542"/>
         <source>Use small toolbar icons</source>
-        <translation type="unfinished">Usa icone piccole barra strumenti</translation>
+        <translation>Usa icone piccole barra strumenti</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1543"/>
         <source>Use normal size toolbar icons</source>
-        <translation type="unfinished">Usa icone normali nell barra strumenti</translation>
+        <translation>Usa icone normali nell barra strumenti</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1543"/>
         <source>Normal</source>
-        <translation type="unfinished">Normali</translation>
+        <translation>Normali</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1544"/>
         <source>Use big toolbar icons</source>
-        <translation type="unfinished">Usa icone grandi barra strumenti</translation>
+        <translation>Usa icone grandi barra strumenti</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1544"/>
         <source>Big</source>
-        <translation type="unfinished">Grandi</translation>
+        <translation>Grandi</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1545"/>
         <source>Use huge toolbar icons</source>
-        <translation type="unfinished">Usa icone giganti barra strumenti</translation>
+        <translation>Usa icone giganti barra strumenti</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1545"/>
         <source>Huge</source>
-        <translation type="unfinished">Giganti</translation>
+        <translation>Giganti</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1450"/>
         <source>OpenTX Companion - FW: %1 - Profile: %2</source>
-        <translation type="unfinished">OpenTx Companion - FW: %1 - Profilo: %2</translation>
+        <translation>OpenTx Companion - FW: %1 - Profilo: %2</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="414"/>
         <source>Firmware %1 does not seem to have ever been downloaded.
 Release %2 is available.
 Do you want to download it now?</source>
-        <translation type="unfinished"></translation>
+        <translation>Il firmware %1 non sembra mai essere stato scaricato.
+E&apos; disponibile la versione %2.
+Volete scaricarla adesso ?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="426"/>
         <source>Do you want to download release %1 %2 now ?</source>
-        <translation type="unfinished">Volete scaricare la versione %1 adesso ? {1 %2 ?}</translation>
+        <translation>Volete scaricare la versione %1 %2 adesso ?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="443"/>
@@ -3773,168 +3775,172 @@ Do you want to download it now?</source>
   - newer is %3
 
 Do you want to download it now ?</source>
-        <translation type="unfinished"></translation>
+        <translation>Una nuova versione del firmware %1 è disponibile
+  - attuale %2
+ - nuova %3
+
+Volete scaricarla ora ?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="479"/>
         <source>Ignore this release %1?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignorare questa versione %1?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="976"/>
         <source>Read Firmware From Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Leggi il firmware dalla Radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1525"/>
         <source>Create a new Models and Settings file</source>
-        <translation type="unfinished">Crea nuovo modello e file di impostazioni</translation>
+        <translation>Crea nuovo modello e file di impostazioni</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1527"/>
         <location filename="../mainwindow.cpp" line="1528"/>
         <source>Save Models and Settings file</source>
-        <translation type="unfinished">Salva Modello e file impostazioni</translation>
+        <translation>Salva Modello e file impostazioni</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1529"/>
         <source>Exit</source>
-        <translation type="unfinished">Esci</translation>
+        <translation>Esci</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1530"/>
         <source>Cut Model</source>
-        <translation type="unfinished">Taglia Modello</translation>
+        <translation>Taglia Modello</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1530"/>
         <source>Cut current model to the clipboard</source>
-        <translation type="unfinished">Taglia e inserisci modello nella clipboard</translation>
+        <translation>Taglia e inserisci modello nella clipboard</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1531"/>
         <source>Copy current model to the clipboard</source>
-        <translation type="unfinished">Copia modello nella clipboard</translation>
+        <translation>Copia modello nella clipboard</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1532"/>
         <source>Paste model from clipboard</source>
-        <translation type="unfinished">Incolla Modello dalla clipboard</translation>
+        <translation>Incolla Modello dalla clipboard</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1535"/>
         <source>Classical</source>
-        <translation type="unfinished">Classica</translation>
+        <translation>Classica</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1535"/>
         <source>The classic companion9x icon theme</source>
-        <translation type="unfinished">Tema classico icone Companion</translation>
+        <translation>Tema classico icone Companion</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1536"/>
         <source>Yerico</source>
-        <translation type="unfinished">Yerico</translation>
+        <translation>Yerico</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1536"/>
         <source>Yellow round honey sweet icon theme</source>
-        <translation type="unfinished">Tema di icone giallo dolce miele rotondo</translation>
+        <translation>Tema di icone giallo dolce miele rotondo</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1537"/>
         <source>Monochrome</source>
-        <translation type="unfinished">Monocromatico</translation>
+        <translation>Monocromatico</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1538"/>
         <source>MonoWhite</source>
-        <translation type="unfinished">Monocolore Bianco</translation>
+        <translation>Monocolore Bianco</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1539"/>
         <source>MonoBlue</source>
-        <translation type="unfinished">Monocolore Blu</translation>
+        <translation>Monocolore Blu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1548"/>
         <source>System language</source>
-        <translation type="unfinished">Lingua di sistema</translation>
+        <translation>Lingua di sistema</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1548"/>
         <source>Use system language in menus</source>
-        <translation type="unfinished">Usa la lingua di sistema</translation>
+        <translation>Usa la lingua di sistema</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1549"/>
         <source>Czech</source>
-        <translation type="unfinished">Ceco</translation>
+        <translation>Ceco</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1549"/>
         <source>Use Czech in menus</source>
-        <translation type="unfinished">Usa il Ceco nei menu</translation>
+        <translation>Usa il Ceco nei menu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1550"/>
         <source>German</source>
-        <translation type="unfinished">Tedesco</translation>
+        <translation>Tedesco</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1550"/>
         <source>Use German in menus</source>
-        <translation type="unfinished">Usa il Tedesco nei menu</translation>
+        <translation>Usa il Tedesco nei menu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1551"/>
         <source>English</source>
-        <translation type="unfinished">Inglese</translation>
+        <translation>Inglese</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1551"/>
         <source>Use English in menus</source>
-        <translation type="unfinished">Usa inglese nei menu</translation>
+        <translation>Usa inglese nei menu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1552"/>
         <source>Finnish</source>
-        <translation type="unfinished">Finlandese</translation>
+        <translation>Finlandese</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1552"/>
         <source>Use Finnish in menus</source>
-        <translation type="unfinished">Usa il Fillandese nei menu</translation>
+        <translation>Usa il Fillandese nei menu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1553"/>
         <source>French</source>
-        <translation type="unfinished">Francese</translation>
+        <translation>Francese</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1553"/>
         <source>Use French in menus</source>
-        <translation type="unfinished">Usa il Francese nei menu</translation>
+        <translation>Usa il Francese nei menu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1554"/>
         <source>Italian</source>
-        <translation type="unfinished">Italiano</translation>
+        <translation>Italiano</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1554"/>
         <source>Use Italian in menus</source>
-        <translation type="unfinished">Usa l&apos;Italiano nei menu</translation>
+        <translation>Usa l&apos;Italiano nei menu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1556"/>
         <source>Polish</source>
-        <translation type="unfinished">Polacco</translation>
+        <translation>Polacco</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1556"/>
         <source>Use Polish in menus</source>
-        <translation type="unfinished">Usa il polacco nei menu</translation>
+        <translation>Usa il polacco nei menu</translation>
     </message>
     <message>
         <source>Portuguese</source>
@@ -3943,258 +3949,258 @@ Do you want to download it now ?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1558"/>
         <source>Swedish</source>
-        <translation type="unfinished">Svedese</translation>
+        <translation>Svedese</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1558"/>
         <source>Use Swedish in menus</source>
-        <translation type="unfinished">Usa lo svedese nei menu</translation>
+        <translation>Usa lo svedese nei menu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1562"/>
         <source>About...</source>
-        <translation type="unfinished">Informa su...</translation>
+        <translation>Informa su...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1563"/>
         <source>Print...</source>
-        <translation type="unfinished">Stampa</translation>
+        <translation>Stampa...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1563"/>
         <source>Print current model</source>
-        <translation type="unfinished">Stampa il modello corrente</translation>
+        <translation>Stampa il modello corrente</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1564"/>
         <source>Simulate...</source>
-        <translation type="unfinished">Simula...</translation>
+        <translation>Simula...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1564"/>
         <source>Simulate current model</source>
-        <translation type="unfinished">Simula il modello corrente</translation>
+        <translation>Simula il modello corrente</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1564"/>
         <source>Alt+S</source>
-        <translation type="unfinished">Alt+S</translation>
+        <translation>Alt+S</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1565"/>
         <source>Load Backup...</source>
-        <translation type="unfinished">Carica salvataggio</translation>
+        <translation>Carica salvataggio...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1566"/>
         <source>View Log File...</source>
-        <translation type="unfinished">Visualizza file di Log</translation>
+        <translation>Visualizza file di Log...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1566"/>
         <source>Open and view log file</source>
-        <translation type="unfinished">Apri e visualizza file di log</translation>
+        <translation>Apri e visualizza file di log</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1567"/>
         <source>Settings...</source>
-        <translation type="unfinished">Impostazioni</translation>
+        <translation>Impostazioni...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1567"/>
         <source>Edit Settings</source>
-        <translation type="unfinished">Edita Impostazioni</translation>
+        <translation>Edita Impostazioni</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1568"/>
         <source>Download...</source>
-        <translation type="unfinished">Scarica</translation>
+        <translation>Scarica...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1568"/>
         <source>Download firmware and voice files</source>
-        <translation type="unfinished">Scarica Firmware e file voce</translation>
+        <translation>Scarica Firmware e file voce</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1569"/>
         <source>Check for Updates...</source>
-        <translation type="unfinished">Controlla gli aggiornamenti</translation>
+        <translation>Controllo aggiornamenti...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1569"/>
         <source>Check OpenTX and Companion updates</source>
-        <translation type="unfinished">Controlla aggiornamenti di openTx e Companion</translation>
+        <translation>Controllo degli aggiornamenti di openTx e Companion</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1570"/>
         <source>Companion Changes...</source>
-        <translation type="unfinished">Cambiamenti in Companion</translation>
+        <translation>Cambiamenti in Companion...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1570"/>
         <source>Show Companion change log</source>
-        <translation type="unfinished">Mostra i cambiamenti in Companion</translation>
+        <translation>Mostra i cambiamenti in Companion</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1571"/>
         <source>Firmware Changes...</source>
-        <translation type="unfinished">Cambiamenti nel Firmware</translation>
+        <translation>Cambiamenti nel Firmware...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1571"/>
         <source>Show firmware change log</source>
-        <translation type="unfinished">Mostra i cambiamenti nel Firmware</translation>
+        <translation>Mostra i cambiamenti nel Firmware</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1572"/>
         <source>Compare Models...</source>
-        <translation type="unfinished">Confronta due modelli</translation>
+        <translation>Confronta due modelli...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1573"/>
         <source>Edit Radio Splash Image...</source>
-        <translation type="unfinished">Edita immagine Splah della radio</translation>
+        <translation>Edita immagine Splah della radio...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1573"/>
         <source>Edit the splash image of your Radio</source>
-        <translation type="unfinished">Edita immagine splash della tua radio</translation>
+        <translation>Edita immagine splash della tua radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1574"/>
         <source>List programmers...</source>
-        <translation type="unfinished">Lista programmatori</translation>
+        <translation>Lista programmatori...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1575"/>
         <source>Fuses...</source>
-        <translation type="unfinished">Fuses...</translation>
+        <translation>Fuses...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1576"/>
         <source>Read Firmware from Radio</source>
-        <translation type="unfinished">Leggi il Firmware dalla Radio</translation>
+        <translation>Leggi il Firmware dalla Radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1576"/>
         <source>Read firmware from Radio</source>
-        <translation type="unfinished">Leggi firmware dalla Radio</translation>
+        <translation>Leggi firmware dalla Radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1577"/>
         <source>Write Firmware to Radio</source>
-        <translation type="unfinished">Scrivi Firmware sulla Radio</translation>
+        <translation>Scrivi Firmware sulla Radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1577"/>
         <source>Write firmware to Radio</source>
-        <translation type="unfinished">Scrivi firmware sulla Radio</translation>
+        <translation>Scrivi firmware sulla Radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1578"/>
         <source>Add Radio Profile</source>
-        <translation type="unfinished">Aggiungi profilo Radio</translation>
+        <translation>Aggiungi profilo Radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1578"/>
         <source>Create a new Radio Setting Profile</source>
-        <translation type="unfinished">Crea un nuovo profilo Radio</translation>
+        <translation>Crea un nuovo profilo Radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1579"/>
         <source>Manuals and other Documents</source>
-        <translation type="unfinished">Manuali e altri documenti</translation>
+        <translation>Manuali e altri documenti</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1579"/>
         <source>Open the OpenTX document page in a web browser</source>
-        <translation type="unfinished">Apri la pagina documenti di OpenTx in un browser web </translation>
+        <translation>Apri la pagina documenti di OpenTx in un browser web </translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1580"/>
         <source>Write Models and Settings To Radio</source>
-        <translation type="unfinished">Scrivi modello e impostazioni sulla Radio</translation>
+        <translation>Scrivi modello e impostazioni sulla Radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1580"/>
         <source>Write Models and Settings to Radio</source>
-        <translation type="unfinished">Scrivi Modeli e Impostazioni sulla Radio</translation>
+        <translation>Scrivi Modeli e Impostazioni sulla Radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1581"/>
         <source>Read Models and Settings from Radio</source>
-        <translation type="unfinished">Leggi Modelli e Impostazioni dalla Radio</translation>
+        <translation>Leggi Modelli e Impostazioni dalla Radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1582"/>
         <source>Configure Communications...</source>
-        <translation type="unfinished">Configura Comunicazioni...</translation>
+        <translation>Configura Comunicazioni...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1582"/>
         <source>Configure software for communicating with the Radio</source>
-        <translation type="unfinished">Configura il software per comunicare con la Radio</translation>
+        <translation>Configura il software per comunicare con la Radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1583"/>
         <source>Write Backup to Radio</source>
-        <translation type="unfinished">Scrivi salvataggio sulla Radio</translation>
+        <translation>Scrivi salvataggio sulla Radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1583"/>
         <source>Write Backup from file to to Radio</source>
-        <translation type="unfinished">Scrivi salvataggio dal file sulla Radio</translation>
+        <translation>Scrivi salvataggio dal file sulla Radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1584"/>
         <source>Backup Radio to File</source>
-        <translation type="unfinished">Salvataggio Radio su File</translation>
+        <translation>Salvataggio Radio su File</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1584"/>
         <source>Save a complete backup file of all settings and model data in the Radio</source>
-        <translation type="unfinished">Salvataggio completo di Impostazioni e Modelli nella Radio</translation>
+        <translation>Salvataggio completo di Impostazioni e Modelli nella Radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1585"/>
         <source>Contributors...</source>
-        <translation type="unfinished">Contributori....</translation>
+        <translation>Contributori....</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1585"/>
         <source>A tribute to those who have contributed to OpenTX and Companion</source>
-        <translation type="unfinished">Un ringraziamento a tutti coloro che hanno contribuito a OpenTx e Companion</translation>
+        <translation>Un ringraziamento a tutti coloro che hanno contribuito a OpenTx e Companion</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1594"/>
         <source>Recent Files</source>
-        <translation type="unfinished">File recenti</translation>
+        <translation>File recenti</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1739"/>
         <source>Recent Models+Settings</source>
-        <translation type="unfinished">Modelli e Impostazioni recenti</translation>
+        <translation>Modelli e Impostazioni recenti</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1595"/>
         <source>Set Menu Language</source>
-        <translation type="unfinished">Inposta Menu Lingua</translation>
+        <translation>Inposta Menu Lingua</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1565"/>
         <source>Load backup from file</source>
-        <translation type="unfinished">Carica salvataggio da file</translation>
+        <translation>Carica salvataggio da file</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="964"/>
         <location filename="../mainwindow.cpp" line="1581"/>
         <source>Read Models and Settings From Radio</source>
-        <translation type="unfinished">Leggi Modelli e impostazioni dalla Radio</translation>
+        <translation>Leggi Modelli e impostazioni dalla Radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1126"/>
         <source>Write Radio Backup from %1 to the radio?</source>
-        <translation type="unfinished">Scrivi salvataggio radio da %1 nelle Radio?</translation>
+        <translation>Scrivi salvataggio radio da %1 nelle Radio?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1148"/>
@@ -4202,82 +4208,82 @@ Do you want to download it now ?</source>
         <location filename="../mainwindow.cpp" line="1316"/>
         <location filename="../mainwindow.cpp" line="1350"/>
         <source>Backup Models and Settings From Radio</source>
-        <translation type="unfinished">Salvataggio Modelli e Impostazioni dalla radio</translation>
+        <translation>Salvataggio Modelli e Impostazioni dalla radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1168"/>
         <source>The radio firmware belongs to another product family, check file and preferences!</source>
-        <translation type="unfinished">Il Firmware appartiene  ad un altro prodotto della famiglia, controllare il file e le preferenze</translation>
+        <translation>Il Firmware appartiene ad un altra famiglia di prodotti, controllare il file e le preferenze!</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1171"/>
         <source>The radio firmware is outdated, please upgrade!</source>
-        <translation type="unfinished">Il firmware della radio è obsoleto, per favore aggiornare!</translation>
+        <translation>Il firmware della radio è obsoleto, per favore aggiornare!</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1186"/>
         <source>Write Backup To Radio</source>
-        <translation type="unfinished">Scrivi Salvataggio sulla Radio</translation>
+        <translation>Scrivi Salvataggio sulla Radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1018"/>
         <source>Write Firmware To Radio</source>
-        <translation type="unfinished">Scrivi Firmware sulla radio</translation>
+        <translation>Scrivi Firmware sulla radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1326"/>
         <source>Restore Models and Settings To Radio</source>
-        <translation type="unfinished">Ripristina Modelli e impostazioni sulla Radio</translation>
+        <translation>Ripristina Modelli e impostazioni sulla Radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1327"/>
         <source>Could not restore Models and Settings to Radio. The models and settings data file can be found at: %1</source>
-        <translation type="unfinished">Non è possibile ripristinare Modelli e impostazioni sulla radio. Il file di Modelli e impostazioni può essere trovato a: %1</translation>
+        <translation>Non è possibile ripristinare Modelli e impostazioni sulla radio. Il file di Modelli e impostazioni può essere trovato a: %1</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1331"/>
         <source>Could not write firmware to radio. The models and settings data file can be found at: %1</source>
-        <translation type="unfinished">Non è possibile scrivere il firmware sulla Radio. Operazione di scrittura Firmware abortita</translation>
+        <translation>Non è possibile scrivere il firmware sulla Radio. I modelli e impostazioni originali si trovano in %1</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1335"/>
         <source>Cannot backup existing Models and Settings from Radio. Firmware write process aborted</source>
-        <translation type="unfinished">Impossibile ripristinare modelli e impostazioni dalla radio. Il file di modelli e impostazioni può essere trovato a: %!</translation>
+        <translation>Impossibile ripristinare modelli e impostazioni dalla radio. Il processo di aggiornamento firmware è stato interrotto</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1360"/>
         <source>Save Radio Backup to File</source>
-        <translation type="unfinished">Salvataggio Radi su file</translation>
+        <translation>Salvataggio Radio su file</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1362"/>
         <source>Read Radio Backup</source>
-        <translation type="unfinished">Leggi salvataggio Radio</translation>
+        <translation>Leggi salvataggio Radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1369"/>
         <source>Read Radio Firmware to File</source>
-        <translation type="unfinished">Leggi firmware radio su File</translation>
+        <translation>Leggi firmware radio su File</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1412"/>
         <source>OpenTX Home Page: &lt;a href=&apos;%1&apos;&gt;%1&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTX Home Page: &lt;a href=&apos;%1&apos;&gt;%1&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1414"/>
         <source>The OpenTX Companion project was originally forked from &lt;a href=&apos;%2&apos;&gt;eePe&lt;/a&gt;</source>
-        <translation type="unfinished">Il progetto OpenTx-Companion è originariamente derivato da &lt;a href=&apos;%2&apos;&gt;eePe&lt;/a&gt;</translation>
+        <translation>Il progetto OpenTx-Companion è originariamente derivato da &lt;a href=&apos;%2&apos;&gt;eePe&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1416"/>
         <source>If you&apos;ve found this program useful, please support by &lt;a href=&apos;%1&apos;&gt;donating&lt;/a&gt;</source>
-        <translation type="unfinished">Se avete trovato utile questo programma prego supportatelo con &lt;a href=&apos;%1&apos;&gt;donating&lt;/a&gt; href=&apos;%1&apos;&gt;donating&lt;/a&gt;</translation>
+        <translation>Se avete trovato utile questo programma prego supportatelo con &lt;a href=&apos;%1&apos;&gt;una donazione&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1418"/>
         <source>Version %1, %3</source>
-        <translation type="unfinished">Versione %1, %3</translation>
+        <translation>Versione %1, %3</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1572"/>
@@ -4292,7 +4298,7 @@ Do you want to download it now ?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1756"/>
         <source>Show the list of radio profiles</source>
-        <translation type="unfinished">Mostra la lista dei profili radio</translation>
+        <translation>Mostra la lista dei profili radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1772"/>
@@ -4313,17 +4319,17 @@ Do you want to download it now ?</source>
     <message>
         <location filename="../mainwindow.cpp" line="284"/>
         <source>A new version of Companion is available (version %1)&lt;br&gt;Would you like to download it?</source>
-        <translation type="unfinished">Una nuova versione di Companio è disponibile (versione %1)&lt;br&gt; Vuoi scaricarla?</translation>
+        <translation>Una nuova versione di Companion è disponibile (versione %1)&lt;br&gt; Vuoi scaricarla?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="356"/>
         <source>Compilation server requires registration, please check OpenTX web site</source>
-        <translation type="unfinished">Server di compilazione richiede la registrazione, prego controllare sul sito web di OpenTx</translation>
+        <translation>Server di compilazione richiede la registrazione, prego controllare sul sito web di OpenTx</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1423"/>
         <source>About Companion</source>
-        <translation type="unfinished">Informazioni su Companion</translation>
+        <translation>Informazioni su Companion</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1574"/>
@@ -4343,12 +4349,12 @@ Do you want to download it now ?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1596"/>
         <source>Set Icon Theme</source>
-        <translation type="unfinished">Scegli tema di icone</translation>
+        <translation>Scegliere il tema di icone</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1597"/>
         <source>Set Icon Size</source>
-        <translation type="unfinished">Scegli dimensione icone</translation>
+        <translation>Impostazione dimensione icone</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1599"/>
@@ -4365,12 +4371,12 @@ Do you want to download it now ?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1623"/>
         <source>Settings</source>
-        <translation type="unfinished">Impostazioni</translation>
+        <translation>Impostazioni</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1656"/>
         <source>Read/Write</source>
-        <translation type="unfinished">Leggi\Scrivi</translation>
+        <translation>Leggi/Scrivi</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1673"/>
@@ -4382,12 +4388,12 @@ Do you want to download it now ?</source>
         <location filename="../mainwindow.cpp" line="1696"/>
         <location filename="../mainwindow.cpp" line="1755"/>
         <source>Radio Profile</source>
-        <translation type="unfinished">Profilo Radio</translation>
+        <translation>Profilo Radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1740"/>
         <source>Show recent Models+Settings documents</source>
-        <translation type="unfinished">Mostra modell e impostazioni recenti</translation>
+        <translation>Mostra modell e impostazioni recenti</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1796"/>
@@ -4397,12 +4403,12 @@ Do you want to download it now ?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1909"/>
         <source>%2</source>
-        <translation type="unfinished">%2</translation>
+        <translation>%2</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1932"/>
         <source>New Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Nuova radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1951"/>
