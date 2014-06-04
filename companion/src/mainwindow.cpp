@@ -496,6 +496,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
 void MainWindow::startFirmwareDownload()
 {
   QString url = current_firmware_variant.getFirmwareUrl();
+  qDebug() << url;
   QString ext = url.mid(url.lastIndexOf("."));
   QString defaultFilename = g.flashDir() + "/" + current_firmware_variant.id;
   if (g.profile[g.id()].renameFwFiles()) {

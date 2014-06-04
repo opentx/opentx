@@ -103,10 +103,6 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
       mavbaudEditLock=false;
     }
     
-    if (!GetCurrentFirmware()->getCapability(HasContrast)) {
-      ui->contrastSB->hide();
-      ui->label_contrast->hide();
-    }
     if (!GetCurrentFirmware()->getCapability(HasSoundMixer)) {
       ui->beepVolume_SL->hide();
       ui->beepVolume_label->hide();

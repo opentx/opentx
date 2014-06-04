@@ -569,11 +569,6 @@ int OpenTxFirmware::getCapability(const Capability capability)
         return 1;
       else
         return 0;
-    case HasFuncRepeat:
-    case HasContrast:
-      return 1;      
-    case Beeperlen:
-      return 1;
     case MaxVolume:
       return (IS_ARM(board) ? 23 : 7);
     case HasSoundMixer:
@@ -915,6 +910,7 @@ QString OpenTxFirmware::getFirmwareUrl(QString & id)
       url.append(QString("/getfw.php?fw=%1.hex").arg(id));
       break;
     case BOARD_SKY9X:
+    case BOARD_9XRPRO:
     case BOARD_TARANIS:
     case BOARD_TARANIS_PLUS:
       url.append(QString("/getfw.php?fw=%1.bin").arg(id));

@@ -376,7 +376,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
       widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM + CUSTOM_FUNCTION_ENABLE;
     }
     else if (index==FuncPlaySound || index==FuncPlayHaptic || index==FuncPlayValue || index==FuncPlayPrompt || index==FuncPlayBoth || index==FuncBackgroundMusic) {
-      if (index != FuncBackgroundMusic && firmware->getCapability(HasFuncRepeat)) {
+      if (index != FuncBackgroundMusic) {
         widgetsMask |= CUSTOM_FUNCTION_REPEAT;
         fswtchRepeat[i]->update();
       }
