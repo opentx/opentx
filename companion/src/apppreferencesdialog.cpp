@@ -174,14 +174,14 @@ void AppPreferencesDialog::initSettings()
 
   QString hwSettings;
   if (g.profile[g.id()].stickPotCalib() == "" ) {
-    hwSettings = QString(tr("EMPTY: No radio settings stored in profile"));
+    hwSettings = tr("EMPTY: No radio settings stored in profile");
   }
   else  {
     QString str = g.profile[g.id()].timeStamp();
     if (str.isEmpty())
-      hwSettings = QString(tr("AVAILABLE: Radio settings of unknown age"));
+      hwSettings = tr("AVAILABLE: Radio settings of unknown age");
     else
-      hwSettings = QString(tr("AVAILABLE: Radio settings stored %1").arg(str));
+      hwSettings = tr("AVAILABLE: Radio settings stored %1").arg(str);
   }
   ui->lblGeneralSettings->setText(hwSettings);
 

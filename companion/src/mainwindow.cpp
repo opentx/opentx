@@ -1939,15 +1939,16 @@ void MainWindow::updateProfilesActions()
 }
 
 void MainWindow::createProfile()
-{ int i;
-for (i=0; i<MAX_PROFILES && g.profile[i].existsOnDisk(); i++)
+{
+  int i;
+  for (i=0; i<MAX_PROFILES && g.profile[i].existsOnDisk(); i++)
     ;
   if (i==MAX_PROFILES)  //Failed to find free slot
     return;
  
   // Copy current profile to new and give it a new name
   g.profile[i] = g.profile[g.id()];
-  g.profile[i].name( QString(tr("New Radio")));
+  g.profile[i].name(tr("New Radio"));
 
   g.id(i);
   updateMenus();
@@ -1955,7 +1956,7 @@ for (i=0; i<MAX_PROFILES && g.profile[i].existsOnDisk(); i++)
 
 QString MainWindow::strippedName(const QString &fullFileName)
 {
-    return QFileInfo(fullFileName).fileName();
+  return QFileInfo(fullFileName).fileName();
 }
 
 int MainWindow::getEpromVersion(QString fileName)

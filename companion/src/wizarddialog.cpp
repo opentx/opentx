@@ -18,10 +18,10 @@
 #include "helpers.h"
 #include "googleanalytics.h"
 
-WizardDialog::WizardDialog(const GeneralSettings & settings, unsigned int modelId, QWidget *parent)
-  : QWizard(parent),
-    mix(settings, modelId),
-    settings(settings)
+WizardDialog::WizardDialog(const GeneralSettings & settings, unsigned int modelId, QWidget *parent):
+  QWizard(parent),
+  mix(settings, modelId),
+  settings(settings)
 {
   setWindowIcon(CompanionIcon("wizard.png"));
   setWindowTitle(tr("Model Wizard"));
@@ -1012,10 +1012,10 @@ WizardPrinter::WizardPrinter(WizMix *wizMix)
 
 QString WizardPrinter::print()
 {
-  QString str = QString(tr("Model Name: ")) + mix->name + "\n";
-  str += QString(tr("Model Type: ")) + vehicleName(mix->vehicle) + "\n";
+  QString str = tr("Model Name: ") + mix->name + "\n";
+  str += tr("Model Type: ") + vehicleName(mix->vehicle) + "\n";
 
-  str += QString(tr("Options: ")) + "[";
+  str += tr("Options: ") + "[";
   for (int i=0; i<WIZ_MAX_OPTIONS; i++) {
     if (mix->options[i])
       str += "X";
@@ -1027,7 +1027,7 @@ QString WizardPrinter::print()
   for (int i=0; i<WIZ_MAX_CHANNELS; i++) {
     if (mix->channel[i].page != Page_None) {
       Channel ch = mix->channel[i];
-      str += QString(tr("Channel %1: ").arg(i+1));
+      str += tr("Channel %1: ").arg(i+1);
       str += printChannel(ch.input1, ch.weight1, ch.input2, ch.weight2 );
       str += QString("\n");
     }
