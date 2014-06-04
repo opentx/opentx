@@ -4,7 +4,7 @@
 <context>
     <name>AileronsPage</name>
     <message>
-        <location filename="../wizarddialog.cpp" line="+398"/>
+        <location filename="../wizarddialog.cpp" line="+416"/>
         <source>No</source>
         <translation>Nej</translation>
     </message>
@@ -32,7 +32,7 @@
 <context>
     <name>AirbrakesPage</name>
     <message>
-        <location line="+82"/>
+        <location line="+113"/>
         <source>No</source>
         <translation>Nej</translation>
     </message>
@@ -575,24 +575,20 @@ Behöver inte vara samma som menyspråket</translation>
 <context>
     <name>BankPage</name>
     <message>
-        <location filename="../wizarddialog.cpp" line="+33"/>
         <source>One</source>
-        <translation>En</translation>
+        <translation type="obsolete">En</translation>
     </message>
     <message>
-        <location line="+1"/>
         <source>Two</source>
-        <translation>Två</translation>
+        <translation type="obsolete">Två</translation>
     </message>
     <message>
-        <location line="+10"/>
         <source>&lt;br&gt;First Elevon Channel:</source>
-        <translation>&lt;br&gt;Första roderkanalen:</translation>
+        <translation type="obsolete">&lt;br&gt;Första roderkanalen:</translation>
     </message>
     <message>
-        <location line="+2"/>
         <source>Second Elevon Channel:</source>
-        <translation>Andra roderkanalen:</translation>
+        <translation type="obsolete">Andra roderkanalen:</translation>
     </message>
 </context>
 <context>
@@ -1170,7 +1166,7 @@ Behöver inte vara samma som menyspråket</translation>
 <context>
     <name>ConclusionPage</name>
     <message>
-        <location filename="../wizarddialog.cpp" line="+311"/>
+        <location filename="../wizarddialog.cpp" line="+382"/>
         <source>OK, I understand.</source>
         <translation>OK, jag förstår.</translation>
     </message>
@@ -1425,7 +1421,7 @@ Behöver inte vara samma som menyspråket</translation>
 <context>
     <name>CyclicPage</name>
     <message>
-        <location filename="../wizarddialog.cpp" line="-178"/>
+        <location filename="../wizarddialog.cpp" line="-187"/>
         <source>90</source>
         <translation>90</translation>
     </message>
@@ -1443,6 +1439,19 @@ Behöver inte vara samma som menyspråket</translation>
         <location line="+1"/>
         <source>140</source>
         <translation>140</translation>
+    </message>
+</context>
+<context>
+    <name>ElevonsPage</name>
+    <message>
+        <location line="-146"/>
+        <source>&lt;br&gt;First Elevon Channel:</source>
+        <translation type="unfinished">&lt;br&gt;Första roderkanalen:</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Second Elevon Channel:</source>
+        <translation type="unfinished">Andra roderkanalen:</translation>
     </message>
 </context>
 <context>
@@ -1656,7 +1665,7 @@ Om fältet lämnas tomt så är filtret aktivt hela tiden.</translation>
         <translation type="obsolete">Gaskanal:</translation>
     </message>
     <message>
-        <location filename="../wizarddialog.cpp" line="+50"/>
+        <location filename="../wizarddialog.cpp" line="+197"/>
         <source>Throttle Channel:</source>
         <translation>Gaskanal:</translation>
     </message>
@@ -1780,7 +1789,7 @@ Behöver inte vara samma som menyspråk</translation>
 <context>
     <name>FlapsPage</name>
     <message>
-        <location filename="../wizarddialog.cpp" line="-304"/>
+        <location filename="../wizarddialog.cpp" line="-338"/>
         <source>No</source>
         <translation>Nej</translation>
     </message>
@@ -1932,7 +1941,7 @@ Behöver inte vara samma som menyspråk</translation>
 <context>
     <name>FlightModesPanel</name>
     <message>
-        <location line="+287"/>
+        <location line="+279"/>
         <source>Flight Mode %1</source>
         <translation>Flygläge %1</translation>
     </message>
@@ -1950,7 +1959,7 @@ Behöver inte vara samma som menyspråk</translation>
 <context>
     <name>FlybarSelectionPage</name>
     <message>
-        <location filename="../wizarddialog.cpp" line="-123"/>
+        <location filename="../wizarddialog.cpp" line="-139"/>
         <source>Has Flybar</source>
         <translation>Har Flybar</translation>
     </message>
@@ -2883,7 +2892,7 @@ Mode 4:
         <translation>Spänning</translation>
     </message>
     <message>
-        <location filename="../generaledit.cpp" line="+999"/>
+        <location filename="../generaledit.cpp" line="+995"/>
         <location line="+53"/>
         <source>Warning</source>
         <translation>Varning</translation>
@@ -3104,7 +3113,7 @@ FAI-funktionen kan inte slås av i sändaren.
 <context>
     <name>GyroPage</name>
     <message>
-        <location filename="../wizarddialog.cpp" line="+371"/>
+        <location filename="../wizarddialog.cpp" line="+420"/>
         <source>No</source>
         <translation>Nej</translation>
     </message>
@@ -3193,7 +3202,7 @@ FAI-funktionen kan inte slås av i sändaren.
         <translation type="obsolete">Gaskanal:</translation>
     </message>
     <message>
-        <location filename="../wizarddialog.cpp" line="+61"/>
+        <location filename="../wizarddialog.cpp" line="+64"/>
         <source>Throttle Channel:</source>
         <translation>Gaskanal:</translation>
     </message>
@@ -3445,21 +3454,21 @@ FAI-funktionen kan inte slås av i sändaren.
     <name>MainWindow</name>
     <message>
         <location filename="../mainwindow.cpp" line="+153"/>
-        <location line="+437"/>
+        <location line="+438"/>
         <location line="+31"/>
-        <location line="+1423"/>
+        <location line="+1441"/>
         <source>File loaded</source>
         <translation>Filen har laddats</translation>
     </message>
     <message>
-        <location line="-1754"/>
+        <location line="-1773"/>
         <location line="+2"/>
-        <location line="+214"/>
+        <location line="+215"/>
         <source>Save As</source>
         <translation>Spara Som</translation>
     </message>
     <message>
-        <location line="-198"/>
+        <location line="-199"/>
         <location line="+165"/>
         <source>No updates available at this time.</source>
         <translation>Inga updateringar finns tillgängliga.</translation>
@@ -3486,18 +3495,17 @@ Do you want to download it now ?</source>
 Vill du ladda ned den nya versionen nu ?</translation>
     </message>
     <message>
-        <location line="+278"/>
+        <location line="+279"/>
         <location line="+6"/>
         <source>File saved</source>
         <translation>Filen sparades</translation>
     </message>
     <message>
-        <location line="+815"/>
         <source>Copyright</source>
-        <translation>Copyright</translation>
+        <translation type="obsolete">Copyright</translation>
     </message>
     <message>
-        <location line="+109"/>
+        <location line="+941"/>
         <source>Exit</source>
         <translation>Avsluta</translation>
     </message>
@@ -3623,7 +3631,7 @@ Vill du ladda ned den nu ?</translation>
         <translation>Visa information om programmet</translation>
     </message>
     <message>
-        <location line="-1342"/>
+        <location line="-1360"/>
         <source>Checking for updates</source>
         <translation>Letar efter uppdateringar</translation>
     </message>
@@ -3636,31 +3644,29 @@ Vill du ladda ned den nu ?</translation>
         <translation type="obsolete">Ladda inte ned versionen (r%1)?</translation>
     </message>
     <message>
-        <location line="+1192"/>
+        <location line="+1210"/>
         <source>OpenTX Home Page: &lt;a href=&apos;%1&apos;&gt;%1&lt;/a&gt;</source>
         <translation>OpenTX Hemsida: &lt;a href=&apos;%1&apos;&gt;%1&lt;/a&gt;</translation>
     </message>
     <message>
-        <location line="+2"/>
         <source>The OpenTX Companion project was originally forked from &lt;a href=&apos;%2&apos;&gt;eePe&lt;/a&gt;</source>
-        <translation>OpenTX-projektet grenades ursprungligen av från &lt;a href=&apos;%2&apos;&gt;eePe&lt;/a&gt;</translation>
+        <translation type="obsolete">OpenTX-projektet grenades ursprungligen av från &lt;a href=&apos;%2&apos;&gt;eePe&lt;/a&gt;</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+4"/>
         <source>If you&apos;ve found this program useful, please support by &lt;a href=&apos;%1&apos;&gt;donating&lt;/a&gt;</source>
         <translation>Om du tycker att programet är användbart så kan du stödja utvecklingen genom att &lt;a href=&apos;%1&apos;&gt;donera&lt;/a&gt;</translation>
     </message>
     <message>
-        <location line="+2"/>
         <source>Version %1, %3</source>
-        <translation>Version %1, %3</translation>
+        <translation type="obsolete">Version %1, %3</translation>
     </message>
     <message>
         <source>New Models+Settings</source>
         <translation type="obsolete">Ny Modeller+Inställningar</translation>
     </message>
     <message>
-        <location line="+107"/>
+        <location line="+109"/>
         <source>Create a new Models and Settings file</source>
         <translation>Skapa en ny Modeller och Inställningar-fil</translation>
     </message>
@@ -3759,15 +3765,15 @@ Vill du ladda ned den nu ?</translation>
         <translation>Redo</translation>
     </message>
     <message>
-        <location line="-1617"/>
+        <location line="-1635"/>
         <source>Display previous warning again at startup ?</source>
         <translation>SKall föregående varning visas igen vid uppstart ?</translation>
     </message>
     <message>
         <location line="+155"/>
         <location line="+29"/>
-        <location line="+453"/>
-        <location line="+1135"/>
+        <location line="+454"/>
+        <location line="+1153"/>
         <location line="+6"/>
         <location line="+8"/>
         <location line="+23"/>
@@ -3779,20 +3785,20 @@ Vill du ladda ned den nu ?</translation>
         <translation>Fel</translation>
     </message>
     <message>
-        <location line="-1195"/>
+        <location line="-1213"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation>Filen %1 kunde inte skrivas:
 %2.</translation>
     </message>
     <message>
-        <location line="-514"/>
+        <location line="-515"/>
         <source>New release available</source>
         <translation>En ny version finns tillgänglig</translation>
     </message>
     <message>
         <location line="+32"/>
-        <location line="+1622"/>
+        <location line="+1641"/>
         <location line="+8"/>
         <location line="+36"/>
         <source>Error opening file %1:
@@ -3801,7 +3807,7 @@ Vill du ladda ned den nu ?</translation>
 %2.</translation>
     </message>
     <message>
-        <location line="-1651"/>
+        <location line="-1670"/>
         <source>Compilation server termporary failure, try later</source>
         <translation>Tillfälligt fel i byggservern. Försök igen senare</translation>
     </message>
@@ -3816,7 +3822,7 @@ Vill du ladda ned den nu ?</translation>
         <translation>Okänt server-fel. Försök igen senare</translation>
     </message>
     <message>
-        <location line="+1213"/>
+        <location line="+1231"/>
         <source>Compare models</source>
         <translation>Jämför modeller</translation>
     </message>
@@ -3828,7 +3834,7 @@ Vill du ladda ned den nu ?</translation>
         <translation>Säkerhetskopiering kan inte utföras</translation>
     </message>
     <message>
-        <location line="-1040"/>
+        <location line="-1058"/>
         <source>A new release of Companion is available, please check the OpenTX website!</source>
         <translation>En ny version av Companion finns tillgänglig. Var god kontrollera OpenTX webbsida!</translation>
     </message>
@@ -3838,7 +3844,7 @@ Vill du ladda ned den nu ?</translation>
         <translation>Firmware får inte plats i radion eftersom alltför många funktioner är valda samtidigt</translation>
     </message>
     <message>
-        <location line="+789"/>
+        <location line="+807"/>
         <location line="+165"/>
         <location line="+42"/>
         <source>The backup dir set in preferences does not exist</source>
@@ -3947,7 +3953,7 @@ Vill du ladda ned den nu ?</translation>
 </translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+24"/>
         <source>New Radio</source>
         <translation>Ny Radio</translation>
     </message>
@@ -3964,12 +3970,12 @@ Vill du ladda ned den nu ?</translation>
 %2.</translation>
     </message>
     <message>
-        <location line="-443"/>
+        <location line="-444"/>
         <source>Load backup from file</source>
         <translation>Ladda backup från fil</translation>
     </message>
     <message>
-        <location line="-1150"/>
+        <location line="-1168"/>
         <location line="+29"/>
         <source>Yes</source>
         <translation>Ja</translation>
@@ -4006,7 +4012,7 @@ Vill du ladda ned den nu ?</translation>
         <translation type="obsolete">Release notes innehåller väldigt viktig information. Vill du läsa dem nu?</translation>
     </message>
     <message>
-        <location line="+80"/>
+        <location line="+81"/>
         <source>The selected language will be used the next time you start Companion.</source>
         <translation>Språket som valts kommer att användas nästa gång Companion startas.</translation>
     </message>
@@ -4029,12 +4035,12 @@ Vill du ladda ned den nu ?</translation>
     </message>
     <message>
         <location line="+21"/>
-        <location line="+948"/>
+        <location line="+965"/>
         <source>Open Models and Settings file</source>
         <translation>Öppna Modeller och Inställningar-fil</translation>
     </message>
     <message>
-        <location line="-842"/>
+        <location line="-859"/>
         <source>Firmware updates</source>
         <translation>Firmware-uppdatering</translation>
     </message>
@@ -4044,7 +4050,7 @@ Vill du ladda ned den nu ?</translation>
         <translation>Den firmware som valts har inga release notes.</translation>
     </message>
     <message>
-        <location line="+445"/>
+        <location line="+462"/>
         <source>The file %1
 has not been recognized as a valid Models and Settings file
 Write anyway ?</source>
@@ -4091,7 +4097,7 @@ Starta skrivningen i alla fall ?</translation>
         <translation type="obsolete">Firmware får inte plats i radion eftersom alltför många funktioner är valda samtidigt</translation>
     </message>
     <message>
-        <location line="-1168"/>
+        <location line="-1186"/>
         <source>Do you want to write the firmware to the radio now ?</source>
         <translation>Vill du skriva firmware till radion nu?</translation>
     </message>
@@ -4128,8 +4134,8 @@ Vill du ladda ned den nya versionen nu ?</translation>
         <translation>Hoppa över den här versionen (%1) ?</translation>
     </message>
     <message>
-        <location line="+485"/>
-        <location line="+617"/>
+        <location line="+484"/>
+        <location line="+636"/>
         <source>Read Models and Settings From Radio</source>
         <translation>Läs Modeller och Inställningar från radion</translation>
     </message>
@@ -4162,7 +4168,7 @@ Vill du ladda ned den nya versionen nu ?</translation>
         <translation>Skriv Backup till radion</translation>
     </message>
     <message>
-        <location line="-168"/>
+        <location line="-187"/>
         <source>Write Firmware To Radio</source>
         <translation>Skriv firmware till radion</translation>
     </message>
@@ -4172,7 +4178,7 @@ Vill du ladda ned den nya versionen nu ?</translation>
         <translation>Läs firmware från radion</translation>
     </message>
     <message>
-        <location line="+350"/>
+        <location line="+369"/>
         <source>Restore Models and Settings To Radio</source>
         <translation>Återställ Backup till radion</translation>
     </message>
@@ -4207,7 +4213,17 @@ Vill du ladda ned den nya versionen nu ?</translation>
         <translation>Spara radiobackup till fil</translation>
     </message>
     <message>
-        <location line="+156"/>
+        <location line="+45"/>
+        <source>The OpenTX Companion project was originally forked from &lt;a href=&apos;%1&apos;&gt;eePe&lt;/a&gt;</source>
+        <translation type="unfinished">OpenTX-projektet grenades ursprungligen av från &lt;a href=&apos;%2&apos;&gt;eePe&lt;/a&gt; {1&apos;?}</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Copyright OpenTX Team</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+105"/>
         <source>New</source>
         <translation>Ny</translation>
     </message>
@@ -4534,7 +4550,7 @@ Vill du ladda ned den nya versionen nu ?</translation>
         <translation type="obsolete">Visa alla radioprofiler i en lista</translation>
     </message>
     <message>
-        <location line="+233"/>
+        <location line="+234"/>
         <location line="+6"/>
         <source>Invalid Models and Settings File %1</source>
         <translation>Filen innehåller inte Modeller och Inställningar: %1</translation>
@@ -4548,7 +4564,7 @@ Vill du ladda ned den nya versionen nu ?</translation>
 <context>
     <name>MdiChild</name>
     <message>
-        <location filename="../mdichild.cpp" line="+239"/>
+        <location filename="../mdichild.cpp" line="+238"/>
         <location line="+8"/>
         <location line="+11"/>
         <location line="+31"/>
@@ -5245,7 +5261,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>ModelSelectionPage</name>
     <message>
-        <location filename="../wizarddialog.cpp" line="-540"/>
+        <location filename="../wizarddialog.cpp" line="-592"/>
         <source>Plane</source>
         <translation>Plan</translation>
     </message>
@@ -5568,7 +5584,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Gaskanal:</translation>
     </message>
     <message>
-        <location filename="../wizarddialog.cpp" line="+557"/>
+        <location filename="../wizarddialog.cpp" line="+611"/>
         <source>Throttle Channel:</source>
         <translation>Gaskanal:</translation>
     </message>
@@ -5591,7 +5607,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>OptionsPage</name>
     <message>
-        <location line="+23"/>
+        <location line="+25"/>
         <source>Throttle Cut</source>
         <translation>Gassäkring</translation>
     </message>
@@ -6142,7 +6158,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="+243"/>
         <location filename="../helpers.cpp" line="-146"/>
-        <location filename="../modeledit/setup.cpp" line="+439"/>
+        <location filename="../modeledit/setup.cpp" line="+442"/>
         <source>P1</source>
         <translation>P1</translation>
     </message>
@@ -6275,7 +6291,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="+407"/>
-        <location filename="../helpers.cpp" line="+842"/>
+        <location filename="../helpers.cpp" line="+846"/>
         <source>Warning</source>
         <translation>Varning</translation>
     </message>
@@ -6376,7 +6392,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="+97"/>
-        <location filename="../helpers.cpp" line="-570"/>
+        <location filename="../helpers.cpp" line="-574"/>
         <source>ON</source>
         <translation>På</translation>
     </message>
@@ -6653,7 +6669,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Det går inte att använda Expo på en specialkurva i open9x</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="+559"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="+555"/>
         <location line="+2"/>
         <source>Support for frsky telemetry mod</source>
         <translation>Stöd för  FrSky telemeri</translation>
@@ -6698,12 +6714,11 @@ p, li { white-space: pre-wrap; }
         <location line="+30"/>
         <location line="+30"/>
         <location line="+24"/>
-        <location line="+22"/>
         <source>Enable TEMPLATES menu</source>
         <translation>Slå på menyn Mallar</translation>
     </message>
     <message>
-        <location line="-210"/>
+        <location line="-188"/>
         <location line="+38"/>
         <location line="+32"/>
         <location line="+35"/>
@@ -6718,12 +6733,11 @@ p, li { white-space: pre-wrap; }
         <location line="+29"/>
         <location line="+30"/>
         <location line="+24"/>
-        <location line="+22"/>
         <source>Disable curves menus</source>
         <translation>Slå av menyn för kurvor</translation>
     </message>
     <message>
-        <location line="-209"/>
+        <location line="-187"/>
         <location line="+38"/>
         <location line="+32"/>
         <location line="+35"/>
@@ -6754,36 +6768,36 @@ p, li { white-space: pre-wrap; }
         <location line="+35"/>
         <location line="+29"/>
         <location line="+25"/>
-        <location line="+46"/>
         <location line="+24"/>
+        <location line="+23"/>
         <location line="+10"/>
         <source>Channel values displayed in us</source>
         <translation>Kanal-värden visade i us</translation>
     </message>
     <message>
-        <location line="-234"/>
+        <location line="-211"/>
         <location line="+38"/>
         <location line="+31"/>
         <location line="+35"/>
         <location line="+29"/>
         <location line="+25"/>
-        <location line="+46"/>
+        <location line="+24"/>
         <source>In model setup menus automatically set source by moving the control</source>
         <translation>Välj automatisk kontroller i menyn för modelinställningar genom att använda dem</translation>
     </message>
     <message>
-        <location line="-203"/>
+        <location line="-181"/>
         <location line="+38"/>
         <location line="+31"/>
         <location line="+35"/>
         <location line="+29"/>
         <location line="+25"/>
-        <location line="+46"/>
+        <location line="+24"/>
         <source>In model setup menus automatically set switch by moving the control</source>
         <translation>Välj automatisk brytare i menyn för modelinställningar genom att använda dem</translation>
     </message>
     <message>
-        <location line="-190"/>
+        <location line="-168"/>
         <location line="+67"/>
         <source>Add support for reversing stick inputs (e.g. needed for FrSky gimbals)</source>
         <translation>Addera stöd för reversering av spakar (behövs om man byter till FrSky-spakar)</translation>
@@ -6819,7 +6833,7 @@ p, li { white-space: pre-wrap; }
         <translation>OpenTX för 9XR PRO</translation>
     </message>
     <message>
-        <location line="+51"/>
+        <location line="+28"/>
         <source>Haptic module installed</source>
         <translation>Vibratormodul är installerad</translation>
     </message>
@@ -6839,7 +6853,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">OpenTX för FrSky Taranis Rev4a</translation>
     </message>
     <message>
-        <location line="-237"/>
+        <location line="-214"/>
         <location line="+38"/>
         <location line="+32"/>
         <location line="+35"/>
@@ -6855,80 +6869,73 @@ p, li { white-space: pre-wrap; }
         <location line="+29"/>
         <location line="+25"/>
         <location line="+24"/>
-        <location line="+22"/>
         <source>PPM center adjustment in limits</source>
         <translation>Justering av PPM-centrum i menyn för Gränser</translation>
     </message>
     <message>
-        <location line="-202"/>
+        <location line="-180"/>
         <location line="+38"/>
         <location line="+32"/>
         <location line="+35"/>
         <location line="+29"/>
         <location line="+25"/>
         <location line="+24"/>
-        <location line="+22"/>
         <source>Symetrical Limits</source>
         <translation>Symetriska Gränser</translation>
     </message>
     <message>
-        <location line="-225"/>
+        <location line="-203"/>
         <location line="+91"/>
         <location line="+35"/>
         <location line="+29"/>
         <location line="+25"/>
         <location line="+24"/>
-        <location line="+22"/>
         <source>Pots use in menus navigation</source>
         <translation>Använd potentiometrar förr menyskrollning</translation>
     </message>
     <message>
-        <location line="-204"/>
+        <location line="-182"/>
         <location line="+38"/>
         <source>SmartieParts 2.2 Backlight support</source>
         <translation>Stöd för belysning mha. SmartieParts v2.2</translation>
     </message>
     <message>
-        <location line="+146"/>
         <source>In model setup menus automatically set switch by moving some of them</source>
-        <translation>Använd brytare för att direkt ange brytarvärden i modelleditorn</translation>
+        <translation type="obsolete">Använd brytare för att direkt ange brytarvärden i modelleditorn</translation>
     </message>
     <message>
-        <location line="-181"/>
+        <location line="-35"/>
         <location line="+38"/>
         <location line="+95"/>
         <location line="+25"/>
         <location line="+24"/>
-        <location line="+22"/>
         <source>Enable resetting values by pressing up and down at the same time</source>
         <translation>Slå på nollställning av värden genom att hålla ned upp- och ned-knappen samtidigt</translation>
     </message>
     <message>
-        <location line="-203"/>
+        <location line="-181"/>
         <location line="+38"/>
         <location line="+30"/>
         <location line="+35"/>
         <location line="+30"/>
         <location line="+25"/>
         <location line="+24"/>
-        <location line="+22"/>
         <source>No graphical check boxes and sliders</source>
         <translation>Använd inte grafiska kontroller</translation>
     </message>
     <message>
-        <location line="-202"/>
+        <location line="-180"/>
         <location line="+38"/>
         <location line="+30"/>
         <location line="+35"/>
         <location line="+30"/>
         <location line="+25"/>
         <location line="+24"/>
-        <location line="+22"/>
         <source>Don&apos;t use bold font for highlighting active items</source>
         <translation>Använd inte feta typsnitt för att markera aktiva objekt</translation>
     </message>
     <message>
-        <location line="-163"/>
+        <location line="-141"/>
         <location line="+30"/>
         <location line="+35"/>
         <location line="+29"/>
@@ -6952,12 +6959,11 @@ p, li { white-space: pre-wrap; }
         <location line="+29"/>
         <location line="+25"/>
         <location line="+24"/>
-        <location line="+22"/>
         <source>Global variables</source>
         <translation>Globala variabler</translation>
     </message>
     <message>
-        <location line="-78"/>
+        <location line="-56"/>
         <source>Support for SD memory card</source>
         <translation>Stöd för SD-minneskort</translation>
     </message>
@@ -6968,14 +6974,12 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location line="+21"/>
-        <location line="+46"/>
         <source>OpenTX for Sky9x board / 9X</source>
         <translation>OpenTX för 9X med Sky9X-kort</translation>
     </message>
     <message>
-        <location line="-44"/>
+        <location line="+2"/>
         <location line="+24"/>
-        <location line="+22"/>
         <source>Enable HELI menu and cyclic mix support</source>
         <translation>Slå på helikoptermenyn och stöd för cyklisk mix</translation>
     </message>
@@ -6997,12 +7001,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+145"/>
         <location filename="../helpers.cpp" line="-468"/>
-        <location line="+674"/>
+        <location line="+678"/>
         <source>---</source>
         <translation>----</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="-674"/>
+        <location filename="../helpers.cpp" line="-678"/>
         <source>Rud Trim</source>
         <translation>Rod.Trim</translation>
     </message>
@@ -7083,19 +7087,17 @@ p, li { white-space: pre-wrap; }
         <translation>-GV%1</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="-219"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="-197"/>
         <source>Support for telemetry easy board</source>
         <translation>Stöd för TelemetryEZ-kort</translation>
     </message>
     <message>
-        <location line="+202"/>
         <source>PPM values displayed in us</source>
-        <translation>PPM-värden visade i ms</translation>
+        <translation type="obsolete">PPM-värden visade i ms</translation>
     </message>
     <message>
-        <location line="-12"/>
+        <location line="+190"/>
         <location line="+24"/>
-        <location line="+22"/>
         <source>Bluetooth interface</source>
         <translation>Blåtandsinterface</translation>
     </message>
@@ -7742,7 +7744,7 @@ p, li { white-space: pre-wrap; }
         <translation>Ökning</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="+676"/>
+        <location filename="../helpers.cpp" line="+680"/>
         <source>Yellow</source>
         <translation>Gul</translation>
     </message>
@@ -7863,7 +7865,7 @@ p, li { white-space: pre-wrap; }
         <translation>Skevroder</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="-235"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="-213"/>
         <source>Rotary Encoder use in menus navigation</source>
         <translation>Använd inmatningshjul för att navigera i menyer</translation>
     </message>
@@ -7875,7 +7877,6 @@ p, li { white-space: pre-wrap; }
         <location line="+30"/>
         <location line="+25"/>
         <location line="+24"/>
-        <location line="+22"/>
         <source>Battery graph</source>
         <translation>Batteriikon</translation>
     </message>
@@ -7970,7 +7971,7 @@ p, li { white-space: pre-wrap; }
         <translation>!Kurva(%1)</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="-808"/>
+        <location filename="../helpers.cpp" line="-812"/>
         <location line="+6"/>
         <source>FM%1</source>
         <translation>FM%1</translation>
@@ -8066,14 +8067,14 @@ p, li { white-space: pre-wrap; }
         <translation>OpenTX accepterar inte detta antal kanaler</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="-886"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="-860"/>
         <source>Your radio probably uses a wrong firmware,
  eeprom size is 4096 but only the first 2048 are used</source>
         <translation>Din sändare har antagligen laddats med felaktig programvara.
 eeprom-storleken är 4096, men enbart den första hälften används</translation>
     </message>
     <message>
-        <location line="+654"/>
+        <location line="+650"/>
         <location line="+2"/>
         <source>Support for MAVLINK devices</source>
         <translation>Stöd för MAVLINK-enheter</translation>
@@ -8086,31 +8087,28 @@ eeprom-storleken är 4096, men enbart den första hälften används</translation
         <location line="+29"/>
         <location line="+30"/>
         <location line="+24"/>
-        <location line="+22"/>
         <source>No flight modes</source>
         <translation>Inga flyglägen</translation>
     </message>
     <message>
-        <location line="-15"/>
         <source>In model setup menus automatically set source by moving some of them</source>
-        <translation>Rör brytare/rattar för att direkt ange att de skall användas</translation>
+        <translation type="obsolete">Rör brytare/rattar för att direkt ange att de skall användas</translation>
     </message>
     <message>
-        <location line="-176"/>
+        <location line="-169"/>
         <location line="+38"/>
         <location line="+30"/>
         <location line="+35"/>
         <location line="+30"/>
         <location line="+25"/>
         <location line="+24"/>
-        <location line="+22"/>
-        <location line="+15"/>
+        <location line="+14"/>
         <location line="+10"/>
         <source>Use alternative SQT5 font</source>
         <translation>Använd SQT5-typsnittet</translation>
     </message>
     <message>
-        <location line="-228"/>
+        <location line="-205"/>
         <location line="+38"/>
         <location line="+30"/>
         <location line="+35"/>
@@ -8154,12 +8152,11 @@ eeprom-storleken är 4096, men enbart den första hälften används</translation
     <message>
         <location line="+151"/>
         <location line="+24"/>
-        <location line="+22"/>
         <source>Use FrSky Taranis sticks in a 9X/9XR</source>
         <translation>Använd spakar från FrSky Taranis i 9X/9XR</translation>
     </message>
     <message>
-        <location line="+8"/>
+        <location line="+7"/>
         <source>OpenTX for FrSky Taranis</source>
         <translation>OpenTx för FrSky Taranis</translation>
     </message>
@@ -8180,7 +8177,7 @@ eeprom-storleken är 4096, men enbart den första hälften används</translation
         <translation>Slå av Globala Variabler</translation>
     </message>
     <message>
-        <location line="-253"/>
+        <location line="-230"/>
         <source>Possibility to enable FAI MODE at field</source>
         <translation>Möjlighet att slå på FAI-LÄGE före pflygning</translation>
     </message>
@@ -8202,7 +8199,7 @@ Vi uppskattar ert stöd!
 Gruppen bakom OpenTX/Companion.</translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="-385"/>
+        <location filename="../modeledit/flightmodes.cpp" line="-377"/>
         <source>Trim disabled</source>
         <translation>Trim inaktiv</translation>
     </message>
@@ -8252,9 +8249,27 @@ OpenTX-gruppen.</translation>
     </message>
 </context>
 <context>
+    <name>RadioNotFoundDialog</name>
+    <message>
+        <location filename="../radionotfound.ui" line="+32"/>
+        <source>No Radio Found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Radio was found!&lt;/p&gt;&lt;p&gt;Make sure that you hold the lower trim buttons towards the center while you turn it on.&lt;/p&gt;&lt;p&gt;Then connect the USB wire.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+52"/>
+        <source>OK</source>
+        <translation type="unfinished">OK</translation>
+    </message>
+</context>
+<context>
     <name>RudderPage</name>
     <message>
-        <location filename="../wizarddialog.cpp" line="-260"/>
+        <location filename="../wizarddialog.cpp" line="-283"/>
         <source>No</source>
         <translation>Nej</translation>
     </message>
@@ -8422,7 +8437,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
 <context>
     <name>SimpleTailPage</name>
     <message>
-        <location filename="../wizarddialog.cpp" line="+78"/>
+        <location filename="../wizarddialog.cpp" line="+90"/>
         <source>Elevator Channel:</source>
         <translation>Höjdroderkanal:</translation>
     </message>
@@ -8682,7 +8697,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
 <context>
     <name>StandardPage</name>
     <message>
-        <location filename="../wizarddialog.cpp" line="-504"/>
+        <location filename="../wizarddialog.cpp" line="-547"/>
         <source>Channel %1</source>
         <translation>Kanal %1</translation>
     </message>
@@ -8690,7 +8705,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
 <context>
     <name>TailPage</name>
     <message>
-        <location line="+480"/>
+        <location line="+521"/>
         <source>Rudder Channel:</source>
         <translation>Sidoroderkanal:</translation>
     </message>
@@ -8703,7 +8718,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
 <context>
     <name>TailSelectionPage</name>
     <message>
-        <location line="-337"/>
+        <location line="-380"/>
         <source>Elevator and Rudder</source>
         <translation>Höjdroder och Sidoroder</translation>
     </message>
@@ -8730,7 +8745,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <translation type="obsolete">Form</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.ui" line="+61"/>
+        <location filename="../modeledit/telemetry.ui" line="+104"/>
         <source>A1</source>
         <translation>A1</translation>
     </message>
@@ -8751,7 +8766,12 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <translation>Alarm 1</translation>
     </message>
     <message>
-        <location line="+14"/>
+        <location line="-23"/>
+        <source>Critical Alarm</source>
+        <translation type="unfinished">Kritisk Alarmnivå</translation>
+    </message>
+    <message>
+        <location line="+37"/>
         <location line="+77"/>
         <source>----</source>
         <translation>----</translation>
@@ -8765,13 +8785,11 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <location line="-72"/>
         <location line="+77"/>
-        <location line="+64"/>
         <source>Orange</source>
         <translation>Orange</translation>
     </message>
     <message>
-        <location line="-188"/>
-        <location line="+52"/>
+        <location line="-72"/>
         <location line="+77"/>
         <source>Red</source>
         <translation>Röd</translation>
@@ -8793,7 +8811,17 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <translation>Volt-källa</translation>
     </message>
     <message>
-        <location line="-94"/>
+        <location line="-181"/>
+        <source>FrSky S.PORT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>FrSky D</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+82"/>
         <source>A4</source>
         <translation>A4</translation>
     </message>
@@ -8818,7 +8846,8 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <translation>Ström-källa</translation>
     </message>
     <message>
-        <location line="+19"/>
+        <location line="-234"/>
+        <location line="+253"/>
         <source>Protocol</source>
         <translation>Protokoll</translation>
     </message>
@@ -8942,7 +8971,12 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <translation>mAh-antal</translation>
     </message>
     <message>
-        <location line="+54"/>
+        <location line="-382"/>
+        <source>Low Alarm</source>
+        <translation type="unfinished">Låg Alarmnivå</translation>
+    </message>
+    <message>
+        <location line="+436"/>
         <source>FAS Offset</source>
         <translation>FAS-offset</translation>
     </message>
@@ -9125,7 +9159,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
 <context>
     <name>TelemetryPanel</name>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="+452"/>
+        <location filename="../modeledit/telemetry.cpp" line="+460"/>
         <source>Telemetry screen %1</source>
         <translation>Telemetriskärm %1</translation>
     </message>
@@ -9268,7 +9302,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
 <context>
     <name>TimerPanel</name>
     <message>
-        <location filename="../modeledit/setup.cpp" line="-545"/>
+        <location filename="../modeledit/setup.cpp" line="-548"/>
         <source>Silent</source>
         <translation>Tyst</translation>
     </message>
@@ -9286,7 +9320,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
 <context>
     <name>VTailPage</name>
     <message>
-        <location filename="../wizarddialog.cpp" line="+256"/>
+        <location filename="../wizarddialog.cpp" line="+297"/>
         <source>First Tail Channel:</source>
         <translation>Första stjärtkanalen:</translation>
     </message>
@@ -9299,7 +9333,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
 <context>
     <name>WingtypeSelectionPage</name>
     <message>
-        <location line="-332"/>
+        <location line="-373"/>
         <source>Standard Wing</source>
         <translation>Standardvinge</translation>
     </message>
@@ -9312,7 +9346,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
 <context>
     <name>WizardDialog</name>
     <message>
-        <location line="-270"/>
+        <location line="-288"/>
         <source>Model Wizard</source>
         <translation>Modellguide</translation>
     </message>
@@ -9382,9 +9416,13 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <translation>Flygande vinge / Deltavinge</translation>
     </message>
     <message>
-        <location line="+0"/>
         <source>Are the elevons controlled by servos connected to separate channels or by a single servo channel?</source>
-        <translation>Styrs rodren av servon kopplade till separata kanaler eller används en enda kanal för att styra båda rodren?</translation>
+        <translation type="obsolete">Styrs rodren av servon kopplade till separata kanaler eller används en enda kanal för att styra båda rodren?</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source>Select the elevons channels</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
@@ -9506,24 +9544,28 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <translation>Ange ett namn för din modell och ange modeltypen.</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+3"/>
         <source>Select the receiver channel that is connected to your ESC or throttle servo.&lt;br&gt;&lt;br&gt;Throttle - Spektrum: CH1, Futaba: CH3</source>
         <translation>Välj den mottagar-kanal som är kopplad till din ESC eller till gas-servot.&lt;br&gt;&lt;br&gt;Gas - Spektrum: CH1, Futaba: CH3</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+4"/>
         <source>Most aircraft have a main wing and a tail with control surfaces. Flying wings and delta winged aircraft only have a single wing. The main control surface on a standard wing controls the roll of the aircraft. This surface is called an aileron.&lt;br&gt;The control surface of a delta wing controls both roll and pitch. This surface is called an elevon. </source>
         <translation>De flesta flygplan har en huvudvinge och en stjärt med kontrollytor. Flygande vingar och deltavingar saknar däremot stjärt. Rodren på en huvudvinge används för att luta planet i sidled (kallas för att Rolla eller Banka). Denna typ av roder kallas för skevroder.&lt;br&gt; Rodren på en deltavinge fungerar som en kombination av skevroder och höjdroder. </translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+5"/>
         <source>Models use one or two channels to control the ailerons.&lt;br&gt;A so called Y-cable can be used to connect a single receiver channel to two separate aileron servos. If your servos are connected by a Y-cable you should select the single-servo option.&lt;br&gt;&lt;br&gt;Aileron - Spektrum: CH2, Futaba: CH1</source>
         <translation>Modeller använder en eller två kontrollkanaler för att styra skevrodren.&lt;br&gt;En så kallad Y-kabel kan användas för att koppla två servon till en enda kanal. Om dina skevroderservon är inkopplade via en Y-kabel, så skall du välja inställningen för en kontrollkanal.&lt;br&gt;&lt;br&gt;Skevroder - Spektrum: KN2, Futaba: KN1</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+14"/>
+        <source>Models use two channels to control the elevons.&lt;br&gt;Select these two channels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Models use one or two channels to control the elevons.&lt;br&gt;A so called Y-cable can be used to connect single a receiver channel to two separate elevon servos. If your servos are connected by a Y-cable you should select the single-servo option.</source>
-        <translation>Modeller använder en eller två kontrollkanaler för att styra deltavingar och flygande vingar.&lt;br&gt;En så kallad Y-kabel kan användas för att koppla två servon till en enda kanal. Om dina servon är inkopplade via en Y-kabel, så skall du välja inställningen för en kontrollkanal.</translation>
+        <translation type="obsolete">Modeller använder en eller två kontrollkanaler för att styra deltavingar och flygande vingar.&lt;br&gt;En så kallad Y-kabel kan användas för att koppla två servon till en enda kanal. Om dina servon är inkopplade via en Y-kabel, så skall du välja inställningen för en kontrollkanal.</translation>
     </message>
     <message>
         <source>Most aircraft have a main wing and a tail with control surfaces. Flying wings and delta winged aircraft only have a single wing. The main control surface on a standard wing controlls the roll of the aircraft. This surface is called an aileron.&lt;br&gt;The control surface of a delta wing controls both roll and elevation. This surface is called an elevon. </source>
@@ -9534,12 +9576,12 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <translation type="obsolete">Modeller använder en eller två kontrollkanaler för att styra skevrodren.&lt;br&gt;En så kallad Y-kabel kan användas för att koppla två servon till en enda kanal. Om dina skevroderservon är inkopplade via en Y-kabel, så skall du välja inställningen för en kontrollkanal.&lt;br&gt;&lt;br&gt;Skevroder - Spektrum: KN2, Futaba: KN1</translation>
     </message>
     <message>
-        <location line="-6"/>
+        <location line="-8"/>
         <source>This wizard assumes that your flaps are controlled by a switch. If your flaps are controlled by a potentiometer you can change that manually later.</source>
         <translation>Denna modellguide utgår ifrån att dina flaps styrs via en brytare. Om du instället vill styra via en potentiometer så får du själv ändra inställningen i Modell-editorn.</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+4"/>
         <source>Air brakes are used to reduce the speed of advanced sail planes.&lt;br&gt;They are very uncommon on other types of planes.</source>
         <translation>Luftbromsar används för att minska hastigheten för segelflygplan. De är mycket ovanliga på andra typer av flygplan.</translation>
     </message>
@@ -9548,49 +9590,49 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <translation type="obsolete">Modeller använder en eller två kontrollkanaler för att styra deltavingar och flygande vingar.&lt;br&gt;En så kallad Y-kabel kan användas för att koppla två servon till en enda kanal. Om dina servon är inkopplade via en Y-kabel, så skall du välja inställningen för en kontrollkanal.</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+8"/>
         <source>Select the receiver channel that is connected to your rudder.&lt;br&gt;&lt;br&gt;Rudder - Spektrum: CH4, Futaba: CH4</source>
         <translation>Ange vilken kontrollkanal som används för att styra modellens sidoroder.&lt;br&gt;&lt;br&gt;Sidoroder - Spektrum: CH4, Futaba: CH4</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+4"/>
         <source>Select the tail type of your plane.</source>
         <translation>Angej vilken typ av stärt din modell har.</translation>
     </message>
     <message>
-        <location line="+2"/>
-        <location line="+4"/>
+        <location line="+3"/>
+        <location line="+5"/>
         <source>Select the Rudder and Elevator channels.&lt;br&gt;&lt;br&gt;Rudder - Spektrum: CH4, Futaba: CH4&lt;br&gt;Elevator - Spektrum: CH3, Futaba: CH2</source>
         <translation>Ange kontroll-kanaler för sidorodret och höjdrodret.&lt;br&gt;&lt;br&gt;Sidoroder - Spektrum: CH4, Futaba: CH4&lt;br&gt;Höjdroder - Spektrum: CH3, Futaba: CH2</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+5"/>
         <source>Select the Elevator channel.&lt;br&gt;&lt;br&gt;Elevator - Spektrum: CH3, Futaba: CH2</source>
         <translation>Ange kontrollkanal för höjdrodret.&lt;br&gt;&lt;br&gt; Höjdroder - Spektrum: CH3, Futaba: CH2</translation>
     </message>
     <message>
+        <location line="+4"/>
         <location line="+3"/>
-        <location line="+2"/>
-        <location line="+2"/>
-        <location line="+2"/>
-        <location line="+2"/>
-        <location line="+8"/>
-        <location line="+2"/>
+        <location line="+3"/>
+        <location line="+3"/>
+        <location line="+3"/>
+        <location line="+10"/>
+        <location line="+3"/>
         <source>TBD.</source>
         <translation>Information saknas för denna dialog.</translation>
     </message>
     <message>
-        <location line="-8"/>
+        <location line="-10"/>
         <source>Select the control channels for your multirotor.&lt;br&gt;&lt;br&gt;Throttle - Spektrum: CH1, Futaba: CH3&lt;br&gt;Yaw - Spektrum: CH4, Futaba: CH4&lt;br&gt;Pitch - Spektrum: CH3, Futaba: CH2&lt;br&gt;Roll - Spektrum: CH2, Futaba: CH1</source>
         <translation>Välj vilka kanaler som skall användas för att kontrollera din Multirotot-modell.&lt;br&gt;&lt;br&gt;Gas - Spektrum: CH1, Futaba: CH3&lt;br&gt;Yaw - Spektrum: CH4, Futaba: CH4&lt;br&gt;Pitch - Spektrum: CH3, Futaba: CH2&lt;br&gt;Roll - Spektrum: CH2, Futaba: CH1</translation>
     </message>
     <message>
-        <location line="+10"/>
+        <location line="+13"/>
         <source>There is no help available for the current page.</source>
         <translation>Det finns ingen hjälp tillgänglig för denna sida.</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+3"/>
         <source>Model Wizard Help</source>
         <translation>Hjälp för Modellguiden</translation>
     </message>
@@ -9598,7 +9640,22 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
 <context>
     <name>WizardPrinter</name>
     <message>
-        <location line="+798"/>
+        <location line="+838"/>
+        <source>Plane</source>
+        <translation type="unfinished">Plan</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Multicopter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Helicopter</source>
+        <translation type="unfinished">Helikopter</translation>
+    </message>
+    <message>
+        <location line="+22"/>
         <source>Model Name: </source>
         <translation>Modelnamn:</translation>
     </message>
@@ -12572,19 +12629,16 @@ Får skilja från språket för mjukvaran</translation>
 <context>
     <name>taranisNotFoundDialog</name>
     <message>
-        <location filename="../taranisnotfound.ui" line="+32"/>
         <source>No Taranis Radio Found</source>
-        <translation>Ingen Taranis-radio kunde hittas</translation>
+        <translation type="obsolete">Ingen Taranis-radio kunde hittas</translation>
     </message>
     <message>
-        <location line="+8"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Taranis Radio was found!&lt;/p&gt;&lt;p&gt;Make sure that you hold the lower trim buttons towards the center while you turn it on.&lt;/p&gt;&lt;p&gt;Then connect the USB wire.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Det gick inte att hitta någon ansluten Taranis!&lt;/p&gt;&lt;p&gt;Se till att hålla de nedre trimknapparna inåt samtidigt som du slår på radion.&lt;/p&gt;&lt;p&gt;Anslut sedan USB-kabeln.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Det gick inte att hitta någon ansluten Taranis!&lt;/p&gt;&lt;p&gt;Se till att hålla de nedre trimknapparna inåt samtidigt som du slår på radion.&lt;/p&gt;&lt;p&gt;Anslut sedan USB-kabeln.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location line="+52"/>
         <source>OK</source>
-        <translation>OK</translation>
+        <translation type="obsolete">OK</translation>
     </message>
 </context>
 </TS>
