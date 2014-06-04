@@ -450,7 +450,7 @@
 #define LEN_VTRAINERMODES      "\007"
 #define TR_VTRAINERMODES       "Maestro""Allievo"
 
-#define LEN_VFAILSAFE          "\012"
+#define LEN_VFAILSAFE          "\013"
 #define TR_VFAILSAFE           "Mantieni\0  ""Personali\0 ""No impulsi\0""Ricevente\0 "
 
 #if defined(MAVLINK)
