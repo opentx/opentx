@@ -552,6 +552,11 @@ void checkSwitches()
       evalFlightModeMixes(e_perout_mode_normal, 0);
       bad_pots = 0;
       for (uint8_t i=0; i<NUM_POTS; i++) {
+#if !defined(REVPLUS)
+        if (i == POT3-POT1) {
+          continue;
+        }
+#endif
         if (!(g_model.nPotsToWarn & (1 << i)) && (abs(g_model.potPosition[i] - GET_LOWRES_POT_POSITION(i)) > 1)) {
           warn = true;
           bad_pots |= (1<<i);
