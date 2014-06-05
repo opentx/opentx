@@ -409,7 +409,11 @@ void burnDialog::on_BurnFlashButton_clicked()
     if (!fileName.isEmpty()) {
       g.flashDir( QFileInfo(fileName).dir().absolutePath() );
       if (!ui->useFwImageCB->isChecked()) {
-        QImage image = ui->imageLabel->pixmap()->toImage().scaled(ui->imageLabel->width(), ui->imageLabel->height());
+        const QPixmap * pixmap = ui->imageLabel->pixmap();
+        QImage image;
+        if (pixmap) {
+          image = pixmap->toImage().scaled(ui->imageLabel->width(), ui->imageLabel->height());
+        }
         if (!image.isNull()) {
           QString tempDir = QDir::tempPath();
           QString tempFile;
@@ -422,7 +426,8 @@ void burnDialog::on_BurnFlashButton_clicked()
           if (flash.saveFlash(tempFile) > 0) {
             hexfileName->clear();
             hexfileName->append(tempFile);
-          } else {
+          }
+          else {
             hexfileName->clear();
             QMessageBox::critical(this, tr("Warning"), tr("Cannot save customized firmware"));
           }
@@ -442,6 +447,7 @@ void burnDialog::on_BurnFlashButton_clicked()
       hexfileName->clear();     
     }
   }
+
   if (hexType==EEPROM_FILE_TYPE) {
     QString calib = g.profile[g.id()].stickPotCalib();
     QString trainercalib = g.profile[g.id()].trainerCalib();
@@ -486,7 +492,8 @@ void burnDialog::on_BurnFlashButton_clicked()
         radioData.generalSettings.vBatCalib=vBatCalib;
         radioData.generalSettings.PPM_Multiplier=PPM_Multiplier;
         patch=true;
-      } else {
+      }
+      else {
         QMessageBox::critical(this, tr("Warning"), tr("Wrong radio calibration data in profile, Settings not patched"));
       }
     }
@@ -540,7 +547,8 @@ void burnDialog::on_BurnFlashButton_clicked()
         if (ok)
           radioData.generalSettings.speakerVolume=byte8u;
         patch=true;
-      } else {
+      }
+      else {
         QMessageBox::critical(this, tr("Warning"), tr("Wrong radio setting data in profile, Settings not patched"));
       }
     
@@ -567,17 +575,19 @@ void burnDialog::on_BurnFlashButton_clicked()
         QTextStream outputStream(&file);
 
         long result = file.write((char*)eeprom, eeprom_size);
-        if(result!=eeprom_size) {
+        if (result!=eeprom_size) {
           QMessageBox::warning(this, tr("Error"),tr("Error writing file %1:\n%2.").arg(fileName).arg(file.errorString()));
           hexfileName->clear();
         }
         hexfileName->clear();
         hexfileName->append(fileName);
-      } else {
+      }
+      else {
         hexfileName->clear();
         hexfileName->append(ui->FWFileName->text());        
       }
-    } else {
+    }
+    else {
       hexfileName->clear();
       hexfileName->append(ui->FWFileName->text());        
     }
