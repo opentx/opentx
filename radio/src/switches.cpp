@@ -305,15 +305,29 @@ bool getLogicalSwitch(uint8_t idx)
           break;
         default:
         {
-          if (LS_LAST_VALUE(s_current_mixer_flight_mode, idx) == CS_LAST_VALUE_INIT)
+          if (LS_LAST_VALUE(s_current_mixer_flight_mode, idx) == CS_LAST_VALUE_INIT) {
             LS_LAST_VALUE(s_current_mixer_flight_mode, idx) = x;
+          }
           int16_t diff = x - LS_LAST_VALUE(s_current_mixer_flight_mode, idx);
-          if (ls->func == LS_FUNC_DIFFEGREATER)
-            result = (y >= 0 ? (diff >= y) : (diff <= y));
-          else
+          bool update = false;
+          if (ls->func == LS_FUNC_DIFFEGREATER) {
+            if (y >= 0) {
+              result = (diff >= y);
+              if (diff < 0)
+                update = true;
+            }
+            else {
+              result = (diff <= y);
+              if (diff > 0)
+                update = true;
+            }
+          }
+          else {
             result = (abs(diff) >= y);
-          if (result)
+          }
+          if (result || update) {
             LS_LAST_VALUE(s_current_mixer_flight_mode, idx) = x;
+          }
           break;
         }
       }
