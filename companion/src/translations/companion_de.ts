@@ -306,7 +306,7 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="415"/>
         <source>Remove Profile</source>
-        <translation>Aufruf Profil</translation>
+        <translation>Lösche Profil</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="444"/>
@@ -8926,7 +8926,7 @@ umgedreht und ist dann vorne
     <message>
         <location filename="../modeledit/telemetry.ui" line="1194"/>
         <source>Various</source>
-        <translation>Varios</translation>
+        <translation>Verschiedenes</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="1101"/>
@@ -9810,7 +9810,7 @@ Mode 4:
     </message>
     <message>
         <source>Remove Profile</source>
-        <translation type="obsolete">Aufruf Profil</translation>
+        <translation type="obsolete">Lösche Profil</translation>
     </message>
     <message>
         <source>Select Image</source>
