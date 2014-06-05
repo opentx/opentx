@@ -106,7 +106,7 @@ MainWindow::MainWindow():
     restoreState(g.mainWinState());
     restoreGeometry(g.mainWinGeo());
 
-    setUnifiedTitleAndToolBarOnMac(true);
+    // setUnifiedTitleAndToolBarOnMac(true);
     this->setWindowIcon(QIcon(":/icon.png"));
     this->setIconSize(QSize(32, 32));
     QNetworkProxyFactory::setUseSystemConfiguration(true);
