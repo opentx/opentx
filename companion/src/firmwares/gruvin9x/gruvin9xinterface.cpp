@@ -28,7 +28,7 @@
 
 Gruvin9xInterface::Gruvin9xInterface(BoardEnum board):
 EEPROMInterface(board),
-efile(new EFile())
+efile(new RleFile())
 {
 }
 

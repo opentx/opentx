@@ -61,7 +61,7 @@ struct t_eeprom_header
   uint8_t hcsum ;
 };
 
-class EFile
+class RleFile
 {
   uint8_t       m_fileId;    //index of file in directory = filename
   unsigned int  m_pos;       //over all filepos
@@ -101,7 +101,7 @@ class EFile
 
 public:
 
-  EFile();
+  RleFile();
 
   void EeFsCreate(uint8_t *eeprom, int size, BoardEnum board);
 

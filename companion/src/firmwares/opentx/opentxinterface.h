@@ -21,7 +21,7 @@
 #define OPENTX_COMPANION_DOWNLOADS   "http://downloads-20.open-tx.org/companion"
 #define OPENTX_FIRMWARE_DOWNLOADS    "http://downloads-20.open-tx.org/firmware"
 
-class EFile;
+class RleFile;
 
 class OpenTxEepromInterface : public EEPROMInterface
 {
@@ -74,7 +74,7 @@ class OpenTxEepromInterface : public EEPROMInterface
     template <class T>
     bool saveGeneral(GeneralSettings &settings, BoardEnum board, uint32_t version, uint32_t variant);
 
-    EFile *efile;
+    RleFile *efile;
 
 };
 

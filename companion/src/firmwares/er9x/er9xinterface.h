@@ -18,7 +18,7 @@
 #include <QtXml>
 #include "eeprominterface.h"
 #include "er9xeeprom.h"
-class EFile;
+class RleFile;
 
 class Er9xInterface : public EEPROMInterface
 {
@@ -50,7 +50,7 @@ class Er9xInterface : public EEPROMInterface
 
   protected:
 
-    EFile *efile;
+    RleFile *efile;
 
   private:
     void appendTextElement(QDomDocument * qdoc, QDomElement * pe, QString name, QString value);

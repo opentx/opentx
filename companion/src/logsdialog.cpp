@@ -352,7 +352,7 @@ void logsDialog::on_mapsButton_clicked() {
 #ifdef __APPLE__
   gePath = "/usr/bin/open";
   parameters << "-a";
-  parameters << "Google\ Earth";
+  parameters << "Google\\ Earth";
 #endif
   parameters << geFilename;
   QProcess *process = new QProcess(this);
@@ -525,7 +525,8 @@ void logsDialog::plotValue(int index, int plot, int numplots)
       ui->customPlot->graph(0)->setScatterStyle(QCP::ssNone);
       //ui->customPlot->graph()->setLineStyle((QCPGraph::LineStyle)(rand()%5+1));
       ui->customPlot->graph(0)->setPen(graphPen);
-    } else {
+    }
+    else {
       ui->customPlot->xAxis2->setRange(0, maxx-minx);
       ui->customPlot->yAxis2->setTickLabels(true);
       ui->customPlot->yAxis2->setRange(miny,maxy);
@@ -540,7 +541,8 @@ void logsDialog::plotValue(int index, int plot, int numplots)
       //ui->customPlot->graph()->setLineStyle((QCPGraph::LineStyle)(rand()%5+1));
       ui->customPlot->graph(1)->setPen(graphPen);
     }
-  } else {
+  }
+  else {
       ui->customPlot->yAxis->setTickLabels(false);
       ui->customPlot->yAxis2->setTickLabels(false);
       ui->customPlot->yAxis->setRange(-1100, 1100);

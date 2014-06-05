@@ -18,7 +18,7 @@
 
 #include "eeprominterface.h"
 
-class EFile;
+class RleFile;
 
 class Gruvin9xInterface : public EEPROMInterface
 {
@@ -57,7 +57,7 @@ class Gruvin9xInterface : public EEPROMInterface
     template <class T>
     bool loadGeneral(GeneralSettings &settings, int version=2);
 
-    EFile *efile;
+    RleFile *efile;
 
 };
 

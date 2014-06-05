@@ -18,7 +18,7 @@
 
 #include "eeprominterface.h"
 
-class EFile;
+class RleFile;
 
 class Th9xInterface : public EEPROMInterface
 {
@@ -50,7 +50,7 @@ class Th9xInterface : public EEPROMInterface
 
   protected:
 
-    EFile *efile;
+    RleFile *efile;
 
 };
 

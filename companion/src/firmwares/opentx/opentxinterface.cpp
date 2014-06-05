@@ -45,7 +45,7 @@ size_t SizeOfArray( T(&)[ N ] )
 
 OpenTxEepromInterface::OpenTxEepromInterface(BoardEnum board):
   EEPROMInterface(board),
-  efile(new EFile())
+  efile(new RleFile())
 {
 }
 

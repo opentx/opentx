@@ -23,7 +23,7 @@
 #include <algorithm>
 #include "eeprominterface.h"
 
-EFile::EFile():
+RleFile::RleFile():
 eeprom(NULL),
 eeprom_size(0),
 eeFs(NULL),
@@ -31,7 +31,7 @@ eeFsArm(NULL)
 {
 }
 
-void EFile::EeFsCreate(uint8_t *eeprom, int size, BoardEnum board)
+void RleFile::EeFsCreate(uint8_t *eeprom, int size, BoardEnum board)
 {
   this->eeprom = eeprom;
   this->eeprom_size = size;
@@ -92,7 +92,7 @@ void EFile::EeFsCreate(uint8_t *eeprom, int size, BoardEnum board)
   }
 }
 
-bool EFile::EeFsOpen(uint8_t *eeprom, int size, BoardEnum board)
+bool RleFile::EeFsOpen(uint8_t *eeprom, int size, BoardEnum board)
 {
   this->eeprom = eeprom;
   this->eeprom_size = size;
@@ -137,29 +137,29 @@ bool EFile::EeFsOpen(uint8_t *eeprom, int size, BoardEnum board)
   }
 }
 
-void EFile::eeprom_read_block (void *pointer_ram, unsigned int pointer_eeprom, size_t size)
+void RleFile::eeprom_read_block (void *pointer_ram, unsigned int pointer_eeprom, size_t size)
 {
   memcpy(pointer_ram, &eeprom[pointer_eeprom], size);
 }
 
-void EFile::eeprom_write_block(const void *pointer_ram, unsigned int pointer_eeprom, size_t size)
+void RleFile::eeprom_write_block(const void *pointer_ram, unsigned int pointer_eeprom, size_t size)
 {
   memcpy(&eeprom[pointer_eeprom], pointer_ram, size);
 }
 
-uint8_t EFile::EeFsRead(unsigned int blk, unsigned int ofs)
+uint8_t RleFile::EeFsRead(unsigned int blk, unsigned int ofs)
 {
   uint8_t ret;
   eeprom_read_block(&ret, blk*eeFsBlockSize+ofs+eeFsBlocksOffset, 1);
   return ret;
 }
 
-void EFile::EeFsWrite(unsigned int blk, unsigned int ofs, uint8_t val)
+void RleFile::EeFsWrite(unsigned int blk, unsigned int ofs, uint8_t val)
 {
   eeprom_write_block(&val, blk*eeFsBlockSize+ofs+eeFsBlocksOffset, 1);
 }
 
-unsigned int EFile::EeFsGetLink(unsigned int blk)
+unsigned int RleFile::EeFsGetLink(unsigned int blk)
 {
   if (IS_ARM(board)) {
     int16_t ret;
@@ -171,7 +171,7 @@ unsigned int EFile::EeFsGetLink(unsigned int blk)
   }
 }
 
-void EFile::EeFsSetLink(unsigned int blk, unsigned int val)
+void RleFile::EeFsSetLink(unsigned int blk, unsigned int val)
 {
   if (IS_ARM(board)) {
     int16_t s_link = val;
@@ -182,17 +182,17 @@ void EFile::EeFsSetLink(unsigned int blk, unsigned int val)
   }
 }
 
-uint8_t EFile::EeFsGetDat(unsigned int blk, unsigned int ofs)
+uint8_t RleFile::EeFsGetDat(unsigned int blk, unsigned int ofs)
 {
   return EeFsRead(blk, ofs+eeFsLinkSize);
 }
 
-void EFile::EeFsSetDat(unsigned int blk, unsigned int ofs, const uint8_t *buf, unsigned int len)
+void RleFile::EeFsSetDat(unsigned int blk, unsigned int ofs, const uint8_t *buf, unsigned int len)
 {
   eeprom_write_block(buf, blk*eeFsBlockSize+ofs+eeFsLinkSize+eeFsBlocksOffset, len);
 }
 
-unsigned int EFile::EeFsGetFree()
+unsigned int RleFile::EeFsGetFree()
 {
   unsigned int ret = 0;
   unsigned int i;
@@ -211,7 +211,7 @@ unsigned int EFile::EeFsGetFree()
 /*
  * free one or more blocks
  */
-void EFile::EeFsFree(unsigned int blk)
+void RleFile::EeFsFree(unsigned int blk)
 {
   unsigned int i = blk;
   while (EeFsGetLink(i)) i = EeFsGetLink(i);
@@ -228,7 +228,7 @@ void EFile::EeFsFree(unsigned int blk)
 /*
  * alloc one block from freelist
  */
-unsigned int EFile::EeFsAlloc()
+unsigned int RleFile::EeFsAlloc()
 {
   unsigned int ret = (IS_ARM(board) ? eeFsArm->freeList : eeFs->freeList);
   if (ret) {
@@ -241,12 +241,12 @@ unsigned int EFile::EeFsAlloc()
   return ret;
 }
 
-unsigned int EFile::size(unsigned int id)
+unsigned int RleFile::size(unsigned int id)
 {
   return IS_ARM(board) ? eeFsArm->files[id].size : eeFs->files[id].size;
 }
 
-unsigned int EFile::openRd(unsigned int i_fileId)
+unsigned int RleFile::openRd(unsigned int i_fileId)
 {
   if (IS_SKY9X(board)) {
     m_fileId = get_current_block_number(i_fileId * 2, &m_size);
@@ -268,7 +268,7 @@ unsigned int EFile::openRd(unsigned int i_fileId)
   }
 }
 
-unsigned int EFile::read(uint8_t *buf, unsigned int i_len)
+unsigned int RleFile::read(uint8_t *buf, unsigned int i_len)
 {
   unsigned int len = IS_ARM(board) ? eeFsArm->files[m_fileId].size : eeFs->files[m_fileId].size;
   len -= m_pos;
@@ -288,7 +288,7 @@ unsigned int EFile::read(uint8_t *buf, unsigned int i_len)
 }
 
 // G: Read runlength (RLE) compressed bytes into buf.
-unsigned int EFile::readRlc12(uint8_t *buf, unsigned int i_len, bool rlc2)
+unsigned int RleFile::readRlc12(uint8_t *buf, unsigned int i_len, bool rlc2)
 {
   memset(buf, 0, i_len);
 
@@ -344,12 +344,12 @@ unsigned int EFile::readRlc12(uint8_t *buf, unsigned int i_len, bool rlc2)
   }
 }
 
-unsigned int EFile::write1(uint8_t b)
+unsigned int RleFile::write1(uint8_t b)
 {
   return write(&b, 1);
 }
 
-unsigned int EFile::write(const uint8_t *buf, unsigned int i_len)
+unsigned int RleFile::write(const uint8_t *buf, unsigned int i_len)
 {
   unsigned int len = i_len;
   if (!m_currBlk && m_pos==0)
@@ -386,7 +386,7 @@ unsigned int EFile::write(const uint8_t *buf, unsigned int i_len)
   return i_len - len;
 }
 
-void EFile::create(unsigned int i_fileId, unsigned int typ)
+void RleFile::create(unsigned int i_fileId, unsigned int typ)
 {
   openRd(i_fileId); //internal use
   if (IS_ARM(board)) {
@@ -399,7 +399,7 @@ void EFile::create(unsigned int i_fileId, unsigned int typ)
   }
 }
 
-void EFile::closeTrunc()
+void RleFile::closeTrunc()
 {
   unsigned int fri=0;
   if (IS_ARM(board))
@@ -410,7 +410,7 @@ void EFile::closeTrunc()
   if(fri) EeFsFree( fri );  //chain in
 }
 
-unsigned int EFile::writeRlc1(unsigned int i_fileId, unsigned int typ, const uint8_t *buf, unsigned int i_len)
+unsigned int RleFile::writeRlc1(unsigned int i_fileId, unsigned int typ, const uint8_t *buf, unsigned int i_len)
 {
   create(i_fileId, typ);
   bool state0 = true;
@@ -456,7 +456,7 @@ unsigned int EFile::writeRlc1(unsigned int i_fileId, unsigned int typ, const uin
 /*
  * Write runlength (RLE) compressed bytes
  */
-unsigned int EFile::writeRlc2(unsigned int i_fileId, unsigned int typ, const uint8_t *buf, unsigned int i_len)
+unsigned int RleFile::writeRlc2(unsigned int i_fileId, unsigned int typ, const uint8_t *buf, unsigned int i_len)
 {
   if (IS_SKY9X(board)) {
     openRd(i_fileId);
@@ -520,7 +520,7 @@ unsigned int EFile::writeRlc2(unsigned int i_fileId, unsigned int typ, const uin
   }
 }
 
-uint8_t EFile::byte_checksum( uint8_t *p, unsigned int size )
+uint8_t RleFile::byte_checksum( uint8_t *p, unsigned int size )
 {
         uint32_t csum ;
 
@@ -533,7 +533,7 @@ uint8_t EFile::byte_checksum( uint8_t *p, unsigned int size )
         return csum ;
 }
 
-uint32_t EFile::ee32_check_header( struct t_eeprom_header *hptr )
+uint32_t RleFile::ee32_check_header( struct t_eeprom_header *hptr )
 {
         uint8_t csum ;
 
@@ -549,7 +549,7 @@ uint32_t EFile::ee32_check_header( struct t_eeprom_header *hptr )
 // to see which is the most recent, the block_no of the most recent
 // is returned, with the corresponding data size if required
 // and the sequence number if required
-uint32_t EFile::get_current_block_number( uint32_t block_no, uint16_t *p_size)
+uint32_t RleFile::get_current_block_number( uint32_t block_no, uint16_t *p_size)
 {
   struct t_eeprom_header b0 ;
   struct t_eeprom_header b1 ;

@@ -32,7 +32,7 @@
 
 Ersky9xInterface::Ersky9xInterface():
 EEPROMInterface(BOARD_SKY9X),
-efile(new EFile())
+efile(new RleFile())
 {
 }
 
