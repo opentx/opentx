@@ -300,7 +300,6 @@ getvalue_t getValue(uint8_t i)
   else if (i==MIXSRC_SF) return (switchState(SW_SF0) ? -1024 : 1024);
   else if (i==MIXSRC_SG) return (switchState(SW_SG0) ? -1024 : (switchState(SW_SG1) ? 0 : 1024));
   else if (i==MIXSRC_SH) return (switchState(SW_SH0) ? -1024 : 1024);
-  else if (i<=MIXSRC_LAST_LOGICAL_SWITCH) return getSwitch(SWSRC_FIRST_LOGICAL_SWITCH+i-MIXSRC_FIRST_LOGICAL_SWITCH) ? 1024 : -1024;
 #else
   else if (i==MIXSRC_3POS) return (getSwitch(SW_ID0-SW_BASE+1) ? -1024 : (getSwitch(SW_ID1-SW_BASE+1) ? 0 : 1024));
   // don't use switchState directly to give getSwitch possibility to hack values if needed for switch warning
@@ -308,9 +307,9 @@ getvalue_t getValue(uint8_t i)
   else if (i==MIXSRC_3POS2) return (getSwitch(SW_ID3-SW_BASE+1) ? -1024 : (getSwitch(SW_ID4-SW_BASE+1) ? 0 : 1024));
   // don't use switchState directly to give getSwitch possibility to hack values if needed for switch warning
 #endif
-  else if (i<=MIXSRC_LAST_LOGICAL_SWITCH) return getSwitch(SWSRC_THR+i-MIXSRC_THR) ? 1024 : -1024;
+  else if (i<MIXSRC_SW1) return getSwitch(SWSRC_THR+i-MIXSRC_THR) ? 1024 : -1024;
 #endif
-
+  else if (i<=MIXSRC_LAST_LOGICAL_SWITCH) return getSwitch(SWSRC_FIRST_LOGICAL_SWITCH+i-MIXSRC_FIRST_LOGICAL_SWITCH) ? 1024 : -1024;
   else if (i<=MIXSRC_LAST_TRAINER) { int16_t x = g_ppmIns[i-MIXSRC_FIRST_TRAINER]; if (i<MIXSRC_FIRST_TRAINER+NUM_CAL_PPM) { x-= g_eeGeneral.trainer.calib[i-MIXSRC_FIRST_TRAINER]; } return x*2; }
   else if (i<=MIXSRC_LAST_CH) return ex_chans[i-MIXSRC_CH1];
 

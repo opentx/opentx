@@ -990,14 +990,15 @@ void putsMixerSource(xcoord_t x, uint8_t y, uint8_t idx, LcdFlags att)
 #if defined(PCBTARANIS)
   else if (idx < MIXSRC_SW1)
     lcd_putsiAtt(x, y, STR_VSRCRAW, idx-MIXSRC_Rud+1, att);
-  else if (idx <= MIXSRC_LAST_LOGICAL_SWITCH)
-    putsSwitches(x, y, SWSRC_SW1+idx-MIXSRC_SW1, att);
 #else
   if (idx < MIXSRC_THR)
     lcd_putsiAtt(x, y, STR_VSRCRAW, idx, att);
-  else if (idx < MIXSRC_FIRST_TRAINER)
+  else if (idx < MIXSRC_SW1)
     putsSwitches(x, y, idx-MIXSRC_THR+1+3*(1/*+EXTRA_3POS*/), att);
+  // TODO would perhaps save flash if those switches were in VSRCRAW
 #endif
+  else if (idx <= MIXSRC_LAST_LOGICAL_SWITCH)
+    putsSwitches(x, y, SWSRC_SW1+idx-MIXSRC_SW1, att);
   else if (idx < MIXSRC_CH1)
     putsStrIdx(x, y, STR_PPM_TRAINER, idx-MIXSRC_FIRST_TRAINER+1, att);
   else if (idx <= MIXSRC_LAST_CH) {
