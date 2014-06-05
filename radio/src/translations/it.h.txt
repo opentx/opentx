@@ -110,7 +110,7 @@
 #define TR_VBEEPCOUNTDOWN      "NienteSuoni\0Voce\0 "
 
 #define LEN_CURVE_TYPES        "\010"
-#define TR_CURVE_TYPES         "Standard""Personali\0"
+#define TR_CURVE_TYPES         "Fisso\0  ""Modific."
 
 #define LEN_RETA123            "\001"
 
@@ -486,7 +486,7 @@
 #define TR_MODELNAME           "Nome modello"
 #define TR_PHASENAME           "Nome fase"
 #define TR_MIXNAME             "Nome mix"
-#define TR_INPUTNAME           "Nome Input"
+#define TR_INPUTNAME           "Nome Ingr."
 #if defined(PCBTARANIS)
   #define TR_EXPONAME          "Nome expo"
 #else
@@ -588,7 +588,7 @@
 #define TR_MENUTOSTART         CENTER"\011" TR_ENTER " per Cal."
 #define TR_SETMIDPOINT         CENTER"\012SETTA CENTRO"
 #define TR_MOVESTICKSPOTS      CENTER"\010MUOVI STICK/POT"
-#define TR_RXBATT              "Rx Batt:"
+#define TR_RXBATT              "Batt Rx:"
 #define TR_TXnRX               "Tx:\0Rx:"
 #define OFS_RX                 4
 #define TR_ACCEL               "Acc:"
@@ -658,7 +658,7 @@
 #define TR_MENUTEMPLATES       "ESEMPI GUIDA"
 #define TR_MENUSTAT            "STATO"
 #define TR_MENUDEBUG           "DEBUG"
-#define TR_RXNUM               "RxNum"
+#define TR_RXNUM               "NumRx"
 #define TR_SYNCMENU            TR("Sinc.","Sinc.[Menù]")
 #define TR_LIMIT               "Limiti"
 #define TR_MINRSSI             "Min Rssi"
@@ -689,7 +689,7 @@
 #define TR_EEPROM_CONVERTING   "Conversione EEPROM"
 #define TR_THROTTLEWARN        "MOTORE"
 #define TR_ALARMSWARN          "ALLARMI"
-#define TR_SWITCHWARN          "INTERRUTTORI"
+#define TR_SWITCHWARN          "CONTROLLI"
 #define TR_INVERT_THR          "Inverti Mot?"
 #define TR_SPEAKER_VOLUME      "Volume Audio"
 #define TR_LCD                 "LCD"
@@ -794,7 +794,7 @@
 #define TR_COUNT               "Punti"
 #define TR_PT                  "pt"
 #define TR_PTS                 "pti"
-#define TR_SMOOTH              "Smorza"
+#define TR_SMOOTH              "Smussa"
 #define TR_COPY_TRIMS_TO_OFS   "Copia Trim su Offset"
 #define TR_PERSISTENT_MAH      INDENT "Memo mAh"
 #define TR_PREFLIGHT           "Controlli Prevolo"
