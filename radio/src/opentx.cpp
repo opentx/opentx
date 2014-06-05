@@ -2441,11 +2441,11 @@ void opentxClose()
   saveTimers();
 
 #if defined(CPUARM) && defined(FRSKY)
-  if ((g_model.frsky.mAhPersistent) && (g_model.frsky.storedMah != frskyData.hub.currentConsumption)) {
+  if (g_model.frsky.mAhPersistent && g_model.frsky.storedMah!=frskyData.hub.currentConsumption) {
     g_model.frsky.storedMah = frskyData.hub.currentConsumption;
     eeDirty(EE_MODEL);
   }
-  else if((!g_model.frsky.mAhPersistent) && (g_model.frsky.storedMah != 0)){
+  else if (!g_model.frsky.mAhPersistent && g_model.frsky.storedMah!=0) {
     g_model.frsky.storedMah = 0;
     eeDirty(EE_MODEL);
   }

@@ -587,6 +587,9 @@ void telemetryInit(void)
   telemetryPortInit();
 #endif
 
-  // clear telemetry context
+#if 0
+  // if we call telemetryReset() here we also reset the consumption after model load
+  // right now I don't see why we call it here
   telemetryReset();
+#endif
 }
