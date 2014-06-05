@@ -147,8 +147,8 @@ add_library(common ${common_SRCS})
 set(companion_SRCS
   hexinterface.cpp
   flashinterface.cpp
-  xmlinterface.cpp
-  ${PROJECT_BINARY_DIR}/radio.cxx
+  # xmlinterface.cpp
+  # ${PROJECT_BINARY_DIR}/radio.cxx
   ${RADIO_SRC_DIRECTORY}/stamp-opentx.h
   ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
   ${RADIO_SRC_DIRECTORY}/translations/en.h

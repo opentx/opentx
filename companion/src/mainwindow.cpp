@@ -423,7 +423,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
           if (msgBox.clickedButton() == rnButton) {
             contributorsDialog *cd = new contributorsDialog(this,2,rn);
             cd->exec();
-            int ret2 = QMessageBox::question(this, "Companion", tr("Do you want to download release %1 %2 now ?").arg(versionString), QMessageBox::Yes | QMessageBox::No);
+            int ret2 = QMessageBox::question(this, "Companion", tr("Do you want to download release %1 now ?").arg(versionString), QMessageBox::Yes | QMessageBox::No);
             if (ret2 == QMessageBox::Yes)
               download = true;
             else
@@ -438,7 +438,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
         }
         else if (version > currentVersion) {
           QString rn = GetFirmware(current_firmware_variant.id)->getReleaseNotesUrl();
-          QAbstractButton *rnButton;
+          QAbstractButton *rnButton = NULL;
           msgBox.setText("Companion");
           msgBox.setInformativeText(tr("A new version of %1 firmware is available:\n  - current is %2\n  - newer is %3\n\nDo you want to download it now ?").arg(current_firmware_variant.id).arg(currentVersionString).arg(versionString));
           QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
@@ -563,7 +563,7 @@ void  MainWindow::setIconThemeSize(int index)
 
 void MainWindow::newFile()
 {
-    MdiChild *child = createMdiChild();
+    MdiChild * child = createMdiChild();
     child->newFile();
     child->show();
 }
@@ -1470,7 +1470,7 @@ void MainWindow::updateMenus()
 
 MdiChild *MainWindow::createMdiChild()
 {
-  MdiChild *child = new MdiChild();
+  MdiChild * child = new MdiChild();
   mdiArea->addSubWindow(child);
   if(!child->parentWidget()->isMaximized() && !child->parentWidget()->isMinimized())
     child->parentWidget()->resize(400, 400);
@@ -1971,6 +1971,7 @@ int MainWindow::getEpromVersion(QString fileName)
     return -1;
   }
   int fileType = getFileType(fileName);
+#if 0
   if (fileType==FILE_TYPE_XML) {
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {  //reading HEX TEXT file
       QMessageBox::critical(this, tr("Error"),tr("Error opening file %1:\n%2.").arg(fileName).arg(file.errorString()));
@@ -1979,7 +1980,9 @@ int MainWindow::getEpromVersion(QString fileName)
     QTextStream inputStream(&file);
     XmlInterface(inputStream).load(testData);
   }
-  else if (fileType==FILE_TYPE_HEX || fileType==FILE_TYPE_EEPE) { //read HEX file
+  else
+#endif
+  if (fileType==FILE_TYPE_HEX || fileType==FILE_TYPE_EEPE) { //read HEX file
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {  //reading HEX TEXT file
         QMessageBox::critical(this, tr("Error"),tr("Error opening file %1:\n%2.").arg(fileName).arg(file.errorString()));
         return -1;

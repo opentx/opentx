@@ -241,6 +241,7 @@ bool MdiChild::loadFile(const QString &fileName, bool resetCurrentFile)
 
     int fileType = getFileType(fileName);
 
+#if 0
     if (fileType==FILE_TYPE_XML) {
       if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {  //reading HEX TEXT file
         QMessageBox::critical(this, tr("Error"),
@@ -252,7 +253,9 @@ bool MdiChild::loadFile(const QString &fileName, bool resetCurrentFile)
       QTextStream inputStream(&file);
       XmlInterface(inputStream).load(radioData);
     }
-    else if (fileType==FILE_TYPE_HEX || fileType==FILE_TYPE_EEPE) { //read HEX file
+    else
+#endif 
+    if (fileType==FILE_TYPE_HEX || fileType==FILE_TYPE_EEPE) { //read HEX file
       if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {  //reading HEX TEXT file
           QMessageBox::critical(this, tr("Error"),
                                tr("Error opening file %1:\n%2.")
@@ -415,6 +418,7 @@ bool MdiChild::saveFile(const QString &fileName, bool setCurrent)
 
     QTextStream outputStream(&file);
 
+#if 0
     if (fileType==FILE_TYPE_XML) {
       if (!XmlInterface(outputStream).save(radioData)) {
         QMessageBox::warning(this, tr("Error"),tr("Cannot write file %1:\n%2.").arg(myFile).arg(file.errorString()));
@@ -422,7 +426,9 @@ bool MdiChild::saveFile(const QString &fileName, bool setCurrent)
         return false;
       }
     }
-    else if (fileType==FILE_TYPE_HEX || fileType==FILE_TYPE_EEPE) { // write hex
+    else
+#endif
+    if (fileType==FILE_TYPE_HEX || fileType==FILE_TYPE_EEPE) { // write hex
       if (fileType==FILE_TYPE_EEPE)
         outputStream << EEPE_EEPROM_FILE_HEADER << "\n";
 

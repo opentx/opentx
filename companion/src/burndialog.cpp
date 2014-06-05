@@ -221,6 +221,7 @@ bool burnDialog::checkeEprom(QString fileName)
   }
   burnraw=false;
   int fileType = getFileType(fileName);
+#if 0
   if (fileType==FILE_TYPE_XML) {
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {  //reading HEX TEXT file
       QMessageBox::critical(this, tr("Error"),tr("Error opening file %1:\n%2.").arg(fileName).arg(file.errorString()));
@@ -229,7 +230,9 @@ bool burnDialog::checkeEprom(QString fileName)
     QTextStream inputStream(&file);
     XmlInterface(inputStream).load(radioData);
   }
-  else if (fileType==FILE_TYPE_HEX || fileType==FILE_TYPE_EEPE) { //read HEX file
+  else
+#endif
+  if (fileType==FILE_TYPE_HEX || fileType==FILE_TYPE_EEPE) { //read HEX file
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {  //reading HEX TEXT file
         QMessageBox::critical(this, tr("Error"),tr("Error opening file %1:\n%2.").arg(fileName).arg(file.errorString()));
         return false;
