@@ -1446,12 +1446,12 @@ Behöver inte vara samma som menyspråket</translation>
     <message>
         <location line="-146"/>
         <source>&lt;br&gt;First Elevon Channel:</source>
-        <translation type="unfinished">&lt;br&gt;Första roderkanalen:</translation>
+        <translation>&lt;br&gt;Första roderkanalen:</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Second Elevon Channel:</source>
-        <translation type="unfinished">Andra roderkanalen:</translation>
+        <translation>Andra roderkanalen:</translation>
     </message>
 </context>
 <context>
@@ -4215,12 +4215,12 @@ Vill du ladda ned den nya versionen nu ?</translation>
     <message>
         <location line="+45"/>
         <source>The OpenTX Companion project was originally forked from &lt;a href=&apos;%1&apos;&gt;eePe&lt;/a&gt;</source>
-        <translation type="unfinished">OpenTX-projektet grenades ursprungligen av från &lt;a href=&apos;%2&apos;&gt;eePe&lt;/a&gt; {1&apos;?}</translation>
+        <translation>OpenTX-Companion-projektet grenades ursprungligen av från &lt;a href=&apos;%1&apos;&gt;eePe&lt;/a&gt;</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Copyright OpenTX Team</source>
-        <translation type="unfinished"></translation>
+        <translation>Copyright OpenTX Team</translation>
     </message>
     <message>
         <location line="+105"/>
@@ -5551,7 +5551,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>ModulePanel</name>
     <message>
-        <location filename="../modeledit/setup.cpp" line="+109"/>
+        <location filename="../modeledit/setup.cpp" line="+103"/>
         <source>Trainer Port</source>
         <translation>Trainer-ingång</translation>
     </message>
@@ -8253,17 +8253,17 @@ OpenTX-gruppen.</translation>
     <message>
         <location filename="../radionotfound.ui" line="+32"/>
         <source>No Radio Found</source>
-        <translation type="unfinished"></translation>
+        <translation>Ingen Taranis-radio kunde hittas</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Radio was found!&lt;/p&gt;&lt;p&gt;Make sure that you hold the lower trim buttons towards the center while you turn it on.&lt;/p&gt;&lt;p&gt;Then connect the USB wire.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ingen radio hittades!&lt;/p&gt;&lt;p&gt;Hål inl båda de lägre trimknapparna mot mitten när du slår på strömmen till radion.&lt;/p&gt;&lt;p&gt;Koppla sedan in USB-kabeln.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+52"/>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -8768,7 +8768,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <location line="-23"/>
         <source>Critical Alarm</source>
-        <translation type="unfinished">Kritisk Alarmnivå</translation>
+        <translation>Kritisk Alarmnivå</translation>
     </message>
     <message>
         <location line="+37"/>
@@ -8813,12 +8813,12 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <location line="-181"/>
         <source>FrSky S.PORT</source>
-        <translation type="unfinished"></translation>
+        <translation>FrSky S.PORT</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>FrSky D</source>
-        <translation type="unfinished"></translation>
+        <translation>FrSky D</translation>
     </message>
     <message>
         <location line="+82"/>
@@ -8973,7 +8973,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <location line="-382"/>
         <source>Low Alarm</source>
-        <translation type="unfinished">Låg Alarmnivå</translation>
+        <translation>Låg Alarmnivå</translation>
     </message>
     <message>
         <location line="+436"/>
@@ -9302,7 +9302,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
 <context>
     <name>TimerPanel</name>
     <message>
-        <location filename="../modeledit/setup.cpp" line="-548"/>
+        <location filename="../modeledit/setup.cpp" line="-541"/>
         <source>Silent</source>
         <translation>Tyst</translation>
     </message>
@@ -9422,7 +9422,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <location line="+0"/>
         <source>Select the elevons channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj roderkanaler</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -9561,7 +9561,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <location line="+14"/>
         <source>Models use two channels to control the elevons.&lt;br&gt;Select these two channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Modeller använder två kanaler för att kontrollera rodren på en deltavinge/flygande vinge. Välj vilka dessa två kanaler är.</translation>
     </message>
     <message>
         <source>Models use one or two channels to control the elevons.&lt;br&gt;A so called Y-cable can be used to connect single a receiver channel to two separate elevon servos. If your servos are connected by a Y-cable you should select the single-servo option.</source>
@@ -9642,17 +9642,17 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <location line="+838"/>
         <source>Plane</source>
-        <translation type="unfinished">Plan</translation>
+        <translation>Plan</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Multicopter</source>
-        <translation type="unfinished"></translation>
+        <translation>Multikopter</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Helicopter</source>
-        <translation type="unfinished">Helikopter</translation>
+        <translation>Helikopter</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -10523,16 +10523,16 @@ m2560 för v4.1-kort</translation>
     </message>
     <message>
         <location filename="../burndialog.cpp" line="+205"/>
-        <location line="+222"/>
+        <location line="+227"/>
         <location line="+5"/>
         <location line="+9"/>
-        <location line="+49"/>
-        <location line="+54"/>
+        <location line="+51"/>
+        <location line="+55"/>
         <source>Warning</source>
         <translation>Varning</translation>
     </message>
     <message>
-        <location line="-172"/>
+        <location line="-180"/>
         <source>Images (%1)</source>
         <translation>Bilder (%1)</translation>
     </message>
@@ -10547,14 +10547,14 @@ m2560 för v4.1-kort</translation>
         <location line="+16"/>
         <location line="+21"/>
         <location line="+18"/>
-        <location line="+163"/>
+        <location line="+171"/>
         <location line="+5"/>
         <location line="+8"/>
         <source>Error</source>
         <translation>Fel</translation>
     </message>
     <message>
-        <location line="-314"/>
+        <location line="-322"/>
         <location line="+10"/>
         <location line="+24"/>
         <source>Invalid binary Models and Settings File %1, Proceed anyway ?</source>
@@ -10571,7 +10571,7 @@ m2560 för v4.1-kort</translation>
         <translation>Öppna bildfil för användning som startbild i radion</translation>
     </message>
     <message>
-        <location line="+55"/>
+        <location line="+60"/>
         <source>Cannot save customized firmware</source>
         <translation>Det gick inte att spara den modifierade firmware-filen</translation>
     </message>
@@ -10586,12 +10586,12 @@ m2560 för v4.1-kort</translation>
         <translation>Ingen firmware har valts</translation>
     </message>
     <message>
-        <location line="+49"/>
+        <location line="+51"/>
         <source>Wrong radio calibration data in profile, Settings not patched</source>
         <translation>Felaktig information i profilen, sändarens-kalibrering kunde inte läsas in</translation>
     </message>
     <message>
-        <location line="+54"/>
+        <location line="+55"/>
         <source>Wrong radio setting data in profile, Settings not patched</source>
         <translation>Felaktig information i profilen, sändarens inställningar kunde inte läsas in</translation>
     </message>
@@ -10622,7 +10622,7 @@ m2560 för v4.1-kort</translation>
     </message>
     <message>
         <location line="+47"/>
-        <location filename="../burndialog.cpp" line="-497"/>
+        <location filename="../burndialog.cpp" line="-505"/>
         <source>Browse for file</source>
         <translation>Välj fil</translation>
     </message>
@@ -10737,7 +10737,7 @@ m2560 för v4.1-kort</translation>
         <translation>Bild-biblioteket kunde inte öppnas</translation>
     </message>
     <message>
-        <location line="+163"/>
+        <location line="+171"/>
         <location line="+5"/>
         <source>Cannot write file %1:
 %2.</source>
@@ -11767,7 +11767,7 @@ Tryck på Avbryt för att avburyta kalibreringen</translation>
 %2.</translation>
     </message>
     <message>
-        <location line="+335"/>
+        <location line="+337"/>
         <source>Select your log file</source>
         <translation>Välj loggfil</translation>
     </message>
