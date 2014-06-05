@@ -9,6 +9,12 @@
 <li>Multis Wizard added
 <li>Bootloader now needs only one trim pressed
 <li>S3 warning hidden (no S3 on Taranis)
+<li>Persistent mAh was broken
+</ul>
+
+[Stock]
+<ul>
+<li>Fix for LS used as source
 </ul>
 
 [All]
