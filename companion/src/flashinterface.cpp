@@ -182,7 +182,7 @@ void FlashInterface::SeekSplash(void)
     return;
   }
 
-  if (SeekSplash(QByteArray(OTX_SPS_TARANIS, sizeof(OTX_SPS_TARANIS)), QByteArray(OTX_SPE, sizeof(OTX_SPE)), 6790)) {
+  if (SeekSplash(QByteArray(OTX_SPS_TARANIS, OTX_SPS_SIZE), QByteArray(OTX_SPE, OTX_SPE_SIZE), 6784)) {
     splash_width = SPLASHX9D_WIDTH;
     splash_height = SPLASHX9D_HEIGHT;
     splash_format = QImage::Format_Indexed8;
