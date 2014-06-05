@@ -121,6 +121,8 @@ set(common_SRCS
   firmwares/gruvin9x/gruvin9xinterface.cpp  
   firmwares/ersky9x/ersky9xeeprom.cpp
   firmwares/ersky9x/ersky9xinterface.cpp
+  ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
+  ${RADIO_SRC_DIRECTORY}/translations/en.h
   firmwares/opentx/opentxeeprom.cpp
   firmwares/opentx/open9xStockeeprom.cpp
   firmwares/opentx/open9xGruvin9xeeprom.cpp
@@ -150,8 +152,6 @@ set(companion_SRCS
   # xmlinterface.cpp
   # ${PROJECT_BINARY_DIR}/radio.cxx
   ${RADIO_SRC_DIRECTORY}/stamp-opentx.h
-  ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
-  ${RADIO_SRC_DIRECTORY}/translations/en.h
   helpers.cpp
   mdichild.cpp
   generaledit.cpp
