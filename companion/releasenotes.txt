@@ -1,9 +1,10 @@
 <h2>Version 2.0.1</h2>
 <ul>
-<li>Companion fix on recursive GVars</li>
+<li>Fix on recursive GVars</li>
 <li>Sky9x EEPROM read/write fix</li>
 <li>Translations updated
 <li>Wizard fixes
+<li>Fix on invalid splashes bitmaps
 </ul>
 
 <h2>Version 2.0.0</h2>

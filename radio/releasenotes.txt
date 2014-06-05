@@ -1,6 +1,7 @@
 <h2>OpenTX 2.0.1 / 2014-02-05</h2>
 [Taranis]
 <ul>
+<li>S.PORT / D protocol choice added in TELEMETRY menu
 <li>Heli mixer fix (stick modes 2/3/4)
 <li>Multipos switch fix
 <li>Italian translations updated
@@ -8,6 +9,11 @@
 <li>Multis Wizard added
 <li>Bootloader now needs only one trim pressed
 <li>S3 warning hidden (no S3 on Taranis)
+</ul>
+
+[All]
+<ul>
+<li>Fix on d>=x logical switches
 </ul>
 
 <h2>OpenTX 2.0.0 / 2014-06-02</h2>
@@ -29,7 +35,7 @@
 <li>Taranis will be useable as a standard PC joystick through USB, 8 analogs and 8 buttons mapped to CH1-8 and 9-16 respectively
 </ul>
 
-[Arm Boards]
+[ARM Boards]
 <ul>
 <li>Measured consumption (mAh) can be stored on power off
 <li>0.1% resolution for limits
@@ -45,7 +51,7 @@
 <li>Support for up to 16 channels on trainer input
 </ul>
 
-[all]
+[All]
 <ul>
 <li>Proportional fonts
 <li>Switch warnings can be disabled for switches you don't use on a given model
@@ -59,13 +65,13 @@
 </ul>
 
 <h2>2940 / 2014-02-02</h2>
-[Arm Boards]
+[ARM Boards]
 <ul>
 <li>Wav files played even in silent mode
 <li>GPS support had broken VFAS
 </ul>
 
-[all]
+[All]
 <ul>
 <li>Custom function triggered by a CSW based on analog triggering erroneously at powerup
 <li>Problem with mixer weight field when !GVARS
@@ -73,20 +79,20 @@
 </ul>
 
 <h2>2923 / 2014-01-08</h2>
-[Arm Boards]
+[ARM Boards]
 <ul>
 <li>Audio freeze bug fixed
 <li>Aurora gimbals support
 </ul>
 
 <h2>2834 / 2013-10-29</h2>
-[Arm Boards]
+[ARM Boards]
 <ul>
 <li>Altitude played without decimal when &gt;= 10m
 <li>Check to avoid too long paths when playing SD files
 </ul>
  		
-[all]
+[All]
 <ul>
 <li>Mixer bug when a MULTIPLY mix used with a slow
 <li>GVAR popup removed
@@ -94,75 +100,75 @@
 </ul>
 
 <h2>2768 / 2013-09-20</h2>
-[all]
+[All]
 <ul>
 <li>Name badly displayed after SD Model Restore</li>
 </ul>
 
-[stock]
+[9X Stock]
 <ul>
 <li>Custom switches not working when comparing a timer with a value (stock only without telemetry mod)</li>
 </ul>
 
-[sky9x/gruvin]
+[Sky9x/Gruvin9x]
 <ul>
 <li>Fixes in logging function</li>
 <li>Confirmation Popup before SD Format</li>
 </ul>
 
 <h2>2751 / 2013-09-01</h2>
-[all]
+[All]
 <ul>
 <li>Fixes in translations (FR, IT, PT)</li>
 </ul>
 
 <h2>2746 / 2013-08-30</h2>
-[all]
+[All]
 <ul>
 <li>Limits are now [-125:0] and [0:125] instead of [-125:25] and [-25:125]</li>
 <li>INPUTS instead of STICKS for BL activation</li>
 <li>Curves presets bug fix</li>
 </ul>
 
-[stock]
+[9X Stock]
 <ul>
 <li>Fix bug with Battery calibration</li>
 <li>14051 can be used for THR and AIL connections (telemetry)</li>
 <li>CH1 PPM output was truncated</li>
 </ul>
 
-[sky9x]
+[Sky9x]
 <ul>
 <li>Flight mode sound files now are read from: /SOUNDS/(lang)/modelname/fpname-ON.wav and /SOUNDS/(lang)/modelname/fpname-OFF.wav</li>
 </ul>
 
 <h2>2688 / 2013-07-28</h2>
-[stock]
+[9X Stock]
 <ul>
 <li>Fix bug with imperial units</li>
 </ul>
 
-[gruvin9x]
+[Gruvin9x]
 <ul>
 <li>Fix bug with imperial units</li>
 <li>Fix small bug with SOMO 14D </li>
 <li>Telemetry logs renamed modelname-yyyy-mm-dd.csv</li>
 </ul>
 
-[sky9x]
+[Sky9x]
 <ul>
 <li>Telemetry logs renamed modelname-yyyy-mm-dd.csv</li>
 </ul>
 
 <h2>2647 / 2013-07-21</h2>
-[all]
+[All]
 <ul>
 <li>Some bug fixes</li>
 <li>Better fonts</li>
 </ul>
 
 <h2>2491 / 2013-06-24</h2>
-[all]
+[All]
 <ul>
 <li>PlaySound has now a repeat argument</li>
 <li>FAI mode added (disable telemetry other than A1/A2/RSSI for contests)</li>
@@ -170,55 +176,55 @@
 <li>RSSI alarms default thresholds now 45 / 42 </li>
 </ul>
 
-[stock]
+[9X Stock]
 <ul>
 <li>Flash savings</li>
 <li>Vario sink tones removed</li>
 <li>Audio files renumbered (see here) </li>
 </ul>
 
-[sky9x]
+[Sky9x]
 <ul>
 <li>Audio mixer: several sounds can now be played simulataneously, and beeps won't interrupt and clear voice alerts anymore. Note that sound files now need to have sampling rates of either 8, 16 or 32kHz and may need to be replaced. </li>
 </ul>
 
 <h2>2413 / 2013-05-22</h2>
-[all]
+[All]
 <ul>
 <li>Calibration screen automatically appears following an EEPROM format</li>
 <li>Wraparound in popup menus </li>
 </ul>
 
-[stock]
+[9X Stock]
 <ul>
 <li>More options supported (novario / nogps / nogauges)</li>
 <li>Flash savings</li>
 <li>Mavlink huge rework by Rienk! </li>
 </ul>
 
-[sky9x]
+[Sky9x]
 <ul>
 <li>Audio language can now be selected in the general settings! Note that the sound files need to be moved to subfolders of the SOUNDS folder (SOUNDS/en for English, same with it, fr, de, pt, se, cz)</li>
 <li>More settings for the 2nd PPM port</li>
 </ul>
 
 <h2>2215 / 2013-04-05</h2>
-[all]
+[All]
 <ul>
 <li>New option AUTOSOURCE to automatically select the stick / pot / switch which is moved when editing a Mix source </li>
 </ul>
 
-[stock]
+[9X Stock]
 <ul>
 <li>All prompts renumbered to have the "custom" prompts starting at 0 and to be able to use PlayTrack?(GVAR) with Adjust(GVAR) to play tracks sequences </li>
 </ul>
 
-[gruvin9x]
+[Gruvin9x]
 <ul>
 <li>Possibility to have both BEEPER and SPEAKER enable in the same time </li>
 </ul>
 
-[sky9x]
+[Sky9x]
 <ul>
 <li>Fixed a bug with audio stopped until next reboot in BackgroundMusic with no track selected</li>
 <li>Imperial is now an option selectable in the menus</li>
