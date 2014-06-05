@@ -617,7 +617,7 @@ void menuGeneralSetup(uint8_t event)
 
 #if defined(MAVLINK)
       case ITEM_MAVLINK_BAUD:
-        g_eeGeneral.mavbaud = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_MAVLINK_BAUD_LABEL, STR_MAVLINK_BAUDS, PSTR("4800""9600""14400""19200""38400""57600""76800""115200"), g_eeGeneral.mavbaud, 0, 7, attr, event);
+        g_eeGeneral.mavbaud = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_MAVLINK_BAUD_LABEL, STR_MAVLINK_BAUDS, g_eeGeneral.mavbaud, 0, 7, attr, event);
         break;
 #endif
 
