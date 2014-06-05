@@ -158,7 +158,7 @@ void displayVoltageScreenLine(uint8_t y, uint8_t index)
 }
 
 #if LCD_W >= 212
-  #define BAR_WIDTH   160
+  #define BAR_WIDTH   150
 #else
   #define BAR_WIDTH   100
 #endif
