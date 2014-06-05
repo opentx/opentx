@@ -22,10 +22,11 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
     ui->persistentValue->hide();
   }
 
-  ui->countdownBeep->addItem(tr("Silent"));
-  ui->countdownBeep->addItem(tr("Beeps"));
+  ui->countdownBeep->setField(&timer.countdownBeep, this);
+  ui->countdownBeep->addItem(tr("Silent"), 0);
+  ui->countdownBeep->addItem(tr("Beeps"), 1);
   if (IS_ARM(GetEepromInterface()->getBoard()) || IS_2560(GetEepromInterface()->getBoard()))
-    ui->countdownBeep->addItem(tr("Voice"));
+    ui->countdownBeep->addItem(tr("Voice"), 2);
 
   lock = false;
 }
@@ -56,7 +57,6 @@ void TimerPanel::update()
     ui->persistentValue->setText(QString(" %1(%2:%3:%4)").arg(sign<0 ? "-" :" ").arg(hours, 2, 10, QLatin1Char('0')).arg(minutes, 2, 10, QLatin1Char('0')).arg(seconds, 2, 10, QLatin1Char('0')));
   }
 
-  ui->countdownBeep->setCurrentIndex(timer.countdownBeep);
   ui->minuteBeep->setChecked(timer.minuteBeep);
 }
 
@@ -77,12 +77,6 @@ void TimerPanel::on_mode_currentIndexChanged(int index)
 void TimerPanel::on_persistent_toggled(bool checked)
 {
   timer.persistent = checked;
-  emit modified();
-}
-
-void TimerPanel::on_countdownBeep_currentIndexChanged(int index)
-{
-  timer.countdownBeep = index;
   emit modified();
 }
 

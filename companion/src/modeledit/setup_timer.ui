@@ -41,7 +41,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QComboBox" name="countdownBeep"/>
+    <widget class="QUnsignedAutoComboBox" name="countdownBeep"/>
    </item>
    <item>
     <widget class="QCheckBox" name="minuteBeep">
@@ -79,6 +79,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QUnsignedAutoComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qautocombobox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
