@@ -140,6 +140,10 @@ set(common_MOC_HDRS
   googleanalytics.h
 )
 
+qt4_wrap_cpp( common_SRCS ${common_MOC_HDRS} )
+
+add_library(common ${common_SRCS})
+
 set(companion_SRCS
   hexinterface.cpp
   flashinterface.cpp
@@ -274,9 +278,9 @@ FOREACH( language ${LANGUAGES} )
   SET( companion_TS ${companion_TS} translations/companion_${language}.ts )
 ENDFOREACH( language )
 
-set( companion_SRCS ${common_SRCS} ${companion_SRCS}  )
+set( companion_SRCS ${companion_SRCS}  )
 QT4_WRAP_UI( companion_SRCS ${companion_UIS} )
-QT4_WRAP_CPP( companion_SRCS ${companion_MOC_HDRS} ${common_MOC_HDRS} )
+QT4_WRAP_CPP( companion_SRCS ${companion_MOC_HDRS} )
 QT4_ADD_TRANSLATION( companion_QM ${companion_TS}  )
 QT4_ADD_RESOURCES( companion_SRCS ${companion_RCS} )
 
@@ -288,7 +292,7 @@ ELSE( )
     ADD_EXECUTABLE( ${PROJECT_NAME} WIN32 ${companion_SRCS} ${companion_QM} )
 ENDIF( )
 
-TARGET_LINK_LIBRARIES( ${PROJECT_NAME} modeledit simulation ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} )
+TARGET_LINK_LIBRARIES( ${PROJECT_NAME} modeledit simulation common ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} )
 
 ############# Standalone simu ###############
 
@@ -334,8 +338,8 @@ set(simu_MOC_HDRS
   modeledit/node.h
 )
 
-set( simu_SRCS ${simu_SRCS} ${common_SRCS} )
-qt4_wrap_cpp(simu_SRCS ${simu_MOC_HDRS} ${common_MOC_HDRS} )
+set( simu_SRCS ${simu_SRCS} )
+qt4_wrap_cpp(simu_SRCS ${simu_MOC_HDRS} )
 qt4_add_resources(simu_SRCS companion.qrc) # TODO not needed
 
 if(WIN32)
@@ -345,9 +349,9 @@ endif()
 add_executable(simulator WIN32 ${simu_SRCS})
 
 if(SDL_FOUND)
-  target_link_libraries(simulator simulation ${QT_LIBRARIES} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS})
+  target_link_libraries(simulator simulation common ${QT_LIBRARIES} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS})
 else()
-  target_link_libraries(simulator simulation ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS})
+  target_link_libraries(simulator simulation common ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS})
 endif()
 
 ############# Packaging ####################
