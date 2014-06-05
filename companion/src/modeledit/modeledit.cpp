@@ -67,7 +67,6 @@ class VerticalScrollArea : public QScrollArea
 
   private:
     ModelPanel * panel;
-    QWidget * parent;
 };
 
 VerticalScrollArea::VerticalScrollArea(QWidget * parent, ModelPanel * panel):
