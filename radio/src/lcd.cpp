@@ -1341,6 +1341,10 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
       // no break
 #endif
 
+    case TELEM_HDG-1:
+      putsTelemetryValue(x, y, val, UNIT_HDG, att);
+      break;
+
     default:
     {
       uint8_t unit = 1;
@@ -1350,8 +1354,6 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
         unit = channel + 1 - TELEM_ALT;
       if (channel >= TELEM_MIN_ALT-1 && channel <= TELEM_MAX_ALT-1)
         unit = 0;
-      if (channel == TELEM_HDG-1)
-        unit = 3;
       putsTelemetryValue(x, y, val, pgm_read_byte(bchunit_ar+unit), att);
       break;
     }
