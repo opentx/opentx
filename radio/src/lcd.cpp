@@ -262,6 +262,9 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
     if (inv) bb = 0xff;
   #endif
 #endif
+
+    uint8_t *lineEnd = &displayBuf[ y / 8 * LCD_W + LCD_W ];
+
     for (int8_t i=0; i<=6; i++) {
       uint8_t b = 0;
       if (i==0) {
@@ -298,7 +301,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
       }
 #endif
 
-      if (p<DISPLAY_END && !BLINKING_CHAR) {
+      if (p<lineEnd && !BLINKING_CHAR) {
         ASSERT_IN_DISPLAY(p);
         uint8_t mask = ~(0xff << ym8);
         LCD_BYTE_FILTER(p, mask, b << ym8);

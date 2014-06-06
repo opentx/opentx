@@ -503,8 +503,10 @@ void telemetryInterrupt10ms()
     frskyStreaming--;
   }
   else {
+#if !defined(SIMU)
     frskyData.rssi[0].set(0);
     frskyData.rssi[1].set(0);
+#endif
   }
 }
 
@@ -571,8 +573,8 @@ void telemetryReset()
   frskyData.hub.temperature1 = -30;
   frskyData.hub.maxTemperature1 = 100;
 
-  frskyData.hub.current = 5;
-  frskyData.hub.maxCurrent = 56;
+  frskyData.hub.current = 55;
+  frskyData.hub.maxCurrent = 65;
 #endif
 }
 

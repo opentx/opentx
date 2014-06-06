@@ -44,7 +44,7 @@
 #endif
 
 #if defined(FRSKY_HUB) && defined(GAUGES)
-uint8_t barsThresholds[THLD_MAX];
+bar_threshold_t barsThresholds[THLD_MAX];
 #endif
 
 enum FrskyViews {
@@ -58,6 +58,14 @@ enum FrskyViews {
 
 static uint8_t s_frsky_view = e_frsky_custom_screen_1;
 
+#if LCD_W >= 212
+  #define BAR_LEFT    26
+  #define BAR_WIDTH   157
+#else
+  #define BAR_LEFT    25
+  #define BAR_WIDTH   100
+#endif
+
 #if defined(PCBTARANIS)
 void displayRssiLine()
 {
@@ -65,8 +73,8 @@ void displayRssiLine()
     lcd_hline(0, 55, 212, 0); // separator
     uint8_t rssi = min((uint8_t)99, frskyData.rssi[0].value);
     lcd_putsn(0, STATUS_BAR_Y, STR_RX, 2); lcd_outdezNAtt(4*FW, STATUS_BAR_Y, rssi, LEADING0, 2);
-    lcd_rect(25, 57, 78, 7);
-    lcd_filled_rect(26, 58, 19*rssi/25, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
+    lcd_rect(BAR_LEFT, 57, 78, 7);
+    lcd_filled_rect(BAR_LEFT+1, 58, 19*rssi/25, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
   }
   else {
     lcd_putsAtt(7*FW, STATUS_BAR_Y, STR_NODATA, BLINK);
@@ -80,8 +88,8 @@ void displayRssiLine()
     lcd_hline(0, 55, 128, 0); // separator
     uint8_t rssi = min((uint8_t)99, frskyData.rssi[1].value);
     lcd_putsLeft(STATUS_BAR_Y, STR_TX); lcd_outdezNAtt(4*FW+1, STATUS_BAR_Y, rssi, LEADING0, 2);
-    lcd_rect(25, 57, 38, 7);
-    lcd_filled_rect(26, 58, 4*rssi/11, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
+    lcd_rect(BAR_LEFT+1, 57, 38, 7);
+    lcd_filled_rect(BAR_LEFT+1, 58, 4*rssi/11, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
     rssi = min((uint8_t)99, frskyData.rssi[0].value);
     lcd_puts(104, STATUS_BAR_Y, STR_RX); lcd_outdezNAtt(105+4*FW, STATUS_BAR_Y, rssi, LEADING0, 2);
     lcd_rect(65, 57, 38, 7);
@@ -157,12 +165,6 @@ void displayVoltageScreenLine(uint8_t y, uint8_t index)
   }
 }
 
-#if LCD_W >= 212
-  #define BAR_WIDTH   150
-#else
-  #define BAR_WIDTH   100
-#endif
-
 uint8_t barCoord(int16_t value, int16_t min, int16_t max)
 {
   return limit((uint8_t)0, (uint8_t)(((int32_t)(BAR_WIDTH-1) * (value - min)) / (max - min)), (uint8_t)BAR_WIDTH);
@@ -220,10 +222,10 @@ void menuTelemetryFrsky(uint8_t event)
         if (source && barMax > barMin) {
           uint8_t y = barHeight+6+i*(barHeight+6);
           lcd_putsiAtt(0, y+barHeight-5, STR_VTELEMCHNS, source, 0);
-          lcd_rect(25, y, BAR_WIDTH+1, barHeight+2);
+          lcd_rect(BAR_LEFT, y, BAR_WIDTH+1, barHeight+2);
           getvalue_t value = getValue(MIXSRC_FIRST_TELEM+source-1);
 #if LCD_W >= 212
-          putsTelemetryChannel(27+BAR_WIDTH, y+barHeight-6, source-1, value, LEFT);
+          putsTelemetryChannel(BAR_LEFT+2+BAR_WIDTH, y+barHeight-5, source-1, value, LEFT);
 #endif
           getvalue_t threshold = 0;
           uint8_t thresholdX = 0;
@@ -234,8 +236,13 @@ void menuTelemetryFrsky(uint8_t event)
           else if (source <= TELEM_A2)
             threshold = g_model.frsky.channels[source-TELEM_A1].alarms_value[0];
 #if defined(FRSKY_HUB)
-          else
+          else {
+#if defined(CPUARM)
+            threshold = barsThresholds[source-TELEM_ALT];
+#else
             threshold = convertBarTelemValue(source, barsThresholds[source-TELEM_ALT]);
+#endif
+          }
 #endif
 
           if (threshold) {
@@ -251,14 +258,17 @@ void menuTelemetryFrsky(uint8_t event)
           if (source == TELEM_T1 || source == TELEM_T2)
             barShade = -barShade;
 
-          lcd_filled_rect(26, y+1, width, barHeight, barShade);
+          lcd_filled_rect(BAR_LEFT+1, y+1, width, barHeight, barShade);
 
-          for (uint8_t j=24; j<99; j+=25)
-            if (j>thresholdX || j>width) lcd_vline(j*BAR_WIDTH/100+26, y+1, barHeight);
+          for (uint8_t j=24; j<99; j+=25) {
+            if (j>thresholdX || j>width) {
+              lcd_vline(j*BAR_WIDTH/100+BAR_LEFT+1, y+1, barHeight);
+            }
+          }
 
           if (thresholdX) {
-            lcd_vlineStip(26+thresholdX, y-2, barHeight+3, DOTTED);
-            lcd_hline(25+thresholdX, y-2, 3);
+            lcd_vlineStip(BAR_LEFT+1+thresholdX, y-2, barHeight+3, DOTTED);
+            lcd_hline(BAR_LEFT+thresholdX, y-2, 3);
           }
         }
         else {

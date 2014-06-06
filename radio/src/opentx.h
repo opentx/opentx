@@ -1564,11 +1564,24 @@ enum BarThresholdIdx {
   THLD_DIST,
   THLD_GPSALT,
   THLD_CELL,
+  THLD_CELLS_SUM,
+  THLD_VFAS,
   THLD_CURRENT,
   THLD_CONSUMPTION,
   THLD_MAX,
 };
-extern uint8_t barsThresholds[THLD_MAX];
+
+#if defined(CPUARM)
+  typedef uint16_t bar_threshold_t;
+  #define FILL_THRESHOLD(idx, val) barsThresholds[idx] = (val)
+#else
+  typedef uint8_t bar_threshold_t;
+  #define FILL_THRESHOLD(idx, val) barsThresholds[idx] = 128 + (val)
+#endif
+
+extern bar_threshold_t barsThresholds[THLD_MAX];
+#else
+#define FILL_THRESHOLD(idx, val)
 #endif
 
 #if defined(FRSKY)
