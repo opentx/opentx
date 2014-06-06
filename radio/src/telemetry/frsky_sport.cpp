@@ -244,12 +244,16 @@ void processHubPacket(uint8_t id, uint16_t value)
         if (frskyData.hub.cellsCount < battnumber+1) {
           frskyData.hub.cellsCount = battnumber+1;
         }
+#if defined(CPUARM)
         uint16_t cellVolts = (uint16_t)(((((frskyData.hub.volts & 0xFF00) >> 8) + ((frskyData.hub.volts & 0x000F) << 8))) / 5);
+#else
+        uint8_t cellVolts = (uint8_t)(((((frskyData.hub.volts & 0xFF00) >> 8) + ((frskyData.hub.volts & 0x000F) << 8))) / 10);
+#endif
         frskyData.hub.cellVolts[battnumber] = cellVolts;
         if (!frskyData.hub.minCellVolts || cellVolts<frskyData.hub.minCellVolts || battnumber==frskyData.hub.minCellIdx) {
           frskyData.hub.minCellIdx = battnumber;
           frskyData.hub.minCellVolts = cellVolts;
-          if (!frskyData.hub.minCell || frskyData.hub.minCellVolts < frskyData.hub.minCell)
+          if (!frskyData.hub.minCell || frskyData.hub.minCellVolts<frskyData.hub.minCell)
             frskyData.hub.minCell = frskyData.hub.minCellVolts;
         }
       }
