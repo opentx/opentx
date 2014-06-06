@@ -635,6 +635,8 @@ enum MltpxValue {
   MLTPX_REP=2
 };
 
+#define MIXDATA_NAME_LEN  10
+
 class MixData {
   public:
     MixData() { clear(); }
@@ -653,7 +655,7 @@ class MixData {
     unsigned int mixWarn;           // mixer warning
     unsigned int phases;             // -5=!FP4, 0=normal, 5=FP4
     int    sOffset;
-    char   name[10+1];
+    char   name[MIXDATA_NAME_LEN+1];
 
     void clear() { memset(this, 0, sizeof(MixData)); }
 };

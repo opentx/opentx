@@ -42,8 +42,8 @@ WizMix::WizMix(const GeneralSettings & settings, const unsigned int modelId):
 
 void WizMix::maxMixSwitch(char *name, MixData &mix, int channel, int sw, int weight)
 {
-  strncpy(mix.name, name, sizeof(mix.name));
-  mix.name[sizeof(mix.name)]=0;
+  strncpy(mix.name, name, MIXDATA_NAME_LEN);
+  mix.name[MIXDATA_NAME_LEN] = '\0';
   mix.destCh = channel;
   mix.srcRaw = RawSource(SOURCE_TYPE_MAX);
   mix.swtch  = RawSwitch(SWITCH_TYPE_SWITCH, sw);  
