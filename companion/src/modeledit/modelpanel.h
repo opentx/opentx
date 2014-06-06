@@ -31,6 +31,8 @@ class ModelPanel : public QWidget
     void addHSpring(QGridLayout *, int col, int row);
     void addVSpring(QGridLayout *, int col, int row);
     void addDoubleSpring(QGridLayout *, int col, int row);
+    virtual bool eventFilter(QObject *obj, QEvent *event);
+    void disableMouseScrolling();
 };
 
 #endif // CHANNELS_H

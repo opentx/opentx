@@ -196,6 +196,8 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
   // Push rows upward
   addDoubleSpring(gridLayout, 5, num_fsw+1);
 
+  disableMouseScrolling();
+  
   lock = false;
 }
 

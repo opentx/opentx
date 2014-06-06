@@ -1,5 +1,7 @@
 #include "modelpanel.h"
 #include <QLabel>
+#include <QComboBox>
+#include <QSpinBox>
 
 ModelPanel::ModelPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
   QWidget(parent),
@@ -57,3 +59,30 @@ void ModelPanel::addDoubleSpring(QGridLayout * gridLayout, int col, int row)
     gridLayout->addItem(spacer, row, col);
 }
 
+bool ModelPanel::eventFilter(QObject *object, QEvent * event)
+{
+  if (event->type() == QEvent::Wheel && qobject_cast<QWidget*>(object)) {
+    if (qobject_cast<QWidget*>(object)->focusPolicy() == Qt::WheelFocus) {
+      event->accept();
+      return false;
+    }
+    else {
+      event->ignore();
+      return true;
+    }
+  }
+  return QWidget::eventFilter(object, event);
+}
+
+void ModelPanel::disableMouseScrolling()
+{
+  Q_FOREACH(QComboBox * cb, findChildren<QComboBox*>()) {
+    cb->installEventFilter(this);
+    cb->setFocusPolicy(Qt::StrongFocus);
+  }
+
+  Q_FOREACH(QAbstractSpinBox * sb, findChildren<QAbstractSpinBox*>()) {
+    sb->installEventFilter(this);
+    sb->setFocusPolicy(Qt::StrongFocus);
+  }
+}
