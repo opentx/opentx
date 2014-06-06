@@ -874,6 +874,32 @@ TEST(Heli, BasicTest)
   EXPECT_EQ(chans[1], CHANNEL_MAX/2);
   EXPECT_EQ(chans[2], CHANNEL_MAX/2);
 }
+
+TEST(Heli, Mode2Test)
+{
+  MODEL_RESET();
+  g_eeGeneral.templateSetup = 2;
+  applyDefaultTemplate();
+  g_model.swashR.collectiveSource = MIXSRC_Thr;
+  g_model.swashR.type = SWASH_TYPE_120;
+  g_model.mixData[0].destCh = 0;
+  g_model.mixData[0].mltpx = MLTPX_ADD;
+  g_model.mixData[0].srcRaw = MIXSRC_CYC1;
+  g_model.mixData[0].weight = 100;
+  g_model.mixData[1].destCh = 1;
+  g_model.mixData[1].mltpx = MLTPX_ADD;
+  g_model.mixData[1].srcRaw = MIXSRC_CYC2;
+  g_model.mixData[1].weight = 100;
+  g_model.mixData[2].destCh = 2;
+  g_model.mixData[2].mltpx = MLTPX_ADD;
+  g_model.mixData[2].srcRaw = MIXSRC_CYC3;
+  g_model.mixData[2].weight = 100;
+  anaInValues[ELE_STICK] = 1024;
+  evalFlightModeMixes(e_perout_mode_normal, 0);
+  EXPECT_EQ(chans[0], -CHANNEL_MAX);
+  EXPECT_EQ(chans[1], CHANNEL_MAX/2);
+  EXPECT_EQ(chans[2], CHANNEL_MAX/2);
+}
 #elif defined(HELI)
 TEST(Heli, BasicTest)
 {
