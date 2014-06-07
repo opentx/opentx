@@ -264,6 +264,9 @@ ModelSelectionPage::ModelSelectionPage(WizardDialog *dlg, QString image, QString
   multirotorRB = new QRadioButton(tr("Multirotor"));
   helicopterRB = new QRadioButton(tr("Helicopter"));
   helicopterRB->setDisabled(true);  //TODO REMOVE TO ENABLE HELICOPTERS
+  planeRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
+  multirotorRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
+  helicopterRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
 
   registerField("evaluate.name*", nameLineEdit);
 
@@ -310,7 +313,9 @@ WingtypeSelectionPage::WingtypeSelectionPage(WizardDialog *dlg, QString image, Q
 {
   standardWingRB = new QRadioButton(tr("Standard Wing"));
   standardWingRB->setChecked(true);
+  standardWingRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
   deltaWingRB = new QRadioButton(tr("Flying Wing / Deltawing"));
+  deltaWingRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
 
   QLayout *l = layout();
   l->addWidget(standardWingRB);
@@ -330,8 +335,11 @@ TailSelectionPage::TailSelectionPage(WizardDialog *dlg, QString image, QString t
 {
   standardTailRB = new QRadioButton(tr("Elevator and Rudder"));
   standardTailRB->setChecked(true);
+  standardTailRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
   simpleTailRB = new QRadioButton(tr("Only Elevator"));
+  simpleTailRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
   vTailRB = new QRadioButton(tr("V-tail"));
+  vTailRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
 
   QLayout *l = layout();
   l->addWidget(new QLabel(tr("Tail Type:")));
@@ -355,7 +363,9 @@ FlybarSelectionPage::FlybarSelectionPage(WizardDialog *dlg, QString image, QStri
 {
   flybarRB = new QRadioButton(tr("Has Flybar"));
   flybarRB->setChecked(true);
+  flybarRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
   noFlybarRB = new QRadioButton(tr("Flybarless"));
+  noFlybarRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
 
   QLayout *l = layout();
   l->addWidget(new QLabel(tr("Flybar:")));
@@ -377,6 +387,8 @@ ThrottlePage::ThrottlePage(WizardDialog *dlg, QString image, QString title, QStr
   motorRB = new QRadioButton(tr("Yes"));
   noMotorRB = new QRadioButton(tr("No"));
   motorRB->setChecked(true);
+  motorRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
+  noMotorRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
   throttleCB = new QComboBox();
 
   QLayout *l = layout();
@@ -415,6 +427,9 @@ AileronsPage::AileronsPage(WizardDialog *dlg, QString image, QString title, QStr
   oneAileronRB = new QRadioButton(tr("Yes, controlled by a single channel"));
   twoAileronsRB = new QRadioButton(tr("Yes, controlled by two channels"));
   noAileronsRB->setChecked(true);
+  noAileronsRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
+  oneAileronRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
+  twoAileronsRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
 
   aileron1CB = new QComboBox();
   aileron2CB = new QComboBox();
@@ -480,6 +495,9 @@ FlapsPage::FlapsPage(WizardDialog *dlg, QString image, QString title, QString te
   oneFlapRB = new QRadioButton(tr("Yes, controlled by a single channel"));
   twoFlapsRB = new QRadioButton(tr("Yes, controlled by two channels"));
   noFlapsRB->setChecked(true);
+  noFlapsRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
+  oneFlapRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
+  twoFlapsRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
 
   flap1CB = new QComboBox();
   flap2CB = new QComboBox();
@@ -544,6 +562,9 @@ AirbrakesPage::AirbrakesPage(WizardDialog *dlg, QString image, QString title, QS
   oneAirbrakeRB = new QRadioButton(tr("Yes, controlled by a single channel"));
   twoAirbrakesRB = new QRadioButton(tr("Yes, controlled by two channels"));
   noAirbrakesRB->setChecked(true);
+  noAirbrakesRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
+  oneAirbrakeRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
+  twoAirbrakesRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
 
   airbrake1CB = new QComboBox();
   airbrake2CB = new QComboBox();
@@ -635,6 +656,8 @@ RudderPage::RudderPage(WizardDialog *dlg, QString image, QString title, QString 
   noRudderRB = new QRadioButton(tr("No"));
   hasRudderRB = new QRadioButton(tr("Yes"));
   noRudderRB->setChecked(true);
+  noRudderRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
+  hasRudderRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
 
   rudderCB = new QComboBox();
   rudderCB->setEnabled(false);
@@ -756,6 +779,10 @@ CyclicPage::CyclicPage(WizardDialog *dlg, QString image, QString title, QString 
   cyclic120RB = new QRadioButton(tr("120"));
   cyclic120XRB = new QRadioButton(tr("120x"));
   cyclic140RB = new QRadioButton(tr("140"));
+  cyclic90RB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
+  cyclic120RB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
+  cyclic120XRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
+  cyclic140RB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
 
   QLayout *l = layout();
   l->addWidget(cyclic90RB);
@@ -782,6 +809,9 @@ GyroPage::GyroPage(WizardDialog *dlg, QString image, QString title, QString text
   noGyroRB->setChecked(true);
   switchGyroRB = new QRadioButton(tr("Yes, controled by a switch"));
   potGyroRB = new QRadioButton(tr("Yes, controlled by a pot"));
+  noGyroRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
+  switchGyroRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
+  potGyroRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
 
   QLayout *l = layout();
   l->addWidget(noGyroRB);
@@ -916,6 +946,9 @@ OptionsPage::OptionsPage(WizardDialog *dlg, QString image, QString title, QStrin
   throttleCutRB = new QCheckBox(tr("Throttle Cut"));
   throttleTimerRB = new QCheckBox(tr("Throttle Timer"));
   flightTimerRB = new QCheckBox(tr("Flight Timer"));
+  throttleCutRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
+  throttleTimerRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
+  flightTimerRB->setAttribute(Qt::WA_LayoutUsesWidgetRect);
 
   QLayout *l = layout();
   l->addWidget(throttleCutRB);
