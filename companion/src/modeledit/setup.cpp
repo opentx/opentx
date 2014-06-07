@@ -466,7 +466,7 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
       ui->potWarningLayout->addWidget(cb, 0, i+1);
       connect(cb, SIGNAL(toggled(bool)), this, SLOT(potWarningToggled(bool)));
       potWarningCheckboxes << cb;
-      if (!IS_TARANIS_PLUS(firmware->getBoard())) {
+      if (!IS_TARANIS_PLUS(firmware->getBoard()) && i==2) {
         cb->hide();
       }
     }
