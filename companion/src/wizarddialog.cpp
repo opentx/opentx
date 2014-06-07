@@ -51,9 +51,7 @@ WizardDialog::WizardDialog(const GeneralSettings & settings, unsigned int modelI
     "Please note that continuing removes all old model settings!"), -1));
   setStartId(Page_Models);
 
-#ifndef Q_WS_MAC
   setWizardStyle(ModernStyle);
-#endif
   setOption(HaveHelpButton, true);
   connect(this, SIGNAL(helpRequested()), this, SLOT(showHelp()));
 
