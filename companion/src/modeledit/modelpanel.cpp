@@ -61,14 +61,23 @@ void ModelPanel::addDoubleSpring(QGridLayout * gridLayout, int col, int row)
 
 bool ModelPanel::eventFilter(QObject *object, QEvent * event)
 {
-  if (event->type() == QEvent::Wheel && qobject_cast<QWidget*>(object)) {
-    if (qobject_cast<QWidget*>(object)->focusPolicy() == Qt::WheelFocus) {
-      event->accept();
-      return false;
+  QWidget * widget = qobject_cast<QWidget*>(object);
+  if (widget) {
+    if (event->type() == QEvent::Wheel) {
+      if (widget->focusPolicy() == Qt::WheelFocus) {
+        event->accept();
+        return false;
+      }
+      else {
+        event->ignore();
+        return true;
+      }
     }
-    else {
-      event->ignore();
-      return true;
+    else if (event->type() == QEvent::FocusIn) {
+      widget->setFocusPolicy(Qt::WheelFocus);
+    }
+    else if (event->type() == QEvent::FocusOut) {
+      widget->setFocusPolicy(Qt::StrongFocus);
     }
   }
   return QWidget::eventFilter(object, event);
