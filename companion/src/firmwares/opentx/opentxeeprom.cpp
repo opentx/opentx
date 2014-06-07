@@ -2703,7 +2703,11 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
     internalField.Append(new SpareBitsField<3>());
   internalField.Append(new SignedField<2>((int &)generalData.hapticMode));
 
-  internalField.Append(new SpareBitsField<8>());
+  if (IS_ARM(board))
+    internalField.Append(new UnsignedField<8>(generalData.switchesDelay));
+  else
+    internalField.Append(new SpareBitsField<8>());
+
   internalField.Append(new UnsignedField<8>(generalData.backlightDelay));
   internalField.Append(new UnsignedField<8>(generalData.templateSetup));
   internalField.Append(new SignedField<8>(generalData.PPM_Multiplier));
@@ -2736,7 +2740,6 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
   }
 
   if (IS_ARM(board)) {
-    internalField.Append(new UnsignedField<8>(generalData.backlightBright));
     internalField.Append(new SignedField<8>(generalData.currentCalib));
     if (version >= 213) {
       internalField.Append(new SignedField<8>(generalData.temperatureWarn)); // TODO

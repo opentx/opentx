@@ -1054,6 +1054,10 @@ bool MainWindow::readEepromFromRadio(const QString filename, const QString messa
   if (IS_ARM(GetCurrentFirmware()->getBoard())) {
     QString path = FindMassstoragePath("EEPROM.BIN");
     if (path.isEmpty()) {
+      // On previous OpenTX we called the EEPROM file "TARANIS.BIN" :(
+      path = FindMassstoragePath("TARANIS.BIN");
+    }
+    if (path.isEmpty()) {
       // Mike's bootloader calls the EEPROM file "ERSKY9X.BIN" :(
       path = FindMassstoragePath("ERSKY9X.BIN");
     }
@@ -1098,6 +1102,10 @@ bool MainWindow::writeEepromToRadio(const QString filename, const QString messag
 
   if (IS_ARM(GetCurrentFirmware()->getBoard())) {
     QString path = FindMassstoragePath("EEPROM.BIN");
+    if (path.isEmpty()) {
+      // On previous OpenTX we called the EEPROM file "TARANIS.BIN" :(
+      path = FindMassstoragePath("TARANIS.BIN");
+    }
     if (path.isEmpty()) {
       // Mike's bootloader calls the EEPROM file "ERSKY9X.BIN" :(
       path = FindMassstoragePath("ERSKY9X.BIN");

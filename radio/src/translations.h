@@ -403,6 +403,7 @@ extern const pm_char STR_PITCH_AT_ZERO[];
 extern const pm_char STR_PITCH_AT_MAX[];
 extern const pm_char STR_REPEAT_AT_ZERO[];
 extern const pm_char STR_RXCHANNELORD[];
+extern const pm_char STR_SWITCHES_DELAY[];
 extern const pm_char STR_SLAVE[];
 extern const pm_char STR_MODESRC[];
 extern const pm_char STR_MULTIPLIER[];
@@ -681,6 +682,7 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_RESET_SUBMENU[];
   extern const pm_char STR_LOWALARM[];
   extern const pm_char STR_CRITICALALARM[];
+  extern const pm_char STR_TELEMETRY_TYPE[];
 #endif
 
 #if defined(PCBTARANIS)

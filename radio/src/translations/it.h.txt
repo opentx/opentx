@@ -309,7 +309,7 @@
 #if defined(PCBTARANIS)
   #define TR_TELEM_RSSI_RX     "RSSI\0"
 #else
-  #define TR_TELEM_RSSI_RX     TR("Rx\0  ", "Rx\0 ")
+  #define TR_TELEM_RSSI_RX     TR("Rx\0 ", "Rx\0  ")
 #endif
 
 #if LCD_W >= 212
@@ -579,6 +579,7 @@
 #define TR_POTWARNING          TR("Pot Warn.", INDENT "Avviso Pot.")
 #define TR_TIMEZONE            "Ora locale"
 #define TR_RXCHANNELORD        "Ordine ch RX"
+#define TR_SWITCHES_DELAY      "Ritardo Inter."
 #define TR_SLAVE               "Allievo"
 #define TR_MODESRC             "Modo\006% Origine"
 #define TR_MULTIPLIER          "Moltiplica"
@@ -780,6 +781,7 @@
 #define TR_ANTENNAPROBLEM      CENTER "Problemi antenna TX!"
 #define TR_MODELIDUSED         TR("ID già usato","ID Modello già usato")
 #define TR_MODULE              INDENT "Modulo"
+#define TR_TELEMETRY_TYPE      "Mod. Telemetria"
 #define TR_CHANNELRANGE        INDENT "Numero Canali"
 #define TR_LOWALARM            INDENT "Allarme Basso"
 #define TR_CRITICALALARM       INDENT "Allarme Critico"
