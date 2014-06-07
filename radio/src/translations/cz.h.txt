@@ -579,6 +579,7 @@
 #define TR_POTWARNING          TR("* Potenc.", INDENT "Nastavení Pot.")
 #define TR_TIMEZONE            "časové pásmo"
 #define TR_RXCHANNELORD        TR("Pořadí kanálů", "Výchozí pořadí kanálů")
+#define TR_SWITCHES_DELAY      "Switches Delay"
 #define TR_SLAVE               "Podřízený"
 #define TR_MODESRC             " Mód\006% Zdroj"
 #define TR_MULTIPLIER          "Násobič"
@@ -780,6 +781,7 @@
 #define TR_ANTENNAPROBLEM      CENTER "Problém s TX anténou!"
 #define TR_MODELIDUSED         TR("ID již použito","ID modelu je již použito")
 #define TR_MODULE              INDENT "Modul"
+#define TR_TELEMETRY_TYPE      "Telemetry Type"
 #define TR_CHANNELRANGE        INDENT "Rozsah kanálů"
 #define TR_LOWALARM            INDENT "Nízký Alarm"
 #define TR_CRITICALALARM       INDENT "Kritický Alarm"

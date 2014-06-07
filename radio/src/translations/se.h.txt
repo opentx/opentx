@@ -579,6 +579,7 @@
 #define TR_POTWARNING          TR("Rattvarn.", INDENT "Rattvarning")
 #define TR_TIMEZONE            TR("Tidszon","GPS Tidszon")
 #define TR_RXCHANNELORD        "Kanaler i RX"
+#define TR_SWITCHES_DELAY      "Switches Delay"
 #define TR_SLAVE               "Elev"
 #define TR_MODESRC             " Läge\004% Källa"
 #define TR_MULTIPLIER          "Styrka"
@@ -780,6 +781,7 @@
 #define TR_ANTENNAPROBLEM      CENTER "Fel på TX-antennen"
 #define TR_MODELIDUSED         TR("ID finns redan","ModellID används redan")
 #define TR_MODULE              INDENT "Modul"
+#define TR_TELEMETRY_TYPE      "Telemetry Type"
 #define TR_CHANNELRANGE        INDENT "Kanalområde"
 #define TR_LOWALARM            INDENT "Låg-alarm"
 #define TR_CRITICALALARM       INDENT "Kritiskt alarm"

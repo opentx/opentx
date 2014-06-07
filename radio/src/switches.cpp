@@ -96,7 +96,6 @@ uint32_t check2PosSwitchPosition(EnumKeys sw)
   return result;
 }
 
-#define DELAY_SWITCH_3POS    15/*150ms*/
 uint32_t check3PosSwitchPosition(uint8_t idx, EnumKeys sw, bool startup)
 {
   uint32_t result;
@@ -112,7 +111,7 @@ uint32_t check3PosSwitchPosition(uint8_t idx, EnumKeys sw, bool startup)
     result = (1 << index);
     switchesMidposStart[idx] = 0;
   }
-  else if (startup || (switchesPos & (1 << (sw - SW_SA0 + 1))) || (switchesMidposStart[idx] && (tmr10ms_t)(get_tmr10ms() - switchesMidposStart[idx]) > DELAY_SWITCH_3POS)) {
+  else if (startup || (switchesPos & (1 << (sw - SW_SA0 + 1))) || g_eeGeneral.switchesDelay==0 || (switchesMidposStart[idx] && (tmr10ms_t)(get_tmr10ms() - switchesMidposStart[idx]) > 10*g_eeGeneral.switchesDelay)) {
     index = sw - SW_SA0 + 1;
     result = (1 << index);
     switchesMidposStart[idx] = 0;
@@ -159,7 +158,7 @@ void getSwitchesPosition(bool startup)
           potsLastposStart[i] = get_tmr10ms();
           potsPos[i] = (pos << 4) | previousStoredPos;
         }
-        else if (startup || (tmr10ms_t)(get_tmr10ms() - potsLastposStart[i]) > DELAY_SWITCH_3POS) {
+        else if (startup || g_eeGeneral.switchesDelay==0 || (tmr10ms_t)(get_tmr10ms() - potsLastposStart[i]) > 10*g_eeGeneral.switchesDelay) {
           potsLastposStart[i] = 0;
           potsPos[i] = (pos << 4) | pos;
           if (previousStoredPos != pos) {

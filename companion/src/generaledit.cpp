@@ -51,7 +51,8 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
         ui->chkSG->setValue(switchstate & 0x3);
         switchstate >>= 2;
         ui->chkSH->setValue(switchstate & 0x3);      
-      } else {
+      }
+      else {
         for (int i=0; pmsl[i]; i++) {
           pmsl[i]->hide();
         }
@@ -305,6 +306,14 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
       ui->backlightColor2_label->hide();
     }
 
+    if (IS_ARM(eepromInterface->getBoard())) {
+      ui->switchesDelay->setValue(10*g_eeGeneral.switchesDelay);
+    }
+    else {
+      ui->switchesDelay->hide();
+      ui->switchesDelayLabel->hide();
+    }
+
     ga.sendPageView(getBoardName(GetCurrentFirmware()->getBoard()) + " GeneralEdit");
 }
 
@@ -514,6 +523,12 @@ void GeneralEdit::on_backlightautoSB_editingFinished()
     g_eeGeneral.backlightDelay = i;
     updateSettings();
   }
+}
+
+void GeneralEdit::on_switchesDelay_valueChanged()
+{
+  g_eeGeneral.switchesDelay = ui->switchesDelay->value() / 10;
+  updateSettings();
 }
 
 void GeneralEdit::on_backlightColor_SL_valueChanged()

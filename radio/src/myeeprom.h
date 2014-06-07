@@ -70,6 +70,14 @@
 #define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
 #endif
 
+#if defined (CPUARM)
+  #define ARM_FIELD(x) x;
+  #define AVR_FIELD(x)
+#else
+  #define ARM_FIELD(x)
+  #define AVR_FIELD(x) x;
+#endif
+
 #if defined(PCBTARANIS)
   #define MAX_MODELS          60
   #define NUM_CHNOUT          32 // number of real output channels CH1-CH32
@@ -407,8 +415,9 @@ PACK(typedef struct t_EEGeneral {
   uint8_t   mavbaud:3;
   SPLASH_MODE; /* 3bits */
   int8_t    hapticMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
-  uint8_t   blOffBright:4;
-  uint8_t   blOnBright:4;
+  AVR_FIELD(uint8_t blOffBright:4)
+  AVR_FIELD(uint8_t blOnBright:4)
+  ARM_FIELD(uint8_t switchesDelay)
   uint8_t   lightAutoOff;
   uint8_t   templateSetup;   // RETA order for receiver channels
   int8_t    PPM_Multiplier;
@@ -1669,14 +1678,6 @@ PACK(typedef struct {
   MODELDATA_BITMAP
 }) ModelHeader;
 
-#if defined (CPUARM)
-  #define ARM_FIELD(x) x;
-  #define AVR_FIELD(x)
-#else
-  #define ARM_FIELD(x)
-  #define AVR_FIELD(x) x;
-#endif
-
 enum ThrottleSources {
   THROTTLE_SOURCE_THR,
 #if defined(PCBTARANIS)
@@ -1702,8 +1703,8 @@ enum TelemetryProtocol
 PACK(typedef struct t_ModelData {
   ModelHeader header;
   TimerData timers[MAX_TIMERS];
-  AVR_FIELD(uint8_t   protocol:3);
-  ARM_FIELD(uint8_t   telemetryProtocol:3);
+  AVR_FIELD(uint8_t   protocol:3)
+  ARM_FIELD(uint8_t   telemetryProtocol:3)
   uint8_t   thrTrim:1;            // Enable Throttle Trim
   AVR_FIELD(int8_t    ppmNCH:4)
   ARM_FIELD(int8_t    spare2:4)

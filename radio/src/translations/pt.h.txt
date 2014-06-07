@@ -579,6 +579,7 @@
 #define TR_POTWARNING          TR("Pot Warn.", INDENT "Pot Warning")
 #define TR_TIMEZONE            "Time Zone"
 #define TR_RXCHANNELORD        "Ordem Canal RX"
+#define TR_SWITCHES_DELAY      "Switches Delay"
 #define TR_SLAVE               "Escravo"
 #define TR_MODESRC             "Modo\006% Fonte"
 #define TR_MULTIPLIER          "Multiplicar"
@@ -780,6 +781,7 @@
 #define TR_ANTENNAPROBLEM      CENTER "TX Antenna problem!"
 #define TR_MODELIDUSED         TR("ID already used","Model ID already used")
 #define TR_MODULE              INDENT "Module"
+#define TR_TELEMETRY_TYPE      "Telemetry Type"
 #define TR_CHANNELRANGE        INDENT "Channel Range"
 #define TR_LOWALARM            INDENT "Low Alarm"
 #define TR_CRITICALALARM       INDENT "Critical Alarm"

@@ -29,10 +29,10 @@ private:
     void setSwitchDefPos();
     void updateVarioPitchRange();
     
-signals:
+  signals:
     void modelValuesChanged();
 
-private slots:
+  private slots:
     void on_faimode_CB_stateChanged(int );
     void on_speakerPitchSB_editingFinished();
     void on_timezoneSB_editingFinished();
@@ -132,6 +132,7 @@ private slots:
     void setValues();
     void shrink();
     void stickReverseEdited();
+    void on_switchesDelay_valueChanged();
 };
 
 #endif // GENERALEDIT_H

@@ -579,6 +579,7 @@
 #define TR_POTWARNING          TR("Pot Warn.", INDENT "Poti Warnung")
 #define TR_TIMEZONE            TR("Zeitzone","GPS Zeit Zone")
 #define TR_RXCHANNELORD        TR("Kanalanordnung","Kanalvoreinstellung")
+#define TR_SWITCHES_DELAY      "Switches Delay"
 #define TR_SLAVE               TR("Schüler PPM1-16","Schüler PPM1-16 als Ausgang")
 #define TR_MODESRC             " Modus\002% Quelle"
 #define TR_MULTIPLIER          "Multiplikator"
@@ -780,6 +781,7 @@
 #define TR_ANTENNAPROBLEM      CENTER "TX Antennen Problem!"
 #define TR_MODELIDUSED         TR("ID schon benutzt","Modell ID schon benutzt")
 #define TR_MODULE              INDENT "Modul-Typ"
+#define TR_TELEMETRY_TYPE      "Telemetry Type"
 #define TR_CHANNELRANGE        INDENT "Ausgangs Kanäle"
 #define TR_LOWALARM            INDENT "Vor-Alarm bei"
 #define TR_CRITICALALARM       INDENT "Kritisch Alarm"
