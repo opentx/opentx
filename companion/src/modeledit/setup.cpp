@@ -418,6 +418,9 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
     ui->centerBeepLayout->addWidget(checkbox, 0, i+1);
     connect(checkbox, SIGNAL(toggled(bool)), this, SLOT(onBeepCenterToggled(bool)));
     centerBeepCheckboxes << checkbox;
+    if (!IS_TARANIS_PLUS(firmware->getBoard()) && i==6) {
+        checkbox->hide();
+    }
   }
 
   // Startup switches warnings
