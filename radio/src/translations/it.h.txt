@@ -309,7 +309,7 @@
 #if defined(PCBTARANIS)
   #define TR_TELEM_RSSI_RX     "RSSI\0"
 #else
-  #define TR_TELEM_RSSI_RX     TR("Rx\0  ", "Rx\0 ")
+  #define TR_TELEM_RSSI_RX     TR("Rx\0 ", "Rx\0  ")
 #endif
 
 #if LCD_W >= 212
