@@ -57,6 +57,7 @@ WizardDialog::WizardDialog(const GeneralSettings & settings, unsigned int modelI
   }
 
   setWizardStyle(ModernStyle);
+  setOption(QWizard::NoCancelButton, false);
   setOption(HaveHelpButton, true);
   connect(this, SIGNAL(helpRequested()), this, SLOT(showHelp()));
 
