@@ -87,7 +87,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
       lang="en";
     path.append(lang);
     QDir qd(path);
-    int vml= firmware->getCapability(VoicesMaxLength)+4;
+    int vml= firmware->getCapability(VoicesMaxLength);
     if (qd.exists()) {
       QStringList filters;
       filters << "*.wav" << "*.WAV";
