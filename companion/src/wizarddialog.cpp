@@ -51,7 +51,13 @@ WizardDialog::WizardDialog(const GeneralSettings & settings, unsigned int modelI
     "Please note that continuing removes all old model settings!"), -1));
   setStartId(Page_Models);
 
+  // Workaround for Qt radio button rendering issue on Mac
+  Q_FOREACH(QAbstractButton * rb, findChildren<QAbstractButton *>()) {
+    rb->setAttribute(Qt::WA_LayoutUsesWidgetRect);
+  }
+
   setWizardStyle(ModernStyle);
+  setOption(QWizard::NoCancelButton, false);
   setOption(HaveHelpButton, true);
   connect(this, SIGNAL(helpRequested()), this, SLOT(showHelp()));
 
