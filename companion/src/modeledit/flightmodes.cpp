@@ -121,7 +121,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
   }
 
   // GVars
-  if (gvCount > 0) {
+  if (gvCount > 0 && (firmware->getCapability(GvarsFlightModes) || phaseIdx == 0) ) {
     QGridLayout *gvLayout = new QGridLayout(ui->gvGB);
     for (int i=0; i<gvCount; i++) {
       int col = 0;
@@ -200,12 +200,14 @@ void FlightModePanel::update()
     trimUpdate(i);
   }
 
-  for (int i=0; i<gvCount; i++) {
-    gvNames[i]->setText(model.gvars_names[i]);
-    gvValues[i]->setDisabled(model.isGVarLinked(phaseIdx, i));
-    gvValues[i]->setValue(model.getGVarValue(phaseIdx, i));
-    if (IS_TARANIS(GetEepromInterface()->getBoard()) && phaseIdx == 0) { 
-      gvPopups[i]->setChecked(model.gvars_popups[i]);
+  if (ui->gvGB->isVisible()) {
+    for (int i=0; i<gvCount; i++) {
+      gvNames[i]->setText(model.gvars_names[i]);
+      gvValues[i]->setDisabled(model.isGVarLinked(phaseIdx, i));
+      gvValues[i]->setValue(model.getGVarValue(phaseIdx, i));
+      if (IS_TARANIS(GetEepromInterface()->getBoard()) && phaseIdx == 0) { 
+        gvPopups[i]->setChecked(model.gvars_popups[i]);
+      }
     }
   }
 
