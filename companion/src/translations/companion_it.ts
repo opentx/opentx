@@ -4884,40 +4884,40 @@ p, li { white-space: pre-wrap; }
         <location filename="../modeledit/mixes.cpp" line="17"/>
         <location filename="../modeledit/mixes.cpp" line="489"/>
         <source>Move Up</source>
-        <translation type="unfinished">Muovi in Su</translation>
+        <translation>Muovi in Su</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="19"/>
         <location filename="../modeledit/mixes.cpp" line="489"/>
         <source>Ctrl+Up</source>
-        <translation type="unfinished">Ctrl+Up</translation>
+        <translation>Ctrl+Up</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="20"/>
         <location filename="../modeledit/mixes.cpp" line="490"/>
         <source>Move Down</source>
-        <translation type="unfinished">Muovi in Giù</translation>
+        <translation>Muovi in Giù</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="22"/>
         <location filename="../modeledit/mixes.cpp" line="490"/>
         <source>Ctrl+Down</source>
-        <translation type="unfinished">Ctrl+Down</translation>
+        <translation>Ctrl+Down</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="23"/>
         <source>Clear Mixes</source>
-        <translation type="unfinished">Cancella Miscelazioni</translation>
+        <translation>Cancella Miscelazioni</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="185"/>
         <source>Weight(%1)</source>
-        <translation type="unfinished">Peso(%1)</translation>
+        <translation>Peso(%1)</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="191"/>
         <source>Switch(%1)</source>
-        <translation type="unfinished">Interruttore(%1)</translation>
+        <translation>Interruttore(%1)</translation>
     </message>
     <message>
         <source>No Trim</source>
@@ -4926,92 +4926,92 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/mixes.cpp" line="195"/>
         <source>NoTrim</source>
-        <translation type="unfinished">NoTrim</translation>
+        <translation>NoTrim</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="198"/>
         <source>No DR/Expo</source>
-        <translation type="unfinished">No DR/Expo</translation>
+        <translation>No DR/Espo</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="199"/>
         <source>Offset(%1)</source>
-        <translation type="unfinished">Offset(%1)</translation>
+        <translation>Spostamento(%1)</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="206"/>
         <source> Delay(u%1:d%2)</source>
-        <translation type="unfinished"> Ritarda(s%1:g%2)</translation>
+        <translation> Ritarda(s%1:g%2)</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="208"/>
         <source> Slow(u%1:d%2)</source>
-        <translation type="unfinished"> Rallenta(s%1:g%2)</translation>
+        <translation> Rallenta(s%1:g%2)</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="209"/>
         <source> Warn(%1)</source>
-        <translation type="unfinished"> Avviso(%1)</translation>
+        <translation> Avviso(%1)</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="224"/>
         <source>Not enough available mixers!</source>
-        <translation type="unfinished">Non ci sono più miscelazioni disponibili!</translation>
+        <translation>Non ci sono più miscelazioni disponibili!</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="330"/>
         <source>Delete Selected Mixes?</source>
-        <translation type="unfinished">Cancellare le miscelazioni selezionate ?</translation>
+        <translation>Cancellare le miscelazioni selezionate ?</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="479"/>
         <source>&amp;Add</source>
-        <translation type="unfinished">&amp;Aggiungi</translation>
+        <translation>&amp;Aggiungi</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="479"/>
         <source>Ctrl+A</source>
-        <translation type="unfinished">Ctrl+A</translation>
+        <translation>Ctrl+A</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="480"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished">&amp;Modifica</translation>
+        <translation>&amp;Modifica</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="480"/>
         <source>Enter</source>
-        <translation type="unfinished">Invio</translation>
+        <translation>Invio</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="481"/>
         <source>&amp;Toggle highlight</source>
-        <translation type="unfinished"></translation>
+        <translation>Al&amp;terna evidenziazione</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="481"/>
         <source>Ctrl+T</source>
-        <translation type="unfinished">Ctrl+T</translation>
+        <translation>Ctrl+T</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="483"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished">&amp;Elimina</translation>
+        <translation>&amp;Elimina</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="483"/>
         <source>Delete</source>
-        <translation type="unfinished">Elimina</translation>
+        <translation>Elimina</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="484"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished">&amp;Copia</translation>
+        <translation>&amp;Copia</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="484"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished">Ctrl+C</translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
         <source>&amp;Cut</source>
@@ -5020,42 +5020,42 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/mixes.cpp" line="485"/>
         <source>Ctrl+X</source>
-        <translation type="unfinished">Ctrl+X</translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="485"/>
         <source>C&amp;ut</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta&amp;glia</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="486"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished">&amp;Incolla</translation>
+        <translation>&amp;Incolla</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="486"/>
         <source>Ctrl+V</source>
-        <translation type="unfinished">Ctrl+V</translation>
+        <translation>Ctrl+V</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="487"/>
         <source>Du&amp;plicate</source>
-        <translation type="unfinished">Dup&amp;lica</translation>
+        <translation>Du&amp;plica</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="487"/>
         <source>Ctrl+U</source>
-        <translation type="unfinished">Ctrl+U</translation>
+        <translation>Ctrl+U</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="575"/>
         <source>Clear Mixes?</source>
-        <translation type="unfinished">Cancellare le miscelazioni ?</translation>
+        <translation>Cancellare le miscelazioni ?</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="575"/>
         <source>Really clear all the mixes?</source>
-        <translation type="unfinished">Sicuri di voler cancellare le miscelazioni ?</translation>
+        <translation>Sicuri di voler cancellare le miscelazioni ?</translation>
     </message>
 </context>
 <context>
@@ -5487,32 +5487,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../printdialog.ui" line="54"/>
         <source>Close</source>
-        <translation type="unfinished">Chiudi</translation>
+        <translation>Chiudi</translation>
     </message>
     <message>
         <location filename="../printdialog.ui" line="61"/>
         <source>Print</source>
-        <translation type="unfinished">Stampa</translation>
+        <translation>Stampa</translation>
     </message>
     <message>
         <location filename="../printdialog.ui" line="68"/>
         <source>Print to file</source>
-        <translation type="unfinished">Stampa su file</translation>
+        <translation>Stampa su file</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="36"/>
         <source>Setup for: </source>
-        <translation type="unfinished">Impostazioni per: </translation>
+        <translation>Impostazioni per: </translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="122"/>
         <source>printed on: %1</source>
-        <translation type="unfinished">stampato il: %1</translation>
+        <translation>stampato il: %1</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="123"/>
         <source>General Model Settings</source>
-        <translation type="unfinished">Impostazioni generali del modello</translation>
+        <translation>Impostazioni generali del modello</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="125"/>
@@ -5520,132 +5520,132 @@ p, li { white-space: pre-wrap; }
         <location filename="../printdialog.cpp" line="423"/>
         <location filename="../printdialog.cpp" line="455"/>
         <source>Name</source>
-        <translation type="unfinished">Nome</translation>
+        <translation>Nome</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="126"/>
         <source>EEprom Size</source>
-        <translation type="unfinished">Dimensione in EEprom</translation>
+        <translation>Dimensione in EEprom</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="127"/>
         <source>Timer1</source>
-        <translation type="unfinished">Tempo1</translation>
+        <translation>Temporizzatore 1</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="128"/>
         <source>Timer2</source>
-        <translation type="unfinished">Tempo2</translation>
+        <translation>Temporizzatore 2</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="129"/>
         <source>Protocol</source>
-        <translation type="unfinished">Protocollo</translation>
+        <translation>Protocollo</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="130"/>
         <source>Pulse Polarity</source>
-        <translation type="unfinished">Polarità impulso</translation>
+        <translation>Polarità impulso</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="131"/>
         <source>Throttle Trim</source>
-        <translation type="unfinished">Trim Motore</translation>
+        <translation>Trim Motore</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="131"/>
         <location filename="../printdialog.cpp" line="132"/>
         <location filename="../printdialog.cpp" line="651"/>
         <source>Enabled</source>
-        <translation type="unfinished">Abilitato</translation>
+        <translation>Abilitato</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="131"/>
         <location filename="../printdialog.cpp" line="132"/>
         <source>Disabled</source>
-        <translation type="unfinished">Disabilitato</translation>
+        <translation>Disabilitato</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="132"/>
         <source>Throttle Expo</source>
-        <translation type="unfinished">Esponenziale Motore</translation>
+        <translation>Esponenziale Motore</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="134"/>
         <source>Trim Increment</source>
-        <translation type="unfinished">Incremento del Trim</translation>
+        <translation>Incremento del Trim</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="135"/>
         <source>Center Beep</source>
-        <translation type="unfinished">Avviso centraggio</translation>
+        <translation>Avviso centraggio</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="150"/>
         <source>Flight modes</source>
-        <translation type="unfinished">Fasi di volo</translation>
+        <translation>Fasi di volo</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="152"/>
         <source>Fades</source>
-        <translation type="unfinished">Transizioni</translation>
+        <translation>Transizioni</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="153"/>
         <source>Trims</source>
-        <translation type="unfinished">Trims</translation>
+        <translation>Trims</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="155"/>
         <source>Gvars</source>
-        <translation type="unfinished">Var Glob</translation>
+        <translation>Var Glob</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="158"/>
         <source>Rot.Enc.</source>
-        <translation type="unfinished">Enc. Rot.</translation>
+        <translation>Enc. Rot.</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="160"/>
         <location filename="../printdialog.cpp" line="288"/>
         <location filename="../printdialog.cpp" line="647"/>
         <source>Switch</source>
-        <translation type="unfinished"></translation>
+        <translation>Int.</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="160"/>
         <source>Flight mode name</source>
-        <translation type="unfinished">Nome fase di volo</translation>
+        <translation>Nome fase di volo</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="161"/>
         <source>IN</source>
-        <translation type="unfinished">Ingr.</translation>
+        <translation>Ingr.</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="161"/>
         <source>OUT</source>
-        <translation type="unfinished">Usc.</translation>
+        <translation>Usc.</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="162"/>
         <source>Rud</source>
-        <translation type="unfinished"></translation>
+        <translation>Dir</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="162"/>
         <source>Ele</source>
-        <translation type="unfinished"></translation>
+        <translation>Ele</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="162"/>
         <source>Thr</source>
-        <translation type="unfinished"></translation>
+        <translation>Mot</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="162"/>
         <source>Ail</source>
-        <translation type="unfinished"></translation>
+        <translation>Ale</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="178"/>
@@ -5653,86 +5653,86 @@ p, li { white-space: pre-wrap; }
         <location filename="../printdialog.cpp" line="197"/>
         <location filename="../printdialog.cpp" line="208"/>
         <source>FM</source>
-        <translation type="unfinished">FV</translation>
+        <translation>FV</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="221"/>
         <source>Inputs</source>
-        <translation type="unfinished">Ingressi</translation>
+        <translation>Ingressi</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="250"/>
         <source>Weight</source>
-        <translation type="unfinished">Peso</translation>
+        <translation>Peso</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="253"/>
         <location filename="../printdialog.cpp" line="808"/>
         <source>Source</source>
-        <translation type="unfinished">Sorgente</translation>
+        <translation>Sorgente</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="254"/>
         <location filename="../printdialog.cpp" line="351"/>
         <source>NoTrim</source>
-        <translation type="unfinished">NoTrim</translation>
+        <translation>NoTrim</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="284"/>
         <source>DISABLED</source>
-        <translation type="unfinished">DISABILITATO</translation>
+        <translation>DISABILITATO</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="301"/>
         <source>Mixers</source>
-        <translation type="unfinished">Miscelazioni</translation>
+        <translation>Miscelazioni</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="341"/>
         <source>Weight(%1)</source>
-        <translation type="unfinished">Peso(%1)</translation>
+        <translation>Peso(%1)</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="347"/>
         <source>Switch(%1)</source>
-        <translation type="unfinished">Interruttore(%1)</translation>
+        <translation>Interruttore(%1)</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="354"/>
         <source>No DR/Expo</source>
-        <translation type="unfinished">No DR/Expo</translation>
+        <translation>No DR/Espo</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="355"/>
         <source>Offset(%1)</source>
-        <translation type="unfinished">Offset(%1)</translation>
+        <translation>Spostamento(%1)</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="363"/>
         <source> Delay(u%1:d%2)</source>
-        <translation type="unfinished"> Ritarda(s%1:g%2)</translation>
+        <translation> Ritarda(s%1:g%2)</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="365"/>
         <source> Slow(u%1:d%2)</source>
-        <translation type="unfinished"> Rallenta(s%1:g%2)</translation>
+        <translation> Rallenta(s%1:g%2)</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="366"/>
         <source> Warn(%1)</source>
-        <translation type="unfinished"> Avviso(%1)</translation>
+        <translation> Avviso(%1)</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="385"/>
         <source>Limits</source>
-        <translation type="unfinished">Limiti</translation>
+        <translation>Limiti</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="389"/>
         <location filename="../printdialog.cpp" line="419"/>
         <location filename="../printdialog.cpp" line="451"/>
         <source>CH</source>
-        <translation type="unfinished">CH</translation>
+        <translation>CH</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="398"/>
@@ -5741,7 +5741,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../printdialog.cpp" line="692"/>
         <location filename="../printdialog.cpp" line="742"/>
         <source>Offset</source>
-        <translation type="unfinished">Spostamento</translation>
+        <translation>Spostamento</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="403"/>
@@ -5749,7 +5749,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../printdialog.cpp" line="465"/>
         <location filename="../printdialog.cpp" line="808"/>
         <source>Min</source>
-        <translation type="unfinished">Min</translation>
+        <translation>Min</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="408"/>
@@ -5757,162 +5757,162 @@ p, li { white-space: pre-wrap; }
         <location filename="../printdialog.cpp" line="470"/>
         <location filename="../printdialog.cpp" line="808"/>
         <source>Max</source>
-        <translation type="unfinished">Max</translation>
+        <translation>Max</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="413"/>
         <location filename="../printdialog.cpp" line="443"/>
         <location filename="../printdialog.cpp" line="475"/>
         <source>Invert</source>
-        <translation type="unfinished"></translation>
+        <translation>Inversione</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="415"/>
         <location filename="../printdialog.cpp" line="445"/>
         <location filename="../printdialog.cpp" line="477"/>
         <source>INV</source>
-        <translation type="unfinished">INV</translation>
+        <translation>INV</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="415"/>
         <location filename="../printdialog.cpp" line="445"/>
         <location filename="../printdialog.cpp" line="477"/>
         <source>NOR</source>
-        <translation type="unfinished">NOR</translation>
+        <translation>NOR</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="493"/>
         <source>Curves</source>
-        <translation type="unfinished">Curve</translation>
+        <translation>Curve</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="517"/>
         <location filename="../printdialog.cpp" line="545"/>
         <location filename="../printdialog.cpp" line="547"/>
         <source>Curve</source>
-        <translation type="unfinished">Curva</translation>
+        <translation>Curva</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="530"/>
         <source>pt %1</source>
-        <translation type="unfinished">pt %1</translation>
+        <translation>pt %1</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="597"/>
         <source>Logical Switches</source>
-        <translation type="unfinished">Interruttori logici</translation>
+        <translation>Interruttori logici</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="603"/>
         <source>L</source>
-        <translation type="unfinished"></translation>
+        <translation>L</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="620"/>
         <source>Global Variables</source>
-        <translation type="unfinished">Variabili Globali</translation>
+        <translation>Variabili Globali</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="626"/>
         <source>GV</source>
-        <translation type="unfinished">VG</translation>
+        <translation>VG</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="644"/>
         <source>Special Functions</source>
-        <translation type="unfinished">Funzioni speciali</translation>
+        <translation>Funzioni speciali</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="648"/>
         <source>Function</source>
-        <translation type="unfinished">Funzione</translation>
+        <translation>Funzione</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="649"/>
         <source>Parameter</source>
-        <translation type="unfinished">Parametro</translation>
+        <translation>Parametro</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="650"/>
         <source>Repeat</source>
-        <translation type="unfinished">Ripeti</translation>
+        <translation>Ripeti</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="656"/>
         <source>SF%1</source>
-        <translation type="unfinished">SF%1</translation>
+        <translation>FS%1</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="688"/>
         <location filename="../printdialog.cpp" line="740"/>
         <source>Telemetry Settings</source>
-        <translation type="unfinished">Impostazioni telemetria</translation>
+        <translation>Impostazioni telemetria</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="690"/>
         <location filename="../printdialog.cpp" line="742"/>
         <source>Analog</source>
-        <translation type="unfinished">Analogico</translation>
+        <translation>Analogico</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="691"/>
         <source>Range</source>
-        <translation type="unfinished">Intervallo</translation>
+        <translation>Intervallo</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="702"/>
         <location filename="../printdialog.cpp" line="725"/>
         <location filename="../printdialog.cpp" line="750"/>
         <source>A%1</source>
-        <translation type="unfinished">A%1</translation>
+        <translation>A%1</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="711"/>
         <source>Alarms</source>
-        <translation type="unfinished"></translation>
+        <translation>Allarmi</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="712"/>
         <source>Low Alarm</source>
-        <translation type="unfinished">Allarme basso</translation>
+        <translation>Allarme basso</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="713"/>
         <source>Critical Alarm</source>
-        <translation type="unfinished">Allarme critico</translation>
+        <translation>Allarme critico</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="716"/>
         <source>RSSI</source>
-        <translation type="unfinished">RSSI</translation>
+        <translation>RSSI</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="736"/>
         <location filename="../printdialog.cpp" line="771"/>
         <source>Blades</source>
-        <translation type="unfinished">Pale dell&apos;elica</translation>
+        <translation>Pale dell&apos;elica</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="741"/>
         <location filename="../printdialog.cpp" line="762"/>
         <source>Alarm 1</source>
-        <translation type="unfinished">Allarme 1</translation>
+        <translation>Allarme 1</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="741"/>
         <location filename="../printdialog.cpp" line="762"/>
         <source>Alarm 2</source>
-        <translation type="unfinished">Allarme 2</translation>
+        <translation>Allarme 2</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="742"/>
         <source>Unit</source>
-        <translation type="unfinished">Unità</translation>
+        <translation>Unità</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="742"/>
         <source>Scale</source>
-        <translation type="unfinished">Campo di misura</translation>
+        <translation>Campo di misura</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="743"/>
@@ -5920,7 +5920,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../printdialog.cpp" line="763"/>
         <location filename="../printdialog.cpp" line="764"/>
         <source>Type</source>
-        <translation type="unfinished">Tipo</translation>
+        <translation>Tipo</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="743"/>
@@ -5928,7 +5928,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../printdialog.cpp" line="763"/>
         <location filename="../printdialog.cpp" line="764"/>
         <source>Condition</source>
-        <translation type="unfinished">Condizione</translation>
+        <translation>Condizione</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="743"/>
@@ -5936,53 +5936,53 @@ p, li { white-space: pre-wrap; }
         <location filename="../printdialog.cpp" line="763"/>
         <location filename="../printdialog.cpp" line="764"/>
         <source>Value</source>
-        <translation type="unfinished">Valore</translation>
+        <translation>Valore</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="765"/>
         <source>RSSI Alarm</source>
-        <translation type="unfinished">Allarmi RSSI</translation>
+        <translation>Allarmi RSSI</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="769"/>
         <source>Frsky serial protocol</source>
-        <translation type="unfinished">Protocollo seriale FrSky</translation>
+        <translation>Protocollo seriale FrSky</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="770"/>
         <source>Units system</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistema di misura</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="781"/>
         <location filename="../printdialog.cpp" line="783"/>
         <source>Custom Telemetry View</source>
-        <translation type="unfinished">Schermata personalizzata dati telemetrici</translation>
+        <translation>Schermata personalizzata dati telemetrici</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="807"/>
         <source>Telemetry Bars</source>
-        <translation type="unfinished">Barre Telemetria</translation>
+        <translation>Barre Telemetria</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="808"/>
         <source>Bar Number</source>
-        <translation type="unfinished">Numero Barra</translation>
+        <translation>Barra Numero</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="828"/>
         <source>Print Document</source>
-        <translation type="unfinished">Stampa documento</translation>
+        <translation>Stampa documento</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="836"/>
         <source>Select PDF output file</source>
-        <translation type="unfinished">Scegliere il nome del file PDF</translation>
+        <translation>Scegliere il nome del file PDF</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="836"/>
         <source>ODF files (*.odt);;PDF Files(*.pdf);;HTML-Files (*.htm *.html);;All Files (*)</source>
-        <translation type="unfinished">Documenti ODF (*.odt);;Documenti PDF (*.pdf);;Documenti HTML (*.htm *.html);;Tutti i documenti (*)</translation>
+        <translation>Documenti ODF (*.odt);;Documenti PDF (*.pdf);;Documenti HTML (*.htm *.html);;Tutti i documenti (*)</translation>
     </message>
 </context>
 <context>
@@ -8050,17 +8050,17 @@ Il Team di OpenTX.</translation>
     <message>
         <location filename="../radionotfound.ui" line="32"/>
         <source>No Radio Found</source>
-        <translation type="unfinished"></translation>
+        <translation>Radio non trovata</translation>
     </message>
     <message>
         <location filename="../radionotfound.ui" line="40"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Radio was found!&lt;/p&gt;&lt;p&gt;Make sure that you hold the lower trim buttons towards the center while you turn it on.&lt;/p&gt;&lt;p&gt;Then connect the USB wire.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Nessuna radio è stata trovata!&lt;/p&gt;&lt;p&gt;Siate sicuri di tenere entrambi i trim inferiori verso il centro durante l&apos;accensione della radio..&lt;/p&gt;&lt;p&gt;Solo dopo connettete il cavo USB.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../radionotfound.ui" line="92"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -8232,7 +8232,7 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../wizarddialog.cpp" line="737"/>
         <source>Elevator Channel:</source>
-        <translation type="unfinished">Canale Elevatore</translation>
+        <translation>Canale dell&apos;Elevatore:</translation>
     </message>
 </context>
 <context>
@@ -8381,36 +8381,36 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="26"/>
         <source>Companion Simulator</source>
-        <translation type="unfinished">Simulatore di Companion</translation>
+        <translation>Simulatore di Companion</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="245"/>
         <source>Gvars</source>
-        <translation type="unfinished">Var Glob</translation>
+        <translation>Var Glob</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="453"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1177"/>
         <source>Hold Y</source>
-        <translation type="unfinished">Tieni Y</translation>
+        <translation>Mantieni Y</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="483"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1207"/>
         <source>Fix Y</source>
-        <translation type="unfinished">Fissa Y</translation>
+        <translation>Blocca Y</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="513"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1237"/>
         <source>Fix X</source>
-        <translation type="unfinished">Fissa X</translation>
+        <translation>Blocca X</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="543"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1267"/>
         <source>Hold X</source>
-        <translation type="unfinished">Tieni X</translation>
+        <translation>Mantieni X</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="334"/>
@@ -8418,7 +8418,7 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
         <location filename="../simulation/simulatordialog-taranis.ui" line="1021"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1615"/>
         <source>Right Double Click to Reset</source>
-        <translation type="unfinished">Doppio click con il destro per portare a 0</translation>
+        <translation>Doppio click con il destro per portare a 0</translation>
     </message>
     <message>
         <source>TextLabel</source>
@@ -8427,12 +8427,12 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="77"/>
         <source>Taranis Simulator</source>
-        <translation type="unfinished">Simulatore Taranis</translation>
+        <translation>Simulatore Taranis</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="232"/>
         <source>Outputs</source>
-        <translation type="unfinished">Uscite</translation>
+        <translation>Uscite</translation>
     </message>
 </context>
 <context>
@@ -8484,114 +8484,114 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../modeledit/telemetry.ui" line="104"/>
         <source>A1</source>
-        <translation type="unfinished">A1</translation>
+        <translation>A1</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="433"/>
         <source>A2</source>
-        <translation type="unfinished">A2</translation>
+        <translation>A2</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="702"/>
         <source>RSSI</source>
-        <translation type="unfinished">RSSI</translation>
+        <translation>RSSI</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="501"/>
         <location filename="../modeledit/telemetry.ui" line="554"/>
         <source>Alarm 1</source>
-        <translation type="unfinished">Allarme 1</translation>
+        <translation>Allarme 1</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="51"/>
         <source>FrSky S.PORT</source>
-        <translation type="unfinished"></translation>
+        <translation>FrSky S.PORT</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="56"/>
         <source>FrSky D</source>
-        <translation type="unfinished"></translation>
+        <translation>FrSky D</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="514"/>
         <source>RxBatt</source>
-        <translation type="unfinished"></translation>
+        <translation>BattRx</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="531"/>
         <source>Critical Alarm</source>
-        <translation type="unfinished">Allarme critico</translation>
+        <translation>Allarme critico</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="568"/>
         <location filename="../modeledit/telemetry.ui" line="645"/>
         <source>----</source>
-        <translation type="unfinished">----</translation>
+        <translation>----</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="573"/>
         <location filename="../modeledit/telemetry.ui" line="650"/>
         <source>Yellow</source>
-        <translation type="unfinished">Giallo</translation>
+        <translation>Giallo</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="578"/>
         <location filename="../modeledit/telemetry.ui" line="655"/>
         <source>Orange</source>
-        <translation type="unfinished">Arancione</translation>
+        <translation>Arancione</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="583"/>
         <location filename="../modeledit/telemetry.ui" line="660"/>
         <source>Red</source>
-        <translation type="unfinished">Rosso</translation>
+        <translation>Rosso</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="479"/>
         <location filename="../modeledit/telemetry.ui" line="631"/>
         <source>Alarm 2</source>
-        <translation type="unfinished">Allarme 2</translation>
+        <translation>Allarme 2</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="375"/>
         <source>Serial Protocol</source>
-        <translation type="unfinished">Protocollo seriale</translation>
+        <translation>Protocollo seriale</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="232"/>
         <source>Volt source</source>
-        <translation type="unfinished">Misura della tensione</translation>
+        <translation>Misura della tensione</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="138"/>
         <source>A4</source>
-        <translation type="unfinished">A4</translation>
+        <translation>A4</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="184"/>
         <source>A3</source>
-        <translation type="unfinished">A3</translation>
+        <translation>A3</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="246"/>
         <source>Metric</source>
-        <translation type="unfinished">Sistema Metrico</translation>
+        <translation>Sistema Metrico</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="251"/>
         <source>Imperial</source>
-        <translation type="unfinished">Imperiale</translation>
+        <translation>Imperiale</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="271"/>
         <source>Current source</source>
-        <translation type="unfinished">Misura della corrente</translation>
+        <translation>Misura della corrente</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="37"/>
         <location filename="../modeledit/telemetry.ui" line="290"/>
         <source>Protocol</source>
-        <translation type="unfinished">Protocollo</translation>
+        <translation>Protocollo</translation>
     </message>
     <message>
         <source>NONE</source>
@@ -8604,12 +8604,12 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../modeledit/telemetry.ui" line="314"/>
         <source>None</source>
-        <translation type="unfinished">Nessuno</translation>
+        <translation>Nessuno</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="319"/>
         <source>FrSky Sensor Hub</source>
-        <translation type="unfinished">FrSky Sensor Hub</translation>
+        <translation>FrSky Sensor Hub</translation>
     </message>
     <message>
         <source>CEL</source>
@@ -8618,12 +8618,12 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../modeledit/telemetry.ui" line="349"/>
         <source>Units</source>
-        <translation type="unfinished">Unità</translation>
+        <translation>Unità</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="362"/>
         <source>Blades</source>
-        <translation type="unfinished">Pale dell&apos;elica</translation>
+        <translation>Pale dell&apos;elica</translation>
     </message>
     <message>
         <source>Vario</source>
@@ -8632,87 +8632,87 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../modeledit/telemetry.ui" line="840"/>
         <source>Sink Max</source>
-        <translation type="unfinished">Max Discesa</translation>
+        <translation>Max Discesa</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="950"/>
         <source>Off</source>
-        <translation type="unfinished">NO</translation>
+        <translation>NO</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="963"/>
         <source>Climb Max</source>
-        <translation type="unfinished">Max Salita</translation>
+        <translation>Max Salita</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="979"/>
         <source>Sink Min</source>
-        <translation type="unfinished">Min Discesa</translation>
+        <translation>Min Discesa</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="995"/>
         <source>Climb Min</source>
-        <translation type="unfinished">Min Salita</translation>
+        <translation>Min Salita</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="1007"/>
         <source>Vario source</source>
-        <translation type="unfinished">Sorgente per il Vario</translation>
+        <translation>Sorgente per il Vario</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="1014"/>
         <source>Vario limits</source>
-        <translation type="unfinished">Limiti per il Vario</translation>
+        <translation>Limiti per il Vario</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="1029"/>
         <source>Use GPS as altitude source</source>
-        <translation type="unfinished">Usa il GPS per l&apos;altitudine</translation>
+        <translation>Usa il GPS per l&apos;altitudine</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="1042"/>
         <source>Display altitude in toolbar</source>
-        <translation type="unfinished">Mostra l&apos;altitudine sulla barra</translation>
+        <translation>Mostra l&apos;altitudine sulla barra</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="1057"/>
         <source>Altimetry</source>
-        <translation type="unfinished"></translation>
+        <translation>Altimetro</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="1114"/>
         <source> mAh</source>
-        <translation type="unfinished"></translation>
+        <translation> mAh</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="1130"/>
         <source> A</source>
-        <translation type="unfinished"></translation>
+        <translation> A</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="1194"/>
         <source>Various</source>
-        <translation type="unfinished">Varie</translation>
+        <translation>Varie</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="1101"/>
         <source>mAh count</source>
-        <translation type="unfinished">Conteggio mAh</translation>
+        <translation>Conteggio mAh</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="719"/>
         <source>Low Alarm</source>
-        <translation type="unfinished">Allarme basso</translation>
+        <translation>Allarme basso</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="1155"/>
         <source>FAS Offset</source>
-        <translation type="unfinished">Offset FAS</translation>
+        <translation>Offset FAS</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="1162"/>
         <source>Persistent mAh</source>
-        <translation type="unfinished">mAh persistenti</translation>
+        <translation>mAh persistenti</translation>
     </message>
 </context>
 <context>
@@ -8882,94 +8882,94 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../modeledit/telemetry.cpp" line="511"/>
         <source>Telemetry screen %1</source>
-        <translation type="unfinished">Schermo telemetria %1</translation>
+        <translation>Schermo telemetria %1</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="556"/>
         <source>Low Alarm</source>
-        <translation type="unfinished">Allarme basso</translation>
+        <translation>Allarme basso</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="557"/>
         <source>Critical Alarm</source>
-        <translation type="unfinished">Allarme critico</translation>
+        <translation>Allarme critico</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="632"/>
         <source>Winged Shadow How High</source>
-        <translation type="unfinished">Winged Shadow How High</translation>
+        <translation>Winged Shadow How High</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="635"/>
         <source>Winged Shadow How High (not supported)</source>
-        <translation type="unfinished">Winged Shadow How High (non supportato)</translation>
+        <translation>Winged Shadow How High (non supportato)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="680"/>
         <source>Alti</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="681"/>
         <source>Alti+</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="683"/>
         <source>VSpeed</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="684"/>
         <location filename="../modeledit/telemetry.cpp" line="698"/>
         <location filename="../modeledit/telemetry.cpp" line="713"/>
         <source>A1</source>
-        <translation type="unfinished">A1</translation>
+        <translation>A1</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="685"/>
         <location filename="../modeledit/telemetry.cpp" line="699"/>
         <location filename="../modeledit/telemetry.cpp" line="714"/>
         <source>A2</source>
-        <translation type="unfinished">A2</translation>
+        <translation>A2</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="687"/>
         <source>dTE</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="696"/>
         <source>RxBatt</source>
-        <translation type="unfinished"></translation>
+        <translation>BattRx</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="701"/>
         <location filename="../modeledit/telemetry.cpp" line="716"/>
         <source>A3</source>
-        <translation type="unfinished">A3</translation>
+        <translation>A3</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="702"/>
         <location filename="../modeledit/telemetry.cpp" line="717"/>
         <source>A4</source>
-        <translation type="unfinished">A4</translation>
+        <translation>A4</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="704"/>
         <location filename="../modeledit/telemetry.cpp" line="719"/>
         <source>FAS</source>
-        <translation type="unfinished">FAS</translation>
+        <translation>FAS</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="705"/>
         <source>Cells</source>
-        <translation type="unfinished"></translation>
+        <translation>Celle</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="712"/>
         <source>---</source>
-        <translation type="unfinished">---</translation>
+        <translation>---</translation>
     </message>
 </context>
 <context>
@@ -9167,7 +9167,7 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
         <location filename="../wizarddialog.cpp" line="38"/>
         <location filename="../wizarddialog.cpp" line="39"/>
         <source>Select channels for tail control.</source>
-        <translation type="unfinished">Selezionare i canali  che controllano la coda</translation>
+        <translation>Selezionare i canali che controllano la coda.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="39"/>
@@ -9177,7 +9177,7 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../wizarddialog.cpp" line="40"/>
         <source>Select elevator channel.</source>
-        <translation type="unfinished">Selezionare il canale dell&apos;elevatore</translation>
+        <translation>Selezionare il canale dell&apos;elevatore.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="41"/>
@@ -9229,7 +9229,7 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../wizarddialog.cpp" line="46"/>
         <source>Select the control channels for your multirotor</source>
-        <translation type="unfinished">Selezionare i canali di controllo per il multirotore</translation>
+        <translation>Selezionare i canali di controllo per il multirotore</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="47"/>
@@ -9239,7 +9239,7 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../wizarddialog.cpp" line="47"/>
         <source>Select additional options</source>
-        <translation type="unfinished"></translation>
+        <translation>Selezionarefunzionalità aggiuntive </translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="48"/>
@@ -9269,7 +9269,7 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../wizarddialog.cpp" line="81"/>
         <source>Models use one or two channels to control the ailerons.&lt;br&gt;A so called Y-cable can be used to connect a single receiver channel to two separate aileron servos. If your servos are connected by a Y-cable you should select the single-servo option.&lt;br&gt;&lt;br&gt;Aileron - Spektrum: CH2, Futaba: CH1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="87"/>
