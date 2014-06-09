@@ -1247,13 +1247,20 @@ class CurvesField: public TransformedField {
 
       for (int i=0; i<maxCurves; i++) {
         CurveData *curve = &curves[i];
-        int size = (curve->type == CurveData::CURVE_TYPE_CUSTOM ? curve->count * 2 - 2 : curve->count);
-        if (offset+size > maxPoints) {
-          EEPROMWarnings += ::QObject::tr("OpenTX only accepts %1 points in all curves").arg(maxPoints) + "\n";
-          break;
+        if (IS_TARANIS(board) && version >= 216) {
+          offset += (curve->type == CurveData::CURVE_TYPE_CUSTOM ? curve->count * 2 - 2 : curve->count);
+          if (offset > maxPoints) {
+            EEPROMWarnings += ::QObject::tr("OpenTX only accepts %1 points in all curves").arg(maxPoints) + "\n";
+            break;
+          }
         }
-        if (!IS_TARANIS(board) || version < 216) {
-          _curves[i] = offset - (5*i);
+        else {
+          offset += (curve->type == CurveData::CURVE_TYPE_CUSTOM ? curve->count * 2 - 2 : curve->count) - 5;
+          if (offset > maxPoints - 5 * maxCurves) {
+            EEPROMWarnings += ::QObject::tr("openTx only accepts %1 points in all curves").arg(maxPoints) + "\n";
+            break;
+          }
+          _curves[i] = offset;
         }
         for (int j=0; j<curve->count; j++) {
           *cur++ = curve->points[j].y;
@@ -1263,7 +1270,6 @@ class CurvesField: public TransformedField {
             *cur++ = curve->points[j].x;
           }
         }
-        offset += size;
       }
     }
 
