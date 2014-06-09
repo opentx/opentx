@@ -499,6 +499,7 @@ int main()
 #endif
 
 #if defined(PCBTARANIS)
+  turnBacklightOn(0, 0);
   keysInit();
   I2C_EE_Init();
   init_hw_timer();
