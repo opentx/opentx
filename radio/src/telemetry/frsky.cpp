@@ -317,7 +317,9 @@ void telemetryWakeup()
     static uint8_t frskyTxDelay = 5;
     if (frskyAlarmsSendState && (--frskyTxDelay == 0)) {
       frskyTxDelay = 5; // 50ms
+#if !defined(SIMU)
       frskyDSendNextAlarm();
+#endif
     }
   }
 #endif

@@ -435,7 +435,9 @@ void frskySendPacket(uint8_t type, uint8_t value, uint8_t p1, uint8_t p2)
   *ptr++ = START_STOP; // Start of packet
 
   frskyTxBufferCount = ptr - &frskyTxBuffer[0];
+#if !defined(SIMU)
   telemetryTransmitBuffer();
+#endif
 }
 
 inline void frskyDSendNextAlarm(void)
