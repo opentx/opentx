@@ -95,6 +95,10 @@ Section "OpenTX companion" SecDummy
   File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\avrdude.conf"
   File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\libusb0.dll"
   File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\dfu-util.exe"
+   
+  CreateDirectory "$INSTDIR\phonon_backend"
+  SetOutPath "$INSTDIR\phonon_backend"
+  File "@QT_BINARY_DIR@\..\plugins\phonon_backend\Phonon_ds94.dll"
   
   CreateDirectory "$INSTDIR\lang"
   SetOutPath "$INSTDIR\lang"
