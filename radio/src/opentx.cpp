@@ -1650,7 +1650,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
     case MIXSRC_FIRST_TELEM+TELEM_TM2-1:
       PLAY_DURATION(val, 0);
       break;
-#if defined(CPUARM)
+#if defined(CPUARM) && defined(FRSKY)
     case MIXSRC_FIRST_TELEM+TELEM_SWR-1:
       PLAY_NUMBER(val, 0, 0);
       break;
