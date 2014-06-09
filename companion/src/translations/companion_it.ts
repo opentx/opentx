@@ -1428,12 +1428,12 @@ Può essere differente dalla lingua del firmware</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="614"/>
         <source>&lt;br&gt;First Elevon Channel:</source>
-        <translation type="unfinished">&lt;br&gt;Canale primo Elevone:</translation>
+        <translation>&lt;br&gt;Canale primo Elevone:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="616"/>
         <source>Second Elevon Channel:</source>
-        <translation type="unfinished">Canale secondo Elevone:</translation>
+        <translation>Canale secondo Elevone:</translation>
     </message>
 </context>
 <context>
@@ -3802,12 +3802,12 @@ Volete scaricarla ora ?</translation>
     <message>
         <location filename="../mainwindow.cpp" line="1432"/>
         <source>The OpenTX Companion project was originally forked from &lt;a href=&apos;%1&apos;&gt;eePe&lt;/a&gt;</source>
-        <translation type="unfinished">Il progetto OpenTx-Companion è originariamente derivato da &lt;a href=&apos;%2&apos;&gt;eePe&lt;/a&gt; {1&apos;?}</translation>
+        <translation>Il progetto OpenTx-Companion è originariamente derivato da &lt;a href=&apos;%1&apos;&gt;eePe&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1438"/>
         <source>Copyright OpenTX Team</source>
-        <translation type="unfinished"></translation>
+        <translation>Copyright OpenTX Team</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1543"/>
@@ -5136,27 +5136,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../wizarddialog.cpp" line="264"/>
         <source>Plane</source>
-        <translation type="unfinished">Aereo</translation>
+        <translation>Aereo</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="266"/>
         <source>Multirotor</source>
-        <translation type="unfinished">Multirotore</translation>
+        <translation>Multirotore</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="267"/>
         <source>Helicopter</source>
-        <translation type="unfinished">Elicottero</translation>
+        <translation>Elicottero</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="273"/>
         <source>Model Name:</source>
-        <translation type="unfinished">Nome Modello:</translation>
+        <translation>Nome Modello:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="276"/>
         <source>Model Type:</source>
-        <translation type="unfinished">Tipo di Modello</translation>
+        <translation>Tipo di modello:</translation>
     </message>
 </context>
 <context>
@@ -8094,67 +8094,67 @@ Il Team di OpenTX.</translation>
     <message>
         <location filename="../modeledit/setup.ui" line="258"/>
         <source>Center beep</source>
-        <translation type="unfinished">Avviso centraggio</translation>
+        <translation>Avviso centraggio</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="452"/>
         <source>OFF</source>
-        <translation type="unfinished">Spento</translation>
+        <translation>Spento</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="308"/>
         <source>Model Image</source>
-        <translation type="unfinished">Immagine modello</translation>
+        <translation>Immagine modello</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="110"/>
         <source>Exponential</source>
-        <translation type="unfinished">Esponenziale</translation>
+        <translation>Esponenziale</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="73"/>
         <source>Throttle Trim Idle Only</source>
-        <translation type="unfinished">Trim Motore solo Idle</translation>
+        <translation>Trim Motore solo Idle</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="115"/>
         <source>Extra Fine</source>
-        <translation type="unfinished">Extra Fine</translation>
+        <translation>Extra Fine</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="120"/>
         <source>Fine</source>
-        <translation type="unfinished">Fine</translation>
+        <translation>Fine</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="125"/>
         <source>Medium</source>
-        <translation type="unfinished">Medio</translation>
+        <translation>Medio</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="130"/>
         <source>Coarse</source>
-        <translation type="unfinished">Ampio</translation>
+        <translation>Ampio</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="141"/>
         <source>Display Checklist</source>
-        <translation type="unfinished">Mostra Note</translation>
+        <translation>Mostra Note</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="156"/>
         <source>Timer 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Temporizzatore 2</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="172"/>
         <source>Timer 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Temporizzatore 1</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="190"/>
         <source>Throttle Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Sorgente motore</translation>
     </message>
     <message>
         <source>Timer Source</source>
@@ -8163,52 +8163,52 @@ Il Team di OpenTX.</translation>
     <message>
         <location filename="../modeledit/setup.ui" line="206"/>
         <source>Trim Step</source>
-        <translation type="unfinished">Passo trim</translation>
+        <translation>Passo trim</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="388"/>
         <source>Warnings</source>
-        <translation type="unfinished">Avvisi</translation>
+        <translation>Avvisi</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="402"/>
         <source>Switch Warnings</source>
-        <translation type="unfinished">Attiva Avvisi </translation>
+        <translation>Avviso interruttore </translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="442"/>
         <source>Pot Warnings</source>
-        <translation type="unfinished">Avviso Pot</translation>
+        <translation>Avviso Pot</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="457"/>
         <source>Manual</source>
-        <translation type="unfinished">Manuale</translation>
+        <translation>Manuale</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="462"/>
         <source>Auto</source>
-        <translation type="unfinished">Auto</translation>
+        <translation>Auto</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="508"/>
         <source>Model</source>
-        <translation type="unfinished">Modello</translation>
+        <translation>Modello</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="43"/>
         <source>Extended Limits</source>
-        <translation type="unfinished">Limiti estesi</translation>
+        <translation>Limiti estesi</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="63"/>
         <source>Extended Trims</source>
-        <translation type="unfinished">Trim estesi</translation>
+        <translation>Trim estesi</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="83"/>
         <source>Throttle Warning</source>
-        <translation type="unfinished">Avviso Motore</translation>
+        <translation>Avviso Motore</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="24"/>
@@ -8216,7 +8216,7 @@ Il Team di OpenTX.</translation>
 If this is checked the throttle will be reversed.  Idle will be forward, trim will also be reversed and the throttle warning will be reversed as well.
 
 </source>
-        <translation type="unfinished">Stick motore inverso.
+        <translation>Stick motore invertito.
 Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà in avanti, anche i trim verranno rovesciati e anche gli avvisi.
 
 </translation>
@@ -8224,7 +8224,7 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../modeledit/setup.ui" line="33"/>
         <source>Reverse Throttle</source>
-        <translation type="unfinished">Stck Motore invertito</translation>
+        <translation>Stick Motore invertito</translation>
     </message>
 </context>
 <context>
@@ -8241,27 +8241,27 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
         <location filename="../simulation/simulatordialog.cpp" line="315"/>
         <location filename="../simulation/simulatordialog.cpp" line="337"/>
         <source>Warning</source>
-        <translation type="unfinished">Avviso</translation>
+        <translation>Avviso</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog.cpp" line="315"/>
         <source>Joystick enabled but not configured correctly</source>
-        <translation type="unfinished">Joystick abilitato ma non configurato correttamente</translation>
+        <translation>Joystick abilitato ma non configurato correttamente</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog.cpp" line="337"/>
         <source>Cannot open joystick, joystick disabled</source>
-        <translation type="unfinished">Non riesco ad aprire il joystick, supporto joystick disabilitato</translation>
+        <translation>Non riesco ad aprire il joystick, supporto joystick disabilitato</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog.cpp" line="344"/>
         <source>Simulating Radio (%1)</source>
-        <translation type="unfinished">Simulazione Radio (%1)</translation>
+        <translation>Simulazione Radio (%1)</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog.cpp" line="495"/>
         <source>Firmware %1 error: %2</source>
-        <translation type="unfinished">Firmware %1 errore: %2</translation>
+        <translation>Firmware %1 errore: %2</translation>
     </message>
 </context>
 <context>
@@ -8269,7 +8269,7 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="26"/>
         <source>Companion Simulator</source>
-        <translation type="unfinished">Simulatore di Companion</translation>
+        <translation>Simulatore di Companion</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="404"/>
@@ -8277,7 +8277,7 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
         <location filename="../simulation/simulatordialog-9x.ui" line="873"/>
         <location filename="../simulation/simulatordialog-9x.ui" line="937"/>
         <source>Right Double Click to Reset</source>
-        <translation type="unfinished">Doppio click con il destro per portare a 0</translation>
+        <translation>Doppio click con il destro per portare a 0</translation>
     </message>
     <message>
         <source>THR</source>
@@ -8299,30 +8299,30 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
         <location filename="../simulation/simulatordialog-9x.ui" line="248"/>
         <location filename="../simulation/simulatordialog-9x.ui" line="717"/>
         <source>Hold X</source>
-        <translation type="unfinished">Tieni X</translation>
+        <translation>Mantieni X</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="278"/>
         <location filename="../simulation/simulatordialog-9x.ui" line="747"/>
         <source>Fix X</source>
-        <translation type="unfinished">Fissa X</translation>
+        <translation>Blocca X</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="308"/>
         <location filename="../simulation/simulatordialog-9x.ui" line="777"/>
         <source>Fix Y</source>
-        <translation type="unfinished">Fissa Y</translation>
+        <translation>Blocca Y</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="338"/>
         <location filename="../simulation/simulatordialog-9x.ui" line="807"/>
         <source>Hold Y</source>
-        <translation type="unfinished">Tieni Y</translation>
+        <translation>Mantieni Y</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="1445"/>
         <source>Gvars</source>
-        <translation type="unfinished">Var Glob</translation>
+        <translation>Var Glob</translation>
     </message>
     <message>
         <source>TextLabel</source>
@@ -8351,7 +8351,7 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="999"/>
         <source>BEEP</source>
-        <translation type="unfinished">SUONO</translation>
+        <translation>SUONO</translation>
     </message>
     <message>
         <source>P1</source>
@@ -8368,12 +8368,12 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="1239"/>
         <source>9x Simulator</source>
-        <translation type="unfinished">Simulatore 9x</translation>
+        <translation>Simulatore 9x</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-9x.ui" line="1432"/>
         <source>Outputs</source>
-        <translation type="unfinished">Uscite</translation>
+        <translation>Uscite</translation>
     </message>
 </context>
 <context>
@@ -9061,72 +9061,72 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../wizarddialog.cpp" line="27"/>
         <source>Model Wizard</source>
-        <translation type="unfinished"></translation>
+        <translation>Assistente di configurazione</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="29"/>
         <source>Model Type</source>
-        <translation type="unfinished">Tipologia veivolo</translation>
+        <translation>Tipologia modello</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="29"/>
         <source>Enter model name and model type.</source>
-        <translation type="unfinished">Inserici nome e tipo di modello</translation>
+        <translation>Inserire nome e tipo di modello.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="30"/>
         <source>Throttle</source>
-        <translation type="unfinished">Motore</translation>
+        <translation>Motore</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="30"/>
         <source>Has your model got a motor or an engine?</source>
-        <translation type="unfinished">Il modello ha un motore a scoppio o elettrico?</translation>
+        <translation>Il modello ha un motore a scoppio o elettrico?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="31"/>
         <source>Wing Type</source>
-        <translation type="unfinished">Tipo di ala</translation>
+        <translation>Tipo di ala</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="31"/>
         <source>Is your model a flying wing/deltawing or has it a standard wing configuration?</source>
-        <translation type="unfinished">Il modello è un tuttala / ala a delta o ha una configurazione standard?</translation>
+        <translation>Il modello è un tuttala / ala a delta o ha una configurazione standard?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="32"/>
         <source>Ailerons</source>
-        <translation type="unfinished">Alettoni</translation>
+        <translation>Alettoni</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="32"/>
         <source>Has your model got ailerons?</source>
-        <translation type="unfinished">Il modello ha gli alettoni?</translation>
+        <translation>Il modello ha gli alettoni?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="33"/>
         <source>Flaps</source>
-        <translation type="unfinished"></translation>
+        <translation>Flap</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="33"/>
         <source>Has your model got flaps?</source>
-        <translation type="unfinished">Il modello ha i flaps?</translation>
+        <translation>Il modello ha i flap?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="34"/>
         <source>Airbrakes</source>
-        <translation type="unfinished">Diruttori</translation>
+        <translation>Diruttori</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="34"/>
         <source>Has your model got airbrakes?</source>
-        <translation type="unfinished">Il modello ha i diruttori?</translation>
+        <translation>Il modello ha i diruttori?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="35"/>
         <source>Flying-wing / Delta-wing</source>
-        <translation type="unfinished">Tuttala / Ala a delta</translation>
+        <translation>Tuttala / Ala a delta</translation>
     </message>
     <message>
         <source>Are the elevons controlled by servos connected to separate channels or by a single servo channel?</source>
@@ -9135,33 +9135,33 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../wizarddialog.cpp" line="35"/>
         <source>Select the elevons channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Selezionare in canali degli elevoni</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="36"/>
         <source>Rudder</source>
-        <translation type="unfinished">Direzionale</translation>
+        <translation>Direzionale</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="36"/>
         <source>Does your model have a rudder?</source>
-        <translation type="unfinished">Il modello ha una deriva?</translation>
+        <translation>Il modello ha un direzionale?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="37"/>
         <source>Tail Type</source>
-        <translation type="unfinished">Tipo di coda</translation>
+        <translation>Tipo di coda</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="37"/>
         <source>Select which type of tail your model is equiped with.</source>
-        <translation type="unfinished">Selezionare quale tipo di coda ha il modello</translation>
+        <translation>Selezionare quale tipo di coda ha il modello.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="38"/>
         <location filename="../wizarddialog.cpp" line="40"/>
         <source>Tail</source>
-        <translation type="unfinished">Coda</translation>
+        <translation>Coda</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="38"/>
@@ -9172,7 +9172,7 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../wizarddialog.cpp" line="39"/>
         <source>V-Tail</source>
-        <translation type="unfinished">Coda a V</translation>
+        <translation>Coda a V</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="40"/>
@@ -9182,49 +9182,49 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../wizarddialog.cpp" line="41"/>
         <source>Cyclic</source>
-        <translation type="unfinished">Ciclico</translation>
+        <translation>Ciclico</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="41"/>
         <source>Which type of swash control is installed in your helicopter?</source>
-        <translation type="unfinished">Quale tipo di alello è installato sul vostro elicottero?</translation>
+        <translation>Quale tipo di anello è installato sul vostro elicottero?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="42"/>
         <source>Tail Gyro</source>
-        <translation type="unfinished">Giroscopio di coda</translation>
+        <translation>Giroscopio di coda</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="42"/>
         <source>Has your helicopter got an adjustable gyro for the tail?</source>
-        <translation type="unfinished">L&apos; elicottero ha un giroscopio per la coda?</translation>
+        <translation>L&apos; elicottero ha un giroscopio per la coda?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="43"/>
         <source>Rotor Type</source>
-        <translation type="unfinished">Tipo di rotore</translation>
+        <translation>Tipo di rotore</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="43"/>
         <source>Has your helicopter got a flybar?</source>
-        <translation type="unfinished">L&apos;elicottero ha una Flubar?</translation>
+        <translation>L&apos;elicottero ha una Flybar ?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="44"/>
         <location filename="../wizarddialog.cpp" line="45"/>
         <source>Helicopter</source>
-        <translation type="unfinished">Elicottero</translation>
+        <translation>Elicottero</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="44"/>
         <location filename="../wizarddialog.cpp" line="45"/>
         <source>Select the controls for your helicopter</source>
-        <translation type="unfinished">Selezionare il controllo per l&apos;elicottero</translation>
+        <translation>Selezionare i controlli per l&apos;elicottero</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="46"/>
         <source>Multirotor</source>
-        <translation type="unfinished">Multirotore</translation>
+        <translation>Multirotore</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="46"/>
@@ -9234,7 +9234,7 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../wizarddialog.cpp" line="47"/>
         <source>Model Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opzioni del modello</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="47"/>
@@ -9244,27 +9244,27 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../wizarddialog.cpp" line="48"/>
         <source>Save Changes</source>
-        <translation type="unfinished">Salva cambiamenti</translation>
+        <translation>Salva cambiamenti</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="48"/>
         <source>Manually check the direction of each control surface and reverse any channels that make controls move in the wrong direction. Remove the propeller/propellers before you try to control your model for the first time.&lt;br&gt;Please note that continuing removes all old model settings!</source>
-        <translation type="unfinished">Controllare manualmente la direzione di ogni superfice di controllo e invertire ogni canale che si sposta nella direzione errata. Rimuovere l&apos;elica/eliche prima di controllare per la prima volta il modello.&lt;br&gt;Attenzione: continuando verranno rimosse tutte le impostazioni dei vecchi modelli!</translation>
+        <translation>Controllare manualmente la direzione di ogni superfice di controllo e invertire ogni canale che si sposta nella direzione errata. Rimuovere l&apos;elica/eliche prima di controllare per la prima volta il modello.&lt;br&gt;Attenzione: continuando verranno rimosse tutte le impostazioni dei vecchi modelli!</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="69"/>
         <source>Enter a name for your model and select model type.</source>
-        <translation type="unfinished">Inserire il nome per il vostro modello e selezionare il tipo di modello</translation>
+        <translation>Inserire il nome per il vostro modello e selezionare il tipo di modello.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="72"/>
         <source>Select the receiver channel that is connected to your ESC or throttle servo.&lt;br&gt;&lt;br&gt;Throttle - Spektrum: CH1, Futaba: CH3</source>
-        <translation type="unfinished">Selezionare il canale della ricevente al quale è connesso l&apos;ESC o il servo del gas.&lt;br&gt;&lt;br&gt;Motore - Spectrum: CH1, Futaba:.CH3</translation>
+        <translation>Selezionare il canale della ricevente al quale è connesso l&apos;ESC o il servo del gas.&lt;br&gt;&lt;br&gt;Es. Spectrum: CH1, Futaba:.CH3</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="76"/>
         <source>Most aircraft have a main wing and a tail with control surfaces. Flying wings and delta winged aircraft only have a single wing. The main control surface on a standard wing controls the roll of the aircraft. This surface is called an aileron.&lt;br&gt;The control surface of a delta wing controls both roll and pitch. This surface is called an elevon. </source>
-        <translation type="unfinished">Molti aeromobili hanno l&apos;ala principale e la coda con superfici di controllo. I veivoli tuttala e le ali a delta ne hanno una s ola. In un ala tradizionale le superfici di controllo principali provocano il rollio del veivolo e si chiamano Alettoni.&lt;br&gt;In una ala a delta le superfici di controllo provocano contemporaneamente rollio e beccheggio e si chiamano Elevoni.</translation>
+        <translation>Molti aeromobili hanno l&apos;ala principale e la coda con superfici di controllo. I veivoli tuttala e le ali a delta ne hanno una sola. In un ala tradizionale le superfici di controllo principali provocano il rollio del veivolo e si chiamano Alettoni.&lt;br&gt;In un&apos;ala a delta le superfici di controllo provocano contemporaneamente rollio e beccheggio e si chiamano Elevoni.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="81"/>
@@ -9274,7 +9274,7 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../wizarddialog.cpp" line="87"/>
         <source>This wizard assumes that your flaps are controlled by a switch. If your flaps are controlled by a potentiometer you can change that manually later.</source>
-        <translation type="unfinished"></translation>
+        <translation>Questo assistente configura l&apos;azionamento dei flap tramite switch. Potete associare un potenziometro in seguito.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="91"/>
@@ -9289,12 +9289,12 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../wizarddialog.cpp" line="99"/>
         <source>Select the receiver channel that is connected to your rudder.&lt;br&gt;&lt;br&gt;Rudder - Spektrum: CH4, Futaba: CH4</source>
-        <translation type="unfinished"></translation>
+        <translation>Selezionare il canale della ricevente al quale è connesso il direzionale.&lt;br&gt;&lt;br&gt;Es. Spectrum: CH4, Futaba:.CH4</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="103"/>
         <source>Select the tail type of your plane.</source>
-        <translation type="unfinished"></translation>
+        <translation>Slezionare il tipo di coda dell&apos;aereo.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="106"/>
@@ -9326,12 +9326,12 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../wizarddialog.cpp" line="148"/>
         <source>There is no help available for the current page.</source>
-        <translation type="unfinished">Non è disponibile un aiuto per questa pagina</translation>
+        <translation>Nessun aiuto disponibile per questa pagina.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="151"/>
         <source>Model Wizard Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Aiuto dell&apos;assistente di configurazione</translation>
     </message>
 </context>
 <context>
@@ -9339,17 +9339,17 @@ Se l&apos;opzione selezionata lo stick motore verrà rovesciato. Il minimo sarà
     <message>
         <location filename="../wizarddialog.cpp" line="989"/>
         <source>Plane</source>
-        <translation type="unfinished">Aereo</translation>
+        <translation>Aereo</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="991"/>
         <source>Multicopter</source>
-        <translation type="unfinished"></translation>
+        <translation>Multirotore</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="993"/>
         <source>Helicopter</source>
-        <translation type="unfinished">Elicottero</translation>
+        <translation>Elicottero</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="1015"/>
