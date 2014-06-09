@@ -659,6 +659,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case LuaInputs:
     case LimitsPer1000:
     case EnhancedCurves:
+      return IS_TARANIS(board);
     case HasFasOffset:
       return (IS_STOCK(board) ? false : true);
     case HasMahPersistent:
