@@ -246,12 +246,13 @@ void Curves::updateCurveType()
     index = model.curves[currentCurve].count - 2;
   }
   else {
+    ui->curveSmooth->hide();
     if (model.curves[currentCurve].count == 5)
-      index += 2;
+      index = 1;
     else if (model.curves[currentCurve].count == 9)
-      index += 4;
+      index = 2;
     else if (model.curves[currentCurve].count == 17)
-      index += 6;
+      index = 3;
   }
 
   ui->curvePoints->setCurrentIndex(index);
