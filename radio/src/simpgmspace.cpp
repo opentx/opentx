@@ -678,5 +678,7 @@ void unlockFlash() { }
 void lockFlash() { }
 void writeFlash(uint32_t *address, uint32_t *buffer) { SIMU_SLEEP(100); }
 uint32_t isBootloaderStart(const void *block) { return 1; }
+void turnBacklightOn(uint8_t level, uint8_t color) { }
+void turnBacklightOff(void) { }
 #endif
 
