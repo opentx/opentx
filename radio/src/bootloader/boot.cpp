@@ -499,7 +499,9 @@ int main()
 #endif
 
 #if defined(PCBTARANIS)
+#if defined(REVPLUS)
   turnBacklightOn(0, 0);
+#endif
   keysInit();
   I2C_EE_Init();
   init_hw_timer();
