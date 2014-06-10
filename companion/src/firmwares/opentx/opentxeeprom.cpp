@@ -2745,6 +2745,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
   }
 
   if (IS_ARM(board)) {
+    internalField.Append(new UnsignedField<8>(generalData.backlightBright));
     internalField.Append(new SignedField<8>(generalData.currentCalib));
     if (version >= 213) {
       internalField.Append(new SignedField<8>(generalData.temperatureWarn)); // TODO
