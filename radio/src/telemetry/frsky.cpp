@@ -520,6 +520,10 @@ void telemetryReset()
   frskyData.rssi[1].value = 75;
   frskyData.analog[TELEM_ANA_A1].set(120, UNIT_VOLTS);
   frskyData.analog[TELEM_ANA_A2].set(240, UNIT_VOLTS);
+#if defined(CPUARM)
+  frskyData.analog[TELEM_ANA_A3].set(100, UNIT_VOLTS);
+  frskyData.analog[TELEM_ANA_A4].set(200, UNIT_VOLTS);
+#endif
   frskyData.hub.fuelLevel = 75;
   frskyData.hub.rpm = 12000;
   frskyData.hub.vfas = 100;
