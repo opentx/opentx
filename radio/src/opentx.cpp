@@ -1833,7 +1833,7 @@ void evalFunctions()
     CustomFnData *sd = &g_model.funcSw[i];
     int8_t swtch = CFN_SWITCH(sd);
     if (swtch) {
-      MASK_CFN_TYPE  switch_mask   = ((MASK_CFN_TYPE)1 << i);
+      MASK_CFN_TYPE  switch_mask = ((MASK_CFN_TYPE)1 << i);
 
       bool active = getSwitch(swtch);
 
@@ -2024,6 +2024,10 @@ void evalFunctions()
 #endif
                 PUSH_CUSTOM_PROMPT(active ? param : param+1, i+1);
               }
+            }
+            if (!active) {
+              // PLAY_BOTH would change activeFnSwitches otherwise
+              switch_mask = 0;
             }
             break;
           }
