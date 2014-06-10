@@ -450,3 +450,5 @@ Craig Hall
 Joseph Case
 Harald Klein
 Robert Crockford
+Chris Boultinghouse
+Kitsew
