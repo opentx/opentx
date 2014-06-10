@@ -260,15 +260,17 @@ class SourcesConversionTable: public ConversionTable {
 
         for (int i=0; i<TELEMETRY_SOURCE_ACC; i++) {
           if (version < 216) {
-            if (i==TELEMETRY_SOURCE_TX_TIME || i==TELEMETRY_SOURCE_SWR || i==TELEMETRY_SOURCE_RX_BATT || i==TELEMETRY_SOURCE_A3 || i==TELEMETRY_SOURCE_A4 || i==TELEMETRY_SOURCE_ASPD || i==TELEMETRY_SOURCE_DTE || i==TELEMETRY_SOURCE_CELL_MIN || i==TELEMETRY_SOURCE_CELLS_MIN || i==TELEMETRY_SOURCE_VFAS_MIN)
+            if (i==TELEMETRY_SOURCE_TX_TIME || i==TELEMETRY_SOURCE_SWR || i==TELEMETRY_SOURCE_A3 || i==TELEMETRY_SOURCE_A4 || i==TELEMETRY_SOURCE_ASPD || i==TELEMETRY_SOURCE_DTE || i==TELEMETRY_SOURCE_CELL_MIN || i==TELEMETRY_SOURCE_CELLS_MIN || i==TELEMETRY_SOURCE_VFAS_MIN)
               continue;
           }
           if (!IS_ARM(board)) {
-            if (i==TELEMETRY_SOURCE_TX_TIME || i==TELEMETRY_SOURCE_SWR|| i==TELEMETRY_SOURCE_RX_BATT || i==TELEMETRY_SOURCE_A3 || i==TELEMETRY_SOURCE_A4 || i==TELEMETRY_SOURCE_A3_MIN || i==TELEMETRY_SOURCE_A4_MIN)
+            if (i==TELEMETRY_SOURCE_TX_TIME || i==TELEMETRY_SOURCE_SWR || i==TELEMETRY_SOURCE_A3 || i==TELEMETRY_SOURCE_A4 || i==TELEMETRY_SOURCE_A3_MIN || i==TELEMETRY_SOURCE_A4_MIN)
               continue;
           }
           addConversion(RawSource(SOURCE_TYPE_TELEMETRY, i), val++);
           if (version >= 216 && IS_ARM(board)) {
+            if (i==TELEMETRY_SOURCE_RSSI_RX)
+              val += 1;
             if (i==TELEMETRY_SOURCE_TX_TIME)
               val += 5;
             if (i==TELEMETRY_SOURCE_DTE)
@@ -414,7 +416,7 @@ class TelemetrySourcesConversionTable: public ConversionTable {
       addConversion(1+TELEMETRY_SOURCE_RSSI_TX, val++);
       addConversion(1+TELEMETRY_SOURCE_RSSI_RX, val++);
       if (IS_ARM(board) && version >= 216)
-        addConversion(1+TELEMETRY_SOURCE_RX_BATT, val++);
+        addConversion(1+TELEMETRY_SOURCE_RESERVE, val++);
       addConversion(1+TELEMETRY_SOURCE_A1, val++);
       addConversion(1+TELEMETRY_SOURCE_A2, val++);
       if (IS_ARM(board) && version >= 216) {
@@ -2208,8 +2210,6 @@ class TelemetryVoltsSourceConversionTable: public ConversionTable
     TelemetryVoltsSourceConversionTable(BoardEnum board, unsigned int version)
     {
       int val = 0;
-      if (IS_ARM(board) && version >= 216)
-        addConversion(TELEMETRY_VOLTS_SOURCE_RXBATT, val++);
       addConversion(TELEMETRY_VOLTS_SOURCE_A1, val++);
       addConversion(TELEMETRY_VOLTS_SOURCE_A2, val++);
       if (IS_ARM(board) && version >= 216) {
@@ -2575,8 +2575,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   }
 
   if (IS_ARM(board) && version >= 216) {
-    internalField.Append(new UnsignedField<8>(modelData.frsky.rxBattAlarms[0]));
-    internalField.Append(new UnsignedField<8>(modelData.frsky.rxBattAlarms[1]));
+    internalField.Append(new SpareBitsField<16>());
   }
 }
 

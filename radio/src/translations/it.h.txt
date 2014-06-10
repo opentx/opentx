@@ -358,7 +358,7 @@
   #define LEN_AMPSRC           TR("\003", "\007")
   #define TR_AMPSRC            TR("---""A1\0""A2\0""A3\0""A4\0""FAS""Cel", "---\0   ""A1\0    ""A2\0    ""A3\0    ""A4\0    ""FAS\0   ""Celle\0 ")
   #define LEN_VOLTSRC          TR("\003", "\007")
-  #define TR_VOLTSRC           TR("RxV""A1\0""A2\0""A3\0""A4\0""FAS""Cel", "BattRx\0""A1\0    ""A2\0    ""A3\0    ""A4\0    ""FAS\0   ""Celle\0 ")
+  #define TR_VOLTSRC           TR("A1\0""A2\0""A3\0""A4\0""FAS""Cel", "A1\0    ""A2\0    ""A3\0    ""A4\0    ""FAS\0   ""Celle\0 ")
 #else
   #define LEN_AMPSRC           TR("\003", "\007")
   #define TR_AMPSRC            TR("---""A1\0""A2\0""FAS""Cel", "---\0   ""A1\0    ""A2\0    ""FAS\0   ""Celle\0 ")

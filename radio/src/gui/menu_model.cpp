@@ -5361,11 +5361,6 @@ void menuModelCustomScripts(uint8_t event)
 
 enum menuModelTelemetryItems {
   CASE_CPUARM(ITEM_TELEMETRY_PROTOCOL_TYPE)
-#if defined(CPUARM)
-  ITEM_TELEMETRY_RXBATT_LABEL,
-  ITEM_TELEMETRY_RXBATT_ALARM1,
-  ITEM_TELEMETRY_RXBATT_ALARM2,
-#endif
   ITEM_TELEMETRY_A1_LABEL,
   ITEM_TELEMETRY_A1_RANGE,
   ITEM_TELEMETRY_A1_OFFSET,
@@ -5463,12 +5458,6 @@ enum menuModelTelemetryItems {
   #define TELEM_SCRTYPE_COL (10*FW)
 #endif
 
-#if defined(CPUARM)
-  #define RXBATT_ROWS       LABEL(RXBATT), 0, 0,
-#else
-  #define RXBATT_ROWS
-#endif
-
 #if defined(PCBTARANIS)
   #define CHANNEL_ROWS      LABEL(CHANNEL), 1, 0, 0, 0
   #define RSSI_ROWS         LABEL(RSSI), 0, 0
@@ -5497,7 +5486,7 @@ enum menuModelTelemetryItems {
 
 void menuModelTelemetry(uint8_t event)
 {
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX+1, {0, CASE_CPUARM(0) RXBATT_ROWS CHANNEL_ROWS, CHANNEL_ROWS, CASE_CPUARM(CHANNEL_ROWS) CASE_CPUARM(CHANNEL_ROWS) RSSI_ROWS, USRDATA_LINES 0, 0, IF_FAS_OFFSET(0) CASE_CPUARM(0) CASE_VARIO(LABEL(Vario)) CASE_VARIO(0) CASE_VARIO(VARIO_RANGE_ROWS) CASE_PCBTARANIS(LABEL(TopBar)) CASE_PCBTARANIS(0) SCREEN_TYPE_ROWS, 2, 2, 2, 2, SCREEN_TYPE_ROWS, 2, 2, 2, 2, CASE_CPUARM(SCREEN_TYPE_ROWS) CASE_CPUARM(2) CASE_CPUARM(2) CASE_CPUARM(2) CASE_CPUARM(2)});
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX+1, {0, CASE_CPUARM(0) CHANNEL_ROWS, CHANNEL_ROWS, CASE_CPUARM(CHANNEL_ROWS) CASE_CPUARM(CHANNEL_ROWS) RSSI_ROWS, USRDATA_LINES 0, 0, IF_FAS_OFFSET(0) CASE_CPUARM(0) CASE_VARIO(LABEL(Vario)) CASE_VARIO(0) CASE_VARIO(VARIO_RANGE_ROWS) CASE_PCBTARANIS(LABEL(TopBar)) CASE_PCBTARANIS(0) SCREEN_TYPE_ROWS, 2, 2, 2, 2, SCREEN_TYPE_ROWS, 2, 2, 2, 2, CASE_CPUARM(SCREEN_TYPE_ROWS) CASE_CPUARM(2) CASE_CPUARM(2) CASE_CPUARM(2) CASE_CPUARM(2)});
 
   uint8_t sub = m_posVert - 1;
 
@@ -5540,23 +5529,6 @@ void menuModelTelemetry(uint8_t event)
         break;
 #endif
 
-#if defined(CPUARM)
-      case ITEM_TELEMETRY_RXBATT_LABEL:
-        lcd_putsLeft(y, "RxBatt");
-        putsTelemetryChannel(TELEM_COL2+6*FW, y, TELEM_RXBATT-1, frskyData.analog[TELEM_ANA_RXBATT].value, LEFT);
-        break;
-      case ITEM_TELEMETRY_RXBATT_ALARM1:
-      case ITEM_TELEMETRY_RXBATT_ALARM2:
-      {
-        uint8_t alarm = (k==ITEM_TELEMETRY_RXBATT_ALARM1 ? 0 : 1);
-        lcd_putsLeft(y, (alarm==0 ? STR_LOWALARM : STR_CRITICALALARM));
-        putsTelemetryChannel(TELEM_COL2, y, TELEM_RXBATT-1, g_model.rxBattAlarms[alarm], LEFT|attr);
-        if (attr && (s_editMode>0 || p1valdiff)) {
-          g_model.rxBattAlarms[alarm] = checkIncDec(event, g_model.rxBattAlarms[alarm], 0, 255, EE_MODEL);
-        }
-        break;
-      }
-#endif
       case ITEM_TELEMETRY_A1_LABEL:
       case ITEM_TELEMETRY_A2_LABEL:
 #if defined(CPUARM)

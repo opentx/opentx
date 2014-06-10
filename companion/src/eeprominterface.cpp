@@ -263,7 +263,7 @@ QString RawSource::toString()
 
   static const QString telemetry[] = {
     QObject::tr("Batt"), QObject::tr("Time"), QObject::tr("Timer1"), QObject::tr("Timer2"),
-    QObject::tr("SWR"), QObject::tr("RSSI Tx"), QObject::tr("RSSI Rx"), QObject::tr("Rx Batt"),
+    QObject::tr("SWR"), QObject::tr("RSSI Tx"), QObject::tr("RSSI Rx"),
     QObject::tr("A1"), QObject::tr("A2"), QObject::tr("A3"), QObject::tr("A4"),
     QObject::tr("Alt"), QObject::tr("Rpm"), QObject::tr("Fuel"), QObject::tr("T1"), QObject::tr("T2"),
     QObject::tr("Speed"), QObject::tr("Dist"), QObject::tr("GPS Alt"),
@@ -991,7 +991,6 @@ void FrSkyData::clear()
   memset(this, 0, sizeof(FrSkyData));
   rssiAlarms[0].clear(2, 45);
   rssiAlarms[1].clear(3, 42);
-  rxBattAlarms[1] = round(43.0*255/132);
   varioSource = 2/*VARIO*/;
   blades = 2;
 }

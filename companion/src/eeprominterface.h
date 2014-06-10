@@ -229,7 +229,6 @@ enum TelemetrySource {
   TELEMETRY_SOURCE_SWR,
   TELEMETRY_SOURCE_RSSI_TX,
   TELEMETRY_SOURCE_RSSI_RX,
-  TELEMETRY_SOURCE_RX_BATT,
   TELEMETRY_SOURCE_A1,
   TELEMETRY_SOURCE_A2,
   TELEMETRY_SOURCE_A3,
@@ -871,7 +870,6 @@ enum TelemetryVarioSources {
 };
 
 enum TelemetryVoltsSources {
-  TELEMETRY_VOLTS_SOURCE_RXBATT,
   TELEMETRY_VOLTS_SOURCE_A1,
   TELEMETRY_VOLTS_SOURCE_A2,
   TELEMETRY_VOLTS_SOURCE_A3,
@@ -910,7 +908,6 @@ class FrSkyData {
     bool mAhPersistent;
     unsigned int storedMah;
     int fasOffset;
-    unsigned int rxBattAlarms[2];
 
     void clear();
 };

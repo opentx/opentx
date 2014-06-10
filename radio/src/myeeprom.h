@@ -326,7 +326,7 @@ PACK(typedef struct t_ScriptData {
     TRAINER_MODULE
   };
   #define MODELDATA_BITMAP  char bitmap[LEN_BITMAP_NAME];
-  #define MODELDATA_EXTRA   uint8_t externalModule; uint8_t trainerMode; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][4]; uint8_t nPotsToWarn; int8_t potPosition[NUM_POTS]; uint8_t rxBattAlarms[2];
+  #define MODELDATA_EXTRA   uint8_t externalModule; uint8_t trainerMode; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][4]; uint8_t nPotsToWarn; int8_t potPosition[NUM_POTS]; uint8_t spare[2];
   #define LIMITDATA_EXTRA   char name[LEN_CHANNEL_NAME]; int8_t curve;
   #define swstate_t         uint16_t
 #elif defined(PCBSKY9X)
@@ -1034,7 +1034,7 @@ enum TelemetrySource {
   TELEM_RSSI_TX,
   TELEM_RSSI_RX,
 #if defined(CPUARM)
-  TELEM_RXBATT,
+  TELEM_RESERVE0,
 #endif
   TELEM_A_FIRST,
   TELEM_A1=TELEM_A_FIRST,
@@ -1184,9 +1184,6 @@ enum FrskyCurrentSource {
 };
 
 enum FrskyVoltsSource {
-#if defined(CPUARM)
-  FRSKY_VOLTS_SOURCE_RXBATT,
-#endif
   FRSKY_VOLTS_SOURCE_A1,
   FRSKY_VOLTS_SOURCE_A2,
 #if defined(CPUARM)

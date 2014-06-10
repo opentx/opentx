@@ -439,8 +439,6 @@ void modelDefault(uint8_t id)
 
 #if defined(PCBTARANIS)
   g_model.frsky.channels[0].ratio = 132;
-  g_model.rxBattAlarms[0] = 0;
-  g_model.rxBattAlarms[1] = 83; // 4.3V
 #endif
 
 #if defined(MAVLINK)
@@ -1655,11 +1653,6 @@ PLAY_FUNCTION(playValue, uint8_t idx)
 #if defined(CPUARM) && defined(FRSKY)
     case MIXSRC_FIRST_TELEM+TELEM_SWR-1:
       PLAY_NUMBER(val, 0, 0);
-      break;
-    case MIXSRC_FIRST_TELEM+TELEM_RXBATT-1:
-      if (TELEMETRY_STREAMING()) {
-        PLAY_NUMBER((val*132+127)/255, 1+UNIT_VOLTS, PREC1);
-      }
       break;
 #endif
 #if defined(FRSKY)

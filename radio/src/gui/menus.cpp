@@ -1451,6 +1451,9 @@ bool isTelemetrySourceAvailable(int source)
     return false;
 #endif
 
+  if (source == TELEM_RESERVE0)
+    return false;
+
   if (source >= TELEM_RESERVE1 && source <= TELEM_RESERVE5)
     return false;
 
