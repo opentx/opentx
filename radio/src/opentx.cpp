@@ -3007,6 +3007,8 @@ ISR(USART0_UDRE_vect)
 #endif
 #endif
 
+#define INSTANT_TRIM_MARGIN 10 /* around 1% */
+
 void instantTrim()
 {
   evalInputs(e_perout_mode_notrainer);
@@ -3016,11 +3018,14 @@ void instantTrim()
       // don't instant trim the throttle stick
       uint8_t trim_phase = getTrimFlightPhase(s_current_mixer_flight_mode, i);
 #if defined(PCBTARANIS)
-      int16_t trim = limit<int16_t>(TRIM_EXTENDED_MIN, (calibratedStick[i] + trims[i]) / 2, TRIM_EXTENDED_MAX);
+      int16_t delta = calibratedStick[i];
 #else
-      int16_t trim = limit<int16_t>(TRIM_EXTENDED_MIN, (anas[i] + trims[i]) / 2, TRIM_EXTENDED_MAX);
+      int16_t delta = anas[i];
 #endif
-      setTrimValue(trim_phase, i, trim);
+      if (abs(delta) >= INSTANT_TRIM_MARGIN) {
+        int16_t trim = limit<int16_t>(TRIM_EXTENDED_MIN, (delta + trims[i]) / 2, TRIM_EXTENDED_MAX);
+        setTrimValue(trim_phase, i, trim);
+      }
     }
   }
 
