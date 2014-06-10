@@ -1082,7 +1082,9 @@ void checkTHR()
   else {
     calibratedStick[thrchn] = -1024;
 #if !defined(PCBTARANIS)
-    rawAnas[thrchn] = anas[thrchn] = calibratedStick[thrchn];
+    if (thrchn < NUM_STICKS) {
+      rawAnas[thrchn] = anas[thrchn] = calibratedStick[thrchn];
+    }
 #endif
     MESSAGE(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_THROTTLE_ALERT);
   }
@@ -2156,10 +2158,10 @@ void doMixerCalculations()
         val = val - gModelMin;
 
 #if defined(PPM_LIMITS_SYMETRICAL)
-      if (lim->symetrical)
+      if (lim->symetrical) {
         val -= calc1000toRESX(lim->offset);
+      }
 #endif
-
 
       gModelMax -= gModelMin; // we compare difference between Max and Mix for recaling needed; Max and Min are shifted to 0 by default
       // usually max is 1024 min is -1024 --> max-min = 2048 full range
@@ -2182,7 +2184,7 @@ void doMixerCalculations()
 #ifdef PCBTARANIS
       val = RESX + calibratedStick[g_model.thrTraceSrc == 0 ? THR_STICK : g_model.thrTraceSrc+NUM_STICKS-1];
 #else
-      val = RESX + rawAnas[g_model.thrTraceSrc == 0 ? THR_STICK : g_model.thrTraceSrc+NUM_STICKS-1];
+      val = RESX + (g_model.thrTraceSrc == 0 ? rawAnas[THR_STICK] : calibratedStick[g_model.thrTraceSrc+NUM_STICKS-1]);
 #endif
     }
 
@@ -2205,8 +2207,6 @@ void doMixerCalculations()
           timerState->sum = 0;
         }
 
-        // value for time described in timer->mode
-        // OFFABSTHsTH%THt
         if (tm == TMRMODE_THR_REL) {
           timerState->cnt++;
           timerState->sum+=val;
@@ -2227,21 +2227,22 @@ void doMixerCalculations()
             // @@@ open.20.fsguruh: why so complicated? we have already a s_sum field; use it for the half seconds (not showable) as well
             // check for s_cnt[i]==0 is not needed because we are shure it is at least 1
 #if defined(ACCURAT_THROTTLE_TIMER)
-            if ((timerState->sum/timerState->cnt)>=128) {  // throttle was normalized to 0 to 128 value (throttle/64*2 (because - range is added as well)
+            if ((timerState->sum/timerState->cnt) >= 128) {  // throttle was normalized to 0 to 128 value (throttle/64*2 (because - range is added as well)
               newTimerVal++;  // add second used of throttle
-              timerState->sum-=128*timerState->cnt;
+              timerState->sum -= 128*timerState->cnt;
             }
 #else
-            if ((timerState->sum/timerState->cnt)>=32) {  // throttle was normalized to 0 to 32 value (throttle/16*2 (because - range is added as well)
+            if ((timerState->sum/timerState->cnt) >= 32) {  // throttle was normalized to 0 to 32 value (throttle/16*2 (because - range is added as well)
               newTimerVal++;  // add second used of throttle
-              timerState->sum-=32*timerState->cnt;
+              timerState->sum -= 32*timerState->cnt;
             }
 #endif
             timerState->cnt=0;
           }
           else if (tm == TMRMODE_THR_TRG) {
-            if (val || newTimerVal > 0)
+            if (val || newTimerVal > 0) {
               newTimerVal++;
+            }
           }
           else {
             if (tm > 0) tm -= (TMR_VAROFS-1);
