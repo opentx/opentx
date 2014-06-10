@@ -64,7 +64,7 @@
 #include "../translations/en.h"
 
 #if defined(PCBTARANIS)
-  #define BOOTLOADER_TITLE      " Taranis BootLoader - v1.0"
+  #define BOOTLOADER_TITLE      " Taranis BootLoader - v1.1"
   #define BOOT_KEY_UP		KEY_PLUS
   #define BOOT_KEY_DOWN		KEY_MINUS
   #define BOOT_KEY_LEFT		KEY_MENU
