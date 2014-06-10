@@ -116,7 +116,7 @@ const pm_char * openLogs()
 #endif
 
 #if defined(CPUARM)
-    f_puts("SWR,RSSI,A1,A2,A3,A4", &g_oLogFile);
+    f_puts("SWR,RSSI,A1,A2,A3,A4,", &g_oLogFile);
 #elif defined(FRSKY)
     f_puts("Buffer,RX,TX,A1,A2,", &g_oLogFile);
 #endif
