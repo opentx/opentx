@@ -20,7 +20,7 @@ class avrOutputDialog : public QDialog
 {
     Q_OBJECT
 
-public:
+  public:
     explicit avrOutputDialog(QWidget *parent, QString prog, QStringList arg, QString wTitle, int closeBehaviour=AVR_DIALOG_CLOSE_IF_SUCCESSFUL, bool displayDetails=false);
     ~avrOutputDialog();
 
@@ -29,7 +29,7 @@ public:
     void waitForFinish();
     void addReadFuses();
 
-protected slots:
+  protected slots:
     void doAddTextStdOut();
     void doAddTextStdErr();
     void doProcessStarted();
@@ -41,7 +41,7 @@ protected slots:
     void killTimerElapsed();
     void errorWizard();
 
-private:
+  private:
     QString getProgrammer();
     Ui::avrOutputDialog *ui;
 

@@ -1025,7 +1025,6 @@ bool MainWindow::writeFirmwareToRadio(const QString filename)
       ad->setWindowIcon(CompanionIcon("write_flash.png"));
       ad->exec();
       delete ad;
-      sleep(1);
       result = true;
     }
   }
@@ -1113,22 +1112,20 @@ bool MainWindow::writeEepromToRadio(const QString filename, const QString messag
     if (!path.isEmpty()) {
       QStringList str;
       str << filename << path;
-      avrOutputDialog *ad = new avrOutputDialog(this, "", str, message);
-      ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
+      avrOutputDialog *ad = new avrOutputDialog(this, "", str, message, AVR_DIALOG_SHOW_DONE);
+      ad->setWindowIcon(CompanionIcon("write_eeprom.png"));
       ad->exec();
       delete ad;
-      sleep(1);
       result = true;
     }
   }
 
   if (result == false && !IS_TARANIS(GetCurrentFirmware()->getBoard())) {
     QStringList str = GetSendEEpromCommand(filename);
-    avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, "Write Backup To Radio", AVR_DIALOG_SHOW_DONE);
+    avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, "Write EEPROM To Radio", AVR_DIALOG_SHOW_DONE);
     ad->setWindowIcon(CompanionIcon("write_eeprom.png"));
     ad->exec();
     delete ad;
-    sleep(1);
     result = true;
   }
 
