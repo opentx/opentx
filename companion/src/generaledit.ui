@@ -1977,7 +1977,7 @@ Mode 4:
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Switches Delay (mid position)</string>
+          <string>Play Delay (switch mid position)</string>
          </property>
         </widget>
        </item>
@@ -2004,7 +2004,7 @@ p, li { white-space: pre-wrap; }
           <number>0</number>
          </property>
          <property name="maximum">
-          <number>250</number>
+          <number>300</number>
          </property>
          <property name="singleStep">
           <number>10</number>

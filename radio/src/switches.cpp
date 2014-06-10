@@ -111,7 +111,7 @@ uint32_t check3PosSwitchPosition(uint8_t idx, EnumKeys sw, bool startup)
     result = (1 << index);
     switchesMidposStart[idx] = 0;
   }
-  else if (startup || (switchesPos & (1 << (sw - SW_SA0 + 1))) || g_eeGeneral.switchesDelay==0 || (switchesMidposStart[idx] && (tmr10ms_t)(get_tmr10ms() - switchesMidposStart[idx]) > g_eeGeneral.switchesDelay)) {
+  else if (startup || (switchesPos & (1 << (sw - SW_SA0 + 1))) || g_eeGeneral.switchesDelay==SWITCHES_DELAY_NONE || (switchesMidposStart[idx] && (tmr10ms_t)(get_tmr10ms() - switchesMidposStart[idx]) > SWITCHES_DELAY())) {
     index = sw - SW_SA0 + 1;
     result = (1 << index);
     switchesMidposStart[idx] = 0;
@@ -158,7 +158,7 @@ void getSwitchesPosition(bool startup)
           potsLastposStart[i] = get_tmr10ms();
           potsPos[i] = (pos << 4) | previousStoredPos;
         }
-        else if (startup || g_eeGeneral.switchesDelay==0 || (tmr10ms_t)(get_tmr10ms() - potsLastposStart[i]) > g_eeGeneral.switchesDelay) {
+        else if (startup || g_eeGeneral.switchesDelay==SWITCHES_DELAY_NONE || (tmr10ms_t)(get_tmr10ms() - potsLastposStart[i]) > SWITCHES_DELAY()) {
           potsLastposStart[i] = 0;
           potsPos[i] = (pos << 4) | pos;
           if (previousStoredPos != pos) {
@@ -171,8 +171,6 @@ void getSwitchesPosition(bool startup)
 }
 #define SWITCH_POSITION(sw)  (switchesPos & (1<<(sw)))
 #define POT_POSITION(sw)     ((potsPos[(sw)/XPOTS_MULTIPOS_COUNT] & 0x0f) == ((sw) % XPOTS_MULTIPOS_COUNT))
-#else
-#define SWITCH_POSITION(idx) switchState((EnumKeys)(SW_BASE+(idx)))
 #endif
 
 bool getLogicalSwitch(uint8_t idx)
@@ -369,7 +367,11 @@ bool getLogicalSwitch(uint8_t idx)
   return result;
 }
 
+#if defined(CPUARM)
+bool getSwitch(int8_t swtch, uint8_t flags)
+#else
 bool getSwitch(int8_t swtch)
+#endif
 {
   bool result;
 
@@ -385,7 +387,13 @@ bool getSwitch(int8_t swtch)
     result = true;
   }
   else if (cs_idx <= SWSRC_LAST_SWITCH) {
-    result = SWITCH_POSITION(cs_idx-SWSRC_FIRST_SWITCH);
+#if defined(PCBTARANIS)
+    if (flags & GETSWITCH_MIDPOS_DELAY)
+      result = SWITCH_POSITION(cs_idx-SWSRC_FIRST_SWITCH);
+    else
+#endif
+    result = switchState((EnumKeys)(SW_BASE+cs_idx-SWSRC_FIRST_SWITCH));
+
 #if defined(MODULE_ALWAYS_SEND_PULSES)
     if (startupWarningState < STARTUP_WARNING_DONE) {
       // if throttle or switch warning is currently active, ignore actual stick position and use wanted values

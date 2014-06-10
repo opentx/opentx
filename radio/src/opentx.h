@@ -696,7 +696,14 @@ void perMain();
 NOINLINE void per10ms();
 
 getvalue_t getValue(uint8_t i);
+
+#if defined(CPUARM)
+#define GETSWITCH_MIDPOS_DELAY   1
+bool getSwitch(int8_t swtch, uint8_t flags=0);
+#else
 bool getSwitch(int8_t swtch);
+#endif
+
 void logicalSwitchesTimerTick();
 void logicalSwitchesReset();
 

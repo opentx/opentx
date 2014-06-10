@@ -2709,7 +2709,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
   internalField.Append(new SignedField<2>((int &)generalData.hapticMode));
 
   if (IS_ARM(board))
-    internalField.Append(new UnsignedField<8>(generalData.switchesDelay));
+    internalField.Append(new SignedField<8>(generalData.switchesDelay));
   else
     internalField.Append(new SpareBitsField<8>());
 

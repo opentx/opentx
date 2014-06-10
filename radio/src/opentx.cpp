@@ -1830,7 +1830,12 @@ void evalFunctions()
     if (swtch) {
       MASK_CFN_TYPE  switch_mask = ((MASK_CFN_TYPE)1 << i);
 
+#if defined(CPUARM)
+      bool active = getSwitch(swtch, IS_PLAY_FUNC(CFN_FUNC(sd)) ? GETSWITCH_MIDPOS_DELAY : 0);
+#else
       bool active = getSwitch(swtch);
+#endif
+
 
       if (HAS_ENABLE_PARAM(CFN_FUNC(sd))) {
         active &= (bool)CFN_ACTIVE(sd);

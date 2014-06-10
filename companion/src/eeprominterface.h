@@ -516,7 +516,7 @@ class GeneralSettings {
     unsigned int    gpsFormat;
     int     speakerVolume;
     unsigned int   backlightBright;
-    unsigned int switchesDelay;
+    int switchesDelay;
     int    currentCalib;
     int    temperatureCalib;
     int    temperatureWarn;

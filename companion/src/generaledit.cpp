@@ -307,7 +307,7 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
     }
 
     if (IS_ARM(eepromInterface->getBoard())) {
-      ui->switchesDelay->setValue(10*g_eeGeneral.switchesDelay);
+      ui->switchesDelay->setValue(10*(g_eeGeneral.switchesDelay+15));
     }
     else {
       ui->switchesDelay->hide();
@@ -527,7 +527,7 @@ void GeneralEdit::on_backlightautoSB_editingFinished()
 
 void GeneralEdit::on_switchesDelay_valueChanged()
 {
-  g_eeGeneral.switchesDelay = ui->switchesDelay->value() / 10;
+  g_eeGeneral.switchesDelay = (ui->switchesDelay->value() / 10) - 15;
   updateSettings();
 }
 
