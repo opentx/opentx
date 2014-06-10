@@ -116,6 +116,9 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
   }
   // Push rows upward
   addVSpring(gridLayout,0,firmware->getCapability(LogicalSwitches)+1);
+
+  disableMouseScrolling();
+
   lock = false;
 }
 

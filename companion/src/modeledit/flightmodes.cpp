@@ -171,6 +171,8 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
     ui->gvGB->hide();
   }
 
+  disableMouseScrolling();
+
   update();
 }
 

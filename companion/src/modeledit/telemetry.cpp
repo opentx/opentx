@@ -50,6 +50,8 @@ TelemetryAnalog::TelemetryAnalog(QWidget *parent, FrSkyChannelData & analog, Mod
   else {
     ui->label_Max->setText(tr("Range"));
   }
+
+  disableMouseScrolling();
 }
 
 void TelemetryAnalog::update()
@@ -324,6 +326,8 @@ TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model,
     ui->screenBarsLayout->addWidget(maxSB[l], l, 3, 1, 1);
   }
 
+  disableMouseScrolling();
+
   update();
 }
 
@@ -515,6 +519,8 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
     ui->bladesCount->setMinimum(1);
     ui->bladesCount->setMaximum(128);
   }
+
+  disableMouseScrolling();
 
   setup();
 }

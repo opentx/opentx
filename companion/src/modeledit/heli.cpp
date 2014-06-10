@@ -14,6 +14,8 @@ HeliPanel::HeliPanel(QWidget *parent, ModelData & model, GeneralSettings & gener
   connect(ui->swashInvertELE, SIGNAL(stateChanged(int)), this, SLOT(edited()));
   connect(ui->swashInvertAIL, SIGNAL(stateChanged(int)), this, SLOT(edited()));
   connect(ui->swashInvertCOL, SIGNAL(stateChanged(int)), this, SLOT(edited()));
+
+  disableMouseScrolling();
 }
 
 HeliPanel::~HeliPanel()

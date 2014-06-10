@@ -180,6 +180,8 @@ Curves::Curves(QWidget * parent, ModelData & model, GeneralSettings & generalSet
   addTemplate(tr("Symmetrical f(x)=-f(-x)"), CURVE_COEFF_ENABLE, curveSymmetricalY);
   addTemplate(tr("Symmetrical f(x)=f(-x)"), CURVE_COEFF_ENABLE | CURVE_YMID_ENABLE, curveSymmetricalX);
 
+  disableMouseScrolling();
+
   lock = false;
 }
 
