@@ -852,9 +852,14 @@ GeneralSettings::GeneralSettings()
     calibSpanPos[i] = 0x180;
   }
 
-  if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+  BoardEnum board = GetEepromInterface()->getBoard();
+  if (IS_TARANIS(board)) {
     potsType[0] = 1;
     potsType[1] = 1;
+  }
+
+  if (IS_ARM(board)) {
+    speakerVolume = 12;
   }
 
   templateSetup = g.profile[g.id()].channelOrder();
@@ -1072,11 +1077,11 @@ void ModelData::clear()
     moduleData[0].protocol=PPM;
     moduleData[1].protocol=OFF;      
   }
-  for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++)
+  for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
     phaseData[i].clear();
+  }
   clearInputs();
   clearMixes();
-
   for (int i=0; i<C9X_NUM_CHNOUT; i++)
     limitData[i].clear();
   for (int i=0; i<NUM_STICKS; i++)
@@ -1087,7 +1092,6 @@ void ModelData::clear()
     curves[i].clear(5);
   for (int i=0; i<2; i++)
     timers[i].clear();
-
   swashRingData.clear();
   frsky.clear();
 }
