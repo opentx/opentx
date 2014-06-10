@@ -388,7 +388,11 @@ void menuTelemetryFrsky(uint8_t event)
       putsTelemetryChannel(3*FW+4+4*FW+6*FW+FW, 5*FH+1, TELEM_CONSUMPTION-1, frskyData.hub.currentConsumption, DBLSIZE);
     }
     else {
+#if defined(CPUARM)
+      displayVoltageScreenLine(analog > 0 ? 5*FH : 4*FH, analog==1+FRSKY_VOLTS_SOURCE_A1+1 ? FRSKY_VOLTS_SOURCE_A2 : FRSKY_VOLTS_SOURCE_A1);
+#else
       displayVoltageScreenLine(analog > 0 ? 5*FH : 4*FH, analog ? 2-analog : 0);
+#endif
       if (analog == 0) displayVoltageScreenLine(6*FH, 1);
     }
 
