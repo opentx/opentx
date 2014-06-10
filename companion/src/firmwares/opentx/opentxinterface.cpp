@@ -504,7 +504,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
       return 1;
     case GvarsAreNamed:
     case GvarsFlightModes:
-      return ((IS_ARM(board)||(board==BOARD_GRUVIN9X)) ? 1 : 0);
+      return ((IS_ARM(board) || board==BOARD_GRUVIN9X) ? 1 : 0);
     case Mixes:
       return (IS_ARM(board) ? O9X_ARM_MAX_MIXERS : O9X_MAX_MIXERS);
     case OffsetWeight:
