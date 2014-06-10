@@ -1789,7 +1789,7 @@ class ArmCustomFunctionField: public TransformedField {
     {
       _mode = 0;
 
-      if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayValue)
+      if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayValue || fn.func == FuncPlayHaptic)
         _active = (version >= 216 ? fn.repeatParam : (fn.repeatParam/5));
       else
         _active = (fn.enabled ? 1 : 0);
@@ -1861,7 +1861,7 @@ class ArmCustomFunctionField: public TransformedField {
 
     virtual void afterImport()
     {
-      if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayValue)
+      if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayValue || fn.func == FuncPlayHaptic)
         fn.repeatParam = (version >= 216 ? _active : (_active*5));
       else
         fn.enabled = (_active & 0x01);
