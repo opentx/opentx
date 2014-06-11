@@ -1160,6 +1160,9 @@ class InputField: public TransformedField {
           }
         }
       }
+      else if (expo.mode) {
+        expo.srcRaw = RawSource(SOURCE_TYPE_STICK, expo.chn);
+      }
 
       expo.weight = smallGvarToC9x(_weight);
 
