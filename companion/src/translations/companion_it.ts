@@ -6408,7 +6408,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="313"/>
         <source>TR%1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="364"/>
@@ -6716,17 +6716,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="522"/>
         <source>Edge(%1, [%2:%3])</source>
-        <translation type="unfinished"></translation>
+        <translation>Soglia(%1, [%2:%3])</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="525"/>
         <source>Sticky(%1, %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Bloccato(%1, %2)</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="528"/>
         <source>Timer(%1, %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Temporizzatore(%1, %2)</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="619"/>
@@ -6755,7 +6755,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="504"/>
         <source>Edge</source>
-        <translation type="unfinished"></translation>
+        <translation>Soglia</translation>
     </message>
     <message>
         <source> Duration %1 sec</source>
@@ -6783,7 +6783,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../eeprominterface.cpp" line="788"/>
         <location filename="../modeledit/customfunctions.cpp" line="664"/>
         <source>Telemetry</source>
-        <translation type="unfinished">Telemetria</translation>
+        <translation>Telemetria</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="678"/>
@@ -7343,7 +7343,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1002"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1069"/>
         <source>Add support for reversing stick inputs (e.g. needed for FrSky gimbals)</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi il supporto per l&apos;inversione degli stick (Ad es. necessario per l&apos;utilizzo degli stick FrSky)</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1158"/>
@@ -7869,42 +7869,42 @@ la eeprom è 4096 bytes ma solo 2048 vengono utilizzati</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="374"/>
         <source>RudTrim Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Trim Dir Sinistro</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="374"/>
         <source>RudTrim Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Trim Dir Destro</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="375"/>
         <source>EleTrim Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Trim Ele Giù</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="375"/>
         <source>EleTrim Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Trim Ele Su</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="376"/>
         <source>ThrTrim Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Trim Mot Giù</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="376"/>
         <source>ThrTrim Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Trim Mot Su</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="377"/>
         <source>AilTrim Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Trim Ale Sinistro</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="377"/>
         <source>AilTrim Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Trim Ale Destro</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="385"/>
@@ -7914,17 +7914,17 @@ la eeprom è 4096 bytes ma solo 2048 vengono utilizzati</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="386"/>
         <source>THs</source>
-        <translation type="unfinished"></translation>
+        <translation>MOs</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="386"/>
         <source>TH%</source>
-        <translation></translation>
+        <translation>MO%</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="386"/>
         <source>THt</source>
-        <translation type="unfinished"></translation>
+        <translation>MOt</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="420"/>
@@ -7998,7 +7998,7 @@ la eeprom è 4096 bytes ma solo 2048 vengono utilizzati</translation>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="72"/>
         <source>Trim disabled</source>
-        <translation type="unfinished">Trim disabilitato</translation>
+        <translation>Trim disabilitato</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="75"/>
@@ -8008,12 +8008,12 @@ la eeprom è 4096 bytes ma solo 2048 vengono utilizzati</translation>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="78"/>
         <source>Use Trim from Flight mode %1</source>
-        <translation type="unfinished">Usa Trim  per Fase di volo %1</translation>
+        <translation>Usa Trim della Fase di volo %1</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="79"/>
         <source>Use Trim from Flight mode %1 + Own Trim as an offset</source>
-        <translation type="unfinished">Usa Trim per Fase di volo %1 + Trim proprio come offset</translation>
+        <translation>Usa Trim della Fase di volo %1 + Trim proprio come offset</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.cpp" line="76"/>
@@ -8040,7 +8040,7 @@ la eeprom è 4096 bytes ma solo 2048 vengono utilizzati</translation>
         <source>Thank you for upgrading to OpenTX 2.0. This is a major upgrade that adds and modifies a lot of things, so please make sure that you read release notes carefully to learn about the changes, and thoroughly check each of your models for proper function.
 
 The OpenTX Team.</source>
-        <translation type="unfinished">Grazie per aver aggiornato a OpenTX 2.0 Questo Importante aggiornamento aggiunge nuove funzionalità e migliora quelle già esistenti. Leggere molto attentamente le note di rilascio e controllate approfonditamente i programmi esistenti per assicurarsi che tutte le impostazioni funzionino regolarmente.
+        <translation>Grazie per aver aggiornato a OpenTX 2.0 Questo Importante aggiornamento aggiunge nuove funzionalità e migliora quelle già esistenti. Leggere molto attentamente le note di rilascio e controllate approfonditamente i programmi esistenti per assicurarsi che tutte le impostazioni funzionino regolarmente.
 
 Il Team di OpenTX.</translation>
     </message>
