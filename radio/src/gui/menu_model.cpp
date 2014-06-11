@@ -4807,8 +4807,8 @@ void menuModelLogicalSwitches(uint8_t event)
 #endif
 
 #if LCD_W >= 212
-  #define MODEL_CUSTOM_FUNC_1ST_COLUMN          (5+3*FW)
-  #define MODEL_CUSTOM_FUNC_2ND_COLUMN          (8*FW)
+  #define MODEL_CUSTOM_FUNC_1ST_COLUMN          (4*FW+2)
+  #define MODEL_CUSTOM_FUNC_2ND_COLUMN          (8*FW+2)
   #define MODEL_CUSTOM_FUNC_3RD_COLUMN          (20*FW)
   #define MODEL_CUSTOM_FUNC_4TH_COLUMN          (33*FW-3)
   #define MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF    (34*FW-3)
