@@ -462,3 +462,4 @@ Robert Sessler
 John Murray
 Martin Sniedze
 David Poole
+Manfred Delakowitz
