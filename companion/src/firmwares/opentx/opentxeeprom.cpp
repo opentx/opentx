@@ -1259,7 +1259,7 @@ class CurvesField: public TransformedField {
         else {
           offset += (curve->type == CurveData::CURVE_TYPE_CUSTOM ? curve->count * 2 - 2 : curve->count) - 5;
           if (offset > maxPoints - 5 * maxCurves) {
-            EEPROMWarnings += ::QObject::tr("openTx only accepts %1 points in all curves").arg(maxPoints) + "\n";
+            EEPROMWarnings += ::QObject::tr("OpenTx only accepts %1 points in all curves").arg(maxPoints) + "\n";
             break;
           }
           _curves[i] = offset;
