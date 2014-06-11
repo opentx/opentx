@@ -463,3 +463,5 @@ John Murray
 Martin Sniedze
 David Poole
 Manfred Delakowitz
+Martijn Kruissen
+Jörgen Norman
