@@ -31,7 +31,8 @@ class ExpoDialog : public QDialog {
     FirmwareInterface * firmware;
     ExpoData * ed;
     char * inputName;
-    GVarGroup * gvGroup;
+    GVarGroup * gvWeightGroup;
+    GVarGroup * gvOffsetGroup;
     CurveGroup * curveGroup;
 };
 

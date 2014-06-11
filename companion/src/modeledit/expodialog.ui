@@ -30,10 +30,10 @@
     <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="2" column="1">
-    <widget class="QComboBox" name="sourceCB">
-     <property name="whatsThis">
-      <string>Source for the mixer.</string>
+   <item row="9" column="0">
+    <widget class="QLabel" name="label_phases">
+     <property name="text">
+      <string>Flight modes</string>
      </property>
     </widget>
    </item>
@@ -41,20 +41,6 @@
     <widget class="QLabel" name="inputNameLabel">
      <property name="text">
       <string>Input name</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QLineEdit" name="inputName">
-     <property name="maxLength">
-      <number>6</number>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Weight</string>
      </property>
     </widget>
    </item>
@@ -92,14 +78,28 @@
      </item>
     </layout>
    </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="label_phases">
-     <property name="text">
-      <string>Flight modes</string>
+   <item row="0" column="1">
+    <widget class="QLineEdit" name="inputName">
+     <property name="maxLength">
+      <number>6</number>
      </property>
     </widget>
    </item>
-   <item row="8" column="1">
+   <item row="2" column="1">
+    <widget class="QComboBox" name="sourceCB">
+     <property name="whatsThis">
+      <string>Source for the mixer.</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Weight</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="1">
     <layout class="QGridLayout" name="gridLayout_4">
      <item row="0" column="0">
       <widget class="QLabel" name="lb_FP0">
@@ -256,14 +256,14 @@
      </item>
     </layout>
    </item>
-   <item row="9" column="0">
+   <item row="10" column="0">
     <widget class="QLabel" name="label_7">
      <property name="text">
       <string>Switch</string>
      </property>
     </widget>
    </item>
-   <item row="9" column="1">
+   <item row="10" column="1">
     <widget class="QComboBox" name="switchesCB">
      <property name="whatsThis">
       <string>Switch used to enable the line.
@@ -271,14 +271,14 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</string
      </property>
     </widget>
    </item>
-   <item row="11" column="0">
+   <item row="12" column="0">
     <widget class="QLabel" name="sideLabel">
      <property name="text">
       <string>Stick Side</string>
      </property>
     </widget>
    </item>
-   <item row="11" column="1">
+   <item row="12" column="1">
     <widget class="QComboBox" name="sideCB">
      <item>
       <property name="text">
@@ -297,7 +297,7 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</string
      </item>
     </widget>
    </item>
-   <item row="13" column="0" colspan="2">
+   <item row="14" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="minimumSize">
       <size>
@@ -316,7 +316,7 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</string
      </property>
     </widget>
    </item>
-   <item row="12" column="0" colspan="2">
+   <item row="13" column="0" colspan="2">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -370,14 +370,14 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</string
      </item>
     </widget>
    </item>
-   <item row="7" column="0">
+   <item row="8" column="0">
     <widget class="QLabel" name="label_curves">
      <property name="text">
       <string>Curve</string>
      </property>
     </widget>
    </item>
-   <item row="7" column="1">
+   <item row="8" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0,1,0">
      <item>
       <widget class="QComboBox" name="curveTypeCB">
@@ -428,6 +428,47 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</string
       <number>6</number>
      </property>
     </widget>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="offsetLabel">
+     <property name="text">
+      <string>Offset</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <layout class="QHBoxLayout" name="offsetLayout" stretch="0,0,1,0">
+     <item>
+      <widget class="QCheckBox" name="offsetGV">
+       <property name="text">
+        <string>GV</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="offsetSB"/>
+     </item>
+     <item>
+      <widget class="QComboBox" name="offsetCB">
+       <property name="whatsThis">
+        <string>The source for the mixer</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="offsetSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>0</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

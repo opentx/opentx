@@ -18,10 +18,18 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
   setWindowTitle(tr("Edit %1").arg(getInputStr(model, ed->chn)));
   QRegExp rx(CHAR_FOR_NAMES_REGEX);
 
-  if (IS_TARANIS(GetEepromInterface()->getBoard()))
-    gvGroup = new GVarGroup(ui->weightGV, ui->weightSB, ui->weightCB, ed->weight, 100, -100, 100);
-  else
-    gvGroup = new GVarGroup(ui->weightGV, ui->weightSB, ui->weightCB, ed->weight, 100, 0, 100);
+  if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+    gvWeightGroup = new GVarGroup(ui->weightGV, ui->weightSB, ui->weightCB, ed->weight, 100, -100, 100);
+    gvOffsetGroup = new GVarGroup(ui->offsetGV, ui->offsetSB, ui->offsetCB, ed->offset, 0, -100, 100);
+  }
+  else {
+    gvWeightGroup = new GVarGroup(ui->weightGV, ui->weightSB, ui->weightCB, ed->weight, 100, 0, 100);
+    gvOffsetGroup = NULL;
+    ui->offsetLabel->hide();
+    ui->offsetGV->hide();
+    ui->offsetSB->hide();
+    ui->offsetCB->hide();
+  }
 
   curveGroup = new CurveGroup(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, ed->curve);
 
@@ -105,7 +113,8 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
 
 ExpoDialog::~ExpoDialog()
 {
-  delete gvGroup;
+  delete gvWeightGroup;
+  delete gvOffsetGroup;
   delete curveGroup;
   delete ui;
 }

@@ -162,6 +162,7 @@ QString InputsPanel::getInputText(int dest, bool * new_ch)
     }
 
     str += " " + tr("Weight(%1)").arg(getGVarString(md->weight));
+    if (md->offset) str += " " + tr("Offset(%1)").arg(getGVarString(md->offset));
 
     if (firmware->getCapability(VirtualInputs)) {
       str += " " + tr("Source(%1)").arg(md->srcRaw.toString());
