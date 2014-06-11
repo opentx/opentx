@@ -146,7 +146,7 @@ ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module
       label->setText(QString::number(i+1));
       QDoubleSpinBox * spinbox = new QDoubleSpinBox(this);
       spinbox->setMinimumSize(QSize(20, 0));
-      spinbox->setRange(-100, 100);
+      spinbox->setRange(-150, 150);
       spinbox->setSingleStep(0.1);
       spinbox->setDecimals(1);
       spinbox->setValue(((double)module.failsafeChannels[i]*100)/1024);
@@ -232,7 +232,7 @@ void ModulePanel::update()
   ui->ppmDelay->setValue(module.ppmDelay);
   ui->label_ppmFrameLength->setVisible(mask & MASK_PPM_FIELDS);
   ui->ppmFrameLength->setVisible(mask & MASK_PPM_FIELDS);
-  ui->ppmFrameLength->setMinimum(module.channelsCount*(model.extendedLimits ? 2.250 :2)+3.5);
+  ui->ppmFrameLength->setMinimum(module.channelsCount*(model.extendedLimits ? 2.250 : 2)+3.5);
   ui->ppmFrameLength->setMaximum(firmware->getCapability(PPMFrameLength));
   ui->ppmFrameLength->setValue(22.5+((double)module.ppmFrameLength)*0.5);
 

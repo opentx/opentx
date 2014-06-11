@@ -1041,6 +1041,8 @@ class ModelData {
     void clearMixes();
     void clearInputs();
 
+    int getChannelsMax();
+
   protected:
     void removeGlobalVar(int & var);
 };

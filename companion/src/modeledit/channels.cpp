@@ -69,7 +69,7 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     minSB->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
     minSB->setAccelerated(true);
     minSB->setDecimals(1);
-    minSB->setMinimum(model.extendedLimits ? -125 : -100);
+    minSB->setMinimum(-model.getChannelsMax());
     minSB->setSingleStep(0.1);
     minSB->setMaximum(0);
     minSB->setValue(float(model.limitData[i].min) / 10);
@@ -85,7 +85,7 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     maxSB->setDecimals(1);
     maxSB->setMinimum(0);
     maxSB->setSingleStep(0.1);
-    maxSB->setMaximum(model.extendedLimits ? 125 : 100);
+    maxSB->setMaximum(model.getChannelsMax());
     maxSB->setValue(float(model.limitData[i].max) / 10);
     connect(maxSB, SIGNAL(editingFinished()), this, SLOT(maxEdited()));
     gridLayout->addWidget(maxSB, i+1, col++, 1, 1);
@@ -194,8 +194,8 @@ void Channels::refreshExtendedLimits()
     QDoubleSpinBox * minDSB = minSpins[i];
     QDoubleSpinBox * maxDSB = maxSpins[i];
     
-    minDSB->setMinimum(model.extendedLimits ? -125 : -100);
-    maxDSB->setMaximum(model.extendedLimits ? 125 : 100);
+    minDSB->setMinimum(-model.getChannelsMax());
+    maxDSB->setMaximum(model.getChannelsMax());
   }
   emit modified(); 
 }

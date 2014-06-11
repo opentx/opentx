@@ -1237,6 +1237,14 @@ ModelData ModelData::removeGlobalVars()
   return result;
 }
 
+int ModelData::getChannelsMax()
+{
+  if (extendedLimits)
+    return IS_TARANIS(GetCurrentFirmware()->getBoard()) ? 150 : 125;
+  else
+    return 100;
+}
+
 QList<EEPROMInterface *> eepromInterfaces;
 void RegisterEepromInterfaces()
 {
