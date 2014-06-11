@@ -125,6 +125,8 @@ RawSourceRange RawSource::getRange(bool singleprec)
           break;
         case TELEMETRY_SOURCE_A1:
         case TELEMETRY_SOURCE_A2:
+        case TELEMETRY_SOURCE_A3:
+        case TELEMETRY_SOURCE_A4:
           if (model) {
             const FrSkyChannelData & channel = model->frsky.channels[index-TELEMETRY_SOURCE_A1];
             float ratio = channel.getRatio();
