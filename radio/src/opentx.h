@@ -1236,9 +1236,8 @@ uint8_t lswFamily(uint8_t func);
 int16_t lswTimerValue(delayval_t val);
 
 #if defined(CPUARM)
-  #define MASK_CFN_TYPE  uint32_t  // current max = 32 function switches
+  #define MASK_CFN_TYPE  uint64_t  // current max = 64 function switches
   #define MASK_FUNC_TYPE uint32_t  // current max = 32 functions
-
 #elif defined(CPUM64)
   #define MASK_CFN_TYPE  uint16_t  // current max = 16 function switches
   #define MASK_FUNC_TYPE uint8_t   // current max = 8  functions
