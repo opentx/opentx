@@ -2815,7 +2815,8 @@ void OpenTxGeneralData::beforeExport()
 void OpenTxGeneralData::afterImport()
 {
   for (int i=0; i<4; i++) {
-    if (i<2 && generalData.potsType[i] == 0)
+    generalData.potsType[i] = potsType[i];
+    if (i<2 && potsType[i] == 0)
       generalData.potsType[i] = 1;
   }
 }
