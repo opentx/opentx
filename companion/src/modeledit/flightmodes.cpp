@@ -299,14 +299,6 @@ void FlightModePanel::GVName_editingFinished()
   }
 }
 
-void FlightModePanel::GVSource_currentIndexChanged(int index)
-{
-  QComboBox *comboBox = qobject_cast<QComboBox*>(sender());
-  int gvar = comboBox->property("index").toInt();
-  model.gvsource[gvar] = index;
-  emit modified();
-}
-
 void FlightModePanel::phaseGVUse_currentIndexChanged(int index)
 {
   if (!lock) {

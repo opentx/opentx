@@ -356,7 +356,6 @@ t_Er9xModelData::operator ModelData ()
 {
   ModelData c9x;
   c9x.used = true;
-  c9x.modelVoice = modelVoice;
   getEEPROMString(c9x.name, name, sizeof(name));
   c9x.timers[0].mode = getEr9xTimerMode(tmrMode);
   c9x.timers[0].dir = tmrDir;
@@ -375,8 +374,6 @@ t_Er9xModelData::operator ModelData ()
       c9x.moduleData[0].protocol = PPM;
       break;
   }
-  c9x.traineron= traineron;
-  // c9x.t2throttle =  t2throttle;
   c9x.moduleData[0].ppmFrameLength=ppmFrameLength;
   c9x.moduleData[0].channelsCount = 8 + 2 * ppmNCH;
   c9x.thrTrim = thrTrim;

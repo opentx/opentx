@@ -152,7 +152,8 @@ MainWindow::MainWindow():
           if (!(printing && (model >=0 && model<GetEepromInterface()->getMaxModels()) && !printfilename.isEmpty()  )) {
             statusBar()->showMessage(tr("File loaded"), 2000);
             child->show();
-          } else {
+          }
+          else {
             child->show();            
             child->print(model,printfilename);
             child->close();
@@ -1472,8 +1473,9 @@ MdiChild *MainWindow::createMdiChild()
 {
   MdiChild * child = new MdiChild();
   mdiArea->addSubWindow(child);
-  if(!child->parentWidget()->isMaximized() && !child->parentWidget()->isMinimized())
+  if (!child->parentWidget()->isMaximized() && !child->parentWidget()->isMinimized()) {
     child->parentWidget()->resize(400, 400);
+  }
 
   connect(child, SIGNAL(copyAvailable(bool)),cutAct, SLOT(setEnabled(bool)));
   connect(child, SIGNAL(copyAvailable(bool)),copyAct, SLOT(setEnabled(bool)));

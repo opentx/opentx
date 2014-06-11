@@ -85,7 +85,6 @@ Th9xGeneral::operator GeneralSettings ()
   }
   result.stickMode = stickMode;
   result.inactivityTimer = inactivityMin;
-  result.filterInput = adcFilt;
   return result;
 }
 
