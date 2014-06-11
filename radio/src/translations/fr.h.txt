@@ -579,7 +579,7 @@
 #define TR_POTWARNING          TR(IF_CPUARM(INDENT) "Alerte pot", INDENT "Pos. potentiom.")
 #define TR_TIMEZONE            "Fuseau horaire"
 #define TR_RXCHANNELORD        TR("Ordre voies RX","Ordre des voies préféré")
-#define TR_SWITCHES_DELAY      "Switches Delay"
+#define TR_SWITCHES_DELAY      "Délai inters milieu"
 #define TR_SLAVE               "Elève"
 #define TR_MODESRC             "Mode\006% Source"
 #define TR_MULTIPLIER          "Multiplieur"
@@ -781,7 +781,7 @@
 #define TR_ANTENNAPROBLEM      CENTER "Antenne radio défectueuse!"
 #define TR_MODELIDUSED         TR("ID déjà affecté", "No de modèle déjà utilisé")
 #define TR_MODULE              INDENT "Type de module"
-#define TR_TELEMETRY_TYPE      "Telemetry Type"
+#define TR_TELEMETRY_TYPE      "Type télémesure"
 #define TR_CHANNELRANGE        TR(INDENT "Canaux", INDENT "Plage de canaux")
 #define TR_LOWALARM            INDENT "Alarme basse"
 #define TR_CRITICALALARM       INDENT "Alarme critique"
