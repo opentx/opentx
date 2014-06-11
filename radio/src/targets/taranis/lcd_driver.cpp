@@ -161,7 +161,7 @@ static void LCD_BL_Config()
   TIM4->CCMR2 = TIM_CCMR2_OC4M_1 | TIM_CCMR2_OC4M_2 ; // PWM
   TIM4->CCER = TIM_CCER_CC4E | TIM_CCER_CC2E ;
 
-  int BacklightBrightness = 40 ;
+  int BacklightBrightness = 0 ;
   TIM4->CCR2 = BacklightBrightness ;
   TIM4->CCR4 = BacklightBrightness ;
   TIM4->EGR = 0 ;
@@ -257,3 +257,16 @@ void lcdSetRefVolt(uint8_t val)
   AspiCmd(val+CONTRAST_OFS);		//0--255
 }
 
+#if defined(REVPLUS)
+void turnBacklightOn(uint8_t level, uint8_t color)
+{
+  TIM4->CCR4 = (100-level)*color;
+  TIM4->CCR2 = (100-level)*(100-color);
+}
+
+void turnBacklightOff(void)
+{
+  TIM4->CCR4 = 0;
+  TIM4->CCR2 = 0;
+}
+#endif

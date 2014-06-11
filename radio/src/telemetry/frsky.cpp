@@ -134,10 +134,6 @@ lcdint_t applyChannelRatio(uint8_t channel, lcdint_t val)
 }
 
 #if defined(CPUARM)
-inline bool rxBattAlarmRaised(uint8_t alarm)
-{
-  return g_model.rxBattAlarms[alarm] > 0 && frskyData.analog[TELEM_ANA_RXBATT].value < g_model.rxBattAlarms[alarm];
-}
 inline bool alarmRaised(uint8_t channel, uint8_t idx)
 {
   return g_model.frsky.channels[channel].ratio > 0 && g_model.frsky.channels[channel].alarms_value[idx] > 0 && frskyData.analog[channel].value < g_model.frsky.channels[channel].alarms_value[idx];
@@ -269,7 +265,6 @@ NOINLINE void processSerialData(uint8_t data)
 enum AlarmsCheckSteps {
   ALARM_SWR_STEP,
   ALARM_RSSI_STEP,
-  ALARM_RXBATT_STEP,
   ALARM_A1_STEP,
   ALARM_A2_STEP,
   ALARM_A3_STEP,
@@ -317,7 +312,9 @@ void telemetryWakeup()
     static uint8_t frskyTxDelay = 5;
     if (frskyAlarmsSendState && (--frskyTxDelay == 0)) {
       frskyTxDelay = 5; // 50ms
+#if !defined(SIMU)
       frskyDSendNextAlarm();
+#endif
     }
   }
 #endif
@@ -354,16 +351,6 @@ void telemetryWakeup()
         }
         else if (getRssiAlarmValue(0) && frskyData.rssi[0].value < getRssiAlarmValue(0)) {
           AUDIO_RSSI_ORANGE();
-          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
-        }
-      }
-      else if (alarmsCheckStep == ALARM_RXBATT_STEP) {
-        if (rxBattAlarmRaised(1)) {
-          AUDIO_RXBATT_RED();
-          alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
-        }
-        else if (rxBattAlarmRaised(0)) {
-          AUDIO_RXBATT_ORANGE();
           alarmsCheckTime = get_tmr10ms() + 300; /* next check in 3 seconds */
         }
       }
@@ -446,10 +433,7 @@ void telemetryInterrupt10ms()
       // power calculation
       uint8_t channel = g_model.frsky.voltsSource;
 #if defined(CPUARM)
-      if (channel == FRSKY_VOLTS_SOURCE_RXBATT) {
-        voltage = ((frskyData.analog[TELEM_ANA_RXBATT].value * 132) + 127) / 255;
-      }
-      else if (channel <= FRSKY_VOLTS_SOURCE_A4) {
+      if (channel <= FRSKY_VOLTS_SOURCE_A4) {
         voltage = applyChannelRatio(channel, frskyData.analog[channel].value) / 10;
       }
 #else
@@ -536,6 +520,10 @@ void telemetryReset()
   frskyData.rssi[1].value = 75;
   frskyData.analog[TELEM_ANA_A1].set(120, UNIT_VOLTS);
   frskyData.analog[TELEM_ANA_A2].set(240, UNIT_VOLTS);
+#if defined(CPUARM)
+  frskyData.analog[TELEM_ANA_A3].set(100, UNIT_VOLTS);
+  frskyData.analog[TELEM_ANA_A4].set(200, UNIT_VOLTS);
+#endif
   frskyData.hub.fuelLevel = 75;
   frskyData.hub.rpm = 12000;
   frskyData.hub.vfas = 100;

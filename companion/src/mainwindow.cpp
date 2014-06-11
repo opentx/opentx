@@ -152,7 +152,8 @@ MainWindow::MainWindow():
           if (!(printing && (model >=0 && model<GetEepromInterface()->getMaxModels()) && !printfilename.isEmpty()  )) {
             statusBar()->showMessage(tr("File loaded"), 2000);
             child->show();
-          } else {
+          }
+          else {
             child->show();            
             child->print(model,printfilename);
             child->close();
@@ -990,7 +991,6 @@ bool MainWindow::readFirmwareFromRadio(const QString filename)
       ad->setWindowIcon(CompanionIcon("read_flash.png"));
       ad->exec();
       delete ad;
-      sleep(1);
       result = true;
     }
   }
@@ -1025,7 +1025,6 @@ bool MainWindow::writeFirmwareToRadio(const QString filename)
       ad->setWindowIcon(CompanionIcon("write_flash.png"));
       ad->exec();
       delete ad;
-      sleep(1);
       result = true;
     }
   }
@@ -1068,7 +1067,6 @@ bool MainWindow::readEepromFromRadio(const QString filename, const QString messa
       ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
       ad->exec();
       delete ad;
-      sleep(1);
       result = true;
     }
   }
@@ -1079,7 +1077,6 @@ bool MainWindow::readEepromFromRadio(const QString filename, const QString messa
     ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
     ad->exec();
     delete ad;
-    sleep(1);
     result = true;
   }
 
@@ -1113,22 +1110,20 @@ bool MainWindow::writeEepromToRadio(const QString filename, const QString messag
     if (!path.isEmpty()) {
       QStringList str;
       str << filename << path;
-      avrOutputDialog *ad = new avrOutputDialog(this, "", str, message);
-      ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
+      avrOutputDialog *ad = new avrOutputDialog(this, "", str, message, AVR_DIALOG_SHOW_DONE);
+      ad->setWindowIcon(CompanionIcon("write_eeprom.png"));
       ad->exec();
       delete ad;
-      sleep(1);
       result = true;
     }
   }
 
   if (result == false && !IS_TARANIS(GetCurrentFirmware()->getBoard())) {
     QStringList str = GetSendEEpromCommand(filename);
-    avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, "Write Backup To Radio", AVR_DIALOG_SHOW_DONE);
+    avrOutputDialog *ad = new avrOutputDialog(this, GetAvrdudeLocation(), str, "Write EEPROM To Radio", AVR_DIALOG_SHOW_DONE);
     ad->setWindowIcon(CompanionIcon("write_eeprom.png"));
     ad->exec();
     delete ad;
-    sleep(1);
     result = true;
   }
 
@@ -1270,11 +1265,8 @@ bool MainWindow::convertEEPROM(QString backupFile, QString restoreFile, QString 
     if (!flash.isValid())
       return false;
 
-    unsigned int version = 0;
-    unsigned int variant = 0;
-
-    QString fwEEprom = flash.getEEprom();
-    version = fwEEprom.toInt();
+    unsigned int version = flash.getEEpromVersion();
+    unsigned int variant = flash.getEEpromVariant();
 
     QFile file(backupFile);
     int eeprom_size = file.size();
@@ -1336,7 +1328,7 @@ void MainWindow::writeFlash(QString fileToFlash)
         if (backupEnable) {
           QDateTime datetime;
           backupFile.clear();
-          backupFile=backupPath+"/backup-"+QDateTime().currentDateTime().toString("yyyy-MM-dd-hhmmss")+".bin";
+          backupFile = backupPath+"/backup-"+QDateTime().currentDateTime().toString("yyyy-MM-dd-hhmmss")+".bin";
         }
 
         if (readEepromFromRadio(backupFile, tr("Backup Models and Settings From Radio"))) {
@@ -1428,6 +1420,7 @@ void MainWindow::compare()
 void MainWindow::logFile()
 {
   logsDialog *fd = new logsDialog(this);
+  fd->setWindowFlags(Qt::Window);   //to show minimize an maximize buttons
   fd->setAttribute(Qt::WA_DeleteOnClose, true);
   fd->show();
 }
@@ -1480,8 +1473,9 @@ MdiChild *MainWindow::createMdiChild()
 {
   MdiChild * child = new MdiChild();
   mdiArea->addSubWindow(child);
-  if(!child->parentWidget()->isMaximized() && !child->parentWidget()->isMinimized())
+  if (!child->parentWidget()->isMaximized() && !child->parentWidget()->isMinimized()) {
     child->parentWidget()->resize(400, 400);
+  }
 
   connect(child, SIGNAL(copyAvailable(bool)),cutAct, SLOT(setEnabled(bool)));
   connect(child, SIGNAL(copyAvailable(bool)),copyAct, SLOT(setEnabled(bool)));

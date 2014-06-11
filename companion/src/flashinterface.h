@@ -49,7 +49,9 @@ class FlashInterface
     int getSize() { return flash_size; }
     inline QString getVersion() { return version; }
     unsigned int getVersionId() { return versionId; }
-    inline QString getEEprom() { return eeprom; }
+    inline int getEEpromVersion() { return eepromVersion; }
+    inline int getEEpromVariant() { return eepromVariant; }
+    inline QString getEEpromId() { return eepromId; }
     QImage getSplash();
     bool setSplash(const QImage & newsplash);
     bool hasSplash();
@@ -72,7 +74,9 @@ class FlashInterface
     QString time;
     QString version;
     int versionId;
-    QString eeprom;
+    QString eepromId;
+    int eepromVersion;
+    int eepromVariant;
     QByteArray splash;
     uint splash_offset;
     uint splash_size;

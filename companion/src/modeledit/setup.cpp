@@ -28,6 +28,8 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
   if (IS_ARM(GetEepromInterface()->getBoard()) || IS_2560(GetEepromInterface()->getBoard()))
     ui->countdownBeep->addItem(tr("Voice"), 2);
 
+  disableMouseScrolling();
+
   lock = false;
 }
 
@@ -156,6 +158,8 @@ ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module
       connect(spinbox, SIGNAL(valueChanged(double)), this, SLOT(onFailsafeSpinChanged(double)));
     }
   }
+
+  disableMouseScrolling();
 
   lock = false;
 }
@@ -478,6 +482,9 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
     ui->label_potWarning->hide();
     ui->potWarningMode->hide();
   }
+
+  disableMouseScrolling();
+
   lock = false;
 }
 

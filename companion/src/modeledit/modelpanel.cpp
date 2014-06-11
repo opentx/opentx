@@ -94,4 +94,9 @@ void ModelPanel::disableMouseScrolling()
     sb->installEventFilter(this);
     sb->setFocusPolicy(Qt::StrongFocus);
   }
+
+  Q_FOREACH(QSlider * slider, findChildren<QSlider*>()) {
+    slider->installEventFilter(this);
+    slider->setFocusPolicy(Qt::StrongFocus);
+  }
 }

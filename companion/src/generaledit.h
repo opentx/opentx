@@ -12,12 +12,12 @@ class GeneralEdit : public QDialog
 {
     Q_OBJECT
 
-public:
+  public:
     explicit GeneralEdit(RadioData &radioData, QWidget *parent = 0);
     ~GeneralEdit();
     void updateSettings();
 
-private:
+  private:
     Ui::GeneralEdit *ui;
     RadioData &radioData;
     GeneralSettings g_eeGeneral;
@@ -28,6 +28,10 @@ private:
     void getGeneralSwitchDefPos(int i, bool val);
     void setSwitchDefPos();
     void updateVarioPitchRange();
+    void disableMouseScrolling();
+
+  protected:
+    virtual bool eventFilter(QObject *obj, QEvent *event);
     
   signals:
     void modelValuesChanged();

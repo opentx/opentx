@@ -136,6 +136,8 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
   }
   // Push the rows up
   addVSpring(gridLayout, 0,firmware->getCapability(Outputs)+1);
+
+  disableMouseScrolling();
 }
 
 Channels::~Channels()

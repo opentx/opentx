@@ -87,7 +87,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData & model, 
       lang="en";
     path.append(lang);
     QDir qd(path);
-    int vml= firmware->getCapability(VoicesMaxLength)+4;
+    int vml= firmware->getCapability(VoicesMaxLength);
     if (qd.exists()) {
       QStringList filters;
       filters << "*.wav" << "*.WAV";
@@ -573,10 +573,10 @@ void CustomFunctionsPanel::fsw_customContextMenuRequested(QPoint pos)
     bool hasData = mimeData->hasFormat("application/x-companion-fsw");
 
     QMenu contextMenu;
-    contextMenu.addAction(CompanionIcon("clear.png"), tr("&Delete"),this,SLOT(fswDelete()),tr("Delete"));
     contextMenu.addAction(CompanionIcon("copy.png"), tr("&Copy"),this,SLOT(fswCopy()),tr("Ctrl+C"));
     contextMenu.addAction(CompanionIcon("cut.png"), tr("&Cut"),this,SLOT(fswCut()),tr("Ctrl+X"));
     contextMenu.addAction(CompanionIcon("paste.png"), tr("&Paste"),this,SLOT(fswPaste()),tr("Ctrl+V"))->setEnabled(hasData);
+    contextMenu.addAction(CompanionIcon("clear.png"), tr("&Delete"),this,SLOT(fswDelete()),tr("Delete"));
 
     contextMenu.exec(globalPos);
 }

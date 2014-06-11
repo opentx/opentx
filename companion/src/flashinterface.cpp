@@ -69,7 +69,17 @@ FlashInterface::FlashInterface(QString fileName):
     version = seekLabel(VERS_MARK);
     date = seekLabel(DATE_MARK);
     time = seekLabel(TIME_MARK);
-    eeprom = seekLabel(EEPR_MARK);
+    eepromId = seekLabel(EEPR_MARK);
+
+    if (eepromId.contains('-')) {
+      QStringList list = eepromId.split('-');
+      eepromVersion = list[0].toInt();
+      eepromVariant = list[1].toInt();
+    }
+    else {
+      eepromVersion = eepromId.toInt();
+    }
+
     versionId = version2index(version);
     SeekSplash();
     isValidFlag = true;

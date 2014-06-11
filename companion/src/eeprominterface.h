@@ -229,7 +229,6 @@ enum TelemetrySource {
   TELEMETRY_SOURCE_SWR,
   TELEMETRY_SOURCE_RSSI_TX,
   TELEMETRY_SOURCE_RSSI_RX,
-  TELEMETRY_SOURCE_RX_BATT,
   TELEMETRY_SOURCE_A1,
   TELEMETRY_SOURCE_A2,
   TELEMETRY_SOURCE_A3,
@@ -496,7 +495,6 @@ class GeneralSettings {
     bool      disableBG;
     unsigned int  splashMode;
     int splashDuration;
-    uint8_t   filterInput; // TODO enum
     unsigned int  backlightDelay;
     bool   blightinv;
     bool   stickScroll;
@@ -517,7 +515,7 @@ class GeneralSettings {
     unsigned int    gpsFormat;
     int     speakerVolume;
     unsigned int   backlightBright;
-    unsigned int switchesDelay;
+    int switchesDelay;
     int    currentCalib;
     int    temperatureCalib;
     int    temperatureWarn;
@@ -799,15 +797,6 @@ class FrSkyAlarmData {
     void clear() { memset(this, 0, sizeof(FrSkyAlarmData)); }
 };
 
-class FrSkyErAlarmData {
-  public:
-    FrSkyErAlarmData() { clear(); }
-    uint8_t frskyAlarmType ;
-    uint8_t frskyAlarmLimit ;
-    uint8_t frskyAlarmSound ;
-    void clear() { memset(this, 0, sizeof(FrSkyErAlarmData)); }
-};
-
 class FrSkyRSSIAlarm {
   public:
     FrSkyRSSIAlarm() { clear(0, 50); }
@@ -871,7 +860,6 @@ enum TelemetryVarioSources {
 };
 
 enum TelemetryVoltsSources {
-  TELEMETRY_VOLTS_SOURCE_RXBATT,
   TELEMETRY_VOLTS_SOURCE_A1,
   TELEMETRY_VOLTS_SOURCE_A2,
   TELEMETRY_VOLTS_SOURCE_A3,
@@ -910,7 +898,6 @@ class FrSkyData {
     bool mAhPersistent;
     unsigned int storedMah;
     int fasOffset;
-    unsigned int rxBattAlarms[2];
 
     void clear();
 };
@@ -993,7 +980,6 @@ class ModelData {
 
     bool      used;
     char      name[12+1];
-    uint8_t   modelVoice;
     TimerData timers[2];
     bool      thrTrim;            // Enable Throttle Trim
     bool      thrExpo;            // Enable Throttle Expo
@@ -1016,8 +1002,7 @@ class ModelData {
     LogicalSwitchData  customSw[C9X_NUM_CSW];
     FuncSwData    funcSw[C9X_MAX_CUSTOM_FUNCTIONS];
     SwashRingData swashRingData;
-    unsigned int  thrTraceSrc;
-    int8_t   traineron;  // 0 disable trainer, 1 allow trainer
+    unsigned int thrTraceSrc;
     unsigned int modelId;
     unsigned int switchWarningStates;
     unsigned int nSwToWarn;
@@ -1027,9 +1012,6 @@ class ModelData {
     // TODO structure
     char     gvars_names[C9X_MAX_GVARS][6+1];
     bool     gvars_popups[C9X_MAX_GVARS];
-    uint8_t  gvsource[5];
-    uint8_t  bt_telemetry;
-    uint8_t  numVoice;
     MavlinkData mavlink;
     unsigned int telemetryProtocol;
     FrSkyData frsky;

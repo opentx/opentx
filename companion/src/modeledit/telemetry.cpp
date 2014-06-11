@@ -50,6 +50,8 @@ TelemetryAnalog::TelemetryAnalog(QWidget *parent, FrSkyChannelData & analog, Mod
   else {
     ui->label_Max->setText(tr("Range"));
   }
+
+  disableMouseScrolling();
 }
 
 void TelemetryAnalog::update()
@@ -324,6 +326,8 @@ TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model,
     ui->screenBarsLayout->addWidget(maxSB[l], l, 3, 1, 1);
   }
 
+  disableMouseScrolling();
+
   update();
 }
 
@@ -516,6 +520,8 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
     ui->bladesCount->setMaximum(128);
   }
 
+  disableMouseScrolling();
+
   setup();
 }
 
@@ -529,20 +535,6 @@ void TelemetryPanel::setup()
     QString firmware_id = g.profile[g.id()].fwType();
 
     lock = true;
-
-    if (IS_ARM(firmware->getBoard())) {
-      ui->rxbattAlarm1DSB->setValue((13.2*model.frsky.rxBattAlarms[0])/255);
-      ui->rxbattAlarm2DSB->setValue((13.2*model.frsky.rxBattAlarms[1])/255);
-    }
-    else {
-      ui->rxbattLabel->hide();
-      ui->rxbattAlarm1Label->hide();
-      ui->rxbattAlarm2Label->hide();
-      ui->rxbattAlarm1CB->hide();
-      ui->rxbattAlarm2CB->hide();
-      ui->rxbattAlarm1DSB->hide();
-      ui->rxbattAlarm2DSB->hide();
-    }
 
     ui->rssiAlarm1SB->setValue(model.frsky.rssiAlarms[0].value);
     ui->rssiAlarm2SB->setValue(model.frsky.rssiAlarms[1].value);
@@ -692,9 +684,6 @@ void TelemetryPanel::populateVoltsSource()
 {
   QUnsignedAutoComboBox * cb = ui->frskyVoltCB;
   cb->setField(&model.frsky.voltsSource, this);
-  if (IS_ARM(firmware->getBoard())) {
-    cb->addItem(tr("RxBatt"), TELEMETRY_VOLTS_SOURCE_RXBATT);
-  }
   cb->addItem(tr("A1"), TELEMETRY_VOLTS_SOURCE_A1);
   cb->addItem(tr("A2"), TELEMETRY_VOLTS_SOURCE_A2);
   if (IS_ARM(firmware->getBoard())) {
@@ -787,18 +776,6 @@ void TelemetryPanel::on_AltitudeToolbar_ChkB_toggled(bool checked)
 void TelemetryPanel::on_varioLimitMin_DSB_editingFinished()
 {
   model.frsky.varioMin = round(ui->varioLimitMin_DSB->value()+10);
-  emit modified();
-}
-
-void TelemetryPanel::on_rxbattAlarm1DSB_editingFinished()
-{
-  model.frsky.rxBattAlarms[0] = round(ui->rxbattAlarm1DSB->value()/(13.2/255));
-  emit modified();
-}
-
-void TelemetryPanel::on_rxbattAlarm2DSB_editingFinished()
-{
-  model.frsky.rxBattAlarms[1] = round(ui->rxbattAlarm2DSB->value()/(13.2/255));
   emit modified();
 }
 

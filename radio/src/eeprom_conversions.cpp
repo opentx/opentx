@@ -338,8 +338,8 @@ int ConvertTelemetrySource_215_to_216(int source)
   // TELEM_RSSI_TX added
   if (source >= TELEM_RSSI_TX)
     source += 1;
-  // RxBatt added
-  if (source >= TELEM_RXBATT)
+  // Reserve added
+  if (source >= TELEM_RESERVE0)
     source += 1;
   // A3 and A4 added
   if (source >= TELEM_A3)
@@ -838,9 +838,6 @@ void ConvertModel_215_to_216(ModelData &model)
   memcpy(&g_model.frsky, &oldModel.frsky, 2*sizeof(FrSkyChannelData));
   // gap for A3-A4
   memcpy(((uint8_t *)&g_model.frsky) + 4*sizeof(FrSkyChannelData), ((uint8_t *)&oldModel.frsky) + 2*sizeof(FrSkyChannelData), sizeof(oldModel.frsky) - 2*sizeof(FrSkyChannelData));
-  // RxBatt introduced
-  if (g_model.frsky.voltsSource >= FRSKY_VOLTS_SOURCE_A1)
-    g_model.frsky.voltsSource += 1;
   // A3 and A4 introduced
   if (g_model.frsky.voltsSource >= FRSKY_VOLTS_SOURCE_A3)
     g_model.frsky.voltsSource += 2;

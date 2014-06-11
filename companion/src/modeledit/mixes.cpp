@@ -191,9 +191,8 @@ QString MixesPanel::getMixerText(int dest, bool * new_ch)
       str += " " + Qt::escape(tr("Switch(%1)").arg(md->swtch.toString()));
     }
 
-    if (md->carryTrim) {
-      str += " " + Qt::escape(tr("NoTrim"));
-    }
+    if (md->carryTrim>0)      str += " " + Qt::escape(tr("NoTrim"));
+    else if (md->carryTrim<0) str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString();
 
     if (firmware->getCapability(HasNoExpo) && md->noExpo) str += " " + Qt::escape(tr("No DR/Expo"));
     if (md->sOffset)     str += " " + Qt::escape(tr("Offset(%1)").arg(getGVarString(md->sOffset)));

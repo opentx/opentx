@@ -278,7 +278,7 @@ Josep Clodas Sola
 Thierry Martin
 Peter Mauro 
 Mitchell Brenner
-Ulach Green
+Yak
 Lluis Bullich Rañe 
 Steffen Rohr 
 Eric Jacquin
@@ -436,3 +436,30 @@ Axel Stöckle
 Mike Perkins
 Erwin Störrle
 Rodger Hopper
+Fernando Cesar
+Jonathan Gillis
+DK-System
+Lexington S Morley
+Bernd Koehler
+Davis RC
+Pete Johnson
+Patricia Martin
+Florian Tschacher
+Brian Spearing
+Craig Hall
+Joseph Case
+Harald Klein
+Robert Crockford
+Chris Boultinghouse
+Kitsew
+Georgios Papadopoulos
+Fourmost Products
+Dennis Miller
+Dave Matison
+Maximilian Radig
+Juan Rodriguez
+Robert Sessler
+John Murray
+Martin Sniedze
+David Poole
+Manfred Delakowitz

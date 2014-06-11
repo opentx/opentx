@@ -325,7 +325,7 @@ void frskySportProcessPacket(uint8_t *packet)
 #endif
       }
       else if (appId == BATT_ID) {
-        frskyData.analog[TELEM_ANA_RXBATT].set(SPORT_DATA_U8(packet), UNIT_VOLTS);
+        frskyData.analog[TELEM_ANA_A1].set(SPORT_DATA_U8(packet), UNIT_VOLTS);
       }
       else if ((appId >> 8) == 0) {
         // The old FrSky IDs

@@ -116,6 +116,9 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
   }
   // Push rows upward
   addVSpring(gridLayout,0,firmware->getCapability(LogicalSwitches)+1);
+
+  disableMouseScrolling();
+
   lock = false;
 }
 
@@ -437,10 +440,10 @@ void LogicalSwitchesPanel::csw_customContextMenuRequested(QPoint pos)
     bool hasData = mimeData->hasFormat("application/x-companion-csw");
 
     QMenu contextMenu;
-    contextMenu.addAction(CompanionIcon("clear.png"), tr("&Delete"),this,SLOT(cswDelete()),tr("Delete"));
     contextMenu.addAction(CompanionIcon("copy.png"), tr("&Copy"),this,SLOT(cswCopy()),tr("Ctrl+C"));
     contextMenu.addAction(CompanionIcon("cut.png"), tr("&Cut"),this,SLOT(cswCut()),tr("Ctrl+X"));
     contextMenu.addAction(CompanionIcon("paste.png"), tr("&Paste"),this,SLOT(cswPaste()),tr("Ctrl+V"))->setEnabled(hasData);
+    contextMenu.addAction(CompanionIcon("clear.png"), tr("&Delete"),this,SLOT(cswDelete()),tr("Delete"));
 
     contextMenu.exec(globalPos);
 }

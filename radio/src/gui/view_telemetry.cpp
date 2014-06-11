@@ -347,11 +347,6 @@ void menuTelemetryFrsky(uint8_t event)
     lcd_putsiAtt(0, 2*FH, STR_AMPSRC, g_model.frsky.voltsSource+1, 0);
 #endif
     switch (g_model.frsky.voltsSource) {
-#if defined(CPUARM)
-      case FRSKY_VOLTS_SOURCE_RXBATT:
-        putsTelemetryChannel(3*FW+6*FW+4, FH+1, TELEM_RXBATT-1, frskyData.analog[TELEM_ANA_RXBATT].value, DBLSIZE);
-        break;
-#endif
       case FRSKY_VOLTS_SOURCE_A1:
       case FRSKY_VOLTS_SOURCE_A2:
 #if defined(CPUARM)
@@ -393,7 +388,11 @@ void menuTelemetryFrsky(uint8_t event)
       putsTelemetryChannel(3*FW+4+4*FW+6*FW+FW, 5*FH+1, TELEM_CONSUMPTION-1, frskyData.hub.currentConsumption, DBLSIZE);
     }
     else {
+#if defined(CPUARM)
+      displayVoltageScreenLine(analog > 0 ? 5*FH : 4*FH, analog==1+FRSKY_VOLTS_SOURCE_A1 ? FRSKY_VOLTS_SOURCE_A2 : FRSKY_VOLTS_SOURCE_A1);
+#else
       displayVoltageScreenLine(analog > 0 ? 5*FH : 4*FH, analog ? 2-analog : 0);
+#endif
       if (analog == 0) displayVoltageScreenLine(6*FH, 1);
     }
 

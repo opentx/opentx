@@ -88,7 +88,8 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
     if (!GetCurrentFirmware()->getCapability(MultiLangVoice)) {
       ui->VoiceLang_label->hide();
       ui->voiceLang_CB->hide();
-    } else {
+    }
+    else {
       voiceLangEditLock=true;
       populateVoiceLangCB(ui->voiceLang_CB, g_eeGeneral.ttsLanguage);
       voiceLangEditLock=false;
@@ -97,7 +98,8 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
     if (!mavlink) {
       ui->mavbaud_CB->hide();
       ui->mavbaud_label->hide();
-    } else {
+    }
+    else {
       mavbaudEditLock=true;
       ui->mavbaud_CB->setCurrentIndex(g_eeGeneral.mavbaud);
       populateVoiceLangCB(ui->voiceLang_CB, g_eeGeneral.ttsLanguage);
@@ -170,7 +172,8 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
       ui->volume_SB->hide();
       ui->volume_SB->setDisabled(true);
       ui->label_volume->hide();
-    } else {
+    }
+    else {
       ui->volume_SB->setMaximum(GetCurrentFirmware()->getCapability(MaxVolume));
     }    
     if (!GetCurrentFirmware()->getCapability(HasBrightness)) {
@@ -307,12 +310,14 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
     }
 
     if (IS_ARM(eepromInterface->getBoard())) {
-      ui->switchesDelay->setValue(10*g_eeGeneral.switchesDelay);
+      ui->switchesDelay->setValue(10*(g_eeGeneral.switchesDelay+15));
     }
     else {
       ui->switchesDelay->hide();
       ui->switchesDelayLabel->hide();
     }
+
+    disableMouseScrolling();
 
     ga.sendPageView(getBoardName(GetCurrentFirmware()->getBoard()) + " GeneralEdit");
 }
@@ -527,7 +532,7 @@ void GeneralEdit::on_backlightautoSB_editingFinished()
 
 void GeneralEdit::on_switchesDelay_valueChanged()
 {
-  g_eeGeneral.switchesDelay = ui->switchesDelay->value() / 10;
+  g_eeGeneral.switchesDelay = (ui->switchesDelay->value() / 10) - 15;
   updateSettings();
 }
 
@@ -1076,7 +1081,8 @@ void GeneralEdit::on_calstore_PB_clicked()
   if (name.isEmpty()) {
     ui->calstore_PB->setDisabled(true);
     return;
-  } else {
+  }
+  else {
     QString calib=g.profile[profile_id].stickPotCalib();
     if (!(calib.isEmpty())) {
       int ret = QMessageBox::question(this, "Companion", 
@@ -1115,7 +1121,50 @@ void GeneralEdit::on_calstore_PB_clicked()
   }
 }
 
-void GeneralEdit::shrink() {
-    resize(100,100);
-    resize(0,0);
+void GeneralEdit::shrink()
+{
+  resize(100, 100);
+  resize(0, 0);
+}
+
+bool GeneralEdit::eventFilter(QObject *object, QEvent * event)
+{
+  QWidget * widget = qobject_cast<QWidget*>(object);
+  if (widget) {
+    if (event->type() == QEvent::Wheel) {
+      if (widget->focusPolicy() == Qt::WheelFocus) {
+        event->accept();
+        return false;
+      }
+      else {
+        event->ignore();
+        return true;
+      }
+    }
+    else if (event->type() == QEvent::FocusIn) {
+      widget->setFocusPolicy(Qt::WheelFocus);
+    }
+    else if (event->type() == QEvent::FocusOut) {
+      widget->setFocusPolicy(Qt::StrongFocus);
+    }
+  }
+  return QWidget::eventFilter(object, event);
+}
+
+void GeneralEdit::disableMouseScrolling()
+{
+  Q_FOREACH(QComboBox * cb, findChildren<QComboBox*>()) {
+    cb->installEventFilter(this);
+    cb->setFocusPolicy(Qt::StrongFocus);
+  }
+
+  Q_FOREACH(QAbstractSpinBox * sb, findChildren<QAbstractSpinBox*>()) {
+    sb->installEventFilter(this);
+    sb->setFocusPolicy(Qt::StrongFocus);
+  }
+
+  Q_FOREACH(QSlider * slider, findChildren<QSlider*>()) {
+    slider->installEventFilter(this);
+    slider->setFocusPolicy(Qt::StrongFocus);
+  }
 }

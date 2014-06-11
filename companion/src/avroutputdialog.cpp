@@ -159,11 +159,11 @@ void avrOutputDialog::doCopy()
       dest.close();
     }
     else {
-      QMessageBox::warning(this, tr("Error"),tr("Cannot write destination"));
+      QMessageBox::warning(this, tr("Error"),tr("Cannot write destination") + ": " + dest.errorString());
     }
   }
   else {
-    QMessageBox::warning(this, tr("Error"),tr("Cannot open source file"));
+    QMessageBox::warning(this, tr("Error"),tr("Cannot open source file") + ": " + source.errorString());
   }
 
   source.close();
@@ -438,7 +438,7 @@ void avrOutputDialog::doFinished(int code=0)
         if (hasErrors || code) {
           if (!cmdLine.isEmpty()) {
             if (getProgrammer()!="AVRDUDE") {
-               QMessageBox::critical(this, "Companion", getProgrammer() + " " + tr("did not finish correctly"));
+              QMessageBox::critical(this, "Companion", getProgrammer() + " " + tr("did not finish correctly"));
             }
             else {
               int res = QMessageBox::question(this, "Companion",getProgrammer() + " " + tr("did not finish correctly!\nDo you want some help ?"),QMessageBox::Yes | QMessageBox::No);
@@ -446,8 +446,9 @@ void avrOutputDialog::doFinished(int code=0)
                 errorWizard();
               }
             }
-          } else {
-            QMessageBox::critical(this, "Companion",  tr("Copy did not finish correctly"));
+          }
+          else {
+            QMessageBox::critical(this, "Companion", tr("Copy did not finish correctly"));
           }
             // reject();
         }
@@ -467,8 +468,6 @@ void avrOutputDialog::doFinished(int code=0)
     default: //AVR_DIALOG_KEEP_OPEN
       break;
     }
-
-
 }
 
 void avrOutputDialog::doProcessStarted()

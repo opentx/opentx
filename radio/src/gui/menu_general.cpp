@@ -406,7 +406,7 @@ void menuGeneralSetup(uint8_t event)
       case ITEM_SETUP_VARIO_REPEAT:
         lcd_putsLeft(y, STR_REPEAT_AT_ZERO);
         lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, VARIO_REPEAT_ZERO+(g_eeGeneral.varioRepeat*10), attr|LEFT);
-        lcd_putsAtt(lcdLastPos, y, "ms", attr);
+        lcd_putsAtt(lcdLastPos, y, STR_MS, attr);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.varioRepeat, -30, 50);
         break;
 #endif
@@ -624,10 +624,10 @@ void menuGeneralSetup(uint8_t event)
 
 #if defined(CPUARM)
       case ITEM_SETUP_SWITCHES_DELAY:
-        lcd_putsLeft(y, "Switches Delay");
-        lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, 10*g_eeGeneral.switchesDelay, attr|LEFT);
-        lcd_putsAtt(lcdLastPos, y, "ms", attr);
-        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.switchesDelay, 0, 25);
+        lcd_putsLeft(y, STR_SWITCHES_DELAY);
+        lcd_outdezAtt(RADIO_SETUP_2ND_COLUMN, y, 10*SWITCHES_DELAY(), attr|LEFT);
+        lcd_putsAtt(lcdLastPos, y, STR_MS, attr);
+        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.switchesDelay, -15, +15);
         break;
 #endif
 

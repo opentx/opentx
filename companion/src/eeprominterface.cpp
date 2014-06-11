@@ -263,7 +263,7 @@ QString RawSource::toString()
 
   static const QString telemetry[] = {
     QObject::tr("Batt"), QObject::tr("Time"), QObject::tr("Timer1"), QObject::tr("Timer2"),
-    QObject::tr("SWR"), QObject::tr("RSSI Tx"), QObject::tr("RSSI Rx"), QObject::tr("Rx Batt"),
+    QObject::tr("SWR"), QObject::tr("RSSI Tx"), QObject::tr("RSSI Rx"),
     QObject::tr("A1"), QObject::tr("A2"), QObject::tr("A3"), QObject::tr("A4"),
     QObject::tr("Alt"), QObject::tr("Rpm"), QObject::tr("Fuel"), QObject::tr("T1"), QObject::tr("T2"),
     QObject::tr("Speed"), QObject::tr("Dist"), QObject::tr("GPS Alt"),
@@ -852,9 +852,14 @@ GeneralSettings::GeneralSettings()
     calibSpanPos[i] = 0x180;
   }
 
-  if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+  BoardEnum board = GetEepromInterface()->getBoard();
+  if (IS_TARANIS(board)) {
     potsType[0] = 1;
     potsType[1] = 1;
+  }
+
+  if (IS_ARM(board)) {
+    speakerVolume = 12;
   }
 
   templateSetup = g.profile[g.id()].channelOrder();
@@ -991,7 +996,6 @@ void FrSkyData::clear()
   memset(this, 0, sizeof(FrSkyData));
   rssiAlarms[0].clear(2, 45);
   rssiAlarms[1].clear(3, 42);
-  rxBattAlarms[1] = round(43.0*255/132);
   varioSource = 2/*VARIO*/;
   blades = 2;
 }
@@ -1073,11 +1077,11 @@ void ModelData::clear()
     moduleData[0].protocol=PPM;
     moduleData[1].protocol=OFF;      
   }
-  for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++)
+  for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
     phaseData[i].clear();
+  }
   clearInputs();
   clearMixes();
-
   for (int i=0; i<C9X_NUM_CHNOUT; i++)
     limitData[i].clear();
   for (int i=0; i<NUM_STICKS; i++)
@@ -1088,7 +1092,6 @@ void ModelData::clear()
     curves[i].clear(5);
   for (int i=0; i<2; i++)
     timers[i].clear();
-
   swashRingData.clear();
   frsky.clear();
 }

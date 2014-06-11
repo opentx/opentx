@@ -35,7 +35,6 @@ class FlightModePanel : public ModelPanel
     void phaseTrim_valueChanged();
     void phaseTrimSlider_valueChanged();
     void GVName_editingFinished();
-    void GVSource_currentIndexChanged(int index);
     void phaseGVValue_editingFinished();
     void phaseGVUse_currentIndexChanged(int index);
     void phaseGVPopupToggled(bool checked);

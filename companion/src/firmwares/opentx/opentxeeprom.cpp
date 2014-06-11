@@ -260,15 +260,17 @@ class SourcesConversionTable: public ConversionTable {
 
         for (int i=0; i<TELEMETRY_SOURCE_ACC; i++) {
           if (version < 216) {
-            if (i==TELEMETRY_SOURCE_TX_TIME || i==TELEMETRY_SOURCE_SWR || i==TELEMETRY_SOURCE_RX_BATT || i==TELEMETRY_SOURCE_A3 || i==TELEMETRY_SOURCE_A4 || i==TELEMETRY_SOURCE_ASPD || i==TELEMETRY_SOURCE_DTE || i==TELEMETRY_SOURCE_CELL_MIN || i==TELEMETRY_SOURCE_CELLS_MIN || i==TELEMETRY_SOURCE_VFAS_MIN)
+            if (i==TELEMETRY_SOURCE_TX_TIME || i==TELEMETRY_SOURCE_SWR || i==TELEMETRY_SOURCE_A3 || i==TELEMETRY_SOURCE_A4 || i==TELEMETRY_SOURCE_ASPD || i==TELEMETRY_SOURCE_DTE || i==TELEMETRY_SOURCE_CELL_MIN || i==TELEMETRY_SOURCE_CELLS_MIN || i==TELEMETRY_SOURCE_VFAS_MIN)
               continue;
           }
           if (!IS_ARM(board)) {
-            if (i==TELEMETRY_SOURCE_TX_TIME || i==TELEMETRY_SOURCE_SWR|| i==TELEMETRY_SOURCE_RX_BATT || i==TELEMETRY_SOURCE_A3 || i==TELEMETRY_SOURCE_A4 || i==TELEMETRY_SOURCE_A3_MIN || i==TELEMETRY_SOURCE_A4_MIN)
+            if (i==TELEMETRY_SOURCE_TX_TIME || i==TELEMETRY_SOURCE_SWR || i==TELEMETRY_SOURCE_A3 || i==TELEMETRY_SOURCE_A4 || i==TELEMETRY_SOURCE_A3_MIN || i==TELEMETRY_SOURCE_A4_MIN)
               continue;
           }
           addConversion(RawSource(SOURCE_TYPE_TELEMETRY, i), val++);
           if (version >= 216 && IS_ARM(board)) {
+            if (i==TELEMETRY_SOURCE_RSSI_RX)
+              val += 1;
             if (i==TELEMETRY_SOURCE_TX_TIME)
               val += 5;
             if (i==TELEMETRY_SOURCE_DTE)
@@ -414,7 +416,7 @@ class TelemetrySourcesConversionTable: public ConversionTable {
       addConversion(1+TELEMETRY_SOURCE_RSSI_TX, val++);
       addConversion(1+TELEMETRY_SOURCE_RSSI_RX, val++);
       if (IS_ARM(board) && version >= 216)
-        addConversion(1+TELEMETRY_SOURCE_RX_BATT, val++);
+        addConversion(1+TELEMETRY_SOURCE_RESERVE, val++);
       addConversion(1+TELEMETRY_SOURCE_A1, val++);
       addConversion(1+TELEMETRY_SOURCE_A2, val++);
       if (IS_ARM(board) && version >= 216) {
@@ -1247,13 +1249,20 @@ class CurvesField: public TransformedField {
 
       for (int i=0; i<maxCurves; i++) {
         CurveData *curve = &curves[i];
-        int size = (curve->type == CurveData::CURVE_TYPE_CUSTOM ? curve->count * 2 - 2 : curve->count);
-        if (offset+size > maxPoints) {
-          EEPROMWarnings += ::QObject::tr("OpenTX only accepts %1 points in all curves").arg(maxPoints) + "\n";
-          break;
+        if (IS_TARANIS(board) && version >= 216) {
+          offset += (curve->type == CurveData::CURVE_TYPE_CUSTOM ? curve->count * 2 - 2 : curve->count);
+          if (offset > maxPoints) {
+            EEPROMWarnings += ::QObject::tr("OpenTX only accepts %1 points in all curves").arg(maxPoints) + "\n";
+            break;
+          }
         }
-        if (!IS_TARANIS(board) || version < 216) {
-          _curves[i] = offset - (5*i);
+        else {
+          offset += (curve->type == CurveData::CURVE_TYPE_CUSTOM ? curve->count * 2 - 2 : curve->count) - 5;
+          if (offset > maxPoints - 5 * maxCurves) {
+            EEPROMWarnings += ::QObject::tr("OpenTx only accepts %1 points in all curves").arg(maxPoints) + "\n";
+            break;
+          }
+          _curves[i] = offset;
         }
         for (int j=0; j<curve->count; j++) {
           *cur++ = curve->points[j].y;
@@ -1263,7 +1272,6 @@ class CurvesField: public TransformedField {
             *cur++ = curve->points[j].x;
           }
         }
-        offset += size;
       }
     }
 
@@ -1783,7 +1791,7 @@ class ArmCustomFunctionField: public TransformedField {
     {
       _mode = 0;
 
-      if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayValue)
+      if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayValue || fn.func == FuncPlayHaptic)
         _active = (version >= 216 ? fn.repeatParam : (fn.repeatParam/5));
       else
         _active = (fn.enabled ? 1 : 0);
@@ -1855,7 +1863,7 @@ class ArmCustomFunctionField: public TransformedField {
 
     virtual void afterImport()
     {
-      if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayValue)
+      if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayValue || fn.func == FuncPlayHaptic)
         fn.repeatParam = (version >= 216 ? _active : (_active*5));
       else
         fn.enabled = (_active & 0x01);
@@ -2202,8 +2210,6 @@ class TelemetryVoltsSourceConversionTable: public ConversionTable
     TelemetryVoltsSourceConversionTable(BoardEnum board, unsigned int version)
     {
       int val = 0;
-      if (IS_ARM(board) && version >= 216)
-        addConversion(TELEMETRY_VOLTS_SOURCE_RXBATT, val++);
       addConversion(TELEMETRY_VOLTS_SOURCE_A1, val++);
       addConversion(TELEMETRY_VOLTS_SOURCE_A2, val++);
       if (IS_ARM(board) && version >= 216) {
@@ -2569,8 +2575,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   }
 
   if (IS_ARM(board) && version >= 216) {
-    internalField.Append(new UnsignedField<8>(modelData.frsky.rxBattAlarms[0]));
-    internalField.Append(new UnsignedField<8>(modelData.frsky.rxBattAlarms[1]));
+    internalField.Append(new SpareBitsField<16>());
   }
 }
 
@@ -2704,7 +2709,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
   internalField.Append(new SignedField<2>((int &)generalData.hapticMode));
 
   if (IS_ARM(board))
-    internalField.Append(new UnsignedField<8>(generalData.switchesDelay));
+    internalField.Append(new SignedField<8>(generalData.switchesDelay));
   else
     internalField.Append(new SpareBitsField<8>());
 
@@ -2740,6 +2745,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
   }
 
   if (IS_ARM(board)) {
+    internalField.Append(new UnsignedField<8>(generalData.backlightBright));
     internalField.Append(new SignedField<8>(generalData.currentCalib));
     if (version >= 213) {
       internalField.Append(new SignedField<8>(generalData.temperatureWarn)); // TODO
@@ -2809,7 +2815,8 @@ void OpenTxGeneralData::beforeExport()
 void OpenTxGeneralData::afterImport()
 {
   for (int i=0; i<4; i++) {
-    if (i<2 && generalData.potsType[i] == 0)
+    generalData.potsType[i] = potsType[i];
+    if (i<2 && potsType[i] == 0)
       generalData.potsType[i] = 1;
   }
 }

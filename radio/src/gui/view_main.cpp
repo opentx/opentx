@@ -252,11 +252,7 @@ void displayTopBar()
     /* Rx voltage */
     lcdint_t voltage = 0;
     uint8_t channel = 0;
-    if (g_model.frsky.voltsSource == FRSKY_VOLTS_SOURCE_RXBATT) {
-      channel = TELEM_RXBATT-1;
-      voltage = frskyData.analog[TELEM_ANA_RXBATT].value;
-    }
-    else if (g_model.frsky.voltsSource <= FRSKY_VOLTS_SOURCE_A4) {
+    if (g_model.frsky.voltsSource <= FRSKY_VOLTS_SOURCE_A4) {
       channel = TELEM_A1+g_model.frsky.voltsSource-1;
       voltage = frskyData.analog[g_model.frsky.voltsSource].value;
     }
@@ -368,14 +364,20 @@ void displayTimers()
   }
 }
 #else
+
 void displayTimers()
 {
+#if defined(TRANSLATIONS_CZ)
+  #define MAINTMR_LBL_COL (9*FW-FW/2-1)
+#else
+  #define MAINTMR_LBL_COL (9*FW-FW/2+3)
+#endif
   // Main timer
   if (g_model.timers[0].mode) {
     TimerState & timerState = timersStates[0];
     uint8_t att = DBLSIZE | (timerState.val<0 ? BLINK|INVERS : 0);
     putsTimer(12*FW+2+10*FWNUM-4, FH*2, timerState.val, att, att);
-    putsTimerMode(timerState.val >= 0 ? 9*FW-FW/2+3 : 9*FW-FW/2-4, FH*3, g_model.timers[0].mode);
+    putsTimerMode(timerState.val >= 0 ? MAINTMR_LBL_COL : MAINTMR_LBL_COL-7, FH*3, g_model.timers[0].mode);
   }
 }
 #endif
@@ -826,24 +828,26 @@ void menuMainView(uint8_t event)
         lcd_vline(x-1, VSWITCH_Y-len, len);
         lcd_vline(x,   VSWITCH_Y-len, len);
       }
-#elif defined(PCBGRUVIN9X) && ROTARY_ENCODERS > 2
-      for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++)
-        putsSwitches(2*FW-2 + (i/3)*(4*FW-2) + (i/3>1 ? 3*FW+6 : 0), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
 #elif defined(PCBGRUVIN9X)
       for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++)
-        putsSwitches(2*FW-2 + (i/3)*(4*FW-2) + (i/3>1 ? 3*FW : 0), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
+        putsSwitches(2*FW-3 + (i/3)*(i/3>2 ? 3*FW+2 : (3*FW-1)) + (i/3>2 ? 2*FW : 0), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
 #elif !defined(PCBSTD)
       for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++)
         putsSwitches(2*FW-2 + (i/3)*(4*FW-1), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
 #else
       for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++)
-        putsSwitches(2*FW-2 + (i/3)*(5*FW), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
+        putsSwitches(2*FW-3 + (i/3)*(4*FW), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
 #endif
     }
   }
   else { // timer2
+#if defined(TRANSLATIONS_CZ)
+  #define TMR2_LBL_COL (20-FW/2+1)
+#else
+  #define TMR2_LBL_COL (20-FW/2+5)
+#endif
     putsTimer(33+FW+2+10*FWNUM-4, FH*5, timersStates[1].val, DBLSIZE, DBLSIZE);
-    putsTimerMode(timersStates[1].val >= 0 ? 20-FW/2+5 : 20-FW/2-2, FH*6, g_model.timers[1].mode);
+    putsTimerMode(timersStates[1].val >= 0 ? TMR2_LBL_COL : TMR2_LBL_COL-7, FH*6, g_model.timers[1].mode);
     // lcd_outdezNAtt(33+11*FW, FH*6, s_timerVal_10ms[1], LEADING0, 2); // 1/100s
   }
 #endif // PCBTARANIS

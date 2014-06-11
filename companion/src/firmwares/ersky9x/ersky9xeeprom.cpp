@@ -125,7 +125,6 @@ Ersky9xGeneral::operator GeneralSettings ()
   result.splashMode = disableSplashScreen;
   result.disablePotScroll=(disablePotScroll==1);
   result.disableBG=(disableBG==1);
-  result.filterInput = filterInput;
   result.templateSetup = templateSetup;
   result.PPM_Multiplier = PPM_Multiplier;
   getEEPROMString(result.ownerName, ownerName, sizeof(ownerName));
@@ -507,8 +506,6 @@ t_Ersky9xModelData_v10::operator ModelData ()
       c9x.moduleData[0].protocol = PPM;
       break;
   }
-  c9x.traineron= traineron;
-  // c9x.t2throttle =  t2throttle;
   c9x.moduleData[0].ppmFrameLength=ppmFrameLength;
   c9x.moduleData[0].channelsCount = 8 + 2 * ppmNCH;
   c9x.thrTrim = thrTrim;
@@ -628,8 +625,6 @@ t_Ersky9xModelData_v11::operator ModelData ()
       c9x.moduleData[0].protocol = PPM;
       break;
   }
-  c9x.traineron= traineron;
-  // c9x.t2throttle =  t2throttle;
   c9x.moduleData[0].ppmFrameLength=ppmFrameLength;
   c9x.moduleData[0].channelsCount = 8 + 2 * ppmNCH;
   c9x.thrTrim = thrTrim;
@@ -732,7 +727,7 @@ t_Ersky9xModelData_v11::operator ModelData ()
   // }
   for (int i=0; i<5;i++) {
     c9x.phaseData[0].gvars[i]=gvars[i].gvar;
-    c9x.gvsource[i]=gvars[i].gvsource;
+    // c9x.gvsource[i]=gvars[i].gvsource;
   }
   return c9x;
 }

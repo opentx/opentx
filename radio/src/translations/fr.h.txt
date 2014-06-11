@@ -355,13 +355,13 @@
 #define TR_VTELPROTO           "Aucun  ""Hub\0   ""WSHHigh"
 
 #if defined(CPUARM)
-  #define LEN_AMPSRC           TR("\003", "\007")
-  #define TR_AMPSRC            TR("---""A1\0""A2\0""A3\0""A4\0""FAS""Cel", "---\0   ""A1\0    ""A2\0    ""A3\0    ""A4\0    ""FAS\0   ""Elem.\0 ")
-  #define LEN_VOLTSRC          TR("\003", "\007")
-  #define TR_VOLTSRC           TR("RxV""A1\0""A2\0""A3\0""A4\0""FAS""Cel", "RxBatt\0""A1\0    ""A2\0    ""A3\0    ""A4\0    ""FAS\0   ""Elem.\0 ")
+  #define LEN_AMPSRC           TR("\003", "\005")
+  #define TR_AMPSRC            TR("---""A1\0""A2\0""A3\0""A4\0""FAS""Cel", "---\0 ""A1\0  ""A2\0  ""A3\0  ""A4\0  ""FAS\0 ""Elem.")
+  #define LEN_VOLTSRC          TR("\003", "\005")
+  #define TR_VOLTSRC           TR("A1\0""A2\0""A3\0""A4\0""FAS""Cel", "A1\0  ""A2\0  ""A3\0  ""A4\0  ""FAS\0 ""Elem.")
 #else
-  #define LEN_AMPSRC           TR("\003", "\007")
-  #define TR_AMPSRC            TR("---""A1\0""A2\0""FAS""Cel", "---\0   ""A1\0    ""A2\0    ""FAS\0   ""Elem.\0 ")
+  #define LEN_AMPSRC           TR("\003", "\005")
+  #define TR_AMPSRC            TR("---""A1\0""A2\0""FAS""Cel", "---\0 ""A1\0  ""A2\0  ""FAS\0 ""Elem.")
 #endif
 
 #define LEN_VARIOSRC           "\005"
@@ -579,7 +579,7 @@
 #define TR_POTWARNING          TR(IF_CPUARM(INDENT) "Alerte pot", INDENT "Pos. potentiom.")
 #define TR_TIMEZONE            "Fuseau horaire"
 #define TR_RXCHANNELORD        TR("Ordre voies RX","Ordre des voies préféré")
-#define TR_SWITCHES_DELAY      "Switches Delay"
+#define TR_SWITCHES_DELAY      "Délai inters milieu"
 #define TR_SLAVE               "Elève"
 #define TR_MODESRC             "Mode\006% Source"
 #define TR_MULTIPLIER          "Multiplieur"
@@ -781,7 +781,7 @@
 #define TR_ANTENNAPROBLEM      CENTER "Antenne radio défectueuse!"
 #define TR_MODELIDUSED         TR("ID déjà affecté", "No de modèle déjà utilisé")
 #define TR_MODULE              INDENT "Type de module"
-#define TR_TELEMETRY_TYPE      "Telemetry Type"
+#define TR_TELEMETRY_TYPE      "Type télémesure"
 #define TR_CHANNELRANGE        TR(INDENT "Canaux", INDENT "Plage de canaux")
 #define TR_LOWALARM            INDENT "Alarme basse"
 #define TR_CRITICALALARM       INDENT "Alarme critique"

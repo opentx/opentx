@@ -180,6 +180,8 @@ Curves::Curves(QWidget * parent, ModelData & model, GeneralSettings & generalSet
   addTemplate(tr("Symmetrical f(x)=-f(-x)"), CURVE_COEFF_ENABLE, curveSymmetricalY);
   addTemplate(tr("Symmetrical f(x)=f(-x)"), CURVE_COEFF_ENABLE | CURVE_YMID_ENABLE, curveSymmetricalX);
 
+  disableMouseScrolling();
+
   lock = false;
 }
 
@@ -246,12 +248,13 @@ void Curves::updateCurveType()
     index = model.curves[currentCurve].count - 2;
   }
   else {
+    ui->curveSmooth->hide();
     if (model.curves[currentCurve].count == 5)
-      index += 2;
+      index = 1;
     else if (model.curves[currentCurve].count == 9)
-      index += 4;
+      index = 2;
     else if (model.curves[currentCurve].count == 17)
-      index += 6;
+      index = 3;
   }
 
   ui->curvePoints->setCurrentIndex(index);

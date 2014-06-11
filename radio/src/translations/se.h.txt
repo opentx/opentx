@@ -292,7 +292,7 @@
   #define TR_TELEM_RESERVE     TR("[--]", "[---]")
   #define TR_TELEM_TIME        TR("Tid\0", "Tid\0 ")
   #define TR_SWR               TR("SWR\0", "SWR\0 ")
-  #define TR_RX_BATT           TR("RxBt", "RxBat")
+  #define TR_RX_BATT           TR("[NA]", "[NA]\0")
   #define TR_A3_A4             TR("A3\0 ""A4\0 ", "A3\0  ""A4\0  ") 
   #define TR_A3_A4_MIN         TR("A3-\0""A4-\0", "A3-\0 ""A4-\0 ")
 #else
@@ -358,7 +358,7 @@
   #define LEN_AMPSRC           TR("\003", "\007")
   #define TR_AMPSRC            TR("---""A1\0""A2\0""A3\0""A4\0""FAS""Cel", "---\0   ""A1\0    ""A2\0    ""A3\0    ""A4\0    ""FAS\0   ""Cells\0 ")
   #define LEN_VOLTSRC          TR("\003", "\007")
-  #define TR_VOLTSRC           TR("RxV""A1\0""A2\0""A3\0""A4\0""FAS""Cel", "RxBatt\0""A1\0    ""A2\0    ""A3\0    ""A4\0    ""FAS\0   ""Cells\0 ")
+  #define TR_VOLTSRC           TR("A1\0""A2\0""A3\0""A4\0""FAS""Cel", "A1\0    ""A2\0    ""A3\0    ""A4\0    ""FAS\0   ""Cells\0 ")
 #else
   #define LEN_AMPSRC           TR("\003", "\007")
   #define TR_AMPSRC            TR("---""A1\0""A2\0""FAS""Cel", "---\0   ""A1\0    ""A2\0    ""FAS\0   ""Cells\0 ")
@@ -579,7 +579,7 @@
 #define TR_POTWARNING          TR("Rattvarn.", INDENT "Rattvarning")
 #define TR_TIMEZONE            TR("Tidszon","GPS Tidszon")
 #define TR_RXCHANNELORD        "Kanaler i RX"
-#define TR_SWITCHES_DELAY      "Switches Delay"
+#define TR_SWITCHES_DELAY      "Brytarfördröjning"
 #define TR_SLAVE               "Elev"
 #define TR_MODESRC             " Läge\004% Källa"
 #define TR_MULTIPLIER          "Styrka"
@@ -781,7 +781,7 @@
 #define TR_ANTENNAPROBLEM      CENTER "Fel på TX-antennen"
 #define TR_MODELIDUSED         TR("ID finns redan","ModellID används redan")
 #define TR_MODULE              INDENT "Modul"
-#define TR_TELEMETRY_TYPE      "Telemetry Type"
+#define TR_TELEMETRY_TYPE      "Telemetrityp"
 #define TR_CHANNELRANGE        INDENT "Kanalområde"
 #define TR_LOWALARM            INDENT "Låg-alarm"
 #define TR_CRITICALALARM       INDENT "Kritiskt alarm"

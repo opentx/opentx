@@ -100,28 +100,30 @@ void _bootStart()
     bwdt_reset();
   }
 
-  if (((GPIOC->IDR & 0x00000002) == 0) || ((GPIOE->IDR & 0x00000008) == 0)) {
-    // Bootloader needed
-    const uint8_t *src;
-    uint8_t *dest;
-    uint32_t size;
+  if ((GPIOE->IDR & 0x00000008) == 0) {
+    if ((GPIOC->IDR & 0x00000002) == 0) {
+      // Bootloader needed
+      const uint8_t *src;
+      uint8_t *dest;
+      uint32_t size;
 
-    bwdt_reset();
-    size = sizeof(BootCode);
-    src = BootCode;
-    dest = (uint8_t *) 0x20000000;
+      bwdt_reset();
+      size = sizeof(BootCode);
+      src = BootCode;
+      dest = (uint8_t *) 0x20000000;
 
-    for (; size; size -= 1) {
-      *dest++ = *src++;
+      for (; size; size -= 1) {
+        *dest++ = *src++;
+      }
+      // Could check for a valid copy to RAM here
+      // Go execute bootloader
+      bwdt_reset();
+
+      uint32_t address = *(uint32_t *) 0x20000004;
+
+      ((void (*)(void)) (address))();		// Go execute the loaded application
+
     }
-    // Could check for a valid copy to RAM here
-    // Go execute bootloader
-    bwdt_reset();
-
-    uint32_t address = *(uint32_t *) 0x20000004;
-
-    ((void (*)(void)) (address))();		// Go execute the loaded application
-
   }
 
 // run_application() ;

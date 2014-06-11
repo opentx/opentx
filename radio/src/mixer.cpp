@@ -329,7 +329,6 @@ getvalue_t getValue(uint8_t i)
 #if defined(FRSKY)
 #if defined(CPUARM)
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_SWR) return frskyData.swr.value;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RXBATT) return frskyData.analog[TELEM_ANA_RXBATT].value;
 #endif
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RSSI_TX) return frskyData.rssi[1].value;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RSSI_RX) return frskyData.rssi[0].value;
@@ -824,7 +823,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       //========== OFFSET / AFTER ===============
       if (apply_offset_and_curve) {
         int16_t offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, s_current_mixer_flight_mode);
-        if (offset) dv += calc100toRESX_16Bits(offset) << 8;
+        if (offset) dv += int32_t(calc100toRESX_16Bits(offset)) << 8;
       }
 
       //========== DIFFERENTIAL =========

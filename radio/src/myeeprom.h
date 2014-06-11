@@ -326,7 +326,7 @@ PACK(typedef struct t_ScriptData {
     TRAINER_MODULE
   };
   #define MODELDATA_BITMAP  char bitmap[LEN_BITMAP_NAME];
-  #define MODELDATA_EXTRA   uint8_t externalModule; uint8_t trainerMode; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][4]; uint8_t nPotsToWarn; int8_t potPosition[NUM_POTS]; uint8_t rxBattAlarms[2];
+  #define MODELDATA_EXTRA   uint8_t externalModule; uint8_t trainerMode; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][4]; uint8_t nPotsToWarn; int8_t potPosition[NUM_POTS]; uint8_t spare[2];
   #define LIMITDATA_EXTRA   char name[LEN_CHANNEL_NAME]; int8_t curve;
   #define swstate_t         uint16_t
 #elif defined(PCBSKY9X)
@@ -417,7 +417,7 @@ PACK(typedef struct t_EEGeneral {
   int8_t    hapticMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
   AVR_FIELD(uint8_t blOffBright:4)
   AVR_FIELD(uint8_t blOnBright:4)
-  ARM_FIELD(uint8_t switchesDelay)
+  ARM_FIELD(int8_t switchesDelay)
   uint8_t   lightAutoOff;
   uint8_t   templateSetup;   // RETA order for receiver channels
   int8_t    PPM_Multiplier;
@@ -439,6 +439,8 @@ PACK(typedef struct t_EEGeneral {
 
 }) EEGeneral;
 
+#define SWITCHES_DELAY()     uint8_t(15+g_eeGeneral.switchesDelay)
+#define SWITCHES_DELAY_NONE  (-15)
 #define HAPTIC_STRENGTH()    (3+g_eeGeneral.hapticStrength)
 
 #if defined(PCBTARANIS)
@@ -839,33 +841,35 @@ enum Functions {
   FUNC_MAX
 };
 
-#define HAS_ENABLE_PARAM(func) (func < FUNC_FIRST_WITHOUT_ENABLE)
+#define HAS_ENABLE_PARAM(func)    ((func) < FUNC_FIRST_WITHOUT_ENABLE)
+
+#if defined(VOICE)
+  #define IS_PLAY_FUNC(func)      ((func) >= FUNC_PLAY_SOUND && func <= FUNC_PLAY_VALUE)
+#else
+  #define IS_PLAY_FUNC(func)      ((func) == FUNC_PLAY_SOUND)
+#endif
 
 #if defined(CPUARM)
   #define IS_PLAY_BOTH_FUNC(func) (0)
-  #define IS_VOLUME_FUNC(func)    (func == FUNC_VOLUME)
+  #define IS_VOLUME_FUNC(func)    ((func) == FUNC_VOLUME)
 #else
-  #define IS_PLAY_BOTH_FUNC(func) (func == FUNC_PLAY_BOTH)
+  #define IS_PLAY_BOTH_FUNC(func) ((func) == FUNC_PLAY_BOTH)
   #define IS_VOLUME_FUNC(func)    (0)
 #endif
 
 #if defined(GVARS)
-  #define IS_ADJUST_GV_FUNC(func) (func == FUNC_ADJUST_GVAR)
+  #define IS_ADJUST_GV_FUNC(func) ((func) == FUNC_ADJUST_GVAR)
 #else
   #define IS_ADJUST_GV_FUNC(func) (0)
 #endif
 
 #if defined(HAPTIC)
-  #define IS_HAPTIC_FUNC(func)    (func == FUNC_HAPTIC)
+  #define IS_HAPTIC_FUNC(func)    ((func) == FUNC_HAPTIC)
 #else
   #define IS_HAPTIC_FUNC(func)    (0)
 #endif
 
-#if defined(VOICE)
-  #define HAS_REPEAT_PARAM(func) (func == FUNC_PLAY_SOUND || (func >= FUNC_PLAY_TRACK && func <= FUNC_PLAY_VALUE) || IS_HAPTIC_FUNC(func))
-#else
-  #define HAS_REPEAT_PARAM(func) (func == FUNC_PLAY_SOUND || IS_HAPTIC_FUNC(func))
-#endif
+#define HAS_REPEAT_PARAM(func)    (IS_PLAY_FUNC(func) || IS_HAPTIC_FUNC(func))
 
 enum ResetFunctionParam {
   FUNC_RESET_TIMER1,
@@ -1034,7 +1038,7 @@ enum TelemetrySource {
   TELEM_RSSI_TX,
   TELEM_RSSI_RX,
 #if defined(CPUARM)
-  TELEM_RXBATT,
+  TELEM_RESERVE0,
 #endif
   TELEM_A_FIRST,
   TELEM_A1=TELEM_A_FIRST,
@@ -1184,9 +1188,6 @@ enum FrskyCurrentSource {
 };
 
 enum FrskyVoltsSource {
-#if defined(CPUARM)
-  FRSKY_VOLTS_SOURCE_RXBATT,
-#endif
   FRSKY_VOLTS_SOURCE_A1,
   FRSKY_VOLTS_SOURCE_A2,
 #if defined(CPUARM)

@@ -201,8 +201,6 @@ const char * audioFilenames[] = {
   "rssi_org",
   "rssi_red",
   "swr_red",
-  "rx_org",
-  "rx_red",
   "telemko",
   "telemok"
 };
@@ -329,8 +327,8 @@ void getLogicalSwitchAudioFile(char * filename, int index, unsigned int event)
   char * str = getModelPath(filename);
   int len = STR_VSWITCHES[0];
   strncpy(str, &STR_VSWITCHES[1+len*(index+SWSRC_FIRST_LOGICAL_SWITCH)], len);
-  str += len;
-  strcpy(str, suffixes[event]);
+  str[len] = '\0';
+  strcat(str, suffixes[event]);
   strcat(str, SOUNDS_EXT);
 }
 
@@ -1057,14 +1055,12 @@ void audioEvent(uint8_t e, uint16_t f)
         case AU_TIMER_30:
           audioQueue.playTone(BEEP_DEFAULT_FREQ+150, 120, 20, PLAY_REPEAT(2)|PLAY_NOW);
           break;
-        case AU_RXBATT_ORANGE:
         case AU_A1_ORANGE:
         case AU_A2_ORANGE:
         case AU_A3_ORANGE:
         case AU_A4_ORANGE:
           audioQueue.playTone(BEEP_DEFAULT_FREQ+600, 200, 20, PLAY_NOW);
           break;
-        case AU_RXBATT_RED:
         case AU_A1_RED:
         case AU_A2_RED:
         case AU_A3_RED:

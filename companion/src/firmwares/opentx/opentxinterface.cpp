@@ -154,7 +154,7 @@ bool OpenTxEepromInterface::loadModelVariant(unsigned int index, ModelData &mode
     int numbytes = efile->readRlc2((uint8_t *)eepromData.data(), eepromData.size());
     if (numbytes) {
       open9xModel.Import(eepromData);
-      // open9xModel.Dump();
+      open9xModel.Dump();
       model.used = true;
     }
     else {
@@ -504,7 +504,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
       return 1;
     case GvarsAreNamed:
     case GvarsFlightModes:
-      return ((IS_ARM(board)||(board==BOARD_GRUVIN9X)) ? 1 : 0);
+      return ((IS_ARM(board) || board==BOARD_GRUVIN9X) ? 1 : 0);
     case Mixes:
       return (IS_ARM(board) ? O9X_ARM_MAX_MIXERS : O9X_MAX_MIXERS);
     case OffsetWeight:
@@ -659,6 +659,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case LuaInputs:
     case LimitsPer1000:
     case EnhancedCurves:
+      return IS_TARANIS(board);
     case HasFasOffset:
       return (IS_STOCK(board) ? false : true);
     case HasMahPersistent:

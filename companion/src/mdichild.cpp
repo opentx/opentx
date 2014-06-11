@@ -71,13 +71,13 @@ MdiChild::MdiChild():
   fileChanged(false)
 {
   ui->setupUi(this);
-  this->setWindowIcon(CompanionIcon("open.png"));
+  setWindowIcon(CompanionIcon("open.png"));
   ui->SimulateTxButton->setIcon(CompanionIcon("simulate.png"));
   setAttribute(Qt::WA_DeleteOnClose);
 
   eepromInterfaceChanged();
 
-  if(!(this->isMaximized() || this->isMinimized())) {
+  if (!(this->isMaximized() || this->isMinimized())) {
     adjustSize();
   }
 

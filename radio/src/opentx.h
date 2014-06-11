@@ -696,7 +696,14 @@ void perMain();
 NOINLINE void per10ms();
 
 getvalue_t getValue(uint8_t i);
+
+#if defined(CPUARM)
+#define GETSWITCH_MIDPOS_DELAY   1
+bool getSwitch(int8_t swtch, uint8_t flags=0);
+#else
 bool getSwitch(int8_t swtch);
+#endif
+
 void logicalSwitchesTimerTick();
 void logicalSwitchesReset();
 
@@ -1229,9 +1236,8 @@ uint8_t lswFamily(uint8_t func);
 int16_t lswTimerValue(delayval_t val);
 
 #if defined(CPUARM)
-  #define MASK_CFN_TYPE  uint32_t  // current max = 32 function switches
+  #define MASK_CFN_TYPE  uint64_t  // current max = 64 function switches
   #define MASK_FUNC_TYPE uint32_t  // current max = 32 functions
-
 #elif defined(CPUM64)
   #define MASK_CFN_TYPE  uint16_t  // current max = 16 function switches
   #define MASK_FUNC_TYPE uint8_t   // current max = 8  functions
@@ -1363,8 +1369,6 @@ enum AUDIO_SOUNDS {
     AU_RSSI_ORANGE,
     AU_RSSI_RED,
     AU_SWR_RED,
-    AU_RXBATT_ORANGE,
-    AU_RXBATT_RED,
     AU_TELEMETRY_LOST,
     AU_TELEMETRY_BACK,
 #endif

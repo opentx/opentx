@@ -108,7 +108,6 @@ Gruvin9xGeneral_v103::operator GeneralSettings ()
   result.flashBeep = flashBeep;
   result.splashMode = disableSplashScreen;
   result.enableTelemetryAlarm = enableTelemetryAlarm;
-  result.filterInput = filterInput;
   result.templateSetup = templateSetup;
   result.PPM_Multiplier = PPM_Multiplier;
   // TODO frskyRssiAlarms[2];
@@ -153,7 +152,6 @@ Gruvin9xGeneral_v104::operator GeneralSettings ()
   result.flashBeep = flashBeep;
   result.splashMode = disableSplashScreen;
   result.enableTelemetryAlarm = enableTelemetryAlarm;
-  result.filterInput = filterInput;
   result.templateSetup = templateSetup;
   result.PPM_Multiplier = PPM_Multiplier;
   // TODO frskyRssiAlarms[2];

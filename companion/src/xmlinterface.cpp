@@ -105,8 +105,6 @@ void saveGeneralSettings(GeneralSettings & settings, global_settings & gs)
   }
   /* TODO if (settings.disableSplashScreen)
     gs.splash_screen(false); */
-  if (settings.filterInput)
-    gs.filter_input(filter_input::value(settings.filterInput));
   /* TODO if (settings.backlightDelay)
     gs.light_auto_off_timer(settings.lightAutoOff); */
   gs.default_channel_order(settings.templateSetup);

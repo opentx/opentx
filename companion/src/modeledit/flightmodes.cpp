@@ -121,7 +121,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
   }
 
   // GVars
-  if (gvCount > 0) {
+  if (gvCount > 0 && (firmware->getCapability(GvarsFlightModes) || phaseIdx == 0) ) {
     QGridLayout *gvLayout = new QGridLayout(ui->gvGB);
     for (int i=0; i<gvCount; i++) {
       int col = 0;
@@ -171,6 +171,8 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
     ui->gvGB->hide();
   }
 
+  disableMouseScrolling();
+
   update();
 }
 
@@ -200,13 +202,14 @@ void FlightModePanel::update()
     trimUpdate(i);
   }
 
-  for (int i=0; i<gvCount; i++) {
-    gvNames[i]->setText(model.gvars_names[i]);
-    gvValues[i]->setDisabled(model.isGVarLinked(phaseIdx, i));
-    if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+  if (ui->gvGB->isVisible()) {
+    for (int i=0; i<gvCount; i++) {
+      gvNames[i]->setText(model.gvars_names[i]);
+      gvValues[i]->setDisabled(model.isGVarLinked(phaseIdx, i));
       gvValues[i]->setValue(model.getGVarValue(phaseIdx, i));
-      if (phaseIdx == 0) 
+      if (IS_TARANIS(GetEepromInterface()->getBoard()) && phaseIdx == 0) { 
         gvPopups[i]->setChecked(model.gvars_popups[i]);
+      }
     }
   }
 
@@ -294,14 +297,6 @@ void FlightModePanel::GVName_editingFinished()
     strcpy(model.gvars_names[gvar], lineedit->text().toAscii());
     emit modified();
   }
-}
-
-void FlightModePanel::GVSource_currentIndexChanged(int index)
-{
-  QComboBox *comboBox = qobject_cast<QComboBox*>(sender());
-  int gvar = comboBox->property("index").toInt();
-  model.gvsource[gvar] = index;
-  emit modified();
 }
 
 void FlightModePanel::phaseGVUse_currentIndexChanged(int index)
