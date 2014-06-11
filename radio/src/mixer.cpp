@@ -823,7 +823,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       //========== OFFSET / AFTER ===============
       if (apply_offset_and_curve) {
         int16_t offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, s_current_mixer_flight_mode);
-        if (offset) dv += calc100toRESX_16Bits(offset) << 8;
+        if (offset) dv += int32_t(calc100toRESX_16Bits(offset)) << 8;
       }
 
       //========== DIFFERENTIAL =========
