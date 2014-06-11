@@ -266,7 +266,7 @@ void CustomFunctionsPanel::playMusic()
     else {
       phononCurrent = index;
       clickObject->clear();
-      clickObject->setCurrentSource(QUrl(track));
+      clickObject->setCurrentSource(QUrl("file://"+track));
       clickObject->play();
       playBT[index]->setIcon(CompanionIcon("stop.png"));
     }
