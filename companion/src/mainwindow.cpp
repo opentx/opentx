@@ -990,7 +990,6 @@ bool MainWindow::readFirmwareFromRadio(const QString filename)
       ad->setWindowIcon(CompanionIcon("read_flash.png"));
       ad->exec();
       delete ad;
-      sleep(1);
       result = true;
     }
   }
@@ -1067,7 +1066,6 @@ bool MainWindow::readEepromFromRadio(const QString filename, const QString messa
       ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
       ad->exec();
       delete ad;
-      sleep(1);
       result = true;
     }
   }
@@ -1078,7 +1076,6 @@ bool MainWindow::readEepromFromRadio(const QString filename, const QString messa
     ad->setWindowIcon(CompanionIcon("read_eeprom.png"));
     ad->exec();
     delete ad;
-    sleep(1);
     result = true;
   }
 
@@ -1267,11 +1264,8 @@ bool MainWindow::convertEEPROM(QString backupFile, QString restoreFile, QString 
     if (!flash.isValid())
       return false;
 
-    unsigned int version = 0;
-    unsigned int variant = 0;
-
-    QString fwEEprom = flash.getEEprom();
-    version = fwEEprom.toInt();
+    unsigned int version = flash.getEEpromVersion();
+    unsigned int variant = flash.getEEpromVariant();
 
     QFile file(backupFile);
     int eeprom_size = file.size();
@@ -1333,7 +1327,7 @@ void MainWindow::writeFlash(QString fileToFlash)
         if (backupEnable) {
           QDateTime datetime;
           backupFile.clear();
-          backupFile=backupPath+"/backup-"+QDateTime().currentDateTime().toString("yyyy-MM-dd-hhmmss")+".bin";
+          backupFile = backupPath+"/backup-"+QDateTime().currentDateTime().toString("yyyy-MM-dd-hhmmss")+".bin";
         }
 
         if (readEepromFromRadio(backupFile, tr("Backup Models and Settings From Radio"))) {

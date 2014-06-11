@@ -154,7 +154,7 @@ bool OpenTxEepromInterface::loadModelVariant(unsigned int index, ModelData &mode
     int numbytes = efile->readRlc2((uint8_t *)eepromData.data(), eepromData.size());
     if (numbytes) {
       open9xModel.Import(eepromData);
-      // open9xModel.Dump();
+      open9xModel.Dump();
       model.used = true;
     }
     else {
