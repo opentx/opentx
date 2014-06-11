@@ -444,8 +444,8 @@
 
 #define TR_VSRCRAW             "---\0""Směr""Výšk""Plyn""Křid" TR_POTS_VSRCRAW TR_ROTARY_ENCODERS "MAX\0" TR_CYC_VSRCRAW "TrmS" "TrmV" "TrmP" "TrmK" TR_SW_VSRCRAW
 
-#define LEN_VTMRMODES          "\003"
-#define TR_VTMRMODES           "VYP""ABS""PL>""PL%""PL*"
+#define LEN_VTMRMODES          "\004"
+#define TR_VTMRMODES           "VYP\0""ABS\0""Pln>""Pln%""Pln*"
 
 #define LEN_VTRAINERMODES      "\006"
 #define TR_VTRAINERMODES       "Učitel""Žák\0  "
@@ -497,7 +497,7 @@
 #define TR_ELIMITS             TR("Limit +25%", "Kanál +/- 125%")
 #define TR_ETRIMS              TR("širší Trim", "Široký trim")
 #define TR_TRIMINC             TR("Krok Trimu", "Krok trimu")
-#define TR_TTRACE              TR("PL stopek", INDENT "Stopa PL stopek")
+#define TR_TTRACE              TR("StopaPlynu", INDENT "Stopa plynu")
 #define TR_TTRIM               TR("TrimVolnob.", INDENT "Trim jen volnoběh")
 #define TR_BEEPCTR             "Středy \221\222"
 #define TR_PROTO               INDENT "Protokol"
@@ -572,7 +572,7 @@
 #define TR_BLDELAY             INDENT"Zhasnout po"
 #define TR_BLONBRIGHTNESS      INDENT"Jas Zap."
 #define TR_BLOFFBRIGHTNESS     INDENT"Jas Vyp."
-#define TR_BLCOLOR             INDENT "Color"
+#define TR_BLCOLOR             INDENT "Barva"
 #define TR_SPLASHSCREEN        TR("úvodníLogo", "Zobrazit úvodní logo")
 #define TR_THROTTLEWARNING     TR("* Plyn", INDENT "Páka Plynu")
 #define TR_SWITCHWARNING       TR("* Spínače", INDENT "Polohy Spínačů")
