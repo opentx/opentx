@@ -4828,19 +4828,27 @@ void menuModelLogicalSwitches(uint8_t event)
 void onCustomFunctionsFileSelectionMenu(const char *result)
 {
   int8_t  sub = m_posVert - 1;
+  CustomFnData * cf = &g_model.funcSw[sub];
+  uint8_t func = CFN_FUNC(cf);
 
   if (result == STR_UPDATE_LIST) {
     char directory[] = SOUNDS_PATH;
-    strncpy(directory+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
-    if (!listSdFiles(directory, SOUNDS_EXT, sizeof(g_model.funcSw[sub].play.name), NULL)) {
-      POPUP_WARNING(STR_NO_SOUNDS_ON_SD);
+    if (func == FUNC_PLAY_SCRIPT)
+      strcpy(directory, SCRIPTS_PATH);
+    else
+      strncpy(directory+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
+    if (!listSdFiles(directory, func==FUNC_PLAY_SCRIPT ? SCRIPTS_EXT : SOUNDS_EXT, sizeof(cf->play.name), NULL)) {
+      POPUP_WARNING(func==FUNC_PLAY_SCRIPT ? STR_NO_SCRIPTS_ON_SD : STR_NO_SOUNDS_ON_SD);
       s_menu_flags = 0;
     }
   }
   else {
-    // The user choosed a wav file in the list
-    memcpy(g_model.funcSw[sub].play.name, result, sizeof(g_model.funcSw[sub].play.name));
+    // The user choosed a file in the list
+    memcpy(cf->play.name, result, sizeof(cf->play.name));
     eeDirty(EE_MODEL);
+    if (func == FUNC_PLAY_SCRIPT) {
+      LUA_LOAD_MODEL_SCRIPTS();
+    }
   }
 }
 #endif
@@ -4874,7 +4882,6 @@ void onCustomFunctionsMenu(const char *result)
     eeDirty(EE_MODEL);
   }
 }
-
 #endif
 
 void menuModelCustomFunctions(uint8_t event)
@@ -5018,7 +5025,7 @@ void menuModelCustomFunctions(uint8_t event)
           }
 #endif
 #if defined(CPUARM) && defined(SDCARD)
-          else if (func == FUNC_PLAY_TRACK || func == FUNC_BACKGND_MUSIC) {
+          else if (func == FUNC_PLAY_TRACK || func == FUNC_BACKGND_MUSIC || func == FUNC_PLAY_SCRIPT) {
 #if LCD_W >= 212
             xcoord_t x = MODEL_CUSTOM_FUNC_3RD_COLUMN;
 #else
@@ -5031,12 +5038,15 @@ void menuModelCustomFunctions(uint8_t event)
             if (active && event==EVT_KEY_BREAK(KEY_ENTER)) {
               s_editMode = 0;
               char directory[] = SOUNDS_PATH;
-              strncpy(directory+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
-              if (listSdFiles(directory, SOUNDS_EXT, sizeof(sd->play.name), sd->play.name)) {
+              if (func==FUNC_PLAY_SCRIPT)
+                strcpy(directory, SCRIPTS_PATH);
+              else
+                strncpy(directory+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
+              if (listSdFiles(directory, func==FUNC_PLAY_SCRIPT ? SCRIPTS_EXT : SOUNDS_EXT, sizeof(sd->play.name), sd->play.name)) {
                 menuHandler = onCustomFunctionsFileSelectionMenu;
               }
               else {
-                POPUP_WARNING(STR_NO_SOUNDS_ON_SD);
+                POPUP_WARNING(func==FUNC_PLAY_SCRIPT ? STR_NO_SCRIPTS_ON_SD : STR_NO_SOUNDS_ON_SD);
                 s_menu_flags = 0;
               }
             }
@@ -5235,7 +5245,7 @@ void menuModelCustomScriptOne(uint8_t event)
 
   putsStrIdx(lcdLastPos+FW, 0, "LUA", s_currIdx+1, 0);
 
-  SUBMENU_NOTITLE(3+scriptInternalData[s_currIdx].inputsCount, { 0, 0, LABEL(inputs), 0/*repeated*/ });
+  SUBMENU_NOTITLE(3+scriptInputsOutputs[s_currIdx].inputsCount, { 0, 0, LABEL(inputs), 0/*repeated*/ });
 
   int8_t sub = m_posVert;
 
@@ -5268,32 +5278,32 @@ void menuModelCustomScriptOne(uint8_t event)
     else if (i == ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL) {
       lcd_putsLeft(y, STR_INPUTS);
     }
-    else if (i <= ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL+scriptInternalData[s_currIdx].inputsCount) {
+    else if (i <= ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL+scriptInputsOutputs[s_currIdx].inputsCount) {
       int inputIdx = i-ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL-1;
-      lcd_putsnAtt(INDENT_WIDTH, y, scriptInternalData[s_currIdx].inputs[inputIdx].name, 10, 0);
-      if (scriptInternalData[s_currIdx].inputs[inputIdx].type == 0) {
-        lcd_outdezAtt(SCRIPT_ONE_2ND_COLUMN_POS, y, g_model.scriptsData[s_currIdx].inputs[inputIdx]+scriptInternalData[s_currIdx].inputs[inputIdx].def, attr|LEFT);
+      lcd_putsnAtt(INDENT_WIDTH, y, scriptInputsOutputs[s_currIdx].inputs[inputIdx].name, 10, 0);
+      if (scriptInputsOutputs[s_currIdx].inputs[inputIdx].type == 0) {
+        lcd_outdezAtt(SCRIPT_ONE_2ND_COLUMN_POS, y, g_model.scriptsData[s_currIdx].inputs[inputIdx]+scriptInputsOutputs[s_currIdx].inputs[inputIdx].def, attr|LEFT);
         if (attr) {
-          CHECK_INCDEC_MODELVAR(event, g_model.scriptsData[s_currIdx].inputs[inputIdx], scriptInternalData[s_currIdx].inputs[inputIdx].min-scriptInternalData[s_currIdx].inputs[inputIdx].def, scriptInternalData[s_currIdx].inputs[inputIdx].max-scriptInternalData[s_currIdx].inputs[inputIdx].def);
+          CHECK_INCDEC_MODELVAR(event, g_model.scriptsData[s_currIdx].inputs[inputIdx], scriptInputsOutputs[s_currIdx].inputs[inputIdx].min-scriptInputsOutputs[s_currIdx].inputs[inputIdx].def, scriptInputsOutputs[s_currIdx].inputs[inputIdx].max-scriptInputsOutputs[s_currIdx].inputs[inputIdx].def);
         }
       }
       else {
-        putsMixerSource(SCRIPT_ONE_2ND_COLUMN_POS, y, g_model.scriptsData[s_currIdx].inputs[inputIdx]+scriptInternalData[s_currIdx].inputs[inputIdx].def, attr);
+        putsMixerSource(SCRIPT_ONE_2ND_COLUMN_POS, y, g_model.scriptsData[s_currIdx].inputs[inputIdx]+scriptInputsOutputs[s_currIdx].inputs[inputIdx].def, attr);
         if (attr) {
           uint8_t *source = (uint8_t *)&g_model.scriptsData[s_currIdx].inputs[inputIdx];
-          CHECK_INCDEC_MODELSOURCE(event, *source, scriptInternalData[s_currIdx].inputs[inputIdx].min-scriptInternalData[s_currIdx].inputs[inputIdx].def, scriptInternalData[s_currIdx].inputs[inputIdx].max-scriptInternalData[s_currIdx].inputs[inputIdx].def);
+          CHECK_INCDEC_MODELSOURCE(event, *source, scriptInputsOutputs[s_currIdx].inputs[inputIdx].min-scriptInputsOutputs[s_currIdx].inputs[inputIdx].def, scriptInputsOutputs[s_currIdx].inputs[inputIdx].max-scriptInputsOutputs[s_currIdx].inputs[inputIdx].def);
         }
       }
     }
   }
 
-  if (scriptInternalData[s_currIdx].outputsCount > 0) {
+  if (scriptInputsOutputs[s_currIdx].outputsCount > 0) {
     lcd_vline(SCRIPT_ONE_3RD_COLUMN_POS-4, FH+1, LCD_H-FH-1);
     lcd_puts(SCRIPT_ONE_3RD_COLUMN_POS, FH+1, STR_OUTPUTS);
 
-    for (int i=0; i<scriptInternalData[s_currIdx].outputsCount; i++) {
+    for (int i=0; i<scriptInputsOutputs[s_currIdx].outputsCount; i++) {
       putsMixerSource(SCRIPT_ONE_3RD_COLUMN_POS+INDENT_WIDTH, FH+1+FH+i*FH, MIXSRC_FIRST_LUA+(s_currIdx*MAX_SCRIPT_OUTPUTS)+i, 0);
-      lcd_outdezNAtt(SCRIPT_ONE_3RD_COLUMN_POS+11*FW+3, FH+1+FH+i*FH, calcRESXto1000(scriptInternalData[s_currIdx].outputs[i].value), PREC1);
+      lcd_outdezNAtt(SCRIPT_ONE_3RD_COLUMN_POS+11*FW+3, FH+1+FH+i*FH, calcRESXto1000(scriptInputsOutputs[s_currIdx].outputs[i].value), PREC1);
     }
   }
 }
@@ -5320,7 +5330,7 @@ void menuModelCustomScripts(uint8_t event)
       break;
   }
 
-  for (int i=0; i<MAX_SCRIPTS; i++) {
+  for (int i=0, scriptIndex=0; i<MAX_SCRIPTS; i++) {
     y = 1 + (i+1)*FH;
 
     ScriptData &sd = g_model.scriptsData[i];
@@ -5331,7 +5341,7 @@ void menuModelCustomScripts(uint8_t event)
     // LUA script
     if (ZEXIST(sd.file)) {
       lcd_putsnAtt(5*FW, y, sd.file, sizeof(sd.file), 0);
-      switch (scriptInternalData[i].state) {
+      switch (scriptInternalData[scriptIndex].state) {
         case SCRIPT_SYNTAX_ERROR:
           lcd_puts(28*FW+2, y, "(error)");
           break;
@@ -5342,12 +5352,13 @@ void menuModelCustomScripts(uint8_t event)
           lcd_puts(29*FW+2, y, "(leak)");
           break;
         default:
-          lcd_outdezAtt(31*FW, y, luaGetCpuUsed(i));
+          lcd_outdezAtt(31*FW, y, luaGetCpuUsed(scriptIndex));
           lcd_putc(31*FW, y, '%');
-          lcd_outdezAtt(34*FW+2, y, luaGetMemUsed(i));
+          lcd_outdezAtt(34*FW+2, y, luaGetMemUsed(scriptIndex));
           lcd_putc(34*FW+2, y, 'k');
           break;
       }
+      scriptIndex++;
     }
     else {
       lcd_putsiAtt(5*FW, y, STR_VCSWFUNC, 0, 0);

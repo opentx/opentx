@@ -58,7 +58,9 @@ extern "C" {
 
 lua_State *L = NULL;
 uint8_t luaState = 0;
+uint8_t luaScriptsCount = 0;
 ScriptInternalData scriptInternalData[MAX_SCRIPTS] = { { SCRIPT_NOFILE, 0 } };
+ScriptInputsOutputs scriptInputsOutputs[MAX_SCRIPTS] = { 0 };
 ScriptInternalData standaloneScript = { SCRIPT_NOFILE, 0 };
 uint16_t maxLuaInterval = 0;
 uint16_t maxLuaDuration = 0;
@@ -915,7 +917,7 @@ static int luaDefaultChannel(lua_State *L)
   return 1;
 }
 
-int luaGetInputs(ScriptInternalData & sid)
+int luaGetInputs(ScriptInputsOutputs & sid)
 {
   if (!lua_istable(L, -1))
     return -1;
@@ -969,7 +971,7 @@ int luaGetInputs(ScriptInternalData & sid)
   return 0;
 }
 
-int luaGetOutputs(ScriptInternalData & sid)
+int luaGetOutputs(ScriptInputsOutputs & sid)
 {
   if (!lua_istable(L, -1))
     return -1;
@@ -1107,7 +1109,7 @@ void luaFree(ScriptInternalData & sid)
   }
 }
 
-int luaLoad(const char *filename, ScriptInternalData & sid)
+int luaLoad(const char *filename, ScriptInternalData & sid, ScriptInputsOutputs * sio=NULL)
 {
   int init = 0;
 
@@ -1136,11 +1138,11 @@ int luaLoad(const char *filename, ScriptInternalData & sid)
         sid.run = luaL_ref(L, LUA_REGISTRYINDEX);
         lua_pushnil(L);
       }
-      else if (!strcmp(key, "input")) {
-        luaGetInputs(sid);
+      else if (sio && !strcmp(key, "input")) {
+        luaGetInputs(*sio);
       }
-      else if (!strcmp(key, "output")) {
-        luaGetOutputs(sid);
+      else if (sio && !strcmp(key, "output")) {
+        luaGetOutputs(*sio);
       }
     }
 
@@ -1170,26 +1172,65 @@ int luaLoad(const char *filename, ScriptInternalData & sid)
 void luaLoadModelScript(uint8_t index)
 {
   ScriptData & sd = g_model.scriptsData[index];
-  ScriptInternalData & sid = scriptInternalData[index];
-
-  memset(&sid, 0, sizeof(sid));
-  sid.state = SCRIPT_NOFILE;
 
   if (ZEXIST(sd.file)) {
+    ScriptInternalData & sid = scriptInternalData[luaScriptsCount++];
+    ScriptInputsOutputs * sio = &scriptInputsOutputs[index];
+    memset(&sid, 0, sizeof(sid));
+    sid.reference = SCRIPT_MIX_FIRST+index;
+    sid.state = SCRIPT_NOFILE;
     char filename[sizeof(SCRIPTS_PATH)+sizeof(sd.file)+sizeof(SCRIPTS_EXT)] = SCRIPTS_PATH "/";
     strncpy(filename+sizeof(SCRIPTS_PATH), sd.file, sizeof(sd.file));
     filename[sizeof(SCRIPTS_PATH)+sizeof(sd.file)] = '\0';
     strcat(filename+sizeof(SCRIPTS_PATH), SCRIPTS_EXT);
-    luaLoad(filename, sid);
+    luaLoad(filename, sid, sio);
   }
+}
+
+bool luaLoadFunctionScript(uint8_t index)
+{
+  CustomFnData & fn = g_model.funcSw[index];
+
+  if (fn.func == FUNC_PLAY_SCRIPT && ZEXIST(fn.play.name)) {
+    if (luaScriptsCount < MAX_SCRIPTS) {
+      ScriptInternalData & sid = scriptInternalData[luaScriptsCount++];
+      memset(&sid, 0, sizeof(sid));
+      sid.reference = SCRIPT_FUNC_FIRST+index;
+      sid.state = SCRIPT_NOFILE;
+      char filename[sizeof(SCRIPTS_PATH)+sizeof(fn.play.name)+sizeof(SCRIPTS_EXT)] = SCRIPTS_PATH "/";
+      strncpy(filename+sizeof(SCRIPTS_PATH), fn.play.name, sizeof(fn.play.name));
+      filename[sizeof(SCRIPTS_PATH)+sizeof(fn.play.name)] = '\0';
+      strcat(filename+sizeof(SCRIPTS_PATH), SCRIPTS_EXT);
+      luaLoad(filename, sid);
+    }
+    else {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 void luaLoadModelScripts()
 {
+  luaScriptsCount = 0;
+
   // Load model scripts
   for (int i=0; i<MAX_SCRIPTS; i++) {
     luaLoadModelScript(i);
   }
+
+  // Load custom function scripts
+  for (int i=0; i<NUM_CFN; i++) {
+    if (!luaLoadFunctionScript(i)) {
+      POPUP_WARNING("Too many Lua scripts!"); // TODO translation
+      break;
+    }
+  }
+
+#if 0
+  // Load telemetry screen script
+#endif
 }
 
 char lua_warning_str[WARNING_LINE_LEN+1];
@@ -1333,37 +1374,60 @@ void luaTask(uint8_t evt)
       luaLoadModelScripts();
     }
 
-    for (int i=0; i<MAX_SCRIPTS; i++) {
-      ScriptData & sd = g_model.scriptsData[i];
+    for (int i=0; i<luaScriptsCount; i++) {
       ScriptInternalData & sid = scriptInternalData[i];
       if (sid.state == SCRIPT_OK) {
         uint8_t prev_mem = lua_gc(L, LUA_GCCOUNT, 0);
         SET_LUA_INSTRUCTIONS_COUNT(PERMANENT_SCRIPTS_MAX_INSTRUCTIONS);
-        lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
-        for (int j=0; j<sid.inputsCount; j++) {
-          if (sid.inputs[j].type == 1)
-            luaGetValueAndPush((uint8_t)sd.inputs[j]);
-          else
-            lua_pushinteger(L, sd.inputs[j] + sid.inputs[j].def);
+        const char *filename;
+        ScriptInputsOutputs * sio = NULL;
+        if (sid.reference >= SCRIPT_MIX_FIRST && sid.reference <= SCRIPT_MIX_LAST) {
+          ScriptData & sd = g_model.scriptsData[sid.reference-SCRIPT_MIX_FIRST];
+          sio = &scriptInputsOutputs[sid.reference-SCRIPT_MIX_FIRST];
+          filename = sd.file;
+          lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
+          for (int j=0; j<sio->inputsCount; j++) {
+            if (sio->inputs[j].type == 1)
+              luaGetValueAndPush((uint8_t)sd.inputs[j]);
+            else
+              lua_pushinteger(L, sd.inputs[j] + sio->inputs[j].def);
+          }
         }
-        if (lua_pcall(L, sid.inputsCount, sid.outputsCount, 0) == 0) {
-          for (int j=sid.outputsCount-1; j>=0; j--) {
-            if (!lua_isnumber(L, -1)) {
-              sid.state = (instructionsPercent > 100 ? SCRIPT_KILLED : SCRIPT_SYNTAX_ERROR);
-              TRACE("Script %10s disabled", sd.file);
-              break;
+        else if (sid.reference >= SCRIPT_FUNC_FIRST && sid.reference <= SCRIPT_FUNC_LAST) {
+          CustomFnData & fn = g_model.funcSw[sid.reference-SCRIPT_FUNC_FIRST];
+          if (!getSwitch(fn.swtch)) {
+            continue;
+          }
+          filename = fn.play.name;
+          lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
+        }
+#if 0
+        else {
+          // SCRIPT_TELEMETRY_SCREEN
+          filename = "telem";
+          lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
+        }
+#endif
+        if (lua_pcall(L, sio ? sio->inputsCount : 0, sio ? sio->outputsCount : 0, 0) == 0) {
+          if (sio) {
+            for (int j=sio->outputsCount-1; j>=0; j--) {
+              if (!lua_isnumber(L, -1)) {
+                sid.state = (instructionsPercent > 100 ? SCRIPT_KILLED : SCRIPT_SYNTAX_ERROR);
+                TRACE("Script %8s disabled", filename);
+                break;
+              }
+              sio->outputs[j].value = lua_tointeger(L, -1);
+              lua_pop(L, 1);
             }
-            sid.outputs[j].value = lua_tointeger(L, -1);
-            lua_pop(L, 1);
           }
         }
         else {
           if (instructionsPercent > 100) {
-            TRACE("Script %10s killed", sd.file);
+            TRACE("Script %8s killed", filename);
             sid.state = SCRIPT_KILLED;
           }
           else {
-            TRACE("Script %10s error: %s", sd.file, lua_tostring(L, -1));
+            TRACE("Script %8s error: %s", filename, lua_tostring(L, -1));
             sid.state = SCRIPT_SYNTAX_ERROR;
           }
         }
@@ -1392,6 +1456,7 @@ void luaTask(uint8_t evt)
       if (max_idx >= 0) {
         ScriptInternalData & sid = scriptInternalData[max_idx];
         TRACE("Script %d killed", max_idx);
+        // TODO Global Warning
         sid.state = SCRIPT_LEAK;
         luaFree(sid);
       }

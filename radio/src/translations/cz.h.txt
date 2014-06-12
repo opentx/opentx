@@ -249,8 +249,14 @@
   #define TR_ADJUST_GVAR     "[AdjustGV]\0"
 #endif
 
-#ifdef DEBUG
-  #define TR_CFN_TEST            "Test\0      "
+#if defined(LUA)
+  #define TR_CFN_PLAY_SCRIPT   "Lua Script "
+#else
+  #define TR_CFN_PLAY_SCRIPT   "[Lua]\0     "
+#endif
+
+#if defined(DEBUG)
+  #define TR_CFN_TEST          "Test\0      "
 #else
   #define TR_CFN_TEST
 #endif
@@ -258,7 +264,7 @@
 #define TR_CFN_RESERVE         "[rezerva]\0 "
 
 #if defined(CPUARM)
-  #define TR_VFSWFUNC          "Zámek \0    ""Trenér \0   ""Insta-Trim\0""Reset\0     ""Set \0      " TR_ADJUST_GVAR "Hlasitost\0 " TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_RESERVE TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podsvětlení" TR_CFN_TEST
+  #define TR_VFSWFUNC          "Zámek \0    ""Trenér \0   ""Insta-Trim\0""Reset\0     ""Set \0      " TR_ADJUST_GVAR "Hlasitost\0 " TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_RESERVE TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_RESERVE TR_CFN_PLAY_SCRIPT TR_CFN_RESERVE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podsvětlení" TR_CFN_TEST
 #elif defined(PCBGRUVIN9X)
   #define TR_VFSWFUNC          "Zámek \0    ""Trenér \0   ""Insta-Trim\0""Reset\0     " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC TR_SDCLOGS "Podsvětlení" TR_CFN_TEST
 #else

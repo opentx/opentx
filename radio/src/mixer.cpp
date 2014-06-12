@@ -267,7 +267,7 @@ getvalue_t getValue(uint8_t i)
   else if (i<MIXSRC_LAST_LUA) {
 #if defined(LUA_MODEL_SCRIPTS)
     div_t qr = div(i-MIXSRC_FIRST_LUA, MAX_SCRIPT_OUTPUTS);
-    return scriptInternalData[qr.quot].outputs[qr.rem].value;
+    return scriptInputsOutputs[qr.quot].outputs[qr.rem].value;
 #else
     return 0;
 #endif

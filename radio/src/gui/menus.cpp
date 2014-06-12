@@ -341,16 +341,11 @@ uint8_t scrollbar_X = LCD_W-1;
 #if defined(CPUARM)
 bool modelHasNotes()
 {
-  FILINFO info;
-  TCHAR lfn[_MAX_LFN + 1];
-  info.lfname = lfn;
-  info.lfsize = sizeof(lfn);
-
   char filename[sizeof(MODELS_PATH)+1+sizeof(g_model.header.name)+sizeof(TEXT_EXT)] = MODELS_PATH "/";
   char *buf = strcat_modelname(&filename[sizeof(MODELS_PATH)], g_eeGeneral.currModel);
   strcpy(buf, TEXT_EXT);
 
-  return (f_stat(filename, &info) == FR_OK);
+  return isFileAvailable(filename);
 }
 
 void pushModelNotes()
@@ -1391,7 +1386,7 @@ bool isSourceAvailable(int source)
 #if defined(LUA_MODEL_SCRIPTS)
   if (source>=MIXSRC_FIRST_LUA && source<=MIXSRC_LAST_LUA) {
     div_t qr = div(source-MIXSRC_FIRST_LUA, MAX_SCRIPT_OUTPUTS);
-    return (scriptInternalData[qr.quot].state==SCRIPT_OK && qr.rem<scriptInternalData[qr.quot].outputsCount);
+    return (qr.rem<scriptInputsOutputs[qr.quot].outputsCount);
   }
 #elif defined(PCBTARANIS)
   if (source>=MIXSRC_FIRST_LUA && source<=MIXSRC_LAST_LUA)
@@ -1568,7 +1563,9 @@ bool isAssignableFunctionAvailable(int function)
     case FUNC_RESERVE1:
     case FUNC_RESERVE2:
     case FUNC_RESERVE3:
-    case FUNC_RESERVE4:
+#if !defined(LUA)
+    case FUNC_PLAY_SCRIPT:
+#endif
     case FUNC_RESERVE5:
       return false;
 

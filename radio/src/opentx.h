@@ -1018,6 +1018,7 @@ void generalDefault();
 void modelDefault(uint8_t id);
 
 #if defined(CPUARM)
+bool isFileAvailable(const char * filename);
 void checkModelIdUnique(uint8_t id);
 #endif
 
@@ -1450,11 +1451,21 @@ enum AUDIO_SOUNDS {
     SCRIPT_KILLED,
     SCRIPT_LEAK
   };
+  enum ScriptReference {
+    SCRIPT_MIX_FIRST,
+    SCRIPT_MIX_LAST=SCRIPT_MIX_FIRST+MAX_SCRIPTS-1,
+    SCRIPT_FUNC_FIRST,
+    SCRIPT_FUNC_LAST=SCRIPT_FUNC_FIRST+MAX_SCRIPTS-1,
+    SCRIPT_TELEMETRY_SCREEN,
+  };
   struct ScriptInternalData {
+    uint8_t reference;
     uint8_t state;
     int run;
     uint8_t instructions;
     uint8_t memory;
+  };
+  struct ScriptInputsOutputs {
     uint8_t inputsCount;
     ScriptInput inputs[MAX_SCRIPT_INPUTS];
     uint8_t outputsCount;
@@ -1463,8 +1474,10 @@ enum AUDIO_SOUNDS {
   #define LUASTATE_STANDALONE_SCRIPT_RUNNING 1
   #define LUASTATE_RELOAD_MODEL_SCRIPTS      2
   extern uint8_t luaState;
-  extern ScriptInternalData scriptInternalData[MAX_SCRIPTS];
+  extern uint8_t luaScriptsCount;
   extern ScriptInternalData standaloneScript;
+  extern ScriptInternalData scriptInternalData[MAX_SCRIPTS];
+  extern ScriptInputsOutputs scriptInputsOutputs[MAX_SCRIPTS];
   void luaInit();
   void luaTask(uint8_t evt);
   void luaExec(const char *filename);

@@ -976,10 +976,10 @@ void putsMixerSource(xcoord_t x, uint8_t y, uint8_t idx, LcdFlags att)
   else if (idx <= MIXSRC_LAST_LUA) {
     div_t qr = div(idx-MIXSRC_FIRST_LUA, MAX_SCRIPT_OUTPUTS);
 #if defined(LUA_MODEL_SCRIPTS)
-    if (qr.quot < MAX_SCRIPTS && qr.rem < scriptInternalData[qr.quot].outputsCount) {
+    if (qr.quot < MAX_SCRIPTS && qr.rem < scriptInputsOutputs[qr.quot].outputsCount) {
       lcd_putcAtt(x+2, y+1, '1'+qr.quot, TINSIZE);
       lcd_filled_rect(x, y, 7, 7);
-      lcd_putsnAtt(x+8, y, scriptInternalData[qr.quot].outputs[qr.rem].name, att & STREXPANDED ? 9 : 4, att);
+      lcd_putsnAtt(x+8, y, scriptInputsOutputs[qr.quot].outputs[qr.rem].name, att & STREXPANDED ? 9 : 4, att);
     }
     else
 #endif
