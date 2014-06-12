@@ -465,3 +465,5 @@ David Poole
 Manfred Delakowitz
 Martijn Kruissen
 Jörgen Norman
+Nathan Kinney
+John Godden
