@@ -522,10 +522,17 @@ void MixesPanel::mixerlistWidget_KeyPress(QKeyEvent *event)
 
 int MixesPanel::gm_moveMix(int idx, bool dir) //true=inc=down false=dec=up
 {
-    if(idx>firmware->getCapability(Mixes) || (idx==0 && !dir) || (idx==firmware->getCapability(Mixes) && dir)) return idx;
+    if(idx>firmware->getCapability(Mixes) || (idx==firmware->getCapability(Mixes) && dir)) return idx;
+
+    MixData &src=model.mixData[idx];
+
+    if (idx==0 && !dir) {
+        //special case: topmost mixer moving up
+        if (src.destCh > 1) src.destCh--;
+        return idx;  
+    }
 
     int tdx = dir ? idx+1 : idx-1;
-    MixData &src=model.mixData[idx];
     MixData &tgt=model.mixData[tdx];
 
     unsigned int outputs = firmware->getCapability(Outputs);
