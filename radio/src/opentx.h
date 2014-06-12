@@ -1182,7 +1182,7 @@ void evalFunctions();
 #if defined(CPUARM)
 #define ACTIVE_PHASES_TYPE uint16_t
 #define DELAY_POS_SHIFT    0
-#define DELAY_POS_MARGIN   16
+#define DELAY_POS_MARGIN   3
 #define delayval_t         int16_t
 PACK(typedef struct t_SwOn {
   uint16_t delay;
