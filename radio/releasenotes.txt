@@ -1,3 +1,14 @@
+<h2>Version 2.0.2 / 2014-06-12</h2>
+<ul>
+<li>RxBatt removed (merged with A1 as before)
+<li>Bootloader accessible through the 2 trims (as 2.0.0)
+<li>Delay on switches middle position only applied to Play functions
+<li>Delay for Play functions is configurable (0-300ms)
+<li>SWR, A3 and A4 now recorded in SD logs
+<li>Persistent mAh was not correctly stored in EEPROM
+<li>A lot of small bug fixes
+</ul>
+
 <h2>OpenTX 2.0.1 / 2014-02-05</h2>
 [Taranis]
 <ul>
