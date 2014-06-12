@@ -688,7 +688,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       //========== DELAYS ===============
       delayval_t _swOn = swOn[i].now;
       delayval_t _swPrev = swOn[i].prev;
-      bool swTog = (mixEnabled != _swOn);
+      bool swTog = (mixEnabled > _swOn+DELAY_POS_MARGIN || mixEnabled < _swOn-DELAY_POS_MARGIN);
       if (mode==e_perout_mode_normal && swTog) {
         if (!swOn[i].delay) _swPrev = _swOn;
         swOn[i].delay = (mixEnabled > _swOn ? md->delayUp : md->delayDown) * (100/DELAY_STEP);
@@ -702,15 +702,20 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         else if (mixEnabled)
           continue;
       }
-      else if (!mixEnabled) {
-        if ((md->speedDown || md->speedUp) && md->mltpx!=MLTPX_REP) {
-          if (mixCondition) {
-            v = (md->mltpx == MLTPX_ADD ? 0 : RESX);
-            apply_offset_and_curve = false;
-          }
+      else {
+        if (mode==e_perout_mode_normal) {
+          swOn[i].now = swOn[i].prev = mixEnabled;
         }
-        else if (mixCondition) {
-          continue;
+        if (!mixEnabled) {
+          if ((md->speedDown || md->speedUp) && md->mltpx!=MLTPX_REP) {
+            if (mixCondition) {
+              v = (md->mltpx == MLTPX_ADD ? 0 : RESX);
+              apply_offset_and_curve = false;
+            }
+          }
+          else if (mixCondition) {
+            continue;
+          }
         }
       }
 
