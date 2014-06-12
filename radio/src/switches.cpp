@@ -246,6 +246,7 @@ bool getLogicalSwitch(uint8_t idx)
 
         y = convertLswTelemValue(ls);
 
+#if defined(GAUGES)
         // Fill the telemetry bars threshold array
         if (s == LS_FAMILY_OFS) {
           uint8_t idx = v1-MIXSRC_FIRST_TELEM+1-TELEM_ALT;
@@ -253,6 +254,8 @@ bool getLogicalSwitch(uint8_t idx)
             FILL_THRESHOLD(idx, ls->v2);
           }
         }
+#endif
+
       }
       else if (v1 >= MIXSRC_GVAR1) {
         y = ls->v2;
