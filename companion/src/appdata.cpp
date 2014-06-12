@@ -633,6 +633,9 @@ AppData::AppData()
         settings.remove("startup_check_companion9x");
         settings.remove("wizardEnable");
 
+        // Delete settings that we do not want to carry over from 1.52
+        settings.remove("dfu_location");
+
         // Select the new default profile as current profile
         id( 0 );
     }
