@@ -3006,7 +3006,11 @@ ISR(USART0_UDRE_vect)
 #endif
 #endif
 
-#define INSTANT_TRIM_MARGIN 10 /* around 1% */
+#if defined(PCBTARANIS)
+  #define INSTANT_TRIM_MARGIN 10 /* around 1% */
+#else
+  #define INSTANT_TRIM_MARGIN 15 /* around 1.5% */
+#endif
 
 void instantTrim()
 {
