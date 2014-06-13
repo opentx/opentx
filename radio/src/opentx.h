@@ -1456,7 +1456,8 @@ enum AUDIO_SOUNDS {
     SCRIPT_MIX_LAST=SCRIPT_MIX_FIRST+MAX_SCRIPTS-1,
     SCRIPT_FUNC_FIRST,
     SCRIPT_FUNC_LAST=SCRIPT_FUNC_FIRST+MAX_SCRIPTS-1,
-    SCRIPT_TELEMETRY_SCREEN,
+    SCRIPT_TELEMETRY_FIRST,
+    SCRIPT_TELEMETRY_LAST=SCRIPT_TELEMETRY_FIRST+MAX_SCRIPTS-1,
   };
   struct ScriptInternalData {
     uint8_t reference;
@@ -1481,10 +1482,11 @@ enum AUDIO_SOUNDS {
   void luaInit();
   void luaTask(uint8_t evt);
   void luaExec(const char *filename);
-  void luaLoadModelScript(uint8_t index);
-  void luaLoadModelScripts();
+  void luaLoadMixScript(uint8_t index);
+  void luaLoadMixScripts();
   #define luaGetMemUsed(idx) scriptInternalData[idx].memory
   #define luaGetCpuUsed(idx) scriptInternalData[idx].instructions
+  bool isTelemetryScriptAvailable(uint8_t index);
   #define LUA_INIT()
   #define LUA_RESET() luaInit()
   #define LUA_LOAD_MODEL_SCRIPTS()   luaState |= LUASTATE_RELOAD_MODEL_SCRIPTS

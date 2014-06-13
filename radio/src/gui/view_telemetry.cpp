@@ -56,7 +56,7 @@ enum FrskyViews {
   FRSKY_VIEW_MAX = e_frsky_after_flight
 };
 
-static uint8_t s_frsky_view = e_frsky_custom_screen_1;
+uint8_t s_frsky_view = e_frsky_custom_screen_1;
 
 #if LCD_W >= 212
   #define BAR_LEFT    26
@@ -205,6 +205,12 @@ void menuTelemetryFrsky(uint8_t event)
       break;
 #endif
   }
+
+#if defined(LUA)
+  if (isTelemetryScriptAvailable(s_frsky_view)) {
+    return;
+  }
+#endif
 
   lcdDrawTelemetryTopBar();
 

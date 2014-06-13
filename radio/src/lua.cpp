@@ -1169,7 +1169,7 @@ int luaLoad(const char *filename, ScriptInternalData & sid, ScriptInputsOutputs 
   return sid.state;
 }
 
-void luaLoadModelScript(uint8_t index)
+void luaLoadMixScript(uint8_t index)
 {
   ScriptData & sd = g_model.scriptsData[index];
 
@@ -1211,13 +1211,51 @@ bool luaLoadFunctionScript(uint8_t index)
   return true;
 }
 
-void luaLoadModelScripts()
+void getTelemetryScriptPath(char * path, uint8_t index)
+{
+  strcpy(path, SCRIPTS_PATH "/");
+  char * curs = strcat_modelname(path+sizeof(SCRIPTS_PATH), g_eeGeneral.currModel);
+  strcpy(curs, "/telemX.lua");
+  curs[6] = '0' + index;
+}
+
+bool luaLoadTelemetryScript(uint8_t index)
+{
+  char path[256];
+  getTelemetryScriptPath(path, index);
+  if (isFileAvailable(path)) {
+    if (luaScriptsCount < MAX_SCRIPTS) {
+      ScriptInternalData & sid = scriptInternalData[luaScriptsCount++];
+      memset(&sid, 0, sizeof(sid));
+      sid.reference = SCRIPT_TELEMETRY_FIRST+index;
+      sid.state = SCRIPT_NOFILE;
+      luaLoad(path, sid);
+    }
+    else {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool isTelemetryScriptAvailable(uint8_t index)
+{
+  for (int i=0; i<luaScriptsCount; i++) {
+    ScriptInternalData & sid = scriptInternalData[i];
+    if (sid.reference == SCRIPT_TELEMETRY_FIRST+index) {
+      return true;
+    }
+  }
+  return false;
+}
+
+void luaLoadMixScripts()
 {
   luaScriptsCount = 0;
 
   // Load model scripts
   for (int i=0; i<MAX_SCRIPTS; i++) {
-    luaLoadModelScript(i);
+    luaLoadMixScript(i);
   }
 
   // Load custom function scripts
@@ -1228,9 +1266,13 @@ void luaLoadModelScripts()
     }
   }
 
-#if 0
-  // Load telemetry screen script
-#endif
+  // Load telemetry scripts
+  for (int i=0; i<MAX_SCRIPTS; i++) {
+    if (!luaLoadTelemetryScript(i)) {
+      POPUP_WARNING("Too many Lua scripts!"); // TODO translation
+      break;
+    }
+  }
 }
 
 char lua_warning_str[WARNING_LINE_LEN+1];
@@ -1286,6 +1328,8 @@ void luaExec(const char *filename)
     luaError(result);
   }
 }
+
+extern uint8_t s_frsky_view;
 
 void luaTask(uint8_t evt)
 {
@@ -1371,7 +1415,7 @@ void luaTask(uint8_t evt)
     if (luaState & LUASTATE_RELOAD_MODEL_SCRIPTS) {
       luaState = 0;
       LUA_RESET();
-      luaLoadModelScripts();
+      luaLoadMixScripts();
     }
 
     for (int i=0; i<luaScriptsCount; i++) {
@@ -1401,13 +1445,13 @@ void luaTask(uint8_t evt)
           filename = fn.play.name;
           lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
         }
-#if 0
         else {
-          // SCRIPT_TELEMETRY_SCREEN
-          filename = "telem";
+          if (g_menuStack[0]!=menuTelemetryFrsky || sid.reference!=SCRIPT_TELEMETRY_FIRST+s_frsky_view) {
+            continue;
+          }
+          filename = "[telem]";
           lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
         }
-#endif
         if (lua_pcall(L, sio ? sio->inputsCount : 0, sio ? sio->outputsCount : 0, 0) == 0) {
           if (sio) {
             for (int j=sio->outputsCount-1; j>=0; j--) {
