@@ -426,8 +426,8 @@ void modelDefault(uint8_t id)
   applyDefaultTemplate();
 
 #if defined(LUA)
-  if (isFileAvailable(TEMPLATES_PATH "/" WIZARD_NAME)) {
-    f_chdir(TEMPLATES_PATH);
+  if (isFileAvailable(WIZARD_PATH "/" WIZARD_NAME)) {
+    f_chdir(WIZARD_PATH);
     luaExec(WIZARD_NAME);
   }
 #endif

@@ -46,12 +46,14 @@
 #define SOUNDS_PATH_LNG_OFS (sizeof(SOUNDS_PATH)-3)
 #define SYSTEM_SUBDIR       "SYSTEM" // no trailing slash = important
 #define BITMAPS_PATH        ROOT_PATH "BMP"
-#define SCRIPTS_PATH        ROOT_PATH "SCRIPTS"
 #define FIRMWARES_PATH      ROOT_PATH "FIRMWARES"
 #define EEPROMS_PATH        ROOT_PATH "EEPROMS"
-#define TEMPLATES_PATH      ROOT_PATH "TEMPLATES"
-
+#define SCRIPTS_PATH        ROOT_PATH "SCRIPTS"
+#define WIZARD_PATH         SCRIPTS_PATH "/WIZARD"
 #define WIZARD_NAME         "wizard.lua"
+#define TEMPLATES_PATH      SCRIPTS_PATH "/TEMPLATES"
+#define SCRIPTS_MIXES_PATH  SCRIPTS_PATH "/MIXES"
+#define SCRIPTS_FUNCS_PATH  SCRIPTS_PATH "/FUNCTIONS"
 
 #define MODELS_EXT          ".bin"
 #define LOGS_EXT            ".csv"

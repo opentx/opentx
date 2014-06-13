@@ -4832,11 +4832,14 @@ void onCustomFunctionsFileSelectionMenu(const char *result)
   uint8_t func = CFN_FUNC(cf);
 
   if (result == STR_UPDATE_LIST) {
-    char directory[] = SOUNDS_PATH;
-    if (func == FUNC_PLAY_SCRIPT)
-      strcpy(directory, SCRIPTS_PATH);
-    else
+    char directory[256];
+    if (func == FUNC_PLAY_SCRIPT) {
+      strcpy(directory, SCRIPTS_FUNCS_PATH);
+    }
+    else {
+      strcpy(directory, SOUNDS_PATH);
       strncpy(directory+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
+    }
     if (!listSdFiles(directory, func==FUNC_PLAY_SCRIPT ? SCRIPTS_EXT : SOUNDS_EXT, sizeof(cf->play.name), NULL)) {
       POPUP_WARNING(func==FUNC_PLAY_SCRIPT ? STR_NO_SCRIPTS_ON_SD : STR_NO_SOUNDS_ON_SD);
       s_menu_flags = 0;
@@ -5037,11 +5040,14 @@ void menuModelCustomFunctions(uint8_t event)
               lcd_putsiAtt(x, y, STR_VCSWFUNC, 0, attr);
             if (active && event==EVT_KEY_BREAK(KEY_ENTER)) {
               s_editMode = 0;
-              char directory[] = SOUNDS_PATH;
-              if (func==FUNC_PLAY_SCRIPT)
-                strcpy(directory, SCRIPTS_PATH);
-              else
+              char directory[256];
+              if (func==FUNC_PLAY_SCRIPT) {
+                strcpy(directory, SCRIPTS_FUNCS_PATH);
+              }
+              else {
+                strcpy(directory, SOUNDS_PATH);
                 strncpy(directory+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
+              }
               if (listSdFiles(directory, func==FUNC_PLAY_SCRIPT ? SCRIPTS_EXT : SOUNDS_EXT, sizeof(sd->play.name), sd->play.name)) {
                 menuHandler = onCustomFunctionsFileSelectionMenu;
               }
@@ -5214,7 +5220,7 @@ void onModelCustomScriptMenu(const char *result)
   ScriptData &sd = g_model.scriptsData[s_currIdx];
 
   if (result == STR_UPDATE_LIST) {
-    if (!listSdFiles(SCRIPTS_PATH, SCRIPTS_EXT, sizeof(sd.file), NULL)) {
+    if (!listSdFiles(SCRIPTS_MIXES_PATH, SCRIPTS_EXT, sizeof(sd.file), NULL)) {
       POPUP_WARNING(STR_NO_SCRIPTS_ON_SD);
       s_menu_flags = 0;
     }
@@ -5262,7 +5268,7 @@ void menuModelCustomScriptOne(uint8_t event)
         lcd_putsiAtt(SCRIPT_ONE_2ND_COLUMN_POS, y, STR_VCSWFUNC, 0, attr);
       if (attr && event==EVT_KEY_BREAK(KEY_ENTER) && !READ_ONLY()) {
         s_editMode = 0;
-        if (listSdFiles(SCRIPTS_PATH, SCRIPTS_EXT, sizeof(sd.file), sd.file, LIST_NONE_SD_FILE)) {
+        if (listSdFiles(SCRIPTS_MIXES_PATH, SCRIPTS_EXT, sizeof(sd.file), sd.file, LIST_NONE_SD_FILE)) {
           menuHandler = onModelCustomScriptMenu;
         }
         else {
