@@ -459,6 +459,11 @@ CSFunctionFamily LogicalSwitchData::getFunctionFamily()
     return LS_FAMILY_VCOMP;
 }
 
+bool LogicalSwitchData::isDeltaFunction()
+{
+  return (func == LS_FN_DPOS || func == LS_FN_DAPOS);
+}
+
 QString LogicalSwitchData::funcToString()
 {
   switch (func) {
@@ -545,7 +550,7 @@ QString LogicalSwitchData::toString(const ModelData & model)
       else if (func == LS_FN_DPOS) result = "d(" + res + ")";
       result += res;
 
-      if (func == LS_FN_APOS || func == LS_FN_VPOS || func == LS_FN_DAPOS || func == LS_FN_DPOS)
+      if (func == LS_FN_APOS || func == LS_FN_VPOS || isDeltaFunction())
         result += " &gt; ";
       else if (func == LS_FN_ANEG || func == LS_FN_VNEG)
         result += " &lt; ";

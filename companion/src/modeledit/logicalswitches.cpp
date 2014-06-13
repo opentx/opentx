@@ -82,6 +82,12 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     connect(cswitchOffset2[i], SIGNAL(editingFinished()), this, SLOT(edited()));
     cswitchOffset2[i]->setVisible(false);
     v2Layout->addWidget(cswitchOffset2[i]);
+    cswitchTOffset[i] = new QTimeEdit(this);
+    cswitchTOffset[i]->setProperty("index",i);
+    cswitchTOffset[i]->setAccelerated(true);
+    connect(cswitchTOffset[i],SIGNAL(editingFinished()),this,SLOT(edited()));
+    v2Layout->addWidget(cswitchTOffset[i]);
+    cswitchTOffset[i]->setVisible(false);
     gridLayout->addLayout(v2Layout, i+1, 3);
 
     // AND
@@ -134,7 +140,7 @@ void LogicalSwitchesPanel::v1Edited(int value)
     if (model.customSw[i].getFunctionFamily() == LS_FAMILY_VOFS) {
       RawSource source = RawSource(model.customSw[i].val1, &model);
       RawSourceRange range = source.getRange();
-      if (model.customSw[i].func == LS_FN_DPOS || model.customSw[i].func == LS_FN_DAPOS) {
+      if (model.customSw[i].isDeltaFunction()) {
         model.customSw[i].val2 = (cswitchOffset[i]->value() / range.step);
       }
       else {
@@ -185,6 +191,7 @@ void LogicalSwitchesPanel::edited()
     int i = sender()->property("index").toInt();
     int newFunc = csw[i]->itemData(csw[i]->currentIndex()).toInt();
     bool chAr = (model.customSw[i].getFunctionFamily() != LogicalSwitchData(newFunc).getFunctionFamily());
+    bool chDelta = (model.customSw[i].isDeltaFunction() ^ LogicalSwitchData(newFunc).isDeltaFunction());
     model.customSw[i].func = newFunc;
     if (chAr) {
       if (model.customSw[i].getFunctionFamily() == LS_FAMILY_TIMER) {
@@ -203,6 +210,10 @@ void LogicalSwitchesPanel::edited()
       model.customSw[i].andsw = 0;
       setSwitchWidgetVisibility(i);
     }
+    if (chDelta) {
+      model.customSw[i].val2 = 0;
+      setSwitchWidgetVisibility(i);
+    }
 
     RawSource source;
     switch (model.customSw[i].getFunctionFamily())
@@ -211,14 +222,18 @@ void LogicalSwitchesPanel::edited()
       {
         source = RawSource(model.customSw[i].val1, &model);
         RawSourceRange range = source.getRange();
-        if (model.customSw[i].func == LS_FN_DPOS || model.customSw[i].func == LS_FN_DAPOS) {
-          model.customSw[i].val2 = (cswitchOffset[i]->value() / range.step);
-          cswitchOffset[i]->setValue(model.customSw[i].val2*range.step);
+        int value = source.isTimeBased() ? QTimeS(cswitchTOffset[i]->time()).seconds() : cswitchOffset[i]->value();
+        if (model.customSw[i].isDeltaFunction()) {
+          /*TODO: is this delta function value set correctly*/
+          model.customSw[i].val2 = (value/range.step);
+          value=model.customSw[i].val2*range.step;
         }
         else {
-          model.customSw[i].val2 = round((cswitchOffset[i]->value()-range.offset)/range.step);
-          cswitchOffset[i]->setValue(model.customSw[i].val2*range.step + range.offset);
+          model.customSw[i].val2 = round((value-range.offset)/range.step);;
+          value= model.customSw[i].val2*range.step + range.offset;
         }
+        if (source.isTimeBased()) cswitchTOffset[i]->setTime(QTimeS(value));
+        else cswitchOffset[i]->setValue(value);
         break;
       }
       case LS_FAMILY_TIMER:
@@ -266,6 +281,7 @@ void LogicalSwitchesPanel::updateTimerParam(QDoubleSpinBox *sb, int timer, bool 
 #define VALUE1_VISIBLE   0x4
 #define VALUE2_VISIBLE   0x8
 #define VALUE3_VISIBLE   0x10
+#define VALUE_TO_VISIBLE 0x20
 
 void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
 {
@@ -278,19 +294,39 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
   switch (model.customSw[i].getFunctionFamily())
   {
     case LS_FAMILY_VOFS:
-      mask |= SOURCE1_VISIBLE | VALUE2_VISIBLE;
+      mask |= SOURCE1_VISIBLE;
       populateSourceCB(cswitchSource1[i], source, model, POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (firmware->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
       cswitchOffset[i]->setDecimals(range.decimals);
       cswitchOffset[i]->setSingleStep(range.step);
-      if (model.customSw[i].func == LS_FN_DPOS || model.customSw[i].func == LS_FN_DAPOS) {
-        cswitchOffset[i]->setMinimum(range.step*-127);
-        cswitchOffset[i]->setMaximum(range.step*127);
-        cswitchOffset[i]->setValue(range.step*model.customSw[i].val2);
+      if (source.isTimeBased()) {
+        mask |= VALUE_TO_VISIBLE;
+        int maxTime;
+        int value;
+        if (model.customSw[i].isDeltaFunction()) {
+          /*TODO: is this delta function value set correctly*/
+          maxTime = range.step*127;
+          value = range.step*model.customSw[i].val2;
+        } else {
+          maxTime = range.max;
+          value = range.step*(model.customSw[i].val2/* TODO+source.getRawOffset(model)*/)+range.offset;
+        }
+        cswitchTOffset[i]->setMaximumTime(QTimeS(maxTime));
+        cswitchTOffset[i]->setDisplayFormat((maxTime>=3600)?"hh:mm:ss":"mm:ss");
+        cswitchTOffset[i]->setTime(QTimeS(value));
       }
       else {
-        cswitchOffset[i]->setMinimum(range.min);
-        cswitchOffset[i]->setMaximum(range.max);
-        cswitchOffset[i]->setValue(range.step*(model.customSw[i].val2/* TODO+source.getRawOffset(model)*/)+range.offset);
+        mask |= VALUE2_VISIBLE;
+        if (model.customSw[i].isDeltaFunction()) {
+          /*TODO: is this delta function value set correctly*/
+          cswitchOffset[i]->setMinimum(range.step*-127);
+          cswitchOffset[i]->setMaximum(range.step*127);
+          cswitchOffset[i]->setValue(range.step*model.customSw[i].val2);
+        }
+        else {
+          cswitchOffset[i]->setMinimum(range.min);
+          cswitchOffset[i]->setMaximum(range.max);
+          cswitchOffset[i]->setValue(range.step*(model.customSw[i].val2/* TODO+source.getRawOffset(model)*/)+range.offset);
+        }
       }
       break;
     case LS_FAMILY_VBOOL:
@@ -322,7 +358,7 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
   cswitchValue[i]->setVisible(mask & VALUE1_VISIBLE);
   cswitchOffset[i]->setVisible(mask & VALUE2_VISIBLE);
   cswitchOffset2[i]->setVisible(mask & VALUE3_VISIBLE);
-
+  cswitchTOffset[i]->setVisible(mask & VALUE_TO_VISIBLE);
   lock = false;
 }
 

@@ -370,6 +370,11 @@ class RawSource {
       return (this->type != other.type) || (this->index != other.index);
     }
 
+    bool isTimeBased() const
+    {
+      return (type==SOURCE_TYPE_TELEMETRY && (index==1 || index==2 || index==3));
+    }
+
     RawSourceType type;
     int index;
     const ModelData * model;
@@ -710,6 +715,7 @@ class LogicalSwitchData { // Logical Switches data
     int andsw;
     void clear() { memset(this, 0, sizeof(LogicalSwitchData)); }
     CSFunctionFamily getFunctionFamily();
+    bool isDeltaFunction();
     QString funcToString();
     QString toString(const ModelData & model);
 };

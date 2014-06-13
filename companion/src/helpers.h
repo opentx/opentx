@@ -132,4 +132,12 @@ QPixmap makePixMap( QImage image, QString firmwareType );
 int version2index(QString version);
 QString index2version(int index);
 
+class QTimeS : public QTime
+{
+  public:
+    QTimeS(int s) { int h = s/3600; s %= 3600; int m = s/60; s %=60; setHMS(h, m, s); };
+    QTimeS(const QTime & q) : QTime(q) {};
+    int seconds() const { return hour()*3600 + minute()*60 + second(); };
+};
+
 #endif // HELPERS_H
