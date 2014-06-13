@@ -280,7 +280,7 @@ void referenceSystemAudioFiles()
 
 const char * suffixes[] = { "-off", "-on" };
 
-char * getModelPath(char * path)
+char * getModelAudioPath(char * path)
 {
   strcpy(path, SOUNDS_PATH "/");
   strncpy(path+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
@@ -292,7 +292,7 @@ char * getModelPath(char * path)
 
 void getPhaseAudioFile(char * filename, int index, unsigned int event)
 {
-  char * str = getModelPath(filename);
+  char * str = getModelAudioPath(filename);
   char * tmp = strcat_phasename(str, index);
   strcpy(tmp, suffixes[event]);
   strcat(tmp, SOUNDS_EXT);
@@ -300,7 +300,7 @@ void getPhaseAudioFile(char * filename, int index, unsigned int event)
 
 void getSwitchAudioFile(char * filename, int index)
 {
-  char * str = getModelPath(filename);
+  char * str = getModelAudioPath(filename);
   int len = STR_VSWITCHES[0];
   strncpy(str, &STR_VSWITCHES[1+len*(index+1)], len);
   str += len-1;
@@ -324,7 +324,7 @@ void getSwitchAudioFile(char * filename, int index)
 
 void getLogicalSwitchAudioFile(char * filename, int index, unsigned int event)
 {
-  char * str = getModelPath(filename);
+  char * str = getModelAudioPath(filename);
   int len = STR_VSWITCHES[0];
   strncpy(str, &STR_VSWITCHES[1+len*(index+SWSRC_FIRST_LOGICAL_SWITCH)], len);
   str[len] = '\0';
@@ -346,7 +346,7 @@ void referenceModelAudioFiles()
   sdAvailableSwitchAudioFiles = 0;
   sdAvailableLogicalSwitchAudioFiles = 0;
   
-  char * filename = getModelPath(path);
+  char * filename = getModelAudioPath(path);
   *(filename-1) = '\0';
 
   FRESULT res = f_opendir(&dir, path);        /* Open the directory */
