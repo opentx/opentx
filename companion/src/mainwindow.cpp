@@ -64,7 +64,6 @@
 #include "helpers.h"
 #include "appdata.h"
 #include "radionotfound.h"
-#include "googleanalytics.h"
 #include "firmwares/opentx/opentxinterface.h" // TODO get rid of this include
 
 #define DONATE_STR      "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QUZ48K4SEXDP2"
@@ -164,8 +163,6 @@ MainWindow::MainWindow():
     if (printing) {
       QTimer::singleShot(0, this, SLOT(autoClose()));
     }
-
-    ga.sendPageView("Home");
 }
 
 void MainWindow::displayWarnings()
@@ -512,7 +509,6 @@ void MainWindow::startFirmwareDownload()
     downloadDialog * dd = new downloadDialog(this, url, filename);
     connect(dd, SIGNAL(accepted()), this, SLOT(firmwareDownloadAccepted()));
     dd->exec();
-    ga.sendEvent(getBoardName(GetCurrentFirmware()->getBoard()), "Download", url);
   }
 }
 

@@ -130,15 +130,10 @@ set(common_SRCS
   firmwares/opentx/opentxM128simulator.cpp
   firmwares/opentx/opentxM64simulator.cpp
   file.cpp
-  googleanalytics.cpp
   appdata.cpp
 )
 
-set(common_MOC_HDRS
-  googleanalytics.h
-)
-
-qt4_wrap_cpp( common_SRCS ${common_MOC_HDRS} )
+qt4_wrap_cpp(common_SRCS)
 
 add_library(common ${common_SRCS})
 

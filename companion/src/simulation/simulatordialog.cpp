@@ -4,7 +4,6 @@
 #include <iostream>
 #include "helpers.h"
 #include "simulatorinterface.h"
-#include "googleanalytics.h"
 
 #define GBALL_SIZE  20
 #define RESX        1024
@@ -24,7 +23,6 @@ SimulatorDialog::SimulatorDialog(QWidget * parent, unsigned int flags):
   trimPressed (TRIM_NONE),
   middleButtonPressed(false)
 {
-  ga.sendPageView(getBoardName(GetCurrentFirmware()->getBoard()) + " Simulator");
 }
 
 uint32_t SimulatorDialog9X::switchstatus = 0;

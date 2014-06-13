@@ -4,7 +4,6 @@
 #include "appdata.h"
 #include <QDateTime>
 #include <QtGui>
-#include "googleanalytics.h"
 
 #define BIT_WARN_THR     ( 0x01 )
 #define BIT_WARN_SW      ( 0x02 )
@@ -318,8 +317,6 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
     }
 
     disableMouseScrolling();
-
-    ga.sendPageView(getBoardName(GetCurrentFirmware()->getBoard()) + " GeneralEdit");
 }
 
 GeneralEdit::~GeneralEdit()

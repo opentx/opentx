@@ -54,7 +54,6 @@
 #include "appdata.h"
 #include "wizarddialog.h"
 #include <QFileInfo>
-#include "googleanalytics.h"
 
 #if defined WIN32 || !defined __GNUC__
 #include <windows.h>
@@ -80,8 +79,6 @@ MdiChild::MdiChild():
   if (!(this->isMaximized() || this->isMinimized())) {
     adjustSize();
   }
-
-  ga.sendPageView(getBoardName(firmware->getBoard()) + " Models");
 }
 
 MdiChild::~MdiChild() 

@@ -3,7 +3,6 @@
 #include <QtGui>
 #include "eeprominterface.h"
 #include "flashinterface.h"
-#include "googleanalytics.h"
 
 #if defined WIN32 || !defined __GNUC__
 #include <Windows.h>
@@ -94,8 +93,6 @@ avrOutputDialog::avrOutputDialog(QWidget *parent, QString prog, QStringList arg,
         process->start(prog,arg);
       }
     }
-
-    ga.sendPageView(getBoardName(GetCurrentFirmware()->getBoard()) + " Flash");
 }
 
 # if !__GNUC__
