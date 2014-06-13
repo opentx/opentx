@@ -372,7 +372,7 @@ class RawSource {
 
     bool isTimeBased() const
     {
-      return (type==SOURCE_TYPE_TELEMETRY && (index==1 || index==2 || index==3));
+      return (type==SOURCE_TYPE_TELEMETRY && (index==TELEMETRY_SOURCE_TX_TIME || index==TELEMETRY_SOURCE_TIMER1 || index==TELEMETRY_SOURCE_TIMER2));
     }
 
     RawSourceType type;
