@@ -103,6 +103,7 @@ class OpenTxFirmware: public FirmwareInterface {
       addTTSLanguage("pl");
       addTTSLanguage("pt");
       addTTSLanguage("es");
+      addTTSLanguage("hu");
     }
     
     virtual QString getStampUrl();

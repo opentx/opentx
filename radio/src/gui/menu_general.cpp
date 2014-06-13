@@ -51,19 +51,21 @@ extern LanguagePack plLanguagePack;
 extern LanguagePack ptLanguagePack;
 extern LanguagePack skLanguagePack;
 extern LanguagePack seLanguagePack;
+extern LanguagePack huLanguagePack;
 
 LanguagePack * languagePacks[] = {
   // alphabetical order
   &czLanguagePack,
+  &deLanguagePack,
   &enLanguagePack,
   &esLanguagePack,
   &frLanguagePack,
-  &deLanguagePack,
+  &huLanguagePack,
   &itLanguagePack,
   &plLanguagePack,
   &ptLanguagePack,
-  &skLanguagePack,
   &seLanguagePack,
+  &skLanguagePack,
   NULL
 };
 #endif

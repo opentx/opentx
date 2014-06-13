@@ -120,6 +120,7 @@ namespace Open9xSky9x {
 #include "radio/src/translations/tts_pt.cpp"
 #include "radio/src/translations/tts_sk.cpp"
 #include "radio/src/translations/tts_pl.cpp"
+#include "radio/src/translations/tts_hu.cpp"
 
 int16_t g_anas[NUM_STICKS+BOARD_9X_NUM_POTS];
 
