@@ -253,7 +253,7 @@ void hapticOff(void);
 #if defined(REVPLUS)
   void hapticOn(uint32_t pwmPercent);
 #else
-  void hapticOn();
+  void hapticOn(void);
   #define HAPTIC_ON()   hapticOn()
 #endif
 
