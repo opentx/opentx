@@ -139,8 +139,8 @@ void avrOutputDialog::doCopy()
   if (source.open(QIODevice::ReadOnly)) {
     QFile dest(destFile);
     if (dest.open(QIODevice::WriteOnly)) {
+      addText(tr("Writing file: "));
       for (int i=0; i<blocks; i++) {
-        addText(tr("Writing file: "));
         int read = source.read(buf, BLKSIZE);
         if (dest.write(buf, read) == read) {
           dest.flush();
