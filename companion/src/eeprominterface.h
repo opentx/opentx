@@ -1372,6 +1372,8 @@ class FirmwareInterface {
 
     virtual int getCapability(const Capability) = 0;
 
+    virtual bool isTelemetrySourceAvailable(int source) = 0;
+
     virtual SimulatorInterface * getSimulator()
     {
       return NULL;

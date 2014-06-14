@@ -680,6 +680,17 @@ int OpenTxFirmware::getCapability(const Capability capability)
   }
 }
 
+bool OpenTxFirmware::isTelemetrySourceAvailable(int source)
+{
+  if (IS_TARANIS(board) && (source == TELEMETRY_SOURCE_RSSI_TX))
+    return false;
+
+  if (source == TELEMETRY_SOURCE_DTE)
+    return false;
+
+  return true;
+}
+
 int OpenTxEepromInterface::isAvailable(Protocol proto, int port)
 {
   if (IS_TARANIS(board)) {
