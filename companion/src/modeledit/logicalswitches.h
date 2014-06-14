@@ -4,6 +4,7 @@
 #include "modelpanel.h"
 #include <QComboBox>
 #include <QDoubleSpinBox>
+#include <QTimeEdit>
 
 class LogicalSwitchesPanel : public ModelPanel
 {
@@ -33,6 +34,7 @@ class LogicalSwitchesPanel : public ModelPanel
     QDoubleSpinBox  * cswitchValue[C9X_NUM_CSW];
     QDoubleSpinBox  * cswitchOffset[C9X_NUM_CSW];
     QDoubleSpinBox  * cswitchOffset2[C9X_NUM_CSW];
+    QTimeEdit  * cswitchTOffset[C9X_NUM_CSW];
     QComboBox * cswitchAnd[C9X_NUM_CSW];
     QDoubleSpinBox  * cswitchDuration[C9X_NUM_CSW];
     QDoubleSpinBox  * cswitchDelay[C9X_NUM_CSW];
