@@ -1379,7 +1379,7 @@ void luaTask(uint8_t evt)
       if (sid.state == SCRIPT_OK) {
         uint8_t prev_mem = lua_gc(L, LUA_GCCOUNT, 0);
         SET_LUA_INSTRUCTIONS_COUNT(PERMANENT_SCRIPTS_MAX_INSTRUCTIONS);
-        const char *filename;
+        const char *filename __attribute__((unused));
         ScriptInputsOutputs * sio = NULL;
         if (sid.reference >= SCRIPT_MIX_FIRST && sid.reference <= SCRIPT_MIX_LAST) {
           ScriptData & sd = g_model.scriptsData[sid.reference-SCRIPT_MIX_FIRST];
