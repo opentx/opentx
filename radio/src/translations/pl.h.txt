@@ -250,7 +250,7 @@
 #endif
 
 #if defined(LUA)
-  #define TR_CFN_PLAY_SCRIPT   "Lua Script"
+  #define TR_CFN_PLAY_SCRIPT   "Skrypty Lua"
 #else
   #define TR_CFN_PLAY_SCRIPT   "[Lua]\0    "
 #endif
@@ -585,7 +585,7 @@
 #define TR_POTWARNING          TR(IF_CPUARM(IDENT) "Ostrz.Poten.", INDENT "PozycjaPotencj.")
 #define TR_TIMEZONE            TR("Strefa czasowa" ,"Strefa czasowa GPS")
 #define TR_RXCHANNELORD        TR("KolejnKan.RX", "Bazowa kolejność kanałów")
-#define TR_SWITCHES_DELAY      "Switches Delay"
+#define TR_SWITCHES_DELAY      "Opóźn.Przeł."
 #define TR_SLAVE               "Uczeń"
 #define TR_MODESRC             " Tryb\006% Źródło"
 #define TR_MULTIPLIER          "Połącznie"
@@ -787,7 +787,7 @@
 #define TR_ANTENNAPROBLEM      CENTER "Problem z anteną TX"
 #define TR_MODELIDUSED         TR("ID zajęte","ID modelu zajęte")
 #define TR_MODULE              INDENT "Moduł"
-#define TR_TELEMETRY_TYPE      "Telemetry Type"
+#define TR_TELEMETRY_TYPE      "Typ Telemetri"
 #define TR_CHANNELRANGE        TR(INDENT "ZakrKn",INDENT "Zakres kanału")
 #define TR_LOWALARM            INDENT "Alarm niski"
 #define TR_CRITICALALARM       INDENT "Alarm krytyczny"
