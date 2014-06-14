@@ -60,7 +60,7 @@ lua_State *L = NULL;
 uint8_t luaState = 0;
 uint8_t luaScriptsCount = 0;
 ScriptInternalData scriptInternalData[MAX_SCRIPTS] = { { SCRIPT_NOFILE, 0 } };
-ScriptInputsOutputs scriptInputsOutputs[MAX_SCRIPTS] = { 0 };
+ScriptInputsOutputs scriptInputsOutputs[MAX_SCRIPTS] = { {0} };
 ScriptInternalData standaloneScript = { SCRIPT_NOFILE, 0 };
 uint16_t maxLuaInterval = 0;
 uint16_t maxLuaDuration = 0;
@@ -1379,7 +1379,7 @@ void luaTask(uint8_t evt)
       if (sid.state == SCRIPT_OK) {
         uint8_t prev_mem = lua_gc(L, LUA_GCCOUNT, 0);
         SET_LUA_INSTRUCTIONS_COUNT(PERMANENT_SCRIPTS_MAX_INSTRUCTIONS);
-        const char *filename;
+        const char *filename __attribute__((unused));
         ScriptInputsOutputs * sio = NULL;
         if (sid.reference >= SCRIPT_MIX_FIRST && sid.reference <= SCRIPT_MIX_LAST) {
           ScriptData & sd = g_model.scriptsData[sid.reference-SCRIPT_MIX_FIRST];
