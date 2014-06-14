@@ -340,6 +340,12 @@ void TelemetryCustomScreen::populateTelemetrySourceCB(QComboBox *b, unsigned int
 
   for (unsigned int i = 0; i < (last ? TELEMETRY_SOURCES_STATUS_COUNT : TELEMETRY_SOURCES_DISPLAY_COUNT); i++) {
     b->addItem(RawSource(SOURCE_TYPE_TELEMETRY, i).toString());
+    if (!firmware->isTelemetrySourceAvailable(i)) {
+      //disable item
+      QModelIndex index = b->model()->index(i+1, 0);
+      QVariant v(0);
+      b->model()->setData(index, v, Qt::UserRole - 1);
+    }
     if (!(i>=sizeof(telem_hub)/sizeof(int) || telem_hub[i]==0 || ((telem_hub[i]>=hubproto) && hubproto!=0))) {
       QModelIndex index = b->model()->index(i, 0);
       QVariant v(0);
