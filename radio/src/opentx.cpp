@@ -731,6 +731,9 @@ ls_telemetry_value_t maxTelemValue(uint8_t channel)
 #if defined(CPUARM)
     case TELEM_TX_TIME:
       return 24*60-1;
+    case TELEM_TIMER1:
+    case TELEM_TIMER2:
+      return 60*60;
 #endif
     case TELEM_FUEL:
 #if defined(CPUARM)
@@ -783,8 +786,8 @@ getvalue_t convert8bitsTelemValue(uint8_t channel, ls_telemetry_value_t value)
 {
   getvalue_t result;
   switch (channel) {
-    case TELEM_TM1:
-    case TELEM_TM2:
+    case TELEM_TIMER1:
+    case TELEM_TIMER2:
       result = value * 5;
       break;
 #if defined(FRSKY)
@@ -1646,8 +1649,8 @@ PLAY_FUNCTION(playValue, uint8_t idx)
     case MIXSRC_FIRST_TELEM+TELEM_TX_VOLTAGE-1:
       PLAY_NUMBER(val, 1+UNIT_VOLTS, PREC1);
       break;
-    case MIXSRC_FIRST_TELEM+TELEM_TM1-1:
-    case MIXSRC_FIRST_TELEM+TELEM_TM2-1:
+    case MIXSRC_FIRST_TELEM+TELEM_TIMER1-1:
+    case MIXSRC_FIRST_TELEM+TELEM_TIMER2-1:
       PLAY_DURATION(val, 0);
       break;
 #if defined(CPUARM) && defined(FRSKY)

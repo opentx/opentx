@@ -860,12 +860,12 @@ void lcdDrawTelemetryTopBar()
   if (g_model.timers[0].mode) {
     att = (timersStates[0].val<0 ? BLINK : 0);
     putsTimer(22*FW+5*FWNUM+3, 0, timersStates[0].val, att, att);
-    lcd_putsiAtt(18*FW+2, 1, STR_VTELEMCHNS, TELEM_TM1, SMLSIZE);
+    lcd_putsiAtt(18*FW+2, 1, STR_VTELEMCHNS, TELEM_TIMER1, SMLSIZE);
   }
   if (g_model.timers[1].mode) {
     att = (timersStates[1].val<0 ? BLINK : 0);
     putsTimer(31*FW+5*FWNUM+3, 0, timersStates[1].val, att, att);
-    lcd_putsiAtt(27*FW+2, 1, STR_VTELEMCHNS, TELEM_TM2, SMLSIZE);
+    lcd_putsiAtt(27*FW+2, 1, STR_VTELEMCHNS, TELEM_TIMER2, SMLSIZE);
   }
   lcd_invert_line(0);
 }
@@ -1214,8 +1214,8 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
       break;
     }
 #endif
-    case TELEM_TM1-1:
-    case TELEM_TM2-1:
+    case TELEM_TIMER1-1:
+    case TELEM_TIMER2-1:
       att &= ~NO_UNIT;
       putsTimer(x, y, val, att, att);
       break;
@@ -1346,8 +1346,8 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
 void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, uint8_t att)
 {
   switch (channel) {
-    case TELEM_TM1-1:
-    case TELEM_TM2-1:
+    case TELEM_TIMER1-1:
+    case TELEM_TIMER2-1:
       att &= ~NO_UNIT;
       putsTimer(x, y, val, att, att);
       break;

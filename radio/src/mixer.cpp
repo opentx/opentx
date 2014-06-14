@@ -325,7 +325,7 @@ getvalue_t getValue(uint8_t i)
     return t.tm_hour*60 + t.tm_min;
   }
 #endif
-  else if (i<=MIXSRC_FIRST_TELEM-1+TELEM_TM2) return timersStates[i-MIXSRC_FIRST_TELEM+1-TELEM_TM1].val;
+  else if (i<=MIXSRC_FIRST_TELEM-1+TELEM_TIMER2) return timersStates[i-MIXSRC_FIRST_TELEM+1-TELEM_TIMER1].val;
 #if defined(FRSKY)
 #if defined(CPUARM)
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_SWR) return frskyData.swr.value;

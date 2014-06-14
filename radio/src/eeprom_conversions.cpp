@@ -678,8 +678,8 @@ void ConvertModel_215_to_216(ModelData &model)
       if (cstate == LS_FAMILY_OFS || cstate == LS_FAMILY_DIFF) {
         if ((uint8_t)sw.v1 >= MIXSRC_FIRST_TELEM) {
           switch ((uint8_t)sw.v1) {
-            case MIXSRC_FIRST_TELEM + TELEM_TM1-1:
-            case MIXSRC_FIRST_TELEM + TELEM_TM2-1:
+            case MIXSRC_FIRST_TELEM + TELEM_TIMER1-1:
+            case MIXSRC_FIRST_TELEM + TELEM_TIMER2-1:
               sw.v2 = (sw.v2+128) * 3;
               break;
             case MIXSRC_FIRST_TELEM + TELEM_ALT-1:

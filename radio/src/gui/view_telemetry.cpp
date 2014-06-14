@@ -235,7 +235,7 @@ void menuTelemetryFrsky(uint8_t event)
 #endif
           getvalue_t threshold = 0;
           uint8_t thresholdX = 0;
-          if (source <= TELEM_TM2)
+          if (source <= TELEM_TIMER2)
             threshold = 0;
           else if (source <= TELEM_RSSI_RX)
             threshold = getRssiAlarmValue(source-TELEM_RSSI_TX);
@@ -331,9 +331,9 @@ void menuTelemetryFrsky(uint8_t event)
 #endif
             putsTelemetryChannel(pos[j+1]-2, 1+FH+2*FH*i, field-1, value, att);
             
-            if (field >= TELEM_TM1 && field <= TELEM_TM2 && i!=3) {
+            if (field >= TELEM_TIMER1 && field <= TELEM_TIMER2 && i!=3) {
               // there is not enough space on LCD for displaying "Tmr1" or "Tmr2" and still see the - sign, we write "T1" or "T2" instead
-              field = field-TELEM_TM1+TELEM_T1;
+              field = field-TELEM_TIMER1+TELEM_T1;
             }
             lcd_putsiAtt(pos[j], 1+FH+2*FH*i, STR_VTELEMCHNS, field, 0);
           }

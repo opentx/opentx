@@ -1030,8 +1030,8 @@ enum TelemetrySource {
   TELEM_RESERVE4,
   TELEM_RESERVE5,
 #endif
-  TELEM_TM1,
-  TELEM_TM2,
+  TELEM_TIMER1,
+  TELEM_TIMER2,
 #if defined(CPUARM)
   TELEM_SWR,
 #endif
@@ -1115,7 +1115,7 @@ enum TelemetrySource {
 #if defined(FRSKY)
   TELEM_DISPLAY_MAX = TELEM_MAX_POWER,
 #else
-  TELEM_DISPLAY_MAX = TELEM_TM2, // because used also in PlayValue
+  TELEM_DISPLAY_MAX = TELEM_TIMER2, // because used also in PlayValue
 #endif
   TELEM_STATUS_MAX = TELEM_GPS_TIME,
   TELEM_FIRST_STREAMED_VALUE = TELEM_RSSI_TX,
@@ -1145,7 +1145,7 @@ enum VarioSource {
 #elif defined(MAVLINK)
   #define NUM_TELEMETRY      4
 #else
-  #define NUM_TELEMETRY      TELEM_TM2
+  #define NUM_TELEMETRY      TELEM_TIMER2
 #endif
 
 PACK(typedef struct t_FrSkyBarData {
