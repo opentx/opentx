@@ -898,8 +898,10 @@ enum AdjustGvarFunctionParam {
 #if defined(CPUARM)
 #if defined(PCBTARANIS)
   #define LEN_CFN_NAME 8
+  #define CFN_SPARE_TYPE int32_t
 #else
   #define LEN_CFN_NAME 6
+  #define CFN_SPARE_TYPE int16_t
 #endif
 PACK(typedef struct t_CustomFnData { // Function Switches data
   int8_t  swtch;
@@ -913,12 +915,12 @@ PACK(typedef struct t_CustomFnData { // Function Switches data
       int16_t val;
       uint8_t mode;
       uint8_t param;
-      int16_t spare2;
+      CFN_SPARE_TYPE spare2;
     }) all;
 
     PACK(struct {
       int32_t val1;
-      int16_t val2;
+      CFN_SPARE_TYPE val2;
     }) clear;
   });
   uint8_t active;
