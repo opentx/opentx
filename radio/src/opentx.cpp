@@ -2061,8 +2061,10 @@ void evalFunctions()
 
 #if defined(SDCARD)
           case FUNC_LOGS:
-            newActiveFunctions |= (1 << FUNCTION_LOGS);
-            logDelay = CFN_PARAM(sd);
+            if (CFN_PARAM(sd)) {
+              newActiveFunctions |= (1 << FUNCTION_LOGS);
+              logDelay = CFN_PARAM(sd);
+            }
             break;
 #endif
 
