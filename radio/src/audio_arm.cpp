@@ -917,7 +917,7 @@ void AudioQueue::stopAll()
   CoEnterMutexSection(audioMutex);
   widx = ridx;                      // clean the queue
   priorityContext.clear();
-  normalContext.tone.clear();
+  normalContext.fragment.clear();
   varioContext.clear();
   backgroundContext.clear();
   CoLeaveMutexSection(audioMutex);
