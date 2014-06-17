@@ -1050,14 +1050,34 @@ bool ModelData::isInputValid(const unsigned int idx) const
 
 void ModelData::removeInput(const int idx)
 {
+  unsigned int chn = expoData[idx].chn;
+
   memmove(&expoData[idx], &expoData[idx+1], (C9X_MAX_EXPOS-(idx+1))*sizeof(ExpoData));
   expoData[C9X_MAX_EXPOS-1].clear();
+
+  //also remove input name if removing last line for this input
+  bool found = false;
+  for (int i=0; i<C9X_MAX_EXPOS; i++) {
+    if (expoData[i].mode==0) continue;
+    if (expoData[i].chn==chn) {
+      found = true;
+      break;
+    }
+  }
+  if (!found) inputNames[chn][0] = 0;
 }
 
 void ModelData::clearInputs()
 {
   for (int i=0; i<C9X_MAX_EXPOS; i++)
     expoData[i].clear();
+
+  //clear all input names
+  if (GetCurrentFirmware()->getCapability(VirtualInputs)) {
+    for (int i=0; i<C9X_MAX_INPUTS; i++) {
+      inputNames[i][0] = 0;
+    }
+  }
 }
 
 void ModelData::clearMixes()
