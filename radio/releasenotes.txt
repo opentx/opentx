@@ -1,3 +1,10 @@
+<h2>Version 2.0.3 / 2014-06-17</h2>
+<ul>
+<li>Bugfix on Reset Flight function (possible freeze of the menus)
+<li>Imperial units bug (on altitude)
+<li>FIRMWARE.BIN and EEPROM.BIN are not anymore marked as system files
+</ul>
+
 <h2>Version 2.0.2 / 2014-06-12</h2>
 <ul>
 <li>RxBatt removed (merged with A1 as before)

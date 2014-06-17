@@ -1,3 +1,9 @@
+<h2>Version 2.0.3</h2>
+<ul>
+<li>EEPROM import bug on AdjustGVAR function</li>
+<li>Timers correctly displayed in logical switches tab</li> 
+</ul>
+
 <h2>Version 2.0.2</h2>
 <ul>
 <li>Mouse scroll wheel behaves differently</li>
