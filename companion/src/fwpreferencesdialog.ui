@@ -81,56 +81,6 @@
       <string>Set voice language.
 May be different from firmware language</string>
      </property>
-     <item>
-      <property name="text">
-       <string>en</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>cz</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>de</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>es</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>fi</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>fr</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>it</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>pl</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>pt</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>se</string>
-      </property>
-     </item>
     </widget>
    </item>
    <item row="7" column="5">
