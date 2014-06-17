@@ -80,10 +80,10 @@
 #define TR_TRNCHN              "ch1ch2ch3ch4"
                                
 #define LEN_UART3MODES         "\017"
-#define TR_UART3MODES          "OFF\0           ""S-Port Mirror\0 ""Debug\0         "
+#define TR_UART3MODES          "OFF\0           ""Replica Porta-S""Debug\0         "
                                
 #define LEN_POTTYPES           "\017"
-#define TR_POTTYPES            "None\0          ""Pot\0           ""Inter. Multipos"
+#define TR_POTTYPES            "None\0          ""Potenziometro\0 ""Inter. Multipos"
                                
 #define LEN_DATETIME           "\005"
 #define TR_DATETIME            "DATA:""ORA :"
@@ -250,7 +250,7 @@
 #endif                         
                                
 #if defined(LUA)
-  #define TR_CFN_PLAY_SCRIPT   "Lua Script\0  "
+  #define TR_CFN_PLAY_SCRIPT   "Script Lua\0  "
 #else
   #define TR_CFN_PLAY_SCRIPT   "[Lua]\0       "
 #endif
@@ -580,12 +580,12 @@
 #define TR_BLOFFBRIGHTNESS     TR(INDENT"Lumin. OFF",INDENT"Luminosità OFF")
 #define TR_BLCOLOR             INDENT "Colore"
 #define TR_SPLASHSCREEN        TR("Schermo avvio", "Schermata di avvio")
-#define TR_THROTTLEWARNING     TR("All. Thr", INDENT "Allarme Motore")
+#define TR_THROTTLEWARNING     TR("All. Mot", INDENT "Allarme Motore")
 #define TR_SWITCHWARNING       TR("Avv. Int.", INDENT "Avviso Interr.")
-#define TR_POTWARNING          TR("Pot Warn.", INDENT "Avviso Pot.")
+#define TR_POTWARNING          TR("Avv. Pot.", INDENT "Avviso Pot.")
 #define TR_TIMEZONE            "Ora locale"
 #define TR_RXCHANNELORD        "Ordine ch RX"
-#define TR_SWITCHES_DELAY      "Ritardo Inter."
+#define TR_SWITCHES_DELAY      "Ritardo voce FV"
 #define TR_SLAVE               "Allievo"
 #define TR_MODESRC             "Modo\006% Origine"
 #define TR_MULTIPLIER          "Moltiplica"
@@ -787,7 +787,7 @@
 #define TR_ANTENNAPROBLEM      CENTER "Problemi antenna TX!"
 #define TR_MODELIDUSED         TR("ID già usato","ID Modello già usato")
 #define TR_MODULE              INDENT "Modulo"
-#define TR_TELEMETRY_TYPE      "Mod. Telemetria"
+#define TR_TELEMETRY_TYPE      "Tipo Telemetria"
 #define TR_CHANNELRANGE        INDENT "Numero Canali"
 #define TR_LOWALARM            INDENT "Allarme Basso"
 #define TR_CRITICALALARM       INDENT "Allarme Critico"
