@@ -5128,7 +5128,7 @@ void menuModelCustomFunctions(uint8_t event)
           else if (func == FUNC_ADJUST_GVAR) {
             switch (CFN_GVAR_MODE(sd)) {
               case FUNC_ADJUST_GVAR_CONSTANT:
-                val_displayed = (int8_t)CFN_PARAM(sd);
+                val_displayed = (int16_t)CFN_PARAM(sd);
                 val_min = -CFN_GVAR_CST_MAX; val_max = +CFN_GVAR_CST_MAX;
                 lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
                 break;
