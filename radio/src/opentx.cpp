@@ -2483,7 +2483,7 @@ void opentxClose()
 #endif
 
 
-#if defined(PCBTARANIS) && !defined(SIMU)
+#if defined(USB_JOYSTICK) && defined(PCBTARANIS) && !defined(SIMU)
 extern USB_OTG_CORE_HANDLE USB_OTG_dev;
 
 /*
@@ -2517,7 +2517,7 @@ void usbJoystickUpdate(void)
   USBD_HID_SendReport (&USB_OTG_dev, HID_Buffer, HID_IN_PACKET );
 }
 
-#endif //#if defined(PCBTARANIS) && !defined(SIMU)
+#endif //#if defined(USB_JOYSTICK) && defined(PCBTARANIS) && !defined(SIMU)
 
 
 void perMain()
@@ -2674,10 +2674,17 @@ void perMain()
 #if defined(PCBTARANIS) && !defined(SIMU)
   static bool usbStarted = false;
   if (!usbStarted && usbPlugged()) {
+#if defined(USB_MASS_STORAGE)
+    opentxClose();
+#endif
     usbStart();
+#if defined(USB_MASS_STORAGE)
+    usbPluggedIn();
+#endif
     usbStarted = true;
   }
   
+#if defined(USB_JOYTICK)
   if (usbStarted) {
     if (!usbPlugged()) {
       //disable USB
@@ -2688,6 +2695,8 @@ void perMain()
       usbJoystickUpdate();
     }
   }
+#endif
+
 #endif //#if defined(PCBTARANIS) && !defined(SIMU)
 
 #if defined(NAVIGATION_STICKS)
@@ -2754,29 +2763,38 @@ void perMain()
   StickScrollAllowed = 1 ;
 #endif
 
-  const char *warn = s_warning;
-  uint8_t menu = s_menu_count;
-
-  if (!LCD_LOCKED()) {
+#if defined(USB_MASS_STORAGE)
+  if (usbPlugged()) {
     lcd_clear();
-    g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
+    menuMainView(0);
   }
+  else 
+#endif
+  {
+    const char *warn = s_warning;
+    uint8_t menu = s_menu_count;
+
+    if (!LCD_LOCKED()) {
+      lcd_clear();
+      g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
+      }
 
 #if defined(LUA)
-  luaTask(evt);
+    luaTask(evt);
 #endif
 
-  if (!LCD_LOCKED()) {
-    if (warn) DISPLAY_WARNING(evt);
+    if (!LCD_LOCKED()) {
+      if (warn) DISPLAY_WARNING(evt);
 #if defined(NAVIGATION_MENUS)
-    if (menu) {
-      const char * result = displayMenu(evt);
-      if (result) {
-        menuHandler(result);
-        putEvent(EVT_MENU_UP);
+      if (menu) {
+        const char * result = displayMenu(evt);
+        if (result) {
+          menuHandler(result);
+          putEvent(EVT_MENU_UP);
+        }
       }
-    }
 #endif
+    }
   }
 
   drawStatusLine();

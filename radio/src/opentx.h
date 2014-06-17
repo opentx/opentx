@@ -1699,4 +1699,8 @@ void varioWakeup();
   extern const pm_uchar logo_taranis[];
 #endif
 
+#if defined(USB_MASS_STORAGE)
+  extern void usbPluggedIn();
+#endif
+
 #endif

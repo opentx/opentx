@@ -119,6 +119,9 @@ void USBD_USR_DeviceConnected (void)
 */
 void USBD_USR_DeviceDisconnected (void)
 {
+#if !defined(BOOT) && defined(USB_MASS_STORAGE)
+  NVIC_SystemReset();
+#endif
 }
 
 

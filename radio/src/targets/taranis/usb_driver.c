@@ -43,6 +43,7 @@ int usbPlugged(void)
   //debounce
   static uint8_t debounced_state = 0;
   static uint8_t last_state = 0;
+
   if ( GPIO_ReadInputDataBit(GPIOA, PIN_FS_VBUS) ) {
     if (last_state) debounced_state = 1;
     last_state = 1;
@@ -69,16 +70,23 @@ void usbInit(void)
 void usbStart(void)
 {
 #if !defined(BOOT)
+#if defined(USB_JOYSTICK)
   //intialize USB as HID device
   USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID, &USR_desc, &USBD_HID_cb, &USR_cb);
+#elif defined(USB_MASS_STORAGE)
+  //intialize USB as MSC device
+  USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID, &USR_desc, &USBD_MSC_cb, &USR_cb);
+#endif
 #else
   //intialize USB as MSC device
   USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID, &USR_desc, &USBD_MSC_cb, &USR_cb);
 #endif //!defined(BOOT)
 }
 
-
+#if defined(USB_JOYSTICK)
 void usbStop(void)
 {
   USBD_DeInit(&USB_OTG_dev);
 }
+#endif
+
