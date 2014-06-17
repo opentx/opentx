@@ -974,7 +974,7 @@ void evalMixes(uint8_t tick10ms)
   }
 
 #if defined(CPUARM)
-  if (flightModeTransitionTime && get_tmr10ms() > flightModeTransitionTime+g_eeGeneral.switchesDelay) {
+  if (flightModeTransitionTime && get_tmr10ms() > flightModeTransitionTime+SWITCHES_DELAY()) {
     flightModeTransitionTime = 0;
     if (fm != flightModeTransitionLast) {
       if (flightModeTransitionLast != 255) PLAY_PHASE_OFF(flightModeTransitionLast);
