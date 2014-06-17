@@ -558,7 +558,6 @@ void telemetryReset()
   frskyData.hub.maxAltitude = 500;
 #if defined(CPUARM)
   frskyData.hub.baroAltitude = 340*100;  //in cm
-  frskyData.hub.gpsDistance = 1234;
 #endif
 
   frskyData.hub.accelY = 100;
