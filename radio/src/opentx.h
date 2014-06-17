@@ -675,6 +675,7 @@ enum StartupWarningStates {
 
 extern uint8_t s_current_mixer_flight_mode;
 extern uint8_t s_last_phase;
+extern uint8_t flightModeTransitionLast;
 
 #if defined(CPUARM)
   #define bitfield_channels_t uint32_t

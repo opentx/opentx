@@ -435,7 +435,10 @@ bool getSwitch(int8_t swtch)
 #if defined(CPUARM) && defined(FLIGHT_MODES)
   else if (cs_idx >= SWSRC_FIRST_FLIGHT_MODE) {
     uint8_t idx = cs_idx - SWSRC_FIRST_FLIGHT_MODE;
-    result = (idx == s_current_mixer_flight_mode);
+    if (flags & GETSWITCH_MIDPOS_DELAY)
+      result = (idx == flightModeTransitionLast);
+    else
+      result = (idx == s_current_mixer_flight_mode);
   }
 #endif
   else {

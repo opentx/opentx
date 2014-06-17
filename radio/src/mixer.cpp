@@ -927,6 +927,11 @@ int32_t sum_chans512[NUM_CHNOUT] = {0};
 #define MAX_ACT 0xffff
 uint8_t s_last_phase = 255; // TODO reinit everything here when the model changes, no???
 
+#if defined(CPUARM)
+tmr10ms_t flightModeTransitionTime;
+uint8_t   flightModeTransitionLast = 255;
+#endif
+
 void evalMixes(uint8_t tick10ms)
 {
 #if defined(PCBGRUVIN9X) && defined(DEBUG) && !defined(VOICE)
@@ -942,8 +947,9 @@ void evalMixes(uint8_t tick10ms)
   uint8_t phase = getFlightPhase();
 
   if (s_last_phase != phase) {
-    if (s_last_phase != 255) PLAY_PHASE_OFF(s_last_phase);
-    PLAY_PHASE_ON(phase);
+#if defined(CPUARM)
+    flightModeTransitionTime = get_tmr10ms();
+#endif
 
     if (s_last_phase == 255) {
       fp_act[phase] = MAX_ACT;
@@ -966,6 +972,17 @@ void evalMixes(uint8_t tick10ms)
     }
     s_last_phase = phase;
   }
+
+#if defined(CPUARM)
+  if (flightModeTransitionTime && get_tmr10ms() > flightModeTransitionTime+g_eeGeneral.switchesDelay) {
+    flightModeTransitionTime = 0;
+    if (phase != flightModeTransitionLast) {
+      if (flightModeTransitionLast != 255) PLAY_PHASE_OFF(flightModeTransitionLast);
+      PLAY_PHASE_ON(phase);
+      flightModeTransitionLast = phase;
+    }
+  }
+#endif
 
   int32_t weight = 0;
   if (s_fade_flight_phases) {
