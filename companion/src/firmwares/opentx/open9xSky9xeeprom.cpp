@@ -220,9 +220,9 @@ t_Open9xArmExpoData_v212::operator ExpoData ()
   return c9x;
 }
 
-t_Open9xArmPhaseData_v208::operator PhaseData ()
+t_Open9xArmFlightModeData_v208::operator FlightModeData ()
 {
-  PhaseData c9x;
+  FlightModeData c9x;
   for (int i=0; i<NUM_STICKS; i++)
     c9x.trim[i] = trim[i];
   c9x.swtch = open9xArmToSwitch(swtch);
@@ -232,9 +232,9 @@ t_Open9xArmPhaseData_v208::operator PhaseData ()
   return c9x;
 }
 
-t_Open9xArmPhaseData_v212::operator PhaseData ()
+t_Open9xArmFlightModeData_v212::operator FlightModeData ()
 {
-  PhaseData c9x;
+  FlightModeData c9x;
   for (int i=0; i<NUM_STICKS; i++)
     c9x.trim[i] = trim[i];
   c9x.swtch = open9xArmToSwitch(swtch);
@@ -768,13 +768,13 @@ t_Open9xArmModelData_v208::operator ModelData ()
   c9x.extendedLimits = extendedLimits;
   c9x.extendedTrims = extendedTrims;
   for (int i=0; i<O9X_ARM_MAX_FLIGHT_MODES; i++) {
-    c9x.phaseData[i] = phaseData[i];
+    c9x.flightModeData[i] = flightModeData[i];
     for (int j=0; j<NUM_STICKS; j++) {
-      if (c9x.phaseData[i].trim[j] > 500) {
-        c9x.phaseData[i].trimRef[j] = c9x.phaseData[i].trim[j] - 501;
-        if (c9x.phaseData[i].trimRef[j] >= i)
-          c9x.phaseData[i].trimRef[j] += 1;
-        c9x.phaseData[i].trim[j] = 0;
+      if (c9x.flightModeData[i].trim[j] > 500) {
+        c9x.flightModeData[i].trimRef[j] = c9x.flightModeData[i].trim[j] - 501;
+        if (c9x.flightModeData[i].trimRef[j] >= i)
+          c9x.flightModeData[i].trimRef[j] += 1;
+        c9x.flightModeData[i].trim[j] = 0;
       }
     }
   }
@@ -857,13 +857,13 @@ t_Open9xArmModelData_v209::operator ModelData ()
   c9x.extendedLimits = extendedLimits;
   c9x.extendedTrims = extendedTrims;
   for (int i=0; i<O9X_ARM_MAX_FLIGHT_MODES; i++) {
-    c9x.phaseData[i] = phaseData[i];
+    c9x.flightModeData[i] = flightModeData[i];
     for (int j=0; j<NUM_STICKS; j++) {
-      if (c9x.phaseData[i].trim[j] > 500) {
-        c9x.phaseData[i].trimRef[j] = c9x.phaseData[i].trim[j] - 501;
-        if (c9x.phaseData[i].trimRef[j] >= i)
-          c9x.phaseData[i].trimRef[j] += 1;
-        c9x.phaseData[i].trim[j] = 0;
+      if (c9x.flightModeData[i].trim[j] > 500) {
+        c9x.flightModeData[i].trimRef[j] = c9x.flightModeData[i].trim[j] - 501;
+        if (c9x.flightModeData[i].trimRef[j] >= i)
+          c9x.flightModeData[i].trimRef[j] += 1;
+        c9x.flightModeData[i].trim[j] = 0;
       }
     }
   }
@@ -947,13 +947,13 @@ t_Open9xArmModelData_v210::operator ModelData ()
   c9x.extendedLimits = extendedLimits;
   c9x.extendedTrims = extendedTrims;
   for (int i=0; i<O9X_ARM_MAX_FLIGHT_MODES; i++) {
-    c9x.phaseData[i] = phaseData[i];
+    c9x.flightModeData[i] = flightModeData[i];
     for (int j=0; j<NUM_STICKS; j++) {
-      if (c9x.phaseData[i].trim[j] > 500) {
-        c9x.phaseData[i].trimRef[j] = c9x.phaseData[i].trim[j] - 501;
-        if (c9x.phaseData[i].trimRef[j] >= i)
-          c9x.phaseData[i].trimRef[j] += 1;
-        c9x.phaseData[i].trim[j] = 0;
+      if (c9x.flightModeData[i].trim[j] > 500) {
+        c9x.flightModeData[i].trimRef[j] = c9x.flightModeData[i].trim[j] - 501;
+        if (c9x.flightModeData[i].trimRef[j] >= i)
+          c9x.flightModeData[i].trimRef[j] += 1;
+        c9x.flightModeData[i].trim[j] = 0;
       }
     }
   }
@@ -1031,13 +1031,13 @@ t_Open9xArmModelData_v211::operator ModelData ()
   c9x.extendedLimits = extendedLimits;
   c9x.extendedTrims = extendedTrims;
   for (int i=0; i<O9X_ARM_MAX_FLIGHT_MODES; i++) {
-    c9x.phaseData[i] = phaseData[i];
+    c9x.flightModeData[i] = flightModeData[i];
     for (int j=0; j<NUM_STICKS; j++) {
-      if (c9x.phaseData[i].trim[j] > 500) {
-        c9x.phaseData[i].trimRef[j] = c9x.phaseData[i].trim[j] - 501;
-        if (c9x.phaseData[i].trimRef[j] >= i)
-          c9x.phaseData[i].trimRef[j] += 1;
-        c9x.phaseData[i].trim[j] = 0;
+      if (c9x.flightModeData[i].trim[j] > 500) {
+        c9x.flightModeData[i].trimRef[j] = c9x.flightModeData[i].trim[j] - 501;
+        if (c9x.flightModeData[i].trimRef[j] >= i)
+          c9x.flightModeData[i].trimRef[j] += 1;
+        c9x.flightModeData[i].trim[j] = 0;
       }
     }
   }
@@ -1118,13 +1118,13 @@ t_Open9xArmModelData_v212::operator ModelData ()
   c9x.extendedLimits = extendedLimits;
   c9x.extendedTrims = extendedTrims;
   for (int i=0; i<O9X_ARM_MAX_FLIGHT_MODES; i++) {
-    c9x.phaseData[i] = phaseData[i];
+    c9x.flightModeData[i] = flightModeData[i];
     for (int j=0; j<NUM_STICKS; j++) {
-      if (c9x.phaseData[i].trim[j] > 500) {
-        c9x.phaseData[i].trimRef[j] = c9x.phaseData[i].trim[j] - 501;
-        if (c9x.phaseData[i].trimRef[j] >= i)
-          c9x.phaseData[i].trimRef[j] += 1;
-        c9x.phaseData[i].trim[j] = 0;
+      if (c9x.flightModeData[i].trim[j] > 500) {
+        c9x.flightModeData[i].trimRef[j] = c9x.flightModeData[i].trim[j] - 501;
+        if (c9x.flightModeData[i].trimRef[j] >= i)
+          c9x.flightModeData[i].trimRef[j] += 1;
+        c9x.flightModeData[i].trim[j] = 0;
       }
     }
   }

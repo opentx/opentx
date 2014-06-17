@@ -347,9 +347,9 @@ t_Gruvin9xSwashRingData::operator SwashRingData ()
   return c9x;
 }
 
-t_Gruvin9xPhaseData_v102::operator PhaseData ()
+t_Gruvin9xFlightModeData_v102::operator FlightModeData ()
 {
-  PhaseData c9x;
+  FlightModeData c9x;
   for (int i=0; i<NUM_STICKS; i++)
     c9x.trim[i] = trim[i];
   c9x.swtch = gruvin9xToSwitch(swtch);
@@ -359,9 +359,9 @@ t_Gruvin9xPhaseData_v102::operator PhaseData ()
   return c9x;
 }
 
-t_Gruvin9xPhaseData_v106::operator PhaseData ()
+t_Gruvin9xFlightModeData_v106::operator FlightModeData ()
 {
-  PhaseData c9x;
+  FlightModeData c9x;
   for (int i=0; i<NUM_STICKS; i++)
     c9x.trim[i] = (((int16_t)trim[i]) << 2) + ((trim_ext >> (2*i)) & 0x03);
   c9x.swtch = gruvin9xToSwitch(swtch);
@@ -454,7 +454,7 @@ t_Gruvin9xModelData_v102::operator ModelData ()
   c9x.moduleData[0].ppmPulsePol = pulsePol;
   c9x.extendedLimits = extendedLimits;
   for (int i=0; i<G9X_MAX_FLIGHT_MODES; i++)
-    c9x.phaseData[i] = phaseData[i];
+    c9x.flightModeData[i] = flightModeData[i];
   for (int i=0; i<G9X_MAX_MIXERS; i++)
     c9x.mixData[i] = mixData[i];
   for (int i=0; i<G9X_NUM_CHNOUT; i++)
@@ -525,7 +525,7 @@ t_Gruvin9xModelData_v103::operator ModelData ()
   c9x.moduleData[0].ppmPulsePol = pulsePol;
   c9x.extendedLimits = extendedLimits;
   for (int i=0; i<G9X_MAX_FLIGHT_MODES; i++)
-    c9x.phaseData[i] = phaseData[i];
+    c9x.flightModeData[i] = flightModeData[i];
   for (int i=0; i<G9X_MAX_MIXERS; i++)
     c9x.mixData[i] = mixData[i];
   for (int i=0; i<G9X_NUM_CHNOUT; i++)
@@ -597,20 +597,20 @@ t_Gruvin9xModelData_v105::operator ModelData ()
   c9x.extendedLimits = extendedLimits;
   c9x.extendedTrims = extendedTrims;
   for (int i=0; i<G9X_MAX_FLIGHT_MODES; i++) {
-    c9x.phaseData[i] = phaseData[i];
+    c9x.flightModeData[i] = flightModeData[i];
     for (int j=0; j<NUM_STICKS; j++) {
-      if (phaseData[i].trim[j] > 125) {
-        c9x.phaseData[i].trimRef[j] = 0;
-        c9x.phaseData[i].trim[j] = 0;
+      if (flightModeData[i].trim[j] > 125) {
+        c9x.flightModeData[i].trimRef[j] = 0;
+        c9x.flightModeData[i].trim[j] = 0;
       }
-      else if (phaseData[i].trim[j] < -125) {
-        c9x.phaseData[i].trimRef[j] = 129 + phaseData[i].trim[j];
-        if (c9x.phaseData[i].trimRef[j] >= i)
-          c9x.phaseData[i].trimRef[j] += 1;
-        c9x.phaseData[i].trim[j] = 0;
+      else if (flightModeData[i].trim[j] < -125) {
+        c9x.flightModeData[i].trimRef[j] = 129 + flightModeData[i].trim[j];
+        if (c9x.flightModeData[i].trimRef[j] >= i)
+          c9x.flightModeData[i].trimRef[j] += 1;
+        c9x.flightModeData[i].trim[j] = 0;
       }
       else {
-        c9x.phaseData[i].trim[j] += subtrim[j];
+        c9x.flightModeData[i].trim[j] += subtrim[j];
       }
     }
   }
@@ -688,13 +688,13 @@ t_Gruvin9xModelData_v106::operator ModelData ()
   c9x.extendedLimits = extendedLimits;
   c9x.extendedTrims = extendedTrims;
   for (int i=0; i<G9X_MAX_FLIGHT_MODES; i++) {
-    c9x.phaseData[i] = phaseData[i];
+    c9x.flightModeData[i] = flightModeData[i];
     for (int j=0; j<NUM_STICKS; j++) {
-      if (c9x.phaseData[i].trim[j] > 500) {
-        c9x.phaseData[i].trimRef[j] = c9x.phaseData[i].trim[j] - 501;
-        if (c9x.phaseData[i].trimRef[j] >= i)
-          c9x.phaseData[i].trimRef[j] += 1;
-        c9x.phaseData[i].trim[j] = 0;
+      if (c9x.flightModeData[i].trim[j] > 500) {
+        c9x.flightModeData[i].trimRef[j] = c9x.flightModeData[i].trim[j] - 501;
+        if (c9x.flightModeData[i].trimRef[j] >= i)
+          c9x.flightModeData[i].trimRef[j] += 1;
+        c9x.flightModeData[i].trim[j] = 0;
       }
     }
   }

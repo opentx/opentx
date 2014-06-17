@@ -1105,7 +1105,7 @@ void ModelData::clear()
     moduleData[1].protocol=OFF;      
   }
   for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
-    phaseData[i].clear();
+    flightModeData[i].clear();
   }
   clearInputs();
   clearMixes();
@@ -1174,7 +1174,7 @@ int ModelData::getTrimValue(int phaseIdx, int trimIdx)
 {
   int result = 0;
   for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
-    PhaseData & phase = phaseData[phaseIdx];
+    FlightModeData & phase = flightModeData[phaseIdx];
     if (phase.trimMode[trimIdx] < 0) {
       return result;
     }
@@ -1196,17 +1196,17 @@ int ModelData::getTrimValue(int phaseIdx, int trimIdx)
 
 bool ModelData::isGVarLinked(int phaseIdx, int gvarIdx)
 {
-  return phaseData[phaseIdx].gvars[gvarIdx] > 1024;
+  return flightModeData[phaseIdx].gvars[gvarIdx] > 1024;
 }
 
 int ModelData::getGVarValue(int phaseIdx, int gvarIdx)
 {
-  int idx = phaseData[phaseIdx].gvars[gvarIdx];
+  int idx = flightModeData[phaseIdx].gvars[gvarIdx];
   for (int i=0; idx>1024 && i<C9X_MAX_FLIGHT_MODES; i++) {
     int nextPhase = idx - 1025;
     if (nextPhase >= phaseIdx) nextPhase += 1;
     phaseIdx = nextPhase;
-    idx = phaseData[phaseIdx].gvars[gvarIdx];
+    idx = flightModeData[phaseIdx].gvars[gvarIdx];
   }
   return idx;
 }
@@ -1214,7 +1214,7 @@ int ModelData::getGVarValue(int phaseIdx, int gvarIdx)
 void ModelData::setTrimValue(int phaseIdx, int trimIdx, int value)
 {
   for (uint8_t i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
-    PhaseData & phase = phaseData[phaseIdx];
+    FlightModeData & phase = flightModeData[phaseIdx];
     int mode = phase.trimMode[trimIdx];
     int p = phase.trimRef[trimIdx];
     int & trim = phase.trim[trimIdx];
@@ -1241,9 +1241,9 @@ void ModelData::setTrimValue(int phaseIdx, int trimIdx, int value)
 void ModelData::removeGlobalVar(int & var)
 {
   if (var >= 126 && var <= 130)
-    var = phaseData[0].gvars[var-126];
+    var = flightModeData[0].gvars[var-126];
   else if (var <= -126 && var >= -130)
-    var = - phaseData[0].gvars[-126-var];
+    var = - flightModeData[0].gvars[-126-var];
 }
 
 ModelData ModelData::removeGlobalVars()

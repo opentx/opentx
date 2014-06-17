@@ -237,14 +237,14 @@ PACK(typedef struct t_Ersky9xgvar {
 //	int8_t gvswitch ;
 }) Ersky9xGvarData ;
 
-PACK(typedef struct t_Ersky9xPhaseData {
+PACK(typedef struct t_Ersky9xFlightModeData {
   int16_t trim[4];     // -500..500 => trim value, 501 => use trim of phase 0, 502, 503, 504 => use trim of phases 1|2|3|4 instead
   int8_t swtch;       // swtch of phase[0] is not used
   char name[6];
   uint8_t fadeIn:4;
   uint8_t fadeOut:4;
   uint16_t spare ;		// Future expansion
-}) Ersky9xPhaseData;
+}) Ersky9xFlightModeData;
 
 PACK(typedef struct t_Ersky9xFuncSwData { // Function Switches data
   int8_t  swtch; //input
@@ -421,7 +421,7 @@ PACK(typedef struct t_Ersky9xModelData_v11 {
 // Add 6 bytes for custom telemetry screen
   uint8_t customDisplayIndex[6] ;
   Ersky9xFuncSwData   funcSw[ERSKY9X_NUM_FSW];
-  Ersky9xPhaseData phaseData[6] ;
+  Ersky9xFlightModeData flightModeData[6] ;
   Ersky9xGvarData gvars[ERSKY9X_MAX_GVARS] ;
 
   operator ModelData();

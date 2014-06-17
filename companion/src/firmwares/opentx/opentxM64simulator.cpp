@@ -179,13 +179,13 @@ void OpenTxM64Simulator::setValues(TxInputs &inputs)
 void OpenTxM64Simulator::setTrim(unsigned int idx, int value)
 {
   idx = OpenTxM64::modn12x3[4*getStickMode() + idx];
-  uint8_t phase = getTrimFlightPhase(getFlightPhase(), idx);
+  uint8_t phase = getTrimFlightPhase(getFlightMode(), idx);
   setTrimValue(phase, idx, value);
 }
 
 void OpenTxM64Simulator::getTrims(Trims & trims)
 {
-  uint8_t phase = getFlightPhase();
+  uint8_t phase = getFlightMode();
   trims.extended = hasExtendedTrims();
   for (uint8_t idx=0; idx<4; idx++) {
     trims.values[idx] = getTrimValue(getTrimFlightPhase(phase, idx), idx);
@@ -201,13 +201,13 @@ void OpenTxM64Simulator::getTrims(Trims & trims)
 
 unsigned int OpenTxM64Simulator::getPhase()
 {
-  return getFlightPhase();
+  return getFlightMode();
 }
 
 const char * OpenTxM64Simulator::getPhaseName(unsigned int phase)
 {
-  static char buff[sizeof(g_model.phaseData[0].name)+1];
-  zchar2str(buff, g_model.phaseData[phase].name, sizeof(g_model.phaseData[0].name));
+  static char buff[sizeof(g_model.flightModeData[0].name)+1];
+  zchar2str(buff, g_model.flightModeData[phase].name, sizeof(g_model.flightModeData[0].name));
   return buff;
 }
 

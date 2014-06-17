@@ -310,8 +310,8 @@ void CompareDialog::printPhases()
   }
   str.append("</tr>");
   for (i=0; i<GetCurrentFirmware()->getCapability(FlightModes); i++) {
-    PhaseData *pd1=&g_model1->phaseData[i];
-    PhaseData *pd2=&g_model2->phaseData[i];
+    FlightModeData *pd1=&g_model1->flightModeData[i];
+    FlightModeData *pd2=&g_model2->flightModeData[i];
     str.append("<tr><td><b>"+tr("FM")+QString("%1</b> ").arg(i));
     color=getColor1(pd1->name,pd2->name);
     str.append(QString("<font size=+1 face='Courier New' color=%2>%1</font></td>").arg(pd1->name).arg(color));
@@ -367,8 +367,8 @@ void CompareDialog::printPhases()
     }
     str.append("</tr>");
     for (i=0; i<GetCurrentFirmware()->getCapability(FlightModes); i++) {
-      PhaseData *pd1=&g_model1->phaseData[i];
-      PhaseData *pd2=&g_model2->phaseData[i];
+      FlightModeData *pd1=&g_model1->flightModeData[i];
+      FlightModeData *pd2=&g_model2->flightModeData[i];
       str.append("<tr><td><b>"+tr("FM")+QString("%1</b> ").arg(i));
       color=getColor1(pd1->name,pd2->name);
       str.append(QString("<font size=+1 face='Courier New' color=%2>%1</font></td>").arg(pd1->name).arg(color));
@@ -412,8 +412,8 @@ void CompareDialog::printPhases()
   }
   str.append("</tr>");
   for (i=0; i<GetCurrentFirmware()->getCapability(FlightModes); i++) {
-    PhaseData *pd1=&g_model1->phaseData[i];
-    PhaseData *pd2=&g_model2->phaseData[i];
+    FlightModeData *pd1=&g_model1->flightModeData[i];
+    FlightModeData *pd2=&g_model2->flightModeData[i];
     str.append("<tr><td><b>"+tr("FM")+QString("%1</b> ").arg(i));
     color=getColor2(pd1->name,pd2->name);
     str.append(QString("<font size=+1 face='Courier New' color=%2>%1</font></td>").arg(pd2->name).arg(color));
@@ -456,8 +456,8 @@ void CompareDialog::printPhases()
     }
     str.append("</tr>");
     for (i=0; i<GetCurrentFirmware()->getCapability(FlightModes); i++) {
-      PhaseData *pd1=&g_model1->phaseData[i];
-      PhaseData *pd2=&g_model2->phaseData[i];
+      FlightModeData *pd1=&g_model1->flightModeData[i];
+      FlightModeData *pd2=&g_model2->flightModeData[i];
       str.append("<tr><td><b>"+tr("FM")+QString("%1</b> ").arg(i));
       color=getColor1(pd1->name,pd2->name);
       str.append(QString("<font size=+1 face='Courier New' color=%2>%1</font></td>").arg(pd2->name).arg(color));
@@ -574,8 +574,8 @@ void CompareDialog::printGvars()
     str.append("<tr><td colspan=2><h2>"+tr("Global Variables")+"</h2></td></tr>");
     str.append("<tr><td width=50%>");
     str.append("<table border=1 cellspacing=0 cellpadding=3 width=100>");
-    PhaseData *pd1=&g_model1->phaseData[0];
-    PhaseData *pd2=&g_model2->phaseData[0];
+    FlightModeData *pd1=&g_model1->flightModeData[0];
+    FlightModeData *pd2=&g_model2->flightModeData[0];
     int width=100/gvarnum;
     str.append("<tr>");
     for(int i=0; i<gvarnum; i++) {        
@@ -673,7 +673,7 @@ void CompareDialog::printExpos()
                 first=1;
                 for (int j=0; j<GetCurrentFirmware()->getCapability(FlightModes);j++) {
                   if (!(ed->phases & mask)) {
-                    PhaseData *pd = &g_model1->phaseData[j];
+                    FlightModeData *pd = &g_model1->flightModeData[j];
                     if (!first) {
                       str += QString(", ")+ QString("%1").arg(getPhaseName(j+1, pd->name));
                     } else {
@@ -751,7 +751,7 @@ void CompareDialog::printExpos()
                 first=1;
                 for (int j=0; j<GetCurrentFirmware()->getCapability(FlightModes);j++) {
                   if (!(ed->phases & mask)) {
-                    PhaseData *pd = &g_model2->phaseData[j];
+                    FlightModeData *pd = &g_model2->flightModeData[j];
                     if (!first) {
                       str += QString(", ")+ QString("%1").arg(getPhaseName(j+1, pd->name));
                     } else {
@@ -849,7 +849,7 @@ void CompareDialog::printMixers()
                 first=1;
                 for (int j=0; j<GetCurrentFirmware()->getCapability(FlightModes);j++) {
                   if (!(md->phases & mask)) {
-                    PhaseData *pd = &g_model1->phaseData[j];
+                    FlightModeData *pd = &g_model1->flightModeData[j];
                     if (!first) {
                       str += QString(", ")+ QString("%1").arg(getPhaseName(j+1, pd->name));
                     } else {
@@ -928,7 +928,7 @@ void CompareDialog::printMixers()
                 first=1;
                 for (int j=0; j<GetCurrentFirmware()->getCapability(FlightModes);j++) {
                   if (!(md->phases & mask)) {
-                    PhaseData *pd = &g_model2->phaseData[j];
+                    FlightModeData *pd = &g_model2->flightModeData[j];
                     if (!first) {
                       str += QString(", ")+ QString("%1").arg(getPhaseName(j+1, pd->name));
                     } else {

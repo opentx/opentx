@@ -571,7 +571,7 @@ t_Ersky9xModelData_v10::operator ModelData ()
   }
 
   for (int i=0; i<NUM_STICKS; i++)
-    c9x.phaseData[0].trim[i] = trim[i];
+    c9x.flightModeData[0].trim[i] = trim[i];
 
   for (int i=0; i<ERSKY9X_MAX_CURVE5; i++) {
     c9x.curves[i].count = 5;
@@ -690,7 +690,7 @@ t_Ersky9xModelData_v11::operator ModelData ()
   }
 
   for (int i=0; i<NUM_STICKS; i++)
-    c9x.phaseData[0].trim[i] = trim[i];
+    c9x.flightModeData[0].trim[i] = trim[i];
 
   for (int i=0; i<ERSKY9X_MAX_CURVE5; i++) {
     c9x.curves[i].count = 5;
@@ -726,7 +726,7 @@ t_Ersky9xModelData_v11::operator ModelData ()
   //   c9x.customdisplay[i]=customDisplayIndex[i];
   // }
   for (int i=0; i<5;i++) {
-    c9x.phaseData[0].gvars[i]=gvars[i].gvar;
+    c9x.flightModeData[0].gvars[i]=gvars[i].gvar;
     // c9x.gvsource[i]=gvars[i].gvsource;
   }
   return c9x;

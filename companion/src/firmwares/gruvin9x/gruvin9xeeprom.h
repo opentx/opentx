@@ -244,19 +244,19 @@ PACK(typedef struct t_Gruvin9xSwashRingData { // Swash Ring data
   t_Gruvin9xSwashRingData();
 }) Gruvin9xSwashRingData;
 
-PACK(typedef struct t_Gruvin9xPhaseData_v102 {
+PACK(typedef struct t_Gruvin9xFlightModeData_v102 {
   int8_t trim[4];     // -125..125 => trim value, 127 => use trim of phase 0, -128, -127, -126 => use trim of phases 1|2|3|4 instead
   int8_t swtch;       // swtch of phase[0] is not used
   char name[6];
   uint8_t fadeIn:4;
   uint8_t fadeOut:4;
 
-  operator PhaseData();
-  t_Gruvin9xPhaseData_v102() { memset(this, 0, sizeof(t_Gruvin9xPhaseData_v102)); }
-}) Gruvin9xPhaseData_v102;
+  operator FlightModeData();
+  t_Gruvin9xFlightModeData_v102() { memset(this, 0, sizeof(t_Gruvin9xFlightModeData_v102)); }
+}) Gruvin9xFlightModeData_v102;
 
 
-PACK(typedef struct t_Gruvin9xPhaseData_v106 {
+PACK(typedef struct t_Gruvin9xFlightModeData_v106 {
   int8_t trim[4];     // -500..500 => trim value, 501 => use trim of phase 0, 502, 503, 504 => use trim of phases 1|2|3|4 instead
   int8_t trim_ext:8;  // 2 less significant extra bits per trim (10bits trims)
   int8_t swtch;       // swtch of phase[0] is not used
@@ -264,9 +264,9 @@ PACK(typedef struct t_Gruvin9xPhaseData_v106 {
   uint8_t fadeIn:4;
   uint8_t fadeOut:4;
 
-  operator PhaseData();
-  t_Gruvin9xPhaseData_v106() { memset(this, 0, sizeof(t_Gruvin9xPhaseData_v106)); }
-}) Gruvin9xPhaseData_v106;
+  operator FlightModeData();
+  t_Gruvin9xFlightModeData_v106() { memset(this, 0, sizeof(t_Gruvin9xFlightModeData_v106)); }
+}) Gruvin9xFlightModeData_v106;
 
 PACK(typedef struct t_Gruvin9xTimerData {
   int8_t    mode:7;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
@@ -312,7 +312,7 @@ PACK(typedef struct t_Gruvin9xModelData_v102 {
   Gruvin9xLogicalSwitchData  customSw[G9X_NUM_CSW];
   Gruvin9xSafetySwData  safetySw[G9X_NUM_CHNOUT];
   Gruvin9xSwashRingData swashR;
-  Gruvin9xPhaseData_v102 phaseData[G9X_MAX_FLIGHT_MODES];
+  Gruvin9xFlightModeData_v102 flightModeData[G9X_MAX_FLIGHT_MODES];
   Gruvin9xFrSkyData frsky;
 
   operator ModelData();
@@ -344,7 +344,7 @@ PACK(typedef struct t_Gruvin9xModelData_v103 {
   Gruvin9xLogicalSwitchData  customSw[G9X_NUM_CSW];
   Gruvin9xSafetySwData  safetySw[G9X_NUM_CHNOUT];
   Gruvin9xSwashRingData swashR;
-  Gruvin9xPhaseData_v102 phaseData[G9X_MAX_FLIGHT_MODES];
+  Gruvin9xFlightModeData_v102 flightModeData[G9X_MAX_FLIGHT_MODES];
   Gruvin9xFrSkyData frsky;
 
   operator ModelData();
@@ -377,7 +377,7 @@ PACK(typedef struct t_Gruvin9xModelData_v105 {
   Gruvin9xSafetySwData  safetySw[G9X_NUM_CHNOUT];
   Gruvin9xFuncSwData    funcSw[G9X_NUM_FSW];
   Gruvin9xSwashRingData swashR;
-  Gruvin9xPhaseData_v102 phaseData[G9X_MAX_FLIGHT_MODES];
+  Gruvin9xFlightModeData_v102 flightModeData[G9X_MAX_FLIGHT_MODES];
   int16_t   subtrim[NUM_STICKS];
   Gruvin9xFrSkyData frsky;
 
@@ -409,7 +409,7 @@ PACK(typedef struct t_Gruvin9xModelData_v106 {
   Gruvin9xSafetySwData  safetySw[G9X_NUM_CHNOUT];
   Gruvin9xFuncSwData    funcSw[G9X_NUM_FSW];
   Gruvin9xSwashRingData swashR;
-  Gruvin9xPhaseData_v106 phaseData[G9X_MAX_FLIGHT_MODES];
+  Gruvin9xFlightModeData_v106 flightModeData[G9X_MAX_FLIGHT_MODES];
   Gruvin9xFrSkyData frsky;
 
   operator ModelData();

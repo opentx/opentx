@@ -766,9 +766,9 @@ class FuncSwData { // Function Switches data
     QStringList toStringList();
 };
 
-class PhaseData {
+class FlightModeData {
   public:
-    PhaseData() { clear(); }
+    FlightModeData() { clear(); }
     int trimMode[NUM_STICKS];
     int trimRef[NUM_STICKS];
     int trim[NUM_STICKS];
@@ -778,7 +778,7 @@ class PhaseData {
     unsigned int fadeOut;
     int rotaryEncoders[2];
     int gvars[C9X_MAX_GVARS];
-    void clear() { memset(this, 0, sizeof(PhaseData)); }
+    void clear() { memset(this, 0, sizeof(FlightModeData)); }
 };
 
 class SwashRingData { // Swash Ring data
@@ -997,7 +997,7 @@ class ModelData {
     bool      extendedLimits; // TODO xml
     bool      extendedTrims;
     bool      throttleReversed;
-    PhaseData phaseData[C9X_MAX_FLIGHT_MODES];
+    FlightModeData flightModeData[C9X_MAX_FLIGHT_MODES];
     MixData   mixData[C9X_MAX_MIXERS];
     LimitData limitData[C9X_NUM_CHNOUT];
 
@@ -1237,12 +1237,12 @@ inline void applyStickModeToModel(ModelData &model, unsigned int mode)
   for (int p=0; p<C9X_MAX_FLIGHT_MODES; p++) {
     for (int i=0; i<NUM_STICKS/2; i++) {
       int converted_stick = applyStickMode(i+1, mode) - 1;
-      int tmp = model.phaseData[p].trim[i];
-      model.phaseData[p].trim[i] = model.phaseData[p].trim[converted_stick];
-      model.phaseData[p].trim[converted_stick] = tmp;
-      tmp = model.phaseData[p].trimRef[i];
-      model.phaseData[p].trimRef[i] = model.phaseData[p].trimRef[converted_stick];
-      model.phaseData[p].trimRef[converted_stick] = tmp;
+      int tmp = model.flightModeData[p].trim[i];
+      model.flightModeData[p].trim[i] = model.flightModeData[p].trim[converted_stick];
+      model.flightModeData[p].trim[converted_stick] = tmp;
+      tmp = model.flightModeData[p].trimRef[i];
+      model.flightModeData[p].trimRef[i] = model.flightModeData[p].trimRef[converted_stick];
+      model.flightModeData[p].trimRef[converted_stick] = tmp;
     }
   }
 

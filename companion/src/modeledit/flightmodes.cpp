@@ -9,7 +9,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::FlightMode),
   phaseIdx(phaseIdx),
-  phase(model.phaseData[phaseIdx]),
+  phase(model.flightModeData[phaseIdx]),
   reCount(firmware->getCapability(RotaryEncoders)),
   gvCount(((!firmware->getCapability(HasVariants)) || (GetCurrentFirmwareVariant() & GVARS_VARIANT)) ?
       firmware->getCapability(Gvars) : 0)
@@ -216,10 +216,10 @@ void FlightModePanel::update()
   for (int i=0; i<reCount; i++) {    
     reValues[i]->setDisabled(false);
     int idx = phase.rotaryEncoders[i];
-    PhaseData *phasere = &phase;
+    FlightModeData *phasere = &phase;
     while (idx > 1024) {
       idx -= 1025;
-      phasere = &model.phaseData[idx];
+      phasere = &model.flightModeData[idx];
       idx = phasere->rotaryEncoders[i];
       reValues[i]->setDisabled(true);
     }
@@ -436,7 +436,7 @@ void FlightModesPanel::onPhaseModified()
 QString FlightModesPanel::getTabName(int index)
 {
   QString result = tr("Flight Mode %1").arg(index);
-  const char *name = model.phaseData[index].name;
+  const char *name = model.flightModeData[index].name;
   if (firmware->getCapability(FlightModesName) && strlen(name) > 0) {
     result += tr(" (%1)").arg(name);
   }

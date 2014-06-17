@@ -1160,7 +1160,7 @@ void menuModelSetup(uint8_t event)
           if (event==EVT_KEY_LONG(KEY_ENTER)) {
             s_noHi = NO_HI_LEN;
             for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
-              memclear(&g_model.phaseData[i], TRIMS_ARRAY_SIZE);
+              memclear(&g_model.flightModeData[i], TRIMS_ARRAY_SIZE);
             }
             eeDirty(EE_MODEL);
             AUDIO_WARNING1();
@@ -1839,16 +1839,16 @@ FlightModesType editFlightModes(uint8_t x, uint8_t y, uint8_t event, FlightModes
 #if defined(PCBTARANIS)
 
 enum FlightModesItems {
-  ITEM_PHASES_NAME,
-  ITEM_PHASES_SWITCH,
-  ITEM_PHASES_TRIM_RUD,
-  ITEM_PHASES_TRIM_ELE,
-  ITEM_PHASES_TRIM_THR,
-  ITEM_PHASES_TRIM_AIL,
-  ITEM_PHASES_FADE_IN,
-  ITEM_PHASES_FADE_OUT,
-  ITEM_PHASES_COUNT,
-  ITEM_PHASES_LAST = ITEM_PHASES_COUNT-1
+  ITEM_FLIGHT_MODES_NAME,
+  ITEM_FLIGHT_MODES_SWITCH,
+  ITEM_FLIGHT_MODES_TRIM_RUD,
+  ITEM_FLIGHT_MODES_TRIM_ELE,
+  ITEM_FLIGHT_MODES_TRIM_THR,
+  ITEM_FLIGHT_MODES_TRIM_AIL,
+  ITEM_FLIGHT_MODES_FADE_IN,
+  ITEM_FLIGHT_MODES_FADE_OUT,
+  ITEM_FLIGHT_MODES_COUNT,
+  ITEM_FLIGHT_MODES_LAST = ITEM_FLIGHT_MODES_COUNT-1
 };
 
 bool isTrimModeAvailable(int mode)
@@ -1858,7 +1858,7 @@ bool isTrimModeAvailable(int mode)
 
 void menuModelFlightModesAll(uint8_t event)
 {
-  MENU(STR_MENUFLIGHTPHASES, menuTabModel, e_FlightModesAll, 1+MAX_FLIGHT_MODES+1, {0, NAVIGATION_LINE_BY_LINE|(ITEM_PHASES_LAST-5), NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_PHASES_LAST, 0});
+  MENU(STR_MENUFLIGHTPHASES, menuTabModel, e_FlightModesAll, 1+MAX_FLIGHT_MODES+1, {0, NAVIGATION_LINE_BY_LINE|(ITEM_FLIGHT_MODES_LAST-5), NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, 0});
 
   int8_t sub = m_posVert - 1;
 
@@ -1876,26 +1876,26 @@ void menuModelFlightModesAll(uint8_t event)
     if (k==MAX_FLIGHT_MODES) {
       // last line available - add the "check trims" line
       lcd_putsLeft((LCD_LINES-1)*FH+1, STR_CHECKTRIMS);
-      putsFlightMode(OFS_CHECKTRIMS, (LCD_LINES-1)*FH+1, s_current_mixer_flight_mode+1);
+      putsFlightMode(OFS_CHECKTRIMS, (LCD_LINES-1)*FH+1, mixerCurrentFlightMode+1);
       if (sub==MAX_FLIGHT_MODES && !trimsCheckTimer) {
         lcd_status_line();
       }
       return;
     }
 
-    PhaseData *p = phaseAddress(k);
+    FlightModeData *p = flightModeAddress(k);
 
-    putsFlightMode(0, y, k+1, (getFlightPhase()==k ? BOLD : 0) | ((sub==k && m_posHorz<0) ? INVERS : 0));
+    putsFlightMode(0, y, k+1, (getFlightMode()==k ? BOLD : 0) | ((sub==k && m_posHorz<0) ? INVERS : 0));
 
-    for (uint8_t j=0; j<ITEM_PHASES_COUNT; j++) {
+    for (uint8_t j=0; j<ITEM_FLIGHT_MODES_COUNT; j++) {
       uint8_t attr = ((sub==k && posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       uint8_t active = (attr && (s_editMode>0 || p1valdiff)) ;
       switch (j) {
-        case ITEM_PHASES_NAME:
+        case ITEM_FLIGHT_MODES_NAME:
           editName(4*FW-1, y, p->name, sizeof(p->name), event, attr);
           break;
 
-        case ITEM_PHASES_SWITCH:
+        case ITEM_FLIGHT_MODES_SWITCH:
           if (k == 0) {
             lcd_puts((5+LEN_FP_NAME)*FW, y, STR_DEFAULT);
           }
@@ -1905,12 +1905,12 @@ void menuModelFlightModesAll(uint8_t event)
           }
           break;
 
-        case ITEM_PHASES_TRIM_RUD:
-        case ITEM_PHASES_TRIM_ELE:
-        case ITEM_PHASES_TRIM_THR:
-        case ITEM_PHASES_TRIM_AIL:
+        case ITEM_FLIGHT_MODES_TRIM_RUD:
+        case ITEM_FLIGHT_MODES_TRIM_ELE:
+        case ITEM_FLIGHT_MODES_TRIM_THR:
+        case ITEM_FLIGHT_MODES_TRIM_AIL:
           if (k != 0) {
-            uint8_t t = j-ITEM_PHASES_TRIM_RUD;
+            uint8_t t = j-ITEM_FLIGHT_MODES_TRIM_RUD;
             putsTrimMode((4+LEN_FP_NAME)*FW+j*(5*FW/2), y, k, t, attr);
             if (active) {
               trim_t & v = p->trim[t];
@@ -1918,12 +1918,12 @@ void menuModelFlightModesAll(uint8_t event)
             }
           }
           break;
-        case ITEM_PHASES_FADE_IN:
+        case ITEM_FLIGHT_MODES_FADE_IN:
           lcd_outdezAtt(32*FW-2, y, (10/DELAY_STEP)*p->fadeIn, attr|PREC1);
           if (active) p->fadeIn = checkIncDec(event, p->fadeIn, 0, DELAY_MAX, EE_MODEL|NO_INCDEC_MARKS);
           break;
 
-        case ITEM_PHASES_FADE_OUT:
+        case ITEM_FLIGHT_MODES_FADE_OUT:
           lcd_outdezAtt(35*FW, y, (10/DELAY_STEP)*p->fadeOut, attr|PREC1);
           if (active) p->fadeOut = checkIncDec(event, p->fadeOut, 0, DELAY_MAX, EE_MODEL|NO_INCDEC_MARKS);
           break;
@@ -1961,14 +1961,14 @@ enum menuModelPhaseItems {
 
 void menuModelPhaseOne(uint8_t event)
 {
-  PhaseData *phase = phaseAddress(s_currIdx);
-  putsFlightMode(13*FW, 0, s_currIdx+1, (getFlightPhase()==s_currIdx ? BOLD : 0));
+  FlightModeData *fm = flightModeAddress(s_currIdx);
+  putsFlightMode(13*FW, 0, s_currIdx+1, (getFlightMode()==s_currIdx ? BOLD : 0));
 
 #if defined(GVARS) && !defined(PCBSTD)
-  static const pm_uint8_t mstate_tab_phase1[] PROGMEM = {0, 0, 0, (uint8_t)-1, 1, 1, 1, 1, 1};
+  static const pm_uint8_t mstate_tab_fm1[] PROGMEM = {0, 0, 0, (uint8_t)-1, 1, 1, 1, 1, 1};
   static const pm_uint8_t mstate_tab_others[] PROGMEM = {0, 0, 3, IF_ROTARY_ENCODERS(NUM_ROTARY_ENCODERS-1) 0, 0, (uint8_t)-1, 2, 2, 2, 2, 2};
 
-  if (!check(event, 0, NULL, 0, (s_currIdx == 0) ? mstate_tab_phase1 : mstate_tab_others, DIM(mstate_tab_others)-1, ITEM_MODEL_PHASE_MAX - 1 - (s_currIdx==0 ? (ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_SWITCH) : 0))) return;
+  if (!check(event, 0, NULL, 0, (s_currIdx == 0) ? mstate_tab_fm1 : mstate_tab_others, DIM(mstate_tab_others)-1, ITEM_MODEL_PHASE_MAX - 1 - (s_currIdx==0 ? (ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_SWITCH) : 0))) return;
 
   TITLE(STR_MENUFLIGHTPHASE);
 
@@ -1996,10 +1996,10 @@ void menuModelPhaseOne(uint8_t event)
 #endif
     switch(i) {
       case ITEM_MODEL_PHASE_NAME:
-        editSingleName(MIXES_2ND_COLUMN, y, STR_PHASENAME, phase->name, sizeof(phase->name), event, attr);
+        editSingleName(MIXES_2ND_COLUMN, y, STR_PHASENAME, fm->name, sizeof(fm->name), event, attr);
         break;
       case ITEM_MODEL_PHASE_SWITCH:
-        phase->swtch = switchMenuItem(MIXES_2ND_COLUMN, y, phase->swtch, attr, event);
+        fm->swtch = switchMenuItem(MIXES_2ND_COLUMN, y, fm->swtch, attr, event);
         break;
       case ITEM_MODEL_PHASE_TRIMS:
         lcd_putsLeft(y, STR_TRIMS);
@@ -2023,12 +2023,12 @@ void menuModelPhaseOne(uint8_t event)
         for (uint8_t t=0; t<NUM_ROTARY_ENCODERS; t++) {
           putsRotaryEncoderMode(MIXES_2ND_COLUMN+(t*FW), y, s_currIdx, t, m_posHorz==t ? attr : 0);
           if (attr && m_posHorz==t && ((editMode>0) || p1valdiff)) {
-            int16_t v = phaseAddress(s_currIdx)->rotaryEncoders[t];
+            int16_t v = flightModeAddress(s_currIdx)->rotaryEncoders[t];
             if (v < ROTARY_ENCODER_MAX) v = ROTARY_ENCODER_MAX;
             v = checkIncDec(event, v, ROTARY_ENCODER_MAX, ROTARY_ENCODER_MAX+MAX_FLIGHT_MODES-1, EE_MODEL);
             if (checkIncDec_Ret) {
               if (v == ROTARY_ENCODER_MAX) v = 0;
-              phaseAddress(s_currIdx)->rotaryEncoders[t] = v;
+              flightModeAddress(s_currIdx)->rotaryEncoders[t] = v;
             }
           }
         }
@@ -2036,11 +2036,11 @@ void menuModelPhaseOne(uint8_t event)
 #endif
 
       case ITEM_MODEL_PHASE_FADE_IN:
-        phase->fadeIn = EDIT_DELAY(0, y, event, attr, STR_FADEIN, phase->fadeIn);
+        fm->fadeIn = EDIT_DELAY(0, y, event, attr, STR_FADEIN, fm->fadeIn);
         break;
 
       case ITEM_MODEL_PHASE_FADE_OUT:
-        phase->fadeOut = EDIT_DELAY(0, y, event, attr, STR_FADEOUT, phase->fadeOut);
+        fm->fadeOut = EDIT_DELAY(0, y, event, attr, STR_FADEOUT, fm->fadeOut);
         break;
 
 #if defined(GVARS) && !defined(PCBSTD)
@@ -2058,7 +2058,7 @@ void menuModelPhaseOne(uint8_t event)
 
         editName(4*FW, y, g_model.gvars[idx].name, LEN_GVAR_NAME, event, posHorz==0 ? attr : 0);
 
-        int16_t v = phase->gvars[idx];
+        int16_t v = fm->gvars[idx];
         if (v > GVAR_MAX) {
           uint8_t p = v - GVAR_MAX - 1;
           if (p >= s_currIdx) p++;
@@ -2072,7 +2072,7 @@ void menuModelPhaseOne(uint8_t event)
           v = checkIncDec(event, v, GVAR_MAX, GVAR_MAX+MAX_FLIGHT_MODES-1, EE_MODEL);
           if (checkIncDec_Ret) {
             if (v == GVAR_MAX) v = 0;
-            phase->gvars[idx] = v;
+            fm->gvars[idx] = v;
           }
         }
 
@@ -2138,11 +2138,11 @@ void menuModelFlightModesAll(uint8_t event)
     uint8_t y = 1 + (i+1)*FH;
 #endif
     att = (i==sub ? INVERS : 0);
-    PhaseData *p = phaseAddress(i);
+    FlightModeData *p = flightModeAddress(i);
 #if ROTARY_ENCODERS > 2
-    putsFlightMode(0, y, i+1, att|CONDENSED|(getFlightPhase()==i ? BOLD : 0));
+    putsFlightMode(0, y, i+1, att|CONDENSED|(getFlightMode()==i ? BOLD : 0));
 #else
-    putsFlightMode(0, y, i+1, att|(getFlightPhase()==i ? BOLD : 0));
+    putsFlightMode(0, y, i+1, att|(getFlightMode()==i ? BOLD : 0));
 #endif
 
     lcd_putsnAtt(4*FW+NAME_OFS, y, p->name, sizeof(p->name), ZCHAR);
@@ -2171,7 +2171,7 @@ void menuModelFlightModesAll(uint8_t event)
 #endif
 
   lcd_putsLeft((LCD_LINES-1)*FH+1, STR_CHECKTRIMS);
-  putsFlightMode(OFS_CHECKTRIMS, (LCD_LINES-1)*FH+1, s_current_mixer_flight_mode+1);
+  putsFlightMode(OFS_CHECKTRIMS, (LCD_LINES-1)*FH+1, mixerCurrentFlightMode+1);
   if (sub==MAX_FLIGHT_MODES && !trimsCheckTimer) {
     lcd_status_line();
   }
@@ -2255,10 +2255,10 @@ int16_t expoFn(int16_t x)
   ExpoData *ed = expoAddress(s_currIdx);
   int16_t anas[NUM_INPUTS] = {0};
 #if defined(PCBTARANIS)
-  applyExpos(anas, e_perout_mode_inactive_phase, ed->srcRaw, x);
+  applyExpos(anas, e_perout_mode_inactive_flight_mode, ed->srcRaw, x);
 #else
   anas[ed->chn] = x;
-  applyExpos(anas, e_perout_mode_inactive_phase);
+  applyExpos(anas, e_perout_mode_inactive_flight_mode);
 #endif
   return anas[ed->chn];
 }
@@ -3022,7 +3022,7 @@ void menuModelExpoOne(uint8_t event)
 
 #if defined(FLIGHT_MODES)
       case EXPO_FIELD_FLIGHT_PHASE:
-        ed->phases = editFlightModes(EXPO_ONE_2ND_COLUMN-IF_9X(EXPO_ONE_FP_WIDTH), y, event, ed->phases, attr);
+        ed->flightModes = editFlightModes(EXPO_ONE_2ND_COLUMN-IF_9X(EXPO_ONE_FP_WIDTH), y, event, ed->flightModes, attr);
         break;
 #endif
 
@@ -3255,7 +3255,7 @@ void menuModelMixOne(uint8_t event)
 #endif
 #if defined(FLIGHT_MODES)
       case MIX_FIELD_FLIGHT_PHASE:
-        md2->phases = editFlightModes(COLUMN_X+MIXES_2ND_COLUMN, y, event, md2->phases, attr);
+        md2->flightModes = editFlightModes(COLUMN_X+MIXES_2ND_COLUMN, y, event, md2->flightModes, attr);
         break;
 #endif
       case MIX_FIELD_SWITCH:
@@ -3603,12 +3603,12 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
             if (ed->mode!=3) lcd_putc(EXPO_LINE_SIDE_POS, y, ed->mode == 2 ? 126 : 127);
 
 #if defined(CPUARM) && LCD_W >= 212
-            if (ed->phases) lcd_puts(EXPO_LINE_FM_POS, y, STR_FP);
+            if (ed->flightModes) lcd_puts(EXPO_LINE_FM_POS, y, STR_FP);
             if (ed->name[0]) lcd_putsnAtt(EXPO_LINE_NAME_POS, y, ed->name, sizeof(ed->name), ZCHAR | (isExpoActive(i) ? BOLD : 0));
 #elif defined(CPUARM)
             if (ed->name[0]) lcd_putsnAtt(EXPO_LINE_NAME_POS, y, ed->name, sizeof(ed->name), ZCHAR | (isExpoActive(i) ? BOLD : 0));
 #else
-            displayFlightModes(EXPO_LINE_FM_POS, y, ed->phases);
+            displayFlightModes(EXPO_LINE_FM_POS, y, ed->flightModes);
 #endif
           }
           else {
@@ -3635,7 +3635,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
             {
 #if defined(PCBTARANIS)
               putsCurveRef(MIX_LINE_CURVE_POS, y, md->curve, 0);
-              if (md->phases) lcd_puts(MIX_LINE_FM_POS, y, STR_FP);
+              if (md->flightModes) lcd_puts(MIX_LINE_FM_POS, y, STR_FP);
 #else
               if (md->curveParam) {
                 if (md->curveMode == MODE_CURVE)
@@ -4117,7 +4117,7 @@ void onGVARSMenu(const char *result)
   }
   else if (result == STR_CLEAR) {
     for (int i=0; i<MAX_FLIGHT_MODES; i++) {
-      g_model.phaseData[i].gvars[sub] = 0;
+      g_model.flightModeData[i].gvars[sub] = 0;
     }
     eeDirty(EE_MODEL);
   }
@@ -4134,7 +4134,7 @@ void menuModelGVars(uint8_t event)
   if (first2seconds) {
     menuTitle = STR_GLOBAL_V;
     for (int i=0; i<MAX_GVARS; i++) {
-      putsStrIdx(GVARS_FM_COLUMN(i)-16, 1, STR_FP, i, SMLSIZE|(getFlightPhase()==i ? INVERS : 0));
+      putsStrIdx(GVARS_FM_COLUMN(i)-16, 1, STR_FP, i, SMLSIZE|(getFlightMode()==i ? INVERS : 0));
     }
   }
   else {
@@ -4178,8 +4178,8 @@ void menuModelGVars(uint8_t event)
 
         default:
         {
-          PhaseData *phase = &g_model.phaseData[j-1];
-          int16_t & v = phase->gvars[i];
+          FlightModeData *fm = &g_model.flightModeData[j-1];
+          int16_t & v = fm->gvars[i];
           int16_t vmin, vmax;
           if (v > GVAR_MAX) {
             uint8_t p = v - GVAR_MAX - 1;

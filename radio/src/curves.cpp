@@ -250,7 +250,7 @@ int applyCurve(int x, CurveRef & curve)
   switch (curve.type) {
     case CURVE_REF_DIFF:
     {
-      int curveParam = calc100to256(GET_GVAR(curve.value, -100, 100, s_current_mixer_flight_mode));
+      int curveParam = calc100to256(GET_GVAR(curve.value, -100, 100, mixerCurrentFlightMode));
       if (curveParam > 0 && x < 0)
         x = (x * (256 - curveParam)) >> 8;
       else if (curveParam < 0 && x > 0)
@@ -259,7 +259,7 @@ int applyCurve(int x, CurveRef & curve)
     }
 
     case CURVE_REF_EXPO:
-      return expo(x, GET_GVAR(curve.value, -100, 100, s_current_mixer_flight_mode));
+      return expo(x, GET_GVAR(curve.value, -100, 100, mixerCurrentFlightMode));
 
     case CURVE_REF_FUNC:
       switch (curve.value) {

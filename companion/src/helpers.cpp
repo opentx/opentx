@@ -835,7 +835,7 @@ QString getPhasesStr(unsigned int phases, ModelData & model)
       for (int i=0; i<numphases;i++) {
         if (!(phases & (1<<i))) {
           if (count++ > 0) str += QString(", ");
-          str += getPhaseName(i+1, model.phaseData[i].name);
+          str += getPhaseName(i+1, model.flightModeData[i].name);
         }
       }
     }

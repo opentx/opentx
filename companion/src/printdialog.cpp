@@ -171,7 +171,7 @@ QString PrintDialog::printFlightModes()
     }
     str.append("</tr>");
     for (int i=0; i<firmware->getCapability(FlightModes); i++) {
-      PhaseData *pd=&g_model->phaseData[i];
+      FlightModeData *pd=&g_model->flightModeData[i];
       str.append("<tr><td><b>"+tr("FM")+QString("%1</b> <font size=+1 face='Courier New' color=green>%2</font></td>").arg(i).arg(pd->name));
       str.append(QString("<td  align=\"right\"><font size=+1 face='Courier New' color=green>%1</font></td>").arg((qreal)pd->fadeIn/firmware->getCapability(SlowScale)));
       str.append(QString("<td width=\"30\" align=\"right\"><font size=+1 face='Courier New' color=green>%1</font></td>").arg((qreal)pd->fadeOut/firmware->getCapability(SlowScale)));
@@ -262,8 +262,8 @@ void PrintDialog::printInputs()
             QString strModes;
             for (int j=0; j<firmware->getCapability(FlightModes);j++) {
               if (!(ed->phases & mask)) {
-                //PhaseData *pd = &g_model->phaseData[j];
-                const char * pdName = g_model->phaseData[j].name;
+                //FlightModeData *pd = &g_model->flightModeData[j];
+                const char * pdName = g_model->flightModeData[j].name;
                 if (first) {
                   strModes += Qt::escape(QString("%1").arg(getPhaseName(j+1,pdName)));
                   first = false;
@@ -615,7 +615,7 @@ void PrintDialog::printGvars()
     QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
     str.append("<tr><td><h2>"+tr("Global Variables")+"</h2></td></tr>");
     str.append("<tr><td><table border=1 cellspacing=0 cellpadding=3 width=100>");
-    PhaseData *pd=&g_model->phaseData[0];
+    FlightModeData *pd=&g_model->flightModeData[0];
     int width=100/gvarnum;
     str.append("<tr>");
     for(unsigned int i=0; i<gvarnum; i++) {        

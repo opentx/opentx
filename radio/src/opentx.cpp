@@ -261,9 +261,9 @@ void per10ms()
   heartbeat |= HEART_TIMER_10MS;
 }
 
-PhaseData *phaseAddress(uint8_t idx)
+FlightModeData *flightModeAddress(uint8_t idx)
 {
-  return &g_model.phaseData[idx];
+  return &g_model.flightModeData[idx];
 }
 
 ExpoData *expoAddress(uint8_t idx )
@@ -492,10 +492,10 @@ int8_t getMovedSource(GET_MOVED_SOURCE_PARAMS)
 #endif
 
 #if defined(FLIGHT_MODES)
-uint8_t getFlightPhase()
+uint8_t getFlightMode()
 {
   for (uint8_t i=1; i<MAX_FLIGHT_MODES; i++) {
-    PhaseData *phase = &g_model.phaseData[i];
+    FlightModeData *phase = &g_model.flightModeData[i];
     if (phase->swtch && getSwitch(phase->swtch)) {
       return i;
     }
@@ -506,7 +506,7 @@ uint8_t getFlightPhase()
 
 trim_t getRawTrimValue(uint8_t phase, uint8_t idx)
 {
-  PhaseData *p = phaseAddress(phase);
+  FlightModeData *p = flightModeAddress(phase);
 #if defined(PCBSTD)
   return (((trim_t)p->trim[idx]) << 2) + ((p->trim_ext >> (2*idx)) & 0x03);
 #else
@@ -546,7 +546,7 @@ void setTrimValue(uint8_t phase, uint8_t idx, int trim)
 {
 #if defined(PCBTARANIS)
   for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
-    trim_t & v = phaseAddress(phase)->trim[idx];
+    trim_t & v = flightModeAddress(phase)->trim[idx];
     if (v.mode == TRIM_MODE_NONE)
       return;
     unsigned int p = v.mode >> 1;
@@ -563,12 +563,12 @@ void setTrimValue(uint8_t phase, uint8_t idx, int trim)
     }
   }
 #elif defined(PCBSTD)
-  PhaseData *p = phaseAddress(phase);
+  FlightModeData *p = flightModeAddress(phase);
   p->trim[idx] = (int8_t)(trim >> 2);
   idx <<= 1;
   p->trim_ext = (p->trim_ext & ~(0x03 << idx)) + (((trim & 0x03) << idx));
 #else
-  PhaseData *p = phaseAddress(phase);
+  FlightModeData *p = flightModeAddress(phase);
   p->trim[idx] = trim;
 #endif
   eeDirty(EE_MODEL);
@@ -592,10 +592,10 @@ uint8_t getTrimFlightPhase(uint8_t phase, uint8_t idx)
 #if defined(ROTARY_ENCODERS)
 uint8_t getRotaryEncoderFlightPhase(uint8_t idx)
 {
-  uint8_t phase = s_current_mixer_flight_mode;
+  uint8_t phase = mixerCurrentFlightMode;
   for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
     if (phase == 0) return 0;
-    int16_t value = phaseAddress(phase)->rotaryEncoders[idx];
+    int16_t value = flightModeAddress(phase)->rotaryEncoders[idx];
     if (value <= ROTARY_ENCODER_MAX) return phase;
     uint8_t result = value-ROTARY_ENCODER_MAX-1;
     if (result >= phase) result++;
@@ -606,13 +606,13 @@ uint8_t getRotaryEncoderFlightPhase(uint8_t idx)
 
 int16_t getRotaryEncoder(uint8_t idx)
 {
-  return phaseAddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx];
+  return flightModeAddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx];
 }
 
 void incRotaryEncoder(uint8_t idx, int8_t inc)
 {
   g_rotenc[idx] += inc;
-  int16_t *value = &(phaseAddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx]);
+  int16_t *value = &(flightModeAddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx]);
   *value = limit((int16_t)-1024, (int16_t)(*value + (inc * 8)), (int16_t)+1024);
   eeDirty(EE_MODEL);
 }
@@ -1222,13 +1222,13 @@ uint8_t checkTrim(uint8_t event)
 #if defined(PCBSTD)
       phase = 0;
 #else
-      phase = getGVarFlightPhase(s_current_mixer_flight_mode, trimGvar[idx]);
+      phase = getGVarFlightPhase(mixerCurrentFlightMode, trimGvar[idx]);
 #endif
       before = GVAR_VALUE(trimGvar[idx], phase);
       thro = false;
     }
     else {
-      phase = getTrimFlightPhase(s_current_mixer_flight_mode, idx);
+      phase = getTrimFlightPhase(mixerCurrentFlightMode, idx);
 #if defined(PCBTARANIS)
       before = getTrimValue(phase, idx);
 #else
@@ -1237,7 +1237,7 @@ uint8_t checkTrim(uint8_t event)
       thro = (idx==THR_STICK && g_model.thrTrim);
     }
 #else
-    phase = getTrimFlightPhase(s_current_mixer_flight_mode, idx);
+    phase = getTrimFlightPhase(mixerCurrentFlightMode, idx);
 #if defined(PCBTARANIS)
     before = getTrimValue(phase, idx);
 #else
@@ -1597,7 +1597,7 @@ uint16_t s_sum_samples_thr_10s;
 
 FORCEINLINE void evalTrims()
 {
-  uint8_t phase = s_current_mixer_flight_mode;
+  uint8_t phase = mixerCurrentFlightMode;
   for (uint8_t i=0; i<NUM_STICKS; i++) {
     // do trim -> throttle trim if applicable
     int16_t trim = getTrimValue(phase, i);
@@ -1918,14 +1918,14 @@ void evalFunctions()
 #if defined(GVARS)
           case FUNC_ADJUST_GVAR:
             if (CFN_GVAR_MODE(sd) == 0) {
-              SET_GVAR(CFN_GVAR_INDEX(sd), CFN_PARAM(sd), s_current_mixer_flight_mode);
+              SET_GVAR(CFN_GVAR_INDEX(sd), CFN_PARAM(sd), mixerCurrentFlightMode);
             }
             else if (CFN_GVAR_MODE(sd) == 2) {
-              SET_GVAR(CFN_GVAR_INDEX(sd), GVAR_VALUE(CFN_PARAM(sd), s_current_mixer_flight_mode), s_current_mixer_flight_mode);
+              SET_GVAR(CFN_GVAR_INDEX(sd), GVAR_VALUE(CFN_PARAM(sd), mixerCurrentFlightMode), mixerCurrentFlightMode);
             }
             else if (CFN_GVAR_MODE(sd) == 3) {
               if (!(activeFnSwitches & switch_mask)) {
-                SET_GVAR(CFN_GVAR_INDEX(sd), GVAR_VALUE(CFN_GVAR_INDEX(sd), getGVarFlightPhase(s_current_mixer_flight_mode, CFN_GVAR_INDEX(sd))) + (CFN_PARAM(sd) ? +1 : -1), s_current_mixer_flight_mode);
+                SET_GVAR(CFN_GVAR_INDEX(sd), GVAR_VALUE(CFN_GVAR_INDEX(sd), getGVarFlightPhase(mixerCurrentFlightMode, CFN_GVAR_INDEX(sd))) + (CFN_PARAM(sd) ? +1 : -1), mixerCurrentFlightMode);
               }
             }
             else if (CFN_PARAM(sd) >= MIXSRC_TrimRud && CFN_PARAM(sd) <= MIXSRC_TrimAil) {
@@ -1935,12 +1935,12 @@ void evalFunctions()
             else if (CFN_PARAM(sd) >= MIXSRC_REa && CFN_PARAM(sd) < MIXSRC_TrimRud) {
               int8_t scroll = rePreviousValues[CFN_PARAM(sd)-MIXSRC_REa] - (g_rotenc[CFN_PARAM(sd)-MIXSRC_REa] / ROTARY_ENCODER_GRANULARITY);
               if (scroll) {
-                SET_GVAR(CFN_GVAR_INDEX(sd), GVAR_VALUE(CFN_GVAR_INDEX(sd), getGVarFlightPhase(s_current_mixer_flight_mode, CFN_GVAR_INDEX(sd))) + scroll, s_current_mixer_flight_mode);
+                SET_GVAR(CFN_GVAR_INDEX(sd), GVAR_VALUE(CFN_GVAR_INDEX(sd), getGVarFlightPhase(mixerCurrentFlightMode, CFN_GVAR_INDEX(sd))) + scroll, mixerCurrentFlightMode);
               }
             }
 #endif
             else {
-              SET_GVAR(CFN_GVAR_INDEX(sd), calcRESXto100(getValue(CFN_PARAM(sd))), s_current_mixer_flight_mode);
+              SET_GVAR(CFN_GVAR_INDEX(sd), calcRESXto100(getValue(CFN_PARAM(sd))), mixerCurrentFlightMode);
             }
             break;
 #endif
@@ -2023,7 +2023,7 @@ void evalFunctions()
               else {
 #if defined(GVARS)
                 if (CFN_FUNC(sd) == FUNC_PLAY_TRACK && param > 250)
-                  param = GVAR_VALUE(param-251, getGVarFlightPhase(s_current_mixer_flight_mode, param-251));
+                  param = GVAR_VALUE(param-251, getGVarFlightPhase(mixerCurrentFlightMode, param-251));
 #endif
                 PUSH_CUSTOM_PROMPT(active ? param : param+1, i+1);
               }
@@ -3024,7 +3024,7 @@ void instantTrim()
   for (uint8_t i=0; i<NUM_STICKS; i++) {
     if (i!=THR_STICK) {
       // don't instant trim the throttle stick
-      uint8_t trim_phase = getTrimFlightPhase(s_current_mixer_flight_mode, i);
+      uint8_t trim_phase = getTrimFlightPhase(mixerCurrentFlightMode, i);
 #if defined(PCBTARANIS)
       int16_t delta = calibratedStick[i];
 #else
@@ -3091,7 +3091,7 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
   // reset all trims, except throttle (if throttle trim)
   for (uint8_t i=0; i<NUM_STICKS; i++) {
     if (i!=THR_STICK || !g_model.thrTrim) {
-      int16_t original_trim = getTrimValue(s_current_mixer_flight_mode, i);
+      int16_t original_trim = getTrimValue(mixerCurrentFlightMode, i);
       for (uint8_t phase=0; phase<MAX_FLIGHT_MODES; phase++) {
 #if defined(PCBTARANIS)
         trim_t trim = getRawTrimValue(phase, i);

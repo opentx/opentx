@@ -856,7 +856,7 @@ static int luaModelGetGlobalVariable(lua_State *L)
   int idx = luaL_checkunsigned(L, 1);
   int phase = luaL_checkunsigned(L, 2);
   if (phase < MAX_FLIGHT_MODES && idx < MAX_GVARS)
-    lua_pushinteger(L, g_model.phaseData[phase].gvars[idx]);
+    lua_pushinteger(L, g_model.flightModeData[phase].gvars[idx]);
   else
     lua_pushnil(L);
   return 1;
@@ -868,7 +868,7 @@ static int luaModelSetGlobalVariable(lua_State *L)
   int phase = luaL_checkunsigned(L, 2);
   int value = luaL_checkinteger(L, 3);
   if (phase < MAX_FLIGHT_MODES && idx < MAX_GVARS && value >= -GVAR_LIMIT && value <= GVAR_LIMIT) {
-    g_model.phaseData[phase].gvars[idx] = value;
+    g_model.flightModeData[phase].gvars[idx] = value;
   }
   return 0;
 }

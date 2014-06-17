@@ -154,14 +154,14 @@ void saveModel(ModelData & m, model & xm)
   phases xphases;
   phases::phase_sequence & phases_sequence (xphases.phase());
   for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
-    PhaseData & p = m.phaseData[i];
+    FlightModeData & p = m.flightModeData[i];
     if (i == 0 || p.swtch.type!=SWITCH_TYPE_NONE) {
       TrimType xtrim[4];
       for (int j=0; j<4; j++) {
-        if (m.phaseData[i].trimRef[j] >= 0)
-          xtrim[j].phaseRef(m.phaseData[i].trimRef[j]);
+        if (m.flightModeData[i].trimRef[j] >= 0)
+          xtrim[j].phaseRef(m.flightModeData[i].trimRef[j]);
         else
-          xtrim[j].value(m.phaseData[i].trim[j]);
+          xtrim[j].value(m.flightModeData[i].trim[j]);
       }
       trims1 xtrims(xtrim[0], xtrim[1], xtrim[2], xtrim[3]);
       phase xphase(xtrims, i);

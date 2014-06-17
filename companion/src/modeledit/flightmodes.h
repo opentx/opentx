@@ -44,7 +44,7 @@ class FlightModePanel : public ModelPanel
   private:
     Ui::FlightMode *ui;
     int phaseIdx;
-    PhaseData & phase;
+    FlightModeData & phase;
     int reCount;
     int gvCount;
     QVector<QLabel *> trimsLabel;

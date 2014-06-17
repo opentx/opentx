@@ -169,26 +169,26 @@ PACK(typedef struct t_Open9xArmMixData_v212 {
   t_Open9xArmMixData_v212() { memset(this, 0, sizeof(t_Open9xArmMixData_v212)); }
 }) Open9xArmMixData_v212;
 
-PACK(typedef struct t_Open9xArmPhaseData_v208 {
+PACK(typedef struct t_Open9xArmFlightModeData_v208 {
   int16_t trim[4];     // -500..500 => trim value, 501 => use trim of phase 0, 502, 503, 504 => use trim of phases 1|2|3|4 instead
   int8_t swtch;       // swtch of phase[0] is not used
   char name[6];
   uint8_t fadeIn:4;
   uint8_t fadeOut:4;
-  operator PhaseData();
-  t_Open9xArmPhaseData_v208() { memset(this, 0, sizeof(t_Open9xArmPhaseData_v208)); }
-}) Open9xArmPhaseData_v208;
+  operator FlightModeData();
+  t_Open9xArmFlightModeData_v208() { memset(this, 0, sizeof(t_Open9xArmFlightModeData_v208)); }
+}) Open9xArmFlightModeData_v208;
 
-PACK(typedef struct t_Open9xArmPhaseData_v212 {
+PACK(typedef struct t_Open9xArmFlightModeData_v212 {
   int16_t trim[4];     // -500..500 => trim value, 501 => use trim of phase 0, 502, 503, 504 => use trim of phases 1|2|3|4 instead
   int8_t swtch;       // swtch of phase[0] is not used
   char name[6];
   uint8_t fadeIn:4;
   uint8_t fadeOut:4;
   int16_t rotaryEncoders[1];
-  operator PhaseData();
-  t_Open9xArmPhaseData_v212() { memset(this, 0, sizeof(t_Open9xArmPhaseData_v212)); }
-}) Open9xArmPhaseData_v212;
+  operator FlightModeData();
+  t_Open9xArmFlightModeData_v212() { memset(this, 0, sizeof(t_Open9xArmFlightModeData_v212)); }
+}) Open9xArmFlightModeData_v212;
 
 PACK(typedef struct t_Open9xArmLogicalSwitchData_v208 { // Custom Switches data
   int8_t  v1; //input
@@ -346,7 +346,7 @@ PACK(typedef struct t_Open9xArmModelData_v208 {
   Open9xArmLogicalSwitchData_v208 customSw[O9X_ARM_NUM_CSW];
   Open9xArmFuncSwData_v208 funcSw[O9X_ARM_NUM_FSW];
   Open9xArmSwashRingData_v208 swashR;
-  Open9xArmPhaseData_v208 phaseData[O9X_ARM_MAX_FLIGHT_MODES];
+  Open9xArmFlightModeData_v208 flightModeData[O9X_ARM_MAX_FLIGHT_MODES];
   Open9xFrSkyData_v208 frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
@@ -385,7 +385,7 @@ PACK(typedef struct t_Open9xArmModelData_v209 {
   Open9xArmLogicalSwitchData_v209 customSw[O9X_ARM_NUM_CSW];
   Open9xArmFuncSwData_v208 funcSw[O9X_ARM_NUM_FSW];
   Open9xArmSwashRingData_v209 swashR;
-  Open9xArmPhaseData_v208 phaseData[O9X_ARM_MAX_FLIGHT_MODES];
+  Open9xArmFlightModeData_v208 flightModeData[O9X_ARM_MAX_FLIGHT_MODES];
   Open9xFrSkyData_v208 frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
@@ -425,7 +425,7 @@ PACK(typedef struct t_Open9xArmModelData_v210 {
   Open9xArmLogicalSwitchData_v210 customSw[O9X_ARM_NUM_CSW];
   Open9xArmFuncSwData_v210 funcSw[O9X_ARM_NUM_FSW];
   Open9xArmSwashRingData_v209 swashR;
-  Open9xArmPhaseData_v208 phaseData[O9X_ARM_MAX_FLIGHT_MODES];
+  Open9xArmFlightModeData_v208 flightModeData[O9X_ARM_MAX_FLIGHT_MODES];
   Open9xArmFrSkyData_v210 frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
@@ -464,7 +464,7 @@ PACK(typedef struct t_Open9xArmModelData_v211 {
   Open9xArmLogicalSwitchData_v210 customSw[O9X_ARM_NUM_CSW];
   Open9xArmFuncSwData_v211 funcSw[O9X_ARM_NUM_FSW];
   Open9xArmSwashRingData_v209 swashR;
-  Open9xArmPhaseData_v208 phaseData[O9X_ARM_MAX_FLIGHT_MODES];
+  Open9xArmFlightModeData_v208 flightModeData[O9X_ARM_MAX_FLIGHT_MODES];
 
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
@@ -502,7 +502,7 @@ PACK(typedef struct t_Open9xArmModelData_v212 {
   Open9xArmLogicalSwitchData_v210 customSw[O9X_ARM_NUM_CSW];
   Open9xArmFuncSwData_v211 funcSw[O9X_ARM_NUM_FSW];
   Open9xArmSwashRingData_v210 swashR;
-  Open9xArmPhaseData_v212 phaseData[O9X_ARM_MAX_FLIGHT_MODES];
+  Open9xArmFlightModeData_v212 flightModeData[O9X_ARM_MAX_FLIGHT_MODES];
 
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;

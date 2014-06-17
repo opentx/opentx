@@ -443,7 +443,7 @@ t_Er9xModelData::operator ModelData ()
   }
 
   for (int i=0; i<NUM_STICKS; i++)
-    c9x.phaseData[0].trim[i] = trim[i];
+    c9x.flightModeData[0].trim[i] = trim[i];
 
   for (int i=0; i<ER9X_MAX_CURVE5; i++) {
     c9x.curves[i].count = 5;

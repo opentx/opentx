@@ -195,13 +195,13 @@ PACK(typedef struct t_gvar {
 //	int8_t gvswitch ;
 }) Er9xGvarData ;
 
-PACK(typedef struct t_PhaseData {
+PACK(typedef struct t_FlightModeData {
 	// Trim store as -1001 to -1, trim value-501, 0-5 use trim of phase 0-5
   int16_t trim[4];     // -500..500 => trim value, 501 => use trim of phase 0, 502, 503, 504 => use trim of modes 1|2|3|4 instead
   int8_t swtch;        // Try 0-5 use trim of phase 0-5, 1000-2000, trim + 1500 ???
   uint8_t fadeIn:4;
   uint8_t fadeOut:4;
-}) Er9xPhaseData;
+}) Er9xFlightModeData;
 
 PACK(typedef struct t_Er9xModelData {
   char      name[10];             // 10 must be first for eeLoadModelName
@@ -251,7 +251,7 @@ PACK(typedef struct t_Er9xModelData {
   uint8_t unused1[8] ;
   uint8_t CustomDisplayIndex[6] ;
   Er9xGvarData gvars[ER9X_MAX_GVARS] ;
-  Er9xPhaseData phaseData[ER9X_MAX_MODES] ;
+  Er9xFlightModeData flightModeData[ER9X_MAX_MODES] ;
   
   operator ModelData();
   t_Er9xModelData() { memset(this, 0, sizeof(t_Er9xModelData)); }

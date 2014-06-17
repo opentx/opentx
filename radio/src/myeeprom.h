@@ -205,7 +205,7 @@ typedef int16_t gvar_t;
   #endif
   #define MODEL_GVARS_DATA global_gvar_t gvars[MAX_GVARS];
   #define PHASE_GVARS_DATA gvar_t gvars[MAX_GVARS]
-  #define GVAR_VALUE(x, p) g_model.phaseData[p].gvars[x]
+  #define GVAR_VALUE(x, p) g_model.flightModeData[p].gvars[x]
 #endif
 
 PACK(typedef struct t_TrainerMix {
@@ -481,7 +481,7 @@ PACK(typedef struct {
   uint16_t scale;
   uint8_t  chn;
   int8_t   swtch;
-  uint16_t phases;
+  uint16_t flightModes;
   int8_t   weight;
   int8_t   carryTrim:6;
   uint8_t  mode:2;
@@ -499,7 +499,7 @@ PACK(typedef struct {
   uint8_t  chn:4;
   uint8_t  curveMode:2;
   int8_t   swtch;
-  uint16_t phases;
+  uint16_t flightModes;
   int8_t   weight;
   char     name[LEN_EXPOMIX_NAME];
   int8_t   curveParam;
@@ -513,7 +513,7 @@ PACK(typedef struct t_ExpoData {
   uint8_t chn:2;
   uint8_t curveMode:1;
   uint8_t spare:3;
-  uint8_t phases;
+  uint8_t flightModes;
   int8_t  swtch;
   uint8_t weight;
   int8_t  curveParam;
@@ -526,7 +526,7 @@ PACK(typedef struct t_ExpoData {
   uint8_t mode:2;         // 0=end, 1=pos, 2=neg, 3=both
   int8_t  swtch:6;
   uint8_t chn:2;
-  uint8_t phases:5;
+  uint8_t flightModes:5;
   uint8_t curveMode:1;
   uint8_t weight;         // One spare bit here (used for GVARS)
   int8_t  curveParam;
@@ -540,9 +540,9 @@ PACK(typedef struct t_ExpoData {
   #define limit_min_max_t     int16_t
   #define LIMIT_EXT_PERCENT   150
   #define LIMIT_EXT_MAX       (LIMIT_EXT_PERCENT*10)
-  #define LIMIT_MAX(lim)      (GV_IS_GV_VALUE(lim->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX) ? GET_GVAR(lim->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, s_current_mixer_flight_mode)*10 : lim->max+1000)
-  #define LIMIT_MIN(lim)      (GV_IS_GV_VALUE(lim->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX) ? GET_GVAR(lim->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, s_current_mixer_flight_mode)*10 : lim->min-1000)
-  #define LIMIT_OFS(lim)      (GV_IS_GV_VALUE(lim->offset, -1000, 1000) ? GET_GVAR(lim->offset, -1000, 1000, s_current_mixer_flight_mode)*10 : lim->offset)
+  #define LIMIT_MAX(lim)      (GV_IS_GV_VALUE(lim->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX) ? GET_GVAR(lim->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, mixerCurrentFlightMode)*10 : lim->max+1000)
+  #define LIMIT_MIN(lim)      (GV_IS_GV_VALUE(lim->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX) ? GET_GVAR(lim->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, mixerCurrentFlightMode)*10 : lim->min-1000)
+  #define LIMIT_OFS(lim)      (GV_IS_GV_VALUE(lim->offset, -1000, 1000) ? GET_GVAR(lim->offset, -1000, 1000, mixerCurrentFlightMode)*10 : lim->offset)
   #define LIMIT_MAX_RESX(lim) calc1000toRESX(LIMIT_MAX(lim))
   #define LIMIT_MIN_RESX(lim) calc1000toRESX(LIMIT_MIN(lim))
   #define LIMIT_OFS_RESX(lim) calc1000toRESX(LIMIT_OFS(lim))
@@ -593,7 +593,7 @@ PACK(typedef struct t_LimitData {
 #if defined(PCBTARANIS)
 PACK(typedef struct {
   uint8_t  destCh;
-  uint16_t phases;
+  uint16_t flightModes;
   uint8_t  mltpx:2;         // multiplex method: 0 means +=, 1 means *=, 2 means :=
   uint8_t  carryTrim:1;
   uint8_t  spare1:5;
@@ -615,7 +615,7 @@ PACK(typedef struct {
 PACK(typedef struct {
   uint8_t  destCh:4;
   uint8_t  mixWarn:4;         // mixer warning
-  uint16_t phases;
+  uint16_t flightModes;
   uint8_t  curveMode:1;
   uint8_t  noExpo:1;
   int8_t   carryTrim:3;
@@ -673,7 +673,7 @@ PACK(typedef struct t_MixData {
   uint8_t srcRaw;
   int8_t  weight;
   int8_t  swtch;
-  uint8_t phases;
+  uint8_t flightModes;
   uint8_t mltpx:2;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
   int8_t  carryTrim:3;
   uint8_t mixWarn:2;         // mixer warning
@@ -695,7 +695,7 @@ PACK(typedef struct t_MixData {
   int8_t  weight;
   int8_t  swtch:6;
   uint8_t mltpx:2;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
-  uint8_t phases:5;
+  uint8_t flightModes:5;
   int8_t  carryTrim:3;
   uint8_t srcRaw:6;
   uint8_t mixWarn:2;         // mixer warning
@@ -1315,7 +1315,7 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 #endif
 
 #if defined(CPUARM)
-PACK(typedef struct t_PhaseData {
+PACK(typedef struct t_FlightModeData {
   TRIMS_ARRAY;
   int8_t swtch;       // swtch of phase[0] is not used
   char name[LEN_FP_NAME];
@@ -1323,9 +1323,9 @@ PACK(typedef struct t_PhaseData {
   uint8_t fadeOut;
   ROTARY_ENCODER_ARRAY;
   PHASE_GVARS_DATA;
-}) PhaseData;
+}) FlightModeData;
 #else
-PACK(typedef struct t_PhaseData {
+PACK(typedef struct t_FlightModeData {
   TRIMS_ARRAY;
   int8_t swtch;       // swtch of phase[0] is not used
   char name[LEN_FP_NAME];
@@ -1333,7 +1333,7 @@ PACK(typedef struct t_PhaseData {
   uint8_t fadeOut:4;
   ROTARY_ENCODER_ARRAY;
   PHASE_GVARS_DATA;
-}) PhaseData;
+}) FlightModeData;
 #endif
 
 enum SwitchSources {
@@ -1730,7 +1730,7 @@ PACK(typedef struct t_ModelData {
   LogicalSwitchData logicalSw[NUM_LOGICAL_SWITCH];
   CustomFnData funcSw[NUM_CFN];
   SwashRingData swashR;
-  PhaseData phaseData[MAX_FLIGHT_MODES];
+  FlightModeData flightModeData[MAX_FLIGHT_MODES];
 
   AVR_FIELD(int8_t ppmFrameLength)     // 0=22.5ms  (10ms-30ms) 0.5ms increments
   uint8_t   thrTraceSrc;

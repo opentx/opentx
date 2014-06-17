@@ -169,13 +169,13 @@ void OpenTxM128Simulator::setValues(TxInputs &inputs)
 void OpenTxM128Simulator::setTrim(unsigned int idx, int value)
 {
   idx = OpenTxM128::modn12x3[4*getStickMode() + idx];
-  uint8_t phase = getTrimFlightPhase(getFlightPhase(), idx);
+  uint8_t phase = getTrimFlightPhase(getFlightMode(), idx);
   setTrimValue(phase, idx, value);
 }
 
 void OpenTxM128Simulator::getTrims(Trims & trims)
 {
-  uint8_t phase = getFlightPhase();
+  uint8_t phase = getFlightMode();
   trims.extended = hasExtendedTrims();
   for (uint8_t idx=0; idx<4; idx++) {
     trims.values[idx] = getTrimValue(getTrimFlightPhase(phase, idx), idx);
@@ -195,13 +195,13 @@ void OpenTxM128Simulator::wheelEvent(uint8_t steps)
 
 unsigned int OpenTxM128Simulator::getPhase()
 {
-  return getFlightPhase();
+  return getFlightMode();
 }
 
 const char * OpenTxM128Simulator::getPhaseName(unsigned int phase)
 {
-  static char buff[sizeof(g_model.phaseData[0].name)+1];
-  zchar2str(buff, g_model.phaseData[phase].name, sizeof(g_model.phaseData[0].name));
+  static char buff[sizeof(g_model.flightModeData[0].name)+1];
+  zchar2str(buff, g_model.flightModeData[phase].name, sizeof(g_model.flightModeData[0].name));
   return buff;
 }
 

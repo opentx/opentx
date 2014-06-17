@@ -41,7 +41,7 @@ PACK(typedef struct {
   uint8_t  mode;         // 0=end, 1=pos, 2=neg, 3=both
   uint8_t  chn;
   int8_t   swtch;
-  uint16_t phases;
+  uint16_t flightModes;
   int8_t   weight;
   uint8_t  curveMode;
   char     name[LEN_EXPOMIX_NAME];
@@ -53,7 +53,7 @@ PACK(typedef struct {
   uint8_t  mode;         // 0=end, 1=pos, 2=neg, 3=both
   uint8_t  chn;
   int8_t   swtch;
-  uint16_t phases;
+  uint16_t flightModes;
   int8_t   weight;
   uint8_t  curveMode;
   char     name[LEN_EXPOMIX_NAME];
@@ -80,7 +80,7 @@ PACK(typedef struct {
 #if defined(PCBTARANIS)
 PACK(typedef struct {
   uint8_t  destCh;
-  uint16_t phases;
+  uint16_t flightModes;
   uint8_t  curveMode:1;       // O=curve, 1=differential
   uint8_t  noExpo:1;
   int8_t   carryTrim:3;
@@ -103,7 +103,7 @@ PACK(typedef struct {
 #else
 PACK(typedef struct {
   uint8_t  destCh;
-  uint16_t phases;
+  uint16_t flightModes;
   uint8_t  curveMode:1;       // O=curve, 1=differential
   uint8_t  noExpo:1;
   int8_t   carryTrim:3;
@@ -142,7 +142,7 @@ PACK(typedef struct {
   uint8_t fadeOut;
   ROTARY_ENCODER_ARRAY;
   gvar_t gvars[5];
-}) PhaseData_v215;
+}) FlightModeData_v215;
 
 PACK(typedef struct {
   int16_t v1;
@@ -225,7 +225,7 @@ PACK(typedef struct {
   LogicalSwitchData_v215 logicalSw[NUM_LOGICAL_SWITCH];
   CustomFnData_v215 funcSw[32];
   SwashRingData swashR;
-  PhaseData_v215 phaseData[MAX_FLIGHT_MODES];
+  FlightModeData_v215 flightModeData[MAX_FLIGHT_MODES];
 
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5ms increments
   uint8_t   thrTraceSrc;
@@ -500,7 +500,7 @@ void ConvertModel_215_to_216(ModelData &model)
     MixData_v215 * oldMix = &oldModel.mixData[i];
 #if defined(PCBTARANIS)
     mix->destCh = oldMix->destCh;
-    mix->phases = oldMix->phases;
+    mix->flightModes = oldMix->flightModes;
     mix->mltpx = oldMix->mltpx;
     if (oldMix->carryTrim == TRIM_OFF) mix->carryTrim = TRIM_OFF;
     mix->weight = ConvertGVAR_215_to_216(oldMix->weight);
@@ -533,7 +533,7 @@ void ConvertModel_215_to_216(ModelData &model)
 #else
     mix->destCh = oldMix->destCh;
     mix->mixWarn = oldMix->mixWarn;
-    mix->phases = oldMix->phases;
+    mix->flightModes = oldMix->flightModes;
     mix->curveMode = oldMix->curveMode;
     mix->noExpo = oldMix->noExpo;
     mix->carryTrim = oldMix->carryTrim;
@@ -575,7 +575,7 @@ void ConvertModel_215_to_216(ModelData &model)
     if (oldExpo->mode) {
 #if defined(PCBTARANIS)
       uint8_t chn = oldExpo->chn;
-      if (!oldExpo->swtch && !oldExpo->phases) {
+      if (!oldExpo->swtch && !oldExpo->flightModes) {
         indexes[chn] = -1;
       }
       else if (indexes[chn] != -1) {
@@ -588,7 +588,7 @@ void ConvertModel_215_to_216(ModelData &model)
       expo->chn = chn;
       expo->mode = oldExpo->mode;
       expo->swtch = ConvertSwitch_215_to_216(oldExpo->swtch);
-      expo->phases = oldExpo->phases;
+      expo->flightModes = oldExpo->flightModes;
       expo->weight = oldExpo->weight;
       memcpy(expo->name, oldExpo->name, LEN_EXPOMIX_NAME);
       if (oldExpo->curveMode==0/*expo*/) {
@@ -610,7 +610,7 @@ void ConvertModel_215_to_216(ModelData &model)
       expo->chn = oldExpo->chn;
       expo->curveMode = oldExpo->curveMode;
       expo->swtch = oldExpo->swtch;
-      expo->phases = oldExpo->phases;
+      expo->flightModes = oldExpo->flightModes;
       expo->weight = oldExpo->weight;
       memcpy(expo->name, oldExpo->name, LEN_EXPOMIX_NAME);
       expo->curveParam = oldExpo->curveParam;
@@ -802,22 +802,22 @@ void ConvertModel_215_to_216(ModelData &model)
   g_model.swashR.collectiveSource = ConvertSource_215_to_216(g_model.swashR.collectiveSource);
 
   for (uint8_t i=0; i<9; i++) {
-    if (i==0 || oldModel.phaseData[i].swtch) {
-      memcpy(&g_model.phaseData[i], &oldModel.phaseData[i], sizeof(oldModel.phaseData[i])); // the last 4 gvars will remain blank
-      g_model.phaseData[i].swtch = ConvertSwitch_215_to_216(oldModel.phaseData[i].swtch);
+    if (i==0 || oldModel.flightModeData[i].swtch) {
+      memcpy(&g_model.flightModeData[i], &oldModel.flightModeData[i], sizeof(oldModel.flightModeData[i])); // the last 4 gvars will remain blank
+      g_model.flightModeData[i].swtch = ConvertSwitch_215_to_216(oldModel.flightModeData[i].swtch);
 #if defined(PCBTARANIS)
       for (uint8_t t=0; t<4; t++) {
-        int trim = oldModel.phaseData[i].trim[t];
+        int trim = oldModel.flightModeData[i].trim[t];
         if (trim > 500) {
           trim -= 501;
           if (trim >= i)
             trim += 1;
-          g_model.phaseData[i].trim[t].mode = 2*trim;
-          g_model.phaseData[i].trim[t].value = 0;
+          g_model.flightModeData[i].trim[t].mode = 2*trim;
+          g_model.flightModeData[i].trim[t].value = 0;
         }
         else {
-          g_model.phaseData[i].trim[t].mode = 2*i;
-          g_model.phaseData[i].trim[t].value = trim;
+          g_model.flightModeData[i].trim[t].mode = 2*i;
+          g_model.flightModeData[i].trim[t].value = trim;
         }
       }
 #endif

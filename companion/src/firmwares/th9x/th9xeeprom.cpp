@@ -295,7 +295,7 @@ t_Th9xModelData::operator ModelData ()
   for (int i=0; i<TH9X_MAX_MIXERS; i++)
     c9x.mixData[i] = mixData[i];
   for (int i=0; i<NUM_STICKS; i++)
-    c9x.phaseData[0].trim[i] = trimData[i].itrim;
+    c9x.flightModeData[0].trim[i] = trimData[i].itrim;
   for (int i=0; i<TH9X_MAX_CURVES3; i++) {
     c9x.curves[i].count = 3;
     for (int j=0; j<3; j++) {

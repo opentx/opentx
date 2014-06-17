@@ -188,7 +188,7 @@ bool getLogicalSwitch(uint8_t idx)
 #endif
 
   if (ls->func == LS_FUNC_NONE || (s && !getSwitch(s))) {
-    LS_LAST_VALUE(s_current_mixer_flight_mode, idx) = CS_LAST_VALUE_INIT;
+    LS_LAST_VALUE(mixerCurrentFlightMode, idx) = CS_LAST_VALUE_INIT;
     result = false;
   }
   else if ((s=lswFamily(ls->func)) == LS_FAMILY_BOOL) {
@@ -208,14 +208,14 @@ bool getLogicalSwitch(uint8_t idx)
     }
   }
   else if (s == LS_FAMILY_TIMER) {
-    result = (LS_LAST_VALUE(s_current_mixer_flight_mode, idx) <= 0);
+    result = (LS_LAST_VALUE(mixerCurrentFlightMode, idx) <= 0);
   }
   else if (s == LS_FAMILY_STICKY) {
-    result = (LS_LAST_VALUE(s_current_mixer_flight_mode, idx) & (1<<0));
+    result = (LS_LAST_VALUE(mixerCurrentFlightMode, idx) & (1<<0));
   }
 #if defined(CPUARM)
   else if (s == LS_FAMILY_STAY) {
-    result = (LS_LAST_VALUE(s_current_mixer_flight_mode, idx) & (1<<0));
+    result = (LS_LAST_VALUE(mixerCurrentFlightMode, idx) & (1<<0));
   }
 #endif
   else {
@@ -303,10 +303,10 @@ bool getLogicalSwitch(uint8_t idx)
           break;
         default:
         {
-          if (LS_LAST_VALUE(s_current_mixer_flight_mode, idx) == CS_LAST_VALUE_INIT) {
-            LS_LAST_VALUE(s_current_mixer_flight_mode, idx) = x;
+          if (LS_LAST_VALUE(mixerCurrentFlightMode, idx) == CS_LAST_VALUE_INIT) {
+            LS_LAST_VALUE(mixerCurrentFlightMode, idx) = x;
           }
-          int16_t diff = x - LS_LAST_VALUE(s_current_mixer_flight_mode, idx);
+          int16_t diff = x - LS_LAST_VALUE(mixerCurrentFlightMode, idx);
           bool update = false;
           if (ls->func == LS_FUNC_DIFFEGREATER) {
             if (y >= 0) {
@@ -324,7 +324,7 @@ bool getLogicalSwitch(uint8_t idx)
             result = (abs(diff) >= y);
           }
           if (result || update) {
-            LS_LAST_VALUE(s_current_mixer_flight_mode, idx) = x;
+            LS_LAST_VALUE(mixerCurrentFlightMode, idx) = x;
           }
           break;
         }
@@ -334,7 +334,7 @@ bool getLogicalSwitch(uint8_t idx)
 
 #if defined(CPUARM)
     if (ls->delay || ls->duration) {
-      LogicalSwitchContext &context = lswFm[s_current_mixer_flight_mode].lsw[idx];
+      LogicalSwitchContext &context = lswFm[mixerCurrentFlightMode].lsw[idx];
       if (result) {
         if (context.timerState == SWITCH_START) {
           // set delay timer
@@ -438,13 +438,13 @@ bool getSwitch(int8_t swtch)
     if (flags & GETSWITCH_MIDPOS_DELAY)
       result = (idx == flightModeTransitionLast);
     else
-      result = (idx == s_current_mixer_flight_mode);
+      result = (idx == mixerCurrentFlightMode);
   }
 #endif
   else {
     cs_idx -= SWSRC_FIRST_LOGICAL_SWITCH;
 #if defined(CPUARM)
-    result = lswFm[s_current_mixer_flight_mode].lsw[cs_idx].state;
+    result = lswFm[mixerCurrentFlightMode].lsw[cs_idx].state;
 #else
     GETSWITCH_RECURSIVE_TYPE mask = ((GETSWITCH_RECURSIVE_TYPE)1 << cs_idx);
     if (s_last_switch_used & mask) {
@@ -468,12 +468,12 @@ bool getSwitch(int8_t swtch)
 
 #if defined(CPUARM)
 /**
-  @brief Calculates new state of logical switches for s_current_mixer_flight_mode
+  @brief Calculates new state of logical switches for mixerCurrentFlightMode
 */
 void evalLogicalSwitches(bool isCurrentPhase)
 {
   for (unsigned int idx=0; idx<NUM_LOGICAL_SWITCH; idx++) {
-    LogicalSwitchContext &context = lswFm[s_current_mixer_flight_mode].lsw[idx];
+    LogicalSwitchContext &context = lswFm[mixerCurrentFlightMode].lsw[idx];
     bool result = getLogicalSwitch(idx);
     if (isCurrentPhase) {
       if (result) {

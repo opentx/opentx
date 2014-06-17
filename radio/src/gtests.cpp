@@ -59,7 +59,7 @@ void MIXER_RESET()
   s_last_switch_used = 0;
   s_last_switch_value = 0;
 #endif
-  s_current_mixer_flight_mode = s_last_phase = 0;
+  mixerCurrentFlightMode = s_last_phase = 0;
   lastAct = 0;
   logicalSwitchesReset();
 }
@@ -365,8 +365,8 @@ TEST(getSwitch, recursiveSW)
 TEST(FlightModes, nullFadeOut_posFadeIn)
 {
   MODEL_RESET();
-  g_model.phaseData[1].swtch = SWSRC_ID1;
-  g_model.phaseData[1].fadeIn = 15;
+  g_model.flightModeData[1].swtch = SWSRC_ID1;
+  g_model.flightModeData[1].fadeIn = 15;
   perMain();
   simuSetSwitch(3, 0);
   perMain();
@@ -527,7 +527,7 @@ TEST(Mixer, RecursiveAddChannelAfterInactivePhase)
 {
   MODEL_RESET();
   MIXER_RESET();
-  g_model.phaseData[1].swtch = SWSRC_ID1;
+  g_model.flightModeData[1].swtch = SWSRC_ID1;
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].mltpx = MLTPX_ADD;
   g_model.mixData[0].srcRaw = MIXSRC_CH2;
@@ -634,7 +634,7 @@ TEST(Mixer, SlowOnPhase)
 {
   MODEL_RESET();
   MIXER_RESET();
-  g_model.phaseData[1].swtch = TR(SWSRC_THR, SWSRC_SA0);
+  g_model.flightModeData[1].swtch = TR(SWSRC_THR, SWSRC_SA0);
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].mltpx = MLTPX_ADD;
   g_model.mixData[0].srcRaw = MIXSRC_MAX;
@@ -644,13 +644,13 @@ TEST(Mixer, SlowOnPhase)
   g_model.mixData[0].speedDown = SLOW_STEP*5;
 
   s_mixer_first_run_done = true;
-  s_current_mixer_flight_mode = 0;
+  mixerCurrentFlightMode = 0;
   evalFlightModeMixes(e_perout_mode_normal, 0);
   EXPECT_EQ(chans[0], 0);
 
   CHECK_SLOW_MOVEMENT(0, +1, 250);
 
-  s_current_mixer_flight_mode = 1;
+  mixerCurrentFlightMode = 1;
   CHECK_SLOW_MOVEMENT(0, -1, 250);
 }
 
@@ -659,7 +659,7 @@ TEST(Mixer, SlowOnSwitchAndPhase)
 {
   MODEL_RESET();
   MIXER_RESET();
-  g_model.phaseData[1].swtch = TR(SWSRC_THR, SWSRC_SA0);
+  g_model.flightModeData[1].swtch = TR(SWSRC_THR, SWSRC_SA0);
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].mltpx = MLTPX_ADD;
   g_model.mixData[0].srcRaw = MIXSRC_MAX;
@@ -678,11 +678,11 @@ TEST(Mixer, SlowOnSwitchAndPhase)
   EXPECT_EQ(chans[0], 0);
 
   simuSetSwitch(0, 1);
-  s_current_mixer_flight_mode = 0;
+  mixerCurrentFlightMode = 0;
   CHECK_SLOW_MOVEMENT(0, +1, 250);
 
   simuSetSwitch(0, -1);
-  s_current_mixer_flight_mode = 1;
+  mixerCurrentFlightMode = 1;
   CHECK_SLOW_MOVEMENT(0, -1, 250);
 }
 #endif

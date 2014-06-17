@@ -22,7 +22,7 @@
 
 #include "open9xStockeeprom.h"
 
-PACK(typedef struct t_Open9xGruvin9xPhaseData_v207 {
+PACK(typedef struct t_Open9xGruvin9xFlightModeData_v207 {
   int8_t trim[4];     // -500..500 => trim value, 501 => use trim of phase 0, 502, 503, 504 => use trim of phases 1|2|3|4 instead
   int8_t trim_ext:8;  // 2 less significant extra bits per trim (10bits trims)
   int8_t swtch;       // swtch of phase[0] is not used
@@ -30,20 +30,20 @@ PACK(typedef struct t_Open9xGruvin9xPhaseData_v207 {
   uint8_t fadeIn:4;
   uint8_t fadeOut:4;
   int16_t rotaryEncoders[2];
-  operator PhaseData();
-  t_Open9xGruvin9xPhaseData_v207() { memset(this, 0, sizeof(t_Open9xGruvin9xPhaseData_v207)); }
-}) Open9xGruvin9xPhaseData_v207;
+  operator FlightModeData();
+  t_Open9xGruvin9xFlightModeData_v207() { memset(this, 0, sizeof(t_Open9xGruvin9xFlightModeData_v207)); }
+}) Open9xGruvin9xFlightModeData_v207;
 
-PACK(typedef struct t_Open9xGruvin9xPhaseData_v208 {
+PACK(typedef struct t_Open9xGruvin9xFlightModeData_v208 {
   int16_t trim[4];     // -500..500 => trim value, 501 => use trim of phase 0, 502, 503, 504 => use trim of phases 1|2|3|4 instead
   int8_t swtch;       // swtch of phase[0] is not used
   char name[6];
   uint8_t fadeIn:4;
   uint8_t fadeOut:4;
   int16_t rotaryEncoders[2];
-  operator PhaseData();
-  t_Open9xGruvin9xPhaseData_v208() { memset(this, 0, sizeof(t_Open9xGruvin9xPhaseData_v208)); }
-}) Open9xGruvin9xPhaseData_v208;
+  operator FlightModeData();
+  t_Open9xGruvin9xFlightModeData_v208() { memset(this, 0, sizeof(t_Open9xGruvin9xFlightModeData_v208)); }
+}) Open9xGruvin9xFlightModeData_v208;
 
 PACK(typedef struct t_Open9xGruvin9xMixData_v207 {
   uint8_t destCh:4;          // 0, 1..C9X_NUM_CHNOUT
@@ -197,7 +197,7 @@ PACK(typedef struct t_Open9xGruvin9xModelData_v207 {
   Open9xGruvin9xLogicalSwitchData_v207  customSw[O9X_NUM_CSW];
   Open9xFuncSwData_v203 funcSw[O9X_NUM_FSW];
   Open9xGruvin9xSwashRingData_v208 swashR;
-  Open9xGruvin9xPhaseData_v207 phaseData[O9X_MAX_FLIGHT_MODES];
+  Open9xGruvin9xFlightModeData_v207 flightModeData[O9X_MAX_FLIGHT_MODES];
   Open9xFrSkyData_v205 frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
@@ -231,7 +231,7 @@ PACK(typedef struct t_Open9xGruvin9xModelData_v208 {
   Open9xGruvin9xLogicalSwitchData_v207  customSw[O9X_NUM_CSW];
   Open9xGruvin9xFuncSwData_v203 funcSw[O9X_NUM_FSW];
   Open9xGruvin9xSwashRingData_v208 swashR;
-  Open9xGruvin9xPhaseData_v208 phaseData[O9X_MAX_FLIGHT_MODES];
+  Open9xGruvin9xFlightModeData_v208 flightModeData[O9X_MAX_FLIGHT_MODES];
   Open9xFrSkyData_v208 frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
@@ -270,7 +270,7 @@ PACK(typedef struct t_Open9xGruvin9xModelData_v209 {
   Open9xGruvin9xLogicalSwitchData_v209  customSw[O9X_NUM_CSW];
   Open9xGruvin9xFuncSwData_v203 funcSw[O9X_NUM_FSW];
   Open9xGruvin9xSwashRingData_v209 swashR;
-  Open9xGruvin9xPhaseData_v208 phaseData[O9X_MAX_FLIGHT_MODES];
+  Open9xGruvin9xFlightModeData_v208 flightModeData[O9X_MAX_FLIGHT_MODES];
   Open9xFrSkyData_v208 frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
@@ -310,7 +310,7 @@ PACK(typedef struct t_Open9xGruvin9xModelData_v210 {
   Open9xGruvin9xLogicalSwitchData_v209  customSw[O9X_NUM_CSW];
   Open9xGruvin9xFuncSwData_v210 funcSw[O9X_NUM_FSW];
   Open9xGruvin9xSwashRingData_v209 swashR;
-  Open9xGruvin9xPhaseData_v208 phaseData[O9X_MAX_FLIGHT_MODES];
+  Open9xGruvin9xFlightModeData_v208 flightModeData[O9X_MAX_FLIGHT_MODES];
 
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
@@ -348,7 +348,7 @@ PACK(typedef struct t_Open9xGruvin9xModelData_v211 {
   Open9xGruvin9xLogicalSwitchData_v209  customSw[O9X_NUM_CSW];
   Open9xGruvin9xFuncSwData_v210 funcSw[O9X_NUM_FSW];
   Open9xGruvin9xSwashRingData_v209 swashR;
-  Open9xGruvin9xPhaseData_v208 phaseData[O9X_MAX_FLIGHT_MODES];
+  Open9xGruvin9xFlightModeData_v208 flightModeData[O9X_MAX_FLIGHT_MODES];
 
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;

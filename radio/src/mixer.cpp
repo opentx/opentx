@@ -89,7 +89,7 @@ void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
     if (!EXPO_VALID(ed)) break; // end of list
     if (ed->chn == cur_chn)
       continue;
-    if (ed->phases & (1<<s_current_mixer_flight_mode))
+    if (ed->flightModes & (1<<mixerCurrentFlightMode))
       continue;
     if (getSwitch(ed->swtch)) {
 #if defined(PCBTARANIS)
@@ -128,18 +128,18 @@ void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
           if (ed->curveMode == MODE_CURVE)
             v = applyCurve(v, curveParam);
           else
-            v = expo(v, GET_GVAR(curveParam, -100, 100, s_current_mixer_flight_mode));
+            v = expo(v, GET_GVAR(curveParam, -100, 100, mixerCurrentFlightMode));
         }
 #endif
 
         //========== WEIGHT ===============
-        int16_t weight = GET_GVAR(ed->weight, MIN_EXPO_WEIGHT, 100, s_current_mixer_flight_mode);
+        int16_t weight = GET_GVAR(ed->weight, MIN_EXPO_WEIGHT, 100, mixerCurrentFlightMode);
         weight = calc100to256(weight);
         v = ((int32_t)v * weight) >> 8;
 
 #if defined(PCBTARANIS)
         //========== OFFSET ===============
-        int16_t offset = GET_GVAR(ed->offset, -100, 100, s_current_mixer_flight_mode);
+        int16_t offset = GET_GVAR(ed->offset, -100, 100, mixerCurrentFlightMode);
         if (offset) v += calc100toRESX(offset);
 
         //========== TRIMS ================
@@ -289,7 +289,7 @@ getvalue_t getValue(uint8_t i)
     return 0;
 #endif
 
-  else if (i<=MIXSRC_TrimAil) return calc1000toRESX((int16_t)8 * getTrimValue(s_current_mixer_flight_mode, i-MIXSRC_TrimRud));
+  else if (i<=MIXSRC_TrimAil) return calc1000toRESX((int16_t)8 * getTrimValue(mixerCurrentFlightMode, i-MIXSRC_TrimRud));
 
 #if defined(PCBTARANIS)
   else if (i==MIXSRC_SA) return (switchState(SW_SA0) ? -1024 : (switchState(SW_SA1) ? 0 : 1024));
@@ -314,7 +314,7 @@ getvalue_t getValue(uint8_t i)
   else if (i<=MIXSRC_LAST_CH) return ex_chans[i-MIXSRC_CH1];
 
 #if defined(GVARS)
-  else if (i<=MIXSRC_LAST_GVAR) return GVAR_VALUE(i-MIXSRC_GVAR1, getGVarFlightPhase(s_current_mixer_flight_mode, i-MIXSRC_GVAR1));
+  else if (i<=MIXSRC_LAST_GVAR) return GVAR_VALUE(i-MIXSRC_GVAR1, getGVarFlightPhase(mixerCurrentFlightMode, i-MIXSRC_GVAR1));
 #endif
 
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_TX_VOLTAGE) return g_vbat100mV;
@@ -473,7 +473,7 @@ void evalInputs(uint8_t mode)
       }
 #endif
 
-      if (mode <= e_perout_mode_inactive_phase && isFunctionActive(FUNCTION_TRAINER+ch) && ppmInValid) {
+      if (mode <= e_perout_mode_inactive_flight_mode && isFunctionActive(FUNCTION_TRAINER+ch) && ppmInValid) {
         // trainer mode
         TrainerMix* td = &g_eeGeneral.trainer.mix[ch];
         if (td->mode) {
@@ -528,7 +528,7 @@ void evalInputs(uint8_t mode)
   #define HELI_ANAS_ARRAY anas
 #endif
 
-uint8_t s_current_mixer_flight_mode;
+uint8_t mixerCurrentFlightMode;
 void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 {
   evalInputs(mode);
@@ -634,8 +634,8 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       }
 
       //========== PHASE && SWITCH =====
-      bool mixCondition = (md->phases != 0 || md->swtch);
-      delayval_t mixEnabled = !(md->phases & (1 << s_current_mixer_flight_mode)) && getSwitch(md->swtch);
+      bool mixCondition = (md->flightModes != 0 || md->swtch);
+      delayval_t mixEnabled = !(md->flightModes & (1 << mixerCurrentFlightMode)) && getSwitch(md->swtch);
 
       if (mixEnabled && md->srcRaw >= MIXSRC_FIRST_TRAINER && md->srcRaw <= MIXSRC_LAST_TRAINER && !ppmInValid) {
         mixEnabled = 0;
@@ -643,7 +643,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 
       //========== VALUE ===============
       getvalue_t v = 0;
-      if (mode > e_perout_mode_inactive_phase) {
+      if (mode > e_perout_mode_inactive_flight_mode) {
 #if defined(PCBTARANIS)
         if (!mixEnabled) {
           continue;
@@ -767,14 +767,14 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       }
 
       // saves 12 bytes code if done here and not together with weight; unknown reason
-      int16_t weight = GET_GVAR(MD_WEIGHT(md), GV_RANGELARGE_NEG, GV_RANGELARGE, s_current_mixer_flight_mode);
+      int16_t weight = GET_GVAR(MD_WEIGHT(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
       weight = calc100to256_16Bits(weight);
 
       //========== SPEED ===============
       // now its on input side, but without weight compensation. More like other remote controls
       // lower weight causes slower movement
 
-      if (mode <= e_perout_mode_inactive_phase && (md->speedUp || md->speedDown)) { // there are delay values
+      if (mode <= e_perout_mode_inactive_flight_mode && (md->speedUp || md->speedDown)) { // there are delay values
 #define DEL_MULT_SHIFT 8
         // we recale to a mult 256 higher value for calculation
         int32_t tact = act[i];
@@ -827,7 +827,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 
       //========== OFFSET / AFTER ===============
       if (apply_offset_and_curve) {
-        int16_t offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, s_current_mixer_flight_mode);
+        int16_t offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
         if (offset) dv += int32_t(calc100toRESX_16Bits(offset)) << 8;
       }
 
@@ -839,7 +839,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 #else
       if (md->curveMode == MODE_DIFFERENTIAL) {
         // @@@2 also recalculate curveParam to a 256 basis which ease the calculation later a lot
-        int16_t curveParam = calc100to256(GET_GVAR(md->curveParam, -100, 100, s_current_mixer_flight_mode));
+        int16_t curveParam = calc100to256(GET_GVAR(md->curveParam, -100, 100, mixerCurrentFlightMode));
         if (curveParam > 0 && dv < 0)
           dv = (dv * (256 - curveParam)) >> 8;
         else if (curveParam < 0 && dv > 0)
@@ -925,7 +925,7 @@ int32_t sum_chans512[NUM_CHNOUT] = {0};
 
 
 #define MAX_ACT 0xffff
-uint8_t s_last_phase = 255; // TODO reinit everything here when the model changes, no???
+uint8_t lastFlightMode = 255; // TODO reinit everything here when the model changes, no???
 
 #if defined(CPUARM)
 tmr10ms_t flightModeTransitionTime;
@@ -940,58 +940,58 @@ void evalMixes(uint8_t tick10ms)
 
   static uint16_t fp_act[MAX_FLIGHT_MODES] = {0};
   static uint16_t delta = 0;
-  static ACTIVE_PHASES_TYPE s_fade_flight_phases = 0;
+  static ACTIVE_PHASES_TYPE flightModesFade = 0;
 
   LS_RECURSIVE_EVALUATION_RESET();
   
-  uint8_t phase = getFlightPhase();
+  uint8_t fm = getFlightMode();
 
-  if (s_last_phase != phase) {
+  if (lastFlightMode != fm) {
 #if defined(CPUARM)
     flightModeTransitionTime = get_tmr10ms();
 #endif
 
-    if (s_last_phase == 255) {
-      fp_act[phase] = MAX_ACT;
+    if (lastFlightMode == 255) {
+      fp_act[fm] = MAX_ACT;
     }
     else {
-      uint8_t fadeTime = max(g_model.phaseData[s_last_phase].fadeOut, g_model.phaseData[phase].fadeIn);
-      ACTIVE_PHASES_TYPE transitionMask = ((ACTIVE_PHASES_TYPE)1 << s_last_phase) + ((ACTIVE_PHASES_TYPE)1 << phase);
+      uint8_t fadeTime = max(g_model.flightModeData[lastFlightMode].fadeOut, g_model.flightModeData[fm].fadeIn);
+      ACTIVE_PHASES_TYPE transitionMask = ((ACTIVE_PHASES_TYPE)1 << lastFlightMode) + ((ACTIVE_PHASES_TYPE)1 << fm);
       if (fadeTime) {
-        s_fade_flight_phases |= transitionMask;
+        flightModesFade |= transitionMask;
         delta = (MAX_ACT / (100/SLOW_STEP)) / fadeTime;
       }
       else {
-        s_fade_flight_phases &= ~transitionMask;
-        fp_act[s_last_phase] = 0;
-        fp_act[phase] = MAX_ACT;
+        flightModesFade &= ~transitionMask;
+        fp_act[lastFlightMode] = 0;
+        fp_act[fm] = MAX_ACT;
       }
 #if defined(CPUARM)
-      logicalSwitchesCopyState(s_last_phase, phase); // push last logical switches state from old to new phase
+      logicalSwitchesCopyState(lastFlightMode, fm); // push last logical switches state from old to new flight mode
 #endif
     }
-    s_last_phase = phase;
+    lastFlightMode = fm;
   }
 
 #if defined(CPUARM)
   if (flightModeTransitionTime && get_tmr10ms() > flightModeTransitionTime+g_eeGeneral.switchesDelay) {
     flightModeTransitionTime = 0;
-    if (phase != flightModeTransitionLast) {
+    if (fm != flightModeTransitionLast) {
       if (flightModeTransitionLast != 255) PLAY_PHASE_OFF(flightModeTransitionLast);
-      PLAY_PHASE_ON(phase);
-      flightModeTransitionLast = phase;
+      PLAY_PHASE_ON(fm);
+      flightModeTransitionLast = fm;
     }
   }
 #endif
 
   int32_t weight = 0;
-  if (s_fade_flight_phases) {
+  if (flightModesFade) {
     memclear(sum_chans512, sizeof(sum_chans512));
     for (uint8_t p=0; p<MAX_FLIGHT_MODES; p++) {
       LS_RECURSIVE_EVALUATION_RESET();
-      if (s_fade_flight_phases & ((ACTIVE_PHASES_TYPE)1 << p)) {
-        s_current_mixer_flight_mode = p;
-        evalFlightModeMixes(p==phase ? e_perout_mode_normal : e_perout_mode_inactive_phase, p==phase ? tick10ms : 0);
+      if (flightModesFade & ((ACTIVE_PHASES_TYPE)1 << p)) {
+        mixerCurrentFlightMode = p;
+        evalFlightModeMixes(p==fm ? e_perout_mode_normal : e_perout_mode_inactive_flight_mode, p==fm ? tick10ms : 0);
         for (uint8_t i=0; i<NUM_CHNOUT; i++)
           sum_chans512[i] += (chans[i] >> 4) * fp_act[p];
         weight += fp_act[p];
@@ -999,10 +999,10 @@ void evalMixes(uint8_t tick10ms)
       LS_RECURSIVE_EVALUATION_RESET();
     }
     assert(weight);
-    s_current_mixer_flight_mode = phase;
+    mixerCurrentFlightMode = fm;
   }
   else {
-    s_current_mixer_flight_mode = phase;
+    mixerCurrentFlightMode = fm;
     evalFlightModeMixes(e_perout_mode_normal, tick10ms);
   }
 
@@ -1023,7 +1023,7 @@ void evalMixes(uint8_t tick10ms)
     // at the end chans[i] = chans[i]/256 =>  -1024..1024
     // interpolate value with min/max so we get smooth motion from center to stop
     // this limits based on v original values and min=-1024, max=1024  RESX=1024
-    int32_t q = (s_fade_flight_phases ? (sum_chans512[i] / weight) << 4 : chans[i]);
+    int32_t q = (flightModesFade ? (sum_chans512[i] / weight) << 4 : chans[i]);
 
 #if defined(PCBSTD)
     ex_chans[i] = q >> 8;
@@ -1038,17 +1038,17 @@ void evalMixes(uint8_t tick10ms)
     sei();
   }
 
-  if (tick10ms && s_fade_flight_phases) {
+  if (tick10ms && flightModesFade) {
     uint16_t tick_delta = delta * tick10ms;
     for (uint8_t p=0; p<MAX_FLIGHT_MODES; p++) {
-      ACTIVE_PHASES_TYPE phaseMask = ((ACTIVE_PHASES_TYPE)1 << p);
-      if (s_fade_flight_phases & phaseMask) {
-        if (p == phase) {
+      ACTIVE_PHASES_TYPE flightModeMask = ((ACTIVE_PHASES_TYPE)1 << p);
+      if (flightModesFade & flightModeMask) {
+        if (p == fm) {
           if (MAX_ACT - fp_act[p] > tick_delta)
             fp_act[p] += tick_delta;
           else {
             fp_act[p] = MAX_ACT;
-            s_fade_flight_phases -= phaseMask;
+            flightModesFade -= flightModeMask;
           }
         }
         else {
@@ -1056,12 +1056,12 @@ void evalMixes(uint8_t tick10ms)
             fp_act[p] -= tick_delta;
           else {
             fp_act[p] = 0;
-            s_fade_flight_phases -= phaseMask;
+            flightModesFade -= flightModeMask;
           }
         }
       }
     }
-  } //endif s_fade_fligh_phases
+  }
 
 #if defined(PCBGRUVIN9X) && defined(DEBUG) && !defined(VOICE)
   PORTH &= ~0x40; // PORTH:6 HIGH->LOW signals end of mixer interrupt

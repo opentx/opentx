@@ -647,7 +647,7 @@ extern void alert(const pm_char * t, const pm_char * s MESSAGE_SOUND_ARG);
 
 enum PerOutMode {
   e_perout_mode_normal = 0,
-  e_perout_mode_inactive_phase = 1,
+  e_perout_mode_inactive_flight_mode = 1,
   e_perout_mode_notrainer = 2,
   e_perout_mode_notrims = 4,
   e_perout_mode_nosticks = 8,
@@ -673,7 +673,7 @@ enum StartupWarningStates {
   #define FORCE_INDIRECT(ptr) __asm__ __volatile__ ("" : "=e" (ptr) : "0" (ptr))
 #endif
 
-extern uint8_t s_current_mixer_flight_mode;
+extern uint8_t mixerCurrentFlightMode;
 extern uint8_t s_last_phase;
 extern uint8_t flightModeTransitionLast;
 
@@ -740,9 +740,9 @@ int8_t  getMovedSwitch();
 #endif
 
 #if defined(FLIGHT_MODES)
-  extern uint8_t getFlightPhase();
+  extern uint8_t getFlightMode();
 #else
-  #define getFlightPhase() 0
+  #define getFlightMode() 0
 #endif
 
 #if !defined(PCBTARANIS)
@@ -1137,7 +1137,7 @@ extern uint16_t lightOffCounter;
 extern uint8_t flashCounter;
 extern uint8_t mixWarning;
 
-PhaseData *phaseAddress(uint8_t idx);
+FlightModeData *flightModeAddress(uint8_t idx);
 ExpoData *expoAddress(uint8_t idx);
 MixData *mixAddress(uint8_t idx);
 LimitData *limitAddress(uint8_t idx);
@@ -1563,7 +1563,7 @@ uint8_t zlen(const char *str, uint8_t size);
 bool zexist(const char *str, uint8_t size);
 char * strcat_zchar(char * dest, char * name, uint8_t size, const char *defaultName, uint8_t defaultNameSize, uint8_t defaultIdx);
 #define strcat_modelname(dest, idx) strcat_zchar(dest, modelHeaders[idx].name, LEN_MODEL_NAME, STR_MODEL, PSIZE(TR_MODEL), idx+1)
-#define strcat_phasename(dest, idx) strcat_zchar(dest, g_model.phaseData[idx].name, LEN_FP_NAME, STR_FP, PSIZE(TR_FP), idx+1)
+#define strcat_phasename(dest, idx) strcat_zchar(dest, g_model.flightModeData[idx].name, LEN_FP_NAME, STR_FP, PSIZE(TR_FP), idx+1)
 #define ZLEN(s) zlen(s, sizeof(s))
 #define ZEXIST(s) zexist(s, sizeof(s))
 #endif

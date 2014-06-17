@@ -701,7 +701,7 @@ class HeliField: public StructField {
 
 class FlightModeField: public TransformedField {
   public:
-    FlightModeField(PhaseData & phase, int index, BoardEnum board, unsigned int version):
+    FlightModeField(FlightModeData & phase, int index, BoardEnum board, unsigned int version):
       TransformedField(internalField),
       internalField("Phase"),
       phase(phase),
@@ -826,7 +826,7 @@ class FlightModeField: public TransformedField {
 
   protected:
     StructField internalField;
-    PhaseData & phase;
+    FlightModeData & phase;
     int index;
     BoardEnum board;
     unsigned int version;
@@ -2475,7 +2475,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   }
   internalField.Append(new HeliField(modelData.swashRingData, board, version, variant));
   for (int i=0; i<MAX_FLIGHT_MODES(board, version); i++)
-    internalField.Append(new FlightModeField(modelData.phaseData[i], i, board, version));
+    internalField.Append(new FlightModeField(modelData.flightModeData[i], i, board, version));
 
   if (!IS_ARM(board) || version < 216) {
     internalField.Append(new SignedField<8>(modelData.moduleData[0].ppmFrameLength));
@@ -2499,7 +2499,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   if ((board == BOARD_STOCK || (board == BOARD_M128 && version >= 215)) && (variant & GVARS_VARIANT)) {
     for (int i=0; i<MAX_GVARS(board, version); i++) {
       // on M64 GVARS are common to all phases, and there is no name
-      internalField.Append(new SignedField<16>(modelData.phaseData[0].gvars[i]));
+      internalField.Append(new SignedField<16>(modelData.flightModeData[0].gvars[i]));
     }
   }
 

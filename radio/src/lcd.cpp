@@ -1167,7 +1167,7 @@ void putsTrimMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, LcdFlags at
 #if ROTARY_ENCODERS > 0
 void putsRotaryEncoderMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, LcdFlags att)
 {
-  int16_t v = phaseAddress(phase)->rotaryEncoders[idx];
+  int16_t v = flightModeAddress(phase)->rotaryEncoders[idx];
 
   if (v > ROTARY_ENCODER_MAX) {
     uint8_t p = v - ROTARY_ENCODER_MAX - 1;
