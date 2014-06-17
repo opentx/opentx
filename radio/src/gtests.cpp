@@ -46,7 +46,7 @@ void doMixerCalculations();
   memset(&g_model, 0, sizeof(g_model)); \
   extern uint8_t s_mixer_first_run_done; \
   s_mixer_first_run_done = false; \
-  s_last_phase = 255;
+  lastFlightMode = 255;
 
 int32_t lastAct = 0;
 void MIXER_RESET()
@@ -59,7 +59,7 @@ void MIXER_RESET()
   s_last_switch_used = 0;
   s_last_switch_value = 0;
 #endif
-  mixerCurrentFlightMode = s_last_phase = 0;
+  mixerCurrentFlightMode = lastFlightMode = 0;
   lastAct = 0;
   logicalSwitchesReset();
 }
@@ -531,12 +531,12 @@ TEST(Mixer, RecursiveAddChannelAfterInactivePhase)
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].mltpx = MLTPX_ADD;
   g_model.mixData[0].srcRaw = MIXSRC_CH2;
-  g_model.mixData[0].phases = 0b11110;
+  g_model.mixData[0].flightModes = 0b11110;
   g_model.mixData[0].weight = 50;
   g_model.mixData[1].destCh = 0;
   g_model.mixData[1].mltpx = MLTPX_ADD;
   g_model.mixData[1].srcRaw = MIXSRC_MAX;
-  g_model.mixData[1].phases = 0b11101;
+  g_model.mixData[1].flightModes = 0b11101;
   g_model.mixData[1].weight = 50;
   g_model.mixData[2].destCh = 1;
   g_model.mixData[2].srcRaw = MIXSRC_MAX;
@@ -639,7 +639,7 @@ TEST(Mixer, SlowOnPhase)
   g_model.mixData[0].mltpx = MLTPX_ADD;
   g_model.mixData[0].srcRaw = MIXSRC_MAX;
   g_model.mixData[0].weight = 100;
-  g_model.mixData[0].phases = 0x2 + 0x4 + 0x8 + 0x10 /*only enabled in phase 0*/;
+  g_model.mixData[0].flightModes = 0x2 + 0x4 + 0x8 + 0x10 /*only enabled in phase 0*/;
   g_model.mixData[0].speedUp = SLOW_STEP*5;
   g_model.mixData[0].speedDown = SLOW_STEP*5;
 
@@ -666,9 +666,9 @@ TEST(Mixer, SlowOnSwitchAndPhase)
   g_model.mixData[0].weight = 100;
   g_model.mixData[0].swtch = TR(SWSRC_THR, SWSRC_SA0);
 #if defined(CPUARM)
-  g_model.mixData[0].phases = 0x2 + 0x4 + 0x8 + 0x10 + 0x20 + 0x40 + 0x80 + 0x100 /*only enabled in phase 0*/;
+  g_model.mixData[0].flightModes = 0x2 + 0x4 + 0x8 + 0x10 + 0x20 + 0x40 + 0x80 + 0x100 /*only enabled in phase 0*/;
 #else
-  g_model.mixData[0].phases = 0x2 + 0x4 + 0x8 + 0x10 /*only enabled in phase 0*/;
+  g_model.mixData[0].flightModes = 0x2 + 0x4 + 0x8 + 0x10 /*only enabled in phase 0*/;
 #endif
   g_model.mixData[0].speedUp = SLOW_STEP*5;
   g_model.mixData[0].speedDown = SLOW_STEP*5;
