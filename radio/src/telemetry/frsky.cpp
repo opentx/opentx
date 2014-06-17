@@ -556,6 +556,10 @@ void telemetryReset()
   frskyData.hub.baroAltitude_bp = 50;
   frskyData.hub.minAltitude = 10;
   frskyData.hub.maxAltitude = 500;
+#if defined(CPUARM)
+  frskyData.hub.baroAltitude = 340*100;  //in cm
+  frskyData.hub.gpsDistance = 1234;
+#endif
 
   frskyData.hub.accelY = 100;
   frskyData.hub.temperature1 = -30;
