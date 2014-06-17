@@ -69,12 +69,9 @@ void init_main_ppm(uint32_t period, uint32_t out_enable)
   pwmptr->PWM_ENA = PWM_ENA_CHID3 ;                             // Enable channel 3
   pwmptr->PWM_IER1 = PWM_IER1_CHID3 ;
 
-#if !defined(REVA)
-  configure_pins( PIO_PC15, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_B | PIN_PORTC | PIN_NO_PULLUP ) ;
-#endif
-
-#if !defined(REVA)
+#if !defined(REVA) && !defined(REVX)
   // PWM1 for PPM2
+  configure_pins(PIO_PC15, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_B | PIN_PORTC | PIN_NO_PULLUP ) ;
   pwmptr->PWM_CH_NUM[1].PWM_CMR = 0x0000000B ;    // CLKB
   if (g_model.moduleData[EXTRA_MODULE].ppmPulsePol)
     pwmptr->PWM_CH_NUM[1].PWM_CMR |= 0x00000200 ;   // CPOL
@@ -129,10 +126,12 @@ void disable_ppm(uint32_t port)
     PWM->PWM_IDR1 = PWM_IDR1_CHID3 ;
   }
   else {
+#if !defined(REVA) && !defined(REVX)
     pioptr = PIOC ;
     pioptr->PIO_PER = PIO_PC17 ;                                            // Assign A17 to PIO
     PWM->PWM_IDR1 = PWM_IDR1_CHID1 ;
     NVIC_DisableIRQ(PWM_IRQn) ;
+#endif
   }
 }
 
