@@ -272,6 +272,9 @@ void InputsPanel::setSelectedByExpoList(QList<int> list)
 
 void InputsPanel::exposDelete(bool ask)
 {
+    QList<int> list = createExpoListFromSelected();
+    if(list.isEmpty()) return;
+
     QMessageBox::StandardButton ret = QMessageBox::No;
 
     if(ask)
@@ -281,7 +284,7 @@ void InputsPanel::exposDelete(bool ask)
 
 
     if ((ret == QMessageBox::Yes) || (!ask)) {
-        exposDeleteList(createExpoListFromSelected());
+        exposDeleteList(list);
         emit modified();
         update();
     }

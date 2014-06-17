@@ -322,6 +322,9 @@ void MixesPanel::setSelectedByMixList(QList<int> list)
 
 void MixesPanel::mixersDelete(bool ask)
 {
+    QList<int> list = createMixListFromSelected();
+    if(list.isEmpty()) return;
+
     QMessageBox::StandardButton ret = QMessageBox::No;
 
     if(ask)
@@ -331,7 +334,7 @@ void MixesPanel::mixersDelete(bool ask)
 
 
     if ((ret == QMessageBox::Yes) || (!ask)) {
-      mixersDeleteList(createMixListFromSelected());
+      mixersDeleteList(list);
       emit modified();
       update();
     }
