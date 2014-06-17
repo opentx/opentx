@@ -457,7 +457,7 @@ const FATDirEntry_t g_DIRroot[16] =
     {
         { 'E', 'E', 'P', 'R', 'O', 'M', ' ', ' '},
         { 'B', 'I', 'N'},
-        0x24,		// Archive, hidden, system
+        0x20,		// Archive
         0x00,
         0x3E,
         0xA301,
@@ -472,7 +472,7 @@ const FATDirEntry_t g_DIRroot[16] =
     {
         { 'F', 'I', 'R', 'M', 'W', 'A', 'R', 'E'},
         { 'B', 'I', 'N'},
-        0x24,		// Archive, hidden, system
+        0x20,           // Archive
         0x00,
         0x3E,
         0xA301,
