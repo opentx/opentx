@@ -43,6 +43,20 @@ extern uint8_t *pxxStreamPtr[NUM_MODULES];  // TODO not here, duplicated
 extern uint8_t dsm2Stream[64];  // Likely more than we need
 extern uint8_t *dsm2StreamPtr;
 
+void module_output_active()
+{
+  register Pio *pioptr ;
+
+  pioptr = PIOA ;
+  pioptr->PIO_ABCDSR[0] &= ~PIO_PA17 ;            // Peripheral C
+  pioptr->PIO_ABCDSR[1] |= PIO_PA17 ;             // Peripheral C
+  pioptr->PIO_PDR = PIO_PA17 ;                    // Disable bit A17 Assign to peripheral
+  pioptr->PIO_MDER = PIO_PA17 ;                       // Open Drain O/p in A17
+  // pioptr->PIO_MDDR = PIO_PA17 ;                // Push Pull O/p in A17
+  pioptr->PIO_PUER = PIO_PA17 ;                   // With pull up
+}
+
+
 void init_main_ppm(uint32_t period, uint32_t out_enable)
 {
   register Pio *pioptr ;
@@ -51,10 +65,7 @@ void init_main_ppm(uint32_t period, uint32_t out_enable)
   setupPulsesPPM(EXTERNAL_MODULE) ;
 
   if (out_enable) {
-    pioptr = PIOA ;
-    pioptr->PIO_ABCDSR[0] &= ~PIO_PA17 ;            // Peripheral C
-    pioptr->PIO_ABCDSR[1] |= PIO_PA17 ;             // Peripheral C
-    pioptr->PIO_PDR = PIO_PA17 ;                    // Disable bit A17 Assign to peripheral
+    module_output_active();
   }
 
   pwmptr = PWM ;
