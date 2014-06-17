@@ -1423,12 +1423,16 @@ void luaTask(uint8_t evt)
       if (sid.state == SCRIPT_OK) {
         uint8_t prev_mem = lua_gc(L, LUA_GCCOUNT, 0);
         SET_LUA_INSTRUCTIONS_COUNT(PERMANENT_SCRIPTS_MAX_INSTRUCTIONS);
-        const char *filename __attribute__((unused));
+#if defined(SIMU) || defined(DEBUG)
+        const char *filename;
+#endif
         ScriptInputsOutputs * sio = NULL;
         if (sid.reference >= SCRIPT_MIX_FIRST && sid.reference <= SCRIPT_MIX_LAST) {
           ScriptData & sd = g_model.scriptsData[sid.reference-SCRIPT_MIX_FIRST];
           sio = &scriptInputsOutputs[sid.reference-SCRIPT_MIX_FIRST];
+#if defined(SIMU) || defined(DEBUG)
           filename = sd.file;
+#endif
           lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
           for (int j=0; j<sio->inputsCount; j++) {
             if (sio->inputs[j].type == 1)
@@ -1442,14 +1446,18 @@ void luaTask(uint8_t evt)
           if (!getSwitch(fn.swtch)) {
             continue;
           }
+#if defined(SIMU) || defined(DEBUG)
           filename = fn.play.name;
+#endif
           lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
         }
         else {
           if (g_menuStack[0]!=menuTelemetryFrsky || sid.reference!=SCRIPT_TELEMETRY_FIRST+s_frsky_view) {
             continue;
           }
+#if defined(SIMU) || defined(DEBUG)
           filename = "[telem]";
+#endif
           lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
         }
         if (lua_pcall(L, sio ? sio->inputsCount : 0, sio ? sio->outputsCount : 0, 0) == 0) {
