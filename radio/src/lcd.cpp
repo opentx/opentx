@@ -1309,6 +1309,10 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
       putsTelemetryValue(x, y, val, UNIT_RAW, att);
       break;
 
+    case TELEM_HDG-1:
+      putsTelemetryValue(x, y, val, UNIT_HDG, att);
+      break;
+
 #if defined(FRSKY_SPORT)
     case TELEM_ALT-1:
       putsTelemetryValue(x, y, div10_and_round(val), UNIT_DIST, att|PREC1);
@@ -1323,10 +1327,6 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
       }
       // no break
 #endif
-
-    case TELEM_HDG-1:
-      putsTelemetryValue(x, y, val, UNIT_HDG, att);
-      break;
 
     default:
     {
