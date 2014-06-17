@@ -48,10 +48,9 @@ void init_main_ppm(uint32_t period, uint32_t out_enable)
   register Pio *pioptr ;
   register Pwm *pwmptr ;
 
-  setupPulsesPPM(0) ;
+  setupPulsesPPM(EXTERNAL_MODULE) ;
 
-  if ( out_enable )
-  {
+  if (out_enable) {
     pioptr = PIOA ;
     pioptr->PIO_ABCDSR[0] &= ~PIO_PA17 ;            // Peripheral C
     pioptr->PIO_ABCDSR[1] |= PIO_PA17 ;             // Peripheral C
@@ -61,12 +60,12 @@ void init_main_ppm(uint32_t period, uint32_t out_enable)
   pwmptr = PWM ;
   // PWM3 for PPM output
   pwmptr->PWM_CH_NUM[3].PWM_CMR = 0x0000000B ;                  // CLKA
-  if (g_model.moduleData[0].ppmPulsePol)
+  if (g_model.moduleData[EXTERNAL_MODULE].ppmPulsePol)
     pwmptr->PWM_CH_NUM[3].PWM_CMR |= 0x00000200 ;               // CPOL
   pwmptr->PWM_CH_NUM[3].PWM_CPDR = period ;                     // Period in half uS
   pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = period ;                  // Period in half uS
-  pwmptr->PWM_CH_NUM[3].PWM_CDTY = g_model.moduleData[0].ppmDelay*100+600;    // Duty in half uS
-  pwmptr->PWM_CH_NUM[3].PWM_CDTYUPD = g_model.moduleData[0].ppmDelay*100+600; // Duty in half uS
+  pwmptr->PWM_CH_NUM[3].PWM_CDTY = g_model.moduleData[EXTERNAL_MODULE].ppmDelay*100+600;    // Duty in half uS
+  pwmptr->PWM_CH_NUM[3].PWM_CDTYUPD = g_model.moduleData[EXTERNAL_MODULE].ppmDelay*100+600; // Duty in half uS
   pwmptr->PWM_ENA = PWM_ENA_CHID3 ;                             // Enable channel 3
   pwmptr->PWM_IER1 = PWM_IER1_CHID3 ;
 
@@ -77,12 +76,12 @@ void init_main_ppm(uint32_t period, uint32_t out_enable)
 #if !defined(REVA)
   // PWM1 for PPM2
   pwmptr->PWM_CH_NUM[1].PWM_CMR = 0x0000000B ;    // CLKB
-  if (g_model.moduleData[0].ppmPulsePol)
+  if (g_model.moduleData[EXTRA_MODULE].ppmPulsePol)
     pwmptr->PWM_CH_NUM[1].PWM_CMR |= 0x00000200 ;   // CPOL
   pwmptr->PWM_CH_NUM[1].PWM_CPDR = period ;                       // Period
   pwmptr->PWM_CH_NUM[1].PWM_CPDRUPD = period ;            // Period
-  pwmptr->PWM_CH_NUM[1].PWM_CDTY = g_model.moduleData[0].ppmDelay*100+600 ;                             // Duty
-  pwmptr->PWM_CH_NUM[1].PWM_CDTYUPD = g_model.moduleData[0].ppmDelay*100+600 ;          // Duty
+  pwmptr->PWM_CH_NUM[1].PWM_CDTY = g_model.moduleData[EXTRA_MODULE].ppmDelay*100+600 ;                             // Duty
+  pwmptr->PWM_CH_NUM[1].PWM_CDTYUPD = g_model.moduleData[EXTRA_MODULE].ppmDelay*100+600 ;          // Duty
   pwmptr->PWM_ENA = PWM_ENA_CHID1 ;                                               // Enable channel 1
 #endif
 
@@ -90,11 +89,41 @@ void init_main_ppm(uint32_t period, uint32_t out_enable)
   NVIC_EnableIRQ(PWM_IRQn) ;
 }
 
+void init_no_pulses(uint32_t port)
+{
+  if (port == EXTERNAL_MODULE) {
+    init_main_ppm(3000, 0);
+  }
+  else {
+    // TODO
+  }
+}
+
+void disable_no_pulses(uint32_t port)
+{
+  if (port == EXTERNAL_MODULE) {
+    disable_ppm(0);
+  }
+  else {
+    // TODO
+  }
+}
+
+void init_ppm(uint32_t port)
+{
+  if (port == EXTERNAL_MODULE) {
+    init_main_ppm(3000, 1);
+  }
+  else {
+    // TODO
+  }
+}
+
 void disable_ppm(uint32_t port)
 {
   register Pio *pioptr ;
 
-  if (port == 0) {
+  if (port == EXTERNAL_MODULE) {
     pioptr = PIOA ;
     pioptr->PIO_PER = PIO_PA17 ;                                            // Assign A17 to PIO
     PWM->PWM_IDR1 = PWM_IDR1_CHID3 ;
@@ -102,7 +131,6 @@ void disable_ppm(uint32_t port)
   else {
     pioptr = PIOC ;
     pioptr->PIO_PER = PIO_PC17 ;                                            // Assign A17 to PIO
-
     PWM->PWM_IDR1 = PWM_IDR1_CHID1 ;
     NVIC_DisableIRQ(PWM_IRQn) ;
   }
@@ -138,6 +166,48 @@ void disable_ssc()
   sscptr->SSC_CR = SSC_CR_TXDIS ;
 }
 
+void init_pxx(uint32_t port)
+{
+  if (port == EXTERNAL_MODULE) {
+    init_main_ppm(5000, 0);
+    init_ssc();
+  }
+  else {
+    // TODO
+  }
+}
+
+void disable_pxx(uint32_t port)
+{
+  if (port == EXTERNAL_MODULE) {
+    disable_ssc();
+  }
+  else {
+    // TODO
+  }
+}
+
+void init_dsm2(uint32_t port)
+{
+  if (port == EXTERNAL_MODULE) {
+    init_main_ppm(5000, 0);
+    init_ssc();
+  }
+  else {
+    // TODO
+  }
+}
+
+void disable_dsm2(uint32_t port)
+{
+  if (port == EXTERNAL_MODULE) {
+    disable_ssc();
+  }
+  else {
+    // TODO
+  }
+}
+
 #if !defined(SIMU)
 extern "C" void PWM_IRQHandler(void)
 {
@@ -149,8 +219,8 @@ extern "C" void PWM_IRQHandler(void)
   pwmptr = PWM;
   reason = pwmptr->PWM_ISR1 ;
   if (reason & PWM_ISR1_CHID3) {
-    switch (s_current_protocol[0]) // Use the current, don't switch until set_up_pulses
-    {
+    // Use the current protocol, don't switch until set_up_pulses
+    switch (s_current_protocol[EXTERNAL_MODULE]) {
       case PROTO_PXX:
         // Alternate periods of 15.5mS and 2.5 mS
         period = pwmptr->PWM_CH_NUM[3].PWM_CPDR;
@@ -162,13 +232,13 @@ extern "C" void PWM_IRQHandler(void)
         }
         pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = period; // Period in half uS
         if (period != 5000) { // 2.5 mS
-          setupPulses(0);
+          setupPulses(EXTERNAL_MODULE);
         }
         else {
           // Kick off serial output here
           sscptr = SSC;
-          sscptr->SSC_TPR = CONVERT_PTR_UINT(pxxStream[0]);
-          sscptr->SSC_TCR = (uint8_t *)pxxStreamPtr[0] - (uint8_t *)pxxStream[0];
+          sscptr->SSC_TPR = CONVERT_PTR_UINT(pxxStream[EXTERNAL_MODULE]);
+          sscptr->SSC_TCR = (uint8_t *)pxxStreamPtr[EXTERNAL_MODULE] - (uint8_t *)pxxStream[EXTERNAL_MODULE];
           sscptr->SSC_PTCR = SSC_PTCR_TXTEN; // Start transfers
         }
         break;
@@ -198,10 +268,10 @@ extern "C" void PWM_IRQHandler(void)
         break;
 
       default:
-        pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = ppmStream[0][ppmStreamIndex[0]++]; // Period in half uS
-        if (ppmStream[0][ppmStreamIndex[0]] == 0) {
-          ppmStreamIndex[0] = 0;
-          setupPulses(0);
+        pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = ppmStream[EXTERNAL_MODULE][ppmStreamIndex[EXTERNAL_MODULE]++]; // Period in half uS
+        if (ppmStream[EXTERNAL_MODULE][ppmStreamIndex[EXTERNAL_MODULE]] == 0) {
+          ppmStreamIndex[EXTERNAL_MODULE] = 0;
+          setupPulses(EXTERNAL_MODULE);
         }
         break;
 
@@ -209,10 +279,10 @@ extern "C" void PWM_IRQHandler(void)
   }
 
   if (reason & PWM_ISR1_CHID1) {
-    pwmptr->PWM_CH_NUM[1].PWM_CPDRUPD = ppmStream[1][ppmStreamIndex[1]++] ;  // Period in half uS
-    if (ppmStream[1][ppmStreamIndex[1]] == 0) {
-      ppmStreamIndex[1] = 0;
-      setupPulsesPPM(1);
+    pwmptr->PWM_CH_NUM[1].PWM_CPDRUPD = ppmStream[EXTRA_MODULE][ppmStreamIndex[EXTRA_MODULE]++] ;  // Period in half uS
+    if (ppmStream[EXTRA_MODULE][ppmStreamIndex[EXTRA_MODULE]] == 0) {
+      ppmStreamIndex[EXTRA_MODULE] = 0;
+      setupPulsesPPM(EXTRA_MODULE);
     }
   }
 }

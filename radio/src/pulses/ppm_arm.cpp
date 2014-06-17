@@ -56,7 +56,7 @@ void setupPulsesPPM(unsigned int port)                   // Don't enable interru
 
 #if defined(PCBSKY9X)
   register Pwm *pwmptr = PWM;
-  uint32_t pwmCh = (port == 0 ? 3 : 1);
+  uint32_t pwmCh = (port == EXTERNAL_MODULE ? 3 : 1);
   pwmptr->PWM_CH_NUM[pwmCh].PWM_CDTYUPD = (g_model.moduleData[port].ppmDelay * 50 + 300) * 2; //Stoplen *2
   if (g_model.moduleData[port].ppmPulsePol)
     pwmptr->PWM_CH_NUM[pwmCh].PWM_CMR |= 0x00000200 ;   // CPOL
@@ -81,7 +81,7 @@ void setupPulsesPPM(unsigned int port)                   // Don't enable interru
   if (port == TRAINER_MODULE) {
     TIM3->CCR2 = rest - 1000 ;             // Update time
     TIM3->CCR4 = (g_model.moduleData[port].ppmDelay*50+300)*2;
-    if(!g_model.moduleData[TRAINER_MODULE].ppmPulsePol)
+    if (!g_model.moduleData[TRAINER_MODULE].ppmPulsePol)
       TIM3->CCER |= TIM_CCER_CC4P;
     else
       TIM3->CCER &= ~TIM_CCER_CC4P;

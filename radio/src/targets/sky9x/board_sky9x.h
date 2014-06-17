@@ -191,17 +191,14 @@ extern uint32_t readTrims();
 #define DBLKEYS_PRESSED_LFT_DWN(i) ((in & (0x40 + 0x08)) == (0x40 + 0x08))
 
 // Pulses driver
-#define init_no_pulses(port) init_main_ppm(3000, 0)
-#define disable_no_pulses(port) disable_ppm(0)
-void init_main_ppm(uint32_t period, uint32_t out_enable);
-#define init_ppm(port) init_main_ppm(3000, 1)
+void init_no_pulses(uint32_t port);
+void disable_no_pulses(uint32_t port);
+void init_ppm(uint32_t port);
 void disable_ppm(uint32_t port);
-void init_ssc();
-void disable_ssc();
-#define init_pxx(port) init_main_ppm(5000, 0); init_ssc()
-#define disable_pxx(port) disable_ssc()
-#define init_dsm2(port) init_main_ppm(5000, 0); init_ssc()
-#define disable_dsm2(port) disable_ssc()
+void init_pxx(uint32_t port);
+void disable_pxx(uint32_t port);
+void init_dsm2(uint32_t port);
+void disable_dsm2(uint32_t port);
 
 // SD driver
 #if defined(SIMU)
