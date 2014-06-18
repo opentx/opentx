@@ -1302,7 +1302,7 @@ void luaLoadMixScripts()
   }
 
   // Load telemetry scripts
-  for (int i=0; i<MAX_SCRIPTS; i++) {
+  for (int i=0; i<MAX_SCRIPTS+1; i++) {
     if (!luaLoadTelemetryScript(i)) {
       POPUP_WARNING("Too many Lua scripts!"); // TODO translation
       break;

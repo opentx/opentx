@@ -48,15 +48,22 @@ bar_threshold_t barsThresholds[THLD_MAX];
 #endif
 
 enum FrskyViews {
-  e_frsky_custom_screen_1,
-  e_frsky_custom_screen_2,
-  CASE_CPUARM(e_frsky_custom_screen_3)
-  e_frsky_voltages,
-  e_frsky_after_flight,
-  FRSKY_VIEW_MAX = e_frsky_after_flight
+  TELEMETRY_VOLTAGES_SCREEN,
+  CASE_LUA(TELEMETRY_LUA_SCREEN_1)
+  CASE_LUA(TELEMETRY_LUA_SCREEN_2)
+  CASE_LUA(TELEMETRY_LUA_SCREEN_3)
+  CASE_LUA(TELEMETRY_LUA_SCREEN_4)
+  CASE_LUA(TELEMETRY_LUA_SCREEN_5)
+  CASE_LUA(TELEMETRY_LUA_SCREEN_6)
+  CASE_LUA(TELEMETRY_LUA_SCREEN_7)
+  TELEMETRY_CUSTOM_SCREEN_1,
+  TELEMETRY_CUSTOM_SCREEN_2,
+  CASE_CPUARM(TELEMETRY_CUSTOM_SCREEN_3)
+  TELEMETRY_AFTER_FLIGHT_SCREEN,
+  FRSKY_VIEW_MAX = TELEMETRY_AFTER_FLIGHT_SCREEN
 };
 
-uint8_t s_frsky_view = e_frsky_custom_screen_1;
+uint8_t s_frsky_view = TELEMETRY_VOLTAGES_SCREEN;
 
 #if LCD_W >= 212
   #define BAR_LEFT    26
@@ -214,10 +221,107 @@ void menuTelemetryFrsky(uint8_t event)
 
   lcdDrawTelemetryTopBar();
 
-  if (s_frsky_view < MAX_FRSKY_SCREENS) {
-    FrSkyScreenData & screen = g_model.frsky.screens[s_frsky_view];
+  if (s_frsky_view == TELEMETRY_VOLTAGES_SCREEN) {
+    // Volts / Amps / Watts / mAh
+    uint8_t analog = 0;
+#if defined(CPUARM)
+    lcd_putsiAtt(0, 2*FH, STR_VOLTSRC, g_model.frsky.voltsSource, 0);
+#else
+    lcd_putsiAtt(0, 2*FH, STR_AMPSRC, g_model.frsky.voltsSource+1, 0);
+#endif
+    switch (g_model.frsky.voltsSource) {
+      case FRSKY_VOLTS_SOURCE_A1:
+      case FRSKY_VOLTS_SOURCE_A2:
+#if defined(CPUARM)
+      case FRSKY_VOLTS_SOURCE_A3:
+      case FRSKY_VOLTS_SOURCE_A4:
+#endif
+        displayVoltageScreenLine(2*FH, g_model.frsky.voltsSource);
+        analog = 1+g_model.frsky.voltsSource;
+        break;
+#if defined(FRSKY_HUB)
+      case FRSKY_VOLTS_SOURCE_FAS:
+        putsTelemetryChannel(3*FW+6*FW+4, FH+1, TELEM_VFAS-1, frskyData.hub.vfas, DBLSIZE);
+        break;
+      case FRSKY_VOLTS_SOURCE_CELLS:
+        putsTelemetryChannel(3*FW+6*FW+4, FH+1, TELEM_CELLS_SUM-1, frskyData.hub.cellsSum, DBLSIZE);
+        break;
+#endif
+    }
+
+    if (g_model.frsky.currentSource) {
+      lcd_putsiAtt(0, 4*FH, STR_AMPSRC, g_model.frsky.currentSource, 0);
+      switch(g_model.frsky.currentSource) {
+        case FRSKY_CURRENT_SOURCE_A1:
+        case FRSKY_CURRENT_SOURCE_A2:
+#if defined(CPUARM)
+        case FRSKY_CURRENT_SOURCE_A3:
+        case FRSKY_CURRENT_SOURCE_A4:
+#endif
+          displayVoltageScreenLine(4*FH, g_model.frsky.currentSource-1);
+          break;
+#if defined(FRSKY_HUB)
+        case FRSKY_CURRENT_SOURCE_FAS:
+          putsTelemetryChannel(3*FW+6*FW+4, 3*FH+1, TELEM_CURRENT-1, frskyData.hub.current, DBLSIZE);
+          break;
+#endif
+      }
+
+      putsTelemetryChannel(4, 5*FH+1, TELEM_POWER-1, frskyData.hub.power, LEFT|DBLSIZE);
+      putsTelemetryChannel(3*FW+4+4*FW+6*FW+FW, 5*FH+1, TELEM_CONSUMPTION-1, frskyData.hub.currentConsumption, DBLSIZE);
+    }
+    else {
+#if defined(CPUARM)
+      displayVoltageScreenLine(analog > 0 ? 5*FH : 4*FH, analog==1+FRSKY_VOLTS_SOURCE_A1 ? FRSKY_VOLTS_SOURCE_A2 : FRSKY_VOLTS_SOURCE_A1);
+#else
+      displayVoltageScreenLine(analog > 0 ? 5*FH : 4*FH, analog ? 2-analog : 0);
+#endif
+      if (analog == 0) displayVoltageScreenLine(6*FH, 1);
+    }
+
+#if defined(FRSKY_HUB)
+    // Cells voltage
+    if (frskyData.hub.cellsCount > 0) {
+      uint8_t y = 1*FH;
+      for (uint8_t k=0; k<frskyData.hub.cellsCount && k<6; k++) {
 #if defined(GAUGES)
-    if (g_model.frsky.screensType & (1<<s_frsky_view)) {
+        uint8_t attr = (barsThresholds[THLD_CELL] && frskyData.hub.cellVolts[k] < barsThresholds[THLD_CELL]) ? BLINK|PREC2 : PREC2;
+#else
+        uint8_t attr = PREC2;
+#endif
+        lcd_outdezNAtt(LCD_W, y, TELEMETRY_CELL_VOLTAGE(k), attr, 4);
+        y += 1*FH;
+      }
+#if defined(PCBTARANIS)
+      if (frskyData.hub.cellsCount > 6) {
+        y = 1*FH;
+        for (uint8_t k=6; k<frskyData.hub.cellsCount && k<12; k++) {
+#if defined(GAUGES)
+          uint8_t attr = (barsThresholds[THLD_CELL] && frskyData.hub.cellVolts[k] < barsThresholds[THLD_CELL]) ? BLINK|PREC2 : PREC2;
+#else
+          uint8_t attr = PREC2;
+#endif
+          lcd_outdezNAtt(LCD_W-3*FW-2, y, TELEMETRY_CELL_VOLTAGE(k), attr, 4);
+          y += 1*FH;
+        }
+        lcd_vline(LCD_W-6*FW-4, 8, 47);
+      } else
+#endif
+      lcd_vline(LCD_W-3*FW-2, 8, 47);
+    }
+#endif
+
+    displayRssiLine();
+  }
+#if defined(LUA)
+  else if (s_frsky_view < TELEMETRY_CUSTOM_SCREEN_1) {
+    putEvent(event == EVT_KEY_BREAK(KEY_UP) ? event : EVT_KEY_BREAK(KEY_DOWN));
+  }
+#endif
+  else if (s_frsky_view < TELEMETRY_CUSTOM_SCREEN_1+MAX_FRSKY_SCREENS) {
+    FrSkyScreenData & screen = g_model.frsky.screens[s_frsky_view-TELEMETRY_CUSTOM_SCREEN_1];
+#if defined(GAUGES)
+    if (g_model.frsky.screensType & (1<<(s_frsky_view-TELEMETRY_CUSTOM_SCREEN_1))) {
       // Custom Screen with gauges
       uint8_t barHeight = 5;
       for (int8_t i=3; i>=0; i--) {
@@ -340,104 +444,13 @@ void menuTelemetryFrsky(uint8_t event)
         }
       }
       lcd_status_line();
-      if (fields_count == 0)
+      if (fields_count == 0) {
         putEvent(event == EVT_KEY_BREAK(KEY_UP) ? event : EVT_KEY_BREAK(KEY_DOWN));
+      }
     }
   }
-  else if (s_frsky_view == e_frsky_voltages) {
-    // Volts / Amps / Watts / mAh
-    uint8_t analog = 0;
-#if defined(CPUARM)
-    lcd_putsiAtt(0, 2*FH, STR_VOLTSRC, g_model.frsky.voltsSource, 0);
-#else
-    lcd_putsiAtt(0, 2*FH, STR_AMPSRC, g_model.frsky.voltsSource+1, 0);
-#endif
-    switch (g_model.frsky.voltsSource) {
-      case FRSKY_VOLTS_SOURCE_A1:
-      case FRSKY_VOLTS_SOURCE_A2:
-#if defined(CPUARM)
-      case FRSKY_VOLTS_SOURCE_A3:
-      case FRSKY_VOLTS_SOURCE_A4:
-#endif
-        displayVoltageScreenLine(2*FH, g_model.frsky.voltsSource);
-        analog = 1+g_model.frsky.voltsSource;
-        break;
 #if defined(FRSKY_HUB)
-      case FRSKY_VOLTS_SOURCE_FAS:
-        putsTelemetryChannel(3*FW+6*FW+4, FH+1, TELEM_VFAS-1, frskyData.hub.vfas, DBLSIZE);
-        break;
-      case FRSKY_VOLTS_SOURCE_CELLS:
-        putsTelemetryChannel(3*FW+6*FW+4, FH+1, TELEM_CELLS_SUM-1, frskyData.hub.cellsSum, DBLSIZE);
-        break;
-#endif
-    }
-
-    if (g_model.frsky.currentSource) {
-      lcd_putsiAtt(0, 4*FH, STR_AMPSRC, g_model.frsky.currentSource, 0);
-      switch(g_model.frsky.currentSource) {
-        case FRSKY_CURRENT_SOURCE_A1:
-        case FRSKY_CURRENT_SOURCE_A2:
-#if defined(CPUARM)
-        case FRSKY_CURRENT_SOURCE_A3:
-        case FRSKY_CURRENT_SOURCE_A4:
-#endif
-          displayVoltageScreenLine(4*FH, g_model.frsky.currentSource-1);
-          break;
-#if defined(FRSKY_HUB)
-        case FRSKY_CURRENT_SOURCE_FAS:
-          putsTelemetryChannel(3*FW+6*FW+4, 3*FH+1, TELEM_CURRENT-1, frskyData.hub.current, DBLSIZE);
-          break;
-#endif
-      }
-
-      putsTelemetryChannel(4, 5*FH+1, TELEM_POWER-1, frskyData.hub.power, LEFT|DBLSIZE);
-      putsTelemetryChannel(3*FW+4+4*FW+6*FW+FW, 5*FH+1, TELEM_CONSUMPTION-1, frskyData.hub.currentConsumption, DBLSIZE);
-    }
-    else {
-#if defined(CPUARM)
-      displayVoltageScreenLine(analog > 0 ? 5*FH : 4*FH, analog==1+FRSKY_VOLTS_SOURCE_A1 ? FRSKY_VOLTS_SOURCE_A2 : FRSKY_VOLTS_SOURCE_A1);
-#else
-      displayVoltageScreenLine(analog > 0 ? 5*FH : 4*FH, analog ? 2-analog : 0);
-#endif
-      if (analog == 0) displayVoltageScreenLine(6*FH, 1);
-    }
-
-#if defined(FRSKY_HUB)
-    // Cells voltage
-    if (frskyData.hub.cellsCount > 0) {
-      uint8_t y = 1*FH;
-      for (uint8_t k=0; k<frskyData.hub.cellsCount && k<6; k++) {
-#if defined(GAUGES)
-        uint8_t attr = (barsThresholds[THLD_CELL] && frskyData.hub.cellVolts[k] < barsThresholds[THLD_CELL]) ? BLINK|PREC2 : PREC2;
-#else
-        uint8_t attr = PREC2;
-#endif
-        lcd_outdezNAtt(LCD_W, y, TELEMETRY_CELL_VOLTAGE(k), attr, 4);
-        y += 1*FH;
-      }
-#if defined(PCBTARANIS)      
-      if (frskyData.hub.cellsCount > 6) {
-        y = 1*FH;
-        for (uint8_t k=6; k<frskyData.hub.cellsCount && k<12; k++) {
-#if defined(GAUGES)
-          uint8_t attr = (barsThresholds[THLD_CELL] && frskyData.hub.cellVolts[k] < barsThresholds[THLD_CELL]) ? BLINK|PREC2 : PREC2;
-#else
-          uint8_t attr = PREC2;
-#endif
-          lcd_outdezNAtt(LCD_W-3*FW-2, y, TELEMETRY_CELL_VOLTAGE(k), attr, 4);
-          y += 1*FH;
-        }
-        lcd_vline(LCD_W-6*FW-4, 8, 47);       
-      } else
-#endif
-      lcd_vline(LCD_W-3*FW-2, 8, 47);
-    }
-#endif
-
-    displayRssiLine();
-  }
-#if defined(FRSKY_HUB)
-  else if (s_frsky_view == e_frsky_after_flight) {
+  else if (s_frsky_view == TELEMETRY_AFTER_FLIGHT_SCREEN) {
     uint8_t line=1*FH+1;
     if (IS_GPS_AVAILABLE()) {
       // Latitude
