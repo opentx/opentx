@@ -1464,6 +1464,7 @@ enum AUDIO_SOUNDS {
     uint8_t reference;
     uint8_t state;
     int run;
+    int background;
     uint8_t instructions;
     uint8_t memory;
   };

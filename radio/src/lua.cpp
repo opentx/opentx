@@ -1173,6 +1173,10 @@ int luaLoad(const char *filename, ScriptInternalData & sid, ScriptInputsOutputs 
         sid.run = luaL_ref(L, LUA_REGISTRYINDEX);
         lua_pushnil(L);
       }
+      else if (!strcmp(key, "background")) {
+        sid.background = luaL_ref(L, LUA_REGISTRYINDEX);
+        lua_pushnil(L);
+      }
       else if (sio && !strcmp(key, "input")) {
         luaGetInputs(*sio);
       }
@@ -1487,13 +1491,15 @@ void luaTask(uint8_t evt)
           lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
         }
         else {
-          if (g_menuStack[0]!=menuTelemetryFrsky || sid.reference!=SCRIPT_TELEMETRY_FIRST+s_frsky_view) {
-            continue;
-          }
 #if defined(SIMU) || defined(DEBUG)
           filename = "[telem]";
 #endif
-          lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
+          if (g_menuStack[0]==menuTelemetryFrsky && sid.reference==SCRIPT_TELEMETRY_FIRST+s_frsky_view) {
+            lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
+          }
+          else if (sid.background) {
+            lua_rawgeti(L, LUA_REGISTRYINDEX, sid.background);
+          }
         }
         if (lua_pcall(L, sio ? sio->inputsCount : 0, sio ? sio->outputsCount : 0, 0) == 0) {
           if (sio) {
