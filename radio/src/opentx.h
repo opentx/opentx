@@ -1513,7 +1513,7 @@ union ReusableBuffer
         uint16_t eepromfree;
 #if defined(SDCARD)
         char menu_bss[MENU_MAX_LINES][MENU_LINE_LENGTH];
-        char mainname[42]; // because reused for SD backup / restore
+        char mainname[sizeof(menu_bss)]; // because reused for SD backup / restore
 #else
         char mainname[LEN_MODEL_NAME];
 #endif
