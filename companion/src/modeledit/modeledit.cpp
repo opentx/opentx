@@ -28,7 +28,8 @@ ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, Firmw
   ui->pushButton->setIcon(CompanionIcon("simulate.png"));
   SetupPanel * setupPanel = new SetupPanel(this, model, generalSettings, firmware);
   addTab(setupPanel, tr("Setup"));
-  addTab(new HeliPanel(this, model, generalSettings, firmware), tr("Heli"));
+  if (firmware->getCapability(Heli))
+    addTab(new HeliPanel(this, model, generalSettings, firmware), tr("Heli"));
   addTab(new FlightModesPanel(this, model, generalSettings, firmware), tr("Flight Modes"));
   addTab(new InputsPanel(this, model, generalSettings, firmware), tr("Inputs"));
   addTab(new MixesPanel(this, model, generalSettings, firmware), tr("Mixes"));

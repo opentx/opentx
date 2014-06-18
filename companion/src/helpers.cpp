@@ -140,20 +140,6 @@ void populatePhasesCB(QComboBox *b, int value)
   b->setCurrentIndex(value + GetCurrentFirmware()->getCapability(FlightModes));
 }
 
-bool gvarsEnabled()
-{
-  int gvars=0;
-  if (GetCurrentFirmware()->getCapability(HasVariants)) {
-    if ((GetCurrentFirmwareVariant() & GVARS_VARIANT)) {
-      gvars=1;
-    }
-  }
-  else {
-    gvars=1;
-  }
-  return gvars;
-}
-
 GVarGroup::GVarGroup(QCheckBox *weightGV, QSpinBox *weightSB, QComboBox *weightCB, int & weight, const int deflt, const int mini, const int maxi, const unsigned int flags):
   QObject(),
   weightGV(weightGV),
@@ -165,7 +151,7 @@ GVarGroup::GVarGroup(QCheckBox *weightGV, QSpinBox *weightSB, QComboBox *weightC
 {
   lock = true;
 
-  if (gvarsEnabled()) {
+  if (GetCurrentFirmware()->getCapability(Gvars)) {
     populateGVCB(weightCB, weight);
     connect(weightGV, SIGNAL(stateChanged(int)), this, SLOT(gvarCBChanged(int)));
     connect(weightCB, SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));

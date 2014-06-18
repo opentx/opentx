@@ -555,16 +555,13 @@ void burnDialog::on_BurnFlashButton_clicked()
         QMessageBox::critical(this, tr("Warning"), tr("Wrong radio setting data in profile, Settings not patched"));
       }
     
-      QString fileName;
       if (patch) {
-        QString tempDir    = QDir::tempPath();
-        fileName = tempDir + "/temp.bin";
+        QString tempDir = QDir::tempPath();
+        QString fileName = tempDir + "/temp.bin";
         QFile file(fileName);
 
         uint8_t *eeprom = (uint8_t*)malloc(GetEepromInterface()->getEEpromSize());
-        int eeprom_size = 0;
-
-        eeprom_size = GetEepromInterface()->save(eeprom, radioData, GetCurrentFirmwareVariant());
+        int eeprom_size = GetEepromInterface()->save(eeprom, radioData, GetCurrentFirmware()->getVariantNumber());
         if (!eeprom_size) {
           QMessageBox::warning(this, tr("Error"),tr("Cannot write file %1:\n%2.").arg(fileName).arg(file.errorString()));
           hexfileName->clear();
@@ -578,10 +575,10 @@ void burnDialog::on_BurnFlashButton_clicked()
         QTextStream outputStream(&file);
 
         long result = file.write((char*)eeprom, eeprom_size);
-        if (result!=eeprom_size) {
+        if (result != eeprom_size) {
           QMessageBox::warning(this, tr("Error"),tr("Error writing file %1:\n%2.").arg(fileName).arg(file.errorString()));
-          hexfileName->clear();
         }
+
         hexfileName->clear();
         hexfileName->append(fileName);
       }

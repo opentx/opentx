@@ -586,24 +586,12 @@ void CustomFunctionsPanel::populateFuncCB(QComboBox *b, unsigned int value)
   b->clear();
   for (unsigned int i=0; i<FuncCount; i++) {
     b->addItem(FuncSwData(AssignFunc(i)).funcToString());
-    if (!firmware->getCapability(HasVolume)) {
-      if (i==FuncVolume || i==FuncBackgroundMusic || i==FuncBackgroundMusicPause) {
-        QModelIndex index = b->model()->index(i, 0);
-        QVariant v(0);
-        b->model()->setData(index, v, Qt::UserRole - 1);
-      }
-    }
-    if ((i==FuncPlayHaptic) && !firmware->getCapability(Haptic)) {
-      QModelIndex index = b->model()->index(i, 0);
-      QVariant v(0);
-      b->model()->setData(index, v, Qt::UserRole - 1);
-    }
-    if ((i==FuncPlayBoth) && !firmware->getCapability(HasBeeper)) {
-      QModelIndex index = b->model()->index(i, 0);
-      QVariant v(0);
-      b->model()->setData(index, v, Qt::UserRole - 1);
-    }
-    if ((i==FuncLogs) && !firmware->getCapability(HasSDLogs)) {
+    if (((i==FuncVolume || i==FuncBackgroundMusic || i==FuncBackgroundMusicPause) && !firmware->getCapability(HasVolume)) ||
+        ((i==FuncPlayHaptic) && !firmware->getCapability(Haptic)) ||
+        ((i==FuncPlayBoth) && !firmware->getCapability(HasBeeper)) ||
+        ((i==FuncLogs) && !firmware->getCapability(HasSDLogs)) ||
+        ((i>=FuncAdjustGV1 && i<=FuncAdjustGVLast) && !firmware->getCapability(Gvars))
+        ) {
       QModelIndex index = b->model()->index(i, 0);
       QVariant v(0);
       b->model()->setData(index, v, Qt::UserRole - 1);

@@ -11,8 +11,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
   phaseIdx(phaseIdx),
   phase(model.flightModeData[phaseIdx]),
   reCount(firmware->getCapability(RotaryEncoders)),
-  gvCount(((!firmware->getCapability(HasVariants)) || (GetCurrentFirmwareVariant() & GVARS_VARIANT)) ?
-      firmware->getCapability(Gvars) : 0)
+  gvCount(firmware->getCapability(Gvars))
 {
   ui->setupUi(this);
 

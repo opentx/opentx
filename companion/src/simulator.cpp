@@ -129,28 +129,28 @@ int main(int argc, char *argv[])
   if (msgBox.clickedButton() == exitButton)
     return 0;
   else if (msgBox.clickedButton() == taranisButton) {
-    current_firmware_variant = GetFirmwareVariant("opentx-taranis-haptic-en");
+    current_firmware_variant = GetFirmware("opentx-taranis-haptic-en");
     fileName = eedir.filePath("eeprom-taranis.bin");
     path = fileName.toAscii();
     eepromFileName = path.data();
     dialog = new SimulatorDialogTaranis();
   }
   else if (msgBox.clickedButton() == sky9xButton) {
-    current_firmware_variant = GetFirmwareVariant("opentx-sky9x-heli-templates-ppmca-gvars-symlimits-autosource-autoswitch-battgraph-bluetooth-en");
+    current_firmware_variant = GetFirmware("opentx-sky9x-heli-templates-ppmca-gvars-symlimits-autosource-autoswitch-battgraph-bluetooth-en");
     fileName = eedir.filePath("eeprom-sky9x.bin");
     path = fileName.toAscii();
     eepromFileName = path.data();
     dialog = new SimulatorDialog9X();
   }
   else if (msgBox.clickedButton() == gruvinButton) {
-    current_firmware_variant = GetFirmwareVariant("opentx-gruvin9x-heli-templates-sdcard-voice-DSM2PPM-ppmca-gvars-symlimits-autosource-autoswitch-battgraph-ttsen-en");
+    current_firmware_variant = GetFirmware("opentx-gruvin9x-heli-templates-sdcard-voice-DSM2PPM-ppmca-gvars-symlimits-autosource-autoswitch-battgraph-ttsen-en");
     fileName = eedir.filePath("eeprom-gruvin9x.bin");
     path = fileName.toAscii();
     eepromFileName = path.data();
     dialog = new SimulatorDialog9X();
   }
   else {
-    current_firmware_variant = GetFirmwareVariant("opentx-9x128-frsky-heli-templates-audio-voice-haptic-DSM2-ppmca-gvars-symlimits-autosource-autoswitch-battgraph-thrtrace-en");
+    current_firmware_variant = GetFirmware("opentx-9x128-frsky-heli-templates-audio-voice-haptic-DSM2-ppmca-gvars-symlimits-autosource-autoswitch-battgraph-thrtrace-en");
     fileName = eedir.filePath("eeprom-9x128.bin");
     path = fileName.toAscii();
     eepromFileName = path.data();

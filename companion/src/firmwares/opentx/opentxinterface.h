@@ -80,8 +80,13 @@ class OpenTxEepromInterface : public EEPROMInterface
 
 class OpenTxFirmware: public FirmwareInterface {
   public:
-    OpenTxFirmware(const QString & id, const QString & name, const BoardEnum board, bool voice = false):
-      FirmwareInterface(id, name, board, new OpenTxEepromInterface(board), voice)
+    OpenTxFirmware(const QString & id, OpenTxFirmware * parent):
+      FirmwareInterface(parent, id, parent->getName(), parent->getBoard(), parent->eepromInterface)
+    {
+    }
+
+    OpenTxFirmware(const QString & id, const QString & name, const BoardEnum board):
+      FirmwareInterface(id, name, board, new OpenTxEepromInterface(board))
     {
       addLanguage("en");
       addLanguage("fr");
@@ -105,19 +110,20 @@ class OpenTxFirmware: public FirmwareInterface {
       addTTSLanguage("es");
       addTTSLanguage("hu");
     }
+
+    virtual FirmwareInterface * getFirmwareVariant(const QString & id);
     
     virtual QString getStampUrl();
 
     virtual QString getReleaseNotesUrl();
 
-    virtual QString getFirmwareUrl(QString & id);
+    virtual QString getFirmwareUrl();
 
     virtual int getCapability(const Capability);
 
     virtual bool isTelemetrySourceAvailable(int source);
 
     virtual SimulatorInterface * getSimulator();
-    
     
 };
 

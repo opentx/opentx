@@ -19,10 +19,6 @@ AppPreferencesDialog::AppPreferencesDialog(QWidget *parent) :
   updateLock=false;
   setWindowIcon(CompanionIcon("apppreferences.png"));
 
-  voice=NULL;
-  connect(ui->langCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(firmwareLangChanged()));
-  connect(ui->voiceCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(firmwareLangChanged()));
-
   initSettings();
   connect(ui->downloadVerCB, SIGNAL(currentIndexChanged(int)), this, SLOT(baseFirmwareChanged()));
   connect(this, SIGNAL(accepted()), this, SLOT(writeValues()));
@@ -80,10 +76,11 @@ void AppPreferencesDialog::writeValues()
 
   // If a new fw type has been choosen, several things need to reset
   current_firmware_variant = getFirmwareVariant();
-  if (g.profile[g.id()].fwType() != current_firmware_variant.id) {
+  QString id = current_firmware_variant->getId();
+  if (g.profile[g.id()].fwType() != id) {
     g.profile[g.id()].fwName("");
     g.profile[g.id()].initFwVariables();
-    g.profile[g.id()].fwType( current_firmware_variant.id );
+    g.profile[g.id()].fwType(id);
   }
 }
 
@@ -103,8 +100,7 @@ void AppPreferencesDialog::initSettings()
   ui->burnFirmware->setChecked(g.profile[g.id()].burnFirmware());
   ui->snapshotPath->setText(g.snapshotDir());
   ui->snapshotPath->setReadOnly(true);
-  if (ui->snapshotClipboardCKB->isChecked())
-  {
+  if (ui->snapshotClipboardCKB->isChecked()) {
     ui->snapshotPath->setDisabled(true);
     ui->snapshotPathButton->setDisabled(true);
   }
@@ -114,8 +110,9 @@ void AppPreferencesDialog::initSettings()
   ui->historySize->setValue(g.historySize());
   ui->backLightColor->setCurrentIndex(g.backLight());
 
-  if (IS_TARANIS(GetCurrentFirmware()->getBoard()))
+  if (IS_TARANIS(GetCurrentFirmware()->getBoard())) {
     ui->backLightColor->setEnabled(false);
+  }
 
   ui->simuSW->setChecked(g.simuSW());
   ui->modelWizard_CB->setChecked(g.useWizard());
@@ -189,13 +186,12 @@ void AppPreferencesDialog::initSettings()
 
   foreach(FirmwareInterface * firmware, firmwares) {
     ui->downloadVerCB->addItem(firmware->getName(), firmware->getId());
-    if (current_firmware == firmware) {
+    if (current_firmware->getFirmwareBase() == firmware) {
       ui->downloadVerCB->setCurrentIndex(ui->downloadVerCB->count() - 1);
     }
   }
   
   baseFirmwareChanged();
-  firmwareChanged();
 }
 
 void AppPreferencesDialog::on_libraryPathButton_clicked()
@@ -333,7 +329,8 @@ void AppPreferencesDialog::on_SplashSelect_clicked()
   }
 }
 
-void AppPreferencesDialog::on_clearImageButton_clicked() {
+void AppPreferencesDialog::on_clearImageButton_clicked()
+{
   ui->imageLabel->clear();
   ui->SplashFileName->clear();
 }
@@ -341,65 +338,45 @@ void AppPreferencesDialog::on_clearImageButton_clicked() {
 
 void AppPreferencesDialog::showVoice(bool show)
 {
-  if (show)
-    showVoice();
-  else
-    hideVoice();
-}
-
-void AppPreferencesDialog::showVoice()
-{
-  ui->voiceLabel->show();
-  ui->voiceCombo->show();
-}
-
-void AppPreferencesDialog::hideVoice()
-{
-  ui->voiceLabel->hide();
-  ui->voiceCombo->hide();
+  ui->voiceLabel->setVisible(show);
+  ui->voiceCombo->setVisible(show);
   QTimer::singleShot(0, this, SLOT(shrink()));
 }
-
 
 void AppPreferencesDialog::baseFirmwareChanged()
 {
   QVariant selected_firmware = ui->downloadVerCB->itemData(ui->downloadVerCB->currentIndex());
-  voice=NULL;
+
   foreach(FirmwareInterface * firmware, firmwares) {
     if (firmware->getId() == selected_firmware) {
-      showVoice(firmware->voice);
       populateFirmwareOptions(firmware);
       break;
     }
   }
-  firmwareChanged();
 }
 
-FirmwareVariant AppPreferencesDialog::getFirmwareVariant()
+FirmwareInterface * AppPreferencesDialog::getFirmwareVariant()
 {
   QVariant selected_firmware = ui->downloadVerCB->itemData(ui->downloadVerCB->currentIndex());
-  bool voice=false;
+
   foreach(FirmwareInterface * firmware, firmwares) {
     QString id = firmware->getId();
     if (id == selected_firmware) {
       foreach(QCheckBox *cb, optionsCheckBoxes) {
         if (cb->isChecked()) {
-          if (cb->text()=="voice" && cb->isChecked())
-            voice=true;
           id += QString("-") + cb->text();
         }
       }
-      if (voice) {
-        if (ui->voiceCombo->count() && (voice || firmware->voice))
-          id += QString("-tts") + ui->voiceCombo->currentText();
-      }
-      else {
-        hideVoice();
-      }
-      if (ui->langCombo->count())
-        id += QString("-") + ui->langCombo->currentText();
 
-      return GetFirmwareVariant(id);
+      if (voice && voice->isChecked()) {
+        id += QString("-tts") + ui->voiceCombo->currentText();
+      }
+
+      if (ui->langCombo->count()) {
+        id += QString("-") + ui->langCombo->currentText();
+      }
+
+      return GetFirmware(id);
     }
   }
 
@@ -410,6 +387,9 @@ FirmwareVariant AppPreferencesDialog::getFirmwareVariant()
 void AppPreferencesDialog::firmwareOptionChanged(bool state)
 {
   QCheckBox *cb = qobject_cast<QCheckBox*>(sender());
+  if (cb == voice) {
+    showVoice(voice->isChecked());
+  }
   FirmwareInterface * firmware=NULL;
   if (cb && state) {
     QVariant selected_firmware = ui->downloadVerCB->itemData(ui->downloadVerCB->currentIndex());
@@ -421,74 +401,37 @@ void AppPreferencesDialog::firmwareOptionChanged(bool state)
               foreach(Option other, opts) {
                 if (other.name != opt.name) {
                   foreach(QCheckBox *ocb, optionsCheckBoxes) {
-                    if (ocb->text() == other.name)
+                    if (ocb->text() == other.name) {
                       ocb->setChecked(false);
+                    }
                   }
                 }
               }
-              if (voice) {
-                showVoice(voice->isChecked());
-              }
-              
-              return firmwareChanged();
+              return;
             }
           }
         }
       }
     }
   } 
-  else if (cb && !state) {
-    if (cb->text()=="voice") {
-      hideVoice();
-    }
-  }
-  if (voice) {
-    showVoice(voice->isChecked());
-  }
-  else if (firmware) {
-    if (firmware->voice) {
-      showVoice();    
-    }
-  }
-  return firmwareChanged();
-}
-
-void AppPreferencesDialog::firmwareLangChanged()
-{
-  firmwareChanged();
-}
-
-void AppPreferencesDialog::firmwareChanged()
-{
-  if (updateLock)
-    return;
-  
-  FirmwareVariant variant = getFirmwareVariant();
-  QString stamp;
-  stamp.append(variant.firmware->getStampUrl());
-  QString url = variant.getFirmwareUrl();
 }
 
 void AppPreferencesDialog::populateFirmwareOptions(const FirmwareInterface * firmware)
 {
-  const FirmwareInterface * parent = /*firmware->parent ? firmware->parent : */ firmware;
+  const FirmwareInterface * parent = firmware->getFirmwareBase();
 
   updateLock = true;
 
+  QString id = current_firmware_variant->getId();
   ui->langCombo->clear();
   foreach(const char *lang, parent->languages) {
     ui->langCombo->addItem(lang);
-    if (current_firmware_variant.id.endsWith(lang))
+    if (id.endsWith(lang)) {
       ui->langCombo->setCurrentIndex(ui->langCombo->count() - 1);
-  }
-  ui->voiceCombo->clear();
-  foreach(const char *lang, parent->ttslanguages) {
-    ui->voiceCombo->addItem(lang);
-    if (current_firmware_variant.id.contains(QString("-tts%1").arg(lang)))
-      ui->voiceCombo->setCurrentIndex(ui->voiceCombo->count() - 1);
+    }
   }
 
-  showVoice(ui->langCombo->count()!=0);
+  voice = NULL; // we will search for a voice checkbox
 
   int index = 0;
   foreach(QList<Option> opts, parent->opts) {
@@ -505,20 +448,29 @@ void AppPreferencesDialog::populateFirmwareOptions(const FirmwareInterface * fir
         cb->show();
         cb->setText(opt.name);
         cb->setToolTip(opt.tooltip);
-        cb->setCheckState(current_firmware_variant.id.contains(opt.name) ? Qt::Checked : Qt::Unchecked);
-            
-        if (opt.name==QString("voice")) {
-          voice=cb;
-          showVoice(current_firmware_variant.id.contains(opt.name) ||firmware->voice);
+        cb->setCheckState(id.contains(opt.name) ? Qt::Checked : Qt::Unchecked);
+        if (opt.name == QString("voice")) {
+          voice = cb;
         }
       }
     }
   }
+
   for (; index<optionsCheckBoxes.size(); index++) {
     QCheckBox *cb = optionsCheckBoxes.at(index);
     cb->hide();
     cb->setCheckState(Qt::Unchecked);
   }
+
+  ui->voiceCombo->clear();
+  foreach(const char *lang, parent->ttslanguages) {
+    ui->voiceCombo->addItem(lang);
+    if (id.contains(QString("-tts%1").arg(lang))) {
+      ui->voiceCombo->setCurrentIndex(ui->voiceCombo->count() - 1);
+    }
+  }
+
+  showVoice(voice && voice->isChecked());
 
   updateLock = false;
   QTimer::singleShot(0, this, SLOT(shrink()));

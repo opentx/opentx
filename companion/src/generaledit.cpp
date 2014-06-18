@@ -83,26 +83,26 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
 
     switchDefPosEditLock=true;
     populateBacklightCB(ui->backlightswCB, g_eeGeneral.backlightMode);
-    bool voice = current_firmware_variant.id.contains("voice");
+
     if (!GetCurrentFirmware()->getCapability(MultiLangVoice)) {
       ui->VoiceLang_label->hide();
       ui->voiceLang_CB->hide();
     }
     else {
-      voiceLangEditLock=true;
+      voiceLangEditLock = true;
       populateVoiceLangCB(ui->voiceLang_CB, g_eeGeneral.ttsLanguage);
-      voiceLangEditLock=false;
+      voiceLangEditLock = false;
     }
-    bool mavlink = current_firmware_variant.id.contains("mavlink");
-    if (!mavlink) {
+
+    if (!GetCurrentFirmware()->getCapability(MavlinkTelemetry)) {
       ui->mavbaud_CB->hide();
       ui->mavbaud_label->hide();
     }
     else {
-      mavbaudEditLock=true;
+      mavbaudEditLock = true;
       ui->mavbaud_CB->setCurrentIndex(g_eeGeneral.mavbaud);
-      populateVoiceLangCB(ui->voiceLang_CB, g_eeGeneral.ttsLanguage);
-      mavbaudEditLock=false;
+      // TODO why ??? populateVoiceLangCB(ui->voiceLang_CB, g_eeGeneral.ttsLanguage);
+      mavbaudEditLock = false;
     }
     
     if (!GetCurrentFirmware()->getCapability(HasSoundMixer)) {
@@ -120,7 +120,8 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
       ui->varioPMax_SB->hide();
       ui->varioR0_label->hide();
       ui->varioR0_SB->hide();
-    } else {
+    }
+    else {
       ui->beepVolume_SL->setValue(g_eeGeneral.beepVolume);
       ui->varioVolume_SL->setValue(g_eeGeneral.varioVolume);
       ui->bgVolume_SL->setValue(g_eeGeneral.backgroundVolume);
@@ -167,7 +168,7 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
       ui->displayTypeCB->setDisabled(true);
       ui->displayTypeCB->hide();
     }
-    if (!GetCurrentFirmware()->getCapability(HasVolume) && !voice) {
+    if (!GetCurrentFirmware()->getCapability(HasVolume)) {
       ui->volume_SB->hide();
       ui->volume_SB->setDisabled(true);
       ui->label_volume->hide();

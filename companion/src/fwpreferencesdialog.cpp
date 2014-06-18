@@ -15,9 +15,9 @@ FirmwarePreferencesDialog::FirmwarePreferencesDialog(QWidget *parent) :
   setWindowIcon(CompanionIcon("fwpreferences.png"));
   initSettings();
 
-  foreach(const char *lang, GetCurrentFirmware()->ttslanguages) {
+  foreach(const char *lang, GetCurrentFirmware()->getFirmwareBase()->ttslanguages) {
     ui->voiceCombo->addItem(lang);
-    if (current_firmware_variant.id.contains(QString("-tts%1").arg(lang)))
+    if (current_firmware_variant->getId().contains(QString("-tts%1").arg(lang)))
       ui->voiceCombo->setCurrentIndex(ui->voiceCombo->count() - 1);
   }
 }

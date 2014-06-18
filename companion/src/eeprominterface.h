@@ -1113,6 +1113,7 @@ enum Capability {
  Telemetry,
  TelemetryUnits,
  TelemetryBars,
+ Heli,
  Gvars,
  GvarsInCS,
  GvarsAreNamed,
@@ -1126,7 +1127,6 @@ enum Capability {
  HasAltitudeSel,
  HasVario,
  HasVarioSink,
- HasVariants,
  HasFailsafe,
  HasSoundMixer,
  NumModules,
@@ -1154,6 +1154,7 @@ enum Capability {
  MultiposPots,
  MultiposPotsPositions,
  SimulatorVariant,
+ MavlinkTelemetry,
 };
 
 class SimulatorInterface;
@@ -1309,27 +1310,45 @@ struct Option {
 class FirmwareInterface {
 
   public:
+    FirmwareInterface(const QString & id, const QString & name, const BoardEnum board, EEPROMInterface * eepromInterface):
+      id(id),
+      name(name),
+      board(board),
+      eepromInterface(eepromInterface),
+      variantBase(0),
+      base(NULL)
+    {
+    }
+
+    FirmwareInterface(FirmwareInterface * base, const QString & id, const QString & name, const BoardEnum board, EEPROMInterface * eepromInterface):
+      id(id),
+      name(name),
+      board(board),
+      eepromInterface(eepromInterface),
+      variantBase(0),
+      base(base)
+    {
+    }
+
     virtual ~FirmwareInterface()
     {
       delete eepromInterface;
     }
 
-    FirmwareInterface(const QString & id, const QString & name, const BoardEnum board, EEPROMInterface * eepromInterface, bool voice = false):
-      id(id),
-      name(name),
-      board(board),
-      eepromInterface(eepromInterface),
-      voice(voice),
-      variantBase(0)
+    inline const FirmwareInterface * getFirmwareBase() const
     {
+      return base ? base : this;
     }
 
+    // TODO needed?
     inline void setVariantBase(unsigned int variant)
     {
       variantBase = variant;
     }
 
-    unsigned int getVariant(const QString & id);
+    virtual FirmwareInterface * getFirmwareVariant(const QString & id) { return NULL; }
+
+    unsigned int getVariantNumber();
 
     virtual void addLanguage(const char *lang);
 
@@ -1348,19 +1367,19 @@ class FirmwareInterface {
 
     virtual QString getReleaseNotesUrl() = 0;
 
-    virtual QString getFirmwareUrl(QString & id) = 0;
+    virtual QString getFirmwareUrl() = 0;
 
-    inline BoardEnum getBoard()
+    inline BoardEnum getBoard() const
     {
       return board;
     }
 
-    inline QString getName()
+    inline QString getName() const
     {
       return name;
     }
 
-    inline QString getId()
+    inline QString getId() const
     {
       return id;
     }
@@ -1389,71 +1408,28 @@ class FirmwareInterface {
     QString name;
     BoardEnum board;
     EEPROMInterface * eepromInterface;
-
-  public:
-    bool voice;
-
-  protected:
     unsigned int variantBase;
+    FirmwareInterface * base;
 
   private:
     FirmwareInterface();
 
 };
 
-class FirmwareVariant
-{
-  public:
-    FirmwareVariant():
-      firmware(NULL),
-      variant(0)
-    {
-    }
-
-    FirmwareVariant(QString & id, FirmwareInterface * firmware, unsigned int variant):
-      id(id),
-      firmware(firmware),
-      variant(variant)
-    {
-    }
-
-    QString getFirmwareUrl()
-    {
-      if (firmware)
-        return firmware->getFirmwareUrl(id);
-      else
-        return "";
-    }
-
-    QString id;
-    FirmwareInterface * firmware;
-    unsigned int variant;
-};
-
 extern QList<FirmwareInterface *> firmwares;
-extern FirmwareVariant default_firmware_variant;
-extern FirmwareVariant current_firmware_variant;
+extern FirmwareInterface * default_firmware_variant;
+extern FirmwareInterface * current_firmware_variant;
 
-FirmwareVariant GetFirmwareVariant(QString id);
-
-inline FirmwareInterface * GetFirmware(QString id)
-{
-  return GetFirmwareVariant(id).firmware;
-}
+FirmwareInterface * GetFirmware(QString id);
 
 inline FirmwareInterface * GetCurrentFirmware()
 {
-  return current_firmware_variant.firmware;
+  return current_firmware_variant;
 }
 
 inline EEPROMInterface * GetEepromInterface()
 {
   return GetCurrentFirmware()->getEepromInterface();
-}
-
-inline unsigned int GetCurrentFirmwareVariant()
-{
-  return current_firmware_variant.variant;
 }
 
 void UnregisterEepromInterfaces();

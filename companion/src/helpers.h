@@ -37,8 +37,6 @@ class CompanionIcon: public QIcon {
     CompanionIcon(QString baseimage);
 };
 
-bool gvarsEnabled();
-
 class GVarGroup : public QObject {
 
   Q_OBJECT

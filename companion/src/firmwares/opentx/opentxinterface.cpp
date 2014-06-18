@@ -422,7 +422,7 @@ int OpenTxEepromInterface::getSize(ModelData &model)
   uint8_t tmp[EESIZE_RLC_MAX];
   efile->EeFsCreate(tmp, EESIZE_RLC_MAX, board);
 
-  OpenTxModelData open9xModel(model, board, 255, GetCurrentFirmwareVariant());
+  OpenTxModelData open9xModel(model, board, 255, GetCurrentFirmware()->getVariantNumber());
 
   QByteArray eeprom;
   open9xModel.Export(eeprom);
@@ -441,7 +441,7 @@ int OpenTxEepromInterface::getSize(GeneralSettings &settings)
   uint8_t tmp[EESIZE_RLC_MAX];
   efile->EeFsCreate(tmp, EESIZE_RLC_MAX, board);
 
-  OpenTxGeneralData open9xGeneral(settings, board, 255, GetCurrentFirmwareVariant());
+  OpenTxGeneralData open9xGeneral(settings, board, 255, GetCurrentFirmware()->getVariantNumber());
   // open9xGeneral.Dump();
 
   QByteArray eeprom;
@@ -451,6 +451,18 @@ int OpenTxEepromInterface::getSize(GeneralSettings &settings)
     return -1;
   }
   return efile->size(0);
+}
+
+FirmwareInterface * OpenTxFirmware::getFirmwareVariant(const QString & id)
+{
+  if (id.contains(getId()+"-") || (!id.contains("-") && id.contains(getId()))) {
+    FirmwareInterface * result = new OpenTxFirmware(id, this);
+    // TODO result.variant = firmware->getVariant(id);
+    return result;
+  }
+  else {
+    return NULL;
+  }
 }
 
 int OpenTxFirmware::getCapability(const Capability capability)
@@ -491,8 +503,18 @@ int OpenTxFirmware::getCapability(const Capability capability)
         return 5;
     case FlightModesHaveFades:
       return 1;
+    case Heli:
+      if (IS_TARANIS(board))
+        return id.contains("noheli") ? 0 : 1;
+      else
+        return id.contains("heli") ? 1 : 0;
     case Gvars:
-      return IS_ARM(board) ? 9 : 5;
+      if (IS_TARANIS(board))
+        return id.contains("nogvars") ? 0 : 9;
+      else if (id.contains("gvars"))
+        return IS_ARM(board) ? 9 : 5;
+      else
+        return 0;
     case FlightModesName:
       return (IS_TARANIS(board) ? 10 : 6);
     case GvarsName:
@@ -563,7 +585,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case SoundPitch:
       return 1;
     case Haptic:
-      return 1;
+      return (board == BOARD_GRUVIN9X || IS_SKY9X(board) || board == BOARD_TARANIS_PLUS || id.contains("haptic"));
     case ModelTrainerEnable:
       if (IS_ARM(board))
         return 1;
@@ -619,11 +641,6 @@ int OpenTxFirmware::getCapability(const Capability capability)
       return 1;
     case HasVarioSink:
       return ((board == BOARD_GRUVIN9X || IS_ARM(board)) ? true : false);
-    case HasVariants:
-      if (IS_TARANIS(board))
-        return 0;
-      else
-        return 1;
     case HasFailsafe:
       return (IS_ARM(board) ? 32 : 0);
     case NumModules:
@@ -675,6 +692,8 @@ int OpenTxFirmware::getCapability(const Capability capability)
         return SIMU_M128_VARIANTS;
       else
         return 0;
+    case MavlinkTelemetry:
+      return id.contains("mavlink") ? 1 : 0;
     default:
       return 0;
   }
@@ -912,7 +931,7 @@ bool OpenTxEepromInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, in
   return true;
 }
 
-QString OpenTxFirmware::getFirmwareUrl(QString & id)
+QString OpenTxFirmware::getFirmwareUrl()
 {
   QString url = OPENTX_FIRMWARE_DOWNLOADS;
   switch (board) {
@@ -978,7 +997,7 @@ void registerOpenTxFirmwares()
   Option fai_options[] = { { "faichoice", QObject::tr("Possibility to enable FAI MODE at field") }, { "faimode", QObject::tr("FAI MODE always enabled") }, { NULL } };
 
   /* 9x board */
-  openTx = new OpenTxFirmware("opentx-9x", QObject::tr("OpenTX for 9X board"), BOARD_STOCK, false);
+  openTx = new OpenTxFirmware("opentx-9x", QObject::tr("OpenTX for 9X board"), BOARD_STOCK);
   openTx->addOptions(ext_options);
   openTx->addOption("heli", QObject::tr("Enable heli menu and cyclic mix support"));
   openTx->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
@@ -1016,7 +1035,7 @@ void registerOpenTxFirmwares()
   firmwares.push_back(openTx);
 
   /* 9x board with M128 chip */
-  openTx = new OpenTxFirmware("opentx-9x128", QObject::tr("OpenTX for M128 / 9X board"), BOARD_M128, false);
+  openTx = new OpenTxFirmware("opentx-9x128", QObject::tr("OpenTX for M128 / 9X board"), BOARD_M128);
   openTx->addOptions(ext_options);
   openTx->addOption("heli", QObject::tr("Enable heli menu and cyclic mix support"));
   openTx->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
@@ -1048,7 +1067,7 @@ void registerOpenTxFirmwares()
   firmwares.push_back(openTx);
 
   /* 9XR board */
-  openTx = new OpenTxFirmware("opentx-9xr", QObject::tr("OpenTX for 9XR"), BOARD_STOCK, false);
+  openTx = new OpenTxFirmware("opentx-9xr", QObject::tr("OpenTX for 9XR"), BOARD_STOCK);
   openTx->addOptions(extr_options);
   openTx->addOption("heli", QObject::tr("Enable heli menu and cyclic mix support"));
   openTx->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
@@ -1083,7 +1102,7 @@ void registerOpenTxFirmwares()
   firmwares.push_back(openTx);
 
   /* 9XR board with M128 chip */
-  openTx = new OpenTxFirmware("opentx-9xr128", QObject::tr("OpenTX for 9XR with M128 chip"), BOARD_M128, false);
+  openTx = new OpenTxFirmware("opentx-9xr128", QObject::tr("OpenTX for 9XR with M128 chip"), BOARD_M128);
   openTx->addOptions(extr_options);
   openTx->addOption("heli", QObject::tr("Enable heli menu and cyclic mix support"));
   openTx->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
@@ -1113,8 +1132,7 @@ void registerOpenTxFirmwares()
   firmwares.push_back(openTx);
 
   /* Gruvin9x board */
-  openTx = new OpenTxFirmware("opentx-gruvin9x", QObject::tr("OpenTX for Gruvin9x board / 9X"), BOARD_GRUVIN9X, false);
-  openTx->setVariantBase(FRSKY_VARIANT);
+  openTx = new OpenTxFirmware("opentx-gruvin9x", QObject::tr("OpenTX for Gruvin9x board / 9X"), BOARD_GRUVIN9X);
   openTx->addOption("heli", QObject::tr("Enable heli menu and cyclic mix support"));
   openTx->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
   openTx->addOption("nofp", QObject::tr("No flight modes"));
@@ -1143,8 +1161,7 @@ void registerOpenTxFirmwares()
 
 #ifndef __APPLE__
   /* SKY9X board */
-  openTx = new OpenTxFirmware("opentx-sky9x", QObject::tr("OpenTX for Sky9x board / 9X"), BOARD_SKY9X, true);
-  openTx->setVariantBase(FRSKY_VARIANT);
+  openTx = new OpenTxFirmware("opentx-sky9x", QObject::tr("OpenTX for Sky9x board / 9X"), BOARD_SKY9X);
   openTx->addOption("heli", QObject::tr("Enable HELI menu and cyclic mix support"));
   openTx->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
   openTx->addOption("nofp", QObject::tr("No flight modes"));
@@ -1167,8 +1184,7 @@ void registerOpenTxFirmwares()
   firmwares.push_back(openTx);
   
   /* 9XR-Pro */
-  openTx = new OpenTxFirmware("opentx-9xrpro", QObject::tr("OpenTX for 9XR-PRO"), BOARD_9XRPRO, true);
-  openTx->setVariantBase(FRSKY_VARIANT);
+  openTx = new OpenTxFirmware("opentx-9xrpro", QObject::tr("OpenTX for 9XR-PRO"), BOARD_9XRPRO);
   openTx->addOption("heli", QObject::tr("Enable HELI menu and cyclic mix support"));
   openTx->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
   openTx->addOption("nofp", QObject::tr("No flight modes"));
@@ -1192,7 +1208,7 @@ void registerOpenTxFirmwares()
 #endif
   
   /* Taranis board */
-  openTx = new OpenTxFirmware("opentx-taranis", QObject::tr("OpenTX for FrSky Taranis"), BOARD_TARANIS, true);
+  openTx = new OpenTxFirmware("opentx-taranis", QObject::tr("OpenTX for FrSky Taranis"), BOARD_TARANIS);
   openTx->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
   openTx->addOption("nogvars", QObject::tr("Disable Global variables"));
   openTx->addOption("haptic", QObject::tr("Haptic module installed"));
@@ -1203,7 +1219,7 @@ void registerOpenTxFirmwares()
   firmwares.push_back(openTx);
   
   /* Taranis Plus board */
-  openTx = new OpenTxFirmware("opentx-taranisplus", QObject::tr("OpenTX for FrSky Taranis Plus"), BOARD_TARANIS_PLUS, true);
+  openTx = new OpenTxFirmware("opentx-taranisplus", QObject::tr("OpenTX for FrSky Taranis Plus"), BOARD_TARANIS_PLUS);
   openTx->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
   openTx->addOption("nogvars", QObject::tr("Disable Global variables"));
   openTx->addOption("lua", QObject::tr("Support for Lua model scripts"));
@@ -1212,7 +1228,7 @@ void registerOpenTxFirmwares()
   openTx->addOptions(fai_options);
   firmwares.push_back(openTx);
 
-  default_firmware_variant = GetFirmwareVariant("opentx-9x-heli-templates-en");
+  default_firmware_variant = GetFirmware("opentx-9x-heli-templates-en");
   current_firmware_variant = default_firmware_variant;
 }
 

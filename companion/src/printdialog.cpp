@@ -21,13 +21,8 @@ PrintDialog::PrintDialog(QWidget *parent, FirmwareInterface * firmware, GeneralS
   g_model(gm),
   printfilename(filename),
   ui(new Ui::PrintDialog),
-  gvars(gvarsEnabled()),
-  gvarnum (0)
+  gvars(firmware->getCapability(Gvars))
 {
-  if (gvars) {
-    gvarnum=firmware->getCapability(Gvars); 
-  } 
-
   ui->setupUi(this);
   this->setWindowIcon(CompanionIcon("print.png"));
   te = ui->textEdit;
@@ -143,13 +138,13 @@ void PrintDialog::printSetup()
 QString PrintDialog::printFlightModes()
 {      
     QString str="";
-    str.append(QString("<table border=1 cellspacing=0 cellpadding=3 width=\"100%\"><tr><td colspan=%1><h2>").arg(!gvars ? 8+firmware->getCapability(RotaryEncoders) : 8+gvarnum+firmware->getCapability(RotaryEncoders)));
+    str.append(QString("<table border=1 cellspacing=0 cellpadding=3 width=\"100%\"><tr><td colspan=%1><h2>").arg(!gvars ? 8+firmware->getCapability(RotaryEncoders) : 8+gvars+firmware->getCapability(RotaryEncoders)));
     str.append(tr("Flight modes"));
     str.append("</h2></td></tr><tr><td style=\"border-style:none;\">&nbsp;</td><td colspan=2 align=center><b>");
     str.append(tr("Fades")+"</b></td>");
     str.append("<td colspan=4 align=center><b>"+tr("Trims")+"</b></td>");
     if (gvars) {
-      str.append(QString("<td colspan=%1 align=center><b>").arg(gvarnum)+tr("Gvars")+"</b></td>");
+      str.append(QString("<td colspan=%1 align=center><b>").arg(gvars)+tr("Gvars")+"</b></td>");
     }
     if (firmware->getCapability(RotaryEncoders)) {
       str.append(QString("<td colspan=%1 align=center><b>").arg(firmware->getCapability(RotaryEncoders))+tr("Rot.Enc.")+"</b></td>");
@@ -161,10 +156,8 @@ QString PrintDialog::printFlightModes()
       GeneralSettings generalSettings = *g_eeGeneral;
       str.append(QString("<td  align=\"center\" nowrap><b>%1</b></td>").arg(labels[CONVERT_MODE(i+1)-1]));
     }
-    if (gvars) {
-      for (unsigned int i=0; i<gvarnum; i++) {
-        str.append(QString("<td  align=\"center\" nowrap><b>GV%1</b><br>%2</td>").arg(i+1).arg(g_model->gvars_names[i]));
-      }      
+    for (unsigned int i=0; i<gvars; i++) {
+      str.append(QString("<td  align=\"center\" nowrap><b>GV%1</b><br>%2</td>").arg(i+1).arg(g_model->gvars_names[i]));
     }
     for (int i=0; i<firmware->getCapability(RotaryEncoders); i++) {
       str.append(QString("<td align=\"center\"><b>RE%1</b></td>").arg((i==0 ? 'A': 'B')));
@@ -183,16 +176,14 @@ QString PrintDialog::printFlightModes()
           str.append("<td align=\"right\" ><font size=+1 face='Courier New' color=green>"+tr("FM")+QString("%1</font></td>").arg(pd->trimRef[k]));
         }
       }
-      if (gvars) {
-        for (unsigned int k=0; k<gvarnum; k++) {
-          if (pd->gvars[k]<=1024) {
-            str.append(QString("<td align=\"right\"><font size=+1 face='Courier New' color=green>%1").arg(pd->gvars[k])+"</font></td>");
-          }
-          else {
-            int num = pd->gvars[k] - 1025;
-            if (num>=i) num++;
-            str.append("<td align=\"right\" ><font size=+1 face='Courier New' color=green>"+tr("FM")+QString("%1</font></td>").arg(num));
-          }
+      for (unsigned int k=0; k<gvars; k++) {
+        if (pd->gvars[k]<=1024) {
+          str.append(QString("<td align=\"right\"><font size=+1 face='Courier New' color=green>%1").arg(pd->gvars[k])+"</font></td>");
+        }
+        else {
+          int num = pd->gvars[k] - 1025;
+          if (num>=i) num++;
+          str.append("<td align=\"right\" ><font size=+1 face='Courier New' color=green>"+tr("FM")+QString("%1</font></td>").arg(num));
         }
       }
       for (int k=0; k<firmware->getCapability(RotaryEncoders); k++) {
@@ -611,20 +602,20 @@ void PrintDialog::printSwitches()
 
 void PrintDialog::printGvars()
 {
-  if (!firmware->getCapability(GvarsFlightModes) && (gvars && firmware->getCapability(Gvars))) {
+  if (!firmware->getCapability(GvarsFlightModes) && gvars) {
     QString str = "<table border=1 cellspacing=0 cellpadding=3 width=\"100%\">";
     str.append("<tr><td><h2>"+tr("Global Variables")+"</h2></td></tr>");
     str.append("<tr><td><table border=1 cellspacing=0 cellpadding=3 width=100>");
     FlightModeData *pd=&g_model->flightModeData[0];
-    int width=100/gvarnum;
+    int width = 100/gvars;
     str.append("<tr>");
-    for(unsigned int i=0; i<gvarnum; i++) {        
-        str.append(QString("<td width=\"%1%\" align=\"center\"><b>").arg(width)+tr("GV")+QString("%1</b></td>").arg(i+1));
+    for (unsigned int i=0; i<gvars; i++) {
+      str.append(QString("<td width=\"%1%\" align=\"center\"><b>").arg(width)+tr("GV")+QString("%1</b></td>").arg(i+1));
     }
     str.append("</tr>");
     str.append("<tr>");
-    for(unsigned int i=0; i<gvarnum; i++) {        
-        str.append(QString("<td width=\"%1%\" align=\"center\"><font color=green>").arg(width)+QString("%1</font></td>").arg(pd->gvars[i]));
+    for (unsigned int i=0; i<gvars; i++) {
+      str.append(QString("<td width=\"%1%\" align=\"center\"><font color=green>").arg(width)+QString("%1</font></td>").arg(pd->gvars[i]));
     }
     str.append("</tr>");
     str.append("</table></td></tr></table>");

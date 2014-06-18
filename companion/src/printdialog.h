@@ -28,8 +28,7 @@ public:
 
 private:
     Ui::PrintDialog *ui;
-    bool gvars;
-    unsigned int gvarnum;
+    unsigned int gvars;
 
     void printSetup();
     QString printFlightModes();

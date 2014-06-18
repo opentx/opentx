@@ -1299,8 +1299,8 @@ void UnregisterEepromInterfaces()
 }
 
 QList<FirmwareInterface *> firmwares;
-FirmwareVariant default_firmware_variant;
-FirmwareVariant current_firmware_variant;
+FirmwareInterface * default_firmware_variant;
+FirmwareInterface * current_firmware_variant;
 
 void UnregisterFirmwares() 
 {
@@ -1364,15 +1364,11 @@ QString getBoardName(BoardEnum board)
   }
 }
 
-FirmwareVariant GetFirmwareVariant(QString id)
+FirmwareInterface * GetFirmware(QString id)
 {
-  FirmwareVariant result;
-
   foreach(FirmwareInterface * firmware, firmwares) {
-    if (id.contains(firmware->getId()+"-") || (!id.contains("-") && id.contains(firmware->getId()))) {
-      result.id = id;
-      result.firmware = firmware;
-      result.variant = firmware->getVariant(id);
+    FirmwareInterface * result = firmware->getFirmwareVariant(id);
+    if (result) {
       return result;
     }
   }
@@ -1386,20 +1382,21 @@ void FirmwareInterface::addOption(const char *option, QString tooltip, uint32_t 
   addOptions(options);
 }
 
-unsigned int FirmwareInterface::getVariant(const QString & variantId)
+unsigned int FirmwareInterface::getVariantNumber()
 {
-  unsigned int variant = variantBase;
-  QStringList options = variantId.mid(id.length()+1).split("-", QString::SkipEmptyParts);
+  unsigned int result = 0;
+  const FirmwareInterface * base = getFirmwareBase();
+  QStringList options = id.mid(base->getId().length()+1).split("-", QString::SkipEmptyParts);
   foreach(QString option, options) {
-    foreach(QList<Option> group, opts) {
+    foreach(QList<Option> group, base->opts) {
       foreach(Option opt, group) {
         if (opt.name == option) {
-          variant += opt.variant;
+          result += opt.variant;
         }
       }
     }
   }
-  return variant;
+  return result;
 }
 
 void FirmwareInterface::addLanguage(const char *lang)

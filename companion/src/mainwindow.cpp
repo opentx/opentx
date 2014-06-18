@@ -230,7 +230,7 @@ void MainWindow::checkForUpdates()
   }
   else if (checkForUpdatesState & CHECK_FIRMWARE) {
     checkForUpdatesState -= CHECK_FIRMWARE;
-    QString stamp = GetFirmware(current_firmware_variant.id)->getStampUrl();
+    QString stamp = GetCurrentFirmware()->getStampUrl();
     if (!stamp.isEmpty()) {
       networkManager = new QNetworkAccessManager(this);
       connect(networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(checkForFirmwareUpdateFinished(QNetworkReply*)));
@@ -362,7 +362,7 @@ void MainWindow::firmwareDownloadAccepted()
       return;
     }
     file.close();
-    g.fwRev.set(current_firmware_variant.id, version2index(firmwareVersionString));
+    g.fwRev.set(current_firmware_variant->getId(), version2index(firmwareVersionString));
     if (g.profile[g.id()].burnFirmware()) {
       int ret = QMessageBox::question(this, "Companion", tr("Do you want to write the firmware to the radio now ?"), QMessageBox::Yes | QMessageBox::No);
       if (ret == QMessageBox::Yes) {
@@ -397,7 +397,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
         download = true;
       }
       else {
-        int currentVersion = g.fwRev.get(current_firmware_variant.id);
+        int currentVersion = g.fwRev.get(current_firmware_variant->getId());
         QString currentVersionString = index2version(currentVersion);
 
         QMessageBox msgBox;
@@ -406,10 +406,10 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
         layout->addItem(horizontalSpacer, layout->rowCount(), 0, 1, layout->columnCount());
 
         if (currentVersion == 0) {
-          QString rn = GetFirmware(current_firmware_variant.id)->getReleaseNotesUrl();
+          QString rn = GetCurrentFirmware()->getReleaseNotesUrl();
           QAbstractButton *rnButton = NULL;
           msgBox.setWindowTitle("Companion");
-          msgBox.setInformativeText(tr("Firmware %1 does not seem to have ever been downloaded.\nRelease %2 is available.\nDo you want to download it now?").arg(current_firmware_variant.id).arg(versionString));
+          msgBox.setInformativeText(tr("Firmware %1 does not seem to have ever been downloaded.\nRelease %2 is available.\nDo you want to download it now?").arg(current_firmware_variant->getId()).arg(versionString));
           QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
           msgBox.addButton(trUtf8("No"), QMessageBox::NoRole);
           if (!rn.isEmpty()) {
@@ -435,10 +435,10 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
           }
         }
         else if (version > currentVersion) {
-          QString rn = GetFirmware(current_firmware_variant.id)->getReleaseNotesUrl();
+          QString rn = GetCurrentFirmware()->getReleaseNotesUrl();
           QAbstractButton *rnButton = NULL;
           msgBox.setText("Companion");
-          msgBox.setInformativeText(tr("A new version of %1 firmware is available:\n  - current is %2\n  - newer is %3\n\nDo you want to download it now ?").arg(current_firmware_variant.id).arg(currentVersionString).arg(versionString));
+          msgBox.setInformativeText(tr("A new version of %1 firmware is available:\n  - current is %2\n  - newer is %3\n\nDo you want to download it now ?").arg(current_firmware_variant->getId()).arg(currentVersionString).arg(versionString));
           QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
           msgBox.addButton(trUtf8("No"), QMessageBox::NoRole);
           if (!rn.isEmpty()) {
@@ -476,7 +476,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
       if (ignore) {
         int res = QMessageBox::question(this, "Companion", tr("Ignore this release %1?").arg(versionString), QMessageBox::Yes | QMessageBox::No);
         if (res==QMessageBox::Yes)   {
-          g.fwRev.set(current_firmware_variant.id, version);
+          g.fwRev.set(current_firmware_variant->getId(), version);
         }
       }
       else if (download == true) {
@@ -493,10 +493,10 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
 
 void MainWindow::startFirmwareDownload()
 {
-  QString url = current_firmware_variant.getFirmwareUrl();
+  QString url = current_firmware_variant->getFirmwareUrl();
   qDebug() << url;
   QString ext = url.mid(url.lastIndexOf("."));
-  QString defaultFilename = g.flashDir() + "/" + current_firmware_variant.id;
+  QString defaultFilename = g.flashDir() + "/" + current_firmware_variant->getId();
   if (g.profile[g.id()].renameFwFiles()) {
     defaultFilename += "-" + firmwareVersionString;
   }
@@ -633,7 +633,7 @@ void MainWindow::loadProfile()  //TODO Load all variables - Also HW!
       g.id( profnum );
 
       // TODO Get rid of this global variable - The profile.firmware is the real source
-      current_firmware_variant = GetFirmwareVariant(g.profile[g.id()].fwType());  
+      current_firmware_variant = GetFirmware(g.profile[g.id()].fwType());
 
       foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
         MdiChild *mdiChild = qobject_cast<MdiChild *>(window->widget());
