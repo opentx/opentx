@@ -45,9 +45,7 @@ extern uint8_t *dsm2StreamPtr;
 
 void module_output_active()
 {
-  register Pio *pioptr ;
-
-  pioptr = PIOA ;
+  register Pio *pioptr = PIOA ;
   pioptr->PIO_ABCDSR[0] &= ~PIO_PA17 ;            // Peripheral C
   pioptr->PIO_ABCDSR[1] |= PIO_PA17 ;             // Peripheral C
   pioptr->PIO_PDR = PIO_PA17 ;                    // Disable bit A17 Assign to peripheral
@@ -59,7 +57,6 @@ void module_output_active()
 
 void init_main_ppm(uint32_t period, uint32_t out_enable)
 {
-  register Pio *pioptr ;
   register Pwm *pwmptr ;
 
   setupPulsesPPM(EXTERNAL_MODULE) ;
