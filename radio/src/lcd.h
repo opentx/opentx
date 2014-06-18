@@ -113,7 +113,6 @@
   #define SMLSIZE       0x0200
   #define TINSIZE       0x0400
   #define STREXPANDED   0x0800
-  #define TIMEBLINK     0x1000
 #else
   #define MIDSIZE       DBLSIZE
   #define SMLSIZE       0x00
@@ -125,6 +124,11 @@
   #define GREY(x)       ((x) * 0x1000)
   #define GREY_DEFAULT  GREY(11)
   #define GREY_MASK(x)  ((x) & 0xF000)
+#endif
+
+#if defined(CPUARM)
+  #define TIMEBLINK     0x10000
+  #define TIMEHOUR      0x20000
 #endif
 
 #if defined(CPUARM)

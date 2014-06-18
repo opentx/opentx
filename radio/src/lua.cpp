@@ -65,8 +65,8 @@ ScriptInternalData standaloneScript = { SCRIPT_NOFILE, 0 };
 uint16_t maxLuaInterval = 0;
 uint16_t maxLuaDuration = 0;
 
-#define PERMANENT_SCRIPTS_MAX_INSTRUCTIONS (1000/100)
-#define MANUAL_SCRIPTS_MAX_INSTRUCTIONS    (10000/100)
+#define PERMANENT_SCRIPTS_MAX_INSTRUCTIONS (10000/100)
+#define MANUAL_SCRIPTS_MAX_INSTRUCTIONS    (20000/100)
 #define SCRIPTS_MAX_HEAP                   50
 #define SET_LUA_INSTRUCTIONS_COUNT(x)      (instructionsPercent=0, lua_sethook(L, hook, LUA_MASKCOUNT, x))
 
@@ -155,7 +155,11 @@ static int luaGetValue(lua_State *L)
   }
   else {
     const char *what = luaL_checkstring(L, 1);
-    if (!strcmp(what, "altitude")) {
+    if (!strcmp(what, "altitude-max")) {
+      lua_pushnumber(L, frskyData.hub.maxAltitude);
+      return 1;
+    }
+    else if (!strcmp(what, "altitude")) {
       lua_pushnumber(L, double(frskyData.hub.baroAltitude)/100);
       return 1;
     }
@@ -250,6 +254,16 @@ static int luaLcdDrawText(lua_State *L)
   return 0;
 }
 
+static int luaLcdDrawTimer(lua_State *L)
+{
+  int x = luaL_checkinteger(L, 1);
+  int y = luaL_checkinteger(L, 2);
+  int seconds = luaL_checkinteger(L, 3);
+  int att = luaL_checkinteger(L, 4);
+  putsTimer(x, y, seconds, att|LEFT, att);
+  return 0;
+}
+
 static int luaLcdDrawNumber(lua_State *L)
 {
   int x = luaL_checkinteger(L, 1);
@@ -313,6 +327,25 @@ static int luaLcdDrawFilledRectangle(lua_State *L)
   lcd_filled_rect(x, y, w, h, SOLID, flags);
   return 0;
 }
+
+#if 0
+static int luaLcdDrawGauge(lua_State *L)
+{
+  int x = luaL_checkinteger(L, 1);
+  int y = luaL_checkinteger(L, 2);
+  int w = luaL_checkinteger(L, 3);
+  int h = luaL_checkinteger(L, 4);
+  int num = luaL_checkinteger(L, 5);
+  int den = luaL_checkinteger(L, 6);
+  int flags = luaL_checkinteger(L, 7);
+  lcd_rect(x, y, w, h);
+  uint8_t len = limit((uint8_t)1, uint8_t(w*num/den), uint8_t(w));
+  for (int i=1; i<h-1; i++) {
+    lcd_hline(x+1, y+i, len);
+  }
+  return 0;
+}
+#endif
 
 static int luaLcdDrawScreenTitle(lua_State *L)
 {
@@ -1020,7 +1053,9 @@ static const luaL_Reg lcdLib[] = {
   { "drawLine", luaLcdDrawLine },
   { "drawRectangle", luaLcdDrawRectangle },
   { "drawFilledRectangle", luaLcdDrawFilledRectangle },
+  // { "drawGauge", luaLcdDrawGauge },
   { "drawText", luaLcdDrawText },
+  { "drawTimer", luaLcdDrawTimer },
   { "drawNumber", luaLcdDrawNumber },
   { "drawSwitch", luaLcdDrawSwitch },
   { "drawSource", luaLcdDrawSource },

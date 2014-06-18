@@ -552,7 +552,7 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
       }
       else if (midsize) {
         x -= 3;
-        xn = x+1;
+        xn = x;
       }
       else if (tinsize) {
         x--;
@@ -912,7 +912,7 @@ void putsTimer(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFlags att
 
 #if defined(PCBTARANIS)
 #define separator ':'
-  if (att & MIDSIZE) {
+  if (att & TIMEHOUR) {
     div_t qr2 = div(qr.quot, 60);
     lcd_outdezNAtt(x, y, qr2.quot, att|LEADING0|LEFT, 2);
     lcd_putcAtt(lcdLastPos, y, separator, att&att2);

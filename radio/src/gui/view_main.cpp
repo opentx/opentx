@@ -340,7 +340,7 @@ void displayTimers()
   // Main timer
   if (g_model.timers[0].mode) {
     TimerState & timerState = timersStates[0];
-    putsTimer(TIMERS_X, TIMER1_Y, timerState.val, MIDSIZE|LEFT, MIDSIZE|LEFT);
+    putsTimer(TIMERS_X, TIMER1_Y, timerState.val, TIMEHOUR|MIDSIZE|LEFT, TIMEHOUR|MIDSIZE|LEFT);
     putsTimerMode(TIMERS_X, TIMER1_Y-6, g_model.timers[0].mode, SMLSIZE);
     if (g_model.timers[0].persistent) lcd_putcAtt(TIMERS_R, TIMER1_Y+1, 'P', SMLSIZE);
     if (timerState.val < 0) {
@@ -353,7 +353,7 @@ void displayTimers()
   // Second timer
   if (g_model.timers[1].mode) {
     TimerState & timerState = timersStates[1];
-    putsTimer(TIMERS_X, TIMER2_Y, timerState.val, MIDSIZE|LEFT, MIDSIZE|LEFT);
+    putsTimer(TIMERS_X, TIMER2_Y, timerState.val, TIMEHOUR|MIDSIZE|LEFT, TIMEHOUR|MIDSIZE|LEFT);
     putsTimerMode(TIMERS_X, TIMER2_Y-6, g_model.timers[1].mode, SMLSIZE);
     if (g_model.timers[1].persistent) lcd_putcAtt(TIMERS_R, TIMER2_Y+1, 'P', SMLSIZE);
     if (timerState.val < 0) {
