@@ -1462,6 +1462,7 @@ void luaTask(uint8_t evt)
       if (sid.state == SCRIPT_OK) {
         uint8_t prev_mem = lua_gc(L, LUA_GCCOUNT, 0);
         SET_LUA_INSTRUCTIONS_COUNT(PERMANENT_SCRIPTS_MAX_INSTRUCTIONS);
+        int inputsCount = 0;
 #if defined(SIMU) || defined(DEBUG)
         const char *filename;
 #endif
@@ -1469,6 +1470,7 @@ void luaTask(uint8_t evt)
         if (sid.reference >= SCRIPT_MIX_FIRST && sid.reference <= SCRIPT_MIX_LAST) {
           ScriptData & sd = g_model.scriptsData[sid.reference-SCRIPT_MIX_FIRST];
           sio = &scriptInputsOutputs[sid.reference-SCRIPT_MIX_FIRST];
+          inputsCount = sio->inputsCount;
 #if defined(SIMU) || defined(DEBUG)
           filename = sd.file;
 #endif
@@ -1496,12 +1498,14 @@ void luaTask(uint8_t evt)
 #endif
           if (g_menuStack[0]==menuTelemetryFrsky && sid.reference==SCRIPT_TELEMETRY_FIRST+s_frsky_view) {
             lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
+            lua_pushinteger(L, evt);
+            inputsCount = 1;
           }
           else if (sid.background) {
             lua_rawgeti(L, LUA_REGISTRYINDEX, sid.background);
           }
         }
-        if (lua_pcall(L, sio ? sio->inputsCount : 0, sio ? sio->outputsCount : 0, 0) == 0) {
+        if (lua_pcall(L, inputsCount, sio ? sio->outputsCount : 0, 0) == 0) {
           if (sio) {
             for (int j=sio->outputsCount-1; j>=0; j--) {
               if (!lua_isnumber(L, -1)) {

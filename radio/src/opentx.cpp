@@ -2760,6 +2760,13 @@ void perMain()
   if (!LCD_LOCKED()) {
     lcd_clear();
     g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
+  }
+
+#if defined(LUA)
+  luaTask(evt);
+#endif
+
+  if (!LCD_LOCKED()) {
     if (warn) DISPLAY_WARNING(evt);
 #if defined(NAVIGATION_MENUS)
     if (menu) {
@@ -2770,14 +2777,7 @@ void perMain()
       }
     }
 #endif
-#if defined(LUA)
-    evt = 0;
-#endif
   }
-
-#if defined(LUA)
-  luaTask(evt);
-#endif
 
   drawStatusLine();
   lcdRefresh();
