@@ -12,7 +12,11 @@
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
 macro(_phonon_find_version)
-   file(READ "${PHONON_INCLUDE_DIR}/phonon/phononnamespace.h" _phonon_header LIMIT 5000 OFFSET 1000)
+   set(_phonon_namespace_header_file "${PHONON_INCLUDE_DIR}/phonon/phononnamespace.h")
+   if (APPLE AND EXISTS "${PHONON_INCLUDE_DIR}/Headers/phononnamespace.h")
+      set(_phonon_namespace_header_file "${PHONON_INCLUDE_DIR}/Headers/phononnamespace.h")
+   endif (APPLE AND EXISTS "${PHONON_INCLUDE_DIR}/Headers/phononnamespace.h")
+   file(READ ${_phonon_namespace_header_file} _phonon_header LIMIT 5000 OFFSET 1000)
    string(REGEX MATCH "define PHONON_VERSION_STR \"(4\\.[0-9]+\\.[0-9a-z]+)\"" _phonon_version_match "${_phonon_header}")
    set(PHONON_VERSION "${CMAKE_MATCH_1}")
    message(STATUS "Phonon Version: ${PHONON_VERSION}")
@@ -31,7 +35,7 @@ else(PHONON_FOUND)
    # then at the default system locations (CMAKE_SYSTEM_PREFIX_PATH, i.e. /usr etc.)
    find_library(PHONON_LIBRARY NAMES phonon)
 
-   find_path(PHONON_INCLUDE_DIR NAMES phonon/phonon_export.h PATHS ${KDE4_INCLUDE_INSTALL_DIR} ${QT_INCLUDE_DIR} ${INCLUDE_INSTALL_DIR} NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
+   find_path(PHONON_INCLUDE_DIR NAMES phonon/phonon_export.h PATHS ${KDE4_INCLUDE_INSTALL_DIR} ${QT_INCLUDE_DIR} ${INCLUDE_INSTALL_DIR} ${QT_LIBRARY_DIR} NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
    find_path(PHONON_INCLUDE_DIR NAMES phonon/phonon_export.h)
 
    if(PHONON_INCLUDE_DIR AND PHONON_LIBRARY)

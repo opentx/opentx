@@ -279,6 +279,8 @@ ADD_DEFINITIONS( -DQT_TRANSLATIONS_DIR="${QT_TRANSLATIONS_DIR}" )
 
 IF( APPLE )
     ADD_EXECUTABLE( ${PROJECT_NAME} MACOSX_BUNDLE ${companion_SRCS} ${companion_QM} )
+    # OS X compiler no longer automatically includes /Library/Frameworks in search path
+    SET( CMAKE_EXE_LINKER_FLAGS -F/Library/Frameworks )
 ELSE( )
     ADD_EXECUTABLE( ${PROJECT_NAME} WIN32 ${companion_SRCS} ${companion_QM} )
 ENDIF( )
@@ -406,7 +408,7 @@ IF( APPLE )
                      COMMAND mkdir -p companion.app/Contents/Resources
                      COMMAND mkdir -p companion.app/Contents/translations                     
                      COMMAND rsync ${PROJECT_SOURCE_DIR}/images/${MACOSX_BUNDLE_ICON_FILE} companion.app/Contents/Resources/${MACOSX_BUNDLE_ICON_FILE} # Copy the icon files
-                     COMMAND rsync ${PROJECT_SOURCE_DIR}/../targets/mac/lib* companion.app/Contents/Frameworks
+                     #COMMAND rsync ${PROJECT_SOURCE_DIR}/../targets/mac/lib* companion.app/Contents/Frameworks
                      #COMMAND rsync ${PROJECT_SOURCE_DIR}/../targets/mac/libcrypto.1.0.0.dylib companion.app/Contents/Frameworks
                      COMMAND rsync -r --exclude=.svn  ${PROJECT_SOURCE_DIR}/../targets/mac/qt_menu.nib companion.app/Contents/Resources/
                      COMMAND rsync ${PROJECT_BINARY_DIR}/*.qm companion.app/Contents/translations
