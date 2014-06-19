@@ -125,4 +125,4 @@ void USBD_USR_DeviceDisconnected (void)
 }
 
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/ 
