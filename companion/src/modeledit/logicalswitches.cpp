@@ -230,7 +230,7 @@ void LogicalSwitchesPanel::edited()
         }
         else {
           model.customSw[i].val2 = round((value-range.offset)/range.step);;
-          value= model.customSw[i].val2*range.step + range.offset;
+          value = model.customSw[i].val2*range.step + range.offset;
         }
         if (source.isTimeBased()) cswitchTOffset[i]->setTime(QTimeS(value));
         else cswitchOffset[i]->setValue(value);

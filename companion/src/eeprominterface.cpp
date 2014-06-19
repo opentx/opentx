@@ -174,8 +174,8 @@ RawSourceRange RawSource::getRange(bool singleprec)
         case TELEMETRY_SOURCE_ASPEED_MAX:
         case TELEMETRY_SOURCE_SPEED:
         case TELEMETRY_SOURCE_SPEED_MAX:
-          result.step = singleprec ? 1 : 1;
-          result.max = singleprec ? (1*255) : 2000;
+          result.step = singleprec ? 2 : 1;
+          result.max = singleprec ? (2*255) : 2000;
           if (model && !model->frsky.imperial) {
             result.step *= 1.852;
             result.max *= 1.852;
