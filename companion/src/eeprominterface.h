@@ -327,7 +327,7 @@ class RawSourceRange
     double max;
     double step;
     double offset;
-
+    QString unit;
 };
 
 class RawSource {

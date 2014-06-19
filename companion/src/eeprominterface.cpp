@@ -113,6 +113,7 @@ RawSourceRange RawSource::getRange(bool singleprec)
           result.step = 0.1;
           result.decimals = 1;
           result.max = 25.5;
+          result.unit = QObject::tr("V");
           break;
         case TELEMETRY_SOURCE_TX_TIME:
           result.step = 1;
@@ -122,6 +123,7 @@ RawSourceRange RawSource::getRange(bool singleprec)
         case TELEMETRY_SOURCE_TIMER2:
           result.step = singleprec ? 5 : 1;
           result.max = singleprec ? 255*5 : 60*60;
+          result.unit = QObject::tr("s");
           break;
         case TELEMETRY_SOURCE_RSSI_TX:
         case TELEMETRY_SOURCE_RSSI_RX:
@@ -142,6 +144,7 @@ RawSourceRange RawSource::getRange(bool singleprec)
             result.step = ratio / 255;
             result.min = channel.offset * result.step;
             result.max = ratio + result.min;
+            result.unit = QObject::tr("V");
           }
           break;
         case TELEMETRY_SOURCE_ALT:
@@ -149,6 +152,7 @@ RawSourceRange RawSource::getRange(bool singleprec)
           result.step = singleprec ? 8 : 1;
           result.min = -500;
           result.max = singleprec ? 1540 : 3000;
+          result.unit = QObject::tr("m");
           break;
         case TELEMETRY_SOURCE_T1:
         case TELEMETRY_SOURCE_T1_MAX:
@@ -156,11 +160,13 @@ RawSourceRange RawSource::getRange(bool singleprec)
         case TELEMETRY_SOURCE_T2_MAX:
           result.min = -30;
           result.max = 225;
+          result.unit = QObject::tr("°C");
           break;
         case TELEMETRY_SOURCE_HDG:
           result.step = singleprec ? 2 : 1;
           result.max = 360;
           if (singleprec) result.offset = 256;
+          result.unit = QObject::tr("°");
           break;
         case TELEMETRY_SOURCE_RPM:
         case TELEMETRY_SOURCE_RPM_MAX:
@@ -169,6 +175,7 @@ RawSourceRange RawSource::getRange(bool singleprec)
           break;
         case TELEMETRY_SOURCE_FUEL:
           result.max = 100;
+          result.unit = QObject::tr("%");
           break;
         case TELEMETRY_SOURCE_ASPEED:
         case TELEMETRY_SOURCE_ASPEED_MAX:
@@ -179,6 +186,10 @@ RawSourceRange RawSource::getRange(bool singleprec)
           if (model && !model->frsky.imperial) {
             result.step *= 1.852;
             result.max *= 1.852;
+            result.unit = QObject::tr("km/h");
+          }
+          else {
+            result.unit = QObject::tr("MPH");
           }
           break;
         case TELEMETRY_SOURCE_VERTICAL_SPEED:
@@ -186,17 +197,20 @@ RawSourceRange RawSource::getRange(bool singleprec)
           result.min = -12.5;
           result.max = 13.0;
           result.decimals = 1;
+          result.unit = QObject::tr("m/s");
           break;
         case TELEMETRY_SOURCE_DIST:
         case TELEMETRY_SOURCE_DIST_MAX:
           result.step = singleprec ? 8 : 1;
           result.max = singleprec ? 2040 : 10000;
+          result.unit = QObject::tr("m");
           break;
         case TELEMETRY_SOURCE_CELL:
         case TELEMETRY_SOURCE_CELL_MIN:
           result.step = singleprec ? 0.02 : 0.01;
           result.max = 5.1;
           result.decimals = 2;
+          result.unit = QObject::tr("V");
           break;
         case TELEMETRY_SOURCE_CELLS_SUM:
         case TELEMETRY_SOURCE_CELLS_MIN:
@@ -205,21 +219,25 @@ RawSourceRange RawSource::getRange(bool singleprec)
           result.step = 0.1;
           result.max = 25.5;
           result.decimals = 1;
+          result.unit = QObject::tr("V");
           break;
         case TELEMETRY_SOURCE_CURRENT:
         case TELEMETRY_SOURCE_CURRENT_MAX:
           result.step = singleprec ? 0.5 : 0.1;
           result.max = singleprec ? 127.5 : 200.0;
           result.decimals = 1;
+          result.unit = QObject::tr("A");
           break;
         case TELEMETRY_SOURCE_CONSUMPTION:
           result.step = singleprec ? 100 : 1;
           result.max = singleprec ? 25500 : 10000;
+          result.unit = QObject::tr("mAh");
           break;
         case TELEMETRY_SOURCE_POWER:
         case TELEMETRY_SOURCE_POWER_MAX:
           result.step = singleprec ? 5 : 1;
           result.max = singleprec ? 1275 : 2000;
+          result.unit = QObject::tr("W");
           break;
         case TELEMETRY_SOURCE_ACCX:
         case TELEMETRY_SOURCE_ACCY:
@@ -227,6 +245,7 @@ RawSourceRange RawSource::getRange(bool singleprec)
           result.step = 0.01;
           result.decimals = 2;
           result.max = 2.55;
+          result.unit = QObject::tr("g");
           break;
         default:
           result.max = 125;

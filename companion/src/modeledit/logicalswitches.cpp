@@ -144,7 +144,7 @@ void LogicalSwitchesPanel::v1Edited(int value)
         model.customSw[i].val2 = (cswitchOffset[i]->value() / range.step);
       }
       else {
-        model.customSw[i].val2 = (cswitchOffset[i]->value() - range.offset) / range.step/* TODO - source.getRawOffset(model)*/;
+        model.customSw[i].val2 = (cswitchOffset[i]->value() - range.offset) / range.step;
       }
       setSwitchWidgetVisibility(i);
     }
@@ -232,8 +232,10 @@ void LogicalSwitchesPanel::edited()
           model.customSw[i].val2 = round((value-range.offset)/range.step);;
           value = model.customSw[i].val2*range.step + range.offset;
         }
-        if (source.isTimeBased()) cswitchTOffset[i]->setTime(QTimeS(value));
-        else cswitchOffset[i]->setValue(value);
+        if (source.isTimeBased())
+          cswitchTOffset[i]->setTime(QTimeS(value));
+        else
+          cswitchOffset[i]->setValue(value);
         break;
       }
       case LS_FAMILY_TIMER:
@@ -306,7 +308,8 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
           /*TODO: is this delta function value set correctly*/
           maxTime = range.step*127;
           value = range.step*model.customSw[i].val2;
-        } else {
+        }
+        else {
           maxTime = range.max;
           value = range.step*(model.customSw[i].val2/* TODO+source.getRawOffset(model)*/)+range.offset;
         }
@@ -316,6 +319,10 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
       }
       else {
         mask |= VALUE2_VISIBLE;
+        if (range.unit.isEmpty())
+          cswitchOffset[i]->setSuffix("");
+        else
+          cswitchOffset[i]->setSuffix(" " + range.unit);
         if (model.customSw[i].isDeltaFunction()) {
           /*TODO: is this delta function value set correctly*/
           cswitchOffset[i]->setMinimum(range.step*-127);
