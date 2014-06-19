@@ -716,6 +716,11 @@ ls_telemetry_value_t minTelemValue(uint8_t channel)
     case TELEM_HDG:
       return 0;
 #if defined(CPUARM)
+    case TELEM_SPEED:
+    case TELEM_MAX_SPEED:
+    case TELEM_ASPEED:
+    case TELEM_MAX_ASPEED:
+      return 0;
     default:
       return -30000;
 #else
