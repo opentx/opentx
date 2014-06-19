@@ -158,7 +158,7 @@ GVarGroup::GVarGroup(QCheckBox *weightGV, QSpinBox *weightSB, QComboBox *weightC
   }
   else {
     weightGV->hide();
-    if (weight > maxi || weight < -mini) {
+    if (weight > maxi || weight < mini) {
       weight = deflt;
     }
   }
