@@ -260,7 +260,7 @@ class SourcesConversionTable: public ConversionTable {
 
         for (int i=0; i<TELEMETRY_SOURCE_ACC; i++) {
           if (version < 216) {
-            if (i==TELEMETRY_SOURCE_TX_TIME || i==TELEMETRY_SOURCE_SWR || i==TELEMETRY_SOURCE_A3 || i==TELEMETRY_SOURCE_A4 || i==TELEMETRY_SOURCE_ASPD || i==TELEMETRY_SOURCE_DTE || i==TELEMETRY_SOURCE_CELL_MIN || i==TELEMETRY_SOURCE_CELLS_MIN || i==TELEMETRY_SOURCE_VFAS_MIN)
+            if (i==TELEMETRY_SOURCE_TX_TIME || i==TELEMETRY_SOURCE_SWR || i==TELEMETRY_SOURCE_A3 || i==TELEMETRY_SOURCE_A4 || i==TELEMETRY_SOURCE_ASPEED || i==TELEMETRY_SOURCE_DTE || i==TELEMETRY_SOURCE_CELL_MIN || i==TELEMETRY_SOURCE_CELLS_MIN || i==TELEMETRY_SOURCE_VFAS_MIN)
               continue;
           }
           if (!IS_ARM(board)) {
@@ -443,7 +443,7 @@ class TelemetrySourcesConversionTable: public ConversionTable {
       addConversion(1+TELEMETRY_SOURCE_HDG, val++);
       addConversion(1+TELEMETRY_SOURCE_VERTICAL_SPEED, val++);
       if (version >= 216) {
-        addConversion(1+TELEMETRY_SOURCE_ASPD, val++);
+        addConversion(1+TELEMETRY_SOURCE_ASPEED, val++);
         addConversion(1+TELEMETRY_SOURCE_DTE, val++);
       }
       if (IS_ARM(board) && version >= 216) {
@@ -1009,7 +1009,7 @@ class MixField: public TransformedField {
       if (IS_TARANIS(board) && version < 216) {
         if (mix.srcRaw.type == SOURCE_TYPE_STICK && mix.srcRaw.index < NUM_STICKS) {
           if (!mix.noExpo) {
-            mix.srcRaw = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, mix.srcRaw.index, model);
+            mix.srcRaw = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, mix.srcRaw.index);
           }
         }
       }
@@ -1548,7 +1548,7 @@ class LogicalSwitchField: public TransformedField {
       else if (csw.func != LS_FN_OFF) {
         sourcesConversionTable->importValue((uint8_t)v1, csw.val1);
         csw.val2 = v2;
-        RawSource val1(csw.val1, model);
+        RawSource val1(csw.val1);
         if (IS_ARM(board) && version < 216 && val1.type == SOURCE_TYPE_TELEMETRY) {
           switch (val1.index) {
             case TELEMETRY_SOURCE_TIMER1:
@@ -2424,7 +2424,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   if (IS_ARM(board))
     internalField.Append(new UnsignedField<3>(modelData.telemetryProtocol));
   else
-    internalField.Append(new ConversionField< SignedField<3> >(modelData.moduleData[0].protocol, &protocolsConversionTable, "Protocol", ::QObject::tr("OpenTX doesn't accept this protocol")));
+    internalField.Append(new ConversionField< UnsignedField<3> >((unsigned int &)modelData.moduleData[0].protocol, &protocolsConversionTable, "Protocol", ::QObject::tr("OpenTX doesn't accept this protocol")));
 
   internalField.Append(new BoolField<1>(modelData.thrTrim));
 

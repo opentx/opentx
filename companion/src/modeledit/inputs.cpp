@@ -165,12 +165,12 @@ QString InputsPanel::getInputText(int dest, bool * new_ch)
     if (md->offset) str += " " + tr("Offset(%1)").arg(getGVarString(md->offset));
 
     if (firmware->getCapability(VirtualInputs)) {
-      str += " " + tr("Source(%1)").arg(md->srcRaw.toString());
+      str += " " + tr("Source(%1)").arg(md->srcRaw.toString(model));
       if (md->carryTrim>0) {
         str += " " + tr("NoTrim");
       }
       else if (md->carryTrim<0) {
-        str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString();
+        str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString(model);
       }
     }
 

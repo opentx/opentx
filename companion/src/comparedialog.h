@@ -19,6 +19,7 @@ class CompareDialog : public QDialog
     ~CompareDialog();
 
   protected:
+    GeneralSettings * settings;
     ModelData * g_model1;
     ModelData * g_model2;
     ModelData * modeltemp;

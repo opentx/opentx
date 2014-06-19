@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <list>
+#include <float.h>
 #include "eeprominterface.h"
 #include "firmwares/er9x/er9xinterface.h"
 #include "firmwares/th9x/th9xinterface.h"
@@ -91,11 +92,12 @@ QString getGVarString(int16_t val, bool sign)
   }
 }
 
-RawSourceRange RawSource::getRange(bool singleprec)
+RawSourceRange RawSource::getRange(const ModelData & model, const GeneralSettings & settings, bool singleprec)
 {
   RawSourceRange result;
 
-  int board = GetEepromInterface()->getBoard();
+  FirmwareInterface * firmware = GetCurrentFirmware();
+  int board = firmware->getBoard();
 
   if (!singleprec && !IS_ARM(board)) {
     singleprec = true;
@@ -103,11 +105,16 @@ RawSourceRange RawSource::getRange(bool singleprec)
 
   switch (type) {
     case SOURCE_TYPE_TELEMETRY:
+      if (singleprec) {
+        result.offset = -DBL_MAX;
+      }
+
       switch (index) {
         case TELEMETRY_SOURCE_TX_BATT:
           result.step = 0.1;
           result.decimals = 1;
           result.max = 25.5;
+          result.unit = QObject::tr("V");
           break;
         case TELEMETRY_SOURCE_TX_TIME:
           result.step = 1;
@@ -117,6 +124,7 @@ RawSourceRange RawSource::getRange(bool singleprec)
         case TELEMETRY_SOURCE_TIMER2:
           result.step = singleprec ? 5 : 1;
           result.max = singleprec ? 255*5 : 60*60;
+          result.unit = QObject::tr("s");
           break;
         case TELEMETRY_SOURCE_RSSI_TX:
         case TELEMETRY_SOURCE_RSSI_RX:
@@ -127,23 +135,33 @@ RawSourceRange RawSource::getRange(bool singleprec)
         case TELEMETRY_SOURCE_A2:
         case TELEMETRY_SOURCE_A3:
         case TELEMETRY_SOURCE_A4:
-          if (model) {
-            const FrSkyChannelData & channel = model->frsky.channels[index-TELEMETRY_SOURCE_A1];
-            float ratio = channel.getRatio();
-            if (channel.type==0 || channel.type==1 || channel.type==2)
-              result.decimals = 2;
-            else
-              result.decimals = 0;
-            result.step = ratio / 255;
-            result.min = channel.offset * result.step;
-            result.max = ratio + result.min;
-          }
+        {
+          const FrSkyChannelData & channel = model.frsky.channels[index-TELEMETRY_SOURCE_A1];
+          float ratio = channel.getRatio();
+          if (channel.type==0 || channel.type==1 || channel.type==2)
+            result.decimals = 2;
+          else
+            result.decimals = 0;
+          result.step = ratio / 255;
+          result.min = channel.offset * result.step;
+          result.max = ratio + result.min;
+          result.unit = QObject::tr("V");
           break;
+        }
         case TELEMETRY_SOURCE_ALT:
         case TELEMETRY_SOURCE_GPS_ALT:
           result.step = singleprec ? 8 : 1;
           result.min = -500;
           result.max = singleprec ? 1540 : 3000;
+          if (firmware->getCapability(Imperial) || settings.imperial) {
+            result.step = (result.step * 105) / 32;
+            result.min = (result.min * 105) / 32;
+            result.max = (result.max * 105) / 32;
+            result.unit = QObject::tr("ft");
+          }
+          else {
+            result.unit = QObject::tr("m");
+          }
           break;
         case TELEMETRY_SOURCE_T1:
         case TELEMETRY_SOURCE_T1_MAX:
@@ -151,11 +169,13 @@ RawSourceRange RawSource::getRange(bool singleprec)
         case TELEMETRY_SOURCE_T2_MAX:
           result.min = -30;
           result.max = 225;
+          result.unit = QObject::tr("°C");
           break;
         case TELEMETRY_SOURCE_HDG:
           result.step = singleprec ? 2 : 1;
           result.max = 360;
           if (singleprec) result.offset = 256;
+          result.unit = QObject::tr("°");
           break;
         case TELEMETRY_SOURCE_RPM:
         case TELEMETRY_SOURCE_RPM_MAX:
@@ -164,14 +184,21 @@ RawSourceRange RawSource::getRange(bool singleprec)
           break;
         case TELEMETRY_SOURCE_FUEL:
           result.max = 100;
+          result.unit = QObject::tr("%");
           break;
+        case TELEMETRY_SOURCE_ASPEED:
+        case TELEMETRY_SOURCE_ASPEED_MAX:
         case TELEMETRY_SOURCE_SPEED:
         case TELEMETRY_SOURCE_SPEED_MAX:
-          result.step = singleprec ? 4 : 1;
-          result.max = singleprec ? (4*236) : 2000;
-          if (model && !model->frsky.imperial) {
+          result.step = singleprec ? 2 : 1;
+          result.max = singleprec ? (2*255) : 2000;
+          if (firmware->getCapability(Imperial) || settings.imperial) {
+            result.unit = QObject::tr("MPH");
+          }
+          else {
             result.step *= 1.852;
             result.max *= 1.852;
+            result.unit = QObject::tr("km/h");
           }
           break;
         case TELEMETRY_SOURCE_VERTICAL_SPEED:
@@ -179,17 +206,20 @@ RawSourceRange RawSource::getRange(bool singleprec)
           result.min = -12.5;
           result.max = 13.0;
           result.decimals = 1;
+          result.unit = QObject::tr("m/s");
           break;
         case TELEMETRY_SOURCE_DIST:
         case TELEMETRY_SOURCE_DIST_MAX:
           result.step = singleprec ? 8 : 1;
           result.max = singleprec ? 2040 : 10000;
+          result.unit = QObject::tr("m");
           break;
         case TELEMETRY_SOURCE_CELL:
         case TELEMETRY_SOURCE_CELL_MIN:
           result.step = singleprec ? 0.02 : 0.01;
           result.max = 5.1;
           result.decimals = 2;
+          result.unit = QObject::tr("V");
           break;
         case TELEMETRY_SOURCE_CELLS_SUM:
         case TELEMETRY_SOURCE_CELLS_MIN:
@@ -198,21 +228,25 @@ RawSourceRange RawSource::getRange(bool singleprec)
           result.step = 0.1;
           result.max = 25.5;
           result.decimals = 1;
+          result.unit = QObject::tr("V");
           break;
         case TELEMETRY_SOURCE_CURRENT:
         case TELEMETRY_SOURCE_CURRENT_MAX:
           result.step = singleprec ? 0.5 : 0.1;
           result.max = singleprec ? 127.5 : 200.0;
           result.decimals = 1;
+          result.unit = QObject::tr("A");
           break;
         case TELEMETRY_SOURCE_CONSUMPTION:
           result.step = singleprec ? 100 : 1;
           result.max = singleprec ? 25500 : 10000;
+          result.unit = QObject::tr("mAh");
           break;
         case TELEMETRY_SOURCE_POWER:
         case TELEMETRY_SOURCE_POWER_MAX:
           result.step = singleprec ? 5 : 1;
           result.max = singleprec ? 1275 : 2000;
+          result.unit = QObject::tr("W");
           break;
         case TELEMETRY_SOURCE_ACCX:
         case TELEMETRY_SOURCE_ACCY:
@@ -220,19 +254,21 @@ RawSourceRange RawSource::getRange(bool singleprec)
           result.step = 0.01;
           result.decimals = 2;
           result.max = 2.55;
+          result.unit = QObject::tr("g");
           break;
         default:
           result.max = 125;
           break;
       }
-      if (singleprec && !result.offset) {
+
+      if (singleprec && result.offset==-DBL_MAX) {
         result.offset = result.max - (127*result.step);
       }
       break;
 
     default:
-      result.max = (model && model->extendedLimits ? 125 : 100);
-      result.min = - result.max;
+      result.max = (model.extendedLimits ? 125 : 100);
+      result.min = -result.max;
       break;
   }
 
@@ -257,7 +293,7 @@ QString RotaryEncoderString(int index)
   return CHECK_IN_ARRAY(rotary, index);
 }
 
-QString RawSource::toString()
+QString RawSource::toString(const ModelData & model)
 {
   static const QString trims[] = {
     QObject::tr("TrmR"), QObject::tr("TrmE"), QObject::tr("TrmT"), QObject::tr("TrmA")
@@ -292,8 +328,8 @@ QString RawSource::toString()
     case SOURCE_TYPE_VIRTUAL_INPUT:
     {
       QString result = QObject::tr("[I%1]").arg(index+1);
-      if (model && strlen(model->inputNames[index]) > 0) {
-        result += QString(model->inputNames[index]);
+      if (strlen(model.inputNames[index]) > 0) {
+        result += QString(model.inputNames[index]);
       }
       return result;
     }
@@ -514,7 +550,7 @@ QString LogicalSwitchData::funcToString()
   }
 }
 
-QString LogicalSwitchData::toString(const ModelData & model)
+QString LogicalSwitchData::toString(const ModelData & model, const GeneralSettings & settings)
 {
   QString result = "";
 
@@ -535,11 +571,11 @@ QString LogicalSwitchData::toString(const ModelData & model)
       result += QObject::tr("Timer(%1, %2)").arg(ValToTim(val1)).arg(ValToTim(val2));
       break;
     case LS_FAMILY_VOFS: {
-      RawSource source = RawSource(val1, &model);
-      RawSourceRange range = source.getRange();
+      RawSource source = RawSource(val1);
+      RawSourceRange range = source.getRange(model, settings);
       QString res;
       if (val1)
-        res += source.toString();
+        res += source.toString(model);
       else
         res += "0";
       res.remove(" ");
@@ -582,7 +618,7 @@ QString LogicalSwitchData::toString(const ModelData & model)
 
     case LS_FAMILY_VCOMP:
       if (val1)
-        result += RawSource(val1).toString();
+        result += RawSource(val1).toString(model);
       else
         result += "0";
       switch (func) {
@@ -610,7 +646,7 @@ QString LogicalSwitchData::toString(const ModelData & model)
           break;
       }
       if (val2)
-        result += RawSource(val2).toString();
+        result += RawSource(val2).toString(model);
       else
         result += "0";
       break;
@@ -720,8 +756,9 @@ QStringList FuncSwData::toStringList()
 
 QString FuncSwData::funcToString()
 {
+  ModelData model;
   if (func >= FuncSafetyCh1 && func <= FuncSafetyCh32)
-    return QObject::tr("Safety %1").arg(RawSource(SOURCE_TYPE_CH, func).toString());
+    return QObject::tr("Safety %1").arg(RawSource(SOURCE_TYPE_CH, func).toString(model));
   else if (func == FuncTrainer)
     return QObject::tr("Trainer");
   else if (func == FuncTrainerRUD)
@@ -800,7 +837,8 @@ QString FuncSwData::paramToString()
   }
   else if ((func==FuncVolume)|| (func==FuncPlayValue)) {
     RawSource item(param);
-    return item.toString();
+    ModelData model;
+    return item.toString(model);
   }
   else if ((func==FuncPlayPrompt) || (func==FuncPlayBoth)) {
     if ( GetCurrentFirmware()->getCapability(VoicesAsNumbers)) {
@@ -810,15 +848,16 @@ QString FuncSwData::paramToString()
     }
   }
   else if ((func>FuncBackgroundMusicPause) && (func<FuncCount)) {
+    ModelData model;
     switch (adjustMode) {
       case 0:
         return QObject::tr("Value ")+QString("%1").arg(param);
         break;
       case 1:
-        return RawSource(param).toString();
+        return RawSource(param).toString(model);
         break;
       case 2:
-        return RawSource(param).toString();
+        return RawSource(param).toString(model);
         break;
       case 3:
         if (param==0) {
@@ -1020,13 +1059,6 @@ ModelData::ModelData(const ModelData & src)
 ModelData & ModelData::operator = (const ModelData & src)
 {
   memcpy(this, &src, sizeof(ModelData));
-
-  for (int i=0; i<C9X_MAX_MIXERS; i++)
-    mixData[i].srcRaw.model = this;
-  for (int i=0; i<C9X_MAX_EXPOS; i++)
-    expoData[i].srcRaw.model = this;
-  swashRingData.collectiveSource.model = this;
-
   return *this;
 }
 
@@ -1137,7 +1169,7 @@ void ModelData::setDefaultInputs(const GeneralSettings & settings)
       expo->mode = INPUT_MODE_BOTH;
       expo->srcRaw = settings.getDefaultSource(i);
       expo->weight = 100;
-      strncpy(inputNames[i], expo->srcRaw.toString().toLatin1().constData(), sizeof(inputNames[i])-1);
+      strncpy(inputNames[i], expo->srcRaw.toString(*this).toLatin1().constData(), sizeof(inputNames[i])-1);
     }
   }
 }
@@ -1153,7 +1185,7 @@ void ModelData::setDefaultMixes(const GeneralSettings & settings)
     mix->destCh = i+1;
     mix->weight = 100;
     if (IS_TARANIS(GetEepromInterface()->getBoard())) {
-      mix->srcRaw = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, i, this);
+      mix->srcRaw = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, i);
     }
     else {
       mix->srcRaw = RawSource(SOURCE_TYPE_STICK, i);

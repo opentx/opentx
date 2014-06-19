@@ -122,7 +122,7 @@ ExpoDialog::~ExpoDialog()
 void ExpoDialog::updateScale()
 {
   if (firmware->getCapability(VirtualInputs) && ed->srcRaw.type == SOURCE_TYPE_TELEMETRY) {
-    RawSourceRange range = ed->srcRaw.getRange();
+    RawSourceRange range = ed->srcRaw.getRange(model, generalSettings);
     ui->scaleLabel->show();
     ui->scale->show();
     ui->scale->setDecimals(range.decimals);
@@ -146,7 +146,7 @@ void ExpoDialog::valuesChanged()
       updateScale();
     }
 
-    RawSourceRange range = srcRaw.getRange();
+    RawSourceRange range = srcRaw.getRange(model, generalSettings);
     ed->scale = round(float(ui->scale->value()) / range.step);
     ed->carryTrim = 1 - ui->trimCB->currentIndex();
     ed->swtch  = RawSwitch(ui->switchesCB->itemData(ui->switchesCB->currentIndex()).toInt());

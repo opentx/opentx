@@ -86,7 +86,6 @@ class TelemetryPanel : public ModelPanel
     void on_telemetryProtocol_currentIndexChanged(int index);
     void onAnalogModified();
     void on_frskyProtoCB_currentIndexChanged(int index);
-    void on_frskyUnitsCB_currentIndexChanged(int index);
     void on_bladesCount_editingFinished();
     void on_AltitudeToolbar_ChkB_toggled(bool checked);
     void on_rssiAlarm1CB_currentIndexChanged(int index);
@@ -106,6 +105,7 @@ class TelemetryPanel : public ModelPanel
   private:
     Ui::Telemetry *ui;
     TelemetryAnalog * analogs[4];
+    TelemetryCustomScreen * telemetryCustomScreens[4];
 
     void setup();
     void telBarUpdate();

@@ -596,7 +596,6 @@ t_Ersky9xModelData_v10::operator ModelData ()
 
   c9x.frsky = frsky;
   c9x.frsky.usrProto=FrSkyUsrProto;
-  c9x.frsky.imperial=FrSkyImperial;
   c9x.frsky.FrSkyGpsAlt=FrSkyGpsAlt;
   return c9x;
 }
@@ -715,7 +714,6 @@ t_Ersky9xModelData_v11::operator ModelData ()
 
   c9x.frsky = frsky;
   c9x.frsky.usrProto=FrSkyUsrProto;
-  c9x.frsky.imperial=FrSkyImperial;
   c9x.frsky.FrSkyGpsAlt=FrSkyGpsAlt;
   // for (int i=0; i<8; i++) {
   //   c9x.frskyalarms[i].frskyAlarmLimit=frskyAlarms.alarmData[i].frskyAlarmLimit;

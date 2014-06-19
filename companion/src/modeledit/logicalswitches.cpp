@@ -138,13 +138,13 @@ void LogicalSwitchesPanel::v1Edited(int value)
     int i = sender()->property("index").toInt();
     model.customSw[i].val1 = cswitchSource1[i]->itemData(value).toInt();
     if (model.customSw[i].getFunctionFamily() == LS_FAMILY_VOFS) {
-      RawSource source = RawSource(model.customSw[i].val1, &model);
-      RawSourceRange range = source.getRange();
+      RawSource source = RawSource(model.customSw[i].val1);
+      RawSourceRange range = source.getRange(model, generalSettings);
       if (model.customSw[i].isDeltaFunction()) {
         model.customSw[i].val2 = (cswitchOffset[i]->value() / range.step);
       }
       else {
-        model.customSw[i].val2 = (cswitchOffset[i]->value() - range.offset) / range.step/* TODO - source.getRawOffset(model)*/;
+        model.customSw[i].val2 = (cswitchOffset[i]->value() - range.offset) / range.step;
       }
       setSwitchWidgetVisibility(i);
     }
@@ -220,8 +220,8 @@ void LogicalSwitchesPanel::edited()
     {
       case LS_FAMILY_VOFS:
       {
-        source = RawSource(model.customSw[i].val1, &model);
-        RawSourceRange range = source.getRange();
+        source = RawSource(model.customSw[i].val1);
+        RawSourceRange range = source.getRange(model, generalSettings);
         double value = source.isTimeBased() ? QTimeS(cswitchTOffset[i]->time()).seconds() : cswitchOffset[i]->value();
         if (model.customSw[i].isDeltaFunction()) {
           /*TODO: is this delta function value set correctly*/
@@ -230,10 +230,12 @@ void LogicalSwitchesPanel::edited()
         }
         else {
           model.customSw[i].val2 = round((value-range.offset)/range.step);;
-          value= model.customSw[i].val2*range.step + range.offset;
+          value = model.customSw[i].val2*range.step + range.offset;
         }
-        if (source.isTimeBased()) cswitchTOffset[i]->setTime(QTimeS(round(value)));
-        else cswitchOffset[i]->setValue(value);
+        if (source.isTimeBased())
+          cswitchTOffset[i]->setTime(QTimeS(round(value)));
+        else
+          cswitchOffset[i]->setValue(value);
         break;
       }
       case LS_FAMILY_TIMER:
@@ -288,8 +290,8 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
   lock = true;
 
   unsigned int mask = 0;
-  RawSource source = RawSource(model.customSw[i].val1, &model);
-  RawSourceRange range = source.getRange();
+  RawSource source = RawSource(model.customSw[i].val1);
+  RawSourceRange range = source.getRange(model, generalSettings);
 
   switch (model.customSw[i].getFunctionFamily())
   {
@@ -316,6 +318,10 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
       }
       else {
         mask |= VALUE2_VISIBLE;
+        if (range.unit.isEmpty())
+          cswitchOffset[i]->setSuffix("");
+        else
+          cswitchOffset[i]->setSuffix(" " + range.unit);
         if (model.customSw[i].isDeltaFunction()) {
           /*TODO: is this delta function value set correctly*/
           cswitchOffset[i]->setMinimum(range.step*-127);

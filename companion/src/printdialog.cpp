@@ -238,9 +238,9 @@ void PrintDialog::printInputs()
       str += "&nbsp;" + tr("Weight") + QString("(%1)").arg(getGVarString(ed->weight,true));
   
       if (firmware->getCapability(VirtualInputs)) {
-        str += " " + tr("Source") + QString("(%1)").arg(ed->srcRaw.toString());
+        str += " " + tr("Source") + QString("(%1)").arg(ed->srcRaw.toString(*g_model));
         if (ed->carryTrim>0) str += " " + tr("NoTrim");
-        else if (ed->carryTrim<0) str += " " + RawSource(SOURCE_TYPE_TRIM, (-(ed->carryTrim)-1)).toString();
+        else if (ed->carryTrim<0) str += " " + RawSource(SOURCE_TYPE_TRIM, (-(ed->carryTrim)-1)).toString(*g_model);
       }
       if (ed->curve.value) str += " " + Qt::escape(ed->curve.toString());
 
@@ -321,11 +321,8 @@ void PrintDialog::printMixes()
         case (2): str += "&nbsp;R"; break;
         default:  str += "&nbsp;&nbsp;"; break;
       };
-        //set mixer src model if it is unset (srcRaw needs this to generate proper toString() for input source type)
-        if (md->srcRaw.model == 0) 
-          md->srcRaw.model = g_model;  
-      str += " " + md->srcRaw.toString();
 
+      str += " " + md->srcRaw.toString(*g_model);
       str += " " + Qt::escape(tr("Weight(%1)").arg(getGVarString(md->weight, true)));
 
       QString phasesStr = getPhasesStr(md->phases, *g_model);
@@ -335,8 +332,10 @@ void PrintDialog::printMixes()
         str += " " + Qt::escape(tr("Switch(%1)").arg(md->swtch.toString()));
       }
 
-      if (md->carryTrim>0)      str += " " + Qt::escape(tr("NoTrim"));
-      else if (md->carryTrim<0) str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString();
+      if (md->carryTrim>0)
+        str += " " + Qt::escape(tr("NoTrim"));
+      else if (md->carryTrim<0)
+        str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString(*g_model);
 
       if (firmware->getCapability(HasNoExpo) && md->noExpo) str += " " + Qt::escape(tr("No DR/Expo"));
       if (md->sOffset)     str += " " + Qt::escape(tr("Offset(%1)").arg(getGVarString(md->sOffset)));
@@ -350,7 +349,8 @@ void PrintDialog::printMixes()
         str += Qt::escape(tr(" Delay(u%1:d%2)").arg((double)md->delayUp/scale).arg((double)md->delayDown/scale));
       if (md->speedDown || md->speedUp)
         str += Qt::escape(tr(" Slow(u%1:d%2)").arg((double)md->speedUp/scale).arg((double)md->speedDown/scale));
-      if (md->mixWarn)  str += Qt::escape(tr(" Warn(%1)").arg(md->mixWarn));
+      if (md->mixWarn)
+        str += Qt::escape(tr(" Warn(%1)").arg(md->mixWarn));
       if (firmware->getCapability(HasMixerNames)) {
         QString MixerName;
         MixerName.append(md->name);
@@ -588,7 +588,7 @@ void PrintDialog::printSwitches()
       if (g_model->customSw[i].func) {
         str.append("<tr>");
         str.append("<td width=\"60\"><b>"+tr("L")+QString("%1</b></td>").arg(i+1));
-        QString tstr = g_model->customSw[i].toString(*g_model);
+        QString tstr = g_model->customSw[i].toString(*g_model, *g_eeGeneral);
         str.append(doTL(tstr,"green"));
         str.append("</tr>");
         sc++;
@@ -754,7 +754,6 @@ void PrintDialog::printFrSky()
     str.append("<td width=\"40\" align=\"center\"><b>"+getFrSkyAlarmType(fd->rssiAlarms[1].level)+"</b></td><td width=\"40\" align=\"center\"><b>&lt;</b></td><td width=\"40\" align=\"center\"><b>"+QString::number(fd->rssiAlarms[1].value,10)+"</b></td></tr>");
     str.append("<tr><td colspan=10 align=\"Left\" height=\"4px\"></td></tr>");
     str.append("<tr><td colspan=2 align=\"Left\"><b>"+tr("Frsky serial protocol")+"</b></td><td colspan=8 align=\"left\">"+getFrSkyProtocol(fd->usrProto)+"</td></tr>");
-    str.append("<tr><td colspan=2 align=\"Left\"><b>"+tr("Units system")+"</b></td><td colspan=8 align=\"left\">"+getFrSkyMeasure(fd->imperial)+"</td></tr>");
     str.append("<tr><td colspan=2 align=\"Left\"><b>"+tr("Blades")+"</b></td><td colspan=8 align=\"left\">"+fd->blades+"</td></tr>");
     str.append("<tr><td colspan=10 align=\"Left\" height=\"4px\"></td></tr></table>");
   }

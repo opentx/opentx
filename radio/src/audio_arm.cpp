@@ -155,6 +155,19 @@ const char * audioFilenames[] = {
   "eeformat",
   "lowbatt",
   "inactiv",
+  "a1_org",
+  "a1_red",
+  "a2_org",
+  "a2_red",
+  "a3_org",
+  "a3_red",
+  "a4_org",
+  "a4_red",
+  "rssi_org",
+  "rssi_red",
+  "swr_red",
+  "telemko",
+  "telemok",
 #if defined(PCBSKY9X)
   "highmah",
   "hightemp",
@@ -189,20 +202,7 @@ const char * audioFilenames[] = {
   "timer00",
   "timer10",
   "timer20",
-  "timer30",
-  "a1_org",
-  "a1_red",
-  "a2_org",
-  "a2_red",
-  "a3_org",
-  "a3_red",
-  "a4_org",
-  "a4_red",
-  "rssi_org",
-  "rssi_red",
-  "swr_red",
-  "telemko",
-  "telemok"
+  "timer30"
 };
 
 uint64_t sdAvailableSystemAudioFiles = 0;

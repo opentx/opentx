@@ -361,7 +361,8 @@ void SimulatorDialog::initUi(T * ui)
     int column = i / (outputs/2);
     int line = i % (outputs/2);
     QLabel * label = new QLabel(tabWidget);
-    label->setText(RawSource(SOURCE_TYPE_CH, i).toString());
+    ModelData model;
+    label->setText(RawSource(SOURCE_TYPE_CH, i).toString(model));
     channelsLayout->addWidget(label, line, column == 0 ? 0 : 5, 1, 1);
 
     QSlider * slider = new QSlider(tabWidget);

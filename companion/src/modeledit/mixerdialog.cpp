@@ -142,7 +142,7 @@ void MixerDialog::valuesChanged()
   if (!lock) {
     lock = true;
     QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
-    md->srcRaw  = RawSource(ui->sourceCB->itemData(ui->sourceCB->currentIndex()).toInt(), &model);
+    md->srcRaw  = RawSource(ui->sourceCB->itemData(ui->sourceCB->currentIndex()).toInt());
     if (firmware->getCapability(HasNoExpo)) {
       bool drVisible = (md->srcRaw.type == SOURCE_TYPE_STICK && md->srcRaw.index < NUM_STICKS);
       ui->MixDR_CB->setEnabled(drVisible);

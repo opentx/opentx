@@ -60,7 +60,7 @@ void WizMix::addMix(ModelData &model, Input input, int weight, int channel, int 
       mix.destCh = channel+1;
       if (isTaranis){
         int channel = settings.getDefaultChannel(input-1);
-        mix.srcRaw = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, channel, &model);
+        mix.srcRaw = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, channel);
       }
       else
         mix.srcRaw = RawSource(SOURCE_TYPE_STICK, input-1);
