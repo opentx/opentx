@@ -2783,7 +2783,7 @@ void perMain()
     luaTask(evt);
 #endif
 
-    if (!LCD_LOCKED()) { 
+    if (!LCD_LOCKED()) {
       if (warn) DISPLAY_WARNING(evt);
 #if defined(NAVIGATION_MENUS)
       if (menu) {

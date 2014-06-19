@@ -233,4 +233,4 @@ uint8_t *  USBD_USR_InterfaceStrDescriptor( uint8_t speed , uint16_t *length)
 }
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
- 
+
