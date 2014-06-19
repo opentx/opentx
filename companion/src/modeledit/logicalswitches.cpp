@@ -295,6 +295,7 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
       cswitchOffset[i]->setSingleStep(range.step);
       if (source.isTimeBased()) {
         mask |= VALUE_TO_VISIBLE;
+        int maxTime = round(range.max);
         cswitchTOffset[i]->setMaximumTime(QTimeS(maxTime));
         cswitchTOffset[i]->setDisplayFormat((maxTime>=3600)?"hh:mm:ss":"mm:ss");
         cswitchTOffset[i]->setTime(QTimeS(round(range.step*(model.customSw[i].val2+range.offset)));
