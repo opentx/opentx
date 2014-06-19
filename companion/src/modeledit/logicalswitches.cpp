@@ -308,7 +308,8 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
           /*TODO: is this delta function value set correctly*/
           maxTime = round(range.step*127);
           value = round(range.step*model.customSw[i].val2);
-        } else {
+        } 
+        else {
           maxTime = round(range.max);
           value = round(range.step*(model.customSw[i].val2/* TODO+source.getRawOffset(model)*/)+range.offset);
         }
