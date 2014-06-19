@@ -40,7 +40,7 @@
 #include <stdarg.h>
 #include <sys/stat.h>
 #if defined(RTCLOCK)
-	#include <time.h>
+  #include <time.h>
 #endif
 
 #if defined WIN32 || !defined __GNUC__
