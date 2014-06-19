@@ -335,10 +335,10 @@ void TelemetryCustomScreen::populateTelemetrySourceCB(QComboBox *b, unsigned int
   int telem_hub[] = {0,0,0,0,0,0,0,0,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,0,0,2,2,1,1,1,1,1,1};
   b->clear();
 
-  b->addItem(RawSource(SOURCE_TYPE_NONE, 0).toString());
+  b->addItem(RawSource(SOURCE_TYPE_NONE, 0).toString(model));
 
   for (unsigned int i = 0; i < (last ? TELEMETRY_SOURCES_STATUS_COUNT : TELEMETRY_SOURCES_DISPLAY_COUNT); i++) {
-    b->addItem(RawSource(SOURCE_TYPE_TELEMETRY, i).toString());
+    b->addItem(RawSource(SOURCE_TYPE_TELEMETRY, i).toString(model));
     if (!firmware->isTelemetrySourceAvailable(i)) {
       //disable item
       QModelIndex index = b->model()->index(i+1, 0);
@@ -407,8 +407,8 @@ void TelemetryCustomScreen::updateBar(int line)
   int index = screen.body.bars[line].source;
   barsCB[line]->setCurrentIndex(index);
   if (index) {
-    RawSource source = RawSource(SOURCE_TYPE_TELEMETRY, index-1, &model);
-    RawSourceRange range = source.getRange(true);
+    RawSource source = RawSource(SOURCE_TYPE_TELEMETRY, index-1);
+    RawSourceRange range = source.getRange(model, generalSettings, true);
     int max = round((range.max - range.min) / range.step);
     if (int(255-screen.body.bars[line].barMax) > max)
       screen.body.bars[line].barMax = 255 - max;
@@ -619,15 +619,6 @@ void TelemetryPanel::setup()
     ui->altimetryGB->setVisible(firmware->getCapability(HasAltitudeSel) || firmware->getCapability(HasVario)),
     ui->frskyProtoCB->setDisabled(firmware->getCapability(NoTelemetryProtocol));
 
-    if (!firmware->getCapability(TelemetryUnits)) {
-      ui->frskyUnitsCB->setDisabled(true);
-      int index=0;
-      if (firmware_id.contains("imperial")) {
-        index=1;
-      }
-      ui->frskyUnitsCB->setCurrentIndex(index);
-    }
-
     if (firmware->getCapability(Telemetry) & TM_HASWSHH) {
       ui->frskyProtoCB->addItem(tr("Winged Shadow How High"));
     }
@@ -662,7 +653,6 @@ void TelemetryPanel::setup()
     }
 
     ui->frskyProtoCB->setCurrentIndex(model.frsky.usrProto);
-    ui->frskyUnitsCB->setCurrentIndex(model.frsky.imperial);
     ui->bladesCount->setValue(model.frsky.blades);
 
     populateVoltsSource();
@@ -724,12 +714,6 @@ void TelemetryPanel::on_telemetryProtocol_currentIndexChanged(int index)
 
 void TelemetryPanel::onAnalogModified()
 {
-  emit modified();
-}
-
-void TelemetryPanel::on_frskyUnitsCB_currentIndexChanged(int index)
-{
-  model.frsky.imperial = index;
   emit modified();
 }
 

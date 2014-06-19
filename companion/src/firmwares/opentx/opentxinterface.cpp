@@ -468,6 +468,11 @@ FirmwareInterface * OpenTxFirmware::getFirmwareVariant(const QString & id)
 int OpenTxFirmware::getCapability(const Capability capability)
 {
   switch (capability) {
+    case Imperial:
+      if (IS_ARM(board))
+        return 0;
+      else
+        return id.contains("imperial") ? 1 : 0;
     case ModelImage:
       if (IS_TARANIS(board))
         return 1;

@@ -170,16 +170,12 @@ QString MixesPanel::getMixerText(int dest, bool * new_ch)
       default:  str += "  "; break;
     };
 
-    //set mixer src model if it is unset (srcRaw needs this to generate proper toString() for input source type)
-    if (md->srcRaw.model == 0) 
-      md->srcRaw.model = &model;  
-    
-    //highlight source if needed
+    // highlight source if needed
     if ( (md->srcRaw.type == SOURCE_TYPE_CH) && (md->srcRaw.index+1 == (int)highlightedSource) ) {
-      str += " <b>" + Qt::escape(md->srcRaw.toString()) + "</b>"; 
+      str += " <b>" + Qt::escape(md->srcRaw.toString(model)) + "</b>";
     }
     else {
-      str += " " + Qt::escape(md->srcRaw.toString());
+      str += " " + Qt::escape(md->srcRaw.toString(model));
     }
 
     str += " " + Qt::escape(tr("Weight(%1)").arg(getGVarString(md->weight, true)));
@@ -192,7 +188,7 @@ QString MixesPanel::getMixerText(int dest, bool * new_ch)
     }
 
     if (md->carryTrim>0)      str += " " + Qt::escape(tr("NoTrim"));
-    else if (md->carryTrim<0) str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString();
+    else if (md->carryTrim<0) str += " " + RawSource(SOURCE_TYPE_TRIM, (-(md->carryTrim)-1)).toString(model);
 
     if (firmware->getCapability(HasNoExpo) && md->noExpo) str += " " + Qt::escape(tr("No DR/Expo"));
     if (md->sOffset)     str += " " + Qt::escape(tr("Offset(%1)").arg(getGVarString(md->sOffset)));

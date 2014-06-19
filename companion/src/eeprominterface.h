@@ -330,26 +330,24 @@ class RawSourceRange
     QString unit;
 };
 
+class GeneralSettings;
 class RawSource {
   public:
     RawSource():
       type(SOURCE_TYPE_NONE),
-      index(0),
-      model(NULL)
+      index(0)
     {
     }
 
-    RawSource(int value, const ModelData * model=NULL):
+    RawSource(int value):
       type(RawSourceType(abs(value)/65536)),
-      index(value >= 0 ? abs(value)%65536 : -(abs(value)%65536)),
-      model(model)
+      index(value >= 0 ? abs(value)%65536 : -(abs(value)%65536))
     {
     }
 
-    RawSource(RawSourceType type, int index=0, const ModelData * model=NULL):
+    RawSource(RawSourceType type, int index=0):
       type(type),
-      index(index),
-      model(model)
+      index(index)
     {
     }
 
@@ -358,9 +356,9 @@ class RawSource {
       return index >= 0 ? (type * 65536 + index) : -(type * 65536 - index);
     }
 
-    QString toString();
+    QString toString(const ModelData & model);
     
-    RawSourceRange getRange(bool singleprec=false);
+    RawSourceRange getRange(const ModelData & model, const GeneralSettings & settings, bool singleprec=false);
     
     bool operator == ( const RawSource & other) {
       return (this->type == other.type) && (this->index == other.index);
@@ -377,7 +375,6 @@ class RawSource {
 
     RawSourceType type;
     int index;
-    const ModelData * model;
 };
 
 enum RawSwitchType {
@@ -717,7 +714,7 @@ class LogicalSwitchData { // Logical Switches data
     CSFunctionFamily getFunctionFamily();
     bool isDeltaFunction();
     QString funcToString();
-    QString toString(const ModelData & model);
+    QString toString(const ModelData & model, const GeneralSettings & settings);
 };
 
 enum AssignFunc {
@@ -888,7 +885,6 @@ class FrSkyData {
     FrSkyData() { clear(); }
     FrSkyChannelData channels[4];
     unsigned int usrProto;
-    unsigned int imperial;
     int blades;
     unsigned int voltsSource;
     bool altitudeDisplayed;
@@ -1064,6 +1060,7 @@ enum Capability {
  FlightModes,
  FlightModesName,
  FlightModesHaveFades,
+ Imperial,
  Mixes,
  Timers,
  TimeDivisions,

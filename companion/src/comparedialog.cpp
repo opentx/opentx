@@ -803,7 +803,7 @@ void CompareDialog::printMixers()
               break;
           };
           str += QString(" %1").arg(getGVarString(md->weight)).rightJustified(6, ' ');
-          str += md->srcRaw.toString();
+          str += md->srcRaw.toString(*g_model1);
           if (md->swtch.type) str += " " + tr("Switch") + QString("(%1)").arg(md->swtch.toString());
           if (md->carryTrim) str += " " + tr("noTrim");
           if (md->sOffset)  str += " "+ tr("Offset") + QString(" (%1%)").arg(getGVarString(md->sOffset));
@@ -881,7 +881,7 @@ void CompareDialog::printMixers()
               break;
           };
           str += QString(" %1").arg(getGVarString(md->weight)).rightJustified(6, ' ');
-          str += md->srcRaw.toString();
+          str += md->srcRaw.toString(*g_model2);
           if (md->swtch.type) str += " " + tr("Switch") + QString("(%1)").arg(md->swtch.toString());
           if (md->carryTrim) str += " " + tr("noTrim");
           if (md->sOffset)  str += " "+ tr("Offset") + QString(" (%1%)").arg(getGVarString(md->sOffset));
@@ -1025,8 +1025,9 @@ void CompareDialog::printSwitches()
     str.append("<tr><td><h2>"+tr("Logical Switches")+"</h2></td></tr>");
     str.append("<tr><td><table border=1 cellspacing=0 cellpadding=1 width=\"100%\">");
     for (int i=0; i<GetCurrentFirmware()->getCapability(LogicalSwitches); i++) {
-      QString sw1 = g_model1->customSw[i].toString(*g_model1);
-      QString sw2 = g_model2->customSw[i].toString(*g_model2);
+      GeneralSettings settings;
+      QString sw1 = g_model1->customSw[i].toString(*g_model1, settings);
+      QString sw2 = g_model2->customSw[i].toString(*g_model2, settings);
       if (!(sw1.isEmpty() && sw2.isEmpty())) {
         str.append("<tr>");
         color=getColor1(sw1,sw2);

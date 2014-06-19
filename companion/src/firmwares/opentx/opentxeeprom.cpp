@@ -1009,7 +1009,7 @@ class MixField: public TransformedField {
       if (IS_TARANIS(board) && version < 216) {
         if (mix.srcRaw.type == SOURCE_TYPE_STICK && mix.srcRaw.index < NUM_STICKS) {
           if (!mix.noExpo) {
-            mix.srcRaw = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, mix.srcRaw.index, model);
+            mix.srcRaw = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, mix.srcRaw.index);
           }
         }
       }
@@ -1548,7 +1548,7 @@ class LogicalSwitchField: public TransformedField {
       else if (csw.func != LS_FN_OFF) {
         sourcesConversionTable->importValue((uint8_t)v1, csw.val1);
         csw.val2 = v2;
-        RawSource val1(csw.val1, model);
+        RawSource val1(csw.val1);
         if (IS_ARM(board) && version < 216 && val1.type == SOURCE_TYPE_TELEMETRY) {
           switch (val1.index) {
             case TELEMETRY_SOURCE_TIMER1:

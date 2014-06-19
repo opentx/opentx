@@ -138,8 +138,8 @@ void LogicalSwitchesPanel::v1Edited(int value)
     int i = sender()->property("index").toInt();
     model.customSw[i].val1 = cswitchSource1[i]->itemData(value).toInt();
     if (model.customSw[i].getFunctionFamily() == LS_FAMILY_VOFS) {
-      RawSource source = RawSource(model.customSw[i].val1, &model);
-      RawSourceRange range = source.getRange();
+      RawSource source = RawSource(model.customSw[i].val1);
+      RawSourceRange range = source.getRange(model, generalSettings);
       if (model.customSw[i].isDeltaFunction()) {
         model.customSw[i].val2 = (cswitchOffset[i]->value() / range.step);
       }
@@ -220,8 +220,8 @@ void LogicalSwitchesPanel::edited()
     {
       case LS_FAMILY_VOFS:
       {
-        source = RawSource(model.customSw[i].val1, &model);
-        RawSourceRange range = source.getRange();
+        source = RawSource(model.customSw[i].val1);
+        RawSourceRange range = source.getRange(model, generalSettings);
         int value = source.isTimeBased() ? QTimeS(cswitchTOffset[i]->time()).seconds() : cswitchOffset[i]->value();
         if (model.customSw[i].isDeltaFunction()) {
           /*TODO: is this delta function value set correctly*/
@@ -290,8 +290,8 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
   lock = true;
 
   unsigned int mask = 0;
-  RawSource source = RawSource(model.customSw[i].val1, &model);
-  RawSourceRange range = source.getRange();
+  RawSource source = RawSource(model.customSw[i].val1);
+  RawSourceRange range = source.getRange(model, generalSettings);
 
   switch (model.customSw[i].getFunctionFamily())
   {
