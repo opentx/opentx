@@ -180,7 +180,7 @@ RawSourceRange RawSource::getRange(const ModelData & model, const GeneralSetting
         case TELEMETRY_SOURCE_RPM:
         case TELEMETRY_SOURCE_RPM_MAX:
           result.step = singleprec ? 50 : 1;
-          result.max = singleprec ? 12750 : 20000;
+          result.max = singleprec ? 12750 : 30000;
           break;
         case TELEMETRY_SOURCE_FUEL:
           result.max = 100;
