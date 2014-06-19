@@ -582,7 +582,7 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
       len = i+1;
     if (len) {
       if (buf[i])
-	buf[i] = idx2char(buf[i]);
+        buf[i] = idx2char(buf[i]);
       else
         buf[i] = '_'; 	
     }
@@ -596,6 +596,11 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
     buf[sizeof(MODELS_PATH) + PSIZE(TR_MODEL) + 1] = (char)((num % 10) + '0');
     len = sizeof(MODELS_PATH) + PSIZE(TR_MODEL) + 2;
   }
+
+#if defined(RTCLOCK)
+  char * tmp = strAppendDate(&buf[len], true);
+  len = tmp - buf;
+#endif
 
   strcpy_P(&buf[len], STR_MODELS_EXT);
 

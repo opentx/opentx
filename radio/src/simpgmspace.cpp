@@ -39,6 +39,9 @@
 #include <fcntl.h>
 #include <stdarg.h>
 #include <sys/stat.h>
+#if defined(RTCLOCK)
+  #include <time.h>
+#endif
 
 #if defined WIN32 || !defined __GNUC__
   #include <direct.h>
@@ -352,7 +355,10 @@ void StartMainThread(bool tests)
 #endif
 
   g_tmr10ms = 0;
-
+#if defined(RTCLOCK)
+  g_rtcTime = time(0);
+#endif
+  
   main_thread_running = (tests ? 1 : 2);
   pthread_create(&main_thread_pid, NULL, &main_thread, NULL);
 }
