@@ -101,7 +101,13 @@ int main(int argc, char *argv[])
     g.profile[g.id()].fwName("");
   }
 
-  QPixmap pixmap = QPixmap(g.profile[g.id()].fwType().contains("taranis") ? ":/images/splasht.png" : ":/images/splash.png");
+  QString splashScreen;
+  if ( g.profile[g.id()].fwType().contains("taranis"))     splashScreen = ":/images/splasht.png";
+  else if ( g.profile[g.id()].fwType().contains("9xrpro")) splashScreen = ":/images/splashp.png";
+  else if ( g.profile[g.id()].fwType().contains("9xr"))    splashScreen = ":/images/splashr.png";
+  else  splashScreen = ":/images/splash.png";
+
+  QPixmap pixmap = QPixmap(splashScreen);
   QSplashScreen *splash = new QSplashScreen(pixmap);
 
   RegisterEepromInterfaces();
