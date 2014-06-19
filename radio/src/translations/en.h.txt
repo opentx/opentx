@@ -803,7 +803,8 @@
 #define TR_PT                  "pt"
 #define TR_PTS                 "pts"
 #define TR_SMOOTH              "Smooth"
-#define TR_COPY_STICKS_TO_OFS  "Copy Stick To Subtrim"
+#define TR_COPY_STICKS_TO_OFS  "Copy sticks to subtrim"
+#define TR_COPY_TRIMS_TO_OFS   "Copy trims to subtrim"
 #define TR_PERSISTENT_MAH      TR(INDENT "Str mAh", INDENT "Persistent mAh")
 #define TR_PREFLIGHT           "Preflight Checks"
 #define TR_CHECKLIST           TR(INDENT "Checklist", INDENT "Display Checklist")

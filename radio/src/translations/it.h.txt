@@ -804,6 +804,7 @@
 #define TR_PTS                 "pti"
 #define TR_SMOOTH              "Smussa"
 #define TR_COPY_STICKS_TO_OFS  "Copia Stick su Offset"
+#define TR_COPY_TRIMS_TO_OFS   "Copy trims to subtrim"
 #define TR_PERSISTENT_MAH      INDENT "Memo mAh"
 #define TR_PREFLIGHT           "Controlli Prevolo"
 #define TR_CHECKLIST           INDENT "Mostra Checklist"

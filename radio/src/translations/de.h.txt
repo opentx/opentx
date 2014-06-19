@@ -804,6 +804,7 @@
 #define TR_PTS                 "Pts"
 #define TR_SMOOTH              "Runden"
 #define TR_COPY_STICKS_TO_OFS  "Kopie Stick to Servo-Mitte"  // "Trims => Offset"
+#define TR_COPY_TRIMS_TO_OFS   "Copy trims to subtrim"
 #define TR_PERSISTENT_MAH      INDENT "Speichern mAh"
 #define TR_PREFLIGHT           "----Preflight Checks----"
 #define TR_CHECKLIST           INDENT "Display Checklist"

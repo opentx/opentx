@@ -3853,6 +3853,9 @@ void onLimitsMenu(const char *result)
   else if (result == STR_COPY_STICKS_TO_OFS) {
     copySticksToOffset(ch);
   }
+  else if (result == STR_COPY_TRIMS_TO_OFS) {
+    copyTrimsToOffset(ch);
+  }
 }
 #endif
 
@@ -3929,6 +3932,7 @@ void menuModelLimits(uint8_t event)
     if (sub==k && m_posHorz < 0 && event==EVT_KEY_LONG(KEY_ENTER)) {
       killEvents(event);
       MENU_ADD_ITEM(STR_RESET);
+      MENU_ADD_ITEM(STR_COPY_TRIMS_TO_OFS);
       MENU_ADD_ITEM(STR_COPY_STICKS_TO_OFS);
       menuHandler = onLimitsMenu;
     }

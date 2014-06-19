@@ -804,6 +804,7 @@
 #define TR_PTS                 " b."
 #define TR_SMOOTH              "Hladká"
 #define TR_COPY_STICKS_TO_OFS  "Kopírovat stick do subtrimu"
+#define TR_COPY_TRIMS_TO_OFS   "Copy trims to subtrim"
 #define TR_PERSISTENT_MAH      TR(INDENT "Str mAh", INDENT "Ukládat mAh")
 #define TR_PREFLIGHT           "Předletová kontrola"
 #define TR_CHECKLIST           INDENT "Zobrazit poznámky"

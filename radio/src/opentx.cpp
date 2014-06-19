@@ -3054,13 +3054,11 @@ void copySticksToOffset(uint8_t ch)
 {
   pauseMixerCalculations();
   int32_t zero = (int32_t)channelOutputs[ch];
-  int32_t old = chans[ch];
 
   evalFlightModeMixes(e_perout_mode_nosticks+e_perout_mode_notrainer, 0);
   int32_t val = chans[ch];
   LimitData *ld = limitAddress(ch);
   limit_min_max_t lim = LIMIT_MIN(ld);
-  TRACE("%d vs %d chan=%d vs %d - lim=%d", zero, channelOutputs[ch], val, old, lim);
   if (val < 0) {
     val = -val;
     lim = LIMIT_MIN(ld);
@@ -3071,6 +3069,31 @@ void copySticksToOffset(uint8_t ch)
   zero = (zero*256000 - 10*val*lim) / (1024*256-val);
 #endif
   ld->offset = (ld->revert ? -zero : zero);
+  resumeMixerCalculations();
+  eeDirty(EE_MODEL);
+}
+
+void copyTrimsToOffset(uint8_t ch)
+{
+  int16_t zero;
+
+  pauseMixerCalculations();
+
+  evalFlightModeMixes(e_perout_mode_noinput, 0); // do output loop - zero input sticks and trims
+  zero = applyLimits(ch, chans[ch]);
+
+  evalFlightModeMixes(e_perout_mode_noinput-e_perout_mode_notrims, 0); // do output loop - only trims
+
+  int16_t output = applyLimits(ch, chans[ch]) - zero;
+  int16_t v = g_model.limitData[ch].offset;
+  if (g_model.limitData[ch].revert) output = -output;
+#if defined(CPUARM)
+  v += (output * 125) / 128;
+#else
+  v += output;
+#endif
+  g_model.limitData[ch].offset = limit((int16_t)-1000, (int16_t)v, (int16_t)1000); // make sure the offset doesn't go haywire
+
   resumeMixerCalculations();
   eeDirty(EE_MODEL);
 }
