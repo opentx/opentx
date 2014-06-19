@@ -53,7 +53,7 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     cswitchValue[i]->setAccelerated(true);
     cswitchValue[i]->setDecimals(0);
     cswitchValue[i]->setProperty("index", i);
-    connect(cswitchValue[i], SIGNAL(editingFinished()), this, SLOT(edited()));
+    connect(cswitchValue[i], SIGNAL(valueChanged(double)), this, SLOT(edited()));
     gridLayout->addWidget(cswitchValue[i], i+1, 2);
     cswitchValue[i]->setVisible(false);
 
@@ -70,7 +70,7 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     cswitchOffset[i]->setMinimum(-125);
     cswitchOffset[i]->setAccelerated(true);
     cswitchOffset[i]->setDecimals(0);
-    connect(cswitchOffset[i], SIGNAL(editingFinished()), this, SLOT(edited()));
+    connect(cswitchOffset[i], SIGNAL(valueChanged(double)), this, SLOT(edited()));
     cswitchOffset[i]->setVisible(false);
     v2Layout->addWidget(cswitchOffset[i]);
     cswitchOffset2[i] = new QDoubleSpinBox(this);
@@ -79,7 +79,7 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     cswitchOffset2[i]->setMinimum(-125);
     cswitchOffset2[i]->setAccelerated(true);
     cswitchOffset2[i]->setDecimals(0);
-    connect(cswitchOffset2[i], SIGNAL(editingFinished()), this, SLOT(edited()));
+    connect(cswitchOffset2[i], SIGNAL(valueChanged(double)), this, SLOT(edited()));
     cswitchOffset2[i]->setVisible(false);
     v2Layout->addWidget(cswitchOffset2[i]);
     cswitchTOffset[i] = new QTimeEdit(this);
@@ -241,18 +241,22 @@ void LogicalSwitchesPanel::edited()
       case LS_FAMILY_TIMER:
         model.customSw[i].val1 = TimToVal(cswitchValue[i]->value());
         model.customSw[i].val2 = TimToVal(cswitchOffset[i]->value());
-        updateTimerParam(cswitchValue[i], model.customSw[i].val1);
-        updateTimerParam(cswitchOffset[i], model.customSw[i].val2);
+        updateTimerParam(cswitchValue[i], model.customSw[i].val1, 0.1);
+        updateTimerParam(cswitchOffset[i], model.customSw[i].val2, 0.1);
         break;
       case LS_FAMILY_STAY:
         if (sender() == cswitchOffset[i]) {
           model.customSw[i].val2 = TimToVal(cswitchOffset[i]->value());
-          updateTimerParam(cswitchOffset[i], model.customSw[i].val2, true);
+          updateTimerParam(cswitchOffset[i], model.customSw[i].val2, 0.0);
         }
         else {
           model.customSw[i].val3 = TimToVal(cswitchOffset2[i]->value()) - model.customSw[i].val2;
         }
-        updateTimerParam(cswitchOffset2[i], model.customSw[i].val2+model.customSw[i].val3, true);
+        updateTimerParam(cswitchOffset2[i], model.customSw[i].val2+model.customSw[i].val3, cswitchOffset[i]->value());
+        if (model.customSw[i].val3 == 0) {
+          cswitchOffset2[i]->setSuffix(tr("(infinite)"));
+          cswitchOffset2[i]->clear();
+        }
         break;
       default:
         break;
@@ -262,11 +266,11 @@ void LogicalSwitchesPanel::edited()
   }
 }
 
-void LogicalSwitchesPanel::updateTimerParam(QDoubleSpinBox *sb, int timer, bool allowZero)
+void LogicalSwitchesPanel::updateTimerParam(QDoubleSpinBox *sb, int timer, double minimum)
 {
   sb->setVisible(true);
   sb->setDecimals(1);
-  sb->setMinimum(allowZero ? 0.0 : 0.1);
+  sb->setMinimum(minimum);
   sb->setMaximum(175);
   float value = ValToTim(timer);
   if (value>=60)
@@ -276,6 +280,7 @@ void LogicalSwitchesPanel::updateTimerParam(QDoubleSpinBox *sb, int timer, bool 
   else
     sb->setSingleStep(0.1);
   sb->setValue(value);
+  sb->setSuffix("");
 }
 
 #define SOURCE1_VISIBLE  0x1
@@ -345,8 +350,12 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
     case LS_FAMILY_STAY:
       mask |= SOURCE1_VISIBLE | VALUE2_VISIBLE | VALUE3_VISIBLE;
       populateSwitchCB(cswitchSource1[i], RawSwitch(model.customSw[i].val1), generalSettings);
-      updateTimerParam(cswitchOffset[i], model.customSw[i].val2, true);
-      updateTimerParam(cswitchOffset2[i], model.customSw[i].val2+model.customSw[i].val3, true);
+      updateTimerParam(cswitchOffset[i], model.customSw[i].val2, 0.0);
+      updateTimerParam(cswitchOffset2[i], model.customSw[i].val2+model.customSw[i].val3, cswitchOffset[i]->value());
+      if (model.customSw[i].val3 == 0) {
+        cswitchOffset2[i]->setSuffix(tr("(infinite)"));
+        cswitchOffset2[i]->clear();
+      }
       break;
     case LS_FAMILY_VCOMP:
       mask |= SOURCE1_VISIBLE | SOURCE2_VISIBLE;
@@ -355,8 +364,8 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
       break;
     case LS_FAMILY_TIMER:
       mask |= VALUE1_VISIBLE | VALUE2_VISIBLE;
-      updateTimerParam(cswitchValue[i], model.customSw[i].val1);
-      updateTimerParam(cswitchOffset[i], model.customSw[i].val2);
+      updateTimerParam(cswitchValue[i], model.customSw[i].val1, 0.1);
+      updateTimerParam(cswitchOffset[i], model.customSw[i].val2, 0.1);
       break;
   }
 
