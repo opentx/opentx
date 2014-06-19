@@ -1350,7 +1350,17 @@ void menuModelSetup(uint8_t event)
         lcd_putsLeft(y, STR_BEEPCTR);
         for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS; i++) {
           // TODO flash saving, \001 not needed in STR_RETA123
-          lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+i*FW, y, STR_RETA123, i, ((m_posHorz==i) && attr) ? BLINK|INVERS : (((g_model.beepANACenter & ((BeepANACenter)1<<i)) || (attr && m_posHorz<0)) ? INVERS : 0 ) );
+          uint8_t x = MODEL_SETUP_2ND_COLUMN+i*FW;
+#if defined(PCBTARANIS) && !defined(REVPLUS)
+          if (i == POT3) {
+            if (m_posHorz == POT3) REPEAT_LAST_CURSOR_MOVE();
+            continue;
+          }
+          else if (i > POT3) {
+            x -= FW;
+          }
+#endif
+          lcd_putsiAtt(x, y, STR_RETA123, i, ((m_posHorz==i) && attr) ? BLINK|INVERS : (((g_model.beepANACenter & ((BeepANACenter)1<<i)) || (attr && m_posHorz<0)) ? INVERS : 0 ) );
         }
         if (attr && CURSOR_ON_CELL) {
           if (event==EVT_KEY_BREAK(KEY_ENTER) || p1valdiff) {
