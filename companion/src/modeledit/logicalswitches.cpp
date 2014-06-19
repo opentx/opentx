@@ -298,7 +298,7 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
         int maxTime = round(range.max);
         cswitchTOffset[i]->setMaximumTime(QTimeS(maxTime));
         cswitchTOffset[i]->setDisplayFormat((maxTime>=3600)?"hh:mm:ss":"mm:ss");
-        cswitchTOffset[i]->setTime(QTimeS(round(range.step*(model.customSw[i].val2+range.offset)));
+        cswitchTOffset[i]->setTime(QTimeS(round(range.step*(model.customSw[i].val2+range.offset))));
       }
       else {
         mask |= VALUE2_VISIBLE;
@@ -308,7 +308,7 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
           cswitchOffset[i]->setSuffix(" " + range.unit);
         cswitchOffset[i]->setMinimum(range.min);
         cswitchOffset[i]->setMaximum(range.max);
-        cswitchOffset[i]->setValue(range.step*(model.customSw[i].val2+range.offset);
+        cswitchOffset[i]->setValue(range.step*(model.customSw[i].val2+range.offset));
       }
       break;
     case LS_FAMILY_VBOOL:
