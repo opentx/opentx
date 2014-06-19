@@ -266,7 +266,11 @@ void CustomFunctionsPanel::playMusic()
     else {
       phononCurrent = index;
       clickObject->clear();
+#ifdef __APPLE__
       clickObject->setCurrentSource(QUrl("file://"+track));
+#else
+      clickObject->setCurrentSource(QUrl(track));
+#endif
       clickObject->play();
       playBT[index]->setIcon(CompanionIcon("stop.png"));
     }
