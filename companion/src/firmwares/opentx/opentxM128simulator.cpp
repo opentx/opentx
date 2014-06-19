@@ -46,6 +46,8 @@
 #define GPS
 #define FAI_CHOICE
 #define FRSKY_STICKS
+#define DSM2
+#define DSM2_PPM
 
 #define EEPROM_VARIANT SIMU_M128_VARIANTS
 #define GAUGES

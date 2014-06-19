@@ -2424,7 +2424,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   if (IS_ARM(board))
     internalField.Append(new UnsignedField<3>(modelData.telemetryProtocol));
   else
-    internalField.Append(new ConversionField< SignedField<3> >(modelData.moduleData[0].protocol, &protocolsConversionTable, "Protocol", ::QObject::tr("OpenTX doesn't accept this protocol")));
+    internalField.Append(new ConversionField< UnsignedField<3> >((unsigned int &)modelData.moduleData[0].protocol, &protocolsConversionTable, "Protocol", ::QObject::tr("OpenTX doesn't accept this protocol")));
 
   internalField.Append(new BoolField<1>(modelData.thrTrim));
 
