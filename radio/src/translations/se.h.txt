@@ -803,7 +803,7 @@
 #define TR_PT                  "pt"
 #define TR_PTS                 "pkt"
 #define TR_SMOOTH              "Mjuk"
-#define TR_COPY_TRIMS_TO_OFS   "Spara trimmar som offset"
+#define TR_COPY_STICKS_TO_OFS  "Spara sticks som offset"
 #define TR_PERSISTENT_MAH      INDENT "Lagra mAh"
 #define TR_PREFLIGHT           "Startkontroller"
 #define TR_CHECKLIST           TR(INDENT "Checklista", INDENT "Visa Checklista")

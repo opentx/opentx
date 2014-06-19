@@ -3850,8 +3850,8 @@ void onLimitsMenu(const char *result)
     ld->revert = false;
     ld->curve = 0;
   }
-  else if (result == STR_COPY_TRIMS_TO_OFS) {
-    copyTrimsToOffset(ch);
+  else if (result == STR_COPY_STICKS_TO_OFS) {
+    copySticksToOffset(ch);
   }
 }
 #endif
@@ -3929,7 +3929,7 @@ void menuModelLimits(uint8_t event)
     if (sub==k && m_posHorz < 0 && event==EVT_KEY_LONG(KEY_ENTER)) {
       killEvents(event);
       MENU_ADD_ITEM(STR_RESET);
-      MENU_ADD_ITEM(STR_COPY_TRIMS_TO_OFS);
+      MENU_ADD_ITEM(STR_COPY_STICKS_TO_OFS);
       menuHandler = onLimitsMenu;
     }
 #else
@@ -3965,7 +3965,7 @@ void menuModelLimits(uint8_t event)
             ld->offset = checkIncDec(event, ld->offset, -1000, 1000, EE_MODEL|NO_INCDEC_MARKS|DBLKEYS_1000);
           }
           else if (attr && event==EVT_KEY_LONG(KEY_MENU)) {
-            copyTrimsToOffset(k);
+            copySticksToOffset(k);
             s_editMode = 0;
           }
           break;

@@ -1176,7 +1176,7 @@ void applyDefaultTemplate();
 void incSubtrim(uint8_t idx, int16_t inc);
 void instantTrim();
 FORCEINLINE void evalTrims();
-void copyTrimsToOffset(uint8_t ch);
+void copySticksToOffset(uint8_t ch);
 void moveTrimsToOffsets();
 
 void evalFunctions();

@@ -3050,24 +3050,27 @@ void instantTrim()
   AUDIO_WARNING2();
 }
 
-void copyTrimsToOffset(uint8_t ch)
+void copySticksToOffset(uint8_t ch)
 {
   pauseMixerCalculations();
   int32_t zero = (int32_t)channelOutputs[ch];
+  int32_t old = chans[ch];
+
   evalFlightModeMixes(e_perout_mode_nosticks+e_perout_mode_notrainer, 0);
   int32_t val = chans[ch];
   LimitData *ld = limitAddress(ch);
-  limit_min_max_t lim = LIMIT_MAX(ld);
+  limit_min_max_t lim = LIMIT_MIN(ld);
+  TRACE("%d vs %d chan=%d vs %d - lim=%d", zero, channelOutputs[ch], val, old, lim);
   if (val < 0) {
     val = -val;
     lim = LIMIT_MIN(ld);
   }
 #if defined(CPUARM)
-  zero = (zero*100000 - val*lim) / (102400-val);
+  zero = (zero*256000 - val*lim) / (1024*256-val);
 #else
-  zero = (zero*100000 - 10*val*lim) / (102400-val);
+  zero = (zero*256000 - 10*val*lim) / (1024*256-val);
 #endif
-  ld->offset = (ld->revert) ? -zero : zero;
+  ld->offset = (ld->revert ? -zero : zero);
   resumeMixerCalculations();
   eeDirty(EE_MODEL);
 }
