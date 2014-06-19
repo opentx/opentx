@@ -260,7 +260,7 @@ class SourcesConversionTable: public ConversionTable {
 
         for (int i=0; i<TELEMETRY_SOURCE_ACC; i++) {
           if (version < 216) {
-            if (i==TELEMETRY_SOURCE_TX_TIME || i==TELEMETRY_SOURCE_SWR || i==TELEMETRY_SOURCE_A3 || i==TELEMETRY_SOURCE_A4 || i==TELEMETRY_SOURCE_ASPD || i==TELEMETRY_SOURCE_DTE || i==TELEMETRY_SOURCE_CELL_MIN || i==TELEMETRY_SOURCE_CELLS_MIN || i==TELEMETRY_SOURCE_VFAS_MIN)
+            if (i==TELEMETRY_SOURCE_TX_TIME || i==TELEMETRY_SOURCE_SWR || i==TELEMETRY_SOURCE_A3 || i==TELEMETRY_SOURCE_A4 || i==TELEMETRY_SOURCE_ASPEED || i==TELEMETRY_SOURCE_DTE || i==TELEMETRY_SOURCE_CELL_MIN || i==TELEMETRY_SOURCE_CELLS_MIN || i==TELEMETRY_SOURCE_VFAS_MIN)
               continue;
           }
           if (!IS_ARM(board)) {
@@ -443,7 +443,7 @@ class TelemetrySourcesConversionTable: public ConversionTable {
       addConversion(1+TELEMETRY_SOURCE_HDG, val++);
       addConversion(1+TELEMETRY_SOURCE_VERTICAL_SPEED, val++);
       if (version >= 216) {
-        addConversion(1+TELEMETRY_SOURCE_ASPD, val++);
+        addConversion(1+TELEMETRY_SOURCE_ASPEED, val++);
         addConversion(1+TELEMETRY_SOURCE_DTE, val++);
       }
       if (IS_ARM(board) && version >= 216) {

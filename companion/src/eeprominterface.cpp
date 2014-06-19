@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <list>
+#include <float.h>
 #include "eeprominterface.h"
 #include "firmwares/er9x/er9xinterface.h"
 #include "firmwares/th9x/th9xinterface.h"
@@ -103,6 +104,10 @@ RawSourceRange RawSource::getRange(bool singleprec)
 
   switch (type) {
     case SOURCE_TYPE_TELEMETRY:
+      if (singleprec) {
+        result.offset = -DBL_MAX;
+      }
+
       switch (index) {
         case TELEMETRY_SOURCE_TX_BATT:
           result.step = 0.1;
@@ -165,10 +170,12 @@ RawSourceRange RawSource::getRange(bool singleprec)
         case TELEMETRY_SOURCE_FUEL:
           result.max = 100;
           break;
+        case TELEMETRY_SOURCE_ASPEED:
+        case TELEMETRY_SOURCE_ASPEED_MAX:
         case TELEMETRY_SOURCE_SPEED:
         case TELEMETRY_SOURCE_SPEED_MAX:
-          result.step = singleprec ? 4 : 1;
-          result.max = singleprec ? (4*236) : 2000;
+          result.step = singleprec ? 1 : 1;
+          result.max = singleprec ? (1*255) : 2000;
           if (model && !model->frsky.imperial) {
             result.step *= 1.852;
             result.max *= 1.852;
@@ -225,14 +232,15 @@ RawSourceRange RawSource::getRange(bool singleprec)
           result.max = 125;
           break;
       }
-      if (singleprec && !result.offset) {
+
+      if (singleprec && result.offset==-DBL_MAX) {
         result.offset = result.max - (127*result.step);
       }
       break;
 
     default:
       result.max = (model && model->extendedLimits ? 125 : 100);
-      result.min = - result.max;
+      result.min = -result.max;
       break;
   }
 
