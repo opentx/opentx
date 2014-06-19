@@ -106,6 +106,7 @@ class TelemetryPanel : public ModelPanel
   private:
     Ui::Telemetry *ui;
     TelemetryAnalog * analogs[4];
+    TelemetryCustomScreen * telemetryCustomScreens[4];
 
     void setup();
     void telBarUpdate();
