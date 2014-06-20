@@ -350,9 +350,9 @@ void logsDialog::on_mapsButton_clicked() {
   geFile.close();
   QStringList parameters;
 #ifdef __APPLE__
-  gePath = "/usr/bin/open";
   parameters << "-a";
-  parameters << "Google\\ Earth";
+  parameters << gePath;
+  gePath = "/usr/bin/open";
 #endif
   parameters << geFilename;
   QProcess *process = new QProcess(this);
