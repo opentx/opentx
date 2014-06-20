@@ -440,7 +440,12 @@ static int8_t SCSI_StartStopUnit(uint8_t lun, uint8_t *params)
 {
   MSC_BOT_DataLen = 0;
   
-  if (lun < 2) {
+#if defined(BOOT)
+  if (lun < 2) 
+#else
+  if (lun < 1) 
+#endif
+    {
     if (params[4] & 1) {
       // lun to be active
       lunReady[lun] = 1 ;

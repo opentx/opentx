@@ -35,7 +35,12 @@ extern "C" {
 #include "usbd_msc_mem.h"
 #include "usb_conf.h"
 
+#if defined(BOOT)
 #define STORAGE_LUN_NBR    2
+#else
+/* SD card only when not running bootloader */
+#define STORAGE_LUN_NBR    1
+#endif
 #define BLOCKSIZE          512
 
 /* USB Mass storage Standard Inquiry Data */
@@ -54,6 +59,7 @@ const unsigned char STORAGE_Inquirydata[] = {//36
   'T', 'a', 'r', 'a', 'n', 'i', 's', ' ',  /* Product      : 16 Bytes */
   'R', 'a', 'd', 'i', 'o', ' ', ' ', ' ',
   '1', '.', '0', '0',                      /* Version      : 4 Bytes */
+#if defined(BOOT)
   /* LUN 1 */
   0x00,		
   0x80,		
@@ -67,10 +73,13 @@ const unsigned char STORAGE_Inquirydata[] = {//36
   'T', 'a', 'r', 'a', 'n', 'i', 's', ' ',  /* Product      : 16 Bytes */
   'R', 'a', 'd', 'i', 'o', ' ', ' ', ' ',
   '1', '.', '0' ,'0',                      /* Version      : 4 Bytes */
+#endif  
 }; 
 
+#if defined(BOOT)
 int32_t fat12Write( const uint8_t *buffer, uint16_t sector, uint32_t count ) ;
 int32_t fat12Read( uint8_t *buffer, uint16_t sector, uint16_t count ) ;
+#endif
 
 int8_t STORAGE_Init (uint8_t lun);
 
@@ -137,11 +146,14 @@ int8_t STORAGE_Init (uint8_t lun)
   */
 int8_t STORAGE_GetCapacity (uint8_t lun, uint32_t *block_num, uint32_t *block_size)
 {
+#if defined(BOOT)
   if (lun == 1)	{
     *block_size = BLOCKSIZE;
     *block_num  = 3 + EESIZE/BLOCKSIZE + FLASHSIZE/BLOCKSIZE;
   }
-  else {
+  else 
+#endif
+  	{
     if (!SD_CARD_PRESENT())
       return -1;
   
@@ -161,17 +173,22 @@ int8_t STORAGE_GetCapacity (uint8_t lun, uint32_t *block_num, uint32_t *block_si
   return 0;
 }
 
+#if defined(BOOT)
 uint8_t lunReady[2] ;
+#else
+uint8_t lunReady[1] ;
+#endif
 
 void usbPluggedIn()
 {
   if (lunReady[0] == 0) {
     lunReady[0] = 1;
   }
-
+#if defined(BOOT)
   if (lunReady[1] == 0) {
     lunReady[1] = 1;
   }
+#endif
 }
 
 /**
@@ -181,13 +198,16 @@ void usbPluggedIn()
   */
 int8_t  STORAGE_IsReady (uint8_t lun)
 { 
+#if defined(BOOT)
   if (lun == 1) {
     if (lunReady[1] == 0) {
       return -1 ;
     }
     return 0 ;
   }
-  else {
+  else 
+#endif
+    {
     if (lunReady[0] == 0) {
       return -1 ;
     }
@@ -221,11 +241,14 @@ int8_t STORAGE_Read (uint8_t lun,
                  uint32_t blk_addr,                       
                  uint16_t blk_len)
 {
+#if defined(BOOT)
   if (lun == 1) {
     if (fat12Read(buf, blk_addr, blk_len) != 0)
       return -1;
   }
-  else {
+  else 
+#endif
+    {
     if (SD_ReadSectors(buf, blk_addr, blk_len) != 0) {
       return -1;
     }
@@ -249,11 +272,14 @@ int8_t STORAGE_Write (uint8_t lun,
                   uint32_t blk_addr,
                   uint16_t blk_len)
 {
+#if defined(BOOT)
   if (lun == 1)	{
     if (fat12Write(buf, blk_addr, blk_len) != 0)
       return -1;
   }
-  else {
+  else 
+#endif
+    {
     if (SD_WriteSectors(buf, blk_addr, blk_len) != 0)
       return -1;
   }
@@ -269,10 +295,10 @@ int8_t STORAGE_Write (uint8_t lun,
 
 int8_t STORAGE_GetMaxLun (void)
 {
-  return (STORAGE_LUN_NBR - 1);
+  return STORAGE_LUN_NBR - 1;
 }
 
-
+#if defined(BOOT)
 //------------------------------------------------------------------------------
 /**
  * FAT12 boot sector partition.
@@ -766,5 +792,5 @@ int32_t fat12Write(const uint8_t *buffer, uint16_t sector, uint32_t count )
   }
   return 0 ;
 }
-
+#endif
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

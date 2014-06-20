@@ -224,7 +224,9 @@ void turnBacklightOff(void);
 int usbPlugged(void);
 void usbInit(void);
 void usbStart(void);
+#if defined(USB_JOYSTICK)
 void usbStop(void);
+#endif
 
 #ifdef __cplusplus
 }
