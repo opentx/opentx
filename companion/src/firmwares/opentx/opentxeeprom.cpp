@@ -2559,7 +2559,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   if (IS_TARANIS(board) && version >= 216) {
     for (int i=0; i<7; i++) {
       ScriptData & script = modelData.scriptData[i];
-      internalField.Append(new ZCharField<10>(script.filename));
+      internalField.Append(new CharField<10>(script.filename));
       internalField.Append(new ZCharField<10>(script.name));
       for (int j=0; j<10; j++) {
         internalField.Append(new SignedField<8>(script.inputs[j]));
