@@ -349,36 +349,6 @@ void populateBacklightCB(QComboBox *b, const uint8_t value)
   }
 }
 
-void populateAndSwitchCB(QComboBox *b, const RawSwitch & value)
-{
-  GeneralSettings fakeSettings;
-
-  if (IS_ARM(GetEepromInterface()->getBoard())) {
-    populateSwitchCB(b, value, fakeSettings);
-  }
-  else {
-    RawSwitch item;
-
-    b->clear();
-
-    item = RawSwitch(SWITCH_TYPE_NONE);
-    b->addItem(item.toString(), item.toValue());
-    if (item == value) b->setCurrentIndex(b->count()-1);
-
-    for (int i=1; i<=GetCurrentFirmware()->getCapability(SwitchesPositions); i++) {
-      item = RawSwitch(SWITCH_TYPE_SWITCH, i);
-      b->addItem(item.toString(), item.toValue());
-      if (item == value) b->setCurrentIndex(b->count()-1);
-    }
-
-    for (int i=1; i<=6; i++) {
-      item = RawSwitch(SWITCH_TYPE_VIRTUAL, i);
-      b->addItem(item.toString(), item.toValue());
-      if (item == value) b->setCurrentIndex(b->count()-1);
-    }
-  }
-}
-
 void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettings & generalSettings, unsigned long attr)
 {
   RawSwitch item;

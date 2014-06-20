@@ -422,6 +422,34 @@ void LogicalSwitchesPanel::populateCSWCB(QComboBox *b, int value)
   b->setMaxVisibleItems(10);
 }
 
+void LogicalSwitchesPanel::populateAndSwitchCB(QComboBox *b, const RawSwitch & value)
+{
+  if (IS_ARM(firmware->getBoard())) {
+    populateSwitchCB(b, value, generalSettings, POPULATE_ONOFF);
+  }
+  else {
+    RawSwitch item;
+
+    b->clear();
+
+    item = RawSwitch(SWITCH_TYPE_NONE);
+    b->addItem(item.toString(), item.toValue());
+    if (item == value) b->setCurrentIndex(b->count()-1);
+
+    for (int i=1; i<=firmware->getCapability(SwitchesPositions); i++) {
+      item = RawSwitch(SWITCH_TYPE_SWITCH, i);
+      b->addItem(item.toString(), item.toValue());
+      if (item == value) b->setCurrentIndex(b->count()-1);
+    }
+
+    for (int i=1; i<=6; i++) {
+      item = RawSwitch(SWITCH_TYPE_VIRTUAL, i);
+      b->addItem(item.toString(), item.toValue());
+      if (item == value) b->setCurrentIndex(b->count()-1);
+    }
+  }
+}
+
 void LogicalSwitchesPanel::updateLine(int i)
 {
   lock = true;

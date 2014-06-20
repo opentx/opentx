@@ -44,6 +44,7 @@ class LogicalSwitchesPanel : public ModelPanel
     int selectedSwitch;
 
     void populateCSWCB(QComboBox *b, int value);
+    void populateAndSwitchCB(QComboBox *b, const RawSwitch & value);
     void updateLine(int index);
     void updateTimerParam(QDoubleSpinBox *sb, int timer, double minimum=0);
 
