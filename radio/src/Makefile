@@ -273,9 +273,9 @@ LUA = NO
 MENUS_LOCK = NO
 
 # USB options in the main image
-# Values = JOYSTICK, DRIVES
+# Values = JOYSTICK, MASSSTORAGE
 # JOYSTICK: The TX will appear as a joystick
-# MASS: The TX will appear as a drive (as occurred pre-V2.0)
+# MASSSTORAGE: The TX will appear as a drive
 USB = JOYSTICK
 
 #------- END BUILD OPTIONS ---------------------------
