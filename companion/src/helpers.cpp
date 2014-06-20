@@ -479,8 +479,7 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
 
 void populateGVCB(QComboBox *b, int value)
 {
-  int selected=0;
-  int nullitem;
+  bool selected = false;
 
   b->clear();
 
@@ -490,16 +489,8 @@ void populateGVCB(QComboBox *b, int value)
     b->addItem(QObject::tr("-GV%1").arg(-i), gval);
     if (value == gval) {
       b->setCurrentIndex(b->count()-1);
-      selected=1;
+      selected = true;
     }
-  }
-
-  b->addItem("---", 0);
-
-  nullitem=b->count()-1;
-  if (value == 0) {
-    b->setCurrentIndex(b->count()-1);
-    selected=1;
   }
 
   for (int i=1; i<=pgvars; i++) {
@@ -507,12 +498,13 @@ void populateGVCB(QComboBox *b, int value)
     b->addItem(QObject::tr("GV%1").arg(i), gval);
     if (value == gval) {
       b->setCurrentIndex(b->count()-1);
-      selected=1;
+      selected = true;
     }
   }
 
-  if (selected==0)
-    b->setCurrentIndex(nullitem);
+  if (!selected) {
+    b->setCurrentIndex(pgvars);
+  }
 }
 
 void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData & model, unsigned int flags)
