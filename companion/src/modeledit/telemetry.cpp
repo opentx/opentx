@@ -408,7 +408,7 @@ void TelemetryCustomScreen::updateBar(int line)
   barsCB[line]->setCurrentIndex(index);
   if (index) {
     RawSource source = RawSource(SOURCE_TYPE_TELEMETRY, index-1);
-    RawSourceRange range = source.getRange(model, generalSettings, true);
+    RawSourceRange range = source.getRange(model, generalSettings, RANGE_SINGLE_PRECISION);
     int max = round((range.max - range.min) / range.step);
     if (int(255-screen.body.bars[line].barMax) > max)
       screen.body.bars[line].barMax = 255 - max;

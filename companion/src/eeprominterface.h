@@ -330,6 +330,10 @@ class RawSourceRange
     QString unit;
 };
 
+#define RANGE_SINGLE_PRECISION    1
+#define RANGE_DELTA_FUNCTION      2
+#define RANGE_DELTA_ABS_FUNCTION  4
+
 class GeneralSettings;
 class RawSource {
   public:
@@ -358,7 +362,7 @@ class RawSource {
 
     QString toString(const ModelData & model);
     
-    RawSourceRange getRange(const ModelData & model, const GeneralSettings & settings, bool singleprec=false);
+    RawSourceRange getRange(const ModelData & model, const GeneralSettings & settings, unsigned int flags=0);
     
     bool operator == ( const RawSource & other) {
       return (this->type == other.type) && (this->index == other.index);
@@ -712,7 +716,7 @@ class LogicalSwitchData { // Logical Switches data
     int andsw;
     void clear() { memset(this, 0, sizeof(LogicalSwitchData)); }
     CSFunctionFamily getFunctionFamily();
-    bool isDeltaFunction();
+    unsigned int getRangeFlags();
     QString funcToString();
     QString toString(const ModelData & model, const GeneralSettings & settings);
 };

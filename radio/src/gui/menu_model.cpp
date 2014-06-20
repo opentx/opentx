@@ -4397,7 +4397,12 @@ void menuModelLogicalSwitchOne(uint8_t event)
           if (v1_val >= MIXSRC_FIRST_TELEM) {
             putsTelemetryChannel(CSWONE_2ND_COLUMN, y, v1_val - MIXSRC_FIRST_TELEM, convertLswTelemValue(cs), attr|LEFT);
             v2_max = maxTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
-            v2_min = minTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
+            if (cs->func == LS_FUNC_DIFFEGREATER)
+              v2_min = -v2_max;
+            else if (cs->func == LS_FUNC_ADIFFEGREATER)
+              v2_min = 0;
+            else
+              v2_min = minTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
             INCDEC_SET_FLAG(INCDEC_REP10 | NO_INCDEC_MARKS);
             if (cs->v2 < v2_min || cs->v2 > v2_max) {
               cs->v2 = 0;
@@ -4682,7 +4687,12 @@ void menuModelLogicalSwitches(uint8_t event)
         putsTelemetryChannel(CSW_3RD_COLUMN, y, v1_val - MIXSRC_FIRST_TELEM, convertLswTelemValue(cs), LEFT|attr2);
         v2_max = maxTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
 #if defined(CPUARM)
-        v2_min = minTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
+        if (cs->func == LS_FUNC_DIFFEGREATER)
+          v2_min = -v2_max;
+        else if (cs->func == LS_FUNC_ADIFFEGREATER)
+          v2_min = 0;
+        else
+          v2_min = minTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
         if (horz == 2 && v2_max-v2_min > 1000)
           INCDEC_SET_FLAG(INCDEC_REP10 | NO_INCDEC_MARKS);
         if (cs->v2 < v2_min || cs->v2 > v2_max) {

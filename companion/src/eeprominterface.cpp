@@ -92,12 +92,13 @@ QString getGVarString(int16_t val, bool sign)
   }
 }
 
-RawSourceRange RawSource::getRange(const ModelData & model, const GeneralSettings & settings, bool singleprec)
+RawSourceRange RawSource::getRange(const ModelData & model, const GeneralSettings & settings, unsigned int flags)
 {
   RawSourceRange result;
 
   FirmwareInterface * firmware = GetCurrentFirmware();
   int board = firmware->getBoard();
+  bool singleprec = (flags & RANGE_SINGLE_PRECISION);
 
   if (!singleprec && !IS_ARM(board)) {
     singleprec = true;
@@ -266,12 +267,27 @@ RawSourceRange RawSource::getRange(const ModelData & model, const GeneralSetting
       if (singleprec && result.offset==-DBL_MAX) {
         result.offset = result.max - (127*result.step);
       }
+
+      if (flags & (RANGE_DELTA_FUNCTION|RANGE_DELTA_ABS_FUNCTION)) {
+        if (singleprec) {
+          result.offset = 0;
+          result.min = result.step * -127;
+          result.max = result.step * 127;
+        }
+        else {
+          result.min = -result.max;
+        }
+      }
       break;
 
     default:
       result.max = (model.extendedLimits ? 125 : 100);
       result.min = -result.max;
       break;
+  }
+
+  if (flags & RANGE_DELTA_ABS_FUNCTION) {
+    result.min = 0;
   }
 
   return result;
@@ -497,9 +513,14 @@ CSFunctionFamily LogicalSwitchData::getFunctionFamily()
     return LS_FAMILY_VCOMP;
 }
 
-bool LogicalSwitchData::isDeltaFunction()
+unsigned int LogicalSwitchData::getRangeFlags()
 {
-  return (func == LS_FN_DPOS || func == LS_FN_DAPOS);
+  if (func == LS_FN_DPOS)
+    return RANGE_DELTA_FUNCTION;
+  else if (func == LS_FN_DAPOS)
+    return RANGE_DELTA_ABS_FUNCTION;
+  else
+    return 0;
 }
 
 QString LogicalSwitchData::funcToString()
@@ -588,7 +609,7 @@ QString LogicalSwitchData::toString(const ModelData & model, const GeneralSettin
       else if (func == LS_FN_DPOS) result = "d(" + res + ")";
       result += res;
 
-      if (func == LS_FN_APOS || func == LS_FN_VPOS || isDeltaFunction())
+      if (func == LS_FN_APOS || func == LS_FN_VPOS || func == LS_FN_DPOS || func == LS_FN_DAPOS)
         result += " &gt; ";
       else if (func == LS_FN_ANEG || func == LS_FN_VNEG)
         result += " &lt; ";
