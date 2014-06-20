@@ -103,6 +103,31 @@ TEST(Trims, infiniteChainedTrims)
 }
 #endif
 
+TEST(Trims, CopyTrimsToOffset)
+{
+  MODEL_RESET();
+  modelDefault(0);
+  setTrimValue(0, 1, -100); // -100 on elevator
+  evalFunctions(); // it disables all safety channels
+  copyTrimsToOffset(1);
+  EXPECT_EQ(getTrimValue(0, 1), -100); // unchanged
+#if defined(CPUARM)
+  EXPECT_EQ(g_model.limitData[1].offset, -195);
+#else
+  EXPECT_EQ(g_model.limitData[1].offset, -200);
+#endif
+}
+
+TEST(Trims, CopySticksToOffset)
+{
+  MODEL_RESET();
+  modelDefault(0);
+  anaInValues[ELE_STICK] = -100;
+  perMain();
+  copySticksToOffset(1);
+  EXPECT_EQ(g_model.limitData[1].offset, -97);
+}
+
 TEST(outdezNAtt, test_unsigned)
 {
   uint8_t refBuf[sizeof(displayBuf)];
@@ -901,7 +926,7 @@ TEST(Heli, Mode2Test)
   EXPECT_EQ(chans[2], CHANNEL_MAX/2);
 }
 #elif defined(HELI)
-TEST(Heli, BasicTest)
+TEST(Heli, SimpleTest)
 {
   MODEL_RESET();
   applyTemplate(TMPL_HELI_SETUP);
