@@ -169,13 +169,13 @@ RawSourceRange RawSource::getRange(const ModelData & model, const GeneralSetting
         case TELEMETRY_SOURCE_T2_MAX:
           result.min = -30;
           result.max = 225;
-          result.unit = QObject::tr("°C");
+          result.unit = QObject::trUtf8("°C");
           break;
         case TELEMETRY_SOURCE_HDG:
           result.step = singleprec ? 2 : 1;
           result.max = 360;
           if (singleprec) result.offset = 256;
-          result.unit = QObject::tr("°");
+          result.unit = QObject::trUtf8("°");
           break;
         case TELEMETRY_SOURCE_RPM:
         case TELEMETRY_SOURCE_RPM_MAX:
