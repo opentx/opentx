@@ -6178,7 +6178,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="272"/>
         <source>AirSpeed</source>
-        <translation>VitA</translation>
+        <translation>Vitesse Air</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="273"/>
@@ -7353,7 +7353,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="268"/>
         <source>Alt</source>
-        <translation></translation>
+        <translation>Altitude</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="268"/>
@@ -7363,7 +7363,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="268"/>
         <source>Fuel</source>
-        <translation>Carb</translation>
+        <translation>Carburant</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="269"/>
@@ -7373,17 +7373,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="269"/>
         <source>Dist</source>
-        <translation></translation>
+        <translation>Distance</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="269"/>
         <source>GPS Alt</source>
-        <translation>Alt GPS</translation>
+        <translation>Altitude GPS</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="270"/>
         <source>Cell</source>
-        <translation>Elem</translation>
+        <translation>Element LiPo</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="270"/>
@@ -7393,17 +7393,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="270"/>
         <source>Curr</source>
-        <translation>Cour</translation>
+        <translation>Courant</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="270"/>
         <source>Cnsp</source>
-        <translation>Cnsm</translation>
+        <translation>Consommation</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="270"/>
         <source>Powr</source>
-        <translation>Puis</translation>
+        <translation>Puissance</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="271"/>
@@ -7423,7 +7423,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../eeprominterface.cpp" line="272"/>
         <source>VSpd</source>
-        <translation>VitV</translation>
+        <translation>Vitesse Verticale</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="273"/>
