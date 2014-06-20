@@ -580,7 +580,7 @@
 #define TR_BLOFFBRIGHTNESS     TR(INDENT"Lumin. OFF",INDENT"Luminosità OFF")
 #define TR_BLCOLOR             INDENT "Colore"
 #define TR_SPLASHSCREEN        TR("Schermo avvio", "Schermata di avvio")
-#define TR_THROTTLEWARNING     TR("All. Mot", INDENT "Allarme Motore")
+#define TR_THROTTLEWARNING     TR("All. Mot.", INDENT "Allarme Motore")
 #define TR_SWITCHWARNING       TR("Avv. Int.", INDENT "Avviso Interr.")
 #define TR_POTWARNING          TR("Avv. Pot.", INDENT "Avviso Pot.")
 #define TR_TIMEZONE            "Ora locale"
@@ -680,7 +680,7 @@
 #define TR_BATT_CALIB          "Calibra batt."
 #define TR_CURRENT_CALIB       "Calibra corr."
 #define TR_VOLTAGE             "Voltaggio"
-#define TR_CURRENT             "Corr."
+#define TR_CURRENT             "Corrente"
 #define TR_SELECT_MODEL        "Scegli Memo."
 #define TR_CREATE_MODEL        "Crea Modello"
 #define TR_COPY_MODEL          "Copia Modello"
@@ -707,7 +707,7 @@
 #define TR_COPROC              "CoProc."  
 #define TR_COPROC_TEMP         "Temp. MB \016>"
 #define TR_CAPAWARNING         INDENT "CapacitàLow"
-#define TR_TEMPWARNING         INDENT "Temp Alta"
+#define TR_TEMPWARNING         INDENT "Temp. Alta"
 #define TR_FUNC                "Funz"
 #define TR_V1                  "V1"
 #define TR_V2                  "V2"
@@ -804,7 +804,7 @@
 #define TR_PTS                 "pti"
 #define TR_SMOOTH              "Smussa"
 #define TR_COPY_STICKS_TO_OFS  "Copia Stick su Offset"
-#define TR_COPY_TRIMS_TO_OFS   "Copy trims to subtrim"
+#define TR_COPY_TRIMS_TO_OFS   "Copia Trim in Subtrim"
 #define TR_PERSISTENT_MAH      INDENT "Memo mAh"
 #define TR_PREFLIGHT           "Controlli Prevolo"
 #define TR_CHECKLIST           INDENT "Mostra Checklist"
