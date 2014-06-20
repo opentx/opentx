@@ -469,7 +469,7 @@ void evalInputs(uint8_t mode)
     if (ch < NUM_STICKS) { //only do this for sticks
 #if defined(PCBTARANIS)
       if (mode & e_perout_mode_nosticks) {
-        calibratedStick[ch] = 0;
+        v = calibratedStick[ch] = 0;
       }
 #endif
 
