@@ -193,7 +193,7 @@ RawSourceRange RawSource::getRange(const ModelData & model, const GeneralSetting
           result.step = singleprec ? 2 : 1;
           result.max = singleprec ? (2*255) : 2000;
           if (firmware->getCapability(Imperial) || settings.imperial) {
-            result.unit = QObject::tr("MPH");
+            result.unit = QObject::tr("kn");
           }
           else {
             result.step *= 1.852;
