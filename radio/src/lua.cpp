@@ -1215,7 +1215,6 @@ void luaLoadMixScript(uint8_t index)
   if (ZEXIST(sd.file)) {
     ScriptInternalData & sid = scriptInternalData[luaScriptsCount++];
     ScriptInputsOutputs * sio = &scriptInputsOutputs[index];
-    memset(&sid, 0, sizeof(sid));
     sid.reference = SCRIPT_MIX_FIRST+index;
     sid.state = SCRIPT_NOFILE;
     char filename[sizeof(SCRIPTS_MIXES_PATH)+sizeof(sd.file)+sizeof(SCRIPTS_EXT)] = SCRIPTS_MIXES_PATH "/";
@@ -1233,7 +1232,6 @@ bool luaLoadFunctionScript(uint8_t index)
   if (fn.func == FUNC_PLAY_SCRIPT && ZEXIST(fn.play.name)) {
     if (luaScriptsCount < MAX_SCRIPTS) {
       ScriptInternalData & sid = scriptInternalData[luaScriptsCount++];
-      memset(&sid, 0, sizeof(sid));
       sid.reference = SCRIPT_FUNC_FIRST+index;
       sid.state = SCRIPT_NOFILE;
       char filename[sizeof(SCRIPTS_FUNCS_PATH)+sizeof(fn.play.name)+sizeof(SCRIPTS_EXT)] = SCRIPTS_FUNCS_PATH "/";
@@ -1265,7 +1263,6 @@ bool luaLoadTelemetryScript(uint8_t index)
   if (isFileAvailable(path)) {
     if (luaScriptsCount < MAX_SCRIPTS) {
       ScriptInternalData & sid = scriptInternalData[luaScriptsCount++];
-      memset(&sid, 0, sizeof(sid));
       sid.reference = SCRIPT_TELEMETRY_FIRST+index;
       sid.state = SCRIPT_NOFILE;
       luaLoad(path, sid);
@@ -1288,9 +1285,11 @@ bool isTelemetryScriptAvailable(uint8_t index)
   return false;
 }
 
-void luaLoadMixScripts()
+void luaLoadPermanentScripts()
 {
   luaScriptsCount = 0;
+  memset(scriptInternalData, 0, sizeof(scriptInternalData));
+  memset(scriptInputsOutputs, 0, sizeof(scriptInputsOutputs));
 
   // Load model scripts
   for (int i=0; i<MAX_SCRIPTS; i++) {
@@ -1454,7 +1453,7 @@ void luaTask(uint8_t evt)
     if (luaState & LUASTATE_RELOAD_MODEL_SCRIPTS) {
       luaState = 0;
       LUA_RESET();
-      luaLoadMixScripts();
+      luaLoadPermanentScripts();
     }
 
     for (int i=0; i<luaScriptsCount; i++) {
