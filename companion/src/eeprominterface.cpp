@@ -203,8 +203,8 @@ RawSourceRange RawSource::getRange(const ModelData & model, const GeneralSetting
           break;
         case TELEMETRY_SOURCE_VERTICAL_SPEED:
           result.step = 0.1;
-          result.min = -12.5;
-          result.max = 13.0;
+          result.min = singleprec ? -12.5 : -20.0;
+          result.max = singleprec ? 13.0 : 20.0;
           result.decimals = 1;
           result.unit = QObject::tr("m/s");
           break;
@@ -229,7 +229,7 @@ RawSourceRange RawSource::getRange(const ModelData & model, const GeneralSetting
         case TELEMETRY_SOURCE_VFAS:
         case TELEMETRY_SOURCE_VFAS_MIN:
           result.step = 0.1;
-          result.max = 25.5;
+          result.max = singleprec ? 25.5 : 100.0;
           result.decimals = 1;
           result.unit = QObject::tr("V");
           break;
@@ -256,7 +256,8 @@ RawSourceRange RawSource::getRange(const ModelData & model, const GeneralSetting
         case TELEMETRY_SOURCE_ACCZ:
           result.step = 0.01;
           result.decimals = 2;
-          result.max = 2.55;
+          result.max = singleprec ? 2.55 : 10.00;
+          result.min = singleprec ? 0 : -10.00;
           result.unit = QObject::tr("g");
           break;
         default:

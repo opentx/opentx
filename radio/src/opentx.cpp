@@ -721,9 +721,9 @@ ls_telemetry_value_t minTelemValue(uint8_t channel)
     case TELEM_ACCx:
     case TELEM_ACCy:
     case TELEM_ACCz:
-      return -255;
+      return -1000;
     case TELEM_VSPEED:
-      return -125;
+      return -200;
     default:
       return 0;
   }
@@ -757,6 +757,17 @@ ls_telemetry_value_t maxTelemValue(uint8_t channel)
     case TELEM_CELL:
     case TELEM_MIN_CELL:
       return 510;
+    case TELEM_CELLS_SUM:
+    case TELEM_MIN_CELLS_SUM:
+    case TELEM_VFAS:
+    case TELEM_MIN_VFAS:
+      return 1000;
+    case TELEM_VSPEED:
+      return 200;
+    case TELEM_ACCx:
+    case TELEM_ACCy:
+    case TELEM_ACCz:
+      return 1000;
     default:
       return 30000;
 #else
