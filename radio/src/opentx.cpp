@@ -728,7 +728,9 @@ ls_telemetry_value_t minTelemValue(uint8_t channel)
       return 0;
   }
 }
+#endif
 
+#if defined(FRSKY)
 ls_telemetry_value_t maxTelemValue(uint8_t channel)
 {
   switch (channel) {
