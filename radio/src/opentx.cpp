@@ -701,32 +701,31 @@ void setGVarValue(uint8_t idx, int16_t value, int8_t phase)
 
 #endif
 
-#if defined(FRSKY)
+#if defined(CPUARM) && defined(FRSKY)
 ls_telemetry_value_t minTelemValue(uint8_t channel)
 {
   switch (channel) {
-    case TELEM_FUEL:
-#if defined(CPUARM)
-    case TELEM_TX_TIME:
-    case TELEM_SWR:
-#endif
-    case TELEM_RSSI_TX:
-    case TELEM_RSSI_RX:
-      return 0;
-    case TELEM_HDG:
-      return 0;
-#if defined(CPUARM)
-    case TELEM_SPEED:
-    case TELEM_MAX_SPEED:
-    case TELEM_ASPEED:
-    case TELEM_MAX_ASPEED:
-      return 0;
+    case TELEM_TIMER1:
+    case TELEM_TIMER2:
+      return -3600;
+    case TELEM_ALT:
+    case TELEM_MIN_ALT:
+    case TELEM_MAX_ALT:
+    case TELEM_GPSALT:
+      return -500;
+    case TELEM_T1:
+    case TELEM_MAX_T1:
+    case TELEM_T2:
+    case TELEM_MAX_T2:
+      return -30;
+    case TELEM_ACCx:
+    case TELEM_ACCy:
+    case TELEM_ACCz:
+      return -255;
+    case TELEM_VSPEED:
+      return -125;
     default:
-      return -30000;
-#else
-    default:
       return 0;
-#endif
   }
 }
 
