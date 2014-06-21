@@ -92,7 +92,7 @@ QString getGVarString(int16_t val, bool sign)
   }
 }
 
-RawSourceRange RawSource::getRange(const ModelData & model, const GeneralSettings & settings, unsigned int flags)
+RawSourceRange RawSource::getRange(const ModelData & model, const GeneralSettings & settings, unsigned int flags) const
 {
   RawSourceRange result;
 

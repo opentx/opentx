@@ -362,7 +362,7 @@ class RawSource {
 
     QString toString(const ModelData & model);
     
-    RawSourceRange getRange(const ModelData & model, const GeneralSettings & settings, unsigned int flags=0);
+    RawSourceRange getRange(const ModelData & model, const GeneralSettings & settings, unsigned int flags=0) const;
     
     bool operator == ( const RawSource & other) {
       return (this->type == other.type) && (this->index == other.index);
