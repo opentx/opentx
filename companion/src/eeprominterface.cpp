@@ -357,6 +357,8 @@ QString RawSource::toString(const ModelData & model)
       }
       return result;
     }
+    case SOURCE_TYPE_LUA_OUTPUT:
+      return QObject::tr("[S%1]%2").arg(index/16+1).arg(index%16+1);
     case SOURCE_TYPE_STICK:
       return AnalogString(index);
     case SOURCE_TYPE_TRIM:
