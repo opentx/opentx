@@ -755,6 +755,9 @@ ls_telemetry_value_t maxTelemValue(uint8_t channel)
     case TELEM_ASPEED:
     case TELEM_MAX_ASPEED:
       return 2000;
+    case TELEM_CELL:
+    case TELEM_MIN_CELL:
+      return 510;
     default:
       return 30000;
 #else
