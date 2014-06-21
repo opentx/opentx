@@ -178,6 +178,11 @@ I18N_PLAY_FUNCTION(fr, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 
 I18N_PLAY_FUNCTION(fr, playDuration, int seconds PLAY_DURATION_ATT)
 {
+  if (seconds == 0) {
+    PLAY_NUMBER(0, 0, FEMININ);
+    return;
+  }
+
   if (seconds < 0) {
     PUSH_NUMBER_PROMPT(FR_PROMPT_MOINS);
     seconds = -seconds;
