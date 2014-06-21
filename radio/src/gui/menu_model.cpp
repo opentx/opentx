@@ -4716,7 +4716,15 @@ void menuModelLogicalSwitches(uint8_t event)
       }
       else {
         lcd_outdezAtt(CSW_3RD_COLUMN, y, cs->v2, LEFT|attr2);
-        v2_min = -125; v2_max = 125;
+#if defined(CPUARM) && defined(GVARS)
+        if (v1_val >= MIXSRC_GVAR1) {
+          v2_min = -1024; v2_max = +1024;
+        }
+        else
+#endif
+        {
+          v2_min = -125; v2_max = +125;
+        }
       }
 #else
       if (v1_val >= MIXSRC_FIRST_TELEM) {

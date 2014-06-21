@@ -150,6 +150,8 @@ RawSourceRange RawSource::getRange(const ModelData & model, const GeneralSetting
           break;
         }
         case TELEMETRY_SOURCE_ALT:
+        case TELEMETRY_SOURCE_ALT_MIN:
+        case TELEMETRY_SOURCE_ALT_MAX:
         case TELEMETRY_SOURCE_GPS_ALT:
           result.step = singleprec ? 8 : 1;
           result.min = -500;
@@ -210,6 +212,9 @@ RawSourceRange RawSource::getRange(const ModelData & model, const GeneralSetting
           result.max = 13.0;
           result.decimals = 1;
           result.unit = QObject::tr("m/s");
+          break;
+        case TELEMETRY_SOURCE_DTE:
+          result.max = 30000;
           break;
         case TELEMETRY_SOURCE_DIST:
         case TELEMETRY_SOURCE_DIST_MAX:
@@ -278,6 +283,11 @@ RawSourceRange RawSource::getRange(const ModelData & model, const GeneralSetting
           result.min = -result.max;
         }
       }
+      break;
+
+    case SOURCE_TYPE_GVAR:
+      result.max = 1024;
+      result.min = -result.max;
       break;
 
     default:
