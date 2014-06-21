@@ -519,6 +519,17 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData & 
     if (item == source) b->setCurrentIndex(b->count()-1);
   }
 
+  if (flags & POPULATE_SCRIPT_OUTPUTS) {
+    for (int i=0; i<GetCurrentFirmware()->getCapability(LuaScripts); i++) {
+      for (int j=0; j<GetCurrentFirmware()->getCapability(LuaOutputsPerScript); j++) {
+        item = RawSource(SOURCE_TYPE_LUA_OUTPUT, i*16+j);
+        b->addItem(item.toString(model), item.toValue());
+        if (item == source) b->setCurrentIndex(b->count()-1);
+      }
+    }
+  }
+
+
   if (flags & POPULATE_VIRTUAL_INPUTS) {
     int virtualInputs = GetCurrentFirmware()->getCapability(VirtualInputs);
     for (int i=0; i<virtualInputs; i++) {

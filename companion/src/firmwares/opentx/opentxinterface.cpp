@@ -678,7 +678,12 @@ int OpenTxFirmware::getCapability(const Capability capability)
       return IS_TARANIS(board) ? 32 : 0;
     case TrainerInputs:
       return IS_ARM(board) ? 16 : 8;
-    case LuaInputs:
+    case LuaScripts:
+      return IS_TARANIS(board) ? 7 : 0;
+    case LuaInputsPerScript:
+      return IS_TARANIS(board) ? 10 : 0;
+    case LuaOutputsPerScript:
+      return IS_TARANIS(board) ? 6 : 0;
     case LimitsPer1000:
     case EnhancedCurves:
       return IS_TARANIS(board);
