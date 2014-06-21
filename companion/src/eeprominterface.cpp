@@ -132,6 +132,13 @@ RawSourceRange RawSource::getRange(const ModelData & model, const GeneralSetting
           result.max = 100;
           if (singleprec) result.offset = 128;
           break;
+        case TELEMETRY_SOURCE_A1_MIN:
+        case TELEMETRY_SOURCE_A2_MIN:
+        case TELEMETRY_SOURCE_A3_MIN:
+        case TELEMETRY_SOURCE_A4_MIN:
+          index -= TELEMETRY_SOURCE_A1_MIN;
+          index += TELEMETRY_SOURCE_A1;
+          // no break;
         case TELEMETRY_SOURCE_A1:
         case TELEMETRY_SOURCE_A2:
         case TELEMETRY_SOURCE_A3:
