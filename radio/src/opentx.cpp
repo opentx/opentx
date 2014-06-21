@@ -3104,7 +3104,7 @@ void copySticksToOffset(uint8_t ch)
 #if defined(CPUARM)
   zero = (zero*256000 - val*lim) / (1024*256-val);
 #else
-  zero = (zero*256000 - 10*val*lim) / (1024*256-val);
+  zero = (zero*25600 - val*lim) / (26214-val);
 #endif
   ld->offset = (ld->revert ? -zero : zero);
   resumeMixerCalculations();
