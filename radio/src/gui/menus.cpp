@@ -165,7 +165,7 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
 #if defined(CPUARM)
     do {
       if (IS_KEY_REPT(event) && (i_flags & INCDEC_REP10)) {
-        newval+=10;
+        newval += min(10, i_max-val);
       }
       else {
         newval++;
@@ -190,7 +190,7 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
 #if defined(CPUARM)
     do {
       if (IS_KEY_REPT(event) && (i_flags & INCDEC_REP10)) {
-        newval-=10;
+        newval -= min(10, val-i_min);
       }
       else {
         newval--;
