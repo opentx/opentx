@@ -1148,8 +1148,6 @@ int luaLoad(const char *filename, ScriptInternalData & sid, ScriptInputsOutputs 
 {
   int init = 0;
 
-  uint8_t prev_mem = lua_gc(L, LUA_GCCOUNT, 0);
-
   sid.instructions = 0;
   sid.state = SCRIPT_OK;
 
@@ -1198,8 +1196,6 @@ int luaLoad(const char *filename, ScriptInternalData & sid, ScriptInputsOutputs 
     TRACE("Error in script %s: %s", filename, lua_tostring(L, -1));
     sid.state = SCRIPT_SYNTAX_ERROR;
   }
-
-  sid.memory = lua_gc(L, LUA_GCCOUNT, 0) - prev_mem;
 
   if (sid.state != SCRIPT_OK) {
     luaFree(sid);
@@ -1345,9 +1341,6 @@ void luaError(uint8_t error)
       case SCRIPT_KILLED:
         msg = "Script killed";
         break;
-      case SCRIPT_LEAK:
-        msg = "Script memory leak";
-        break;
     }
     POPUP_WARNING(msg);
   }
@@ -1459,7 +1452,6 @@ void luaTask(uint8_t evt)
     for (int i=0; i<luaScriptsCount; i++) {
       ScriptInternalData & sid = scriptInternalData[i];
       if (sid.state == SCRIPT_OK) {
-        uint8_t prev_mem = lua_gc(L, LUA_GCCOUNT, 0);
         SET_LUA_INSTRUCTIONS_COUNT(PERMANENT_SCRIPTS_MAX_INSTRUCTIONS);
         int inputsCount = 0;
 #if defined(SIMU) || defined(DEBUG)
@@ -1532,29 +1524,10 @@ void luaTask(uint8_t evt)
           luaFree(sid);
         }
         else {
-          sid.memory += lua_gc(L, LUA_GCCOUNT, 0) - prev_mem;
           if (instructionsPercent > sid.instructions) {
             sid.instructions = instructionsPercent;
           }
         }
-      }
-    }
-
-    if (lua_gc(L, LUA_GCCOUNT, 0) > SCRIPTS_MAX_HEAP) {
-      uint8_t max_memory = 0;
-      int8_t max_idx = -1;
-      for (int i=0; i<MAX_SCRIPTS; i++) {
-        ScriptInternalData & sid = scriptInternalData[i];
-        if (sid.state == SCRIPT_OK && sid.memory > max_memory && sid.memory > 15) {
-          max_idx = i;
-        }
-      }
-      if (max_idx >= 0) {
-        ScriptInternalData & sid = scriptInternalData[max_idx];
-        TRACE("Script %d killed", max_idx);
-        // TODO Global Warning
-        sid.state = SCRIPT_LEAK;
-        luaFree(sid);
       }
     }
   }
@@ -1563,7 +1536,7 @@ void luaTask(uint8_t evt)
 
 #if defined(SIMU) || defined(DEBUG)
   static int lastgc = 0;
-  int gc = 1000*lua_gc(L, LUA_GCCOUNT, 0) + lua_gc(L, LUA_GCCOUNTB, 0);
+  int gc = luaGetMemUsed();
   if (gc != lastgc) {
     lastgc = gc;
     TRACE("GC Use: %dbytes", gc);
@@ -1574,4 +1547,9 @@ void luaTask(uint8_t evt)
   if (t0 > maxLuaDuration) {
     maxLuaDuration = t0;
   }
+}
+
+int luaGetMemUsed()
+{
+  return 1000*lua_gc(L, LUA_GCCOUNT, 0) + lua_gc(L, LUA_GCCOUNTB, 0);
 }

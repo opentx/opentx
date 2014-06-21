@@ -1450,8 +1450,7 @@ enum AUDIO_SOUNDS {
     SCRIPT_OK,
     SCRIPT_NOFILE,
     SCRIPT_SYNTAX_ERROR,
-    SCRIPT_KILLED,
-    SCRIPT_LEAK
+    SCRIPT_KILLED
   };
   enum ScriptReference {
     SCRIPT_MIX_FIRST,
@@ -1467,7 +1466,6 @@ enum AUDIO_SOUNDS {
     int run;
     int background;
     uint8_t instructions;
-    uint8_t memory;
   };
   struct ScriptInputsOutputs {
     uint8_t inputsCount;
@@ -1487,7 +1485,7 @@ enum AUDIO_SOUNDS {
   void luaExec(const char *filename);
   void luaLoadMixScript(uint8_t index);
   void luaLoadMixScripts();
-  #define luaGetMemUsed(idx) scriptInternalData[idx].memory
+  int luaGetMemUsed();
   #define luaGetCpuUsed(idx) scriptInternalData[idx].instructions
   bool isTelemetryScriptAvailable(uint8_t index);
   #define LUA_INIT()

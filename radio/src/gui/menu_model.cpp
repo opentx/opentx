@@ -5357,6 +5357,9 @@ void menuModelCustomScriptOne(uint8_t event)
 
 void menuModelCustomScripts(uint8_t event)
 {
+  lcd_outdezAtt(19*FW, 0, luaGetMemUsed(), 0);
+  lcd_puts(19*FW+1, 0, STR_BYTES);
+
   MENU(STR_MENUCUSTOMSCRIPTS, menuTabModel, e_CustomScripts, MAX_SCRIPTS+1, {0, NAVIGATION_LINE_BY_LINE|3/*repeated*/});
 
   uint8_t y;
@@ -5390,19 +5393,14 @@ void menuModelCustomScripts(uint8_t event)
       lcd_putsnAtt(5*FW, y, sd.file, sizeof(sd.file), 0);
       switch (scriptInternalData[scriptIndex].state) {
         case SCRIPT_SYNTAX_ERROR:
-          lcd_puts(28*FW+2, y, "(error)");
+          lcd_puts(30*FW+2, y, "(error)");
           break;
         case SCRIPT_KILLED:
-          lcd_puts(27*FW+2, y, "(killed)");
-          break;
-        case SCRIPT_LEAK:
-          lcd_puts(29*FW+2, y, "(leak)");
+          lcd_puts(29*FW+2, y, "(killed)");
           break;
         default:
-          lcd_outdezAtt(31*FW, y, luaGetCpuUsed(scriptIndex));
-          lcd_putc(31*FW, y, '%');
-          lcd_outdezAtt(34*FW+2, y, luaGetMemUsed(scriptIndex));
-          lcd_putc(34*FW+2, y, 'k');
+          lcd_outdezAtt(34*FW, y, luaGetCpuUsed(scriptIndex));
+          lcd_putc(34*FW, y, '%');
           break;
       }
       scriptIndex++;
