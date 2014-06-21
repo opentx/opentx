@@ -136,26 +136,14 @@ RawSourceRange RawSource::getRange(const ModelData & model, const GeneralSetting
         case TELEMETRY_SOURCE_A2_MIN:
         case TELEMETRY_SOURCE_A3_MIN:
         case TELEMETRY_SOURCE_A4_MIN:
-          index -= TELEMETRY_SOURCE_A1_MIN;
-          index += TELEMETRY_SOURCE_A1;
-          // no break;
+          result = model.frsky.channels[index-TELEMETRY_SOURCE_A1_MIN].getRange();
+          break;
         case TELEMETRY_SOURCE_A1:
         case TELEMETRY_SOURCE_A2:
         case TELEMETRY_SOURCE_A3:
         case TELEMETRY_SOURCE_A4:
-        {
-          const FrSkyChannelData & channel = model.frsky.channels[index-TELEMETRY_SOURCE_A1];
-          float ratio = channel.getRatio();
-          if (channel.type==0 || channel.type==1 || channel.type==2)
-            result.decimals = 2;
-          else
-            result.decimals = 0;
-          result.step = ratio / 255;
-          result.min = channel.offset * result.step;
-          result.max = ratio + result.min;
-          result.unit = QObject::tr("V");
+          result = model.frsky.channels[index-TELEMETRY_SOURCE_A1].getRange();
           break;
-        }
         case TELEMETRY_SOURCE_ALT:
         case TELEMETRY_SOURCE_ALT_MIN:
         case TELEMETRY_SOURCE_ALT_MAX:
@@ -1075,6 +1063,29 @@ int GeneralSettings::getDefaultChannel(unsigned int stick) const
       return i;
   }
   return -1;
+}
+
+float FrSkyChannelData::getRatio() const
+{
+  if (type==0 || type==1 || type==2)
+    return float(ratio << multiplier) / 10.0;
+  else
+    return ratio << multiplier;
+}
+
+RawSourceRange FrSkyChannelData::getRange() const
+{
+  RawSourceRange result;
+  float ratio = getRatio();
+  if (type==0 || type==1 || type==2)
+    result.decimals = 2;
+  else
+    result.decimals = 0;
+  result.step = ratio / 255;
+  result.min = offset * result.step;
+  result.max = ratio + result.min;
+  result.unit = QObject::tr("V");
+  return result;
 }
 
 void FrSkyData::clear()
