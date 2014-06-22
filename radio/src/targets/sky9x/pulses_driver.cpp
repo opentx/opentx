@@ -49,9 +49,10 @@ void module_output_active()
   pioptr->PIO_ABCDSR[0] &= ~PIO_PA17 ;            // Peripheral C
   pioptr->PIO_ABCDSR[1] |= PIO_PA17 ;             // Peripheral C
   pioptr->PIO_PDR = PIO_PA17 ;                    // Disable bit A17 Assign to peripheral
-  pioptr->PIO_MDER = PIO_PA17 ;                       // Open Drain O/p in A17
-  // pioptr->PIO_MDDR = PIO_PA17 ;                // Push Pull O/p in A17
+#if defined(REVX)
+  pioptr->PIO_MDER = PIO_PA17 ;                   // Open Drain O/p in A17
   pioptr->PIO_PUER = PIO_PA17 ;                   // With pull up
+#endif
 }
 
 
