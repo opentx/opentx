@@ -533,7 +533,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 {
   evalInputs(mode);
 
-  evalLogicalSwitches(mode==e_perout_mode_normal);
+  if (tick10ms) evalLogicalSwitches(mode==e_perout_mode_normal);
 
 #if defined(MODULE_ALWAYS_SEND_PULSES)
   checkStartupWarnings();
