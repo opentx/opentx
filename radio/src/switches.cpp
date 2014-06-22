@@ -472,7 +472,6 @@ bool getSwitch(int8_t swtch)
 */
 void evalLogicalSwitches(bool isCurrentPhase)
 {
-  TRACE("eval %d %d", mixerCurrentFlightMode, isCurrentPhase);
   for (unsigned int idx=0; idx<NUM_LOGICAL_SWITCH; idx++) {
     LogicalSwitchContext &context = lswFm[mixerCurrentFlightMode].lsw[idx];
     bool result = getLogicalSwitch(idx);
