@@ -1839,6 +1839,7 @@ inline void playCustomFunctionFile(CustomFnData *sd, uint8_t id)
 
 void evalFunctions()
 {
+  TRACE("func");
   MASK_FUNC_TYPE newActiveFunctions  = 0;
   MASK_CFN_TYPE  newActiveFnSwitches = 0;
 
