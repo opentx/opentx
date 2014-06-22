@@ -597,8 +597,8 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
     len = sizeof(MODELS_PATH) + PSIZE(TR_MODEL) + 2;
   }
 
-#if defined(RTCLOCK)
-  char * tmp = strAppendDate(&buf[len], true);
+#if defined(RTCLOCK) && LCD_W >= 212
+  char * tmp = strAppendDate(&buf[len]);
   len = tmp - buf;
 #endif
 
