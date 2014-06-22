@@ -1350,7 +1350,7 @@ void drawStatusLine()
 {
   if (statusLineTime) {
     if ((tmr10ms_t)(get_tmr10ms() - statusLineTime) <= (tmr10ms_t)STATUS_LINE_DELAY) {
-      if (statusLineHeight < 8) statusLineHeight++;
+      if (statusLineHeight < FH) statusLineHeight++;
     }
     else if (statusLineHeight) {
       statusLineHeight--;
@@ -1359,9 +1359,9 @@ void drawStatusLine()
       statusLineTime = 0;
     }
 
-    lcd_filled_rect(0, 8*FH-statusLineHeight, LCD_W, 8, SOLID, ERASE);
-    lcd_putsAtt(5, 8*FH+1-statusLineHeight, statusLineMsg, BSS);
-    lcd_filled_rect(0, 8*FH-statusLineHeight, LCD_W, 8, SOLID);
+    lcd_filled_rect(0, LCD_H-statusLineHeight, LCD_W, FH, SOLID, ERASE);
+    lcd_putsAtt(5, LCD_H+1-statusLineHeight, statusLineMsg, BSS);
+    lcd_filled_rect(0, LCD_H-statusLineHeight, LCD_W, FH, SOLID);
   }
 }
 #endif
