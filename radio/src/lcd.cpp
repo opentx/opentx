@@ -336,8 +336,10 @@ void lcd_putc(xcoord_t x, uint8_t y, const unsigned char c)
 
 void lcd_putsnAtt(xcoord_t x, uint8_t y, const pm_char * s, uint8_t len, LcdFlags mode)
 {
-  xcoord_t orig_x = x;
-  uint8_t const orig_len = len;
+  const xcoord_t orig_x = x;
+#if defined(CPUARM)
+  const uint8_t orig_len = len;
+#endif
   bool setx = false;
   while (len--) {
     unsigned char c;
@@ -374,7 +376,9 @@ void lcd_putsnAtt(xcoord_t x, uint8_t y, const pm_char * s, uint8_t len, LcdFlag
       setx = true;
     }
     else if (c == 0x1E) {  //NEWLINE
+#if defined(CPUARM)
       len = orig_len;
+#endif
       x = orig_x;
       y += FH;
 #if defined(CPUARM)      
