@@ -308,7 +308,7 @@ void onModelSelectMenu(const char *result)
     POPUP_WARNING(eeBackupModel(sub));
   }
   else if (result == STR_RESTORE_MODEL || result == STR_UPDATE_LIST) {
-    if (!listSdFiles(MODELS_PATH, MODELS_EXT, sizeof(g_model.header.name), NULL)) {
+    if (!listSdFiles(MODELS_PATH, MODELS_EXT, MENU_LINE_LENGTH-1, NULL)) {
       POPUP_WARNING(STR_NO_MODELS_ON_SD);
       s_menu_flags = 0;
     }

@@ -397,7 +397,11 @@ void displayWarning(uint8_t event);
   #else
     #define MENU_ADD_SD_ITEM(s)
   #endif
-  #define MENU_LINE_LENGTH (LEN_MODEL_NAME+1)
+  #if LCD_W >= 212
+    #define MENU_LINE_LENGTH (LEN_MODEL_NAME+12)
+  #else
+    #define MENU_LINE_LENGTH (LEN_MODEL_NAME+1)
+  #endif
   extern const char *s_menu[MENU_MAX_LINES];
   extern uint16_t s_menu_count;
   extern uint8_t s_menu_flags;
