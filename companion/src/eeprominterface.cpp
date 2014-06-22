@@ -203,8 +203,8 @@ RawSourceRange RawSource::getRange(const ModelData & model, const GeneralSetting
           break;
         case TELEMETRY_SOURCE_VERTICAL_SPEED:
           result.step = 0.1;
-          result.min = singleprec ? -12.5 : -20.0;
-          result.max = singleprec ? 13.0 : 20.0;
+          result.min = singleprec ? -12.5 : -300.0;
+          result.max = singleprec ? 13.0 : 300.0;
           result.decimals = 1;
           result.unit = QObject::tr("m/s");
           break;
