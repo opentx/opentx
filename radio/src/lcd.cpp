@@ -301,7 +301,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
       }
 #endif
 
-      if (p<lineEnd && !BLINKING_CHAR) {
+      if (p<DISPLAY_END && p<lineEnd && !BLINKING_CHAR) {
         ASSERT_IN_DISPLAY(p);
         uint8_t mask = ~(0xff << ym8);
         LCD_BYTE_FILTER(p, mask, b << ym8);
