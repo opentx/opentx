@@ -772,9 +772,14 @@ static int luaModelGetCustomFunction(lua_State *L)
     lua_newtable(L);
     lua_pushtablenumber(L, "switch", CFN_SWITCH(cfn));
     lua_pushtablenumber(L, "function", CFN_FUNC(cfn));
-    lua_pushtablezstring(L, "name", cfn->play.name);
-    lua_pushtablenumber(L, "value", cfn->all.val);
-    lua_pushtablenumber(L, "mode", cfn->all.mode);
+    if (CFN_FUNC(cfn) == FUNC_PLAY_TRACK || CFN_FUNC(cfn) == FUNC_BACKGND_MUSIC || CFN_FUNC(cfn) == FUNC_PLAY_SCRIPT) {
+      lua_pushtablezstring(L, "name", cfn->play.name);
+    }
+    else {
+      lua_pushtablenumber(L, "value", cfn->all.val);
+      lua_pushtablenumber(L, "mode", cfn->all.mode);
+      lua_pushtablenumber(L, "param", cfn->all.param);
+    }
     lua_pushtablenumber(L, "active", CFN_ACTIVE(cfn));
   }
   else {
@@ -807,6 +812,9 @@ static int luaModelSetCustomFunction(lua_State *L)
       }
       else if (!strcmp(key, "mode")) {
         cfn->all.mode = luaL_checkinteger(L, -1);
+      }
+      else if (!strcmp(key, "param")) {
+        cfn->all.param = luaL_checkinteger(L, -1);
       }
       else if (!strcmp(key, "active")) {
         CFN_ACTIVE(cfn) = luaL_checkinteger(L, -1);
