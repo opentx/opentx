@@ -36,6 +36,10 @@
 
 #include "../../opentx.h"
 
+bool uart3Telemetry = false;
+Fifo<512> uart3TxFifo;
+extern Fifo<512> telemetryFifo;
+
 void uart3Setup(unsigned int baudrate)
 {
   USART_InitTypeDef USART_InitStructure;
@@ -60,7 +64,7 @@ void uart3Setup(unsigned int baudrate)
   USART_InitStructure.USART_StopBits = USART_StopBits_1;
   USART_InitStructure.USART_Parity = USART_Parity_No;
   USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-  USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+  USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
   
   USART_Init(UART3, &USART_InitStructure);
   USART_Cmd(UART3, ENABLE);
@@ -72,12 +76,13 @@ void uart3Setup(unsigned int baudrate)
   NVIC_SetPriority(USART3_IRQn, 7);
 }
 
-void uart3Init(unsigned int mode)
+void uart3Init(unsigned int mode, unsigned int protocol)
 {
   USART_DeInit(USART3);
+  uart3Telemetry = false;
 
-  switch(mode) {
-    case UART_MODE_SPORT:
+  switch (mode) {
+    case UART_MODE_TELEMETRY_MIRROR:
       uart3Setup(FRSKY_SPORT_BAUDRATE);
       break;
 #if defined(DEBUG)
@@ -85,10 +90,14 @@ void uart3Init(unsigned int mode)
       uart3Setup(DEBUG_BAUDRATE);
       break;
 #endif
+    case UART_MODE_TELEMETRY:
+      if (protocol == PROTOCOL_FRSKY_D_SECONDARY) {
+        uart3Setup(FRSKY_D_BAUDRATE);
+        uart3Telemetry = true;
+      }
+      break;
   }
 }
-
-Fifo<512> uart3TxFifo;
 
 void uart3Putc(const char c)
 {
@@ -105,8 +114,11 @@ void debugPutc(const char c)
 }
 #endif
 
+#define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
+
 extern "C" void USART3_IRQHandler(void)
 {
+  // Send
   if (USART_GetITStatus(UART3, USART_IT_TXE) != RESET) {
     uint8_t txchar;
     if (uart3TxFifo.pop(txchar)) {
@@ -117,4 +129,17 @@ extern "C" void USART3_IRQHandler(void)
       USART_ITConfig(UART3, USART_IT_TXE, DISABLE);
     }
   }
+
+  // Receive
+  uint32_t status = SPORT->SR;
+  while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
+    uint8_t data = SPORT->DR;
+
+    if (uart3Telemetry && !(status & USART_FLAG_ERRORS)) {
+      telemetryFifo.push(data);
+    }
+
+    status = SPORT->SR;
+  }
 }
+

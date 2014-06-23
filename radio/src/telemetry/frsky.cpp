@@ -161,7 +161,7 @@ NOINLINE void processSerialData(uint8_t data)
 #endif
 
 #if defined(PCBTARANIS)
-    if (g_eeGeneral.uart3Mode == UART_MODE_SPORT) {
+    if (g_eeGeneral.uart3Mode == UART_MODE_TELEMETRY_MIRROR) {
       uart3Putc(data);
     }
 #endif
@@ -572,17 +572,19 @@ void telemetryReset()
 void telemetryInit(void)
 {
 #if defined(CPUARM)
-  if (telemetryProtocol == PROTOCOL_FRSKY_SPORT)
-    telemetryPortInit(FRSKY_SPORT_BAUDRATE);
-  else
+  if (telemetryProtocol == PROTOCOL_FRSKY_D) {
     telemetryPortInit(FRSKY_D_BAUDRATE);
+  }
+  else if (telemetryProtocol==PROTOCOL_FRSKY_D_SECONDARY) {
+    telemetryPortInit(0);
+    uart3Init(UART_MODE_TELEMETRY, PROTOCOL_FRSKY_D_SECONDARY);
+  }
+  else {
+    telemetryPortInit(FRSKY_SPORT_BAUDRATE);
+  }
 #elif !defined(SIMU)
   telemetryPortInit();
 #endif
 
-#if 0
-  // if we call telemetryReset() here we also reset the consumption after model load
-  // right now I don't see why we call it here
-  telemetryReset();
-#endif
+  // we don't reset the telemetry here as we would also reset the consumption after model load
 }

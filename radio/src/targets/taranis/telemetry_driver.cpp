@@ -40,6 +40,11 @@ extern Fifo<512> telemetryFifo;
 
 void telemetryPortInit(uint32_t baudrate)
 {
+  if (baudrate == 0) {
+    USART_DeInit(USART2);
+    return;
+  }
+
   USART_InitTypeDef USART_InitStructure;
   GPIO_InitTypeDef GPIO_InitStructure;
 
@@ -77,6 +82,7 @@ void telemetryPortInit(uint32_t baudrate)
   USART_Cmd(SPORT, ENABLE);
   
   USART_ITConfig(SPORT, USART_IT_RXNE, ENABLE);
+
   NVIC_EnableIRQ(USART2_IRQn);
   NVIC_SetPriority(USART2_IRQn, 6);
 }

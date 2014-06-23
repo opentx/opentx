@@ -115,7 +115,7 @@ void delaysInit(void);
 
 #define DEBUG_BAUDRATE      115200
 
-void uart3Init(unsigned int mode);
+void uart3Init(unsigned int mode, unsigned int protocol);
 void uart3Putc(const char c);
 
 void delaysInit(void);

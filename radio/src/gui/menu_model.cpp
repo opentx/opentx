@@ -5589,7 +5589,7 @@ void menuModelTelemetry(uint8_t event)
 
 #if defined(CPUARM)
       case ITEM_TELEMETRY_PROTOCOL_TYPE:
-        g_model.telemetryProtocol = selectMenuItem(TELEM_COL2, y, STR_TELEMETRY_TYPE, "\006S.PORTD\0    ", g_model.telemetryProtocol, PROTOCOL_FRSKY_SPORT, PROTOCOL_FRSKY_D, attr, event);
+        g_model.telemetryProtocol = selectMenuItem(TELEM_COL2, y, STR_TELEMETRY_TYPE, "\016FrSky S.PORT\0 FrSky D\0      FrSky D (batt)", g_model.telemetryProtocol, PROTOCOL_TELEMETRY_FIRST, PROTOCOL_TELEMETRY_LAST, attr, event);
         break;
 #endif
 
