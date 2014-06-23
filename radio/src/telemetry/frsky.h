@@ -344,8 +344,8 @@ enum AlarmLevel {
   #define TELEMETRY_BARO_ALT_ARGS         frskyData.hub.baroAltitude < 0 ? '-' : ' ', abs(baroAltitudeDivision.quot), abs(baroAltitudeDivision.rem),
   #define TELEMETRY_GPS_ALT_FORMAT        "%c%d.%02d,"
   #define TELEMETRY_GPS_ALT_ARGS          frskyData.hub.gpsAltitude < 0 ? '-' : ' ', abs(frskyData.hub.gpsAltitude / 100), abs(frskyData.hub.gpsAltitude % 100),
-  #define TELEMETRY_GPS_SPEED_UNIT        (IS_IMPERIAL_ENABLE() ? SPEED_UNIT_IMP : SPEED_UNIT_METR)
-  #define TELEMETRY_GPS_SPEED_FORMAT      "%d,"
+  #define TELEMETRY_SPEED_UNIT            (IS_IMPERIAL_ENABLE() ? SPEED_UNIT_IMP : SPEED_UNIT_METR)
+  #define TELEMETRY_SPEED_FORMAT          "%d,"
   #define TELEMETRY_GPS_SPEED_ARGS        getConvertedTelemetryValue(frskyData.hub.gpsSpeed_bp, UNIT_KTS),
   #if defined(CPUARM)
     #define TELEMETRY_CELLS_ARGS          frskyData.hub.cellsSum / 10, frskyData.hub.cellsSum % 10, TELEMETRY_CELL_VOLTAGE(0)/100, TELEMETRY_CELL_VOLTAGE(0)%100, TELEMETRY_CELL_VOLTAGE(1)/100, TELEMETRY_CELL_VOLTAGE(1)%100, TELEMETRY_CELL_VOLTAGE(2)/100, TELEMETRY_CELL_VOLTAGE(2)%100, TELEMETRY_CELL_VOLTAGE(3)/100, TELEMETRY_CELL_VOLTAGE(3)%100, TELEMETRY_CELL_VOLTAGE(4)/100, TELEMETRY_CELL_VOLTAGE(4)%100, TELEMETRY_CELL_VOLTAGE(5)/100, TELEMETRY_CELL_VOLTAGE(5)%100, TELEMETRY_CELL_VOLTAGE(6)/100, TELEMETRY_CELL_VOLTAGE(6)%100, TELEMETRY_CELL_VOLTAGE(7)/100, TELEMETRY_CELL_VOLTAGE(7)%100, TELEMETRY_CELL_VOLTAGE(8)/100, TELEMETRY_CELL_VOLTAGE(8)%100, TELEMETRY_CELL_VOLTAGE(9)/100, TELEMETRY_CELL_VOLTAGE(9)%100, TELEMETRY_CELL_VOLTAGE(10)/100, TELEMETRY_CELL_VOLTAGE(10)%100, TELEMETRY_CELL_VOLTAGE(11)/100, TELEMETRY_CELL_VOLTAGE(11)%100,
@@ -362,6 +362,7 @@ enum AlarmLevel {
   #define TELEMETRY_VFAS_ARGS             frskyData.hub.vfas / 10, frskyData.hub.vfas % 10,
   #define TELEMETRY_VSPEED_FORMAT         "%c%d.%02d,"
   #define TELEMETRY_VSPEED_ARGS           frskyData.hub.varioSpeed < 0 ? '-' : ' ', abs(frskyData.hub.varioSpeed / 100), abs(frskyData.hub.varioSpeed % 100),
+  #define TELEMETRY_ASPEED_ARGS           getConvertedTelemetryValue(frskyData.hub.airSpeed, UNIT_KTS),
   #define TELEMETRY_OPENXSENSOR()         (0)
 #else
   #define TELEMETRY_STREAMING()           (frskyStreaming > 0)
@@ -382,8 +383,8 @@ enum AlarmLevel {
   #define TELEMETRY_BARO_ALT_ARGS         frskyData.hub.baroAltitude_bp,
   #define TELEMETRY_GPS_ALT_FORMAT        "%d,"
   #define TELEMETRY_GPS_ALT_ARGS          frskyData.hub.gpsAltitude_bp,
-  #define TELEMETRY_GPS_SPEED_UNIT        (IS_IMPERIAL_ENABLE() ? SPEED_UNIT_IMP : SPEED_UNIT_METR)
-  #define TELEMETRY_GPS_SPEED_FORMAT      "%d,"
+  #define TELEMETRY_SPEED_UNIT            (IS_IMPERIAL_ENABLE() ? SPEED_UNIT_IMP : SPEED_UNIT_METR)
+  #define TELEMETRY_SPEED_FORMAT          "%d,"
   #define TELEMETRY_GPS_SPEED_ARGS        getConvertedTelemetryValue(frskyData.hub.gpsSpeed_bp, UNIT_KTS),
   #if defined(CPUARM)
     #define TELEMETRY_CELLS_ARGS          frskyData.hub.cellsSum / 10, frskyData.hub.cellsSum % 10, frskyData.hub.cellVolts[0]*2/100, frskyData.hub.cellVolts[0]*2%100, frskyData.hub.cellVolts[1]*2/100, frskyData.hub.cellVolts[1]*2%100, frskyData.hub.cellVolts[2]*2/100, frskyData.hub.cellVolts[2]*2%100, frskyData.hub.cellVolts[3]*2/100, frskyData.hub.cellVolts[3]*2%100, frskyData.hub.cellVolts[4]*2/100, frskyData.hub.cellVolts[4]*2%100, frskyData.hub.cellVolts[5]*2/100, frskyData.hub.cellVolts[5]*2%100, frskyData.hub.cellVolts[6]*2/100, frskyData.hub.cellVolts[6]*2%100, frskyData.hub.cellVolts[7]*2/100, frskyData.hub.cellVolts[7]*2%100, frskyData.hub.cellVolts[8]*2/100, frskyData.hub.cellVolts[8]*2%100, frskyData.hub.cellVolts[9]*2/100, frskyData.hub.cellVolts[9]*2%100, frskyData.hub.cellVolts[10]*2/100, frskyData.hub.cellVolts[10]*2%100, frskyData.hub.cellVolts[11]*2/100, frskyData.hub.cellVolts[11]*2%100,
@@ -400,6 +401,7 @@ enum AlarmLevel {
   #define TELEMETRY_VFAS_ARGS             frskyData.hub.vfas / 10, frskyData.hub.vfas % 10,
   #define TELEMETRY_VSPEED_FORMAT         "%c%d.%02d,"
   #define TELEMETRY_VSPEED_ARGS           frskyData.hub.varioSpeed < 0 ? '-' : ' ', frskyData.hub.varioSpeed / 100, frskyData.hub.varioSpeed % 100,
+  #define TELEMETRY_ASPEED_ARGS           getConvertedTelemetryValue(frskyData.hub.airSpeed, UNIT_KTS),
 
   #if defined(FRSKY_HUB)
     #define TELEMETRY_OPENXSENSOR()       (frskyData.hub.openXsensor)

@@ -124,10 +124,12 @@ const pm_char * openLogs()
 #if defined(FRSKY_HUB)
     if (IS_USR_PROTO_FRSKY_HUB()) {
       f_puts("GPS Date,GPS Time,Long,Lat,Course,GPS Speed(", &g_oLogFile);
-      f_puts(TELEMETRY_GPS_SPEED_UNIT, &g_oLogFile);
+      f_puts(TELEMETRY_SPEED_UNIT, &g_oLogFile);
       f_puts("),GPS Alt,Baro Alt(", &g_oLogFile);
       f_puts(TELEMETRY_BARO_ALT_UNIT, &g_oLogFile);
-      f_puts("),Vertical Speed,Temp1,Temp2,RPM,Fuel," TELEMETRY_CELLS_LABEL "Current,Consumption,Vfas,AccelX,AccelY,AccelZ,", &g_oLogFile);
+      f_puts("),Vertical Speed,Air Speed(", &g_oLogFile);
+      f_puts(TELEMETRY_SPEED_UNIT, &g_oLogFile);
+      f_puts("),Temp1,Temp2,RPM,Fuel," TELEMETRY_CELLS_LABEL "Current,Consumption,Vfas,AccelX,AccelY,AccelZ,", &g_oLogFile);
     }
 #endif
 
@@ -213,7 +215,7 @@ void writeLogs()
       TELEMETRY_BARO_ALT_PREPARE();
 
       if (IS_USR_PROTO_FRSKY_HUB()) {
-        f_printf(&g_oLogFile, "%4d-%02d-%02d,%02d:%02d:%02d,%03d.%04d%c,%03d.%04d%c,%03d.%02d," TELEMETRY_GPS_SPEED_FORMAT TELEMETRY_GPS_ALT_FORMAT TELEMETRY_BARO_ALT_FORMAT TELEMETRY_VSPEED_FORMAT "%d,%d,%d,%d," TELEMETRY_CELLS_FORMAT TELEMETRY_CURRENT_FORMAT "%d," TELEMETRY_VFAS_FORMAT "%d,%d,%d,",
+        f_printf(&g_oLogFile, "%4d-%02d-%02d,%02d:%02d:%02d,%03d.%04d%c,%03d.%04d%c,%03d.%02d," TELEMETRY_SPEED_FORMAT TELEMETRY_GPS_ALT_FORMAT TELEMETRY_BARO_ALT_FORMAT TELEMETRY_VSPEED_FORMAT TELEMETRY_SPEED_FORMAT "%d,%d,%d,%d," TELEMETRY_CELLS_FORMAT TELEMETRY_CURRENT_FORMAT "%d," TELEMETRY_VFAS_FORMAT "%d,%d,%d,",
             frskyData.hub.year+2000,
             frskyData.hub.month,
             frskyData.hub.day,
@@ -232,6 +234,7 @@ void writeLogs()
             TELEMETRY_GPS_ALT_ARGS
             TELEMETRY_BARO_ALT_ARGS
             TELEMETRY_VSPEED_ARGS
+            TELEMETRY_ASPEED_ARGS
             frskyData.hub.temperature1,
             frskyData.hub.temperature2,
             frskyData.hub.rpm,
