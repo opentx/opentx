@@ -34,7 +34,7 @@
  *
  */
 
-#include "../opentx.h"
+#include "../../opentx.h"
 #include <stdarg.h>
 
 /** Usart Hw interface used by the console (UART0). */

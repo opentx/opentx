@@ -109,6 +109,7 @@ namespace Open9xSky9x {
 #include "radio/src/targets/sky9x/sdcard_driver.cpp"
 #include "radio/src/targets/sky9x/coproc_driver.cpp"
 #include "radio/src/targets/sky9x/haptic_driver.cpp"
+#include "radio/src/targets/sky9x/second_serial_driver.cpp"
 #include "radio/src/haptic.cpp"
 #include "radio/src/translations/tts_cz.cpp"
 #include "radio/src/translations/tts_de.cpp"
