@@ -2756,7 +2756,7 @@ void deleteExpoMix(uint8_t expo, uint8_t idx)
     memclear(&g_model.expoData[MAX_EXPOS-1], sizeof(ExpoData));
 #if defined(PCBTARANIS)
     if (!isInputAvailable(input)) {
-      memclear(&g_model.inputNames[input], sizeof(LEN_INPUT_NAME));
+      memclear(&g_model.inputNames[input], LEN_INPUT_NAME);
     }
 #endif
   }
