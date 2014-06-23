@@ -37,6 +37,13 @@
 #include "../opentx.h"
 #include <stdarg.h>
 
+/** Usart Hw interface used by the console (UART0). */
+#define SECOND_SERIAL_UART        UART0
+/** Usart Hw ID used by the console (UART0). */
+#define SECOND_SERIAL_ID          ID_UART0
+/** Pins description corresponding to Rxd,Txd, (UART pins) */
+#define SECOND_SERIAL_PINS        {PINS_UART}
+
 #if !defined(SIMU)
 
 extern Fifo<512> debugRxFifo;
@@ -49,7 +56,7 @@ extern Fifo<512> debugRxFifo;
  */
 void debugPutc(const char c)
 {
-  Uart *pUart = CONSOLE_USART;
+  Uart *pUart = SECOND_SERIAL_UART;
 
   /* Wait for the transmitter to be ready */
   while ( (pUart->UART_SR & UART_SR_TXEMPTY) == 0 ) ;
@@ -65,22 +72,22 @@ void debugPutc(const char c)
  * masterClock  Frequency of the system master clock (in Hz).
  * uses PA9 and PA10, RXD2 and TXD2
  */
-void DEBUG_UART_Configure( uint32_t baudrate, uint32_t masterClock)
+void SECOND_UART_Configure(uint32_t baudrate, uint32_t masterClock)
 {
-  register Uart *pUart = CONSOLE_USART;
+  register Uart *pUart = SECOND_SERIAL_UART;
 
   /* Configure PIO */
   configure_pins( (PIO_PA9 | PIO_PA10), PIN_PERIPHERAL | PIN_INPUT | PIN_PER_A | PIN_PORTA | PIN_NO_PULLUP ) ;
 
   /* Configure PMC */
-  PMC->PMC_PCER0 = 1 << CONSOLE_ID;
+  PMC->PMC_PCER0 = 1 << SECOND_SERIAL_ID;
 
   /* Reset and disable receiver & transmitter */
   pUart->UART_CR = UART_CR_RSTRX | UART_CR_RSTTX
                  | UART_CR_RXDIS | UART_CR_TXDIS;
 
   /* Configure mode */
-  pUart->UART_MR =  0x800 ;  // NORMAL, No Parity
+  pUart->UART_MR = 0x800 ;  // NORMAL, No Parity
 
   /* Configure baudrate */
   /* Asynchronous, no oversampling */
@@ -91,19 +98,42 @@ void DEBUG_UART_Configure( uint32_t baudrate, uint32_t masterClock)
 
   /* Enable receiver and transmitter */
   pUart->UART_CR = UART_CR_RXEN | UART_CR_TXEN;
-  pUart->UART_IER = UART_IER_RXRDY ;
-  NVIC_EnableIRQ(UART0_IRQn) ;
+
+#if defined(DEBUG)
+  pUart->UART_IER = UART_IER_RXRDY;
+  NVIC_EnableIRQ(UART0_IRQn);
+#endif
 }
 
-void DEBUG_UART_Stop()
+void SECOND_UART_Stop()
 {
-  CONSOLE_USART->UART_IDR = UART_IDR_RXRDY ;
+  SECOND_SERIAL_UART->UART_IDR = UART_IDR_RXRDY ;
   NVIC_DisableIRQ(UART0_IRQn) ;
 }
 
 extern "C" void UART0_IRQHandler()
 {
-  debugRxFifo.push(CONSOLE_USART->UART_RHR);
+#if defined(DEBUG)
+  debugRxFifo.push(SECOND_SERIAL_UART->UART_RHR);
+#endif
+}
+#else
+#define SECOND_UART_Configure(...)
+#endif
+
+void telemetrySecondPortInit(unsigned int /*protocol*/)
+{
+  SECOND_UART_Configure(FRSKY_D_BAUDRATE, Master_frequency);
+  startPdcUsartReceive();
 }
 
-#endif
+uint16_t telemetrySecondPortReceive()
+{
+  Uart *pUart = SECOND_SERIAL_UART;
+
+  if (pUart->UART_SR & UART_SR_RXRDY) {
+    return pUart->UART_RHR ;
+  }
+
+  return 0xFFFF ;
+}

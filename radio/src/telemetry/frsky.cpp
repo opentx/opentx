@@ -303,7 +303,16 @@ void telemetryWakeup()
 #endif
   }
 #elif defined(PCBSKY9X)
-  rxPdcUsart(processSerialData);              // Receive serial data here
+  if (telemetryProtocol == PROTOCOL_FRSKY_D_SECONDARY) {
+    uint16_t data ;
+    while ((data=telemetrySecondPortReceive()) != 0xFFFF) {
+      processSerialData(data);
+    }
+  }
+  else {
+    // Receive serial data here
+    rxPdcUsart(processSerialData);
+  }
 #endif
 
 #if !defined(PCBTARANIS)
@@ -577,7 +586,7 @@ void telemetryInit(void)
   }
   else if (telemetryProtocol==PROTOCOL_FRSKY_D_SECONDARY) {
     telemetryPortInit(0);
-    uart3Init(UART_MODE_TELEMETRY, PROTOCOL_FRSKY_D_SECONDARY);
+    telemetrySecondPortInit(PROTOCOL_FRSKY_D_SECONDARY);
   }
   else {
     telemetryPortInit(FRSKY_SPORT_BAUDRATE);

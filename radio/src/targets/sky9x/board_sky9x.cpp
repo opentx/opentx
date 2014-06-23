@@ -36,28 +36,11 @@
 
 #include "../../opentx.h"
 
-#if defined(DEBUG) && !defined(SIMU)
-void DEBUG_UART_Configure( uint32_t baudrate, uint32_t masterClock);
-void DEBUG_UART_Stop();
-#else
-#define DEBUG_UART_Stop()
-#define DEBUG_UART_Configure(...)
-#endif
-
 uint16_t ResetReason;
 uint32_t Master_frequency ;
 volatile uint32_t Tenms ;
 volatile uint8_t lcdLock;
 volatile uint32_t lcdInputs;
-
-/** Console baudrate 9600. */
-#define CONSOLE_BAUDRATE    9600
-/** Usart Hw interface used by the console (UART0). */
-#define CONSOLE_USART       UART0
-/** Usart Hw ID used by the console (UART0). */
-#define CONSOLE_ID          ID_UART0
-/** Pins description corresponding to Rxd,Txd, (UART pins) */
-#define CONSOLE_PINS        {PINS_UART}
 
 extern "C" void sam_boot( void ) ;
 
@@ -124,7 +107,6 @@ inline void setup_switches()
 
 inline void UART3_Configure(uint32_t baudrate, uint32_t masterClock)
 {
-//    const Pin pPins[] = CONSOLE_PINS;
   register Uart *pUart = BT_USART;
 
   /* Configure PIO */
@@ -588,9 +570,6 @@ void boardInit()
   pioptr->PIO_PDR = PIO_PB3 ;             // Assign to peripheral
   PMC->PMC_SCER |= 0x0400 ;               // PCK2 enabled
   PMC->PMC_PCK[2] = 2 ;                   // PCK2 is PLLA
-
-  DEBUG_UART_Configure( 9600, Master_frequency ) ;
-  UART3_Configure( 9600, Master_frequency ) ;             // TODO not needed, done after ...
 
   start_timer2() ;
   start_timer0() ;

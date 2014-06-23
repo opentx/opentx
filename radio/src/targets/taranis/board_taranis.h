@@ -113,11 +113,6 @@ extern uint16_t sessionTimer;
 
 void delaysInit(void);
 
-#define DEBUG_BAUDRATE      115200
-
-void uart3Init(unsigned int mode, unsigned int protocol);
-void uart3Putc(const char c);
-
 void delaysInit(void);
 void delay_01us(uint16_t nb);
 
@@ -258,6 +253,12 @@ void hapticOff(void);
   void hapticOn(void);
   #define HAPTIC_ON()   hapticOn()
 #endif
+
+// UART3 driver
+#define DEBUG_BAUDRATE      115200
+void uart3Init(unsigned int mode, unsigned int protocol);
+void uart3Putc(const char c);
+#define telemetrySecondPortInit(protocol) uart3Init(UART_MODE_TELEMETRY, protocol)
 
 extern uint8_t currentTrainerMode;
 
