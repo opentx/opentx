@@ -142,6 +142,12 @@
 #define NUM_CAL_PPM   4
 
 #if defined(PCBTARANIS)
+  #define LEN_MODEL_NAME     12
+  #define LEN_BITMAP_NAME    10
+  #define LEN_EXPOMIX_NAME   8
+  #define LEN_FP_NAME        10
+  #define LEN_CHANNEL_NAME   6
+  #define LEN_INPUT_NAME     4
   enum CurveType {
     CURVE_TYPE_STANDARD,
     CURVE_TYPE_CUSTOM,
@@ -153,17 +159,22 @@ PACK(typedef struct t_CurveInfo {
   uint8_t spare:4;
   int8_t  points;
 }) CurveInfo;
-  #define MAX_CURVES 32
-  #define NUM_POINTS 512
-  #define CURVDATA   CurveInfo
+  #define MAX_CURVES         32
+  #define NUM_POINTS         512
+  #define CURVDATA           CurveInfo
 #elif defined(CPUARM)
-  #define MAX_CURVES 16
-  #define NUM_POINTS 512
-  #define CURVDATA   int16_t
+  #define LEN_MODEL_NAME     10
+  #define LEN_EXPOMIX_NAME   6
+  #define LEN_FP_NAME        6
+  #define MAX_CURVES         16
+  #define NUM_POINTS         512
+  #define CURVDATA           int16_t
 #else
-  #define MAX_CURVES 8
-  #define NUM_POINTS (112-MAX_CURVES)
-  #define CURVDATA   int8_t
+  #define LEN_MODEL_NAME     10
+  #define LEN_FP_NAME        6
+  #define MAX_CURVES         8
+  #define NUM_POINTS         (112-MAX_CURVES)
+  #define CURVDATA           int8_t
 #endif
 
 #if defined(PCBTARANIS) || defined(PCBSKY9X)
@@ -326,7 +337,7 @@ PACK(typedef struct t_ScriptData {
     TRAINER_MODULE
   };
   #define MODELDATA_BITMAP  char bitmap[LEN_BITMAP_NAME];
-  #define MODELDATA_EXTRA   uint8_t externalModule; uint8_t trainerMode; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][4]; uint8_t nPotsToWarn; int8_t potPosition[NUM_POTS]; uint8_t spare[2];
+  #define MODELDATA_EXTRA   uint8_t externalModule; uint8_t trainerMode; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t nPotsToWarn; int8_t potPosition[NUM_POTS]; uint8_t spare[2];
   #define LIMITDATA_EXTRA   char name[LEN_CHANNEL_NAME]; int8_t curve;
   #define swstate_t         uint16_t
 #elif defined(PCBSKY9X)
@@ -442,21 +453,6 @@ PACK(typedef struct t_EEGeneral {
 #define SWITCHES_DELAY()     uint8_t(15+g_eeGeneral.switchesDelay)
 #define SWITCHES_DELAY_NONE  (-15)
 #define HAPTIC_STRENGTH()    (3+g_eeGeneral.hapticStrength)
-
-#if defined(PCBTARANIS)
-  #define LEN_MODEL_NAME     12
-  #define LEN_BITMAP_NAME    10
-  #define LEN_EXPOMIX_NAME   8
-  #define LEN_FP_NAME        10
-  #define LEN_CHANNEL_NAME   6
-#elif defined(PCBSKY9X)
-  #define LEN_MODEL_NAME     10
-  #define LEN_EXPOMIX_NAME   6
-  #define LEN_FP_NAME        6
-#else
-  #define LEN_MODEL_NAME     10
-  #define LEN_FP_NAME        6
-#endif
 
 #if defined(PCBTARANIS)
 enum CurveRefType {

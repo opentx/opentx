@@ -2749,8 +2749,16 @@ void deleteExpoMix(uint8_t expo, uint8_t idx)
   pauseMixerCalculations();
   if (expo) {
     ExpoData *expo = expoAddress(idx);
+#if defined(PCBTARANIS)
+    int input = expo->chn;
+#endif
     memmove(expo, expo+1, (MAX_EXPOS-(idx+1))*sizeof(ExpoData));
     memclear(&g_model.expoData[MAX_EXPOS-1], sizeof(ExpoData));
+#if defined(PCBTARANIS)
+    if (!isInputAvailable(input)) {
+      memclear(&g_model.inputNames[input], sizeof(LEN_INPUT_NAME));
+    }
+#endif
   }
   else {
     MixData *mix = mixAddress(idx);

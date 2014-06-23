@@ -1366,20 +1366,26 @@ void drawStatusLine()
 }
 #endif
 
+#if defined(PCBTARANIS)
+bool isInputAvailable(int input)
+{
+  for (int i=0; i<MAX_EXPOS; i++) {
+    ExpoData * expo = expoAddress(i);
+    if (!EXPO_VALID(expo))
+      break;
+    if (expo->chn == input)
+      return true;
+  }
+  return false;
+}
+#endif
+
 #if defined(CPUARM)
 bool isSourceAvailable(int source)
 {
 #if defined(PCBTARANIS)
   if (source>=MIXSRC_FIRST_INPUT && source<=MIXSRC_LAST_INPUT) {
-    int input = source - MIXSRC_FIRST_INPUT;
-    for (int i=0; i<MAX_EXPOS; i++) {
-      ExpoData * expo = expoAddress(i);
-      if (!EXPO_VALID(expo))
-        break;
-      if (expo->chn == input)
-        return true;
-    }
-    return false;
+    return isInputAvailable(source - MIXSRC_FIRST_INPUT);
   }
 #endif
 

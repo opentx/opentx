@@ -236,6 +236,7 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 #endif
 
 #if defined(CPUARM)
+  bool isInputAvailable(int input);
   bool isSourceAvailable(int source);
   bool isTelemetrySourceAvailable(int source);
   bool isInputSourceAvailable(int source);
