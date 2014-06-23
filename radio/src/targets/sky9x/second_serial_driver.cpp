@@ -121,6 +121,7 @@ extern "C" void UART0_IRQHandler()
 #define SECOND_UART_Configure(...)
 #endif
 
+#if defined(FRSKY)
 void telemetrySecondPortInit(unsigned int /*protocol*/)
 {
   SECOND_UART_Configure(FRSKY_D_BAUDRATE, Master_frequency);
@@ -137,3 +138,4 @@ uint16_t telemetrySecondPortReceive()
 
   return 0xFFFF ;
 }
+#endif
