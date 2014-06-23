@@ -787,7 +787,7 @@
 #define TR_ANTENNAPROBLEM      CENTER "¡Problema antena TX!"
 #define TR_MODELIDUSED         TR("ID en uso", "ID modelo en uso")
 #define TR_MODULE              INDENT "Modulo"
-#define TR_TELEMETRY_TYPE      "Telemetry Type"
+#define TR_TELEMETRY_TYPE      TR("Type", "Telemetry Type")
 #define TR_CHANNELRANGE        INDENT "Gama de canales"
 #define TR_LOWALARM            INDENT "Alarma baja"
 #define TR_CRITICALALARM       INDENT "Alarma Critica"
