@@ -726,6 +726,9 @@ void backupEeprom()
   lcd_rect(3, 6*FH+4, 204, 7);
   lcdRefresh();
 
+  //reset unexpectedShutdown to prevent warning when user restores EEPROM backup
+  g_eeGeneral.unexpectedShutdown = 0;
+  eeDirty(EE_GENERAL);
   eeCheck(true);
 
   // create the directory if needed...
@@ -760,6 +763,11 @@ void backupEeprom()
   }
 
   f_close(&file);
+
+  //set back unexpectedShutdown
+  g_eeGeneral.unexpectedShutdown = 1;
+  eeDirty(EE_GENERAL);
+  eeCheck(true);
 }
 #endif
 
