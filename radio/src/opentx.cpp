@@ -2713,7 +2713,7 @@ void perMain()
     usbStarted = true;
   }
   
-#if defined(USB_JOYTICK)
+#if defined(USB_JOYSTICK)
   if (usbStarted) {
     if (!usbPlugged()) {
       //disable USB
