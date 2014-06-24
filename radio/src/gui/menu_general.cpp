@@ -256,8 +256,9 @@ void menuGeneralSetup(uint8_t event)
 #if defined(PCBTARANIS)
         if (attr && m_posHorz < 0) lcd_filled_rect(RADIO_SETUP_2ND_COLUMN, y, LCD_W-RADIO_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
 #endif
-        if (attr && checkIncDec_Ret)
+        if (attr && checkIncDec_Ret) {
           g_rtcTime = gmktime(&t); // update local timestamp and get wday calculated
+        }
         break;
 
       case ITEM_SETUP_TIME:
