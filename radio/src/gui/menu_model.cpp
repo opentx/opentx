@@ -1797,21 +1797,30 @@ uint8_t editDelay(const uint8_t y, const uint8_t event, const uint8_t attr, cons
   #define FlightModesType uint8_t
 #endif
 
+#if defined(PCBTARANIS)
+void displayFlightModes(uint8_t x, uint8_t y, FlightModesType value)
+{
+  lcd_puts(x, y, "FM:"); 
+  uint8_t p = MAX_FLIGHT_MODES;
+  x += 9*FW+2;
+  do {
+    --p;
+    lcd_putcAtt(x, y, '0'+p, ((value & (1<<p)) ? 0 : INVERS));     
+    x -= FWNUM;
+  } while (p!=0);
+}
+#else
 void displayFlightModes(uint8_t x, uint8_t y, FlightModesType value)
 {
   uint8_t p = MAX_FLIGHT_MODES;
   do {
     --p;
     if (!(value & (1<<p)))
-#if defined(PCBTARANIS)
-      lcd_putcAtt(x, y+2, '0'+p, TINSIZE);
-      x -= FWNUM-1;
-#else
       lcd_putc(x, y, '0'+p);
-      x -= FWNUM;
-#endif
+    x -= FWNUM;
   } while (p!=0);
 }
+#endif
 
 FlightModesType editFlightModes(uint8_t x, uint8_t y, uint8_t event, FlightModesType value, uint8_t attr)
 {
@@ -3328,16 +3337,16 @@ static uint8_t s_copySrcCh;
   #define EXPO_LINE_CURVE_POS  12*FW+11
   #define EXPO_LINE_TRIM_POS   19*FW-4
   #define EXPO_LINE_SWITCH_POS 20*FW-1
-  #define EXPO_LINE_SIDE_POS   23*FW
-  #define EXPO_LINE_FM_POS     24*FW+2
+  #define EXPO_LINE_SIDE_POS   25*FW
+  #define EXPO_LINE_FM_POS     12*FW+11
   #define EXPO_LINE_SELECT_POS 5*FW+2
   #define EXPO_LINE_NAME_POS   LCD_W-LEN_EXPOMIX_NAME*FW-MENUS_SCROLLBAR_WIDTH
   #define MIX_LINE_WEIGHT_POS  6*FW+8
   #define MIX_LINE_SRC_POS     7*FW+3
   #define MIX_LINE_CURVE_POS   13*FW+3
-  #define MIX_LINE_SWITCH_POS  21*FW-1
-  #define MIX_LINE_FM_POS      24*FW+2
-  #define MIX_LINE_DELAY_POS   18*FW+2
+  #define MIX_LINE_SWITCH_POS  19*FW+1
+  #define MIX_LINE_FM_POS      13*FW+3
+  #define MIX_LINE_DELAY_POS   24*FW+3
 #elif defined(CPUARM)
   #define EXPO_LINE_WEIGHT_POS 7*FW+1
   #define EXPO_LINE_EXPO_POS   10*FW+5
@@ -3345,7 +3354,7 @@ static uint8_t s_copySrcCh;
   #define EXPO_LINE_SIDE_POS   14*FW+2
   #define EXPO_LINE_SELECT_POS 24
   #define EXPO_LINE_FM_POS
-  #define EXPO_LINE_NAME_POS   LCD_W-sizeof(ed->name)*FW-MENUS_SCROLLBAR_WIDTH
+  #define EXPO_LINE_NAME_POS   LCD_W-LEN_EXPOMIX_NAME*FW-MENUS_SCROLLBAR_WIDTH
   #define MIX_LINE_SRC_POS     4*FW-1
   #define MIX_LINE_WEIGHT_POS  11*FW+3
   #define MIX_LINE_CURVE_POS   12*FW+2
@@ -3408,6 +3417,97 @@ void displayHeaderChannelName(uint8_t ch)
     lcd_putc(lcdNextPos, 0, ' ');
   }
 }
+#endif
+
+void displayMixInfos(uint8_t y, MixData *md)
+{
+#if defined(PCBTARANIS)
+  putsCurveRef(MIX_LINE_CURVE_POS, y, md->curve, 0);
+#else
+  if (md->curveParam) {
+    if (md->curveMode == MODE_CURVE)
+      putsCurve(MIX_LINE_CURVE_POS, y, md->curveParam);
+    else
+      displayGVar(MIX_LINE_CURVE_POS+3*FW, y, md->curveParam, -100, 100);
+  }
+#endif
+
+  if (md->swtch) {
+    putsSwitches(MIX_LINE_SWITCH_POS, y, md->swtch);
+  }
+}
+
+#if defined(PCBTARANIS)
+void displayMixLine(uint8_t y, MixData *md)
+{
+  if (md->name[0]) {
+    lcd_putsnAtt(EXPO_LINE_NAME_POS, y, md->name, sizeof(md->name), ZCHAR);
+  }
+
+  if (!md->flightModes || ((md->curve.value || md->swtch) && ((get_tmr10ms() / 200) & 1)))
+    displayMixInfos(y, md);
+  else
+    displayFlightModes(MIX_LINE_FM_POS, y, md->flightModes);
+}
+#elif defined(CPUARM)
+void displayMixLine(uint8_t y, MixData *md)
+{
+  if (md->name[0]) {
+    lcd_putsnAtt(EXPO_LINE_NAME_POS, y, md->name, sizeof(md->name), ZCHAR);
+  }
+  else {
+    displayMixInfos(y, md);
+  }
+}
+#else
+#define displayMixLine(y, md) displayMixInfos(y, md)
+#endif
+
+void displayExpoInfos(uint8_t y, ExpoData *ed)
+{
+#if defined(PCBTARANIS)
+  putsCurveRef(EXPO_LINE_CURVE_POS, y, ed->curve, 0);
+#else
+  if (ed->curveMode == MODE_CURVE)
+    putsCurve(EXPO_LINE_EXPO_POS-3*FW, y, ed->curveParam);
+  else
+    displayGVar(EXPO_LINE_EXPO_POS, y, ed->curveParam, -100, 100);
+#endif
+
+  putsSwitches(EXPO_LINE_SWITCH_POS, y, ed->swtch, 0);
+}
+
+#if defined(PCBTARANIS)
+void displayExpoLine(uint8_t y, ExpoData *ed)
+{ 
+  putsMixerSource(EXPO_LINE_SRC_POS, y, ed->srcRaw, 0);
+
+  if (ed->carryTrim != TRIM_ON) {
+    lcd_putc(EXPO_LINE_TRIM_POS, y, ed->carryTrim > 0 ? '-' : STR_RETA123[-ed->carryTrim]);
+  }
+
+  if (!ed->flightModes || ((ed->curve.value || ed->swtch) && ((get_tmr10ms() / 200) & 1)))
+    displayExpoInfos(y, ed);
+  else
+    displayFlightModes(EXPO_LINE_FM_POS, y, ed->flightModes);
+      
+  if (ed->name[0]) {
+    lcd_putsnAtt(EXPO_LINE_NAME_POS, y, ed->name, sizeof(ed->name), ZCHAR);
+  }
+}
+#elif defined(CPUARM)
+void displayExpoLine(uint8_t y, ExpoData *ed)
+{
+  displayExpoInfos(y, ed);
+  
+  if (ed->name[0]) {
+    lcd_putsnAtt(EXPO_LINE_NAME_POS, y, ed->name, sizeof(ed->name), ZCHAR);
+  }
+}
+#else
+#define displayExpoLine(y, ed) \
+  displayExpoInfos(y, ed); \
+  displayFlightModes(EXPO_LINE_FM_POS, y, ed->flightModes) 
 #endif
 
 void menuModelExpoMix(uint8_t expo, uint8_t event)
@@ -3609,34 +3709,10 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
           uint8_t attr = ((s_copyMode || sub != cur) ? 0 : INVERS);         
           if (expo) {
             ed->weight = GVAR_MENU_ITEM(EXPO_LINE_WEIGHT_POS, y, ed->weight, MIN_EXPO_WEIGHT, 100, attr | (isExpoActive(i) ? BOLD : 0), 0, event);
-
-#if defined(PCBTARANIS)
-            putsMixerSource(EXPO_LINE_SRC_POS, y, ed->srcRaw, 0);
-#endif
-
-#if defined(PCBTARANIS)
-            if (ed->carryTrim != TRIM_ON)
-              lcd_putc(EXPO_LINE_TRIM_POS, y, ed->carryTrim > 0 ? '-' : STR_RETA123[-ed->carryTrim]);
-            putsCurveRef(EXPO_LINE_CURVE_POS, y, ed->curve, 0);
-#else
-            if (ed->curveMode == MODE_CURVE)
-              putsCurve(EXPO_LINE_EXPO_POS-3*FW, y, ed->curveParam);
-            else
-              displayGVar(EXPO_LINE_EXPO_POS, y, ed->curveParam, -100, 100);
-#endif
-
-            putsSwitches(EXPO_LINE_SWITCH_POS, y, ed->swtch, 0);
-
-            if (ed->mode!=3) lcd_putc(EXPO_LINE_SIDE_POS, y, ed->mode == 2 ? 126 : 127);
-
-#if defined(CPUARM) && LCD_W >= 212
-            if (ed->flightModes) lcd_puts(EXPO_LINE_FM_POS, y, STR_FP);
-            if (ed->name[0]) lcd_putsnAtt(EXPO_LINE_NAME_POS, y, ed->name, sizeof(ed->name), ZCHAR | (isExpoActive(i) ? BOLD : 0));
-#elif defined(CPUARM)
-            if (ed->name[0]) lcd_putsnAtt(EXPO_LINE_NAME_POS, y, ed->name, sizeof(ed->name), ZCHAR | (isExpoActive(i) ? BOLD : 0));
-#else
-            displayFlightModes(EXPO_LINE_FM_POS, y, ed->flightModes);
-#endif
+            displayExpoLine(y, ed);
+            if (ed->mode!=3) {
+              lcd_putc(EXPO_LINE_SIDE_POS, y, ed->mode == 2 ? 126 : 127);
+            }  
           }
           else {
 #if LCD_W >= 212
@@ -3651,37 +3727,14 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
 
             gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, attr | (isMixActive(i) ? BOLD : 0), event);
 
-#if defined(CPUARM)
-            if (md->name[0]) {
-              lcd_putsnAtt(EXPO_LINE_NAME_POS, y, md->name, sizeof(md->name), ZCHAR | (isMixActive(i) ? BOLD : 0));
-            }
-#if LCD_W < 212
-            else
-#endif
-#endif
-            {
-#if defined(PCBTARANIS)
-              putsCurveRef(MIX_LINE_CURVE_POS, y, md->curve, 0);
-              if (md->flightModes) lcd_puts(MIX_LINE_FM_POS, y, STR_FP);
-#else
-              if (md->curveParam) {
-                if (md->curveMode == MODE_CURVE)
-                  putsCurve(MIX_LINE_CURVE_POS, y, md->curveParam);
-                else
-                  displayGVar(MIX_LINE_CURVE_POS+3*FW, y, md->curveParam, -100, 100);
-              }
-#endif
-              if (md->swtch) {
-                putsSwitches(MIX_LINE_SWITCH_POS, y, md->swtch);
-              }
-
-              char cs = ' ';
-              if (md->speedDown || md->speedUp)
-                cs = 'S';
-              if ((md->delayUp || md->delayDown))
-                cs = (cs =='S' ? '*' : 'D');
-              lcd_putc(MIX_LINE_DELAY_POS, y, cs);
-            }
+            displayMixLine(y, md);
+            
+            char cs = ' ';
+	    if (md->speedDown || md->speedUp)
+              cs = 'S';
+            if (md->delayUp || md->delayDown)
+              cs = (cs =='S' ? '*' : 'D');
+            lcd_putc(MIX_LINE_DELAY_POS, y, cs);
           }
           if (s_copyMode) {
             if ((s_copyMode==COPY_MODE || s_copyTgtOfs == 0) && s_copySrcCh == ch && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
