@@ -1,3 +1,19 @@
+<h2>Version 2.0.4 / 2014-06-24</h2>
+[Taranis]
+<ul>
+<li>Lua Telemetry custom screens added 
+<li>Lua wrong memory used indication
+<li>Telemetry on the serial port in the battery bay
+<li>
+</ul>
+
+[All]
+<ul>
+<li>Air Speed added in Logs
+<li>|d|>x bug fix
+<li>Timers played even if 00:00
+</ul>
+
 <h2>Version 2.0.3 / 2014-06-17</h2>
 <ul>
 <li>Bugfix on Reset Flight function (possible freeze of the menus)

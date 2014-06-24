@@ -1,3 +1,10 @@
+<h2>Version 2.0.4</h2>
+<ul>
+<li>Sound should be ok on all platforms</li>
+<li>Min/Max reviewed in Logical switches (for the whole telemetry)</li>
+<li>Various bug fixes</li> 
+</ul>
+
 <h2>Version 2.0.3</h2>
 <ul>
 <li>EEPROM import bug on AdjustGVAR function</li>
