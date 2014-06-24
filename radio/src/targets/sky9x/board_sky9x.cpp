@@ -475,10 +475,12 @@ void opentxBootloader();
 // Need PA3 and PA4 set to peripheral A
 void i2cInit()
 {
-  register Pio *pioptr ;
-  register uint32_t timing ;
+  register Pio *pioptr;
+  register uint32_t timing;
 
   PMC->PMC_PCER0 |= 0x00080000L ;               // Enable peripheral clock to TWI0
+
+  TWI0->TWI_CR = TWI_CR_SWRST ;                           // Reset in case we are restarting
 
   /* Configure PIO */
   pioptr = PIOA ;
