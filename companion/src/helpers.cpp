@@ -290,7 +290,7 @@ void CurveGroup::gvarCBChanged(int state)
 {
   if (!lock) {
     if (state) {
-      curve.value = 10000; // TODO constant in EEpromInterface ...
+      curve.value = 10000+1; // TODO constant in EEpromInterface ...
     }
     else {
       curve.value = 0; // TODO could be better
