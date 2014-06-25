@@ -52,8 +52,8 @@ extern "C" {
 #define lua_pushtablenil(L, k)         (lua_pushstring(L, (k)), lua_pushnil(L), lua_settable(L, -3))
 #define lua_pushtableboolean(L, k, v)  (lua_pushstring(L, (k)), lua_pushboolean(L, (v)), lua_settable(L, -3))
 #define lua_pushtablenumber(L, k, v)   (lua_pushstring(L, (k)), lua_pushinteger(L, (v)), lua_settable(L, -3))
-#define lua_pushtablestring(L, k, v)   (lua_pushstring(L, (k)), lua_pushstring(L, (v)), lua_settable(L, -3))
-#define lua_pushtablezstring(L, k, v)  { char _zz[sizeof(v)+1]; zchar2str(_zz, (v), sizeof(v)); lua_pushstring(L, (k)); lua_pushstring(L, _zz); lua_settable(L, -3); }
+#define lua_pushtablestring(L, k, v)   { char tmp[sizeof(v)+1]; strncpy(tmp, (v), sizeof(v)); tmp[sizeof(v)] = '\0'; lua_pushstring(L, (k)); lua_pushstring(L, tmp); lua_settable(L, -3); }
+#define lua_pushtablezstring(L, k, v)  { char tmp[sizeof(v)+1]; zchar2str(tmp, (v), sizeof(v)); lua_pushstring(L, (k)); lua_pushstring(L, tmp); lua_settable(L, -3); }
 #define lua_registerlib(L, name, tab)  (luaL_newmetatable(L, name), luaL_setfuncs(L, tab, 0), lua_setglobal(L, name))
 
 lua_State *L = NULL;
@@ -714,7 +714,7 @@ static int luaModelGetLogicalSwitch(lua_State *L)
   if (idx < NUM_LOGICAL_SWITCH) {
     LogicalSwitchData * sw = lswAddress(idx);
     lua_newtable(L);
-    lua_pushtablenumber(L, "function", sw->func);
+    lua_pushtablenumber(L, "func", sw->func);
     lua_pushtablenumber(L, "v1", sw->v1);
     lua_pushtablenumber(L, "v2", sw->v2);
     lua_pushtablenumber(L, "v3", sw->v3);
@@ -733,11 +733,12 @@ static int luaModelSetLogicalSwitch(lua_State *L)
   int idx = luaL_checkunsigned(L, 1);
   if (idx < NUM_LOGICAL_SWITCH) {
     LogicalSwitchData * sw = lswAddress(idx);
+    memclear(sw, sizeof(LogicalSwitchData));
     luaL_checktype(L, -1, LUA_TTABLE);
     for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
       luaL_checktype(L, -2, LUA_TSTRING); // key is string
       const char * key = luaL_checkstring(L, -2);
-      if (!strcmp(key, "function")) {
+      if (!strcmp(key, "func")) {
         sw->func = luaL_checkinteger(L, -1);
       }
       else if (!strcmp(key, "v1")) {
@@ -771,9 +772,9 @@ static int luaModelGetCustomFunction(lua_State *L)
     CustomFnData * cfn = &g_model.funcSw[idx];
     lua_newtable(L);
     lua_pushtablenumber(L, "switch", CFN_SWITCH(cfn));
-    lua_pushtablenumber(L, "function", CFN_FUNC(cfn));
+    lua_pushtablenumber(L, "func", CFN_FUNC(cfn));
     if (CFN_FUNC(cfn) == FUNC_PLAY_TRACK || CFN_FUNC(cfn) == FUNC_BACKGND_MUSIC || CFN_FUNC(cfn) == FUNC_PLAY_SCRIPT) {
-      lua_pushtablezstring(L, "name", cfn->play.name);
+      lua_pushtablestring(L, "name", cfn->play.name);
     }
     else {
       lua_pushtablenumber(L, "value", cfn->all.val);
@@ -793,6 +794,7 @@ static int luaModelSetCustomFunction(lua_State *L)
   int idx = luaL_checkunsigned(L, 1);
   if (idx < NUM_CFN) {
     CustomFnData * cfn = &g_model.funcSw[idx];
+    memclear(cfn, sizeof(CustomFnData));
     luaL_checktype(L, -1, LUA_TTABLE);
     for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
       luaL_checktype(L, -2, LUA_TSTRING); // key is string
@@ -800,12 +802,12 @@ static int luaModelSetCustomFunction(lua_State *L)
       if (!strcmp(key, "switch")) {
         CFN_SWITCH(cfn) = luaL_checkinteger(L, -1);
       }
-      else if (!strcmp(key, "function")) {
+      else if (!strcmp(key, "func")) {
         CFN_FUNC(cfn) = luaL_checkinteger(L, -1);
       }
       else if (!strcmp(key, "name")) {
         const char * name = luaL_checkstring(L, -1);
-        str2zchar(cfn->play.name, name, sizeof(cfn->play.name));
+        strncpy(cfn->play.name, name, sizeof(cfn->play.name));
       }
       else if (!strcmp(key, "value")) {
         cfn->all.val = luaL_checkinteger(L, -1);
