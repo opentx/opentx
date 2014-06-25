@@ -242,7 +242,7 @@ RawSourceRange RawSource::getRange(const ModelData & model, const GeneralSetting
           break;
         case TELEMETRY_SOURCE_CONSUMPTION:
           result.step = singleprec ? 100 : 1;
-          result.max = singleprec ? 25500 : 10000;
+          result.max = singleprec ? 25500 : 30000;
           result.unit = QObject::tr("mAh");
           break;
         case TELEMETRY_SOURCE_POWER:
