@@ -332,7 +332,6 @@ TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model,
 
 void TelemetryCustomScreen::populateTelemetrySourceCB(QComboBox *b, unsigned int value, bool last, int hubproto)
 {
-  int telem_hub[] = {0,0,0,0,0,0,0,0,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,0,0,2,2,1,1,1,1,1,1};
   b->clear();
 
   b->addItem(RawSource(SOURCE_TYPE_NONE, 0).toString(model));
@@ -340,24 +339,14 @@ void TelemetryCustomScreen::populateTelemetrySourceCB(QComboBox *b, unsigned int
   for (unsigned int i = 0; i < (last ? TELEMETRY_SOURCES_STATUS_COUNT : TELEMETRY_SOURCES_DISPLAY_COUNT); i++) {
     b->addItem(RawSource(SOURCE_TYPE_TELEMETRY, i).toString(model));
     if (!firmware->isTelemetrySourceAvailable(i)) {
-      //disable item
+      // disable item
       QModelIndex index = b->model()->index(i+1, 0);
       QVariant v(0);
       b->model()->setData(index, v, Qt::UserRole - 1);
     }
-    if (!(i>=sizeof(telem_hub)/sizeof(int) || telem_hub[i]==0 || ((telem_hub[i]>=hubproto) && hubproto!=0))) {
-      QModelIndex index = b->model()->index(i, 0);
-      QVariant v(0);
-      b->model()->setData(index, v, Qt::UserRole - 1);
-    }
   }
 
-  if (value>=sizeof(telem_hub)/sizeof(int))
-    b->setCurrentIndex(0);
-  else if (telem_hub[value]==0 || ((telem_hub[value]>=hubproto) && hubproto!=0)) {
-    b->setCurrentIndex(value);
-  }
-
+  b->setCurrentIndex(value);
   b->setMaxVisibleItems(10);
 }
 
