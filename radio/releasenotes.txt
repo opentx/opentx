@@ -1,3 +1,13 @@
+<h2>Version 2.0.5 / 2014-06-26</h2>
+[Taranis]
+<ul>
+<li>Add Flight Mode indication to the mixer/inputs screens
+<li>Joystick emulation fixed
+<li>Fixed float number display in Lua
+<li>Fixed telemetry screens page order (Lua, custom, voltage, GPS)
+<li>Fixed unability to disable switch warning for SG
+</ul>
+
 <h2>Version 2.0.4 / 2014-06-24</h2>
 [Taranis]
 <ul>

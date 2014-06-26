@@ -1,3 +1,11 @@
+<h2>Version 2.0.5</h2>
+<ul>
+<li>Fix crash on startup</li>
+<li>Fix version number in simu</li>
+<li>9XR-Pro now supported on Mac</li>
+<li>Fix loss of settings in telemetry custom screens</li>
+</ul>
+
 <h2>Version 2.0.4</h2>
 <ul>
 <li>Sound should be ok on all platforms</li>
