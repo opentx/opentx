@@ -44,7 +44,8 @@
 #define DEBUG_STACK_SIZE    500
 
 OS_TID menusTaskId;
-OS_STK menusStack[MENUS_STACK_SIZE];
+//stack must be alligned to 8 bytes otherwise printf for %f does not work!
+OS_STK __attribute__((aligned(8))) menusStack[MENUS_STACK_SIZE];
 
 OS_TID mixerTaskId;
 OS_STK mixerStack[MIXER_STACK_SIZE];
