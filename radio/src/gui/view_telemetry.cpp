@@ -63,7 +63,7 @@ enum FrskyViews {
   FRSKY_VIEW_MAX = TELEMETRY_AFTER_FLIGHT_SCREEN
 };
 
-uint8_t s_frsky_view = TELEMETRY_VOLTAGES_SCREEN;
+uint8_t s_frsky_view = 0;
 
 #if LCD_W >= 212
   #define BAR_LEFT    26

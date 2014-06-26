@@ -1284,7 +1284,7 @@ bool isTelemetryScriptAvailable(uint8_t index)
 {
   for (int i=0; i<luaScriptsCount; i++) {
     ScriptInternalData & sid = scriptInternalData[i];
-    if (sid.reference == SCRIPT_TELEMETRY_FIRST+index) {
+    if (sid.reference == SCRIPT_TELEMETRY_FIRST+index+1) {
       return true;
     }
   }
@@ -1497,7 +1497,7 @@ void luaTask(uint8_t evt)
 #if defined(SIMU) || defined(DEBUG)
           filename = "[telem]";
 #endif
-          if (g_menuStack[0]==menuTelemetryFrsky && sid.reference==SCRIPT_TELEMETRY_FIRST+s_frsky_view) {
+          if (g_menuStack[0]==menuTelemetryFrsky && sid.reference==SCRIPT_TELEMETRY_FIRST+s_frsky_view+1) {
             lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
             lua_pushinteger(L, evt);
             inputsCount = 1;
