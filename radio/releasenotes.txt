@@ -6,6 +6,7 @@
 <li>Fixed float number display in Lua
 <li>Fixed telemetry screens page order (Lua, custom, voltage, GPS)
 <li>Fixed unability to disable switch warning for SG
+<li>Lua bugfixes in getCustomFunction/setCustomFunction and getLogicalSwitch/setLogicalSwitch
 </ul>
 
 <h2>Version 2.0.4 / 2014-06-24</h2>

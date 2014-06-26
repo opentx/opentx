@@ -4,6 +4,8 @@
 <li>Fix version number in simu</li>
 <li>9XR-Pro now supported on Mac</li>
 <li>Fix loss of settings in telemetry custom screens</li>
+<li>Fix 10000% bug when using GVs in mixer weithg or offset</li>
+<li>Fix Cnsp range in logical switches (up to 30000mAh)</li>
 </ul>
 
 <h2>Version 2.0.4</h2>
