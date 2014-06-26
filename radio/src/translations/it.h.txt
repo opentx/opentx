@@ -80,7 +80,7 @@
 #define TR_TRNCHN              "ch1ch2ch3ch4"
                                
 #define LEN_UART3MODES         "\017"
-#define TR_UART3MODES          "OFF\0           ""Replica Porta-S""Telemetry\0     ""Debug\0         "
+#define TR_UART3MODES          "OFF\0           ""Replica Porta-S""Telemetria\0    ""Debug\0         "
                                
 #define LEN_POTTYPES           "\017"
 #define TR_POTTYPES            "None\0          ""Potenziometro\0 ""Inter. Multipos"
@@ -483,7 +483,7 @@
 #define OFS_EXIT               sizeof(TR_ENTER)
 
 #define TR_MENUWHENDONE        CENTER "\007" TR_ENTER " Conferma"
-#define TR_FREE                " Disp."
+#define TR_FREE                "disp"
 #define TR_DELETEMODEL         "Elimina modello?"
 #define TR_COPYINGMODEL        "Copia in corso.."
 #define TR_MOVINGMODEL         "Spostamento..."
@@ -659,8 +659,8 @@
 #define TR_MENULOGICALSWITCH   "INTER. PERSON."
 #define TR_MENULOGICALSWITCHES TR("INTER. LOGICI","INTERRUTTORI LOGICI")
 #define TR_MENUCUSTOMFUNC      TR("FUNZ. SPECIALI","FUNZIONI SPECIALI")
-#define TR_MENUCUSTOMSCRIPTS   "SCRIPTS PERSONALI"
-#define TR_MENUCUSTOMSCRIPT    "SCRIPT PERSONALE"
+#define TR_MENUCUSTOMSCRIPTS   "SCRIPTS UTENTE"
+#define TR_MENUCUSTOMSCRIPT    "SCRIPT UTENTE"
 #define TR_MENUTELEMETRY       "TELEMETRIA"
 #define TR_MENUTEMPLATES       "ESEMPI GUIDA"
 #define TR_MENUSTAT            "STATO"
@@ -778,7 +778,7 @@
 #define TR_CF                  "CF"
 #define TR_SPEAKER             INDENT"Speaker"
 #define TR_BUZZER              INDENT"Buzzer"
-#define TR_BYTES               "bytes"
+#define TR_BYTES               "Bytes"
 #define TR_MODULE_BIND         "[Bind]"
 #define TR_MODULE_RANGE        "[Range]"
 #define TR_RESET_BTN           "[Reset]"
