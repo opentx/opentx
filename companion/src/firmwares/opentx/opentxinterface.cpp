@@ -1169,8 +1169,7 @@ void registerOpenTxFirmwares()
   openTx->addOptions(fai_options);
   firmwares.push_back(openTx);
 
-#ifndef __APPLE__
-  /* SKY9X board */
+  /* Sky9x board */
   openTx = new OpenTxFirmware("opentx-sky9x", QObject::tr("OpenTX for Sky9x board / 9X"), BOARD_SKY9X);
   openTx->addOption("heli", QObject::tr("Enable HELI menu and cyclic mix support"));
   openTx->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
@@ -1215,7 +1214,6 @@ void registerOpenTxFirmwares()
   openTx->addOption("bluetooth", QObject::tr("Bluetooth interface"));
   openTx->addOptions(fai_options);
   firmwares.push_back(openTx);
-#endif
   
   /* Taranis board */
   openTx = new OpenTxFirmware("opentx-taranis", QObject::tr("OpenTX for FrSky Taranis"), BOARD_TARANIS);
