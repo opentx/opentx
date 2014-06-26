@@ -96,7 +96,8 @@ int main(int argc, char *argv[])
 
   QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
   
-  registerOpenTxFirmwares();
+    RegisterEepromInterfaces();
+    registerOpenTxFirmwares();
 
   if (g.profile[g.id()].fwType().isEmpty()){
     g.profile[g.id()].fwType(default_firmware_variant->getId());
@@ -111,8 +112,6 @@ int main(int argc, char *argv[])
 
   QPixmap pixmap = QPixmap(splashScreen);
   QSplashScreen *splash = new QSplashScreen(pixmap);
-
-  RegisterEepromInterfaces();
 
   current_firmware_variant = GetFirmware(g.profile[g.id()].fwType());
 
