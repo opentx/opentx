@@ -44,8 +44,13 @@
 #define DEBUG_STACK_SIZE    500
 
 OS_TID menusTaskId;
-//stack must be alligned to 8 bytes otherwise printf for %f does not work!
+#if !defined(SIMU)
+// stack must be alligned to 8 bytes otherwise printf for %f does not work!
 OS_STK __attribute__((aligned(8))) menusStack[MENUS_STACK_SIZE];
+#else
+// but VC++ doesn't like the aligned keyword, so keep it as is on simu (which works)
+OS_STK menusStack[MENUS_STACK_SIZE];
+#endif
 
 OS_TID mixerTaskId;
 OS_STK mixerStack[MIXER_STACK_SIZE];
