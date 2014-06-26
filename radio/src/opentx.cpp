@@ -43,14 +43,15 @@
 #define BT_STACK_SIZE       500
 #define DEBUG_STACK_SIZE    500
 
-OS_TID menusTaskId;
-#if !defined(SIMU)
-// stack must be alligned to 8 bytes otherwise printf for %f does not work!
-OS_STK __attribute__((aligned(8))) menusStack[MENUS_STACK_SIZE];
-#else
-// but VC++ doesn't like the aligned keyword, so keep it as is on simu (which works)
-OS_STK menusStack[MENUS_STACK_SIZE];
+#if defined(_MSC_VER)
+  #define _ALIGNED(x) __declspec(align(x))
+#elif defined(__GNUC__)
+  #define _ALIGNED(x) __attribute__ ((aligned(x)))
 #endif
+
+OS_TID menusTaskId;
+// stack must be aligned to 8 bytes otherwise printf for %f does not work!
+OS_STK _ALIGNED(8) menusStack[MENUS_STACK_SIZE];
 
 OS_TID mixerTaskId;
 OS_STK mixerStack[MIXER_STACK_SIZE];
