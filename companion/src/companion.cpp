@@ -95,6 +95,8 @@ int main(int argc, char *argv[])
   app.installTranslator(&qtTranslator);
 
   QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
+  
+  registerOpenTxFirmwares();
 
   if (g.profile[g.id()].fwType().isEmpty()){
     g.profile[g.id()].fwType(default_firmware_variant->getId());
@@ -111,7 +113,6 @@ int main(int argc, char *argv[])
   QSplashScreen *splash = new QSplashScreen(pixmap);
 
   RegisterEepromInterfaces();
-  registerOpenTxFirmwares();
 
   current_firmware_variant = GetFirmware(g.profile[g.id()].fwType());
 
