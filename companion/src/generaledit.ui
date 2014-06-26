@@ -113,17 +113,31 @@ These will be relevant for all models in the same EEPROM.</string>
        <string>Setup</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout" columnstretch="1,0,0,0,0">
-       <item row="34" column="4">
+       <item row="34" column="3">
+        <widget class="QLabel" name="gpsFormatLabel">
+         <property name="text">
+          <string>GPS Coordinates</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QLabel" name="label_speakerPitch">
+         <property name="text">
+          <string>Speaker Pitch (spkr only)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="36" column="4">
         <widget class="QComboBox" name="voiceLang_CB"/>
        </item>
-       <item row="31" column="3">
+       <item row="33" column="3">
         <widget class="QLabel" name="units_label">
          <property name="text">
           <string>Measurement Units</string>
          </property>
         </widget>
        </item>
-       <item row="32" column="4">
+       <item row="34" column="4">
         <widget class="QComboBox" name="gpsFormatCB">
          <item>
           <property name="text">
@@ -137,7 +151,7 @@ These will be relevant for all models in the same EEPROM.</string>
          </item>
         </widget>
        </item>
-       <item row="33" column="4">
+       <item row="35" column="4">
         <widget class="QSpinBox" name="timezoneSB">
          <property name="minimum">
           <number>-14</number>
@@ -150,28 +164,21 @@ These will be relevant for all models in the same EEPROM.</string>
          </property>
         </widget>
        </item>
-       <item row="34" column="3">
+       <item row="36" column="3">
         <widget class="QLabel" name="VoiceLang_label">
          <property name="text">
           <string>Voice Language</string>
          </property>
         </widget>
        </item>
-       <item row="32" column="3">
-        <widget class="QLabel" name="gpsFormatLabel">
-         <property name="text">
-          <string>GPS Coordinates</string>
-         </property>
-        </widget>
-       </item>
-       <item row="33" column="3">
+       <item row="35" column="3">
         <widget class="QLabel" name="label_timezone">
          <property name="text">
           <string>Timeshift from UTC</string>
          </property>
         </widget>
        </item>
-       <item row="31" column="4">
+       <item row="33" column="4">
         <widget class="QComboBox" name="units_CB">
          <item>
           <property name="text">
@@ -185,14 +192,14 @@ These will be relevant for all models in the same EEPROM.</string>
          </item>
         </widget>
        </item>
-       <item row="29" column="3">
+       <item row="31" column="3">
         <widget class="QLabel" name="countrycode_label">
          <property name="text">
           <string>Country Code</string>
          </property>
         </widget>
        </item>
-       <item row="29" column="4">
+       <item row="31" column="4">
         <widget class="QComboBox" name="countrycode_CB">
          <item>
           <property name="text">
@@ -256,14 +263,7 @@ These will be relevant for all models in the same EEPROM.</string>
          </item>
         </widget>
        </item>
-       <item row="1" column="3">
-        <widget class="QLabel" name="label_speakerPitch">
-         <property name="text">
-          <string>Speaker Pitch (spkr only)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="14" column="4">
+       <item row="16" column="4">
         <layout class="QHBoxLayout" name="backlightColor_Layout">
          <item>
           <widget class="QLabel" name="backlightColor1_label">
@@ -298,7 +298,7 @@ These will be relevant for all models in the same EEPROM.</string>
          </property>
         </widget>
        </item>
-       <item row="15" column="3">
+       <item row="17" column="3">
         <widget class="QLabel" name="re_label">
          <property name="text">
           <string>RotEnc Navigation</string>
@@ -333,7 +333,7 @@ These will be relevant for all models in the same EEPROM.</string>
          </item>
         </widget>
        </item>
-       <item row="27" column="0">
+       <item row="29" column="0">
         <widget class="QLabel" name="ro_label">
          <property name="text">
           <string>Readonly Unlock</string>
@@ -343,7 +343,7 @@ These will be relevant for all models in the same EEPROM.</string>
          </property>
         </widget>
        </item>
-       <item row="36" column="0" colspan="2">
+       <item row="38" column="0" colspan="2">
         <spacer name="verticalSpacer_5">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -426,7 +426,7 @@ These will be relevant for all models in the same EEPROM.</string>
          </item>
         </widget>
        </item>
-       <item row="13" column="2">
+       <item row="14" column="2">
         <spacer name="horizontalSpacer">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -526,7 +526,7 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </item>
-       <item row="27" column="1" colspan="3">
+       <item row="29" column="1" colspan="3">
         <layout class="QGridLayout" name="TaranisReadOnlyUnlock" rowstretch="0,0" columnstretch="0,0,0,0,0,0,0,0,0">
          <property name="sizeConstraint">
           <enum>QLayout::SetMinimumSize</enum>
@@ -1199,7 +1199,7 @@ Acceptable values are 5v..10v</string>
          </property>
         </widget>
        </item>
-       <item row="13" column="3">
+       <item row="14" column="3">
         <widget class="QLabel" name="label_BLBright">
          <property name="text">
           <string>Backlight Brightness</string>
@@ -1220,17 +1220,17 @@ Acceptable values are 5v..10v</string>
          </property>
         </widget>
        </item>
-       <item row="13" column="4">
+       <item row="14" column="4">
         <widget class="QSpinBox" name="BLBright_SB">
          <property name="maximum">
           <number>100</number>
          </property>
         </widget>
        </item>
-       <item row="15" column="4">
+       <item row="17" column="4">
         <widget class="QComboBox" name="re_CB"/>
        </item>
-       <item row="14" column="3">
+       <item row="16" column="3">
         <widget class="QLabel" name="backlightColor_label">
          <property name="text">
           <string>Backlight color</string>
@@ -1272,7 +1272,7 @@ Acceptable values are 5v..10v</string>
          </property>
         </widget>
        </item>
-       <item row="15" column="1">
+       <item row="17" column="1">
         <widget class="QComboBox" name="mavbaud_CB">
          <item>
           <property name="text">
@@ -1374,7 +1374,7 @@ Acceptable values are 5v..10v</string>
          </property>
         </widget>
        </item>
-       <item row="14" column="1">
+       <item row="16" column="1">
         <widget class="QCheckBox" name="memwarnChkB">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -1409,7 +1409,7 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </item>
-       <item row="15" column="0">
+       <item row="17" column="0">
         <widget class="QLabel" name="mavbaud_label">
          <property name="text">
           <string>MAVLink Baud Rate</string>
@@ -1465,7 +1465,7 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </item>
-       <item row="13" column="1">
+       <item row="14" column="1">
         <widget class="QCheckBox" name="alarmwarnChkB">
          <property name="sizePolicy">
           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -1579,14 +1579,14 @@ p, li { white-space: pre-wrap; }
          </item>
         </layout>
        </item>
-       <item row="13" column="0">
+       <item row="14" column="0">
         <widget class="QLabel" name="label_27">
          <property name="text">
           <string>&quot;No Sound&quot; Warning</string>
          </property>
         </widget>
        </item>
-       <item row="14" column="0">
+       <item row="16" column="0">
         <widget class="QLabel" name="label_11">
          <property name="text">
           <string>Low Memory Warning</string>
@@ -1696,14 +1696,14 @@ p, li { white-space: pre-wrap; }
          </item>
         </layout>
        </item>
-       <item row="29" column="0">
+       <item row="31" column="0">
         <widget class="QLabel" name="label_14">
          <property name="text">
           <string>Stick Mode</string>
          </property>
         </widget>
        </item>
-       <item row="31" column="0">
+       <item row="33" column="0">
         <widget class="QLabel" name="stickReverseLB">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -1716,7 +1716,7 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </item>
-       <item row="32" column="0">
+       <item row="34" column="0">
         <widget class="QLabel" name="label_13">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -1729,14 +1729,14 @@ p, li { white-space: pre-wrap; }
          </property>
         </widget>
        </item>
-       <item row="33" column="0">
+       <item row="35" column="0">
         <widget class="QLabel" name="label_faimode">
          <property name="text">
           <string>FAI Mode</string>
          </property>
         </widget>
        </item>
-       <item row="29" column="1">
+       <item row="31" column="1">
         <widget class="QComboBox" name="stickmodeCB">
          <property name="toolTip">
           <string/>
@@ -1790,7 +1790,7 @@ Mode 4:
          </item>
         </widget>
        </item>
-       <item row="31" column="1">
+       <item row="33" column="1">
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
           <widget class="QCheckBox" name="stickReverse1">
@@ -1822,7 +1822,7 @@ Mode 4:
          </item>
         </layout>
        </item>
-       <item row="32" column="1">
+       <item row="34" column="1">
         <widget class="QComboBox" name="channelorderCB">
          <property name="toolTip">
           <string/>
@@ -1958,7 +1958,7 @@ Mode 4:
          </item>
         </widget>
        </item>
-       <item row="33" column="1">
+       <item row="35" column="1">
         <widget class="QCheckBox" name="faimode_CB">
          <property name="toolTip">
           <string>If you enable FAI, you loose the vario, the play functions, the telemetry screen. This function cannot be disabled by the radio.</string>
@@ -1968,7 +1968,7 @@ Mode 4:
          </property>
         </widget>
        </item>
-       <item row="34" column="0">
+       <item row="36" column="0">
         <widget class="QLabel" name="switchesDelayLabel">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -1981,7 +1981,7 @@ Mode 4:
          </property>
         </widget>
        </item>
-       <item row="34" column="1">
+       <item row="36" column="1">
         <widget class="QSpinBox" name="switchesDelay">
          <property name="toolTip">
           <string/>
@@ -2011,6 +2011,20 @@ p, li { white-space: pre-wrap; }
          </property>
          <property name="value">
           <number>0</number>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="3">
+        <widget class="QLabel" name="blAlarm_LB">
+         <property name="text">
+          <string>Backlight flash on alarm</string>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="4">
+        <widget class="QCheckBox" name="blAlarm_ChkB">
+         <property name="text">
+          <string/>
          </property>
         </widget>
        </item>

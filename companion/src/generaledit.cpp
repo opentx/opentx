@@ -316,6 +316,7 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
       ui->switchesDelay->hide();
       ui->switchesDelayLabel->hide();
     }
+    ui->blAlarm_ChkB->setChecked(g_eeGeneral.flashBeep);
 
     disableMouseScrolling();
 }
@@ -323,6 +324,12 @@ GeneralEdit::GeneralEdit(RadioData &radioData, QWidget *parent) :
 GeneralEdit::~GeneralEdit()
 {
     delete ui;
+}
+
+void GeneralEdit::on_blAlarm_ChkB_stateChanged()
+{
+  g_eeGeneral.flashBeep = ui->blAlarm_ChkB->isChecked();
+  updateSettings();
 }
 
 void GeneralEdit::stickReverseEdited()

@@ -137,6 +137,7 @@ class GeneralEdit : public QDialog
     void shrink();
     void stickReverseEdited();
     void on_switchesDelay_valueChanged();
+    void on_blAlarm_ChkB_stateChanged();
 };
 
 #endif // GENERALEDIT_H
