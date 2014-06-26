@@ -1800,9 +1800,11 @@ uint8_t editDelay(const uint8_t y, const uint8_t event, const uint8_t attr, cons
 #if defined(PCBTARANIS)
 void displayFlightModes(uint8_t x, uint8_t y, FlightModesType value)
 {
-  lcd_putsAtt(x, y, STR_FP, SMLSIZE);
+  lcd_puts(x, y, STR_FP);
+  x = lcdNextPos + 1;
   for (uint8_t p=0; p<MAX_FLIGHT_MODES; p++) {
-    lcd_putcAtt(lcdNextPos, y, '0'+p, ((value & (1<<p)) ? SMLSIZE : INVERS));     
+    lcd_putc(x, y, ((value & (1<<p)) ? '-' : '0'+p));
+    x += 5;
   }
 }
 #else
