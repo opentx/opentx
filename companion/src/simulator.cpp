@@ -115,6 +115,7 @@ int main(int argc, char *argv[])
   QAbstractButton *taranisButton = msgBox.addButton("Taranis", QMessageBox::ActionRole);
   QAbstractButton *sky9xButton = msgBox.addButton("9X-Sky9X", QMessageBox::ActionRole);
   QAbstractButton *gruvinButton = msgBox.addButton("9X-Gruvin9X", QMessageBox::ActionRole);
+  QAbstractButton *proButton = msgBox.addButton("9XR-Pro", QMessageBox::ActionRole);
   msgBox.addButton("9X-M128", QMessageBox::ActionRole);
   QPushButton *exitButton = msgBox.addButton(QMessageBox::Close);
 
@@ -145,6 +146,13 @@ int main(int argc, char *argv[])
   else if (msgBox.clickedButton() == gruvinButton) {
     current_firmware_variant = GetFirmware("opentx-gruvin9x-heli-templates-sdcard-voice-DSM2PPM-ppmca-gvars-symlimits-autosource-autoswitch-battgraph-ttsen-en");
     fileName = eedir.filePath("eeprom-gruvin9x.bin");
+    path = fileName.toAscii();
+    eepromFileName = path.data();
+    dialog = new SimulatorDialog9X();
+  }
+  else if (msgBox.clickedButton() == proButton) {
+    current_firmware_variant = GetFirmware("opentx-9xrpro-heli-templates-ppmca-gvars-symlimits-autosource-autoswitch-battgraph-en");
+    fileName = eedir.filePath("eeprom-9xrpro.bin");
     path = fileName.toAscii();
     eepromFileName = path.data();
     dialog = new SimulatorDialog9X();
