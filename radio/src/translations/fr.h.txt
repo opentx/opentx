@@ -585,7 +585,7 @@
 #define TR_POTWARNING          TR(IF_CPUARM(INDENT) "Alerte pot", INDENT "Pos. potentiom.")
 #define TR_TIMEZONE            "Fuseau horaire"
 #define TR_RXCHANNELORD        TR("Ordre voies RX","Ordre des voies préféré")
-#define TR_SWITCHES_DELAY      "Délai inters milieu"
+#define TR_SWITCHES_DELAY      "Délai inters son"
 #define TR_SLAVE               "Elève"
 #define TR_MODESRC             "Mode\006% Source"
 #define TR_MULTIPLIER          "Multiplieur"

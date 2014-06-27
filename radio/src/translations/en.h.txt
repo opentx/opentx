@@ -585,7 +585,7 @@
 #define TR_POTWARNING          TR(IF_CPUARM(INDENT) "Pot Warn.", INDENT "Pot Positions")
 #define TR_TIMEZONE            TR("Time Zone", "GPS Time zone")
 #define TR_RXCHANNELORD        TR("Rx Channel Ord", "Default channel order")
-#define TR_SWITCHES_DELAY      "Play Delay (sw. mid pos)"
+#define TR_SWITCHES_DELAY      TR("Play delay","Play Delay (sw. mid pos)")
 #define TR_SLAVE               CENTER "Slave"
 #define TR_MODESRC             "Mode\006% Source"
 #define TR_MULTIPLIER          "Multiplier"
