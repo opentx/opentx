@@ -1187,7 +1187,6 @@ void registerOpenTxFirmwares()
   openTx->addOption("battgraph", QObject::tr("Battery graph"));
   openTx->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
   openTx->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
-  openTx->addOption("tsticks", QObject::tr("Use FrSky Taranis sticks in a 9X/9XR"));
   openTx->addOption("bluetooth", QObject::tr("Bluetooth interface"));
   openTx->addOptions(fai_options);
   firmwares.push_back(openTx);
@@ -1210,7 +1209,6 @@ void registerOpenTxFirmwares()
   openTx->addOption("battgraph", QObject::tr("Battery graph"));
   openTx->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
   openTx->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
-  openTx->addOption("tsticks", QObject::tr("Use FrSky Taranis sticks in a 9X/9XR"));
   openTx->addOption("bluetooth", QObject::tr("Bluetooth interface"));
   openTx->addOptions(fai_options);
   firmwares.push_back(openTx);
