@@ -1204,7 +1204,6 @@ void registerOpenTxFirmwares()
   openTx->addOption("potscroll", QObject::tr("Pots use in menus navigation"));
   openTx->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving the control"));
   openTx->addOption("autoswitch", QObject::tr("In model setup menus automatically set switch by moving the control"));
-  openTx->addOption("dblkeys", QObject::tr("Enable resetting values by pressing up and down at the same time"));
   openTx->addOption("nographics", QObject::tr("No graphical check boxes and sliders"));
   openTx->addOption("battgraph", QObject::tr("Battery graph"));
   openTx->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
