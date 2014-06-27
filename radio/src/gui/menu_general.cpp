@@ -746,7 +746,7 @@ void backupEeprom()
 
   // prepare the filename...
   char * tmp = strAppend(filename, EEPROMS_PATH "/eeprom");
-  tmp = strAppendDate(tmp);
+  tmp = strAppendDate(tmp, true);
   strAppend(tmp, EEPROM_EXT);
 
   // open the file for writing...
