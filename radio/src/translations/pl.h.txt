@@ -803,8 +803,8 @@
 #define TR_PT                  "pkt"
 #define TR_PTS                 "pkty"
 #define TR_SMOOTH              "Gładka"
-#define TR_COPY_STICKS_TO_OFS  "Skopiuj Stick Do Offsetu"
-#define TR_COPY_TRIMS_TO_OFS   "Copy trims to subtrim"
+#define TR_COPY_STICKS_TO_OFS  "Skopiuj Drążki Do Offsetu"
+#define TR_COPY_TRIMS_TO_OFS   "Skopiuj Trymery Do subtrymerów"
 #define TR_PERSISTENT_MAH      TR(INDENT "Zap. mAh", INDENT "Zapisz mAh")
 #define TR_PREFLIGHT           "Lista Ostrzeżeń"
 #define TR_CHECKLIST           TR(INDENT "Czeklista",INDENT "Pokaż Listę Ostrzeżeń")
