@@ -1061,12 +1061,14 @@ void eeCheck(bool immediately)
   }
 
   if (s_eeDirtyMsk & EE_GENERAL) {
+    TRACE("eeprom write general");
     s_eeDirtyMsk -= EE_GENERAL;
     theFile.writeRlc(FILE_GENERAL, FILE_TYP_GENERAL, (uint8_t*)&g_eeGeneral, sizeof(EEGeneral), immediately);
     if (!immediately) return;
   }
 
   if (s_eeDirtyMsk & EE_MODEL) {
+    TRACE("eeprom write model");
     s_eeDirtyMsk = 0;
     theFile.writeRlc(FILE_MODEL(g_eeGeneral.currModel), FILE_TYP_MODEL, (uint8_t*)&g_model, sizeof(g_model), immediately);
   }

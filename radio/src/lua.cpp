@@ -788,6 +788,7 @@ static int luaModelSetLogicalSwitch(lua_State *L)
         sw->duration = luaL_checkinteger(L, -1);
       }
     }
+    eeDirty(EE_MODEL);
   }
 
   return 0;
@@ -850,6 +851,7 @@ static int luaModelSetCustomFunction(lua_State *L)
         CFN_ACTIVE(cfn) = luaL_checkinteger(L, -1);
       }
     }
+    eeDirty(EE_MODEL);
   }
 
   return 0;
@@ -917,6 +919,7 @@ static int luaModelSetOutput(lua_State *L)
           limit->curve = luaL_checkinteger(L, -1) + 1;
       }
     }
+    eeDirty(EE_MODEL);
   }
 
   return 0;
@@ -940,6 +943,7 @@ static int luaModelSetGlobalVariable(lua_State *L)
   int value = luaL_checkinteger(L, 3);
   if (phase < MAX_FLIGHT_MODES && idx < MAX_GVARS && value >= -GVAR_LIMIT && value <= GVAR_LIMIT) {
     g_model.flightModeData[phase].gvars[idx] = value;
+    eeDirty(EE_MODEL);
   }
   return 0;
 }
