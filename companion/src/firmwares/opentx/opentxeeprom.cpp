@@ -2061,6 +2061,10 @@ class AvrCustomFunctionField: public TransformedField {
         if (version >= 216) {
           fn.func = AssignFunc(fn.func + (_union_param >> 2));
           fn.adjustMode = (_union_param & 0x03);
+          if (fn.adjustMode == 1)
+            sourcesConversionTable->importValue(_param, (int &)fn.param);
+          else if (fn.adjustMode == 2)
+            fn.param = RawSource(SOURCE_TYPE_GVAR, _param).toValue();
         }
         else if (version >= 213) {
           fn.adjustMode = ((_active >> 1) & 0x03);
