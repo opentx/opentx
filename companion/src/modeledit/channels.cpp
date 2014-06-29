@@ -190,16 +190,19 @@ void Channels::maxEdited()
 
 void Channels::refreshExtendedLimits()
 {
+  int channelMax = model.getChannelsMax();
+  int channelMaxValue = channelMax * 10;
+
   for (int i=0; i<firmware->getCapability(Outputs); i++) {
     QDoubleSpinBox * minDSB = minSpins[i];
     QDoubleSpinBox * maxDSB = maxSpins[i];
     
-    minDSB->setMinimum(-model.getChannelsMax());
-    maxDSB->setMaximum(model.getChannelsMax());
+    minDSB->setMinimum(-channelMax);
+    maxDSB->setMaximum(+channelMax);
 
     //reset any limit that is bigger than current maximum (dependent on extended limits setting)
-    if ( model.limitData[i].min < -model.getChannelsMax() ) model.limitData[i].min = -model.getChannelsMax();
-    if ( model.limitData[i].max > +model.getChannelsMax() ) model.limitData[i].max = +model.getChannelsMax();
+    if ( model.limitData[i].min < -channelMaxValue ) model.limitData[i].min = -channelMaxValue;
+    if ( model.limitData[i].max > +channelMaxValue ) model.limitData[i].max = +channelMaxValue;
   }
   emit modified(); 
 }
