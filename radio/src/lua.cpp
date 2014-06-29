@@ -1142,6 +1142,7 @@ void luaInit()
   lua_registerint(L, "SMLSIZE", SMLSIZE);
   lua_registerint(L, "INVERS", INVERS);
   lua_registerint(L, "PREC1", PREC1);
+  lua_registerint(L, "PREC2", PREC2);
   lua_registerint(L, "BLINK", BLINK);
   lua_registerint(L, "VALUE", 0);
   lua_registerint(L, "SOURCE", 1);
