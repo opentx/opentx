@@ -544,7 +544,8 @@ void telemetryReset()
   frskyData.hub.gpsLatitude_ap = 7710;
   frskyData.hub.gpsLongitude_bp = 1006;
   frskyData.hub.gpsLongitude_ap = 8872;
-  frskyData.hub.gpsSpeed_bp = (100 * 250) / 463;
+  frskyData.hub.gpsSpeed_bp = 200;  //in knots
+  frskyData.hub.gpsSpeed_ap = 0;
   getGpsPilotPosition();
 
   frskyData.hub.gpsLatitude_bp = 4401;
@@ -553,9 +554,6 @@ void telemetryReset()
   frskyData.hub.gpsLongitude_ap = 9533;
   getGpsDistance();
 #endif
-
-  frskyData.hub.gpsSpeed_bp = 100;
-  frskyData.hub.gpsSpeed_ap = 50;
 
   frskyData.hub.airSpeed = 100;
 
