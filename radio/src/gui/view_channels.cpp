@@ -75,6 +75,11 @@ void menuChannelsView(uint8_t event)
       int32_t val = channelOutputs[ch];
       uint8_t ofs = (col ? 0 : 1);
 
+#if defined(CHANNELS_MONITOR_INV_HIDE)
+      //if channel output is inverted, show it with oposite sign
+      if (g_model.limitData[ch].revert) val = -val;
+#endif
+
       // Channel name if present, number if not
       uint8_t lenLabel = ZLEN(g_model.limitData[ch].name);
       if (lenLabel > 4) {
