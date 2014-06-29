@@ -177,45 +177,11 @@ uint8_t barCoord(int16_t value, int16_t min, int16_t max)
   return limit((uint8_t)0, (uint8_t)(((int32_t)(BAR_WIDTH-1) * (value - min)) / (max - min)), (uint8_t)BAR_WIDTH);
 }
 
-void menuTelemetryFrsky(uint8_t event)
-{
-  if (event == EVT_KEY_FIRST(KEY_EXIT)) {
-    killEvents(event);
-    chainMenu(menuMainView);
-    return;
-  }
 
-  switch (event) {
-    case EVT_KEY_BREAK(KEY_UP):
-      if (s_frsky_view-- == 0)
-        s_frsky_view = FRSKY_VIEW_MAX;
-      break;
-
-#if defined(PCBTARANIS)
-    case EVT_KEY_BREAK(KEY_PAGE):
-#endif
-    case EVT_KEY_BREAK(KEY_DOWN):
-      if (s_frsky_view++ == FRSKY_VIEW_MAX)
-        s_frsky_view = 0;
-      break;
-
-#if defined(PCBTARANIS)
-    case EVT_KEY_LONG(KEY_ENTER):
-      killEvents(event);
-      MENU_ADD_ITEM(STR_RESET_TELEMETRY);
-      MENU_ADD_ITEM(STR_RESET_FLIGHT);
-      menuHandler = onMainViewMenu;
-      break;
-#else
-    case EVT_KEY_FIRST(KEY_ENTER):
-      telemetryReset();
-      break;
-#endif
-  }
-
+bool showTelemetryScreen() {
 #if defined(LUA)
-  if (isTelemetryScriptAvailable(s_frsky_view)) {
-    return;
+  if (s_frsky_view < TELEMETRY_CUSTOM_SCREEN_1) {
+    return isTelemetryScriptAvailable(s_frsky_view);
   }
 #endif
 
@@ -313,11 +279,6 @@ void menuTelemetryFrsky(uint8_t event)
 
     displayRssiLine();
   }
-#if defined(LUA)
-  else if (s_frsky_view < TELEMETRY_CUSTOM_SCREEN_1) {
-    putEvent(event == EVT_KEY_BREAK(KEY_UP) ? event : EVT_KEY_BREAK(KEY_DOWN));
-  }
-#endif
   else if (s_frsky_view < TELEMETRY_CUSTOM_SCREEN_1+MAX_FRSKY_SCREENS) {
     FrSkyScreenData & screen = g_model.frsky.screens[s_frsky_view-TELEMETRY_CUSTOM_SCREEN_1];
 #if defined(GAUGES)
@@ -414,14 +375,14 @@ void menuTelemetryFrsky(uint8_t event)
 #if defined(GPS)
               else if (field == TELEM_GPS_TIME) {
                 displayGpsTime();
-                return;
+                return true;
               }
 #endif
 #endif
             }
             else {
               displayRssiLine();
-              return;
+              return true;
             }
           }
           if (field) {
@@ -444,9 +405,7 @@ void menuTelemetryFrsky(uint8_t event)
         }
       }
       lcd_status_line();
-      if (fields_count == 0) {
-        putEvent(event == EVT_KEY_BREAK(KEY_UP) ? event : EVT_KEY_BREAK(KEY_DOWN));
-      }
+      if (fields_count == 0) return false;
     }
   }
 #if defined(FRSKY_HUB)
@@ -474,5 +433,74 @@ void menuTelemetryFrsky(uint8_t event)
     lcd_outdezNAtt(TELEM_2ND_COLUMN+9*FW, line, frskyData.rssi[0].min, LEFT|LEADING0, 2);
 #endif
   }
-#endif    
+#endif  
+  return true;
 }
+
+enum NavigationDirection {
+  none,
+  up,
+  down
+};
+
+void menuTelemetryFrsky(uint8_t event)
+{
+  if (event == EVT_KEY_FIRST(KEY_EXIT)) {
+    killEvents(event);
+    chainMenu(menuMainView);
+    return;
+  }
+
+  enum NavigationDirection direction = none;
+
+  switch (event) {
+#if defined(PCBTARANIS)
+    case EVT_KEY_LONG(KEY_PAGE):
+      killEvents(event);
+      // without break here
+#endif
+    case EVT_KEY_BREAK(KEY_UP):
+      direction = up;
+      break;
+
+#if defined(PCBTARANIS)
+    case EVT_KEY_BREAK(KEY_PAGE):
+#endif
+    case EVT_KEY_BREAK(KEY_DOWN):
+      direction = down;
+      break;
+
+#if defined(PCBTARANIS)
+    case EVT_KEY_LONG(KEY_ENTER):
+      killEvents(event);
+      MENU_ADD_ITEM(STR_RESET_TELEMETRY);
+      MENU_ADD_ITEM(STR_RESET_FLIGHT);
+      menuHandler = onMainViewMenu;
+      break;
+#else
+    case EVT_KEY_FIRST(KEY_ENTER):
+      telemetryReset();
+      break;
+#endif
+  }
+
+  if (direction == up) {
+    do {
+      if (s_frsky_view-- == 0)
+        s_frsky_view = FRSKY_VIEW_MAX;
+    } while (!showTelemetryScreen());
+  }
+  else if (direction == down) {
+    do {
+      if (s_frsky_view++ == FRSKY_VIEW_MAX)
+        s_frsky_view = 0;
+    } while (!showTelemetryScreen());
+  }
+  else {
+    while (!showTelemetryScreen()) {
+      if (s_frsky_view++ == FRSKY_VIEW_MAX)
+        s_frsky_view = 0;
+    }  
+  }
+}
+
