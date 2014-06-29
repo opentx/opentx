@@ -407,6 +407,34 @@ static int luaLcdDrawCombobox(lua_State *L)
   return 0;
 }
 
+static int luaModelGetInfo(lua_State *L)
+{
+  lua_newtable(L);
+  lua_pushtablezstring(L, "name", g_model.header.name);
+  lua_pushtablenumber(L, "id", g_model.header.modelId);
+  return 1;
+}
+
+static int luaModelSetInfo(lua_State *L)
+{
+  luaL_checktype(L, -1, LUA_TTABLE);
+  for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
+    luaL_checktype(L, -2, LUA_TSTRING); // key is string
+    const char * key = luaL_checkstring(L, -2);
+    if (!strcmp(key, "name")) {
+      const char * name = luaL_checkstring(L, -1);
+      str2zchar(g_model.header.name, name, sizeof(g_model.header.name));
+      memcpy(modelHeaders[g_eeGeneral.currModel].name, g_model.header.name, sizeof(g_model.header.name));
+    }
+    else if (!strcmp(key, "id")) {
+      g_model.header.modelId = luaL_checkinteger(L, -1);
+      modelHeaders[g_eeGeneral.currModel].modelId = g_model.header.modelId;
+    }
+  }
+  eeDirty(EE_MODEL);
+  return 0;
+}
+
 static int luaModelGetTimer(lua_State *L)
 {
   int idx = luaL_checkunsigned(L, 1);
@@ -1032,6 +1060,8 @@ int luaGetOutputs(ScriptInputsOutputs & sid)
 }
 
 static const luaL_Reg modelLib[] = {
+  { "getInfo", luaModelGetInfo },
+  { "setInfo", luaModelSetInfo },
   { "getTimer", luaModelGetTimer },
   { "setTimer", luaModelSetTimer },
   { "getInputsCount", luaModelGetInputsCount },
