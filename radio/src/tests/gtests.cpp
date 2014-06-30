@@ -1005,7 +1005,10 @@ bool checkScreenshot(QString test)
   QFile reference("./tests/" + filename);
   if (!reference.open(QIODevice::ReadOnly))
     return false;
-  return reference.readAll() == screenshot.readAll();
+  if (reference.readAll() != screenshot.readAll())
+    return false;
+  screenshot.remove();
+  return true;
 }
 
 TEST(Lcd, Invers_0_0)
