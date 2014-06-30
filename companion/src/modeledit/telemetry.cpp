@@ -434,9 +434,11 @@ void TelemetryCustomScreen::on_screenType_currentIndexChanged(int index)
 
 void TelemetryCustomScreen::customFieldChanged(int value)
 {
-  int index = sender()->property("index").toInt();
-  screen.body.lines[index/256].source[index%256] = value;
-  emit modified();
+  if (!lock) {
+    int index = sender()->property("index").toInt();
+    screen.body.lines[index/256].source[index%256] = value;
+    emit modified();
+  }
 }
 
 void TelemetryCustomScreen::barSourceChanged(int index)
