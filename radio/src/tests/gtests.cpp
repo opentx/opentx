@@ -991,17 +991,18 @@ void doPaint(QPainter & p)
   }
 }
 
-bool checkScreenshot(QString filename)
+bool checkScreenshot(QString test)
 {
   lcdRefresh();
   QImage buffer(LCD_W, LCD_H, QImage::Format_RGB32);
   QPainter p(&buffer);
   doPaint(p);
-  buffer.save("/tmp/screenshot.png");
-  QFile screenshot("/tmp/screenshot.png");
+  QString filename(QString("%1_%2x%3.png").arg(test).arg(LCD_W).arg(LCD_H));
+  buffer.save("/tmp/" + filename);
+  QFile screenshot("/tmp/" + filename);
   if (!screenshot.open(QIODevice::ReadOnly))
     return false;
-  QFile reference(QString("./tests/%1_%2x%3.png").arg(filename).arg(LCD_W).arg(LCD_H));
+  QFile reference("./tests/" + filename);
   if (!reference.open(QIODevice::ReadOnly))
     return false;
   return reference.readAll() == screenshot.readAll();
@@ -1012,6 +1013,20 @@ TEST(Lcd, Invers_0_0)
   lcd_clear();
   lcd_putsAtt(0, 0, "Test", INVERS);
   EXPECT_TRUE(checkScreenshot("invers_0_0"));
+}
+
+TEST(Lcd, Prec2_Left)
+{
+  lcd_clear();
+  lcd_outdezAtt(0, 0, 2, PREC2|LEFT);
+  EXPECT_TRUE(checkScreenshot("prec2_left"));
+}
+
+TEST(Lcd, Prec2_Right)
+{
+  lcd_clear();
+  lcd_outdezAtt(LCD_W, LCD_H-FH, 2, PREC2);
+  EXPECT_TRUE(checkScreenshot("prec2_right"));
 }
 
 int main(int argc, char **argv)
