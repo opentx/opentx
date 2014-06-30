@@ -621,7 +621,10 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case HasCvNames:
       return (IS_TARANIS(board) ? 1 : 0);
     case Telemetry:
-      return TM_HASTELEMETRY|TM_HASOFFSET|TM_HASWSHH;
+      if (board == BOARD_GRUVIN9X || IS_ARM(board) || id.contains("frsky"))
+        return TM_HASTELEMETRY|TM_HASOFFSET|TM_HASWSHH;
+      else
+        return 0;
     case TelemetryBars:
       return 1;
     case TelemetryCustomScreens:
