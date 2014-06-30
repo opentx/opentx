@@ -1286,11 +1286,11 @@ void menuGeneralDiagKeys(uint8_t event)
 void menuGeneralDiagAna(uint8_t event)
 {
 #if defined(PCBSKY9X) && !defined(REVA)
-#define ANAS_ITEMS_COUNT 4
+  #define ANAS_ITEMS_COUNT 4
 #elif defined(PCBSKY9X)
-#define ANAS_ITEMS_COUNT 3
+  #define ANAS_ITEMS_COUNT 3
 #else
-#define ANAS_ITEMS_COUNT 2
+  #define ANAS_ITEMS_COUNT 2
 #endif
 
   SIMPLE_MENU(STR_MENUANA, menuTabDiag, e_Ana, ANAS_ITEMS_COUNT);

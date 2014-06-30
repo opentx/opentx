@@ -2165,11 +2165,7 @@ void menuModelFlightModesAll(uint8_t event)
 #endif
     att = (i==sub ? INVERS : 0);
     FlightModeData *p = flightModeAddress(i);
-#if ROTARY_ENCODERS > 2
-    putsFlightMode(0, y, i+1, att|CONDENSED|(getFlightMode()==i ? BOLD : 0));
-#else
     putsFlightMode(0, y, i+1, att|(getFlightMode()==i ? BOLD : 0));
-#endif
 
     lcd_putsnAtt(4*FW+NAME_OFS, y, p->name, sizeof(p->name), ZCHAR);
     if (i == 0) {
