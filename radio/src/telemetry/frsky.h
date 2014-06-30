@@ -70,12 +70,13 @@ extern uint8_t telemetryState;
 #endif
 
 #if defined(CPUARM)
-#define TELEMETRY_AVERAGE_COUNT 4
+#define TELEMETRY_AVERAGE_COUNT 2     //we actually average two more readings!
 class FrskyValueWithMin {
   public:
-    uint8_t value;
-    uint8_t min;
+    uint8_t value;      //fitered value (average of last TELEMETRY_AVERAGE_COUNT+2 values)
+    uint8_t min;        
     uint8_t values[TELEMETRY_AVERAGE_COUNT];
+    uint8_t raw;        //raw value (unfiltered)
     void set(uint8_t value);
 };
 #else

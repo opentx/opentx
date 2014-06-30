@@ -84,16 +84,18 @@ void FrskyValueWithMin::set(uint8_t value)
     this->value = value;
   }
   else {
-    unsigned int sum = 0;
+    //calculate the average from values[], raw, value
+    unsigned int sum = values[0];
     for (int i=0; i<TELEMETRY_AVERAGE_COUNT-1; i++) {
       uint8_t tmp = values[i+1];
       values[i] = tmp;
       sum += tmp;
     }
-    values[TELEMETRY_AVERAGE_COUNT-1] = value;
-    sum += value;
-    this->value = sum/TELEMETRY_AVERAGE_COUNT;
+    values[TELEMETRY_AVERAGE_COUNT-1] = raw;
+    sum += raw + value;
+    this->value = sum/(TELEMETRY_AVERAGE_COUNT+2);
   }
+  raw = value;
 #else
   if (this->value == 0) {
     this->value = value;
@@ -573,6 +575,20 @@ void telemetryReset()
 
   frskyData.hub.current = 55;
   frskyData.hub.maxCurrent = 65;
+
+  // //test of averaging
+  // FrskyValueWithMin testVal;
+  // testVal.value = 0;
+  // testVal.set(10);
+  // TRACE("testVal after first set: %d", (int)testVal.value);
+  // for(int n=2; n<10; ++n) {
+  //   testVal.set(n*10);
+  //   TRACE("in %d, testVal: %d", n*10, (int)testVal.value);
+  // }
+  // for(int n=2; n<10; ++n) {
+  //   testVal.set(100);
+  //   TRACE("in %d, testVal: %d", 100, (int)testVal.value);
+  // }
 #endif
 }
 
