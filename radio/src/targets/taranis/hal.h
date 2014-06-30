@@ -257,7 +257,7 @@
 
 // LCD
 #if defined(REVPLUS)
-  #define RCC_AHB1Periph_LCD              RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD
+  #define RCC_AHB1Periph_LCD              (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD)
   #define GPIO_LCD_SPI                    GPIOC
   #define GPIO_LCD_NCS                    GPIOA
   #define GPIO_LCD_RST                    GPIOD
