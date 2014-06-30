@@ -7,6 +7,10 @@ InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & g
   ModelPanel(parent, model, generalSettings, firmware),
   expoInserted(false)
 {
+  inputsCount = firmware->getCapability(VirtualInputs);
+  if (inputsCount == 0)
+    inputsCount = NUM_STICKS;
+
   QGridLayout * exposLayout = new QGridLayout(this);
 
   ExposlistWidget = new MixersList(this, true);
@@ -46,10 +50,6 @@ InputsPanel::~InputsPanel()
 void InputsPanel::update()
 {
   lock = true;
-
-  int inputsCount = firmware->getCapability(VirtualInputs);
-  if (inputsCount == 0)
-    inputsCount = NUM_STICKS;
 
   // curDest -> destination channel
   // i -> mixer number
@@ -446,6 +446,7 @@ void InputsPanel::expolistWidget_KeyPress(QKeyEvent *event)
 
 int InputsPanel::gm_moveExpo(int idx, bool dir) //true=inc=down false=dec=up
 {
+
     if(idx>C9X_MAX_EXPOS || (idx==C9X_MAX_EXPOS && dir)) return idx;
 
     int tdx = dir ? idx+1 : idx-1;
@@ -463,7 +464,7 @@ int InputsPanel::gm_moveExpo(int idx, bool dir) //true=inc=down false=dec=up
     if(memcmp(&src,&temp,sizeof(ExpoData))==0) return idx;
     bool tgtempty=(memcmp(&tgt,&temp,sizeof(ExpoData))==0 ? 1:0);
     if(tgt.chn!=src.chn || tgtempty) {
-        if ((dir)  && (src.chn<(NUM_STICKS-1))) src.chn++;
+        if ((dir)  && (src.chn<(inputsCount-1))) src.chn++;
         if ((!dir) && (src.chn>0)) src.chn--;
         return idx;
     }

@@ -34,6 +34,7 @@ class InputsPanel : public ModelPanel
     bool expoInserted;
     MixersList *ExposlistWidget;
     bool firstLine;
+    int inputsCount;
 
     int getExpoIndex(unsigned int dch);
     bool gm_insertExpo(int idx);
