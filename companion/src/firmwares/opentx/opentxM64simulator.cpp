@@ -83,7 +83,7 @@ namespace OpenTxM64 {
 #include "radio/src/gui/view_telemetry.cpp"
 #include "radio/src/lcd.cpp"
 #include "radio/src/keys.cpp"
-#include "radio/src/simpgmspace.cpp"
+#include "radio/src/targets/simu/simpgmspace.cpp"
 #include "radio/src/telemetry/frsky.cpp"
 #include "radio/src/telemetry/frsky_d.cpp"
 #include "radio/src/templates.cpp"

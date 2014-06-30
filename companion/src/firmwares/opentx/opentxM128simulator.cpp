@@ -79,7 +79,7 @@ namespace OpenTxM128 {
 #include "radio/src/gui/view_telemetry.cpp"
 #include "radio/src/lcd.cpp"
 #include "radio/src/keys.cpp"
-#include "radio/src/simpgmspace.cpp"
+#include "radio/src/targets/simu/simpgmspace.cpp"
 #include "radio/src/templates.cpp"
 #include "radio/src/translations.cpp"
 #include "radio/src/fonts.cpp"
