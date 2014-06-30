@@ -147,6 +147,13 @@ Curves::Curves(QWidget * parent, ModelData & model, GeneralSettings & generalSet
   }
 
   for (int i=0; i<C9X_MAX_POINTS; i++) {
+    spnx[i] = new QSpinBox(this);
+    spnx[i]->setProperty("index", i);
+    spnx[i]->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+    spnx[i]->setAccelerated(true);
+    connect(spnx[i], SIGNAL(valueChanged(int)), this, SLOT(onPointEdited()));
+    ui->pointsLayout->addWidget(spnx[i], i, 0, 1, 1);
+
     spny[i] = new QSpinBox(this);
     spny[i]->setProperty("index", i);
     spny[i]->setMinimum(-100);
@@ -154,14 +161,7 @@ Curves::Curves(QWidget * parent, ModelData & model, GeneralSettings & generalSet
     spny[i]->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
     spny[i]->setAccelerated(true);
     connect(spny[i], SIGNAL(valueChanged(int)), this, SLOT(onPointEdited()));
-    ui->pointsLayout->addWidget(spny[i], i, 0, 1, 1);
-
-    spnx[i] = new QSpinBox(this);
-    spnx[i]->setProperty("index", i);
-    spnx[i]->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-    spnx[i]->setAccelerated(true);
-    connect(spnx[i], SIGNAL(valueChanged(int)), this, SLOT(onPointEdited()));
-    ui->pointsLayout->addWidget(spnx[i], i, 1, 1, 1);
+    ui->pointsLayout->addWidget(spny[i], i, 1, 1, 1);
 
     bool insert;
     if (firmware->getCapability(EnhancedCurves)) {
