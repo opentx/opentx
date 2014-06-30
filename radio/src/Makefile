@@ -1372,6 +1372,7 @@ endif
 # Target: clean project.
 clean: begin clean_list end
 
+CLEAN_SRC=$(filter %.c,$(SRC))
 clean_list :
 	@echo
 	@echo $(MSG_CLEANING)
@@ -1387,7 +1388,7 @@ clean_list :
 	$(REMOVE) $(TARGET).sym
 	$(REMOVE) $(TARGET).lss
 	$(REMOVE) $(TARGET).lst
-	$(REMOVE) $(SRC:.c=.s)
+	$(REMOVE) $(CLEAN_SRC:.c=.s)
 	$(REMOVE) `find . -name "*.o"` 
 	$(REMOVE) *.d
 	$(REMOVE) *.lst
