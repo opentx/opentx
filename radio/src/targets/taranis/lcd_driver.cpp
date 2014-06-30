@@ -117,6 +117,7 @@ void lcdRefresh()
   for (uint32_t y=0; y<LCD_H; y+=2) {
     uint8_t *p = &displayBuf[(y>>3)*LCD_W];
     uint8_t mask = (1 << (y%8));
+    uint8_t mask2 = (1 << (1+(y%8)));
 
     Set_Address(0, y/2);
     AspiCmd(0xAF);
@@ -126,49 +127,18 @@ void lcdRefresh()
     LCD_NCS_LOW();
 
     for (uint32_t x=0; x<LCD_W; x++) {
-      uint8_t a, b, c ;
-      uint8_t val = 0 ;
-
-      a = p[3*DISPLAY_PLAN_SIZE+x] ;
-      if ( a & mask ) {
-        val |= 1 ;
-      }
-      if ( (a>>1) & mask ) {
-        val |= 0x10 ;
-      }
-
-      b = p[2*DISPLAY_PLAN_SIZE+x] ;
-      if ( b & mask ) {
-        val |= 2 ;
-      }
-      if ( (b>>1) & mask ) {
-        val |= 0x20 ;
-      }
-
-      c = p[DISPLAY_PLAN_SIZE+x] ;
-      if ( c & mask ) {
-        val |= 4 ;
-      }
-      if ( (c>>1) & mask ) {
-        val |= 0x40 ;
-      }
-
-      c = p[x] ;
-      if ( c & mask ) {
-        val |= 8 ;
-      }
-      if ( (c>>1) & mask ) {
-        val |= 0x80 ;
-      }
-
-      LCD_WRITE_BIT(val & 1);
-      LCD_WRITE_BIT(val & 2);
-      LCD_WRITE_BIT(val & 4);
-      LCD_WRITE_BIT(val & 8);
-      LCD_WRITE_BIT(val & 0x10);
-      LCD_WRITE_BIT(val & 0x20);
-      LCD_WRITE_BIT(val & 0x40);
-      LCD_WRITE_BIT(val & 0x80);
+      uint8_t a = p[3*DISPLAY_PLAN_SIZE+x] ;
+      uint8_t b = p[2*DISPLAY_PLAN_SIZE+x] ;
+      uint8_t c = p[DISPLAY_PLAN_SIZE+x] ;
+      uint8_t d = p[x] ;
+      LCD_WRITE_BIT(a & mask);
+      LCD_WRITE_BIT(b & mask);
+      LCD_WRITE_BIT(c & mask);
+      LCD_WRITE_BIT(d & mask);
+      LCD_WRITE_BIT(a & mask2);
+      LCD_WRITE_BIT(b & mask2);
+      LCD_WRITE_BIT(c & mask2);
+      LCD_WRITE_BIT(d & mask2);
     }
 
     LCD_NCS_HIGH();
