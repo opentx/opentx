@@ -65,8 +65,8 @@
 #define FWNUM           5
 #define FH              8
 
-#define LCD_LINES     (LCD_H/FH)
-#define LCD_COLS      (LCD_W/FW)
+#define LCD_LINES       (LCD_H/FH)
+#define LCD_COLS        (LCD_W/FW)
 
 /* lcd common flags */
 #define BLINK           0x01
@@ -75,9 +75,9 @@
 #define INVERS          0x02
 #define DBLSIZE         0x04
 #ifdef BOLD_FONT
-  #define BOLD            0x40
+  #define BOLD          0x40
 #else
-  #define BOLD            0x00
+  #define BOLD          0x00
 #endif
 
 /* lcd putc flags */
@@ -112,12 +112,12 @@
   #define MIDSIZE       0x0100
   #define SMLSIZE       0x0200
   #define TINSIZE       0x0400
-  #define STREXPANDED   0x0800
+  #define XXLSIZE       0x0800
 #else
   #define MIDSIZE       DBLSIZE
   #define SMLSIZE       0x00
   #define TINSIZE       0x00
-  #define STREXPANDED   0x00
+  #define XXLSIZE       0x00
 #endif
 
 #if defined(PCBTARANIS)
@@ -127,8 +127,11 @@
 #endif
 
 #if defined(CPUARM)
-  #define TIMEBLINK     0x10000
-  #define TIMEHOUR      0x20000
+  #define TIMEBLINK     0x010000
+  #define TIMEHOUR      0x020000
+  #define STREXPANDED   0x040000
+#else
+  #define STREXPANDED   0x00
 #endif
 
 #if defined(CPUARM)

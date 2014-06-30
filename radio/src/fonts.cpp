@@ -147,6 +147,10 @@ const pm_uchar font_8x10[] PROGMEM = {
 #endif
 };
 
+const pm_uchar font_22x38_num[] PROGMEM = {
+#include "font_22x38_num.lbm"
+};
+
 const pm_uchar font_4x6_extra[] PROGMEM = {
 #include "font_04x06_extra.lbm"
 };
