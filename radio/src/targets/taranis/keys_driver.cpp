@@ -122,6 +122,7 @@ void readKeysAndTrims()
   }
 }
 
+#if !defined(BOOT)
 bool switchState(EnumKeys enuk)
 {
   register uint32_t xxx = 0;
@@ -225,6 +226,7 @@ bool switchState(EnumKeys enuk)
 
   return xxx;
 }
+#endif
 
 #if !defined(SIMU)
 void keysInit()
