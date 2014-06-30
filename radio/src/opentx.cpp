@@ -1640,7 +1640,7 @@ FORCEINLINE void evalTrims()
     if (i==THR_STICK && g_model.thrTrim) {
       if (g_model.throttleReversed)
         trim = -trim;
-      int16_t v = anas[i];
+      int16_t v = getValue(MIXSRC_Thr);
       int32_t vv = ((int32_t)trim-TRIM_MIN)*(RESX-v)>>(RESX_SHIFT+1);
       trim = vv;
     }
