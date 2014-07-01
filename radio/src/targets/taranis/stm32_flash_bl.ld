@@ -15,7 +15,7 @@
 **
 **  Environment : Atollic TrueSTUDIO(R)
 **
-**  Distribution: The file is distributed “as is,” without any warranty
+**  Distribution: The file is distributed ï¿½as is,ï¿½ without any warranty
 **                of any kind.
 **
 **  (c)Copyright Atollic AB.
@@ -63,7 +63,7 @@ SECTIONS
     *(.bootrodata)
     *(.bootrodata.*)
       
-    . = ALIGN(32768);    /* Align the start of the main program */
+    . = 32768;           /* Set the start of the main program */
     _stext = .;          /* Provide the name for the start of this section */
 	 . = ALIGN(4);
     KEEP(*(.isr_vector)) /* Startup code */

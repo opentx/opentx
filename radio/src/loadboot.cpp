@@ -71,8 +71,9 @@ void _bootStart(void);
 
 #if defined(PCBTARANIS)
 __attribute__ ((section(".isr_boot_vector"), used))
-const uint32_t BootVectors[] = { (uint32_t) &_estack,
-    (uint32_t) (void (*)(void)) ((unsigned long) &_bootStart) };
+const uint32_t BootVectors[] = {
+  (uint32_t) &_estack,
+  (uint32_t) (void (*)(void)) ((unsigned long) &_bootStart) };
 #endif
 
 #if defined(PCBTARANIS)

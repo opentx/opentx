@@ -1149,7 +1149,6 @@ endif
 # build bootloader
 ifeq ($(PCB), TARANIS)
 bootloader.lbm: bootloader/bootloader_ramBoot.bin
-	test -z "$$(find $^ -size +32k)"
 	$(BIN2LBM) $^ $@
 
 .PHONY bootloader/bootloader_ramBoot.bin:
