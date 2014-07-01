@@ -575,20 +575,6 @@ void telemetryReset()
 
   frskyData.hub.current = 55;
   frskyData.hub.maxCurrent = 65;
-
-  // //test of averaging
-  // FrskyValueWithMin testVal;
-  // testVal.value = 0;
-  // testVal.set(10);
-  // TRACE("testVal after first set: %d", (int)testVal.value);
-  // for(int n=2; n<10; ++n) {
-  //   testVal.set(n*10);
-  //   TRACE("in %d, testVal: %d", n*10, (int)testVal.value);
-  // }
-  // for(int n=2; n<10; ++n) {
-  //   testVal.set(100);
-  //   TRACE("in %d, testVal: %d", 100, (int)testVal.value);
-  // }
 #endif
 }
 
