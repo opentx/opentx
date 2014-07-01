@@ -557,7 +557,7 @@ void telemetryReset()
   getGpsDistance();
 #endif
 
-  frskyData.hub.airSpeed = 100;
+  frskyData.hub.airSpeed = 1000; // 185.1 km/h
 
   frskyData.hub.cellsCount = 6;
 

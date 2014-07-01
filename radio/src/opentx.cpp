@@ -762,7 +762,7 @@ ls_telemetry_value_t maxTelemValue(uint8_t channel)
     case TELEM_MAX_SPEED:
     case TELEM_ASPEED:
     case TELEM_MAX_ASPEED:
-      return 2000;
+      return 20000;
     case TELEM_CELL:
     case TELEM_MIN_CELL:
       return 510;
@@ -845,11 +845,13 @@ getvalue_t convert8bitsTelemValue(uint8_t channel, ls_telemetry_value_t value)
       break;
     case TELEM_CELL:
     case TELEM_HDG:
-    case TELEM_ASPEED:
-    case TELEM_MAX_ASPEED:
     case TELEM_SPEED:
     case TELEM_MAX_SPEED:
       result = value * 2;
+      break;
+    case TELEM_ASPEED:
+    case TELEM_MAX_ASPEED:
+      result = value * 20;
       break;
     case TELEM_DIST:
     case TELEM_MAX_DIST:
@@ -1752,7 +1754,7 @@ PLAY_FUNCTION(playValue, uint8_t idx)
 
     case MIXSRC_FIRST_TELEM+TELEM_ASPEED-1:
     case MIXSRC_FIRST_TELEM+TELEM_MAX_ASPEED-1:
-      PLAY_NUMBER(val, 1+UNIT_KTS, 0);
+      PLAY_NUMBER(val/10, 1+UNIT_KTS, 0);
       break;
 
     case MIXSRC_FIRST_TELEM+TELEM_CONSUMPTION-1:

@@ -379,7 +379,6 @@ void frskySportProcessPacket(uint8_t *packet)
       }
       else if (appId >= AIR_SPEED_FIRST_ID && appId <= AIR_SPEED_LAST_ID) {
         frskyData.hub.airSpeed = SPORT_DATA_U32(packet);
-        frskyData.hub.airSpeed /= 10;
         if (frskyData.hub.airSpeed > frskyData.hub.maxAirSpeed)
           frskyData.hub.maxAirSpeed = frskyData.hub.airSpeed;
       }

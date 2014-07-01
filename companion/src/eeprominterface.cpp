@@ -186,6 +186,20 @@ RawSourceRange RawSource::getRange(const ModelData & model, const GeneralSetting
           break;
         case TELEMETRY_SOURCE_ASPEED:
         case TELEMETRY_SOURCE_ASPEED_MAX:
+          result.decimals = 1;
+          result.step = singleprec ? 2.0 : 0.1;
+          result.max = singleprec ? (2*255) : 2000;
+          if (firmware->getCapability(Imperial) || settings.imperial) {
+            result.step *= 1.150779;
+            result.max *= 1.150779;
+            result.unit = QObject::tr("mph");
+          }
+          else {
+            result.step *= 1.852;
+            result.max *= 1.852;
+            result.unit = QObject::tr("km/h");
+          }
+          break;
         case TELEMETRY_SOURCE_SPEED:
         case TELEMETRY_SOURCE_SPEED_MAX:
           result.step = singleprec ? 2 : 1;

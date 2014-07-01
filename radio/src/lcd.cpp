@@ -1367,7 +1367,7 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
 
     case TELEM_ASPEED-1:
     case TELEM_MAX_ASPEED-1:
-      putsTelemetryValue(x, y, val, UNIT_KTS, att);
+      putsTelemetryValue(x, y, val, UNIT_KTS, att|PREC1);
       break;
 
 #if defined(CPUARM)
