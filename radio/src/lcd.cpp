@@ -983,7 +983,10 @@ void putsTimer(xcoord_t x, uint8_t y, putstime_t tme, LcdFlags att, LcdFlags att
     lcd_outdezNAtt(x, y, qr2.quot, att|LEADING0|LEFT, 2);
     lcd_putcAtt(lcdLastPos, y, separator, att&att2);
     qr.quot = qr2.rem;
-    x += 2*8+1;
+    if (att & MIDSIZE)
+      x += 17;
+    else
+      x += 13;
   }
 #elif defined(CPUARM)
   char separator = ':';

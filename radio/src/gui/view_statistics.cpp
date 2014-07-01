@@ -49,7 +49,7 @@ void menuStatisticsView(uint8_t event)
 #if defined(PCBTARANIS)
     case EVT_KEY_LONG(KEY_MENU):
       g_eeGeneral.globalTimer = 0;
-    	break;
+      break;
 #endif
     case EVT_KEY_FIRST(KEY_EXIT):
       chainMenu(menuMainView);
@@ -66,7 +66,7 @@ void menuStatisticsView(uint8_t event)
   putsTimer(   12*FW+5*FWNUM+1, FH*0, s_timeCumTot, 0, 0);
   
 #if defined(PCBTARANIS)
-  putsTimer(21*FW+5*FWNUM+1, 0*FH, g_eeGeneral.globalTimer + sessionTimer, 0, 0);
+  putsTimer(21*FW+5*FWNUM+1, 0*FH, g_eeGeneral.globalTimer + sessionTimer, TIMEHOUR, 0);
 #endif
 
 #if defined(THRTRACE)
