@@ -457,22 +457,27 @@ int InputsPanel::gm_moveExpo(int idx, bool dir) //true=inc=down false=dec=up
     if (!dir && tdx<0 && src.chn>0) {
       src.chn--;
       return idx;
-    } else if (!dir && tdx<0) {
+    }
+    else if (!dir && tdx<0) {
       return idx;
     }
 
-    if(memcmp(&src,&temp,sizeof(ExpoData))==0) return idx;
-    bool tgtempty=(memcmp(&tgt,&temp,sizeof(ExpoData))==0 ? 1:0);
-    if(tgt.chn!=src.chn || tgtempty) {
-        if ((dir)  && (src.chn<(inputsCount-1))) src.chn++;
-        if ((!dir) && (src.chn>0)) src.chn--;
-        return idx;
+    if (memcmp(&src, &temp, sizeof(ExpoData)) == 0) {
+      return idx;
     }
 
-    //flip between idx and tgt
-    memcpy(&temp,&src,sizeof(ExpoData));
-    memcpy(&src,&tgt,sizeof(ExpoData));
-    memcpy(&tgt,&temp,sizeof(ExpoData));
+    bool tgtempty = (memcmp(&tgt, &temp, sizeof(ExpoData)) == 0);
+
+    if (tgt.chn!=src.chn || tgtempty) {
+      if ((dir)  && (src.chn<unsigned(inputsCount-1))) src.chn++;
+      if ((!dir) && (src.chn>0)) src.chn--;
+      return idx;
+    }
+
+    // flip between idx and tgt
+    memcpy(&temp, &src, sizeof(ExpoData));
+    memcpy(&src, &tgt, sizeof(ExpoData));
+    memcpy(&tgt, &temp, sizeof(ExpoData));
     return tdx;
 }
 
