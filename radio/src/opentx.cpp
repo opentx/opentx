@@ -2241,14 +2241,6 @@ void doMixerCalculations()
     val >>= (RESX_SHIFT-4); // calibrate it
 #endif
 
-    {
-      static int cnt = 0;
-      if (++cnt > 100) {
-        cnt = 0;
-        TRACE("Ttrace: %d", (int)val);
-      }
-    }
-
     // Timers start
     for (uint8_t i=0; i<MAX_TIMERS; i++) {
       int8_t tm = g_model.timers[i].mode;
