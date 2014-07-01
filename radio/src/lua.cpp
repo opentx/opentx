@@ -1293,8 +1293,16 @@ void getTelemetryScriptPath(char * path, uint8_t index)
 {
   strcpy(path, SCRIPTS_PATH "/");
   char * curs = strcat_modelname(path+sizeof(SCRIPTS_PATH), g_eeGeneral.currModel);
-  strcpy(curs, "/telemX.lua");
-  curs[6] = '0' + index;
+  if (index == TELEMETRY_VOLTAGES_SCREEN) {
+    strcpy(curs, "/telempw.lua");
+  }
+  else if (index == TELEMETRY_AFTER_FLIGHT_SCREEN) {
+    strcpy(curs, "/telemaf.lua");
+  }
+  else {
+    strcpy(curs, "/telemX.lua");
+    curs[6] = '1' + index;
+  }
 }
 
 bool luaLoadTelemetryScript(uint8_t index)
@@ -1319,7 +1327,7 @@ bool isTelemetryScriptAvailable(uint8_t index)
 {
   for (int i=0; i<luaScriptsCount; i++) {
     ScriptInternalData & sid = scriptInternalData[i];
-    if (sid.reference == SCRIPT_TELEMETRY_FIRST+index+1) {
+    if (sid.reference == SCRIPT_TELEMETRY_FIRST+index) {
       return true;
     }
   }
@@ -1340,17 +1348,25 @@ void luaLoadPermanentScripts()
   // Load custom function scripts
   for (int i=0; i<NUM_CFN; i++) {
     if (!luaLoadFunctionScript(i)) {
-      POPUP_WARNING("Too many Lua scripts!"); // TODO translation
-      break;
+      POPUP_WARNING(STR_TOO_MANY_LUA_SCRIPTS);
+      return;
     }
   }
 
-  // Load telemetry scripts
-  for (int i=0; i<MAX_SCRIPTS+1; i++) {
+  // Load custom telemetry scripts
+  for (int i=0; i<MAX_SCRIPTS; i++) {
     if (!luaLoadTelemetryScript(i)) {
-      POPUP_WARNING("Too many Lua scripts!"); // TODO translation
-      break;
+      POPUP_WARNING(STR_TOO_MANY_LUA_SCRIPTS);
+      return;
     }
+  }
+  if (!luaLoadTelemetryScript(TELEMETRY_VOLTAGES_SCREEN)) {
+    POPUP_WARNING(STR_TOO_MANY_LUA_SCRIPTS);
+    return;
+  }
+  if (!luaLoadTelemetryScript(TELEMETRY_AFTER_FLIGHT_SCREEN)) {
+    POPUP_WARNING(STR_TOO_MANY_LUA_SCRIPTS);
+    return;
   }
 }
 
@@ -1404,8 +1420,6 @@ void luaExec(const char *filename)
     luaError(result);
   }
 }
-
-extern uint8_t s_frsky_view;
 
 void luaTask(uint8_t evt)
 {
@@ -1532,7 +1546,7 @@ void luaTask(uint8_t evt)
 #if defined(SIMU) || defined(DEBUG)
           filename = "[telem]";
 #endif
-          if (g_menuStack[0]==menuTelemetryFrsky && sid.reference==SCRIPT_TELEMETRY_FIRST+s_frsky_view+1) {
+          if (g_menuStack[0]==menuTelemetryFrsky && sid.reference==SCRIPT_TELEMETRY_FIRST+s_frsky_view) {
             lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
             lua_pushinteger(L, evt);
             inputsCount = 1;

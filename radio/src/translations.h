@@ -626,6 +626,7 @@ extern const pm_char STR_FLASH_BOOTLOADER[];
 extern const pm_char STR_WRITING[];
 extern const pm_char STR_CONFIRM_FORMAT[];
 extern const pm_char STR_EEBACKUP[];
+extern const pm_char STR_TOO_MANY_LUA_SCRIPTS[];
 extern const pm_char STR_BLCOLOR[];
 
 #if defined(VOICE) && defined(CPUARM)
