@@ -146,6 +146,21 @@ static void luaGetValueAndPush(int src)
   }
 }
 
+struct LuaField {
+  const char * name;
+  const uint8_t id;
+  const uint8_t attr;
+};
+
+const LuaField luaFields[] = {
+  { "altitude-max", MIXSRC_FIRST_TELEM+TELEM_MAX_ALT-1, 0 },
+  { "altitude", MIXSRC_FIRST_TELEM+TELEM_ALT-1, PREC2 },
+  { "vario", MIXSRC_FIRST_TELEM+TELEM_VSPEED-1, PREC2 },
+  { "tx-voltage", MIXSRC_FIRST_TELEM+TELEM_TX_VOLTAGE-1, PREC1 },
+  { "rpm", MIXSRC_FIRST_TELEM+TELEM_RPM-1, 0 },
+  { NULL, 0, 0 },
+};
+
 static int luaGetValue(lua_State *L)
 {
   if (lua_isnumber(L, 1)) {
@@ -155,19 +170,19 @@ static int luaGetValue(lua_State *L)
   }
   else {
     const char *what = luaL_checkstring(L, 1);
-    if (!strcmp(what, "altitude-max")) {
-      lua_pushnumber(L, frskyData.hub.maxAltitude);
-      return 1;
+    for (const LuaField * field = &luaFields[0]; field->name; field++) {
+      if (!strcmp(what, field->name)) {
+        getvalue_t value = getValue(field->id);
+        if (field->attr == PREC1)
+          lua_pushnumber(L, double(value)/10);
+        else if (field->attr == PREC2)
+          lua_pushnumber(L, double(value)/100);
+        else
+          lua_pushnumber(L, value);
+        return 1;
+      }
     }
-    else if (!strcmp(what, "altitude")) {
-      lua_pushnumber(L, double(frskyData.hub.baroAltitude)/100);
-      return 1;
-    }
-    else if (!strcmp(what, "vario")) {
-      lua_pushnumber(L, double(frskyData.hub.varioSpeed)/100);
-      return 1;
-    }
-    else if (frskyData.hub.gpsFix) {
+    if (frskyData.hub.gpsFix) {
       if (!strcmp(what, "latitude")) {
         lua_pushnumber(L, gpsToDouble(frskyData.hub.gpsLatitudeNS=='S', frskyData.hub.gpsLatitude_bp, frskyData.hub.gpsLatitude_ap));
         return 1;
@@ -271,6 +286,29 @@ static int luaLcdDrawNumber(lua_State *L)
   int n = luaL_checkinteger(L, 3);
   int att = luaL_checkinteger(L, 4);
   lcd_outdezAtt(x, y, n, att);
+  return 0;
+}
+
+static int luaLcdDrawChannel(lua_State *L)
+{
+  int x = luaL_checkinteger(L, 1);
+  int y = luaL_checkinteger(L, 2);
+  int channel = -1;
+  if (lua_isnumber(L, 3)) {
+    channel = luaL_checkinteger(L, 3);
+  }
+  else {
+    const char *what = luaL_checkstring(L, 3);
+    for (const LuaField * field = &luaFields[0]; field->name; field++) {
+      if (!strcmp(what, field->name)) {
+        channel = field->id;
+        break;
+      }
+    }
+  }
+  int att = luaL_checkinteger(L, 4);
+  getvalue_t value = getValue(channel);
+  putsTelemetryChannel(x, y, channel-MIXSRC_FIRST_TELEM, value, att);
   return 0;
 }
 
@@ -1101,6 +1139,7 @@ static const luaL_Reg lcdLib[] = {
   { "drawText", luaLcdDrawText },
   { "drawTimer", luaLcdDrawTimer },
   { "drawNumber", luaLcdDrawNumber },
+  { "drawChannel", luaLcdDrawChannel },
   { "drawSwitch", luaLcdDrawSwitch },
   { "drawSource", luaLcdDrawSource },
   { "drawPixmap", luaLcdDrawPixmap },
@@ -1142,6 +1181,7 @@ void luaInit()
   lua_registerint(L, "MIDSIZE", MIDSIZE);
   lua_registerint(L, "SMLSIZE", SMLSIZE);
   lua_registerint(L, "INVERS", INVERS);
+  lua_registerint(L, "LEFT", LEFT);
   lua_registerint(L, "PREC1", PREC1);
   lua_registerint(L, "PREC2", PREC2);
   lua_registerint(L, "BLINK", BLINK);

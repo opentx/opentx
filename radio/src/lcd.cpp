@@ -1247,7 +1247,7 @@ void putsRotaryEncoderMode(xcoord_t x, uint8_t y, uint8_t phase, uint8_t idx, Lc
 #endif
 
 #if defined(FRSKY) || defined(CPUARM)
-void putsTelemetryValue(xcoord_t x, uint8_t y, lcdint_t val, uint8_t unit, uint8_t att)
+void putsTelemetryValue(xcoord_t x, uint8_t y, lcdint_t val, uint8_t unit, LcdFlags att)
 {
   convertUnit(val, unit);
   lcd_outdezAtt(x, y, val, att & (~NO_UNIT));
@@ -1267,7 +1267,7 @@ const pm_uint8_t bchunit_ar[] PROGMEM = {
   UNIT_DIST,    // GPS Alt
 };
 
-void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, uint8_t att)
+void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, LcdFlags att)
 {
   switch (channel) {
 #if defined(CPUARM) && defined(RTCLOCK)
