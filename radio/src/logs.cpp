@@ -200,13 +200,17 @@ void writeLogs()
 
 #if defined(FRSKY)
 #if defined(CPUARM)
-      f_printf(&g_oLogFile, "%d,%d,", frskyData.swr.value, frskyData.rssi[0].value);
+      f_printf(&g_oLogFile, "%d,%d,", frskyData.swr.raw, frskyData.rssi[0].raw);
 #else
       f_printf(&g_oLogFile, "%d,%d,%d,", frskyStreaming, frskyData.rssi[0].value, frskyData.rssi[1].value);
 #endif
 
       for (uint8_t i=0; i<MAX_FRSKY_A_CHANNELS; i++) {
+#if defined(CPUARM)
+        int16_t converted_value = applyChannelRatio(i, frskyData.analog[i].raw);
+#else
         int16_t converted_value = applyChannelRatio(i, frskyData.analog[i].value);
+#endif
         f_printf(&g_oLogFile, "%d.%02d,", converted_value/100, converted_value%100);
       }
 #endif

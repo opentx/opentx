@@ -84,16 +84,18 @@ void FrskyValueWithMin::set(uint8_t value)
     this->value = value;
   }
   else {
-    unsigned int sum = 0;
+    //calculate the average from values[], raw, value
+    unsigned int sum = values[0];
     for (int i=0; i<TELEMETRY_AVERAGE_COUNT-1; i++) {
       uint8_t tmp = values[i+1];
       values[i] = tmp;
       sum += tmp;
     }
-    values[TELEMETRY_AVERAGE_COUNT-1] = value;
-    sum += value;
-    this->value = sum/TELEMETRY_AVERAGE_COUNT;
+    values[TELEMETRY_AVERAGE_COUNT-1] = raw;
+    sum += raw + value;
+    this->value = sum/(TELEMETRY_AVERAGE_COUNT+2);
   }
+  raw = value;
 #else
   if (this->value == 0) {
     this->value = value;
