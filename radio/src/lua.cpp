@@ -1137,6 +1137,7 @@ void luaInit()
 
   // Push OpenTX constants
   lua_registerint(L, "FULLSCALE", RESX);
+  lua_registerint(L, "XXLSIZE", XXLSIZE);
   lua_registerint(L, "DBLSIZE", DBLSIZE);
   lua_registerint(L, "MIDSIZE", MIDSIZE);
   lua_registerint(L, "SMLSIZE", SMLSIZE);
@@ -1553,6 +1554,9 @@ void luaTask(uint8_t evt)
           }
           else if (sid.background) {
             lua_rawgeti(L, LUA_REGISTRYINDEX, sid.background);
+          }
+          else {
+            continue;
           }
         }
         if (lua_pcall(L, inputsCount, sio ? sio->outputsCount : 0, 0) == 0) {
