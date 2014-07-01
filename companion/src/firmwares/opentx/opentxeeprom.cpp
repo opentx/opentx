@@ -2804,10 +2804,12 @@ void OpenTxGeneralData::beforeExport()
       sum += generalData.calibSpanPos[i];
       if (++count == 12) break;
     }
-    for (int i=0; i<4; i++) {
-      potsType[i] = generalData.potsType[i];
-      if (i<2 && potsType[i] == 1)
-        potsType[i] = 0;
+    if (IS_TARANIS(board)) {
+      for (int i=0; i<4; i++) {
+        potsType[i] = generalData.potsType[i];
+        if (i<2 && potsType[i] == 1)
+          potsType[i] = 0;
+      }
     }
   }
   else {
@@ -2821,9 +2823,11 @@ void OpenTxGeneralData::beforeExport()
 
 void OpenTxGeneralData::afterImport()
 {
-  for (int i=0; i<4; i++) {
-    generalData.potsType[i] = potsType[i];
-    if (i<2 && potsType[i] == 0)
-      generalData.potsType[i] = 1;
+  if (IS_TARANIS(board)) {
+    for (int i=0; i<4; i++) {
+      generalData.potsType[i] = potsType[i];
+      if (i<2 && potsType[i] == 0)
+        generalData.potsType[i] = 1;
+    }
   }
 }
