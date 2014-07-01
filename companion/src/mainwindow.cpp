@@ -1328,7 +1328,7 @@ void MainWindow::writeFlash(QString fileToFlash)
         }
 
         if (readEepromFromRadio(backupFile, tr("Backup Models and Settings From Radio"))) {
-          sleep(1);
+          sleep(2);
           int res = writeFirmwareToRadio(fileName);
           if (res) {
             QString restoreFile = tempDir + "/restore.bin";
@@ -1336,7 +1336,7 @@ void MainWindow::writeFlash(QString fileToFlash)
               QMessageBox::warning(this, tr("Conversion failed"), tr("Cannot convert Models and Settings for use with this firmware, original data will be used"));
               restoreFile = backupFile;
             }
-            sleep(1);
+            sleep(2);
             if (!writeEepromToRadio(restoreFile, tr("Restore Models and Settings To Radio"))) {
               QMessageBox::warning(this, tr("Restore failed"), tr("Could not restore Models and Settings to Radio. The models and settings data file can be found at: %1").arg(backupFile));
             }
@@ -1362,6 +1362,7 @@ void MainWindow::writeFlash(QString fileToFlash)
           QDateTime datetime;
           QString backupFile = backupPath+"/backup-"+QDateTime().currentDateTime().toString("yyyy-MM-dd-hhmmss")+".bin";
           readEepromFromRadio(backupFile, tr("Backup Models and Settings From Radio"));
+          sleep(2);
         }
 
         writeFirmwareToRadio(fileName);
