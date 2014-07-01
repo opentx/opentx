@@ -2180,6 +2180,14 @@ void doMixerCalculations()
 #endif
 
   if (tick10ms) {
+
+#if !defined(CPUM64) && !defined(ACCURAT_THROTTLE_TIMER)
+    //  code cost is about 16 bytes for higher throttle accuracy for timer
+    //  would not be noticable anyway, because all version up to this change had only 16 steps;
+    //  now it has already 32  steps; this define would increase to 128 steps
+    #define ACCURAT_THROTTLE_TIMER
+#endif
+
     /* Throttle trace */
     int16_t val;
 
@@ -2232,6 +2240,14 @@ void doMixerCalculations()
 #else
     val >>= (RESX_SHIFT-4); // calibrate it
 #endif
+
+    {
+      static int cnt = 0;
+      if (++cnt > 100) {
+        cnt = 0;
+        TRACE("Ttrace: %d", (int)val);
+      }
+    }
 
     // Timers start
     for (uint8_t i=0; i<MAX_TIMERS; i++) {
