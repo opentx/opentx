@@ -51,7 +51,8 @@ extern "C" {
 #define lua_registerint(L, n, i)       (lua_pushinteger(L, (i)), lua_setglobal(L, (n)))
 #define lua_pushtablenil(L, k)         (lua_pushstring(L, (k)), lua_pushnil(L), lua_settable(L, -3))
 #define lua_pushtableboolean(L, k, v)  (lua_pushstring(L, (k)), lua_pushboolean(L, (v)), lua_settable(L, -3))
-#define lua_pushtablenumber(L, k, v)   (lua_pushstring(L, (k)), lua_pushinteger(L, (v)), lua_settable(L, -3))
+#define lua_pushtableinteger(L, k, v)  (lua_pushstring(L, (k)), lua_pushinteger(L, (v)), lua_settable(L, -3))
+#define lua_pushtablenumber(L, k, v)   (lua_pushstring(L, (k)), lua_pushnumber(L, (v)), lua_settable(L, -3))
 #define lua_pushtablestring(L, k, v)   { char tmp[sizeof(v)+1]; strncpy(tmp, (v), sizeof(v)); tmp[sizeof(v)] = '\0'; lua_pushstring(L, (k)); lua_pushstring(L, tmp); lua_settable(L, -3); }
 #define lua_pushtablezstring(L, k, v)  { char tmp[sizeof(v)+1]; zchar2str(tmp, (v), sizeof(v)); lua_pushstring(L, (k)); lua_pushstring(L, tmp); lua_settable(L, -3); }
 #define lua_registerlib(L, name, tab)  (luaL_newmetatable(L, name), luaL_setfuncs(L, tab, 0), lua_setglobal(L, name))
@@ -227,6 +228,14 @@ static int luaKillEvents(lua_State *L)
   return 0;
 }
 
+static int luaGetGeneralSettings(lua_State *L)
+{
+  lua_newtable(L);
+  lua_pushtablenumber(L, "battMin", double(90+g_eeGeneral.vBatMin)/10);
+  lua_pushtablenumber(L, "battMax", double(120+g_eeGeneral.vBatMax)/10);
+  return 1;
+}
+
 static int luaLcdLock(lua_State *L)
 {
   lcd_locked = true;
@@ -257,6 +266,12 @@ static int luaLcdDrawLine(lua_State *L)
   int flags = luaL_checkinteger(L, 6);
   lcd_line(x1, y1, x2, y2, pat, flags);
   return 0;
+}
+
+static int luaLcdGetLastPos(lua_State *L)
+{
+  lua_pushinteger(L, lcdLastPos);
+  return 1;
 }
 
 static int luaLcdDrawText(lua_State *L)
@@ -366,7 +381,6 @@ static int luaLcdDrawFilledRectangle(lua_State *L)
   return 0;
 }
 
-#if 0
 static int luaLcdDrawGauge(lua_State *L)
 {
   int x = luaL_checkinteger(L, 1);
@@ -375,7 +389,7 @@ static int luaLcdDrawGauge(lua_State *L)
   int h = luaL_checkinteger(L, 4);
   int num = luaL_checkinteger(L, 5);
   int den = luaL_checkinteger(L, 6);
-  int flags = luaL_checkinteger(L, 7);
+  // int flags = luaL_checkinteger(L, 7);
   lcd_rect(x, y, w, h);
   uint8_t len = limit((uint8_t)1, uint8_t(w*num/den), uint8_t(w));
   for (int i=1; i<h-1; i++) {
@@ -383,7 +397,6 @@ static int luaLcdDrawGauge(lua_State *L)
   }
   return 0;
 }
-#endif
 
 static int luaLcdDrawScreenTitle(lua_State *L)
 {
@@ -449,7 +462,7 @@ static int luaModelGetInfo(lua_State *L)
 {
   lua_newtable(L);
   lua_pushtablezstring(L, "name", g_model.header.name);
-  lua_pushtablenumber(L, "id", g_model.header.modelId);
+  lua_pushtableinteger(L, "id", g_model.header.modelId);
   return 1;
 }
 
@@ -479,10 +492,10 @@ static int luaModelGetTimer(lua_State *L)
   if (idx < MAX_TIMERS) {
     TimerData & timer = g_model.timers[idx];
     lua_newtable(L);
-    lua_pushtablenumber(L, "mode", timer.mode);
-    lua_pushtablenumber(L, "start", timer.start);
-    lua_pushtablenumber(L, "value", timersStates[idx].val);
-    lua_pushtablenumber(L, "countdownBeep", timer.countdownBeep);
+    lua_pushtableinteger(L, "mode", timer.mode);
+    lua_pushtableinteger(L, "start", timer.start);
+    lua_pushtableinteger(L, "value", timersStates[idx].val);
+    lua_pushtableinteger(L, "countdownBeep", timer.countdownBeep);
     lua_pushtableboolean(L, "minuteBeep", timer.minuteBeep);
     lua_pushtableboolean(L, "persistent", timer.persistent);
   }
@@ -575,9 +588,9 @@ static int luaModelGetInput(lua_State *L)
     ExpoData * expo = expoAddress(first+idx);
     lua_newtable(L);
     lua_pushtablezstring(L, "name", expo->name);
-    lua_pushtablenumber(L, "source", expo->srcRaw);
-    lua_pushtablenumber(L, "weight", expo->weight);
-    lua_pushtablenumber(L, "offset", expo->offset);
+    lua_pushtableinteger(L, "source", expo->srcRaw);
+    lua_pushtableinteger(L, "weight", expo->weight);
+    lua_pushtableinteger(L, "offset", expo->offset);
   }
   else {
     lua_pushnil(L);
@@ -699,11 +712,11 @@ static int luaModelGetMix(lua_State *L)
     MixData * mix = mixAddress(first+idx);
     lua_newtable(L);
     lua_pushtablezstring(L, "name", mix->name);
-    lua_pushtablenumber(L, "source", mix->srcRaw);
-    lua_pushtablenumber(L, "weight", mix->weight);
-    lua_pushtablenumber(L, "offset", mix->offset);
-    lua_pushtablenumber(L, "switch", mix->swtch);
-    lua_pushtablenumber(L, "multiplex", mix->mltpx);
+    lua_pushtableinteger(L, "source", mix->srcRaw);
+    lua_pushtableinteger(L, "weight", mix->weight);
+    lua_pushtableinteger(L, "offset", mix->offset);
+    lua_pushtableinteger(L, "switch", mix->swtch);
+    lua_pushtableinteger(L, "multiplex", mix->mltpx);
   }
   else {
     lua_pushnil(L);
@@ -780,13 +793,13 @@ static int luaModelGetLogicalSwitch(lua_State *L)
   if (idx < NUM_LOGICAL_SWITCH) {
     LogicalSwitchData * sw = lswAddress(idx);
     lua_newtable(L);
-    lua_pushtablenumber(L, "func", sw->func);
-    lua_pushtablenumber(L, "v1", sw->v1);
-    lua_pushtablenumber(L, "v2", sw->v2);
-    lua_pushtablenumber(L, "v3", sw->v3);
-    lua_pushtablenumber(L, "and", sw->andsw);
-    lua_pushtablenumber(L, "delay", sw->delay);
-    lua_pushtablenumber(L, "duration", sw->duration);
+    lua_pushtableinteger(L, "func", sw->func);
+    lua_pushtableinteger(L, "v1", sw->v1);
+    lua_pushtableinteger(L, "v2", sw->v2);
+    lua_pushtableinteger(L, "v3", sw->v3);
+    lua_pushtableinteger(L, "and", sw->andsw);
+    lua_pushtableinteger(L, "delay", sw->delay);
+    lua_pushtableinteger(L, "duration", sw->duration);
   }
   else {
     lua_pushnil(L);
@@ -838,17 +851,17 @@ static int luaModelGetCustomFunction(lua_State *L)
   if (idx < NUM_CFN) {
     CustomFnData * cfn = &g_model.funcSw[idx];
     lua_newtable(L);
-    lua_pushtablenumber(L, "switch", CFN_SWITCH(cfn));
-    lua_pushtablenumber(L, "func", CFN_FUNC(cfn));
+    lua_pushtableinteger(L, "switch", CFN_SWITCH(cfn));
+    lua_pushtableinteger(L, "func", CFN_FUNC(cfn));
     if (CFN_FUNC(cfn) == FUNC_PLAY_TRACK || CFN_FUNC(cfn) == FUNC_BACKGND_MUSIC || CFN_FUNC(cfn) == FUNC_PLAY_SCRIPT) {
       lua_pushtablestring(L, "name", cfn->play.name);
     }
     else {
-      lua_pushtablenumber(L, "value", cfn->all.val);
-      lua_pushtablenumber(L, "mode", cfn->all.mode);
-      lua_pushtablenumber(L, "param", cfn->all.param);
+      lua_pushtableinteger(L, "value", cfn->all.val);
+      lua_pushtableinteger(L, "mode", cfn->all.mode);
+      lua_pushtableinteger(L, "param", cfn->all.param);
     }
-    lua_pushtablenumber(L, "active", CFN_ACTIVE(cfn));
+    lua_pushtableinteger(L, "active", CFN_ACTIVE(cfn));
   }
   else {
     lua_pushnil(L);
@@ -902,14 +915,14 @@ static int luaModelGetOutput(lua_State *L)
     LimitData * limit = limitAddress(idx);
     lua_newtable(L);
     lua_pushtablezstring(L, "name", limit->name);
-    lua_pushtablenumber(L, "min", limit->min-1000);
-    lua_pushtablenumber(L, "max", limit->max+1000);
-    lua_pushtablenumber(L, "offset", limit->offset);
-    lua_pushtablenumber(L, "ppmCenter", limit->ppmCenter);
-    lua_pushtablenumber(L, "symetrical", limit->symetrical);
-    lua_pushtablenumber(L, "revert", limit->revert);
+    lua_pushtableinteger(L, "min", limit->min-1000);
+    lua_pushtableinteger(L, "max", limit->max+1000);
+    lua_pushtableinteger(L, "offset", limit->offset);
+    lua_pushtableinteger(L, "ppmCenter", limit->ppmCenter);
+    lua_pushtableinteger(L, "symetrical", limit->symetrical);
+    lua_pushtableinteger(L, "revert", limit->revert);
     if (limit->curve)
-      lua_pushtablenumber(L, "curve", limit->curve-1);
+      lua_pushtableinteger(L, "curve", limit->curve-1);
     else
       lua_pushtablenil(L, "curve");
   }
@@ -1131,11 +1144,12 @@ static const luaL_Reg modelLib[] = {
 static const luaL_Reg lcdLib[] = {
   { "lock", luaLcdLock },
   { "clear", luaLcdClear },
+  { "getLastPos", luaLcdGetLastPos },
   { "drawPoint", luaLcdDrawPoint },
   { "drawLine", luaLcdDrawLine },
   { "drawRectangle", luaLcdDrawRectangle },
   { "drawFilledRectangle", luaLcdDrawFilledRectangle },
-  // { "drawGauge", luaLcdDrawGauge },
+  { "drawGauge", luaLcdDrawGauge },
   { "drawText", luaLcdDrawText },
   { "drawTimer", luaLcdDrawTimer },
   { "drawNumber", luaLcdDrawNumber },
@@ -1166,6 +1180,7 @@ void luaInit()
   // Push OpenTX functions
   lua_register(L, "getTime", luaGetTime);
   lua_register(L, "getVersion", luaGetVersion);
+  lua_register(L, "getGeneralSettings", luaGetGeneralSettings);
   lua_register(L, "getValue", luaGetValue);
   lua_register(L, "playFile", luaPlayFile);
   lua_register(L, "playNumber", luaPlayNumber);
