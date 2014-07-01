@@ -56,6 +56,7 @@ uint8_t lcdNextPos;
 void lcdPutPattern(xcoord_t x, uint8_t y, const uint8_t * pattern, uint8_t width, uint8_t height, LcdFlags flags)
 {
   uint8_t *p = &displayBuf[ y / 8 * LCD_W + x ];
+  uint8_t *end = &displayBuf[ y / 8 * LCD_W + LCD_W ];
 
   bool blink = false;
   bool inv = false;
@@ -75,7 +76,7 @@ void lcdPutPattern(xcoord_t x, uint8_t y, const uint8_t * pattern, uint8_t width
   // we need to work on the previous byte when INVERS
   p--;
 
-  for (int8_t i=0; i<width+2; i++) {
+  for (int8_t i=0; i<width+2 && p<end; i++) {
     uint8_t lines = (height+7)/8;
     assert(lines <= 5);
     uint8_t b[5] = { 0 };

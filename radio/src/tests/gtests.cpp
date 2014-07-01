@@ -1062,6 +1062,13 @@ TEST(Lcd, Prec2_Right)
   EXPECT_TRUE(checkScreenshot("prec2_right"));
 }
 
+TEST(Lcd, Line_Wrap)
+{
+  lcd_clear();
+  lcd_puts(LCD_W-10, 0, "TEST");
+  EXPECT_TRUE(checkScreenshot("line_wrap"));
+}
+
 int main(int argc, char **argv)
 {
   QCoreApplication app(argc, argv);
