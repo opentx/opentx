@@ -199,6 +199,10 @@ static int luaGetValue(lua_State *L)
         lua_pushnumber(L, pilotLongitude);
         return 1;
       }
+      else if (!strcmp(what, "rpm")) {
+        lua_pushnumber(L, frskyData.hub.rpm);
+        return 1;
+      }
     }
   }
   return 0;
