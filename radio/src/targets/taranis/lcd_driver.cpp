@@ -15,49 +15,61 @@
 #define	WriteCommand(x)	 AspiCmd(x)
 
 #if defined(REVPLUS)
-  #define CONTRAST_OFS 120
+  #define CONTRAST_OFS 160
 #else
   #define CONTRAST_OFS 5
 #endif
 
+//275us
+void Delay(volatile unsigned int ms)
+{
+  volatile u8 i;
+  while(ms != 0) {
+    for(i=0;i<250;i++) {}
+    for(i=0;i<75;i++) {}
+    ms--;
+  }
+}
+
 #if defined(REVPLUS)
 static void LCD_Init()
 {
-  AspiCmd(0x25);   //(5) Temperature compensation curve definition: 0x25 = -0.05%/oC
-  AspiCmd(0x2b);   //(6) Panel loading set ,Internal VLCD.
-  AspiCmd(0xEA);	 //(27) set bias=1/10
-  AspiCmd(0x81);	 //(11) Set Vop + next byte
+  WriteCommand(0x2F);   //Internal pump control
+  Delay(20);
+  WriteCommand(0x24);   //Temperature compensation
+  WriteCommand(0xE9);   //set bias=1/10
+  WriteCommand(0x81);   //Set Vop
 #if defined(BOOT)
   AspiCmd(CONTRAST_OFS+25);
 #else
   AspiCmd(CONTRAST_OFS+g_eeGeneral.contrast);
 #endif
-  AspiCmd(0xA6);	//inverse display off
-  AspiCmd(0xA1);	//line rates,24 Klps
-  AspiCmd(0x84);	//Disable Partial Display
-  AspiCmd(0xC8);	//SET N-LINE INVERSION
-  AspiCmd(0x00);	//Disable NIV
-  AspiCmd(0xF1);	//Set CEN
-  AspiCmd(0x3F);	// 1/64DUTY
-  AspiCmd(0xC0);	//(21) Set mapping
-  AspiCmd(0x05);	// MY=1, MX=0, MSF=0
-  AspiCmd(0x89);	//(15) WA=1,column (CA) increment (+1) first until CA reaches CA boundary, then RA will increment by (+1).
-  AspiCmd(0xF8);	//Set Window Program Enable  ,inside modle
-  AspiCmd(0xD0);	 //(23) SET 4 bits/pixel, pattern 0
-  AspiCmd(0xF4);   //starting column address of RAM program window.
-  AspiCmd(0x00);
-  AspiCmd(0xF5);   //starting row address of RAM program window.
-  AspiCmd(0x00);
-  AspiCmd(0xF6);   //ending column address of RAM program window.
-  AspiCmd(0xD3);
-  AspiCmd(0xF7);   //ending row address of RAM program window.
-  AspiCmd(0x3F);
-  AspiCmd(0xAF);	// Active and 16-grey scale
+  WriteCommand(0xA2);   //set line rate:28KLPS
+  WriteCommand(0x28);   //set pannel loading
+  WriteCommand(0x40);   //scroll line LSB
+  WriteCommand(0x50);   //SCROLL LINE MSB
+  WriteCommand(0x89);   //ram address control
+  WriteCommand(0xC0);   //LCD mapping control
+  WriteCommand(0x04);   //MX=0,MY=1
+  WriteCommand(0xD0);   //DISPLAY PATTERN = 16-SCALE GRAY
+  WriteCommand(0xF1);   //SET COM end
+  WriteCommand(0x3F);   //64
+
+  WriteCommand(0xF8);   //Set Window Program Disable.
+
+  WriteCommand(0xF5);   //starting row address of RAM program window.PAGE1
+  WriteCommand(0x00);
+  WriteCommand(0xF7);   //end row address of RAM program window.PAGE32
+  WriteCommand(0x1F);
+  WriteCommand(0xF4);   //start column address of RAM program window.
+  WriteCommand(0x00);
+  WriteCommand(0xF6);   //end column address of RAM program window.SEG212
+  WriteCommand(0xD3);
 }
 #else
 static void LCD_Init()
 {	
-  AspiCmd(0x2b);   //Panel loading set ,Internal VLCD.
+  AspiCmd(0x2B);   //Panel loading set ,Internal VLCD.
   AspiCmd(0x25);   //Temperature compensation curve definition: 0x25 = -0.05%/oC
   AspiCmd(0xEA);	//set bias=1/10 :Command table NO.27
   AspiCmd(0x81);	//Set Vop
@@ -117,6 +129,7 @@ void lcdRefresh()
   for (uint32_t y=0; y<LCD_H; y+=2) {
     uint8_t *p = &displayBuf[(y>>3)*LCD_W];
     uint8_t mask = (1 << (y%8));
+    uint8_t mask2 = (1 << (1+(y%8)));
 
     Set_Address(0, y/2);
     AspiCmd(0xAF);
@@ -126,49 +139,18 @@ void lcdRefresh()
     LCD_NCS_LOW();
 
     for (uint32_t x=0; x<LCD_W; x++) {
-      uint8_t a, b, c ;
-      uint8_t val = 0 ;
-
-      a = p[3*DISPLAY_PLAN_SIZE+x] ;
-      if ( a & mask ) {
-        val |= 1 ;
-      }
-      if ( (a>>1) & mask ) {
-        val |= 0x10 ;
-      }
-
-      b = p[2*DISPLAY_PLAN_SIZE+x] ;
-      if ( b & mask ) {
-        val |= 2 ;
-      }
-      if ( (b>>1) & mask ) {
-        val |= 0x20 ;
-      }
-
-      c = p[DISPLAY_PLAN_SIZE+x] ;
-      if ( c & mask ) {
-        val |= 4 ;
-      }
-      if ( (c>>1) & mask ) {
-        val |= 0x40 ;
-      }
-
-      c = p[x] ;
-      if ( c & mask ) {
-        val |= 8 ;
-      }
-      if ( (c>>1) & mask ) {
-        val |= 0x80 ;
-      }
-
-      LCD_WRITE_BIT(val & 1);
-      LCD_WRITE_BIT(val & 2);
-      LCD_WRITE_BIT(val & 4);
-      LCD_WRITE_BIT(val & 8);
-      LCD_WRITE_BIT(val & 0x10);
-      LCD_WRITE_BIT(val & 0x20);
-      LCD_WRITE_BIT(val & 0x40);
-      LCD_WRITE_BIT(val & 0x80);
+      uint8_t a = p[3*DISPLAY_PLAN_SIZE+x] ;
+      uint8_t b = p[2*DISPLAY_PLAN_SIZE+x] ;
+      uint8_t c = p[DISPLAY_PLAN_SIZE+x] ;
+      uint8_t d = p[x] ;
+      LCD_WRITE_BIT(a & mask2);
+      LCD_WRITE_BIT(b & mask2);
+      LCD_WRITE_BIT(c & mask2);
+      LCD_WRITE_BIT(d & mask2);
+      LCD_WRITE_BIT(a & mask);
+      LCD_WRITE_BIT(b & mask);
+      LCD_WRITE_BIT(c & mask);
+      LCD_WRITE_BIT(d & mask);
     }
 
     LCD_NCS_HIGH();
@@ -282,18 +264,6 @@ static void LCD_Hardware_Init()
   /*!< Configure lcd RST pin in output pushpull mode ,PULLUP *************/
   GPIO_InitStructure.GPIO_Pin = PIN_LCD_RST; 
   GPIO_Init(GPIO_LCD_RST, &GPIO_InitStructure);
-}
-
-//275us
-void Delay(volatile unsigned int ms)
-{
-  volatile u8 i;
-  while(ms != 0)
-  {
-    for(i=0;i<250;i++) {}
-    for(i=0;i<75;i++) {}
-    ms--;
-  }
 }
 
 void LCD_OFF()

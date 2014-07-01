@@ -147,7 +147,7 @@ void setupPulsesDSM2(unsigned int port)
   *dsm2StreamPtr++ = dsm2Value;
 #endif
 
-  switch(s_current_protocol[port]) {
+  switch (s_current_protocol[port]) {
     case PROTO_DSM2_LP45:
       dsmDat[0] = 0x00;
       break;
@@ -155,7 +155,7 @@ void setupPulsesDSM2(unsigned int port)
       dsmDat[0] = 0x10;
       break;
     default: // DSMX
-      dsmDat[0] = 0x18;
+      dsmDat[0] = 0x10 | DSMX_BIT;
       break;
   }
 

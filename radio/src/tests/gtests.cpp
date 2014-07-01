@@ -334,6 +334,36 @@ TEST(FrSkySPORT, checkCrc)
 }
 #endif
 
+
+#if defined(FRSKY) && defined(CPUARM)
+TEST(FrSky, FrskyValueWithMinAveraging)
+{
+  /*
+    The following expected[] array is filled
+    with values that correspond to 4 elements 
+    long averaging buffer.
+    If length of averaging buffer is changed, this
+    values must be adjusted
+  */
+  uint8_t expected[] = { 10, 12, 17, 25, 35, 45, 55, 65, 75, 85, 92, 97, 100, 100, 100, 100, 100};
+  int testPos = 0;
+  //test of averaging
+  FrskyValueWithMin testVal;
+  testVal.value = 0;  
+  testVal.set(10);
+  EXPECT_EQ(testVal.value, expected[testPos++]);
+  for(int n=2; n<10; ++n) {
+    testVal.set(n*10);
+    EXPECT_EQ(testVal.value, expected[testPos++]);
+  }
+  for(int n=2; n<10; ++n) {
+    testVal.set(100);
+    EXPECT_EQ(testVal.value, expected[testPos++]);
+  }
+}
+#endif
+
+
 #if !defined(PCBTARANIS)
 TEST(getSwitch, undefCSW)
 {

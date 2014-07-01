@@ -814,6 +814,7 @@
 #define TR_INPUTS              "Vstupy"
 #define TR_OUTPUTS             "Výstupy"
 #define TR_EEBACKUP            "\010[dlouze ENTER] zálohuje EEPROM"
+#define TR_TO_MANY_LUA_SCRIPTS "Too many Lua scripts!"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL        "Max RSSI"
