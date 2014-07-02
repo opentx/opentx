@@ -147,7 +147,9 @@ uint8_t heartbeat;
 
 uint8_t stickMode;
 
+#if defined(SAFETY_CHANNEL_FUNCTION)
 int8_t safetyCh[NUM_CHNOUT];
+#endif
 
 union ReusableBuffer reusableBuffer;
 
@@ -1855,9 +1857,11 @@ void evalFunctions()
   static rotenc_t rePreviousValues[ROTARY_ENCODERS];
 #endif
 
+#if defined(SAFETY_CHANNEL_FUNCTION)
   for (uint8_t i=0; i<NUM_CHNOUT; i++) {
     safetyCh[i] = -128; // not defined
   }
+#endif
 
 #if defined(GVARS)
   for (uint8_t i=0; i<NUM_STICKS; i++) {
@@ -1886,9 +1890,11 @@ void evalFunctions()
 
         switch (CFN_FUNC(sd)) {
 
+#if defined(SAFETY_CHANNEL_FUNCTION)
           case FUNC_SAFETY_CHANNEL:
             safetyCh[CFN_CH_INDEX(sd)] = CFN_PARAM(sd);
             break;
+#endif
 
           case FUNC_TRAINER:
           {

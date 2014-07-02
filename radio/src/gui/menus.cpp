@@ -1554,17 +1554,15 @@ bool isLogicalSwitchFunctionAvailable(int function)
 bool isAssignableFunctionAvailable(int function)
 {
   switch (function) {
-
+#if !defined(SAFETY_CHANNEL_FUNCTION)
+    case FUNC_SAFETY_CHANNEL:
+#endif
 #if !defined(HAPTIC)
     case FUNC_HAPTIC:
-      return false;
 #endif
-
 #if !defined(GVARS)
     case FUNC_ADJUST_GVAR:
-      return false;
 #endif
-
     case FUNC_PLAY_DIFF:
     case FUNC_RESERVE1:
     case FUNC_RESERVE2:

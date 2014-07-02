@@ -590,7 +590,8 @@ void CustomFunctionsPanel::populateFuncCB(QComboBox *b, unsigned int value)
   b->clear();
   for (unsigned int i=0; i<FuncCount; i++) {
     b->addItem(FuncSwData(AssignFunc(i)).funcToString());
-    if (((i==FuncVolume || i==FuncBackgroundMusic || i==FuncBackgroundMusicPause) && !firmware->getCapability(HasVolume)) ||
+    if (((i>=FuncSafetyCh1 && i<=FuncSafetyCh32) && !firmware->getCapability(SafetyChannelCustomFunction)) ||
+        ((i==FuncVolume || i==FuncBackgroundMusic || i==FuncBackgroundMusicPause) && !firmware->getCapability(HasVolume)) ||
         ((i==FuncPlayHaptic) && !firmware->getCapability(Haptic)) ||
         ((i==FuncPlayBoth) && !firmware->getCapability(HasBeeper)) ||
         ((i==FuncLogs) && !firmware->getCapability(HasSDLogs)) ||

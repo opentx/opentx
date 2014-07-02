@@ -760,7 +760,7 @@ class FuncSwData { // Function Switches data
     unsigned int enabled; // TODO perhaps not any more the right name
     unsigned int adjustMode;
     int repeatParam;
-    void clear() { memset(this, 0, sizeof(FuncSwData)); }
+    void clear();
     QString funcToString();
     QString paramToString();
     QString repeatToString();
@@ -1063,6 +1063,7 @@ enum Capability {
   Timers,
   TimeDivisions,
   CustomFunctions,
+  SafetyChannelCustomFunction,
   VoicesAsNumbers,
   VoicesMaxLength,
   ModelVoice,

@@ -837,7 +837,11 @@ enum Functions {
   FUNC_MAX
 };
 
-#define HAS_ENABLE_PARAM(func)    ((func) < FUNC_FIRST_WITHOUT_ENABLE)
+#if defined(SAFETY_CHANNEL_FUNCTION)
+  #define HAS_ENABLE_PARAM(func)    ((func) < FUNC_FIRST_WITHOUT_ENABLE)
+#else
+  #define HAS_ENABLE_PARAM(func)    ((func) < FUNC_FIRST_WITHOUT_ENABLE && (func) != FUNC_SAFETY_CHANNEL)
+#endif
 
 #if defined(VOICE)
   #define IS_PLAY_FUNC(func)      ((func) >= FUNC_PLAY_SOUND && func <= FUNC_PLAY_VALUE)

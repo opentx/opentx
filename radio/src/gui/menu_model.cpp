@@ -5055,10 +5055,13 @@ void menuModelCustomFunctions(uint8_t event)
         case 2:
         {
           int8_t maxParam = NUM_CHNOUT-1;
+#if defined(SAFETY_CHANNEL_FUNCTION)
           if (func == FUNC_SAFETY_CHANNEL) {
             putsChn(lcdNextPos, y, CFN_CH_INDEX(sd)+1, attr);
           }
-          else if (func == FUNC_TRAINER) {
+          else
+#endif
+          if (func == FUNC_TRAINER) {
             maxParam = 4;
 #if defined(CPUARM)
             putsMixerSource(lcdNextPos, y, CFN_CH_INDEX(sd)==0 ? 0 : MIXSRC_Rud+CFN_CH_INDEX(sd)-1, attr);
@@ -5100,11 +5103,17 @@ void menuModelCustomFunctions(uint8_t event)
           int8_t val_min = 0;
           uint8_t val_max = 255;
 #endif
-          if (func == FUNC_SAFETY_CHANNEL) {
+          if (func == FUNC_RESET) {
+            val_max = FUNC_RESET_PARAM_LAST;
+            lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_VFSWRESET, CFN_PARAM(sd), attr);
+          }
+#if defined(SAFETY_CHANNEL_FUNCTION)
+          else if (func == FUNC_SAFETY_CHANNEL) {
             val_displayed = (int8_t)CFN_PARAM(sd);
             val_min = -125; val_max = 125;
             lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
           }
+#endif
 #if defined(CPUARM)
           else if (func == FUNC_SET_TIMER) {
             val_max = 59*60+59;
@@ -5216,10 +5225,6 @@ void menuModelCustomFunctions(uint8_t event)
             val_max = 100;
           }
 #endif
-          else if (func == FUNC_RESET) {
-            val_max = FUNC_RESET_PARAM_LAST;
-            lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_VFSWRESET, CFN_PARAM(sd), attr);
-          }
 #if defined(GVARS)
           else if (func == FUNC_ADJUST_GVAR) {
             switch (CFN_GVAR_MODE(sd)) {

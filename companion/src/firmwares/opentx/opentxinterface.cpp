@@ -556,6 +556,8 @@ int OpenTxFirmware::getCapability(const Capability capability)
         return 24;
       else
         return 16;
+    case SafetyChannelCustomFunction:
+      return id.contains("nosafetych") ? 0 : 1;
     case LogicalSwitches:
       if (IS_ARM(board))
         return 32;
@@ -1000,6 +1002,15 @@ SimulatorInterface * OpenTxFirmware::getSimulator()
   }
 }
 
+void addOpenTxCommonOptions(OpenTxFirmware * firmware)
+{
+  firmware->addOption("ppmus", QObject::tr("Channel values displayed in us"));
+  firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
+  firmware->addOption("nosafetych", QObject::tr("No SafetyCH functions available"));
+  Option fai_options[] = { { "faichoice", QObject::tr("Possibility to enable FAI MODE at field") }, { "faimode", QObject::tr("FAI MODE always enabled") }, { NULL } };
+  firmware->addOptions(fai_options);
+}
+
 void registerOpenTxFirmwares()
 {
   OpenTxFirmware * openTx;
@@ -1007,7 +1018,6 @@ void registerOpenTxFirmwares()
   Option ext_options[] = { { "frsky", QObject::tr("Support for frsky telemetry mod"), FRSKY_VARIANT }, { "telemetrez", QObject::tr("Support for telemetry easy board"), FRSKY_VARIANT }, { "jeti", QObject::tr("Support for jeti telemetry mod"), 0 }, { "ardupilot", QObject::tr("Support for receiving ardupilot data"), 0 }, { "nmea", QObject::tr("Support for receiving NMEA data"), 0 }, { "mavlink", QObject::tr("Support for MAVLINK devices"), MAVLINK_VARIANT }, { NULL } };
   Option nav_options[] = { { "rotenc", QObject::tr("Rotary Encoder use in menus navigation") }, { "potscroll", QObject::tr("Pots use in menus navigation") }, { NULL } };
   Option extr_options[] = { { "frsky", QObject::tr("Support for frsky telemetry mod"), FRSKY_VARIANT }, { "jeti", QObject::tr("Support for jeti telemetry mod"), 0 }, { "ardupilot", QObject::tr("Support for receiving ardupilot data"), 0 }, { "nmea", QObject::tr("Support for receiving NMEA data"), 0 }, { "mavlink", QObject::tr("Support for MAVLINK devices"), MAVLINK_VARIANT }, { NULL } };
-  Option fai_options[] = { { "faichoice", QObject::tr("Possibility to enable FAI MODE at field") }, { "faimode", QObject::tr("FAI MODE always enabled") }, { NULL } };
 
   /* 9x board */
   openTx = new OpenTxFirmware("opentx-9x", QObject::tr("OpenTX for 9X board"), BOARD_STOCK);
@@ -1023,7 +1033,6 @@ void registerOpenTxFirmwares()
   // NOT TESTED openTx->addOption("PXX", QObject::tr("Support of FrSky PXX protocol"));
   openTx->addOption("DSM2", QObject::tr("Support for DSM2 modules"));
   openTx->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
-  openTx->addOption("ppmus", QObject::tr("Channel values displayed in us"));
   openTx->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
   openTx->addOption("symlimits", QObject::tr("Symetrical Limits"));
   openTx->addOptions(nav_options);
@@ -1034,7 +1043,6 @@ void registerOpenTxFirmwares()
   openTx->addOption("nographics", QObject::tr("No graphical check boxes and sliders"));
   openTx->addOption("battgraph", QObject::tr("Battery graph"));
   openTx->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
-  openTx->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   openTx->addOption("thrtrace", QObject::tr("Enable the throttle trace in Statistics"));
   openTx->addOption("pgbar", QObject::tr("EEprom write progress bar"));
   openTx->addOption("imperial", QObject::tr("Imperial units"));
@@ -1042,9 +1050,10 @@ void registerOpenTxFirmwares()
   openTx->addOption("novario", QObject::tr("No vario support"));
   openTx->addOption("nogps", QObject::tr("No GPS support"));
   openTx->addOption("nogauges", QObject::tr("No gauges in the custom telemetry screen"));
+  openTx->addOption("nosafetych", QObject::tr("No SafetyCH functions available"));
   openTx->addOption("fasoffset", QObject::tr("Allow compensating for offset errors in FrSky FAS current sensors"));
   openTx->addOption("stickrev", QObject::tr("Add support for reversing stick inputs (e.g. needed for FrSky gimbals)"));
-  openTx->addOptions(fai_options);
+  addOpenTxCommonOptions(openTx);
   firmwares.push_back(openTx);
 
   /* 9x board with M128 chip */
@@ -1061,7 +1070,6 @@ void registerOpenTxFirmwares()
   // NOT TESTED openTx->addOption("PXX", QObject::tr("Support of FrSky PXX protocol"));
   openTx->addOption("DSM2", QObject::tr("Support for DSM2 modules"));
   openTx->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
-  openTx->addOption("ppmus", QObject::tr("Channel values displayed in us"));
   openTx->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
   openTx->addOption("symlimits", QObject::tr("Symetrical Limits"));
   openTx->addOptions(nav_options);
@@ -1072,11 +1080,10 @@ void registerOpenTxFirmwares()
   openTx->addOption("nographics", QObject::tr("No graphical check boxes and sliders"));
   openTx->addOption("battgraph", QObject::tr("Battery graph"));
   openTx->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
-  openTx->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   openTx->addOption("thrtrace", QObject::tr("Enable the throttle trace in Statistics"));
   openTx->addOption("pgbar", QObject::tr("EEprom write Progress bar"));
   openTx->addOption("imperial", QObject::tr("Imperial units"));
-  openTx->addOptions(fai_options);
+  addOpenTxCommonOptions(openTx);
   firmwares.push_back(openTx);
 
   /* 9XR board */
@@ -1093,7 +1100,6 @@ void registerOpenTxFirmwares()
   // NOT TESTED openTx->addOption("PXX", QObject::tr("Support of FrSky PXX protocol"));
   openTx->addOption("DSM2", QObject::tr("Support for DSM2 modules"));
   openTx->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
-  openTx->addOption("ppmus", QObject::tr("Channel values displayed in us"));
   openTx->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
   openTx->addOption("symlimits", QObject::tr("Symetrical Limits"));
   openTx->addOption("potscroll", QObject::tr("Pots use in menus navigation"));
@@ -1102,7 +1108,6 @@ void registerOpenTxFirmwares()
   openTx->addOption("nographics", QObject::tr("No graphical check boxes and sliders"));
   openTx->addOption("battgraph", QObject::tr("Battery graph"));
   openTx->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
-  openTx->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   openTx->addOption("thrtrace", QObject::tr("Enable the throttle trace in Statistics"));
   openTx->addOption("pgbar", QObject::tr("EEprom write Progress bar"));
   openTx->addOption("imperial", QObject::tr("Imperial units"));
@@ -1111,7 +1116,7 @@ void registerOpenTxFirmwares()
   openTx->addOption("nogps", QObject::tr("No GPS support"));
   openTx->addOption("nogauges", QObject::tr("No gauges in the custom telemetry screen"));
   openTx->addOption("stickrev", QObject::tr("Add support for reversing stick inputs (e.g. needed for FrSky gimbals)"));
-  openTx->addOptions(fai_options);
+  addOpenTxCommonOptions(openTx);
   firmwares.push_back(openTx);
 
   /* 9XR board with M128 chip */
@@ -1128,7 +1133,6 @@ void registerOpenTxFirmwares()
   // NOT TESTED openTx->addOption("PXX", QObject::tr("Support of FrSky PXX protocol"));
   openTx->addOption("DSM2", QObject::tr("Support for DSM2 modules"));
   openTx->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
-  openTx->addOption("ppmus", QObject::tr("Channel values displayed in us"));
   openTx->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
   openTx->addOption("symlimits", QObject::tr("Symetrical Limits"));
   openTx->addOption("potscroll", QObject::tr("Pots use in menus navigation"));
@@ -1137,11 +1141,10 @@ void registerOpenTxFirmwares()
   openTx->addOption("nographics", QObject::tr("No graphical check boxes and sliders"));
   openTx->addOption("battgraph", QObject::tr("Battery graph"));
   openTx->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
-  openTx->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   openTx->addOption("thrtrace", QObject::tr("Enable the throttle trace in Statistics"));
   openTx->addOption("pgbar", QObject::tr("EEprom write Progress bar"));
   openTx->addOption("imperial", QObject::tr("Imperial units"));
-  openTx->addOptions(fai_options);
+  addOpenTxCommonOptions(openTx);
   firmwares.push_back(openTx);
 
   /* Gruvin9x board */
@@ -1156,7 +1159,6 @@ void registerOpenTxFirmwares()
   Option dsm2_options[] = { { "DSM2", QObject::tr("Support for DSM2 modules"), 0 }, { "DSM2PPM", QObject::tr("Support for DSM2 modules using ppm instead of true serial"), 0 }, { NULL } };
   openTx->addOptions(dsm2_options);
   openTx->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
-  openTx->addOption("ppmus", QObject::tr("Channel values displayed in us"));
   openTx->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
   openTx->addOption("symlimits", QObject::tr("Symetrical Limits"));
   openTx->addOption("potscroll", QObject::tr("Pots use in menus navigation"));
@@ -1166,10 +1168,9 @@ void registerOpenTxFirmwares()
   openTx->addOption("nographics", QObject::tr("No graphical check boxes and sliders"));
   openTx->addOption("battgraph", QObject::tr("Battery graph"));
   openTx->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
-  openTx->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   openTx->addOption("pgbar", QObject::tr("EEprom write Progress bar"));
   openTx->addOption("imperial", QObject::tr("Imperial units"));
-  openTx->addOptions(fai_options);
+  addOpenTxCommonOptions(openTx);
   firmwares.push_back(openTx);
 
   /* Sky9x board */
@@ -1179,7 +1180,6 @@ void registerOpenTxFirmwares()
   openTx->addOption("nofp", QObject::tr("No flight modes"));
   openTx->addOption("nocurves", QObject::tr("Disable curves menus"));
   openTx->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
-  openTx->addOption("ppmus", QObject::tr("Channel values displayed in us"));
   openTx->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
   openTx->addOption("symlimits", QObject::tr("Symetrical Limits"));
   openTx->addOption("potscroll", QObject::tr("Pots use in menus navigation"));
@@ -1189,9 +1189,8 @@ void registerOpenTxFirmwares()
   openTx->addOption("nographics", QObject::tr("No graphical check boxes and sliders"));
   openTx->addOption("battgraph", QObject::tr("Battery graph"));
   openTx->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
-  openTx->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   openTx->addOption("bluetooth", QObject::tr("Bluetooth interface"));
-  openTx->addOptions(fai_options);
+  addOpenTxCommonOptions(openTx);
   firmwares.push_back(openTx);
   
   /* 9XR-Pro */
@@ -1201,7 +1200,6 @@ void registerOpenTxFirmwares()
   openTx->addOption("nofp", QObject::tr("No flight modes"));
   openTx->addOption("nocurves", QObject::tr("Disable curves menus"));
   openTx->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
-  openTx->addOption("ppmus", QObject::tr("Channel values displayed in us"));
   openTx->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
   openTx->addOption("symlimits", QObject::tr("Symetrical Limits"));
   openTx->addOption("potscroll", QObject::tr("Pots use in menus navigation"));
@@ -1210,9 +1208,8 @@ void registerOpenTxFirmwares()
   openTx->addOption("nographics", QObject::tr("No graphical check boxes and sliders"));
   openTx->addOption("battgraph", QObject::tr("Battery graph"));
   openTx->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
-  openTx->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   openTx->addOption("bluetooth", QObject::tr("Bluetooth interface"));
-  openTx->addOptions(fai_options);
+  addOpenTxCommonOptions(openTx);
   firmwares.push_back(openTx);
   
   /* Taranis board */
@@ -1221,9 +1218,7 @@ void registerOpenTxFirmwares()
   openTx->addOption("nogvars", QObject::tr("Disable Global variables"));
   openTx->addOption("haptic", QObject::tr("Haptic module installed"));
   openTx->addOption("lua", QObject::tr("Support for Lua model scripts"));
-  openTx->addOption("ppmus", QObject::tr("Channel values displayed in us"));
-  openTx->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
-  openTx->addOptions(fai_options);
+  addOpenTxCommonOptions(openTx);
   firmwares.push_back(openTx);
   
   /* Taranis Plus board */
@@ -1231,9 +1226,7 @@ void registerOpenTxFirmwares()
   openTx->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
   openTx->addOption("nogvars", QObject::tr("Disable Global variables"));
   openTx->addOption("lua", QObject::tr("Support for Lua model scripts"));
-  openTx->addOption("ppmus", QObject::tr("Channel values displayed in us"));
-  openTx->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
-  openTx->addOptions(fai_options);
+  addOpenTxCommonOptions(openTx);
   firmwares.push_back(openTx);
 
   default_firmware_variant = GetFirmware("opentx-9x-heli-templates-en");
