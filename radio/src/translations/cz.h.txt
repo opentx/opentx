@@ -485,10 +485,16 @@
   #define TR_ENTER             "[MENU]"
 #endif
 
-#define TR_POPUPS              TR_ENTER"\010[EXIT]"
-#define OFS_EXIT               sizeof(TR_ENTER)
+#define TR_EXIT                "[EXIT]"
 
-#define TR_MENUWHENDONE        CENTER "\011"TR_ENTER" > DALŠÍ"
+#if defined(PCBTARANIS)
+  #define TR_POPUPS            TR_EXIT "\010" "\010" "\010" "\010" TR_ENTER
+#else
+  #define TR_POPUPS            TR_ENTER "\010" TR_EXIT
+  #define OFS_EXIT             sizeof(TR_ENTER)
+#endif
+
+#define TR_MENUWHENDONE        CENTER "\011" TR_ENTER " > DALŠÍ"
 #define TR_FREE                TR("volné:", "volných")
 #define TR_DELETEMODEL         "SMAZAT MODEL"
 #define TR_COPYINGMODEL        "Kopíruji model.."

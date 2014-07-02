@@ -1074,8 +1074,9 @@ void displayWarning(uint8_t event)
 {
   s_warning_result = false;
   displayBox();
-  if (s_warning_info)
+  if (s_warning_info) {
     lcd_putsnAtt(16, WARNING_LINE_Y+FH, s_warning_info, s_warning_info_len, WARNING_INFO_FLAGS);
+  }
   lcd_puts(16, WARNING_LINE_Y+2*FH, s_warning_type == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS);
   switch (event) {
 #if defined(ROTARY_ENCODER_NAVIGATION)

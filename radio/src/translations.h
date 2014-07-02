@@ -291,7 +291,13 @@ extern const pm_char STR_OPEN9X[];
 #define NO_INDENT(x) (x)+LEN_INDENT
 
 extern const pm_char STR_POPUPS[];
-#define STR_EXIT (STR_POPUPS + OFS_EXIT)
+
+#if defined(OFS_EXIT)
+  #define STR_EXIT (STR_POPUPS + OFS_EXIT)
+#else
+  extern const pm_char STR_EXIT[];
+#endif
+
 extern const pm_char STR_MENUWHENDONE[];
 extern const pm_char STR_FREE[];
 #define LEN_FREE PSIZE(TR_FREE)

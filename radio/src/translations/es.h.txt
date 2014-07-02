@@ -485,8 +485,14 @@
   #define TR_ENTER             "[MENU]"
 #endif
 
-#define TR_POPUPS              TR_ENTER "\010[SALIR]"
-#define OFS_EXIT               sizeof(TR_ENTER)
+#define TR_EXIT                "[SALIR]"
+
+#if defined(PCBTARANIS)
+  #define TR_POPUPS            TR_EXIT "\010" "\010" "\010" "\010" TR_ENTER
+#else
+  #define TR_POPUPS            TR_ENTER "\010" TR_EXIT
+  #define OFS_EXIT             sizeof(TR_ENTER)
+#endif
 
 #define TR_MENUWHENDONE        CENTER "\007" TR_ENTER " AL ACABAR "
 #define TR_FREE                "libre"
