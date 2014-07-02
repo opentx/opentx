@@ -814,7 +814,7 @@
 #define TR_INPUTS              "Ingresso"
 #define TR_OUTPUTS             "Uscita"
 #define TR_EEBACKUP            "\004[ENTER Lungo] per copiare la EEPROM"
-#define TR_TO_MANY_LUA_SCRIPTS "Too many Lua scripts!"
+#define TR_TO_MANY_LUA_SCRIPTS "Troppi Scripts Lua!"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL  "Max RSSI"
