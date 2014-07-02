@@ -1069,6 +1069,15 @@ TEST(Lcd, Line_Wrap)
   EXPECT_TRUE(checkScreenshot("line_wrap"));
 }
 
+#if defined(CPUARM)
+TEST(Lcd, Smlsize_putsStrIdx)
+{
+  lcd_clear();
+  putsStrIdx(0, 0, "FM", 0, SMLSIZE);
+  EXPECT_TRUE(checkScreenshot("smlsize_putsstridx"));
+}
+#endif
+
 int main(int argc, char **argv)
 {
   QCoreApplication app(argc, argv);
