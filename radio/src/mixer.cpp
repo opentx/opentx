@@ -164,6 +164,10 @@ void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
   }
 }
 
+#if !defined(CPUM64) && !defined(PREVENT_ARITHMETIC_OVERFLOW)
+  #define PREVENT_ARITHMETIC_OVERFLOW
+#endif
+
 // #define PREVENT_ARITHMETIC_OVERFLOW
 // because of optimizations the reserves before overruns occurs is only the half
 // this defines enables some checks the greatly improves this situation
@@ -183,6 +187,7 @@ void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
 // value = outputvalue with 100 mulitplied usual range -102400 to 102400; output -1024 to 1024
 // changed rescaling from *100 to *256 to optimize performance
 // rescaled from -262144 to 262144
+
 int16_t applyLimits(uint8_t channel, int32_t value)
 {
   LimitData * lim = limitAddress(channel);
@@ -886,8 +891,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       }
 #endif
 
-
-      PACK( union u_int16int32_t {
+      PACK(union u_int16int32_t {
         struct {
           int16_t lo;
           int16_t hi;
@@ -895,16 +899,16 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         int32_t dword;
       });
 
-      u_int16int32_t tmp;
-      tmp.dword=*ptr;
+      u_int16int32_t * tmp = (u_int16int32_t *)ptr;
 
-      if (tmp.dword<0) {
-        if ((tmp.words_t.hi&0xFF80)!=0xFF80) tmp.words_t.hi=0xFF86; // set to min nearly
+      if (tmp->dword < 0) {
+        if ((tmp->words_t.hi & 0xFF80) != 0xFF80)
+          tmp->words_t.hi = 0xFF86; // set to min nearly
       }
       else {
-        if ((tmp.words_t.hi|0x007F)!=0x007F) tmp.words_t.hi=0x0079; // set to max nearly
+        if ((tmp->words_t.hi | 0x007F) != 0x007F)
+          tmp->words_t.hi = 0x0079; // set to max nearly
       }
-      *ptr = tmp.dword;
 #endif
 
     }
