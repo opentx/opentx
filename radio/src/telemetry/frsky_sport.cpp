@@ -248,13 +248,7 @@ void processHubPacket(uint8_t id, uint16_t value)
 #else
         uint8_t cellVolts = (uint8_t)(((((frskyData.hub.volts & 0xFF00) >> 8) + ((frskyData.hub.volts & 0x000F) << 8))) / 10);
 #endif
-        frskyData.hub.cellVolts[battnumber] = cellVolts;
-        if (!frskyData.hub.minCellVolts || cellVolts<frskyData.hub.minCellVolts || battnumber==frskyData.hub.minCellIdx) {
-          frskyData.hub.minCellIdx = battnumber;
-          frskyData.hub.minCellVolts = cellVolts;
-          if (!frskyData.hub.minCell || frskyData.hub.minCellVolts<frskyData.hub.minCell)
-            frskyData.hub.minCell = frskyData.hub.minCellVolts;
-        }
+        frskySetCellVoltage(battnumber, cellVolts);
       }
       break;
     }
@@ -473,32 +467,8 @@ void frskySportProcessPacket(uint8_t *packet)
       else if (appId >= CELLS_FIRST_ID && appId <= CELLS_LAST_ID) {
         uint32_t cells = SPORT_DATA_U32(packet);
         uint8_t battnumber = cells & 0xF;
-        uint32_t minCell, minCellNum;
-        
-        //TODO: Use reported total voltages (bits 4-7)?
-        frskyData.hub.cellVolts[battnumber] = ((cells & 0x000FFF00) >> 8) / 5;
-        frskyData.hub.cellVolts[battnumber+1] = ((cells & 0xFFF00000) >> 20) / 5;
-        
-        if (frskyData.hub.cellsCount < battnumber+2)
-          frskyData.hub.cellsCount = battnumber+2;
-        if (frskyData.hub.cellVolts[battnumber+1] == 0)
-          frskyData.hub.cellsCount--;
-        
-        if ((frskyData.hub.cellVolts[battnumber] < frskyData.hub.cellVolts[battnumber+1]) || (frskyData.hub.cellVolts[battnumber+1] == 0)) {
-          minCell = frskyData.hub.cellVolts[battnumber];
-          minCellNum = battnumber;
-        }
-        else {
-          minCell = frskyData.hub.cellVolts[battnumber+1];
-          minCellNum = battnumber+1;
-        }
-        	
-        if (!frskyData.hub.minCellVolts || minCell < frskyData.hub.minCellVolts || minCellNum==frskyData.hub.minCellIdx) {
-          frskyData.hub.minCellIdx = minCellNum;
-          frskyData.hub.minCellVolts = minCell;
-          if (!frskyData.hub.minCell || frskyData.hub.minCellVolts<frskyData.hub.minCell)
-            frskyData.hub.minCell = frskyData.hub.minCellVolts;
-        }
+        frskySetCellVoltage(battnumber,   (uint16_t) ((cells & 0x000FFF00) >>  8) / 5);
+        frskySetCellVoltage(battnumber+1, (uint16_t) ((cells & 0xFFF00000) >> 20) / 5);
       }
       break;
   }

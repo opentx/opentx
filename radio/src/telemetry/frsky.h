@@ -461,4 +461,10 @@ void telemetryReset();
 void telemetryInit(void);
 void telemetryInterrupt10ms(void);
 
+#if defined(CPUARM)
+void frskySetCellVoltage(uint8_t battnumber, uint16_t cellVolts);
+#elif defined(FRSKY_HUB)
+void frskySetCellVoltage(uint8_t battnumber, uint8_t cellVolts);
+#endif
+
 #endif

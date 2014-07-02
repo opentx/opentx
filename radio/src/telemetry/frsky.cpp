@@ -607,3 +607,24 @@ void telemetryInit(void)
 
   // we don't reset the telemetry here as we would also reset the consumption after model load
 }
+
+
+#if defined(CPUARM)
+void frskySetCellVoltage(uint8_t battnumber, uint16_t cellVolts) {
+#elif defined(FRSKY_HUB)
+void frskySetCellVoltage(uint8_t battnumber, uint8_t cellVolts) {
+#endif
+  frskyData.hub.cellVolts[battnumber] = cellVolts;
+  if (!frskyData.hub.minCellVolts || cellVolts<frskyData.hub.minCellVolts || battnumber==frskyData.hub.minCellIdx) {
+    //update minimum cell voltage (Cell) and its cell number 
+    frskyData.hub.minCellIdx = battnumber;
+    frskyData.hub.minCellVolts = cellVolts;
+#if defined(CPUARM)
+    if (!frskyData.hub.minCell || frskyData.hub.minCellVolts<frskyData.hub.minCell) {
+      //update all time minimum cell voltage (Cell-)
+      frskyData.hub.minCell = frskyData.hub.minCellVolts;
+    }
+#endif
+  }
+}
+

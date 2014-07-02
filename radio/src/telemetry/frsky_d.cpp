@@ -227,15 +227,7 @@ void parseTelemHubByte(uint8_t byte)
 #else
         uint8_t cellVolts = (uint8_t)(((((frskyData.hub.volts & 0xFF00) >> 8) + ((frskyData.hub.volts & 0x000F) << 8))) / 10);
 #endif
-        frskyData.hub.cellVolts[battnumber] = cellVolts;
-        if (!frskyData.hub.minCellVolts || cellVolts<frskyData.hub.minCellVolts || battnumber==frskyData.hub.minCellIdx) {
-          frskyData.hub.minCellIdx = battnumber;
-          frskyData.hub.minCellVolts = cellVolts;
-#if defined(CPUARM)
-          if (!frskyData.hub.minCell || frskyData.hub.minCellVolts<frskyData.hub.minCell)
-            frskyData.hub.minCell = frskyData.hub.minCellVolts;
-#endif
-        }
+        frskySetCellVoltage(battnumber, cellVolts);
       }
       break;
     }
