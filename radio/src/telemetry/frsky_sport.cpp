@@ -237,19 +237,7 @@ void processHubPacket(uint8_t id, uint16_t value)
 
     case VOLTS_ID:
     {
-      // Voltage => Cell number + Cell voltage
-      uint8_t battnumber = ((frskyData.hub.volts & 0x00F0) >> 4);
-      if (battnumber < 12) {
-        if (frskyData.hub.cellsCount < battnumber+1) {
-          frskyData.hub.cellsCount = battnumber+1;
-        }
-#if defined(CPUARM)
-        uint16_t cellVolts = (uint16_t)(((((frskyData.hub.volts & 0xFF00) >> 8) + ((frskyData.hub.volts & 0x000F) << 8))) / 5);
-#else
-        uint8_t cellVolts = (uint8_t)(((((frskyData.hub.volts & 0xFF00) >> 8) + ((frskyData.hub.volts & 0x000F) << 8))) / 10);
-#endif
-        frskySetCellVoltage(battnumber, cellVolts);
-      }
+      frskyUpdateCells();
       break;
     }
 
@@ -467,8 +455,8 @@ void frskySportProcessPacket(uint8_t *packet)
       else if (appId >= CELLS_FIRST_ID && appId <= CELLS_LAST_ID) {
         uint32_t cells = SPORT_DATA_U32(packet);
         uint8_t battnumber = cells & 0xF;
-        frskySetCellVoltage(battnumber,   (uint16_t) ((cells & 0x000FFF00) >>  8) / 5);
-        frskySetCellVoltage(battnumber+1, (uint16_t) ((cells & 0xFFF00000) >> 20) / 5);
+        frskySetCellVoltage(battnumber,   (frskyCellVoltage_t) ((cells & 0x000FFF00) >>  8) / 5);
+        frskySetCellVoltage(battnumber+1, (frskyCellVoltage_t) ((cells & 0xFFF00000) >> 20) / 5);
       }
       break;
   }

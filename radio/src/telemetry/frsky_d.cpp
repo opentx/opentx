@@ -216,19 +216,7 @@ void parseTelemHubByte(uint8_t byte)
 
     case offsetof(FrskySerialData, volts):
     {
-      // Voltage => Cell number + Cell voltage
-      uint8_t battnumber = ((frskyData.hub.volts & 0x00F0) >> 4);
-      if (battnumber < 12) {
-        if (frskyData.hub.cellsCount < battnumber+1) {
-          frskyData.hub.cellsCount = battnumber+1;
-        }
-#if defined(CPUARM)
-        uint16_t cellVolts = (uint16_t)(((((frskyData.hub.volts & 0xFF00) >> 8) + ((frskyData.hub.volts & 0x000F) << 8))) / 5);
-#else
-        uint8_t cellVolts = (uint8_t)(((((frskyData.hub.volts & 0xFF00) >> 8) + ((frskyData.hub.volts & 0x000F) << 8))) / 10);
-#endif
-        frskySetCellVoltage(battnumber, cellVolts);
-      }
+      frskyUpdateCells();
       break;
     }
 
