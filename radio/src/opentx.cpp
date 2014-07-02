@@ -898,14 +898,18 @@ FORCEINLINE void convertUnit(getvalue_t & val, uint8_t & unit)
     if (unit == UNIT_KTS) {
       // kts to mph
       unit = UNIT_SPEED;
-      val = (val * 31) / 27;
+      val = (val * 23) / 20;
     }
   }
   else {
     if (unit == UNIT_KTS) {
       // kts to km/h
       unit = UNIT_SPEED;
+#if defined(CPUARM)
+      val = (val * 1852) / 1000;
+#else
       val = (val * 50) / 27;
+#endif
     }
   }
 
