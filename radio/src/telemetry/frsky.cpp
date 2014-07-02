@@ -560,6 +560,16 @@ void telemetryReset()
   frskyData.hub.airSpeed = 1000; // 185.1 km/h
 
   frskyData.hub.cellsCount = 6;
+  frskyData.hub.cellVolts[0] = 410/TELEMETRY_CELL_VOLTAGE_MUTLIPLIER;
+  frskyData.hub.cellVolts[1] = 420/TELEMETRY_CELL_VOLTAGE_MUTLIPLIER;
+  frskyData.hub.cellVolts[2] = 430/TELEMETRY_CELL_VOLTAGE_MUTLIPLIER;
+  frskyData.hub.cellVolts[3] = 440/TELEMETRY_CELL_VOLTAGE_MUTLIPLIER;
+  frskyData.hub.cellVolts[4] = 450/TELEMETRY_CELL_VOLTAGE_MUTLIPLIER;
+  frskyData.hub.cellVolts[5] = 460/TELEMETRY_CELL_VOLTAGE_MUTLIPLIER;
+  frskyData.hub.minCellVolts = 250/TELEMETRY_CELL_VOLTAGE_MUTLIPLIER;
+  frskyData.hub.minCell = 300;    //unit 10mV
+  frskyData.hub.minCells = 220;  //unit 100mV
+  //frskyData.hub.cellsSum = 261;    //calculated from cellVolts[]
 
   frskyData.hub.gpsAltitude_bp = 50;
   frskyData.hub.baroAltitude_bp = 50;
