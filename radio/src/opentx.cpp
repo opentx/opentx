@@ -3085,18 +3085,26 @@ void instantTrim()
 {
   evalInputs(e_perout_mode_notrainer);
 
-  for (uint8_t i=0; i<NUM_STICKS; i++) {
-    if (i!=THR_STICK) {
+  for (uint8_t stick=0; stick<NUM_STICKS; stick++) {
+    if (stick!=THR_STICK) {
       // don't instant trim the throttle stick
-      uint8_t trim_phase = getTrimFlightPhase(mixerCurrentFlightMode, i);
+      uint8_t trim_phase = getTrimFlightPhase(mixerCurrentFlightMode, stick);
 #if defined(PCBTARANIS)
-      int16_t delta = calibratedStick[i];
+      int16_t delta = 0;
+      for (int e=0; e<MAX_EXPOS; e++) {
+        ExpoData * ed = expoAddress(e);
+        if (!EXPO_VALID(ed)) break; // end of list
+        if (ed->srcRaw-MIXSRC_Rud == stick) {
+          delta = anas[ed->chn];
+          break;
+        }
+      }
 #else
-      int16_t delta = anas[i];
+      int16_t delta = anas[stick];
 #endif
       if (abs(delta) >= INSTANT_TRIM_MARGIN) {
-        int16_t trim = limit<int16_t>(TRIM_EXTENDED_MIN, (delta + trims[i]) / 2, TRIM_EXTENDED_MAX);
-        setTrimValue(trim_phase, i, trim);
+        int16_t trim = limit<int16_t>(TRIM_EXTENDED_MIN, (delta + trims[stick]) / 2, TRIM_EXTENDED_MAX);
+        setTrimValue(trim_phase, stick, trim);
       }
     }
   }
