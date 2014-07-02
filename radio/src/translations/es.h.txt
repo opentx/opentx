@@ -223,7 +223,7 @@
 
 #if defined(VOICE)
   #if defined(PCBSKY9X)
-    #define TR_PLAY_TRACK      "Oir\0     "
+    #define TR_PLAY_TRACK      "Oir\0      "
   #else
     #define TR_PLAY_TRACK      "Oir pista\0"
   #endif
@@ -235,7 +235,7 @@
   #define TR_PLAY_VALUE        "[OirValor]"
 #endif
        
-#define TR_CFN_BG_MUSIC        "BgMusica\0  ""BgMusica||"
+#define TR_CFN_BG_MUSIC        "BgMusica\0 ""BgMusica||"
 
 #if defined(SDCARD)
   #define TR_SDCLOGS           "SD Logs\0  "
@@ -270,7 +270,7 @@
 #define TR_CFN_RESERVE         "[reserve]\0"
 
 #if defined(CPUARM)
-  #define TR_VFSWFUNC          TR_CFN_SAFETY "Aprendiz\0 ""Inst. Trim""Reset\0    ""Set \0     " TR_ADJUST_GVAR "Volumen\0   " TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_RESERVE TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_RESERVE TR_CFN_PLAY_SCRIPT TR_CFN_RESERVE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Luz fondo\0" TR_CFN_TEST
+  #define TR_VFSWFUNC          TR_CFN_SAFETY "Aprendiz\0 ""Inst. Trim""Reset\0    ""Set \0     " TR_ADJUST_GVAR "Volumen\0  " TR_CFN_RESERVE TR_CFN_RESERVE TR_CFN_RESERVE TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_CFN_RESERVE TR_CFN_PLAY_SCRIPT TR_CFN_RESERVE TR_CFN_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Luz fondo\0" TR_CFN_TEST
 #elif defined(PCBGRUVIN9X)
   #define TR_VFSWFUNC          TR_CFN_SAFETY "Aprendiz\0 ""Inst. Trim""Reset\0    " TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC TR_SDCLOGS "Luz fondo\0" TR_CFN_TEST
 #else
