@@ -871,16 +871,20 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         default: // MLTPX_ADD
           *ptr += dv; //Mixer output add up to the line (dv + (dv>0 ? 100/2 : -100/2))/(100);
           break;
-      } //endswitch md->mltpx
-#ifdef PREVENT_ARITHMETIC_OVERFLOW
-/*
+      }
+
+#if defined(CPUARM)
+      *ptr = limit(int32_t(-1)<<23, *ptr, int32_t(1)<<23);
+#elif defined(PREVENT_ARITHMETIC_OVERFLOW)
+
+#if 0
       // a lot of assumptions must be true, for this kind of check; not really worth for only 4 bytes flash savings
-      // this solution would save again 4 bytes flash
       int8_t testVar=(*ptr<<1)>>24;
       if ( (testVar!=-1) && (testVar!=0 ) ) {
         // this devices by 64 which should give a good balance between still over 100% but lower then 32x100%; should be OK
         *ptr >>= 6;  // this is quite tricky, reduces the value a lot but should be still over 100% and reduces flash need
-      } */
+      }
+#endif
 
 
       PACK( union u_int16int32_t {
@@ -901,19 +905,9 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         if ((tmp.words_t.hi|0x007F)!=0x007F) tmp.words_t.hi=0x0079; // set to max nearly
       }
       *ptr = tmp.dword;
-      // this implementation saves 18bytes flash
-
-/*      dv=*ptr>>8;
-      if (dv>(32767-RESXl)) {
-        *ptr=(32767-RESXl)<<8;
-      } else if (dv<(-32767+RESXl)) {
-        *ptr=(-32767+RESXl)<<8;
-      }*/
-      // *ptr=limit( int32_t(int32_t(-1)<<23), *ptr, int32_t(int32_t(1)<<23));  // limit code cost 72 bytes
-      // *ptr=limit( int32_t((-32767+RESXl)<<8), *ptr, int32_t((32767-RESXl)<<8));  // limit code cost 80 bytes
 #endif
 
-    } //endfor mixers
+    }
 
     tick10ms = 0;
     dirtyChannels &= passDirtyChannels;
