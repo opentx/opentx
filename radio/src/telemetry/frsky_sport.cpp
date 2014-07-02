@@ -496,6 +496,8 @@ void frskySportProcessPacket(uint8_t *packet)
         if (!frskyData.hub.minCellVolts || minCell < frskyData.hub.minCellVolts || minCellNum==frskyData.hub.minCellIdx) {
           frskyData.hub.minCellIdx = minCellNum;
           frskyData.hub.minCellVolts = minCell;
+          if (!frskyData.hub.minCell || frskyData.hub.minCellVolts<frskyData.hub.minCell)
+            frskyData.hub.minCell = frskyData.hub.minCellVolts;
         }
       }
       break;
