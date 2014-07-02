@@ -753,7 +753,12 @@ int8_t  getMovedSwitch();
 
 trim_t getRawTrimValue(uint8_t phase, uint8_t idx);
 int getTrimValue(uint8_t phase, uint8_t idx);
+
+#if defined(PCBTARANIS)
+bool setTrimValue(uint8_t phase, uint8_t idx, int trim);
+#else
 void setTrimValue(uint8_t phase, uint8_t idx, int trim);
+#endif
 
 #if defined(ROTARY_ENCODERS)
   int16_t getRotaryEncoder(uint8_t idx);

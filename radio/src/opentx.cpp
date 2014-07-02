@@ -551,17 +551,17 @@ int getTrimValue(uint8_t phase, uint8_t idx)
 #endif
 }
 
-void setTrimValue(uint8_t phase, uint8_t idx, int trim)
-{
 #if defined(PCBTARANIS)
+bool setTrimValue(uint8_t phase, uint8_t idx, int trim)
+{
   for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
     trim_t & v = flightModeAddress(phase)->trim[idx];
     if (v.mode == TRIM_MODE_NONE)
-      return;
+      return false;
     unsigned int p = v.mode >> 1;
     if (p == phase || phase == 0) {
       v.value = trim;
-      break;;
+      break;
     }
     else if (v.mode % 2 == 0) {
       phase = p;
@@ -571,7 +571,13 @@ void setTrimValue(uint8_t phase, uint8_t idx, int trim)
       break;
     }
   }
-#elif defined(PCBSTD)
+  eeDirty(EE_MODEL);
+  return true;
+}
+#else
+void setTrimValue(uint8_t phase, uint8_t idx, int trim)
+{
+#if defined(PCBSTD)
   FlightModeData *p = flightModeAddress(phase);
   p->trim[idx] = (int8_t)(trim >> 2);
   idx <<= 1;
@@ -582,6 +588,7 @@ void setTrimValue(uint8_t phase, uint8_t idx, int trim)
 #endif
   eeDirty(EE_MODEL);
 }
+#endif
 
 #if !defined(PCBTARANIS)
 uint8_t getTrimFlightPhase(uint8_t phase, uint8_t idx)
@@ -1320,12 +1327,18 @@ uint8_t checkTrim(uint8_t event)
     if (TRIM_REUSED(idx)) {
       SET_GVAR_VALUE(trimGvar[idx], phase, after);
     }
-    else {
-      setTrimValue(phase, idx, after);
-    }
-#else
-    setTrimValue(phase, idx, after);
+    else
 #endif
+    {
+#if defined(PCBTARANIS)
+      if (!setTrimValue(phase, idx, after)) {
+        // we don't play a beep, so we exit now the function
+        return;
+      }
+#else
+      setTrimValue(phase, idx, after);
+#endif
+    }
 
 #if defined(AUDIO)
     // toneFreq higher/lower according to trim position
