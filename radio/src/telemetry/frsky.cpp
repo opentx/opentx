@@ -608,7 +608,8 @@ void telemetryInit(void)
   // we don't reset the telemetry here as we would also reset the consumption after model load
 }
 
-void frskySetCellVoltage(uint8_t battnumber, frskyCellVoltage_t cellVolts) {
+void frskySetCellVoltage(uint8_t battnumber, frskyCellVoltage_t cellVolts) 
+{
   frskyData.hub.cellVolts[battnumber] = cellVolts;
   if (!frskyData.hub.minCellVolts || cellVolts<frskyData.hub.minCellVolts || battnumber==frskyData.hub.minCellIdx) {
     //update minimum cell voltage (Cell) and its cell number 
@@ -623,7 +624,8 @@ void frskySetCellVoltage(uint8_t battnumber, frskyCellVoltage_t cellVolts) {
   }
 }
 
-void frskyUpdateCells(void) {
+void frskyUpdateCells(void) 
+{
   // Voltage => Cell number + Cell voltage
   uint8_t battnumber = ((frskyData.hub.volts & 0x00F0) >> 4);
   if (battnumber < 12) {
