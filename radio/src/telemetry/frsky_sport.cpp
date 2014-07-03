@@ -405,7 +405,7 @@ void frskySportProcessPacket(uint8_t *packet)
         if (frskyData.hub.gpsFix > 0) {
           if (!frskyData.hub.pilotLatitude && !frskyData.hub.pilotLongitude) {
             // First received GPS position => Pilot GPS position
-	    getGpsPilotPosition();
+            getGpsPilotPosition();
           }
           else if (frskyData.hub.gpsDistNeeded || g_menuStack[g_menuStackPtr] == menuTelemetryFrsky) {
             getGpsDistance();
