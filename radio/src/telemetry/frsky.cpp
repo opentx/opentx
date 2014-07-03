@@ -425,8 +425,6 @@ void telemetryWakeup()
 #endif
 }
 
-
-
 void telemetryInterrupt10ms()
 {
   uint16_t voltage = 0; /* unit: 1/10 volts */

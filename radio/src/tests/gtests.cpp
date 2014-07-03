@@ -496,7 +496,6 @@ TEST(FrSky, FrskyValueWithMinAveraging)
 #endif
 
 
-
 #if !defined(PCBTARANIS)
 TEST(getSwitch, undefCSW)
 {
