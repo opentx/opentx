@@ -624,7 +624,7 @@ void frskySetCellVoltage(uint8_t battnumber, frskyCellVoltage_t cellVolts)
   for (uint8_t i=0; i<frskyData.hub.cellsCount; i++) {
     frskyCellVoltage_t tmpCellVolts = frskyData.hub.cellVolts[i];
     cellsSum += tmpCellVolts;
-    if (tmpCellVolts < minCellVolts) {
+    if ((tmpCellVolts > 0) && (tmpCellVolts < minCellVolts)) {
       //update minimum cell voltage (Cell) and its cell number 
       frskyData.hub.minCellVolts = minCellVolts = tmpCellVolts;
       frskyData.hub.minCellIdx = i;
