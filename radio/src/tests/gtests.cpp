@@ -377,11 +377,9 @@ TEST(FrSkySPORT, frskySetCellVoltage)
   generateSportCellPacket(packet, 0, _V(410), _V(420)); frskySportProcessPacket(packet);
   EXPECT_EQ(checkSportPacket(packet), true) << "Bad CRC generation in setSportPacketCrc()";
   generateSportCellPacket(packet, 2, _V(430), _V(  0)); frskySportProcessPacket(packet);
-  frskyCalculateCellStats();
 
   generateSportCellPacket(packet, 0, _V(405), _V(300)); frskySportProcessPacket(packet);
   generateSportCellPacket(packet, 2, _V(430), _V(  0)); frskySportProcessPacket(packet);
-  frskyCalculateCellStats();
   
   EXPECT_EQ(frskyData.hub.cellsCount,         3);
   EXPECT_EQ(frskyData.hub.cellVolts[0], _V(405));
@@ -396,11 +394,9 @@ TEST(FrSkySPORT, frskySetCellVoltage)
 
   generateSportCellPacket(packet, 0, _V(405), _V(250)); frskySportProcessPacket(packet);
   generateSportCellPacket(packet, 2, _V(430), _V(  0)); frskySportProcessPacket(packet);
-  frskyCalculateCellStats();
   
   generateSportCellPacket(packet, 0, _V(410), _V(420)); frskySportProcessPacket(packet);
   generateSportCellPacket(packet, 2, _V(430), _V(  0)); frskySportProcessPacket(packet);
-  frskyCalculateCellStats();
   
   EXPECT_EQ(frskyData.hub.cellsCount,         3);
   EXPECT_EQ(frskyData.hub.cellVolts[0], _V(410));
@@ -417,7 +413,6 @@ TEST(FrSkySPORT, frskySetCellVoltage)
   generateSportCellPacket(packet, 0, _V(418), _V(408)); frskySportProcessPacket(packet);
   generateSportCellPacket(packet, 2, _V(415), _V(420)); frskySportProcessPacket(packet);
   generateSportCellPacket(packet, 4, _V(410), _V(  0)); frskySportProcessPacket(packet);
-  frskyCalculateCellStats();
 
   EXPECT_EQ(frskyData.hub.cellsCount,         5);
   EXPECT_EQ(frskyData.hub.cellVolts[0], _V(418));
@@ -429,27 +424,45 @@ TEST(FrSkySPORT, frskySetCellVoltage)
   EXPECT_EQ(frskyData.hub.minCellVolts, _V(408));   //current minimum cell voltage
   EXPECT_EQ(frskyData.hub.minCellIdx,         1);   //current minimum cell index
   EXPECT_EQ(frskyData.hub.minCell,      _V(250));   //all time minimum cell voltage
-  EXPECT_EQ(frskyData.hub.minCells,     _V(108));   //all time cells sum minimum
+  EXPECT_EQ(frskyData.hub.minCells,     _V(207));   //all time cells sum minimum
   EXPECT_EQ(frskyData.hub.cellsSum,     _V(207));   //current cells sum
 
-  //simulate total failure of cell 3
+  //simulate very low voltage for cell 3
   generateSportCellPacket(packet, 0, _V(418), _V(408)); frskySportProcessPacket(packet);
-  generateSportCellPacket(packet, 2, _V(0  ), _V(420)); frskySportProcessPacket(packet);
+  generateSportCellPacket(packet, 2, _V(100), _V(420)); frskySportProcessPacket(packet);
   generateSportCellPacket(packet, 4, _V(410), _V(  0)); frskySportProcessPacket(packet);
-  frskyCalculateCellStats();
 
   EXPECT_EQ(frskyData.hub.cellsCount,         5);
   EXPECT_EQ(frskyData.hub.cellVolts[0], _V(418));
   EXPECT_EQ(frskyData.hub.cellVolts[1], _V(408));
-  EXPECT_EQ(frskyData.hub.cellVolts[2], _V(  0));
+  EXPECT_EQ(frskyData.hub.cellVolts[2], _V(100));
   EXPECT_EQ(frskyData.hub.cellVolts[3], _V(420));
   EXPECT_EQ(frskyData.hub.cellVolts[4], _V(410));
   EXPECT_EQ(frskyData.hub.cellVolts[5], _V(  0));
-  EXPECT_EQ(frskyData.hub.minCellVolts, _V(  0));   //current minimum cell voltage
+  EXPECT_EQ(frskyData.hub.minCellVolts, _V(100));   //current minimum cell voltage
   EXPECT_EQ(frskyData.hub.minCellIdx,         2);   //current minimum cell index
-  EXPECT_EQ(frskyData.hub.minCell,      _V(  0));   //all time minimum cell voltage
-  EXPECT_EQ(frskyData.hub.minCells,     _V(108));   //all time cells sum minimum
-  EXPECT_EQ(frskyData.hub.cellsSum,     _V(165));   //current cells sum
+  EXPECT_EQ(frskyData.hub.minCell,      _V(100));   //all time minimum cell voltage
+  EXPECT_EQ(frskyData.hub.minCells,     _V(175));   //all time cells sum minimum
+  EXPECT_EQ(frskyData.hub.cellsSum,     _V(175));   //current cells sum
+
+  //back to normal (but with reversed order of packets)
+  generateSportCellPacket(packet, 4, _V(410), _V(  0)); frskySportProcessPacket(packet);
+  generateSportCellPacket(packet, 0, _V(418), _V(408)); frskySportProcessPacket(packet);
+  generateSportCellPacket(packet, 2, _V(412), _V(420)); frskySportProcessPacket(packet);
+
+  EXPECT_EQ(frskyData.hub.cellsCount,         5);
+  EXPECT_EQ(frskyData.hub.cellVolts[0], _V(418));
+  EXPECT_EQ(frskyData.hub.cellVolts[1], _V(408));
+  EXPECT_EQ(frskyData.hub.cellVolts[2], _V(412));
+  EXPECT_EQ(frskyData.hub.cellVolts[3], _V(420));
+  EXPECT_EQ(frskyData.hub.cellVolts[4], _V(410));
+  EXPECT_EQ(frskyData.hub.cellVolts[5], _V(  0));
+  EXPECT_EQ(frskyData.hub.minCellVolts, _V(408));   //current minimum cell voltage
+  EXPECT_EQ(frskyData.hub.minCellIdx,         1);   //current minimum cell index
+  EXPECT_EQ(frskyData.hub.minCell,      _V(100));   //all time minimum cell voltage
+  EXPECT_EQ(frskyData.hub.minCells,     _V(175));   //all time cells sum minimum
+  EXPECT_EQ(frskyData.hub.cellsSum,     _V(206));   //current cells sum
+
 }
 #endif
 
