@@ -46,9 +46,11 @@ void menuStatisticsView(uint8_t event)
       chainMenu(menuStatisticsDebug);
       return;
 
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
     case EVT_KEY_LONG(KEY_MENU):
       g_eeGeneral.globalTimer = 0;
+      eeDirty(EE_GENERAL);
+      s_timeCumTot = 0;
       break;
 #endif
     case EVT_KEY_FIRST(KEY_EXIT):
@@ -65,8 +67,8 @@ void menuStatisticsView(uint8_t event)
 
   putsTimer(   12*FW+5*FWNUM+1, FH*0, s_timeCumTot, 0, 0);
   
-#if defined(PCBTARANIS)
-  putsTimer(21*FW+5*FWNUM+1, 0*FH, g_eeGeneral.globalTimer + sessionTimer, TIMEHOUR, 0);
+#if defined(CPUARM)
+  putsTimer(21*FW+5*FWNUM+1, 0*FH, g_eeGeneral.globalTimer + s_timeCumTot, TIMEHOUR, 0);
 #endif
 
 #if defined(THRTRACE)
@@ -111,7 +113,7 @@ void menuStatisticsDebug(uint8_t event)
 #if defined(PCBSKY9X)
       Current_used = 0;
 #endif
-      sessionTimer = 0;
+      s_timeCumTot = 0;
       killEvents(event);
       AUDIO_KEYPAD_UP();
       break;
@@ -155,7 +157,6 @@ void menuStatisticsDebug(uint8_t event)
   // consumption
   lcd_putsLeft(2*FH, STR_CPU_MAH);
   putsTelemetryValue(MENU_DEBUG_COL1_OFS, 2*FH, g_eeGeneral.mAhUsed + Current_used*current_scale/8192/36, UNIT_MAH, LEFT|PREC1);
-  putsTimer(MENU_DEBUG_COL2_OFS, 2*FH, g_eeGeneral.globalTimer + sessionTimer, LEFT, 0);
 #endif
 
 #if defined(PCBSKY9X)

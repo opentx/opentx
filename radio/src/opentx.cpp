@@ -1385,10 +1385,6 @@ uint32_t Current_accumulator;
 uint32_t Current_used;
 #endif
 
-#if defined(CPUARM) && !defined(REVA)
-uint16_t sessionTimer;
-#endif
-
 #if !defined(SIMU)
 static uint16_t s_anaFilt[NUMBER_ANALOG];
 #endif
@@ -2653,14 +2649,9 @@ void perMain()
   static uint32_t OneSecTimer;
   if (++OneSecTimer >= 100) {
     OneSecTimer -= 100 ;
-    sessionTimer += 1;
     Current_used += Current_accumulator / 100 ;                     // milliAmpSeconds (but scaled)
     Current_accumulator = 0 ;
   }
-#endif
-
-#if defined(PCBTARANIS)
-  sessionTimer = s_timeCumTot;
 #endif
 
 #if defined(CPUARM)
@@ -3247,8 +3238,10 @@ void saveTimers()
   }
 
 #if defined(CPUARM) && !defined(REVA)
-  if (sessionTimer > 0) {
-    g_eeGeneral.globalTimer += sessionTimer;
+  if (s_timeCumTot > 0) {
+    g_eeGeneral.globalTimer += s_timeCumTot;
+    eeDirty(EE_GENERAL);
+    s_timeCumTot = 0;
   }
 #endif
 }
