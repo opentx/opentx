@@ -230,7 +230,8 @@ void displayVoltagesScreen()
 #else
       uint8_t attr = PREC2;
 #endif
-      lcd_outdezNAtt(LCD_W, y, TELEMETRY_CELL_VOLTAGE(k), attr, 4);
+      if (TELEMETRY_CELL_VOLTAGE(k) > 0)
+        lcd_outdezNAtt(LCD_W, y, TELEMETRY_CELL_VOLTAGE(k), attr, 4);
       y += 1*FH;
     }
 #if defined(PCBTARANIS)
@@ -242,7 +243,8 @@ void displayVoltagesScreen()
 #else
         uint8_t attr = PREC2;
 #endif
-        lcd_outdezNAtt(LCD_W-3*FW-2, y, TELEMETRY_CELL_VOLTAGE(k), attr, 4);
+        if (TELEMETRY_CELL_VOLTAGE(k) > 0)
+          lcd_outdezNAtt(LCD_W-3*FW-2, y, TELEMETRY_CELL_VOLTAGE(k), attr, 4);
         y += 1*FH;
       }
       lcd_vline(LCD_W-6*FW-4, 8, 47);
