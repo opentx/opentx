@@ -453,7 +453,7 @@ void frskyCalculateCellStats(void)
     //update all time minimum cell voltage (Cell-)
     frskyData.hub.minCell = frskyData.hub.minCellVolts;
   }
- #endif
+#endif
 }
 #endif
 
