@@ -59,7 +59,7 @@ class Open9xSim: public FXMainWindow
     long onTimeout(FXObject*,FXSelector,void*);
     void makeSnapshot(const FXDrawable* drawable);
     void doEvents();
-    void refreshDiplay();
+    void refreshDisplay();
 
   private:
     FXImage       *bmp;
@@ -283,7 +283,7 @@ long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
   }
 
   per10ms();
-  refreshDiplay();
+  refreshDisplay();
   getApp()->addTimeout(this, 2, 10);
   return 0;
 }
@@ -294,7 +294,7 @@ long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
 #define BL_COLOR FXRGB(150,200,152)
 #endif
 
-void Open9xSim::refreshDiplay()
+void Open9xSim::refreshDisplay()
 {
   if (lcd_refresh) {
     lcd_refresh = false;
@@ -305,9 +305,8 @@ void Open9xSim::refreshDiplay()
     for (int x=0;x<LCD_W;x++) {
       for (int y=0; y<LCD_H; y++) {
 #if defined(PCBTARANIS)
-        #define PALETTE_IDX(p, x, mask) ((((p)[(x)] & (mask)) ? 0x1 : 0) + (((p)[DISPLAY_PLAN_SIZE+(x)] & (mask)) ? 0x2 : 0) + (((p)[2*DISPLAY_PLAN_SIZE+(x)] & (mask)) ? 0x4 : 0) + (((p)[3*DISPLAY_PLAN_SIZE+(x)] & (mask)) ? 0x8 : 0))
-        uint8_t mask = (1 << (y%8));
-        uint32_t z = PALETTE_IDX(lcd_buf, (y/8)*LCD_W+x, mask);
+        uint8_t * p = & lcd_buf[y / 2 * LCD_W + x];
+        uint8_t z = (y & 1) ? (*p >> 4) : (*p & 0x0F);
         if (z) {
           FXColor color;
           if (IS_BACKLIGHT_ON())
@@ -346,7 +345,7 @@ void doFxEvents()
 {
   //puts("doFxEvents");
   th9xSim->getApp()->runOneEvent(false);
-  th9xSim->refreshDiplay();
+  th9xSim->refreshDisplay();
 }
 
 int main(int argc,char **argv)

@@ -168,7 +168,8 @@ CPPSRC = ../targets/taranis/lcd_driver.cpp \
 	../targets/taranis/diskio.cpp \
         ../targets/taranis/usbd_usr.cpp \
         ../targets/taranis/usbd_storage_msd.cpp \
-        ../lcd.cpp \
+        ../lcd_common.cpp \
+        ../lcd_taranis.cpp \
         ../keys.cpp \
         ../fonts.cpp \
         ../strhelpers.cpp \

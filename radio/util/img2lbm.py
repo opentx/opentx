@@ -43,22 +43,19 @@ elif what == "img":
             f.write("0x%02x," % value)
         f.write("\n")
 elif what == "bmp":
-    rows = 1
     colors = []
-    if len(sys.argv) > 4:
-        rows = int(sys.argv[4])
-    f.write("%d,%d,\n" % (width, height/rows))
-    for y in range(0, height, 8):
+    f.write("%d,%d,\n" % (width, height))
+    for y in range(0, height, 2):
         for x in range(width):
-            values = [255, 255, 255, 255]
-            for z in range(8):
-                if y+z < height:
-                    gray = Qt.qGray(image.pixel(x, y+z))
-                    for i in range(4):
-                        if (gray & (1<<(4+i))):
-                            values[i] -= 1 << z
-            for value in values:
-                f.write("0x%02x," % value)
+            value = 0xFF;            
+            gray1 = Qt.qGray(image.pixel(x, y))
+            gray2 = Qt.qGray(image.pixel(x, y+1))
+            for i in range(4):
+                if (gray1 & (1<<(4+i))):
+                    value -= 1<<i
+                if (gray2 & (1<<(4+i))):
+                    value -= 1<<(4+i)                    
+            f.write("0x%02x," % value)
         f.write("\n")
 elif what == "03x05":
     for y in range(0, height, 5):

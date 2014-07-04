@@ -159,23 +159,19 @@ const pm_char * bmpLoad(uint8_t *bmp, const char *filename, const xcoord_t width
   switch (depth) {
     case 1:
       n = w/8;
-      for (uint32_t i=0; i<h; i+=8) {
-        result = f_read(&bmpFile, buf, n*8, &read);
-        if (result != FR_OK || read != n*8) {
+      for (uint32_t i=0; i<h; i+=2) {
+        result = f_read(&bmpFile, buf, n*2, &read);
+        if (result != FR_OK || read != n*2) {
           f_close(&bmpFile);
           return SDCARD_ERROR(result);
         }
-        uint8_t * dst = dest + 4*((h-i-8)/8 * w);
-        for (uint32_t j=0; j<n; j++) {
-#define PUSH_4BYTES(x) *dst = *(dst+1) = *(dst+2) = *(dst+3) = (x); dst += 4
-          PUSH_4BYTES(~(((buf[j+0*n] >> 7) << 7) + ((buf[j+1*n] >> 7) << 6) + ((buf[j+2*n] >> 7) << 5) + ((buf[j+3*n] >> 7) << 4) + ((buf[j+4*n] >> 7) << 3) + ((buf[j+5*n] >> 7) << 2) + ((buf[j+6*n] >> 7) << 1) + ((buf[j+7*n] >> 7) << 0)));
-          PUSH_4BYTES(~((((buf[j+0*n] >> 6) & 1) << 7) + (((buf[j+1*n] >> 6) & 1) << 6) + (((buf[j+2*n] >> 6) & 1) << 5) + (((buf[j+3*n] >> 6) & 1) << 4) + (((buf[j+4*n] >> 6) & 1) << 3) + (((buf[j+5*n] >> 6) & 1) << 2) + (((buf[j+6*n] >> 6) & 1) << 1) + (((buf[j+7*n] >> 6) & 1) << 0)));
-          PUSH_4BYTES(~((((buf[j+0*n] >> 5) & 1) << 7) + (((buf[j+1*n] >> 5) & 1) << 6) + (((buf[j+2*n] >> 5) & 1) << 5) + (((buf[j+3*n] >> 5) & 1) << 4) + (((buf[j+4*n] >> 5) & 1) << 3) + (((buf[j+5*n] >> 5) & 1) << 2) + (((buf[j+6*n] >> 5) & 1) << 1) + (((buf[j+7*n] >> 5) & 1) << 0)));
-          PUSH_4BYTES(~((((buf[j+0*n] >> 4) & 1) << 7) + (((buf[j+1*n] >> 4) & 1) << 6) + (((buf[j+2*n] >> 4) & 1) << 5) + (((buf[j+3*n] >> 4) & 1) << 4) + (((buf[j+4*n] >> 4) & 1) << 3) + (((buf[j+5*n] >> 4) & 1) << 2) + (((buf[j+6*n] >> 4) & 1) << 1) + (((buf[j+7*n] >> 4) & 1) << 0)));
-          PUSH_4BYTES(~((((buf[j+0*n] >> 3) & 1) << 7) + (((buf[j+1*n] >> 3) & 1) << 6) + (((buf[j+2*n] >> 3) & 1) << 5) + (((buf[j+3*n] >> 3) & 1) << 4) + (((buf[j+4*n] >> 3) & 1) << 3) + (((buf[j+5*n] >> 3) & 1) << 2) + (((buf[j+6*n] >> 3) & 1) << 1) + (((buf[j+7*n] >> 3) & 1) << 0)));
-          PUSH_4BYTES(~((((buf[j+0*n] >> 2) & 1) << 7) + (((buf[j+1*n] >> 2) & 1) << 6) + (((buf[j+2*n] >> 2) & 1) << 5) + (((buf[j+3*n] >> 2) & 1) << 4) + (((buf[j+4*n] >> 2) & 1) << 3) + (((buf[j+5*n] >> 2) & 1) << 2) + (((buf[j+6*n] >> 2) & 1) << 1) + (((buf[j+7*n] >> 2) & 1) << 0)));
-          PUSH_4BYTES(~((((buf[j+0*n] >> 1) & 1) << 7) + (((buf[j+1*n] >> 1) & 1) << 6) + (((buf[j+2*n] >> 1) & 1) << 5) + (((buf[j+3*n] >> 1) & 1) << 4) + (((buf[j+4*n] >> 1) & 1) << 3) + (((buf[j+5*n] >> 1) & 1) << 2) + (((buf[j+6*n] >> 1) & 1) << 1) + (((buf[j+7*n] >> 1) & 1) << 0)));
-          PUSH_4BYTES(~((((buf[j+0*n] >> 0) & 1) << 7) + (((buf[j+1*n] >> 0) & 1) << 6) + (((buf[j+2*n] >> 0) & 1) << 5) + (((buf[j+3*n] >> 0) & 1) << 4) + (((buf[j+4*n] >> 0) & 1) << 3) + (((buf[j+5*n] >> 0) & 1) << 2) + (((buf[j+6*n] >> 0) & 1) << 1) + (((buf[j+7*n] >> 0) & 1) << 0)));
+
+        for (uint32_t j=0; j<w; j++) {
+          uint8_t * dst = dest + (h-i-2)/2 * w + j;
+          if (!(buf[j/8] & (1<<(7-(j%8)))))
+            *dst |= 0xF0;
+          if (!(buf[n+j/8] & (1<<(7-(j%8)))))
+            *dst |= 0x0F;
         }
       }
       break;
@@ -187,19 +183,20 @@ const pm_char * bmpLoad(uint8_t *bmp, const char *filename, const xcoord_t width
           f_close(&bmpFile);
           return SDCARD_ERROR(result);
         }
-        uint8_t mask = 1 << (i%8);
         for (uint32_t j=0; j<w/2; j++) {
-          uint8_t * dst = dest + (i/8)*w*4 + j*8;
-          uint8_t val = palette[(buf[j] >> 4) & 0x0F];
-          *(dst+0) = ((*(dst+0)) & (~mask)) + ((val & 0x1) ? 0 : mask);
-          *(dst+1) = ((*(dst+1)) & (~mask)) + ((val & 0x2) ? 0 : mask);
-          *(dst+2) = ((*(dst+2)) & (~mask)) + ((val & 0x4) ? 0 : mask);
-          *(dst+3) = ((*(dst+3)) & (~mask)) + ((val & 0x8) ? 0 : mask);
-          val = palette[buf[j] & 0x0F];
-          *(dst+4) = ((*(dst+4)) & (~mask)) + ((val & 0x1) ? 0 : mask);
-          *(dst+5) = ((*(dst+5)) & (~mask)) + ((val & 0x2) ? 0 : mask);
-          *(dst+6) = ((*(dst+6)) & (~mask)) + ((val & 0x4) ? 0 : mask);
-          *(dst+7) = ((*(dst+7)) & (~mask)) + ((val & 0x8) ? 0 : mask);
+          uint8_t * dst = dest + (i/2)*w + j*2;
+          if (i & 1) {
+            uint8_t val = palette[(buf[j] >> 4) & 0x0F] << 4;
+            *dst |= val ^ 0xF0;
+            val = palette[buf[j] & 0x0F] << 4;
+            *(dst+1) |= val ^ 0xF0;
+          }
+          else {
+            uint8_t val = palette[(buf[j] >> 4) & 0x0F];
+            *dst |= val ^ 0x0F;
+            val = palette[buf[j] & 0x0F];
+            *(dst+1) |= val ^ 0x0F;
+          }
         }
       }
       break;
@@ -211,34 +208,4 @@ const pm_char * bmpLoad(uint8_t *bmp, const char *filename, const xcoord_t width
 
   f_close(&bmpFile);
   return 0;
-}
-
-void lcd_bmp(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t offset, uint8_t width)
-{
-  const pm_uchar *q = img;
-#if LCD_W >= 260
-  xcoord_t w   = pgm_read_byte(q++);
-  if (w == 255) w += pgm_read_byte(q++);
-#else
-  uint8_t w    = pgm_read_byte(q++);
-#endif
-  if (!width) width = w;
-  uint8_t hb   = (pgm_read_byte(q++)+7)/8;
-  q += 4*offset;
-  for (uint8_t yb = 0; yb < hb; yb++) {
-    uint8_t *p = &displayBuf[ (y / 8 + yb) * LCD_W + x ];
-    for (xcoord_t i=0; i<width; i++) {
-      for (uint8_t plan=0; plan<4; plan++) {
-        uint8_t b = pgm_read_byte(q++);
-        uint8_t ym8 = (y & 0x07);
-        uint8_t *pp = p + plan*DISPLAY_PLAN_SIZE;
-        LCD_BYTE_FILTER_PLAN(pp, ~(0xff << ym8), b << ym8);
-        if (ym8) {
-          uint8_t *r = pp + LCD_W;
-          LCD_BYTE_FILTER_PLAN(r, ~(0xff >> (8-ym8)), b >> (8-ym8));
-        }
-      }
-      p++;
-    }
-  }
 }

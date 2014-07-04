@@ -122,18 +122,18 @@ class lcdWidget : public QWidget {
         }
 
         unsigned int previousDepth = 0xFF;
-        const int planSize = (lcdWidth * ((lcdHeight+7) / 8));
 
         for (int y=0; y<lcdHeight; y++) {
-          unsigned int idx = (y/8)*lcdWidth;
+          unsigned int idx = (y*lcdDepth/8)*lcdWidth;
           unsigned int mask = (1 << (y%8));
           for (int x=0; x<lcdWidth; x++, idx++) {
             if (lcdDepth == 1) {
-              if (lcdBuf[idx] & mask)
+              if (lcdBuf[idx] & mask) {
                 p.drawRect(2*x, 2*y, 1, 1);
+              }
             }
             else {
-              unsigned int z = (((lcdBuf[idx] & mask) ? 0x1 : 0) + ((lcdBuf[planSize+idx] & mask) ? 0x2 : 0) + ((lcdBuf[2*planSize+idx] & mask) ? 0x4 : 0) + ((lcdBuf[3*planSize+idx] & mask) ? 0x8 : 0));
+              unsigned int z = (y & 1) ? (lcdBuf[idx] >> 4) : (lcdBuf[idx] & 0x0F);
               if (z) {
                 if (z != previousDepth) {
                   previousDepth = z;
