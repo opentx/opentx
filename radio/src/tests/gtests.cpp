@@ -990,25 +990,25 @@ void doPaint(QPainter & p)
 
 #if defined(PCBTARANIS)
     unsigned int previousDepth = 0xFF;
-    const int planSize = (LCD_W * ((LCD_H+7) / 8));
 #endif
 
     for (int y=0; y<LCD_H; y++) {
-      unsigned int idx = (y/8)*LCD_W;
+#if defined(PCBTARANIS)
+      unsigned int idx = (y/2) * LCD_W;
+#else
+      unsigned int idx = (y/8) * LCD_W;
       unsigned int mask = (1 << (y%8));
+#endif
       for (int x=0; x<LCD_W; x++, idx++) {
 #if !defined(PCBTARANIS)
         if (lcd_buf[idx] & mask) {
           p.drawPoint(x, y);
         }
 #else
-        unsigned int z = (((lcd_buf[idx] & mask) ? 0x1 : 0) + ((lcd_buf[planSize+idx] & mask) ? 0x2 : 0) + ((lcd_buf[2*planSize+idx] & mask) ? 0x4 : 0) + ((lcd_buf[3*planSize+idx] & mask) ? 0x8 : 0));
+        unsigned int z = (y & 1) ? (lcd_buf[idx] >> 4) : (lcd_buf[idx] & 0x0F);
         if (z) {
           if (z != previousDepth) {
             previousDepth = z;
-            //if (lightEnable)
-             // rgb = qRgb(_r-(z*_r)/15, _g-(z*_g)/15, _b-(z*_b)/15);
-            //else
             rgb = qRgb(161-(z*161)/15, 161-(z*161)/15, 161-(z*161)/15);
             p.setPen(rgb);
             p.setBrush(QBrush(rgb));

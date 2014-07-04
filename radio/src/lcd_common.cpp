@@ -37,8 +37,6 @@
 #include "opentx.h"
 
 uint8_t displayBuf[DISPLAY_BUF_SIZE];
-#define DISPLAY_END (displayBuf+DISPLAY_PLAN_SIZE)
-#define ASSERT_IN_DISPLAY(p) assert((p) >= displayBuf && (p) < DISPLAY_END)
 
 #if defined(LUA)
 bool lcd_locked = false;
@@ -53,111 +51,7 @@ uint8_t lcdLastPos;
 uint8_t lcdNextPos;
 
 #if defined(CPUARM)
-void lcdPutPattern(xcoord_t x, uint8_t y, const uint8_t * pattern, uint8_t width, uint8_t height, LcdFlags flags)
-{
-  uint8_t *p = &displayBuf[ y / 8 * LCD_W + x ];
-  uint8_t *end = &displayBuf[ y / 8 * LCD_W + LCD_W ];
-
-  bool blink = false;
-  bool inv = false;
-  if (flags & BLINK) {
-    if (BLINK_ON_PHASE) {
-      if (flags & INVERS)
-        inv = true;
-      else {
-        blink = true;
-      }
-    }
-  }
-  else if (flags & INVERS) {
-    inv = true;
-  }
-
-  // we need to work on the previous byte when INVERS
-  p--;
-
-  for (int8_t i=0; i<width+2 && p<end; i++) {
-    uint8_t lines = (height+7)/8;
-    assert(lines <= 5);
-    uint8_t b[5] = { 0 };
-    if (i==0) {
-      if (x==0 || !inv) {
-        lcdNextPos++;
-        p++;
-        continue;
-      }
-    }
-    else if (i<=width) {
-      uint8_t skip = true;
-      for (uint8_t j=0; j<lines; j++) {
-        b[j] = pgm_read_byte(pattern++); /*top byte*/
-        if (b[j] != 0xff) {
-          skip = false;
-        }
-      }
-      if (skip) {
-        if (flags & FIXEDWIDTH) {
-          for (uint8_t j=0; j<lines; j++) {
-            b[j] = 0;
-          }
-        }
-        else {
-          continue;
-        }
-      }
-      if ((flags & CONDENSED) && i==2) {
-        /*condense the letter by skipping column 3 */
-        continue;
-      }
-    }
-    const uint8_t ym8 = (y & 0x07);
-    const uint8_t keepref = (1 << ((height&0x07)+1)) - 1;
-    uint8_t * dest = p;
-    for (uint8_t j=0; j<lines+1; j++) {
-      if (dest < DISPLAY_END) {
-        uint8_t b1=0, b2=0, keep=0;
-        if (j>0) {
-          b1 = b[j-1] >> (8-ym8);
-        }
-        else {
-          keep = ~(keepref << ym8);
-        }
-        if (j<lines) {
-          if (inv) {
-            b[j] = ~b[j];
-            if (j==lines-1) {
-              if (height >= 10)
-                b[j] &= 1 + (keepref << 1);
-              else
-                b[j] &= keepref;
-            }
-          }
-          b2 = b[j] << ym8;
-        }
-        else {
-          keep = ~(keepref >> (8-ym8));
-        }
-        if (!blink) {
-          LCD_BYTE_FILTER(dest, keep, b1|b2);
-        }
-        dest += LCD_W;
-      }
-    }
-
-    if (inv && height<8) {
-      if (ym8)
-        lcd_mask(p, 0x01 << (ym8-1), FORCE);
-      else if (y) {
-        ASSERT_IN_DISPLAY(p - LCD_W);
-        lcd_mask(p - LCD_W, 0x80, FORCE);
-      }
-    }
-
-    p++;
-    lcdNextPos++;
-  }
-}
-
+void lcdPutPattern(xcoord_t x, uint8_t y, const uint8_t * pattern, uint8_t width, uint8_t height, LcdFlags flags);
 void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
 {
 #if !defined(BOOT)
@@ -172,7 +66,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
   unsigned char c_remapped = 0;
 
   if (flags & (DBLSIZE+BOLD)) {
-    // To save space only some DBLSIZE and BOLD chars are available 
+    // To save space only some DBLSIZE and BOLD chars are available
     // c has to be remapped. All non existing chars mapped to 0 (space)
     if (c>=',' && c<=':')
       c_remapped = c - ',' + 1;
@@ -192,7 +86,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
     /* each letter consists of ten top bytes followed by
      * by ten bottom bytes (20 bytes per * char) */
     q = &font_10x14[((uint16_t)c_remapped)*20];
-    lcdPutPattern(x, y, q, 10, 14, flags);
+    lcdPutPattern(x, y, q, 10, 16, flags);
   }
   else if (flags & XXLSIZE) {
     q = &font_22x38_num[((uint16_t)c-'0'+5)*110];
@@ -200,7 +94,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
   }
   else if (flags & MIDSIZE) {
     q = &font_8x10[((uint16_t)c-0x20)*16];
-    lcdPutPattern(x, y, q, 8, 10, flags);
+    lcdPutPattern(x, y, q, 8, 12, flags);
   }
   else if (flags & SMLSIZE) {
     q = (c < 0xc0 ? &font_4x6[(c-0x20)*5] : &font_4x6_extra[(c-0xc0)*5]);
@@ -218,156 +112,6 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
 #endif
   {
     lcdPutPattern(x, y, q, 5, 7, flags);
-  }
-}
-#else
-void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
-{
-  uint8_t *p = &displayBuf[ y / 8 * LCD_W + x ];
-  const pm_uchar *q = &font_5x7[(c-0x20)*5];
-
-  lcdNextPos = x-1;
-  p--;
-
-  bool inv = false;
-  if (flags & BLINK) {
-    if (BLINK_ON_PHASE) {
-      if (flags & INVERS)
-        inv = true;
-      else {
-        return;
-      }
-    }
-  }
-  else if (flags & INVERS) {
-    inv = true;
-  }
-
-  unsigned char c_remapped = 0;
-
-#if defined(BOLD_SPECIFIC_FONT)
-  if (flags & (DBLSIZE+BOLD)) {
-#else
-  if (flags & DBLSIZE) {
-#endif
-    // To save space only some DBLSIZE and BOLD chars are available
-    // c has to be remapped. All non existing chars mapped to 0 (space)
-
-    if (c>=',' && c<=':')
-      c_remapped = c - ',' + 1;
-    else if (c>='A' && c<='Z')
-      c_remapped = c - 'A' + 16;
-    else if (c>='a' && c<='z')
-      c_remapped = c - 'a' + 42;
-    else if (c=='_')
-      c_remapped = 4;
-#if defined(BOLD_SPECIFIC_FONT)
-    else if (c!=' ')
-      flags &= ~BOLD;
-#endif
-
-#if defined(BOLD_SPECIFIC_FONT)
-  }
-  if (flags & DBLSIZE) {
-#endif
-
-    /* each letter consists of ten top bytes followed by
-     * by ten bottom bytes (20 bytes per * char) */
-    q = &font_10x14[((uint16_t)c_remapped)*20];
-    for (int8_t i=0; i<=11; i++) {
-      uint8_t b1=0, b2=0;
-      if (!i) {
-        if (!x || !inv) {
-          lcdNextPos++;
-          p++;
-          continue;
-        }
-      }
-      else if (i <= 10) {
-        b1 = pgm_read_byte(q++); /*top byte*/
-        b2 = pgm_read_byte(q++);
-      }
-      if ((b1 & b2) == 0xff) continue;
-      if (inv) {
-        b1 = ~b1;
-        b2 = ~b2;
-      }
-      if(&p[LCD_W+1] < DISPLAY_END) {
-        ASSERT_IN_DISPLAY(p);
-        ASSERT_IN_DISPLAY(p+LCD_W);
-        LCD_BYTE_FILTER(p, 0, b1);
-        LCD_BYTE_FILTER(p+LCD_W, 0, b2);
-        p++;
-        lcdNextPos++;
-      }
-    }
-  }
-  else {
-    const uint8_t ym8 = (y & 0x07);
-#if defined(BOLD_FONT)
-  #if defined(BOLD_SPECIFIC_FONT)
-    if (flags & BOLD) {
-      q = &font_5x7_B[(c_remapped)*5];
-    }
-  #else
-    uint8_t bb = 0;
-    if (inv) bb = 0xff;
-  #endif
-#endif
-
-    uint8_t *lineEnd = &displayBuf[ y / 8 * LCD_W + LCD_W ];
-
-    for (int8_t i=0; i<=6; i++) {
-      uint8_t b = 0;
-      if (i==0) {
-        if (!x || !inv) {
-          lcdNextPos++;
-          p++;
-          continue;
-        }
-      }
-      else if (i <= 5) {
-        b = pgm_read_byte(q++);
-      }
-      if (b == 0xff) {
-        if (flags & FIXEDWIDTH)
-          b = 0;
-        else
-          continue;
-      }
-      if (inv) b = ~b;
-      if ((flags & CONDENSED) && i==2) {
-        /*condense the letter by skipping column 3 */
-        continue;
-      }
-
-#if defined(BOLD_FONT) && !defined(BOLD_SPECIFIC_FONT)
-      if (flags & BOLD) {
-        uint8_t a;
-        if (inv)
-          a = b & bb;
-        else
-          a = b | bb;
-        bb = b;
-        b = a;
-      }
-#endif
-
-      if (p<DISPLAY_END && p<lineEnd) {
-        ASSERT_IN_DISPLAY(p);
-        uint8_t mask = ~(0xff << ym8);
-        LCD_BYTE_FILTER(p, mask, b << ym8);
-        if (ym8) {
-          uint8_t *r = p + LCD_W;
-          if (r<DISPLAY_END)
-            LCD_BYTE_FILTER(r, ~mask, b >> (8-ym8));
-        }
-
-        if (inv && (ym8 == 1)) *p |= 0x01;
-      }
-      p++;
-      lcdNextPos++;
-    }
   }
 }
 #endif
@@ -662,94 +406,6 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
 }
 #endif
 
-#if defined(PCBTARANIS)
-void lcd_mask(uint8_t *p, uint8_t mask, LcdFlags att)
-{
-  ASSERT_IN_DISPLAY(p);
-
-  if ((att&FILL_WHITE) && ((*p&mask) || (*(p+DISPLAY_PLAN_SIZE)&mask) || (*(p+2*DISPLAY_PLAN_SIZE)&mask) || (*(p+3*DISPLAY_PLAN_SIZE)&mask))) {
-    return;
-  }
-
-  if (!(att & GREY(1))) {
-    if (att & FORCE)
-      *p |= mask;
-    else if (att & ERASE)
-      *p &= ~mask;
-    else
-      *p ^= mask;
-  }
-
-  p += DISPLAY_PLAN_SIZE;
-  if (!(att & GREY(2))) {
-    if (att & FORCE)
-      *p |= mask;
-    else if (att & ERASE)
-      *p &= ~mask;
-    else
-      *p ^= mask;
-  }
-
-  p += DISPLAY_PLAN_SIZE;
-  if (!(att & GREY(4))) {
-    if (att & FORCE)
-      *p |= mask;
-    else if (att & ERASE)
-      *p &= ~mask;
-    else
-      *p ^= mask;
-  }
-
-  p += DISPLAY_PLAN_SIZE;
-  if (!(att & GREY(8))) {
-    if (att & FORCE)
-      *p |= mask;
-    else if (att & ERASE)
-      *p &= ~mask;
-    else
-      *p ^= mask;
-  }
-}
-#else
-void lcd_mask(uint8_t *p, uint8_t mask, LcdFlags att)
-{
-  ASSERT_IN_DISPLAY(p);
-
-  if (att & FORCE)
-    *p |= mask;
-  else if (att & ERASE)
-    *p &= ~mask;
-  else
-    *p ^= mask;
-}
-#endif
-
-void lcd_plot(xcoord_t x, uint8_t y, LcdFlags att)
-{
-  uint8_t *p = &displayBuf[ y / 8 * LCD_W + x ];
-  if (p<DISPLAY_END)
-    lcd_mask(p, BITMASK(y%8), att);
-}
-
-void lcd_hlineStip(xcoord_t x, uint8_t y, xcoord_t w, uint8_t pat, LcdFlags att)
-{
-  if (y >= LCD_H) return;
-  if (x+w > LCD_W) { w = LCD_W - x; }
-
-  uint8_t *p  = &displayBuf[ y / 8 * LCD_W + x ];
-  uint8_t msk = BITMASK(y%8);
-  while(w--) {
-    if(pat&1) {
-      lcd_mask(p, msk, att);
-      pat = (pat >> 1) | 0x80;
-    }
-    else {
-      pat = pat >> 1;
-    }
-    p++;
-  }
-}
-
 void lcd_hline(xcoord_t x, uint8_t y, xcoord_t w, LcdFlags att)
 {
   lcd_hlineStip(x, y, w, 0xff, att);
@@ -798,96 +454,9 @@ void lcd_line(xcoord_t x1, int8_t y1, xcoord_t x2, int8_t y2, uint8_t pat, LcdFl
 }
 #endif
 
-#if defined(CPUM64)
-void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat)
-{
-  if (x >= LCD_W) return;
-  if (h<0) { y+=h; h=-h; }
-  if (y<0) { h+=y; y=0; }
-  if (y+h > LCD_H) { h = LCD_H - y; }
-
-  if (pat==DOTTED && !(y%2))
-    pat = ~pat;
-
-  uint8_t *p  = &displayBuf[ y / 8 * LCD_W + x ];
-  y = (y & 0x07);
-  if (y) {
-    ASSERT_IN_DISPLAY(p);
-    *p ^= ~(BITMASK(y)-1) & pat;
-    p += LCD_W;
-    h -= 8-y;
-  }
-  while (h>0) {
-    ASSERT_IN_DISPLAY(p);
-    *p ^= pat;
-    p += LCD_W;
-    h -= 8;
-  }
-  if (h < 0) h += 8;
-  if (h) {
-    p -= LCD_W;
-    ASSERT_IN_DISPLAY(p);
-    *p ^= ~(BITMASK(h)-1) & pat;
-  }
-}
-#else
-// allows the att parameter...
-void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat, LcdFlags att)
-{
-  if (x >= LCD_W) return;
-#if defined(CPUARM)
-  // should never happen on 9X
-  if (y >= LCD_H) return;
-#endif
-
-  if (h<0) { y+=h; h=-h; }
-  if (y<0) { h+=y; y=0; }
-  if (y+h > LCD_H) { h = LCD_H - y; }
-
-  if (pat==DOTTED && !(y%2))
-    pat = ~pat;
-
-  uint8_t *p  = &displayBuf[ y / 8 * LCD_W + x ];
-  y = (y & 0x07);
-  if (y) {
-    ASSERT_IN_DISPLAY(p);
-    uint8_t msk = ~(BITMASK(y)-1);
-    h -= 8-y;
-    if (h < 0)
-      msk -= ~(BITMASK(8+h)-1);
-    lcd_mask(p, msk & pat, att);
-    p += LCD_W;
-  }
-  while (h>=8) {
-    ASSERT_IN_DISPLAY(p);
-    lcd_mask(p, pat, att);
-    p += LCD_W;
-    h -= 8;
-  }
-  if (h>0) {
-    ASSERT_IN_DISPLAY(p);
-    lcd_mask(p, (BITMASK(h)-1) & pat, att);
-  }
-}
-#endif
-
 void lcd_vline(xcoord_t x, int8_t y, int8_t h)
 {
   lcd_vlineStip(x, y, h, SOLID);
-}
-
-void lcd_invert_line(int8_t y)
-{
-  uint8_t *p  = &displayBuf[y * LCD_W];
-  for (xcoord_t x=0; x<LCD_W; x++) {
-    ASSERT_IN_DISPLAY(p);
-#if defined(PCBTARANIS)
-    *(p+3*DISPLAY_PLAN_SIZE) ^= 0xff;
-    *(p+2*DISPLAY_PLAN_SIZE) ^= 0xff;
-    *(p+DISPLAY_PLAN_SIZE)   ^= 0xff;
-#endif
-    *p++ ^= 0xff;
-  }
 }
 
 void lcd_rect(xcoord_t x, uint8_t y, xcoord_t w, uint8_t h, uint8_t pat, LcdFlags att)
@@ -1431,45 +1000,9 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
 }
 #endif
 
-void lcd_img(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t idx, LcdFlags att)
-{
-  const pm_uchar *q = img;
-#if LCD_W >= 260
-  xcoord_t w   = pgm_read_byte(q++);
-  if (w == 255) w += pgm_read_byte(q++);
-#else
-  uint8_t w    = pgm_read_byte(q++);
-#endif
-  uint8_t hb   = (pgm_read_byte(q++)+7)/8;
-  bool    inv  = (att & INVERS) ? true : (att & BLINK ? BLINK_ON_PHASE : false);
-  q += idx*w*hb;
-  for (uint8_t yb = 0; yb < hb; yb++) {
-    uint8_t *p = &displayBuf[ (y / 8 + yb) * LCD_W + x ];
-    for (xcoord_t i=0; i<w; i++){
-      uint8_t b = pgm_read_byte(q);
-      q++;
-      ASSERT_IN_DISPLAY(p);
-#if defined(PCBTARANIS)
-      uint8_t val = inv ? ~b : b;
-      if (!(att & GREY(1)))
-        *p = val;
-      if (!(att & GREY(2)))
-        *(p+DISPLAY_PLAN_SIZE) = val;
-      if (!(att & GREY(4)))
-        *(p+2*DISPLAY_PLAN_SIZE) = val;
-      if (!(att & GREY(8)))
-        *(p+3*DISPLAY_PLAN_SIZE) = val;
-      p++;
-#else
-      *p++ = inv ? ~b : b;
-#endif
-    }
-  }
-}
-
 void lcdSetContrast()
 {
   lcdSetRefVolt(g_eeGeneral.contrast);
 }
 
-#endif // !defined(BOOT)
+#endif

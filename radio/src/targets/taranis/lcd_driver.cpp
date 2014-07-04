@@ -111,9 +111,6 @@ void Set_Address(u8 x, u8 y)
   WriteCommand(((y>>4)&0x0F)|0x70);    //Set Row Address MSB RA [7:4]
 }
 
-#define PALETTE_IDX(p, x, mask) (((p[x] & mask) ? 0x1 : 0) + ((p[DISPLAY_PLAN_SIZE+x] & mask) ? 0x2 : 0) + ((p[2*DISPLAY_PLAN_SIZE+x] & mask) ? 0x4 : 0) + ((p[3*DISPLAY_PLAN_SIZE+x] & mask) ? 0x8 : 0))
-const uint8_t lcdPalette[4] = { 0, 0x03, 0x06, 0x0F };
-
 #define LCD_WRITE_BIT(bit) \
   if (bit) \
     LCD_MOSI_HIGH(); \
@@ -127,9 +124,7 @@ const uint8_t lcdPalette[4] = { 0, 0x03, 0x06, 0x0F };
 void lcdRefresh()
 {  
   for (uint32_t y=0; y<LCD_H; y+=2) {
-    uint8_t *p = &displayBuf[(y>>3)*LCD_W];
-    uint8_t mask = (1 << (y%8));
-    uint8_t mask2 = (1 << (1+(y%8)));
+    uint8_t *p = &displayBuf[y/2 * LCD_W];
 
     Set_Address(0, y/2);
     AspiCmd(0xAF);
@@ -139,18 +134,15 @@ void lcdRefresh()
     LCD_NCS_LOW();
 
     for (uint32_t x=0; x<LCD_W; x++) {
-      uint8_t a = p[3*DISPLAY_PLAN_SIZE+x] ;
-      uint8_t b = p[2*DISPLAY_PLAN_SIZE+x] ;
-      uint8_t c = p[DISPLAY_PLAN_SIZE+x] ;
-      uint8_t d = p[x] ;
-      LCD_WRITE_BIT(a & mask2);
-      LCD_WRITE_BIT(b & mask2);
-      LCD_WRITE_BIT(c & mask2);
-      LCD_WRITE_BIT(d & mask2);
-      LCD_WRITE_BIT(a & mask);
-      LCD_WRITE_BIT(b & mask);
-      LCD_WRITE_BIT(c & mask);
-      LCD_WRITE_BIT(d & mask);
+      uint8_t a = p[x] ;
+      LCD_WRITE_BIT(a & 0x80);
+      LCD_WRITE_BIT(a & 0x40);
+      LCD_WRITE_BIT(a & 0x20);
+      LCD_WRITE_BIT(a & 0x10);
+      LCD_WRITE_BIT(a & 0x08);
+      LCD_WRITE_BIT(a & 0x04);
+      LCD_WRITE_BIT(a & 0x02);
+      LCD_WRITE_BIT(a & 0x01);
     }
 
     LCD_NCS_HIGH();
@@ -163,8 +155,7 @@ void lcdRefresh()
 void lcdRefresh()
 {  
   for (uint32_t y=0; y<LCD_H; y++) {
-    uint8_t *p = &displayBuf[(y>>3)*LCD_W];
-    uint8_t mask = (1 << (y%8));
+    uint8_t *p = &displayBuf[y/2 * LCD_W];
 
     Set_Address(0, y);
     AspiCmd(0xAF);
@@ -174,10 +165,13 @@ void lcdRefresh()
     LCD_NCS_LOW();
 
     for (uint32_t x=0; x<LCD_W; x++) {
-      LCD_WRITE_BIT(p[3*DISPLAY_PLAN_SIZE+x] & mask);
-      LCD_WRITE_BIT(p[2*DISPLAY_PLAN_SIZE+x] & mask);
-      LCD_WRITE_BIT(p[DISPLAY_PLAN_SIZE+x] & mask);
-      LCD_WRITE_BIT(p[x] & mask);
+      uint8_t b = p[x];
+      if (y & 1)
+        b >>= 4;
+      LCD_WRITE_BIT(b & 0x08);
+      LCD_WRITE_BIT(b & 0x04);
+      LCD_WRITE_BIT(b & 0x02);
+      LCD_WRITE_BIT(b & 0x01);
     }
 
     LCD_NCS_HIGH();

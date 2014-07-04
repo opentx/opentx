@@ -143,14 +143,17 @@
 #define DISPLAY_PLAN_SIZE  (LCD_W*((LCD_H+7)/8))
 
 #if defined(PCBTARANIS)
-#define DISPLAY_BUF_SIZE   (4*DISPLAY_PLAN_SIZE)
+  #define DISPLAY_BUF_SIZE   (4*DISPLAY_PLAN_SIZE)
 #else
-#define DISPLAY_BUF_SIZE   DISPLAY_PLAN_SIZE
+  #define DISPLAY_BUF_SIZE   DISPLAY_PLAN_SIZE
 #endif
 
 extern uint8_t displayBuf[DISPLAY_BUF_SIZE];
 extern uint8_t lcdLastPos;
 extern uint8_t lcdNextPos;
+
+#define DISPLAY_END          (displayBuf + DISPLAY_BUF_SIZE)
+#define ASSERT_IN_DISPLAY(p) assert((p) >= displayBuf && (p) < DISPLAY_END)
 
 #if defined(PCBSTD) && defined(VOICE)
   extern volatile uint8_t LcdLock ;
@@ -283,24 +286,6 @@ void lcdRefresh();
   #define LCD_LOCKED() lcd_locked
 #else
   #define LCD_LOCKED() 0
-#endif
-
-#define LCD_BYTE_FILTER_PLAN(p, keep, add) *(p) = (*(p) & (keep)) | (add)
-
-#if defined(PCBTARANIS)
-#define LCD_BYTE_FILTER(p, keep, add) \
-  do { \
-    if (!(flags & GREY(1))) \
-      LCD_BYTE_FILTER_PLAN(p, keep, add); \
-    if (!(flags & GREY(2))) \
-      LCD_BYTE_FILTER_PLAN((p+DISPLAY_PLAN_SIZE), keep, add); \
-    if (!(flags & GREY(4))) \
-      LCD_BYTE_FILTER_PLAN((p+2*DISPLAY_PLAN_SIZE), keep, add); \
-    if (!(flags & GREY(8))) \
-      LCD_BYTE_FILTER_PLAN((p+3*DISPLAY_PLAN_SIZE), keep, add); \
-  } while (0)
-#else
-#define LCD_BYTE_FILTER(p, keep, add) LCD_BYTE_FILTER_PLAN(p, keep, add)
 #endif
 
 char * strAppend(char * dest, const char * source);
