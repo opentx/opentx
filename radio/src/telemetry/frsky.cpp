@@ -602,24 +602,23 @@ void telemetryInit(void)
 void frskySetCellVoltage(uint8_t battnumber, frskyCellVoltage_t cellVolts) 
 {
   // TRACE("frskySetCellVoltage() %d, %d", battnumber, cellVolts);
+
   if (battnumber >= DIM(frskyData.hub.cellVolts) || (cellVolts == 0 && battnumber >= frskyData.hub.cellsCount)) {
     return;
   }
 
-  //set cell voltage
+  // set cell voltage
   frskyData.hub.cellVolts[battnumber] = cellVolts;
 
-  if (cellVolts > 0 ) {
-    //update cells count
-    if (frskyData.hub.cellsCount < battnumber+1) {
-      frskyData.hub.cellsCount = battnumber+1;
-      //reset frskyData.hub.minCells to retrigger new calculation
-      frskyData.hub.minCells = 0;
-    }
+  // update cells count
+  if (frskyData.hub.cellsCount < battnumber+1) {
+    frskyData.hub.cellsCount = battnumber+1;
+    // reset frskyData.hub.minCells to retrigger new calculation
+    frskyData.hub.minCells = 0;
   }
 
-  //calculate cells sum (Cells)
-  //and find mimimum cell voltage (Cell)
+  // calculate cells sum (Cells)
+  // and find mimimum cell voltage (Cell)
   uint16_t cellsSum = 0; /* unit: 1/10 volts */
   frskyCellVoltage_t minCellVolts = -1;
   for (uint8_t i=0; i<DIM(frskyData.hub.cellVolts); i++) {
@@ -627,19 +626,20 @@ void frskySetCellVoltage(uint8_t battnumber, frskyCellVoltage_t cellVolts)
     if (tmpCellVolts == 0) continue;
     cellsSum += tmpCellVolts;
     if (tmpCellVolts < minCellVolts) {
-      //update minimum cell voltage (Cell) and its cell number 
+      // update minimum cell voltage (Cell) and its cell number
       frskyData.hub.minCellVolts = minCellVolts = tmpCellVolts;
       frskyData.hub.minCellIdx = i;
     }
   }
   frskyData.hub.cellsSum = cellsSum / (10 / TELEMETRY_CELL_VOLTAGE_MUTLIPLIER);
 
-  //update all time cells sum minimum (Cells-)
+  // update all time cells sum minimum (Cells-)
   if (!frskyData.hub.minCells || frskyData.hub.cellsSum < frskyData.hub.minCells) {
     frskyData.hub.minCells = frskyData.hub.cellsSum;
   }
+
 #if defined(CPUARM)
-  //update all time minimum cell voltage (Cell-)
+  // update all time minimum cell voltage (Cell-)
   if (!frskyData.hub.minCell || frskyData.hub.minCellVolts<frskyData.hub.minCell) {
     frskyData.hub.minCell = frskyData.hub.minCellVolts;
   }
