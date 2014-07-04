@@ -601,6 +601,7 @@ void telemetryInit(void)
 #if defined(CPUARM) || defined(FRSKY_HUB)
 void frskySetCellVoltage(uint8_t battnumber, frskyCellVoltage_t cellVolts) 
 {
+  // TRACE("frskySetCellVoltage() %d, %d", battnumber, cellVolts);
   if (battnumber >= DIM(frskyData.hub.cellVolts) || (cellVolts == 0 && battnumber >= frskyData.hub.cellsCount)) {
     return;
   }
@@ -612,7 +613,7 @@ void frskySetCellVoltage(uint8_t battnumber, frskyCellVoltage_t cellVolts)
     //update cells count
     if (frskyData.hub.cellsCount < battnumber+1) {
       frskyData.hub.cellsCount = battnumber+1;
-      //reset frskyData.hub.minCells
+      //reset frskyData.hub.minCells to retrigger new calculation
       frskyData.hub.minCells = 0;
     }
   }
@@ -621,10 +622,11 @@ void frskySetCellVoltage(uint8_t battnumber, frskyCellVoltage_t cellVolts)
   //and find mimimum cell voltage (Cell)
   uint16_t cellsSum = 0; /* unit: 1/10 volts */
   frskyCellVoltage_t minCellVolts = -1;
-  for (uint8_t i=0; i<frskyData.hub.cellsCount; i++) {
+  for (uint8_t i=0; i<DIM(frskyData.hub.cellVolts); i++) {
     frskyCellVoltage_t tmpCellVolts = frskyData.hub.cellVolts[i];
+    if (tmpCellVolts == 0) continue;
     cellsSum += tmpCellVolts;
-    if ((tmpCellVolts > 0) && (tmpCellVolts < minCellVolts)) {
+    if (tmpCellVolts < minCellVolts) {
       //update minimum cell voltage (Cell) and its cell number 
       frskyData.hub.minCellVolts = minCellVolts = tmpCellVolts;
       frskyData.hub.minCellIdx = i;

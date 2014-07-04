@@ -222,37 +222,34 @@ void displayVoltagesScreen()
 
 #if defined(FRSKY_HUB)
   // Cells voltage
-  if (frskyData.hub.cellsCount > 0) {
-    uint8_t y = 1*FH;
-    for (uint8_t k=0; k<frskyData.hub.cellsCount && k<6; k++) {
+  uint8_t noSensors = 0;
+  for (uint8_t k=0; k<DIM(frskyData.hub.cellVolts); k++)
+  {
 #if defined(GAUGES)
-      uint8_t attr = (barsThresholds[THLD_CELL] && frskyData.hub.cellVolts[k] < barsThresholds[THLD_CELL]) ? BLINK|PREC2 : PREC2;
+    uint8_t attr = (barsThresholds[THLD_CELL] && frskyData.hub.cellVolts[k] < barsThresholds[THLD_CELL]) ? BLINK|PREC2 : PREC2;
 #else
-      uint8_t attr = PREC2;
+    uint8_t attr = PREC2;
 #endif
-      if (TELEMETRY_CELL_VOLTAGE(k) > 0)
-        lcd_outdezNAtt(LCD_W, y, TELEMETRY_CELL_VOLTAGE(k), attr, 4);
-      y += 1*FH;
-    }
-#if defined(PCBTARANIS)
-    if (frskyData.hub.cellsCount > 6) {
-      y = 1*FH;
-      for (uint8_t k=6; k<frskyData.hub.cellsCount && k<12; k++) {
-#if defined(GAUGES)
-        uint8_t attr = (barsThresholds[THLD_CELL] && frskyData.hub.cellVolts[k] < barsThresholds[THLD_CELL]) ? BLINK|PREC2 : PREC2;
-#else
-        uint8_t attr = PREC2;
-#endif
-        if (TELEMETRY_CELL_VOLTAGE(k) > 0)
-          lcd_outdezNAtt(LCD_W-3*FW-2, y, TELEMETRY_CELL_VOLTAGE(k), attr, 4);
-        y += 1*FH;
+    if (TELEMETRY_CELL_VOLTAGE(k) > 0) {
+      if (k < 6) {
+        lcd_outdezNAtt(LCD_W, k*FH, TELEMETRY_CELL_VOLTAGE(k), attr, 4);
+        noSensors = 1;
       }
-      lcd_vline(LCD_W-6*FW-4, 8, 47);
-    } else
+#if defined(PCBTARANIS)
+      else {
+        lcd_outdezNAtt(LCD_W-3*FW-2, (k-6)*FH, TELEMETRY_CELL_VOLTAGE(k), attr, 4);
+        noSensors = 2;
+      }
 #endif
-    lcd_vline(LCD_W-3*FW-2, 8, 47);
+    }
   }
-#endif
+  if (noSensors > 0 ) {
+    lcd_vline(LCD_W-3*FW-2, 0, LCD_H-FH);  
+  }
+  if (noSensors > 1 ) {
+    lcd_vline(LCD_W-6*FW-4, 0, LCD_H-FH);
+  }
+#endif   //#if defined(FRSKY_HUB)
 
   displayRssiLine();
 }

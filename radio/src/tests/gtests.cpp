@@ -47,6 +47,7 @@
 #define CHANNEL_MAX (1024*256)
 
 void doMixerCalculations();
+bool checkScreenshot(QString test);
 
 #define MODEL_RESET() \
   memset(&g_model, 0, sizeof(g_model)); \
@@ -338,6 +339,7 @@ TEST(FrSkySPORT, checkCrc)
 extern void frskySportProcessPacket(uint8_t *packet);
 extern bool checkSportPacket(uint8_t *packet);
 extern void frskyCalculateCellStats(void);
+extern void displayVoltagesScreen();
 
 void setSportPacketCrc(uint8_t * packet)
 {
@@ -355,6 +357,13 @@ void setSportPacketCrc(uint8_t * packet)
 
 void generateSportCellPacket(uint8_t * packet, uint8_t battnumber, uint16_t cell1, uint16_t cell2)
 {
+  if (battnumber < 6) {
+    packet[0] = 0xA1; //DATA_ID_FLVSS;
+  }
+  else {
+    packet[0] = 0xA1+1; //DATA_ID_FLVSS+1;
+    battnumber -= 6;
+  }
   packet[1] = 0x10; //DATA_FRAME
   *((uint16_t *)(packet+2)) = 0x0300; //CELLS_FIRST_ID
   uint32_t data = 0;
@@ -462,6 +471,81 @@ TEST(FrSkySPORT, frskySetCellVoltage)
   EXPECT_EQ(frskyData.hub.minCell,      _V(100));   //all time minimum cell voltage
   EXPECT_EQ(frskyData.hub.minCells,     _V(175));   //all time cells sum minimum
   EXPECT_EQ(frskyData.hub.cellsSum,     _V(206));   //current cells sum
+
+}
+
+TEST(FrSkySPORT, frskySetCellVoltageTwoSensors)
+{
+  //telemetryReset();
+  memclear(&frskyData, sizeof(frskyData));
+  uint8_t packet[FRSKY_SPORT_PACKET_SIZE];
+
+  //sensor 1: 3 cell battery
+  generateSportCellPacket(packet, 0, _V(418), _V(416)); frskySportProcessPacket(packet);
+  generateSportCellPacket(packet, 2, _V(415), _V(  0)); frskySportProcessPacket(packet);
+
+  EXPECT_EQ(frskyData.hub.cellsCount,         3);
+  EXPECT_EQ(frskyData.hub.cellVolts[0], _V(418));
+  EXPECT_EQ(frskyData.hub.cellVolts[1], _V(416));
+  EXPECT_EQ(frskyData.hub.cellVolts[2], _V(415));
+  EXPECT_EQ(frskyData.hub.cellVolts[3], _V(  0));
+  EXPECT_EQ(frskyData.hub.minCellVolts, _V(415));   //current minimum cell voltage
+  EXPECT_EQ(frskyData.hub.minCellIdx,         2);   //current minimum cell index
+  EXPECT_EQ(frskyData.hub.minCell,      _V(415));   //all time minimum cell voltage
+  EXPECT_EQ(frskyData.hub.minCells,     _V(124));   //all time cells sum minimum
+  EXPECT_EQ(frskyData.hub.cellsSum,     _V(124));   //current cells sum
+
+  //sensor 2: 4 cell battery
+  generateSportCellPacket(packet, 6, _V(410), _V(420)); frskySportProcessPacket(packet);
+  generateSportCellPacket(packet, 8, _V(400), _V(405)); frskySportProcessPacket(packet);
+
+  EXPECT_EQ(frskyData.hub.cellsCount,        10);
+  EXPECT_EQ(frskyData.hub.cellVolts[0], _V(418));
+  EXPECT_EQ(frskyData.hub.cellVolts[1], _V(416));
+  EXPECT_EQ(frskyData.hub.cellVolts[2], _V(415));
+  EXPECT_EQ(frskyData.hub.cellVolts[3], _V(  0));
+  EXPECT_EQ(frskyData.hub.cellVolts[4], _V(  0));
+  EXPECT_EQ(frskyData.hub.cellVolts[5], _V(  0));
+  EXPECT_EQ(frskyData.hub.cellVolts[6], _V(410));
+  EXPECT_EQ(frskyData.hub.cellVolts[7], _V(420));
+  EXPECT_EQ(frskyData.hub.cellVolts[8], _V(400));
+  EXPECT_EQ(frskyData.hub.cellVolts[9], _V(405));
+  EXPECT_EQ(frskyData.hub.cellVolts[10],_V(  0));
+  EXPECT_EQ(frskyData.hub.cellVolts[11],_V(  0));
+  EXPECT_EQ(frskyData.hub.minCellVolts, _V(400));   //current minimum cell voltage
+  EXPECT_EQ(frskyData.hub.minCellIdx,         8);   //current minimum cell index
+  EXPECT_EQ(frskyData.hub.minCell,      _V(400));   //all time minimum cell voltage
+  EXPECT_EQ(frskyData.hub.minCells,     _V(288));   //all time cells sum minimum
+  EXPECT_EQ(frskyData.hub.cellsSum,     _V(288));   //current cells sum
+
+  //now change some voltages
+  generateSportCellPacket(packet, 8, _V(390), _V(370)); frskySportProcessPacket(packet);
+  generateSportCellPacket(packet, 0, _V(420), _V(410)); frskySportProcessPacket(packet);
+
+  EXPECT_EQ(frskyData.hub.cellsCount,        10);
+  EXPECT_EQ(frskyData.hub.cellVolts[0], _V(420));
+  EXPECT_EQ(frskyData.hub.cellVolts[1], _V(410));
+  EXPECT_EQ(frskyData.hub.cellVolts[2], _V(415));
+  EXPECT_EQ(frskyData.hub.cellVolts[3], _V(  0));
+  EXPECT_EQ(frskyData.hub.cellVolts[4], _V(  0));
+  EXPECT_EQ(frskyData.hub.cellVolts[5], _V(  0));
+  EXPECT_EQ(frskyData.hub.cellVolts[6], _V(410));
+  EXPECT_EQ(frskyData.hub.cellVolts[7], _V(420));
+  EXPECT_EQ(frskyData.hub.cellVolts[8], _V(390));
+  EXPECT_EQ(frskyData.hub.cellVolts[9], _V(370));
+  EXPECT_EQ(frskyData.hub.cellVolts[10],_V(  0));
+  EXPECT_EQ(frskyData.hub.cellVolts[11],_V(  0));
+  EXPECT_EQ(frskyData.hub.minCellVolts, _V(370));   //current minimum cell voltage
+  EXPECT_EQ(frskyData.hub.minCellIdx,         9);   //current minimum cell index
+  EXPECT_EQ(frskyData.hub.minCell,      _V(370));   //all time minimum cell voltage
+  EXPECT_EQ(frskyData.hub.minCells,     _V(283));   //all time cells sum minimum
+  EXPECT_EQ(frskyData.hub.cellsSum,     _V(283));   //current cells sum
+
+  //display test
+  lcd_clear();
+  g_model.frsky.voltsSource = FRSKY_VOLTS_SOURCE_A1;
+  displayVoltagesScreen();
+  EXPECT_TRUE(checkScreenshot("two_sensor_votages_screen"));
 
 }
 #endif
