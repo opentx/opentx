@@ -615,6 +615,7 @@ void frskySetCellVoltage(uint8_t battnumber, frskyCellVoltage_t cellVolts)
     frskyData.hub.cellsCount = battnumber+1;
     // reset frskyData.hub.minCells to retrigger new calculation
     frskyData.hub.minCells = 0;
+    frskyData.hub.minCell = 0;
   }
 
   // calculate cells sum (Cells)
@@ -640,7 +641,7 @@ void frskySetCellVoltage(uint8_t battnumber, frskyCellVoltage_t cellVolts)
 
 #if defined(CPUARM)
   // update all time minimum cell voltage (Cell-)
-  if (!frskyData.hub.minCell || frskyData.hub.minCellVolts<frskyData.hub.minCell) {
+  if (!frskyData.hub.minCell || frskyData.hub.minCellVolts < frskyData.hub.minCell) {
     frskyData.hub.minCell = frskyData.hub.minCellVolts;
   }
 #endif
