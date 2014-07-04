@@ -244,10 +244,10 @@ void displayVoltagesScreen()
     }
   }
   if (noSensors > 0 ) {
-    lcd_vline(LCD_W-3*FW-2, FH, 6*FH);  
+    lcd_vline(LCD_W-3*FW-2, FH, 6*FH-1);  
   }
   if (noSensors > 1 ) {
-    lcd_vline(LCD_W-6*FW-4,  FH, 6*FH);
+    lcd_vline(LCD_W-6*FW-4, FH, 6*FH-1);
   }
 #endif   //#if defined(FRSKY_HUB)
 
