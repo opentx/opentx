@@ -828,7 +828,7 @@ void setTrimValue(uint8_t phase, uint8_t idx, int trim);
   #define GV_RANGELARGE_OFFSET_NEG  GV_RANGELARGE_NEG
 #endif
 
-extern uint16_t s_timeCumTot;
+extern uint16_t sessionTimer;
 extern uint16_t s_timeCumThr;
 extern uint16_t s_timeCum16ThrP;
 

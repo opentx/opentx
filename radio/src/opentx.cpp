@@ -1385,10 +1385,6 @@ uint32_t Current_accumulator;
 uint32_t Current_used;
 #endif
 
-#if defined(CPUARM) && !defined(REVA)
-uint16_t sessionTimer;
-#endif
-
 #if !defined(SIMU)
 static uint16_t s_anaFilt[NUMBER_ANALOG];
 #endif
@@ -1601,7 +1597,7 @@ uint8_t g_vbat100mV = 0;
 uint16_t lightOffCounter;
 uint8_t flashCounter = 0;
 
-uint16_t s_timeCumTot;
+uint16_t sessionTimer;
 uint16_t s_timeCumThr;    // THR in 1/16 sec
 uint16_t s_timeCum16ThrP; // THR% in 1/16 sec
 
@@ -2369,7 +2365,7 @@ void doMixerCalculations()
 
       if (s_cnt_1s >= 10) { // 1sec
         s_cnt_1s -= 10;
-        s_timeCumTot += 1;
+        sessionTimer += 1;
 
         struct t_inactivity *ptrInactivity = &inactivity;
         FORCE_INDIRECT(ptrInactivity) ;
@@ -2378,9 +2374,9 @@ void doMixerCalculations()
           AUDIO_INACTIVITY();
 
 #if defined(AUDIO)
-        if (mixWarning & 1) if ((s_timeCumTot&0x03)==0) AUDIO_MIX_WARNING(1);
-        if (mixWarning & 2) if ((s_timeCumTot&0x03)==1) AUDIO_MIX_WARNING(2);
-        if (mixWarning & 4) if ((s_timeCumTot&0x03)==2) AUDIO_MIX_WARNING(3);
+        if (mixWarning & 1) if ((sessionTimer&0x03)==0) AUDIO_MIX_WARNING(1);
+        if (mixWarning & 2) if ((sessionTimer&0x03)==1) AUDIO_MIX_WARNING(2);
+        if (mixWarning & 4) if ((sessionTimer&0x03)==2) AUDIO_MIX_WARNING(3);
 #endif
 
 #if defined(ACCURAT_THROTTLE_TIMER)
@@ -2653,14 +2649,9 @@ void perMain()
   static uint32_t OneSecTimer;
   if (++OneSecTimer >= 100) {
     OneSecTimer -= 100 ;
-    sessionTimer += 1;
     Current_used += Current_accumulator / 100 ;                     // milliAmpSeconds (but scaled)
     Current_accumulator = 0 ;
   }
-#endif
-
-#if defined(PCBTARANIS)
-  sessionTimer = s_timeCumTot;
 #endif
 
 #if defined(CPUARM)
@@ -3249,6 +3240,8 @@ void saveTimers()
 #if defined(CPUARM) && !defined(REVA)
   if (sessionTimer > 0) {
     g_eeGeneral.globalTimer += sessionTimer;
+    eeDirty(EE_GENERAL);
+    sessionTimer = 0;
   }
 #endif
 }
