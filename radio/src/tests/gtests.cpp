@@ -378,7 +378,6 @@ void generateSportCellPacket(uint8_t * packet, uint8_t battnumber, uint16_t cell
 
 TEST(FrSkySPORT, frskySetCellVoltage)
 {
-  //telemetryReset();
   memclear(&frskyData, sizeof(frskyData));
   uint8_t packet[FRSKY_SPORT_PACKET_SIZE];
 
@@ -432,7 +431,7 @@ TEST(FrSkySPORT, frskySetCellVoltage)
   EXPECT_EQ(frskyData.hub.cellVolts[5], _V(  0));
   EXPECT_EQ(frskyData.hub.minCellVolts, _V(408));   //current minimum cell voltage
   EXPECT_EQ(frskyData.hub.minCellIdx,         1);   //current minimum cell index
-  EXPECT_EQ(frskyData.hub.minCell,      _V(250));   //all time minimum cell voltage
+  EXPECT_EQ(frskyData.hub.minCell,      _V(408));   //all time minimum cell voltage
   EXPECT_EQ(frskyData.hub.minCells,     _V(207));   //all time cells sum minimum
   EXPECT_EQ(frskyData.hub.cellsSum,     _V(207));   //current cells sum
 
