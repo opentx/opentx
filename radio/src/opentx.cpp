@@ -1597,7 +1597,7 @@ uint8_t g_vbat100mV = 0;
 uint16_t lightOffCounter;
 uint8_t flashCounter = 0;
 
-uint16_t s_timeCumTot;
+uint16_t sessionTimer;
 uint16_t s_timeCumThr;    // THR in 1/16 sec
 uint16_t s_timeCum16ThrP; // THR% in 1/16 sec
 
@@ -2365,7 +2365,7 @@ void doMixerCalculations()
 
       if (s_cnt_1s >= 10) { // 1sec
         s_cnt_1s -= 10;
-        s_timeCumTot += 1;
+        sessionTimer += 1;
 
         struct t_inactivity *ptrInactivity = &inactivity;
         FORCE_INDIRECT(ptrInactivity) ;
@@ -2374,9 +2374,9 @@ void doMixerCalculations()
           AUDIO_INACTIVITY();
 
 #if defined(AUDIO)
-        if (mixWarning & 1) if ((s_timeCumTot&0x03)==0) AUDIO_MIX_WARNING(1);
-        if (mixWarning & 2) if ((s_timeCumTot&0x03)==1) AUDIO_MIX_WARNING(2);
-        if (mixWarning & 4) if ((s_timeCumTot&0x03)==2) AUDIO_MIX_WARNING(3);
+        if (mixWarning & 1) if ((sessionTimer&0x03)==0) AUDIO_MIX_WARNING(1);
+        if (mixWarning & 2) if ((sessionTimer&0x03)==1) AUDIO_MIX_WARNING(2);
+        if (mixWarning & 4) if ((sessionTimer&0x03)==2) AUDIO_MIX_WARNING(3);
 #endif
 
 #if defined(ACCURAT_THROTTLE_TIMER)
@@ -3238,10 +3238,10 @@ void saveTimers()
   }
 
 #if defined(CPUARM) && !defined(REVA)
-  if (s_timeCumTot > 0) {
-    g_eeGeneral.globalTimer += s_timeCumTot;
+  if (sessionTimer > 0) {
+    g_eeGeneral.globalTimer += sessionTimer;
     eeDirty(EE_GENERAL);
-    s_timeCumTot = 0;
+    sessionTimer = 0;
   }
 #endif
 }

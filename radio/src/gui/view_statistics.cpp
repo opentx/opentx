@@ -50,7 +50,7 @@ void menuStatisticsView(uint8_t event)
     case EVT_KEY_LONG(KEY_MENU):
       g_eeGeneral.globalTimer = 0;
       eeDirty(EE_GENERAL);
-      s_timeCumTot = 0;
+      sessionTimer = 0;
       break;
 #endif
     case EVT_KEY_FIRST(KEY_EXIT):
@@ -65,10 +65,10 @@ void menuStatisticsView(uint8_t event)
   putsTimer(    5*FW+5*FWNUM+1, FH*2, s_timeCumThr, 0, 0);
   putsTimer(   12*FW+5*FWNUM+1, FH*2, s_timeCum16ThrP/16, 0, 0);
 
-  putsTimer(   12*FW+5*FWNUM+1, FH*0, s_timeCumTot, 0, 0);
+  putsTimer(   12*FW+5*FWNUM+1, FH*0, sessionTimer, 0, 0);
   
 #if defined(CPUARM)
-  putsTimer(21*FW+5*FWNUM+1, 0*FH, g_eeGeneral.globalTimer + s_timeCumTot, TIMEHOUR, 0);
+  putsTimer(21*FW+5*FWNUM+1, 0*FH, g_eeGeneral.globalTimer + sessionTimer, TIMEHOUR, 0);
 #endif
 
 #if defined(THRTRACE)
@@ -113,7 +113,7 @@ void menuStatisticsDebug(uint8_t event)
 #if defined(PCBSKY9X)
       Current_used = 0;
 #endif
-      s_timeCumTot = 0;
+      sessionTimer = 0;
       killEvents(event);
       AUDIO_KEYPAD_UP();
       break;
