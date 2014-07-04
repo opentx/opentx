@@ -427,7 +427,7 @@ void telemetryWakeup()
 
 void telemetryInterrupt10ms()
 {
-  uint16_t voltage = 0; /* unit: 1/10 volts */
+  uint16_t voltage = frskyData.hub.cellsSum; /* unit: 1/10 volts */
 
   if (TELEMETRY_STREAMING()) {
     if (!TELEMETRY_OPENXSENSOR()) {
