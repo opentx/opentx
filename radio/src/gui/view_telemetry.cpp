@@ -232,22 +232,22 @@ void displayVoltagesScreen()
 #endif
     if (TELEMETRY_CELL_VOLTAGE(k) > 0) {
       if (k < 6) {
-        lcd_outdezNAtt(LCD_W, k*FH, TELEMETRY_CELL_VOLTAGE(k), attr, 4);
+        lcd_outdezNAtt(LCD_W, k*FH+FH, TELEMETRY_CELL_VOLTAGE(k), attr, 4);
         noSensors = 1;
       }
 #if defined(PCBTARANIS)
       else {
-        lcd_outdezNAtt(LCD_W-3*FW-2, (k-6)*FH, TELEMETRY_CELL_VOLTAGE(k), attr, 4);
+        lcd_outdezNAtt(LCD_W-3*FW-2, (k-6)*FH+FH, TELEMETRY_CELL_VOLTAGE(k), attr, 4);
         noSensors = 2;
       }
 #endif
     }
   }
   if (noSensors > 0 ) {
-    lcd_vline(LCD_W-3*FW-2, 0, LCD_H-FH);  
+    lcd_vline(LCD_W-3*FW-2, FH, 6*FH);  
   }
   if (noSensors > 1 ) {
-    lcd_vline(LCD_W-6*FW-4, 0, LCD_H-FH);
+    lcd_vline(LCD_W-6*FW-4,  FH, 6*FH);
   }
 #endif   //#if defined(FRSKY_HUB)
 

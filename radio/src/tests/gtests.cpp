@@ -472,6 +472,11 @@ TEST(FrSkySPORT, frskySetCellVoltage)
   EXPECT_EQ(frskyData.hub.minCells,     _V(175));   //all time cells sum minimum
   EXPECT_EQ(frskyData.hub.cellsSum,     _V(206));   //current cells sum
 
+  //display test
+  lcd_clear();
+  g_model.frsky.voltsSource = FRSKY_VOLTS_SOURCE_A1;
+  displayVoltagesScreen();
+  EXPECT_TRUE(checkScreenshot("one_sensor_votages_screen"));
 }
 
 TEST(FrSkySPORT, frskySetCellVoltageTwoSensors)
@@ -546,7 +551,6 @@ TEST(FrSkySPORT, frskySetCellVoltageTwoSensors)
   g_model.frsky.voltsSource = FRSKY_VOLTS_SOURCE_A1;
   displayVoltagesScreen();
   EXPECT_TRUE(checkScreenshot("two_sensor_votages_screen"));
-
 }
 #endif
 
