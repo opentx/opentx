@@ -168,10 +168,10 @@ void lcdRefresh()
       uint8_t b = p[x];
       if (y & 1)
         b >>= 4;
-      LCD_WRITE_BIT(b & 0x01);
-      LCD_WRITE_BIT(b & 0x02);
-      LCD_WRITE_BIT(b & 0x04);
       LCD_WRITE_BIT(b & 0x08);
+      LCD_WRITE_BIT(b & 0x04);
+      LCD_WRITE_BIT(b & 0x02);
+      LCD_WRITE_BIT(b & 0x01);
     }
 
     LCD_NCS_HIGH();
