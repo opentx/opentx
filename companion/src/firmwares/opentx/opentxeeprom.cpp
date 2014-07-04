@@ -19,7 +19,7 @@
 #define MAX_MIXERS(board, version)           (IS_ARM(board) ? 64 : 32)
 #define MAX_CHANNELS(board, version)         (IS_ARM(board) ? 32 : 16)
 #define MAX_EXPOS(board, version)            (IS_ARM(board) ? ((IS_TARANIS(board) && version >= 216) ? 64 : 32) : (IS_DBLRAM(board, version) ? 16 : 14))
-#define MAX_CUSTOM_SWITCHES(board, version)  (IS_ARM(board) ? 32 : (IS_DBLEEPROM(board, version) ? 15 : 12))
+#define MAX_CUSTOM_SWITCHES(board, version)  (IS_ARM(board) ? 32 : ((IS_DBLEEPROM(board, version) && version<217) ? 15 : 12))
 #define MAX_CUSTOM_FUNCTIONS(board, version) (IS_ARM(board) ? (version >= 216 ? 64 : 32) : (IS_DBLEEPROM(board, version) ? 24 : 16))
 #define MAX_CURVES(board, version)           (IS_ARM(board) ? ((IS_TARANIS(board) && version >= 216) ? 32 : 16) : O9X_MAX_CURVES)
 #define MAX_GVARS(board, version)            ((IS_ARM(board) && version >= 216) ? 9 : 5)

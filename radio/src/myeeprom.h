@@ -58,10 +58,10 @@
   #define EEPROM_VER             216
   #define FIRST_CONV_EEPROM_VER  215
 #elif defined(CPUM2560) || defined(CPUM2561)
-  #define EEPROM_VER             216
+  #define EEPROM_VER             217
   #define FIRST_CONV_EEPROM_VER  EEPROM_VER
 #elif defined(CPUM128)
-  #define EEPROM_VER             216
+  #define EEPROM_VER             217
 #else
   #define EEPROM_VER             216
 #endif
@@ -108,7 +108,7 @@
   #define MAX_FLIGHT_MODES    6
   #define MAX_MIXERS          32
   #define MAX_EXPOS           16
-  #define NUM_LOGICAL_SWITCH  15 // number of custom switches
+  #define NUM_LOGICAL_SWITCH  12 // number of custom switches
   #define NUM_CFN             24 // number of functions assigned to switches
   #define NUM_TRAINER         8
   #define NUM_POTS            3
@@ -119,7 +119,7 @@
   #define MAX_FLIGHT_MODES    5
   #define MAX_MIXERS          32
   #define MAX_EXPOS           14
-  #define NUM_LOGICAL_SWITCH  15 // number of custom switches
+  #define NUM_LOGICAL_SWITCH  12 // number of custom switches
   #define NUM_CFN             24 // number of functions assigned to switches
   #define NUM_TRAINER         8
   #define NUM_POTS            3

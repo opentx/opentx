@@ -369,10 +369,10 @@ int OpenTxEepromInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t 
         break;
       case BOARD_GRUVIN9X:
       case BOARD_MEGA2560:
-        version = 216;
+        version = 217;
         break;
       case BOARD_M128:
-        version = 216;
+        version = 217;
         break;
       case BOARD_STOCK:
         version = 216;
@@ -561,8 +561,6 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case LogicalSwitches:
       if (IS_ARM(board))
         return 32;
-      else if (board==BOARD_GRUVIN9X||board==BOARD_M128)
-        return 15;
       else
         return 12;
     case CustomAndSwitches:
@@ -875,6 +873,9 @@ bool OpenTxEepromInterface::checkVersion(unsigned int version)
       break;
     case 216:
       // A lot of things (first github release)
+      break;
+    case 217:
+      // 3 logical switches removed on M128 / gruvin9x boards
       break;
     default:
       return false;
