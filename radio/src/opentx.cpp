@@ -2853,7 +2853,8 @@ void perMain()
   }
 
   drawStatusLine();
-  lcdRefresh();
+
+  lcdRefresh(LCD_REFRESH_DONT_WAIT);
 
   if (SLAVE_MODE()) {
     JACK_PPM_OUT();

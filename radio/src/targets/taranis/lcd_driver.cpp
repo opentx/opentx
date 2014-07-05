@@ -161,7 +161,7 @@ void Set_Address(u8 x, u8 y)
   LCD_CLK_HIGH();
 
 #if defined(REVPLUS)
-void lcdRefresh()
+void lcdRefresh(bool wait)
 {
   Set_Address(0, 0);
 	

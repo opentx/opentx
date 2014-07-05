@@ -264,7 +264,14 @@ void lcdSetRefVolt(unsigned char val);
 void lcdInit();
 void lcd_clear();
 void lcdSetContrast();
-void lcdRefresh();
+
+#if defined(PCBTARANIS) && defined(REVPLUS) && !defined(SIMU)
+  void lcdRefresh(bool wait=true);
+  #define LCD_REFRESH_DONT_WAIT false
+#else
+  void lcdRefresh();
+  #define LCD_REFRESH_DONT_WAIT
+#endif
 
 #if defined(PCBTARANIS)
   const pm_char * bmpLoad(uint8_t *dest, const char *filename, const xcoord_t width, const uint8_t height);
