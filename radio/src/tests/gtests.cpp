@@ -389,7 +389,7 @@ TEST(getSwitch, circularCSW)
   EXPECT_EQ(getSwitch(-SWSRC_SW2), true);
 }
 
-#if defined(CPUARM)
+#if defined(PCBTARANIS)
 TEST(getSwitch, OldTypeStickyCSW)
 {
   MODEL_RESET();
@@ -419,7 +419,7 @@ TEST(getSwitch, OldTypeStickyCSW)
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
   EXPECT_EQ(getSwitch(SWSRC_SW2), false);
 }
-#endif // #if defined(CPUARM)
+#endif // #if defined(PCBTARANIS)
 
 TEST(getSwitch, nullSW)
 {
