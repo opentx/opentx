@@ -684,7 +684,19 @@ void unlockFlash() { }
 void lockFlash() { }
 void writeFlash(uint32_t *address, uint32_t *buffer) { SIMU_SLEEP(100); }
 uint32_t isBootloaderStart(const void *block) { return 1; }
-void turnBacklightOn(uint8_t level, uint8_t color) { }
-void turnBacklightOff(void) { }
+#if defined(REVPLUS)
+void turnBacklightOn(uint8_t level, uint8_t color)
+{
+  TIM4->CCR4 = (100-level)*color;
+  TIM4->CCR2 = (100-level)*(100-color);
+}
+
+void turnBacklightOff(void)
+{
+  TIM4->CCR4 = 0;
+  TIM4->CCR2 = 0;
+}
+#endif
+
 #endif
 
