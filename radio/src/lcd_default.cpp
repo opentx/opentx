@@ -59,83 +59,81 @@ void lcdPutPattern(xcoord_t x, uint8_t y, const uint8_t * pattern, uint8_t width
     inv = true;
   }
 
-  for (int8_t i=0; i<width+2 && p<end; i++) {
-    uint8_t lines = (height+7)/8;
-    assert(lines <= 5);
-    uint8_t b[5] = { 0 };
-    if (i==0) {
-      if (x==0 || !inv) {
-        lcdNextPos++;
-        continue;
-      }
-      else {
-        // we need to work on the previous byte when INVERS
-        p--;
-      }
-    }
-    else if (i<=width) {
-      uint8_t skip = true;
-      for (uint8_t j=0; j<lines; j++) {
-        b[j] = pgm_read_byte(pattern++); /*top byte*/
-        if (b[j] != 0xff) {
-          skip = false;
-        }
-      }
-      if (skip) {
-        if (flags & FIXEDWIDTH) {
-          for (uint8_t j=0; j<lines; j++) {
-            b[j] = 0;
-          }
+  uint8_t lines = (height+7)/8;
+  assert(lines <= 5);
+
+  for (int8_t i=0; i<width+2; i++) {
+    if (p<end) {
+      uint8_t b[5] = { 0 };
+      if (i==0) {
+        if (x==0 || !inv) {
+          lcdNextPos++;
+          continue;
         }
         else {
+          // we need to work on the previous byte when INVERS
+          p--;
+        }
+      }
+      else if (i<=width) {
+        uint8_t skip = true;
+        for (uint8_t j=0; j<lines; j++) {
+          b[j] = pgm_read_byte(pattern++); /*top byte*/
+          if (b[j] != 0xff) {
+            skip = false;
+          }
+        }
+        if (skip) {
+          if (flags & FIXEDWIDTH) {
+            for (uint8_t j=0; j<lines; j++) {
+              b[j] = 0;
+            }
+          }
+          else {
+            continue;
+          }
+        }
+        if ((flags & CONDENSED) && i==2) {
+          /*condense the letter by skipping column 3 */
           continue;
         }
       }
-      if ((flags & CONDENSED) && i==2) {
-        /*condense the letter by skipping column 3 */
-        continue;
-      }
-    }
-    const uint8_t ym8 = (y & 0x07);
-    const uint8_t keepref = (1 << ((height&0x07)+1)) - 1;
-    uint8_t * dest = p;
-    for (uint8_t j=0; j<lines+1; j++) {
-      if (dest < DISPLAY_END) {
-        uint8_t b1=0, b2=0, keep=0;
-        if (j>0) {
-          b1 = b[j-1] >> (8-ym8);
-        }
-        else {
-          keep = ~(keepref << ym8);
-        }
-        if (j<lines) {
-          if (inv) {
-            b[j] = ~b[j];
-            if (j==lines-1) {
-              if (height >= 10)
-                b[j] &= 1 + (keepref << 1);
-              else
-                b[j] &= keepref;
-            }
+      const uint8_t ym8 = (y & 0x07);
+      const uint8_t keepref = (1 << ((height&0x07)+1)) - 1;
+      uint8_t * dest = p;
+      for (uint8_t j=0; j<lines+1; j++) {
+        if (dest < DISPLAY_END) {
+          uint8_t b1=0, b2=0, keep=0;
+          if (j>0) {
+            b1 = b[j-1] >> (8-ym8);
           }
-          b2 = b[j] << ym8;
+          else {
+            keep = ~(keepref << ym8);
+          }
+          if (j<lines) {
+            if (inv) {
+              b[j] = ~b[j];
+            }
+            b2 = b[j] << ym8;
+          }
+          else {
+            keep = ~(keepref >> (8-ym8));
+          }
+          if (!blink) {
+            LCD_BYTE_FILTER(dest, keep, b1|b2);
+          }
+          dest += LCD_W;
         }
-        else {
-          keep = ~(keepref >> (8-ym8));
-        }
-        if (!blink) {
-          LCD_BYTE_FILTER(dest, keep, b1|b2);
-        }
-        dest += LCD_W;
       }
-    }
 
-    if (inv && height<8) {
-      if (ym8)
-        lcd_mask(p, 0x01 << (ym8-1), FORCE);
-      else if (y) {
-        ASSERT_IN_DISPLAY(p - LCD_W);
-        lcd_mask(p - LCD_W, 0x80, FORCE);
+      if (inv && height<8) {
+        if (ym8) {
+          lcd_mask(p, 0x01 << (ym8-1), FORCE);
+        }
+        else if (y) {
+          ASSERT_IN_DISPLAY(p - LCD_W);
+          lcd_mask(p - LCD_W, 0x80, FORCE);
+        }
       }
     }
 
@@ -393,7 +391,7 @@ void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat, LcdFlags att)
     lcd_mask(p, msk & pat, att);
     p += LCD_W;
   }
-  while (h>0) {
+  while (h>=8) {
     ASSERT_IN_DISPLAY(p);
     lcd_mask(p, pat, att);
     p += LCD_W;

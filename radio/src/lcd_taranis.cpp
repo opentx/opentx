@@ -65,6 +65,7 @@ void lcdPutPattern(xcoord_t x, uint8_t y, const uint8_t * pattern, uint8_t width
           continue;
         }
         else {
+          // we need to work on the previous x when INVERS
           x--;
         }
       }

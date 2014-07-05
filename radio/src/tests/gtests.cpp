@@ -151,6 +151,7 @@ TEST(outdezNAtt, test_unsigned)
   EXPECT_EQ(memcmp(refBuf, displayBuf, sizeof(displayBuf)), 0) << "Unsigned numbers will be bad displayed";
 }
 
+#if !defined(PCBSKY9X)
 TEST(EEPROM, 100_random_writes)
 {
   eepromFile = NULL; // in memory
@@ -275,6 +276,7 @@ TEST(EEPROM, rm)
   }
   EXPECT_EQ(sz, 0);
 }
+#endif
 
 #if defined(FRSKY) && !defined(FRSKY_SPORT)
 extern void frskyDProcessPacket(uint8_t *packet);
@@ -393,7 +395,7 @@ TEST(getSwitch, nullSW)
   EXPECT_EQ(getSwitch(0), true);
 }
 
-#if !defined(PCBTARANIS)
+#if !defined(CPUARM)
 TEST(getSwitch, recursiveSW)
 {
   MODEL_RESET();
@@ -784,7 +786,7 @@ TEST(Mixer, SlowDisabledOnStartup)
   EXPECT_EQ(chans[0], CHANNEL_MAX);
 }
 
-#if !defined(PCBTARANIS)
+#if !defined(CPUARM)
 TEST(Mixer, SlowAndDelayOnReplace3POSSource)
 {
   MODEL_RESET();
@@ -1048,6 +1050,13 @@ TEST(Lcd, Invers_0_0)
   EXPECT_TRUE(checkScreenshot("invers_0_0"));
 }
 
+TEST(Lcd, Invers_0_1)
+{
+  lcd_clear();
+  lcd_putsAtt(0, 1, "Test", INVERS);
+  EXPECT_TRUE(checkScreenshot("invers_0_1"));
+}
+
 TEST(Lcd, Prec2_Left)
 {
   lcd_clear();
@@ -1060,6 +1069,13 @@ TEST(Lcd, Prec2_Right)
   lcd_clear();
   lcd_outdezAtt(LCD_W, LCD_H-FH, 2, PREC2);
   EXPECT_TRUE(checkScreenshot("prec2_right"));
+}
+
+TEST(Lcd, Prec1_Dblsize_Invers)
+{
+  lcd_clear();
+  lcd_outdezAtt(LCD_W, 10, 51, PREC1|DBLSIZE|INVERS);
+  EXPECT_TRUE(checkScreenshot("prec1_dblsize_invers"));
 }
 
 TEST(Lcd, Line_Wrap)
@@ -1077,6 +1093,15 @@ TEST(Lcd, Smlsize_putsStrIdx)
   EXPECT_TRUE(checkScreenshot("smlsize_putsstridx"));
 }
 #endif
+
+TEST(Lcd, vline)
+{
+  lcd_clear();
+  for (int x=0; x<100; x+=2) {
+    lcd_vline(x, x/2, 12);
+  }
+  EXPECT_TRUE(checkScreenshot("vline"));
+}
 
 int main(int argc, char **argv)
 {
