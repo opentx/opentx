@@ -1071,12 +1071,14 @@ TEST(Lcd, Prec2_Right)
   EXPECT_TRUE(checkScreenshot("prec2_right"));
 }
 
+#if defined(CPUARM)
 TEST(Lcd, Prec1_Dblsize_Invers)
 {
   lcd_clear();
   lcd_outdezAtt(LCD_W, 10, 51, PREC1|DBLSIZE|INVERS);
   EXPECT_TRUE(checkScreenshot("prec1_dblsize_invers"));
 }
+#endif
 
 TEST(Lcd, Line_Wrap)
 {
