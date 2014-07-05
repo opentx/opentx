@@ -44,52 +44,6 @@ extern "C" {
 
 volatile uint32_t Tenms ; // TODO to remove everywhere / use a #define
 
-#if !defined(SIMU)
-void configure_pins( uint32_t pins, uint16_t config )
-{
-  uint32_t address ;
-  GPIO_TypeDef *pgpio ;
-  uint32_t thispin ;
-  uint32_t pos ;
-
-  address = ( config & PIN_PORT_MASK ) >> 8 ;
-  address *= (GPIOB_BASE-GPIOA_BASE) ;
-  address += GPIOA_BASE ;
-  pgpio = (GPIO_TypeDef* ) address ;
-
-  /* -------------------------Configure the port pins---------------- */
-  /*-- GPIO Mode Configuration --*/
-  for (thispin = 0x0001, pos = 0; thispin < 0x10000; thispin <<= 1, pos +=1 )
-  {
-    if ( pins & thispin)
-    {
-      pgpio->MODER  &= ~(GPIO_MODER_MODER0 << (pos * 2)) ;
-      pgpio->MODER |= (config & PIN_MODE_MASK) << (pos * 2) ;
-
-      if ( ( (config & PIN_MODE_MASK ) == PIN_OUTPUT) || ( (config & PIN_MODE_MASK) == PIN_PERIPHERAL) )
-      {
-        /* Speed mode configuration */
-        pgpio->OSPEEDR &= ~GPIO_OSPEEDER_OSPEEDR0 << (pos * 2) ;
-        pgpio->OSPEEDR |= ((config & PIN_SPEED_MASK) >> 13 ) << (pos * 2) ;
-
-        /* Output mode configuration*/
-        pgpio->OTYPER  &= ~((GPIO_OTYPER_OT_0) << ((uint16_t)pos)) ;
-        if ( config & PIN_ODRAIN )
-        {
-          pgpio->OTYPER |= (GPIO_OTYPER_OT_0) << pos ;
-        }
-      }
-      /* Pull-up Pull down resistor configuration*/
-      pgpio->PUPDR &= ~(GPIO_PUPDR_PUPDR0 << ((uint16_t)pos * 2));
-      pgpio->PUPDR |= ((config & PIN_PULL_MASK) >> 2) << (pos * 2) ;
-
-      pgpio->AFR[pos >> 3] &= ~(0x000F << ((pos & 7)*4)) ;
-      pgpio->AFR[pos >> 3] |= ((config & PIN_PERI_MASK) >> 4) << ((pos & 7)*4) ;
-    }
-  }
-}
-#endif
-
 void watchdogInit(unsigned int duration)
 {
   IWDG->KR = 0x5555 ;      // Unlock registers

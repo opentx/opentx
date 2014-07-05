@@ -31,7 +31,23 @@
     return	readValue;
 }*/
 
-//Anolog spi
+#if defined(REVPLUS)
+void AspiCmd(uint8_t Command_Byte)
+{
+  LCD_A0_LOW() ;
+  LCD_NCS_LOW() ;  
+  while ( ( SPI3->SR & SPI_SR_TXE ) == 0 ) {
+    // wait
+  }
+  (void)SPI3->DR ;		// Clear receive
+  SPI3->DR = Command_Byte ;
+  while ( ( SPI3->SR & SPI_SR_RXNE ) == 0 ) {
+    // wait
+  }
+  LCD_NCS_HIGH() ;
+}
+#else
+// Analog SPI
 void AspiCmd(u8 Command_Byte)
 {
     int i=8; 
@@ -58,6 +74,7 @@ void AspiCmd(u8 Command_Byte)
     LCD_NCS_HIGH();  
     LCD_A0_HIGH();
 }
+#endif
 
 /**
 

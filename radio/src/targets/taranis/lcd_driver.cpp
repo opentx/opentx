@@ -32,6 +32,46 @@ void Delay(volatile unsigned int ms)
 }
 
 #if defined(REVPLUS)
+static void LCD_Hardware_Init() ;
+
+// New hardware SPI driver for LCD
+void initLcdSpi()
+{
+  // uint16_t temp ;
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_LCD, ENABLE);
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_LCD_RST, ENABLE);
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_LCD_NCS, ENABLE);
+
+  RCC->APB1ENR |= RCC_APB1ENR_SPI3EN ;    // Enable clock
+  // APB1 clock / 2 = 133nS per clock
+  SPI3->CR1 = 0 ;		// Clear any mode error
+  SPI3->CR1 = SPI_CR1_SSM | SPI_CR1_SSI | SPI_CR1_CPOL | SPI_CR1_CPHA ;
+  SPI3->CR2 = 0 ;
+  SPI3->CR1 |= SPI_CR1_MSTR ;	// Make sure in case SSM/SSI needed to be set first
+  SPI3->CR1 |= SPI_CR1_SPE ;
+
+  configure_pins( PIN_LCD_NCS, PIN_OUTPUT | PIN_PORTA | PIN_PUSHPULL | PIN_OS25 | PIN_NO_PULLUP ) ;
+  configure_pins( PIN_LCD_RST, PIN_OUTPUT | PIN_PORTD | PIN_PUSHPULL | PIN_OS25 | PIN_NO_PULLUP ) ;
+  configure_pins( PIN_LCD_A0,  PIN_OUTPUT | PIN_PORTC | PIN_PUSHPULL | PIN_OS50 | PIN_NO_PULLUP ) ;
+  configure_pins( PIN_LCD_MOSI|PIN_LCD_CLK, PIN_PORTC | PIN_PUSHPULL | PIN_OS50 | PIN_NO_PULLUP | PIN_PER_6 | PIN_PERIPHERAL ) ;
+}
+
+void setupSPIdma()
+{
+  RCC->AHB1ENR |= RCC_AHB1ENR_DMA1EN ;			// Enable DMA1 clock
+  // Chan 0, 8-bit wide, Medium priority, memory increments
+  DMA1_Stream7->CR &= ~DMA_SxCR_EN ;		// Disable DMA
+  DMA1->HIFCR = DMA_HIFCR_CTCIF7 | DMA_HIFCR_CHTIF7 | DMA_HIFCR_CTEIF7 | DMA_HIFCR_CDMEIF7 | DMA_HIFCR_CFEIF7 ; // Write ones to clear bits
+  DMA1_Stream7->CR =  DMA_SxCR_PL_0 | DMA_SxCR_MINC | DMA_SxCR_DIR_0 ;
+  DMA1_Stream7->PAR = (uint32_t) &SPI3->DR ;
+  DMA1_Stream7->M0AR = (uint32_t)displayBuf;
+  DMA1_Stream7->FCR = 0x05 ; //DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
+  DMA1_Stream7->NDTR = LCD_W*LCD_H/8*4 ;
+
+//	NVIC_SetPriority( DMA1_Stream7_IRQn, 2 ) ; // Lower priority interrupt
+//	NVIC_EnableIRQ(DMA1_Stream7_IRQn) ;
+}
+
 static void LCD_Init()
 {
   WriteCommand(0x2F);   //Internal pump control
@@ -122,34 +162,32 @@ void Set_Address(u8 x, u8 y)
 
 #if defined(REVPLUS)
 void lcdRefresh()
-{  
-  for (uint32_t y=0; y<LCD_H; y+=2) {
-    uint8_t *p = &displayBuf[y/2 * LCD_W];
+{
+  Set_Address(0, 0);
+	
+  LCD_NCS_LOW();
+  LCD_A0_HIGH();
 
-    Set_Address(0, y/2);
-    AspiCmd(0xAF);
+  setupSPIdma() ;
+  DMA1_Stream7->CR |= DMA_SxCR_EN ;		// Enable DMA
+  SPI3->CR2 |= SPI_CR2_TXDMAEN ;
 
-    LCD_CLK_HIGH();
-    LCD_A0_HIGH();
-    LCD_NCS_LOW();
-
-    for (uint32_t x=0; x<LCD_W; x++) {
-      uint8_t a = p[x] ;
-      LCD_WRITE_BIT(a & 0x80);
-      LCD_WRITE_BIT(a & 0x40);
-      LCD_WRITE_BIT(a & 0x20);
-      LCD_WRITE_BIT(a & 0x10);
-      LCD_WRITE_BIT(a & 0x08);
-      LCD_WRITE_BIT(a & 0x04);
-      LCD_WRITE_BIT(a & 0x02);
-      LCD_WRITE_BIT(a & 0x01);
-    }
-
-    LCD_NCS_HIGH();
-    LCD_A0_HIGH();
-
-    WriteData(0);
+  while ( ( DMA1->HISR & DMA_HISR_TCIF7 ) == 0 ) {
+    // wait
   }
+
+  SPI3->CR2 &= ~SPI_CR2_TXDMAEN ;
+  DMA1_Stream7->CR &= ~DMA_SxCR_EN ;		// Disable DMA
+
+  while ( ( SPI3->SR & SPI_SR_TXE ) == 0 ) {
+    // wait
+  } // Last byte being sent
+
+  while ( SPI3->SR & SPI_SR_BSY ) {
+    // wait
+  }
+  
+  LCD_NCS_HIGH();
 }
 #else
 void lcdRefresh()
@@ -270,6 +308,9 @@ void lcdInit()
 {
   LCD_BL_Config();
   LCD_Hardware_Init();
+#if defined(REVPLUS)
+  initLcdSpi() ;
+#endif
   
   LCD_RST_HIGH();
   Delay(5);
@@ -285,8 +326,6 @@ void lcdInit()
   LCD_Init();
   Delay(120);
 
-  LCD_Init();
-  Delay(120);
   AspiCmd(0xAF);	//dc2=1, IC into exit SLEEP MODE, dc3=1 gray=ON, dc4=1 Green Enhanc mode disabled
 }
 
