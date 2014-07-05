@@ -3334,6 +3334,7 @@ inline void opentxInit(OPENTX_INIT_ARGS)
 #if defined(PCBTARANIS)
   CoTickDelay(100);   //200ms
   lcdInit();
+  lcdSetRefVolt(g_eeGeneral.contrast);
   BACKLIGHT_ON();
   CoTickDelay(20);  //20ms
   Splash();
@@ -3509,7 +3510,9 @@ int main(void)
   g_menuStack[1] = menuModelSelect;
 #endif
 
+#if !defined(PCBTARANIS)
   lcdSetRefVolt(25);
+#endif
 
   sei(); // interrupts needed for telemetryInit and eeReadAll.
 
