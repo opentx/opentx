@@ -611,9 +611,14 @@ void frskySetCellVoltage(uint8_t battnumber, frskyCellVoltage_t cellVolts)
   frskyData.hub.cellVolts[battnumber] = cellVolts;
 
   // update cells count
+  // NOTICE: frskyData.hub.cellsCount does not necessarily reflect
+  // the real number of cells. In case where two independent sensors
+  // with less than 6 cells in first sensor, the number will be wrong.
+  // This is intended. This number is only used for detection of change
+  // of number of cells.
   if (frskyData.hub.cellsCount < battnumber+1) {
     frskyData.hub.cellsCount = battnumber+1;
-    // reset frskyData.hub.minCells to retrigger new calculation
+    // reset frskyData.hub.minCells and frskyData.hub.minCell to retrigger their new calculation
     frskyData.hub.minCells = 0;
     frskyData.hub.minCell = 0;
   }
@@ -627,7 +632,6 @@ void frskySetCellVoltage(uint8_t battnumber, frskyCellVoltage_t cellVolts)
     if (tmpCellVolts == 0) continue;
     cellsSum += tmpCellVolts;
     if (tmpCellVolts < minCellVolts) {
-      // update minimum cell voltage (Cell) and its cell number
       frskyData.hub.minCellVolts = minCellVolts = tmpCellVolts;
       frskyData.hub.minCellIdx = i;
     }
@@ -639,12 +643,10 @@ void frskySetCellVoltage(uint8_t battnumber, frskyCellVoltage_t cellVolts)
     frskyData.hub.minCells = frskyData.hub.cellsSum;
   }
 
-#if defined(CPUARM)
   // update all time minimum cell voltage (Cell-)
   if (!frskyData.hub.minCell || frskyData.hub.minCellVolts < frskyData.hub.minCell) {
     frskyData.hub.minCell = frskyData.hub.minCellVolts;
   }
-#endif
 }
 
 void frskyUpdateCells(void) 
