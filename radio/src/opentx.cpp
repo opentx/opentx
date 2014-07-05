@@ -2832,7 +2832,7 @@ void perMain()
     if (!LCD_LOCKED()) {
       lcd_clear();
       g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
-      }
+    }
 
 #if defined(LUA)
     luaTask(evt);
