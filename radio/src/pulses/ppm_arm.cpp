@@ -59,9 +59,9 @@ void setupPulsesPPM(unsigned int port)                   // Don't enable interru
   uint32_t pwmCh = (port == EXTERNAL_MODULE ? 3 : 1);
   pwmptr->PWM_CH_NUM[pwmCh].PWM_CDTYUPD = (g_model.moduleData[port].ppmDelay * 50 + 300) * 2; //Stoplen *2
   if (g_model.moduleData[port].ppmPulsePol)
-    pwmptr->PWM_CH_NUM[pwmCh].PWM_CMR |= 0x00000200 ;   // CPOL
-  else
     pwmptr->PWM_CH_NUM[pwmCh].PWM_CMR &= ~0x00000200 ;  // CPOL
+  else
+    pwmptr->PWM_CH_NUM[pwmCh].PWM_CMR |= 0x00000200 ;   // CPOL
 #endif
 
   uint16_t * ptr = ppmStream[port];

@@ -69,7 +69,7 @@ void init_main_ppm(uint32_t period, uint32_t out_enable)
   pwmptr = PWM ;
   // PWM3 for PPM output
   pwmptr->PWM_CH_NUM[3].PWM_CMR = 0x0000000B ;                  // CLKA
-  if (g_model.moduleData[EXTERNAL_MODULE].ppmPulsePol)
+  if (!g_model.moduleData[EXTERNAL_MODULE].ppmPulsePol)
     pwmptr->PWM_CH_NUM[3].PWM_CMR |= 0x00000200 ;               // CPOL
   pwmptr->PWM_CH_NUM[3].PWM_CPDR = period ;                     // Period in half uS
   pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = period ;                  // Period in half uS
@@ -82,7 +82,7 @@ void init_main_ppm(uint32_t period, uint32_t out_enable)
   // PWM1 for PPM2
   configure_pins(PIO_PC15, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_B | PIN_PORTC | PIN_NO_PULLUP ) ;
   pwmptr->PWM_CH_NUM[1].PWM_CMR = 0x0000000B ;    // CLKB
-  if (g_model.moduleData[EXTRA_MODULE].ppmPulsePol)
+  if (!g_model.moduleData[EXTRA_MODULE].ppmPulsePol)
     pwmptr->PWM_CH_NUM[1].PWM_CMR |= 0x00000200 ;   // CPOL
   pwmptr->PWM_CH_NUM[1].PWM_CPDR = period ;                       // Period
   pwmptr->PWM_CH_NUM[1].PWM_CPDRUPD = period ;            // Period
