@@ -1625,11 +1625,6 @@ void flightReset()
   telemetryReset();
 #endif
 
-  logicalSwitchesReset();
-#if !defined(CPUARM)
-  s_last_switch_value = 0;
-#endif
-
   s_mixer_first_run_done = false;
 
   START_SILENCE_PERIOD();

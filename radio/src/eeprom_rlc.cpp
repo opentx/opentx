@@ -970,6 +970,7 @@ void eeLoadModel(uint8_t id)
     }
 
     flightReset();
+    logicalSwitchesReset();
 
     if (pulsesStarted()) {
       checkAll();

@@ -389,6 +389,38 @@ TEST(getSwitch, circularCSW)
   EXPECT_EQ(getSwitch(-SWSRC_SW2), true);
 }
 
+#if defined(CPUARM)
+TEST(getSwitch, OldTypeStickyCSW)
+{
+  MODEL_RESET();
+  MIXER_RESET();
+  g_model.logicalSw[0] = { SWSRC_SA0, 0, 0, LS_FUNC_AND };
+  g_model.logicalSw[1] = { SWSRC_SW1, SWSRC_SW2, 0, LS_FUNC_OR };
+
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
+
+  // now trigger SA0, both switches should become true
+  simuSetSwitch(0, -1);
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), true);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), true);
+
+  // now release SA0 and SW2 should stay true
+  simuSetSwitch(0, 0);
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), true);
+
+  // now reset logical switches
+  logicalSwitchesReset();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
+}
+#endif // #if defined(CPUARM)
+
 TEST(getSwitch, nullSW)
 {
   MODEL_RESET();
