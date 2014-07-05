@@ -802,6 +802,12 @@ int16_t lswTimerValue(delayval_t val)
 void logicalSwitchesReset()
 {
 #if defined(CPUARM)
+  memset(lswFm, 0, sizeof(lswFm));
+#else
+  s_last_switch_value = 0;
+#endif
+
+#if defined(CPUARM)
   for (uint8_t fm=0; fm<MAX_FLIGHT_MODES; fm++) {
 #endif
     for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++) {
