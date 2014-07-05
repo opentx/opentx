@@ -168,13 +168,13 @@ CPPSRC = ../targets/taranis/lcd_driver.cpp \
 	../targets/taranis/flash_driver.cpp \
 	../targets/taranis/diskio.cpp \
 	../targets/taranis/usbd_usr.cpp \
-        ../targets/taranis/usbd_storage_msd.cpp \
-        ../lcd_common.cpp \
-        ../lcd_taranis.cpp \
-        ../keys.cpp \
-        ../fonts.cpp \
-        ../strhelpers.cpp \
-        boot.cpp
+	../targets/taranis/usbd_storage_msd.cpp \
+	../lcd_common.cpp \
+	../lcd_taranis.cpp \
+	../keys.cpp \
+	../fonts.cpp \
+	../strhelpers.cpp \
+	boot.cpp
 
 # List ASM source files here
 ASRC = ../targets/taranis/STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Source/Templates/gcc_ride7/startup_stm32f2xx.s
