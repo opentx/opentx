@@ -119,7 +119,7 @@ void PrintDialog::printSetup()
     str.append(fv(tr("Timer1"), getTimerStr(g_model->timers[0])));  //value, mode, count up/down
     str.append(fv(tr("Timer2"), getTimerStr(g_model->timers[1])));  //value, mode, count up/down
     str.append(fv(tr("Protocol"), getProtocol(g_model))); //proto, numch, delay,
-    str.append(fv(tr("Pulse Polarity"), g_model->moduleData[0].ppmPulsePol ? "NEG" : "POS"));
+    str.append(fv(tr("Pulse Polarity"), g_model->moduleData[0].polarityToString()));
     str.append(fv(tr("Throttle Trim"), g_model->thrTrim ? tr("Enabled") : tr("Disabled")));
     str.append(fv(tr("Throttle Expo"), g_model->thrExpo ? tr("Enabled") : tr("Disabled")));
     // TODO   str.append(fv(tr("Trim Switch"), getSWName(g_model->trimSw)));

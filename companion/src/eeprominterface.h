@@ -954,6 +954,7 @@ class ModuleData {
     bool         ppmPulsePol;           // false = positive
     int          ppmFrameLength;
     void clear() { memset(this, 0, sizeof(ModuleData)); }
+    QString polarityToString() { return ppmPulsePol ? QObject::tr("Positive") : QObject::tr("Negative"); }
 };
 
 #define C9X_MAX_SCRIPTS       7
