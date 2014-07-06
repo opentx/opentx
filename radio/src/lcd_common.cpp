@@ -324,13 +324,13 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
   if (dblsize) x++;
 
   for (uint8_t i=1; i<=len; i++) {
-    div_t qr = div((uint16_t)val, 10);
+    div_t qr = div(val, 10);
     char c = qr.rem + '0';
     LcdFlags f = flags;
 #if !defined(PCBTARANIS)
     if (dblsize) {
       if (c=='1' && i==len && xn>x+10) { x+=1; }
-      if ((uint16_t)val >= 1000) { x+=FWNUM; f&=~DBLSIZE; }
+      if (val >= 1000) { x+=FWNUM; f&=~DBLSIZE; }
     }
 #endif
     lcd_putcAtt(x, y, c, f);
@@ -379,7 +379,7 @@ void lcd_outdezNAtt(xcoord_t x, uint8_t y, lcdint_t val, LcdFlags flags, uint8_t
       }
     }
 #if !defined(PCBTARANIS)
-    if (dblsize && (uint16_t)val >= 1000 && (uint16_t)val < 10000) x-=2;
+    if (dblsize && val >= 1000 && val < 10000) x-=2;
 #endif
     val = qr.quot;
     x -= fw;
