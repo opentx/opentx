@@ -356,14 +356,28 @@ void SimulatorDialog::initUi(T * ui)
 
   setTrims();
 
-  int outputs = std::min(16, GetCurrentFirmware()->getCapability(Outputs));
+  int outputs = std::min(32,GetCurrentFirmware()->getCapability(Outputs));
+  if (outputs <= 16) {
+    int idx = tabWidget->indexOf(ui->outputs2);
+    tabWidget->removeTab(idx);
+  }
+  else {
+    tabWidget->setTabText(tabWidget->indexOf(ui->outputs), tr("Outputs") + QString(" 1-%1").arg(16));
+    tabWidget->setTabText(tabWidget->indexOf(ui->outputs2), tr("Outputs") + QString(" 17-%1").arg(outputs));
+  }
   for (int i=0; i<outputs; i++) {
-    int column = i / (outputs/2);
-    int line = i % (outputs/2);
+    QGridLayout * dest = ui->channelsLayout;
+    int column = i / (std::min(16,outputs)/2);
+    int line = i % (std::min(16,outputs)/2);
+    if (i >= 16 ) {
+      dest = ui->channelsLayout2;
+      column = (i-16) / (8);
+      line = (i-16) % (8);
+    }
     QLabel * label = new QLabel(tabWidget);
     ModelData model;
     label->setText(RawSource(SOURCE_TYPE_CH, i).toString(model));
-    channelsLayout->addWidget(label, line, column == 0 ? 0 : 5, 1, 1);
+    dest->addWidget(label, line, column == 0 ? 0 : 5, 1, 1);
 
     QSlider * slider = new QSlider(tabWidget);
     slider->setEnabled(false);
@@ -389,30 +403,24 @@ void SimulatorDialog::initUi(T * ui)
     slider->setInvertedAppearance(false);
     slider->setTickPosition(QSlider::TicksBelow);
     channelSliders << slider;
-    channelsLayout->addWidget(slider, line, column == 0 ? 1 : 4, 1, 1);
+    dest->addWidget(slider, line, column == 0 ? 1 : 4, 1, 1);
 
     QLabel * value = new QLabel(tabWidget);
     value->setMinimumSize(QSize(50, 0));
     value->setAlignment(Qt::AlignCenter);
     channelValues << value;
-    channelsLayout->addWidget(value, line, column == 0 ? 2 : 3, 1, 1);
+    dest->addWidget(value, line, column == 0 ? 2 : 3, 1, 1);
   }
 
   int switches = GetCurrentFirmware()->getCapability(LogicalSwitches);
   for (int i=0; i<switches; i++) {
-    QFrame * swtch = new QFrame(tabWidget);
-    swtch->setAutoFillBackground(true);
-    swtch->setFrameShape(QFrame::Panel);
-    swtch->setFrameShadow(QFrame::Raised);
-    swtch->setLineWidth(2);
-    QVBoxLayout * layout = new QVBoxLayout(swtch);
-    layout->setContentsMargins(2, 2, 2, 2);
-    QLabel * label = new QLabel(swtch);
-    label->setText(RawSwitch(SWITCH_TYPE_VIRTUAL, i+1).toString());
-    label->setAlignment(Qt::AlignCenter);
-    logicalSwitchLabels << label;
-    layout->addWidget(label);
-    logicalSwitchesLayout->addWidget(swtch, i / (switches/2), i % (switches/2), 1, 1);
+    QFrame * swtch1 = createLogicalSwitch(tabWidget, i, logicalSwitchLabels);
+    logicalSwitchesLayout->addWidget(swtch1, i / (switches/2), i % (switches/2), 1, 1);
+    if (outputs > 16) {
+      // repeat logical switches on second outputs tab
+      QFrame * swtch2 = createLogicalSwitch(tabWidget, i, logicalSwitchLabels2);
+      ui->logicalSwitchesLayout2->addWidget(swtch2, i / (switches/2), i % (switches/2), 1, 1);
+    }
   }
 
   int fmodes = GetCurrentFirmware()->getCapability(FlightModes);
@@ -441,6 +449,23 @@ void SimulatorDialog::initUi(T * ui)
   else {
     ui->tabWidget->setCurrentWidget(ui->simu);
   }
+}
+
+QFrame * SimulatorDialog::createLogicalSwitch(QWidget * parent, int switchNo, QVector<QLabel *> & labels)
+{
+    QFrame * swtch = new QFrame(tabWidget);
+    swtch->setAutoFillBackground(true);
+    swtch->setFrameShape(QFrame::Panel);
+    swtch->setFrameShadow(QFrame::Raised);
+    swtch->setLineWidth(2);
+    QVBoxLayout * layout = new QVBoxLayout(swtch);
+    layout->setContentsMargins(2, 2, 2, 2);
+    QLabel * label = new QLabel(swtch);
+    label->setText(RawSwitch(SWITCH_TYPE_VIRTUAL, switchNo+1).toString());
+    label->setAlignment(Qt::AlignCenter);
+    labels << label;
+    layout->addWidget(label);
+    return swtch;
 }
 
 void SimulatorDialog::onButtonPressed(int value)
@@ -814,9 +839,11 @@ void SimulatorDialog::setValues()
   Trims trims;
   simulator->getTrims(trims);
 
-  for (int i=0; i<std::min(16, GetCurrentFirmware()->getCapability(Outputs)); i++) {
-    channelSliders[i]->setValue(chVal(outputs.chans[i]));
-    channelValues[i]->setText(QString("%1").arg((qreal)outputs.chans[i]*100/1024, 0, 'f', 1));
+  for (int i=0; i<GetCurrentFirmware()->getCapability(Outputs); i++) {
+    if (i < channelSliders.size()) {
+      channelSliders[i]->setValue(chVal(outputs.chans[i]));
+      channelValues[i]->setText(QString("%1").arg((qreal)outputs.chans[i]*100/1024, 0, 'f', 1));
+    }
   }
 
   leftXPerc->setText(QString("X %1%").arg((qreal)nodeLeft->getX()*100+trims.values[0]/5, 2, 'f', 0));
@@ -830,6 +857,8 @@ void SimulatorDialog::setValues()
 
   for (int i=0; i<GetCurrentFirmware()->getCapability(LogicalSwitches); i++) {
     logicalSwitchLabels[i]->setStyleSheet(outputs.vsw[i] ? CSWITCH_ON : CSWITCH_OFF);
+    if (!logicalSwitchLabels2.isEmpty())
+      logicalSwitchLabels2[i]->setStyleSheet(outputs.vsw[i] ? CSWITCH_ON : CSWITCH_OFF);
   }
 
   for (unsigned int gv=0; gv<numGvars; gv++) {
