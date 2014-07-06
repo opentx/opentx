@@ -467,7 +467,9 @@ void telemetryInterrupt10ms(void);
   typedef uint8_t frskyCellVoltage_t;
 #endif
 
+#if defined(CPUARM) || defined(FRSKY_HUB)
 void frskySetCellVoltage(uint8_t battnumber, frskyCellVoltage_t cellVolts);
 void frskyUpdateCells(void);
+#endif
 
 #endif
