@@ -143,6 +143,16 @@ TEST(outdezNAtt, test_unsigned)
   EXPECT_TRUE(checkScreenshot("unsigned")) << "Unsigned numbers will be bad displayed";
 }
 
+#if defined(CPUARM)
+TEST(outdezNAtt, testBigNumbers)
+{
+  lcd_clear();
+  lcd_outdezNAtt(0, 0, 1234567, LEFT);
+  lcd_outdezNAtt(0, FH, -1234567, LEFT);
+  EXPECT_TRUE(checkScreenshot("big_numbers"));
+}
+#endif // #if defined(CPUARM)
+
 #if !defined(PCBSKY9X)
 TEST(EEPROM, 100_random_writes)
 {
