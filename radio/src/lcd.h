@@ -57,8 +57,10 @@
 
 #if defined(CPUARM)
   #define lcdint_t      int32_t
+  #define lcduint_t     uint32_t
 #else
   #define lcdint_t      int16_t
+  #define lcduint_t     uint16_t
 #endif
 
 #define FW              6
