@@ -687,6 +687,7 @@ extern uint8_t flightModeTransitionLast;
   extern unsigned char *heap;
   extern int _end;
   extern unsigned char *_estack;
+  #define getAvailableMemory() ((unsigned int)((unsigned char *)&_estack - heap))
 #endif
 
 void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms);

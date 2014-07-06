@@ -186,12 +186,12 @@ void menuStatisticsDebug(uint8_t event)
 
 #if defined(PCBTARANIS) && !defined(SIMU)
   lcd_putsLeft(3*FH, "Free Mem");
-  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, 3*FH, (unsigned int)(_estack - heap), LEFT);
+  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, 3*FH, getAvailableMemory(), LEFT);
 #endif
 
 #if defined(LUA)
   lcd_putsLeft(4*FH, "Lua scripts");
-  lcd_putsAtt(MENU_DEBUG_COL1_OFS-1, 4*FH+1, "[Duration]", SMLSIZE);
+  lcd_putsAtt(MENU_DEBUG_COL1_OFS, 4*FH+1, "[Duration]", SMLSIZE);
   lcd_outdezAtt(lcdLastPos, 4*FH, 10*maxLuaDuration, LEFT);
   lcd_putsAtt(lcdLastPos+2, 4*FH+1, "[Interval]", SMLSIZE);
   lcd_outdezAtt(lcdLastPos, 4*FH, 10*maxLuaInterval, LEFT);
@@ -204,7 +204,7 @@ void menuStatisticsDebug(uint8_t event)
   lcd_putsLeft(6*FH, STR_FREESTACKMINB);
 
 #if LCD_W >= 212
-  lcd_putsAtt(MENU_DEBUG_COL1_OFS-1, 6*FH+1, "[Main]", SMLSIZE);
+  lcd_putsAtt(MENU_DEBUG_COL1_OFS, 6*FH+1, "[Main]", SMLSIZE);
   lcd_outdezAtt(lcdLastPos, 6*FH, stack_free(0), UNSIGN|LEFT);
   lcd_putsAtt(lcdLastPos+2, 6*FH+1, "[Mix]", SMLSIZE);
   lcd_outdezAtt(lcdLastPos, 6*FH, stack_free(1), UNSIGN|LEFT);
