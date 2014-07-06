@@ -1594,6 +1594,7 @@ PACK(typedef struct t_TimerData {
   uint8_t  spare:4;
   uint16_t value;
 }) TimerData;
+#define IS_PERSISTENT_TIMER(idx) g_model.timers[idx].persistent
 #else
 PACK(typedef struct t_TimerData {
   int8_t    mode;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
@@ -1602,6 +1603,7 @@ PACK(typedef struct t_TimerData {
   uint16_t  minuteBeep:1;
   uint16_t  spare:2;
 }) TimerData;
+#define IS_PERSISTENT_TIMER(idx) 0
 #endif
 
 enum Protocols {

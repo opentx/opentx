@@ -1619,8 +1619,14 @@ void flightReset()
   else
     AUDIO_RESET();
 
-  timerReset(0);
-  timerReset(1);
+  if (!IS_PERSISTENT_TIMER(0)) {
+    timerReset(0);
+  }
+
+  if (!IS_PERSISTENT_TIMER(1)) {
+    timerReset(1);
+  }
+
 #if defined(FRSKY)
   telemetryReset();
 #endif
