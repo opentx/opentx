@@ -47,6 +47,8 @@
 #define CHANNEL_MAX (1024*256)
 
 void doMixerCalculations();
+bool checkScreenshot(QString test);
+
 
 #define MODEL_RESET() \
   memset(&g_model, 0, sizeof(g_model)); \
@@ -136,20 +138,20 @@ TEST(Trims, CopySticksToOffset)
 
 TEST(outdezNAtt, test_unsigned)
 {
-  uint8_t refBuf[sizeof(displayBuf)];
-  memset(displayBuf, 0, sizeof(displayBuf));
-  lcd_putc(0*FWNUM, 0, '6');
-  lcd_putc(1*FWNUM, 0, '5');
-  lcd_putc(2*FWNUM, 0, '5');
-  lcd_putc(3*FWNUM, 0, '3');
-  lcd_putc(4*FWNUM, 0, '0');
-  memcpy(refBuf, displayBuf, sizeof(displayBuf));
-
-  memset(displayBuf, 0, sizeof(displayBuf));
+  lcd_clear();
   lcd_outdezNAtt(0, 0, 65530, LEFT|UNSIGN);
-
-  EXPECT_EQ(memcmp(refBuf, displayBuf, sizeof(displayBuf)), 0) << "Unsigned numbers will be bad displayed";
+  EXPECT_TRUE(checkScreenshot("unsigned")) << "Unsigned numbers will be bad displayed";
 }
+
+#if defined(CPUARM)
+TEST(outdezNAtt, testBigNumbers)
+{
+  lcd_clear();
+  lcd_outdezNAtt(0, 0, 1234567, LEFT);
+  lcd_outdezNAtt(0, FH, -1234567, LEFT);
+  EXPECT_TRUE(checkScreenshot("big_numbers"));
+}
+#endif // #if defined(CPUARM)
 
 #if !defined(PCBSKY9X)
 TEST(EEPROM, 100_random_writes)
