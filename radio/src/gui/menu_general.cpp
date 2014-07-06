@@ -229,16 +229,16 @@ void menuGeneralSetup(uint8_t event)
 #if defined(RTCLOCK)
       case ITEM_SETUP_DATE:
         lcd_putsLeft(y, STR_DATE);
-        lcd_putc(RADIO_SETUP_DATE_COLUMN, y, '-'); lcd_putc(RADIO_SETUP_DATE_COLUMN+3*FW-1, y, '-');
+        lcd_putc(RADIO_SETUP_DATE_COLUMN+2, y, '-'); lcd_putc(RADIO_SETUP_DATE_COLUMN+3*FW, y, '-');
         for (uint8_t j=0; j<3; j++) {
           uint8_t rowattr = (m_posHorz==j ? attr : 0);
           switch (j) {
             case 0:
-              lcd_outdezAtt(RADIO_SETUP_DATE_COLUMN, y, t.tm_year+1900, rowattr);
+              lcd_outdezAtt(RADIO_SETUP_DATE_COLUMN+2, y, t.tm_year+1900, rowattr);
               if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_year = checkIncDec(event, t.tm_year, 112, 200, 0);
               break;
             case 1:
-              lcd_outdezNAtt(RADIO_SETUP_DATE_COLUMN+3*FW-1, y, t.tm_mon+1, rowattr|LEADING0, 2);
+              lcd_outdezNAtt(RADIO_SETUP_DATE_COLUMN+3*FW, y, t.tm_mon+1, rowattr|LEADING0, 2);
               if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_mon = checkIncDec(event, t.tm_mon, 0, 11, 0);
               break;
             case 2:

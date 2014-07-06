@@ -215,8 +215,8 @@ extern "C" void TWI0_IRQHandler()
                 utm.tm_min = fromBCD( Rtc_status[1] & 0x7F ) ;
                 utm.tm_hour = fromBCD( Rtc_status[2] & 0x3F ) ;
                 utm.tm_mday = fromBCD( Rtc_status[4] & 0x3F ) ;
-                utm.tm_mon = fromBCD( Rtc_status[5] & 0x1F ) ;
-                utm.tm_year = fromBCD( Rtc_status[6] ) + 2000 ;
+                utm.tm_mon = fromBCD( Rtc_status[5] & 0x1F ) - 1;
+                utm.tm_year = fromBCD( Rtc_status[6] ) + 100 ;
                 g_rtcTime = gmktime(&utm);
 
                 TWI0->TWI_PTCR = TWI_PTCR_RXTDIS ;      // Stop transfers
