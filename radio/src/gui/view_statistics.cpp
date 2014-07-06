@@ -186,7 +186,7 @@ void menuStatisticsDebug(uint8_t event)
 
 #if defined(PCBTARANIS) && !defined(SIMU)
   lcd_putsLeft(3*FH, "Free Mem");
-  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, 3*FH, 0x20020000 - (unsigned int)heap, LEFT);
+  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, 3*FH, (unsigned int)(_estack - heap), LEFT);
 #endif
 
 #if defined(LUA)
