@@ -28,7 +28,6 @@ class TimerPanel : public ModelPanel
   private slots:
     void on_mode_currentIndexChanged(int index);
     void on_value_editingFinished();
-    void on_persistent_toggled(bool checked);
     void on_minuteBeep_toggled(bool checked);
 
   private:

@@ -81,12 +81,6 @@ void TimerPanel::on_mode_currentIndexChanged(int index)
   }
 }
 
-void TimerPanel::on_persistent_toggled(bool checked)
-{
-  timer.persistent = checked;
-  emit modified();
-}
-
 void TimerPanel::on_minuteBeep_toggled(bool checked)
 {
   timer.minuteBeep = checked;
