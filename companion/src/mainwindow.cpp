@@ -64,8 +64,8 @@
 #include "helpers.h"
 #include "appdata.h"
 #include "radionotfound.h"
-#include "firmwares/opentx/opentxinterface.h" // TODO get rid of this include
 
+#define OPENTX_COMPANION_DOWNLOADS   "http://downloads-20.open-tx.org/companion"
 #define DONATE_STR      "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QUZ48K4SEXDP2"
 
 #ifdef __APPLE__
@@ -632,7 +632,6 @@ void MainWindow::loadProfile()  //TODO Load all variables - Also HW!
       int profnum=action->data().toInt();
       g.id( profnum );
 
-      // TODO Get rid of this global variable - The profile.firmware is the real source
       current_firmware_variant = GetFirmware(g.profile[g.id()].fwType());
 
       foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {

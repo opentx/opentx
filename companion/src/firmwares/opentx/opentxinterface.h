@@ -18,7 +18,6 @@
 
 #include "eeprominterface.h"
 
-#define OPENTX_COMPANION_DOWNLOADS   "http://downloads-20.open-tx.org/companion"
 #define OPENTX_FIRMWARE_DOWNLOADS    "http://downloads-20.open-tx.org/firmware"
 
 class RleFile;
