@@ -609,8 +609,8 @@ PACK(typedef struct {
 }) MixData;
 #else
 PACK(typedef struct {
-  uint8_t  destCh:4;
-  uint8_t  mixWarn:4;         // mixer warning
+  uint8_t  destCh:5;
+  uint8_t  mixWarn:3;         // mixer warning
   uint16_t flightModes;
   uint8_t  curveMode:1;
   uint8_t  noExpo:1;

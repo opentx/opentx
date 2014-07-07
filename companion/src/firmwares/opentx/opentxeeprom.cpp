@@ -867,8 +867,8 @@ class MixField: public TransformedField {
         internalField.Append(new SpareBitsField<8>());
       }
       else if (IS_ARM(board) && version >= 216) {
-        internalField.Append(new UnsignedField<4>(_destCh));
-        internalField.Append(new UnsignedField<4>(mix.mixWarn));
+        internalField.Append(new UnsignedField<5>(_destCh));
+        internalField.Append(new UnsignedField<3>(mix.mixWarn));
         internalField.Append(new UnsignedField<16>(mix.phases));
         internalField.Append(new BoolField<1>(_curveMode));
         internalField.Append(new BoolField<1>(mix.noExpo));
