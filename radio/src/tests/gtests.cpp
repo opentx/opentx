@@ -431,7 +431,7 @@ TEST(getSwitch, nullSW)
 
 
 #if defined(PCBTARANIS) && defined(FRSKY)
-TEST(getSwitch, TelemetryValueWithDelay)
+TEST(getSwitch, VfasWithDelay)
 {
   MODEL_RESET();
   MIXER_RESET();
@@ -446,9 +446,9 @@ TEST(getSwitch, TelemetryValueWithDelay)
   g_model.logicalSw[0] = {-40, 96, 0, 4, 5, 0, 0};
   frskyData.hub.vfas = 150;   //unit is 100mV
 
+  //telemetry streaming is FALSE, so L1 should be FALSE no matter what value Vfas has
   evalLogicalSwitches();
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
-
 
   logicalSwitchesTimerTick();
   evalLogicalSwitches();
@@ -467,20 +467,24 @@ TEST(getSwitch, TelemetryValueWithDelay)
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
 
   //every logicalSwitchesTimerTick() represents 100ms
-  //so now after 5 ticks we should have a TRUE value
+  //so now after 5 ticks we should still have a FALSE value
   logicalSwitchesTimerTick();
   evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), true);
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
 
   //now turn on telemetry
   EXPECT_EQ(TELEMETRY_STREAMING(), false);
   frskyData.rssi[0].value = 50;
   EXPECT_EQ(TELEMETRY_STREAMING(), true);
 
-  //vfas is 15.0V so L1 should become FALSE
+  //vfas is 15.0V so L1 should still be FALSE
   logicalSwitchesTimerTick();
   evalLogicalSwitches();
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+  logicalSwitchesTimerTick();
+  logicalSwitchesTimerTick();
+  logicalSwitchesTimerTick();
+  logicalSwitchesTimerTick();
   logicalSwitchesTimerTick();
   evalLogicalSwitches();
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
@@ -510,25 +514,56 @@ TEST(getSwitch, TelemetryValueWithDelay)
   EXPECT_EQ(getSwitch(SWSRC_SW1), true);
 
   logicalSwitchesTimerTick();
+  logicalSwitchesTimerTick();
+  logicalSwitchesTimerTick();
+  logicalSwitchesTimerTick();
   evalLogicalSwitches();
   EXPECT_EQ(getSwitch(SWSRC_SW1), true);
 
-  //increase vfas
-  frskyData.hub.vfas = 195;
-  evalLogicalSwitches();
 
-  logicalSwitchesTimerTick();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
-
-  //now stop telemetry, L1 should become TRUE
+  //now stop telemetry, L1 should become FALSE immediatelly
   frskyData.rssi[0].value = 0;
   EXPECT_EQ(TELEMETRY_STREAMING(), false);
   evalLogicalSwitches();
 
   logicalSwitchesTimerTick();
+  logicalSwitchesTimerTick();
+  logicalSwitchesTimerTick();
+  logicalSwitchesTimerTick();
+  logicalSwitchesTimerTick();
   evalLogicalSwitches();
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+}
+
+TEST(getSwitch, RssiWithDuration)
+{
+  MODEL_RESET();
+  MIXER_RESET();
+  memclear(&frskyData, sizeof(frskyData));
+  /*
+  Test for logical switch:
+      L1  RSSI > 10 Duration (0.5s)
+
+  (gdb) print Open9xX9D::g_model.logicalSw[0] 
+  $1 = {v1 = -56 '\310', v2 = 10, v3 = 0, func = 3 '\003', delay = 0 '\000', duration = 5 '\005', andsw = 0 '\000'}
+  */
+  g_model.logicalSw[0] = {-56, 10, 0, 3, 0, 5, 0};
+
+  EXPECT_EQ(TELEMETRY_STREAMING(), false);
+
+  evalLogicalSwitches();
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+
+  //now set RSSI to 5, L1 should still be FALSE
+  frskyData.rssi[0].value = 5;
+  evalLogicalSwitches();
+  EXPECT_EQ(TELEMETRY_STREAMING(), true);
 
   logicalSwitchesTimerTick();
   evalLogicalSwitches();
@@ -538,14 +573,59 @@ TEST(getSwitch, TelemetryValueWithDelay)
   evalLogicalSwitches();
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
 
-  logicalSwitchesTimerTick();
+  //now set RSSI to 100, L1 should become TRUE for 0.5s
+  frskyData.rssi[0].value = 100;
   evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+  EXPECT_EQ(TELEMETRY_STREAMING(), true);
 
   logicalSwitchesTimerTick();
   evalLogicalSwitches();
   EXPECT_EQ(getSwitch(SWSRC_SW1), true);
 
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), true);
+
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), true);
+
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), true);
+
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+
+  //repeat  telemetry streaming OFF and ON to test for duration processing
+  frskyData.rssi[0].value = 0;
+  evalLogicalSwitches();
+  EXPECT_EQ(TELEMETRY_STREAMING(), false);
+
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+
+  //now set RSSI to 100, L1 should become TRUE for 0.5s
+  frskyData.rssi[0].value = 100;
+  evalLogicalSwitches();
+  EXPECT_EQ(TELEMETRY_STREAMING(), true);
+
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), true);
+
+  logicalSwitchesTimerTick();
+  logicalSwitchesTimerTick();
+  logicalSwitchesTimerTick();
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
 }
 #endif // #if defined(PCBTARANIS) && defined(FRSKY)
 
