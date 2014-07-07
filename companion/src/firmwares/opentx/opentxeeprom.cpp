@@ -1016,7 +1016,7 @@ class MixField: public TransformedField {
 
       if (mix.srcRaw.type != SOURCE_TYPE_NONE) {
         mix.destCh = _destCh + 1;
-        if (!IS_ARM(board) || version < 216) {
+        if (!IS_TARANIS(board) || version < 216) {
           if (!_curveMode)
             mix.curve = CurveReference(CurveReference::CURVE_REF_DIFF, smallGvarToC9x(_curveParam));
           else if (_curveParam > 6)
