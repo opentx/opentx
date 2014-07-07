@@ -1232,7 +1232,7 @@ QPushButton:checked {
       </size>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="simu">
       <attribute name="title">
@@ -1437,6 +1437,19 @@ QPushButton:checked {
        </item>
        <item row="1" column="0">
         <layout class="QGridLayout" name="channelsLayout"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="outputs2">
+      <attribute name="title">
+       <string>Outputs2</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <layout class="QGridLayout" name="logicalSwitchesLayout2"/>
+       </item>
+       <item>
+        <layout class="QGridLayout" name="channelsLayout2"/>
        </item>
       </layout>
      </widget>

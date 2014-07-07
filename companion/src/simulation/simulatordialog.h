@@ -51,10 +51,8 @@ class SimulatorDialog : public QDialog
     mySlider * trimHLeft, * trimVLeft, * trimHRight, * trimVRight;
     QLabel * leftXPerc, * rightXPerc, * leftYPerc, * rightYPerc;
     QTabWidget * tabWidget;
-    QGridLayout * logicalSwitchesLayout;
-    QGridLayout * channelsLayout;
-    QGridLayout * gvarsLayout;
     QVector<QLabel *> logicalSwitchLabels;
+    QVector<QLabel *> logicalSwitchLabels2;
     QVector<QSlider *> channelSliders;
     QVector<QLabel *> channelValues;
     QVector<QLabel *> gvarValues;
@@ -91,6 +89,7 @@ class SimulatorDialog : public QDialog
     int getValue(qint8 i);
     bool getSwitch(int swtch, bool nc, qint8 level=0);
     void setTrims();
+    QFrame * createLogicalSwitch(QWidget * parent, int switchNo, QVector<QLabel *> & labels);
 
     int beepVal;
 
