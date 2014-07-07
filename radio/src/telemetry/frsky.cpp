@@ -277,8 +277,9 @@ enum AlarmsCheckSteps {
 void telemetryWakeup()
 {
 #if defined(CPUARM)
-  if (telemetryProtocol != g_model.telemetryProtocol) {
-    telemetryProtocol = g_model.telemetryProtocol;
+  uint8_t requiredTelemetryProtocol = MODEL_TELEMETRY_PROTOCOL;
+  if (telemetryProtocol != requiredTelemetryProtocol) {
+    telemetryProtocol = requiredTelemetryProtocol;
     telemetryInit();
   }
 #endif

@@ -81,6 +81,7 @@ class TelemetryPanel : public ModelPanel
   public:
     TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware);
     virtual ~TelemetryPanel();
+    virtual void update();
 
   private slots:
     void on_telemetryProtocol_currentIndexChanged(int index);

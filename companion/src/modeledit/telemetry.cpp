@@ -28,7 +28,7 @@ TelemetryAnalog::TelemetryAnalog(QWidget *parent, FrSkyChannelData & analog, Mod
   update();
 
   ui->UnitCB->setCurrentIndex(analog.type);
-  if (!IS_TARANIS(GetEepromInterface()->getBoard())) {
+  if (!IS_TARANIS(firmware->getBoard())) {
     ui->alarm1LevelCB->setCurrentIndex(analog.alarms[0].level);
     ui->alarm1GreaterCB->setCurrentIndex(analog.alarms[0].greater);
     ui->alarm2LevelCB->setCurrentIndex(analog.alarms[1].level);
@@ -487,6 +487,11 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
   }
 
   if (IS_ARM(firmware->getBoard())) {
+    ui->telemetryProtocol->addItem(tr("FrSky S.PORT"), 0);
+    ui->telemetryProtocol->addItem(tr("FrSky D"), 1);
+    if (IS_9XRPRO(firmware->getBoard())) {
+      ui->telemetryProtocol->addItem(tr("FrSky D (cable)"), 2);
+    }
     ui->telemetryProtocol->setCurrentIndex(model.telemetryProtocol);
   }
   else {
@@ -502,7 +507,7 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
   ui->A2Layout->addWidget(analogs[1]);
   connect(analogs[1], SIGNAL(modified()), this, SLOT(onAnalogModified()));
 
-  if (IS_ARM(GetEepromInterface()->getBoard())) {
+  if (IS_ARM(firmware->getBoard())) {
     analogs[2] = new TelemetryAnalog(this, model.frsky.channels[2], model, generalSettings, firmware);
     ui->A3Layout->addWidget(analogs[2]);
     connect(analogs[2], SIGNAL(modified()), this, SLOT(onAnalogModified()));
@@ -522,7 +527,7 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
     telemetryCustomScreens[i] = tab;
   }
 
-  if (IS_ARM(GetEepromInterface()->getBoard())) {
+  if (IS_ARM(firmware->getBoard())) {
     ui->bladesCount->setMinimum(1);
     ui->bladesCount->setMaximum(128);
   }
@@ -537,6 +542,19 @@ TelemetryPanel::~TelemetryPanel()
   delete ui;
 }
 
+void TelemetryPanel::update()
+{
+  if (IS_TARANIS(firmware->getBoard())) {
+    if (model.moduleData[0].protocol == OFF && model.moduleData[1].protocol == PPM) {
+      ui->telemetryProtocol->setEnabled(true);
+    }
+    else {
+      ui->telemetryProtocol->setEnabled(false);
+      ui->telemetryProtocol->setCurrentIndex(0);
+    }
+  }
+}
+
 void TelemetryPanel::setup()
 {
     QString firmware_id = g.profile[g.id()].fwType();
@@ -545,7 +563,7 @@ void TelemetryPanel::setup()
 
     ui->rssiAlarm1SB->setValue(model.frsky.rssiAlarms[0].value);
     ui->rssiAlarm2SB->setValue(model.frsky.rssiAlarms[1].value);
-    if (!IS_TARANIS(GetEepromInterface()->getBoard())) {
+    if (!IS_TARANIS(firmware->getBoard())) {
       ui->rssiAlarm1CB->setCurrentIndex(model.frsky.rssiAlarms[0].level);
       ui->rssiAlarm2CB->setCurrentIndex(model.frsky.rssiAlarms[1].level);
     }
