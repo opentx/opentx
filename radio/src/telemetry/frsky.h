@@ -470,4 +470,10 @@ void telemetryInterrupt10ms(void);
 void frskySetCellVoltage(uint8_t battnumber, frskyCellVoltage_t cellVolts);
 void frskyUpdateCells(void);
 
+#if defined(PCBTARANIS)
+  #define MODEL_TELEMETRY_PROTOCOL ((g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.externalModule == MODULE_TYPE_PPM) ? g_model.telemetryProtocol : PROTOCOL_FRSKY_SPORT)
+#elif defined(CPUARM)
+  #define MODEL_TELEMETRY_PROTOCOL g_model.telemetryProtocol
+#endif
+
 #endif

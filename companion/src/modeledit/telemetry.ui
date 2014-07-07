@@ -46,16 +46,6 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <item>
-        <property name="text">
-         <string>FrSky S.PORT</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>FrSky D</string>
-        </property>
-       </item>
       </widget>
      </item>
     </layout>

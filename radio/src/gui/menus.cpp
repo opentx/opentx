@@ -594,24 +594,24 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
       break;
   }
 
-#if defined(CPUARM)
-  if (l_posVert<1) {
-    s_pgOfs=0;
+  if (l_posVert == 0 || (l_posVert==2 && MAXCOL(vertpos_t(1)) >= HIDDEN_ROW) || (l_posVert==3 && MAXCOL(vertpos_t(1)) >= HIDDEN_ROW && MAXCOL(vertpos_t(2)) >= HIDDEN_ROW)) {
+    s_pgOfs = 0;
   }
   else if (menuTab && horTab) {
     if (maxrow > LCD_LINES-1) {
       while (1) {
-        vertpos_t line = s_pgOfs+1;
+        vertpos_t firstLine = s_pgOfs + (MAXCOL(vertpos_t(1)) == HIDDEN_ROW ? 2 : 1);
+        vertpos_t line = firstLine;
         for (int numLines=0; line<=maxrow && numLines<LCD_LINES-1; line++) {
           if (MAXCOL(line) != HIDDEN_ROW) {
             numLines++;
           }
         }
-        int max = line - s_pgOfs - 1;
-        if (l_posVert > max+s_pgOfs) {
+        int max = line - firstLine;
+        if (l_posVert > max+firstLine-1) {
           s_pgOfs++;
         }
-        else if (l_posVert < 1+s_pgOfs) {
+        else if (l_posVert < firstLine) {
           s_pgOfs--;
         }
         else {
@@ -630,25 +630,13 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
     }
   }
 
-#if LCD_W >= 212
-  if (maxrow > LCD_LINES-1 && scrollbar_X)
+  if (maxrow > LCD_LINES-1 && scrollbar_X) {
     displayScrollbar(scrollbar_X, FH, LCD_H-FH, s_pgOfs, menuTab ? maxrow : maxrow+1, LCD_LINES-1);
-#endif
+  }
 
-#else
-  uint8_t max = menuTab ? LCD_LINES-1 : LCD_LINES-2;
-  if (l_posVert<1) s_pgOfs=0;
-  else if (l_posVert>max+s_pgOfs) s_pgOfs = l_posVert-max;
-  else if (l_posVert<1+s_pgOfs) s_pgOfs = l_posVert-1;
-#endif
   m_posVert = l_posVert;
   m_posHorz = l_posHorz;
-  if (s_pgOfs > 0) {
-    l_posVert--;
-    if (l_posVert == s_pgOfs && CURSOR_NOT_ALLOWED_IN_ROW(l_posVert)) {
-      s_pgOfs = l_posVert-1;
-    }
-  }
+
   return true;
 }
 
@@ -982,8 +970,9 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
   // cosmetics on 9x
   if (s_pgOfs > 0) {
     l_posVert--;
-    if (l_posVert == s_pgOfs && CURSOR_NOT_ALLOWED_IN_ROW(l_posVert))
+    if (l_posVert == s_pgOfs && CURSOR_NOT_ALLOWED_IN_ROW(l_posVert)) {
       s_pgOfs = l_posVert-1;
+    }
   }
 #endif
   return true;

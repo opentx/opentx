@@ -3406,7 +3406,7 @@ inline void opentxInit(OPENTX_INIT_ARGS)
   backlightOn();
 
 #if defined(PCBTARANIS)
-  uart3Init(g_eeGeneral.uart3Mode, g_model.telemetryProtocol);
+  uart3Init(g_eeGeneral.uart3Mode, MODEL_TELEMETRY_PROTOCOL);
 #endif
 
 #if defined(CPUARM)

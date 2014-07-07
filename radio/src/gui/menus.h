@@ -468,13 +468,13 @@ void displayWarning(uint8_t event);
 #endif
 
 #if defined(PCBTARANIS)
-  #define POS_VERT_INIT   (menuTab ? (MAXCOL((uint16_t)1) == 255 ? 2 : 1) : 0)
+  #define POS_VERT_INIT            (menuTab ? (MAXCOL((uint16_t)1) >= HIDDEN_ROW ? (MAXCOL((uint16_t)2) >= HIDDEN_ROW ? 3 : 2) : 1) : 0)
   #define POS_HORZ_INIT(posVert)   ((COLATTR(posVert) & NAVIGATION_LINE_BY_LINE) ? -1 : 0)
-  #define EDIT_MODE_INIT  0 // TODO enum
+  #define EDIT_MODE_INIT           0 // TODO enum
 #else
-  #define POS_VERT_INIT   0
+  #define POS_VERT_INIT            0
   #define POS_HORZ_INIT(posVert)   0
-  #define EDIT_MODE_INIT  -1
+  #define EDIT_MODE_INIT           -1
 #endif
 
 #endif
