@@ -44,8 +44,6 @@
 #define SWAP_DEFINED
 #include "opentx.h"
 
-
-
 #if !defined(PCBSKY9X)
 TEST(EEPROM, 100_random_writes)
 {
