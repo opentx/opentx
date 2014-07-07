@@ -51,9 +51,6 @@ class SimulatorDialog : public QDialog
     mySlider * trimHLeft, * trimVLeft, * trimHRight, * trimVRight;
     QLabel * leftXPerc, * rightXPerc, * leftYPerc, * rightYPerc;
     QTabWidget * tabWidget;
-    QGridLayout * logicalSwitchesLayout;
-    QGridLayout * channelsLayout;
-    QGridLayout * gvarsLayout;
     QVector<QLabel *> logicalSwitchLabels;
     QVector<QLabel *> logicalSwitchLabels2;
     QVector<QSlider *> channelSliders;
