@@ -25,8 +25,14 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
   ui->countdownBeep->setField(&timer.countdownBeep, this);
   ui->countdownBeep->addItem(tr("Silent"), 0);
   ui->countdownBeep->addItem(tr("Beeps"), 1);
-  if (IS_ARM(GetEepromInterface()->getBoard()) || IS_2560(GetEepromInterface()->getBoard()))
+  if (IS_ARM(GetEepromInterface()->getBoard()) || IS_2560(GetEepromInterface()->getBoard())) {
     ui->countdownBeep->addItem(tr("Voice"), 2);
+  }
+
+  ui->persistent->setField(&timer.persistent, this);
+  ui->persistent->addItem(tr("Not persistent"), 0);
+  ui->persistent->addItem(tr("Persistent (flight)"), 1);
+  ui->persistent->addItem(tr("Persistent (manual reset)"), 2);
 
   disableMouseScrolling();
 
@@ -55,7 +61,6 @@ void TimerPanel::update()
     pvalue -= hours * 3600;
     int minutes = pvalue / 60;
     int seconds = pvalue % 60;
-    ui->persistent->setChecked(timer.persistent);
     ui->persistentValue->setText(QString(" %1(%2:%3:%4)").arg(sign<0 ? "-" :" ").arg(hours, 2, 10, QLatin1Char('0')).arg(minutes, 2, 10, QLatin1Char('0')).arg(seconds, 2, 10, QLatin1Char('0')));
   }
 

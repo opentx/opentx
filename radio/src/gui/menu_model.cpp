@@ -1142,7 +1142,7 @@ void menuModelSetup(uint8_t event)
       case ITEM_MODEL_TIMER2_PERSISTENT:
       {
         TimerData &timer = g_model.timers[k==ITEM_MODEL_TIMER2_PERSISTENT];
-        timer.persistent = onoffMenuItem(timer.persistent, MODEL_SETUP_2ND_COLUMN, y, STR_PERSISTENT, attr, event);
+        timer.persistent = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_PERSISTENT, STR_VPERSISTENT, timer.persistent, 0, 2, attr, event);
         break;
       }
 #endif

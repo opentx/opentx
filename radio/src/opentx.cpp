@@ -1619,11 +1619,11 @@ void flightReset()
   else
     AUDIO_RESET();
 
-  if (!IS_PERSISTENT_TIMER(0)) {
+  if (!IS_MANUAL_RESET_TIMER(0)) {
     timerReset(0);
   }
 
-  if (!IS_PERSISTENT_TIMER(1)) {
+  if (!IS_MANUAL_RESET_TIMER(1)) {
     timerReset(1);
   }
 

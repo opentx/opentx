@@ -918,7 +918,7 @@ class TimerData {
     unsigned int countdownBeep;
     bool         dir;    // 0=>Count Down, 1=>Count Up
     unsigned int val;
-    bool         persistent;
+    unsigned int persistent;
     int          pvalue;
     void clear() { memset(this, 0, sizeof(TimerData)); mode = RawSwitch(SWITCH_TYPE_TIMER_MODE, 0); }
 };

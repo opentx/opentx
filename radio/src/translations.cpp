@@ -100,6 +100,7 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(VTMRMODES)
 #if defined(CPUM2560) || defined(CPUARM)
     ISTR(DATETIME)
+    ISTR(VPERSISTENT)
 #endif
 #if defined(CPUARM)
     ISTR(VLCD)

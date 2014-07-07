@@ -51,11 +51,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QCheckBox" name="persistent">
-     <property name="text">
-      <string>Persistent</string>
-     </property>
-    </widget>
+    <widget class="QUnsignedAutoComboBox" name="persistent"/>
    </item>
    <item>
     <widget class="QLabel" name="persistentValue">

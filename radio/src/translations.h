@@ -156,7 +156,8 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_VTMRMODES           (OFS_VSRCRAW + sizeof(TR_VSRCRAW))
 #define OFS_DATETIME            (OFS_VTMRMODES + sizeof(TR_VTMRMODES))
 #if defined(CPUM2560) || defined(CPUARM)
-  #define OFS_VLCD              (OFS_DATETIME + sizeof(TR_DATETIME))
+  #define OFS_VPERSISTENT       (OFS_DATETIME + sizeof(TR_DATETIME))
+  #define OFS_VLCD              (OFS_VPERSISTENT + sizeof(TR_VPERSISTENT))
 #else
   #define OFS_VLCD              (OFS_DATETIME)
 #endif
@@ -192,85 +193,86 @@ extern const pm_char STR_OPEN9X[];
   #define OFS_SPARE		(OFS_MAVLINK_BAUDS)
 #endif
 
-#define STR_OFFON              (STR_OPEN9X + OFS_OFFON)
-#define STR_MMMINV             (STR_OPEN9X + OFS_MMMINV)
-#define STR_NCHANNELS          (STR_OPEN9X + OFS_NCHANNELS)
+#define STR_OFFON               (STR_OPEN9X + OFS_OFFON)
+#define STR_MMMINV              (STR_OPEN9X + OFS_MMMINV)
+#define STR_NCHANNELS           (STR_OPEN9X + OFS_NCHANNELS)
 #if !defined(GRAPHICS)
-#define STR_VBEEPLEN           (STR_OPEN9X + OFS_VBEEPLEN)
+#define STR_VBEEPLEN            (STR_OPEN9X + OFS_VBEEPLEN)
 #endif
-#define STR_VBEEPMODE          (STR_OPEN9X + OFS_VBEEPMODE)
-#define STR_TRNMODE            (STR_OPEN9X + OFS_TRNMODE)
-#define STR_TRNCHN             (STR_OPEN9X + OFS_TRNCHN)
-#define STR_UART3MODES         (STR_OPEN9X + OFS_UART3MODES)
-#define STR_POTTYPES           (STR_OPEN9X + OFS_POTTYPES)
-#define STR_VTRIMINC           (STR_OPEN9X + OFS_VTRIMINC)
-#define STR_RETA123            (STR_OPEN9X + OFS_RETA123)
-#define STR_VPROTOS            (STR_OPEN9X + OFS_VPROTOS)
-#define STR_POSNEG             (STR_OPEN9X + OFS_POSNEG)
-#define STR_VBLMODE            (STR_OPEN9X + OFS_VBLMODE)
-#define STR_VCURVEFUNC         (STR_OPEN9X + OFS_VCURVEFUNC)
-#define STR_VSIDE              STR_VCURVEFUNC
-#define LEN_VSIDE              LEN_VCURVEFUNC
-#define STR_VMLTPX             (STR_OPEN9X + OFS_VMLTPX)
-#define STR_VMLTPX2            (STR_OPEN9X + OFS_VMLTPX2)
-#define STR_VMIXTRIMS          (STR_OPEN9X + OFS_VMIXTRIMS)
-#define STR_VCSWFUNC           (STR_OPEN9X + OFS_VCSWFUNC)
-#define STR_VFSWFUNC           (STR_OPEN9X + OFS_VFSWFUNC)
-#define STR_VFSWRESET          (STR_OPEN9X + OFS_VFSWRESET)
-#define STR_FUNCSOUNDS         (STR_OPEN9X + OFS_FUNCSOUNDS)
-#define STR_VTELEMCHNS         (STR_OPEN9X + OFS_VTELEMCHNS)
+#define STR_VBEEPMODE           (STR_OPEN9X + OFS_VBEEPMODE)
+#define STR_TRNMODE             (STR_OPEN9X + OFS_TRNMODE)
+#define STR_TRNCHN              (STR_OPEN9X + OFS_TRNCHN)
+#define STR_UART3MODES          (STR_OPEN9X + OFS_UART3MODES)
+#define STR_POTTYPES            (STR_OPEN9X + OFS_POTTYPES)
+#define STR_VTRIMINC            (STR_OPEN9X + OFS_VTRIMINC)
+#define STR_RETA123             (STR_OPEN9X + OFS_RETA123)
+#define STR_VPROTOS             (STR_OPEN9X + OFS_VPROTOS)
+#define STR_POSNEG              (STR_OPEN9X + OFS_POSNEG)
+#define STR_VBLMODE             (STR_OPEN9X + OFS_VBLMODE)
+#define STR_VCURVEFUNC          (STR_OPEN9X + OFS_VCURVEFUNC)
+#define STR_VSIDE               STR_VCURVEFUNC
+#define LEN_VSIDE               LEN_VCURVEFUNC
+#define STR_VMLTPX              (STR_OPEN9X + OFS_VMLTPX)
+#define STR_VMLTPX2             (STR_OPEN9X + OFS_VMLTPX2)
+#define STR_VMIXTRIMS           (STR_OPEN9X + OFS_VMIXTRIMS)
+#define STR_VCSWFUNC            (STR_OPEN9X + OFS_VCSWFUNC)
+#define STR_VFSWFUNC            (STR_OPEN9X + OFS_VFSWFUNC)
+#define STR_VFSWRESET           (STR_OPEN9X + OFS_VFSWRESET)
+#define STR_FUNCSOUNDS          (STR_OPEN9X + OFS_FUNCSOUNDS)
+#define STR_VTELEMCHNS          (STR_OPEN9X + OFS_VTELEMCHNS)
 
 #if defined(FRSKY) || defined(CPUARM)
   #if defined(CPUARM)
-    #define STR_VTELEMUNIT     (STR_OPEN9X + (g_eeGeneral.imperial ? OFS_VTELEMUNIT_IMP : OFS_VTELEMUNIT_METR))
-    #define STR_VOLTSRC        (STR_OPEN9X + OFS_VOLTSRC)
+    #define STR_VTELEMUNIT      (STR_OPEN9X + (g_eeGeneral.imperial ? OFS_VTELEMUNIT_IMP : OFS_VTELEMUNIT_METR))
+    #define STR_VOLTSRC         (STR_OPEN9X + OFS_VOLTSRC)
   #else
-    #define STR_VTELEMUNIT     (STR_OPEN9X + OFS_VTELEMUNIT)
+    #define STR_VTELEMUNIT      (STR_OPEN9X + OFS_VTELEMUNIT)
   #endif
-#define STR_VALARM             (STR_OPEN9X + OFS_VALARM)
-#define STR_VALARMFN           (STR_OPEN9X + OFS_VALARMFN)
-#define STR_VTELPROTO          (STR_OPEN9X + OFS_VTELPROTO)
-#define STR_GPSFORMAT          (STR_OPEN9X + OFS_GPSFORMAT)
-#define STR_AMPSRC             (STR_OPEN9X + OFS_AMPSRC)
-#define STR_VARIOSRC           (STR_OPEN9X + OFS_VARIOSRC)
-#define STR_VSCREEN            (STR_OPEN9X + OFS_VSCREEN)
-#define STR_TELEMCHNS          (STR_OPEN9X + OFS_TELEMCHNS)
+#define STR_VALARM              (STR_OPEN9X + OFS_VALARM)
+#define STR_VALARMFN            (STR_OPEN9X + OFS_VALARMFN)
+#define STR_VTELPROTO           (STR_OPEN9X + OFS_VTELPROTO)
+#define STR_GPSFORMAT           (STR_OPEN9X + OFS_GPSFORMAT)
+#define STR_AMPSRC              (STR_OPEN9X + OFS_AMPSRC)
+#define STR_VARIOSRC            (STR_OPEN9X + OFS_VARIOSRC)
+#define STR_VSCREEN             (STR_OPEN9X + OFS_VSCREEN)
+#define STR_TELEMCHNS           (STR_OPEN9X + OFS_TELEMCHNS)
 #endif
 
 #if defined(TEMPLATES)
-  #define STR_VTEMPLATES       (STR_OPEN9X + OFS_VTEMPLATES)
+  #define STR_VTEMPLATES        (STR_OPEN9X + OFS_VTEMPLATES)
 #endif
 
 #if defined(HELI)
-  #define STR_VSWASHTYPE       (STR_OPEN9X + OFS_VSWASHTYPE)
+  #define STR_VSWASHTYPE        (STR_OPEN9X + OFS_VSWASHTYPE)
 #endif
 
-#define STR_VKEYS              (STR_OPEN9X + OFS_VKEYS)
-#define STR_VSWITCHES          (STR_OPEN9X + OFS_VSWITCHES)
-#define STR_VSRCRAW            (STR_OPEN9X + OFS_VSRCRAW)
-#define STR_VTMRMODES          (STR_OPEN9X + OFS_VTMRMODES)
+#define STR_VKEYS               (STR_OPEN9X + OFS_VKEYS)
+#define STR_VSWITCHES           (STR_OPEN9X + OFS_VSWITCHES)
+#define STR_VSRCRAW             (STR_OPEN9X + OFS_VSRCRAW)
+#define STR_VTMRMODES           (STR_OPEN9X + OFS_VTMRMODES)
 
 #if defined(ROTARY_ENCODERS)
-  #define STR_VRENAVIG         (STR_OPEN9X + OFS_VRENAVIG)
+  #define STR_VRENAVIG          (STR_OPEN9X + OFS_VRENAVIG)
 #endif
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
-  #define STR_VRENCODERS       (STR_OPEN9X + OFS_VRENCODERS)
+  #define STR_VRENCODERS        (STR_OPEN9X + OFS_VRENCODERS)
 #endif
 
 #if defined(CPUM2560) || defined(CPUARM)
-#define STR_DATETIME           (STR_OPEN9X + OFS_DATETIME)
+  #define STR_DATETIME          (STR_OPEN9X + OFS_DATETIME)
+  #define STR_VPERSISTENT       (STR_OPEN9X + OFS_VPERSISTENT)
 #endif
 
 #if defined(CPUARM)
-  #define STR_VLCD             (STR_OPEN9X + OFS_VLCD)
-  #define STR_VUNITSSYSTEM     (STR_OPEN9X + OFS_VUNITSSYSTEM)
-  #define STR_VBEEPCOUNTDOWN   (STR_OPEN9X + OFS_VBEEPCOUNTDOWN)
+  #define STR_VLCD              (STR_OPEN9X + OFS_VLCD)
+  #define STR_VUNITSSYSTEM      (STR_OPEN9X + OFS_VUNITSSYSTEM)
+  #define STR_VBEEPCOUNTDOWN    (STR_OPEN9X + OFS_VBEEPCOUNTDOWN)
 #endif
 
 #if defined(PXX) || defined(CPUARM)
-  #define STR_COUNTRYCODES     (STR_OPEN9X + OFS_COUNTRYCODES)
-  #define STR_VFAILSAFE        (STR_OPEN9X + OFS_VFAILSAFE)
+  #define STR_COUNTRYCODES      (STR_OPEN9X + OFS_COUNTRYCODES)
+  #define STR_VFAILSAFE         (STR_OPEN9X + OFS_VFAILSAFE)
 #endif
 
 #if defined(CPUARM)

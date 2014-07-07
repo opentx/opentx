@@ -2399,8 +2399,8 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
       internalField.Append(new UnsignedField<16>(modelData.timers[i].val));
       internalField.Append(new UnsignedField<2>(modelData.timers[i].countdownBeep));
       internalField.Append(new BoolField<1>(modelData.timers[i].minuteBeep));
-      internalField.Append(new BoolField<1>(modelData.timers[i].persistent));
-      internalField.Append(new SpareBitsField<4>());
+      internalField.Append(new UnsignedField<2>(modelData.timers[i].persistent));
+      internalField.Append(new SpareBitsField<3>());
       internalField.Append(new SignedField<16>(modelData.timers[i].pvalue));
     }
     else if (afterrelease21March2013) {
@@ -2408,7 +2408,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
       internalField.Append(new BoolField<1>((bool &)modelData.timers[i].countdownBeep));
       internalField.Append(new BoolField<1>(modelData.timers[i].minuteBeep));
       if (HAS_PERSISTENT_TIMERS(board)) {
-        internalField.Append(new BoolField<1>(modelData.timers[i].persistent));
+        internalField.Append(new UnsignedField<1>(modelData.timers[i].persistent));
         internalField.Append(new SpareBitsField<1>());
         internalField.Append(new SignedField<16>(modelData.timers[i].pvalue));
       }
@@ -2419,7 +2419,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
     else {
       internalField.Append(new UnsignedField<16>(modelData.timers[i].val));
       if (HAS_PERSISTENT_TIMERS(board)) {
-        internalField.Append(new BoolField<1>(modelData.timers[i].persistent));
+        internalField.Append(new UnsignedField<1>(modelData.timers[i].persistent));
         internalField.Append(new SpareBitsField<15>());
       }
     }
