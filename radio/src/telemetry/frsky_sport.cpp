@@ -120,6 +120,15 @@
 #define BATT_ID                 0xf104
 #define SWR_ID                  0xf105
 
+// Default sensor data IDs (Physical IDs + CRC)
+#define DATA_ID_VARIO            0x00 // 0
+#define DATA_ID_FLVSS            0xA1 // 1
+#define DATA_ID_FAS              0x22 // 2
+#define DATA_ID_GPS              0x83 // 3
+#define DATA_ID_RPM              0xE4 // 4
+#define DATA_ID_SP2UH            0x45 // 5
+#define DATA_ID_SP2UR            0xC6 // 6
+
 void setBaroAltitude(int32_t baroAltitude)
 {
   // First received barometer altitude => Altitude offset
@@ -236,10 +245,8 @@ void processHubPacket(uint8_t id, uint16_t value)
       break;
 
     case VOLTS_ID:
-    {
       frskyUpdateCells();
       break;
-    }
 
     case GPS_HOUR_MIN_ID:
       frskyData.hub.hour = ((uint8_t)(frskyData.hub.hour + g_eeGeneral.timezone + 24)) % 24;
@@ -274,7 +281,7 @@ bool checkSportPacket(uint8_t *packet)
 
 void frskySportProcessPacket(uint8_t *packet)
 {
-  /* uint8_t  dataId = packet[0]; */
+  uint8_t  dataId = packet[0];
   uint8_t  prim   = packet[1];
   uint16_t appId  = *((uint16_t *)(packet+2));
 
@@ -405,7 +412,7 @@ void frskySportProcessPacket(uint8_t *packet)
         if (frskyData.hub.gpsFix > 0) {
           if (!frskyData.hub.pilotLatitude && !frskyData.hub.pilotLongitude) {
             // First received GPS position => Pilot GPS position
-	    getGpsPilotPosition();
+            getGpsPilotPosition();
           }
           else if (frskyData.hub.gpsDistNeeded || g_menuStack[g_menuStackPtr] == menuTelemetryFrsky) {
             getGpsDistance();
@@ -453,10 +460,21 @@ void frskySportProcessPacket(uint8_t *packet)
         frskyData.analog[TELEM_ANA_A4].set(SPORT_DATA_U32(packet), UNIT_VOLTS);
       }
       else if (appId >= CELLS_FIRST_ID && appId <= CELLS_LAST_ID) {
-        uint32_t cells = SPORT_DATA_U32(packet);
-        uint8_t battnumber = cells & 0xF;
-        frskySetCellVoltage(battnumber,   (frskyCellVoltage_t) ((cells & 0x000FFF00) >>  8) / 5);
-        frskySetCellVoltage(battnumber+1, (frskyCellVoltage_t) ((cells & 0xFFF00000) >> 20) / 5);
+        uint32_t data = SPORT_DATA_U32(packet);
+        uint8_t battnumber = data & 0xF;
+        uint8_t cells = (data & 0xF0) >> 4;
+
+        if (dataId != DATA_ID_FLVSS) {
+          // TODO
+          // break;
+        }
+
+        if (cells != frskyData.hub.cellsCount) {
+          frskySetCellsCount(cells);
+        }
+
+        frskySetCellVoltage(battnumber,   (frskyCellVoltage_t) ((data & 0x000FFF00) >>  8) / 5);
+        frskySetCellVoltage(battnumber+1, (frskyCellVoltage_t) ((data & 0xFFF00000) >> 20) / 5);
       }
       break;
   }

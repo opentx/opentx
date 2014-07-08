@@ -175,7 +175,7 @@ PACK(struct FrskySerialData {
 
     uint16_t cellVolts[12];
     int16_t  cellsSum;
-    uint8_t  minCellIdx;
+    uint8_t  cellsState;
     uint16_t minCellVolts;
 
     bool     varioHighPrecision;
@@ -232,7 +232,7 @@ PACK(struct FrskySerialData {
   uint16_t gpsDistance;
   int16_t  gpsAltitudeOffset;
   uint8_t  varioAltitudeQueuePointer;     // circular-buffer pointer
-  uint8_t  minCellIdx;
+  uint8_t  cellsState;
   int16_t  cellsSum;
   uint16_t currentConsumption; // 0x35 openXsensor only! Otherwise calculated by the Tx from current
   uint16_t currentPrescale;
@@ -467,8 +467,11 @@ void telemetryInterrupt10ms(void);
   typedef uint8_t frskyCellVoltage_t;
 #endif
 
+#if defined(CPUARM) || defined(FRSKY_HUB)
+void frskySetCellsCount(uint8_t cellscount);
 void frskySetCellVoltage(uint8_t battnumber, frskyCellVoltage_t cellVolts);
 void frskyUpdateCells(void);
+#endif
 
 #if defined(PCBTARANIS)
   #define MODEL_TELEMETRY_PROTOCOL ((g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.externalModule == MODULE_TYPE_PPM) ? g_model.telemetryProtocol : PROTOCOL_FRSKY_SPORT)
