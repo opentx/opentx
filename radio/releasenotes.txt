@@ -1,3 +1,32 @@
+<h2>Version 2.0.6 / 2014-07-08</h2>
+[Taranis]
+<ul>
+<li>Telemetry Type field is hidden when only S.PORT is available
+<li>Permanent timers may be not resetted on Flight Reset 
+<li>Instant Trim bugfix
+<li>No sound on trim press when trim option disabled
+<li>[Page] / [Page Long] allowed to change Telemetry screen
+<li>XXL font added for Lua telemetry screens
+<li>
+
+[9XR-PRO / Sky9x]
+<ul>
+<li>RTC time was not stored correctly
+<li>PPM polarity fix
+</ul>
+
+[Gruvin9x, 9X128, 9XR128]
+<ul>
+<li>12 logical switches instead of 15 (the extra ones were not accessible in custom functions)
+</ul>
+
+[All]
+<ul>
+<li>Logical switches were not resetted on Model load
+<li>SafetyCH function can be hidden (depending on Companion options)
+<li>MPH to km/h conversion improved
+</ul>
+
 <h2>Version 2.0.5 / 2014-06-26</h2>
 [Taranis]
 <ul>
