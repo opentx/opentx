@@ -94,7 +94,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
   }
   else if (flags & MIDSIZE) {
     q = &font_8x10[((uint16_t)c-0x20)*16];
-    lcdPutPattern(x, y, q, 8, 12, flags);
+    lcdPutPattern(x, y, q, 8, 11, flags);
   }
   else if (flags & SMLSIZE) {
     q = (c < 0xc0 ? &font_4x6[(c-0x20)*5] : &font_4x6_extra[(c-0xc0)*5]);
