@@ -150,7 +150,7 @@ void displayVoltageScreenLine(uint8_t y, uint8_t index)
 {
   putsStrIdx(0, y, STR_A, index+1, 0);
   if (TELEMETRY_STREAMING()) {
-    putsTelemetryChannel(3*FW+6*FW+4, y-FH+1, index+TELEM_A1-1, frskyData.analog[index].value, DBLSIZE);
+    putsTelemetryChannel(3*FW+6*FW+4, y-FH, index+TELEM_A1-1, frskyData.analog[index].value, DBLSIZE);
     lcd_putc(12*FW-1, y-FH, '<'); putsTelemetryChannel(17*FW, y-FH, index+TELEM_A1-1, frskyData.analog[index].min, NO_UNIT);
     lcd_putc(12*FW, y, '>');      putsTelemetryChannel(17*FW, y, index+TELEM_A1-1, frskyData.analog[index].max, NO_UNIT);
   }
@@ -182,10 +182,10 @@ void displayVoltagesScreen()
       break;
 #if defined(FRSKY_HUB)
     case FRSKY_VOLTS_SOURCE_FAS:
-      putsTelemetryChannel(3*FW+6*FW+4, FH+1, TELEM_VFAS-1, frskyData.hub.vfas, DBLSIZE);
+      putsTelemetryChannel(3*FW+6*FW+4, FH, TELEM_VFAS-1, frskyData.hub.vfas, DBLSIZE);
       break;
     case FRSKY_VOLTS_SOURCE_CELLS:
-      putsTelemetryChannel(3*FW+6*FW+4, FH+1, TELEM_CELLS_SUM-1, frskyData.hub.cellsSum, DBLSIZE);
+      putsTelemetryChannel(3*FW+6*FW+4, FH, TELEM_CELLS_SUM-1, frskyData.hub.cellsSum, DBLSIZE);
       break;
 #endif
   }
@@ -203,13 +203,13 @@ void displayVoltagesScreen()
         break;
 #if defined(FRSKY_HUB)
       case FRSKY_CURRENT_SOURCE_FAS:
-        putsTelemetryChannel(3*FW+6*FW+4, 3*FH+1, TELEM_CURRENT-1, frskyData.hub.current, DBLSIZE);
+        putsTelemetryChannel(3*FW+6*FW+4, 3*FH, TELEM_CURRENT-1, frskyData.hub.current, DBLSIZE);
         break;
 #endif
     }
 
-    putsTelemetryChannel(4, 5*FH+1, TELEM_POWER-1, frskyData.hub.power, LEFT|DBLSIZE);
-    putsTelemetryChannel(3*FW+4+4*FW+6*FW+FW, 5*FH+1, TELEM_CONSUMPTION-1, frskyData.hub.currentConsumption, DBLSIZE);
+    putsTelemetryChannel(4, 5*FH, TELEM_POWER-1, frskyData.hub.power, LEFT|DBLSIZE);
+    putsTelemetryChannel(3*FW+4+4*FW+6*FW+FW, 5*FH, TELEM_CONSUMPTION-1, frskyData.hub.currentConsumption, DBLSIZE);
   }
   else {
 #if defined(CPUARM)
@@ -397,7 +397,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
 #else
         xcoord_t pos[] = {0, 65, 130};
 #endif
-        putsTelemetryChannel(pos[j+1]-2, 1+FH+2*FH*i, field-1, value, att);
+        putsTelemetryChannel(pos[j+1]-2, FH+2*FH*i, field-1, value, att);
 
         if (field >= TELEM_TIMER1 && field <= TELEM_TIMER2 && i!=3) {
           // there is not enough space on LCD for displaying "Tmr1" or "Tmr2" and still see the - sign, we write "T1" or "T2" instead
