@@ -465,8 +465,7 @@ void frskySportProcessPacket(uint8_t *packet)
         uint8_t cells = (data & 0xF0) >> 4;
 
         if (dataId != DATA_ID_FLVSS) {
-          // TODO
-          // break;
+          // TODO second sensor connected
         }
 
         if (cells != frskyData.hub.cellsCount) {
