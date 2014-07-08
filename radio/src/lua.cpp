@@ -192,11 +192,11 @@ static int luaGetValue(lua_State *L)
         lua_pushnumber(L, gpsToDouble(frskyData.hub.gpsLongitudeEW=='W', frskyData.hub.gpsLongitude_bp, frskyData.hub.gpsLongitude_ap));
         return 1;
       }
-      else if (!strcmp(what, "pilot latitude")) {
+      else if (!strcmp(what, "pilot-latitude")) {
         lua_pushnumber(L, pilotLatitude);
         return 1;
       }
-      else if (!strcmp(what, "pilot longitude")) {
+      else if (!strcmp(what, "pilot-longitude")) {
         lua_pushnumber(L, pilotLongitude);
         return 1;
       }
