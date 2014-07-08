@@ -242,8 +242,8 @@ bool getLogicalSwitch(uint8_t idx)
       // Telemetry
       if (v1 >= MIXSRC_FIRST_TELEM) {
         if ((!TELEMETRY_STREAMING() && v1 >= MIXSRC_FIRST_TELEM+TELEM_FIRST_STREAMED_VALUE-1) || IS_FAI_FORBIDDEN(v1-1)) {
-          x = 0;  //replace actual value with zero and continue processing (needed for duraton and delay)
-          //we could also return actual stored values (except when FAI FORBIDDEN, then we would return 0)
+          result = false;
+          goto DurationAndDelayProcessing;
         }
 
         y = convertLswTelemValue(ls);
@@ -333,6 +333,10 @@ bool getLogicalSwitch(uint8_t idx)
       }
     }
   }
+
+#if defined(FRSKY)
+DurationAndDelayProcessing:
+#endif
 
 #if defined(CPUARM)
     if (ls->delay || ls->duration) {
