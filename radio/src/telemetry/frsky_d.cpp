@@ -215,10 +215,8 @@ void parseTelemHubByte(uint8_t byte)
 #endif
 
     case offsetof(FrskySerialData, volts):
-    {
       frskyUpdateCells();
       break;
-    }
 
 #if defined(GPS)
     case offsetof(FrskySerialData, hour):

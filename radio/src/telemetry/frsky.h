@@ -232,7 +232,7 @@ PACK(struct FrskySerialData {
   uint16_t gpsDistance;
   int16_t  gpsAltitudeOffset;
   uint8_t  varioAltitudeQueuePointer;     // circular-buffer pointer
-  uint8_t  cellsState;
+  uint8_t  minCellIdx;
   int16_t  cellsSum;
   uint16_t currentConsumption; // 0x35 openXsensor only! Otherwise calculated by the Tx from current
   uint16_t currentPrescale;

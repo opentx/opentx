@@ -428,9 +428,10 @@ void telemetryWakeup()
 
 void telemetryInterrupt10ms()
 {
+#if defined(CPUARM)
   uint16_t voltage = frskyData.hub.cellsSum; /* unit: 1/10 volts */
-
-#if defined(FRSKY_HUB)
+#elif defined(FRSKY_HUB)
+  uint16_t voltage = 0; /* unit: 1/10 volts */
   for (uint8_t i=0; i<frskyData.hub.cellsCount; i++)
     voltage += frskyData.hub.cellVolts[i];
   voltage /= (10 / TELEMETRY_CELL_VOLTAGE_MUTLIPLIER);
@@ -609,7 +610,7 @@ void telemetryInit(void)
   // we don't reset the telemetry here as we would also reset the consumption after model load
 }
 
-#if defined(CPUARM) || defined(FRSKY_HUB)
+#if defined(CPUARM)
 void frskySetCellsCount(uint8_t cellscount)
 {
   if (cellscount <= DIM(frskyData.hub.cellVolts)) {
@@ -670,5 +671,24 @@ void frskyUpdateCells(void)
   }
   frskyCellVoltage_t cellVolts = (frskyCellVoltage_t) (((((frskyData.hub.volts & 0xFF00) >> 8) + ((frskyData.hub.volts & 0x000F) << 8))) / (5*TELEMETRY_CELL_VOLTAGE_MUTLIPLIER));
   frskySetCellVoltage(battnumber, cellVolts);
+}
+#elif defined(FRSKY_HUB)
+void frskyUpdateCells(void)
+{
+  // Voltage => Cell number + Cell voltage
+  uint8_t battnumber = ((frskyData.hub.volts & 0x00F0) >> 4);
+  if (battnumber < 12) {
+    if (frskyData.hub.cellsCount < battnumber+1) {
+      frskyData.hub.cellsCount = battnumber+1;
+    }
+    uint8_t cellVolts = (uint8_t)(((((frskyData.hub.volts & 0xFF00) >> 8) + ((frskyData.hub.volts & 0x000F) << 8))) / 10);
+    frskyData.hub.cellVolts[battnumber] = cellVolts;
+    if (!frskyData.hub.minCellVolts || cellVolts<frskyData.hub.minCellVolts || battnumber==frskyData.hub.minCellIdx) {
+      frskyData.hub.minCellIdx = battnumber;
+      frskyData.hub.minCellVolts = cellVolts;
+      if (!frskyData.hub.minCell || frskyData.hub.minCellVolts<frskyData.hub.minCell)
+        frskyData.hub.minCell = frskyData.hub.minCellVolts;
+    }
+  }
 }
 #endif
