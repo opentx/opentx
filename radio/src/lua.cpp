@@ -1214,6 +1214,8 @@ void luaInit()
   lua_registerint(L, "MIXSRC_SD", MIXSRC_SD);
   lua_registerint(L, "MIXSRC_SE", MIXSRC_SE);
   lua_registerint(L, "MIXSRC_SF", MIXSRC_SF);
+  lua_registerint(L, "MIXSRC_SG", MIXSRC_SG);
+  lua_registerint(L, "MIXSRC_SH", MIXSRC_SH);
   lua_registerint(L, "MIXSRC_CH1", MIXSRC_CH1);
   lua_registerint(L, "SWSRC_LAST", SWSRC_LAST_LOGICAL_SWITCH);
   lua_registerint(L, "EVT_MENU_BREAK", EVT_KEY_BREAK(KEY_MENU));
