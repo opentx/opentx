@@ -365,6 +365,8 @@ void frskySportProcessPacket(uint8_t *packet)
       }
       else if (appId >= VFAS_FIRST_ID && appId <= VFAS_LAST_ID) {
         frskyData.hub.vfas = SPORT_DATA_U32(packet)/10;   //TODO: remove /10 and display with PREC2 when using SPORT
+        if (!frskyData.hub.minVfas || frskyData.hub.vfas < frskyData.hub.minVfas)
+          frskyData.hub.minVfas = frskyData.hub.vfas;
       }
       else if (appId >= AIR_SPEED_FIRST_ID && appId <= AIR_SPEED_LAST_ID) {
         frskyData.hub.airSpeed = SPORT_DATA_U32(packet);
