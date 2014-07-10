@@ -340,6 +340,97 @@ TEST(FrSkySPORT, frskySetCellVoltageTwoSensors)
   displayVoltagesScreen();
   EXPECT_TRUE(checkScreenshot("two_sensor_votages_screen"));
 }
+
+void generateSportFasVoltagePacket(uint8_t * packet, uint32_t voltage)
+{
+  packet[0] = 0x22; //DATA_ID_FAS
+  packet[1] = 0x10; //DATA_FRAME
+  *((uint16_t *)(packet+2)) = 0x0210; //VFAS_FIRST_ID
+  *((int32_t *)(packet+4)) = voltage;  // unit 10mV
+  setSportPacketCrc(packet);
+}
+
+TEST(FrSkySPORT, frskyVfas)
+{
+  uint8_t packet[FRSKY_SPORT_PACKET_SIZE];
+
+  //telemetryReset();
+  memclear(&frskyData, sizeof(frskyData));
+
+  // tests for Vfas
+  generateSportFasVoltagePacket(packet, 5000); frskySportProcessPacket(packet);
+  EXPECT_EQ(frskyData.hub.vfas,    500);
+  EXPECT_EQ(frskyData.hub.minVfas, 500);
+
+  generateSportFasVoltagePacket(packet, 6524); frskySportProcessPacket(packet);
+  EXPECT_EQ(frskyData.hub.vfas,    652);
+  EXPECT_EQ(frskyData.hub.minVfas, 500);
+
+  generateSportFasVoltagePacket(packet, 1248); frskySportProcessPacket(packet);
+  EXPECT_EQ(frskyData.hub.vfas,    124);
+  EXPECT_EQ(frskyData.hub.minVfas, 124);
+
+  generateSportFasVoltagePacket(packet, 2248); frskySportProcessPacket(packet);
+  EXPECT_EQ(frskyData.hub.vfas,    224);
+  EXPECT_EQ(frskyData.hub.minVfas, 124);
+}
+
+void generateSportFasCurrentPacket(uint8_t * packet, uint32_t current)
+{
+  packet[0] = 0x22; //DATA_ID_FAS
+  packet[1] = 0x10; //DATA_FRAME
+  *((uint16_t *)(packet+2)) = 0x0200; //CURR_FIRST_ID
+  *((int32_t *)(packet+4)) = current;
+  setSportPacketCrc(packet);
+}
+
+TEST(FrSkySPORT, frskyCurrent)
+{
+  uint8_t packet[FRSKY_SPORT_PACKET_SIZE];
+
+  //telemetryReset();
+  memclear(&frskyData, sizeof(frskyData));
+  g_model.frsky.fasOffset = -5;  /* unit: 1/10 amps */
+
+  // tests for Curr
+  generateSportFasCurrentPacket(packet, 0); frskySportProcessPacket(packet);
+  EXPECT_EQ(frskyData.hub.current,      0);
+  EXPECT_EQ(frskyData.hub.maxCurrent,   0);
+
+  //measured current less then offset - value should be zero
+  generateSportFasCurrentPacket(packet, 4); frskySportProcessPacket(packet);
+  EXPECT_EQ(frskyData.hub.current,      0);
+  EXPECT_EQ(frskyData.hub.maxCurrent,   0);
+
+  generateSportFasCurrentPacket(packet, 10); frskySportProcessPacket(packet);
+  EXPECT_EQ(frskyData.hub.current,      5);
+  EXPECT_EQ(frskyData.hub.maxCurrent,   5);
+
+  generateSportFasCurrentPacket(packet, 500); frskySportProcessPacket(packet);
+  EXPECT_EQ(frskyData.hub.current,      495);
+  EXPECT_EQ(frskyData.hub.maxCurrent,   495);
+
+  generateSportFasCurrentPacket(packet, 200); frskySportProcessPacket(packet);
+  EXPECT_EQ(frskyData.hub.current,      195);
+  EXPECT_EQ(frskyData.hub.maxCurrent,   495);
+
+  //test with positive offset
+  //telemetryReset();
+  memclear(&frskyData, sizeof(frskyData));
+  g_model.frsky.fasOffset = 5;  /* unit: 1/10 amps */
+
+  generateSportFasCurrentPacket(packet, 0); frskySportProcessPacket(packet);
+  EXPECT_EQ(frskyData.hub.current,      5);
+  EXPECT_EQ(frskyData.hub.maxCurrent,   5);
+
+  generateSportFasCurrentPacket(packet, 500); frskySportProcessPacket(packet);
+  EXPECT_EQ(frskyData.hub.current,      505);
+  EXPECT_EQ(frskyData.hub.maxCurrent,   505);
+
+  generateSportFasCurrentPacket(packet, 200); frskySportProcessPacket(packet);
+  EXPECT_EQ(frskyData.hub.current,      205);
+  EXPECT_EQ(frskyData.hub.maxCurrent,   505);
+}
 #endif  //#if defined(FRSKY_SPORT)
 
 
