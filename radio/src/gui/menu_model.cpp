@@ -1905,6 +1905,10 @@ void menuModelFlightModesAll(uint8_t event)
       putsFlightMode(OFS_CHECKTRIMS, (LCD_LINES-1)*FH+1, mixerCurrentFlightMode+1);
       if (sub==MAX_FLIGHT_MODES && !trimsCheckTimer) {
         lcd_status_line();
+        if (event == EVT_KEY_FIRST(KEY_ENTER)) {
+          s_editMode = 0;
+          trimsCheckTimer = 200; // 2 seconds
+        }
       }
       return;
     }
