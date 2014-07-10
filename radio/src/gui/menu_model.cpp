@@ -1903,11 +1903,24 @@ void menuModelFlightModesAll(uint8_t event)
       // last line available - add the "check trims" line
       lcd_putsLeft((LCD_LINES-1)*FH+1, STR_CHECKTRIMS);
       putsFlightMode(OFS_CHECKTRIMS, (LCD_LINES-1)*FH+1, mixerCurrentFlightMode+1);
-      if (sub==MAX_FLIGHT_MODES && !trimsCheckTimer) {
-        lcd_status_line();
-        if (event == EVT_KEY_FIRST(KEY_ENTER)) {
-          s_editMode = 0;
-          trimsCheckTimer = 200; // 2 seconds
+      if (sub==MAX_FLIGHT_MODES) {
+        if (!trimsCheckTimer) {
+          if (event == EVT_KEY_FIRST(KEY_ENTER)) {
+            trimsCheckTimer = 200; // 2 seconds trims cancelled
+            s_editMode = 1;
+            killEvents(event);
+          }
+          else {
+            lcd_status_line();
+            s_editMode = 0;
+          }
+        }
+        else {
+          if (event == EVT_KEY_FIRST(KEY_EXIT)) {
+            trimsCheckTimer = 0;
+            s_editMode = 0;
+            killEvents(event);
+          }
         }
       }
       return;
