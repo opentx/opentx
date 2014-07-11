@@ -165,7 +165,8 @@ PACK(struct FrskySerialData {
     uint8_t  gpsDistNeeded:1;  //        1bits out of 16bits spare reused
     int8_t   gpsFix:2;         //        2bits out of 16bits spare reused: -1=never fixed, 0=not fixed now, 1=fixed
     uint8_t  openXsensor:1;    //        1bits out of 16bits spare reused: we receive data from the openXsensor
-    uint8_t  cellsCount:4;     //        4bits out of 16bits spare reused
+    uint8_t  varioHighPrecision:1;
+    uint8_t  spare6:3;
 
     int32_t  gpsAltitude;
 
@@ -173,12 +174,13 @@ PACK(struct FrskySerialData {
     uint16_t currentPrescale;
     uint16_t power;
 
+    uint8_t  cellsCount;
+    uint8_t  sensorCellsCount[2];
     uint16_t cellVolts[12];
     int16_t  cellsSum;
-    uint8_t  cellsState;
+    uint16_t cellsState;
     uint16_t minCellVolts;
 
-    bool     varioHighPrecision;
     uint16_t airSpeed;
     uint16_t dTE;
 });

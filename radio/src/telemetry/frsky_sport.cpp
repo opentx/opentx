@@ -279,8 +279,6 @@ bool checkSportPacket(uint8_t *packet)
 #define SPORT_DATA_U32(packet)  (*((uint32_t *)(packet+4)))
 #define HUB_DATA_U16(packet)    (*((uint16_t *)(packet+4)))
 
-uint8_t noCellsSensor[2];
-
 void frskySportProcessPacket(uint8_t *packet)
 {
   uint8_t  dataId = packet[0];
@@ -471,21 +469,21 @@ void frskySportProcessPacket(uint8_t *packet)
 
         if (dataId == DATA_ID_FLVSS) {
           // first sensor, remember its cell count
-          noCellsSensor[0] = cells;
-          cells += noCellsSensor[1];
+          frskyData.hub.sensorCellsCount[0] = cells;
+          cells += frskyData.hub.sensorCellsCount[1];
         }
         else {
           // second sensor connected
-          noCellsSensor[1] = cells;
-          cells += noCellsSensor[0];
-          battnumber += noCellsSensor[0];
+          frskyData.hub.sensorCellsCount[1] = cells;
+          cells += frskyData.hub.sensorCellsCount[0];
+          battnumber += frskyData.hub.sensorCellsCount[0];
         }
 
         if (cells != frskyData.hub.cellsCount) {
           frskySetCellsCount(cells);
         }
 
-        frskySetCellVoltage(battnumber,   (frskyCellVoltage_t) ((data & 0x000FFF00) >>  8) / 5);
+        frskySetCellVoltage(battnumber, (frskyCellVoltage_t) ((data & 0x000FFF00) >>  8) / 5);
         if (useSecondCell) {
           frskySetCellVoltage(battnumber+1, (frskyCellVoltage_t) ((data & 0xFFF00000) >> 20) / 5);
         }
