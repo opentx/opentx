@@ -270,6 +270,17 @@ TEST(FrSkySPORT, frskySetCellVoltage)
   EXPECT_TRUE(checkScreenshot("one_sensor_votages_screen"));
 }
 
+TEST(FrSkySPORT, StrangeCellsBug)
+{
+  memclear(&frskyData, sizeof(frskyData));
+  uint8_t pkt[] = { 0x7E, 0x48, 0x10, 0x00, 0x03, 0x30, 0x15, 0x50, 0x81, 0xD5 };
+  EXPECT_EQ(checkSportPacket(pkt+1), true);
+  frskySportProcessPacket(pkt+1);
+  EXPECT_EQ(frskyData.hub.cellsCount,         3);
+  EXPECT_EQ(frskyData.hub.cellVolts[0], _V(004)); // Aie, it seems a FLVSS bug :(
+  EXPECT_EQ(frskyData.hub.cellVolts[1], _V(413));
+}
+
 TEST(FrSkySPORT, frskySetCellVoltageTwoSensors)
 {
   //telemetryReset();
