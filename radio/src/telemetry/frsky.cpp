@@ -628,35 +628,37 @@ void frskySetCellVoltage(uint8_t battnumber, frskyCellVoltage_t cellVolts)
   if (battnumber < frskyData.hub.cellsCount) {
     // set cell voltage
     frskyData.hub.cellVolts[battnumber] = cellVolts;
-    frskyData.hub.cellsState |= (1 << battnumber);
 
-    if (frskyData.hub.cellsState == (1<<frskyData.hub.cellsCount)-1) {
-      // we received voltage of all cells
-      frskyData.hub.cellsState = 0;
+    if (cellVolts != 0) {
+      frskyData.hub.cellsState |= (1 << battnumber);
+      if (frskyData.hub.cellsState == (1<<frskyData.hub.cellsCount)-1) {
+        // we received voltage of all cells
+        frskyData.hub.cellsState = 0;
 
-      // calculate Cells, Cells-, Cell and Cell-
-      uint16_t cellsSum = 0; /* unit: 1/10 volts */
-      frskyCellVoltage_t minCellVolts = -1;
-      for (uint8_t i=0; i<frskyData.hub.cellsCount; i++) {
-        frskyCellVoltage_t tmpCellVolts = frskyData.hub.cellVolts[i];
-        cellsSum += tmpCellVolts;
-        if (tmpCellVolts < minCellVolts) {
-          // update minimum cell voltage (Cell)
-          minCellVolts = tmpCellVolts;
+        // calculate Cells, Cells-, Cell and Cell-
+        uint16_t cellsSum = 0; /* unit: 1/10 volts */
+        frskyCellVoltage_t minCellVolts = -1;
+        for (uint8_t i=0; i<frskyData.hub.cellsCount; i++) {
+          frskyCellVoltage_t tmpCellVolts = frskyData.hub.cellVolts[i];
+          cellsSum += tmpCellVolts;
+          if (tmpCellVolts < minCellVolts) {
+            // update minimum cell voltage (Cell)
+            minCellVolts = tmpCellVolts;
+          }
         }
-      }
 
-      frskyData.hub.minCellVolts = minCellVolts;
-      frskyData.hub.cellsSum = cellsSum / (10 / TELEMETRY_CELL_VOLTAGE_MUTLIPLIER);
+        frskyData.hub.minCellVolts = minCellVolts;
+        frskyData.hub.cellsSum = cellsSum / (10 / TELEMETRY_CELL_VOLTAGE_MUTLIPLIER);
 
-      // update cells sum minimum (Cells-)
-      if (!frskyData.hub.minCells || frskyData.hub.cellsSum < frskyData.hub.minCells) {
-        frskyData.hub.minCells = frskyData.hub.cellsSum;
-      }
+        // update cells sum minimum (Cells-)
+        if (!frskyData.hub.minCells || frskyData.hub.cellsSum < frskyData.hub.minCells) {
+          frskyData.hub.minCells = frskyData.hub.cellsSum;
+        }
 
-      // update minimum cell voltage (Cell-)
-      if (!frskyData.hub.minCell || frskyData.hub.minCellVolts < frskyData.hub.minCell) {
-        frskyData.hub.minCell = frskyData.hub.minCellVolts;
+        // update minimum cell voltage (Cell-)
+        if (!frskyData.hub.minCell || frskyData.hub.minCellVolts < frskyData.hub.minCell) {
+          frskyData.hub.minCell = frskyData.hub.minCellVolts;
+        }
       }
     }
   }
