@@ -627,7 +627,8 @@ void frskySetCellVoltage(uint8_t battnumber, frskyCellVoltage_t cellVolts)
 
   if (battnumber < frskyData.hub.cellsCount) {
     // set cell voltage
-    frskyData.hub.cellVolts[battnumber] = cellVolts;
+    if (cellVolts > 50)  // Filter out bogus cell values apparently sent by the FLVSS in some cases
+      frskyData.hub.cellVolts[battnumber] = cellVolts;
 
     if (cellVolts != 0) {
       frskyData.hub.cellsState |= (1 << battnumber);
