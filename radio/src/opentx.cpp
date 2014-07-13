@@ -1656,11 +1656,7 @@ FORCEINLINE void evalTrims()
     // do trim -> throttle trim if applicable
     int16_t trim = getTrimValue(phase, i);
     if (i==THR_STICK && g_model.thrTrim) {
-      if (g_model.throttleReversed)
-        trim = -trim;
-      int16_t v = getValue(MIXSRC_Thr);
-      int32_t vv = ((int32_t)trim-TRIM_MIN)*(RESX-v)>>(RESX_SHIFT+1);
-      trim = vv;
+      trim = (((g_model.throttleReversed)?(int32_t)(trim+TRIM_MIN):(int32_t)(trim-TRIM_MIN)) * (RESX-getValue(MIXSRC_Thr))) >> (RESX_SHIFT+1);
     }
     else if (trimsCheckTimer > 0) {
       trim = 0;
