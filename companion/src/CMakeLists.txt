@@ -87,6 +87,13 @@ add_custom_command(
   WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
 )
 
+add_custom_command(
+  OUTPUT ${RADIO_SRC_DIRECTORY}/lua_exports.inc
+  COMMAND make lua_exports.cpp
+  DEPENDS ${RADIO_SRC_DIRECTORY}/myeeprom.h
+  WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
+)
+
 include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${PROJECT_SOURCE_DIR}/../..
@@ -112,6 +119,7 @@ set(common_SRCS
   firmwares/ersky9x/ersky9xinterface.cpp
   ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
   ${RADIO_SRC_DIRECTORY}/translations/en.h
+  ${RADIO_SRC_DIRECTORY}/lua_exports.inc
   firmwares/opentx/opentxeeprom.cpp
   firmwares/opentx/open9xStockeeprom.cpp
   firmwares/opentx/open9xGruvin9xeeprom.cpp
@@ -312,6 +320,7 @@ set(simu_SRCS
   ${ERSKY9X_CHECKOUT_DIRECTORY}/ersky9xsimulator.cpp
   ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
   ${RADIO_SRC_DIRECTORY}/translations/en.h
+  ${RADIO_SRC_DIRECTORY}/lua_exports.inc
   modeledit/node.cpp
   modeledit/edge.cpp # TODO not needed
   simulator.cpp

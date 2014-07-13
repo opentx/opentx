@@ -302,6 +302,7 @@ SRC =
 CPPSRC =
 INCDIRS = . translations
 EXTRAINCDIRS = 
+LUADEP =
 
 # MCU name
 ifneq ($(PCB), $(filter $(PCB), STD 9X 9XR STD128 9X128 9XR128 9X2561 9XR2561 GRUVIN9X MEGA2560 SKY9X 9XRPRO TARANIS))
@@ -729,6 +730,7 @@ ifeq ($(PCB), TARANIS)
            lua/src/lbaselib.c lua/src/linit.c lua/src/lmathlib.c lua/src/loadlib.c lua/src/lauxlib.c lua/src/ltablib.c lua/src/lcorolib.c 
            # lua/src/loslib.c lua/src/lbitlib.c lua/src/lstrlib.c lua/src/liolib.c lua/src/ldblib.c
     SRC += $(LUASRC) 
+    LUADEP = lua_exports.cpp
   endif           
 
   ifeq ($(SDCARD), YES)
@@ -1156,7 +1158,7 @@ all: begin gccversion sizebefore build sizeafter end
 ifeq ($(ARCH), AVR)
   build: stamp_header tra lbm allsrc.cpp elf remallsrc hex
 else ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO TARANIS))
-  build: stamp_header tra lbm bootloader.lbm allsrc.cpp elf remallsrc bin
+  build: stamp_header tra lbm bootloader.lbm $(LUADEP) allsrc.cpp elf remallsrc bin
 else
   build: stamp_header tra lbm allsrc.cpp elf remallsrc bin
 endif
@@ -1272,6 +1274,12 @@ bitmaps/sticks.lbm: bitmaps/sticks_4x1.xbm bitmaps/splash_9x.xbm bitmaps/splash_
 	$(IMG2LBM) bitmaps/about_taranis.png bitmaps/about_taranis.lbm bmp
 	$(IMG2LBM) bitmaps/about_9x.png bitmaps/about_9x.lbm img
 	$(IMG2LBM) bitmaps/asterisk_4bits.png bitmaps/asterisk_4bits.lbm bmp
+
+lua_exports.cpp: myeeprom.h ../util/luaexport.py
+	@echo "Generating a list of Lua exported constants in lua_exports.txt" 
+	@cpp -DPCBTARANIS -DCPUARM -DLUA -DEXPORT  myeeprom.h | grep LEXP > lua_exports.txt
+	@echo "Parsing and generating C Lua exports in lua_exports.cpp"
+	@python ../util/luaexport.py lua_exports.txt lua_exports.cpp
 	 
 # Eye candy.
 # AVR Studio 3.x does not check make's exit code but relies on
@@ -1313,7 +1321,7 @@ FOXLIB=-L/usr/local/lib \
        -lFOX-1.6 \
        -Wl,-rpath,$(FOXPATH)/src/.libs
 
-simu: stamp_header $(BOARDSRC) $(CPPSRC) Makefile simu.cpp targets/simu/simpgmspace.cpp *.h tra lbm eeprom.bin
+simu: $(LUADEP) stamp_header $(BOARDSRC) $(CPPSRC) Makefile simu.cpp targets/simu/simpgmspace.cpp *.h tra lbm eeprom.bin
 	g++ $(CPPFLAGS) $(INCFLAGS) simu.cpp $(BOARDSRC) $(CPPSRC) $(LUASRC) targets/simu/simpgmspace.cpp -MD -DSIMU -O0 -o simu $(FOXINC) $(FOXLIB) -pthread -fexceptions
 
 eeprom.bin:
@@ -1410,6 +1418,7 @@ clean_list :
 	$(REMOVE) stamp-opentx.h
 	$(REMOVE) bitmaps/*.lbm 
 	$(REMOVE) fonts/*/*.lbm
+	$(REMOVE) lua_exports.txt lua_exports.cpp
 	$(MAKE) -C bootloader clean
 
 #### Install
@@ -1492,3 +1501,4 @@ GTEST_TESTS_SRCS = $(shell find tests/ -type f -name '*.cpp')
 
 gtests: $(BOARDSRC) $(CPPSRC) $(GTEST_TESTS_SRCS) targets/simu/simpgmspace.cpp *.h gtest_main.a
 	g++ -std=gnu++0x $(CPPFLAGS) $(BOARDSRC) $(CPPSRC) $(GTEST_TESTS_SRCS) targets/simu/simpgmspace.cpp -I$(GTEST_DIR) ${INCFLAGS} -I$(GTEST_DIR)/include -o gtests -lpthread -MD -DSIMU -lQtCore -lQtGui gtest_main.a 
+
