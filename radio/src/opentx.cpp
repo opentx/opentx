@@ -3060,7 +3060,7 @@ FORCEINLINE void DSM2_USART0_vect()
 
 #if !defined(SIMU) && !defined(CPUARM)
 
-#if defined (FRSKY) || defined(DSM2_SERIAL)
+#if defined (FRSKY)
 
 // USART0 Transmit Data Register Emtpy ISR
 FORCEINLINE void FRSKY_USART0_vect()
