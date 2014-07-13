@@ -280,7 +280,7 @@ TEST(FrSkySPORT, StrangeCellsBug)
   EXPECT_EQ(checkSportPacket(pkt+1), true);
   frskySportProcessPacket(pkt+1);
   EXPECT_EQ(frskyData.hub.cellsCount,         3);
-  EXPECT_EQ(frskyData.hub.cellVolts[0], _V(004)); // Aie, it seems a FLVSS bug :(
+  EXPECT_EQ(frskyData.hub.cellVolts[0], _V(000)); // now we ignore such low values 
   EXPECT_EQ(frskyData.hub.cellVolts[1], _V(413));
 }
 
