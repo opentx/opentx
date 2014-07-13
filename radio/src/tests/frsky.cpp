@@ -110,13 +110,16 @@ TEST(FrSky, FrskyValueWithMinAveraging)
   FrskyValueWithMin testVal;
   testVal.value = 0;  
   testVal.set(10);
+  EXPECT_EQ(RAW_FRSKY_MINMAX(testVal), 10);
   EXPECT_EQ(testVal.value, expected[testPos++]);
   for(int n=2; n<10; ++n) {
     testVal.set(n*10);
+    EXPECT_EQ(RAW_FRSKY_MINMAX(testVal), n*10);
     EXPECT_EQ(testVal.value, expected[testPos++]);
   }
   for(int n=2; n<10; ++n) {
     testVal.set(100);
+    EXPECT_EQ(RAW_FRSKY_MINMAX(testVal), 100);
     EXPECT_EQ(testVal.value, expected[testPos++]);
   }
 }

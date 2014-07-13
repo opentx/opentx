@@ -70,6 +70,7 @@ extern uint8_t telemetryState;
 #endif
 
 #if defined(CPUARM)
+#define RAW_FRSKY_MINMAX(v)   v.raw
 #define TELEMETRY_AVERAGE_COUNT 2     //we actually average two more readings!
 class FrskyValueWithMin {
   public:
@@ -80,6 +81,7 @@ class FrskyValueWithMin {
     void set(uint8_t value);
 };
 #else
+#define RAW_FRSKY_MINMAX(v)   v.value
 class FrskyValueWithMin {
   public:
     uint8_t value;
