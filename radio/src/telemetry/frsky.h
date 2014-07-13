@@ -70,18 +70,17 @@ extern uint8_t telemetryState;
 #endif
 
 #if defined(CPUARM)
-#define RAW_FRSKY_MINMAX(v)   v.raw
-#define TELEMETRY_AVERAGE_COUNT 2     //we actually average two more readings!
+#define TELEMETRY_AVERAGE_COUNT 3     //we actually average one more reading!
+#define RAW_FRSKY_MINMAX(v)     v.values[TELEMETRY_AVERAGE_COUNT-1]
 class FrskyValueWithMin {
   public:
-    uint8_t value;      //fitered value (average of last TELEMETRY_AVERAGE_COUNT+2 values)
+    uint8_t value;      //fitered value (average of last TELEMETRY_AVERAGE_COUNT+1 values)
     uint8_t min;        
     uint8_t values[TELEMETRY_AVERAGE_COUNT];
-    uint8_t raw;        //raw value (unfiltered)
     void set(uint8_t value);
 };
 #else
-#define RAW_FRSKY_MINMAX(v)   v.value
+#define RAW_FRSKY_MINMAX(v)     v.value
 class FrskyValueWithMin {
   public:
     uint8_t value;
