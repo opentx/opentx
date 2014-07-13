@@ -310,7 +310,7 @@ bool displayGaugesTelemetryScreen(FrSkyScreenData & screen)
       else {
 #if defined(CPUARM)
         threshold = barsThresholds[source-TELEM_ALT];
-#else
+#elif defined(GAUGES)
         threshold = convertBarTelemValue(source, barsThresholds[source-TELEM_ALT]);
 #endif
       }
