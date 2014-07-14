@@ -235,8 +235,9 @@ class SourcesConversionTable: public ConversionTable {
               addConversion(RawSource(SOURCE_TYPE_SWITCH, i), val++);
           }
         }
-        for (int i=0; i<MAX_CUSTOM_SWITCHES(board, version); i++)
+        for (int i=0; i<MAX_CUSTOM_SWITCHES(board, version); i++) {
           addConversion(RawSource(SOURCE_TYPE_CUSTOM_SWITCH, i), val++);
+        }
       }
 
       if (!afterrelease21March2013) {
@@ -503,7 +504,7 @@ template <int N>
 class SourceField: public ConversionField< UnsignedField<N> > {
   public:
     SourceField(RawSource & source, BoardEnum board, unsigned int version, unsigned int variant, unsigned long flags=0):
-      ConversionField< UnsignedField<N> >(_source, SourcesConversionTable::getInstance(board, version, variant, flags), "Source"),
+      ConversionField< UnsignedField<N> >(_source, SourcesConversionTable::getInstance(board, version, variant, flags), "Source", "This source cannot be exported on this board!"),
       source(source),
       _source(0)
     {
