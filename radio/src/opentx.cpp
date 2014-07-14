@@ -3095,6 +3095,12 @@ ISR(USART0_UDRE_vect)
 
 void instantTrim()
 {
+#if defined(PCBTARANIS)
+  int16_t  anas_0[NUM_INPUTS];
+  evalInputs(e_perout_mode_notrainer | e_perout_mode_nosticks);
+  memcpy(anas_0, anas, sizeof(anas_0));
+#endif
+
   evalInputs(e_perout_mode_notrainer);
 
   for (uint8_t stick=0; stick<NUM_STICKS; stick++) {
@@ -3107,7 +3113,7 @@ void instantTrim()
         ExpoData * ed = expoAddress(e);
         if (!EXPO_VALID(ed)) break; // end of list
         if (ed->srcRaw-MIXSRC_Rud == stick) {
-          delta = anas[ed->chn];
+          delta = anas[ed->chn] - anas_0[ed->chn];
           break;
         }
       }
