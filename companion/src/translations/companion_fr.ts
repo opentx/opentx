@@ -3875,7 +3875,7 @@ Are you sure ?</source>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1603"/>
-        <source>Write Backup from file to to Radio</source>
+        <source>Write Backup from file to Radio</source>
         <translation>Transférer une sauvegarde à la radio</translation>
     </message>
     <message>

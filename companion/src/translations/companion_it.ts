@@ -4166,7 +4166,7 @@ Volete scaricarla ora ?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1601"/>
-        <source>Write Backup from file to to Radio</source>
+        <source>Write Backup from file to Radio</source>
         <translation>Scrivi salvataggio dal file sulla Radio</translation>
     </message>
     <message>

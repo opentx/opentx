@@ -4270,7 +4270,7 @@ Chcete ho přesto zapsat ?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1601"/>
-        <source>Write Backup from file to to Radio</source>
+        <source>Write Backup from file to Radio</source>
         <translation>Zapsat zálohu ze souboru do rádia</translation>
     </message>
     <message>

@@ -3902,7 +3902,7 @@ Vill du ladda ned den nu ?</translation>
     </message>
     <message>
         <location line="+0"/>
-        <source>Write Backup from file to to Radio</source>
+        <source>Write Backup from file to Radio</source>
         <translation>Skriv Backup från en fil till radion</translation>
     </message>
     <message>

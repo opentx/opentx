@@ -4613,7 +4613,7 @@ Kirjoita se silti lähettimeen ?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1676"/>
-        <source>Write Backup from file to to Radio</source>
+        <source>Write Backup from file to Radio</source>
         <translation>Kirjoita varmuuskopio tiedosto lähettimeen</translation>
     </message>
     <message>
