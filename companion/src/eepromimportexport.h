@@ -648,7 +648,7 @@ class ConversionField: public TransformedField {
         if (table->exportValue(_field, _field))
           return;
         if (!error.isEmpty())
-          EEPROMWarnings += error + "\n";
+          EEPROMWarnings.push_back(error);
       }
 
       if (shift) {

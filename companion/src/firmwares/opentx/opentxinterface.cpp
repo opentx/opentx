@@ -402,10 +402,21 @@ int OpenTxEepromInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t 
     }
   }
 
-  if (!EEPROMWarnings.isEmpty())
+  if (!EEPROMWarnings.empty()) {
+    QString msg;
+    int noErrorsToDisplay = std::min((int)EEPROMWarnings.size(),10);
+    for (int n = 0; n < noErrorsToDisplay; n++) {
+      msg += "-" + EEPROMWarnings.front() + "\n";
+      EEPROMWarnings.pop_front();
+    }
+    if (!EEPROMWarnings.empty()) {
+      msg = QObject::tr("(displaying only first 10 warnings)") + "\n" + msg;
+    }
+    EEPROMWarnings.clear();
     QMessageBox::warning(NULL,
         QObject::tr("Warning"),
-        QObject::tr("EEPROM saved with these warnings:") + "\n- " + EEPROMWarnings.remove(EEPROMWarnings.length()-1, 1).replace("\n", "\n- "));
+        QObject::tr("EEPROM saved with these warnings:") + "\n" + msg);
+  }
 
   return size;
 }

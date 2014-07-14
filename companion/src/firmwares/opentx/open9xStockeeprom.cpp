@@ -89,7 +89,7 @@ t_Open9xExpoData_v201::operator ExpoData ()
   c9x.mode = mode;
   c9x.chn = chn;
   if (expo!=0 && curve!=0) {
-    EEPROMWarnings += ::QObject::tr("Simultaneous usage of expo and curves is no longer supported in OpenTX") + "\n";
+    EEPROMWarnings.push_back(::QObject::tr("Simultaneous usage of expo and curves is no longer supported in OpenTX"));
   }
   else {
     if (curve == 0) {
