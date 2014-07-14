@@ -104,10 +104,12 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
     q = &font_3x5[((uint16_t)c-0x2d)*3];
     lcdPutPattern(x, y, q, 3, 5, flags);
   }
+#if defined(BOLD_FONT)
   else if (flags & BOLD) {
     q = &font_5x7_B[c_remapped*5];
     lcdPutPattern(x, y, q, 5, 7, flags);
   }
+#endif
   else
 #endif
   {
