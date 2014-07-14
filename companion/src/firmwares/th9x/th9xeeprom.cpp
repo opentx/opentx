@@ -197,7 +197,7 @@ int8_t t_Th9xLogicalSwitchData::fromSource(RawSource source)
   if (source.type == SOURCE_TYPE_STICK)
     v1 = 1+source.index;
   else if (source.type == SOURCE_TYPE_ROTARY_ENCODER) {
-    EEPROMWarnings += ::QObject::tr("th9x on this board doesn't have Rotary Encoders") + "\n";
+    EEPROMWarnings.push_back(::QObject::tr("th9x on this board doesn't have Rotary Encoders"));
     v1 = 5+source.index;
   }
   else if (source.type == SOURCE_TYPE_MAX)

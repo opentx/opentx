@@ -370,7 +370,8 @@ template <int N>
 class SwitchField: public ConversionField< SignedField<N> > {
   public:
     SwitchField(RawSwitch & sw, BoardEnum board, unsigned int version, unsigned long flags=0):
-      ConversionField< SignedField<N> >(_switch, SwitchesConversionTable::getInstance(board, version, flags), "Switch"),
+      ConversionField< SignedField<N> >(_switch, SwitchesConversionTable::getInstance(board, version, flags), "Switch",
+          "Switch "+ sw.toString()+" cannot be exported on this board!"),
       sw(sw),
       _switch(0)
     {
@@ -1257,14 +1258,14 @@ class CurvesField: public TransformedField {
         if (IS_TARANIS(board) && version >= 216) {
           offset += (curve->type == CurveData::CURVE_TYPE_CUSTOM ? curve->count * 2 - 2 : curve->count);
           if (offset > maxPoints) {
-            EEPROMWarnings += ::QObject::tr("OpenTX only accepts %1 points in all curves").arg(maxPoints) + "\n";
+            EEPROMWarnings.push_back(::QObject::tr("OpenTX only accepts %1 points in all curves").arg(maxPoints));
             break;
           }
         }
         else {
           offset += (curve->type == CurveData::CURVE_TYPE_CUSTOM ? curve->count * 2 - 2 : curve->count) - 5;
           if (offset > maxPoints - 5 * maxCurves) {
-            EEPROMWarnings += ::QObject::tr("OpenTx only accepts %1 points in all curves").arg(maxPoints) + "\n";
+            EEPROMWarnings.push_back(::QObject::tr("OpenTx only accepts %1 points in all curves").arg(maxPoints));
             break;
           }
           _curves[i] = offset;
@@ -2430,7 +2431,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   if (IS_ARM(board))
     internalField.Append(new UnsignedField<3>(modelData.telemetryProtocol));
   else
-    internalField.Append(new ConversionField< UnsignedField<3> >((unsigned int &)modelData.moduleData[0].protocol, &protocolsConversionTable, "Protocol", ::QObject::tr("OpenTX doesn't accept this protocol")));
+    internalField.Append(new ConversionField< UnsignedField<3> >((unsigned int &)modelData.moduleData[0].protocol, &protocolsConversionTable, "Protocol", ::QObject::tr("OpenTX doesn't accept this telemetry protocol")));
 
   internalField.Append(new BoolField<1>(modelData.thrTrim));
 
@@ -2534,12 +2535,12 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
 
   if (IS_TARANIS(board)) {
     modulesCount = 3;
-    internalField.Append(new ConversionField< SignedField<8> >(modelData.moduleData[1].protocol, &protocolsConversionTable, "Protocol", ::QObject::tr("OpenTX doesn't accept this protocol")));
+    internalField.Append(new ConversionField< SignedField<8> >(modelData.moduleData[1].protocol, &protocolsConversionTable, "Protocol", ::QObject::tr("OpenTX doesn't accept this rado protocol")));
     internalField.Append(new UnsignedField<8>(modelData.trainerMode));
   }
   else if (IS_ARM(board) && version >= 216) {
     modulesCount = 3;
-    internalField.Append(new ConversionField< SignedField<8> >(modelData.moduleData[0].protocol, &protocolsConversionTable, "Protocol", ::QObject::tr("OpenTX doesn't accept this protocol")));
+    internalField.Append(new ConversionField< SignedField<8> >(modelData.moduleData[0].protocol, &protocolsConversionTable, "Protocol", ::QObject::tr("OpenTX doesn't accept this radio protocol")));
   }
 
   if (IS_ARM(board) && version >= 215) {

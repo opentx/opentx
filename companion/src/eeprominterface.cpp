@@ -12,7 +12,7 @@
 #include "helpers.h"
 #include "wizarddata.h"
 
-QString EEPROMWarnings;
+std::list<QString> EEPROMWarnings;
 
 const char * switches9X[] = { "3POS", "THR", "RUD", "ELE", "AIL", "GEA", "TRN" };
 const char * switchesX9D[] = { "SA", "SB", "SC", "SD", "SE", "SF", "SG", "SH" };

@@ -149,7 +149,7 @@ t_Open9xArmExpoData_v208::operator ExpoData ()
   c9x.chn = chn;
 
   if (expo!=0 && curve!=0) {
-    EEPROMWarnings += ::QObject::tr("Simultaneous usage of expo and curves is no longer supported") + "\n";
+    EEPROMWarnings.push_back(::QObject::tr("Simultaneous usage of expo and curves is no longer supported"));
   }
   else {
     if (curve == 0) {
@@ -179,7 +179,7 @@ t_Open9xArmExpoData_v210::operator ExpoData ()
   c9x.chn = chn;
 
   if (expo!=0 && curve!=0) {
-    EEPROMWarnings += ::QObject::tr("Simultaneous usage of expo and curves is no longer supported") + "\n";
+    EEPROMWarnings.push_back(::QObject::tr("Simultaneous usage of expo and curves is no longer supported"));
   }
   else {
     if (curve == 0) {
