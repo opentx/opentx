@@ -50,6 +50,7 @@ void doMixerCalculations();
 
 #define MODEL_RESET() \
   memset(&g_model, 0, sizeof(g_model)); \
+  memset(&anaInValues, 0, sizeof(anaInValues)); \
   extern uint8_t s_mixer_first_run_done; \
   s_mixer_first_run_done = false; \
   lastFlightMode = 255;
