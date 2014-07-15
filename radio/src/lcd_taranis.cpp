@@ -97,6 +97,7 @@ void lcdPutPattern(xcoord_t x, uint8_t y, const uint8_t * pattern, uint8_t width
         bool plot;
         if (j < 0 || j == height) {
           plot = false;
+          if (height >= 12) continue;
           if (j<0 && !inv) continue;
         }
         else {
