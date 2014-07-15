@@ -133,6 +133,33 @@ TEST(Trims, CopySticksToOffset)
   EXPECT_EQ(g_model.limitData[1].offset, -97);
 }
 
+TEST(Trims, InstantTrim)
+{
+  MODEL_RESET();
+  modelDefault(0);
+  anaInValues[AIL_STICK] = 50;
+  instantTrim();
+  EXPECT_EQ(25, getTrimValue(0, AIL_STICK));
+}
+
+#if defined(PCBTARANIS)
+TEST(Trims, InstantTrimNegativeCurve)
+{
+  MODEL_RESET();
+  modelDefault(0);
+  ExpoData *expo = expoAddress(AIL_STICK);
+  expo->curve.type = CURVE_REF_CUSTOM;
+  expo->curve.value = 1;
+  g_model.points[0] = -100;
+  g_model.points[1] = -75;
+  g_model.points[2] = -50;
+  g_model.points[3] = -25;
+  g_model.points[4] = 0;
+  anaInValues[AIL_STICK] = 512;
+  instantTrim();
+  EXPECT_EQ(128, getTrimValue(0, AIL_STICK));
+}
+#endif
 
 TEST(Curves, LinearIntpol)
 {
