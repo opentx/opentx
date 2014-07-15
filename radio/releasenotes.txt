@@ -1,9 +1,13 @@
-<h2>Version 2.0.7 / 2014-07-14</h2>
+<h2>Version 2.0.7 / 2014-07-15</h2>
+[Taranis]
+<ul>
+<li>Instant Trim problem when using a negative curve
+
 [All]
 <ul>
 <li>SafetyCH function was missing on the compilation server
 
-<h2>Version 2.0.6 / 2014-07-03</h2>
+<h2>Version 2.0.6 / 2014-07-13</h2>
 [Taranis]
 <ul>
 <li>Telemetry Type field is hidden when only S.PORT is available
