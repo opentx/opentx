@@ -2340,8 +2340,7 @@ class FrskyField: public StructField {
         Append(new ConversionField< UnsignedField<3> >(frsky.currentSource, &telemetryCurrentSourceConversionTable, "Current Source"));
         Append(new SignedField<8>(frsky.varioCenterMax));
         if (version >= 216) {
-          // TODO int8_t   fasOffset;
-          Append(new SpareBitsField<8>());
+          Append(new SignedField<8>(frsky.fasOffset));
         }
       }
     }

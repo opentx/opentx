@@ -2,6 +2,7 @@
 <ul>
 <li>SafetyCH function was missing in simulator</li>
 <li>EEPROM export warning when exporting logical switches > L12 on 9X128</li>
+<li>FAS offset was not exported on 9X/9XR boards</li>
 </ul>
 
 <h2>Version 2.0.6</h2>
