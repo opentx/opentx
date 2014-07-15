@@ -2338,7 +2338,7 @@ class FrskyField: public StructField {
         Append(new UnsignedField<3>(frsky.varioSource));
         Append(new SignedField<5>(frsky.varioCenterMin));
         Append(new ConversionField< UnsignedField<3> >(frsky.currentSource, &telemetryCurrentSourceConversionTable, "Current Source"));
-        Append(new SignedField<8>(frsky.varioCenterMax));
+        Append(new SignedField<5>(frsky.varioCenterMax));
         if (version >= 216) {
           Append(new SignedField<8>(frsky.fasOffset));
         }
