@@ -1408,7 +1408,8 @@ clean_list :
 	$(REMOVE) *.lst
 	$(REMOVE) allsrc.cpp
 	$(REMOVE) stamp-opentx.h
-	$(REMOVE) `find . -name "*.lbm"` 
+	$(REMOVE) bitmaps/*.lbm 
+	$(REMOVE) fonts/*/*.lbm
 	$(MAKE) -C bootloader clean
 
 #### Install
