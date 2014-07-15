@@ -192,6 +192,17 @@ TEST(Lcd, vline)
   EXPECT_TRUE(checkScreenshot("vline"));
 }
 
+#if defined(CPUARM)
+TEST(Lcd, Smlsize)
+{
+  lcd_clear();
+  lcd_putsAtt(0, 0, "TESTgy,", SMLSIZE);
+  lcd_putsAtt(10, 22, "TESTgy,", SMLSIZE|INVERS);
+  lcd_filled_rect(8, 40, 100, 20);
+  lcd_putsAtt(10, 42, "TESTgy,", SMLSIZE);
+  EXPECT_TRUE(checkScreenshot("smlsize"));
+}
+
 TEST(Lcd, Stdsize)
 {
   lcd_clear();
@@ -202,7 +213,6 @@ TEST(Lcd, Stdsize)
   EXPECT_TRUE(checkScreenshot("stdsize"));
 }
 
-#if defined(CPUARM)
 TEST(Lcd, Midsize)
 {
   lcd_clear();
