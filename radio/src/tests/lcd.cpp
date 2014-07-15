@@ -191,3 +191,36 @@ TEST(Lcd, vline)
   }
   EXPECT_TRUE(checkScreenshot("vline"));
 }
+
+TEST(Lcd, Stdsize)
+{
+  lcd_clear();
+  lcd_putsAtt(0, 0, "TEST", 0);
+  lcd_putsAtt(10, 22, "TEST", INVERS);
+  lcd_filled_rect(8, 40, 100, 20);
+  lcd_putsAtt(10, 42, "TEST", 0);
+  EXPECT_TRUE(checkScreenshot("stdsize"));
+}
+
+#if defined(CPUARM)
+TEST(Lcd, Midsize)
+{
+  lcd_clear();
+  lcd_putsAtt(0, 0, "TEST", MIDSIZE);
+  lcd_putsAtt(10, 22, "TEST", MIDSIZE|INVERS);
+  lcd_filled_rect(8, 40, 100, 20);
+  lcd_putsAtt(10, 42, "TEST", MIDSIZE);
+  EXPECT_TRUE(checkScreenshot("midsize"));
+}
+
+TEST(Lcd, Dblsize)
+{
+  lcd_clear();
+  lcd_putsAtt(2, 10, "TST", DBLSIZE);
+  lcd_putsAtt(42, 10, "TST", DBLSIZE|INVERS);
+  lcd_filled_rect(80, 8, 46, 24);
+  lcd_putsAtt(82, 10, "TST", DBLSIZE);
+  EXPECT_TRUE(checkScreenshot("dblsize"));
+}
+
+#endif

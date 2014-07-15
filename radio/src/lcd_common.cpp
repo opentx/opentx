@@ -51,7 +51,87 @@ uint8_t lcdLastPos;
 uint8_t lcdNextPos;
 
 #if defined(CPUARM)
-void lcdPutPattern(xcoord_t x, uint8_t y, const uint8_t * pattern, uint8_t width, uint8_t height, LcdFlags flags);
+void lcdPutPattern(xcoord_t x, uint8_t y, const uint8_t * pattern, uint8_t width, uint8_t height, LcdFlags flags)
+{
+  bool blink = false;
+  bool inv = false;
+  if (flags & BLINK) {
+    if (BLINK_ON_PHASE) {
+      if (flags & INVERS)
+        inv = true;
+      else {
+        blink = true;
+      }
+    }
+  }
+  else if (flags & INVERS) {
+    inv = true;
+  }
+
+  uint8_t lines = (height+7)/8;
+  assert(lines <= 5);
+
+  for (int8_t i=0; i<width+2; i++) {
+    if (x<LCD_W) {
+      uint8_t b[5] = { 0 };
+      if (i==0) {
+        if (x==0 || !inv) {
+          lcdNextPos++;
+          continue;
+        }
+        else {
+          // we need to work on the previous x when INVERS
+          x--;
+        }
+      }
+      else if (i<=width) {
+        uint8_t skip = true;
+        for (uint8_t j=0; j<lines; j++) {
+          b[j] = pgm_read_byte(pattern++); /*top byte*/
+          if (b[j] != 0xff) {
+            skip = false;
+          }
+        }
+        if (skip) {
+          if (flags & FIXEDWIDTH) {
+            for (uint8_t j=0; j<lines; j++) {
+              b[j] = 0;
+            }
+          }
+          else {
+            continue;
+          }
+        }
+        if ((flags & CONDENSED) && i==2) {
+          /*condense the letter by skipping column 3 */
+          continue;
+        }
+      }
+
+      for (int8_t j=-1; j<=height; j++) {
+        bool plot;
+        if (j < 0 || j == height) {
+          plot = false;
+          if (height >= 12) continue;
+          if (j<0 && !inv) continue;
+        }
+        else {
+          uint8_t line = (j / 8);
+          uint8_t pixel = (j % 8);
+          plot = b[line] & (1 << pixel);
+        }
+        if (inv) plot = !plot;
+        if (!blink) {
+          lcd_plot(x, y+j, plot ? FORCE : ERASE);
+        }
+      }
+    }
+
+    x++;
+    lcdNextPos++;
+  }
+}
+
 void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
 {
 #if !defined(BOOT)
@@ -94,7 +174,7 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
   }
   else if (flags & MIDSIZE) {
     q = &font_8x10[((uint16_t)c-0x20)*16];
-    lcdPutPattern(x, y, q, 8, 11, flags);
+    lcdPutPattern(x, y, q, 8, 12, flags);
   }
   else if (flags & SMLSIZE) {
     q = (c < 0xc0 ? &font_4x6[(c-0x20)*5] : &font_4x6_extra[(c-0xc0)*5]);
