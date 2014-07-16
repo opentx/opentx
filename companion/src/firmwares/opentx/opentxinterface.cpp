@@ -163,12 +163,13 @@ bool OpenTxEepromInterface::loadModelVariant(unsigned int index, ModelData &mode
   }
   else {
     // load from SD Backup, size is stored in index
-    QByteArray eepromData((char *)data, index);
-    QByteArray modelData(sizeof(model), 0);  // ModelData should be always bigger than the EEPROM struct
-    // memcpy(eepromData.data(), data, index);
-    // efile->openRd(FILE_MODEL(0));
-    int numbytes = efile->importRlc2(modelData, eepromData);
-    if (numbytes) {
+    QByteArray backupData((char *)data, index);
+    QByteArray modelData;
+    if (IS_SKY9X(board))
+      modelData = backupData;
+    else
+      importRlc(modelData, backupData);
+    if (modelData.size()) {
       open9xModel.Import(modelData);
       // open9xModel.Dump();
       model.used = true;
@@ -176,8 +177,6 @@ bool OpenTxEepromInterface::loadModelVariant(unsigned int index, ModelData &mode
     else {
       model.clear();
     }
-    // open9xModel.Import(eepromData);
-    // model.used = true;
   }
 
   return true;

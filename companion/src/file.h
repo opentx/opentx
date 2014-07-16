@@ -140,11 +140,12 @@ public:
   {
     return readRlc12(buf, i_len, true);
   }
-  unsigned int importRlc2(QByteArray & dst, QByteArray & src);
 
   uint8_t byte_checksum(uint8_t *p, unsigned int size);
   unsigned int ee32_check_header(struct t_eeprom_header *hptr);
   unsigned int get_current_block_number(unsigned int block_no, uint16_t *p_size);
 };
+
+unsigned int importRlc(QByteArray & dst, QByteArray & src, unsigned int rlcVersion=2);
 
 #endif

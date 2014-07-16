@@ -4,6 +4,7 @@
 <li>EEPROM export warning when exporting logical switches > L12 on 9X128</li>
 <li>FAS offset was not exported on 9X/9XR boards</li>
 <li>Trims modes bugfix on non Taranis boards</li>
+<li>It was impossible to open a backuped model from the Tx</li>
 </ul>
 
 <h2>Version 2.0.6</h2>
