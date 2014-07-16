@@ -63,19 +63,25 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
   trimsValue << ui->trim1Value << ui->trim2Value << ui->trim3Value << ui->trim4Value;
   trimsSlider << ui->trim1Slider << ui->trim2Slider << ui->trim3Slider << ui->trim4Slider;
 
+  BoardEnum board = firmware->getBoard();
+
   for (int i=0; i<4; i++) {
     trimsLabel[i]->setText(labels[CONVERT_MODE(i+1)-1]);
 
     QComboBox * cb = trimsUse[i];
     cb->setProperty("index", i);
-    cb->addItem(QObject::tr("Trim disabled"), -1);
+    if (IS_TARANIS(board)) {
+      cb->addItem(QObject::tr("Trim disabled"), -1);
+    }
     for (int m=0; m<modesCount; m++) {
       if (m == phaseIdx) {
         cb->addItem(QObject::tr("Own Trim"), m*2);
       }
       else if (phaseIdx > 0) {
         cb->addItem(QObject::tr("Use Trim from Flight mode %1").arg(m), m*2);
-        cb->addItem(QObject::tr("Use Trim from Flight mode %1 + Own Trim as an offset").arg(m), m*2+1);
+        if (IS_TARANIS(board)) {
+          cb->addItem(QObject::tr("Use Trim from Flight mode %1 + Own Trim as an offset").arg(m), m*2+1);
+        }
       }
     }
     connect(cb, SIGNAL(currentIndexChanged(int)), this, SLOT(phaseTrimUse_currentIndexChanged(int)));
@@ -157,7 +163,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
       gvLayout->addWidget(gvValues[i], i, col++, 1, 1);
       
       // Popups
-      if (IS_TARANIS(GetEepromInterface()->getBoard()) && (phaseIdx == 0)) {
+      if (IS_TARANIS(board) && phaseIdx == 0) {
         gvPopups[i] = new QCheckBox(ui->gvGB);
         gvPopups[i]->setProperty("index", i);
         gvPopups[i]->setText(tr("Popup enabled"));
@@ -270,7 +276,11 @@ void FlightModePanel::trimUpdate(unsigned int trim)
     trimsSlider[trim]->setEnabled(false);
   }
   else {
-    trimsUse[trim]->setCurrentIndex(1 + 2*phase.trimRef[chn] + phase.trimMode[chn] - (phase.trimRef[chn] > phaseIdx ? 1 : 0));
+    BoardEnum board = firmware->getBoard();
+    if (IS_TARANIS(board))
+      trimsUse[trim]->setCurrentIndex(1 + 2*phase.trimRef[chn] + phase.trimMode[chn] - (phase.trimRef[chn] > phaseIdx ? 1 : 0));
+    else
+      trimsUse[trim]->setCurrentIndex(phase.trimRef[chn]);
     trimsValue[trim]->setEnabled(true);
     trimsSlider[trim]->setEnabled(true);
   }
@@ -364,8 +374,15 @@ void FlightModePanel::phaseTrimUse_currentIndexChanged(int index)
       phase.trim[chn] = 0;
     }
     else {
-      phase.trimMode[chn] = data % 2;
-      phase.trimRef[chn] = data / 2;
+      BoardEnum board = firmware->getBoard();
+      if (IS_TARANIS(board)) {
+        phase.trimMode[chn] = data % 2;
+        phase.trimRef[chn] = data / 2;
+      }
+      else {
+        phase.trimMode[chn] = 0;
+        phase.trimRef[chn] = data / 2;
+      }
       phase.trim[chn] = 0;
     }
     trimUpdate(trim);
