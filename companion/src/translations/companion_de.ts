@@ -4232,7 +4232,7 @@ Do you want to download it now ?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1589"/>
         <source>Firmware Changes...</source>
-        <translation>Firmware Ändeurngen...</translation>
+        <translation>Firmware Änderungen...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1589"/>
