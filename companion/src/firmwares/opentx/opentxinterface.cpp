@@ -164,7 +164,20 @@ bool OpenTxEepromInterface::loadModelVariant(unsigned int index, ModelData &mode
   else {
     // load from SD Backup, size is stored in index
     QByteArray eepromData((char *)data, index);
-    open9xModel.Import(eepromData);
+    QByteArray modelData(sizeof(model), 0);  // ModelData should be always bigger than the EEPROM struct
+    // memcpy(eepromData.data(), data, index);
+    // efile->openRd(FILE_MODEL(0));
+    int numbytes = efile->importRlc2(modelData, eepromData);
+    if (numbytes) {
+      open9xModel.Import(modelData);
+      // open9xModel.Dump();
+      model.used = true;
+    }
+    else {
+      model.clear();
+    }
+    // open9xModel.Import(eepromData);
+    // model.used = true;
   }
 
   return true;
@@ -921,8 +934,29 @@ bool OpenTxEepromInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, in
 {
   std::cout << "trying " << getName() << " backup import...";
 
-  if (esize < 8 || memcmp(eeprom, "o9x", 3) != 0 || eeprom[3] != 0x30+board) {
+  if (esize < 8 || memcmp(eeprom, "o9x", 3) != 0) {
     std::cout << " no\n";
+    return false;
+  }
+
+  BoardEnum backupBoard = (BoardEnum)-1;
+  switch (eeprom[3]) {
+    case 0x33:
+      backupBoard = BOARD_TARANIS;
+      break;
+    case 0x32:
+      backupBoard = BOARD_SKY9X;
+      break;
+    case 0x31:
+      backupBoard = BOARD_GRUVIN9X;
+      break;
+    default:
+      std::cout << " unknown board\n";
+      return false;
+  }
+
+  if (backupBoard != board) {
+    std::cout << " not right board\n";
     return false;
   }
 

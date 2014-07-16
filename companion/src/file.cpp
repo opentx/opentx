@@ -344,6 +344,77 @@ unsigned int RleFile::readRlc12(uint8_t *buf, unsigned int i_len, bool rlc2)
   }
 }
 
+unsigned int RleFile::importRlc2(QByteArray & dst, QByteArray & src)
+{
+  // TODO reset dst
+
+  unsigned int i_len = src.size();
+  unsigned int i_ofs = 0;
+  uint8_t *buf = (uint8_t *)dst.data();
+  m_pos      = 0;
+  m_ofs      = 0;
+  m_zeroes   = 0;
+  m_bRlc     = 0;
+  m_err      = ERR_NONE;       //error reasons
+
+
+  if (IS_SKY9X(board)) {
+    int len = std::min((int)i_len, (int)m_size + (int)sizeof(t_eeprom_header) - (int)m_pos);
+    if (len > 0) {
+      eeprom_read_block(buf, (m_fileId << 12) + m_pos, len);
+      m_pos += len;
+    }
+    return len;
+  }
+  else {
+    unsigned int i=0;
+    for( ; 1; ) {
+      uint8_t ln = std::min<uint16_t>(m_zeroes, i_len-i);
+      memset(&buf[i], 0, ln);
+      i        += ln;
+      m_zeroes -= ln;
+      if(m_zeroes) break;
+
+      ln = std::min<uint16_t>(m_bRlc, i_len-i);
+      memcpy(&buf[i], ((uint8_t *)src.data()) + i_ofs, ln);
+      i_ofs += ln;
+      uint8_t lr = ln;
+
+      i        += lr ;
+      m_bRlc   -= lr;
+      if(m_bRlc) break;
+
+      // if (read(&m_bRlc, 1) !=1) break; //read how many bytes to read
+      m_bRlc = *(((uint8_t *)src.data()) + i_ofs);
+      i_ofs += 1;
+
+      if (!(m_bRlc & 0x7f)) {
+        qDebug() << "RLC decoding error!";
+        return 0;
+      }
+
+      if (1/*rlc2*/) {
+        if(m_bRlc&0x80){ // if contains high byte
+          m_zeroes  =(m_bRlc>>4) & 0x7;
+          m_bRlc    = m_bRlc & 0x0f;
+        }
+        else if(m_bRlc&0x40){
+          m_zeroes  = m_bRlc & 0x3f;
+          m_bRlc    = 0;
+        }
+        //else   m_bRlc
+      }
+      else {
+        if(m_bRlc&0x80){ // if contains high byte
+          m_zeroes  = m_bRlc & 0x7f;
+          m_bRlc    = 0;
+        }
+      }
+    }
+    return i;
+  }
+}
+
 unsigned int RleFile::write1(uint8_t b)
 {
   return write(&b, 1);
