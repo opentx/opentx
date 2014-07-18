@@ -120,6 +120,7 @@ static void luaGetValueAndPush(int src)
     case MIXSRC_FIRST_TELEM-1+TELEM_CURRENT:
     case MIXSRC_FIRST_TELEM-1+TELEM_MAX_CURRENT:
     case MIXSRC_FIRST_TELEM-1+TELEM_ASPEED:
+    case MIXSRC_FIRST_TELEM-1+TELEM_MAX_ASPEED:
       //theese need to be divided by 10
       lua_pushnumber(L, getValue(src)/10.0);
       break;
