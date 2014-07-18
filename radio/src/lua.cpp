@@ -34,6 +34,7 @@
  *
  */
 
+#include <ctype.h>
 #include <stdio.h>
 #include "opentx.h"
 #include "stamp-opentx.h"
@@ -48,7 +49,7 @@ extern "C" {
 }
 #endif
 
-#include "lua_exports.cpp"   //this line must be after lua headers
+#include "lua_exports.cpp"   // this line must be after lua headers
 
 #define lua_registernumber(L, n, i)    (lua_pushnumber(L, (i)), lua_setglobal(L, (n)))
 #define lua_registerint(L, n, i)       (lua_pushinteger(L, (i)), lua_setglobal(L, (n)))
@@ -56,7 +57,8 @@ extern "C" {
 #define lua_pushtableboolean(L, k, v)  (lua_pushstring(L, (k)), lua_pushboolean(L, (v)), lua_settable(L, -3))
 #define lua_pushtableinteger(L, k, v)  (lua_pushstring(L, (k)), lua_pushinteger(L, (v)), lua_settable(L, -3))
 #define lua_pushtablenumber(L, k, v)   (lua_pushstring(L, (k)), lua_pushnumber(L, (v)), lua_settable(L, -3))
-#define lua_pushtablestring(L, k, v)   { char tmp[sizeof(v)+1]; strncpy(tmp, (v), sizeof(v)); tmp[sizeof(v)] = '\0'; lua_pushstring(L, (k)); lua_pushstring(L, tmp); lua_settable(L, -3); }
+#define lua_pushtablestring(L, k, v)   (lua_pushstring(L, (k)), lua_pushstring(L, (v)), lua_settable(L, -3))
+#define lua_pushtablenzstring(L, k, v) { char tmp[sizeof(v)+1]; strncpy(tmp, (v), sizeof(v)); tmp[sizeof(v)] = '\0'; lua_pushstring(L, (k)); lua_pushstring(L, tmp); lua_settable(L, -3); }
 #define lua_pushtablezstring(L, k, v)  { char tmp[sizeof(v)+1]; zchar2str(tmp, (v), sizeof(v)); lua_pushstring(L, (k)); lua_pushstring(L, tmp); lua_settable(L, -3); }
 #define lua_registerlib(L, name, tab)  (luaL_newmetatable(L, name), luaL_setfuncs(L, tab, 0), lua_setglobal(L, name))
 
@@ -102,7 +104,7 @@ static void luaGetValueAndPush(int src)
 {
   if (src >= MIXSRC_FIRST_TELEM && src <= MIXSRC_LAST_TELEM) {
     // telemetry values
-   if ((src != MIXSRC_FIRST_TELEM-1+TELEM_TX_VOLTAGE) && !TELEMETRY_STREAMING() ) {
+   if ((src != MIXSRC_FIRST_TELEM-1+TELEM_TX_VOLTAGE) && !TELEMETRY_STREAMING()) {
       // telemetry not working, return zero for telemetry sources
       // except for "tx voltage"
       lua_pushinteger(L, (int)0);
@@ -121,7 +123,7 @@ static void luaGetValueAndPush(int src)
     case MIXSRC_FIRST_TELEM-1+TELEM_MAX_CURRENT:
     case MIXSRC_FIRST_TELEM-1+TELEM_ASPEED:
     case MIXSRC_FIRST_TELEM-1+TELEM_MAX_ASPEED:
-      //theese need to be divided by 10
+      // these need to be divided by 10
       lua_pushnumber(L, getValue(src)/10.0);
       break;
 
@@ -135,7 +137,7 @@ static void luaGetValueAndPush(int src)
     case MIXSRC_FIRST_TELEM-1+TELEM_A2:
     case MIXSRC_FIRST_TELEM-1+TELEM_A3:
     case MIXSRC_FIRST_TELEM-1+TELEM_A4:
-      //convert raw Ax values to calibrated values
+      // convert raw Ax values to calibrated values
       idx -= (MIXSRC_FIRST_TELEM+TELEM_A1-1);
       lua_pushnumber(L, applyChannelRatio(idx, getValue(src))/100.0);
       break;
@@ -147,7 +149,7 @@ static void luaGetValueAndPush(int src)
     case MIXSRC_FIRST_TELEM-1+TELEM_ACCy:
     case MIXSRC_FIRST_TELEM-1+TELEM_ACCz:
     case MIXSRC_FIRST_TELEM-1+TELEM_VSPEED:
-      //theese need to be divided by 100
+      // these need to be divided by 100
       lua_pushnumber(L, getValue(src)/100.0);
       break;
 
@@ -158,108 +160,76 @@ static void luaGetValueAndPush(int src)
   }
 }
 
-//these are used when returning fields that are defined as multiples
-static char foundName[10];
-static char foundDesc[50];
-static LuaField foundField = {0, foundName, foundDesc};
+struct LuaField {
+  uint16_t id;
+  char desc[50];
+};
+
+#define FIND_FIELD_DESC  0x01
 
 /**
-  Return filed data for a given field name
-
-  Note: function is non-reentrant, 
-  it uses global variable foundField for return value
+  Return field data for a given field name
 */
-const LuaField * luaFindFieldByName(const char * name)
+bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags=0)
 {
   // TODO better search method (binary lookup)
-  for(int n = 0; n < (int)DIM(luaFields); ++n) {
-    if (!strcmp(name, luaFields[n].name)) {
-      return &luaFields[n];
+  for (unsigned int n=0; n<DIM(luaSingleFields); ++n) {
+    if (!strcmp(name, luaSingleFields[n].name)) {
+      field.id = luaSingleFields[n].id;
+      if (flags & FIND_FIELD_DESC) {
+        strncpy(field.desc, luaSingleFields[n].desc, sizeof(field.desc)-1);
+        field.desc[sizeof(field.desc)-1] = '\0';
+      }
+      else {
+        field.desc[0] = '\0';
+      }
+      return true;
     }
   }
-  //search in multiples
-  for(int n = 0; n < (int)DIM(luaMultipleFields); ++n) {
-    for(int i = luaMultipleFields[n].start; i < luaMultipleFields[n].end; i++){
-      //char buf[10];
-      snprintf(foundName, sizeof(foundName), luaMultipleFields[n].name, i);
-      // TRACE("luaFindFieldByName(): %s", foundName);
-      if (!strcmp(name, foundName)) {
-        snprintf(foundDesc, sizeof(foundDesc), luaMultipleFields[n].desc, i);
-        foundField.id = luaMultipleFields[n].id+i-1;
-        return &foundField;
+
+  // search in multiples
+  unsigned int len = strlen(name);
+  for (unsigned int n=0; n<DIM(luaMultipleFields); ++n) {
+    const char * fieldName = luaMultipleFields[n].name;
+    unsigned int fieldLen = strlen(fieldName);
+    if (!strncmp(name, fieldName, fieldLen)) {
+      unsigned int index;
+      if (len == fieldLen+1 && isdigit(name[fieldLen])) {
+        index = name[fieldLen] - '1';
+      }
+      else if (len == fieldLen+2 && isdigit(name[fieldLen]) && isdigit(name[fieldLen+1])) {
+        index = 10 * (name[fieldLen] - '0') + (name[fieldLen+1] - '1');
+      }
+      else {
+        continue;
+      }
+      if (index < luaMultipleFields[n].count) {
+        field.id = luaMultipleFields[n].id;
+        if (flags & FIND_FIELD_DESC) {
+          snprintf(field.desc, sizeof(field.desc)-1, luaMultipleFields[n].desc, index+1);
+          field.desc[sizeof(field.desc)-1] = '\0';
+        }
+        else {
+          field.desc[0] = '\0';
+        }
+        return true;
       }
     }
   }
-  return 0;  // not found
+  return false;  // not found
 }
 
-/**
-  Return filed data for a given field id
-
-  Note: function is non-reentrant, 
-  it uses global variable foundField for return value
-*/
-const LuaField * luaFindFieldById(int id)
-{
-  for(int n = 0; n < (int)DIM(luaFields); ++n) {
-    if (id == luaFields[n].id) {
-      return &luaFields[n];
-    }
-  }
-  //search in multiples
-  for(int n = 0; n < (int)DIM(luaMultipleFields); ++n) {
-    if ((id >= luaMultipleFields[n].id) && (id <= luaMultipleFields[n].id+luaMultipleFields[n].end-luaMultipleFields[n].start)) {
-      int i = id - luaMultipleFields[n].id + luaMultipleFields[n].start;
-      snprintf(foundName, sizeof(foundName), luaMultipleFields[n].name, i);  
-      snprintf(foundDesc, sizeof(foundDesc), luaMultipleFields[n].desc, i);
-      foundField.id = id;
-      return &foundField;
-    }
-  }
-  return 0;  // not found
-}
-
-// TODO this could be removed and luaGetFieldInfo() used instead
-// get a filed ids for one or more fields
-static int luaGetFields(lua_State *L)
-{
-  // get number of arguments
-  int n = lua_gettop(L);
-  // return requested filed ids as multiple return values
-  for (int i = 1; i <= n; i++)
-  {
-    const char * what = luaL_checkstring(L, i);
-    TRACE("luaGetFields(): %s", what);
-    const LuaField * field = luaFindFieldByName(what);
-    if (field) {
-      lua_pushinteger(L, field->id);
-    }
-    else {
-      lua_pushnil(L);
-    }
-  }
-  return n;
-}
-
-//get a detailed info about particular field
+// get a detailed info about particular field
 static int luaGetFieldInfo(lua_State *L)
 {
-  const LuaField * field;
-  if (lua_isnumber(L, 1)) {
-    int id = luaL_checkinteger(L, 1);
-    // TRACE("luaGetFieldInfo(): int %d", id);
-    field = luaFindFieldById(id);
-  }
-  else {
-    const char * what = luaL_checkstring(L, 1);
-    // TRACE("luaGetFieldInfo(): str %s", what);
-    field = luaFindFieldByName(what);
-  }
-  if (field) {
+  const char * what = luaL_checkstring(L, 1);
+  LuaField field;
+  bool found = luaFindFieldByName(what, field, FIND_FIELD_DESC);
+  if (found) {
     lua_newtable(L);
-    lua_pushtableinteger(L, "id", field->id);
-    lua_pushstring(L, "name"); lua_pushstring(L, field->name); lua_settable(L, -3);
-    lua_pushstring(L, "desc"); lua_pushstring(L, field->desc); lua_settable(L, -3);
+    lua_pushtableinteger(L, "id", field.id);
+    lua_pushtablestring(L, "name", what);
+    lua_pushtablestring(L, "desc", field.desc);
     return 1;
   }
   return 0;
@@ -272,12 +242,12 @@ static int luaGetValue(lua_State *L)
     src = luaL_checkinteger(L, 1);
   }
   else {
-    // convert from filed name to its id
+    // convert from field name to its id
     const char *name = luaL_checkstring(L, 1);
-    const LuaField * field = luaFindFieldByName(name);
-    if (field) {
-      // TRACE("luaGetValue(): %d", field->id);
-      src = field->id;
+    LuaField field;
+    bool found = luaFindFieldByName(name, field);
+    if (found) {
+      src = field.id;
     }
   }
   if (src >= EXTRA_FIRST ) {
@@ -396,10 +366,11 @@ static int luaLcdDrawChannel(lua_State *L)
     channel = luaL_checkinteger(L, 3);
   }
   else {
-    const char *what = luaL_checkstring(L, 3);
-    const LuaField * field = luaFindFieldByName(what);
-    if (field) {
-      channel = field->id;
+    const char * what = luaL_checkstring(L, 3);
+    LuaField field;
+    bool found = luaFindFieldByName(what, field);
+    if (found) {
+      channel = field.id;
     }
   }
   int att = luaL_checkinteger(L, 4);
@@ -935,7 +906,7 @@ static int luaModelGetCustomFunction(lua_State *L)
     lua_pushtableinteger(L, "switch", CFN_SWITCH(cfn));
     lua_pushtableinteger(L, "func", CFN_FUNC(cfn));
     if (CFN_FUNC(cfn) == FUNC_PLAY_TRACK || CFN_FUNC(cfn) == FUNC_BACKGND_MUSIC || CFN_FUNC(cfn) == FUNC_PLAY_SCRIPT) {
-      lua_pushtablestring(L, "name", cfn->play.name);
+      lua_pushtablenzstring(L, "name", cfn->play.name);
     }
     else {
       lua_pushtableinteger(L, "value", cfn->all.val);
@@ -1263,7 +1234,6 @@ void luaInit()
   lua_register(L, "getVersion", luaGetVersion);
   lua_register(L, "getGeneralSettings", luaGetGeneralSettings);
   lua_register(L, "getValue", luaGetValue);
-  lua_register(L, "getFields", luaGetFields);
   lua_register(L, "getFieldInfo", luaGetFieldInfo);  
 
   lua_register(L, "playFile", luaPlayFile);
