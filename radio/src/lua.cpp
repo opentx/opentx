@@ -165,7 +165,8 @@ static LuaField foundField = {0, foundName, foundDesc};
 /**
   Return filed data for a given field name
 
-  Note: function is non-reentrant
+  Note: function is non-reentrant, 
+  it uses global variable foundField for return value
 */
 const LuaField * luaFindFieldByName(const char * name)
 {
@@ -188,15 +189,14 @@ const LuaField * luaFindFieldByName(const char * name)
       }
     }
   }
-  // search in lua script outputs
-  // TODO
   return 0;  // not found
 }
 
 /**
   Return filed data for a given field id
 
-  Note: function is non-reentrant
+  Note: function is non-reentrant, 
+  it uses global variable foundField for return value
 */
 const LuaField * luaFindFieldById(int id)
 {
@@ -215,8 +215,6 @@ const LuaField * luaFindFieldById(int id)
       return &foundField;
     }
   }
-  // search in lua script outputs
-  // TODO
   return 0;  // not found
 }
 
