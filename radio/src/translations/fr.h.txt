@@ -265,7 +265,7 @@
 #endif
 
 #if defined(SAFETY_CHANNEL_FUNCTION)
-  #define TR_CFN_SAFETY        "Sécur.\0      "
+  #define TR_CFN_SAFETY        "Rempl.\0      "
 #else
   #define TR_CFN_SAFETY        "---\0         "
 #endif
