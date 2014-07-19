@@ -529,3 +529,5 @@ Alexandre Rault
 Eric Albin
 Lukas Kliment
 Bernard Philippe
+Bernard Delpy
+Didier Klein
