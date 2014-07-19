@@ -418,9 +418,15 @@ ADD_CUSTOM_TARGET( stamp
                    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/version.h ${CMAKE_SOURCE_DIR}/../companion.stamp 
                    DEPENDS ${CMAKE_BINARY_DIR}/version.h )
 
-ADD_CUSTOM_TARGET( translations
+IF(WIN32)
+  ADD_CUSTOM_TARGET( translations
+                   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+                   COMMAND lupdate ${CMAKE_SOURCE_DIR} -ts ${companion_TS} )
+ELSE( )
+  ADD_CUSTOM_TARGET( translations
                    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
                    COMMAND lupdate-qt4 ${CMAKE_SOURCE_DIR} -ts ${companion_TS} )
+ENDIF( )
 
 SET(CPACK_PACKAGE_NAME "COMPANION")
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Models and settings editor for the OpenTx open source firmware")
