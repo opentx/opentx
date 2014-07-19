@@ -528,3 +528,4 @@ Teddie Holmes
 Alexandre Rault
 Eric Albin
 Lukas Kliment
+Bernard Philippe
