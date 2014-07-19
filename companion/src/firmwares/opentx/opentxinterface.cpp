@@ -580,7 +580,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
       else
         return 16;
     case SafetyChannelCustomFunction:
-      return id.contains("nosafetych") ? 0 : 1;
+      return id.contains("noovveridech") ? 0 : 1;
     case LogicalSwitches:
       if (IS_ARM(board))
         return 32;
@@ -1051,7 +1051,7 @@ void addOpenTxCommonOptions(OpenTxFirmware * firmware)
 {
   firmware->addOption("ppmus", QObject::tr("Channel values displayed in us"));
   firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
-  firmware->addOption("nosafetych", QObject::tr("No SafetyCH functions available"));
+  firmware->addOption("nooverridech", QObject::tr("No OverrideCH functions available"));
   Option fai_options[] = { { "faichoice", QObject::tr("Possibility to enable FAI MODE at field") }, { "faimode", QObject::tr("FAI MODE always enabled") }, { NULL } };
   firmware->addOptions(fai_options);
 }

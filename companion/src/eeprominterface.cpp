@@ -724,7 +724,7 @@ QString FuncSwData::funcToString()
 {
   ModelData model;
   if (func >= FuncSafetyCh1 && func <= FuncSafetyCh32)
-    return QObject::tr("Safety %1").arg(RawSource(SOURCE_TYPE_CH, func).toString(model));
+    return QObject::tr("Override %1").arg(RawSource(SOURCE_TYPE_CH, func).toString(model));
   else if (func == FuncTrainer)
     return QObject::tr("Trainer");
   else if (func == FuncTrainerRUD)
