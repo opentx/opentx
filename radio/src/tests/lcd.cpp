@@ -193,6 +193,16 @@ TEST(Lcd, vline)
 }
 
 #if defined(CPUARM)
+TEST(Lcd, vline_x_lt0)
+{
+  lcd_clear();
+  lcd_vline(50, -10, 12);
+  lcd_vline(100, -10, 1);
+  EXPECT_TRUE(checkScreenshot("vline_lt0"));
+}
+#endif
+
+#if defined(CPUARM)
 TEST(Lcd, Smlsize)
 {
   lcd_clear();

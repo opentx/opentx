@@ -92,7 +92,7 @@ void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat, LcdFlags att)
   if (x >= LCD_W) return;
   if (y >= LCD_H) return;
   if (h<0) { y+=h; h=-h; }
-  if (y<0) { h+=y; y=0; }
+  if (y<0) { h+=y; y=0; if (h<=0) return; }
   if (y+h > LCD_H) { h = LCD_H - y; }
 
   if (pat==DOTTED && !(y%2)) {
