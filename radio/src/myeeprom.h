@@ -1082,7 +1082,7 @@ enum TelemetrySource {
   TELEM_ACCy,                     LUA_EXPORT_TELEMETRY("accy", "G sensor - acceleration in Y axis [g]")
   TELEM_ACCz,                     LUA_EXPORT_TELEMETRY("accz", "G sensor - acceleration in Z axis [g]")
   TELEM_HDG,                      LUA_EXPORT_TELEMETRY("heading", "GPS heading [degrees]")
-  TELEM_VSPEED,                   LUA_EXPORT_TELEMETRY("vario-speed", "Variometer vertical speed [m/s]")
+  TELEM_VSPEED,                   LUA_EXPORT_TELEMETRY("vertical-speed", "Variometer vertical speed [m/s]")
   TELEM_ASPEED,                   LUA_EXPORT_TELEMETRY("air-speed", "Air speed [knots]")
   TELEM_DTE,                      LUA_EXPORT_TELEMETRY("dte", "Total energy [???]")
 #if defined(CPUARM)
