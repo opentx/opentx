@@ -34,6 +34,8 @@
  *
  */
 
+#include <ctype.h>
+#include <stdio.h>
 #include "opentx.h"
 #include "stamp-opentx.h"
 
@@ -47,13 +49,16 @@ extern "C" {
 }
 #endif
 
+#include "lua_exports.cpp"   // this line must be after lua headers
+
 #define lua_registernumber(L, n, i)    (lua_pushnumber(L, (i)), lua_setglobal(L, (n)))
 #define lua_registerint(L, n, i)       (lua_pushinteger(L, (i)), lua_setglobal(L, (n)))
 #define lua_pushtablenil(L, k)         (lua_pushstring(L, (k)), lua_pushnil(L), lua_settable(L, -3))
 #define lua_pushtableboolean(L, k, v)  (lua_pushstring(L, (k)), lua_pushboolean(L, (v)), lua_settable(L, -3))
 #define lua_pushtableinteger(L, k, v)  (lua_pushstring(L, (k)), lua_pushinteger(L, (v)), lua_settable(L, -3))
 #define lua_pushtablenumber(L, k, v)   (lua_pushstring(L, (k)), lua_pushnumber(L, (v)), lua_settable(L, -3))
-#define lua_pushtablestring(L, k, v)   { char tmp[sizeof(v)+1]; strncpy(tmp, (v), sizeof(v)); tmp[sizeof(v)] = '\0'; lua_pushstring(L, (k)); lua_pushstring(L, tmp); lua_settable(L, -3); }
+#define lua_pushtablestring(L, k, v)   (lua_pushstring(L, (k)), lua_pushstring(L, (v)), lua_settable(L, -3))
+#define lua_pushtablenzstring(L, k, v) { char tmp[sizeof(v)+1]; strncpy(tmp, (v), sizeof(v)); tmp[sizeof(v)] = '\0'; lua_pushstring(L, (k)); lua_pushstring(L, tmp); lua_settable(L, -3); }
 #define lua_pushtablezstring(L, k, v)  { char tmp[sizeof(v)+1]; zchar2str(tmp, (v), sizeof(v)); lua_pushstring(L, (k)); lua_pushstring(L, tmp); lua_settable(L, -3); }
 #define lua_registerlib(L, name, tab)  (luaL_newmetatable(L, name), luaL_setfuncs(L, tab, 0), lua_setglobal(L, name))
 
@@ -97,14 +102,17 @@ static int luaGetTime(lua_State *L)
 
 static void luaGetValueAndPush(int src)
 {
-  /*
-    Hint about dividers are taken from putsTelemetryChannel()
-  */
-  if (!TELEMETRY_STREAMING() && src>=MIXSRC_FIRST_TELEM && src<=MIXSRC_LAST_TELEM) {
-    //telemetry not working, return zero for telemetry sources
-    lua_pushinteger(L, (int)0);
-    return;
+  if (src >= MIXSRC_FIRST_TELEM && src <= MIXSRC_LAST_TELEM) {
+    // telemetry values
+   if ((src != MIXSRC_FIRST_TELEM-1+TELEM_TX_VOLTAGE) && !TELEMETRY_STREAMING()) {
+      // telemetry not working, return zero for telemetry sources
+      // except for "tx voltage"
+      lua_pushinteger(L, (int)0);
+      return;
+    }
   }
+
+  int idx = src;
   switch (src) {
     case MIXSRC_FIRST_TELEM-1+TELEM_TX_VOLTAGE:
     case MIXSRC_FIRST_TELEM-1+TELEM_VFAS:
@@ -113,21 +121,25 @@ static void luaGetValueAndPush(int src)
     case MIXSRC_FIRST_TELEM-1+TELEM_MIN_CELLS_SUM:
     case MIXSRC_FIRST_TELEM-1+TELEM_CURRENT:
     case MIXSRC_FIRST_TELEM-1+TELEM_MAX_CURRENT:
-    case MIXSRC_FIRST_TELEM-1+TELEM_VSPEED:
-      //theese need to be divided by 10
+    case MIXSRC_FIRST_TELEM-1+TELEM_ASPEED:
+    case MIXSRC_FIRST_TELEM-1+TELEM_MAX_ASPEED:
+      // these need to be divided by 10
       lua_pushnumber(L, getValue(src)/10.0);
-      break;
-
-    case MIXSRC_FIRST_TELEM-1+TELEM_A1:
-    case MIXSRC_FIRST_TELEM-1+TELEM_A2:
-      //convert raw A1/2 values to calibrated values
-      lua_pushnumber(L, applyChannelRatio(src-(MIXSRC_FIRST_TELEM-1+TELEM_A1), getValue(src))/100.0);
       break;
 
     case MIXSRC_FIRST_TELEM-1+TELEM_MIN_A1:
     case MIXSRC_FIRST_TELEM-1+TELEM_MIN_A2:
-      //convert raw A1/2 values to calibrated values
-      lua_pushnumber(L, applyChannelRatio(src-(MIXSRC_FIRST_TELEM-1+TELEM_MIN_A1), getValue(src))/100.0);
+    case MIXSRC_FIRST_TELEM-1+TELEM_MIN_A3:
+    case MIXSRC_FIRST_TELEM-1+TELEM_MIN_A4:
+      idx -= TELEM_MIN_A1-TELEM_A1;
+      // no break
+    case MIXSRC_FIRST_TELEM-1+TELEM_A1:
+    case MIXSRC_FIRST_TELEM-1+TELEM_A2:
+    case MIXSRC_FIRST_TELEM-1+TELEM_A3:
+    case MIXSRC_FIRST_TELEM-1+TELEM_A4:
+      // convert raw Ax values to calibrated values
+      idx -= (MIXSRC_FIRST_TELEM+TELEM_A1-1);
+      lua_pushnumber(L, applyChannelRatio(idx, getValue(src))/100.0);
       break;
 
     case MIXSRC_FIRST_TELEM-1+TELEM_CELL:
@@ -136,7 +148,8 @@ static void luaGetValueAndPush(int src)
     case MIXSRC_FIRST_TELEM-1+TELEM_ACCx:
     case MIXSRC_FIRST_TELEM-1+TELEM_ACCy:
     case MIXSRC_FIRST_TELEM-1+TELEM_ACCz:
-      //theese need to be divided by 100
+    case MIXSRC_FIRST_TELEM-1+TELEM_VSPEED:
+      // these need to be divided by 100
       lua_pushnumber(L, getValue(src)/100.0);
       break;
 
@@ -148,61 +161,101 @@ static void luaGetValueAndPush(int src)
 }
 
 struct LuaField {
-  const char * name;
-  const uint8_t id;
-  const uint8_t attr;
+  uint16_t id;
+  char desc[50];
 };
 
-const LuaField luaFields[] = {
-  { "altitude-max", MIXSRC_FIRST_TELEM+TELEM_MAX_ALT-1, 0 },
-  { "altitude", MIXSRC_FIRST_TELEM+TELEM_ALT-1, PREC2 },
-  { "vario", MIXSRC_FIRST_TELEM+TELEM_VSPEED-1, PREC2 },
-  { "tx-voltage", MIXSRC_FIRST_TELEM+TELEM_TX_VOLTAGE-1, PREC1 },
-  { "rpm", MIXSRC_FIRST_TELEM+TELEM_RPM-1, 0 },
-  { NULL, 0, 0 },
-};
+#define FIND_FIELD_DESC  0x01
+
+/**
+  Return field data for a given field name
+*/
+bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags=0)
+{
+  // TODO better search method (binary lookup)
+  for (unsigned int n=0; n<DIM(luaSingleFields); ++n) {
+    if (!strcmp(name, luaSingleFields[n].name)) {
+      field.id = luaSingleFields[n].id;
+      if (flags & FIND_FIELD_DESC) {
+        strncpy(field.desc, luaSingleFields[n].desc, sizeof(field.desc)-1);
+        field.desc[sizeof(field.desc)-1] = '\0';
+      }
+      else {
+        field.desc[0] = '\0';
+      }
+      return true;
+    }
+  }
+
+  // search in multiples
+  unsigned int len = strlen(name);
+  for (unsigned int n=0; n<DIM(luaMultipleFields); ++n) {
+    const char * fieldName = luaMultipleFields[n].name;
+    unsigned int fieldLen = strlen(fieldName);
+    if (!strncmp(name, fieldName, fieldLen)) {
+      unsigned int index;
+      if (len == fieldLen+1 && isdigit(name[fieldLen])) {
+        index = name[fieldLen] - '1';
+      }
+      else if (len == fieldLen+2 && isdigit(name[fieldLen]) && isdigit(name[fieldLen+1])) {
+        index = 10 * (name[fieldLen] - '0') + (name[fieldLen+1] - '1');
+      }
+      else {
+        continue;
+      }
+      if (index < luaMultipleFields[n].count) {
+        field.id = luaMultipleFields[n].id + index;
+        if (flags & FIND_FIELD_DESC) {
+          snprintf(field.desc, sizeof(field.desc)-1, luaMultipleFields[n].desc, index+1);
+          field.desc[sizeof(field.desc)-1] = '\0';
+        }
+        else {
+          field.desc[0] = '\0';
+        }
+        return true;
+      }
+    }
+  }
+  return false;  // not found
+}
+
+// get a detailed info about particular field
+static int luaGetFieldInfo(lua_State *L)
+{
+  const char * what = luaL_checkstring(L, 1);
+  LuaField field;
+  bool found = luaFindFieldByName(what, field, FIND_FIELD_DESC);
+  if (found) {
+    lua_newtable(L);
+    lua_pushtableinteger(L, "id", field.id);
+    lua_pushtablestring(L, "name", what);
+    lua_pushtablestring(L, "desc", field.desc);
+    return 1;
+  }
+  return 0;
+}
 
 static int luaGetValue(lua_State *L)
 {
+  int src = 0;
   if (lua_isnumber(L, 1)) {
-    int src = luaL_checkinteger(L, 1);
-    luaGetValueAndPush(src);
-    return 1;
+    src = luaL_checkinteger(L, 1);
   }
   else {
-    const char *what = luaL_checkstring(L, 1);
-    for (const LuaField * field = &luaFields[0]; field->name; field++) {
-      if (!strcmp(what, field->name)) {
-        getvalue_t value = getValue(field->id);
-        if (field->attr == PREC1)
-          lua_pushnumber(L, double(value)/10);
-        else if (field->attr == PREC2)
-          lua_pushnumber(L, double(value)/100);
-        else
-          lua_pushnumber(L, value);
-        return 1;
-      }
-    }
-    if (frskyData.hub.gpsFix) {
-      if (!strcmp(what, "latitude")) {
-        lua_pushnumber(L, gpsToDouble(frskyData.hub.gpsLatitudeNS=='S', frskyData.hub.gpsLatitude_bp, frskyData.hub.gpsLatitude_ap));
-        return 1;
-      }
-      else if (!strcmp(what, "longitude")) {
-        lua_pushnumber(L, gpsToDouble(frskyData.hub.gpsLongitudeEW=='W', frskyData.hub.gpsLongitude_bp, frskyData.hub.gpsLongitude_ap));
-        return 1;
-      }
-      else if (!strcmp(what, "pilot-latitude")) {
-        lua_pushnumber(L, pilotLatitude);
-        return 1;
-      }
-      else if (!strcmp(what, "pilot-longitude")) {
-        lua_pushnumber(L, pilotLongitude);
-        return 1;
-      }
+    // convert from field name to its id
+    const char *name = luaL_checkstring(L, 1);
+    LuaField field;
+    bool found = luaFindFieldByName(name, field);
+    if (found) {
+      src = field.id;
     }
   }
-  return 0;
+  if (src >= EXTRA_FIRST ) {
+    // one of the extra fields
+    return luaGetExtraValue(src);
+  }
+  luaGetValueAndPush(src);
+  return 1;
 }
 
 static int luaPlayFile(lua_State *L)
@@ -313,12 +366,11 @@ static int luaLcdDrawChannel(lua_State *L)
     channel = luaL_checkinteger(L, 3);
   }
   else {
-    const char *what = luaL_checkstring(L, 3);
-    for (const LuaField * field = &luaFields[0]; field->name; field++) {
-      if (!strcmp(what, field->name)) {
-        channel = field->id;
-        break;
-      }
+    const char * what = luaL_checkstring(L, 3);
+    LuaField field;
+    bool found = luaFindFieldByName(what, field);
+    if (found) {
+      channel = field.id;
     }
   }
   int att = luaL_checkinteger(L, 4);
@@ -854,7 +906,7 @@ static int luaModelGetCustomFunction(lua_State *L)
     lua_pushtableinteger(L, "switch", CFN_SWITCH(cfn));
     lua_pushtableinteger(L, "func", CFN_FUNC(cfn));
     if (CFN_FUNC(cfn) == FUNC_PLAY_TRACK || CFN_FUNC(cfn) == FUNC_BACKGND_MUSIC || CFN_FUNC(cfn) == FUNC_PLAY_SCRIPT) {
-      lua_pushtablestring(L, "name", cfn->play.name);
+      lua_pushtablenzstring(L, "name", cfn->play.name);
     }
     else {
       lua_pushtableinteger(L, "value", cfn->all.val);
@@ -1182,6 +1234,8 @@ void luaInit()
   lua_register(L, "getVersion", luaGetVersion);
   lua_register(L, "getGeneralSettings", luaGetGeneralSettings);
   lua_register(L, "getValue", luaGetValue);
+  lua_register(L, "getFieldInfo", luaGetFieldInfo);  
+
   lua_register(L, "playFile", luaPlayFile);
   lua_register(L, "playNumber", luaPlayNumber);
   lua_register(L, "popupInput", luaPopupInput);

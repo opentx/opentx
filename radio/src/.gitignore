@@ -24,3 +24,5 @@
 /gtests
 /gtest_main.a
 /gtests.d
+/lua_exports.cpp
+/lua_exports.txt
