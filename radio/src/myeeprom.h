@@ -807,7 +807,7 @@ PACK(typedef struct t_LogicalSwitchData { // Logical Switches data
 
 enum Functions {
   // first the functions which need a checkbox
-  FUNC_SAFETY_CHANNEL,
+  FUNC_OVERRIDE_CHANNEL,
   FUNC_TRAINER,
   FUNC_INSTANT_TRIM,
   FUNC_RESET,
@@ -849,10 +849,10 @@ enum Functions {
   FUNC_MAX
 };
 
-#if defined(SAFETY_CHANNEL_FUNCTION)
+#if defined(OVERRIDE_CHANNEL_FUNCTION)
   #define HAS_ENABLE_PARAM(func)    ((func) < FUNC_FIRST_WITHOUT_ENABLE)
 #else
-  #define HAS_ENABLE_PARAM(func)    ((func) < FUNC_FIRST_WITHOUT_ENABLE && (func) != FUNC_SAFETY_CHANNEL)
+  #define HAS_ENABLE_PARAM(func)    ((func) < FUNC_FIRST_WITHOUT_ENABLE && (func) != FUNC_OVERRIDE_CHANNEL)
 #endif
 
 #if defined(VOICE)

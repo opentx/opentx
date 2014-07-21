@@ -264,9 +264,9 @@
   #define TR_CFN_TEST
 #endif
 
-#if defined(SAFETY_CHANNEL_FUNCTION) && LCD_W >= 212
+#if defined(OVERRIDE_CHANNEL_FUNCTION) && LCD_W >= 212
   #define TR_CFN_SAFETY        "Override\0 "
-#elif defined(SAFETY_CHANNEL_FUNCTION)
+#elif defined(OVERRIDE_CHANNEL_FUNCTION)
   #define TR_CFN_SAFETY        "Overr.\0   "
 #else
   #define TR_CFN_SAFETY        "---\0      "

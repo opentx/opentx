@@ -54,7 +54,7 @@
 #define EEPROM_VARIANT 3
 #define HAPTIC
 #define REVPLUS
-#define SAFETY_CHANNEL_FUNCTION
+#define OVERRIDE_CHANNEL_FUNCTION
 
 #define NUM_POTS  5
 

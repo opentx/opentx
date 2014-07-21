@@ -147,7 +147,7 @@ uint8_t heartbeat;
 
 uint8_t stickMode;
 
-#if defined(SAFETY_CHANNEL_FUNCTION)
+#if defined(OVERRIDE_CHANNEL_FUNCTION)
 int8_t safetyCh[NUM_CHNOUT];
 #endif
 
@@ -1867,7 +1867,7 @@ void evalFunctions()
   static rotenc_t rePreviousValues[ROTARY_ENCODERS];
 #endif
 
-#if defined(SAFETY_CHANNEL_FUNCTION)
+#if defined(OVERRIDE_CHANNEL_FUNCTION)
   for (uint8_t i=0; i<NUM_CHNOUT; i++) {
     safetyCh[i] = -128; // not defined
   }
@@ -1900,8 +1900,8 @@ void evalFunctions()
 
         switch (CFN_FUNC(sd)) {
 
-#if defined(SAFETY_CHANNEL_FUNCTION)
-          case FUNC_SAFETY_CHANNEL:
+#if defined(OVERRIDE_CHANNEL_FUNCTION)
+          case FUNC_OVERRIDE_CHANNEL:
             safetyCh[CFN_CH_INDEX(sd)] = CFN_PARAM(sd);
             break;
 #endif

@@ -843,7 +843,7 @@ struct TimerState {
 
 extern TimerState timersStates[MAX_TIMERS];
 
-#if defined(SAFETY_CHANNEL_FUNCTION)
+#if defined(OVERRIDE_CHANNEL_FUNCTION)
 extern int8_t safetyCh[NUM_CHNOUT];
 #endif
 

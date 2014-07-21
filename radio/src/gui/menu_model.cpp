@@ -5068,8 +5068,8 @@ void menuModelCustomFunctions(uint8_t event)
         case 2:
         {
           int8_t maxParam = NUM_CHNOUT-1;
-#if defined(SAFETY_CHANNEL_FUNCTION)
-          if (func == FUNC_SAFETY_CHANNEL) {
+#if defined(OVERRIDE_CHANNEL_FUNCTION)
+          if (func == FUNC_OVERRIDE_CHANNEL) {
             putsChn(lcdNextPos, y, CFN_CH_INDEX(sd)+1, attr);
           }
           else
@@ -5120,8 +5120,8 @@ void menuModelCustomFunctions(uint8_t event)
             val_max = FUNC_RESET_PARAM_LAST;
             lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_VFSWRESET, CFN_PARAM(sd), attr);
           }
-#if defined(SAFETY_CHANNEL_FUNCTION)
-          else if (func == FUNC_SAFETY_CHANNEL) {
+#if defined(OVERRIDE_CHANNEL_FUNCTION)
+          else if (func == FUNC_OVERRIDE_CHANNEL) {
             val_displayed = (int8_t)CFN_PARAM(sd);
             val_min = -125; val_max = 125;
             lcd_outdezAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);

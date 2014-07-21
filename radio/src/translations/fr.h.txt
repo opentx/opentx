@@ -264,7 +264,7 @@
   #define TR_CFN_TEST
 #endif
 
-#if defined(SAFETY_CHANNEL_FUNCTION)
+#if defined(OVERRIDE_CHANNEL_FUNCTION)
   #define TR_CFN_SAFETY        "Rempl.\0      "
 #else
   #define TR_CFN_SAFETY        "---\0         "

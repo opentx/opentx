@@ -730,7 +730,7 @@ void ConvertModel_215_to_216(ModelData &model)
     fn.func = oldModel.funcSw[i].func;
     if (fn.func <= 15) {
       fn.all.param = fn.func;
-      fn.func = FUNC_SAFETY_CHANNEL;
+      fn.func = FUNC_OVERRIDE_CHANNEL;
     }
     else if (fn.func <= 20) {
       fn.all.param = fn.func - 16;

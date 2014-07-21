@@ -1544,8 +1544,8 @@ bool isLogicalSwitchFunctionAvailable(int function)
 bool isAssignableFunctionAvailable(int function)
 {
   switch (function) {
-#if !defined(SAFETY_CHANNEL_FUNCTION)
-    case FUNC_SAFETY_CHANNEL:
+#if !defined(OVERRIDE_CHANNEL_FUNCTION)
+    case FUNC_OVERRIDE_CHANNEL:
 #endif
 #if !defined(HAPTIC)
     case FUNC_HAPTIC:

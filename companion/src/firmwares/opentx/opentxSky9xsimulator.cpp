@@ -54,7 +54,7 @@
 #define GPS
 #define FAI_CHOICE
 #define FRSKY_STICKS
-#define SAFETY_CHANNEL_FUNCTION
+#define OVERRIDE_CHANNEL_FUNCTION
 
 #define NUM_POTS  3
 #define EEPROM_VARIANT 3
