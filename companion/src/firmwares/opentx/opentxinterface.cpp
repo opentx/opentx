@@ -1262,6 +1262,7 @@ void registerOpenTxFirmwares()
   openTx->addOption("nogvars", QObject::tr("Disable Global variables"));
   openTx->addOption("haptic", QObject::tr("Haptic module installed"));
   openTx->addOption("lua", QObject::tr("Support for Lua model scripts"));
+  openTx->addOption("nojoystick", QObject::tr("No Joystick emulation inside the FW (only Mass Storage as in the Bootloader)"));
   addOpenTxCommonOptions(openTx);
   firmwares.push_back(openTx);
   
@@ -1270,6 +1271,7 @@ void registerOpenTxFirmwares()
   openTx->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
   openTx->addOption("nogvars", QObject::tr("Disable Global variables"));
   openTx->addOption("lua", QObject::tr("Support for Lua model scripts"));
+  openTx->addOption("nojoystick", QObject::tr("No Joystick emulation inside the FW (only Mass Storage as in the Bootloader)"));
   addOpenTxCommonOptions(openTx);
   firmwares.push_back(openTx);
 
