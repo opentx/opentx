@@ -34,10 +34,7 @@
  *
  */
 
-#include <QtCore/QDir>
-#include <QtCore/QDebug>
-#include <QtGui/QApplication>
-#include <QtGui/QPainter>
+#include <QtCore/QString>
 #include <math.h>
 #include <gtest/gtest.h>
 
