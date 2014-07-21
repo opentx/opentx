@@ -631,7 +631,10 @@ class LimitData {
     bool  symetrical;
     char  name[6+1];
     CurveReference curve;
-    void clear() { memset(this, 0, sizeof(LimitData)); min = -1000; max = +1000; }
+    QString minToString();
+    QString maxToString();
+    QString offsetToString();
+    void clear();
 };
 
 enum MltpxValue {

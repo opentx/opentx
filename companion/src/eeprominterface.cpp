@@ -851,6 +851,28 @@ QString FuncSwData::repeatToString()
   }
 }
 
+QString LimitData::minToString()
+{
+  return QString::number((qreal)min/10);
+}
+
+QString LimitData::maxToString()
+{
+  return QString::number((qreal)max/10);
+}
+
+QString LimitData::offsetToString()
+{
+  return QString::number((qreal)offset/10, 'f', 1);
+}
+
+void LimitData::clear()
+{
+  memset(this, 0, sizeof(LimitData));
+  min = -1000;
+  max = +1000;
+}
+
 GeneralSettings::GeneralSettings()
 {
   memset(this, 0, sizeof(GeneralSettings));

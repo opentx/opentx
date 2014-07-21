@@ -506,11 +506,11 @@ void CompareDialog::printLimits()
       str.append(doTC(tr("CH")+QString(" %1").arg(i+1,2,10,QChar('0')),"",true));
     }
     color=getColor1(g_model1->limitData[i].offset,g_model2->limitData[i].offset);
-    str.append(doTR(QString::number((qreal)g_model1->limitData[i].offset/10, 'f', 1),color));
+    str.append(doTR(g_model1->limitData[i].offsetToString(), color));
     color=getColor1(g_model1->limitData[i].min,g_model2->limitData[i].min);
-    str.append(doTR(QString::number(g_model1->limitData[i].min),color));
+    str.append(doTR(g_model1->limitData[i].minToString(), color));
     color=getColor1(g_model1->limitData[i].max,g_model2->limitData[i].max);
-    str.append(doTR(QString::number(g_model1->limitData[i].max),color));
+    str.append(doTR(g_model1->limitData[i].maxToString(), color));
     color=getColor1(g_model1->limitData[i].revert,g_model2->limitData[i].revert);
     str.append(doTR(QString(g_model1->limitData[i].revert ? tr("INV") : tr("NOR")),color));
     str.append("</tr>");
@@ -533,11 +533,11 @@ void CompareDialog::printLimits()
       str.append(doTC(tr("CH")+QString(" %1").arg(i+1,2,10,QChar('0')),"",true));
     }
     color=getColor2(g_model1->limitData[i].offset,g_model2->limitData[i].offset);
-    str.append(doTR(QString::number((qreal)g_model2->limitData[i].offset/10, 'f', 1),color));
+    str.append(doTR(g_model2->limitData[i].offsetToString(), color));
     color=getColor2(g_model1->limitData[i].min,g_model2->limitData[i].min);
-    str.append(doTR(QString::number(g_model2->limitData[i].min),color));
+    str.append(doTR(g_model2->limitData[i].minToString(), color));
     color=getColor2(g_model1->limitData[i].max,g_model2->limitData[i].max);
-    str.append(doTR(QString::number(g_model2->limitData[i].max),color));
+    str.append(doTR(g_model2->limitData[i].maxToString(), color));
     color=getColor2(g_model1->limitData[i].revert,g_model2->limitData[i].revert);
     str.append(doTR(QString(g_model2->limitData[i].revert ? tr("INV") : tr("NOR")),color));
     str.append("</tr>");
@@ -807,7 +807,7 @@ void CompareDialog::printMixers()
           if (md->swtch.type) str += " " + tr("Switch") + QString("(%1)").arg(md->swtch.toString());
           if (md->carryTrim) str += " " + tr("noTrim");
           if (md->sOffset)  str += " "+ tr("Offset") + QString(" (%1%)").arg(getGVarString(md->sOffset));
-          str += md->curve.toString().replace("<", "&lt;").replace(">", "&gt;");
+          if (md->curve.value) str += " " + md->curve.toString().replace("<", "&lt;").replace(">", "&gt;");
           if (md->delayDown || md->delayUp) str += tr(" Delay(u%1:d%2)").arg(md->delayUp/scale).arg(md->delayDown/scale);
           if (md->speedDown || md->speedUp) str += tr(" Slow(u%1:d%2)").arg(md->speedUp/scale).arg(md->speedDown/scale);
           if (md->mixWarn)  str += " "+tr("Warn")+QString("(%1)").arg(md->mixWarn);
@@ -885,8 +885,7 @@ void CompareDialog::printMixers()
           if (md->swtch.type) str += " " + tr("Switch") + QString("(%1)").arg(md->swtch.toString());
           if (md->carryTrim) str += " " + tr("noTrim");
           if (md->sOffset)  str += " "+ tr("Offset") + QString(" (%1%)").arg(getGVarString(md->sOffset));
-          // TODO if (md->differential)  str += " "+ tr("Diff") + QString(" (%1%)").arg(getGVarString(md->differential));
-          // TODO if (md->curve) str += " " + tr("Curve") + QString("(%1)").arg(getCurveStr(md->curve).replace("<", "&lt;").replace(">", "&gt;"));
+          if (md->curve.value) str += " " + md->curve.toString().replace("<", "&lt;").replace(">", "&gt;");
           if (md->delayDown || md->delayUp) str += tr(" Delay(u%1:d%2)").arg(md->delayUp/scale).arg(md->delayDown/scale);
           if (md->speedDown || md->speedUp) str += tr(" Slow(u%1:d%2)").arg(md->speedUp/scale).arg(md->speedDown/scale);
           if (md->mixWarn)  str += " "+tr("Warn")+QString("(%1)").arg(md->mixWarn);

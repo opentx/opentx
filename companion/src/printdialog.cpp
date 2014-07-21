@@ -340,7 +340,6 @@ void PrintDialog::printMixes()
       if (firmware->getCapability(HasNoExpo) && md->noExpo) str += " " + Qt::escape(tr("No DR/Expo"));
       if (md->sOffset)     str += " " + Qt::escape(tr("Offset(%1)").arg(getGVarString(md->sOffset)));
       if (md->curve.value) str += " " + Qt::escape(md->curve.toString());
-
   
       int scale = firmware->getCapability(SlowScale);
       if (scale == 0)
@@ -379,22 +378,22 @@ void PrintDialog::printLimits()
       if (firmware->getCapability(HasChNames)) {
         str.append("<tr><td><b>"+tr("Name")+"</b></td>");
         for(int i=0; i<firmware->getCapability(Outputs); i++) {
-          str.append(doTR(g_model->limitData[i].name,"green"));
+          str.append(doTR(g_model->limitData[i].name, "green"));
         }
       }
       str.append("<tr><td><b>"+tr("Offset")+"</b></td>");
       for(int i=0; i<firmware->getCapability(Outputs); i++) {
-        str.append(doTR(QString::number((qreal)g_model->limitData[i].offset/10, 'f', 1),"green"));
+        str.append(doTR(g_model->limitData[i].offsetToString(), "green"));
       }
       str.append("</tr>");
       str.append("<tr><td><b>"+tr("Min")+"</b></td>");
       for(int i=0; i<firmware->getCapability(Outputs); i++) {
-        str.append(doTR(QString::number((qreal)g_model->limitData[i].min/10),"green"));
+        str.append(doTR(g_model->limitData[i].minToString(), "green"));
       }
       str.append("</tr>");
       str.append("<tr><td><b>"+tr("Max")+"</b></td>");
       for(int i=0; i<firmware->getCapability(Outputs); i++) {
-        str.append(doTR(QString::number((qreal)g_model->limitData[i].max/10),"green"));
+        str.append(doTR(g_model->limitData[i].maxToString(), "green"));
       }
       str.append("</tr>");
       str.append("<tr><td><b>"+tr("Invert")+"</b></td>");
