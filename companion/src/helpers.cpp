@@ -216,7 +216,7 @@ CurveGroup::CurveGroup(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QComboBox
 
   curveValueCB->setMaxVisibleItems(10);
 
-  connect(curveTypeCB, SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
+  connect(curveTypeCB, SIGNAL(currentIndexChanged(int)), this, SLOT(typeChanged(int)));
   connect(curveGVarCB, SIGNAL(stateChanged(int)), this, SLOT(gvarCBChanged(int)));
   connect(curveValueCB, SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
   connect(curveValueSB, SIGNAL(editingFinished()), this, SLOT(valuesChanged()));
@@ -294,6 +294,28 @@ void CurveGroup::gvarCBChanged(int state)
     }
     else {
       curve.value = 0; // TODO could be better
+    }
+
+    update();
+  }
+}
+
+void CurveGroup::typeChanged(int value)
+{
+  if (!lock) {
+    switch (value) {
+      case 0:
+        curve = CurveReference(CurveReference::CURVE_REF_DIFF, 0);
+        break;
+      case 1:
+        curve = CurveReference(CurveReference::CURVE_REF_EXPO, 0);
+        break;
+      case 2:
+        curve = CurveReference(CurveReference::CURVE_REF_FUNC, 0);
+        break;
+      case 3:
+        curve = CurveReference(CurveReference::CURVE_REF_CUSTOM, 0);
+        break;
     }
 
     update();

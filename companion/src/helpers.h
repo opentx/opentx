@@ -67,6 +67,7 @@ class CurveGroup : public QObject {
 
   protected slots:
     void gvarCBChanged(int);
+    void typeChanged(int);
     void valuesChanged();
 
   protected:
