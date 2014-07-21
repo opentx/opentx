@@ -171,6 +171,24 @@ void getSwitchesPosition(bool startup)
 }
 #define SWITCH_POSITION(sw)  (switchesPos & (1<<(sw)))
 #define POT_POSITION(sw)     ((potsPos[(sw)/XPOTS_MULTIPOS_COUNT] & 0x0f) == ((sw) % XPOTS_MULTIPOS_COUNT))
+
+getvalue_t getValueForLogicalSwitch(uint8_t i)
+{
+  getvalue_t result = getValue(i);
+  if (i>=MIXSRC_FIRST_INPUT && i<=MIXSRC_LAST_INPUT) {
+    int8_t trimIdx = virtualInputsTrims[i-MIXSRC_FIRST_INPUT];
+    if (trimIdx >= 0) {
+      int16_t trim = trims[trimIdx];
+      if (trimIdx == THR_STICK && g_model.throttleReversed)
+        result -= trim;
+      else
+        result += trim;
+    }
+  }
+  return result;
+}
+#else
+  #define getValueForLogicalSwitch(i) getValue(i)
 #endif
 
 bool getLogicalSwitch(uint8_t idx)
@@ -219,10 +237,10 @@ bool getLogicalSwitch(uint8_t idx)
   }
 #endif
   else {
-    getvalue_t x = getValue(ls->v1);
+    getvalue_t x = getValueForLogicalSwitch(ls->v1);
     getvalue_t y;
     if (s == LS_FAMILY_COMP) {
-      y = getValue(ls->v2);
+      y = getValueForLogicalSwitch(ls->v2);
 
       switch (ls->func) {
         case LS_FUNC_EQUAL:

@@ -57,6 +57,7 @@ TEST(getSwitch, undefCSW)
 }
 #endif
 
+#if !defined(CPUARM)
 TEST(getSwitch, circularCSW)
 {
   MODEL_RESET();
@@ -70,6 +71,7 @@ TEST(getSwitch, circularCSW)
   EXPECT_EQ(getSwitch(SWSRC_SW2), false);
   EXPECT_EQ(getSwitch(-SWSRC_SW2), true);
 }
+#endif
 
 #if defined(PCBTARANIS)
 TEST(getSwitch, OldTypeStickyCSW)
@@ -108,7 +110,6 @@ TEST(getSwitch, nullSW)
   MODEL_RESET();
   EXPECT_EQ(getSwitch(0), true);
 }
-
 
 #if defined(PCBTARANIS) && defined(FRSKY)
 TEST(getSwitch, VfasWithDelay)
@@ -340,3 +341,23 @@ TEST(getSwitch, recursiveSW)
   EXPECT_EQ(getSwitch(SWSRC_SW2), false);
 }
 #endif // #if !defined(CPUARM)
+
+#if defined(PCBTARANIS)
+TEST(getSwitch, inputWithTrim)
+{
+  MODEL_RESET();
+  modelDefault(0);
+  MIXER_RESET();
+
+  g_model.logicalSw[0] = { MIXSRC_FIRST_INPUT, 0, 0, LS_FUNC_VPOS };
+
+  doMixerCalculations();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+
+  setTrimValue(0, 0, 32);
+  doMixerCalculations();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), true);
+}
+#endif
