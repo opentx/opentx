@@ -60,4 +60,19 @@ TEST(Lua, testSetModelId)
   EXPECT_EQ(g_model.header.modelId, 2);
 }
 
+TEST(Lua, testSetTelemetryChannel)
+{
+  luaExecStr("channel = model.getTelemetryChannel(0)");
+  luaExecStr("channel.range = 100.0");
+  luaExecStr("channel.offset = -10.0");
+  luaExecStr("channel.alarm1 = 60");
+  luaExecStr("channel.alarm2 = 50");
+  luaExecStr("model.setTelemetryChannel(0, channel)");
+  EXPECT_EQ(g_model.frsky.channels[0].multiplier, 2);
+  EXPECT_EQ(g_model.frsky.channels[0].ratio, 250);
+  EXPECT_EQ(g_model.frsky.channels[0].offset, -26);
+  EXPECT_EQ(g_model.frsky.channels[0].alarms_value[0], 179);
+  EXPECT_EQ(g_model.frsky.channels[0].alarms_value[1], 153);
+}
+
 #endif

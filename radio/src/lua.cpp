@@ -1051,6 +1051,120 @@ static int luaModelSetGlobalVariable(lua_State *L)
   return 0;
 }
 
+static int luaModelGetTelemetryChannel(lua_State *L)
+{
+  int idx = luaL_checkunsigned(L, 1);
+  if (idx < MAX_FRSKY_A_CHANNELS) {
+    FrSkyChannelData & channel = g_model.frsky.channels[idx];
+    lua_newtable(L);
+    double range = applyChannelRatio(idx, 255-channel.offset);
+    double offset = applyChannelRatio(idx, 0);
+    double alarm1 = applyChannelRatio(idx, channel.alarms_value[0]);
+    double alarm2 = applyChannelRatio(idx, channel.alarms_value[1]);
+    if (ANA_CHANNEL_UNIT(idx) >= UNIT_RAW) {
+      range /= 10;
+      offset /= 10;
+      alarm1 /= 10;
+      alarm2 /= 10;
+    }
+    else {
+      range /= 100;
+      offset /= 100;
+      alarm1 /= 100;
+      alarm2 /= 100;
+    }
+    lua_pushtablenumber(L, "range", range);
+    lua_pushtablenumber(L, "offset", offset);
+    lua_pushtablenumber(L, "alarm1", alarm1);
+    lua_pushtablenumber(L, "alarm2", alarm2);
+    lua_pushtableinteger(L, "unit", channel.type);
+  }
+  else {
+    lua_pushnil(L);
+  }
+  return 1;
+}
+
+int findmult(float value, float base)
+{
+  int vvalue = value*10;
+  int vbase = base*10;
+  vvalue--;
+
+  int mult = 0;
+  for (int i=8; i>=0; i--) {
+    if (vvalue/vbase >= (1<<i)) {
+      mult = i+1;
+      break;
+    }
+  }
+
+  return mult;
+}
+
+static int luaModelSetTelemetryChannel(lua_State *L)
+{
+  int idx = luaL_checkunsigned(L, 1);
+
+  if (idx < MAX_FRSKY_A_CHANNELS) {
+    FrSkyChannelData & channel = g_model.frsky.channels[idx];
+    double range = applyChannelRatio(idx, 255-channel.offset);
+    double offset = applyChannelRatio(idx, 0);
+    double alarm1 = applyChannelRatio(idx, channel.alarms_value[0]);
+    double alarm2 = applyChannelRatio(idx, channel.alarms_value[1]);
+    if (ANA_CHANNEL_UNIT(idx) >= UNIT_RAW) {
+      range /= 10;
+      offset /= 10;
+      alarm1 /= 10;
+      alarm2 /= 10;
+    }
+    else {
+      range /= 100;
+      offset /= 100;
+      alarm1 /= 100;
+      alarm2 /= 100;
+    }
+    luaL_checktype(L, -1, LUA_TTABLE);
+    for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
+      luaL_checktype(L, -2, LUA_TSTRING); // key is string
+      const char * key = luaL_checkstring(L, -2);
+      if (!strcmp(key, "unit")) {
+        channel.type = luaL_checkinteger(L, -1);
+      }
+      else if (!strcmp(key, "range")) {
+        range = luaL_checknumber(L, -1);
+        double value = range;
+        if (ANA_CHANNEL_UNIT(idx) < UNIT_RAW) {
+          value *= 10;
+        }
+        channel.multiplier = findmult(value, 255);
+        channel.ratio = (int)(round(value)) / (1<<channel.multiplier);
+      }
+      else if (!strcmp(key, "offset")) {
+        offset = luaL_checknumber(L, -1);
+      }
+      else if (!strcmp(key, "alarm1")) {
+        alarm1 = luaL_checknumber(L, -1);
+      }
+      else if (!strcmp(key, "alarm2")) {
+        alarm2 = luaL_checknumber(L, -1);
+      }
+    }
+    if (range > 0) {
+      channel.offset = round((offset * 255) / range);
+      channel.alarms_value[0] = limit<int>(0, round((alarm1-offset)*255/range), 255);
+      channel.alarms_value[1] = limit<int>(0, round((alarm2-offset)*255/range), 255);
+    }
+    else {
+      channel.offset = 0;;
+      channel.alarms_value[0] = 0;
+      channel.alarms_value[1] = 0;
+    }
+    eeDirty(EE_MODEL);
+  }
+  return 0;
+}
+
 static int luaPopupInput(lua_State *L)
 {
   uint8_t event = luaL_checkinteger(L, 2);
@@ -1190,6 +1304,8 @@ static const luaL_Reg modelLib[] = {
   { "setOutput", luaModelSetOutput },
   { "getGlobalVariable", luaModelGetGlobalVariable },
   { "setGlobalVariable", luaModelSetGlobalVariable },
+  { "getTelemetryChannel", luaModelGetTelemetryChannel },
+  { "setTelemetryChannel", luaModelSetTelemetryChannel },
   { NULL, NULL }  /* sentinel */
 };
 

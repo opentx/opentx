@@ -198,12 +198,14 @@ void TelemetryAnalog::on_CalibSB_editingFinished()
       }
       if (alarm2value<calib) {
         alarm2value=calib;
-      } else if (alarm2value>(ratio+calib)) {
+      }
+      else if (alarm2value>(ratio+calib)) {
         alarm2value=ratio+calib;
       }
       analog.alarms[0].value=round(((alarm1value-calib)*255)/ratio);
       analog.alarms[1].value=round(((alarm2value-calib)*255)/ratio);
-    } else {
+    }
+    else {
       analog.offset=0;
       analog.alarms[0].value=0;
       analog.alarms[1].value=0;
