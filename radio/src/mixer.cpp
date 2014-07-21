@@ -326,11 +326,7 @@ getvalue_t getValue(uint8_t i)
 
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_TX_VOLTAGE) return g_vbat100mV;
 #if defined(CPUARM) && defined(RTCLOCK)
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_TX_TIME) {
-    struct gtm t;
-    gettime(&t);
-    return t.tm_hour*60 + t.tm_min;
-  }
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_TX_TIME) return (g_rtcTime % SECS_PER_DAY) / 60; // number of minutes from midnight
 #endif
   else if (i<=MIXSRC_FIRST_TELEM-1+TELEM_TIMER2) return timersStates[i-MIXSRC_FIRST_TELEM+1-TELEM_TIMER1].val;
 #if defined(FRSKY)
