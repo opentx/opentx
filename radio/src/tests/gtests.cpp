@@ -40,6 +40,16 @@
 #define SWAP_DEFINED
 #include "opentx.h"
 
+static char _zchar2stringResult[200];
+const char * zchar2string(const char * zstring, int size)
+{
+  if (size > (int)sizeof(_zchar2stringResult) ) {
+    return 0;
+  }
+  zchar2str(_zchar2stringResult, zstring, size);
+  return _zchar2stringResult;
+}
+
 #if !defined(PCBSKY9X)
 TEST(EEPROM, 100_random_writes)
 {

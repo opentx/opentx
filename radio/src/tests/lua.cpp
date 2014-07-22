@@ -46,22 +46,37 @@
 #include <lauxlib.h>
 #include <lualib.h>
 
+extern const char * zchar2string(const char * zstring, int size);
+#define EXPECT_ZSTREQ(c_string, z_string)   EXPECT_STREQ(c_string, zchar2string(z_string, sizeof(z_string)))
+
 void luaExecStr(const char * str)
 {
   extern lua_State * L;
-  luaL_dostring(L, str);
+  if (luaL_dostring(L, str)) {
+    FAIL() << "lua error: " << lua_tostring(L, -1);
+  }
 }
 
-TEST(Lua, testSetModelId)
+TEST(Lua, testSetModelInfo)
 {
   luaExecStr("info = model.getInfo()");
-  luaExecStr("info.id = 2");
+  // luaExecStr("print('model name: '..info.name..' id: '..info.id)");
+  luaExecStr("info.id = 2; info.name = 'modelA'");
   luaExecStr("model.setInfo(info)");
+  // luaExecStr("print('model name: '..info.name..' id: '..info.id)");
   EXPECT_EQ(g_model.header.modelId, 2);
+  EXPECT_ZSTREQ("modelA", g_model.header.name);
+
+  luaExecStr("info.id = 4; info.name = 'Model 1'");
+  luaExecStr("model.setInfo(info)");
+  // luaExecStr("print('model name: '..info.name..' id: '..info.id)");
+  EXPECT_EQ(g_model.header.modelId, 4);
+  EXPECT_ZSTREQ("Model 1", g_model.header.name);
 }
 
 TEST(Lua, testSetTelemetryChannel)
 {
+  // set
   luaExecStr("channel = model.getTelemetryChannel(0)");
   luaExecStr("channel.range = 100.0");
   luaExecStr("channel.offset = -10.0");
@@ -73,6 +88,14 @@ TEST(Lua, testSetTelemetryChannel)
   EXPECT_EQ(g_model.frsky.channels[0].offset, -26);
   EXPECT_EQ(g_model.frsky.channels[0].alarms_value[0], 179);
   EXPECT_EQ(g_model.frsky.channels[0].alarms_value[1], 153);
+
+  //verify in Lua
+  luaExecStr("channel = model.getTelemetryChannel(0)");
+  luaExecStr("if math.abs(channel.range - 100) > 0.5 then error('channel.range is: '..channel.range) end");
+  luaExecStr("if math.abs(channel.offset + 10) > 0.5 then error('channel.offset is: '..channel.offset) end");
+  luaExecStr("if math.abs(channel.alarm1 - 60) > 0.5 then error('channel.alarm1 is: '..channel.alarm1) end");
+  luaExecStr("if math.abs(channel.alarm2 - 50) > 0.5 then error('channel.alarm2 is: '..channel.alarm2) end");
+
 }
 
 #endif
