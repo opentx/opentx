@@ -1,3 +1,12 @@
+<h2>Version 2.0.8 / 2014-07-23</h2>
+[Taranis]
+<ul>
+<li>Curve wrongly displayed when used in an Input with a positive offset
+<li>Telemetry Channels are now accessible through Lua
+<li>New string Lua fields added for accessing sources
+<li>Trims now applied on Inputs when used in Logical Switches
+<li>Option "nojoystick" added
+
 <h2>Version 2.0.7 / 2014-07-15</h2>
 [Taranis]
 <ul>

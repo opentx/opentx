@@ -1,3 +1,9 @@
+<h2>Version 2.0.8</h2>
+<ul>
+<li>Compare dialog bugfixes</li>
+<li>Curve index correctly resetted when type changed</li>
+</ul>
+
 <h2>Version 2.0.7</h2>
 <ul>
 <li>SafetyCH function was missing in simulator</li>
