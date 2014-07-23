@@ -628,8 +628,8 @@ void ElevonsPage::initializePage()
 bool ElevonsPage::validatePage()
 {
   releaseBookings();
-  return (bookChannel(elevon1CB, AILERONS_INPUT, 100, ELEVATOR_INPUT, 100) &&
-      bookChannel(elevon2CB, AILERONS_INPUT, -100, ELEVATOR_INPUT, 100));
+  return (bookChannel(elevon1CB, AILERONS_INPUT, 50, ELEVATOR_INPUT, 50) &&
+      bookChannel(elevon2CB, AILERONS_INPUT, -50, ELEVATOR_INPUT, 50));
 }
 
 RudderPage::RudderPage(WizardDialog *dlg, QString image, QString title, QString text, int nextPage):
@@ -1002,7 +1002,7 @@ WizardPrinter::WizardPrinter(WizMix *wizMix)
   mix = wizMix;
 }
   
-  QString WizardPrinter::printChannel( Input input1, int weight1, Input input2, int weight2 )
+QString WizardPrinter::printChannel( Input input1, int weight1, Input input2, int weight2 )
 {
   QString str;
   str =  QString("[%1, %2]").arg(inputName(input1)).arg(weight1);
