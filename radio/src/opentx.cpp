@@ -1405,8 +1405,6 @@ uint16_t BandGap ;
 uint16_t anaIn(uint8_t chan)
 {
 #if defined(PCBTARANIS)
-  // crossAna[]={LH,LV,RH,RV,S1,S2,LS,RS,BAT 
-  // s_anaFilt[]={LH,LV,RH,RV,S1,S2,LS,RS,_BAT
   return s_anaFilt[chan];
 #elif defined(PCBSKY9X) && !defined(REVA)
   static const uint8_t crossAna[]={1,5,7,0,4,6,2,3};

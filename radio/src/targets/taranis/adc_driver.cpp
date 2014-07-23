@@ -126,10 +126,9 @@ void adcRead()
 #if !defined(REV3)
   // adc direction correct
   for (i=0; i<NUMBER_ANALOG; i++) {
-    if (ana_direction[i] == -1)
+    if (ana_direction[i] < 0) {
       Analog_values[i] = 4096-Analog_values[i];
-    else if (ana_direction[i] == 0)
-      Analog_values[i] = 0;
+    }
   }
 #endif
 }
