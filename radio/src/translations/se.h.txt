@@ -83,7 +83,7 @@
 #define TR_UART3MODES          "Av\0               ""Spegling av S-Port""Telemetry\0        ""Debug\0            "
 
 #define LEN_POTTYPES           "\020"
-#define TR_POTTYPES            "Ingen\0          ""Potentiometer\0  ""Flerlägesväljare"
+#define TR_POTTYPES            "Ingen\0          ""Pot with detent""Flerlägesväljare""Potentiometer\0"
 
 #define LEN_DATETIME           "\005"
 #define TR_DATETIME            "DAG: ""TID: "

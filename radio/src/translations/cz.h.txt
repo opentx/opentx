@@ -83,7 +83,7 @@
 #define TR_UART3MODES          "VYP\0           ""S-Port Mirror\0 ""Telemetry\0     ""Debug\0         "
 
 #define LEN_POTTYPES           "\017"
-#define TR_POTTYPES            "Není\0          ""Potenciometr\0  ""Vícepol. přep.\0"
+#define TR_POTTYPES            "Není\0          ""Pot with detent""Vícepol. přep.\0""Potenciometr\0"
 
 #define LEN_DATETIME           "\006"
 #define TR_DATETIME            "DATUM:""ČAS:  "

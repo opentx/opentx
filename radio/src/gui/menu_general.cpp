@@ -1386,9 +1386,9 @@ void menuGeneralHardware(uint8_t event)
         putsMixerSource(sizeof(TR_TYPE)*FW, y, MIXSRC_FIRST_POT+idx);
         uint8_t potType = (g_eeGeneral.potsType & mask) >> shift;
         if (potType == POT_TYPE_NONE && i < 2)
-          potType = POT_TYPE_POT;
+          potType = POT_TYPE_DETENT;
         potType = selectMenuItem(HW_SETTINGS_COLUMN, y, STR_TYPE, STR_POTTYPES, potType, 0, POT_TYPE_MAX, attr, event);
-        if (potType == POT_TYPE_POT && i < 2)
+        if (potType == POT_TYPE_DETENT && i < 2)
           potType = POT_TYPE_NONE;
         g_eeGeneral.potsType &= ~mask;
         g_eeGeneral.potsType |= (potType << shift);
@@ -1490,7 +1490,9 @@ void menuCommonCalib(uint8_t event)
     reusableBuffer.calib.loVals[i] = min(vt, reusableBuffer.calib.loVals[i]);
     reusableBuffer.calib.hiVals[i] = max(vt, reusableBuffer.calib.hiVals[i]);
     if (i >= POT1 && i <= POT_LAST) {
-      reusableBuffer.calib.midVals[i] = (reusableBuffer.calib.hiVals[i] + reusableBuffer.calib.loVals[i]) / 2;
+      if (IS_POT_WITHOUT_DETENT(i)) {
+        reusableBuffer.calib.midVals[i] = (reusableBuffer.calib.hiVals[i] + reusableBuffer.calib.loVals[i]) / 2;
+      }
 #if defined(PCBTARANIS)
       uint8_t idx = i - POT1;
       int count = reusableBuffer.calib.xpotsCalib[idx].stepsCount;

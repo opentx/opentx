@@ -83,7 +83,7 @@
 #define TR_UART3MODES          "POIS\0          ""S-Port Pelik\0  ""Telemetry\0     ""Debug\0         "
 
 #define LEN_POTTYPES           "\017"
-#define TR_POTTYPES            "None\0          ""Potikka\0       ""Monias. Kytkin\0"
+#define TR_POTTYPES            "None\0          ""Pot with detent""Monias. Kytkin\0""Potikka\0"
 
 #define LEN_DATETIME           "\005"
 #define TR_DATETIME            "PÄIV:""AIKA:"
