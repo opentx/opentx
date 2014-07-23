@@ -51,9 +51,10 @@
 #else
   #define POT_R     8
 #endif
-#define SLIDE_L    14
-#define SLIDE_R    15
-#define BATTERY    10
+#define POT_XTRA    9
+#define SLIDE_L     14
+#define SLIDE_R     15
+#define BATTERY     10
 
 // Sample time should exceed 1uS
 #define SAMPTIME    2   // sample time = 15 cycles
@@ -61,40 +62,40 @@
 volatile uint16_t Analog_values[NUMBER_ANALOG];
 
 #if defined(REV4a)
-  const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,-1,0,-1,1,  1};
+  const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,-1,1,-1,1,  1};
 #elif !defined(REV3)
-  const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,0,-1,1,  1};
+  const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,1,-1,1,  1};
 #endif
 
 void adcInit()
 {
-  RCC->APB2ENR |= RCC_APB2ENR_ADC1EN ;                    // Enable clock
-  RCC->AHB1ENR |= RCC_AHB1Periph_GPIOADC ;        // Enable ports A&C clocks
-  RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN ;            // Enable DMA2 clock
+  RCC->APB2ENR |= RCC_APB2ENR_ADC1EN;            // Enable clock
+  RCC->AHB1ENR |= RCC_AHB1Periph_GPIOADC;        // Enable ports A&C clocks
+  RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN;            // Enable DMA2 clock
 
 #if defined(REV3)
   configure_pins(PIN_STK_J1 | PIN_STK_J2 | PIN_STK_J3 | PIN_STK_J4 |
-                 PIN_FLP_J1 | PIN_FLP_J2, PIN_ANALOG | PIN_PORTA) ;
+                 PIN_FLP_J1 | PIN_FLP_J2, PIN_ANALOG | PIN_PORTA);
 #else
   configure_pins(PIN_STK_J1 | PIN_STK_J2 | PIN_STK_J3 | PIN_STK_J4 |
-                 PIN_FLP_J1, PIN_ANALOG | PIN_PORTA) ;
+                 PIN_FLP_J1, PIN_ANALOG | PIN_PORTA);
 #endif
 
-#if !defined(REV3)
+#if defined(REVPLUS)
+  configure_pins(PIN_FLP_J2 | PIN_FLP_J3, PIN_ANALOG|PIN_PORTB);
+#elif !defined(REV3)
   configure_pins(PIN_FLP_J2, PIN_ANALOG|PIN_PORTB);
 #endif
 
-  configure_pins(PIN_SLD_J1 | PIN_SLD_J2 | PIN_MVOLT, PIN_ANALOG | PIN_PORTC) ;
+  configure_pins(PIN_SLD_J1 | PIN_SLD_J2 | PIN_MVOLT, PIN_ANALOG | PIN_PORTC);
 
-  ADC1->CR1 = ADC_CR1_SCAN ;
-  ADC1->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS ;
-  ADC1->SQR1 = (NUMBER_ANALOG-1) << 20 ;             // NUMBER_ANALOG Channels
-  ADC1->SQR2 = (SLIDE_L<<5) + (SLIDE_R<<10) + (BATTERY<<15) ;
-  ADC1->SQR3 = STICK_LH + (STICK_LV<<5) + (STICK_RV<<10) + (STICK_RH<<15) + (POT_L<<20) + (POT_R<<25) ;
-  ADC1->SMPR1 = SAMPTIME + (SAMPTIME<<3) + (SAMPTIME<<6) + (SAMPTIME<<9) + (SAMPTIME<<12)
-                                                          + (SAMPTIME<<15) + (SAMPTIME<<18) + (SAMPTIME<<21) + (SAMPTIME<<24) ;
-  ADC1->SMPR2 = SAMPTIME + (SAMPTIME<<3) + (SAMPTIME<<6) + (SAMPTIME<<9) + (SAMPTIME<<12)
-                                                          + (SAMPTIME<<15) + (SAMPTIME<<18) + (SAMPTIME<<21) + (SAMPTIME<<24) + (SAMPTIME<<27) ;
+  ADC1->CR1 = ADC_CR1_SCAN;
+  ADC1->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS;
+  ADC1->SQR1 = (NUMBER_ANALOG-1) << 20 ; // bits 23:20 = number of conversions
+  ADC1->SQR2 = (POT_XTRA<<0) + (SLIDE_L<<5) + (SLIDE_R<<10) + (BATTERY<<15); // conversions 7 and more
+  ADC1->SQR3 = (STICK_LH<<0) + (STICK_LV<<5) + (STICK_RV<<10) + (STICK_RH<<15) + (POT_L<<20) + (POT_R<<25); // conversions 1 to 6
+  ADC1->SMPR1 = SAMPTIME + (SAMPTIME<<3) + (SAMPTIME<<6) + (SAMPTIME<<9) + (SAMPTIME<<12) + (SAMPTIME<<15) + (SAMPTIME<<18) + (SAMPTIME<<21) + (SAMPTIME<<24);
+  ADC1->SMPR2 = SAMPTIME + (SAMPTIME<<3) + (SAMPTIME<<6) + (SAMPTIME<<9) + (SAMPTIME<<12) + (SAMPTIME<<15) + (SAMPTIME<<18) + (SAMPTIME<<21) + (SAMPTIME<<24) + (SAMPTIME<<27) ;
 
   ADC->CCR = 0 ; //ADC_CCR_ADCPRE_0 ;             // Clock div 2
 
