@@ -1602,7 +1602,7 @@ void menuCommonCalib(uint8_t event)
           }
         }
         else {
-          g_eeGeneral.potsType &= ~(1<<idx);
+          g_eeGeneral.potsType &= ~(0x03<<(2*idx));
         }
       }
 #endif
