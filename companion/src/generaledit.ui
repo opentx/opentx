@@ -106,7 +106,7 @@
 These will be relevant for all models in the same EEPROM.</string>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tabSetup">
       <attribute name="title">
@@ -3195,12 +3195,17 @@ p, li { white-space: pre-wrap; }
          </item>
          <item>
           <property name="text">
-           <string>Pot (normal)</string>
+           <string>Pot with detent (normal)</string>
           </property>
          </item>
          <item>
           <property name="text">
            <string>Multipos Switch</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Pot without detent</string>
           </property>
          </item>
         </widget>
@@ -3236,12 +3241,17 @@ p, li { white-space: pre-wrap; }
          </item>
          <item>
           <property name="text">
-           <string>Pot (normal)</string>
+           <string>Pot with detent (normal)</string>
           </property>
          </item>
          <item>
           <property name="text">
            <string>Multipos Switch</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Pot without detent</string>
           </property>
          </item>
         </widget>
@@ -3284,12 +3294,17 @@ p, li { white-space: pre-wrap; }
          </item>
          <item>
           <property name="text">
-           <string>Pot (normal)</string>
+           <string>Pot with detent (normal)</string>
           </property>
          </item>
          <item>
           <property name="text">
            <string>Multipos Switch</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Pot without detent</string>
           </property>
          </item>
         </widget>
