@@ -771,6 +771,7 @@ ifeq ($(PCB), TARANIS)
 endif
 
 CC      = $(TRGT)gcc
+CPP     = $(TRGT)cpp
 AS      = $(TRGT)as
 OBJCOPY = $(TRGT)objcopy
 OBJDUMP = $(TRGT)objdump
@@ -1277,7 +1278,7 @@ bitmaps/sticks.lbm: bitmaps/sticks_4x1.xbm bitmaps/splash_9x.xbm bitmaps/splash_
 
 lua_exports.cpp: myeeprom.h ../util/luaexport.py
 	@echo "Generating a list of Lua exported constants in lua_exports.txt" 
-	@cpp -DPCBTARANIS -DCPUARM -DLUA -DEXPORT  myeeprom.h | grep LEXP > lua_exports.txt
+	@$(CPP) -DPCBTARANIS -DCPUARM -DLUA -DEXPORT  myeeprom.h | grep LEXP > lua_exports.txt
 	@echo "Parsing and generating C Lua exports in lua_exports.cpp"
 	@python ../util/luaexport.py lua_exports.txt lua_exports.cpp
 	 
