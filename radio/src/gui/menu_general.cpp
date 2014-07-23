@@ -1587,22 +1587,24 @@ void menuCommonCalib(uint8_t event)
       for (uint8_t i=POT1; i<=POT_LAST; i++) {
         int idx = i - POT1;
         int count = reusableBuffer.calib.xpotsCalib[idx].stepsCount;
-        if (IS_POT_MULTIPOS(i) && count > 1 && count <= XPOTS_MULTIPOS_COUNT) {
-          for (int j=0; j<count; j++) {
-            for (int k=j+1; k<count; k++) {
-              if (reusableBuffer.calib.xpotsCalib[idx].steps[k] < reusableBuffer.calib.xpotsCalib[idx].steps[j]) {
-                swap(reusableBuffer.calib.xpotsCalib[idx].steps[j], reusableBuffer.calib.xpotsCalib[idx].steps[k]);
+        if (IS_POT_MULTIPOS(i)) {
+          if (count > 1 && count <= XPOTS_MULTIPOS_COUNT) {
+            for (int j=0; j<count; j++) {
+              for (int k=j+1; k<count; k++) {
+                if (reusableBuffer.calib.xpotsCalib[idx].steps[k] < reusableBuffer.calib.xpotsCalib[idx].steps[j]) {
+                  swap(reusableBuffer.calib.xpotsCalib[idx].steps[j], reusableBuffer.calib.xpotsCalib[idx].steps[k]);
+                }
               }
             }
+            StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[i];
+            calib->count = count - 1;
+            for (int j=0; j<calib->count; j++) {
+              calib->steps[j] = (reusableBuffer.calib.xpotsCalib[idx].steps[j+1] + reusableBuffer.calib.xpotsCalib[idx].steps[j]) >> 5;
+            }
           }
-          StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[i];
-          calib->count = count - 1;
-          for (int j=0; j<calib->count; j++) {
-            calib->steps[j] = (reusableBuffer.calib.xpotsCalib[idx].steps[j+1] + reusableBuffer.calib.xpotsCalib[idx].steps[j]) >> 5;
+          else {
+            g_eeGeneral.potsType &= ~(0x03<<(2*idx));
           }
-        }
-        else {
-          g_eeGeneral.potsType &= ~(0x03<<(2*idx));
         }
       }
 #endif
