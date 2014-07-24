@@ -1052,7 +1052,7 @@ void addOpenTxCommonOptions(OpenTxFirmware * firmware)
   firmware->addOption("ppmus", QObject::tr("Channel values displayed in us"));
   firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   firmware->addOption("nooverridech", QObject::tr("No OverrideCH functions available"));
-  Option fai_options[] = { { "faichoice", QObject::tr("Possibility to enable FAI MODE at field") }, { "faimode", QObject::tr("FAI MODE always enabled") }, { NULL } };
+  Option fai_options[] = { { "faichoice", QObject::tr("Possibility to enable FAI MODE (no telemetry) at field") }, { "faimode", QObject::tr("FAI MODE (no telemetry) always enabled") }, { NULL } };
   firmware->addOptions(fai_options);
 }
 
