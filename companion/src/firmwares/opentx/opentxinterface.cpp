@@ -1275,7 +1275,7 @@ void registerOpenTxFirmwares()
   addOpenTxCommonOptions(openTx);
   firmwares.push_back(openTx);
 
-  default_firmware_variant = GetFirmware("opentx-9x-heli-templates-en");
+  default_firmware_variant = GetFirmware("opentx-taranis-en");
   current_firmware_variant = default_firmware_variant;
 }
 
