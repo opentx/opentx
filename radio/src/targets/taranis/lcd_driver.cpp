@@ -338,6 +338,9 @@ void lcdSetRefVolt(uint8_t val)
 #if defined(REVPLUS)
 void turnBacklightOn(uint8_t level, uint8_t color)
 {
+  if (color >= 9 && color <= 17) {
+    color += 83;
+  }
   TIM4->CCR4 = (100-level)*color;
   TIM4->CCR2 = (100-level)*(100-color);
 }

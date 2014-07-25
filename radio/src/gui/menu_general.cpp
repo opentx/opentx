@@ -106,7 +106,7 @@ const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
   #define RADIO_SETUP_DATE_COLUMN RADIO_SETUP_2ND_COLUMN + 4*FWNUM
   #define RADIO_SETUP_TIME_COLUMN RADIO_SETUP_2ND_COLUMN + 2*FWNUM
 #else
-  #define RADIO_SETUP_2ND_COLUMN  (LCD_W-6*FW-3-MENUS_SCROLLBAR_WIDTH)
+  #define RADIO_SETUP_2ND_COLUMN  (LCD_W-6*FW-1-MENUS_SCROLLBAR_WIDTH)
   #define RADIO_SETUP_TIME_COLUMN (FW*15+9)
   #define RADIO_SETUP_DATE_COLUMN (FW*15+5)
 #endif
@@ -229,16 +229,16 @@ void menuGeneralSetup(uint8_t event)
 #if defined(RTCLOCK)
       case ITEM_SETUP_DATE:
         lcd_putsLeft(y, STR_DATE);
-        lcd_putc(RADIO_SETUP_DATE_COLUMN+2, y, '-'); lcd_putc(RADIO_SETUP_DATE_COLUMN+3*FW, y, '-');
+        lcd_putc(RADIO_SETUP_DATE_COLUMN, y, '-'); lcd_putc(RADIO_SETUP_DATE_COLUMN+3*FW-2, y, '-');
         for (uint8_t j=0; j<3; j++) {
           uint8_t rowattr = (m_posHorz==j ? attr : 0);
           switch (j) {
             case 0:
-              lcd_outdezAtt(RADIO_SETUP_DATE_COLUMN+2, y, t.tm_year+1900, rowattr);
+              lcd_outdezAtt(RADIO_SETUP_DATE_COLUMN, y, t.tm_year+1900, rowattr);
               if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_year = checkIncDec(event, t.tm_year, 112, 200, 0);
               break;
             case 1:
-              lcd_outdezNAtt(RADIO_SETUP_DATE_COLUMN+3*FW, y, t.tm_mon+1, rowattr|LEADING0, 2);
+              lcd_outdezNAtt(RADIO_SETUP_DATE_COLUMN+3*FW-2, y, t.tm_mon+1, rowattr|LEADING0, 2);
               if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_mon = checkIncDec(event, t.tm_mon, 0, 11, 0);
               break;
             case 2:
@@ -247,7 +247,7 @@ void menuGeneralSetup(uint8_t event)
               int8_t dlim = (((((year%4==0) && (year%100!=0)) || (year%400==0)) && (t.tm_mon==1)) ? 1 : 0);
               static const pm_uint8_t dmon[] PROGMEM = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
               dlim += pgm_read_byte(&dmon[t.tm_mon]);
-              lcd_outdezNAtt(RADIO_SETUP_DATE_COLUMN+6*FW-2, y, t.tm_mday, rowattr|LEADING0, 2);
+              lcd_outdezNAtt(RADIO_SETUP_DATE_COLUMN+6*FW-4, y, t.tm_mday, rowattr|LEADING0, 2);
               if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_mday = checkIncDec(event, t.tm_mday, 1, dlim, 0);
               break;
             }
@@ -531,8 +531,8 @@ void menuGeneralSetup(uint8_t event)
 #if defined(PCBTARANIS) && defined(REVPLUS)
       case ITEM_SETUP_BACKLIGHT_COLOR:
         lcd_putsLeft(y, STR_BLCOLOR);
-        displaySlider(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.backlightColor, 100, attr);
-        if (attr) g_eeGeneral.backlightColor = checkIncDec(event, g_eeGeneral.backlightColor, 0, 100, EE_GENERAL | NO_INCDEC_MARKS);
+        displaySlider(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.backlightColor, 17, attr);
+        if (attr) g_eeGeneral.backlightColor = checkIncDec(event, g_eeGeneral.backlightColor, 0, 17, EE_GENERAL | NO_INCDEC_MARKS);
         break;
 #endif
 
