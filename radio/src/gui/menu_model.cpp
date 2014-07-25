@@ -1320,7 +1320,7 @@ void menuModelSetup(uint8_t event)
            }
          }
 
-        lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\004""Off\0""Man\0""Auto"), potMode, attr & ((m_posHorz == 0) ? attr : !INVERS));
+        lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, PSTR("\004""OFF\0""Man\0""Auto"), potMode, attr & ((m_posHorz == 0) ? attr : !INVERS));
         if (potMode) {
           uint8_t x = MODEL_SETUP_2ND_COLUMN+5*FW;
           for (uint8_t i=0; i<NUM_POTS ; i++) {
