@@ -1,3 +1,9 @@
+<h2>Version 2.0.9 / 2014-07-28</h2>
+[Taranis]
+<ul>
+<li>CPPM issue on Helis when cross trims used
+<li>Taranis+ LCD color range adjusted
+
 <h2>Version 2.0.8 / 2014-07-23</h2>
 [Taranis]
 <ul>

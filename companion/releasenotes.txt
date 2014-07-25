@@ -1,3 +1,8 @@
+<h2>Version 2.0.9</h2>
+<ul>
+<li>Taranis is now the default board in General Settings</li>
+</ul>
+
 <h2>Version 2.0.8</h2>
 <ul>
 <li>Compare dialog bugfixes</li>
