@@ -1047,9 +1047,15 @@ void doSplash()
       getADC();
 
 #if defined(FSPLASH)
-      if (!(g_eeGeneral.splashMode & 0x04))
+      // Splash is forced, we can't skip it
+      if (!(g_eeGeneral.splashMode & 0x04)) {
 #endif
+
       if (keyDown() || inputsMoved()) return;
+
+#if defined(FSPLASH)
+      }
+#endif
 
       if (pwrCheck()==e_power_off) return;
 
