@@ -83,7 +83,7 @@
 #define TR_UART3MODES          "OFF\0           ""Replica Porta-S""Telemetria\0    ""Debug\0         "
                                
 #define LEN_POTTYPES           "\017"
-#define TR_POTTYPES            "None\0          ""Pot with detent""Inter. Multipos""Potenziometro\0"
+#define TR_POTTYPES            "None\0          ""Pot. con centro""Inter. Multipos""Potenziometro\0 "
                                
 #define LEN_DATETIME           "\005"
 #define TR_DATETIME            "DATA:""ORA :"
