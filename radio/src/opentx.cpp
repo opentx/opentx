@@ -85,6 +85,13 @@ const pm_uchar splashdata[] PROGMEM = { 'S','P','S',0,
 const pm_uchar * splash_lbm = splashdata+4;
 #endif
 
+#if defined(PCBTARANIS)
+const pm_uchar splashdata2[] PROGMEM = { 'S','F','S',0,
+#include "bitmaps/splash_frsky.lbm"
+        'S','F','E',0 };
+const pm_uchar * splash2_lbm = splashdata2+4;
+#endif
+
 #if LCD_W >= 212
   const pm_uchar asterisk_lbm[] PROGMEM = {
     #include "bitmaps/asterisk_4bits.lbm"
@@ -1026,7 +1033,9 @@ void doSplash()
 
 #if defined(PCBSTD)
     lcdSetContrast();
-#elif !defined(PCBTARANIS)
+#elif defined(PCBTARANIS)
+    bool secondSplash = false;
+#else
     tmr10ms_t curTime = get_tmr10ms() + 10;
     uint8_t contrast = 10;
     lcdSetRefVolt(contrast);
@@ -1059,7 +1068,14 @@ void doSplash()
 
       if (pwrCheck()==e_power_off) return;
 
-#if !defined(PCBTARANIS) && !defined(PCBSTD)
+#if defined(PCBTARANIS)
+      if (!secondSplash && get_tmr10ms() >= tgtime-200) {
+        secondSplash = true;
+        lcd_clear();
+        lcd_bmp(0, 0, splash2_lbm);
+        lcdRefresh();
+      }
+#elif !defined(PCBSTD)
       if (curTime < get_tmr10ms()) {
         curTime += 10;
         if (contrast < g_eeGeneral.contrast) {
