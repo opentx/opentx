@@ -456,10 +456,10 @@ void frskySportProcessPacket(uint8_t *packet)
         }
       }
       else if (appId >= A3_FIRST_ID && appId <= A3_LAST_ID) {
-        frskyData.analog[TELEM_ANA_A3].set(SPORT_DATA_U32(packet), UNIT_VOLTS);
+        frskyData.analog[TELEM_ANA_A3].set((SPORT_DATA_U32(packet)*255+165)/330, UNIT_VOLTS);
       }
       else if (appId >= A4_FIRST_ID && appId <= A4_LAST_ID) {
-        frskyData.analog[TELEM_ANA_A4].set(SPORT_DATA_U32(packet), UNIT_VOLTS);
+        frskyData.analog[TELEM_ANA_A4].set((SPORT_DATA_U32(packet)*255+165)/330, UNIT_VOLTS);
       }
       else if (appId >= CELLS_FIRST_ID && appId <= CELLS_LAST_ID) {
         uint32_t data = SPORT_DATA_U32(packet);
