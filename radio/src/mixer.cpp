@@ -64,6 +64,7 @@ int16_t ex_chans[NUM_CHNOUT] = {0}; // Outputs (before LIMITS) of the last perMa
   int16_t cyc_anas[3] = {0};
   #if defined(PCBTARANIS)
     int16_t heliAnas[4] = {0};
+    uint8_t heliTrims[4] = {0};
   #endif
 #endif
 
@@ -151,10 +152,14 @@ void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
           virtualInputsTrims[cur_chn] = -1;
 
 #if defined(HELI)
-        if (ed->srcRaw == MIXSRC_Ele)
+        if (ed->srcRaw == MIXSRC_Ele) {
           heliAnas[ELE_STICK] = v;
-        else if (ed->srcRaw == MIXSRC_Ail)
+          heliTrims[ELE_STICK] = virtualInputsTrims[cur_chn];
+        }
+        else if (ed->srcRaw == MIXSRC_Ail) {
           heliAnas[AIL_STICK] = v;
+          heliTrims[AIL_STICK] = virtualInputsTrims[cur_chn];
+        }
 #endif
 #endif
 
@@ -525,9 +530,11 @@ void evalInputs(uint8_t mode)
 }
 
 #if defined(PCBTARANIS)
-  #define HELI_ANAS_ARRAY heliAnas
+  #define HELI_ANAS_ARRAY(x)  heliAnas[x]
+  #define HELI_TRIMS_ARRAY(x) trims[heliTrims[x]]
 #else
-  #define HELI_ANAS_ARRAY anas
+  #define HELI_ANAS_ARRAY(x)  anas[x]
+  #define HELI_TRIMS_ARRAY(x) trims[x]
 #endif
 
 uint8_t mixerCurrentFlightMode;
@@ -543,14 +550,14 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 
 #if defined(HELI)
   if (g_model.swashR.value) {
-    uint32_t v = ((int32_t)HELI_ANAS_ARRAY[ELE_STICK]*HELI_ANAS_ARRAY[ELE_STICK] + (int32_t)HELI_ANAS_ARRAY[AIL_STICK]*HELI_ANAS_ARRAY[AIL_STICK]);
+    uint32_t v = ((int32_t)HELI_ANAS_ARRAY(ELE_STICK)*HELI_ANAS_ARRAY(ELE_STICK) + (int32_t)HELI_ANAS_ARRAY(AIL_STICK)*HELI_ANAS_ARRAY(AIL_STICK));
     uint32_t q = calc100toRESX(g_model.swashR.value);
     q *= q;
     if (v>q) {
       uint16_t d = isqrt32(v);
       int16_t tmp = calc100toRESX(g_model.swashR.value);
-      HELI_ANAS_ARRAY[ELE_STICK] = (int32_t) HELI_ANAS_ARRAY[ELE_STICK]*tmp/d;
-      HELI_ANAS_ARRAY[AIL_STICK] = (int32_t) HELI_ANAS_ARRAY[AIL_STICK]*tmp/d;
+      HELI_ANAS_ARRAY(ELE_STICK) = (int32_t) HELI_ANAS_ARRAY(ELE_STICK)*tmp/d;
+      HELI_ANAS_ARRAY(AIL_STICK) = (int32_t) HELI_ANAS_ARRAY(AIL_STICK)*tmp/d;
     }
   }
 
@@ -558,8 +565,8 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 #define REZ_SWASH_Y(x)  ((x))   //  1024 => 1024
 
   if (g_model.swashR.type) {
-    getvalue_t vp = HELI_ANAS_ARRAY[ELE_STICK]+trims[ELE_STICK];
-    getvalue_t vr = HELI_ANAS_ARRAY[AIL_STICK]+trims[AIL_STICK];
+    getvalue_t vp = HELI_ANAS_ARRAY(ELE_STICK) + HELI_TRIMS_ARRAY(ELE_STICK);
+    getvalue_t vr = HELI_ANAS_ARRAY(AIL_STICK) + HELI_TRIMS_ARRAY(AIL_STICK);
     getvalue_t vc = 0;
     if (g_model.swashR.collectiveSource)
       vc = getValue(g_model.swashR.collectiveSource);
