@@ -544,3 +544,4 @@ Thomas Sandner
 Marco Coltorti
 Harald Wilczak
 Rodney Lorimor
+Richard Davis
