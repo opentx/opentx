@@ -83,7 +83,7 @@
 #define TR_UART3MODES          "Wyłącz\0        ""S-Port Mirror\0 ""Telemetry\0     ""Debug\0         "
 
 #define LEN_POTTYPES           "\017"
-#define TR_POTTYPES            "Brak\0          ""Pot with detent""Przeł.Wielopoz.""Potencjometr\0"
+#define TR_POTTYPES            "Brak\0          ""Poten z zapadką""Przeł.Wielopoz.""Potencjometr\0"
 
 #define LEN_DATETIME           "\005"
 #define TR_DATETIME            "DATA:""CZAS:"
@@ -92,7 +92,7 @@
 #define TR_VLCD                "NormalOptrex"
 
 #define LEN_VPERSISTENT        "\014"
-#define TR_VPERSISTENT         "OFF\0        ""Flight\0     ""Manual Reset"
+#define TR_VPERSISTENT         "Wyłącz\0        ""Lot\0     ""Ręczny Reset"
 
 #define LEN_COUNTRYCODES       TR("\002", "\007")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Ameryka""Japonia""Europa\0")
