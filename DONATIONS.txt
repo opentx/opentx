@@ -541,3 +541,5 @@ Frederick Davie
 Jürgen Enders
 Terrence Pitts
 Thomas Sandner
+Marco Coltorti
+Harald Wilczak
