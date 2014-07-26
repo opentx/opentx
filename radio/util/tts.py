@@ -246,7 +246,7 @@ def ttsFr():
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+110+i)))
     for i, s in enumerate(["virgule", "et", "moins", "minuit", "midi"]): 
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+119+i)))
-    for i, s in enumerate(["volts", u"ampères", u"mètres seconde", "", u"kilomètre heure", u"mètres", u"degrés", "pourcents", u"milli ampères", u"milli ampères / heure", "watt", "db", "pieds", "miles par heure", "heure", "minute", "seconde", "tours par minute", "g"]):
+    for i, s in enumerate(["volts", u"ampères", u"mètres seconde", "", u"kilomètre heure", u"mètres", u"degrés", "pourcents", u"milli ampères", u"milli ampères / heure", "watt", "db", "pieds", "miles par heure", "heure", "minute", "seconde", "tours minute", "g"]):
         systemSounds.append((s, filename(PROMPT_SYSTEM_BASE+125+i)))
     for i, s in enumerate(["timer", "", "tension", "tension", u"émission", u"réception", "altitude", "moteur",
                            "essence", u"température", u"température", "vitesse", "distance", "altitude", u"élément lipo",
@@ -279,6 +279,9 @@ def ttsFr():
                    ]:
         systemSounds.append((s, filename(f, a)))
     for i, (s, f) in enumerate([
+                 (u"altitude", "altitude"),
+                 (u"température moteur", "moteur"),
+                 (u"température contrôleur", "cntrleur"),
                  (u"train rentré", "gearup"),
                  (u"train sorti", "geardn"),
                  (u"volets rentrés", "flapup"),
