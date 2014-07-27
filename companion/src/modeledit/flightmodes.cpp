@@ -315,10 +315,10 @@ void FlightModePanel::phaseGVUse_currentIndexChanged(int index)
     QComboBox *comboBox = qobject_cast<QComboBox*>(sender());
     int gvar = comboBox->property("index").toInt();
     if (index == 0) {
-      phase.gvars[gvar]=0;
+      phase.gvars[gvar] = 0;
     }
     else {
-      phase.gvars[gvar] = 1024+index+(index>phaseIdx?1:0);
+      phase.gvars[gvar] = 1024 + index;
     }
     update();
     emit modified();
