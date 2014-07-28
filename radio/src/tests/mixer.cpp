@@ -533,6 +533,34 @@ TEST(Mixer, SlowDisabledOnStartup)
   EXPECT_EQ(chans[0], CHANNEL_MAX);
 }
 
+TEST(Mixer, DelayOnSwitch)
+{
+  MODEL_RESET();
+  MIXER_RESET();
+  g_model.mixData[0].destCh = 0;
+  g_model.mixData[0].mltpx = MLTPX_ADD;
+  g_model.mixData[0].srcRaw = MIXSRC_MAX;
+  g_model.mixData[0].weight = 100;
+  g_model.mixData[0].swtch = TR(SWSRC_THR, SWSRC_SA2);
+  g_model.mixData[0].delayUp = DELAY_STEP*5;
+  g_model.mixData[0].delayDown = DELAY_STEP*5;
+
+  evalFlightModeMixes(e_perout_mode_normal, 0);
+  EXPECT_EQ(chans[0], 0);
+
+  simuSetSwitch(0, 1);
+  CHECK_DELAY(0, 500);
+
+  evalFlightModeMixes(e_perout_mode_normal, 1);
+  EXPECT_EQ(chans[0], CHANNEL_MAX);
+
+  simuSetSwitch(0, 0);
+  CHECK_DELAY(0, 500);
+
+  evalFlightModeMixes(e_perout_mode_normal, 1);
+  EXPECT_EQ(chans[0], 0);
+}
+
 #if !defined(CPUARM)
 TEST(Mixer, SlowAndDelayOnReplace3POSSource)
 {

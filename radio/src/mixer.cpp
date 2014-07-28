@@ -644,7 +644,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 
       //========== PHASE && SWITCH =====
       bool mixCondition = (md->flightModes != 0 || md->swtch);
-      delayval_t mixEnabled = !(md->flightModes & (1 << mixerCurrentFlightMode)) && getSwitch(md->swtch);
+      delayval_t mixEnabled = (!(md->flightModes & (1 << mixerCurrentFlightMode)) && getSwitch(md->swtch)) ? DELAY_POS_MARGIN+1 : 0;
 
       if (mixEnabled && md->srcRaw >= MIXSRC_FIRST_TRAINER && md->srcRaw <= MIXSRC_LAST_TRAINER && !ppmInValid) {
         mixEnabled = 0;
