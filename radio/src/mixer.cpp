@@ -753,9 +753,11 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
               if (mix_trim == THR_STICK) {
                 if (g_model.thrTrim) {
                   if (g_model.throttleReversed) {
-                    trim = -trim;
+                    trim = ((int32_t)(trim+TRIM_MIN) * (RESX-v)) >> (RESX_SHIFT+1);
                   }
-                  trim = ((trim-2*TRIM_MIN) * (RESX-v)) >> (RESX_SHIFT+1);
+                  else {
+                    trim = ((int32_t)(trim-TRIM_MIN) * (RESX-v)) >> (RESX_SHIFT+1);
+                  }
                 }
                 if (g_model.throttleReversed) {
                   trim = -trim;
