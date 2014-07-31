@@ -509,16 +509,16 @@ void evalInputs(uint8_t mode)
 
 #if !defined(PCBTARANIS)
       rawAnas[ch] = v;
-      anas[ch] = v; //set values for mixer
+      anas[ch] = v; // set values for mixer
 #endif
     }
   }
 
-  /* TRIMs */
-  evalTrims();
-
   /* EXPOs */
   applyExpos(anas, mode);
+
+  /* TRIMs */
+  evalTrims(); // when no virtual inputs, the trims need the anas array calculated above (when throttle trim enabled)
 
   if (mode == e_perout_mode_normal) {
 #if !defined(CPUARM)
@@ -749,11 +749,19 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
             else
               mix_trim = -1;
             if (mix_trim >= 0) {
-              int16_t trim = trims[mix_trim];
-              if (mix_trim == THR_STICK && g_model.throttleReversed)
-                v -= trim;
-              else
-                v += trim;
+              int32_t trim = trims[mix_trim];
+              if (mix_trim == THR_STICK) {
+                if (g_model.thrTrim) {
+                  if (g_model.throttleReversed) {
+                    trim = -trim;
+                  }
+                  trim = ((trim-2*TRIM_MIN) * (RESX-v)) >> (RESX_SHIFT+1);
+                }
+                if (g_model.throttleReversed) {
+                  trim = -trim;
+                }
+              }
+              v += trim;
             }
           }
 #else

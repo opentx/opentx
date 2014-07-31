@@ -1659,10 +1659,16 @@ FORCEINLINE void evalTrims()
   for (uint8_t i=0; i<NUM_STICKS; i++) {
     // do trim -> throttle trim if applicable
     int16_t trim = getTrimValue(phase, i);
+#if !defined(PCBTARANIS)
     if (i==THR_STICK && g_model.thrTrim) {
-      trim = (((g_model.throttleReversed)?(int32_t)(trim+TRIM_MIN):(int32_t)(trim-TRIM_MIN)) * (RESX-getValue(MIXSRC_Thr))) >> (RESX_SHIFT+1);
+      if (g_model.throttleReversed)
+        trim = -trim;
+      int16_t v = anas[i];
+      int32_t vv = ((int32_t)trim-TRIM_MIN)*(RESX-v)>>(RESX_SHIFT+1);
+      trim = vv;
     }
-    else if (trimsCheckTimer > 0) {
+#endif
+    if (trimsCheckTimer > 0) {
       trim = 0;
     }
 
