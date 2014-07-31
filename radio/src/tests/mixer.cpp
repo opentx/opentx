@@ -76,32 +76,160 @@ uint16_t anaIn(uint8_t chan)
     return 0;
 }
 
+TEST(Trims, throttleTrim)
+{
+  MODEL_RESET();
+  modelDefault(0);
+  g_model.thrTrim = 1;
+  // stick max + trim max
+  anaInValues[THR_STICK] = +1024;
+  setTrimValue(0, THR_STICK, +125);
+  evalMixes(1);
+  EXPECT_EQ(channelOutputs[2], 1024);
+  // stick max + trim min
+  anaInValues[THR_STICK] = +1024;
+  setTrimValue(0, THR_STICK, -125);
+  evalMixes(1);
+  EXPECT_EQ(channelOutputs[2], 1024);
+  // stick min + trim max
+  anaInValues[THR_STICK] = -1024;
+  setTrimValue(0, THR_STICK, +125);
+  evalMixes(1);
+  EXPECT_EQ(channelOutputs[2], -1024+500);
+  // stick min + trim min
+  anaInValues[THR_STICK] = -1024;
+  setTrimValue(0, THR_STICK, -125);
+  evalMixes(1);
+  EXPECT_EQ(channelOutputs[2], -1024);
+}
+
+TEST(Trims, invertedThrottlePlusThrottleTrim)
+{
+  MODEL_RESET();
+  modelDefault(0);
+  g_model.throttleReversed = 1;
+  g_model.thrTrim = 1;
+  // stick max + trim max
+  anaInValues[THR_STICK] = +1024;
+  setTrimValue(0, THR_STICK, +125);
+  evalMixes(1);
+  EXPECT_EQ(channelOutputs[2], -1024);
+  // stick max + trim min
+  anaInValues[THR_STICK] = +1024;
+  setTrimValue(0, THR_STICK, -125);
+  evalMixes(1);
+  EXPECT_EQ(channelOutputs[2], -1024+500);
+  // stick min + trim max
+  anaInValues[THR_STICK] = -1024;
+  setTrimValue(0, THR_STICK, +125);
+  evalMixes(1);
+  EXPECT_EQ(channelOutputs[2], +1024);
+  // stick min + trim min
+  anaInValues[THR_STICK] = -1024;
+  setTrimValue(0, THR_STICK, -125);
+  evalMixes(1);
+  EXPECT_EQ(channelOutputs[2], +1024);
+}
+
+TEST(Trims, throttleTrimWithZeroWeightOnThrottle)
+{
+  MODEL_RESET();
+  modelDefault(0);
+  g_model.thrTrim = 1;
+#if defined(PCBTARANIS)
+  // the input already exists
+  ExpoData *expo = expoAddress(THR_STICK);
+#else
+  ExpoData *expo = expoAddress(0);
+  expo->mode = 3;
+  expo->chn = THR_STICK;
+#endif
+  expo->weight = 0;
+  // stick max + trim max
+  anaInValues[THR_STICK] = +1024;
+  setTrimValue(0, THR_STICK, +125);
+  evalMixes(1);
+  EXPECT_EQ(channelOutputs[2], 250);
+  // stick max + trim min
+  anaInValues[THR_STICK] = +1024;
+  setTrimValue(0, THR_STICK, -125);
+  evalMixes(1);
+  EXPECT_EQ(channelOutputs[2], 0);
+  // stick min + trim max
+  anaInValues[THR_STICK] = -1024;
+  setTrimValue(0, THR_STICK, +125);
+  evalMixes(1);
+  EXPECT_EQ(channelOutputs[2], 250);
+  // stick min + trim min
+  anaInValues[THR_STICK] = -1024;
+  setTrimValue(0, THR_STICK, -125);
+  evalMixes(1);
+  EXPECT_EQ(channelOutputs[2], 0);
+}
+
+TEST(Trims, invertedThrottlePlusthrottleTrimWithZeroWeightOnThrottle)
+{
+  MODEL_RESET();
+  modelDefault(0);
+  g_model.throttleReversed = 1;
+  g_model.thrTrim = 1;
+#if defined(PCBTARANIS)
+  // the input already exists
+  ExpoData *expo = expoAddress(THR_STICK);
+#else
+  ExpoData *expo = expoAddress(0);
+  expo->mode = 3;
+  expo->chn = THR_STICK;
+#endif
+  expo->weight = 0;
+  // stick max + trim max
+  anaInValues[THR_STICK] = +1024;
+  setTrimValue(0, THR_STICK, +125);
+  evalMixes(1);
+  EXPECT_EQ(channelOutputs[2], 0);
+  // stick max + trim min
+  anaInValues[THR_STICK] = +1024;
+  setTrimValue(0, THR_STICK, -125);
+  evalMixes(1);
+  EXPECT_EQ(channelOutputs[2], 250);
+  // stick min + trim max
+  anaInValues[THR_STICK] = -1024;
+  setTrimValue(0, THR_STICK, +125);
+  evalMixes(1);
+  EXPECT_EQ(channelOutputs[2], 0);
+  // stick min + trim min
+  anaInValues[THR_STICK] = -1024;
+  setTrimValue(0, THR_STICK, -125);
+  evalMixes(1);
+  EXPECT_EQ(channelOutputs[2], 250);
+}
+
 #if !defined(PCBTARANIS)
 TEST(Trims, greaterTrimLink)
 {
   MODEL_RESET();
-  setTrimValue(1, 0, TRIM_EXTENDED_MAX+3); // link to FP3 trim
-  setTrimValue(3, 0, 32);
-  EXPECT_EQ(getRawTrimValue(getTrimFlightPhase(1, 0), 0), 32);
+  setTrimValue(1, RUD_STICK, TRIM_EXTENDED_MAX+3); // link to FP3 trim
+  setTrimValue(3, RUD_STICK, 32);
+  EXPECT_EQ(getRawTrimValue(getTrimFlightPhase(1, RUD_STICK), RUD_STICK), 32);
 }
 
 TEST(Trims, chainedTrims)
 {
   MODEL_RESET();
-  setTrimValue(0, 0, 32);
-  setTrimValue(1, 0, TRIM_EXTENDED_MAX+1); // link to FP0 trim
-  setTrimValue(2, 0, TRIM_EXTENDED_MAX+2); // link to FP1 trim
-  EXPECT_EQ(getRawTrimValue(getTrimFlightPhase(0, 2), 0), 32);
+  setTrimValue(0, RUD_STICK, 32);
+  setTrimValue(1, RUD_STICK, TRIM_EXTENDED_MAX+1); // link to FP0 trim
+  setTrimValue(2, RUD_STICK, TRIM_EXTENDED_MAX+2); // link to FP1 trim
+  EXPECT_EQ(getRawTrimValue(getTrimFlightPhase(0, RUD_STICK), RUD_STICK), 32);
 }
 
 TEST(Trims, infiniteChainedTrims)
 {
   MODEL_RESET();
-  setTrimValue(0, 0, 32);
-  setTrimValue(1, 0, TRIM_EXTENDED_MAX+3); // link to FP3 trim
-  setTrimValue(2, 0, TRIM_EXTENDED_MAX+2); // link to FP1 trim
-  setTrimValue(3, 0, TRIM_EXTENDED_MAX+3); // link to FP2 trim
-  EXPECT_EQ(getRawTrimValue(getTrimFlightPhase(0, 2), 0), 32);
+  setTrimValue(0, RUD_STICK, 32);
+  setTrimValue(1, RUD_STICK, TRIM_EXTENDED_MAX+3); // link to FP3 trim
+  setTrimValue(2, RUD_STICK, TRIM_EXTENDED_MAX+2); // link to FP1 trim
+  setTrimValue(3, RUD_STICK, TRIM_EXTENDED_MAX+3); // link to FP2 trim
+  EXPECT_EQ(getRawTrimValue(getTrimFlightPhase(0, RUD_STICK), RUD_STICK), 32);
 }
 #endif
 
@@ -109,10 +237,10 @@ TEST(Trims, CopyTrimsToOffset)
 {
   MODEL_RESET();
   modelDefault(0);
-  setTrimValue(0, 1, -100); // -100 on elevator
+  setTrimValue(0, ELE_STICK, -100); // -100 on elevator
   evalFunctions(); // it disables all safety channels
   copyTrimsToOffset(1);
-  EXPECT_EQ(getTrimValue(0, 1), -100); // unchanged
+  EXPECT_EQ(getTrimValue(0, ELE_STICK), -100); // unchanged
 #if defined(CPUARM)
   EXPECT_EQ(g_model.limitData[1].offset, -195);
 #else
