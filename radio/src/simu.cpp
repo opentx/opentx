@@ -357,7 +357,7 @@ int main(int argc,char **argv)
   // We pass the "name" of the application, and its "vendor", the name
   // and vendor are used to search the registry database (which stores
   // persistent information e.g. fonts and colors).
-  FXApp application("Open9xSim", "thus");
+  FXApp application("OpenTX Simu", "OpenTX");
 
   // Here we initialize the application.  We pass the command line arguments
   // because FOX may sometimes need to filter out some of the arguments.
