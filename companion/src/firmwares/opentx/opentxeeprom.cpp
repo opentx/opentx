@@ -1547,9 +1547,25 @@ class LogicalSwitchField: public TransformedField {
       else if (csw.func >= LS_FN_EQUAL && csw.func <= LS_FN_ELESS) {
         sourcesConversionTable->importValue((uint8_t)v1, csw.val1);
         sourcesConversionTable->importValue((uint8_t)v2, csw.val2);
+        if (IS_TARANIS(board) && version < 216) {
+          RawSource val1(csw.val1);
+          if (val1.type == SOURCE_TYPE_STICK && val1.index < NUM_STICKS) {
+            csw.val1 = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, val1.index).toValue();
+          }
+          RawSource val2(csw.val2);
+          if (val2.type == SOURCE_TYPE_STICK && val2.index < NUM_STICKS) {
+            csw.val2 = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, val2.index).toValue();
+          }
+        }
       }
       else if (csw.func != LS_FN_OFF) {
         sourcesConversionTable->importValue((uint8_t)v1, csw.val1);
+        if (IS_TARANIS(board) && version < 216) {
+          RawSource val1(csw.val1);
+          if (val1.type == SOURCE_TYPE_STICK && val1.index < NUM_STICKS) {
+            csw.val1 = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, val1.index).toValue();
+          }
+        }
         csw.val2 = v2;
         RawSource val1(csw.val1);
         if (IS_ARM(board) && version < 216 && val1.type == SOURCE_TYPE_TELEMETRY) {
