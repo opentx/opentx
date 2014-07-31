@@ -1662,7 +1662,7 @@ FORCEINLINE void evalTrims()
 #if !defined(PCBTARANIS)
     if (i==THR_STICK && g_model.thrTrim) {
       int16_t trimMin = g_model.extendedTrims ? TRIM_EXTENDED_MIN : TRIM_MIN;
-      trim = (((g_model.throttleReversed)?(int32_t)(trim+trimMin):(int32_t)(trim-trimMin)) * (RESX-getValue(MIXSRC_Thr))) >> (RESX_SHIFT+1);
+      trim = (((g_model.throttleReversed)?(int32_t)(trim+trimMin):(int32_t)(trim-trimMin)) * (RESX-anas[i])) >> (RESX_SHIFT+1);
     }
 #endif
     if (trimsCheckTimer > 0) {
