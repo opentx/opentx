@@ -549,3 +549,5 @@ Stephen Palmer
 Michael Napolitan
 Joshua Bardwell
 Fred Dawson
+Jim Wagner
+Peter Johnson
