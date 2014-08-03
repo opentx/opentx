@@ -156,8 +156,8 @@ void CompareDialog::dropEvent(QDropEvent *event)
 
 void CompareDialog::closeEvent(QCloseEvent *event) 
 {
-  unlink(curvefile5);
-  unlink(curvefile9);    
+  qunlink(curvefile5);
+  qunlink(curvefile9);    
 }
 
 CompareDialog::~CompareDialog()

@@ -1,4 +1,11 @@
 #include <QtGui>
+#if defined WIN32
+  #include <io.h>
+  #include <stdio.h>
+#endif
+#if !defined WIN32 && defined __GNUC__
+  #include <unistd.h>
+#endif 
 #include "appdata.h"
 #include "helpers.h"
 #include "simulatordialog.h"
@@ -966,8 +973,16 @@ QString index2version(int index)
 }
 
 
-int unlink(const QString & fileName)
+int qunlink(const QString & fileName)
 {
+  qDebug() << "unlinking "<< fileName;
   QByteArray ba = fileName.toLatin1();
   return unlink(ba.constData());
+}
+
+QString generateProcessUniqueTempFileName(const QString & fileName)
+{
+  QString sanitizedFileName = fileName;
+  sanitizedFileName.remove('/');
+  return QDir::tempPath() + QString("/%1-").arg(QCoreApplication::applicationPid()) + sanitizedFileName;
 }

@@ -140,6 +140,8 @@ class QTimeS : public QTime
 };
 
 
-int unlink(const QString & fileName);
+int qunlink(const QString & fileName);
+
+QString generateProcessUniqueTempFileName(const QString & fileName);
 
 #endif // HELPERS_H

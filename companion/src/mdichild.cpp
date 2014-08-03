@@ -531,8 +531,7 @@ void MdiChild::writeEeprom()  // write to Tx
   }
   QString stickCal=g.profile[g.id()].stickPotCalib();
   burnConfigDialog bcd;
-  QString tempDir    = QDir::tempPath();
-  QString tempFile = tempDir + "/temp.bin";
+  QString tempFile = generateProcessUniqueTempFileName("temp.bin");
   saveFile(tempFile, false);
   if(!QFileInfo(tempFile).exists()) {
     QMessageBox::critical(this,tr("Error"), tr("Cannot write temporary file!"));
@@ -550,12 +549,12 @@ void MdiChild::writeEeprom()  // write to Tx
           return;
       }
       int oldrev=((MainWindow *)this->parent())->getEpromVersion(tempFile);
-      QString tempFlash=tempDir + "/flash.bin";
+      QString tempFlash = generateProcessUniqueTempFileName("flash.bin");
 
       if (!((MainWindow *)this->parent())->readFirmwareFromRadio(tempFlash))
         return;
 
-      QString restoreFile = tempDir + "/compat.bin";
+      QString restoreFile = generateProcessUniqueTempFileName("compat.bin");
       if (!((MainWindow *)this->parent())->convertEEPROM(tempFile, restoreFile, tempFlash)) {
         int ret = QMessageBox::question(this, tr("Error"), tr("Cannot check eeprom compatibility! Continue anyway?"), QMessageBox::Yes | QMessageBox::No);
         if (ret == QMessageBox::No)
@@ -571,7 +570,7 @@ void MdiChild::writeEeprom()  // write to Tx
         }
         tempFile=restoreFile;
       }
-      unlink(tempFlash);
+      qunlink(tempFlash);
     }
     else {
       if (backupEnable) {
