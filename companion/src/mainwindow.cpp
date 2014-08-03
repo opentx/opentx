@@ -1172,12 +1172,12 @@ void MainWindow::writeBackup()
         }
         int oldrev = getEpromVersion(fileName);
         QString tempDir = QDir::tempPath();
-        QString tempFlash = tempDir + "/flash.bin";
+        QString tempFlash = tempDir + QString("/flash-%1.bin").arg(QCoreApplication::applicationPid());
 
         if (!readFirmwareFromRadio(tempFlash))
           return;
 
-        QString restoreFile = tempDir + "/compat.bin";
+        QString restoreFile = tempDir + QString("/compat.bin-%1.bin").arg(QCoreApplication::applicationPid());
         if (!convertEEPROM(fileName, restoreFile, tempFlash)) {
          int ret = QMessageBox::question(this, "Error", tr("Cannot check Models and Settings compatibility! Continue anyway?") ,
                                               QMessageBox::Yes | QMessageBox::No);
@@ -1194,9 +1194,7 @@ void MainWindow::writeBackup()
           }
           fileName = restoreFile;
         }
-        QByteArray ba = tempFlash.toLatin1();
-        char *name = ba.data();
-        unlink(name);
+        unlink(tempFlash.toAscii());
       }
       else {
         if (backupEnable) {
