@@ -947,20 +947,23 @@ QString MainWindow::FindMassstoragePath(QString filename)
 void MainWindow::readEeprom()
 {
     QString tempDir = QDir::tempPath();
-    QString tempFile;
+    QString tempFile = tempDir + QString("/temp-%1").arg(QCoreApplication::applicationPid());;
 
     EEPROMInterface *eepromInterface = GetEepromInterface();
 
     if (IS_ARM(eepromInterface->getBoard())) 
-      tempFile = tempDir + "/temp.bin";
+      tempFile += ".bin";
     else
-      tempFile = tempDir + "/temp.hex";
+      tempFile += ".hex";
+
+    qDebug() << "MainWindow::readEeprom(): using temp file: " << tempFile;
 
     if (readEepromFromRadio(tempFile, tr("Read Models and Settings From Radio"))) {
       MdiChild *child = createMdiChild();
       child->newFile();
       child->loadFile(tempFile, false);
       child->show();
+      unlink(tempFile.toAscii());
     }
 }
 
@@ -1042,7 +1045,10 @@ bool MainWindow::readEepromFromRadio(const QString filename, const QString messa
 
   QFile file(filename);
   if (file.exists()) {
-    file.remove();
+    if (!file.remove()) {
+      QMessageBox::warning(this, tr("Error"), tr("Could not delete temporary file: %1").arg(filename));
+      return false;
+    }
   }
 
   if (IS_ARM(GetCurrentFirmware()->getBoard())) {
