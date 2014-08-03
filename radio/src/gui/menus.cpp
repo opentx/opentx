@@ -1429,7 +1429,13 @@ bool isSourceAvailable(int source)
 bool isTelemetrySourceAvailable(int source)
 {
 #if defined(PCBTARANIS)
-  if (source == TELEM_RSSI_TX || source == TELEM_SWR)
+  if (source == TELEM_RSSI_TX)
+    return false;
+#endif
+
+#if defined(PCBTARANIS) && defined(REVPLUS)
+  // on Taranis+ we also hide the SWR
+  if (source == TELEM_SWR)
     return false;
 #endif
 
