@@ -806,7 +806,7 @@ QStringList MainWindow::GetSambaArguments(const QString &tcl)
 
     QString tclFilename = QDir::tempPath() + "/temp.tcl";
     if (QFile::exists(tclFilename)) {
-      unlink(tclFilename.toAscii());
+      unlink(tclFilename);
     }
     QFile tclFile(tclFilename);
     if (!tclFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -963,7 +963,7 @@ void MainWindow::readEeprom()
       child->newFile();
       child->loadFile(tempFile, false);
       child->show();
-      unlink(tempFile.toAscii());
+      unlink(tempFile);
     }
 }
 
@@ -1194,7 +1194,7 @@ void MainWindow::writeBackup()
           }
           fileName = restoreFile;
         }
-        unlink(tempFlash.toAscii());
+        unlink(tempFlash);
       }
       else {
         if (backupEnable) {

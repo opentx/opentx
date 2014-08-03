@@ -139,4 +139,7 @@ class QTimeS : public QTime
     int seconds() const { return hour()*3600 + minute()*60 + second(); };
 };
 
+
+int unlink(const QString & fileName);
+
 #endif // HELPERS_H

@@ -61,12 +61,8 @@ PrintDialog::PrintDialog(QWidget *parent, FirmwareInterface * firmware, GeneralS
 void PrintDialog::closeEvent(QCloseEvent *event) 
 {
   if (printfilename.isEmpty()) {
-    QByteArray ba = curvefile5.toLatin1();
-    char *name = ba.data(); 
-    unlink(name);
-    ba = curvefile9.toLatin1();
-    name = ba.data(); 
-    unlink(name);
+    unlink(curvefile5);
+    unlink(curvefile9);
   }
 }
 

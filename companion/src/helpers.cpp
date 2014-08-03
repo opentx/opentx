@@ -964,3 +964,10 @@ QString index2version(int index)
     return QString();
   }
 }
+
+
+int unlink(const QString & fileName)
+{
+  QByteArray ba = fileName.toLatin1();
+  return unlink(ba.constData());
+}

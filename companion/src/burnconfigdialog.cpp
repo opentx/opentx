@@ -376,7 +376,7 @@ void burnConfigDialog::restFuses(bool eeProtect)
               lfuses="lfuse:w:0x3F:m";
             } 
             file.close();
-            unlink(tempFile.toAscii());
+            unlink(tempFile);
           }
           else {
             lfuses="lfuse:w:0x3F:m";

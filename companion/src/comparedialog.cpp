@@ -156,12 +156,8 @@ void CompareDialog::dropEvent(QDropEvent *event)
 
 void CompareDialog::closeEvent(QCloseEvent *event) 
 {
-  QByteArray ba = curvefile5.toLatin1();
-  char *name = ba.data(); 
-  unlink(name);
-  ba = curvefile9.toLatin1();
-  name = ba.data(); 
-  unlink(name);    
+  unlink(curvefile5);
+  unlink(curvefile9);    
 }
 
 CompareDialog::~CompareDialog()

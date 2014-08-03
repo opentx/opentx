@@ -571,9 +571,7 @@ void MdiChild::writeEeprom()  // write to Tx
         }
         tempFile=restoreFile;
       }
-      QByteArray ba = tempFlash.toLatin1();
-      char *name = ba.data(); 
-      unlink(name);
+      unlink(tempFlash);
     }
     else {
       if (backupEnable) {
