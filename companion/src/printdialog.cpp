@@ -60,13 +60,11 @@ PrintDialog::PrintDialog(QWidget *parent, FirmwareInterface * firmware, GeneralS
 
 void PrintDialog::closeEvent(QCloseEvent *event) 
 {
-  // if (printfilename.isEmpty()) {
-  // }
 }
 
 PrintDialog::~PrintDialog()
 {
-  qDebug() << "PrintDialog::~PrintDialog";
+  // notice PrintDialog::closeEvent() is not called if user clicks on Close button
   qunlink(curvefile5);
   qunlink(curvefile9);
   delete ui;

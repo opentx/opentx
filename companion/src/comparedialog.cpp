@@ -156,12 +156,12 @@ void CompareDialog::dropEvent(QDropEvent *event)
 
 void CompareDialog::closeEvent(QCloseEvent *event) 
 {
-  qunlink(curvefile5);
-  qunlink(curvefile9);    
 }
 
 CompareDialog::~CompareDialog()
 {
+  qunlink(curvefile5);
+  qunlink(curvefile9);
   delete ui;
 }
 

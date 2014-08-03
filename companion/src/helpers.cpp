@@ -972,7 +972,6 @@ QString index2version(int index)
   }
 }
 
-
 int qunlink(const QString & fileName)
 {
   qDebug() << "unlinking "<< fileName;

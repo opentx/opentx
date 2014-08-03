@@ -139,7 +139,6 @@ class QTimeS : public QTime
     int seconds() const { return hour()*3600 + minute()*60 + second(); };
 };
 
-
 int qunlink(const QString & fileName);
 
 QString generateProcessUniqueTempFileName(const QString & fileName);
