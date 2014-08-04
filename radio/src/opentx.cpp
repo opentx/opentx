@@ -446,6 +446,14 @@ void modelDefault(uint8_t id)
   checkModelIdUnique(id);
 #endif
 
+#if defined(CPUARM) && defined(FLIGHT_MODES) && defined(GVARS)
+  for (int p=1; p<MAX_FLIGHT_MODES; p++) {
+    for (int i=0; i<MAX_GVARS; i++) {
+      g_model.flightModeData[p].gvars[i] = GVAR_MAX+1;
+    }
+  }
+#endif
+
 #if defined(PCBTARANIS)
   g_model.frsky.channels[0].ratio = 132;
 #endif
