@@ -129,8 +129,8 @@ t_Open9xExpoData_v211::operator ExpoData ()
 t_Open9xLimitData_v201::operator LimitData ()
 {
   LimitData c9x;
-  c9x.min = min-100;
-  c9x.max = max+100;
+  c9x.min = 10*(min-100);
+  c9x.max = 10*(max+100);
   c9x.revert = revert;
   c9x.offset = offset;
   return c9x;
@@ -139,8 +139,8 @@ t_Open9xLimitData_v201::operator LimitData ()
 t_Open9xLimitData_v211::operator LimitData ()
 {
   LimitData c9x;
-  c9x.min = min-100;
-  c9x.max = max+100;
+  c9x.min = 10*(min-100);
+  c9x.max = 10*(max+100);
   c9x.revert = revert;
   c9x.offset = offset;
   c9x.symetrical=symetrical;

@@ -138,8 +138,8 @@ t_Er9xLimitData::t_Er9xLimitData()
 t_Er9xLimitData::operator LimitData ()
 {
   LimitData c9x;
-  c9x.min = min-100;
-  c9x.max = max+100;
+  c9x.min = 10*(min-100);
+  c9x.max = 10*(max+100);
   c9x.revert = revert;
   c9x.offset = offset;
   return c9x;
