@@ -155,7 +155,10 @@ tmr10ms_t lastLogTime = 0;
 
 void closeLogs()
 {
-  f_close(&g_oLogFile);
+  if (f_close(&g_oLogFile) != FR_OK) {
+    // close failed, forget file
+    g_oLogFile.fs = 0;
+  }
   lastLogTime = 0;
 }
 
@@ -279,13 +282,15 @@ void writeLogs()
       if (result<0 && !error_displayed) {
         error_displayed = STR_SDCARD_ERROR;
         POPUP_WARNING(STR_SDCARD_ERROR);
+        closeLogs();
       }
     }
   }
   else {
     error_displayed = NULL;
-    if (g_oLogFile.fs)
+    if (g_oLogFile.fs) {
       closeLogs();
+    }
   }
 }
 
