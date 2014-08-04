@@ -418,12 +418,11 @@ void burnDialog::on_BurnFlashButton_clicked()
           image = pixmap->toImage().scaled(ui->imageLabel->width(), ui->imageLabel->height());
         }
         if (!image.isNull()) {
-          QString tempDir = QDir::tempPath();
           QString tempFile;
           if (getFileType(fileName) == FILE_TYPE_HEX)
-            tempFile = tempDir + "/flash.hex";
+            tempFile = generateProcessUniqueTempFileName("flash.hex");
           else
-            tempFile = tempDir + "/flash.bin";
+            tempFile = generateProcessUniqueTempFileName("flash.bin");
           FlashInterface flash(fileName);
           flash.setSplash(image);
           if (flash.saveFlash(tempFile) > 0) {
@@ -556,8 +555,7 @@ void burnDialog::on_BurnFlashButton_clicked()
       }
     
       if (patch) {
-        QString tempDir = QDir::tempPath();
-        QString fileName = tempDir + "/temp.bin";
+        QString fileName = generateProcessUniqueTempFileName("temp.bin");
         QFile file(fileName);
 
         uint8_t *eeprom = (uint8_t*)malloc(GetEepromInterface()->getEEpromSize());

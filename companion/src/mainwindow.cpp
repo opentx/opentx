@@ -804,9 +804,9 @@ QStringList MainWindow::GetSambaArguments(const QString &tcl)
 {
     QStringList result;
 
-    QString tclFilename = QDir::tempPath() + "/temp.tcl";
+    QString tclFilename = generateProcessUniqueTempFileName("temp.tcl");
     if (QFile::exists(tclFilename)) {
-      unlink(tclFilename.toAscii());
+      qunlink(tclFilename);
     }
     QFile tclFile(tclFilename);
     if (!tclFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -946,21 +946,23 @@ QString MainWindow::FindMassstoragePath(QString filename)
 
 void MainWindow::readEeprom()
 {
-    QString tempDir = QDir::tempPath();
     QString tempFile;
 
     EEPROMInterface *eepromInterface = GetEepromInterface();
 
     if (IS_ARM(eepromInterface->getBoard())) 
-      tempFile = tempDir + "/temp.bin";
+      tempFile = generateProcessUniqueTempFileName("temp.bin");
     else
-      tempFile = tempDir + "/temp.hex";
+      tempFile += generateProcessUniqueTempFileName("temp.hex");
+
+    qDebug() << "MainWindow::readEeprom(): using temp file: " << tempFile;
 
     if (readEepromFromRadio(tempFile, tr("Read Models and Settings From Radio"))) {
       MdiChild *child = createMdiChild();
       child->newFile();
       child->loadFile(tempFile, false);
       child->show();
+      qunlink(tempFile);
     }
 }
 
@@ -1042,7 +1044,10 @@ bool MainWindow::readEepromFromRadio(const QString filename, const QString messa
 
   QFile file(filename);
   if (file.exists()) {
-    file.remove();
+    if (!file.remove()) {
+      QMessageBox::warning(this, tr("Error"), tr("Could not delete temporary file: %1").arg(filename));
+      return false;
+    }
   }
 
   if (IS_ARM(GetCurrentFirmware()->getBoard())) {
@@ -1165,13 +1170,12 @@ void MainWindow::writeBackup()
             return;
         }
         int oldrev = getEpromVersion(fileName);
-        QString tempDir = QDir::tempPath();
-        QString tempFlash = tempDir + "/flash.bin";
+        QString tempFlash = generateProcessUniqueTempFileName("flash.bin");
 
         if (!readFirmwareFromRadio(tempFlash))
           return;
 
-        QString restoreFile = tempDir + "/compat.bin";
+        QString restoreFile = generateProcessUniqueTempFileName("compat.bin");
         if (!convertEEPROM(fileName, restoreFile, tempFlash)) {
          int ret = QMessageBox::question(this, "Error", tr("Cannot check Models and Settings compatibility! Continue anyway?") ,
                                               QMessageBox::Yes | QMessageBox::No);
@@ -1188,9 +1192,7 @@ void MainWindow::writeBackup()
           }
           fileName = restoreFile;
         }
-        QByteArray ba = tempFlash.toLatin1();
-        char *name = ba.data();
-        unlink(name);
+        qunlink(tempFlash);
       }
       else {
         if (backupEnable) {
@@ -1304,8 +1306,7 @@ void MainWindow::writeFlash(QString fileToFlash)
     if (!fileName.isEmpty()) {
       g.backupOnFlash(backup);
       if (backup) {
-        QString tempDir    = QDir::tempPath();
-        QString backupFile = tempDir + "/backup.bin";
+        QString backupFile = generateProcessUniqueTempFileName("backup.bin");
         bool backupEnable=g.enableBackup();
         QString backupPath=g.backupDir();
         if (!backupPath.isEmpty() && !IS_TARANIS(GetEepromInterface()->getBoard())) {
@@ -1330,7 +1331,7 @@ void MainWindow::writeFlash(QString fileToFlash)
           sleep(2);
           int res = writeFirmwareToRadio(fileName);
           if (res) {
-            QString restoreFile = tempDir + "/restore.bin";
+            QString restoreFile = generateProcessUniqueTempFileName("restore.bin");
             if (!convertEEPROM(backupFile, restoreFile, fileName)) {
               QMessageBox::warning(this, tr("Conversion failed"), tr("Cannot convert Models and Settings for use with this firmware, original data will be used"));
               restoreFile = backupFile;

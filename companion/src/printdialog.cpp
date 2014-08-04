@@ -31,12 +31,12 @@ PrintDialog::PrintDialog(QWidget *parent, FirmwareInterface * firmware, GeneralS
   te->clear();
   QString modelname=g_model->name;
   if (modelname.isEmpty()) {
-    curvefile5=QString("%1/curve5.png").arg(qd->tempPath());
-    curvefile9=QString("%1/curve9.png").arg(qd->tempPath());      
+    curvefile5=generateProcessUniqueTempFileName("curve5.png");
+    curvefile9=generateProcessUniqueTempFileName("curve9.png");  
   }
   else {
-    curvefile5=QString("%1/%2-curve5.png").arg(qd->tempPath()).arg(modelname);
-    curvefile9=QString("%1/%2-curve9.png").arg(qd->tempPath()).arg(modelname);
+    curvefile5=generateProcessUniqueTempFileName(QString("%1-curve5.png").arg(modelname));
+    curvefile9=generateProcessUniqueTempFileName(QString("%1-curve9.png").arg(modelname));
   }
   printSetup(); 
   if (gvars) {
@@ -60,19 +60,14 @@ PrintDialog::PrintDialog(QWidget *parent, FirmwareInterface * firmware, GeneralS
 
 void PrintDialog::closeEvent(QCloseEvent *event) 
 {
-  if (printfilename.isEmpty()) {
-    QByteArray ba = curvefile5.toLatin1();
-    char *name = ba.data(); 
-    unlink(name);
-    ba = curvefile9.toLatin1();
-    name = ba.data(); 
-    unlink(name);
-  }
 }
 
 PrintDialog::~PrintDialog()
 {
-    delete ui;
+  // notice PrintDialog::closeEvent() is not called if user clicks on Close button
+  qunlink(curvefile5);
+  qunlink(curvefile9);
+  delete ui;
 }
 
 QString doTC(const QString s, const QString color="", bool bold=false)

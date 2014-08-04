@@ -354,10 +354,8 @@ void burnConfigDialog::restFuses(bool eeProtect)
           //use hfuse = 0x81 to prevent eeprom being erased with every flashing          
         }
         else {
-          QString tempDir    = QDir::tempPath();
-          QString tempFile;
           QString lfuses;
-          tempFile = tempDir + "/ftemp.bin";
+          QString tempFile = generateProcessUniqueTempFileName("ftemp.bin");
           QStringList argread;
           argread << "-c" << avrProgrammer << "-p" << avrMCU << args  <<"-U" << "lfuse:r:"+tempFile+":r" ;
           avrOutputDialog *ad = new avrOutputDialog(this, avrLoc, argread, "Reset Fuses",AVR_DIALOG_CLOSE_IF_SUCCESSFUL,FALSE);
@@ -376,7 +374,7 @@ void burnConfigDialog::restFuses(bool eeProtect)
               lfuses="lfuse:w:0x3F:m";
             } 
             file.close();
-            unlink(tempFile.toAscii());
+            qunlink(tempFile);
           }
           else {
             lfuses="lfuse:w:0x3F:m";

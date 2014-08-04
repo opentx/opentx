@@ -239,13 +239,13 @@ void logsDialog::on_mapsButton_clicked() {
     itemSelected=n-1;
   }
   
-  QString geFilename = QDir::tempPath() + "/track0.png";
-  if (QFile::exists(geFilename)) {
-    QFile::remove(geFilename);
+  QString geIconFilename = generateProcessUniqueTempFileName("track0.png");
+  if (QFile::exists(geIconFilename)) {
+    QFile::remove(geIconFilename);
   }
-  QFile::copy(":/images/track0.png", geFilename);
+  QFile::copy(":/images/track0.png", geIconFilename);
 
-  geFilename = QDir::tempPath() + "/flight.kml";
+  QString geFilename = generateProcessUniqueTempFileName("flight.kml");
   if (QFile::exists(geFilename)) {
     QFile::remove(geFilename);
   }
@@ -264,7 +264,7 @@ void logsDialog::on_mapsButton_clicked() {
   QTextStream outputStream(&geFile);
   outputStream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\">\n";
   outputStream << "\t<Document>\n\t\t<name>" << logFilename << "</name>\n";
-  outputStream << "\t\t<Style id=\"multiTrack_n\">\n\t\t\t<IconStyle>\n\t\t\t\t<Icon>\n\t\t\t\t\t<href>file://" << QDir::tempPath() << "/track0.png</href>\n\t\t\t\t</Icon>\n\t\t\t</IconStyle>\n\t\t\t<LineStyle>\n\t\t\t\t<color>991081f4</color>\n\t\t\t\t<width>6</width>\n\t\t\t</LineStyle>\n\t\t</Style>\n";
+  outputStream << "\t\t<Style id=\"multiTrack_n\">\n\t\t\t<IconStyle>\n\t\t\t\t<Icon>\n\t\t\t\t\t<href>file://" << geIconFilename << "</href>\n\t\t\t\t</Icon>\n\t\t\t</IconStyle>\n\t\t\t<LineStyle>\n\t\t\t\t<color>991081f4</color>\n\t\t\t\t<width>6</width>\n\t\t\t</LineStyle>\n\t\t</Style>\n";
   outputStream << "\t\t<Style id=\"multiTrack_h\">\n\t\t\t<IconStyle>\n\t\t\t\t<scale>0</scale>\n\t\t\t\t<Icon>\n\t\t\t\t\t<href>file://" << QDir::tempPath() << "/track0.png</href>\n\t\t\t\t</Icon>\n\t\t\t</IconStyle>\n\t\t\t<LineStyle>\n\t\t\t\t<color>991081f4</color>\n\t\t\t\t<width>8</width>\n\t\t\t</LineStyle>\n\t\t</Style>\n";
   outputStream << "\t\t<StyleMap id=\"multiTrack\">\n\t\t\t<Pair>\n\t\t\t\t<key>normal</key>\n\t\t\t\t<styleUrl>#multiTrack_n</styleUrl>\n\t\t\t</Pair>\n\t\t\t<Pair>\n\t\t\t\t<key>highlight</key>\n\t\t\t\t<styleUrl>#multiTrack_h</styleUrl>\n\t\t\t</Pair>\n\t\t</StyleMap>\n";
   outputStream << "\t\t<Style id=\"lineStyle\">\n\t\t\t<LineStyle>\n\t\t\t\t<color>991081f4</color>\n\t\t\t\t<width>6</width>\n\t\t\t</LineStyle>\n\t\t</Style>\n";

@@ -156,11 +156,11 @@ void avrOutputDialog::doCopy()
       dest.close();
     }
     else {
-      QMessageBox::warning(this, tr("Error"),tr("Cannot write destination") + ": " + dest.errorString());
+      QMessageBox::warning(this, tr("Error"),tr("Cannot write destination") + ": " + dest.fileName() + ", " + tr("reason") + ": " + dest.errorString());
     }
   }
   else {
-    QMessageBox::warning(this, tr("Error"),tr("Cannot open source file") + ": " + source.errorString());
+    QMessageBox::warning(this, tr("Error"),tr("Cannot open source file") + ": " + source.fileName() + ", " + tr("reason") + ": " + source.errorString());
   }
 
   source.close();
