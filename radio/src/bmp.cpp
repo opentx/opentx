@@ -183,7 +183,7 @@ const pm_char * bmpLoad(uint8_t *bmp, const char *filename, const xcoord_t width
           f_close(&bmpFile);
           return SDCARD_ERROR(result);
         }
-        for (uint32_t j=0; j<w/2; j++) {
+        for (uint32_t j=0; j<(w+1)/2; j++) {
           uint8_t * dst = dest + (i/2)*w + j*2;
           if (i & 1) {
             uint8_t val = palette[(buf[j] >> 4) & 0x0F] << 4;
