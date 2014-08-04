@@ -354,8 +354,12 @@ enum PotType {
   POT_TYPE_MAX=POT_TYPE_NO_DETENT
 };
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) && defined(REVPLUS)
   #define IS_POT_AVAILABLE(x)       ((x)!=POT3 || (g_eeGeneral.potsType & (0x03 << (2*((x)-POT1))))!=POT_TYPE_NONE)
+  #define IS_POT_MULTIPOS(x)        ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsType>>(2*((x)-POT1)))&0x03)==POT_TYPE_MULTIPOS)
+  #define IS_POT_WITHOUT_DETENT(x)  ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsType>>(2*((x)-POT1)))&0x03)==POT_TYPE_NO_DETENT)
+#elif defined(PCBTARANIS)
+  #define IS_POT_AVAILABLE(x)       ((x)!=POT3)
   #define IS_POT_MULTIPOS(x)        ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsType>>(2*((x)-POT1)))&0x03)==POT_TYPE_MULTIPOS)
   #define IS_POT_WITHOUT_DETENT(x)  ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsType>>(2*((x)-POT1)))&0x03)==POT_TYPE_NO_DETENT)
 #else

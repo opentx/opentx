@@ -1462,6 +1462,14 @@ bool isTelemetrySourceAvailable(int source)
 
 bool isInputSourceAvailable(int source)
 {
+#if defined(PCBTARANIS) && !defined(REVPLUS)
+  if (source == MIXSRC_POT3)
+    return false;
+#endif
+
+  if (source>=MIXSRC_Rud && source<=MIXSRC_MAX)
+    return true;
+
   if (source>=MIXSRC_Rud && source<=MIXSRC_MAX)
     return true;
 

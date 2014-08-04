@@ -61,10 +61,12 @@
 
 volatile uint16_t Analog_values[NUMBER_ANALOG];
 
-#if defined(REV4a)
+#if defined(REVPLUS)
   const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,-1,1,-1,1,  1};
+#elif defined(REV4a)
+  const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,-1,0,-1,1,  1};
 #elif !defined(REV3)
-  const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,1,-1,1,  1};
+  const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,0,-1,1,  1};
 #endif
 
 void adcInit()
@@ -129,6 +131,11 @@ void adcRead()
     if (ana_direction[i] < 0) {
       Analog_values[i] = 4096-Analog_values[i];
     }
+#if !defined(REVPLUS)
+    else if (ana_direction[i] == 0) {
+      Analog_values[i] = 0;
+    }
+#endif
   }
 #endif
 }
