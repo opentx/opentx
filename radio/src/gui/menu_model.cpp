@@ -1224,7 +1224,7 @@ void menuModelSetup(uint8_t event)
         if (attr) {
           s_editMode = 0;
           if (!READ_ONLY()) {
-            switch(event) {
+            switch (event) {
               CASE_EVT_ROTARY_BREAK
               case EVT_KEY_BREAK(KEY_ENTER):
 #if defined(CPUM64)
@@ -1325,7 +1325,7 @@ void menuModelSetup(uint8_t event)
           uint8_t x = MODEL_SETUP_2ND_COLUMN+5*FW;
           for (uint8_t i=0; i<NUM_POTS ; i++) {
 #if !defined(REVPLUS)
-            if (i == POT3-POT1) {
+            if (attr && i == POT3-POT1) {
               if (m_posHorz==i+1) REPEAT_LAST_CURSOR_MOVE();
               continue;
             }
