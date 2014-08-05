@@ -1458,82 +1458,82 @@ Behöver inte vara samma som menyspråket</translation>
     <message>
         <location filename="../modeledit/templates.cpp" line="+39"/>
         <source>Simple 4-CH</source>
-        <translation type="unfinished"></translation>
+        <translation>Enkel 4-Kanal</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>T-Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Gas-klipp</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Sticky T-Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Sticky Gas-Klipp</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>V-Tail</source>
-        <translation type="unfinished">V-stjärt</translation>
+        <translation>V-stjärt</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Elevon\Delta</source>
-        <translation type="unfinished"></translation>
+        <translation>Flygande vinge/Deltavinge</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Heli Setup</source>
-        <translation type="unfinished"></translation>
+        <translation>Helikopter</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Heli Setup with gyro gain control</source>
-        <translation type="unfinished"></translation>
+        <translation>Helikopter med gyro-gain</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Gyro gain control</source>
-        <translation type="unfinished"></translation>
+        <translation>Gyrogain-kontroll</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Heli Setup (Futaba&apos;s channel assignment style)</source>
-        <translation type="unfinished"></translation>
+        <translation>Helikopter (Futabas kanalordning)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Heli Setup with gyro gain control (Futaba&apos;s channel assignment style)</source>
-        <translation type="unfinished"></translation>
+        <translation>Helikopter med gyro gain (Futabas kanalordning)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Gyro gain control (Futaba&apos;s channel assignment style)</source>
-        <translation type="unfinished"></translation>
+        <translation>Gyrogain-kontroll (Futabas kanalordning)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Servo Test</source>
-        <translation type="unfinished"></translation>
+        <translation>Servotest</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>MultiCopter</source>
-        <translation type="unfinished"></translation>
+        <translation>Multikopter</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Use Model Config Wizard</source>
-        <translation type="unfinished"></translation>
+        <translation>Använd Modellguiden</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>Apply Template?</source>
-        <translation type="unfinished"></translation>
+        <translation>Använd Mall?</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Apply template &quot;%1&quot;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Använd Mall &quot;%1&quot;?</translation>
     </message>
     <message>
         <location line="+88"/>
@@ -1544,7 +1544,7 @@ Behöver inte vara samma som menyspråket</translation>
         <location line="+2"/>
         <location line="+129"/>
         <source>RUD</source>
-        <translation type="unfinished">ROD</translation>
+        <translation>ROD</translation>
     </message>
     <message>
         <location line="-316"/>
@@ -1558,14 +1558,14 @@ Behöver inte vara samma som menyspråket</translation>
         <location line="+113"/>
         <location line="+1"/>
         <source>ELE</source>
-        <translation type="unfinished">HÖJ</translation>
+        <translation>HJD</translation>
     </message>
     <message>
         <location line="-298"/>
         <location line="+171"/>
         <location line="+122"/>
         <source>THR</source>
-        <translation type="unfinished">GAS</translation>
+        <translation>GAS</translation>
     </message>
     <message>
         <location line="-277"/>
@@ -1577,7 +1577,7 @@ Behöver inte vara samma som menyspråket</translation>
         <location line="+94"/>
         <location line="+1"/>
         <source>AIL</source>
-        <translation type="unfinished">SKE</translation>
+        <translation>SKE</translation>
     </message>
     <message>
         <location line="-279"/>
@@ -1585,7 +1585,7 @@ Behöver inte vara samma som menyspråket</translation>
         <location line="+185"/>
         <location line="+6"/>
         <source>AIL2</source>
-        <translation type="unfinished"></translation>
+        <translation>SKE2</translation>
     </message>
     <message>
         <location line="-184"/>
@@ -1593,7 +1593,7 @@ Behöver inte vara samma som menyspråket</translation>
         <location line="+185"/>
         <location line="+6"/>
         <source>ELE2</source>
-        <translation type="unfinished"></translation>
+        <translation>HJD2</translation>
     </message>
     <message>
         <location line="-187"/>
@@ -1603,7 +1603,7 @@ Behöver inte vara samma som menyspråket</translation>
         <location line="+94"/>
         <location line="+1"/>
         <source>FLAPS</source>
-        <translation type="unfinished"></translation>
+        <translation>FLAPS</translation>
     </message>
     <message>
         <location line="-272"/>
@@ -1613,7 +1613,7 @@ Behöver inte vara samma som menyspråket</translation>
         <location line="+89"/>
         <location line="+6"/>
         <source>FLAP%1</source>
-        <translation type="unfinished"></translation>
+        <translation>FLAP%1</translation>
     </message>
     <message>
         <location line="-252"/>
@@ -1621,7 +1621,7 @@ Behöver inte vara samma som menyspråket</translation>
         <location line="+21"/>
         <location line="+4"/>
         <source>PITCH</source>
-        <translation type="unfinished"></translation>
+        <translation>PITCH</translation>
     </message>
     <message>
         <location line="-16"/>
@@ -1633,41 +1633,41 @@ Behöver inte vara samma som menyspråket</translation>
         <location line="+3"/>
         <location line="+1"/>
         <source>GYRO</source>
-        <translation type="unfinished"></translation>
+        <translation>GYRO</translation>
     </message>
     <message>
         <location line="+118"/>
         <location line="+1"/>
         <source>SPOIL</source>
-        <translation type="unfinished"></translation>
+        <translation>SPOIL</translation>
     </message>
     <message>
         <location line="+14"/>
         <location line="+6"/>
         <source>SPOIL%1</source>
-        <translation type="unfinished"></translation>
+        <translation>SPOIL%1</translation>
     </message>
     <message>
         <location line="+39"/>
         <location line="+6"/>
         <source>RUD2</source>
-        <translation type="unfinished"></translation>
+        <translation>ROD2</translation>
     </message>
     <message>
         <location line="+203"/>
         <location line="+112"/>
         <source>Clear Mixes?</source>
-        <translation type="unfinished">Ta bort mixarna?</translation>
+        <translation>Nollställ mixarna?</translation>
     </message>
     <message>
         <location line="-112"/>
         <source>Really clear existing mixes on CH6?</source>
-        <translation type="unfinished"></translation>
+        <translation>Vill du verkligen ta bort mixarna på kanal 6?</translation>
     </message>
     <message>
         <location line="+112"/>
         <source>Really clear existing mixes on CH5?</source>
-        <translation type="unfinished"></translation>
+        <translation>Vill du verkligen ta bort mixarna på kanal 5?</translation>
     </message>
 </context>
 <context>
@@ -6480,7 +6480,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+383"/>
         <source>Override %1</source>
-        <translation type="unfinished"></translation>
+        <translation>I stället för %1</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -6713,7 +6713,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+13"/>
         <source>Speed+</source>
-        <translation type="unfinished"></translation>
+        <translation>Hastighet+</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -7044,7 +7044,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="-627"/>
         <source>(displaying only first 10 warnings)</source>
-        <translation type="unfinished"></translation>
+        <translation>(enbart de 10 första varningarna visas)</translation>
     </message>
     <message>
         <location line="+660"/>
@@ -8336,13 +8336,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+452"/>
         <source>OpenTX doesn&apos;t accept this telemetry protocol</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTX accepterar inte detta telemetri-protokoll</translation>
     </message>
     <message>
         <location line="+104"/>
         <location line="+5"/>
         <source>OpenTX doesn&apos;t accept this radio protocol</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTX accepterar inte detta radio-protokoll</translation>
     </message>
     <message>
         <source>OpenTX doesn&apos;t accept this protocol</source>
@@ -8389,7 +8389,7 @@ eeprom-storleken är 4096, men enbart den första hälften används</translation
     <message>
         <location line="+1"/>
         <source>No OverrideCH functions available</source>
-        <translation type="unfinished"></translation>
+        <translation>Inga funktioner finns  för att ersätta kanaldata</translation>
     </message>
     <message>
         <location line="+37"/>
@@ -8532,12 +8532,12 @@ OpenTX-gruppen.</translation>
     <message>
         <location filename="../eeprominterface.h" line="+957"/>
         <source>Positive</source>
-        <translation type="unfinished">Positiv</translation>
+        <translation>Positiv</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Negative</source>
-        <translation type="unfinished">Negativ</translation>
+        <translation>Negativ</translation>
     </message>
 </context>
 <context>
@@ -8761,7 +8761,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <location line="+23"/>
         <location line="+1"/>
         <source>Outputs</source>
-        <translation type="unfinished">Utgångar</translation>
+        <translation>Utgångar</translation>
     </message>
     <message>
         <location line="+153"/>
@@ -8827,7 +8827,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <location line="+638"/>
         <source>Outputs2</source>
-        <translation type="unfinished"></translation>
+        <translation>Outputs2</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -8900,7 +8900,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <location line="+219"/>
         <source>Outputs2</source>
-        <translation type="unfinished"></translation>
+        <translation>Outputs2</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -9499,17 +9499,17 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <location line="-189"/>
         <source>FrSky S.PORT</source>
-        <translation type="unfinished">FrSky S.PORT</translation>
+        <translation>FrSky S.PORT</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>FrSky D</source>
-        <translation type="unfinished">FrSky D</translation>
+        <translation>FrSky D</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>FrSky D (cable)</source>
-        <translation type="unfinished"></translation>
+        <translation>FrSky D (kabel)</translation>
     </message>
     <message>
         <location line="+187"/>
@@ -9629,17 +9629,17 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
     <message>
         <location line="+4"/>
         <source>Not persistent</source>
-        <translation type="unfinished"></translation>
+        <translation>Ej bestående</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Persistent (flight)</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestående (under flygning)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Persistent (manual reset)</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestående (återställs manuellt)</translation>
     </message>
 </context>
 <context>
