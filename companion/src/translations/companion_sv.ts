@@ -6655,7 +6655,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+1"/>
         <source>Cell</source>
-        <translation>Batt</translation>
+        <translation>Cell</translation>
     </message>
     <message>
         <location line="+43"/>
