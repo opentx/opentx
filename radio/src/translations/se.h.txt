@@ -80,10 +80,10 @@
 #define TR_TRNCHN              "KN1KN2KN3KN4"
 
 #define LEN_UART3MODES         "\022"
-#define TR_UART3MODES          "Av\0               ""Spegling av S-Port""Telemetry\0        ""Debug\0            "
+#define TR_UART3MODES          "Av\0               ""Spegling av S-Port""Telemetri\0        ""Debug\0            "
 
 #define LEN_POTTYPES           "\020"
-#define TR_POTTYPES            "Ingen\0          ""Pot with detent""Flerlägesväljare""Potentiometer\0"
+#define TR_POTTYPES            "Ingen\0          ""Mittläges-pot\0  ""Flerlägesväljare""Potentiometer\0"
 
 #define LEN_DATETIME           "\005"
 #define TR_DATETIME            "DAG: ""TID: "
@@ -92,7 +92,7 @@
 #define TR_VLCD                "NormalOptrex"
 
 #define LEN_VPERSISTENT        "\014"
-#define TR_VPERSISTENT         "OFF\0        ""Flight\0     ""Manual Reset"
+#define TR_VPERSISTENT         "AV\0         ""Flygning\0   ""Nolla Själv\0"
 
 #define LEN_COUNTRYCODES       TR("\002", "\007")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Amerika""Japan\0 ""Europa\0")
@@ -816,8 +816,8 @@
 #define TR_PT                  "pt"
 #define TR_PTS                 "pkt"
 #define TR_SMOOTH              "Mjuk"
-#define TR_COPY_STICKS_TO_OFS  "Spara sticks som offset"
-#define TR_COPY_TRIMS_TO_OFS   "Copy trims to subtrim"
+#define TR_COPY_STICKS_TO_OFS  "Spara spakar som offset"
+#define TR_COPY_TRIMS_TO_OFS   "Spara trimmar som offset"
 #define TR_PERSISTENT_MAH      INDENT "Lagra mAh"
 #define TR_PREFLIGHT           "Startkontroller"
 #define TR_CHECKLIST           TR(INDENT "Checklista", INDENT "Visa Checklista")
@@ -827,7 +827,7 @@
 #define TR_INPUTS              "Input"
 #define TR_OUTPUTS             "Outputs"
 #define TR_EEBACKUP            "\004[ENTER Lång] säkerhetskopiera EEPROM"
-#define TR_TO_MANY_LUA_SCRIPTS "Too many Lua scripts!"
+#define TR_TO_MANY_LUA_SCRIPTS "För många Lua-scripts!"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL  "Max RSSI"
