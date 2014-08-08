@@ -145,7 +145,12 @@ void lcd_bmp(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t offset, uint8_
 {
   const pm_uchar *q = img;
   uint8_t w    = pgm_read_byte(q++);
-  if (!width) width = w;
+  if (!width || width > w) {
+    width = w;
+  }
+  if (x+width > LCD_W) {
+    width = LCD_W-x;
+  }
   uint8_t rows = (pgm_read_byte(q++) + 1) / 2;
 
   for (uint8_t row=0; row<rows; row++) {

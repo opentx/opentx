@@ -255,3 +255,15 @@ TEST(Lcd, DrawSwitch)
   EXPECT_TRUE(checkScreenshot("drawswitch"));
 }
 #endif
+
+#if defined(PCBTARANIS)
+TEST(Lcd, BMPWrapping)
+{
+  lcd_clear();
+  uint8_t bitmap[2+40*40/2];
+  bmpLoad(bitmap, "./tests/plane.bmp", 40, 40);
+  lcd_bmp(200, 0, bitmap);
+  lcd_bmp(200, 60, bitmap);
+  EXPECT_TRUE(checkScreenshot("bmpwrapping"));
+}
+#endif
