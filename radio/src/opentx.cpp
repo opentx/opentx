@@ -1625,11 +1625,8 @@ void timerReset(uint8_t idx)
 
 void flightReset()
 {
-  static bool firstReset = true;
-  if (firstReset)
-    firstReset = false;
-  else
-    AUDIO_RESET();
+  // we don't reset the whole audio here (the tada.wav would be cut, if a prompt is queued before FlightReset, it should be played)
+  // TODO check if the vario / background music are stopped correctly if switching to a model which doesn't have these functions enabled
 
   if (!IS_MANUAL_RESET_TIMER(0)) {
     timerReset(0);
