@@ -242,5 +242,16 @@ TEST(Lcd, Dblsize)
   lcd_putsAtt(82, 10, "TST", DBLSIZE);
   EXPECT_TRUE(checkScreenshot("dblsize"));
 }
+#endif
 
+#if defined(PCBTARANIS)
+TEST(Lcd, DrawSwitch)
+{
+  lcd_clear();
+  putsSwitches(0,  10, SWSRC_SA0, 0);
+  putsSwitches(30, 10, SWSRC_SA0, SMLSIZE);
+  // putsSwitches(60, 10, SWSRC_SA0, MIDSIZE); missing arrows in this font
+  putsSwitches(90, 10, SWSRC_SA0, DBLSIZE);
+  EXPECT_TRUE(checkScreenshot("drawswitch"));
+}
 #endif

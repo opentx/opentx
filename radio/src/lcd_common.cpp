@@ -134,11 +134,7 @@ void lcdPutPattern(xcoord_t x, uint8_t y, const uint8_t * pattern, uint8_t width
 
 void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
 {
-#if !defined(BOOT)
-  const pm_uchar *q = (c < 0xC0) ? &font_5x7[(c-0x20)*5] : &font_5x7_extra[(c-0xC0)*5];
-#else
-  const pm_uchar *q = &font_5x7[(c-0x20)*5];
-#endif
+  const pm_uchar * q;
 
   lcdNextPos = x-1;
 
@@ -158,14 +154,17 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
       c_remapped = 4;
     else if (c!=' ')
       flags &= ~BOLD;
-    if ((c>= 128) && (flags & DBLSIZE))
-      c_remapped = c - 60;
   }
 
   if (flags & DBLSIZE) {
-    /* each letter consists of ten top bytes followed by
-     * by ten bottom bytes (20 bytes per * char) */
-    q = &font_10x14[((uint16_t)c_remapped)*20];
+    if (c >= 0xC0) {
+      q = &font_10x14_extra[((uint16_t)(c-0xC0))*20];
+    }
+    else {
+      if (c >= 128)
+        c_remapped = c - 60;
+      q = &font_10x14[((uint16_t)c_remapped)*20];
+    }
     lcdPutPattern(x, y, q, 10, 16, flags);
   }
   else if (flags & XXLSIZE) {
@@ -193,6 +192,11 @@ void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
   else
 #endif
   {
+#if !defined(BOOT)
+    q = (c < 0xC0) ? &font_5x7[(c-0x20)*5] : &font_5x7_extra[(c-0xC0)*5];
+#else
+    q = &font_5x7[(c-0x20)*5];
+#endif
     lcdPutPattern(x, y, q, 5, 7, flags);
   }
 }
