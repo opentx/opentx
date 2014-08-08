@@ -505,7 +505,7 @@ class ConversionTable {
     {
       after = 0;
 
-      for (std::list<ConversionTuple>::iterator it=internalTable.begin(); it!=internalTable.end(); it++) {
+      for (std::list<ConversionTuple>::iterator it=exportTable.begin(); it!=exportTable.end(); it++) {
         ConversionTuple tuple = *it;
         if (before == tuple.a) {
           after = tuple.b;
@@ -520,7 +520,7 @@ class ConversionTable {
     {
       after = 0;
 
-      for (std::list<ConversionTuple>::iterator it=internalTable.begin(); it!=internalTable.end(); it++) {
+      for (std::list<ConversionTuple>::iterator it=importTable.begin(); it!=importTable.end(); it++) {
         ConversionTuple tuple = *it;
         if (before == tuple.b) {
           after = tuple.a;
@@ -547,10 +547,23 @@ class ConversionTable {
 
     void addConversion(const int a, const int b)
     {
-      internalTable.push_back(ConversionTuple(a, b));
+      ConversionTuple conversion(a, b);
+      importTable.push_back(conversion);
+      exportTable.push_back(conversion);
     }
 
-    std::list<ConversionTuple> internalTable;
+    void addImportConversion(const int a, const int b)
+    {
+      importTable.push_back(ConversionTuple(a, b));
+    }
+
+    void addExportConversion(const int a, const int b)
+    {
+      exportTable.push_back(ConversionTuple(a, b));
+    }
+
+    std::list<ConversionTuple> importTable;
+    std::list<ConversionTuple> exportTable;
 };
 
 template<class T>

@@ -56,8 +56,15 @@ class SwitchesConversionTable: public ConversionTable {
 
       for (int i=1; i<=MAX_SWITCHES_POSITION(board); i++) {
         int s = switchIndex(i, board, version);
-        addConversion(RawSwitch(SWITCH_TYPE_SWITCH, -s), -val+offset);
-        addConversion(RawSwitch(SWITCH_TYPE_SWITCH, s), val++);
+        addConversion(RawSwitch(SWITCH_TYPE_SWITCH, s), val);
+        if (IS_TARANIS(board) && s>=21/*SHup/SHdown*/) {
+          addImportConversion(RawSwitch(SWITCH_TYPE_SWITCH, 21+22-s), -val+offset);
+          addExportConversion(RawSwitch(SWITCH_TYPE_SWITCH, -s), -val+offset);
+        }
+        else {
+          addConversion(RawSwitch(SWITCH_TYPE_SWITCH, -s), -val+offset);
+        }
+        val++;
       }
 
       if (IS_TARANIS(board) && version >= 216) {
@@ -122,6 +129,16 @@ class SwitchesConversionTable: public ConversionTable {
     void addConversion(const RawSwitch & sw, const int b)
     {
       ConversionTable::addConversion(sw.toValue(), b);
+    }
+
+    void addImportConversion(const RawSwitch & sw, const int b)
+    {
+      ConversionTable::addImportConversion(sw.toValue(), b);
+    }
+
+    void addExportConversion(const RawSwitch & sw, const int b)
+    {
+      ConversionTable::addExportConversion(sw.toValue(), b);
     }
 
     class Cache {
