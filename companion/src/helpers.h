@@ -114,7 +114,7 @@ int findmult(float value, float base);
 QString getTrimInc(ModelData * g_model);
 QString getTimerStr(TimerData & timer);
 QString getProtocol(ModelData * g_model);
-QString getCenterBeep(ModelData * g_model);
+QString getCenterBeepStr(ModelData * g_model);
 
 /* FrSky helpers */
 QString getFrSkyAlarmType(int alarm);

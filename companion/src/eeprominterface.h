@@ -919,7 +919,6 @@ class TimerData {
     RawSwitch    mode;
     bool         minuteBeep;
     unsigned int countdownBeep;
-    bool         dir;    // 0=>Count Down, 1=>Count Up
     unsigned int val;
     unsigned int persistent;
     int          pvalue;
@@ -986,7 +985,6 @@ class ModelData {
     char      name[12+1];
     TimerData timers[2];
     bool      thrTrim;            // Enable Throttle Trim
-    bool      thrExpo;            // Enable Throttle Expo
     int       trimInc;            // Trim Increments
     bool      disableThrottleWarning;
 

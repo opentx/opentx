@@ -789,19 +789,35 @@ QString getFrSkySrc(int index)
 
 QString getTrimInc(ModelData * g_model)
 {
-    switch (g_model->trimInc) {
-      case (1): return QObject::tr("Extra Fine");
-      case (2): return QObject::tr("Fine");
-      case (3): return QObject::tr("Medium");
-      case (4): return QObject::tr("Coarse");
-      default: return QObject::tr("Exponential");
-    }
+  switch (g_model->trimInc) {
+    case -2:
+      return QObject::tr("Exponential");
+    case -1:
+      return QObject::tr("Extra Fine");
+    case 0:
+      return QObject::tr("Fine");
+    case 1:
+      return QObject::tr("Medium");
+    case 2:
+      return QObject::tr("Coarse");
+    default:
+      return QObject::tr("Unknown");
+  }
 }
 
 QString getTimerStr(TimerData & timer)
 {
-  QString str = ", " + (timer.dir ? QObject::tr("Count Up") : QObject::tr("Count Down"));
-  return QObject::tr("%1:%2, ").arg(timer.val/60, 2, 10, QChar('0')).arg(timer.val%60, 2, 10, QChar('0')) + timer.mode.toString() + str;
+  QString result = QObject::tr("%1:%2").arg(timer.val/60, 2, 10, QChar('0')).arg(timer.val%60, 2, 10, QChar('0'));
+  result += QString(", ") + timer.mode.toString();
+  if (timer.persistent)
+    result += QObject::tr(", Persistent");
+  if (timer.minuteBeep)
+    result += QObject::tr(", MinuteBeep");
+  if (timer.countdownBeep == 1)
+    result += QObject::tr(", CountDown(Beeps)");
+  else if (timer.countdownBeep == 2)
+    result += QObject::tr(", CountDown(Voice)");
+  return result;
 }
 
 QString getProtocol(ModelData * g_model)
@@ -842,18 +858,37 @@ QString getPhasesStr(unsigned int phases, ModelData & model)
   }
 }
 
-QString getCenterBeep(ModelData * g_model)
+QString getCenterBeepStr(ModelData * g_model)
 {
-  //RETA123
   QStringList strl;
-  if(g_model->beepANACenter & 0x01) strl << QObject::tr("Rudder");
-  if(g_model->beepANACenter & 0x02) strl << QObject::tr("Elevator");
-  if(g_model->beepANACenter & 0x04) strl << QObject::tr("Throttle");
-  if(g_model->beepANACenter & 0x08) strl << QObject::tr("Aileron");
-  if(g_model->beepANACenter & 0x10) strl << "P1";
-  if(g_model->beepANACenter & 0x20) strl << "P2";
-  if(g_model->beepANACenter & 0x40) strl << "P3";
-  if(g_model->beepANACenter & 0x80) strl << "LS";
+  if (g_model->beepANACenter & 0x01)
+    strl << QObject::tr("Rudder");
+  if (g_model->beepANACenter & 0x02)
+    strl << QObject::tr("Elevator");
+  if (g_model->beepANACenter & 0x04)
+    strl << QObject::tr("Throttle");
+  if (g_model->beepANACenter & 0x08)
+    strl << QObject::tr("Aileron");
+  if (IS_TARANIS(GetCurrentFirmware()->getBoard())) {
+    if (g_model->beepANACenter & 0x10)
+      strl << "S1";
+    if (g_model->beepANACenter & 0x20)
+      strl << "S2";
+    if (g_model->beepANACenter & 0x40)
+      strl << "S3";
+    if (g_model->beepANACenter & 0x80)
+      strl << "LS";
+    if (g_model->beepANACenter & 0x100)
+      strl << "RS";
+  }
+  else {
+    if (g_model->beepANACenter & 0x10)
+      strl << "P1";
+    if (g_model->beepANACenter & 0x20)
+      strl << "P2";
+    if (g_model->beepANACenter & 0x40)
+      strl << "P3";
+  }
   return strl.join(", ");
 }
 

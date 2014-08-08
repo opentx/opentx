@@ -136,7 +136,6 @@ void saveModel(ModelData & m, model & xm)
     trims xtrims;
     xtrims.extended(m.extendedTrims);
     xtrims.throttleTrim(m.thrTrim);
-    xtrims.throttleTrimExpo(m.thrExpo);
     xm.trims(xtrims);
   }
   if (m.beepANACenter) {

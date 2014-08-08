@@ -138,7 +138,6 @@ t_Open9xArmTimerData_v202::operator TimerData ()
 */
   c9x.val = val;
   c9x.persistent = false;
-  c9x.dir = (val == 0);
   return c9x;
 }
 

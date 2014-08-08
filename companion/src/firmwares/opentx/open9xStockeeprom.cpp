@@ -704,7 +704,6 @@ t_Open9xTimerData_v201::operator TimerData ()
   // c9x.mode = TMRMODE_OFF;
   c9x.val = val;
   c9x.persistent = persistent;
-  c9x.dir = dir;
   return c9x;
 }
 
@@ -725,7 +724,6 @@ t_Open9xTimerData_v202::operator TimerData ()
 */
   c9x.val = val;
   c9x.persistent = false;
-  c9x.dir = (val == 0);
   return c9x;
 }
 
@@ -939,7 +937,6 @@ t_Open9xModelData_v201::operator ModelData ()
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
   c9x.thrTrim = thrTrim;
-  c9x.thrExpo = thrExpo;
   c9x.trimInc = trimInc - 2;
   c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
   c9x.beepANACenter = beepANACenter;

@@ -489,7 +489,6 @@ t_Ersky9xModelData_v10::operator ModelData ()
   getEEPROMString(c9x.name, name, sizeof(name));
   for (int i=0; i<2; i++) {
     c9x.timers[i].mode = getErSky9xTimerMode(timer[i].tmrModeA);
-    c9x.timers[i].dir = timer[i].tmrDir;
     c9x.timers[i].val = timer[i].tmrVal;
   }
   switch(protocol) {
@@ -509,7 +508,6 @@ t_Ersky9xModelData_v10::operator ModelData ()
   c9x.moduleData[0].ppmFrameLength=ppmFrameLength;
   c9x.moduleData[0].channelsCount = 8 + 2 * ppmNCH;
   c9x.thrTrim = thrTrim;
-  c9x.thrExpo = thrExpo;
   c9x.trimInc = trimInc-2;
   c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
   c9x.funcSw[0].func = FuncInstantTrim;
@@ -607,7 +605,6 @@ t_Ersky9xModelData_v11::operator ModelData ()
   getEEPROMString(c9x.name, name, sizeof(name));
   for (int i=0; i<2; i++) {
     c9x.timers[i].mode = getErSky9xTimerMode(timer[i].tmrModeA);
-    c9x.timers[i].dir = timer[i].tmrDir;
     c9x.timers[i].val = timer[i].tmrVal;
   }
   switch(protocol) {
@@ -627,7 +624,6 @@ t_Ersky9xModelData_v11::operator ModelData ()
   c9x.moduleData[0].ppmFrameLength=ppmFrameLength;
   c9x.moduleData[0].channelsCount = 8 + 2 * ppmNCH;
   c9x.thrTrim = thrTrim;
-  c9x.thrExpo = thrExpo;
   c9x.trimInc = trimInc-2;
   c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
   c9x.funcSw[0].func = FuncInstantTrim;

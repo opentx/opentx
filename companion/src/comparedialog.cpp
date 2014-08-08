@@ -256,13 +256,10 @@ void CompareDialog::printSetup()
   str.append(fv(tr("Pulse Polarity"), g_model1->moduleData[0].polarityToString(), color));
   color=getColor1(g_model1->thrTrim,g_model2->thrTrim);
   str.append(fv(tr("Throttle Trim"), g_model1->thrTrim ? tr("Enabled") : tr("Disabled"), color));
-  color=getColor1(g_model1->thrExpo,g_model2->thrExpo);
-  str.append(fv(tr("Throttle Expo"), g_model1->thrExpo ? tr("Enabled") : tr("Disabled"),color));
-  // TODO    str.append(fv(tr("Trim Switch"), getSWName(g_model->trimSw)));
   color=getColor1(getTrimInc(g_model1),getTrimInc(g_model2));
   str.append(fv(tr("Trim Increment"), getTrimInc(g_model1),color));
-  color=getColor1(getCenterBeep(g_model1),getCenterBeep(g_model2));
-  str.append(fv(tr("Center Beep"), getCenterBeep(g_model1),color)); // specify which channels beep
+  color = getColor1(getCenterBeepStr(g_model1), getCenterBeepStr(g_model2));
+  str.append(fv(tr("Center Beep"), getCenterBeepStr(g_model1), color)); // specify which channels beep
   str.append("</table></td>");
   str.append("<td><table border=0 cellspacing=0 cellpadding=3 width=\"50%\">");
   color=getColor2(g_model1->name,g_model2->name);
@@ -279,13 +276,10 @@ void CompareDialog::printSetup()
   str.append(fv(tr("Pulse Polarity"), g_model2->moduleData[0].polarityToString(), color));
   color=getColor2(g_model1->thrTrim,g_model2->thrTrim);
   str.append(fv(tr("Throttle Trim"), g_model2->thrTrim ? tr("Enabled") : tr("Disabled"), color));
-  color=getColor2(g_model1->thrExpo,g_model2->thrExpo);
-  str.append(fv(tr("Throttle Expo"), g_model2->thrExpo ? tr("Enabled") : tr("Disabled"),color));
-  // TODO    str.append(fv(tr("Trim Switch"), getSWName(g_model->trimSw)));
   color=getColor2(getTrimInc(g_model1),getTrimInc(g_model2));
   str.append(fv(tr("Trim Increment"), getTrimInc(g_model2),color));
-  color=getColor2(getCenterBeep(g_model1),getCenterBeep(g_model2));
-  str.append(fv(tr("Center Beep"), getCenterBeep(g_model2),color)); // specify which channels beep
+  color = getColor2(getCenterBeepStr(g_model1),getCenterBeepStr(g_model2));
+  str.append(fv(tr("Center Beep"), getCenterBeepStr(g_model2), color)); // specify which channels beep
   str.append("</td></tr></table></td></tr></table>");
   te->append(str);
 }

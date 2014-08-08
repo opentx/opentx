@@ -378,7 +378,6 @@ t_Gruvin9xTimerData::operator TimerData ()
   TimerData c9x;
   c9x.mode = getEr9xTimerMode(mode);
   c9x.val = val;
-  c9x.dir = dir;
   return c9x;
 }
 
@@ -447,7 +446,6 @@ t_Gruvin9xModelData_v102::operator ModelData ()
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
   c9x.thrTrim = thrTrim;
-  c9x.thrExpo = thrExpo;
   c9x.trimInc = trimInc-2;
   c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
   c9x.beepANACenter = beepANACenter;
@@ -518,7 +516,6 @@ t_Gruvin9xModelData_v103::operator ModelData ()
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
   c9x.thrTrim = thrTrim;
-  c9x.thrExpo = thrExpo;
   c9x.trimInc = trimInc-2;
   c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
   c9x.beepANACenter = beepANACenter;
@@ -589,7 +586,6 @@ t_Gruvin9xModelData_v105::operator ModelData ()
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
   c9x.thrTrim = thrTrim;
-  c9x.thrExpo = thrExpo;
   c9x.trimInc = trimInc-2;
   c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
   c9x.beepANACenter = beepANACenter;
@@ -680,7 +676,6 @@ t_Gruvin9xModelData_v106::operator ModelData ()
   }
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
   c9x.thrTrim = thrTrim;
-  c9x.thrExpo = thrExpo;
   c9x.trimInc = trimInc-2;
   c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
   c9x.beepANACenter = beepANACenter;
