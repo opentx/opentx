@@ -261,6 +261,15 @@ static int luaGetValue(lua_State *L)
 static int luaPlayFile(lua_State *L)
 {
   const char * filename = luaL_checkstring(L, 1);
+  if (filename[0] != '/') {
+    // relative sound file path - use current languague dir for absolute path
+    char file[AUDIO_FILENAME_MAXLEN+1];
+    char * str = getAudioPath(file);
+    strncpy(str, filename, AUDIO_FILENAME_MAXLEN - (str-file));
+    file[AUDIO_FILENAME_MAXLEN] = 0;
+    PLAY_FILE(file, 0, 0);
+    return 0;
+  }
   PLAY_FILE(filename, 0, 0);
   return 0;
 }
