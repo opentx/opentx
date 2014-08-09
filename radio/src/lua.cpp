@@ -291,6 +291,17 @@ static int luaPlayDuration(lua_State *L)
   return 0;
 }
 
+static int luaPlayTone(lua_State *L)
+{
+  int frequency = luaL_checkinteger(L, 1);
+  int length = luaL_checkinteger(L, 2);
+  int pause = luaL_checkinteger(L, 3);
+  int flags = luaL_optinteger(L, 4, 0);
+  int freqIncr = luaL_optinteger(L, 5, 0);
+  audioQueue.playTone(frequency, length, pause, flags, freqIncr);
+  return 0;
+}
+
 static int luaKillEvents(lua_State *L)
 {
   int event = luaL_checkinteger(L, 1);
@@ -1372,6 +1383,7 @@ void luaInit()
   lua_register(L, "playFile", luaPlayFile);
   lua_register(L, "playNumber", luaPlayNumber);
   lua_register(L, "playDuration", luaPlayDuration);
+  lua_register(L, "playTone", luaPlayTone);
   lua_register(L, "popupInput", luaPopupInput);
   lua_register(L, "defaultStick", luaDefaultStick);
   lua_register(L, "defaultChannel", luaDefaultChannel);
@@ -1424,6 +1436,8 @@ void luaInit()
   lua_registerint(L, "DOTTED", DOTTED);
   lua_registerint(L, "LCD_W", LCD_W);
   lua_registerint(L, "LCD_H", LCD_H);
+  lua_registerint(L, "PLAY_NOW", PLAY_NOW);
+  lua_registerint(L, "PLAY_BACKGROUND", PLAY_BACKGROUND);
 }
 
 void luaFree(ScriptInternalData & sid)
