@@ -283,6 +283,14 @@ static int luaPlayNumber(lua_State *L)
   return 0;
 }
 
+static int luaPlayDuration(lua_State *L)
+{
+  int duration = luaL_checkinteger(L, 1);
+  bool playTime = (luaL_checkinteger(L, 2) != 0);
+  playDuration(duration, playTime ? PLAY_TIME : 0, 0);
+  return 0;
+}
+
 static int luaKillEvents(lua_State *L)
 {
   int event = luaL_checkinteger(L, 1);
@@ -1363,6 +1371,7 @@ void luaInit()
 
   lua_register(L, "playFile", luaPlayFile);
   lua_register(L, "playNumber", luaPlayNumber);
+  lua_register(L, "playDuration", luaPlayDuration);
   lua_register(L, "popupInput", luaPopupInput);
   lua_register(L, "defaultStick", luaDefaultStick);
   lua_register(L, "defaultChannel", luaDefaultChannel);
