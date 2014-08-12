@@ -506,7 +506,7 @@ void CustomFunctionsPanel::update()
   lock = true;
   for (int i=0; i<firmware->getCapability(CustomFunctions); i++) {
     if (!initialized) {
-      populateSwitchCB(fswtchSwtch[i], model.funcSw[i].swtch, generalSettings, POPULATE_ONOFF);
+      populateSwitchCB(fswtchSwtch[i], model.funcSw[i].swtch, generalSettings, CustomFunctionsContext);
       populateFuncCB(fswtchFunc[i], model.funcSw[i].func);
       populateGVmodeCB(fswtchGVmode[i], model.funcSw[i].adjustMode);
       populateFuncParamCB(fswtchParamT[i], model, model.funcSw[i].func, model.funcSw[i].param, model.funcSw[i].adjustMode);
@@ -527,7 +527,7 @@ void CustomFunctionsPanel::fswPaste()
     FuncSwData *fsw = &model.funcSw[selectedFunction];
     memcpy(fsw, fswData.mid(0, sizeof(FuncSwData)).constData(), sizeof(FuncSwData));
     lock = true;
-    populateSwitchCB(fswtchSwtch[selectedFunction], model.funcSw[selectedFunction].swtch, generalSettings, POPULATE_ONOFF);
+    populateSwitchCB(fswtchSwtch[selectedFunction], model.funcSw[selectedFunction].swtch, generalSettings, CustomFunctionsContext);
     populateFuncCB(fswtchFunc[selectedFunction], model.funcSw[selectedFunction].func);
     populateGVmodeCB(fswtchGVmode[selectedFunction], model.funcSw[selectedFunction].adjustMode);
     populateFuncParamCB(fswtchParamT[selectedFunction], model, model.funcSw[selectedFunction].func, model.funcSw[selectedFunction].param, model.funcSw[selectedFunction].adjustMode);
@@ -543,7 +543,7 @@ void CustomFunctionsPanel::fswDelete()
   model.funcSw[selectedFunction].clear();
   // TODO update switch and func
   lock = true;
-  populateSwitchCB(fswtchSwtch[selectedFunction], model.funcSw[selectedFunction].swtch, generalSettings, POPULATE_ONOFF);
+  populateSwitchCB(fswtchSwtch[selectedFunction], model.funcSw[selectedFunction].swtch, generalSettings, CustomFunctionsContext);
   populateFuncCB(fswtchFunc[selectedFunction], model.funcSw[selectedFunction].func);
   refreshCustomFunction(selectedFunction);
   lock = false;

@@ -378,13 +378,13 @@ void populateBacklightCB(QComboBox *b, const uint8_t value)
   }
 }
 
-void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettings & generalSettings, unsigned long attr)
+void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettings & generalSettings, SwitchContext context)
 {
   RawSwitch item;
 
   b->clear();
 
-  if (attr & POPULATE_ONOFF) {
+  if (context != MixesContext) {
     // !FMx
     if (IS_ARM(GetCurrentFirmware()->getBoard())) {
       for (int i=-GetCurrentFirmware()->getCapability(FlightModes); i<0; i++) {
@@ -393,14 +393,6 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
         if (item == value) b->setCurrentIndex(b->count()-1);
       }
     }
-    // !One
-    item = RawSwitch(SWITCH_TYPE_ONE, 1);
-    b->addItem(item.toString(), item.toValue());
-    if (item == value) b->setCurrentIndex(b->count()-1);
-    // OFF
-    item = RawSwitch(SWITCH_TYPE_OFF);
-    b->addItem(item.toString(), item.toValue());
-    if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
   for (int i=-GetCurrentFirmware()->getCapability(LogicalSwitches); i<0; i++) {
@@ -435,13 +427,13 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
     item = RawSwitch(SWITCH_TYPE_SWITCH, i);
     if (IS_TARANIS(GetCurrentFirmware()->getBoard())) {
       //hide up and down for !SH and !SF, because they are redundant (!SFup == SFdown)
-      if (item.toString().contains("H") || item.toString().contains("F"))  continue;
+      if (item.toString().contains("H") || item.toString().contains("F")) continue;
     }
     b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
-  if (attr & POPULATE_TIMER_MODES) {
+  if (context == TimersContext) {
     for (int i=0; i<5; i++) {
       item = RawSwitch(SWITCH_TYPE_TIMER_MODE, i);
       b->addItem(item.toString(), item.toValue());
@@ -488,7 +480,7 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
     if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
-  if (attr & POPULATE_ONOFF) {
+  if (context == CustomFunctionsContext) {
     // ON
     item = RawSwitch(SWITCH_TYPE_ON);
     b->addItem(item.toString(), item.toValue());
@@ -497,7 +489,10 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
     item = RawSwitch(SWITCH_TYPE_ONE, 1);
     b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);
-    // FMx
+  }
+
+  // FMx
+  if (context != MixesContext) {
     if (IS_ARM(GetCurrentFirmware()->getBoard())) {
       for (int i=1; i<=GetCurrentFirmware()->getCapability(FlightModes); i++) {
         item = RawSwitch(SWITCH_TYPE_FLIGHT_MODE, i);

@@ -1085,8 +1085,6 @@ extern int16_t calcRESXto1000(int16_t x);
 extern int8_t  calcRESXto100(int16_t x);
 #endif
 
-#define TMR_VAROFS  5
-
 extern const char vers_stamp[];
 
 extern uint8_t            g_vbat100mV;

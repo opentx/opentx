@@ -76,7 +76,7 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, G
       }
     }
 
-    populateSwitchCB(ui->switchesCB, md->swtch, generalSettings);
+    populateSwitchCB(ui->switchesCB, md->swtch, generalSettings, MixesContext);
     ui->warningCB->setCurrentIndex(md->mixWarn);
     ui->mltpxCB->setCurrentIndex(md->mltpx);
     int scale=firmware->getCapability(SlowScale);  

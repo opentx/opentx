@@ -472,8 +472,8 @@ void ConvertModel_215_to_216(ModelData &model)
   memcpy(&g_model.header, &oldModel.header, sizeof(g_model.header));
   for (uint8_t i=0; i<2; i++) {
     TimerData & timer = g_model.timers[i];
-    if (oldModel.timers[i].mode >= TMRMODE_FIRST_SWITCH)
-      timer.mode = TMRMODE_FIRST_SWITCH + ConvertSwitch_215_to_216(oldModel.timers[i].mode - TMRMODE_FIRST_SWITCH + 1) - 1;
+    if (oldModel.timers[i].mode >= TMRMODE_COUNT)
+      timer.mode = TMRMODE_COUNT + ConvertSwitch_215_to_216(oldModel.timers[i].mode - TMRMODE_COUNT + 1) - 1;
     else
       timer.mode = oldModel.timers[i].mode;
     timer.start = oldModel.timers[i].start;

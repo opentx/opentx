@@ -1117,7 +1117,7 @@ int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, LcdFlags attr, uint8_t
 {
   lcd_putsColumnLeft(x, y, STR_SWITCH);
   putsSwitches(x,  y, value, attr);
-  if (attr) CHECK_INCDEC_MODELSWITCH(event, value, SWSRC_FIRST_SHORT_LIST, SWSRC_LAST_SHORT_LIST);
+  if (attr) CHECK_INCDEC_MODELSWITCH(event, value, SWSRC_FIRST_IN_MIXES, SWSRC_LAST_IN_MIXES, isSwitchAvailableInMixes);
   return value;
 }
 
@@ -1488,17 +1488,25 @@ bool isInputSourceAvailable(int source)
   return false;
 }
 
-bool isSwitchAvailableInLogicalSwitches(int swtch)
+enum SwitchContext
+{
+  LogicalSwitchesContext,
+  CustomFunctionsContext,
+  TimersContext,
+  MixesContext
+};
+
+bool isSwitchAvailable(int swtch, SwitchContext context)
 {
   if (swtch < 0) {
-    if (swtch <= -SWSRC_ON)
-      return false;
 #if defined(PCBTARANIS)
-    else if (swtch == -SWSRC_SF0 || swtch == -SWSRC_SF2 || swtch == -SWSRC_SH0 || swtch == -SWSRC_SH2)
+    if (swtch == -SWSRC_SF0 || swtch == -SWSRC_SF2 || swtch == -SWSRC_SH0 || swtch == -SWSRC_SH2)
       return false;
 #endif
-    else
-      swtch = -swtch;
+    if (swtch == -SWSRC_ON || swtch == -SWSRC_One) {
+      return false;
+    }
+    swtch = -swtch;
   }
 
 #if defined(PCBTARANIS)
@@ -1514,25 +1522,57 @@ bool isSwitchAvailableInLogicalSwitches(int swtch)
   }
 #endif
 
-  return true;
-}
-
-bool isSwitchAvailable(int swtch)
-{
-  if (!isSwitchAvailableInLogicalSwitches(swtch)) {
-    return false;
-  }
-
-  if (swtch < 0) {
-    swtch = -swtch;
-  }
-
-  if (swtch >= SWSRC_FIRST_LOGICAL_SWITCH && swtch <= SWSRC_LAST_LOGICAL_SWITCH) {
+  if (context != LogicalSwitchesContext && swtch >= SWSRC_FIRST_LOGICAL_SWITCH && swtch <= SWSRC_LAST_LOGICAL_SWITCH) {
     LogicalSwitchData * cs = lswAddress(swtch-SWSRC_FIRST_LOGICAL_SWITCH);
     return (cs->func != LS_FUNC_NONE);
   }
+
+  if (context != CustomFunctionsContext && (swtch == SWSRC_ON || swtch == SWSRC_One)) {
+    return false;
+  }
+
+  if (swtch >= SWSRC_FIRST_FLIGHT_MODE && swtch <= SWSRC_LAST_FLIGHT_MODE) {
+    if (context == MixesContext) {
+      return false;
+    }
+    else {
+      swtch -= SWSRC_FIRST_FLIGHT_MODE;
+      if (swtch == 0) {
+        return true;
+      }
+      FlightModeData * fm = flightModeAddress(swtch);
+      return (fm->swtch != SWSRC_NONE);
+    }
+  }
   
   return true;
+}
+
+bool isSwitchAvailableInLogicalSwitches(int swtch)
+{
+  return isSwitchAvailable(swtch, LogicalSwitchesContext);
+}
+
+bool isSwitchAvailableInCustomFunctions(int swtch)
+{
+  return isSwitchAvailable(swtch, CustomFunctionsContext);
+}
+
+bool isSwitchAvailableInMixes(int swtch)
+{
+  return isSwitchAvailable(swtch, MixesContext);
+}
+
+bool isSwitchAvailableInTimers(int swtch)
+{
+  if (swtch >= 0) {
+    if (swtch < TMRMODE_COUNT) {
+      return true;
+    }
+    swtch -= TMRMODE_COUNT-1;
+  }
+
+  return isSwitchAvailable(swtch, TimersContext);
 }
 
 bool isThrottleSourceAvailable(int source)

@@ -40,11 +40,11 @@ inline int switchIndex(int i, BoardEnum board, unsigned int version)
 class SwitchesConversionTable: public ConversionTable {
 
   public:
-    SwitchesConversionTable(BoardEnum board, unsigned int version, unsigned long flags=0)
+    SwitchesConversionTable(BoardEnum board, unsigned int version, bool timer=false)
     {
       int val=0;
       int offset=0;
-      if (flags & POPULATE_TIMER_MODES) {
+      if (timer) {
         offset = 4;
         for (int i=0; i<5; i++) {
           addConversion(RawSwitch(SWITCH_TYPE_TIMER_MODE, i), val++);
@@ -93,17 +93,15 @@ class SwitchesConversionTable: public ConversionTable {
         addConversion(RawSwitch(SWITCH_TYPE_VIRTUAL, i), val++);
       }
 
-      if (!(flags & POPULATE_TIMER_MODES)) {
-        addConversion(RawSwitch(SWITCH_TYPE_OFF), -val+offset);
-        addConversion(RawSwitch(SWITCH_TYPE_ON), val++);
-        if (version >= 216) {
-          addConversion(RawSwitch(SWITCH_TYPE_ONE, -1), -val+offset);
-          addConversion(RawSwitch(SWITCH_TYPE_ONE, 1), val++);
-          if (IS_ARM(board)) {
-            for (int i=1; i<=MAX_FLIGHT_MODES(board, version); i++) {
-              addConversion(RawSwitch(SWITCH_TYPE_FLIGHT_MODE, -i), -val+offset);
-              addConversion(RawSwitch(SWITCH_TYPE_FLIGHT_MODE, i), val++);
-            }
+      addConversion(RawSwitch(SWITCH_TYPE_OFF), -val+offset);
+      addConversion(RawSwitch(SWITCH_TYPE_ON), val++);
+      if (version >= 216) {
+        addConversion(RawSwitch(SWITCH_TYPE_ONE, -1), -val+offset);
+        addConversion(RawSwitch(SWITCH_TYPE_ONE, 1), val++);
+        if (IS_ARM(board)) {
+          for (int i=1; i<=MAX_FLIGHT_MODES(board, version); i++) {
+            addConversion(RawSwitch(SWITCH_TYPE_FLIGHT_MODE, -i), -val+offset);
+            addConversion(RawSwitch(SWITCH_TYPE_FLIGHT_MODE, i), val++);
           }
         }
       }
@@ -2429,7 +2427,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   }
 
   for (int i=0; i<O9X_MAX_TIMERS; i++) {
-    internalField.Append(new SwitchField<8>(modelData.timers[i].mode, board, version, POPULATE_TIMER_MODES));
+    internalField.Append(new SwitchField<8>(modelData.timers[i].mode, board, version, true));
     if ((IS_ARM(board) || IS_2560(board)) && version >= 216) {
       internalField.Append(new UnsignedField<16>(modelData.timers[i].val));
       internalField.Append(new UnsignedField<2>(modelData.timers[i].countdownBeep));

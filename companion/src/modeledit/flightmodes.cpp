@@ -30,7 +30,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
 
   // Phase switch
   if (phaseIdx > 0) {
-    populateSwitchCB(ui->swtch, phase.swtch, generalSettings);
+    populateSwitchCB(ui->swtch, phase.swtch, generalSettings, MixesContext);
     connect(ui->swtch, SIGNAL(currentIndexChanged(int)), this, SLOT(phaseSwitch_currentIndexChanged(int)));
   }
   else {

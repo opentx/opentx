@@ -209,9 +209,13 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
   var = checkIncDecModelZero(event,var,max)
 
 #if defined(CPUARM)
+  #define CHECK_INCDEC_MODELVAR_CHECK(event, var, min, max, check) \
+    var = checkIncDec(event, var, min, max, EE_MODEL, check)
   #define CHECK_INCDEC_MODELVAR_ZERO_CHECK(event, var, max, check) \
     var = checkIncDec(event, var, 0, max, EE_MODEL, check)
 #else
+  #define CHECK_INCDEC_MODELVAR_CHECK(event, var, min, max, check) \
+    var = checkIncDec(event, var, min, max, EE_MODEL)
   #define CHECK_INCDEC_MODELVAR_ZERO_CHECK(event, var, max, check) \
     CHECK_INCDEC_MODELVAR_ZERO(event, var, max)
 #endif
@@ -220,19 +224,22 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
   bool isThrottleSourceAvailable(int source);
   bool isLogicalSwitchFunctionAvailable(int function);
   bool isAssignableFunctionAvailable(int function);
-  bool isSwitchAvailable(int swtch);
   bool isSwitchAvailableInLogicalSwitches(int swtch);
+  bool isSwitchAvailableInCustomFunctions(int swtch);
+  bool isSwitchAvailableInMixes(int swtch);
+  bool isSwitchAvailableInTimers(int swtch);
   bool isModuleAvailable(int module);
   #define AUTOSWITCH_ENTER_LONG() (attr && event==EVT_KEY_LONG(KEY_ENTER))
-  #define CHECK_INCDEC_MODELSWITCH(event, var, min, max) \
-    var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SWITCH|NO_INCDEC_MARKS, isSwitchAvailable)
+  #define CHECK_INCDEC_MODELSWITCH(event, var, min, max, available) \
+    var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SWITCH|NO_INCDEC_MARKS, available)
 #elif defined(AUTOSWITCH)
   #define AUTOSWITCH_ENTER_LONG() (attr && event==EVT_KEY_LONG(KEY_ENTER))
-  #define CHECK_INCDEC_MODELSWITCH(event, var, min, max) \
+  #define CHECK_INCDEC_MODELSWITCH(event, var, min, max, available) \
     var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SWITCH)
 #else
   #define AUTOSWITCH_ENTER_LONG() (0)
-  #define CHECK_INCDEC_MODELSWITCH CHECK_INCDEC_MODELVAR
+  #define CHECK_INCDEC_MODELSWITCH(event, var, min, max, available) \
+    CHECK_INCDEC_MODELVAR(event, var, min, max)
 #endif
 
 #if defined(CPUARM)

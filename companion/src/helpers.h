@@ -6,7 +6,7 @@
 
 extern const QColor colors[C9X_MAX_CURVES];
 
-#define TMR_NUM_OPTION  (TMR_VAROFS+2*9+2*GetCurrentFirmware()->getCapability(LogicalSwitches)-1)
+#define TMR_NUM_OPTION  (TMRMODE_COUNT+2*9+2*GetCurrentFirmware()->getCapability(LogicalSwitches)-1)
 
 //convert from mode 1 to mode generalSettings.stickMode
 //NOTICE!  =>  1..4 -> 1..4
@@ -81,9 +81,15 @@ class CurveGroup : public QObject {
     int lastType;
 };
 
-#define POPULATE_ONOFF        0x01
-#define POPULATE_TIMER_MODES  0x02
-void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettings & generalSettings, unsigned long attr=0);
+enum SwitchContext
+{
+  LogicalSwitchesContext,
+  CustomFunctionsContext,
+  TimersContext,
+  MixesContext
+};
+
+void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettings & generalSettings, SwitchContext context);
 
 void populatePhasesCB(QComboBox *b, int value);
 void populateGvarUseCB(QComboBox *b, unsigned int phase);

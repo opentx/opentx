@@ -843,10 +843,10 @@ void putsCurve(xcoord_t x, uint8_t y, int8_t idx, LcdFlags att)
 void putsTimerMode(xcoord_t x, uint8_t y, int8_t mode, LcdFlags att)
 {
   if (mode >= 0) {
-    if (mode < TMR_VAROFS)
+    if (mode < TMRMODE_COUNT)
       return lcd_putsiAtt(x, y, STR_VTMRMODES, mode, att);
     else
-      mode -= (TMR_VAROFS-1);
+      mode -= (TMRMODE_COUNT-1);
   }
   putsSwitches(x, y, mode, att);
 }

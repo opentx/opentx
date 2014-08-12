@@ -15,7 +15,7 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
   lock = true;
 
   // Mode
-  populateSwitchCB(ui->mode, timer.mode, generalSettings, POPULATE_TIMER_MODES);
+  populateSwitchCB(ui->mode, timer.mode, generalSettings, TimersContext);
 
   if (!firmware->getCapability(PermTimers)) {
     ui->persistent->hide();

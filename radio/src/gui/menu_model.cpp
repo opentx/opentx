@@ -1120,7 +1120,7 @@ void menuModelSetup(uint8_t event)
             div_t qr = div(timer->start, 60);
             switch (m_posHorz) {
               case 0:
-                CHECK_INCDEC_MODELVAR(event, timer->mode, SWSRC_FIRST, TMR_VAROFS+SWSRC_LAST-1);
+                CHECK_INCDEC_MODELVAR_CHECK(event, timer->mode, SWSRC_FIRST, TMRMODE_COUNT+SWSRC_LAST-1/*SWSRC_None removed*/, isSwitchAvailableInTimers);
                 break;
               case 1:
                 CHECK_INCDEC_MODELVAR_ZERO(event, qr.quot, 59);
@@ -1940,7 +1940,7 @@ void menuModelFlightModesAll(uint8_t event)
 
         case ITEM_FLIGHT_MODES_SWITCH:
           putsSwitches((5+LEN_FP_NAME)*FW+FW/2, y, p->swtch, attr);
-          if (active) CHECK_INCDEC_MODELSWITCH(event, p->swtch, SWSRC_FIRST_SHORT_LIST, SWSRC_LAST_SHORT_LIST);
+          if (active) CHECK_INCDEC_MODELSWITCH(event, p->swtch, SWSRC_FIRST_IN_MIXES, SWSRC_LAST_IN_MIXES, isSwitchAvailableInMixes);
           break;
 
         case ITEM_FLIGHT_MODES_TRIM_RUD:
@@ -4691,8 +4691,8 @@ void menuModelLogicalSwitches(uint8_t event)
     if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY) {
       putsSwitches(CSW_2ND_COLUMN, y, cs->v1, attr1);
       putsSwitches(CSW_3RD_COLUMN, y, cs->v2, attr2);
-      v1_min = SWSRC_OFF+1; v1_max = SWSRC_ON-1;
-      v2_min = SWSRC_OFF+1; v2_max = SWSRC_ON-1;
+      v1_min = SWSRC_FIRST_IN_LOGICAL_SWITCHES; v1_max = SWSRC_LAST_IN_LOGICAL_SWITCHES;
+      v2_min = SWSRC_FIRST_IN_LOGICAL_SWITCHES; v2_max = SWSRC_LAST_IN_LOGICAL_SWITCHES;
       INCDEC_SET_FLAG(INCDEC_SWITCH);
       INCDEC_ENABLE_CHECK(isSwitchAvailableInLogicalSwitches);
     }
@@ -4707,12 +4707,12 @@ void menuModelLogicalSwitches(uint8_t event)
       else
         lcd_outdezAtt(lcdLastPos+3, y, lswTimerValue(cs->v2+cs->v3), LEFT|PREC1|(horz==LS_FIELD_V3 ? attr : 0));
       lcd_putc(lcdLastPos, y, ']');
-      v1_min = SWSRC_OFF+1; v1_max = SWSRC_ON-1;
+      v1_min = SWSRC_FIRST_IN_LOGICAL_SWITCHES; v1_max = SWSRC_LAST_IN_LOGICAL_SWITCHES;
       v2_min=-129; v2_max = 122;
       v3_max = 222 - cs->v2;
       if (horz == 1) {
         INCDEC_SET_FLAG(INCDEC_SWITCH);
-        INCDEC_ENABLE_CHECK(isSwitchAvailable);
+        INCDEC_ENABLE_CHECK(isSwitchAvailableInLogicalSwitches);
       }
       else {
         INCDEC_SET_FLAG(0);
@@ -5042,7 +5042,7 @@ void menuModelCustomFunctions(uint8_t event)
       switch (j) {
         case 0:
           putsSwitches(MODEL_CUSTOM_FUNC_1ST_COLUMN, y, CFN_SWITCH(sd), attr | ((activeFnSwitches & ((MASK_CFN_TYPE)1 << k)) ? BOLD : 0));
-          if (active || AUTOSWITCH_ENTER_LONG()) CHECK_INCDEC_MODELSWITCH(event, CFN_SWITCH(sd), SWSRC_FIRST, SWSRC_LAST);
+          if (active || AUTOSWITCH_ENTER_LONG()) CHECK_INCDEC_MODELSWITCH(event, CFN_SWITCH(sd), SWSRC_FIRST, SWSRC_LAST, isSwitchAvailableInCustomFunctions);
           break;
 
         case 1:

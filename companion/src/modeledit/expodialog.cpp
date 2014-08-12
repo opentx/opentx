@@ -33,7 +33,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
 
   curveGroup = new CurveGroup(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, ed->curve);
 
-  populateSwitchCB(ui->switchesCB, ed->swtch, generalSettings);
+  populateSwitchCB(ui->switchesCB, ed->swtch, generalSettings, MixesContext);
 
   ui->sideCB->setCurrentIndex(ed->mode-1);
 

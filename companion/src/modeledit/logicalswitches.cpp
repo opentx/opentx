@@ -324,12 +324,12 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
       // no break
     case LS_FAMILY_VBOOL:
       mask |= SOURCE1_VISIBLE | SOURCE2_VISIBLE;
-      populateSwitchCB(cswitchSource1[i], RawSwitch(model.customSw[i].val1), generalSettings);
-      populateSwitchCB(cswitchSource2[i], RawSwitch(model.customSw[i].val2), generalSettings);
+      populateSwitchCB(cswitchSource1[i], RawSwitch(model.customSw[i].val1), generalSettings, LogicalSwitchesContext);
+      populateSwitchCB(cswitchSource2[i], RawSwitch(model.customSw[i].val2), generalSettings, LogicalSwitchesContext);
       break;
     case LS_FAMILY_STAY:
       mask |= SOURCE1_VISIBLE | VALUE2_VISIBLE | VALUE3_VISIBLE;
-      populateSwitchCB(cswitchSource1[i], RawSwitch(model.customSw[i].val1), generalSettings);
+      populateSwitchCB(cswitchSource1[i], RawSwitch(model.customSw[i].val1), generalSettings, LogicalSwitchesContext);
       updateTimerParam(cswitchOffset[i], model.customSw[i].val2, 0.0);
       updateTimerParam(cswitchOffset2[i], model.customSw[i].val2+model.customSw[i].val3, cswitchOffset[i]->value());
       if (model.customSw[i].val3 == 0) {
@@ -410,7 +410,7 @@ void LogicalSwitchesPanel::populateCSWCB(QComboBox *b, int value)
 void LogicalSwitchesPanel::populateAndSwitchCB(QComboBox *b, const RawSwitch & value)
 {
   if (IS_ARM(firmware->getBoard())) {
-    populateSwitchCB(b, value, generalSettings, POPULATE_ONOFF);
+    populateSwitchCB(b, value, generalSettings, LogicalSwitchesContext);
   }
   else {
     RawSwitch item;

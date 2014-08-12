@@ -2322,7 +2322,7 @@ void doMixerCalculations()
             }
           }
           else {
-            if (tm > 0) tm -= (TMR_VAROFS-1);
+            if (tm > 0) tm -= (TMRMODE_COUNT-1);
             if (getSwitch(tm))
               newTimerVal++;
           }
