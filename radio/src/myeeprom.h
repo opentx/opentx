@@ -1638,8 +1638,8 @@ PACK(typedef struct t_TimerData {
   uint8_t  minuteBeep:1;
   uint8_t  persistent:2;
   uint8_t  spare:3;
-  uint32_t start;
-  int32_t  value;
+  uint32_t start:24;
+  int32_t  value:24;
 }) TimerData;
 #define IS_MANUAL_RESET_TIMER(idx) (g_model.timers[idx].persistent == 2)
 #elif defined(CPUM2560)

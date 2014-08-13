@@ -2434,8 +2434,8 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
       internalField.Append(new BoolField<1>(modelData.timers[i].minuteBeep));
       internalField.Append(new UnsignedField<2>(modelData.timers[i].persistent));
       internalField.Append(new SpareBitsField<3>());
-      internalField.Append(new UnsignedField<32>(modelData.timers[i].val));
-      internalField.Append(new SignedField<32>(modelData.timers[i].pvalue));
+      internalField.Append(new UnsignedField<24>(modelData.timers[i].val));
+      internalField.Append(new SignedField<24>(modelData.timers[i].pvalue));
     }
     else if ((IS_ARM(board) || IS_2560(board)) && version >= 216) {
       internalField.Append(new UnsignedField<16>(modelData.timers[i].val));
