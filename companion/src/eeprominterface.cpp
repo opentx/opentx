@@ -1162,7 +1162,7 @@ void ModelData::clear()
     funcSw[i].clear();
   for (int i=0; i<C9X_MAX_CURVES; i++)
     curves[i].clear(5);
-  for (int i=0; i<2; i++)
+  for (int i=0; i<C9X_MAX_TIMERS; i++)
     timers[i].clear();
   swashRingData.clear();
   frsky.clear();

@@ -481,20 +481,6 @@ PACK(typedef struct t_Open9xTimerDataExtra {
   t_Open9xTimerDataExtra() { memset(this, 0, sizeof(t_Open9xTimerDataExtra)); }
 }) Open9xTimerDataExtra;
 
-#define O9X_MAX_TIMERS     2
-#define O9X_MAX_FLIGHT_MODES 5
-#define O9X_MAX_MIXERS 32
-#define O9X_MAX_EXPOS  14
-#define O9X_NUM_CHNOUT 16 // number of real output channels CH1-CH16
-#define O9X_NUM_CSW    12 // number of custom switches
-#define O9X_NUM_FSW    16 // number of functions assigned to switches
-#define O9X_MAX_CURVES 8
-#define O9X_NUM_POINTS (112-O9X_MAX_CURVES)
-#define O9X_MAX_GVARS  5
-
-#define O9X_209_MAX_CURVE5 8
-#define O9X_209_MAX_CURVE9 8
-
 PACK(typedef struct t_Open9xModelData_v201 {
   char      name[10];             // 10 must be first for eeLoadModelName
   Open9xTimerData_v201 timer1;
@@ -511,16 +497,16 @@ PACK(typedef struct t_Open9xModelData_v201 {
   int8_t    ppmDelay;
   uint8_t   beepANACenter;        // 1<<0->A1.. 1<<6->A7
   Open9xTimerData_v201 timer2;
-  Open9xMixData_v201 mixData[O9X_MAX_MIXERS];
-  Open9xLimitData_v201 limitData[O9X_NUM_CHNOUT];
-  Open9xExpoData_v201  expoData[O9X_MAX_EXPOS];
-  int8_t    curves5[O9X_209_MAX_CURVE5][5];
-  int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xLogicalSwitchData_v208  customSw[O9X_NUM_CSW];
-  Open9xSafetySwData  safetySw[O9X_NUM_CHNOUT];
+  Open9xMixData_v201 mixData[32];
+  Open9xLimitData_v201 limitData[16];
+  Open9xExpoData_v201  expoData[14];
+  int8_t    curves5[8][5];
+  int8_t    curves9[8][9];
+  Open9xLogicalSwitchData_v208  customSw[12];
+  Open9xSafetySwData  safetySw[16];
   Open9xFuncSwData_v201 funcSw[12];
   Open9xSwashRingData_v208 swashR;
-  Open9xFlightModeData_v201 flightModeData[O9X_MAX_FLIGHT_MODES];
+  Open9xFlightModeData_v201 flightModeData[5];
   Open9xFrSkyData_v201 frsky;
 
   operator ModelData();
@@ -542,16 +528,16 @@ PACK(typedef struct t_Open9xModelData_v202 {
   int8_t    ppmDelay;
   uint8_t   beepANACenter;        // 1<<0->A1.. 1<<6->A7
   Open9xTimerData_v202 timer2;
-  Open9xMixData_v201 mixData[O9X_MAX_MIXERS];
-  Open9xLimitData_v201 limitData[O9X_NUM_CHNOUT];
-  Open9xExpoData_v201  expoData[O9X_MAX_EXPOS];
-  int8_t    curves5[O9X_209_MAX_CURVE5][5];
-  int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xLogicalSwitchData_v208  customSw[O9X_NUM_CSW];
-  Open9xSafetySwData  safetySw[O9X_NUM_CHNOUT];
+  Open9xMixData_v201 mixData[32];
+  Open9xLimitData_v201 limitData[16];
+  Open9xExpoData_v201  expoData[14];
+  int8_t    curves5[8][5];
+  int8_t    curves9[8][9];
+  Open9xLogicalSwitchData_v208  customSw[12];
+  Open9xSafetySwData  safetySw[16];
   Open9xFuncSwData_v201 funcSw[12];
   Open9xSwashRingData_v208 swashR;
-  Open9xFlightModeData_v201 flightModeData[O9X_MAX_FLIGHT_MODES];
+  Open9xFlightModeData_v201 flightModeData[5];
   Open9xFrSkyData_v202 frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
@@ -576,15 +562,15 @@ PACK(typedef struct t_Open9xModelData_v203 {
   int8_t    ppmDelay;
   uint8_t   beepANACenter;        // 1<<0->A1.. 1<<6->A7
   Open9xTimerData_v202 timer2;
-  Open9xMixData_v203 mixData[O9X_MAX_MIXERS];
-  Open9xLimitData_v201 limitData[O9X_NUM_CHNOUT];
-  Open9xExpoData_v201  expoData[O9X_MAX_EXPOS];
-  int8_t    curves5[O9X_209_MAX_CURVE5][5];
-  int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xLogicalSwitchData_v208 customSw[O9X_NUM_CSW];
-  Open9xFuncSwData_v203 funcSw[O9X_NUM_FSW];
+  Open9xMixData_v203 mixData[32];
+  Open9xLimitData_v201 limitData[16];
+  Open9xExpoData_v201  expoData[14];
+  int8_t    curves5[8][5];
+  int8_t    curves9[8][9];
+  Open9xLogicalSwitchData_v208 customSw[12];
+  Open9xFuncSwData_v203 funcSw[16];
   Open9xSwashRingData_v208 swashR;
-  Open9xFlightModeData_v201 flightModeData[O9X_MAX_FLIGHT_MODES];
+  Open9xFlightModeData_v201 flightModeData[5];
   Open9xFrSkyData_v202 frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
@@ -609,15 +595,15 @@ PACK(typedef struct t_Open9xModelData_v204 {
   int8_t    ppmDelay;
   uint8_t   beepANACenter;        // 1<<0->A1.. 1<<6->A7
   Open9xTimerData_v202 timer2;
-  Open9xMixData_v203 mixData[O9X_MAX_MIXERS];
-  Open9xLimitData_v201 limitData[O9X_NUM_CHNOUT];
-  Open9xExpoData_v201  expoData[O9X_MAX_EXPOS];
-  int8_t    curves5[O9X_209_MAX_CURVE5][5];
-  int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xLogicalSwitchData_v208  customSw[O9X_NUM_CSW];
-  Open9xFuncSwData_v203 funcSw[O9X_NUM_FSW];
+  Open9xMixData_v203 mixData[32];
+  Open9xLimitData_v201 limitData[16];
+  Open9xExpoData_v201  expoData[14];
+  int8_t    curves5[8][5];
+  int8_t    curves9[8][9];
+  Open9xLogicalSwitchData_v208  customSw[12];
+  Open9xFuncSwData_v203 funcSw[16];
   Open9xSwashRingData_v208 swashR;
-  Open9xFlightModeData_v201 flightModeData[O9X_MAX_FLIGHT_MODES];
+  Open9xFlightModeData_v201 flightModeData[5];
   Open9xFrSkyData_v204 frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
@@ -630,7 +616,7 @@ PACK(typedef struct t_Open9xModelData_v204 {
 
 PACK(typedef struct t_Open9xModelData_v205 {
   char      name[10];             // 10 must be first for eeLoadModelName
-  Open9xTimerData_v202 timers[O9X_MAX_TIMERS];
+  Open9xTimerData_v202 timers[2];
   uint8_t   protocol:3;
   uint8_t   thrTrim:1;            // Enable Throttle Trim
   int8_t    ppmNCH:4;
@@ -642,22 +628,22 @@ PACK(typedef struct t_Open9xModelData_v205 {
   uint8_t   spare2:1;
   int8_t    ppmDelay;
   uint8_t   beepANACenter;        // 1<<0->A1.. 1<<6->A7
-  Open9xMixData_v205 mixData[O9X_MAX_MIXERS];
-  Open9xLimitData_v201 limitData[O9X_NUM_CHNOUT];
-  Open9xExpoData_v201  expoData[O9X_MAX_EXPOS];
-  int8_t    curves5[O9X_209_MAX_CURVE5][5];
-  int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xLogicalSwitchData_v208  customSw[O9X_NUM_CSW];
-  Open9xFuncSwData_v203 funcSw[O9X_NUM_FSW];
+  Open9xMixData_v205 mixData[32];
+  Open9xLimitData_v201 limitData[16];
+  Open9xExpoData_v201  expoData[14];
+  int8_t    curves5[8][5];
+  int8_t    curves9[8][9];
+  Open9xLogicalSwitchData_v208  customSw[12];
+  Open9xFuncSwData_v203 funcSw[16];
   Open9xSwashRingData_v208 swashR;
-  Open9xFlightModeData_v201 flightModeData[O9X_MAX_FLIGHT_MODES];
+  Open9xFlightModeData_v201 flightModeData[5];
   Open9xFrSkyData_v205 frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
   uint8_t   modelId;
   uint8_t   frskyLines[4];
   uint16_t  frskyLinesXtra;
-  int8_t    servoCenter[O9X_NUM_CHNOUT];
+  int8_t    servoCenter[16];
 
   operator ModelData();
   t_Open9xModelData_v205() { memset(this, 0, sizeof(t_Open9xModelData_v205)); }
@@ -665,7 +651,7 @@ PACK(typedef struct t_Open9xModelData_v205 {
 
 PACK(typedef struct t_Open9xModelData_v208 {
   char      name[10];             // 10 must be first for eeLoadModelName
-  Open9xTimerData_v202 timers[O9X_MAX_TIMERS];
+  Open9xTimerData_v202 timers[2];
   uint8_t   protocol:3;
   uint8_t   thrTrim:1;            // Enable Throttle Trim
   int8_t    ppmNCH:4;
@@ -677,22 +663,22 @@ PACK(typedef struct t_Open9xModelData_v208 {
   uint8_t   spare2:1;
   int8_t    ppmDelay;
   uint8_t   beepANACenter;        // 1<<0->A1.. 1<<6->A7
-  Open9xMixData_v205 mixData[O9X_MAX_MIXERS];
-  Open9xLimitData_v201 limitData[O9X_NUM_CHNOUT];
-  Open9xExpoData_v201  expoData[O9X_MAX_EXPOS];
-  int8_t    curves5[O9X_209_MAX_CURVE5][5];
-  int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xLogicalSwitchData_v208  customSw[O9X_NUM_CSW];
-  Open9xFuncSwData_v203 funcSw[O9X_NUM_FSW];
+  Open9xMixData_v205 mixData[32];
+  Open9xLimitData_v201 limitData[16];
+  Open9xExpoData_v201  expoData[14];
+  int8_t    curves5[8][5];
+  int8_t    curves9[8][9];
+  Open9xLogicalSwitchData_v208  customSw[12];
+  Open9xFuncSwData_v203 funcSw[16];
   Open9xSwashRingData_v208 swashR;
-  Open9xFlightModeData_v201 flightModeData[O9X_MAX_FLIGHT_MODES];
+  Open9xFlightModeData_v201 flightModeData[5];
   Open9xFrSkyData_v208 frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
   uint8_t   modelId;
   uint8_t   frskyLines[4];
   uint16_t  frskyLinesXtra;
-  int8_t    servoCenter[O9X_NUM_CHNOUT];
+  int8_t    servoCenter[16];
 
   uint8_t varioSource:3;
   uint8_t varioSpeedUpMin:5;    // if increment in 0.2m/s = 3.0m/s max
@@ -704,7 +690,7 @@ PACK(typedef struct t_Open9xModelData_v208 {
 
 PACK(typedef struct t_Open9xModelData_v209 {
   char      name[10];             // 10 must be first for eeLoadModelName
-  Open9xTimerData_v202 timers[O9X_MAX_TIMERS];
+  Open9xTimerData_v202 timers[2];
   uint8_t   protocol:3;
   uint8_t   thrTrim:1;            // Enable Throttle Trim
   int8_t    ppmNCH:4;
@@ -716,22 +702,22 @@ PACK(typedef struct t_Open9xModelData_v209 {
   uint8_t   spare2:1;
   int8_t    ppmDelay;
   uint8_t   beepANACenter;        // 1<<0->A1.. 1<<6->A7
-  Open9xMixData_v209 mixData[O9X_MAX_MIXERS];
-  Open9xLimitData_v201 limitData[O9X_NUM_CHNOUT];
-  Open9xExpoData_v201  expoData[O9X_MAX_EXPOS];
-  int8_t    curves5[O9X_209_MAX_CURVE5][5];
-  int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xLogicalSwitchData_v209  customSw[O9X_NUM_CSW];
-  Open9xFuncSwData_v203 funcSw[O9X_NUM_FSW];
+  Open9xMixData_v209 mixData[32];
+  Open9xLimitData_v201 limitData[16];
+  Open9xExpoData_v201  expoData[14];
+  int8_t    curves5[8][5];
+  int8_t    curves9[8][9];
+  Open9xLogicalSwitchData_v209  customSw[12];
+  Open9xFuncSwData_v203 funcSw[16];
   Open9xSwashRingData_v209 swashR;
-  Open9xFlightModeData_v201 flightModeData[O9X_MAX_FLIGHT_MODES];
+  Open9xFlightModeData_v201 flightModeData[5];
   Open9xFrSkyData_v208 frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
   uint8_t   modelId;
   uint8_t   frskyLines[4];
   uint16_t  frskyLinesXtra;
-  int8_t    servoCenter[O9X_NUM_CHNOUT];
+  int8_t    servoCenter[16];
 
   uint8_t varioSource:3;
   uint8_t varioSpeedUpMin:5;    // if increment in 0.2m/s = 3.0m/s max
@@ -744,7 +730,7 @@ PACK(typedef struct t_Open9xModelData_v209 {
 
 PACK(typedef struct t_Open9xModelData_v210 {
   char      name[10];             // 10 must be first for eeLoadModelName
-  Open9xTimerData_v202 timers[O9X_MAX_TIMERS];
+  Open9xTimerData_v202 timers[2];
   uint8_t   protocol:3;
   uint8_t   thrTrim:1;            // Enable Throttle Trim
   int8_t    ppmNCH:4;
@@ -756,21 +742,21 @@ PACK(typedef struct t_Open9xModelData_v210 {
   uint8_t   spare2:1;
   int8_t    ppmDelay;
   uint8_t   beepANACenter;        // 1<<0->A1.. 1<<6->A7
-  Open9xMixData_v209 mixData[O9X_MAX_MIXERS];
-  Open9xLimitData_v201 limitData[O9X_NUM_CHNOUT];
-  Open9xExpoData_v201  expoData[O9X_MAX_EXPOS];
-  int8_t    curves[O9X_MAX_CURVES];
-  int8_t    points[O9X_NUM_POINTS];
-  Open9xLogicalSwitchData_v209  customSw[O9X_NUM_CSW];
-  Open9xFuncSwData_v210 funcSw[O9X_NUM_FSW];
+  Open9xMixData_v209 mixData[32];
+  Open9xLimitData_v201 limitData[16];
+  Open9xExpoData_v201  expoData[14];
+  int8_t    curves[8];
+  int8_t    points[112-8];
+  Open9xLogicalSwitchData_v209  customSw[12];
+  Open9xFuncSwData_v210 funcSw[16];
   Open9xSwashRingData_v209 swashR;
-  Open9xFlightModeData_v201 flightModeData[O9X_MAX_FLIGHT_MODES];
+  Open9xFlightModeData_v201 flightModeData[5];
 
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
   uint8_t   modelId;
 
-  int8_t    servoCenter[O9X_NUM_CHNOUT];
+  int8_t    servoCenter[16];
 
   uint8_t switchWarningStates;
 
@@ -782,7 +768,7 @@ PACK(typedef struct t_Open9xModelData_v210 {
 
 PACK(typedef struct t_Open9xModelData_v211 {
   char      name[10];             // 10 must be first for eeLoadModelName
-  Open9xTimerData_v202 timers[O9X_MAX_TIMERS];
+  Open9xTimerData_v202 timers[2];
   uint8_t   protocol:3;
   uint8_t   thrTrim:1;            // Enable Throttle Trim
   int8_t    ppmNCH:4;
@@ -794,15 +780,15 @@ PACK(typedef struct t_Open9xModelData_v211 {
   uint8_t   spare1:1;
   int8_t    ppmDelay;
   uint8_t   beepANACenter;        // 1<<0->A1.. 1<<6->A7
-  Open9xMixData_v211 mixData[O9X_MAX_MIXERS];
-  Open9xLimitData_v211 limitData[O9X_NUM_CHNOUT];
-  Open9xExpoData_v211  expoData[O9X_MAX_EXPOS];
-  int8_t    curves[O9X_MAX_CURVES];
-  int8_t    points[O9X_NUM_POINTS];
-  Open9xLogicalSwitchData_v209  customSw[O9X_NUM_CSW];
-  Open9xFuncSwData_v210 funcSw[O9X_NUM_FSW];
+  Open9xMixData_v211 mixData[32];
+  Open9xLimitData_v211 limitData[16];
+  Open9xExpoData_v211  expoData[14];
+  int8_t    curves[8];
+  int8_t    points[112-8];
+  Open9xLogicalSwitchData_v209  customSw[12];
+  Open9xFuncSwData_v210 funcSw[16];
   Open9xSwashRingData_v209 swashR;
-  Open9xFlightModeData_v201 flightModeData[O9X_MAX_FLIGHT_MODES];
+  Open9xFlightModeData_v201 flightModeData[5];
 
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;

@@ -436,7 +436,7 @@ t_Open9xGruvin9xModelData_v207::operator ModelData ()
   ModelData c9x;
   c9x.used = true;
   getEEPROMZString(c9x.name, name, sizeof(name));
-  for (int i=0; i<O9X_MAX_TIMERS; i++)
+  for (int i=0; i<2; i++)
     c9x.timers[i] = timers[i];
   switch(protocol) {
     case 1:
@@ -460,7 +460,7 @@ t_Open9xGruvin9xModelData_v207::operator ModelData ()
   c9x.moduleData[0].ppmPulsePol = pulsePol;
   c9x.extendedLimits = extendedLimits;
   c9x.extendedTrims = extendedTrims;
-  for (int i=0; i<O9X_MAX_FLIGHT_MODES; i++) {
+  for (int i=0; i<5; i++) {
     c9x.flightModeData[i] = flightModeData[i];
     for (int j=0; j<NUM_STICKS; j++) {
       if (c9x.flightModeData[i].trim[j] > 500) {
@@ -471,31 +471,31 @@ t_Open9xGruvin9xModelData_v207::operator ModelData ()
       }
     }
   }
-  for (int i=0; i<O9X_MAX_MIXERS; i++)
+  for (int i=0; i<32; i++)
     c9x.mixData[i] = mixData[i];
-  for (int i=0; i<O9X_NUM_CHNOUT; i++)
+  for (int i=0; i<16; i++)
     c9x.limitData[i] = limitData[i];
-  for (int i=0; i<O9X_MAX_EXPOS; i++)
+  for (int i=0; i<14; i++)
     c9x.expoData[i] = expoData[i];
 
-  for (int i=0; i<O9X_209_MAX_CURVE5; i++) {
+  for (int i=0; i<8; i++) {
     c9x.curves[i].count = 5;
     for (int j = 0; j < 5; j++) {
       c9x.curves[i].points[j].x = -100 + 50 * i;
       c9x.curves[i].points[j].y = curves5[i][j];
     }
   }
-  for (int i=0; i<O9X_209_MAX_CURVE9; i++) {
-    c9x.curves[O9X_209_MAX_CURVE5 + i].count = 9;
+  for (int i=0; i<8; i++) {
+    c9x.curves[8 + i].count = 9;
     for (int j = 0; j < 9; j++) {
-      c9x.curves[O9X_209_MAX_CURVE5 + i].points[j].x = -100 + 25 * i;
-      c9x.curves[O9X_209_MAX_CURVE5 + i].points[j].y = curves9[i][j];
+      c9x.curves[8 + i].points[j].x = -100 + 25 * i;
+      c9x.curves[8 + i].points[j].y = curves9[i][j];
     }
   }
 
-  for (int i=0; i<O9X_NUM_CSW; i++)
+  for (int i=0; i<12; i++)
     c9x.customSw[i] = customSw[i];
-  for (int i=0; i<O9X_NUM_FSW; i++)
+  for (int i=0; i<16; i++)
     c9x.funcSw[i] = funcSw[i];
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;
@@ -517,7 +517,7 @@ t_Open9xGruvin9xModelData_v208::operator ModelData ()
   ModelData c9x;
   c9x.used = true;
   getEEPROMZString(c9x.name, name, sizeof(name));
-  for (int i=0; i<O9X_MAX_TIMERS; i++)
+  for (int i=0; i<2; i++)
     c9x.timers[i] = timers[i];
   switch(protocol) {
     case 1:
@@ -545,7 +545,7 @@ t_Open9xGruvin9xModelData_v208::operator ModelData ()
   c9x.moduleData[0].ppmPulsePol = pulsePol;
   c9x.extendedLimits = extendedLimits;
   c9x.extendedTrims = extendedTrims;
-  for (int i=0; i<O9X_MAX_FLIGHT_MODES; i++) {
+  for (int i=0; i<5; i++) {
     c9x.flightModeData[i] = flightModeData[i];
     for (int j=0; j<NUM_STICKS; j++) {
       if (c9x.flightModeData[i].trim[j] > 500) {
@@ -556,29 +556,29 @@ t_Open9xGruvin9xModelData_v208::operator ModelData ()
       }
     }
   }
-  for (int i=0; i<O9X_MAX_MIXERS; i++)
+  for (int i=0; i<32; i++)
     c9x.mixData[i] = mixData[i];
-  for (int i=0; i<O9X_NUM_CHNOUT; i++)
+  for (int i=0; i<16; i++)
     c9x.limitData[i] = limitData[i];
-  for (int i=0; i<O9X_MAX_EXPOS; i++)
+  for (int i=0; i<14; i++)
     c9x.expoData[i] = expoData[i];
-  for (int i=0; i<O9X_209_MAX_CURVE5; i++) {
+  for (int i=0; i<8; i++) {
     c9x.curves[i].count = 5;
     for (int j = 0; j < 5; j++) {
       c9x.curves[i].points[j].x = -100 + 50 * i;
       c9x.curves[i].points[j].y = curves5[i][j];
     }
   }
-  for (int i=0; i<O9X_209_MAX_CURVE9; i++) {
-    c9x.curves[O9X_209_MAX_CURVE5 + i].count = 9;
+  for (int i=0; i<8; i++) {
+    c9x.curves[8 + i].count = 9;
     for (int j = 0; j < 9; j++) {
-      c9x.curves[O9X_209_MAX_CURVE5 + i].points[j].x = -100 + 25 * i;
-      c9x.curves[O9X_209_MAX_CURVE5 + i].points[j].y = curves9[i][j];
+      c9x.curves[8 + i].points[j].x = -100 + 25 * i;
+      c9x.curves[8 + i].points[j].y = curves9[i][j];
     }
   }
-  for (int i=0; i<O9X_NUM_CSW; i++)
+  for (int i=0; i<12; i++)
     c9x.customSw[i] = customSw[i];
-  for (int i=0; i<O9X_NUM_FSW; i++)
+  for (int i=0; i<16; i++)
     c9x.funcSw[i] = funcSw[i];
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;
@@ -594,7 +594,7 @@ t_Open9xGruvin9xModelData_v208::operator ModelData ()
       c9x.frsky.screens[1].body.lines[line].source[col] += (((frskyLinesXtra >> (4*line+2*col)) & 0x03) * 16);
     }
   }
-  for (int i=0; i<O9X_NUM_CHNOUT; i++) {
+  for (int i=0; i<16; i++) {
     c9x.limitData[i].ppmCenter = servoCenter[i];
   }
 
@@ -606,7 +606,7 @@ t_Open9xGruvin9xModelData_v209::operator ModelData ()
   ModelData c9x;
   c9x.used = true;
   getEEPROMZString(c9x.name, name, sizeof(name));
-  for (int i=0; i<O9X_MAX_TIMERS; i++)
+  for (int i=0; i<2; i++)
     c9x.timers[i] = timers[i];
   switch(protocol) {
     case 1:
@@ -634,7 +634,7 @@ t_Open9xGruvin9xModelData_v209::operator ModelData ()
   c9x.moduleData[0].ppmPulsePol = pulsePol;
   c9x.extendedLimits = extendedLimits;
   c9x.extendedTrims = extendedTrims;
-  for (int i=0; i<O9X_MAX_FLIGHT_MODES; i++) {
+  for (int i=0; i<5; i++) {
     c9x.flightModeData[i] = flightModeData[i];
     for (int j=0; j<NUM_STICKS; j++) {
       if (c9x.flightModeData[i].trim[j] > 500) {
@@ -645,29 +645,29 @@ t_Open9xGruvin9xModelData_v209::operator ModelData ()
       }
     }
   }
-  for (int i=0; i<O9X_MAX_MIXERS; i++)
+  for (int i=0; i<32; i++)
     c9x.mixData[i] = mixData[i];
-  for (int i=0; i<O9X_NUM_CHNOUT; i++)
+  for (int i=0; i<16; i++)
     c9x.limitData[i] = limitData[i];
-  for (int i=0; i<O9X_MAX_EXPOS; i++)
+  for (int i=0; i<14; i++)
     c9x.expoData[i] = expoData[i];
-  for (int i=0; i<O9X_209_MAX_CURVE5; i++) {
+  for (int i=0; i<8; i++) {
     c9x.curves[i].count = 5;
     for (int j = 0; j < 5; j++) {
       c9x.curves[i].points[j].x = -100 + 50 * i;
       c9x.curves[i].points[j].y = curves5[i][j];
     }
   }
-  for (int i=0; i<O9X_209_MAX_CURVE9; i++) {
-    c9x.curves[O9X_209_MAX_CURVE5 + i].count = 9;
+  for (int i=0; i<8; i++) {
+    c9x.curves[8 + i].count = 9;
     for (int j = 0; j < 9; j++) {
-      c9x.curves[O9X_209_MAX_CURVE5 + i].points[j].x = -100 + 25 * i;
-      c9x.curves[O9X_209_MAX_CURVE5 + i].points[j].y = curves9[i][j];
+      c9x.curves[8 + i].points[j].x = -100 + 25 * i;
+      c9x.curves[8 + i].points[j].y = curves9[i][j];
     }
   }
-  for (int i=0; i<O9X_NUM_CSW; i++)
+  for (int i=0; i<12; i++)
     c9x.customSw[i] = customSw[i];
-  for (int i=0; i<O9X_NUM_FSW; i++)
+  for (int i=0; i<16; i++)
     c9x.funcSw[i] = funcSw[i];
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;
@@ -684,7 +684,7 @@ t_Open9xGruvin9xModelData_v209::operator ModelData ()
       c9x.frsky.screens[1].body.lines[line].source[col] += (((frskyLinesXtra >> (4*line+2*col)) & 0x03) * 16);
     }
   }
-  for (int i=0; i<O9X_NUM_CHNOUT; i++) {
+  for (int i=0; i<16; i++) {
     c9x.limitData[i].ppmCenter = servoCenter[i];
   }
 
@@ -696,7 +696,7 @@ t_Open9xGruvin9xModelData_v210::operator ModelData ()
   ModelData c9x;
   c9x.used = true;
   getEEPROMZString(c9x.name, name, sizeof(name));
-  for (int i=0; i<O9X_MAX_TIMERS; i++)
+  for (int i=0; i<2; i++)
     c9x.timers[i] = timers[i];
   switch(protocol) {
     case 1:
@@ -724,7 +724,7 @@ t_Open9xGruvin9xModelData_v210::operator ModelData ()
   c9x.moduleData[0].ppmPulsePol = pulsePol;
   c9x.extendedLimits = extendedLimits;
   c9x.extendedTrims = extendedTrims;
-  for (int i=0; i<O9X_MAX_FLIGHT_MODES; i++) {
+  for (int i=0; i<5; i++) {
     c9x.flightModeData[i] = flightModeData[i];
     for (int j=0; j<NUM_STICKS; j++) {
       if (c9x.flightModeData[i].trim[j] > 500) {
@@ -735,13 +735,13 @@ t_Open9xGruvin9xModelData_v210::operator ModelData ()
       }
     }
   }
-  for (int i=0; i<O9X_MAX_MIXERS; i++)
+  for (int i=0; i<32; i++)
     c9x.mixData[i] = mixData[i];
-  for (int i=0; i<O9X_NUM_CHNOUT; i++)
+  for (int i=0; i<16; i++)
     c9x.limitData[i] = limitData[i];
-  for (int i=0; i<O9X_MAX_EXPOS; i++)
+  for (int i=0; i<14; i++)
     c9x.expoData[i] = expoData[i];
-  for (int i=0; i<O9X_MAX_CURVES; i++) {
+  for (int i=0; i<8; i++) {
     CurveInfo crvinfo = curveinfo(this, i);
     c9x.curves[i].type = (crvinfo.custom ? CurveData::CURVE_TYPE_CUSTOM : CurveData::CURVE_TYPE_STANDARD);
     c9x.curves[i].count = crvinfo.points;
@@ -758,9 +758,9 @@ t_Open9xGruvin9xModelData_v210::operator ModelData ()
         c9x.curves[i].points[j].x = -100 + (200*i) / (crvinfo.points-1);
     }
   }
-  for (int i=0; i<O9X_NUM_CSW; i++)
+  for (int i=0; i<12; i++)
     c9x.customSw[i] = customSw[i];
-  for (int i=0; i<O9X_NUM_FSW; i++)
+  for (int i=0; i<16; i++)
     c9x.funcSw[i] = funcSw[i];
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;
@@ -768,7 +768,7 @@ t_Open9xGruvin9xModelData_v210::operator ModelData ()
   c9x.moduleData[0].ppmFrameLength = ppmFrameLength;
   c9x.thrTraceSrc = thrTraceSrc;
   c9x.modelId = modelId;
-  for (int i=0; i<O9X_NUM_CHNOUT; i++) {
+  for (int i=0; i<16; i++) {
     c9x.limitData[i].ppmCenter = servoCenter[i];
   }
 
@@ -780,7 +780,7 @@ t_Open9xGruvin9xModelData_v211::operator ModelData ()
   ModelData c9x;
   c9x.used = true;
   getEEPROMZString(c9x.name, name, sizeof(name));
-  for (int i=0; i<O9X_MAX_TIMERS; i++) {
+  for (int i=0; i<2; i++) {
     c9x.timers[i] = timers[i];
     c9x.timers[i].persistent = timersXtra[i].remanent;
     c9x.timers[i].val = timersXtra[i].value;
@@ -811,7 +811,7 @@ t_Open9xGruvin9xModelData_v211::operator ModelData ()
   c9x.moduleData[0].ppmPulsePol = pulsePol;
   c9x.extendedLimits = extendedLimits;
   c9x.extendedTrims = extendedTrims;
-  for (int i=0; i<O9X_MAX_FLIGHT_MODES; i++) {
+  for (int i=0; i<5; i++) {
     c9x.flightModeData[i] = flightModeData[i];
     for (int j=0; j<NUM_STICKS; j++) {
       if (c9x.flightModeData[i].trim[j] > 500) {
@@ -822,13 +822,13 @@ t_Open9xGruvin9xModelData_v211::operator ModelData ()
       }
     }
   }
-  for (int i=0; i<O9X_MAX_MIXERS; i++)
+  for (int i=0; i<32; i++)
     c9x.mixData[i] = mixData[i];
-  for (int i=0; i<O9X_NUM_CHNOUT; i++)
+  for (int i=0; i<16; i++)
     c9x.limitData[i] = limitData[i];
-  for (int i=0; i<O9X_MAX_EXPOS; i++)
+  for (int i=0; i<14; i++)
     c9x.expoData[i] = expoData[i];
-  for (int i=0; i<O9X_MAX_CURVES; i++) {
+  for (int i=0; i<8; i++) {
     CurveInfo crvinfo = curveinfo(this, i);
     c9x.curves[i].type = (crvinfo.custom ? CurveData::CURVE_TYPE_CUSTOM : CurveData::CURVE_TYPE_STANDARD);
     c9x.curves[i].count = crvinfo.points;
@@ -845,9 +845,9 @@ t_Open9xGruvin9xModelData_v211::operator ModelData ()
         c9x.curves[i].points[j].x = -100 + (200*i) / (crvinfo.points-1);
     }
   }
-  for (int i=0; i<O9X_NUM_CSW; i++)
+  for (int i=0; i<12; i++)
     c9x.customSw[i] = customSw[i];
-  for (int i=0; i<O9X_NUM_FSW; i++)
+  for (int i=0; i<16; i++)
     c9x.funcSw[i] = funcSw[i];
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;

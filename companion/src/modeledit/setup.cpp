@@ -345,9 +345,16 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
   ui->name->setMaxLength(IS_TARANIS(firmware->getBoard()) ? 12 : 10);
 
   for (int i=0; i<C9X_MAX_TIMERS; i++) {
-    timers[i] = new TimerPanel(this, model, model.timers[i], generalSettings, firmware);
-    ui->gridLayout->addWidget(timers[i], 1+i, 1);
-    connect(timers[i], SIGNAL(modified()), this, SLOT(onChildModified()));
+    if (i<firmware->getCapability(Timers)) {
+      timers[i] = new TimerPanel(this, model, model.timers[i], generalSettings, firmware);
+      ui->gridLayout->addWidget(timers[i], 1+i, 1);
+      connect(timers[i], SIGNAL(modified()), this, SLOT(onChildModified()));
+    }
+    else {
+      foreach(QLabel *label, findChildren<QLabel *>(QRegExp(QString("label_timer%1").arg(i+1)))) {
+        label->hide();
+      }
+    }
   }
 
   for (int i=0; i<firmware->getCapability(NumModules); i++) {
@@ -625,7 +632,7 @@ void SetupPanel::update()
     updatePotWarnings();
   }
 
-  for (int i=0; i<C9X_MAX_TIMERS; i++)
+  for (int i=0; i<firmware->getCapability(Timers); i++)
     timers[i]->update();
 
   for (int i=0; i<C9X_NUM_MODULES+1; i++)

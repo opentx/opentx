@@ -64,10 +64,10 @@
 #define BEEP_VAL     ( (g_eeGeneral.warnOpts & WARN_BVAL_BIT) >>3 )
 
 #if defined(PCBTARANIS)
-  #define EEPROM_VER             216
+  #define EEPROM_VER             217
   #define FIRST_CONV_EEPROM_VER  215
 #elif defined(PCBSKY9X)
-  #define EEPROM_VER             216
+  #define EEPROM_VER             217
   #define FIRST_CONV_EEPROM_VER  215
 #elif defined(CPUM2560) || defined(CPUM2561)
   #define EEPROM_VER             217
@@ -149,7 +149,12 @@
   #define NUM_XPOTS           0
 #endif
 
-#define MAX_TIMERS    2
+#if defined(CPUARM)
+  #define MAX_TIMERS          3
+#else
+  #define MAX_TIMERS          2
+#endif
+
 #define NUM_CYC       3
 #define NUM_CAL_PPM   4
 
@@ -1626,7 +1631,18 @@ enum CountDownModes {
   COUNTDOWN_VOICE
 };
 
-#if defined(CPUARM) || defined(CPUM2560)
+#if defined(CPUARM)
+PACK(typedef struct t_TimerData {
+  int8_t   mode;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
+  uint8_t  countdownBeep:2;
+  uint8_t  minuteBeep:1;
+  uint8_t  persistent:2;
+  uint8_t  spare:3;
+  uint32_t start;
+  int32_t  value;
+}) TimerData;
+#define IS_MANUAL_RESET_TIMER(idx) (g_model.timers[idx].persistent == 2)
+#elif defined(CPUM2560)
 PACK(typedef struct t_TimerData {
   int8_t   mode;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
   uint16_t start;

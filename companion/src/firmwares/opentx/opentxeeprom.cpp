@@ -16,12 +16,13 @@
 #define MAX_SWITCHES_POSITION(board)         (IS_TARANIS(board) ? 22 : 9)
 #define MAX_ROTARY_ENCODERS(board)           (board==BOARD_GRUVIN9X ? 2 : (IS_SKY9X(board) ? 1 : 0))
 #define MAX_FLIGHT_MODES(board, version)     (IS_ARM(board) ? 9 :  (IS_DBLRAM(board, version) ? 6 :  5))
+#define MAX_TIMERS(board, version)           ((IS_ARM(board) && version >= 217) ? 3 : 2)
 #define MAX_MIXERS(board, version)           (IS_ARM(board) ? 64 : 32)
 #define MAX_CHANNELS(board, version)         (IS_ARM(board) ? 32 : 16)
 #define MAX_EXPOS(board, version)            (IS_ARM(board) ? ((IS_TARANIS(board) && version >= 216) ? 64 : 32) : (IS_DBLRAM(board, version) ? 16 : 14))
 #define MAX_CUSTOM_SWITCHES(board, version)  (IS_ARM(board) ? 32 : ((IS_DBLEEPROM(board, version) && version<217) ? 15 : 12))
 #define MAX_CUSTOM_FUNCTIONS(board, version) (IS_ARM(board) ? (version >= 216 ? 64 : 32) : (IS_DBLEEPROM(board, version) ? 24 : 16))
-#define MAX_CURVES(board, version)           (IS_ARM(board) ? ((IS_TARANIS(board) && version >= 216) ? 32 : 16) : O9X_MAX_CURVES)
+#define MAX_CURVES(board, version)           (IS_ARM(board) ? ((IS_TARANIS(board) && version >= 216) ? 32 : 16) : 8)
 #define MAX_GVARS(board, version)            ((IS_ARM(board) && version >= 216) ? 9 : 5)
 #define NUM_PPM_INPUTS(board, version)       ((IS_ARM(board) && version >= 216) ? 16 : 8)
 
@@ -1239,7 +1240,7 @@ class CurvesField: public TransformedField {
       board(board),
       version(version),
       maxCurves(MAX_CURVES(board, version)),
-      maxPoints(IS_ARM(board) ? O9X_ARM_NUM_POINTS : O9X_NUM_POINTS)
+      maxPoints(IS_ARM(board) ? 512 : 112-8)
     {
       for (int i=0; i<maxCurves; i++) {
         if (IS_TARANIS(board) && version >= 216) {
@@ -2426,9 +2427,17 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
     internalField.Append(new CharField<10>(modelData.bitmap));
   }
 
-  for (int i=0; i<O9X_MAX_TIMERS; i++) {
+  for (int i=0; i<MAX_TIMERS(board, version); i++) {
     internalField.Append(new SwitchField<8>(modelData.timers[i].mode, board, version, true));
-    if ((IS_ARM(board) || IS_2560(board)) && version >= 216) {
+    if (IS_ARM(board) && version >= 217) {
+      internalField.Append(new UnsignedField<2>(modelData.timers[i].countdownBeep));
+      internalField.Append(new BoolField<1>(modelData.timers[i].minuteBeep));
+      internalField.Append(new UnsignedField<2>(modelData.timers[i].persistent));
+      internalField.Append(new SpareBitsField<3>());
+      internalField.Append(new UnsignedField<32>(modelData.timers[i].val));
+      internalField.Append(new SignedField<32>(modelData.timers[i].pvalue));
+    }
+    else if ((IS_ARM(board) || IS_2560(board)) && version >= 216) {
       internalField.Append(new UnsignedField<16>(modelData.timers[i].val));
       internalField.Append(new UnsignedField<2>(modelData.timers[i].countdownBeep));
       internalField.Append(new BoolField<1>(modelData.timers[i].minuteBeep));

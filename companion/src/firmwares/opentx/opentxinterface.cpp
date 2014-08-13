@@ -377,7 +377,7 @@ int OpenTxEepromInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t 
       case BOARD_TARANIS_PLUS:
       case BOARD_SKY9X:
       case BOARD_9XRPRO:
-        version = 216;
+        version = 217;
         break;
       case BOARD_GRUVIN9X:
       case BOARD_MEGA2560:
@@ -556,11 +556,11 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case GvarsFlightModes:
       return ((IS_ARM(board) || board==BOARD_GRUVIN9X) ? 1 : 0);
     case Mixes:
-      return (IS_ARM(board) ? O9X_ARM_MAX_MIXERS : O9X_MAX_MIXERS);
+      return (IS_ARM(board) ? 64 : 32);
     case OffsetWeight:
       return (IS_ARM(board) ? 500 : 245);
     case Timers:
-      return 2;
+      return (IS_ARM(board) ? 3 : 2);
     case PermTimers:
       if (board == BOARD_GRUVIN9X || IS_ARM(board))
         return 1;
@@ -601,7 +601,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
       else
         return 0;
     case Outputs:
-      return (IS_ARM(board) ? O9X_ARM_NUM_CHNOUT : O9X_NUM_CHNOUT);
+      return (IS_ARM(board) ? 32 : 16);
     case NumCurvePoints:
       return (IS_ARM(board) ? 512 : 104);
     case VoicesAsNumbers:

@@ -135,6 +135,16 @@ PACK(typedef struct {
 }) TimerData_v215;
 
 PACK(typedef struct {
+  int8_t   mode;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
+  uint16_t start;
+  uint8_t  countdownBeep:2;
+  uint8_t  minuteBeep:1;
+  uint8_t  persistent:2;
+  uint8_t  spare:3;
+  uint16_t value;
+}) TimerData_v216;
+
+PACK(typedef struct {
   int16_t trim[4];
   int8_t swtch;       // swtch of phase[0] is not used
   char name[LEN_FP_NAME];
@@ -203,7 +213,7 @@ PACK(typedef struct {
 
 PACK(typedef struct {
   ModelHeader header;
-  TimerData_v215 timers[MAX_TIMERS];
+  TimerData_v215 timers[2];
   uint8_t   protocol:3;
   uint8_t   thrTrim:1;            // Enable Throttle Trim
   int8_t    ppmNCH:4;
@@ -239,6 +249,65 @@ PACK(typedef struct {
   MODELDATA_EXTRA
 
 }) ModelData_v215;
+
+PACK(typedef struct {
+  ModelHeader header;
+  TimerData_v216 timers[2];
+  AVR_FIELD(uint8_t   protocol:3)
+  ARM_FIELD(uint8_t   telemetryProtocol:3)
+  uint8_t   thrTrim:1;            // Enable Throttle Trim
+  AVR_FIELD(int8_t    ppmNCH:4)
+  ARM_FIELD(int8_t    spare2:4)
+  int8_t    trimInc:3;            // Trim Increments
+  uint8_t   disableThrottleWarning:1;
+  ARM_FIELD(uint8_t displayChecklist:1)
+  AVR_FIELD(uint8_t pulsePol:1)
+  uint8_t   extendedLimits:1;
+  uint8_t   extendedTrims:1;
+  uint8_t   throttleReversed:1;
+  AVR_FIELD(int8_t ppmDelay)
+  BeepANACenter beepANACenter;        // 1<<0->A1.. 1<<6->A7
+  MixData   mixData[MAX_MIXERS];
+  LimitData limitData[NUM_CHNOUT];
+  ExpoData  expoData[MAX_EXPOS];
+
+  CURVDATA  curves[MAX_CURVES];
+  int8_t    points[NUM_POINTS];
+
+  LogicalSwitchData logicalSw[NUM_LOGICAL_SWITCH];
+  CustomFnData funcSw[NUM_CFN];
+  SwashRingData swashR;
+  FlightModeData flightModeData[MAX_FLIGHT_MODES];
+
+  AVR_FIELD(int8_t ppmFrameLength)     // 0=22.5ms  (10ms-30ms) 0.5ms increments
+  uint8_t   thrTraceSrc;
+
+  swstate_t switchWarningStates;
+  uint8_t nSwToWarn;
+
+  global_gvar_t gvars[MAX_GVARS];
+
+  FrSkyData frsky;
+
+#if defined(PCBTARANIS)
+  uint8_t externalModule;
+  uint8_t trainerMode;
+  ModuleData moduleData[NUM_MODULES+1];
+  char curveNames[MAX_CURVES][6];
+  ScriptData scriptsData[MAX_SCRIPTS];
+  char inputNames[MAX_INPUTS][LEN_INPUT_NAME];
+  uint8_t nPotsToWarn;
+  int8_t potPosition[NUM_POTS];
+  uint8_t spare[2];
+#elif defined(PCBSKY9X)
+  uint8_t externalModule;
+  ModuleData moduleData[NUM_MODULES+1];
+  uint8_t nPotsToWarn;
+  int8_t potPosition[NUM_POTS];
+  uint8_t rxBattAlarms[2];
+#endif
+
+}) ModelData_v216;
 
 #if defined(PCBTARANIS)
   #define NUM_POTS_215 4
@@ -328,6 +397,11 @@ void ConvertGeneralSettings_215_to_216(EEGeneral &settings)
   memcpy(&settings.currModel, &oldSettings.currModel, sizeof(GeneralSettings_v215)-offsetof(GeneralSettings_v215, currModel));
 
   settings.hapticStrength = 0; // Haptic strength reset
+}
+
+void ConvertGeneralSettings_216_to_217(EEGeneral &settings)
+{
+  settings.version = 217;
 }
 
 int ConvertTelemetrySource_215_to_216(int source)
@@ -463,15 +537,16 @@ void ConvertModel_215_to_216(ModelData &model)
 
   ModelData_v215 oldModel;
   memcpy(&oldModel, &model, sizeof(oldModel));
-  memset(&model, 0, sizeof(ModelData));
+  ModelData_v216 &newModel = *(ModelData_v216*)&model;
+  memset(&newModel, 0, sizeof(ModelData_v216));
 
   char name[LEN_MODEL_NAME+1];
   zchar2str(name, oldModel.header.name, LEN_MODEL_NAME);
   TRACE("Model %s conversion from v215 to v216", name);
 
-  memcpy(&g_model.header, &oldModel.header, sizeof(g_model.header));
+  memcpy(&newModel.header, &oldModel.header, sizeof(newModel.header));
   for (uint8_t i=0; i<2; i++) {
-    TimerData & timer = g_model.timers[i];
+    TimerData_v216 & timer = newModel.timers[i];
     if (oldModel.timers[i].mode >= TMRMODE_COUNT)
       timer.mode = TMRMODE_COUNT + ConvertSwitch_215_to_216(oldModel.timers[i].mode - TMRMODE_COUNT + 1) - 1;
     else
@@ -482,21 +557,21 @@ void ConvertModel_215_to_216(ModelData &model)
     timer.countdownBeep = oldModel.timers[i].countdownBeep;
     timer.value = oldModel.timers[i].value;
   }
-  g_model.thrTrim = oldModel.thrTrim;
-  g_model.trimInc = oldModel.trimInc - 2;
-  g_model.disableThrottleWarning = oldModel.disableThrottleWarning;
-  g_model.extendedLimits = oldModel.extendedLimits;
-  g_model.extendedTrims = oldModel.extendedTrims;
-  g_model.throttleReversed = oldModel.throttleReversed;
+  newModel.thrTrim = oldModel.thrTrim;
+  newModel.trimInc = oldModel.trimInc - 2;
+  newModel.disableThrottleWarning = oldModel.disableThrottleWarning;
+  newModel.extendedLimits = oldModel.extendedLimits;
+  newModel.extendedTrims = oldModel.extendedTrims;
+  newModel.throttleReversed = oldModel.throttleReversed;
 
 #if defined(PCBTARANIS)
-  g_model.beepANACenter = (oldModel.beepANACenter & 0x3f) | ((oldModel.beepANACenter & 0xc0) << 1);
+  newModel.beepANACenter = (oldModel.beepANACenter & 0x3f) | ((oldModel.beepANACenter & 0xc0) << 1);
 #else
-  g_model.beepANACenter = oldModel.beepANACenter;
+  newModel.beepANACenter = oldModel.beepANACenter;
 #endif
 
   for (uint8_t i=0; i<64; i++) {
-    MixData * mix = &g_model.mixData[i];
+    MixData * mix = &newModel.mixData[i];
     MixData_v215 * oldMix = &oldModel.mixData[i];
 #if defined(PCBTARANIS)
     mix->destCh = oldMix->destCh;
@@ -552,25 +627,25 @@ void ConvertModel_215_to_216(ModelData &model)
   }
   for (uint8_t i=0; i<32; i++) {
 #if defined(PCBTARANIS)
-    g_model.limitData[i].min = 10 * oldModel.limitData[i].min;
-    g_model.limitData[i].max = 10 * oldModel.limitData[i].max;
+    newModel.limitData[i].min = 10 * oldModel.limitData[i].min;
+    newModel.limitData[i].max = 10 * oldModel.limitData[i].max;
 #else
-    g_model.limitData[i].min = oldModel.limitData[i].min;
-    g_model.limitData[i].max = oldModel.limitData[i].max;
+    newModel.limitData[i].min = oldModel.limitData[i].min;
+    newModel.limitData[i].max = oldModel.limitData[i].max;
 #endif
-    g_model.limitData[i].ppmCenter = oldModel.limitData[i].ppmCenter;
-    g_model.limitData[i].offset = oldModel.limitData[i].offset;
-    g_model.limitData[i].symetrical = oldModel.limitData[i].symetrical;
-    g_model.limitData[i].revert = oldModel.limitData[i].revert;
+    newModel.limitData[i].ppmCenter = oldModel.limitData[i].ppmCenter;
+    newModel.limitData[i].offset = oldModel.limitData[i].offset;
+    newModel.limitData[i].symetrical = oldModel.limitData[i].symetrical;
+    newModel.limitData[i].revert = oldModel.limitData[i].revert;
 #if defined(PCBTARANIS)
-    memcpy(g_model.limitData[i].name, oldModel.limitData[i].name, LEN_CHANNEL_NAME);
+    memcpy(newModel.limitData[i].name, oldModel.limitData[i].name, LEN_CHANNEL_NAME);
 #endif
   }
 #if defined(PCBTARANIS)
   int indexes[NUM_STICKS] = { 0, 0, 0, 0 };
 #endif
   for (uint8_t i=0; i<32; i++) {
-    ExpoData * expo = &g_model.expoData[i];
+    ExpoData * expo = &newModel.expoData[i];
     ExpoData_v215 * oldExpo = &oldModel.expoData[i];
     if (oldExpo->mode) {
 #if defined(PCBTARANIS)
@@ -634,7 +709,7 @@ void ConvertModel_215_to_216(ModelData &model)
       expo->mode = 3;
     }
     for (int c=0; c<4; c++) {
-      g_model.inputNames[i][c] = char2idx(STR_VSRCRAW[1+STR_VSRCRAW[0]*(i+1)+c]);
+      newModel.inputNames[i][c] = char2idx(STR_VSRCRAW[1+STR_VSRCRAW[0]*(i+1)+c]);
     }
   }
 #endif
@@ -644,21 +719,21 @@ void ConvertModel_215_to_216(ModelData &model)
     int8_t *nxt = &oldModel.points[5+5*i+oldModel.curves[i]];
     uint8_t size = nxt - cur;
     if ((size & 1) == 0) {
-      g_model.curves[i].type = CURVE_TYPE_CUSTOM;
-      g_model.curves[i].points = (size / 2) - 4;
+      newModel.curves[i].type = CURVE_TYPE_CUSTOM;
+      newModel.curves[i].points = (size / 2) - 4;
     }
     else {
-      g_model.curves[i].points = size-5;
+      newModel.curves[i].points = size-5;
     }
 #else
-    g_model.curves[i] = oldModel.curves[i];
+    newModel.curves[i] = oldModel.curves[i];
 #endif
   }
   for (uint16_t i=0; i<512; i++) {
-    g_model.points[i] = oldModel.points[i];
+    newModel.points[i] = oldModel.points[i];
   }
   for (uint8_t i=0; i<32; i++) {
-    LogicalSwitchData & sw = g_model.logicalSw[i];
+    LogicalSwitchData & sw = newModel.logicalSw[i];
     sw.func = oldModel.logicalSw[i].func;
     if (sw.func >= LS_FUNC_VEQUAL) sw.func += 1;
     if (sw.func >= LS_FUNC_RANGE) sw.func += 1;
@@ -725,7 +800,7 @@ void ConvertModel_215_to_216(ModelData &model)
     }
   }
   for (uint8_t i=0; i<32; i++) {
-    CustomFnData & fn = g_model.funcSw[i];
+    CustomFnData & fn = newModel.funcSw[i];
     fn.swtch = ConvertSwitch_215_to_216(oldModel.funcSw[i].swtch);
     fn.func = oldModel.funcSw[i].func;
     if (fn.func <= 15) {
@@ -798,13 +873,13 @@ void ConvertModel_215_to_216(ModelData &model)
     }
   }
 
-  g_model.swashR = oldModel.swashR;
-  g_model.swashR.collectiveSource = ConvertSource_215_to_216(g_model.swashR.collectiveSource);
+  newModel.swashR = oldModel.swashR;
+  newModel.swashR.collectiveSource = ConvertSource_215_to_216(newModel.swashR.collectiveSource);
 
   for (uint8_t i=0; i<9; i++) {
     if (i==0 || oldModel.flightModeData[i].swtch) {
-      memcpy(&g_model.flightModeData[i], &oldModel.flightModeData[i], sizeof(oldModel.flightModeData[i])); // the last 4 gvars will remain blank
-      g_model.flightModeData[i].swtch = ConvertSwitch_215_to_216(oldModel.flightModeData[i].swtch);
+      memcpy(&newModel.flightModeData[i], &oldModel.flightModeData[i], sizeof(oldModel.flightModeData[i])); // the last 4 gvars will remain blank
+      newModel.flightModeData[i].swtch = ConvertSwitch_215_to_216(oldModel.flightModeData[i].swtch);
 #if defined(PCBTARANIS)
       for (uint8_t t=0; t<4; t++) {
         int trim = oldModel.flightModeData[i].trim[t];
@@ -812,43 +887,43 @@ void ConvertModel_215_to_216(ModelData &model)
           trim -= 501;
           if (trim >= i)
             trim += 1;
-          g_model.flightModeData[i].trim[t].mode = 2*trim;
-          g_model.flightModeData[i].trim[t].value = 0;
+          newModel.flightModeData[i].trim[t].mode = 2*trim;
+          newModel.flightModeData[i].trim[t].value = 0;
         }
         else {
-          g_model.flightModeData[i].trim[t].mode = 2*i;
-          g_model.flightModeData[i].trim[t].value = trim;
+          newModel.flightModeData[i].trim[t].mode = 2*i;
+          newModel.flightModeData[i].trim[t].value = trim;
         }
       }
 #endif
     }
   }
-  g_model.thrTraceSrc = oldModel.thrTraceSrc;
+  newModel.thrTraceSrc = oldModel.thrTraceSrc;
 #if defined(PCBTARANIS)
   // S3 added
-  if (g_model.thrTraceSrc >= THROTTLE_SOURCE_S3)
-    g_model.thrTraceSrc += 1;
+  if (newModel.thrTraceSrc >= THROTTLE_SOURCE_S3)
+    newModel.thrTraceSrc += 1;
 #endif
-  g_model.switchWarningStates = oldModel.switchWarningStates >> 1;
-  g_model.nSwToWarn = (oldModel.switchWarningStates & 0x01) ? 0xFF : 0;
+  newModel.switchWarningStates = oldModel.switchWarningStates >> 1;
+  newModel.nSwToWarn = (oldModel.switchWarningStates & 0x01) ? 0xFF : 0;
   for (uint8_t i=0; i<5; i++) {
-    memcpy(g_model.gvars[i].name, oldModel.gvar_names[i], LEN_GVAR_NAME);
+    memcpy(newModel.gvars[i].name, oldModel.gvar_names[i], LEN_GVAR_NAME);
   }
 
-  memcpy(&g_model.frsky, &oldModel.frsky, 2*sizeof(FrSkyChannelData));
+  memcpy(&newModel.frsky, &oldModel.frsky, 2*sizeof(FrSkyChannelData));
   // gap for A3-A4
-  memcpy(((uint8_t *)&g_model.frsky) + 4*sizeof(FrSkyChannelData), ((uint8_t *)&oldModel.frsky) + 2*sizeof(FrSkyChannelData), sizeof(oldModel.frsky) - 2*sizeof(FrSkyChannelData));
+  memcpy(((uint8_t *)&newModel.frsky) + 4*sizeof(FrSkyChannelData), ((uint8_t *)&oldModel.frsky) + 2*sizeof(FrSkyChannelData), sizeof(oldModel.frsky) - 2*sizeof(FrSkyChannelData));
   // A3 and A4 introduced
-  if (g_model.frsky.voltsSource >= FRSKY_VOLTS_SOURCE_A3)
-    g_model.frsky.voltsSource += 2;
-  if (g_model.frsky.currentSource >= FRSKY_CURRENT_SOURCE_A3)
-    g_model.frsky.currentSource += 2;
+  if (newModel.frsky.voltsSource >= FRSKY_VOLTS_SOURCE_A3)
+    newModel.frsky.voltsSource += 2;
+  if (newModel.frsky.currentSource >= FRSKY_CURRENT_SOURCE_A3)
+    newModel.frsky.currentSource += 2;
 
   for (int i=0; i<3; i++) {
-    if (g_model.frsky.screensType & (1<<i)) {
+    if (newModel.frsky.screensType & (1<<i)) {
       // gauges
       for (int j=0; j<4; j++) {
-        uint8_t & source = g_model.frsky.screens[i].bars[j].source;
+        uint8_t & source = newModel.frsky.screens[i].bars[j].source;
         source = ConvertTelemetrySource_215_to_216(source);
       }
     }
@@ -856,7 +931,7 @@ void ConvertModel_215_to_216(ModelData &model)
       // numbers
       for (int j=0; j<4; j++) {
         for (int k=0; k<NUM_LINE_ITEMS; k++) {
-          uint8_t & source = g_model.frsky.screens[i].lines[j].sources[k];
+          uint8_t & source = newModel.frsky.screens[i].lines[j].sources[k];
           source = ConvertTelemetrySource_215_to_216(source);
         }
       }
@@ -864,12 +939,72 @@ void ConvertModel_215_to_216(ModelData &model)
   }
 
 #if defined(PCBTARANIS)
-  g_model.externalModule = oldModel.externalModule;
-  g_model.trainerMode = oldModel.trainerMode;
-  memcpy(g_model.curveNames, oldModel.curveNames, sizeof(g_model.curveNames));
+  newModel.externalModule = oldModel.externalModule;
+  newModel.trainerMode = oldModel.trainerMode;
+  memcpy(newModel.curveNames, oldModel.curveNames, sizeof(newModel.curveNames));
 #endif
 
-  memcpy(g_model.moduleData, oldModel.moduleData, sizeof(g_model.moduleData));
+  memcpy(newModel.moduleData, oldModel.moduleData, sizeof(newModel.moduleData));
+}
+
+void ConvertModel_216_to_217(ModelData &model)
+{
+  // Timer3 added
+  // 32bits Timers
+
+  assert(sizeof(ModelData_v216) <= sizeof(ModelData));
+
+  ModelData_v216 oldModel;
+  memcpy(&oldModel, &model, sizeof(oldModel));
+  ModelData &newModel = model;
+  memset(&newModel, 0, sizeof(ModelData));
+
+  char name[LEN_MODEL_NAME+1];
+  zchar2str(name, oldModel.header.name, LEN_MODEL_NAME);
+  TRACE("Model %s conversion from v216 to v217", name);
+
+  memcpy(&newModel.header, &oldModel.header, sizeof(newModel.header));
+  for (uint8_t i=0; i<2; i++) {
+    newModel.timers[i].mode = oldModel.timers[i].mode;
+    newModel.timers[i].start = oldModel.timers[i].start;
+    newModel.timers[i].countdownBeep = oldModel.timers[i].countdownBeep;
+    newModel.timers[i].minuteBeep = oldModel.timers[i].minuteBeep;
+    newModel.timers[i].persistent = oldModel.timers[i].persistent;
+    newModel.timers[i].value = oldModel.timers[i].value;
+  }
+  newModel.telemetryProtocol = oldModel.telemetryProtocol;
+  newModel.thrTrim = oldModel.thrTrim;
+  newModel.trimInc = oldModel.trimInc - 2;
+  newModel.disableThrottleWarning = oldModel.disableThrottleWarning;
+  newModel.displayChecklist = oldModel.displayChecklist;
+  newModel.extendedLimits = oldModel.extendedLimits;
+  newModel.extendedTrims = oldModel.extendedTrims;
+  newModel.throttleReversed = oldModel.throttleReversed;
+  newModel.beepANACenter = oldModel.beepANACenter;
+  memcpy(newModel.mixData, oldModel.mixData, sizeof(newModel.mixData));
+  memcpy(newModel.limitData, oldModel.limitData, sizeof(newModel.limitData));
+  memcpy(newModel.expoData, oldModel.expoData, sizeof(newModel.expoData));
+  memcpy(newModel.curves, oldModel.curves, sizeof(newModel.curves));
+  memcpy(newModel.points, oldModel.points, sizeof(newModel.points));
+  memcpy(newModel.logicalSw, oldModel.logicalSw, sizeof(newModel.logicalSw));
+  memcpy(newModel.funcSw, oldModel.funcSw, sizeof(newModel.funcSw));
+  newModel.swashR = oldModel.swashR;
+  memcpy(newModel.flightModeData, oldModel.flightModeData, sizeof(newModel.flightModeData));
+  newModel.thrTraceSrc = oldModel.thrTraceSrc;
+  newModel.switchWarningStates = oldModel.switchWarningStates;
+  newModel.nSwToWarn = oldModel.nSwToWarn;
+  memcpy(newModel.gvars, oldModel.gvars, sizeof(newModel.gvars));
+  newModel.frsky = oldModel.frsky;
+  newModel.externalModule = oldModel.externalModule;
+  memcpy(newModel.moduleData, oldModel.moduleData, sizeof(newModel.moduleData));
+#if defined(PCBTARANIS)
+  newModel.trainerMode = oldModel.trainerMode;
+  memcpy(newModel.scriptsData, oldModel.scriptsData, sizeof(newModel.scriptsData));
+  memcpy(newModel.curveNames, oldModel.curveNames, sizeof(newModel.curveNames));
+  memcpy(newModel.inputNames, oldModel.inputNames, sizeof(newModel.inputNames));
+#endif
+  newModel.nPotsToWarn = oldModel.nPotsToWarn;
+  memcpy(newModel.potPosition, oldModel.potPosition, sizeof(newModel.potPosition));
 }
 
 void ConvertModel(int id, int version)
@@ -879,6 +1014,11 @@ void ConvertModel(int id, int version)
   if (version == 215) {
     version = 216;
     ConvertModel_215_to_216(g_model);
+  }
+
+  if (version == 216) {
+    version = 217;
+    ConvertModel_216_to_217(g_model);
   }
 
   uint8_t currModel = g_eeGeneral.currModel;
@@ -894,6 +1034,9 @@ bool eeConvert()
 
   if (g_eeGeneral.version == 215) {
     msg = PSTR("EEprom Data v215");
+  }
+  else if (g_eeGeneral.version == 216) {
+    msg = PSTR("EEprom Data v216");
   }
   else {
     return false;
@@ -917,6 +1060,10 @@ bool eeConvert()
   if (version == 215) {
     version = 216;
     ConvertGeneralSettings_215_to_216(g_eeGeneral);
+  }
+  if (version == 216) {
+    version = 217;
+    ConvertGeneralSettings_216_to_217(g_eeGeneral);
   }
   s_eeDirtyMsk = EE_GENERAL;
   eeCheck(true);

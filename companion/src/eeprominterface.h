@@ -70,6 +70,7 @@ const uint8_t modn12x3[4][4]= {
   {4, 3, 2, 1} };
 
 #define C9X_MAX_MODELS            60
+#define C9X_MAX_TIMERS            3
 #define C9X_MAX_FLIGHT_MODES      9
 #define C9X_MAX_MIXERS            64
 #define C9X_MAX_INPUTS            32
@@ -199,7 +200,6 @@ enum HeliSwashTypes {
 #define NUM_CYC             3
 #define C9X_NUM_SWITCHES    10
 #define C9X_NUM_KEYS        6
-#define C9X_MAX_TIMERS      2
 
 extern const char * switches9X[];
 extern const char * switchesX9D[];
@@ -983,7 +983,7 @@ class ModelData {
 
     bool      used;
     char      name[12+1];
-    TimerData timers[2];
+    TimerData timers[C9X_MAX_TIMERS];
     bool      thrTrim;            // Enable Throttle Trim
     int       trimInc;            // Trim Increments
     bool      disableThrottleWarning;
@@ -1055,7 +1055,6 @@ class RadioData {
     ModelData models[C9X_MAX_MODELS];    
 };
 
-// TODO rename FlightPhase to FlightMode
 enum Capability {
   FlightModes,
   FlightModesName,

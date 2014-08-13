@@ -19,17 +19,6 @@
 
 #include "open9xStockeeprom.h"
 
-#define O9X_ARM_MAX_FLIGHT_MODES  9
-#define O9X_ARM_MAX_MIXERS  64
-#define O9X_ARM_MAX_EXPOS   32
-#define O9X_ARM_NUM_CHNOUT  32 // number of real output channels CH1-CH16
-#define O9X_ARM_NUM_CSW     32 // number of custom switches
-#define O9X_ARM_NUM_FSW     32 // number of functions assigned to switches
-#define O9X_ARM_MAX_CURVES  16
-#define O9X_ARM_NUM_POINTS  512
-#define O9X_ARM_MAX_CSFUNCOLD 13
-#define O9X_ARM_MAX_CSFUNC 15
-
 PACK(typedef struct t_Open9xArmTimerData_v202 {
   int8_t     mode;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
   uint16_t   val;
@@ -326,7 +315,7 @@ PACK(typedef struct t_Open9xArmFrSkyData_v211 {
 
 PACK(typedef struct t_Open9xArmModelData_v208 {
   char      name[10];             // 10 must be first for eeLoadModelName
-  Open9xArmTimerData_v202 timers[O9X_MAX_TIMERS];
+  Open9xArmTimerData_v202 timers[2];
   uint8_t   protocol:3;
   uint8_t   thrTrim:1;            // Enable Throttle Trim
   int8_t    ppmNCH:4;
@@ -338,22 +327,22 @@ PACK(typedef struct t_Open9xArmModelData_v208 {
   uint8_t   spare2:1;
   int8_t    ppmDelay;
   uint16_t  beepANACenter;        // 1<<0->A1.. 1<<6->A7
-  Open9xArmMixData_v208 mixData[O9X_ARM_MAX_MIXERS];
-  Open9xLimitData_v201 limitData[O9X_ARM_NUM_CHNOUT];
-  Open9xArmExpoData_v208  expoData[O9X_ARM_MAX_EXPOS];
-  int8_t    curves5[O9X_209_MAX_CURVE5][5];
-  int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xArmLogicalSwitchData_v208 customSw[O9X_ARM_NUM_CSW];
-  Open9xArmFuncSwData_v208 funcSw[O9X_ARM_NUM_FSW];
+  Open9xArmMixData_v208 mixData[64];
+  Open9xLimitData_v201 limitData[32];
+  Open9xArmExpoData_v208  expoData[32];
+  int8_t    curves5[8][5];
+  int8_t    curves9[8][9];
+  Open9xArmLogicalSwitchData_v208 customSw[32];
+  Open9xArmFuncSwData_v208 funcSw[32];
   Open9xArmSwashRingData_v208 swashR;
-  Open9xArmFlightModeData_v208 flightModeData[O9X_ARM_MAX_FLIGHT_MODES];
+  Open9xArmFlightModeData_v208 flightModeData[9];
   Open9xFrSkyData_v208 frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
   uint8_t   modelId;
   uint8_t   frskyLines[4];
   uint16_t  frskyLinesXtra;
-  int8_t    servoCenter[O9X_ARM_NUM_CHNOUT];
+  int8_t    servoCenter[32];
 
   uint8_t varioSource:3;
   uint8_t varioSpeedUpMin:5;    // if increment in 0.2m/s = 3.0m/s max
@@ -365,7 +354,7 @@ PACK(typedef struct t_Open9xArmModelData_v208 {
 
 PACK(typedef struct t_Open9xArmModelData_v209 {
   char      name[10];             // 10 must be first for eeLoadModelName
-  Open9xArmTimerData_v202 timers[O9X_MAX_TIMERS];
+  Open9xArmTimerData_v202 timers[2];
   uint8_t   protocol:3;
   uint8_t   thrTrim:1;            // Enable Throttle Trim
   int8_t    ppmNCH:4;
@@ -377,22 +366,22 @@ PACK(typedef struct t_Open9xArmModelData_v209 {
   uint8_t   spare2:1;
   int8_t    ppmDelay;
   uint16_t  beepANACenter;        // 1<<0->A1.. 1<<6->A7
-  Open9xArmMixData_v209 mixData[O9X_ARM_MAX_MIXERS];
-  Open9xLimitData_v201 limitData[O9X_ARM_NUM_CHNOUT];
-  Open9xArmExpoData_v208  expoData[O9X_ARM_MAX_EXPOS];
-  int8_t    curves5[O9X_209_MAX_CURVE5][5];
-  int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xArmLogicalSwitchData_v209 customSw[O9X_ARM_NUM_CSW];
-  Open9xArmFuncSwData_v208 funcSw[O9X_ARM_NUM_FSW];
+  Open9xArmMixData_v209 mixData[64];
+  Open9xLimitData_v201 limitData[32];
+  Open9xArmExpoData_v208  expoData[32];
+  int8_t    curves5[8][5];
+  int8_t    curves9[8][9];
+  Open9xArmLogicalSwitchData_v209 customSw[32];
+  Open9xArmFuncSwData_v208 funcSw[32];
   Open9xArmSwashRingData_v209 swashR;
-  Open9xArmFlightModeData_v208 flightModeData[O9X_ARM_MAX_FLIGHT_MODES];
+  Open9xArmFlightModeData_v208 flightModeData[9];
   Open9xFrSkyData_v208 frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
   uint8_t   modelId;
   uint8_t   frskyLines[4];
   uint16_t  frskyLinesXtra;
-  int8_t    servoCenter[O9X_ARM_NUM_CHNOUT];
+  int8_t    servoCenter[32];
 
   uint8_t varioSource:3;
   uint8_t varioSpeedUpMin:5;    // if increment in 0.2m/s = 3.0m/s max
@@ -405,7 +394,7 @@ PACK(typedef struct t_Open9xArmModelData_v209 {
 
 PACK(typedef struct t_Open9xArmModelData_v210 {
   char      name[10];             // 10 must be first for eeLoadModelName
-  Open9xArmTimerData_v202 timers[O9X_MAX_TIMERS];
+  Open9xArmTimerData_v202 timers[2];
   uint8_t   protocol:3;
   uint8_t   thrTrim:1;            // Enable Throttle Trim
   int8_t    ppmNCH:4;
@@ -417,20 +406,20 @@ PACK(typedef struct t_Open9xArmModelData_v210 {
   uint8_t   spare2:1;
   int8_t    ppmDelay;
   uint16_t  beepANACenter;        // 1<<0->A1.. 1<<6->A7
-  Open9xArmMixData_v210 mixData[O9X_ARM_MAX_MIXERS];
-  Open9xLimitData_v201 limitData[O9X_ARM_NUM_CHNOUT];
-  Open9xArmExpoData_v210  expoData[O9X_ARM_MAX_EXPOS];
-  int8_t    curves5[O9X_209_MAX_CURVE5][5];
-  int8_t    curves9[O9X_209_MAX_CURVE9][9];
-  Open9xArmLogicalSwitchData_v210 customSw[O9X_ARM_NUM_CSW];
-  Open9xArmFuncSwData_v210 funcSw[O9X_ARM_NUM_FSW];
+  Open9xArmMixData_v210 mixData[64];
+  Open9xLimitData_v201 limitData[32];
+  Open9xArmExpoData_v210  expoData[32];
+  int8_t    curves5[8][5];
+  int8_t    curves9[8][9];
+  Open9xArmLogicalSwitchData_v210 customSw[32];
+  Open9xArmFuncSwData_v210 funcSw[32];
   Open9xArmSwashRingData_v209 swashR;
-  Open9xArmFlightModeData_v208 flightModeData[O9X_ARM_MAX_FLIGHT_MODES];
+  Open9xArmFlightModeData_v208 flightModeData[9];
   Open9xArmFrSkyData_v210 frsky;
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
   uint8_t   modelId;
-  int8_t    servoCenter[O9X_ARM_NUM_CHNOUT];
+  int8_t    servoCenter[32];
 
   uint8_t varioSource:3;
   uint8_t varioSpeedUpMin:5;    // if increment in 0.2m/s = 3.0m/s max
@@ -444,7 +433,7 @@ PACK(typedef struct t_Open9xArmModelData_v210 {
 
 PACK(typedef struct t_Open9xArmModelData_v211 {
   char      name[10];             // 10 must be first for eeLoadModelName
-  Open9xArmTimerData_v202 timers[O9X_MAX_TIMERS];
+  Open9xArmTimerData_v202 timers[2];
   uint8_t   protocol:3;
   uint8_t   thrTrim:1;            // Enable Throttle Trim
   int8_t    ppmNCH:4;
@@ -456,21 +445,21 @@ PACK(typedef struct t_Open9xArmModelData_v211 {
   uint8_t   spare2:1;
   int8_t    ppmDelay;
   uint16_t  beepANACenter;        // 1<<0->A1.. 1<<6->A7
-  Open9xArmMixData_v210 mixData[O9X_ARM_MAX_MIXERS];
-  Open9xLimitData_v201 limitData[O9X_ARM_NUM_CHNOUT];
-  Open9xArmExpoData_v210  expoData[O9X_ARM_MAX_EXPOS];
-  int16_t   curves[O9X_ARM_MAX_CURVES];
-  int8_t    points[O9X_ARM_NUM_POINTS];
-  Open9xArmLogicalSwitchData_v210 customSw[O9X_ARM_NUM_CSW];
-  Open9xArmFuncSwData_v211 funcSw[O9X_ARM_NUM_FSW];
+  Open9xArmMixData_v210 mixData[64];
+  Open9xLimitData_v201 limitData[32];
+  Open9xArmExpoData_v210  expoData[32];
+  int16_t   curves[16];
+  int8_t    points[512];
+  Open9xArmLogicalSwitchData_v210 customSw[32];
+  Open9xArmFuncSwData_v211 funcSw[32];
   Open9xArmSwashRingData_v209 swashR;
-  Open9xArmFlightModeData_v208 flightModeData[O9X_ARM_MAX_FLIGHT_MODES];
+  Open9xArmFlightModeData_v208 flightModeData[9];
 
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
   uint8_t   modelId;
 
-  int8_t    servoCenter[O9X_ARM_NUM_CHNOUT];
+  int8_t    servoCenter[32];
 
   uint8_t switchWarningStates;
 
@@ -482,7 +471,7 @@ PACK(typedef struct t_Open9xArmModelData_v211 {
 
 PACK(typedef struct t_Open9xArmModelData_v212 {
   char      name[10];             // 10 must be first for eeLoadModelName
-  Open9xArmTimerData_v202 timers[O9X_MAX_TIMERS];
+  Open9xArmTimerData_v202 timers[2];
   uint8_t   protocol:3;
   uint8_t   thrTrim:1;            // Enable Throttle Trim
   int8_t    ppmNCH:4;
@@ -494,15 +483,15 @@ PACK(typedef struct t_Open9xArmModelData_v212 {
   uint8_t   spare1:1;
   int8_t    ppmDelay;
   uint16_t  beepANACenter;        // 1<<0->A1.. 1<<6->A7
-  Open9xArmMixData_v212 mixData[O9X_ARM_MAX_MIXERS];
-  Open9xLimitData_v211 limitData[O9X_ARM_NUM_CHNOUT];
-  Open9xArmExpoData_v212  expoData[O9X_ARM_MAX_EXPOS];
-  int16_t   curves[O9X_ARM_MAX_CURVES];
-  int8_t    points[O9X_ARM_NUM_POINTS];
-  Open9xArmLogicalSwitchData_v210 customSw[O9X_ARM_NUM_CSW];
-  Open9xArmFuncSwData_v211 funcSw[O9X_ARM_NUM_FSW];
+  Open9xArmMixData_v212 mixData[64];
+  Open9xLimitData_v211 limitData[32];
+  Open9xArmExpoData_v212  expoData[32];
+  int16_t   curves[16];
+  int8_t    points[512];
+  Open9xArmLogicalSwitchData_v210 customSw[32];
+  Open9xArmFuncSwData_v211 funcSw[32];
   Open9xArmSwashRingData_v210 swashR;
-  Open9xArmFlightModeData_v212 flightModeData[O9X_ARM_MAX_FLIGHT_MODES];
+  Open9xArmFlightModeData_v212 flightModeData[9];
 
   int8_t    ppmFrameLength;       // 0=22.5ms  (10ms-30ms) 0.5msec increments
   uint8_t   thrTraceSrc;
@@ -510,7 +499,7 @@ PACK(typedef struct t_Open9xArmModelData_v212 {
   uint8_t switchWarningStates;
 
   Open9xArmFrSkyData_v211 frsky;
-  Open9xTimerDataExtra timersXtra[O9X_MAX_TIMERS];
+  Open9xTimerDataExtra timersXtra[2];
   
   operator ModelData();
   t_Open9xArmModelData_v212() { memset(this, 0, sizeof(t_Open9xArmModelData_v212)); }
