@@ -190,12 +190,19 @@ void writeLogs()
       }
 
 #if defined(RTCLOCK)
-      struct gtm utm;
-      gettime(&utm);
-      f_printf(&g_oLogFile, "%4d-%02d-%02d,%02d:%02d:%02d.%02d0,", utm.tm_year+1900, utm.tm_mon+1, utm.tm_mday, utm.tm_hour, utm.tm_min, utm.tm_sec, g_ms100);
-#else
+      {
+        static struct gtm utm;
+        static gtime_t lastRtcTime = 0;
+        if ( g_rtcTime != lastRtcTime )
+        {
+          lastRtcTime = g_rtcTime;
+          gettime(&utm);
+        }
+        f_printf(&g_oLogFile, "%4d-%02d-%02d,%02d:%02d:%02d.%02d0,", utm.tm_year+1900, utm.tm_mon+1, utm.tm_mday, utm.tm_hour, utm.tm_min, utm.tm_sec, g_ms100);
+      }
+#else   // #if defined(RTCLOCK)
       f_printf(&g_oLogFile, "%d,", tmr10ms);
-#endif
+#endif  // #if defined(RTCLOCK)
 
 #if defined(FRSKY)
 #if defined(CPUARM)

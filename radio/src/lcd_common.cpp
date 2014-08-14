@@ -602,9 +602,9 @@ void lcdDrawTelemetryTopBar()
 #endif
 
 #if defined(CPUARM) && defined(RTCLOCK)
-void putsTime(xcoord_t x, uint8_t y, struct gtm t, LcdFlags att)
+void putsRtcTime(xcoord_t x, uint8_t y, LcdFlags att)
 {
-  putsTimer(x, y, t.tm_hour*60+t.tm_min, att, att);
+  putsTimer(x, y, getValue(MIXSRC_FIRST_TELEM-1+TELEM_TX_TIME), att, att);
 }
 #endif
 
@@ -928,10 +928,7 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
 #if defined(CPUARM) && defined(RTCLOCK)
     case TELEM_TX_TIME-1:
     {
-      gtm t;
-      t.tm_hour = val / 60;
-      t.tm_min = val % 60;
-      putsTime(x, y, t, att);
+      putsRtcTime(x, y, att);
       break;
     }
 #endif

@@ -347,9 +347,7 @@ void displayTopBar()
     LCD_ICON(BAR_VOLUME_X, BAR_Y, ICON_SPEAKER3);
 
   /* RTC time */
-  struct gtm t;
-  gettime(&t);
-  putsTime(BAR_TIME_X, BAR_Y+1, t, LEFT|TIMEBLINK);
+  putsRtcTime(BAR_TIME_X, BAR_Y+1, LEFT|TIMEBLINK);
 
   /* The background */
   lcd_filled_rect(BAR_X, BAR_Y, BAR_W, BAR_H, SOLID, FILL_WHITE|GREY(12)|ROUND);
