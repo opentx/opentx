@@ -348,6 +348,8 @@ void pushPrompt(uint16_t prompt, uint8_t id=0);
   #define START_SILENCE_PERIOD()
 #endif
 
+char * getAudioPath(char * path);
+
 void referenceSystemAudioFiles();
 void referenceModelAudioFiles();
 

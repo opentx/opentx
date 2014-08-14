@@ -850,6 +850,9 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
 {
 #if defined(SIMU)
   printf("playFile(\"%s\", flags=%x, id=%d)\n", filename, flags, id);
+  if (strlen(filename) > AUDIO_FILENAME_MAXLEN) {
+    TRACE("file name too long! maximum length is %d characters", AUDIO_FILENAME_MAXLEN);
+  }
   fflush(stdout);
 #else
 
