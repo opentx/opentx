@@ -1,8 +1,7 @@
-﻿##OpenTX Next Branch
+﻿##OpenTX Master Branch
 
-You have found your way to the GitHub repository site for the OpenTX Next Branch. This code branch holds the source code for the ongoing development.    
+You have found your way to the GitHub repository site for the OpenTX Master Branch. This code branch holds the source code for the latest stable release.    
 
-The stable release code is not here, it is in the master branch.  
-Under no circumstances build and use software from this branch for real world application. At times you will be more or less guaranteed to crash your plane and destroy all your model settings.  
+The ongoing development is not done in this branch. It is performed in the branch called next.
 
 Refer to the opentx.wiki for information about setting up the tool chains for building OpenTX and OpenTX Companion as well as other development related issues.
