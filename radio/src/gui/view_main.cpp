@@ -164,15 +164,22 @@ void displayTrims(uint8_t phase)
     uint8_t att = ROUND;
     int16_t val = getTrimValue(phase, i);
 
-    if (val < -125 || val > 125)
-      att = BLINK|INVERS|ROUND;
-
-    if (val < -(TRIM_LEN+1)*4)
+#if !defined(CPUM64) || !defined(FRSKY)
+    int16_t dir = val;
+    bool exttrim = false;
+    if (val < -125 || val > 125) {
+      exttrim = true;
+    }
+#endif
+    if (val < -(TRIM_LEN+1)*4) {
       val = -(TRIM_LEN+1);
-    else if (val > (TRIM_LEN+1)*4)
+    }
+    else if (val > (TRIM_LEN+1)*4) {
       val = TRIM_LEN+1;
-    else
+    }
+    else {
       val /= 4;
+    }
 
     if (vert[i]) {
       ym = 31;
@@ -182,6 +189,18 @@ void displayTrims(uint8_t phase)
         lcd_vline(xm+1, ym-1,  3);
       }
       ym -= val;
+#if !defined(CPUM64) || !defined(FRSKY)
+      lcd_filled_rect(xm-3, ym-3, 7, 7, SOLID, att|ERASE);
+      if (dir >= 0) {
+        lcd_hline(xm-1, ym-1,  3);
+      }
+      if (dir <= 0) {
+        lcd_hline(xm-1, ym+1,  3);
+      }
+      if (exttrim) {
+        lcd_hline(xm-1, ym,  3);
+      }
+#endif
     }
     else {
       ym = 60;
@@ -189,6 +208,18 @@ void displayTrims(uint8_t phase)
       lcd_hline(xm-1, ym-1,  3);
       lcd_hline(xm-1, ym+1,  3);
       xm += val;
+#if !defined(CPUM64) || !defined(FRSKY)
+      lcd_filled_rect(xm-3, ym-3, 7, 7, SOLID, att|ERASE);
+      if (dir >= 0) {
+        lcd_vline(xm+1, ym-1,  3);
+      }
+      if (dir <= 0) {
+        lcd_vline(xm-1, ym-1,  3);
+      }
+      if (exttrim) {
+        lcd_vline(xm, ym-1,  3);
+      }
+#endif
     }
     lcd_square(xm-3, ym-3, 7, att);
   }
