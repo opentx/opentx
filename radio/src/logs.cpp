@@ -115,7 +115,9 @@ const pm_char * openLogs()
     f_puts("Time,", &g_oLogFile);
 #endif
 
-#if defined(CPUARM) && defined(FRSKY)
+#if defined(PCBTARANIS) && defined(REVPLUS)
+    f_puts("RSSI,A1,A2,A3,A4,", &g_oLogFile);
+#elif defined(CPUARM) && defined(FRSKY)
     f_puts("SWR,RSSI,A1,A2,A3,A4,", &g_oLogFile);
 #elif defined(FRSKY)
     f_puts("Buffer,RX,TX,A1,A2,", &g_oLogFile);
@@ -198,7 +200,9 @@ void writeLogs()
 #endif
 
 #if defined(FRSKY)
-#if defined(CPUARM)
+#if defined(PCBTARANIS) && defined(REVPLUS)
+      f_printf(&g_oLogFile, "%d,", RAW_FRSKY_MINMAX(frskyData.rssi[0]));
+#elif defined(CPUARM)
       f_printf(&g_oLogFile, "%d,%d,", RAW_FRSKY_MINMAX(frskyData.swr), RAW_FRSKY_MINMAX(frskyData.rssi[0]));
 #else
       f_printf(&g_oLogFile, "%d,%d,%d,", frskyStreaming, RAW_FRSKY_MINMAX(frskyData.rssi[0]), RAW_FRSKY_MINMAX(frskyData.rssi[1]));

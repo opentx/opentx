@@ -347,7 +347,7 @@ void telemetryWakeup()
     alarmsCheckTime = get_tmr10ms() + 100; /* next check in 1 second */
 
     if (alarmsCheckStep == ALARM_SWR_STEP) {
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) && !defined(REVPLUS)
       if (IS_FRSKY_SPORT_PROTOCOL() && frskyData.swr.value > 0x33) {
         AUDIO_SWR_RED();
         POPUP_WARNING(STR_ANTENNAPROBLEM);
