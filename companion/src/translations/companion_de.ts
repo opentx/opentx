@@ -2096,7 +2096,7 @@ May be different from firmware language</source>
     </message>
     <message>
         <source>Popup enabled</source>
-        <translation type="obsolete">Anzeige im Fenster</translation>
+        <translation type="obsolete">GVAR im Popupfenster anzeigen</translation>
     </message>
 </context>
 <context>
@@ -2134,7 +2134,7 @@ May be different from firmware language</source>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="169"/>
         <source>Popup enabled</source>
-        <translation>Anzeige im Fenster</translation>
+        <translation>Anzeige im Popupfenster freigeben</translation>
     </message>
 </context>
 <context>
@@ -2237,7 +2237,7 @@ Die Werte können sein</translation>
     <message>
         <location filename="../generaledit.ui" line="126"/>
         <source>Speaker Pitch (spkr only)</source>
-        <translation>Lautstärke (nur PiSpkr)</translation>
+        <translation>Lautstärke (Spkr Pitch)</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1082"/>
@@ -2623,7 +2623,7 @@ Mode 4:
     <message>
         <location filename="../generaledit.ui" line="1450"/>
         <source>Speaker Volume</source>
-        <translation>Lautstärke</translation>
+        <translation>Lautstärke Gesamt</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="1599"/>
@@ -2925,12 +2925,12 @@ Mode 4:
     <message>
         <location filename="../generaledit.ui" line="1980"/>
         <source>Play Delay (switch mid position)</source>
-        <translation type="unfinished"></translation>
+        <translation>Play verzögern(Schalter Mitte Pos)</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="2020"/>
         <source>Backlight flash on alarm</source>
-        <translation type="unfinished"></translation>
+        <translation>LCD Beleucht. an bei Alarm</translation>
     </message>
     <message>
         <location filename="../generaledit.ui" line="3259"/>
@@ -5723,12 +5723,12 @@ Anzahl Sekunden fest, welche der Mischer für einen Durchgang von -100 bis +100 
     <message>
         <location filename="../modeledit/setup_module.ui" line="414"/>
         <source>Hold</source>
-        <translation>Halten letzte</translation>
+        <translation>Halte Servopos.</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="419"/>
         <source>Custom</source>
-        <translation>frei Einstellbar</translation>
+        <translation>Frei einstellbar</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="424"/>
@@ -5738,7 +5738,7 @@ Anzahl Sekunden fest, welche der Mischer für einen Durchgang von -100 bis +100 
     <message>
         <location filename="../modeledit/setup_module.ui" line="429"/>
         <source>Receiver</source>
-        <translation>Empfänger</translation>
+        <translation>Empfänger gesp.</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="443"/>
@@ -5817,17 +5817,17 @@ Anzahl Sekunden fest, welche der Mischer für einen Durchgang von -100 bis +100 
     <message>
         <location filename="../wizarddialog.cpp" line="919"/>
         <source>Throttle Cut</source>
-        <translation>Gas Schalter</translation>
+        <translation>Gas Freigabe Schalter</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="920"/>
         <source>Throttle Timer</source>
-        <translation>Gas Timer</translation>
+        <translation>Gas Timer starten</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="921"/>
         <source>Flight Timer</source>
-        <translation>Flug Timer</translation>
+        <translation>Flug Timer starten</translation>
     </message>
 </context>
 <context>
@@ -7085,7 +7085,7 @@ Anzahl Sekunden fest, welche der Mischer für einen Durchgang von -100 bis +100 
     <message>
         <location filename="../eeprominterface.cpp" line="727"/>
         <source>Override %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Override %1</translation>
     </message>
     <message>
         <source>STAY(%1, [%2:%3])</source>
@@ -7127,7 +7127,7 @@ Anzahl Sekunden fest, welche der Mischer für einen Durchgang von -100 bis +100 
     <message>
         <location filename="../eeprominterface.cpp" line="759"/>
         <source>Volume</source>
-        <translation>Lautstärke</translation>
+        <translation>Lautstärke Gesamt</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="761"/>
@@ -7568,12 +7568,12 @@ Anzahl Sekunden fest, welche der Mischer für einen Durchgang von -100 bis +100 
     <message>
         <location filename="../eeprominterface.cpp" line="464"/>
         <source>TH%</source>
-        <translation>Gs%</translation>
+        <translation>GS%</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="464"/>
         <source>THt</source>
-        <translation>Gst</translation>
+        <translation>GSt</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="498"/>
@@ -9584,11 +9584,11 @@ umgedreht und ist dann vorne
     </message>
     <message>
         <source>Persistent</source>
-        <translation type="obsolete">Dauerhaft</translation>
+        <translation>Dauerhaft</translation>
     </message>
     <message>
         <source> (00:00:00)</source>
-        <translation type="obsolete">(00:00:00)</translation>
+        <translation>(00:00:00)</translation>
     </message>
 </context>
 <context>
@@ -9611,17 +9611,17 @@ umgedreht und ist dann vorne
     <message>
         <location filename="../modeledit/setup.cpp" line="33"/>
         <source>Not persistent</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht dauerhaft</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="34"/>
         <source>Persistent (flight)</source>
-        <translation type="unfinished"></translation>
+        <translation>Dauerhaft für Flug</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="35"/>
         <source>Persistent (manual reset)</source>
-        <translation type="unfinished"></translation>
+        <translation>Dauerhaft (per Hand reset)</translation>
     </message>
 </context>
 <context>
@@ -9833,7 +9833,7 @@ umgedreht und ist dann vorne
     <message>
         <location filename="../wizarddialog.cpp" line="46"/>
         <source>Select additional options</source>
-        <translation type="unfinished"></translation>
+        <translation>Auswahl von zusätzlichen Optionen</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="47"/>
