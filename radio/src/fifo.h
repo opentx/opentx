@@ -56,7 +56,7 @@ class Fifo
     }
 
     bool pop(uint8_t & byte) {
-      if (ridx == widx) {
+      if (empty()) {
         return false;
       }
       else {
@@ -64,6 +64,10 @@ class Fifo
         ridx = (ridx+1) & (N-1);
         return true;
       }
+    }
+
+    bool empty() {
+      return (ridx == widx);
     }
 
   protected:
