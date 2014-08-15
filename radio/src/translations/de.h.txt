@@ -1,4 +1,4 @@
-/*   German checked 26.06.2014 Test 019 Taranis, Th9, 9XR, 9XR-Pro  
+/*   German checked 14.08.2014 opentx V2.09 Taranis, Th9, 9XR, 9XR-Pro  
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bernet Andre <bernet.andre@gmail.com>
@@ -80,10 +80,10 @@
 #define TR_TRNCHN              "CH1CH2CH3CH4"
 
 #define LEN_UART3MODES         "\017"
-#define TR_UART3MODES          "AUS\0           ""S-Port Data Out\0""Telemetry\0     ""Debug\0         "
+#define TR_UART3MODES          "AUS\0           ""S-Port DataOut\0""Telemetrie\0    ""Debug\0         "
 
-#define LEN_POTTYPES           "\017"
-#define TR_POTTYPES            "Kein\0          ""Pot with detent""Stufen-Schalter ""Poti\0"
+#define LEN_POTTYPES           "\017" 
+#define TR_POTTYPES            "Kein\0          ""Poti mit Raste ""Stufen-Schalter""Poti ohne Raste\0"
 
 #define LEN_DATETIME           "\005"
 #define TR_DATETIME            "DATE:""ZEIT:"
@@ -92,7 +92,7 @@
 #define TR_VLCD                "Normal""Optrex"
 
 #define LEN_VPERSISTENT        "\014"
-#define TR_VPERSISTENT         "OFF\0        ""Flight\0     ""Manual Reset"
+#define TR_VPERSISTENT         "AUS\0        ""Flight\0     ""Manual Reset"
 
 #define LEN_COUNTRYCODES       TR("\002", "\007")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Amerika""Japan\0 ""Europa\0")
@@ -264,8 +264,10 @@
   #define TR_CFN_TEST
 #endif
 
-#if defined(OVERRIDE_CHANNEL_FUNCTION)
-  #define TR_CFN_SAFETY        "Sicher\0   "
+#if defined(OVERRIDE_CHANNEL_FUNCTION) && LCD_W >= 212
+  #define TR_CFN_SAFETY        "Sicher \0  "   //Override
+#elif defined(OVERRIDE_CHANNEL_FUNCTION)
+  #define TR_CFN_SAFETY        "Sicher\0   "  //Overr.
 #else
   #define TR_CFN_SAFETY        "---\0      "
 #endif
@@ -283,7 +285,7 @@
 #define LEN_VFSWRESET          TR("\004", "\011")
 
 #if defined(FRSKY)
-  #define TR_FSW_RESET_TELEM   TR("Telm", "Telemetrie")
+  #define TR_FSW_RESET_TELEM   TR("Telm", "Telemetry")
 #else
   #define TR_FSW_RESET_TELEM
 #endif
@@ -464,7 +466,7 @@
 #define TR_VTRAINERMODES       "Lehrer\0""Schüler\0"  // "Master""Slave\0"
 
 #define LEN_VFAILSAFE          "\011"
-#define TR_VFAILSAFE           "Hold\0    ""Custom\0  ""No pulses""Receiver\0"
+#define TR_VFAILSAFE           "Hold Pos\0""Custom\0  ""No Pulses""Receiver\0"
 
 #if defined(MAVLINK)
   #define LEN_MAVLINK_BAUDS    "\006"
@@ -649,7 +651,7 @@
 #define TR_MENUDIAG            TR("Schalt.","Schalter Test")
 #define TR_MENUANA             "Analog Test"
 #define TR_MENUCALIBRATION     TR("KALIB. ANALOG","KALIBRIERUNG STICKS+POTIS")
-#define TR_TRIMS2OFFSETS       "Kopie Trim to Servo-Mitte"  // "Trims => Offset"
+#define TR_TRIMS2OFFSETS       TR("All Trims => Subtrim","Kopie alle Trims to Servo-Mitte")  // "Trims => Offset"
 #define TR_MENUMODELSEL        TR("MODELLE","MODELL WÄHLEN")
 #define TR_MENUSETUP           TR("MODELL EINST.","MODELL EINSTELLUNGEN")
 #define TR_MENUFLIGHTPHASE     "FLUGPHASE"
@@ -796,16 +798,16 @@
 #define TR_MODULE_RANGE        "[Range]"
 #define TR_RESET_BTN           "[Reset]"
 #define TR_SET                 "[Set]"
-#define TR_TRAINER             "----DSC Buchse PPM In/Out------" //DSC Buchse Funktion
+#define TR_TRAINER             "----DSC Buchse PPM In/Out------" //DSC Buchse Trainer Buchse
 #define TR_ANTENNAPROBLEM      CENTER "TX Antennen Problem!"
 #define TR_MODELIDUSED         TR("ID schon benutzt","Modell ID schon benutzt")
 #define TR_MODULE              INDENT "Modul-Typ"
 #define TR_TELEMETRY_TYPE      TR("Type", "Telemetry Type")
-#define TR_CHANNELRANGE        TR(INDENT "Kanäle", INDENT " Ausgangs Kanäle")  //wg 9XR-Pro
+#define TR_CHANNELRANGE        TR(INDENT "Kanäle", INDENT "Ausgangs Kanäle")  //wg 9XR-Pro
 #define TR_LOWALARM            INDENT "Vor-Alarm bei"
 #define TR_CRITICALALARM       INDENT "Kritisch Alarm"
-#define TR_ENABLE_POPUP        "Enable Popup"
-#define TR_DISABLE_POPUP       "Disable Popup"
+#define TR_ENABLE_POPUP        "Freigabe Popup Fenster"
+#define TR_DISABLE_POPUP       "Sperren  Popup Fenster"
 #define TR_CURVE_PRESET        "Gerade 0 11 22 33 45"
 #define TR_PRESET              "Preset"
 #define TR_MIRROR              "Spiegeln"
@@ -816,8 +818,8 @@
 #define TR_PT                  "Pt"
 #define TR_PTS                 "Pts"
 #define TR_SMOOTH              "Runden"
-#define TR_COPY_STICKS_TO_OFS  "Kopie Stick to Servo-Mitte"  // "Trims => Offset"
-#define TR_COPY_TRIMS_TO_OFS   "Copy trims to subtrim"
+#define TR_COPY_STICKS_TO_OFS  "Kopie Stick to Servo-Mitte"  
+#define TR_COPY_TRIMS_TO_OFS   "Kopie Trimm to Servo-Mitte"  // "Trim to Subtrim"
 #define TR_PERSISTENT_MAH      TR(INDENT"Spr. mAh",INDENT "Speichern mAh") //9XR-Pro
 #define TR_PREFLIGHT           "----Preflight Checks----"
 #define TR_CHECKLIST           TR(INDENT "Checklist",INDENT "Display Checklist") //9XR-Pro
@@ -826,7 +828,7 @@
 #define TR_SCRIPT              "Lua-Script"
 #define TR_INPUTS              "Inputs"
 #define TR_OUTPUTS             "Outputs"
-#define TR_EEBACKUP            "\004[ENTER Long] to backup the EEPROM"
+#define TR_EEBACKUP            "\004[ENTER Long] Backup EEPROM->SD-Card"
 #define TR_TO_MANY_LUA_SCRIPTS "Too many Lua scripts!"
 
 #if defined(MAVLINK)
