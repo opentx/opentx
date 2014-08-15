@@ -529,6 +529,11 @@ const BYTE ExCvt[] = _EXCVT;	/* Upper conversion table for extended chars */
 
 ---------------------------------------------------------------------------*/
 
+#if defined(TRACE_FATFS)
+  #define TRACE_FATFS_EVENT(condition, event, data)  TRACE_EVENT(condition, event, data)
+#else
+  #define TRACE_FATFS_EVENT(condition, event, data)  
+#endif
 
 /*-----------------------------------------------------------------------*/
 /* String functions                                                      */
@@ -2555,11 +2560,15 @@ FRESULT f_write (
 	*bw = 0;	/* Clear write byte counter */
 
 	res = validate(fp);						/* Check validity */
-	if (res != FR_OK) LEAVE_FF(fp->fs, res);
-	if (fp->flag & FA__ERROR)				/* Aborted file? */
+	if (res != FR_OK) { TRACE_FATFS_EVENT(1, ff_f_write_validate, res); LEAVE_FF(fp->fs, res); }
+	if (fp->flag & FA__ERROR)	{			/* Aborted file? */
+		TRACE_FATFS_EVENT(1, ff_f_write_flag, fp->flag);
 		LEAVE_FF(fp->fs, FR_INT_ERR);
-	if (!(fp->flag & FA_WRITE))				/* Check access mode */
+	}
+	if (!(fp->flag & FA_WRITE))	{			/* Check access mode */
+		TRACE_FATFS_EVENT(1, ff_f_write_flag, fp->flag);
 		LEAVE_FF(fp->fs, FR_DENIED);
+	}
 	if ((DWORD)(fp->fsize + btw) < fp->fsize) btw = 0;	/* File size cannot reach 4GB */
 
 	for ( ;  btw;							/* Repeat until all data written */
@@ -2580,29 +2589,35 @@ FRESULT f_write (
 						clst = create_chain(fp->fs, fp->clust);	/* Follow or stretch cluster chain on the FAT */
 				}
 				if (clst == 0) break;		/* Could not allocate a new cluster (disk full) */
-				if (clst == 1) ABORT(fp->fs, FR_INT_ERR);
-				if (clst == 0xFFFFFFFF) ABORT(fp->fs, FR_DISK_ERR);
+				if (clst == 1) { TRACE_FATFS_EVENT(1, ff_f_write_clst, FR_INT_ERR); ABORT(fp->fs, FR_INT_ERR); }
+				if (clst == 0xFFFFFFFF) { TRACE_FATFS_EVENT(1, ff_f_write_clst, FR_DISK_ERR); ABORT(fp->fs, FR_DISK_ERR); }
 				fp->clust = clst;			/* Update current cluster */
 			}
 #if _FS_TINY
-			if (fp->fs->winsect == fp->dsect && sync_window(fp->fs))	/* Write-back sector cache */
+			if (fp->fs->winsect == fp->dsect && sync_window(fp->fs)) {	/* Write-back sector cache */
+				TRACE_FATFS_EVENT(1, ff_f_write_sync_window, fp->dsect);
 				ABORT(fp->fs, FR_DISK_ERR);
+			}
 #else
 			if (fp->flag & FA__DIRTY) {		/* Write-back sector cache */
-				if (disk_write(fp->fs->drv, fp->buf, fp->dsect, 1) != RES_OK)
+				if (disk_write(fp->fs->drv, fp->buf, fp->dsect, 1) != RES_OK) {
+					TRACE_FATFS_EVENT(1, ff_f_write_disk_write_dirty, fp->dsect);
 					ABORT(fp->fs, FR_DISK_ERR);
+				}
 				fp->flag &= ~FA__DIRTY;
 			}
 #endif
 			sect = clust2sect(fp->fs, fp->clust);	/* Get current sector */
-			if (!sect) ABORT(fp->fs, FR_INT_ERR);
+			if (!sect) { TRACE_FATFS_EVENT(1, ff_f_write_clust2sect, fp->clust); ABORT(fp->fs, FR_INT_ERR); }
 			sect += csect;
 			cc = btw / SS(fp->fs);			/* When remaining bytes >= sector size, */
 			if (cc) {						/* Write maximum contiguous sectors directly */
 				if (csect + cc > fp->fs->csize)	/* Clip at cluster boundary */
 					cc = fp->fs->csize - csect;
-				if (disk_write(fp->fs->drv, wbuff, sect, (BYTE)cc) != RES_OK)
+				if (disk_write(fp->fs->drv, wbuff, sect, (BYTE)cc) != RES_OK) {
+					TRACE_FATFS_EVENT(1, ff_f_write_disk_write, sect);
 					ABORT(fp->fs, FR_DISK_ERR);
+				}
 #if _FS_TINY
 				if (fp->fs->winsect - sect < cc) {	/* Refill sector cache if it gets invalidated by the direct write */
 					mem_cpy(fp->fs->win, wbuff + ((fp->fs->winsect - sect) * SS(fp->fs)), SS(fp->fs));
@@ -2625,8 +2640,10 @@ FRESULT f_write (
 #else
 			if (fp->dsect != sect) {		/* Fill sector cache with file data */
 				if (fp->fptr < fp->fsize &&
-					disk_read(fp->fs->drv, fp->buf, sect, 1) != RES_OK)
+					disk_read(fp->fs->drv, fp->buf, sect, 1) != RES_OK) {
+						TRACE_FATFS_EVENT(1, ff_f_write_disk_read, sect);
 						ABORT(fp->fs, FR_DISK_ERR);
+					}
 			}
 #endif
 			fp->dsect = sect;
@@ -2634,8 +2651,10 @@ FRESULT f_write (
 		wcnt = SS(fp->fs) - ((UINT)fp->fptr % SS(fp->fs));/* Put partial sector into file I/O buffer */
 		if (wcnt > btw) wcnt = btw;
 #if _FS_TINY
-		if (move_window(fp->fs, fp->dsect))	/* Move sector window */
+		if (move_window(fp->fs, fp->dsect)) {	/* Move sector window */
+			TRACE_FATFS_EVENT(1, ff_f_write_move_window, fp->dsect);
 			ABORT(fp->fs, FR_DISK_ERR);
+		}
 		mem_cpy(&fp->fs->win[fp->fptr % SS(fp->fs)], wbuff, wcnt);	/* Fit partial sector */
 		fp->fs->wflag = 1;
 #else

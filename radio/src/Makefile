@@ -289,6 +289,10 @@ USB = JOYSTICK
 # NO - normal behaviour, show real channel values
 CHANNELS_MONITOR_INV_HIDE = NO
 
+
+TRACE_SD_CARD = NO
+TRACE_FATFS = NO
+
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
@@ -303,6 +307,7 @@ CPPSRC =
 INCDIRS = . translations
 EXTRAINCDIRS = 
 LUADEP =
+DEBUG_TRACE_BUFFER = NO
 
 # MCU name
 ifneq ($(PCB), $(filter $(PCB), STD 9X 9XR STD128 9X128 9XR128 9X2561 9XR2561 GRUVIN9X MEGA2560 SKY9X 9XRPRO TARANIS))
@@ -657,6 +662,19 @@ ifeq ($(PCB), TARANIS)
   else
     CPPDEFS = -DREV4
   endif
+	ifeq ($(TRACE_SD_CARD), YES)
+		DEBUG = YES
+		DEBUG_TRACE_BUFFER = YES
+	  CPPDEFS += -DTRACE_SD_CARD
+	endif
+	ifeq ($(TRACE_FATFS), YES)
+		DEBUG = YES
+		DEBUG_TRACE_BUFFER = YES
+	  CPPDEFS += -DTRACE_FATFS
+	endif
+	ifeq ($(DEBUG_TRACE_BUFFER), YES)
+	  CPPDEFS += -DDEBUG_TRACE_BUFFER 
+	endif
   LDSCRIPT = targets/taranis/stm32_flash_bl.ld
   TRGT = arm-none-eabi-
   MCU  = cortex-m3
@@ -1092,6 +1110,7 @@ ifeq ($(3POS), POT3)
   # EEPROM_VARIANT += ${3POS_VARIANT}
 endif
 
+
 #---------------- Compiler Options C++ ----------------
 #  -g*:          generate debugging information
 #  -O*:          optimization level
@@ -1367,6 +1386,7 @@ endif
 # Concatenate all sources files in one big file to optimize size
 allsrc.cpp: Makefile $(BOARDSRC) $(CPPSRC) $(EXTRABOARDSRC)
 	@rm -f allsrc.cpp 
+	@echo All soruces: $(CPPSRC)
 	for f in $(BOARDSRC) $(CPPSRC) $(EXTRABOARDSRC) ; do echo "# 1 \"$$f\"" >> allsrc.cpp; cat "$$f" >> allsrc.cpp; done
 
 remallsrc:

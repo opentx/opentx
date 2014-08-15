@@ -130,6 +130,13 @@ void menuStatisticsDebug(uint8_t event)
       maxMixerDuration  = 0;
       AUDIO_KEYPAD_UP();
       break;
+
+#if defined(DEBUG_TRACE_BUFFER)
+    case EVT_KEY_FIRST(KEY_UP):
+      pushMenu(menuTraceBuffer);
+      return;
+#endif //#if defined(DEBUG_SD_CARD)
+
     case EVT_KEY_FIRST(KEY_DOWN):
       chainMenu(menuStatisticsView);
       return;
@@ -234,3 +241,53 @@ void menuStatisticsDebug(uint8_t event)
   lcd_puts(3*FW, 7*FH+1, STR_MENUTORESET);
   lcd_status_line();
 }
+
+
+#if defined(DEBUG_TRACE_BUFFER)
+
+void menuTraceBuffer(uint8_t event)
+{
+  switch(event)
+  {
+    case EVT_KEY_LONG(KEY_ENTER):
+      dumpTraceBuffer();
+      killEvents(event);
+      break;
+  }
+
+  SIMPLE_SUBMENU("Trace Buffer", TRACE_BUFFER_LEN);
+
+  uint8_t y = 0;
+  uint8_t k = 0;
+  int8_t sub = m_posVert;
+
+  lcd_putc(0, FH, '#');
+  lcd_puts(4*FW, FH, "Time");
+  lcd_puts(14*FW, FH, "Event");
+  lcd_puts(20*FW, FH, "Data");
+
+  for (uint8_t i=0; i<LCD_LINES-2; i++) {
+    y = 1 + (i+2)*FH;
+    k = i+s_pgOfs;
+
+    //item
+    lcd_outdezAtt(0, y, k, LEFT | (sub==k ? INVERS : 0));
+
+    const struct TraceElement * te = getTraceElement(k);
+    if (te) {
+      //time
+      putstime_t tme = te->time % SECS_PER_DAY;
+      putsTimer(4*FW, y, tme, TIMEHOUR|LEFT, TIMEHOUR|LEFT);
+      //event
+      lcd_outdezNAtt(14*FW, y, te->event, LEADING0|LEFT, 3);
+      //data
+      lcd_putsn  (20*FW, y, "0x", 2);
+      lcd_outhex4(22*FW-2, y, (uint16_t)(te->data >> 16));
+      lcd_outhex4(25*FW, y, (uint16_t)(te->data & 0xFFFF));
+    }
+
+  }
+
+
+}
+#endif //#if defined(DEBUG_TRACE_BUFFER)
