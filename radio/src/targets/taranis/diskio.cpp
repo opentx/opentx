@@ -594,7 +594,7 @@ BYTE send_cmd (
     res = rcvr_spi();
   } while ((res & 0x80) && --n);
 
-  TRACE_SD_CARD_EVENT((n == 0), sd_send_cmd_rcvr_spi, ((uint32_t)(res) << 8) + cmd);
+  TRACE_SD_CARD_EVENT((res != 0), sd_send_cmd_rcvr_spi, ((uint32_t)(n) << 16) + ((uint32_t)(res) << 8) + cmd);
 
   return res;                     /* Return with the response value */
 }
@@ -704,7 +704,7 @@ int8_t SD_ReadSectors(uint8_t *buff, uint32_t sector, uint32_t count)
   }
 
   release_spi();
-  TRACE_SD_CARD_EVENT((count != 0), sd_SD_ReadSectors, (count << 24) + (sector & 0x00FFFFFF));
+  TRACE_SD_CARD_EVENT((count != 0), sd_SD_ReadSectors, (count << 24) + ((sector/512) & 0x00FFFFFF));
   return count ? -1 : 0;
 }
 
@@ -718,7 +718,7 @@ DRESULT disk_read (
   if (drv || !count) return RES_PARERR;
   if (Stat & STA_NOINIT) return RES_NOTRDY;
   uint8_t res = SD_ReadSectors(buff, sector, count);
-  TRACE_SD_CARD_EVENT((res != 0), sd_disk_read, (count << 24) + (sector & 0x00FFFFFF));
+  TRACE_SD_CARD_EVENT((res != 0), sd_disk_read, (count << 24) + ((sector/512) & 0x00FFFFFF));
   return (res != 0) ? RES_ERROR : RES_OK;
 }
 
@@ -742,7 +742,7 @@ int8_t SD_WriteSectors(uint8_t *buff, uint32_t sector, uint32_t count)
       count = 1;
   }
   release_spi();
-  TRACE_SD_CARD_EVENT((count != 0), sd_SD_WriteSectors, (count << 24) + (sector & 0x00FFFFFF));
+  TRACE_SD_CARD_EVENT((count != 0), sd_SD_WriteSectors, (count << 24) + ((sector/512) & 0x00FFFFFF));
   return count ? -1 : 0;
 }
 
@@ -778,7 +778,7 @@ DRESULT disk_write (
     }
   }
   release_spi();
-  TRACE_SD_CARD_EVENT((count != 0), sd_disk_write, (count << 24) + (sector & 0x00FFFFFF));
+  TRACE_SD_CARD_EVENT((count != 0), sd_disk_write, (count << 24) + ((sector/512) & 0x00FFFFFF));
   return count ? RES_ERROR : RES_OK;
 }
 #endif /* _READONLY == 0 */
