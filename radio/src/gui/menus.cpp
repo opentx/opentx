@@ -1433,6 +1433,12 @@ bool isTelemetrySourceAvailable(int source)
     return false;
 #endif
 
+#if defined(PCBTARANIS) && defined(REVPLUS)
+  // on Taranis+ we also hide the SWR
+  if (source == TELEM_SWR)
+    return false;
+#endif
+
   if (source >= TELEM_A1 && source <= TELEM_A4) {
     return g_model.frsky.channels[source-TELEM_A1].ratio != 0;
   }
