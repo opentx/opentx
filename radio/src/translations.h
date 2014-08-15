@@ -552,6 +552,7 @@ extern const pm_char STR_CURRENT[];
   extern const pm_char STR_RESET_FLIGHT[];
   extern const pm_char STR_RESET_TIMER1[];
   extern const pm_char STR_RESET_TIMER2[];
+  extern const pm_char STR_RESET_TIMER3[];
   extern const pm_char STR_RESET_TELEMETRY[];
   extern const pm_char STR_STATISTICS[];
   extern const pm_char STR_ABOUT_US[];

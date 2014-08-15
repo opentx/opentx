@@ -5141,7 +5141,7 @@ void menuModelCustomFunctions(uint8_t event)
 #endif
 #if defined(CPUARM)
           else if (func == FUNC_SET_TIMER) {
-            maxParam = 1;
+            maxParam = MAX_TIMERS-1;
             putsStrIdx(lcdNextPos, y, STR_TIMER, CFN_TIMER_INDEX(sd)+1, attr);
             if (active) CHECK_INCDEC_MODELVAR_ZERO(event, CFN_TIMER_INDEX(sd), maxParam);
             break;

@@ -537,6 +537,7 @@ void populateGVCB(QComboBox *b, int value)
 
 void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData & model, unsigned int flags)
 {
+  BoardEnum board = GetCurrentFirmware()->getBoard();
   RawSource item;
 
   b->clear();
@@ -556,7 +557,6 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData & 
       }
     }
   }
-
 
   if (flags & POPULATE_VIRTUAL_INPUTS) {
     int virtualInputs = GetCurrentFirmware()->getCapability(VirtualInputs);
@@ -632,7 +632,7 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData & 
 
   if (flags & POPULATE_TELEMETRYEXT) {
     for (int i=0; i<TELEMETRY_SOURCE_ACC; i++) {
-      if (i==TELEMETRY_SOURCE_RSSI_TX && IS_TARANIS(GetCurrentFirmware()->getBoard()))
+      if (i==TELEMETRY_SOURCE_RSSI_TX && IS_TARANIS(board))
         continue;
       item = RawSource(SOURCE_TYPE_TELEMETRY, i);
       b->addItem(item.toString(model), item.toValue());
@@ -641,7 +641,9 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const ModelData & 
   }
   else if (flags & POPULATE_TELEMETRY) {
     for (int i=0; i<TELEMETRY_SOURCES_COUNT; i++) {
-      if (i==TELEMETRY_SOURCE_RSSI_TX && IS_TARANIS(GetCurrentFirmware()->getBoard()))
+      if (i==TELEMETRY_SOURCE_RSSI_TX && IS_TARANIS(board))
+        continue;
+      if (i==TELEMETRY_SOURCE_TIMER3 && !IS_ARM(board))
         continue;
       item = RawSource(SOURCE_TYPE_TELEMETRY, i);
       b->addItem(item.toString(model), item.toValue());

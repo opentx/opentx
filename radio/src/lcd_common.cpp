@@ -934,7 +934,10 @@ void putsTelemetryChannel(xcoord_t x, uint8_t y, uint8_t channel, lcdint_t val, 
 #endif
     case TELEM_TIMER1-1:
     case TELEM_TIMER2-1:
-      att &= ~NO_UNIT;
+#if defined(CPUARM)
+    case TELEM_TIMER3-1:
+#endif
+    att &= ~NO_UNIT;
       putsTimer(x, y, val, att, att);
       break;
 #if defined(FRSKY)

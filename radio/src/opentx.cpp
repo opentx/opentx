@@ -731,6 +731,7 @@ ls_telemetry_value_t minTelemValue(uint8_t channel)
   switch (channel) {
     case TELEM_TIMER1:
     case TELEM_TIMER2:
+    case TELEM_TIMER3:
       return -3600;
     case TELEM_ALT:
     case TELEM_MIN_ALT:
@@ -763,6 +764,7 @@ ls_telemetry_value_t maxTelemValue(uint8_t channel)
       return 24*60-1;
     case TELEM_TIMER1:
     case TELEM_TIMER2:
+    case TELEM_TIMER3:
       return 60*60;
 #endif
     case TELEM_FUEL:
@@ -837,6 +839,9 @@ getvalue_t convert8bitsTelemValue(uint8_t channel, ls_telemetry_value_t value)
   switch (channel) {
     case TELEM_TIMER1:
     case TELEM_TIMER2:
+#if defined(CPUARM)
+    case TELEM_TIMER3:
+#endif
       result = value * 5;
       break;
 #if defined(FRSKY)
@@ -1713,6 +1718,9 @@ PLAY_FUNCTION(playValue, uint8_t idx)
       break;
     case MIXSRC_FIRST_TELEM+TELEM_TIMER1-1:
     case MIXSRC_FIRST_TELEM+TELEM_TIMER2-1:
+#if defined(CPUARM)
+    case MIXSRC_FIRST_TELEM+TELEM_TIMER3-1:
+#endif
       PLAY_DURATION(val, 0);
       break;
 #if defined(CPUARM) && defined(FRSKY)
@@ -1949,6 +1957,9 @@ void evalFunctions()
             switch (CFN_PARAM(sd)) {
               case FUNC_RESET_TIMER1:
               case FUNC_RESET_TIMER2:
+#if defined(CPUARM)
+              case FUNC_RESET_TIMER3:
+#endif
                 timerReset(CFN_PARAM(sd));
                 break;
               case FUNC_RESET_FLIGHT:

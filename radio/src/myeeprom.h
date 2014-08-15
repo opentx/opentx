@@ -891,6 +891,9 @@ enum Functions {
 enum ResetFunctionParam {
   FUNC_RESET_TIMER1,
   FUNC_RESET_TIMER2,
+#if defined(CPUARM)
+  FUNC_RESET_TIMER3,
+#endif
   FUNC_RESET_FLIGHT,
 #if defined(FRSKY)
   FUNC_RESET_TELEMETRY,
@@ -1051,8 +1054,12 @@ enum TelemetrySource {
 #endif
   TELEM_TIMER1,                   LUA_EXPORT_TELEMETRY("timer1", "Timer 1 value [seconds]")
   TELEM_TIMER2,                   LUA_EXPORT_TELEMETRY("timer2", "Timer 2 value [seconds]")
-#if defined(CPUARM)       
+#if defined(CPUARM)
+  TELEM_TIMER3,                   LUA_EXPORT_TELEMETRY("timer3", "Timer 3 value [seconds]")
+  TELEM_TIMER_MAX = TELEM_TIMER3,
   TELEM_SWR,                      LUA_EXPORT_TELEMETRY("swr", "Transmitter antenna quality [less is better]")
+#else
+  TELEM_TIMER_MAX = TELEM_TIMER2,
 #endif        
   TELEM_RSSI_TX,        
   TELEM_RSSI_RX,                  LUA_EXPORT_TELEMETRY("rssi", "RSSI [more is better]")
@@ -1165,7 +1172,7 @@ enum VarioSource {
 #elif defined(MAVLINK)
   #define NUM_TELEMETRY      4
 #else
-  #define NUM_TELEMETRY      TELEM_TIMER2
+  #define NUM_TELEMETRY      TELEM_TIMER_MAX
 #endif
 
 PACK(typedef struct t_FrSkyBarData {

@@ -123,6 +123,7 @@ RawSourceRange RawSource::getRange(const ModelData & model, const GeneralSetting
           break;
         case TELEMETRY_SOURCE_TIMER1:
         case TELEMETRY_SOURCE_TIMER2:
+        case TELEMETRY_SOURCE_TIMER3:
           result.step = singleprec ? 5 : 1;
           result.max = singleprec ? 255*5 : 60*60;
           result.unit = QObject::tr("s");
@@ -338,7 +339,7 @@ QString RawSource::toString(const ModelData & model)
   };
 
   static const QString telemetry[] = {
-    QObject::tr("Batt"), QObject::tr("Time"), QObject::tr("Timer1"), QObject::tr("Timer2"),
+    QObject::tr("Batt"), QObject::tr("Time"), QObject::tr("Timer1"), QObject::tr("Timer2"), QObject::tr("Timer3"),
     QObject::tr("SWR"), QObject::tr("RSSI Tx"), QObject::tr("RSSI Rx"),
     QObject::tr("A1"), QObject::tr("A2"), QObject::tr("A3"), QObject::tr("A4"),
     QObject::tr("Alt"), QObject::tr("Rpm"), QObject::tr("Fuel"), QObject::tr("T1"), QObject::tr("T2"),
@@ -743,7 +744,7 @@ QString FuncSwData::funcToString()
     return QObject::tr("Play Haptic");
   else if (func == FuncReset)
     return QObject::tr("Reset");
-  else if (func >= FuncSetTimer1 && func <= FuncSetTimer2)
+  else if (func >= FuncSetTimer1 && func <= FuncSetTimer3)
     return QObject::tr("Set Timer %1").arg(func-FuncSetTimer1+1);
   else if (func == FuncVario)
     return QObject::tr("Vario");
@@ -794,6 +795,7 @@ QString FuncSwData::paramToString()
   else if (func==FuncReset) {
     qs.append( QObject::tr("Timer1"));
     qs.append( QObject::tr("Timer2"));
+    qs.append( QObject::tr("Timer3"));
     qs.append( QObject::tr("All"));
     qs.append( QObject::tr("Telemetry"));
     if (param>=0 && param<(int)qs.count())

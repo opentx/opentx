@@ -328,7 +328,7 @@ getvalue_t getValue(uint8_t i)
 #if defined(CPUARM) && defined(RTCLOCK)
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_TX_TIME) return (g_rtcTime % SECS_PER_DAY) / 60; // number of minutes from midnight
 #endif
-  else if (i<=MIXSRC_FIRST_TELEM-1+TELEM_TIMER2) return timersStates[i-MIXSRC_FIRST_TELEM+1-TELEM_TIMER1].val;
+  else if (i<=MIXSRC_FIRST_TELEM-1+TELEM_TIMER_MAX) return timersStates[i-MIXSRC_FIRST_TELEM+1-TELEM_TIMER1].val;
 #if defined(FRSKY)
 #if defined(CPUARM)
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_SWR) return frskyData.swr.value;

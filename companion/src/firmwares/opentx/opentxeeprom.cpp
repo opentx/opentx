@@ -429,6 +429,8 @@ class TelemetrySourcesConversionTable: public ConversionTable {
       }
       addConversion(1+TELEMETRY_SOURCE_TIMER1, val++);
       addConversion(1+TELEMETRY_SOURCE_TIMER2, val++);
+      if (IS_ARM(board) && version >= 217)
+        addConversion(1+TELEMETRY_SOURCE_TIMER3, val++);
       if (IS_ARM(board) && version >= 216)
         addConversion(1+TELEMETRY_SOURCE_SWR, val++);
       addConversion(1+TELEMETRY_SOURCE_RSSI_TX, val++);
@@ -1588,6 +1590,7 @@ class LogicalSwitchField: public TransformedField {
           switch (val1.index) {
             case TELEMETRY_SOURCE_TIMER1:
             case TELEMETRY_SOURCE_TIMER2:
+            case TELEMETRY_SOURCE_TIMER3:
               csw.val2 = (csw.val2 + 128) * 3;
               break;
             case TELEMETRY_SOURCE_ALT:
@@ -1694,6 +1697,7 @@ class CustomFunctionsConversionTable: public ConversionTable {
         if (IS_ARM(board)) {
           addConversion(FuncSetTimer1, val);
           addConversion(FuncSetTimer2, val);
+          addConversion(FuncSetTimer3, val);
           val++;
         }
         for (int i=0; i<MAX_GVARS(board, version); i++)
@@ -1847,7 +1851,7 @@ class ArmCustomFunctionField: public TransformedField {
         if (version >= 216)
           *((uint8_t *)(_param+3)) = fn.func - FuncTrainer;
       }
-      else if (fn.func >= FuncSetTimer1 && fn.func <= FuncSetTimer2) {
+      else if (fn.func >= FuncSetTimer1 && fn.func <= FuncSetTimer3) {
         if (version >= 216) {
           *((uint16_t *)_param) = fn.param;
           *((uint8_t *)(_param+3)) = fn.func - FuncSetTimer1;
@@ -1894,6 +1898,12 @@ class ArmCustomFunctionField: public TransformedField {
         else
           *((uint32_t *)_param) = value;
       }
+      else if (fn.func == FuncReset) {
+        if (version >= 217)
+          *((uint32_t *)_param) = fn.param;
+        else
+          *((uint32_t *)_param) = (fn.param < 2 ? fn.param : fn.param-1);
+      }
       else {
         *((uint32_t *)_param) = fn.param;
       }
@@ -1920,7 +1930,7 @@ class ArmCustomFunctionField: public TransformedField {
         fn.func = AssignFunc(fn.func + index);
         fn.param = (int8_t)value;
       }
-      else if (fn.func >= FuncSetTimer1 && fn.func <= FuncSetTimer2) {
+      else if (fn.func >= FuncSetTimer1 && fn.func <= FuncSetTimer3) {
         fn.func = AssignFunc(fn.func + index);
         fn.param = (int)value;
       }
@@ -1963,6 +1973,12 @@ class ArmCustomFunctionField: public TransformedField {
           sourcesConversionTable->importValue(value, (int &)fn.param);
         else
           SourcesConversionTable::getInstance(board, version, variant, FLAG_NONONE|FLAG_NOSWITCHES)->importValue(value, (int &)fn.param);
+      }
+      else if (fn.func == FuncReset) {
+        if (version >= 217)
+          fn.param = value;
+        else
+          fn.param = (value < 2 ? value : value+1);
       }
       else {
         fn.param = value;

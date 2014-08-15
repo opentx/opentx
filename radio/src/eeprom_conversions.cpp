@@ -36,6 +36,77 @@
 
 #include "opentx.h"
 
+enum Telemetry216Source {
+  TELEM216_NONE,
+  TELEM216_TX_VOLTAGE,
+  TELEM216_TX_TIME,
+  TELEM216_RESERVE1,
+  TELEM216_RESERVE2,
+  TELEM216_RESERVE3,
+  TELEM216_RESERVE4,
+  TELEM216_RESERVE5,
+  TELEM216_TIMER1,
+  TELEM216_TIMER2,
+  TELEM216_SWR,
+  TELEM216_RSSI_TX,
+  TELEM216_RSSI_RX,
+  TELEM216_RESERVE0,
+  TELEM216_A1,
+  TELEM216_A2,
+  TELEM216_A3,
+  TELEM216_A4,
+  TELEM216_ALT,
+  TELEM216_RPM,
+  TELEM216_FUEL,
+  TELEM216_T1,
+  TELEM216_T2,
+  TELEM216_SPEED,
+  TELEM216_DIST,
+  TELEM216_GPSALT,
+  TELEM216_CELL,
+  TELEM216_CELLS_SUM,
+  TELEM216_VFAS,
+  TELEM216_CURRENT,
+  TELEM216_CONSUMPTION,
+  TELEM216_POWER,
+  TELEM216_ACCx,
+  TELEM216_ACCy,
+  TELEM216_ACCz,
+  TELEM216_HDG,
+  TELEM216_VSPEED,
+  TELEM216_ASPEED,
+  TELEM216_DTE,
+  TELEM216_RESERVE6,
+  TELEM216_RESERVE7,
+  TELEM216_RESERVE8,
+  TELEM216_RESERVE9,
+  TELEM216_RESERVE10,
+  TELEM216_MIN_A1,
+  TELEM216_MIN_A2,
+  TELEM216_MIN_A3,
+  TELEM216_MIN_A4,
+  TELEM216_MIN_ALT,
+  TELEM216_MAX_ALT,
+  TELEM216_MAX_RPM,
+  TELEM216_MAX_T1,
+  TELEM216_MAX_T2,
+  TELEM216_MAX_SPEED,
+  TELEM216_MAX_DIST,
+  TELEM216_MAX_ASPEED,
+  TELEM216_MIN_CELL,
+  TELEM216_MIN_CELLS_SUM,
+  TELEM216_MIN_VFAS,
+  TELEM216_MAX_CURRENT,
+  TELEM216_MAX_POWER,
+  TELEM216_RESERVE11,
+  TELEM216_RESERVE12,
+  TELEM216_RESERVE13,
+  TELEM216_RESERVE14,
+  TELEM216_RESERVE15,
+  TELEM216_ACC,
+  TELEM216_GPS_TIME,
+};
+
 #if defined(PCBTARANIS)
 PACK(typedef struct {
   uint8_t  mode;         // 0=end, 1=pos, 2=neg, 3=both
@@ -407,29 +478,38 @@ void ConvertGeneralSettings_216_to_217(EEGeneral &settings)
 int ConvertTelemetrySource_215_to_216(int source)
 {
   // TELEM_TX_TIME and 5 spare added
-  if (source >= TELEM_TX_TIME)
+  if (source >= TELEM216_TX_TIME)
     source += 6;
   // TELEM_RSSI_TX added
-  if (source >= TELEM_RSSI_TX)
+  if (source >= TELEM216_RSSI_TX)
     source += 1;
   // Reserve added
-  if (source >= TELEM_RESERVE0)
+  if (source >= TELEM216_RESERVE0)
     source += 1;
   // A3 and A4 added
-  if (source >= TELEM_A3)
+  if (source >= TELEM216_A3)
     source += 2;
   // ASpd and dTE added + 5 reserve
-  if (source >= TELEM_ASPEED)
+  if (source >= TELEM216_ASPEED)
     source += 7;
   // A3 and A4 MIN added
-  if (source >= TELEM_MIN_A3)
+  if (source >= TELEM216_MIN_A3)
     source += 2;
   // ASpd+ Cel- Cels- and Vfas- added
-  if (source >= TELEM_MAX_ASPEED)
+  if (source >= TELEM216_MAX_ASPEED)
     source += 4;
   // 5 reserve added
-  if (source >= TELEM_RESERVE6)
+  if (source >= TELEM216_RESERVE6)
     source += 5;
+
+  return source;
+}
+
+int ConvertTelemetrySource_216_to_217(int source)
+{
+  // TELEM_TIMER3 added
+  if (source >= TELEM_TIMER3)
+    source += 1;
 
   return source;
 }
@@ -509,6 +589,15 @@ int ConvertSwitch_215_to_216(int swtch)
   }
 }
 #endif
+
+int ConvertSource_216_to_217(int source)
+{
+  // Telemetry conversions
+  if (source >= MIXSRC_FIRST_TELEM)
+    source = MIXSRC_FIRST_TELEM + ConvertTelemetrySource_216_to_217(source-MIXSRC_FIRST_TELEM+1) - 1;
+
+  return source;
+}
 
 int16_t ConvertGVAR_215_to_216(int16_t var)
 {
@@ -753,39 +842,39 @@ void ConvertModel_215_to_216(ModelData &model)
       if (cstate == LS_FAMILY_OFS || cstate == LS_FAMILY_DIFF) {
         if ((uint8_t)sw.v1 >= MIXSRC_FIRST_TELEM) {
           switch ((uint8_t)sw.v1) {
-            case MIXSRC_FIRST_TELEM + TELEM_TIMER1-1:
-            case MIXSRC_FIRST_TELEM + TELEM_TIMER2-1:
+            case MIXSRC_FIRST_TELEM + TELEM216_TIMER1-1:
+            case MIXSRC_FIRST_TELEM + TELEM216_TIMER2-1:
               sw.v2 = (sw.v2+128) * 3;
               break;
-            case MIXSRC_FIRST_TELEM + TELEM_ALT-1:
-            case MIXSRC_FIRST_TELEM + TELEM_GPSALT-1:
-            case MIXSRC_FIRST_TELEM + TELEM_MIN_ALT-1:
-            case MIXSRC_FIRST_TELEM + TELEM_MAX_ALT-1:
+            case MIXSRC_FIRST_TELEM + TELEM216_ALT-1:
+            case MIXSRC_FIRST_TELEM + TELEM216_GPSALT-1:
+            case MIXSRC_FIRST_TELEM + TELEM216_MIN_ALT-1:
+            case MIXSRC_FIRST_TELEM + TELEM216_MAX_ALT-1:
               sw.v2 = (sw.v2+128) * 8 - 500;
               break;
-            case MIXSRC_FIRST_TELEM + TELEM_RPM-1:
-            case MIXSRC_FIRST_TELEM + TELEM_MAX_RPM-1:
+            case MIXSRC_FIRST_TELEM + TELEM216_RPM-1:
+            case MIXSRC_FIRST_TELEM + TELEM216_MAX_RPM-1:
               sw.v2 = (sw.v2+128) * 50;
               break;
-            case MIXSRC_FIRST_TELEM + TELEM_T1-1:
-            case MIXSRC_FIRST_TELEM + TELEM_T2-1:
-            case MIXSRC_FIRST_TELEM + TELEM_MAX_T1-1:
-            case MIXSRC_FIRST_TELEM + TELEM_MAX_T2-1:
+            case MIXSRC_FIRST_TELEM + TELEM216_T1-1:
+            case MIXSRC_FIRST_TELEM + TELEM216_T2-1:
+            case MIXSRC_FIRST_TELEM + TELEM216_MAX_T1-1:
+            case MIXSRC_FIRST_TELEM + TELEM216_MAX_T2-1:
               sw.v2 = (sw.v2+128) + 30;
               break;
-            case MIXSRC_FIRST_TELEM + TELEM_CELL-1:
-            case MIXSRC_FIRST_TELEM + TELEM_HDG-1:
+            case MIXSRC_FIRST_TELEM + TELEM216_CELL-1:
+            case MIXSRC_FIRST_TELEM + TELEM216_HDG-1:
               sw.v2 = (sw.v2+128) * 2;
               break;
-            case MIXSRC_FIRST_TELEM + TELEM_DIST-1:
-            case MIXSRC_FIRST_TELEM + TELEM_MAX_DIST-1:
+            case MIXSRC_FIRST_TELEM + TELEM216_DIST-1:
+            case MIXSRC_FIRST_TELEM + TELEM216_MAX_DIST-1:
               sw.v2 = (sw.v2+128) * 8;
               break;
-            case MIXSRC_FIRST_TELEM + TELEM_CURRENT-1:
-            case MIXSRC_FIRST_TELEM + TELEM_POWER-1:
+            case MIXSRC_FIRST_TELEM + TELEM216_CURRENT-1:
+            case MIXSRC_FIRST_TELEM + TELEM216_POWER-1:
               sw.v2 = (sw.v2+128) * 5;
               break;
-            case MIXSRC_FIRST_TELEM + TELEM_CONSUMPTION-1:
+            case MIXSRC_FIRST_TELEM + TELEM216_CONSUMPTION-1:
               sw.v2 = (sw.v2+128) * 20;
               break;
             default:
@@ -981,14 +1070,40 @@ void ConvertModel_216_to_217(ModelData &model)
   newModel.extendedTrims = oldModel.extendedTrims;
   newModel.throttleReversed = oldModel.throttleReversed;
   newModel.beepANACenter = oldModel.beepANACenter;
-  memcpy(newModel.mixData, oldModel.mixData, sizeof(newModel.mixData));
+  for (int i=0; i<MAX_MIXERS; i++) {
+    newModel.mixData[i] = oldModel.mixData[i];
+    newModel.mixData[i].srcRaw = ConvertSource_216_to_217(oldModel.mixData[i].srcRaw);
+  }
   memcpy(newModel.limitData, oldModel.limitData, sizeof(newModel.limitData));
-  memcpy(newModel.expoData, oldModel.expoData, sizeof(newModel.expoData));
+  for (int i=0; i<MAX_EXPOS; i++) {
+    newModel.expoData[i] = oldModel.expoData[i];
+#if defined(PCBTARANIS)
+    newModel.expoData[i].srcRaw = ConvertSource_216_to_217(oldModel.expoData[i].srcRaw);
+#endif
+  }
   memcpy(newModel.curves, oldModel.curves, sizeof(newModel.curves));
   memcpy(newModel.points, oldModel.points, sizeof(newModel.points));
-  memcpy(newModel.logicalSw, oldModel.logicalSw, sizeof(newModel.logicalSw));
-  memcpy(newModel.funcSw, oldModel.funcSw, sizeof(newModel.funcSw));
+  for (int i=0; i<NUM_LOGICAL_SWITCH; i++) {
+    newModel.logicalSw[i] = oldModel.logicalSw[i];
+    uint8_t cstate = lswFamily(newModel.logicalSw[i].func);
+    if (cstate == LS_FAMILY_OFS || cstate == LS_FAMILY_COMP || cstate == LS_FAMILY_DIFF) {
+      newModel.logicalSw[i].v1 = ConvertSource_216_to_217(oldModel.logicalSw[i].v1);
+      if (cstate == LS_FAMILY_COMP) {
+        newModel.logicalSw[i].v2 = ConvertSource_216_to_217(oldModel.logicalSw[i].v2);
+      }
+    }
+  }
+  for (int i=0; i<NUM_CFN; i++) {
+    CustomFnData & fn = newModel.funcSw[i];
+    fn = oldModel.funcSw[i];
+    if (fn.func == FUNC_PLAY_VALUE || fn.func == FUNC_VOLUME || (IS_ADJUST_GV_FUNC(fn.func) && fn.all.mode == FUNC_ADJUST_GVAR_SOURCE)) {
+      fn.all.val = ConvertSource_216_to_217(fn.all.val);
+    }
+  }
+
   newModel.swashR = oldModel.swashR;
+  newModel.swashR.collectiveSource = ConvertSource_216_to_217(newModel.swashR.collectiveSource);
+
   memcpy(newModel.flightModeData, oldModel.flightModeData, sizeof(newModel.flightModeData));
   newModel.thrTraceSrc = oldModel.thrTraceSrc;
   newModel.switchWarningStates = oldModel.switchWarningStates;

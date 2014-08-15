@@ -487,6 +487,9 @@ void onMainViewMenu(const char *result)
     timerReset(1);
   }
 #if defined(CPUARM)
+  else if (result == STR_RESET_TIMER3) {
+    timerReset(2);
+  }
   else if (result == STR_VIEW_NOTES) {
     pushModelNotes();
   }
@@ -494,6 +497,7 @@ void onMainViewMenu(const char *result)
     MENU_ADD_ITEM(STR_RESET_FLIGHT);
     MENU_ADD_ITEM(STR_RESET_TIMER1);
     MENU_ADD_ITEM(STR_RESET_TIMER2);
+    MENU_ADD_ITEM(STR_RESET_TIMER3);
 #if defined(FRSKY)
     MENU_ADD_ITEM(STR_RESET_TELEMETRY);
 #endif

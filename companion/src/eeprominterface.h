@@ -226,6 +226,7 @@ enum TelemetrySource {
   TELEMETRY_SOURCE_TX_TIME,
   TELEMETRY_SOURCE_TIMER1,
   TELEMETRY_SOURCE_TIMER2,
+  TELEMETRY_SOURCE_TIMER3,
   TELEMETRY_SOURCE_SWR,
   TELEMETRY_SOURCE_RSSI_TX,
   TELEMETRY_SOURCE_RSSI_RX,
@@ -372,9 +373,8 @@ class RawSource {
       return (this->type != other.type) || (this->index != other.index);
     }
 
-    bool isTimeBased() const
-    {
-      return (type==SOURCE_TYPE_TELEMETRY && (index==TELEMETRY_SOURCE_TX_TIME || index==TELEMETRY_SOURCE_TIMER1 || index==TELEMETRY_SOURCE_TIMER2));
+    bool isTimeBased() const {
+      return (type==SOURCE_TYPE_TELEMETRY && (index==TELEMETRY_SOURCE_TX_TIME || index==TELEMETRY_SOURCE_TIMER1 || index==TELEMETRY_SOURCE_TIMER2 || index==TELEMETRY_SOURCE_TIMER3));
     }
 
     RawSourceType type;
@@ -738,6 +738,7 @@ enum AssignFunc {
   FuncReset,
   FuncSetTimer1,
   FuncSetTimer2,
+  FuncSetTimer3,
   FuncVario,
   FuncPlayPrompt,
   FuncPlayBoth,

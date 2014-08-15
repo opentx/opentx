@@ -300,7 +300,7 @@ bool displayGaugesTelemetryScreen(FrSkyScreenData & screen)
 #endif
       getvalue_t threshold = 0;
       uint8_t thresholdX = 0;
-      if (source <= TELEM_TIMER2)
+      if (source <= TELEM_TIMER_MAX)
         threshold = 0;
       else if (source <= TELEM_RSSI_RX)
         threshold = getRssiAlarmValue(source-TELEM_RSSI_TX);
@@ -399,10 +399,18 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
 #endif
         putsTelemetryChannel(pos[j+1]-2, FH+2*FH*i, field-1, value, att);
 
-        if (field >= TELEM_TIMER1 && field <= TELEM_TIMER2 && i!=3) {
+#if defined(CPUARM)
+        if (field >= TELEM_TIMER1 && field <= TELEM_TIMER_MAX && i!=3) {
+          // there is not enough space on LCD for displaying "Tmr1" or "Tmr2" and still see the - sign, we write "T1" or "T2" instead
+          putsStrIdx(pos[j], 1+FH+2*FH*i, "T", field-TELEM_TIMER1+1, 0);
+        }
+        else
+#else
+        if (field >= TELEM_TIMER1 && field <= TELEM_TIMER_MAX && i!=3) {
           // there is not enough space on LCD for displaying "Tmr1" or "Tmr2" and still see the - sign, we write "T1" or "T2" instead
           field = field-TELEM_TIMER1+TELEM_T1;
         }
+#endif
         lcd_putsiAtt(pos[j], 1+FH+2*FH*i, STR_VTELEMCHNS, field, 0);
       }
     }
