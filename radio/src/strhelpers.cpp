@@ -151,6 +151,18 @@ char * strAppend(char * dest, const char * source)
   return dest - 1;
 }
 
+char * strAppendFilename(char * dest, const char * filename, const int size)
+{
+  memset(dest, 0, size);
+  for (int i=0; i<size; i++) {
+    char c = *filename++;
+    if (c == '\0' || c == '.')
+      break;
+    *dest++ = c;
+  }
+  return dest;
+}
+
 #if defined(RTCLOCK)
 #include "rtc.h"
 
