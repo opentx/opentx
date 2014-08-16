@@ -299,5 +299,6 @@ void lcdSetContrast();
 
 char * strAppend(char * dest, const char * source);
 char * strAppendDate(char * str, bool time=false);
+char * strAppendFilename(char * dest, const char * filename, const int size);
 
 #endif

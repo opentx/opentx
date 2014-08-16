@@ -859,12 +859,7 @@ void onSdManagerMenu(const char *result)
 #endif
 #if defined(PCBTARANIS)
   else if (result == STR_ASSIGN_BITMAP) {
-    strcpy(lfn, reusableBuffer.sdmanager.lines[index]);
-    // TODO duplicated code for finding extension
-    uint8_t len = strlen(lfn) - 4;
-    memset(lfn+len, 0, sizeof(g_model.header.bitmap)-len);
-    // TODO duplicated code
-    memcpy(g_model.header.bitmap, lfn, sizeof(g_model.header.bitmap));
+    strAppendFilename(g_model.header.bitmap, reusableBuffer.sdmanager.lines[index], sizeof(g_model.header.bitmap));
     LOAD_MODEL_BITMAP();
     memcpy(modelHeaders[g_eeGeneral.currModel].bitmap, g_model.header.bitmap, sizeof(g_model.header.bitmap));
     eeDirty(EE_MODEL);
@@ -983,7 +978,8 @@ void menuGeneralSdManager(uint8_t _event)
         uint8_t index = m_posVert-1-s_pgOfs;
         // TODO duplicated code for finding extension
         char * ext = reusableBuffer.sdmanager.lines[index];
-        ext += strlen(ext) - 4;
+        int len = strlen(ext) - 4;
+        ext += len;
         /* TODO if (!strcasecmp(ext, MODELS_EXT)) {
           s_menu[s_menu_count++] = STR_LOAD_FILE;
         }
@@ -992,7 +988,7 @@ void menuGeneralSdManager(uint8_t _event)
         }
 #endif
 #if defined(PCBTARANIS)
-        else if (!strcasecmp(ext, BITMAPS_EXT) && !READ_ONLY()) {
+        else if (!strcasecmp(ext, BITMAPS_EXT) && !READ_ONLY() && len <= (int)sizeof(g_model.header.bitmap)) {
           MENU_ADD_ITEM(STR_ASSIGN_BITMAP);
         }
         else if (!strcasecmp(ext, TEXT_EXT)) {
