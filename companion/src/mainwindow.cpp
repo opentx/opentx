@@ -70,10 +70,10 @@
 
 #ifdef __APPLE__
   #define C9X_STAMP     OPENTX_COMPANION_DOWNLOADS "/companion-macosx.stamp"
-  #define C9X_INSTALLER "/CompanionMacUpdate.%1.pkg.zip"
+  #define C9X_INSTALLER "/companion-macosx-%1.dmg"
 #else
   #define C9X_STAMP     OPENTX_COMPANION_DOWNLOADS "/companion-windows.stamp"
-  #define C9X_INSTALLER "/companionInstall_%1.exe"
+  #define C9X_INSTALLER "/companion-windows-%1.exe"
 #endif
 
 #if defined WIN32 || !defined __GNUC__
