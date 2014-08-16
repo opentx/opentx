@@ -92,7 +92,7 @@
 #define TR_VLCD                "Normal""Optrex"
 
 #define LEN_VPERSISTENT        "\014"
-#define TR_VPERSISTENT         "AUS\0        ""Flight\0     ""Manual Reset"
+#define TR_VPERSISTENT         "AUS\0        ""Flugzeit\0   ""Man. zurück."
 
 #define LEN_COUNTRYCODES       TR("\002", "\007")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Amerika""Japan\0 ""Europa\0")
@@ -106,8 +106,8 @@
 #define LEN_DSM_PROTOCOLS      "\004"
 #define TR_DSM_PROTOCOLS       "LP45""DSM2""DSMX"
 
-#define LEN_VTRIMINC           TR("\006","\013")
-#define TR_VTRIMINC            TR("Expo  ""ExFein""Fein  ""Mittel""Grob  ","Exponential""Extra Fein ""Fein       ""Mittel     ""Grob       ")
+#define LEN_VTRIMINC           TR("\006","\014")
+#define TR_VTRIMINC            TR("Expo  ""ExFein""Fein  ""Mittel""Grob  ","Exponentiell""Extrafein\0  ""Fein\0       ""Mittel\0     ""Grob\0       ")
 
 #define LEN_VBEEPCOUNTDOWN     "\006"
 #define TR_VBEEPCOUNTDOWN      "Kein\0 Pieps\0Stimme"
@@ -466,7 +466,7 @@
 #define TR_VTRAINERMODES       "Lehrer\0""Schüler\0"  // "Master""Slave\0"
 
 #define LEN_VFAILSAFE          "\011"
-#define TR_VFAILSAFE           "Hold Pos\0""Custom\0  ""No Pulses""Receiver\0"
+#define TR_VFAILSAFE           "Halten\0  ""Angepasst""Keine Sig""Empfänger"
 
 #if defined(MAVLINK)
   #define LEN_MAVLINK_BAUDS    "\006"
@@ -504,7 +504,7 @@
 #define TR_MOVINGMODEL         "Schiebe Modell"
 #define TR_LOADINGMODEL        "Lade Modell..."
 #define TR_NAME                "Name"
-#define TR_MODELNAME           "Modell Name"
+#define TR_MODELNAME           "Modellname"
 #define TR_PHASENAME           "Phase Name"
 #define TR_MIXNAME             "Mix Name"
 #define TR_INPUTNAME           "Input Name"
@@ -513,11 +513,11 @@
 #else
   #define TR_EXPONAME          "Info   Name"
 #endif
-#define TR_BITMAP              "Modell Bild"
+#define TR_BITMAP              "Modellfoto"
 #define TR_TIMER               TR("Timer","Timer ")
 #define TR_ELIMITS             TR("Erw. Limit","Erw. Wege auf 150%")
 #define TR_ETRIMS              TR("Erw. Trims","Erw. Trim  auf 100%")
-#define TR_TRIMINC             TR("Trim Schr.","Trimm Schritte")
+#define TR_TRIMINC             TR("Trim Schr.","Trimmschritte")
 #define TR_TTRACE              TR("Gasquelle", INDENT "Gas TimerQuelle")
 #define TR_TTRIM               TR("Gastrim", INDENT "Gas Leerlauf Trim")
 #define TR_BEEPCTR             TR("Mitt.Piep","Mittelst. Pieps")
@@ -570,34 +570,34 @@
 #define TR_USRDATA             "Daten berechnen aus"
 #define TR_BLADES              TR(INDENT"Prop",INDENT"Prop-Blätter") //9XR-Pro
 #define TR_SCREEN              "Telm-Bild "
-#define TR_SOUND_LABEL         "----Töne---------"
+#define TR_SOUND_LABEL         "Töne"
 #define TR_LENGTH              INDENT"Dauer"
 #define TR_BEEP_LENGTH         INDENT "Beep Länge"
 #define TR_SPKRPITCH           INDENT"Beep Freq. +/-"
-#define TR_HAPTIC_LABEL        "----Haptik-------" //9XR-Pro
+#define TR_HAPTIC_LABEL        "Haptik" //9XR-Pro
 #define TR_HAPTICSTRENGTH      INDENT"Stärke"
 #define TR_CONTRAST            "LCD Kontrast"
-#define TR_ALARMS_LABEL        "----Alarm wenn---"
+#define TR_ALARMS_LABEL        "Alarm wenn"
 #define TR_BATTERY_RANGE       TR("Akku Bereich","Akku Spg-Bereich") // Symbol Akku Ladezustand
 #define TR_BATTERYWARNING      INDENT"Akku Spg kleiner"
 #define TR_INACTIVITYALARM     TR(INDENT"Inaktivität",INDENT"Inaktivität nach") //9XR-Pro
 #define TR_MEMORYWARNING       INDENT"Speicher voll"
 #define TR_ALARMWARNING        INDENT"Töne ganz aus ?"
 #define TR_RENAVIG             "Drehgeb. Navig."
-#define TR_THROTTLE_LABEL      "---Gas Kontrolle----"
+#define TR_THROTTLE_LABEL      "Gas Kontrolle"
 #define TR_THROTTLEREVERSE     TR("Gas invers", INDENT "Vollgas hinten?") //Änderung wg TH9x, Taranis
-#define TR_MINUTEBEEP          TR(INDENT"Minute",INDENT"Jede Minute")
+#define TR_MINUTEBEEP          TR(INDENT"Minute",INDENT"Minuten-Alarm")
 #define TR_BEEPCOUNTDOWN       INDENT"Countdown"
-#define TR_PERSISTENT          TR(INDENT"M-Zeit",INDENT"Modell Zeit")
-#define TR_BACKLIGHT_LABEL     "----LCD Licht----"
+#define TR_PERSISTENT          TR(INDENT"M-Zeit",INDENT"Messzeit")
+#define TR_BACKLIGHT_LABEL     "LCD Licht"
 #define TR_BLDELAY             INDENT"Dauer"
 #define TR_BLONBRIGHTNESS      INDENT"An Helligkeit"
 #define TR_BLOFFBRIGHTNESS     INDENT"Aus Helligkeit"
 #define TR_BLCOLOR             INDENT "Farbe"
 #define TR_SPLASHSCREEN        TR("Startbild Ein","Startbild Ein für")
-#define TR_THROTTLEWARNING     TR("Gas Alarm", INDENT "Gas Alarm")
-#define TR_SWITCHWARNING       TR("Sch. Alarm", INDENT "Schalter Alarm")
-#define TR_POTWARNING          TR("Pot Warn.", INDENT "Poti Warnung")
+#define TR_THROTTLEWARNING     TR(IF_CPUARM(INDENT) "Gasalarm", INDENT "Gasalarm")
+#define TR_SWITCHWARNING       TR(IF_CPUARM(INDENT) "Sch. Alarm", INDENT "Schalter Alarm")
+#define TR_POTWARNING          TR(IF_CPUARM(INDENT) "Pot Warn.", INDENT "Poti-Warnung")
 #define TR_TIMEZONE            TR("Zeitzone","GPS Zeit Zone")
 #define TR_RXCHANNELORD        TR("Kanalanordnung","Kanalvoreinstellung")
 #define TR_SWITCHES_DELAY      TR("Sw. Mitte Delay","Schalter Mitte Verz.")   //Schalter Mitten verzögern Anpassung
@@ -653,26 +653,26 @@
 #define TR_MENUCALIBRATION     TR("KALIB. ANALOG","KALIBRIERUNG STICKS+POTIS")
 #define TR_TRIMS2OFFSETS       TR("All Trims => Subtrim","Kopie alle Trims to Servo-Mitte")  // "Trims => Offset"
 #define TR_MENUMODELSEL        TR("MODELLE","MODELL WÄHLEN")
-#define TR_MENUSETUP           TR("MODELL EINST.","MODELL EINSTELLUNGEN")
+#define TR_MENUSETUP           TR("MODELL-EINST.","MODELL-EINSTELLUNGEN")
 #define TR_MENUFLIGHTPHASE     "FLUGPHASE"
 #define TR_MENUFLIGHTPHASES    "FLUGPHASEN"
 #define TR_MENUHELISETUP       "HUBSCHRAUBER"
 
 #if defined(PCBTARANIS)
   #define TR_MENUINPUTS        "INPUTS"
-  #define TR_MENULIMITS        "SERVO WEG"
+  #define TR_MENULIMITS        "SERVOWEGE"
 #elif defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_LIMITS_SYMETRICAL) // The right menu titles for the gurus ...  #define TR_MENUDREXPO        "KNÜPPEL"
-  #define TR_MENUINPUTS        "INPUTS"
-  #define TR_MENULIMITS        "SERVO WEG"
+  #define TR_MENUINPUTS        "STICK"
+  #define TR_MENULIMITS        "SERVOWEGE"
 #else
   #define TR_MENUINPUTS        TR("DR/EXPO","DUALRATE/EXPO")
-  #define TR_MENULIMITS        TR("GRENZEN","SERVO WEG")
+  #define TR_MENULIMITS        TR("GRENZEN","SERVOWEGE")
 #endif
 
 #define TR_MENUCURVES          "KURVEN"
 #define TR_MENUCURVE           "KURVE"
-#define TR_MENULOGICALSWITCH   "LOGIK SCHALTER"
-#define TR_MENULOGICALSWITCHES "LOGIK SCHALTER"
+#define TR_MENULOGICALSWITCH   "LOGISCHE SCHALTER"
+#define TR_MENULOGICALSWITCHES "LOGISCHE SCHALTER"
 #define TR_MENUCUSTOMFUNC      "SPEZ. FUNKTIONEN"
 #define TR_MENUCUSTOMSCRIPTS   "CUSTOM SCRIPTS"
 #define TR_MENUCUSTOMSCRIPT    "CUSTOM SCRIPT"
@@ -687,15 +687,15 @@
 #define TR_LATITUDE            "Breite:"
 #define TR_LONGITUDE           "Länge:"
 #define TR_GPSCOORD            TR("Gps Koord.","GPS Koordinaten Format")
-#define TR_VARIO               TR("----Vario--------","----Variometer----") //9XR-Pro
+#define TR_VARIO               TR("Vario","Variometer") //9XR-Pro
 #define TR_PITCH_AT_ZERO       INDENT "Niedrigster Ton"
 #define TR_PITCH_AT_MAX        INDENT "Höchster Ton"
 #define TR_REPEAT_AT_ZERO      INDENT "Wiederholrate"
 #define TR_SHUTDOWN            "Herunterfahren"
 #define TR_BATT_CALIB          "Akku abgleichen"
 #define TR_CURRENT_CALIB       "Strom abgl."
-#define TR_VOLTAGE             TR(INDENT "Spg",INDENT "Spannung Quelle")  //9XR-Pro
-#define TR_CURRENT             TR(INDENT "Strom",INDENT "Strom Quelle")
+#define TR_VOLTAGE             TR(INDENT "Spg",INDENT "Spannungsquelle")  //9XR-Pro
+#define TR_CURRENT             TR(INDENT "Strom",INDENT "Stromquelle")
 #define TR_SELECT_MODEL        "Modell Wählen"
 #define TR_CREATE_MODEL        "Neues Modell"
 #define TR_COPY_MODEL          "Kopiere Modell"
@@ -768,9 +768,9 @@
 #define TR_FLASH_BOOTLOADER    "Flash BootLoader"
 #define TR_WRITING             "\032Writing..."
 #define TR_CONFIRM_FORMAT      "Confirm Format?"
-#define TR_INTERNALRF          "----Internes HF Modul----------"
-#define TR_EXTERNALRF          TR("----Externes HF Modul---","----Externes HF Modul----------")  //9XR-Pro
-#define TR_FAILSAFE            "Failsafe Mode"
+#define TR_INTERNALRF          "Internes HF"
+#define TR_EXTERNALRF          "Externes HF"
+#define TR_FAILSAFE            "Failsafe-Modus"
 #define TR_FAILSAFESET         "Failsafe Einst."
 #define TR_COUNTRYCODE         "Länder Code"
 #define TR_VOICELANG           "Sprach-Ansage"
@@ -798,14 +798,14 @@
 #define TR_MODULE_RANGE        "[Range]"
 #define TR_RESET_BTN           "[Reset]"
 #define TR_SET                 "[Set]"
-#define TR_TRAINER             "----DSC Buchse PPM In/Out------" //DSC Buchse Trainer Buchse
+#define TR_TRAINER             "DSC Buchse PPM In/Out" //DSC Buchse Trainer Buchse
 #define TR_ANTENNAPROBLEM      CENTER "TX Antennen Problem!"
 #define TR_MODELIDUSED         TR("ID schon benutzt","Modell ID schon benutzt")
 #define TR_MODULE              INDENT "Modul-Typ"
 #define TR_TELEMETRY_TYPE      TR("Type", "Telemetry Type")
-#define TR_CHANNELRANGE        TR(INDENT "Kanäle", INDENT "Ausgangs Kanäle")  //wg 9XR-Pro
+#define TR_CHANNELRANGE        TR(INDENT "Kanäle", INDENT "Ausgangskanäle")  //wg 9XR-Pro
 #define TR_LOWALARM            INDENT "Vor-Alarm bei"
-#define TR_CRITICALALARM       INDENT "Kritisch Alarm"
+#define TR_CRITICALALARM       INDENT "Kritisch-Alarm"
 #define TR_ENABLE_POPUP        "Freigabe Popup Fenster"
 #define TR_DISABLE_POPUP       "Sperren  Popup Fenster"
 #define TR_CURVE_PRESET        "Gerade 0 11 22 33 45"
@@ -821,9 +821,9 @@
 #define TR_COPY_STICKS_TO_OFS  "Kopie Stick to Servo-Mitte"  
 #define TR_COPY_TRIMS_TO_OFS   "Kopie Trimm to Servo-Mitte"  // "Trim to Subtrim"
 #define TR_PERSISTENT_MAH      TR(INDENT"Spr. mAh",INDENT "Speichern mAh") //9XR-Pro
-#define TR_PREFLIGHT           "----Preflight Checks----"
-#define TR_CHECKLIST           TR(INDENT "Checklist",INDENT "Display Checklist") //9XR-Pro
-#define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
+#define TR_PREFLIGHT           "Checkliste vor Flug"
+#define TR_CHECKLIST           TR(INDENT "Checkliste",INDENT "Checkliste anzeigen") //9XR-Pro
+#define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS-Offset")
 #define TR_UART3MODE           "Serial Port"
 #define TR_SCRIPT              "Lua-Script"
 #define TR_INPUTS              "Inputs"
@@ -925,7 +925,7 @@
 #define TR_VARIO_VOLUME        "Vario Lautst"
 #define TR_BG_VOLUME           "Backgrd Lautst"
 
-#define TR_TOP_BAR             "----Info Zeile----"
+#define TR_TOP_BAR             "Infozeile"
 #define TR_ALTITUDE            INDENT "Höhe"
 #define TR_SCALE               "Skalliere"
 #define TR_VIEW_CHANNELS       "Zeige Kanäle"
