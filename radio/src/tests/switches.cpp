@@ -122,9 +122,9 @@ TEST(getSwitch, VfasWithDelay)
       L1  Vfas < 9.6 Delay (0.5s)
 
   (gdb) print Open9xX9D::g_model.logicalSw[0] 
-  $3 = {v1 = -40 '\330', v2 = 96, v3 = 0, func = 4 '\004', delay = 5 '\005', duration = 0 '\000', andsw = 0 '\000'}
+  $3 = {v1 = -39 '\331', v2 = 96, v3 = 0, func = 4 '\004', delay = 5 '\005', duration = 0 '\000', andsw = 0 '\000'}
   */
-  g_model.logicalSw[0] = {-40, 96, 0, 4, 5, 0, 0};
+  g_model.logicalSw[0] = {-39, 96, 0, 4, 5, 0, 0};
   frskyData.hub.vfas = 150;   //unit is 100mV
 
   //telemetry streaming is FALSE, so L1 should be FALSE no matter what value Vfas has
@@ -226,9 +226,9 @@ TEST(getSwitch, RssiWithDuration)
       L1  RSSI > 10 Duration (0.5s)
 
   (gdb) print Open9xX9D::g_model.logicalSw[0] 
-  $1 = {v1 = -56 '\310', v2 = 10, v3 = 0, func = 3 '\003', delay = 0 '\000', duration = 5 '\005', andsw = 0 '\000'}
+  $1 = {v1 = -55 '\311', v2 = 10, v3 = 0, func = 3 '\003', delay = 0 '\000', duration = 5 '\005', andsw = 0 '\000'}
   */
-  g_model.logicalSw[0] = {-56, 10, 0, 3, 0, 5, 0};
+  g_model.logicalSw[0] = {-55, 10, 0, 3, 0, 5, 0};
 
   EXPECT_EQ(TELEMETRY_STREAMING(), false);
 
