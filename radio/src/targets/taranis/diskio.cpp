@@ -480,7 +480,7 @@ BOOL rcvr_datablock (
     token = rcvr_spi();
   } while ((token == 0xFF) && Timer1);
   if(token != 0xFE) {
-    TRACE_SD_CARD_EVENT(1, sd_rcvr_datablock, ((uint32_t)(btr) << 8) + token);
+    TRACE_SD_CARD_EVENT(1, sd_rcvr_datablock, ((uint32_t)(Timer1) << 16) + ((uint32_t)(btr) << 8) + token);
     return FALSE; /* If not valid data token, return with error */
   }
 
@@ -594,7 +594,7 @@ BYTE send_cmd (
     res = rcvr_spi();
   } while ((res & 0x80) && --n);
 
-  TRACE_SD_CARD_EVENT((res != 0), sd_send_cmd_rcvr_spi, ((uint32_t)(n) << 16) + ((uint32_t)(res) << 8) + cmd);
+  TRACE_SD_CARD_EVENT((res > 1), sd_send_cmd_rcvr_spi, ((uint32_t)(n) << 16) + ((uint32_t)(res) << 8) + cmd);
 
   return res;                     /* Return with the response value */
 }
@@ -704,7 +704,7 @@ int8_t SD_ReadSectors(uint8_t *buff, uint32_t sector, uint32_t count)
   }
 
   release_spi();
-  TRACE_SD_CARD_EVENT((count != 0), sd_SD_ReadSectors, (count << 24) + ((sector/512) & 0x00FFFFFF));
+  TRACE_SD_CARD_EVENT((count != 0), sd_SD_ReadSectors, (count << 24) + ((sector/((CardType & CT_BLOCK) ? 1 : 512)) & 0x00FFFFFF));
   return count ? -1 : 0;
 }
 
@@ -718,7 +718,7 @@ DRESULT disk_read (
   if (drv || !count) return RES_PARERR;
   if (Stat & STA_NOINIT) return RES_NOTRDY;
   uint8_t res = SD_ReadSectors(buff, sector, count);
-  TRACE_SD_CARD_EVENT((res != 0), sd_disk_read, (count << 24) + ((sector/512) & 0x00FFFFFF));
+  TRACE_SD_CARD_EVENT((res != 0), sd_disk_read, (count << 24) + (sector & 0x00FFFFFF));
   return (res != 0) ? RES_ERROR : RES_OK;
 }
 
@@ -729,38 +729,9 @@ DRESULT disk_read (
 /*-----------------------------------------------------------------------*/
 
 // TODO quick & dirty
-int8_t SD_WriteSectors(uint8_t *buff, uint32_t sector, uint32_t count)
+int8_t SD_WriteSectors(const uint8_t *buff, uint32_t sector, uint32_t count)
 {
   if (!(CardType & CT_BLOCK)) sector *= 512;      /* Convert to byte address if needed */
-  if (CardType & CT_SDC) send_cmd(ACMD23, count);
-  if (send_cmd(CMD25, sector) == 0) {     /* WRITE_MULTIPLE_BLOCK */
-    do {
-      if (!xmit_datablock(buff, 0xFC)) break;
-      buff += 512;
-    } while (--count);
-    if (!xmit_datablock(0, 0xFD))   /* STOP_TRAN token */
-      count = 1;
-  }
-  release_spi();
-  TRACE_SD_CARD_EVENT((count != 0), sd_SD_WriteSectors, (count << 24) + ((sector/512) & 0x00FFFFFF));
-  return count ? -1 : 0;
-}
-
-#if _FS_READONLY == 0
-
-DRESULT disk_write (
-        BYTE drv,                       /* Physical drive number (0) */
-        const BYTE *buff,       /* Pointer to the data to be written */
-        DWORD sector,           /* Start sector number (LBA) */
-        BYTE count                      /* Sector count (1..255) */
-)
-{
-  if (drv || !count) return RES_PARERR;
-  if (Stat & STA_NOINIT) return RES_NOTRDY;
-  if (Stat & STA_PROTECT) return RES_WRPRT;
-
-  if (!(CardType & CT_BLOCK)) sector *= 512;      /* Convert to byte address if needed */
-
   if (count == 1) {       /* Single block write */
     if ((send_cmd(CMD24, sector) == 0)      /* WRITE_BLOCK */
          && xmit_datablock(buff, 0xFE))
@@ -778,9 +749,27 @@ DRESULT disk_write (
     }
   }
   release_spi();
-  TRACE_SD_CARD_EVENT((count != 0), sd_disk_write, (count << 24) + ((sector/512) & 0x00FFFFFF));
-  return count ? RES_ERROR : RES_OK;
+  TRACE_SD_CARD_EVENT((count != 0), sd_SD_WriteSectors, (count << 24) + ((sector/((CardType & CT_BLOCK) ? 1 : 512)) & 0x00FFFFFF));
+  return count ? -1 : 0;
 }
+
+#if _FS_READONLY == 0
+
+DRESULT disk_write (
+        BYTE drv,                       /* Physical drive number (0) */
+        const BYTE *buff,       /* Pointer to the data to be written */
+        DWORD sector,           /* Start sector number (LBA) */
+        BYTE count                      /* Sector count (1..255) */
+)
+{
+  if (drv || !count) return RES_PARERR;
+  if (Stat & STA_NOINIT) return RES_NOTRDY;
+  if (Stat & STA_PROTECT) return RES_WRPRT;
+  uint8_t res = SD_WriteSectors(buff, sector, count);
+  TRACE_SD_CARD_EVENT((res != 0), sd_disk_write, (count << 24) + (sector & 0x00FFFFFF));
+  return (res != 0) ? RES_ERROR : RES_OK;
+}
+
 #endif /* _READONLY == 0 */
 
 
@@ -828,8 +817,9 @@ DRESULT disk_ioctl (
     switch (ctrl) {
     case CTRL_SYNC :                /* Make sure that no pending write process */
       SELECT();
-      if (wait_ready() == 0xFF)
+      if (wait_ready() == 0xFF) {
         res = RES_OK;
+      }
       else {
         TRACE_SD_CARD_EVENT(1, sd_disk_ioctl_CTRL_SYNC, 0);
       }
@@ -886,8 +876,9 @@ DRESULT disk_ioctl (
 
     case MMC_GET_CSD :              /* Receive CSD as a data block (16 bytes) */
       if (send_cmd(CMD9, 0) == 0              /* READ_CSD */
-          && rcvr_datablock(ptr, 16))
+          && rcvr_datablock(ptr, 16)) {
         res = RES_OK;
+      }
       else {
         TRACE_SD_CARD_EVENT(1, sd_disk_ioctl_MMC_GET_CSD, 0);
       }
@@ -895,8 +886,9 @@ DRESULT disk_ioctl (
 
     case MMC_GET_CID :              /* Receive CID as a data block (16 bytes) */
       if (send_cmd(CMD10, 0) == 0             /* READ_CID */
-          && rcvr_datablock(ptr, 16))
+          && rcvr_datablock(ptr, 16)) {
         res = RES_OK;
+      }
       else {
         TRACE_SD_CARD_EVENT(1, sd_disk_ioctl_MMC_GET_CID, 0);
       }
@@ -915,8 +907,9 @@ DRESULT disk_ioctl (
     case MMC_GET_SDSTAT :   /* Receive SD status as a data block (64 bytes) */
       if (send_cmd(ACMD13, 0) == 0) { /* SD_STATUS */
         rcvr_spi();
-        if (rcvr_datablock(ptr, 64))
+        if (rcvr_datablock(ptr, 64)) {
           res = RES_OK;
+        }
         else {
           TRACE_SD_CARD_EVENT(1, sd_disk_ioctl_MMC_GET_SDSTAT_1, 0);
         }
@@ -977,7 +970,7 @@ void sdPoll10ms()
 // TODO everything here should not be in the driver layer ...
 
 FATFS g_FATFS_Obj;
-#if defined(DEBUG)
+#if defined(DEBUG) && defined(SPORT_FILE_LOG) && !defined(SIMU)
 FIL g_telemetryFile = {0};
 #endif
 
