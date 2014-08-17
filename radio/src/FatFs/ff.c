@@ -529,12 +529,6 @@ const BYTE ExCvt[] = _EXCVT;	/* Upper conversion table for extended chars */
 
 ---------------------------------------------------------------------------*/
 
-#if defined(TRACE_FATFS)
-  #define TRACE_FATFS_EVENT(condition, event, data)  TRACE_EVENT(condition, event, data)
-#else
-  #define TRACE_FATFS_EVENT(condition, event, data)  
-#endif
-
 /*-----------------------------------------------------------------------*/
 /* String functions                                                      */
 /*-----------------------------------------------------------------------*/

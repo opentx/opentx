@@ -156,8 +156,6 @@ struct TraceElement {
   uint32_t data;
 };
 
-// extern struct TraceElement TraceBuffer[TRACE_BUFFER_LEN];
-
 void trace_event(enum TraceEvent event, uint32_t data);
 const struct TraceElement * getTraceElement(uint16_t idx);
 void dumpTraceBuffer();
@@ -169,6 +167,22 @@ void dumpTraceBuffer();
 #define TRACE_EVENT(condition, event, data)  
 
 #endif // #if defined(DEBUG_TRACE_BUFFER)
+
+#if defined(TRACE_SD_CARD)
+  #define TRACE_SD_CARD_EVENT(condition, event, data)  TRACE_EVENT(condition, event, data)
+#else
+  #define TRACE_SD_CARD_EVENT(condition, event, data)  
+#endif
+#if defined(TRACE_FATFS)
+  #define TRACE_FATFS_EVENT(condition, event, data)  TRACE_EVENT(condition, event, data)
+#else
+  #define TRACE_FATFS_EVENT(condition, event, data)  
+#endif
+#if defined(TRACE_AUDIO)
+  #define TRACE_AUDIO_EVENT(condition, event, data)  TRACE_EVENT(condition, event, data)
+#else
+  #define TRACE_AUDIO_EVENT(condition, event, data)  
+#endif
 
 
 #endif  // #ifndef debug_h

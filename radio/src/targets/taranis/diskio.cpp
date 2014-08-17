@@ -40,6 +40,7 @@
 #include "../../FatFs/ff.h"
 #include "../../CoOS/kernel/CoOS.h"
 #include "hal.h"
+#include "debug.h"
 
 /* Definitions for MMC/SDC command */
 #define CMD0    (0x40+0)        /* GO_IDLE_STATE */
@@ -224,12 +225,6 @@ BYTE rcvr_spi (void)
 /* Alternative macro to receive data fast */
 #define rcvr_spi_m(dst)  *(dst)=stm32_spi_rw(0xff)
 
-
-#if defined(TRACE_SD_CARD)
-  #define TRACE_SD_CARD_EVENT(condition, event, data)  TRACE_EVENT(condition, event, data)
-#else
-  #define TRACE_SD_CARD_EVENT(condition, event, data)  
-#endif
 
 /*-----------------------------------------------------------------------*/
 /* Wait for card ready                                                   */

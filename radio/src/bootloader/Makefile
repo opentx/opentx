@@ -116,6 +116,7 @@ else
   EXTRAINCDIRS += ../targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/inc
   EXTRAINCDIRS += ../targets/taranis
   EXTRAINCDIRS += ../fonts/std
+  EXTRAINCDIRS += ../
   
   ifeq ($(PCBREV), REV3)
     CPPDEFS += -DREV3
