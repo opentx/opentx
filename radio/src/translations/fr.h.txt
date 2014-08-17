@@ -395,7 +395,7 @@
 
 #define LEN_VARIOSRC           "\005"
 #if defined(FRSKY_SPORT)
-  #define TR_VARIOSRC          "Vario""A1\0  ""A2\0""dTE\0"
+  #define TR_VARIOSRC          "Vario""A1\0  ""A2\0  ""dTE\0 "
 #else
   #define TR_VARIOSRC          "Alti\0""Alti+""Vario""A1\0  ""A2\0"
 #endif
