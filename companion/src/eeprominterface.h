@@ -914,10 +914,13 @@ class MavlinkData {
     void clear() { memset(this, 0, sizeof(MavlinkData)); }
 };
 
+#define TIMER_NAME_LEN 8
+
 class TimerData {
   public:
     TimerData() { clear(); }
     RawSwitch    mode;
+    char         name[TIMER_NAME_LEN+1];
     bool         minuteBeep;
     unsigned int countdownBeep;
     unsigned int val;
@@ -1063,6 +1066,7 @@ enum Capability {
   Imperial,
   Mixes,
   Timers,
+  TimersName,
   TimeDivisions,
   CustomFunctions,
   SafetyChannelCustomFunction,

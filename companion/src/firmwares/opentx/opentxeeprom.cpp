@@ -2452,6 +2452,10 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
       internalField.Append(new SpareBitsField<3>());
       internalField.Append(new UnsignedField<24>(modelData.timers[i].val));
       internalField.Append(new SignedField<24>(modelData.timers[i].pvalue));
+      if (IS_TARANIS(board))
+        internalField.Append(new ZCharField<8>(modelData.timers[i].name));
+      else
+        internalField.Append(new ZCharField<3>(modelData.timers[i].name));
     }
     else if ((IS_ARM(board) || IS_2560(board)) && version >= 216) {
       internalField.Append(new UnsignedField<16>(modelData.timers[i].val));

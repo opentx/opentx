@@ -218,7 +218,7 @@ PACK(typedef struct {
 PACK(typedef struct {
   int16_t trim[4];
   int8_t swtch;       // swtch of phase[0] is not used
-  char name[LEN_FP_NAME];
+  char name[LEN_FLIGHT_MODE_NAME];
   uint8_t fadeIn;
   uint8_t fadeOut;
   ROTARY_ENCODER_ARRAY;

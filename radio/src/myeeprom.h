@@ -91,80 +91,81 @@
 #endif
 
 #if defined(PCBTARANIS)
-  #define MAX_MODELS          60
-  #define NUM_CHNOUT          32 // number of real output channels CH1-CH32
-  #define MAX_FLIGHT_MODES    9
-  #define MAX_MIXERS          64
-  #define MAX_EXPOS           64
-  #define NUM_LOGICAL_SWITCH  32 // number of custom switches
-  #define NUM_CFN             64 // number of functions assigned to switches
-  #define MAX_SCRIPTS         7
-  #define MAX_INPUTS          32
-  #define NUM_TRAINER         16
-  #define NUM_POTS            5
-  #define NUM_XPOTS           3
+  #define MAX_MODELS           60
+  #define NUM_CHNOUT           32 // number of real output channels CH1-CH32
+  #define MAX_FLIGHT_MODES     9
+  #define MAX_MIXERS           64
+  #define MAX_EXPOS            64
+  #define NUM_LOGICAL_SWITCH   32 // number of custom switches
+  #define NUM_CFN              64 // number of functions assigned to switches
+  #define MAX_SCRIPTS          7
+  #define MAX_INPUTS           32
+  #define NUM_TRAINER          16
+  #define NUM_POTS             5
+  #define NUM_XPOTS            3
 #elif defined(CPUARM)
-  #define MAX_MODELS          60
-  #define NUM_CHNOUT          32 // number of real output channels CH1-CH32
-  #define MAX_FLIGHT_MODES    9
-  #define MAX_MIXERS          64
-  #define MAX_EXPOS           32
-  #define NUM_LOGICAL_SWITCH  32 // number of custom switches
-  #define NUM_CFN             64      // number of functions assigned to switches
-  #define NUM_TRAINER         16
-  #define NUM_POTS            3
-  #define NUM_XPOTS           0
+  #define MAX_MODELS           60
+  #define NUM_CHNOUT           32 // number of real output channels CH1-CH32
+  #define MAX_FLIGHT_MODES     9
+  #define MAX_MIXERS           64
+  #define MAX_EXPOS            32
+  #define NUM_LOGICAL_SWITCH   32 // number of custom switches
+  #define NUM_CFN              64      // number of functions assigned to switches
+  #define NUM_TRAINER          16
+  #define NUM_POTS             3
+  #define NUM_XPOTS            0
 #elif defined(CPUM2560) || defined(CPUM2561)
-  #define MAX_MODELS          30
-  #define NUM_CHNOUT          16 // number of real output channels CH1-CH16
-  #define MAX_FLIGHT_MODES    6
-  #define MAX_MIXERS          32
-  #define MAX_EXPOS           16
-  #define NUM_LOGICAL_SWITCH  12 // number of custom switches
-  #define NUM_CFN             24 // number of functions assigned to switches
-  #define NUM_TRAINER         8
-  #define NUM_POTS            3
-  #define NUM_XPOTS           0
+  #define MAX_MODELS           30
+  #define NUM_CHNOUT           16 // number of real output channels CH1-CH16
+  #define MAX_FLIGHT_MODES     6
+  #define MAX_MIXERS           32
+  #define MAX_EXPOS            16
+  #define NUM_LOGICAL_SWITCH   12 // number of custom switches
+  #define NUM_CFN              24 // number of functions assigned to switches
+  #define NUM_TRAINER          8
+  #define NUM_POTS             3
+  #define NUM_XPOTS            0
 #elif defined(CPUM128)
-  #define MAX_MODELS          30
-  #define NUM_CHNOUT          16 // number of real output channels CH1-CH16
-  #define MAX_FLIGHT_MODES    5
-  #define MAX_MIXERS          32
-  #define MAX_EXPOS           14
-  #define NUM_LOGICAL_SWITCH  12 // number of custom switches
-  #define NUM_CFN             24 // number of functions assigned to switches
-  #define NUM_TRAINER         8
-  #define NUM_POTS            3
-  #define NUM_XPOTS           0
+  #define MAX_MODELS           30
+  #define NUM_CHNOUT           16 // number of real output channels CH1-CH16
+  #define MAX_FLIGHT_MODES     5
+  #define MAX_MIXERS           32
+  #define MAX_EXPOS            14
+  #define NUM_LOGICAL_SWITCH   12 // number of custom switches
+  #define NUM_CFN              24 // number of functions assigned to switches
+  #define NUM_TRAINER          8
+  #define NUM_POTS             3
+  #define NUM_XPOTS            0
 #else
-  #define MAX_MODELS          16
-  #define NUM_CHNOUT          16 // number of real output channels CH1-CH16
-  #define MAX_FLIGHT_MODES    5
-  #define MAX_MIXERS          32
-  #define MAX_EXPOS           14
-  #define NUM_LOGICAL_SWITCH  12 // number of custom switches
-  #define NUM_CFN             16 // number of functions assigned to switches
-  #define NUM_TRAINER         8
-  #define NUM_POTS            3
-  #define NUM_XPOTS           0
+  #define MAX_MODELS           16
+  #define NUM_CHNOUT           16 // number of real output channels CH1-CH16
+  #define MAX_FLIGHT_MODES     5
+  #define MAX_MIXERS           32
+  #define MAX_EXPOS            14
+  #define NUM_LOGICAL_SWITCH   12 // number of custom switches
+  #define NUM_CFN              16 // number of functions assigned to switches
+  #define NUM_TRAINER          8
+  #define NUM_POTS             3
+  #define NUM_XPOTS            0
 #endif
 
 #if defined(CPUARM)
-  #define MAX_TIMERS          3
+  #define MAX_TIMERS           3
 #else
-  #define MAX_TIMERS          2
+  #define MAX_TIMERS           2
 #endif
 
-#define NUM_CYC       3
-#define NUM_CAL_PPM   4
+#define NUM_CYC                3
+#define NUM_CAL_PPM            4
 
 #if defined(PCBTARANIS)
-  #define LEN_MODEL_NAME     12
-  #define LEN_BITMAP_NAME    10
-  #define LEN_EXPOMIX_NAME   8
-  #define LEN_FP_NAME        10
-  #define LEN_CHANNEL_NAME   6
-  #define LEN_INPUT_NAME     4
+  #define LEN_MODEL_NAME       12
+  #define LEN_TIMER_NAME       8
+  #define LEN_FLIGHT_MODE_NAME 10
+  #define LEN_BITMAP_NAME      10
+  #define LEN_EXPOMIX_NAME     8
+  #define LEN_CHANNEL_NAME     6
+  #define LEN_INPUT_NAME       4
   enum CurveType {
     CURVE_TYPE_STANDARD,
     CURVE_TYPE_CUSTOM,
@@ -176,28 +177,29 @@ PACK(typedef struct t_CurveInfo {
   uint8_t spare:4;
   int8_t  points;
 }) CurveInfo;
-  #define MAX_CURVES         32
-  #define NUM_POINTS         512
-  #define CURVDATA           CurveInfo
+  #define MAX_CURVES           32
+  #define NUM_POINTS           512
+  #define CURVDATA             CurveInfo
 #elif defined(CPUARM)
-  #define LEN_MODEL_NAME     10
-  #define LEN_EXPOMIX_NAME   6
-  #define LEN_FP_NAME        6
-  #define MAX_CURVES         16
-  #define NUM_POINTS         512
-  #define CURVDATA           int16_t
+  #define LEN_MODEL_NAME       10
+  #define LEN_TIMER_NAME       3
+  #define LEN_FLIGHT_MODE_NAME 6
+  #define LEN_EXPOMIX_NAME     6
+  #define MAX_CURVES           16
+  #define NUM_POINTS           512
+  #define CURVDATA             int16_t
 #else
-  #define LEN_MODEL_NAME     10
-  #define LEN_FP_NAME        6
-  #define MAX_CURVES         8
-  #define NUM_POINTS         (112-MAX_CURVES)
-  #define CURVDATA           int8_t
+  #define LEN_MODEL_NAME       10
+  #define LEN_FLIGHT_MODE_NAME 6
+  #define MAX_CURVES           8
+  #define NUM_POINTS           (112-MAX_CURVES)
+  #define CURVDATA             int8_t
 #endif
 
 #if defined(PCBTARANIS) || defined(PCBSKY9X)
-  #define NUM_MODULES 2
+  #define NUM_MODULES          2
 #else
-  #define NUM_MODULES 1
+  #define NUM_MODULES          1
 #endif
 
 typedef int16_t gvar_t;
@@ -1343,7 +1345,7 @@ PACK(typedef struct t_SwashRingData { // Swash Ring data
 PACK(typedef struct t_FlightModeData {
   TRIMS_ARRAY;
   int8_t swtch;       // swtch of phase[0] is not used
-  char name[LEN_FP_NAME];
+  char name[LEN_FLIGHT_MODE_NAME];
   uint8_t fadeIn;
   uint8_t fadeOut;
   ROTARY_ENCODER_ARRAY;
@@ -1353,7 +1355,7 @@ PACK(typedef struct t_FlightModeData {
 PACK(typedef struct t_FlightModeData {
   TRIMS_ARRAY;
   int8_t swtch;       // swtch of phase[0] is not used
-  char name[LEN_FP_NAME];
+  char name[LEN_FLIGHT_MODE_NAME];
   uint8_t fadeIn:4;
   uint8_t fadeOut:4;
   ROTARY_ENCODER_ARRAY;
@@ -1647,6 +1649,7 @@ PACK(typedef struct t_TimerData {
   uint8_t  spare:3;
   uint32_t start:24;
   int32_t  value:24;
+  char     name[LEN_TIMER_NAME];
 }) TimerData;
 #define IS_MANUAL_RESET_TIMER(idx) (g_model.timers[idx].persistent == 2)
 #elif defined(CPUM2560)

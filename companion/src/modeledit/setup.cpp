@@ -10,9 +10,21 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
   timer(timer),
   ui(new Ui::Timer)
 {
+  BoardEnum board = firmware->getBoard();
+
   ui->setupUi(this);
 
   lock = true;
+
+  // Name
+  int length = firmware->getCapability(TimersName);
+  if (length == 0) {
+    ui->name->hide();
+  }
+  else {
+    ui->name->setMaxLength(length);
+    ui->name->setText(timer.name);
+  }
 
   // Mode
   populateSwitchCB(ui->mode, timer.mode, generalSettings, TimersContext);
@@ -25,7 +37,7 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
   ui->countdownBeep->setField(&timer.countdownBeep, this);
   ui->countdownBeep->addItem(tr("Silent"), 0);
   ui->countdownBeep->addItem(tr("Beeps"), 1);
-  if (IS_ARM(GetEepromInterface()->getBoard()) || IS_2560(GetEepromInterface()->getBoard())) {
+  if (IS_ARM(board) || IS_2560(board)) {
     ui->countdownBeep->addItem(tr("Voice"), 2);
   }
 
@@ -84,6 +96,13 @@ void TimerPanel::on_mode_currentIndexChanged(int index)
 void TimerPanel::on_minuteBeep_toggled(bool checked)
 {
   timer.minuteBeep = checked;
+  emit modified();
+}
+
+void TimerPanel::on_name_editingFinished()
+{
+  int length = ui->name->maxLength();
+  strncpy(timer.name, ui->name->text().toAscii(), length);
   emit modified();
 }
 
@@ -336,13 +355,15 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::Setup)
 {
+  BoardEnum board = firmware->getBoard();
+
   lock = true;
 
   memset(modules, 0, sizeof(modules));
 
   ui->setupUi(this);
 
-  ui->name->setMaxLength(IS_TARANIS(firmware->getBoard()) ? 12 : 10);
+  ui->name->setMaxLength(IS_TARANIS(board) ? 12 : 10);
 
   for (int i=0; i<C9X_MAX_TIMERS; i++) {
     if (i<firmware->getCapability(Timers)) {
@@ -428,7 +449,7 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
     ui->centerBeepLayout->addWidget(checkbox, 0, i+1);
     connect(checkbox, SIGNAL(toggled(bool)), this, SLOT(onBeepCenterToggled(bool)));
     centerBeepCheckboxes << checkbox;
-    if (!IS_TARANIS_PLUS(firmware->getBoard()) && i==6) {
+    if (!IS_TARANIS_PLUS(board) && i==6) {
         checkbox->hide();
     }
   }
@@ -448,7 +469,7 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
     slider->setTickInterval(1);
     slider->setMinimumSize(QSize(30, 50));
     slider->setMaximumSize(QSize(50, 50));
-    if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+    if (IS_TARANIS(board)) {
       label->setText(switchesX9D[i]);
       slider->setMaximum(i==5 ? 1 : 2);
     }
@@ -471,7 +492,7 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
   ui->switchesStartupLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum), 0, firmware->getCapability(Switches));
 
   // Pot warnings
-  if (IS_TARANIS(firmware->getBoard())) {
+  if (IS_TARANIS(board)) {
     for (int i=0; i<firmware->getCapability(Pots); i++) {
       QCheckBox * cb = new QCheckBox(this);
       cb->setProperty("index", i+1);
@@ -479,7 +500,7 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
       ui->potWarningLayout->addWidget(cb, 0, i+1);
       connect(cb, SIGNAL(toggled(bool)), this, SLOT(potWarningToggled(bool)));
       potWarningCheckboxes << cb;
-      if (!IS_TARANIS_PLUS(firmware->getBoard()) && i==2) {
+      if (!IS_TARANIS_PLUS(board) && i==2) {
         cb->hide();
       }
     }

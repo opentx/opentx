@@ -561,6 +561,8 @@ int OpenTxFirmware::getCapability(const Capability capability)
       return (IS_ARM(board) ? 500 : 245);
     case Timers:
       return (IS_ARM(board) ? 3 : 2);
+    case TimersName:
+      return (IS_TARANIS(board) ? 8 : (IS_ARM(board) ? 3 : 0));
     case PermTimers:
       if (board == BOARD_GRUVIN9X || IS_ARM(board))
         return 1;

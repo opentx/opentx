@@ -591,16 +591,17 @@
 #define TR_CONTRAST            "Contraste"
 #define TR_ALARMS_LABEL        "Alarmes"
 #define TR_BATTERY_RANGE       "Plage batterie"
-#define TR_BATTERYWARNING      TR(INDENT "Batterie",INDENT "Batterie faible")
+#define TR_BATTERYWARNING      TR(INDENT "Batterie", INDENT "Batterie faible")
 #define TR_INACTIVITYALARM     INDENT "Inactivité"
 #define TR_MEMORYWARNING       INDENT "Mémoire pleine"
-#define TR_ALARMWARNING        TR(INDENT "Silence",INDENT "Sons désactivés")
+#define TR_ALARMWARNING        TR(INDENT "Silence", INDENT "Sons désactivés")
 #define TR_RENAVIG             "Navig EncRot"
 #define TR_THROTTLE_LABEL      "Gaz"
 #define TR_THROTTLEREVERSE     TR("Inv. gaz", INDENT "Inversion gaz")
-#define TR_MINUTEBEEP          TR(INDENT "Bip min.",INDENT "Annonces minutes")
-#define TR_BEEPCOUNTDOWN       TR(INDENT "Bip fin",INDENT "Compte à rebours")
-#define TR_PERSISTENT          TR(INDENT "Persist.",INDENT "Persistant")
+#define TR_TIMER_NAME          INDENT "Name"
+#define TR_MINUTEBEEP          TR(INDENT "Bip min.", INDENT "Annonces minutes")
+#define TR_BEEPCOUNTDOWN       TR(INDENT "Bip fin", INDENT "Compte à rebours")
+#define TR_PERSISTENT          TR(INDENT "Persist.", INDENT "Persistant")
 #define TR_BACKLIGHT_LABEL     "Rétroéclairage"
 #define TR_BLDELAY             INDENT "Durée"
 #define TR_BLONBRIGHTNESS      INDENT "Luminosité ON"

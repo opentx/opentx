@@ -54,8 +54,8 @@
 #define PHASE_Y       (3*FH)
 #define PHASE_FLAGS   (0)
 #define TIMERS_X      145
-#define TIMER1_Y      20
-#define TIMER2_Y      45
+#define TIMERS_Y      20
+#define TIMERS_H      25
 #define TIMERS_R      193
 #define REBOOT_X      (LCD_W-FW)
 #define VSWITCH_X(i)  (((i>=NUM_LOGICAL_SWITCH*3/4) ? BITMAP_X+28 : ((i>=NUM_LOGICAL_SWITCH/2) ? BITMAP_X+25 : ((i>=NUM_LOGICAL_SWITCH/4) ? 21 : 18))) + 3*i)
@@ -366,34 +366,31 @@ void displayTopBar()
 #if LCD_W >= 212
 void displayTimers()
 {
-  // Main timer
-  if (g_model.timers[0].mode) {
-    TimerState & timerState = timersStates[0];
-    putsTimerMode(TIMERS_X, TIMER1_Y-6, g_model.timers[0].mode, SMLSIZE);
-    putsTimer(TIMERS_X, TIMER1_Y, timerState.val, TIMEHOUR|MIDSIZE|LEFT, TIMEHOUR|MIDSIZE|LEFT);
-    if (g_model.timers[0].persistent) lcd_putcAtt(TIMERS_R, TIMER1_Y+1, 'P', SMLSIZE);
-    if (timerState.val < 0) {
-      if (BLINK_ON_PHASE) {
-        lcd_filled_rect(TIMERS_X-7, TIMER1_Y-7, 60, 19);
+  // Main and Second timer
+  for (unsigned int i=0; i<2; i++) {
+    if (g_model.timers[i].mode) {
+      TimerState & timerState = timersStates[i];
+      TimerData & timerData = g_model.timers[i];
+      uint8_t y = TIMERS_Y + i*TIMERS_H;
+      if (zlen(timerData.name, LEN_TIMER_NAME) > 0) {
+        lcd_putsnAtt(TIMERS_X, y-7, timerData.name, LEN_TIMER_NAME, ZCHAR|SMLSIZE);
       }
-    }
-  }
-
-  // Second timer
-  if (g_model.timers[1].mode) {
-    TimerState & timerState = timersStates[1];
-    putsTimerMode(TIMERS_X, TIMER2_Y-6, g_model.timers[1].mode, SMLSIZE);
-    putsTimer(TIMERS_X, TIMER2_Y, timerState.val, TIMEHOUR|MIDSIZE|LEFT, TIMEHOUR|MIDSIZE|LEFT);
-    if (g_model.timers[1].persistent) lcd_putcAtt(TIMERS_R, TIMER2_Y+1, 'P', SMLSIZE);
-    if (timerState.val < 0) {
-      if (BLINK_ON_PHASE) {
-        lcd_filled_rect(TIMERS_X-7, TIMER2_Y-7, 60, 19);
+      else {
+        putsTimerMode(TIMERS_X, y-7, timerData.mode, SMLSIZE);
+      }
+      putsTimer(TIMERS_X, y, timerState.val, TIMEHOUR|MIDSIZE|LEFT, TIMEHOUR|MIDSIZE|LEFT);
+      if (timerData.persistent) {
+        lcd_putcAtt(TIMERS_R, y+1, 'P', SMLSIZE);
+      }
+      if (timerState.val < 0) {
+        if (BLINK_ON_PHASE) {
+          lcd_filled_rect(TIMERS_X-7, y-8, 60, 20);
+        }
       }
     }
   }
 }
 #else
-
 void displayTimers()
 {
 #if defined(TRANSLATIONS_CZ)
@@ -406,7 +403,19 @@ void displayTimers()
     TimerState & timerState = timersStates[0];
     uint8_t att = DBLSIZE | (timerState.val<0 ? BLINK|INVERS : 0);
     putsTimer(12*FW+2+10*FWNUM-4, FH*2, timerState.val, att, att);
-    putsTimerMode(timerState.val >= 0 ? MAINTMR_LBL_COL : MAINTMR_LBL_COL-7, FH*3, g_model.timers[0].mode);
+    uint8_t xLabel = (timerState.val >= 0 ? MAINTMR_LBL_COL : MAINTMR_LBL_COL-7);
+#if defined(CPUARM)
+    uint8_t len = zlen(g_model.timers[0].name, LEN_TIMER_NAME);
+    if (len > 0) {
+      xLabel += (LEN_TIMER_NAME-len)*FW;
+      lcd_putsnAtt(xLabel, FH*3, g_model.timers[0].name, len, ZCHAR);
+    }
+    else {
+      putsTimerMode(xLabel, FH*3, g_model.timers[0].mode);
+    }
+#else
+    putsTimerMode(xLabel, FH*3, g_model.timers[0].mode);
+#endif
   }
 }
 #endif

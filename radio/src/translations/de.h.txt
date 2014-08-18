@@ -600,22 +600,23 @@
 #define TR_RENAVIG             "Drehgeb. Navig."
 #define TR_THROTTLE_LABEL      "---Gas-Kontrolle----"
 #define TR_THROTTLEREVERSE     TR("Gas invers", INDENT "Vollgas hinten?") //Änderung wg TH9x, Taranis
-#define TR_MINUTEBEEP          TR(INDENT"Min-Alarm",INDENT"Minuten-Alarm")
+#define TR_TIMER_NAME          INDENT "Name"
+#define TR_MINUTEBEEP          TR(INDENT"Min-Alarm", INDENT"Minuten-Alarm")
 #define TR_BEEPCOUNTDOWN       INDENT"Countdown"
-#define TR_PERSISTENT          TR(INDENT"Permanent",INDENT"Permanent")
+#define TR_PERSISTENT          TR(INDENT"Permanent", INDENT"Permanent")
 #define TR_BACKLIGHT_LABEL     "----LCD-Beleuchtg----"
 #define TR_BLDELAY             INDENT"Dauer"
 #define TR_BLONBRIGHTNESS      INDENT"An-Helligkeit"
 #define TR_BLOFFBRIGHTNESS     INDENT"Aus-Helligkeit"
 #define TR_BLCOLOR             INDENT "Farbe"
-#define TR_SPLASHSCREEN        TR("Startbild Ein","Startbild Ein für")
+#define TR_SPLASHSCREEN        TR("Startbild Ein", "Startbild Ein für")
 #define TR_THROTTLEWARNING     TR("Gasalarm", INDENT "Gas Alarm")
 #define TR_SWITCHWARNING       TR("Sch. Alarm", INDENT "Schalter-Alarm")
 #define TR_POTWARNING          TR("Pot Warn.", INDENT "Poti-Warnung")
-#define TR_TIMEZONE            TR("Zeitzone","GPS-Zeitzone")
-#define TR_RXCHANNELORD        TR("Kanalanordnung","Kanalvoreinstellung")
-#define TR_SWITCHES_DELAY      TR("Sw. Mitte Delay","Schaltermitte Verz.")   //Schalter Mitten verzögern Anpassung
-#define TR_SLAVE               TR("Schüler PPM1-16","Schüler PPM1-16 als Ausgang")
+#define TR_TIMEZONE            TR("Zeitzone", "GPS-Zeitzone")
+#define TR_RXCHANNELORD        TR("Kanalanordnung", "Kanalvoreinstellung")
+#define TR_SWITCHES_DELAY      TR("Sw. Mitte Delay", "Schaltermitte Verz.")   //Schalter Mitten verzögern Anpassung
+#define TR_SLAVE               TR("Schüler PPM1-16", "Schüler PPM1-16 als Ausgang")
 #define TR_MODESRC             " Modus\003%  Quelle"
 #define TR_MULTIPLIER          "Multiplikator"
 #define TR_CAL                 "Kal."
