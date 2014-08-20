@@ -42,6 +42,12 @@
 #include <stddef.h>
 #include <stdlib.h>
 
+#if defined(SIMU)
+  #define SWITCH_SIMU(a, b)  (a)
+#else
+  #define SWITCH_SIMU(a, b)  (b)
+#endif
+
 #if defined(PCBSKY9X)
   #define IS_PCBSKY9X        true
   #define CASE_PCBSKY9X(x)   x,
@@ -1568,7 +1574,7 @@ void checkFlashOnBeep();
 
 #if defined(FRSKY) || defined(CPUARM)
 void convertUnit(getvalue_t & val, uint8_t & unit); // TODO check FORCEINLINE on stock
-void putsTelemetryValue(xcoord_t x, uint8_t y, lcdint_t val, uint8_t unit, LcdFlags att);
+void putsTelemetryValue(coord_t x, coord_t y, lcdint_t val, uint8_t unit, LcdFlags att);
 #else
 #define convertUnit(...)
 #endif

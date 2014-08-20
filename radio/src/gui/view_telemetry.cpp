@@ -393,9 +393,9 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
         getvalue_t value = getValue(MIXSRC_FIRST_TELEM+field-1);
         uint8_t att = (i==3 ? NO_UNIT : DBLSIZE|NO_UNIT);
 #if LCD_W >= 212
-        xcoord_t pos[] = {0, 71, 143, 214};
+        coord_t pos[] = {0, 71, 143, 214};
 #else
-        xcoord_t pos[] = {0, 65, 130};
+        coord_t pos[] = {0, 65, 130};
 #endif
         putsTelemetryChannel(pos[j+1]-2, FH+2*FH*i, field-1, value, att);
 

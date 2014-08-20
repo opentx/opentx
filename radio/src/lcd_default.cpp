@@ -39,7 +39,7 @@
 #define LCD_BYTE_FILTER(p, keep, add) *(p) = (*(p) & (keep)) | (add)
 
 #if !defined(CPUARM)
-void lcd_putcAtt(xcoord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
+void lcd_putcAtt(coord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
 {
   uint8_t *p = &displayBuf[ y / 8 * LCD_W + x ];
   const pm_uchar *q = &font_5x7[(c-0x20)*5];
@@ -202,14 +202,14 @@ void lcd_mask(uint8_t *p, uint8_t mask, LcdFlags att)
     *p ^= mask;
 }
 
-void lcd_plot(xcoord_t x, uint8_t y, LcdFlags att)
+void lcd_plot(coord_t x, coord_t y, LcdFlags att)
 {
   uint8_t *p = &displayBuf[ y / 8 * LCD_W + x ];
   if (p<DISPLAY_END)
     lcd_mask(p, BITMASK(y%8), att);
 }
 
-void lcd_hlineStip(xcoord_t x, uint8_t y, xcoord_t w, uint8_t pat, LcdFlags att)
+void lcd_hlineStip(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att)
 {
   if (y >= LCD_H) return;
   if (x+w > LCD_W) { w = LCD_W - x; }
@@ -229,7 +229,7 @@ void lcd_hlineStip(xcoord_t x, uint8_t y, xcoord_t w, uint8_t pat, LcdFlags att)
 }
 
 #if defined(CPUM64)
-void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat)
+void lcd_vlineStip(coord_t x, int8_t y, int8_t h, uint8_t pat)
 {
   if (x >= LCD_W) return;
   if (h<0) { y+=h; h=-h; }
@@ -262,7 +262,7 @@ void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat)
 }
 #else
 // allows the att parameter...
-void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat, LcdFlags att)
+void lcd_vlineStip(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlags att)
 {
   if (x >= LCD_W) return;
 #if defined(CPUARM)
@@ -304,18 +304,18 @@ void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat, LcdFlags att)
 void lcd_invert_line(int8_t y)
 {
   uint8_t *p  = &displayBuf[y * LCD_W];
-  for (xcoord_t x=0; x<LCD_W; x++) {
+  for (coord_t x=0; x<LCD_W; x++) {
     ASSERT_IN_DISPLAY(p);
     *p++ ^= 0xff;
   }
 }
 
 #if !defined(BOOT)
-void lcd_img(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t idx, LcdFlags att)
+void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att)
 {
   const pm_uchar *q = img;
 #if LCD_W >= 260
-  xcoord_t w   = pgm_read_byte(q++);
+  coord_t w   = pgm_read_byte(q++);
   if (w == 255) w += pgm_read_byte(q++);
 #else
   uint8_t w    = pgm_read_byte(q++);
@@ -325,7 +325,7 @@ void lcd_img(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t idx, LcdFlags 
   q += idx*w*hb;
   for (uint8_t yb = 0; yb < hb; yb++) {
     uint8_t *p = &displayBuf[ (y / 8 + yb) * LCD_W + x ];
-    for (xcoord_t i=0; i<w; i++){
+    for (coord_t i=0; i<w; i++){
       uint8_t b = pgm_read_byte(q);
       q++;
       ASSERT_IN_DISPLAY(p);

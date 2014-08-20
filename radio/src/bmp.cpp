@@ -36,7 +36,7 @@
 
 #include "opentx.h"
 
-const pm_char * bmpLoad(uint8_t *bmp, const char *filename, const xcoord_t width, const uint8_t height)
+const pm_char * bmpLoad(uint8_t *bmp, const char *filename, const unsigned int width, const unsigned int height)
 {
   FIL bmpFile;
   UINT read;

@@ -46,11 +46,11 @@ inline void displayColumnHeader(const char **headers, uint8_t index)
 }
 
 #if !defined(CPUM64)
-  void displayScrollbar(xcoord_t x, uint8_t y, uint8_t h, uint16_t offset, uint16_t count, uint8_t visible);
+  void displayScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
 #endif
 
 #if LCD_W >= 212
-  extern uint8_t scrollbar_X;
+  extern coord_t scrollbar_X;
   #define SET_SCROLLBAR_X(x) scrollbar_X = (x);
 #else
   #define SET_SCROLLBAR_X(x)
@@ -98,7 +98,7 @@ extern vertpos_t s_pgOfs;
 extern uint8_t s_noHi;
 extern uint8_t calibrationState;
 
-void menu_lcd_onoff(uint8_t x, uint8_t y, uint8_t value, LcdFlags attr);
+void menu_lcd_onoff(coord_t x, coord_t y, uint8_t value, LcdFlags attr);
 
 typedef void (*MenuFuncP)(uint8_t event);
 typedef void (*MenuFuncP_PROGMEM)(uint8_t event);
@@ -139,9 +139,9 @@ void menuStatisticsDebug(uint8_t event);
 void menuAboutView(uint8_t event);
 
 #if !defined(CPUM64)
-  void displaySlider(uint8_t x, uint8_t y, uint8_t value, uint8_t max, uint8_t attr);
+  void displaySlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr);
 #elif defined(GRAPHICS)
-  void display5posSlider(uint8_t x, uint8_t y, uint8_t value, uint8_t attr);
+  void display5posSlider(coord_t x, coord_t y, uint8_t value, uint8_t attr);
   #define displaySlider(x, y, value, max, attr) lcd_outdezAtt(x, y, value, attr|LEFT)
 #else
   #define displaySlider(x, y, value, max, attr) lcd_outdezAtt(x, y, value, attr|LEFT)
@@ -329,9 +329,9 @@ void title(const pm_char * s);
   typedef int8_t select_menu_value_t;
 #endif
 
-select_menu_value_t selectMenuItem(uint8_t x, uint8_t y, const pm_char *label, const pm_char *values, select_menu_value_t value, select_menu_value_t min, select_menu_value_t max, LcdFlags attr, uint8_t event);
-uint8_t onoffMenuItem(uint8_t value, uint8_t x, uint8_t y, const pm_char *label, LcdFlags attr, uint8_t event );
-int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, LcdFlags attr, uint8_t event);
+select_menu_value_t selectMenuItem(coord_t x, coord_t y, const pm_char *label, const pm_char *values, select_menu_value_t value, select_menu_value_t min, select_menu_value_t max, LcdFlags attr, uint8_t event);
+uint8_t onoffMenuItem(uint8_t value, coord_t x, coord_t y, const pm_char *label, LcdFlags attr, uint8_t event );
+int8_t switchMenuItem(coord_t x, coord_t y, int8_t value, LcdFlags attr, uint8_t event);
 
 #if defined(CPUARM) && defined(GVARS)
   #define GVAR_MENU_ITEM(x, y, v, min, max, lcdattr, editflags, event) gvarMenuItem(x, y, v, min, max, lcdattr, editflags, event)
@@ -341,13 +341,13 @@ int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, LcdFlags attr, uint8_t
 
 #if defined(GVARS)
   #if defined(CPUARM)
-    int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, uint8_t event); 
+    int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, uint8_t event);
   #else
-    int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event); // @@@ open.20.fsguruh
+    int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event); // @@@ open.20.fsguruh
   #endif
   #define displayGVar(x, y, v, min, max) GVAR_MENU_ITEM(x, y, v, min, max, 0, 0, 0)
 #else
-    int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event);
+    int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event);
   #define displayGVar(x, y, v, min, max) lcd_outdez8(x, y, v)
 #endif
 

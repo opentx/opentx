@@ -108,7 +108,7 @@ const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
 #else
   #define RADIO_SETUP_2ND_COLUMN  (LCD_W-6*FW-1-MENUS_SCROLLBAR_WIDTH)
   #define RADIO_SETUP_TIME_COLUMN (FW*15+9)
-  #define RADIO_SETUP_DATE_COLUMN (FW*15+5)
+  #define RADIO_SETUP_DATE_COLUMN (FW*15+7)
 #endif
 
 #if !defined(CPUM64)
@@ -220,7 +220,7 @@ void menuGeneralSetup(uint8_t event)
   uint8_t sub = m_posVert - 1;
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
-    uint8_t y = 1 + 1*FH + i*FH;
+    coord_t y = MENU_TITLE_HEIGHT + 1 + i*FH;
     uint8_t k = i+s_pgOfs;
     uint8_t blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
     uint8_t attr = (sub == k ? blink : 0);
@@ -1096,7 +1096,7 @@ void menuGeneralSdManager(uint8_t _event)
   reusableBuffer.sdmanager.offset = s_pgOfs;
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
-    uint8_t y = 1 + FH + i*FH;
+    coord_t y = MENU_TITLE_HEIGHT + 1 + i*FH;
     lcdNextPos = 0;
     uint8_t attr = (m_posVert-1-s_pgOfs == i ? BSS|INVERS : BSS);
     if (reusableBuffer.sdmanager.lines[i][0]) {
@@ -1148,9 +1148,9 @@ void menuGeneralTrainer(uint8_t event)
     uint8_t attr;
     uint8_t blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
 
-    lcd_puts(3*FW, 1 + 1*FH, STR_MODESRC);
+    lcd_puts(3*FW, MENU_TITLE_HEIGHT+1, STR_MODESRC);
 
-    y = 1 + 2*FH;
+    y = MENU_TITLE_HEIGHT + 1 + FH;
 
     for (uint8_t i=1; i<=NUM_STICKS; i++) {
       uint8_t chan = channel_order(i);
@@ -1183,19 +1183,19 @@ void menuGeneralTrainer(uint8_t event)
     }
 
     attr = (m_posVert==5) ? blink : 0;
-    lcd_putsLeft(6*FH+1, STR_MULTIPLIER);
-    lcd_outdezAtt(LEN_MULTIPLIER*FW+3*FW, 6*FH+1, g_eeGeneral.PPM_Multiplier+10, attr|PREC1);
+    lcd_putsLeft(MENU_TITLE_HEIGHT+1+5*FH, STR_MULTIPLIER);
+    lcd_outdezAtt(LEN_MULTIPLIER*FW+3*FW, MENU_TITLE_HEIGHT+1+5*FH, g_eeGeneral.PPM_Multiplier+10, attr|PREC1);
     if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.PPM_Multiplier, -10, 40);
 
     attr = (m_posVert==6) ? INVERS : 0;
     if (attr) s_editMode = 0;
-    lcd_putsAtt(0*FW, 1+7*FH, STR_CAL, attr);
+    lcd_putsAtt(0*FW, MENU_TITLE_HEIGHT+1+6*FH, STR_CAL, attr);
     for (uint8_t i=0; i<4; i++) {
       uint8_t x = (i*TRAINER_CALIB_POS+16)*FW/2;
 #if defined (PPM_UNIT_PERCENT_PREC1)
-      lcd_outdezAtt(x, 1+7*FH, (g_ppmIns[i]-g_eeGeneral.trainer.calib[i])*2, PREC1);
+      lcd_outdezAtt(x, MENU_TITLE_HEIGHT+1+6*FH, (g_ppmIns[i]-g_eeGeneral.trainer.calib[i])*2, PREC1);
 #else
-      lcd_outdezAtt(x, 1+7*FH, (g_ppmIns[i]-g_eeGeneral.trainer.calib[i])/5, 0);
+      lcd_outdezAtt(x, MENU_TITLE_HEIGHT+1+6*FH, (g_ppmIns[i]-g_eeGeneral.trainer.calib[i])/5, 0);
 #endif
     }
 
@@ -1213,7 +1213,7 @@ void menuGeneralVersion(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUVERSION, menuTabDiag, e_Vers, 1);
 
-  lcd_putsLeft(2*FH, vers_stamp);
+  lcd_putsLeft(MENU_TITLE_HEIGHT+FH, vers_stamp);
   
 #if defined(COPROCESSOR)
   if (Coproc_valid == 1) {
@@ -1226,7 +1226,7 @@ void menuGeneralVersion(uint8_t event)
 #endif
 
 #if defined(PCBTARANIS)
-  lcd_putsLeft(7*FH, STR_EEBACKUP);
+  lcd_putsLeft(MENU_TITLE_HEIGHT+6*FH, STR_EEBACKUP);
   if (event == EVT_KEY_LONG(KEY_ENTER)) {
     backupEeprom();
   }
@@ -1243,26 +1243,26 @@ void menuGeneralDiagKeys(uint8_t event)
 {
   SIMPLE_MENU(STR_MENUDIAG, menuTabDiag, e_Keys, 1);
 
-  lcd_puts(14*FW, 3*FH, STR_VTRIM);
+  lcd_puts(14*FW, MENU_TITLE_HEIGHT+2*FH, STR_VTRIM);
 
   for(uint8_t i=0; i<9; i++) {
-    uint8_t y;
+    coord_t y;
 
     if (i<8) {
-      y = i/2*FH+FH*4;
+      y = MENU_TITLE_HEIGHT + FH*3 + FH*(i/2);
       lcd_img(14*FW, y, sticks, i/2, 0);
       displayKeyState(i&1? 20*FW : 18*FW, y, (EnumKeys)(TRM_BASE+i));
     }
 
     if (i<6) {
-      y = (5-i)*FH+2*FH;
+      y = (5-i)*FH+MENU_TITLE_HEIGHT+FH;
       lcd_putsiAtt(0, y, STR_VKEYS, i, 0);
       displayKeyState(5*FW+2, y, (EnumKeys)(KEY_MENU+i));
     }
 
 #if !defined(PCBTARANIS)
     if (i != SW_ID0-SW_BASE) {
-      y = i*FH-FH;
+      y = MENU_TITLE_HEIGHT+i*FH-2*FH;
       putsSwitches(8*FW, y, i+1, 0); //ohne off,on
       displayKeyState(11*FW+2, y, (EnumKeys)(SW_BASE+i));
     }
@@ -1271,7 +1271,7 @@ void menuGeneralDiagKeys(uint8_t event)
 
 #if defined(ROTARY_ENCODERS) || defined(ROTARY_ENCODER_NAVIGATION)
   for(uint8_t i=0; i<DIM(g_rotenc); i++) {
-    uint8_t y = i*FH + FH;
+    coord_t y = MENU_TITLE_HEIGHT /* ??? + 1 ??? */ + i*FH;
     lcd_putsiAtt(14*FW, y, STR_VRENCODERS, i, 0);
     lcd_outdezNAtt(18*FW, y, g_rotenc[i], LEFT|(switchState((EnumKeys)(BTN_REa+i)) ? INVERS : 0));
   }
@@ -1294,7 +1294,7 @@ void menuGeneralDiagAna(uint8_t event)
   STICK_SCROLL_DISABLE();
 
   for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
-    uint8_t y = 1+FH+(i/2)*FH;
+    coord_t y = MENU_TITLE_HEIGHT + 1 + (i/2)*FH;
     uint8_t x = i&1 ? 64+5 : 0;
     putsStrIdx(x, y, PSTR("A"), i+1);
     lcd_putc(lcdNextPos, y, ':');
@@ -1304,25 +1304,25 @@ void menuGeneralDiagAna(uint8_t event)
 
 #if !defined(CPUARM)
   // Display raw BandGap result (debug)
-  lcd_puts(64+5, 1+4*FH, STR_BG);
+  lcd_puts(64+5, MENU_TITLE_HEIGHT+1+3*FH, STR_BG);
   lcd_outdezAtt(64+5+6*FW-3, 1+4*FH, BandGap, 0);
 #endif
 
 #if defined(PCBTARANIS)
-  lcd_putsLeft(6*FH+1, STR_BATT_CALIB);
+  lcd_putsLeft(MENU_TITLE_HEIGHT+1+5*FH, STR_BATT_CALIB);
   static int32_t adcBatt;
   adcBatt = ((adcBatt * 7) + anaIn(TX_VOLTAGE)) / 8;
   uint32_t batCalV = (adcBatt + (adcBatt*g_eeGeneral.vBatCalib)/128) * BATT_SCALE;
   batCalV >>= 11;
   batCalV += 2; // because of the diode
-  putsVolts(LEN_CALIB_FIELDS*FW+4*FW, 6*FH+1, batCalV, (m_posVert==1 ? INVERS : 0));
+  putsVolts(LEN_CALIB_FIELDS*FW+4*FW, MENU_TITLE_HEIGHT+1+5*FH, batCalV, (m_posVert==1 ? INVERS : 0));
 #elif defined(PCBSKY9X)
-  lcd_putsLeft(5*FH+1, STR_BATT_CALIB);
+  lcd_putsLeft(MENU_TITLE_HEIGHT+1+4*FH, STR_BATT_CALIB);
   static int32_t adcBatt;
   adcBatt = ((adcBatt * 7) + anaIn(TX_VOLTAGE)) / 8;
   uint32_t batCalV = (adcBatt + adcBatt*(g_eeGeneral.vBatCalib)/128) * 4191;
   batCalV /= 55296;
-  putsVolts(LEN_CALIB_FIELDS*FW+4*FW, 5*FH+1, batCalV, (m_posVert==1 ? INVERS : 0));
+  putsVolts(LEN_CALIB_FIELDS*FW+4*FW, MENU_TITLE_HEIGHT+1+4*FH, batCalV, (m_posVert==1 ? INVERS : 0));
 #elif defined(PCBGRUVIN9X)
   lcd_putsLeft(6*FH-2, STR_BATT_CALIB);
   // Gruvin wants 2 decimal places and instant update of volts calib field when button pressed
@@ -1367,7 +1367,7 @@ void menuGeneralHardware(uint8_t event)
   uint8_t sub = m_posVert - 1;
     
   for (uint8_t i=0; i<ITEM_SETUP_HW_MAX; i++) {
-    uint8_t y = 1 + 1*FH + i*FH;
+    coord_t y = MENU_TITLE_HEIGHT + 1 + i*FH;
     uint8_t attr = (sub == i ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
     switch(i) {
       case ITEM_SETUP_HW_POT1:
@@ -1422,7 +1422,7 @@ void menuGeneralHardware(uint8_t event)
   uint8_t sub = m_posVert - 1;
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
-    uint8_t y = 1 + 1*FH + i*FH;
+    coord_t y = MENU_TITLE_HEIGHT + 1 + i*FH;
     uint8_t k = i+s_pgOfs;
     uint8_t blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
     uint8_t attr = (sub == k ? blink : 0);
@@ -1539,14 +1539,14 @@ void menuCommonCalib(uint8_t event)
     case 0:
       // START CALIBRATION
       if (!READ_ONLY()) {
-        lcd_putsLeft(3*FH, STR_MENUTOSTART);
+        lcd_putsLeft(MENU_TITLE_HEIGHT+2*FH, STR_MENUTOSTART);
       }
       break;
 
     case 1:
       // SET MIDPOINT
-      lcd_putsAtt(0*FW, 2*FH, STR_SETMIDPOINT, INVERS);
-      lcd_putsLeft(3*FH, STR_MENUWHENDONE);
+      lcd_putsAtt(0*FW, MENU_TITLE_HEIGHT+FH, STR_SETMIDPOINT, INVERS);
+      lcd_putsLeft(MENU_TITLE_HEIGHT+2*FH, STR_MENUWHENDONE);
 
       for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
         reusableBuffer.calib.loVals[i] = 15000;
@@ -1564,8 +1564,8 @@ void menuCommonCalib(uint8_t event)
     case 2:
       // MOVE STICKS/POTS
       STICK_SCROLL_DISABLE();
-      lcd_putsAtt(0*FW, 2*FH, STR_MOVESTICKSPOTS, INVERS);
-      lcd_putsLeft(3*FH, STR_MENUWHENDONE);
+      lcd_putsAtt(0*FW, MENU_TITLE_HEIGHT+FH, STR_MOVESTICKSPOTS, INVERS);
+      lcd_putsLeft(MENU_TITLE_HEIGHT+2*FH, STR_MENUWHENDONE);
 
       for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
         if (abs(reusableBuffer.calib.loVals[i]-reusableBuffer.calib.hiVals[i]) > 50) {

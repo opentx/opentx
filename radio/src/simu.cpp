@@ -70,30 +70,29 @@ class Open9xSim: public FXMainWindow
     FXSlider      *sliders[8];
     FXKnob        *knobs[NUM_POTS];
 };
-// Message Map
-FXDEFMAP(Open9xSim) Open9xSimMap[]={
 
-  //________Message_Type_________ID_____________________Message_Handler_______
+// Message Map
+FXDEFMAP(Open9xSim) Open9xSimMap[] = {
+//Message_Type   _________ ID____Message_Handler_______
   FXMAPFUNC(SEL_TIMEOUT,   2,    Open9xSim::onTimeout),
   FXMAPFUNC(SEL_KEYPRESS,  0,    Open9xSim::onKeypress),
-  };
+};
 
 FXIMPLEMENT(Open9xSim,FXMainWindow,Open9xSimMap,ARRAYNUMBER(Open9xSimMap))
 
 Open9xSim::Open9xSim(FXApp* a):
   FXMainWindow(a, "OpenTX Simu", NULL, NULL, DECOR_ALL, 20, 90, 0, 0)
 {
-  firstTime=true;
-  for(int i=0; i<(LCD_W*LCD_H/8); i++) displayBuf[i]=0;//rand();
+  firstTime = true;
+  memset(displayBuf, 0, sizeof(displayBuf));
   bmp = new FXPPMImage(getApp(),NULL,IMAGE_OWNED|IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP, W2, H2);
 
   FXHorizontalFrame *hf11=new FXHorizontalFrame(this,LAYOUT_CENTER_X);
   FXHorizontalFrame *hf1=new FXHorizontalFrame(this,LAYOUT_FILL_X);
 
   //rh lv rv lh
-  for(int i=0; i<4; i++){
-    switch(i)
-    {
+  for (int i=0; i<4; i++) {
+    switch (i) {
 #define L LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|LAYOUT_FIX_X|LAYOUT_FIX_Y
 #undef X0
 #define X0 10
@@ -164,6 +163,7 @@ void Open9xSim::makeSnapshot(const FXDrawable* drawable)
        printf("Cannot create snapshot %s\n", buf);
      }
 }
+
 void Open9xSim::doEvents()
 {
   getApp()->runOneEvent(false);
@@ -302,10 +302,10 @@ void Open9xSim::refreshDisplay()
 #if !defined(PCBTARANIS)
     FXColor onColor = FXRGB(0,0,0);
 #endif
-    for (int x=0;x<LCD_W;x++) {
+    for (int x=0; x<LCD_W; x++) {
       for (int y=0; y<LCD_H; y++) {
 #if defined(PCBTARANIS)
-        uint8_t * p = & lcd_buf[y / 2 * LCD_W + x];
+        display_t * p = &lcd_buf[y / 2 * LCD_W + x];
         uint8_t z = (y & 1) ? (*p >> 4) : (*p & 0x0F);
         if (z) {
           FXColor color;

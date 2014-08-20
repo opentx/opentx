@@ -41,7 +41,7 @@ int8_t s_editMode;
 uint8_t s_noHi;
 uint8_t calibrationState;
 
-void menu_lcd_onoff(uint8_t x, uint8_t y, uint8_t value, LcdFlags attr)
+void menu_lcd_onoff(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
 {
 #if defined(GRAPHICS)
   if (value)
@@ -59,18 +59,18 @@ void menu_lcd_onoff(uint8_t x, uint8_t y, uint8_t value, LcdFlags attr)
 void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr)
 {
   lcd_outdezAtt(LCD_W, 0, count, attr);
-  xcoord_t x = 1+LCD_W-FW*(count>9 ? 3 : 2);
+  coord_t x = 1+LCD_W-FW*(count>9 ? 3 : 2);
   lcd_putcAtt(x, 0, '/', attr);
   lcd_outdezAtt(x, 0, index+1, attr);
 }
 
 #if !defined(CPUM64)
-void displayScrollbar(xcoord_t x, uint8_t y, uint8_t h, uint16_t offset, uint16_t count, uint8_t visible)
+void displayScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible)
 {
   lcd_vlineStip(x, y, h, SOLID, ERASE);
   lcd_vlineStip(x, y, h, DOTTED);
-  uint8_t yofs = (h * offset) / count;
-  uint8_t yhgt = (h * visible) / count;
+  coord_t yofs = (h * offset) / count;
+  coord_t yhgt = (h * visible) / count;
   if (yhgt + yofs > h)
     yhgt = h - yofs;
   lcd_vlineStip(x, y + yofs, yhgt, SOLID, FORCE);
@@ -335,7 +335,7 @@ void title(const pm_char * s)
 #define DEC(val, min, max) if (val>min) {val--;} else {val=max;}
 
 #if LCD_W >= 212
-uint8_t scrollbar_X = LCD_W-1;
+coord_t scrollbar_X = LCD_W-1;
 #endif
 
 #if defined(CPUARM)
@@ -386,8 +386,6 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
   if (p2valdiff || scrollUD || p1valdiff) backlightOn(); // on keypress turn the light on
 
   if (menuTab) {
-    uint8_t attr = 0;
-
     int8_t cc = curr;
     switch (event) {
       case EVT_KEY_LONG(KEY_MENU):
@@ -427,10 +425,10 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
     }
 
     if (!(flags&CHECK_FLAG_NO_SCREEN_INDEX)) {
-      displayScreenIndex(curr, menuTabSize, attr);
+      displayScreenIndex(curr, menuTabSize, 0);
     }
 
-    lcd_filled_rect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
+    lcd_filled_rect(0, 0, LCD_W, MENU_TITLE_HEIGHT, SOLID, FILL_WHITE|GREY_DEFAULT);
   }
 
   DISPLAY_PROGRESS_BAR(menuTab ? lcdLastPos-2*FW-((curr+1)/10*FWNUM)-2 : 20*FW+1);
@@ -631,7 +629,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
   }
 
   if (maxrow > LCD_LINES-1 && scrollbar_X) {
-    displayScrollbar(scrollbar_X, FH, LCD_H-FH, s_pgOfs, menuTab ? maxrow : maxrow+1, LCD_LINES-1);
+    displayScrollbar(scrollbar_X, MENU_TITLE_HEIGHT, LCD_H-MENU_TITLE_HEIGHT-MENU_NAVIG_HEIGHT, s_pgOfs, menuTab ? maxrow : maxrow+1, LCD_LINES-1);
   }
 
   m_posVert = l_posVert;
@@ -1095,7 +1093,7 @@ void displayWarning(uint8_t event)
   }
 }
 
-select_menu_value_t selectMenuItem(uint8_t x, uint8_t y, const pm_char *label, const pm_char *values, select_menu_value_t value, select_menu_value_t min, select_menu_value_t max, LcdFlags attr, uint8_t event)
+select_menu_value_t selectMenuItem(coord_t x, coord_t y, const pm_char *label, const pm_char *values, select_menu_value_t value, select_menu_value_t min, select_menu_value_t max, LcdFlags attr, uint8_t event)
 {
   lcd_putsColumnLeft(x, y, label);
   if (values) lcd_putsiAtt(x, y, values, value-min, attr);
@@ -1103,7 +1101,7 @@ select_menu_value_t selectMenuItem(uint8_t x, uint8_t y, const pm_char *label, c
   return value;
 }
 
-uint8_t onoffMenuItem(uint8_t value, uint8_t x, uint8_t y, const pm_char *label, LcdFlags attr, uint8_t event )
+uint8_t onoffMenuItem(uint8_t value, coord_t x, coord_t y, const pm_char *label, LcdFlags attr, uint8_t event )
 {
 #if defined(GRAPHICS)
   menu_lcd_onoff(x, y, value, attr);
@@ -1113,7 +1111,7 @@ uint8_t onoffMenuItem(uint8_t value, uint8_t x, uint8_t y, const pm_char *label,
 #endif
 }
 
-int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, LcdFlags attr, uint8_t event)
+int8_t switchMenuItem(coord_t x, coord_t y, int8_t value, LcdFlags attr, uint8_t event)
 {
   lcd_putsColumnLeft(x, y, STR_SWITCH);
   putsSwitches(x,  y, value, attr);
@@ -1122,26 +1120,26 @@ int8_t switchMenuItem(uint8_t x, uint8_t y, int8_t value, LcdFlags attr, uint8_t
 }
 
 #if !defined(CPUM64)
-  void displaySlider(uint8_t x, uint8_t y, uint8_t value, uint8_t max, uint8_t attr)
-  {
-    lcd_putc(x+(value*4*FW)/max, y, '$');
-    lcd_hline(x, y+3, 5*FW-1, SOLID);
-    if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcd_filled_rect(x, y, 5*FW-1, FH-1);
-  }
+void displaySlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr)
+{
+  lcd_putc(x+(value*4*FW)/max, y, '$');
+  lcd_hline(x, y+3, 5*FW-1, FORCE);
+  if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcd_filled_rect(x, y, 5*FW-1, FH-1);
+}
 #elif defined(GRAPHICS)
-  void display5posSlider(uint8_t x, uint8_t y, uint8_t value, uint8_t attr)
-  {
-    lcd_putc(x+2*FW+(value*FW), y, '$');
-    lcd_hline(x, y+3, 5*FW-1, SOLID);
-    if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcd_filled_rect(x, y, 5*FW-1, FH-1);
-  }
+void display5posSlider(coord_t x, coord_t y, uint8_t value, uint8_t attr)
+{
+  lcd_putc(x+2*FW+(value*FW), y, '$');
+  lcd_hline(x, y+3, 5*FW-1, SOLID);
+  if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcd_filled_rect(x, y, 5*FW-1, FH-1);
+}
 #endif
 
 #if defined(GVARS)
 #if defined(CPUARM)
-int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, uint8_t event) 
+int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, uint8_t event)
 #else
-int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event) 
+int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event)
 #endif
 {
   uint16_t delta = GV_GET_GV1_VALUE(max);
@@ -1198,7 +1196,7 @@ int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t m
   return value;
 }
 #else
-int16_t gvarMenuItem(uint8_t x, uint8_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event)
+int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event)
 {
   lcd_outdezAtt(x, y, value, attr);
   if (attr&INVERS) value = checkIncDec(event, value, min, max, EE_MODEL);

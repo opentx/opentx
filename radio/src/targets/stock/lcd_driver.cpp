@@ -125,7 +125,7 @@ void lcdRefresh()
 #endif
     PORTC_LCD_CTRL |=  (1<<OUT_C_LCD_A0);
     PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_RnW);
-    for (xcoord_t x=LCD_W; x>0; --x) {
+    for (coord_t x=LCD_W; x>0; --x) {
       PORTA_LCD_DAT = *p++;
       PORTC_LCD_CTRL |= (1<<OUT_C_LCD_E);
       PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_E);

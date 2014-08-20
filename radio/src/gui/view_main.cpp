@@ -129,7 +129,7 @@ void drawPotsBars()
   }
 }
 
-void drawStick(uint8_t centrex, int16_t xval, int16_t yval)
+void drawStick(coord_t centrex, int16_t xval, int16_t yval)
 {
   lcd_square(centrex-BOX_WIDTH/2, BOX_CENTERY-BOX_WIDTH/2, BOX_WIDTH);
   DO_CROSS(centrex, BOX_CENTERY, 3);
@@ -156,9 +156,9 @@ void doMainScreenGraphics()
 void displayTrims(uint8_t phase)
 {
   for (uint8_t i=0; i<4; i++) {
-    static xcoord_t x[4] = {TRIM_LH_X, TRIM_LV_X, TRIM_RV_X, TRIM_RH_X};
+    static coord_t x[4] = {TRIM_LH_X, TRIM_LV_X, TRIM_RV_X, TRIM_RH_X};
     static uint8_t vert[4] = {0,1,1,0};
-    uint8_t xm, ym;
+    coord_t xm, ym;
     xm = x[CONVERT_MODE(i)];
 
     uint8_t att = ROUND;
@@ -232,7 +232,7 @@ void displaySliders()
     if (i == POT3) {
       continue;
     }
-    xcoord_t x = ((i==POT1 || i==SLIDER1) ? 3 : LCD_W-5);
+    coord_t x = ((i==POT1 || i==SLIDER1) ? 3 : LCD_W-5);
     int8_t y = (i>=SLIDER1 ? LCD_H/2+1 : 1);
     lcd_vline(x, y, LCD_H/2-2);
     lcd_vline(x+1, y, LCD_H/2-2);
@@ -251,7 +251,7 @@ void displaySliders()
 #define BAR_VOLUME_X BAR_X+147
 #define BAR_TIME_X   BAR_X+159
 
-void displayTopBarGauge(xcoord_t x, int count, bool blinking=false)
+void displayTopBarGauge(coord_t x, int count, bool blinking=false)
 {
   if (!blinking || BLINK_ON_PHASE)
     lcd_filled_rect(x+1, BAR_Y+2, 11, 5, SOLID, ERASE);
@@ -311,7 +311,7 @@ void displayTopBar()
   }
 
   /* Notifs icons */
-  xcoord_t x = BAR_NOTIFS_X;
+  coord_t x = BAR_NOTIFS_X;
   if (unexpectedShutdown) {
     LCD_NOTIF_ICON(x, ICON_REBOOT);
     x -= 12;

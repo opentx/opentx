@@ -634,7 +634,7 @@ uint32_t Card_CSD[4]; // TODO elsewhere
 #endif
 
 bool lcd_refresh = true;
-uint8_t lcd_buf[DISPLAY_BUF_SIZE];
+display_t lcd_buf[DISPLAY_BUF_SIZE];
 
 void lcdSetRefVolt(uint8_t val)
 {
@@ -642,7 +642,7 @@ void lcdSetRefVolt(uint8_t val)
 
 void lcdRefresh()
 {
-  memcpy(lcd_buf, displayBuf, DISPLAY_BUF_SIZE);
+  memcpy(lcd_buf, displayBuf, sizeof(lcd_buf));
   lcd_refresh = true;
 }
 

@@ -330,7 +330,7 @@ enum AlarmLevel {
 
   #define TELEMETRY_CELL_VOLTAGE_MUTLIPLIER  1
 
-  #define TELEMETRY_BARO_ALT_AVAILABLE()  (frskyData.hub.baroAltitudeOffset)
+  #define TELEMETRY_BARO_ALT_AVAILABLE()  SWITCH_SIMU(true, frskyData.hub.baroAltitudeOffset)
   #define TELEMETRY_BARO_ALT_UNIT         (IS_IMPERIAL_ENABLE() ? LENGTH_UNIT_IMP : LENGTH_UNIT_METR)
 
   #define TELEMETRY_GPS_SPEED_BP          frskyData.hub.gpsSpeed_bp

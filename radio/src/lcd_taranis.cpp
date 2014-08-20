@@ -57,9 +57,9 @@ void lcd_mask(uint8_t *p, uint8_t mask, LcdFlags att)
   }
 }
 
-#define PIXEL_GREY_MASK(y, att) (((y) & 1) ? (0xF0 - (GREY_MASK(att) >> 8)) : (0x0F - (GREY_MASK(att) >> 12)))
+#define PIXEL_GREY_MASK(y, att) (((y) & 1) ? (0xF0 - (COLOUR_MASK(att) >> 12)) : (0x0F - (COLOUR_MASK(att) >> 16)))
 
-void lcd_plot(xcoord_t x, uint8_t y, LcdFlags att)
+void lcd_plot(coord_t x, coord_t y, LcdFlags att)
 {
   uint8_t *p = &displayBuf[ y / 2 * LCD_W + x ];
   uint8_t mask = PIXEL_GREY_MASK(y, att);
@@ -68,7 +68,7 @@ void lcd_plot(xcoord_t x, uint8_t y, LcdFlags att)
   }
 }
 
-void lcd_hlineStip(xcoord_t x, uint8_t y, xcoord_t w, uint8_t pat, LcdFlags att)
+void lcd_hlineStip(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att)
 {
   if (y >= LCD_H) return;
   if (x+w > LCD_W) { w = LCD_W - x; }
@@ -87,7 +87,7 @@ void lcd_hlineStip(xcoord_t x, uint8_t y, xcoord_t w, uint8_t pat, LcdFlags att)
   }
 }
 
-void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat, LcdFlags att)
+void lcd_vlineStip(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlags att)
 {
   if (x >= LCD_W) return;
   if (y >= LCD_H) return;
@@ -111,17 +111,17 @@ void lcd_vlineStip(xcoord_t x, int8_t y, int8_t h, uint8_t pat, LcdFlags att)
   }
 }
 
-void lcd_invert_line(int8_t y)
+void lcd_invert_line(int8_t line)
 {
-  uint8_t *p  = &displayBuf[y * 4 * LCD_W];
-  for (xcoord_t x=0; x<LCD_W*4; x++) {
+  uint8_t *p  = &displayBuf[line * 4 * LCD_W];
+  for (coord_t x=0; x<LCD_W*4; x++) {
     ASSERT_IN_DISPLAY(p);
     *p++ ^= 0xff;
   }
 }
 
 #if !defined(BOOT)
-void lcd_img(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t idx, LcdFlags att)
+void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att)
 {
   const pm_uchar *q = img;
   uint8_t w    = pgm_read_byte(q++);
@@ -129,7 +129,7 @@ void lcd_img(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t idx, LcdFlags 
   bool    inv  = (att & INVERS) ? true : (att & BLINK ? BLINK_ON_PHASE : false);
   q += idx*w*hb;
   for (uint8_t yb = 0; yb < hb; yb++) {
-    for (xcoord_t i=0; i<w; i++) {
+    for (coord_t i=0; i<w; i++) {
       uint8_t b = pgm_read_byte(q++);
       uint8_t val = inv ? ~b : b;
       for (int k=0; k<8; k++) {
@@ -141,7 +141,7 @@ void lcd_img(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t idx, LcdFlags 
   }
 }
 
-void lcd_bmp(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t offset, uint8_t width)
+void lcd_bmp(coord_t x, coord_t y, const pm_uchar * img, uint8_t offset, uint8_t width)
 {
   const pm_uchar *q = img;
   uint8_t w    = pgm_read_byte(q++);
@@ -156,7 +156,7 @@ void lcd_bmp(xcoord_t x, uint8_t y, const pm_uchar * img, uint8_t offset, uint8_
   for (uint8_t row=0; row<rows; row++) {
     q = img + 2 + row*w + offset;
     uint8_t *p = &displayBuf[(row + (y/2)) * LCD_W + x];
-    for (xcoord_t i=0; i<width; i++) {
+    for (coord_t i=0; i<width; i++) {
       uint8_t b = pgm_read_byte(q++);
       if (y & 1) {
         *p = (*p & 0x0f) + ((b & 0x0f) << 4);

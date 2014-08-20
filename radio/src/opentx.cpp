@@ -1225,31 +1225,29 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
 
 #if LCD_W >= 212
   lcd_bmp(0, 0, asterisk_lbm);
-  #define TITLE_LCD_OFFSET   60
-  #define MESSAGE_LCD_OFFSET 60
+  #define MESSAGE_LCD_OFFSET   60
 #else
   lcd_img(2, 0, asterisk_lbm, 0, 0);
-  #define TITLE_LCD_OFFSET   6*FW
-  #define MESSAGE_LCD_OFFSET 0
+  #define MESSAGE_LCD_OFFSET   6*FW
 #endif
 
 #if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_IT) || defined(TRANSLATIONS_CZ)
-  lcd_putsAtt(TITLE_LCD_OFFSET, 0, STR_WARNING, DBLSIZE);
-  lcd_putsAtt(TITLE_LCD_OFFSET, 2*FH, title, DBLSIZE);
+  lcd_putsAtt(MESSAGE_LCD_OFFSET, 0, STR_WARNING, DBLSIZE);
+  lcd_putsAtt(MESSAGE_LCD_OFFSET, 2*FH, title, DBLSIZE);
 #else
-  lcd_putsAtt(TITLE_LCD_OFFSET, 0, title, DBLSIZE);
-  lcd_putsAtt(TITLE_LCD_OFFSET, 2*FH, STR_WARNING, DBLSIZE);
+  lcd_putsAtt(MESSAGE_LCD_OFFSET, 0, title, DBLSIZE);
+  lcd_putsAtt(MESSAGE_LCD_OFFSET, 2*FH, STR_WARNING, DBLSIZE);
 #endif
 
 #if LCD_W >= 212
-  lcd_filled_rect(60, 0, LCD_W-MESSAGE_LCD_OFFSET, 32);
+  lcd_filled_rect(MESSAGE_LCD_OFFSET, 0, LCD_W-MESSAGE_LCD_OFFSET, 32);
   if (t) lcd_puts(MESSAGE_LCD_OFFSET, 5*FH, t);
   if (last) {
     lcd_puts(MESSAGE_LCD_OFFSET, 7*FH, last);
     AUDIO_ERROR_MESSAGE(sound);
   }
 #else
-  lcd_filled_rect(0, 0, LCD_W-MESSAGE_LCD_OFFSET, 32);
+  lcd_filled_rect(0, 0, LCD_W, 32);
   if (t) lcd_putsLeft(5*FH, t);
   if (last) {
     lcd_putsLeft(7*FH, last);
