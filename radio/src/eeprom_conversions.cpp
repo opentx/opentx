@@ -150,6 +150,21 @@ PACK(typedef struct {
 
 #if defined(PCBTARANIS)
 PACK(typedef struct {
+  int16_t min;
+  int16_t max;
+  int8_t  ppmCenter;
+  int16_t offset:14;
+  uint16_t symetrical:1;
+  uint16_t revert:1;
+  char name[LEN_CHANNEL_NAME];
+  int8_t curve;
+}) LimitData_v216;
+#else
+#define LimitData_v216 LimitData
+#endif
+
+#if defined(PCBTARANIS)
+PACK(typedef struct {
   uint8_t  destCh;
   uint16_t flightModes;
   uint8_t  curveMode:1;       // O=curve, 1=differential
@@ -339,7 +354,7 @@ PACK(typedef struct {
   AVR_FIELD(int8_t ppmDelay)
   BeepANACenter beepANACenter;        // 1<<0->A1.. 1<<6->A7
   MixData   mixData[MAX_MIXERS];
-  LimitData limitData[NUM_CHNOUT];
+  LimitData_v216 limitData[NUM_CHNOUT];
   ExpoData  expoData[MAX_EXPOS];
 
   CURVDATA  curves[MAX_CURVES];
@@ -1074,7 +1089,20 @@ void ConvertModel_216_to_217(ModelData &model)
     newModel.mixData[i] = oldModel.mixData[i];
     newModel.mixData[i].srcRaw = ConvertSource_216_to_217(oldModel.mixData[i].srcRaw);
   }
-  memcpy(newModel.limitData, oldModel.limitData, sizeof(newModel.limitData));
+  for (int i=0; i<NUM_CHNOUT; i++) {
+#if defined(PCBTARANIS)
+    newModel.limitData[i].min = oldModel.limitData[i].min;
+    newModel.limitData[i].max = oldModel.limitData[i].max;
+    newModel.limitData[i].offset = oldModel.limitData[i].offset;
+    newModel.limitData[i].ppmCenter = oldModel.limitData[i].ppmCenter;
+    newModel.limitData[i].symetrical = oldModel.limitData[i].symetrical;
+    newModel.limitData[i].revert = oldModel.limitData[i].revert;
+    newModel.limitData[i].curve = oldModel.limitData[i].curve;
+    memcpy(newModel.limitData[i].name, oldModel.limitData[i].name, sizeof(newModel.limitData[i].name));
+#else
+    newModel.limitData[i] = oldModel.limitData[i];
+#endif
+  }
   for (int i=0; i<MAX_EXPOS; i++) {
     newModel.expoData[i] = oldModel.expoData[i];
 #if defined(PCBTARANIS)

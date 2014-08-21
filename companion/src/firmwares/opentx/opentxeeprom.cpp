@@ -1212,23 +1212,35 @@ class LimitField: public StructField {
     LimitField(LimitData & limit, BoardEnum board, unsigned int version):
       StructField("Limit")
     {
-      if (IS_TARANIS(board) && version >= 216) {
-        Append(new ConversionField< SignedField<16> >(limit.min, +1000));
-        Append(new ConversionField< SignedField<16> >(limit.max, -1000));
+      if (IS_TARANIS(board) && version >= 217) {
+        Append(new ConversionField< SignedField<11> >(limit.min, +1000));
+        Append(new ConversionField< SignedField<11> >(limit.max, -1000));
+        Append(new SignedField<11>(limit.offset));
+        Append(new SignedField<11>(limit.ppmCenter));
+        Append(new BoolField<1>(limit.symetrical));
+        Append(new BoolField<1>(limit.revert));
+        Append(new SpareBitsField<2>());
+        Append(new SignedField<8>(limit.curve.value));
       }
       else {
-        Append(new ConversionField< SignedField<8> >(limit.min, +100, 10));
-        Append(new ConversionField< SignedField<8> >(limit.max, -100, 10));
-      }
-      Append(new SignedField<8>(limit.ppmCenter));
-      Append(new SignedField<14>(limit.offset));
-      Append(new BoolField<1>(limit.symetrical));
-      Append(new BoolField<1>(limit.revert));
-      if (HAS_LARGE_LCD(board)) {
-        Append(new ZCharField<6>(limit.name));
-      }
-      if (IS_TARANIS(board) && version >= 216) {
-        Append(new SignedField<8>(limit.curve.value));
+        if (IS_TARANIS(board) && version >= 216) {
+          Append(new ConversionField< SignedField<16> >(limit.min, +1000));
+          Append(new ConversionField< SignedField<16> >(limit.max, -1000));
+        }
+        else {
+          Append(new ConversionField< SignedField<8> >(limit.min, +100, 10));
+          Append(new ConversionField< SignedField<8> >(limit.max, -100, 10));
+        }
+        Append(new SignedField<8>(limit.ppmCenter));
+        Append(new SignedField<14>(limit.offset));
+        Append(new BoolField<1>(limit.symetrical));
+        Append(new BoolField<1>(limit.revert));
+        if (HAS_LARGE_LCD(board)) {
+          Append(new ZCharField<6>(limit.name));
+        }
+        if (IS_TARANIS(board) && version >= 216) {
+          Append(new SignedField<8>(limit.curve.value));
+        }
       }
     }
 };

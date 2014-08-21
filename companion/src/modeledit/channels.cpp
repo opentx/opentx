@@ -113,12 +113,13 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     }
 
     // PPM center
-    if (firmware->getCapability(PPMCenter)) {
+    int ppmCenterMax = firmware->getCapability(PPMCenter);
+    if (ppmCenterMax) {
       QSpinBox * center = new QSpinBox(this);
       center->setProperty("index", i);
       center->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-      center->setMinimum(1375);
-      center->setMaximum(1625);
+      center->setMinimum(1500-ppmCenterMax);
+      center->setMaximum(1500+ppmCenterMax);
       center->setValue(1500);
       center->setValue(model.limitData[i].ppmCenter + 1500);
       connect(center, SIGNAL(editingFinished()), this, SLOT(ppmcenterEdited()));
