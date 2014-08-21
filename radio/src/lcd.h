@@ -264,8 +264,12 @@ void lcdDrawTelemetryTopBar();
     lcd_vline(xx+1,yy-ll,ll);
 
 void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att=0);
-void lcd_bmp(coord_t x, coord_t y, const pm_uchar * img, uint8_t offset=0, uint8_t width=0);
+
+#if defined(PCBTARANIS)
+void lcd_bmp(coord_t x, coord_t y, const uint8_t * img, uint8_t offset=0, uint8_t width=0);
 #define LCD_ICON(x, y, icon) lcd_bmp(x, y, icons, icon)
+#endif
+
 void lcdSetRefVolt(unsigned char val);
 void lcdInit();
 void lcd_clear();

@@ -141,23 +141,23 @@ void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags a
   }
 }
 
-void lcd_bmp(coord_t x, coord_t y, const pm_uchar * img, uint8_t offset, uint8_t width)
+void lcd_bmp(coord_t x, coord_t y, const uint8_t * img, uint8_t offset, uint8_t width)
 {
-  const pm_uchar *q = img;
-  uint8_t w    = pgm_read_byte(q++);
+  const uint8_t *q = img;
+  uint8_t w = *q++;
   if (!width || width > w) {
     width = w;
   }
   if (x+width > LCD_W) {
     width = LCD_W-x;
   }
-  uint8_t rows = (pgm_read_byte(q++) + 1) / 2;
+  uint8_t rows = (*q++ + 1) / 2;
 
   for (uint8_t row=0; row<rows; row++) {
     q = img + 2 + row*w + offset;
     uint8_t *p = &displayBuf[(row + (y/2)) * LCD_W + x];
     for (coord_t i=0; i<width; i++) {
-      uint8_t b = pgm_read_byte(q++);
+      uint8_t b = *q++;
       if (y & 1) {
         *p = (*p & 0x0f) + ((b & 0x0f) << 4);
         *(p+LCD_W) = (*(p+LCD_W) & 0xf0) + ((b & 0xf0) >> 4);
