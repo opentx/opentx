@@ -1280,7 +1280,8 @@ lua_exports.cpp: myeeprom.h ../util/luaexport.py
 	@echo "Generating a list of Lua exported constants in lua_exports.txt" 
 	@$(CPP) -DPCBTARANIS -DCPUARM -DLUA -DEXPORT myeeprom.h | grep LEXP > lua_exports.txt
 	@echo "Parsing and generating C Lua exports in lua_exports.cpp"
-	@python ../util/luaexport.py lua_exports.txt lua_exports.cpp
+	@python ../util/luaexport.py $(VERSION) lua_exports.txt lua_exports.cpp lua_fields.txt
+	@rm lua_exports.txt
 	 
 # Eye candy.
 # AVR Studio 3.x does not check make's exit code but relies on
@@ -1419,7 +1420,7 @@ clean_list :
 	$(REMOVE) stamp-opentx.h
 	$(REMOVE) bitmaps/*.lbm 
 	$(REMOVE) fonts/*/*.lbm
-	$(REMOVE) lua_exports.txt lua_exports.cpp
+	$(REMOVE) lua_exports.txt lua_exports.cpp lua_fields.txt
 	$(MAKE) -C bootloader clean
 
 #### Install
