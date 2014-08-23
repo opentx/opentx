@@ -160,6 +160,7 @@ inline int geteepromsize() {
 #include "radio/src/lua/src/lauxlib.c"
 #include "radio/src/lua/src/ltablib.c"
 #include "radio/src/lua/src/lcorolib.c"
+#include "radio/src/lua/src/lbitlib.c"
 
   
 int16_t g_anas[NUM_STICKS+5];
