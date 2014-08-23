@@ -598,22 +598,28 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
   else if (menuTab && horTab) {
     if (maxrow > LCD_LINES-1) {
       while (1) {
-        vertpos_t firstLine = s_pgOfs + (MAXCOL(vertpos_t(1)) == HIDDEN_ROW ? 2 : 1);
-        vertpos_t line = firstLine;
-        for (int numLines=0; line<=maxrow && numLines<LCD_LINES-1; line++) {
-          if (MAXCOL(line) != HIDDEN_ROW) {
+        vertpos_t firstLine = 0;
+        for (int numLines=0; firstLine<=maxrow && numLines<s_pgOfs; firstLine++) {
+          if (horTab[firstLine+1] != HIDDEN_ROW) {
             numLines++;
           }
         }
-        int max = line - firstLine;
-        if (l_posVert > max+firstLine-1) {
-          s_pgOfs++;
-        }
-        else if (l_posVert < firstLine) {
+        if (l_posVert <= firstLine) {
           s_pgOfs--;
         }
         else {
-          break;
+          vertpos_t lastLine = firstLine;
+          for (int numLines=0; lastLine<=maxrow && numLines<LCD_LINES-1; lastLine++) {
+            if (horTab[lastLine+1] != HIDDEN_ROW) {
+              numLines++;
+            }
+          }
+          if (l_posVert > lastLine) {
+            s_pgOfs++;
+          }
+          else {
+            break;
+          }
         }
       }
     }
