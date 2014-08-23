@@ -135,7 +135,7 @@ void menuStatisticsDebug(uint8_t event)
     case EVT_KEY_FIRST(KEY_UP):
       pushMenu(menuTraceBuffer);
       return;
-#endif //#if defined(DEBUG_SD_CARD)
+#endif
 
     case EVT_KEY_FIRST(KEY_DOWN):
       chainMenu(menuStatisticsView);

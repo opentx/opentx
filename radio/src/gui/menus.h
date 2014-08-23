@@ -139,7 +139,7 @@ void menuStatisticsDebug(uint8_t event);
 void menuAboutView(uint8_t event);
 #if defined(DEBUG_TRACE_BUFFER)
 void menuTraceBuffer(uint8_t event);
-#endif //#if defined(DEBUG_SD_CARD)
+#endif
 
 #if !defined(CPUM64)
   void displaySlider(uint8_t x, uint8_t y, uint8_t value, uint8_t max, uint8_t attr);
