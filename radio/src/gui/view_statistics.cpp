@@ -244,6 +244,7 @@ void menuStatisticsDebug(uint8_t event)
 
 
 #if defined(DEBUG_TRACE_BUFFER)
+#include "stamp-opentx.h"
 
 void menuTraceBuffer(uint8_t event)
 {
@@ -255,7 +256,8 @@ void menuTraceBuffer(uint8_t event)
       break;
   }
 
-  SIMPLE_SUBMENU("Trace Buffer", TRACE_BUFFER_LEN);
+  SIMPLE_SUBMENU("Trace Buffer " VERS_STR, TRACE_BUFFER_LEN);
+  putsRtcTime(LCD_W+1, 0, TIMEBLINK);
 
   uint8_t y = 0;
   uint8_t k = 0;
