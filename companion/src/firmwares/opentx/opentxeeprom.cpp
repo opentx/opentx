@@ -1221,6 +1221,9 @@ class LimitField: public StructField {
         Append(new BoolField<1>(limit.revert));
         Append(new SpareBitsField<2>());
         Append(new SignedField<8>(limit.curve.value));
+        if (HAS_LARGE_LCD(board)) {
+          Append(new ZCharField<6>(limit.name));
+        }
       }
       else {
         if (IS_TARANIS(board) && version >= 216) {
