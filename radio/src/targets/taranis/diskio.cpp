@@ -230,21 +230,30 @@ BYTE rcvr_spi (void)
 /* Wait for card ready                                                   */
 /*-----------------------------------------------------------------------*/
 
-static
-BYTE wait_ready (void)
+#define WAIT_CONSECUTIVE_IDLE_STATES    5
+
+static BYTE wait_ready (void)
 {
   BYTE res;
+  BYTE n;
 
   Timer2 = 50;    /* Wait for ready in timeout of 500ms */
-  rcvr_spi();
+  n = 0;
   do {
     res = rcvr_spi();
-  } while ((res != 0xFF) && Timer2);
+    n = (res == 0xFF) ? n+1 : 0;
+  } while ((n < WAIT_CONSECUTIVE_IDLE_STATES) && Timer2);
   TRACE_SD_CARD_EVENT((res != 0xFF), sd_wait_ready, res);
   return res;
 }
 
 
+static void spi_reset()
+{
+  for(int n=0; n < 520; ++n) {
+    stm32_spi_rw(0xFF);  
+  }
+}
 
 /*-----------------------------------------------------------------------*/
 /* Deselect the card and release SPI bus                                 */
@@ -475,7 +484,8 @@ BOOL rcvr_datablock (
     token = rcvr_spi();
   } while ((token == 0xFF) && Timer1);
   if(token != 0xFE) {
-    TRACE_SD_CARD_EVENT(1, sd_rcvr_datablock, ((uint32_t)(Timer1) << 16) + ((uint32_t)(btr) << 8) + token);
+    TRACE_SD_CARD_EVENT(1, sd_rcvr_datablock, ((uint32_t)(Timer1) << 24) + ((uint32_t)(btr) << 8) + token);
+    spi_reset();
     return FALSE; /* If not valid data token, return with error */
   }
 
@@ -502,6 +512,8 @@ BOOL rcvr_datablock (
 /* Send a data packet to MMC                                             */
 /*-----------------------------------------------------------------------*/
 
+#define DATA_RESPONSE_TIMEOUT   10
+
 static
 BOOL xmit_datablock (
         const BYTE *buff,       /* 512 byte data block to be transmitted */
@@ -515,6 +527,7 @@ BOOL xmit_datablock (
 
   if (wait_ready() != 0xFF) {
     TRACE_SD_CARD_EVENT(1, sd_xmit_datablock_wait_ready, token);
+    spi_reset();
     return FALSE;
   }
 
@@ -533,13 +546,30 @@ BOOL xmit_datablock (
 
     xmit_spi(0xFF);                                 /* CRC (Dummy) */
     xmit_spi(0xFF);
-    resp = rcvr_spi();                              /* Receive data response */
-    if ((resp & 0x1F) != 0x05) {             /* If not accepted, return with error */
-      TRACE_SD_CARD_EVENT(1, sd_xmit_datablock_rcvr_spi, ((uint32_t)(resp) << 8) + token);
-      return FALSE;
-    }
-  }
 
+
+    /*
+    Despite what the SD card standard says, the reality is that (at least for some SD cards)
+    the Data Response byte does not come immediately after the last byte of data.
+
+    This delay only happens very rarely, but it does happen. Typical response delay is some 10ms
+    */
+    Timer2 = DATA_RESPONSE_TIMEOUT;   
+    do {
+      resp = rcvr_spi();            /* Receive data response */
+      if ((resp & 0x1F) == 0x05) {
+        TRACE_SD_CARD_EVENT((Timer2 != DATA_RESPONSE_TIMEOUT), sd_xmit_datablock_rcvr_spi,  ((uint32_t)(Timer2) << 16) + ((uint32_t)(resp) << 8) + token);
+        return TRUE;
+      }
+      if (resp != 0xFF) {
+        TRACE_SD_CARD_EVENT(1, sd_xmit_datablock_rcvr_spi,  ((uint32_t)(Timer2) << 16) + ((uint32_t)(resp) << 8) + token);
+        spi_reset();
+        return FALSE;
+      }
+    } while (Timer2);
+    TRACE_SD_CARD_EVENT(1, sd_xmit_datablock_rcvr_spi,  ((uint32_t)(Timer2) << 16) + ((uint32_t)(resp) << 8) + token);
+    return FALSE;
+  }
   return TRUE;
 }
 
@@ -567,6 +597,7 @@ BYTE send_cmd (
   SELECT();
   if (wait_ready() != 0xFF) {
     TRACE_SD_CARD_EVENT(1, sd_send_cmd_wait_ready, cmd);
+    spi_reset();
     return 0xFF;
   }
 
@@ -665,8 +696,8 @@ DSTATUS disk_status (
         BYTE drv                /* Physical drive number (0) */
 )
 {
-        if (drv) return STA_NOINIT;             /* Supports only single drive */
-        return Stat;
+  if (drv) return STA_NOINIT;             /* Supports only single drive */
+  return Stat;
 }
 
 
@@ -674,7 +705,6 @@ DSTATUS disk_status (
 /* Read Sector(s)                                                        */
 /*-----------------------------------------------------------------------*/
 
-// TODO quick & dirty
 int8_t SD_ReadSectors(uint8_t *buff, uint32_t sector, uint32_t count)
 {
   if (!(CardType & CT_BLOCK)) sector *= 512;      /* Convert to byte address if needed */
@@ -684,6 +714,9 @@ int8_t SD_ReadSectors(uint8_t *buff, uint32_t sector, uint32_t count)
       if (rcvr_datablock(buff, 512)) {
         count = 0;
       }
+    }
+    else {
+      spi_reset();
     }
   }
   else {                          /* Multiple block read */
@@ -696,8 +729,10 @@ int8_t SD_ReadSectors(uint8_t *buff, uint32_t sector, uint32_t count)
       } while (--count);
       send_cmd(CMD12, 0);                             /* STOP_TRANSMISSION */
     }
+    else {
+      spi_reset();
+    }
   }
-
   release_spi();
   TRACE_SD_CARD_EVENT((count != 0), sd_SD_ReadSectors, (count << 24) + ((sector/((CardType & CT_BLOCK) ? 1 : 512)) & 0x00FFFFFF));
   return count ? -1 : 0;
@@ -723,14 +758,18 @@ DRESULT disk_read (
 /* Write Sector(s)                                                       */
 /*-----------------------------------------------------------------------*/
 
-// TODO quick & dirty
 int8_t SD_WriteSectors(const uint8_t *buff, uint32_t sector, uint32_t count)
 {
   if (!(CardType & CT_BLOCK)) sector *= 512;      /* Convert to byte address if needed */
   if (count == 1) {       /* Single block write */
-    if ((send_cmd(CMD24, sector) == 0)      /* WRITE_BLOCK */
-         && xmit_datablock(buff, 0xFE))
-      count = 0;
+    if (send_cmd(CMD24, sector) == 0) {     /* WRITE_BLOCK */
+      if (xmit_datablock(buff, 0xFE)) {
+        count = 0;
+      }
+    }
+    else {
+      spi_reset();
+    }
   }
   else {                          /* Multiple block write */
     if (CardType & CT_SDC) send_cmd(ACMD23, count);
@@ -741,6 +780,9 @@ int8_t SD_WriteSectors(const uint8_t *buff, uint32_t sector, uint32_t count)
       } while (--count);
       if (!xmit_datablock(0, 0xFD))   /* STOP_TRAN token */
         count = 1;
+    }
+    else {
+      spi_reset();
     }
   }
   release_spi();

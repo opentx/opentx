@@ -3467,7 +3467,7 @@ void mixerTask(void * pdata)
       if (t0 > maxMixerDuration) maxMixerDuration = t0 ;
     }
 
-    CoTickDelay(1);  // 2ms for now
+    CoTickDelay(2);  // 4ms for now
   }
 }
 
