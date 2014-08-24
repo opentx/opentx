@@ -349,7 +349,9 @@ void simuSetTrim(uint8_t trim, bool state);
 void simuSetSwitch(uint8_t swtch, int8_t state);
 
 void StartMainThread(bool tests=true);
+void StopMainThread();
 void StartEepromThread(const char *filename="eeprom.bin");
+void StopEepromThread();
 
 extern const char *eepromFile;
 #if defined(PCBTARANIS) || defined(PCBACT)

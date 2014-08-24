@@ -1496,6 +1496,7 @@ enum AUDIO_SOUNDS {
   extern ScriptInternalData scriptInternalData[MAX_SCRIPTS];
   extern ScriptInputsOutputs scriptInputsOutputs[MAX_SCRIPTS];
   void luaInit();
+  void luaClose();
   void luaTask(uint8_t evt);
   void luaExec(const char *filename);
   void luaLoadMixScript(uint8_t index);

@@ -1330,22 +1330,35 @@ static const luaL_Reg lcdLib[] = {
   { NULL, NULL }  /* sentinel */
 };
 
-void luaInit()
+void luaClose()
 {
   if (L) {
+    TRACE("lua_close");
     lua_close(L);
+    L = 0;
+    TRACE("lua_close end");
   }
+}
 
+void luaInit()
+{
+  luaClose();
+
+  TRACE("luaL_newstate");
   L = luaL_newstate();
 
   // Init lua
+  TRACE("luaL_openlibs");
   luaL_openlibs(L);
 
   // Push OpenTX libs
+  TRACE("registering MODEL");
   lua_registerlib(L, "model", modelLib);
+  TRACE("registering LCD");
   lua_registerlib(L, "lcd", lcdLib);
 
   // Push OpenTX functions
+  TRACE("registering functions");
   lua_register(L, "getTime", luaGetTime);
   lua_register(L, "getVersion", luaGetVersion);
   lua_register(L, "getGeneralSettings", luaGetGeneralSettings);
@@ -1360,6 +1373,7 @@ void luaInit()
   lua_register(L, "killEvents", luaKillEvents);
 
   // Push OpenTX constants
+  TRACE("registering constants");
   lua_registerint(L, "FULLSCALE", RESX);
   lua_registerint(L, "XXLSIZE", XXLSIZE);
   lua_registerint(L, "DBLSIZE", DBLSIZE);
@@ -1406,15 +1420,21 @@ void luaInit()
   lua_registerint(L, "DOTTED", DOTTED);
   lua_registerint(L, "LCD_W", LCD_W);
   lua_registerint(L, "LCD_H", LCD_H);
+
+  TRACE("luaInit done");
 }
 
 void luaFree(ScriptInternalData & sid)
 {
-  if (sid.run) {
+  if (sid.run > 0) {
     luaL_unref(L, LUA_REGISTRYINDEX, sid.run);
     sid.run = 0;
-    lua_gc(L, LUA_GCCOLLECT, 0);
   }
+  if (sid.background > 0) {
+    luaL_unref(L, LUA_REGISTRYINDEX, sid.background);
+    sid.background = 0;
+  }
+  lua_gc(L, LUA_GCCOLLECT, 0);
 }
 
 int luaLoad(const char *filename, ScriptInternalData & sid, ScriptInputsOutputs * sio=NULL)
@@ -1427,6 +1447,8 @@ int luaLoad(const char *filename, ScriptInternalData & sid, ScriptInputsOutputs 
   luaFree(sid);
 
   SET_LUA_INSTRUCTIONS_COUNT(MANUAL_SCRIPTS_MAX_INSTRUCTIONS);
+
+  TRACE("loading script: %s", filename);
 
   if (luaL_loadfile(L, filename) == 0 &&
       lua_pcall(L, 0, 1, 0) == 0 &&
@@ -1456,13 +1478,14 @@ int luaLoad(const char *filename, ScriptInternalData & sid, ScriptInputsOutputs 
       }
     }
 
-    if (init) {
+    if (init > 0) {
       lua_rawgeti(L, LUA_REGISTRYINDEX, init);
-      luaL_unref(L, LUA_REGISTRYINDEX, init);
       if (lua_pcall(L, 0, 0, 0) != 0) {
         TRACE("Error in script %s init: %s", filename, lua_tostring(L, -1));
         sid.state = SCRIPT_SYNTAX_ERROR;
       }
+      luaL_unref(L, LUA_REGISTRYINDEX, init);
+      lua_gc(L, LUA_GCCOLLECT, 0);
     }
   }
   else {
@@ -1696,10 +1719,9 @@ void luaTask(uint8_t evt)
             luaState = LUASTATE_RELOAD_MODEL_SCRIPTS;
           }
           else if (luaDisplayStatistics) {
-            int gc = 1000*lua_gc(L, LUA_GCCOUNT, 0) + lua_gc(L, LUA_GCCOUNTB, 0);
             lcd_hline(0, 7*FH-1, lcdLastPos+FW, ERASE);
             lcd_puts(0, 7*FH, "GV Use: ");
-            lcd_outdezAtt(lcdLastPos, 7*FH, gc, LEFT);
+            lcd_outdezAtt(lcdLastPos, 7*FH, luaGetMemUsed(), LEFT);
             lcd_putc(lcdLastPos, 7*FH, 'b');
             lcd_hline(0, 7*FH-2, lcdLastPos+FW, FORCE);
             lcd_vlineStip(lcdLastPos+FW, 7*FH-2, FH+2, SOLID, FORCE);
@@ -1731,6 +1753,7 @@ void luaTask(uint8_t evt)
   else {
     // model scripts
     if (luaState & LUASTATE_RELOAD_MODEL_SCRIPTS) {
+      // TRACE("LUASTATE_RELOAD_MODEL_SCRIPTS");
       luaState = 0;
       LUA_RESET();
       luaLoadPermanentScripts();
@@ -1841,5 +1864,5 @@ void luaTask(uint8_t evt)
 
 int luaGetMemUsed()
 {
-  return 1000*lua_gc(L, LUA_GCCOUNT, 0) + lua_gc(L, LUA_GCCOUNTB, 0);
+  return (lua_gc(L, LUA_GCCOUNT, 0) << 10) + lua_gc(L, LUA_GCCOUNTB, 0);
 }

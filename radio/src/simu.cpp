@@ -55,6 +55,7 @@ class Open9xSim: public FXMainWindow
   public:
     Open9xSim(){};
     Open9xSim(FXApp* a);
+    ~Open9xSim();
     long onKeypress(FXObject*,FXSelector,void*);
     long onTimeout(FXObject*,FXSelector,void*);
     void makeSnapshot(const FXDrawable* drawable);
@@ -67,7 +68,7 @@ class Open9xSim: public FXMainWindow
     bool           firstTime;
 
   public:
-    FXSlider      *sliders[8];
+    FXSlider      *sliders[NUM_STICKS];
     FXKnob        *knobs[NUM_POTS];
 };
 // Message Map
@@ -128,6 +129,24 @@ Open9xSim::Open9xSim(FXApp* a):
   getApp()->addTimeout(this,2,100);
 }
 
+Open9xSim::~Open9xSim()
+{
+  StopMainThread();
+  StopEepromThread();
+  
+  delete bmp;
+  delete sliders[0];
+  delete sliders[1];
+  delete sliders[2];
+  delete sliders[3];
+
+  for(int i=0; i<NUM_POTS; i++){
+    delete knobs[i];
+  }
+
+  delete bmf;
+}
+
 void Open9xSim::makeSnapshot(const FXDrawable* drawable)
 {
      // Construct and create an FXImage object
@@ -164,6 +183,7 @@ void Open9xSim::makeSnapshot(const FXDrawable* drawable)
        printf("Cannot create snapshot %s\n", buf);
      }
 }
+
 void Open9xSim::doEvents()
 {
   getApp()->runOneEvent(false);

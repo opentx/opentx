@@ -2511,6 +2511,10 @@ void opentxClose()
   // TODO needed? telemetryEnd();
 #endif
 
+#if defined(LUA)
+  luaClose();
+#endif
+
 #if defined(SDCARD)
   closeLogs();
   sdDone();

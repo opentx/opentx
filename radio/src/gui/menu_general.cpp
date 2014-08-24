@@ -743,6 +743,9 @@ void backupEeprom()
       return;
     }
   }
+  else {
+    f_closedir(&folder);
+  }
 
   // prepare the filename...
   char * tmp = strAppend(filename, EEPROMS_PATH "/eeprom");
@@ -1090,6 +1093,7 @@ void menuGeneralSdManager(uint8_t _event)
           }
         }
       }
+      f_closedir(&dir);
     }
   }
 

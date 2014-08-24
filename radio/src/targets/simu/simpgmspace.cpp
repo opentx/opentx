@@ -326,6 +326,11 @@ void *main_thread(void *)
       perMain();
       sleep(10/*ms*/);
     }
+
+#if defined(LUA)
+    luaClose();
+#endif
+    
 #ifdef SIMU_EXCEPTIONS
   }
   catch (...) {
@@ -399,6 +404,14 @@ void StopEepromThread()
   sem_post(eeprom_write_sem);
   pthread_join(eeprom_thread_pid, NULL);
 #endif
+#ifdef __APPLE__
+  //TODO free semaphore eeprom_write_sem
+#else
+  sem_destroy(eeprom_write_sem);
+  free(eeprom_write_sem);
+#endif
+
+  if (fp) fclose(fp);
 }
 
 #if defined(PCBTARANIS)
@@ -548,6 +561,13 @@ FRESULT f_opendir (DIR * rep, const TCHAR * name)
   char *path = convertSimuPath(name);
   TRACE("f_opendir(%s)", path);
   rep->fs = (FATFS *)simu::opendir(path);
+  return FR_OK;
+}
+
+FRESULT f_closedir (DIR * rep)
+{
+  TRACE("f_closedir(%p)", rep);
+  simu::closedir((simu::DIR *)rep->fs);
   return FR_OK;
 }
 
