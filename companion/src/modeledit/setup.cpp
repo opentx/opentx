@@ -210,8 +210,8 @@ void ModulePanel::update()
 
   ui->label_protocol->setVisible(mask & MASK_PROTOCOL);
   ui->protocol->setVisible(mask & MASK_PROTOCOL);
-  ui->label_rxNumber->setVisible(mask & MASK_FAILSAFES);
-  ui->rxNumber->setVisible(mask & MASK_FAILSAFES);
+  ui->label_rxNumber->setVisible(mask & MASK_RX_NUMBER);
+  ui->rxNumber->setVisible(mask & MASK_RX_NUMBER);
   ui->rxNumber->setValue(model.modelId);
   ui->label_channelsStart->setVisible(mask & MASK_CHANNELS_RANGE);
   ui->channelsStart->setVisible(mask & MASK_CHANNELS_RANGE);
