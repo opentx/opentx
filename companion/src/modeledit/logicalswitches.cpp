@@ -320,7 +320,6 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
       }
       break;
     case LS_FAMILY_STICKY:
-      mask &= ~DELAY_ENABLED;
       // no break
     case LS_FAMILY_VBOOL:
       mask |= SOURCE1_VISIBLE | SOURCE2_VISIBLE;
@@ -329,6 +328,7 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
       break;
     case LS_FAMILY_STAY:
       mask |= SOURCE1_VISIBLE | VALUE2_VISIBLE | VALUE3_VISIBLE;
+      mask &= ~DELAY_ENABLED;
       populateSwitchCB(cswitchSource1[i], RawSwitch(model.customSw[i].val1), generalSettings, LogicalSwitchesContext);
       updateTimerParam(cswitchOffset[i], model.customSw[i].val2, 0.0);
       updateTimerParam(cswitchOffset2[i], model.customSw[i].val2+model.customSw[i].val3, cswitchOffset[i]->value());
