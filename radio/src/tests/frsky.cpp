@@ -41,6 +41,10 @@
 #define SWAP_DEFINED
 #include "opentx.h"
 
+#define TELEMETRY_RESET() \
+  memclear(&frskyData, sizeof(frskyData)); \
+  frskyData.rssi[0].value = 100
+
 extern bool checkScreenshot(QString test);
 
 #if defined(FRSKY) && !defined(FRSKY_SPORT)
@@ -175,10 +179,11 @@ void generateSportCellPacket(uint8_t * packet, uint8_t cells, uint8_t battnumber
 
 TEST(FrSkySPORT, frskySetCellVoltage)
 {
-  memclear(&frskyData, sizeof(frskyData));
   uint8_t packet[FRSKY_SPORT_PACKET_SIZE];
 
-  //test that simulates 3 cell battery
+  TELEMETRY_RESET();
+
+  // test that simulates 3 cell battery
   generateSportCellPacket(packet, 3, 0, _V(410), _V(420)); frskySportProcessPacket(packet);
   EXPECT_EQ(checkSportPacket(packet), true) << "Bad CRC generation in setSportPacketCrc()";
   generateSportCellPacket(packet, 3, 2, _V(430), _V(  0)); frskySportProcessPacket(packet);
@@ -272,7 +277,7 @@ TEST(FrSkySPORT, frskySetCellVoltage)
 
 TEST(FrSkySPORT, StrangeCellsBug)
 {
-  memclear(&frskyData, sizeof(frskyData));
+  TELEMETRY_RESET();
   uint8_t pkt[] = { 0x7E, 0x48, 0x10, 0x00, 0x03, 0x30, 0x15, 0x50, 0x81, 0xD5 };
   EXPECT_EQ(checkSportPacket(pkt+1), true);
   frskySportProcessPacket(pkt+1);
@@ -283,9 +288,9 @@ TEST(FrSkySPORT, StrangeCellsBug)
 
 TEST(FrSkySPORT, frskySetCellVoltageTwoSensors)
 {
-  //telemetryReset();
-  memclear(&frskyData, sizeof(frskyData));
   uint8_t packet[FRSKY_SPORT_PACKET_SIZE];
+
+  TELEMETRY_RESET();
 
   //sensor 1: 3 cell battery
   generateSportCellPacket(packet, 3, 0, _V(418), _V(416)); frskySportProcessPacket(packet);
@@ -366,7 +371,7 @@ TEST(FrSkySPORT, frskyVfas)
   uint8_t packet[FRSKY_SPORT_PACKET_SIZE];
 
   //telemetryReset();
-  memclear(&frskyData, sizeof(frskyData));
+  TELEMETRY_RESET();
 
   // tests for Vfas
   generateSportFasVoltagePacket(packet, 5000); frskySportProcessPacket(packet);
@@ -399,8 +404,7 @@ TEST(FrSkySPORT, frskyCurrent)
 {
   uint8_t packet[FRSKY_SPORT_PACKET_SIZE];
 
-  //telemetryReset();
-  memclear(&frskyData, sizeof(frskyData));
+  TELEMETRY_RESET();
   g_model.frsky.fasOffset = -5;  /* unit: 1/10 amps */
 
   // tests for Curr
@@ -408,7 +412,7 @@ TEST(FrSkySPORT, frskyCurrent)
   EXPECT_EQ(frskyData.hub.current,      0);
   EXPECT_EQ(frskyData.hub.maxCurrent,   0);
 
-  //measured current less then offset - value should be zero
+  // measured current less then offset - value should be zero
   generateSportFasCurrentPacket(packet, 4); frskySportProcessPacket(packet);
   EXPECT_EQ(frskyData.hub.current,      0);
   EXPECT_EQ(frskyData.hub.maxCurrent,   0);
@@ -425,9 +429,8 @@ TEST(FrSkySPORT, frskyCurrent)
   EXPECT_EQ(frskyData.hub.current,      195);
   EXPECT_EQ(frskyData.hub.maxCurrent,   495);
 
-  //test with positive offset
-  //telemetryReset();
-  memclear(&frskyData, sizeof(frskyData));
+  // test with positive offset
+  TELEMETRY_RESET();
   g_model.frsky.fasOffset = 5;  /* unit: 1/10 amps */
 
   generateSportFasCurrentPacket(packet, 0); frskySportProcessPacket(packet);
