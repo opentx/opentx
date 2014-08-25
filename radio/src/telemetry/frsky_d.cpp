@@ -290,8 +290,9 @@ void frskyDProcessPacket(uint8_t *packet)
       link_counter += 256 / FRSKY_D_AVERAGING;
 #if defined(VARIO)
       uint8_t varioSource = g_model.frsky.varioSource - VARIO_SOURCE_A1;
-      if (varioSource < 2)
+      if (varioSource < 2) {
         frskyData.hub.varioSpeed = applyChannelRatio(varioSource, frskyData.analog[varioSource].value);
+      }
 #endif
       break;
     }
@@ -300,12 +301,14 @@ void frskyDProcessPacket(uint8_t *packet)
       uint8_t numBytes = 3 + (packet[1] & 0x07); // sanitize in case of data corruption leading to buffer overflow
       for (uint8_t i=3; i<numBytes; i++) {
 #if defined(FRSKY_HUB)
-        if (IS_USR_PROTO_FRSKY_HUB())
+        if (IS_USR_PROTO_FRSKY_HUB()) {
           parseTelemHubByte(packet[i]);
+        }
 #endif
 #if defined(WS_HOW_HIGH)
-        if (IS_USR_PROTO_WS_HOW_HIGH())
+        if (IS_USR_PROTO_WS_HOW_HIGH()) {
           parseTelemWSHowHighByte(packet[i]);
+        }
 #endif
       }
       break;
