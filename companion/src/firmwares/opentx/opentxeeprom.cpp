@@ -2834,8 +2834,8 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
     if (version >= 213) {
       internalField.Append(new SignedField<8>(generalData.temperatureWarn)); // TODO
       internalField.Append(new UnsignedField<8>(generalData.mAhWarn));
-      internalField.Append(new SpareBitsField<16>()); // mAhUsed
-      internalField.Append(new SpareBitsField<32>()); // globalTimer
+      internalField.Append(new UnsignedField<16>(generalData.mAhUsed));
+      internalField.Append(new UnsignedField<32>(generalData.globalTimer));
       internalField.Append(new SignedField<8>(generalData.temperatureCalib)); // TODO
       internalField.Append(new UnsignedField<8>(generalData.btBaudrate)); // TODO
       internalField.Append(new BoolField<8>(generalData.optrexDisplay)); //TODO

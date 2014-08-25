@@ -526,6 +526,8 @@ class GeneralSettings {
     int    temperatureCalib;
     int    temperatureWarn;
     unsigned int mAhWarn;
+    unsigned int mAhUsed;
+    unsigned int globalTimer;
     unsigned int btBaudrate;
     unsigned int sticksGain;
     unsigned int rotarySteps;
