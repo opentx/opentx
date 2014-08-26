@@ -7,6 +7,74 @@
 #include <QCheckBox>
 #include <QDoubleSpinBox>
 
+LimitsGroup::LimitsGroup(FirmwareInterface * firmware, QGridLayout *gridLayout, int row, int col, int & value, int min, int max, int deflt):
+  firmware(firmware),
+  spinbox(new QDoubleSpinBox()),
+  value(value),
+  step(1.0)
+{
+
+  bool allowGVars = false;
+
+  spinbox->setProperty("index", row);
+  spinbox->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+  spinbox->setAccelerated(true);
+
+  if (firmware->getCapability(PPMUnitMicroseconds)) {
+    step = 5.12;
+    spinbox->setDecimals(1);
+    spinbox->setSuffix("us");
+  }
+  else {
+    spinbox->setDecimals(0);
+    spinbox->setSuffix("%");
+  }
+
+  if (IS_TARANIS(firmware->getBoard()) || deflt == 0 /*it's the offset*/) {
+    min *= 10;
+    max *= 10;
+    deflt *= 10;
+    step /= 10;
+    spinbox->setDecimals(1);
+    allowGVars = true;
+  }
+
+  spinbox->setSingleStep(step);
+
+  QHBoxLayout * horizontalLayout = new QHBoxLayout();
+  QCheckBox * gv = new QCheckBox(QObject::tr("GV"));
+  horizontalLayout->addWidget(gv);
+  QComboBox * cb = new QComboBox();
+  horizontalLayout->addWidget(cb);
+  horizontalLayout->addWidget(spinbox);
+  gridLayout->addLayout(horizontalLayout, row, col, 1, 1);
+  gvarGroup = new GVarGroup(gv, spinbox, cb, value, deflt, min, max, step, allowGVars);
+}
+
+LimitsGroup::~LimitsGroup()
+{
+  delete gvarGroup;
+}
+
+void LimitsGroup::updateMinMax(int max)
+{
+  if (IS_TARANIS(firmware->getBoard())) {
+    max *= 10;
+  }
+  if (spinbox->maximum() == 0) {
+    spinbox->setMinimum(-step*max);
+    if (value < -max) {
+      value = -max;
+    }
+  }
+  if (spinbox->minimum() == 0) {
+    spinbox->setMaximum(step*max);
+    if (value > max) {
+      value = max;
+    }
+  }
+}
+
 Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, FirmwareInterface * firmware):
   ModelPanel(parent, model, generalSettings, firmware)
 {
@@ -52,85 +120,13 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     }
 
     // Channel offset
-    QDoubleSpinBox * offset = new QDoubleSpinBox(this);
-    offset->setProperty("index", i);
-    offset->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-    offset->setAccelerated(true);
-    offset->setDecimals(1);
-    offset->setSingleStep(0.1);
-    if (IS_TARANIS(firmware->getBoard())) {
-      QHBoxLayout * horizontalLayout = new QHBoxLayout();
-      QCheckBox * ofsGV = new QCheckBox(tr("GV"));
-      horizontalLayout->addWidget(ofsGV);
-      QComboBox * ofsCB = new QComboBox(this);
-      horizontalLayout->addWidget(ofsCB);
-      horizontalLayout->addWidget(offset);
-      gridLayout->addLayout(horizontalLayout, i+1, col++, 1, 1);
-      ofsGroup = new GVarGroup(ofsGV, offset, ofsCB, model.limitData[i].offset, 0, -10*model.getChannelsMax(), 10*model.getChannelsMax(), 0.1);
-    }
-    else {
-      offset->setMinimum(-100);
-      offset->setMaximum(100);
-      offset->setValue(float(model.limitData[i].offset) / 10);
-      connect(offset, SIGNAL(editingFinished()), this, SLOT(offsetEdited()));
-      gridLayout->addWidget(offset, i+1, col++, 1, 1);
-    }
+    limitsGroups << new LimitsGroup(firmware, gridLayout, i+1, col++, model.limitData[i].offset, -100, 100, 0);
 
     // Channel min
-    QDoubleSpinBox * minSB = new QDoubleSpinBox(this);
-    minSB->setProperty("index", i);
-    minSB->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-    minSB->setAccelerated(true);
-    if (IS_TARANIS(firmware->getBoard())) {
-      QHBoxLayout * horizontalLayout = new QHBoxLayout();
-      QCheckBox * minGV = new QCheckBox(tr("GV"));
-      horizontalLayout->addWidget(minGV);
-      QComboBox * minCB = new QComboBox(this);
-      horizontalLayout->addWidget(minCB);
-      minSB->setDecimals(1);
-      minSB->setSingleStep(0.1);
-      horizontalLayout->addWidget(minSB);
-      gridLayout->addLayout(horizontalLayout, i+1, col++, 1, 1);
-      minGroup = new GVarGroup(minGV, minSB, minCB, model.limitData[i].min, -1000, -10*model.getChannelsMax(), 0, 0.1);
-    }
-    else {
-      minSB->setDecimals(0);
-      minSB->setSingleStep(1);
-      minSB->setMinimum(-model.getChannelsMax());
-      minSB->setMaximum(0);
-      minSB->setValue(model.limitData[i].min / 10);
-      connect(minSB, SIGNAL(editingFinished()), this, SLOT(minEdited()));
-      gridLayout->addWidget(minSB, i+1, col++, 1, 1);
-    }
-    minSpins << minSB;
+    limitsGroups << new LimitsGroup(firmware, gridLayout, i+1, col++, model.limitData[i].min, -model.getChannelsMax(), 0, -100);
 
     // Channel max
-    QDoubleSpinBox * maxSB = new QDoubleSpinBox(this);
-    maxSB->setProperty("index", i);
-    maxSB->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-    maxSB->setAccelerated(true);
-    if (IS_TARANIS(firmware->getBoard())) {
-      QHBoxLayout * horizontalLayout = new QHBoxLayout();
-      QCheckBox * maxGV = new QCheckBox(tr("GV"));
-      horizontalLayout->addWidget(maxGV);
-      QComboBox * maxCB = new QComboBox(this);
-      horizontalLayout->addWidget(maxCB);
-      maxSB->setDecimals(1);
-      maxSB->setSingleStep(0.1);
-      horizontalLayout->addWidget(maxSB);
-      gridLayout->addLayout(horizontalLayout, i+1, col++, 1, 1);
-      maxGroup = new GVarGroup(maxGV, maxSB, maxCB, model.limitData[i].max, 1000, 0, 10*model.getChannelsMax(), 0.1);
-    }
-    else {
-      maxSB->setDecimals(0);
-      maxSB->setSingleStep(1);
-      maxSB->setMinimum(0);
-      maxSB->setMaximum(model.getChannelsMax());
-      maxSB->setValue(model.limitData[i].max / 10);
-      connect(maxSB, SIGNAL(editingFinished()), this, SLOT(maxEdited()));
-      gridLayout->addWidget(maxSB, i+1, col++, 1, 1);
-    }
-    maxSpins << maxSB;
+    limitsGroups << new LimitsGroup(firmware, gridLayout, i+1, col++, model.limitData[i].max, 0, model.getChannelsMax(), 100);
 
     // Channel inversion
     QComboBox * invCB = new QComboBox(this);
@@ -158,6 +154,7 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
       QSpinBox * center = new QSpinBox(this);
       center->setProperty("index", i);
       center->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+      center->setSuffix("us");
       center->setMinimum(1375);
       center->setMaximum(1625);
       center->setValue(1500);
@@ -184,9 +181,9 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
 
 Channels::~Channels()
 {
-  delete ofsGroup;
-  delete minGroup;
-  delete maxGroup;
+  foreach(LimitsGroup *group, limitsGroups) {
+    delete group;
+  }
 }
 
 void Channels::symlimitsEdited()
@@ -209,46 +206,14 @@ void Channels::nameEdited()
   }
 }
 
-void Channels::offsetEdited()
-{
-  QDoubleSpinBox *dsb = qobject_cast<QDoubleSpinBox*>(sender());
-  int index = dsb->property("index").toInt();
-  model.limitData[index].offset = round(dsb->value() * 10);
-  emit modified();
-}
-
-void Channels::minEdited()
-{
-  QDoubleSpinBox *sb = qobject_cast<QDoubleSpinBox*>(sender());
-  int index = sb->property("index").toInt();
-  model.limitData[index].min = round(sb->value() * 10);
-  emit modified();
-}
-
-void Channels::maxEdited()
-{
-  QDoubleSpinBox *sb = qobject_cast<QDoubleSpinBox*>(sender());
-  int index = sb->property("index").toInt();
-  model.limitData[index].max = round(sb->value() * 10);
-  emit modified();
-}
-
 void Channels::refreshExtendedLimits()
 {
   int channelMax = model.getChannelsMax();
-  int channelMaxValue = channelMax * 10;
 
-  for (int i=0; i<firmware->getCapability(Outputs); i++) {
-    QDoubleSpinBox * minDSB = minSpins[i];
-    QDoubleSpinBox * maxDSB = maxSpins[i];
-    
-    minDSB->setMinimum(-channelMax);
-    maxDSB->setMaximum(+channelMax);
-
-    //reset any limit that is bigger than current maximum (dependent on extended limits setting)
-    if ( model.limitData[i].min < -channelMaxValue ) model.limitData[i].min = -channelMaxValue;
-    if ( model.limitData[i].max > +channelMaxValue ) model.limitData[i].max = +channelMaxValue;
+  foreach(LimitsGroup *group, limitsGroups) {
+    group->updateMinMax(channelMax);
   }
+
   emit modified(); 
 }
 

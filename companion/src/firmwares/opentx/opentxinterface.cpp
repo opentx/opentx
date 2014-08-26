@@ -663,7 +663,9 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case TelemetryMaxMultiplier:
       return (IS_ARM(board) ? 32 : 8);
     case PPMCenter:
-      return 1;
+      return (IS_TARANIS(board) || id.contains("ppmca")) ? 1 : 0;
+    case PPMUnitMicroseconds:
+      return id.contains("ppmus") ? 1 : 0;
     case SYMLimits:
       return 1;
     case OptrexDisplay:
