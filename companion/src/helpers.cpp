@@ -147,17 +147,18 @@ void populatePhasesCB(QComboBox *b, int value)
   b->setCurrentIndex(value + GetCurrentFirmware()->getCapability(FlightModes));
 }
 
-GVarGroup::GVarGroup(QCheckBox *weightGV, QSpinBox *weightSB, QComboBox *weightCB, int & weight, const int deflt, const int mini, const int maxi, const unsigned int flags):
+GVarGroup::GVarGroup(QCheckBox *weightGV, QAbstractSpinBox *weightSB, QComboBox *weightCB, int & weight, const int deflt, const int mini, const int maxi, const double step, const unsigned int flags):
   QObject(),
   weightGV(weightGV),
   weightSB(weightSB),
+  sb(dynamic_cast<QSpinBox *>(weightSB)),
+  dsb(dynamic_cast<QDoubleSpinBox *>(weightSB)),
   weightCB(weightCB),
   weight(weight),
+  step(step),
   flags(flags),
-  lock(false)
+  lock(true)
 {
-  lock = true;
-
   if (GetCurrentFirmware()->getCapability(Gvars)) {
     populateGVCB(weightCB, weight);
     connect(weightGV, SIGNAL(stateChanged(int)), this, SLOT(gvarCBChanged(int)));
@@ -170,19 +171,30 @@ GVarGroup::GVarGroup(QCheckBox *weightGV, QSpinBox *weightSB, QComboBox *weightC
     }
   }
 
-  weightSB->setMinimum(mini);
-  weightSB->setMaximum(maxi);
+  int val;
 
   if (weight>maxi || weight<mini) {
+    val = deflt;
     weightGV->setChecked(true);
     weightSB->hide();
     weightCB->show();
   }
   else {
+    val = weight;
     weightGV->setChecked(false);
-    weightSB->setValue(weight);
     weightSB->show();
     weightCB->hide();
+  }
+
+  if (sb) {
+    sb->setMinimum(step*mini);
+    sb->setMaximum(step*maxi);
+    sb->setValue(step*val);
+  }
+  else {
+    dsb->setMinimum(step*mini);
+    dsb->setMaximum(step*maxi);
+    dsb->setValue(step*val);
   }
 
   connect(weightSB, SIGNAL(editingFinished()), this, SLOT(valuesChanged()));
@@ -193,16 +205,23 @@ GVarGroup::GVarGroup(QCheckBox *weightGV, QSpinBox *weightSB, QComboBox *weightC
 void GVarGroup::gvarCBChanged(int state)
 {
   weightCB->setVisible(state);
-  weightSB->setVisible(!state);
+  if (weightSB)
+    weightSB->setVisible(!state);
+  else
+    weightSB->setVisible(!state);
   valuesChanged();
 }
 
 void GVarGroup::valuesChanged()
 {
-  if (weightGV->isChecked())
-    weight = weightCB->itemData(weightCB->currentIndex()).toInt();
-  else
-    weight = weightSB->value();
+  if (!lock) {
+    if (weightGV->isChecked())
+      weight = weightCB->itemData(weightCB->currentIndex()).toInt();
+    else if (sb)
+      weight = sb->value()/step;
+    else
+      weight = dsb->value()/step;
+  }
 }
 
 CurveGroup::CurveGroup(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QComboBox *curveValueCB, QSpinBox *curveValueSB, CurveReference & curve, unsigned int flags):

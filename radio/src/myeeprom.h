@@ -608,7 +608,7 @@ PACK(typedef struct t_LimitData {
 
 #if defined(CPUARM)
 #define GV1_SMALL       128
-#define GV1_LARGE       4096
+#define GV1_LARGE       1024
 #define GV_RANGE_WEIGHT 500
 #define GV_RANGE_OFFSET 500
 #define DELAY_STEP      10
@@ -618,15 +618,13 @@ PACK(typedef struct t_LimitData {
 #if defined(PCBTARANIS)
 PACK(typedef struct {
   uint8_t  destCh;
-  uint16_t flightModes;
+  uint16_t flightModes:9;
   uint8_t  mltpx:2;         // multiplex method: 0 means +=, 1 means *=, 2 means :=
   uint8_t  carryTrim:1;
-  uint8_t  spare1:5;
+  uint8_t  mixWarn:4;       // mixer warning
   int16_t  weight;
   int8_t   swtch;
   CurveRef curve;
-  uint8_t  mixWarn:4;       // mixer warning
-  uint8_t  spare2:4;
   uint8_t  delayUp;
   uint8_t  delayDown;
   uint8_t  speedUp;
@@ -634,18 +632,16 @@ PACK(typedef struct {
   uint8_t  srcRaw;
   int16_t  offset;
   char     name[LEN_EXPOMIX_NAME];
-  uint8_t  spare3;
 }) MixData;
 #else
 PACK(typedef struct {
   uint8_t  destCh:5;
   uint8_t  mixWarn:3;         // mixer warning
-  uint16_t flightModes;
+  uint16_t flightModes:9;
   uint8_t  curveMode:1;
   uint8_t  noExpo:1;
   int8_t   carryTrim:3;
   uint8_t  mltpx:2;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
-  uint8_t  spare:1;
   int16_t  weight;
   int8_t   swtch;
   int8_t   curveParam;
@@ -661,7 +657,6 @@ PACK(typedef struct {
 #define MD_WEIGHT(md) (md->weight)
 #define MD_WEIGHT_TO_UNION(md, var) var.word = md->weight
 #define MD_UNION_TO_WEIGHT(var, md) md->weight = var.word
-// #define MD_SETWEIGHT(md, val) md->weight = val
 
 PACK( union u_int8int16_t {
   struct {

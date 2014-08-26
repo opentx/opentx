@@ -633,7 +633,7 @@ void concatGvarParam(int & gvar, const int _gvar, const unsigned int _gvarParam,
 
 void exportGvarParam(const int gvar, int & _gvar, int version)
 {
-  int GV1 = (version >= 216 ? 4096 : 512);
+  int GV1 = (version >= 217 ? 1024 : (version >= 216 ? 4096 : 512));
 
   if (gvar < -10000) {
     _gvar = GV1 + gvar + 10000;
@@ -648,7 +648,7 @@ void exportGvarParam(const int gvar, int & _gvar, int version)
 
 void importGvarParam(int & gvar, const int _gvar, int version)
 {
-  int GV1 = (version >= 216 ? 4096 : 512);
+  int GV1 = (version >= 217 ? 1024 : (version >= 216 ? 4096 : 512));
 
   if (_gvar >= GV1) {
     gvar = 10001 + _gvar - GV1;
@@ -867,7 +867,43 @@ class MixField: public TransformedField {
       version(version),
       model(model)
     {
-      if (IS_TARANIS(board) && version >= 216) {
+      if (IS_TARANIS(board) && version >= 217) {
+        internalField.Append(new UnsignedField<8>(_destCh));
+        internalField.Append(new UnsignedField<9>(mix.phases));
+        internalField.Append(new UnsignedField<2>((unsigned int &)mix.mltpx));
+        internalField.Append(new UnsignedField<1>((unsigned int &)mix.carryTrim));
+        internalField.Append(new UnsignedField<4>(mix.mixWarn));
+        internalField.Append(new SignedField<16>(_weight));
+        internalField.Append(new SwitchField<8>(mix.swtch, board, version));
+        internalField.Append(new CurveReferenceField(mix.curve, board, version));
+        internalField.Append(new UnsignedField<8>(mix.delayUp));
+        internalField.Append(new UnsignedField<8>(mix.delayDown));
+        internalField.Append(new UnsignedField<8>(mix.speedUp));
+        internalField.Append(new UnsignedField<8>(mix.speedDown));
+        internalField.Append(new SourceField<8>(mix.srcRaw, board, version, FLAG_NOTELEMETRY));
+        internalField.Append(new SignedField<16>(_offset));
+        internalField.Append(new ZCharField<8>(mix.name));
+      }
+      else if (IS_ARM(board) && version >= 217) {
+        internalField.Append(new UnsignedField<5>(_destCh));
+        internalField.Append(new UnsignedField<3>(mix.mixWarn));
+        internalField.Append(new UnsignedField<9>(mix.phases));
+        internalField.Append(new BoolField<1>(_curveMode));
+        internalField.Append(new BoolField<1>(mix.noExpo));
+        internalField.Append(new SignedField<3>(mix.carryTrim));
+        internalField.Append(new UnsignedField<2>((unsigned int &)mix.mltpx));
+        internalField.Append(new SignedField<16>(_weight));
+        internalField.Append(new SwitchField<8>(mix.swtch, board, version));
+        internalField.Append(new SignedField<8>(_curveParam));
+        internalField.Append(new UnsignedField<8>(mix.delayUp));
+        internalField.Append(new UnsignedField<8>(mix.delayDown));
+        internalField.Append(new UnsignedField<8>(mix.speedUp));
+        internalField.Append(new UnsignedField<8>(mix.speedDown));
+        internalField.Append(new SourceField<8>(mix.srcRaw, board, version, FLAG_NOTELEMETRY));
+        internalField.Append(new SignedField<16>(_offset));
+        internalField.Append(new ZCharField<6>(mix.name));
+      }
+      else if (IS_TARANIS(board) && version == 216) {
         internalField.Append(new UnsignedField<8>(_destCh));
         internalField.Append(new UnsignedField<16>(mix.phases));
         internalField.Append(new UnsignedField<2>((unsigned int &)mix.mltpx));
@@ -887,7 +923,7 @@ class MixField: public TransformedField {
         internalField.Append(new ZCharField<8>(mix.name));
         internalField.Append(new SpareBitsField<8>());
       }
-      else if (IS_ARM(board) && version >= 216) {
+      else if (IS_ARM(board) && version == 216) {
         internalField.Append(new UnsignedField<5>(_destCh));
         internalField.Append(new UnsignedField<3>(mix.mixWarn));
         internalField.Append(new UnsignedField<16>(mix.phases));
@@ -1154,7 +1190,7 @@ class InputField: public TransformedField {
 
     virtual void beforeExport()
     {
-      _weight    = smallGvarToEEPROM(expo.weight);
+      _weight = smallGvarToEEPROM(expo.weight);
 
       if (!IS_TARANIS(board) || version < 216) {
         if (expo.curve.type==CurveReference::CURVE_REF_FUNC && expo.curve.value) {
@@ -1209,13 +1245,35 @@ class InputField: public TransformedField {
 
 class LimitField: public StructField {
   public:
+    template <int shift>
+    static int exportLimitValue(int value)
+    {
+      if (value > 10000)
+        return 1023 + value - 10000;
+      else if (value < -10000)
+        return -1024 + value + 10000;
+      else
+        return value + shift;
+    }
+
+    template <int shift>
+    static int importLimitValue(int value)
+    {
+      if (value > 1023)
+        return 10000 + value - 1023;
+      else if (value < -1024)
+        return -10000 + value + 1024;
+      else
+        return value - shift;
+    }
+
     LimitField(LimitData & limit, BoardEnum board, unsigned int version):
       StructField("Limit")
     {
       if (IS_TARANIS(board) && version >= 217) {
-        Append(new ConversionField< SignedField<11> >(limit.min, +1000));
-        Append(new ConversionField< SignedField<11> >(limit.max, -1000));
-        Append(new SignedField<11>(limit.offset));
+        Append(new ConversionField< SignedField<11> >(limit.min, exportLimitValue<1000>, importLimitValue<1000>));
+        Append(new ConversionField< SignedField<11> >(limit.max, exportLimitValue<-1000>, importLimitValue<-1000>));
+        Append(new ConversionField< SignedField<11> >(limit.offset, exportLimitValue<0>, importLimitValue<0>));
         Append(new SignedField<11>(limit.ppmCenter));
         Append(new BoolField<1>(limit.symetrical));
         Append(new BoolField<1>(limit.revert));
@@ -1227,15 +1285,17 @@ class LimitField: public StructField {
       }
       else {
         if (IS_TARANIS(board) && version >= 216) {
-          Append(new ConversionField< SignedField<16> >(limit.min, +1000));
-          Append(new ConversionField< SignedField<16> >(limit.max, -1000));
+          Append(new ConversionField< SignedField<16> >(limit.min, exportLimitValue<1000>, importLimitValue<1000>));
+          Append(new ConversionField< SignedField<16> >(limit.max, exportLimitValue<-1000>, importLimitValue<-1000>));
+          Append(new SignedField<8>(limit.ppmCenter));
+          Append(new ConversionField< SignedField<14> >(limit.offset, exportLimitValue<0>, importLimitValue<0>));
         }
         else {
           Append(new ConversionField< SignedField<8> >(limit.min, +100, 10));
           Append(new ConversionField< SignedField<8> >(limit.max, -100, 10));
+          Append(new SignedField<8>(limit.ppmCenter));
+          Append(new SignedField<14>(limit.offset));
         }
-        Append(new SignedField<8>(limit.ppmCenter));
-        Append(new SignedField<14>(limit.offset));
         Append(new BoolField<1>(limit.symetrical));
         Append(new BoolField<1>(limit.revert));
         if (HAS_LARGE_LCD(board)) {

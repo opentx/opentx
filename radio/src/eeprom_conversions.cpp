@@ -1051,6 +1051,15 @@ void ConvertModel_215_to_216(ModelData &model)
   memcpy(newModel.moduleData, oldModel.moduleData, sizeof(newModel.moduleData));
 }
 
+int ConvertGVar_216_to_217(int value)
+{
+  if (value < -4096 + 9)
+    value += 4096 - 1024;
+  else if (value > 4095 - 9)
+    value -= 4095 - 1023;
+  return value;
+}
+
 void ConvertModel_216_to_217(ModelData &model)
 {
   // Timer3 added
@@ -1086,14 +1095,33 @@ void ConvertModel_216_to_217(ModelData &model)
   newModel.throttleReversed = oldModel.throttleReversed;
   newModel.beepANACenter = oldModel.beepANACenter;
   for (int i=0; i<MAX_MIXERS; i++) {
-    newModel.mixData[i] = oldModel.mixData[i];
+    newModel.mixData[i].destCh = oldModel.mixData[i].destCh;
+    newModel.mixData[i].flightModes = oldModel.mixData[i].flightModes;
+    newModel.mixData[i].mltpx = oldModel.mixData[i].mltpx;
+    newModel.mixData[i].carryTrim = oldModel.mixData[i].carryTrim;
+    newModel.mixData[i].mixWarn = oldModel.mixData[i].mixWarn;
+    newModel.mixData[i].weight = ConvertGVar_216_to_217(oldModel.mixData[i].weight);
+    newModel.mixData[i].swtch = oldModel.mixData[i].swtch;
+#if defined(PCBTARANIS)
+    newModel.mixData[i].curve = oldModel.mixData[i].curve;
+#else
+    newModel.mixData[i].curveMode = oldModel.mixData[i].curveMode;
+    newModel.mixData[i].noExpo = oldModel.mixData[i].noExpo;
+    newModel.mixData[i].curveParam = oldModel.mixData[i].curveParam;
+#endif
+    newModel.mixData[i].delayUp = oldModel.mixData[i].delayUp;
+    newModel.mixData[i].delayDown = oldModel.mixData[i].delayDown;
+    newModel.mixData[i].speedUp = oldModel.mixData[i].speedUp;
+    newModel.mixData[i].speedDown = oldModel.mixData[i].speedDown;
     newModel.mixData[i].srcRaw = ConvertSource_216_to_217(oldModel.mixData[i].srcRaw);
+    newModel.mixData[i].offset = ConvertGVar_216_to_217(oldModel.mixData[i].offset);
+    memcpy(newModel.mixData[i].name, oldModel.mixData[i].name, sizeof(newModel.mixData[i].name));
   }
   for (int i=0; i<NUM_CHNOUT; i++) {
 #if defined(PCBTARANIS)
-    newModel.limitData[i].min = oldModel.limitData[i].min;
-    newModel.limitData[i].max = oldModel.limitData[i].max;
-    newModel.limitData[i].offset = oldModel.limitData[i].offset;
+    newModel.limitData[i].min = ConvertGVar_216_to_217(oldModel.limitData[i].min);
+    newModel.limitData[i].max = ConvertGVar_216_to_217(oldModel.limitData[i].max);
+    newModel.limitData[i].offset = ConvertGVar_216_to_217(oldModel.limitData[i].offset);
     newModel.limitData[i].ppmCenter = oldModel.limitData[i].ppmCenter;
     newModel.limitData[i].symetrical = oldModel.limitData[i].symetrical;
     newModel.limitData[i].revert = oldModel.limitData[i].revert;

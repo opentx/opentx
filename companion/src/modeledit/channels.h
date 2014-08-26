@@ -4,6 +4,8 @@
 #include "modelpanel.h"
 #include <QSpinBox>
 
+class GVarGroup;
+
 class Channels : public ModelPanel
 {
     Q_OBJECT
@@ -15,6 +17,9 @@ class Channels : public ModelPanel
   private:
     QVector<QDoubleSpinBox *> minSpins;
     QVector<QDoubleSpinBox *> maxSpins;
+    GVarGroup * ofsGroup;
+    GVarGroup * minGroup;
+    GVarGroup * maxGroup;
 
   public slots:
     void refreshExtendedLimits();
