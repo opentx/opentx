@@ -6,6 +6,22 @@
 
 class GVarGroup;
 
+class LimitsGroup
+{
+  public:
+    LimitsGroup(FirmwareInterface * firmware, QGridLayout *gridLayout, int row, int col, int & value, int min, int max, int deflt);
+    ~LimitsGroup();
+
+    void updateMinMax(int max);
+
+  protected:
+    FirmwareInterface * firmware;
+    QDoubleSpinBox * spinbox;
+    GVarGroup * gvarGroup;
+    int & value;
+    double step;
+};
+
 class Channels : public ModelPanel
 {
     Q_OBJECT
@@ -15,11 +31,7 @@ class Channels : public ModelPanel
     ~Channels();
     
   private:
-    QVector<QDoubleSpinBox *> minSpins;
-    QVector<QDoubleSpinBox *> maxSpins;
-    GVarGroup * ofsGroup;
-    GVarGroup * minGroup;
-    GVarGroup * maxGroup;
+    QVector<LimitsGroup *> limitsGroups;
 
   public slots:
     void refreshExtendedLimits();
@@ -27,9 +39,6 @@ class Channels : public ModelPanel
   private slots:
     void symlimitsEdited();
     void nameEdited();
-    void offsetEdited();
-    void minEdited();
-    void maxEdited();
     void invEdited();
     void curveEdited();
     void ppmcenterEdited();

@@ -1135,6 +1135,7 @@ enum Capability {
   HasSoundMixer,
   NumModules,
   PPMCenter,
+  PPMUnitMicroseconds,
   SYMLimits,
   HasCurrentCalibration,
   HasVolume,
