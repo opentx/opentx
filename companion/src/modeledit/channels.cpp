@@ -1,4 +1,5 @@
 #include "channels.h"
+#include "helpers.h"
 #include <QLabel>
 #include <QLineEdit>
 #include <QSpinBox>
@@ -13,8 +14,7 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
   bool minimize = false;
 
   int col = 1;
-  if (firmware->getCapability(ChannelsName))
-  {
+  if (firmware->getCapability(ChannelsName)) {
     minimize=true;
     addLabel(gridLayout, tr("Name"), col++);
   }
@@ -57,24 +57,51 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     offset->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
     offset->setAccelerated(true);
     offset->setDecimals(1);
-    offset->setMinimum(-100);
     offset->setSingleStep(0.1);
-    offset->setValue(float(model.limitData[i].offset) / 10);
-    connect(offset, SIGNAL(editingFinished()), this, SLOT(offsetEdited()));
-    gridLayout->addWidget(offset, i+1, col++, 1, 1);
+    if (IS_TARANIS(firmware->getBoard())) {
+      QHBoxLayout * horizontalLayout = new QHBoxLayout();
+      QCheckBox * ofsGV = new QCheckBox(tr("GV"));
+      horizontalLayout->addWidget(ofsGV);
+      QComboBox * ofsCB = new QComboBox(this);
+      horizontalLayout->addWidget(ofsCB);
+      horizontalLayout->addWidget(offset);
+      gridLayout->addLayout(horizontalLayout, i+1, col++, 1, 1);
+      ofsGroup = new GVarGroup(ofsGV, offset, ofsCB, model.limitData[i].offset, 0, -10*model.getChannelsMax(), 10*model.getChannelsMax(), 0.1);
+    }
+    else {
+      offset->setMinimum(-100);
+      offset->setMaximum(100);
+      offset->setValue(float(model.limitData[i].offset) / 10);
+      connect(offset, SIGNAL(editingFinished()), this, SLOT(offsetEdited()));
+      gridLayout->addWidget(offset, i+1, col++, 1, 1);
+    }
 
     // Channel min
     QDoubleSpinBox * minSB = new QDoubleSpinBox(this);
     minSB->setProperty("index", i);
     minSB->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
     minSB->setAccelerated(true);
-    minSB->setDecimals(1);
-    minSB->setMinimum(-model.getChannelsMax());
-    minSB->setSingleStep(0.1);
-    minSB->setMaximum(0);
-    minSB->setValue(float(model.limitData[i].min) / 10);
-    connect(minSB, SIGNAL(editingFinished()), this, SLOT(minEdited()));
-    gridLayout->addWidget(minSB, i+1, col++, 1, 1);
+    if (IS_TARANIS(firmware->getBoard())) {
+      QHBoxLayout * horizontalLayout = new QHBoxLayout();
+      QCheckBox * minGV = new QCheckBox(tr("GV"));
+      horizontalLayout->addWidget(minGV);
+      QComboBox * minCB = new QComboBox(this);
+      horizontalLayout->addWidget(minCB);
+      minSB->setDecimals(1);
+      minSB->setSingleStep(0.1);
+      horizontalLayout->addWidget(minSB);
+      gridLayout->addLayout(horizontalLayout, i+1, col++, 1, 1);
+      minGroup = new GVarGroup(minGV, minSB, minCB, model.limitData[i].min, -1000, -10*model.getChannelsMax(), 0, 0.1);
+    }
+    else {
+      minSB->setDecimals(0);
+      minSB->setSingleStep(1);
+      minSB->setMinimum(-model.getChannelsMax());
+      minSB->setMaximum(0);
+      minSB->setValue(model.limitData[i].min / 10);
+      connect(minSB, SIGNAL(editingFinished()), this, SLOT(minEdited()));
+      gridLayout->addWidget(minSB, i+1, col++, 1, 1);
+    }
     minSpins << minSB;
 
     // Channel max
@@ -82,13 +109,27 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     maxSB->setProperty("index", i);
     maxSB->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
     maxSB->setAccelerated(true);
-    maxSB->setDecimals(1);
-    maxSB->setMinimum(0);
-    maxSB->setSingleStep(0.1);
-    maxSB->setMaximum(model.getChannelsMax());
-    maxSB->setValue(float(model.limitData[i].max) / 10);
-    connect(maxSB, SIGNAL(editingFinished()), this, SLOT(maxEdited()));
-    gridLayout->addWidget(maxSB, i+1, col++, 1, 1);
+    if (IS_TARANIS(firmware->getBoard())) {
+      QHBoxLayout * horizontalLayout = new QHBoxLayout();
+      QCheckBox * maxGV = new QCheckBox(tr("GV"));
+      horizontalLayout->addWidget(maxGV);
+      QComboBox * maxCB = new QComboBox(this);
+      horizontalLayout->addWidget(maxCB);
+      maxSB->setDecimals(1);
+      maxSB->setSingleStep(0.1);
+      horizontalLayout->addWidget(maxSB);
+      gridLayout->addLayout(horizontalLayout, i+1, col++, 1, 1);
+      maxGroup = new GVarGroup(maxGV, maxSB, maxCB, model.limitData[i].max, 1000, 0, 10*model.getChannelsMax(), 0.1);
+    }
+    else {
+      maxSB->setDecimals(0);
+      maxSB->setSingleStep(1);
+      maxSB->setMinimum(0);
+      maxSB->setMaximum(model.getChannelsMax());
+      maxSB->setValue(model.limitData[i].max / 10);
+      connect(maxSB, SIGNAL(editingFinished()), this, SLOT(maxEdited()));
+      gridLayout->addWidget(maxSB, i+1, col++, 1, 1);
+    }
     maxSpins << maxSB;
 
     // Channel inversion
@@ -134,6 +175,7 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
       gridLayout->addWidget(symlimits, i+1, col++, 1, 1);
     }
   }
+
   // Push the rows up
   addVSpring(gridLayout, 0,firmware->getCapability(Outputs)+1);
 
@@ -142,6 +184,9 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
 
 Channels::~Channels()
 {
+  delete ofsGroup;
+  delete minGroup;
+  delete maxGroup;
 }
 
 void Channels::symlimitsEdited()

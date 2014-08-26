@@ -37,12 +37,12 @@ class CompanionIcon: public QIcon {
     CompanionIcon(QString baseimage);
 };
 
-class GVarGroup : public QObject {
+class GVarGroup: public QObject {
 
   Q_OBJECT
 
   public:
-    GVarGroup(QCheckBox *weightGV, QSpinBox *weightSB, QComboBox *weightCB, int & weight, const int deflt, const int mini, const int maxi, const unsigned int flags=0);
+    GVarGroup(QCheckBox *weightGV, QAbstractSpinBox *weightSB, QComboBox *weightCB, int & weight, const int deflt, const int mini, const int maxi, const double step=1, const unsigned int flags=0);
 
   protected slots:
     void gvarCBChanged(int);
@@ -50,10 +50,13 @@ class GVarGroup : public QObject {
 
   protected:
     QCheckBox *weightGV;
-    QSpinBox *weightSB;
+    QAbstractSpinBox *weightSB;
+    QSpinBox *sb;
+    QDoubleSpinBox *dsb;
     QComboBox *weightCB;
     int & weight;
-    const unsigned int flags;
+    double step;
+    unsigned int flags;
     bool lock;
 };
 

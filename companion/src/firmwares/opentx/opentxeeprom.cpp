@@ -1151,7 +1151,7 @@ class InputField: public TransformedField {
 
     virtual void beforeExport()
     {
-      _weight    = smallGvarToEEPROM(expo.weight);
+      _weight = smallGvarToEEPROM(expo.weight);
 
       if (!IS_TARANIS(board) || version < 216) {
         if (expo.curve.type==CurveReference::CURVE_REF_FUNC && expo.curve.value) {
@@ -1206,19 +1206,43 @@ class InputField: public TransformedField {
 
 class LimitField: public StructField {
   public:
+    template <int shift>
+    static int exportLimitValue(int value)
+    {
+      if (value > 10000)
+        return 4095 + value - 10000;
+      else if (value < -10000)
+        return -4096 + value + 10000;
+      else
+        return value + shift;
+    }
+
+    template <int shift>
+    static int importLimitValue(int value)
+    {
+      if (value > 4095)
+        return 10000 + value - 4095;
+      else if (value < -4096)
+        return -10000 + value + 4096;
+      else
+        return value - shift;
+    }
+
     LimitField(LimitData & limit, BoardEnum board, unsigned int version):
       StructField("Limit")
     {
       if (IS_TARANIS(board) && version >= 216) {
-        Append(new ConversionField< SignedField<16> >(limit.min, +1000));
-        Append(new ConversionField< SignedField<16> >(limit.max, -1000));
+        Append(new ConversionField< SignedField<16> >(limit.min, exportLimitValue<1000>, importLimitValue<1000>));
+        Append(new ConversionField< SignedField<16> >(limit.max, exportLimitValue<-1000>, importLimitValue<-1000>));
+        Append(new SignedField<8>(limit.ppmCenter));
+        Append(new ConversionField< SignedField<14> >(limit.offset, exportLimitValue<0>, importLimitValue<0>));
       }
       else {
         Append(new ConversionField< SignedField<8> >(limit.min, +100, 10));
         Append(new ConversionField< SignedField<8> >(limit.max, -100, 10));
+        Append(new SignedField<8>(limit.ppmCenter));
+        Append(new SignedField<14>(limit.offset));
       }
-      Append(new SignedField<8>(limit.ppmCenter));
-      Append(new SignedField<14>(limit.offset));
       Append(new BoolField<1>(limit.symetrical));
       Append(new BoolField<1>(limit.revert));
       if (HAS_LARGE_LCD(board)) {
