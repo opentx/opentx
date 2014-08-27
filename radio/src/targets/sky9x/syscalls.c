@@ -68,7 +68,7 @@ extern int _getpid ( void ) ;
 unsigned char *heap = (unsigned char *)&_end;
 extern caddr_t _sbrk(int nbytes)
 {
-  if (heap + nbytes < RAM_END-4096) {
+  if (heap + nbytes < RAM_END-8192) {
     unsigned char *prev_heap = heap;
     heap += nbytes;
     return (caddr_t) prev_heap;
