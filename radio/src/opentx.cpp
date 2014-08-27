@@ -3312,7 +3312,7 @@ uint16_t stack_free(uint8_t tid)
   for (; i<size; i++)
     if (stack[i] != 0x55555555)
       break;
-  return i*4;
+  return i;
 }
 #else
 extern unsigned char __bss_end ;
