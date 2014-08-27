@@ -106,7 +106,7 @@ const MenuFuncP_PROGMEM menuTabDiag[] PROGMEM = {
   #define RADIO_SETUP_DATE_COLUMN RADIO_SETUP_2ND_COLUMN + 4*FWNUM
   #define RADIO_SETUP_TIME_COLUMN RADIO_SETUP_2ND_COLUMN + 2*FWNUM
 #else
-  #define RADIO_SETUP_2ND_COLUMN  (LCD_W-6*FW-1-MENUS_SCROLLBAR_WIDTH)
+  #define RADIO_SETUP_2ND_COLUMN  (LCD_W-6*FW-3-MENUS_SCROLLBAR_WIDTH)
   #define RADIO_SETUP_TIME_COLUMN (FW*15+9)
   #define RADIO_SETUP_DATE_COLUMN (FW*15+7)
 #endif
@@ -292,9 +292,9 @@ void menuGeneralSetup(uint8_t event)
 #if defined(BATTGRAPH) || defined(PCBTARANIS)
       case ITEM_SETUP_BATT_RANGE:
         lcd_putsLeft(y, STR_BATTERY_RANGE);
-        lcd_putc(g_eeGeneral.vBatMin >= 10 ? RADIO_SETUP_2ND_COLUMN+2*FW+FWNUM-1 : RADIO_SETUP_2ND_COLUMN+2*FW+FWNUM-FW/2, y, '-');
         putsVolts(RADIO_SETUP_2ND_COLUMN, y,  90+g_eeGeneral.vBatMin, (m_posHorz==0 ? attr : 0)|LEFT|NO_UNIT);
-        putsVolts(RADIO_SETUP_2ND_COLUMN+4*FW-2, y, 120+g_eeGeneral.vBatMax, (m_posHorz>0 ? attr : 0)|LEFT|NO_UNIT);
+        lcd_putc(lcdLastPos, y, '-');
+        putsVolts(lcdLastPos+FW, y, 120+g_eeGeneral.vBatMax, (m_posHorz>0 ? attr : 0)|LEFT|NO_UNIT);
 #if defined(PCBTARANIS)
         if (attr && m_posHorz < 0) lcd_filled_rect(RADIO_SETUP_2ND_COLUMN, y, LCD_W-RADIO_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
 #endif
