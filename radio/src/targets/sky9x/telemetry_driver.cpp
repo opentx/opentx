@@ -36,7 +36,7 @@
 
 #include "../../opentx.h"
 
-#define RX_UART_BUFFER_SIZE     32
+#define RX_UART_BUFFER_SIZE     128
 
 struct t_rxUartBuffer
 {
@@ -44,8 +44,7 @@ struct t_rxUartBuffer
   uint8_t *outPtr ;
 };
 
-struct t_rxUartBuffer TelemetryInBuffer[2] ;
-uint32_t TelemetryActiveBuffer;
+struct t_rxUartBuffer TelemetryInBuffer ;
 uint16_t DsmRxTimeout;
 
 // USART0 configuration
@@ -106,18 +105,14 @@ extern "C" void USART0_IRQHandler()
 void startPdcUsartReceive()
 {
   register Usart *pUsart = SECOND_USART;
-
-  TelemetryInBuffer[0].outPtr = TelemetryInBuffer[0].fifo ;
-  TelemetryInBuffer[1].outPtr = TelemetryInBuffer[1].fifo ;
+  TelemetryInBuffer.outPtr = TelemetryInBuffer.fifo ;
 #ifndef SIMU
-  // TODO because of the 64bits cast ...
-  pUsart->US_RPR = (uint32_t)TelemetryInBuffer[0].fifo ;
-  pUsart->US_RNPR = (uint32_t)TelemetryInBuffer[1].fifo ;
+  pUsart->US_RPR = (uint32_t)TelemetryInBuffer.fifo ;
+  pUsart->US_RNPR = (uint32_t)TelemetryInBuffer.fifo ;
 #endif
   pUsart->US_RCR = RX_UART_BUFFER_SIZE ;
   pUsart->US_RNCR = RX_UART_BUFFER_SIZE ;
   pUsart->US_PTCR = US_PTCR_RXTEN ;
-  TelemetryActiveBuffer = 0;
 }
 
 void rxPdcUsart( void (*pChProcess)(uint8_t x) )
@@ -126,34 +121,29 @@ void rxPdcUsart( void (*pChProcess)(uint8_t x) )
   register Usart *pUsart = SECOND_USART;
   uint8_t *ptr ;
   uint8_t *endPtr ;
-  uint32_t j ;
 
   // Find out where the DMA has got to
-  __disable_irq() ;
-  pUsart->US_PTCR = US_PTCR_RXTDIS ;              // Freeze DMA
-  ptr = (uint8_t *)pUsart->US_RPR ;
-  j = pUsart->US_RNCR ;
-  pUsart->US_PTCR = US_PTCR_RXTEN ;                       // DMA active again
-  __enable_irq() ;
-
-  endPtr = ptr - 1 ;
-  ptr = TelemetryInBuffer[TelemetryActiveBuffer].outPtr ;
-  if ( j == 0 )           // First buf is full
+  endPtr = (uint8_t *)pUsart->US_RPR ;
+  // Check for DMA passed end of buffer
+  if ( endPtr > &TelemetryInBuffer.fifo[RX_UART_BUFFER_SIZE-1] )
   {
-    endPtr = &TelemetryInBuffer[TelemetryActiveBuffer].fifo[RX_UART_BUFFER_SIZE-1] ;                // last byte
+    endPtr = TelemetryInBuffer.fifo ;
   }
-  while ( ptr <= endPtr )
+  ptr = TelemetryInBuffer.outPtr ;
+  while ( ptr != endPtr )
   {
     (*pChProcess)(*ptr++) ;
+    if ( ptr > &TelemetryInBuffer.fifo[RX_UART_BUFFER_SIZE-1] )       // last byte
+    {
+      ptr = TelemetryInBuffer.fifo ;
+    }
   }
-  TelemetryInBuffer[TelemetryActiveBuffer].outPtr = ptr ;
-  if ( j == 0 )           // First buf is full
+  TelemetryInBuffer.outPtr = ptr ;
+
+  if ( pUsart->US_RNCR == 0 )
   {
-    TelemetryInBuffer[TelemetryActiveBuffer].outPtr = TelemetryInBuffer[TelemetryActiveBuffer].fifo ;
-    pUsart->US_RNPR = (uint32_t)TelemetryInBuffer[TelemetryActiveBuffer].fifo ;
+    pUsart->US_RNPR = (uint32_t)TelemetryInBuffer.fifo ;
     pUsart->US_RNCR = RX_UART_BUFFER_SIZE ;
-    TelemetryActiveBuffer ^= 1 ;            // Other buffer is active
-    rxPdcUsart( pChProcess ) ;                      // Get any chars from second buffer
   }
 #endif
 }
