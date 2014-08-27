@@ -441,6 +441,10 @@ void modelDefault(uint8_t id)
   }
 #endif
 
+#if defined(CPUARM) && !defined(PCBTARANIS)
+  g_model.externalModule = MODULE_TYPE_PPM;
+#endif
+
 #if defined(PXX) && defined(CPUARM)
   modelHeaders[id].modelId = g_model.header.modelId = id+1;
   checkModelIdUnique(id);
