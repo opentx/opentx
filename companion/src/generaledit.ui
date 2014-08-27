@@ -275,7 +275,7 @@ These will be relevant for all models in the same EEPROM.</string>
          <item>
           <widget class="QSlider" name="backlightColor_SL">
            <property name="maximum">
-            <number>17</number>
+            <number>20</number>
            </property>
            <property name="pageStep">
             <number>5</number>
