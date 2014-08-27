@@ -44,10 +44,9 @@
 /** Pins description corresponding to Rxd,Txd, (UART pins) */
 #define SECOND_SERIAL_PINS        {PINS_UART}
 
+Fifo<512> serial2RxFifo;
+
 #if !defined(SIMU)
-
-extern Fifo<512> debugRxFifo;
-
 /*
  * Outputs a character on the UART line.
  *
@@ -99,10 +98,8 @@ void SECOND_UART_Configure(uint32_t baudrate, uint32_t masterClock)
   /* Enable receiver and transmitter */
   pUart->UART_CR = UART_CR_RXEN | UART_CR_TXEN;
 
-#if defined(DEBUG)
   pUart->UART_IER = UART_IER_RXRDY;
   NVIC_EnableIRQ(UART0_IRQn);
-#endif
 }
 
 void SECOND_UART_Stop()
@@ -113,9 +110,7 @@ void SECOND_UART_Stop()
 
 extern "C" void UART0_IRQHandler()
 {
-#if defined(DEBUG)
-  debugRxFifo.push(SECOND_SERIAL_UART->UART_RHR);
-#endif
+  serial2RxFifo.push(SECOND_SERIAL_UART->UART_RHR);
 }
 #else
 #define SECOND_UART_Configure(...)
@@ -125,17 +120,11 @@ extern "C" void UART0_IRQHandler()
 void telemetrySecondPortInit(unsigned int /*protocol*/)
 {
   SECOND_UART_Configure(FRSKY_D_BAUDRATE, Master_frequency);
-  startPdcUsartReceive();
+  // startPdcUsartReceive();
 }
 
-uint16_t telemetrySecondPortReceive()
+bool telemetrySecondPortReceive(uint8_t & data)
 {
-  Uart *pUart = SECOND_SERIAL_UART;
-
-  if (pUart->UART_SR & UART_SR_RXRDY) {
-    return pUart->UART_RHR ;
-  }
-
-  return 0xFFFF ;
+  return serial2RxFifo.pop(data);
 }
 #endif

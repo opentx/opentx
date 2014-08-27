@@ -277,7 +277,7 @@ enum AlarmsCheckSteps {
 void telemetryWakeup()
 {
 #if defined(CPUARM)
-  uint8_t requiredTelemetryProtocol = MODEL_TELEMETRY_PROTOCOL;
+  uint8_t requiredTelemetryProtocol = MODEL_TELEMETRY_PROTOCOL();
   if (telemetryProtocol != requiredTelemetryProtocol) {
     telemetryProtocol = requiredTelemetryProtocol;
     telemetryInit();
@@ -307,8 +307,8 @@ void telemetryWakeup()
   }
 #elif defined(PCBSKY9X)
   if (telemetryProtocol == PROTOCOL_FRSKY_D_SECONDARY) {
-    uint16_t data ;
-    while ((data=telemetrySecondPortReceive()) != 0xFFFF) {
+    uint8_t data;
+    while (telemetrySecondPortReceive(data)) {
       processSerialData(data);
     }
   }
