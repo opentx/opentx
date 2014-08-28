@@ -4359,6 +4359,22 @@ enum LogicalSwitchFields {
   #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, incdecFlag)
 #endif
 
+#if defined(CPUARM)
+void putsEdgeDelayParam(xcoord_t x, uint8_t y, LogicalSwitchData *cs, uint8_t lattr, uint8_t rattr)
+{
+  lcd_putc(x-4, y, '[');
+  lcd_outdezAtt(x, y, lswTimerValue(cs->v2), LEFT|PREC1|lattr);
+  lcd_putc(lcdLastPos, y, ':');
+  if (cs->v3 < 0)
+    lcd_putsAtt(lcdLastPos+3, y, "<<", rattr);
+  else if (cs->v3 == 0)
+    lcd_putsAtt(lcdLastPos+3, y, "--", rattr);
+  else
+    lcd_outdezAtt(lcdLastPos+3, y, lswTimerValue(cs->v2+cs->v3), LEFT|PREC1|rattr);
+  lcd_putc(lcdLastPos, y, ']');
+}
+#endif
+
 #if defined(CPUARM) && LCD_W < 212
 
 #define CSWONE_2ND_COLUMN (11*FW)
@@ -4440,17 +4456,10 @@ void menuModelLogicalSwitchOne(uint8_t event)
           v2_max = 99;
         }
         else if (cstate == LS_FAMILY_STAY) {
-          lcd_putc(CSWONE_2ND_COLUMN-4, y, '[');
-          lcd_outdezAtt(CSWONE_2ND_COLUMN, y, lswTimerValue(cs->v2), LEFT|PREC1|(m_posHorz==0 ? attr : 0));
-          lcd_putc(lcdLastPos, y, ':');
-          if (cs->v3 == 0)
-            lcd_putsAtt(lcdLastPos+3, y, "--", (m_posHorz==1 ? attr : 0));
-          else
-            lcd_outdezAtt(lcdLastPos+3, y, lswTimerValue(cs->v2+cs->v3), LEFT|PREC1|(m_posHorz==1 ? attr : 0));
-          lcd_putc(lcdLastPos, y, ']');
+          putsEdgeDelayParam(CSWONE_2ND_COLUMN, y, cs, m_posHorz==0 ? attr : 0, m_posHorz==1 ? attr : 0);
           if (s_editMode <= 0) continue;
           if (attr && m_posHorz==1) {
-            CHECK_INCDEC_MODELVAR(event, cs->v3, 0, 222 - cs->v2);
+            CHECK_INCDEC_MODELVAR(event, cs->v3, -1, 222 - cs->v2);
             break;
           }
           v2_min = -129; v2_max = 122;
@@ -4563,14 +4572,7 @@ void menuModelLogicalSwitches(uint8_t event)
       }
       else if (cstate == LS_FAMILY_STAY) {
         putsSwitches(CSW_2ND_COLUMN, y, cs->v1, 0);
-        lcd_putc(CSW_3RD_COLUMN-4, y, '[');
-        lcd_outdezAtt(CSW_3RD_COLUMN, y, lswTimerValue(cs->v2), LEFT|PREC1);
-        lcd_putc(lcdLastPos, y, ':');
-        if (cs->v3 == 0)
-          lcd_puts(lcdLastPos+3, y, "--");
-        else
-          lcd_outdezAtt(lcdLastPos+3, y, lswTimerValue(cs->v2+cs->v3), LEFT|PREC1);
-        lcd_putc(lcdLastPos-1, y, ']');
+        putsEdgeDelayParam(CSW_3RD_COLUMN, y, cs, 0, 0);
       }
       else if (cstate == LS_FAMILY_TIMER) {
         lcd_outdezAtt(CSW_2ND_COLUMN, y, cs->v1+1, LEFT);
@@ -4682,7 +4684,7 @@ void menuModelLogicalSwitches(uint8_t event)
     uint8_t cstate = lswFamily(cs->func);
 #if defined(CPUARM)
     int16_t v1_val=cs->v1, v1_min=0, v1_max=MIXSRC_LAST_TELEM, v2_min=0, v2_max=MIXSRC_LAST_TELEM;
-    int16_t v3_min=0, v3_max=100;
+    int16_t v3_min=-1, v3_max=100;
 #else
     int8_t v1_min=0, v1_max=MIXSRC_LAST_TELEM, v2_min=0, v2_max=MIXSRC_LAST_TELEM;
     #define v1_val cs->v1
@@ -4699,14 +4701,7 @@ void menuModelLogicalSwitches(uint8_t event)
 #if defined(CPUARM)
     else if (cstate == LS_FAMILY_STAY) {
       putsSwitches(CSW_2ND_COLUMN, y, cs->v1, attr1);
-      lcd_putc(CSW_3RD_COLUMN-4, y, '[');
-      lcd_outdezAtt(CSW_3RD_COLUMN, y, lswTimerValue(cs->v2), LEFT|PREC1|attr2);
-      lcd_putc(lcdLastPos, y, ':');
-      if (cs->v3 == 0)
-        lcd_putsAtt(lcdLastPos+3, y, "--", (horz==LS_FIELD_V3 ? attr : 0));
-      else
-        lcd_outdezAtt(lcdLastPos+3, y, lswTimerValue(cs->v2+cs->v3), LEFT|PREC1|(horz==LS_FIELD_V3 ? attr : 0));
-      lcd_putc(lcdLastPos, y, ']');
+      putsEdgeDelayParam(CSW_3RD_COLUMN, y, cs, attr2, horz==LS_FIELD_V3 ? attr : 0);
       v1_min = SWSRC_FIRST_IN_LOGICAL_SWITCHES; v1_max = SWSRC_LAST_IN_LOGICAL_SWITCHES;
       v2_min=-129; v2_max = 122;
       v3_max = 222 - cs->v2;

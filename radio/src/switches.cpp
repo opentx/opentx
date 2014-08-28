@@ -191,6 +191,16 @@ getvalue_t getValueForLogicalSwitch(uint8_t i)
   #define getValueForLogicalSwitch(i) getValue(i)
 #endif
 
+PACK(typedef struct {
+  uint8_t state;
+  uint8_t last;
+}) ls_sticky_struct;
+
+PACK(typedef struct {
+  uint16_t state:1;
+  uint16_t duration:15;
+}) ls_stay_struct;
+
 bool getLogicalSwitch(uint8_t idx)
 {
   LogicalSwitchData * ls = lswAddress(idx);
@@ -379,6 +389,10 @@ DurationAndDelayProcessing:
         
         if (context.timerState == SWITCH_ENABLE) {
           result = (ls->duration==0 || context.timer>0); // return false after duration timer runs out
+          if (!result && ls->func == LS_FUNC_STICKY) {
+            ls_sticky_struct & lastValue = (ls_sticky_struct &)context.lastValue;
+            lastValue.state = 0;
+          }
         }
       }
       else if (context.timerState == SWITCH_ENABLE && ls->duration > 0 && context.timer > 0) {
@@ -733,10 +747,6 @@ void logicalSwitchesTimerTick()
         }
       }
       else if (ls->func == LS_FUNC_STICKY) {
-        PACK(typedef struct {
-          uint8_t state;
-          uint8_t last;
-        }) ls_sticky_struct;
         ls_sticky_struct & lastValue = (ls_sticky_struct &)LS_LAST_VALUE(fm, i);
         bool before = lastValue.last & 0x01;
         if (lastValue.state) {
@@ -760,22 +770,17 @@ void logicalSwitchesTimerTick()
       }
 #if defined(CPUARM)
       else if (ls->func == LS_FUNC_STAY) {
-        PACK(typedef struct {
-          uint16_t state:1;
-          uint16_t duration:15;
-        }) ls_stay_struct;
-
         ls_stay_struct & lastValue = (ls_stay_struct &)LS_LAST_VALUE(fm, i);
         lastValue.state = false;
         bool state = getSwitch(ls->v1);
         if (state) {
-          if (ls->v3 == 0 && lastValue.duration == lswTimerValue(ls->v2))
+          if (ls->v3 == -1 && lastValue.duration == lswTimerValue(ls->v2))
             lastValue.state = true;
           if (lastValue.duration < 1000)
             lastValue.duration++;
         }
         else {
-          if (lastValue.duration > lswTimerValue(ls->v2) && lastValue.duration <= lswTimerValue(ls->v2+ls->v3))
+          if (lastValue.duration > lswTimerValue(ls->v2) && (ls->v3 == 0 || lastValue.duration <= lswTimerValue(ls->v2+ls->v3)))
             lastValue.state = true;
           lastValue.duration = 0;
         }
