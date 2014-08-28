@@ -1438,6 +1438,7 @@ void luaInit()
   lua_registerint(L, "LCD_H", LCD_H);
   lua_registerint(L, "PLAY_NOW", PLAY_NOW);
   lua_registerint(L, "PLAY_BACKGROUND", PLAY_BACKGROUND);
+  lua_registerint(L, "TIMEHOUR", TIMEHOUR);
 }
 
 void luaFree(ScriptInternalData & sid)
