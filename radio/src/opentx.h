@@ -1255,7 +1255,7 @@ enum CswFunctionFamilies {
   LS_FAMILY_TIMER,
   LS_FAMILY_STICKY,
   LS_FAMILY_RANGE,
-  LS_FAMILY_STAY
+  LS_FAMILY_EDGE
 };
 
 uint8_t lswFamily(uint8_t func);

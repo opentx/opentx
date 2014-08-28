@@ -1451,7 +1451,7 @@ class LogicalSwitchesFunctionsTable: public ConversionTable {
       addConversion(LS_FN_AND, val++);
       addConversion(LS_FN_OR, val++);
       addConversion(LS_FN_XOR, val++);
-      if (IS_ARM(board) && version >= 216) addConversion(LS_FN_STAY, val++);
+      if (IS_ARM(board) && version >= 216) addConversion(LS_FN_EDGE, val++);
       addConversion(LS_FN_EQUAL, val++);
       if (!afterrelease21March2013)
         addConversion(LS_FN_NEQUAL, val++);
@@ -1603,7 +1603,7 @@ class LogicalSwitchField: public TransformedField {
         v1 = csw.val1;
         v2 = csw.val2;
       }
-      else if (csw.func == LS_FN_STAY) {
+      else if (csw.func == LS_FN_EDGE) {
         switchesConversionTable->exportValue(csw.val1, v1);
         v2 = csw.val2;
         v3 = csw.val3;
@@ -1628,7 +1628,7 @@ class LogicalSwitchField: public TransformedField {
         csw.val1 = v1;
         csw.val2 = v2;
       }
-      else if (csw.func == LS_FN_STAY) {
+      else if (csw.func == LS_FN_EDGE) {
         switchesConversionTable->importValue(v1, csw.val1);
         csw.val2 = v2;
         csw.val3 = v3;

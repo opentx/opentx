@@ -522,8 +522,8 @@ QString CurveReference::toString()
 
 CSFunctionFamily LogicalSwitchData::getFunctionFamily()
 {
-  if (func == LS_FN_STAY)
-    return LS_FAMILY_STAY;
+  if (func == LS_FN_EDGE)
+    return LS_FAMILY_EDGE;
   else if (func == LS_FN_TIMER)
     return LS_FAMILY_TIMER;
   else if (func == LS_FN_STICKY)
@@ -589,7 +589,7 @@ QString LogicalSwitchData::funcToString()
       return QObject::tr("Timer");
     case LS_FN_STICKY:
       return QObject::tr("Sticky");
-    case LS_FN_STAY:
+    case LS_FN_EDGE:
       return QObject::tr("Edge");
     default:
       return QObject::tr("Unknown");
@@ -607,7 +607,7 @@ QString LogicalSwitchData::toString(const ModelData & model, const GeneralSettin
     result +="( ";
   }
   switch (getFunctionFamily()) {
-    case LS_FAMILY_STAY:
+    case LS_FAMILY_EDGE:
       result += QObject::tr("Edge(%1, [%2:%3])").arg(RawSwitch(val1).toString()).arg(ValToTim(val2)).arg(ValToTim(val2+val3));
       break;
     case LS_FAMILY_STICKY:

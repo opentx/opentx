@@ -691,7 +691,7 @@ enum CSFunction {
   LS_FN_VALMOSTEQUAL,
   LS_FN_TIMER,
   LS_FN_STICKY,
-  LS_FN_STAY,
+  LS_FN_EDGE,
   // later ... LS_FN_RANGE,
   LS_FN_MAX
 };
@@ -702,7 +702,7 @@ enum CSFunctionFamily {
   LS_FAMILY_VCOMP,
   LS_FAMILY_TIMER,
   LS_FAMILY_STICKY,
-  LS_FAMILY_STAY,
+  LS_FAMILY_EDGE,
 };
 
 class LogicalSwitchData { // Logical Switches data

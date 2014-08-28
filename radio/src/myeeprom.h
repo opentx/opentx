@@ -779,7 +779,7 @@ enum LogicalSwitchesFunctions {
   LS_FUNC_OR,
   LS_FUNC_XOR,
 #if defined(CPUARM)
-  LS_FUNC_STAY,
+  LS_FUNC_EDGE,
 #endif
   LS_FUNC_EQUAL,
   LS_FUNC_GREATER,

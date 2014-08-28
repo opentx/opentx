@@ -4483,7 +4483,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
             if (new_cstate == LS_FAMILY_TIMER) {
               cs->v1 = cs->v2 = 0;
             }
-            else if (new_cstate == LS_FAMILY_STAY) {
+            else if (new_cstate == LS_FAMILY_EDGE) {
               cs->v1 = 0; cs->v2 = -129; cs->v3 = 0;
             }
             else {
@@ -4496,7 +4496,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
       {
         lcd_putsLeft(y, STR_V1);
         int v1_min=0, v1_max=MIXSRC_LAST_TELEM;
-        if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY || cstate == LS_FAMILY_STAY) {
+        if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY || cstate == LS_FAMILY_EDGE) {
           putsSwitches(CSWONE_2ND_COLUMN, y, v1_val, attr);
           v1_min = SWSRC_OFF+1; v1_max = SWSRC_ON-1;
         }
@@ -4527,7 +4527,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
           lcd_outdezAtt(CSWONE_2ND_COLUMN, y, cs->v2+1, LEFT|attr);
           v2_max = 99;
         }
-        else if (cstate == LS_FAMILY_STAY) {
+        else if (cstate == LS_FAMILY_EDGE) {
           putsEdgeDelayParam(CSWONE_2ND_COLUMN, y, cs, m_posHorz==0 ? attr : 0, m_posHorz==1 ? attr : 0);
           if (s_editMode <= 0) continue;
           if (attr && m_posHorz==1) {
@@ -4642,7 +4642,7 @@ void menuModelLogicalSwitches(uint8_t event)
         putsMixerSource(CSW_2ND_COLUMN, y, cs->v1, 0);
         putsMixerSource(CSW_3RD_COLUMN, y, cs->v2, 0);
       }
-      else if (cstate == LS_FAMILY_STAY) {
+      else if (cstate == LS_FAMILY_EDGE) {
         putsSwitches(CSW_2ND_COLUMN, y, cs->v1, 0);
         putsEdgeDelayParam(CSW_3RD_COLUMN, y, cs, 0, 0);
       }
@@ -4770,7 +4770,7 @@ void menuModelLogicalSwitches(uint8_t event)
       INCDEC_ENABLE_CHECK(isSwitchAvailableInLogicalSwitches);
     }
 #if defined(CPUARM)
-    else if (cstate == LS_FAMILY_STAY) {
+    else if (cstate == LS_FAMILY_EDGE) {
       putsSwitches(CSW_2ND_COLUMN, y, cs->v1, attr1);
       putsEdgeDelayParam(CSW_3RD_COLUMN, y, cs, attr2, horz==LS_FIELD_V3 ? attr : 0);
       v1_min = SWSRC_FIRST_IN_LOGICAL_SWITCHES; v1_max = SWSRC_LAST_IN_LOGICAL_SWITCHES;
@@ -4891,7 +4891,7 @@ void menuModelLogicalSwitches(uint8_t event)
       lcd_putsiAtt(CSW_5TH_COLUMN, y, STR_MMMINV, 0, horz==LS_FIELD_DURATION ? attr : 0);
 
     // CSW delay
-    if (cstate == LS_FAMILY_STAY) {
+    if (cstate == LS_FAMILY_EDGE) {
       lcd_puts(CSW_6TH_COLUMN, y, STR_NA);
       if (attr && horz == LS_FIELD_DELAY) {
         REPEAT_LAST_CURSOR_MOVE();
@@ -4904,7 +4904,7 @@ void menuModelLogicalSwitches(uint8_t event)
       lcd_putsiAtt(CSW_6TH_COLUMN, y, STR_MMMINV, 0, horz==LS_FIELD_DELAY ? attr : 0);
     }
 
-    if (attr && horz == LS_FIELD_V3 && cstate != LS_FAMILY_STAY) {
+    if (attr && horz == LS_FIELD_V3 && cstate != LS_FAMILY_EDGE) {
       REPEAT_LAST_CURSOR_MOVE();
     }
 #endif
@@ -4924,7 +4924,7 @@ void menuModelLogicalSwitches(uint8_t event)
             if (new_cstate == LS_FAMILY_TIMER) {
               cs->v1 = cs->v2 = -119;
             }
-            else if (new_cstate == LS_FAMILY_STAY) {
+            else if (new_cstate == LS_FAMILY_EDGE) {
               cs->v1 = 0; cs->v2 = -129; cs->v3 = 0;
             }
             else {

@@ -242,7 +242,7 @@ bool getLogicalSwitch(uint8_t idx)
     result = (LS_LAST_VALUE(mixerCurrentFlightMode, idx) & (1<<0));
   }
 #if defined(CPUARM)
-  else if (s == LS_FAMILY_STAY) {
+  else if (s == LS_FAMILY_EDGE) {
     result = (LS_LAST_VALUE(mixerCurrentFlightMode, idx) & (1<<0));
   }
 #endif
@@ -769,7 +769,7 @@ void logicalSwitchesTimerTick()
         }
       }
 #if defined(CPUARM)
-      else if (ls->func == LS_FUNC_STAY) {
+      else if (ls->func == LS_FUNC_EDGE) {
         ls_stay_struct & lastValue = (ls_stay_struct &)LS_LAST_VALUE(fm, i);
         lastValue.state = false;
         bool state = getSwitch(ls->v1);
@@ -810,8 +810,8 @@ uint8_t lswFamily(uint8_t func)
   else if (func <= LS_FUNC_XOR)
     return LS_FAMILY_BOOL;
 #if defined(CPUARM)
-  else if (func == LS_FUNC_STAY)
-    return LS_FAMILY_STAY;
+  else if (func == LS_FUNC_EDGE)
+    return LS_FAMILY_EDGE;
 #endif
   else if (func <= LS_FUNC_LESS)
     return LS_FAMILY_COMP;

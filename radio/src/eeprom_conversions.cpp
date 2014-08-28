@@ -841,7 +841,7 @@ void ConvertModel_215_to_216(ModelData &model)
     sw.func = oldModel.logicalSw[i].func;
     if (sw.func >= LS_FUNC_VEQUAL) sw.func += 1;
     if (sw.func >= LS_FUNC_RANGE) sw.func += 1;
-    if (sw.func >= LS_FUNC_STAY) sw.func += 1;
+    if (sw.func >= LS_FUNC_EDGE) sw.func += 1;
     sw.v1 = oldModel.logicalSw[i].v1;
     sw.v2 = oldModel.logicalSw[i].v2;
     sw.delay = oldModel.logicalSw[i].delay * 5;

@@ -197,7 +197,7 @@ void LogicalSwitchesPanel::edited()
         model.customSw[i].val1 = -119;
         model.customSw[i].val2 = -119;
       }
-      else if (newFuncFamily == LS_FAMILY_STAY) {
+      else if (newFuncFamily == LS_FAMILY_EDGE) {
         model.customSw[i].val1 = 0;
         model.customSw[i].val2 = -129;
         model.customSw[i].val3 = 0;
@@ -238,7 +238,7 @@ void LogicalSwitchesPanel::edited()
         updateTimerParam(cswitchValue[i], model.customSw[i].val1, 0.1);
         updateTimerParam(cswitchOffset[i], model.customSw[i].val2, 0.1);
         break;
-      case LS_FAMILY_STAY:
+      case LS_FAMILY_EDGE:
         if (sender() == cswitchOffset[i]) {
           model.customSw[i].val2 = TimToVal(cswitchOffset[i]->value());
           updateTimerParam(cswitchOffset[i], model.customSw[i].val2, 0.0);
@@ -326,7 +326,7 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
       populateSwitchCB(cswitchSource1[i], RawSwitch(model.customSw[i].val1), generalSettings, LogicalSwitchesContext);
       populateSwitchCB(cswitchSource2[i], RawSwitch(model.customSw[i].val2), generalSettings, LogicalSwitchesContext);
       break;
-    case LS_FAMILY_STAY:
+    case LS_FAMILY_EDGE:
       mask |= SOURCE1_VISIBLE | VALUE2_VISIBLE | VALUE3_VISIBLE;
       mask &= ~DELAY_ENABLED;
       populateSwitchCB(cswitchSource1[i], RawSwitch(model.customSw[i].val1), generalSettings, LogicalSwitchesContext);
@@ -377,7 +377,7 @@ void LogicalSwitchesPanel::populateCSWCB(QComboBox *b, int value)
     LS_FN_AND,
     LS_FN_OR,
     LS_FN_XOR,
-    LS_FN_STAY,
+    LS_FN_EDGE,
     LS_FN_EQUAL,
     LS_FN_NEQUAL,
     LS_FN_GREATER,
@@ -396,7 +396,7 @@ void LogicalSwitchesPanel::populateCSWCB(QComboBox *b, int value)
     if (func == LS_FN_NEQUAL || func == LS_FN_EGREATER || func == LS_FN_ELESS)
       continue;
     if (!IS_ARM(firmware->getBoard())) {
-      if (func == LS_FN_VEQUAL || func == LS_FN_STAY)
+      if (func == LS_FN_VEQUAL || func == LS_FN_EDGE)
         continue;
     }
     b->addItem(LogicalSwitchData(func).funcToString(), func);
