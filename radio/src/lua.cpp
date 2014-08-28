@@ -1406,6 +1406,7 @@ void luaInit()
   lua_registerint(L, "DOTTED", DOTTED);
   lua_registerint(L, "LCD_W", LCD_W);
   lua_registerint(L, "LCD_H", LCD_H);
+  lua_registerint(L, "TIMEHOUR", TIMEHOUR);
 }
 
 void luaFree(ScriptInternalData & sid)
