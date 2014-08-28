@@ -1044,7 +1044,7 @@ static int luaModelSetGlobalVariable(lua_State *L)
   int idx = luaL_checkunsigned(L, 1);
   int phase = luaL_checkunsigned(L, 2);
   int value = luaL_checkinteger(L, 3);
-  if (phase < MAX_FLIGHT_MODES && idx < MAX_GVARS && value >= -GVAR_LIMIT && value <= GVAR_LIMIT) {
+  if (phase < MAX_FLIGHT_MODES && idx < MAX_GVARS && value >= -GVAR_MAX && value <= GVAR_MAX) {
     g_model.flightModeData[phase].gvars[idx] = value;
     eeDirty(EE_MODEL);
   }
