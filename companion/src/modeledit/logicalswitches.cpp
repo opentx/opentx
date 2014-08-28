@@ -239,6 +239,7 @@ void LogicalSwitchesPanel::edited()
         updateTimerParam(cswitchOffset[i], model.customSw[i].val2, 0.1);
         break;
       case LS_FAMILY_STAY:
+        cswitchOffset2[i]->setSpecialValueText(tr("(no release)"));
         if (sender() == cswitchOffset[i]) {
           model.customSw[i].val2 = TimToVal(cswitchOffset[i]->value());
           updateTimerParam(cswitchOffset[i], model.customSw[i].val2, 0.0);
@@ -246,10 +247,12 @@ void LogicalSwitchesPanel::edited()
         else {
           model.customSw[i].val3 = TimToVal(cswitchOffset2[i]->value()) - model.customSw[i].val2;
         }
-        updateTimerParam(cswitchOffset2[i], model.customSw[i].val2+model.customSw[i].val3, cswitchOffset[i]->value());
+        updateTimerParam(cswitchOffset2[i], model.customSw[i].val2+model.customSw[i].val3, cswitchOffset[i]->value()-0.1);
         if (model.customSw[i].val3 == 0) {
-          cswitchOffset2[i]->setSuffix(tr("(infinite)"));
-          cswitchOffset2[i]->clear();
+          cswitchOffset2[i]->setSuffix("(infinite)");
+        }
+        else {
+          cswitchOffset2[i]->setSuffix("");
         }
         break;
       default:
@@ -274,7 +277,6 @@ void LogicalSwitchesPanel::updateTimerParam(QDoubleSpinBox *sb, int timer, doubl
   else
     sb->setSingleStep(0.1);
   sb->setValue(value);
-  sb->setSuffix("");
 }
 
 #define SOURCE1_VISIBLE  0x1
@@ -331,10 +333,13 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
       mask &= ~DELAY_ENABLED;
       populateSwitchCB(cswitchSource1[i], RawSwitch(model.customSw[i].val1), generalSettings, LogicalSwitchesContext);
       updateTimerParam(cswitchOffset[i], model.customSw[i].val2, 0.0);
-      updateTimerParam(cswitchOffset2[i], model.customSw[i].val2+model.customSw[i].val3, cswitchOffset[i]->value());
+      updateTimerParam(cswitchOffset2[i], model.customSw[i].val2+model.customSw[i].val3, cswitchOffset[i]->value()-0.1);
+      cswitchOffset2[i]->setSpecialValueText(tr("(no release)"));
       if (model.customSw[i].val3 == 0) {
         cswitchOffset2[i]->setSuffix(tr("(infinite)"));
-        cswitchOffset2[i]->clear();
+      }
+      else {
+        cswitchOffset2[i]->setSuffix("");
       }
       break;
     case LS_FAMILY_VCOMP:
