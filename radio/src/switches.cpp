@@ -216,7 +216,9 @@ bool getLogicalSwitch(uint8_t idx)
 #endif
 
   if (ls->func == LS_FUNC_NONE || (s && !getSwitch(s))) {
-    LS_LAST_VALUE(mixerCurrentFlightMode, idx) = CS_LAST_VALUE_INIT;
+    if (ls->func != LS_FUNC_STICKY) {
+      LS_LAST_VALUE(mixerCurrentFlightMode, idx) = CS_LAST_VALUE_INIT;
+    }
     result = false;
   }
   else if ((s=lswFamily(ls->func)) == LS_FAMILY_BOOL) {
