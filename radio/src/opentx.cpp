@@ -467,6 +467,23 @@ void modelDefault(uint8_t id)
   g_model.mavlink.pc_rssi_en = 1;
 #endif
 }
+
+#if defined(PCBTARANIS)
+bool isInputRecursive(int index)
+{
+  ExpoData * line = expoAddress(0);
+  for (int i=0; i<MAX_EXPOS; i++, line++) {
+    if (line->chn > index)
+      break;
+    else if (line->chn < index)
+      continue;
+    else if (line->srcRaw >= MIXSRC_FIRST_LOGICAL_SWITCH)
+      return true;
+  }
+  return false;
+}
+#endif
+
 #if defined(AUTOSOURCE)
 int8_t getMovedSource(GET_MOVED_SOURCE_PARAMS)
 {
@@ -478,8 +495,10 @@ int8_t getMovedSource(GET_MOVED_SOURCE_PARAMS)
   if (min <= MIXSRC_FIRST_INPUT) {
     for (uint8_t i=0; i<MAX_INPUTS; i++) {
       if (abs(anas[i] - inputsStates[i]) > 512) {
-        result = MIXSRC_FIRST_INPUT+i;
-        break;
+        if (!isInputRecursive(i)) {
+          result = MIXSRC_FIRST_INPUT+i;
+          break;
+        }
       }
     }
   }

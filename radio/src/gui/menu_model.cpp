@@ -3167,12 +3167,13 @@ void menuModelExpoOne(uint8_t event)
   if (ed->srcRaw >= MIXSRC_FIRST_TELEM) {
     putsTelemetryChannel(LCD_W-8, 6*FH, ed->srcRaw - MIXSRC_FIRST_TELEM, x512, 0);
     if (ed->scale > 0) x512 = (x512 * 1024) / convertTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1, ed->scale);
-    x512 = limit(-1024, x512, 1024);
   }
   else {
     lcd_outdezAtt(LCD_W-8, 6*FH, calcRESXto1000(x512), PREC1);
   }
+  x512 = limit(-1024, x512, 1024);
   int y512 = expoFn(x512);
+  y512 = limit(-1024, y512, 1024);
   lcd_outdezAtt(LCD_W-8-6*FW, 1*FH, calcRESXto1000(y512), PREC1);
 #else
   int16_t x512 = calibratedStick[ed->chn];
@@ -3181,10 +3182,11 @@ void menuModelExpoOne(uint8_t event)
   lcd_outdezAtt(LCD_W-8-6*FW, 1*FH, calcRESXto100(y512), 0);
 #endif
 
-  x512 = X0+x512/(RESXu/WCHART);
 #if defined(CPUARM)
+  x512 = X0+x512/(RESX/WCHART);
   y512 = (LCD_H-1) - ((y512+RESX)/2) * (LCD_H-1) / RESX;
 #else
+  x512 = X0+x512/(RESXu/WCHART);
   y512 = (LCD_H-1) - (uint16_t)((y512+RESX)/2) * (LCD_H-1) / RESX;
 #endif
 
