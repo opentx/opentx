@@ -106,8 +106,9 @@ void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
       else {
         v = getValue(ed->srcRaw);
         if (ed->srcRaw >= MIXSRC_FIRST_TELEM && ed->scale > 0) {
-          v = limit(-1024, int((v * 1024) / convertTelemValue(ed->srcRaw-MIXSRC_FIRST_TELEM+1, ed->scale)), 1024);
+          v = (v * 1024) / convertTelemValue(ed->srcRaw-MIXSRC_FIRST_TELEM+1, ed->scale);
         }
+        v = limit(-1024, v, 1024);
       }
 #else
       int16_t v = anas2[ed->chn];
