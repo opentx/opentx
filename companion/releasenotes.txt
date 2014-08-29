@@ -1,6 +1,8 @@
-<h2>Version 2.0.9</h2>
+<h2>Version 2.0.10</h2>
 <ul>
 <li>Taranis is now the default board in General Settings</li>
+<li>GVARS allowed in Limits min/max/offset</li>
+<li>Limits displayed in us when ppmus option selected
 </ul>
 
 <h2>Version 2.0.8</h2>
