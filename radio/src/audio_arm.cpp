@@ -607,7 +607,6 @@ int WavContext::mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade)
     }
   }
 
-  clear();
   return -result;
 }
 #else
@@ -719,12 +718,18 @@ void AudioQueue::wakeup()
     }
 
     // mix the normal context (tones and wavs)
-    if (normalContext.fragment.type == FRAGMENT_TONE)
+    if (normalContext.fragment.type == FRAGMENT_TONE) {
       result = normalContext.tone.mixBuffer(buffer, g_eeGeneral.beepVolume, fade);
-    else if (normalContext.fragment.type == FRAGMENT_FILE)
+    }
+    else if (normalContext.fragment.type == FRAGMENT_FILE) {
       result = normalContext.wav.mixBuffer(buffer, g_eeGeneral.wavVolume, fade);
-    else
+      if (result < 0) {
+        normalContext.wav.clear();
+      }
+    }
+    else {
       result = 0;
+    }
     if (result > 0) {
       size = max(size, result);
       fade += 1;
