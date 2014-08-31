@@ -55,6 +55,7 @@
 extern int errno;
 extern int  _end;
 extern int _estack;
+extern const int _main_stack_size;
 
 #define RAM_END (unsigned char *)&_estack
 
@@ -68,7 +69,7 @@ extern int _getpid ( void ) ;
 unsigned char *heap = (unsigned char *)&_end;
 extern caddr_t _sbrk(int nbytes)
 {
-  if (heap + nbytes < RAM_END-4096) {
+  if (heap + nbytes < RAM_END-_main_stack_size) {
     unsigned char *prev_heap = heap;
     heap += nbytes;
     return (caddr_t) prev_heap;

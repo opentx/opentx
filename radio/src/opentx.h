@@ -694,6 +694,8 @@ extern uint8_t flightModeTransitionLast;
   extern unsigned char *heap;
   extern int _end;
   extern unsigned char *_estack;
+  extern unsigned char * _main_stack_start;
+  extern const int _main_stack_size;
   #define getAvailableMemory() ((unsigned int)((unsigned char *)&_estack - heap))
 #endif
 

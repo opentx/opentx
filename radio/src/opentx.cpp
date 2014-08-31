@@ -3304,6 +3304,11 @@ uint16_t stack_free(uint8_t tid)
       stack = audioStack;
       size = AUDIO_STACK_SIZE;
       break;
+    case 255:
+      // main stack
+      stack = (OS_STK *)&_main_stack_start;
+      size = (_main_stack_size / 4);
+      break;
     default:
       return 0;
   }
