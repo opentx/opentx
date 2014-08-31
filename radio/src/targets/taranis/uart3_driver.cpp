@@ -131,15 +131,15 @@ extern "C" void USART3_IRQHandler(void)
   }
 
   // Receive
-  uint32_t status = SPORT->SR;
+  uint32_t status = USART3->SR;
   while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
-    uint8_t data = SPORT->DR;
+    uint8_t data = USART3->DR;
 
     if (uart3Telemetry && !(status & USART_FLAG_ERRORS)) {
       telemetryFifo.push(data);
     }
 
-    status = SPORT->SR;
+    status = USART3->SR;
   }
 }
 
