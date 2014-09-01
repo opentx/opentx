@@ -45,6 +45,7 @@ extern "C" {
   #include <lua.h>
   #include <lauxlib.h>
   #include <lualib.h>
+  #include <lstate.h>
 #if !defined(SIMU)
 }
 #endif
@@ -53,7 +54,7 @@ extern "C" {
 
 #define lua_registernumber(L, n, i)    (lua_pushnumber(L, (i)), lua_setglobal(L, (n)))
 #define lua_registerint(L, n, i)       (lua_pushinteger(L, (i)), lua_setglobal(L, (n)))
-#define lua_pushtablenil(L, k)         (lua_pushstring(L, (k)), lua_pushnil(L), lua_settable(L, -3))
+#define lua_pushtablenil(L, k)         (lua_pushstring(L, (k)), lua_pushnil(L), lua_settable(L, -3))   //lua_settable can throw error
 #define lua_pushtableboolean(L, k, v)  (lua_pushstring(L, (k)), lua_pushboolean(L, (v)), lua_settable(L, -3))
 #define lua_pushtableinteger(L, k, v)  (lua_pushstring(L, (k)), lua_pushinteger(L, (v)), lua_settable(L, -3))
 #define lua_pushtablenumber(L, k, v)   (lua_pushstring(L, (k)), lua_pushnumber(L, (v)), lua_settable(L, -3))
@@ -239,7 +240,7 @@ static int luaGetValue(lua_State *L)
 {
   int src = 0;
   if (lua_isnumber(L, 1)) {
-    src = luaL_checkinteger(L, 1);
+    src = luaL_checkinteger(L, 1);  //can throw error
   }
   else {
     // convert from field name to its id
@@ -512,7 +513,7 @@ static int luaLcdDrawCombobox(lua_State *L)
 
 static int luaModelGetInfo(lua_State *L)
 {
-  lua_newtable(L);
+  lua_newtable(L); //can throw error
   lua_pushtablezstring(L, "name", g_model.header.name);
   lua_pushtableinteger(L, "id", g_model.header.modelId);
   return 1;
@@ -1176,7 +1177,7 @@ static int luaPopupInput(lua_State *L)
   displayWarning(event);
   if (s_warning_result) {
     s_warning_result = 0;
-    lua_pushstring(L, "OK");
+    lua_pushstring(L, "OK");   //can throw error
   }
   else if (!s_warning) {
     lua_pushstring(L, "CANCEL");
@@ -1225,7 +1226,7 @@ int luaGetInputs(ScriptInputsOutputs & sid)
           case 0:
             luaL_checktype(L, -2, LUA_TNUMBER); // key is number
             luaL_checktype(L, -1, LUA_TSTRING); // value is string
-            sid.inputs[sid.inputsCount].name = lua_tostring(L, -1);
+            sid.inputs[sid.inputsCount].name = lua_tostring(L, -1);  //can throw error
             break;
           case 1:
             luaL_checktype(L, -2, LUA_TNUMBER); // key is number
@@ -1340,12 +1341,56 @@ void luaClose()
   }
 }
 
+int SimulateMallocFailure = 0;
+
+static void *debug_l_alloc (void *ud, void *ptr, size_t osize, size_t nsize) {
+  (void)ud; (void)osize;  /* not used */
+  if (nsize == 0) {
+    if (ptr) {   // avoid a bunch of NULL pointer free calls
+      // TRACE("free %p", ptr);
+      free(ptr);
+    }
+    return NULL;
+  }
+  else {
+    if (SimulateMallocFailure < 0 ) {
+      //delayed failure
+      if (++SimulateMallocFailure == 0) {
+        SimulateMallocFailure = 1;
+      }
+    }
+    if ( SimulateMallocFailure > 0) {
+      // simulate one malloc failure
+      TRACE("debug_l_alloc(): simulating malloc failure at %p[%lu]", ptr, nsize);
+      return 0;
+    }
+    void * res = realloc(ptr, nsize);
+    // TRACE("realloc %p[%lu] -> %p[%lu]", ptr, osize, res, nsize);
+    return res;
+  }
+}
+
+
+static int debug_panic (lua_State *L) {
+  TRACE("PANIC: unprotected error in call to Lua API");
+  return 0;  /* return to Lua to abort */
+}
+
+
+LUALIB_API lua_State *debug_luaL_newstate (void) {
+  lua_State *L = lua_newstate(debug_l_alloc, NULL);
+  if (L) lua_atpanic(L, &debug_panic);
+  return L;
+}
+
+
 void luaInit()
 {
   luaClose();
 
   TRACE("luaL_newstate");
-  L = luaL_newstate();
+  // L = luaL_newstate();  //watch out for NULL return!!!
+  L = debug_luaL_newstate();  //watch out for NULL return!!!
 
   // Init lua
   TRACE("luaL_openlibs");
@@ -1359,7 +1404,7 @@ void luaInit()
 
   // Push OpenTX functions
   TRACE("registering functions");
-  lua_register(L, "getTime", luaGetTime);
+  lua_register(L, "getTime", luaGetTime);  //can throw error
   lua_register(L, "getVersion", luaGetVersion);
   lua_register(L, "getGeneralSettings", luaGetGeneralSettings);
   lua_register(L, "getValue", luaGetValue);
@@ -1845,7 +1890,7 @@ void luaTask(uint8_t evt)
     }
   }
 
-  lua_gc(L, LUA_GCCOLLECT, 0);
+  lua_gc(L, LUA_GCSTEP /*LUA_GCCOLLECT*/, 0);  //LUA_GCSTEP is enogh //can throw error
 
 #if defined(SIMU) || defined(DEBUG)
   static int lastgc = 0;
@@ -1853,6 +1898,7 @@ void luaTask(uint8_t evt)
   if (gc != lastgc) {
     lastgc = gc;
     TRACE("GC Use: %dbytes", gc);
+    TRACE("stack in use: %ld of %d", (L->top - L->stack), L->stacksize );
   }
 #endif
 

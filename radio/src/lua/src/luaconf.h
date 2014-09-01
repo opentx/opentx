@@ -11,9 +11,9 @@
 #include <limits.h>
 #include <stddef.h>
 
-#include "debug.h"
-
+#if defined(SDCARD)
 #define USE_FATFS
+#endif
 
 /*
 ** ==================================================================

@@ -184,6 +184,7 @@ static void f_luaopen (lua_State *L, void *ud) {
   global_State *g = G(L);
   UNUSED(ud);
   stack_init(L, L);  /* init stack */
+  TRACE("f_luaopen(): stack size: %d", L->stacksize);
   init_registry(L, g);
   luaS_resize(L, MINSTRTABSIZE);  /* initial size of string table */
   luaT_init(L);

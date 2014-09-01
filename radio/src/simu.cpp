@@ -189,12 +189,18 @@ void Open9xSim::doEvents()
   getApp()->runOneEvent(false);
 }
 
+extern int SimulateMallocFailure;
+
 long Open9xSim::onKeypress(FXObject*,FXSelector,void*v)
 {
   FXEvent *evt=(FXEvent*)v;
   // printf("keypress %x\n", evt->code);
   if (evt->code=='s'){
     makeSnapshot(bmf);
+  }
+  if (evt->code=='F'){
+    TRACE("SimulateMallocFailure = 1");
+    SimulateMallocFailure = 1;
   }
   return 0;
 }
