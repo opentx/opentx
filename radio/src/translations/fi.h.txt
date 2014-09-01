@@ -80,7 +80,7 @@
 #define TR_TRNCHN              "CH1CH2CH3CH4"
 
 #define LEN_UART3MODES         "\017"
-#define TR_UART3MODES          "POIS\0          ""S-Port Pelik\0  ""Telemetry\0     ""Debug\0         "
+#define TR_UART3MODES          "POIS\0          ""S-Port Pelik\0  ""Telemetry\0     ""Trainer\0       ""Debug\0         "
 
 #define LEN_POTTYPES           "\017"
 #define TR_POTTYPES            "None\0          ""Pot with detent""Monias. Kytkin\0""Potikka\0"

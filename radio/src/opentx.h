@@ -949,6 +949,10 @@ void checkAll();
   void getADC();
 #endif
 
+#if defined(PCBTARANIS)
+void processSbusInput();
+#endif
+
 extern void backlightOn();
 
 enum Analogs {

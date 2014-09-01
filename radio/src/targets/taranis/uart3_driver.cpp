@@ -36,9 +36,10 @@
 
 #include "../../opentx.h"
 
-bool uart3Telemetry = false;
+uint8_t uart3Mode = UART_MODE_NONE;
 Fifo<512> uart3TxFifo;
 extern Fifo<512> telemetryFifo;
+extern Fifo<28> sbusFifo;
 
 void uart3Setup(unsigned int baudrate)
 {
@@ -79,7 +80,8 @@ void uart3Setup(unsigned int baudrate)
 void uart3Init(unsigned int mode, unsigned int protocol)
 {
   USART_DeInit(USART3);
-  uart3Telemetry = false;
+
+  uart3Mode = false;
 
   switch (mode) {
     case UART_MODE_TELEMETRY_MIRROR:
@@ -93,10 +95,15 @@ void uart3Init(unsigned int mode, unsigned int protocol)
     case UART_MODE_TELEMETRY:
       if (protocol == PROTOCOL_FRSKY_D_SECONDARY) {
         uart3Setup(FRSKY_D_BAUDRATE);
-        uart3Telemetry = true;
       }
       break;
+    case UART_MODE_SBUS_TRAINER:
+      uart3Setup(100000);
+      USART3->CR1 |= USART_CR1_M | USART_CR1_PCE ;
+      break;
   }
+
+  uart3Mode = mode;
 }
 
 void uart3Putc(const char c)
@@ -108,7 +115,7 @@ void uart3Putc(const char c)
 #if defined(DEBUG)
 void debugPutc(const char c)
 {
-  if (g_eeGeneral.uart3Mode == UART_MODE_DEBUG) {
+  if (uart3Mode == UART_MODE_DEBUG) {
     uart3Putc(c);
   }
 }
@@ -135,8 +142,15 @@ extern "C" void USART3_IRQHandler(void)
   while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
     uint8_t data = USART3->DR;
 
-    if (uart3Telemetry && !(status & USART_FLAG_ERRORS)) {
-      telemetryFifo.push(data);
+    if (!(status & USART_FLAG_ERRORS)) {
+      switch (uart3Mode) {
+        case UART_MODE_TELEMETRY:
+          telemetryFifo.push(data);
+          break;
+        case UART_MODE_SBUS_TRAINER:
+          sbusFifo.push(data);
+          break;
+      }
     }
 
     status = USART3->SR;

@@ -80,7 +80,7 @@
 #define TR_TRNCHN              "CH1CH2CH3CH4"
 
 #define LEN_UART3MODES         "\017"
-#define TR_UART3MODES          "AUS\0           ""S-Port DataOut\0""Telemetrie\0    ""Debug\0         "
+#define TR_UART3MODES          "AUS\0           ""S-Port DataOut\0""Telemetrie\0    ""Trainer\0       ""Debug\0         "
 
 #define LEN_POTTYPES           "\017" 
 #define TR_POTTYPES            "Kein\0          ""Poti mit Raste ""Stufen-Schalter""Poti ohne Raste\0"

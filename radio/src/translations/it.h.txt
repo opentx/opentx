@@ -80,7 +80,7 @@
 #define TR_TRNCHN              "ch1ch2ch3ch4"
                                
 #define LEN_UART3MODES         "\017"
-#define TR_UART3MODES          "OFF\0           ""Replica Porta-S""Telemetria\0    ""Debug\0         "
+#define TR_UART3MODES          "OFF\0           ""Replica Porta-S""Telemetria\0    ""Trainer\0       ""Debug\0         "
                                
 #define LEN_POTTYPES           "\017"
 #define TR_POTTYPES            "None\0          ""Pot. con centro""Inter. Multipos""Potenziometro\0 "

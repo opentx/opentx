@@ -2216,6 +2216,10 @@ void doMixerCalculations()
 
   getADC();
 
+#if defined(PCBTARANIS)
+  processSbusInput();
+#endif
+
   getSwitchesPosition(!s_mixer_first_run_done);
 
 #if defined(CPUARM)
