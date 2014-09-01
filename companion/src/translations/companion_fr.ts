@@ -11,22 +11,22 @@
     <message>
         <location filename="../wizarddialog.cpp" line="418"/>
         <source>Yes, controlled by a single channel</source>
-        <translation>Oui, contrôlés par un seul canal</translation>
+        <translation>Oui, contrôlés par une seule voie</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="419"/>
         <source>Yes, controlled by two channels</source>
-        <translation>Oui, contrôlés par 2 canaux</translation>
+        <translation>Oui, contrôlés par 2 voies</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="431"/>
         <source>&lt;br&gt;First Aileron Channel:</source>
-        <translation>&lt;br&gt;Premier canal d&apos;ailerons:</translation>
+        <translation>&lt;br&gt;Première voie d&apos;ailerons:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="433"/>
         <source>Second Aileron Channel:</source>
-        <translation>Deuxième canal d&apos;ailerons:</translation>
+        <translation>Deuxième voie d&apos;ailerons:</translation>
     </message>
 </context>
 <context>
@@ -39,22 +39,22 @@
     <message>
         <location filename="../wizarddialog.cpp" line="547"/>
         <source>Yes, controlled by a single channel</source>
-        <translation>Oui, contrôlés par un seul canal</translation>
+        <translation>Oui, contrôlés par une seule voie</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="548"/>
         <source>Yes, controlled by two channels</source>
-        <translation>Oui, contrôlés par 2 canaux</translation>
+        <translation>Oui, contrôlés par 2 voies</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="560"/>
         <source>&lt;br&gt;First Airbrake Channel:</source>
-        <translation>&lt;br&gt;Premier canal de volets:</translation>
+        <translation>&lt;br&gt;Première voie de volets:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="562"/>
         <source>Second Airbrake Channel:</source>
-        <translation>Deuxième canal de volets:</translation>
+        <translation>Deuxième voie de volets:</translation>
     </message>
 </context>
 <context>
@@ -573,11 +573,11 @@ Peut être différente de la langue du firmware</translation>
     </message>
     <message>
         <source>&lt;br&gt;First Elevon Channel:</source>
-        <translation type="obsolete">&lt;br&gt;Premier canal d&apos;élevons:</translation>
+        <translation type="obsolete">&lt;br&gt;Première voie d&apos;élevons:</translation>
     </message>
     <message>
         <source>Second Elevon Channel:</source>
-        <translation type="obsolete">Deuxième canal d&apos;élevons:</translation>
+        <translation type="obsolete">Deuxième voie d&apos;élevons:</translation>
     </message>
 </context>
 <context>
@@ -625,7 +625,7 @@ Peut être différente de la langue du firmware</translation>
     <message>
         <location filename="../modeledit/channels.cpp" line="37"/>
         <source>Channel %1</source>
-        <translation>Canal %1</translation>
+        <translation>Voie %1</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="96"/>
@@ -1423,12 +1423,12 @@ Peut être différente de la langue du firmware</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="615"/>
         <source>&lt;br&gt;First Elevon Channel:</source>
-        <translation>&lt;br&gt;Premier canal d&apos;élevons:</translation>
+        <translation>&lt;br&gt;Première voie d&apos;élevons:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="617"/>
         <source>Second Elevon Channel:</source>
-        <translation>Deuxième canal d&apos;élevons:</translation>
+        <translation>Deuxième voie d&apos;élevons:</translation>
     </message>
 </context>
 <context>
@@ -1436,7 +1436,7 @@ Peut être différente de la langue du firmware</translation>
     <message>
         <location filename="../modeledit/templates.cpp" line="39"/>
         <source>Simple 4-CH</source>
-        <translation>4 canaux simple</translation>
+        <translation>4 voies simple</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="40"/>
@@ -1476,17 +1476,17 @@ Peut être différente de la langue du firmware</translation>
     <message>
         <location filename="../modeledit/templates.cpp" line="47"/>
         <source>Heli Setup (Futaba&apos;s channel assignment style)</source>
-        <translation>Configuration hélico (canaux Futaba)</translation>
+        <translation>Configuration hélico (config Futaba)</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="48"/>
         <source>Heli Setup with gyro gain control (Futaba&apos;s channel assignment style)</source>
-        <translation>Configuration hélico avec gain du gyro (canaux Futaba)</translation>
+        <translation>Configuration hélico avec gain du gyro (config Futaba)</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="49"/>
         <source>Gyro gain control (Futaba&apos;s channel assignment style)</source>
-        <translation>Gain de gyro (canaux Futaba)</translation>
+        <translation>Gain de gyro (config Futaba)</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="50"/>
@@ -1790,22 +1790,22 @@ Si vide, la ligne est toujours active.</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="814"/>
         <source>Throttle Channel:</source>
-        <translation>Canal des gaz:</translation>
+        <translation>Voie des gaz:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="816"/>
         <source>Yaw Channel:</source>
-        <translation>Canal du lacet:</translation>
+        <translation>Voie du lacet:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="818"/>
         <source>Pitch Channel:</source>
-        <translation>Canal du tangage:</translation>
+        <translation>Voie du tangage:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="820"/>
         <source>Roll Channel:</source>
-        <translation>Canal du roulis:</translation>
+        <translation>Voie du roulis:</translation>
     </message>
 </context>
 <context>
@@ -1863,22 +1863,22 @@ Peut être différente de la langue du firmware</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="483"/>
         <source>Yes, controlled by a single channel</source>
-        <translation>Oui, contrôlés par un seul canal</translation>
+        <translation>Oui, contrôlés par une seule voie</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="484"/>
         <source>Yes, controlled by two channels</source>
-        <translation>Oui, contrôlés par 2 canaux</translation>
+        <translation>Oui, contrôlés par 2 voies</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="496"/>
         <source>&lt;br&gt;First Flap Channel:</source>
-        <translation>&lt;br&gt;Premier canal de volets:</translation>
+        <translation>&lt;br&gt;Première voie de volets:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="498"/>
         <source>Second Flap Channel:</source>
-        <translation>Deuxième canal de volets:</translation>
+        <translation>Deuxième voie de volets:</translation>
     </message>
 </context>
 <context>
@@ -3215,22 +3215,22 @@ Are you sure ?</source>
     <message>
         <location filename="../wizarddialog.cpp" line="851"/>
         <source>Throttle Channel:</source>
-        <translation>Canal des gaz:</translation>
+        <translation>Voie des gaz:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="853"/>
         <source>Yaw Channel:</source>
-        <translation>Canal du lacet:</translation>
+        <translation>Voie du lacet:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="855"/>
         <source>Pitch Channel:</source>
-        <translation>Canal du tangage:</translation>
+        <translation>Voie du tangage:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="857"/>
         <source>Roll Channel:</source>
-        <translation>Canal du roulis:</translation>
+        <translation>Voie du roulis:</translation>
     </message>
 </context>
 <context>
@@ -5315,7 +5315,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/setup_module.ui" line="153"/>
         <source>Start</source>
-        <translation>1er canal</translation>
+        <translation>1ère voie</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="179"/>
@@ -5375,7 +5375,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/setup_module.ui" line="391"/>
         <source>Channels</source>
-        <translation>Nb de canaux</translation>
+        <translation>Nb de voies</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="414"/>
@@ -5447,22 +5447,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../wizarddialog.cpp" line="888"/>
         <source>Throttle Channel:</source>
-        <translation>Canal des gaz:</translation>
+        <translation>Voie des gaz:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="890"/>
         <source>Yaw Channel:</source>
-        <translation>Canal du lacet:</translation>
+        <translation>Voie du lacet:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="892"/>
         <source>Pitch Channel:</source>
-        <translation>Canal du tangage:</translation>
+        <translation>Voie du tangage:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="894"/>
         <source>Roll Channel:</source>
-        <translation>Canal du roulis:</translation>
+        <translation>Voie du roulis:</translation>
     </message>
 </context>
 <context>
@@ -7661,7 +7661,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1052"/>
         <source>Channel values displayed in us</source>
-        <translation>Positions de canaux affichées en us</translation>
+        <translation>Positions de voies affichées en us</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1089"/>
@@ -8107,7 +8107,7 @@ La taille de l&apos;EEPROM est de 4096, mais seulement les 2048 premiers sont ut
     <message>
         <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2440"/>
         <source>OpenTX doesn&apos;t allow this number of channels</source>
-        <translation>OpenTX ne supporte pas ce nombre de canaux</translation>
+        <translation>OpenTX ne supporte pas ce nombre de voies</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="74"/>
@@ -8202,7 +8202,7 @@ L&apos;équipe OpenTX.</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="648"/>
         <source>&lt;br&gt;Rudder Channel:</source>
-        <translation>&lt;br&gt;Canal de dérive:</translation>
+        <translation>&lt;br&gt;Voie de dérive:</translation>
     </message>
 </context>
 <context>
@@ -8348,7 +8348,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../wizarddialog.cpp" line="738"/>
         <source>Elevator Channel:</source>
-        <translation>Canal de profondeur:</translation>
+        <translation>Voie de profondeur:</translation>
     </message>
 </context>
 <context>
@@ -8516,7 +8516,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../wizarddialog.cpp" line="191"/>
         <source>Channel %1</source>
-        <translation>Canal %1</translation>
+        <translation>Voie %1</translation>
     </message>
 </context>
 <context>
@@ -8524,12 +8524,12 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../wizarddialog.cpp" line="712"/>
         <source>Rudder Channel:</source>
-        <translation>Canal de dérive:</translation>
+        <translation>Voie de dérive:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="714"/>
         <source>Elevator Channel:</source>
-        <translation>Canal de profondeur:</translation>
+        <translation>Voie de profondeur:</translation>
     </message>
 </context>
 <context>
@@ -9066,7 +9066,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../wizarddialog.cpp" line="388"/>
         <source>&lt;br&gt;Throttle Channel:</source>
-        <translation>&lt;br&gt;Canal des gaz:</translation>
+        <translation>&lt;br&gt;Voie des gaz:</translation>
     </message>
 </context>
 <context>
@@ -9124,12 +9124,12 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../wizarddialog.cpp" line="685"/>
         <source>First Tail Channel:</source>
-        <translation>Premier canal d&apos;empennage:</translation>
+        <translation>Première voie d&apos;empennage:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="687"/>
         <source>Second Tail Channel:</source>
-        <translation>Deuxième canal d&apos;empennage:</translation>
+        <translation>Deuxième voie d&apos;empennage:</translation>
     </message>
 </context>
 <context>
@@ -9219,12 +9219,12 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     </message>
     <message>
         <source>Are the elevons controlled by servos connected to separate channels or by a single servo channel?</source>
-        <translation type="obsolete">Les élevons sont-ils commandés par des servos connectés à des canaux différents, ou à un seul canal ?</translation>
+        <translation type="obsolete">Les élevons sont-ils commandés par des servos connectés à des voies différentes, ou à une seule voie ?</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="34"/>
         <source>Select the elevons channels</source>
-        <translation>Sélectionner les canaux d&apos;élevons</translation>
+        <translation>Sélectionner les voies d&apos;élevons</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="35"/>
@@ -9256,7 +9256,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
         <location filename="../wizarddialog.cpp" line="37"/>
         <location filename="../wizarddialog.cpp" line="38"/>
         <source>Select channels for tail control.</source>
-        <translation>Sélectionner les canaux à utiliser pour l&apos;empennage.</translation>
+        <translation>Sélectionner les voies à utiliser pour l&apos;empennage.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="38"/>
@@ -9266,7 +9266,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../wizarddialog.cpp" line="39"/>
         <source>Select elevator channel.</source>
-        <translation>Sélectionner le canal de profondeur.</translation>
+        <translation>Sélectionner la voie de profondeur.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="40"/>
@@ -9338,7 +9338,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../wizarddialog.cpp" line="47"/>
         <source>Manually check the direction of each control surface and reverse any channels that make controls move in the wrong direction. Remove the propeller/propellers before you try to control your model for the first time.&lt;br&gt;Please note that continuing removes all old model settings!</source>
-        <translation>Vérifiez manuellement le sens de chaque commande, et inversez les canaux de celles qui répondent dans le mauvais sens. Attention à bien enlever les hélices du modèle avant de l&apos;alimenter la première fois !&lt;br&gt;Veuillez noter que tous les réglages existants du modèle courant seront écrasés.</translation>
+        <translation>Vérifiez manuellement le sens de chaque commande, et inversez les voies de celles qui répondent dans le mauvais sens. Attention à bien enlever les hélices du modèle avant de l&apos;alimenter la première fois !&lt;br&gt;Veuillez noter que tous les réglages existants du modèle courant seront écrasés.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="70"/>
@@ -9348,7 +9348,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../wizarddialog.cpp" line="73"/>
         <source>Select the receiver channel that is connected to your ESC or throttle servo.&lt;br&gt;&lt;br&gt;Throttle - Spektrum: CH1, Futaba: CH3</source>
-        <translation>Sélectionnez le canal du récepteur auquel le contrôleur/servo de gaz est connecté.&lt;br&gt;&lt;br&gt;Gaz - Spektrum : CH1, Futaba : CH3</translation>
+        <translation>Sélectionnez la voie du récepteur auquel le contrôleur/servo de gaz est connecté.&lt;br&gt;&lt;br&gt;Gaz - Spektrum : CH1, Futaba : CH3</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="77"/>
@@ -9358,11 +9358,11 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../wizarddialog.cpp" line="82"/>
         <source>Models use one or two channels to control the ailerons.&lt;br&gt;A so called Y-cable can be used to connect a single receiver channel to two separate aileron servos. If your servos are connected by a Y-cable you should select the single-servo option.&lt;br&gt;&lt;br&gt;Aileron - Spektrum: CH2, Futaba: CH1</source>
-        <translation>On utilise en général soit 1, soit 2 canaux pour contrôler les ailerons. Un câble en Y peut être utilisé pour connecter 2 servos à un seul canal, auquel cas il convient de choisir l&apos;option  &quot;un seul canal&quot;.&lt;br&gt;&lt;br&gt;Ailerons - Spektrum : CH2, Futaba : CH1</translation>
+        <translation>On utilise en général soit 1, soit 2 voies pour contrôler les ailerons. Un câble en Y peut être utilisé pour connecter 2 servos à une seule voie, auquel cas il convient de choisir l&apos;option  &quot;une seule voie&quot;.&lt;br&gt;&lt;br&gt;Ailerons - Spektrum : CH2, Futaba : CH1</translation>
     </message>
     <message>
         <source>Models use one or two channels to control the elevons.&lt;br&gt;A so called Y-cable can be used to connect single a receiver channel to two separate elevon servos. If your servos are connected by a Y-cable you should select the single-servo option.</source>
-        <translation type="obsolete">On utilise en général soit un, soit 2 canaux pour contrôler les élevons. Un câble en Y peut être utilisé pour connecter 2 servos à un seul canal, auquel cas il convient de choisir l&apos;option &quot;un seul canal&quot;.</translation>
+        <translation type="obsolete">On utilise en général soit un, soit 2 voies pour contrôler les élevons. Un câble en Y peut être utilisé pour connecter 2 servos à une seule voie, auquel cas il convient de choisir l&apos;option &quot;une seule voie&quot;.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="88"/>
@@ -9377,12 +9377,12 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../wizarddialog.cpp" line="96"/>
         <source>Models use two channels to control the elevons.&lt;br&gt;Select these two channels</source>
-        <translation>Un modéle utilise 2 canaux pour commanderles élevons.&lt;br&gt;Sélectionnez-les ici:</translation>
+        <translation>Un modéle utilise 2 voies pour commanderles élevons.&lt;br&gt;Sélectionnez-les ici:</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="100"/>
         <source>Select the receiver channel that is connected to your rudder.&lt;br&gt;&lt;br&gt;Rudder - Spektrum: CH4, Futaba: CH4</source>
-        <translation>Sélectionnez le canal du récepteur auquel le servo de dérive est connecté.&lt;br&gt;&lt;br&gt;Dérive - Spektrum : CH4, Futaba : CH4</translation>
+        <translation>Sélectionnez la voie du récepteur auquel le servo de dérive est connecté.&lt;br&gt;&lt;br&gt;Dérive - Spektrum : CH4, Futaba : CH4</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="104"/>
@@ -9393,12 +9393,12 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
         <location filename="../wizarddialog.cpp" line="107"/>
         <location filename="../wizarddialog.cpp" line="112"/>
         <source>Select the Rudder and Elevator channels.&lt;br&gt;&lt;br&gt;Rudder - Spektrum: CH4, Futaba: CH4&lt;br&gt;Elevator - Spektrum: CH3, Futaba: CH2</source>
-        <translation>Sélectionnez les canaux du récepteur auquel les servos de profondeur et dérive sont connectés.&lt;br&gt;&lt;br&gt;Dérive - Spektrum : CH4, Futaba : CH4&lt;br&gt;Profondeur - Spektrum : CH3, Futaba : CH2</translation>
+        <translation>Sélectionnez les voies du récepteur auquel les servos de profondeur et dérive sont connectés.&lt;br&gt;&lt;br&gt;Dérive - Spektrum : CH4, Futaba : CH4&lt;br&gt;Profondeur - Spektrum : CH3, Futaba : CH2</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="117"/>
         <source>Select the Elevator channel.&lt;br&gt;&lt;br&gt;Elevator - Spektrum: CH3, Futaba: CH2</source>
-        <translation>Sélectionnez le canal du récepteur auquel le servo de profondeur est connecté.&lt;br&gt;&lt;br&gt;Profondeur - Spektrum : CH3, Futaba : CH2</translation>
+        <translation>Sélectionnez la voie du récepteur auquel le servo de profondeur est connecté.&lt;br&gt;&lt;br&gt;Profondeur - Spektrum : CH3, Futaba : CH2</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="121"/>
@@ -9414,7 +9414,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../wizarddialog.cpp" line="136"/>
         <source>Select the control channels for your multirotor.&lt;br&gt;&lt;br&gt;Throttle - Spektrum: CH1, Futaba: CH3&lt;br&gt;Yaw - Spektrum: CH4, Futaba: CH4&lt;br&gt;Pitch - Spektrum: CH3, Futaba: CH2&lt;br&gt;Roll - Spektrum: CH2, Futaba: CH1</source>
-        <translation>Sélectionnez les canaux de votre multirotor.&lt;br&gt;&lt;br&gt;Gaz - Spektrum: CH1, Futaba: CH3&lt;br&gt;Lacet - Spektrum: CH4, Futaba : CH4&lt;br&gt;Tangage - Spektrum : CH3, Futaba: CH2&lt;br&gt;Roulis - Spektrum : CH2, Futaba: CH1</translation>
+        <translation>Sélectionnez les voies de votre multirotor.&lt;br&gt;&lt;br&gt;Gaz - Spektrum: CH1, Futaba: CH3&lt;br&gt;Lacet - Spektrum: CH4, Futaba : CH4&lt;br&gt;Tangage - Spektrum : CH3, Futaba: CH2&lt;br&gt;Roulis - Spektrum : CH2, Futaba: CH1</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="149"/>
@@ -9462,7 +9462,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../wizarddialog.cpp" line="1031"/>
         <source>Channel %1: </source>
-        <translation>Canal %1: </translation>
+        <translation>Voie %1: </translation>
     </message>
 </context>
 <context>
@@ -11034,7 +11034,7 @@ Peut être différente de la langue du firmware</translation>
 
 This is used by the templated to determine which channel goes to what number output.</source>
         <translation>Ordre des voies
-Indique l&apos;affectation voie / numéro de canal par défaut utilisée lors de la création  d&apos;un modèle.</translation>
+Indique l&apos;affectation voie / numéro de voie par défaut utilisée lors de la création  d&apos;un modèle.</translation>
     </message>
     <message>
         <location filename="../preferencesdialog.ui" line="859"/>
