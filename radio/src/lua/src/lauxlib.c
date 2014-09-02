@@ -966,6 +966,10 @@ static void *l_alloc (void *ud, void *ptr, size_t osize, size_t nsize) {
   else {
     void * res = realloc(ptr, nsize);
     // TRACE("realloc %p[%lu] -> %p[%lu]", ptr, osize, res, nsize);
+    if (res == 0 ){
+      TRACE("realloc FAILURE %u", nsize);
+      dumpFreeMemory();
+    }
     return res;
   }
 }

@@ -1338,6 +1338,10 @@ void luaClose()
     lua_close(L);
     L = 0;
     TRACE("lua_close end");
+    dumpFreeMemory();
+#if defined(FIX_NEWLIB_NANO_ALLOCATOR)
+    freeFreeMemory();
+#endif
   }
 }
 

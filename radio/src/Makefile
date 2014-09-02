@@ -289,6 +289,18 @@ USB = JOYSTICK
 # NO - normal behaviour, show real channel values
 CHANNELS_MONITOR_INV_HIDE = NO
 
+# Use newlib-nano 
+# Values = NO, YES
+NANO = NO
+
+
+# Modify newlib-nano allocator
+# Values = NO, YES
+# YES - when all allocated memory is freed and all free
+#       memory is in one free chunk, remove that chunk
+#       and restore heap to zero size
+FIX_NEWLIB_NANO_ALLOCATOR = NO
+
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
@@ -656,6 +668,9 @@ ifeq ($(PCB), TARANIS)
     HAPTIC = YES
   else
     CPPDEFS = -DREV4
+  endif
+  ifeq ($(FIX_NEWLIB_NANO_ALLOCATOR), YES)
+    CPPDEFS = -DFIX_NEWLIB_NANO_ALLOCATOR
   endif
   LDSCRIPT = targets/taranis/stm32_flash_bl.ld
   TRGT = arm-none-eabi-
@@ -1116,6 +1131,13 @@ MATH_LIB = -lm
 LDFLAGS = -Wl,-Map=$(TARGET).map,--cref
 LDFLAGS += $(MATH_LIB)
 
+
+ifeq ($(NANO), YES)
+  #use newlib-nano for linking
+  NEWLIB_NANO_FLAGS = --specs=nano.specs -u _printf_float
+  CPPDEFS += -DNANO
+endif
+
 # Define Messages
 # English
 MSG_BEGIN = -------- begin --------
@@ -1278,7 +1300,7 @@ bitmaps/sticks.lbm: bitmaps/sticks_4x1.xbm bitmaps/splash_9x.xbm bitmaps/splash_
 
 lua_exports.cpp: myeeprom.h ../util/luaexport.py
 	@echo "Generating a list of Lua exported constants in lua_exports.txt" 
-	@$(CPP) -DPCBTARANIS -DCPUARM -DLUA -DEXPORT  myeeprom.h | grep LEXP > lua_exports.txt
+	@$(CPP) -DPCBTARANIS -DCPUARM -DLUA -DEXPORT myeeprom.h | grep LEXP > lua_exports.txt
 	@echo "Parsing and generating C Lua exports in lua_exports.cpp"
 	@python ../util/luaexport.py $(VERSION) lua_exports.txt lua_exports.cpp lua_fields.txt
 	@rm lua_exports.txt
@@ -1390,7 +1412,7 @@ OBJS =  $(TMP:.s=.o)
 	@echo
 	@echo $(MSG_COMPILING) $@
 	$(CC) $(ARMCPPFLAGS) $< -o allsrc.o
-	$(CC) $(OBJS) allsrc.o -mcpu=cortex-m3 -mthumb -nostartfiles -lm -T$(LDSCRIPT) -Wl,-Map=$(TARGET).map,--cref,--no-warn-mismatch,--gc-sections -o $@
+	$(CC) $(OBJS) allsrc.o -mcpu=cortex-m3 -mthumb -nostartfiles -lm -T$(LDSCRIPT) -Wl,-Map=$(TARGET).map,--cref,--no-warn-mismatch,--gc-sections $(NEWLIB_NANO_FLAGS) -o $@
 endif
 
 # Target: clean project.

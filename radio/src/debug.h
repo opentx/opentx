@@ -78,6 +78,14 @@ extern "C" {
 void debugPuts(const char *string, ...);
 void dump(unsigned char *data, unsigned int size);
 
+#if defined(NANO)
+void dumpFreeMemory();
+void freeFreeMemory();
+#else
+#define dumpFreeMemory()
+#define freeFreeMemory()
+#endif
+
 #ifdef __cplusplus
 }
 #endif
@@ -93,6 +101,7 @@ void dump(unsigned char *data, unsigned int size);
 #define TRACE_ERROR(...)      debugPuts("-E- " __VA_ARGS__)
 
 void debugTask(void* pdata);
+
 
 #else
 

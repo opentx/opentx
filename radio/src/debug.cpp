@@ -137,6 +137,79 @@ static void dispw_256( register uint32_t address, register uint32_t lines )
 	}
 }
 
+#if defined(NANO)
+typedef struct malloc_chunk
+{
+    /*          ------------------
+     *   chunk->| size (4 bytes) |
+     *          ------------------
+     *          | Padding for    |
+     *          | alignment      |
+     *          | holding neg    |
+     *          | offset to size |
+     *          ------------------
+     * mem_ptr->| point to next  |
+     *          | free when freed|
+     *          | or data load   |
+     *          | when allocated |
+     *          ------------------
+     */
+    /* size of the allocated payload area, including size before
+       CHUNK_OFFSET */
+    long size;
+
+    /* since here, the memory is either the next free block, or data load */
+    struct malloc_chunk * next;
+}chunk;
+
+#define free_list __malloc_free_list
+#define sbrk_start __malloc_sbrk_start
+
+extern chunk * free_list;
+extern char * sbrk_start;
+extern Fifo<512> uart3TxFifo;
+
+void dumpFreeMemory() 
+{
+  chunk * pf;
+  size_t free_size = 0;
+  size_t total_size;
+
+  if (sbrk_start == NULL) total_size = 0;
+  else total_size = (size_t) ((char*)heap - sbrk_start);
+
+  uart3TxFifo.flush();
+  TRACE("mallinfo:");
+  char * prev_end = sbrk_start;
+  for (pf = free_list; pf; pf = pf->next) {
+    free_size += pf->size;
+    TRACE("\t%6d %p[%d]", prev_end ? ((char*)pf - prev_end):0, pf, pf->size);
+    prev_end = (char*)pf + pf->size;
+    uart3TxFifo.flush();
+  }
+
+  TRACE("\tTotal size: %d", total_size);
+  TRACE("\tFree size:  %d", free_size);
+  TRACE("\tUsed size:  %d", total_size - free_size);
+  uart3TxFifo.flush();
+}
+
+extern int  _end;
+
+void freeFreeMemory()
+{
+	//TODO this functio should be atomic
+  if ((char*)free_list == sbrk_start) {
+    TRACE("feeing all memory");
+    free_list = 0;
+    heap = (unsigned char *)&_end;
+  }
+}
+
+#else     // #if defined(NANO)
+#define dumpFreeMemory()
+#endif   // #if defined(NANO)
+
 void debugTask(void* pdata)
 {
   uint8_t rxchar ;
@@ -212,6 +285,10 @@ void debugTask(void* pdata)
       crlf();
     }
 
+    if ( rxchar == 'F' )
+    {
+      dumpFreeMemory();
+    }
   }
 }
 #endif
