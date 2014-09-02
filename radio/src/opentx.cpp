@@ -82,7 +82,7 @@ const pm_uchar splashdata[] PROGMEM = { 'S','P','S',0,
 #include "bitmaps/splash_9x.lbm"
 #endif
 	'S','P','E',0};
-const pm_uchar * splash_lbm = splashdata+4;
+const pm_uchar * const splash_lbm = splashdata+4;
 #endif
 
 #if LCD_W >= 212
@@ -1884,7 +1884,6 @@ uint8_t mSwitchDuration[1+NUM_ROTARY_ENCODERS] = { 0 };
 uint8_t currentSpeakerVolume = 255;
 uint8_t requiredSpeakerVolume;
 getvalue_t requiredSpeakerVolumeRawLast = 1024 + 1; //initial value must be outside normal range
-uint8_t fnSwitchDuration[NUM_CFN] = { 0 };
 
 inline void playCustomFunctionFile(CustomFnData *sd, uint8_t id)
 {
@@ -2181,9 +2180,6 @@ void evalFunctions()
       }
       else {
         lastFunctionTime[i] = 0;
-#if defined(CPUARM)
-        fnSwitchDuration[i] = 0;
-#endif
       }
     }
   }

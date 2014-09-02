@@ -83,7 +83,7 @@ __ALIGN_BEGIN uint32_t USBD_ep_status __ALIGN_END  = 0;
     #pragma data_alignment=4   
   #endif
 #endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
-__ALIGN_BEGIN uint32_t  USBD_default_cfg __ALIGN_END  = 0;
+__ALIGN_BEGIN const uint32_t  USBD_default_cfg __ALIGN_END  = 0;
 
 #ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
   #if defined ( __ICCARM__ ) /*!< IAR Compiler */
@@ -381,7 +381,7 @@ static void USBD_GetDescriptor(USB_OTG_CORE_HANDLE  *pdev,
     break;
     
   case USB_DESC_TYPE_CONFIGURATION:
-      pbuf   = (uint8_t *)pdev->dev.class_cb->GetConfigDescriptor(pdev->cfg.speed, &len);
+    pbuf   = (uint8_t *)pdev->dev.class_cb->GetConfigDescriptor(pdev->cfg.speed, &len);
 #ifdef USB_OTG_HS_CORE
     if((pdev->cfg.speed == USB_OTG_SPEED_FULL )&&
        (pdev->cfg.phy_itface  == USB_OTG_ULPI_PHY))
@@ -397,7 +397,7 @@ static void USBD_GetDescriptor(USB_OTG_CORE_HANDLE  *pdev,
     switch ((uint8_t)(req->wValue))
     {
     case USBD_IDX_LANGID_STR:
-     pbuf = pdev->dev.usr_device->GetLangIDStrDescriptor(pdev->cfg.speed, &len);        
+      pbuf = pdev->dev.usr_device->GetLangIDStrDescriptor(pdev->cfg.speed, &len);        
       break;
       
     case USBD_IDX_MFC_STR:
@@ -625,7 +625,7 @@ static void USBD_GetConfig(USB_OTG_CORE_HANDLE  *pdev,
     case USB_OTG_ADDRESSED:                     
       
       USBD_CtlSendData (pdev, 
-                        (uint8_t *)&USBD_default_cfg,
+                        (const uint8_t *)&USBD_default_cfg,
                         1);
       break;
       

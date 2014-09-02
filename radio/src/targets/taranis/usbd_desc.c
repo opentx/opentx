@@ -26,6 +26,7 @@
   */ 
 
 /* Includes ------------------------------------------------------------------*/
+#include <string.h>
 #include "usbd_core.h"
 #include "usbd_desc.h"
 #include "usbd_req.h"
@@ -81,7 +82,7 @@
 #endif
 #endif
 
-USBD_DEVICE USR_desc =
+const USBD_DEVICE USR_desc =
 {
   USBD_USR_DeviceDescriptor,
   USBD_USR_LangIDStrDescriptor, 
@@ -93,7 +94,7 @@ USBD_DEVICE USR_desc =
 };
 
 /* USB Standard Device Descriptor */
-__ALIGN_BEGIN uint8_t USBD_DeviceDesc[USB_SIZ_DEVICE_DESC] __ALIGN_END =
+__ALIGN_BEGIN const uint8_t USBD_DeviceDesc[USB_SIZ_DEVICE_DESC] __ALIGN_END =
   {
     0x12,                       /*bLength */
     USB_DEVICE_DESCRIPTOR_TYPE, /*bDescriptorType*/
@@ -116,7 +117,7 @@ __ALIGN_BEGIN uint8_t USBD_DeviceDesc[USB_SIZ_DEVICE_DESC] __ALIGN_END =
   } ; /* USB_DeviceDescriptor */
 
 /* USB Standard Device Descriptor */
-__ALIGN_BEGIN uint8_t USBD_DeviceQualifierDesc[USB_LEN_DEV_QUALIFIER_DESC] __ALIGN_END =
+__ALIGN_BEGIN const uint8_t USBD_DeviceQualifierDesc[USB_LEN_DEV_QUALIFIER_DESC] __ALIGN_END =
 {
   USB_LEN_DEV_QUALIFIER_DESC,
   USB_DESC_TYPE_DEVICE_QUALIFIER,
@@ -131,7 +132,7 @@ __ALIGN_BEGIN uint8_t USBD_DeviceQualifierDesc[USB_LEN_DEV_QUALIFIER_DESC] __ALI
 };
 
 /* USB Standard Device Descriptor */
-__ALIGN_BEGIN uint8_t USBD_LangIDDesc[USB_SIZ_STRING_LANGID] __ALIGN_END =
+__ALIGN_BEGIN const  uint8_t USBD_LangIDDesc[USB_SIZ_STRING_LANGID] __ALIGN_END =
 {
      USB_SIZ_STRING_LANGID,         
      USB_DESC_TYPE_STRING,       
@@ -149,7 +150,8 @@ __ALIGN_BEGIN uint8_t USBD_LangIDDesc[USB_SIZ_STRING_LANGID] __ALIGN_END =
 uint8_t *  USBD_USR_DeviceDescriptor( uint8_t speed , uint16_t *length)
 {
   *length = sizeof(USBD_DeviceDesc);
-  return USBD_DeviceDesc;
+  memcpy(USBD_StrDesc, USBD_DeviceDesc, *length);
+  return USBD_StrDesc;
 }
 
 /**
@@ -162,7 +164,8 @@ uint8_t *  USBD_USR_DeviceDescriptor( uint8_t speed , uint16_t *length)
 uint8_t *  USBD_USR_LangIDStrDescriptor( uint8_t speed , uint16_t *length)
 {
   *length =  sizeof(USBD_LangIDDesc);  
-  return USBD_LangIDDesc;
+  memcpy(USBD_StrDesc, USBD_LangIDDesc, *length);
+  return USBD_StrDesc;
 }
 
 

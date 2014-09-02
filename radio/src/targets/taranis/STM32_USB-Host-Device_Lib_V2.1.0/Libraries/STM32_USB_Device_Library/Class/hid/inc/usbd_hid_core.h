@@ -89,7 +89,7 @@
   * @{
   */ 
 
-extern USBD_Class_cb_TypeDef  USBD_HID_cb;
+extern const USBD_Class_cb_TypeDef  USBD_HID_cb;
 /**
   * @}
   */ 

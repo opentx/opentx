@@ -36,7 +36,7 @@
 
 #include "../../opentx.h"
 
-int dacIdle = 1;
+bool dacIdle = true;
 
 void setSampleRate(uint32_t frequency)
 {
@@ -96,7 +96,7 @@ void dacInit()
 bool dacQueue(AudioBuffer *buffer)
 {
   if (dacIdle) {
-    dacIdle = 0;
+    dacIdle = false;
     DMA1_Stream5->CR &= ~DMA_SxCR_EN ;                              // Disable DMA channel
     DMA1->HIFCR = DMA_HIFCR_CTCIF5 | DMA_HIFCR_CHTIF5 | DMA_HIFCR_CTEIF5 | DMA_HIFCR_CDMEIF5 | DMA_HIFCR_CFEIF5 ; // Write ones to clear bits
     DMA1_Stream5->M0AR = CONVERT_PTR_UINT(buffer->data);
@@ -163,7 +163,7 @@ extern "C" void DMA1_Stream5_IRQHandler()
     DAC->SR = DAC_SR_DMAUDR1;                      // Write 1 to clear flag
   }
   else {
-    dacIdle = 1;
+    dacIdle = true;
   }
 }
 #endif

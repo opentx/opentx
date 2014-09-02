@@ -222,9 +222,9 @@ typedef struct _Device_cb
   uint8_t  (*IsoINIncomplete)  (void *pdev); 
   uint8_t  (*IsoOUTIncomplete)  (void *pdev);   
 
-  uint8_t  *(*GetConfigDescriptor)( uint8_t speed , uint16_t *length); 
+  const uint8_t  *(*GetConfigDescriptor)( uint8_t speed , uint16_t *length); 
 #ifdef USB_OTG_HS_CORE 
-  uint8_t  *(*GetOtherConfigDescriptor)( uint8_t speed , uint16_t *length);   
+  const uint8_t  *(*GetOtherConfigDescriptor)( uint8_t speed , uint16_t *length);   
 #endif
 
 #ifdef USB_SUPPORT_USER_STRING_DESC 
@@ -262,9 +262,9 @@ typedef struct _DCD
   USB_OTG_EP     in_ep   [USB_OTG_MAX_TX_FIFOS];
   USB_OTG_EP     out_ep  [USB_OTG_MAX_TX_FIFOS];
   uint8_t        setup_packet [8*3];
-  USBD_Class_cb_TypeDef         *class_cb;
-  USBD_Usr_cb_TypeDef           *usr_cb;
-  USBD_DEVICE                   *usr_device;  
+  const USBD_Class_cb_TypeDef         *class_cb;
+  const USBD_Usr_cb_TypeDef           *usr_cb;
+  const USBD_DEVICE                   *usr_device;  
   uint8_t        *pConfig_descriptor;
  }
 DCD_DEV , *DCD_PDEV;

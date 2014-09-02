@@ -41,19 +41,19 @@ const pm_uchar sticks[] PROGMEM = {
 };
 
 #if defined(CPUARM)
-extern LanguagePack czLanguagePack;
-extern LanguagePack enLanguagePack;
-extern LanguagePack esLanguagePack;
-extern LanguagePack frLanguagePack;
-extern LanguagePack deLanguagePack;
-extern LanguagePack itLanguagePack;
-extern LanguagePack plLanguagePack;
-extern LanguagePack ptLanguagePack;
-extern LanguagePack skLanguagePack;
-extern LanguagePack seLanguagePack;
-extern LanguagePack huLanguagePack;
+extern LP_CONST LanguagePack czLanguagePack;
+extern LP_CONST LanguagePack enLanguagePack;
+extern LP_CONST LanguagePack esLanguagePack;
+extern LP_CONST LanguagePack frLanguagePack;
+extern LP_CONST LanguagePack deLanguagePack;
+extern LP_CONST LanguagePack itLanguagePack;
+extern LP_CONST LanguagePack plLanguagePack;
+extern LP_CONST LanguagePack ptLanguagePack;
+extern LP_CONST LanguagePack skLanguagePack;
+extern LP_CONST LanguagePack seLanguagePack;
+extern LP_CONST LanguagePack huLanguagePack;
 
-LanguagePack * languagePacks[] = {
+const LanguagePack * LP_CONST languagePacks[] = {
   // alphabetical order
   &czLanguagePack,
   &deLanguagePack,

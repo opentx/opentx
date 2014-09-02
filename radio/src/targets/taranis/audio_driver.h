@@ -44,8 +44,6 @@ void dacStop();
 
 extern void setSampleRate(uint32_t frequency);
 
-extern int dacIdle;
-
 #define VOLUME_LEVEL_MAX  23
 #define VOLUME_LEVEL_DEF  12
 static const int8_t volumeScale[VOLUME_LEVEL_MAX+1] =

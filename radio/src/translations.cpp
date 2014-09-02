@@ -492,9 +492,9 @@ const pm_char STR_BLCOLOR[]  PROGMEM = TR_BLCOLOR;
 #endif
 
 #if LCD_W >= 212
-  const char * STR_PHASES_HEADERS[] = TR_PHASES_HEADERS;
-  const char * STR_LIMITS_HEADERS[] = TR_LIMITS_HEADERS;
-  const char * STR_CSW_HEADERS[] =    TR_CSW_HEADERS;
+  const char * const STR_PHASES_HEADERS[] = TR_PHASES_HEADERS;
+  const char * const STR_LIMITS_HEADERS[] = TR_LIMITS_HEADERS;
+  const char * const STR_CSW_HEADERS[] =    TR_CSW_HEADERS;
 #endif
 
 #if defined(CPUARM)

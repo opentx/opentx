@@ -40,7 +40,7 @@
 #define NO_HI_LEN  25
 
 void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
-inline void displayColumnHeader(const char **headers, uint8_t index)
+inline void displayColumnHeader(const char * const *headers, uint8_t index)
 {
   lcd_putsAtt(17*FW, 0, headers[index], 0);
 }

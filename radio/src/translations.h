@@ -640,17 +640,24 @@ extern const pm_char STR_TOO_MANY_LUA_SCRIPTS[];
 extern const pm_char STR_BLCOLOR[];
 
 #if defined(VOICE) && defined(CPUARM)
+
+#if defined(SIMU)
+  #define LP_CONST
+#else
+  #define LP_CONST const
+#endif
+
   struct LanguagePack {
     const char *id;
     const char *name;
     void (*playNumber)(getvalue_t number, uint8_t unit, uint8_t flags, uint8_t id);
     void (*playDuration)(int seconds, uint8_t flags, uint8_t id);
   };
-  extern LanguagePack * languagePacks[];
-  extern LanguagePack * currentLanguagePack;
+  extern const LanguagePack * LP_CONST languagePacks[];
+  extern const LanguagePack * currentLanguagePack;
   extern uint8_t currentLanguagePackIdx;
-  #define LANGUAGE_PACK_DECLARE(lng, name) LanguagePack lng ## LanguagePack = { #lng, name, lng ## _ ## playNumber, lng ## _ ## playDuration }
-  #define LANGUAGE_PACK_DECLARE_DEFAULT(lng, name) LANGUAGE_PACK_DECLARE(lng, name); LanguagePack * currentLanguagePack = & lng ## LanguagePack; uint8_t currentLanguagePackIdx
+  #define LANGUAGE_PACK_DECLARE(lng, name) LP_CONST LanguagePack lng ## LanguagePack = { #lng, name, lng ## _ ## playNumber, lng ## _ ## playDuration }
+  #define LANGUAGE_PACK_DECLARE_DEFAULT(lng, name) LANGUAGE_PACK_DECLARE(lng, name); const LanguagePack * currentLanguagePack = & lng ## LanguagePack; uint8_t currentLanguagePackIdx
   inline PLAY_FUNCTION(playNumber, getvalue_t number, uint8_t unit, uint8_t flags) { currentLanguagePack->playNumber(number, unit, flags, id); }
   inline PLAY_FUNCTION(playDuration, int seconds, uint8_t flags) { currentLanguagePack->playDuration(seconds, flags, id); }
 #elif defined(VOICE)
@@ -677,9 +684,9 @@ extern const pm_char STR_BLCOLOR[];
 #endif
 
 #if LCD_W >= 212
-  extern const char * STR_PHASES_HEADERS[];
-  extern const char * STR_LIMITS_HEADERS[];
-  extern const char * STR_CSW_HEADERS[];
+  extern const char * const STR_PHASES_HEADERS[];
+  extern const char * const STR_LIMITS_HEADERS[];
+  extern const char * const STR_CSW_HEADERS[];
 #endif
 
 #if defined(CPUARM)
