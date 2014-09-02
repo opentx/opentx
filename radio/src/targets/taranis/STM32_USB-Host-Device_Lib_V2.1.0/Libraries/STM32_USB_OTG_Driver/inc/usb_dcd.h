@@ -127,7 +127,7 @@ uint32_t   DCD_EP_PrepareRx ( USB_OTG_CORE_HANDLE *pdev,
   
 uint32_t    DCD_EP_Tx (USB_OTG_CORE_HANDLE *pdev,
                                uint8_t  ep_addr,
-                               uint8_t  *pbuf,
+                               const uint8_t  *pbuf,
                                uint32_t   buf_len);
 uint32_t    DCD_EP_Stall (USB_OTG_CORE_HANDLE *pdev,
                               uint8_t   epnum);

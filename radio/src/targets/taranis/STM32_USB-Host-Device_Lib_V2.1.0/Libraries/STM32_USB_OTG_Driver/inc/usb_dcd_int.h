@@ -65,7 +65,7 @@ typedef struct _USBD_DCD_INT
   
 }USBD_DCD_INT_cb_TypeDef;
 
-extern USBD_DCD_INT_cb_TypeDef *USBD_DCD_INT_fops;
+extern const USBD_DCD_INT_cb_TypeDef * const USBD_DCD_INT_fops;
 /**
   * @}
   */ 

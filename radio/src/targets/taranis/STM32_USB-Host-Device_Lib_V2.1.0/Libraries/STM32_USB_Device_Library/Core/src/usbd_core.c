@@ -96,7 +96,7 @@ static uint8_t  USBD_RunTestMode (USB_OTG_CORE_HANDLE  *pdev) ;
 
 __IO USB_OTG_DCTL_TypeDef SET_TEST_MODE;
 
-USBD_DCD_INT_cb_TypeDef USBD_DCD_INT_cb = 
+const USBD_DCD_INT_cb_TypeDef USBD_DCD_INT_cb = 
 {
   USBD_DataOutStage,
   USBD_DataInStage,
@@ -113,7 +113,7 @@ USBD_DevDisconnected,
 #endif  
 };
 
-USBD_DCD_INT_cb_TypeDef  *USBD_DCD_INT_fops = &USBD_DCD_INT_cb;
+const USBD_DCD_INT_cb_TypeDef  * const USBD_DCD_INT_fops = &USBD_DCD_INT_cb;
 /**
 * @}
 */ 
@@ -133,9 +133,9 @@ USBD_DCD_INT_cb_TypeDef  *USBD_DCD_INT_fops = &USBD_DCD_INT_cb;
 */
 void USBD_Init(USB_OTG_CORE_HANDLE *pdev,
                USB_OTG_CORE_ID_TypeDef coreID,
-               USBD_DEVICE *pDevice,                  
-               USBD_Class_cb_TypeDef *class_cb, 
-               USBD_Usr_cb_TypeDef *usr_cb)
+               const USBD_DEVICE *pDevice,                  
+               const USBD_Class_cb_TypeDef *class_cb, 
+               const USBD_Usr_cb_TypeDef *usr_cb)
 {
   /* Hardware Init */
   USB_OTG_BSP_Init(pdev);  

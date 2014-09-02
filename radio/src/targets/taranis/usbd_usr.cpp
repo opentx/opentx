@@ -35,7 +35,7 @@ extern "C" {
 /*  The purpose of this register is to speed up the execution */
 
 
-USBD_Usr_cb_TypeDef USR_cb =
+const USBD_Usr_cb_TypeDef USR_cb =
 {
   USBD_USR_Init,
   USBD_USR_DeviceReset,

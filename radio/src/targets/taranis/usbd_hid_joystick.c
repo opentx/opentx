@@ -102,7 +102,7 @@ static uint8_t  USBD_HID_DeInit (void  *pdev,
 static uint8_t  USBD_HID_Setup (void  *pdev, 
                                 USB_SETUP_REQ *req);
 
-static uint8_t  *USBD_HID_GetCfgDesc (uint8_t speed, uint16_t *length);
+static const uint8_t  *USBD_HID_GetCfgDesc (uint8_t speed, uint16_t *length);
 
 static uint8_t  USBD_HID_DataIn (void  *pdev, uint8_t epnum);
 /**
@@ -135,7 +135,7 @@ static uint8_t  USBD_HID_DataIn (void  *pdev, uint8_t epnum);
     uint8_t S2; //analog value, mapped to channel 8
   }
 */ 
-__ALIGN_BEGIN static uint8_t HID_JOYSTICK_ReportDesc[] __ALIGN_END =
+__ALIGN_BEGIN static const uint8_t HID_JOYSTICK_ReportDesc[] __ALIGN_END =
 {
     0x05, 0x01,                    //     USAGE_PAGE (Generic Desktop)
     0x09, 0x05,                    //     USAGE (Game Pad)
@@ -172,7 +172,7 @@ __ALIGN_BEGIN static uint8_t HID_JOYSTICK_ReportDesc[] __ALIGN_END =
   * @{
   */ 
 
-USBD_Class_cb_TypeDef  USBD_HID_cb = 
+const USBD_Class_cb_TypeDef  USBD_HID_cb = 
 {
   USBD_HID_Init,
   USBD_HID_DeInit,
@@ -217,7 +217,7 @@ __ALIGN_BEGIN static uint32_t  USBD_HID_IdleState __ALIGN_END = 0;
   #endif
 #endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */ 
 /* USB HID device Configuration Descriptor */
-__ALIGN_BEGIN static uint8_t USBD_HID_CfgDesc[USB_HID_CONFIG_DESC_SIZ] __ALIGN_END =
+__ALIGN_BEGIN static const uint8_t USBD_HID_CfgDesc[USB_HID_CONFIG_DESC_SIZ] __ALIGN_END =
 {
   0x09, /* bLength: Configuration Descriptor size */
   USB_CONFIGURATION_DESCRIPTOR_TYPE, /* bDescriptorType: Configuration */
@@ -334,7 +334,7 @@ static uint8_t  USBD_HID_Setup (void  *pdev,
                                 USB_SETUP_REQ *req)
 {
   uint16_t len = 0;
-  uint8_t  *pbuf = NULL;
+  const uint8_t  *pbuf = NULL;
   
   switch (req->bmRequest & USB_REQ_TYPE_MASK)
   {
@@ -439,7 +439,7 @@ uint8_t USBD_HID_SendReport     (USB_OTG_CORE_HANDLE  *pdev,
   * @param  length : pointer data length
   * @retval pointer to descriptor buffer
   */
-static uint8_t  *USBD_HID_GetCfgDesc (uint8_t speed, uint16_t *length)
+static const uint8_t  *USBD_HID_GetCfgDesc (uint8_t speed, uint16_t *length)
 {
   *length = sizeof (USBD_HID_CfgDesc);
   return USBD_HID_CfgDesc;

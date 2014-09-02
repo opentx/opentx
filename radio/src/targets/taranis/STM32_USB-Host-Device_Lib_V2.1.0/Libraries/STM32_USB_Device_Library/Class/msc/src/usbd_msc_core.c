@@ -101,7 +101,7 @@ uint8_t  USBD_MSC_DataIn (void  *pdev,
 uint8_t  USBD_MSC_DataOut (void  *pdev, 
                                uint8_t epnum);
 
-uint8_t  *USBD_MSC_GetCfgDesc (uint8_t speed, 
+const uint8_t  *USBD_MSC_GetCfgDesc (uint8_t speed, 
                                       uint16_t *length);
 
 #ifdef USB_OTG_HS_CORE  
@@ -458,7 +458,7 @@ uint8_t  USBD_MSC_DataOut (void  *pdev,
 * @param  length : pointer data length
 * @retval pointer to descriptor buffer
 */
-uint8_t  *USBD_MSC_GetCfgDesc (uint8_t speed, uint16_t *length)
+const uint8_t  *USBD_MSC_GetCfgDesc (uint8_t speed, uint16_t *length)
 {
   *length = sizeof (USBD_MSC_CfgDesc);
   return USBD_MSC_CfgDesc;
