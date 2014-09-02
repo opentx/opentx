@@ -2518,6 +2518,10 @@ void opentxStart()
 {
   doSplash();
 
+#if defined(DEBUG_TRACE_BUFFER)
+    trace_event(trace_start, 0x12345678); 
+#endif 
+
 #if defined(PCBSKY9X) && defined(SDCARD) && !defined(SIMU)
   for (int i=0; i<500 && !Card_initialized; i++) {
     CoTickDelay(1);  // 2ms
@@ -3495,7 +3499,7 @@ void mixerTask(void * pdata)
       if (t0 > maxMixerDuration) maxMixerDuration = t0 ;
     }
 
-    CoTickDelay(1);  // 2ms for now
+    CoTickDelay(2);  // 4ms for now
   }
 }
 

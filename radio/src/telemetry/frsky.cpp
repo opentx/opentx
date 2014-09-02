@@ -286,7 +286,7 @@ void telemetryWakeup()
 
 #if defined(PCBTARANIS)
   uint8_t data;
-#if defined(DEBUG) && !defined(SIMU)
+#if defined(DEBUG) && defined(SPORT_FILE_LOG) && !defined(SIMU)
   static tmr10ms_t lastTime = 0;
   tmr10ms_t newTime = get_tmr10ms();
   struct gtm utm;
@@ -294,7 +294,7 @@ void telemetryWakeup()
 #endif
   while (telemetryFifo.pop(data)) {
     processSerialData(data);
-#if defined(DEBUG) && !defined(SIMU)
+#if defined(DEBUG) && defined(SPORT_FILE_LOG) && !defined(SIMU)
     extern FIL g_telemetryFile;
     if (lastTime != newTime) {
       f_printf(&g_telemetryFile, "\r\n%4d-%02d-%02d,%02d:%02d:%02d.%02d0: %02X", utm.tm_year+1900, utm.tm_mon+1, utm.tm_mday, utm.tm_hour, utm.tm_min, utm.tm_sec, g_ms100, data);

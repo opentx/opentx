@@ -69,7 +69,7 @@ FAI = NO
 
 # the latests deliveries for Turnigy 9x transmitters (since 2 years now, 2014) do not stop sending if no pulses are generated.
 # This fact totally breaks the nice throttle and switch warning concept, because even we prevent sending pulses the
-# transmitter modul ignores this, and continous to send the last value or 0 at beginning. And 0 means in the middle of throttle -> 50%.
+# transmitter module ignores this, and continues to send the last value or 0 at beginning. And 0 means in the middle of throttle -> 50%.
 # To cope with this situation, we need a new concept how to handle throttle and switch warnings.
 # if you have a 0 value (50% ) for throttle, while throttle warning is active, you should activate this switch
 # Values = YES, NO
@@ -126,7 +126,7 @@ CORRECT_NEGATIVE_VALUES = YES
 ARITHMETIC_OVERFLOW_CHECK = NO
 
 # increases resolution for throttle statistics and throttle counting, in very rare cases.
-# this will be only true if an output channel is used for throttle calculation, and this chanenel has changed limits, e.g. -90% to +80%
+# this will be only true if an output channel is used for throttle calculation, and this channel has changed limits, e.g. -90% to +80%
 # if you use standard limits for throttle or directly the throttle stick you do not need to bother about this option
 # not valid for ARM based transmitters like Taranis, They do not have this rounding issue at all
 # Values = YES, NO
@@ -161,7 +161,7 @@ FONT = STD
 # Values = YES, NO
 PPM_CENTER_ADJUSTABLE = NO
 
-# PPM symetrical limits
+# PPM symmetrical limits
 # Values = YES, NO
 PPM_LIMITS_SYMETRICAL = NO
 
@@ -247,10 +247,15 @@ EEPROM_PROGRESS_BAR = NO
 
 # Activates the DEBUG Mode (all boards)
 # On G9X V4 board, when VOICE=NO:
-#  PORTH:7 --> Transistion LOW to HIGH = start of setupPulses(). Transistion HIGH to LOW = end of setupPulses().
+#  PORTH:7 --> Transition LOW to HIGH = start of setupPulses(). Transition HIGH to LOW = end of setupPulses().
 #  PORTH:6 --> LOW->HIGH = start of mixer calcs. HIGH->LOW, end of mixer calcs.
 # Values = YES, NO
 DEBUG = NO
+
+# Activate writing of SPORT telemetry received data 
+# to sport.log file. This option activates the DEBUG option as well!
+# Values = YES, NO
+SPORT_FILE_LOG = NO
 
 # Flight Modes
 # Values = YES, NO
@@ -282,12 +287,22 @@ MENUS_LOCK = NO
 # MASSSTORAGE: The TX will appear as a drive
 USB = JOYSTICK
 
-# Channel monitor display behaviour
+# Channel monitor display behavior
 # Values = NO, YES
 # YES - hide the fact that channel is inverted in limits tab 
-#       and show inverted channel value with oposite sign
-# NO - normal behaviour, show real channel values
+#       and show inverted channel value with opposite sign
+# NO - normal behavior, show real channel values
 CHANNELS_MONITOR_INV_HIDE = NO
+
+# Enable trace of events into Trace Buffer for debugging purposes
+# Activating any of these options also activates DEBUG and DEBUG_TRACE_BUFFER
+# Values = NO, YES
+#   TRACE_SD_CARD     SD card operations (read, write, etc)
+#   TRACE_FATFS       FatFs file operations
+#   TRACE_AUDIO       Audio processing (not yet implemented)
+TRACE_SD_CARD = NO
+TRACE_FATFS = NO
+TRACE_AUDIO = NO
 
 #------- END BUILD OPTIONS ---------------------------
 
@@ -303,6 +318,7 @@ CPPSRC =
 INCDIRS = . translations
 EXTRAINCDIRS = 
 LUADEP =
+DEBUG_TRACE_BUFFER = NO
 
 # MCU name
 ifneq ($(PCB), $(filter $(PCB), STD 9X 9XR STD128 9X128 9XR128 9X2561 9XR2561 GRUVIN9X MEGA2560 SKY9X 9XRPRO TARANIS))
@@ -601,6 +617,10 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
     CPPDEFS += -DROTARY_ENCODERS=1
     CPPSRC += targets/sky9x/rotenc_driver.cpp 
   endif
+  ifeq ($(SPORT_FILE_LOG), YES)
+    DEBUG = YES
+    CPPDEFS += -DSPORT_FILE_LOG
+  endif
   INCDIRS += targets/sky9x CoOS/kernel CoOS/portable
   BOARDSRC = targets/sky9x/board_sky9x.cpp
   EXTRABOARDSRC = targets/sky9x/lcd_driver.cpp
@@ -634,13 +654,13 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO))
   endif
   
   ifeq ($(BLUETOOTH), YES)
-  	CPPDEFS += -DBLUETOOTH
-  	CPPSRC += targets/sky9x/bluetooth.cpp 
+    CPPDEFS += -DBLUETOOTH
+    CPPSRC += targets/sky9x/bluetooth.cpp 
   endif
   
   ifeq ($(DEBUG), YES)
     CPPSRC += debug.cpp
-  	SRC += targets/sky9x/syscalls.c
+    SRC += targets/sky9x/syscalls.c
   endif
 endif
 
@@ -656,6 +676,28 @@ ifeq ($(PCB), TARANIS)
     HAPTIC = YES
   else
     CPPDEFS = -DREV4
+  endif
+  ifeq ($(SPORT_FILE_LOG), YES)
+    DEBUG = YES
+    CPPDEFS += -DSPORT_FILE_LOG
+  endif
+  ifeq ($(TRACE_SD_CARD), YES)
+    DEBUG = YES
+    DEBUG_TRACE_BUFFER = YES
+    CPPDEFS += -DTRACE_SD_CARD
+  endif
+  ifeq ($(TRACE_FATFS), YES)
+    DEBUG = YES
+    DEBUG_TRACE_BUFFER = YES
+    CPPDEFS += -DTRACE_FATFS
+  endif
+  ifeq ($(TRACE_AUDIO), YES)
+    DEBUG = YES
+    DEBUG_TRACE_BUFFER = YES
+    CPPDEFS += -DTRACE_AUDIO
+  endif
+  ifeq ($(DEBUG_TRACE_BUFFER), YES)
+    CPPDEFS += -DDEBUG_TRACE_BUFFER 
   endif
   LDSCRIPT = targets/taranis/stm32_flash_bl.ld
   TRGT = arm-none-eabi-
@@ -970,7 +1012,7 @@ endif
 ifeq ($(EXT), $(filter $(EXT), FRSKY FRSKY_SPORT TELEMETREZ))
   CPPDEFS += -DFRSKY
   ifeq ($(EXT), FRSKY_SPORT)
-	CPPSRC += telemetry/frsky.cpp telemetry/frsky_sport.cpp telemetry/frsky_d.cpp
+    CPPSRC += telemetry/frsky.cpp telemetry/frsky_sport.cpp telemetry/frsky_d.cpp
     CPPDEFS += -DFRSKY_SPORT
   else
     CPPSRC += telemetry/frsky.cpp telemetry/frsky_d.cpp
@@ -1091,6 +1133,7 @@ ifeq ($(3POS), POT3)
   CPPDEFS += -DEXTRA_3POS=3
   # EEPROM_VARIANT += ${3POS_VARIANT}
 endif
+
 
 #---------------- Compiler Options C++ ----------------
 #  -g*:          generate debugging information
@@ -1340,7 +1383,7 @@ else
 %.hex: %.elf
 	@echo
 	@echo $(MSG_FLASH) $@
-	 $(OBJCOPY) -O ihex opentx.elf opentx.hex
+	$(OBJCOPY) -O ihex opentx.elf opentx.hex
 endif
 
 %.bin: %.elf
@@ -1368,6 +1411,7 @@ endif
 # Concatenate all sources files in one big file to optimize size
 allsrc.cpp: Makefile $(BOARDSRC) $(CPPSRC) $(EXTRABOARDSRC)
 	@rm -f allsrc.cpp 
+	@echo All soruces: $(CPPSRC)
 	for f in $(BOARDSRC) $(CPPSRC) $(EXTRABOARDSRC) ; do echo "# 1 \"$$f\"" >> allsrc.cpp; cat "$$f" >> allsrc.cpp; done
 
 remallsrc:
@@ -1430,12 +1474,12 @@ AVRCOMMAND = $(AVRDUDE) $(AVRDEVICE)
 
 WRITE_COMMAND = $(AVRCOMMAND) -U flash:w:opentx.hex:i
 ifeq ($(RESTORE_EEPROM), YES)
-   BACKUP_EEPROM = YES
-   ifeq ($(DOUBLE_WRITE_OK), YES)
-      WRITE_COMMAND += -U eeprom:w:$(DATA_DIR)/eeprom-$(DATE).hex:i
-   else
-     SECOND_WRITE_COMMAND = -U eeprom:w:$(DATA_DIR)/eeprom-$(DATE).hex:i
-   endif
+  BACKUP_EEPROM = YES
+  ifeq ($(DOUBLE_WRITE_OK), YES)
+    WRITE_COMMAND += -U eeprom:w:$(DATA_DIR)/eeprom-$(DATE).hex:i
+  else
+    SECOND_WRITE_COMMAND = -U eeprom:w:$(DATA_DIR)/eeprom-$(DATE).hex:i
+  endif
 endif
 
 ifeq ($(BACKUP_FLASH), YES)

@@ -67,6 +67,8 @@ extern "C" {
 void rtcSetTime(struct gtm * tm);
 void gettime(struct gtm * tm);
 gtime_t gmktime (struct gtm *tm);
+gtime_t filltm(gtime_t *t, struct gtm *tp);
+
 #ifdef __cplusplus
 }
 #endif
