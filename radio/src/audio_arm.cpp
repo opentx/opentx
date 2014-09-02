@@ -147,7 +147,7 @@ const int16_t sineValues[] =
 };
 
 #if defined(SDCARD)
-const char * audioFilenames[] = {
+const char * const audioFilenames[] = {
   "tada",
   "thralert",
   "swalert",
@@ -278,7 +278,7 @@ void referenceSystemAudioFiles()
   sdAvailableSystemAudioFiles = availableAudioFiles;
 }
 
-const char * suffixes[] = { "-off", "-on" };
+const char * const suffixes[] = { "-off", "-on" };
 
 char * getModelAudioPath(char * path)
 {
