@@ -490,7 +490,7 @@ void menuTelemetryFrsky(uint8_t event)
     case EVT_KEY_FIRST(KEY_EXIT):
       killEvents(event);
       chainMenu(menuMainView);
-      return;
+      break;
 
 #if defined(PCBTARANIS)
     case EVT_KEY_LONG(KEY_PAGE):

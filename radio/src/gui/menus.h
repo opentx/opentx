@@ -105,7 +105,9 @@ typedef void (*MenuFuncP_PROGMEM)(uint8_t event);
 extern const MenuFuncP_PROGMEM menuTabModel[];
 
 extern MenuFuncP g_menuStack[5];
+extern uint8_t g_menuPos[4];
 extern uint8_t g_menuStackPtr;
+extern uint8_t menuEvent;
 
 /// goto given Menu, but substitute current menu in menuStack
 void chainMenu(MenuFuncP newMenu);
@@ -267,13 +269,13 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 
 #if defined(PCBTARANIS)
   #define CHECK_FLAG_NO_SCREEN_INDEX   1
-  bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow, uint8_t flags=0);
+  void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow, uint8_t flags=0);
 #else
-  bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow);
+  void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow);
 #endif
 
-bool check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t maxrow);
-bool check_submenu_simple(check_event_t event, uint8_t maxrow);
+void check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t maxrow);
+void check_submenu_simple(check_event_t event, uint8_t maxrow);
 
 void title(const pm_char * s);
 #define TITLE(str) title(str)
@@ -292,32 +294,32 @@ void title(const pm_char * s);
 
 #define MENU(title, tab, menu, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
-  if (!MENU_CHECK(tab, menu, lines_count)) return; \
+  MENU_CHECK(tab, menu, lines_count); \
   TITLE(title)
 
 #define MENU_FLAGS(title, tab, menu, flags, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
-  if (!MENU_CHECK_FLAGS(tab, menu, flags, lines_count)) return; \
+  MENU_CHECK_FLAGS(tab, menu, flags, lines_count)); \
   TITLE(title)
 
 #define SIMPLE_MENU_NOTITLE(tab, menu, lines_count) \
-  if (!check_simple(event,menu,tab,DIM(tab),(lines_count)-1)) return;
+  check_simple(event, menu, tab, DIM(tab), (lines_count)-1);
 
 #define SIMPLE_MENU(title, tab, menu, lines_count) \
   SIMPLE_MENU_NOTITLE(tab, menu, lines_count); \
   TITLE(title)
 
-#define SUBMENU_NOTITLE(lines_count, ...) { \
+#define SUBMENU_NOTITLE(lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
-  if (!check(event,0,NULL,0,mstate_tab,DIM(mstate_tab)-1,(lines_count)-1)) return; }
+  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, (lines_count)-1);
 
 #define SUBMENU(title, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
-  if (!check(event,0,NULL,0,mstate_tab,DIM(mstate_tab)-1,(lines_count)-1)) return; \
+  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, (lines_count)-1); \
   TITLE(title)
 
 #define SIMPLE_SUBMENU_NOTITLE(lines_count) \
-  if (!check_submenu_simple(event,(lines_count)-1)) return;
+  check_submenu_simple(event, (lines_count)-1);
 
 #define SIMPLE_SUBMENU(title, lines_count) \
   SIMPLE_SUBMENU_NOTITLE(lines_count); \

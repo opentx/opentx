@@ -44,7 +44,7 @@ void menuStatisticsView(uint8_t event)
   {
     case EVT_KEY_FIRST(KEY_UP):
       chainMenu(menuStatisticsDebug);
-      return;
+      break;
 
 #if defined(CPUARM)
     case EVT_KEY_LONG(KEY_MENU):
@@ -55,7 +55,7 @@ void menuStatisticsView(uint8_t event)
 #endif
     case EVT_KEY_FIRST(KEY_EXIT):
       chainMenu(menuMainView);
-      return;
+      break;
   }
 
   lcd_puts(  1*FW, FH*0, STR_TOTTM1TM2THRTHP);
@@ -132,10 +132,10 @@ void menuStatisticsDebug(uint8_t event)
       break;
     case EVT_KEY_FIRST(KEY_DOWN):
       chainMenu(menuStatisticsView);
-      return;
+      break;
     case EVT_KEY_FIRST(KEY_EXIT):
       chainMenu(menuMainView);
-      return;
+      break;
   }
 
 #if defined(PCBSKY9X)

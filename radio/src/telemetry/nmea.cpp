@@ -396,18 +396,18 @@ void menuTelemetryNMEA1(uint8_t event)
     {
     case EVT_KEY_BREAK(KEY_LEFT):
         chainMenu(menuTelemetryNMEA4);
-        return;
+        break;
     case EVT_KEY_BREAK(KEY_RIGHT):
         chainMenu(menuTelemetryNMEA2);
-        return;
+        break;
     case EVT_KEY_LONG(KEY_UP):
         NMEA_DisableRXD();
         chainMenu(menuStatisticsView);
-        return;
+        break;
     case EVT_KEY_LONG(KEY_DOWN):
         NMEA_DisableRXD();
         chainMenu(menuMainView);
-        return;
+        break;
     case EVT_KEY_FIRST(KEY_MENU):
         if (show_timer == 0) {
             show_timer = 1;
@@ -509,21 +509,21 @@ void menuTelemetryNMEA2(uint8_t event)
 		    ignore_break=0;
                 break;}
         chainMenu(menuTelemetryNMEA1);
-        return;
+        break;
     case EVT_KEY_BREAK(KEY_RIGHT):
           if (ignore_break==1) {
 		     ignore_break=0;
                  break;}
         chainMenu(menuTelemetryNMEA3);
-        return;
+        break;
     case EVT_KEY_LONG(KEY_UP):
         NMEA_DisableRXD();
         chainMenu(menuStatisticsView);
-        return;
+        break;
     case EVT_KEY_LONG(KEY_DOWN):
         NMEA_DisableRXD();
         chainMenu(menuMainView);
-        return;
+        break;
 
 //Beep setting
     case EVT_KEY_LONG(KEY_LEFT):
@@ -664,18 +664,18 @@ void menuTelemetryNMEA3(uint8_t event)
     {
     case EVT_KEY_BREAK(KEY_LEFT):
         chainMenu(menuTelemetryNMEA2);
-        return;
+        break;
     case EVT_KEY_BREAK(KEY_RIGHT):
         chainMenu(menuTelemetryNMEA4);
-        return;
+        break;
     case EVT_KEY_LONG(KEY_UP):
         NMEA_DisableRXD();
         chainMenu(menuStatisticsView);
-        return;
+        break;
     case EVT_KEY_LONG(KEY_DOWN):
         NMEA_DisableRXD();
         chainMenu(menuMainView);
-        return;
+        break;
     }
     initval (LONG_BUF(0), PACK_RMC, SOG);
     initval (LONG_BUF(1), PACK_RMC, COG);
@@ -713,18 +713,18 @@ void menuTelemetryNMEA4(uint8_t event)
     {
     case EVT_KEY_BREAK(KEY_LEFT):
         chainMenu(menuTelemetryNMEA3);
-        return;
+        break;
     case EVT_KEY_BREAK(KEY_RIGHT):
         chainMenu(menuTelemetryNMEA1);
-        return;
+        break;
     case EVT_KEY_LONG(KEY_UP):
         NMEA_DisableRXD();
         chainMenu(menuStatisticsView);
-        return;
+        break;
     case EVT_KEY_LONG(KEY_DOWN):
         NMEA_DisableRXD();
         chainMenu(menuMainView);
-        return;
+        break;
     }
     // expecting LAT value in POS packet to be stored in the first buffer
     initval (LONG_BUF(0), PACK_GGA, LAT);

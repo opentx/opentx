@@ -1636,10 +1636,12 @@ void menuCommonCalib(uint8_t event)
 
 void menuGeneralCalib(uint8_t event)
 {
-  if (!check_simple(event, e_Calib, menuTabDiag, DIM(menuTabDiag), 0)) {
+  check_simple(event, e_Calib, menuTabDiag, DIM(menuTabDiag), 0);
+
+  if (menuEvent) {
     calibrationState = 0;
-    return;
   }
+
   TITLE(STR_MENUCALIBRATION);
   menuCommonCalib(READ_ONLY() ? 0 : event);
 }

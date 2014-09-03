@@ -47,7 +47,7 @@ void menuChannelsView(uint8_t event)
   {
     case EVT_KEY_BREAK(KEY_EXIT):
       popMenu();
-      return;
+      break;
     case EVT_KEY_FIRST(KEY_RIGHT):
     case EVT_KEY_FIRST(KEY_LEFT):
       secondPage = !secondPage;

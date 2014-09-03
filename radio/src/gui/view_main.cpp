@@ -479,7 +479,7 @@ void menuMainViewChannelsMonitor(uint8_t event)
     case EVT_KEY_BREAK(KEY_PAGE):
     case EVT_KEY_BREAK(KEY_EXIT):
       chainMenu(menuMainView);
-      return;
+      break;
   }
 
   return menuChannelsView(event);
@@ -632,7 +632,6 @@ void menuMainView(uint8_t event)
       if (g_eeGeneral.view >= VIEW_COUNT) {
         g_eeGeneral.view = 0;
         chainMenu(menuMainViewChannelsMonitor);
-        return;
       }
       break;
 #else
@@ -648,7 +647,7 @@ void menuMainView(uint8_t event)
     case EVT_KEY_STATISTICS:
       chainMenu(menuStatisticsView);
       killEvents(event);
-      return;
+      break;
 #endif
 
     case EVT_KEY_TELEMETRY:
@@ -670,7 +669,7 @@ void menuMainView(uint8_t event)
       chainMenu(menuStatisticsDebug);
 #endif
       killEvents(event);
-      return;
+      break;
 
     case EVT_KEY_FIRST(KEY_EXIT):
 #if defined(GVARS) && !defined(PCBSTD)

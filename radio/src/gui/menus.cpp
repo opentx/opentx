@@ -299,14 +299,14 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max)
 }
 #endif
 
-bool check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t maxrow)
+void check_simple(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, vertpos_t maxrow)
 {
-  return check(event, curr, menuTab, menuTabSize, 0, 0, maxrow);
+  check(event, curr, menuTab, menuTabSize, 0, 0, maxrow);
 }
 
-bool check_submenu_simple(check_event_t event, uint8_t maxrow)
+void check_submenu_simple(check_event_t event, uint8_t maxrow)
 {
-  return check_simple(event, 0, 0, 0, maxrow);
+  check_simple(event, 0, 0, 0, maxrow);
 }
 
 void title(const pm_char * s)
@@ -344,7 +344,6 @@ bool modelHasNotes()
   char filename[sizeof(MODELS_PATH)+1+sizeof(g_model.header.name)+sizeof(TEXT_EXT)] = MODELS_PATH "/";
   char *buf = strcat_modelname(&filename[sizeof(MODELS_PATH)], g_eeGeneral.currModel);
   strcpy(buf, TEXT_EXT);
-
   return isFileAvailable(filename);
 }
 
@@ -374,7 +373,7 @@ tmr10ms_t menuEntryTime;
 #endif
 
 #if defined(PCBTARANIS)
-bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow, uint8_t flags)
+void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow, uint8_t flags)
 {
   vertpos_t l_posVert = m_posVert;
   horzpos_t l_posHorz = m_posHorz;
@@ -398,7 +397,6 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
           }
           else {
             pushMenu(menuChannelsView);
-            return false;
           }
         }
         break;
@@ -421,7 +419,6 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 
     if (!calibrationState && cc != curr) {
       chainMenu((MenuFuncP)pgm_read_adr(&menuTab[cc]));
-      return false;
     }
 
     if (!(flags&CHECK_FLAG_NO_SCREEN_INDEX)) {
@@ -496,7 +493,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
     case EVT_KEY_LONG(KEY_EXIT):
       s_editMode = 0; // TODO needed? we call ENTRY_UP after which does the same
       popMenu();
-      return false;
+      break;
 
     case EVT_KEY_BREAK(KEY_EXIT):
 #if defined(ROTARY_ENCODER_NAVIGATION)
@@ -522,7 +519,6 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
         }
         else {
           popMenu();
-          return false;
         }
       }
       break;
@@ -640,13 +636,11 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 
   m_posVert = l_posVert;
   m_posHorz = l_posHorz;
-
-  return true;
 }
 
 #else // defined(PCBTARANIS)
 
-bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow)
+void check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow)
 {
   vertpos_t l_posVert = m_posVert;
   horzpos_t l_posHorz = m_posHorz;
@@ -738,7 +732,6 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 
       if (cc != curr) {
         chainMenu((MenuFuncP)pgm_read_adr(&menuTab[cc]));
-        return false;
       }
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
@@ -817,7 +810,7 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
     case EVT_KEY_LONG(KEY_EXIT):
       s_editMode = 0; // TODO needed? we call ENTRY_UP after which does the same
       popMenu();
-      return false;
+      break;
 
     case EVT_KEY_BREAK(KEY_EXIT):
 #if defined(ROTARY_ENCODER_NAVIGATION)
@@ -832,7 +825,6 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
 
       if (l_posVert==0 || !menuTab) {
         popMenu();  // beeps itself
-        return false;
       }
       else {
         AUDIO_MENUS();
@@ -979,11 +971,11 @@ bool check(check_event_t event, uint8_t curr, const MenuFuncP *menuTab, uint8_t 
     }
   }
 #endif
-  return true;
 }
 #endif
 
 MenuFuncP g_menuStack[5];
+uint8_t menuEvent = 0;
 uint8_t g_menuPos[4];
 uint8_t g_menuStackPtr = 0;
 vertpos_t m_posVert;
@@ -992,19 +984,14 @@ horzpos_t m_posHorz;
 void popMenu()
 {
   assert(g_menuStackPtr>0);
-
   g_menuStackPtr = g_menuStackPtr-1;
-  AUDIO_KEYPAD_UP();
-  m_posHorz = 0;
-  m_posVert = g_menuPos[g_menuStackPtr];
-  (*g_menuStack[g_menuStackPtr])(EVT_ENTRY_UP);
+  menuEvent = EVT_ENTRY_UP;
 }
 
 void chainMenu(MenuFuncP newMenu)
 {
   g_menuStack[g_menuStackPtr] = newMenu;
-  (*newMenu)(EVT_ENTRY);
-  AUDIO_MENUS();
+  menuEvent = EVT_ENTRY;
 }
 
 void pushMenu(MenuFuncP newMenu)
@@ -1025,9 +1012,8 @@ void pushMenu(MenuFuncP newMenu)
 
   assert(g_menuStackPtr < DIM(g_menuStack));
 
-  AUDIO_MENUS();
   g_menuStack[g_menuStackPtr] = newMenu;
-  (*newMenu)(EVT_ENTRY);
+  menuEvent = EVT_ENTRY;
 }
 
 const pm_char * s_warning = NULL;

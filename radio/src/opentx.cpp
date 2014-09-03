@@ -2839,6 +2839,13 @@ void perMain()
 
     if (!LCD_LOCKED()) {
       lcd_clear();
+      if (menuEvent) {
+        m_posVert = menuEvent == EVT_ENTRY_UP ? g_menuPos[g_menuStackPtr] : 0;
+        m_posHorz = 0;
+        evt = menuEvent;
+        menuEvent = 0;
+        AUDIO_MENUS();
+      }
       g_menuStack[g_menuStackPtr]((warn || menu) ? 0 : evt);
     }
 

@@ -62,24 +62,19 @@ void menuTelemetryMavlink(uint8_t event) {
 
 	case EVT_KEY_FIRST(KEY_UP):
 		if (MAVLINK_menu > 0)
-		{
-			MAVLINK_menu--;
-			break;
-		}
+		  MAVLINK_menu--;
 		else
-		{
-			chainMenu(menuMainView);
-			return;
-		}
+		  chainMenu(menuMainView);
+                break;
 	case EVT_KEY_FIRST(KEY_DOWN):
 		if (MAVLINK_menu < MAX_MAVLINK_MENU - 1)
-			MAVLINK_menu++;
+		  MAVLINK_menu++;
 		break;
 	case EVT_KEY_FIRST(KEY_MENU):
 		return;
 	case EVT_KEY_FIRST(KEY_EXIT):
 		chainMenu(menuMainView);
-		return;
+		break;
 	}
 
 	switch (MAVLINK_menu) {

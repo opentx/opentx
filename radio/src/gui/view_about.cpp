@@ -90,7 +90,7 @@ void menuAboutView(uint8_t event)
       break;
     case EVT_KEY_FIRST(KEY_EXIT):
       chainMenu(menuMainView);
-    return;
+      break;
   }
 
 #if defined(PCBTARANIS)

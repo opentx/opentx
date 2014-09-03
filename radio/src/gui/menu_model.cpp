@@ -358,7 +358,7 @@ void menuModelSelect(uint8_t event)
 
   int8_t oldSub = m_posVert;
 
-  if (!check_submenu_simple(_event_, MAX_MODELS-1)) return;
+  check_submenu_simple(_event_, MAX_MODELS-1);
 
 #if defined(NAVIGATION_POT2)
   if (event==0 && p2valdiff<0) {
@@ -405,7 +405,7 @@ void menuModelSelect(uint8_t event)
         killEvents(event);
         if (s_editMode < 0) {
           popMenu();
-          return;
+          break;
         }
         else if (!s_copyMode) {
           m_posVert = sub = g_eeGeneral.currModel;
@@ -427,7 +427,6 @@ void menuModelSelect(uint8_t event)
           }
           else {
             popMenu();
-            return;
           }
         }
 #endif
@@ -530,7 +529,7 @@ void menuModelSelect(uint8_t event)
       case EVT_KEY_LONG(KEY_PAGE):
         chainMenu(event == EVT_KEY_BREAK(KEY_PAGE) ? menuModelSetup : menuTabModel[DIM(menuTabModel)-1]);
         killEvents(event);
-        return;
+        break;
 #else
 #if defined(ROTARY_ENCODER_NAVIGATION)
       case EVT_ROTARY_LEFT:
@@ -543,9 +542,10 @@ void menuModelSelect(uint8_t event)
 #endif
         if (sub == g_eeGeneral.currModel) {
           chainMenu((IS_ROTARY_RIGHT(event) || event == EVT_KEY_FIRST(KEY_RIGHT)) ? menuModelSetup : menuTabModel[DIM(menuTabModel)-1]);
-          return;
         }
-        AUDIO_WARNING2();
+        else {
+          AUDIO_WARNING2();
+        }
         break;
 #if defined(ROTARY_ENCODER_NAVIGATION)
         }
@@ -1038,7 +1038,9 @@ void menuModelSetup(uint8_t event)
   MENU_TAB({ 0, 0, CASE_PCBTARANIS(0) 2, CASE_PERSISTENT_TIMERS(0) 0, 0, 2, CASE_PERSISTENT_TIMERS(0) 0, 0, 0, 1, 0, 0, 0, 0, 0, NUM_SWITCHES, NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1, FIELD_PROTOCOL_MAX, 2, CASE_PCBSKY9X(1) CASE_PCBSKY9X(2) });
 #endif
 
-  if (!MENU_CHECK(menuTabModel, e_ModelSetup, MODEL_SETUP_MAX_LINES)) {
+  MENU_CHECK(menuTabModel, e_ModelSetup, MODEL_SETUP_MAX_LINES);
+
+  if (menuEvent) {
 #if defined(DSM2)
     dsm2Flag = 0;
 #endif
@@ -1048,7 +1050,6 @@ void menuModelSetup(uint8_t event)
 #if defined(CPUARM) && defined(PXX)
     pxxFlag[EXTERNAL_MODULE] = 0;
 #endif
-    return;
   }
 
   TITLE(STR_MENUSETUP);
@@ -2609,7 +2610,6 @@ void menuModelCurveOne(uint8_t event)
     case EVT_KEY_LONG(KEY_MENU):
       pushMenu(menuChannelsView);
       killEvents(event);
-      return;
   }
 
   DrawCurve(FW);
@@ -3026,7 +3026,6 @@ void menuModelExpoOne(uint8_t event)
   if (event == EVT_KEY_LONG(KEY_MENU)) {
     pushMenu(menuChannelsView);
     killEvents(event);
-    return;
   }
 #endif
 
@@ -3226,7 +3225,6 @@ void menuModelMixOne(uint8_t event)
   if (event == EVT_KEY_LONG(KEY_MENU)) {
     pushMenu(menuChannelsView);
     killEvents(event);
-    return;
   }
 #endif
 
@@ -3660,7 +3658,6 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
         if (READ_ONLY()) {
           if (!s_currCh) {
             pushMenu(expo ? menuModelExpoOne : menuModelMixOne);
-            return;
           }
         }
         else {
@@ -3671,7 +3668,6 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
             insertExpoMix(expo, s_currIdx);
             pushMenu(expo ? menuModelExpoOne : menuModelMixOne);
             s_copyMode = 0;
-            return;
           }
           else {
             event = 0;
@@ -3691,7 +3687,6 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
           }
           pushMenu(expo ? menuModelExpoOne : menuModelMixOne);
           s_copyMode = 0;
-          return;
 #endif
         }
       }
@@ -3706,7 +3701,6 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
         pushMenu(expo ? menuModelExpoOne : menuModelMixOne);
         s_copyMode = 0;
         killEvents(event);
-        return;
       }
       break;
 #if defined(ROTARY_ENCODER_NAVIGATION)

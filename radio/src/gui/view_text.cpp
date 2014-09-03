@@ -134,7 +134,7 @@ void menuTextView(uint8_t event)
 
     case EVT_KEY_BREAK(KEY_EXIT):
       popMenu();
-      return;
+      break;
   }
 
   for (int i=0; i<LCD_LINES-1; i++) {
