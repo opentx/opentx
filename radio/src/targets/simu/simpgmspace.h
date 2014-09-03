@@ -358,19 +358,25 @@ void eeprom_read_block (void *pointer_ram, uint16_t pointer_eeprom, size_t size)
 void eeprom_read_block (void *pointer_ram, const void *pointer_eeprom, size_t size);
 #endif
 
+#define wdt_enable(...) sleep(1/*ms*/)
 #define wdt_reset() sleep(1/*ms*/)
 #define boardInit()
 
 #define OS_MutexID pthread_mutex_t
 extern OS_MutexID audioMutex;
 
-#define OS_FlagID int
-#define OS_TID int
-#define OS_TCID int
-#define OS_STK char
+#define OS_FlagID uint32_t
+#define OS_TID uint32_t
+#define OS_TCID uint32_t
+#define OS_STK uint32_t
 
 #define E_OK   0
+#define WDRF   0
 
+#define CoInitOS(...)
+#define CoStartOS(...)
+#define CoCreateTask(...) sleep(1/*ms*/)
+#define CoCreateMutex(...) PTHREAD_MUTEX_INITIALIZER
 #define CoSetFlag(...)
 #define CoClearFlag(...)
 #define CoSetTmrCnt(...)

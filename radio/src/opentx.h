@@ -912,7 +912,7 @@ extern uint16_t maxLuaDuration;
 #endif
 
 #if defined(CPUARM)
-  uint16_t stack_free(uint8_t tid);
+  uint32_t stack_free(uint32_t tid);
 #else
   uint16_t stack_free();
 #endif

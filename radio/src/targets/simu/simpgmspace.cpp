@@ -436,14 +436,12 @@ void eeWriteBlockCmp(const void *pointer_ram, uint16_t pointer_eeprom, size_t si
 
 #endif
 
-#if defined(CPUARM)
-uint16_t stack_free(uint8_t)
-#else
+#if !defined(CPUARM)
 uint16_t stack_free()
-#endif
 {
   return 500;
 }
+#endif
 
 #if 0
 static void EeFsDump(){

@@ -36,44 +36,6 @@
 
 #include "opentx.h"
 
-#if defined(CPUARM)
-#define MENUS_STACK_SIZE    2000
-#define MIXER_STACK_SIZE    500
-#define AUDIO_STACK_SIZE    500
-#define BT_STACK_SIZE       500
-#define DEBUG_STACK_SIZE    500
-
-#if defined(_MSC_VER)
-  #define _ALIGNED(x) __declspec(align(x))
-#elif defined(__GNUC__)
-  #define _ALIGNED(x) __attribute__ ((aligned(x)))
-#endif
-
-OS_TID menusTaskId;
-// stack must be aligned to 8 bytes otherwise printf for %f does not work!
-OS_STK _ALIGNED(8) menusStack[MENUS_STACK_SIZE];
-
-OS_TID mixerTaskId;
-OS_STK mixerStack[MIXER_STACK_SIZE];
-
-OS_TID audioTaskId;
-OS_STK audioStack[AUDIO_STACK_SIZE];
-
-#if defined(BLUETOOTH)
-OS_TID btTaskId;
-OS_STK btStack[BT_STACK_SIZE];
-#endif
-
-#if defined(DEBUG)
-OS_TID debugTaskId;
-OS_STK debugStack[DEBUG_STACK_SIZE];
-#endif
-
-OS_MutexID audioMutex;
-OS_MutexID mixerMutex;
-
-#endif // defined(CPUARM)
-
 #if defined(SPLASH)
 const pm_uchar splashdata[] PROGMEM = { 'S','P','S',0,
 #if defined(PCBTARANIS)
@@ -3301,48 +3263,7 @@ void saveTimers()
   volatile rotenc_t g_rotenc[1] = {0};
 #endif
 
-#ifndef SIMU
-
-#if defined(CPUARM)
-void stack_paint()
-{
-  for (uint16_t i=0; i<MENUS_STACK_SIZE; i++)
-    menusStack[i] = 0x55555555;
-  for (uint16_t i=0; i<MIXER_STACK_SIZE; i++)
-    mixerStack[i] = 0x55555555;
-  for (uint16_t i=0; i<AUDIO_STACK_SIZE; i++)
-    audioStack[i] = 0x55555555;
-}
-
-uint16_t stack_free(uint8_t tid)
-{
-  OS_STK *stack;
-  uint16_t size;
-
-  switch(tid) {
-    case 0:
-      stack = menusStack;
-      size = MENUS_STACK_SIZE;
-      break;
-    case 1:
-      stack = mixerStack;
-      size = MIXER_STACK_SIZE;
-      break;
-    case 2:
-      stack = audioStack;
-      size = AUDIO_STACK_SIZE;
-      break;
-    default:
-      return 0;
-  }
-
-  uint16_t i=0;
-  for (; i<size; i++)
-    if (stack[i] != 0x55555555)
-      break;
-  return i;
-}
-#else
+#if !defined(CPUARM) && !defined(SIMU)
 extern unsigned char __bss_end ;
 #define STACKPTR     _SFR_IO16(0x3D)
 void stack_paint()
@@ -3377,9 +3298,9 @@ uint16_t stack_free()
   #define OPENTX_INIT_ARGS
 #endif
 
-inline void opentxInit(OPENTX_INIT_ARGS)
+void opentxInit(OPENTX_INIT_ARGS)
 {
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) && !defined(SIMU)
   CoTickDelay(100);   //200ms
   lcdInit();
   lcdSetRefVolt(g_eeGeneral.contrast);
@@ -3468,65 +3389,7 @@ inline void opentxInit(OPENTX_INIT_ARGS)
   wdt_enable(WDTO_500MS);
 }
 
-#if defined(CPUARM)
-void mixerTask(void * pdata)
-{
-  s_pulses_paused = true;
-
-  while(1) {
-
-    if (!s_pulses_paused) {
-      uint16_t t0 = getTmr2MHz();
-
-      CoEnterMutexSection(mixerMutex);
-      doMixerCalculations();
-      CoLeaveMutexSection(mixerMutex);
-
-#if defined(FRSKY) || defined(MAVLINK)
-      telemetryWakeup();
-#endif
-
-      if (heartbeat == HEART_WDT_CHECK) {
-        wdt_reset();
-        heartbeat = 0;
-      }
-
-      t0 = getTmr2MHz() - t0;
-      if (t0 > maxMixerDuration) maxMixerDuration = t0 ;
-    }
-
-    CoTickDelay(1);  // 2ms for now
-  }
-}
-
-void menusTask(void * pdata)
-{
-  opentxInit();
-
-  while (pwrCheck() != e_power_off) {
-    perMain();
-    // TODO remove completely massstorage from sky9x firmware
-    CoTickDelay(5);  // 5*2ms for now
-  }
-
-  lcd_clear();
-  displayPopup(STR_SHUTDOWN);
-
-  opentxClose();
-
-  lcd_clear();
-  lcdRefresh();
-  lcdSetRefVolt(0);
-
-  SysTick->CTRL = 0; // turn off systick
-
-  pwrOff(); // Only turn power off if necessary
-}
-
-extern void audioTask(void* pdata);
-
-#endif
-
+#if !defined(SIMU)
 int main(void)
 {
   // G: The WDT remains active after a WDT reset -- at maximum clock speed. So it's
@@ -3597,30 +3460,13 @@ int main(void)
 #endif
 
 #if defined(CPUARM)
-  CoInitOS();
-
-#if defined(CPUARM) && defined(DEBUG)
-  debugTaskId = CoCreateTaskEx(debugTask, NULL, 10, &debugStack[DEBUG_STACK_SIZE-1], DEBUG_STACK_SIZE, 1, false);
-#endif
-
-#if defined(BLUETOOTH)
-  btTaskId = CoCreateTask(btTask, NULL, 15, &btStack[BT_STACK_SIZE-1], BT_STACK_SIZE);
-#endif
-
-  mixerTaskId = CoCreateTask(mixerTask, NULL, 5, &mixerStack[MIXER_STACK_SIZE-1], MIXER_STACK_SIZE);
-  menusTaskId = CoCreateTask(menusTask, NULL, 10, &menusStack[MENUS_STACK_SIZE-1], MENUS_STACK_SIZE);
-  audioTaskId = CoCreateTask(audioTask, NULL, 7, &audioStack[AUDIO_STACK_SIZE-1], AUDIO_STACK_SIZE);
-
-  audioMutex = CoCreateMutex();
-  mixerMutex = CoCreateMutex();
-
-  CoStartOS();
+  tasksStart();
 #else
 #if defined(CPUM2560)
   uint8_t shutdown_state = 0;
 #endif
 
-  while(1) {
+  while (1) {
 #if defined(CPUM2560)
     if ((shutdown_state=pwrCheck()) > e_power_trainer)
       break;
