@@ -52,7 +52,7 @@ extern const char * zchar2string(const char * zstring, int size);
 void luaExecStr(const char * str)
 {
   extern lua_State * L;
-  if (!L) luaInitProtected();
+  if (!L) luaInit_P();
   if (!L) FAIL() << "No Lua state!!!"; 
   if (luaL_dostring(L, str)) {
     FAIL() << "lua error: " << lua_tostring(L, -1);

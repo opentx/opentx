@@ -326,7 +326,7 @@ void *main_thread(void *)
     }
 
 #if defined(LUA)
-    luaCloseProtected();
+    luaClose_P();
 #endif
     
 #ifdef SIMU_EXCEPTIONS

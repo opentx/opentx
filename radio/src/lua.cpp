@@ -1377,7 +1377,7 @@ static const luaL_Reg lcdLib[] = {
   { NULL, NULL }  /* sentinel */
 };
 
-void luaCloseProtected()
+void luaClose_P()
 {
   if (L) {
     TRACE("lua_close");
@@ -1479,9 +1479,9 @@ void luaRegisterStuff()
   lua_registerint(L, "LCD_H", LCD_H);
 }
 
-void luaInitProtected()
+void luaInit_P()
 {
-  luaCloseProtected();
+  luaClose_P();
   if (luaState == LUASTATE_PANIC) return;
 
   TRACE("luaL_newstate");
@@ -1510,7 +1510,7 @@ void luaInitProtected()
   TRACE("luaInit done");
 }
 
-void luaFreeProtected(ScriptInternalData & sid)
+void luaFree_P(ScriptInternalData & sid)
 {
   // protect
   PROTECT_LUA() {
@@ -1535,14 +1535,14 @@ void luaFreeProtected(ScriptInternalData & sid)
   UNPROTECT_LUA();  
 }
 
-int luaLoadProtected(const char *filename, ScriptInternalData & sid, ScriptInputsOutputs * sio=NULL)
+int luaLoad_P(const char *filename, ScriptInternalData & sid, ScriptInputsOutputs * sio=NULL)
 {
   int init = 0;
 
   sid.instructions = 0;
   sid.state = SCRIPT_OK;
 
-  luaFreeProtected(sid);
+  luaFree_P(sid);
 
   SET_LUA_INSTRUCTIONS_COUNT(MANUAL_SCRIPTS_MAX_INSTRUCTIONS);
 
@@ -1600,17 +1600,17 @@ int luaLoadProtected(const char *filename, ScriptInternalData & sid, ScriptInput
     //panic handler
     TRACE("Panic when loading script %s: %s", filename, lua_tostring(L, -1));
     sid.state = SCRIPT_NOFILE;   // todo some other state like SCRIPT_MEMORY_ERROR
-    //luaFreeProtected() will cleanup
+    //luaFree_P() will cleanup
   }
   UNPROTECT_LUA();
   if (sid.state != SCRIPT_OK) {
-    luaFreeProtected(sid);
+    luaFree_P(sid);
   }
 
   return sid.state;
 }
 
-void luaLoadMixScriptProtected(uint8_t index)
+void luaLoadMixScript_P(uint8_t index)
 {
   ScriptData & sd = g_model.scriptsData[index];
 
@@ -1623,11 +1623,11 @@ void luaLoadMixScriptProtected(uint8_t index)
     strncpy(filename+sizeof(SCRIPTS_MIXES_PATH), sd.file, sizeof(sd.file));
     filename[sizeof(SCRIPTS_MIXES_PATH)+sizeof(sd.file)] = '\0';
     strcat(filename+sizeof(SCRIPTS_MIXES_PATH), SCRIPTS_EXT);
-    luaLoadProtected(filename, sid, sio);
+    luaLoad_P(filename, sid, sio);
   }
 }
 
-bool luaLoadFunctionScriptProtected(uint8_t index)
+bool luaLoadFunctionScript_P(uint8_t index)
 {
   CustomFnData & fn = g_model.funcSw[index];
 
@@ -1640,7 +1640,7 @@ bool luaLoadFunctionScriptProtected(uint8_t index)
       strncpy(filename+sizeof(SCRIPTS_FUNCS_PATH), fn.play.name, sizeof(fn.play.name));
       filename[sizeof(SCRIPTS_FUNCS_PATH)+sizeof(fn.play.name)] = '\0';
       strcat(filename+sizeof(SCRIPTS_FUNCS_PATH), SCRIPTS_EXT);
-      luaLoadProtected(filename, sid);
+      luaLoad_P(filename, sid);
     }
     else {
       return false;
@@ -1665,7 +1665,7 @@ void getTelemetryScriptPath(char * path, uint8_t index)
   }
 }
 
-bool luaLoadTelemetryScriptProtected(uint8_t index)
+bool luaLoadTelemetryScript_P(uint8_t index)
 {
   char path[256];
   getTelemetryScriptPath(path, index);
@@ -1674,7 +1674,7 @@ bool luaLoadTelemetryScriptProtected(uint8_t index)
       ScriptInternalData & sid = scriptInternalData[luaScriptsCount++];
       sid.reference = SCRIPT_TELEMETRY_FIRST+index;
       sid.state = SCRIPT_NOFILE;
-      luaLoadProtected(path, sid);
+      luaLoad_P(path, sid);
     }
     else {
       return false;
@@ -1694,7 +1694,7 @@ bool isTelemetryScriptAvailable(uint8_t index)
   return false;
 }
 
-void luaLoadPermanentScriptsProtected()
+void luaLoadPermanentScripts_P()
 {
   luaScriptsCount = 0;
   memset(scriptInternalData, 0, sizeof(scriptInternalData));
@@ -1702,12 +1702,12 @@ void luaLoadPermanentScriptsProtected()
 
   // Load model scripts
   for (int i=0; i<MAX_SCRIPTS; i++) {
-    luaLoadMixScriptProtected(i);
+    luaLoadMixScript_P(i);
   }
 
   // Load custom function scripts
   for (int i=0; i<NUM_CFN; i++) {
-    if (!luaLoadFunctionScriptProtected(i)) {
+    if (!luaLoadFunctionScript_P(i)) {
       POPUP_WARNING(STR_TOO_MANY_LUA_SCRIPTS);
       return;
     }
@@ -1715,16 +1715,16 @@ void luaLoadPermanentScriptsProtected()
 
   // Load custom telemetry scripts
   for (int i=0; i<MAX_SCRIPTS; i++) {
-    if (!luaLoadTelemetryScriptProtected(i)) {
+    if (!luaLoadTelemetryScript_P(i)) {
       POPUP_WARNING(STR_TOO_MANY_LUA_SCRIPTS);
       return;
     }
   }
-  if (!luaLoadTelemetryScriptProtected(TELEMETRY_VOLTAGES_SCREEN)) {
+  if (!luaLoadTelemetryScript_P(TELEMETRY_VOLTAGES_SCREEN)) {
     POPUP_WARNING(STR_TOO_MANY_LUA_SCRIPTS);
     return;
   }
-  if (!luaLoadTelemetryScriptProtected(TELEMETRY_AFTER_FLIGHT_SCREEN)) {
+  if (!luaLoadTelemetryScript_P(TELEMETRY_AFTER_FLIGHT_SCREEN)) {
     POPUP_WARNING(STR_TOO_MANY_LUA_SCRIPTS);
     return;
   }
@@ -1767,12 +1767,12 @@ void luaError(uint8_t error)
   }
 }
 
-void luaExecProtected(const char *filename)
+void luaExec_P(const char *filename)
 {
-  luaInitProtected();
+  luaInit_P();
 
   standaloneScript.state = SCRIPT_NOFILE;
-  int result = luaLoadProtected(filename, standaloneScript);
+  int result = luaLoad_P(filename, standaloneScript);
   // TODO the same with run ...
   if (result == SCRIPT_OK) {
     luaState = LUASTATE_STANDALONE_SCRIPT_RUNNING;
@@ -1802,7 +1802,7 @@ void luaDoOneRunStandalone(uint8_t evt)
           char nextScript[_MAX_LFN+1];
           strncpy(nextScript, lua_tostring(L, -1), _MAX_LFN);
           nextScript[_MAX_LFN] = '\0';
-          luaExecProtected(nextScript);
+          luaExec_P(nextScript);
         }
         else {
           TRACE("Script error");
@@ -1928,7 +1928,7 @@ void luaDoOneRunPermanentScript(uint8_t evt, int i)
     }
 
     if (sid.state != SCRIPT_OK) {
-      luaFreeProtected(sid);
+      luaFree_P(sid);
     }
     else {
       if (instructionsPercent > sid.instructions) {
@@ -1938,14 +1938,14 @@ void luaDoOneRunPermanentScript(uint8_t evt, int i)
   }
 }
 
-void luaDoOneRunPermanentProtected(uint8_t evt)
+void luaDoOneRunPermanent_P(uint8_t evt)
 {
   if (luaState == LUASTATE_RELOAD_MODEL_SCRIPTS) {
     // TRACE("LUASTATE_RELOAD_MODEL_SCRIPTS");
     luaState = 0;
-    luaInitProtected();
+    luaInit_P();
     if (!L) return;
-    luaLoadPermanentScriptsProtected();
+    luaLoadPermanentScripts_P();
   }
 
   for (int i=0; i<luaScriptsCount; i++) {
@@ -1959,14 +1959,14 @@ void luaDoOneRunPermanentProtected(uint8_t evt)
       // POPUP_WARNING("Lua GC Panic!");
       ScriptInternalData & sid = scriptInternalData[i];
       sid.state = SCRIPT_KILLED;
-      luaFreeProtected(sid);
+      luaFree_P(sid);
     }
     UNPROTECT_LUA();
   }
 
 }
 
-void luaDoGcProtected()
+void luaDoGc_P()
 {
   //protect GC
   PROTECT_LUA() {
@@ -1990,10 +1990,10 @@ void luaDoGcProtected()
   UNPROTECT_LUA()
 }
 
-void luaTaskProtected(uint8_t evt)
+void luaTask_P(uint8_t evt)
 {
   if (luaState == LUASTATE_PANIC) return; // Lua disabled for this session
-  if (!L) luaInitProtected();   //this one is self protected
+  if (!L) luaInit_P();   //this one is self protected
   if (!L) return;   //no Lua environment
 
   lcd_locked = false;
@@ -2024,10 +2024,10 @@ void luaTaskProtected(uint8_t evt)
   else {
     // model scripts
     // panic handling inside!
-    luaDoOneRunPermanentProtected(evt);
+    luaDoOneRunPermanent_P(evt);
   }
 
-  luaDoGcProtected();
+  luaDoGc_P();
 
   t0 = get_tmr10ms() - t0;
   if (t0 > maxLuaDuration) {

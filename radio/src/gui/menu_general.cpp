@@ -885,7 +885,7 @@ void onSdManagerMenu(const char *result)
     f_getcwd(lfn, _MAX_LFN);
     strcat(lfn, "/");
     strcat(lfn, reusableBuffer.sdmanager.lines[index]);
-    luaExecProtected(lfn);
+    luaExec_P(lfn);
   }
 #endif
 }

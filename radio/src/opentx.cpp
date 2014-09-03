@@ -437,7 +437,7 @@ void modelDefault(uint8_t id)
 #if defined(LUA)
   if (isFileAvailable(WIZARD_PATH "/" WIZARD_NAME)) {
     f_chdir(WIZARD_PATH);
-    luaExecProtected(WIZARD_NAME);
+    luaExec_P(WIZARD_NAME);
   }
 #endif
 
@@ -2512,7 +2512,7 @@ void opentxClose()
 #endif
 
 #if defined(LUA)
-  luaCloseProtected();
+  luaClose_P();
 #endif
 
 #if defined(SDCARD)
@@ -2853,7 +2853,7 @@ void perMain()
     }
 
 #if defined(LUA)
-    luaTaskProtected(evt);
+    luaTask_P(evt);
 #endif
 
     if (!LCD_LOCKED()) {

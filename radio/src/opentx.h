@@ -1498,10 +1498,10 @@ enum AUDIO_SOUNDS {
   extern ScriptInternalData standaloneScript;
   extern ScriptInternalData scriptInternalData[MAX_SCRIPTS];
   extern ScriptInputsOutputs scriptInputsOutputs[MAX_SCRIPTS];
-  void luaInitProtected();
-  void luaCloseProtected();
-  void luaTaskProtected(uint8_t evt);
-  void luaExecProtected(const char *filename);
+  void luaInit_P();
+  void luaClose_P();
+  void luaTask_P(uint8_t evt);
+  void luaExec_P(const char *filename);
   int luaGetMemUsed();
   #define luaGetCpuUsed(idx) scriptInternalData[idx].instructions
   bool isTelemetryScriptAvailable(uint8_t index);
