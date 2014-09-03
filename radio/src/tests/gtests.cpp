@@ -183,7 +183,6 @@ int main(int argc, char **argv)
   StartEepromThread(NULL);
   g_menuStackPtr = 0;
   g_menuStack[0] = menuMainView;
-  LUA_RESET();
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

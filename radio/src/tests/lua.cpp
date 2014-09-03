@@ -52,6 +52,8 @@ extern const char * zchar2string(const char * zstring, int size);
 void luaExecStr(const char * str)
 {
   extern lua_State * L;
+  if (!L) luaInitProtected();
+  if (!L) FAIL() << "No Lua state!!!"; 
   if (luaL_dostring(L, str)) {
     FAIL() << "lua error: " << lua_tostring(L, -1);
   }
@@ -98,4 +100,67 @@ TEST(Lua, testSetTelemetryChannel)
 
 }
 
+struct our_longjmp {
+  struct our_longjmp *previous;
+  jmp_buf b;
+  volatile int status;  /* error code */
+};
+
+extern struct our_longjmp * global_lj;
+
+#define PROTECT_LUA()   { struct our_longjmp lj; \
+                        lj.previous = global_lj;  /* chain new error handler */ \
+                        global_lj = &lj;  \
+                        if (setjmp(lj.b) == 0)
+
+#define UNPROTECT_LUA() global_lj = lj.previous; } /* restore old error handler */
+
+
+TEST(Lua, testPanicProtection)
+{
+  bool passed = false;
+  PROTECT_LUA() {
+    PROTECT_LUA() {
+      //simulate panic
+      longjmp(global_lj->b, 1);
+    }
+    else {
+      //we should come here
+      passed = true;
+    }
+    UNPROTECT_LUA();
+  }
+  else
+  {
+    // an not here 
+    // TRACE("testLuaProtection: test 1 FAILED");
+    FAIL() << "Failed test 1";
+  }
+  UNPROTECT_LUA()  
+
+  EXPECT_EQ(passed, true);  
+
+  passed = false;
+  PROTECT_LUA() {
+    PROTECT_LUA() {
+      int a = 5;
+    }
+    else {
+      //we should not come here
+      // TRACE("testLuaProtection: test 2 FAILED");
+      FAIL() << "Failed test 2";
+    }
+    UNPROTECT_LUA()
+    //simulate panic
+    longjmp(global_lj->b, 1);
+  }
+  else
+  {
+    // we should come here
+    passed = true;
+  }
+  UNPROTECT_LUA()  
+
+  EXPECT_EQ(passed, true);   
+}
 #endif

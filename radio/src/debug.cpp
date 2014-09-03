@@ -137,6 +137,13 @@ static void dispw_256( register uint32_t address, register uint32_t lines )
 	}
 }
 
+extern Fifo<512> uart3TxFifo;
+
+void debugFlush() 
+{
+  uart3TxFifo.flush();
+}
+
 #if defined(NANO)
 typedef struct malloc_chunk
 {
@@ -167,7 +174,8 @@ typedef struct malloc_chunk
 
 extern chunk * free_list;
 extern char * sbrk_start;
-extern Fifo<512> uart3TxFifo;
+
+#include "bin_allocator.h"
 
 void dumpFreeMemory() 
 {
@@ -178,20 +186,26 @@ void dumpFreeMemory()
   if (sbrk_start == NULL) total_size = 0;
   else total_size = (size_t) ((char*)heap - sbrk_start);
 
-  uart3TxFifo.flush();
-  TRACE("mallinfo:");
+  FLUSH(); TRACE("mallinfo:");
   char * prev_end = sbrk_start;
   for (pf = free_list; pf; pf = pf->next) {
     free_size += pf->size;
     TRACE("\t%6d %p[%d]", prev_end ? ((char*)pf - prev_end):0, pf, pf->size);
+    FLUSH();
     prev_end = (char*)pf + pf->size;
-    uart3TxFifo.flush();
   }
 
   TRACE("\tTotal size: %d", total_size);
   TRACE("\tFree size:  %d", free_size);
   TRACE("\tUsed size:  %d", total_size - free_size);
-  uart3TxFifo.flush();
+  FLUSH();
+
+  // display bins info
+  TRACE("\tslots1: %d/%d", slots1.size(), slots1.capacity());
+  TRACE("\tslots2: %d/%d", slots2.size(), slots2.capacity());
+
+  //display heap info
+  TRACE("\theap: %p", heap);
 }
 
 extern int  _end;

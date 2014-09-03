@@ -958,16 +958,16 @@ static void *l_alloc (void *ud, void *ptr, size_t osize, size_t nsize) {
   (void)ud; (void)osize;  /* not used */
   if (nsize == 0) {
     if (ptr) {   // avoid a bunch of NULL pointer free calls
-      // TRACE("free %p", ptr);
+      TRACE("free %p", ptr); FLUSH();
       free(ptr);
     }
     return NULL;
   }
   else {
     void * res = realloc(ptr, nsize);
-    // TRACE("realloc %p[%lu] -> %p[%lu]", ptr, osize, res, nsize);
+    TRACE("realloc %p[%lu] -> %p[%lu]", ptr, osize, res, nsize); FLUSH();
     if (res == 0 ){
-      TRACE("realloc FAILURE %u", nsize);
+      TRACE("realloc FAILURE %lu", nsize);
       dumpFreeMemory();
     }
     return res;

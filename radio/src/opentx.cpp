@@ -437,7 +437,7 @@ void modelDefault(uint8_t id)
 #if defined(LUA)
   if (isFileAvailable(WIZARD_PATH "/" WIZARD_NAME)) {
     f_chdir(WIZARD_PATH);
-    luaExec(WIZARD_NAME);
+    luaExecProtected(WIZARD_NAME);
   }
 #endif
 
@@ -2512,7 +2512,7 @@ void opentxClose()
 #endif
 
 #if defined(LUA)
-  luaClose();
+  luaCloseProtected();
 #endif
 
 #if defined(SDCARD)
@@ -2853,7 +2853,7 @@ void perMain()
     }
 
 #if defined(LUA)
-    luaTask(evt);
+    luaTaskProtected(evt);
 #endif
 
     if (!LCD_LOCKED()) {
@@ -3307,7 +3307,7 @@ uint16_t stack_free(uint8_t tid)
     case 255:
       // main stack
       stack = (OS_STK *)&_main_stack_start;
-      size = (_main_stack_size / 4);
+      size = ((unsigned char *)&_estack - (unsigned char *)&_main_stack_start) / 4;
       break;
     default:
       return 0;
@@ -3400,8 +3400,6 @@ inline void opentxInit(OPENTX_INIT_ARGS)
 #if defined(RTCLOCK)
   rtcInit();
 #endif
-
-  LUA_INIT();
 
   if (g_eeGeneral.backlightMode != e_backlight_mode_off) backlightOn(); // on Tx start turn the light on
 

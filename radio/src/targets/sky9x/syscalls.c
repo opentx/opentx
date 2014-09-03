@@ -56,7 +56,7 @@
 extern int errno;
 extern int  _end;
 extern int _estack;
-extern const int _main_stack_size;
+extern int _main_stack_start;
 
 #define RAM_END (unsigned char *)&_estack
 
@@ -70,13 +70,16 @@ extern int _getpid ( void ) ;
 unsigned char *heap = (unsigned char *)&_end;
 extern caddr_t _sbrk(int nbytes)
 {
-  if (heap + nbytes < RAM_END-_main_stack_size) {
+  
+  if (heap + nbytes < (unsigned char *)&_main_stack_start) {
     unsigned char *prev_heap = heap;
     heap += nbytes;
+    TRACE("_sbrk() new heap %p", heap); FLUSH();
     return (caddr_t) prev_heap;
   }
   else {
     errno = ENOMEM;
+    TRACE("x");
     return ((void*)-1);
   }
 }

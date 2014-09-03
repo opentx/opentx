@@ -198,10 +198,12 @@ long Open9xSim::onKeypress(FXObject*,FXSelector,void*v)
   if (evt->code=='s'){
     makeSnapshot(bmf);
   }
+#if defined(PCBTARANIS)
   if (evt->code=='F'){
     TRACE("SimulateMallocFailure = 1");
     SimulateMallocFailure = 1;
   }
+#endif
   return 0;
 }
 
