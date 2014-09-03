@@ -1,0 +1,4 @@
+void _init (void)
+{
+  
+}
