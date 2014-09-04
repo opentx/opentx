@@ -6,31 +6,32 @@
 
 BinAllocator_slots1 slots1;
 BinAllocator_slots2 slots2;
-int SimulateMallocFailure = 0;
 
+#if defined(DEBUG)
+int SimulateMallocFailure = 0;    //set this to simulate allocation failure
+#endif 
 
 bool bin_free(void * ptr)
 {
-  //return TRUE if our
-  return (slots1.free(ptr) || slots2.free(ptr));
+  //return TRUE if ours
+  return slots1.free(ptr) || slots2.free(ptr);
 }
 
 void * bin_malloc(size_t size) {
-  //try to give from our space,
+  //try to allocate from our space
   void * res = slots1.malloc(size);
-  if (res) return res;
-  return slots2.malloc(size);
+  return res ? res : slots2.malloc(size);
 }
 
 void * bin_realloc(void * ptr, size_t size)
 {
   if (ptr == 0) {
-    //no previous data
+    //no previous data, try our malloc
     return bin_malloc(size);
   }
   else {
     if (! (slots1.is_member(ptr) || slots2.is_member(ptr)) ) {
-      // not our resposibility
+      // not our data, leave it to libc realloc
       return 0;
     }
 
@@ -46,10 +47,10 @@ void * bin_realloc(void * ptr, size_t size)
       return ptr;
     }
 
-    //we need bigger slot
+    //we need a bigger slot
     void * res = bin_malloc(size);
     if (res == 0) {
-      //allocation failure
+      // we don't have the space, use libc malloc
       // TRACE("bin_malloc [%lu] FAILURE", size); FLUSH();
       res = malloc(size);
       if (res == 0) {
@@ -79,6 +80,7 @@ void *bin_l_alloc (void *ud, void *ptr, size_t osize, size_t nsize)
     return NULL;
   }
   else {
+#if defined(DEBUG)
     if (SimulateMallocFailure < 0 ) {
       //delayed failure
       if (++SimulateMallocFailure == 0) {
@@ -90,10 +92,8 @@ void *bin_l_alloc (void *ud, void *ptr, size_t osize, size_t nsize)
       TRACE("bin_l_alloc(): simulating malloc failure at %p[%lu]", ptr, nsize); FLUSH();
       return 0;
     }
-    // if requested size fints in our slots
-    // and we have a free slot,
-    // then use our allocator
-    // else use lic allocator
+#endif // #if defined(DEBUG)
+    // try our allocator, if it fails use libc allocator
     void * res = bin_realloc(ptr, nsize);
     if (res && ptr) {
       // TRACE("OUR realloc %p[%lu] -> %p[%lu]", ptr, osize, res, nsize); FLUSH(); 
