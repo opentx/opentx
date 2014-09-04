@@ -137,6 +137,85 @@ static void dispw_256( register uint32_t address, register uint32_t lines )
 	}
 }
 
+extern Fifo<512> uart3TxFifo;
+
+void debugFlush() 
+{
+  uart3TxFifo.flush();
+}
+
+#if defined(NANO)
+typedef struct malloc_chunk
+{
+    /*          ------------------
+     *   chunk->| size (4 bytes) |
+     *          ------------------
+     *          | Padding for    |
+     *          | alignment      |
+     *          | holding neg    |
+     *          | offset to size |
+     *          ------------------
+     * mem_ptr->| point to next  |
+     *          | free when freed|
+     *          | or data load   |
+     *          | when allocated |
+     *          ------------------
+     */
+    /* size of the allocated payload area, including size before
+       CHUNK_OFFSET */
+    long size;
+
+    /* since here, the memory is either the next free block, or data load */
+    struct malloc_chunk * next;
+}chunk;
+
+#define free_list __malloc_free_list
+#define sbrk_start __malloc_sbrk_start
+
+extern chunk * free_list;
+extern char * sbrk_start;
+
+#include "bin_allocator.h"
+
+void dumpFreeMemory() 
+{
+  chunk * pf;
+  size_t free_size = 0;
+  size_t total_size;
+
+  if (sbrk_start == NULL) total_size = 0;
+  else total_size = (size_t) ((char*)heap - sbrk_start);
+
+  FLUSH(); TRACE("mallinfo:");
+  // char * prev_end = sbrk_start;
+  for (pf = free_list; pf; pf = pf->next) {
+    free_size += pf->size;
+    // using TRACE here is dangerous!!! ti could cause another allocation
+    // and this would mean that free_list would change on us
+    // TRACE("\t%6d %p[%d]", prev_end ? ((char*)pf - prev_end):0, pf, pf->size);
+    // FLUSH();
+    // prev_end = (char*)pf + pf->size;
+  }
+
+  TRACE("\tTotal size: %d", total_size);
+  TRACE("\tFree size:  %d", free_size);
+  TRACE("\tUsed size:  %d", total_size - free_size);
+  FLUSH();
+
+#if defined(USE_BIN_ALLOCATOR)
+  // display bins info
+  TRACE("\tslots1: %d/%d", slots1.size(), slots1.capacity());
+  TRACE("\tslots2: %d/%d", slots2.size(), slots2.capacity());
+#endif // #if defined(USE_BIN_ALLOCATOR)
+
+  //display heap info
+  TRACE("\theap: %p", heap);
+}
+
+#else     // #if defined(NANO)
+#define dumpFreeMemory()
+#endif   // #if defined(NANO)
+
 void debugTask(void* pdata)
 {
   uint8_t rxchar ;
@@ -212,6 +291,10 @@ void debugTask(void* pdata)
       crlf();
     }
 
+    if ( rxchar == 'F' )
+    {
+      dumpFreeMemory();
+    }
   }
 }
 #endif

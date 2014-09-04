@@ -87,6 +87,8 @@ LUALIB_API int (luaL_len) (lua_State *L, int idx);
 LUALIB_API const char *(luaL_gsub) (lua_State *L, const char *s, const char *p,
                                                   const char *r);
 
+LUALIB_API void *l_alloc (void *ud, void *ptr, size_t osize, size_t nsize);
+
 LUALIB_API void (luaL_setfuncs) (lua_State *L, const luaL_Reg *l, int nup);
 
 LUALIB_API int (luaL_getsubtable) (lua_State *L, int idx, const char *fname);

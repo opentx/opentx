@@ -45,6 +45,7 @@
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
+#include "lua_protect.h"
 
 extern const char * zchar2string(const char * zstring, int size);
 #define EXPECT_ZSTREQ(c_string, z_string)   EXPECT_STREQ(c_string, zchar2string(z_string, sizeof(z_string)))
@@ -52,6 +53,8 @@ extern const char * zchar2string(const char * zstring, int size);
 void luaExecStr(const char * str)
 {
   extern lua_State * L;
+  if (!L) luaInit_P();
+  if (!L) FAIL() << "No Lua state!!!"; 
   if (luaL_dostring(L, str)) {
     FAIL() << "lua error: " << lua_tostring(L, -1);
   }
@@ -98,4 +101,51 @@ TEST(Lua, testSetTelemetryChannel)
 
 }
 
+TEST(Lua, testPanicProtection)
+{
+  bool passed = false;
+  PROTECT_LUA() {
+    PROTECT_LUA() {
+      //simulate panic
+      longjmp(global_lj->b, 1);
+    }
+    else {
+      //we should come here
+      passed = true;
+    }
+    UNPROTECT_LUA();
+  }
+  else
+  {
+    // an not here 
+    // TRACE("testLuaProtection: test 1 FAILED");
+    FAIL() << "Failed test 1";
+  }
+  UNPROTECT_LUA()  
+
+  EXPECT_EQ(passed, true);  
+
+  passed = false;
+  PROTECT_LUA() {
+    PROTECT_LUA() {
+      int a = 5;
+    }
+    else {
+      //we should not come here
+      // TRACE("testLuaProtection: test 2 FAILED");
+      FAIL() << "Failed test 2";
+    }
+    UNPROTECT_LUA()
+    //simulate panic
+    longjmp(global_lj->b, 1);
+  }
+  else
+  {
+    // we should come here
+    passed = true;
+  }
+  UNPROTECT_LUA()  
+
+  EXPECT_EQ(passed, true);   
+}
 #endif

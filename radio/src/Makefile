@@ -289,6 +289,16 @@ USB = JOYSTICK
 # NO - normal behaviour, show real channel values
 CHANNELS_MONITOR_INV_HIDE = NO
 
+# Use newlib-nano 
+# Values = NO, YES
+NANO = NO
+
+# Use custom bin based allocator for Lua
+# Values = NO, YES
+# YES - use our bin based allocator
+# NO - use default Lua allocator
+USE_BIN_ALLOCATOR = NO
+
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
@@ -731,6 +741,10 @@ ifeq ($(PCB), TARANIS)
            # lua/src/loslib.c lua/src/lbitlib.c lua/src/lstrlib.c lua/src/liolib.c lua/src/ldblib.c
     SRC += $(LUASRC) 
     LUADEP = lua_exports.cpp
+	  ifeq ($(USE_BIN_ALLOCATOR), YES)
+	    CPPDEFS += -DUSE_BIN_ALLOCATOR
+	    CPPSRC += bin_allocator.cpp
+	  endif
   endif           
 
   ifeq ($(SDCARD), YES)
@@ -1116,6 +1130,13 @@ MATH_LIB = -lm
 LDFLAGS = -Wl,-Map=$(TARGET).map,--cref
 LDFLAGS += $(MATH_LIB)
 
+
+ifeq ($(NANO), YES)
+  #use newlib-nano for linking
+  NEWLIB_NANO_FLAGS = --specs=nano.specs -u _printf_float
+  CPPDEFS += -DNANO
+endif
+
 # Define Messages
 # English
 MSG_BEGIN = -------- begin --------
@@ -1278,7 +1299,7 @@ bitmaps/sticks.lbm: bitmaps/sticks_4x1.xbm bitmaps/splash_9x.xbm bitmaps/splash_
 
 lua_exports.cpp: myeeprom.h ../util/luaexport.py
 	@echo "Generating a list of Lua exported constants in lua_exports.txt" 
-	@$(CPP) -DPCBTARANIS -DCPUARM -DLUA -DEXPORT  myeeprom.h | grep LEXP > lua_exports.txt
+	@$(CPP) -DPCBTARANIS -DCPUARM -DLUA -DEXPORT myeeprom.h | grep LEXP > lua_exports.txt
 	@echo "Parsing and generating C Lua exports in lua_exports.cpp"
 	@python ../util/luaexport.py $(VERSION) lua_exports.txt lua_exports.cpp lua_fields.txt
 	@rm lua_exports.txt
@@ -1324,7 +1345,7 @@ FOXLIB=-L/usr/local/lib \
        -Wl,-rpath,$(FOXPATH)/src/.libs
 
 simu: $(LUADEP) stamp_header $(BOARDSRC) $(CPPSRC) Makefile simu.cpp targets/simu/simpgmspace.cpp *.h tra lbm eeprom.bin
-	g++ $(CPPFLAGS) $(INCFLAGS) simu.cpp $(BOARDSRC) $(CPPSRC) $(LUASRC) targets/simu/simpgmspace.cpp -MD -DSIMU -O0 -o simu $(FOXINC) $(FOXLIB) -pthread -fexceptions
+	g++ $(CPPFLAGS) $(INCFLAGS) simu.cpp $(BOARDSRC) $(CPPSRC) $(LUASRC) targets/simu/simpgmspace.cpp -MD -DSIMU -DLUA_USE_APICHECK -O0 -o simu $(FOXINC) $(FOXLIB) -pthread -fexceptions
 
 eeprom.bin:
 	dd if=/dev/zero of=$@ bs=1 count=2048
@@ -1390,7 +1411,7 @@ OBJS =  $(TMP:.s=.o)
 	@echo
 	@echo $(MSG_COMPILING) $@
 	$(CC) $(ARMCPPFLAGS) $< -o allsrc.o
-	$(CC) $(OBJS) allsrc.o -mcpu=cortex-m3 -mthumb -nostartfiles -lm -T$(LDSCRIPT) -Wl,-Map=$(TARGET).map,--cref,--no-warn-mismatch,--gc-sections -o $@
+	$(CC) $(OBJS) allsrc.o -mcpu=cortex-m3 -mthumb -nostartfiles -lm -T$(LDSCRIPT) -Wl,-Map=$(TARGET).map,--cref,--no-warn-mismatch,--gc-sections $(NEWLIB_NANO_FLAGS) -o $@
 endif
 
 # Target: clean project.

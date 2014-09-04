@@ -273,6 +273,7 @@ void referenceSystemAudioFiles()
         }
       }
     }
+    f_closedir(&dir);
   }
 
   sdAvailableSystemAudioFiles = availableAudioFiles;
@@ -394,6 +395,7 @@ void referenceModelAudioFiles()
         }
       }
     }
+    f_closedir(&dir);
   }
 }
 
