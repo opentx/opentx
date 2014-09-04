@@ -13,7 +13,6 @@ private:
   int NoUsedBins;
 public:
   BinAllocator() : NoUsedBins(0) {
-    TRACE("BinAllocator<%d> sizeof(Bins): %lu, sizeof(Bin): %lu", SIZE_SLOT, sizeof(Bins), sizeof(Bin)); FLUSH();
     memclear(Bins, sizeof(Bins));
   }
   bool free(void * ptr) {
@@ -68,11 +67,12 @@ typedef BinAllocator<29,200> BinAllocator_slots1;
 typedef BinAllocator<91,50> BinAllocator_slots2;
 #endif
 
+#if defined(USE_BIN_ALLOCATOR)
 extern BinAllocator_slots1 slots1;
 extern BinAllocator_slots2 slots2;
 
 // wrapper for our BinAllocator for Lua
 void *bin_l_alloc (void *ud, void *ptr, size_t osize, size_t nsize);
-
+#endif   //#if defined(USE_BIN_ALLOCATOR)
 
 #endif //binallocator_h

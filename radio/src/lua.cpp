@@ -39,6 +39,7 @@
 #include "opentx.h"
 #include "stamp-opentx.h"
 #include "bin_allocator.h"
+#include "lua_protect.h"
 
 #if !defined(SIMU)
 extern "C" {
@@ -55,7 +56,7 @@ extern "C" {
 
 #define lua_registernumber(L, n, i)    (lua_pushnumber(L, (i)), lua_setglobal(L, (n)))
 #define lua_registerint(L, n, i)       (lua_pushinteger(L, (i)), lua_setglobal(L, (n)))
-#define lua_pushtablenil(L, k)         (lua_pushstring(L, (k)), lua_pushnil(L), lua_settable(L, -3))   //lua_settable can throw error
+#define lua_pushtablenil(L, k)         (lua_pushstring(L, (k)), lua_pushnil(L), lua_settable(L, -3))
 #define lua_pushtableboolean(L, k, v)  (lua_pushstring(L, (k)), lua_pushboolean(L, (v)), lua_settable(L, -3))
 #define lua_pushtableinteger(L, k, v)  (lua_pushstring(L, (k)), lua_pushinteger(L, (v)), lua_settable(L, -3))
 #define lua_pushtablenumber(L, k, v)   (lua_pushstring(L, (k)), lua_pushnumber(L, (v)), lua_settable(L, -3))
@@ -72,22 +73,8 @@ ScriptInputsOutputs scriptInputsOutputs[MAX_SCRIPTS] = { {0} };
 ScriptInternalData standaloneScript = { SCRIPT_NOFILE, 0 };
 uint16_t maxLuaInterval = 0;
 uint16_t maxLuaDuration = 0;
-// jmp_buf custom_lua_panic_jump;    //our Lua panic jump point for setjmp/longjmp
-
-struct our_longjmp {
-  struct our_longjmp *previous;
-  jmp_buf b;
-  volatile int status;  /* error code */
-};
-
 struct our_longjmp * global_lj = 0;
 
-#define PROTECT_LUA()   { struct our_longjmp lj; \
-                        lj.previous = global_lj;  /* chain new error handler */ \
-                        global_lj = &lj;  \
-                        if (setjmp(lj.b) == 0)
-
-#define UNPROTECT_LUA() global_lj = lj.previous; } /* restore old error handler */
                           
 #define PERMANENT_SCRIPTS_MAX_INSTRUCTIONS (10000/100)
 #define MANUAL_SCRIPTS_MAX_INSTRUCTIONS    (20000/100)
@@ -106,6 +93,7 @@ void hook(lua_State* L, lua_Debug *ar)
   }
 }
 
+#if defined(DEBUG)
 bool SimulatePanic;
 
 void simu_panic()
@@ -116,12 +104,11 @@ void simu_panic()
   }
 }
 
-
-#if defined(DEBUG)
 #define SIMULATE_PANIC()  simu_panic()
-#else
+
+#else   // #if defined(DEBUG)
 #define SIMULATE_PANIC()
-#endif
+#endif   // #if defined(DEBUG)
 
 /* custom panic handler */
 static int custom_lua_atpanic(lua_State *lua)
@@ -286,7 +273,7 @@ static int luaGetValue(lua_State *L)
 {
   int src = 0;
   if (lua_isnumber(L, 1)) {
-    src = luaL_checkinteger(L, 1);  //can throw error
+    src = luaL_checkinteger(L, 1);
   }
   else {
     // convert from field name to its id
@@ -559,7 +546,7 @@ static int luaLcdDrawCombobox(lua_State *L)
 
 static int luaModelGetInfo(lua_State *L)
 {
-  lua_newtable(L); //can throw error
+  lua_newtable(L);
   lua_pushtablezstring(L, "name", g_model.header.name);
   lua_pushtableinteger(L, "id", g_model.header.modelId);
   return 1;
@@ -1223,7 +1210,7 @@ static int luaPopupInput(lua_State *L)
   displayWarning(event);
   if (s_warning_result) {
     s_warning_result = 0;
-    lua_pushstring(L, "OK");   //can throw error
+    lua_pushstring(L, "OK");
   }
   else if (!s_warning) {
     lua_pushstring(L, "CANCEL");
@@ -1272,7 +1259,7 @@ int luaGetInputs(ScriptInputsOutputs & sid)
           case 0:
             luaL_checktype(L, -2, LUA_TNUMBER); // key is number
             luaL_checktype(L, -1, LUA_TSTRING); // value is string
-            sid.inputs[sid.inputsCount].name = lua_tostring(L, -1);  //can throw error
+            sid.inputs[sid.inputsCount].name = lua_tostring(L, -1);
             break;
           case 1:
             luaL_checktype(L, -2, LUA_TNUMBER); // key is number
@@ -1395,9 +1382,6 @@ void luaClose_P()
     L = 0;
     TRACE("lua_close end");
     dumpFreeMemory();
-#if defined(FIX_NEWLIB_NANO_ALLOCATOR)
-    freeFreeMemory();
-#endif
   }
 }
 
@@ -1415,7 +1399,7 @@ void luaRegisterStuff()
 
   // Push OpenTX functions
   TRACE("registering functions");
-  lua_register(L, "getTime", luaGetTime);  //can throw error
+  lua_register(L, "getTime", luaGetTime);
   lua_register(L, "getVersion", luaGetVersion);
   lua_register(L, "getGeneralSettings", luaGetGeneralSettings);
   lua_register(L, "getValue", luaGetValue);
@@ -1482,10 +1466,14 @@ void luaRegisterStuff()
 void luaInit_P()
 {
   luaClose_P();
-  if (luaState == LUASTATE_PANIC) return;
+  if (luaState & LUASTATE_PANIC) return;
 
   TRACE("luaL_newstate");
+#if defined(USE_BIN_ALLOCATOR)
   L = lua_newstate(bin_l_alloc, NULL);   //we use our own allocator!
+#else
+  L = lua_newstate(l_alloc, NULL);   //we use Lua default allocator
+#endif
   if (!L) {
     /* log error and return */
     POPUP_WARNING("Lua Disabled!");
@@ -1940,7 +1928,7 @@ void luaDoOneRunPermanentScript(uint8_t evt, int i)
 
 void luaDoOneRunPermanent_P(uint8_t evt)
 {
-  if (luaState == LUASTATE_RELOAD_MODEL_SCRIPTS) {
+  if (luaState & LUASTATE_RELOAD_MODEL_SCRIPTS) {
     // TRACE("LUASTATE_RELOAD_MODEL_SCRIPTS");
     luaState = 0;
     luaInit_P();
@@ -1992,7 +1980,7 @@ void luaDoGc_P()
 
 void luaTask_P(uint8_t evt)
 {
-  if (luaState == LUASTATE_PANIC) return; // Lua disabled for this session
+  if (luaState & LUASTATE_PANIC) return; // Lua disabled for this session
   if (!L) luaInit_P();   //this one is self protected
   if (!L) return;   //no Lua environment
 

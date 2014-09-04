@@ -45,6 +45,7 @@
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
+#include "lua_protect.h"
 
 extern const char * zchar2string(const char * zstring, int size);
 #define EXPECT_ZSTREQ(c_string, z_string)   EXPECT_STREQ(c_string, zchar2string(z_string, sizeof(z_string)))
@@ -99,22 +100,6 @@ TEST(Lua, testSetTelemetryChannel)
   luaExecStr("if math.abs(channel.alarm2 - 50) > 0.5 then error('channel.alarm2 is: '..channel.alarm2) end");
 
 }
-
-struct our_longjmp {
-  struct our_longjmp *previous;
-  jmp_buf b;
-  volatile int status;  /* error code */
-};
-
-extern struct our_longjmp * global_lj;
-
-#define PROTECT_LUA()   { struct our_longjmp lj; \
-                        lj.previous = global_lj;  /* chain new error handler */ \
-                        global_lj = &lj;  \
-                        if (setjmp(lj.b) == 0)
-
-#define UNPROTECT_LUA() global_lj = lj.previous; } /* restore old error handler */
-
 
 TEST(Lua, testPanicProtection)
 {

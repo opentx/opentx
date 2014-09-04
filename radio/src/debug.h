@@ -72,8 +72,6 @@ inline void dump(void * data, unsigned int size)
 #define DUMP(data, size) dump(data, size)
 
 #define dumpFreeMemory()
-#define freeFreeMemory()
-
 
 #elif defined(DEBUG) && defined(CPUARM)
 
@@ -86,10 +84,8 @@ void dump(unsigned char *data, unsigned int size);
 
 #if defined(NANO)
 void dumpFreeMemory();
-void freeFreeMemory();
 #else
 #define dumpFreeMemory()
-#define freeFreeMemory()
 #endif
 
 void debugFlush();

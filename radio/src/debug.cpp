@@ -187,12 +187,14 @@ void dumpFreeMemory()
   else total_size = (size_t) ((char*)heap - sbrk_start);
 
   FLUSH(); TRACE("mallinfo:");
-  char * prev_end = sbrk_start;
+  // char * prev_end = sbrk_start;
   for (pf = free_list; pf; pf = pf->next) {
     free_size += pf->size;
-    TRACE("\t%6d %p[%d]", prev_end ? ((char*)pf - prev_end):0, pf, pf->size);
-    FLUSH();
-    prev_end = (char*)pf + pf->size;
+    // using TRACE here is dangerous!!! ti could cause another allocation
+    // and this would mean that free_list would change on us
+    // TRACE("\t%6d %p[%d]", prev_end ? ((char*)pf - prev_end):0, pf, pf->size);
+    // FLUSH();
+    // prev_end = (char*)pf + pf->size;
   }
 
   TRACE("\tTotal size: %d", total_size);
@@ -200,24 +202,14 @@ void dumpFreeMemory()
   TRACE("\tUsed size:  %d", total_size - free_size);
   FLUSH();
 
+#if defined(USE_BIN_ALLOCATOR)
   // display bins info
   TRACE("\tslots1: %d/%d", slots1.size(), slots1.capacity());
   TRACE("\tslots2: %d/%d", slots2.size(), slots2.capacity());
+#endif // #if defined(USE_BIN_ALLOCATOR)
 
   //display heap info
   TRACE("\theap: %p", heap);
-}
-
-extern int  _end;
-
-void freeFreeMemory()
-{
-	//TODO this functio should be atomic
-  if ((char*)free_list == sbrk_start) {
-    TRACE("feeing all memory");
-    free_list = 0;
-    heap = (unsigned char *)&_end;
-  }
 }
 
 #else     // #if defined(NANO)

@@ -293,13 +293,11 @@ CHANNELS_MONITOR_INV_HIDE = NO
 # Values = NO, YES
 NANO = NO
 
-
-# Modify newlib-nano allocator
+# Use custom bin based allocator for Lua
 # Values = NO, YES
-# YES - when all allocated memory is freed and all free
-#       memory is in one free chunk, remove that chunk
-#       and restore heap to zero size
-FIX_NEWLIB_NANO_ALLOCATOR = NO
+# YES - use our bin based allocator
+# NO - use default Lua allocator
+USE_BIN_ALLOCATOR = NO
 
 #------- END BUILD OPTIONS ---------------------------
 
@@ -669,9 +667,6 @@ ifeq ($(PCB), TARANIS)
   else
     CPPDEFS = -DREV4
   endif
-  ifeq ($(FIX_NEWLIB_NANO_ALLOCATOR), YES)
-    CPPDEFS = -DFIX_NEWLIB_NANO_ALLOCATOR
-  endif
   LDSCRIPT = targets/taranis/stm32_flash_bl.ld
   TRGT = arm-none-eabi-
   MCU  = cortex-m3
@@ -739,13 +734,17 @@ ifeq ($(PCB), TARANIS)
     endif
     CPPDEFS += -DLUA
     INCDIRS += lua/src
-    CPPSRC += lua.cpp bin_allocator.cpp
+    CPPSRC += lua.cpp
     LUASRC = lua/src/lapi.c lua/src/lcode.c lua/src/lctype.c lua/src/ldebug.c lua/src/ldo.c lua/src/ldump.c lua/src/lfunc.c lua/src/lgc.c lua/src/llex.c lua/src/lmem.c \
            lua/src/lobject.c lua/src/lopcodes.c lua/src/lparser.c lua/src/lstate.c lua/src/lstring.c lua/src/ltable.c lua/src/ltm.c lua/src/lundump.c lua/src/lvm.c lua/src/lzio.c \
            lua/src/lbaselib.c lua/src/linit.c lua/src/lmathlib.c lua/src/loadlib.c lua/src/lauxlib.c lua/src/ltablib.c lua/src/lcorolib.c 
            # lua/src/loslib.c lua/src/lbitlib.c lua/src/lstrlib.c lua/src/liolib.c lua/src/ldblib.c
     SRC += $(LUASRC) 
     LUADEP = lua_exports.cpp
+	  ifeq ($(USE_BIN_ALLOCATOR), YES)
+	    CPPDEFS += -DUSE_BIN_ALLOCATOR
+	    CPPSRC += bin_allocator.cpp
+	  endif
   endif           
 
   ifeq ($(SDCARD), YES)

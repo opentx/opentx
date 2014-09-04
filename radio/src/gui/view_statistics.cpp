@@ -210,8 +210,10 @@ void menuStatisticsDebug(uint8_t event)
   lcd_outdezAtt(lcdLastPos, 6*FH, stack_free(1), UNSIGN|LEFT);
   lcd_putsAtt(lcdLastPos+2, 6*FH+1, "[A]", SMLSIZE);
   lcd_outdezAtt(lcdLastPos, 6*FH, stack_free(2), UNSIGN|LEFT);
+#if defined(PCBTARANIS)
   lcd_putsAtt(lcdLastPos+2, 6*FH+1, "[I]", SMLSIZE);
   lcd_outdezAtt(lcdLastPos, 6*FH, stack_free(255), UNSIGN|LEFT);
+#endif // #if defined(PCBTARANIS)
 #else
   lcd_outdezAtt(MENU_DEBUG_COL1_OFS, 6*FH, stack_free(0), UNSIGN|LEFT);
   lcd_puts(lcdLastPos, 6*FH, "/");

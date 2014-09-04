@@ -103,14 +103,14 @@ static void seterrorobj (lua_State *L, int errcode, StkId oldtop) {
 l_noret luaD_throw (lua_State *L, int errcode) {
   if (L->errorJmp) {  /* thread has an error handler? */
     L->errorJmp->status = errcode;  /* set status */
-    TRACE("luaD_throw(): L->errorJmp");
+    // TRACE("luaD_throw(): L->errorJmp");
     LUAI_THROW(L, L->errorJmp);  /* jump to it */
   }
   else {  /* thread has no error handler */
     L->status = cast_byte(errcode);  /* mark it as dead */
     if (G(L)->mainthread->errorJmp) {  /* main thread has a handler? */
       setobjs2s(L, G(L)->mainthread->top++, L->top - 1);  /* copy error obj. */
-      TRACE("luaD_throw(): G(L)->mainthread");
+      // TRACE("luaD_throw(): G(L)->mainthread");
       luaD_throw(G(L)->mainthread, errcode);  /* re-throw in main thread */
     }
     else {  /* no handler at all; abort */
@@ -118,7 +118,7 @@ l_noret luaD_throw (lua_State *L, int errcode) {
         lua_unlock(L);
         G(L)->panic(L);  /* call it (last chance to jump out) */
       }
-      TRACE("luaD_throw(): ABORT");
+      // TRACE("luaD_throw(): ABORT");
       abort();
     }
   }
@@ -164,7 +164,7 @@ static void correctstack (lua_State *L, TValue *oldstack) {
 void luaD_reallocstack (lua_State *L, int newsize) {
   TValue *oldstack = L->stack;
   int lim = L->stacksize;
-  TRACE("luaD_reallocstack(): from %d to %d at %p", L->stacksize, newsize, L->stack);
+  // TRACE("luaD_reallocstack(): from %d to %d at %p", L->stacksize, newsize, L->stack);
   lua_assert(newsize <= LUAI_MAXSTACK || newsize == ERRORSTACKSIZE);
   lua_assert(L->stack_last - L->stack == L->stacksize - EXTRA_STACK);
   luaM_reallocvector(L, L->stack, L->stacksize, newsize, TValue);
@@ -173,13 +173,13 @@ void luaD_reallocstack (lua_State *L, int newsize) {
   L->stacksize = newsize;
   L->stack_last = L->stack + newsize - EXTRA_STACK;
   correctstack(L, oldstack);
-  TRACE("luaD_reallocstack(): finished size %d at %p", L->stacksize, L->stack);
+  // TRACE("luaD_reallocstack(): finished size %d at %p", L->stacksize, L->stack);
 }
 
 
 void luaD_growstack (lua_State *L, int n) {
   int size = L->stacksize;
-  TRACE("luaD_growstack(): from %d add %d ", L->stacksize, n);
+  // TRACE("luaD_growstack(): from %d add %d ", L->stacksize, n);
   if (size > LUAI_MAXSTACK)  /* error after extra size? */
     luaD_throw(L, LUA_ERRERR);
   else {
@@ -194,7 +194,7 @@ void luaD_growstack (lua_State *L, int n) {
     else
       luaD_reallocstack(L, newsize);
   }
-  TRACE("luaD_growstack(): for %d to %d at %p", n, L->stacksize, L->stack);
+  // TRACE("luaD_growstack(): for %d to %d at %p", n, L->stacksize, L->stack);
 }
 
 
@@ -217,8 +217,7 @@ void luaD_shrinkstack (lua_State *L) {
     // TRACE("luaD_shrinkstack(skip): L->stacksize: %d, goodsize: %d", L->stacksize, goodsize);
     return;
   }
-  TRACE("luaD_shrinkstack(): L->stacksize: %d, goodsize: %d", L->stacksize, goodsize);
-  //TODO ony really shirnk if size decrease big enough
+  // TRACE("luaD_shrinkstack(): L->stacksize: %d, goodsize: %d", L->stacksize, goodsize);
   if (goodsize > LUAI_MAXSTACK) goodsize = LUAI_MAXSTACK;
   if (inuse > LUAI_MAXSTACK ||  /* handling stack overflow? */
       goodsize >= L->stacksize)  /* would grow instead of shrink? */

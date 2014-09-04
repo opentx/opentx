@@ -74,12 +74,14 @@ extern caddr_t _sbrk(int nbytes)
   if (heap + nbytes < (unsigned char *)&_main_stack_start) {
     unsigned char *prev_heap = heap;
     heap += nbytes;
-    TRACE("_sbrk() new heap %p", heap); FLUSH();
+    // TRACE here is very dangerous, because printf() might do an allocation
+    // TRACE("_sbrk() new heap %p", heap); FLUSH();
     return (caddr_t) prev_heap;
   }
   else {
     errno = ENOMEM;
-    TRACE("x");
+    // TRACE here is very dangerous, because printf() might do an allocation
+    // TRACE("x");
     return ((void*)-1);
   }
 }

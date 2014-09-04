@@ -1492,7 +1492,7 @@ enum AUDIO_SOUNDS {
   };
   #define LUASTATE_STANDALONE_SCRIPT_RUNNING 1
   #define LUASTATE_RELOAD_MODEL_SCRIPTS      2
-  #define LUASTATE_PANIC                     3
+  #define LUASTATE_PANIC                     4
   extern uint8_t luaState;
   extern uint8_t luaScriptsCount;
   extern ScriptInternalData standaloneScript;
