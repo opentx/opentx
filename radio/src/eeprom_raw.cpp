@@ -683,6 +683,9 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
     if (result != FR_OK)
       return SDCARD_ERROR(result);
   }
+  else {
+    f_closedir(&archiveFolder);
+  }
 
   buf[sizeof(MODELS_PATH)-1] = '/';
   strcpy(strcat_modelname(&buf[sizeof(MODELS_PATH)], i_fileSrc), STR_MODELS_EXT);

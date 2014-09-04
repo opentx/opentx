@@ -51,6 +51,8 @@
 #define TRACE_WARNING(...)    do { printf("-W- " __VA_ARGS__); fflush(stdout); } while(0)
 #define TRACE_WARNING_WP(...) do { printf(__VA_ARGS__); fflush(stdout); } while(0)
 #define TRACE_ERROR(...)      do { printf("-E- " __VA_ARGS__); fflush(stdout); } while(0)
+#define FLUSH()
+
 inline void dump(void * data, unsigned int size)
 {
   unsigned char *uchar_data = (unsigned char *)data;
@@ -69,6 +71,8 @@ inline void dump(void * data, unsigned int size)
 }
 #define DUMP(data, size) dump(data, size)
 
+#define dumpFreeMemory()
+
 #elif defined(DEBUG) && defined(CPUARM)
 
 #ifdef __cplusplus
@@ -78,9 +82,19 @@ extern "C" {
 void debugPuts(const char *string, ...);
 void dump(unsigned char *data, unsigned int size);
 
+#if defined(NANO)
+void dumpFreeMemory();
+#else
+#define dumpFreeMemory()
+#endif
+
+void debugFlush();
+
+
 #ifdef __cplusplus
 }
 #endif
+
 
 #define TRACE(...)            do { debugPuts(__VA_ARGS__); debugPuts("\r\n"); } while(0)
 #define DUMP(data, size)      dump(data, size)
@@ -91,7 +105,7 @@ void dump(unsigned char *data, unsigned int size);
 #define TRACE_WARNING(...)    debugPuts("-W- " __VA_ARGS__)
 #define TRACE_WARNING_WP(...) debugPuts(__VA_ARGS__)
 #define TRACE_ERROR(...)      debugPuts("-E- " __VA_ARGS__)
-
+#define FLUSH()               debugFlush();
 void debugTask(void* pdata);
 
 #else
@@ -105,6 +119,10 @@ void debugTask(void* pdata);
 #define TRACE_WARNING(...) { }
 #define TRACE_WARNING_WP(...) { }
 #define TRACE_ERROR(...) { }
+#define FLUSH()
+
+#define dumpFreeMemory()
+#define freeFreeMemory()
 
 #endif
 

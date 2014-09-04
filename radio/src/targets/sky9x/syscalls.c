@@ -47,6 +47,7 @@
 #include <sys/stat.h>
 #include <errno.h>
 
+#include "debug.h"
 /*----------------------------------------------------------------------------
  *        Exported variables
  *----------------------------------------------------------------------------*/
@@ -55,6 +56,7 @@
 extern int errno;
 extern int  _end;
 extern int _estack;
+extern int _main_stack_start;
 
 #define RAM_END (unsigned char *)&_estack
 
@@ -68,13 +70,18 @@ extern int _getpid ( void ) ;
 unsigned char *heap = (unsigned char *)&_end;
 extern caddr_t _sbrk(int nbytes)
 {
-  if (heap + nbytes < RAM_END-8192) {
+  
+  if (heap + nbytes < (unsigned char *)&_main_stack_start) {
     unsigned char *prev_heap = heap;
     heap += nbytes;
+    // TRACE here is very dangerous, because printf() might do an allocation
+    // TRACE("_sbrk() new heap %p", heap); FLUSH();
     return (caddr_t) prev_heap;
   }
   else {
     errno = ENOMEM;
+    // TRACE here is very dangerous, because printf() might do an allocation
+    // TRACE("x");
     return ((void*)-1);
   }
 }
@@ -142,7 +149,7 @@ extern int _write( int file, char *ptr, int len )
 
 extern void _exit( int status )
 {
-    printf( "Exiting with status %d.\n", status ) ;
+    TRACE( "Exiting with status %d.\n", status ) ;
 
     for ( ; ; ) ;
 }

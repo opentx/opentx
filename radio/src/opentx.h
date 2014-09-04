@@ -41,7 +41,8 @@
 #include <string.h>
 #include <stddef.h>
 #include <stdlib.h>
-
+#include <setjmp.h> 
+ 
 #if defined(PCBSKY9X)
   #define IS_PCBSKY9X        true
   #define CASE_PCBSKY9X(x)   x,
@@ -693,7 +694,8 @@ extern uint8_t flightModeTransitionLast;
 #if defined(CPUARM) && !defined(SIMU)
   extern unsigned char *heap;
   extern int _end;
-  extern unsigned char *_estack;
+  extern int _estack;
+  extern int _main_stack_start;
   #define getAvailableMemory() ((unsigned int)((unsigned char *)&_estack - heap))
 #endif
 
@@ -1490,26 +1492,22 @@ enum AUDIO_SOUNDS {
   };
   #define LUASTATE_STANDALONE_SCRIPT_RUNNING 1
   #define LUASTATE_RELOAD_MODEL_SCRIPTS      2
+  #define LUASTATE_PANIC                     4
   extern uint8_t luaState;
   extern uint8_t luaScriptsCount;
   extern ScriptInternalData standaloneScript;
   extern ScriptInternalData scriptInternalData[MAX_SCRIPTS];
   extern ScriptInputsOutputs scriptInputsOutputs[MAX_SCRIPTS];
-  void luaInit();
-  void luaTask(uint8_t evt);
-  void luaExec(const char *filename);
-  void luaLoadMixScript(uint8_t index);
-  void luaLoadMixScripts();
+  void luaInit_P();
+  void luaClose_P();
+  void luaTask_P(uint8_t evt);
+  void luaExec_P(const char *filename);
   int luaGetMemUsed();
   #define luaGetCpuUsed(idx) scriptInternalData[idx].instructions
   bool isTelemetryScriptAvailable(uint8_t index);
-  #define LUA_INIT()
-  #define LUA_RESET() luaInit()
   #define LUA_LOAD_MODEL_SCRIPTS()   luaState |= LUASTATE_RELOAD_MODEL_SCRIPTS
   #define LUA_LOAD_MODEL_SCRIPT(idx) luaState |= LUASTATE_RELOAD_MODEL_SCRIPTS
 #else
-  #define LUA_INIT()
-  #define LUA_RESET()
   #define LUA_LOAD_MODEL_SCRIPTS()
   #define LUA_LOAD_MODEL_SCRIPT(idx)
 #endif
