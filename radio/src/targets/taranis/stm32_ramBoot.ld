@@ -21,7 +21,7 @@ ENTRY(Reset_Handler)
 
 /* Highest address of the user mode stack */
 _estack = 0x20020000;    /* end of 128K SRAM */
-_main_stack_size = 0x2000;   /*size of main stack*/
+_main_stack_size = 0x1000;   /*size of main stack*/
 _main_stack_start = _estack - _main_stack_size;
 
 
