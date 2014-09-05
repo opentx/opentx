@@ -566,3 +566,23 @@ Bertrand Condevaux Lanloy
 Henri Mirra
 Aurélien Planiol
 Kevin Caldwell
+Andrew Garello
+Tomasz Maziarz
+Russell Flack
+Fernando Rimoldi
+Greg Reid
+Dietmar Drees
+Holger Landwehr
+Arno Loehdorf
+Boon Sripattha
+Patrik Åkerfeldt
+Alonzo Fretwell
+Renjith Chandrasekharan
+Ruben Gomez Hernandez
+Michael Gardner
+Judith Green
+Timo Ruppell
+John Lipscomb
+Norbert Wenke
+Erik Frieberg
+Raimo Ruotsalainen
