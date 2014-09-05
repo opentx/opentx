@@ -1,4 +1,4 @@
-<h2>Version 2.0.10 / 2014-08-30</h2>
+<h2>Version 2.0.10 / 2014-09-06</h2>
 [All]
 <ul>
 <li>Duration and AND fixed on Sticky and Edge logical switches 
@@ -9,6 +9,7 @@
 <li>Taranis+ LCD color range and brightness adjusted
 <li>Taranis+ SWR removed
 <li>Lua small enhancements (TIMEHOUR constant, GVARS over 500)
+<li>Lua hardening, use of newlib-nano (optimizes RAM usage)
 <li>Incoming telemetry rejected if RSSI=0
 <li>Assign Bitmap impossible if filename length too big
 <li> 
