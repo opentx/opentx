@@ -2534,6 +2534,10 @@ void opentxClose()
   // TODO needed? telemetryEnd();
 #endif
 
+#if defined(LUA)
+  luaClose();
+#endif
+
 #if defined(SDCARD)
   closeLogs();
   sdDone();
@@ -3331,7 +3335,7 @@ uint16_t stack_free(uint8_t tid)
   for (; i<size; i++)
     if (stack[i] != 0x55555555)
       break;
-  return i;
+  return i*4;
 }
 #else
 extern unsigned char __bss_end ;
@@ -3414,8 +3418,6 @@ inline void opentxInit(OPENTX_INIT_ARGS)
 #if defined(RTCLOCK)
   rtcInit();
 #endif
-
-  LUA_INIT();
 
   if (g_eeGeneral.backlightMode != e_backlight_mode_off) backlightOn(); // on Tx start turn the light on
 

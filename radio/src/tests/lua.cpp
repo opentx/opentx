@@ -52,6 +52,8 @@ extern const char * zchar2string(const char * zstring, int size);
 void luaExecStr(const char * str)
 {
   extern lua_State * L;
+  if (!L) luaInit();
+  if (!L) FAIL() << "No Lua state!";
   if (luaL_dostring(L, str)) {
     FAIL() << "lua error: " << lua_tostring(L, -1);
   }
@@ -98,4 +100,51 @@ TEST(Lua, testSetTelemetryChannel)
 
 }
 
+TEST(Lua, testPanicProtection)
+{
+  bool passed = false;
+  PROTECT_LUA() {
+    PROTECT_LUA() {
+      //simulate panic
+      longjmp(global_lj->b, 1);
+    }
+    else {
+      //we should come here
+      passed = true;
+    }
+    UNPROTECT_LUA();
+  }
+  else {
+    // an not here
+    // TRACE("testLuaProtection: test 1 FAILED");
+    FAIL() << "Failed test 1";
+  }
+  UNPROTECT_LUA()
+
+  EXPECT_EQ(passed, true);
+
+  passed = false;
+
+  PROTECT_LUA() {
+    PROTECT_LUA() {
+      int a = 5;
+      a = a; // avoids the warning
+    }
+    else {
+      //we should not come here
+      // TRACE("testLuaProtection: test 2 FAILED");
+      FAIL() << "Failed test 2";
+    }
+    UNPROTECT_LUA()
+    //simulate panic
+    longjmp(global_lj->b, 1);
+  }
+  else {
+    // we should come here
+    passed = true;
+  }
+  UNPROTECT_LUA()
+
+  EXPECT_EQ(passed, true);
+}
 #endif

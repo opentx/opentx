@@ -309,8 +309,6 @@ void *main_thread(void *)
 
     if (g_eeGeneral.backlightMode != e_backlight_mode_off) backlightOn(); // on Tx start turn the light on
 
-    LUA_INIT();
-
     if (main_thread_running == 1) {
       opentxStart();
     }
