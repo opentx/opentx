@@ -693,7 +693,8 @@ extern uint8_t flightModeTransitionLast;
 #if defined(CPUARM) && !defined(SIMU)
   extern unsigned char *heap;
   extern int _end;
-  extern unsigned char *_estack;
+  extern int _estack;
+  extern int _main_stack_start;
   #define getAvailableMemory() ((unsigned int)((unsigned char *)&_estack - heap))
 #endif
 
