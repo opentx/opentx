@@ -1475,7 +1475,8 @@ enum AUDIO_SOUNDS {
     SCRIPT_OK,
     SCRIPT_NOFILE,
     SCRIPT_SYNTAX_ERROR,
-    SCRIPT_KILLED
+    SCRIPT_PANIC,
+    SCRIPT_KILLED,
   };
   enum ScriptReference {
     SCRIPT_MIX_FIRST,
@@ -1498,13 +1499,18 @@ enum AUDIO_SOUNDS {
     uint8_t outputsCount;
     ScriptOutput outputs[MAX_SCRIPT_OUTPUTS];
   };
-  #define LUASTATE_STANDALONE_SCRIPT_RUNNING 1
-  #define LUASTATE_RELOAD_MODEL_SCRIPTS      2
+  enum InterpreterState {
+    INTERPRETER_RUNNING_PERMANENT_SCRIPTS,
+    INTERPRETER_RUNNING_STANDALONE_SCRIPT,
+    INTERPRETER_RELOAD_PERMANENT_SCRIPTS,
+    INTERPRETER_PANIC,
+  };
   extern uint8_t luaState;
   extern uint8_t luaScriptsCount;
   extern ScriptInternalData standaloneScript;
   extern ScriptInternalData scriptInternalData[MAX_SCRIPTS];
   extern ScriptInputsOutputs scriptInputsOutputs[MAX_SCRIPTS];
+  void luaClose();
   void luaInit();
   void luaTask(uint8_t evt);
   void luaExec(const char *filename);
@@ -1513,13 +1519,23 @@ enum AUDIO_SOUNDS {
   int luaGetMemUsed();
   #define luaGetCpuUsed(idx) scriptInternalData[idx].instructions
   bool isTelemetryScriptAvailable(uint8_t index);
-  #define LUA_INIT()
-  #define LUA_RESET() luaInit()
-  #define LUA_LOAD_MODEL_SCRIPTS()   luaState |= LUASTATE_RELOAD_MODEL_SCRIPTS
-  #define LUA_LOAD_MODEL_SCRIPT(idx) luaState |= LUASTATE_RELOAD_MODEL_SCRIPTS
+  #define LUA_LOAD_MODEL_SCRIPTS()   luaState |= INTERPRETER_RELOAD_PERMANENT_SCRIPTS
+  #define LUA_LOAD_MODEL_SCRIPT(idx) luaState |= INTERPRETER_RELOAD_PERMANENT_SCRIPTS
+
+  // Lua PROTECT/UNPROTECT
+  #include <setjmp.h>
+  struct our_longjmp {
+    struct our_longjmp *previous;
+    jmp_buf b;
+    volatile int status;  /* error code */
+  };
+  extern struct our_longjmp * global_lj;
+  #define PROTECT_LUA()   { struct our_longjmp lj; \
+                          lj.previous = global_lj;  /* chain new error handler */ \
+                          global_lj = &lj;  \
+                          if (setjmp(lj.b) == 0)
+  #define UNPROTECT_LUA() global_lj = lj.previous; }   /* restore old error handler */
 #else
-  #define LUA_INIT()
-  #define LUA_RESET()
   #define LUA_LOAD_MODEL_SCRIPTS()
   #define LUA_LOAD_MODEL_SCRIPT(idx)
 #endif

@@ -289,6 +289,10 @@ USB = JOYSTICK
 # NO - normal behaviour, show real channel values
 CHANNELS_MONITOR_INV_HIDE = NO
 
+# Use newlib-nano 
+# Values = NO, YES
+NANO = YES
+
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
@@ -1116,6 +1120,12 @@ MATH_LIB = -lm
 LDFLAGS = -Wl,-Map=$(TARGET).map,--cref
 LDFLAGS += $(MATH_LIB)
 
+ifeq ($(NANO), YES)
+  # use newlib-nano for linking
+  NEWLIB_NANO_FLAGS = --specs=nano.specs -u _printf_float
+  CPPDEFS += -DNANO
+endif
+
 # Define Messages
 # English
 MSG_BEGIN = -------- begin --------
@@ -1324,7 +1334,7 @@ FOXLIB=-L/usr/local/lib \
        -Wl,-rpath,$(FOXPATH)/src/.libs
 
 simu: $(LUADEP) stamp_header $(BOARDSRC) $(CPPSRC) Makefile simu.cpp targets/simu/simpgmspace.cpp *.h tra lbm eeprom.bin
-	g++ $(CPPFLAGS) $(INCFLAGS) simu.cpp $(BOARDSRC) $(CPPSRC) $(LUASRC) targets/simu/simpgmspace.cpp -MD -DSIMU -O0 -o simu $(FOXINC) $(FOXLIB) -pthread -fexceptions
+	g++ $(CPPFLAGS) $(INCFLAGS) simu.cpp $(BOARDSRC) $(CPPSRC) $(LUASRC) targets/simu/simpgmspace.cpp -MD -DSIMU -DLUA_USE_APICHECK -O0 -o simu $(FOXINC) $(FOXLIB) -pthread -fexceptions
 
 eeprom.bin:
 	dd if=/dev/zero of=$@ bs=1 count=2048
@@ -1390,7 +1400,7 @@ OBJS =  $(TMP:.s=.o)
 	@echo
 	@echo $(MSG_COMPILING) $@
 	$(CC) $(ARMCPPFLAGS) $< -o allsrc.o
-	$(CC) $(OBJS) allsrc.o -mcpu=cortex-m3 -mthumb -nostartfiles -lm -T$(LDSCRIPT) -Wl,-Map=$(TARGET).map,--cref,--no-warn-mismatch,--gc-sections -o $@
+	$(CC) $(OBJS) allsrc.o -mcpu=cortex-m3 -mthumb -nostartfiles -lm -T$(LDSCRIPT) -Wl,-Map=$(TARGET).map,--cref,--no-warn-mismatch,--gc-sections $(NEWLIB_NANO_FLAGS) -o $@
 endif
 
 # Target: clean project.
