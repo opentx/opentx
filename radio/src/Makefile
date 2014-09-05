@@ -722,6 +722,12 @@ ifeq ($(PCB), TARANIS)
     EXTRABOARDSRC += targets/taranis/usbd_storage_msd.cpp
   endif
   
+  ifeq ($(NANO), YES)
+    # use newlib-nano for linking
+    NEWLIB_NANO_FLAGS = --specs=nano.specs -u _printf_float
+    CPPDEFS += -DNANO
+  endif
+  
   ifneq ($(LUA), NO)
     ifeq ($(LUA), YES)
       CPPDEFS += -DLUA_MODEL_SCRIPTS
@@ -1119,12 +1125,6 @@ MATH_LIB = -lm
 #    --cref:    add cross reference to  map file
 LDFLAGS = -Wl,-Map=$(TARGET).map,--cref
 LDFLAGS += $(MATH_LIB)
-
-ifeq ($(NANO), YES)
-  # use newlib-nano for linking
-  NEWLIB_NANO_FLAGS = --specs=nano.specs -u _printf_float
-  CPPDEFS += -DNANO
-endif
 
 # Define Messages
 # English
