@@ -92,9 +92,20 @@ void menuStatisticsView(uint8_t event)
 
 #if defined(PCBTARANIS)
   #define MENU_DEBUG_COL1_OFS   (11*FW-2)
+  #define MENU_DEBUG_Y_MIXMAX   (2*FH)
+  #define MENU_DEBUG_Y_LUA      (3*FH)
+  #define MENU_DEBUG_Y_FREE_RAM (4*FH)
+  #define MENU_DEBUG_Y_STACK    (5*FH)
+  #define MENU_DEBUG_Y_RTOS     (6*FH)
 #elif defined(PCBSKY9X)
   #define MENU_DEBUG_COL1_OFS   (11*FW-3)
   #define MENU_DEBUG_COL2_OFS   (17*FW)
+  #define MENU_DEBUG_Y_CURRENT  (1*FH)
+  #define MENU_DEBUG_Y_MAH      (2*FH)
+  #define MENU_DEBUG_Y_CPU_TEMP (3*FH)
+  #define MENU_DEBUG_Y_COPROC   (4*FH)
+  #define MENU_DEBUG_Y_MIXMAX   (5*FH)
+  #define MENU_DEBUG_Y_RTOS     (6*FH)
 #else
   #define MENU_DEBUG_COL1_OFS   (14*FW)
 #endif
@@ -149,76 +160,85 @@ void menuStatisticsDebug(uint8_t event)
 
 #if defined(PCBSKY9X) && !defined(REVA)
   // current
-  lcd_putsLeft(1*FH, STR_CPU_CURRENT);
-  putsTelemetryValue(MENU_DEBUG_COL1_OFS, 1*FH, getCurrent(), UNIT_MILLIAMPS, LEFT);
+  lcd_putsLeft(MENU_DEBUG_Y_CURRENT, STR_CPU_CURRENT);
+  putsTelemetryValue(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_CURRENT, getCurrent(), UNIT_MILLIAMPS, LEFT);
   uint32_t current_scale = 488 + g_eeGeneral.currentCalib;
-  lcd_putc(MENU_DEBUG_COL2_OFS, 1*FH, '>');
-  putsTelemetryValue(MENU_DEBUG_COL2_OFS+FW+1, 1*FH, Current_max*10*current_scale/8192, UNIT_RAW, LEFT);
+  lcd_putc(MENU_DEBUG_COL2_OFS, MENU_DEBUG_Y_CURRENT, '>');
+  putsTelemetryValue(MENU_DEBUG_COL2_OFS+FW+1, MENU_DEBUG_Y_CURRENT, Current_max*10*current_scale/8192, UNIT_RAW, LEFT);
   // consumption
-  lcd_putsLeft(2*FH, STR_CPU_MAH);
-  putsTelemetryValue(MENU_DEBUG_COL1_OFS, 2*FH, g_eeGeneral.mAhUsed + Current_used*current_scale/8192/36, UNIT_MAH, LEFT|PREC1);
+  lcd_putsLeft(MENU_DEBUG_Y_MAH, STR_CPU_MAH);
+  putsTelemetryValue(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_MAH, g_eeGeneral.mAhUsed + Current_used*current_scale/8192/36, UNIT_MAH, LEFT|PREC1);
 #endif
 
 #if defined(PCBSKY9X)
-  lcd_putsLeft(3*FH, STR_CPU_TEMP);
-  putsTelemetryValue(MENU_DEBUG_COL1_OFS, 3*FH, getTemperature(), UNIT_TEMPERATURE, LEFT);
-  lcd_putc(MENU_DEBUG_COL2_OFS, 3*FH, '>');
-  putsTelemetryValue(MENU_DEBUG_COL2_OFS+FW+1, 3*FH, maxTemperature+g_eeGeneral.temperatureCalib, UNIT_TEMPERATURE, LEFT);
+  lcd_putsLeft(MENU_DEBUG_Y_CPU_TEMP, STR_CPU_TEMP);
+  putsTelemetryValue(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_CPU_TEMP, getTemperature(), UNIT_TEMPERATURE, LEFT);
+  lcd_putc(MENU_DEBUG_COL2_OFS, MENU_DEBUG_Y_CPU_TEMP, '>');
+  putsTelemetryValue(MENU_DEBUG_COL2_OFS+FW+1, MENU_DEBUG_Y_CPU_TEMP, maxTemperature+g_eeGeneral.temperatureCalib, UNIT_TEMPERATURE, LEFT);
 #endif
 
 #if defined(COPROCESSOR)
-  lcd_putsLeft(4*FH, STR_COPROC_TEMP);
+  lcd_putsLeft(MENU_DEBUG_Y_COPROC, STR_COPROC_TEMP);
 
   if (Coproc_read==0) {
-    lcd_putsAtt(MENU_DEBUG_COL1_OFS, 4*FH, PSTR("Co Proc NACK"),INVERS);
+    lcd_putsAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_COPROC, PSTR("Co Proc NACK"),INVERS);
   }
   else if (Coproc_read==0x81) {
-    lcd_putsAtt(MENU_DEBUG_COL1_OFS, 4*FH, PSTR("Inst.TinyApp"),INVERS);
+    lcd_putsAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_COPROC, PSTR("Inst.TinyApp"),INVERS);
   }
   else if (Coproc_read<3) {
-    lcd_putsAtt(MENU_DEBUG_COL1_OFS, 4*FH, PSTR("Upgr.TinyApp"),INVERS);
+    lcd_putsAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_COPROC, PSTR("Upgr.TinyApp"),INVERS);
   }
   else {
-    putsTelemetryValue(MENU_DEBUG_COL1_OFS, 4*FH, Coproc_temp, UNIT_TEMPERATURE, LEFT);
-    putsTelemetryValue(MENU_DEBUG_COL2_OFS, 4*FH, Coproc_maxtemp, UNIT_TEMPERATURE, LEFT);
+    putsTelemetryValue(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_COPROC, Coproc_temp, UNIT_TEMPERATURE, LEFT);
+    putsTelemetryValue(MENU_DEBUG_COL2_OFS, MENU_DEBUG_Y_COPROC, Coproc_maxtemp, UNIT_TEMPERATURE, LEFT);
   }
 #endif
 
 #if defined(PCBTARANIS) && !defined(SIMU)
-  lcd_putsLeft(3*FH, "Free Mem");
-  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, 3*FH, getAvailableMemory(), LEFT);
+  lcd_putsLeft(MENU_DEBUG_Y_FREE_RAM, "Free Mem");
+  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_FREE_RAM, getAvailableMemory(), LEFT);
 #endif
 
 #if defined(LUA)
-  lcd_putsLeft(4*FH, "Lua scripts");
-  lcd_putsAtt(MENU_DEBUG_COL1_OFS, 4*FH+1, "[Duration]", SMLSIZE);
-  lcd_outdezAtt(lcdLastPos, 4*FH, 10*maxLuaDuration, LEFT);
-  lcd_putsAtt(lcdLastPos+2, 4*FH+1, "[Interval]", SMLSIZE);
-  lcd_outdezAtt(lcdLastPos, 4*FH, 10*maxLuaInterval, LEFT);
+  lcd_putsLeft(MENU_DEBUG_Y_LUA, "Lua scripts");
+  lcd_putsAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_LUA+1, "[Duration]", SMLSIZE);
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_LUA, 10*maxLuaDuration, LEFT);
+  lcd_putsAtt(lcdLastPos+2, MENU_DEBUG_Y_LUA+1, "[Interval]", SMLSIZE);
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_LUA, 10*maxLuaInterval, LEFT);
 #endif
 
 #if defined(CPUARM)
-  lcd_putsLeft(5*FH, STR_TMIXMAXMS);
-  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, 5*FH, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT);
-  lcd_puts(lcdLastPos, 5*FH, "ms");
-  lcd_putsLeft(6*FH, STR_FREESTACKMINB);
-
-#if LCD_W >= 212
-  lcd_putsAtt(MENU_DEBUG_COL1_OFS, 6*FH+1, "[Main]", SMLSIZE);
-  lcd_outdezAtt(lcdLastPos, 6*FH, stack_free(0), UNSIGN|LEFT);
-  lcd_putsAtt(lcdLastPos+2, 6*FH+1, "[Mix]", SMLSIZE);
-  lcd_outdezAtt(lcdLastPos, 6*FH, stack_free(1), UNSIGN|LEFT);
-  lcd_putsAtt(lcdLastPos+2, 6*FH+1, "[Audio]", SMLSIZE);
-  lcd_outdezAtt(lcdLastPos, 6*FH, stack_free(2), UNSIGN|LEFT);
-#else
-  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, 6*FH, stack_free(0), UNSIGN|LEFT);
-  lcd_puts(lcdLastPos, 6*FH, "/");
-  lcd_outdezAtt(lcdLastPos, 6*FH, stack_free(1), UNSIGN|LEFT);
-  lcd_puts(lcdLastPos, 6*FH, "/");
-  lcd_outdezAtt(lcdLastPos, 6*FH, stack_free(2), UNSIGN|LEFT);
+  lcd_putsLeft(MENU_DEBUG_Y_MIXMAX, STR_TMIXMAXMS);
+  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_MIXMAX, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT);
+  lcd_puts(lcdLastPos, MENU_DEBUG_Y_MIXMAX, "ms");
 #endif
 
-#else
+#if defined(PCBTARANIS)
+  lcd_putsLeft(MENU_DEBUG_Y_STACK, STR_FREESTACKMINB);
+  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_STACK, stack_free(255), UNSIGN|LEFT);
+  lcd_puts(lcdLastPos, MENU_DEBUG_Y_STACK, "b");
+#endif
+
+#if defined(PCBTARANIS)
+  lcd_putsAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS+1, "[Main]", SMLSIZE);
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stack_free(0), UNSIGN|LEFT);
+  lcd_putsAtt(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[Mix]", SMLSIZE);
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stack_free(1), UNSIGN|LEFT);
+  lcd_putsAtt(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[Audio]", SMLSIZE);
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stack_free(2), UNSIGN|LEFT);
+#endif
+
+#if defined(PCBSKY9X)
+  lcd_putsLeft(MENU_DEBUG_Y_RTOS, STR_FREESTACKMINB);
+  lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS, stack_free(0), UNSIGN|LEFT);
+  lcd_puts(lcdLastPos, MENU_DEBUG_Y_RTOS, "/");
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stack_free(1), UNSIGN|LEFT);
+  lcd_puts(lcdLastPos, MENU_DEBUG_Y_RTOS, "/");
+  lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stack_free(2), UNSIGN|LEFT);
+#endif
+
+#if !defined(CPUARM)
   lcd_putsLeft(1*FH, STR_TMR1LATMAXUS);
   lcd_outdez8(MENU_DEBUG_COL1_OFS , 1*FH, g_tmr1Latency_max/2 );
   lcd_putsLeft(2*FH, STR_TMR1LATMINUS);

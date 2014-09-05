@@ -47,6 +47,10 @@ class Fifo
     {
     }
 
+    bool empty() {
+      return (ridx == widx);
+    }
+
     void push(uint8_t byte) {
       uint32_t next = (widx+1) & (N-1);
       if (next != ridx) {
@@ -56,7 +60,7 @@ class Fifo
     }
 
     bool pop(uint8_t & byte) {
-      if (ridx == widx) {
+      if (empty()) {
         return false;
       }
       else {
