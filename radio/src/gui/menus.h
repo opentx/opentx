@@ -299,7 +299,7 @@ void title(const pm_char * s);
 
 #define MENU_FLAGS(title, tab, menu, flags, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
-  MENU_CHECK_FLAGS(tab, menu, flags, lines_count)); \
+  MENU_CHECK_FLAGS(tab, menu, flags, lines_count); \
   TITLE(title)
 
 #define SIMPLE_MENU_NOTITLE(tab, menu, lines_count) \
@@ -309,9 +309,10 @@ void title(const pm_char * s);
   SIMPLE_MENU_NOTITLE(tab, menu, lines_count); \
   TITLE(title)
 
-#define SUBMENU_NOTITLE(lines_count, ...) \
+#define SUBMENU_NOTITLE(lines_count, ...) { \
   MENU_TAB(__VA_ARGS__); \
-  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, (lines_count)-1);
+  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, (lines_count)-1); \
+  }
 
 #define SUBMENU(title, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \

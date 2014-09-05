@@ -3383,7 +3383,7 @@ void opentxInit(OPENTX_INIT_ARGS)
   uart3Init(g_eeGeneral.uart3Mode, MODEL_TELEMETRY_PROTOCOL());
 #endif
 
-#if defined(CPUARM)
+#if defined(CPUARM) && !defined(SIMU)
   init_trainer_capture();
 #endif
 

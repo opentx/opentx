@@ -88,6 +88,7 @@ inline int geteepromsize() {
 #include "radio/src/targets/taranis/trainer_driver.cpp"
 #include "radio/src/targets/taranis/uart3_driver.cpp"
 #include "radio/src/pulses/pulses_arm.cpp"
+#include "radio/src/tasks_arm.cpp"
 #include "radio/src/stamp.cpp"
 #include "radio/src/maths.cpp"
 #include "radio/src/vario.cpp"

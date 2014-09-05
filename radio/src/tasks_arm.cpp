@@ -161,7 +161,9 @@ void menusTask(void * pdata)
   lcdRefresh();
   lcdSetRefVolt(0);
 
+#if !defined(SIMU)
   SysTick->CTRL = 0; // turn off systick
+#endif
 
   pwrOff(); // Only turn power off if necessary
 }

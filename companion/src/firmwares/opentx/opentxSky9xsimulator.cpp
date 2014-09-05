@@ -82,6 +82,7 @@ namespace Open9xSky9x {
 #include "radio/src/curves.cpp"
 #include "radio/src/targets/sky9x/pulses_driver.cpp"
 #include "radio/src/pulses/pulses_arm.cpp"
+#include "radio/src/tasks_arm.cpp"
 #include "radio/src/stamp.cpp"
 #include "radio/src/maths.cpp"
 #include "radio/src/vario.cpp"
