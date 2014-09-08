@@ -5,7 +5,7 @@
 
 [Taranis]
 <ul>
-<li>CPPM issue on Helis when cross trims used
+<li>CCPM issue on Helis when cross trims used
 <li>Taranis+ LCD color range and brightness adjusted
 <li>Taranis+ SWR removed
 <li>Lua small enhancements (TIMEHOUR constant, GVARS over 500)
