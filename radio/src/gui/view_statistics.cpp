@@ -92,9 +92,9 @@ void menuStatisticsView(uint8_t event)
 
 #if defined(PCBTARANIS)
   #define MENU_DEBUG_COL1_OFS   (11*FW-2)
-  #define MENU_DEBUG_Y_MIXMAX   (2*FH)
-  #define MENU_DEBUG_Y_LUA      (3*FH)
-  #define MENU_DEBUG_Y_FREE_RAM (4*FH)
+  #define MENU_DEBUG_Y_MIXMAX   (2*FH-3)
+  #define MENU_DEBUG_Y_LUA      (3*FH-2)
+  #define MENU_DEBUG_Y_FREE_RAM (4*FH-1)
   #define MENU_DEBUG_Y_STACK    (5*FH)
   #define MENU_DEBUG_Y_RTOS     (6*FH)
 #elif defined(PCBSKY9X)
@@ -198,6 +198,7 @@ void menuStatisticsDebug(uint8_t event)
 #if defined(PCBTARANIS) && !defined(SIMU)
   lcd_putsLeft(MENU_DEBUG_Y_FREE_RAM, "Free Mem");
   lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_FREE_RAM, getAvailableMemory(), LEFT);
+  lcd_puts(lcdLastPos, MENU_DEBUG_Y_FREE_RAM, "b");
 #endif
 
 #if defined(LUA)
