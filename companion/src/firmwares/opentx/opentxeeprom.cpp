@@ -1100,7 +1100,7 @@ class InputField: public TransformedField {
         internalField.Append(new SignedField<6>(expo.carryTrim, "CarryTrim"));
         internalField.Append(new UnsignedField<2>(expo.mode, "Mode"));
         internalField.Append(new ZCharField<8>(expo.name));
-        internalField.Append(new SignedField<8>(expo.offset, "Offset"));
+        internalField.Append(new SignedField<8>(_offset, "Offset"));
         internalField.Append(new CurveReferenceField(expo.curve, board, version));
         internalField.Append(new SpareBitsField<8>());
       }
@@ -1155,6 +1155,10 @@ class InputField: public TransformedField {
     {
       _weight = smallGvarToEEPROM(expo.weight);
 
+      if (IS_TARANIS(board) && version >= 216) {
+        _offset = smallGvarToEEPROM(expo.offset);
+      }
+
       if (!IS_TARANIS(board) || version < 216) {
         if (expo.curve.type==CurveReference::CURVE_REF_FUNC && expo.curve.value) {
           _curveMode = true;
@@ -1186,6 +1190,10 @@ class InputField: public TransformedField {
 
       expo.weight = smallGvarToC9x(_weight);
 
+      if (IS_TARANIS(board) && version >= 216) {
+        expo.offset = smallGvarToC9x(_offset);
+      }
+
       if (!IS_TARANIS(board) || version < 216) {
         if (!_curveMode)
           expo.curve = CurveReference(CurveReference::CURVE_REF_EXPO, smallGvarToC9x(_curveParam));
@@ -1203,6 +1211,7 @@ class InputField: public TransformedField {
     unsigned int version;
     bool _curveMode;
     int  _weight;
+    int  _offset;
     int  _curveParam;
 };
 
