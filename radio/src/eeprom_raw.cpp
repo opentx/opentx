@@ -385,6 +385,7 @@ void eeLoadModel(uint8_t id)
       read32_eeprom_data((File_system[id+1].block_no << 12) + sizeof(struct t_eeprom_header), (uint8_t *)&g_model, size) ;
     }
 
+    AUDIO_RESET();
     flightReset();
     logicalSwitchesReset();
 
