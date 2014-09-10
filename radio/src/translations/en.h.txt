@@ -536,7 +536,11 @@
 #define TR_TTRIM               TR("T-Trim", INDENT "Trim Idle Only")
 #define TR_BEEPCTR             TR("Ctr Beep", "Center Beep")
 #define TR_PROTO               TR(INDENT "Proto", INDENT "Protocol")
-#define TR_PPMFRAME            TR(INDENT "PPM frame", INDENT "PPM frame")
+#if defined(CPUARM)
+  #define TR_PPMFRAME          INDENT "PPM frame"
+#else
+  #define TR_PPMFRAME          "PPM frame"
+#endif
 #define TR_MS                  "ms"
 #define TR_SWITCH              "Switch"
 #define TR_TRIMS               "Trims"
