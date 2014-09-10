@@ -239,7 +239,7 @@ void LogicalSwitchesPanel::edited()
         updateTimerParam(cswitchOffset[i], model.customSw[i].val2, 0.1);
         break;
       case LS_FAMILY_STAY:
-        cswitchOffset2[i]->setSpecialValueText(tr("(no release)"));
+        cswitchOffset2[i]->setSpecialValueText(tr("(instant)"));
         if (sender() == cswitchOffset[i]) {
           model.customSw[i].val2 = TimToVal(cswitchOffset[i]->value());
           updateTimerParam(cswitchOffset[i], model.customSw[i].val2, 0.0);
@@ -249,7 +249,7 @@ void LogicalSwitchesPanel::edited()
         }
         updateTimerParam(cswitchOffset2[i], model.customSw[i].val2+model.customSw[i].val3, cswitchOffset[i]->value()-0.1);
         if (model.customSw[i].val3 == 0) {
-          cswitchOffset2[i]->setSuffix("(infinite)");
+          cswitchOffset2[i]->setSuffix("(release)");
         }
         else {
           cswitchOffset2[i]->setSuffix("");
@@ -334,9 +334,9 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
       populateSwitchCB(cswitchSource1[i], RawSwitch(model.customSw[i].val1), generalSettings, LogicalSwitchesContext);
       updateTimerParam(cswitchOffset[i], model.customSw[i].val2, 0.0);
       updateTimerParam(cswitchOffset2[i], model.customSw[i].val2+model.customSw[i].val3, cswitchOffset[i]->value()-0.1);
-      cswitchOffset2[i]->setSpecialValueText(tr("(no release)"));
+      cswitchOffset2[i]->setSpecialValueText(tr("(instant)"));
       if (model.customSw[i].val3 == 0) {
-        cswitchOffset2[i]->setSuffix(tr("(infinite)"));
+        cswitchOffset2[i]->setSuffix(tr("(release)"));
       }
       else {
         cswitchOffset2[i]->setSuffix("");
