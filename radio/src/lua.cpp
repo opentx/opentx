@@ -1748,16 +1748,17 @@ void luaError(uint8_t error)
 void luaExec(const char *filename)
 {
   luaInit();
-  
-  standaloneScript.state = SCRIPT_NOFILE;
-  int result = luaLoad(filename, standaloneScript);
-  // TODO the same with run ...
-  if (result == SCRIPT_OK) {
-    luaState = INTERPRETER_RUNNING_STANDALONE_SCRIPT;
-  }
-  else {
-    luaError(result);
-    luaState = INTERPRETER_RELOAD_PERMANENT_SCRIPTS;
+  if (L) {
+    standaloneScript.state = SCRIPT_NOFILE;
+    int result = luaLoad(filename, standaloneScript);
+    // TODO the same with run ...
+    if (result == SCRIPT_OK) {
+      luaState = INTERPRETER_RUNNING_STANDALONE_SCRIPT;
+    }
+    else {
+      luaError(result);
+      luaState = INTERPRETER_RELOAD_PERMANENT_SCRIPTS;
+    }
   }
 }
 
