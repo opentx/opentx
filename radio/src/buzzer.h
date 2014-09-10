@@ -99,6 +99,7 @@ void beep(uint8_t val);
 
   #define IS_AUDIO_BUSY() (g_beepCnt || beepAgain || beepOn)
   #define AUDIO_RESET()
+  #define AUDIO_FLUSH()
 
   #define PLAY_PHASE_OFF(phase)
   #define PLAY_PHASE_ON(phase)
