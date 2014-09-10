@@ -19,7 +19,7 @@ class LimitsGroup
     QDoubleSpinBox * spinbox;
     GVarGroup * gvarGroup;
     int & value;
-    double step;
+    double displayStep;
 };
 
 class Channels : public ModelPanel

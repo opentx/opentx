@@ -186,14 +186,14 @@ GVarGroup::GVarGroup(QCheckBox *weightGV, QAbstractSpinBox *weightSB, QComboBox 
   }
 
   if (sb) {
-    sb->setMinimum(step*mini);
-    sb->setMaximum(step*maxi);
-    sb->setValue(step*val);
+    sb->setMinimum(mini);
+    sb->setMaximum(maxi);
+    sb->setValue(val);
   }
   else {
-    dsb->setMinimum(step*mini);
-    dsb->setMaximum(step*maxi);
-    dsb->setValue(step*val);
+    dsb->setMinimum(mini*step);
+    dsb->setMaximum(maxi*step);
+    dsb->setValue(val*step);
   }
 
   connect(weightSB, SIGNAL(editingFinished()), this, SLOT(valuesChanged()));
@@ -217,7 +217,7 @@ void GVarGroup::valuesChanged()
     if (weightGV->isChecked())
       weight = weightCB->itemData(weightCB->currentIndex()).toInt();
     else if (sb)
-      weight = sb->value()/step;
+      weight = sb->value();
     else
       weight = dsb->value()/step;
   }
@@ -1024,7 +1024,6 @@ QString index2version(int index)
 
 int qunlink(const QString & fileName)
 {
-  qDebug() << "unlinking "<< fileName;
   QByteArray ba = fileName.toLatin1();
   return unlink(ba.constData());
 }
