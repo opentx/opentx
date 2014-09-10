@@ -1424,7 +1424,7 @@ void menuModelSetup(uint8_t event)
           coord_t x = MODEL_SETUP_2ND_COLUMN+i*FW;
 #if defined(PCBTARANIS) && !defined(REVPLUS)
           if (i == POT3) {
-            if (m_posHorz == POT3) REPEAT_LAST_CURSOR_MOVE();
+            if (attr && m_posHorz == POT3) REPEAT_LAST_CURSOR_MOVE();
             continue;
           }
           else if (i > POT3) {
