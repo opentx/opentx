@@ -1396,8 +1396,8 @@ void menuModelSetup(uint8_t event)
           coord_t x = MODEL_SETUP_2ND_COLUMN+5*FW;
           for (uint8_t i=0; i<NUM_POTS ; i++) {
 #if !defined(REVPLUS)
-            if (attr && i == POT3-POT1) {
-              if (m_posHorz==i+1) REPEAT_LAST_CURSOR_MOVE();
+            if (i == POT3-POT1) {
+              if (attr && (m_posHorz==i+1)) REPEAT_LAST_CURSOR_MOVE();
               continue;
             }
 #endif
