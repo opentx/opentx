@@ -634,11 +634,14 @@ static void f_parser (lua_State *L, void *ud) {
   Closure *cl;
   struct SParser *p = cast(struct SParser *, ud);
   int c = zgetc(p->z);  /* read first character */
+#if 0
   if (c == LUA_SIGNATURE[0]) {
     checkmode(L, p->mode, "binary");
     cl = luaU_undump(L, p->z, &p->buff, p->name);
   }
-  else {
+  else
+#endif
+  {
     checkmode(L, p->mode, "text");
     cl = luaY_parser(L, p->z, &p->buff, &p->dyd, p->name, c);
   }
