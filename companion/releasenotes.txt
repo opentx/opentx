@@ -1,6 +1,7 @@
 <h2>Version 2.0.11</h2>
 <ul>
 <li>Limits EEPROM export was broken (all boards except Taranis)</li>
+<li>Fix issue when a GVAR was used as Offset</li>
 </ul>
 
 <h2>Version 2.0.10</h2>
