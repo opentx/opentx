@@ -1078,6 +1078,8 @@ class MixField: public TransformedField {
             mix.curve = CurveReference(CurveReference::CURVE_REF_DIFF, smallGvarToC9x(_curveParam));
           else if (_curveParam > 6)
             mix.curve = CurveReference(CurveReference::CURVE_REF_CUSTOM, _curveParam-6);
+          else if (_curveParam < 0)
+            mix.curve = CurveReference(CurveReference::CURVE_REF_CUSTOM, _curveParam);
           else
             mix.curve = CurveReference(CurveReference::CURVE_REF_FUNC, _curveParam);
         }
