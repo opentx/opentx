@@ -684,7 +684,11 @@
 #define TR_MENUTEMPLATES       "TEMPLATES"
 #define TR_MENUSTAT            "STATS"
 #define TR_MENUDEBUG           "DEBUG"
-#define TR_RXNUM               TR(INDENT "RxNum", INDENT "Receiver No.")
+#if defined(CPUARM)
+  #define TR_RXNUM             TR(INDENT "RxNum", INDENT "Receiver No.")
+#else
+  #define TR_RXNUM             "RxNum"
+#endif
 #define TR_SYNCMENU            "[Sync]"
 #define TR_LIMIT               INDENT "Limit"
 #define TR_MINRSSI             "Min Rssi"
