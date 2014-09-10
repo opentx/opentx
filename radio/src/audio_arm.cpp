@@ -931,6 +931,15 @@ void AudioQueue::stopAll()
   CoLeaveMutexSection(audioMutex);
 }
 
+void AudioQueue::flush()
+{
+  CoEnterMutexSection(audioMutex);
+  widx = ridx;                      // clean the queue
+  varioContext.clear();
+  backgroundContext.clear();
+  CoLeaveMutexSection(audioMutex);
+}
+
 void audioEvent(uint8_t e, uint16_t f)
 {
 #if defined(HAPTIC)

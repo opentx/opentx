@@ -163,6 +163,8 @@ class AudioQueue {
 
     void stopAll();
 
+    void flush();
+
     void pause(uint16_t tLen);
 
     void stopSD();
@@ -328,6 +330,7 @@ void pushPrompt(uint16_t prompt, uint8_t id=0);
 #define PLAY_FILE(f, flags, id)  audioQueue.playFile((f), (flags), (id))
 #define STOP_PLAY(id)            audioQueue.stopPlay((id))
 #define AUDIO_RESET()            audioQueue.stopAll()
+#define AUDIO_FLUSH()            audioQueue.flush()
 
 #if defined(SDCARD)
   extern tmr10ms_t timeAutomaticPromptsSilence;

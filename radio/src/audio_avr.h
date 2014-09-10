@@ -154,6 +154,7 @@ void audioDefevent(uint8_t e);
 #define AUDIO_HEARTBEAT()        audio.heartbeat()
 #define IS_AUDIO_BUSY()          audio.busy()
 #define AUDIO_RESET()
+#define AUDIO_FLUSH()
 
 #define PLAY_PHASE_OFF(phase)
 #define PLAY_PHASE_ON(phase)

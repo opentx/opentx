@@ -969,7 +969,7 @@ void eeLoadModel(uint8_t id)
       eeCheck(true);
     }
 
-    AUDIO_RESET();
+    AUDIO_FLUSH();
     flightReset();
     logicalSwitchesReset();
 
