@@ -11,17 +11,17 @@ LimitsGroup::LimitsGroup(FirmwareInterface * firmware, QGridLayout *gridLayout, 
   firmware(firmware),
   spinbox(new QDoubleSpinBox()),
   value(value),
-  step(1.0)
+  displayStep(0.1)
 {
-
   bool allowGVars = false;
+  int internalStep = 1;
 
   spinbox->setProperty("index", row);
   spinbox->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
   spinbox->setAccelerated(true);
 
   if (firmware->getCapability(PPMUnitMicroseconds)) {
-    step = 5.12;
+    displayStep = 0.512;
     spinbox->setDecimals(1);
     spinbox->setSuffix("us");
   }
@@ -31,15 +31,14 @@ LimitsGroup::LimitsGroup(FirmwareInterface * firmware, QGridLayout *gridLayout, 
   }
 
   if (IS_TARANIS(firmware->getBoard()) || deflt == 0 /*it's the offset*/) {
-    min *= 10;
-    max *= 10;
-    deflt *= 10;
-    step /= 10;
     spinbox->setDecimals(1);
     allowGVars = true;
   }
-
-  spinbox->setSingleStep(step);
+  else {
+    internalStep *= 10;
+  }
+  
+  spinbox->setSingleStep(displayStep*internalStep);
 
   QHBoxLayout * horizontalLayout = new QHBoxLayout();
   QCheckBox * gv = new QCheckBox(QObject::tr("GV"));
@@ -48,7 +47,7 @@ LimitsGroup::LimitsGroup(FirmwareInterface * firmware, QGridLayout *gridLayout, 
   horizontalLayout->addWidget(cb);
   horizontalLayout->addWidget(spinbox);
   gridLayout->addLayout(horizontalLayout, row, col, 1, 1);
-  gvarGroup = new GVarGroup(gv, spinbox, cb, value, deflt, min, max, step, allowGVars);
+  gvarGroup = new GVarGroup(gv, spinbox, cb, value, deflt, min, max, displayStep, allowGVars);
 }
 
 LimitsGroup::~LimitsGroup()
@@ -58,17 +57,14 @@ LimitsGroup::~LimitsGroup()
 
 void LimitsGroup::updateMinMax(int max)
 {
-  if (IS_TARANIS(firmware->getBoard())) {
-    max *= 10;
-  }
   if (spinbox->maximum() == 0) {
-    spinbox->setMinimum(-step*max);
+    spinbox->setMinimum(-max*displayStep);
     if (value < -max) {
       value = -max;
     }
   }
   if (spinbox->minimum() == 0) {
-    spinbox->setMaximum(step*max);
+    spinbox->setMaximum(max*displayStep);
     if (value > max) {
       value = max;
     }
@@ -120,13 +116,13 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     }
 
     // Channel offset
-    limitsGroups << new LimitsGroup(firmware, gridLayout, i+1, col++, model.limitData[i].offset, -100, 100, 0);
+    limitsGroups << new LimitsGroup(firmware, gridLayout, i+1, col++, model.limitData[i].offset, -1000, 1000, 0);
 
     // Channel min
-    limitsGroups << new LimitsGroup(firmware, gridLayout, i+1, col++, model.limitData[i].min, -model.getChannelsMax(), 0, -100);
+    limitsGroups << new LimitsGroup(firmware, gridLayout, i+1, col++, model.limitData[i].min, -model.getChannelsMax()*10, 0, -1000);
 
     // Channel max
-    limitsGroups << new LimitsGroup(firmware, gridLayout, i+1, col++, model.limitData[i].max, 0, model.getChannelsMax(), 100);
+    limitsGroups << new LimitsGroup(firmware, gridLayout, i+1, col++, model.limitData[i].max, 0, model.getChannelsMax()*10, 1000);
 
     // Channel inversion
     QComboBox * invCB = new QComboBox(this);
@@ -211,7 +207,7 @@ void Channels::refreshExtendedLimits()
   int channelMax = model.getChannelsMax();
 
   foreach(LimitsGroup *group, limitsGroups) {
-    group->updateMinMax(channelMax);
+    group->updateMinMax(10*channelMax);
   }
 
   emit modified(); 
