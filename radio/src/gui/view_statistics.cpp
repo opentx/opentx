@@ -215,13 +215,14 @@ void menuStatisticsDebug(uint8_t event)
   lcd_puts(lcdLastPos, MENU_DEBUG_Y_MIXMAX, "ms");
 #endif
 
-#if defined(PCBTARANIS)
+#if 0
   lcd_putsLeft(MENU_DEBUG_Y_STACK, STR_FREESTACKMINB);
   lcd_outdezAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_STACK, stack_free(255), UNSIGN|LEFT);
   lcd_puts(lcdLastPos, MENU_DEBUG_Y_STACK, "b");
 #endif
 
 #if defined(PCBTARANIS)
+  lcd_putsLeft(MENU_DEBUG_Y_RTOS, STR_FREESTACKMINB);
   lcd_putsAtt(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS+1, "[Main]", SMLSIZE);
   lcd_outdezAtt(lcdLastPos, MENU_DEBUG_Y_RTOS, stack_free(0), UNSIGN|LEFT);
   lcd_putsAtt(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[Mix]", SMLSIZE);

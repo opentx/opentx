@@ -3327,7 +3327,7 @@ uint16_t stack_free(uint8_t tid)
       stack = audioStack;
       size = AUDIO_STACK_SIZE;
       break;
-#if defined(PCBTARANIS)
+#if 0 // defined(PCBTARANIS)
     case 255:
       // main stack
       stack = (OS_STK *)&_main_stack_start;
