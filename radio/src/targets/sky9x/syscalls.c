@@ -46,7 +46,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
-#include "debug.h"
 
 /*----------------------------------------------------------------------------
  *        Exported variables
@@ -54,8 +53,10 @@
 
 #undef errno
 extern int errno;
-extern int _end;
-extern int _main_stack_start;
+extern int  _end;
+extern int _estack;
+
+#define RAM_END (unsigned char *)&_estack
 
 /*----------------------------------------------------------------------------
  *        Exported functions
@@ -67,7 +68,7 @@ extern int _getpid ( void ) ;
 unsigned char *heap = (unsigned char *)&_end;
 extern caddr_t _sbrk(int nbytes)
 {
-  if (heap + nbytes < (unsigned char *)&_main_stack_start) {
+  if (heap + nbytes < RAM_END-4096) {
     unsigned char *prev_heap = heap;
     heap += nbytes;
     return (caddr_t) prev_heap;
@@ -141,8 +142,9 @@ extern int _write( int file, char *ptr, int len )
 
 extern void _exit( int status )
 {
-    TRACE( "Exiting with status %d.\n", status ) ;
-
+#if defined(SIMU)
+    printf( "Exiting with status %d.\n", status ) ;
+#endif
     for ( ; ; ) ;
 }
 

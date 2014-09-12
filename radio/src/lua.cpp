@@ -1796,6 +1796,7 @@ void luaDoOneRunStandalone(uint8_t evt)
           TRACE("Script finished with status %d", scriptResult);
           standaloneScript.state = SCRIPT_NOFILE;
           luaState = INTERPRETER_RELOAD_PERMANENT_SCRIPTS;
+          return;
         }
         else if (luaDisplayStatistics) {
           lcd_hline(0, 7*FH-1, lcdLastPos+FW, ERASE);
@@ -1919,22 +1920,24 @@ void luaDoOneRunPermanentScript(uint8_t evt, int i)
 
 void luaDoGc()
 {
-  PROTECT_LUA() {
-    lua_gc(L, LUA_GCSTEP /*LUA_GCCOLLECT*/, 0);  // LUA_GCSTEP is enough
+  if (L) {
+    PROTECT_LUA() {
+      lua_gc(L, LUA_GCSTEP /*LUA_GCCOLLECT*/, 0);  // LUA_GCSTEP is enough
 #if defined(SIMU) || defined(DEBUG)
-    static int lastgc = 0;
-    int gc = luaGetMemUsed();
-    if (gc != lastgc) {
-      lastgc = gc;
-      TRACE("GC Use: %dbytes", gc);
-    }
+      static int lastgc = 0;
+      int gc = luaGetMemUsed();
+      if (gc != lastgc) {
+        lastgc = gc;
+        TRACE("GC Use: %dbytes", gc);
+      }
 #endif
+    }
+    else {
+      // we disable Lua for the rest of the session
+      luaDisable();
+    }
+    UNPROTECT_LUA();
   }
-  else {
-    // we disable Lua for the rest of the session
-    luaDisable();
-  }
-  UNPROTECT_LUA();
 }
 
 void luaTask(uint8_t evt)

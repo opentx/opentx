@@ -289,10 +289,6 @@ USB = JOYSTICK
 # NO - normal behaviour, show real channel values
 CHANNELS_MONITOR_INV_HIDE = NO
 
-# Use newlib-nano 
-# Values = NO, YES
-NANO = YES
-
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
@@ -722,12 +718,6 @@ ifeq ($(PCB), TARANIS)
     EXTRABOARDSRC += targets/taranis/usbd_storage_msd.cpp
   endif
   
-  ifeq ($(NANO), YES)
-    # use newlib-nano for linking
-    NEWLIB_NANO_FLAGS = --specs=nano.specs -u _printf_float
-    CPPDEFS += -DNANO
-  endif
-  
   ifneq ($(LUA), NO)
     ifeq ($(LUA), YES)
       CPPDEFS += -DLUA_MODEL_SCRIPTS
@@ -738,7 +728,6 @@ ifeq ($(PCB), TARANIS)
     LUASRC = lua/src/lapi.c lua/src/lcode.c lua/src/lctype.c lua/src/ldebug.c lua/src/ldo.c lua/src/ldump.c lua/src/lfunc.c lua/src/lgc.c lua/src/llex.c lua/src/lmem.c \
            lua/src/lobject.c lua/src/lopcodes.c lua/src/lparser.c lua/src/lstate.c lua/src/lstring.c lua/src/ltable.c lua/src/ltm.c lua/src/lundump.c lua/src/lvm.c lua/src/lzio.c \
            lua/src/lbaselib.c lua/src/linit.c lua/src/lmathlib.c lua/src/loadlib.c lua/src/lauxlib.c lua/src/ltablib.c lua/src/lcorolib.c lua/src/lbitlib.c
-           # lua/src/loslib.c lua/src/lstrlib.c lua/src/liolib.c lua/src/ldblib.c
     SRC += $(LUASRC) 
     LUADEP = lua_exports.cpp
   endif           
@@ -1400,7 +1389,7 @@ OBJS =  $(TMP:.s=.o)
 	@echo
 	@echo $(MSG_COMPILING) $@
 	$(CC) $(ARMCPPFLAGS) $< -o allsrc.o
-	$(CC) $(OBJS) allsrc.o -mcpu=cortex-m3 -mthumb -nostartfiles -lm -T$(LDSCRIPT) -Wl,-Map=$(TARGET).map,--cref,--no-warn-mismatch,--gc-sections $(NEWLIB_NANO_FLAGS) -o $@
+	$(CC) $(OBJS) allsrc.o -mcpu=cortex-m3 -mthumb -nostartfiles -lm -T$(LDSCRIPT) -Wl,-Map=$(TARGET).map,--cref,--no-warn-mismatch,--gc-sections -o $@
 endif
 
 # Target: clean project.
