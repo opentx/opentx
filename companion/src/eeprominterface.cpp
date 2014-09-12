@@ -461,7 +461,7 @@ QString RawSwitch::toString()
   };
 
   static const QString timerModes[] = {
-    QObject::tr("OFF"), QObject::tr("ABS"),
+    QObject::tr("OFF"), QObject::tr("ON"),
     QObject::tr("THs"), QObject::tr("TH%"), QObject::tr("THt")
   };
 
