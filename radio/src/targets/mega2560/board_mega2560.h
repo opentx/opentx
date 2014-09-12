@@ -194,4 +194,9 @@ void pwrOff();
 #define HAPTIC_ON()   PORTD &= ~(1 << OUT_D_HAPTIC)
 #define HAPTIC_OFF()  PORTD |=  (1 << OUT_D_HAPTIC)
 
+// Rotary encoder driver
+#define REA_DOWN()    (~PIND & 0x20)
+#define REB_DOWN()    (~PIND & 0x10)
+#define ROTENC_DOWN() (REA_DOWN() || REB_DOWN())
+
 #endif

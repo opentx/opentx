@@ -116,12 +116,6 @@ void pwrOff()
 #endif
 }
 
-#if ROTARY_ENCODERS <= 2
-#define ROTENC_DOWN() ((~PIND & 0x20) || (~PIND & 0x10))
-#else
-#define ROTENC_DOWN() (0)
-#endif
-
 FORCEINLINE uint8_t keyDown()
 {
   return ((~PINL) & 0x3F) || ROTENC_DOWN();
@@ -196,6 +190,24 @@ bool switchState(EnumKeys enuk)
   return result;
 }
 
+// Trim switches ...
+static const pm_uchar crossTrim[] PROGMEM ={
+  1<<INP_F_TRM_LH_DWN,
+  1<<INP_F_TRM_LH_UP,
+  1<<INP_F_TRM_LV_DWN,
+  1<<INP_F_TRM_LV_UP,
+  1<<INP_F_TRM_RV_DWN,
+  1<<INP_F_TRM_RV_UP,
+  1<<INP_F_TRM_RH_DWN,
+  1<<INP_F_TRM_RH_UP
+};
+  
+uint8_t trimDown(uint8_t idx)
+{
+  uint8_t in = ~PIND;
+  return (in & pgm_read_byte(crossTrim+idx));
+}
+
 FORCEINLINE void readKeysAndTrims()
 {
   /* Original keys were connected to PORTB as follows:
@@ -213,40 +225,28 @@ FORCEINLINE void readKeysAndTrims()
 
   uint8_t enuk = KEY_MENU;
 
-  keys[BTN_REa].input(~PIND & 0x20, BTN_REa);
-  keys[BTN_REb].input(~PIND & 0x10, BTN_REb);
-
+  // User buttons ...
   uint8_t tin = ~PINL;
   uint8_t in;
   in = (tin & 0x0f) << 3;
   in |= (tin & 0x30) >> 3;
 
-  for (int i=1; i<7; i++)
-  {
+  for (int i=1; i<7; i++) {
     //INP_B_KEY_MEN 1  .. INP_B_KEY_LFT 6
     keys[enuk].input(in & (1<<i),(EnumKeys)enuk);
     ++enuk;
   }
 
-  // Trim switches ...
-  static const pm_uchar crossTrim[] PROGMEM ={
-    1<<INP_F_TRM_LH_DWN,
-    1<<INP_F_TRM_LH_UP,
-    1<<INP_F_TRM_LV_DWN,
-    1<<INP_F_TRM_LV_UP,
-    1<<INP_F_TRM_RV_DWN,
-    1<<INP_F_TRM_RV_UP,
-    1<<INP_F_TRM_RH_DWN,
-    1<<INP_F_TRM_RH_UP
-  };
-
+  // Trims ...
   in = ~PINF;
-
   for (int i=0; i<8; i++) {
     // INP_D_TRM_RH_UP   0 .. INP_D_TRM_LH_UP   7
     keys[enuk].input(in & pgm_read_byte(crossTrim+i),(EnumKeys)enuk);
     ++enuk;
   }
+  
+  keys[BTN_REa].input(REA_DOWN(), BTN_REa);
+  keys[BTN_REb].input(REB_DOWN(), BTN_REb);
 }
 
 ISR(INT2_vect)

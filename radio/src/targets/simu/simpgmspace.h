@@ -225,6 +225,7 @@ extern void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 #define PINC  ~pinc
 #define PIND  ~pind
 #define PINE  ~pine
+#define PINF  ~pinf
 #define PING  ~ping
 #define PINH  ~pinh
 #define PINJ  ~pinj
@@ -334,7 +335,7 @@ extern uint32_t Master_frequency;
 #define __enable_irq()
 #endif
 
-extern volatile unsigned char pina, pinb, pinc, pind, pine, ping, pinh, pinj, pinl;
+extern volatile unsigned char pina, pinb, pinc, pind, pine, pinf, ping, pinh, pinj, pinl;
 extern uint8_t portb, portc, porth, dummyport;
 extern uint16_t dummyport16;
 extern uint8_t main_thread_running;
