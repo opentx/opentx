@@ -595,3 +595,5 @@ Rodney Huddleston
 Dietmar Drees
 Jürgen Monden
 David Morgan
+Andrew Fernie
+Michel Baily
