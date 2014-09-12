@@ -301,7 +301,6 @@ FORCEINLINE void readKeysAndTrims()
 #endif
 }
 
-#if ROTARY_ENCODERS <= 2
 ISR(INT2_vect)
 {
   uint8_t input = (PIND & 0x0C);
@@ -313,7 +312,6 @@ ISR(INT3_vect)
   uint8_t input = (PIND & 0x0C);
   if (input == 0 || input == 0x0C) incRotaryEncoder(0, +1);
 }
-#endif
 
 ISR(INT5_vect)
 {
