@@ -49,7 +49,7 @@ char idx2char(int8_t idx)
   if (idx < 37) return '0' + idx - 27;
   if (idx <= 40) return pgm_read_byte(s_charTab+idx-37);
 #if LEN_SPECIAL_CHARS > 0
-  if (idx <= ZCHAR_MAX) return 'z' + 5 + idx - 40;
+  if (idx <= (LEN_STD_CHARS + LEN_SPECIAL_CHARS)) return 'z' + 5 + idx - 40;
 #endif
   return ' ';
 }

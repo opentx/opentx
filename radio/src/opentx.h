@@ -621,7 +621,12 @@ extern uint8_t pxxFlag[NUM_MODULES];
 #define PXX_SEND_RANGECHECK  (1 << 5)
 
 #define LEN_STD_CHARS 40
+
+#if defined(TRANSLATIONS_CZ)
+#define ZCHAR_MAX (LEN_STD_CHARS)
+#else
 #define ZCHAR_MAX (LEN_STD_CHARS + LEN_SPECIAL_CHARS)
+#endif
 
 char idx2char(int8_t idx);
 #if defined(CPUARM) || defined(SIMU)
