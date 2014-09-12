@@ -460,7 +460,7 @@
 #define TR_VSRCRAW             "---\0""Rud\0""Ele\0""Thr\0""Ail\0" TR_POTS_VSRCRAW TR_ROTARY_ENCODERS "MAX\0" TR_CYC_VSRCRAW "TrmR" "TrmE" "TrmT" "TrmA" TR_SW_VSRCRAW
 
 #define LEN_VTMRMODES          "\003"
-#define TR_VTMRMODES           "OFF""ABS""THs""TH%""THt"
+#define TR_VTMRMODES           "OFF""ON\0""THs""TH%""THt"
 
 #define LEN_VTRAINERMODES      "\006"
 #define TR_VTRAINERMODES       "Master""Slave\0"
