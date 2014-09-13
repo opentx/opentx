@@ -1482,7 +1482,7 @@ enum AUDIO_SOUNDS {
     SCRIPT_NOFILE,
     SCRIPT_SYNTAX_ERROR,
     SCRIPT_PANIC,
-    SCRIPT_KILLED,
+    SCRIPT_KILLED
   };
   enum ScriptReference {
     SCRIPT_MIX_FIRST,
@@ -1517,8 +1517,6 @@ enum AUDIO_SOUNDS {
   void luaInit();
   void luaTask(uint8_t evt);
   void luaExec(const char *filename);
-  void luaLoadMixScript(uint8_t index);
-  void luaLoadMixScripts();
   int luaGetMemUsed();
   #define luaGetCpuUsed(idx) scriptInternalData[idx].instructions
   bool isTelemetryScriptAvailable(uint8_t index);

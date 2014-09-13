@@ -1525,6 +1525,10 @@ int luaLoad(const char *filename, ScriptInternalData & sid, ScriptInputsOutputs 
 
   luaFree(sid);
 
+  if (luaState == INTERPRETER_PANIC) {
+	return SCRIPT_PANIC;
+  }
+
   SET_LUA_INSTRUCTIONS_COUNT(MANUAL_SCRIPTS_MAX_INSTRUCTIONS);
 
   PROTECT_LUA() {
@@ -1572,8 +1576,8 @@ int luaLoad(const char *filename, ScriptInternalData & sid, ScriptInputsOutputs 
     }
   }
   else {
-    TRACE("Panic in script %s: %s", filename, lua_tostring(L, -1));
-    sid.state = SCRIPT_PANIC;
+    luaDisable();
+    return SCRIPT_PANIC;
   }
   UNPROTECT_LUA();
 
@@ -1584,7 +1588,7 @@ int luaLoad(const char *filename, ScriptInternalData & sid, ScriptInputsOutputs 
   return sid.state;
 }
 
-void luaLoadMixScript(uint8_t index)
+bool luaLoadMixScript(uint8_t index)
 {
   ScriptData & sd = g_model.scriptsData[index];
 
@@ -1597,8 +1601,11 @@ void luaLoadMixScript(uint8_t index)
     strncpy(filename+sizeof(SCRIPTS_MIXES_PATH), sd.file, sizeof(sd.file));
     filename[sizeof(SCRIPTS_MIXES_PATH)+sizeof(sd.file)] = '\0';
     strcat(filename+sizeof(SCRIPTS_MIXES_PATH), SCRIPTS_EXT);
-    luaLoad(filename, sid, sio);
+    if (luaLoad(filename, sid, sio) == SCRIPT_PANIC) {
+      return false;
+    }
   }
+  return true;
 }
 
 bool luaLoadFunctionScript(uint8_t index)
@@ -1614,13 +1621,15 @@ bool luaLoadFunctionScript(uint8_t index)
       strncpy(filename+sizeof(SCRIPTS_FUNCS_PATH), fn.play.name, sizeof(fn.play.name));
       filename[sizeof(SCRIPTS_FUNCS_PATH)+sizeof(fn.play.name)] = '\0';
       strcat(filename+sizeof(SCRIPTS_FUNCS_PATH), SCRIPTS_EXT);
-      luaLoad(filename, sid);
+      if (luaLoad(filename, sid) == SCRIPT_PANIC) {
+        return false;
+      }
     }
     else {
+      POPUP_WARNING(STR_TOO_MANY_LUA_SCRIPTS);
       return false;
     }
   }
-
   return true;
 }
 
@@ -1649,9 +1658,12 @@ bool luaLoadTelemetryScript(uint8_t index)
       ScriptInternalData & sid = scriptInternalData[luaScriptsCount++];
       sid.reference = SCRIPT_TELEMETRY_FIRST+index;
       sid.state = SCRIPT_NOFILE;
-      luaLoad(path, sid);
+      if (luaLoad(path, sid) == SCRIPT_PANIC) {
+        return false;
+      }
     }
     else {
+      POPUP_WARNING(STR_TOO_MANY_LUA_SCRIPTS);
       return false;
     }
   }
@@ -1677,13 +1689,14 @@ void luaLoadPermanentScripts()
 
   // Load model scripts
   for (int i=0; i<MAX_SCRIPTS; i++) {
-    luaLoadMixScript(i);
+	if (!luaLoadMixScript(i)) {
+	  return;
+	}
   }
 
   // Load custom function scripts
   for (int i=0; i<NUM_CFN; i++) {
     if (!luaLoadFunctionScript(i)) {
-      POPUP_WARNING(STR_TOO_MANY_LUA_SCRIPTS);
       return;
     }
   }
@@ -1691,16 +1704,13 @@ void luaLoadPermanentScripts()
   // Load custom telemetry scripts
   for (int i=0; i<MAX_SCRIPTS; i++) {
     if (!luaLoadTelemetryScript(i)) {
-      POPUP_WARNING(STR_TOO_MANY_LUA_SCRIPTS);
       return;
     }
   }
   if (!luaLoadTelemetryScript(TELEMETRY_VOLTAGES_SCREEN)) {
-    POPUP_WARNING(STR_TOO_MANY_LUA_SCRIPTS);
     return;
   }
   if (!luaLoadTelemetryScript(TELEMETRY_AFTER_FLIGHT_SCREEN)) {
-    POPUP_WARNING(STR_TOO_MANY_LUA_SCRIPTS);
     return;
   }
 }
@@ -1748,7 +1758,7 @@ void luaError(uint8_t error)
 void luaExec(const char *filename)
 {
   luaInit();
-  if (L) {
+  if (luaState != INTERPRETER_PANIC) {
     standaloneScript.state = SCRIPT_NOFILE;
     int result = luaLoad(filename, standaloneScript);
     // TODO the same with run ...
@@ -1952,13 +1962,17 @@ void luaTask(uint8_t evt)
     maxLuaInterval = interval;
   }
 
+  if (luaState == INTERPRETER_PANIC) {
+	return;
+  }
+
   if (luaState & INTERPRETER_RUNNING_STANDALONE_SCRIPT) {
     PROTECT_LUA() {
       luaDoOneRunStandalone(evt);
     }
     else {
-      POPUP_WARNING("Script Panic!");
-      luaState = INTERPRETER_RELOAD_PERMANENT_SCRIPTS;
+      luaDisable();
+      return;
     }
     UNPROTECT_LUA();
   }
@@ -1967,8 +1981,9 @@ void luaTask(uint8_t evt)
     if (luaState & INTERPRETER_RELOAD_PERMANENT_SCRIPTS) {
       luaState = 0;
       luaInit();
-      if (!L) return;
+      if (luaState == INTERPRETER_PANIC) return;
       luaLoadPermanentScripts();
+      if (luaState == INTERPRETER_PANIC) return;
     }
 
     for (int i=0; i<luaScriptsCount; i++) {
@@ -1976,10 +1991,8 @@ void luaTask(uint8_t evt)
         luaDoOneRunPermanentScript(evt, i);
       }
       else {
-        // we disable this script for the rest of the session
-        ScriptInternalData & sid = scriptInternalData[i];
-        sid.state = SCRIPT_PANIC;
-        luaFree(sid);
+        luaDisable();
+        return;
       }
       UNPROTECT_LUA();
     }
