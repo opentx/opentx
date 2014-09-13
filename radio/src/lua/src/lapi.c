@@ -260,7 +260,7 @@ LUA_API const char *lua_typename (lua_State *L, int t) {
 
 LUA_API int lua_iscfunction (lua_State *L, int idx) {
   StkId o = index2addr(L, idx);
-  return (ttislcf(o) || (ttisCclosure(o)));
+  return (ttislcf(o) || ttislightfunction(o) || (ttisCclosure(o)));
 }
 
 
@@ -417,7 +417,7 @@ LUA_API size_t lua_rawlen (lua_State *L, int idx) {
 
 LUA_API lua_CFunction lua_tocfunction (lua_State *L, int idx) {
   StkId o = index2addr(L, idx);
-  if (ttislcf(o)) return fvalue(o);
+  if (ttislcf(o)) return lcfvalue(o);
   else if (ttisCclosure(o))
     return clCvalue(o)->f;
   else return NULL;  /* not a C function */
@@ -446,11 +446,14 @@ LUA_API const void *lua_topointer (lua_State *L, int idx) {
     case LUA_TTABLE: return hvalue(o);
     case LUA_TLCL: return clLvalue(o);
     case LUA_TCCL: return clCvalue(o);
-    case LUA_TLCF: return cast(void *, cast(size_t, fvalue(o)));
+    case LUA_TLCF: return cast(void *, cast(size_t, lcfvalue(o)));
     case LUA_TTHREAD: return thvalue(o);
     case LUA_TUSERDATA:
     case LUA_TLIGHTUSERDATA:
       return lua_touserdata(L, idx);
+    case LUA_TROTABLE:
+    case LUA_TLIGHTFUNCTION:
+      return pvalue(o);
     default: return NULL;
   }
 }
@@ -551,11 +554,10 @@ LUA_API const char *lua_pushfstring (lua_State *L, const char *fmt, ...) {
   return ret;
 }
 
-
 LUA_API void lua_pushcclosure (lua_State *L, lua_CFunction fn, int n) {
   lua_lock(L);
   if (n == 0) {
-    setfvalue(L->top, fn);
+    setlcfvalue(L->top, fn);
   }
   else {
     Closure *cl;
@@ -573,7 +575,6 @@ LUA_API void lua_pushcclosure (lua_State *L, lua_CFunction fn, int n) {
   lua_unlock(L);
 }
 
-
 LUA_API void lua_pushboolean (lua_State *L, int b) {
   lua_lock(L);
   setbvalue(L->top, (b != 0));  /* ensure that true is 1 */
@@ -589,6 +590,19 @@ LUA_API void lua_pushlightuserdata (lua_State *L, void *p) {
   lua_unlock(L);
 }
 
+LUA_API void lua_pushrotable (lua_State *L, void *p) {
+  lua_lock(L);
+  setrvalue(L->top, p);
+  api_incr_top(L);
+  lua_unlock(L);
+}
+
+LUA_API void lua_pushlightfunction(lua_State *L, void *p) {
+  lua_lock(L);
+  setlfvalue(L->top, p);
+  api_incr_top(L);
+  lua_unlock(L);
+}
 
 LUA_API int lua_pushthread (lua_State *L) {
   lua_lock(L);
@@ -597,8 +611,6 @@ LUA_API int lua_pushthread (lua_State *L) {
   lua_unlock(L);
   return (G(L)->mainthread == L);
 }
-
-
 
 /*
 ** get functions (Lua -> stack)
@@ -1007,7 +1019,6 @@ LUA_API int lua_dump (lua_State *L, lua_Writer writer, void *data) {
   lua_unlock(L);
   return status;
 }
-
 
 LUA_API int lua_status (lua_State *L) {
   return L->status;

@@ -23,11 +23,10 @@ static const char udatatypename[] = "userdata";
 
 LUAI_DDEF const char *const luaT_typenames_[LUA_TOTALTAGS] = {
   "no value",
-  "nil", "boolean", udatatypename, "number",
+  "nil", "boolean", "rotable", "lightfunction", udatatypename, "number",
   "string", "table", "function", udatatypename, "thread",
   "proto", "upval"  /* these last two cases are used for tests only */
 };
-
 
 void luaT_init (lua_State *L) {
   static const char *const luaT_eventname[] = {  /* ORDER TM */
