@@ -1,3 +1,9 @@
+<h2>Version 2.0.12 / 2014-09-14</h2>
+[Taranis]
+<ul>
+<li>LTR patch (modified) applied to the Lua code. Saves around 8-10k RAM
+<li>Lua hardening again
+
 <h2>Version 2.0.11 / 2014-09-10</h2>
 [9XR-PRO]
 <ul>
@@ -5,8 +11,8 @@
 
 [Taranis]
 <ul>
-<li> Switch warning didn't allow access to SG
-<li> Pot warning would show S3 when the cursor wasn't on the Pot Warning line
+<li>Switch warning didn't allow access to SG
+<li>Pot warning would show S3 when the cursor wasn't on the Pot Warning line
 
 <h2>Version 2.0.10 / 2014-09-08</h2>
 [All]
