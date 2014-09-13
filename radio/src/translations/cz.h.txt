@@ -80,10 +80,10 @@
 #define TR_TRNCHN              "CH1CH2CH3CH4"
 
 #define LEN_UART3MODES         "\017"
-#define TR_UART3MODES          "VYP\0           ""S-Port Mirror\0 ""Telemetry\0     ""Debug\0         "
+#define TR_UART3MODES          "VYP\0           ""S-Port Mirror\0 ""Telemetrie\0    ""Debug\0         "
 
 #define LEN_POTTYPES           "\017"
-#define TR_POTTYPES            "Není\0          ""Pot with detent""Vícepol. přep.\0""Potenciometr\0"
+#define TR_POTTYPES            "Není\0          ""Pot s aretací\0 ""Vícepol. přep.\0""Potenciometr\0"
 
 #define LEN_DATETIME           "\006"
 #define TR_DATETIME            "DATUM:""ČAS:  "
@@ -92,7 +92,7 @@
 #define TR_VLCD                "NormalOptrex"
 
 #define LEN_VPERSISTENT        "\014"
-#define TR_VPERSISTENT         "OFF\0        ""Flight\0     ""Manual Reset"
+#define TR_VPERSISTENT         "Ne\0         ""V rámci letu""Reset ručně\0"
 
 #define LEN_COUNTRYCODES       TR("\002", "\010")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Amerika\0""Japonsko""Evropa\0 ")
@@ -253,7 +253,7 @@
 #endif
 
 #if defined(LUA)
-  #define TR_CFN_PLAY_SCRIPT   "Lua Script\0"
+  #define TR_CFN_PLAY_SCRIPT   "Lua Skript\0"
 #else
   #define TR_CFN_PLAY_SCRIPT   "[Lua]\0     "
 #endif
@@ -570,7 +570,7 @@
 #define TR_SCREEN              "Panel "
 #define TR_SOUND_LABEL         "Zvuk"
 #define TR_LENGTH              INDENT"Délka"
-#define TR_BEEP_LENGTH         INDENT "Beep Length"
+#define TR_BEEP_LENGTH         INDENT "Délka"
 #define TR_SPKRPITCH           INDENT"Tón"
 #define TR_HAPTIC_LABEL        "Vibrace"
 #define TR_HAPTICSTRENGTH      INDENT"Síla"
@@ -598,7 +598,7 @@
 #define TR_POTWARNING          TR("* Potenc.", INDENT "Nastavení Pot.")
 #define TR_TIMEZONE            "časové pásmo"
 #define TR_RXCHANNELORD        TR("Pořadí kanálů", "Výchozí pořadí kanálů")
-#define TR_SWITCHES_DELAY      "Switches Delay"
+#define TR_SWITCHES_DELAY      "Přechod středu přepínače"
 #define TR_SLAVE               "Podřízený"
 #define TR_MODESRC             " Mód\006% Zdroj"
 #define TR_MULTIPLIER          "Násobič"
@@ -800,7 +800,7 @@
 #define TR_ANTENNAPROBLEM      CENTER "Problém s TX anténou!"
 #define TR_MODELIDUSED         TR("ID již použito","ID modelu je již použito")
 #define TR_MODULE              INDENT "Modul"
-#define TR_TELEMETRY_TYPE      TR("Type", "Telemetry Type")
+#define TR_TELEMETRY_TYPE      TR("Typ", "Typ telemetrie")
 #define TR_CHANNELRANGE        INDENT "Rozsah kanálů"
 #define TR_LOWALARM            INDENT "Nízký Alarm"
 #define TR_CRITICALALARM       INDENT "Kritický Alarm"
@@ -816,8 +816,8 @@
 #define TR_PT                  "č."
 #define TR_PTS                 " b."
 #define TR_SMOOTH              "Hladká"
-#define TR_COPY_STICKS_TO_OFS  "Kopírovat stick do subtrimu"
-#define TR_COPY_TRIMS_TO_OFS   "Copy trims to subtrim"
+#define TR_COPY_STICKS_TO_OFS  "Kopie pák do subtrimu"
+#define TR_COPY_TRIMS_TO_OFS   "Kopíe trimů do subtrimu"
 #define TR_PERSISTENT_MAH      TR(INDENT "Str mAh", INDENT "Ukládat mAh")
 #define TR_PREFLIGHT           "Předletová kontrola"
 #define TR_CHECKLIST           INDENT "Zobrazit poznámky"
@@ -827,7 +827,7 @@
 #define TR_INPUTS              "Vstupy"
 #define TR_OUTPUTS             "Výstupy"
 #define TR_EEBACKUP            "\010[dlouze ENTER] zálohuje EEPROM"
-#define TR_TO_MANY_LUA_SCRIPTS "Too many Lua scripts!"
+#define TR_TO_MANY_LUA_SCRIPTS "Příliš mnoho skriptů!"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL        "Max RSSI"
@@ -871,7 +871,7 @@
 
 #define TR_ABOUT_BERTRAND_1    "Bertrand Songis"
 #define TR_ABOUT_BERTRAND_2    "Hlavní vývojář OpenTX"
-#define TR_ABOUT_BERTRAND_3    "Spoluautor Companion9x"
+#define TR_ABOUT_BERTRAND_3    "Spoluautor Companion"
 
 #define TR_ABOUT_MIKE_1        "Mike Blandford"
 #define TR_ABOUT_MIKE_2        "Specialista na kód,"
@@ -880,7 +880,7 @@
        
 #define TR_ABOUT_ROMOLO_1      "Romolo Manfredini"
 #define TR_ABOUT_ROMOLO_2      "Hlavní vývojář"
-#define TR_ABOUT_ROMOLO_3      "Companion9x"
+#define TR_ABOUT_ROMOLO_3      "Companion"
 
 #define TR_ABOUT_ANDRE_1       "Andre Bernet"
 #define TR_ABOUT_ANDRE_2       "Funkčnost, použitelnost,"
@@ -891,8 +891,8 @@
 
 #define TR_ABOUT_KJELL_1       "Kjell Kernen"
 #define TR_ABOUT_KJELL_2       "www.open-tx.org main author"
-#define TR_ABOUT_KJELL_3       "OpenTX Recorder author"
-#define TR_ABOUT_KJELL_4       "Companion contributor"
+#define TR_ABOUT_KJELL_3       "autor OpenTX Recorder"
+#define TR_ABOUT_KJELL_4       "Spoluautor Companion"
 
 #define TR_ABOUT_MARTIN_1      "Martin Hotař"
 #define TR_ABOUT_MARTIN_2      "Grafický design, Čeština"
