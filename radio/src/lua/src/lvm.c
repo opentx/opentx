@@ -25,7 +25,7 @@
 #include "ltable.h"
 #include "ltm.h"
 #include "lvm.h"
-
+#include "lrotable.h"
 
 
 /* limit for table tag-method chains (to avoid loops) */
@@ -106,9 +106,31 @@ static void callTM (lua_State *L, const TValue *f, const TValue *p1,
   }
 }
 
+static void lua_getcstr(char *dest, const TString *src, size_t maxsize) {
+  if (src->tsv.len+1 > maxsize)
+    dest[0] = '\0';
+  else {
+    memcpy(dest, getstr(src), src->tsv.len);
+    dest[src->tsv.len] = '\0';
+  }
+}
 
 void luaV_gettable (lua_State *L, const TValue *t, TValue *key, StkId val) {
   int loop;
+  if (ttisrotable(t)) {
+    setnilvalue(val);
+    if (ttisstring(key)) {
+      char keyname[LUA_MAX_ROTABLE_NAME + 1];
+      lu_byte keytype;
+      lua_getcstr(keyname, rawtsvalue(key), LUA_MAX_ROTABLE_NAME);
+      luaR_result res = luaR_findentry(rvalue(t), keyname, &keytype);
+      if (keytype == LUA_TLIGHTFUNCTION)
+        setlfvalue(val, (void*)(size_t)res)
+      else if (keytype == LUA_TNUMBER)
+        setnvalue(val, (lua_Number)res)
+    }
+    return;
+  }
   for (loop = 0; loop < MAXTAGLOOP; loop++) {
     const TValue *tm;
     if (ttistable(t)) {  /* `t' is a table? */
@@ -123,7 +145,7 @@ void luaV_gettable (lua_State *L, const TValue *t, TValue *key, StkId val) {
     }
     else if (ttisnil(tm = luaT_gettmbyobj(L, t, TM_INDEX)))
       luaG_typeerror(L, t, "index");
-    if (ttisfunction(tm)) {
+    if (ttisfunction(tm) || ttislightfunction(tm)) {
       callTM(L, tm, t, key, val, 1);
       return;
     }
@@ -264,8 +286,11 @@ int luaV_equalobj_ (lua_State *L, const TValue *t1, const TValue *t2) {
     case LUA_TNIL: return 1;
     case LUA_TNUMBER: return luai_numeq(nvalue(t1), nvalue(t2));
     case LUA_TBOOLEAN: return bvalue(t1) == bvalue(t2);  /* true must be 1 !! */
-    case LUA_TLIGHTUSERDATA: return pvalue(t1) == pvalue(t2);
-    case LUA_TLCF: return fvalue(t1) == fvalue(t2);
+    case LUA_TLIGHTUSERDATA:
+    case LUA_TROTABLE:
+    case LUA_TLIGHTFUNCTION:
+      return pvalue(t1) == pvalue(t2);
+    case LUA_TLCF: return lcfvalue(t1) == lcfvalue(t2);
     case LUA_TSHRSTR: return eqshrstr(rawtsvalue(t1), rawtsvalue(t2));
     case LUA_TLNGSTR: return luaS_eqlngstr(rawtsvalue(t1), rawtsvalue(t2));
     case LUA_TUSERDATA: {
@@ -554,53 +579,97 @@ void luaV_execute (lua_State *L) {
     lua_assert(base == ci->u.l.base);
     lua_assert(base <= L->top && L->top < L->stack + L->stacksize);
     vmdispatch (GET_OPCODE(i)) {
-      vmcase(OP_MOVE,
+      case OP_MOVE:
         setobjs2s(L, ra, RB(i));
-      )
-      vmcase(OP_LOADK,
+        break;
+
+      case OP_LOADK:
+      {
         TValue *rb = k + GETARG_Bx(i);
         setobj2s(L, ra, rb);
-      )
-      vmcase(OP_LOADKX,
+      }
+      break;
+
+      case OP_LOADKX:
+      {
         TValue *rb;
         lua_assert(GET_OPCODE(*ci->u.l.savedpc) == OP_EXTRAARG);
         rb = k + GETARG_Ax(*ci->u.l.savedpc++);
         setobj2s(L, ra, rb);
-      )
-      vmcase(OP_LOADBOOL,
+      }
+      break;
+
+      case OP_LOADBOOL:
         setbvalue(ra, GETARG_B(i));
         if (GETARG_C(i)) ci->u.l.savedpc++;  /* skip next instruction (if C) */
-      )
-      vmcase(OP_LOADNIL,
+        break;
+
+      case OP_LOADNIL:
+      {
         int b = GETARG_B(i);
         do {
           setnilvalue(ra++);
         } while (b--);
-      )
-      vmcase(OP_GETUPVAL,
+      }
+      break;
+
+      case OP_GETUPVAL:
+      {
         int b = GETARG_B(i);
         setobj2s(L, ra, cl->upvals[b]->v);
-      )
-      vmcase(OP_GETTABUP,
+      }
+      break;
+
+      case OP_GETTABUP:
+      {
         int b = GETARG_B(i);
-        Protect(luaV_gettable(L, cl->upvals[b]->v, RKC(i), ra));
-      )
-      vmcase(OP_GETTABLE,
+        if (ttisstring(RKC(i))) {
+          char keyname[LUA_MAX_ROTABLE_NAME + 1];
+          lu_byte keytype;
+          lua_getcstr(keyname, rawtsvalue(RKC(i)), LUA_MAX_ROTABLE_NAME);
+          luaR_result res = luaR_findglobal(keyname, &keytype);
+          if (keytype == LUA_TROTABLE) {
+            setrvalue(ra, (void*)(size_t)res)
+          }
+          else if (keytype == LUA_TLIGHTFUNCTION)
+            setlfvalue(ra, (void*)(size_t)res)
+          else if (keytype == LUA_TNUMBER)
+            setnvalue(ra, (lua_Number)res)
+          else
+            Protect(luaV_gettable(L, cl->upvals[b]->v, RKC(i), ra));
+        }
+        else {
+          Protect(luaV_gettable(L, cl->upvals[b]->v, RKC(i), ra));
+        }
+      }
+      break;
+
+      case OP_GETTABLE:
+        /* First try to look for a rotable with this name */
         Protect(luaV_gettable(L, RB(i), RKC(i), ra));
-      )
-      vmcase(OP_SETTABUP,
+        break;
+
+      case OP_SETTABUP:
+      {
         int a = GETARG_A(i);
         Protect(luaV_settable(L, cl->upvals[a]->v, RKB(i), RKC(i)));
-      )
-      vmcase(OP_SETUPVAL,
+      }
+      break;
+
+      case OP_SETUPVAL:
+      {
         UpVal *uv = cl->upvals[GETARG_B(i)];
         setobj(L, uv->v, ra);
         luaC_barrier(L, uv, ra);
-      )
-      vmcase(OP_SETTABLE,
+      }
+      break;
+
+      case OP_SETTABLE:
         Protect(luaV_settable(L, ra, RKB(i), RKC(i)));
-      )
-      vmcase(OP_NEWTABLE,
+        break;
+
+      case OP_NEWTABLE:
+      {
         int b = GETARG_B(i);
         int c = GETARG_C(i);
         Table *t = luaH_new(L);
@@ -608,31 +677,43 @@ void luaV_execute (lua_State *L) {
         if (b != 0 || c != 0)
           luaH_resize(L, t, luaO_fb2int(b), luaO_fb2int(c));
         checkGC(L, ra + 1);
-      )
-      vmcase(OP_SELF,
+      }
+      break;
+
+      case OP_SELF:
+      {
         StkId rb = RB(i);
         setobjs2s(L, ra+1, rb);
         Protect(luaV_gettable(L, rb, RKC(i), ra));
-      )
-      vmcase(OP_ADD,
+      }
+      break;
+
+      case OP_ADD:
         arith_op(luai_numadd, TM_ADD);
-      )
-      vmcase(OP_SUB,
+        break;
+
+      case OP_SUB:
         arith_op(luai_numsub, TM_SUB);
-      )
-      vmcase(OP_MUL,
+        break;
+
+      case OP_MUL:
         arith_op(luai_nummul, TM_MUL);
-      )
-      vmcase(OP_DIV,
+        break;
+
+      case OP_DIV:
         arith_op(luai_numdiv, TM_DIV);
-      )
-      vmcase(OP_MOD,
+        break;
+
+      case OP_MOD:
         arith_op(luai_nummod, TM_MOD);
-      )
-      vmcase(OP_POW,
+        break;
+
+      case OP_POW:
         arith_op(luai_numpow, TM_POW);
-      )
-      vmcase(OP_UNM,
+        break;
+
+      case OP_UNM:
+      {
         TValue *rb = RB(i);
         if (ttisnumber(rb)) {
           lua_Number nb = nvalue(rb);
@@ -641,15 +722,19 @@ void luaV_execute (lua_State *L) {
         else {
           Protect(luaV_arith(L, ra, rb, rb, TM_UNM));
         }
-      )
+      }
+      break;
+
       vmcase(OP_NOT,
         TValue *rb = RB(i);
         int res = l_isfalse(rb);  /* next assignment may change this value */
         setbvalue(ra, res);
       )
+
       vmcase(OP_LEN,
         Protect(luaV_objlen(L, ra, RB(i)));
       )
+
       vmcase(OP_CONCAT,
         int b = GETARG_B(i);
         int c = GETARG_C(i);
@@ -662,9 +747,11 @@ void luaV_execute (lua_State *L) {
         checkGC(L, (ra >= rb ? ra + 1 : rb));
         L->top = ci->top;  /* restore top */
       )
+
       vmcase(OP_JMP,
         dojump(ci, i, 0);
       )
+
       vmcase(OP_EQ,
         TValue *rb = RKB(i);
         TValue *rc = RKC(i);
@@ -675,6 +762,7 @@ void luaV_execute (lua_State *L) {
             donextjump(ci);
         )
       )
+
       vmcase(OP_LT,
         Protect(
           if (luaV_lessthan(L, RKB(i), RKC(i)) != GETARG_A(i))
@@ -706,7 +794,9 @@ void luaV_execute (lua_State *L) {
           donextjump(ci);
         }
       )
-      vmcase(OP_CALL,
+
+      case OP_CALL:
+      {
         int b = GETARG_B(i);
         int nresults = GETARG_C(i) - 1;
         if (b != 0) L->top = ra+b;  /* else previous instruction set top */
@@ -719,8 +809,11 @@ void luaV_execute (lua_State *L) {
           ci->callstatus |= CIST_REENTRY;
           goto newframe;  /* restart luaV_execute over new Lua function */
         }
-      )
-      vmcase(OP_TAILCALL,
+      }
+      break;
+
+      case OP_TAILCALL:
+      {
         int b = GETARG_B(i);
         if (b != 0) L->top = ra+b;  /* else previous instruction set top */
         lua_assert(GETARG_C(i) - 1 == LUA_MULTRET);
@@ -748,7 +841,8 @@ void luaV_execute (lua_State *L) {
           lua_assert(L->top == oci->u.l.base + getproto(ofunc)->maxstacksize);
           goto newframe;  /* restart luaV_execute over new Lua function */
         }
-      )
+      }
+
       vmcasenb(OP_RETURN,
         int b = GETARG_B(i);
         if (b != 0) L->top = ra+b-1;
@@ -764,7 +858,9 @@ void luaV_execute (lua_State *L) {
           goto newframe;  /* restart luaV_execute over new Lua function */
         }
       )
-      vmcase(OP_FORLOOP,
+
+      case OP_FORLOOP:
+      {
         lua_Number step = nvalue(ra+2);
         lua_Number idx = luai_numadd(L, nvalue(ra), step); /* increment index */
         lua_Number limit = nvalue(ra+1);
@@ -774,7 +870,9 @@ void luaV_execute (lua_State *L) {
           setnvalue(ra, idx);  /* update internal index... */
           setnvalue(ra+3, idx);  /* ...and external index */
         }
-      )
+      }
+      break;
+
       vmcase(OP_FORPREP,
         const TValue *init = ra;
         const TValue *plimit = ra+1;

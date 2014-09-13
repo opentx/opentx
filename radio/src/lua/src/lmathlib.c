@@ -15,6 +15,7 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
+#include "lrotable.h"
 
 #undef PI
 #define PI	((lua_Number)(3.1415926535897932384626433832795))
@@ -228,20 +229,19 @@ static int math_randomseed (lua_State *L) {
   return 0;
 }
 
-
-static const luaL_Reg mathlib[] = {
+const luaL_Reg mathlib[] = {
   {"abs",   math_abs},
   {"acos",  math_acos},
   {"asin",  math_asin},
   {"atan2", math_atan2},
   {"atan",  math_atan},
   {"ceil",  math_ceil},
-  {"cosh",   math_cosh},
+  {"cosh",  math_cosh},
   {"cos",   math_cos},
   {"deg",   math_deg},
   {"exp",   math_exp},
   {"floor", math_floor},
-  {"fmod",   math_fmod},
+  {"fmod",  math_fmod},
   {"frexp", math_frexp},
   {"ldexp", math_ldexp},
 #if defined(LUA_COMPAT_LOG10)
@@ -263,16 +263,16 @@ static const luaL_Reg mathlib[] = {
   {NULL, NULL}
 };
 
+const luaR_value_entry mathlib_vals[] = {
+  {"pi",   PI},
+  {"huge", HUGE_VAL},
+  {NULL, 0}
+};
 
 /*
 ** Open math library
 */
 LUAMOD_API int luaopen_math (lua_State *L) {
-  luaL_newlib(L, mathlib);
-  lua_pushnumber(L, PI);
-  lua_setfield(L, -2, "pi");
-  lua_pushnumber(L, HUGE_VAL);
-  lua_setfield(L, -2, "huge");
-  return 1;
+  return 0;
 }
 

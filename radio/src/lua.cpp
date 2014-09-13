@@ -45,6 +45,7 @@ extern "C" {
   #include <lua.h>
   #include <lauxlib.h>
   #include <lualib.h>
+  #include <lrotable.h>
 #if !defined(SIMU)
 }
 #endif
@@ -1322,7 +1323,77 @@ int luaGetOutputs(ScriptInputsOutputs & sid)
   return 0;
 }
 
-static const luaL_Reg modelLib[] = {
+const luaL_Reg opentxLib[] = {
+  { "getTime", luaGetTime },
+  { "getVersion", luaGetVersion },
+  { "getGeneralSettings", luaGetGeneralSettings },
+  { "getValue", luaGetValue },
+  { "getFieldInfo", luaGetFieldInfo },
+  { "playFile", luaPlayFile },
+  { "playNumber", luaPlayNumber },
+  { "playDuration", luaPlayDuration },
+  { "playTone", luaPlayTone },
+  { "popupInput", luaPopupInput },
+  { "defaultStick", luaDefaultStick },
+  { "defaultChannel", luaDefaultChannel },
+  { "killEvents", luaKillEvents },
+  { NULL, NULL }  /* sentinel */
+};
+
+const luaR_value_entry opentxConstants[] = {
+  { "FULLSCALE", RESX },
+  { "XXLSIZE", XXLSIZE },
+  { "DBLSIZE", DBLSIZE },
+  { "MIDSIZE", MIDSIZE },
+  { "SMLSIZE", SMLSIZE },
+  { "INVERS", INVERS },
+  { "LEFT", LEFT },
+  { "PREC1", PREC1 },
+  { "PREC2", PREC2 },
+  { "BLINK", BLINK },
+  { "VALUE", 0 },
+  { "SOURCE", 1 },
+  { "REPLACE", MLTPX_REP },
+  { "MIXSRC_FIRST_INPUT", MIXSRC_FIRST_INPUT },
+  { "MIXSRC_Rud", MIXSRC_Rud },
+  { "MIXSRC_Ele", MIXSRC_Ele },
+  { "MIXSRC_Thr", MIXSRC_Thr },
+  { "MIXSRC_Ail", MIXSRC_Ail },
+  { "MIXSRC_SA", MIXSRC_SA },
+  { "MIXSRC_SB", MIXSRC_SB },
+  { "MIXSRC_SC", MIXSRC_SC },
+  { "MIXSRC_SD", MIXSRC_SD },
+  { "MIXSRC_SE", MIXSRC_SE },
+  { "MIXSRC_SF", MIXSRC_SF },
+  { "MIXSRC_SG", MIXSRC_SG },
+  { "MIXSRC_SH", MIXSRC_SH },
+  { "MIXSRC_CH1", MIXSRC_CH1 },
+  { "SWSRC_LAST", SWSRC_LAST_LOGICAL_SWITCH },
+  { "EVT_MENU_BREAK", EVT_KEY_BREAK(KEY_MENU) },
+  { "EVT_PAGE_BREAK", EVT_KEY_BREAK(KEY_PAGE) },
+  { "EVT_PAGE_LONG", EVT_KEY_LONG(KEY_PAGE) },
+  { "EVT_ENTER_BREAK", EVT_KEY_BREAK(KEY_ENTER) },
+  { "EVT_ENTER_LONG", EVT_KEY_LONG(KEY_ENTER) },
+  { "EVT_EXIT_BREAK", EVT_KEY_BREAK(KEY_EXIT) },
+  { "EVT_PLUS_BREAK", EVT_KEY_BREAK(KEY_PLUS) },
+  { "EVT_MINUS_BREAK", EVT_KEY_BREAK(KEY_MINUS) },
+  { "EVT_PLUS_FIRST", EVT_KEY_FIRST(KEY_PLUS) },
+  { "EVT_MINUS_FIRST", EVT_KEY_FIRST(KEY_MINUS) },
+  { "EVT_PLUS_REPT", EVT_KEY_REPT(KEY_PLUS) },
+  { "EVT_MINUS_REPT", EVT_KEY_REPT(KEY_MINUS) },
+  { "FILL_WHITE", FILL_WHITE },
+  { "GREY_DEFAULT", GREY_DEFAULT },
+  { "SOLID", SOLID },
+  { "DOTTED", DOTTED },
+  { "LCD_W", LCD_W },
+  { "LCD_H", LCD_H },
+  { "PLAY_NOW", PLAY_NOW },
+  { "PLAY_BACKGROUND", PLAY_BACKGROUND },
+  { "TIMEHOUR", TIMEHOUR },
+  { NULL, 0 }  /* sentinel */
+};
+
+const luaL_Reg modelLib[] = {
   { "getInfo", luaModelGetInfo },
   { "setInfo", luaModelSetInfo },
   { "getTimer", luaModelGetTimer },
@@ -1351,7 +1422,7 @@ static const luaL_Reg modelLib[] = {
   { NULL, NULL }  /* sentinel */
 };
 
-static const luaL_Reg lcdLib[] = {
+const luaL_Reg lcdLib[] = {
   { "lock", luaLcdLock },
   { "clear", luaLcdClear },
   { "getLastPos", luaLcdGetLastPos },
@@ -1397,77 +1468,6 @@ void luaRegisterAll()
 {
   // Init lua
   luaL_openlibs(L);
-
-  // Push OpenTX libs
-  lua_registerlib(L, "model", modelLib);
-  lua_registerlib(L, "lcd", lcdLib);
-
-  // Push OpenTX functions
-  lua_register(L, "getTime", luaGetTime);
-  lua_register(L, "getVersion", luaGetVersion);
-  lua_register(L, "getGeneralSettings", luaGetGeneralSettings);
-  lua_register(L, "getValue", luaGetValue);
-  lua_register(L, "getFieldInfo", luaGetFieldInfo);  
-
-  lua_register(L, "playFile", luaPlayFile);
-  lua_register(L, "playNumber", luaPlayNumber);
-  lua_register(L, "playDuration", luaPlayDuration);
-  lua_register(L, "playTone", luaPlayTone);
-  lua_register(L, "popupInput", luaPopupInput);
-  lua_register(L, "defaultStick", luaDefaultStick);
-  lua_register(L, "defaultChannel", luaDefaultChannel);
-  lua_register(L, "killEvents", luaKillEvents);
-
-  // Push OpenTX constants
-  lua_registerint(L, "FULLSCALE", RESX);
-  lua_registerint(L, "XXLSIZE", XXLSIZE);
-  lua_registerint(L, "DBLSIZE", DBLSIZE);
-  lua_registerint(L, "MIDSIZE", MIDSIZE);
-  lua_registerint(L, "SMLSIZE", SMLSIZE);
-  lua_registerint(L, "INVERS", INVERS);
-  lua_registerint(L, "LEFT", LEFT);
-  lua_registerint(L, "PREC1", PREC1);
-  lua_registerint(L, "PREC2", PREC2);
-  lua_registerint(L, "BLINK", BLINK);
-  lua_registerint(L, "VALUE", 0);
-  lua_registerint(L, "SOURCE", 1);
-  lua_registerint(L, "REPLACE", MLTPX_REP);
-  lua_registerint(L, "MIXSRC_FIRST_INPUT", MIXSRC_FIRST_INPUT);
-  lua_registerint(L, "MIXSRC_Rud", MIXSRC_Rud);
-  lua_registerint(L, "MIXSRC_Ele", MIXSRC_Ele);
-  lua_registerint(L, "MIXSRC_Thr", MIXSRC_Thr);
-  lua_registerint(L, "MIXSRC_Ail", MIXSRC_Ail);
-  lua_registerint(L, "MIXSRC_SA", MIXSRC_SA);
-  lua_registerint(L, "MIXSRC_SB", MIXSRC_SB);
-  lua_registerint(L, "MIXSRC_SC", MIXSRC_SC);
-  lua_registerint(L, "MIXSRC_SD", MIXSRC_SD);
-  lua_registerint(L, "MIXSRC_SE", MIXSRC_SE);
-  lua_registerint(L, "MIXSRC_SF", MIXSRC_SF);
-  lua_registerint(L, "MIXSRC_SG", MIXSRC_SG);
-  lua_registerint(L, "MIXSRC_SH", MIXSRC_SH);
-  lua_registerint(L, "MIXSRC_CH1", MIXSRC_CH1);
-  lua_registerint(L, "SWSRC_LAST", SWSRC_LAST_LOGICAL_SWITCH);
-  lua_registerint(L, "EVT_MENU_BREAK", EVT_KEY_BREAK(KEY_MENU));
-  lua_registerint(L, "EVT_PAGE_BREAK", EVT_KEY_BREAK(KEY_PAGE));
-  lua_registerint(L, "EVT_PAGE_LONG", EVT_KEY_LONG(KEY_PAGE));
-  lua_registerint(L, "EVT_ENTER_BREAK", EVT_KEY_BREAK(KEY_ENTER));
-  lua_registerint(L, "EVT_ENTER_LONG", EVT_KEY_LONG(KEY_ENTER));
-  lua_registerint(L, "EVT_EXIT_BREAK", EVT_KEY_BREAK(KEY_EXIT));
-  lua_registerint(L, "EVT_PLUS_BREAK", EVT_KEY_BREAK(KEY_PLUS));
-  lua_registerint(L, "EVT_MINUS_BREAK", EVT_KEY_BREAK(KEY_MINUS));
-  lua_registerint(L, "EVT_PLUS_FIRST", EVT_KEY_FIRST(KEY_PLUS));
-  lua_registerint(L, "EVT_MINUS_FIRST", EVT_KEY_FIRST(KEY_MINUS));
-  lua_registerint(L, "EVT_PLUS_REPT", EVT_KEY_REPT(KEY_PLUS));
-  lua_registerint(L, "EVT_MINUS_REPT", EVT_KEY_REPT(KEY_MINUS));
-  lua_registerint(L, "FILL_WHITE", FILL_WHITE);
-  lua_registerint(L, "GREY_DEFAULT", GREY_DEFAULT);
-  lua_registerint(L, "SOLID", SOLID);
-  lua_registerint(L, "DOTTED", DOTTED);
-  lua_registerint(L, "LCD_W", LCD_W);
-  lua_registerint(L, "LCD_H", LCD_H);
-  lua_registerint(L, "PLAY_NOW", PLAY_NOW);
-  lua_registerint(L, "PLAY_BACKGROUND", PLAY_BACKGROUND);
-  lua_registerint(L, "TIMEHOUR", TIMEHOUR);
 }
 
 void luaInit()
@@ -1963,7 +1963,7 @@ void luaTask(uint8_t evt)
   }
 
   if (luaState == INTERPRETER_PANIC) {
-	return;
+    return;
   }
 
   if (luaState & INTERPRETER_RUNNING_STANDALONE_SCRIPT) {

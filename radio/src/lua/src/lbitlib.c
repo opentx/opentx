@@ -11,6 +11,7 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
+#include "lrotable.h"
 
 /* number of bits to consider in a number */
 #if !defined(LUA_NBITS)
@@ -185,7 +186,7 @@ static int b_replace (lua_State *L) {
 }
 
 
-static const luaL_Reg bitlib[] = {
+const luaL_Reg bitlib[] = {
   {"arshift", b_arshift},
   {"band", b_and},
   {"bnot", b_not},
@@ -201,10 +202,11 @@ static const luaL_Reg bitlib[] = {
   {NULL, NULL}
 };
 
-
+const luaR_value_entry bitlib_vals[] = {
+  {NULL, 0}
+};
 
 LUAMOD_API int luaopen_bit32 (lua_State *L) {
-  luaL_newlib(L, bitlib);
-  return 1;
+  return 0;
 }
 

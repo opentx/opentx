@@ -16,7 +16,7 @@
 
 #include "lauxlib.h"
 #include "lualib.h"
-
+#include "lrotable.h"
 
 static int luaB_print (lua_State *L) {
   int n = lua_gettop(L);  /* number of arguments */
@@ -411,8 +411,7 @@ static int luaB_tostring (lua_State *L) {
   return 1;
 }
 
-
-static const luaL_Reg base_funcs[] = {
+const luaL_Reg baselib[] = {
   {"assert", luaB_assert},
   {"collectgarbage", luaB_collectgarbage},
   {"dofile", luaB_dofile},
@@ -441,16 +440,10 @@ static const luaL_Reg base_funcs[] = {
   {NULL, NULL}
 };
 
-
-LUAMOD_API int luaopen_base (lua_State *L) {
-  /* set global _G */
-  lua_pushglobaltable(L);
-  lua_pushglobaltable(L);
-  lua_setfield(L, -2, "_G");
-  /* open lib into global table */
-  luaL_setfuncs(L, base_funcs, 0);
-  lua_pushliteral(L, LUA_VERSION);
-  lua_setfield(L, -2, "_VERSION");  /* set global _VERSION */
-  return 1;
-}
-
+#if 0
+// TODO
+const luaR_value_entry baselib_vals[] = {
+  {"_VERSION",   LUA_VERSION},
+  {NULL, 0}
+};
+#endif

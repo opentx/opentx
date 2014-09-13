@@ -20,25 +20,37 @@
 #include "lualib.h"
 #include "lauxlib.h"
 
+#include "lrotable.h"
 
 /*
 ** these libs are loaded by lua.c and are readily available to any Lua
 ** program
 */
 static const luaL_Reg loadedlibs[] = {
-  {"_G", luaopen_base},
+  // {"_G", luaopen_base},
   // {LUA_LOADLIBNAME, luaopen_package},
   // {LUA_COLIBNAME, luaopen_coroutine},
   // {LUA_TABLIBNAME, luaopen_table},
   // {LUA_IOLIBNAME, luaopen_io},
   // {LUA_OSLIBNAME, luaopen_os},
   // {LUA_STRLIBNAME, luaopen_string},
-  {LUA_BITLIBNAME, luaopen_bit32},
-  {LUA_MATHLIBNAME, luaopen_math},
+  // {LUA_BITLIBNAME, luaopen_bit32},
+  // {LUA_MATHLIBNAME, luaopen_math},
   // {LUA_DBLIBNAME, luaopen_debug},
   {NULL, NULL}
 };
 
+/* The read-only tables are defined here */
+const luaR_table lua_rotable[] =
+{
+  {LUA_MATHLIBNAME, mathlib, mathlib_vals},
+  {LUA_BITLIBNAME, bitlib, NULL},
+  {"lcd", lcdLib, NULL},
+  {"model", modelLib, NULL},
+  {"__baselib", baselib, NULL},
+  {"__opentx", opentxLib, opentxConstants},
+  {NULL, NULL, NULL}
+};
 
 /*
 ** these libs are preloaded and must be required before used

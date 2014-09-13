@@ -299,7 +299,10 @@ int luaD_precall (lua_State *L, StkId func, int nresults) {
   ptrdiff_t funcr = savestack(L, func);
   switch (ttype(func)) {
     case LUA_TLCF:  /* light C function */
-      f = fvalue(func);
+      f = lcfvalue(func);
+      goto Cfunc;
+    case LUA_TLIGHTFUNCTION:
+      f = check_exp(ttislightfunction(func), val_(func).f);
       goto Cfunc;
     case LUA_TCCL: {  /* C closure */
       f = clCvalue(func)->f;
