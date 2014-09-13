@@ -7067,7 +7067,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../modeledit/setup.cpp" line="575"/>
         <location filename="../modeledit/setup.cpp" line="576"/>
         <source>THR</source>
-        <translation></translation>
+        <translation type="unfinished">Gaz</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="341"/>
