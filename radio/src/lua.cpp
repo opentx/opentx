@@ -74,7 +74,6 @@ uint16_t maxLuaDuration = 0;
 
 #define PERMANENT_SCRIPTS_MAX_INSTRUCTIONS (10000/100)
 #define MANUAL_SCRIPTS_MAX_INSTRUCTIONS    (20000/100)
-#define SCRIPTS_MAX_HEAP                   50
 #define SET_LUA_INSTRUCTIONS_COUNT(x)      (instructionsPercent=0, lua_sethook(L, hook, LUA_MASKCOUNT, x))
 
 struct our_longjmp * global_lj = 0;
@@ -1523,7 +1522,10 @@ int luaLoad(const char *filename, ScriptInternalData & sid, ScriptInputsOutputs 
   sid.instructions = 0;
   sid.state = SCRIPT_OK;
 
+#if 0
+  // not needed, we just called luaInit
   luaFree(sid);
+#endif
 
   if (luaState == INTERPRETER_PANIC) {
 	return SCRIPT_PANIC;
@@ -1932,7 +1934,7 @@ void luaDoGc()
 {
   if (L) {
     PROTECT_LUA() {
-      lua_gc(L, LUA_GCSTEP /*LUA_GCCOLLECT*/, 0);  // LUA_GCSTEP is enough
+      lua_gc(L, LUA_GCCOLLECT, 0);
 #if defined(SIMU) || defined(DEBUG)
       static int lastgc = 0;
       int gc = luaGetMemUsed();
