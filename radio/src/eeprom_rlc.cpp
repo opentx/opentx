@@ -964,9 +964,12 @@ void eeLoadModel(uint8_t id)
     }
 #endif
 
+    bool newModel = false;
+
     if (sz < 256) {
       modelDefault(id);
       eeCheck(true);
+      newModel = true;
     }
 
     AUDIO_FLUSH();
@@ -974,7 +977,9 @@ void eeLoadModel(uint8_t id)
     logicalSwitchesReset();
 
     if (pulsesStarted()) {
-      checkAll();
+      if (!newModel) {
+        checkAll();
+      }
       resumePulses();
     }
 
