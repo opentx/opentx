@@ -1,206 +1,236 @@
-<h2>Version 2.0.9 / 2014-07-28</h2>
+<h2>Version 2.0.11 / 2014-09-10</h2>
+[9XR-PRO]
+<ul>
+<li>Audio broken (since we changed the ARM GCC compiler)</li>
+</ul>
+
 [Taranis]
 <ul>
-<li>CPPM issue on Helis when cross trims used
-<li>Taranis+ LCD color range adjusted
+<li>Switch warning didn't allow access to SG</li>
+<li>Pot warning would show S3 when the cursor wasn't on the Pot Warning line</li>
+</ul>
+
+<h2>Version 2.0.10 / 2014-09-08</h2>
+[All]
+<ul>
+<li>Duration and AND fixed on Sticky and Edge logical switches</li>
+</ul>
+
+[Taranis]
+<ul>
+<li>CCPM issue on Helis when cross trims used</li>
+<li>Taranis+ LCD color range and brightness adjusted</li>
+<li>Taranis+ SWR removed</li>
+<li>Lua small enhancements (TIMEHOUR constant, GVARS over 500)</li>
+<li>Lua hardening, use of newlib-nano (optimizes RAM usage)</li>
+<li>Incoming telemetry rejected if RSSI=0</li>
+<li>Assign Bitmap impossible if filename length too big</li>
+</ul>
+
+[9XR-PRO]
+<ul>
+<li>Telemetry enabled</li>
+</ul>
 
 <h2>Version 2.0.8 / 2014-07-23</h2>
 [Taranis]
 <ul>
-<li>Curve wrongly displayed when used in an Input with a positive offset
-<li>Telemetry Channels are now accessible through Lua
-<li>New string Lua fields added for accessing sources
-<li>Trims now applied on Inputs when used in Logical Switches
-<li>Option "nojoystick" added
+<li>Curve wrongly displayed when used in an Input with a positive offset</li>
+<li>Telemetry Channels are now accessible through Lua</li>
+<li>New string Lua fields added for accessing sources</li>
+<li>Trims now applied on Inputs when used in Logical Switches</li>
+<li>Option "nojoystick" added</li>
+</ul>
 
 <h2>Version 2.0.7 / 2014-07-15</h2>
 [Taranis]
 <ul>
-<li>Instant Trim problem when using a negative curve
+<li>Instant Trim problem when using a negative curve</li>
+</ul>
 
 [All]
 <ul>
-<li>SafetyCH function was missing on the compilation server
+<li>SafetyCH function was missing on the compilation server</li>
+</ul>
 
 <h2>Version 2.0.6 / 2014-07-13</h2>
 [Taranis]
 <ul>
-<li>Telemetry Type field is hidden when only S.PORT is available
-<li>Permanent timers may be not resetted on Flight Reset 
-<li>Instant Trim bugfix
-<li>No sound on trim press when trim option disabled
-<li>[Page] / [Page Long] allowed to change Telemetry screen
-<li>XXL font added for Lua telemetry screens
-<li>
+<li>Telemetry Type field is hidden when only S.PORT is available</li>
+<li>Permanent timers may be not resetted on Flight Reset</li>
+<li>Instant Trim bugfix</li>
+<li>No sound on trim press when trim option disabled</li>
+<li>[Page] / [Page Long] allowed to change Telemetry screen</li>
+<li>XXL font added for Lua telemetry screens</li>
+</ul>
 
 [9XR-PRO / Sky9x]
 <ul>
-<li>RTC time was not stored correctly
-<li>PPM polarity fix
+<li>RTC time was not stored correctly</li>
+<li>PPM polarity fix</li>
 </ul>
 
 [Gruvin9x, 9X128, 9XR128]
 <ul>
-<li>12 logical switches instead of 15 (the extra ones were not accessible in custom functions)
+<li>12 logical switches instead of 15 (the extra ones were not accessible in custom functions)</li>
 </ul>
 
 [All]
 <ul>
-<li>Logical switches were not resetted on Model load
-<li>SafetyCH function can be hidden (depending on Companion options)
-<li>MPH to km/h conversion improved
+<li>Logical switches were not resetted on Model load</li>
+<li>SafetyCH function can be hidden (depending on Companion options)</li>
+<li>MPH to km/h conversion improved</li>
 </ul>
 
 <h2>Version 2.0.5 / 2014-06-26</h2>
 [Taranis]
 <ul>
-<li>Add Flight Mode indication to the mixer/inputs screens
-<li>Joystick emulation fixed
-<li>Fixed float number display in Lua
-<li>Fixed telemetry screens page order (Lua, custom, voltage, GPS)
-<li>Fixed unability to disable switch warning for SG
-<li>Lua bugfixes in getCustomFunction/setCustomFunction and getLogicalSwitch/setLogicalSwitch
+<li>Add Flight Mode indication to the mixer/inputs screens</li>
+<li>Joystick emulation fixed</li>
+<li>Fixed float number display in Lua</li>
+<li>Fixed telemetry screens page order (Lua, custom, voltage, GPS)</li>
+<li>Fixed unability to disable switch warning for SG</li>
+<li>Lua bugfixes in getCustomFunction/setCustomFunction and getLogicalSwitch/setLogicalSwitch</li>
 </ul>
 
 <h2>Version 2.0.4 / 2014-06-24</h2>
 [Taranis]
 <ul>
-<li>Lua Telemetry custom screens added 
-<li>Lua wrong memory used indication
-<li>Telemetry on the serial port in the battery bay
-<li>
+<li>Lua Telemetry custom screens added</li>
+<li>Lua wrong memory used indication</li>
+<li>Telemetry on the serial port in the battery bay</li>
 </ul>
 
 [All]
 <ul>
-<li>Air Speed added in Logs
-<li>|d|>x bug fix
+<li>Air Speed added in Logs</li>
+<li>|d|>x bug fix</li>
 <li>Timers played even if 00:00
 </ul>
 
 <h2>Version 2.0.3 / 2014-06-17</h2>
 <ul>
-<li>Bugfix on Reset Flight function (possible freeze of the menus)
-<li>Imperial units bug (on altitude)
-<li>FIRMWARE.BIN and EEPROM.BIN are not anymore marked as system files
+<li>Bugfix on Reset Flight function (possible freeze of the menus)</li>
+<li>Imperial units bug (on altitude)</li>
+<li>FIRMWARE.BIN and EEPROM.BIN are not anymore marked as system files</li>
 </ul>
 
 <h2>Version 2.0.2 / 2014-06-12</h2>
 <ul>
-<li>RxBatt removed (merged with A1 as before)
-<li>Bootloader accessible through the 2 trims (as 2.0.0)
-<li>Delay on switches middle position only applied to Play functions
-<li>Delay for Play functions is configurable (0-300ms)
-<li>SWR, A3 and A4 now recorded in SD logs
-<li>Persistent mAh was not correctly stored in EEPROM
-<li>A lot of small bug fixes
+<li>RxBatt removed (merged with A1 as before)</li>
+<li>Bootloader accessible through the 2 trims (as 2.0.0)</li>
+<li>Delay on switches middle position only applied to Play functions</li>
+<li>Delay for Play functions is configurable (0-300ms)</li>
+<li>SWR, A3 and A4 now recorded in SD logs</li>
+<li>Persistent mAh was not correctly stored in EEPROM</li>
+<li>A lot of small bug fixes</li>
 </ul>
 
 <h2>OpenTX 2.0.1 / 2014-02-05</h2>
 [Taranis]
 <ul>
-<li>S.PORT / D protocol choice added in TELEMETRY menu
-<li>Heli mixer fix (stick modes 2/3/4)
-<li>Multipos switch fix
-<li>Italian translations updated
-<li>French translations fixes
-<li>Multis Wizard added
-<li>Bootloader now needs only one trim pressed
-<li>S3 warning hidden (no S3 on Taranis)
-<li>Persistent mAh was broken
+<li>S.PORT / D protocol choice added in TELEMETRY menu</li>
+<li>Heli mixer fix (stick modes 2/3/4)</li>
+<li>Multipos switch fix</li>
+<li>Italian translations updated</li>
+<li>French translations fixes</li>
+<li>Multis Wizard added</li>
+<li>Bootloader now needs only one trim pressed</li>
+<li>S3 warning hidden (no S3 on Taranis)</li>
+<li>Persistent mAh was broken</li>
 </ul>
 
 [Stock]
 <ul>
-<li>Fix for LS used as source
+<li>Fix for LS used as source</li>
 </ul>
 
 [All]
 <ul>
-<li>Fix on d>=x logical switches
+<li>Fix on d>=x logical switches</li>
 </ul>
 
 <h2>OpenTX 2.0.0 / 2014-06-02</h2>
 [Taranis]
 <ul>
-<li>Inputs layer with support for all physical inputs and telemetry
-<li>Lua interpreter for runtime scripts and one-time configuration assistants
-<li>GVARs useable for offsets and limits
-<li>GVAR modification popup on home screen can be enabled/disabled for each GVAR
-<li>Output curve assignable to each servo on the SERVOS page
-<li>32 curves instead of 16, with smoothing, and any number of points between 2 and 17
-<li>Pot position memory for the 4 pots, with startup warning
-<li>Copy/paste/insert/delete of custom function lines
-<li>Altitude can be displayed in the top bar
-<li>FrSky Taranis will run at 120MHz instead of 60MHz
-<li>New trim system (a mode's trims can be relative to that of another mode's)
-<li>SPORT data form internal module available on the UART connector in the battery compartment in the Taranis
-<li>Support for 6-position pots, with individual positions available in the switch selection list
-<li>Taranis will be useable as a standard PC joystick through USB, 8 analogs and 8 buttons mapped to CH1-8 and 9-16 respectively
+<li>Inputs layer with support for all physical inputs and telemetry</li>
+<li>Lua interpreter for runtime scripts and one-time configuration assistants</li>
+<li>GVARs useable for offsets and limits</li>
+<li>GVAR modification popup on home screen can be enabled/disabled for each GVAR</li>
+<li>Output curve assignable to each servo on the SERVOS page</li>
+<li>32 curves instead of 16, with smoothing, and any number of points between 2 and 17</li>
+<li>Pot position memory for the 4 pots, with startup warning</li>
+<li>Copy/paste/insert/delete of custom function lines</li>
+<li>Altitude can be displayed in the top bar</li>
+<li>FrSky Taranis will run at 120MHz instead of 60MHz</li>
+<li>New trim system (a mode's trims can be relative to that of another mode's)</li>
+<li>SPORT data form internal module available on the UART connector in the battery compartment in the Taranis</li>
+<li>Support for 6-position pots, with individual positions available in the switch selection list</li>
+<li>Taranis will be useable as a standard PC joystick through USB, 8 analogs and 8 buttons mapped to CH1-8 and 9-16 respectively</li>
 </ul>
 
 [ARM Boards]
 <ul>
-<li>Measured consumption (mAh) can be stored on power off
-<li>0.1% resolution for limits
-<li>Sound repeat time settable in multiples of 1sec, call at model load can be disabled
-<li>3 options for timer countdown voice output
-<li>9 GVARS instead of 5 (ARM boards only)
-<li>64 custom functions instead of 32
-<li>Ability to read text files from the SD card. A file with the name of a model will be linked to it and easily accessible as "model notes". Can be displayed automatically at model load for use as a checklist
-<li>Bootloader added, removes the need to install computer drivers to flash new firmware
-<li>Radio can handle EEPROM conversion by itself (no need for companion)
-<li>Improved vario sounds
-<li>Default audio files can be placed on the SD card for each model for all switch positions (both for physical and logical switches).
-<li>Support for up to 16 channels on trainer input
+<li>Measured consumption (mAh) can be stored on power off</li>
+<li>0.1% resolution for limits</li>
+<li>Sound repeat time settable in multiples of 1sec, call at model load can be disabled</li>
+<li>3 options for timer countdown voice output</li>
+<li>9 GVARS instead of 5 (ARM boards only)</li>
+<li>64 custom functions instead of 32</li>
+<li>Ability to read text files from the SD card. A file with the name of a model will be linked to it and easily accessible as "model notes". Can be displayed automatically at model load for use as a checklist</li>
+<li>Bootloader added, removes the need to install computer drivers to flash new firmware</li>
+<li>Radio can handle EEPROM conversion by itself (no need for companion)</li>
+<li>Improved vario sounds</li>
+<li>Default audio files can be placed on the SD card for each model for all switch positions (both for physical and logical switches)</li>
+<li>Support for up to 16 channels on trainer input</li>
 </ul>
 
 [All]
 <ul>
-<li>Proportional fonts
-<li>Switch warnings can be disabled for switches you don't use on a given model
-<li>Compensation for offset error of FrSky FAS-xx current sensors (option on m64)
-<li>Companion merged into OpenTX
-<li>Companion major code / graphics refactoring
-<li>Sticky Logical Switches
-<li>ASpd, dTE, Cel-, Vfas- added to Telemetry values
-<li>Workaround for newer bogus FlySky modules that send out servo centers on powerup (9x only)
-<li>Finnish language support
+<li>Proportional fonts</li>
+<li>Switch warnings can be disabled for switches you don't use on a given model</li>
+<li>Compensation for offset error of FrSky FAS-xx current sensors (option on m64)</li>
+<li>Companion merged into OpenTX</li>
+<li>Companion major code / graphics refactoring</li>
+<li>Sticky Logical Switches</li>
+<li>ASpd, dTE, Cel-, Vfas- added to Telemetry values</li>
+<li>Workaround for newer bogus FlySky modules that send out servo centers on powerup (9x only)</li>
+<li>Finnish language support</li>
 </ul>
 
 <h2>2940 / 2014-02-02</h2>
 [ARM Boards]
 <ul>
-<li>Wav files played even in silent mode
-<li>GPS support had broken VFAS
+<li>Wav files played even in silent mode</li>
+<li>GPS support had broken VFAS</li>
 </ul>
 
 [All]
 <ul>
-<li>Custom function triggered by a CSW based on analog triggering erroneously at powerup
-<li>Problem with mixer weight field when !GVARS
-<li>PPM5 was broken
+<li>Custom function triggered by a CSW based on analog triggering erroneously at powerup</li>
+<li>Problem with mixer weight field when !GVARS</li>
+<li>PPM5 was broken</li>
 </ul>
 
 <h2>2923 / 2014-01-08</h2>
 [ARM Boards]
 <ul>
-<li>Audio freeze bug fixed
-<li>Aurora gimbals support
+<li>Audio freeze bug fixed</li>
+<li>Aurora gimbals support</li>
 </ul>
 
 <h2>2834 / 2013-10-29</h2>
 [ARM Boards]
 <ul>
-<li>Altitude played without decimal when &gt;= 10m
-<li>Check to avoid too long paths when playing SD files
+<li>Altitude played without decimal when &gt;= 10m</li>
+<li>Check to avoid too long paths when playing SD files</li>
 </ul>
  		
 [All]
 <ul>
-<li>Mixer bug when a MULTIPLY mix used with a slow
-<li>GVAR popup removed
-<li>Sticky virtual switches are reset when ResetFlight function is called 
+<li>Mixer bug when a MULTIPLY mix used with a slow</li>
+<li>GVAR popup removed</li>
+<li>Sticky virtual switches are reset when ResetFlight function is called </li>
 </ul>
 
 <h2>2768 / 2013-09-20</h2>
@@ -284,26 +314,26 @@
 <ul>
 <li>Flash savings</li>
 <li>Vario sink tones removed</li>
-<li>Audio files renumbered (see here) </li>
+<li>Audio files renumbered (see here)</li>
 </ul>
 
 [Sky9x]
 <ul>
-<li>Audio mixer: several sounds can now be played simulataneously, and beeps won't interrupt and clear voice alerts anymore. Note that sound files now need to have sampling rates of either 8, 16 or 32kHz and may need to be replaced. </li>
+<li>Audio mixer: several sounds can now be played simulataneously, and beeps won't interrupt and clear voice alerts anymore. Note that sound files now need to have sampling rates of either 8, 16 or 32kHz and may need to be replaced</li>
 </ul>
 
 <h2>2413 / 2013-05-22</h2>
 [All]
 <ul>
 <li>Calibration screen automatically appears following an EEPROM format</li>
-<li>Wraparound in popup menus </li>
+<li>Wraparound in popup menus</li>
 </ul>
 
 [9X Stock]
 <ul>
 <li>More options supported (novario / nogps / nogauges)</li>
 <li>Flash savings</li>
-<li>Mavlink huge rework by Rienk! </li>
+<li>Mavlink huge rework by Rienk!</li>
 </ul>
 
 [Sky9x]
@@ -315,17 +345,17 @@
 <h2>2215 / 2013-04-05</h2>
 [All]
 <ul>
-<li>New option AUTOSOURCE to automatically select the stick / pot / switch which is moved when editing a Mix source </li>
+<li>New option AUTOSOURCE to automatically select the stick / pot / switch which is moved when editing a Mix source</li>
 </ul>
 
 [9X Stock]
 <ul>
-<li>All prompts renumbered to have the "custom" prompts starting at 0 and to be able to use PlayTrack?(GVAR) with Adjust(GVAR) to play tracks sequences </li>
+<li>All prompts renumbered to have the "custom" prompts starting at 0 and to be able to use PlayTrack?(GVAR) with Adjust(GVAR) to play tracks sequences</li>
 </ul>
 
 [Gruvin9x]
 <ul>
-<li>Possibility to have both BEEPER and SPEAKER enable in the same time </li>
+<li>Possibility to have both BEEPER and SPEAKER enable in the same time</li>
 </ul>
 
 [Sky9x]
@@ -335,5 +365,5 @@
 <li>Possibility to have both BEEPER and SPEAKER enable in the same time</li>
 <li>New menu in Main Views / Telemetry Views</li>
 <li>Vario sounds improved!</li>
-<li>SD Folders renamed. "9XSOUNDS" becomes "SOUNDS", don't forget to updateyour cards!</li>
+<li>SD Folders renamed. "9XSOUNDS" becomes "SOUNDS", don't forget to update your SD card!</li>
 </ul>
