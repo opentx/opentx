@@ -289,6 +289,10 @@ USB = JOYSTICK
 # NO - normal behaviour, show real channel values
 CHANNELS_MONITOR_INV_HIDE = NO
 
+# Use newlib-nano 
+# Values = NO, YES
+NANO = NO
+
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
@@ -716,6 +720,12 @@ ifeq ($(PCB), TARANIS)
     SRC += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_bot.c
     SRC += targets/taranis/STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_Device_Library/Class/msc/src/usbd_msc_core.c
     EXTRABOARDSRC += targets/taranis/usbd_storage_msd.cpp
+  endif
+  
+  ifeq ($(NANO), YES)
+    # use newlib-nano for linking
+    NEWLIB_NANO_FLAGS = --specs=nano.specs -u _printf_float
+    CPPDEFS += -DNANO
   endif
   
   ifneq ($(LUA), NO)
@@ -1389,7 +1399,7 @@ OBJS =  $(TMP:.s=.o)
 	@echo
 	@echo $(MSG_COMPILING) $@
 	$(CC) $(ARMCPPFLAGS) $< -o allsrc.o
-	$(CC) $(OBJS) allsrc.o -mcpu=cortex-m3 -mthumb -nostartfiles -lm -T$(LDSCRIPT) -Wl,-Map=$(TARGET).map,--cref,--no-warn-mismatch,--gc-sections -o $@
+	$(CC) $(OBJS) allsrc.o -mcpu=cortex-m3 -mthumb -nostartfiles -lm -T$(LDSCRIPT) -Wl,-Map=$(TARGET).map,--cref,--no-warn-mismatch,--gc-sections $(NEWLIB_NANO_FLAGS) -o $@
 endif
 
 # Target: clean project.
