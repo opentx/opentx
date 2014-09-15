@@ -69,7 +69,7 @@ FAI = NO
 
 # the latests deliveries for Turnigy 9x transmitters (since 2 years now, 2014) do not stop sending if no pulses are generated.
 # This fact totally breaks the nice throttle and switch warning concept, because even we prevent sending pulses the
-# transmitter modul ignores this, and continous to send the last value or 0 at beginning. And 0 means in the middle of throttle -> 50%.
+# transmitter module ignores this, and continues to send the last value or 0 at beginning. And 0 means in the middle of throttle -> 50%.
 # To cope with this situation, we need a new concept how to handle throttle and switch warnings.
 # if you have a 0 value (50% ) for throttle, while throttle warning is active, you should activate this switch
 # Values = YES, NO
@@ -126,7 +126,7 @@ CORRECT_NEGATIVE_VALUES = YES
 ARITHMETIC_OVERFLOW_CHECK = NO
 
 # increases resolution for throttle statistics and throttle counting, in very rare cases.
-# this will be only true if an output channel is used for throttle calculation, and this chanenel has changed limits, e.g. -90% to +80%
+# this will be only true if an output channel is used for throttle calculation, and this channel has changed limits, e.g. -90% to +80%
 # if you use standard limits for throttle or directly the throttle stick you do not need to bother about this option
 # not valid for ARM based transmitters like Taranis, They do not have this rounding issue at all
 # Values = YES, NO
@@ -161,7 +161,7 @@ FONT = STD
 # Values = YES, NO
 PPM_CENTER_ADJUSTABLE = NO
 
-# PPM symetrical limits
+# PPM symmetrical limits
 # Values = YES, NO
 PPM_LIMITS_SYMETRICAL = NO
 
@@ -247,7 +247,7 @@ EEPROM_PROGRESS_BAR = NO
 
 # Activates the DEBUG Mode (all boards)
 # On G9X V4 board, when VOICE=NO:
-#  PORTH:7 --> Transistion LOW to HIGH = start of setupPulses(). Transistion HIGH to LOW = end of setupPulses().
+#  PORTH:7 --> Transition LOW to HIGH = start of setupPulses(). Transition HIGH to LOW = end of setupPulses().
 #  PORTH:6 --> LOW->HIGH = start of mixer calcs. HIGH->LOW, end of mixer calcs.
 # Values = YES, NO
 DEBUG = NO
@@ -282,11 +282,11 @@ MENUS_LOCK = NO
 # MASSSTORAGE: The TX will appear as a drive
 USB = JOYSTICK
 
-# Channel monitor display behaviour
+# Channel monitor display behavior
 # Values = NO, YES
 # YES - hide the fact that channel is inverted in limits tab 
-#       and show inverted channel value with oposite sign
-# NO - normal behaviour, show real channel values
+#       and show inverted channel value with opposite sign
+# NO - normal behavior, show real channel values
 CHANNELS_MONITOR_INV_HIDE = NO
 
 # Use newlib-nano 
@@ -1349,7 +1349,7 @@ else
 %.hex: %.elf
 	@echo
 	@echo $(MSG_FLASH) $@
-	 $(OBJCOPY) -O ihex opentx.elf opentx.hex
+	$(OBJCOPY) -O ihex opentx.elf opentx.hex
 endif
 
 %.bin: %.elf
@@ -1439,12 +1439,12 @@ AVRCOMMAND = $(AVRDUDE) $(AVRDEVICE)
 
 WRITE_COMMAND = $(AVRCOMMAND) -U flash:w:opentx.hex:i
 ifeq ($(RESTORE_EEPROM), YES)
-   BACKUP_EEPROM = YES
-   ifeq ($(DOUBLE_WRITE_OK), YES)
-      WRITE_COMMAND += -U eeprom:w:$(DATA_DIR)/eeprom-$(DATE).hex:i
-   else
-     SECOND_WRITE_COMMAND = -U eeprom:w:$(DATA_DIR)/eeprom-$(DATE).hex:i
-   endif
+  BACKUP_EEPROM = YES
+  ifeq ($(DOUBLE_WRITE_OK), YES)
+    WRITE_COMMAND += -U eeprom:w:$(DATA_DIR)/eeprom-$(DATE).hex:i
+  else
+    SECOND_WRITE_COMMAND = -U eeprom:w:$(DATA_DIR)/eeprom-$(DATE).hex:i
+  endif
 endif
 
 ifeq ($(BACKUP_FLASH), YES)
