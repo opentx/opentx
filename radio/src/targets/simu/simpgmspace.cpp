@@ -47,7 +47,7 @@
   #include <direct.h>
 #endif
 
-volatile uint8_t pina=0xff, pinb=0xff, pinc=0xff, pind, pine=0xff, ping=0xff, pinh=0xff, pinj=0xff, pinl=0;
+volatile uint8_t pina=0xff, pinb=0xff, pinc=0xff, pind, pine=0xff, pinf=0xff, ping=0xff, pinh=0xff, pinj=0xff, pinl=0;
 uint8_t portb, portc, porth=0, dummyport;
 uint16_t dummyport16;
 const char *eepromFile = NULL;
@@ -158,7 +158,7 @@ void simuSetKey(uint8_t key, bool state)
 #endif
 #if defined(PCBSKY9X) && !defined(REVX)
     KEY_CASE(BTN_REa, PIOB->PIO_PDSR, 0x40)
-#elif defined(PCBGRUVIN9X)
+#elif defined(PCBGRUVIN9X) || defined(PCBMEGA2560)
     KEY_CASE(BTN_REa, pind, 0x20)
 #elif defined(ROTARY_ENCODER_NAVIGATION)
     KEY_CASE(BTN_REa, RotEncoder, 0x20)
@@ -212,7 +212,15 @@ void simuSetSwitch(uint8_t swtch, int8_t state)
     SWITCH_CASE(4, pinc, 1<<INP_C_AileDR)
     SWITCH_CASE(5, ping, 1<<INP_G_Gear)
     SWITCH_CASE(6, pinb, 1<<INP_B_Trainer)
-#else // STOCK
+#elif defined(PCBMEGA2560)
+    SWITCH_CASE(0, ping, 1<<INP_G_ThrCt)
+    SWITCH_CASE(1, ping, 1<<INP_G_RuddDR)
+    SWITCH_CASE(2, pinc, 1<<INP_C_ElevDR)
+    SWITCH_3_CASE(3, pinc, pinc, (1<<INP_C_ID1), (1<<INP_C_ID2))
+    SWITCH_CASE(4, pinc, 1<<INP_C_AileDR)
+    SWITCH_CASE(5, ping, 1<<INP_G_Gear)
+    SWITCH_CASE(6, pinb, 1<<INP_B_Trainer)
+#else // PCB9X
 #if defined(JETI) || defined(FRSKY) || defined(NMEA) || defined(ARDUPILOT)
     SWITCH_CASE(0, pinc, 1<<INP_C_ThrCt)
     SWITCH_CASE(4, pinc, 1<<INP_C_AileDR)

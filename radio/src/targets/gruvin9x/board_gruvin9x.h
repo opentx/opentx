@@ -82,14 +82,12 @@
 #define JACK_PPM_OUT()           PORTG |= (1<<OUT_G_SIM_CTL)
 #define JACK_PPM_IN()            PORTG &= ~(1<<OUT_G_SIM_CTL)
 
-#define sdDone()
-
 // SD driver
+#define sdDone()
 #if !defined(SIMU)
 bool sdMounted();
 void sdMountPoll();
 void sdPoll10ms();
-
 #define SD_IS_HC()               (0)
 #define SD_GET_BLOCKNR()         (0)
 #define SD_GET_SIZE_MB()         (0)
