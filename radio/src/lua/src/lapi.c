@@ -23,6 +23,7 @@
 #include "lstate.h"
 #include "lstring.h"
 #include "ltable.h"
+#include "lrotable.h"
 #include "ltm.h"
 #include "lundump.h"
 #include "lvm.h"
@@ -621,9 +622,19 @@ LUA_API void lua_getglobal (lua_State *L, const char *var) {
   Table *reg = hvalue(&G(L)->l_registry);
   const TValue *gt;  /* global table */
   lua_lock(L);
-  gt = luaH_getint(reg, LUA_RIDX_GLOBALS);
-  setsvalue2s(L, L->top++, luaS_new(L, var));
-  luaV_gettable(L, gt, L->top - 1, L->top - 1);
+
+  lu_byte keytype;
+  luaR_result res = luaR_findglobal(var, &keytype);
+  if (res != 0) {
+    setsvalue2s(L, L->top++, luaS_new(L, var));
+    setlfvalue(L->top - 1, (void*)(size_t)res)
+  }
+  else {
+    gt = luaH_getint(reg, LUA_RIDX_GLOBALS);
+    setsvalue2s(L, L->top++, luaS_new(L, var));
+    luaV_gettable(L, gt, L->top - 1, L->top - 1);
+  }
+
   lua_unlock(L);
 }
 
