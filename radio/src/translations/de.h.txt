@@ -402,8 +402,13 @@
   #define TR_VARIOSRC          "Alt\0""Alt+""Vspd""A1\0 ""A2\0 "
 #endif
 
-#define LEN_VSCREEN  	         "\007"
-#define TR_VSCREEN   	         ":Werte\0"":Balken" //Telemetrie Werte oder Balken
+#if defined(CPUARM)
+  #define LEN_VTELEMSCREENTYPE "\007"
+  #define TR_VTELEMSCREENTYPE  "None\0  "":Werte\0"":Balken""Script\0"
+#else
+  #define LEN_VTELEMSCREENTYPE "\006" 
+  #define TR_VTELEMSCREENTYPE  "Werte\0""Balken"
+#endif
 
 #define LEN_GPSFORMAT          "\004"
 #define TR_GPSFORMAT           "GMS\0""NMEA"  //Koordinatenanzeige
@@ -476,10 +481,10 @@
 #define LEN_VTMRMODES          "\003"
 #define TR_VTMRMODES           "AUS""ABS""GSs""GS%""GSt"
 
-#define LEN_VTRAINERMODES      "\007"     // "\006"
+#define LEN_VTRAINERMODES      "\007"
 #define TR_VTRAINERMODES       "Lehrer\0""Schüler\0"  // "Master""Slave\0"
 
-#define LEN_VFAILSAFE          "\013"     // "\011"
+#define LEN_VFAILSAFE          "\013"
 #define TR_VFAILSAFE           "Halte Pos.\0""Angepasst\0 ""Kein Signal""Empfänger\0"
 
 #if defined(MAVLINK)

@@ -839,7 +839,18 @@ struct FrSkyBarData {
 };
 
 struct FrSkyLineData {
-  unsigned int     source[3];
+  unsigned int   source[3];
+};
+
+struct TelemetryScriptData {
+  char filename[8+1];
+};
+
+enum TelemetryScreenEnum {
+  TELEMETRY_SCREEN_NONE,
+  TELEMETRY_SCREEN_NUMBERS,
+  TELEMETRY_SCREEN_BARS,
+  TELEMETRY_SCREEN_SCRIPT
 };
 
 class FrSkyScreenData {
@@ -849,6 +860,7 @@ class FrSkyScreenData {
     typedef union {
       FrSkyBarData bars[4];
       FrSkyLineData lines[4];
+      TelemetryScriptData script;
     } FrSkyScreenBody;
 
     unsigned int type;
@@ -894,7 +906,7 @@ class FrSkyData {
     bool altitudeDisplayed;
     unsigned int currentSource;
     unsigned int FrSkyGpsAlt;
-    FrSkyScreenData screens[3];
+    FrSkyScreenData screens[4];
     FrSkyRSSIAlarm rssiAlarms[2];
     unsigned int varioSource;
     int varioMin;

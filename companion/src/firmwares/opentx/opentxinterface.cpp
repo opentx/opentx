@@ -653,7 +653,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case TelemetryBars:
       return 1;
     case TelemetryCustomScreens:
-      return IS_TARANIS(board) ? 3 : 2;
+      return IS_ARM(board) ? 4 : 2;
     case TelemetryCustomScreensFieldsPerLine:
       return IS_TARANIS(board) ? 3 : 2;
     case NoTelemetryProtocol:

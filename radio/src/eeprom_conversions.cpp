@@ -328,7 +328,7 @@ PACK(typedef struct {
   uint8_t blades;   // How many blades for RPMs, 0=2 blades, 1=3 blades
   uint8_t currentSource;
   uint8_t screensType;
-  FrSkyScreenData screens[MAX_FRSKY_SCREENS];
+  FrSkyScreenData screens[MAX_TELEMETRY_SCREENS];
   uint8_t varioSource;
   int8_t  varioCenterMax;
   int8_t  varioCenterMin;
@@ -336,6 +336,12 @@ PACK(typedef struct {
   int8_t  varioMax;
   FrSkyRSSIAlarm rssiAlarms[2];
 }) FrSkyData_v215;
+
+PACK(typedef struct t_ScriptData {
+  char    file[10];
+  char    name[10];
+  int8_t  inputs[10];
+}) ScriptData_v216;
 
 PACK(typedef struct {
   ModelHeader header;
@@ -420,7 +426,7 @@ PACK(typedef struct {
   uint8_t trainerMode;
   ModuleData moduleData[NUM_MODULES+1];
   char curveNames[MAX_CURVES][6];
-  ScriptData scriptsData[MAX_SCRIPTS];
+  ScriptData_v216 scriptsData[MAX_SCRIPTS];
   char inputNames[MAX_INPUTS][LEN_INPUT_NAME];
   uint8_t nPotsToWarn;
   int8_t potPosition[NUM_POTS];
@@ -1104,6 +1110,9 @@ void ConvertModel_216_to_217(ModelData &model)
 {
   // Timer3 added
   // 32bits Timers
+  // MixData reduction
+  // PPM center range
+  // Telemetry custom screens
 
   assert(sizeof(ModelData_v216) <= sizeof(ModelData));
 
@@ -1210,7 +1219,7 @@ void ConvertModel_216_to_217(ModelData &model)
   memcpy(newModel.moduleData, oldModel.moduleData, sizeof(newModel.moduleData));
 #if defined(PCBTARANIS)
   newModel.trainerMode = oldModel.trainerMode;
-  memcpy(newModel.scriptsData, oldModel.scriptsData, sizeof(newModel.scriptsData));
+  // TODO memcpy(newModel.scriptsData, oldModel.scriptsData, sizeof(newModel.scriptsData));
   memcpy(newModel.curveNames, oldModel.curveNames, sizeof(newModel.curveNames));
   memcpy(newModel.inputNames, oldModel.inputNames, sizeof(newModel.inputNames));
 #endif

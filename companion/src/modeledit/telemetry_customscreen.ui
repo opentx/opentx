@@ -51,12 +51,22 @@
        </property>
        <item>
         <property name="text">
-         <string>Nums</string>
+         <string>None</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Numbers</string>
         </property>
        </item>
        <item>
         <property name="text">
          <string>Bars</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Script</string>
         </property>
        </item>
       </widget>

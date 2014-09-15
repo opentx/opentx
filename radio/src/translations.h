@@ -137,7 +137,7 @@ extern const pm_char STR_OPEN9X[];
   #define OFS_AMPSRC            (OFS_GPSFORMAT + sizeof(TR_GPSFORMAT))
   #define OFS_VARIOSRC          (OFS_AMPSRC + sizeof(TR_AMPSRC))
   #define OFS_VSCREEN           (OFS_VARIOSRC + sizeof(TR_VARIOSRC))
-  #define OFS_VTEMPLATES        (OFS_VSCREEN + sizeof(TR_VSCREEN))
+  #define OFS_VTEMPLATES        (OFS_VSCREEN + sizeof(TR_VTELEMSCREENTYPE))
 #else
   #define OFS_VTEMPLATES        (OFS_VTELEMCHNS + sizeof(TR_VTELEMCHNS))
 #endif
@@ -234,7 +234,7 @@ extern const pm_char STR_OPEN9X[];
 #define STR_GPSFORMAT           (STR_OPEN9X + OFS_GPSFORMAT)
 #define STR_AMPSRC              (STR_OPEN9X + OFS_AMPSRC)
 #define STR_VARIOSRC            (STR_OPEN9X + OFS_VARIOSRC)
-#define STR_VSCREEN             (STR_OPEN9X + OFS_VSCREEN)
+#define STR_VTELEMSCREENTYPE    (STR_OPEN9X + OFS_VSCREEN)
 #define STR_TELEMCHNS           (STR_OPEN9X + OFS_TELEMCHNS)
 #endif
 

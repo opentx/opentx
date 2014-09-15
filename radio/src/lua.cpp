@@ -1528,7 +1528,7 @@ int luaLoad(const char *filename, ScriptInternalData & sid, ScriptInputsOutputs 
 #endif
 
   if (luaState == INTERPRETER_PANIC) {
-	return SCRIPT_PANIC;
+    return SCRIPT_PANIC;
   }
 
   SET_LUA_INSTRUCTIONS_COUNT(MANUAL_SCRIPTS_MAX_INSTRUCTIONS);
@@ -1635,52 +1635,32 @@ bool luaLoadFunctionScript(uint8_t index)
   return true;
 }
 
-void getTelemetryScriptPath(char * path, uint8_t index)
-{
-  strcpy(path, SCRIPTS_PATH "/");
-  char * curs = strcat_modelname(path+sizeof(SCRIPTS_PATH), g_eeGeneral.currModel);
-  if (index == TELEMETRY_VOLTAGES_SCREEN) {
-    strcpy(curs, "/telempw.lua");
-  }
-  else if (index == TELEMETRY_AFTER_FLIGHT_SCREEN) {
-    strcpy(curs, "/telemaf.lua");
-  }
-  else {
-    strcpy(curs, "/telemX.lua");
-    curs[6] = '1' + index;
-  }
-}
-
 bool luaLoadTelemetryScript(uint8_t index)
 {
-  char path[256];
-  getTelemetryScriptPath(path, index);
-  if (isFileAvailable(path)) {
-    if (luaScriptsCount < MAX_SCRIPTS) {
-      ScriptInternalData & sid = scriptInternalData[luaScriptsCount++];
-      sid.reference = SCRIPT_TELEMETRY_FIRST+index;
-      sid.state = SCRIPT_NOFILE;
-      if (luaLoad(path, sid) == SCRIPT_PANIC) {
+  TelemetryScreenType screenType = TELEMETRY_SCREEN_TYPE(index);
+
+  if (screenType == TELEMETRY_SCREEN_TYPE_SCRIPT) {
+    TelemetryScriptData & script = g_model.frsky.screens[index].script;
+    if (ZEXIST(script.file)) {
+      if (luaScriptsCount < MAX_SCRIPTS) {
+        ScriptInternalData & sid = scriptInternalData[luaScriptsCount++];
+        sid.reference = SCRIPT_TELEMETRY_FIRST+index;
+        sid.state = SCRIPT_NOFILE;
+        char filename[sizeof(SCRIPTS_TELEM_PATH)+sizeof(script.file)+sizeof(SCRIPTS_EXT)] = SCRIPTS_TELEM_PATH "/";
+        strncpy(filename+sizeof(SCRIPTS_TELEM_PATH), script.file, sizeof(script.file));
+        filename[sizeof(SCRIPTS_TELEM_PATH)+sizeof(script.file)] = '\0';
+        strcat(filename+sizeof(SCRIPTS_TELEM_PATH), SCRIPTS_EXT);
+        if (luaLoad(filename, sid) == SCRIPT_PANIC) {
+          return false;
+        }
+      }
+      else {
+        POPUP_WARNING(STR_TOO_MANY_LUA_SCRIPTS);
         return false;
       }
     }
-    else {
-      POPUP_WARNING(STR_TOO_MANY_LUA_SCRIPTS);
-      return false;
-    }
   }
   return true;
-}
-
-bool isTelemetryScriptAvailable(uint8_t index)
-{
-  for (int i=0; i<luaScriptsCount; i++) {
-    ScriptInternalData & sid = scriptInternalData[i];
-    if (sid.reference == SCRIPT_TELEMETRY_FIRST+index) {
-      return true;
-    }
-  }
-  return false;
 }
 
 void luaLoadPermanentScripts()
@@ -1691,9 +1671,9 @@ void luaLoadPermanentScripts()
 
   // Load model scripts
   for (int i=0; i<MAX_SCRIPTS; i++) {
-	if (!luaLoadMixScript(i)) {
-	  return;
-	}
+    if (!luaLoadMixScript(i)) {
+      return;
+    }
   }
 
   // Load custom function scripts
@@ -1704,16 +1684,10 @@ void luaLoadPermanentScripts()
   }
 
   // Load custom telemetry scripts
-  for (int i=0; i<MAX_SCRIPTS; i++) {
+  for (int i=0; i<MAX_TELEMETRY_SCREENS; i++) {
     if (!luaLoadTelemetryScript(i)) {
       return;
     }
-  }
-  if (!luaLoadTelemetryScript(TELEMETRY_VOLTAGES_SCREEN)) {
-    return;
-  }
-  if (!luaLoadTelemetryScript(TELEMETRY_AFTER_FLIGHT_SCREEN)) {
-    return;
   }
 }
 
@@ -1880,8 +1854,9 @@ void luaDoOneRunPermanentScript(uint8_t evt, int i)
       lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
     }
     else {
+      TelemetryScriptData & script = g_model.frsky.screens[sid.reference-SCRIPT_TELEMETRY_FIRST].script;
 #if defined(SIMU) || defined(DEBUG)
-      filename = "[telem]";
+      filename = script.file;
 #endif
       if (g_menuStack[0]==menuTelemetryFrsky && sid.reference==SCRIPT_TELEMETRY_FIRST+s_frsky_view) {
         lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);

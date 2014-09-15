@@ -362,8 +362,8 @@ void TelemetryCustomScreen::update()
   lock = true;
 
   ui->screenType->setCurrentIndex(screen.type);
-  ui->screenNums->setVisible(screen.type == 0);
-  ui->screenBars->setVisible(screen.type != 0);
+  ui->screenNums->setVisible(screen.type == TELEMETRY_SCREEN_NUMBERS);
+  ui->screenBars->setVisible(screen.type == TELEMETRY_SCREEN_BARS);
 
   for (int l=0; l<4; l++) {
     for (int c=0; c<firmware->getCapability(TelemetryCustomScreensFieldsPerLine); c++) {
@@ -375,14 +375,7 @@ void TelemetryCustomScreen::update()
     populateTelemetrySourceCB(barsCB[l], screen.body.bars[l].source, false, model.frsky.usrProto);
   }
 
-  if (screen.type == 0) {
-    for (int l=0; l<4; l++) {
-      for (int c=0; c<firmware->getCapability(TelemetryCustomScreensFieldsPerLine); c++) {
-        fieldsCB[l][c]->setCurrentIndex(screen.body.lines[l].source[c]);
-      }
-    }
-  }
-  else {
+  if (screen.type == TELEMETRY_SCREEN_BARS) {
     for (int i=0; i<4; i++) {
       updateBar(i);
     }

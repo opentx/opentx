@@ -424,31 +424,29 @@ bool displayCustomTelemetryScreen(uint8_t index)
   FrSkyScreenData & screen = g_model.frsky.screens[index];
 
 #if defined(GAUGES)
-  if (g_model.frsky.screensType & (1<<(s_frsky_view-TELEMETRY_CUSTOM_SCREEN_1))) {
+  if (IS_BARS_SCREEN(s_frsky_view)) {
     return displayGaugesTelemetryScreen(screen);
   }
-  else
 #endif
-  {
-    return displayNumbersTelemetryScreen(screen);
-  }
+
+  return displayNumbersTelemetryScreen(screen);
 }
 
 bool displayTelemetryScreen()
 {
 #if defined(LUA)
-  if (s_frsky_view < TELEMETRY_CUSTOM_SCREEN_1) {
-    return isTelemetryScriptAvailable(s_frsky_view);
+  if (TELEMETRY_SCREEN_TYPE(s_frsky_view) == TELEMETRY_SCREEN_TYPE_SCRIPT) {
+    return ZEXIST(g_model.frsky.screens[s_frsky_view].script.file);
   }
 #endif
 
   lcdDrawTelemetryTopBar();
 
+  if (s_frsky_view < MAX_TELEMETRY_SCREENS) {
+    return displayCustomTelemetryScreen(s_frsky_view);
+  }
   if (s_frsky_view == TELEMETRY_VOLTAGES_SCREEN) {
     displayVoltagesScreen();
-  }
-  else if (s_frsky_view < TELEMETRY_CUSTOM_SCREEN_1+MAX_FRSKY_SCREENS) {
-    return displayCustomTelemetryScreen(s_frsky_view-TELEMETRY_CUSTOM_SCREEN_1);
   }
 #if defined(FRSKY_HUB)
   else {

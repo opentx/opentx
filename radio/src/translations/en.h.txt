@@ -402,8 +402,13 @@
   #define TR_VARIOSRC          "Alt\0""Alt+""VSpd""A1\0 ""A2\0"
 #endif
 
-#define LEN_VSCREEN            "\004"
-#define TR_VSCREEN             "Nums""Bars"
+#if defined(CPUARM)
+  #define LEN_VTELEMSCREENTYPE "\006"
+  #define TR_VTELEMSCREENTYPE  "None\0 ""Nums\0 ""Bars\0 ""Script"
+#else
+  #define LEN_VTELEMSCREENTYPE "\004" 
+  #define TR_VTELEMSCREENTYPE  "Nums""Bars"
+#endif
 
 #define LEN_GPSFORMAT          "\004"
 #define TR_GPSFORMAT           "DMS\0""NMEA"
@@ -587,7 +592,7 @@
 #define TR_ALARM               INDENT "Alarm"
 #define TR_USRDATA             TR("UsrData","User Data")
 #define TR_BLADES              INDENT "Blades"
-#define TR_SCREEN              "Screen "
+#define TR_SCREEN              "Screen\001"
 #define TR_SOUND_LABEL         "Sound"
 #define TR_LENGTH              INDENT "Length"
 #define TR_BEEP_LENGTH         INDENT "Beep Length"

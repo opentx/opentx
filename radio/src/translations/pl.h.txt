@@ -400,8 +400,8 @@
   #define TR_VARIOSRC          "Wys\0""Wys+""VSpd""A1\0 ""A2\0"
 #endif
 
-#define LEN_VSCREEN            "\004"
-#define TR_VSCREEN             "Licz""Pask"
+#define LEN_VTELEMSCREENTYPE   "\004"
+#define TR_VTELEMSCREENTYPE    "Licz""Pask"
 
 #define LEN_GPSFORMAT          "\004"
 #define TR_GPSFORMAT           "DMS\0""NMEA"

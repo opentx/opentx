@@ -2263,7 +2263,7 @@ class FrskyScreenField: public DataField {
         bars.Append(new UnsignedField<8>(screen.body.bars[i].barMax));
       }
 
-      int columns=(IS_TARANIS(board) ? 3:2);
+      int columns = (IS_TARANIS(board) ? 3 : 2);
       for (int i=0; i<4; i++) {
         for (int j=0; j<columns; j++) {
           numbers.Append(new TelemetrySourceField<8>(screen.body.lines[i].source[j], board, version));
@@ -2274,43 +2274,61 @@ class FrskyScreenField: public DataField {
           numbers.Append(new SpareBitsField<8>());
         }
       }
+
+      none.Append(new SpareBitsField<12*8>());
+
+      if (IS_TARANIS(board) && version >= 217) {
+        script.Append(new CharField<8>(screen.body.script.filename));
+        script.Append(new SpareBitsField<32>());
+      }
     }
 
     virtual void ExportBits(QBitArray & output)
     {
-      if (screen.type == 0)
+      if (screen.type == TELEMETRY_SCREEN_SCRIPT)
+        script.ExportBits(output);
+      else if (screen.type == TELEMETRY_SCREEN_NUMBERS)
         numbers.ExportBits(output);
-      else
+      else if (screen.type == TELEMETRY_SCREEN_BARS)
         bars.ExportBits(output);
+      else
+        none.ExportBits(output);
     }
 
     virtual void ImportBits(QBitArray & input)
     {
       // NOTA: screen.type should have been imported first!
-      if (screen.type == 0) {
+      if (screen.type == TELEMETRY_SCREEN_SCRIPT)
+        script.ImportBits(input);
+      else if (screen.type == TELEMETRY_SCREEN_NUMBERS)
         numbers.ImportBits(input);
-      }
-      else {
+      else if (screen.type == TELEMETRY_SCREEN_BARS)
         bars.ImportBits(input);
-      }
-
+      else
+        none.ImportBits(input);
     }
 
     virtual unsigned int size()
     {
       // NOTA: screen.type should have been imported first!
-      if (screen.type == 0)
+      if (screen.type == TELEMETRY_SCREEN_SCRIPT)
+        return script.size();
+      else if (screen.type == TELEMETRY_SCREEN_NUMBERS)
         return numbers.size();
-      else
+      else if (screen.type == TELEMETRY_SCREEN_BARS)
         return bars.size();
+      else
+        return none.size();
     }
 
   protected:
     FrSkyScreenData & screen;
     BoardEnum board;
     unsigned int version;
+    StructField none;
     StructField bars;
     StructField numbers;
+    StructField script;
 };
 
 class RSSIConversionTable: public ConversionTable
@@ -2418,13 +2436,22 @@ class FrskyField: public StructField {
         Append(new ConversionField< SignedField<8> >(frsky.blades, -2));
         Append(new ConversionField< UnsignedField<8> >(frsky.currentSource, &telemetryCurrentSourceConversionTable, "Current Source"));
 
-        Append(new UnsignedField<1>(frsky.screens[0].type));
-        Append(new UnsignedField<1>(frsky.screens[1].type));
-        Append(new UnsignedField<1>(frsky.screens[2].type));
-        Append(new SpareBitsField<5>());
-
-        for (int i=0; i<3; i++) {
-          Append(new FrskyScreenField(frsky.screens[i], board, version));
+        if (version >= 217) {
+          for (int i=0; i<4; i++) {
+            Append(new UnsignedField<2>(frsky.screens[i].type));
+          }
+          for (int i=0; i<4; i++) {
+            Append(new FrskyScreenField(frsky.screens[i], board, version));
+          }
+        }
+        else {
+          Append(new UnsignedField<1>(frsky.screens[0].type));
+          Append(new UnsignedField<1>(frsky.screens[1].type));
+          Append(new UnsignedField<1>(frsky.screens[2].type));
+          Append(new SpareBitsField<5>());
+          for (int i=0; i<3; i++) {
+            Append(new FrskyScreenField(frsky.screens[i], board, version));
+          }
         }
 
         Append(new ConversionField< UnsignedField<8> >(frsky.varioSource, &telemetryVarioSourceConversionTable, "Vario Source"));
@@ -2708,20 +2735,35 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
     }
   }
 
-  if (IS_TARANIS(board) && version >= 216) {
-    for (int i=0; i<7; i++) {
-      ScriptData & script = modelData.scriptData[i];
-      internalField.Append(new CharField<10>(script.filename));
-      internalField.Append(new ZCharField<10>(script.name));
-      for (int j=0; j<10; j++) {
-        internalField.Append(new SignedField<8>(script.inputs[j]));
+  if (IS_TARANIS(board)) {
+    if (version >= 217) {
+      for (int i=0; i<7; i++) {
+        ScriptData & script = modelData.scriptData[i];
+        internalField.Append(new CharField<8>(script.filename));
+        internalField.Append(new ZCharField<8>(script.name));
+        for (int j=0; j<8; j++) {
+          internalField.Append(new SignedField<8>(script.inputs[j]));
+        }
       }
     }
+    else if (version >= 216) {
+      for (int i=0; i<7; i++) {
+        ScriptData & script = modelData.scriptData[i];
+        internalField.Append(new CharField<10>(script.filename));
+        internalField.Append(new ZCharField<10>(script.name));
+        for (int j=0; j<10; j++) {
+          internalField.Append(new SignedField<8>(script.inputs[j]));
+        }
+      }
+    }
+  }
+  
+  if (IS_TARANIS(board) && version >= 216) {
     for (int i=0; i<32; i++) {
       internalField.Append(new ZCharField<4>(modelData.inputNames[i]));
     }
   }
-
+  
   if (IS_ARM(board) && version >= 216) {
     internalField.Append(new UnsignedField<8>(modelData.nPotsToWarn));
     for (int i=0; i < GetCurrentFirmware()->getCapability(Pots); i++) {

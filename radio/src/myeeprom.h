@@ -342,11 +342,12 @@ PACK(typedef struct t_ModuleData {
 
 #define SET_DEFAULT_PPM_FRAME_LENGTH(idx) g_model.moduleData[idx].ppmFrameLength = 4 * max((int8_t)0, g_model.moduleData[idx].channelsCount)
 
-#define MAX_SCRIPT_INPUTS  10
-#define MAX_SCRIPT_OUTPUTS 6
-PACK(typedef struct t_ScriptData {
-  char    file[10];
-  char    name[10];
+#define LEN_SCRIPT_FILENAME    8
+#define MAX_SCRIPT_INPUTS      8
+#define MAX_SCRIPT_OUTPUTS     6
+PACK(typedef struct {
+  char    file[LEN_SCRIPT_FILENAME];
+  char    name[8];
   int8_t  inputs[MAX_SCRIPT_INPUTS];
 }) ScriptData;
 
@@ -1183,7 +1184,7 @@ enum VarioSource {
   #define NUM_TELEMETRY      TELEM_TIMER_MAX
 #endif
 
-PACK(typedef struct t_FrSkyBarData {
+PACK(typedef struct {
   uint8_t    source;
   uint8_t    barMin;           // minimum for bar display
   uint8_t    barMax;           // ditto for max display (would usually = ratio)
@@ -1194,13 +1195,24 @@ PACK(typedef struct t_FrSkyBarData {
 #else
   #define NUM_LINE_ITEMS 2
 #endif
-PACK(typedef struct t_FrSkyLineData {
+PACK(typedef struct {
   uint8_t    sources[NUM_LINE_ITEMS];
 }) FrSkyLineData;
 
-typedef union t_FrSkyScreenData {
+#if defined(PCBTARANIS)
+#define MAX_TELEM_SCRIPT_INPUTS  4
+PACK(typedef struct {
+  char   file[LEN_SCRIPT_FILENAME];
+  int8_t inputs[MAX_TELEM_SCRIPT_INPUTS];
+}) TelemetryScriptData;
+#endif
+
+typedef union {
   FrSkyBarData  bars[4];
   FrSkyLineData lines[4];
+#if defined(PCBTARANIS)
+  TelemetryScriptData script;
+#endif
 } FrSkyScreenData;
 
 enum FrskyUsrProtocols {
@@ -1235,17 +1247,30 @@ enum FrskyVoltsSource {
 };
 
 #if defined(CPUARM)
+enum TelemetryScreenType {
+  TELEMETRY_SCREEN_TYPE_NONE,
+  TELEMETRY_SCREEN_TYPE_VALUES,
+  TELEMETRY_SCREEN_TYPE_GAUGES,
+#if defined(PCBTARANIS) && defined(LUA)
+  TELEMETRY_SCREEN_TYPE_SCRIPT,
+  TELEMETRY_SCREEN_TYPE_MAX = TELEMETRY_SCREEN_TYPE_SCRIPT
+#else
+  TELEMETRY_SCREEN_TYPE_MAX = TELEMETRY_SCREEN_TYPE_GAUGES
+#endif
+};
 #define MAX_FRSKY_A_CHANNELS 4
-#define MAX_FRSKY_SCREENS 3
-PACK(typedef struct t_FrSkyData {
+#define MAX_TELEMETRY_SCREENS 4
+#define TELEMETRY_SCREEN_TYPE(screenIndex) TelemetryScreenType((g_model.frsky.screensType >> (2*(screenIndex))) & 0x03)
+#define IS_BARS_SCREEN(screenIndex)        (TELEMETRY_SCREEN_TYPE(screenIndex) == TELEMETRY_SCREEN_TYPE_GAUGES)
+PACK(typedef struct {
   FrSkyChannelData channels[MAX_FRSKY_A_CHANNELS];
   uint8_t usrProto; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh, 3=Halcyon
   uint8_t voltsSource:7;
   uint8_t altitudeDisplayed:1;
   int8_t blades;    // How many blades for RPMs, 0=2 blades
   uint8_t currentSource;
-  uint8_t screensType;
-  FrSkyScreenData screens[MAX_FRSKY_SCREENS];
+  uint8_t screensType; // 2bits per screen (None/Gauges/Numbers/Script)
+  FrSkyScreenData screens[MAX_TELEMETRY_SCREENS];
   uint8_t varioSource;
   int8_t  varioCenterMax;
   int8_t  varioCenterMin;
@@ -1260,7 +1285,8 @@ PACK(typedef struct t_FrSkyData {
 #define MAX_BLADES 126  // 128 blades
 #else
 #define MAX_FRSKY_A_CHANNELS 2
-#define MAX_FRSKY_SCREENS 2
+#define MAX_TELEMETRY_SCREENS 2
+#define IS_BARS_SCREEN(screenIndex) (g_model.frsky.screensType & (1<<(screenIndex)))
 PACK(typedef struct t_FrSkyData {
   FrSkyChannelData channels[MAX_FRSKY_A_CHANNELS];
   uint8_t usrProto:2; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh, 3=Halcyon
@@ -1270,7 +1296,7 @@ PACK(typedef struct t_FrSkyData {
   int8_t  varioMin:4;
   int8_t  varioMax:4;
   FrSkyRSSIAlarm rssiAlarms[2];
-  FrSkyScreenData screens[MAX_FRSKY_SCREENS];
+  FrSkyScreenData screens[MAX_TELEMETRY_SCREENS];
   uint8_t varioSource:3;
   int8_t  varioCenterMin:5;
   uint8_t currentSource:3;
@@ -1822,7 +1848,7 @@ PACK(typedef struct {
 
   MODELDATA_EXTRA
 
-  ARM_FIELD(uint8_t spare3[188]) // TODO dirty hack for eeprom conversions (we load the model inside the g_model structure)
+  ARM_FIELD(uint8_t spare3[230]) // TODO dirty hack for eeprom conversions (we load the model inside the g_model structure)
 }) ModelData;
 
 extern EEGeneral g_eeGeneral;

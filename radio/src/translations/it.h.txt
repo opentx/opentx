@@ -400,8 +400,8 @@
   #define TR_VARIOSRC          "Alti\0""Alti+""Vario""A1\0  ""A2\0"
 #endif
 
-#define LEN_VSCREEN            "\006"
-#define TR_VSCREEN             "Valori""Barre "
+#define LEN_VTELEMSCREENTYPE   "\006"
+#define TR_VTELEMSCREENTYPE    "Valori""Barre "
                                
 #define LEN_GPSFORMAT          "\004"
 #define TR_GPSFORMAT           "HMS NMEA"
