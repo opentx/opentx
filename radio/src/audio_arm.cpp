@@ -737,7 +737,7 @@ void AudioQueue::wakeup()
     else {
       CoEnterMutexSection(audioMutex);
       if (ridx != widx) {
-        normalContext.fragment = fragments[ridx];
+        normalContext.tone.setFragment(fragments[ridx]);
         if (!fragments[ridx].repeat--) {
           ridx = (ridx + 1) % AUDIO_QUEUE_LENGTH;
         }
@@ -804,8 +804,9 @@ void AudioQueue::playTone(uint16_t freq, uint16_t len, uint16_t pause, uint8_t f
 {
   CoEnterMutexSection(audioMutex);
 
-  if (freq && freq < BEEP_MIN_FREQ)
+  if (freq && freq < BEEP_MIN_FREQ) {
     freq = BEEP_MIN_FREQ;
+  }
 
   if (flags & PLAY_BACKGROUND) {
     AudioFragment & fragment = varioContext.fragment;

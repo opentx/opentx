@@ -103,6 +103,12 @@ class ToneContext {
       uint16_t pause;
     } state;
 
+    inline void setFragment(AudioFragment & fragment)
+    {
+      this->fragment = fragment;
+      memset(&state, 0, sizeof(state));
+    }
+
     inline void clear()
     {
       memset(this, 0, sizeof(ToneContext));
