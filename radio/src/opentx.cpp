@@ -148,7 +148,7 @@ uint8_t heartbeat;
 uint8_t stickMode;
 
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
-int8_t safetyCh[NUM_CHNOUT];
+safetych_t safetyCh[NUM_CHNOUT];
 #endif
 
 union ReusableBuffer reusableBuffer;
@@ -1904,7 +1904,7 @@ void evalFunctions()
 
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
   for (uint8_t i=0; i<NUM_CHNOUT; i++) {
-    safetyCh[i] = -128; // not defined
+    safetyCh[i] = OVERRIDE_CHANNEL_UNDEFINED;
   }
 #endif
 
