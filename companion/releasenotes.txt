@@ -1,17 +1,22 @@
-<h2>Version 2.0.11</h2>
+<h2>Version 2.0.12 / 2014-09-15</h2>
+<ul>
+<li>Typos & Translations updated</li>
+</ul>
+
+<h2>Version 2.0.11 / 2014-09-10</h2>
 <ul>
 <li>Limits EEPROM export was broken (all boards except Taranis)</li>
 <li>Fix issue when a GVAR was used as Offset</li>
 </ul>
 
-<h2>Version 2.0.10</h2>
+<h2>Version 2.0.10 / 2014-09-08</h2>
 <ul>
 <li>Taranis is now the default board in General Settings</li>
 <li>GVARS allowed in Limits min/max/offset</li>
 <li>Limits displayed in us when ppmus option selected
 </ul>
 
-<h2>Version 2.0.8</h2>
+<h2>Version 2.0.8 / 2014-07-23</h2>
 <ul>
 <li>Compare dialog bugfixes</li>
 <li>Curve index correctly resetted when type changed</li>

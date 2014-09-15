@@ -1,8 +1,11 @@
-<h2>Version 2.0.12 / 2014-09-14</h2>
+<h2>Version 2.0.12 / 2014-09-15</h2>
 [Taranis]
 <ul>
 <li>LTR patch (modified) applied to the Lua code. Saves around 8-10k RAM</li>
-<li>Lua hardening again</li>
+<li>Lua hardening again!</li>
+<li>bit32 lib added to the Lua interpreter</li>
+<li>Audio tones distorsion (just after playing a wav file)</li>
+<li>ABS changed to ON in Timers modes</li>
 </ul>
 
 <h2>Version 2.0.11 / 2014-09-10</h2>
